@@ -7,7 +7,7 @@ glabel SelectWin_state9_00008468
     /* 008474 00008474 AFBF001C */  .word 0xAFBF001C
     lui $a0, %hi(import_80020098)   /* 008478 3C040000 -> import_80020098 */
     /* 00847C 0000847C 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 008480 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 008480 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 008484 00008484 24050100 */  .word 0x24050100
     /* 008488 00008488 10400039 */  .word 0x10400039
     /* 00848C 0000848C 3C040000 */  .word 0x3C040000
@@ -37,7 +37,7 @@ glabel SelectWin_state9_00008468
     /* 0084EC 000084EC 8D0903D0 */  .word 0x8D0903D0
     /* 0084F0 000084F0 00822021 */  .word 0x00822021
     /* 0084F4 000084F4 8C840000 */  .word 0x8C840000
-    jal timproc_uso_b5_func_0002FC   /* 0084F8 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 0084F8 0C000000 -> gen_imp_snd_sendEvent */
     /* 0084FC 000084FC 03092825 */  .word 0x03092825
     jal SelectWin_nextStageBit_000087F4   /* 008500 0C000000 -> SelectWin_nextStageBit_000087F4 */
     /* 008504 00008504 02002025 */  .word 0x02002025
@@ -68,7 +68,7 @@ glabel SelectWin_state9_00008468
     /* 008568 00008568 10000019 */  .word 0x10000019
     /* 00856C 0000856C 8FBF001C */  .word 0x8FBF001C
     /* 008570 00008570 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 008574 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 008574 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 008578 00008578 24050200 */  .word 0x24050200
     /* 00857C 0000857C 50400004 */  .word 0x50400004
     /* 008580 00008580 8E0B04B4 */  .word 0x8E0B04B4
@@ -79,7 +79,7 @@ glabel SelectWin_state9_00008468
     /* 008594 00008594 24840000 */  .word 0x24840000
     /* 008598 00008598 1560000C */  .word 0x1560000C
     /* 00859C 0000859C 3C050001 */  .word 0x3C050001
-    jal timproc_uso_b5_func_011E00   /* 0085A0 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 0085A0 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 0085A4 000085A4 34A54003 */  .word 0x34A54003
     /* 0085A8 000085A8 10400008 */  .word 0x10400008
     /* 0085AC 000085AC 02002025 */  .word 0x02002025

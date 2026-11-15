@@ -6,16 +6,16 @@ glabel GenCourse_update_0000024C
     /* 000254 00000254 AFBF0014 */  .word 0xAFBF0014
     lui $a0, %hi(import_80020098)   /* 000258 3C040000 -> import_80020098 */
     /* 00025C 0000025C 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 000260 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 000260 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 000264 00000264 24050300 */  .word 0x24050300
     /* 000268 00000268 14400005 */  .word 0x14400005
     lui $a0, %hi(import_80020098)   /* 00026C 3C040000 -> import_80020098 */
     /* 000270 00000270 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 000274 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 000274 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 000278 00000278 3C050004 */  .word 0x3C050004
     /* 00027C 0000027C 10400019 */  .word 0x10400019
     lui $a0, %hi(timproc_uso_b5_D_807FD924)   /* 000280 3C040000 -> timproc_uso_b5_D_807FD924 */
-    jal timproc_uso_b5_func_048E7C   /* 000284 0C000000 -> timproc_uso_b5_func_048E7C */
+    jal gen_imp_dbg_printf   /* 000284 0C000000 -> gen_imp_dbg_printf */
     /* 000288 00000288 248400B4 */  .word 0x248400B4
     /* 00028C 0000028C 8FA30018 */  .word 0x8FA30018
     /* 000290 00000290 24040028 */  .word 0x24040028

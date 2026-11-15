@@ -8,13 +8,13 @@ glabel gen_createScene_00008DB4
     /* 008DC4 00008DC4 AFB0001C */  .word 0xAFB0001C
     /* 008DC8 00008DC8 14800005 */  .word 0x14800005
     /* 008DCC 00008DCC AFA5005C */  .word 0xAFA5005C
-    jal timproc_uso_b5_func_055750   /* 008DD0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 008DD0 0C000000 -> gen_imp_mem_new */
     /* 008DD4 00008DD4 2404000C */  .word 0x2404000C
     /* 008DD8 00008DD8 10400069 */  .word 0x10400069
     /* 008DDC 00008DDC 00408825 */  .word 0x00408825
     lui $a0, %hi(import_800201CC)   /* 008DE0 3C040000 -> import_800201CC */
     /* 008DE4 00008DE4 8C840134 */  .word 0x8C840134
-    jal timproc_uso_b5_func_002C94   /* 008DE8 0C000000 -> timproc_uso_b5_func_002C94 */
+    jal gen_imp_game_initDdm_00002C94   /* 008DE8 0C000000 -> gen_imp_game_initDdm_00002C94 */
     /* 008DEC 00008DEC 24050002 */  .word 0x24050002
     lui $t6, %hi(import_8005C2CC)   /* 008DF0 3C0E0000 -> import_8005C2CC */
     /* 008DF4 00008DF4 8DCE01C4 */  .word 0x8DCE01C4
@@ -33,17 +33,17 @@ glabel gen_createScene_00008DB4
     /* 008E28 00008E28 E4400000 */  .word 0xE4400000
     /* 008E2C 00008E2C 24A51334 */  .word 0x24A51334
     /* 008E30 00008E30 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_04C678   /* 008E34 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 008E34 0C000000 -> gen_imp_Node_ctor */
     /* 008E38 00008E38 E42002A0 */  .word 0xE42002A0
     lui $a1, %hi(timproc_uso_b5_D_807FEBB0)   /* 008E3C 3C050000 -> timproc_uso_b5_D_807FEBB0 */
     /* 008E40 00008E40 00408025 */  .word 0x00408025
     /* 008E44 00008E44 24A51340 */  .word 0x24A51340
-    jal timproc_uso_b5_func_04C678   /* 008E48 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 008E48 0C000000 -> gen_imp_Node_ctor */
     /* 008E4C 00008E4C 00002025 */  .word 0x00002025
     lui $a1, %hi(timproc_uso_b5_D_807FEBB4)   /* 008E50 3C050000 -> timproc_uso_b5_D_807FEBB4 */
     /* 008E54 00008E54 AFA20050 */  .word 0xAFA20050
     /* 008E58 00008E58 24A51344 */  .word 0x24A51344
-    jal timproc_uso_b5_func_04C678   /* 008E5C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 008E5C 0C000000 -> gen_imp_Node_ctor */
     /* 008E60 00008E60 00002025 */  .word 0x00002025
     lui $a0, %hi(import_800201CC)   /* 008E64 3C040000 -> import_800201CC */
     /* 008E68 00008E68 AFA2004C */  .word 0xAFA2004C
@@ -52,11 +52,11 @@ glabel gen_createScene_00008DB4
     /* 008E74 00008E74 8FA60050 */  .word 0x8FA60050
     /* 008E78 00008E78 02003825 */  .word 0x02003825
     /* 008E7C 00008E7C AFA00010 */  .word 0xAFA00010
-    jal timproc_uso_b5_func_002060   /* 008E80 0C000000 -> timproc_uso_b5_func_002060 */
+    jal gen_imp_game_setParams_00002060   /* 008E80 0C000000 -> gen_imp_game_setParams_00002060 */
     /* 008E84 00008E84 AFA00014 */  .word 0xAFA00014
     /* 008E88 00008E88 26040010 */  .word 0x26040010
     /* 008E8C 00008E8C 8FA50050 */  .word 0x8FA50050
-    jal timproc_uso_b5_func_07ACE0   /* 008E90 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 008E90 0C000000 -> gen_imp_list_append */
     /* 008E94 00008E94 AFA4002C */  .word 0xAFA4002C
     /* 008E98 00008E98 8FA60050 */  .word 0x8FA60050
     /* 008E9C 00008E9C 8FA4002C */  .word 0x8FA4002C
@@ -66,7 +66,7 @@ glabel gen_createScene_00008DB4
     /* 008EAC 00008EAC ACD00014 */  .word 0xACD00014
     /* 008EB0 00008EB0 ACD90004 */  .word 0xACD90004
     /* 008EB4 00008EB4 ACD00014 */  .word 0xACD00014
-    jal timproc_uso_b5_func_07ACE0   /* 008EB8 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 008EB8 0C000000 -> gen_imp_list_append */
     /* 008EBC 00008EBC 8FA5004C */  .word 0x8FA5004C
     /* 008EC0 00008EC0 8FA2004C */  .word 0x8FA2004C
     lui $a0, %hi(import_800200A8)   /* 008EC4 3C040000 -> import_800200A8 */
@@ -77,7 +77,7 @@ glabel gen_createScene_00008DB4
     /* 008ED8 00008ED8 11000002 */  .word 0x11000002
     /* 008EDC 00008EDC 00000000 */  .word 0x00000000
     /* 008EE0 00008EE0 AC490004 */  .word 0xAC490004
-    jal timproc_uso_b5_func_07ACE0   /* 008EE4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 008EE4 0C000000 -> gen_imp_list_append */
     /* 008EE8 00008EE8 AC500014 */  .word 0xAC500014
     /* 008EEC 00008EEC 8E0A0014 */  .word 0x8E0A0014
     lui $t4, %hi(import_80020098)   /* 008EF0 3C0C0000 -> import_80020098 */

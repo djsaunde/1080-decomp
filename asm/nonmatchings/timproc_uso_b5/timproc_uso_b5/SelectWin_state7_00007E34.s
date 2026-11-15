@@ -20,7 +20,7 @@ glabel SelectWin_state7_00007E34
     /* 007E74 00007E74 14600041 */  .word 0x14600041
     lui $a0, %hi(import_80020098)   /* 007E78 3C040000 -> import_80020098 */
     /* 007E7C 00007E7C 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 007E80 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 007E80 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 007E84 00007E84 24050100 */  .word 0x24050100
     /* 007E88 00007E88 1040003C */  .word 0x1040003C
     /* 007E8C 00007E8C 00000000 */  .word 0x00000000
@@ -51,7 +51,7 @@ glabel SelectWin_state7_00007E34
     /* 007EF0 00007EF0 8D4B03D0 */  .word 0x8D4B03D0
     /* 007EF4 00007EF4 00822021 */  .word 0x00822021
     /* 007EF8 00007EF8 8C840000 */  .word 0x8C840000
-    jal timproc_uso_b5_func_0002FC   /* 007EFC 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 007EFC 0C000000 -> gen_imp_snd_sendEvent */
     /* 007F00 00007F00 012B2825 */  .word 0x012B2825
     jal SelectWin_nextStageBit_000087F4   /* 007F04 0C000000 -> SelectWin_nextStageBit_000087F4 */
     /* 007F08 00007F08 02002025 */  .word 0x02002025
@@ -85,7 +85,7 @@ glabel SelectWin_state7_00007E34
     /* 007F78 00007F78 AE0D04B8 */  .word 0xAE0D04B8
     lui $a0, %hi(import_80020098)   /* 007F7C 3C040000 -> import_80020098 */
     /* 007F80 00007F80 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 007F84 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 007F84 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 007F88 00007F88 24050200 */  .word 0x24050200
     /* 007F8C 00007F8C 10400027 */  .word 0x10400027
     /* 007F90 00007F90 00000000 */  .word 0x00000000
@@ -105,7 +105,7 @@ glabel SelectWin_state7_00007E34
     /* 007FC8 00007FC8 8DF803D0 */  .word 0x8DF803D0
     /* 007FCC 00007FCC 00822021 */  .word 0x00822021
     /* 007FD0 00007FD0 8C840000 */  .word 0x8C840000
-    jal timproc_uso_b5_func_0002FC   /* 007FD4 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 007FD4 0C000000 -> gen_imp_snd_sendEvent */
     /* 007FD8 00007FD8 01D82825 */  .word 0x01D82825
     jal SelectWin_curItem_00008A38   /* 007FDC 0C000000 -> SelectWin_curItem_00008A38 */
     /* 007FE0 00007FE0 02002025 */  .word 0x02002025
@@ -129,7 +129,7 @@ glabel SelectWin_state7_00007E34
     /* 008028 00008028 E6060484 */  .word 0xE6060484
     lui $a0, %hi(import_80020098)   /* 00802C 3C040000 -> import_80020098 */
     /* 008030 00008030 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 008034 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 008034 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 008038 00008038 24054002 */  .word 0x24054002
     /* 00803C 0000803C 10400011 */  .word 0x10400011
     /* 008040 00008040 00000000 */  .word 0x00000000
@@ -140,7 +140,7 @@ glabel SelectWin_state7_00007E34
     /* 008054 00008054 316C0020 */  .word 0x316C0020
     /* 008058 00008058 1180000A */  .word 0x1180000A
     /* 00805C 0000805C 00000000 */  .word 0x00000000
-    jal timproc_uso_b5_func_0002FC   /* 008060 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 008060 0C000000 -> gen_imp_snd_sendEvent */
     /* 008064 00008064 00002825 */  .word 0x00002825
     jal SelectWin_curItem_00008A38   /* 008068 0C000000 -> SelectWin_curItem_00008A38 */
     /* 00806C 0000806C 02002025 */  .word 0x02002025
@@ -152,7 +152,7 @@ glabel SelectWin_state7_00007E34
     lui $a0, %hi(import_80020098)   /* 008084 3C040000 -> import_80020098 */
     /* 008088 00008088 3C050001 */  .word 0x3C050001
     /* 00808C 0000808C 34A50001 */  .word 0x34A50001
-    jal timproc_uso_b5_func_011E00   /* 008090 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 008090 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 008094 00008094 24840000 */  .word 0x24840000
     /* 008098 00008098 50400012 */  .word 0x50400012
     /* 00809C 0000809C 8FBF001C */  .word 0x8FBF001C
@@ -163,7 +163,7 @@ glabel SelectWin_state7_00007E34
     /* 0080B0 000080B0 31EE0020 */  .word 0x31EE0020
     /* 0080B4 000080B4 55C0000B */  .word 0x55C0000B
     /* 0080B8 000080B8 8FBF001C */  .word 0x8FBF001C
-    jal timproc_uso_b5_func_0002FC   /* 0080BC 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 0080BC 0C000000 -> gen_imp_snd_sendEvent */
     /* 0080C0 000080C0 00002825 */  .word 0x00002825
     jal SelectWin_curItem_00008A38   /* 0080C4 0C000000 -> SelectWin_curItem_00008A38 */
     /* 0080C8 000080C8 02002025 */  .word 0x02002025

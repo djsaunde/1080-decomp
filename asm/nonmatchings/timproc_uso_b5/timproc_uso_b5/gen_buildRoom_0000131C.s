@@ -7,13 +7,13 @@ glabel gen_buildRoom_0000131C
     /* 001328 00001328 AFBF001C */  .word 0xAFBF001C
     /* 00132C 0000132C 14800005 */  .word 0x14800005
     /* 001330 00001330 AFA5002C */  .word 0xAFA5002C
-    jal timproc_uso_b5_func_055750   /* 001334 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 001334 0C000000 -> gen_imp_mem_new */
     /* 001338 00001338 24040060 */  .word 0x24040060
     /* 00133C 0000133C 10400043 */  .word 0x10400043
     /* 001340 00001340 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FE8F4)   /* 001344 3C050000 -> timproc_uso_b5_D_807FE8F4 */
     /* 001348 00001348 24A51084 */  .word 0x24A51084
-    jal timproc_uso_b5_func_04C678   /* 00134C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00134C 0C000000 -> gen_imp_Node_ctor */
     /* 001350 00001350 02002025 */  .word 0x02002025
     lui $v1, %hi(import_80020098)   /* 001354 3C030000 -> import_80020098 */
     /* 001358 00001358 24630000 */  .word 0x24630000
@@ -33,7 +33,7 @@ glabel gen_buildRoom_0000131C
     /* 001390 00001390 AFA20024 */  .word 0xAFA20024
     /* 001394 00001394 00402825 */  .word 0x00402825
     /* 001398 00001398 AFA30020 */  .word 0xAFA30020
-    jal timproc_uso_b5_func_07ACE0   /* 00139C 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00139C 0C000000 -> gen_imp_list_append */
     /* 0013A0 000013A0 24640010 */  .word 0x24640010
     /* 0013A4 000013A4 8FA60024 */  .word 0x8FA60024
     /* 0013A8 000013A8 8FA30020 */  .word 0x8FA30020
@@ -46,7 +46,7 @@ glabel gen_buildRoom_0000131C
     /* 0013C4 000013C4 8E03005C */  .word 0x8E03005C
     /* 0013C8 000013C8 02002825 */  .word 0x02002825
     /* 0013CC 000013CC 24640010 */  .word 0x24640010
-    jal timproc_uso_b5_func_07ACE0   /* 0013D0 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0013D0 0C000000 -> gen_imp_list_append */
     /* 0013D4 000013D4 AFA30020 */  .word 0xAFA30020
     /* 0013D8 000013D8 8E0C0014 */  .word 0x8E0C0014
     /* 0013DC 000013DC 8FA30020 */  .word 0x8FA30020
@@ -65,7 +65,7 @@ glabel gen_buildRoom_0000131C
     lui $at, %hi(import_8001FFF0)   /* 001410 3C010000 -> import_8001FFF0 */
     /* 001414 00001414 AC200000 */  .word 0xAC200000
     /* 001418 00001418 26040010 */  .word 0x26040010
-    jal timproc_uso_b5_func_07ACE0   /* 00141C 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00141C 0C000000 -> gen_imp_list_append */
     /* 001420 00001420 AFA50024 */  .word 0xAFA50024
     /* 001424 00001424 8FA60024 */  .word 0x8FA60024
     /* 001428 00001428 240F0001 */  .word 0x240F0001
@@ -75,7 +75,7 @@ glabel gen_buildRoom_0000131C
     /* 001438 00001438 ACD00014 */  .word 0xACD00014
     /* 00143C 0000143C ACCF0004 */  .word 0xACCF0004
     /* 001440 00001440 ACD00014 */  .word 0xACD00014
-    jal timproc_uso_b5_func_076D58   /* 001444 0C000000 -> timproc_uso_b5_func_076D58 */
+    jal gen_imp_AnimDataMgr_releaseFrames   /* 001444 0C000000 -> gen_imp_AnimDataMgr_releaseFrames */
     /* 001448 00001448 8C840000 */  .word 0x8C840000
     /* 00144C 0000144C 8FBF001C */  .word 0x8FBF001C
     /* 001450 00001450 02001025 */  .word 0x02001025

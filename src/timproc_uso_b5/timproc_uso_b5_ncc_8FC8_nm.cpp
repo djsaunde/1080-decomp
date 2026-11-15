@@ -29,14 +29,14 @@ extern char timproc_uso_b5_D_807FDB64;
 extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_80807FB8;
 extern char import_800201EC;
-char *timproc_uso_b5_func_055750(...);
-char *timproc_uso_b5_func_04C678(...);
-char *timproc_uso_b5_func_07ACE0(...);
-char *timproc_uso_b5_func_04DFFC(...);
-char *timproc_uso_b5_func_05D0E0(...);
-char *timproc_uso_b5_func_04C774(...);
-char *timproc_uso_b5_func_048E7C(...);
-char *timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
+char *gen_imp_mem_new(...);
+char *gen_imp_Node_ctor(...);
+char *gen_imp_list_append(...);
+char *gen_imp_MNode_addChild(...);
+char *gen_imp_PolyShape_ctor(...);
+char *gen_imp_Node_Load(...);
+char *gen_imp_dbg_printf(...);
+char *gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
 char *CommonInfo_add_0000A95C(...);
 void CommonInfo_init_0000A928(...);
 extern char import_80063D04[];
@@ -151,24 +151,24 @@ typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 }
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
-inline void *operator new(unsigned n) { return timproc_uso_b5_func_055750(n); }
+inline void *operator new(unsigned n) { return gen_imp_mem_new(n); }
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void set(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void seti(int a, int b, int c) { V3 *t = this; if (1) {} t->x = a; if (1) {} t->y = b; if (1) {} t->z = c; } /* run 196: int-param zeros (kit CLVIII); run 221: held this + if (1) = the target's x / y / z store order */ void operator=(V3 v) { x = v.x; y = v.y; z = v.z; } };
 struct Node { char p[0x10]; V3 pos; void setPos(V3 v) { pos = v; } };
 struct Fl { int v; void clr(int m) { v &= ~m; } };
 struct B { int f0; int flag; int f8; char *name; char list[4]; B *parent; Fl fl; char p1c[0x28 - 0x1C];
     B(char *); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
     void setup(int, int *);
-    void add(B *n) { timproc_uso_b5_func_07ACE0(list, n); if (1) {} if (n->parent) n->flag = 1; n->parent = this; } };
+    void add(B *n) { gen_imp_list_append(list, n); if (1) {} if (n->parent) n->flag = 1; n->parent = this; } };
 struct Sub30 : B { void *owner; Sub30(void *o) : B(timproc_uso_b5_D_807FEBCC + 0x135C) { name = timproc_uso_b5_D_807FEBD4 + 0x1364; owner = o; } virtual void v(); };
-struct Sub2C : B { Sub2C() : B(timproc_uso_b5_D_807FEBE0 + 0x1370) { name = timproc_uso_b5_D_807FEBE8 + 0x1378; } void init() { timproc_uso_b5_func_04C678(this, timproc_uso_b5_D_807FEBE0 + 0x1370); FW(this, 0x28) = (int)(timproc_uso_b5_D_807FEBE8 + 0xCC4); name = timproc_uso_b5_D_807FEBE8 + 0x1378; } virtual void v(); };
+struct Sub2C : B { Sub2C() : B(timproc_uso_b5_D_807FEBE0 + 0x1370) { name = timproc_uso_b5_D_807FEBE8 + 0x1378; } void init() { gen_imp_Node_ctor(this, timproc_uso_b5_D_807FEBE0 + 0x1370); FW(this, 0x28) = (int)(timproc_uso_b5_D_807FEBE8 + 0xCC4); name = timproc_uso_b5_D_807FEBE8 + 0x1378; } virtual void v(); };
 struct S70 : B { int f2C, f30, f34; B *f38; char p3c[0x6C - 0x3C]; int f6C;
     S70(char *d, char *vt) : B(d) { FW(this, 0x28) = (int)vt; } /* run 221: per-row base vptr (the implicit store dies; one shared vtbl was hoisted into s0); run 186: f38 = o moved to the derived ctor bodies (after f6C, as the target stores it) */
     virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10();
     virtual B *add(int, int, f32, f32, f32, f32, f32, f32); };
 #define CFG (*(char **)((char *)&import_80020098 + 0x134))
-#define NEWS70(P, D, VT, NM) { B *o = m38; S70 *np = (S70 *)timproc_uso_b5_func_055750(0x70); \
-    if (np) { S70 *bp = np; if (bp || (bp = (S70 *)timproc_uso_b5_func_055750(0x70))) { \
-        timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)(f8fc8_e304_1 + 0xA94); } \
+#define NEWS70(P, D, VT, NM) { B *o = m38; S70 *np = (S70 *)gen_imp_mem_new(0x70); \
+    if (np) { S70 *bp = np; if (bp || (bp = (S70 *)gen_imp_mem_new(0x70))) { \
+        gen_imp_Node_ctor(bp, D); FW(bp, 0x28) = (int)(f8fc8_e304_1 + 0xA94); } \
       FW(np, 0x28) = (int)(VT); np->name = NM; np->f2C = FW(CFG, 0x84); np->f30 = FW(CFG, 0x80); np->f6C = 0; np->f38 = o; np->f34 = FW(CFG, 0x8C); } \
     P = np; }
 #define S70CLASS(N, D, NM, S, VT) struct N : S70 { N(B *const &o) : S70(D, VT) { name = NM; f2C = FW(CFGS(S), 0x84); f30 = FW(CFGS(S), 0x80); f34 = FW(CFGS(S), 0x8C); f6C = 0; f38 = o; } \
@@ -253,9 +253,9 @@ struct C32C8 { char p[0x22C - 0x194]; Node n22C; char p248[0x24C - 0x248]; Node 
 struct M2B8 : B { C2B74 a; C32C8 b; M2B8(char *d) : B(d) {} virtual void v(); };
 struct Panel : M2B8 { WBase *w; Panel(char *d, char *n) : M2B8(d) { name = n; init(); } void init(); virtual void v(); };
 extern "C" char *SelItemParms_ctor(...);
-#define NEWPANEL(P, D, NM) { Panel *np = (Panel *)timproc_uso_b5_func_055750(0x2BC); \
-    if (np) { M2B8 *bp = np; if (bp || (bp = (M2B8 *)timproc_uso_b5_func_055750(0x2B8))) { \
-        timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)&timproc_uso_b5_D_807FDB64; \
+#define NEWPANEL(P, D, NM) { Panel *np = (Panel *)gen_imp_mem_new(0x2BC); \
+    if (np) { M2B8 *bp = np; if (bp || (bp = (M2B8 *)gen_imp_mem_new(0x2B8))) { \
+        gen_imp_Node_ctor(bp, D); FW(bp, 0x28) = (int)&timproc_uso_b5_D_807FDB64; \
         SelItemParms_ctor((char *)bp + 0x2C); SelItemInfo_ctor((char *)bp + 0x194); } \
       FW(np, 0x28) = (int)(NM - 0x138C + 0x8B4); np->name = NM; np->init(); } \
     P = np; }
@@ -268,7 +268,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     m50 = new Sub30(this);
     add(m50);
     CommonInfo_init_0000A928(this);
-    { Sub2C *p = (Sub2C *)timproc_uso_b5_func_055750(0x2C); if (p) { p->init(); } B *q = m30; m38 = p; q->add(p); }
+    { Sub2C *p = (Sub2C *)gen_imp_mem_new(0x2C); if (p) { p->init(); } B *q = m30; m38 = p; q->add(p); }
 
     if (FW(&import_800200CC, 0x34) != 2) {
         NEWPANEL(m5C, timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C)
@@ -343,7 +343,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     d->add(1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
     B *volatile e2 = d->add(1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f) + 0; /* run 182 (lever-sweep volatile): e2 homed; run 206 folded + 0 */
     B *e3 = d->add(1, 3, -220.0f, 200.0f, -400.0f, 0.0, 0.0f, 0.0f) + 0; /* run 206: folded + 0 */
-    timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
+    gen_imp_dbg_printf(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
     switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
     case 1:
         FF(e2, 0x2A4) = 0.0;

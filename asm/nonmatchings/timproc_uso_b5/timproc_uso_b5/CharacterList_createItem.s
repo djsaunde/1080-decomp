@@ -8,20 +8,20 @@ glabel CharacterList_createItem
     /* 00D15C 0000D15C AFA50064 */  .word 0xAFA50064
     /* 00D160 0000D160 AFA60068 */  .word 0xAFA60068
     /* 00D164 0000D164 AFA7006C */  .word 0xAFA7006C
-    jal timproc_uso_b5_func_055750   /* 00D168 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00D168 0C000000 -> gen_imp_mem_new */
     /* 00D16C 0000D16C 240402C4 */  .word 0x240402C4
     /* 00D170 0000D170 1040001D */  .word 0x1040001D
     /* 00D174 0000D174 00408025 */  .word 0x00408025
     /* 00D178 0000D178 14400005 */  .word 0x14400005
     /* 00D17C 0000D17C 00403025 */  .word 0x00403025
-    jal timproc_uso_b5_func_055750   /* 00D180 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00D180 0C000000 -> gen_imp_mem_new */
     /* 00D184 0000D184 240402B8 */  .word 0x240402B8
     /* 00D188 0000D188 1040000F */  .word 0x1040000F
     /* 00D18C 0000D18C 00403025 */  .word 0x00403025
     lui $a1, %hi(timproc_uso_b5_D_807FEE30)   /* 00D190 3C050000 -> timproc_uso_b5_D_807FEE30 */
     /* 00D194 0000D194 24A515C0 */  .word 0x24A515C0
     /* 00D198 0000D198 00C02025 */  .word 0x00C02025
-    jal timproc_uso_b5_func_04C678   /* 00D19C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00D19C 0C000000 -> gen_imp_Node_ctor */
     /* 00D1A0 0000D1A0 AFA60054 */  .word 0xAFA60054
     /* 00D1A4 0000D1A4 8FA60054 */  .word 0x8FA60054
     lui $t6, %hi(timproc_uso_b5_D_807FDB64)   /* 00D1A8 3C0E0000 -> timproc_uso_b5_D_807FDB64 */
@@ -43,7 +43,7 @@ glabel CharacterList_createItem
     /* 00D1E8 0000D1E8 8FA40060 */  .word 0x8FA40060
     /* 00D1EC 0000D1EC AFB0005C */  .word 0xAFB0005C
     /* 00D1F0 0000D1F0 02002825 */  .word 0x02002825
-    jal timproc_uso_b5_func_07ACE0   /* 00D1F4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00D1F4 0C000000 -> gen_imp_list_append */
     /* 00D1F8 0000D1F8 24840010 */  .word 0x24840010
     /* 00D1FC 0000D1FC 8E190014 */  .word 0x8E190014
     /* 00D200 0000D200 24080001 */  .word 0x24080001
@@ -61,7 +61,7 @@ glabel CharacterList_createItem
     /* 00D230 0000D230 E44602A4 */  .word 0xE44602A4
     /* 00D234 0000D234 8FAB0068 */  .word 0x8FAB0068
     /* 00D238 0000D238 256CFFFF */  .word 0x256CFFFF
-    jal timproc_uso_b5_func_055750   /* 00D23C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00D23C 0C000000 -> gen_imp_mem_new */
     /* 00D240 0000D240 AC4C02B0 */  .word 0xAC4C02B0
     /* 00D244 0000D244 104000A1 */  .word 0x104000A1
     /* 00D248 0000D248 00408025 */  .word 0x00408025
@@ -71,12 +71,12 @@ glabel CharacterList_createItem
     /* 00D258 0000D258 44060000 */  .word 0x44060000
     /* 00D25C 0000D25C 44070000 */  .word 0x44070000
     /* 00D260 0000D260 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 00D264 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 00D264 0C000000 -> gen_imp_QNode_ctor */
     /* 00D268 0000D268 E7A00010 */  .word 0xE7A00010
     lui $t5, %hi(timproc_uso_b5_D_807FDDEC)   /* 00D26C 3C0D0000 -> timproc_uso_b5_D_807FDDEC */
     /* 00D270 0000D270 25AD057C */  .word 0x25AD057C
     /* 00D274 0000D274 AE0D0028 */  .word 0xAE0D0028
-    jal timproc_uso_b5_func_055750   /* 00D278 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00D278 0C000000 -> gen_imp_mem_new */
     /* 00D27C 0000D27C 2404016C */  .word 0x2404016C
     /* 00D280 0000D280 10400017 */  .word 0x10400017
     /* 00D284 0000D284 AFA2004C */  .word 0xAFA2004C
@@ -86,7 +86,7 @@ glabel CharacterList_createItem
     /* 00D294 0000D294 44060000 */  .word 0x44060000
     /* 00D298 0000D298 44070000 */  .word 0x44070000
     /* 00D29C 0000D29C 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 00D2A0 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 00D2A0 0C000000 -> gen_imp_QNode_ctor */
     /* 00D2A4 0000D2A4 E7A00010 */  .word 0xE7A00010
     /* 00D2A8 0000D2A8 8FA3004C */  .word 0x8FA3004C
     lui $at, %hi(import_80807FB8)   /* 00D2AC 3C010000 -> import_80807FB8 */
@@ -105,7 +105,7 @@ glabel CharacterList_createItem
     /* 00D2E0 0000D2E0 8FB8004C */  .word 0x8FB8004C
     /* 00D2E4 0000D2E4 02002025 */  .word 0x02002025
     /* 00D2E8 0000D2E8 AE180108 */  .word 0xAE180108
-    jal timproc_uso_b5_func_04DFFC   /* 00D2EC 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 00D2EC 0C000000 -> gen_imp_MNode_addChild */
     /* 00D2F0 0000D2F0 8FA5004C */  .word 0x8FA5004C
     /* 00D2F4 0000D2F4 8E070108 */  .word 0x8E070108
     /* 00D2F8 0000D2F8 44800000 */  .word 0x44800000
@@ -121,7 +121,7 @@ glabel CharacterList_createItem
     /* 00D320 0000D320 E6100130 */  .word 0xE6100130
     /* 00D324 0000D324 8CA50000 */  .word 0x8CA50000
     /* 00D328 0000D328 24E700B4 */  .word 0x24E700B4
-    jal timproc_uso_b5_func_055750   /* 00D32C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00D32C 0C000000 -> gen_imp_mem_new */
     /* 00D330 0000D330 AFA50028 */  .word 0xAFA50028
     /* 00D334 0000D334 8FA50028 */  .word 0x8FA50028
     /* 00D338 0000D338 1040000B */  .word 0x1040000B
@@ -133,12 +133,12 @@ glabel CharacterList_createItem
     lui $t9, %hi(timproc_uso_b5_D_807FDAB8)   /* 00D350 3C190000 -> timproc_uso_b5_D_807FDAB8 */
     /* 00D354 0000D354 27390248 */  .word 0x27390248
     /* 00D358 0000D358 AC990028 */  .word 0xAC990028
-    jal timproc_uso_b5_func_077574   /* 00D35C 0C000000 -> timproc_uso_b5_func_077574 */
+    jal gen_imp_AnimPlayer_reset   /* 00D35C 0C000000 -> gen_imp_AnimPlayer_reset */
     /* 00D360 0000D360 AC8000B0 */  .word 0xAC8000B0
     /* 00D364 0000D364 8FA7002C */  .word 0x8FA7002C
     /* 00D368 0000D368 AE07010C */  .word 0xAE07010C
     /* 00D36C 0000D36C 02002025 */  .word 0x02002025
-    jal timproc_uso_b5_func_04DFFC   /* 00D370 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 00D370 0C000000 -> gen_imp_MNode_addChild */
     /* 00D374 0000D374 00E02825 */  .word 0x00E02825
     lui $t0, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D378 3C080000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D37C 0000D37C 8D080004 */  .word 0x8D080004
@@ -167,7 +167,7 @@ glabel CharacterList_createItem
     /* 00D3D8 0000D3D8 AFB00010 */  .word 0xAFB00010
     /* 00D3DC 0000D3DC 8FA40068 */  .word 0x8FA40068
     /* 00D3E0 0000D3E0 00002825 */  .word 0x00002825
-    jal timproc_uso_b5_func_00B1B4   /* 00D3E4 0C000000 -> timproc_uso_b5_func_00B1B4 */
+    jal gen_imp_SnowBoarder_loadBoardModel_0000B1B4   /* 00D3E4 0C000000 -> gen_imp_SnowBoarder_loadBoardModel_0000B1B4 */
     /* 00D3E8 0000D3E8 24060201 */  .word 0x24060201
     /* 00D3EC 0000D3EC 8FAC0068 */  .word 0x8FAC0068
     lui $t6, %hi(timproc_uso_b5_D_807FDB4C)   /* 00D3F0 3C0E0000 -> timproc_uso_b5_D_807FDB4C */
@@ -181,7 +181,7 @@ glabel CharacterList_createItem
     /* 00D410 0000D410 AFB80014 */  .word 0xAFB80014
     /* 00D414 0000D414 AFAF0010 */  .word 0xAFAF0010
     /* 00D418 0000D418 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_077C44   /* 00D41C 0C000000 -> timproc_uso_b5_func_077C44 */
+    jal gen_imp_AnimPlayer_start   /* 00D41C 0C000000 -> gen_imp_AnimPlayer_start */
     /* 00D420 0000D420 24070002 */  .word 0x24070002
     /* 00D424 0000D424 8E02010C */  .word 0x8E02010C
     /* 00D428 0000D428 8C470028 */  .word 0x8C470028
@@ -235,7 +235,7 @@ glabel CharacterList_createItem
     /* 00D4E8 0000D4E8 8FAA0060 */  .word 0x8FAA0060
     /* 00D4EC 0000D4EC 8D460038 */  .word 0x8D460038
     /* 00D4F0 0000D4F0 24C40010 */  .word 0x24C40010
-    jal timproc_uso_b5_func_07ACE0   /* 00D4F4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00D4F4 0C000000 -> gen_imp_list_append */
     /* 00D4F8 0000D4F8 AFA60054 */  .word 0xAFA60054
     /* 00D4FC 0000D4FC 8E0B0014 */  .word 0x8E0B0014
     /* 00D500 0000D500 8FA60054 */  .word 0x8FA60054

@@ -9,7 +9,7 @@ typedef double f64;
 extern "C" {
 extern void SelectionMgr_setSplit_00001DB0(char *);
 extern int gen_stageBitToIndex_000087A0(...);
-extern void timproc_uso_b5_func_04CD94(char *);
+extern void gen_imp_Node_update(char *);
 }
 extern "C" void SelectionMgr_update_00001F14(char *arg0) {
     s32 dst;
@@ -197,5 +197,5 @@ extern "C" void SelectionMgr_update_00001F14(char *arg0) {
         }
         *(s32 *)(arg0 + 0x40) = *(s32 *)(arg0 + 0x3C);
     }
-    timproc_uso_b5_func_04CD94(arg0);
+    gen_imp_Node_update(arg0);
 }

@@ -7,7 +7,7 @@ glabel gen_streamReadQuad_000003A8
     lui $a0, %hi(import_8005C6E0)   /* 0003B4 3C040000 -> import_8005C6E0 */
     /* 0003B8 000003B8 24840000 */  .word 0x24840000
     /* 0003BC 000003BC 27A50018 */  .word 0x27A50018
-    jal timproc_uso_b5_func_049AAC   /* 0003C0 0C000000 -> timproc_uso_b5_func_049AAC */
+    jal gen_imp_fs_gdlReadFile   /* 0003C0 0C000000 -> gen_imp_fs_gdlReadFile */
     /* 0003C4 000003C4 24060010 */  .word 0x24060010
     /* 0003C8 000003C8 27AF0018 */  .word 0x27AF0018
     /* 0003CC 000003CC 8DF90000 */  .word 0x8DF90000

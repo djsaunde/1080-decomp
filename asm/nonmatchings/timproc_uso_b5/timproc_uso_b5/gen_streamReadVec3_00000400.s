@@ -8,7 +8,7 @@ glabel gen_streamReadVec3_00000400
     /* 000410 00000410 24840000 */  .word 0x24840000
     /* 000414 00000414 AFA70048 */  .word 0xAFA70048
     /* 000418 00000418 27A50038 */  .word 0x27A50038
-    jal timproc_uso_b5_func_049AAC   /* 00041C 0C000000 -> timproc_uso_b5_func_049AAC */
+    jal gen_imp_fs_gdlReadFile   /* 00041C 0C000000 -> gen_imp_fs_gdlReadFile */
     /* 000420 00000420 2406000C */  .word 0x2406000C
     /* 000424 00000424 27AF0038 */  .word 0x27AF0038
     /* 000428 00000428 8DF90000 */  .word 0x8DF90000

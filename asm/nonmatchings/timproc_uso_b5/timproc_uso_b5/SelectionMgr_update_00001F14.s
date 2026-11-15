@@ -546,7 +546,7 @@ glabel SelectionMgr_update_00001F14
     /* 00278C 0000278C ACCD0050 */  .word 0xACCD0050
     /* 002790 00002790 8CC8003C */  .word 0x8CC8003C
     /* 002794 00002794 ACC80040 */  .word 0xACC80040
-    jal timproc_uso_b5_func_04CD94   /* 002798 0C000000 -> timproc_uso_b5_func_04CD94 */
+    jal gen_imp_Node_update   /* 002798 0C000000 -> gen_imp_Node_update */
     /* 00279C 0000279C 00C02025 */  .word 0x00C02025
     /* 0027A0 000027A0 8FBF0014 */  .word 0x8FBF0014
     /* 0027A4 000027A4 27BD0020 */  .word 0x27BD0020

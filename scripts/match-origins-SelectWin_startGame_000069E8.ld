@@ -17,4 +17,4 @@ timproc_uso_b5_69E8_global = 0x0;
 timproc_uso_b5_69E8_print = 0x0;
 timproc_uso_b5_D_807FE794 = 0x0;
 timproc_uso_b5_D_807FEB74 = 0x0;
-timproc_uso_b5_func_00F954 = 0x0;
+gen_imp_Process_fadeOut_0000F954 = 0x0;

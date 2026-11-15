@@ -3,7 +3,7 @@ nonmatching SelectionMgr_display_000027B0, 0x8C
 glabel SelectionMgr_display_000027B0
     /* 0027B0 000027B0 27BDFFB8 */  .word 0x27BDFFB8
     /* 0027B4 000027B4 AFBF001C */  .word 0xAFBF001C
-    jal timproc_uso_b5_func_04CCA8   /* 0027B8 0C000000 -> timproc_uso_b5_func_04CCA8 */
+    jal gen_imp_Node_display   /* 0027B8 0C000000 -> gen_imp_Node_display */
     /* 0027BC 000027BC AFA40048 */  .word 0xAFA40048
     /* 0027C0 000027C0 8FAE0048 */  .word 0x8FAE0048
     /* 0027C4 000027C4 24010002 */  .word 0x24010002

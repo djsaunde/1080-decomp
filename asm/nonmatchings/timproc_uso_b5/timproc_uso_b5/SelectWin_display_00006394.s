@@ -300,7 +300,7 @@ glabel SelectWin_display_00006394
     /* 006834 00006834 846D00C8 */  .word 0x846D00C8
     /* 006838 00006838 0320F809 */  .word 0x0320F809
     /* 00683C 0000683C 01A22021 */  .word 0x01A22021
-    jal timproc_uso_b5_func_04CCA8   /* 006840 0C000000 -> timproc_uso_b5_func_04CCA8 */
+    jal gen_imp_Node_display   /* 006840 0C000000 -> gen_imp_Node_display */
     /* 006844 00006844 02002025 */  .word 0x02002025
     /* 006848 00006848 8FBF001C */  .word 0x8FBF001C
     /* 00684C 0000684C 8FB00018 */  .word 0x8FB00018

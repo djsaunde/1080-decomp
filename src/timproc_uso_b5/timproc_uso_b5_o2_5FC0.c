@@ -39,7 +39,7 @@ extern void SelectWin_state6_00007B2C();
 extern void SelectWin_state7_00007E34();
 extern void SelectWin_state8_000080F4();
 extern void SelectWin_state9_00008468();
-extern f32 timproc_uso_b5_func_07E7B0(f32);
+extern f32 gen_imp_fsin(f32);
 int SelectionMgr_otherWin_00001CF0(int *a0, int a1);
 int SelectWin_curItem_00008A38();
 int SelectWin_prevFocusItem_00008AD4(int *a0);
@@ -136,26 +136,26 @@ void SelectWin_update_00005FC0(char *arg0) {
     if (SELWIN(arg0)->state == 5) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_lerpCamToItemZoom_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) *
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x14C);
     } else {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_lerpCamToItem_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +
-            timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
+            gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x134);
     }
     *(f32 *)(FW(FW(FW(arg0, 0x414), 0xC), 0x70) + 0x14C) =
         SELWIN(arg0)->fovFrom +
         (SELWIN(arg0)->fovTarget - SELWIN(arg0)->fovFrom) *
-        timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));
+        gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));
 }

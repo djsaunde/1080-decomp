@@ -38,7 +38,7 @@ glabel SelectWin_state1_000072D0
     /* 007358 00007358 AE0F03CC */  .word 0xAE0F03CC
     /* 00735C 0000735C AE1803CC */  .word 0xAE1803CC
     lui $a0, %hi(import_80020098)   /* 007360 3C040000 -> import_80020098 */
-    jal timproc_uso_b5_func_011E00   /* 007364 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 007364 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 007368 00007368 24840000 */  .word 0x24840000
     /* 00736C 0000736C 1040000F */  .word 0x1040000F
     /* 007370 00007370 02002025 */  .word 0x02002025

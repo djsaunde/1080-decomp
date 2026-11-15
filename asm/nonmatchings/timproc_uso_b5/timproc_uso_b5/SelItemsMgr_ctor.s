@@ -11,13 +11,13 @@ glabel SelItemsMgr_ctor
     /* 008FE4 00008FE4 AFA50164 */  .word 0xAFA50164
     /* 008FE8 00008FE8 14800005 */  .word 0x14800005
     /* 008FEC 00008FEC AFA60168 */  .word 0xAFA60168
-    jal timproc_uso_b5_func_055750   /* 008FF0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 008FF0 0C000000 -> gen_imp_mem_new */
     /* 008FF4 00008FF4 24040060 */  .word 0x24040060
     /* 008FF8 00008FF8 10400643 */  .word 0x10400643
     /* 008FFC 00008FFC 00409025 */  .word 0x00409025
     lui $a1, %hi(timproc_uso_b5_D_807FEBB8)   /* 009000 3C050000 -> timproc_uso_b5_D_807FEBB8 */
     /* 009004 00009004 24A51348 */  .word 0x24A51348
-    jal timproc_uso_b5_func_04C678   /* 009008 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 009008 0C000000 -> gen_imp_Node_ctor */
     /* 00900C 0000900C 02402025 */  .word 0x02402025
     lui $t6, %hi(timproc_uso_b5_D_807FE5F4)   /* 009010 3C0E0000 -> timproc_uso_b5_D_807FE5F4 */
     lui $t7, %hi(timproc_uso_b5_D_807FE5F4)   /* 009014 3C0F0000 -> timproc_uso_b5_D_807FE5F4 */
@@ -25,13 +25,13 @@ glabel SelItemsMgr_ctor
     /* 00901C 0000901C 25EF1350 */  .word 0x25EF1350
     /* 009020 00009020 AE4E0028 */  .word 0xAE4E0028
     /* 009024 00009024 AE4F000C */  .word 0xAE4F000C
-    jal timproc_uso_b5_func_055750   /* 009028 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009028 0C000000 -> gen_imp_mem_new */
     /* 00902C 0000902C 24040030 */  .word 0x24040030
     /* 009030 00009030 1040000C */  .word 0x1040000C
     /* 009034 00009034 00408825 */  .word 0x00408825
     lui $a1, %hi(timproc_uso_b5_D_807FEBCC)   /* 009038 3C050000 -> timproc_uso_b5_D_807FEBCC */
     /* 00903C 0000903C 24A5135C */  .word 0x24A5135C
-    jal timproc_uso_b5_func_04C678   /* 009040 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 009040 0C000000 -> gen_imp_Node_ctor */
     /* 009044 00009044 00402025 */  .word 0x00402025
     lui $t8, %hi(timproc_uso_b5_D_807FEBD4)   /* 009048 3C180000 -> timproc_uso_b5_D_807FEBD4 */
     lui $t9, %hi(timproc_uso_b5_D_807FEBD4)   /* 00904C 3C190000 -> timproc_uso_b5_D_807FEBD4 */
@@ -43,7 +43,7 @@ glabel SelItemsMgr_ctor
     /* 009064 00009064 AE510050 */  .word 0xAE510050
     /* 009068 00009068 26440010 */  .word 0x26440010
     /* 00906C 0000906C AFA40050 */  .word 0xAFA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009070 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009070 0C000000 -> gen_imp_list_append */
     /* 009074 00009074 02202825 */  .word 0x02202825
     /* 009078 00009078 8E280014 */  .word 0x8E280014
     /* 00907C 0000907C 02402025 */  .word 0x02402025
@@ -52,13 +52,13 @@ glabel SelItemsMgr_ctor
     /* 009088 00009088 AE290004 */  .word 0xAE290004
     jal CommonInfo_init_0000A928   /* 00908C 0C000000 -> CommonInfo_init_0000A928 */
     /* 009090 00009090 AE320014 */  .word 0xAE320014
-    jal timproc_uso_b5_func_055750   /* 009094 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009094 0C000000 -> gen_imp_mem_new */
     /* 009098 00009098 2404002C */  .word 0x2404002C
     /* 00909C 0000909C 1040000B */  .word 0x1040000B
     /* 0090A0 000090A0 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FEBE0)   /* 0090A4 3C050000 -> timproc_uso_b5_D_807FEBE0 */
     /* 0090A8 000090A8 24A51370 */  .word 0x24A51370
-    jal timproc_uso_b5_func_04C678   /* 0090AC 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 0090AC 0C000000 -> gen_imp_Node_ctor */
     /* 0090B0 000090B0 00402025 */  .word 0x00402025
     lui $t2, %hi(timproc_uso_b5_D_807FEBE8)   /* 0090B4 3C0A0000 -> timproc_uso_b5_D_807FEBE8 */
     lui $t3, %hi(timproc_uso_b5_D_807FEBE8)   /* 0090B8 3C0B0000 -> timproc_uso_b5_D_807FEBE8 */
@@ -69,7 +69,7 @@ glabel SelItemsMgr_ctor
     /* 0090CC 000090CC 8E510030 */  .word 0x8E510030
     /* 0090D0 000090D0 AE500038 */  .word 0xAE500038
     /* 0090D4 000090D4 02002825 */  .word 0x02002825
-    jal timproc_uso_b5_func_07ACE0   /* 0090D8 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0090D8 0C000000 -> gen_imp_list_append */
     /* 0090DC 000090DC 26240010 */  .word 0x26240010
     /* 0090E0 000090E0 8E0C0014 */  .word 0x8E0C0014
     lui $t6, %hi(import_800200CC)   /* 0090E4 3C0E0000 -> import_800200CC */
@@ -81,19 +81,19 @@ glabel SelItemsMgr_ctor
     /* 0090FC 000090FC 24010002 */  .word 0x24010002
     /* 009100 00009100 51C10158 */  .word 0x51C10158
     /* 009104 00009104 8E430038 */  .word 0x8E430038
-    jal timproc_uso_b5_func_055750   /* 009108 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009108 0C000000 -> gen_imp_mem_new */
     /* 00910C 0000910C 240402BC */  .word 0x240402BC
     /* 009110 00009110 1040001A */  .word 0x1040001A
     /* 009114 00009114 00408825 */  .word 0x00408825
     /* 009118 00009118 14400005 */  .word 0x14400005
     /* 00911C 0000911C 00408025 */  .word 0x00408025
-    jal timproc_uso_b5_func_055750   /* 009120 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009120 0C000000 -> gen_imp_mem_new */
     /* 009124 00009124 240402B8 */  .word 0x240402B8
     /* 009128 00009128 1040000C */  .word 0x1040000C
     /* 00912C 0000912C 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FEBF4)   /* 009130 3C050000 -> timproc_uso_b5_D_807FEBF4 */
     /* 009134 00009134 24A51384 */  .word 0x24A51384
-    jal timproc_uso_b5_func_04C678   /* 009138 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 009138 0C000000 -> gen_imp_Node_ctor */
     /* 00913C 0000913C 02002025 */  .word 0x02002025
     lui $t7, %hi(timproc_uso_b5_D_807FDB64)   /* 009140 3C0F0000 -> timproc_uso_b5_D_807FDB64 */
     /* 009144 00009144 25EF0000 */  .word 0x25EF0000
@@ -112,7 +112,7 @@ glabel SelItemsMgr_ctor
     /* 009178 00009178 02202025 */  .word 0x02202025
     /* 00917C 0000917C AE51005C */  .word 0xAE51005C
     /* 009180 00009180 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009184 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009184 0C000000 -> gen_imp_list_append */
     /* 009188 00009188 02202825 */  .word 0x02202825
     /* 00918C 0000918C 8E280014 */  .word 0x8E280014
     /* 009190 00009190 24090001 */  .word 0x24090001
@@ -120,7 +120,7 @@ glabel SelItemsMgr_ctor
     /* 009198 00009198 11000002 */  .word 0x11000002
     /* 00919C 0000919C 00000000 */  .word 0x00000000
     /* 0091A0 000091A0 AE290004 */  .word 0xAE290004
-    jal timproc_uso_b5_func_055750   /* 0091A4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0091A4 0C000000 -> gen_imp_mem_new */
     /* 0091A8 000091A8 AE320014 */  .word 0xAE320014
     /* 0091AC 000091AC 104000D5 */  .word 0x104000D5
     /* 0091B0 000091B0 00408825 */  .word 0x00408825
@@ -130,7 +130,7 @@ glabel SelItemsMgr_ctor
     /* 0091C0 000091C0 4406A000 */  .word 0x4406A000
     /* 0091C4 000091C4 4407A000 */  .word 0x4407A000
     /* 0091C8 000091C8 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 0091CC 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 0091CC 0C000000 -> gen_imp_QNode_ctor */
     /* 0091D0 000091D0 E7B40010 */  .word 0xE7B40010
     lui $t2, %hi(timproc_uso_b5_D_807FEC10)   /* 0091D4 3C0A0000 -> timproc_uso_b5_D_807FEC10 */
     lui $t3, %hi(timproc_uso_b5_D_807FEC10)   /* 0091D8 3C0B0000 -> timproc_uso_b5_D_807FEC10 */
@@ -138,7 +138,7 @@ glabel SelItemsMgr_ctor
     /* 0091E0 000091E0 254A04AC */  .word 0x254A04AC
     /* 0091E4 000091E4 AE2A0028 */  .word 0xAE2A0028
     /* 0091E8 000091E8 AE2B000C */  .word 0xAE2B000C
-    jal timproc_uso_b5_func_055750   /* 0091EC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0091EC 0C000000 -> gen_imp_mem_new */
     /* 0091F0 000091F0 2404016C */  .word 0x2404016C
     /* 0091F4 000091F4 10400015 */  .word 0x10400015
     /* 0091F8 000091F8 00408025 */  .word 0x00408025
@@ -147,7 +147,7 @@ glabel SelItemsMgr_ctor
     /* 009204 00009204 4407A000 */  .word 0x4407A000
     /* 009208 00009208 24A513A8 */  .word 0x24A513A8
     /* 00920C 0000920C 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 009210 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 009210 0C000000 -> gen_imp_QNode_ctor */
     /* 009214 00009214 E7B40010 */  .word 0xE7B40010
     lui $at, %hi(import_80807FB8)   /* 009218 3C010000 -> import_80807FB8 */
     /* 00921C 0000921C C420023C */  .word 0xC420023C
@@ -164,7 +164,7 @@ glabel SelItemsMgr_ctor
     /* 009248 00009248 E6040124 */  .word 0xE6040124
     /* 00924C 0000924C AE300108 */  .word 0xAE300108
     /* 009250 00009250 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04DFFC   /* 009254 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 009254 0C000000 -> gen_imp_MNode_addChild */
     /* 009258 00009258 02002825 */  .word 0x02002825
     /* 00925C 0000925C 8E300108 */  .word 0x8E300108
     /* 009260 00009260 44803000 */  .word 0x44803000
@@ -202,7 +202,7 @@ glabel SelItemsMgr_ctor
     /* 0092E0 000092E0 AFAF00C0 */  .word 0xAFAF00C0
     /* 0092E4 000092E4 00002025 */  .word 0x00002025
     /* 0092E8 000092E8 00003825 */  .word 0x00003825
-    jal timproc_uso_b5_func_05D0E0   /* 0092EC 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 0092EC 0C000000 -> gen_imp_PolyShape_ctor */
     /* 0092F0 000092F0 261000B4 */  .word 0x261000B4
     lui $a1, %hi(timproc_uso_b5_D_807F8434)   /* 0092F4 3C050000 -> timproc_uso_b5_D_807F8434 */
     lui $a2, %hi(import_80768434)   /* 0092F8 3C060000 -> import_80768434 */
@@ -210,7 +210,7 @@ glabel SelItemsMgr_ctor
     /* 009300 00009300 24A513CC */  .word 0x24A513CC
     /* 009304 00009304 AE220148 */  .word 0xAE220148
     /* 009308 00009308 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00930C 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00930C 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009310 00009310 00003825 */  .word 0x00003825
     lui $a1, %hi(timproc_uso_b5_D_807FA3A4)   /* 009314 3C050000 -> timproc_uso_b5_D_807FA3A4 */
     lui $a2, %hi(import_8076A3A4)   /* 009318 3C060000 -> import_8076A3A4 */
@@ -218,7 +218,7 @@ glabel SelItemsMgr_ctor
     /* 009320 00009320 24A513D8 */  .word 0x24A513D8
     /* 009324 00009324 AE22014C */  .word 0xAE22014C
     /* 009328 00009328 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00932C 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00932C 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009330 00009330 00003825 */  .word 0x00003825
     lui $a1, %hi(timproc_uso_b5_D_807FC314)   /* 009334 3C050000 -> timproc_uso_b5_D_807FC314 */
     lui $a2, %hi(import_8076C314)   /* 009338 3C060000 -> import_8076C314 */
@@ -226,7 +226,7 @@ glabel SelItemsMgr_ctor
     /* 009340 00009340 24A513E4 */  .word 0x24A513E4
     /* 009344 00009344 AE220150 */  .word 0xAE220150
     /* 009348 00009348 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00934C 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00934C 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009350 00009350 00003825 */  .word 0x00003825
     lui $a1, %hi(timproc_uso_b5_D_807FE284)   /* 009354 3C050000 -> timproc_uso_b5_D_807FE284 */
     lui $a2, %hi(import_8076E284)   /* 009358 3C060000 -> import_8076E284 */
@@ -234,7 +234,7 @@ glabel SelItemsMgr_ctor
     /* 009360 00009360 24A513F0 */  .word 0x24A513F0
     /* 009364 00009364 AE220154 */  .word 0xAE220154
     /* 009368 00009368 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00936C 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00936C 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009370 00009370 00003825 */  .word 0x00003825
     lui $a1, %hi(import_808001F4)   /* 009374 3C050000 -> import_808001F4 */
     lui $a2, %hi(import_807701F4)   /* 009378 3C060000 -> import_807701F4 */
@@ -242,7 +242,7 @@ glabel SelItemsMgr_ctor
     /* 009380 00009380 24A513FC */  .word 0x24A513FC
     /* 009384 00009384 AE220158 */  .word 0xAE220158
     /* 009388 00009388 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00938C 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00938C 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009390 00009390 00003825 */  .word 0x00003825
     lui $a1, %hi(import_80802164)   /* 009394 3C050000 -> import_80802164 */
     lui $a2, %hi(import_80772164)   /* 009398 3C060000 -> import_80772164 */
@@ -250,7 +250,7 @@ glabel SelItemsMgr_ctor
     /* 0093A0 000093A0 24A51408 */  .word 0x24A51408
     /* 0093A4 000093A4 AE22015C */  .word 0xAE22015C
     /* 0093A8 000093A8 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 0093AC 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 0093AC 0C000000 -> gen_imp_PolyShape_ctor */
     /* 0093B0 000093B0 00003825 */  .word 0x00003825
     lui $a1, %hi(import_808040D4)   /* 0093B4 3C050000 -> import_808040D4 */
     lui $a2, %hi(import_807740D4)   /* 0093B8 3C060000 -> import_807740D4 */
@@ -258,7 +258,7 @@ glabel SelItemsMgr_ctor
     /* 0093C0 000093C0 24A51414 */  .word 0x24A51414
     /* 0093C4 000093C4 AE220160 */  .word 0xAE220160
     /* 0093C8 000093C8 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 0093CC 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 0093CC 0C000000 -> gen_imp_PolyShape_ctor */
     /* 0093D0 000093D0 00003825 */  .word 0x00003825
     /* 0093D4 000093D4 24180008 */  .word 0x24180008
     /* 0093D8 000093D8 AE38013C */  .word 0xAE38013C
@@ -270,7 +270,7 @@ glabel SelItemsMgr_ctor
     /* 0093F0 000093F0 8C450148 */  .word 0x8C450148
     /* 0093F4 000093F4 AFA300BC */  .word 0xAFA300BC
     /* 0093F8 000093F8 AFA2004C */  .word 0xAFA2004C
-    jal timproc_uso_b5_func_04DFFC   /* 0093FC 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 0093FC 0C000000 -> gen_imp_MNode_addChild */
     /* 009400 00009400 02202025 */  .word 0x02202025
     /* 009404 00009404 8FA2004C */  .word 0x8FA2004C
     /* 009408 00009408 2401FFFB */  .word 0x2401FFFB
@@ -415,7 +415,7 @@ glabel SelItemsMgr_ctor
     /* 009634 00009634 8E500038 */  .word 0x8E500038
     /* 009638 00009638 8F3102B8 */  .word 0x8F3102B8
     /* 00963C 0000963C 26040010 */  .word 0x26040010
-    jal timproc_uso_b5_func_07ACE0   /* 009640 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009640 0C000000 -> gen_imp_list_append */
     /* 009644 00009644 02202825 */  .word 0x02202825
     /* 009648 00009648 8E280014 */  .word 0x8E280014
     /* 00964C 0000964C 24090001 */  .word 0x24090001
@@ -426,7 +426,7 @@ glabel SelItemsMgr_ctor
     /* 009660 00009660 8E430038 */  .word 0x8E430038
     /* 009664 00009664 4480A000 */  .word 0x4480A000
     /* 009668 00009668 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00966C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00966C 0C000000 -> gen_imp_mem_new */
     /* 009670 00009670 AFA300E0 */  .word 0xAFA300E0
     /* 009674 00009674 8FA300E0 */  .word 0x8FA300E0
     /* 009678 00009678 10400025 */  .word 0x10400025
@@ -434,7 +434,7 @@ glabel SelItemsMgr_ctor
     /* 009680 00009680 14400007 */  .word 0x14400007
     /* 009684 00009684 00408825 */  .word 0x00408825
     /* 009688 00009688 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00968C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00968C 0C000000 -> gen_imp_mem_new */
     /* 009690 00009690 AFA300E0 */  .word 0xAFA300E0
     /* 009694 00009694 8FA300E0 */  .word 0x8FA300E0
     /* 009698 00009698 1040000A */  .word 0x1040000A
@@ -442,7 +442,7 @@ glabel SelItemsMgr_ctor
     lui $a1, %hi(timproc_uso_b5_D_807FEC90)   /* 0096A0 3C050000 -> timproc_uso_b5_D_807FEC90 */
     /* 0096A4 000096A4 24A51420 */  .word 0x24A51420
     /* 0096A8 000096A8 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04C678   /* 0096AC 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 0096AC 0C000000 -> gen_imp_Node_ctor */
     /* 0096B0 000096B0 AFA300E0 */  .word 0xAFA300E0
     lui $t2, %hi(timproc_uso_b5_D_807FE304)   /* 0096B4 3C0A0000 -> timproc_uso_b5_D_807FE304 */
     /* 0096B8 000096B8 254A0A94 */  .word 0x254A0A94
@@ -472,7 +472,7 @@ glabel SelItemsMgr_ctor
     jal CommonInfo_add_0000A95C   /* 009718 0C000000 -> CommonInfo_add_0000A95C */
     /* 00971C 0000971C 02002825 */  .word 0x02002825
     /* 009720 00009720 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009724 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009724 0C000000 -> gen_imp_list_append */
     /* 009728 00009728 8FA5012C */  .word 0x8FA5012C
     /* 00972C 0000972C 8FA2012C */  .word 0x8FA2012C
     /* 009730 00009730 8C490014 */  .word 0x8C490014
@@ -482,7 +482,7 @@ glabel SelItemsMgr_ctor
     /* 009740 00009740 AC520014 */  .word 0xAC520014
     /* 009744 00009744 8E430038 */  .word 0x8E430038
     /* 009748 00009748 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00974C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00974C 0C000000 -> gen_imp_mem_new */
     /* 009750 00009750 AFA300E0 */  .word 0xAFA300E0
     /* 009754 00009754 8FA300E0 */  .word 0x8FA300E0
     /* 009758 00009758 10400025 */  .word 0x10400025
@@ -490,7 +490,7 @@ glabel SelItemsMgr_ctor
     /* 009760 00009760 14400007 */  .word 0x14400007
     /* 009764 00009764 00408825 */  .word 0x00408825
     /* 009768 00009768 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00976C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00976C 0C000000 -> gen_imp_mem_new */
     /* 009770 00009770 AFA300E0 */  .word 0xAFA300E0
     /* 009774 00009774 8FA300E0 */  .word 0x8FA300E0
     /* 009778 00009778 1040000A */  .word 0x1040000A
@@ -498,7 +498,7 @@ glabel SelItemsMgr_ctor
     lui $a1, %hi(timproc_uso_b5_D_807FECA8)   /* 009780 3C050000 -> timproc_uso_b5_D_807FECA8 */
     /* 009784 00009784 24A51438 */  .word 0x24A51438
     /* 009788 00009788 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04C678   /* 00978C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00978C 0C000000 -> gen_imp_Node_ctor */
     /* 009790 00009790 AFA300E0 */  .word 0xAFA300E0
     lui $t3, %hi(timproc_uso_b5_D_807FE304)   /* 009794 3C0B0000 -> timproc_uso_b5_D_807FE304 */
     /* 009798 00009798 256B0A94 */  .word 0x256B0A94
@@ -528,7 +528,7 @@ glabel SelItemsMgr_ctor
     jal CommonInfo_add_0000A95C   /* 0097F8 0C000000 -> CommonInfo_add_0000A95C */
     /* 0097FC 000097FC 02002825 */  .word 0x02002825
     /* 009800 00009800 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009804 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009804 0C000000 -> gen_imp_list_append */
     /* 009808 00009808 8FA50128 */  .word 0x8FA50128
     /* 00980C 0000980C 8FA20128 */  .word 0x8FA20128
     /* 009810 00009810 8C4A0014 */  .word 0x8C4A0014
@@ -538,7 +538,7 @@ glabel SelItemsMgr_ctor
     /* 009820 00009820 AC520014 */  .word 0xAC520014
     /* 009824 00009824 8E430038 */  .word 0x8E430038
     /* 009828 00009828 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00982C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00982C 0C000000 -> gen_imp_mem_new */
     /* 009830 00009830 AFA300E0 */  .word 0xAFA300E0
     /* 009834 00009834 8FA300E0 */  .word 0x8FA300E0
     /* 009838 00009838 10400025 */  .word 0x10400025
@@ -546,7 +546,7 @@ glabel SelItemsMgr_ctor
     /* 009840 00009840 14400007 */  .word 0x14400007
     /* 009844 00009844 00408825 */  .word 0x00408825
     /* 009848 00009848 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00984C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00984C 0C000000 -> gen_imp_mem_new */
     /* 009850 00009850 AFA300E0 */  .word 0xAFA300E0
     /* 009854 00009854 8FA300E0 */  .word 0x8FA300E0
     /* 009858 00009858 1040000A */  .word 0x1040000A
@@ -554,7 +554,7 @@ glabel SelItemsMgr_ctor
     lui $a1, %hi(timproc_uso_b5_D_807FECBC)   /* 009860 3C050000 -> timproc_uso_b5_D_807FECBC */
     /* 009864 00009864 24A5144C */  .word 0x24A5144C
     /* 009868 00009868 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04C678   /* 00986C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00986C 0C000000 -> gen_imp_Node_ctor */
     /* 009870 00009870 AFA300E0 */  .word 0xAFA300E0
     lui $t4, %hi(timproc_uso_b5_D_807FE304)   /* 009874 3C0C0000 -> timproc_uso_b5_D_807FE304 */
     /* 009878 00009878 258C0A94 */  .word 0x258C0A94
@@ -584,7 +584,7 @@ glabel SelItemsMgr_ctor
     jal CommonInfo_add_0000A95C   /* 0098D8 0C000000 -> CommonInfo_add_0000A95C */
     /* 0098DC 000098DC 02002825 */  .word 0x02002825
     /* 0098E0 000098E0 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 0098E4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0098E4 0C000000 -> gen_imp_list_append */
     /* 0098E8 000098E8 8FA50124 */  .word 0x8FA50124
     /* 0098EC 000098EC 8FA20124 */  .word 0x8FA20124
     /* 0098F0 000098F0 8C4B0014 */  .word 0x8C4B0014
@@ -594,7 +594,7 @@ glabel SelItemsMgr_ctor
     /* 009900 00009900 AC520014 */  .word 0xAC520014
     /* 009904 00009904 8E430038 */  .word 0x8E430038
     /* 009908 00009908 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00990C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00990C 0C000000 -> gen_imp_mem_new */
     /* 009910 00009910 AFA300E0 */  .word 0xAFA300E0
     /* 009914 00009914 8FA300E0 */  .word 0x8FA300E0
     /* 009918 00009918 10400025 */  .word 0x10400025
@@ -602,7 +602,7 @@ glabel SelItemsMgr_ctor
     /* 009920 00009920 14400007 */  .word 0x14400007
     /* 009924 00009924 00408825 */  .word 0x00408825
     /* 009928 00009928 24040070 */  .word 0x24040070
-    jal timproc_uso_b5_func_055750   /* 00992C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00992C 0C000000 -> gen_imp_mem_new */
     /* 009930 00009930 AFA300E0 */  .word 0xAFA300E0
     /* 009934 00009934 8FA300E0 */  .word 0x8FA300E0
     /* 009938 00009938 1040000A */  .word 0x1040000A
@@ -610,7 +610,7 @@ glabel SelItemsMgr_ctor
     lui $a1, %hi(timproc_uso_b5_D_807FECD0)   /* 009940 3C050000 -> timproc_uso_b5_D_807FECD0 */
     /* 009944 00009944 24A51460 */  .word 0x24A51460
     /* 009948 00009948 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04C678   /* 00994C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00994C 0C000000 -> gen_imp_Node_ctor */
     /* 009950 00009950 AFA300E0 */  .word 0xAFA300E0
     lui $t5, %hi(timproc_uso_b5_D_807FE304)   /* 009954 3C0D0000 -> timproc_uso_b5_D_807FE304 */
     /* 009958 00009958 25AD0A94 */  .word 0x25AD0A94
@@ -640,7 +640,7 @@ glabel SelItemsMgr_ctor
     jal CommonInfo_add_0000A95C   /* 0099B8 0C000000 -> CommonInfo_add_0000A95C */
     /* 0099BC 000099BC 02002825 */  .word 0x02002825
     /* 0099C0 000099C0 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 0099C4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0099C4 0C000000 -> gen_imp_list_append */
     /* 0099C8 000099C8 8FA50120 */  .word 0x8FA50120
     /* 0099CC 000099CC 8FA20120 */  .word 0x8FA20120
     /* 0099D0 000099D0 240402BC */  .word 0x240402BC
@@ -648,19 +648,19 @@ glabel SelItemsMgr_ctor
     /* 0099D8 000099D8 11800002 */  .word 0x11800002
     /* 0099DC 000099DC 240D0001 */  .word 0x240D0001
     /* 0099E0 000099E0 AC4D0004 */  .word 0xAC4D0004
-    jal timproc_uso_b5_func_055750   /* 0099E4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0099E4 0C000000 -> gen_imp_mem_new */
     /* 0099E8 000099E8 AC520014 */  .word 0xAC520014
     /* 0099EC 000099EC 1040001A */  .word 0x1040001A
     /* 0099F0 000099F0 00408825 */  .word 0x00408825
     /* 0099F4 000099F4 14400005 */  .word 0x14400005
     /* 0099F8 000099F8 00408025 */  .word 0x00408025
-    jal timproc_uso_b5_func_055750   /* 0099FC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0099FC 0C000000 -> gen_imp_mem_new */
     /* 009A00 00009A00 240402B8 */  .word 0x240402B8
     /* 009A04 00009A04 1040000C */  .word 0x1040000C
     /* 009A08 00009A08 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FECE4)   /* 009A0C 3C050000 -> timproc_uso_b5_D_807FECE4 */
     /* 009A10 00009A10 24A51474 */  .word 0x24A51474
-    jal timproc_uso_b5_func_04C678   /* 009A14 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 009A14 0C000000 -> gen_imp_Node_ctor */
     /* 009A18 00009A18 02002025 */  .word 0x02002025
     lui $t6, %hi(timproc_uso_b5_D_807FDB64)   /* 009A1C 3C0E0000 -> timproc_uso_b5_D_807FDB64 */
     /* 009A20 00009A20 25CE0000 */  .word 0x25CE0000
@@ -679,14 +679,14 @@ glabel SelItemsMgr_ctor
     /* 009A54 00009A54 02202025 */  .word 0x02202025
     /* 009A58 00009A58 AE510054 */  .word 0xAE510054
     /* 009A5C 00009A5C 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009A60 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009A60 0C000000 -> gen_imp_list_append */
     /* 009A64 00009A64 02202825 */  .word 0x02202825
     /* 009A68 00009A68 8E390014 */  .word 0x8E390014
     /* 009A6C 00009A6C 24040168 */  .word 0x24040168
     /* 009A70 00009A70 13200002 */  .word 0x13200002
     /* 009A74 00009A74 24080001 */  .word 0x24080001
     /* 009A78 00009A78 AE280004 */  .word 0xAE280004
-    jal timproc_uso_b5_func_055750   /* 009A7C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009A7C 0C000000 -> gen_imp_mem_new */
     /* 009A80 00009A80 AE320014 */  .word 0xAE320014
     /* 009A84 00009A84 10400099 */  .word 0x10400099
     /* 009A88 00009A88 00408825 */  .word 0x00408825
@@ -695,7 +695,7 @@ glabel SelItemsMgr_ctor
     /* 009A94 00009A94 4407A000 */  .word 0x4407A000
     /* 009A98 00009A98 24A51488 */  .word 0x24A51488
     /* 009A9C 00009A9C 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 009AA0 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 009AA0 0C000000 -> gen_imp_QNode_ctor */
     /* 009AA4 00009AA4 E7B40010 */  .word 0xE7B40010
     lui $t1, %hi(timproc_uso_b5_D_807FED00)   /* 009AA8 3C090000 -> timproc_uso_b5_D_807FED00 */
     lui $t2, %hi(timproc_uso_b5_D_807FED00)   /* 009AAC 3C0A0000 -> timproc_uso_b5_D_807FED00 */
@@ -703,7 +703,7 @@ glabel SelItemsMgr_ctor
     /* 009AB4 00009AB4 252904AC */  .word 0x252904AC
     /* 009AB8 00009AB8 AE290028 */  .word 0xAE290028
     /* 009ABC 00009ABC AE2A000C */  .word 0xAE2A000C
-    jal timproc_uso_b5_func_055750   /* 009AC0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009AC0 0C000000 -> gen_imp_mem_new */
     /* 009AC4 00009AC4 2404016C */  .word 0x2404016C
     /* 009AC8 00009AC8 10400015 */  .word 0x10400015
     /* 009ACC 00009ACC 00408025 */  .word 0x00408025
@@ -712,7 +712,7 @@ glabel SelItemsMgr_ctor
     /* 009AD8 00009AD8 4407A000 */  .word 0x4407A000
     /* 009ADC 00009ADC 24A51498 */  .word 0x24A51498
     /* 009AE0 00009AE0 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 009AE4 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 009AE4 0C000000 -> gen_imp_QNode_ctor */
     /* 009AE8 00009AE8 E7B40010 */  .word 0xE7B40010
     lui $at, %hi(import_80807FB8)   /* 009AEC 3C010000 -> import_80807FB8 */
     /* 009AF0 00009AF0 C4200270 */  .word 0xC4200270
@@ -729,7 +729,7 @@ glabel SelItemsMgr_ctor
     /* 009B1C 00009B1C E6100124 */  .word 0xE6100124
     /* 009B20 00009B20 AE300108 */  .word 0xAE300108
     /* 009B24 00009B24 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04DFFC   /* 009B28 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 009B28 0C000000 -> gen_imp_MNode_addChild */
     /* 009B2C 00009B2C 02002825 */  .word 0x02002825
     /* 009B30 00009B30 8E250108 */  .word 0x8E250108
     /* 009B34 00009B34 44809000 */  .word 0x44809000
@@ -766,7 +766,7 @@ glabel SelItemsMgr_ctor
     /* 009BB0 00009BB0 24A514A4 */  .word 0x24A514A4
     /* 009BB4 00009BB4 AFAE0080 */  .word 0xAFAE0080
     /* 009BB8 00009BB8 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 009BBC 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 009BBC 0C000000 -> gen_imp_PolyShape_ctor */
     /* 009BC0 00009BC0 00003825 */  .word 0x00003825
     /* 009BC4 00009BC4 240F0001 */  .word 0x240F0001
     /* 009BC8 00009BC8 AE2F013C */  .word 0xAE2F013C
@@ -777,7 +777,7 @@ glabel SelItemsMgr_ctor
     /* 009BDC 00009BDC 02201025 */  .word 0x02201025
     /* 009BE0 00009BE0 8C450148 */  .word 0x8C450148
     /* 009BE4 00009BE4 AFA2004C */  .word 0xAFA2004C
-    jal timproc_uso_b5_func_04DFFC   /* 009BE8 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 009BE8 0C000000 -> gen_imp_MNode_addChild */
     /* 009BEC 00009BEC 02202025 */  .word 0x02202025
     /* 009BF0 00009BF0 8FA2004C */  .word 0x8FA2004C
     /* 009BF4 00009BF4 2401FFFB */  .word 0x2401FFFB
@@ -924,26 +924,26 @@ glabel SelItemsMgr_ctor
     /* 009E28 00009E28 8E500038 */  .word 0x8E500038
     /* 009E2C 00009E2C 8F1102B8 */  .word 0x8F1102B8
     /* 009E30 00009E30 26040010 */  .word 0x26040010
-    jal timproc_uso_b5_func_07ACE0   /* 009E34 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009E34 0C000000 -> gen_imp_list_append */
     /* 009E38 00009E38 02202825 */  .word 0x02202825
     /* 009E3C 00009E3C 8E390014 */  .word 0x8E390014
     /* 009E40 00009E40 240402BC */  .word 0x240402BC
     /* 009E44 00009E44 13200002 */  .word 0x13200002
     /* 009E48 00009E48 24080001 */  .word 0x24080001
     /* 009E4C 00009E4C AE280004 */  .word 0xAE280004
-    jal timproc_uso_b5_func_055750   /* 009E50 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009E50 0C000000 -> gen_imp_mem_new */
     /* 009E54 00009E54 AE300014 */  .word 0xAE300014
     /* 009E58 00009E58 1040001A */  .word 0x1040001A
     /* 009E5C 00009E5C 00408825 */  .word 0x00408825
     /* 009E60 00009E60 14400005 */  .word 0x14400005
     /* 009E64 00009E64 00408025 */  .word 0x00408025
-    jal timproc_uso_b5_func_055750   /* 009E68 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009E68 0C000000 -> gen_imp_mem_new */
     /* 009E6C 00009E6C 240402B8 */  .word 0x240402B8
     /* 009E70 00009E70 1040000C */  .word 0x1040000C
     /* 009E74 00009E74 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FED80)   /* 009E78 3C050000 -> timproc_uso_b5_D_807FED80 */
     /* 009E7C 00009E7C 24A51510 */  .word 0x24A51510
-    jal timproc_uso_b5_func_04C678   /* 009E80 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 009E80 0C000000 -> gen_imp_Node_ctor */
     /* 009E84 00009E84 02002025 */  .word 0x02002025
     lui $t1, %hi(timproc_uso_b5_D_807FDB64)   /* 009E88 3C090000 -> timproc_uso_b5_D_807FDB64 */
     /* 009E8C 00009E8C 25290000 */  .word 0x25290000
@@ -962,14 +962,14 @@ glabel SelItemsMgr_ctor
     /* 009EC0 00009EC0 02202025 */  .word 0x02202025
     /* 009EC4 00009EC4 AE510058 */  .word 0xAE510058
     /* 009EC8 00009EC8 8FA40050 */  .word 0x8FA40050
-    jal timproc_uso_b5_func_07ACE0   /* 009ECC 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 009ECC 0C000000 -> gen_imp_list_append */
     /* 009ED0 00009ED0 02202825 */  .word 0x02202825
     /* 009ED4 00009ED4 8E2C0014 */  .word 0x8E2C0014
     /* 009ED8 00009ED8 24040168 */  .word 0x24040168
     /* 009EDC 00009EDC 11800002 */  .word 0x11800002
     /* 009EE0 00009EE0 240D0001 */  .word 0x240D0001
     /* 009EE4 00009EE4 AE2D0004 */  .word 0xAE2D0004
-    jal timproc_uso_b5_func_055750   /* 009EE8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009EE8 0C000000 -> gen_imp_mem_new */
     /* 009EEC 00009EEC AE320014 */  .word 0xAE320014
     /* 009EF0 00009EF0 1040009D */  .word 0x1040009D
     /* 009EF4 00009EF4 00408825 */  .word 0x00408825
@@ -978,7 +978,7 @@ glabel SelItemsMgr_ctor
     /* 009F00 00009F00 4407A000 */  .word 0x4407A000
     /* 009F04 00009F04 24A51524 */  .word 0x24A51524
     /* 009F08 00009F08 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 009F0C 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 009F0C 0C000000 -> gen_imp_QNode_ctor */
     /* 009F10 00009F10 E7B40010 */  .word 0xE7B40010
     lui $t6, %hi(timproc_uso_b5_D_807FED9C)   /* 009F14 3C0E0000 -> timproc_uso_b5_D_807FED9C */
     lui $t7, %hi(timproc_uso_b5_D_807FED9C)   /* 009F18 3C0F0000 -> timproc_uso_b5_D_807FED9C */
@@ -986,7 +986,7 @@ glabel SelItemsMgr_ctor
     /* 009F20 00009F20 25CE04AC */  .word 0x25CE04AC
     /* 009F24 00009F24 AE2E0028 */  .word 0xAE2E0028
     /* 009F28 00009F28 AE2F000C */  .word 0xAE2F000C
-    jal timproc_uso_b5_func_055750   /* 009F2C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 009F2C 0C000000 -> gen_imp_mem_new */
     /* 009F30 00009F30 2404016C */  .word 0x2404016C
     /* 009F34 00009F34 10400019 */  .word 0x10400019
     /* 009F38 00009F38 00408025 */  .word 0x00408025
@@ -995,7 +995,7 @@ glabel SelItemsMgr_ctor
     /* 009F44 00009F44 4407A000 */  .word 0x4407A000
     /* 009F48 00009F48 24A51534 */  .word 0x24A51534
     /* 009F4C 00009F4C 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_0546DC   /* 009F50 0C000000 -> timproc_uso_b5_func_0546DC */
+    jal gen_imp_QNode_ctor   /* 009F50 0C000000 -> gen_imp_QNode_ctor */
     /* 009F54 00009F54 E7B40010 */  .word 0xE7B40010
     lui $t8, %hi(import_80087FB8)   /* 009F58 3C180000 -> import_80087FB8 */
     /* 009F5C 00009F5C 27180000 */  .word 0x27180000
@@ -1016,7 +1016,7 @@ glabel SelItemsMgr_ctor
     /* 009F98 00009F98 E6060124 */  .word 0xE6060124
     /* 009F9C 00009F9C AE300108 */  .word 0xAE300108
     /* 009FA0 00009FA0 02202025 */  .word 0x02202025
-    jal timproc_uso_b5_func_04DFFC   /* 009FA4 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 009FA4 0C000000 -> gen_imp_MNode_addChild */
     /* 009FA8 00009FA8 02002825 */  .word 0x02002825
     /* 009FAC 00009FAC 8E250108 */  .word 0x8E250108
     /* 009FB0 00009FB0 44804000 */  .word 0x44804000
@@ -1053,7 +1053,7 @@ glabel SelItemsMgr_ctor
     /* 00A02C 0000A02C 24A51540 */  .word 0x24A51540
     /* 00A030 0000A030 AFA90068 */  .word 0xAFA90068
     /* 00A034 0000A034 00002025 */  .word 0x00002025
-    jal timproc_uso_b5_func_05D0E0   /* 00A038 0C000000 -> timproc_uso_b5_func_05D0E0 */
+    jal gen_imp_PolyShape_ctor   /* 00A038 0C000000 -> gen_imp_PolyShape_ctor */
     /* 00A03C 0000A03C 00003825 */  .word 0x00003825
     /* 00A040 0000A040 240A0001 */  .word 0x240A0001
     /* 00A044 0000A044 AE2A013C */  .word 0xAE2A013C
@@ -1064,7 +1064,7 @@ glabel SelItemsMgr_ctor
     /* 00A058 0000A058 02201025 */  .word 0x02201025
     /* 00A05C 0000A05C 8C450148 */  .word 0x8C450148
     /* 00A060 0000A060 AFA20050 */  .word 0xAFA20050
-    jal timproc_uso_b5_func_04DFFC   /* 00A064 0C000000 -> timproc_uso_b5_func_04DFFC */
+    jal gen_imp_MNode_addChild   /* 00A064 0C000000 -> gen_imp_MNode_addChild */
     /* 00A068 0000A068 02202025 */  .word 0x02202025
     /* 00A06C 0000A06C 8FA20050 */  .word 0x8FA20050
     /* 00A070 0000A070 2401FFFB */  .word 0x2401FFFB
@@ -1216,7 +1216,7 @@ glabel SelItemsMgr_ctor
     /* 00A2B8 0000A2B8 8E500038 */  .word 0x8E500038
     /* 00A2BC 0000A2BC 8DB102B8 */  .word 0x8DB102B8
     /* 00A2C0 0000A2C0 26040010 */  .word 0x26040010
-    jal timproc_uso_b5_func_07ACE0   /* 00A2C4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00A2C4 0C000000 -> gen_imp_list_append */
     /* 00A2C8 0000A2C8 02202825 */  .word 0x02202825
     /* 00A2CC 0000A2CC 8E2E0014 */  .word 0x8E2E0014
     /* 00A2D0 0000A2D0 24050001 */  .word 0x24050001
@@ -1579,7 +1579,7 @@ glabel SelItemsMgr_ctor
     lui $a0, %hi(timproc_uso_b5_D_807FEE1C)   /* 00A864 3C040000 -> timproc_uso_b5_D_807FEE1C */
     /* 00A868 0000A868 00408025 */  .word 0x00408025
     /* 00A86C 0000A86C 248415AC */  .word 0x248415AC
-    jal timproc_uso_b5_func_048E7C   /* 00A870 0C000000 -> timproc_uso_b5_func_048E7C */
+    jal gen_imp_dbg_printf   /* 00A870 0C000000 -> gen_imp_dbg_printf */
     /* 00A874 0000A874 95E50002 */  .word 0x95E50002
     lui $t8, %hi(import_800201EC)   /* 00A878 3C180000 -> import_800201EC */
     /* 00A87C 0000A87C 8F180154 */  .word 0x8F180154
@@ -1600,11 +1600,11 @@ glabel SelItemsMgr_ctor
     /* 00A8B8 0000A8B8 E61402A4 */  .word 0xE61402A4
     /* 00A8BC 0000A8BC 02402025 */  .word 0x02402025
     /* 00A8C0 0000A8C0 24050001 */  .word 0x24050001
-    jal timproc_uso_b5_func_04C774   /* 00A8C4 0C000000 -> timproc_uso_b5_func_04C774 */
+    jal gen_imp_Node_Load   /* 00A8C4 0C000000 -> gen_imp_Node_Load */
     /* 00A8C8 0000A8C8 8FA60164 */  .word 0x8FA60164
     /* 00A8CC 0000A8CC 8E440050 */  .word 0x8E440050
     /* 00A8D0 0000A8D0 24050001 */  .word 0x24050001
-    jal timproc_uso_b5_func_04C774   /* 00A8D4 0C000000 -> timproc_uso_b5_func_04C774 */
+    jal gen_imp_Node_Load   /* 00A8D4 0C000000 -> gen_imp_Node_Load */
     /* 00A8D8 0000A8D8 8FA60168 */  .word 0x8FA60168
     /* 00A8DC 0000A8DC 8E510028 */  .word 0x8E510028
     /* 00A8E0 0000A8E0 8E390024 */  .word 0x8E390024

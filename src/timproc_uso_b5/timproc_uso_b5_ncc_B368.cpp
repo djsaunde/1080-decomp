@@ -18,13 +18,13 @@ typedef float f32; typedef int s32; typedef double f64;
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 extern "C" {
 extern char import_80087DA8;
-void *timproc_uso_b5_func_071028(...);
-void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
-void timproc_uso_b5_func_0727A4(void *src, void *dst);
+void *gen_imp_math_vec3Normalize(...);
+void gen_imp_math_quatRotateAxisAngle(void *quat, void *axis, f32 angle);
+void gen_imp_math_mtx4Transpose(void *src, void *dst);
 void import_0010806C(void *src, void *dst);
-void timproc_uso_b5_func_0714D4(void *quat, void *vec, f32 scale, s32 flag);
-void timproc_uso_b5_func_06970C(void *obj, s32 val);
-void timproc_uso_b5_func_054CAC(void *obj);
+void gen_imp_math_quatSlerp(void *quat, void *vec, f32 scale, s32 flag);
+void gen_imp_light_setF124_000550A0(void *obj, s32 val);
+void gen_imp_QNode_display(void *obj);
 extern f32 timb5_B368_gscale;
 }
 static float sXY[2]; static float sZ;
@@ -35,7 +35,7 @@ inline V3 pool(f32 *g, const f32 &s) { if (0) { g[0] = s; } return V3(g[0] * s, 
 inline V3 operator*(const V3 &a, const f32 &s) { f32 k = s; return V3(a.x * k, a.y * k, a.z * k); }
 struct Quat {
     f32 x, y, z, w;
-    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
+    void rot(V3 *axis, f32 ang) { gen_imp_math_quatRotateAxisAngle(this, axis, ang); }
 };
 struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
@@ -43,7 +43,7 @@ struct Obj {
 };
 extern "C" void SelCourseMap_display_0000B368(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
-    timproc_uso_b5_func_071028(&d);
+    gen_imp_math_vec3Normalize(&d);
     if (FW(o, 0x140) != 0) {
         V3 s240;
         f32 ang;
@@ -54,15 +54,15 @@ extern "C" void SelCourseMap_display_0000B368(Obj *o) {
         if (FW(o, 0x13C) != 0) {
             s32 m7C[16];
             s32 m6C[4];
-            timproc_uso_b5_func_0727A4(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
+            gen_imp_math_mtx4Transpose(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
             import_0010806C(m7C, m6C);
-            timproc_uso_b5_func_0714D4(&o->q, m6C, o->f128, 0);
+            gen_imp_math_quatSlerp(&o->q, m6C, o->f128, 0);
         }
         o->sE8 = o->f118; o->sEC = o->f118; o->sF0 = o->f118;
         s224 = (s240 = pool(&sXY[0], timb5_B368_gscale)) * o->f128;
         o->pos += s224;
-        timproc_uso_b5_func_06970C(o->m108, o->i124);
-        timproc_uso_b5_func_054CAC(o);
+        gen_imp_light_setF124_000550A0(o->m108, o->i124);
+        gen_imp_QNode_display(o);
         o->i12C = 1;
     }
 }

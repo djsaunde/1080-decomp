@@ -42,7 +42,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
                 } while (0);
             }
         }
-        timproc_uso_b5_func_04CCA8(b);
+        gen_imp_Node_display(b);
     } else {
         flags = (s32 *)(*(char **)(slot->field_40C + 0x38) + 0x18);
         do {

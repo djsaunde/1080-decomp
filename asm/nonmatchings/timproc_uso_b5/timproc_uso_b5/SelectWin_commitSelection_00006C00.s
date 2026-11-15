@@ -14,7 +14,7 @@ glabel SelectWin_commitSelection_00006C00
     /* 006C28 00006C28 02002025 */  .word 0x02002025
     /* 006C2C 00006C2C 8E040418 */  .word 0x8E040418
     /* 006C30 00006C30 2405FFFF */  .word 0x2405FFFF
-    jal timproc_uso_b5_func_00F954   /* 006C34 0C000000 -> timproc_uso_b5_func_00F954 */
+    jal gen_imp_Process_fadeOut_0000F954   /* 006C34 0C000000 -> gen_imp_Process_fadeOut_0000F954 */
     /* 006C38 00006C38 00003025 */  .word 0x00003025
     lui $v1, %hi(import_80020098)   /* 006C3C 3C030000 -> import_80020098 */
     /* 006C40 00006C40 24630000 */  .word 0x24630000

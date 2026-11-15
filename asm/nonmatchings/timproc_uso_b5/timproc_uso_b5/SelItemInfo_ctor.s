@@ -6,13 +6,13 @@ glabel SelItemInfo_ctor
     /* 0032D0 000032D0 00808025 */  .word 0x00808025
     /* 0032D4 000032D4 14800005 */  .word 0x14800005
     /* 0032D8 000032D8 AFBF001C */  .word 0xAFBF001C
-    jal timproc_uso_b5_func_055750   /* 0032DC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0032DC 0C000000 -> gen_imp_mem_new */
     /* 0032E0 000032E0 24040108 */  .word 0x24040108
     /* 0032E4 000032E4 10400165 */  .word 0x10400165
     /* 0032E8 000032E8 00408025 */  .word 0x00408025
     /* 0032EC 000032EC 16000005 */  .word 0x16000005
     /* 0032F0 000032F0 02001825 */  .word 0x02001825
-    jal timproc_uso_b5_func_055750   /* 0032F4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0032F4 0C000000 -> gen_imp_mem_new */
     /* 0032F8 000032F8 24040008 */  .word 0x24040008
     /* 0032FC 000032FC 10400005 */  .word 0x10400005
     /* 003300 00003300 00401825 */  .word 0x00401825
@@ -27,7 +27,7 @@ glabel SelItemInfo_ctor
     /* 003324 00003324 AFAF0124 */  .word 0xAFAF0124
     /* 003328 00003328 16010005 */  .word 0x16010005
     /* 00332C 0000332C AFAF00A4 */  .word 0xAFAF00A4
-    jal timproc_uso_b5_func_055750   /* 003330 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 003330 0C000000 -> gen_imp_mem_new */
     /* 003334 00003334 24040018 */  .word 0x24040018
     /* 003338 00003338 1040000D */  .word 0x1040000D
     /* 00333C 0000333C 00402025 */  .word 0x00402025
@@ -35,7 +35,7 @@ glabel SelItemInfo_ctor
     /* 003344 00003344 02002825 */  .word 0x02002825
     /* 003348 00003348 24070001 */  .word 0x24070001
     /* 00334C 0000334C AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 003350 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 003350 0C000000 -> gen_imp_Parms_addParm */
     /* 003354 00003354 AFA60008 */  .word 0xAFA60008
     /* 003358 00003358 8FA400A8 */  .word 0x8FA400A8
     lui $t0, %hi(timproc_uso_b5_D_807FDA10)   /* 00335C 3C080000 -> timproc_uso_b5_D_807FDA10 */
@@ -50,7 +50,7 @@ glabel SelItemInfo_ctor
     /* 003380 00003380 AFA90120 */  .word 0xAFA90120
     /* 003384 00003384 16010005 */  .word 0x16010005
     /* 003388 00003388 AFA900A4 */  .word 0xAFA900A4
-    jal timproc_uso_b5_func_055750   /* 00338C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00338C 0C000000 -> gen_imp_mem_new */
     /* 003390 00003390 24040018 */  .word 0x24040018
     /* 003394 00003394 1040000E */  .word 0x1040000E
     /* 003398 00003398 00402025 */  .word 0x00402025
@@ -58,7 +58,7 @@ glabel SelItemInfo_ctor
     /* 0033A0 000033A0 02002825 */  .word 0x02002825
     /* 0033A4 000033A4 24070001 */  .word 0x24070001
     /* 0033A8 000033A8 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 0033AC 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0033AC 0C000000 -> gen_imp_Parms_addParm */
     /* 0033B0 000033B0 AFA60008 */  .word 0xAFA60008
     /* 0033B4 000033B4 8FA400A8 */  .word 0x8FA400A8
     lui $t4, %hi(timproc_uso_b5_D_807FDA10)   /* 0033B8 3C0C0000 -> timproc_uso_b5_D_807FDA10 */
@@ -74,7 +74,7 @@ glabel SelItemInfo_ctor
     /* 0033E0 000033E0 AFAE011C */  .word 0xAFAE011C
     /* 0033E4 000033E4 16010005 */  .word 0x16010005
     /* 0033E8 000033E8 AFAE00A4 */  .word 0xAFAE00A4
-    jal timproc_uso_b5_func_055750   /* 0033EC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0033EC 0C000000 -> gen_imp_mem_new */
     /* 0033F0 000033F0 24040018 */  .word 0x24040018
     /* 0033F4 000033F4 1040000E */  .word 0x1040000E
     /* 0033F8 000033F8 00402025 */  .word 0x00402025
@@ -82,7 +82,7 @@ glabel SelItemInfo_ctor
     /* 003400 00003400 02002825 */  .word 0x02002825
     /* 003404 00003404 24070001 */  .word 0x24070001
     /* 003408 00003408 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 00340C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00340C 0C000000 -> gen_imp_Parms_addParm */
     /* 003410 00003410 AFA60008 */  .word 0xAFA60008
     /* 003414 00003414 8FA400A8 */  .word 0x8FA400A8
     lui $t9, %hi(timproc_uso_b5_D_807FDA10)   /* 003418 3C190000 -> timproc_uso_b5_D_807FDA10 */
@@ -98,7 +98,7 @@ glabel SelItemInfo_ctor
     /* 003440 00003440 AFA90118 */  .word 0xAFA90118
     /* 003444 00003444 16010005 */  .word 0x16010005
     /* 003448 00003448 AFA900A4 */  .word 0xAFA900A4
-    jal timproc_uso_b5_func_055750   /* 00344C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00344C 0C000000 -> gen_imp_mem_new */
     /* 003450 00003450 24040018 */  .word 0x24040018
     /* 003454 00003454 1040000E */  .word 0x1040000E
     /* 003458 00003458 00402025 */  .word 0x00402025
@@ -106,7 +106,7 @@ glabel SelItemInfo_ctor
     /* 003460 00003460 02002825 */  .word 0x02002825
     /* 003464 00003464 24070001 */  .word 0x24070001
     /* 003468 00003468 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 00346C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00346C 0C000000 -> gen_imp_Parms_addParm */
     /* 003470 00003470 AFA60008 */  .word 0xAFA60008
     /* 003474 00003474 8FA400A8 */  .word 0x8FA400A8
     lui $t4, %hi(timproc_uso_b5_D_807FDA10)   /* 003478 3C0C0000 -> timproc_uso_b5_D_807FDA10 */
@@ -122,7 +122,7 @@ glabel SelItemInfo_ctor
     /* 0034A0 000034A0 AFAE0114 */  .word 0xAFAE0114
     /* 0034A4 000034A4 16010005 */  .word 0x16010005
     /* 0034A8 000034A8 AFAE00A4 */  .word 0xAFAE00A4
-    jal timproc_uso_b5_func_055750   /* 0034AC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0034AC 0C000000 -> gen_imp_mem_new */
     /* 0034B0 000034B0 24040018 */  .word 0x24040018
     /* 0034B4 000034B4 1040000E */  .word 0x1040000E
     /* 0034B8 000034B8 00402025 */  .word 0x00402025
@@ -130,7 +130,7 @@ glabel SelItemInfo_ctor
     /* 0034C0 000034C0 02002825 */  .word 0x02002825
     /* 0034C4 000034C4 24070001 */  .word 0x24070001
     /* 0034C8 000034C8 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 0034CC 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0034CC 0C000000 -> gen_imp_Parms_addParm */
     /* 0034D0 000034D0 AFA60008 */  .word 0xAFA60008
     /* 0034D4 000034D4 8FA400A8 */  .word 0x8FA400A8
     lui $t9, %hi(timproc_uso_b5_D_807FDA10)   /* 0034D8 3C190000 -> timproc_uso_b5_D_807FDA10 */
@@ -146,7 +146,7 @@ glabel SelItemInfo_ctor
     /* 003500 00003500 AFA90110 */  .word 0xAFA90110
     /* 003504 00003504 16010005 */  .word 0x16010005
     /* 003508 00003508 AFA900A4 */  .word 0xAFA900A4
-    jal timproc_uso_b5_func_055750   /* 00350C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00350C 0C000000 -> gen_imp_mem_new */
     /* 003510 00003510 24040018 */  .word 0x24040018
     /* 003514 00003514 1040000E */  .word 0x1040000E
     /* 003518 00003518 00402025 */  .word 0x00402025
@@ -154,7 +154,7 @@ glabel SelItemInfo_ctor
     /* 003520 00003520 02002825 */  .word 0x02002825
     /* 003524 00003524 24070001 */  .word 0x24070001
     /* 003528 00003528 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 00352C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00352C 0C000000 -> gen_imp_Parms_addParm */
     /* 003530 00003530 AFA60008 */  .word 0xAFA60008
     /* 003534 00003534 8FA400A8 */  .word 0x8FA400A8
     lui $t4, %hi(timproc_uso_b5_D_807FDA10)   /* 003538 3C0C0000 -> timproc_uso_b5_D_807FDA10 */
@@ -213,7 +213,7 @@ glabel SelItemInfo_ctor
     /* 00360C 0000360C 8FB900E8 */  .word 0x8FB900E8
     /* 003610 00003610 16010006 */  .word 0x16010006
     /* 003614 00003614 AFB900A4 */  .word 0xAFB900A4
-    jal timproc_uso_b5_func_055750   /* 003618 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 003618 0C000000 -> gen_imp_mem_new */
     /* 00361C 0000361C 24040020 */  .word 0x24040020
     /* 003620 00003620 44800000 */  .word 0x44800000
     /* 003624 00003624 1040001B */  .word 0x1040001B
@@ -222,7 +222,7 @@ glabel SelItemInfo_ctor
     /* 003630 00003630 02002825 */  .word 0x02002825
     /* 003634 00003634 24070001 */  .word 0x24070001
     /* 003638 00003638 AFA40084 */  .word 0xAFA40084
-    jal timproc_uso_b5_func_04A188   /* 00363C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00363C 0C000000 -> gen_imp_Parms_addParm */
     /* 003640 00003640 AFA60008 */  .word 0xAFA60008
     /* 003644 00003644 8FA40084 */  .word 0x8FA40084
     lui $t1, %hi(timproc_uso_b5_D_807FD9E0)   /* 003648 3C090000 -> timproc_uso_b5_D_807FD9E0 */
@@ -289,7 +289,7 @@ glabel SelItemInfo_ctor
     /* 00373C 0000373C 8FB900C0 */  .word 0x8FB900C0
     /* 003740 00003740 16010005 */  .word 0x16010005
     /* 003744 00003744 AFB900A4 */  .word 0xAFB900A4
-    jal timproc_uso_b5_func_055750   /* 003748 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 003748 0C000000 -> gen_imp_mem_new */
     /* 00374C 0000374C 24040020 */  .word 0x24040020
     /* 003750 00003750 1040001A */  .word 0x1040001A
     /* 003754 00003754 00402025 */  .word 0x00402025
@@ -297,7 +297,7 @@ glabel SelItemInfo_ctor
     /* 00375C 0000375C 02002825 */  .word 0x02002825
     /* 003760 00003760 24070001 */  .word 0x24070001
     /* 003764 00003764 AFA40050 */  .word 0xAFA40050
-    jal timproc_uso_b5_func_04A188   /* 003768 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 003768 0C000000 -> gen_imp_Parms_addParm */
     /* 00376C 0000376C AFA60008 */  .word 0xAFA60008
     /* 003770 00003770 8FA40050 */  .word 0x8FA40050
     lui $t1, %hi(timproc_uso_b5_D_807FD9E0)   /* 003774 3C090000 -> timproc_uso_b5_D_807FD9E0 */
@@ -325,7 +325,7 @@ glabel SelItemInfo_ctor
     /* 0037CC 000037CC AFAE00BC */  .word 0xAFAE00BC
     /* 0037D0 000037D0 16010005 */  .word 0x16010005
     /* 0037D4 000037D4 AFAE00A4 */  .word 0xAFAE00A4
-    jal timproc_uso_b5_func_055750   /* 0037D8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0037D8 0C000000 -> gen_imp_mem_new */
     /* 0037DC 000037DC 24040018 */  .word 0x24040018
     /* 0037E0 000037E0 1040000E */  .word 0x1040000E
     /* 0037E4 000037E4 00402025 */  .word 0x00402025
@@ -333,7 +333,7 @@ glabel SelItemInfo_ctor
     /* 0037EC 000037EC 02002825 */  .word 0x02002825
     /* 0037F0 000037F0 24070001 */  .word 0x24070001
     /* 0037F4 000037F4 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 0037F8 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0037F8 0C000000 -> gen_imp_Parms_addParm */
     /* 0037FC 000037FC AFA60008 */  .word 0xAFA60008
     /* 003800 00003800 8FA400A8 */  .word 0x8FA400A8
     /* 003804 00003804 44804000 */  .word 0x44804000
@@ -349,7 +349,7 @@ glabel SelItemInfo_ctor
     /* 00382C 0000382C AFA800B8 */  .word 0xAFA800B8
     /* 003830 00003830 16010005 */  .word 0x16010005
     /* 003834 00003834 AFA800A4 */  .word 0xAFA800A4
-    jal timproc_uso_b5_func_055750   /* 003838 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 003838 0C000000 -> gen_imp_mem_new */
     /* 00383C 0000383C 24040018 */  .word 0x24040018
     /* 003840 00003840 1040000E */  .word 0x1040000E
     /* 003844 00003844 00402025 */  .word 0x00402025
@@ -357,7 +357,7 @@ glabel SelItemInfo_ctor
     /* 00384C 0000384C 02002825 */  .word 0x02002825
     /* 003850 00003850 24070001 */  .word 0x24070001
     /* 003854 00003854 AFA400A8 */  .word 0xAFA400A8
-    jal timproc_uso_b5_func_04A188   /* 003858 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 003858 0C000000 -> gen_imp_Parms_addParm */
     /* 00385C 0000385C AFA60008 */  .word 0xAFA60008
     /* 003860 00003860 8FA400A8 */  .word 0x8FA400A8
     /* 003864 00003864 44805000 */  .word 0x44805000

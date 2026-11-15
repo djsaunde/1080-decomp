@@ -10,7 +10,7 @@ glabel gen_createCamera_0000283C
     /* 002854 00002854 AFA60080 */  .word 0xAFA60080
     /* 002858 00002858 14800005 */  .word 0x14800005
     /* 00285C 0000285C AFA70084 */  .word 0xAFA70084
-    jal timproc_uso_b5_func_055750   /* 002860 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 002860 0C000000 -> gen_imp_mem_new */
     /* 002864 00002864 24040020 */  .word 0x24040020
     /* 002868 00002868 104000BC */  .word 0x104000BC
     /* 00286C 0000286C 00408825 */  .word 0x00408825
@@ -25,24 +25,24 @@ glabel gen_createCamera_0000283C
     /* 002890 00002890 AE390004 */  .word 0xAE390004
     /* 002894 00002894 8C480134 */  .word 0x8C480134
     /* 002898 00002898 8D09008C */  .word 0x8D09008C
-    jal timproc_uso_b5_func_055750   /* 00289C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00289C 0C000000 -> gen_imp_mem_new */
     /* 0028A0 000028A0 AE290008 */  .word 0xAE290008
     /* 0028A4 000028A4 10400004 */  .word 0x10400004
     /* 0028A8 000028A8 00408025 */  .word 0x00408025
     /* 0028AC 000028AC 00402025 */  .word 0x00402025
-    jal timproc_uso_b5_func_07BA00   /* 0028B0 0C000000 -> timproc_uso_b5_func_07BA00 */
+    jal gen_imp_pad_open   /* 0028B0 0C000000 -> gen_imp_pad_open */
     /* 0028B4 000028B4 8FA5007C */  .word 0x8FA5007C
     lui $a0, %hi(import_80020098)   /* 0028B8 3C040000 -> import_80020098 */
     /* 0028BC 000028BC 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011C70   /* 0028C0 0C000000 -> timproc_uso_b5_func_011C70 */
+    jal gen_imp_input_addPad_00011C70   /* 0028C0 0C000000 -> gen_imp_input_addPad_00011C70 */
     /* 0028C4 000028C4 02002825 */  .word 0x02002825
-    jal timproc_uso_b5_func_055750   /* 0028C8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0028C8 0C000000 -> gen_imp_mem_new */
     /* 0028CC 000028CC 240400B4 */  .word 0x240400B4
     /* 0028D0 000028D0 1040001F */  .word 0x1040001F
     /* 0028D4 000028D4 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FE990)   /* 0028D8 3C050000 -> timproc_uso_b5_D_807FE990 */
     /* 0028DC 000028DC 24A51120 */  .word 0x24A51120
-    jal timproc_uso_b5_func_04C678   /* 0028E0 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 0028E0 0C000000 -> gen_imp_Node_ctor */
     /* 0028E4 000028E4 00402025 */  .word 0x00402025
     lui $t2, %hi(import_80086288)   /* 0028E8 3C0A0000 -> import_80086288 */
     /* 0028EC 000028EC 254A0000 */  .word 0x254A0000
@@ -50,34 +50,34 @@ glabel gen_createCamera_0000283C
     /* 0028F4 000028F4 AE0A0028 */  .word 0xAE0A0028
     /* 0028F8 000028F8 16010005 */  .word 0x16010005
     /* 0028FC 000028FC 2603002C */  .word 0x2603002C
-    jal timproc_uso_b5_func_055750   /* 002900 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 002900 0C000000 -> gen_imp_mem_new */
     /* 002904 00002904 24040004 */  .word 0x24040004
     /* 002908 00002908 10400008 */  .word 0x10400008
     /* 00290C 0000290C 00401825 */  .word 0x00401825
     /* 002910 00002910 14600005 */  .word 0x14600005
     /* 002914 00002914 00602025 */  .word 0x00602025
-    jal timproc_uso_b5_func_055750   /* 002918 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 002918 0C000000 -> gen_imp_mem_new */
     /* 00291C 0000291C 24040004 */  .word 0x24040004
     /* 002920 00002920 10400002 */  .word 0x10400002
     /* 002924 00002924 00402025 */  .word 0x00402025
     /* 002928 00002928 AC800000 */  .word 0xAC800000
-    jal timproc_uso_b5_func_04D3D0   /* 00292C 0C000000 -> timproc_uso_b5_func_04D3D0 */
+    jal gen_imp_MNode_initMatrices   /* 00292C 0C000000 -> gen_imp_MNode_initMatrices */
     /* 002930 00002930 02002025 */  .word 0x02002025
     /* 002934 00002934 44800000 */  .word 0x44800000
     /* 002938 00002938 26040030 */  .word 0x26040030
     /* 00293C 0000293C 27A50058 */  .word 0x27A50058
     /* 002940 00002940 E7A00058 */  .word 0xE7A00058
     /* 002944 00002944 E7A0005C */  .word 0xE7A0005C
-    jal timproc_uso_b5_func_072EE8   /* 002948 0C000000 -> timproc_uso_b5_func_072EE8 */
+    jal gen_imp_math_mtxAddTranslation   /* 002948 0C000000 -> gen_imp_math_mtxAddTranslation */
     /* 00294C 0000294C E7A00060 */  .word 0xE7A00060
     /* 002950 00002950 AE300014 */  .word 0xAE300014
-    jal timproc_uso_b5_func_055750   /* 002954 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 002954 0C000000 -> gen_imp_mem_new */
     /* 002958 00002958 240400B4 */  .word 0x240400B4
     /* 00295C 0000295C 1040001F */  .word 0x1040001F
     /* 002960 00002960 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FE998)   /* 002964 3C050000 -> timproc_uso_b5_D_807FE998 */
     /* 002968 00002968 24A51128 */  .word 0x24A51128
-    jal timproc_uso_b5_func_04C678   /* 00296C 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 00296C 0C000000 -> gen_imp_Node_ctor */
     /* 002970 00002970 00402025 */  .word 0x00402025
     lui $t3, %hi(import_80086288)   /* 002974 3C0B0000 -> import_80086288 */
     /* 002978 00002978 256B0000 */  .word 0x256B0000
@@ -85,25 +85,25 @@ glabel gen_createCamera_0000283C
     /* 002980 00002980 AE0B0028 */  .word 0xAE0B0028
     /* 002984 00002984 16010005 */  .word 0x16010005
     /* 002988 00002988 2603002C */  .word 0x2603002C
-    jal timproc_uso_b5_func_055750   /* 00298C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00298C 0C000000 -> gen_imp_mem_new */
     /* 002990 00002990 24040004 */  .word 0x24040004
     /* 002994 00002994 10400008 */  .word 0x10400008
     /* 002998 00002998 00401825 */  .word 0x00401825
     /* 00299C 0000299C 14600005 */  .word 0x14600005
     /* 0029A0 000029A0 00602025 */  .word 0x00602025
-    jal timproc_uso_b5_func_055750   /* 0029A4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0029A4 0C000000 -> gen_imp_mem_new */
     /* 0029A8 000029A8 24040004 */  .word 0x24040004
     /* 0029AC 000029AC 10400002 */  .word 0x10400002
     /* 0029B0 000029B0 00402025 */  .word 0x00402025
     /* 0029B4 000029B4 AC800000 */  .word 0xAC800000
-    jal timproc_uso_b5_func_04D3D0   /* 0029B8 0C000000 -> timproc_uso_b5_func_04D3D0 */
+    jal gen_imp_MNode_initMatrices   /* 0029B8 0C000000 -> gen_imp_MNode_initMatrices */
     /* 0029BC 000029BC 02002025 */  .word 0x02002025
     /* 0029C0 000029C0 44800000 */  .word 0x44800000
     /* 0029C4 000029C4 26040030 */  .word 0x26040030
     /* 0029C8 000029C8 27A5003C */  .word 0x27A5003C
     /* 0029CC 000029CC E7A0003C */  .word 0xE7A0003C
     /* 0029D0 000029D0 E7A00040 */  .word 0xE7A00040
-    jal timproc_uso_b5_func_072EE8   /* 0029D4 0C000000 -> timproc_uso_b5_func_072EE8 */
+    jal gen_imp_math_mtxAddTranslation   /* 0029D4 0C000000 -> gen_imp_math_mtxAddTranslation */
     /* 0029D8 000029D8 E7A00044 */  .word 0xE7A00044
     /* 0029DC 000029DC 44800000 */  .word 0x44800000
     /* 0029E0 000029E0 AE300010 */  .word 0xAE300010
@@ -111,14 +111,14 @@ glabel gen_createCamera_0000283C
     /* 0029E8 000029E8 44060000 */  .word 0x44060000
     /* 0029EC 000029EC 44070000 */  .word 0x44070000
     /* 0029F0 000029F0 02002825 */  .word 0x02002825
-    jal timproc_uso_b5_func_047484   /* 0029F4 0C000000 -> timproc_uso_b5_func_047484 */
+    jal gen_imp_MCamera_ctor   /* 0029F4 0C000000 -> gen_imp_MCamera_ctor */
     /* 0029F8 000029F8 E7A00010 */  .word 0xE7A00010
     /* 0029FC 000029FC 8E230000 */  .word 0x8E230000
     /* 002A00 00002A00 AE220018 */  .word 0xAE220018
     /* 002A04 00002A04 00408025 */  .word 0x00408025
     /* 002A08 00002A08 00402825 */  .word 0x00402825
     /* 002A0C 00002A0C AFA3006C */  .word 0xAFA3006C
-    jal timproc_uso_b5_func_07ACE0   /* 002A10 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 002A10 0C000000 -> gen_imp_list_append */
     /* 002A14 00002A14 24640010 */  .word 0x24640010
     /* 002A18 00002A18 8E0C0014 */  .word 0x8E0C0014
     /* 002A1C 00002A1C 8FA3006C */  .word 0x8FA3006C
@@ -131,7 +131,7 @@ glabel gen_createCamera_0000283C
     /* 002A38 00002A38 8E300010 */  .word 0x8E300010
     /* 002A3C 00002A3C AFA3006C */  .word 0xAFA3006C
     /* 002A40 00002A40 24640010 */  .word 0x24640010
-    jal timproc_uso_b5_func_07ACE0   /* 002A44 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 002A44 0C000000 -> gen_imp_list_append */
     /* 002A48 00002A48 02002825 */  .word 0x02002825
     /* 002A4C 00002A4C 8E0E0014 */  .word 0x8E0E0014
     /* 002A50 00002A50 44800000 */  .word 0x44800000
@@ -147,7 +147,7 @@ glabel gen_createCamera_0000283C
     /* 002A78 00002A78 E7A00028 */  .word 0xE7A00028
     /* 002A7C 00002A7C 27A50028 */  .word 0x27A50028
     /* 002A80 00002A80 26040030 */  .word 0x26040030
-    jal timproc_uso_b5_func_072EE8   /* 002A84 0C000000 -> timproc_uso_b5_func_072EE8 */
+    jal gen_imp_math_mtxAddTranslation   /* 002A84 0C000000 -> gen_imp_math_mtxAddTranslation */
     /* 002A88 00002A88 E7A40030 */  .word 0xE7A40030
     /* 002A8C 00002A8C 8FB8007C */  .word 0x8FB8007C
     /* 002A90 00002A90 24010001 */  .word 0x24010001
@@ -163,7 +163,7 @@ glabel gen_createCamera_0000283C
     lui $a0, %hi(import_800201CC)   /* 002AB8 3C040000 -> import_800201CC */
     /* 002ABC 00002ABC 8C840134 */  .word 0x8C840134
     /* 002AC0 00002AC0 01092821 */  .word 0x01092821
-    jal timproc_uso_b5_func_0034E8   /* 002AC4 0C000000 -> timproc_uso_b5_func_0034E8 */
+    jal gen_imp_game_create3DWindow   /* 002AC4 0C000000 -> gen_imp_game_create3DWindow */
     /* 002AC8 00002AC8 8E260018 */  .word 0x8E260018
     /* 002ACC 00002ACC 1000000B */  .word 0x1000000B
     /* 002AD0 00002AD0 AE22000C */  .word 0xAE22000C
@@ -174,7 +174,7 @@ glabel gen_createCamera_0000283C
     /* 002AE4 00002AE4 000B5880 */  .word 0x000B5880
     /* 002AE8 00002AE8 016C2821 */  .word 0x016C2821
     /* 002AEC 00002AEC 8C840134 */  .word 0x8C840134
-    jal timproc_uso_b5_func_0034E8   /* 002AF0 0C000000 -> timproc_uso_b5_func_0034E8 */
+    jal gen_imp_game_create3DWindow   /* 002AF0 0C000000 -> gen_imp_game_create3DWindow */
     /* 002AF4 00002AF4 8E260018 */  .word 0x8E260018
     /* 002AF8 00002AF8 AE22000C */  .word 0xAE22000C
     /* 002AFC 00002AFC 8E2E000C */  .word 0x8E2E000C

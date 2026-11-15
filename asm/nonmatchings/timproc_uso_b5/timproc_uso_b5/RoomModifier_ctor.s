@@ -4,13 +4,13 @@ glabel RoomModifier_ctor
     /* 0010EC 000010EC 27BDFFE8 */  .word 0x27BDFFE8
     /* 0010F0 000010F0 14800005 */  .word 0x14800005
     /* 0010F4 000010F4 AFBF0014 */  .word 0xAFBF0014
-    jal timproc_uso_b5_func_055750   /* 0010F8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0010F8 0C000000 -> gen_imp_mem_new */
     /* 0010FC 000010FC 24040040 */  .word 0x24040040
     /* 001100 00001100 10400011 */  .word 0x10400011
     /* 001104 00001104 00402025 */  .word 0x00402025
     lui $a1, %hi(timproc_uso_b5_D_807FE8DC)   /* 001108 3C050000 -> timproc_uso_b5_D_807FE8DC */
     /* 00110C 0000110C 24A5106C */  .word 0x24A5106C
-    jal timproc_uso_b5_func_04C678   /* 001110 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 001110 0C000000 -> gen_imp_Node_ctor */
     /* 001114 00001114 AFA40018 */  .word 0xAFA40018
     /* 001118 00001118 8FA40018 */  .word 0x8FA40018
     lui $t6, %hi(timproc_uso_b5_D_807FDC54)   /* 00111C 3C0E0000 -> timproc_uso_b5_D_807FDC54 */

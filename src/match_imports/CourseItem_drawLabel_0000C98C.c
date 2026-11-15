@@ -18,17 +18,17 @@ void CourseItem_drawLabel_0000C98C(C98CObject *arg0, C98CContext *arg1, volatile
             arg0->field_1AC * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
     sp30 = 0;
-    v0r = timproc_uso_b5_func_01EEE4(*(char **)(&import_80020098 + 0x148) + 4);
+    v0r = gen_imp_Backup_ghostGetMode(*(char **)(&import_80020098 + 0x148) + 4);
     v1 = *(int *)(&import_80020098 + 0x34);
     if (v1 == 6) {
         if (v0r == 2) {
-            if (timproc_uso_b5_func_01EFC8(*(char **)(&import_80020098 + 0x148) + 4) == arg0->field_2B0) {
+            if (gen_imp_Backup_ghostGetCourse(*(char **)(&import_80020098 + 0x148) + 4) == arg0->field_2B0) {
                 sp30 = 1;
             }
         }
     } else if (v1 == 4) {
         if (v0r == 1) {
-            if (timproc_uso_b5_func_01EFC8(*(char **)(&import_80020098 + 0x148) + 4) == arg0->field_2B0) {
+            if (gen_imp_Backup_ghostGetCourse(*(char **)(&import_80020098 + 0x148) + 4) == arg0->field_2B0) {
                 sp30 = 1;
             }
         }

@@ -8,8 +8,8 @@
     "timproc_uso_b5_D_807FF700": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FF700",
     "SelItem_drawSpriteWhite_00003FF8": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_00003FF8",
     "import_80020098": "snw_port_timproc_uso_b5_func_0000C98C_import_80020098",
-    "timproc_uso_b5_func_01EEE4": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EEE4",
-    "timproc_uso_b5_func_01EFC8": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EFC8",
+    "gen_imp_Backup_ghostGetMode": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EEE4",
+    "gen_imp_Backup_ghostGetCourse": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_func_01EFC8",
     "timproc_uso_b5_D_807FFB50": "snw_port_timproc_uso_b5_func_0000C98C_timproc_uso_b5_D_807FFB50"
   },
   "original_ROM_minus_curated_addend_bindings": {

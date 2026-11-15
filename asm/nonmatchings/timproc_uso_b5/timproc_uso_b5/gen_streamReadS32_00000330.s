@@ -7,7 +7,7 @@ glabel gen_streamReadS32_00000330
     lui $a0, %hi(import_8005C6E0)   /* 00033C 3C040000 -> import_8005C6E0 */
     /* 000340 00000340 24840000 */  .word 0x24840000
     /* 000344 00000344 27A50018 */  .word 0x27A50018
-    jal timproc_uso_b5_func_049AAC   /* 000348 0C000000 -> timproc_uso_b5_func_049AAC */
+    jal gen_imp_fs_gdlReadFile   /* 000348 0C000000 -> gen_imp_fs_gdlReadFile */
     /* 00034C 0000034C 24060004 */  .word 0x24060004
     /* 000350 00000350 8FAE0018 */  .word 0x8FAE0018
     /* 000354 00000354 8FAF0020 */  .word 0x8FAF0020

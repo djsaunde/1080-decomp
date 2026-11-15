@@ -11,13 +11,13 @@ glabel SelectionMgr_ctor
     /* 0018D0 000018D0 AFA50064 */  .word 0xAFA50064
     /* 0018D4 000018D4 14800005 */  .word 0x14800005
     /* 0018D8 000018D8 AFA7006C */  .word 0xAFA7006C
-    jal timproc_uso_b5_func_055750   /* 0018DC 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0018DC 0C000000 -> gen_imp_mem_new */
     /* 0018E0 000018E0 24040058 */  .word 0x24040058
     /* 0018E4 000018E4 104000C1 */  .word 0x104000C1
     /* 0018E8 000018E8 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FE940)   /* 0018EC 3C050000 -> timproc_uso_b5_D_807FE940 */
     /* 0018F0 000018F0 24A510D0 */  .word 0x24A510D0
-    jal timproc_uso_b5_func_04C678   /* 0018F4 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 0018F4 0C000000 -> gen_imp_Node_ctor */
     /* 0018F8 000018F8 02002025 */  .word 0x02002025
     /* 0018FC 000018FC 8FB20074 */  .word 0x8FB20074
     lui $t6, %hi(timproc_uso_b5_D_807FE7E0)   /* 001900 3C0E0000 -> timproc_uso_b5_D_807FE7E0 */
@@ -66,7 +66,7 @@ glabel SelectionMgr_ctor
     /* 0019AC 000019AC 00402025 */  .word 0x00402025
     /* 0019B0 000019B0 8E110034 */  .word 0x8E110034
     /* 0019B4 000019B4 26040010 */  .word 0x26040010
-    jal timproc_uso_b5_func_07ACE0   /* 0019B8 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0019B8 0C000000 -> gen_imp_list_append */
     /* 0019BC 000019BC 02202825 */  .word 0x02202825
     /* 0019C0 000019C0 8E2D0014 */  .word 0x8E2D0014
     /* 0019C4 000019C4 240E0001 */  .word 0x240E0001
@@ -116,7 +116,7 @@ glabel SelectionMgr_ctor
     /* 001A74 00001A74 8E110034 */  .word 0x8E110034
     /* 001A78 00001A78 26040010 */  .word 0x26040010
     /* 001A7C 00001A7C AFA4004C */  .word 0xAFA4004C
-    jal timproc_uso_b5_func_07ACE0   /* 001A80 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001A80 0C000000 -> gen_imp_list_append */
     /* 001A84 00001A84 02202825 */  .word 0x02202825
     /* 001A88 00001A88 8E380014 */  .word 0x8E380014
     /* 001A8C 00001A8C 00002025 */  .word 0x00002025
@@ -165,7 +165,7 @@ glabel SelectionMgr_ctor
     /* 001B38 00001B38 00402025 */  .word 0x00402025
     /* 001B3C 00001B3C 8E110038 */  .word 0x8E110038
     /* 001B40 00001B40 8FA4004C */  .word 0x8FA4004C
-    jal timproc_uso_b5_func_07ACE0   /* 001B44 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001B44 0C000000 -> gen_imp_list_append */
     /* 001B48 00001B48 02202825 */  .word 0x02202825
     /* 001B4C 00001B4C 8E290014 */  .word 0x8E290014
     /* 001B50 00001B50 240A0001 */  .word 0x240A0001

@@ -8,22 +8,22 @@ glabel gen_createVRBox_00001658
     lui $a0, %hi(timproc_uso_b5_D_807FE928)   /* 001668 3C040000 -> timproc_uso_b5_D_807FE928 */
     /* 00166C 0000166C AFB0001C */  .word 0xAFB0001C
     /* 001670 00001670 248410B8 */  .word 0x248410B8
-    jal timproc_uso_b5_func_074710   /* 001674 0C000000 -> timproc_uso_b5_func_074710 */
+    jal gen_imp_memtrack_begin   /* 001674 0C000000 -> gen_imp_memtrack_begin */
     /* 001678 00001678 00002825 */  .word 0x00002825
     lui $a0, %hi(timproc_uso_b5_D_807FE930)   /* 00167C 3C040000 -> timproc_uso_b5_D_807FE930 */
     /* 001680 00001680 248410C0 */  .word 0x248410C0
-    jal timproc_uso_b5_func_074710   /* 001684 0C000000 -> timproc_uso_b5_func_074710 */
+    jal gen_imp_memtrack_begin   /* 001684 0C000000 -> gen_imp_memtrack_begin */
     /* 001688 00001688 00002825 */  .word 0x00002825
     lui $a1, %hi(timproc_uso_b5_D_807FE938)   /* 00168C 3C050000 -> timproc_uso_b5_D_807FE938 */
     /* 001690 00001690 24A510C8 */  .word 0x24A510C8
     /* 001694 00001694 00002025 */  .word 0x00002025
     /* 001698 00001698 24060001 */  .word 0x24060001
-    jal timproc_uso_b5_func_000CA0   /* 00169C 0C000000 -> timproc_uso_b5_func_000CA0 */
+    jal gen_imp_BGBox_ctor   /* 00169C 0C000000 -> gen_imp_BGBox_ctor */
     /* 0016A0 000016A0 24070100 */  .word 0x24070100
     /* 0016A4 000016A4 AFA2003C */  .word 0xAFA2003C
     /* 0016A8 000016A8 00408025 */  .word 0x00408025
     /* 0016AC 000016AC 26240010 */  .word 0x26240010
-    jal timproc_uso_b5_func_07ACE0   /* 0016B0 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0016B0 0C000000 -> gen_imp_list_append */
     /* 0016B4 000016B4 00402825 */  .word 0x00402825
     /* 0016B8 000016B8 8E0E0014 */  .word 0x8E0E0014
     lui $a1, %hi(import_807C3820)   /* 0016BC 3C050000 -> import_807C3820 */
@@ -35,7 +35,7 @@ glabel gen_createVRBox_00001658
     /* 0016D4 000016D4 AE110014 */  .word 0xAE110014
     /* 0016D8 000016D8 AFA00010 */  .word 0xAFA00010
     /* 0016DC 000016DC 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_000E68   /* 0016E0 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 0016E0 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 0016E4 000016E4 00003825 */  .word 0x00003825
     /* 0016E8 000016E8 AE220044 */  .word 0xAE220044
     lui $a1, %hi(import_807D3A40)   /* 0016EC 3C050000 -> import_807D3A40 */
@@ -43,7 +43,7 @@ glabel gen_createVRBox_00001658
     /* 0016F4 000016F4 AFA00010 */  .word 0xAFA00010
     /* 0016F8 000016F8 00002025 */  .word 0x00002025
     /* 0016FC 000016FC 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_000E68   /* 001700 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 001700 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 001704 00001704 2407005A */  .word 0x2407005A
     /* 001708 00001708 AE220048 */  .word 0xAE220048
     lui $a1, %hi(import_807B3600)   /* 00170C 3C050000 -> import_807B3600 */
@@ -51,7 +51,7 @@ glabel gen_createVRBox_00001658
     /* 001714 00001714 AFA00010 */  .word 0xAFA00010
     /* 001718 00001718 00002025 */  .word 0x00002025
     /* 00171C 0000171C 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_000E68   /* 001720 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 001720 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 001724 00001724 240700B4 */  .word 0x240700B4
     /* 001728 00001728 AE22004C */  .word 0xAE22004C
     lui $a1, %hi(timproc_uso_b5_D_807E3C60)   /* 00172C 3C050000 -> timproc_uso_b5_D_807E3C60 */
@@ -59,7 +59,7 @@ glabel gen_createVRBox_00001658
     /* 001734 00001734 AFA00010 */  .word 0xAFA00010
     /* 001738 00001738 00002025 */  .word 0x00002025
     /* 00173C 0000173C 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_000E68   /* 001740 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 001740 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 001744 00001744 2407010E */  .word 0x2407010E
     /* 001748 00001748 AE220050 */  .word 0xAE220050
     lui $a1, %hi(import_807A33E0)   /* 00174C 3C050000 -> import_807A33E0 */
@@ -67,7 +67,7 @@ glabel gen_createVRBox_00001658
     /* 001754 00001754 AFA00010 */  .word 0xAFA00010
     /* 001758 00001758 00002025 */  .word 0x00002025
     /* 00175C 0000175C 2406FFA6 */  .word 0x2406FFA6
-    jal timproc_uso_b5_func_000E68   /* 001760 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 001760 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 001764 00001764 00003825 */  .word 0x00003825
     /* 001768 00001768 AE220054 */  .word 0xAE220054
     lui $a1, %hi(import_807931C0)   /* 00176C 3C050000 -> import_807931C0 */
@@ -75,14 +75,14 @@ glabel gen_createVRBox_00001658
     /* 001774 00001774 AFA00010 */  .word 0xAFA00010
     /* 001778 00001778 00002025 */  .word 0x00002025
     /* 00177C 0000177C 2406FEF2 */  .word 0x2406FEF2
-    jal timproc_uso_b5_func_000E68   /* 001780 0C000000 -> timproc_uso_b5_func_000E68 */
+    jal gen_imp_U64BGWall_ctor   /* 001780 0C000000 -> gen_imp_U64BGWall_ctor */
     /* 001784 00001784 00003825 */  .word 0x00003825
     /* 001788 00001788 AE220058 */  .word 0xAE220058
     /* 00178C 0000178C 8FA4003C */  .word 0x8FA4003C
     /* 001790 00001790 8E300044 */  .word 0x8E300044
     /* 001794 00001794 24840010 */  .word 0x24840010
     /* 001798 00001798 AFA40028 */  .word 0xAFA40028
-    jal timproc_uso_b5_func_07ACE0   /* 00179C 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 00179C 0C000000 -> gen_imp_list_append */
     /* 0017A0 000017A0 02002825 */  .word 0x02002825
     /* 0017A4 000017A4 8E180014 */  .word 0x8E180014
     /* 0017A8 000017A8 13000002 */  .word 0x13000002
@@ -92,7 +92,7 @@ glabel gen_createVRBox_00001658
     /* 0017B8 000017B8 AE080014 */  .word 0xAE080014
     /* 0017BC 000017BC 8E300048 */  .word 0x8E300048
     /* 0017C0 000017C0 8FA40028 */  .word 0x8FA40028
-    jal timproc_uso_b5_func_07ACE0   /* 0017C4 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0017C4 0C000000 -> gen_imp_list_append */
     /* 0017C8 000017C8 02002825 */  .word 0x02002825
     /* 0017CC 000017CC 8E090014 */  .word 0x8E090014
     /* 0017D0 000017D0 11200002 */  .word 0x11200002
@@ -102,7 +102,7 @@ glabel gen_createVRBox_00001658
     /* 0017E0 000017E0 AE0B0014 */  .word 0xAE0B0014
     /* 0017E4 000017E4 8E30004C */  .word 0x8E30004C
     /* 0017E8 000017E8 8FA40028 */  .word 0x8FA40028
-    jal timproc_uso_b5_func_07ACE0   /* 0017EC 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0017EC 0C000000 -> gen_imp_list_append */
     /* 0017F0 000017F0 02002825 */  .word 0x02002825
     /* 0017F4 000017F4 8E0C0014 */  .word 0x8E0C0014
     /* 0017F8 000017F8 240D0001 */  .word 0x240D0001
@@ -113,7 +113,7 @@ glabel gen_createVRBox_00001658
     /* 00180C 0000180C AE0E0014 */  .word 0xAE0E0014
     /* 001810 00001810 8E300050 */  .word 0x8E300050
     /* 001814 00001814 8FA40028 */  .word 0x8FA40028
-    jal timproc_uso_b5_func_07ACE0   /* 001818 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001818 0C000000 -> gen_imp_list_append */
     /* 00181C 0000181C 02002825 */  .word 0x02002825
     /* 001820 00001820 8E0F0014 */  .word 0x8E0F0014
     /* 001824 00001824 24180001 */  .word 0x24180001
@@ -124,7 +124,7 @@ glabel gen_createVRBox_00001658
     /* 001838 00001838 AE190014 */  .word 0xAE190014
     /* 00183C 0000183C 8E300054 */  .word 0x8E300054
     /* 001840 00001840 8FA40028 */  .word 0x8FA40028
-    jal timproc_uso_b5_func_07ACE0   /* 001844 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001844 0C000000 -> gen_imp_list_append */
     /* 001848 00001848 02002825 */  .word 0x02002825
     /* 00184C 0000184C 8E080014 */  .word 0x8E080014
     /* 001850 00001850 24090001 */  .word 0x24090001
@@ -135,7 +135,7 @@ glabel gen_createVRBox_00001658
     /* 001864 00001864 AE0A0014 */  .word 0xAE0A0014
     /* 001868 00001868 8E300058 */  .word 0x8E300058
     /* 00186C 0000186C 8FA40028 */  .word 0x8FA40028
-    jal timproc_uso_b5_func_07ACE0   /* 001870 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001870 0C000000 -> gen_imp_list_append */
     /* 001874 00001874 02002825 */  .word 0x02002825
     /* 001878 00001878 8E0B0014 */  .word 0x8E0B0014
     /* 00187C 0000187C 240C0001 */  .word 0x240C0001
@@ -143,9 +143,9 @@ glabel gen_createVRBox_00001658
     /* 001884 00001884 8FAD003C */  .word 0x8FAD003C
     /* 001888 00001888 AE0C0004 */  .word 0xAE0C0004
     /* 00188C 0000188C 8FAD003C */  .word 0x8FAD003C
-    jal timproc_uso_b5_func_074840   /* 001890 0C000000 -> timproc_uso_b5_func_074840 */
+    jal gen_imp_memtrack_end   /* 001890 0C000000 -> gen_imp_memtrack_end */
     /* 001894 00001894 AE0D0014 */  .word 0xAE0D0014
-    jal timproc_uso_b5_func_074840   /* 001898 0C000000 -> timproc_uso_b5_func_074840 */
+    jal gen_imp_memtrack_end   /* 001898 0C000000 -> gen_imp_memtrack_end */
     /* 00189C 0000189C 00000000 */  .word 0x00000000
     /* 0018A0 000018A0 8FBF0024 */  .word 0x8FBF0024
     /* 0018A4 000018A4 8FB0001C */  .word 0x8FB0001C

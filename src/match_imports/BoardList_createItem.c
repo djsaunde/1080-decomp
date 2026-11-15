@@ -9,12 +9,12 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     s32 savedbit;
     char *p;
     char *gc;
-    if (0) { timproc_uso_b5_func_04DFFC(&gc); }
-    child = (char *)timproc_uso_b5_func_055750((char *)0x2C8);
+    if (0) { gen_imp_MNode_addChild(&gc); }
+    child = (char *)gen_imp_mem_new((char *)0x2C8);
     if (child != 0) {
         obj = child;
-        if (child != 0 || (p = (char *)timproc_uso_b5_func_055750((char *)0x2B8), obj = p, p != 0)) {
-            timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE60 + 0x15F0);
+        if (child != 0 || (p = (char *)gen_imp_mem_new((char *)0x2B8), obj = p, p != 0)) {
+            gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE60 + 0x15F0);
             {
                 char *o2 = obj;
                 (*(s32 *)((char *)(o2) + 0x28)) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
@@ -27,7 +27,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         (*(s32 *)((char *)(child) + 0x2B4)) = 0;
     }
     r = child;
-    timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);
+    gen_imp_list_append(arg0 + 0x10, child);
     if (((TimB5ObjectPrefix *)child)->field_14 != 0) {
         ((TimB5ObjectPrefix *)child)->field_04 = 1;
     }
@@ -40,13 +40,13 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         ((TimB5EntryFields *)rr)->field_2B0 = a2v;
         obj = (char *)(a2v + 1);
     }}
-    child = (char *)timproc_uso_b5_func_055750((char *)0x138);
+    child = (char *)gen_imp_mem_new((char *)0x138);
     if (child != 0) {
-        timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEE74 + 0x1604, 0.0f, 0.0f, 0.0f);
-        (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x444); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x160C); gc = (char *)timproc_uso_b5_func_055750((char *)0x16C);
+        gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEE74 + 0x1604, 0.0f, 0.0f, 0.0f);
+        (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x444); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x160C); gc = (char *)gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
             f32 cf;
-            timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
+            gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
             g2 = gc;
             if (1) {}
             cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
@@ -57,14 +57,14 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             *(f32 *)(g2 + 0x124) = 1.0f;
         }
         (*(s32 *)((char *)(child) + 0x108)) = (s32) gc;
-        timproc_uso_b5_func_04DFFC(child, gc);
+        gen_imp_MNode_addChild(child, gc);
         if (1) {}
         p = (char *)(*(s32 *)((char *)(child) + 0x108));
         p += 0xB4;
         ((Vec3 *)p)->z = (f32)0;
         ((Vec3 *)p)->y = (f32)0;
         ((Vec3 *)p)->x = (f32)0;
-        savedbit = (*(s32 *)((char *)&d550_ee6c_l1 + 4)) & 0x80000; p = (char *)(((*(s32 *)((char *)&d550_ee6c_l2 + 4)) & 0xFFF7FFFF) | 0x2000); (*(s32 *)((char *)&d550_ee6c_s1 + 4)) = (s32) p; timproc_uso_b5_func_04DFFC(child, (char *)import_000A12EC(obj));
+        savedbit = (*(s32 *)((char *)&d550_ee6c_l1 + 4)) & 0x80000; p = (char *)(((*(s32 *)((char *)&d550_ee6c_l2 + 4)) & 0xFFF7FFFF) | 0x2000); (*(s32 *)((char *)&d550_ee6c_s1 + 4)) = (s32) p; gen_imp_MNode_addChild(child, (char *)import_000A12EC(obj));
         if (savedbit != 0) {
             p = (char *)((*(s32 *)((char *)&d550_ee6c_l3 + 4)) | 0x80000);
             (*(s32 *)((char *)&d550_ee6c_s2 + 4)) = (s32) p;
@@ -97,7 +97,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         register char *list = p + 0x10;
         if (list) {}
         obj = p;
-        timproc_uso_b5_func_07ACE0(list, child);
+        gen_imp_list_append(list, child);
     }
     if (((TimB5ObjectPrefix *)child)->field_14 != 0) {
         ((TimB5ObjectPrefix *)child)->field_04 = 1;

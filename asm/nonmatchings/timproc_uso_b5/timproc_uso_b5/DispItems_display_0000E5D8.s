@@ -15,7 +15,7 @@ glabel DispItems_display_0000E5D8
     /* 00E5FC 0000E5FC E4660004 */  .word 0xE4660004
     /* 00E600 0000E600 8C580070 */  .word 0x8C580070
     /* 00E604 0000E604 C70800DC */  .word 0xC70800DC
-    jal timproc_uso_b5_func_04CCA8   /* 00E608 0C000000 -> timproc_uso_b5_func_04CCA8 */
+    jal gen_imp_Node_display   /* 00E608 0C000000 -> gen_imp_Node_display */
     /* 00E60C 0000E60C E4680008 */  .word 0xE4680008
     /* 00E610 0000E610 8FBF0014 */  .word 0x8FBF0014
     /* 00E614 0000E614 27BD0018 */  .word 0x27BD0018

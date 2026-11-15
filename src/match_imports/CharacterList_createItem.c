@@ -12,13 +12,13 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
     int savedbit;
     char *p;
     int n;
-    if (0) { timproc_uso_b5_func_04DFFC(&arg1, &arg2); }
+    if (0) { gen_imp_MNode_addChild(&arg1, &arg2); }
     child.ptr = (char *)timproc_uso_b5_d14c_alloc(0x2C4);
     if (child.ptr != 0) {
         obj = child.ptr;
         if (obj != 0 ||
             (obj = (char *)timproc_uso_b5_d14c_alloc(0x2B8)) != 0) {
-            timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
+            gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
             ((TimB5UiObject *)obj)->field_28 = (void *)(&timproc_uso_b5_D_807FDB64 + 0);
             SelItemParms_ctor(obj + 0x2C);
             SelItemInfo_ctor(obj + 0x194);
@@ -27,7 +27,7 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
         SelItem_reset_00003890(child.ptr);
     }
     r = child.ptr;
-    timproc_uso_b5_func_07ACE0((char *)a0 + 0x10, child.ptr);
+    gen_imp_list_append((char *)a0 + 0x10, child.ptr);
     if (((TimB5UiObject *)child.ptr)->field_14 != 0) {
         ((TimB5UiObject *)child.ptr)->field_04 = 1;
     }
@@ -39,13 +39,13 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
     }
     child.ptr = (char *)timproc_uso_b5_d14c_alloc(0x148);
     if (child.ptr != 0) {
-        timproc_uso_b5_func_0546DC(child.ptr, &timproc_uso_b5_D_807FEE48 + 0x15D8,
+        gen_imp_QNode_ctor(child.ptr, &timproc_uso_b5_D_807FEE48 + 0x15D8,
                                    0.0f, 0.0f, 0.0f);
         ((TimB5UiObject *)child.ptr)->field_28 = (void *)(&timproc_uso_b5_D_807FDDEC + 0x57C);
         gc = (char *)timproc_uso_b5_d14c_alloc(0x16C);
         if (gc != 0) {
             float cf;
-            timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
+            gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
             cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
             ((TimB5UiObject *)gc)->field_28 = (void *)(&import_80087FB8[0]); (*(int *)((char *)(gc) + (0x120))) = 0xFFFF;
@@ -55,7 +55,7 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
             *(float *)(gc + 0x124) = 1.0f;
         }
         *(char **)(child.ptr + 0x108) = gc;
-        timproc_uso_b5_func_04DFFC(child.ptr, gc);
+        gen_imp_MNode_addChild(child.ptr, gc);
         if (1) {}
         p = *(char **)(child.ptr + 0x108);
         p += 0xB4;
@@ -72,13 +72,13 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
             import_0010D33C(p, n);
             ((TimB5UiObject *)p)->field_28 = (void *)(&timproc_uso_b5_D_807FDAB8 + 0x248);
             (*(int *)((char *)(p) + (0xB0))) = 0;
-            timproc_uso_b5_func_077574(p);
+            gen_imp_AnimPlayer_reset(p);
         }
         *(char **)(child.ptr + 0x10C) = p;
-        timproc_uso_b5_func_04DFFC(child.ptr, p);
-        savedbit = d14c_ee6c_l1.flags & 0x80000; if (1) {} { int x = (d14c_ee6c_l2.flags & 0xFFF7FFFF) | 0x20000 | 0x2000 | 2 | 1; d14c_ee6c_s1.flags = x; } d14c_ee64_st = d14c_ee64_ld & ~8; p = *(char **)(child.ptr + 0x10C); timproc_uso_b5_func_00B1B4(arg2, 0, 0x201, p, child.ptr);
+        gen_imp_MNode_addChild(child.ptr, p);
+        savedbit = d14c_ee6c_l1.flags & 0x80000; if (1) {} { int x = (d14c_ee6c_l2.flags & 0xFFF7FFFF) | 0x20000 | 0x2000 | 2 | 1; d14c_ee6c_s1.flags = x; } d14c_ee64_st = d14c_ee64_ld & ~8; p = *(char **)(child.ptr + 0x10C); gen_imp_SnowBoarder_loadBoardModel_0000B1B4(arg2, 0, 0x201, p, child.ptr);
         (*(int *)((char *)(child.ptr) + (0x140))) = ((s32 *)&timproc_uso_b5_D_807FDB4C)[arg2];
-        timproc_uso_b5_func_077C44(*(char **)(child.ptr + 0x10C), (*(int *)((char *)(child.ptr) + (0x140))), 0, 2, 2, 1);
+        gen_imp_AnimPlayer_start(*(char **)(child.ptr + 0x10C), (*(int *)((char *)(child.ptr) + (0x140))), 0, 2, 2, 1);
         if (1) {}
         {
             char *p2 = *(char **)(child.ptr + 0x10C);
@@ -113,7 +113,7 @@ TimB5UiPanel *CharacterList_createItem(TimB5UiOwner *a0, int arg1, int arg2, u32
         ((TimB5UiPanel *)rr)->field_29C = (TimB5UiObject *)child.ptr;
     }
     obj = (char *)a0->field_38;
-    timproc_uso_b5_func_07ACE0(obj + 0x10, child.ptr);
+    gen_imp_list_append(obj + 0x10, child.ptr);
     if (((TimB5UiObject *)child.ptr)->field_14 != 0) {
         ((TimB5UiObject *)child.ptr)->field_04 = 1;
     }

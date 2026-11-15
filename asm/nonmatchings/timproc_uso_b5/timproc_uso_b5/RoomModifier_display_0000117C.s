@@ -73,7 +73,7 @@ glabel RoomModifier_display_0000117C
     /* 001290 00001290 0304C824 */  .word 0x0304C824
     /* 001294 00001294 AC590000 */  .word 0xAC590000
     /* 001298 00001298 00A02025 */  .word 0x00A02025
-    jal timproc_uso_b5_func_04CCA8   /* 00129C 0C000000 -> timproc_uso_b5_func_04CCA8 */
+    jal gen_imp_Node_display   /* 00129C 0C000000 -> gen_imp_Node_display */
     /* 0012A0 000012A0 AFA50018 */  .word 0xAFA50018
     /* 0012A4 000012A4 8FA50018 */  .word 0x8FA50018
     /* 0012A8 000012A8 10000016 */  .word 0x10000016

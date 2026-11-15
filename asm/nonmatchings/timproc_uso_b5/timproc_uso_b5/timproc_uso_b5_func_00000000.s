@@ -11,7 +11,7 @@ glabel timproc_uso_b5_func_00000000
     /* 00001C 0000001C 8C840004 */  .word 0x8C840004
     /* 000020 00000020 2405FFFF */  .word 0x2405FFFF
     /* 000024 00000024 00003025 */  .word 0x00003025
-    jal timproc_uso_b5_func_00F954   /* 000028 0C000000 -> timproc_uso_b5_func_00F954 */
+    jal gen_imp_Process_fadeOut_0000F954   /* 000028 0C000000 -> gen_imp_Process_fadeOut_0000F954 */
     /* 00002C 0000002C AC2F0064 */  .word 0xAC2F0064
     /* 000030 00000030 8FBF0014 */  .word 0x8FBF0014
     /* 000034 00000034 27BD0018 */  .word 0x27BD0018

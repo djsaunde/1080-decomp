@@ -11,20 +11,20 @@ glabel SelectWin_ctor
     /* 004134 00004134 AFA603B0 */  .word 0xAFA603B0
     /* 004138 00004138 14800005 */  .word 0x14800005
     /* 00413C 0000413C AFA703B4 */  .word 0xAFA703B4
-    jal timproc_uso_b5_func_055750   /* 004140 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004140 0C000000 -> gen_imp_mem_new */
     /* 004144 00004144 240404F0 */  .word 0x240404F0
     /* 004148 00004148 104006A2 */  .word 0x104006A2
     /* 00414C 0000414C AFA203A8 */  .word 0xAFA203A8
     /* 004150 00004150 8FB003A8 */  .word 0x8FB003A8
     /* 004154 00004154 16000005 */  .word 0x16000005
     /* 004158 00004158 00000000 */  .word 0x00000000
-    jal timproc_uso_b5_func_055750   /* 00415C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00415C 0C000000 -> gen_imp_mem_new */
     /* 004160 00004160 2404002C */  .word 0x2404002C
     /* 004164 00004164 10400008 */  .word 0x10400008
     /* 004168 00004168 00408025 */  .word 0x00408025
     lui $a1, %hi(timproc_uso_b5_D_807FEAD0)   /* 00416C 3C050000 -> timproc_uso_b5_D_807FEAD0 */
     /* 004170 00004170 24A51260 */  .word 0x24A51260
-    jal timproc_uso_b5_func_04C678   /* 004174 0C000000 -> timproc_uso_b5_func_04C678 */
+    jal gen_imp_Node_ctor   /* 004174 0C000000 -> gen_imp_Node_ctor */
     /* 004178 00004178 02002025 */  .word 0x02002025
     lui $t8, %hi(import_80073B18)   /* 00417C 3C180000 -> import_80073B18 */
     /* 004180 00004180 27180000 */  .word 0x27180000
@@ -37,13 +37,13 @@ glabel SelectWin_ctor
     /* 00419C 0000419C 2401FFD4 */  .word 0x2401FFD4
     /* 0041A0 000041A0 15210005 */  .word 0x15210005
     /* 0041A4 000041A4 2530002C */  .word 0x2530002C
-    jal timproc_uso_b5_func_055750   /* 0041A8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0041A8 0C000000 -> gen_imp_mem_new */
     /* 0041AC 000041AC 2404038C */  .word 0x2404038C
     /* 0041B0 000041B0 1040060A */  .word 0x1040060A
     /* 0041B4 000041B4 00408025 */  .word 0x00408025
     /* 0041B8 000041B8 16000005 */  .word 0x16000005
     /* 0041BC 000041BC 02001825 */  .word 0x02001825
-    jal timproc_uso_b5_func_055750   /* 0041C0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0041C0 0C000000 -> gen_imp_mem_new */
     /* 0041C4 000041C4 24040008 */  .word 0x24040008
     /* 0041C8 000041C8 10400005 */  .word 0x10400005
     /* 0041CC 000041CC 00401825 */  .word 0x00401825
@@ -61,7 +61,7 @@ glabel SelectWin_ctor
     /* 0041FC 000041FC 26040008 */  .word 0x26040008
     /* 004200 00004200 16010005 */  .word 0x16010005
     /* 004204 00004204 AE2E0000 */  .word 0xAE2E0000
-    jal timproc_uso_b5_func_055750   /* 004208 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004208 0C000000 -> gen_imp_mem_new */
     /* 00420C 0000420C 24040018 */  .word 0x24040018
     /* 004210 00004210 1040000F */  .word 0x1040000F
     /* 004214 00004214 00402025 */  .word 0x00402025
@@ -69,7 +69,7 @@ glabel SelectWin_ctor
     /* 00421C 0000421C AFA400A8 */  .word 0xAFA400A8
     /* 004220 00004220 02002825 */  .word 0x02002825
     /* 004224 00004224 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004228 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004228 0C000000 -> gen_imp_Parms_addParm */
     /* 00422C 0000422C AFA60008 */  .word 0xAFA60008
     /* 004230 00004230 8FA400A8 */  .word 0x8FA400A8
     lui $t9, %hi(timproc_uso_b5_D_807FD9C8)   /* 004234 3C190000 -> timproc_uso_b5_D_807FD9C8 */
@@ -88,7 +88,7 @@ glabel SelectWin_ctor
     /* 004268 00004268 26040020 */  .word 0x26040020
     /* 00426C 0000426C 16010005 */  .word 0x16010005
     /* 004270 00004270 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 004274 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004274 0C000000 -> gen_imp_mem_new */
     /* 004278 00004278 24040018 */  .word 0x24040018
     /* 00427C 0000427C 1040000E */  .word 0x1040000E
     /* 004280 00004280 00402025 */  .word 0x00402025
@@ -96,7 +96,7 @@ glabel SelectWin_ctor
     /* 004288 00004288 AFA400A8 */  .word 0xAFA400A8
     /* 00428C 0000428C 02002825 */  .word 0x02002825
     /* 004290 00004290 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004294 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004294 0C000000 -> gen_imp_Parms_addParm */
     /* 004298 00004298 AFA60008 */  .word 0xAFA60008
     /* 00429C 0000429C 8FA400A8 */  .word 0x8FA400A8
     /* 0042A0 000042A0 4480A000 */  .word 0x4480A000
@@ -115,7 +115,7 @@ glabel SelectWin_ctor
     /* 0042D4 000042D4 26040038 */  .word 0x26040038
     /* 0042D8 000042D8 16010005 */  .word 0x16010005
     /* 0042DC 000042DC AE280000 */  .word 0xAE280000
-    jal timproc_uso_b5_func_055750   /* 0042E0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0042E0 0C000000 -> gen_imp_mem_new */
     /* 0042E4 000042E4 24040018 */  .word 0x24040018
     /* 0042E8 000042E8 1040000E */  .word 0x1040000E
     /* 0042EC 000042EC 00402025 */  .word 0x00402025
@@ -123,7 +123,7 @@ glabel SelectWin_ctor
     /* 0042F4 000042F4 AFA400A8 */  .word 0xAFA400A8
     /* 0042F8 000042F8 02002825 */  .word 0x02002825
     /* 0042FC 000042FC 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004300 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004300 0C000000 -> gen_imp_Parms_addParm */
     /* 004304 00004304 AFA60008 */  .word 0xAFA60008
     /* 004308 00004308 8FA400A8 */  .word 0x8FA400A8
     lui $t3, %hi(timproc_uso_b5_D_807FDA10)   /* 00430C 3C0B0000 -> timproc_uso_b5_D_807FDA10 */
@@ -141,7 +141,7 @@ glabel SelectWin_ctor
     /* 00433C 0000433C 26040050 */  .word 0x26040050
     /* 004340 00004340 16010005 */  .word 0x16010005
     /* 004344 00004344 AE380000 */  .word 0xAE380000
-    jal timproc_uso_b5_func_055750   /* 004348 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004348 0C000000 -> gen_imp_mem_new */
     /* 00434C 0000434C 24040018 */  .word 0x24040018
     /* 004350 00004350 1040000E */  .word 0x1040000E
     /* 004354 00004354 00402025 */  .word 0x00402025
@@ -149,7 +149,7 @@ glabel SelectWin_ctor
     /* 00435C 0000435C AFA400A8 */  .word 0xAFA400A8
     /* 004360 00004360 02002825 */  .word 0x02002825
     /* 004364 00004364 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004368 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004368 0C000000 -> gen_imp_Parms_addParm */
     /* 00436C 0000436C AFA60008 */  .word 0xAFA60008
     /* 004370 00004370 8FA400A8 */  .word 0x8FA400A8
     lui $t1, %hi(timproc_uso_b5_D_807FDA10)   /* 004374 3C090000 -> timproc_uso_b5_D_807FDA10 */
@@ -167,7 +167,7 @@ glabel SelectWin_ctor
     /* 0043A4 000043A4 26040068 */  .word 0x26040068
     /* 0043A8 000043A8 16010005 */  .word 0x16010005
     /* 0043AC 000043AC AE2E0000 */  .word 0xAE2E0000
-    jal timproc_uso_b5_func_055750   /* 0043B0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0043B0 0C000000 -> gen_imp_mem_new */
     /* 0043B4 000043B4 24040018 */  .word 0x24040018
     /* 0043B8 000043B8 1040000E */  .word 0x1040000E
     /* 0043BC 000043BC 00402025 */  .word 0x00402025
@@ -175,7 +175,7 @@ glabel SelectWin_ctor
     /* 0043C4 000043C4 AFA400A8 */  .word 0xAFA400A8
     /* 0043C8 000043C8 02002825 */  .word 0x02002825
     /* 0043CC 000043CC 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0043D0 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0043D0 0C000000 -> gen_imp_Parms_addParm */
     /* 0043D4 000043D4 AFA60008 */  .word 0xAFA60008
     /* 0043D8 000043D8 8FA400A8 */  .word 0x8FA400A8
     lui $t9, %hi(timproc_uso_b5_D_807FDA10)   /* 0043DC 3C190000 -> timproc_uso_b5_D_807FDA10 */
@@ -193,7 +193,7 @@ glabel SelectWin_ctor
     /* 00440C 0000440C 26040080 */  .word 0x26040080
     /* 004410 00004410 16010005 */  .word 0x16010005
     /* 004414 00004414 AE2C0000 */  .word 0xAE2C0000
-    jal timproc_uso_b5_func_055750   /* 004418 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004418 0C000000 -> gen_imp_mem_new */
     /* 00441C 0000441C 24040018 */  .word 0x24040018
     /* 004420 00004420 1040000F */  .word 0x1040000F
     /* 004424 00004424 00402025 */  .word 0x00402025
@@ -201,7 +201,7 @@ glabel SelectWin_ctor
     /* 00442C 0000442C AFA400A8 */  .word 0xAFA400A8
     /* 004430 00004430 02002825 */  .word 0x02002825
     /* 004434 00004434 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004438 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004438 0C000000 -> gen_imp_Parms_addParm */
     /* 00443C 0000443C AFA60008 */  .word 0xAFA60008
     /* 004440 00004440 8FA400A8 */  .word 0x8FA400A8
     lui $t7, %hi(timproc_uso_b5_D_807FD9C8)   /* 004444 3C0F0000 -> timproc_uso_b5_D_807FD9C8 */
@@ -220,7 +220,7 @@ glabel SelectWin_ctor
     /* 004478 00004478 26040098 */  .word 0x26040098
     /* 00447C 0000447C 16010005 */  .word 0x16010005
     /* 004480 00004480 AE290000 */  .word 0xAE290000
-    jal timproc_uso_b5_func_055750   /* 004484 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004484 0C000000 -> gen_imp_mem_new */
     /* 004488 00004488 24040018 */  .word 0x24040018
     /* 00448C 0000448C 1040000F */  .word 0x1040000F
     /* 004490 00004490 00402025 */  .word 0x00402025
@@ -228,7 +228,7 @@ glabel SelectWin_ctor
     /* 004498 00004498 AFA400A8 */  .word 0xAFA400A8
     /* 00449C 0000449C 02002825 */  .word 0x02002825
     /* 0044A0 000044A0 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0044A4 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0044A4 0C000000 -> gen_imp_Parms_addParm */
     /* 0044A8 000044A8 AFA60008 */  .word 0xAFA60008
     /* 0044AC 000044AC 8FA400A8 */  .word 0x8FA400A8
     lui $t4, %hi(timproc_uso_b5_D_807FD9C8)   /* 0044B0 3C0C0000 -> timproc_uso_b5_D_807FD9C8 */
@@ -247,7 +247,7 @@ glabel SelectWin_ctor
     /* 0044E4 000044E4 260400B0 */  .word 0x260400B0
     /* 0044E8 000044E8 16010005 */  .word 0x16010005
     /* 0044EC 000044EC AE380000 */  .word 0xAE380000
-    jal timproc_uso_b5_func_055750   /* 0044F0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0044F0 0C000000 -> gen_imp_mem_new */
     /* 0044F4 000044F4 24040018 */  .word 0x24040018
     /* 0044F8 000044F8 1040000F */  .word 0x1040000F
     /* 0044FC 000044FC 00402025 */  .word 0x00402025
@@ -255,7 +255,7 @@ glabel SelectWin_ctor
     /* 004504 00004504 AFA400A8 */  .word 0xAFA400A8
     /* 004508 00004508 02002825 */  .word 0x02002825
     /* 00450C 0000450C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004510 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004510 0C000000 -> gen_imp_Parms_addParm */
     /* 004514 00004514 AFA60008 */  .word 0xAFA60008
     /* 004518 00004518 8FA400A8 */  .word 0x8FA400A8
     lui $t1, %hi(timproc_uso_b5_D_807FD9C8)   /* 00451C 3C090000 -> timproc_uso_b5_D_807FD9C8 */
@@ -274,7 +274,7 @@ glabel SelectWin_ctor
     /* 004550 00004550 260400C8 */  .word 0x260400C8
     /* 004554 00004554 16010005 */  .word 0x16010005
     /* 004558 00004558 AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 00455C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00455C 0C000000 -> gen_imp_mem_new */
     /* 004560 00004560 24040018 */  .word 0x24040018
     /* 004564 00004564 1040000E */  .word 0x1040000E
     /* 004568 00004568 00402025 */  .word 0x00402025
@@ -282,7 +282,7 @@ glabel SelectWin_ctor
     /* 004570 00004570 AFA400A8 */  .word 0xAFA400A8
     /* 004574 00004574 02002825 */  .word 0x02002825
     /* 004578 00004578 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 00457C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00457C 0C000000 -> gen_imp_Parms_addParm */
     /* 004580 00004580 AFA60008 */  .word 0xAFA60008
     /* 004584 00004584 8FA400A8 */  .word 0x8FA400A8
     lui $t8, %hi(timproc_uso_b5_D_807FDA10)   /* 004588 3C180000 -> timproc_uso_b5_D_807FDA10 */
@@ -300,7 +300,7 @@ glabel SelectWin_ctor
     /* 0045B8 000045B8 260400E0 */  .word 0x260400E0
     /* 0045BC 000045BC 16010005 */  .word 0x16010005
     /* 0045C0 000045C0 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 0045C4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0045C4 0C000000 -> gen_imp_mem_new */
     /* 0045C8 000045C8 24040018 */  .word 0x24040018
     /* 0045CC 000045CC 1040000E */  .word 0x1040000E
     /* 0045D0 000045D0 00402025 */  .word 0x00402025
@@ -308,7 +308,7 @@ glabel SelectWin_ctor
     /* 0045D8 000045D8 AFA400A8 */  .word 0xAFA400A8
     /* 0045DC 000045DC 02002825 */  .word 0x02002825
     /* 0045E0 000045E0 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0045E4 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0045E4 0C000000 -> gen_imp_Parms_addParm */
     /* 0045E8 000045E8 AFA60008 */  .word 0xAFA60008
     /* 0045EC 000045EC 8FA400A8 */  .word 0x8FA400A8
     lui $t6, %hi(timproc_uso_b5_D_807FDA10)   /* 0045F0 3C0E0000 -> timproc_uso_b5_D_807FDA10 */
@@ -372,7 +372,7 @@ glabel SelectWin_ctor
     /* 0046D8 000046D8 8D2B0000 */  .word 0x8D2B0000
     /* 0046DC 000046DC 16010007 */  .word 0x16010007
     /* 0046E0 000046E0 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 0046E4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0046E4 0C000000 -> gen_imp_mem_new */
     /* 0046E8 000046E8 24040024 */  .word 0x24040024
     /* 0046EC 000046EC 3C013F80 */  .word 0x3C013F80
     /* 0046F0 000046F0 44810000 */  .word 0x44810000
@@ -382,7 +382,7 @@ glabel SelectWin_ctor
     /* 004700 00004700 AFA40074 */  .word 0xAFA40074
     /* 004704 00004704 02002825 */  .word 0x02002825
     /* 004708 00004708 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 00470C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00470C 0C000000 -> gen_imp_Parms_addParm */
     /* 004710 00004710 AFA60008 */  .word 0xAFA60008
     /* 004714 00004714 8FA40074 */  .word 0x8FA40074
     lui $t6, %hi(timproc_uso_b5_D_807FD9F8)   /* 004718 3C0E0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -453,7 +453,7 @@ glabel SelectWin_ctor
     /* 00481C 0000481C 8D6D0000 */  .word 0x8D6D0000
     /* 004820 00004820 16010007 */  .word 0x16010007
     /* 004824 00004824 AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 004828 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004828 0C000000 -> gen_imp_mem_new */
     /* 00482C 0000482C 24040024 */  .word 0x24040024
     /* 004830 00004830 3C013F80 */  .word 0x3C013F80
     /* 004834 00004834 44810000 */  .word 0x44810000
@@ -463,7 +463,7 @@ glabel SelectWin_ctor
     /* 004844 00004844 AFA40028 */  .word 0xAFA40028
     /* 004848 00004848 02002825 */  .word 0x02002825
     /* 00484C 0000484C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004850 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004850 0C000000 -> gen_imp_Parms_addParm */
     /* 004854 00004854 AFA60008 */  .word 0xAFA60008
     /* 004858 00004858 8FA40028 */  .word 0x8FA40028
     lui $t8, %hi(timproc_uso_b5_D_807FD9F8)   /* 00485C 3C180000 -> timproc_uso_b5_D_807FD9F8 */
@@ -534,7 +534,7 @@ glabel SelectWin_ctor
     /* 004960 00004960 8DAF0000 */  .word 0x8DAF0000
     /* 004964 00004964 16010007 */  .word 0x16010007
     /* 004968 00004968 AE2F0000 */  .word 0xAE2F0000
-    jal timproc_uso_b5_func_055750   /* 00496C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00496C 0C000000 -> gen_imp_mem_new */
     /* 004970 00004970 24040024 */  .word 0x24040024
     /* 004974 00004974 3C013F80 */  .word 0x3C013F80
     /* 004978 00004978 44810000 */  .word 0x44810000
@@ -544,7 +544,7 @@ glabel SelectWin_ctor
     /* 004988 00004988 AFA40028 */  .word 0xAFA40028
     /* 00498C 0000498C 02002825 */  .word 0x02002825
     /* 004990 00004990 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004994 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004994 0C000000 -> gen_imp_Parms_addParm */
     /* 004998 00004998 AFA60008 */  .word 0xAFA60008
     /* 00499C 0000499C 8FA40028 */  .word 0x8FA40028
     lui $t0, %hi(timproc_uso_b5_D_807FD9F8)   /* 0049A0 3C080000 -> timproc_uso_b5_D_807FD9F8 */
@@ -615,7 +615,7 @@ glabel SelectWin_ctor
     /* 004AA4 00004AA4 8DF90000 */  .word 0x8DF90000
     /* 004AA8 00004AA8 16010007 */  .word 0x16010007
     /* 004AAC 00004AAC AE390000 */  .word 0xAE390000
-    jal timproc_uso_b5_func_055750   /* 004AB0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004AB0 0C000000 -> gen_imp_mem_new */
     /* 004AB4 00004AB4 24040024 */  .word 0x24040024
     /* 004AB8 00004AB8 3C013F80 */  .word 0x3C013F80
     /* 004ABC 00004ABC 44810000 */  .word 0x44810000
@@ -625,7 +625,7 @@ glabel SelectWin_ctor
     /* 004ACC 00004ACC AFA40028 */  .word 0xAFA40028
     /* 004AD0 00004AD0 02002825 */  .word 0x02002825
     /* 004AD4 00004AD4 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004AD8 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004AD8 0C000000 -> gen_imp_Parms_addParm */
     /* 004ADC 00004ADC AFA60008 */  .word 0xAFA60008
     /* 004AE0 00004AE0 8FA40028 */  .word 0x8FA40028
     lui $t2, %hi(timproc_uso_b5_D_807FD9F8)   /* 004AE4 3C0A0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -696,7 +696,7 @@ glabel SelectWin_ctor
     /* 004BE8 00004BE8 8F290000 */  .word 0x8F290000
     /* 004BEC 00004BEC 16010007 */  .word 0x16010007
     /* 004BF0 00004BF0 AE290000 */  .word 0xAE290000
-    jal timproc_uso_b5_func_055750   /* 004BF4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004BF4 0C000000 -> gen_imp_mem_new */
     /* 004BF8 00004BF8 24040024 */  .word 0x24040024
     /* 004BFC 00004BFC 3C013F80 */  .word 0x3C013F80
     /* 004C00 00004C00 44810000 */  .word 0x44810000
@@ -706,7 +706,7 @@ glabel SelectWin_ctor
     /* 004C10 00004C10 AFA40028 */  .word 0xAFA40028
     /* 004C14 00004C14 02002825 */  .word 0x02002825
     /* 004C18 00004C18 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004C1C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004C1C 0C000000 -> gen_imp_Parms_addParm */
     /* 004C20 00004C20 AFA60008 */  .word 0xAFA60008
     /* 004C24 00004C24 8FA40028 */  .word 0x8FA40028
     lui $t4, %hi(timproc_uso_b5_D_807FD9F8)   /* 004C28 3C0C0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -777,7 +777,7 @@ glabel SelectWin_ctor
     /* 004D2C 00004D2C 8D2B0000 */  .word 0x8D2B0000
     /* 004D30 00004D30 16010007 */  .word 0x16010007
     /* 004D34 00004D34 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 004D38 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004D38 0C000000 -> gen_imp_mem_new */
     /* 004D3C 00004D3C 24040024 */  .word 0x24040024
     /* 004D40 00004D40 3C013F80 */  .word 0x3C013F80
     /* 004D44 00004D44 44810000 */  .word 0x44810000
@@ -787,7 +787,7 @@ glabel SelectWin_ctor
     /* 004D54 00004D54 AFA40028 */  .word 0xAFA40028
     /* 004D58 00004D58 02002825 */  .word 0x02002825
     /* 004D5C 00004D5C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004D60 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004D60 0C000000 -> gen_imp_Parms_addParm */
     /* 004D64 00004D64 AFA60008 */  .word 0xAFA60008
     /* 004D68 00004D68 8FA40028 */  .word 0x8FA40028
     lui $t6, %hi(timproc_uso_b5_D_807FD9F8)   /* 004D6C 3C0E0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -858,7 +858,7 @@ glabel SelectWin_ctor
     /* 004E70 00004E70 8D6D0000 */  .word 0x8D6D0000
     /* 004E74 00004E74 16010007 */  .word 0x16010007
     /* 004E78 00004E78 AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 004E7C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004E7C 0C000000 -> gen_imp_mem_new */
     /* 004E80 00004E80 24040024 */  .word 0x24040024
     /* 004E84 00004E84 3C013F80 */  .word 0x3C013F80
     /* 004E88 00004E88 44810000 */  .word 0x44810000
@@ -868,7 +868,7 @@ glabel SelectWin_ctor
     /* 004E98 00004E98 AFA40028 */  .word 0xAFA40028
     /* 004E9C 00004E9C 02002825 */  .word 0x02002825
     /* 004EA0 00004EA0 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004EA4 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004EA4 0C000000 -> gen_imp_Parms_addParm */
     /* 004EA8 00004EA8 AFA60008 */  .word 0xAFA60008
     /* 004EAC 00004EAC 8FA40028 */  .word 0x8FA40028
     lui $t8, %hi(timproc_uso_b5_D_807FD9F8)   /* 004EB0 3C180000 -> timproc_uso_b5_D_807FD9F8 */
@@ -941,7 +941,7 @@ glabel SelectWin_ctor
     /* 004FBC 00004FBC 8DAF0000 */  .word 0x8DAF0000
     /* 004FC0 00004FC0 16010007 */  .word 0x16010007
     /* 004FC4 00004FC4 AE2F0000 */  .word 0xAE2F0000
-    jal timproc_uso_b5_func_055750   /* 004FC8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 004FC8 0C000000 -> gen_imp_mem_new */
     /* 004FCC 00004FCC 24040024 */  .word 0x24040024
     /* 004FD0 00004FD0 3C013F80 */  .word 0x3C013F80
     /* 004FD4 00004FD4 44810000 */  .word 0x44810000
@@ -951,7 +951,7 @@ glabel SelectWin_ctor
     /* 004FE4 00004FE4 AFA40028 */  .word 0xAFA40028
     /* 004FE8 00004FE8 02002825 */  .word 0x02002825
     /* 004FEC 00004FEC 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 004FF0 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 004FF0 0C000000 -> gen_imp_Parms_addParm */
     /* 004FF4 00004FF4 AFA60008 */  .word 0xAFA60008
     /* 004FF8 00004FF8 8FA40028 */  .word 0x8FA40028
     lui $t0, %hi(timproc_uso_b5_D_807FD9F8)   /* 004FFC 3C080000 -> timproc_uso_b5_D_807FD9F8 */
@@ -1024,7 +1024,7 @@ glabel SelectWin_ctor
     /* 005108 00005108 8DF90000 */  .word 0x8DF90000
     /* 00510C 0000510C 16010007 */  .word 0x16010007
     /* 005110 00005110 AE390000 */  .word 0xAE390000
-    jal timproc_uso_b5_func_055750   /* 005114 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005114 0C000000 -> gen_imp_mem_new */
     /* 005118 00005118 24040024 */  .word 0x24040024
     /* 00511C 0000511C 3C013F80 */  .word 0x3C013F80
     /* 005120 00005120 44810000 */  .word 0x44810000
@@ -1034,7 +1034,7 @@ glabel SelectWin_ctor
     /* 005130 00005130 AFA40028 */  .word 0xAFA40028
     /* 005134 00005134 02002825 */  .word 0x02002825
     /* 005138 00005138 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 00513C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00513C 0C000000 -> gen_imp_Parms_addParm */
     /* 005140 00005140 AFA60008 */  .word 0xAFA60008
     /* 005144 00005144 8FA40028 */  .word 0x8FA40028
     lui $t2, %hi(timproc_uso_b5_D_807FD9F8)   /* 005148 3C0A0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -1105,7 +1105,7 @@ glabel SelectWin_ctor
     /* 00524C 0000524C 8F290000 */  .word 0x8F290000
     /* 005250 00005250 16010007 */  .word 0x16010007
     /* 005254 00005254 AE290000 */  .word 0xAE290000
-    jal timproc_uso_b5_func_055750   /* 005258 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005258 0C000000 -> gen_imp_mem_new */
     /* 00525C 0000525C 24040024 */  .word 0x24040024
     /* 005260 00005260 3C013F80 */  .word 0x3C013F80
     /* 005264 00005264 44810000 */  .word 0x44810000
@@ -1115,7 +1115,7 @@ glabel SelectWin_ctor
     /* 005274 00005274 AFA40028 */  .word 0xAFA40028
     /* 005278 00005278 02002825 */  .word 0x02002825
     /* 00527C 0000527C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005280 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005280 0C000000 -> gen_imp_Parms_addParm */
     /* 005284 00005284 AFA60008 */  .word 0xAFA60008
     /* 005288 00005288 8FA40028 */  .word 0x8FA40028
     lui $t4, %hi(timproc_uso_b5_D_807FD9F8)   /* 00528C 3C0C0000 -> timproc_uso_b5_D_807FD9F8 */
@@ -1188,7 +1188,7 @@ glabel SelectWin_ctor
     /* 005398 00005398 8D2B0000 */  .word 0x8D2B0000
     /* 00539C 0000539C 16010009 */  .word 0x16010009
     /* 0053A0 000053A0 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 0053A4 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0053A4 0C000000 -> gen_imp_mem_new */
     /* 0053A8 000053A8 24040024 */  .word 0x24040024
     /* 0053AC 000053AC 3C013F80 */  .word 0x3C013F80
     /* 0053B0 000053B0 44810000 */  .word 0x44810000
@@ -1200,7 +1200,7 @@ glabel SelectWin_ctor
     /* 0053C8 000053C8 AFA40028 */  .word 0xAFA40028
     /* 0053CC 000053CC 02002825 */  .word 0x02002825
     /* 0053D0 000053D0 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0053D4 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0053D4 0C000000 -> gen_imp_Parms_addParm */
     /* 0053D8 000053D8 AFA60008 */  .word 0xAFA60008
     /* 0053DC 000053DC 3C013F80 */  .word 0x3C013F80
     /* 0053E0 000053E0 8FA40028 */  .word 0x8FA40028
@@ -1271,7 +1271,7 @@ glabel SelectWin_ctor
     /* 0054E4 000054E4 8D6D0000 */  .word 0x8D6D0000
     /* 0054E8 000054E8 16010007 */  .word 0x16010007
     /* 0054EC 000054EC AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 0054F0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0054F0 0C000000 -> gen_imp_mem_new */
     /* 0054F4 000054F4 24040024 */  .word 0x24040024
     /* 0054F8 000054F8 3C013F80 */  .word 0x3C013F80
     /* 0054FC 000054FC 44810000 */  .word 0x44810000
@@ -1281,7 +1281,7 @@ glabel SelectWin_ctor
     /* 00550C 0000550C AFA40028 */  .word 0xAFA40028
     /* 005510 00005510 02002825 */  .word 0x02002825
     /* 005514 00005514 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005518 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005518 0C000000 -> gen_imp_Parms_addParm */
     /* 00551C 0000551C AFA60008 */  .word 0xAFA60008
     /* 005520 00005520 8FA40028 */  .word 0x8FA40028
     lui $t8, %hi(timproc_uso_b5_D_807FD9F8)   /* 005524 3C180000 -> timproc_uso_b5_D_807FD9F8 */
@@ -1354,7 +1354,7 @@ glabel SelectWin_ctor
     /* 005630 00005630 8DAF0000 */  .word 0x8DAF0000
     /* 005634 00005634 16010005 */  .word 0x16010005
     /* 005638 00005638 AE2F0000 */  .word 0xAE2F0000
-    jal timproc_uso_b5_func_055750   /* 00563C 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 00563C 0C000000 -> gen_imp_mem_new */
     /* 005640 00005640 24040024 */  .word 0x24040024
     /* 005644 00005644 10400015 */  .word 0x10400015
     /* 005648 00005648 00402025 */  .word 0x00402025
@@ -1362,7 +1362,7 @@ glabel SelectWin_ctor
     /* 005650 00005650 AFA40028 */  .word 0xAFA40028
     /* 005654 00005654 02002825 */  .word 0x02002825
     /* 005658 00005658 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 00565C 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 00565C 0C000000 -> gen_imp_Parms_addParm */
     /* 005660 00005660 AFA60008 */  .word 0xAFA60008
     /* 005664 00005664 8FA40028 */  .word 0x8FA40028
     lui $t0, %hi(timproc_uso_b5_D_807FD9F8)   /* 005668 3C080000 -> timproc_uso_b5_D_807FD9F8 */
@@ -1387,7 +1387,7 @@ glabel SelectWin_ctor
     /* 0056B4 000056B4 260402CC */  .word 0x260402CC
     /* 0056B8 000056B8 16010005 */  .word 0x16010005
     /* 0056BC 000056BC AE2F0000 */  .word 0xAE2F0000
-    jal timproc_uso_b5_func_055750   /* 0056C0 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0056C0 0C000000 -> gen_imp_mem_new */
     /* 0056C4 000056C4 24040018 */  .word 0x24040018
     /* 0056C8 000056C8 1040000E */  .word 0x1040000E
     /* 0056CC 000056CC 00402025 */  .word 0x00402025
@@ -1395,7 +1395,7 @@ glabel SelectWin_ctor
     /* 0056D4 000056D4 AFA400A8 */  .word 0xAFA400A8
     /* 0056D8 000056D8 02002825 */  .word 0x02002825
     /* 0056DC 000056DC 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0056E0 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0056E0 0C000000 -> gen_imp_Parms_addParm */
     /* 0056E4 000056E4 AFA60008 */  .word 0xAFA60008
     /* 0056E8 000056E8 8FA400A8 */  .word 0x8FA400A8
     lui $t0, %hi(timproc_uso_b5_D_807FDA10)   /* 0056EC 3C080000 -> timproc_uso_b5_D_807FDA10 */
@@ -1413,7 +1413,7 @@ glabel SelectWin_ctor
     /* 00571C 0000571C 260402E4 */  .word 0x260402E4
     /* 005720 00005720 16010005 */  .word 0x16010005
     /* 005724 00005724 AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 005728 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005728 0C000000 -> gen_imp_mem_new */
     /* 00572C 0000572C 24040018 */  .word 0x24040018
     /* 005730 00005730 1040000E */  .word 0x1040000E
     /* 005734 00005734 00402025 */  .word 0x00402025
@@ -1421,7 +1421,7 @@ glabel SelectWin_ctor
     /* 00573C 0000573C AFA400A8 */  .word 0xAFA400A8
     /* 005740 00005740 02002825 */  .word 0x02002825
     /* 005744 00005744 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005748 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005748 0C000000 -> gen_imp_Parms_addParm */
     /* 00574C 0000574C AFA60008 */  .word 0xAFA60008
     /* 005750 00005750 8FA400A8 */  .word 0x8FA400A8
     lui $t8, %hi(timproc_uso_b5_D_807FDA10)   /* 005754 3C180000 -> timproc_uso_b5_D_807FDA10 */
@@ -1439,7 +1439,7 @@ glabel SelectWin_ctor
     /* 005784 00005784 260402FC */  .word 0x260402FC
     /* 005788 00005788 16010005 */  .word 0x16010005
     /* 00578C 0000578C AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 005790 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005790 0C000000 -> gen_imp_mem_new */
     /* 005794 00005794 24040018 */  .word 0x24040018
     /* 005798 00005798 1040000E */  .word 0x1040000E
     /* 00579C 0000579C 00402025 */  .word 0x00402025
@@ -1447,7 +1447,7 @@ glabel SelectWin_ctor
     /* 0057A4 000057A4 AFA400A8 */  .word 0xAFA400A8
     /* 0057A8 000057A8 02002825 */  .word 0x02002825
     /* 0057AC 000057AC 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0057B0 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0057B0 0C000000 -> gen_imp_Parms_addParm */
     /* 0057B4 000057B4 AFA60008 */  .word 0xAFA60008
     /* 0057B8 000057B8 8FA400A8 */  .word 0x8FA400A8
     lui $t6, %hi(timproc_uso_b5_D_807FDA10)   /* 0057BC 3C0E0000 -> timproc_uso_b5_D_807FDA10 */
@@ -1465,7 +1465,7 @@ glabel SelectWin_ctor
     /* 0057EC 000057EC 26040314 */  .word 0x26040314
     /* 0057F0 000057F0 16010005 */  .word 0x16010005
     /* 0057F4 000057F4 AE290000 */  .word 0xAE290000
-    jal timproc_uso_b5_func_055750   /* 0057F8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0057F8 0C000000 -> gen_imp_mem_new */
     /* 0057FC 000057FC 24040018 */  .word 0x24040018
     /* 005800 00005800 1040000E */  .word 0x1040000E
     /* 005804 00005804 00402025 */  .word 0x00402025
@@ -1473,7 +1473,7 @@ glabel SelectWin_ctor
     /* 00580C 0000580C AFA400A8 */  .word 0xAFA400A8
     /* 005810 00005810 02002825 */  .word 0x02002825
     /* 005814 00005814 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005818 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005818 0C000000 -> gen_imp_Parms_addParm */
     /* 00581C 0000581C AFA60008 */  .word 0xAFA60008
     /* 005820 00005820 8FA400A8 */  .word 0x8FA400A8
     lui $t4, %hi(timproc_uso_b5_D_807FDA10)   /* 005824 3C0C0000 -> timproc_uso_b5_D_807FDA10 */
@@ -1491,7 +1491,7 @@ glabel SelectWin_ctor
     /* 005854 00005854 2604032C */  .word 0x2604032C
     /* 005858 00005858 16010005 */  .word 0x16010005
     /* 00585C 0000585C AE390000 */  .word 0xAE390000
-    jal timproc_uso_b5_func_055750   /* 005860 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005860 0C000000 -> gen_imp_mem_new */
     /* 005864 00005864 24040018 */  .word 0x24040018
     /* 005868 00005868 1040000E */  .word 0x1040000E
     /* 00586C 0000586C 00402025 */  .word 0x00402025
@@ -1499,7 +1499,7 @@ glabel SelectWin_ctor
     /* 005874 00005874 AFA400A8 */  .word 0xAFA400A8
     /* 005878 00005878 02002825 */  .word 0x02002825
     /* 00587C 0000587C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005880 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005880 0C000000 -> gen_imp_Parms_addParm */
     /* 005884 00005884 AFA60008 */  .word 0xAFA60008
     /* 005888 00005888 8FA400A8 */  .word 0x8FA400A8
     lui $t2, %hi(timproc_uso_b5_D_807FDA10)   /* 00588C 3C0A0000 -> timproc_uso_b5_D_807FDA10 */
@@ -1517,7 +1517,7 @@ glabel SelectWin_ctor
     /* 0058BC 000058BC 26040344 */  .word 0x26040344
     /* 0058C0 000058C0 16010005 */  .word 0x16010005
     /* 0058C4 000058C4 AE2F0000 */  .word 0xAE2F0000
-    jal timproc_uso_b5_func_055750   /* 0058C8 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 0058C8 0C000000 -> gen_imp_mem_new */
     /* 0058CC 000058CC 24040018 */  .word 0x24040018
     /* 0058D0 000058D0 1040000E */  .word 0x1040000E
     /* 0058D4 000058D4 00402025 */  .word 0x00402025
@@ -1525,7 +1525,7 @@ glabel SelectWin_ctor
     /* 0058DC 000058DC AFA400A8 */  .word 0xAFA400A8
     /* 0058E0 000058E0 02002825 */  .word 0x02002825
     /* 0058E4 000058E4 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0058E8 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0058E8 0C000000 -> gen_imp_Parms_addParm */
     /* 0058EC 000058EC AFA60008 */  .word 0xAFA60008
     /* 0058F0 000058F0 8FA400A8 */  .word 0x8FA400A8
     lui $t0, %hi(timproc_uso_b5_D_807FDA10)   /* 0058F4 3C080000 -> timproc_uso_b5_D_807FDA10 */
@@ -1543,7 +1543,7 @@ glabel SelectWin_ctor
     /* 005924 00005924 2604035C */  .word 0x2604035C
     /* 005928 00005928 16010005 */  .word 0x16010005
     /* 00592C 0000592C AE2D0000 */  .word 0xAE2D0000
-    jal timproc_uso_b5_func_055750   /* 005930 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005930 0C000000 -> gen_imp_mem_new */
     /* 005934 00005934 24040018 */  .word 0x24040018
     /* 005938 00005938 1040000E */  .word 0x1040000E
     /* 00593C 0000593C 00402025 */  .word 0x00402025
@@ -1551,7 +1551,7 @@ glabel SelectWin_ctor
     /* 005944 00005944 AFA400A8 */  .word 0xAFA400A8
     /* 005948 00005948 02002825 */  .word 0x02002825
     /* 00594C 0000594C 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 005950 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 005950 0C000000 -> gen_imp_Parms_addParm */
     /* 005954 00005954 AFA60008 */  .word 0xAFA60008
     /* 005958 00005958 8FA400A8 */  .word 0x8FA400A8
     lui $t8, %hi(timproc_uso_b5_D_807FDA10)   /* 00595C 3C180000 -> timproc_uso_b5_D_807FDA10 */
@@ -1569,7 +1569,7 @@ glabel SelectWin_ctor
     /* 00598C 0000598C 26040374 */  .word 0x26040374
     /* 005990 00005990 16010005 */  .word 0x16010005
     /* 005994 00005994 AE2B0000 */  .word 0xAE2B0000
-    jal timproc_uso_b5_func_055750   /* 005998 0C000000 -> timproc_uso_b5_func_055750 */
+    jal gen_imp_mem_new   /* 005998 0C000000 -> gen_imp_mem_new */
     /* 00599C 0000599C 24040018 */  .word 0x24040018
     /* 0059A0 000059A0 1040000E */  .word 0x1040000E
     /* 0059A4 000059A4 00402025 */  .word 0x00402025
@@ -1577,7 +1577,7 @@ glabel SelectWin_ctor
     /* 0059AC 000059AC AFA400A8 */  .word 0xAFA400A8
     /* 0059B0 000059B0 02002825 */  .word 0x02002825
     /* 0059B4 000059B4 24070001 */  .word 0x24070001
-    jal timproc_uso_b5_func_04A188   /* 0059B8 0C000000 -> timproc_uso_b5_func_04A188 */
+    jal gen_imp_Parms_addParm   /* 0059B8 0C000000 -> gen_imp_Parms_addParm */
     /* 0059BC 000059BC AFA60008 */  .word 0xAFA60008
     /* 0059C0 000059C0 8FA400A8 */  .word 0x8FA400A8
     lui $t6, %hi(timproc_uso_b5_D_807FDA10)   /* 0059C4 3C0E0000 -> timproc_uso_b5_D_807FDA10 */
@@ -1688,14 +1688,14 @@ glabel SelectWin_ctor
     /* 005B68 00005B68 E4C0049C */  .word 0xE4C0049C
     /* 005B6C 00005B6C 8D6C0054 */  .word 0x8D6C0054
     /* 005B70 00005B70 8D8D02B8 */  .word 0x8D8D02B8
-    jal timproc_uso_b5_func_06970C   /* 005B74 0C000000 -> timproc_uso_b5_func_06970C */
+    jal gen_imp_light_setF124_000550A0   /* 005B74 0C000000 -> gen_imp_light_setF124_000550A0 */
     /* 005B78 00005B78 8DA40108 */  .word 0x8DA40108
     /* 005B7C 00005B7C 8FAE03A8 */  .word 0x8FAE03A8
     /* 005B80 00005B80 3C053F00 */  .word 0x3C053F00
     /* 005B84 00005B84 8DCF040C */  .word 0x8DCF040C
     /* 005B88 00005B88 8DF80058 */  .word 0x8DF80058
     /* 005B8C 00005B8C 8F1902B8 */  .word 0x8F1902B8
-    jal timproc_uso_b5_func_06970C   /* 005B90 0C000000 -> timproc_uso_b5_func_06970C */
+    jal gen_imp_light_setF124_000550A0   /* 005B90 0C000000 -> gen_imp_light_setF124_000550A0 */
     /* 005B94 00005B94 8F240108 */  .word 0x8F240108
     lui $t0, %hi(import_800200CC)   /* 005B98 3C080000 -> import_800200CC */
     /* 005B9C 00005B9C 8D080034 */  .word 0x8D080034
@@ -1706,11 +1706,11 @@ glabel SelectWin_ctor
     /* 005BB0 00005BB0 3C053F00 */  .word 0x3C053F00
     /* 005BB4 00005BB4 8D2B005C */  .word 0x8D2B005C
     /* 005BB8 00005BB8 8D6C02B8 */  .word 0x8D6C02B8
-    jal timproc_uso_b5_func_06970C   /* 005BBC 0C000000 -> timproc_uso_b5_func_06970C */
+    jal gen_imp_light_setF124_000550A0   /* 005BBC 0C000000 -> gen_imp_light_setF124_000550A0 */
     /* 005BC0 00005BC0 8D840108 */  .word 0x8D840108
     /* 005BC4 00005BC4 8FA403A8 */  .word 0x8FA403A8
     /* 005BC8 00005BC8 24050001 */  .word 0x24050001
-    jal timproc_uso_b5_func_04C774   /* 005BCC 0C000000 -> timproc_uso_b5_func_04C774 */
+    jal gen_imp_Node_Load   /* 005BCC 0C000000 -> gen_imp_Node_Load */
     /* 005BD0 00005BD0 8FA603D0 */  .word 0x8FA603D0
     /* 005BD4 00005BD4 8FBF0024 */  .word 0x8FBF0024
     /* 005BD8 00005BD8 8FA203A8 */  .word 0x8FA203A8

@@ -11,7 +11,7 @@ glabel SelectWin_moveCursorPrev_00006E08
     /* 006E24 00006E24 AFB10020 */  .word 0xAFB10020
     /* 006E28 00006E28 F7B40010 */  .word 0xF7B40010
     /* 006E2C 00006E2C 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 006E30 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 006E30 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 006E34 00006E34 34A50001 */  .word 0x34A50001
     /* 006E38 00006E38 50400045 */  .word 0x50400045
     /* 006E3C 00006E3C 4480A000 */  .word 0x4480A000
@@ -77,7 +77,7 @@ glabel SelectWin_moveCursorPrev_00006E08
     /* 006F2C 00006F2C 4480A000 */  .word 0x4480A000
     /* 006F30 00006F30 8E0C04D4 */  .word 0x8E0C04D4
     /* 006F34 00006F34 8C840000 */  .word 0x8C840000
-    jal timproc_uso_b5_func_0002FC   /* 006F38 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 006F38 0C000000 -> gen_imp_snd_sendEvent */
     /* 006F3C 00006F3C 01832825 */  .word 0x01832825
     /* 006F40 00006F40 02002025 */  .word 0x02002025
     jal SelectWin_beginTransition_00008688   /* 006F44 0C000000 -> SelectWin_beginTransition_00008688 */
@@ -85,7 +85,7 @@ glabel SelectWin_moveCursorPrev_00006E08
     /* 006F4C 00006F4C 4480A000 */  .word 0x4480A000
     lui $a0, %hi(import_80020098)   /* 006F50 3C040000 -> import_80020098 */
     /* 006F54 00006F54 24840000 */  .word 0x24840000
-    jal timproc_uso_b5_func_011E00   /* 006F58 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 006F58 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 006F5C 00006F5C 24054002 */  .word 0x24054002
     /* 006F60 00006F60 50400040 */  .word 0x50400040
     /* 006F64 00006F64 8FBF0024 */  .word 0x8FBF0024
@@ -146,7 +146,7 @@ glabel SelectWin_moveCursorPrev_00006E08
     /* 007040 00007040 8FBF0024 */  .word 0x8FBF0024
     /* 007044 00007044 8E1904D4 */  .word 0x8E1904D4
     /* 007048 00007048 8C840000 */  .word 0x8C840000
-    jal timproc_uso_b5_func_0002FC   /* 00704C 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 00704C 0C000000 -> gen_imp_snd_sendEvent */
     /* 007050 00007050 03232825 */  .word 0x03232825
     /* 007054 00007054 02002025 */  .word 0x02002025
     jal SelectWin_beginTransition_00008688   /* 007058 0C000000 -> SelectWin_beginTransition_00008688 */

@@ -9,7 +9,7 @@ glabel SelectWin_startGame_000069E8
     /* 0069FC 000069FC AFA50024 */  .word 0xAFA50024
     /* 006A00 00006A00 8E040418 */  .word 0x8E040418
     /* 006A04 00006A04 2405FFFF */  .word 0x2405FFFF
-    jal timproc_uso_b5_func_00F954   /* 006A08 0C000000 -> timproc_uso_b5_func_00F954 */
+    jal gen_imp_Process_fadeOut_0000F954   /* 006A08 0C000000 -> gen_imp_Process_fadeOut_0000F954 */
     /* 006A0C 00006A0C 00003025 */  .word 0x00003025
     lui $v1, %hi(import_80020098)   /* 006A10 3C030000 -> import_80020098 */
     /* 006A14 00006A14 24630000 */  .word 0x24630000
@@ -29,7 +29,7 @@ glabel SelectWin_startGame_000069E8
     /* 006A4C 00006A4C 28A10004 */  .word 0x28A10004
     /* 006A50 00006A50 1020000D */  .word 0x1020000D
     lui $a0, %hi(timproc_uso_b5_D_807FEB74)   /* 006A54 3C040000 -> timproc_uso_b5_D_807FEB74 */
-    jal timproc_uso_b5_func_048E7C   /* 006A58 0C000000 -> timproc_uso_b5_func_048E7C */
+    jal gen_imp_dbg_printf   /* 006A58 0C000000 -> gen_imp_dbg_printf */
     /* 006A5C 00006A5C 24841304 */  .word 0x24841304
     /* 006A60 00006A60 8E0D04A4 */  .word 0x8E0D04A4
     lui $t7, %hi(timproc_uso_b5_D_807FE794)   /* 006A64 3C0F0000 -> timproc_uso_b5_D_807FE794 */

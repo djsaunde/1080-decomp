@@ -12,7 +12,7 @@ glabel CharacterItem_playPickAnim_0000B928
     /* 00B948 0000B948 AFB80014 */  .word 0xAFB80014
     /* 00B94C 0000B94C AFAF0010 */  .word 0xAFAF0010
     /* 00B950 0000B950 24060003 */  .word 0x24060003
-    jal timproc_uso_b5_func_077C44   /* 00B954 0C000000 -> timproc_uso_b5_func_077C44 */
+    jal gen_imp_AnimPlayer_start   /* 00B954 0C000000 -> gen_imp_AnimPlayer_start */
     /* 00B958 0000B958 24070001 */  .word 0x24070001
     /* 00B95C 0000B95C 8FA20020 */  .word 0x8FA20020
     /* 00B960 0000B960 2409FC18 */  .word 0x2409FC18

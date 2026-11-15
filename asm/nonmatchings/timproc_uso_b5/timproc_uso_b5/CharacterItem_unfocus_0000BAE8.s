@@ -12,7 +12,7 @@ glabel CharacterItem_unfocus_0000BAE8
     /* 00BB08 0000BB08 AFB80014 */  .word 0xAFB80014
     /* 00BB0C 0000BB0C AFAF0010 */  .word 0xAFAF0010
     /* 00BB10 0000BB10 24060003 */  .word 0x24060003
-    jal timproc_uso_b5_func_077C44   /* 00BB14 0C000000 -> timproc_uso_b5_func_077C44 */
+    jal gen_imp_AnimPlayer_start   /* 00BB14 0C000000 -> gen_imp_AnimPlayer_start */
     /* 00BB18 0000BB18 24070002 */  .word 0x24070002
     /* 00BB1C 0000BB1C 8FA20020 */  .word 0x8FA20020
     /* 00BB20 0000BB20 24080020 */  .word 0x24080020

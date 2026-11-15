@@ -30,7 +30,7 @@ glabel SelectionMgr_finish_00001C08
     /* 001C70 00001C70 000A5880 */  .word 0x000A5880
     /* 001C74 00001C74 012B6021 */  .word 0x012B6021
     /* 001C78 00001C78 8D8D003C */  .word 0x8D8D003C
-    jal timproc_uso_b5_func_0002FC   /* 001C7C 0C000000 -> timproc_uso_b5_func_0002FC */
+    jal gen_imp_snd_sendEvent   /* 001C7C 0C000000 -> gen_imp_snd_sendEvent */
     /* 001C80 00001C80 8DA502B0 */  .word 0x8DA502B0
     /* 001C84 00001C84 8E6E0030 */  .word 0x8E6E0030
     /* 001C88 00001C88 00008025 */  .word 0x00008025

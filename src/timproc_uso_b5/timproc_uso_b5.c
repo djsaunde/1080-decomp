@@ -42,10 +42,10 @@ void gen_nop_00000050(void) {
 }
 
 
-extern int timproc_uso_b5_func_055750();
-extern int timproc_uso_b5_func_04C678();
-extern int timproc_uso_b5_func_07ACE0();
-extern int timproc_uso_b5_func_0139B0();
+extern int gen_imp_mem_new();
+extern int gen_imp_Node_ctor();
+extern int gen_imp_list_append();
+extern int gen_imp_Fader_start();
 extern int import_000A5D38();
 extern void import_000A5F40();
 extern int import_000A6900();
@@ -72,20 +72,20 @@ int *GenCourse_ctor(int *a0) {
     int i, tmp;
 
     if (a0 == 0) {
-        a0 = (int *)timproc_uso_b5_func_055750(0x50);
+        a0 = (int *)gen_imp_mem_new(0x50);
         if (a0 == 0) goto done;
     }
     s0 = a0;
     if (a0 == 0) {
-        s0 = (int *)timproc_uso_b5_func_055750(0x50);
+        s0 = (int *)gen_imp_mem_new(0x50);
         if (s0 == 0) goto after_sub;
     }
     s1 = s0;
     if (s0 == 0) {
-        s1 = (int *)timproc_uso_b5_func_055750(0x2C);
+        s1 = (int *)gen_imp_mem_new(0x2C);
         if (s1 == 0) goto after_node;
     }
-    timproc_uso_b5_func_04C678(s1, &timproc_uso_b5_D_807FD908 + 0x98);
+    gen_imp_Node_ctor(s1, &timproc_uso_b5_D_807FD908 + 0x98);
     s1[0x28 / 4] = (int)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 after_node:
     s0[0x28 / 4] = (int)&import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
@@ -112,20 +112,20 @@ after_sub:
 
     s0 = (int *)a0[0x48 / 4];
     s1 = (int *)((char *)a0 + 0x10);
-    timproc_uso_b5_func_07ACE0(s1, s0);
+    gen_imp_list_append(s1, s0);
     if (s0[0x14 / 4] != 0) {
         s0[0x04 / 4] = 1;
     }
     s0[0x14 / 4] = (int)a0;
 
     s0 = *(int **)(&import_80020098 + 0x190);
-    timproc_uso_b5_func_07ACE0(s1, s0);
+    gen_imp_list_append(s1, s0);
     if (s0[0x14 / 4] != 0) {
         s0[0x04 / 4] = 1;
     }
     s0[0x14 / 4] = (int)a0;
 
-    timproc_uso_b5_func_0139B0(*(int *)(&import_80020098 + 0x190), 1, 0);
+    gen_imp_Fader_start(*(int *)(&import_80020098 + 0x190), 1, 0);
     a0[0x30 / 4] = 1;
     a0[0x2C / 4] = 0;
 done:
@@ -165,18 +165,18 @@ done:
  * declared VOID so its dead return frees v0 for p; (4) real reloc names
  * (the save globals are D_807FF480 + 0 and D_807FF484 + 4). */
 typedef struct { void (*fn)(void); char pad[0x24]; } B5Ent24C;
-extern int timproc_uso_b5_func_011E00();
-extern void timproc_uso_b5_func_048E7C();
+extern int gen_imp_input_checkPressed_00011E00();
+extern void gen_imp_dbg_printf();
 extern char timproc_uso_b5_D_807FD924, timproc_uso_b5_D_807FF480, timproc_uso_b5_D_807FF484;
 void GenCourse_update_0000024C(int *a0) {
     int *p;
 
-    if (timproc_uso_b5_func_011E00(&import_80020098, 0x300) == 0) {
-        if (timproc_uso_b5_func_011E00(&import_80020098, 0x40000) == 0) {
+    if (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x300) == 0) {
+        if (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x40000) == 0) {
             return;
         }
     }
-    timproc_uso_b5_func_048E7C(&timproc_uso_b5_D_807FD924 + 0xB4);
+    gen_imp_dbg_printf(&timproc_uso_b5_D_807FD924 + 0xB4);
     p = (int *)a0[0x48 / 4];
     if (((B5Ent24C *)((char *)p + 0x90))[p[0x7C / 4]].fn == 0) return;
     *(int *)&timproc_uso_b5_D_807FF480 = (int)p;
@@ -267,17 +267,17 @@ void SelectionMgr_onFadeDone_00000470(void) {
  * registration call's argument list, 07ACE0(slot, node = result1), after
  * a separate `slot = arg0 + 0x10;` statement gives [sw slot][move s0,v0]
  * (docs/IDO_CODEGEN.md#assign-in-call-arg-spill-before-copy-0478). */
-extern int timproc_uso_b5_func_055750();
-extern int timproc_uso_b5_func_04C678();
-extern int timproc_uso_b5_func_074710();
+extern int gen_imp_mem_new();
+extern int gen_imp_Node_ctor();
+extern int gen_imp_memtrack_begin();
 extern char *gen_createScene_00008DB4(char *self, int a1);
 extern void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2);
-extern int timproc_uso_b5_func_07ACE0();
+extern int gen_imp_list_append();
 extern char *SelectionMgr_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, char *arg5, int arg6, int arg7);
 extern void GenSelectChar_initLabels_00000778(char *arg0);
-extern int timproc_uso_b5_func_0139B0();
-extern int timproc_uso_b5_func_011CD8();
-extern int timproc_uso_b5_func_074840();
+extern int gen_imp_Fader_start();
+extern int gen_imp_input_setRacePadsActive();
+extern int gen_imp_memtrack_end();
 extern char timproc_uso_b5_D_807FE84C;
 extern char timproc_uso_b5_D_807FD948;
 extern char timproc_uso_b5_D_807FE870;
@@ -301,22 +301,22 @@ int *GenSelectChar_ctor(int *arg0, int arg1, int arg2, int arg3) {
     volatile int padbot;
 
     if (arg0 == 0) {
-        arg0 = (int *)timproc_uso_b5_func_055750(0x58);
+        arg0 = (int *)gen_imp_mem_new(0x58);
         if (arg0 == 0) goto done;
     }
 
     node = arg0;
     if (node == 0) {
-        node = (int *)timproc_uso_b5_func_055750(0x50);
+        node = (int *)gen_imp_mem_new(0x50);
         if (node == 0) goto after_sub;
     }
 
     third = node;
     if (third == 0) {
-        third = (int *)timproc_uso_b5_func_055750(0x2C);
+        third = (int *)gen_imp_mem_new(0x2C);
         if (third == 0) goto after_node;
     }
-    timproc_uso_b5_func_04C678(third, &timproc_uso_b5_D_807FE84C + 0xFDC);
+    gen_imp_Node_ctor(third, &timproc_uso_b5_D_807FE84C + 0xFDC);
     third[0x28 / 4] = (int)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 
 after_node:
@@ -326,7 +326,7 @@ after_sub:
     arg0[0x28 / 4] = (int)&timproc_uso_b5_D_807FD948;
     arg0[0x0C / 4] = (int)(&timproc_uso_b5_D_807FD948 + 0xFE4);
 
-    timproc_uso_b5_func_074710(&timproc_uso_b5_D_807FE870 + 0x1000, 0);
+    gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE870 + 0x1000, 0);
     result0 = (int)gen_createScene_00008DB4(0, arg1);
     arg0[0x54 / 4] = 0;
 
@@ -336,7 +336,7 @@ after_sub:
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x100C),
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x101C));
         slot = (int *)((char *)arg0 + 0x10);
-        timproc_uso_b5_func_07ACE0(slot, node = (int *)result1);
+        gen_imp_list_append(slot, node = (int *)result1);
         if (node[0x14 / 4] != 0) {
             node[0x04 / 4] = 1;
         }
@@ -344,7 +344,7 @@ after_sub:
 
         node = (int *)SelectionMgr_ctor(0, (char *)arg0, arg1, arg2, arg3,
                       (char *)result0, result1, 0);
-        timproc_uso_b5_func_07ACE0(slot, (int)node);
+        gen_imp_list_append(slot, (int)node);
         if (node[0x14 / 4] != 0) {
             node[0x04 / 4] = 1;
         }
@@ -359,7 +359,7 @@ after_sub:
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x102C),
                       (int *)(&timproc_uso_b5_D_807FE8AC + 0x103C));
         slot = (int *)((char *)arg0 + 0x10);
-        timproc_uso_b5_func_07ACE0(slot, node = (int *)result1);
+        gen_imp_list_append(slot, node = (int *)result1);
         if (node[0x14 / 4] != 0) {
             node[0x04 / 4] = 1;
         }
@@ -369,7 +369,7 @@ after_sub:
                       (int *)(&timproc_uso_b5_D_807FE8BC + 0x104C),
                       (int *)(&timproc_uso_b5_D_807FE8CC + 0x105C));
         node = (int *)result2;
-        timproc_uso_b5_func_07ACE0(slot, result2);
+        gen_imp_list_append(slot, result2);
         if (node[0x14 / 4] != 0) {
             node[0x04 / 4] = 1;
         }
@@ -377,7 +377,7 @@ after_sub:
 
         node = (int *)SelectionMgr_ctor(0, (char *)arg0, arg1, arg2, arg3,
                       (char *)result0, result1, result2);
-        timproc_uso_b5_func_07ACE0(slot, (int)node);
+        gen_imp_list_append(slot, (int)node);
         if (node[0x14 / 4] != 0) {
             node[0x04 / 4] = 1;
         }
@@ -387,17 +387,17 @@ after_sub:
 
     GenSelectChar_initLabels_00000778((char *)arg0);
     node = (int *)*(int *)(&import_80020228 + 0x190);
-    timproc_uso_b5_func_07ACE0(slot, node);
+    gen_imp_list_append(slot, node);
     if (node[0x14 / 4] != 0) {
         node[0x04 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
-    timproc_uso_b5_func_0139B0(*(int *)(&import_80020228 + 0x190), 1, 0);
+    gen_imp_Fader_start(*(int *)(&import_80020228 + 0x190), 1, 0);
     arg0[0x48 / 4] = 0;
     arg0[0x30 / 4] = 0;
     arg0[0x2C / 4] = 0;
-    timproc_uso_b5_func_011CD8(&import_80020098, 0);
-    timproc_uso_b5_func_074840();
+    gen_imp_input_setRacePadsActive(&import_80020098, 0);
+    gen_imp_memtrack_end();
 
 done:
     return arg0;
@@ -632,7 +632,7 @@ void RoomModifier_update_0000115C(int *a0) {
  * beqzl w/ move-a0 delay). */
 void RoomModifier_applyScale_0000896C();
 void RoomModifier_resetScale_00008AFC();
-extern void timproc_uso_b5_func_04CCA8();
+extern void gen_imp_Node_display();
 void RoomModifier_display_0000117C(int *a0) {
     int *slot, *flags, *b;
     typedef int R1[1];
@@ -659,7 +659,7 @@ void RoomModifier_display_0000117C(int *a0) {
                 *flags = *flags & ~4;
             }
         }
-        timproc_uso_b5_func_04CCA8(b);
+        gen_imp_Node_display(b);
     } else {
         flags = (int *)(*(char **)(*(char **)((char *)slot + 0x40C) + 0x38) + 0x18);
         *flags = *flags | 4;
@@ -774,7 +774,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", RoomModifier_displ
  * to glyph/texture pool fields). */
 extern char D_00000000;
 extern int RoomModifier_ctor();
-extern int timproc_uso_b5_func_076D58();
+extern int gen_imp_AnimDataMgr_releaseFrames();
 extern void gen_createLights_00001460();
 extern void gen_createVRBox_00001658();
 extern char timproc_uso_b5_D_807FE8F4;
@@ -784,21 +784,21 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
     char *sub;
     char *entity;
     if (self == 0) {
-        self = (char*)timproc_uso_b5_func_055750(0x60);
+        self = (char*)gen_imp_mem_new(0x60);
         if (self == 0) goto end;
     }
-    timproc_uso_b5_func_04C678(self, (char*)&timproc_uso_b5_D_807FE8F4 + 0x1084);
+    gen_imp_Node_ctor(self, (char*)&timproc_uso_b5_D_807FE8F4 + 0x1084);
     *(int*)(self + 0x2C) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x84);
     *(int*)(self + 0x30) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x80);
     *(int*)(self + 0x34) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x8C);
     sub = (char*)RoomModifier_ctor(0);
     entity = *(char**)(self + 0x2C);
     *(int*)(self + 0x5C) = (int)sub;
-    timproc_uso_b5_func_07ACE0(entity + 0x10, sub);
+    gen_imp_list_append(entity + 0x10, sub);
     if (*(int*)(sub + 0x14) != 0) *(int*)(sub + 0x4) = 1;
     *(int*)(sub + 0x14) = (int)entity;
     entity = *(char**)(self + 0x5C);
-    timproc_uso_b5_func_07ACE0(entity + 0x10, self);
+    gen_imp_list_append(entity + 0x10, self);
     if (*(int*)(self + 0x14) != 0) *(int*)(self + 0x4) = 1;
     *(int*)(self + 0x14) = (int)entity;
     gen_createLights_00001460(self);
@@ -809,10 +809,10 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
     }
     sub = *(char**)&import_80020078;
     *(int*)&import_8001FFF0 = 0;
-    timproc_uso_b5_func_07ACE0(self + 0x10, sub);
+    gen_imp_list_append(self + 0x10, sub);
     if (*(int*)(sub + 0x14) != 0) *(int*)(sub + 0x4) = 1;
     *(int*)(sub + 0x14) = (int)self;
-    timproc_uso_b5_func_076D58(*(int*)&import_80020078);
+    gen_imp_AnimDataMgr_releaseFrames(*(int*)&import_80020078);
     (void)a1;
 end:
     return self;
@@ -875,8 +875,8 @@ end:
 //   is at 40 (target 32); decl order (1560-permutation sweep), unnamed temp,
 //   adder count and placement never put it below the float's slot.
 #ifdef NON_MATCHING
-extern void *timproc_uso_b5_func_068D54(int, char *);
-extern float timproc_uso_b5_func_062880(char *, char *);
+extern void *gen_imp_BaseLight_ctor(int, char *);
+extern float gen_imp_gfx_listAppend_0004E214(char *, char *);
 extern char gGfxLib_8005C108;
 extern char timproc_uso_b5_D_807FE8FC;
 extern char timproc_uso_b5_D_807FE90C;
@@ -892,7 +892,7 @@ void gen_createLights_00001460(char *arg0) {
     reg = arg0 + 0x10;
 
     /* widget A (id 1) — white RGBA = num / (float)255 (runtime div) */
-    o = (char *)timproc_uso_b5_func_068D54(0, &timproc_uso_b5_D_807FE8FC + 0x108C);
+    o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE8FC + 0x108C);
     *(char **)(arg0 + 0x38) = o;
     retA = num / (float)255;
     *(float *)(o + 0x124) = retA;
@@ -907,16 +907,16 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x38);
     *(int *)(o + 0xD0) = 1;
-    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x38));
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x38));
     o = *(char **)(arg0 + 0x38);
-    timproc_uso_b5_func_07ACE0(reg, o);
+    gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
     }
     *(char **)(o + 0x14) = arg0;
 
     /* widget B (id 2) — white RGBA = 1.0f */
-    o = (char *)timproc_uso_b5_func_068D54(0, &timproc_uso_b5_D_807FE90C + 0x109C);
+    o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE90C + 0x109C);
     *(char **)(arg0 + 0x3C) = o;
     *(float *)(o + 0x124) = 1.0f;
     *(float *)(o + 0x128) = 1.0f;
@@ -924,16 +924,16 @@ void gen_createLights_00001460(char *arg0) {
     *(float *)(o + 0x130) = 1.0f;
     o = *(char **)(arg0 + 0x3C);
     *(int *)(o + 0xD0) = 2;
-    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x3C));
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x3C));
     o = *(char **)(arg0 + 0x3C);
-    timproc_uso_b5_func_07ACE0(reg, o);
+    gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
     }
     *(char **)(o + 0x14) = arg0;
 
     /* widget C (id 4) — RGBA = 174/255, 113/255, 61/255, retA */
-    o = (char *)timproc_uso_b5_func_068D54(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
+    o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
     *(char **)(arg0 + 0x40) = o;
     *(float *)(o + 0x124) = 174.0f / denom;
     *(float *)(o + 0x128) = 113.0f / denom;
@@ -947,9 +947,9 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x40);
     *(int *)(o + 0xD0) = 4;
-    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x40));
+    gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, *(char **)(arg0 + 0x40));
     o = *(char **)(arg0 + 0x40);
-    timproc_uso_b5_func_07ACE0(reg, o);
+    gen_imp_list_append(reg, o);
     if (*(int *)(o + 0x14) != 0) {
         *(int *)(o + 0x4) = 1;
     }
@@ -1004,8 +1004,8 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", gen_createLights_0
 //       once, value used directly for call 1; calls 2-6 reload ap;
 //   (5) the mixed beq (children 1-2) / beql-dup (children 3-6) forms
 //       emit NATURALLY from six identical C blocks — as1 artifact.
-extern int timproc_uso_b5_func_000CA0();
-extern int timproc_uso_b5_func_000E68();
+extern int gen_imp_BGBox_ctor();
+extern int gen_imp_U64BGWall_ctor();
 extern char timproc_uso_b5_D_807FE928;
 extern char timproc_uso_b5_D_807FE930;
 extern char timproc_uso_b5_D_807FE938;
@@ -1021,58 +1021,58 @@ void gen_createVRBox_00001658(char *arg0) {
     char * volatile ap;
     char *c;
 
-    timproc_uso_b5_func_074710(&timproc_uso_b5_D_807FE928 + 0x10B8, 0);
-    timproc_uso_b5_func_074710(&timproc_uso_b5_D_807FE930 + 0x10C0, 0);
-    c = P = (char *)timproc_uso_b5_func_000CA0(0, &timproc_uso_b5_D_807FE938 + 0x10C8, 1, 0x100);
-    timproc_uso_b5_func_07ACE0(arg0 + 0x10, c);
+    gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE928 + 0x10B8, 0);
+    gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE930 + 0x10C0, 0);
+    c = P = (char *)gen_imp_BGBox_ctor(0, &timproc_uso_b5_D_807FE938 + 0x10C8, 1, 0x100);
+    gen_imp_list_append(arg0 + 0x10, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = arg0;
-    *(char **)(arg0 + 0x44) = (char *)timproc_uso_b5_func_000E68(0, &import_807C3820, 0, 0, 0);
-    *(char **)(arg0 + 0x48) = (char *)timproc_uso_b5_func_000E68(0, &import_807D3A40, 0, 0x5A, 0);
-    *(char **)(arg0 + 0x4C) = (char *)timproc_uso_b5_func_000E68(0, &import_807B3600, 0, 0xB4, 0);
-    *(char **)(arg0 + 0x50) = (char *)timproc_uso_b5_func_000E68(0, &timproc_uso_b5_D_807E3C60, 0, 0x10E, 0);
-    *(char **)(arg0 + 0x54) = (char *)timproc_uso_b5_func_000E68(0, &import_807A33E0, -0x5A, 0, 0);
-    *(char **)(arg0 + 0x58) = (char *)timproc_uso_b5_func_000E68(0, &import_807931C0, -0x10E, 0, 0);
+    *(char **)(arg0 + 0x44) = (char *)gen_imp_U64BGWall_ctor(0, &import_807C3820, 0, 0, 0);
+    *(char **)(arg0 + 0x48) = (char *)gen_imp_U64BGWall_ctor(0, &import_807D3A40, 0, 0x5A, 0);
+    *(char **)(arg0 + 0x4C) = (char *)gen_imp_U64BGWall_ctor(0, &import_807B3600, 0, 0xB4, 0);
+    *(char **)(arg0 + 0x50) = (char *)gen_imp_U64BGWall_ctor(0, &timproc_uso_b5_D_807E3C60, 0, 0x10E, 0);
+    *(char **)(arg0 + 0x54) = (char *)gen_imp_U64BGWall_ctor(0, &import_807A33E0, -0x5A, 0, 0);
+    *(char **)(arg0 + 0x58) = (char *)gen_imp_U64BGWall_ctor(0, &import_807931C0, -0x10E, 0, 0);
     c = *(char **)(arg0 + 0x44);
-    timproc_uso_b5_func_07ACE0(ap = P + 0x10, c);
+    gen_imp_list_append(ap = P + 0x10, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
     c = *(char **)(arg0 + 0x48);
-    timproc_uso_b5_func_07ACE0(ap, c);
+    gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
     c = *(char **)(arg0 + 0x4C);
-    timproc_uso_b5_func_07ACE0(ap, c);
+    gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
     c = *(char **)(arg0 + 0x50);
-    timproc_uso_b5_func_07ACE0(ap, c);
+    gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
     c = *(char **)(arg0 + 0x54);
-    timproc_uso_b5_func_07ACE0(ap, c);
+    gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
     c = *(char **)(arg0 + 0x58);
-    timproc_uso_b5_func_07ACE0(ap, c);
+    gen_imp_list_append(ap, c);
     if (*(int *)(c + 0x14) != 0) {
         *(int *)(c + 0x4) = 1;
     }
     *(char **)(c + 0x14) = P;
-    timproc_uso_b5_func_074840();
-    timproc_uso_b5_func_074840();
+    gen_imp_memtrack_end();
+    gen_imp_memtrack_end();
 }
 
 // SelectionMgr_ctor — STRUCTURAL PASS (0x354 / 213 words,
@@ -1134,8 +1134,8 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
 
     d = arg2;
     E = arg5;
-    if ((arg0 != 0) || ((arg0 = (char *)timproc_uso_b5_func_055750(0x58)) != 0)) {
-        timproc_uso_b5_func_04C678(arg0, &timproc_uso_b5_D_807FE940 + 0x10D0);
+    if ((arg0 != 0) || ((arg0 = (char *)gen_imp_mem_new(0x58)) != 0)) {
+        gen_imp_Node_ctor(arg0, &timproc_uso_b5_D_807FE940 + 0x10D0);
         FW(arg0, 0x28) = (int)&timproc_uso_b5_D_807FE7E0;
         FW(arg0, 0xC) = (int)(&timproc_uso_b5_D_807FE7E0 + 0x10D8);
         FW(arg0, 0x30) = d;
@@ -1145,7 +1145,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             FW(arg0, 0x34) = w;
             SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x34);
-            timproc_uso_b5_func_07ACE0(arg0 + 0x10, w);
+            gen_imp_list_append(arg0 + 0x10, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
@@ -1157,7 +1157,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x34);
             sp4C = arg0 + 0x10;
-            timproc_uso_b5_func_07ACE0(sp4C, w);
+            gen_imp_list_append(sp4C, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
@@ -1167,7 +1167,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             FW(arg0, 0x38) = w;
             SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &gInputMgr_800200FC + 0x60, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x38);
-            timproc_uso_b5_func_07ACE0(sp4C, w);
+            gen_imp_list_append(sp4C, w);
             if (FW(w, 0x14) != 0) {
                 FW(w, 0x4) = 1;
             }
@@ -1243,14 +1243,14 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
  *    bne/nop + two-`b` diamond, and the else `i = 0` lands in the outer bne
  *    delay slot. This restructure also flipped the s2/s3 coloring to the
  *    target's (i->s2, st->s3).
- * 3. Real callees per .s jal relocs: timproc_uso_b5_func_0002FC (dispatch,
+ * 3. Real callees per .s jal relocs: gen_imp_snd_sendEvent (dispatch,
  *    a0=7) and SelectWin_startGame_000069E8 (per-slot notify). Loop is a
  *    TWO-CALL if/else (two jal sites), not a ternary second arg.
  * 4. Chain arithmetic: fold c/d locals into one expression, 8C1C-style
  *    scaled-first text -> pure t0-t5 temps + addu rs=base. Site-1 (reg base)
  *    needs base-first text `(int)st + i*4 + 0x34` for addu t9,s3,t8.
  */
-extern int timproc_uso_b5_func_0002FC();
+extern int gen_imp_snd_sendEvent();
 extern int SelectWin_startGame_000069E8(char *scr, int a1);
 void SelectionMgr_finish_00001C08(char *st) {
     int i;
@@ -1266,7 +1266,7 @@ void SelectionMgr_finish_00001C08(char *st) {
         i = 0;
     }
     r = *(char **)((int)st + i * 4 + 0x34);
-    timproc_uso_b5_func_0002FC(7,
+    gen_imp_snd_sendEvent(7,
         *(char **)(*(int *)(*(int *)(r + 0x3D8) * 4 + *(int *)(*(char **)(r + 0x40C) + 0x48) + 0x3C) + 0x2B0));
     for (s0 = 0; s0 < ((SelectionMgr *)st)->numPlayers; s0++) {
         if (s0 == i) {
@@ -1459,7 +1459,7 @@ void SelectionMgr_setSplit_00001DB0(char *a0) {
  * func_00000000 = USO placeholder dispatcher (=0 in undefined_syms). */
 extern int gen_stageBitToIndex_000087A0();
 extern void SelectionMgr_setSplit_00001DB0(char *);
-extern void timproc_uso_b5_func_04CD94(char *);
+extern void gen_imp_Node_update(char *);
 /* EXACT 2026-10-23 (agent-g run 138) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp, REPLACE_FUNC_BODY-spliced
  * over this placeholder (Makefile TIMB5_1F14_DONOR). The cfe "a3 web" cap above
@@ -1575,15 +1575,15 @@ void SelectionMgr_display_000027B0(int *self) {
 s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     extern char import_80020098, import_80086288, import_8001EA70, import_8006EA70, import_800201CC;
     extern char timproc_uso_b5_D_807FE990, timproc_uso_b5_D_807FE998;
-    extern int timproc_uso_b5_func_055750();
-    extern int timproc_uso_b5_func_07BA00();
-    extern int timproc_uso_b5_func_011C70();
-    extern int timproc_uso_b5_func_04C678();
-    extern int timproc_uso_b5_func_04D3D0();
-    extern int timproc_uso_b5_func_072EE8();
-    extern int timproc_uso_b5_func_07ACE0();
-    extern int timproc_uso_b5_func_0034E8();
-    extern s32 *timproc_uso_b5_func_047484(s32 arg0, s32 *arg1, f32 arg2, f32 arg3, f32 arg4);
+    extern int gen_imp_mem_new();
+    extern int gen_imp_pad_open();
+    extern int gen_imp_input_addPad_00011C70();
+    extern int gen_imp_Node_ctor();
+    extern int gen_imp_MNode_initMatrices();
+    extern int gen_imp_math_mtxAddTranslation();
+    extern int gen_imp_list_append();
+    extern int gen_imp_game_create3DWindow();
+    extern s32 *gen_imp_MCamera_ctor(s32 arg0, s32 *arg1, f32 arg2, f32 arg3, f32 arg4);
     char *q;
     char *g;
     s32 *v1t;
@@ -1599,57 +1599,57 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     volatile f32 pad34;
     f32 zC[3];
 
-    if ((arg0 != 0) || ((arg0 = (s32 *)timproc_uso_b5_func_055750(0x20)) != 0)) {
+    if ((arg0 != 0) || ((arg0 = (s32 *)gen_imp_mem_new(0x20)) != 0)) {
         g = &import_80020098;
         FW(arg0, 0x0) = FW(FW(g, 0x134), 0x84);
         FW(arg0, 0x4) = FW(FW(g, 0x134), 0x80);
         FW(arg0, 0x8) = FW(FW(g, 0x134), 0x8C);
-        w = (s32 *)timproc_uso_b5_func_055750(0x80);
+        w = (s32 *)gen_imp_mem_new(0x80);
         if (w != 0) {
-            timproc_uso_b5_func_07BA00(w, arg1);
+            gen_imp_pad_open(w, arg1);
         }
-        timproc_uso_b5_func_011C70(&import_80020098, w);
-        w = (s32 *)timproc_uso_b5_func_055750(0xB4);
+        gen_imp_input_addPad_00011C70(&import_80020098, w);
+        w = (s32 *)gen_imp_mem_new(0xB4);
         if (w != 0) {
-            timproc_uso_b5_func_04C678(w, &timproc_uso_b5_D_807FE990 + 0x1120);
+            gen_imp_Node_ctor(w, &timproc_uso_b5_D_807FE990 + 0x1120);
             FW(w, 0x28) = (int)&import_80086288; /* vptr: bootup MNode_vtbl (gl_data.h) */
             v1t = (s32 *)((char *)w + 0x2C);
-            if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)timproc_uso_b5_func_055750(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)timproc_uso_b5_func_055750(4)) != 0))) {
+            if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)gen_imp_mem_new(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)gen_imp_mem_new(4)) != 0))) {
                 FW(q, 0x0) = 0;
             }
-            timproc_uso_b5_func_04D3D0(w);
+            gen_imp_MNode_initMatrices(w);
             zA[0] = 0.0f;
             zA[1] = 0.0f;
             zA[2] = 0.0f;
-            timproc_uso_b5_func_072EE8((s32 *)((char *)w + 0x30), zA);
+            gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zA);
         }
         FW(arg0, 0x14) = (int)w;
-        w = (s32 *)timproc_uso_b5_func_055750(0xB4);
+        w = (s32 *)gen_imp_mem_new(0xB4);
         if (w != 0) {
-            timproc_uso_b5_func_04C678(w, &timproc_uso_b5_D_807FE998 + 0x1128);
+            gen_imp_Node_ctor(w, &timproc_uso_b5_D_807FE998 + 0x1128);
             FW(w, 0x28) = (int)&D_00000000_a;
             v1t = (s32 *)((char *)w + 0x2C);
-            if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)timproc_uso_b5_func_055750(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)timproc_uso_b5_func_055750(4)) != 0))) {
+            if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)gen_imp_mem_new(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)gen_imp_mem_new(4)) != 0))) {
                 FW(q, 0x0) = 0;
             }
-            timproc_uso_b5_func_04D3D0(w);
+            gen_imp_MNode_initMatrices(w);
             zB[0] = 0.0f;
             zB[1] = 0.0f;
             zB[2] = 0.0f;
-            timproc_uso_b5_func_072EE8((s32 *)((char *)w + 0x30), zB);
+            gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zB);
         }
         FW(arg0, 0x10) = (int)w;
-        w = timproc_uso_b5_func_047484(0, w, 0.0f, 0.0f, 0.0f);
+        w = gen_imp_MCamera_ctor(0, w, 0.0f, 0.0f, 0.0f);
         v1t = (s32 *)FW(arg0, 0x0);
         FW(arg0, 0x18) = (int)w;
-        timproc_uso_b5_func_07ACE0((s32 *)((char *)v1t + 0x10), w);
+        gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
         if (FW(w, 0x14) != 0) {
             FW(w, 0x4) = 1;
         }
         FW(w, 0x14) = (int)v1t;
         v1t = (s32 *)FW(arg0, 0x0);
         w = (s32 *)FW(arg0, 0x10);
-        timproc_uso_b5_func_07ACE0((s32 *)((char *)v1t + 0x10), w);
+        gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
         if (FW(w, 0x14) != 0) {
             FW(w, 0x4) = 1;
         }
@@ -1658,12 +1658,12 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         zC[1] = 0.0f;
         zC[0] = 0.0f;
         zC[2] = -400.0f;
-        timproc_uso_b5_func_072EE8((s32 *)((char *)w + 0x30), zC);
+        gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zC);
         if (arg1 == (s32 *)1) {
-            w = (s32 *)timproc_uso_b5_func_0034E8(FW(&import_800201CC, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
+            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_800201CC, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
             FW(arg0, 0xC) = (int)w;
         } else {
-            w = (s32 *)timproc_uso_b5_func_0034E8(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
+            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
             FW(arg0, 0xC) = (int)w;
         }
         FW(FW(arg0, 0xC), 0x108) = 0x201;
@@ -1753,8 +1753,8 @@ extern char timproc_uso_b5_D_807FE9E4;
 extern char timproc_uso_b5_D_807FDA10;
 extern char timproc_uso_b5_D_807FD9C8;
 extern char timproc_uso_b5_D_807FD9E0;
-extern int timproc_uso_b5_func_055750();
-extern int timproc_uso_b5_func_04A188();
+extern int gen_imp_mem_new();
+extern int gen_imp_Parms_addParm();
 
 /* EXACT 2026-10-23 (agent-g run 140) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp, REPLACE_FUNC_BODY-spliced
@@ -1899,46 +1899,46 @@ char *SelItemInfo_ctor(char *arg0) {
 
     if (1) { struct TimB5Nm *q = &u0; q = &u1; q = &u2; q = &u3; q = &u4; q = &u5; q = &uE8; q = &uC0; q = &uBC; q = &uB8; }
 
-    if (arg0 != 0 || (arg0 = (char *)timproc_uso_b5_func_055750(0x108)) != 0) {
+    if (arg0 != 0 || (arg0 = (char *)gen_imp_mem_new(0x108)) != 0) {
         register char *vt;
         vt = arg0;
-        if (vt != 0 || (vt = (char *)timproc_uso_b5_func_055750(8)) != 0) {
+        if (vt != 0 || (vt = (char *)gen_imp_mem_new(8)) != 0) {
             FW(vt, 0x0) = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
             FW(vt, 0x4) = 0;
         }
         u0.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188); nm = u0;
-        if ((c = arg0 + 0x8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0),
              FW(c, 0x14) = 0, FW(c, 0x10) = 0);
         }
         u1.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C); nm = u1;
-        if ((c = arg0 + 0x20) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x20) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
         u2.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190); nm = u2;
-        if ((c = arg0 + 0x38) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x38) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
         u3.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194); nm = u3;
-        if ((c = arg0 + 0x50) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x50) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
         u4.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198); nm = u4;
-        if ((c = arg0 + 0x68) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x68) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
         u5.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C); nm = u5;
-        if ((c = arg0 + 0x80) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0x80) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), FW(c, 0x10) = 2,
              FW(c, 0x14) = 0);
         }
@@ -1948,8 +1948,8 @@ char *SelItemInfo_ctor(char *arg0) {
         v104.x = 0; v104.y = 0; v104.z = 0;
         cp0 = v104; cp1 = vF8; cp2 = vEC;
         nm = uE8;
-        if ((cA = arg0 + 0x98) != 0 || (cA = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
-            timproc_uso_b5_func_04A188(cA, arg0, nm, 1);
+        if ((cA = arg0 + 0x98) != 0 || (cA = (char *)gen_imp_mem_new(0x20)) != 0) {
+            gen_imp_Parms_addParm(cA, arg0, nm, 1);
             FW(cA, 0xC) = (int)((char *)&D_timb5_32C8_vv0 + 0x170);
             FW(cA, 0x1C) = 0;
             t = cp0;
@@ -1965,8 +1965,8 @@ char *SelItemInfo_ctor(char *arg0) {
         uC0.v = B5_NAME(timproc_uso_b5_D_807FEA14, 0x11A4);
         cp0 = vDC; cp1 = vD0; cp2 = vC4;
         nm = uC0;
-        if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
-            timproc_uso_b5_func_04A188(cB, arg0, nm, 1);
+        if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)gen_imp_mem_new(0x20)) != 0) {
+            gen_imp_Parms_addParm(cB, arg0, nm, 1);
             FW(cB, 0xC) = (int)((char *)&D_timb5_32C8_vv1 + 0x170);
             FW(cB, 0x1C) = 0;
             t = cp0;
@@ -1975,15 +1975,15 @@ char *SelItemInfo_ctor(char *arg0) {
             *(f32 *)(cB + 0x18) = t.z;
         }
         uBC.v = B5_NAME(timproc_uso_b5_D_807FEA18, 0x11A8); nm = uBC;
-        if ((c = arg0 + 0xD8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0xD8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
             FW(c, 0x14) = 0;
             *(f32 *)(c + 0x10) = 0.0f;
         }
         uB8.v = B5_NAME(timproc_uso_b5_D_807FEA1C, 0x11AC); nm = uB8;
-        if ((c = arg0 + 0xF0) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-            timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+        if ((c = arg0 + 0xF0) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+            gen_imp_Parms_addParm(c, arg0, nm, 1);
             FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
             FW(c, 0x14) = 0;
             *(f32 *)(c + 0x10) = 0.0f;
@@ -3431,7 +3431,7 @@ extern void SelectWin_state6_00007B2C();
 extern void SelectWin_state7_00007E34();
 extern void SelectWin_state8_000080F4();
 extern void SelectWin_state9_00008468();
-extern f32 timproc_uso_b5_func_07E7B0(f32);
+extern f32 gen_imp_fsin(f32);
 /* 00001CF0, 000038B0, 0000396C, 000073C0, 000085E0, 00008A38, 00008AD4
  * are defined elsewhere in this TU with real prototypes. */
 int SelectionMgr_otherWin_00001CF0();
@@ -3637,7 +3637,7 @@ void SelectWin_display_00006394(char *arg0) {
         temp_v1_10 = FW(temp_v0_13, 0x28);
         ((GP_00006394)FW(temp_v1_10, 0xCC))(*(s16*)((char*)temp_v1_10 + 0xC8) + temp_v0_13, arg0, var_a2);
     }
-    timproc_uso_b5_func_04CCA8(arg0);
+    gen_imp_Node_display(arg0);
 }
 
 void SelectWin_loadData_0000685C(char *a0) {
@@ -3951,11 +3951,11 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_startGam
  * (`base + idx*4`) while every other row stays index-first -- the operand order
  * picks the t-reg ring position of the loads. */
 extern int import_000A53B4();
-extern void timproc_uso_b5_func_00F954();
+extern void gen_imp_Process_fadeOut_0000F954();
 void SelectWin_commitSelection_00006C00(char *scr) {
     if (!SelectionMgr_canCommit_00001D1C((char *)SELWIN(scr)->owner, SELWIN(scr)->player)) return;
     import_000A53B4(scr);
-    timproc_uso_b5_func_00F954(SELWIN(scr)->fadeProc, -1, 0);
+    gen_imp_Process_fadeOut_0000F954(SELWIN(scr)->fadeProc, -1, 0);
     *(int *)(&import_80020098 + 0x40) = *(int *)(&import_80020098 + 0x48);
 #define E6C00(tb, ix, f) (*(int *)(*(char **)(*(int *)(scr + (ix)) * 4 + *(char **)((char *)SELWIN(scr)->itemsMgr + (tb)) + 0x3C) + (f)))
     *SELWIN(scr)->out[0] = (s32 *)(E6C00(0x4C, 0x3DC, 0x2B0));
@@ -4267,7 +4267,7 @@ void SelectWin_state0_00007078(char *arg0) {
 // so the "baked relocs" cap does not apply (and the bundle note above is
 // stale: 73C0 is its own symbol). docs/MATCHING_WORKFLOW.md
 // #yay0-block-unlinked-in-unit-jal-f360.
-extern int timproc_uso_b5_func_011E00();
+extern int gen_imp_input_checkPressed_00011E00();
 void SelectWin_moveCursorPrev_00006E08(char *arg0, s32 arg1);
 void SelectWin_state1_000072D0(char *scr) {
     float cur;
@@ -4292,7 +4292,7 @@ check_target:
             }
         }
     }
-    if (timproc_uso_b5_func_011E00(&import_80020098, 0x14203) != 0) {
+    if (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x14203) != 0) {
         SelectWin_moveCursorPrev_00006E08(scr, 1);
         e = (char *)SelectWin_curItem_00008A38(scr);
         vt = *(char **)(e + 0x28);
@@ -4630,7 +4630,7 @@ void SelectWin_state5_000079A4(char *scr) {
         }
     }
     if (SELWIN(scr)->zoomTimer != 0) {
-        if (timproc_uso_b5_func_011E00(&import_80020098, 0x100) == 0) {
+        if (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x100) == 0) {
             return;
         }
     }
@@ -5013,7 +5013,7 @@ void SelectWin_state7_00007E34(char *arg0) {
 typedef char *(*GP_000080F4)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE748;
-extern int timproc_uso_b5_func_011E00();
+extern int gen_imp_input_checkPressed_00011E00();
 int SelectWin_chosenItem_00008A90();
 void SelectWin_chooseCurrent_00008ABC();
 int SelectWin_nextStageBit_000087F4(char *a0);
@@ -5049,7 +5049,7 @@ void SelectWin_state8_000080F4(char *arg0) {
         ((GP_000080F4)FW(FW(e, 0x28), 0x7C))(*(s16*)((char *)FW(e, 0x28) + 0x78) + e);
     }
     sp28 = ((flags != 0) == 0);
-    if ((sp28 != 0) && (q != 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x100) != 0)) {
+    if ((sp28 != 0) && (q != 0) && (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x100) != 0)) {
         e = (char *) SelectWin_chosenItem_00008A90((int *) arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x8C))(*(s16*)((char *)FW(e, 0x28) + 0x88) + e, 0);
         SelectWin_chooseCurrent_00008ABC((int *) arg0);
@@ -5069,16 +5069,16 @@ void SelectWin_state8_000080F4(char *arg0) {
         SelectWin_beginTransition_00008688(arg0, 0);
         return;
     }
-    if ((busy == 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x14003) != 0)) {
+    if ((busy == 0) && (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x14003) != 0)) {
         SelectWin_moveCursorPrev_00006E08(arg0, 1);
     }
     import_000A7ECC(&import_80020098, SELWIN(arg0)->player);
-    if ((sp28 != 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x200) != 0)) {
+    if ((sp28 != 0) && (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x200) != 0)) {
         if (SelectWin_prevStageBit_000088A0(arg0) == 0) {
             SelectWin_commitSelection_00006C00(arg0);
             return;
         }
-        timproc_uso_b5_func_0002FC(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
+        gen_imp_snd_sendEvent(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
         if ((SELWIN(arg0)->numPlayers == 2) && ((SELWIN(arg0)->player + 1) == FW(FW(arg0, 0x41C), 0x48))) {
             flags = 0;
             busy = 0;
@@ -5744,7 +5744,7 @@ void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
 // (alloc-or-reuse); returns self. Default build is INCLUDE_ASM.
 //
 // 2026-06-20: rewrote the NM body to reference the RESOLVED .s symbols
-// (timproc_uso_b5_func_055750/002C94/04C678/002060/07ACE0/0000131C/
+// (gen_imp_mem_new/002C94/04C678/002060/07ACE0/0000131C/
 // 0000283C + import_800201CC/8005C2CC/8005C39C/8005EBA4/800200A8/
 // 80020098 + timproc_uso_b5_D_807FEBA4/B0/B4) instead of the old fake
 // D_8DB4_* aliases. Word-exact (reloc-filtered) went 111 -> 18 non-reloc
@@ -5774,11 +5774,11 @@ void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
 // once the cached-base register is gone.
 extern struct C2CC_8DB4 { char _a[0x1C4]; int f1C4; } import_8005C2CC;
 char *gen_createScene_00008DB4(char *self, int a1) {
-    extern int timproc_uso_b5_func_055750();
-    extern int timproc_uso_b5_func_002C94();
-    extern int timproc_uso_b5_func_04C678();
-    extern int timproc_uso_b5_func_002060();
-    extern int timproc_uso_b5_func_07ACE0();
+    extern int gen_imp_mem_new();
+    extern int gen_imp_game_initDdm_00002C94();
+    extern int gen_imp_Node_ctor();
+    extern int gen_imp_game_setParams_00002060();
+    extern int gen_imp_list_append();
     extern char import_800201CC;
     extern char import_8005C39C;
     extern char import_8005EBA4;
@@ -5793,12 +5793,12 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     volatile int pad[6];
     char *p39c;
     if (self == 0) {
-        self = (char *)timproc_uso_b5_func_055750(0xC);
+        self = (char *)gen_imp_mem_new(0xC);
         if (self == 0) {
             goto end;
         }
     }
-    timproc_uso_b5_func_002C94(*(char **)((char *)&import_800201CC + 0x134), 2);
+    gen_imp_game_initDdm_00002C94(*(char **)((char *)&import_800201CC + 0x134), 2);
     {
         extern char import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
         *(int *)((char *)&import_8005C2CC_w + 0x1C4) =
@@ -5812,22 +5812,22 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     ((float *)p39c)[1] = 0.0f;
     ((float *)p39c)[0] = 0.0f;
     *(float *)((char *)&import_8005EBA4 + 0x2A0) = 0.0f;
-    A = (char *)timproc_uso_b5_func_04C678(0, (char *)&timproc_uso_b5_D_807FEBA4 + 0x1334);
-    B = (char *)timproc_uso_b5_func_04C678(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
-    C = (char *)timproc_uso_b5_func_04C678(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
-    timproc_uso_b5_func_002060(*(char **)((char *)&import_800201CC + 0x134), C, B, A, 0, 0);
-    timproc_uso_b5_func_07ACE0(A + 0x10, B);
+    A = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBA4 + 0x1334);
+    B = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
+    C = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
+    gen_imp_game_setParams_00002060(*(char **)((char *)&import_800201CC + 0x134), C, B, A, 0, 0);
+    gen_imp_list_append(A + 0x10, B);
     if (*(char **)(B + 0x14) != 0) {
         *(int *)(B + 0x4) = 1;
     }
     *(char **)(B + 0x14) = A;
-    timproc_uso_b5_func_07ACE0(A + 0x10, C);
+    gen_imp_list_append(A + 0x10, C);
     if (1) { }
     if (*(char **)(C + 0x14) != 0) {
         *(int *)(C + 0x4) = 1;
     }
     *(char **)(C + 0x14) = A;
-    timproc_uso_b5_func_07ACE0((char *)&import_800200A8 + 0x10, A);
+    gen_imp_list_append((char *)&import_800200A8 + 0x10, A);
     if (*(char **)(A + 0x14) != 0) {
         *(int *)(A + 0x4) = 1;
     }
@@ -5916,14 +5916,14 @@ extern char timproc_uso_b5_D_807FDB64;
 extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_80807FB8;
 extern struct DBlk_8D38 import_800201EC;
-extern int timproc_uso_b5_func_055750();
-extern int timproc_uso_b5_func_04C678();
-extern int timproc_uso_b5_func_07ACE0();
-extern int timproc_uso_b5_func_04DFFC();
-extern int timproc_uso_b5_func_05D0E0();
-extern int timproc_uso_b5_func_04C774();
-extern void timproc_uso_b5_func_048E7C();
-extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
+extern int gen_imp_mem_new();
+extern int gen_imp_Node_ctor();
+extern int gen_imp_list_append();
+extern int gen_imp_MNode_addChild();
+extern int gen_imp_PolyShape_ctor();
+extern int gen_imp_Node_Load();
+extern void gen_imp_dbg_printf();
+extern int gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
 extern int CommonInfo_add_0000A95C();
 void CommonInfo_init_0000A928(int *a0);
 extern char import_80063D04[];
@@ -6144,13 +6144,13 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     f32 fv;
 
     var_s2 = (char *) arg0;
-    if ((arg0 != 0) || (pv0 = timproc_uso_b5_func_055750(0x60), var_s2 = pv0, (pv0 != 0))) {
-        timproc_uso_b5_func_04C678(var_s2, timproc_uso_b5_D_807FEBB8 + 0x1348);
+    if ((arg0 != 0) || (pv0 = gen_imp_mem_new(0x60), var_s2 = pv0, (pv0 != 0))) {
+        gen_imp_Node_ctor(var_s2, timproc_uso_b5_D_807FEBB8 + 0x1348);
         M2C_FIELD(var_s2, s8 **, 0x28) = timproc_uso_b5_D_807FE5F4;
         M2C_FIELD(var_s2, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FE5F4 + 0x1350);
-        pv0 = timproc_uso_b5_func_055750(0x30);
+        pv0 = gen_imp_mem_new(0x30);
         if (pv0 != 0) {
-            timproc_uso_b5_func_04C678(pv0, timproc_uso_b5_D_807FEBCC + 0x135C);
+            gen_imp_Node_ctor(pv0, timproc_uso_b5_D_807FEBCC + 0x135C);
             M2C_FIELD(pv0, s8 **, 0x28) = timproc_uso_b5_D_807FEBD4;
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FEBD4 + 0x1364);
             M2C_FIELD(pv0, s32 **, 0x2C) = var_s2;
@@ -6158,31 +6158,31 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         M2C_FIELD(var_s2, s32 **, 0x50) = pv0;
         pa0 = var_s2 + 0x10;
         sp50 = pa0;
-        timproc_uso_b5_func_07ACE0(pa0, pv0);
+        gen_imp_list_append(pa0, pv0);
         if (M2C_FIELD(pv0, s32 **, 0x14) != 0) {
             M2C_FIELD(pv0, s32 *, 4) = 1;
         }
         M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
         CommonInfo_init_0000A928(var_s2);
-        pv0 = timproc_uso_b5_func_055750(0x2C);
+        pv0 = gen_imp_mem_new(0x2C);
         if (pv0 != 0) {
-            timproc_uso_b5_func_04C678(pv0, timproc_uso_b5_D_807FEBE0 + 0x1370);
+            gen_imp_Node_ctor(pv0, timproc_uso_b5_D_807FEBE0 + 0x1370);
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FEBE8 + 0xCC4);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FEBE8 + 0x1378);
         }
         is1 = M2C_FIELD(var_s2, s32 *, 0x30);
         M2C_FIELD(var_s2, char **, 0x38) = pv0;
-        timproc_uso_b5_func_07ACE0(is1 + 0x10, pv0);
+        gen_imp_list_append(is1 + 0x10, pv0);
         if (M2C_FIELD(pv0, s32 *, 0x14) != 0) {
             M2C_FIELD(pv0, s32 *, 4) = 1;
         }
         M2C_FIELD(pv0, s32 *, 0x14) = is1;
         if (M2C_FIELD((&import_800200CC), s32 *, 0x34) != 2) {
-            pv0 = timproc_uso_b5_func_055750(0x2BC);
+            pv0 = gen_imp_mem_new(0x2BC);
             if (pv0 != 0) {
                 ps0 = pv0;
-                if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
-                    timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FEBF4 + 0x1384);
+                if ((pv0 != 0) || (pw0 = gen_imp_mem_new(0x2B8), ps0 = pw0, (pw0 != 0))) {
+                    gen_imp_Node_ctor(ps0, timproc_uso_b5_D_807FEBF4 + 0x1384);
                     M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
                     SelItemParms_ctor(ps0 + 0x2C);
                     SelItemInfo_ctor(ps0 + 0x194);
@@ -6192,19 +6192,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 SelItem_reset_00003890(pv0);
             }
             M2C_FIELD(var_s2, char **, 0x5C) = pv0;
-            timproc_uso_b5_func_07ACE0(sp50, pv0);
+            gen_imp_list_append(sp50, pv0);
             if (M2C_FIELD(pv0, s32 **, 0x14) != 0) {
                 M2C_FIELD(pv0, s32 *, 4) = 1;
             }
             M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
-            pv0 = timproc_uso_b5_func_055750(0x168);
+            pv0 = gen_imp_mem_new(0x168);
             if (pv0 != 0) {
-                timproc_uso_b5_func_0546DC(pv0, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
+                gen_imp_QNode_ctor(pv0, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
                 M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FEC10 + 0x4AC);
                 M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FEC10 + 0x13A0);
-                pw0 = timproc_uso_b5_func_055750(0x16C);
+                pw0 = gen_imp_mem_new(0x16C);
                 if (pw0 != 0) {
-                    timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FEC18 + 0x13A8, 0.0f, 0.0f, 0.0f);
+                    gen_imp_QNode_ctor(pw0, timproc_uso_b5_D_807FEC18 + 0x13A8, 0.0f, 0.0f, 0.0f);
                     fv = M2C_FIELD((&import_80807FB8), f32 *, 0x23C);
                     M2C_FIELD(pw0, s32 *, 0x120) = 1;
                     M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
@@ -6214,7 +6214,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                     M2C_FIELD(pw0, f32 *, 0x124) = 1.0f;
                 }
                 M2C_FIELD(pv0, s8 **, 0x108) = pw0;
-                timproc_uso_b5_func_04DFFC(pv0, pw0);
+                gen_imp_MNode_addChild(pv0, pw0);
                 ps0 = M2C_FIELD(pv0, s8 **, 0x108);
                 M2C_FIELD(ps0, f32 *, 0xB4) = 0.0;
                 M2C_FIELD(ps0, f32 *, 0xB8) = 0.0;
@@ -6222,20 +6222,20 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
                 spC0 = M2C_FIELD(f8fc8_ee6c_sb1, s32 *, 4) & 0x80000;
                 M2C_FIELD(import_800664C4, s32 *, 4) = (s32) (((M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000) & ~2);
-                M2C_FIELD(pv0, char **, 0x148) = timproc_uso_b5_func_05D0E0(0, import_808064C4 + 0x13C0, (s32) import_807664C4, 0);
-                M2C_FIELD(pv0, char **, 0x14C) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807F8434 + 0x13CC, (s32) import_80768434, 0);
-                M2C_FIELD(pv0, char **, 0x150) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, (s32) import_8076A3A4, 0);
-                M2C_FIELD(pv0, char **, 0x154) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FC314 + 0x13E4, (s32) import_8076C314, 0);
-                M2C_FIELD(pv0, char **, 0x158) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FE284 + 0x13F0, (s32) import_8076E284, 0);
-                M2C_FIELD(pv0, char **, 0x15C) = timproc_uso_b5_func_05D0E0(0, import_808001F4 + 0x13FC, (s32) import_807701F4, 0);
-                M2C_FIELD(pv0, char **, 0x160) = timproc_uso_b5_func_05D0E0(0, import_80802164 + 0x1408, (s32) import_80772164, 0);
-                pw0 = timproc_uso_b5_func_05D0E0(0, import_808040D4 + 0x1414, (s32) import_807740D4, 0);
+                M2C_FIELD(pv0, char **, 0x148) = gen_imp_PolyShape_ctor(0, import_808064C4 + 0x13C0, (s32) import_807664C4, 0);
+                M2C_FIELD(pv0, char **, 0x14C) = gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807F8434 + 0x13CC, (s32) import_80768434, 0);
+                M2C_FIELD(pv0, char **, 0x150) = gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, (s32) import_8076A3A4, 0);
+                M2C_FIELD(pv0, char **, 0x154) = gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FC314 + 0x13E4, (s32) import_8076C314, 0);
+                M2C_FIELD(pv0, char **, 0x158) = gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FE284 + 0x13F0, (s32) import_8076E284, 0);
+                M2C_FIELD(pv0, char **, 0x15C) = gen_imp_PolyShape_ctor(0, import_808001F4 + 0x13FC, (s32) import_807701F4, 0);
+                M2C_FIELD(pv0, char **, 0x160) = gen_imp_PolyShape_ctor(0, import_80802164 + 0x1408, (s32) import_80772164, 0);
+                pw0 = gen_imp_PolyShape_ctor(0, import_808040D4 + 0x1414, (s32) import_807740D4, 0);
                 M2C_FIELD(pv0, s32 *, 0x13C) = 8;
                 M2C_FIELD(pv0, char **, 0x164) = pw0;
                 M2C_FIELD(pv0, s32 *, 0x140) = 0;
                 pl = pv0;
                 for (iv = 0; iv < M2C_FIELD(pv0, s32 *, 0x13C); iv++) {
-                    timproc_uso_b5_func_04DFFC(pv0, M2C_FIELD(pl, s8 **, 0x148));
+                    gen_imp_MNode_addChild(pv0, M2C_FIELD(pl, s8 **, 0x148));
                     pa1 = M2C_FIELD(pl, s8 **, 0x148) + 0x18;
                     pl += 4;
                     *(s32 *)pa1 &= ~4;
@@ -6286,7 +6286,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(M2C_FIELD(M2C_FIELD(var_s2, char **, 0x5C), s8 **, 0x2B8), f32 *, 0x128) = (f32) DF_26C;
             ps0 = M2C_FIELD(var_s2, char **, 0x38);
             ps1 = M2C_FIELD(M2C_FIELD(var_s2, char **, 0x5C), s8 **, 0x2B8);
-            timproc_uso_b5_func_07ACE0(ps0 + 0x10, ps1);
+            gen_imp_list_append(ps0 + 0x10, ps1);
             if (M2C_FIELD(ps1, char **, 0x14) != 0) {
                 M2C_FIELD(ps1, s32 *, 4) = 1;
             }
@@ -6294,12 +6294,12 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         }
         pv1 = M2C_FIELD(var_s2, char **, 0x38);
         spE0 = pv1;
-        pv0 = timproc_uso_b5_func_055750(0x70);
+        pv0 = gen_imp_mem_new(0x70);
         if (pv0 != 0) {
             ps1 = pv0;
-            if ((pv0 != 0) || (spE0 = pv1, pw0 = timproc_uso_b5_func_055750(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
+            if ((pv0 != 0) || (spE0 = pv1, pw0 = gen_imp_mem_new(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
                 spE0 = pv1;
-                timproc_uso_b5_func_04C678(ps1, timproc_uso_b5_D_807FEC90 + 0x1420);
+                gen_imp_Node_ctor(ps1, timproc_uso_b5_D_807FEC90 + 0x1420);
                 pw1 = pv1;
                 M2C_FIELD(ps1, s8 **, 0x28) = (s8 *) (f8fc8_e304_1 + 0xA94);
             }
@@ -6313,19 +6313,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         }
         sp12C = pv0;
         CommonInfo_add_0000A95C(var_s2, pv0);
-        timproc_uso_b5_func_07ACE0(sp50, sp12C);
+        gen_imp_list_append(sp50, sp12C);
         if (M2C_FIELD(sp12C, s32 **, 0x14) != 0) {
             M2C_FIELD(sp12C, s32 *, 4) = 1;
         }
         M2C_FIELD(sp12C, s32 **, 0x14) = var_s2;
         pv1 = M2C_FIELD(var_s2, char **, 0x38);
         spE0 = pv1;
-        pv0 = timproc_uso_b5_func_055750(0x70);
+        pv0 = gen_imp_mem_new(0x70);
         if (pv0 != 0) {
             ps1 = pv0;
-            if ((pv0 != 0) || (spE0 = pv1, pw0 = timproc_uso_b5_func_055750(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
+            if ((pv0 != 0) || (spE0 = pv1, pw0 = gen_imp_mem_new(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
                 spE0 = pv1;
-                timproc_uso_b5_func_04C678(ps1, timproc_uso_b5_D_807FECA8 + 0x1438);
+                gen_imp_Node_ctor(ps1, timproc_uso_b5_D_807FECA8 + 0x1438);
                 pw1 = pv1;
                 M2C_FIELD(ps1, s8 **, 0x28) = (s8 *) (f8fc8_e304_2 + 0xA94);
             }
@@ -6339,19 +6339,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         }
         sp128 = pv0;
         CommonInfo_add_0000A95C(var_s2, pv0);
-        timproc_uso_b5_func_07ACE0(sp50, sp128);
+        gen_imp_list_append(sp50, sp128);
         if (M2C_FIELD(sp128, s32 **, 0x14) != 0) {
             M2C_FIELD(sp128, s32 *, 4) = 1;
         }
         M2C_FIELD(sp128, s32 **, 0x14) = var_s2;
         pv1 = M2C_FIELD(var_s2, char **, 0x38);
         spE0 = pv1;
-        pv0 = timproc_uso_b5_func_055750(0x70);
+        pv0 = gen_imp_mem_new(0x70);
         if (pv0 != 0) {
             ps1 = pv0;
-            if ((pv0 != 0) || (spE0 = pv1, pw0 = timproc_uso_b5_func_055750(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
+            if ((pv0 != 0) || (spE0 = pv1, pw0 = gen_imp_mem_new(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
                 spE0 = pv1;
-                timproc_uso_b5_func_04C678(ps1, timproc_uso_b5_D_807FECBC + 0x144C);
+                gen_imp_Node_ctor(ps1, timproc_uso_b5_D_807FECBC + 0x144C);
                 pw1 = pv1;
                 M2C_FIELD(ps1, s8 **, 0x28) = (s8 *) (f8fc8_e304_3 + 0xA94);
             }
@@ -6365,19 +6365,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         }
         sp124 = pv0;
         CommonInfo_add_0000A95C(var_s2, pv0);
-        timproc_uso_b5_func_07ACE0(sp50, sp124);
+        gen_imp_list_append(sp50, sp124);
         if (M2C_FIELD(sp124, s32 **, 0x14) != 0) {
             M2C_FIELD(sp124, s32 *, 4) = 1;
         }
         M2C_FIELD(sp124, s32 **, 0x14) = var_s2;
         pv1 = M2C_FIELD(var_s2, char **, 0x38);
         spE0 = pv1;
-        pv0 = timproc_uso_b5_func_055750(0x70);
+        pv0 = gen_imp_mem_new(0x70);
         if (pv0 != 0) {
             ps1 = pv0;
-            if ((pv0 != 0) || (spE0 = pv1, pw0 = timproc_uso_b5_func_055750(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
+            if ((pv0 != 0) || (spE0 = pv1, pw0 = gen_imp_mem_new(0x70), pw1 = pv1, ps1 = pw0, (pw0 != 0))) {
                 spE0 = pv1;
-                timproc_uso_b5_func_04C678(ps1, timproc_uso_b5_D_807FECD0 + 0x1460);
+                gen_imp_Node_ctor(ps1, timproc_uso_b5_D_807FECD0 + 0x1460);
                 pw1 = pv1;
                 M2C_FIELD(ps1, s8 **, 0x28) = (s8 *) (f8fc8_e304_4 + 0xA94);
             }
@@ -6391,16 +6391,16 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         }
         sp120 = pv0;
         CommonInfo_add_0000A95C(var_s2, pv0);
-        timproc_uso_b5_func_07ACE0(sp50, sp120);
+        gen_imp_list_append(sp50, sp120);
         if (M2C_FIELD(sp120, s32 **, 0x14) != 0) {
             M2C_FIELD(sp120, s32 *, 4) = 1;
         }
         M2C_FIELD(sp120, s32 **, 0x14) = var_s2;
-        pv0 = timproc_uso_b5_func_055750(0x2BC);
+        pv0 = gen_imp_mem_new(0x2BC);
         if (pv0 != 0) {
             ps0 = pv0;
-            if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
-                timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FECE4 + 0x1474);
+            if ((pv0 != 0) || (pw0 = gen_imp_mem_new(0x2B8), ps0 = pw0, (pw0 != 0))) {
+                gen_imp_Node_ctor(ps0, timproc_uso_b5_D_807FECE4 + 0x1474);
                 M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
                 SelItemParms_ctor(ps0 + 0x2C);
                 SelItemInfo_ctor(ps0 + 0x194);
@@ -6410,19 +6410,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             SelItem_reset_00003890(pv0);
         }
         M2C_FIELD(var_s2, char **, 0x54) = pv0;
-        timproc_uso_b5_func_07ACE0(sp50, pv0);
+        gen_imp_list_append(sp50, pv0);
         if (M2C_FIELD(pv0, s32 **, 0x14) != 0) {
             M2C_FIELD(pv0, s32 *, 4) = 1;
         }
         M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
-        pv0 = timproc_uso_b5_func_055750(0x168);
+        pv0 = gen_imp_mem_new(0x168);
         if (pv0 != 0) {
-            timproc_uso_b5_func_0546DC(pv0, timproc_uso_b5_D_807FECF8 + 0x1488, (f32)0.0, 0.0f, 0.0f);
+            gen_imp_QNode_ctor(pv0, timproc_uso_b5_D_807FECF8 + 0x1488, (f32)0.0, 0.0f, 0.0f);
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FED00 + 0x4AC);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FED00 + 0x1490);
-            pw0 = timproc_uso_b5_func_055750(0x16C);
+            pw0 = gen_imp_mem_new(0x16C);
             if (pw0 != 0) {
-                timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FED08 + 0x1498, 0.0f, 0.0f, 0.0f);
+                gen_imp_QNode_ctor(pw0, timproc_uso_b5_D_807FED08 + 0x1498, 0.0f, 0.0f, 0.0f);
                 fv = M2C_FIELD((&import_80807FB8), f32 *, 0x270);
                 M2C_FIELD(pw0, s32 *, 0x120) = 1;
                 M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
@@ -6432,7 +6432,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(pw0, f32 *, 0x124) = 1.0f;
             }
             M2C_FIELD(pv0, s8 **, 0x108) = pw0;
-            timproc_uso_b5_func_04DFFC(pv0, pw0);
+            gen_imp_MNode_addChild(pv0, pw0);
             pa1 = M2C_FIELD(pv0, s8 **, 0x108);
             M2C_FIELD(pa1, f32 *, 0xB4) = 0.0;
             M2C_FIELD(pa1, f32 *, 0xB8) = 0.0;
@@ -6444,13 +6444,13 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 if (1) { fl |= 2; }
                 M2C_FIELD(import_80063D04, s32 *, 4) = fl;
             }
-            pw0 = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, (s32) timproc_uso_b5_D_807E3D04, 0);
+            pw0 = gen_imp_PolyShape_ctor(0, import_80803D04 + 0x14A4, (s32) timproc_uso_b5_D_807E3D04, 0);
             M2C_FIELD(pv0, s32 *, 0x13C) = 1;
             M2C_FIELD(pv0, char **, 0x148) = pw0;
             M2C_FIELD(pv0, s32 *, 0x140) = 0;
             pl = pv0;
             for (iv = 0; iv < M2C_FIELD(pv0, s32 *, 0x13C); iv++) {
-                timproc_uso_b5_func_04DFFC(pv0, M2C_FIELD(pl, s8 **, 0x148));
+                gen_imp_MNode_addChild(pv0, M2C_FIELD(pl, s8 **, 0x148));
                 pa1 = M2C_FIELD(pl, s8 **, 0x148) + 0x18;
                 pl += 4;
                 *(s32 *)pa1 &= ~4;
@@ -6501,16 +6501,16 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         M2C_FIELD(M2C_FIELD(M2C_FIELD(var_s2, char **, 0x54), s8 **, 0x2B8), f32 *, 0x128) = (f32) DF_2AC;
         ps0 = M2C_FIELD(var_s2, char **, 0x38);
         ps1 = M2C_FIELD(M2C_FIELD(var_s2, char **, 0x54), s8 **, 0x2B8);
-        timproc_uso_b5_func_07ACE0(ps0 + 0x10, ps1);
+        gen_imp_list_append(ps0 + 0x10, ps1);
         if (M2C_FIELD(ps1, char **, 0x14) != 0) {
             M2C_FIELD(ps1, s32 *, 4) = 1;
         }
         M2C_FIELD(ps1, char **, 0x14) = ps0;
-        pv0 = timproc_uso_b5_func_055750(0x2BC);
+        pv0 = gen_imp_mem_new(0x2BC);
         if (pv0 != 0) {
             ps0 = pv0;
-            if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
-                timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FED80 + 0x1510);
+            if ((pv0 != 0) || (pw0 = gen_imp_mem_new(0x2B8), ps0 = pw0, (pw0 != 0))) {
+                gen_imp_Node_ctor(ps0, timproc_uso_b5_D_807FED80 + 0x1510);
                 M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
                 SelItemParms_ctor(ps0 + 0x2C);
                 SelItemInfo_ctor(ps0 + 0x194);
@@ -6520,19 +6520,19 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             SelItem_reset_00003890(pv0);
         }
         M2C_FIELD(var_s2, char **, 0x58) = pv0;
-        timproc_uso_b5_func_07ACE0(sp50, pv0);
+        gen_imp_list_append(sp50, pv0);
         if (M2C_FIELD(pv0, s32 **, 0x14) != 0) {
             M2C_FIELD(pv0, s32 *, 4) = 1;
         }
         M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
-        pv0 = timproc_uso_b5_func_055750(0x168);
+        pv0 = gen_imp_mem_new(0x168);
         if (pv0 != 0) {
-            timproc_uso_b5_func_0546DC(pv0, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
+            gen_imp_QNode_ctor(pv0, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FED9C + 0x4AC);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FED9C + 0x152C);
-            pw0 = timproc_uso_b5_func_055750(0x16C);
+            pw0 = gen_imp_mem_new(0x16C);
             if (pw0 != 0) {
-                timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f);
+                gen_imp_QNode_ctor(pw0, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f);
                 M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                 M2C_FIELD(pw0, f32 *, 0x108) = (f32) DF_2B0;
                 M2C_FIELD(pw0, f32 *, 0x10C) = (f32) DF_2B4;
@@ -6541,7 +6541,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(pw0, f32 *, 0x124) = 1.0f;
             }
             M2C_FIELD(pv0, s8 **, 0x108) = pw0;
-            timproc_uso_b5_func_04DFFC(pv0, pw0);
+            gen_imp_MNode_addChild(pv0, pw0);
             pa1 = M2C_FIELD(pv0, s8 **, 0x108);
             M2C_FIELD(pa1, f32 *, 0xB4) = 0.0;
             M2C_FIELD(pa1, f32 *, 0xB8) = 0.0;
@@ -6554,13 +6554,13 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(import_80063D04, s32 *, 4) = fl;
     if (arg0) {}
             }
-            pw0 = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, (s32) f8fc8_e3d04_2, 0);
+            pw0 = gen_imp_PolyShape_ctor(0, import_80803D04 + 0x1540, (s32) f8fc8_e3d04_2, 0);
             M2C_FIELD(pv0, s32 *, 0x13C) = 1;
             M2C_FIELD(pv0, char **, 0x148) = pw0;
             M2C_FIELD(pv0, s32 *, 0x140) = 0;
             pl = pv0;
             for (iv = 0; iv < M2C_FIELD(pv0, s32 *, 0x13C); iv++) {
-                timproc_uso_b5_func_04DFFC(pv0, M2C_FIELD(pl, s8 **, 0x148));
+                gen_imp_MNode_addChild(pv0, M2C_FIELD(pl, s8 **, 0x148));
                 pa1 = M2C_FIELD(pl, s8 **, 0x148) + 0x18;
                 pl += 4;
                 *(s32 *)pa1 &= ~4;
@@ -6611,7 +6611,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         M2C_FIELD(M2C_FIELD(M2C_FIELD(var_s2, char **, 0x58), s8 **, 0x2B8), f32 *, 0x128) = 1.0f;
         ps0 = M2C_FIELD(var_s2, char **, 0x38);
         ps1 = M2C_FIELD(M2C_FIELD(var_s2, char **, 0x58), s8 **, 0x2B8);
-        timproc_uso_b5_func_07ACE0(ps0 + 0x10, ps1);
+        gen_imp_list_append(ps0 + 0x10, ps1);
         if (M2C_FIELD(ps1, char **, 0x14) != 0) {
             M2C_FIELD(ps1, s32 *, 4) = 1;
         }
@@ -6662,7 +6662,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         spF0 = M2C_FIELD(ps1, void *(**)(void *, s32, s32, f32, f32, f32, f32, f32, f32), 0x5C)(M2C_FIELD(ps1, s16 *, 0x58) + sp120, 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
         ps1 = M2C_FIELD(sp120, char **, 0x28);
         ps0 = M2C_FIELD(ps1, void *(**)(void *, s32, s32, f32, f32, f32, f32, f32, f32), 0x5C)(M2C_FIELD(ps1, s16 *, 0x58) + sp120, 1, 3, -220.0f, 200.0f, -400.0f, (f32)0.0, 0.0f, 0.0f);
-        timproc_uso_b5_func_048E7C(timproc_uso_b5_D_807FEE1C + 0x15AC, M2C_FIELD(M2C_FIELD(((char *)&import_800201EC), char **, 0x154), u16 *, 2));
+        gen_imp_dbg_printf(timproc_uso_b5_D_807FEE1C + 0x15AC, M2C_FIELD(M2C_FIELD(((char *)&import_800201EC), char **, 0x154), u16 *, 2));
         tu = M2C_FIELD(M2C_FIELD(((char *)&import_800201EC), char **, 0x154), u16 *, 2);
         switch (tu) {
         case 3:
@@ -6676,8 +6676,8 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(ps0, f32 *, 0x2A4) = 0.0f;
             break;
         }
-        timproc_uso_b5_func_04C774(var_s2, 1, arg1);
-        timproc_uso_b5_func_04C774(M2C_FIELD(var_s2, s32 **, 0x50), 1, arg2);
+        gen_imp_Node_Load(var_s2, 1, arg1);
+        gen_imp_Node_Load(M2C_FIELD(var_s2, s32 **, 0x50), 1, arg2);
         ps1 = M2C_FIELD(var_s2, s8 **, 0x28);
         M2C_FIELD(ps1, s32 (**)(void *), 0x24)(M2C_FIELD(ps1, s16 *, 0x20) + var_s2);
         pv0 = M2C_FIELD(var_s2, char **, 0x38);
@@ -6831,15 +6831,15 @@ void ParmVec3_read_0000AAF4(char *a0) {
  * p1-reuse-for-arg0 + decl-order (p2,head,p1) + condition re-load forces the
  * two-web spill (frame 0x28) and the a0/v1 coloring that the prior
  * single-web/vparg body could not reach. */
-extern int timproc_uso_b5_func_051C28();
+extern int gen_imp_ColourItem_ctor();
 extern char import_8006ED80;
 void *GenItemType_create_0000AB24(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)timproc_uso_b5_func_055750(0x40);
+    p1 = (int*)gen_imp_mem_new(0x40);
     if (p1 != 0) {
-        timproc_uso_b5_func_051C28(p1);
+        gen_imp_ColourItem_ctor(p1);
         *(int*)((char*)p1 + 0x28) = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -6847,7 +6847,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        timproc_uso_b5_func_07ACE0((char*)p2 + 0x10, head);
+        gen_imp_list_append((char*)p2 + 0x10, head);
         if (*(int*)((char*)head + 0x14) != 0) {
             *(int*)((char*)head + 0x4) = 1;
         }
@@ -8030,8 +8030,8 @@ void CourseItem_setAlpha_0000C978(SelCourseItem *it, float a1) {
 //   skeleton only. Byte-match deferred. Name pre-checked: no extern
 //   reuse.
 #ifdef NON_MATCHING
-extern int timproc_uso_b5_func_01EEE4();
-extern int timproc_uso_b5_func_01EFC8();
+extern int gen_imp_Backup_ghostGetMode();
+extern int gen_imp_Backup_ghostGetCourse();
 void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, int arg3) {
     float ones[4];
     int a2v;
@@ -8052,17 +8052,17 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
             SELITEM(arg0)->info.ixn.value * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
     sp30 = 0;
-    v0r = timproc_uso_b5_func_01EEE4(*(int *)(&import_80020098 + 0x148) + 4);
+    v0r = gen_imp_Backup_ghostGetMode(*(int *)(&import_80020098 + 0x148) + 4);
     v1 = *(int *)(&import_80020098 + 0x34);
     if (v1 == 6) {
         if (v0r == 2) {
-            if (timproc_uso_b5_func_01EFC8(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
+            if (gen_imp_Backup_ghostGetCourse(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
                 sp30 = 1;
             }
         }
     } else if (v1 == 4) {
         if (v0r == 1) {
-            if (timproc_uso_b5_func_01EFC8(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
+            if (gen_imp_Backup_ghostGetCourse(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
                 sp30 = 1;
             }
         }
@@ -8506,13 +8506,13 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     char *p;
     int n;
 
-    if (0) { timproc_uso_b5_func_04DFFC(&arg1, &arg2); }
-    child = (char *)timproc_uso_b5_func_055750((char *)0x2C4);
+    if (0) { gen_imp_MNode_addChild(&arg1, &arg2); }
+    child = (char *)gen_imp_mem_new((char *)0x2C4);
     if (child != 0) {
         obj = child;
         if (obj != 0 ||
-            (obj = (char *)timproc_uso_b5_func_055750((char *)0x2B8)) != 0) {
-            timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
+            (obj = (char *)gen_imp_mem_new((char *)0x2B8)) != 0) {
+            gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
             FW(obj, 0x28) = (int)(&timproc_uso_b5_D_807FDB64 + 0);
             SelItemParms_ctor(obj + 0x2C);
             SelItemInfo_ctor(obj + 0x194);
@@ -8522,7 +8522,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         SelItem_reset_00003890(child);
     }
     r = child;
-    timproc_uso_b5_func_07ACE0(a0 + 0x10, child);
+    gen_imp_list_append(a0 + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
@@ -8533,16 +8533,16 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         FW(rr, 0x2B0) = arg2 - 1;
     }
 
-    child = (char *)timproc_uso_b5_func_055750((char *)0x148);
+    child = (char *)gen_imp_mem_new((char *)0x148);
     if (child != 0) {
-        timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEE48 + 0x15D8,
+        gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEE48 + 0x15D8,
                                    0.0f, 0.0f, 0.0f);
         FW(child, 0x28) = (int)(&timproc_uso_b5_D_807FDDEC + 0x57C);
 
-        gc = (char *)timproc_uso_b5_func_055750((char *)0x16C);
+        gc = (char *)gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
             float cf;
-            timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
+            gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
             cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
             FW(gc, 0x28) = (int)(&import_80087FB8[0]); /* vptr: bootup LightTarget_vtbl (gl_data.h) */
@@ -8554,7 +8554,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         }
 
         FW(child, 0x108) = (int)gc;
-        timproc_uso_b5_func_04DFFC(child, gc);
+        gen_imp_MNode_addChild(child, gc);
         if (1) {}
         p = (char *)FW(child, 0x108);
         *(float *)(p + 0xB4) = 0.0f;
@@ -8564,15 +8564,15 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         n = *(int *)&import_80020078;
         p += 0xB4;
 
-        p = (char *)timproc_uso_b5_func_055750((char *)0xB4);
+        p = (char *)gen_imp_mem_new((char *)0xB4);
         if (p != 0) {
             import_0010D33C(p, n);
             FW(p, 0x28) = (int)(&timproc_uso_b5_D_807FDAB8 + 0x248);
             FW(p, 0xB0) = 0;
-            timproc_uso_b5_func_077574(p);
+            gen_imp_AnimPlayer_reset(p);
         }
         FW(child, 0x10C) = (int)p;
-        timproc_uso_b5_func_04DFFC(child, p);
+        gen_imp_MNode_addChild(child, p);
 
         savedbit = D14C_EE6C(d14c_ee6c_l1) & 0x80000;
         if (1) {}
@@ -8582,10 +8582,10 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         }
         d14c_ee64_st = d14c_ee64_ld & ~8;
 
-        timproc_uso_b5_func_00B1B4(arg2, 0, 0x201, FW(child, 0x10C), child);
+        gen_imp_SnowBoarder_loadBoardModel_0000B1B4(arg2, 0, 0x201, FW(child, 0x10C), child);
         n2 = *(int *)((&timproc_uso_b5_D_807FDB4C + 0) + arg2 * 4);
         FW(child, 0x140) = n2;
-        timproc_uso_b5_func_077C44((char *)FW(child, 0x10C), n2, 0, 2, 2, 1);
+        gen_imp_AnimPlayer_start((char *)FW(child, 0x10C), n2, 0, 2, 2, 1);
         {
             char *p2 = (char *)FW(child, 0x10C);
             char *vt = (char *)FW(p2, 0x28);
@@ -8620,7 +8620,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     }
 
     obj = (char *)FW(a0, 0x38);
-    timproc_uso_b5_func_07ACE0(obj + 0x10, child);
+    gen_imp_list_append(obj + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
@@ -8734,12 +8734,12 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     char *p;
     char *gc;
 
-    if (0) { timproc_uso_b5_func_04DFFC(&gc); }
-    child = (char *)timproc_uso_b5_func_055750((char *)0x2C8);
+    if (0) { gen_imp_MNode_addChild(&gc); }
+    child = (char *)gen_imp_mem_new((char *)0x2C8);
     if (child != 0) {
         obj = child;
-        if (child != 0 || (p = (char *)timproc_uso_b5_func_055750((char *)0x2B8), obj = p, p != 0)) {
-            timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE60 + 0x15F0);
+        if (child != 0 || (p = (char *)gen_imp_mem_new((char *)0x2B8), obj = p, p != 0)) {
+            gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE60 + 0x15F0);
             {
                 char *o2 = obj;
                 FW(o2, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
@@ -8754,7 +8754,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         FW(child, 0x2B4) = 0;
     }
     r = child;
-    timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);
+    gen_imp_list_append(arg0 + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
@@ -8767,16 +8767,16 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         *(f32 *)(rr + 0x2A4) = (f32) arg1;
         obj = (char *)(a2v + 1);
     }}
-    child = (char *)timproc_uso_b5_func_055750((char *)0x138);
+    child = (char *)gen_imp_mem_new((char *)0x138);
     if (child != 0) {
-        timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEE74 + 0x1604, 0.0f, 0.0f, 0.0f);
+        gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEE74 + 0x1604, 0.0f, 0.0f, 0.0f);
         FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x444);
         FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE7C + 0x160C);
-        gc = (char *)timproc_uso_b5_func_055750((char *)0x16C);
+        gc = (char *)gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
             f32 cf;
             char *g2;
-            timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
+            gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEE84 + 0x1614, (f32) 0, (f32) 0, (f32) 0);
             g2 = gc; if (1) {}
             cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
             FW(g2, 0x120) = 1;
@@ -8787,7 +8787,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             *(f32 *)(g2 + 0x124) = 1.0f;
         }
         FW(child, 0x108) = (s32) gc;
-        timproc_uso_b5_func_04DFFC(child, gc);
+        gen_imp_MNode_addChild(child, gc);
         if (1) {}
         p = (char *)FW(child, 0x108);
         *(f32 *)(p + 0xBC) = (f32) 0;
@@ -8797,7 +8797,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         p += 0xB4;
         p = (char *)((D550_FLAG(d550_ee6c_l2) & 0xFFF7FFFF) | 0x2000);
         D550_FLAG(d550_ee6c_s1) = (s32) p;
-        timproc_uso_b5_func_04DFFC(child, (char *)import_000A12EC(obj));
+        gen_imp_MNode_addChild(child, (char *)import_000A12EC(obj));
         if (savedbit != 0) {
             p = (char *)(D550_FLAG(d550_ee6c_l3) | 0x80000);
             D550_FLAG(d550_ee6c_s2) = (s32) p;
@@ -8825,7 +8825,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     }
     p = (char *)FW(arg0, 0x38);
     obj = p;
-    timproc_uso_b5_func_07ACE0(p + 0x10, child);
+    gen_imp_list_append(p + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
@@ -8920,9 +8920,9 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", BoardList_createIt
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-extern int timproc_uso_b5_func_05D0E0();
-extern int timproc_uso_b5_func_04DFFC();
+extern int gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
+extern int gen_imp_PolyShape_ctor();
+extern int gen_imp_MNode_addChild();
 extern char timproc_uso_b5_D_807FEE90;
 extern char timproc_uso_b5_D_807FDB64;
 extern char timproc_uso_b5_D_807FEE98;
@@ -9049,7 +9049,7 @@ extern char import_80087FB8[];
 /* Prototyped 5-arg decl: real signature passes f32 singles (mfc1 a2/a3 +
  * swc1 16(sp) 5th arg in the jal delay); the shared unprototyped decl
  * promoted the 0.0f literals to doubles (cvt.d.s + sdc1). */
-extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
+extern int gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
 
 extern char df14_ee6c_l1, df14_ee6c_l2, df14_ee6c_l3, df14_ee6c_l4, df14_ee6c_l5, df14_ee6c_l6, df14_ee6c_l7, df14_ee6c_l8;
 extern char df14_ee6c_s1, df14_ee6c_s2, df14_ee6c_s3, df14_ee6c_s4, df14_ee6c_s5, df14_ee6c_s6, df14_ee6c_s7;

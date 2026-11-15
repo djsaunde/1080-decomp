@@ -8,7 +8,7 @@ glabel gen_createLights_00001460
     lui $a1, %hi(timproc_uso_b5_D_807FE8FC)   /* 001470 3C050000 -> timproc_uso_b5_D_807FE8FC */
     /* 001474 00001474 AFB00014 */  .word 0xAFB00014
     /* 001478 00001478 24A5108C */  .word 0x24A5108C
-    jal timproc_uso_b5_func_068D54   /* 00147C 0C000000 -> timproc_uso_b5_func_068D54 */
+    jal gen_imp_BaseLight_ctor   /* 00147C 0C000000 -> gen_imp_BaseLight_ctor */
     /* 001480 00001480 00002025 */  .word 0x00002025
     /* 001484 00001484 3C01437F */  .word 0x3C01437F
     /* 001488 00001488 44812000 */  .word 0x44812000
@@ -35,12 +35,12 @@ glabel gen_createLights_00001460
     /* 0014DC 000014DC 8E300038 */  .word 0x8E300038
     /* 0014E0 000014E0 AE0800D0 */  .word 0xAE0800D0
     /* 0014E4 000014E4 8E250038 */  .word 0x8E250038
-    jal timproc_uso_b5_func_062880   /* 0014E8 0C000000 -> timproc_uso_b5_func_062880 */
+    jal gen_imp_gfx_listAppend_0004E214   /* 0014E8 0C000000 -> gen_imp_gfx_listAppend_0004E214 */
     /* 0014EC 000014EC E7A00024 */  .word 0xE7A00024
     /* 0014F0 000014F0 8E300038 */  .word 0x8E300038
     /* 0014F4 000014F4 26240010 */  .word 0x26240010
     /* 0014F8 000014F8 AFA40020 */  .word 0xAFA40020
-    jal timproc_uso_b5_func_07ACE0   /* 0014FC 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 0014FC 0C000000 -> gen_imp_list_append */
     /* 001500 00001500 02002825 */  .word 0x02002825
     /* 001504 00001504 8E090014 */  .word 0x8E090014
     lui $a1, %hi(timproc_uso_b5_D_807FE90C)   /* 001508 3C050000 -> timproc_uso_b5_D_807FE90C */
@@ -49,7 +49,7 @@ glabel gen_createLights_00001460
     /* 001514 00001514 00002025 */  .word 0x00002025
     /* 001518 00001518 240A0001 */  .word 0x240A0001
     /* 00151C 0000151C AE0A0004 */  .word 0xAE0A0004
-    jal timproc_uso_b5_func_068D54   /* 001520 0C000000 -> timproc_uso_b5_func_068D54 */
+    jal gen_imp_BaseLight_ctor   /* 001520 0C000000 -> gen_imp_BaseLight_ctor */
     /* 001524 00001524 AE110014 */  .word 0xAE110014
     /* 001528 00001528 3C013F80 */  .word 0x3C013F80
     /* 00152C 0000152C 44810000 */  .word 0x44810000
@@ -63,11 +63,11 @@ glabel gen_createLights_00001460
     lui $a0, %hi(gGfxLib_8005C108)   /* 00154C 3C040000 -> gGfxLib_8005C108 */
     /* 001550 00001550 24840000 */  .word 0x24840000
     /* 001554 00001554 AE0B00D0 */  .word 0xAE0B00D0
-    jal timproc_uso_b5_func_062880   /* 001558 0C000000 -> timproc_uso_b5_func_062880 */
+    jal gen_imp_gfx_listAppend_0004E214   /* 001558 0C000000 -> gen_imp_gfx_listAppend_0004E214 */
     /* 00155C 0000155C 8E25003C */  .word 0x8E25003C
     /* 001560 00001560 8E30003C */  .word 0x8E30003C
     /* 001564 00001564 8FA40020 */  .word 0x8FA40020
-    jal timproc_uso_b5_func_07ACE0   /* 001568 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001568 0C000000 -> gen_imp_list_append */
     /* 00156C 0000156C 02002825 */  .word 0x02002825
     /* 001570 00001570 8E0C0014 */  .word 0x8E0C0014
     lui $a1, %hi(timproc_uso_b5_D_807FE918)   /* 001574 3C050000 -> timproc_uso_b5_D_807FE918 */
@@ -76,7 +76,7 @@ glabel gen_createLights_00001460
     /* 001580 00001580 00002025 */  .word 0x00002025
     /* 001584 00001584 240D0001 */  .word 0x240D0001
     /* 001588 00001588 AE0D0004 */  .word 0xAE0D0004
-    jal timproc_uso_b5_func_068D54   /* 00158C 0C000000 -> timproc_uso_b5_func_068D54 */
+    jal gen_imp_BaseLight_ctor   /* 00158C 0C000000 -> gen_imp_BaseLight_ctor */
     /* 001590 00001590 AE110014 */  .word 0xAE110014
     /* 001594 00001594 3C01437F */  .word 0x3C01437F
     /* 001598 00001598 44810000 */  .word 0x44810000
@@ -110,11 +110,11 @@ glabel gen_createLights_00001460
     /* 001608 00001608 AE190000 */  .word 0xAE190000
     /* 00160C 0000160C 8E300040 */  .word 0x8E300040
     /* 001610 00001610 AE0800D0 */  .word 0xAE0800D0
-    jal timproc_uso_b5_func_062880   /* 001614 0C000000 -> timproc_uso_b5_func_062880 */
+    jal gen_imp_gfx_listAppend_0004E214   /* 001614 0C000000 -> gen_imp_gfx_listAppend_0004E214 */
     /* 001618 00001618 8E250040 */  .word 0x8E250040
     /* 00161C 0000161C 8E300040 */  .word 0x8E300040
     /* 001620 00001620 8FA40020 */  .word 0x8FA40020
-    jal timproc_uso_b5_func_07ACE0   /* 001624 0C000000 -> timproc_uso_b5_func_07ACE0 */
+    jal gen_imp_list_append   /* 001624 0C000000 -> gen_imp_list_append */
     /* 001628 00001628 02002825 */  .word 0x02002825
     /* 00162C 0000162C 8E090014 */  .word 0x8E090014
     /* 001630 00001630 240A0001 */  .word 0x240A0001

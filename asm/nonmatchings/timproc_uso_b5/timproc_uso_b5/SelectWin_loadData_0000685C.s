@@ -3,7 +3,7 @@ nonmatching SelectWin_loadData_0000685C, 0x20
 glabel SelectWin_loadData_0000685C
     /* 00685C 0000685C 27BDFFE8 */  .word 0x27BDFFE8
     /* 006860 00006860 AFBF0014 */  .word 0xAFBF0014
-    jal timproc_uso_b5_func_04A2D8   /* 006864 0C000000 -> timproc_uso_b5_func_04A2D8 */
+    jal gen_imp_Parms_load_00035C6C   /* 006864 0C000000 -> gen_imp_Parms_load_00035C6C */
     /* 006868 00006868 2484002C */  .word 0x2484002C
     /* 00686C 0000686C 8FBF0014 */  .word 0x8FBF0014
     /* 006870 00006870 27BD0018 */  .word 0x27BD0018

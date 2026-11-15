@@ -4,7 +4,7 @@ glabel DispItems_update_0000E5AC
     /* 00E5AC 0000E5AC 27BDFFE8 */  .word 0x27BDFFE8
     /* 00E5B0 0000E5B0 AFBF0014 */  .word 0xAFBF0014
     lui $at, %hi(timproc_uso_b5_D_807FFBBC)   /* 00E5B4 3C010000 -> timproc_uso_b5_D_807FFBBC */
-    jal timproc_uso_b5_func_04CD94   /* 00E5B8 0C000000 -> timproc_uso_b5_func_04CD94 */
+    jal gen_imp_Node_update   /* 00E5B8 0C000000 -> gen_imp_Node_update */
     /* 00E5BC 0000E5BC AC200000 */  .word 0xAC200000
     /* 00E5C0 0000E5C0 8FBF0014 */  .word 0x8FBF0014
     /* 00E5C4 0000E5C4 27BD0018 */  .word 0x27BD0018

@@ -5,7 +5,7 @@ glabel SelItem_loadData_00003ED8
     /* 003EDC 00003EDC AFBF0014 */  .word 0xAFBF0014
     /* 003EE0 00003EE0 00802825 */  .word 0x00802825
     /* 003EE4 00003EE4 AFA50018 */  .word 0xAFA50018
-    jal timproc_uso_b5_func_04A2D8   /* 003EE8 0C000000 -> timproc_uso_b5_func_04A2D8 */
+    jal gen_imp_Parms_load_00035C6C   /* 003EE8 0C000000 -> gen_imp_Parms_load_00035C6C */
     /* 003EEC 00003EEC 2484002C */  .word 0x2484002C
     /* 003EF0 00003EF0 8FA50018 */  .word 0x8FA50018
     /* 003EF4 00003EF4 8CA20028 */  .word 0x8CA20028

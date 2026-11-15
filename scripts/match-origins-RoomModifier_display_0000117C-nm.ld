@@ -11,4 +11,4 @@ SECTIONS {
 }
 RoomModifier_applyScale_0000896C = 0x0;
 RoomModifier_resetScale_00008AFC = 0x0;
-timproc_uso_b5_func_04CCA8 = 0x0;
+gen_imp_Node_display = 0x0;

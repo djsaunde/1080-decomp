@@ -33,7 +33,7 @@ glabel SelectWin_state5_000079A4
     /* 007A18 00007A18 8E190400 */  .word 0x8E190400
     /* 007A1C 00007A1C 13200005 */  .word 0x13200005
     /* 007A20 00007A20 00000000 */  .word 0x00000000
-    jal timproc_uso_b5_func_011E00   /* 007A24 0C000000 -> timproc_uso_b5_func_011E00 */
+    jal gen_imp_input_checkPressed_00011E00   /* 007A24 0C000000 -> gen_imp_input_checkPressed_00011E00 */
     /* 007A28 00007A28 00C02025 */  .word 0x00C02025
     /* 007A2C 00007A2C 5040003B */  .word 0x5040003B
     /* 007A30 00007A30 8FBF001C */  .word 0x8FBF001C

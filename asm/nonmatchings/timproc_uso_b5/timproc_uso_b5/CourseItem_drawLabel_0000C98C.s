@@ -61,7 +61,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CA70 0000CA70 24A50000 */  .word 0x24A50000
     /* 00CA74 0000CA74 8CA40148 */  .word 0x8CA40148
     /* 00CA78 0000CA78 AFA00030 */  .word 0xAFA00030
-    jal timproc_uso_b5_func_01EEE4   /* 00CA7C 0C000000 -> timproc_uso_b5_func_01EEE4 */
+    jal gen_imp_Backup_ghostGetMode   /* 00CA7C 0C000000 -> gen_imp_Backup_ghostGetMode */
     /* 00CA80 0000CA80 24840004 */  .word 0x24840004
     lui $a1, %hi(import_80020098)   /* 00CA84 3C050000 -> import_80020098 */
     /* 00CA88 0000CA88 24A50000 */  .word 0x24A50000
@@ -72,7 +72,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CA9C 0000CA9C 54410018 */  .word 0x54410018
     /* 00CAA0 0000CAA0 8FA90030 */  .word 0x8FA90030
     /* 00CAA4 0000CAA4 8CA40148 */  .word 0x8CA40148
-    jal timproc_uso_b5_func_01EFC8   /* 00CAA8 0C000000 -> timproc_uso_b5_func_01EFC8 */
+    jal gen_imp_Backup_ghostGetCourse   /* 00CAA8 0C000000 -> gen_imp_Backup_ghostGetCourse */
     /* 00CAAC 0000CAAC 24840004 */  .word 0x24840004
     /* 00CAB0 0000CAB0 8E0F02B0 */  .word 0x8E0F02B0
     /* 00CAB4 0000CAB4 24180001 */  .word 0x24180001
@@ -86,7 +86,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CAD4 0000CAD4 5441000A */  .word 0x5441000A
     /* 00CAD8 0000CAD8 8FA90030 */  .word 0x8FA90030
     /* 00CADC 0000CADC 8CA40148 */  .word 0x8CA40148
-    jal timproc_uso_b5_func_01EFC8   /* 00CAE0 0C000000 -> timproc_uso_b5_func_01EFC8 */
+    jal gen_imp_Backup_ghostGetCourse   /* 00CAE0 0C000000 -> gen_imp_Backup_ghostGetCourse */
     /* 00CAE4 0000CAE4 24840004 */  .word 0x24840004
     /* 00CAE8 0000CAE8 8E1902B0 */  .word 0x8E1902B0
     /* 00CAEC 0000CAEC 24080001 */  .word 0x24080001

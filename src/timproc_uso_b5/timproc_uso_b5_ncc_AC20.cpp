@@ -17,13 +17,13 @@ typedef float f32; typedef int s32; typedef double f64;
 extern "C" {
 extern char timproc_uso_b5_D_807FF358, import_80087DA8, D_timb5_AC20_w0, D_timb5_AC20_w1, D_timb5_AC20_w2, D_timb5_AC20_w3;
 extern char timproc_uso_b5_D_807FFBB0;
-void *timproc_uso_b5_func_071028(...);
-void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
-void timproc_uso_b5_func_0727A4(void *src, void *dst);
+void *gen_imp_math_vec3Normalize(...);
+void gen_imp_math_quatRotateAxisAngle(void *quat, void *axis, f32 angle);
+void gen_imp_math_mtx4Transpose(void *src, void *dst);
 void import_0010806C(void *src, void *dst);
-void timproc_uso_b5_func_0714D4(void *quat, void *vec, f32 scale, s32 flag);
-void timproc_uso_b5_func_06970C(void *obj, f32 val);
-void timproc_uso_b5_func_054CAC(void *obj);
+void gen_imp_math_quatSlerp(void *quat, void *vec, f32 scale, s32 flag);
+void gen_imp_light_setF124_000550A0(void *obj, f32 val);
+void gen_imp_QNode_display(void *obj);
 }
 static float sXY[2]; static float sZ;
 struct V3 { f32 x, y, z; V3() {} V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } void operator=(V3 o) { x = o.x; y = o.y; z = o.z; } };
@@ -31,7 +31,7 @@ inline f32 dot(const V3 &a, const V3 &b) { return a.x * b.x + a.y * b.y + a.z * 
 inline V3 rel(const V3 &a, f32 *g) { f32 &x = g[0]; f32 &y = g[1]; if (0) { x = a.x; } return V3(a.x - x, a.y - y, a.z - sZ); }
 struct Quat {
     f32 x, y, z, w;
-    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
+    void rot(V3 *axis, f32 ang) { gen_imp_math_quatRotateAxisAngle(this, axis, ang); }
 };
 struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
@@ -39,7 +39,7 @@ struct Obj {
 };
 extern "C" void SelBoard_display_0000AC20(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
-    timproc_uso_b5_func_071028(&d);
+    gen_imp_math_vec3Normalize(&d);
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + 0x338)) {
         f32 wrap;
         f32 sc;
@@ -50,14 +50,14 @@ extern "C" void SelBoard_display_0000AC20(Obj *o) {
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         { f32 ang = o->f114; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
         { f32 ang = o->f110; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f118; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
-        timproc_uso_b5_func_0727A4(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
+        gen_imp_math_mtx4Transpose(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
         import_0010806C(m7C, m6C);
         {
             t120 = o->f120;
             sc = 1.0f;
             o->sE8 = sc + o->f11C * t120; o->sEC = sc + o->f11C * t120; o->sF0 = sc + o->f11C * t120;
             if (o->i12C != 0) sc = t120;
-            timproc_uso_b5_func_0714D4(&o->q, m6C, sc, 0);
+            gen_imp_math_quatSlerp(&o->q, m6C, sc, 0);
         }
         ax.x = (o->q.x * o->q.z * 2.0f) + (o->q.w * o->q.y * 2.0f);
         ax.y = (o->q.y * o->q.z * 2.0f) - (o->q.w * o->q.x * 2.0f);
@@ -84,8 +84,8 @@ extern "C" void SelBoard_display_0000AC20(Obj *o) {
             ax.z = (o->q.x * o->q.z * 2.0f) - (o->q.w * o->q.y * 2.0f);
             o->q.rot(&ax, o->f10C);
         }
-        timproc_uso_b5_func_06970C(o->m108, o->f124);
-        timproc_uso_b5_func_054CAC(o);
+        gen_imp_light_setF124_000550A0(o->m108, o->f124);
+        gen_imp_QNode_display(o);
         o->i128 = 1;
     }
 }

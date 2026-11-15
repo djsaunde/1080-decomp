@@ -168,7 +168,7 @@ glabel SelectWin_update_00005FC0
     /* 006250 00006250 C43201BC */  .word 0xC43201BC
     /* 006254 00006254 C61004BC */  .word 0xC61004BC
     /* 006258 00006258 46128302 */  .word 0x46128302
-    jal timproc_uso_b5_func_07E7B0   /* 00625C 0C000000 -> timproc_uso_b5_func_07E7B0 */
+    jal gen_imp_fsin   /* 00625C 0C000000 -> gen_imp_fsin */
     /* 006260 00006260 00000000 */  .word 0x00000000
     /* 006264 00006264 8E0D0414 */  .word 0x8E0D0414
     /* 006268 00006268 C604005C */  .word 0xC604005C
@@ -185,7 +185,7 @@ glabel SelectWin_update_00005FC0
     /* 006294 00006294 C42801C0 */  .word 0xC42801C0
     /* 006298 00006298 C6060480 */  .word 0xC6060480
     /* 00629C 0000629C 46083302 */  .word 0x46083302
-    jal timproc_uso_b5_func_07E7B0   /* 0062A0 0C000000 -> timproc_uso_b5_func_07E7B0 */
+    jal gen_imp_fsin   /* 0062A0 0C000000 -> gen_imp_fsin */
     /* 0062A4 000062A4 00000000 */  .word 0x00000000
     /* 0062A8 000062A8 8FAE002C */  .word 0x8FAE002C
     /* 0062AC 000062AC C612049C */  .word 0xC612049C
@@ -201,7 +201,7 @@ glabel SelectWin_update_00005FC0
     /* 0062D4 000062D4 C42801C4 */  .word 0xC42801C4
     /* 0062D8 000062D8 C60604BC */  .word 0xC60604BC
     /* 0062DC 000062DC 46083302 */  .word 0x46083302
-    jal timproc_uso_b5_func_07E7B0   /* 0062E0 0C000000 -> timproc_uso_b5_func_07E7B0 */
+    jal gen_imp_fsin   /* 0062E0 0C000000 -> gen_imp_fsin */
     /* 0062E4 000062E4 00000000 */  .word 0x00000000
     /* 0062E8 000062E8 8E0F0414 */  .word 0x8E0F0414
     /* 0062EC 000062EC C60A005C */  .word 0xC60A005C
@@ -218,7 +218,7 @@ glabel SelectWin_update_00005FC0
     /* 006318 00006318 C43201C8 */  .word 0xC43201C8
     /* 00631C 0000631C C6100480 */  .word 0xC6100480
     /* 006320 00006320 46128302 */  .word 0x46128302
-    jal timproc_uso_b5_func_07E7B0   /* 006324 0C000000 -> timproc_uso_b5_func_07E7B0 */
+    jal gen_imp_fsin   /* 006324 0C000000 -> gen_imp_fsin */
     /* 006328 00006328 00000000 */  .word 0x00000000
     /* 00632C 0000632C 8FB8002C */  .word 0x8FB8002C
     /* 006330 00006330 C608049C */  .word 0xC608049C
@@ -230,7 +230,7 @@ glabel SelectWin_update_00005FC0
     /* 006348 00006348 C43201CC */  .word 0xC43201CC
     /* 00634C 0000634C C61004BC */  .word 0xC61004BC
     /* 006350 00006350 46128302 */  .word 0x46128302
-    jal timproc_uso_b5_func_07E7B0   /* 006354 0C000000 -> timproc_uso_b5_func_07E7B0 */
+    jal gen_imp_fsin   /* 006354 0C000000 -> gen_imp_fsin */
     /* 006358 00006358 00000000 */  .word 0x00000000
     /* 00635C 0000635C C60204C0 */  .word 0xC60204C0
     /* 006360 00006360 C6040498 */  .word 0xC6040498

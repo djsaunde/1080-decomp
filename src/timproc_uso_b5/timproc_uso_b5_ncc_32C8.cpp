@@ -18,8 +18,8 @@ struct TimB5V3 { f32 x, y, z; };
 struct TimB5Nm { char *v; };
 #define B5_NAME(sym, lo) (*(char **)((char *)&sym + (lo)))
 extern "C" {
-extern int timproc_uso_b5_func_055750(...);
-extern int timproc_uso_b5_func_04A188(...);
+extern int gen_imp_mem_new(...);
+extern int gen_imp_Parms_addParm(...);
 extern char timproc_uso_b5_D_807FE9E8;
 extern char timproc_uso_b5_D_807FE9F8, timproc_uso_b5_D_807FE9FC, timproc_uso_b5_D_807FEA00, timproc_uso_b5_D_807FEA04,
     timproc_uso_b5_D_807FEA08, timproc_uso_b5_D_807FEA0C, timproc_uso_b5_D_807FEA10, timproc_uso_b5_D_807FEA14,
@@ -77,51 +77,51 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
 
     if (1) { struct TimB5Nm *q = &u0; q = &u1; q = &u2; q = &u3; q = &u4; q = &u5; q = &u12; q = &u13; q = &u14; q = &u15; }
 
-    if (arg0 != 0 || (arg0 = (char *)timproc_uso_b5_func_055750(0x108)) != 0) {
+    if (arg0 != 0 || (arg0 = (char *)gen_imp_mem_new(0x108)) != 0) {
         vt = arg0;
-        if (vt != 0 || (vt = (char *)timproc_uso_b5_func_055750(8)) != 0) {
+        if (vt != 0 || (vt = (char *)gen_imp_mem_new(8)) != 0) {
             FW(vt, 0x0) = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
             FW(vt, 0x4) = 0;
         }
         u0.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188); nm = u0;
         {
-            if ((c = arg0 + 0x8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0), FW(c, 0x14) = 0, FW(c, 0x10) = 0);
             }
         }
         u1.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C); nm = u1;
         {
-            if ((c = arg0 + 0x20) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x20) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
             }
         }
         u2.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190); nm = u2;
         {
-            if ((c = arg0 + 0x38) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x38) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
             }
         }
         u3.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194); nm = u3;
         {
-            if ((c = arg0 + 0x50) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x50) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
             }
         }
         u4.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198); nm = u4;
         {
-            if ((c = arg0 + 0x68) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x68) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
             }
         }
         u5.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C); nm = u5;
         {
-            if ((c = arg0 + 0x80) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0x80) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 (FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), FW(c, 0x10) = 2, FW(c, 0x14) = 0);
             }
         }
@@ -130,9 +130,9 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         nm.v = u12.v;
         {
             if ((cA = arg0 + 0x98) != 0 ||
-                ((cA = (char *)timproc_uso_b5_func_055750(0x20)),
+                ((cA = (char *)gen_imp_mem_new(0x20)),
                  (h = (f32)iz()), (cA != 0))) {
-                timproc_uso_b5_func_04A188(cA, arg0, nm, 1);
+                gen_imp_Parms_addParm(cA, arg0, nm, 1);
                 h = (f32)iz();
                 FW(cA, 0xC) = (int)((char *)&D_timb5_32C8_vv0 + 0x170);
                 FW(cA, 0x1C) = 0;
@@ -153,8 +153,8 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         cp2 = vE;
         nm.v = u13.v;
         {
-            if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)timproc_uso_b5_func_055750(0x20)) != 0) {
-                timproc_uso_b5_func_04A188(cB, arg0, nm, 1);
+            if ((cB = arg0 + 0xB8) != 0 || (cB = (char *)gen_imp_mem_new(0x20)) != 0) {
+                gen_imp_Parms_addParm(cB, arg0, nm, 1);
                 FW(cB, 0xC) = (int)((char *)&D_timb5_32C8_vv1 + 0x170);
                 FW(cB, 0x1C) = 0;
                 t = cp0;
@@ -165,8 +165,8 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         }
         u14.v = B5_NAME(timproc_uso_b5_D_807FEA18, 0x11A8); nm = u14;
         {
-            if ((c = arg0 + 0xD8) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0xD8) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
                 FW(c, 0x14) = 0;
                 *(f32 *)(c + 0x10) = 0.0f;
@@ -174,8 +174,8 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         }
         u15.v = B5_NAME(timproc_uso_b5_D_807FEA1C, 0x11AC); nm = u15;
         {
-            if ((c = arg0 + 0xF0) != 0 || (c = (char *)timproc_uso_b5_func_055750(0x18)) != 0) {
-                timproc_uso_b5_func_04A188(c, arg0, nm, 1);
+            if ((c = arg0 + 0xF0) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
+                gen_imp_Parms_addParm(c, arg0, nm, 1);
                 FW(c, 0xC) = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
                 FW(c, 0x14) = 0;
                 *(f32 *)(c + 0x10) = 0.0f;

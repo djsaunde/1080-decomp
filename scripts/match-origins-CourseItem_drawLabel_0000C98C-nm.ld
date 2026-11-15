@@ -16,5 +16,5 @@ timproc_uso_b5_D_807FF700 = 0x0;
 timproc_uso_b5_D_807FFB50 = 0x0;
 SelItem_drawSpriteWhite_00003FF8 = 0x0;
 SelItem_drawSpriteColorEx_000040BC = 0x0;
-timproc_uso_b5_func_01EEE4 = 0x0;
-timproc_uso_b5_func_01EFC8 = 0x0;
+gen_imp_Backup_ghostGetMode = 0x0;
+gen_imp_Backup_ghostGetCourse = 0x0;

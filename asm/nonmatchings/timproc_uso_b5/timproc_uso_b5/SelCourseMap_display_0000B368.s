@@ -32,7 +32,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B3D8 0000B3D8 AC8F0004 */  .word 0xAC8F0004
     /* 00B3DC 0000B3DC AC880000 */  .word 0xAC880000
     /* 00B3E0 0000B3E0 AC580008 */  .word 0xAC580008
-    jal timproc_uso_b5_func_071028   /* 00B3E4 0C000000 -> timproc_uso_b5_func_071028 */
+    jal gen_imp_math_vec3Normalize   /* 00B3E4 0C000000 -> gen_imp_math_vec3Normalize */
     /* 00B3E8 0000B3E8 AC980008 */  .word 0xAC980008
     /* 00B3EC 0000B3EC 8E090140 */  .word 0x8E090140
     /* 00B3F0 0000B3F0 3C013F80 */  .word 0x3C013F80
@@ -50,7 +50,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B420 0000B420 AFA40024 */  .word 0xAFA40024
     /* 00B424 0000B424 E7A000DC */  .word 0xE7A000DC
     /* 00B428 0000B428 E7A000D8 */  .word 0xE7A000D8
-    jal timproc_uso_b5_func_071AE0   /* 00B42C 0C000000 -> timproc_uso_b5_func_071AE0 */
+    jal gen_imp_math_quatRotateAxisAngle   /* 00B42C 0C000000 -> gen_imp_math_quatRotateAxisAngle */
     /* 00B430 0000B430 E7AC00D4 */  .word 0xE7AC00D4
     /* 00B434 0000B434 C602010C */  .word 0xC602010C
     /* 00B438 0000B438 44800000 */  .word 0x44800000
@@ -61,7 +61,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B44C 0000B44C 27A500C4 */  .word 0x27A500C4
     /* 00B450 0000B450 E7A000C4 */  .word 0xE7A000C4
     /* 00B454 0000B454 E7A000C8 */  .word 0xE7A000C8
-    jal timproc_uso_b5_func_071AE0   /* 00B458 0C000000 -> timproc_uso_b5_func_071AE0 */
+    jal gen_imp_math_quatRotateAxisAngle   /* 00B458 0C000000 -> gen_imp_math_quatRotateAxisAngle */
     /* 00B45C 0000B45C E7AC00CC */  .word 0xE7AC00CC
     /* 00B460 0000B460 C6020114 */  .word 0xC6020114
     /* 00B464 0000B464 44800000 */  .word 0x44800000
@@ -72,7 +72,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B478 0000B478 27A500B8 */  .word 0x27A500B8
     /* 00B47C 0000B47C E7A000B8 */  .word 0xE7A000B8
     /* 00B480 0000B480 E7A000C0 */  .word 0xE7A000C0
-    jal timproc_uso_b5_func_071AE0   /* 00B484 0C000000 -> timproc_uso_b5_func_071AE0 */
+    jal gen_imp_math_quatRotateAxisAngle   /* 00B484 0C000000 -> gen_imp_math_quatRotateAxisAngle */
     /* 00B488 0000B488 E7AC00BC */  .word 0xE7AC00BC
     /* 00B48C 0000B48C 8E0A013C */  .word 0x8E0A013C
     lui $t3, %hi(import_80087DA8)   /* 00B490 3C0B0000 -> import_80087DA8 */
@@ -81,7 +81,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B49C 0000B49C 8D6B0000 */  .word 0x8D6B0000
     /* 00B4A0 0000B4A0 27A50078 */  .word 0x27A50078
     /* 00B4A4 0000B4A4 8D640070 */  .word 0x8D640070
-    jal timproc_uso_b5_func_0727A4   /* 00B4A8 0C000000 -> timproc_uso_b5_func_0727A4 */
+    jal gen_imp_math_mtx4Transpose   /* 00B4A8 0C000000 -> gen_imp_math_mtx4Transpose */
     /* 00B4AC 0000B4AC 248400B4 */  .word 0x248400B4
     /* 00B4B0 0000B4B0 27A40078 */  .word 0x27A40078
     jal import_0010806C   /* 00B4B4 0C000000 -> import_0010806C */
@@ -89,7 +89,7 @@ glabel SelCourseMap_display_0000B368
     /* 00B4BC 0000B4BC 8FA40024 */  .word 0x8FA40024
     /* 00B4C0 0000B4C0 27A50068 */  .word 0x27A50068
     /* 00B4C4 0000B4C4 8E060128 */  .word 0x8E060128
-    jal timproc_uso_b5_func_0714D4   /* 00B4C8 0C000000 -> timproc_uso_b5_func_0714D4 */
+    jal gen_imp_math_quatSlerp   /* 00B4C8 0C000000 -> gen_imp_math_quatSlerp */
     /* 00B4CC 0000B4CC 00003825 */  .word 0x00003825
     /* 00B4D0 0000B4D0 C6000118 */  .word 0xC6000118
     /* 00B4D4 0000B4D4 3C010000 */  .word 0x3C010000
@@ -163,9 +163,9 @@ glabel SelCourseMap_display_0000B368
     /* 00B5E4 0000B5E4 E61200E0 */  .word 0xE61200E0
     /* 00B5E8 0000B5E8 C7A600E8 */  .word 0xC7A600E8
     /* 00B5EC 0000B5EC 46062200 */  .word 0x46062200
-    jal timproc_uso_b5_func_06970C   /* 00B5F0 0C000000 -> timproc_uso_b5_func_06970C */
+    jal gen_imp_light_setF124_000550A0   /* 00B5F0 0C000000 -> gen_imp_light_setF124_000550A0 */
     /* 00B5F4 0000B5F4 E60800E4 */  .word 0xE60800E4
-    jal timproc_uso_b5_func_054CAC   /* 00B5F8 0C000000 -> timproc_uso_b5_func_054CAC */
+    jal gen_imp_QNode_display   /* 00B5F8 0C000000 -> gen_imp_QNode_display */
     /* 00B5FC 0000B5FC 02002025 */  .word 0x02002025
     /* 00B600 0000B600 240E0001 */  .word 0x240E0001
     /* 00B604 0000B604 AE0E012C */  .word 0xAE0E012C

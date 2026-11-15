@@ -21,18 +21,18 @@
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern int timproc_uso_b5_func_055750();
-extern int timproc_uso_b5_func_04C678();
-extern int timproc_uso_b5_func_07ACE0();
+extern int gen_imp_mem_new();
+extern int gen_imp_Node_ctor();
+extern int gen_imp_list_append();
 extern char D_00000000;
 char *SelItemParms_ctor(char *arg0);
 char *SelItemInfo_ctor(char *arg0);
 extern int SelItem_reset_00003890();
 /* Prototyped 5-arg decl: real signature passes f32 singles (mfc1 a2/a3 +
  * swc1 16(sp) 5th arg in the jal delay). */
-extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-extern int timproc_uso_b5_func_05D0E0();
-extern int timproc_uso_b5_func_04DFFC();
+extern int gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
+extern int gen_imp_PolyShape_ctor();
+extern int gen_imp_MNode_addChild();
 extern char timproc_uso_b5_D_807FDB64;
 extern char timproc_uso_b5_D_807FEBB4;
 extern char timproc_uso_b5_D_807FA914;
@@ -75,11 +75,11 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     s32 mode;
     f32 t;
 
-    child = (char *) timproc_uso_b5_func_055750((char *)0x2BC);
+    child = (char *) gen_imp_mem_new((char *)0x2BC);
     if (child != 0) {
         sub = child;
-        if ((sub != 0) || ((sub = (char *) timproc_uso_b5_func_055750((char *)0x2B8)) != 0)) {
-            timproc_uso_b5_func_04C678(sub, &timproc_uso_b5_D_807FEF48[5848]);
+        if ((sub != 0) || ((sub = (char *) gen_imp_mem_new((char *)0x2B8)) != 0)) {
+            gen_imp_Node_ctor(sub, &timproc_uso_b5_D_807FEF48[5848]);
             FW(sub, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
             SelItemParms_ctor(sub + 0x2C);
             SelItemInfo_ctor(sub + 0x194);
@@ -89,7 +89,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     }
     r = child;
     FW(child, 0x2AC) = FW(arg0, 0x6C);
-    timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);
+    gen_imp_list_append(arg0 + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
@@ -101,13 +101,13 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         FW(rr, 0x2B0) = arg2;
         sub = (char *)(arg2 + 10);
     }
-    child = (char *) timproc_uso_b5_func_055750((char *)0x144);
+    child = (char *) gen_imp_mem_new((char *)0x144);
     if (child != 0) {
-        timproc_uso_b5_func_0546DC(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
+        gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
         FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF64[1300]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF64[5876];
-        gsub = (char *) timproc_uso_b5_func_055750((char *)0x16C);
+        gsub = (char *) gen_imp_mem_new((char *)0x16C);
         if (gsub != 0) {
-            timproc_uso_b5_func_0546DC(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
+            gen_imp_QNode_ctor(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
             t = *(f32 *)(&import_80807FB8 + 1020);
             FW(gsub, 0x28) = (s32) &import_80087FB8[0]; *(s32 *)(gsub + 0x120) = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             *(f32 *)(gsub + 0x108) = t;
@@ -116,7 +116,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
             *(f32 *)(gsub + 0x124) = 1.0f;
         }
         FW(child, 0x108) = (s32) gsub;
-        timproc_uso_b5_func_04DFFC(child, gsub);
+        gen_imp_MNode_addChild(child, gsub);
         if (1) {}
         p = (f32 *)((char *) FW(child, 0x108) + 0xB4);
         p[2] = 0; /* int 0: one mtc1 zero for the three stores (0.0f gives three) */
@@ -129,66 +129,66 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         switch ((s32) sub) {
         case 0:
             if (*(s32 *)(&import_800200CC + 52) == 3) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, (&timproc_uso_b5_D_807FEBB4 + 5900), (&import_8077EBB4 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FEBB4 + 5900), (&import_8077EBB4 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 1:
             if (*(s32 *)(&import_800200CC + 52) == 3) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, (&timproc_uso_b5_D_807FA914 + 5912), (&import_8077A914 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FA914 + 5912), (&import_8077A914 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 2:
             if (*(s32 *)(&import_800200CC + 52) == 3) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, (&import_80806674 + 5924), (&import_80776674 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&import_80806674 + 5924), (&import_80776674 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 3:
             if (*(s32 *)(&import_800200CC + 52) != 2) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFA0[5936], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFA0[5936], (&D_00000000 + 0), 0));
             }
             break;
         case 4:
             if (*(s32 *)(&import_800200CC + 52) != 2) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFAC[5948], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFAC[5948], (&D_00000000 + 0), 0));
             }
             break;
         case 5:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFB8[5960], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFB8[5960], (&D_00000000 + 0), 0));
             }
             break;
         case 6:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFC4[5972], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFC4[5972], (&D_00000000 + 0), 0));
             }
             break;
         case 7:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFD0[5984], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFD0[5984], (&D_00000000 + 0), 0));
             }
             break;
         case 8:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFDC[5996], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFDC[5996], (&D_00000000 + 0), 0));
             }
             break;
         case 9:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFE8[6008], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFE8[6008], (&D_00000000 + 0), 0));
             }
             break;
         case 10:
             mode = *(s32 *)(&import_800200CC + 52);
             if ((mode != 3) && (mode != 5)) {
-                timproc_uso_b5_func_04DFFC(child, timproc_uso_b5_func_05D0E0(0, &timproc_uso_b5_D_807FEFF4[6020], (&D_00000000 + 0), 0));
+                gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFF4[6020], (&D_00000000 + 0), 0));
             }
             break;
         case 11:
@@ -218,7 +218,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         *(f32 *)(gsub + 0x134) = -32.0f; if (1) {}
     }
     sub = (char *) FW(arg0, 0x38);
-    timproc_uso_b5_func_07ACE0(sub + 0x10, child);
+    gen_imp_list_append(sub + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }

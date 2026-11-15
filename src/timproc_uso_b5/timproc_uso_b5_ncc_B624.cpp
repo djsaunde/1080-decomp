@@ -19,11 +19,11 @@ extern "C" {
 extern char timproc_uso_b5_D_807FF370;
 extern char timproc_uso_b5_D_807FFBB0;
 extern int timproc_uso_b5_D_807FFBBC;
-void *timproc_uso_b5_func_071028(...);
-void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
-void timproc_uso_b5_func_054CAC(void *obj);
-int timproc_uso_b5_func_054FE0(...);
-int timproc_uso_b5_func_077C44(...);
+void *gen_imp_math_vec3Normalize(...);
+void gen_imp_math_quatRotateAxisAngle(void *quat, void *axis, f32 angle);
+void gen_imp_QNode_display(void *obj);
+int gen_imp_QNode_update(...);
+int gen_imp_AnimPlayer_start(...);
 void timproc_uso_b5_func_06970C_i(...);
 }
 static float sXY[2]; static float sZ;
@@ -32,7 +32,7 @@ inline f32 dot(const V3 &a, const V3 &b) { return a.x * b.x + a.y * b.y + a.z * 
 inline V3 rel(const V3 &a, f32 *g) { if (0) { g[1] = a.y; } return V3(a.x - g[0], a.y - g[1], a.z - sZ); }
 struct Quat {
     f32 x, y, z, w;
-    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
+    void rot(V3 *axis, f32 ang) { gen_imp_math_quatRotateAxisAngle(this, axis, ang); }
 };
 inline void one(Quat &q, f32 xa) { if (0) { xa = 0.0f; } V3 a(1.0f, 0.0f, 0.0f); q.rot(&a, xa); }
 struct Obj {
@@ -41,7 +41,7 @@ struct Obj {
 };
 extern "C" void SelCharacter_display_0000B624(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
-    timproc_uso_b5_func_071028(&d);
+    gen_imp_math_vec3Normalize(&d);
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         f32 ang3;
@@ -51,17 +51,17 @@ extern "C" void SelCharacter_display_0000B624(Obj *o) {
         { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang3); }
         timproc_uso_b5_func_06970C_i(o->i108, FW(o, 0x130));
         if (FW(o, 0x144) != 0 || FW(o, 0x138) != 0) {
-            timproc_uso_b5_func_054FE0(o);
+            gen_imp_QNode_update(o);
             timproc_uso_b5_D_807FFBBC += 1;
             if (FW(o, 0x144) != 0) FW(o, 0x144) -= 1;
             if (FW(o, 0x144) == 0) {
                 if (FW(o->p10C, 0xB0) != 0) {
-                    timproc_uso_b5_func_077C44(o->p10C, FW(o, 0x140), 0, 2, 2, 1);
+                    gen_imp_AnimPlayer_start(o->p10C, FW(o, 0x140), 0, 2, 2, 1);
                     FW(o->p10C, 0xB0) = 0;
                 }
             }
         }
-        timproc_uso_b5_func_054CAC(o);
+        gen_imp_QNode_display(o);
         FW(o, 0x134) = 1;
         return;
     }

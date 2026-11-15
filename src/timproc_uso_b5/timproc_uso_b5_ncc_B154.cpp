@@ -16,11 +16,11 @@
 typedef float f32; typedef int s32; typedef double f64;
 extern "C" {
 extern char gGfxLib_8005C108;
-void *timproc_uso_b5_func_071028(...);
-void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
-void timproc_uso_b5_func_05B750(void *arg, void *vec4);
-void timproc_uso_b5_func_06970C(void *obj, f32 val);
-void timproc_uso_b5_func_054CAC(void *obj);
+void *gen_imp_math_vec3Normalize(...);
+void gen_imp_math_quatRotateAxisAngle(void *quat, void *axis, f32 angle);
+void gen_imp_gfx_setPrimColour(void *arg, void *vec4);
+void gen_imp_light_setF124_000550A0(void *obj, f32 val);
+void gen_imp_QNode_display(void *obj);
 }
 static float sXY[2]; static float sZ;
 struct V3 { f32 x, y, z; V3() {} void all(f32 v) { f32 s = v; x = s; y = s; z = s; } V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; } };
@@ -28,7 +28,7 @@ struct V4 { f32 x, y, z, w; V4() {} void set(f32 a, f32 b, f32 c, f32 d) { w = d
 inline V3 rel(const V3 &a, f32 *g, f32 *z) { if (0) { g[0] = a.x; } return V3(a.x - g[0], a.y - g[1], a.z - *z); }
 struct Quat {
     f32 x, y, z, w;
-    void rot(V3 *axis, f32 ang) { timproc_uso_b5_func_071AE0(this, axis, ang); }
+    void rot(V3 *axis, f32 ang) { gen_imp_math_quatRotateAxisAngle(this, axis, ang); }
 };
 struct Elem { char p[0x18]; s32 flags; };
 struct Obj {
@@ -38,20 +38,20 @@ struct Obj {
 extern "C" void SelTesuri_display_0000B154(Obj *o) {
     V4 r;
     V3 d = rel(o->pos, &sXY[0], &sZ);
-    timproc_uso_b5_func_071028(&d);
+    gen_imp_math_vec3Normalize(&d);
     o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
     { f32 ang = o->f110; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
     { f32 ang = o->f10C; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f114; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
     o->sc.all(o->f118);
     r.set(0.0f, 0.0f, 0.0f, o->f120);
-    timproc_uso_b5_func_05B750(&gGfxLib_8005C108, &r);
-    timproc_uso_b5_func_06970C(o->m108, 0.5f);
-    timproc_uso_b5_func_06970C(o->m108, o->f128 - (o->f128 - o->f12C) * o->f11C);
+    gen_imp_gfx_setPrimColour(&gGfxLib_8005C108, &r);
+    gen_imp_light_setF124_000550A0(o->m108, 0.5f);
+    gen_imp_light_setF124_000550A0(o->m108, o->f128 - (o->f128 - o->f12C) * o->f11C);
     if (!(o->i144++ & 1)) {
         o->i140 = o->i140 + 1;
         if (o->i140 == o->i13C) o->i140 = 0;
     }
     o->list[o->i140]->flags |= 4;
-    timproc_uso_b5_func_054CAC(o);
+    gen_imp_QNode_display(o);
     o->list[o->i140]->flags &= ~4;
 }

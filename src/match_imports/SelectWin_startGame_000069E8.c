@@ -5,7 +5,7 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
     int a4;
     B5TimingScreen *screen = (B5TimingScreen *)scr;
     import_000A53B4(scr, a1);
-    timproc_uso_b5_func_00F954(*(char **)(scr + 0x418), -1, 0);
+    gen_imp_Process_fadeOut_0000F954(*(char **)(scr + 0x418), -1, 0);
     *(int *)(timproc_uso_b5_69E8_global + 0x40) = *(int *)(timproc_uso_b5_69E8_global + 0x44);
     *screen->field_4DC[1] = screen->field_40C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B0;
     a4 = screen->field_4A4;
