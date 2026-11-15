@@ -13,18 +13,74 @@
  * Only the fields with a known use are named; the rest is padding.
  */
 
+/* ---- HostIO parm records (game_libs Parms_addParm(parm, owner, tag, 1)): each parm is a child
+ * object of its Parms block, named by a 3-letter tag (the Data string the ctor passes). The ctor
+ * stores the parm-type vtable at +0xC and the default value at +0x10. The field names below are
+ * those tags (SelectWin_ctor / SelItemParms_ctor / SelItemInfo_ctor, Data 0x1140..0x11AC and
+ * 0x127C..0x12F4). ---- */
+typedef struct SelParmI {       /* int parm (type vtable D+0x1A0 in the ctor) */
+    char hdr[0xC];
+    s32 vptr;               /* 0x0C */
+    s32 value;              /* 0x10 */
+    s32 unk14;              /* 0x14: 0 */
+} SelParmI;                 /* 0x18 */
+
+typedef struct SelParmF {       /* float parm (type vtable D+0x158) */
+    char hdr[0xC];
+    s32 vptr;
+    f32 value;              /* 0x10 */
+    s32 unk14;
+} SelParmF;                 /* 0x18 */
+
+typedef struct SelParmV3 {      /* vec3 parm with a range (min / max vec3 passed to the ctor) */
+    char hdr[0xC];
+    s32 vptr;
+    f32 v[3];               /* 0x10 */
+    s32 unk1C;
+} SelParmV3;                /* 0x20 */
+
+typedef struct SelParmRGBA {    /* colour parm (type vtable D+0x188): RGBA, each 0..1 */
+    char hdr[0xC];
+    s32 vptr;
+    f32 rgba[4];            /* 0x10 */
+    s32 unk20;
+} SelParmRGBA;              /* 0x24 */
+
+/* SelItem::Parms (SelItemParms_ctor 0x2B74, at SelItem +0x2C): the item's screen layout. */
+typedef struct SelItemParms {
+    s32 vptr;               /* 0x000 */
+    s32 unk004;
+    SelParmI xpn;           /* 0x008: label x (SelItem_drawLabel / the camera lerp) */
+    SelParmI ypn;           /* 0x020: label y */
+    SelParmI jnx, jny;      /* 0x038 / 0x050 */
+    SelParmI xp0, yp0;      /* 0x068 / 0x080 */
+    SelParmI xfp, yfp;      /* 0x098 / 0x0B0 */
+    SelParmI xfc, yfc;      /* 0x0C8 / 0x0E0 */
+    SelParmF cfv, cf2;      /* 0x0F8 / 0x110: -20 */
+    SelParmV3 off;          /* 0x128: camera offset (range +-1500; SelItem_reset clears it,
+                             * SelectWin_lerpCamToItem adds off * t to the node position) */
+    SelParmV3 of2;          /* 0x148 */
+} SelItemParms;             /* 0x168 */
+
+/* SelItem::Info (SelItemInfo_ctor 0x32C8, at SelItem +0x194): the item's model pose. */
+typedef struct SelItemInfo {
+    s32 vptr;               /* 0x000 */
+    s32 unk004;
+    SelParmI ixn;           /* 0x008: label sprite row (24-byte rows) */
+    SelParmI am0, am1, am2, am3, am4; /* 0x020..0x080: 2 */
+    SelParmV3 pos;          /* 0x098: range +-2500 / 1500 / 2500 */
+    SelParmV3 rot;          /* 0x0B8: range +-pi; each item class's update copies rot and scl
+                             * into its model's view[4] (see the model structs below) */
+    SelParmF chy;           /* 0x0D8: 0 */
+    SelParmF scl;           /* 0x0F0: 0 */
+} SelItemInfo;              /* 0x108 */
+
 typedef struct SelItem {
     char pad000[0x28];
     void *vptr;             /* 0x028 */
-    char pad02C[0x44 - 0x2C];
-    s32 x;                  /* 0x044: label position (drawLabel) */
-    char pad048[0x5C - 0x48];
-    s32 y;                  /* 0x05C */
-    char pad060[0x164 - 0x60];
-    f32 unk164[3];          /* 0x164: cleared by SelItem_reset */
-    char pad170[0x1AC - 0x170];
-    s32 labelIndex;         /* 0x1AC: row of the label sprite table (24-byte rows) */
-    char pad1B0[0x29C - 0x1B0];
+    SelItemParms parms;     /* 0x02C: xpn.value 0x44 / ypn.value 0x5C = label position;
+                             * off.v 0x164 */
+    SelItemInfo info;       /* 0x194: ixn.value 0x1AC; rot.v 0x25C; scl.value 0x294 */
     char *node;             /* 0x29C: display node (+0xDC position) */
     f32 alpha;              /* 0x2A0: setAlpha */
     f32 enabled;            /* 0x2A4: 0 = not selectable (locked) */
@@ -43,7 +99,9 @@ typedef struct SelItemEx {
 
 /* ---- per-class display models (SelItemEx.model; the QNode state each item class
  * creates). Only the fields the item virtuals touch are named; `view` is the
- * four floats each class's update copies in from the item (+0x25C.. / +0x294),
+ * four floats each class's update copies in from the item every frame: view[0] = info.rot.v[2],
+ * view[1] = rot.v[0], view[2] = rot.v[1], view[3] = info.scl.value (the same mapping in all five
+ * classes; only the statement order differs, a matching lever),
  * `highlight` the f32 that updateHighlight fades toward its target, `focused`
  * the int that forces the highlight target to 1. ---- */
 
@@ -130,10 +188,36 @@ typedef struct SelItemsMgr {
     SelItemList *lists[4];  /* 0x40: character, board, course, level (the stage index) */
 } SelItemsMgr;
 
+/* SelectWin::Parms (SelectWin_ctor, at SelectWin +0x2C). Defaults in the comments. */
+typedef struct SelectWinParms {
+    s32 vptr;               /* 0x000 */
+    s32 unk004;
+    SelParmF cwt;           /* 0x008 (win 0x044): 0.45 */
+    SelParmF voy;           /* 0x020 (0x05C): 0 */
+    SelParmI ysp;           /* 0x038 (0x074): 0x18 */
+    SelParmI hxp, hyp;      /* 0x050 / 0x068 (0x08C / 0x0A4): 0x78 */
+    SelParmF msp;           /* 0x080 (0x0BC): 0.036, the transition step per frame
+                             * (SelectWin_update: transition += msp) */
+    SelParmF zsp, lsp;      /* 0x098 / 0x0B0 (0x0D4 / 0x0EC): 0.036 */
+    SelParmI lfw;           /* 0x0C8 (0x104): 0x99, idleTimer reload (frames until the focused
+                             * item is chosen without input) */
+    SelParmI sfw;           /* 0x0E0 (0x11C): 0x99 */
+    SelParmRGBA cc[9];      /* 0x0F8: cc0..cc8 (cc8.rgba = win 0x254, passed to the item draw slot) */
+    SelParmRGBA c12;        /* 0x23C (rgba = win 0x278, the other colour passed to the draw slot) */
+    SelParmRGBA cc9;        /* 0x260 */
+    SelParmRGBA c11, c10;   /* 0x284 / 0x2A8 */
+    SelParmI clx, cly;      /* 0x2CC / 0x2E4: -4 / 0xD */
+    SelParmI cox, coy;      /* 0x2FC / 0x314: -0x10 / -0x15 */
+    SelParmI cff, cdf, ctf; /* 0x32C / 0x344 / 0x35C: 0x73 / 0x62 / 0x62 */
+    SelParmI tpy;           /* 0x374: 0xD */
+} SelectWinParms;           /* 0x38C */
+
 struct SelectWin;
 
 typedef struct SelectionMgr {
-    char pad00[0x30];
+    char pad00[0x2C];
+    char *sceneSet;         /* 0x2C: ctor arg 5; +0 root (its +0x5C +0x38 / +0x3C get the two
+                             * windows), +4 / +8 the per-player scene handed to each SelectWin */
     s32 numPlayers;         /* 0x30 */
     struct SelectWin *wins[2]; /* 0x34 */
     char pad3C[0x48 - 0x3C];
@@ -144,7 +228,7 @@ typedef struct SelectionMgr {
 typedef struct SelectWin {
     char pad000[0x28];
     void *vptr;             /* 0x028 */
-    char parms[0x3B8 - 0x2C]; /* 0x02C: SelectWin::Parms (cwt voy ysp hxp ... tpy) */
+    SelectWinParms parms;   /* 0x02C */
     s32 player;             /* 0x3B8: 0 / 1 */
     s32 numPlayers;         /* 0x3BC: 1 / 2 */
     s32 stageMask;          /* 0x3C0: enabled stage bits */
@@ -164,18 +248,24 @@ typedef struct SelectWin {
                              * (s32)(idleTimer reload * 0.75) from beginTransition; state5
                              * decrements it and at 0 accepts the item without input */
     s32 transCountdownInit; /* 0x404: 0x40 (SelectWin_init) */
-    char pad408[0x40C - 0x408];
+    s32 forceAccept;        /* 0x408: state3 treats it like an accept press
+                             * (input_checkPressed(gInputMgr, 0x100)): state 4 or the zoom state 5;
+                             * cleared there and at the end of SelectWin_update; never set
+                             * inside genproc */
     SelItemsMgr *itemsMgr;  /* 0x40C */
-    s32 unk410;             /* 0x410 */
-    char *scene;            /* 0x414 */
+    char *sceneSet;         /* 0x410: ctor arg 8 = SelectionMgr.sceneSet */
+    char *scene;            /* 0x414: ctor arg 9 = sceneSet +4 (player 0) / +8 (player 1);
+                             * +0xC camera, +0x10 / +0x14 the camera nodes */
     char *fadeProc;         /* 0x418: ctor arg 2 (SelectionMgr_ctor's arg 1); commitSelection
                              * fades it out with Process_fadeOut(fadeProc, -1, 0) */
     SelectionMgr *owner;    /* 0x41C */
-    char pad420[0x480 - 0x420];
+    f32 colors[6][4];       /* 0x420: RGBA / 255, set by SelectWin_init: {90,90,90}, {255,145,58},
+                             * {255,255,255}, {13,13,13}, {161,91,35}, {70,70,70} (alpha 255);
+                             * no reader inside genproc */
     f32 fade;               /* 0x480 */
     f32 fadeTarget;         /* 0x484: state1 ramps fade toward it; 1 when a state shows its items,
                              * 0 at beginTransition / when leaving */
-    s32 idleTimer;          /* 0x488: Parms +0x104 frames; counted down in the stage state, at < 0
+    s32 idleTimer;          /* 0x488: parms.lfw frames; counted down in the stage state, at < 0
                              * the focused item is chosen automatically (state 1) */
     s32 blink;              /* 0x48C: frame counter, arrows blink on bit 3 */
     s32 frame;              /* 0x490 */
@@ -194,12 +284,12 @@ typedef struct SelectWin {
     s32 stageLock;          /* 0x4B8: 1 when the board stage is accepted (state7 -> state 8),
                              * 0 when the transition ends; in 2 players the other window's
                              * state7 ORs it into its busy test */
-    f32 transition;         /* 0x4BC: 0 -> 1 at Parms +0xBC per frame while busy (SelectWin_update);
+    f32 transition;         /* 0x4BC: 0 -> 1 at parms.msp per frame while busy (SelectWin_update);
                              * drives the camera lerps and the fov blend */
     f32 fovFrom;            /* 0x4C0: the camera fov (scene->0xC->0x70 +0x14C, degrees) at
                              * beginTransition; blended toward fovTarget by transition */
     f32 camPos[3];          /* 0x4C4: beginTransition copies scene->0x10 +0x60..0x68 */
-    char pad4D0[0x4D4 - 0x4D0];
+    s32 font;               /* 0x4D0: gui_fontCreate(0, font, 0x48, 0xDD, 3, 13) (SelectWin_init) */
     s32 eventFlags;         /* 0x4D4: ctor arg 11 (0 / 0x80), ORed into the select event */
     s32 centerX;            /* 0x4D8: 0x78 (2 players) / 0xF0 */
     s32 *out[5];            /* 0x4DC: commitSelection output pointers */
@@ -215,6 +305,16 @@ typedef struct SelectWin {
 #define SELITEM(p) ((SelItem *)(p))
 
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
+SELECT_ASSERT(parmi_size, sizeof(SelParmI) == 0x18);
+SELECT_ASSERT(parmv3_size, sizeof(SelParmV3) == 0x20);
+SELECT_ASSERT(parmrgba_size, sizeof(SelParmRGBA) == 0x24);
+SELECT_ASSERT(itemparms_size, sizeof(SelItemParms) == 0x168);
+SELECT_ASSERT(iteminfo_size, sizeof(SelItemInfo) == 0x108);
+SELECT_ASSERT(winparms_size, sizeof(SelectWinParms) == 0x38C);
+SELECT_ASSERT(winparms_tpy, (int)&((SelectWinParms *)0)->tpy == 0x374);
+SELECT_ASSERT(item_rot, (int)&((SelItem *)0)->info.rot.v == 0x25C);
+SELECT_ASSERT(item_scl, (int)&((SelItem *)0)->info.scl.value == 0x294);
+SELECT_ASSERT(item_xpn, (int)&((SelItem *)0)->parms.xpn.value == 0x44);
 SELECT_ASSERT(item_alpha, (int)&((SelItem *)0)->alpha == 0x2A0);
 SELECT_ASSERT(item_id, (int)&((SelItem *)0)->id == 0x2B0);
 SELECT_ASSERT(item_size, sizeof(SelItem) == 0x2B8);
@@ -228,12 +328,18 @@ SELECT_ASSERT(levelmodel_chosen, (int)&((SelLevelModel *)0)->chosen == 0x138);
 SELECT_ASSERT(charitem_size, sizeof(SelCharacterItem) == 0x2C4);
 SELECT_ASSERT(list_count, (int)&((SelItemList *)0)->count == 0x6C);
 SELECT_ASSERT(mgr_lists, (int)&((SelItemsMgr *)0)->lists == 0x40);
+SELECT_ASSERT(selmgr_scene, (int)&((SelectionMgr *)0)->sceneSet == 0x2C);
 SELECT_ASSERT(selmgr_busy, (int)&((SelectionMgr *)0)->busy == 0x4C);
 SELECT_ASSERT(win_player, (int)&((SelectWin *)0)->player == 0x3B8);
 SELECT_ASSERT(win_cur, (int)&((SelectWin *)0)->curItem == 0x3D0);
 SELECT_ASSERT(win_prev, (int)&((SelectWin *)0)->prevItem == 0x3F4);
 SELECT_ASSERT(win_mgr, (int)&((SelectWin *)0)->itemsMgr == 0x40C);
 SELECT_ASSERT(win_owner, (int)&((SelectWin *)0)->owner == 0x41C);
+SELECT_ASSERT(win_lfw, (int)&((SelectWin *)0)->parms.lfw.value == 0x104);
+SELECT_ASSERT(win_cc8, (int)&((SelectWin *)0)->parms.cc[8].rgba == 0x254);
+SELECT_ASSERT(win_c12, (int)&((SelectWin *)0)->parms.c12.rgba == 0x278);
+SELECT_ASSERT(win_colors, (int)&((SelectWin *)0)->colors == 0x420);
+SELECT_ASSERT(win_font, (int)&((SelectWin *)0)->font == 0x4D0);
 SELECT_ASSERT(win_fade, (int)&((SelectWin *)0)->fade == 0x480);
 SELECT_ASSERT(win_busy, (int)&((SelectWin *)0)->busy == 0x4B4);
 SELECT_ASSERT(win_cam, (int)&((SelectWin *)0)->camPos == 0x4C4);

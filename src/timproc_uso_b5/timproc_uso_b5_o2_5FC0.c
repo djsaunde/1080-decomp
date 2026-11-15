@@ -101,7 +101,7 @@ void SelectWin_update_00005FC0(char *arg0) {
         break;
     }
     if (SELWIN(arg0)->busy != 0) {
-        SELWIN(arg0)->transition += *(f32 *)(arg0 + 0xBC);
+        SELWIN(arg0)->transition += SELWIN(arg0)->parms.msp.value;
         if (SELWIN(arg0)->transition >= 1.0f) {
             SELWIN(arg0)->transition = 1.0f;
             SELWIN(arg0)->busy = 0;
@@ -137,7 +137,7 @@ void SelectWin_update_00005FC0(char *arg0) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_lerpCamToItemZoom_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
-            *(f32 *)(arg0 + 0x5C));
+            SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +
@@ -147,7 +147,7 @@ void SelectWin_update_00005FC0(char *arg0) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_lerpCamToItem_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
-            *(f32 *)(arg0 + 0x5C));
+            SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SELWIN(arg0)->fovTarget =
             SELWIN(arg0)->fovBase +

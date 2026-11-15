@@ -20,6 +20,7 @@
  *  - typing func_00004068's colour param as `f32 *` (agent-g run 106) and
  *    `pad[6]` after v (0x50 frame, v at 0x40). */
 #include "common.h"
+#include "game/select.h"
 
 extern char timproc_uso_b5_D_807FFB08;
 extern char timproc_uso_b5_D_807FFB20;
@@ -31,28 +32,28 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     s32 pad[6];
     f32 f;
     v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    if (*(s32 *)(a0 + 0x2AC) == 0 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
+    if (*(s32 *)(a0 + 0x2AC) == 0 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {
         f = 0.3f;
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0x44), *(s32 *)(a0 + 0x5C), v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, SELITEM(a0)->parms.xpn.value, SELITEM(a0)->parms.ypn.value, v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
     f = 0.3f;
-    if (*(s32 *)(a0 + 0x2AC) == 1 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
+    if (*(s32 *)(a0 + 0x2AC) == 1 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0xD4), *(s32 *)(a0 + 0xEC), v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, SELITEM(a0)->parms.xfp.value, SELITEM(a0)->parms.yfp.value, v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
     f = 0.3f;
-    if (*(s32 *)(a0 + 0x2AC) == 2 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
+    if (*(s32 *)(a0 + 0x2AC) == 2 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0x104), *(s32 *)(a0 + 0x11C), v, (int)(&timproc_uso_b5_D_807FFB38 + 0x6B8), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, SELITEM(a0)->parms.xfc.value, SELITEM(a0)->parms.yfc.value, v, (int)(&timproc_uso_b5_D_807FFB38 + 0x6B8), 0xFF);
 }

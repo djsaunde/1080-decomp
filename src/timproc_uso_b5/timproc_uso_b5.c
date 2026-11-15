@@ -2016,9 +2016,9 @@ char *SelItemInfo_ctor(char *arg0) {
 void SelItem_reset_00003890(int *a0) {
     float *p;
     SELITEM(a0)->flags = 0;
-    SELITEM(a0)->unk164[0] = 0.0f;
-    SELITEM(a0)->unk164[1] = 0.0f;
-    SELITEM(a0)->unk164[2] = 0.0f;
+    SELITEM(a0)->parms.off.v[0] = 0.0f;
+    SELITEM(a0)->parms.off.v[1] = 0.0f;
+    SELITEM(a0)->parms.off.v[2] = 0.0f;
     p = (float *)((char *)a0 + 0x2A0);
     *p = 0;
 }
@@ -2075,9 +2075,9 @@ void SelectWin_lerpCamToItem_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3
     h = arg3;
     tt = SELITEM(arg0)->alpha;
     B = SELITEM(arg0)->node;
-    x = (SELITEM(arg0)->unk164[0] * tt) + *(f32 *)((char *)B + 0xDC);
-    y = yv = ((SELITEM(arg0)->unk164[1] * tt) + *(f32 *)((char *)B + 0xE0)) + (arg4 * (1.0f - tt));
-    z = (SELITEM(arg0)->unk164[2] * tt) + *(f32 *)((char *)B + 0xE4);
+    x = (SELITEM(arg0)->parms.off.v[0] * tt) + *(f32 *)((char *)B + 0xDC);
+    y = yv = ((SELITEM(arg0)->parms.off.v[1] * tt) + *(f32 *)((char *)B + 0xE0)) + (arg4 * (1.0f - tt));
+    z = (SELITEM(arg0)->parms.off.v[2] * tt) + *(f32 *)((char *)B + 0xE4);
     o = (char *) arg1 + 0x30;
     if (1) {
         t = *(f32 *)((char *)arg2 + 0x0);
@@ -2139,9 +2139,9 @@ void SelectWin_lerpCamToItemZoom_0000396C(char *arg0, s32 arg1, char *arg2, f32 
     h = arg3;
     tt = SELITEM(arg0)->alpha;
     B = SELITEM(arg0)->node;
-    x = (*(f32 *)((char *)arg0 + 0x184) * tt) + *(f32 *)((char *)B + 0xDC);
-    y = yv = ((*(f32 *)((char *)arg0 + 0x188) * tt) + *(f32 *)((char *)B + 0xE0)) + (arg4 * (1.0f - tt));
-    z = (*(f32 *)((char *)arg0 + 0x18C) * tt) + *(f32 *)((char *)B + 0xE4);
+    x = (SELITEM(arg0)->parms.of2.v[0] * tt) + *(f32 *)((char *)B + 0xDC);
+    y = yv = ((SELITEM(arg0)->parms.of2.v[1] * tt) + *(f32 *)((char *)B + 0xE0)) + (arg4 * (1.0f - tt));
+    z = (SELITEM(arg0)->parms.of2.v[2] * tt) + *(f32 *)((char *)B + 0xE4);
     o = (char *) arg1 + 0x30;
     if (1) {
         t = *(f32 *)((char *)arg2 + 0x0);
@@ -3120,7 +3120,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         FW(arg0, 0x4D4) = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;
-        SELWIN(arg0)->unk410 = arg8;
+        SELWIN(arg0)->sceneSet = arg8;
         SELWIN(arg0)->numPlayers = arg3;
         SELWIN(arg0)->owner = (SelectionMgr *)arg1;
         SELWIN(arg0)->player = arg4;
@@ -3306,39 +3306,39 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     vt = *(char **)(e + 0x28);
     (*(void (**)())(vt + 0x84))(*(short *)(vt + 0x80) + (int)e, 0);
     fnum = 145.0f;
-    *(float *)(arg0 + 0x434) = fnum / 255.0f;
+    SELWIN(arg0)->colors[1][1] = fnum / 255.0f;
     fone = (float)255;
-    *(float *)(arg0 + 0x42C) = fone / 255.0f;
-    *(float *)(arg0 + 0x430) = fone / 255.0f;
-    *(float *)(arg0 + 0x43C) = fone / 255.0f;
-    *(float *)(arg0 + 0x440) = fone / 255.0f;
-    *(float *)(arg0 + 0x444) = fone / 255.0f;
-    *(float *)(arg0 + 0x448) = fone / 255.0f;
-    *(float *)(arg0 + 0x44C) = fone / 255.0f;
-    *(float *)(arg0 + 0x45C) = fone / 255.0f;
-    *(float *)(arg0 + 0x46C) = fone / 255.0f;
-    *(float *)(arg0 + 0x47C) = fone / 255.0f;
+    SELWIN(arg0)->colors[0][3] = fone / 255.0f;
+    SELWIN(arg0)->colors[1][0] = fone / 255.0f;
+    SELWIN(arg0)->colors[1][3] = fone / 255.0f;
+    SELWIN(arg0)->colors[2][0] = fone / 255.0f;
+    SELWIN(arg0)->colors[2][1] = fone / 255.0f;
+    SELWIN(arg0)->colors[2][2] = fone / 255.0f;
+    SELWIN(arg0)->colors[2][3] = fone / 255.0f;
+    SELWIN(arg0)->colors[3][3] = fone / 255.0f;
+    SELWIN(arg0)->colors[4][3] = fone / 255.0f;
+    SELWIN(arg0)->colors[5][3] = fone / 255.0f;
     fnum = 161.0f;
-    *(float *)(arg0 + 0x460) = fnum / 255.0f;
+    SELWIN(arg0)->colors[4][0] = fnum / 255.0f;
     fnum = 90.0f;
-    *(float *)(arg0 + 0x420) = fnum / 255.0f;
-    *(float *)(arg0 + 0x424) = fnum / 255.0f;
-    *(float *)(arg0 + 0x428) = fnum / 255.0f;
+    SELWIN(arg0)->colors[0][0] = fnum / 255.0f;
+    SELWIN(arg0)->colors[0][1] = fnum / 255.0f;
+    SELWIN(arg0)->colors[0][2] = fnum / 255.0f;
     fnum = 58.0f;
-    *(float *)(arg0 + 0x438) = fnum / 255.0f;
+    SELWIN(arg0)->colors[1][2] = fnum / 255.0f;
     fnum = 13.0f;
-    *(float *)(arg0 + 0x450) = fnum / 255.0f;
-    *(float *)(arg0 + 0x454) = fnum / 255.0f;
-    *(float *)(arg0 + 0x458) = fnum / 255.0f;
+    SELWIN(arg0)->colors[3][0] = fnum / 255.0f;
+    SELWIN(arg0)->colors[3][1] = fnum / 255.0f;
+    SELWIN(arg0)->colors[3][2] = fnum / 255.0f;
     fnum = 70.0f;
-    *(float *)(arg0 + 0x470) = fnum / 255.0f;
-    *(float *)(arg0 + 0x474) = fnum / 255.0f;
-    *(float *)(arg0 + 0x478) = fnum / 255.0f;
+    SELWIN(arg0)->colors[5][0] = fnum / 255.0f;
+    SELWIN(arg0)->colors[5][1] = fnum / 255.0f;
+    SELWIN(arg0)->colors[5][2] = fnum / 255.0f;
     fnum = 91.0f;
-    *(float *)(arg0 + 0x464) = fnum / 255.0f;
+    SELWIN(arg0)->colors[4][1] = fnum / 255.0f;
     fnum = 35.0f;
-    *(float *)(arg0 + 0x468) = fnum / 255.0f;
-    *(int *)(arg0 + 0x4D0) = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
+    SELWIN(arg0)->colors[4][2] = fnum / 255.0f;
+    SELWIN(arg0)->font = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
     e = (char *)SelectWin_curItem_00008A38(arg0);
     vt = *(char **)(e + 0x28);
     (*(void (**)())(vt + 0x64))(*(short *)(vt + 0x60) + (int)e);
@@ -3350,7 +3350,7 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     }
     SelectWin_beginTransition_00008688(arg0, 0);
     SELWIN(arg0)->transCountdownInit = 0x40;
-    SELWIN(arg0)->idleTimer = *(int *)(arg0 + 0x104);
+    SELWIN(arg0)->idleTimer = SELWIN(arg0)->parms.lfw.value;
     SELWIN(arg0)->transition = 1.0f;
 }
 #else
@@ -3545,7 +3545,7 @@ void SelectWin_display_00006394(char *arg0) {
         }
         sp40 = (char *)&timproc_uso_b5_D_807FF5E0 + 0x160;
         sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + gen_stageBitToIndex_000087A0(arg0, SELWIN(arg0)->stageBit) * 4) * 0x18;
-        import_0024E608(&import_8024CAF8, FW(arg0, 0x398), (int)arg0 + 0x1E8);
+        import_0024E608(&import_8024CAF8, SELWIN(arg0)->parms.ctf.value, (int)arg0 + 0x1E8);
         import_0024F2C8(sp40);
         import_0024F34C(sp40, 0xA0, sp44, 3);
         if (SELWIN(arg0)->busy != 1) {
@@ -4241,7 +4241,7 @@ void SelectWin_state0_00007078(char *arg0) {
     if ((SELWIN(arg0)->prevItemActive != 0) && (SELWIN(arg0)->fade == 0.0f)) {
         SELWIN(arg0)->prevItemActive = 0;
     }
-    FW(arg0, 0x408) = 0;
+    SELWIN(arg0)->forceAccept = 0;
 }
 
 
@@ -4278,10 +4278,10 @@ void SelectWin_state1_000072D0(char *scr) {
     cur = SELWIN(scr)->fade; if (SELWIN(scr)->fadeTarget > cur) {
         state = SELWIN(scr)->state;
         if (state == 1) goto fast_step;
-        SELWIN(scr)->fade = *(float *)(scr + 0xEC) + (curf = cur);
+        SELWIN(scr)->fade = SELWIN(scr)->parms.lsp.value + (curf = cur);
         goto check_target;
 fast_step:
-        SELWIN(scr)->fade = *(float *)(scr + 0xD4) + (curf = cur);
+        SELWIN(scr)->fade = SELWIN(scr)->parms.zsp.value + (curf = cur);
 check_target:
         if (SELWIN(scr)->fadeTarget < SELWIN(scr)->fade) {
             SELWIN(scr)->fade = SELWIN(scr)->fadeTarget;
@@ -4321,10 +4321,10 @@ void SelectWin_state2_000073C0(char *scr) {
         state = SELWIN(scr)->state;
         done_state = 9;
         if (state == 1) goto fast_step;
-        SELWIN(scr)->fade = *(float *)(scr + 0xEC) + (curf = cur);
+        SELWIN(scr)->fade = SELWIN(scr)->parms.lsp.value + (curf = cur);
         goto check_target;
 fast_step:
-        SELWIN(scr)->fade = *(float *)(scr + 0xD4) + (curf = cur);
+        SELWIN(scr)->fade = SELWIN(scr)->parms.zsp.value + (curf = cur);
 check_target:
         if (SELWIN(scr)->fadeTarget < SELWIN(scr)->fade) {
             SELWIN(scr)->fade = SELWIN(scr)->fadeTarget;
@@ -4405,8 +4405,8 @@ void SelectWin_state3_00007430(char *scr) {
         }
     }
 
-    if (func_00000000(&D_00000000, 0x100) || *(int *)(scr + 0x408) != 0) {
-        *(int *)(scr + 0x408) = 0;
+    if (func_00000000(&D_00000000, 0x100) || SELWIN(scr)->forceAccept != 0) {
+        SELWIN(scr)->forceAccept = 0;
         if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
             func_00000000(5);
             SELWIN(scr)->state = 4;
@@ -5221,16 +5221,16 @@ void SelectWin_state10_000085E0(int *a0) {
     o = SELWIN(a0)->fade;
     b = SELWIN(a0)->fadeTarget;
     if (b < o) {
-        SELWIN(a0)->fade = o - *(float *)((char *)a0 + 0xEC);
+        SELWIN(a0)->fade = o - SELWIN(a0)->parms.lsp.value;
         if (*(volatile float *)((char *)a0 + 0x480) < b) {
             SELWIN(a0)->fade = b;
             SELWIN(a0)->state = 0;
-            SELWIN(a0)->idleTimer = *(int *)((char *)a0 + 0x104);
+            SELWIN(a0)->idleTimer = SELWIN(a0)->parms.lfw.value;
         }
     } else {
         SELWIN(a0)->fade = b;
         SELWIN(a0)->state = 0;
-        SELWIN(a0)->idleTimer = *(int *)((char *)a0 + 0x104);
+        SELWIN(a0)->idleTimer = SELWIN(a0)->parms.lfw.value;
         v0 = (int *)SelectWin_curItem_00008A38(a0);
         v1 = (int *)v0[0x28 / 4];
         ((void (*)(int))v1[0x64 / 4])(*(short *)((char *)v1 + 0x60) + (int)v0);
@@ -5262,11 +5262,11 @@ void SelectWin_beginTransition_00008688(SelectWin *w, int mode) {
     w->fovFrom = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
     w->busy = 1;
     w->prevItemActive = 1;
-    w->idleTimer = *(s32 *)((char *)w + 0x104);
+    w->idleTimer = w->parms.lfw.value;
     w->transition = 0.0f;
     w->fadeTarget = 0.0f;
     w->transCountdown = w->transCountdownInit;
-    w->zoomTimer = (f32)*(s32 *)((char *)w + 0x104) * 0.75f;
+    w->zoomTimer = (f32)w->parms.lfw.value * 0.75f;
     if (mode == 1) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(w);
         v1 = *(char **)(v0 + 0x28);
@@ -7213,10 +7213,10 @@ void CharacterItem_clearChosen_0000BB78(SelCharacterItem *it, int unused) {
  * the pool END: b->f12, a->f14. Byte-identical body to C1B4. */
 void CharacterItem_update_0000BB88(int *a0) {
   SelCharModel *p = (SelCharModel *) a0[0x2B8 / 4];
-  float a = *((float *) (((char *) a0) + 0x294));
-  float b = *((float *) (((char *) a0) + 0x264));
-  float c = *((float *) (((char *) a0) + 0x260));
-  float d = *((float *) (((char *) a0) + 0x25C));
+  float a = SELITEM(a0)->info.scl.value;
+  float b = SELITEM(a0)->info.rot.v[2];
+  float c = SELITEM(a0)->info.rot.v[1];
+  float d = SELITEM(a0)->info.rot.v[0];
   p->view[2] = c;
   p->view[1] = d;
   if (!d)
@@ -7282,11 +7282,11 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
             *(int *)((char *)a0 + 0x2BC) = *(int *)((char *)a0 + 0x2BC) + 2;
         }
     }
-    caps[0] = *(int *)((char *)a0 + 0x1C4);
-    caps[1] = *(int *)((char *)a0 + 0x1DC);
-    caps[2] = *(int *)((char *)a0 + 0x1F4);
-    caps[3] = *(int *)((char *)a0 + 0x20C);
-    caps[4] = *(int *)((char *)a0 + 0x224);
+    caps[0] = SELITEM(a0)->info.am0.value;
+    caps[1] = SELITEM(a0)->info.am1.value;
+    caps[2] = SELITEM(a0)->info.am2.value;
+    caps[3] = SELITEM(a0)->info.am3.value;
+    caps[4] = SELITEM(a0)->info.am4.value;
     idxp[0] = (int *)((char *)a1 + 0x134);
     idxp[1] = (int *)((char *)a1 + 0x158);
     idxp[2] = (int *)((char *)a1 + 0x17C);
@@ -7303,11 +7303,11 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
         v = *(int *)((char *)a0 + 0x2BC);
         v1 = (v < *cp) ? v : *cp;
         v = v1;
-        if (*(int *)((char *)a1 + 0x3BC) == 1) {
+        if (SELWIN(a1)->numPlayers == 1) {
             SelItem_drawStatBar_00003A4C(
                 (int)a0,
-                *(int *)((char *)a0 + 0xA4),
-                i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
+                SELITEM(a0)->parms.xp0.value,
+                i * SELWIN(a1)->parms.ysp.value + SELITEM(a0)->parms.yp0.value,
                 (int)tbl,
                 v1,
                 (int)*ip,
@@ -7317,8 +7317,8 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
             v1 = 0;
             SelItem_drawStatBarRight_00003C8C(
                 (int)a0,
-                *(int *)((char *)a0 + 0xA4),
-                i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
+                SELITEM(a0)->parms.xp0.value,
+                i * SELWIN(a1)->parms.ysp.value + SELITEM(a0)->parms.yp0.value,
                 (char *)tbl,
                 v,
                 (int)*ip,
@@ -7550,10 +7550,10 @@ extern int func_00000000();
 extern int func_df14f(void *, void *, float, float, float);
 void BoardItem_update_0000C1B4(int *a0) {
   SelBoardModel *p = (SelBoardModel *) a0[0x2B8 / 4];
-  float a = *((float *) (((char *) a0) + 0x294));
-  float b = *((float *) (((char *) a0) + 0x264));
-  float c = *((float *) (((char *) a0) + 0x260));
-  float d = *((float *) (((char *) a0) + 0x25C));
+  float a = SELITEM(a0)->info.scl.value;
+  float b = SELITEM(a0)->info.rot.v[2];
+  float c = SELITEM(a0)->info.rot.v[1];
+  float d = SELITEM(a0)->info.rot.v[0];
   p->view[2] = c;
   p->view[1] = d;
   if (!d)
@@ -7663,11 +7663,11 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
             *(s32 *)(arg0 + 0x2BC) += 2;
         }
     }
-    vals[0] = *(s32 *)(arg0 + 0x1C4);
-    vals[1] = *(s32 *)(arg0 + 0x1DC);
-    vals[2] = *(s32 *)(arg0 + 0x1F4);
-    vals[3] = *(s32 *)(arg0 + 0x20C);
-    vals[4] = *(s32 *)(arg0 + 0x224);
+    vals[0] = SELITEM(arg0)->info.am0.value;
+    vals[1] = SELITEM(arg0)->info.am1.value;
+    vals[2] = SELITEM(arg0)->info.am2.value;
+    vals[3] = SELITEM(arg0)->info.am3.value;
+    vals[4] = SELITEM(arg0)->info.am4.value;
     ptrs[0] = arg1 + 0x134;
     ptrs[1] = arg1 + 0x158;
     ptrs[2] = arg1 + 0x17C;
@@ -7685,10 +7685,10 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
             mv = *pv; if (arg0) {}
         }
         mv2 = mv;
-        if (*(s32 *)(arg1 + 0x3BC) - 1 == 0) {
-            SelItem_drawStatBar_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+        if (SELWIN(arg1)->numPlayers - 1 == 0) {
+            SelItem_drawStatBar_00003A4C((int)arg0, SELITEM(arg0)->parms.xp0.value, SELITEM(arg0)->parms.yp0.value + i * SELWIN(arg1)->parms.ysp.value, (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
-            SelItem_drawStatBarRight_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            SelItem_drawStatBarRight_00003C8C((int)arg0, SELITEM(arg0)->parms.xp0.value, SELITEM(arg0)->parms.yp0.value + i * SELWIN(arg1)->parms.ysp.value, (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         }
         i++;
         pv++;
@@ -7707,7 +7707,7 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[2] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, SELITEM(arg0)->parms.xfp.value, SELITEM(arg0)->parms.yfp.value, cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA78 + 0x5F8;
             } else {
                 fnum = 105.0f;
@@ -7718,11 +7718,11 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[1] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, SELITEM(arg0)->parms.xfp.value, SELITEM(arg0)->parms.yfp.value, cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA90 + 0x610;
             }
             sp60 = sp60;
-            SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)hud, 0xFF);
+            SelItem_drawSpriteColor_00004068((int)arg0, SELITEM(arg0)->parms.xfp.value, SELITEM(arg0)->parms.yfp.value, cols, (int)hud, 0xFF);
             if ((++*(s32 *)(arg0 + 0x2C4)) & 8) {
                 f32 fzero;
                 char *pa, *pb;
@@ -7736,9 +7736,9 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 pa = &timproc_uso_b5_D_807FFAA8 + 0x628;
                 pb = &timproc_uso_b5_D_807FFAA8_b + 0x640;
                 if (!(SELITEM(arg0)->flags & 0x20)) {
-                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, *(s32 *)(arg0 + 0xEC), cols, (int)pa, 0xFF);
+                    SelItem_drawSpriteColor_00004068((int)arg0, SELITEM(arg0)->parms.xfp.value - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, SELITEM(arg0)->parms.yfp.value, cols, (int)pa, 0xFF);
                 } else {
-                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, *(s32 *)(arg0 + 0xEC), cols, (int)pb, 0xFF);
+                    SelItem_drawSpriteColor_00004068((int)arg0, SELITEM(arg0)->parms.xfp.value + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, SELITEM(arg0)->parms.yfp.value, cols, (int)pb, 0xFF);
                 }
             }
         }
@@ -7979,10 +7979,10 @@ void CourseItem_update_0000C8AC(int *a0) {
     float c;
     float d;
     v1 = (SelCourseModel *) p128;
-    a = *((float *) (((char *) a0) + 0x25C));
-    b = *((float *) (((char *) a0) + 0x260));
-    c = *((float *) (((char *) a0) + 0x264));
-    d = *((float *) (((char *) a0) + 0x294));
+    a = SELITEM(a0)->info.rot.v[0];
+    b = SELITEM(a0)->info.rot.v[1];
+    c = SELITEM(a0)->info.rot.v[2];
+    d = SELITEM(a0)->info.scl.value;
     v1->view[1] = a;
     v1->view[2] = b;
     v1->view[0] = c;
@@ -8042,14 +8042,14 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
     ones[1] = 1.0f;
     ones[2] = 1.0f;
     ones[3] = 1.0f;
-    a2v = (*(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4) +
-           *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xBC)) - SELITEM(arg0)->y;
-    SelItem_drawSpriteColorEx_000040BC((int)arg0, SELITEM(arg0)->x, a2v, arg2, arg3,
-        SELITEM(arg0)->labelIndex * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
+    a2v = (*(int *)(*(char **)(SELWIN(arg1)->scene + 0xC) + 0xC4) +
+           *(int *)(*(char **)(SELWIN(arg1)->scene + 0xC) + 0xBC)) - SELITEM(arg0)->parms.ypn.value;
+    SelItem_drawSpriteColorEx_000040BC((int)arg0, SELITEM(arg0)->parms.xpn.value, a2v, arg2, arg3,
+        SELITEM(arg0)->info.ixn.value * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
     if (*(int *)&import_8002022C != 0) {
-        SelItem_drawSpriteWhite_00003FF8((int)arg0, *(int *)(arg0 + 0x74) + SELITEM(arg0)->x,
-            a2v + *(int *)(arg0 + 0x8C),
-            SELITEM(arg0)->labelIndex * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, SELITEM(arg0)->parms.jnx.value + SELITEM(arg0)->parms.xpn.value,
+            a2v + SELITEM(arg0)->parms.jny.value,
+            SELITEM(arg0)->info.ixn.value * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
     sp30 = 0;
     v0r = timproc_uso_b5_func_01EEE4(*(int *)(&import_80020098 + 0x148) + 4);
@@ -8068,7 +8068,7 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
         }
     }
     if (sp30 != 0) {
-        SelItem_drawSpriteWhite_00003FF8((int)arg0, SELITEM(arg0)->x + 0x54, a2v - 0x78,
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, SELITEM(arg0)->parms.xpn.value + 0x54, a2v - 0x78,
             (int)(&timproc_uso_b5_D_807FFB50 + 0x6D0), 0xFF);
     }
 }
@@ -8180,10 +8180,10 @@ void TesuriItem_clearChosen_0000CC64(SelTesuriItem *it, int a1) {
  * empty-if BB boundaries -> f12,f14 from pool end. */
 void TesuriItem_update_0000CC74(int *a0) {
   SelTesuriModel *p = (SelTesuriModel *) a0[0x2B8 / 4];
-  float a = *((float *) (((char *) a0) + 0x294));
-  float b = *((float *) (((char *) a0) + 0x264));
-  float c = *((float *) (((char *) a0) + 0x260));
-  float d = *((float *) (((char *) a0) + 0x25C));
+  float a = SELITEM(a0)->info.scl.value;
+  float b = SELITEM(a0)->info.rot.v[2];
+  float c = SELITEM(a0)->info.rot.v[1];
+  float d = SELITEM(a0)->info.rot.v[0];
   p->view[2] = c;
   p->view[1] = d;
   if (!d)
@@ -8332,10 +8332,10 @@ void LevelItem_clearChosen_0000CE5C(SelLevelItem *it, int a1) {
  * (immune)" verdict — that was FALSE. */
 void LevelItem_update_0000CE6C(int *a0) {
   SelLevelModel *p = (SelLevelModel *) a0[0x2B8 / 4];
-  float a = *((float *) (((char *) a0) + 0x294));
-  float b = *((float *) (((char *) a0) + 0x264));
-  float c = *((float *) (((char *) a0) + 0x260));
-  float d = *((float *) (((char *) a0) + 0x25C));
+  float a = SELITEM(a0)->info.scl.value;
+  float b = SELITEM(a0)->info.rot.v[2];
+  float c = SELITEM(a0)->info.rot.v[1];
+  float d = SELITEM(a0)->info.rot.v[0];
   p->view[2] = c;
   p->view[1] = d;
   if (!d)

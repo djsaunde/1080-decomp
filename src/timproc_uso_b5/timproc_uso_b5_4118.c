@@ -643,7 +643,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         FW(arg0, 0x4D4) = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;
-        SELWIN(arg0)->unk410 = arg8;
+        SELWIN(arg0)->sceneSet = arg8;
         SELWIN(arg0)->numPlayers = arg3;
         SELWIN(arg0)->owner = (SelectionMgr *)arg1;
         SELWIN(arg0)->player = arg4;
