@@ -48,9 +48,9 @@ extern int gGfxLib_8005C108_6808_0[], gGfxLib_8005C108_6808_1[], gGfxLib_8005C10
 extern int gPolyFlags_3EEC4_8005EE64_6808_0, gPolyFlags_3EEC4_8005EE64_6808_1, gPolyFlags_3EEC4_8005EE64_6808_2, gPolyFlags_3EEC4_8005EE64_6808_3,
     gPolyFlags_3EEC4_8005EE64_6808_4, gPolyFlags_3EEC4_8005EE64_6808_5, gPolyFlags_3EEC4_8005EE64_6808_6, gPolyFlags_3EEC4_8005EE64_6808_7;
 
-#define ATTACH6808(list, x) { \
+#define ATTACH6808(attach, list, x) { \
     L = (list); \
-    func_00000000(L + 0x10, x); \
+    attach(L + 0x10, x); \
     if (*(int *)(x + 0x14) != 0) *(int *)(x + 0x4) = 1; \
     *(int *)(x + 0x14) = (int)L; }
 
@@ -94,7 +94,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     func_00000000(&sStr_Geometry_7EB8, 0);
     t = (char *)func_00000000(0);
     import_8001FFC0 = t;
-    ATTACH6808((char *)obj->bgRoot, t);
+    ATTACH6808(func_00000000, (char *)obj->bgRoot, t);
     goalY = 0.0f;
     goalX = 0.0f;
     goalZ = 1.0f;
@@ -115,7 +115,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             func_00000000(import_8001FFC0, o, t78);
             t74.w = *(int *)&sStr_len_7EEC;
             func_00000000(import_8001FFC0, t, t74);
-            ATTACH6808((char *)obj->ogRoot, o);
+            ATTACH6808(func_00000000, (char *)obj->ogRoot, o);
             func_00000000(o, obj->light1);
             va = (char *)obj->light0;
             func_00000000(import_8001FFC0, va + 0 * (t70.w = *(int *)&sStr_lt0_7EF0), t70);
@@ -158,7 +158,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
                 func_00000000(gInputMgr_800200FC, p[0]);
                 o = (char *)func_00000000(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
                 t = o;
-                ATTACH6808((char *)obj->bgRoot, t);
+                ATTACH6808(func_00000000, (char *)obj->bgRoot, t);
                 *(char **)(import_8001FFC0 + 0x3C) = o;
                 func_00000000();
             }
@@ -199,7 +199,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     func_00000000(D_bu_7770, arg2, envArg);
     {
         t = D_bu_7770;
-        ATTACH6808((char *)obj->egRoot, t);
+        ATTACH6808(func_00000000, (char *)obj->egRoot, t);
     }
     func_00000000(&sStr_Map_7F08, 0);
     if (hasMapParms != 0) {
@@ -232,7 +232,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     {
         o = (char *)func_00000000(0, ((char *)p), obj->light0, obj->light1);
         t = o;
-        ATTACH6808((char *)obj->bgRoot, t);
+        ATTACH6808(func_00000000, (char *)obj->bgRoot, t);
         func_00000000(o);
     }
     func_00000000();
@@ -275,7 +275,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             func_00000000(&sStr_no_gol_7F68);
         }
     }
-    ATTACH6808((char *)obj->bgRoot, res);
+    ATTACH6808(func_00000000, (char *)obj->bgRoot, res);
     D_bu_1EBDC[0] = 6;
     func_00000000(&sStr_Markers_7F70, 0);
     *gD = (char *)func_00000000(0, &sStr_MarkerMgr_7F78, -1);
@@ -286,7 +286,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     }
     if (arg2 == 1) {
         t = *gD;
-        ATTACH6808((char *)obj->fgRoot, t);
+        ATTACH6808(func_00000000, (char *)obj->fgRoot, t);
     }
     func_00000000();
     do { g00 = gPolyFlags_3EEC4_8005EE64_6808_7; g00 &= ~8; gPolyFlags_3EEC4_8005EE64_6808_6 = g00; } while (0);
