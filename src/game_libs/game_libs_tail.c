@@ -2058,39 +2058,39 @@ void fs_gdlReadVec3_0000C714(Vec3 *dst) {
  * docs/IDO_CODEGEN.md #for-init-vs-dowhile-preheader-lui-addiu-adjacency-66d54).
  * Calls are jal 0x0 blanks (gl_func_00000000). */
 extern int gl_func_00000000();
-void *RaceTracker_ctor(char *arg0) {
+void *RaceTracker_ctor(RaceTracker *arg0) {
     int v1;
 
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xB8), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xD678);
-        *(char **)(arg0 + 0x28) = (char *)&D_00000000;
-        *(int *)(arg0 + 0x4C) = 0;
-        *(int *)(arg0 + 0xB4) = 0;
-        *(int *)(arg0 + 0x5C) = 0;
-        *(int *)(arg0 + 0x58) = 0;
-        *(int *)(arg0 + 0x54) = 0;
-        *(int *)(arg0 + 0x68) = 0;
-        *(int *)(arg0 + 0x64) = 0;
-        *(int *)(arg0 + 0x60) = 0;
-        *(int *)(arg0 + 0x6C) = 0;
-        *(int *)(arg0 + 0x70) = 0;
-        *(int *)(arg0 + 0x8C) = 0;
-        *(int *)(arg0 + 0x78) = 0;
-        *(int *)(arg0 + 0x80) = 0;
-        *(int *)(arg0 + 0x84) = 0;
-        *(int *)(arg0 + 0x94) = 0;
-        *(int *)(arg0 + 0x98) = 0;
-        *(int *)(arg0 + 0x48) = 0;
-        *(int *)(arg0 + 0x44) = gl_func_00000000(0x300);
+        arg0->vptr = (int)&D_00000000;
+        arg0->records = 0;
+        arg0->hudFlags = 0;
+        arg0->digitsWide = 0;
+        arg0->digitsTall = 0;
+        arg0->pointsListArg = 0;
+        arg0->sprites68 = 0;
+        arg0->sprites64 = 0;
+        arg0->sprites60 = 0;
+        arg0->pointsList = 0;
+        arg0->speed = 0;
+        arg0->points = 0;
+        arg0->time = 0;
+        arg0->course = 0;
+        arg0->countDown = 0;
+        arg0->points94 = 0;
+        arg0->cool = 0;
+        arg0->numEntries = 0;
+        arg0->entries = (RaceEntry *)gl_func_00000000(0x300);
         for (v1 = 0; v1 != 0x300; v1 += 0x180) {
-            *(int *)(*(char **)(arg0 + 0x44) + v1) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 4) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0x60) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0x64) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0xC0) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0xC4) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0x120) = 0;
-            *(int *)(*(char **)(arg0 + 0x44) + v1 + 0x124) = 0;
+            *(int *)((char *)arg0->entries + v1) = 0;
+            *(int *)((char *)arg0->entries + v1 + 4) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0x60) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0x64) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0xC0) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0xC4) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0x120) = 0;
+            *(int *)((char *)arg0->entries + v1 + 0x124) = 0;
         }
         gl_func_00000000(arg0);
         gl_func_00000000(*(int *)((char *)&D_00000000 + 0x134), arg0);
@@ -2113,59 +2113,59 @@ void *RaceTracker_ctor(char *arg0) {
  * calls get `or a1,a2` copies (+2 words, 32 diffs); with the single-arg
  * call self colours a1 from the entry and the second call's a1 is just
  * that colouring (the target never writes a1 before either jal). */
-void RaceTracker_reset(char *self) {
+void RaceTracker_reset(RaceTracker *self) {
     s32 i;
     char *p;
 
     for (i = 0; i != 0x300; i += 0x60) {
-        *(f32 *)(FW(self, 0x44) + i + 0x8) = 0.0f;
-        *(f32 *)(FW(self, 0x44) + i + 0xC) = 0.0f;
-        *(f32 *)(FW(self, 0x44) + i + 0x10) = 0.0f;
-        FW(FW(self, 0x44) + i, 0x18) = 0;
-        FW(FW(self, 0x44) + i, 0x14) = 0;
-        FW(FW(self, 0x44) + i, 0x1C) = 0;
-        FW(FW(self, 0x44) + i, 0x20) = 0;
-        FW(FW(self, 0x44) + i, 0x24) = 0;
-        FW(FW(self, 0x44) + i, 0x28) = 0;
-        *(f32 *)(FW(self, 0x44) + i + 0x30) = 0.0f;
-        FW(FW(self, 0x44) + i, 0x34) = 0;
-        FW(FW(self, 0x44) + i, 0x38) = 3;
-        FW(FW(self, 0x44) + i, 0x3C) = 3;
-        FW(FW(self, 0x44) + i, 0x40) = 3;
+        RACE_ENTRY_AT(self, i)->unk08 = 0.0f;
+        RACE_ENTRY_AT(self, i)->progress = 0.0f;
+        RACE_ENTRY_AT(self, i)->unk10 = 0.0f;
+        RACE_ENTRY_AT(self, i)->unk18 = 0;
+        RACE_ENTRY_AT(self, i)->time = 0;
+        RACE_ENTRY_AT(self, i)->pendingPoints = 0;
+        RACE_ENTRY_AT(self, i)->unk20 = 0;
+        RACE_ENTRY_AT(self, i)->pending = 0;
+        RACE_ENTRY_AT(self, i)->unk28 = 0;
+        RACE_ENTRY_AT(self, i)->pct = 0.0f;
+        RACE_ENTRY_AT(self, i)->finished = 0;
+        RACE_ENTRY_AT(self, i)->rank[0] = 3;
+        RACE_ENTRY_AT(self, i)->rank[1] = 3;
+        RACE_ENTRY_AT(self, i)->rank[2] = 3;
     }
-    FW(self, 0x30) = 0;
-    FW(self, 0x34) = 0x927C0;
-    FW(self, 0xB0) = 1;
-    *(f32 *)(self + 0x38) = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xC4);
-    *(f32 *)(self + 0x3C) = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xCC);
-    *(f32 *)(self + 0x40) = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xD8) - *(f32 *)(self + 0x3C);
+    self->elapsed = 0;
+    self->timeLimit = 0x927C0;
+    self->unkB0 = 1;
+    self->courseStart = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xC4);
+    self->courseZ = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xCC);
+    self->courseLength = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xD8) - self->courseZ;
     gl_func_00000000(self);
-    if (FW(self, 0x6C) != 0) {
-        gl_func_00000000(FW(self, 0x6C), self);
+    if (self->pointsList != 0) {
+        gl_func_00000000(self->pointsList, self);
     }
-    p = (char *)FW(self, 0x98);
+    p = (char *)self->cool;
     if (p != 0) {
         FW(p, 0xC8) = 0x64;
     }
-    FW(self, 0x2C) = 1;
+    self->active = 1;
 }
 
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void RaceTracker_func_0000CA30(char *arg0, s32 arg1, s32 arg2) {
-    *(int*)(FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)) = arg1;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x4) = arg2;
-    *(f32*)((char*)(FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)) + 0x10) = 0.0f;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x18) = 0;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x14) = 0;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x1C) = 0;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x20) = 0;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x24) = -1;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x28) = 0x32;
-    *(f32*)((char*)(FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)) + 0x30) = 0.0f;
-    FW((FW(arg0, 0x44) + (FW(arg0, 0x48) * 0x60)), 0x34) = 0;
-    FW(arg0, 0x48) = (s32) (FW(arg0, 0x48) + 1);
+void RaceTracker_func_0000CA30(RaceTracker *arg0, s32 arg1, s32 arg2) {
+    arg0->entries[arg0->numEntries].rider = arg1;
+    arg0->entries[arg0->numEntries].flags = arg2;
+    arg0->entries[arg0->numEntries].unk10 = 0.0f;
+    arg0->entries[arg0->numEntries].unk18 = 0;
+    arg0->entries[arg0->numEntries].time = 0;
+    arg0->entries[arg0->numEntries].pendingPoints = 0;
+    arg0->entries[arg0->numEntries].unk20 = 0;
+    arg0->entries[arg0->numEntries].pending = -1;
+    arg0->entries[arg0->numEntries].unk28 = 0x32;
+    arg0->entries[arg0->numEntries].pct = 0.0f;
+    arg0->entries[arg0->numEntries].finished = 0;
+    arg0->numEntries = (s32) (arg0->numEntries + 1);
 }
 
 /* Linear search: scan count (a0->0x48) elements (stride 0x60) at a0->0x44 for
@@ -2176,13 +2176,13 @@ void RaceTracker_func_0000CA30(char *arg0, s32 arg1, s32 arg2) {
  * dup-in-delay shape; decl-order i-before-count colors i=v0/count=v1; the dead
  * empty if (a1) {} is an emission-free priority boost that lets the key keep
  * its a1 home so the cursor colors a2 (no move a2,a1). */
-void *RaceTracker_func_0000CB58(int *a0, int a1) {
+void *RaceTracker_func_0000CB58(RaceTracker *a0, int a1) {
     int i = 0;
-    int count = a0[0x48 / 4];
+    int count = a0->numEntries;
     int *p;
     if (a1) {}
     if (count <= 0) goto end;
-    p = (int*)a0[0x44 / 4];
+    p = (int*)a0->entries;
     do {
         i++;
         if (*p == a1) {
@@ -2219,17 +2219,17 @@ end:
  * the bnezl-to-epilogue and the dead `move v0,zero`); the only reloc is the
  * jal to gl_func_00000000 (real fn at game_libs VRAM 0). UNWRAPPED. */
 extern int gl_func_00000000();
-int RaceTracker_checkTimeLimit(int *a0) {
+int RaceTracker_checkTimeLimit(RaceTracker *a0) {
     int p;
     int n;
 
-    if (a0[0x30 / 4] < a0[0x34 / 4]) {
+    if (a0->elapsed < a0->timeLimit) {
         goto retzero;
     }
-    p = a0[0x78 / 4];
-    n = a0[0x34 / 4] - 8;
+    p = a0->time;
+    n = a0->timeLimit - 8;
     if (p != 0) {
-        a0[0x30 / 4] = n;
+        a0->elapsed = n;
         gl_func_00000000(p, n);
     }
     return 1;
@@ -2421,47 +2421,47 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
  * - `if (n) {}` (emission-free dead-if) lifts the constant-1 LR over the
  *   two pass-through params: s5 = 1, s6 = a1, s7 = a2 (without it 1 -> s7). */
 extern void gl_func_00000000_ce38_v();
-#define CE38_E(i) ((char *)FW(self, 0x44) + (i) * 0x60)
+#define CE38_E(i) (&self->entries[i])
 #define CE38_D(o) FW(&D_00000000, o)
-void hud_loadRecords_0000CE38(char *self, s32 a1, s32 a2) {
+void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
     s32 i;
     char *m;
     s32 fl;
     s32 v;
     s32 n;
 
-    n = FW(self, 0x48);
+    n = self->numEntries;
     if (n) {}
     for (i = 0; i < n; i++) {
-        if ((FW(CE38_E(i), 0x4) & 1) == 1) {
-            m = (char *)FW(self, 0x4C);
+        if ((CE38_E(i)->flags & 1) == 1) {
+            m = (char *)self->records;
             if (m != 0) {
                 fl = FW(m, 0x14);
-                if (FW(CE38_E(i), 0x34) != 0) {
+                if (CE38_E(i)->finished != 0) {
                     if (fl & 1) {
-                        FW(CE38_E(i), 0x38) = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), FW(self, 0x30));
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(FW(self, 0x4C), 0x0), FW(CE38_E(i), 0x38), FW(self, 0x30), CE38_D(0x68) - 1);
-                        v = FW(CE38_E(i), 0x38);
+                        CE38_E(i)->rank[0] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
+                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->records, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
+                        v = CE38_E(i)->rank[0];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)FW(self, 0x4C);
+                        m = (char *)self->records;
                         fl = FW(m, 0x14);
                     }
                     if (fl & 2) {
-                        FW(CE38_E(i), 0x3C) = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), FW(CE38_E(i), 0x14));
-                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(FW(self, 0x4C), 0x0), FW(CE38_E(i), 0x3C), FW(CE38_E(i), 0x14));
-                        v = FW(CE38_E(i), 0x3C);
+                        CE38_E(i)->rank[1] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
+                        gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->records, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
+                        v = CE38_E(i)->rank[1];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)FW(self, 0x4C);
+                        m = (char *)self->records;
                         fl = FW(m, 0x14);
                     }
                 }
                 if (fl & 4) {
-                    FW(CE38_E(i), 0x40) = gl_func_00000000(FW(m, 0x4), FW(CE38_E(i), 0x14));
-                    gl_func_00000000_ce38_v(FW(FW(self, 0x4C), 0x4), FW(CE38_E(i), 0x40), FW(CE38_E(i), 0x14), a1, a2);
-                    v = FW(CE38_E(i), 0x40);
+                    CE38_E(i)->rank[2] = gl_func_00000000(FW(m, 0x4), CE38_E(i)->time);
+                    gl_func_00000000_ce38_v(FW(self->records, 0x4), CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
+                    v = CE38_E(i)->rank[2];
                     if (v < 3) CE38_D(0x7C) = v + 1;
                 }
-                n = FW(self, 0x48);
+                n = self->numEntries;
             }
         }
     }
@@ -2469,8 +2469,8 @@ void hud_loadRecords_0000CE38(char *self, s32 a1, s32 a2) {
 #undef CE38_E
 #undef CE38_D
 
-void RaceTracker_func_0000D090(int *a0) {
-    if (*(int *)(*(int *)((char *)a0 + 0x44) + 0x34) != 0) {
+void RaceTracker_func_0000D090(RaceTracker *a0) {
+    if (a0->entries->finished != 0) {
         if ((unsigned int)*(int *)((char *)&D_00000000 + 0x170) < (unsigned int)*(int *)((char *)&D_00000000 + 0x164) - 1) {
             *(int *)((char *)&D_00000000 + 0x184) = 1;
         }
@@ -2646,12 +2646,12 @@ extern int gl_func_00000000();
  * DIRECT `jal` -- avoids both K&R float->double promotion AND the fn-ptr-cast
  * `jalr $t9`. Per docs/IDO_CODEGEN.md#feedback-ido-knr-float-call verified workaround. */
 extern int gl_proto_D318(void*, int, int, float, float);
-void RaceTracker_vslot11_0000D318(int *a0, int *a1) {
+void RaceTracker_vslot11_0000D318(RaceTracker *a0, int *a1) {
     int *obj;
     float denom;
 
-    if (a0[0xB4 / 4] & 8) {
-        obj = (int*)gl_func_00000000(a0[0x6C / 4], a1[0x88 / 4], 0, 1);
+    if (a0->hudFlags & 8) {
+        obj = (int*)gl_func_00000000(a0->pointsList, a1[0x88 / 4], 0, 1);
         *(float*)((char*)obj + 0xAC) = 0.0f;
         gl_proto_D318(obj, 0xDC, 0x78, 1.0f, 1.0f);
         denom = 255.0f;
@@ -2661,8 +2661,8 @@ void RaceTracker_vslot11_0000D318(int *a0, int *a1) {
         *(float*)((char*)obj + 0x68) = 80.0f / denom;
         *(float*)((char*)obj + 0x6C) = 80.0f / denom;
         *(float*)((char*)obj + 0x70) = (float)0 / denom;
-        gl_func_00000000(0x17, a0[0xA0 / 4] / 1000);
-        a0[0xA0 / 4] += a1[0x88 / 4] * 1000;
+        gl_func_00000000(0x17, a0->score / 1000);
+        a0->score += a1[0x88 / 4] * 1000;
     }
 }
 
@@ -2753,16 +2753,16 @@ void RaceTracker_func_0000D418(int *arg0) {
  * - The h() call needs a prototyped (int*, int, int, float, float) blank
  *   alias: a3 = mfc1 1.0f, 5th arg swc1 at 0x10(sp). */
 extern void gl_func_00000000_d548f(int *, int, int, float, float);
-void RaceTracker_func_0000D548(int *o, int a1) {
+void RaceTracker_func_0000D548(RaceTracker *o, int a1) {
     int *obj;
     float r, g, b;
-    if (o[0x6C / 4] == 0 || (o[0xB4 / 4] & 4) == 0) return;
+    if (o->pointsList == 0 || (o->hudFlags & 4) == 0) return;
     gl_func_00000000(0x2C);
-    o[0xA0 / 4] += 2000;
-    if (o[0xA4 / 4] < 500) {
-        o[0xA4 / 4] += 100;
+    o->score += 2000;
+    if (o->bonus < 500) {
+        o->bonus += 100;
     }
-    obj = (int *)gl_func_00000000(o[0x6C / 4], o[0xA4 / 4], 0, 1);
+    obj = (int *)gl_func_00000000(o->pointsList, o->bonus, 0, 1);
     r = 100.0f;
     g = 235.0f;
     b = 250.0f;
@@ -2771,12 +2771,12 @@ void RaceTracker_func_0000D548(int *o, int a1) {
     *(float *)((char *)obj + 0x6C) = b / 255.0f;
     b = 255.0;
     *(float *)((char *)obj + 0x70) = b / 255.0f;
-    *(int *)((char *)obj + 0xA0) = o[0x6C / 4] + 0x150;
+    *(int *)((char *)obj + 0xA0) = o->pointsList + 0x150;
     *(float *)((char *)obj + 0xAC) = 0.0f;
     gl_func_00000000_d548f(obj, 100, 0x86, 1.0f, 1.0f);
     *(float *)((char *)obj + 0xA8) = 0.0f;
     *(float *)((char *)obj + 0xA4) = 0.0f;
-    obj = (int *)gl_func_00000000(o[0x6C / 4], 2, 0, 1);
+    obj = (int *)gl_func_00000000(o->pointsList, 2, 0, 1);
     r = 80.0f;
     b = 0.0f;
     *(float *)((char *)obj + 0x64) = g / 255.0f;
@@ -2787,10 +2787,10 @@ void RaceTracker_func_0000D548(int *o, int a1) {
 
 extern int gl_func_00000000();
 
-void RaceTracker_func_0000D6A0(char *a0, int a1) {
-    if ((*(int*)(a0 + 0xB4) & 4) != 0) {
+void RaceTracker_func_0000D6A0(RaceTracker *a0, int a1) {
+    if ((a0->hudFlags & 4) != 0) {
         gl_func_00000000(0x2F, a0);
-        *(int*)(a0 + 0xA4) = 0;
+        a0->bonus = 0;
     }
 }
 
@@ -2809,11 +2809,11 @@ void RaceTracker_func_0000D6A0(char *a0, int a1) {
  * 0x9C = 30 store so the constant takes ring t3 after the o->6C reload.
  * docs/IDO_CODEGEN.md#double-literal-defeats-fp-const-cse-d6e8 */
 extern int gl_func_00000000();
-void RaceTracker_func_0000D6E8(int *o, int a1) {
+void RaceTracker_func_0000D6E8(RaceTracker *o, int a1) {
     float r, g, b, a;
-    int node = o[0x6C / 4];
+    int node = o->pointsList;
     int *obj;
-    if (node == 0 || (o[0xB4 / 4] & 2) == 0) return;
+    if (node == 0 || (o->hudFlags & 2) == 0) return;
     obj = (int *)gl_func_00000000(node, a1, 0, 1);
     r = 250.0f;
     g = 219.0f;
@@ -2828,7 +2828,7 @@ void RaceTracker_func_0000D6E8(int *o, int a1) {
     *(float *)((char *)obj + 0x68) = g / 255.0f;
     *(float *)((char *)obj + 0x6C) = b / 255.0f;
     *(float *)((char *)obj + 0x70) = a / 255.0f;
-    *(int *)((char *)obj + 0xA0) = o[0x6C / 4] + 0x138;
+    *(int *)((char *)obj + 0xA0) = o->pointsList + 0x138;
     *(int *)((char *)obj + 0x9C) = 30;
 }
 
@@ -2850,15 +2850,15 @@ void RaceTracker_func_0000D6E8(int *o, int a1) {
  * store (source order = ring order; the scheduler then hoists the `addiu t1,14`). */
 extern int gl_func_00000000();
 extern int gl_proto_d7b8(void *, float, float);
-void RaceTracker_func_0000D7B8(char *arg0, int arg1, int arg2) {
+void RaceTracker_func_0000D7B8(RaceTracker *arg0, int arg1, int arg2) {
     char *v0;
     int a3;
     float denom;
 
-    a3 = *(int *)(arg0 + 0x6C);
-    if ((a3 != 0) && (*(int *)(arg0 + 0xB4) & 2)) {
+    a3 = arg0->pointsList;
+    if ((a3 != 0) && (arg0->hudFlags & 2)) {
         gl_func_00000000(0x27, arg1 + arg2);
-        v0 = (char *)gl_func_00000000(*(int *)(arg0 + 0x6C), arg1, 0, 1);
+        v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 1);
         denom = 255.0f;
         *(float *)(v0 + 0x5C) = 70.0f;
         *(float *)(v0 + 0xA4) = 0.0f;
@@ -2868,13 +2868,13 @@ void RaceTracker_func_0000D7B8(char *arg0, int arg1, int arg2) {
         *(float *)(v0 + 0x68) = 235.0f / denom;
         *(float *)(v0 + 0x6C) = 100.0f / denom;
         *(float *)(v0 + 0x70) = (float)255 / denom;
-        *(int *)(v0 + 0xA0) = *(int *)(arg0 + 0x6C) + 0x108;
+        *(int *)(v0 + 0xA0) = arg0->pointsList + 0x108;
         *(int *)(v0 + 0x9C) = 14;
         gl_proto_d7b8(v0, 1.0f, 1.0f);
         *(int *)(v0 + 0x78) = 255;
-        a3 = *(int *)(arg0 + 0x6C);
+        a3 = arg0->pointsList;
     }
-    if ((a3 != 0) && (*(int *)(arg0 + 0xB4) & 1)) {
+    if ((a3 != 0) && (arg0->hudFlags & 1)) {
         gl_func_00000000(a3);
     }
 }
@@ -2890,24 +2890,24 @@ void RaceTracker_func_0000D7B8(char *arg0, int arg1, int arg2) {
  * the numerator spelled as the CAST class `(float)255` is a distinct pseudo from
  * the `255.0f` literal denom, so it gets its own lui/mtc1 (ring $f6). */
 extern int gl_func_00000000();
-void RaceTracker_func_0000D8E0(char *arg0, int arg1) {
+void RaceTracker_func_0000D8E0(RaceTracker *arg0, int arg1) {
     int a2;
     char *v0;
     float denom;
 
-    a2 = *(int *)(arg0 + 0x6C);
-    if ((a2 != 0) && (*(int *)(arg0 + 0xB4) & 2)) {
+    a2 = arg0->pointsList;
+    if ((a2 != 0) && (arg0->hudFlags & 2)) {
         gl_func_00000000(0x22);
-        v0 = (char *)gl_func_00000000(*(int *)(arg0 + 0x6C), arg1, 0, 0);
+        v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 0);
         denom = 255.0f;
         *(float *)(v0 + 0x5C) = 70.0f;
         *(float *)(v0 + 0x64) = 250.0f / denom;
         *(float *)(v0 + 0x68) = 235.0f / denom;
         *(float *)(v0 + 0x6C) = 100.0f / denom;
         *(float *)(v0 + 0x70) = (float)255 / denom;
-        a2 = *(int *)(arg0 + 0x6C);
+        a2 = arg0->pointsList;
     }
-    if ((a2 != 0) && (*(int *)(arg0 + 0xB4) & 1)) {
+    if ((a2 != 0) && (arg0->hudFlags & 1)) {
         gl_func_00000000(a2);
     }
 }
@@ -2932,15 +2932,15 @@ void RaceTracker_func_0000D9B8(int *a0, int a1, int a2) {
  * Unwrapped 2026-10-16 (agent-g): the NM body was word-identical to the target;
  * the second call goes through the blank alias gl_func_00000000_d9e4b (pinned 0). */
 extern void gl_func_00000000_d9e4b(int *, int, int, float, float);
-void RaceTracker_func_0000D9E4(int *a0, int a1) {
+void RaceTracker_func_0000D9E4(RaceTracker *a0, int a1) {
     int *v0;
     int *sub;
     f32 num100;
     f32 num235;
     f32 num255;
 
-    sub = (int *)a0[0x6C / 4];
-    if ((sub != 0) && (a0[0xB4 / 4] & 2) && (*(int **)((char *)&D_00000000 + 0x64) != 0)) {
+    sub = (int *)a0->pointsList;
+    if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&D_00000000 + 0x64) != 0)) {
         v0 = (int *)gl_func_00000000(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
         v0[0x9C / 4] = 230;
         v0[0x7C / 4] = 0;
@@ -2955,11 +2955,11 @@ void RaceTracker_func_0000D9E4(int *a0, int a1) {
         *(float *)((char *)v0 + 0x6C) = num100 / 255.0f;
         *(float *)((char *)v0 + 0x68) = num235 / 255.0f;
         *(float *)((char *)v0 + 0x70) = num255 / 255.0f;
-        v0[0xA0 / 4] = (int)((char *)a0[0x6C / 4] + 0x120);
+        v0[0xA0 / 4] = (int)((char *)a0->pointsList + 0x120);
     }
-    sub = (int *)a0[0x6C / 4];
+    sub = (int *)a0->pointsList;
     if (sub != 0) {
-        if (a0[0xB4 / 4] & 1) {
+        if (a0->hudFlags & 1) {
             gl_func_00000000(sub);
         }
     }
@@ -2989,23 +2989,23 @@ void RaceTracker_func_0000DB34(int a0, int a1, int a2) {
  *  - the empty `if (v0) {}` after the FIRST arm's q load flips the
  *    entry/q colouring of all three dispatches to v1/v0 (DC90/DD44 nudge; on
  *    the else arm or on the first dispatch it is inert or worse). */
-void RaceTracker_func_0000DB80(char *self, int idx) {
+void RaceTracker_func_0000DB80(RaceTracker *self, int idx) {
     int pad_a[2]; int l0 = 1000; int pad_b[2];
     char *v1, *v0;
-    v1 = *(char **)(*(char **)(self + 0x44) + idx * 0x60);
+    v1 = (char *)self->entries[idx].rider;
     v0 = *(char **)(v1 + 0x28);
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l0);
-    if (*(int *)(self + 0x48) == 2) {
+    if (self->numEntries == 2) {
         int pad_m;
         if (*(int *)((char *)&D_00000000 + 0x34) == 3 || *(int *)((char *)&D_00000000 + 0x34) == 2) {
             int l1 = 1001; int pad_c[2];
-            v1 = *(char **)(*(char **)(self + 0x44) + (idx ^ 1) * 0x60);
+            v1 = (char *)self->entries[idx ^ 1].rider;
             v0 = *(char **)(v1 + 0x28);
             if (v0) {}
             (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l1);
         } else {
             int l2 = 1000; int pad_d[1];
-            v1 = *(char **)(*(char **)(self + 0x44) + (idx ^ 1) * 0x60);
+            v1 = (char *)self->entries[idx ^ 1].rider;
             v0 = *(char **)(v1 + 0x28);
             (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
         }
@@ -3025,15 +3025,15 @@ void RaceTracker_func_0000DB80(char *self, int idx) {
  * method((char*)obj + adj, &msgcode, self) with msgcode 1001, then if
  * self->unk48 == 2 the partner entry (idx^1) with msgcode 1000.
  */
-void RaceTracker_func_0000DC90(char *self, int idx) {
+void RaceTracker_func_0000DC90(RaceTracker *self, int idx) {
     int pad_a[2]; int sp34 = 1001; int pad_b[3]; int pad_c[1];
     char *v0; int sp1C; char *v1;
-    v1 = *(char **)(*(char **)(self + 0x44) + idx * 0x60);
+    v1 = (char *)self->entries[idx].rider;
     v0 = *(char **)(v1 + 0x28);
     (*(void (**)(char *, int *, char *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &sp34, self);
-    if (*(int *)(self + 0x48) == 2) {
+    if (self->numEntries == 2) {
         sp1C = 1000;
-        v1 = *(char **)(*(char **)(self + 0x44) + (idx ^ 1) * 0x60);
+        v1 = (char *)self->entries[idx ^ 1].rider;
         v0 = *(char **)(v1 + 0x28);
         if (v0) {}
         (*(void (**)(char *, int *, char *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &sp1C, self);
@@ -3048,14 +3048,14 @@ void RaceTracker_func_0000DC90(char *self, int idx) {
  * frame; deferring l2's assignment defers its li+sw past the first call; the empty
  * if(v0){} on the 2nd dispatch is the regalloc nudge (permuter-found) that gives
  * entry->v1 / q->v0 like the target. */
-void RaceTracker_func_0000DD44(char *a0, int a1) {
+void RaceTracker_func_0000DD44(RaceTracker *a0, int a1) {
     int pad_top[2]; int l1 = 1001; int between[2]; int l2; int pad_bot[2];
     char *v0, *v1;
-    v1 = *(char **)(*(char **)(a0 + 0x44) + a1 * 0x60);
+    v1 = (char *)a0->entries[a1].rider;
     v0 = *(char **)(v1 + 0x28);
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l1);
     l2 = 1001;
-    v1 = *(char **)(*(char **)(a0 + 0x44) + (a1 ^ 1) * 0x60);
+    v1 = (char *)a0->entries[a1 ^ 1].rider;
     v0 = *(char **)(v1 + 0x28);
     if (v0) {}
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
@@ -3186,11 +3186,11 @@ void RaceTracker_func_0000DF8C(int a0, int a1, float a2, float a3) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-void RaceTracker_func_0000DFC4(int *a0, int a1, int a2) {
+void RaceTracker_func_0000DFC4(RaceTracker *a0, int a1, int a2) {
     int *v0 = (int*)gl_func_00000000(a0, a1, a2);
     if (v0 == 0) return;
     if ((v0[0x4 / 4] & 1) == 0) return;
-    if ((a0[0xB4 / 4] & 2) == 0) return;
+    if ((a0->hudFlags & 2) == 0) return;
     if (v0[0x1C / 4] == 0) {
         v0[0x20 / 4] = 0;
     }
@@ -3227,7 +3227,7 @@ void RaceTracker_vslot13_0000E050(int a0, int a1) { (void)a0; (void)a1; }
  *  3. Vtable tail in the CDDC form (named `new_a0` pointer local, fn-ptr deref
  *     inline) gives the ring t9/t0 + `addu a0,t0,s0`; named fn/off locals colour
  *     a2/a3 and flip the addu. */
-void RaceTracker_func_0000E05C(int *self, int a1, int a2) {
+void RaceTracker_func_0000E05C(RaceTracker *self, int a1, int a2) {
     int *v0;
     int a2_var;
     int *vt;
@@ -3237,15 +3237,15 @@ void RaceTracker_func_0000E05C(int *self, int a1, int a2) {
     a2_var = -1;
     if (v0 == 0) return;
     if ((v0[1] & 1) == 0) return;
-    if (self[0xB4 / 4] & 0x10) {
+    if (self->hudFlags & 0x10) {
         a2_var = (int)gl_func_00000000(*(int*)&D_00000000, a2);
     }
-    if (self[0xB4 / 4] & 0x1) {
+    if (self->hudFlags & 0x1) {
         int r1 = (int)gl_func_00000000(*(int*)&D_00000000, a2);
         gl_func_00000000(self, r1, a2_var);
         gl_func_00000000(0x24, a2);
     }
-    vt = (int*)self[0x28 / 4];
+    vt = (int*)self->vptr;
     new_a0 = (int*)((char*)self + *(short*)((char*)vt + 0x68));
     (*(int(**)(int*, int))((char*)vt + 0x6C))(new_a0, a2);
 }
@@ -3288,11 +3288,11 @@ void RaceTracker_func_0000E118(int a0, int a1, int a2, int a3) {
     }
 }
 
-void RaceTracker_func_0000E1DC(int *a0, int a1, int a2) {
+void RaceTracker_func_0000E1DC(RaceTracker *a0, int a1, int a2) {
     int *v = (int*)gl_func_00000000(a0, a1, a2);
     if (v == 0) return;
     if (!(v[1] & 1)) return;
-    if (!(a0[0xB4 / 4] & 2)) return;
+    if (!(a0->hudFlags & 2)) return;
     gl_func_00000000(a0, a2);
 }
 
@@ -3306,15 +3306,15 @@ void RaceTracker_func_0000E1DC(int *a0, int a1, int a2) {
  * (guard references a0 first) flips the coloring to match. See
  * docs/IDO_CODEGEN.md "Promoted loop-invariants ... UCODE-encounter order". */
 extern int func_00000000();
-void RaceTracker_func_0000E230(int *a0) {
+void RaceTracker_func_0000E230(RaceTracker *a0) {
     int i = 0;
-    if (a0[0x48/4] > 0) {
+    if (a0->numEntries > 0) {
         int offset = 0;
         do {
-            func_00000000(a0, *(int*)((char*)a0[0x44/4] + offset), 1, 0);
+            func_00000000(a0, RACE_ENTRY_AT(a0, offset)->rider, 1, 0);
             i++;
             offset += 0x60;
-        } while (i < a0[0x48/4]);
+        } while (i < a0->numEntries);
     }
 }
 

@@ -166,6 +166,9 @@ typedef char RaceEntry_size_check[sizeof(RaceEntry) == 0x60 ? 1 : -1];
 typedef char RaceEntry_pct_check[(int)&((RaceEntry *)0)->pct == 0x30 ? 1 : -1];
 typedef char RaceEntry_gate_check[(int)&((RaceEntry *)0)->gate == 0x4C ? 1 : -1];
 
+/* The entry at byte offset `off` (the matched loops walk entries in 0x60 byte steps). */
+#define RACE_ENTRY_AT(t, off) ((RaceEntry *)((char *)(t)->entries + (off)))
+
 /* RaceTracker.hudFlags (0xB4) bits */
 #define RTF_FLUSH      1
 #define RTF_POINTS     2
