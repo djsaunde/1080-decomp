@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/select.h"
 extern char *timproc_uso_b5_alias();
 
 extern int gl_func_00000000();
@@ -1284,9 +1285,9 @@ void SelectionMgr_finish_00001C08(char *st) {
  * return-0 block is the branch target; `if (!=2) return 0;` inverts the
  * layout (beq + return-0 fallthrough). See docs/MATCHING_WORKFLOW.md
  * #feedback-beql-next-symbol-plus-4-is-mis-split-branch-likely-block. */
-int SelectionMgr_otherWin_00001CF0(int *a0, int a1) {
-    if (*(int*)((char*)a0 + 0x30) == 2) {
-        return *(int*)((char*)a0 + 0x34 + 4 * (a1 ^ 1));
+int SelectionMgr_otherWin_00001CF0(SelectionMgr *m, int player) {
+    if (m->numPlayers == 2) {
+        return (int)m->wins[player ^ 1];
     }
     return 0;
 }
@@ -2539,7 +2540,7 @@ typedef struct { char *p; } P1;
  * the 0.5f lui like the target); (5) case 0's table store and its `break`
  * on ONE source line: as1 then schedules the a2 reload above the store and
  * the store fills the `b` delay slot (target). */
-void SelectWin_func_00008D90(int *a0, int a1);
+void SelectWin_func_00008D90();
 char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
@@ -3224,7 +3225,7 @@ extern char timproc_uso_b5_D_807FE6C4;
 extern char import_80020150;
 s32 SelectWin_findItem_00008988(char *arg0, s32 arg1, s32 arg2);
 int SelectWin_curItem_00008A38();
-void SelectWin_beginTransition_00008688(char *scr, int mode);
+void SelectWin_beginTransition_00008688();
 /* 2026-09-04 (agent-h) 88.67 (244/244, difflines 80) FP-block study: the
  * target holds the 255.0f DIVISOR as a multi-use candidate in $f2 and the
  * numerators as distinct temps materialized 255,90,255(num),145,58,13,161,91,
@@ -3428,9 +3429,9 @@ extern void SelectWin_state9_00008468();
 extern f32 timproc_uso_b5_func_07E7B0(f32);
 /* 00001CF0, 000038B0, 0000396C, 000073C0, 000085E0, 00008A38, 00008AD4
  * are defined elsewhere in this TU with real prototypes. */
-int SelectionMgr_otherWin_00001CF0(int *a0, int a1);
+int SelectionMgr_otherWin_00001CF0();
 int SelectWin_curItem_00008A38();
-int SelectWin_prevFocusItem_00008AD4(int *a0);
+int SelectWin_prevFocusItem_00008AD4();
 void SelectWin_state2_000073C0(char *scr);
 void SelectWin_state10_000085E0(int *a0);
 
@@ -3758,7 +3759,7 @@ ret0:
  *    addu rs=base at both levels; idx and the table base reload each
  *    iteration (no locals). f20=0.0 hoist/sdc1 pair is automatic.
  */
-extern int SelectWin_itemCount_00008C1C(int *a0);
+extern int SelectWin_itemCount_00008C1C();
 int SelectWin_canScrollNext_00006900(char *s) {
     int i;
     int n0;
@@ -4604,12 +4605,12 @@ void SelectWin_state4_000077D8(char *scr) {
 // 866C / 8988 / 87A0 / 6D30 / 8688). The slot index is array-indexed
 // (`((int *)(scr + 0x3E0))[i]`) because `scr + i * 4` emits the addu operands
 // reversed.
-int SelectWin_chosenItem_00008A90(int *a0);
-void SelectWin_chooseCurrent_00008ABC(int *a0);
+int SelectWin_chosenItem_00008A90();
+void SelectWin_chooseCurrent_00008ABC();
 int SelectWin_nextStageBit_000087F4(char *a0);
-void SelectWin_saveFocus_0000866C(int *a0);
+void SelectWin_saveFocus_0000866C();
 void SelectWin_skipDisabled_00006D30(int *self);
-void SelectWin_beginTransition_00008688(char *scr, int mode);
+void SelectWin_beginTransition_00008688();
 extern char import_8002013C;
 typedef char *(*GP_79A4)();
 void SelectWin_state5_000079A4(char *scr) {
@@ -5009,16 +5010,16 @@ typedef char *(*GP_000080F4)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE748;
 extern int timproc_uso_b5_func_011E00();
-int SelectWin_chosenItem_00008A90(int *a0);
-void SelectWin_chooseCurrent_00008ABC(int *a0);
+int SelectWin_chosenItem_00008A90();
+void SelectWin_chooseCurrent_00008ABC();
 int SelectWin_nextStageBit_000087F4(char *a0);
-void SelectWin_saveFocus_0000866C(int *a0);
+void SelectWin_saveFocus_0000866C();
 void SelectWin_skipDisabled_00006D30(int *self);
-void SelectWin_beginTransition_00008688(char *scr, int mode);
+void SelectWin_beginTransition_00008688();
 void SelectWin_moveCursorPrev_00006E08(char *arg0, s32 arg1);
 int SelectWin_prevStageBit_000088A0(char *a0);
 void SelectWin_commitSelection_00006C00(char *scr);
-void SelectWin_func_00008D90(int *a0, int a1);
+void SelectWin_func_00008D90();
 int SelectWin_func_0000894C();
 void SelectWin_state8_000080F4(char *arg0) {
     s32 sp28;
@@ -5232,10 +5233,10 @@ void SelectWin_state10_000085E0(int *a0) {
     }
 }
 
-void SelectWin_saveFocus_0000866C(int *a0) {
-    int idx = a0[0x3C4 / 4];
-    a0[0x3F0 / 4] = idx;
-    a0[0x3F4 / 4] = *(int *)((char *)a0 + (idx << 2) + 0x3D0);
+void SelectWin_saveFocus_0000866C(SelectWin *w) {
+    int idx = w->stage;
+    w->prevStage = idx;
+    w->prevItem = w->curItem[idx];
 }
 
 /* SelectWin_beginTransition_00008688: timing-screen camera snapshot + view begin.
@@ -5247,32 +5248,32 @@ void SelectWin_saveFocus_0000866C(int *a0) {
  * mode == 2) and an unconditional third call. The 0x4B4/0x3F8 stores are the
  * constant 1 (not mode), and the missing 0x400 store is
  * (int)(scr->0x104 * 0.75f). */
-void SelectWin_beginTransition_00008688(char *scr, int mode) {
-    char *n = *(char **)(scr + 0x414);
+void SelectWin_beginTransition_00008688(SelectWin *w, int mode) {
+    char *n = w->scene;
     char *v0;
     char *v1;
-    *(f32 *)(scr + 0x4C4) = *(f32 *)(*(char **)(n + 0x10) + 0x60);
-    *(f32 *)(scr + 0x4C8) = *(f32 *)(*(char **)(n + 0x10) + 0x64);
-    *(f32 *)(scr + 0x4CC) = *(f32 *)(*(char **)(n + 0x10) + 0x68);
-    *(f32 *)(scr + 0x4C0) = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
-    *(s32 *)(scr + 0x4B4) = 1;
-    *(s32 *)(scr + 0x3F8) = 1;
-    *(s32 *)(scr + 0x488) = *(s32 *)(scr + 0x104);
-    *(f32 *)(scr + 0x4BC) = 0.0f;
-    *(f32 *)(scr + 0x484) = 0.0f;
-    *(s32 *)(scr + 0x3FC) = *(s32 *)(scr + 0x404);
-    *(s32 *)(scr + 0x400) = (f32)*(s32 *)(scr + 0x104) * 0.75f;
+    w->camPos[0] = *(f32 *)(*(char **)(n + 0x10) + 0x60);
+    w->camPos[1] = *(f32 *)(*(char **)(n + 0x10) + 0x64);
+    w->camPos[2] = *(f32 *)(*(char **)(n + 0x10) + 0x68);
+    w->unk4C0 = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
+    w->busy = 1;
+    w->unk3F8 = 1;
+    w->unk488 = *(s32 *)((char *)w + 0x104);
+    w->unk4BC = 0.0f;
+    w->unk484 = 0.0f;
+    w->unk3FC = w->unk404;
+    w->unk400 = (f32)*(s32 *)((char *)w + 0x104) * 0.75f;
     if (mode == 1) {
-        v0 = (char *)SelectWin_prevFocusItem_00008AD4((int *)scr);
+        v0 = (char *)SelectWin_prevFocusItem_00008AD4(w);
         v1 = *(char **)(v0 + 0x28);
         ((void (*)(char *))*(int *)(v1 + 0x6C))(*(s16 *)(v1 + 0x68) + v0);
     }
     if (mode == 2) {
-        v0 = (char *)SelectWin_prevFocusItem_00008AD4((int *)scr);
+        v0 = (char *)SelectWin_prevFocusItem_00008AD4(w);
         v1 = *(char **)(v0 + 0x28);
         ((void (*)(char *))*(int *)(v1 + 0x74))(*(s16 *)(v1 + 0x70) + v0);
     }
-    v0 = (char *)SelectWin_curItem_00008A38(scr);
+    v0 = (char *)SelectWin_curItem_00008A38(w);
     v1 = *(char **)(v0 + 0x28);
     ((void (*)(char *))*(int *)(v1 + 0x64))(*(s16 *)(v1 + 0x60) + v0);
 }
@@ -5525,20 +5526,20 @@ s32 SelectWin_findItem_00008988(char *arg0, s32 arg1, s32 arg2) {
  * locals) emits the target's all-$t allocation. */
 /* K&R param form (2026-07-10, 80F4): lets 80F4 pass an invisible extra a1
  * arg (target precolors the 1D1C-result web a1). Codegen identical. */
-int SelectWin_curItem_00008A38(a0)
-int *a0;
+int SelectWin_curItem_00008A38(w)
+SelectWin *w;
 {
-    return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3D0) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
+    return (int)w->itemsMgr->lists[w->stage]->items[w->curItem[w->stage]];
 }
 
 /* Sibling of _00008A38 (offsets 0x3CC/0x3C). */
-int SelectWin_prevStageItem_00008A64(int *a0) {
-    return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3CC) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x3C) + 0x3C);
+int SelectWin_prevStageItem_00008A64(SelectWin *w) {
+    return (int)w->itemsMgr->lists[w->stage - 1]->items[w->curItem[w->stage - 1]];
 }
 
 /* Sibling of _00008A38 (offsets 0x3E0/0x40). */
-int SelectWin_chosenItem_00008A90(int *a0) {
-    return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3E0) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
+int SelectWin_chosenItem_00008A90(SelectWin *w) {
+    return (int)w->itemsMgr->lists[w->stage]->items[w->chosenItem[w->stage]];
 }
 
 // copy a0[idx*4+0x3D0] -> a0[idx*4+0x3E0], idx = a0->0x3C4.
@@ -5547,14 +5548,14 @@ int SelectWin_chosenItem_00008A90(int *a0) {
 // the addu base-first (addu v0,a0,t7) with the target's t6/t7/v0/t8 registers.
 // The &a0[idx] + char*-offset form emitted index-first addu (was INSN_PATCH'd,
 // banned 2026-05-23). See docs/IDO_CODEGEN.md#feedback-ido-indexed-double-deref-allt-cap.
-void SelectWin_chooseCurrent_00008ABC(int *a0) {
-    a0[a0[0x3C4 / 4] + 0x3E0 / 4] = a0[a0[0x3C4 / 4] + 0x3D0 / 4];
+void SelectWin_chooseCurrent_00008ABC(SelectWin *w) {
+    w->chosenItem[w->stage] = w->curItem[w->stage];
 }
 
 /* SelectWin_prevFocusItem_00008AD4: double-indexed double-deref accessor. Same
  * addu operand-order lever (scaled index FIRST, fully inlined). */
-int SelectWin_prevFocusItem_00008AD4(int *a0) {
-    return *(int *)(*(int *)((char *)a0 + 0x3F4) * 4 + *(int *)(*(int *)((char *)a0 + 0x3F0) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
+int SelectWin_prevFocusItem_00008AD4(SelectWin *w) {
+    return (int)w->itemsMgr->lists[w->prevStage]->items[w->prevItem];
 }
 
 // RoomModifier_func_00008AFC — STRUCTURAL PASS (no episode).
@@ -5613,12 +5614,12 @@ void RoomModifier_func_00008AFC(char *scr) {
 
 /* SelectWin_itemCount_00008C1C: indexed double-deref accessor. addu operand
  * order lever: scaled index FIRST (idx*4 + base) emits the target all-$t. */
-int SelectWin_itemCount_00008C1C(int *a0) {
-    return *(int *)(*(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x6C);
+int SelectWin_itemCount_00008C1C(SelectWin *w) {
+    return w->itemsMgr->lists[w->stage]->count;
 }
 
-int SelectWin_listCount_00008C38(char *scr) {
-    return *(int *)(*(char **)(scr + 0x40C) + 0x3C);
+int SelectWin_listCount_00008C38(SelectWin *w) {
+    return w->itemsMgr->count;
 }
 
 /* SelectWin_func_00008C44: timing-screen slot classification query.
@@ -5724,14 +5725,14 @@ s32 SelectWin_func_00008D38(char *a0) {
     return 3;
 }
 
-void SelectWin_func_00008D90(int *a0, int a1) {
+void SelectWin_func_00008D90(SelectWin *w, int a1) {
     if (a1 == 0) {
-        a0[0x4A4 / 4] = 0;
+        w->unk4A4 = 0;
     } else {
-        a0[0x4A8 / 4] = 0;
+        w->unk4A8 = 0;
     }
-    a0[0x4AC / 4] = 0;
-    a0[0x4B0 / 4] = *(int *)((char *)&D_00000000 + 0xF18);
+    w->unk4AC = 0;
+    w->unk4B0 = *(int *)((char *)&D_00000000 + 0xF18);
 }
 
 // gen_createScene_00008DB4 — STRUCTURAL PASS w/ REAL SYMBOLS
@@ -7127,64 +7128,64 @@ void CharacterItem_updateHighlight_0000B850(char *a0, float target) {
     }
 }
 
-void CharacterItem_vfunc17_0000B914(int *a0) {
-    *(int*)((char*)a0 + 0x2B4) ^= 0x20000;
+void CharacterItem_vfunc17_0000B914(SelItemEx *it) {
+    it->base.flags ^= 0x20000;
 }
 
-void CharacterItem_vfunc18_0000B928(int *a0) {
-    int *p = (int*)a0[0x2B8/4];
-    gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 1, 1, 1);
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = -1000;
+void CharacterItem_vfunc18_0000B928(SelItemEx *it) {
+    char *p = it->model;
+    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 1, 1, 1);
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
 }
 
-void CharacterItem_vfunc19_0000B98C(int *a0) {
-    int *p = (int*)a0[0x2B8/4];
-    gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 2, 3, 1, 1);
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = -1000;
+void CharacterItem_vfunc19_0000B98C(SelItemEx *it) {
+    char *p = it->model;
+    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 2, 3, 1, 1);
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
 }
 
-void CharacterItem_confirm_0000B9F0(int *a0) {
-    int *p = (int*)a0[0x2B8/4];
-    gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 2, 1, 1);
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = 2;
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 0x10;
+void CharacterItem_confirm_0000B9F0(SelItemEx *it) {
+    char *p = it->model;
+    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 2, 1, 1);
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = 2;
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
+    *(int*)(it->model + 0x144) = 0x10;
 }
 
-void CharacterItem_focus_0000BA60(int *a0) {
-    int *p = (int*)a0[0x2B8/4];
-    gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 0, 2, 2, 1);
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
-    *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = -1000;
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x138) = 1;
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 0;
-    *(int*)((char*)a0 + 0x2BC) = 0;
-    *(int*)((char*)a0 + 0x2C0) = 2;
+void CharacterItem_focus_0000BA60(SelItemEx *it) {
+    char *p = it->model;
+    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 0, 2, 2, 1);
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0xB0) = 0;
+    *(int*)((char*)*(int*)(it->model + 0x10C) + 0x64) = -1000;
+    *(int*)(it->model + 0x138) = 1;
+    *(int*)(it->model + 0x144) = 0;
+    it->barCount = 0;
+    it->barTimer = 2;
 }
 
-void CharacterItem_unfocus_0000BAE8(int *a0) {
-    int *p = (int*)a0[0x2B8/4];
-    gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 2, 1, 1);
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x138) = 0;
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 0x20;
+void CharacterItem_unfocus_0000BAE8(SelItemEx *it) {
+    char *p = it->model;
+    gl_func_00000000(*(int*)(p + 0x10C), *(int*)(p + 0x140), 3, 2, 1, 1);
+    *(int*)(it->model + 0x138) = 0;
+    *(int*)(it->model + 0x144) = 0x20;
 }
 
-void CharacterItem_vfunc13_0000BB44(int *a0) {
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x138) = 0;
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 8;
+void CharacterItem_vfunc13_0000BB44(SelItemEx *it) {
+    *(int*)(it->model + 0x138) = 0;
+    *(int*)(it->model + 0x144) = 8;
 }
 
 void CharacterItem_vfunc14_0000BB5C(int a0) {
 }
 
-void CharacterItem_setChosen_0000BB64(int *a0, int unused) {
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x13C) = 1;
+void CharacterItem_setChosen_0000BB64(SelItemEx *it, int unused) {
+    *(int*)(it->model + 0x13C) = 1;
 }
 
-void CharacterItem_clearChosen_0000BB78(int *a0, int unused) {
-    *(int*)((char*)(int*)a0[0x2B8/4] + 0x13C) = 0;
+void CharacterItem_clearChosen_0000BB78(SelItemEx *it, int unused) {
+    *(int*)(it->model + 0x13C) = 0;
 }
 
 /* 16-insn float-quad copy: v0 = a0->_2B8; copies 4 floats from
@@ -7227,9 +7228,9 @@ void CharacterItem_update_0000BB88(int *a0) {
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
  * Float arg passed in $a1 (int reg), so IDO emits mtc1 to FPU first. */
-void CharacterItem_setAlpha_0000BBC8(int *a0, float a1) {
-    *(float*)((char*)a0 + 0x2A0) = a1;
-    *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x120) = a1;
+void CharacterItem_setAlpha_0000BBC8(SelItemEx *it, float a1) {
+    it->base.alpha = a1;
+    *(float*)(it->model + 0x120) = a1;
 }
 
 #ifdef NON_MATCHING
@@ -7488,37 +7489,37 @@ void BoardItem_vfunc19_0000C110(int a0) {
 void BoardItem_confirm_0000C118(int a0) {
 }
 
-void BoardItem_focus_0000C120(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x12C) = 1;
-    *(float*)((char*)a0[0x2B8/4] + 0x10C) = 0.0f;
-    *(int*)((char*)a0 + 0x2BC) = 0;
-    *(int*)((char*)a0 + 0x2C0) = 2;
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
+void BoardItem_focus_0000C120(SelItemEx *it) {
+    *(int*)(it->model + 0x12C) = 1;
+    *(float*)(it->model + 0x10C) = 0.0f;
+    it->barCount = 0;
+    it->barTimer = 2;
+    *(int*)(it->model + 0x130) = 1;
 }
 
-void BoardItem_unfocus_0000C150(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x12C) = 0;
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
+void BoardItem_unfocus_0000C150(SelItemEx *it) {
+    *(int*)(it->model + 0x12C) = 0;
+    *(int*)(it->model + 0x130) = 0;
 }
 
-void BoardItem_vfunc13_0000C164(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
+void BoardItem_vfunc13_0000C164(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 0;
 }
 
-void BoardItem_vfunc14_0000C170(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
+void BoardItem_vfunc14_0000C170(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 1;
 }
 
-void BoardItem_vfunc17_0000C180(int *a0) {
-    *(int*)((char*)a0 + 0x2B4) ^= 0x20;
+void BoardItem_vfunc17_0000C180(SelItemEx *it) {
+    it->base.flags ^= 0x20;
 }
 
-void BoardItem_setChosen_0000C190(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
+void BoardItem_setChosen_0000C190(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x134) = 1;
 }
 
-void BoardItem_clearChosen_0000C1A4(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
+void BoardItem_clearChosen_0000C1A4(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x134) = 0;
 }
 
 /* BoardItem_update_0000C1B4: 16-insn 4-float copy + cross-USO call.
@@ -7566,9 +7567,9 @@ void BoardItem_update_0000C1B4(int *a0) {
  * from the Yay0 gap (no .s, missing from build; bytes from block_5). o32
  * float-after-int arg arrives in $a1 -> mtc1; inline-deref of a0->0x2B8
  * keeps the dest pointer in $t6 (byte-exact). */
-void BoardItem_setAlpha_0000C1F4(int *a0, float val) {
-    *(float*)((char*)a0 + 0x2A0) = val;
-    *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x120) = val;
+void BoardItem_setAlpha_0000C1F4(SelItemEx *it, float val) {
+    it->base.alpha = val;
+    *(float*)(it->model + 0x120) = val;
 }
 
 extern char D_b5_C208_table0;
@@ -7822,11 +7823,11 @@ void CourseItem_updateHighlight_0000C710(char *a0, float a1u) {
 
 /* timproc_uso_b5_func_0000C7B4 MERGED into C710 2026-06-10 (bc1f tail fragment, third of the fade-helper family). */
 
-void CourseItem_copyState_0000C7E8(char *a0, char *a1) {
-    *(float*)(*(int*)(a1 + 0x2B8) + 0x128) = *(float*)(*(int*)(a0 + 0x2B8) + 0x128);
-    *(float*)(*(int*)(a1 + 0x2B8) + 0x124) = *(float*)(*(int*)(a0 + 0x2B8) + 0x124);
-    *(int*)(*(int*)(a1 + 0x2B8) + 0x130) = *(int*)(*(int*)(a0 + 0x2B8) + 0x130);
-    *(int*)(*(int*)(a1 + 0x2B8) + 0x13C) = *(int*)(*(int*)(a0 + 0x2B8) + 0x13C);
+void CourseItem_copyState_0000C7E8(SelItemEx *it, SelItemEx *other) {
+    *(float *)(other->model + 0x128) = *(float *)(it->model + 0x128);
+    *(float *)(other->model + 0x124) = *(float *)(it->model + 0x124);
+    *(int *)(other->model + 0x130) = *(int *)(it->model + 0x130);
+    *(int *)(other->model + 0x13C) = *(int *)(it->model + 0x13C);
 }
 
 void CourseItem_vfunc17_0000C82C(int a0) {
@@ -7841,29 +7842,29 @@ void CourseItem_vfunc19_0000C83C(int a0) {
 void CourseItem_confirm_0000C844(int a0) {
 }
 
-void CourseItem_focus_0000C84C(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
+void CourseItem_focus_0000C84C(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 1;
 }
 
-void CourseItem_unfocus_0000C85C(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
+void CourseItem_unfocus_0000C85C(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 0;
+    *(int*)(it->model + 0x134) = 0;
 }
 
 void CourseItem_vfunc13_0000C870(int a0) {
 }
 
-void CourseItem_vfunc14_0000C878(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
+void CourseItem_vfunc14_0000C878(SelItemEx *it) {
+    *(int*)(it->model + 0x134) = 1;
 }
 
-void CourseItem_setChosen_0000C888(int *a0, int a1) {
+void CourseItem_setChosen_0000C888(SelItemEx *it, int a1) {
     (void)a1;
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
+    *(int*)(it->model + 0x138) = 1;
 }
 
-void CourseItem_clearChosen_0000C89C(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
+void CourseItem_clearChosen_0000C89C(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x138) = 0;
 }
 
 /* 51-insn / 0xCC float clamp + copy. Pattern:
@@ -7987,9 +7988,9 @@ void CourseItem_update_0000C8AC(int *a0) {
 }
 
 
-void CourseItem_setAlpha_0000C978(int *a0, float a1) {
-    *(float*)((char*)a0 + 0x2A0) = a1;
-    *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = a1;
+void CourseItem_setAlpha_0000C978(SelItemEx *it, float a1) {
+    it->base.alpha = a1;
+    *(float*)(it->model + 0x11C) = a1;
 }
 
 // CourseItem_drawLabel_0000C98C — STRUCTURAL PASS (0x1B4 / 109 words,
@@ -8141,24 +8142,24 @@ void TesuriItem_vfunc19_0000CC14(int a0) {}
 
 void TesuriItem_confirm_0000CC1C(int a0) {}
 
-void TesuriItem_focus_0000CC24(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
+void TesuriItem_focus_0000CC24(SelItemEx *it) {
+    *(int*)(it->model + 0x134) = 1;
 }
 
-void TesuriItem_unfocus_0000CC34(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
+void TesuriItem_unfocus_0000CC34(SelItemEx *it) {
+    *(int*)(it->model + 0x134) = 0;
 }
 
 void TesuriItem_vfunc13_0000CC40(int a0) {}
 
 void TesuriItem_vfunc14_0000CC48(int a0) {}
 
-void TesuriItem_setChosen_0000CC50(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
+void TesuriItem_setChosen_0000CC50(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x138) = 1;
 }
 
-void TesuriItem_clearChosen_0000CC64(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
+void TesuriItem_clearChosen_0000CC64(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x138) = 0;
 }
 
 /* Sibling of BoardItem_update_0000C1B4 (4-float copy + cross-USO call + 5-insn
@@ -8194,9 +8195,9 @@ void TesuriItem_update_0000CC74(int *a0) {
 
 /* TesuriItem_setAlpha_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
  * instead of 0x120), RECOVERED 2026-05-28 from the Yay0 gap. */
-void TesuriItem_setAlpha_0000CCB4(int *a0, float val) {
-    *(float*)((char*)a0 + 0x2A0) = val;
-    *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = val;
+void TesuriItem_setAlpha_0000CCB4(SelItemEx *it, float val) {
+    it->base.alpha = val;
+    *(float*)(it->model + 0x11C) = val;
 }
 
 /* TesuriItem_drawLabel_0000CCC8: 23-insn (0x5C) 6-arg cross-USO call
@@ -8284,24 +8285,24 @@ void LevelItem_vfunc19_0000CE0C(int a0) {}
 
 void LevelItem_confirm_0000CE14(int a0) {}
 
-void LevelItem_focus_0000CE1C(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
+void LevelItem_focus_0000CE1C(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 1;
 }
 
-void LevelItem_unfocus_0000CE2C(int *a0) {
-    *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
+void LevelItem_unfocus_0000CE2C(SelItemEx *it) {
+    *(int*)(it->model + 0x130) = 0;
 }
 
 void LevelItem_vfunc13_0000CE38(int a0) {}
 
 void LevelItem_vfunc14_0000CE40(int a0) {}
 
-void LevelItem_setChosen_0000CE48(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
+void LevelItem_setChosen_0000CE48(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x138) = 1;
 }
 
-void LevelItem_clearChosen_0000CE5C(int *a0, int a1) {
-    *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
+void LevelItem_clearChosen_0000CE5C(SelItemEx *it, int a1) {
+    *(int*)(it->model + 0x138) = 0;
 }
 
 /* 4-float load-batched store + jal. Clean NM body 2026-06-21 (agent-d):
@@ -8372,9 +8373,9 @@ void LevelItem_update_0000CE6C(int *a0) {
 void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
 }
 
-void LevelItem_setAlpha_0000D058(int *a0, float a1) {
-    *(float*)((char*)a0 + 0x2A0) = a1;
-    *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = a1;
+void LevelItem_setAlpha_0000D058(SelItemEx *it, float a1) {
+    it->base.alpha = a1;
+    *(float*)(it->model + 0x11C) = a1;
 }
 
 /* MATCHED (byte-exact, 28/28). Sibling of the A97C/A9EC family — the prior
