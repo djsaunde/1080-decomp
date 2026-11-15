@@ -14,7 +14,8 @@
 #   5. writes the regenerated report.json into the tree (commit it with the batch).
 #
 # REF defaults to HEAD (the last committed report.json). Scratch: $GATE_TMP
-# (default /tmp/claude-$UID/readability-gate).
+# (default /tmp/claude-$UID/readability-gate-<worktree dir name>, private per
+# worktree so parallel agents never clobber each other's logs/reports).
 set -euo pipefail
 
 BASE=HEAD
@@ -34,8 +35,9 @@ cd "$ROOT"
 VENV=/home/danjs/code/decomp/tools/build-venv/bin
 [[ -d "$VENV" ]] && export PATH="$VENV:$PATH"
 JOBS="${JOBS:-8}"
-TMP="${GATE_TMP:-/tmp/claude-$(id -u)/readability-gate}"
+TMP="${GATE_TMP:-/tmp/claude-$(id -u)/readability-gate-$(basename "$ROOT")}"
 mkdir -p "$TMP"
+echo "    scratch: $TMP"
 
 fail() { echo "GATE FAIL: $*" >&2; exit 1; }
 

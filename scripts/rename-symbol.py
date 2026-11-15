@@ -4,6 +4,9 @@
 Usage:
   scripts/rename-symbol.py OLD NEW [--dry-run]
   scripts/rename-symbol.py --batch renames.tsv [--dry-run]   # lines: OLD<TAB>NEW [# comment]
+  add --allow-scoped-alias to tolerate NEW already used in a C file as a
+  scoped macro alias (`#define NEW gl_ref_X ... #undef NEW`, the OoT-name
+  idiom in game_libs_post.c) provided OLD never occurs inside such a scope.
 
 What it touches (all whole-word, `[A-Za-z0-9_]` boundaries):
   * every git-tracked TEXT file except episodes/ (historical training records),
@@ -42,6 +45,10 @@ bytes are guarded here):
     contains OLD (two meanings would merge inside one TU, e.g. a local
     `#define osSendMesg gl_func_00000000`);
   * OLD defined in objects of more than one src/<segment>/ (ambiguous).
+Post-check: every derived pin `OLD_<sect>` that existed in a tracked text file
+(undefined_syms_auto.txt etc.) must afterwards exist as `NEW_<sect>` and no
+`OLD_<sect>` may remain; otherwise the run fails loudly (a stale derived pin
+leaves an undefined symbol and ld segfaults).
 After a batch, run scripts/readability-gate.sh (full make + ROM cmp +
 verify-blocks + non_matching_objects + report diff by address).
 """
@@ -158,7 +165,42 @@ class Index:
         return segs
 
 
-def check(old, new, idx, files, pending_new):
+def scoped_alias_ok(path, text, old, new):
+    """True when every CODE occurrence of NEW in this C file sits inside a
+    `#define NEW ...` .. `#undef NEW` scope (a TU-local macro alias such as the
+    OoT names in game_libs_post.c), and OLD (or a derived OLD_<sect>) never
+    occurs inside such a scope. Then renaming OLD -> NEW cannot merge two
+    meanings: outside the scopes NEW was unused, inside them OLD was."""
+    if not path.endswith((".c", ".cpp", ".h")):
+        return False
+    to, wn = token_re(old), word_re(new)
+    d_re = re.compile(r"#\s*define\s+" + re.escape(new) + r"(?![A-Za-z0-9_])")
+    u_re = re.compile(r"#\s*undef\s+" + re.escape(new) + r"(?![A-Za-z0-9_])")
+    inside = False
+    saw_scope = False
+    for line in strip_comments(path, text).splitlines():
+        s = line.strip()
+        if d_re.match(s):
+            if inside:
+                return False  # nested/unterminated scope: be conservative
+            inside = saw_scope = True
+            if to.search(s):
+                return False
+            continue
+        if u_re.match(s):
+            if not inside:
+                return False
+            inside = False
+            continue
+        if inside:
+            if to.search(line):
+                return False
+        elif wn.search(line):
+            return False
+    return saw_scope and not inside
+
+
+def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     errs, warns = [], []
     if not IDENT.match(new) or new in C_KEYWORDS:
         errs.append(f"NEW {new!r} is not a valid C identifier")
@@ -178,12 +220,16 @@ def check(old, new, idx, files, pending_new):
     if len(segs) > 1:
         errs.append(f"{old} is defined in several segments {sorted(segs)}; rename is ambiguous")
     wr, nr = word_re(old), word_re(new)
+    # select files by TOKEN (OLD, OLD.NON_MATCHING, OLD_<sect>), not by the plain
+    # word: undefined_syms_auto.txt may pin only the derived OLD_rodata/OLD_bss
+    # (agent-c run 444: the pin was missed and ld segfaulted on the undefined symbol).
+    tr = token_re(old)
     mangled = re.compile(r"(?<![A-Za-z0-9_])" + re.escape(old) + r"__[A-Za-z0-9]")
     strlit = re.compile(r'"(?:[^"\\\n]|\\.)*"')
     hits = []
     for p in files:
         t = read_text(p)
-        if t is None or old not in t or not wr.search(t):
+        if t is None or old not in t or not tr.search(t):
             continue
         hits.append(p)
         if mangled.search(t):
@@ -191,16 +237,16 @@ def check(old, new, idx, files, pending_new):
         if p.endswith((".c", ".h", ".cpp")):
             code = strip_comments(p, t)
             for line in code.splitlines():
-                if not wr.search(line):
+                if not tr.search(line):
                     continue
                 if re.match(r"\s*(#\s*include|#\s*pragma\s+GLOBAL_ASM|INCLUDE_ASM|INCLUDE_RODATA)", line):
                     continue
                 for lit in strlit.findall(line):
-                    if wr.search(lit):
+                    if tr.search(lit):
                         errs.append(f"{p}: {old} inside a string literal (would change data bytes): {line.strip()[:120]}")
         if p.endswith((".s", ".inc")):
             for line in t.splitlines():
-                if re.search(r"\.ascii", line) and wr.search(line):
+                if re.search(r"\.ascii", line) and tr.search(line):
                     errs.append(f"{p}: {old} inside .ascii data: {line.strip()[:120]}")
         if p.endswith(".md"):
             continue  # prose/tables (DECOMPILED_FUNCTIONS.md "| func_X | osName |" rows): no code context
@@ -210,8 +256,11 @@ def check(old, new, idx, files, pending_new):
         code = re.sub(r"(?<![A-Za-z0-9_])" + re.escape(new) + "=" + re.escape(old) + r"(?![A-Za-z0-9_])", " ", code)
         # Makefile/linker files: one rule line = one context; C/asm: the whole TU.
         units = code.splitlines() if p in ("Makefile", "tenshoe.ld") or p.endswith(".txt") else [code]
-        if any(wr.search(u) and nr.search(u) for u in units):
-            errs.append(f"{p}: NEW {new} is already a code token in a file/rule that uses {old}")
+        if any(tr.search(u) and nr.search(u) for u in units):
+            if allow_scoped_alias and scoped_alias_ok(p, t, old, new):
+                warns.append(f"{p}: NEW {new} only used as a scoped #define/#undef alias; tolerated")
+            else:
+                errs.append(f"{p}: NEW {new} is already a code token in a file/rule that uses {old}")
     return errs, warns, hits
 
 
@@ -318,7 +367,19 @@ def pin_alias(old, new, dry):
         us.write_text(t, encoding="utf-8", errors="surrogateescape")
 
 
-def apply(renames, dry):
+def derived_tokens(name, files):
+    """{NAME_<sect>} spelled anywhere in the tracked text files."""
+    pats = {f"{name}_{d}": word_re(f"{name}_{d}") for d in DERIVED}
+    found = set()
+    for p in files:
+        t = read_text(p)
+        if t is None or name not in t:
+            continue
+        found.update(k for k, r in pats.items() if r.search(t))
+    return found
+
+
+def apply(renames, dry, allow_scoped_alias=False):
     idx = Index()
     files = tracked_text_files()
     pending = set()
@@ -326,7 +387,9 @@ def apply(renames, dry):
     all_errs = []
     plan = []
     for old, new in renames:
-        errs, warns, hits = check(old, new, idx, files, pending)
+        errs, warns, hits = check(old, new, idx, files, pending, allow_scoped_alias)
+        for w in warns:
+            print(f"  note [{old} -> {new}] {w}")
         pending.add(new)
         if errs:
             all_errs += [f"[{old} -> {new}] {e}" for e in errs]
@@ -336,6 +399,7 @@ def apply(renames, dry):
         return 1
 
     for old, new, hits in plan:
+        derived_before = derived_tokens(old, files)
         tr = token_re(old)
         sub = lambda m: new + (m.group(1) or "")
         kernel = "kernel" in idx.defining_segments(old)
@@ -386,6 +450,15 @@ def apply(renames, dry):
             moved[a] = b
         if kernel and kept:
             pin_alias(old, new, dry)
+        # every derived pin must have followed (files now reflect the rewrite)
+        cur = [moved.get(f, f) for f in files]
+        stale = derived_tokens(old, cur)
+        missing = {f"{new}{d[len(old):]}" for d in derived_before} - derived_tokens(new, cur)
+        if stale or missing:
+            sys.exit(f"DERIVED-PIN CHECK FAILED for {old} -> {new}: still spelled {sorted(stale)}, "
+                     f"missing {sorted(missing)}" + (" (dry run)" if dry else " (tree is half-renamed; fix by hand)"))
+        if derived_before:
+            print(f"    derived: {', '.join(sorted(derived_before))} -> {new}_* (all present)")
         print(f"{'[dry] ' if dry else ''}{old} -> {new}: {nrefs} refs in {nfiles} files, "
               f"{len(specs_by_obj)} expected objs, {len(moves)} file moves"
               + (f", {kept} kernel call/address refs kept as the {old} alias" if kept else ""))
@@ -407,6 +480,8 @@ def main():
     ap.add_argument("new", nargs="?")
     ap.add_argument("--batch", type=Path)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--allow-scoped-alias", action="store_true",
+                    help="tolerate NEW already used in a C file only inside #define NEW .. #undef NEW scopes")
     a = ap.parse_args()
     renames = []
     if a.batch:
@@ -422,7 +497,7 @@ def main():
     olds = [o for o, _ in renames]
     if len(set(olds)) != len(olds):
         sys.exit("duplicate OLD in batch")
-    sys.exit(apply(renames, a.dry_run))
+    sys.exit(apply(renames, a.dry_run, a.allow_scoped_alias))
 
 
 if __name__ == "__main__":
