@@ -37,6 +37,10 @@ when pyelftools / crunch64 are missing):
                                its function: per function and token, the multiset of names
                                must be contained in the multiset of ROM jal targets of the
                                real .o's relocs against that token (fast, no compile).
+                               A mismatched name that is an OLD name in renames.tsv is
+                               reported with its current name (a CALL spelled on a base
+                               older than the rename: rename-symbol.py rewrites CALL(OLD)
+                               like any whole-word token, but only in the tree it runs on).
                                --strict re-derives every site with the verify compile and
                                requires the exact name. Default FILE.. = every src file
                                that uses the macros. Exit 1 on a mismatch.
@@ -729,6 +733,28 @@ def macro_files():
     return sorted(out)
 
 
+_RENAMES = None
+
+
+def current_name(name):
+    """Follow renames.tsv (OLD<TAB>NEW, chains allowed) from name; None when name is not an old name."""
+    global _RENAMES
+    if _RENAMES is None:
+        _RENAMES = {}
+        try:
+            for line in open('renames.tsv', errors='replace'):
+                f = line.split('#', 1)[0].split()
+                if len(f) >= 2 and not line.startswith('#'):
+                    _RENAMES[f[0]] = f[1]
+        except OSError:
+            pass
+    seen, n = set(), name
+    while n in _RENAMES and n not in seen:
+        seen.add(n)
+        n = _RENAMES[n]
+    return None if n == name else n
+
+
 def check_fast(path, src, rom, quiet=False):
     """-> (named calls, mismatches) for one file's text."""
     sites, _ = scan(src)
@@ -768,6 +794,13 @@ def check_fast(path, src, rom, quiet=False):
             bad += sum(over.values())
             if not quiet:
                 print(f'{path}: {fn}: {dict(over)} not among the ROM callees of its {tok} jals {dict(have)}')
+                # a CALL name spelled before a rename landed on main (renamed after the naming run's
+                # base, so rename-symbol.py never saw the CALL): point at the current name
+                for old in over:
+                    cur = current_name(old)
+                    if cur:
+                        print(f'    {old} was renamed (renames.tsv): use {cur}'
+                              + ('' if cur in have else ' (not among the ROM callees either)'))
     return n, bad
 
 
@@ -780,6 +813,12 @@ def cmd_selftest(a, rom, mv):
     i = src.index('CALL(fs_gdlReadFile)')
     wrong = src[:i] + 'CALL(mem_new)' + src[i + len('CALL(fs_gdlReadFile)'):]
     assert check_fast(path, wrong, rom, quiet=True)[1] == 1
+    # a pre-rename spelling is flagged and maps back to the current name through renames.tsv
+    current_name('')
+    back = {v: k for k, v in _RENAMES.items()}
+    nm = next(mt.group(2) for mt in MAC_RE.finditer(src) if mt.group(2) in back)
+    stale = src.replace(f'CALL({nm})', f'CALL({back[nm]})', 1)
+    assert check_fast(path, stale, rom, quiet=True)[1] == 1 and current_name(back[nm]) == nm
     # cam_reset_000008FC calls three different callees: swap the first two names
     sites, m = scan(src)
     cr = [s for s in sites if s.func == 'cam_reset_000008FC' and s.name]
