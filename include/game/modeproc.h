@@ -164,20 +164,25 @@ typedef char GameDemoProcess_menu_check[(int)&((GameDemoProcess *)0)->menu == 0x
 /* ---- TitleDemoProcess (titproc, alloc 0x78) ----
  * A plain Process (0x50 head, no RaceProcess) with the same overlays as GameDemoProcess. */
 typedef struct TitleDemoProcess {
-    /* 0x00 */ char process[0x50];   /* Node / Process head (vptr 0x28) */
+    /* 0x00 */ char process[0x3C];   /* Node / Process head (vptr 0x28) */
+    /* 0x3C */ s32 timer;            /* frames left in the current state: handleInput counts it down;
+                                      * state 0 starts at unk6C * 30, state 1 at unk70 * 30 (agent-h run 496) */
+    /* 0x40 */ s32 state;            /* TitleDemoProcess_handleInput's switch (the ctor starts at 0 or 1) */
+    /* 0x44 */ char unk44[0x50 - 0x44];
     /* 0x50 */ s32 dataMgr;          /* plain DataManager (also InputMgr.dataMgr) */
     /* 0x54 */ s32 keyMessage;       /* KeyMessage_ctor */
     /* 0x58 */ s32 mainLogo;         /* MainLogo_ctor */
     /* 0x5C */ s32 menu;             /* the title menu */
     /* 0x60 */ s32 langMenu;         /* LangMenu_ctor */
     /* 0x64 */ s32 whiteFader;       /* tit_WhiteFader_ctor */
-    /* 0x68 */ s32 unk68;
+    /* 0x68 */ s32 keyDelay;         /* 40 on entering state 1; counts down, then the keyMessage is shown */
     /* 0x6C */ s32 unk6C;            /* 5 (seconds; timer = x * 30) */
     /* 0x70 */ s32 unk70;            /* 0x48 (seconds; timer = x * 30) */
     /* 0x74 */ s32 unk74;            /* 15000 */
 } TitleDemoProcess;
 
 typedef char TitleDemoProcess_size_check[sizeof(TitleDemoProcess) == 0x78 ? 1 : -1];
+typedef char TitleDemoProcess_state_check[(int)&((TitleDemoProcess *)0)->state == 0x40 ? 1 : -1];
 
 /* Field access through an untyped pointer (agent-h run 492), as RACEPROC / TIMRACE in
  * gdl/race.h: the race ctors, DataManager methods and name-entry overlays keep their
@@ -189,5 +194,7 @@ typedef char TitleDemoProcess_size_check[sizeof(TitleDemoProcess) == 0x78 ? 1 : 
 #define ARCDATAMGR(p) ((ArcDataManager *)(p))
 #define MGRDATAMGR(p) ((MgrDataManager *)(p))
 #define H2HDATAMGR(p) ((H2HDataManager *)(p))
+#define TITLEDEMO(p)  ((TitleDemoProcess *)(p))
+#define GAMEDEMO(p)   ((GameDemoProcess *)(p))
 
 #endif

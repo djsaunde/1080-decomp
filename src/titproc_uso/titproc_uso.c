@@ -451,84 +451,84 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     sub = root;
     if (sub != 0 || (sub = titproc_uso_func_055750(0x50)) != 0) {
         o2 = sub;
-        if (o2 != 0 || (o2 = titproc_uso_func_055750(0x2C)) != 0) { titproc_uso_func_04C678(o2, (char *)&titproc_uso_D_00048C + 0x4A8); *(int *)((char *)o2 + 0x28) = (int)&import_00073B18; }
-        *(int *)((char *)sub + 0x28) = (int)&import_00073B80;
+        if (o2 != 0 || (o2 = titproc_uso_func_055750(0x2C)) != 0) { titproc_uso_func_04C678(o2, (char *)&titproc_uso_D_00048C + 0x4A8); NODE(o2)->vptr = (int)&import_00073B18; }
+        NODE(sub)->vptr = (int)&import_00073B80;
     }
-    *(int *)((char *)root + 0x28) = (int)&titproc_uso_D_000114;
-    *(int *)((char *)root + 0x0C) = (int)((char *)&titproc_uso_D_00048C + 0x4B0);
+    NODE(root)->vptr = (int)&titproc_uso_D_000114;
+    NODE(root)->name = (int)((char *)&titproc_uso_D_00048C + 0x4B0);
     titproc_uso_func_000000();
     titproc_uso_func_000098();
-    *(void **)((char *)root + 0x50) = (void *)import_000B6C40(0);
-    INPUT_MGR(import_00020098).dataMgr = *(void **)((char *)root + 0x50);
-    import_000B88CC(*(int *)((char *)root + 0x50));
+    TITLEDEMO(root)->dataMgr = (s32)((void *)import_000B6C40(0));
+    INPUT_MGR(import_00020098).dataMgr = (void *)TITLEDEMO(root)->dataMgr;
+    import_000B88CC(TITLEDEMO(root)->dataMgr);
 
-    sub = *(void **)((char *)root + 0x50);
+    sub = (void *)TITLEDEMO(root)->dataMgr;
     titproc_uso_func_07ACE0((char *)root + 0x10, sub);
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
-    *(void **)((char *)root + 0x54) = titproc_uso_func_0015F4(0);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
+    TITLEDEMO(root)->keyMessage = (s32)(titproc_uso_func_0015F4(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x54));
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
     if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
-        child = *(void **)((char *)root + 0x54);
-        sub = *(void **)((char *)child + 0x28);
+        child = (void *)TITLEDEMO(root)->keyMessage;
+        sub = (void *)NODE(child)->vptr;
         ((void (*)(int))((void **)sub)[0x5C / 4])(
             *(short *)((char *)sub + 0x58) + (int)child);
     }
-    *(void **)((char *)root + 0x58) = titproc_uso_func_001840(0);
+    TITLEDEMO(root)->mainLogo = (s32)(titproc_uso_func_001840(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x58));
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
-    *(void **)((char *)root + 0x60) = titproc_uso_func_001B10(0);
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->mainLogo);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
+    TITLEDEMO(root)->langMenu = (s32)(titproc_uso_func_001B10(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x60));
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
-    *(void **)((char *)root + 0x64) = titproc_uso_func_001D7C(0);
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->langMenu);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
+    TITLEDEMO(root)->whiteFader = (s32)(titproc_uso_func_001D7C(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x64));
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
-    *(void **)((char *)root + 0x5C) = import_000A5D38(0);
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->whiteFader);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
+    TITLEDEMO(root)->menu = (s32)(import_000A5D38(0));
 
-    import_000A5F40(*(void **)((char *)root + 0x5C), root);
+    import_000A5F40((void *)TITLEDEMO(root)->menu, root);
     titproc_uso_func_00101C(root);
-    *(int *)((char *)*(void **)((char *)root + 0x5C) + 0x30) =
+    *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x30) =
         import_0024CCF4(0, &titproc_uso_D_00052C, 0x48, 0xDD, 3, 0xD);
-    *(float *)((char *)*(void **)((char *)root + 0x5C) + 0x74) = 17.0f;
-    import_000A5FBC(*(int *)((char *)root + 0x5C));
-    titproc_uso_func_00F4CC(*(int *)((char *)root + 0x5C));
-    *(int *)((char *)*(void **)((char *)root + 0x5C) + 0x7C) =
+    *(float *)((char *)(void *)TITLEDEMO(root)->menu + 0x74) = 17.0f;
+    import_000A5FBC(TITLEDEMO(root)->menu);
+    titproc_uso_func_00F4CC(TITLEDEMO(root)->menu);
+    *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x7C) =
         *(int *)((char *)&import_00020098 + 0x84);
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = *(void **)((char *)root + 0x5C));
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
+    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->menu);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
 
     sub = INPUT_MGR(import_00020098).fader;
     titproc_uso_func_07ACE0((char *)root + 0x10, sub);
-    if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
-    *(int *)((char *)sub + 0x14) = (int)root;
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)root;
     titproc_uso_func_0139B0(INPUT_MGR(import_00020098).fader, 1, 0);
 
-    *(int *)((char *)root + 0x6C) = 5;
-    *(int *)((char *)root + 0x70) = 0x48;
-    *(int *)((char *)root + 0x74) = 15000;
+    TITLEDEMO(root)->unk6C = 5;
+    TITLEDEMO(root)->unk70 = 0x48;
+    TITLEDEMO(root)->unk74 = 15000;
 
     if (*(int *)((char *)&import_00020098 + 0x88) != 0) {
-        *(int *)((char *)root + 0x40) = 0;
-        *(int *)((char *)root + 0x3C) = *(int *)((char *)root + 0x6C) * 30;
+        TITLEDEMO(root)->state = 0;
+        TITLEDEMO(root)->timer = TITLEDEMO(root)->unk6C * 30;
     } else {
-        *(int *)((char *)root + 0x40) = 1;
-        *(int *)((char *)root + 0x3C) = *(int *)((char *)root + 0x70) * 30;
-        *(int *)((char *)root + 0x68) = 0;
-        *(int *)((char *)*(void **)((char *)root + 0x58) + 0x38) = 1;
-        *(int *)((char *)*(void **)((char *)root + 0x58) + 0x2C) = 0;
-        child = *(void **)((char *)root + 0x58);
-        sub = *(void **)((char *)child + 0x28);
+        TITLEDEMO(root)->state = 1;
+        TITLEDEMO(root)->timer = TITLEDEMO(root)->unk70 * 30;
+        TITLEDEMO(root)->keyDelay = 0;
+        *(int *)((char *)(void *)TITLEDEMO(root)->mainLogo + 0x38) = 1;
+        *(int *)((char *)(void *)TITLEDEMO(root)->mainLogo + 0x2C) = 0;
+        child = (void *)TITLEDEMO(root)->mainLogo;
+        sub = (void *)NODE(child)->vptr;
         ((void (*)(int))((void **)sub)[0x5C / 4])(
             *(short *)((char *)sub + 0x58) + (int)child);
     }
@@ -555,16 +555,16 @@ extern int D_t_count_101C;
 extern int D_t_target_101C;
 extern int D_t_arg0_101C, D_t_arg1_101C, D_t_arg2_101C, D_t_arg3_101C, D_t_arg4_101C, D_t_arg5_101C, D_t_arg6_101C;
 void TitleDemoProcess_buildMenu(int *a0) {
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C));
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 1, 0, &D_t_arg0_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 2, 1, &D_t_arg1_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 3, 2, &D_t_arg2_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 6, 3, &D_t_arg3_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
-    gl_func_00000000(*(int*)((char*)a0 + 0x5C), ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 1, 0, &D_t_arg0_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 2, 1, &D_t_arg1_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 3, 2, &D_t_arg2_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 6, 3, &D_t_arg3_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
+    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
     if (gl_func_00000000(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
-        *(int*)((char*)*(int**)((char*)a0 + 0x5C) + 0x128) = 0;
+        *(int*)((char*)(int *)TITLEDEMO(a0)->menu + 0x128) = 0;
     }
 }
 
@@ -721,23 +721,23 @@ void TitleDemoProcess_handleInput(char *s0) {
     void (*fn)(int);
     int v;
 
-    switch (*(int *)(s0 + 0x40)) {
+    switch (TITLEDEMO(s0)->state) {
     case 0: {
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x3C) - 1;
-        if (*(int *)(s0 + 0x3C) >= 0) {
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
+        if (TITLEDEMO(s0)->timer >= 0) {
             if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
                 return;
             }
         }
-        vt = *(char **)(*(char **)(s0 + 0x58) + 0x28);
-        v1 = *(char **)(s0 + 0x58);
+        vt = *(char **)((char *)TITLEDEMO(s0)->mainLogo + 0x28);
+        v1 = (char *)TITLEDEMO(s0)->mainLogo;
         (*(void (**)(int))(vt + 0x5C))((int)(v1 + *(short *)(vt + 0x58)));
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-        *(int *)(s0 + 0x40) = *(int *)(s0 + 0x40) + 1;
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+        TITLEDEMO(s0)->state = TITLEDEMO(s0)->state + 1;
         /* agent-c run 234: a plain `* 30` (ugen expands it in place on a ring temp) instead of the
          * spelled-out (x * 16 - x) * 2, which uopt CSEs into a coloured value */
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
-        *(int *)(s0 + 0x68) = 40;
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
+        TITLEDEMO(s0)->keyDelay = 40;
         gl_func_00000000_116c_v(13);
         break;
     }
@@ -747,51 +747,51 @@ void TitleDemoProcess_handleInput(char *s0) {
          * gated on an SI-status bit, not p->0x34) and a convergent
          * "fire" block (D->0x34=1 + gl(s0,gl(),0)) serves both the
          * t==0 path and the p-chain-nonzero path. */
-        v = *(int *)(s0 + 0x68);
+        v = TITLEDEMO(s0)->keyDelay;
         if (v != 0) {
-            *(int *)(s0 + 0x68) = v - 1; if (s0) {}
-            v = *(int *)(s0 + 0x68); /* agent-c run 234: read back (store-forwarded: ring temp + copy like the target) */
+            TITLEDEMO(s0)->keyDelay = v - 1; if (s0) {}
+            v = TITLEDEMO(s0)->keyDelay; /* agent-c run 234: read back (store-forwarded: ring temp + copy like the target) */
         }
         if (v == 0) {
-            vt2 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
-            v1 = *(char **)(s0 + 0x54);
+            vt2 = *(char **)((char *)TITLEDEMO(s0)->keyMessage + 0x28);
+            v1 = (char *)TITLEDEMO(s0)->keyMessage;
             (*(void (**)(int))(vt2 + 0x5C))((int)(v1 + *(short *)(vt2 + 0x58)));
         }
-        *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x3C) - 1;
-        if (*(int *)(s0 + 0x3C) == 0) goto fire;
-        if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
+        TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
+        if (TITLEDEMO(s0)->timer == 0) goto fire;
+        if (*(int *)(*(char **)((char *)TITLEDEMO(s0)->dataMgr + 0x44) + 0x34) != 0) {
 fire:
             *(int *)((char *)&D_00000000 + 0x34) = 1;
             v = gl_func_00000000();
             gl_func_00000000_116c_v(s0, v, 0);
             return;
         }
-        if (*(int *)(s0 + 0x68) != 0) {
+        if (TITLEDEMO(s0)->keyDelay != 0) {
             return;
         }
         if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
             return;
         }
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x54));
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->keyMessage);
         if (*(unsigned short *)(*(char **)((char *)&D_00000000 + 0x154) + 4) & 8) {
-            vt3 = *(char **)(*(char **)(s0 + 0x60) + 0x28);
-            v1 = *(char **)(s0 + 0x60);
+            vt3 = *(char **)((char *)TITLEDEMO(s0)->langMenu + 0x28);
+            v1 = (char *)TITLEDEMO(s0)->langMenu;
             (*(void (**)(int))(vt3 + 0x5C))((int)(v1 + *(short *)(vt3 + 0x58)));
-            *(int *)(s0 + 0x40) = 2;
+            TITLEDEMO(s0)->state = 2;
             gl_func_00000000_116c_v(144);
         } else {
-            vt4 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
-            v1 = *(char **)(s0 + 0x5C);
+            vt4 = *(char **)((char *)TITLEDEMO(s0)->menu + 0x28);
+            v1 = (char *)TITLEDEMO(s0)->menu;
             (*(void (**)(int))(vt4 + 0x5C))((int)(v1 + *(short *)(vt4 + 0x58)));
-            *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
+            TITLEDEMO(s0)->state = 3;
+            TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk74 * 30;
             gl_func_00000000_116c_v(144);
         }
         break;
     }
     case 2: {
-        gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
+        gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
         if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
             gl_func_00000000_116c_v(5);
             if (1) {
@@ -799,12 +799,12 @@ fire:
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
             gl_func_00000000_116c_v((char *)&D_00000000);
-            gl_func_00000000_116c_v(*(int *)(s0 + 0x60));
-            vt5 = *(char **)(*(char **)(s0 + 0x5C) + 0x28);
-            v1 = *(char **)(s0 + 0x5C);
+            gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
+            vt5 = *(char **)((char *)TITLEDEMO(s0)->menu + 0x28);
+            v1 = (char *)TITLEDEMO(s0)->menu;
             (*(void (**)(int))(vt5 + 0x5C))((int)(v1 + *(short *)(vt5 + 0x58)));
-            *(int *)(s0 + 0x40) = 3;
-            *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x74) * 30;
+            TITLEDEMO(s0)->state = 3;
+            TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk74 * 30;
         }
         break;
     }
@@ -813,17 +813,17 @@ fire:
          * chain actually lives INSIDE the gate-confirmed sub-branch;
          * the real spine is t==0-init then the counter clamp pair. */
         int *c;
-        if (*(int *)(s0 + 0x3C) == 0) { /* agent-c run 234: tested directly (the target re-reads it as a ring temp, no named t) */
+        if (TITLEDEMO(s0)->timer == 0) { /* agent-c run 234: tested directly (the target re-reads it as a ring temp, no named t) */
             *(int *)((char *)&D_00000000 + 0x34) = 1;
             v = gl_func_00000000();
             gl_func_00000000_116c_v(s0, v, 0);
         }
-        if (*(int *)(*(char **)(*(char **)(s0 + 0x50) + 0x44) + 0x34) != 0) {
-            c = (int *)(*(char **)(s0 + 0x64) + 0x3C);
-            if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) < 255) {
+        if (*(int *)(*(char **)((char *)TITLEDEMO(s0)->dataMgr + 0x44) + 0x34) != 0) {
+            c = (int *)((char *)TITLEDEMO(s0)->whiteFader + 0x3C);
+            if (*(int *)((char *)TITLEDEMO(s0)->whiteFader + 0x3C) < 255) {
                 *c = *c + 16;
-                if (*(int *)(*(char **)(s0 + 0x64) + 0x3C) >= 256) {
-                    *(int *)(*(char **)(s0 + 0x64) + 0x3C) = 720;
+                if (*(int *)((char *)TITLEDEMO(s0)->whiteFader + 0x3C) >= 256) {
+                    *(int *)((char *)TITLEDEMO(s0)->whiteFader + 0x3C) = 720;
                 }
             } else {
                 d3 = (char *)&D_00000000;
@@ -832,30 +832,30 @@ fire:
             }
         } else {
             int av;
-            v1 = *(char **)(s0 + 0x64);
+            v1 = (char *)TITLEDEMO(s0)->whiteFader;
             av = *(int *)(v1 + 0x3C);
             c = (int *)(v1 + 0x3C);
             if (av > 0) {
                 *c = *c - 16;
-                v1 = *(char **)(s0 + 0x64);
+                v1 = (char *)TITLEDEMO(s0)->whiteFader;
                 av = *(int *)(v1 + 0x3C);
                 if (av < 0) {
                     *(int *)(v1 + 0x3C) = 0;
-                    av = *(int *)(*(char **)(s0 + 0x64) + 0x3C);
+                    av = *(int *)((char *)TITLEDEMO(s0)->whiteFader + 0x3C);
                 }
             }
             if (av == 0) {
                 if (gl_func_00000000((char *)&D_00000000, 512) != 0) {
-                    vt7 = *(char **)(*(char **)(s0 + 0x58) + 0x28);
-                    v1 = *(char **)(s0 + 0x58);
+                    vt7 = *(char **)((char *)TITLEDEMO(s0)->mainLogo + 0x28);
+                    v1 = (char *)TITLEDEMO(s0)->mainLogo;
                     (*(void (**)(int))(vt7 + 0x5C))((int)(v1 + *(short *)(vt7 + 0x58)));
-                    gl_func_00000000_116c_v(*(int *)(s0 + 0x58));
-                    vt8 = *(char **)(*(char **)(s0 + 0x54) + 0x28);
-                    v1 = *(char **)(s0 + 0x54);
+                    gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+                    vt8 = *(char **)((char *)TITLEDEMO(s0)->keyMessage + 0x28);
+                    v1 = (char *)TITLEDEMO(s0)->keyMessage;
                     (*(void (**)(int))(vt8 + 0x5C))((int)(v1 + *(short *)(vt8 + 0x58)));
-                    gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                    *(int *)(s0 + 0x40) = 1;
-                    *(int *)(s0 + 0x3C) = *(int *)(s0 + 0x70) * 30;
+                    gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
+                    TITLEDEMO(s0)->state = 1;
+                    TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
                     gl_func_00000000_116c_v(2050);
                 }
             }
@@ -863,13 +863,13 @@ fire:
              * 0x90 = callback; D->0xA8 = self, D->0x84 = index published
              * first): reached on every else-arm path (target bnez/beqz to it). */
             if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-                gl_func_00000000_116c_v(*(int *)(s0 + 0x5C));
-                gl_func_00000000_116c_v(5); if (*(char **)(s0 + 0x5C)) {} /* agent-c run 328: code-free tests of the 0x5C object (here and below): gate object v1 as in the target */
-                v1 = *(char **)(s0 + 0x5C);
+                gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
+                gl_func_00000000_116c_v(5); if ((char *)TITLEDEMO(s0)->menu) {} /* agent-c run 328: code-free tests of the 0x5C object (here and below): gate object v1 as in the target */
+                v1 = (char *)TITLEDEMO(s0)->menu;
                 if (*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90) != 0) {
                     *(char **)((char *)&import_00263D30 + 0xA8) = s0;
-                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)(*(char **)(s0 + 0x5C) + 0x7C); if (*(char **)(s0 + 0x5C)) {}
-                    v1 = *(char **)(s0 + 0x5C);
+                    *(int *)((char *)&import_00020098 + 0x84) = *(int *)((char *)TITLEDEMO(s0)->menu + 0x7C); if ((char *)TITLEDEMO(s0)->menu) {}
+                    v1 = (char *)TITLEDEMO(s0)->menu;
                     ((void (*)(void))(*(int *)(v1 + *(int *)(v1 + 0x7C) * 40 + 0x90)))();
                 }
             }
@@ -1139,8 +1139,8 @@ void *MainLogo_ctor(void *self) {
     titproc_uso_func_04C678(sub, (char*)&titproc_uso_D_00048C + 0x4D8);
     *(int*)((char*)sub + 0x28) = (int)&import_00073B18;
 skip:
-    *(int*)((char*)self + 0x28) = (int)&titproc_uso_D_0001FC;
-    *(int*)((char*)self + 0x0C) = (int)((char*)&titproc_uso_D_00048C + 0x4E0);
+    NODE(self)->vptr = (int)&titproc_uso_D_0001FC;
+    NODE(self)->name = (int)((char*)&titproc_uso_D_00048C + 0x4E0);
     *(int*)((char*)self + 0x4C) = 163;
     *(int*)((char*)self + 0x50) = 154;
     *(int*)((char*)self + 0x6C) = 67;
@@ -2033,7 +2033,7 @@ void *tit_ItemType_create_00002980(int *arg0) {
     p1 = (int*)titproc_uso_func_055750(0x40);
     if (p1 != 0) {
         titproc_uso_func_051C28(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&import_0006ED80;
+        NODE(p1)->vptr = (int)&import_0006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -2041,10 +2041,10 @@ void *tit_ItemType_create_00002980(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         titproc_uso_func_07ACE0((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
