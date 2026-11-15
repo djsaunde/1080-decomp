@@ -3,11 +3,10 @@
 
 extern int func_00000000();
 extern char D_00000000;
-typedef struct { int a, b, c, d; } Quad4;
 
 
-/* CRACKED 2026-05-27 (byte-exact): array-indexing form `((Row28*)base)[i].d`;
- * the lever was the ARRAY FORM (`((Row28*)(a0+0x84))[idx].d`) per
+/* CRACKED 2026-05-27 (byte-exact): array-indexing form (now `&GUIMENU(a0)->rows[cursor]`);
+ * the lever was the ARRAY FORM (then `((Row28*)(a0+0x84))[idx].d`) per
  * docs/IDO_CODEGEN.md "addu operand order" entry — gives `addu v0, a0, t7`
  * (base-first) instead of the arithmetic form's `addu v0, t7, a0`
  * (idx-first). Originally matched under an `-O2 -g3` override (unfilled jr
@@ -19,7 +18,6 @@ typedef struct { int a, b, c, d; } Quad4;
  * + TWO dead pairs; the ROM keeps one -> file-terminal, TRUNCATE_TEXT 0x28
  * (11D40/11D78/11DBC precedents; docs/IDO_CODEGEN.md
  * #o0-two-block-predicate-not-adjacent-leaf-cap). 10/10 words. */
-typedef struct { char d[0x28]; } Row10324;
 char *gui_getCurrentRow_00010324(a0) char *a0; {
     return (char *)&GUIMENU(a0)->rows[GUIMENU(a0)->cursor];
 }
