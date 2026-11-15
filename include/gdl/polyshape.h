@@ -50,6 +50,20 @@ typedef struct BasePolyShape {
     /* 0xAC */ s32 unkAC;
 } BasePolyShape;
 
+/* one row of BasePolyShape.verts (6 bytes) and one face / vertex normal (BasePolyShape_genNormals) */
+typedef struct PolyVert {
+    /* 0x0 */ s16 x, y, z;
+} PolyVert;
+
+typedef struct PolyNormal {
+    /* 0x0 */ f32 x, y, z;
+} PolyNormal;
+
+#define POLYVERT(p) ((PolyVert *)(p))
+#define POLYNORMAL(p) ((PolyNormal *)(p))
+#define BASEPOLY(p) ((BasePolyShape *)(p))
+
+typedef char PolyVert_size_check[sizeof(PolyVert) == 6 ? 1 : -1];
 typedef char PolyTri_size_check[sizeof(PolyTri) == 8 ? 1 : -1];
 typedef char BasePolyShape_size_check[sizeof(BasePolyShape) == 0xB0 ? 1 : -1];
 typedef char BasePolyShape_verts_check[(int)&((BasePolyShape *)0)->verts == 0x60 ? 1 : -1];
