@@ -73,7 +73,7 @@ typedef struct SnowAI {
     s32 aimMode;            /* 0x74: SnowAI_steer's aim: 0 SnowAI_aimAlongSegment, 1 SnowAI_aimWeave (entered when
                              * rivalLeadZ <= weaveLead, not at a marker flag, and speed >= minSpeed; left when
                              * rivalLeadZ > the se parm or those fail) */
-    void *unk78;            /* 0x78: last result cached by 7ACC */
+    void *lastMarker;       /* 0x78: the CourseMarker SnowAI_updateMarker found last (its *arg4 out flag = changed) */
     s32 altNode;            /* 0x7C: the other branch node; A3C4 keeps whichever of targetNode / altNode is nearer */
     s32 atFinish;           /* 0x80: SnowAI_isAtFinish's result, stored by SnowAI_onWin / onLose at the race end
                              * (non-zero: targetNode = SnowAI_pickFinishBranch); no reader in game_uso C */
@@ -153,7 +153,7 @@ SNOWAI_ASSERT_OFFSET(SnowAI, scanIndex, 0x5C);
 SNOWAI_ASSERT_OFFSET(SnowAI, scanBestDist, 0x60);
 SNOWAI_ASSERT_OFFSET(SnowAI, aiState, 0x64);
 SNOWAI_ASSERT_OFFSET(SnowAI, finishTimer, 0x70);
-SNOWAI_ASSERT_OFFSET(SnowAI, unk78, 0x78);
+SNOWAI_ASSERT_OFFSET(SnowAI, lastMarker, 0x78);
 SNOWAI_ASSERT_OFFSET(SnowAI, altNode, 0x7C);
 SNOWAI_ASSERT_OFFSET(SnowAI, leadLimit, 0xA0);
 SNOWAI_ASSERT_OFFSET(SnowAI, sideBlock, 0xA4);

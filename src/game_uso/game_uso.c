@@ -2539,7 +2539,7 @@ void SnowAI_reset(SnowAI *self) {
     self->modeFlags = 0;
     self->unk6C = 0;
     self->aimMode = 0;
-    self->unk78 = 0;
+    self->lastMarker = 0;
     self->sideBlock = 0;
     self->scaleTimer = 0;
     self->initPending = 1;
@@ -3071,23 +3071,23 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
     int *inner;
 
     *a1 = 0;
-    v = a0[0x40 / 4];
+    v = AI(a0)->targetNode;
     if (v < 0 || v >= 12) {
         XCALL(game_uso_func_047B1C, sys_assertFail)((char*)&D_00000000 + 0x78C,
                          (char*)&D_00000000 + 0x7B0, 0x609);
     }
-    av.a = *(int*)(*(int*)((char*)&D_00000000 + 0x548 + a0[0x40 / 4] * 4));
+    av.a = *(int*)(*(int*)((char*)&D_00000000 + 0x548 + AI(a0)->targetNode * 4));
     r = (int*)SnowAI_findNearestMarker_0000A374(a0, av, arg3, arg4);
     if (r == 0) return 0;
 
-    if (r != (int*)a0[0x78 / 4]) {
+    if (r != (int*)AI(a0)->lastMarker) {
         if (arg4 != 0) *arg4 = 1;
-        a0[0x78 / 4] = (int)r;
+        AI(a0)->lastMarker = r;
     } else {
         if (arg4 != 0) *arg4 = 0;
     }
 
-    inner = (int*)r[0x2C / 4];
+    inner = (int*)((CourseMarker *)r)->link;
     *a1 = (int)inner;
     AI(a0)->rider->marker = (CourseMarker *)r;
     AI(a0)->rider->markerLink = AI(a0)->rider->marker->link;
@@ -5708,11 +5708,11 @@ int RiderAnim_startQueuedTrick_0000E35C(char *arg0) {
 void RiderAnim_playSpinSound_0000E564(int *a0) {
     int v0 = RA(a0)->curTrick->inputMask;
     if (v0 & 0xC000) {
-        CALL(SndHandle_setScaleIdx31)((char*)a0[0xB4/4] + 0x808);
+        CALL(SndHandle_setScaleIdx31)(RA(a0)->rider->sound);
         v0 = RA(a0)->curTrick->inputMask;
     }
     if (v0 & 0x3000) {
-        CALL(SndHandle_setScaleIdx15)((char*)a0[0xB4/4] + 0x808);
+        CALL(SndHandle_setScaleIdx15)(RA(a0)->rider->sound);
     }
 }
 
@@ -6269,13 +6269,13 @@ void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, int a2) {
     int *p;
     (void)a2;
     switch (a1) {
-        case 0: v0 = a0[0x34C/4]; break;
-        case 1: v0 = a0[0x364/4]; break;
-        case 2: v0 = a0[0x37C/4]; break;
-        case 3: v0 = a0[0x394/4]; break;
+        case 0: v0 = RA(a0)->parms.dm1.value.i; break;
+        case 1: v0 = RA(a0)->parms.dm2.value.i; break;
+        case 2: v0 = RA(a0)->parms.dm3.value.i; break;
+        case 3: v0 = RA(a0)->parms.dm4.value.i; break;
         case 4: break;
     }
-    p = (int*)((char*)a0[0xB4/4] + 0xA14);
+    p = &RA(a0)->rider->health;
     *p = *p - v0;
 }
 
@@ -6347,14 +6347,14 @@ extern int gl_func_00000000();
 void RiderAnim_stateSwitchStanceEnd(int *a0) {
     int *s0 = a0;
     CALL(RiderAnim_flipStance_0000D6E4)(a0);
-    CALL(SnowBoarder_yawPiOver_0000E270)(s0[0xB4 / 4], 0x3F800000);   /* a1 = 1.0f bits */
+    CALL(SnowBoarder_yawPiOver_0000E270)(RA(s0)->rider, 0x3F800000);   /* a1 = 1.0f bits */
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
-    if (((int *)s0[0xB4 / 4])[0x938 / 4] == 0) {
+    if (RA(s0)->rider->contactCount == 0) {
         CALL(RiderAnim_stateRide)(s0);
         CALL(RiderAnim_setNextState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xDF8));
     } else {
         CALL(RiderAnim_endTrick_0000D63C)(s0, 1);
-        if (((int *)s0[0xB4 / 4])[0x9CC / 4] != 0) {
+        if (RA(s0)->rider->useDParms != 0) {
             CALL(RiderAnim_setNextState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE60));
             CALL(RiderAnim_stateRideDeep)(s0);
         } else {
@@ -6681,7 +6681,7 @@ void RiderAnim_stateRow(int *a0) {
     import_0010DB28(a0, RA(a0)->animSet, 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
 
-    q = (float*)((char*)(int*)a0[0xB4 / 4] + 0x3C8);
+    q = RA(a0)->rider->dnode.axes[2];
     scale = RA(a0)->parms.rfc.value.f;
     mx = q[0] * scale;
     my = q[1] * scale;
@@ -6692,7 +6692,7 @@ void RiderAnim_stateRow(int *a0) {
     vb = a;
     vc = vb;
 
-    q = (float*)((char*)(int*)a0[0xB4 / 4] + 0x318);
+    q = RA(a0)->rider->dnode.vel;
     q[0] += vc.x;
     q[1] += vc.y;
     q[2] += vc.z;
@@ -6730,12 +6730,12 @@ void RiderAnim_stateCrashRecover(int *a0) {
 
 /* RiderAnim_startCrashSlide_0000FB7C: 31-insn 3-call dispatcher. */
 void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
-    int v = a0[0xFC/4] | RANIM_CRASH_SLIDE;
-    a0[0x108/4] = v;
+    int v = RA(a0)->animSet | RANIM_CRASH_SLIDE;
+    RA(a0)->selectedAnim = v;
     CALL(AnimPlayer_startIfChanged)(a0, v, 0, 2, 1, 1);
     CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE88), 2);
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
-    a0[0x114/4] = 0;
+    RA(a0)->trickPhase = 0;
 }
 
 void RiderAnim_blendTurn_0000FBF8(int *a0) {
@@ -6818,7 +6818,7 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
 
     if ((flags->held & 0x100) == 0) {
         float zero;
-        float *base_788;
+        SnowBParm *base_788;
         float *base_31C;
         float *base_2FC;
         import_0010DB28(s0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 3, 1, 1);
@@ -6827,9 +6827,9 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
         RiderAnim_clearNextState_0000D5DC((char*)s0);
 
         zero = 0.0f;
-        base_788 = (float*)&RA(s0)->rider->parms.djp;
+        base_788 = &RA(s0)->rider->parms.djp;
         base_31C = &RA(s0)->rider->dnode.vel[1];
-        base_31C[0] = base_788[0x10 / 4] + base_31C[0];
+        base_31C[0] = base_788->value + base_31C[0];
         base_2FC = RA(s0)->rider->dnode.angVel;
         base_2FC[3] = 1.0f;
         base_2FC[2] = zero;
@@ -7086,17 +7086,17 @@ void RiderAnim_checkBackwardSwitch_00011750(char *obj);
 extern void import_0010DB28_void();
 void RiderAnim_stateHopAir(int *a0) {
   int *s0 = a0;
-  int *v0;
+  SnowBoarder *v0;
   int new_var;
   RiderAnim_holdJumpLift_0000E2D0((char *)a0);
-  import_0010DB28_void(s0, s0[0xFC / 4] | RANIM_HOP, 3, 4, 2, 1);
-  v0 = (int *) s0[0xB4 / 4];
-  if (((*((float *) (((char *) v0) + 0x31C))) < 0.0f) && ((*((float *) (((char *) v0) + 0x9D0))) < 1000.0f))
+  import_0010DB28_void(s0, RA(s0)->animSet | RANIM_HOP, 3, 4, 2, 1);
+  v0 = RA(s0)->rider;
+  if ((v0->dnode.vel[1] < 0.0f) && (v0->groundDist < 1000.0f))
   {
     RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
-    v0 = (int *) s0[0xB4 / 4];
+    v0 = RA(s0)->rider;
   }
-  if ((*((int *) (((char *) (new_var = *((int *) (((char *) v0) + 0x800)))) + 0x18))) & 0x400)
+  if (((RiderInput *) (new_var = (int) v0->input))->pressed & 0x400)
   {
     RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
   }
@@ -7104,7 +7104,7 @@ void RiderAnim_stateHopAir(int *a0) {
   if (RiderAnim_startQueuedTrick_0000E35C((char *)s0) == 0)
   {
     ;
-    if (((int *) s0[0xB4 / 4])[0x938 / 4] != 0)
+    if (RA(s0)->rider->contactCount != 0)
     {
       RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
       RiderAnim_stateHopLand((char *)s0);
@@ -7235,13 +7235,13 @@ extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF460;
 void RiderAnim_stateBrake(int *a0) {
     int *p;
-    import_0010DB78(a0, a0[0xFC / 4] | RANIM_BRAKE_B, a0[0xFC / 4] | RANIM_BRAKE_F, ((int *)a0[0xB4 / 4])[0x970 / 4], 0, 1);
-    p = (int *)a0[0xB4 / 4];
-    if (p[0x990 / 4] == 0) {
+    import_0010DB78(a0, RA(a0)->animSet | RANIM_BRAKE_B, RA(a0)->animSet | RANIM_BRAKE_F, *(int *)&RA(a0)->rider->edge, 0, 1);
+    p = (int *)RA(a0)->rider;
+    if (((SnowBoarder *)p)->crouch == 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
-        p = (int *)a0[0xB4 / 4];
+        p = (int *)RA(a0)->rider;
     }
-    if (p[0x9CC / 4] != 0) {
+    if (((SnowBoarder *)p)->useDParms != 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
     }
     RiderAnim_checkGroundSpin_0000E91C((char *)a0);
@@ -7281,7 +7281,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRideDeepBlendIn(int *a0) {
     CALL(RiderAnim_checkJump_0000D8EC)(a0);
-    CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_TURN_B), (RANIM_GROUP_DEEP | RANIM_TURN_F), ((int*)a0[0xB4/4])[0x970/4], ANIM_BLENDIN, 5);
+    CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_TURN_B), (RANIM_GROUP_DEEP | RANIM_TURN_F), *(int *)&RA(a0)->rider->edge, ANIM_BLENDIN, 5);
     CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE60), -1);
 }
 
@@ -7410,15 +7410,15 @@ extern int gl_func_00000000();
 extern char D_00000000;
 void RiderAnim_startTimeout_00011024(int *a0) {
   int v;
-  int *p_B4 = *((int **) (((char *) a0) + 0xB4));
+  int *p_B4 = (int *) RA(a0)->rider;
   RA(a0)->pendingState = *((Pair2 *) (((char *) (&D_00000000)) + 0xF48)); /* stateTimeUp */
   ;
-  p_B4 = (int *) (((char *) p_B4) + 0xA58);
+  p_B4 = (int *) &((SnowBoarder *) p_B4)->flags;
  goto dummy_label_965124; dummy_label_965124: ;
   *p_B4 = (*p_B4) & (~4);
   CALL(RiderAnim_setNextState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
-  ((int *) (*((int **) (((char *) a0) + 0xB4))))[0x960 / 4] = 0x64;
+  RA(a0)->rider->slowdown = 0x64;
 }
 
 
@@ -7436,7 +7436,7 @@ void RiderAnim_startTimeout_00011024(int *a0) {
 void RiderAnim_startFinish_000110A4(int *a0) {
   char *new_var;
   int *new_var2;
-  int *p_B4 = *((int **) (((char *) a0) + 0xB4));
+  int *p_B4 = (int *) RA(a0)->rider;
   int *new_var3;
   int v;
  do { } while (0);
@@ -7444,11 +7444,11 @@ void RiderAnim_startFinish_000110A4(int *a0) {
   new_var3 = a0;
   RA(a0)->pendingState = *((Pair2 *) new_var); /* stateFinish */
   ;
-  new_var2 = (p_B4 = (int *) (((char *) p_B4) + 0xA58));
+  new_var2 = (p_B4 = (int *) &((SnowBoarder *) p_B4)->flags);
   *p_B4 = (*new_var2) & (~4);
   CALL(RiderAnim_setNextState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
-  ((int *) (*((int **) (((char *) new_var3) + 0xB4))))[0x960 / 4] = 0x64;
+  RA(new_var3)->rider->slowdown = 0x64;
 }
 
 
@@ -7499,7 +7499,7 @@ void RiderAnim_stateTimeUp(int *a0) {
 void RiderAnim_stateFinish(int *a0) {
     CALL(RiderAnim_stateStand)(a0);
 
-    if (((int*)a0[0xB4 / 4])[0xA54 / 4] == 1) {
+    if (RA(a0)->rider->raceResult == 1) {
         if (*(int*)((char*)&D_00000000 + 0x7C) != 0) {
             /* struct-by-value pass homes a1,a2 to sp+4/sp+8 (the target's
              * `sw a1,4(sp); sw a2,8(sp)`) — NOT reachable from two int args.
@@ -7598,7 +7598,7 @@ void RiderAnim_stateEnding3(int *a0) {
 /* RiderAnim_stateStartIntro: 39-insn — a1 = ((u)a0->0xB4->0x8C4 % 5)+10 | 0x70000;
  * then 3 USO calls with D[] arg-pairs (same family as RiderAnim_stateSwitchStance). */
 void RiderAnim_stateStartIntro(int *a0) {
-    int v = (int)((unsigned int)((int *)a0[0xB4 / 4])[0x8C4 / 4] % 5U);
+    int v = (int)(RA(a0)->rider->character % 5U);
     int a1 = (v + RANIM_START_INTRO) | RANIM_GROUP_EVENT;
     FCALL(AnimPlayer_start)(a0, a1, 0, 2, 1, 1);
     FCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xEF8), 2);
@@ -7623,11 +7623,11 @@ extern int gl_func_00000000();
 void RiderAnim_stateStartWait(int *a0) {
     int val = 100;
     if (*(int*)((char*)&D_00000000 + 0x78) == 0) {
-        ((int*)a0[0xB4/4])[0x960/4] = 0;
+        RA(a0)->rider->slowdown = 0;
         CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
     } else {
-        ((int*)a0[0xB4/4])[0x960/4] = val;
-        CALL(AnimPlayer_startIfChanged)(a0, a0[0xFC/4] | RANIM_UP_DOWN, 0, 1, 6, 1);
+        RA(a0)->rider->slowdown = val;
+        CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
     }
 }
 
@@ -7654,7 +7654,7 @@ void RiderAnim_playHitAnim_000115EC(int *a0, int a1) {
 void RiderAnim_startHitAnim_00011624(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->selectedAnim, 0, 1, 1, 1);
-    if (((int *)a0[0xB4 / 4])[0xA14 / 4] <= 0) {
+    if (RA(a0)->rider->health <= 0) {
         CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xDC8), 1);
     } else {
         CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
@@ -7775,24 +7775,24 @@ void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
     int s1 = a2;
     switch (a1) {
     case 1:
-        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x109C, 10);
-        FCALL(SndHandle_triggerEvent3_00000940)((int)s0[0xB4 / 4] + 0x808, s1);
+        FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + 0x109C, 10);
+        FCALL(SndHandle_triggerEvent3_00000940)((int)RA(s0)->rider->sound, s1);
         break;
     case 2:
-        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10AC, 10);
-        FCALL(SndHandle_triggerEvent0_000008F4)((int)s0[0xB4 / 4] + 0x808, s1);
+        FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + 0x10AC, 10);
+        FCALL(SndHandle_triggerEvent0_000008F4)((int)RA(s0)->rider->sound, s1);
         break;
     case 3:
-        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10A4, 10);
-        FCALL(SndHandle_triggerEvent0_000008F4)((int)s0[0xB4 / 4] + 0x808, s1);
+        FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + 0x10A4, 10);
+        FCALL(SndHandle_triggerEvent0_000008F4)((int)RA(s0)->rider->sound, s1);
         break;
     case 4:
-        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10C0, 10);
-        FCALL(SndHandle_triggerEvent1_0000098C)((int)s0[0xB4 / 4] + 0x808, s1);
+        FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + 0x10C0, 10);
+        FCALL(SndHandle_triggerEvent1_0000098C)((int)RA(s0)->rider->sound, s1);
         break;
     case 5:
-        FCALL(pad_setRumble)(((int *)s0[0xB4 / 4])[0x800 / 4], (char *)&D_00000000 + 0x10DC, 10);
-        FCALL(SndHandle_triggerEvent2_000009D8)((int)s0[0xB4 / 4] + 0x808, s1);
+        FCALL(pad_setRumble)((int)RA(s0)->rider->input, (char *)&D_00000000 + 0x10DC, 10);
+        FCALL(SndHandle_triggerEvent2_000009D8)((int)RA(s0)->rider->sound, s1);
         break;
     }
 }
