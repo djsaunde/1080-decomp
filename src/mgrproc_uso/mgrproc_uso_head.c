@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* [0x170, 0x19C) of the mgrproc_uso Yay0 block: ONE -O0 predicate,
- * mgrproc_uso_func_00000170 (11 words). Built -O0 with TRUNCATE_TEXT 0x2C.
+ * mgr_noRetriesLeft_00000170 (11 words). Built -O0 with TRUNCATE_TEXT 0x2C.
  *
  * HISTORY (2026-09-05, agent-g): this unit used to be [0x140,0x19C) at -O2 -g3
  * holding six "functions": 140 / 15C / 168 / 170 / 188 / 194. 140 and 170 were
@@ -22,7 +22,7 @@
  *
  * Callers: func_000000F8 (jal, same block), mgrproc_uso.c:522 (`!= 0` test).
  * Semantics: "list is empty" -> 1 when a0->0 == NULL. */
-int mgrproc_uso_func_00000170(int *a0) {
+int mgr_noRetriesLeft_00000170(int *a0) {
     if (a0[0] == 0) {
         return 1;
     }

@@ -53,7 +53,7 @@ glabel mgrproc_uso_func_000023FC
     /* 0024C0 000024C0 272B0001 */  .word 0x272B0001
     /* 0024C4 000024C4 1580001A */  .word 0x1580001A
     /* 0024C8 000024C8 AE6B0508 */  .word 0xAE6B0508
-    jal mgrproc_uso_func_00000140   /* 0024CC 0C000000 -> mgrproc_uso_func_00000140 */
+    jal mgr_isLastCourse_00000140   /* 0024CC 0C000000 -> mgr_isLastCourse_00000140 */
     /* 0024D0 000024D0 8E6406A8 */  .word 0x8E6406A8
     /* 0024D4 000024D4 1040000F */  .word 0x1040000F
     /* 0024D8 000024D8 26700728 */  .word 0x26700728

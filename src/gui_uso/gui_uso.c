@@ -792,7 +792,7 @@ void gui_drawSprite(void) {
  * local (cfe frame word per declared referenced local: frame 112, field58 at
  * sp+88 as the target) and two empty if (1) {} cuts. LEFT: the target keeps
  * lw s6,128 + or s1,s6 (w promoted, rem a copy); here rem loads the param. */
-void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
+void gui_drawSpriteIA8Clip_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
     int s5; int s4; int s3; int s1; int s6; int field58; int s0; int s8; int *s2; int *v1;
 
     /* first DL emit: G_SETSCISSOR (BB000001 / 80008000); ctx rides the s2 web */
@@ -837,7 +837,7 @@ void gui_func_00002BB0(int *a0, int a1, int a2, int a3, int a4) {
     } while (s1 != 0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_func_00002BB0);
+INCLUDE_ASM("asm/nonmatchings/gui_uso/gui_uso", gui_drawSpriteIA8Clip_00002BB0);
 #endif
 
 /* 2026-11-11 agent-c (run 337): EXACT via the IDO 7.1 NCC donor

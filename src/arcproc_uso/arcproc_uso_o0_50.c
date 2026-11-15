@@ -7,7 +7,7 @@ extern int gl_func_00000000();
 extern char D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
-void arcproc_uso_func_00000050(Quad4 *dst) {
+void fs_gdlReadQuad_arc_00000050(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -91,6 +91,6 @@ void arcproc_uso_func_00000050(Quad4 *dst) {
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp. The "extra-branch" residual above is cfe's -O0
  * closing-brace b-epilogue, which edg does not emit. Placeholder spliced over. */
-int arcproc_uso_func_000000B4(int *a0, int a1) {
+int arc_nextCourse_000000B4(int *a0, int a1) {
     return 0;
 }

@@ -26,7 +26,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * and concatenated into the Yay0 block (region 0) before compression. See the
  * block1 yay0 rule in the Makefile. */
 
-/* mgrproc_uso_func_000000F8 .. _00000A14 (0xF8..0xAE0) live in
+/* mgr_useRetry_000000F8 .. _00000A14 (0xF8..0xAE0) live in
  * mgrproc_uso_o0_0.c (-O0, [0x0,0x170), incl. the predicate func_00000140),
  * mgrproc_uso_head.c (-O0, [0x170,0x19C) = the predicate func_00000170) and
  * mgrproc_uso_o0_19C.c (-O0, [0x19C,0xAE0)) — carved sub-units concatenated
@@ -34,7 +34,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * [0x0,0xAE0) run is -O0; the "-O2 -g3 leaves" in between were the predicates'
  * own return-0 arms + dead trailing jr-ra pairs (merged 2026-09-05). */
 
-mgrproc_uso_func_00000AE0() {
+mgr_pauseContinue_00000AE0() {
     gl_func_00000000(*(int*)(&D_00000000 + 0x30));
     gl_func_00000000(*(int*)((char*)*(int**)(&D_00000000 + 0x30) + 0x6AC));
     gl_func_00000000(&D_00000000);
@@ -54,8 +54,8 @@ extern int import_000A5A1C();
 extern int import_000A5938();
 extern int mgrproc_uso_func_01FA1C();
 extern int mgrproc_uso_func_00F954();
-/* mgrproc_uso_func_00000B5C: 46-insn (0xB8) state-update with cond branch.
- * Sibling of mgrproc_uso_func_00000C14 (same state pointer, same `other`
+/* mgr_pauseRetry_00000B5C: 46-insn (0xB8) state-update with cond branch.
+ * Sibling of mgr_pauseQuit_00000C14 (same state pointer, same `other`
  * base import_80020098, different constants). TRUE arm: [0x504]=0;
  * [0x4E0]=7; other[0x40]=5; other[0x44]=3; [0x7D8]=1; import_000A5938(state).
  * FALSE arm: other[0x40]=3; mgrproc_uso_func_00F954(state, 4,
@@ -64,7 +64,7 @@ extern int mgrproc_uso_func_00F954();
  * import_80263D60_30 (pinned to 0x30, baked into the addiu). The earlier
  * if(1) pointer-mutation form left 8 schedule words. */
 extern int *import_80263D60_30;
-void mgrproc_uso_func_00000B5C(void) {
+void mgr_pauseRetry_00000B5C(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
     v0 = mgrproc_uso_func_01FA1C(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
@@ -81,7 +81,7 @@ void mgrproc_uso_func_00000B5C(void) {
     }
 }
 
-/* mgrproc_uso_func_00000C14: 44-insn (0xB0) state-update with conditional
+/* mgr_pauseQuit_00000C14: 44-insn (0xB0) state-update with conditional
  * branch. state = the global state pointer at import_80263D60 + 0x30;
  * queries mgrproc_uso_func_01FA1C(state->[0x6AC]->[0x4C]) and then either
  *   - TRUE: state[0x504]=0, state[0x4E0]=7, other[0x40]=5, other[0x44]=7,
@@ -101,7 +101,7 @@ extern int import_000A5938();
 extern int mgrproc_uso_func_01FA1C();
 extern int mgrproc_uso_func_00F954();
 extern int *import_80263D60_30;
-void mgrproc_uso_func_00000C14(void) {
+void mgr_pauseQuit_00000C14(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
     v0 = mgrproc_uso_func_01FA1C(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
@@ -359,13 +359,13 @@ void MGRRaceProcess_release_00001304(void) {
     mgrproc_uso_func_00000000();
 }
 
-/* mgrproc_uso_func_00001324: 41-insn lazy-init guard. Idempotent
+/* MGRRaceProcess_onResult_00001324: 41-insn lazy-init guard. Idempotent
  * "ensure-initialized" check on arg0->[0x4FC] flag. If unset, runs init
  * cascade. Sets arg0[0x4FC]=1 (guard) + arg0[0x7D0]=arg0[0x4F8] (cached
  * state). Returns 1.
  *
  * 2026-06-01 SOURCE=4 retest: 99.63% NM. Resolved stale placeholder
- * callees to import_000B72F4 / mgrproc_uso_func_000000B0 / 000000F8 /
+ * callees to import_000B72F4 / mgr_nextCourse_000000B0 / 000000F8 /
  * 00000170 / 01FA1C, then reversed the final two source stores:
  *   arg0[0x7D0] = arg0[0x4F8]; arg0[0x4FC] = 1;
  * IDO schedules that as the target order (`sw 1,0x4FC`; `sw state,0x7D0`)
@@ -380,22 +380,22 @@ void MGRRaceProcess_release_00001304(void) {
  * after import_000B72F4 forces a BB boundary that flips arg0->0x4F8 from $v0
  * to $v1, matching the target. Byte-exact 41/41. */
 extern int import_000B72F4();
-extern int mgrproc_uso_func_000000B0();
-extern int mgrproc_uso_func_000000F8();
-extern int mgrproc_uso_func_00000170();
+extern int mgr_nextCourse_000000B0();
+extern int mgr_useRetry_000000F8();
+extern int mgr_noRetriesLeft_00000170();
 extern int mgrproc_uso_func_01FA1C();
-int mgrproc_uso_func_00001324(char *arg0) {
+int MGRRaceProcess_onResult_00001324(char *arg0) {
     int v;
     if (*(int*)(arg0 + 0x4FC) == 0) {
         import_000B72F4(*(int*)(arg0 + 0x6AC), 0, 1);
         if (1) {}
         v = *(int*)(arg0 + 0x4F8);
         if (v == 0) {
-            mgrproc_uso_func_000000B0(*(int*)(arg0 + 0x6A8));
+            mgr_nextCourse_000000B0(*(int*)(arg0 + 0x6A8));
         } else if (v != 2) {
-            mgrproc_uso_func_000000F8(*(int*)(arg0 + 0x6A8));
+            mgr_useRetry_000000F8(*(int*)(arg0 + 0x6A8));
         }
-        if (mgrproc_uso_func_00000170(*(int*)(arg0 + 0x6A8)) != 0 &&
+        if (mgr_noRetriesLeft_00000170(*(int*)(arg0 + 0x6A8)) != 0 &&
             mgrproc_uso_func_01FA1C(*(int*)(*(int*)(arg0 + 0x6AC) + 0x4C)) != 0) {
             *(int*)(arg0 + 0x4EC) = -0x258;
         }
@@ -405,7 +405,7 @@ int mgrproc_uso_func_00001324(char *arg0) {
     return 1;
 }
 
-/* mgrproc_uso_func_000013C8: 75-insn (0x12C) post-init state dispatcher.
+/* MGRRaceProcess_onFinish_000013C8: 75-insn (0x12C) post-init state dispatcher.
  * BYTE-EXACT 75/75, objdiff 100.0 (2026-07-15 agent-g, 82.4 -> 100). The
  * 2026-06-20 "LO16/address-remat + branch-likely tie" cap note was WRONG on
  * all three counts; fixes were:
@@ -428,7 +428,7 @@ int mgrproc_uso_func_00001324(char *arg0) {
  * .o. docs/MATCHING_WORKFLOW.md#yay0-block-unlinked-in-unit-jal-f360.
  *
  * Real symbols re-derived 2026-06-20 from the resolved .s. Correct callees:
- * mgrproc_uso_func_00000140 / _00000170 / _01FA1C / import_000A8114.
+ * mgr_isLastCourse_00000140 / _00000170 / _01FA1C / import_000A8114.
  * Globals: import_800200DC (slot 0x44), import_800200D8 (slot 0x40),
  * import_80020100 (args to import_000A8114).
  *
@@ -456,8 +456,8 @@ int mgrproc_uso_func_00001324(char *arg0) {
  *
  * (Flow comment above retained; "return" in the SI-magic arm corrected to
  * fall-through-to-term per fix 1.) */
-extern int mgrproc_uso_func_00000140();
-extern int mgrproc_uso_func_00000170();
+extern int mgr_isLastCourse_00000140();
+extern int mgr_noRetriesLeft_00000170();
 extern int mgrproc_uso_func_01FA1C();
 extern int import_000A8114();
 extern char import_800200DC;
@@ -466,12 +466,12 @@ extern char import_800200DC_c;
 extern char import_800200D8;
 extern char import_80020100;
 extern char import_80020100_b;
-void mgrproc_uso_func_000013C8(int *a0) {
+void MGRRaceProcess_onFinish_000013C8(int *a0) {
     int spill;          /* stack 0x24(sp) */
     int *s0 = a0;
     spill = 0;
     if (a0[0x4F8 / 4] == 0) {
-        if (mgrproc_uso_func_00000140(a0[0x6A8 / 4]) != 0) {
+        if (mgr_isLastCourse_00000140(a0[0x6A8 / 4]) != 0) {
             spill = 1;
             *(int *)((char *)&import_800200DC + 0x44) = 7;
             if (*(volatile int *)0xA0000200 == (int)0xAC290000) {
@@ -483,13 +483,13 @@ void mgrproc_uso_func_000013C8(int *a0) {
         goto term;
     }
     /* a0[0x4F8] != 0 */
-    if (mgrproc_uso_func_00000170(s0[0x6A8 / 4]) == 0) goto term;
+    if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto term;
     spill = 1;
     *(int *)((char *)&import_800200D8 + 0x40) = *(int *)((char *)&import_800200DC_b + 0x44);
     *(int *)((char *)&import_800200DC_c + 0x44) = 7;
 term:
     if (s0[0x7C8 / 4] != 0) {
-        if (mgrproc_uso_func_00000170(s0[0x6A8 / 4]) == 0) goto storestate;
+        if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto storestate;
     }
     if (mgrproc_uso_func_01FA1C(((int **)s0)[0x6AC / 4][0x4C / 4]) == 0) {
         *(int *)((char *)&import_800200D8 + 0x40) = 7;
@@ -539,7 +539,7 @@ case_13:
     mgrproc_uso_func_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
 }
 
-/* MGRRaceProcess_checkFade_00001594: 32-insn (0x80) check-then-vtable-call helper.
+/* MGRRaceProcess_runPauseRow_00001594: 32-insn (0x80) check-then-vtable-call helper.
  * Decoded:
  *   if (gl_func_0(D[0x190], a0) == 0) return;
  *   int *p = a0[0x48/4]; int idx = p[0x7C/4];
@@ -574,7 +574,7 @@ extern int D_mgr_1594_a, D_mgr_1594_c;
 extern int import_80020228;
 extern int import_80263D60;
 extern int mgrproc_uso_func_013980();
-/* MGRRaceProcess_checkFade_00001594 — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
+/* MGRRaceProcess_runPauseRow_00001594 — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
  *
  * Replaces the former NM body (which was a documented "register-renumber cap").
  * CAP CRACKED — two levers, in order:
@@ -595,14 +595,14 @@ extern int mgrproc_uso_func_013980();
  *   extern int import_80020228;
  *   extern int import_80263D60;
  */
-void MGRRaceProcess_checkFade_00001594(int *a0) {
+void MGRRaceProcess_runPauseRow_00001594(int *a0) {
     if (mgrproc_uso_func_013980(*(int*)((char*)&import_80020228 + 0x190), a0) == 0) return;
     if (*(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90) == 0) return;
     *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
     ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
 }
 
-/* MGRRaceProcess_setupRace_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
+/* MGRRaceProcess_raceOver_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
  * as an if-else chain). Case 0: cb(&D+0x190,3,1), set state=1, cb(7,0,0). Case 1:
  * if cb(&D+0x190,1,1): set 0x4D8=1, several inits, alloc a node into arg0->0x524,
  * link it into the 0x56C list (header+0x10), conditional flag, register via
@@ -650,7 +650,7 @@ extern void import_007FE4E8();
 extern int mgrproc_uso_func_00F954();
 extern int mgrproc_uso_func_00001BD4();
 extern void *MgrNameEntry_ctor_00002940(char *, int, int);
-void MGRRaceProcess_setupRace_00001614(char *arg0) {
+void MGRRaceProcess_raceOver_00001614(char *arg0) {
     void *node;
     char *hdr;
     int state = *(int *)(arg0 + 0x504);
@@ -677,7 +677,7 @@ void MGRRaceProcess_setupRace_00001614(char *arg0) {
                 *(int *)((char *)node + 4) = 1;
             }
             *(int *)((char *)node + 0x14) = (int) hdr;
-            if (mgrproc_uso_func_00000140(*(int *)(arg0 + 0x6A8), node) != 0) {
+            if (mgr_isLastCourse_00000140(*(int *)(arg0 + 0x6A8), node) != 0) {
                 *(int *)((char *)*(void **)(arg0 + 0x524) + 0x60) = 2;
                 mgrproc_uso_func_00001BD4(arg0);
             }
@@ -690,8 +690,8 @@ void MGRRaceProcess_setupRace_00001614(char *arg0) {
     }
 }
 
-/* mgrproc_uso_func_0000179C: 30-insn (0x78) gated state-set.
- * Adjacent 2-insn alt-entry stubs (mgrproc_uso_func_00001814 / 0000181C,
+/* MGRRaceProcess_vfunc26_0000179C: 30-insn (0x78) gated state-set.
+ * Adjacent 2-insn alt-entry stubs (MGRRaceProcess_vfunc33_00001814 / 0000181C,
  * each `jr ra; sw a0, 0(sp)`) used to be bundled into the symbol via a
  * 16-byte SUFFIX_BYTES recipe; that recipe was REMOVED 2026-05-23 as
  * instruction-byte-appending match-faking (per
@@ -705,7 +705,7 @@ void MGRRaceProcess_setupRace_00001614(char *arg0) {
  *   if (gl_func(&D, 0x40100, a0) == 0) return;
  *   if (gl_func(*(int*)(&D + 0x190)) == 0) return;
  *   a0->[0x7D4] = 1; */
-void mgrproc_uso_func_0000179C(int *a0) {
+void MGRRaceProcess_vfunc26_0000179C(int *a0) {
     if (*(int*)((char*)a0 + 0x7E4) != 1) return;
     if (*(int*)((char*)a0 + 0x7E8) >= 0x2EE) return;
     if (gl_func_00000000(&D_00000000, 0x40100, a0) == 0) return;
@@ -713,13 +713,13 @@ void mgrproc_uso_func_0000179C(int *a0) {
     *(int*)((char*)a0 + 0x7D4) = 1;
 }
 
-/* mgrproc_uso_func_00001814/0000181C: 2 save-arg-sentinel stubs RECOVERED
+/* MGRRaceProcess_vfunc33_00001814/0000181C: 2 save-arg-sentinel stubs RECOVERED
  * 2026-05-28 (the alt-entry stubs the 0000179C comment references — they had
  * NO .s and were missing from the build, not "tracked" as it claimed).
  * `void f(int a0){}` -> `jr ra; sw a0, 0(sp)` at -O2, byte-exact. First
  * recovered functions in a Yay0 segment (bytes from the decompressed block). */
-void mgrproc_uso_func_00001814(int a0) {}
-void mgrproc_uso_func_0000181C(int a0) {}
+void MGRRaceProcess_vfunc33_00001814(int a0) {}
+void MGRRaceProcess_vfunc34_0000181C(int a0) {}
 
 /* Full structural decode 2026-06-01. Per-frame state machine: sub-state
  * gate on s0->0x7D4, a 5-case timer-countdown dispatch on s0->0x7E4 (each
@@ -801,7 +801,7 @@ typedef struct { char c[0]; } Z0_1824; /* zero-byte copy type (kit CDLVI) */
  * block boundary. Each guard costs two ugen temps (ring of 10). */
 #define MGR1824_EMPTY_BB(k) \
     if (sel == (k)) *(Z0_1824 *)(char *)(sel + 0x10) = *(Z0_1824 *)(char *)(sel + 0x20)
-void mgrproc_uso_func_00001824(char *s0) {
+void MGRRaceProcess_vfunc35_00001824(char *s0) {
     char *v0;
     char *r;
     char *vt;
@@ -891,7 +891,7 @@ void mgrproc_uso_func_00001824(char *s0) {
     if (s0) {}
 }
 
-void mgrproc_uso_func_00001A5C(int a0) {
+void MGRRaceProcess_vfunc36_00001A5C(int a0) {
 }
 
 extern char import_800201CC;
@@ -986,7 +986,7 @@ extern void mgrproc_1BE4_call_1B58(int *, int);
  * is the one-argument helper 1B58, but this caller also sets a1=0xA0000;
  * use a zero-pinned call alias to retain that unused argument without
  * changing the already-matched callee's signature. */
-void mgrproc_uso_func_00001BE4(int *state) {
+void mgr_startEnding_00001BE4(int *state) {
     int idx;
     char *base = &D_00000000;
     idx = *(int*)(base + 0x64) - 5;
@@ -1088,7 +1088,7 @@ void MGRRaceProcess_drawOverlay_00001C90(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawOverlay_00001C90);
 #endif
 
-/* mgrproc_uso_func_00001F30: physics/bounce animation step (gated on arg0->0x4F0
+/* MGRRaceProcess_vfunc28_00001F30: physics/bounce animation step (gated on arg0->0x4F0
  * bit-16). By state arg0->0x4E0: state 1 integrates 0x7A8 with dbl-precision vel
  * 0x7B8 (+&D+0x5E0), bounce off 36.0 floor; state 3 (sub-state 0x4F8) integrates
  * up to a 160-(2*w-2) ceiling (+&D+0x5E8) or decays 0x7A4. Draws cb(arg0, x, y, w).
@@ -1121,7 +1121,7 @@ INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawOverl
 extern int gl_func_00000000();
 extern char import_8024CAF8;
 extern double D_dbl_5E0, D_dbl_5E8, D_dbl_5F8, D_dbl_600;
-void mgrproc_uso_func_00001F30(char *arg0) {
+void MGRRaceProcess_vfunc28_00001F30(char *arg0) {
     float f0;
     float f2;
     float four;
@@ -1194,7 +1194,7 @@ void mgrproc_uso_func_00001F30(char *arg0) {
     }
 }
 
-/* mgrproc_uso_func_00002294: 36-insn (0x90) FPU-gated state-update. MATCHED
+/* MGRRaceProcess_vfunc30_00002294: 36-insn (0x90) FPU-gated state-update. MATCHED
  * 2026-05-31 (78.2 -> 100%). Three fixes over the prior cap-wrap: (1) the &D FP
  * consts (&D+0/0x608/0x60C/0x610) use DISTINCT externs (D_b0_2294/D_00000608/
  * D_0000060C/D_00000610, valued at the offset in undefined_syms_auto.txt) so each
@@ -1206,7 +1206,7 @@ void mgrproc_uso_func_00001F30(char *arg0) {
  * branch-likely calls gl_func when `D[0x610] < a0->0x7A0` (target), NOT `>=` as
  * the old pseudocode said. */
 extern float D_b0_2294, D_00000608, D_0000060C, D_00000610;
-void mgrproc_uso_func_00002294(int *a0) {
+void MGRRaceProcess_vfunc30_00002294(int *a0) {
     if (a0[0x500/4] == 0) return;
     if (D_b0_2294 <= 0.0f) {
         if (*(float*)((char*)a0 + 0x7A0) < D_00000608) {
@@ -1218,9 +1218,9 @@ void mgrproc_uso_func_00002294(int *a0) {
     }
 }
 
-/* mgrproc_uso_func_00002324 - verified structural decode (0xD8,
+/* MGRRaceProcess_vfunc37_00002324 - verified structural decode (0xD8,
  * 54 insns, one-shot FP state-advance / transition trigger).
- *   void mgrproc_uso_func_00002324(void *a0) {
+ *   void MGRRaceProcess_vfunc37_00002324(void *a0) {
  *       if (a0->0x7C4 != 0) return;               // already triggered
  *       f32 x = a0->0x7A8, y = a0->0x7AC;
  *       a0->0x7B0 = x;  a0->0x7B4 = y;            // snapshot prev
@@ -1261,7 +1261,7 @@ void mgrproc_uso_func_00002294(int *a0) {
  *       the cross-USO placeholder gl_func_00000000); both disk-encode jal as
  *       0C000000 under the USO R_MIPS_26 runtime reloc, so the ROM is identical
  *       and the swap only makes objdiff count the call. */
-void mgrproc_uso_func_00002324(char *a0) {
+void MGRRaceProcess_vfunc37_00002324(char *a0) {
     float x, y;
     float two = 2.0f;
     float one = 1.0f;
@@ -1367,7 +1367,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
  * a3-1 (a1 forward base, a2 mirrored: &a2[-i]). Bundled tail sets
  * s0->0x54C (1356) f32 = 116.0 and s0->0x554 (1364) f32 = 170.0
  * (same field group as the mgrproc final-pose constants seen in
- * mgrproc_uso_func_00002324).
+ * MGRRaceProcess_vfunc37_00002324).
  *
  * SYMBOLS RE-DERIVED 2026-06-20: the prior body used gl_func_00000000 /
  * &D_00000000 placeholders (relocs WRONG). The three calls are DISTINCT
@@ -1431,7 +1431,7 @@ void mgrproc_uso_func_00002850(char *s0, int *a1, int *a2, int a3) {
 INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002850);
 #endif
 
-void mgrproc_uso_func_00002924(int *a0) {
+void MGRRaceProcess_vfunc15_00002924(int *a0) {
     *(float *)((char *)a0 + 0x54C) = 116.0f;
     *(float *)((char *)a0 + 0x554) = 170.0f;
 }
@@ -1496,7 +1496,7 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
     return arg0;
 }
 
-/* mgrproc_uso_func_00002AFC: 32-insn (0x80) FP step-decrement-and-notify
+/* MgrNameEntry_vfunc18_00002AFC: 32-insn (0x80) FP step-decrement-and-notify
  * helper on a0->0x168 (float). If positive, decrement by D[0x614] and
  * clamp to 0 if it went negative (overshoot prevention). Then call
  * notify if the resulting value is <= 0 (signaling "expired"). The
@@ -1504,7 +1504,7 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
  * pattern. */
 extern int gl_func_00000000();
 extern char D_00000000;
-void mgrproc_uso_func_00002AFC(int *a0) {
+void MgrNameEntry_vfunc18_00002AFC(int *a0) {
     float v;
     gl_func_00000000(a0);
     v = *(float*)((char*)a0 + 0x168);
@@ -1886,7 +1886,7 @@ void mgr_readVec3Parm_000033E8(char *dst) {
 
 /* Historical SUFFIX_BYTES-absorbed orphans (per
  * docs/MATCHING_WORKFLOW.md#feedback-splat-orphan-duplicate-symbol-pruning):
- *   mgrproc_uso_func_00001814 ← mgrproc_uso_func_0000179C SUFFIX_BYTES
+ *   MGRRaceProcess_vfunc33_00001814 ← MGRRaceProcess_vfunc26_0000179C SUFFIX_BYTES
  *                                (4 words 0x03E00008,0xAFA40000,0x03E00008,0xAFA40000)
  * The INCLUDE_ASMs lived at the .o tail (offsets 0x3420/0x3430) with no
  * effect on the linked binary — the bytes at vram 0x1814/0x1BD4 come from

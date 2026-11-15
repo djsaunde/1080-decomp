@@ -3,7 +3,7 @@
 extern int gl_func_00000000();
 extern int D_00000148, D_0000014C, D_00000068;
 
-/* -O0 donor for arcproc_uso_func_000005C8 (48-insn / 0xC0 alloc wrapper).
+/* -O0 donor for arc_openSession_000005C8 (48-insn / 0xC0 alloc wrapper).
  * Spliced into the -O2 tail1 object via REPLACE_FUNC_BODY (real -O0 output).
  * arcproc is non-Yay0, so the imported R_MIPS HI16/LO16 vs D_00000148/14C/68
  * and the jal-0 + R_MIPS_26 gl_func_00000000 relocs are resolved by the linker
@@ -15,7 +15,7 @@ extern int D_00000148, D_0000014C, D_00000068;
  * grabbed the top local slot 0x24 (unused, s0-resident) and pushed `saved` down
  * to 0x20. Declaring the stack temp `saved` BEFORE the register var gives it the
  * 0x24 slot -> byte-exact. Decl-order slot lever (docs/IDO_CODEGEN.md -O0 kit). */
-void arcproc_uso_func_000005C8(int *a0) {
+void arc_openSession_000005C8(int *a0) {
     int saved;
     register int s0;
     saved = gl_func_00000000(2);

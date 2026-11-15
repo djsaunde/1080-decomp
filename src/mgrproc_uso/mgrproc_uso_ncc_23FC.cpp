@@ -51,7 +51,7 @@ void import_0024F34C(...);
 void import_0024EAA0(...);
 void import_0024F75C(...);
 int mgrproc_uso_func_07C610(...);
-int mgrproc_uso_func_00000140(...);
+int mgr_isLastCourse_00000140(...);
 void mgrproc_uso_func_083574(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
@@ -84,7 +84,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
     FW(arg0, 0x508) = FW(arg0, 0x508) + 1;
     if (FW(arg0, 0x4F8) == 0) {
         panel = arg0 + 0x728;
-        if (mgrproc_uso_func_00000140(FW(arg0, 0x6A8)) != 0) {
+        if (mgr_isLastCourse_00000140(FW(arg0, 0x6A8)) != 0) {
             panel = arg0 + 0x740;
             if (FW(arg0, 0x508) & 8) {
                 import_0024F2C8(panel);

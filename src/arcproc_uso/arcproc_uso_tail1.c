@@ -10,13 +10,13 @@ typedef struct { int a, b, c, d; } Quad4;
  * Original single-file body split into arcproc_uso.c (0x0..0x50 func_00000000),
  * arcproc_uso_o0_50.c (-O0), and this tail. */
 
-/* arcproc_uso_func_00001B88 moved to its in-offset-order slot (before
+/* ArcNameEntry_vfunc17_00001B88 moved to its in-offset-order slot (before
  * func_00001BBC). It was defined at the top of the file, which made IDO emit
  * it FIRST in .text — an extra 0x34-byte copy at segment offset 0x240 and a
  * 0x34-byte hole at 0x1B88, i.e. +0x34/-0x34 layout drift inside the segment
  * (function order in the TU == .text order). */
 
-/* arcproc_uso_func_0000012C and func_0000019C moved to arcproc_uso_o0_12C.c (-O0 file). */
+/* arc_useRetry_0000012C and func_0000019C moved to arcproc_uso_o0_12C.c (-O0 file). */
 
 /* arc_procMain now LANDED as a compiled -O0 C_FILES unit
  * (arcproc_uso_o0_240.c), pulled into .text between o0_12C and this tail via
@@ -24,14 +24,14 @@ typedef struct { int a, b, c, d; } Quad4;
  * the reloc-form dispatch (lui at,0; lw at,0(at)) bakes byte-exact. */
 
 extern int D_00000148, D_0000014C, D_00000068;
-/* arcproc_uso_func_000005C8: 48-insn (0xC0) -O0 alloc wrapper. MATCHED 2026-07-10
+/* arc_openSession_000005C8: 48-insn (0xC0) -O0 alloc wrapper. MATCHED 2026-07-10
  * via REPLACE_FUNC_BODY donor arcproc_uso_o0_5C8.c (real -O0 output). This tail1
  * unit is -O2, so IDO fills the 6 jal delays + keeps the alloc result in v0 (37w);
  * the -O0 donor is compiled separately (48w) and spliced in. The prior "NOT
  * C-steerable temp-slot" cap (saved@0x20 vs target 0x24) is broken by the donor's
  * decl-order lever (declare stack temp `saved` before `register int s0` so it takes
  * the top -O0 local slot 0x24). Body below is placeholder for the splice. */
-void arcproc_uso_func_000005C8(int *a0) {
+void arc_openSession_000005C8(int *a0) {
     register int s0;
     int saved;
     saved = gl_func_00000000(2);
@@ -46,14 +46,14 @@ void arcproc_uso_func_000005C8(int *a0) {
     D_00000068 = 0;
 }
 
-/* arcproc_uso_func_00000688: 48-insn (0xC0) -O0 struct-init + zero-loop.
+/* arc_initCourses_00000688: 48-insn (0xC0) -O0 struct-init + zero-loop.
  * MATCHED via REPLACE_FUNC_BODY donor arcproc_uso_o0_688.c (real -O0 output;
  * this tail1 unit is -O2, IDO CSEs the a0->[0x8] reloads to 38 insns, so the
  * -O0 48-insn body is compiled separately and spliced in). Reloc-free.
  * Seeds a0->[0x8]->[0x00..0x1C]+[0x34] with constants, then zeroes the int
  * array at 0x20 over [0, a0->[8]->[2]). Body below is placeholder for the
  * splice (its own bytes are replaced by the donor). */
-void arcproc_uso_func_00000688(int *a0) {
+void arc_initCourses_00000688(int *a0) {
     int i;
     ((int **)a0)[2][0] = 1;
     ((int **)a0)[2][1] = 0;
@@ -70,7 +70,7 @@ void arcproc_uso_func_00000688(int *a0) {
 }
 
 /* 27-insn -O0 cleanup wrapper, byte-identical sibling of the matched
- * mgrproc_uso_func_000009A8. Matched 2026-05-30 via the -O0 REPLACE_FUNC_BODY
+ * mgr_closeSession_000009A8. Matched 2026-05-30 via the -O0 REPLACE_FUNC_BODY
  * donor splice (donor src/arcproc_uso/arcproc_uso_o0_748.c). arcproc is
  * non-Yay0, but the donor-splice still works: relocatable USO functions have
  * link-offset-independent bytes (jal-0 + relocs, self-relative branches), so
@@ -80,7 +80,7 @@ void arcproc_uso_func_00000688(int *a0) {
  * The donor splice avoided a risky 3-way file split of tail1 around a mid-file
  * function. Unblocked by the replace-function-body.py realign fix (2026-05-30).
  * See docs/MATCHING_WORKFLOW.md#feedback-replace-func-body-o0-donor. */
-void arcproc_uso_func_00000748(int *a0) {
+void arc_closeSession_00000748(int *a0) {
     gl_func_00000000((int*)a0[2]);
     a0[2] = 0;
     gl_func_00000000((int*)a0[0], 3);
@@ -88,7 +88,7 @@ void arcproc_uso_func_00000748(int *a0) {
     *(int*)((char*)&D_00000000 + 0x14C) = 0;
 }
 
-void arcproc_uso_func_000007B4(void) {
+void arc_pauseContinue_000007B4(void) {
     gl_func_00000000(*(int*)&D_00000000);
     gl_func_00000000(*(int*)((char*)*(int**)&D_00000000 + 0x6AC));
     gl_func_00000000(*(int*)&D_00000000);
@@ -99,7 +99,7 @@ extern char *D_arc800_a;       /* gl_func 1st-arg AND chain-2 (0x6A8) base */
 extern char *D_arc800_b;       /* chain-1 (0x6AC) base */
 extern int   D_arc800_d;       /* store target +0x40 / +0x44 */
 
-void arcproc_uso_func_00000800(void) {
+void arc_pauseRetry_00000800(void) {
     int v;
     gl_func_00000000(D_arc800_a);
     v = gl_func_00000000(*(int*)((char*)*(int**)((char*)D_arc800_b + 0x6AC) + 0x4C));
@@ -113,7 +113,7 @@ void arcproc_uso_func_00000800(void) {
         *(int*)((char*)*(int**)((char*)D_arc800_a + 0x6A8) + 0xC));
 }
 
-/* arcproc_uso_func_00000880: 31-insn (0x7C) state-conditional update.
+/* arc_pauseQuit_00000880: 31-insn (0x7C) state-conditional update.
  * Promoted from 99.19% NM to exact via `make expected` reloc-form refresh.
  * 3 unique extern aliases (D_arc880_X/_Y/_Z) avoid IDO &D-CSE collapse
  * per feedback_unique_extern_with_offset_cast_breaks_cse.md. Inlining
@@ -122,7 +122,7 @@ void arcproc_uso_func_00000800(void) {
 extern int D_arc880_X;
 extern char *D_arc880_Y;
 extern char D_arc880_Z[];
-void arcproc_uso_func_00000880(void) {
+void arc_pauseQuit_00000880(void) {
     int v0;
     gl_func_00000000(D_arc880_X);
     v0 = gl_func_00000000(*(int*)((char*)*(int**)((char*)D_arc880_Y + 0x6AC) + 0x4C));
@@ -401,13 +401,13 @@ void ARCRaceProcess_release_00000EBC(int *a0) {
     }
 }
 
-/* arcproc_uso_func_00000EEC: 12-insn triple-deref non-null check, RECOVERED
+/* ARCRaceProcess_vfunc18_00000EEC: 12-insn triple-deref non-null check, RECOVERED
  * from the 00000EBC bundle gap. Returns 1 iff a0->0x6AC->0x6C is non-null
  * and its 0xEC field is non-zero. MATCHED 2026-05-28: `goto ret0` to a
  * shared `return 0` emits the beql branch-likely idiom (12 insns); the
  * plain `if(...)return 0` form emitted bnel and grew to 14 (the prior cap).
  * Same fix as TrkRace_isHudBusy_00000E30. */
-int arcproc_uso_func_00000EEC(int *a0) {
+int ARCRaceProcess_vfunc18_00000EEC(int *a0) {
     int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
     if (p == 0) {
         goto ret0;
@@ -420,12 +420,12 @@ ret0:
     return 0;
 }
 
-/* arcproc_uso_func_00000F1C: 9-insn flag setter, RECOVERED 2026-05-28 from
+/* ARCRaceProcess_onFinish_00000F1C: 9-insn flag setter, RECOVERED 2026-05-28 from
  * the same bundle gap. a0->0x504 = (a0->0x6B8 != 0) ? 4 : 0, via bnel with
  * the set-4 store in the delay slot (+ a dead duplicate at 0xF34, the
  * branch-likely natural-position artifact). NM (bnel idiom not C-reachable);
  * build uses INCLUDE_ASM. */
-void arcproc_uso_func_00000F1C(int *a0) {
+void ARCRaceProcess_onFinish_00000F1C(int *a0) {
     if (*(int*)((char*)a0 + 0x6B8) == 0) {
         *(int*)((char*)a0 + 0x504) = 0;
     } else {
@@ -433,13 +433,13 @@ void arcproc_uso_func_00000F1C(int *a0) {
     }
 }
 
-/* arcproc_uso_func_00000F40: 2-insn store stub, RECOVERED 2026-05-28.
+/* ARCRaceProcess_vfunc24_00000F40: 2-insn store stub, RECOVERED 2026-05-28.
  * a0->0x504 = 0 (store in the jr-ra delay slot). */
-void arcproc_uso_func_00000F40(int *a0) {
+void ARCRaceProcess_vfunc24_00000F40(int *a0) {
     *(int*)((char*)a0 + 0x504) = 0;
 }
 
-/* arcproc_uso_func_00000F48: 12-insn cross-USO wrapper (0x30), BOUNDARY MERGE
+/* ARCRaceProcess_vfunc23_00000F48: 12-insn cross-USO wrapper (0x30), BOUNDARY MERGE
  * 2026-09-05 of the 2-word "alternate entry" F48 + the 10-insn "F50" body.
  * F48 was never an alt entry: it has no in-module caller (zero TextReloc
  * R_MIPS_26 to 0xF48 or 0xF50, zero Data/RoData fn-pointer relocs) and the
@@ -453,11 +453,11 @@ void arcproc_uso_func_00000F40(int *a0) {
  * (0x26000F does not fit a 16-bit signed immediate). 12/12 BYTE-EXACT.
  * (The lui/lw pair is relocated against Sym idx 10 = the D_00000000 import
  * base, same as the .f44/.f48 stores in arcproc_uso_o0_240.c.) */
-void arcproc_uso_func_00000F48(int a0) {
+void ARCRaceProcess_vfunc23_00000F48(int a0) {
     gl_func_00000000(a0, *(int*)((char*)&D_00000000 + 0x170) + 0x26000F);
 }
 
-/* arcproc_uso_func_00000F78: 12-insn 2-level NULL-check.
+/* ARCRaceProcess_vfunc19_00000F78: 12-insn 2-level NULL-check.
  *
  * BOUNDARY FIX 2026-05-08: was a 9-insn F78 + 3-insn F9C cross-function
  * tail-share — F78's beqzl branches encoded `+7` and `+4` relative
@@ -469,7 +469,7 @@ void arcproc_uso_func_00000F48(int a0) {
  * Positive nested form matches the branch-likely structure and keeps the
  * second deref/test temp in `t7` (per docs/IDO_CODEGEN.md branch-likely
  * arm-choice guidance). */
-int arcproc_uso_func_00000F78(int *a0) {
+int ARCRaceProcess_vfunc19_00000F78(int *a0) {
     int *v;
     v = *(int**)((char*)*(int**)((char*)a0 + 0x6AC) + 0x6C);
     if (v != 0) {
@@ -480,7 +480,7 @@ int arcproc_uso_func_00000F78(int *a0) {
     return 0;
 }
 
-/* ARCRaceProcess_setupRace_00000FA8: 114-insn (0x1C8) state-machine dispatcher.
+/* ARCRaceProcess_raceOver_00000FA8: 114-insn (0x1C8) state-machine dispatcher.
  * 3-way switch on a0->0x504 (state code) with cases 0, 1, 4 + default.
  *
  * ENTRY DECODE (insns 0-15 @ 0xFA8-0xFE4):
@@ -508,7 +508,7 @@ int arcproc_uso_func_00000F78(int *a0) {
  * Multi-tick refinement target — entry decode is forward progress
  * documenting the dispatch structure. Default INCLUDE_ASM build remains
  * exact. */
-/* ARCRaceProcess_setupRace_00000FA8: 114-insn (0x1C8) state-machine dispatcher
+/* ARCRaceProcess_raceOver_00000FA8: 114-insn (0x1C8) state-machine dispatcher
  * on a0->[0x504]. Frame 0x30, saves ra/s1/s0.
  *
  * Decoded entry (insns 1-13):
@@ -567,7 +567,7 @@ extern int gl_func_00000000();
  * `((int *)v0)[v0[1] + 4]` for addu v0,t0. All locals at function scope,
  * declared before i/s1 (frame 48, buf home 32). */
 extern void gl_func_00000000_FA8v();
-void ARCRaceProcess_setupRace_00000FA8(char *a0) {
+void ARCRaceProcess_raceOver_00000FA8(char *a0) {
     int *list;
     char *r;
     char *node;
@@ -616,7 +616,7 @@ void ARCRaceProcess_setupRace_00000FA8(char *a0) {
     }
 }
 
-/* ARCRaceProcess_checkFade_00001170: F1 (32-insn dispatcher + indirect call) only.
+/* ARCRaceProcess_runPauseRow_00001170: F1 (32-insn dispatcher + indirect call) only.
  * EXACT 2026-10-16 (was a "natural ceiling" 97.03% NM). The 2026-05-07 SUFFIX_BYTES recipe (28 words
  * / 0x70 bytes absorbing F2 + F3) was REMOVED 2026-05-23 as match-faking.
  * Symbol is now 0x80 / 32 insns (F1 only); F2 and F3 are separate symbols.
@@ -664,7 +664,7 @@ void ARCRaceProcess_setupRace_00000FA8(char *a0) {
 extern int gl_func_00000000();
 extern char D_00000000;
 typedef struct { void (*fn)(void); char pad[0x24]; } Ent1170;
-void ARCRaceProcess_checkFade_00001170(int *a0) {
+void ARCRaceProcess_runPauseRow_00001170(int *a0) {
     int *table_root = *(int**)((char*)&D_00000000 + 0x190);
     int *p;
 
@@ -676,12 +676,12 @@ void ARCRaceProcess_checkFade_00001170(int *a0) {
     ((Ent1170 *)((char *)p + 0x90))[p[0x7C / 4]].fn();
 }
 
-/* arcproc_uso_func_000011F0: 14-insn dual-field bit-clear, RECOVERED
+/* ARCRaceProcess_onPause_000011F0: 14-insn dual-field bit-clear, RECOVERED
  * 2026-05-28 from the 00001170 bundle gap. Clears bit 2 of the 0x18 field
  * on both a0->0x6AC->0x6C and a0->0x6AC->0x94. Exact 2026-06-01: using an
  * explicit field pointer forces IDO to materialize `addiu v0, v0, 0x18`
  * before the store, matching the target's `sw ..., 0(v0)` shape. */
-void arcproc_uso_func_000011F0(int *a0) {
+void ARCRaceProcess_onPause_000011F0(int *a0) {
     int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
     p = (int*)((char*)p + 0x18);
     *p &= ~4;
@@ -690,10 +690,10 @@ void arcproc_uso_func_000011F0(int *a0) {
     *p &= ~4;
 }
 
-/* arcproc_uso_func_00001228: 13-insn dual-field bit-set, RECOVERED
+/* arc_resumePlayers_00001228: 13-insn dual-field bit-set, RECOVERED
  * 2026-05-28 (sibling of 000011F0, sets bit 2 instead of clearing). Exact
  * 2026-06-01 via the same explicit field-pointer shape. */
-void arcproc_uso_func_00001228(int *a0) {
+void arc_resumePlayers_00001228(int *a0) {
     int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
     p = (int*)((char*)p + 0x18);
     *p |= 4;
@@ -847,11 +847,11 @@ void ARCRaceProcess_drawOverlay_0000125C(char *arg0) {
 
 int arcproc_uso_func_00000000();
 
-void arcproc_uso_func_00001488(void) {
+void ARCRaceProcess_vfunc30_00001488(void) {
     arcproc_uso_func_00000000();
 }
 
-void arcproc_uso_func_000014A8(void) {
+void ARCRaceProcess_vfunc31_000014A8(void) {
     gl_func_00000000();
 }
 
@@ -915,7 +915,7 @@ void arcproc_uso_func_000014C8(char *a0) {
     }
 }
 
-/* arcproc_uso_func_00001604: 60-insn (0xF0) state-machine update with
+/* ARCRaceProcess_onResult_00001604: 60-insn (0xF0) state-machine update with
  * two-stage gate (a0->0x4FC entry, a0->0x4F8 path-select), three outcomes
  * (rv=0/1/2), and two distinct multi-arg JAL shapes.
  *
@@ -958,7 +958,7 @@ void arcproc_uso_func_000014C8(char *a0) {
  * re-read p = s0->0x6A8 INSIDE each of the v1==1/v1==2 branches (not a hoisted
  * local) — that triggers the target's `bnel` (branch-likely) with the p-reload
  * in the delay slot. cb = gl_func_00000000. */
-void arcproc_uso_func_00001604(int *s0) {
+void ARCRaceProcess_onResult_00001604(int *s0) {
     int v1 = 0;
     if (s0[0x4FC / 4] != 0) {
         return;
@@ -988,7 +988,7 @@ void arcproc_uso_func_00001604(int *s0) {
     s0[0x4FC / 4] = 1;
 }
 
-/* arcproc_uso_func_000016F4 - verified structural decode (~170-insn FPU
+/* arc_drawNumber_000016F4 - verified structural decode (~170-insn FPU
  * render/update orchestrator; full s-reg save + 255.0f scale + 12
  * sub-object calls + div + branch-likely = documented FP/spill sub-80
  * ceiling -> INCLUDE_ASM build path; struct-typing reference).
@@ -1049,7 +1049,7 @@ void arcproc_uso_func_00001604(int *s0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/arcproc_uso/arcproc_uso_ncc_16F4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 197, kit CLXI; twin of
  * trk_drawScore_000013B8). The history above describes the earlier cfe decode (removed). */
-void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
+void arc_drawNumber_000016F4(char *arg0, s32 arg1, f32 *arg2) {
     volatile s32 r = arg1;
 }
 
@@ -1114,7 +1114,7 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
 }
 
 #ifdef NON_MATCHING
-/* arcproc_uso_func_00001B04: 33-insn / 0x84 conditional-init dispatcher.
+/* ArcNameEntry_update_00001B04: 33-insn / 0x84 conditional-init dispatcher.
  * 81.88 -> 86.33 (2026-07-15 agent-g) via ARRAY-DECAY RETYPE (extern int
  * sym[]; sym[16]=8) — kills the at-fused absolute stores, base held in a
  * register per arm with the target's sw 0x40/0x44 offsets.
@@ -1132,7 +1132,7 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
 extern int gl_func_00000000();
 extern char D_arc1B04_a;
 extern int D_arc1B04_state[];
-void arcproc_uso_func_00001B04(int *arg) {
+void ArcNameEntry_update_00001B04(int *arg) {
     int v0;
     v0 = gl_func_00000000(&D_arc1B04_a, 0x40100);
     if (v0 == 0) return;
@@ -1147,26 +1147,26 @@ void arcproc_uso_func_00001B04(int *arg) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", arcproc_uso_func_00001B04);
+INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", ArcNameEntry_update_00001B04);
 #endif
 
 /* K&R variadic-style helper at 0x1B88 (named directly as placeholder callee in
  * several NM bodies below). MATCHED. Must sit here in file order: IDO emits
  * .text in definition order. */
-arcproc_uso_func_00001B88(a0) int * a0; {
+ArcNameEntry_vfunc17_00001B88(a0) int * a0; {
     int *t;
     arcproc_uso_func_00000000(a0);
     t = *(int**)((char*)a0 + 0xD4);
     arcproc_uso_func_00000000(t, 0x8C, *(int*)((char*)t + 0x6B0));
 }
 
-/* arcproc_uso_func_00001BBC: decay-tick handler (sub = self->0xD4;
+/* ArcNameEntry_vfunc18_00001BBC: decay-tick handler (sub = self->0xD4;
  * sub->f_77C -= rate D+0x44, clamp at 0, 140-event mid-call with sub->0x6B0,
  * threshold call once <= 0). EXACT 2026-10-20 via twin port (twin-finder.py):
  * masked-identical to TimNameEntry_vfunc18_00001908 after the boundary fix
  * (its 2 trailing words were 1C74's hoisted 1.0f head) -- only the field
  * offsets differ (0x72C->0x77C, 0x6AC->0x6B0, rate 0x48->0x44). */
-void arcproc_uso_func_00001BBC(int *self) {
+void ArcNameEntry_vfunc18_00001BBC(int *self) {
     char *base = &D_00000000;
     int *sub;
     float *fp;
@@ -1286,12 +1286,12 @@ void arc_DataManager_init(char *arg0, char *arg1, int arg2, char *arg3, int arg4
     }
 }
 
-/* arcproc_uso_func_00001F0C: boundary-corrected (stolen-prologue mirror). The 2
+/* arc_DataManager_reset_00001F0C: boundary-corrected (stolen-prologue mirror). The 2
  * words `lui t6,0; lw t6,0x64(t6)` (preloading D[0x64]) sat PAST func_00001D18's
  * `jr ra` epilogue — a splat mis-attribution; they are THIS function's prologue.
  * Shrank func_00001D18.s (0x1F4 -> 0x1EC) and prepended the 2 words here
  * (0x48 -> 0x50). C emits the same lui+lw, so the merged boundary is byte-exact. */
-void arcproc_uso_func_00001F0C(char *a0) {
+void arc_DataManager_reset_00001F0C(char *a0) {
     if (*(int*)((char*)&D_00000000 + 0x64) == 1) {
         *(int*)(a0 + 0xA0) = 0xC350;
     } else {
@@ -1524,25 +1524,25 @@ extern int gl_ref_00000040;
 extern int gl_ref_00000070;
 extern int gl_ref_00000074;
 
-void arcproc_uso_func_000023F4(void) {
+void ARCMenuProcess_rowRetry_000023F4(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 4;
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-void arcproc_uso_func_00002438(void) {
+void ARCMenuProcess_rowExit1_00002438(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 1;
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-void arcproc_uso_func_0000247C(void) {
+void ARCMenuProcess_rowExit2_0000247C(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 2;
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-/* arcproc_uso_func_000024C0: F1 + 3 trailing empty stubs (0x5C total).
+/* ARCMenuProcess_rowQuit_000024C0: F1 + 3 trailing empty stubs (0x5C total).
  * Sibling of 23F4/2438/247C (state-set menu helpers, plain-C exact at
  * -O2). Same shape with N=9 here (vs N=4/1/2 for the others).
  *
@@ -1563,19 +1563,19 @@ void arcproc_uso_func_0000247C(void) {
  * (plus byte-exact-via-includes for trailers via splat coverage). */
 extern int gl_func_00000000();
 extern int gl_ref_00000040, gl_ref_00000070, gl_ref_00000074;
-void arcproc_uso_func_000024C0(void) {
+void ARCMenuProcess_rowQuit_000024C0(void) {
     gl_func_00000000(gl_ref_00000070);
     gl_ref_00000040 = 9;
     gl_func_00000000(gl_ref_00000074, -1, 0);
 }
 
-/* arcproc_uso_func_00002504/250C/2514: 3 empty `jr ra; nop` stubs RECOVERED
+/* arc_nop_00002504/250C/2514: 3 empty `jr ra; nop` stubs RECOVERED
  * 2026-05-28 from the 000024C0 bundle gap (dropped — no .s, missing from
  * build). `void f(void){}` compiles to exactly `jr ra; nop` (0x8) at -O2 —
  * byte-exact matches (the prior SUFFIX_BYTES fake is unnecessary). */
-void arcproc_uso_func_00002504(void) {}
-void arcproc_uso_func_0000250C(void) {}
-void arcproc_uso_func_00002514(void) {}
+void arc_nop_00002504(void) {}
+void arc_nop_0000250C(void) {}
+void arc_nop_00002514(void) {}
 
 /* ARCMenuProcess_ctor — EXACT (168/168 words, frame -64, ROM
  * byte-identical, 2026-09-04). 3-level alloc-cascade constructor

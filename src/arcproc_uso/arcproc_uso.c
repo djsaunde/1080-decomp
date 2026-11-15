@@ -32,8 +32,8 @@ void arcproc_uso_func_00000000(int *dst) {
 /* SUFFIX_BYTES-absorbed orphans (arcproc_uso.c.o is TRUNCATE_TEXT'd to 0x50;
  * the INCLUDE_ASMs below were dead). All bytes are emitted by SUFFIX_BYTES
  * recipes on arcproc_uso_tail1.c.o (see Makefile):
- *   arcproc_uso_func_00000EEC + 00000F10 ← ARCRaceProcess_release_00000EBC (25 words)
- *   arcproc_uso_func_000011F0 + 00001228 ← ARCRaceProcess_checkFade_00001170 (27 words)
- *   arcproc_uso_func_00002504            ← arcproc_uso_func_000024C0 (6 words)
+ *   ARCRaceProcess_vfunc18_00000EEC + 00000F10 ← ARCRaceProcess_release_00000EBC (25 words)
+ *   ARCRaceProcess_onPause_000011F0 + 00001228 ← ARCRaceProcess_runPauseRow_00001170 (27 words)
+ *   arc_nop_00002504            ← ARCMenuProcess_rowQuit_000024C0 (6 words)
  * See docs/MATCHING_WORKFLOW.md#feedback-splat-orphan-duplicate-symbol-pruning
  * SUFFIX_BYTES-absorbed orphan variant. */

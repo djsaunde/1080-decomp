@@ -93,9 +93,9 @@ build/src/gui_uso/gui_uso.c.o: TRUNCATE_TEXT := 0x473C
 # compare build/non_matching vs expected) score the trailing alignment-nop word.
 # splat-symbol-boundary trailing-delay-nop class — see docs/MATCHING_WORKFLOW.md.
 build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gui_fontAdjustAdvance=0x00000000 gui_drawImage_00003B80=0x00000000,0x00000000,0x00000000
-build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
+build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
-build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2hproc_uso_func_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
+build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 # 2026-05-27: removed instruction-appending PREFIX_BYTES for game_libs_func_0003ECDC,
 # game_libs_func_0005AFB0, kernel func_80007FC8 — all were leading-nop / self-branch
 # instruction-faking that violated the 2026-05-23 no-instruction-forcing-matches policy
@@ -109,11 +109,11 @@ build/src/arcproc_uso/arcproc_uso_o0_12C.c.o: TRUNCATE_TEXT := 0x114
 # b-epilogue (kit XIX); edg keeps source evaluation order (see the donors).
 ARC_O0_B4_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp.o
 $(ARC_O0_B4_DONOR): OPT_FLAGS := -O0
-build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_000000B4=$(ARC_O0_B4_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: private REPLACE_FUNC_BODY += arc_nextCourse_000000B4=$(ARC_O0_B4_DONOR)
 build/src/arcproc_uso/arcproc_uso_o0_50.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_50.c.o: $(ARC_O0_B4_DONOR)
 ARC_O0_12C_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_o0_12C.cpp.o
 $(ARC_O0_12C_DONOR): OPT_FLAGS := -O0
-build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_0000012C=$(ARC_O0_12C_DONOR)
+build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: private REPLACE_FUNC_BODY += arc_useRetry_0000012C=$(ARC_O0_12C_DONOR)
 build/src/arcproc_uso/arcproc_uso_o0_12C.c.o build/non_matching/src/arcproc_uso/arcproc_uso_o0_12C.c.o: $(ARC_O0_12C_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F1F0.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_F390.c.o: OPT_FLAGS := -O0
@@ -2794,17 +2794,17 @@ build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_post2b_f.c.o build/non_matching/src/game_libs/game_libs_post2b_f.c.o: REPLACE_FUNC_BODY := osCreateViManager=$(GAMELIBS_74EF4_DONOR) gl_viMgrMain=$(GAMELIBS_74EF4_DONOR)
 build/src/game_libs/game_libs_post2b_d.c.o build/non_matching/src/game_libs/game_libs_post2b_d.c.o: REPLACE_FUNC_BODY := gl___osSiRawWriteIo_000747F4=$(GAMELIBS_747F4_DONOR) gl_osSetTimer=$(GAMELIBS_73824_DONOR) gl_osEPiRawWriteIo=$(GAMELIBS_7369C_DONOR) ldiv=$(GAMELIBS_744C4_DONOR) lldiv=$(GAMELIBS_743C4_DONOR) gl_Genld=$(GAMELIBS_73904_DONOR) gl_Ldtob=$(GAMELIBS_73904_DONOR) _Litob=$(GAMELIBS_74554_DONOR)
 build/src/game_libs/game_libs_post2b_c.c.o build/non_matching/src/game_libs/game_libs_post2b_c.c.o: REPLACE_FUNC_BODY := gl_osYieldThread=$(GAMELIBS_732C4_DONOR) gl_osEPiRawReadIo=$(GAMELIBS_730CC_DONOR) osViGetCurrentField=$(GAMELIBS_73310_DONOR) gl_osPiRawWriteIo_0007307C=$(GAMELIBS_73074_DONOR) gl_osPiWriteIo=$(GAMELIBS_73034_DONOR)
-# arcproc_uso_func_00000748: byte-identical sibling of mgrproc_uso_func_000009A8.
+# arc_closeSession_00000748: byte-identical sibling of mgr_closeSession_000009A8.
 # arcproc is non-Yay0 but the donor-splice still applies (relocatable USO: a
 # function's bytes are link-offset-independent, so the size change doesn't break
 # downstream funcs). Avoids a 3-way file split of tail1 around a mid-file fn.
 ARCPROC_748_DONOR := build/src/arcproc_uso/arcproc_uso_o0_748.c.o
 ARCPROC_688_DONOR := build/src/arcproc_uso/arcproc_uso_o0_688.c.o
 ARCPROC_5C8_DONOR := build/src/arcproc_uso/arcproc_uso_o0_5C8.c.o
-build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: REPLACE_FUNC_BODY := arcproc_uso_func_000005C8=$(ARCPROC_5C8_DONOR) arcproc_uso_func_00000688=$(ARCPROC_688_DONOR) arcproc_uso_func_00000748=$(ARCPROC_748_DONOR)
+build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: REPLACE_FUNC_BODY := arc_openSession_000005C8=$(ARCPROC_5C8_DONOR) arc_initCourses_00000688=$(ARCPROC_688_DONOR) arc_closeSession_00000748=$(ARCPROC_748_DONOR)
 # 16F4 = timer-HUD draw, twin of timproc_b3 13B8 (same C++ donor, offsets mapped); NCC donor (agent-g run 197).
 ARCPROC_16F4_DONOR := build/src/arcproc_uso/arcproc_uso_ncc_16F4.cpp.o
-build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_000016F4=$(ARCPROC_16F4_DONOR)
+build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arc_drawNumber_000016F4=$(ARCPROC_16F4_DONOR)
 build/src/arcproc_uso/arcproc_uso_tail1.c.o build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: $(ARCPROC_16F4_DONOR)
 # 0x23b8 = exact len of the tail1 region (0x5c8..0x2980); clips IDO's
 # trailing pad word so arcproc_uso emits at its original segment length.
@@ -2842,7 +2842,7 @@ build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: TRUNCATE_TEXT := 0x938
 # NCC -O0 without cfe's closing-brace b-epilogue (kit XIX); one donor TU.
 MGR_O0_700_DONOR := build/src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp.o
 $(MGR_O0_700_DONOR): OPT_FLAGS := -O0
-build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00000700=$(MGR_O0_700_DONOR) mgrproc_uso_func_00000A14=$(MGR_O0_700_DONOR)
+build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: private REPLACE_FUNC_BODY += mgr_initMatchRace_00000700=$(MGR_O0_700_DONOR) mgr_prepareReplay_00000A14=$(MGR_O0_700_DONOR)
 build/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o build/non_matching/src/mgrproc_uso/mgrproc_uso_o0_19C.c.o: $(MGR_O0_700_DONOR)
 # 23FC = results-panel draw, the cfe NM body ported to C++ (NCC digit loop = the target's 13*i
 # counter vs 13*n bound; agent-g run 172, cfe 97.25). EXACT NCC donor (run 198, edg pool-temp / home order).
@@ -3441,7 +3441,7 @@ build/assets/mgrproc_uso_block1_yay0.bin: build/src/mgrproc_uso/mgrproc_uso_o0_0
 	$(OBJCOPY) -R .mdebug $(word 3,$^) $(@:.bin=.r2.o)
 	$(OBJCOPY) -R .mdebug $(word 4,$^) $(@:.bin=.r3.o)
 	$(LD) -r -o $(@:.bin=.lnk.o) $(@:.bin=.r0.o) $(@:.bin=.r1.o) $(@:.bin=.r2.o) $(@:.bin=.r3.o)
-	$(CROSS)nm $(@:.bin=.lnk.o) | grep -q '^00000ae0 T mgrproc_uso_func_00000AE0$$' || { echo "mgrproc block: region3 not at 0xAE0"; exit 1; }
+	$(CROSS)nm $(@:.bin=.lnk.o) | grep -q '^00000ae0 T mgr_pauseContinue_00000AE0$$' || { echo "mgrproc block: region3 not at 0xAE0"; exit 1; }
 	$(OBJCOPY) -O binary --only-section=.text $(@:.bin=.lnk.o) $(@:.bin=.text.bin)
 	python3 scripts/bake-data-relocs.py $(@:.bin=.lnk.o) $(@:.bin=.text.bin) undefined_syms_auto.txt
 	python3 -c "import sys; f=sys.argv[1]; n=int(sys.argv[2],0); d=open(f,'rb').read(); assert d[n:]==b'\x00'*len(d[n:]), ('nonzero discarded tail', hex(len(d)), d[n:].hex()); d=d[:n]+b'\x00'*(n-len(d)); open(f,'wb').write(d)" $(@:.bin=.text.bin) $(YAY0_TEXT_SIZE)
@@ -3696,10 +3696,10 @@ build/src/game_libs/game_libs_ido53_74C04.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_74C04.c.o build/non_matching/src/game_libs/game_libs_ido53_74C04.c.o: OPT_FLAGS := -O1
 
 # Per-function local source ports: independently compiled, never new progress units.
-build/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc_uso_func_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
+build/src/match_imports/ArcNameEntry_update_00001B04.c.o: src/match_imports/ArcNameEntry_update_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o: src/match_imports/arcproc_uso_func_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
+build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o: src/match_imports/ArcNameEntry_update_00001B04.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/arc_DataManager_update.c.o: src/match_imports/arc_DataManager_update.c src/match_imports/context_arcproc_uso_tail1.h
@@ -4154,10 +4154,10 @@ build/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_f
 build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_func_0000E5C8.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002BB0.c src/match_imports/context_gui_uso.h
+build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c src/match_imports/context_gui_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gui_func_00002BB0.c.o: src/match_imports/gui_func_00002BB0.c src/match_imports/context_gui_uso.h
+build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c src/match_imports/context_gui_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/h2h_procMain.c.o: src/match_imports/h2h_procMain.c src/match_imports/context_h2hproc_uso.h
@@ -4270,12 +4270,12 @@ build/non_matching/src/match_imports/KeyMessage_display.c.o: src/match_imports/K
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 
 # Original native symbol/section origins for local per-function ports.
-build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/src/match_imports/arcproc_uso_func_00001B04.c.o scripts/match-origins-arcproc_uso_func_00001B04.ld
+build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf: build/src/match_imports/ArcNameEntry_update_00001B04.c.o scripts/match-origins-ArcNameEntry_update_00001B04.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001B04.ld -e arcproc_uso_func_00001B04 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o scripts/match-origins-arcproc_uso_func_00001B04-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-ArcNameEntry_update_00001B04.ld -e ArcNameEntry_update_00001B04 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf: build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o scripts/match-origins-ArcNameEntry_update_00001B04-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001B04-nm.ld -e arcproc_uso_func_00001B04 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-ArcNameEntry_update_00001B04-nm.ld -e ArcNameEntry_update_00001B04 -o $@ $@.stripped.o
 build/src/match_imports/arc_DataManager_update.c.o.linked.elf: build/src/match_imports/arc_DataManager_update.c.o scripts/match-origins-arc_DataManager_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arc_DataManager_update.ld -e arc_DataManager_update -o $@ $@.stripped.o
@@ -4720,12 +4720,12 @@ build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/src/match_i
 build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o scripts/match-origins-game_uso_func_0000E5C8-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000E5C8-nm.ld -e game_uso_func_0000E5C8 -o $@ $@.stripped.o
-build/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/src/match_imports/gui_func_00002BB0.c.o scripts/match-origins-gui_func_00002BB0.ld
+build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_func_00002BB0.ld -e gui_func_00002BB0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o scripts/match-origins-gui_func_00002BB0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld -e gui_drawSpriteIA8Clip_00002BB0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_func_00002BB0-nm.ld -e gui_func_00002BB0 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0-nm.ld -e gui_drawSpriteIA8Clip_00002BB0 -o $@ $@.stripped.o
 build/src/match_imports/h2h_procMain.c.o.linked.elf: build/src/match_imports/h2h_procMain.c.o scripts/match-origins-h2h_procMain.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_procMain.ld -e h2h_procMain -o $@ $@.stripped.o
@@ -4836,10 +4836,10 @@ build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf: build/no
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-KeyMessage_display-nm.ld -e KeyMessage_display -o $@ $@.stripped.o
 
 # Audited original-ROM carrier bindings.
-build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04.json $@
-build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001B04-nm.json $@
+build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf: build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf scripts/match-bindings-ArcNameEntry_update_00001B04.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-ArcNameEntry_update_00001B04.json $@
+build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf scripts/match-bindings-ArcNameEntry_update_00001B04-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-ArcNameEntry_update_00001B04-nm.json $@
 build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: build/src/match_imports/arc_DataManager_update.c.o.linked.elf scripts/match-bindings-arc_DataManager_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arc_DataManager_update.json $@
 build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf scripts/match-bindings-arc_DataManager_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5136,10 +5136,10 @@ build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/s
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8.json $@
 build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8-nm.json $@
-build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/src/match_imports/gui_func_00002BB0.c.o.linked.elf scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0.json $@
-build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_func_00002BB0-nm.json $@
+build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json $@
+build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0-nm.json $@
 build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: build/src/match_imports/h2h_procMain.c.o.linked.elf scripts/match-bindings-h2h_procMain.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_procMain.json $@
 build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf scripts/match-bindings-h2h_procMain-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5214,10 +5214,10 @@ build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-KeyMessage_display-nm.json $@
 
 # Local function union; upstream exacts and unit inventory are unchanged.
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001B04=build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001B04.c scripts/match-bindings-arcproc_uso_func_00001B04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += ArcNameEntry_update_00001B04=build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/ArcNameEntry_update_00001B04.c scripts/match-bindings-ArcNameEntry_update_00001B04.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += ArcNameEntry_update_00001B04=build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/ArcNameEntry_update_00001B04.c scripts/match-bindings-ArcNameEntry_update_00001B04-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arc_DataManager_update=build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arc_DataManager_update.c scripts/match-bindings-arc_DataManager_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arc_DataManager_update=build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
@@ -5539,10 +5539,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 GAMEUSO_8CD8_DONOR := build/src/game_uso/game_uso_mp72_8CD8.cpp.o
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_00008CD8=$(GAMEUSO_8CD8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_8CD8_DONOR)
-build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
-build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_func_00002BB0=build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
-build/non_matching/src/gui_uso/gui_uso.c.o: src/match_imports/gui_func_00002BB0.c scripts/match-bindings-gui_func_00002BB0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteIA8Clip_00002BB0=build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
+build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteIA8Clip_00002BB0=build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
+build/non_matching/src/gui_uso/gui_uso.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_procMain=build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
 build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_procMain.c scripts/match-bindings-h2h_procMain.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_procMain=build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
@@ -5620,10 +5620,10 @@ build/non_matching/src/titproc_uso/titproc_uso.c.o: src/match_imports/KeyMessage
 # Both modes require and install the independently checked C implementations above.
 
 # Full source-to-host dependency closure for incremental rebuilds.
-build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
-build/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/arcproc_uso_func_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf
+build/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/ArcNameEntry_update_00001B04.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
 build/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arc_DataManager_update.c.o.linked.elf.bound.elf
@@ -5920,10 +5920,10 @@ build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000E5C8.
 build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
-build/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gui_func_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
+build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf
 build/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2h_procMain.c.o.linked.elf.bound.elf

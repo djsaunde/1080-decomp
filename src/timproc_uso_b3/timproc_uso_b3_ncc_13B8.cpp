@@ -1,5 +1,5 @@
 /* IDO 7.1 NCC (C++) donor for trk_drawScore_000013B8 (0x2A8 / 170 words), EXACT:
- * timer HUD draw (twin of arcproc_uso_func_000016F4 / tim_drawTime_00001340, same family as
+ * timer HUD draw (twin of arc_drawNumber_000016F4 / tim_drawTime_00001340, same family as
  * mgrproc 23FC). agent-g run 172 (kit CXVII): the cfe NM body as plain C++, 162 of 171 words (89.18).
  * agent-g run 184 (kit CXXXIII): the five panels are sprite MEMBER objects of the owner (0x18 bytes each,
  * image pointer at +0x10, image width / height s16 at +0x20 / +0x22) and the widths come from an inline

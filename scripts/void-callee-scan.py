@@ -26,7 +26,7 @@ For every NM function (report.json fuzzy < 100) this script:
      reports whether it is declared void (skip) or int/K&R (candidate).
 
 When the hit's call is preceded by OTHER discarded-return calls in the same
-straight-line run, try voiding them together: MGRRaceProcess_setupRace_00001614 only
+straight-line run, try voiding them together: MGRRaceProcess_raceOver_00001614 only
 went exact with BOTH import_007FE4E8 and 07ACE0 void (either alone: neutral).
 The `decl` column greps the unit's C source; `undeclared(K&R int)` means an
 implicit declaration (add `extern void NAME();`). For the shared blank callee

@@ -430,7 +430,7 @@ extern int gui_import_2CEC(int *, void *, int, int, int, int, int, int, int);
 extern int gui_import_2D0C(int *, int, int, int, int, int, int);
 extern int gui_import_2D4C(int *, void *, int, int, int, int, int, int, int);
 extern int gui_import_2DA0(int *, int, int, int, int, int, int);
-void gui_func_00002BB0(GuiTextureObject *object, int x, int y, int source_x, int count);
+void gui_drawSpriteIA8Clip_00002BB0(GuiTextureObject *object, int x, int y, int source_x, int count);
 void gui_drawSpriteScaledF_00002DE0(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4);
 void gui_drawSpriteScaled_0000329C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void gui_drawSpriteScroll_00003714(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6);

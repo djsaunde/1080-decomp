@@ -19,7 +19,7 @@ void mgrproc_uso_func_00000000(int *dst) {
 }
 
 /* Quad4-reader (0x64 / 25 insns) */
-void mgrproc_uso_func_0000004C(Quad4 *dst) {
+void fs_gdlReadQuad_mgr_0000004C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -27,7 +27,7 @@ void mgrproc_uso_func_0000004C(Quad4 *dst) {
 
 /* refcount-increment wrapper (0x48 / 18 insns). The `register` pointer lands in
  * callee-saved s0 — the target's pointer base — under -O0. */
-void mgrproc_uso_func_000000B0(int *a0) {
+void mgr_nextCourse_000000B0(int *a0) {
     register int *p = a0;
     p[1]++;
     gl_func_00000000(a0);
@@ -37,7 +37,7 @@ void mgrproc_uso_func_000000B0(int *a0) {
  * (decrement of [0] vs increment of [1]). The `register` pointer lands in
  * callee-saved s0 — the target's pointer base — under -O0. Moved here from
  * mgrproc_uso_head.c (region extended 0xF8->0x140) so it builds at -O0. */
-void mgrproc_uso_func_000000F8(int *a0) {
+void mgr_useRetry_000000F8(int *a0) {
     register int *p = a0;
     p[0]--;
     gl_func_00000000(a0);
@@ -58,7 +58,7 @@ void mgrproc_uso_func_000000F8(int *a0) {
  * target's `lw t6,4(a0); lw t7,8(a0)` (see docs/IDO_CODEGEN.md
  * #feedback-ido-o0-eq-eval-order-gap). Called by func_000000B0 (jal) and
  * mgrproc_uso.c:597 (`!= 0` test). Semantics: a0->4 == a0->8 -> 1. */
-int mgrproc_uso_func_00000140(int *a0) {
+int mgr_isLastCourse_00000140(int *a0) {
     if (a0[2] == a0[1]) {
         return 1;
     }

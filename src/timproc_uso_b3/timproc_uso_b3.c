@@ -431,7 +431,7 @@ void TrkRace_freeLabels_00000DE4(char *a0) {
  * 0x6C is non-null and its 0xEC field is non-zero. KEY: `goto ret0` to a
  * shared `return 0` produces the beql branch-likely idiom (v0=0 in the
  * delay slot) — the plain `if(...)return 0` form emits bnel and grows to
- * 14 insns (the cap that NM'd sibling arcproc_uso_func_00000EEC). */
+ * 14 insns (the cap that NM'd sibling ARCRaceProcess_vfunc18_00000EEC). */
 int TrkRace_isHudBusy_00000E30(int *a0) {
     int *p = (int*)((int*)a0[0x6A8 / 4])[0x6C / 4];
     if (p == 0) {
@@ -446,7 +446,7 @@ ret0:
 }
 
 /* TrkRace_checkRecord_00000E60: state-machine dispatcher, sibling of
- * TimRace_checkRecord_00000EE8 and ARCRaceProcess_setupRace_00000FA8.
+ * TimRace_checkRecord_00000EE8 and ARCRaceProcess_raceOver_00000FA8.
  *
  * Decoded state 0 and state 1 bodies from the target asm. State 0 walks a
  * 0x30-stride table selected by D[0x64], searching for an entry whose
@@ -787,7 +787,7 @@ void trk_drawScore_000013B8(char *arg0, s32 arg1, f32 *arg2) {
     volatile s32 r = arg1;
 }
 /* trk_drawScore_000013B8: 2026-10-24 agent-g run 155: body replaced by a port of
- * arcproc_uso_func_000016F4's C (opcode-identical twin, offsets -0x50 / -0x38, flag 4 -> 2):
+ * arc_drawNumber_000016F4's C (opcode-identical twin, offsets -0x50 / -0x38, flag 4 -> 2):
  * 80.36 -> 85.36 (= 16F4's score). Notes below describe the previous body.
  * 170-insn timer-HUD draw, twin of
  * tim_drawTime_00001340 (no min:sec split — sprintf(buf, fmt, arg2)
@@ -1622,7 +1622,7 @@ void TrkMenu_draw_00002A44(char *arg0) {
  * `if (1) {}` before each o48 load is load-bearing: it forces an IDO
  * basic-block boundary that colors o48 into the dead $v0 (vt into $v1),
  * matching the target (was a 98.26% v0/v1 near-miss). Same lever as
- * mgrproc_uso_func_00001324 / the timproc_uso_b5 dispatch family. */
+ * MGRRaceProcess_onResult_00001324 / the timproc_uso_b5 dispatch family. */
 void TrkMenu_handleInput_00002C98(char *obj) {
     char *o48;
     char *vt;

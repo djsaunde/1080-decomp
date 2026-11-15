@@ -57,10 +57,10 @@ extern int mgrproc_uso_func_0118E4();
 extern int mgrproc_uso_func_0120A8();
 extern char *MGRRaceProcess_ctor();
 extern int mgrproc_uso_func_01DA48();
-void mgrproc_uso_func_00000504();
-int mgrproc_uso_func_00000700();
-void mgrproc_uso_func_000009A8();
-s32 mgrproc_uso_func_00000A14();
+void mgr_openSession_00000504();
+int mgr_initMatchRace_00000700();
+void mgr_closeSession_000009A8();
+s32 mgr_prepareReplay_00000A14();
 mgr_procMain(a0, a1) char * a0; int a1; {
     int v0_save;          /* sp+0x4C (case 4) */
     int loop_continue;    /* sp+0x48 */
@@ -85,11 +85,11 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 loop_continue = 1;
                 break;
             case 2:
-                mgrproc_uso_func_00000504(a0);
+                mgr_openSession_00000504(a0);
                 import_800200D8.v = 3;
                 break;
             case 3:
-                mgrproc_uso_func_00000700(a0, import_80020100.v);
+                mgr_initMatchRace_00000700(a0, import_80020100.v);
                 import_800200D8.v = 4;
                 break;
             case 4:
@@ -111,17 +111,17 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 loop_continue = 1;
                 break;
             case 5:
-                ret = mgrproc_uso_func_00000A14(a0, &buf);
+                ret = mgr_prepareReplay_00000A14(a0, &buf);
                 import_000B3268(a0, (buf | 0x2000) | ret, 0x2000,
                                 *(int*)a0);
                 loop_continue = 1;
                 break;
             case 6:
-                mgrproc_uso_func_000009A8(a0);
+                mgr_closeSession_000009A8(a0);
                 import_800200D8.v = 1;
                 break;
             case 7:
-                mgrproc_uso_func_000009A8(a0);
+                mgr_closeSession_000009A8(a0);
                 import_800200D8.v = 8;
                 break;
             case 8:
@@ -146,7 +146,7 @@ mgr_procMain(a0, a1) char * a0; int a1; {
  * reproduces the target's lui/addiu of &D in s0; the sentinel read uses the
  * direct int symbol D_00000000 for the $at-fused load. D_00000148/_0000014C are
  * fused stores/loads whose %lo bakes into the blob (bake-data-relocs). */
-void mgrproc_uso_func_00000504(int *a0) {
+void mgr_openSession_00000504(int *a0) {
     int v1;
     register int v3;
     v1 = gl_func_00000000(2);
@@ -189,7 +189,7 @@ struct FC { float pad[9]; float v; };
 struct IC { int pad[0x13]; int v; };
 extern struct FC import_802600E4;
 extern struct IC import_800200E4;
-void mgrproc_uso_func_000005D0(char *a0) {
+void mgr_pickRivals_000005D0(char *a0) {
     int result;
     int count;
     int candidate;
@@ -212,9 +212,9 @@ void mgrproc_uso_func_000005D0(char *a0) {
     } while (++count < 4);
 }
 
-/* mgrproc_uso_func_00000700: 3-case state-init dispatcher. 90.05 -> 93.31
+/* mgr_initMatchRace_00000700: 3-case state-init dispatcher. 90.05 -> 93.31
  * (2026-07-10): real callees wired from expected relocs (all three case
- * calls are mgrproc_uso_func_000005D0, NOT func_0000019C as the old body
+ * calls are mgr_pickRivals_000005D0, NOT func_0000019C as the old body
  * had), import_800200E4.v (D+0x4C, int; old body lbu'd *(char*)0x4C),
  * import_800201EC.v[1] u16 reads (lhu at ptr+2; old body lwl/lwr), and the
  * case-1 dead `register char *base = &D_00000000` la (lui/addiu s0 =
@@ -268,7 +268,7 @@ extern char import_8005C6E0;
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp (the NM body that was here, as
  * C++; no cfe closing-brace b-epilogue). Placeholder spliced over. */
-int mgrproc_uso_func_00000700(char *arg0, int arg1) {
+int mgr_initMatchRace_00000700(char *arg0, int arg1) {
     return 0;
 }
 
@@ -276,7 +276,7 @@ int mgrproc_uso_func_00000700(char *arg0, int arg1) {
  * lands in callee-saved s0 (the target's shared-zero reg); D_0000014C (defined
  * = 0x14C) gives the $at-fused `lui at; sw %lo(D_0000014C)(at)` store, whose
  * %lo (0x14c) is baked into the blob by scripts/bake-data-relocs.py. */
-void mgrproc_uso_func_000009A8(int *a0) {
+void mgr_closeSession_000009A8(int *a0) {
     register int z;
     gl_func_00000000(a0[2]);
     a0[2] = 0;
@@ -286,7 +286,7 @@ void mgrproc_uso_func_000009A8(int *a0) {
     D_0000014C = z;
 }
 
-/* mgrproc_uso_func_00000A14 — BEST BODY (IMPROVED over checked-in), still CAP.
+/* mgr_prepareReplay_00000A14 — BEST BODY (IMPROVED over checked-in), still CAP.
  * VERIFIED 2026-07-03 in-tree (build/non_matching, -O0 IDO 7.1): 42/48 words,
  * build 50 insns vs target 48 (checked-in body was 37/48, build 51).
  * IMPROVEMENT: union-alias for buf (arr[8] + head overlay) —
@@ -305,7 +305,7 @@ void mgrproc_uso_func_000009A8(int *a0) {
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp (the NM body that was here, as
  * C++; no cfe closing-brace b-epilogue). Placeholder spliced over. */
-s32 mgrproc_uso_func_00000A14(s32 *arg0, s32 *arg1) {
+s32 mgr_prepareReplay_00000A14(s32 *arg0, s32 *arg1) {
     return 0;
 }
 /* func_00000A14_pad (0xC trailing block-alignment zeros) is added by the

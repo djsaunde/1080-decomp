@@ -80,7 +80,7 @@ regress during the O1/O2 file split, restore from the sources listed.
   emitted by C, matching the b3 1920 sibling and original ROM Text.
 
 - 2026-09-09: the four-word mgrproc orphan at 0x1BD4 was merged into the
-  historical `mgrproc_uso_func_00001BE4` symbol (now 0xBC bytes). The ROM's
+  historical `mgr_startEnding_00001BE4` symbol (now 0xBC bytes). The ROM's
   Sym162 exports 0x1BD4 and TextReloc 0x1744 targets it; 0x1BE4 is not an
   independent entry. Complete C emits all 47 instructions, including the
   hoisted parameter/global setup. No instruction splicing is used.

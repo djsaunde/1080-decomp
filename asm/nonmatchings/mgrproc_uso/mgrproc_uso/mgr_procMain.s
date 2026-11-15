@@ -52,7 +52,7 @@ glabel mgr_procMain
     /* 00025C 0000025C 1000009A */  .word 0x1000009A
     /* 000260 00000260 00000000 */  .word 0x00000000
     /* 000264 00000264 8FA40050 */  .word 0x8FA40050
-    jal mgrproc_uso_func_00000504   /* 000268 0C000000 -> mgrproc_uso_func_00000504 */
+    jal mgr_openSession_00000504   /* 000268 0C000000 -> mgr_openSession_00000504 */
     /* 00026C 0000026C 00000000 */  .word 0x00000000
     /* 000270 00000270 240B0003 */  .word 0x240B0003
     lui $at, %hi(import_800200D8)   /* 000274 3C010000 -> import_800200D8 */
@@ -62,7 +62,7 @@ glabel mgr_procMain
     /* 000284 00000284 8FA40050 */  .word 0x8FA40050
     lui $a1, %hi(import_80020100)   /* 000288 3C050000 -> import_80020100 */
     /* 00028C 0000028C 8CA50068 */  .word 0x8CA50068
-    jal mgrproc_uso_func_00000700   /* 000290 0C000000 -> mgrproc_uso_func_00000700 */
+    jal mgr_initMatchRace_00000700   /* 000290 0C000000 -> mgr_initMatchRace_00000700 */
     /* 000294 00000294 00000000 */  .word 0x00000000
     /* 000298 00000298 240C0004 */  .word 0x240C0004
     lui $at, %hi(import_800200D8)   /* 00029C 3C010000 -> import_800200D8 */
@@ -147,7 +147,7 @@ glabel mgr_procMain
     /* 0003D8 000003D8 00000000 */  .word 0x00000000
     /* 0003DC 000003DC 8FA40050 */  .word 0x8FA40050
     /* 0003E0 000003E0 27A50044 */  .word 0x27A50044
-    jal mgrproc_uso_func_00000A14   /* 0003E4 0C000000 -> mgrproc_uso_func_00000A14 */
+    jal mgr_prepareReplay_00000A14   /* 0003E4 0C000000 -> mgr_prepareReplay_00000A14 */
     /* 0003E8 000003E8 00000000 */  .word 0x00000000
     /* 0003EC 000003EC AFA20040 */  .word 0xAFA20040
     /* 0003F0 000003F0 8FB80050 */  .word 0x8FB80050
@@ -165,7 +165,7 @@ glabel mgr_procMain
     /* 000420 00000420 10000029 */  .word 0x10000029
     /* 000424 00000424 00000000 */  .word 0x00000000
     /* 000428 00000428 8FA40050 */  .word 0x8FA40050
-    jal mgrproc_uso_func_000009A8   /* 00042C 0C000000 -> mgrproc_uso_func_000009A8 */
+    jal mgr_closeSession_000009A8   /* 00042C 0C000000 -> mgr_closeSession_000009A8 */
     /* 000430 00000430 00000000 */  .word 0x00000000
     /* 000434 00000434 240A0001 */  .word 0x240A0001
     lui $at, %hi(import_800200D8)   /* 000438 3C010000 -> import_800200D8 */
@@ -173,7 +173,7 @@ glabel mgr_procMain
     /* 000440 00000440 10000021 */  .word 0x10000021
     /* 000444 00000444 00000000 */  .word 0x00000000
     /* 000448 00000448 8FA40050 */  .word 0x8FA40050
-    jal mgrproc_uso_func_000009A8   /* 00044C 0C000000 -> mgrproc_uso_func_000009A8 */
+    jal mgr_closeSession_000009A8   /* 00044C 0C000000 -> mgr_closeSession_000009A8 */
     /* 000450 00000450 00000000 */  .word 0x00000000
     /* 000454 00000454 240B0008 */  .word 0x240B0008
     lui $at, %hi(import_800200D8)   /* 000458 3C010000 -> import_800200D8 */
