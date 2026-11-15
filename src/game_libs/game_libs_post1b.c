@@ -39,6 +39,7 @@ int AnimPlayer_update(a0) int a0; {
 #endif
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 #define FH(p, o) (*(s16 *)((char *)(p) + (o)))
+#define AP(p) ((AnimPlayer *)(p))
 typedef char *(*GP_00062F8C)();
 
 extern f32 gl_func_00000000_f();
@@ -57,53 +58,59 @@ void AnimPlayer_advance(char *arg0) {
     char *cbp;
     int *p2;
 
-    v0 = FW(arg0, 0x98);
+    /* Calls (all jal-0 placeholders, targets from the bootup.uso relocs): the int
+     * gl_func_00000000(this, anim, key) is AnimPlayer_getKeyFrame, gl_func_00000000_f is
+     * AnimPlayer_getKeyTime, then AnimDataMgr_lookup(mgr, anim) and AnimDataMgr_getSlot x2.
+     * The vtable calls (+0x58 delta / +0x5C fn) are slot 10, AnimPlayer_onKey. */
+    v0 = AP(arg0)->flags;
     if (v0 != 0) {
-        if (FW(arg0, 0x74) != 0) {
-            if (v0 & 0x80) {
-                if (FF(arg0, 0x94) < 0.0f) {
-                    FW(arg0, 0x74) = FW(arg0, 0x8C);
-                    sp34 = gl_func_00000000(arg0, FW(arg0, 0x8C), 0);
+        if (AP(arg0)->anim != 0) {
+            if (v0 & ANIM_WEIGHTED) {
+                /* time = frame(key 0) + |weight| * (frame(key 1) - frame(key 0)) */
+                if (AP(arg0)->weight < 0.0f) {
+                    AP(arg0)->anim = AP(arg0)->weightAnimNeg;
+                    sp34 = gl_func_00000000(arg0, AP(arg0)->weightAnimNeg, 0);
                     if (sp34) {}
-                    FF(arg0, 0x78) = (-FF(arg0, 0x94) * ((f32) gl_func_00000000(arg0, FW(arg0, 0x74), 1) - (f32) sp34)) + (f32) sp34;
+                    AP(arg0)->time = (-AP(arg0)->weight * ((f32) gl_func_00000000(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
                 } else {
-                    FW(arg0, 0x74) = FW(arg0, 0x90);
-                    sp34 = gl_func_00000000(arg0, FW(arg0, 0x90), 0);
+                    AP(arg0)->anim = AP(arg0)->weightAnimPos;
+                    sp34 = gl_func_00000000(arg0, AP(arg0)->weightAnimPos, 0);
                     if (sp34) {}
-                    FF(arg0, 0x78) = (FF(arg0, 0x94) * ((f32) gl_func_00000000(arg0, FW(arg0, 0x74), 1) - (f32) sp34)) + (f32) sp34;
+                    AP(arg0)->time = (AP(arg0)->weight * ((f32) gl_func_00000000(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
                 }
             } else {
-                sp24 = (f32) gl_func_00000000(arg0, FW(arg0, 0x74), FW(arg0, 0x80));
-                t2 = (f32) gl_func_00000000(arg0, FW(arg0, 0x74), FW(arg0, 0x7C));
+                /* sp24 = end frame, t2 = start frame, d = the end key's rate; sp20 = backwards */
+                sp24 = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->endKey);
+                t2 = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->startKey);
                 sp20 = 0;
                 if (sp24 < t2) {
                     sp20 = 1;
                 }
-                d = gl_func_00000000_f(arg0, FW(arg0, 0x74), FW(arg0, 0x80));
+                d = gl_func_00000000_f(arg0, AP(arg0)->anim, AP(arg0)->endKey);
                 if (sp20 != 0) {
-                    t = FF(arg0, 0x78) - d;
-                    FF(arg0, 0x78) = t;
+                    t = AP(arg0)->time - d;
+                    AP(arg0)->time = t;
                     sp28 = (t <= sp24);
                 } else {
-                    t = FF(arg0, 0x78) + d;
-                    FF(arg0, 0x78) = t;
+                    t = AP(arg0)->time + d;
+                    AP(arg0)->time = t;
                     sp28 = (sp24 <= t);
                 }
-                if (FW(arg0, 0x64) != -0x3E8) {
+                if (AP(arg0)->eventKey != ANIM_NO_KEY) {
                     if (sp20 != 0) {
-                        sp34 = gl_func_00000000(arg0, FW(arg0, 0x74), FW(arg0, 0x64));
-                        if (FF(arg0, 0x78) <= (f32) sp34) {
+                        sp34 = gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
+                        if (AP(arg0)->time <= (f32) sp34) {
                             {
-                                p2 = (int *) FW(arg0, 0x28);
+                                p2 = (int *) AP(arg0)->node.vptr;
                                 if (sp34) {}
                                 ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
                             }
                         }
                     } else {
-                        sp34 = gl_func_00000000(arg0, FW(arg0, 0x74), FW(arg0, 0x64));
-                        if ((f32) sp34 <= FF(arg0, 0x78)) {
+                        sp34 = gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
+                        if ((f32) sp34 <= AP(arg0)->time) {
                             {
-                                p2 = (int *) FW(arg0, 0x28);
+                                p2 = (int *) AP(arg0)->node.vptr;
                                 if (sp34) {}
                                 ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
                             }
@@ -111,49 +118,49 @@ void AnimPlayer_advance(char *arg0) {
                     }
                 }
                 if (sp28 != 0) {
-                    v0 = FW(arg0, 0x98);
-                    FF(arg0, 0x78) = sp24;
-                    if (v0 & 2) {
-                        if (v0 & 4) {
-                            int t7C = FW(arg0, 0x7C);
-                            FW(arg0, 0x7C) = FW(arg0, 0x80); FW(arg0, 0x80) = t7C;
+                    v0 = AP(arg0)->flags;
+                    AP(arg0)->time = sp24;
+                    if (v0 & ANIM_LOOP) {
+                        if (v0 & ANIM_PINGPONG) {
+                            int t7C = AP(arg0)->startKey;
+                            AP(arg0)->startKey = AP(arg0)->endKey; AP(arg0)->endKey = t7C;
                         } else {
-                            FF(arg0, 0x78) = (f32) gl_func_00000000(arg0, FW(arg0, 0x74), FW(arg0, 0x7C));
+                            AP(arg0)->time = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->startKey);
                         }
                     }
                 }
             }
-            sp3C = gl_func_00000000(FW(arg0, 0x58), FW(arg0, 0x74));
+            sp3C = gl_func_00000000(AP(arg0)->mgr, AP(arg0)->anim);
             {
-                s16 cnt = FH(sp3C, 0x2);
-                int vi = (s32) FF(arg0, 0x78);
+                s16 cnt = ((AnimData *)sp3C)->numFrames;
+                int vi = (s32) AP(arg0)->time;
                 int a = vi + 1;
                 if (a) {}
                 if (vi) {}
                 if (a >= cnt) {
-                    FF(arg0, 0x78) = (f32) (cnt - 1);
+                    AP(arg0)->time = (f32) (cnt - 1);
                     if (1) {
-                        vi = (s32) FF(arg0, 0x78);
+                        vi = (s32) AP(arg0)->time;
                         a = vi + 1;
                     }
                 }
-                FW(arg0, 0x4C) = vi;
-                FW(arg0, 0x50) = a;
-                FW(arg0, 0xAC) = 0;
-                FF(arg0, 0x54) = FF(arg0, 0x78) - (f32) vi;
-                if (FW(arg0, 0x98) & 0x100) {
+                AP(arg0)->frame0 = vi;
+                AP(arg0)->frame1 = a;
+                AP(arg0)->blendLeft = 0;
+                AP(arg0)->frac = AP(arg0)->time - (f32) vi;
+                if (AP(arg0)->flags & ANIM_BLENDIN) {
                     int num;
                     int den;
-                    FW(arg0, 0x70) = FW(arg0, 0x70) + 1;
-                    num = FW(arg0, 0x70);
-                    den = FW(arg0, 0x6C);
-                    FW(arg0, 0xAC) = den - num;
-                    FF(arg0, 0xA8) = (f32) num / (f32) den;
+                    AP(arg0)->blendCount = AP(arg0)->blendCount + 1;
+                    num = AP(arg0)->blendCount;
+                    den = AP(arg0)->blendFrames;
+                    AP(arg0)->blendLeft = den - num;
+                    AP(arg0)->blendWeight = (f32) num / (f32) den;
                     if (num >= den) {
-                        FW(arg0, 0x98) = FW(arg0, 0x98) & ~0x100;
-                        if (FW(arg0, 0x68) == -1) {
+                        AP(arg0)->flags = AP(arg0)->flags & ~ANIM_BLENDIN;
+                        if (AP(arg0)->blendEvent == -1) {
                             {
-                                p2 = (int *) FW(arg0, 0x28);
+                                p2 = (int *) AP(arg0)->node.vptr;
                                 ((GP_00062F8C)p2[0x5C / 4])(*(s16 *)((char *)p2 + 0x58) + (int)arg0);
                             }
                         }
@@ -161,12 +168,13 @@ void AnimPlayer_advance(char *arg0) {
                 }
             }
             {
-                int dec = FW(arg0, 0xA0) - 1;
-                FW(arg0, 0xA0) = dec;
+                int dec = AP(arg0)->updateCount - 1;
+                AP(arg0)->updateCount = dec;
                 if (dec <= 0) {
-                    sp38 = (char *) (FW(arg0, 0x58) + 0x40);
-                    FW(arg0, 0x34) = gl_func_00000000(sp38, (char *) sp3C, FW(arg0, 0x4C));
-                    FW(arg0, 0x38) = gl_func_00000000(sp38, (char *) sp3C, FW(arg0, 0x50));
+                    /* the frame cache (AnimDataMgr +0x40): fetch frame0 / frame1 of this anim */
+                    sp38 = (char *) (AP(arg0)->mgr + 0x40);
+                    AP(arg0)->slot0 = gl_func_00000000(sp38, (char *) sp3C, AP(arg0)->frame0);
+                    AP(arg0)->slot1 = gl_func_00000000(sp38, (char *) sp3C, AP(arg0)->frame1);
                 }
             }
         }
@@ -219,36 +227,39 @@ void AnimPlayer_applyPose(int *self) {
         bar = &cur;
         bar = &next;
     }
-    if (self[0xA0 / 4] != 0) {
+    /* AnimFrameCache_getPose x2, then anim_blendPose(animator, pose0 + i, pose1 + i, frac,
+     * blendLeft, blendWeight) for every Animator (i = its nodeIndex record, 14 bytes).
+     * frac is passed as the raw word (the callee's float param is declared int here). */
+    if (AP(self)->updateCount != 0) {
         return;
     }
-    if (self[0x74 / 4] == 0) {
+    if (AP(self)->anim == 0) {
         return;
     }
     {
-        int base = self[0x58 / 4] + 0x40;
-        self[0x44 / 4] = gl_func_00000000(base, self[0x34 / 4]);
-        self[0x48 / 4] = gl_func_00000000(base, self[0x38 / 4]);
+        int base = AP(self)->mgr + 0x40;
+        AP(self)->pose0 = gl_func_00000000(base, AP(self)->slot0);
+        AP(self)->pose1 = gl_func_00000000(base, AP(self)->slot1);
     }
-    next = (int *) self[0x30 / 4];
+    next = (int *) AP(self)->animators;
     cur = next;
     val = cur ? (next = (int *) cur[1], cur[0]) : 0;
     while (val != 0) {
         int *obj = (int *) cur[0];
-        int off = obj[0x10C / 4] * 14;
-        gl_func_00062F64f((int) obj, self[0x44 / 4] + off, self[0x48 / 4] + off,
-                          self[0x54 / 4], self[0xAC / 4],
-                          *(float *)&self[0xA8 / 4]);
+        int off = ((Animator *)obj)->nodeIndex * 14;
+        gl_func_00062F64f((int) obj, AP(self)->pose0 + off, AP(self)->pose1 + off,
+                          *(int *)&AP(self)->frac, AP(self)->blendLeft,
+                          AP(self)->blendWeight);
         cur = next;
         val = cur ? (next = (int *) next[1], cur[0]) : 0;
     }
-    self[0xA0 / 4] = self[0xA4 / 4];
+    AP(self)->updateCount = AP(self)->updateInterval;
 }
 
-void AnimPlayer_setUpdateInterval(int *a0, int a1) {
-    if (a1 != *(int*)((char*)a0 + 0xA4)) {
-        *(int*)((char*)a0 + 0xA4) = a1;
-        *(int*)((char*)a0 + 0xA0) = a1;
+void AnimPlayer_setUpdateInterval(AnimPlayer *a0, int a1) {
+    if (a1 != a0->updateInterval) {
+        a0->updateInterval = a1;
+        a0->updateCount = a1;
     }
 }
 
@@ -256,10 +267,10 @@ void AnimPlayer_setUpdateInterval(int *a0, int a1) {
  * pass-to-callee: passed unused a1 to the first call to suppress its
  * K&R caller-slot spill. */
 extern int func_00000000();
-void AnimPlayer_setKey(int *a0, int a1, int a2, int a3, float f) {
-    int *r = (int*)func_00000000(a0[0x58/4], a1);
-    *(int*)((char*)r[0x10/4] + a2*8) = a3;
-    *(int*)((char*)r[0x10/4] + a2*8) = (int)f;
+void AnimPlayer_setKey(AnimPlayer *a0, int a1, int a2, int a3, float f) {
+    AnimData *r = (AnimData *)func_00000000(a0->mgr, a1); /* AnimDataMgr_lookup */
+    *(int*)((char*)r->keys + a2*8) = a3;
+    *(int*)((char*)r->keys + a2*8) = (int)f; /* keys[a2].frame, written twice */
 }
 
 /* AnimPlayer_getKeyFrame: 28-insn bounds-check + array-deref.
@@ -269,25 +280,25 @@ void AnimPlayer_setKey(int *a0, int a1, int a2, int a3, float f) {
  *     func(0x22180, a2, err);  // assert
  *   }
  *   return v0->[0x10][a2*8/4]; */
-int AnimPlayer_getKeyFrame(int *a0, int a1, int a2) {
-    int *v0 = (int*)func_00000000(a0[0x58/4]);
-    if (a2 >= v0[0xC/4]) {
-        int v = func_00000000(a1);
-        func_00000000((char*)&D_00000000 + 0x22180, a2, v);
+int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
+    AnimData *v0 = (AnimData *)func_00000000(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    if (a2 >= v0->numKeys) {
+        int v = func_00000000(a1);                      /* anim_formatId */
+        func_00000000((char*)&D_00000000 + 0x22180, a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
     }
-    return *(int*)((char*)v0[0x10/4] + a2*8);
+    return ((AnimKey *)v0->keys)[a2].frame;
 }
 
 /* AnimPlayer_getKeyTime: 28-insn float-version of AnimPlayer_getKeyFrame.
  *   Same bounds-check + array-deref pattern, but returns float from
  *   offset +4 in the 8-byte entry. */
-float AnimPlayer_getKeyTime(int *a0, int a1, int a2) {
-    int *v0 = (int*)func_00000000(a0[0x58/4]);
-    if (a2 >= v0[0xC/4]) {
-        int v = func_00000000(a1);
-        func_00000000((char*)&D_00000000 + 0x22194, a2, v);
+float AnimPlayer_getKeyTime(AnimPlayer *a0, int a1, int a2) {
+    AnimData *v0 = (AnimData *)func_00000000(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    if (a2 >= v0->numKeys) {
+        int v = func_00000000(a1);                      /* anim_formatId */
+        func_00000000((char*)&D_00000000 + 0x22194, a2, v); /* sys_fatal("BadKeyTime %d - %s") */
     }
-    return *(float*)((char*)v0[0x10/4] + a2*8 + 4);
+    return ((AnimKey *)v0->keys)[a2].rate;
 }
 
 /* AnimPlayer_start: 37-insn constructor-style initializer.
@@ -305,21 +316,22 @@ float AnimPlayer_getKeyTime(int *a0, int a1, int a2) {
  *   gives the target's unscheduled cvt.s.w -> swc1 pair ahead of the -1000 stores. */
 extern int gl_func_00000000();
 extern void gl_func_00000000_635d8_v();
-void AnimPlayer_start(int *self, int a1, int a2, int a3, int a4, int a5) {
+/* (self, anim, startKey, endKey, flags, blendFrames); sys_imin("StartAnim") ... sys_imout */
+void AnimPlayer_start(AnimPlayer *self, int a1, int a2, int a3, int a4, int a5) {
     int r;
     gl_func_00000000_635d8_v((char*)&D_00000000 + 0x221A8);
-    self[0x88/4] = a3;
-    self[0x80/4] = a3;
-    self[0x74/4] = a1;
-    self[0x7C/4] = a2;
-    self[0x84/4] = a2;
-    r = gl_func_00000000(self, a1, a2);
-    *(float*)&self[0x78/4] = (float)r;
-    self[0x6C/4] = a5;
-    self[0x64/4] = -1000;
-    self[0x68/4] = -1000;
-    self[0x70/4] = 0;
-    self[0x98/4] = a4;
+    self->reqEndKey = a3;
+    self->endKey = a3;
+    self->anim = a1;
+    self->startKey = a2;
+    self->reqStartKey = a2;
+    r = gl_func_00000000(self, a1, a2); /* AnimPlayer_getKeyFrame */
+    self->time = (float)r;
+    self->blendFrames = a5;
+    self->eventKey = ANIM_NO_KEY;
+    self->blendEvent = ANIM_NO_KEY;
+    self->blendCount = 0;
+    self->flags = a4;
     gl_func_00000000();
 }
 
@@ -375,8 +387,8 @@ void AnimPlayer_start(int *self, int a1, int a2, int a3, int a4, int a5) {
  *    with a 3-way AND guard (skip the call when all three fields already match). */
 extern int gl_func_00000000();
 void AnimPlayer_startIfChanged(int a0, int a1, int a2, int a3, int a4, int a5) {
-    if (a1 == *(int *)(a0 + 0x74) && a2 == *(int *)(a0 + 0x84) &&
-        a3 == *(int *)(a0 + 0x88)) {
+    if (a1 == AP(a0)->anim && a2 == AP(a0)->reqStartKey &&
+        a3 == AP(a0)->reqEndKey) {
         return;
     }
     gl_func_00000000(a0, a1, a2, a3, a4, a5);
@@ -393,15 +405,15 @@ void AnimPlayer_startIfChanged(int a0, int a1, int a2, int a3, int a4, int a5) {
  * rather than a uopt candidate ($v0), which lines up the whole
  * t7/t8/t9/t0/t1/t2 temp chain and the bnezl a4-reload pair. Reloc-free
  * leaf. */
-void AnimPlayer_setBlend(int *a0, int a1, int a2, float a3, int a4, int a5) {
-    a0[0x8C / 4] = a1;
-    a0[0x90 / 4] = a2;
-    *(float *)((char *)a0 + 0x94) = a3;
-    a0[0x6C / 4] = a5;
-    if (!(a0[0x98 / 4] & 0x100) || !(a4 & 0x100)) {
-        a0[0x70 / 4] = 0;
+void AnimPlayer_setBlend(AnimPlayer *a0, int a1, int a2, float a3, int a4, int a5) {
+    a0->weightAnimNeg = a1;
+    a0->weightAnimPos = a2;
+    a0->weight = a3;
+    a0->blendFrames = a5;
+    if (!(a0->flags & ANIM_BLENDIN) || !(a4 & ANIM_BLENDIN)) {
+        a0->blendCount = 0;
     }
-    a0[0x98 / 4] = a4 | 0x80;
+    a0->flags = a4 | ANIM_WEIGHTED;
 }
 
 

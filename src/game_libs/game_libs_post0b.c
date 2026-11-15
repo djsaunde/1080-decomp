@@ -27576,24 +27576,13 @@ void fs_gdlReadQuad_00061F18(Quad4 *dst) {
  * Field layout: f00/f02 (halfwords), f08/f0C/f18/f1C (words). Split off
  * from the 0x61F18 Quad4 reader bundle; legitimate leaf (no calls,
  * caller-set a0/a1). */
-typedef struct {
-    short f00;
-    short f02;
-    int pad04;
-    int f08;
-    int f0C;
-    int pad10;
-    int pad14;
-    int f18;
-    int f1C;
-} GlFunc61F70Struct;
-void AnimData_init(GlFunc61F70Struct *a0, int a1) {
-    a0->f1C = 0;
-    a0->f00 = 0;
-    a0->f02 = 0;
-    a0->f08 = 0;
-    a0->f0C = 0;
-    a0->f18 = a1;
+void AnimData_init(AnimData *a0, int a1) {
+    a0->keepKeys = 0;
+    a0->numNodes = 0;
+    a0->numFrames = 0;
+    a0->frameData = 0;
+    a0->numKeys = 0;
+    a0->mgr = a1;
 }
 
 /* AnimData_load: (cmd, val) record loader (0x208 / 130 words). Reads
@@ -27677,18 +27666,21 @@ int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int gSysLib_62194_a, gSysLib_62194_b, gSysLib_62194_c, gSysLib_62194_d;
     unsigned int stride;
     unsigned int n[1];
-    if (*(char **)(self + 8) == 0) {
+    /* self = AnimData, a1 = destination pose buffer, frames [a2, a2 + a3) */
+    if (((AnimData *)self)->frameData == 0) {
+        /* streamed: sys_setWord4, fs_setHandle(mgr->file), fs_gdlSeekFile, fs_gdlReadFileAsync */
         gl_func_00000000(&gSysLib_62194_a, 1);
-        gl_func_00000000(&gSysLib_62194_b, *(int *)(*(char **)(self + 0x18) + 0x3C));
-        stride = *(short *)self * 14;
-        { char *p = *(char **)(self + 0x14) + stride * a2;
+        gl_func_00000000(&gSysLib_62194_b, ((AnimDataMgr *)((AnimData *)self)->mgr)->file);
+        stride = ((AnimData *)self)->numNodes * 14;
+        { char *p = (char *)((AnimData *)self)->fileOffset + stride * a2;
         n[0] = stride * a3;
         gl_func_00000000(&gSysLib_62194_c, 0, p); }
         gl_func_00000000(&gSysLib_62194_d, a1, n[0]);
         return;
     }
-    stride = *(short *)self * 14;
-    { char *b = *(char **)(self + 8); unsigned int q = stride * a2; b += q; if (q) {} gl_func_00000000(b, a1, stride * a3); }
+    /* resident: copy (gl_func_00070324) and return -1 = nothing pending */
+    stride = ((AnimData *)self)->numNodes * 14;
+    { char *b = (char *)((AnimData *)self)->frameData; unsigned int q = stride * a2; b += q; if (q) {} gl_func_00000000(b, a1, stride * a3); }
     return -1;
 }
 
@@ -27702,10 +27694,10 @@ void AnimData_waitFrames(int a0, int a1) {
     }
 }
 
-void AnimGroup_init(int *a0, int a1) {
-    a0[1] = 0;
-    a0[0] = 0;
-    a0[2] = a1;
+void AnimGroup_init(AnimGroup *a0, int a1) {
+    a0->count = 0;
+    a0->anims = 0;
+    a0->mgr = a1;
 }
 
 /* AnimGroup_load: 36-insn alloc-array + N-init loop (0x90, frame 0x38).
@@ -27732,15 +27724,15 @@ void AnimGroup_init(int *a0, int a1) {
  * gl_ref_0007644C pin (61F8C's stream int reader), not a fn-ptr cast.
  */
 extern int gl_ref_0007644C(); /* baked jal 0x0C01D913: stream int reader */
-void AnimGroup_load(int *self, int a1) {
+void AnimGroup_load(AnimGroup *self, int a1) {
     int count;
     int i;
     gl_ref_0007644C(&count, a1);
-    self[0] = gl_func_00000000(count * 32);
-    self[1] = count;
-    for (i = 0; i < self[1]; i++) {
-        gl_func_00000000((char *)self[0] + i * 32, self[2]);
-        gl_func_00000000((char *)self[0] + i * 32);
+    self->anims = gl_func_00000000(count * 32);
+    self->count = count;
+    for (i = 0; i < self->count; i++) {
+        gl_func_00000000((char *)self->anims + i * 32, self->mgr); /* AnimData_init */
+        gl_func_00000000((char *)self->anims + i * 32);            /* AnimData_load */
     }
 }
 
@@ -27856,30 +27848,18 @@ fail:
  * its home a1) BEFORE the entry pointer, which then takes a2 and displaces
  * key2 to a3 (`or a3,a2,zero`). Without it the pointer takes a1 and key1 is
  * displaced instead (7 words off, same size). */
-typedef struct {
-    int f0;
-    int key2;
-    int key1;
-    int inuse;
-    short f10;
-    short f12;
-} SlotEntry624EC;
-typedef struct {
-    SlotEntry624EC *entries;
-    int count;
-} SlotPool624EC;
-int AnimFrameCache_find(SlotPool624EC *p, int key1, int key2) {
+int AnimFrameCache_find(AnimFrameCache *p, int key1, int key2) {
     int i;
-    SlotEntry624EC *e;
+    AnimFrameSlot *e;
     int count;
 
     count = p->count;
     i = 0;
     if (count <= 0) goto fail;
     while (0) { i = key1; }
-    e = p->entries;
+    e = (AnimFrameSlot *)p->slots;
 loop:
-    if (e->key1 == key1 && e->key2 == key2) return i;
+    if (e->anim == key1 && e->frame == key2) return i;
     i++;
     e++;
     if (i < count) goto loop;
@@ -27917,20 +27897,21 @@ fail:
  * the miss path claims a slot = evict(self) and stores h10 = the rebind
  * call's result (the old decode had the store order and source wrong).
  */
-typedef struct { int w0; int w4; int w8; int wC; short h10; short pad12; } Ent_62540;
-int AnimDataMgr_getSlot(Ent_62540 **self, int key1, int key2) {
+/* self = the AnimFrameCache (its first word, the slot array); key1 = AnimData *, key2 = frame.
+ * Calls: AnimFrameCache_find, AnimDataMgr_allocSlot, AnimData_readFrames(anim, pose, frame, 1). */
+int AnimDataMgr_getSlot(AnimFrameSlot **self, int key1, int key2) {
     int slot = gl_func_00000000(self, key1, key2);
-    Ent_62540 *e;
+    AnimFrameSlot *e;
     if (slot != -1) {
-        (*self)[slot].wC = 1;
-        (*self)[slot].h10 = -1;
+        (*self)[slot].inUse = 1;
+        (*self)[slot].pending = -1;
         return slot;
     }
     slot = gl_func_00000000(self);
     e = &(*self)[slot];
-    e->h10 = gl_func_00000000(key1, e->w0, key2, 1);
-    e->w8 = key1;
-    e->w4 = key2;
+    e->pending = gl_func_00000000(key1, e->pose, key2, 1);
+    e->anim = key1;
+    e->frame = key2;
     return slot;
 }
 
@@ -27938,12 +27919,12 @@ int AnimDataMgr_getSlot(Ent_62540 **self, int key1, int key2) {
  * Indexes into (*a0)[a1*5]; if entry[0x10] (signed halfword) != -1,
  * calls gl_func(entry->[0x8], val). Returns *entry. */
 int AnimFrameCache_getPose(int *a0, int a1) {
-    int *entry = (int*)((char*)*a0 + a1 * 20);
-    short val = *(short*)((char*)entry + 0x10);
+    AnimFrameSlot *entry = (AnimFrameSlot *)((char*)*a0 + a1 * 20);
+    short val = entry->pending;
     if (val != -1) {
-        gl_func_00000000(*(int**)((char*)entry + 0x8), val);
+        gl_func_00000000((int *)entry->anim, val); /* AnimData_waitFrames */
     }
-    return *entry;
+    return entry->pose;
 }
 
 /* AnimDataMgr_ctor: 40-insn alloc-or-init + 14×-stride sub-init + 4-call (0xA0, frame 0x20).
@@ -27979,13 +27960,13 @@ int* AnimDataMgr_ctor(int *obj, int a1, int a2, int a3) {
     extern int D_00000000;
     extern int AnimDataMgr_vtbl_sym_6264C;
     if (obj != 0 || (obj = (int*)gl_func_00000000(0x48)) != 0) {
-        gl_func_00000000(obj, (char*)&D_00000000 + 0x220DC);
-        obj[0x28 / 4] = (int)&AnimDataMgr_vtbl_sym_6264C;
-        gl_func_00000000((char*)obj + 0x40, a3, a2 * 14);
-        obj[0x38 / 4] = a2;
-        obj[0x2C / 4] = 0;
-        obj[0x34 / 4] = 0;
-        gl_func_00000000(obj, 1, a1);
+        gl_func_00000000(obj, (char*)&D_00000000 + 0x220DC);    /* Node_ctor(this, "AnimDataMgr") */
+        ((AnimDataMgr *)obj)->node.vptr = (int)&AnimDataMgr_vtbl_sym_6264C;
+        gl_func_00000000(&((AnimDataMgr *)obj)->cache, a3, a2 * 14); /* AnimDataMgr_initSlots: a3 slots of a2 * 14 bytes */
+        ((AnimDataMgr *)obj)->numNodes = a2;
+        ((AnimDataMgr *)obj)->version = 0;
+        ((AnimDataMgr *)obj)->numGroups = 0;
+        gl_func_00000000(obj, 1, a1);                           /* Node_Load(this, 1, a1) */
     }
     return obj;
 }
@@ -28035,13 +28016,13 @@ extern int gl_ref_00076488();
 void AnimDataMgr_loadFile(char *self) {
     extern int gSysLib_sym_6275C;
     int i;
-    *(int *)(self + 0x3C) = gl_func_00000000(&gSysLib_sym_6275C);
-    gl_ref_0007644C(self + 0x2C);
-    gl_ref_00076488(self + 0x34);
-    *(int *)(self + 0x30) = gl_func_00000000(*(int *)(self + 0x34) * 12);
-    for (i = 0; i < *(int *)(self + 0x34); i++) {
-        gl_func_00000000(*(char **)(self + 0x30) + i * 12, self);
-        gl_func_00000000(*(char **)(self + 0x30) + i * 12);
+    ((AnimDataMgr *)self)->file = gl_func_00000000(&gSysLib_sym_6275C); /* fs_getHandle */
+    gl_ref_0007644C(&((AnimDataMgr *)self)->version);
+    gl_ref_00076488(&((AnimDataMgr *)self)->numGroups);
+    ((AnimDataMgr *)self)->groups = gl_func_00000000(((AnimDataMgr *)self)->numGroups * 12);
+    for (i = 0; i < ((AnimDataMgr *)self)->numGroups; i++) {
+        gl_func_00000000((char *)((AnimDataMgr *)self)->groups + i * 12, self); /* AnimGroup_init */
+        gl_func_00000000((char *)((AnimDataMgr *)self)->groups + i * 12);       /* AnimGroup_load */
     }
 }
 
@@ -28053,21 +28034,20 @@ void AnimDataMgr_loadFile(char *self) {
  * offset a3 vs target a3 / a2 / v1). `sw a2,28(sp)` before the second jal
  * with nothing setting a2 = inner is a THIRD assert argument; passing it
  * pins inner to a2 and the rest falls into place. */
-typedef struct E280C { int *recs; int count; int w8; } E280C;
-int AnimDataMgr_lookup(int *self, int a1) {
+int AnimDataMgr_lookup(AnimDataMgr *self, int a1) {
     int hi;
     int lo;
     char *rec;
     hi = (a1 >> 16) & 0xFFFF;
-    if (hi >= self[0x34 / 4]) {
+    if (hi >= self->numGroups) {
         gl_func_00000000((char*)&D_00000000 + 0x220E8, hi);
     }
     lo = a1 & 0xFFFF;
-    if (lo >= ((E280C *)self[0x30 / 4])[hi].count) {
+    if (lo >= ((AnimGroup *)self->groups)[hi].count) {
         gl_func_00000000((char*)&D_00000000 + 0x22100, hi, lo);
     }
-    rec = (char *)((E280C *)self[0x30 / 4])[hi].recs + lo * 32;
-    if (*(short *)(rec + 2) == 0) {
+    rec = (char *)((AnimGroup *)self->groups)[hi].anims + lo * 32;
+    if (((AnimData *)rec)->numFrames == 0) {
         gl_func_00000000((char*)&D_00000000 + 0x22114, hi, lo);
     }
     return (int)rec;
@@ -28225,10 +28205,10 @@ void *AnimPlayer_ctor(void *s0, int a1) {
         s0 = (void *)func_00000000(0xB0);
         if (s0 == 0) goto end;
     }
-    func_00000000(s0, (char *)&D_00000000 + 0x22178);
-    *(void **)((char *)s0 + 0x28) = (char *)&AnimPlayer_vtbl + 0;
+    func_00000000(s0, (char *)&D_00000000 + 0x22178); /* Node_ctor(this, "<Node>") */
+    *(void **)&((AnimPlayer *)s0)->node.vptr = (char *)&AnimPlayer_vtbl + 0; /* vtable Data 0x21F58 */
     {
-        int *v1 = (int *)((char *)s0 + 0x30);
+        int *v1 = &((AnimPlayer *)s0)->animators;
         if (s0 == (void *)-48) {
             v1 = (int *)func_00000000(4);
             if (v1 == 0) goto L64;
@@ -28236,7 +28216,7 @@ void *AnimPlayer_ctor(void *s0, int a1) {
         *v1 = 0;
     }
 L64:
-    *(int *)((char *)s0 + 0x58) = a1;
+    ((AnimPlayer *)s0)->mgr = a1;
     func_00000000(s0);
 end:
     return s0;
@@ -28245,20 +28225,20 @@ end:
 /* AnimPlayer_reset: 20-insn no-frame multi-field init.
  * Bulk-initializes 15 fields of struct a0 with constants -1, -1000, 0, 1
  * + one float 0.0f. */
-AnimPlayer_reset(a0) int * a0; {
-    a0[0x50/4] = -1;
-    a0[0x4C/4] = -1;
-    a0[0x64/4] = -1000;
-    a0[0x68/4] = -1000;
-    a0[0x34/4] = -1;
-    a0[0x38/4] = -1;
-    a0[0x48/4] = 0;
-    a0[0x44/4] = 0;
-    a0[0xA4/4] = 1;
-    a0[0xA0/4] = 1;
-    a0[0x74/4] = 0;
-    a0[0x98/4] = 0;
-    a0[0x6C/4] = 1;
-    a0[0x70/4] = 0;
-    *(float*)((char*)a0 + 0x78) = 0.0f;
+AnimPlayer_reset(a0) AnimPlayer * a0; {
+    a0->frame1 = -1;
+    a0->frame0 = -1;
+    a0->eventKey = ANIM_NO_KEY;
+    a0->blendEvent = ANIM_NO_KEY;
+    a0->slot0 = -1;
+    a0->slot1 = -1;
+    a0->pose1 = 0;
+    a0->pose0 = 0;
+    a0->updateInterval = 1;
+    a0->updateCount = 1;
+    a0->anim = 0;
+    a0->flags = 0;
+    a0->blendFrames = 1;
+    a0->blendCount = 0;
+    a0->time = 0.0f;
 }

@@ -19,6 +19,7 @@
  *    volatile read through the s3 base keeps the target's `lw t0,4(s3)`. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/anim.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -27,7 +28,10 @@ extern int gl_ref_00076400(); /* baked jal 0x0C01D900: debug print */
 extern char gl_ref_0002205C_61F8C[], gl_ref_00022068_61F8C[], gl_ref_00022078_61F8C[];
 extern char gl_ref_00022088_61F8C[], gl_ref_00022098_61F8C[], gl_ref_000220AC_61F8C[];
 
-void AnimData_load(char *self) {
+/* Strings: 1 "numkeys %d", 2 "numnodes %d", 3 "frame data %d", 5 "numframes %d",
+ * default "unknown anim cmd %d", exit "AMgr: bad num Nodes". `base` is gSysLib, the stream
+ * the anim file is read through (base[1] != 0: leave frame data in the file, keep its offset). */
+void AnimData_load(AnimData *self) {
     int *base;
     int cmd;
     int val;
@@ -35,7 +39,7 @@ void AnimData_load(char *self) {
     int buf;
 
     base = &gSysLib;
-    *(s16 *)(self + 0) = 0;
+    self->numNodes = 0;
     for (;;) {
         gl_ref_0007644C(&cmd);
         gl_ref_0007644C(&val);
@@ -43,49 +47,51 @@ void AnimData_load(char *self) {
             break;
         }
         switch (cmd) {
-        case 1:
+        case 1: /* keys: val AnimKey records */
             n = val * 8;
-            if (*(int *)(self + 0x1C) == 0) {
-                *(int *)(self + 0xC) = val;
-                gl_ref_00076400(gl_ref_0002205C_61F8C, *(int *)(self + 0xC));
-                *(int *)(self + 0x10) = gl_func_00000000(*(int *)(self + 0xC) * 8);
-                gl_func_00000000(base, *(int *)(self + 0x10), n);
+            if (self->keepKeys == 0) {
+                self->numKeys = val;
+                gl_ref_00076400(gl_ref_0002205C_61F8C, self->numKeys);
+                self->keys = gl_func_00000000(self->numKeys * 8);   /* mem_new */
+                gl_func_00000000(base, self->keys, n);              /* fs_gdlReadFile */
             } else {
                 buf = gl_func_00000000(n);
                 gl_func_00000000(base, buf, n);
-                gl_func_00000000(buf);
+                gl_func_00000000(buf);                              /* mem_delete */
             }
             break;
         case 2:
-            *(s16 *)(self + 0) = val;
-            gl_ref_00076400(gl_ref_00022068_61F8C, *(s16 *)(self + 0));
+            self->numNodes = val;
+            gl_ref_00076400(gl_ref_00022068_61F8C, self->numNodes);
             break;
-        case 3:
+        case 3: /* frame data: val bytes = numFrames * numNodes * 14 */
             n = val;
             gl_ref_00076400(gl_ref_00022078_61F8C, n);
             if (((volatile int *)base)[1] == 0) {
-                *(int *)(self + 8) = gl_func_00000000(n, 8);
-                gl_func_00000000(base, *(int *)(self + 8), n);
+                self->frameData = gl_func_00000000(n, 8);         /* mem_newAligned */
+                gl_func_00000000(base, self->frameData, n);
             } else {
-                *(int *)(self + 8) = 0;
-                *(int *)(self + 0x14) = gl_func_00000000(base, 1, 0);
-                gl_func_00000000(base, 1, n);
+                self->frameData = 0;
+                self->fileOffset = gl_func_00000000(base, 1, 0);  /* fs_gdlSeekFile: current position */
+                gl_func_00000000(base, 1, n);                     /* skip */
             }
             break;
-        case 4:
+        case 4: /* skipped block */
             gl_func_00000000(base, 1, val);
             break;
         case 5:
-            *(s16 *)(self + 2) = val;
-            gl_ref_00076400(gl_ref_00022088_61F8C, *(s16 *)(self + 2));
+            self->numFrames = val;
+            gl_ref_00076400(gl_ref_00022088_61F8C, self->numFrames);
             break;
         default:
             gl_func_00000000(gl_ref_00022098_61F8C, cmd);
             break;
         }
     }
-    if (*(s16 *)(self + 0) != 0 && *(int *)(*(char **)(self + 0x18) + 0x38) != *(s16 *)(self + 0)) {
+    /* the second numNodes read stays a raw `*(s16 *)` deref: spelled self->numNodes,
+     * the beql operands swap (t3, v0 -> v0, t3) */
+    if (self->numNodes != 0 && ((AnimDataMgr *)self->mgr)->numNodes != *(s16 *)((char *)self + 0)) {
         gl_func_00000000(gl_ref_000220AC_61F8C);
     }
-    *(int *)(self + 4) = 7;
+    self->state = 7;
 }
