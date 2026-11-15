@@ -718,7 +718,7 @@ endlabel SnowAI_aimWeave
 .late_rodata
 /* +0x100..+0x110: own 4-entry jumptable (lw %lo 0x100 at 0x969C) */
 .word 0x000096A8, 0x0000970C, 0x000096A8, 0x000096E0
-/* Moved from SnowAI_getRider_000097EC.s (97EC is now a C/NCC donor, no INCLUDE_ASM): */
+/* Moved from SnowAI_isRivalInPath_000097EC.s (97EC is now a C/NCC donor, no INCLUDE_ASM): */
 /* +0x110..+0x114: float of C fn SnowAI_startNodeScan (lwc1 %lo 0x110) */
 .word 0x7F7FFFFF
 /* +0x114..+0x118: float of C fn SnowAI_startSegmentScan (lwc1 %lo 0x114) */

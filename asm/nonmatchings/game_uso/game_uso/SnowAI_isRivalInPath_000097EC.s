@@ -1,6 +1,6 @@
-nonmatching SnowAI_getRider_000097EC, 0x39C
+nonmatching SnowAI_isRivalInPath_000097EC, 0x39C
 
-glabel SnowAI_getRider_000097EC
+glabel SnowAI_isRivalInPath_000097EC
     /* 0097EC 000097EC 27BDFEF0 */  .word 0x27BDFEF0
     /* 0097F0 000097F0 AFBF0014 */  .word 0xAFBF0014
     /* 0097F4 000097F4 AFA40110 */  .word 0xAFA40110
@@ -232,7 +232,7 @@ glabel SnowAI_getRider_000097EC
     /* 009B7C 00009B7C 27BD0110 */  .word 0x27BD0110
     /* 009B80 00009B80 03E00008 */  .word 0x03E00008
     /* 009B84 00009B84 00000000 */  .word 0x00000000
-endlabel SnowAI_getRider_000097EC
+endlabel SnowAI_isRivalInPath_000097EC
 
 /* (game_uso .rodata +0x110..+0x120 moved to the end of SnowAI_aimWeave.s: */
 /* 97EC is built from a C/NCC donor, so this .s is no longer INCLUDE_ASM'd.) */

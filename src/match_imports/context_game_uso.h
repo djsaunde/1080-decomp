@@ -839,7 +839,7 @@ int SnowAI_aimAlongSegment(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5);
 void *SnowAI_aimWeave(char *arg0, char *arg1, char *arg2, char *arg3, s32 arg4);
 extern float game_uso_func_082880(float);
-int SnowAI_getRider_000097EC(char *a0);
+int SnowAI_isRivalInPath_000097EC(char *a0);
 extern void game_uso_func_047B1C();
 extern char game_uso_D_807FEDB8;
 int SnowAI_isInSegmentWidth();

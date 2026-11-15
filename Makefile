@@ -3202,7 +3202,7 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
 # 97EC: EXACT NCC donor over an empty placeholder (XZ derived-ctor protocol x5; agent-g run 237: named
 # Vec3 ctor arguments, pe in the if block and pf / e / f in a nested block = the target's temp homes).
 GAMEUSO_97EC_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_getRider_000097EC=$(GAMEUSO_97EC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_isRivalInPath_000097EC=$(GAMEUSO_97EC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_DONOR)
 # 1DDC: EXACT NCC donor over a placeholder (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; agent-c run 240:
 # getPos through an inline `mtx.me()` gives both matrix pointers their own LR (v1); named V3 e, dead early f23D4 call
