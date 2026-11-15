@@ -30,7 +30,7 @@
  *     pad_setSlotValueGlobal(port - 1) = PadDev.motorValue[]);
  *   - prevHeld = held; held = 0; reads the port through gSysLib (pad_decodeButtonMap
  *     fills rawStickX / rawStickY / held from conts[port - 1]);
- *   - mirrorX negates the stick x byte; replay PLAY / RECORD (input.h InputFrame);
+ *   - mirrorX negates the stick x byte; replay PLAY / RECORD (InputFrame below);
  *   - stick = raw / 80 with a 0.2 dead zone; an injected input (injectPending) ORs
  *     injectButtons in and replaces the stick with injectStick;
  *   - the stick sets the direction bits 0x2000 up / 0x4000 right / 0x8000 down /
@@ -39,18 +39,33 @@
  *   - dirIndex = the u8 table at Data base + ((held & 0x1E000) >> 13).
  */
 
+/* The libultra-shaped types below use plain C types: include/game/input.h includes this
+ * header for InputPad (= PadCtl), and its NCC .cpp users have no s8 / u8 / s16 / f32. */
+
+/* One recorded input frame (4 bytes): pad_update RECORD stores the raw stick bytes and
+ * (recordMask & held & 0x1700); PLAY loads the stick bytes back and ORs the buttons into held. */
+typedef struct InputFrame {
+    /* 0x0 */ signed char stickX;
+    /* 0x1 */ signed char stickY;
+    /* 0x2 */ short buttons;
+} InputFrame;
+
+#define PAD_REPLAY_OFF      0
+#define PAD_REPLAY_PLAY     1   /* pad_startPlay */
+#define PAD_REPLAY_RECORD   2   /* pad_startRecord */
+
 /* libultra OSContPad / OSContStatus, field for field (6 / 4 bytes) */
 typedef struct PadContData {
-    /* 0x0 */ u16 button;
-    /* 0x2 */ s8 stickX;
-    /* 0x3 */ s8 stickY;
-    /* 0x4 */ u8 errNo;
+    /* 0x0 */ unsigned short button;
+    /* 0x2 */ signed char stickX;
+    /* 0x3 */ signed char stickY;
+    /* 0x4 */ unsigned char errNo;
 } PadContData;
 
 typedef struct PadContStatus {
-    /* 0x0 */ u16 type;
-    /* 0x2 */ u8 status;
-    /* 0x3 */ u8 errNo;                     /* 8 = CONT_NO_RESPONSE_ERROR */
+    /* 0x0 */ unsigned short type;
+    /* 0x2 */ unsigned char status;
+    /* 0x3 */ unsigned char errNo;                     /* 8 = CONT_NO_RESPONSE_ERROR */
 } PadContStatus;
 
 /* the controller device block (0x13F8) */
@@ -63,73 +78,70 @@ typedef struct PadDev {
     /* 0x1200 */ PadContData conts[4];      /* osContGetReadData */
     /* 0x1218 */ PadContStatus status[4];   /* osContInit */
     /* 0x1228 */ char pfs[4][0x68];         /* OSPfs[4] (osPfsInitPak / osMotorInit) */
-    /* 0x13C8 */ s32 pakState[4];           /* 3 at init; pad_probePaks: 0 motor init failed,
+    /* 0x13C8 */ int pakState[4];           /* 3 at init; pad_probePaks: 0 motor init failed,
                                              * 2 rumble pak, 1 other pak (osPfsInitPak == 0) */
-    /* 0x13D8 */ u8 motorOn[4];             /* motor state: 3 after a successful osMotorStart,
+    /* 0x13D8 */ unsigned char motorOn[4];             /* motor state: 3 after a successful osMotorStart,
                                              * counted down by pad_updateMotor when osMotorStop
                                              * fails; it returns early when this equals the
                                              * request */
-    /* 0x13DC */ u8 hasMotor[4];            /* rumble pak present (pad_initMotors) */
-    /* 0x13E0 */ s16 motorValue[4];         /* requested rumble per port (pad_setSlotValue);
+    /* 0x13DC */ unsigned char hasMotor[4];            /* rumble pak present (pad_initMotors) */
+    /* 0x13E0 */ short motorValue[4];         /* requested rumble per port (pad_setSlotValue);
                                              * pushed by the thread on message 1 */
-    /* 0x13E8 */ s32 readDone;              /* set by the thread when a read finishes;
+    /* 0x13E8 */ int readDone;              /* set by the thread when a read finishes;
                                              * pad_waitIdle spins on it */
-    /* 0x13EC */ u8 present;                /* osContInit bit pattern (pad_getFlag) */
+    /* 0x13EC */ unsigned char present;                /* osContInit bit pattern (pad_getFlag) */
     char pad13ED[0x13F0 - 0x13ED];
-    /* 0x13F0 */ s32 motorRetry;            /* pad_initMotors re-probes the paks every 32 calls */
+    /* 0x13F0 */ int motorRetry;            /* pad_initMotors re-probes the paks every 32 calls */
     char pad13F4[0x13F8 - 0x13F4];
 } PadDev;
 
 /* one controller (0x80) */
 typedef struct PadCtl {
-    /* 0x00 */ f32 stickX;                  /* rawStickX / 80, 0 inside the 0.2 dead zone */
-    /* 0x04 */ f32 stickY;
-    /* 0x08 */ s8 rawStickX;
-    /* 0x09 */ s8 rawStickY;
+    /* 0x00 */ float stickX;                  /* rawStickX / 80, 0 inside the 0.2 dead zone */
+    /* 0x04 */ float stickY;
+    /* 0x08 */ signed char rawStickX;
+    /* 0x09 */ signed char rawStickY;
     char pad0A[0x10 - 0x0A];
-    /* 0x10 */ s32 held;                    /* 1080 button bits (pad_decodeButtonMap) */
-    /* 0x14 */ s32 prevHeld;
-    /* 0x18 */ s32 pressed;
-    /* 0x1C */ s32 released;
-    /* 0x20 */ s32 doubleTap;               /* pressed & lastPressed while tapTimer runs */
-    /* 0x24 */ s32 lastPressed;
-    /* 0x28 */ s32 unk28;                   /* 0 at reset */
-    /* 0x2C */ s32 unk2C;                   /* 0 at reset */
-    /* 0x30 */ s32 unk30;                   /* 0 at reset */
-    /* 0x34 */ s32 port;                    /* 1-based controller port; 0 = not attached */
-    /* 0x38 */ s32 tapTimer;                /* 10 after a press, counts down */
-    /* 0x3C */ s32 injectPending;           /* one frame of injected input (below) */
-    /* 0x40 */ s32 injectButtons;
-    /* 0x44 */ f32 injectStickX;
-    /* 0x48 */ f32 injectStickY;
-    /* 0x4C */ s32 replayMode;              /* PAD_REPLAY_* (game/input.h) */
-    /* 0x50 */ s32 replayFrame;
-    /* 0x54 */ s32 replayLen;
-    /* 0x58 */ s32 *replayLenOut;
-    /* 0x5C */ void *replayFrames;          /* InputFrame[] (game/input.h) */
+    /* 0x10 */ int held;                    /* 1080 button bits (pad_decodeButtonMap) */
+    /* 0x14 */ int prevHeld;
+    /* 0x18 */ int pressed;
+    /* 0x1C */ int released;
+    /* 0x20 */ int doubleTap;               /* pressed & lastPressed while tapTimer runs */
+    /* 0x24 */ int lastPressed;
+    /* 0x28 */ int unk28;                   /* 0 at reset */
+    /* 0x2C */ int unk2C;                   /* 0 at reset */
+    /* 0x30 */ int unk30;                   /* 0 at reset */
+    /* 0x34 */ int port;                    /* 1-based controller port; 0 = not attached */
+    /* 0x38 */ int tapTimer;                /* 10 after a press, counts down */
+    /* 0x3C */ int injectPending;           /* one frame of injected input (below) */
+    /* 0x40 */ int injectButtons;
+    /* 0x44 */ float injectStickX;
+    /* 0x48 */ float injectStickY;
+    /* 0x4C */ int replayMode;              /* PAD_REPLAY_*; drops to OFF at replayLen */
+    /* 0x50 */ int replayFrame;
+    /* 0x54 */ int replayLen;
+    /* 0x58 */ int *replayLenOut;
+    /* 0x5C */ InputFrame *replayFrames;
     char pad60[0x64 - 0x60];
-    /* 0x64 */ s32 unk64;                   /* pad_open: result of its first call (this, port) */
-    /* 0x68 */ s32 paused;                  /* pad_setPause; pad_update skips the read */
-    /* 0x6C */ s32 recordMask;              /* -1 at reset */
-    /* 0x70 */ s32 mirrorX;
-    /* 0x74 */ s16 rumblePos;               /* index into rumble */
-    /* 0x76 */ s16 rumblePrio;              /* pad_setIfNewer drops a lower-priority pattern */
-    /* 0x78 */ u8 *rumble;                  /* 0xFF-terminated motor bytes; null = none */
-    /* 0x7C */ s16 dirIndex;
+    /* 0x64 */ int unk64;                   /* pad_open: result of its first call (this, port) */
+    /* 0x68 */ int paused;                  /* pad_setPause; pad_update skips the read */
+    /* 0x6C */ int recordMask;              /* -1 at reset */
+    /* 0x70 */ int mirrorX;
+    /* 0x74 */ short rumblePos;               /* index into rumble */
+    /* 0x76 */ short rumblePrio;              /* pad_setIfNewer drops a lower-priority pattern */
+    /* 0x78 */ unsigned char *rumble;                  /* 0xFF-terminated motor bytes; null = none */
+    /* 0x7C */ short dirIndex;
     char pad7E[0x80 - 0x7E];
 } PadCtl;
 
+#ifndef __cplusplus /* edg (NCC donors) rejects the &((T *)0)->f constant form */
 typedef char PadContData_size_check[sizeof(PadContData) == 6 ? 1 : -1];
 typedef char PadDev_size_check[sizeof(PadDev) == 0x13F8 ? 1 : -1];
 typedef char PadDev_pakState_check[(int)&((PadDev *)0)->pakState == 0x13C8 ? 1 : -1];
 typedef char PadCtl_size_check[sizeof(PadCtl) == 0x80 ? 1 : -1];
 typedef char PadCtl_port_check[(int)&((PadCtl *)0)->port == 0x34 ? 1 : -1];
 typedef char PadCtl_rumble_check[(int)&((PadCtl *)0)->rumble == 0x78 ? 1 : -1];
-
-#ifndef PAD_REPLAY_OFF /* same values as game/input.h */
-#define PAD_REPLAY_OFF      0
-#define PAD_REPLAY_PLAY     1   /* pad_startPlay */
-#define PAD_REPLAY_RECORD   2   /* pad_startRecord */
+typedef char InputFrame_size_check[sizeof(InputFrame) == 4 ? 1 : -1];
 #endif
 
 #define PADDEV(p) ((PadDev *)(p))

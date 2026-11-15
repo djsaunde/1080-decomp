@@ -13,147 +13,150 @@
  *
  * Load-bearing shapes kept from the NM body (docs/IDO_CODEGEN.md
  * #store-forward-ring-across-bb-and-scaled-index-first-675a4): the 0x18
- * store + re-read, the scaled-index-first ==1 cursor, `(cur | 0) & ~prev`,
- * and the dead `while (0) { temp_f2 = y; }` anchor. */
+ * store + re-read, the scaled-index-first ==1 cursor (in field form that is
+ * `&p->replayFrames[p->replayFrame]`), `(cur | 0) & ~prev`, and the dead
+ * `while (0) { temp_f2 = y; }` anchor. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/pad.h"
 #include "uso_call.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
 
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
-void pad_update(char *arg0) {
+/* agent-b run 521: typed over gdl/pad.h PadCtl; identical objdump -dr. Spelling notes: a
+ * field read is lowered in the opposite order from the old `FW(arg0, off)` form, so the
+ * commutative pairs that were `X | FW(0x10)` are written `p->held | X` here (PLAY arm,
+ * injected input) and the doubleTap test is `lastPressed & pressed`. D_00000000 below is
+ * the dirIndex table (one u8 per direction-bit pattern). */
+void pad_update(PadCtl *p) {
     f32 temp_f0;
     f32 temp_f2;
     f32 var_f0;
-    s16 temp_v0;
+    s16 pos;
     s32 temp_a0;
-    char *temp_t0;
+    char *rumble;  /* read back through a u8 * cast: a plain u8 * local swaps the addu */
     s32 temp_t4;
     s32 temp_v0_2;
     s32 temp_v0_4;
     s32 temp_v0_5;
     s32 temp_v0_6;
     s32 temp_v0_7;
-    s32 temp_v1;
+    s32 port;
     s32 temp_v1_2;
-    u32 temp_t3;
-    char *temp_v0_3;
+    InputFrame *frame;
 
-    temp_v1 = FW(arg0, 0x34);
-    if ((temp_v1 != 0) && (FW(arg0, 0x68) == 0)) {
-        temp_t0 = (char *) FW(arg0, 0x78);
-        if (temp_t0 != 0) {
-            temp_v0 = (*(s16*)((char*)arg0 + 0x74));
-            (*(s16*)((char*)arg0 + 0x74)) = (s16) (temp_v0 + 1);
-            CALL(pad_setSlotValueGlobal)(&gSysLib, temp_v1 - 1, ((u8*)temp_t0)[temp_v0], arg0);
-            if (*(u8*)((*(s16*)((char*)arg0 + 0x74)) + FW(arg0, 0x78)) == 0xFF) {
-                FW(arg0, 0x78) = 0;
-                (*(s16*)((char*)arg0 + 0x76)) = 0;
+    port = p->port;
+    if ((port != 0) && (p->paused == 0)) {
+        rumble = (char *)p->rumble;
+        if (rumble != 0) {
+            pos = p->rumblePos;
+            p->rumblePos = (s16) (pos + 1);
+            CALL(pad_setSlotValueGlobal)(&gSysLib, port - 1, ((u8 *)rumble)[pos], p);
+            if (p->rumble[p->rumblePos] == 0xFF) {
+                p->rumble = 0;
+                p->rumblePrio = 0;
             }
         }
     }
-    FW(arg0, 0x14) = FW(arg0, 0x10);
-    FW(arg0, 0x10) = 0;
-    if (FW(arg0, 0x68) == 0) {
-        if (FW(arg0, 0x34) != 0) {
-            CALL(pad_decodeButtonMap_00034CC8)(&gSysLib, arg0);
+    p->prevHeld = p->held;
+    p->held = 0;
+    if (p->paused == 0) {
+        if (p->port != 0) {
+            CALL(pad_decodeButtonMap_00034CC8)(&gSysLib, p);
         }
-        if (FW(arg0, 0x70) != 0) {
-            (*(s8*)((char*)arg0 + 0x8)) = (s8) -(*(s8*)((char*)arg0 + 0x8));
+        if (p->mirrorX != 0) {
+            p->rawStickX = (s8) -p->rawStickX;
         }
-        if (FW(arg0, 0x4C) != 0) {
-            FW(arg0, 0x50) = FW(arg0, 0x50) + 1;
-            if ((u32) FW(arg0, 0x50) >= (u32) FW(arg0, 0x54)) {
-                FW(arg0, 0x4C) = 0;
+        if (p->replayMode != PAD_REPLAY_OFF) {
+            p->replayFrame = p->replayFrame + 1;
+            if ((u32) p->replayFrame >= (u32) p->replayLen) {
+                p->replayMode = PAD_REPLAY_OFF;
             }
-            temp_v0_2 = FW(arg0, 0x4C);
-            if (temp_v0_2 == 2) {
-                *(s8*)(FW(arg0, 0x5C) + (FW(arg0, 0x50) * 4)) = (*(s8*)((char*)arg0 + 0x8));
-                *(s8*)((FW(arg0, 0x5C) + (FW(arg0, 0x50) * 4)) + 0x1) = (*(s8*)((char*)arg0 + 0x9));
-                temp_t4 = FW(arg0, 0x6C) & FW(arg0, 0x10) & 0x1700;
-                *(s16*)((FW(arg0, 0x5C) + (FW(arg0, 0x50) * 4)) + 0x2) = temp_t4;
-                *(int*)(FW(arg0, 0x58)) = FW(arg0, 0x50);
-            } else if (temp_v0_2 == 1) {
-                temp_v0_3 = (char *)((FW(arg0, 0x50) * 4) + FW(arg0, 0x5C));
-                FW(arg0, 0x10) = (s32) (*(s16*)((char*)temp_v0_3 + 0x2) | FW(arg0, 0x10));
-                (*(s8*)((char*)arg0 + 0x8)) = *(s8*)((char*)temp_v0_3 + 0x0);
-                (*(s8*)((char*)arg0 + 0x9)) = *(s8*)((char*)temp_v0_3 + 0x1);
+            temp_v0_2 = p->replayMode;
+            if (temp_v0_2 == PAD_REPLAY_RECORD) {
+                p->replayFrames[p->replayFrame].stickX = p->rawStickX;
+                p->replayFrames[p->replayFrame].stickY = p->rawStickY;
+                temp_t4 = p->held & p->recordMask & 0x1700;
+                p->replayFrames[p->replayFrame].buttons = temp_t4;
+                *p->replayLenOut = p->replayFrame;
+            } else if (temp_v0_2 == PAD_REPLAY_PLAY) {
+                frame = &p->replayFrames[p->replayFrame];
+                p->held = (s32) (p->held | frame->buttons);
+                p->rawStickX = frame->stickX;
+                p->rawStickY = frame->stickY;
             }
         }
-        while (0) { temp_f2 = (*(f32*)((char*)arg0 + 0x4)); }
-        temp_f0 = (f32) (*(s8*)((char*)arg0 + 0x8)) / 80.0f;
-        (*(f32*)((char*)arg0 + 0x0)) = temp_f0;
-        (*(f32*)((char*)arg0 + 0x4)) = (f32) ((f32) (*(s8*)((char*)arg0 + 0x9)) / 80.0f);
+        while (0) { temp_f2 = p->stickY; }
+        temp_f0 = (f32) p->rawStickX / 80.0f;
+        p->stickX = temp_f0;
+        p->stickY = (f32) ((f32) p->rawStickY / 80.0f);
         if (temp_f0 < 0.0f) {
-            var_f0 = -(*(f32*)((char*)arg0 + 0x0));
+            var_f0 = -p->stickX;
         } else {
-            var_f0 = (*(f32*)((char*)arg0 + 0x0));
+            var_f0 = p->stickX;
         }
         if ((f64) var_f0 < 0.2) {
-            (*(f32*)((char*)arg0 + 0x0)) = 0.0f;
+            p->stickX = 0.0f;
         }
-        temp_f2 = (*(f32*)((char*)arg0 + 0x4));
+        temp_f2 = p->stickY;
         if (temp_f2 < 0.0f) {
             var_f0 = -temp_f2;
         } else {
             var_f0 = temp_f2;
         }
         if ((f64) var_f0 < 0.2) {
-            (*(f32*)((char*)arg0 + 0x4)) = 0.0f;
+            p->stickY = 0.0f;
         }
     }
-    if (FW(arg0, 0x3C) != 0) {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x40) | FW(arg0, 0x10));
-        FW(arg0, 0x3C) = 0;
-        (*(f32*)((char*)arg0 + 0x0)) = (f32) (*(f32*)((char*)arg0 + 0x44));
-        (*(f32*)((char*)arg0 + 0x4)) = (f32) (*(f32*)((char*)arg0 + 0x48));
+    if (p->injectPending != 0) {
+        p->held = (s32) (p->held | p->injectButtons);
+        p->injectPending = 0;
+        p->stickX = (f32) p->injectStickX;
+        p->stickY = (f32) p->injectStickY;
     }
-    if ((f64) (*(f32*)((char*)arg0 + 0x0)) > 0.5) {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) | 0x4000);
+    if ((f64) p->stickX > 0.5) {
+        p->held = (s32) (p->held | 0x4000);
     } else {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) & ~0x4000);
+        p->held = (s32) (p->held & ~0x4000);
     }
-    if ((f64) (*(f32*)((char*)arg0 + 0x0)) < -0.5) {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) | 0x10000);
+    if ((f64) p->stickX < -0.5) {
+        p->held = (s32) (p->held | 0x10000);
     } else {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) & 0xFFFEFFFF);
+        p->held = (s32) (p->held & 0xFFFEFFFF);
     }
-    if ((f64) (*(f32*)((char*)arg0 + 0x4)) > 0.5) {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) | 0x2000);
+    if ((f64) p->stickY > 0.5) {
+        p->held = (s32) (p->held | 0x2000);
     } else {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) & ~0x2000);
+        p->held = (s32) (p->held & ~0x2000);
     }
-    if ((f64) (*(f32*)((char*)arg0 + 0x4)) < -0.5) {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) | 0x8000);
+    if ((f64) p->stickY < -0.5) {
+        p->held = (s32) (p->held | 0x8000);
     } else {
-        FW(arg0, 0x10) = (s32) (FW(arg0, 0x10) & 0xFFFF7FFF);
+        p->held = (s32) (p->held & 0xFFFF7FFF);
     }
-    temp_v0_4 = FW(arg0, 0x10);
-    temp_v1_2 = FW(arg0, 0x14);
-    temp_a0 = FW(arg0, 0x38);
-    FW(arg0, 0x18) = (temp_v0_4 | 0) & ~temp_v1_2;
-    FW(arg0, 0x1C) = (s32) (~temp_v0_4 & temp_v1_2);
+    temp_v0_4 = p->held;
+    temp_v1_2 = p->prevHeld;
+    temp_a0 = p->tapTimer;
+    p->pressed = (temp_v0_4 | 0) & ~temp_v1_2;
+    p->released = (s32) (~temp_v0_4 & temp_v1_2);
     if (temp_a0 != 0) {
         temp_v0_5 = temp_a0 - 1;
-        FW(arg0, 0x38) = temp_v0_5;
+        p->tapTimer = temp_v0_5;
         if (temp_v0_5 > 0) {
-            temp_v0_6 = FW(arg0, 0x18) & FW(arg0, 0x24);
-            FW(arg0, 0x20) = temp_v0_6;
+            temp_v0_6 = p->lastPressed & p->pressed;
+            p->doubleTap = temp_v0_6;
             if (temp_v0_6 != 0) {
-                FW(arg0, 0x38) = 0;
+                p->tapTimer = 0;
             }
         }
     } else {
-        temp_v0_7 = FW(arg0, 0x18);
-        FW(arg0, 0x20) = 0;
-        FW(arg0, 0x24) = temp_v0_7;
+        temp_v0_7 = p->pressed;
+        p->doubleTap = 0;
+        p->lastPressed = temp_v0_7;
         if (temp_v0_7 != 0) {
-            FW(arg0, 0x38) = 0xA;
+            p->tapTimer = 0xA;
         }
     }
-    (*(s16*)((char*)arg0 + 0x7C)) = (s16) *(u8*)((char*)&D_00000000 + ((u32)(FW(arg0, 0x10) & 0x1E000) >> 0xD));
+    p->dirIndex = (s16) *(u8*)((char*)&D_00000000 + ((u32)(p->held & 0x1E000) >> 0xD));
 }

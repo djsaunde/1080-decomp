@@ -18,38 +18,10 @@
  * address), which keeps the relocated symbol and offset unchanged (READABILITY_PLAN 9, rule 4e).
  */
 
-/* one controller as the input manager sees it (the objects in InputMgr.pads[]) */
-typedef struct InputPad {
-    char pad00[0x10];
-    /* 0x10 */ s32 held;      /* button mask tested by input_checkHeld_00011ED4 */
-    char pad14[0x18 - 0x14];
-    /* 0x18 */ s32 pressed;   /* tested by input_checkPressed_00011E00 */
-    /* 0x1C */ s32 released;  /* tested by input_checkReleased_00011FA8 */
-    char pad20[0x4C - 0x20];
-    /* Input recording / playback (pad_update, game_libs 0x675A4; pad_startRecord /
-     * pad_startPlay). One InputFrame per frame. */
-    /* 0x4C */ s32 replayMode;   /* PAD_REPLAY_OFF / PLAY / RECORD; drops to OFF at replayLen */
-    /* 0x50 */ s32 replayFrame;  /* frame index, counted up by pad_update */
-    /* 0x54 */ s32 replayLen;    /* frames to play, or the record capacity */
-    /* 0x58 */ s32 *replayLenOut; /* RECORD: receives the frame count each frame */
-    /* 0x5C */ struct InputFrame *replayFrames;
-    char pad60[0x6C - 0x60];
-    /* 0x6C */ s32 recordMask;   /* ANDed with held when recording; the replay_begin* functions
-                                  * set 0xFFFBFFFF */
-    /* 0x70 */ s32 mirrorX;      /* nonzero: pad_update negates the stick x byte */
-} InputPad;
-
-/* One recorded frame (4 bytes): pad_update RECORD stores the raw stick bytes and
- * (recordMask & held & 0x1700); PLAY loads the stick bytes back and ORs the buttons into held. */
-typedef struct InputFrame {
-    /* 0x0 */ signed char stickX;   /* plain C types: the NCC .cpp users have no s8 / s16 */
-    /* 0x1 */ signed char stickY;
-    /* 0x2 */ short buttons;
-} InputFrame;
-
-#define PAD_REPLAY_OFF      0
-#define PAD_REPLAY_PLAY     1   /* pad_startPlay */
-#define PAD_REPLAY_RECORD   2   /* pad_startRecord */
+/* One controller as the input manager sees it (the objects in InputMgr.pads[]): the libgdl
+ * PadCtl (include/gdl/pad.h, 0x80), which also defines InputFrame and PAD_REPLAY_*. */
+#include "../gdl/pad.h"
+typedef PadCtl InputPad;
 
 /* One entry of InputMgr.usoList (GameFlow_unloadUso_00011A34 unloads each handle and frees
  * the entry). */
@@ -178,7 +150,6 @@ typedef char InputPad_released_check[(int)&((InputPad *)0)->released == 0x1C ? 1
 typedef char InputPad_replayMode_check[(int)&((InputPad *)0)->replayMode == 0x4C ? 1 : -1];
 typedef char InputPad_recordMask_check[(int)&((InputPad *)0)->recordMask == 0x6C ? 1 : -1];
 typedef char InputPad_mirrorX_check[(int)&((InputPad *)0)->mirrorX == 0x70 ? 1 : -1];
-typedef char InputFrame_size_check[sizeof(InputFrame) == 4 ? 1 : -1];
 typedef char InputMgr_recordBuf_check[(int)&((InputMgr *)0)->recordBuf == 0x160 ? 1 : -1];
 typedef char InputMgr_nextFlowMode_check[(int)&((InputMgr *)0)->nextFlowMode == 0x34 ? 1 : -1];
 typedef char InputMgr_procState_check[(int)&((InputMgr *)0)->procState == 0x40 ? 1 : -1];
