@@ -38,8 +38,14 @@ Example: which modules call replay_saveGhost (docs/1080_REPLAY.md):
   -> timproc  0x...  TimMenu_handleInput_00002A8C  jal  replay_saveGhost
      trkproc  0x...  TrkMenu_handleInput_00002C98  jal  replay_saveGhost
 
-Limits: modules whose header word 1 is 6 instead of 8 (n64proc, gamegfx, the character
-and data USOs) have a different layout and show no sections here. trnproc and viewrec
+Module layout: the magic word is followed directly by the section records. Code modules
+start with a Bss record (type 8, no payload: header word 1 reads 8); n64proc, gamegfx, the
+boarderN and the data USOs start with Data (6) or RoData (7) and have no Bss. n64proc's
+c segment starts 4 bytes before its Text payload (the Text record's flag word is the
+`beq zero,zero` trampoline of n64proc_uso_func_00000000), so its first function shows at
+Text-0x4.
+
+Limits: trnproc and viewrec
 have Text but no splat code segment, so their sites print as `Text+0xK`. A target
 `gl_X+0x4` is a real Sym value inside the build's symbol X (a split boundary), not an
 error of this script.
@@ -86,11 +92,15 @@ class Module:
         self.short = name[:-4] if name.endswith('.uso') else name
         self.secs, self.secrom, self.compressed = {}, {}, set()
         self.funcs = []          # sorted [(text_off, size, name)]
+        self.bss_size = 0
         self._parse(rom)
 
     def _parse(self, rom):
         assert u32(rom, self.hdr) == MAGIC, hex(self.hdr)
-        o = self.hdr + 16
+        # The magic is followed directly by section records. Code modules start with a Bss
+        # record (type 8: no payload), so word 1 reads 8; n64proc, the boarderN / data USOs
+        # start with Data (6) or RoData (7) (run 510).
+        o = self.hdr + 4
         while o < len(rom) - 12:
             # section headers may sit 1-3 bytes off after a Yay0 payload
             for k in range(4):
@@ -102,7 +112,10 @@ class Module:
                 break
             t, size, flag = u32(rom, o), u32(rom, o + 4), u32(rom, o + 8)
             d0 = o + 12
-            if flag & 0x10000:
+            if t == 8:                       # Bss: size only, no payload
+                data, nxt = b'', d0
+                self.bss_size = size
+            elif flag & 0x10000:
                 data = crunch64.yay0.decompress(rom[d0:d0 + size + 0x40000])
                 nxt = d0 + len(crunch64.yay0.compress(data))
                 self.compressed.add(TYPES[t])

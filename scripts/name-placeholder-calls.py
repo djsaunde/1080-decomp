@@ -49,9 +49,25 @@ clean build then flags the stale CALL name.
 
 Modules: bootup (src/game_libs, src/bootup_uso), game (game_uso), genproc
 (timproc_uso_b5), gui, titproc, eddproc, arcproc, h2hproc, mgrproc, timproc
-(timproc_uso_b1), trkproc (timproc_uso_b3). n64proc / boarderN / kernel are not
-resolvable (n64proc and the character USOs use the other module layout; the kernel has
-no placeholders). NCC .cpp files are not compiled by the verify path yet (left).
+(timproc_uso_b1), trkproc (timproc_uso_b3), n64proc, boarder1-5 (run 510: uso-imports
+now parses their Data-first layout). The kernel has no placeholders.
+
+NCC / MIPSpro donors (.cpp, run 510): the verify copy is built with the object's own Makefile
+recipe (NCC or tools/ncc721.sh, then its objcopy --redefine-sym renames; relative #includes
+made absolute), its npc_uc_N declarations wrapped in extern "C" (K&R `()` becomes `(...)`).
+Compiler-generated jals (operator new, constructors, vec_new) have no source site, so the
+call count == reloc count rule is not applied to .cpp; every named site is still pinned by
+its own npc_uc_N reloc in a byte-identical object. `check` on a .cpp aggregates per file
+(source blocks such as inline members are not object functions).
+
+ROM guard (run 510, all files): a function is used only when the real object's bytes (words
+without a reloc) are the module's Text at that name. A donor's extra copy of a function that
+is not spliced (game_libs_o2_34548.c's dbg_printfSink) shares the name but not the bytes.
+
+Every subcommand first runs `make RUN_CC_CHECK=0 -j8 build/assets/*_yay0.bin` (the block
+images that carry the compressed modules' names; a plain make does not always rebuild
+them) and exits with a clear message if they cannot be made. `--no-build` (before the
+subcommand) skips the make and only checks that they exist.
 """
 import argparse
 import collections
@@ -96,7 +112,9 @@ KEYWORDS = {'return', 'else', 'case', 'goto', 'do', 'sizeof', 'default'}
 MODULE_OF_DIR = {'game_libs': 'bootup', 'bootup_uso': 'bootup', 'game_uso': 'game',
                  'timproc_uso_b5': 'genproc', 'gui_uso': 'gui', 'titproc_uso': 'titproc',
                  'eddproc_uso': 'eddproc', 'arcproc_uso': 'arcproc', 'h2hproc_uso': 'h2hproc',
-                 'mgrproc_uso': 'mgrproc', 'timproc_uso_b1': 'timproc', 'timproc_uso_b3': 'trkproc'}
+                 'mgrproc_uso': 'mgrproc', 'timproc_uso_b1': 'timproc', 'timproc_uso_b3': 'trkproc',
+                 'n64proc_uso': 'n64proc', **{f'boarder{i}_uso': f'boarder{i}' for i in range(1, 6)}}
+BUILD_VENV = '/home/danjs/code/decomp/tools/build-venv/bin'
 INCLUDE_LINE = '#include "uso_call.h"'
 INCLUDE_REL = '../../include/uso_call.h'
 SCRATCH = 'build/npc'
@@ -212,9 +230,15 @@ def scan(src, m=None):
         tok = TOK_OF[mt.group(1)] if mt.group(1) else mt.group(3)
         sites.append((mt.start(), mt.end(), tok, mt.group(2) or mt.group(4)))
         spans.append((mt.start(), mt.end()))
+    # placeholder-named DATA (e.g. `extern ViContext *gl_func_00000000_vinext711;`): its uses
+    # are not calls; spelling them as npc_uc_N functions breaks the verify compile (run 510)
+    data_toks = {mt.group(1) for mt in PH_RE.finditer(m)
+                 if is_decl(m, mt.start()) and not re.match(r'\s*\(', m[mt.end():])}
     for mt in PH_RE.finditer(m):
         if is_decl(m, mt.start()) or any(a <= mt.start() < b for a, b in spans):
             continue     # (the token inside an XCALL(tok, f) is that macro's site)
+        if mt.group(1) in data_toks:
+            continue
         sites.append((mt.start(), mt.end(), mt.group(1), None))
     sites.sort()
     out = []
@@ -235,7 +259,7 @@ _DECLS = {}
 def decl_for(src, m, tok, pos, name):
     """`extern <type> name(<params>); ` copied from tok's nearest preceding declaration
     (default `extern int name();`, the K&R form most files use)."""
-    key = (id(m), tok)
+    key = (m, tok)      # not id(m): plan threads free and reuse ids across files (run 510)
     if key not in _DECLS:
         lst = []
         for d in re.finditer(r'(?:(?<=[;{}])|^)[ \t\n]*((?:[A-Za-z_]\w*[ \t\*]+)+?)\**' + re.escape(tok) +
@@ -292,7 +316,7 @@ def insert_point(m, boundary):
     return i
 
 
-def verify_text(src, m, sites):
+def verify_text(src, m, sites, cpp=False):
     edits = []      # (pos, end, text)
     by_block = collections.defaultdict(list)
     for s in sites:
@@ -301,6 +325,8 @@ def verify_text(src, m, sites):
     for blk, ss in by_block.items():
         ip = insert_point(m, blk[0])
         decls = ''.join(decl_for(src, m, s.tok, s.pos, f'npc_uc_{s.i}') for s in ss)
+        if cpp:     # unmangled names; C++ `f()` means (void), so the K&R default becomes (...)
+            decls = 'extern "C" { ' + re.sub(r'\(\); $', '(...); ', decls.replace('(); ', '(...); ')) + '} '
         edits.append((ip, ip, decls))
     strip_static_funcs(m, edits)
     out = src
@@ -313,7 +339,8 @@ def verify_text(src, m, sites):
 class MakeVars:
     def __init__(self, path='Makefile'):
         self.glob, self.tgt = {}, []
-        for line in open(path).read().replace('\\\n', ' ').split('\n'):
+        self.lines = open(path).read().replace('\\\n', ' ').split('\n')
+        for line in self.lines:
             if line.startswith('\t') or line.startswith('#'):
                 continue
             mm = re.match(r'^([A-Za-z_][\w]*)\s*(:=|\?=|=|\+=)\s*(.*)$', line)
@@ -346,6 +373,35 @@ class MakeVars:
         return {k: self.expand(loc.get(k, self.glob.get(k, '')), loc)
                 for k in ('CC', 'CFLAGS', 'OPT_FLAGS', 'CC_ONLY_FLAGS', 'MIPSISET', 'CPPFLAGS')}
 
+    def recipe(self, obj):
+        """The recipe lines of obj's rule: an explicit rule naming it (targets may be $(VAR)s),
+        else the matching pattern rule with the shortest stem (GNU make's choice)."""
+        rules = []      # (targets, recipe lines)
+        cur = None
+        for line in self.lines:
+            if line.startswith('\t'):
+                if cur is not None:
+                    cur.append(line[1:])
+                continue
+            cur = None
+            if not line.strip() or line.startswith('#'):
+                continue
+            mm = re.match(r'^([^:=#\t][^:=#]*?):(?!=)\s*(.*)$', line)
+            if mm and not re.match(r'\s*(?:private\s+)?(?:override\s+)?[A-Za-z_]\w*\s*(:=|=|\+=)', mm.group(2)):
+                cur = []
+                rules.append((self.expand(mm.group(1), {}).split(), cur))
+        exact = [r for t, r in rules if obj in t and r]
+        if exact:
+            return exact[-1]
+        pats = []
+        for t, r in rules:
+            for x in t:
+                if '%' in x and r:
+                    a, b = x.split('%', 1)
+                    if obj.startswith(a) and obj.endswith(b) and len(obj) >= len(a) + len(b):
+                        pats.append((len(obj) - len(a) - len(b), r))
+        return min(pats, key=lambda p: p[0])[1] if pats else None
+
 
 # ---------------------------------------------------------------- ELF
 def elf_info(path):
@@ -375,7 +431,53 @@ def elf_info(path):
         return funcs, rel
 
 
+def reloc_offsets(path):
+    """every .text offset with a reloc of any type"""
+    with open(path, 'rb') as f:
+        e = ELFFile(f)
+        return {r['r_offset'] for sec in e.iter_sections() if sec.name in ('.rel.text', '.rela.text')
+                for r in sec.iter_relocations()}
+
+
+def rom_bytes_match(md, base, rb, rv, relocs):
+    """The real object's function (rb at .o offset rv) is the code in the module's Text at
+    base: every word without a reloc is identical. Guards donors that are not spliced (an NM
+    comparison donor shares the host's name but not its bytes)."""
+    t = md.secs.get('Text', b'')
+    if base < 0 or base + len(rb) > len(t):
+        return base < 0 and base + len(rb) <= len(t) and \
+            all(rb[k:k + 4] == t[base + k:base + k + 4] for k in range(-base, len(rb), 4)
+                if rv + k not in relocs)
+    return all(rb[k:k + 4] == t[base + k:base + k + 4] for k in range(0, len(rb), 4) if rv + k not in relocs)
+
+
 # ---------------------------------------------------------------- ROM resolution
+def block_targets():
+    """The Yay0 block images uso-imports reads names from (build/assets/X_yay0.text.bin is a
+    by-product of the make target build/assets/X_yay0.bin)."""
+    return sorted({tb.replace('.text.bin', '.bin') for tb, _ in UI.COMPRESSED})
+
+
+def ensure_build(no_build=False):
+    """Names of the compressed modules (game, genproc, mgrproc, timproc, trkproc, map4_data)
+    come from the Yay0 block images, which some make invocations do not (re)build. Make them
+    explicitly (a no-op when current); fail clearly when that is impossible."""
+    need = ['build/tenshoe.elf', 'build/tenshoe.map'] + [t.replace('.bin', '.text.bin') for t in block_targets()]
+    if not no_build:
+        env = dict(os.environ)
+        if os.path.isdir(BUILD_VENV):
+            env['PATH'] = BUILD_VENV + os.pathsep + env.get('PATH', '')
+        r = subprocess.run(['make', 'RUN_CC_CHECK=0', '-j8'] + block_targets(), env=env,
+                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        if r.returncode:
+            print('\n'.join(r.stdout.splitlines()[-10:]), file=sys.stderr)
+            sys.exit('make of the Yay0 block targets failed: ' + ' '.join(block_targets()))
+    missing = [p for p in need if not os.path.exists(p)]
+    if missing:
+        sys.exit('missing build products (run make RUN_CC_CHECK=0 -j8 ' + ' '.join(block_targets()) +
+                 ' after a full make): ' + ' '.join(missing))
+
+
 class Rom:
     def __init__(self):
         rom = open('baserom.z64', 'rb').read()
@@ -418,6 +520,8 @@ def compile_verify(path, text, mv):
     fl = mv.for_target(obj)
     base = os.path.join(SCRATCH, path)
     os.makedirs(os.path.dirname(base), exist_ok=True)
+    if path.endswith('.cpp'):
+        return compile_verify_cpp(path, text, mv, base)
     vsrc, pre, vobj = base + '.v.c', base + '.pre.c', base + '.v.o'
     open(vsrc, 'w').write(text)
     asmproc = ['python3', 'tools/asm-processor/asm_processor.py'] + fl['OPT_FLAGS'].split()
@@ -435,6 +539,38 @@ def compile_verify(path, text, mv):
     return elf_info(vobj)
 
 
+def compile_verify_cpp(path, text, mv, base):
+    """NCC / MIPSpro donors (.cpp): run the object's own Makefile recipe (NCC or ncc721.sh, then
+    any objcopy --redefine-sym renames) on the verify copy. No asm-processor in these rules."""
+    obj = obj_of(path)
+    rec = mv.recipe(obj)
+    if not rec:
+        raise RuntimeError('no Makefile recipe for ' + obj)
+    vsrc, vobj = base + '.v.cpp', base + '.v.o'
+    # donors build without -I: their includes are relative to the source dir
+    d = os.path.dirname(os.path.abspath(path))
+    text = re.sub(r'^(\s*#\s*include\s*")([^"/][^"]*)"',
+                  lambda x: x.group(1) + os.path.normpath(os.path.join(d, x.group(2))) + '"'
+                  if os.path.exists(os.path.join(d, x.group(2))) else x.group(0), text, flags=re.M)
+    open(vsrc, 'w').write(text)
+    if os.path.exists(vobj):
+        os.remove(vobj)
+    loc = dict(mv.for_target(obj))
+    for line in rec:
+        line = line.lstrip('@-').strip()
+        if not line or line.startswith('mkdir'):
+            continue
+        cmd = line.replace('$$', '\0').replace('$@', vobj).replace('$<', vsrc)
+        cmd = mv.expand(cmd, loc).replace('\0', '$')
+        r = subprocess.run(['bash', '-c', cmd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        if r.returncode:
+            errs = [ln for ln in r.stdout.splitlines() if 'rror' in ln][:3]
+            raise RuntimeError('ncc: ' + ' | '.join(errs or r.stdout.splitlines()[-3:]))
+    if not os.path.exists(vobj):
+        raise RuntimeError('ncc: no object')
+    return elf_info(vobj)
+
+
 def plan_file(path, rom, mv, verbose=False):
     """-> dict(path, sites=[Site], derived={i: name}, left={i: reason}, error=str|None)."""
     out = {'path': path, 'sites': [], 'derived': {}, 'left': {}, 'error': None}
@@ -443,22 +579,23 @@ def plan_file(path, rom, mv, verbose=False):
     out['sites'] = sites
     if not sites:
         return out
-    if path.endswith('.cpp'):
-        out['error'] = 'NCC .cpp (verify compile not supported)'
-        return out
     md = rom.module_for(path)
-    if md is None or not md.funcs:
-        out['error'] = 'module not resolvable by uso-imports'
+    if md is None:
+        out['error'] = 'no USO module mapped for this src dir (MODULE_OF_DIR)'
+        return out
+    if not md.funcs:
+        out['error'] = f'module {md.short}: no function names (build products missing?)'
         return out
     if not os.path.exists(obj_of(path)):
         out['error'] = 'no built object ' + obj_of(path)
         return out
     try:
-        vfuncs, vrel = compile_verify(path, verify_text(src, m, sites), mv)
+        vfuncs, vrel = compile_verify(path, verify_text(src, m, sites, path.endswith('.cpp')), mv)
     except RuntimeError as ex:
         out['error'] = str(ex)
         return out
     rfuncs, rrel = elf_info(obj_of(path))
+    rall = reloc_offsets(obj_of(path))
     # npc offsets per site, per function
     site_offs = collections.defaultdict(list)       # i -> [(func, reloff)]
     for off, sym in vrel.items():
@@ -482,11 +619,16 @@ def plan_file(path, rom, mv, verbose=False):
         covered = {o for i in mine for f, o in site_offs[i] if f == fn}
         real_ph = {off - rv for off, s in rrel.items() if rv <= off < rv + rsz and
                    (PH_RE.fullmatch(s) or s.startswith('sect:'))}
-        if real_ph - covered:
+        # C++: operator new / constructors / vec_new are jals with no source call (often to a
+        # placeholder via objcopy --redefine-sym). Each site is still pinned by its own npc_uc_N
+        # reloc in a byte-identical object, so those extra jals cannot be mistaken for it.
+        if real_ph - covered and not path.endswith('.cpp'):
             bad_funcs[fn] = f'call count != reloc count ({len(covered)} sites, {len(real_ph)} placeholder jals)'
             continue
         if rom.func_off(md, fn) is None:
             bad_funcs[fn] = f'not (uniquely) in the {md.short} name table'
+        elif not rom_bytes_match(md, rom.func_off(md, fn), rb, rv, rall):
+            bad_funcs[fn] = f'real object bytes are not the {md.short} Text at {fn} (unspliced donor?)'
     for s in sites:
         offs = site_offs.get(s.i)
         if not offs:
@@ -593,23 +735,30 @@ def check_fast(path, src, rom, quiet=False):
     if not mac:
         return 0, 0
     md = rom.module_for(path)
-    if md is None:
-        print(f'{path}: module not resolvable')
+    if md is None or not md.funcs:
+        print(f'{path}: module not resolvable' + (f' ({md.short}: no function names)' if md else ''))
         return len(mac), len(mac)
     rfuncs, rrel = elf_info(obj_of(path))
+    cpp = path.endswith('.cpp')
+    if cpp:     # C++ source blocks (members, inlines) are not object functions: per file
+        rall = reloc_offsets(obj_of(path))
+        live = [f for f in rfuncs if rom.func_off(md, f) is not None and
+                rom_bytes_match(md, rom.func_off(md, f), rfuncs[f][2], rfuncs[f][0], rall)]
     want = collections.defaultdict(collections.Counter)
     for s in mac:
-        want[(s.func, s.tok)][s.name] += 1
+        want[(None if cpp else s.func, s.tok)][s.name] += 1
     n = bad = 0
     for (fn, tok), cnt in want.items():
         n += sum(cnt.values())
         have = collections.Counter()
-        base = rom.func_off(md, fn) if fn in rfuncs else None
-        if base is not None:
-            rv, rsz, _ = rfuncs[fn]
+        for f in (live if cpp else [fn] if fn in rfuncs else []):
+            base = rom.func_off(md, f)
+            if base is None:
+                continue
+            rv, rsz, _ = rfuncs[f]
             for off, sym in rrel.items():
-                if rv <= off < rv + rsz and (sym == tok or sym.startswith('sect:')):
-                    have[rom.jal_target(md, base + off - rv)] += 1
+                if rv <= off < rv + rsz and (sym == tok or sym.startswith(tok + '__') or sym.startswith('sect:')):
+                    have[rom.jal_target(md, base + off - rv)] += 1   # (tok__F...: a C++-mangled decl)
         over = cnt - have
         if over:
             bad += sum(over.values())
@@ -677,7 +826,10 @@ def main():
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
     sub.add_parser('selftest')
+    ap.add_argument('--no-build', action='store_true',
+                    help='do not make the Yay0 block targets (only check they exist)')
     a = ap.parse_args()
+    ensure_build(a.no_build)
     rom, mv = Rom(), MakeVars()
     rc = {'plan': cmd_plan, 'check': cmd_check, 'selftest': cmd_selftest}[a.cmd](a, rom, mv)
     shutil.rmtree(SCRATCH, ignore_errors=True) if a.cmd == 'plan' and not a.verbose else None
