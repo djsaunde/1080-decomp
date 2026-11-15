@@ -12,6 +12,12 @@ exact original token (so the bytes cannot change):
     CALL(f) -> gl_func_00000000   FCALL(f) -> func_00000000
     GCALL(f) -> game_uso_func_00000000   XCALL(tok, f) -> tok
 
+Address tokens (run 520): a call spelled with an import's address-named token
+(`game_uso_func_055750(8)`, `gl_func_0007A1C0_x(...)`) is a placeholder too when the token is
+pinned to 0 in undefined_syms_auto.txt AND undefined in the real object (the link bakes `jal 0`
+just like func_00000000). plan names those with XCALL(tok, f) under the same per-site proof;
+their relocs count toward the call count == reloc count rule.
+
 Which source call is which jal (the ordering proof)
 ----------------------------------------------------
 Source order is NOT trusted (nested calls, loop conditions and for-increments are
@@ -228,10 +234,19 @@ def func_header_name(m, boundary, op):
     return mm.group(1) if mm and ')' in h else None
 
 
-def scan(src, m=None):
+def tok_re(extra=()):
+    """PH_RE, plus the given address tokens (run 520) as whole words."""
+    if not extra:
+        return PH_RE
+    return re.compile(r'\b(\w*func_00000000\w*|' + '|'.join(sorted(map(re.escape, extra))) + r')\b')
+
+
+def scan(src, m=None, extra=()):
     """Call sites: raw placeholder tokens (name None) and macro calls (name set), inside
-    file-scope function blocks, in source order."""
+    file-scope function blocks, in source order. extra: address tokens that are placeholders
+    too (zero_tokens() & the object's undefined symbols)."""
     m = m if m is not None else mask(src)
+    tre = tok_re(extra)
     blocks = [b for b in top_blocks(m) if func_header_name(m, b[0], b[1])]
     sites = []
     spans = []
@@ -241,9 +256,9 @@ def scan(src, m=None):
         spans.append((mt.start(), mt.end()))
     # placeholder-named DATA (e.g. `extern ViContext *gl_func_00000000_vinext711;`): its uses
     # are not calls; spelling them as npc_uc_N functions breaks the verify compile (run 510)
-    data_toks = {mt.group(1) for mt in PH_RE.finditer(m)
+    data_toks = {mt.group(1) for mt in tre.finditer(m)
                  if is_decl(m, mt.start()) and not re.match(r'\s*\(', m[mt.end():])}
-    for mt in PH_RE.finditer(m):
+    for mt in tre.finditer(m):
         if is_decl(m, mt.start()) or any(a <= mt.start() < b for a, b in spans):
             continue     # (the token inside an XCALL(tok, f) is that macro's site)
         if mt.group(1) in data_toks:
@@ -519,6 +534,53 @@ def obj_of(path):
     return 'build/' + path + '.o'
 
 
+ADDR_TOK_RE = re.compile(r'\w*func_(?!00000000)[0-9A-Fa-f]{6,8}\w*')
+_ZERO = None
+
+
+def zero_tokens():
+    """Address tokens (`game_uso_func_055750`, `gl_func_0007A1C0_x` ...) pinned to 0 in
+    undefined_syms_auto.txt: the link bakes `jal 0` exactly like func_00000000, so the ROM
+    TextReloc at the jal names the callee (run 520, ~950 such call sites ROM-wide)."""
+    global _ZERO
+    if _ZERO is None:
+        _ZERO = set()
+        try:
+            for line in open('undefined_syms_auto.txt', errors='replace'):
+                mm = re.match(r'\s*(\w+)\s*=\s*(0|0x0+)\s*;', line)
+                if mm and ADDR_TOK_RE.fullmatch(mm.group(1)):
+                    _ZERO.add(mm.group(1))
+        except OSError:
+            pass
+    return _ZERO
+
+
+def undefined_syms(path):
+    """names of the undefined (SHN_UNDEF) symbols of an object"""
+    with open(path, 'rb') as f:
+        st = ELFFile(f).get_section_by_name('.symtab')
+        return {s.name for s in st.iter_symbols() if s.name and s['st_shndx'] == 'SHN_UNDEF'} if st else set()
+
+
+def addr_tokens(path):
+    """the address tokens that are placeholders in path's real object: zero-pinned AND undefined
+    there (a token defined in the object is a real local function, not an import placeholder)"""
+    o = obj_of(path)
+    return frozenset(zero_tokens() & undefined_syms(o)) if os.path.exists(o) else frozenset()
+
+
+def addr_token_files():
+    """src files that call (`tok(`) a zero-pinned address token, sorted"""
+    z, out = zero_tokens(), []
+    for root, _, fs in os.walk('src'):
+        for f in fs:
+            if f.endswith(('.c', '.cpp')):
+                p = os.path.join(root, f)
+                if any(mt.group(1) in z for mt in re.finditer(r'\b(\w+)\s*\(', mask(open(p, errors='replace').read()))):
+                    out.append(p)
+    return sorted(out)
+
+
 def is_placeholder(symname, tok):
     return symname == tok or bool(PH_RE.fullmatch(symname or '')) or symname.startswith('sect:')
 
@@ -584,9 +646,10 @@ def plan_file(path, rom, mv, verbose=False):
     """-> dict(path, sites=[Site], derived={i: name}, left={i: reason}, error=str|None)."""
     out = {'path': path, 'sites': [], 'derived': {}, 'left': {}, 'error': None, 'hidden': {}}
     src = open(path, errors='replace').read()
-    sites, m = scan(src)
+    extra = addr_tokens(path)
+    sites, m = scan(src, extra=extra)
     out['sites'] = sites
-    out['hidden'] = hidden = macro_hidden(src, m)
+    out['hidden'] = hidden = macro_hidden(src, m, extra)
     if not sites:
         return out
     md = rom.module_for(path)
@@ -628,7 +691,7 @@ def plan_file(path, rom, mv, verbose=False):
             continue
         covered = {o for i in mine for f, o in site_offs[i] if f == fn}
         real_ph = {off - rv for off, s in rrel.items() if rv <= off < rv + rsz and
-                   (PH_RE.fullmatch(s) or s.startswith('sect:'))}
+                   (PH_RE.fullmatch(s) or s in extra or s.startswith('sect:'))}
         # C++: operator new / constructors / vec_new are jals with no source call (often to a
         # placeholder via objcopy --redefine-sym). Each site is still pinned by its own npc_uc_N
         # reloc in a byte-identical object, so those extra jals cannot be mistaken for it.
@@ -720,13 +783,14 @@ def add_include(path, src):
 MACRO_DEF_RE = re.compile(r'^[ \t]*#[ \t]*define[ \t]+(\w+)\(([^)]*)\)((?:[^\n]*\\\n)*[^\n]*)', re.M)
 
 
-def macro_hidden(src, m):
+def macro_hidden(src, m, extra=()):
     """{function: Counter(macro name -> uses)} for uses of THIS file's function-like macros whose
     body spells a placeholder call (`#define SEND(x) gl_func_00000000(x)`). scan() sees only the
     macro name at the use, so those jals have no site: the function's site count falls short of
     its jal count and plan refuses the whole function (agent-h run 514: game_createMap, 58 sites
     vs 65 jals). Not expanded: a CALL name would have to go into the shared macro body."""
-    names = {mt.group(1) for mt in MACRO_DEF_RE.finditer(src) if PH_RE.search(mt.group(3))}
+    tre = tok_re(extra)
+    names = {mt.group(1) for mt in MACRO_DEF_RE.finditer(src) if tre.search(mt.group(3))}
     out = collections.defaultdict(collections.Counter)
     if not names:
         return out
@@ -881,6 +945,20 @@ def cmd_selftest(a, rom, mv):
     nm = next(mt.group(2) for mt in MAC_RE.finditer(src) if mt.group(2) in back)
     stale = src.replace(f'CALL({nm})', f'CALL({back[nm]})', 1)
     assert check_fast(path, stale, rom, quiet=True)[1] == 1 and current_name(back[nm]) == nm
+    # address tokens (run 520): zero-pinned import placeholders such as game_uso_func_055750 are
+    # sites only when passed as extra (and only when undefined in the real object)
+    assert 'game_uso_func_055750' in zero_tokens() and 'game_uso_func_00000000' not in zero_tokens()
+    ext = addr_tokens(path)
+    assert 'game_uso_func_055750' in ext
+    t = 'extern int game_uso_func_055750();\nvoid f(void) { game_uso_func_055750(8); }\n'
+    assert not scan(t)[0] and [x.tok for x in scan(t, extra=ext)[0]] == ['game_uso_func_055750']
+    t = '#define NEW(n) game_uso_func_055750(n)\nvoid f(void) { NEW(1); }\n'
+    assert not macro_hidden(t, mask(t)) and dict(macro_hidden(t, mask(t), ext)) == {'f': collections.Counter({'NEW': 1})}
+    # an XCALL on an address token is checked like CALL: a wrong name is a mismatch
+    xc = next(mt for mt in MAC_RE.finditer(mask(src)) if mt.group(3) == 'game_uso_func_055750')
+    assert xc.group(4) == 'mem_new', xc.group(0)
+    wrong = src[:xc.start()] + 'XCALL(game_uso_func_055750, Parms_addParm)' + src[xc.end():]
+    assert check_fast(path, wrong, rom, quiet=True)[1] == 1
     # cam_reset_000008FC calls three different callees: swap the first two names
     sites, m = scan(src)
     cr = [s for s in sites if s.func == 'cam_reset_000008FC' and s.name]
@@ -896,6 +974,9 @@ def cmd_selftest(a, rom, mv):
         open(path, 'w').write(real)
     got = [(s.name, res['derived'].get(s.i)) for s in res['sites'] if s.func == 'cam_reset_000008FC' and s.name]
     assert got[0][0] != got[0][1] and got[1][0] != got[1][1], got   # strict re-derivation catches it
+    # and the per-site compile re-derives every XCALL(game_uso_func_055750, mem_new)
+    xs = [(s.name, res['derived'].get(s.i)) for s in res['sites'] if s.tok == 'game_uso_func_055750' and s.name]
+    assert len(xs) > 50 and all(n == d for n, d in xs), xs[:5]
     print('selftest OK')
     return 0
 
@@ -926,7 +1007,9 @@ def cmd_check(a, rom, mv):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
-    p = sub.add_parser('plan'); p.add_argument('files', nargs='+')
+    p = sub.add_parser('plan'); p.add_argument('files', nargs='*')
+    p.add_argument('--addr-token-files', action='store_true',
+                   help='add every src file that calls a zero-pinned address token (sorted)')
     p.add_argument('--write', action='store_true'); p.add_argument('-v', '--verbose', action='store_true')
     p = sub.add_parser('check'); p.add_argument('files', nargs='*')
     p.add_argument('--strict', action='store_true')
@@ -936,6 +1019,10 @@ def main():
     a = ap.parse_args()
     ensure_build(a.no_build)
     rom, mv = Rom(), MakeVars()
+    if a.cmd == 'plan':
+        a.files = sorted(set(a.files) | (set(addr_token_files()) if a.addr_token_files else set()))
+        if not a.files:
+            ap.error('plan: no files (give FILE.. or --addr-token-files)')
     rc = {'plan': cmd_plan, 'check': cmd_check, 'selftest': cmd_selftest}[a.cmd](a, rom, mv)
     shutil.rmtree(SCRATCH, ignore_errors=True) if a.cmd == 'plan' and not a.verbose else None
     sys.exit(rc or 0)
