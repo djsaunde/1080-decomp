@@ -23,7 +23,7 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCAF4);
-            *(s32 *)(sub + 0x28) = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&D_00000000;
             gl_func_00000000(sub + 0x2C);
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCAFC);
@@ -84,27 +84,27 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
                 gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB18);
-                *(s32 *)(sub2 + 0x28) = (s32)&D_00000000;
+                ((Node *)sub2)->vptr = (s32)&D_00000000;
                 gl_func_00000000(sub2 + 0x2C);
             }
-            *(s32 *)(sub + 0x28) = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&D_00000000;
         }
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCB20);
-        gl_func_00000000(arg0 + 0x10C, 0x5001B);
-        gl_func_00000000(arg0 + 0x124, 0x5001D);
-        gl_func_00000000(arg0, arg0 + 0x124, arg0 + 0x10C);
-        *(s32 *)(arg0 + 0xD4) = 0;
-        *(s32 *)(arg0 + 0xD8) = 0xFF;
-        *(s32 *)(arg0 + 0xDC) = 0x82;
-        *(f32 *)(arg0 + 0xC4) = 250.0f;
-        *(f32 *)(arg0 + 0xC8) = 235.0f;
-        *(f32 *)(arg0 + 0xCC) = 100.0f;
-        *(f32 *)(arg0 + 0xD0) = 0.0f;
-        *(f32 *)(arg0 + 0xC4) /= 255.0f;
-        *(f32 *)(arg0 + 0xC8) /= 255.0f;
-        *(f32 *)(arg0 + 0xCC) /= 255.0f;
-        *(f32 *)(arg0 + 0xD0) /= 255.0f;
-        *(s32 *)(arg0 + 0xE0) = arg1;
+        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB20);
+        gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001B);
+        gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
+        gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
+        ((Gadget *)arg0)->unkD4 = 0;
+        ((Gadget *)arg0)->unkD8 = 0xFF;
+        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->colour[0] = 250.0f;
+        ((Gadget *)arg0)->colour[1] = 235.0f;
+        ((Gadget *)arg0)->colour[2] = 100.0f;
+        ((Gadget *)arg0)->colour[3] = 0.0f;
+        ((Gadget *)arg0)->colour[0] /= 255.0f;
+        ((Gadget *)arg0)->colour[1] /= 255.0f;
+        ((Gadget *)arg0)->colour[2] /= 255.0f;
+        ((Gadget *)arg0)->colour[3] /= 255.0f;
+        ((Gadget *)arg0)->arg = arg1;
         gl_func_00000000(arg0, -80, -1, -61, 0);
     }
     return arg0;
@@ -112,15 +112,15 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
 
 extern int gl_func_00000000();
 int BestTimeGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x10C);
-    return gl_func_00000000(a0 + 0x124);
+    gl_func_00000000(((Gadget *)a0)->sprite0);
+    return gl_func_00000000(((Gadget *)a0)->sprite1);
 }
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CB30;
 
 void BestTimeGadget_setTime(char *a0, char a1, char a2, char a3) {
-    gl_func_00000000(a0 + 0xE4, &gl_ref_0000CB30, a1, a2, a3);
+    gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CB30, a1, a2, a3);
 }
 
 /* BestScoreGadget_ctor: twin of BestTimeGadget_ctor (0x174, 93 words; vtable
@@ -137,27 +137,27 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
                 gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB40);
-                *(s32 *)(sub2 + 0x28) = (s32)&D_00000000;
+                ((Node *)sub2)->vptr = (s32)&D_00000000;
                 gl_func_00000000(sub2 + 0x2C);
             }
-            *(s32 *)(sub + 0x28) = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&D_00000000;
         }
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCB48);
-        gl_func_00000000(arg0 + 0x10C, 0x5001E);
-        gl_func_00000000(arg0 + 0x124, 0x5001D);
-        gl_func_00000000(arg0, arg0 + 0x124, arg0 + 0x10C);
-        *(s32 *)(arg0 + 0xD4) = 0;
-        *(s32 *)(arg0 + 0xD8) = 0xFF;
-        *(s32 *)(arg0 + 0xDC) = 0x82;
-        *(f32 *)(arg0 + 0xC4) = 250.0f;
-        *(f32 *)(arg0 + 0xC8) = 235.0f;
-        *(f32 *)(arg0 + 0xCC) = 100.0f;
-        *(f32 *)(arg0 + 0xD0) = 0.0f;
-        *(f32 *)(arg0 + 0xC4) /= 255.0f;
-        *(f32 *)(arg0 + 0xC8) /= 255.0f;
-        *(f32 *)(arg0 + 0xCC) /= 255.0f;
-        *(f32 *)(arg0 + 0xD0) /= 255.0f;
-        *(s32 *)(arg0 + 0xE0) = arg1;
+        ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB48);
+        gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001E);
+        gl_func_00000000(((Gadget *)arg0)->sprite1, 0x5001D);
+        gl_func_00000000(arg0, ((Gadget *)arg0)->sprite1, ((Gadget *)arg0)->sprite0);
+        ((Gadget *)arg0)->unkD4 = 0;
+        ((Gadget *)arg0)->unkD8 = 0xFF;
+        ((Gadget *)arg0)->unkDC = 0x82;
+        ((Gadget *)arg0)->colour[0] = 250.0f;
+        ((Gadget *)arg0)->colour[1] = 235.0f;
+        ((Gadget *)arg0)->colour[2] = 100.0f;
+        ((Gadget *)arg0)->colour[3] = 0.0f;
+        ((Gadget *)arg0)->colour[0] /= 255.0f;
+        ((Gadget *)arg0)->colour[1] /= 255.0f;
+        ((Gadget *)arg0)->colour[2] /= 255.0f;
+        ((Gadget *)arg0)->colour[3] /= 255.0f;
+        ((Gadget *)arg0)->arg = arg1;
         gl_func_00000000(arg0, -56, -1, -38, 0);
     }
     return arg0;
@@ -165,14 +165,14 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
 
 extern int gl_func_00000000();
 int BestScoreGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x10C);
-    return gl_func_00000000(a0 + 0x124);
+    gl_func_00000000(((Gadget *)a0)->sprite0);
+    return gl_func_00000000(((Gadget *)a0)->sprite1);
 }
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CB58;
 int BestScoreGadget_setScore(char *a0, int arg1) {
-    return gl_func_00000000(a0 + 0xE4, &gl_ref_0000CB58, arg1);
+    return gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CB58, arg1);
 }
 
 /* TimeGadgetParms_ctor: MATCH 2026-07-15 (agent-h) — 5-member composite constructor,
@@ -300,21 +300,21 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0xC4), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCB84);
-            *(s32 *)(sub + 0x28) = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&D_00000000;
             gl_func_00000000(sub + 0x2C);
         }
-        *(f32 *)(arg0 + 0x94) = 235.0f / d255;
-        *(f32 *)(arg0 + 0x98) = 80.0f / d255;
-        *(f32 *)(arg0 + 0x9C) = 80.0f / d255;
-        *(f32 *)(arg0 + 0xA0) = 0.0f / d255;
-        *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCB8C);
-        *(s32 *)(arg0 + 0xA4) = 0;
-        *(s32 *)(arg0 + 0xA8) = 0xFF;
-        *(s32 *)(arg0 + 0xAC) = a1;
-        *(s32 *)(arg0 + 0xB0) = a2;
+        ((CountDownGadget *)arg0)->colour[0] = 235.0f / d255;
+        ((CountDownGadget *)arg0)->colour[1] = 80.0f / d255;
+        ((CountDownGadget *)arg0)->colour[2] = 80.0f / d255;
+        ((CountDownGadget *)arg0)->colour[3] = 0.0f / d255;
+        ((CountDownGadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB8C);
+        ((CountDownGadget *)arg0)->unkA4 = 0;
+        ((CountDownGadget *)arg0)->unkA8 = 0xFF;
+        ((CountDownGadget *)arg0)->arg1 = a1;
+        ((CountDownGadget *)arg0)->arg2 = a2;
         gl_func_00000000(arg0, 0x59, 2);
-        *(s32 *)(arg0 + 0xC4) = 0;
-        *(s32 *)(arg0 + 0xC8) = 1;
+        ((CountDownGadget *)arg0)->blink = 0;
+        ((CountDownGadget *)arg0)->unkC8 = 1;
     }
     return arg0;
 }
@@ -347,17 +347,8 @@ void CountDownGadget_release(int a0) {}
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-typedef struct GlTimer0B94 {
-    char pad0[0xB4];
-    char unkB4[8];
-    char unkBC[8];
-    s32 unkC4;
-    s32 unkC8;
-    s32 unkCC;
-    s32 unkD0;
-} GlTimer0B94;
 
-void game_libs_func_00000B94(GlTimer0B94 *arg0, s32 arg1, s32 arg2) {
+void game_libs_func_00000B94(CountDownGadget *arg0, s32 arg1, s32 arg2) {
     s32 sp24;
     s32 qmin;
     s32 rem;
@@ -369,30 +360,30 @@ void game_libs_func_00000B94(GlTimer0B94 *arg0, s32 arg1, s32 arg2) {
     rem = arg1 - (qmin * 60000);
     arg0->unkC8 = arg2;
     qsec = rem / 1000;
-    arg0->unkD0 = qmin * 60 + qsec;
-    if ((arg0->unkD0 == 0 && (sp24 = (rem - (qsec * 1000)) / 10) == 0) ||
+    arg0->secs = qmin * 60 + qsec;
+    if ((arg0->secs == 0 && (sp24 = (rem - (qsec * 1000)) / 10) == 0) ||
         (sp24 = (rem - (qsec * 1000)) / 10, arg0->unkC8 == 0)) {
-        arg0->unkC4 = 8;
+        arg0->blink = 8;
     }
-    temp_a2 = arg0->unkD0;
+    temp_a2 = arg0->secs;
     if (temp_a2 >= 100) {
-        gl_func_00000000(arg0->unkB4, (char *)&D_00000000 + 0xCB9C, temp_a2);
+        gl_func_00000000(arg0->secsText, (char *)&D_00000000 + 0xCB9C, temp_a2);
     } else if (temp_a2 >= 10) {
-        gl_func_00000000(arg0->unkB4, (char *)&D_00000000 + 0xCBA0, temp_a2);
+        gl_func_00000000(arg0->secsText, (char *)&D_00000000 + 0xCBA0, temp_a2);
     } else {
-        if (temp_a2 != arg0->unkCC) {
+        if (temp_a2 != arg0->lastSecs) {
             gl_func_00000000(19, temp_a2);
         }
-        temp_v0 = arg0->unkC4;
-        arg0->unkC4 = temp_v0 + 1;
+        temp_v0 = arg0->blink;
+        arg0->blink = temp_v0 + 1;
         if (temp_v0 & 8) {
-            gl_func_00000000(arg0->unkB4, (char *)&D_00000000 + 0xCBA8, arg0->unkD0);
+            gl_func_00000000(arg0->secsText, (char *)&D_00000000 + 0xCBA8, arg0->secs);
         } else {
-            gl_func_00000000(arg0->unkB4, (char *)&D_00000000 + 0xCBB0, arg0->unkD0);
+            gl_func_00000000(arg0->secsText, (char *)&D_00000000 + 0xCBB0, arg0->secs);
         }
-        arg0->unkCC = arg0->unkD0;
+        arg0->lastSecs = arg0->secs;
     }
-    gl_func_00000000(arg0->unkBC, (char *)&D_00000000 + 0xCBB8, sp24);
+    gl_func_00000000(arg0->csText, (char *)&D_00000000 + 0xCBB8, sp24);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00000B94);
@@ -441,22 +432,22 @@ void *PointsGadget_ctor(char *s0, int a1) {
         if (sub == 0) goto skip_init;
     }
     gl_func_00000000(sub, (char*)&D_00000000 + 0xCBC0);
-    *(int*)(sub + 0x28) = (int)&D_00000000;
+    ((Node *)sub)->vptr = (s32)&D_00000000;
     gl_func_00000000(sub + 0x2C);
 skip_init:
-    *(int*)(s0 + 0xC) = (int)((char*)&D_00000000 + 0xCBC8);
-    gl_func_00000000(s0 + 268, 0x050001);
-    gl_func_00000000(s0 + 292, 0x050007);
-    gl_func_00000000(s0, s0 + 292, s0 + 268);
+    ((Gadget *)s0)->node.name = (s32)((char*)&D_00000000 + 0xCBC8);
+    gl_func_00000000(((Gadget *)s0)->sprite0, 0x050001);
+    gl_func_00000000(((Gadget *)s0)->sprite1, 0x050007);
+    gl_func_00000000(s0, ((Gadget *)s0)->sprite1, ((Gadget *)s0)->sprite0);
     k = *(float*)((char*)&D_00000000 + 0xC70);
-    *(int*)(s0 + 0xD4) = 0;
-    *(int*)(s0 + 0xD8) = 255;
-    *(int*)(s0 + 0xDC) = 130;
-    *(float*)(s0 + 0xC4) = k;
-    *(float*)(s0 + 0xC8) = k;
-    *(float*)(s0 + 0xCC) = k;
-    *(float*)(s0 + 0xD0) = 0.0f;
-    *(int*)(s0 + 0xE0) = a1;
+    ((Gadget *)s0)->unkD4 = 0;
+    ((Gadget *)s0)->unkD8 = 255;
+    ((Gadget *)s0)->unkDC = 130;
+    ((Gadget *)s0)->colour[0] = k;
+    ((Gadget *)s0)->colour[1] = k;
+    ((Gadget *)s0)->colour[2] = k;
+    ((Gadget *)s0)->colour[3] = 0.0f;
+    ((Gadget *)s0)->arg = a1;
     gl_func_00000000(s0, -56, -1, -13, 0);
 done:
     return s0;
@@ -464,14 +455,14 @@ done:
 
 extern int gl_func_00000000();
 int PointsGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x10C);
-    return gl_func_00000000(a0 + 0x124);
+    gl_func_00000000(((Gadget *)a0)->sprite0);
+    return gl_func_00000000(((Gadget *)a0)->sprite1);
 }
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CBD8;
 int PointsGadget_setPoints(char *a0, int arg1) {
-    return gl_func_00000000(a0 + 0xE4, &gl_ref_0000CBD8, arg1);
+    return gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CBD8, arg1);
 }
 
 /* PointsGadget_ctor_00000ED0: constructor. obj = a0 ?: alloc(212); a defensive second
@@ -497,7 +488,7 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
         }
     }
     gl_func_00000000(node, (char*)&D_00000000 + 0xCBE0);
-    *(int*)(node + 0x28) = (int)&D_00000000;
+    ((Node *)node)->vptr = (s32)&D_00000000;
     gl_func_00000000(node + 0x2C);
 initfields:
     v = *(float*)((char*)&D_00000000 + 0xC74);
@@ -538,7 +529,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCBFC);
-            *(s32 *)(sub + 0x28) = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&D_00000000;
             gl_func_00000000(sub + 0x2C);
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCC04);
@@ -594,27 +585,27 @@ int* BoardsGadget_ctor(int *self) {
     if (self != 0 || (self = (int*)gl_func_00000000(0x140)) != 0) {
         if ((sub = self) != 0 || (sub = (int*)gl_func_00000000(0x10C)) != 0) {
             gl_func_00000000(sub, (char*)&gl_data_00000000 + 0xCC20);
-            *(int*)((char*)sub + 0x28) = (int)&D_00000000;
+            ((Node *)sub)->vptr = (int)&D_00000000;
             gl_func_00000000((char*)sub + 0x2C);
         }
-        *(int*)((char*)self + 0x28) = (int)&gl_data_00000000;
-        *(int*)((char*)self + 0xC) = (int)((char*)&gl_data_00000000 + 0xCC28);
-        gl_func_00000000((char*)self + 0x110,
+        ((BoardsGadget *)self)->node.vptr = (int)&gl_data_00000000;
+        ((BoardsGadget *)self)->node.name = (s32)((char*)&gl_data_00000000 + 0xCC28);
+        gl_func_00000000(((BoardsGadget *)self)->sprite,
             *(int*)((char*)&gl_data_00000000_11a4 + 0x54) | 0x001E0000);
         f = *(float*)((char*)&D_00000000 + 0xC78);
-        *(int*)((char*)self + 0xD4) = 0;
-        *(int*)((char*)self + 0xD8) = 0xFF;
-        *(int*)((char*)self + 0x10C) = 0;
-        *(float*)((char*)self + 0xC4) = f;
-        *(float*)((char*)self + 0xC8) = f;
-        *(float*)((char*)self + 0xCC) = f;
-        *(float*)((char*)self + 0xD0) = 0.0f;
+        ((BoardsGadget *)self)->unkD4 = 0;
+        ((BoardsGadget *)self)->unkD8 = 0xFF;
+        ((BoardsGadget *)self)->count = 0;
+        ((BoardsGadget *)self)->colour[0] = f;
+        ((BoardsGadget *)self)->colour[1] = f;
+        ((BoardsGadget *)self)->colour[2] = f;
+        ((BoardsGadget *)self)->colour[3] = 0.0f;
     }
     return self;
 }
 
 void BoardsGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x110);
+    gl_func_00000000(((BoardsGadget *)a0)->sprite);
 }
 
 /* BoardsGadget_display: Quad4(1.0f) colour + (int)(255 * alpha) setup, then a
@@ -641,15 +632,15 @@ void BoardsGadget_display(char *self) {
     buf[2] = 1.0f;
     buf[3] = 1.0f;
     gl_func_00000000((char*)&D_00000000, (int)(255.0f * gl_data_00000000_12b4f), buf);
-    s2 = self + 0x110;
+    s2 = ((BoardsGadget *)self)->sprite;
     gl_func_00000000(s2);
-    for (i = *(int*)(self + 0x10C) - 1; i >= 0; i--) {
+    for (i = ((BoardsGadget *)self)->count - 1; i >= 0; i--) {
         gl_func_00000000(s2, *(int*)(self + 0x44) + i * 4, *(int*)(self + 0x5C) - i * 4, 3);
     }
 }
 
 void game_libs_func_00001354(int *a0, int a1) {
-    a0[0x10C/4] = a1;
+    ((BoardsGadget *)a0)->count = a1;
 }
 
 #ifndef FW
