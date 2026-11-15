@@ -3012,7 +3012,7 @@ build/src/%.cpp.o: src/%.cpp
 # D204 = per-frame update with a pointer-to-member `(this->*pm)()` block
 # (133/133 words + 13/13 relocs identical under NCC; cfe capped at 85.8%).
 GAMEUSO_D204_DONOR := build/src/game_uso/game_uso_ncc_D204.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY := game_uso_func_0000D204=$(GAMEUSO_D204_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: REPLACE_FUNC_BODY := RiderAnim_update_0000D204=$(GAMEUSO_D204_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D204_DONOR)
 # 10694 = state-entry handler; passes PMFs by value to D5BC + the same PMF
 # null compare (107/107 words identical under NCC). Uses += (composes).
@@ -3105,7 +3105,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # inner end label and keep their nop delays. Host placeholder re-emits the
 # three .rodata doubles (+0x1F8..+0x210).
 GAMEUSO_D9CC_DONOR := build/src/game_uso/game_uso_ncc_D9CC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000D9CC=$(GAMEUSO_D9CC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_selectAnim_0000D9CC=$(GAMEUSO_D9CC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_D9CC_DONOR)
 # gui is C++ too (kit XXIII #3). 1A5C / 1CA8: DL colour emitters (combine +
 # primcolor) with an inline next() append member (147/147 words each).

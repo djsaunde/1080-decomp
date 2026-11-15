@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000C48C, 0xD78
+nonmatching RiderAnim_ctor_0000C48C, 0xD78
 
-glabel game_uso_func_0000C48C
+glabel RiderAnim_ctor_0000C48C
     /* 00C48C 0000C48C 27BDFF38 */  .word 0x27BDFF38
     /* 00C490 0000C490 AFB00018 */  .word 0xAFB00018
     /* 00C494 0000C494 00A08025 */  .word 0x00A08025
@@ -854,7 +854,7 @@ glabel game_uso_func_0000C48C
     /* 00D1D4 0000D1D4 8FAF00D0 */  .word 0x8FAF00D0
     /* 00D1D8 0000D1D8 8FB800C8 */  .word 0x8FB800C8
     /* 00D1DC 0000D1DC AF0F00B4 */  .word 0xAF0F00B4
-    jal game_uso_func_0000D458   /* 00D1E0 0C000000 -> game_uso_func_0000D458 */
+    jal RiderAnim_init_0000D458   /* 00D1E0 0C000000 -> RiderAnim_init_0000D458 */
     /* 00D1E4 0000D1E4 8FA400C8 */  .word 0x8FA400C8
     /* 00D1E8 0000D1E8 8FBF0024 */  .word 0x8FBF0024
     /* 00D1EC 0000D1EC 8FA200C8 */  .word 0x8FA200C8
@@ -863,7 +863,7 @@ glabel game_uso_func_0000C48C
     /* 00D1F8 0000D1F8 8FB20020 */  .word 0x8FB20020
     /* 00D1FC 0000D1FC 03E00008 */  .word 0x03E00008
     /* 00D200 0000D200 27BD00C8 */  .word 0x27BD00C8
-endlabel game_uso_func_0000C48C
+endlabel RiderAnim_ctor_0000C48C
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
@@ -871,7 +871,7 @@ endlabel game_uso_func_0000C48C
 .late_rodata
 /* +0x1EC..+0x1F4: own floats (lwc1 %lo 0x1EC/0x1F0) */
 .word 0x3F333333, 0x3FDC28F6
-/* +0x1F4..+0x1F8: float of NCC-donor fn game_uso_func_0000D204 (lwc1 %lo 0x1F4) */
+/* +0x1F4..+0x1F8: float of NCC-donor fn RiderAnim_update_0000D204 (lwc1 %lo 0x1F4) */
 .word 0x46DF1600
 
 .text

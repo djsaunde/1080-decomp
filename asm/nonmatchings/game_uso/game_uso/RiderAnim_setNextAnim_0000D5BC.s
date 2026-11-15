@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000D5BC, 0x20
+nonmatching RiderAnim_setNextAnim_0000D5BC, 0x20
 
-glabel game_uso_func_0000D5BC
+glabel RiderAnim_setNextAnim_0000D5BC
     /* 00D5BC 0000D5BC AFA50004 */  .word 0xAFA50004
     /* 00D5C0 0000D5C0 AFA60008 */  .word 0xAFA60008
     /* 00D5C4 0000D5C4 27AE0004 */  .word 0x27AE0004
@@ -9,4 +9,4 @@ glabel game_uso_func_0000D5BC
     /* 00D5D0 0000D5D0 8DCF0004 */  .word 0x8DCF0004
     /* 00D5D4 0000D5D4 03E00008 */  .word 0x03E00008
     /* 00D5D8 0000D5D8 AC8F00CC */  .word 0xAC8F00CC
-endlabel game_uso_func_0000D5BC
+endlabel RiderAnim_setNextAnim_0000D5BC

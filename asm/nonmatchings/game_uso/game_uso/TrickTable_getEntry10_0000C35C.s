@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000C35C, 0x1C
+nonmatching TrickTable_getEntry10_0000C35C, 0x1C
 
-glabel game_uso_func_0000C35C
+glabel TrickTable_getEntry10_0000C35C
     lui $t6, %hi(game_uso_D_807FFBC0)   /* 00C35C 3C0E0000 -> game_uso_D_807FFBC0 */
     /* 00C360 0000C360 8DCE0000 */  .word 0x8DCE0000
     /* 00C364 0000C364 00057980 */  .word 0x00057980
@@ -8,4 +8,4 @@ glabel game_uso_func_0000C35C
     /* 00C36C 0000C36C 01CF1021 */  .word 0x01CF1021
     /* 00C370 0000C370 03E00008 */  .word 0x03E00008
     /* 00C374 0000C374 24420010 */  .word 0x24420010
-endlabel game_uso_func_0000C35C
+endlabel TrickTable_getEntry10_0000C35C

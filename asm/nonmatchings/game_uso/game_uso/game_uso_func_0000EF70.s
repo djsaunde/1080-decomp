@@ -4,7 +4,7 @@ glabel game_uso_func_0000EF70
     /* 00EF70 0000EF70 27BDFFE0 */  .word 0x27BDFFE0
     /* 00EF74 0000EF74 AFBF001C */  .word 0xAFBF001C
     /* 00EF78 0000EF78 AFB00018 */  .word 0xAFB00018
-    jal game_uso_func_0000D6E4   /* 00EF7C 0C000000 -> game_uso_func_0000D6E4 */
+    jal RiderAnim_flipStance_0000D6E4   /* 00EF7C 0C000000 -> RiderAnim_flipStance_0000D6E4 */
     /* 00EF80 0000EF80 00808025 */  .word 0x00808025
     /* 00EF84 0000EF84 8E0400B4 */  .word 0x8E0400B4
     jal import_000A40C0   /* 00EF88 0C000000 -> import_000A40C0 */
@@ -24,11 +24,11 @@ glabel game_uso_func_0000EF70
     /* 00EFC0 0000EFC0 02002025 */  .word 0x02002025
     /* 00EFC4 0000EFC4 AFA50004 */  .word 0xAFA50004
     /* 00EFC8 0000EFC8 8F060004 */  .word 0x8F060004
-    jal game_uso_func_0000D5BC   /* 00EFCC 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 00EFCC 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 00EFD0 0000EFD0 AFA60008 */  .word 0xAFA60008
     /* 00EFD4 0000EFD4 1000001E */  .word 0x1000001E
     /* 00EFD8 0000EFD8 8FBF001C */  .word 0x8FBF001C
-    jal game_uso_func_0000D63C   /* 00EFDC 0C000000 -> game_uso_func_0000D63C */
+    jal RiderAnim_endTrick_0000D63C   /* 00EFDC 0C000000 -> RiderAnim_endTrick_0000D63C */
     /* 00EFE0 0000EFE0 24050001 */  .word 0x24050001
     /* 00EFE4 0000EFE4 8E0900B4 */  .word 0x8E0900B4
     lui $t3, %hi(game_uso_D_807FF450)   /* 00EFE8 3C0B0000 -> game_uso_D_807FF450 */
@@ -42,7 +42,7 @@ glabel game_uso_func_0000EF70
     /* 00F008 0000F008 02002025 */  .word 0x02002025
     /* 00F00C 0000F00C AFA50004 */  .word 0xAFA50004
     /* 00F010 0000F010 8D660004 */  .word 0x8D660004
-    jal game_uso_func_0000D5BC   /* 00F014 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 00F014 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 00F018 0000F018 AFA60008 */  .word 0xAFA60008
     jal game_uso_func_00010840   /* 00F01C 0C000000 -> game_uso_func_00010840 */
     /* 00F020 0000F020 02002025 */  .word 0x02002025
@@ -52,7 +52,7 @@ glabel game_uso_func_0000EF70
     /* 00F030 0000F030 02002025 */  .word 0x02002025
     /* 00F034 0000F034 AFA50004 */  .word 0xAFA50004
     /* 00F038 0000F038 8DC60004 */  .word 0x8DC60004
-    jal game_uso_func_0000D5BC   /* 00F03C 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 00F03C 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 00F040 0000F040 AFA60008 */  .word 0xAFA60008
     jal game_uso_func_00010694   /* 00F044 0C000000 -> game_uso_func_00010694 */
     /* 00F048 0000F048 02002025 */  .word 0x02002025

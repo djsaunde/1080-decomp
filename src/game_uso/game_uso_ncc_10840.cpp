@@ -24,7 +24,7 @@ void import_0010DB78(void *, int, int, float, int, int);
 void game_uso_func_0000D8A8(void *);
 void game_uso_func_0000D8EC(void *);
 void game_uso_func_0000E1FC(void *);
-void game_uso_func_0000D5BC(void *, PM);
+void RiderAnim_setNextAnim_0000D5BC(void *, PM);
 void game_uso_func_00011750(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
@@ -42,7 +42,7 @@ extern "C" void game_uso_func_00010840(int *a0) {
     }
     game_uso_func_0000E1FC(a0);
     if (I(I(a0, 0xB4), 0x9CC) == 0) {
-        game_uso_func_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
+        RiderAnim_setNextAnim_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
     }
     game_uso_func_00011750(a0);
 }

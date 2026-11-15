@@ -1883,17 +1883,17 @@ SnowAI_func_0000AB98 = 0;
 game_uso_func_0000B710 = 0;
 game_uso_func_0000B750 = 0;
 game_uso_func_0000B884 = 0;
-game_uso_func_0000D458 = 0;
-game_uso_func_0000D5BC = 0;
-game_uso_func_0000D5DC = 0;
-game_uso_func_0000D5F8 = 0;
-game_uso_func_0000D63C = 0;
-game_uso_func_0000D6E4 = 0;
+RiderAnim_init_0000D458 = 0;
+RiderAnim_setNextAnim_0000D5BC = 0;
+RiderAnim_setDefaultNext_0000D5DC = 0;
+RiderAnim_setAnim_0000D5F8 = 0;
+RiderAnim_endTrick_0000D63C = 0;
+RiderAnim_flipStance_0000D6E4 = 0;
 game_uso_func_0000D74C = 0;
 game_uso_func_0000D7F4 = 0;
 game_uso_func_0000D8A8 = 0;
 game_uso_func_0000D8EC = 0;
-game_uso_func_0000D9CC = 0;
+RiderAnim_selectAnim_0000D9CC = 0;
 game_uso_func_0000E1FC = 0;
 game_uso_func_0000E2D0 = 0;
 game_uso_func_0000E35C = 0;
@@ -3299,7 +3299,7 @@ D_00000000_e5e0r = 0x00000000;  /* 3E5E0 per-site addr alias */
 D_00000000_e5e0s = 0x00000000;  /* 3E5E0 per-site addr alias */
 gl_func_00000000_1360v = 0x00000000;  /* void-returning alias: dead-$v0 exclusion, h2hproc_uso_func_00001360 */
 
-/* game_uso_func_0000C48C per-site base-0 aliases: bust template-addr + float-load GCSE (target remats lui per site) */
+/* RiderAnim_ctor_0000C48C per-site base-0 aliases: bust template-addr + float-load GCSE (target remats lui per site) */
 gu_c48c_tf0 = 0;
 gu_c48c_tf1 = 0;
 gu_c48c_tf2 = 0;
@@ -3881,7 +3881,7 @@ D_31334_y = 0x00000000;  /* snd_HandleSeqEnd_31334 secondary gate word */
 D_31334_z = 0x00000000;  /* snd_HandleSeqEnd_31334 mode word, step 5 arm */
 gl_ref_0003F010 = 0x0003F010;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC04) */
 gl_ref_0003F024 = 0x0003F024;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC09) */
-game_uso_func_0000D5BC_a3 = 0x00000000;  /* (char *, Pair2, char *) alias of game_uso_func_0000D5BC: game_uso_func_0000FC34 passes a3 = base+0x770 */
+game_uso_func_0000D5BC_a3 = 0x00000000;  /* (char *, Pair2, char *) alias of RiderAnim_setNextAnim_0000D5BC: game_uso_func_0000FC34 passes a3 = base+0x770 */
 gl_ref_0003F1A0 = 0x0003F1A0;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FC68) */
 gl_ref_0003F388 = 0x0003F388;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FCE2) */
 gl_ref_0003FC60 = 0x0003FC60;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FF18) */

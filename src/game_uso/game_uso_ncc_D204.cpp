@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000D204 (0x214 / 133 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_update_0000D204 (0x214 / 133 words).
  *
  * game_uso was written in C++ and compiled by IDO 7.1's own C++ driver NCC
  * (edg front end). The `if (pm != null) (this->*pm)();` block below is an
@@ -22,7 +22,7 @@ extern char game_uso_D_807FF68C;
 extern char game_uso_D_807FF3B8;
 extern char D_00000000;
 void game_uso_func_07C0C0(int, char *, int);
-void game_uso_func_0000D9CC(void *);
+void RiderAnim_selectAnim_0000D9CC(void *);
 void game_uso_func_0000ECE8(void *);
 void game_uso_func_076E78(int, int);
 void game_uso_func_0775F8(void *);
@@ -32,7 +32,7 @@ typedef void (A::*PM)();
 struct H : A { char pad2[200-44]; PM pm; };
 #define I(b,o) (*(int *)((char *)(b) + (o)))
 #define F(b,o) (*(float *)((char *)(b) + (o)))
-extern "C" void game_uso_func_0000D204(H *a0) {
+extern "C" void RiderAnim_update_0000D204(H *a0) {
     H *a3 = a0;
     if (I(&import_80020098, 0x64) == 0) {
         float th = F(&D_00000000, 0x1F4);
@@ -54,7 +54,7 @@ extern "C" void game_uso_func_0000D204(H *a0) {
             game_uso_func_07C0C0(I(v0, 0x800), &game_uso_D_807FF68C + 4252, 1);
         }
     }
-    if (I(a3, 0x114) != 0) game_uso_func_0000D9CC(a3);
+    if (I(a3, 0x114) != 0) RiderAnim_selectAnim_0000D9CC(a3);
     if (a3->pm != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*(a3->pm))();
     game_uso_func_0000ECE8(a3);
     if (I(a3, 0x74) != 0) {

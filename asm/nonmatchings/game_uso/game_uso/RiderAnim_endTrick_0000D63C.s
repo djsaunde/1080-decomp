@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000D63C, 0xA8
+nonmatching RiderAnim_endTrick_0000D63C, 0xA8
 
-glabel game_uso_func_0000D63C
+glabel RiderAnim_endTrick_0000D63C
     /* 00D63C 0000D63C 27BDFFD8 */  .word 0x27BDFFD8
     /* 00D640 0000D640 AFBF001C */  .word 0xAFBF001C
     /* 00D644 0000D644 AFB00018 */  .word 0xAFB00018
@@ -43,4 +43,4 @@ glabel game_uso_func_0000D63C
     /* 00D6D8 0000D6D8 27BD0028 */  .word 0x27BD0028
     /* 00D6DC 0000D6DC 03E00008 */  .word 0x03E00008
     /* 00D6E0 0000D6E0 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000D63C
+endlabel RiderAnim_endTrick_0000D63C

@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000C27C, 0x58
+nonmatching stream_read16_0000C27C, 0x58
 
-glabel game_uso_func_0000C27C
+glabel stream_read16_0000C27C
     /* 00C27C 0000C27C 27BDFFD8 */  .word 0x27BDFFD8
     /* 00C280 0000C280 AFA40028 */  .word 0xAFA40028
     /* 00C284 0000C284 AFBF0014 */  .word 0xAFBF0014
@@ -23,4 +23,4 @@ glabel game_uso_func_0000C27C
     /* 00C2C8 0000C2C8 27BD0028 */  .word 0x27BD0028
     /* 00C2CC 0000C2CC 03E00008 */  .word 0x03E00008
     /* 00C2D0 0000C2D0 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000C27C
+endlabel stream_read16_0000C27C

@@ -21,7 +21,7 @@ void import_0010DB28(void *, int, int, int, int, int);
 void import_0010DB78(void *, int, int, float, int, int);
 void game_uso_func_0000F360(void *);
 void game_uso_func_0001001C(void *);
-void game_uso_func_0000D5BC(void *, PM);
+void RiderAnim_setNextAnim_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
@@ -47,7 +47,7 @@ extern "C" void game_uso_func_0000F13C(int *a0, int *a1) {
         short v0 = AT(short, s0, 0xE6);
         AT(short, s0, 0xE6) = v0 + 1;
         if (s0[0x184 / 4] < v0) {
-            game_uso_func_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
+            RiderAnim_setNextAnim_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
         }
     }
 }

@@ -19,7 +19,7 @@ glabel game_uso_func_00010128
     /* 010164 00010164 8D050000 */  .word 0x8D050000
     /* 010168 00010168 AFA50004 */  .word 0xAFA50004
     /* 01016C 0001016C 8D060004 */  .word 0x8D060004
-    jal game_uso_func_0000D5BC   /* 010170 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 010170 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 010174 00010174 AFA60008 */  .word 0xAFA60008
     /* 010178 00010178 8E0200B4 */  .word 0x8E0200B4
     /* 01017C 0001017C 3C01447A */  .word 0x3C01447A
@@ -42,7 +42,7 @@ glabel game_uso_func_00010128
     /* 0101C0 000101C0 02002025 */  .word 0x02002025
     /* 0101C4 000101C4 AFA50004 */  .word 0xAFA50004
     /* 0101C8 000101C8 8D860004 */  .word 0x8D860004
-    jal game_uso_func_0000D5BC   /* 0101CC 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 0101CC 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 0101D0 000101D0 AFA60008 */  .word 0xAFA60008
     /* 0101D4 000101D4 8E0200F4 */  .word 0x8E0200F4
     /* 0101D8 000101D8 02002025 */  .word 0x02002025
@@ -86,9 +86,9 @@ glabel game_uso_func_00010128
     /* 010270 00010270 24070003 */  .word 0x24070003
     /* 010274 00010274 AFA50004 */  .word 0xAFA50004
     /* 010278 00010278 8DA60004 */  .word 0x8DA60004
-    jal game_uso_func_0000D5F8   /* 01027C 0C000000 -> game_uso_func_0000D5F8 */
+    jal RiderAnim_setAnim_0000D5F8   /* 01027C 0C000000 -> RiderAnim_setAnim_0000D5F8 */
     /* 010280 00010280 AFA60008 */  .word 0xAFA60008
-    jal game_uso_func_0000D5DC   /* 010284 0C000000 -> game_uso_func_0000D5DC */
+    jal RiderAnim_setDefaultNext_0000D5DC   /* 010284 0C000000 -> RiderAnim_setDefaultNext_0000D5DC */
     /* 010288 00010288 02002025 */  .word 0x02002025
     /* 01028C 0001028C 02002025 */  .word 0x02002025
     jal game_uso_func_0000E5C8   /* 010290 0C000000 -> game_uso_func_0000E5C8 */

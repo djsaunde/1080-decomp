@@ -35,7 +35,7 @@ glabel game_uso_func_0000D8EC
     /* 00D968 0000D968 AFA50004 */  .word 0xAFA50004
     /* 00D96C 0000D96C 8D660004 */  .word 0x8D660004
     /* 00D970 0000D970 AFA40018 */  .word 0xAFA40018
-    jal game_uso_func_0000D5BC   /* 00D974 0C000000 -> game_uso_func_0000D5BC */
+    jal RiderAnim_setNextAnim_0000D5BC   /* 00D974 0C000000 -> RiderAnim_setNextAnim_0000D5BC */
     /* 00D978 0000D978 AFA60008 */  .word 0xAFA60008
     /* 00D97C 0000D97C 8FA40018 */  .word 0x8FA40018
     /* 00D980 0000D980 A48000E4 */  .word 0xA48000E4

@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000D418, 0x20
+nonmatching RiderAnim_readParms_0000D418, 0x20
 
-glabel game_uso_func_0000D418
+glabel RiderAnim_readParms_0000D418
     /* 00D418 0000D418 27BDFFE8 */  .word 0x27BDFFE8
     /* 00D41C 0000D41C AFBF0014 */  .word 0xAFBF0014
     jal game_uso_func_04A2D8   /* 00D420 0C000000 -> game_uso_func_04A2D8 */
@@ -9,4 +9,4 @@ glabel game_uso_func_0000D418
     /* 00D42C 0000D42C 27BD0018 */  .word 0x27BD0018
     /* 00D430 0000D430 03E00008 */  .word 0x03E00008
     /* 00D434 0000D434 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000D418
+endlabel RiderAnim_readParms_0000D418

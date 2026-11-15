@@ -26,9 +26,9 @@ glabel game_uso_func_0000FD04
     /* 00FD5C 0000FD5C 24070003 */  .word 0x24070003
     /* 00FD60 0000FD60 AFA50004 */  .word 0xAFA50004
     /* 00FD64 0000FD64 8D260004 */  .word 0x8D260004
-    jal game_uso_func_0000D5F8   /* 00FD68 0C000000 -> game_uso_func_0000D5F8 */
+    jal RiderAnim_setAnim_0000D5F8   /* 00FD68 0C000000 -> RiderAnim_setAnim_0000D5F8 */
     /* 00FD6C 0000FD6C AFA60008 */  .word 0xAFA60008
-    jal game_uso_func_0000D5DC   /* 00FD70 0C000000 -> game_uso_func_0000D5DC */
+    jal RiderAnim_setDefaultNext_0000D5DC   /* 00FD70 0C000000 -> RiderAnim_setDefaultNext_0000D5DC */
     /* 00FD74 0000FD74 02002025 */  .word 0x02002025
     /* 00FD78 0000FD78 8E0300B4 */  .word 0x8E0300B4
     /* 00FD7C 0000FD7C 44800000 */  .word 0x44800000

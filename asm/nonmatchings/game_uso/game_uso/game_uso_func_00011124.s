@@ -12,7 +12,7 @@ glabel game_uso_func_00011124
     /* 011144 00011144 24070001 */  .word 0x24070001
     /* 011148 00011148 AFA50004 */  .word 0xAFA50004
     /* 01114C 0001114C 8DC60004 */  .word 0x8DC60004
-    jal game_uso_func_0000D5F8   /* 011150 0C000000 -> game_uso_func_0000D5F8 */
+    jal RiderAnim_setAnim_0000D5F8   /* 011150 0C000000 -> RiderAnim_setAnim_0000D5F8 */
     /* 011154 00011154 AFA60008 */  .word 0xAFA60008
     /* 011158 00011158 8FBF0014 */  .word 0x8FBF0014
     /* 01115C 0001115C 27BD0018 */  .word 0x27BD0018

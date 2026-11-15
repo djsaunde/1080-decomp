@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000C2D4, 0x70
+nonmatching TrickTable_ctor_0000C2D4, 0x70
 
-glabel game_uso_func_0000C2D4
+glabel TrickTable_ctor_0000C2D4
     /* 00C2D4 0000C2D4 27BDFFE8 */  .word 0x27BDFFE8
     /* 00C2D8 0000C2D8 AFBF0014 */  .word 0xAFBF0014
     /* 00C2DC 0000C2DC 14800005 */  .word 0x14800005
@@ -29,4 +29,4 @@ glabel game_uso_func_0000C2D4
     /* 00C338 0000C338 00801025 */  .word 0x00801025
     /* 00C33C 0000C33C 03E00008 */  .word 0x03E00008
     /* 00C340 0000C340 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000C2D4
+endlabel TrickTable_ctor_0000C2D4

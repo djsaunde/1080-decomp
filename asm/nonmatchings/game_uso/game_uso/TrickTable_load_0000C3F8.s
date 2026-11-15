@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000C3F8, 0x94
+nonmatching TrickTable_load_0000C3F8, 0x94
 
-glabel game_uso_func_0000C3F8
+glabel TrickTable_load_0000C3F8
     /* 00C3F8 0000C3F8 27BDFFD8 */  .word 0x27BDFFD8
     /* 00C3FC 0000C3FC AFB30020 */  .word 0xAFB30020
     lui $s3, %hi(game_uso_D_807FFBC4)   /* 00C400 3C130000 -> game_uso_D_807FFBC4 */
@@ -38,4 +38,4 @@ glabel game_uso_func_0000C3F8
     /* 00C480 0000C480 8FB30020 */  .word 0x8FB30020
     /* 00C484 0000C484 03E00008 */  .word 0x03E00008
     /* 00C488 0000C488 27BD0028 */  .word 0x27BD0028
-endlabel game_uso_func_0000C3F8
+endlabel TrickTable_load_0000C3F8

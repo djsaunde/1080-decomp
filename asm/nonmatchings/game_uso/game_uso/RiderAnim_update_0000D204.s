@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000D204, 0x214
+nonmatching RiderAnim_update_0000D204, 0x214
 
-glabel game_uso_func_0000D204
+glabel RiderAnim_update_0000D204
     lui $v1, %hi(import_80020098)   /* 00D204 3C030000 -> import_80020098 */
     /* 00D208 0000D208 24630000 */  .word 0x24630000
     /* 00D20C 0000D20C 8C6E0064 */  .word 0x8C6E0064
@@ -67,7 +67,7 @@ alabel game_uso_func_0000D210
     /* 00D2FC 0000D2FC 00E02025 */  .word 0x00E02025
     /* 00D300 0000D300 51A00005 */  .word 0x51A00005
     /* 00D304 0000D304 24E300C8 */  .word 0x24E300C8
-    jal game_uso_func_0000D9CC   /* 00D308 0C000000 -> game_uso_func_0000D9CC */
+    jal RiderAnim_selectAnim_0000D9CC   /* 00D308 0C000000 -> RiderAnim_selectAnim_0000D9CC */
     /* 00D30C 0000D30C AFA70018 */  .word 0xAFA70018
     /* 00D310 0000D310 8FA70018 */  .word 0x8FA70018
     /* 00D314 0000D314 24E300C8 */  .word 0x24E300C8
@@ -135,4 +135,4 @@ alabel game_uso_func_0000D210
     /* 00D40C 0000D40C 27BD0018 */  .word 0x27BD0018
     /* 00D410 0000D410 03E00008 */  .word 0x03E00008
     /* 00D414 0000D414 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000D204
+endlabel RiderAnim_update_0000D204

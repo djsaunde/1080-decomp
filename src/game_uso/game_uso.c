@@ -7781,7 +7781,7 @@ void game_uso_func_0000C0BC(char *dst) {
  * at 0xC0F0 (docs/MATCHING_WORKFLOW.md, asm-processor 1-word-pad defect). */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_uso/game_uso/game_uso_func_0000C0BC_pad.s")
 
-static void game_uso_func_0000C0F0(int *dst) {
+static void TrickTable_readCount_0000C0F0(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
@@ -7790,7 +7790,7 @@ static void game_uso_func_0000C0F0(int *dst) {
 /* Struct assignment makes IDO emit the target 3-ints-per-iteration copy loop.
  * The Makefile patch strips relocations from the D_00000000 load and jal
  * words so objdiff sees the same raw .word baseline. */
-static void game_uso_func_0000C12C(int *a0) {
+static void TrickTable_readEntry_0000C12C(int *a0) {
     typedef struct {
         int v[16];
     } I16;
@@ -7799,19 +7799,19 @@ static void game_uso_func_0000C12C(int *a0) {
     *(I16*)a0 = buf;
 }
 
-static void game_uso_func_0000C194(int *dst) {
+static void stream_readS32_0000C194(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void game_uso_func_0000C1D0(float *dst) {
+static void stream_readF32_0000C1D0(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void game_uso_func_0000C20C(Vec3 *dst) {
+static void stream_readVec3_0000C20C(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -7824,14 +7824,14 @@ static void game_uso_func_0000C20C(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-static void game_uso_func_0000C27C(Quad4 *dst) {
+static void stream_read16_0000C27C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-/* game_uso_func_0000C2D4: 28-insn alloc-init constructor with optional 3-arg sub-init. */
-void *game_uso_func_0000C2D4(void *a0, int a1) {
+/* TrickTable_ctor_0000C2D4: 28-insn alloc-init constructor with optional 3-arg sub-init. */
+void *TrickTable_ctor_0000C2D4(void *a0, int a1) {
     if (a0 == 0) {
         a0 = (void*)gl_func_00000000(0x2C);
         if (a0 == 0) goto end;
@@ -7855,31 +7855,31 @@ end:
  *   C3CC: return entry[a1].field_0x30;
  * Unused $a0 is spilled to caller home slot — confirms IDO -O2 leaf-no-jal
  * variant of feedback-ido-unused-arg-save. */
-int *game_uso_func_0000C344(int a0, int a1) {
+int *TrickTable_getEntry_0000C344(int a0, int a1) {
     return (int*)((char*)(*(int**)&D_00000000) + (a1 << 6));
 }
 
-int *game_uso_func_0000C35C(int a0, int a1) {
+int *TrickTable_getEntry10_0000C35C(int a0, int a1) {
     return (int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x10);
 }
 
-int game_uso_func_0000C378(int a0, int a1) {
+int TrickTable_getField2C_0000C378(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x2C);
 }
 
-int game_uso_func_0000C394(int a0, int a1) {
+int TrickTable_getField34_0000C394(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x34);
 }
 
-int game_uso_func_0000C3B0(int a0, int a1) {
+int TrickTable_getField38_0000C3B0(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x38);
 }
 
-int game_uso_func_0000C3CC(int a0, int a1) {
+int TrickTable_getField30_0000C3CC(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x30);
 }
 
-/* game_uso_func_0000C3E8: EXACT 2026-09-05 (agent-g). The former "dead-arg-home
+/* TrickTable_getCount_0000C3E8: EXACT 2026-09-05 (agent-g). The former "dead-arg-home
  * delay-slot CAP" was a SOURCE-LINE-LAYOUT artifact, not a compiler cap. IDO's
  * scheduler tie-breaks the independent arg-home store `sw a0,0(sp)` against the
  * return load by source line: with `return` on its OWN line the store keeps its
@@ -7888,9 +7888,9 @@ int game_uso_func_0000C3CC(int a0, int a1) {
  * delay (lui;lw;jr;sw = target). Keep this definition on ONE line.
  * See docs/IDO_CODEGEN.md#same-line-brace-return-sinks-arg-home-c3e8. */
 extern int game_uso_D_807FFBC4;
-int game_uso_func_0000C3E8(int a0) { return game_uso_D_807FFBC4; }
+int TrickTable_getCount_0000C3E8(int a0) { return game_uso_D_807FFBC4; }
 
-/* game_uso_func_0000C3F8: 37-insn alloc-and-iter constructor. MATCHED 2026-06-20.
+/* TrickTable_load_0000C3F8: 37-insn alloc-and-iter constructor. MATCHED 2026-06-20.
  *   func_C0F0(&D_807FFBC4);                   // setup, base held in $s3
  *   D_807FFBC0 = alloc(D_807FFBC4 << 6);      // ptr base held in $s2
  *   for (i = 0; (u32)i < (u32)D_807FFBC4; i++)
@@ -7905,17 +7905,17 @@ int game_uso_func_0000C3E8(int a0) { return game_uso_D_807FFBC4; }
  * store/branch schedule swap was the last 2-word diff. */
 extern int game_uso_D_807FFBC4;
 extern int *game_uso_D_807FFBC0;
-void game_uso_func_0000C3F8(int *a0) {
+void TrickTable_load_0000C3F8(int *a0) {
     int i;
     int *p;
 
-    game_uso_func_0000C0F0(&game_uso_D_807FFBC4);
+    TrickTable_readCount_0000C0F0(&game_uso_D_807FFBC4);
     p = (int*)game_uso_func_055750(game_uso_D_807FFBC4 << 6);
     game_uso_D_807FFBC0 = p;
     i = 0;
     if (game_uso_D_807FFBC4 != 0) {
         do {
-            game_uso_func_0000C12C((int*)((char*)game_uso_D_807FFBC0 + i * 0x40));
+            TrickTable_readEntry_0000C12C((int*)((char*)game_uso_D_807FFBC0 + i * 0x40));
             i++;
         } while ((u32)i < (u32)game_uso_D_807FFBC4);
     }
@@ -7937,9 +7937,9 @@ extern char game_uso_D_807FF568, game_uso_D_807FF5B0, game_uso_D_807FF74C, game_
 extern int game_uso_func_055750();
 extern int game_uso_func_04A188();
 extern int import_0010D33C();
-void game_uso_func_0000D458(s32);
+void RiderAnim_init_0000D458(s32);
 extern char gu_c48c_tf0, gu_c48c_tf1, gu_c48c_tf2, gu_c48c_tf3, gu_c48c_tf4, gu_c48c_tf5, gu_c48c_tf6, gu_c48c_tf7, gu_c48c_tf8, gu_c48c_tf9, gu_c48c_tf10, gu_c48c_tf11, gu_c48c_tf12, gu_c48c_tf13, gu_c48c_tf14, gu_c48c_tf15, gu_c48c_ti0, gu_c48c_ti1, gu_c48c_ti2, gu_c48c_ti3, gu_c48c_ti4, gu_c48c_ti5, gu_c48c_ti6, gu_c48c_ti7, gu_c48c_ti8, gu_c48c_ti9, gu_c48c_ti10, gu_c48c_ti11, gu_c48c_ti12, gu_c48c_ti13, gu_c48c_ti14, gu_c48c_ti15;
-/* game_uso_func_0000C48C: EXACT 2026-10-16 (agent-g), from 99.7 NM. Three levers:
+/* RiderAnim_ctor_0000C48C: EXACT 2026-10-16 (agent-g), from 99.7 NM. Three levers:
  * (1) the 12 int-0x10 stages put `obj[0xC/4] = tmpl; obj[0x10/4] = K;` on ONE
  *     source line (as1 then emits the 0x10 store first, the target order);
  * (2) the per-stage 1-word scratch structs are function-scope u1..u32 declared
@@ -7953,7 +7953,7 @@ extern char gu_c48c_tf0, gu_c48c_tf1, gu_c48c_tf2, gu_c48c_tf3, gu_c48c_tf4, gu_
  *     donor placeholder below emits D204's 28555.0f at +0x1F4. Extern-symbol
  *     spellings emitted no rodata and shifted every later %lo by 12 bytes. */
 struct C48CArg { int v; };
-void *game_uso_func_0000C48C(char *p, int a1, int a2) {
+void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     int *s1;
     struct C48CArg u1;
     struct C48CArg u2;
@@ -8343,12 +8343,12 @@ stage0:;
     }
 tail:
     *(int *)(p + 0xB4) = a2;
-    game_uso_func_0000D458(p);
+    RiderAnim_init_0000D458(p);
 end:
     return p;
 }
 
-/* game_uso_func_0000D204 (0x214 / 133 words): per-frame update. Gate on
+/* RiderAnim_update_0000D204 (0x214 / 133 words): per-frame update. Gate on
  * import->0x64: clamp self->0xB4->0xBC against D+0x1F4 (reset self->0x120)
  * and set/clear the child mode bits import->0x138->0xB4 & 3; trigger
  * 07C0C0 when the 0xB4 object's 0x938 flag is clear and its 0x9D0 < 700 /
@@ -8364,11 +8364,11 @@ end:
  * it). Body below is a placeholder for the splice; its 28555.0f literal
  * reserves D204's RoData word +0x1F4 (the splice drops the placeholder's
  * own relocs, the .rodata word stays). */
-void game_uso_func_0000D204(int *a0) {
+void RiderAnim_update_0000D204(int *a0) {
     *(volatile float *)a0 = 28555.0f;
 }
 
-void game_uso_func_0000D418(char *a0) {
+void RiderAnim_readParms_0000D418(char *a0) {
     gl_func_00000000(a0 + 0x13C);
 }
 
@@ -8377,13 +8377,13 @@ void game_uso_func_0000D418(char *a0) {
  * target's t7/t6 register order; two separate s32 field-copies gave t6/t7 swapped
  * (was INSN_PATCH'd, banned 2026-05-23). Struct-copy vs separate-field-copy is the
  * lever for adjacent-field $t-renumber. Byte-exact. */
-void game_uso_func_0000D438(char *a0) {
+void RiderAnim_reset_0000D438(char *a0) {
     *(s32*)(a0 + 0x64) = -1000;
     *(s32*)(a0 + 0x68) = -1000;
     *(Pair2*)(a0 + 0xC8) = *(Pair2*)(a0 + 0xC0);
 }
 
-/* game_uso_func_0000D458: parent F1 (frame -0x48, 90 words/0x164) + 4 helper
+/* RiderAnim_init_0000D458: parent F1 (frame -0x48, 90 words/0x164) + 4 helper
  * functions it calls (D5BC/D5DC/D5F8/D634, defs below; D5BC/D5DC/D634 100%).
  * Boundary defect RESOLVED: this .s is truncated to 0x164 (F1 only, ends at the
  * 0xD5B8 nop) and expected/game_uso.c.o carries D458 at the F1 size — verified.
@@ -8413,10 +8413,10 @@ extern int game_uso_func_077C44();
 extern int import_0010D420();
 extern int game_uso_func_049280();
 extern int game_uso_func_048020();
-extern void game_uso_func_0000D5BC(char *, Pair2);
+extern void RiderAnim_setNextAnim_0000D5BC(char *, Pair2);
 extern char import_800200CC;
 extern char game_uso_D_807FF3A0, game_uso_D_807FF3A8, game_uso_D_807FF3B0;
-void game_uso_func_0000D458(s32 arg0) {
+void RiderAnim_init_0000D458(s32 arg0) {
     s32 pad[2];
     s32 sp30[4];
     s32 var_v0;
@@ -8432,9 +8432,9 @@ void game_uso_func_0000D458(s32 arg0) {
     game_uso_func_077C44(arg0, FW(arg0, 0xFC) | 8, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (*(int *)((char *)&import_800200CC + 0x34) == 3) {
-        game_uso_func_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
+        RiderAnim_setNextAnim_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
     } else {
-        game_uso_func_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
+        RiderAnim_setNextAnim_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
     }
     game_uso_func_049280();
     game_uso_func_048020((s32) &sp30, 0xF10, 0x10);
@@ -8446,17 +8446,17 @@ void game_uso_func_0000D458(s32 arg0) {
         var_v0 = 1;
     }
     if (var_v0 == 0) {
-        game_uso_func_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + 0xDC0));
+        RiderAnim_setNextAnim_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + 0xDC0));
     }
 }
 
-/* game_uso_func_0000D5BC: copies the varargs pair (a1,a2 via &a1) to the
+/* RiderAnim_setNextAnim_0000D5BC: copies the varargs pair (a1,a2 via &a1) to the
  * adjacent a0->0xC8/0xCC.
  * MATCH: a STRUCT copy `*(Pair2*)(a0+0xC8) = *(Pair2*)&a1` homes the args, takes
  * &a1 into $t6, and emits the lw/sw/lw/sw via the pointer in the target's regs.
  * The volatile-int-pointer form left the &a1 pointer in $v0 (was a regalloc cap);
- * struct-copy is the lever (same as game_uso_func_0000D438). Byte-exact. */
-void game_uso_func_0000D5BC(char *a0, Pair2 pair) {
+ * struct-copy is the lever (same as RiderAnim_reset_0000D438). Byte-exact. */
+void RiderAnim_setNextAnim_0000D5BC(char *a0, Pair2 pair) {
     *(Pair2*)(a0 + 0xC8) = pair;
 }
 
@@ -8466,7 +8466,7 @@ void game_uso_func_0000D5BC(char *a0, Pair2 pair) {
  * gave the wrong $t order. Same lever as D438/D5BC (here the source is a global).
  * Byte-exact (in-tree verified). */
 extern char game_uso_D_807FF3B8;
-void game_uso_func_0000D5DC(char *a0) {
+void RiderAnim_setDefaultNext_0000D5DC(char *a0) {
     *(Pair2*)(a0 + 0xC8) = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8);
 }
 
@@ -8482,7 +8482,7 @@ void game_uso_func_0000D5DC(char *a0) {
  * DROP the `volatile`: plain `*(int*)&a3` forces the a3 home (sw a3,0xC(sp) in
  * the bne delay) AND lets IDO fold the reload to a direct sp-offset load.
  * 15/15 words byte-exact, 0 diffs. */
-void game_uso_func_0000D5F8(char *a0, Pair2 pair, int a3) {
+void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3) {
     if (a3 == -1) {
         *(int*)(a0 + 0x68) = a3;
     } else {
@@ -8500,7 +8500,7 @@ void game_uso_func_0000D634(int a0) {
     (void)a0;
 }
 
-/* game_uso_func_0000D63C: ramp-down/clamp dispatch. 99.17% objdiff / 36-of-42
+/* RiderAnim_endTrick_0000D63C: ramp-down/clamp dispatch. 99.17% objdiff / 36-of-42
  * raw words (2026-07-03 agent-e). See the NM-wrap comment below for the three
  * levers (value=call2-arg4, `value|0` -> caller-saved $a3, `idx*0+10` -> single
  * `li`) and the residual candidate-numbering temp-pool/spill-slot cap. */
@@ -8512,7 +8512,7 @@ extern int import_000B8698();
 extern int game_uso_func_022784();
 extern char import_800201D0;
 extern char game_uso_D_807FF7B4;
-/* game_uso_func_0000D63C: ramp-down/clamp dispatch. EXACT 2026-07-15 (was
+/* RiderAnim_endTrick_0000D63C: ramp-down/clamp dispatch. EXACT 2026-07-15 (was
  * 99.17% "candidate-numbering temp-pool / spill-slot cap"). Final two levers:
  *   (4) value declared FIRST (before idx) -> value's spill home takes the
  *       HIGHER local slot 0x24 (decl-order home rank, first decl = highest).
@@ -8524,7 +8524,7 @@ extern char game_uso_D_807FF7B4;
  *       both levers must be applied together ((idx<<1<<1) sufficed with
  *       idx-first decls). Levers (1)-(3) from the 2026-07-03 pass retained:
  *       value=call2-arg4, `value | 0` -> caller-saved $a3, `(idx*0)+10`. */
-void game_uso_func_0000D63C(char *a0, int a1) {
+void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
     int value;
     int idx = *(int*)(a0 + 0x100);
 
@@ -8560,7 +8560,7 @@ void game_uso_func_0000D63C(char *a0, int a1) {
  *       direction (bnel → beql) AND lui register allocation order
  *       (which value goes into t1 vs t2). */
 extern int game_uso_func_00E124();
-void game_uso_func_0000D6E4(char *a0) {
+void RiderAnim_flipStance_0000D6E4(char *a0) {
     int *p = (int*)(*(char**)(a0 + 0xB4) + 0xA58);
     *p ^= 0x40;
     game_uso_func_00E124(*(char**)(a0 + 0xB4), a0);
@@ -8686,7 +8686,7 @@ L_BC:
     }
 }
 
-/* game_uso_func_0000D9CC (0x830 / 524 words): per-frame landing/turn-state
+/* RiderAnim_selectAnim_0000D9CC (0x830 / 524 words): per-frame landing/turn-state
  * classifier. EXACT 2026-10-22 (agent-g run 121) via the IDO 7.1 NCC donor
  * src/game_uso/game_uso_ncc_D9CC.cpp (REPLACE_FUNC_BODY, both trees). The old
  * "4-word as1 branch-likely cap" was a decode error that the branch-masking
@@ -8701,7 +8701,7 @@ L_BC:
  * carried at +0x1F8..+0x210 (0.8 and -0.4 for this function, 0.1 for
  * game_uso_func_0000E1FC); the donor reads them through data symbols whose
  * addends hold the offsets (the game_uso block is extracted unlinked). */
-void game_uso_func_0000D9CC(char *arg0) {
+void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     *(volatile double *)arg0 = 0.8;
     *(volatile double *)arg0 = -0.4;
     *(volatile double *)arg0 = 0.1;
@@ -8748,7 +8748,7 @@ void game_uso_func_0000D9CC(char *arg0) {
  * -> $f16, matching target); the named form let uopt number the load early
  * and reuse dead low regs (ldc1 $f0 / cvt $f10, 3-word residual). Same
  * de-naming lever as bootup B49C (int side). */
-extern void game_uso_func_0000D5BC(char *, Pair2);
+extern void RiderAnim_setNextAnim_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FF458;
 extern char game_uso_D_807FF440;
 void game_uso_func_0000E1FC(char *obj) {
@@ -8764,9 +8764,9 @@ void game_uso_func_0000E1FC(char *obj) {
     m = (raw < 0.0f) ? -raw : raw;
     if (*(double *)((char *)&game_uso_D_807FF458 + 0x208) < (double)m) {
     callA:
-        game_uso_func_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + 0xE68));
+        RiderAnim_setNextAnim_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + 0xE68));
     } else {
-        game_uso_func_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + 0xE50));
+        RiderAnim_setNextAnim_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + 0xE50));
     }
 }
 
@@ -9081,7 +9081,7 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_0000E5C8);
  * literal into a0->0xB0 (from a0->0xFC), homes a Pair2 from D_807FF430+0xE40
  * or D_807FF4E0+0xEF0 into the shared sp+0x38 slot, calls an import with
  * a0=a0->0xB4+0x808. Tail (a0->0xB0!=0): zero a0->0x12C, import_0010DB28,
- * game_uso_func_0000D5F8(a0, homed, 1), game_uso_func_0000D5DC(a0).
+ * RiderAnim_setAnim_0000D5F8(a0, homed, 1), RiderAnim_setDefaultNext_0000D5DC(a0).
  *
  * 2026-10-15 (agent-g, 98.98 -> EXACT 118/118):
  *   (1) the A58 word is NOT a named local: inlined at all three uses (CSE'd
@@ -9147,8 +9147,8 @@ void game_uso_func_0000E91C(char *a0) {
     if (*(int *)(a0 + 0xB0) != 0) {
         *(int *)(a0 + 0x12C) = 0;
         import_0010DB28(a0, *(int *)(a0 + 0xB0), 0, 1, 1, 1);
-        game_uso_func_0000D5F8(a0, homed, 1);
-        game_uso_func_0000D5DC(a0);
+        RiderAnim_setAnim_0000D5F8(a0, homed, 1);
+        RiderAnim_setDefaultNext_0000D5DC(a0);
     }
 }
 
@@ -9440,8 +9440,8 @@ void game_uso_func_0000EE84(int *a0) {
         a1 = a0[0xFC / 4] | 0x1D;
     }
     game_uso_func_077C44(a0, a1, 0, 1, 1, 1);
-    game_uso_func_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
-    game_uso_func_0000D5DC((char *)a0);
+    RiderAnim_setAnim_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
+    RiderAnim_setDefaultNext_0000D5DC((char *)a0);
 }
 
 /* MATCHED 2026-05-28 via struct-by-value (E40/E44 pair homes a1,a2). See
@@ -9538,7 +9538,7 @@ void game_uso_func_0000F060(int *a0) {
  * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe.
  * Body below is a placeholder for the splice. */
 extern void game_uso_func_0001001C(int *);
-extern void game_uso_func_0000D5BC(char *, Pair2);
+extern void RiderAnim_setNextAnim_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FFB58;
 extern char game_uso_D_807FF498;
 void game_uso_func_0000F13C(int *a0, int *a1) {
@@ -9728,11 +9728,11 @@ void game_uso_func_0000F6D4(char *a0);
  * MATCHED 2026-06-21 (call-graph DFS + just-in-time family typing). The prior
  * NM body called the cross-USO placeholder gl_func_00000000 for every call and
  * carried a phantom `int a1` param. The resolved .s relocs name the real in-TU
- * callees: game_uso_func_0000D74C (predicate), game_uso_func_0000D5BC /
- * _0000D5F8 (pair-sinks), game_uso_func_0000D5DC (pair-copy),
+ * callees: game_uso_func_0000D74C (predicate), RiderAnim_setNextAnim_0000D5BC /
+ * _0000D5F8 (pair-sinks), RiderAnim_setDefaultNext_0000D5DC (pair-copy),
  * import_0010DB28 (state logger), game_uso_func_0000F6D4 (sibling). The last
  * residual (the D5BC call not homing a1/a2 to sp+4/sp+8) was cracked by
- * converting game_uso_func_0000D5BC to its true Pair2-by-value prototype
+ * converting RiderAnim_setNextAnim_0000D5BC to its true Pair2-by-value prototype
  * `(char*, Pair2)` — the by-value pair triggers the K&R home spill that the
  * folded two-int form suppressed (same lever as the matched D5F8 callers
  * 00011258/000112E0). Byte-exact (0 SUSPECT / 0 reloc-type diffs). */
@@ -9741,14 +9741,14 @@ void game_uso_func_0000F5A8(int *a0) {
     if (s0[0xF0 / 4] != 0) {
         if (game_uso_func_0000D74C((char*)a0) == 0) {
             char *p = (char *)&game_uso_D_807FF4D0 + 0xEE0;
-            game_uso_func_0000D5BC((char*)s0, *(Pair2*)p);
+            RiderAnim_setNextAnim_0000D5BC((char*)s0, *(Pair2*)p);
             game_uso_func_0000F6D4((char*)s0);
         }
     } else {
         import_0010DB28(s0, *(int *)((char *)s0[0xF4 / 4] + 0x20), 3, 1, 1, 1);
-        game_uso_func_0000D5F8((char*)s0,
+        RiderAnim_setAnim_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF4D8 + 0xEE8), 1);
-        game_uso_func_0000D5DC((char*)s0);
+        RiderAnim_setDefaultNext_0000D5DC((char*)s0);
     }
 }
 
@@ -9827,7 +9827,7 @@ void game_uso_func_0000F948(int *a0) {
     volatile int padbot[5];
 
     import_0010DB28(a0, *(int*)((char*)a0 + 0xFC), 0, 2, 1, 1);
-    game_uso_func_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
+    RiderAnim_setAnim_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
 
     q = (float*)((char*)(int*)a0[0xB4 / 4] + 0x3C8);
     scale = *(float*)((char*)a0 + 0x1FC);
@@ -9923,8 +9923,8 @@ extern char D_00000000;
 /* game_uso_func_0000FC34: EE84-family state setter (52 insns, 0xD0). ~89% NM.
  * 2026-06-21 (call-graph DFS): callees corrected from the cross-USO placeholder
  * gl_func_00000000 (+ pairs from &D_00000000) to the resolved in-TU symbols
- * game_uso_func_0000D5BC (pair-copy, now homing via the Pair2-by-value
- * prototype flip), import_0010DB28 (logger), game_uso_func_0000D5F8 (pair-sink)
+ * RiderAnim_setNextAnim_0000D5BC (pair-copy, now homing via the Pair2-by-value
+ * prototype flip), import_0010DB28 (logger), RiderAnim_setAnim_0000D5F8 (pair-sink)
  * and the real globals game_uso_D_807FFB68/400/410. The D5BC/D5F8/logger half
  * now matches byte-for-byte.
  * 2026-07-18 (agent-g, 89.38->97.96): three levers landed together:
@@ -9948,8 +9948,8 @@ extern char D_00000000;
  * docs/MATCHING_WORKFLOW.md#game-uso-rodata-relayout-late-rodata. */
 extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF410;
-void game_uso_func_0000D5BC(char *, Pair2);
-void game_uso_func_0000D5F8(char *a0, Pair2 pair, int a3);
+void RiderAnim_setNextAnim_0000D5BC(char *, Pair2);
+void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3);
 void game_uso_func_0000D5BC_a3(char *, Pair2, char *);  /* alias of D5BC (pinned 0) with the a3 word the target passes */
 extern int import_0010DB28();
 void game_uso_func_0000FC34(int *a0) {
@@ -9970,16 +9970,16 @@ void game_uso_func_0000FC34(int *a0) {
             *(Pair2*)((char*)&game_uso_D_807FF400 + 0xE10), field_770);
     }
     import_0010DB28(a0, 0x30001, 2, 2, 0x100, 0xA);
-    game_uso_func_0000D5F8((char*)a0,
+    RiderAnim_setAnim_0000D5F8((char*)a0,
         *(Pair2*)((char*)&game_uso_D_807FF410 + 0xE20), -1);
 }
 
 extern char game_uso_D_807FF408;
-void game_uso_func_0000D5DC(char *a0);
+void RiderAnim_setDefaultNext_0000D5DC(char *a0);
 /* game_uso_func_0000FD04: 50-insn sibling of game_uso_func_0000FC34. When
  * bit 0x100 of (a0->0xB4)->0x800->0x10 is clear: log via import_0010DB28,
  * push the pair at game_uso_D_807FF408 + 0xE18 through
- * game_uso_func_0000D5F8 (trailing 3), game_uso_func_0000D5DC, then
+ * RiderAnim_setAnim_0000D5F8 (trailing 3), RiderAnim_setDefaultNext_0000D5DC, then
  * sub->0x31C += sub->0x798 and sub->0x2FC..0x308 = {0, 0, 0, 1.0f}.
  *
  * Exact-match notes (2026-10-15, after the 2026-07-18 97.08 wrap): each base
@@ -10001,9 +10001,9 @@ void game_uso_func_0000FD04(int *a0) {
         float *base_31C;
         float *base_2FC;
         import_0010DB28(s0, 0x30001, 2, 3, 1, 1);
-        game_uso_func_0000D5F8((char*)s0,
+        RiderAnim_setAnim_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF408 + 0xE18), 3);
-        game_uso_func_0000D5DC((char*)s0);
+        RiderAnim_setDefaultNext_0000D5DC((char*)s0);
 
         zero = 0.0f;
         base_788 = (float*)(*(char**)((char*)s0 + 0xB4) + 0x788);
@@ -10177,8 +10177,8 @@ void game_uso_func_00010068(int *a0) {
  * diffs vs expected). The "outer<->mid v0/v1 spilltemp-web coloring cap" was a
  * PLACEHOLDER-SYMBOL artifact, NOT a real coloring cap: the body had used
  * gl_func_00000000/D_00000000 placeholders, which color differently than the
- * REAL reloc callees. Rewriting with the real symbols (game_uso_func_0000D5BC,
- * import_0010DB28, game_uso_func_0000D5F8 typed varargs-Pair2-by-value,
+ * REAL reloc callees. Rewriting with the real symbols (RiderAnim_setNextAnim_0000D5BC,
+ * import_0010DB28, RiderAnim_setAnim_0000D5F8 typed varargs-Pair2-by-value,
  * D5DC/E5C8/E35C/E2D0/11750, and game_uso_D_807FF3D0/D8/E0) flipped the
  * coloring so `outer`(a0->0xB4 reload)=$v0 and `mid`(outer->0x800)=$v1 — exactly
  * the target — and the 6 v0/v1 word diffs vanished. (Same lesson as twin 11258:
@@ -10265,8 +10265,8 @@ void game_uso_func_00010068(int *a0) {
 extern char game_uso_D_807FF3D0;
 extern char game_uso_D_807FF3D8;
 extern char game_uso_D_807FF3E0;
-extern void game_uso_func_0000D5F8(char *, Pair2, int);
-extern void game_uso_func_0000D5DC(char *);
+extern void RiderAnim_setAnim_0000D5F8(char *, Pair2, int);
+extern void RiderAnim_setDefaultNext_0000D5DC(char *);
 extern void game_uso_func_0000E5C8(char *, int);
 extern int game_uso_func_0000E35C(char *);
 extern void game_uso_func_0000E2D0();
@@ -10278,12 +10278,12 @@ void game_uso_func_00010128(int *a0) {
     ((int*)a0[0xB4 / 4])[0xA18 / 4] = 1;
     mid = (int*)((int*)a0[0xB4 / 4])[0x800 / 4];
     if ((mid[0x18 / 4] & 0x400) != 0) {
-        game_uso_func_0000D5BC((char*)a0,
+        RiderAnim_setNextAnim_0000D5BC((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3D0 + 0xDE0));
     }
     if (*(float*)((char*)(int*)a0[0xB4 / 4] + 0x9D0) < 1000.0f) {
         if (((int*)a0[0xB4 / 4])[0x938 / 4] != 0) {
-            game_uso_func_0000D5BC((char*)a0,
+            RiderAnim_setNextAnim_0000D5BC((char*)a0,
                              *(Pair2*)((char*)&game_uso_D_807FF3D8 + 0xDE8));
         }
         inner = (int*)a0[0xF4 / 4];
@@ -10300,10 +10300,10 @@ void game_uso_func_00010128(int *a0) {
         import_0010DB28(a0,
                          *(int*)((char*)a0 + 0xFC) | 0x19,
                          2, 3, 1, 1);
-        game_uso_func_0000D5F8((char*)a0,
+        RiderAnim_setAnim_0000D5F8((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3E0 + 0xDF0),
                          3);
-        game_uso_func_0000D5DC((char*)a0);
+        RiderAnim_setDefaultNext_0000D5DC((char*)a0);
     }
     game_uso_func_0000E5C8((char*)a0, 0);
     if (game_uso_func_0000E35C((char*)a0) == 0) {
@@ -10364,12 +10364,12 @@ void game_uso_func_000102CC(int *a0) {
   v0 = (int *) s0[0xB4 / 4];
   if (((*((float *) (((char *) v0) + 0x31C))) < 0.0f) && ((*((float *) (((char *) v0) + 0x9D0))) < 1000.0f))
   {
-    game_uso_func_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
+    RiderAnim_setNextAnim_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
     v0 = (int *) s0[0xB4 / 4];
   }
   if ((*((int *) (((char *) (new_var = *((int *) (((char *) v0) + 0x800)))) + 0x18))) & 0x400)
   {
-    game_uso_func_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
+    RiderAnim_setNextAnim_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
   }
   game_uso_func_0000E5C8((char *)s0, 0);
   if (game_uso_func_0000E35C((char *)s0) == 0)
@@ -10377,7 +10377,7 @@ void game_uso_func_000102CC(int *a0) {
     ;
     if (((int *) s0[0xB4 / 4])[0x938 / 4] != 0)
     {
-      game_uso_func_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
+      RiderAnim_setNextAnim_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
       game_uso_func_000104A4((char *)s0);
     }
     game_uso_func_00011750((char *)s0);
@@ -10458,7 +10458,7 @@ void game_uso_func_00010648(void *a0) {
 /* game_uso_func_00010694: 0x1AC (107 insns). State-machine entry handler,
  * sibling of 00010840. EXACT via REPLACE_FUNC_BODY donor splice: the real
  * body is the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_10694.cpp
- * (107/107 words identical). Two game_uso_func_0000D5BC(this, pm) calls pass
+ * (107/107 words identical). Two RiderAnim_setNextAnim_0000D5BC(this, pm) calls pass
  * a pointer-to-member by value, the second guarded by the edg 2-word PMF
  * null compare (same block as D204). The old "mfc1-from-C cap" was a missing
  * float prototype for import_0010DB78. docs/MATCHING_WORKFLOW.md#game-uso-
@@ -10497,7 +10497,7 @@ void game_uso_func_00010840(int *a0) {
  *     created before the s0=a0 copy point and bases its lw on $a0 not $s0
  *     (the last 47/48 residual). Param used directly, no explicit s0 local. */
 extern int import_0010DB78();
-extern void game_uso_func_0000D5BC(char *, Pair2);
+extern void RiderAnim_setNextAnim_0000D5BC(char *, Pair2);
 extern void game_uso_func_0000E91C(char *);
 extern void game_uso_func_0000D8EC(int *);
 extern void game_uso_func_0000D7F4(char *);
@@ -10508,11 +10508,11 @@ void game_uso_func_0001094C(int *a0) {
     import_0010DB78(a0, a0[0xFC / 4] | 4, a0[0xFC / 4] | 5, ((int *)a0[0xB4 / 4])[0x970 / 4], 0, 1);
     p = (int *)a0[0xB4 / 4];
     if (p[0x990 / 4] == 0) {
-        game_uso_func_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
+        RiderAnim_setNextAnim_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
         p = (int *)a0[0xB4 / 4];
     }
     if (p[0x9CC / 4] != 0) {
-        game_uso_func_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
+        RiderAnim_setNextAnim_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
     }
     game_uso_func_0000E91C((char *)a0);
     game_uso_func_0000D8EC(a0);
@@ -10811,13 +10811,13 @@ void game_uso_func_00011168(int *a0) {
 /* game_uso_func_00011258: 34-insn (0x88) init+register-clear helper.
  * Structure:
  *   game_uso_func_077C44(a0, 0x70009, 0, 2, /stack: 1, 1/);     // call #1
- *   game_uso_func_0000D5F8(a0, *(D+0xF18), *(D+0xF1C), 2);      // call #2 (varargs pair home)
- *   game_uso_func_0000D5DC(a0);                                 // call #3
+ *   RiderAnim_setAnim_0000D5F8(a0, *(D+0xF18), *(D+0xF1C), 2);      // call #2 (varargs pair home)
+ *   RiderAnim_setDefaultNext_0000D5DC(a0);                                 // call #3
  *   p = a0->[0xB4]; p[0xA58] &= ~0x800;   // bit-clear (RSP/SP status mask)
  *
  * 2026-06-20: reconstructed with the REAL reloc callees (was placeholder
  * func_00000000/D_00000000, which score 100% under name-blind objdiff but are
- * NOT byte/episode-correct). game_uso_func_0000D5F8 is varargs (homes the pair
+ * NOT byte/episode-correct). RiderAnim_setAnim_0000D5F8 is varargs (homes the pair
  * to 4(sp)/8(sp)); passing the D-pair BY VALUE (`Pair2`) reproduces the
  * `addiu base,base,0xF18; lw 0/4(base)` + stack-home shape with a DIRECT jal
  * (a fn-ptr cast would emit lui/addiu/jalr). The tail bit-clear emits the
@@ -10844,8 +10844,8 @@ extern char game_uso_D_807FF508;
 void game_uso_func_00011258(int *a0) {
     int *p;
     game_uso_func_077C44(a0, 0x70009, 0, 2, 1, 1);
-    game_uso_func_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
-    game_uso_func_0000D5DC((char*)a0);
+    RiderAnim_setAnim_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_setDefaultNext_0000D5DC((char*)a0);
     p = *(int**)((char*)a0 + 0xB4);
     p = (int*)((char*)p + 0xA58);
     *p = *p & ~0x800;
@@ -10859,8 +10859,8 @@ extern char game_uso_D_807FF508;
 void game_uso_func_000112E0(int *a0) {
     int *p;
     game_uso_func_077C44(a0, 0x70008, 0, 2, 1, 1);
-    game_uso_func_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
-    game_uso_func_0000D5DC((char*)a0);
+    RiderAnim_setAnim_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_setDefaultNext_0000D5DC((char*)a0);
     p = *(int**)((char*)a0 + 0xB4);
     p = (int*)((char*)p + 0xA58);
     *p = *p & ~0x800;
@@ -11014,8 +11014,8 @@ void game_uso_func_000116D4(void *a0) {
  * just-in-time family typing). The prior NM body called placeholder
  * gl_func_00000000 + loaded &D_00000000; the resolved .s relocs name the real
  * callees game_uso_func_077C44 (event/sound dispatch, R_MIPS_26 to an undefined
- * import-class symbol), game_uso_func_0000D5F8 (Pair2-by-value sink — homes
- * a1/a2 to sp+4/sp+8 via the prototype-flip lever), game_uso_func_0000D5DC
+ * import-class symbol), RiderAnim_setAnim_0000D5F8 (Pair2-by-value sink — homes
+ * a1/a2 to sp+4/sp+8 via the prototype-flip lever), RiderAnim_setDefaultNext_0000D5DC
  * (pair-copy trailing call), and the real global game_uso_D_807FF490. Control
  * flow: the FP gate is the POSITIVE if (`if (s->0xA38 < -30.0f)` => the target
  * `c.lt.s; bc1fl` with the else-reset folded into the branch-likely delay slot);
@@ -11036,12 +11036,12 @@ void game_uso_func_00011750(char *obj) {
         *(short *)(obj + 0x130) = 0;
         if (*(int *)(*(char **)(obj + 0xB4) + 0x9CC) != 0) {
             game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | 0x24, 0, 0, 0x100, 5);
-            game_uso_func_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_setAnim_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         } else {
             game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | 0x1D, 0, 0, 0x100, 5);
-            game_uso_func_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_setAnim_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         }
-        game_uso_func_0000D5DC(obj);
+        RiderAnim_setDefaultNext_0000D5DC(obj);
     } else {
         *(short *)(obj + 0x130) = 0;              /* not a hard hit: reset */
     }
@@ -11101,26 +11101,26 @@ void game_uso_func_0001189C(int *a0, int a1, int a2) {
 
 void game_uso_func_000119D4(char *dst) {
     int tmp;
-    game_uso_func_0000C194(&tmp);
-    game_uso_func_0000C1D0((float*)(dst + 0x10));
+    stream_readS32_0000C194(&tmp);
+    stream_readF32_0000C1D0((float*)(dst + 0x10));
 }
 
 void game_uso_func_00011A04(char *dst) {
     int tmp;
-    game_uso_func_0000C194(&tmp);
-    game_uso_func_0000C20C((Vec3*)(dst + 0x10));
+    stream_readS32_0000C194(&tmp);
+    stream_readVec3_0000C20C((Vec3*)(dst + 0x10));
 }
 
 void game_uso_func_00011A34(char *dst) {
     int tmp;
-    game_uso_func_0000C194(&tmp);
-    game_uso_func_0000C27C((Quad4*)(dst + 0x10));
+    stream_readS32_0000C194(&tmp);
+    stream_read16_0000C27C((Quad4*)(dst + 0x10));
 }
 
 void game_uso_func_00011A64(char *dst) {
     int tmp;
-    game_uso_func_0000C194(&tmp);
-    game_uso_func_0000C194((int*)(dst + 0x10));
+    stream_readS32_0000C194(&tmp);
+    stream_readS32_0000C194((int*)(dst + 0x10));
 }
 
 /* game_uso_func_00011A94: 36-insn alloc-init constructor. alloc(0x40) +

@@ -18,7 +18,7 @@ extern "C" {
 extern char game_uso_D_807FF438;
 extern char game_uso_D_807FF460;
 void import_0010DB78(void *, int, int, int, int, int);
-void game_uso_func_0000D5BC(void *, PM);
+void RiderAnim_setNextAnim_0000D5BC(void *, PM);
 void game_uso_func_0000D8EC(void *);
 void game_uso_func_0000D7F4(void *);
 }
@@ -29,11 +29,11 @@ extern "C" void game_uso_func_00010A0C(int *a0) {
     import_0010DB78(a0, 0x20004, 0x20005, I(I(a0, 0xB4), 0x970), 0, 1);
     p = (int *)a0[0xB4 / 4];
     if (p[0x990 / 4] == 0) {
-        game_uso_func_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
+        RiderAnim_setNextAnim_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
         p = (int *)a0[0xB4 / 4];
     }
     if (p[0x9CC / 4] == 0) {
-        game_uso_func_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
+        RiderAnim_setNextAnim_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
     }
     game_uso_func_0000D8EC(a0);
     game_uso_func_0000D7F4(a0);

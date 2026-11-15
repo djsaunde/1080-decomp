@@ -20,7 +20,7 @@ glabel game_uso_func_0001056C
     /* 0105AC 000105AC 2407FFFF */  .word 0x2407FFFF
     /* 0105B0 000105B0 AFA50004 */  .word 0xAFA50004
     /* 0105B4 000105B4 8F060004 */  .word 0x8F060004
-    jal game_uso_func_0000D5F8   /* 0105B8 0C000000 -> game_uso_func_0000D5F8 */
+    jal RiderAnim_setAnim_0000D5F8   /* 0105B8 0C000000 -> RiderAnim_setAnim_0000D5F8 */
     /* 0105BC 000105BC AFA60008 */  .word 0xAFA60008
     /* 0105C0 000105C0 8FA20020 */  .word 0x8FA20020
     /* 0105C4 000105C4 C4440154 */  .word 0xC4440154

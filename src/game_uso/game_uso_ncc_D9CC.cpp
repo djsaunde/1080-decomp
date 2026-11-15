@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000D9CC (0x830 / 524 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_selectAnim_0000D9CC (0x830 / 524 words).
  *
  * Per-frame landing/turn-state classifier. Under NCC two edg spellings fix
  * the cfe "andi temp coalesced into a1" t-ring cascade (kit XXI #2): the
@@ -24,9 +24,9 @@ typedef struct { int a, b; } Pair2;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 int game_uso_func_077C44(...);
-void game_uso_func_0000D5DC(char *a0);
-void game_uso_func_0000D5F8(char *a0, Pair2 pair, int a3);
-void game_uso_func_0000D63C(char *a0, int a1);
+void RiderAnim_setDefaultNext_0000D5DC(char *a0);
+void RiderAnim_setAnim_0000D5F8(char *a0, Pair2 pair, int a3);
+void RiderAnim_endTrick_0000D63C(char *a0, int a1);
 void game_uso_func_07C0FC(...);
 void game_uso_func_0000EDCC(int *a0, int a1);
 void game_uso_func_0000EDD4(int *a0, unsigned int a1, char *a2);
@@ -37,7 +37,7 @@ extern char game_uso_D_807FF3B8;
 extern char game_uso_D_807FF68C;
 extern char game_uso_D_807FFB18;
 extern char game_uso_D_807FFB20;
-void game_uso_func_0000D9CC(char *arg0) {
+void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     s32 var_a3;
     s32 sp30;
     char *sp2C;
@@ -225,16 +225,16 @@ after_24:;
         game_uso_func_0000EDD4((int *)arg0, sp28, sp2C);
         temp_v0_3 = (char *)FW(arg0, 0xB4) + 0x2FC;
         FF(temp_v0_3, 0) = 0.0f; FF(temp_v0_3, 0x4) = 0.0f; FF(temp_v0_3, 0x8) = 0.0f; FF(temp_v0_3, 0xC) = 1.0f;
-        game_uso_func_0000D63C(arg0, (sp28 == 0));
+        RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));
         FW(FW(arg0, 0xB4), 0x3DC) = 0;
         if (sp30 != 0) {
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 2, 1, 1);
-            game_uso_func_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
+            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
         } else {
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
-            game_uso_func_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
+            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
         }
-        game_uso_func_0000D5DC(arg0);
+        RiderAnim_setDefaultNext_0000D5DC(arg0);
         FW(arg0, 0x114) = 0;
     }
     if (FW(FW(arg0, 0xB4), 0xA14) <= 0) {
@@ -242,10 +242,10 @@ after_24:;
         if (FW(arg0, 0x108) != 0) {
             FW(arg0, 0x108) = (FW(arg0, 0x108) & 0xFFFF) | 0x60000;
             game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
-            game_uso_func_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
+            RiderAnim_setAnim_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
         }
         FW(FW(arg0, 0xB4), 0x960) = 0x64;
-        game_uso_func_0000D5DC(arg0);
+        RiderAnim_setDefaultNext_0000D5DC(arg0);
     }
 }
 }

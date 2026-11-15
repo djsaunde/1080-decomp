@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000D6E4, 0x68
+nonmatching RiderAnim_flipStance_0000D6E4, 0x68
 
-glabel game_uso_func_0000D6E4
+glabel RiderAnim_flipStance_0000D6E4
     /* 00D6E4 0000D6E4 27BDFFE8 */  .word 0x27BDFFE8
     /* 00D6E8 0000D6E8 AFBF0014 */  .word 0xAFBF0014
     /* 00D6EC 0000D6EC 8C8200B4 */  .word 0x8C8200B4
@@ -27,4 +27,4 @@ glabel game_uso_func_0000D6E4
     /* 00D740 0000D740 27BD0018 */  .word 0x27BD0018
     /* 00D744 0000D744 03E00008 */  .word 0x03E00008
     /* 00D748 0000D748 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000D6E4
+endlabel RiderAnim_flipStance_0000D6E4
