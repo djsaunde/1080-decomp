@@ -780,35 +780,35 @@ char *CoolGadget_ctor(char *self, s32 arg1) {
     volatile int pad_15fc;
     if (self != 0 || (self = (char *)func_00000000(0x198)) != 0) {
         func_00000000(self, D_0000CC58);
-        FW(self, 0x28) = (int)&gl_data_00000000_15fc;
-        func_00000000(self + 0x2C);
+        COOLG(self)->node.vptr = (int)&gl_data_00000000_15fc;
+        func_00000000(&COOLG(self)->parms);
         temp_f2 = D_00000C7C;
-        FW(self, 0xC) = (int)D_0000CC60;
-        *(f32*)(self + 0xE8) = temp_f2;
-        *(f32*)(self + 0xF8) = temp_f2;
-        *(f32*)(self + 0xEC) = 0.0f; *(f32*)(self + 0xF0) = 0.0f; *(f32*)(self + 0xF4) = 0.0f; *(f32*)(self + 0xFC) = 0.0f; *(f32*)(self + 0x100) = 0.0f; *(f32*)(self + 0x104) = 0.0f;
-        *(f32*)(self + 0x108) = D_00000C80;
-        *(f32*)(self + 0x118) = 1.0f;
-        *(f32*)(self + 0x114) = 0.0f;
-        *(f32*)(self + 0x110) = 0.0f;
-        *(f32*)(self + 0x10C) = 0.0f;
-        *(f32*)(self + 0x11C) = D_00000C84;
-        *(f32*)(self + 0x124) = 0.0f;
-        *(f32*)(self + 0x120) = 0.0f;
-        *(f32*)(self + 0xD8) = D_00000C88;
-        *(f32*)(self + 0xDC) = D_00000C8C;
-        *(f32*)(self + 0xE0) = D_00000C90;
-        *(f32*)(self + 0xE4) = 0.0f;
-        FW(self, 0xD4) = arg1;
-        *(f32*)(self + 0x128) = 0.0f;
-        FW(self, 0xCC) = FW(self, 0xC8) = 0x64;
-        *(f32*)(self + 0x12C) = D_00000C94;
-        FW(self, 0xD0) = 0x82;
-        func_00000000(self + 0x138, 0x5000A);
-        func_00000000(self + 0x150, 0x50009);
-        func_00000000(self + 0x180, 0x5000B);
-        func_00000000(self + 0x168, 0x5001C);
-        func_00000000(self, self + 0x168, self + 0x180);
+        COOLG(self)->node.name = (int)D_0000CC60;
+        COOLG(self)->lowColour.r = temp_f2;
+        COOLG(self)->midColour.r = temp_f2;
+        COOLG(self)->lowColour.g = 0.0f; COOLG(self)->lowColour.b = 0.0f; COOLG(self)->lowColour.a = 0.0f; COOLG(self)->midColour.g = 0.0f; COOLG(self)->midColour.b = 0.0f; COOLG(self)->midColour.a = 0.0f;
+        COOLG(self)->pulseLo.r = D_00000C80;
+        COOLG(self)->pulseHi.r = 1.0f;
+        COOLG(self)->pulseLo.a = 0.0f;
+        COOLG(self)->pulseLo.b = 0.0f;
+        COOLG(self)->pulseLo.g = 0.0f;
+        COOLG(self)->pulseHi.g = D_00000C84;
+        COOLG(self)->pulseHi.a = 0.0f;
+        COOLG(self)->pulseHi.b = 0.0f;
+        COOLG(self)->colour[0] = D_00000C88;
+        COOLG(self)->colour[1] = D_00000C8C;
+        COOLG(self)->colour[2] = D_00000C90;
+        COOLG(self)->colour[3] = 0.0f;
+        COOLG(self)->total = arg1;
+        COOLG(self)->phase = 0.0f;
+        COOLG(self)->target = COOLG(self)->cur = 0x64;
+        COOLG(self)->step = D_00000C94;
+        COOLG(self)->labelAlpha = 0x82;
+        func_00000000(COOLG(self)->barSprite, 0x5000A);
+        func_00000000(COOLG(self)->capSprite, 0x50009);
+        func_00000000(COOLG(self)->label2Sprite, 0x5000B);
+        func_00000000(COOLG(self)->label1Sprite, 0x5001C);
+        func_00000000(self, COOLG(self)->label1Sprite, COOLG(self)->label2Sprite);
         func_00000000(self, -0x49, -2, -0x32, -1);
     }
     return self;
@@ -818,36 +818,36 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CoolGadget_ctor);
 #endif
 
 void CoolGadget_release(char *a0) {
-    gl_func_00000000(a0 + 0x138);
-    gl_func_00000000(a0 + 0x150);
-    gl_func_00000000(a0 + 0x180);
-    gl_func_00000000(a0 + 0x168);
+    gl_func_00000000(COOLG(a0)->barSprite);
+    gl_func_00000000(COOLG(a0)->capSprite);
+    gl_func_00000000(COOLG(a0)->label2Sprite);
+    gl_func_00000000(COOLG(a0)->label1Sprite);
 }
 
-/* 3-insn 2-field setter: a0[0x44]=a1, a0[0x5C]=a2. */
+/* 3-insn 2-field setter: parms xps / yps. */
 void CoolGadget_setPos(int *a0, int a1, int a2) {
-    a0[0x44/4] = a1;
-    a0[0x5C/4] = a2;
+    COOLG(a0)->parms.xps.value = a1;
+    COOLG(a0)->parms.yps.value = a2;
 }
 
-/* 2-insn 1-field setter: a0[0xCC]=a1 (in jr-ra delay slot). */
+/* 2-insn 1-field setter: target (in the jr-ra delay slot); display steps cur toward it. */
 void CoolGadget_setValue(int *a0, int a1) {
-    a0[0xCC/4] = a1;
+    COOLG(a0)->target = a1;
 }
 
-/* 3-insn 2-field setter: a0[0x130]=a1, a0[0x134]=a2. */
+/* 3-insn 2-field setter: label1 / label2 (the ctor passes &label1Sprite / &label2Sprite). */
 void CoolGadget_setPair_000017F4(int *a0, int a1, int a2) {
-    a0[0x130/4] = a1;
-    a0[0x134/4] = a2;
+    COOLG(a0)->label1 = a1;
+    COOLG(a0)->label2 = a2;
 }
 
-/* 6-insn 4-arg setter: a0[0x74]=a1, a0[0x8C]=a2, a0[0xA4]=a3, a0[0xBC]=a4
- * (a4 from caller-arg-save sp+0x10). */
+/* 6-insn 4-arg setter: the label offsets lbx / lby / l2x / l2y (a4 from the caller-arg-save
+ * sp+0x10); the ctor passes -73, -2, -50, -1. */
 void CoolGadget_setQuad_00001800(int *a0, int a1, int a2, int a3, int a4) {
-    a0[0x74/4] = a1;
-    a0[0x8C/4] = a2;
-    a0[0xA4/4] = a3;
-    a0[0xBC/4] = a4;
+    COOLG(a0)->parms.lbx.value = a1;
+    COOLG(a0)->parms.lby.value = a2;
+    COOLG(a0)->parms.l2x.value = a3;
+    COOLG(a0)->parms.l2y.value = a4;
 }
 
 /* CoolGadget_display: 16-segment meter/gauge tick (0x43C incl. its 2-word
@@ -891,9 +891,8 @@ void CoolGadget_setQuad_00001800(int *a0, int a1, int a2, int a3, int a4) {
 extern int gl_func_00000000();
 extern float gl_ffunc_00001818(float);
 extern float gl_ref_00001818_scale_f;
-typedef struct { float x, y, z, w; } Vec4f_1818;
 void CoolGadget_display(char *o) {
-    Vec4f_1818 w;
+    GadgetRGBA w;
     float v[4];
     int m[1];
     int n, rem, tot, cur;
@@ -906,60 +905,64 @@ void CoolGadget_display(char *o) {
     char *p, *q;
     short h;
 
+    /* Field-form notes (agent-h run 509): with members IDO loads a commutative pair in the
+     * opposite order from the raw form, so the sums below are written `phase + step`,
+     * `pulseLo + ...`, `xps + lbx`; the two `m[0] + xps` sums stay raw (`*(int *)(o + 0x44)`
+     * = parms.xps.value): every member spelling swaps their registers. */
     v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    if (*(int*)(o + 0xCC) < *(int*)(o + 0xC8)) {
-        *(int*)(o + 0xC8) -= 1;
-    } else if (*(int*)(o + 0xC8) < *(int*)(o + 0xCC)) {
-        *(int*)(o + 0xC8) += 1;
+    if (COOLG(o)->target < COOLG(o)->cur) {
+        COOLG(o)->cur -= 1;
+    } else if (COOLG(o)->cur < COOLG(o)->target) {
+        COOLG(o)->cur += 1;
     }
-    tot = *(int*)(o + 0xD4);
-    rem = tot - *(int*)(o + 0xC8);
+    tot = COOLG(o)->total;
+    rem = tot - COOLG(o)->cur;
     if (rem < 0) rem = 0;
     if (tot < rem) rem = tot;
     n = (int)((float)rem / (float)tot * 16.0f);
-    *(int*)(o + 0xC4) = n;
+    COOLG(o)->seg = n;
     m[0] = n * 4 + 2;
     if (n >= 12) {
-        t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; a = gl_ffunc_00001818(t);
-        t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; b = gl_ffunc_00001818(t);
-        t = *(float*)(o + 0x12C) + *(float*)(o + 0x128); *(float*)(o + 0x128) = t; c = gl_ffunc_00001818(t);
-        x = (*(float*)(o + 0x118) - *(float*)(o + 0x108)) * (a + 1) / 2 + *(float*)(o + 0x108);
-        y = (*(float*)(o + 0x11C) - *(float*)(o + 0x10C)) * (b + 1) / 2 + *(float*)(o + 0x10C);
-        z = (*(float*)(o + 0x120) - *(float*)(o + 0x110)) * (c + 1) / 2 + *(float*)(o + 0x110);
-        w.x = x; w.y = y; w.z = z; w.w = 1.0f;
-    } else if (*(int*)(o + 0xC4) >= 4) {
-        w = *(Vec4f_1818*)(o + 0xF8);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; a = gl_ffunc_00001818(t);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; b = gl_ffunc_00001818(t);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; c = gl_ffunc_00001818(t);
+        x = COOLG(o)->pulseLo.r + (COOLG(o)->pulseHi.r - COOLG(o)->pulseLo.r) * (a + 1) / 2;
+        y = COOLG(o)->pulseLo.g + (COOLG(o)->pulseHi.g - COOLG(o)->pulseLo.g) * (b + 1) / 2;
+        z = COOLG(o)->pulseLo.b + (COOLG(o)->pulseHi.b - COOLG(o)->pulseLo.b) * (c + 1) / 2;
+        w.r = x; w.g = y; w.b = z; w.a = 1.0f;
+    } else if (COOLG(o)->seg >= 4) {
+        w = COOLG(o)->midColour;
     } else {
-        w = *(Vec4f_1818*)(o + 0xE8);
+        w = COOLG(o)->lowColour;
     }
-    if (*(int*)(o + 0x130) != 0) {
-        gl_func_00000000(*(int*)(o + 0x130));
-        gl_func_00000000(*(int*)(o + 0x130), (int)(gl_ref_00001818_scale_f * (float)*(int*)(o + 0xD0)), v, 0);
-        gl_func_00000000(*(int*)(o + 0x130), *(int*)(o + 0x74) + *(int*)(o + 0x44), *(int*)(o + 0x8C) + *(int*)(o + 0x5C), 0);
+    if (COOLG(o)->label1 != 0) {
+        gl_func_00000000(COOLG(o)->label1);
+        gl_func_00000000(COOLG(o)->label1, (int)(gl_ref_00001818_scale_f * (float)COOLG(o)->labelAlpha), v, 0);
+        gl_func_00000000(COOLG(o)->label1, COOLG(o)->parms.xps.value + COOLG(o)->parms.lbx.value, COOLG(o)->parms.yps.value + COOLG(o)->parms.lby.value, 0);
     }
-    if (*(int*)(o + 0x134) != 0) {
-        gl_func_00000000(*(int*)(o + 0x134));
-        gl_func_00000000(*(int*)(o + 0x134), (int)(255.0f * gl_ref_00001818_scale_f), v, 0);
-        gl_func_00000000(*(int*)(o + 0x134), *(int*)(o + 0xA4) + *(int*)(o + 0x44), *(int*)(o + 0xBC) + *(int*)(o + 0x5C), 0);
+    if (COOLG(o)->label2 != 0) {
+        gl_func_00000000(COOLG(o)->label2);
+        gl_func_00000000(COOLG(o)->label2, (int)(255.0f * gl_ref_00001818_scale_f), v, 0);
+        gl_func_00000000(COOLG(o)->label2, COOLG(o)->parms.xps.value + COOLG(o)->parms.l2x.value, COOLG(o)->parms.yps.value + COOLG(o)->parms.l2y.value, 0);
     }
-    if (*(int*)(o + 0xC4) > 0) {
-        p = o + 0x138;
+    if (COOLG(o)->seg > 0) {
+        p = COOLG(o)->barSprite;
         gl_func_00000000(p);
         gl_func_00000000(p, (int)(255.0f * gl_ref_00001818_scale_f), &w, 0xFF);
-        gl_func_00000000(p, *(int*)(o + 0x44) + 4, *(int*)(o + 0x5C), 3, m[0] - 4);
+        gl_func_00000000(p, COOLG(o)->parms.xps.value + 4, COOLG(o)->parms.yps.value, 3, m[0] - 4);
     }
-    p = o + 0x138;
+    p = COOLG(o)->barSprite;
     gl_func_00000000(p);
-    gl_func_00000000(p, (int)(255.0f * gl_ref_00001818_scale_f), o + 0xD8, 0xFF);
-    q = *(char**)(o + 0x148);
+    gl_func_00000000(p, (int)(255.0f * gl_ref_00001818_scale_f), COOLG(o)->colour, 0xFF);
+    q = *(char**)(COOLG(o)->barSprite + 0x10); /* the bar image; +0x20 = its width */
     if (1) {}
     h = *(short*)(q + 0x20);
-    gl_func_00000000(p, m[0] + *(int*)(o + 0x44), *(int*)(o + 0x5C), m[0] - 1, h - m[0] - 1);
-    if (*(int*)(o + 0xC4) > 0) {
-        p = o + 0x150;
+    gl_func_00000000(p, m[0] + *(int *)(o + 0x44), COOLG(o)->parms.yps.value, m[0] - 1, h - m[0] - 1);
+    if (COOLG(o)->seg > 0) {
+        p = COOLG(o)->capSprite;
         gl_func_00000000(p);
         gl_func_00000000(p, (int)(255.0f * gl_ref_00001818_scale_f), &w, 0xFF);
-        gl_func_00000000(p, m[0] + *(int*)(o + 0x44) - 3, *(int*)(o + 0x5C), 0);
+        gl_func_00000000(p, m[0] + *(int *)(o + 0x44) - 3, COOLG(o)->parms.yps.value, 0);
     }
 }
 

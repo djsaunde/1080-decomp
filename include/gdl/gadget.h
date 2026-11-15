@@ -170,4 +170,53 @@ typedef char PointsPopup_state_check[(int)&((PointsPopup *)0)->state == 0x94 ? 1
 
 #define POPUP(p) ((PointsPopup *)(p))
 
+/* An RGBA colour in 0..1 (CoolGadget's state colours; CoolGadget_display copies one whole). */
+typedef struct GadgetRGBA {
+    f32 r, g, b, a;
+} GadgetRGBA;
+
+/* CoolGadget (0x198, CoolGadget_ctor 0x15FC, name Data 0xCC58; game_libs.c): the 16-segment
+ * "cool" meter (RaceTracker +0x98). Same Node + TimeGadgetParms head as Gadget
+ * (CoolGadgetParms_ctor, Data 0xCC38). CoolGadget_display steps cur one unit per frame toward
+ * target, then seg = clamp(total - cur, 0, total) / total * 16: seg >= 12 pulses the bar colour
+ * between pulseLo and pulseHi (three phase += step calls of a sine-like float import), 4..11
+ * uses midColour, 0..3 lowColour. It draws label1 at xps + lbx with labelAlpha, label2 at
+ * xps + l2x, then with m = seg * 4 + 2: the lit bar (barSprite, width m - 4, in the state
+ * colour), the unlit rest of the bar (barSprite again, from xps + m, in `colour`) and the tip
+ * (capSprite at xps + m - 3, state colour). The ctor: lowColour = midColour = {0.757, 0, 0, 0}
+ * (red), pulseLo = {0.482, 0, 0, 0}, pulseHi = {1, 0.965, 0, 0} (the full bar pulses red ..
+ * yellow), colour = {0.035, 0.608, 0.467, 0}, cur = target = 100, labelAlpha 0x82,
+ * total = arg 1, step 0.18; label1 / label2 = &label1Sprite / &label2Sprite, label offsets
+ * -73, -2, -50, -1
+ * (agent-h run 509). */
+typedef struct CoolGadget {
+    /* 0x000 */ Node node;
+    /* 0x02C */ TimeGadgetParms parms;
+    /* 0x0C4 */ s32 seg;            /* bar segments lit, 0..16 */
+    /* 0x0C8 */ s32 cur;            /* displayed value: steps 1 per frame toward target */
+    /* 0x0CC */ s32 target;         /* CoolGadget_setValue */
+    /* 0x0D0 */ s32 labelAlpha;     /* 0x82: label1 alpha (x the global fade scale) */
+    /* 0x0D4 */ s32 total;          /* ctor arg 1: the full-scale value */
+    /* 0x0D8 */ f32 colour[4];      /* the unlit part of the bar */
+    /* 0x0E8 */ GadgetRGBA lowColour;  /* seg < 4 */
+    /* 0x0F8 */ GadgetRGBA midColour;  /* 4 <= seg < 12 */
+    /* 0x108 */ GadgetRGBA pulseLo;    /* seg >= 12: lerp lo .. hi */
+    /* 0x118 */ GadgetRGBA pulseHi;
+    /* 0x128 */ f32 phase;          /* += step, three times per frame */
+    /* 0x12C */ f32 step;           /* 0.18 */
+    /* 0x130 */ s32 label1;         /* CoolGadget_setLabels_000017F4 arg 1 (&label1Sprite) */
+    /* 0x134 */ s32 label2;         /* arg 2 (&label2Sprite) */
+    /* 0x138 */ char barSprite[0x18];   /* id 0x5000A: the lit bar (+0x10 image, +0x20 width) */
+    /* 0x150 */ char capSprite[0x18];   /* id 0x50009: the bar end */
+    /* 0x168 */ char label1Sprite[0x18]; /* id 0x5001C */
+    /* 0x180 */ char label2Sprite[0x18]; /* id 0x5000B */
+} CoolGadget;
+
+typedef char CoolGadget_size_check[sizeof(CoolGadget) == 0x198 ? 1 : -1];
+typedef char CoolGadget_colour_check[(int)&((CoolGadget *)0)->colour == 0xD8 ? 1 : -1];
+typedef char CoolGadget_phase_check[(int)&((CoolGadget *)0)->phase == 0x128 ? 1 : -1];
+typedef char CoolGadget_sprite_check[(int)&((CoolGadget *)0)->label2Sprite == 0x180 ? 1 : -1];
+
+#define COOLG(p) ((CoolGadget *)(p))
+
 #endif
