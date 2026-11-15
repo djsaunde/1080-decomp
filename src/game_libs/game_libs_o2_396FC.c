@@ -21,6 +21,7 @@
  * (docs/IDO_CODEGEN.md#param-split-spill-home-396fc). */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -46,19 +47,19 @@ void MNode_doCommand(int *a0, int *a1) {
     short *s2;
     switch (a1[0]) {
     case 109:
-        gl_func_00000000(a1, b1);
+        CALL(cmd_readFixedVec3)(a1, b1);
         if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b1);
+        CALL(math_mtxScaleRows)((char *)a0 + 0x30, b1);
         break;
     case 110:
-        gl_func_00000000(a1, b2);
+        CALL(cmd_readFixedVec3)(a1, b2);
         if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b2);
+        CALL(math_mtxRotateEuler)((char *)a0 + 0x30, b2);
         break;
     case 111:
-        gl_func_00000000(a1, b3);
+        CALL(cmd_readFixedVec3)(a1, b3);
         if (1) {}
-        gl_func_00000000((char *)a0 + 0x30, b3);
+        CALL(math_mtxAddTranslation)((char *)a0 + 0x30, b3);
         break;
     case 112:
         q = (int *)a1[1]; a1[1] = (int)(q + 1);
@@ -92,13 +93,13 @@ void MNode_doCommand(int *a0, int *a1) {
         xf.v[4] = y;
         xf.v[5] = z;
         m = (Mtx16_396FC *)((char *)a0 + 0x30);
-        gl_func_00000000(&xf, m);
+        CALL(math_quatScaleToMtx4)(&xf, m);
         *(Mtx16_396FC *)((char *)a0 + 0x70) = *m;
         *(Z0_396FC *)&xf = *(Z0_396FC *)&D_00000000;
         *(Z0_396FC *)b1 = *(Z0_396FC *)&D_00000000;
         break;
     default:
-        gl_func_00000000(a0, a1);
+        CALL(Node_doCommand)(a0, a1);
         break;
     }
 }

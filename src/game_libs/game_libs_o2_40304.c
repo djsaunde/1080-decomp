@@ -20,6 +20,7 @@
  *    p load / first quat product / before `y = *sp`; the dead `while (0)`
  *    anchor and the code-free float tests set the FP colour order. */
 #include "common.h"
+#include "uso_call.h"
 
 typedef struct { float x, y, z; } Vec3;
 typedef struct { float m[16]; } Mtx44_40304;
@@ -55,18 +56,18 @@ void QNode_doCommand(Obj40304 *self, Cmd40304 *cmd) {
     m3 = &self->m30;
     switch (cmd->op) {
         case 0x6D:
-            gl_func_00000000(cmd, (Vec3 *)((int)&self->scl | 0 * (int)cmd), &self->scl);
+            CALL(cmd_readFixedVec3)(cmd, (Vec3 *)((int)&self->scl | 0 * (int)cmd), &self->scl);
             x = self->scl;
             self->scl2.x = x.x; self->scl2.y = x.y; self->scl2.z = x.z;
             break;
         case 0x6E:
-            gl_func_00000000(cmd, &z);
+            CALL(cmd_readFixedVec3)(cmd, &z);
             gl_func_00040304_quat(self->q, z.x, z.y, z.z);
             x = *(Vec3 *)self->q;
             self->q2[0] = x.x; self->q2[1] = x.y; self->q2[2] = x.z; self->q2[3] = self->q[3];
             break;
         case 0x6F:
-            gl_func_00000000(cmd, &self->pos);
+            CALL(cmd_readFixedVec3)(cmd, &self->pos);
             x = self->pos;
             self->pos2.x = x.x; self->pos2.y = x.y; self->pos2.z = x.z;
             break;
@@ -102,13 +103,13 @@ void QNode_doCommand(Obj40304 *self, Cmd40304 *cmd) {
             self->scl2.x = y.x; self->scl2.y = y.y; self->scl2.z = y.z;
             y = *(Vec3 *)self->q;
             self->q2[0] = y.x; self->q2[1] = y.y; self->q2[2] = y.z; self->q2[3] = self->q[3];
-            gl_func_00000000(&self->pos2, &self->m30, sp);
+            CALL(math_quatScaleToMtx4)(&self->pos2, &self->m30, sp);
             self->m70 = self->m30;
             break;
         case 0x70:
         case 0x71:
         default:
-            gl_func_00000000(self, cmd);
+            CALL(MNode_doCommand)(self, cmd);
             break;
     }
 }

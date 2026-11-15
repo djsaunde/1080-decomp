@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CamMan_update (0x3C8 / 242 words): EXACT (agent-g run 219).
  * Real C++ `void FreeCam::update()` (debug free camera: pad buttons 0x40 / 0x80 / 0x400 build a move vector,
  * accelerating while any component exceeds the 0.8 threshold (RoData 0x19E8), rotated by the camera matrix;
@@ -76,8 +77,8 @@ void FreeCam::update() {
     pitch = clamp_(pitch, -89.0f, 89.0f);
     f32 d = dist;
     w.x = 0.0f; w.y = 0.0f; w.z = d;
-    gl_func_00000000(pitch, &w.y, &w.z);
-    gl_func_00000000(yaw, &w.x, &w.z);
+    CALL(math_rotate2D)(pitch, &w.y, &w.z);
+    CALL(math_rotate2D)(yaw, &w.x, &w.z);
     M &m = tm(c);
     pos.x = m.t.x; pos.y = m.t.y; pos.z = m.t.z;
     pos += v;

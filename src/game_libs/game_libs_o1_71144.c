@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 7.1 -O1 whole-fn donor for osViSetSpecialFeatures = libultra
  * osViSetSpecialFeatures (libreultra src/io/visetspecial.c verbatim).
  * PROVEN EXACT 2026-08-22: first -O1 compile is 110/110 FULL-word
@@ -112,5 +113,5 @@ void osViSetSpecialFeatures(u32 func)
     }
     gl_func_00000000_vinext711->state |= VI_STATE_08;
 
-    gl_func_00000000_rstint711(saveMask);
+    XCALL(gl_func_00000000_rstint711, gl___osRestoreInt)(saveMask);
 }

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for BasePolyShape_ctor (0x248 / 146 words) -- EXACT.
  *
  * A C++ constructor Obj::Obj(void *, void *, Obj *src) with cfront's
@@ -50,9 +51,9 @@ struct Obj : Base {
     virtual void f();
 };
 Obj::Obj(void *a1, void *a2, Obj *src) : Base(a1) {
-    gl_func_00000000_526d0_reg(this, &m84);
+    XCALL(gl_func_00000000_526d0_reg, BasePolyShape_reset)(this, &m84);
     copy(src);
     if (a2 != 0) {
-        gl_func_00000000_526d0_fin(this, a2);
+        XCALL(gl_func_00000000_526d0_fin, BasePolyShape_parse)(this, a2);
     }
 }

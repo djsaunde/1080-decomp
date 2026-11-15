@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O2 -mips2 donor for boot_reloadMainUso_000669B8 = 5-call debug-print
  * dispatch. PROVEN EXACT 41/41 standalone against the concatenated
  * 0x669AC..0x66A4C stream.
@@ -43,8 +44,8 @@ void boot_reloadMainUso_000669B8(void) {
     gSysApi_dbg669->vt44((char *)D_00000000 + 0x217C);
     rc = gSysApi_dbg669->vt40((char *)D_00000000 + 0x2184);
     if (rc != 0) {
-        gl_func_00000000_print669((char *)D_00000000 + 0x218C, rc);
+        XCALL(gl_func_00000000_print669, sys_fatal)((char *)D_00000000 + 0x218C, rc);
     }
-    gl_func_00000000_print669((char *)D_00000000 + 0x21A4, rc);
-    gl_func_00000000_print669((char *)D_00000000 + 0x21AC, gSysApi_dbg669->f00, gSysApi_dbg669->f04);
+    XCALL(gl_func_00000000_print669, dbg_printf)((char *)D_00000000 + 0x21A4, rc);
+    XCALL(gl_func_00000000_print669, dbg_printf)((char *)D_00000000 + 0x21AC, gSysApi_dbg669->f00, gSysApi_dbg669->f04);
 }

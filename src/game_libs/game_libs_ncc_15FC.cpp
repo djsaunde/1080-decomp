@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CoolGadget_ctor (0x19C / 103 words), EXACT.
  * The function is a cfront-style constructor G::G(int) of a 0x198-byte class:
  * edg's ctor protocol gives the get-or-create head (`if (this == 0) this =
@@ -23,7 +24,7 @@ void *gl_func_00000000(...);
 extern char sStr_Node_CC58[], sStr_CoolGadget_CC60[];
 extern float kRo_CoolGadget_ctor_C7C, kRo_CoolGadget_ctor_C80, kRo_CoolGadget_ctor_C84, kRo_CoolGadget_ctor_C88, kRo_CoolGadget_ctor_C8C, kRo_CoolGadget_ctor_C90, kRo_CoolGadget_ctor_C94;
 }
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct B { char p[0x28]; B(char *); virtual void g(); };
 struct M { char p[0xA8]; M(); };
 struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); virtual void g(); };
@@ -52,10 +53,10 @@ G::G(int arg1) : B(sStr_Node_CC58) {
     FW(self, 0xC8) = 0x64;
     FF(self, 0x12C) = kRo_CoolGadget_ctor_C94;
     FW(self, 0xD0) = 0x82;
-    gl_func_00000000(self + 0x138, 0x5000A);
-    gl_func_00000000(self + 0x150, 0x50009);
-    gl_func_00000000(((char *)this) + 0x180, 0x5000B);
-    gl_func_00000000(((char *)this) + 0x168, 0x5001C);
-    gl_func_00000000(((char *)this), ((char *)this) + 0x168, ((char *)this) + 0x180);
-    gl_func_00000000(self, -0x49, -2, -0x32, -1);
+    CALL(gui_spriteInit)(self + 0x138, 0x5000A);
+    CALL(gui_spriteInit)(self + 0x150, 0x50009);
+    CALL(gui_spriteInit)(((char *)this) + 0x180, 0x5000B);
+    CALL(gui_spriteInit)(((char *)this) + 0x168, 0x5001C);
+    CALL(CoolGadget_setPair_000017F4)(((char *)this), ((char *)this) + 0x168, ((char *)this) + 0x180);
+    CALL(CoolGadget_setQuad_00001800)(self, -0x49, -2, -0x32, -1);
 }

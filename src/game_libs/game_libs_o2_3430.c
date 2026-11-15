@@ -19,6 +19,7 @@
  *    spellings (PASS-3/4). */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -124,7 +125,7 @@ void PointsGadget_update_00003430(char *arg0) {
             }
             break;
         case 6:
-            if (gl_func_00000000(s0, 0xB4) != 0) {
+            if (CALL(gadget_slideStep_000144F4)(s0, 0xB4) != 0) {
                 FW(s0, 0x94) = 7;
             }
             break;
@@ -136,12 +137,12 @@ void PointsGadget_update_00003430(char *arg0) {
                 FW(s0, 0x98) = 0;
                 FW(s0, 0x94) = 8;
             }
-            gl_func_00000000(s0 + 0xB4, GL_DATA(0xCCE8), FW(s0, 0x98));
+            CALL(gl_sprintf)(s0 + 0xB4, GL_DATA(0xCCE8), FW(s0, 0x98));
             FW(s0, 0x74) += 0x10;
             if (FW(s0, 0x74) >= 0x100) {
                 FW(s0, 0x74) = 0xFF;
             }
-            gl_func_00000000(s0, 0x104);
+            CALL(gadget_slideStep_000144F4)(s0, 0x104);
             break;
         case 8:
             FW(s0, 0x74) += 0x10;
@@ -152,7 +153,7 @@ void PointsGadget_update_00003430(char *arg0) {
             if (FW(s0, 0x78) < 0) {
                 FW(s0, 0x78) = 0;
             }
-            if (gl_func_00000000(s0, 0x104) != 0) {
+            if (CALL(gadget_slideStep_000144F4)(s0, 0x104) != 0) {
                 FW(s0, 0x94) = 0;
             }
             break;

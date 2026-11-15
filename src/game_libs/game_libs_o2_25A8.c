@@ -13,6 +13,7 @@
  * IDO picks v0 for the per-arm constant it reuses (or the D4 value in
  * case 3 / default) on its own. */
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 
@@ -41,9 +42,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 13;
         arg0->e[6].v = 0;
         arg0->e[7].v = -5;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x5000C);
+        CALL(gui_spriteInit)(r, 0x5000C);
         break;
     case 3:
         arg0->e[0].v = 9;
@@ -54,9 +55,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 15;
         arg0->e[6].v = 0;
         arg0->e[7].v = -7;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x5000D);
+        CALL(gui_spriteInit)(r, 0x5000D);
         break;
     case 4:
         arg0->e[0].v = 11;
@@ -67,9 +68,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 12;
         arg0->e[6].v = 1;
         arg0->e[7].v = -4;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x5000E);
+        CALL(gui_spriteInit)(r, 0x5000E);
         break;
     case 5:
         arg0->e[0].v = 17;
@@ -80,9 +81,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 13;
         arg0->e[6].v = 0;
         arg0->e[7].v = -5;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x5000F);
+        CALL(gui_spriteInit)(r, 0x5000F);
         break;
     case 6:
         arg0->e[0].v = 14;
@@ -93,9 +94,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 14;
         arg0->e[6].v = 0;
         arg0->e[7].v = -6;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x5001F);
+        CALL(gui_spriteInit)(r, 0x5001F);
         break;
     case 7:
         arg0->e[0].v = 14;
@@ -106,9 +107,9 @@ void CourseGadget_setCourse(GlObj25A8 *arg0, s32 arg1) {
         arg0->e[5].v = 14;
         arg0->e[6].v = 0;
         arg0->e[7].v = -6;
-        r = gl_func_00000000(24);
+        r = CALL(mem_new)(24);
         arg0->unk1F0 = r;
-        gl_func_00000000(r, 0x50020);
+        CALL(gui_spriteInit)(r, 0x50020);
         break;
     default:
         arg0->e[0].v = 10;

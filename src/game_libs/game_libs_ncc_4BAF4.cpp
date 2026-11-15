@@ -12,6 +12,7 @@
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern int D_00000000;
 extern int gGfxLib_4BAF4_flags;
@@ -72,7 +73,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
     char *d;
     pos.y = gGfxLib_4BAF4_cam.p.y;
     pos.z = gGfxLib_4BAF4_cam.p.z;
-    if ((d = (char *)gl_func_00000000(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
+    if ((d = (char *)CALL(Window_projectPoint)(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
         return;
     }
     iz = (pos.z + 1.0f) * 16384.0f + F4B(me((Ctx4B *)self), 0xC8, f32);
@@ -129,7 +130,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
     me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
     if (*(s32 *)((char *)&gGfxLib_4BAF4_flags + 0x1C4) & 2) {
         if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
-            gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
+            CALL(gfx_emitStateAndPrimColour_00042684)(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
     } else {
         /* agent-g run 332: spr->dl64 through d like the first packet's 0xCC pointer -- the target holds it in v0 (a

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for BasePolyShape_subdivide (0xAC4 / 689 words) -- EXACT.
  *
  * REPLACE_FUNC_BODY-spliced over the placeholder in both post0b objects
@@ -50,9 +51,9 @@ extern "C" int BasePolyShape_subdivide(int scale, int a1, int level, int a3, int
     float ax, ay, az;
     int h0, h1, h2, h3, h4, h5;
 
-    gl_func_00000000_5062c_nrm(&v0, &v1, &n0);
-    gl_func_00000000_5062c_nrm(&v1, &v2, &n1);
-    gl_func_00000000_5062c_nrm(&v2, &v0, &n2);
+    XCALL(gl_func_00000000_5062c_nrm, math_vec3Cross)(&v0, &v1, &n0);
+    XCALL(gl_func_00000000_5062c_nrm, math_vec3Cross)(&v1, &v2, &n1);
+    XCALL(gl_func_00000000_5062c_nrm, math_vec3Cross)(&v2, &v0, &n2);
     ax = fab(n0.x + n1.x + n2.x);
     ay = fab(n0.y + n1.y + n2.y);
     az = fab(n0.z + n1.z + n2.z);
@@ -66,21 +67,21 @@ extern "C" int BasePolyShape_subdivide(int scale, int a1, int level, int a3, int
     u12.assign((s5 = t1 + (P3 &)t2) / 2.0f);
     u20.assign((s6 = t2 + (P3 &)t0) / 2.0f);
     if (--level != 0) {
-        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, v0, m01, m20, t0, u01, u20);
-        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, v1, m12, u01, t1, u12);
-        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m20, m12, v2, u20, u12, t2);
-        gl_func_00000000_5062c_rec(scale, a1, level, a3, a4, a5, a6, m01, m12, m20, u01, u12, u20);
+        XCALL(gl_func_00000000_5062c_rec, BasePolyShape_subdivide)(scale, a1, level, a3, a4, a5, a6, v0, m01, m20, t0, u01, u20);
+        XCALL(gl_func_00000000_5062c_rec, BasePolyShape_subdivide)(scale, a1, level, a3, a4, a5, a6, m01, v1, m12, u01, t1, u12);
+        XCALL(gl_func_00000000_5062c_rec, BasePolyShape_subdivide)(scale, a1, level, a3, a4, a5, a6, m20, m12, v2, u20, u12, t2);
+        XCALL(gl_func_00000000_5062c_rec, BasePolyShape_subdivide)(scale, a1, level, a3, a4, a5, a6, m01, m12, m20, u01, u12, u20);
     } else {
-        h0 = gl_func_00000000_5062c_vtx(a1, a3, &v0, &t0, a4);
-        h1 = gl_func_00000000_5062c_vtx(a1, a3, &v1, &t1, a4);
-        h2 = gl_func_00000000_5062c_vtx(a1, a3, &v2, &t2, a4);
-        h3 = gl_func_00000000_5062c_vtx(a1, a3, &m01, &u01, a4);
-        h4 = gl_func_00000000_5062c_vtx(a1, a3, &m12, &u12, a4);
-        h5 = gl_func_00000000_5062c_vtx(a1, a3, &m20, &u20, a4);
-        gl_func_00000000_5062c_tri(a3, a5, h0, h3, h5, a6);
-        gl_func_00000000_5062c_tri(a3, a5, h3, h1, h4, a6);
-        gl_func_00000000_5062c_tri(a3, a5, h5, h4, h2, a6);
-        gl_func_00000000_5062c_tri(a3, a5, h3, h4, h5, a6);
+        h0 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &v0, &t0, a4);
+        h1 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &v1, &t1, a4);
+        h2 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &v2, &t2, a4);
+        h3 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &m01, &u01, a4);
+        h4 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &m12, &u12, a4);
+        h5 = XCALL(gl_func_00000000_5062c_vtx, BasePolyShape_addPoints)(a1, a3, &m20, &u20, a4);
+        XCALL(gl_func_00000000_5062c_tri, BasePolyShape_addTri)(a3, a5, h0, h3, h5, a6);
+        XCALL(gl_func_00000000_5062c_tri, BasePolyShape_addTri)(a3, a5, h3, h1, h4, a6);
+        XCALL(gl_func_00000000_5062c_tri, BasePolyShape_addTri)(a3, a5, h5, h4, h2, a6);
+        XCALL(gl_func_00000000_5062c_tri, BasePolyShape_addTri)(a3, a5, h3, h4, h5, a6);
     }
     return 0;
 }

@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osCreatePiManager — 98-insn osCreatePiManager (libultra
  * pimgr.c, identified 2026-07-09 vs references/libreultra/src/io/pimgr.c;
  * decode matches field-for-field). PROVEN EXACT 98/98 at both IDO 7.1 and
@@ -44,7 +45,7 @@ void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
     OSPri oldPri;
     OSPri myPri;
     if (!gl___osPiDevMgr_devmgr_6DA74.f0) {
-        gl_func_00000000(cmdQ, cmdBuf, cmdMsgCnt);
+        CALL(gl_osCreateMesgQueue)(cmdQ, cmdBuf, cmdMsgCnt);
         gl_func_00000001(gl_ref_00043E90, gl_ref_00043EA8, 1);
         if (!D_00000000_b) {
             gl_func_00000002();

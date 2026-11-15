@@ -15,6 +15,7 @@
  * __osDisableInt / __osRestoreInt (blank jals).
  * Spliced into game_libs_post1b2.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_pi.h" /* OSPiHandle, __OSTranxInfo (was a private copy) */
+#include "uso_call.h"
 
 typedef struct {
     u8 pageSize;    /* DriveRomHandle+6 */
@@ -55,7 +56,7 @@ OSPiHandle *gl_osDriveRomInit(void) {
     saveMask = gl_func_00000000_disint();
     gl_DriveRomHandle_drvrom.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_DriveRomHandle_drvrom;
-    gl_func_00000000_resint(saveMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
 
     return &gl_DriveRomHandle_drvrom;
 }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* gl_osSetEventMesg = libultra osSetEventMesg (sched/seteventmesg.c) variant,
  * statically linked into the game_libs USO. Byte-exact masked-twin of matched
@@ -17,5 +18,5 @@ void gl_osSetEventMesg(int event, void *queue, int msg) {
     EventState_0006E1A4 *es = &D_00000000[event];
     es->queue = (int)queue;
     es->msg = msg;
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }

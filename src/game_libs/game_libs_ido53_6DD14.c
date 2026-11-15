@@ -13,6 +13,7 @@
  * REPLACE_FUNC_BODY (donor relocs imported, resolve to 0 via
  * undefined_syms_auto). */
 #include "libultra/os_pi.h"
+#include "uso_call.h"
 
 extern s32 gl_func_00000000_recv(void *, OSMesg *, s32);   /* osRecvMesg */
 extern s32 gl_func_00000000_send(void *, OSMesg, s32);     /* osSendMesg */
@@ -36,7 +37,7 @@ void gl___osDevMgrMain(void *args)
     ret = 0;
     dm = (OSDevMgr *)args;
     while (1) {
-        gl_func_00000000_recv(dm->cmdQueue, (OSMesg *)&mb, 1);
+        XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->cmdQueue, (OSMesg *)&mb, 1);
         if (mb->piHandle != 0 &&
             mb->piHandle->type == 2 &&
             (mb->piHandle->transferInfo.cmdType == 0 ||
@@ -53,55 +54,55 @@ void gl___osDevMgrMain(void *args)
                 messageSend = 1;
             else
                 messageSend = 0;
-            gl_func_00000000_recv(dm->acsQueue, &dummy, 1);
-            gl_func_00000000_rgim(0x00100401);
-            gl_func_00000000_ewio(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x80000000);
+            XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
+            XCALL(gl_func_00000000_rgim, gl___osResetGlobalIntMask)(0x00100401);
+            XCALL(gl_func_00000000_ewio, gl_osEPiRawWriteIo)(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x80000000);
             while (1) {
-                gl_func_00000000_recv(dm->evtQueue, &em, 1);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->evtQueue, &em, 1);
                 info = &mb->piHandle->transferInfo;
                 blockInfo = &info->block[info->blockNum];
                 if (blockInfo->errStatus == 29) {
                     u32 stat;
-                    gl_func_00000000_ewio(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x10000000);
-                    gl_func_00000000_ewio(mb->piHandle, 0x05000510, info->bmCtlShadow);
-                    gl_func_00000000_erio(mb->piHandle, 0x05000508, &stat);
+                    XCALL(gl_func_00000000_ewio, gl_osEPiRawWriteIo)(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x10000000);
+                    XCALL(gl_func_00000000_ewio, gl_osEPiRawWriteIo)(mb->piHandle, 0x05000510, info->bmCtlShadow);
+                    XCALL(gl_func_00000000_erio, gl_osEPiRawReadIo)(mb->piHandle, 0x05000508, &stat);
                     if (stat & 0x02000000) {
-                        gl_func_00000000_ewio(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x01000000);
+                        XCALL(gl_func_00000000_ewio, gl_osEPiRawWriteIo)(mb->piHandle, 0x05000510, info->bmCtlShadow | 0x01000000);
                     }
                     blockInfo->errStatus = 4;
                     *(volatile u32 *)0xA4600010 = 2;
-                    gl_func_00000000_sgim(0x00100C01);
+                    XCALL(gl_func_00000000_sgim, gl___osSetGlobalIntMask)(0x00100C01);
                 }
-                gl_func_00000000_send(mb->hdr.retQueue, mb, 0);
+                XCALL(gl_func_00000000_send, gl_osSendMesg)(mb->hdr.retQueue, mb, 0);
                 if (messageSend != 1)
                     break;
                 if (mb->piHandle->transferInfo.block[0].errStatus != 0)
                     break;
                 messageSend = 0;
             }
-            gl_func_00000000_send(dm->acsQueue, 0, 0);
+            XCALL(gl_func_00000000_send, gl_osSendMesg)(dm->acsQueue, 0, 0);
             if (mb->piHandle->transferInfo.blockNum == 1)
-                gl_func_00000000_yield();
+                XCALL(gl_func_00000000_yield, gl_osYieldThread)();
         } else {
             switch (mb->hdr.type) {
             case 10: /* OS_MESG_TYPE_DMAREAD */
-                gl_func_00000000_recv(dm->acsQueue, &dummy, 1);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->dma(0, mb->devAddr, mb->dramAddr, mb->size);
                 break;
             case 11: /* OS_MESG_TYPE_DMAWRITE */
-                gl_func_00000000_recv(dm->acsQueue, &dummy, 1);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->dma(1, mb->devAddr, mb->dramAddr, mb->size);
                 break;
             case 12: /* OS_MESG_TYPE_EDMAREAD */
-                gl_func_00000000_recv(dm->acsQueue, &dummy, 1);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->edma(mb->piHandle, 0, mb->devAddr, mb->dramAddr, mb->size);
                 break;
             case 13: /* OS_MESG_TYPE_EDMAWRITE */
-                gl_func_00000000_recv(dm->acsQueue, &dummy, 1);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->acsQueue, &dummy, 1);
                 ret = dm->edma(mb->piHandle, 1, mb->devAddr, mb->dramAddr, mb->size);
                 break;
             case 14: /* OS_MESG_TYPE_LOOPBACK */
-                gl_func_00000000_send(mb->hdr.retQueue, mb, 0);
+                XCALL(gl_func_00000000_send, gl_osSendMesg)(mb->hdr.retQueue, mb, 0);
                 ret = -1;
                 break;
             case 15: /* jumptable spans 10..16 (sltiu 7): 15/16 -> default */
@@ -111,9 +112,9 @@ void gl___osDevMgrMain(void *args)
                 break;
             }
             if (ret == 0) {
-                gl_func_00000000_recv(dm->evtQueue, &em, 1);
-                gl_func_00000000_send(mb->hdr.retQueue, mb, 0);
-                gl_func_00000000_send(dm->acsQueue, 0, 0);
+                XCALL(gl_func_00000000_recv, gl_osRecvMesg)(dm->evtQueue, &em, 1);
+                XCALL(gl_func_00000000_send, gl_osSendMesg)(mb->hdr.retQueue, mb, 0);
+                XCALL(gl_func_00000000_send, gl_osSendMesg)(dm->acsQueue, 0, 0);
             }
         }
     }

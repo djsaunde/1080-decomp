@@ -13,6 +13,7 @@
  * interval+8 value+0x10).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_timer.h"
+#include "uso_call.h"
 
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
@@ -37,6 +38,6 @@ OSTime __osInsertTimer(OSTimer *t)
     t->prev = timep->prev;
     timep->prev->next = t;
     timep->prev = t;
-    gl_func_00000000_resint(savedMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(savedMask);
     return tim;
 }

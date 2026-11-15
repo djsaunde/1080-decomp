@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for snd_TickChannel8Fade (0x104 / 65 words), agent-c run 177 / agent-g run 202.
  * Fade timer tick over the 8-word state block that the exact sibling 308AC (game_libs_ncc_308AC.cpp) reads as a
  * FILE-LOCAL static: as1 shares one `lui at` between two accesses only when both hit the same LOCAL symbol and
@@ -52,5 +53,5 @@ extern "C" void snd_TickChannel8Fade(void) {
         }
     }
     f = gSndCueQueues_307A8_p.f10;
-    gl_func_00000000_f(0x01000800, f);
+    XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, f);
 }

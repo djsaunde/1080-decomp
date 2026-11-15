@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for CourseGadget_drawMarker (0x1B8 / 110 words), spliced over a placeholder in both
  * build trees (agent-g run 277). History: NM comparison donor since run 139 (cfe 89.75 -> NCC 90.81), 99.97 at
  * run 276 with every home on the target except p (spill word sp+0x20, target sp+0x28).
@@ -60,7 +61,7 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
          * the run-139 volatile sp38 / sp3C copies go (92.82 -> 94.00, + home search 94.18) */
         dx = arg2 - f16; arg2 = dx;
         dy = arg3 - f18; arg3 = dy;
-        len = gl_func_00000000_sqf((dx * dx) + (dy * dy));
+        len = XCALL(gl_func_00000000_sqf, sqrtf)((dx * dx) + (dy * dy));
         if (len != 0.0f) {
             dx /= len;
             dy /= len;
@@ -71,9 +72,9 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
         vec[2] = 0.0f;
         vec[3] = 0.0f;
         vec[1] = (*(f32*)((char*)&D_00000000 + 0xCB4));
-        gl_func_00000000(p);
-        gl_func_00000000(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
+        CALL(gui_spriteRefresh)(p);
+        CALL(gui_setColorEnvPrim_000017DC)(p, (s32) (255.0f * (*(f32*)&D_00000000)), vec, 0xFF);
         /* agent-g run 276: the (f32) term first (target add.s f8,f10,f6 = cvt + product): 99.88 -> 99.97 */
-        gl_func_00000000(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * dx) + (d4 * dy)) * 150.0f)), arg4 - 8, 0);
+        CALL(gui_drawSprite)(p, (s32) ((f32) (FW(arg0, 0x164) - 0xC) + (((b4 * dx) + (d4 * dy)) * 150.0f)), arg4 - 8, 0);
     }
 }

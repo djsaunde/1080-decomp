@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_addDdm (post0b, 43 words), EXACT.
  * Spliced into build/src and build/non_matching (REPLACE_FUNC_BODY).
  * agent-c run 148 (docs/IDO_CODEGEN.md kit LXXXVII): the pool alloc
@@ -25,14 +26,14 @@ struct Obj {
     Pool pool;
 };
 extern "C" Rec *gfx_addDdm(Obj *o, unsigned int i, int a2) {
-    if (i >= 50) gl_func_00000000(D_00000000 + 0x1FE94, D_00000000 + 0x1FEA8, 0x102D);
+    if (i >= 50) CALL(sys_assertFail)(D_00000000 + 0x1FE94, D_00000000 + 0x1FEA8, 0x102D);
     Rec *r;
     Pool *p = &o->pool;
-    if (p->n >= 50) gl_func_00000000();
+    if (p->n >= 50) CALL(sys_staticArrayOverflow)();
     r = (Rec *)p->n; p->n++;
     r = &p->e[(int)r];
     o->slot[i] = r;
     r->c = 0;
-    gl_func_00000000(r, a2);
+    CALL(gfx_initDdm)(r, a2);
     return r;
 }

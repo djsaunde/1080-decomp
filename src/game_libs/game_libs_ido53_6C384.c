@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* The TLB-probe callee is an intra-module call that the USO loader relocates
  * at runtime; the ROM stores it as a bare `jal 0` (0x0C000000). Calling the
@@ -25,5 +26,5 @@ u32 gl_osVirtualToPhysical(u32 a0) {
     if (a0 >= 0xA0000000U && a0 < 0xC0000000U) {
         return a0 & 0x1FFFFFFF;
     }
-    return gl_func_00000000(a0);
+    return CALL(gl___osProbeTLB)(a0);
 }

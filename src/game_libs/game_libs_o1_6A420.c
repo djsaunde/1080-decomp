@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for osSpTaskLoad = libultra osSpTaskLoad (sptask.c), spliced
  * over the -O2 stand-in in game_libs_post1b.c (same recipe as the 6A304
  * donor just before it). The first call is the file-static
@@ -38,13 +39,13 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
         }
     }
     gl_func_00000000(tp, sizeof(OSTask_6A420));
-    gl_func_00000000(0x2B00);
-    while (gl_func_00000000(0x04001000) == -1)
+    CALL(gl___osSpSetStatus)(0x2B00);
+    while (CALL(gl___osSpSetPc)(0x04001000) == -1)
         ;
-    while (gl_func_00000000(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)
+    while (CALL(gl___osSpRawStartDma)(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)
         ;
-    while (gl_func_00000000())
+    while (CALL(gl___osSpDeviceBusy)())
         ;
-    while (gl_func_00000000(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)
+    while (CALL(gl___osSpRawStartDma)(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)
         ;
 }

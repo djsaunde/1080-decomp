@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for math_mtxRotateByVector (rotate-by-drag matrix, 184 words). EXACT (agent-g run 156):
  * spliced into both build/src and build/non_matching post0b with REPLACE_FUNC_BODY.
  * History: the cfe NM body recompiled under NCC (85.13 -> 88.01); run 155 param copy `m = arg0` + volatile
@@ -44,15 +45,15 @@ extern "C" void math_mtxRotateByVector(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32
     f32 out[4][4];
 
     m = arg0;
-    len = gl_func_00000000_sqrt5F984(x * x + y * y + z * z);
+    len = XCALL(gl_func_00000000_sqrt5F984, math_vec3Length_0005BBCC)(x * x + y * y + z * z);
     if (len == 0.0f) {
         if (flag != 0) {
-            gl_func_00000000(m, rot);
+            CALL(math_mtx4Identity)(m, rot);
         }
         return;
     }
     c = 100.0f;
-    h = gl_func_00000000_sqrt5F984(c * c + len * len);
+    h = XCALL(gl_func_00000000_sqrt5F984, math_vec3Length_0005BBCC)(c * c + len * len);
     cs = 100.0f / h;
     v.x = -y / len;
     v.y = -x / len;
@@ -67,7 +68,7 @@ extern "C" void math_mtxRotateByVector(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32
         v.x = c;
         v.z = len;
     }
-    gl_func_00000000_rot5F984(R, &v, sn, cs);
+    XCALL(gl_func_00000000_rot5F984, math_mtxRotateAxisSinCos)(R, &v, sn, cs);
     if (flag == 0) {
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
@@ -77,8 +78,8 @@ extern "C" void math_mtxRotateByVector(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32
                 }
             }
         }
-        gl_func_00000000(out, m);
+        CALL(math_mtx4Copy)(out, m);
     } else {
-        gl_func_00000000(R, m);
+        CALL(math_mtx4Copy)(R, m);
     }
 }

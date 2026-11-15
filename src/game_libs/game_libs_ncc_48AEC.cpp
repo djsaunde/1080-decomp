@@ -29,6 +29,7 @@
  * in the Makefile (names only): func_00000000 -> gl_func_00000000, D_00000000_i / _j -> D_48AEC_mt / gGfxLib_48AEC_src. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern char D_00000000[];
 extern int D_00000000_g, D_00000000_h, D_00000000_i, D_00000000_j;
@@ -40,7 +41,7 @@ struct DLHead { Gfx *buf; int count; };
 struct Mtx { int m[16]; };
 struct MtxHead { Mtx *buf; int count; };
 /* agent-g run 427: the else arm's 0x01 packet stores as a free inline with the slot as a parameter (see Ctx::LX) */
-inline void fG(Gfx *g, Mtx *m) { g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
+inline void fG(Gfx *g, Mtx *m) { g->w0 = 0x01020040; g->w1 = (u32)FCALL(gl_osVirtualToPhysical)(m); }
 struct Ctx {
     char pad[0xC];
     DLHead *dl;
@@ -104,8 +105,8 @@ struct Ctx {
  * third loop's draw() receiver, 97.821 -> 97.869 */
 template <class T> inline T I2(T v) { if (0) { v = 0; } return v; }
 /* agent-g run 435: the loops' 0x06 packets as free inlines: unused leading z (the old `this` slot), ctx last */
-inline void dZ1(void *z, Ctx *c, int n, Ctx *s) { n = (int)func_00000000(&c->dl->buf[n]); s->p6b(n, s->nextQ()); }
-inline void dY3(void *z, Ctx *c, int n, Ctx *s) { u32 t = (u32)func_00000000(&c->dl->buf[n]); Gfx *g = s->next(); g->w0 = 0x06000000; g->w1 = t; }
+inline void dZ1(void *z, Ctx *c, int n, Ctx *s) { n = (int)FCALL(gl_osVirtualToPhysical)(&c->dl->buf[n]); s->p6b(n, s->nextQ()); }
+inline void dY3(void *z, Ctx *c, int n, Ctx *s) { u32 t = (u32)FCALL(gl_osVirtualToPhysical)(&c->dl->buf[n]); Gfx *g = s->next(); g->w0 = 0x06000000; g->w1 = t; }
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(gGfxLib + 0x254)) /* GfxLib current ScreenWindow (Sym 154) */
 struct Flags { int v; int test(int m) { return v & m; } }; /* agent-g run 417: plain (the run-209 folded use of v / kept m made v a uopt LR in v0; the target reads it into a ugen temp, t4) */
@@ -152,7 +153,7 @@ void Obj::draw() {
 
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
     if (flags30 & 0x80) {
-        func_00000000(GS, this);
+        FCALL(PolyShape_stub_0004C20C)(GS, this);
     }
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 1) {
         return;
@@ -171,17 +172,17 @@ void Obj::draw() {
             }
         }
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
-        func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
+        FCALL(math_mtx4Copy)(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; int d1 = 0, d2 = 0, d3 = 0; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} A = (Ctx *)gctx->dl->count; gctx->dl->count = (int)A + 1; g = &gctx->dl->buf[(int)A]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(c); } } /* agent-g run 407: 98.297 -> 98.329 */
+        { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; int d1 = 0, d2 = 0, d3 = 0; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} A = (Ctx *)gctx->dl->count; gctx->dl->count = (int)A + 1; g = &gctx->dl->buf[(int)A]; g->w0 = 0x01020040; g->w1 = (u32)FCALL(gl_osVirtualToPhysical)(c); } } /* agent-g run 407: 98.297 -> 98.329 */
         /* agent-g run 430: the packet slot is held in a block-scoped named `g` (draw's own word, the first holder of
          * lR6()'s return), declared in an inner block entered after a depth-4 me() test made pool words 2 / 3: g's home
          * is vfp-108 = target (lE3's named g was allocated after mtx()'s six words, vfp-120), 99.915 -> 99.919 */
 #undef mt
     } else {
-        gctx = GS->ctx; func_00000000(I2((f32 (*)[4])((char *)&D_00000000_j + 0xA0)), (Mtx *)(A = (Ctx *)me(me(gctx))->mtx())); if (*(u32 *)&gctx->dl) {} if (1) {} B = (f32 (*)[4])((DLHead *)*(u32 *)&gctx->dl)->count; fG(me(me(me(gctx)))->nF0((int)B), (Mtx *)A); /* agent-g run 435 */ /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        gctx = GS->ctx; FCALL(guMtxF2L)(I2((f32 (*)[4])((char *)&D_00000000_j + 0xA0)), (Mtx *)(A = (Ctx *)me(me(gctx))->mtx())); if (*(u32 *)&gctx->dl) {} if (1) {} B = (f32 (*)[4])((DLHead *)*(u32 *)&gctx->dl)->count; fG(me(me(me(gctx)))->nF0((int)B), (Mtx *)A); /* agent-g run 435 */ /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
-    func_00000000(GS->ctx);
+    FCALL(gfx_emitPerspNorm_00057574)(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
         if ((flags30 & 8) && n14 != 0) {
             GS->ctx->setup(&g34, n14->m1e); if (1) {}
@@ -198,10 +199,10 @@ void Obj::draw() {
         Gfx gbi = g34;
         gbi.w1 = (gbi.w1 & ~0xF00) | 0x400; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
         gbi.w1 = gbi.w1 & ~0x80000;
-        func_00000000(GS->ctx, &gbi);
-        func_00000000(GS->ctx, &gbi);
-        func_00000000(GS->ctx, &gbi);
-        func_00000000(GS->ctx, &gbi); if (this) {} /* agent-c run 276: code-free test after the fourth copy call (sweep), 97.447 -> 97.476 */
+        FCALL(gfx_emitCycleType)(GS->ctx, &gbi);
+        FCALL(gfx_emitGeometryMode)(GS->ctx, &gbi);
+        FCALL(gfx_emitCombineMode)(GS->ctx, &gbi);
+        FCALL(gfx_emitRenderMode)(GS->ctx, &gbi); if (this) {} /* agent-c run 276: code-free test after the fourth copy call (sweep), 97.447 -> 97.476 */
         me(me(GS->ctx))->prim(0xFA000000, 0xFFFF00FF); /* agent-g run 419: dl head on pool slot 4, count on slot 3; both mtx() counts on slot 3 (me(me(gctx))) */
         AIter it = arr.iter();
         while (it.next()) {
@@ -218,7 +219,7 @@ void Obj::draw() {
         }
     } else {
         if (a8 != 0) {
-            func_00000000(ac, a8, g34.w1 & 0x20000000, g34.w1);
+            FCALL(gfx_transformLightDirs_000432BC)(ac, a8, g34.w1 & 0x20000000, g34.w1);
         }
         AIter it = arr.iter();
         while (it.next()) {

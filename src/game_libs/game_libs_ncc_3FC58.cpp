@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for hostio_dispatch (0x2E8 / 186 words + 1 all-zero pad word), agent-c run 163.
  * Message pump: read one message, set flag bit 2, dispatch on msg.type, clear bit 2 of the second
  * flag word. The cfe body (85.12) spelled the compare chain with gotos; under NCC a plain switch IS
@@ -33,7 +34,7 @@ extern "C" void hostio_dispatch(int arg0) {
     Msg msg;
     Msg out;
     volatile int p0, p1, p2, p3, p4, p5;
-    gl_func_00000000(&msg);
+    CALL(hostio_recv)(&msg);
     gSysLib_3FC58_flagsW = gSysLib_3FC58_flags | 4;
     switch (msg.type) {
     case 52: {
@@ -44,7 +45,7 @@ extern "C" void hostio_dispatch(int arg0) {
     }
     case 22:
         ((O28 *)msg.obj)->f1();
-        gl_func_00000000(gHostio_3FC58_s1);
+        CALL(hostio_connect)(gHostio_3FC58_s1);
         break;
     case 10:
         out = msg;
@@ -53,7 +54,7 @@ extern "C" void hostio_dispatch(int arg0) {
         case 2: out.p12.f = *(float *)msg.p16; break;
         }
         out.type = 9;
-        gl_func_00000000(&out);
+        CALL(hostio_send)(&out);
         break;
     case 9:
         switch (msg.p8) {
@@ -70,31 +71,31 @@ extern "C" void hostio_dispatch(int arg0) {
         break;
     case 21:
         ((O0 *)msg.obj)->f1();
-        if (msg.p4C) gl_func_00000000(arg0);
+        if (msg.p4C) CALL(hostio_msg21_0003FB38)(arg0);
         break;
     case 23:
         ((O0 *)msg.obj)->f1();
-        if (msg.p4C) gl_func_00000000(arg0);
+        if (msg.p4C) CALL(hostio_msg21_0003FB38)(arg0);
         break;
     case 25:
         break;
     case 27:
-        gl_func_00000000();
+        CALL(hostio_start)();
         break;
     case 28: {
         O28 *o = *(O28 **)(gGfxLib_3FC58_g + 0x1C8);
         out.type = 25;
         out.obj = o;
         if (o == 0) {
-            gl_func_00000000(D_00000000 + 0x1F3B0);
+            CALL(dbg_printf)(D_00000000 + 0x1F3B0);
         } else {
             o->f1();
         }
-        gl_func_00000000(arg0);
+        CALL(hostio_msg21_0003FB38)(arg0);
         break;
     }
     default:
-        gl_func_00000000(D_00000000 + 0x1F3CC, msg.type);
+        CALL(dbg_printf)(D_00000000 + 0x1F3CC, msg.type);
         break;
     }
     gSysLib_3FC58_flags2W = gSysLib_3FC58_flags2 & ~4;

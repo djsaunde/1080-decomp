@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for PolyShape_init (0x790 / 484 words), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post0b.c on both build paths (agent-g run 312, kit CDIV: virtual int hit(), cur2() on
  * one p34-call argument, me(me()) on the k-loop's closing noop, the AIter ctor's dead block dropped and three
@@ -27,7 +28,7 @@ void *gl_func_00000000(...);
 }
 #define S(o) (D_00000000 + (o))
 #define G1C4(S_) (*(s32 *)((char *)&S_ + 0x1C4))
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 template <class T> inline T *me0(T *p) { return p; } /* agent-g run 312: zero-code accessor declared before Arr::iter() */
 struct Gfx { u32 w0, w1; };
 inline void gnoop(Gfx *g) { g->w0 = 0xC0000000; g->w1 = 0; }
@@ -115,33 +116,33 @@ int Mgr::run() {
     if (!(flags30 & 1)) {
         return 1;
     }
-    gl_func_00000000(m0c);
-    gl_func_00000000(S(0x1FF54), m0c);
+    CALL(sys_imin)(m0c);
+    CALL(sys_printStub_00067AE8)(S(0x1FF54), m0c);
     b8 = b4 = b0 = 0;
-    gl_func_00000000(S(0x1FF58));
-    gl_func_00000000(S(0x1FF60), 0);
-    gl_func_00000000();
-    gl_func_00000000(S(0x1FF6C));
-    gl_func_00000000(S(0x1FF74));
+    CALL(sys_imin)(S(0x1FF58));
+    CALL(memtrack_begin)(S(0x1FF60), 0);
+    CALL(sys_imout)();
+    CALL(sys_printStub_00067AE8)(S(0x1FF6C));
+    CALL(sys_imin)(S(0x1FF74));
     AIter it = arr.iter();
     while (it.next1()) { /* agent-c run 247: the folded + 0 moved from the second loop's test to this one (99.36 -> 99.43: the second loop's next() result leaves the call-crossing s2 pool temp, target v0). agent-c run 299: next1() instead (both loop results in v0); the s1/s2 and s0/s1 colour order then fixed by the folded e / m uses in the grid loop (99.43 -> 99.52) */
-        { Elem *e1 = it.cur(); gl_func_00000000(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
+        { Elem *e1 = it.cur(); CALL(PolyShape_func_00043584)(e1); } /* agent-c run 299: block-scoped named copy (its edg home replaces the old `Ctx *g` home-keeping local below): 99.62 -> 99.65 */
         if (m50 == 0) {
             if (it.cur()) {} /* agent-c run 302: code-free test of the current element (random test sweep): 99.6488 -> 99.6798 */
             if (it.cur()->test(0x2000)) {
-                gl_func_00000000(it.cur(), m9c);
+                CALL(PolyShape_allocLightDL_000435FC)(it.cur(), m9c);
             }
         }
-        gl_func_00000000(it.cur2(), it.cur()->p34());
+        CALL(PolyShape_buildStateDL_00043654)(it.cur2(), it.cur()->p34());
     }
-    gl_func_00000000();
-    gl_func_00000000(S(0x1FF7C));
-    gl_func_00000000(S(0x1FF88));
+    CALL(sys_imout)();
+    CALL(sys_printStub_00067AE8)(S(0x1FF7C));
+    CALL(sys_imin)(S(0x1FF88));
     int total = 0;
     u8 *buf;
     if (G1C4(gGfxLib_493AC_a) & 8) {
         pad1 = (int)this; if (1) { pad1 += 0x30; } *(int *)pad1 |= 0x80; /* agent-g run 221: pointer mutation behind if (1) = the target's addiu v0,s6,48 + lw/sw 0(v0) */
-        buf = (u8 *)gl_func_00000000(D_00000000, n44);
+        buf = (u8 *)CALL(heap_tempAlloc)(D_00000000, n44);
         for (pad2 = 0; pad2 < n44; pad2++) { /* agent-c run 302: the clear loop counts in the (zeroed, otherwise dead) pad2 word, not a block-scoped u32 i2: i2's edg temp word sat between the two iter() return temps (second one at sp+132, target sp+136); with it gone and the `Ctx *g = 0;` home-keeping local back in the second loop every sp offset is the target's (pad2 < n44 compares unsigned like i2 did): 99.6467 -> 99.6488, same length */
             buf[pad2] = 0;
         }
@@ -160,12 +161,12 @@ int Mgr::run() {
         rec.ctx = o->ctx6C;
         rec.n58C = 0;
         rec.f590 = 32; rec.f594 = 3; /* agent-g run 233: one line (32 materialised first, stores 0x674 then 0x670 as the target) */
-        gl_func_00000000(&rec);
+        CALL(gfx_vtxBatchBegin_000483A0)(&rec);
         int cnt = 0; /* agent-g run 233: after the call (the target's `or s5,zero,zero` follows the &rec argument) */
         if (G1C4(gGfxLib_493AC_b) & 8) {
             int k = 0;
             if (grid == 0) {
-                gl_func_00000000(S(0x1FF90), S(0x1FFA0), 3287);
+                CALL(sys_assertFail)(S(0x1FF90), S(0x1FFA0), 3287);
             }
             o->n80 = o->ctx6C->count();
             me(me(o->ctx6C))->noop(); /* agent-c run 299: zero-code accessor depth 2 on this receiver (random depth search, kit CCCLXXI lever): 99.56 -> 99.62 */
@@ -195,7 +196,7 @@ int Mgr::run() {
                         if (k < o->lo50) o->lo50 = k;
                         if (o->hi54 < k) o->hi54 = k;
                     }
-                    gl_func_00000000(&rec); if (1) {}
+                    CALL(PolyShape_emitTriBatch_000483BC)(&rec); if (1) {}
                     o->rows7C[k] = o->ctx6C->count();
                     me(me(o->ctx6C))->noop(); /* agent-g run 312: accessor depth 2 = the head / count temps in the -1536 / -1532 pool vars like the n80 append (target v1 / a2); with the iter() change above their uopt order is the target's */
                 } if (k) {}
@@ -215,21 +216,21 @@ int Mgr::run() {
                 }
             }
         }
-        gl_func_00000000(&rec);
+        CALL(PolyShape_emitTriBatch_000483BC)(&rec);
         total += rec.n58C;
-        gl_func_00000000(o->ctx6C);
+        CALL(gfx_endDL)(o->ctx6C);
         if (cnt == 0) {
             o->ctx6C = 0;
         }
     }
-    gl_func_00000000(S(0x1FFAC), m0c, total);
+    CALL(sys_printStub_00067AE8)(S(0x1FFAC), m0c, total);
     if (G1C4(gGfxLib_493AC_c) & 8) {
-        gl_func_00000000(D_00000000, buf);
+        CALL(heap_tempFree)(D_00000000, buf);
     }
-    gl_func_00000000();
-    gl_func_00000000(S(0x1FFB4));
-    gl_func_00000000();
-    gl_func_00000000();
-    gl_func_00000000(S(0x1FFC4));
+    CALL(sys_imout)();
+    CALL(sys_printStub_00067AE8)(S(0x1FFB4));
+    CALL(memtrack_end)();
+    CALL(sys_imout)();
+    CALL(sys_printStub_00067AE8)(S(0x1FFC4));
     return 1;
 }

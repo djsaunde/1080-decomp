@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_emitOneLight_00045CB0 (0x170 / 92 words): fill one
  * 0x48-byte light record (ambient + light 0 colour/colour-copy bytes from a
  * float RGB) from the context's light pool, then emit gSPNumLights-style
@@ -35,6 +36,6 @@ extern "C" void gfx_emitOneLight_00045CB0(int a0, Ctx *c, float *col) {
     q[0xD] = q[9] = q[5] = q[1] = g;
     q[0xE] = q[0xA] = q[6] = q[2] = b; }
     Gfx *p1 = c->next(); p1->w0 = 0xBC000002; p1->w1 = 0x80000040; if (1) {}
-    Gfx *p2 = c->next(); p2->w0 = 0x03880010; p2->w1 = gl_func_00000000(&l->c[8]);
-    Gfx *p3 = c->next(); p3->w0 = 0x03860010; p3->w1 = gl_func_00000000(l);
+    Gfx *p2 = c->next(); p2->w0 = 0x03880010; p2->w1 = CALL(gl_osVirtualToPhysical)(&l->c[8]);
+    Gfx *p3 = c->next(); p3->w0 = 0x03860010; p3->w1 = CALL(gl_osVirtualToPhysical)(l);
 }

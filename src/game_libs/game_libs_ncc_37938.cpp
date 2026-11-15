@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for SeekNode_update (0x158 / 86 words incl. the jr-ra delay nop), agent-c run 162,
  * EXACT agent-c run 246: REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both trees).
  * kit CXI's V3 family: a = s->mtx.pos through an inline gp(V3 *v, Node *n) with a KEPT v parameter (its pooled
@@ -49,5 +50,5 @@ extern "C" void SeekNode_update(Obj *o) {
     if (0) { gl_func_00000000(&a, &b); }
     arg = (b - a) * (kk = o->k); if (1) {}
     if (n) {}
-    n = c.getOut(); gl_func_00000000(n->m30, &arg);
+    n = c.getOut(); CALL(math_mtxAddTranslation)(n->m30, &arg);
 }

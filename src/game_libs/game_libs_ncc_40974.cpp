@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for QNode_update (0x338 / 206 words): lock the
  * owner, blend its 0xDC block from its matrix, then for every child with flag 8:
  * publish the owner, back-link, and either copy/blend the child's record
@@ -31,7 +32,7 @@ extern "C" void QNode_update(Root *r) {
     Iter it(r->head);
     int y0, y1; y0 = 0; y1 = 0;
     r->sub->lock();
-    gl_func_00000000(r->xdc, r->m70);
+    CALL(math_quatScaleToMtx4)(r->xdc, r->m70);
     for (Node *n = it.next(); n; n = it.next()) {
         if (n->x18 & 8) {
             if (r->x2c & 2) *(Root **)D_00000000 = r;
@@ -39,7 +40,7 @@ extern "C" void QNode_update(Root *r) {
             if (n->flags & 0x20000) {
                 if (!(n->x2c & 1)) {
                     if (r->x2c & 2) n->dst = n->src;
-                    else gl_func_00000000(r->xdc, &n->src, &n->dst);
+                    else CALL(math_xformCombine)(r->xdc, &n->src, &n->dst);
                 }
             } else if (n->flags & 0x200) {
                 float *src = n->m30, *w = r->m70; int e0; e0 = 0;
@@ -50,10 +51,10 @@ extern "C" void QNode_update(Root *r) {
                         for (int k = 0; k < 4; k++)
                             res[i * 4 + j] += src[i * 4 + k] * w[k * 4 + j];
                     }
-                gl_func_00000000(res, n->m70);
+                CALL(math_mtx4Copy)(res, n->m70);
             }
             n->tick();
         }
     }
-    gl_func_00000000();
+    CALL(sys_imout)();
 }

@@ -23,6 +23,7 @@
  * The four baked lui/addiu message addresses are pinned data refs
  * (gl_ref_0001EExx_3AC5C). */
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char sStr_CollShape_1EE18, sStr_CollShape_CollShape_1EE24, sStr_colshape_1EE3C, sStr_unknown_coll_cmd_1EE48;
@@ -34,15 +35,15 @@ int *CollShape_ctor(int *arg0, int *arg1) {
     int v;
 
     if (arg0 == 0) {
-        arg0 = (int *) gl_func_00000000(0x90);
+        arg0 = (int *) CALL(mem_new)(0x90);
         if (arg0 == 0) {
             goto ret;
         }
     }
-    gl_func_00000000(arg0, &sStr_CollShape_1EE18);
+    CALL(Node_ctor)(arg0, &sStr_CollShape_1EE18);
     *(int **)((char *)arg0 + 0x34) = arg1;
     flag = 0;
-    gl_func_00000000(&sStr_CollShape_CollShape_1EE24);
+    CALL(sys_imin)(&sStr_CollShape_CollShape_1EE24);
     *(int *)((char *)arg0 + 0x30) = 0;
     if (1) {
     q = arg1; arg1 = q + 1; cmd = *q;
@@ -67,14 +68,14 @@ int *CollShape_ctor(int *arg0, int *arg1) {
             break;
         case 3:
             q = arg1; arg1 = q + 1; v = *q;
-            *(int *)((char *)arg0 + 0x84) = gl_func_00000000(0, &sStr_colshape_1EE3C, v, 0);
+            *(int *)((char *)arg0 + 0x84) = CALL(BasePolyShape_ctor)(0, &sStr_colshape_1EE3C, v, 0);
             break;
         case 4:
             arg1 += 1;
             q = arg1; arg1 = q + 1; flag = *q;
             break;
         default:
-            gl_func_00000000(&sStr_unknown_coll_cmd_1EE48);
+            CALL(sys_fatal)(&sStr_unknown_coll_cmd_1EE48);
             break;
         }
         q = arg1; arg1 = q + 1; cmd = *q;
@@ -87,7 +88,7 @@ int *CollShape_ctor(int *arg0, int *arg1) {
     *(f32 *)((char *)arg0 + 0x54) = 0.0f;
     *(f32 *)((char *)arg0 + 0x58) = 0.0f;
     *(f32 *)((char *)arg0 + 0x5C) = 0.0f;
-    gl_func_00000000();
+    CALL(sys_imout)();
 ret:
     return arg0;
 }

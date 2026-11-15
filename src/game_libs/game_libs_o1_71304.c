@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* osViSetEvent = libultra osViSetEvent (io/visetevent.c).
  * IDO 7.1 -O1: all 27 instruction words match, including reloc immediates.
  * The register saveMask plus -O1 retains the target's s0 round-trip;
@@ -26,5 +27,5 @@ void osViSetEvent(void *mq, void *m, unsigned int retraceCount) {
     gl_func_00000000_vinext711->msgq = mq;
     gl_func_00000000_vinext711->msg = m;
     gl_func_00000000_vinext711->retraceCount = retraceCount;
-    gl_func_00000000_rstint711(saveMask);
+    XCALL(gl_func_00000000_rstint711, gl___osRestoreInt)(saveMask);
 }

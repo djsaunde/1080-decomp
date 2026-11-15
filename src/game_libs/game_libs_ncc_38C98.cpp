@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for Node_printContents (0xC4 / 49 words): debug dump
  * of an owner's child list -- the header line (&D+0x1ECB8, o->0xC) only at
  * depth 0, then per child: indent(depth + 1), the line (&D+0x1ECCC,
@@ -24,11 +25,11 @@ struct Iter {
 struct Owner { char pad[0xC]; int x0c; Link *head; };
 extern "C" void Node_printContents(Owner *o, int a1) {
     Iter it(o->head);
-    if (a1 == 0) { int v = o->x0c; gl_func_00000000((char *)&D_00000000 + 0x1ECB8, v); }
+    if (a1 == 0) { int v = o->x0c; CALL(dbg_printf)((char *)&D_00000000 + 0x1ECB8, v); }
     a1++;
     for (Node *n = it.next(); n; n = it.next()) {
-        gl_func_00000000(a1);
-        { int v = n->x0c; gl_func_00000000((char *)&D_00000000 + 0x1ECCC, v); }
-        gl_func_00000000(n, a1);
+        CALL(dbg_printIndent)(a1);
+        { int v = n->x0c; CALL(dbg_printf)((char *)&D_00000000 + 0x1ECCC, v); }
+        CALL(Node_printContents)(n, a1);
     }
 }

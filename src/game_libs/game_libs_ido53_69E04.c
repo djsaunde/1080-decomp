@@ -9,6 +9,7 @@
  * callees collapse to the address-0 placeholder gl_func_00000000; the single
  * global (running-thread ptr, kernel __osRunningThread) maps to D_00000000. */
 #include "libultra/os_message.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000000; /* __osRunningThread (OSThread *) */
@@ -21,7 +22,7 @@ int gl_osSendMesg(OSMesgQueue *mq, OSMesg msg, int flags) {
             ((OSThread *)gl___osRunningThread)->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000((int *)&mq->fullqueue);
         } else {
-            gl_func_00000000(saveMask);
+            CALL(gl___osRestoreInt)(saveMask);
             return -1;
         }
     }
@@ -29,9 +30,9 @@ int gl_osSendMesg(OSMesgQueue *mq, OSMesg msg, int flags) {
     mq->msg[last] = msg;
     mq->validCount++;
     if (mq->mtqueue->next != 0) {
-        register void *t = (void *)gl_func_00000000(mq);
-        gl_func_00000000(t);
+        register void *t = (void *)CALL(gl___osPopThread)(mq);
+        CALL(gl_osStartThread)(t);
     }
-    gl_func_00000000(saveMask);
+    CALL(gl___osRestoreInt)(saveMask);
     return 0;
 }

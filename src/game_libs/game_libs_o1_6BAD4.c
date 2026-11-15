@@ -1,4 +1,5 @@
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 /* -O1 donor for gl_osContInit — 92-insn one-shot shutdown/timer-wait driver
  * (frame 0x70, no s-regs). PROVEN EXACT 92/92 at IDO 7.1 -O1 (2026-07-08
  * standalone probe; plain -O1, no -g3). Shape: guard on a state flag, flag=1,
@@ -36,21 +37,21 @@ int gl_osContInit(int a0, int a1, int a2) {
         return 0;
     }
     gl___osContinitialized = 1;
-    time = gl_func_00000000_ll();
+    time = XCALL(gl_func_00000000_ll, osGetTime)();
     if (time < (unsigned long long)0x165A0BC) {
-        gl_func_00000000(q, &msg, 1);
-        gl_func_00000000(timer, (unsigned long long)0x165A0BC - time, (unsigned long long)0, q, &msg);
-        gl_func_00000000(q, &msg, 1);
+        CALL(gl_osCreateMesgQueue)(q, &msg, 1);
+        CALL(gl_osSetTimer)(timer, (unsigned long long)0x165A0BC - time, (unsigned long long)0, q, &msg);
+        CALL(gl_osRecvMesg)(q, &msg, 1);
     }
     D_00000000_b = 4;
-    gl_func_00000000(0);
-    ret = gl_func_00000000(1, &gl___osContPifRam);
-    gl_func_00000000(a0, &msg, 1);
-    ret = gl_func_00000000(0, &gl___osContPifRam);
-    gl_func_00000000(a0, &msg, 1);
-    gl_func_00000000(a1, a2);
+    CALL(__osPackReadData)(0);
+    ret = CALL(gl___osSiRawStartDma)(1, &gl___osContPifRam);
+    CALL(gl_osRecvMesg)(a0, &msg, 1);
+    ret = CALL(gl___osSiRawStartDma)(0, &gl___osContPifRam);
+    CALL(gl_osRecvMesg)(a0, &msg, 1);
+    CALL(osContGetReadData)(a1, a2);
     D_00000000_b = 0;
-    gl_func_00000000();
-    gl_func_00000000(&D_00000000_c, &D_00000000_d, 1);
+    CALL(gl___osSiCreateAccessQueue)();
+    CALL(gl_osCreateMesgQueue)(&D_00000000_c, &D_00000000_d, 1);
     return ret;
 }

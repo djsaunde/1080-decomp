@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osPiWriteIo — 16-insn call-sandwich wrapper, raw-word
  * IDENTICAL (16/16, 2026-07-17 sibling scan) to gl_osPiReadIo:
  * hook(); r = work(a0, a1); unhook(); return r.
@@ -15,8 +16,8 @@ extern int gl_func_00000000();
 
 int gl_osPiWriteIo(int a0, int a1) {
     register int r;
-    gl_func_00000000();
-    r = gl_func_00000000(a0, a1);
-    gl_func_00000000();
+    CALL(gl___osPiGetAccess)();
+    r = CALL(gl_osPiRawWriteIo_0007307C)(a0, a1);
+    CALL(gl___osPiRelAccess)();
     return r;
 }

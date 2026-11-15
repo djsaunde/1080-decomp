@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for PhysQNode_pushProbes_00063964 (280 words; this body 278, cfe NM
  * body 275). EXACT since agent-c run 238 (see the end of this comment).
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the cfe body's struct-copy staging (`t = d; n = t;`,
@@ -57,8 +58,8 @@ extern "C" void PhysQNode_pushProbes_00063964(O *o, f32 acc, int a2, int a3) {
     V3 va;
     V3 vb;
 
-    gl_func_00000000(o->probe, &o->pa, &va, o);
-    gl_func_00000000(o->probe, &o->pb, &vb, o);
+    CALL(math_quatRotateVec3)(o->probe, &o->pa, &va, o);
+    CALL(math_quatRotateVec3)(o->probe, &o->pb, &vb, o);
     va += o->pos;
     vb += o->pos;
     V3 out(0, 0, 0); if (1) {}
@@ -66,7 +67,7 @@ extern "C" void PhysQNode_pushProbes_00063964(O *o, f32 acc, int a2, int a3) {
     V3 n = va - vb;
     count = 0;
     acc = 0.0f; if (1) {}
-    gl_func_00000000(&n);
+    CALL(math_vec3Normalize)(&n);
     if (0) { *va.me()->me() += *vb.me(); } /* agent-c run 238: zero-code pool-slot allocation (see header) */
     if (va.y < (f32)0.0) {
         count = 1;
@@ -83,5 +84,5 @@ extern "C" void PhysQNode_pushProbes_00063964(O *o, f32 acc, int a2, int a3) {
         acc = acc * 0.5;
     }
     fin.x = 0.0f; fin.y = -acc; fin.z = 0.0f;
-    gl_func_00000000(o->tgt, &out, &fin);
+    CALL(DNode_addImpulseAt_00065250)(o->tgt, &out, &fin);
 }

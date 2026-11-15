@@ -23,6 +23,7 @@
  */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -91,12 +92,12 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         q = s->cur; s->cur = q + 1; b = (u8 *)*q;
         out->w58.v = *(s32 *)b;
         out->b32 = b[0];
-        hi[0] = gl_func_00000000(b[1]);
-        out->h30 = (hi[0] << 8) | gl_func_00000000(b[2]);
+        hi[0] = CALL(str_hexDigit_0004FB34)(b[1]);
+        out->h30 = (hi[0] << 8) | CALL(str_hexDigit_0004FB34)(b[2]);
         break;
     case 208:
         p = s->cur; s->cur = p + 1; q = (s32 *)*p;
-        r = (s32 *)gl_func_00000000(&gGfxLib, q);
+        r = (s32 *)CALL(gfx_getDdm)(&gGfxLib, q);
         out->w48 = r;
         out->m = *(Pair_51AD8 *)(r + 1);
         break;
@@ -118,11 +119,11 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
             s->cur += 4;
             out->q = (*pp)->q;
         } else {
-            gl_func_00000000(s, out);
+            CALL(cmd_readFixedQuad)(s, out);
         }
         break;
     case 201:
-        gl_func_00000000(s, out);
+        CALL(cmd_readFixedQuad)(s, out);
         break;
     case 203:
         q = s->cur; s->cur = q + 1; out->w24 = *q;
@@ -137,7 +138,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         q = s->cur; s->cur = q + 1; v = *q;
         pp = &gGfxLib_00000148_51AD8[v];
         if (*pp == 0) {
-            gl_func_00000000((char *)&D_00000000 + 0x20F14);
+            CALL(sys_fatal)((char *)&D_00000000 + 0x20F14);
         }
         src = *pp;
         out->q = src->q;
@@ -164,7 +165,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         out->w58 = src->w58;
         break;
     default:
-        gl_func_00000000((char *)&D_00000000 + 0x20F20, op = s->op);
+        CALL(sys_fatal)((char *)&D_00000000 + 0x20F20, op = s->op);
         break;
     }
 }

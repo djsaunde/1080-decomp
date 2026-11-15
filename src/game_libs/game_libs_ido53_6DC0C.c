@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for gl_osCartRomInit = libultra osCartRomInit
  * (cartrominit.c verbatim). BOUNDARY FIX: splat's game_libs_func_0006DBFC
  * (0x10, no jr ra) was 2 alignment nops + this function's HOISTED HEAD —
@@ -65,7 +66,7 @@ OSPiHandle *gl_osCartRomInit(void) {
     gl_CartRomHandle_cartrom.type = 0;                 /* DEVICE_TYPE_CART */
     gl_CartRomHandle_cartrom.baseAddress = 0xB0000000;
 
-    gl_func_00000000_rdio(0, &domain);           /* read BSD DOM1 config */
+    XCALL(gl_func_00000000_rdio, gl_osPiRawReadIo_0006BA7C)(0, &domain);           /* read BSD DOM1 config */
 
     gl_CartRomHandle_cartrom.latency = domain & 0xFF;
     gl_CartRomHandle_cartrom.pulse = (domain >> 8) & 0xFF;
@@ -79,7 +80,7 @@ OSPiHandle *gl_osCartRomInit(void) {
     saveMask = gl_func_00000000_disint();
     gl_CartRomHandle_cartrom.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_CartRomHandle_cartrom;
-    gl_func_00000000_resint(saveMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
 
     return &gl_CartRomHandle_cartrom;
 }

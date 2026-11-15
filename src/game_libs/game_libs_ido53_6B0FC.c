@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for gl___osLeoInterrupt = libultra __osLeoInterrupt
  * (io/leointerrupt.c verbatim, 2.0-era struct layout): the 64DD LEO
  * cart-interrupt service routine. PI_STATUS DMA-busy => LEO_ERROR_29 +
@@ -120,7 +121,7 @@ s32 gl___osLeoInterrupt(void)
         }
         blockInfo->dramAddr = (void *)((u32)blockInfo->dramAddr + blockInfo->sectorSize);
         info->sectorNum++;
-        gl_func_00000000_edma(D_00000000_ldh, 1, 0x05000400, blockInfo->dramAddr,
+        XCALL(gl_func_00000000_edma, gl_osEPiRawStartDma)(D_00000000_ldh, 1, 0x05000400, blockInfo->dramAddr,
                               blockInfo->sectorSize); /* OS_WRITE, LEO_SECTOR_BUFF */
         return 1;
     }
@@ -171,7 +172,7 @@ s32 gl___osLeoInterrupt(void)
                 info->cmdType = 2;
                 blockInfo->errStatus = 0;
             }
-            gl_func_00000000_edma(D_00000000_ldh, 0, 0x05000000, blockInfo->C2Addr,
+            XCALL(gl_func_00000000_edma, gl_osEPiRawStartDma)(D_00000000_ldh, 0, 0x05000000, blockInfo->C2Addr,
                                   blockInfo->sectorSize * 4); /* OS_READ, LEO_C2_BUFF */
             return 1;
         }
@@ -195,7 +196,7 @@ s32 gl___osLeoInterrupt(void)
                 gl_ref_0007FE04();
                 return 1;
             }
-            gl_func_00000000_edma(D_00000000_ldh, 0, 0x05000400, blockInfo->dramAddr,
+            XCALL(gl_func_00000000_edma, gl_osEPiRawStartDma)(D_00000000_ldh, 0, 0x05000400, blockInfo->dramAddr,
                                   blockInfo->sectorSize);
             blockInfo->errStatus = 0;
             return 1;

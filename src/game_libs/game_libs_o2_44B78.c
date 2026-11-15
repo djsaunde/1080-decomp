@@ -34,6 +34,7 @@
  * as `(char *)&gl_osViModeTable_44B78_modes + K` call args; `f = 2; if (mode & 0x200) f =
  * 0x42; if (mode & 0x400) f &= ~2;` for the tail. */
 #include "common.h"
+#include "uso_call.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -48,19 +49,19 @@ void gfx_setVideoMode(int mode) {
 
     D_00000000_3c8e0 = mode;
     switch ((unsigned char)mode) {
-        case 1: gl_func_00000000(VIMODE_44B78(0x280)); break;
-        case 3: gl_func_00000000(VIMODE_44B78(0x320)); break;
-        case 5: gl_func_00000000(VIMODE_44B78(0x3C0)); break;
-        case 8: gl_func_00000000(VIMODE_44B78(0x50)); break;
+        case 1: CALL(osViSetMode)(VIMODE_44B78(0x280)); break;
+        case 3: CALL(osViSetMode)(VIMODE_44B78(0x320)); break;
+        case 5: CALL(osViSetMode)(VIMODE_44B78(0x3C0)); break;
+        case 8: CALL(osViSetMode)(VIMODE_44B78(0x50)); break;
         case 2:
             if (D_00000000_tvtype == 1) {
-                gl_func_00000000(VIMODE_44B78(0xA0));
+                CALL(osViSetMode)(VIMODE_44B78(0xA0));
             } else {
-                gl_func_00000000(VIMODE_44B78(0x960));
+                CALL(osViSetMode)(VIMODE_44B78(0x960));
             }
             break;
-        case 0: gl_func_00000000(VIMODE_44B78(0x0)); break;
-        default: gl_func_00000000((char *)&D_00000000 + 0x1FE78); break;
+        case 0: CALL(osViSetMode)(VIMODE_44B78(0x0)); break;
+        default: CALL(sys_fatal)((char *)&D_00000000 + 0x1FE78); break;
     }
     f = 2;
     if (mode & 0x200) {
@@ -69,5 +70,5 @@ void gfx_setVideoMode(int mode) {
     if (mode & 0x400) {
         f &= ~2;
     }
-    gl_func_00000000(f);
+    CALL(osViSetSpecialFeatures)(f);
 }

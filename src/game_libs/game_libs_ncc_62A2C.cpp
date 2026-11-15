@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for anim_blendPose (0x344 / 209 words).
  *
  * game_libs_post0b holds C++ code too: this camera/transform blend step is
@@ -84,13 +85,13 @@ extern "C" void anim_blendPose(Animator *o, int key0, int key1, float frac, int 
 
     o->unk50 = 22;
     o->unk4C = 7;
-    gl_func_00000000_62a2c_get(o, key0, &x);
-    gl_func_00000000_62a2c_get(o, key1, &p.v);
-    gl_func_00000000_62a2c_lerp(&x.quat, q, frac, 0);
+    XCALL(gl_func_00000000_62a2c_get, anim_unpackKey)(o, key0, &x);
+    XCALL(gl_func_00000000_62a2c_get, anim_unpackKey)(o, key1, &p.v);
+    XCALL(gl_func_00000000_62a2c_lerp, math_quatSlerp)(&x.quat, q, frac, 0);
     x.trans.lerp(p.v, frac);
     if (blendLeft != 0) {
         o->dst = o->cur;
-        gl_func_00000000_62a2c_lerp(&o->dst.quat, &x.quat, blendWeight, 0);
+        XCALL(gl_func_00000000_62a2c_lerp, math_quatSlerp)(&o->dst.quat, &x.quat, blendWeight, 0);
         o->dst.trans.lerp(x.trans, blendWeight);
     } else {
         o->dst = x;

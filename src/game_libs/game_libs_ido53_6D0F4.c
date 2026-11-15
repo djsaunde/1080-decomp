@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for gl__MakeMotorData — 95-insn 40-byte-record builder
  * (frame 0x48, saves ra; one jal). PROVEN EXACT 95/95 (2026-07-09
  * standalone probe; 7.1 -O1 = 76/95, $at struct-copy scratch again).
@@ -38,7 +39,7 @@ void gl__MakeMotorData(int count, unsigned short x, unsigned char *src, int *out
     buf.b1 = 35;
     buf.b2 = 1;
     buf.b3 = 3;
-    buf.h4 = gl_func_00000000(x) | (x << 5);
+    buf.h4 = CALL(__osContAddressCrc)(x) | (x << 5);
     buf.b38 = 255;
     for (i = 0; i < 32; i++) {
         buf.data[i] = *src;

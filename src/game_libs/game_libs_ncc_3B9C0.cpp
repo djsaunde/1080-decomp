@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for CollShape_raycast (0x45C / 279 words), agent-c run 387: REPLACE_FUNC_BODY-spliced
  * over the placeholder in game_libs_post0b.c on both build trees. The two double literals' donor-local .rodata reloc
  * is renamed by the splice to CollShape_raycast_rodata (pinned to the USO RoData +0x1AA8); the blank jal words are
@@ -74,7 +75,7 @@ extern "C" s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V
     d.y = b->y - a->y;
     d.z = b->z - a->z;
     if (gl_func_0003B9C0_sqrtf(d.x * d.x + d.y * d.y + d.z * d.z) > 0.00001) {
-        gl_func_00000000_vnorm3(&d);
+        XCALL(gl_func_00000000_vnorm3, math_vec3Normalize)(&d);
     } else {
         zf(d.x, 0); /* run 190: zeros through an int inline parameter (77.78 -> 78.55); run 193: x first = target store order */
         zf(d.z, 0);

@@ -6,6 +6,7 @@
  * product is written `o->x * factor` (edg keeps the written operand order; the factor loads first).
  * Spliced over an empty placeholder in both build trees. */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
 struct Blk { int w[16]; };
 struct Obj { char pad[0x30]; f32 x, y, z; };
@@ -23,6 +24,6 @@ extern "C" void ColourItem_display(Obj *o) {
         *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(gGfxLib + 0x128);
         *(f32 *)((char *)d + 0x34) = o->y * *(f32 *)(gGfxLib + 0x12C);
         *(f32 *)((char *)d + 0x38) = o->z * *(f32 *)(gGfxLib + 0x130);
-        gl_func_00000000(o);
+        CALL(Node_display)(o);
     }
 }

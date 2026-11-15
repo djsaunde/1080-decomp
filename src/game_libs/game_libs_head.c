@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* PointsGadget_display_FFFFFFE0: the FIRST function of the game_libs text, bootup.uso
  * Text section offset 0x1464C (USO Sym export 871, ROM 0xDE50B8). Its first 8
@@ -42,14 +43,14 @@ void PointsGadget_display_FFFFFFE0(char *o) {
     col[1] = g;
     col[2] = b;
     col[3] = 1.0f;
-    gl_func_00000000(*(char **)(o + 0xB0));
-    gl_func_00000000(*(char **)(o + 0xB0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
-    gl_func_00000000f(*(char **)(o + 0xB0), (int)(*(f32 *)(o + 0x44) + 2.0f), (int)*(f32 *)(o + 0x5C),
+    CALL(gui_setupRenderMode_0000055C)(*(char **)(o + 0xB0));
+    CALL(gui_setPrimColor_000006B8)(*(char **)(o + 0xB0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
+    XCALL(gl_func_00000000f, gui_drawStringScaled_00000F04)(*(char **)(o + 0xB0), (int)(*(f32 *)(o + 0x44) + 2.0f), (int)*(f32 *)(o + 0x5C),
                       *(int *)(o + 0x88), *(f32 *)(o + 0x8C), o + 0xB4);
     if (*(char **)(o + 0xA0) != 0) {
-        gl_func_00000000(*(char **)(o + 0xA0));
-        gl_func_00000000(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
-        gl_func_00000000(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x80) + *(f32 *)(o + 0x44)),
+        CALL(gui_spriteRefresh)(*(char **)(o + 0xA0));
+        CALL(gui_setColorEnvPrim_000017DC)(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x78) * D_00000000), col, 255);
+        CALL(gui_drawSprite)(*(char **)(o + 0xA0), (int)((f32)*(int *)(o + 0x80) + *(f32 *)(o + 0x44)),
                          (int)((f32)*(int *)(o + 0x84) + *(f32 *)(o + 0x5C)), 3);
     }
 }

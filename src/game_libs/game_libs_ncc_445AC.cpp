@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for GfxLib_init (0x36C / 219 words), agent-c run 162.
  * One-shot UI / object bootstrap: registration calls, a new-expression of A40 (inline ctor: a 32-byte
  * buffer + init call) stored into the global holder and passed on, a new-expression of L24 : L20 (the
@@ -15,7 +16,7 @@ extern char D_00000000[];
 extern int D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge;
 }
 #define S(o) (D_00000000 + (o))
-inline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
 struct A40 {
     char pad[0x18];
     char *x18;
@@ -34,33 +35,33 @@ struct L24 : L20 {
 };
 struct Obj { char pad[0x20C]; int x20C; int pad210; int x214; int x218; char pad21C[0x22C - 0x21C]; L24 *x22C; char pad230[0x240 - 0x230]; int x240; char pad244[0x280 - 0x244]; int x280; int x284; };
 extern "C" void GfxLib_init(Obj *a0) {
-    gl_func_00000000(0x140, 0xF0);
-    gl_func_00000000(0x140, 0xF0);
-    gl_func_00000000(S(0x1FDE4), 0);
-    a0->x240 = gl_func_00000000(0, 0x64, S(0x1FDEC), 0x6D, 2, 0x6E, 0, 0, 0x6F, D_445AC_ga, D_445AC_gb, 0x70, 0x1E00, 0x71, 2, 0);
-    gl_func_00000000();
-    a0->x280 = gl_func_00000000(0, S(0x1FDFC), 40, 0, 0, 0, 0);
-    a0->x284 = gl_func_00000000(0, S(0x1FE04), 40, 0, 0, 0, 0);
-    *(int *)D_00000000 = gl_func_00000000(0, S(0x1FE0C), 20, 0, 0, 0, 0);
-    gl_func_00000000(a0);
-    gl_func_00000000(S(0x1FE14), 0);
-    a0->x214 = gl_func_00000000(0, S(0x1FE24), D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge);
-    gl_func_00000000();
-    gl_func_00000000(gSysLib_445AC_b.x1C = new A40, 0x64, 1);
+    CALL(gfx_setScreenSize)(0x140, 0xF0);
+    CALL(gfx_setScreenSize2_00044CB0)(0x140, 0xF0);
+    CALL(memtrack_begin)(S(0x1FDE4), 0);
+    a0->x240 = CALL(ScreenWindow_ctor)(0, 0x64, S(0x1FDEC), 0x6D, 2, 0x6E, 0, 0, 0x6F, D_445AC_ga, D_445AC_gb, 0x70, 0x1E00, 0x71, 2, 0);
+    CALL(memtrack_end)();
+    a0->x280 = CALL(gfx_newDLContext)(0, S(0x1FDFC), 40, 0, 0, 0, 0);
+    a0->x284 = CALL(gfx_newDLContext)(0, S(0x1FE04), 40, 0, 0, 0, 0);
+    *(int *)D_00000000 = CALL(gfx_newDLContext)(0, S(0x1FE0C), 20, 0, 0, 0, 0);
+    CALL(GfxObj_ctor_0004DF90)(a0);
+    CALL(memtrack_begin)(S(0x1FE14), 0);
+    a0->x214 = CALL(gfx_newDLContext)(0, S(0x1FE24), D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge);
+    CALL(memtrack_end)();
+    CALL(osViSetEvent)(gSysLib_445AC_b.x1C = new A40, 0x64, 1);
     a0->x22C = new L24;
-    a0->x218 = gl_func_00000000(0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
+    a0->x218 = CALL(RcpMgr_ctor)(0);
+    CALL(gfx_waitRetrace)(a0);
+    CALL(gfx_waitRetrace)(a0);
     a0->x20C = 1;
-    gl_func_00000000(S(0x1FE30));
-    gl_func_00000000(a0);
-    gl_func_00000000(S(0x1FE3C));
-    a0->x20C = (u32)gl_func_00000000_445f(S(0x1FE48));
+    CALL(prof_timerStart)(S(0x1FE30));
+    CALL(gfx_waitRetrace)(a0);
+    CALL(prof_timerStop)(S(0x1FE3C));
+    a0->x20C = (u32)XCALL(gl_func_00000000_445f, prof_timerRead_0004DD3C)(S(0x1FE48));
     if ((u32)a0->x20C < 10) {
-        gl_func_00000000(S(0x1FE54));
+        CALL(dbg_printf)(S(0x1FE54));
     }
-    gl_func_00000000(a0);
-    gl_func_00000000(0x202);
-    gl_func_00000000(a0, 1);
-    gl_func_00000000(a0);
+    CALL(gfx_swapBuffer)(a0);
+    CALL(gfx_setVideoMode)(0x202);
+    CALL(gfx_viBlack)(a0, 1);
+    CALL(GfxLib_reset)(a0);
 }

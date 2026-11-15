@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for SNodeItemType_newItem: cfront create + virtual call + list attach.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 133 / 134) 3DD28 = create an object through its cfront allocating
@@ -23,12 +24,12 @@ extern "C" Obj *SNodeItemType_newItem(Owner *a0) {
     Node *node;
     int pad2[2];
     pad[0] = 0; pad2[0] = 0;
-    o = (Obj *)gl_func_00000000(0); if (a0) {}
+    o = (Obj *)CALL(SNode_ctor)(0); if (a0) {}
     o->f70 = 10.0f;
     kind = 19;
     o->f(&kind);
     node = a0->n40;
-    gl_func_00000000(o->link, node);
+    CALL(list_append)(o->link, node);
     if (node->o14) node->x4 = 1;
     node->o14 = o;
     return o;

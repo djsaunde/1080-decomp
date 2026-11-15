@@ -16,6 +16,7 @@
  * (no reloc in the .s) — resolved at link like gl_ref_0007FEEC.
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_cont.h"
+#include "uso_call.h"
 extern s32 gl_func_00000000(void *, int, int, u8 *, int); /* __osContRamWrite */
 extern s32 gl_func_00000001(void *, int, int, u8 *);      /* __osContRamRead */
 extern s32 gl_ref_00081760(int, int, u8 *, void *);       /* _MakeMotorData */
@@ -38,9 +39,9 @@ s32 osMotorInit(void *mq, OSPfs *pfs, int channel) {
     for (i = 0; i < 32; i++)
         temp[i] = 254;
 
-    ret = gl_func_00000000(mq, channel, 1024, temp, 0);
+    ret = CALL(__osContRamWrite)(mq, channel, 1024, temp, 0);
     if (ret == 2)
-        ret = gl_func_00000000(mq, channel, 1024, temp, 0);
+        ret = CALL(__osContRamWrite)(mq, channel, 1024, temp, 0);
     if (ret != 0)
         return ret;
 
@@ -55,9 +56,9 @@ s32 osMotorInit(void *mq, OSPfs *pfs, int channel) {
     for (i = 0; i < 32; i++)
         temp[i] = 128;
 
-    ret = gl_func_00000000(mq, channel, 1024, temp, 0);
+    ret = CALL(__osContRamWrite)(mq, channel, 1024, temp, 0);
     if (ret == 2)
-        ret = gl_func_00000000(mq, channel, 1024, temp, 0);
+        ret = CALL(__osContRamWrite)(mq, channel, 1024, temp, 0);
     if (ret != 0)
         return ret;
 

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for app_initSystem (0xEC / 59 words): four init
  * callbacks, back-link two root pointers into the record, then (once) install
  * the KSEG1 config block at module data 0x3B8EC.. and register it.
@@ -16,10 +17,10 @@ extern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st
 }
 static signed char sF6[2];
 extern "C" void app_initSystem(int a0) {
-    gl_func_00000000();
-    gl_func_00000000();
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
+    CALL(console_createSystemWin)();
+    CALL(dbg_startFaultThread)();
+    CALL(pad_initGlobal)(a0);
+    CALL(sys_pollDevices_00034B64)(a0);
     *(int *)(*(char **)&gSysApi_34A78_rec + 0x8C) = (int)&D_34A78_b;
     *(int *)(*(char **)&gSysApi_34A78_rec + 0x90) = (int)&D_34A78_c;
     if (gl_ref_0003B8FC != (int)0xA8000000) {
@@ -30,7 +31,7 @@ extern "C" void app_initSystem(int a0) {
         { signed char &a = sF6[0]; signed char &b = sF6[1]; a = 13; b = 2; }
         gl_ref_0003B8F9 = 1;
         gl_ref_0003B900 = 0; gl_func_00000000(&gl_ref_0003B904, 96);
-        gl_func_00000000(&gl_ref_0003B8F0);
+        CALL(gl_osEPiLinkHandle)(&gl_ref_0003B8F0);
     }
     gl_ref_0003B8EC = (int)&gl_ref_0003B8F0;
 }

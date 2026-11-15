@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for __osViSwapContext = libultra __osViSwapContext
  * (viswapcontext.c verbatim). PROVEN EXACT 215/215 standalone at IDO
  * 5.3 -O1. vc colors s1, vm s0, osVirtualToPhysical result s2; field
@@ -76,7 +77,7 @@ void __osViSwapContext(void) {
 
     field = IO_READ(0xA4400010) & 1; /* VI_CURRENT_REG */
 
-    origin = gl_func_00000000_v2p(vc->framep) + (vm->fldRegs[field].origin);
+    origin = XCALL(gl_func_00000000_v2p, gl_osVirtualToPhysical)(vc->framep) + (vm->fldRegs[field].origin);
     if (vc->state & VI_STATE_XSCALE_UPDATED) {
         vc->x.scale |= (vm->comRegs.xScale & ~VI_SCALE_MASK);
     } else {
@@ -95,11 +96,11 @@ void __osViSwapContext(void) {
     }
     if (vc->state & VI_STATE_REPEATLINE) {
         vc->y.scale = 0;
-        origin = gl_func_00000000_v2p(vc->framep);
+        origin = XCALL(gl_func_00000000_v2p, gl_osVirtualToPhysical)(vc->framep);
     }
     if (vc->state & VI_STATE_FADE) {
         vc->y.scale = (vc->y.offset << VI_SUBPIXEL_SH) & (VI_2_10_FPART_MASK << VI_SUBPIXEL_SH);
-        origin = gl_func_00000000_v2p(vc->framep);
+        origin = XCALL(gl_func_00000000_v2p, gl_osVirtualToPhysical)(vc->framep);
     }
     IO_WRITE(0xA4400004, origin);                       /* VI_ORIGIN */
     IO_WRITE(0xA4400008, vm->comRegs.width);            /* VI_WIDTH */

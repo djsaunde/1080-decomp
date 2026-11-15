@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for nodelist_walk_0005534C (0x9C / 39 words): command
  * stream walker that calls the first command word as a function, then
  * dispatches the rest (low 16 bits) through the shared handler. Same
@@ -22,7 +23,7 @@ extern "C" void nodelist_walk_0005534C(St5534C s) {
     s.w = w;
     while (w != 0) {
         s.w &= 0xFFFF;
-        gl_func_00000000(&s);
+        CALL(nodelist_dispatch)(&s);
         w = s.next();
         s.w = w;
     }

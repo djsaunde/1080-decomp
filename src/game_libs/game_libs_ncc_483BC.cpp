@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for PolyShape_emitTriBatch_000483BC: G_VTX + per-triple G_TRI1 packets (488A0 sibling).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 134) 483BC = emit a G_VTX packet for the object's nv vertices
@@ -57,7 +58,7 @@ extern "C" void PolyShape_emitTriBatch_000483BC(Obj488A0 *obj) {
         ctx = obj->ctx; n = ctx->dl->count++;
         g = &ctx->dl->base[n];
         g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF);
-        g->w1 = gl_func_00000000(*(c2 = obj->ctx)->vtx + obj->vbase);
+        g->w1 = CALL(gl_osVirtualToPhysical)(*(c2 = obj->ctx)->vtx + obj->vbase);
         *(int *)((char *)obj + 0x58C) += obj->nv;
         for (i = 0; i < obj->nline; i++) {
             Gfx488A0 *h;
@@ -67,5 +68,5 @@ extern "C" void PolyShape_emitTriBatch_000483BC(Obj488A0 *obj) {
             h->w1 = ((((obj->ln[i][0] - obj->vbase) * 2) & 0xFF) << 16) | ((((obj->ln[i][1] - obj->vbase) * 2) & 0xFF) << 8) | (((obj->ln[i][2] - obj->vbase) * 2) & 0xFF);
         }
     }
-    gl_func_00000000(obj);
+    CALL(gfx_vtxBatchBegin_000483A0)(obj);
 }

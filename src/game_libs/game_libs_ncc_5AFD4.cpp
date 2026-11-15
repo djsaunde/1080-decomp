@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for Mem_init (0x9C / 39 words), agent-c run 162.
  * Heap init: register the range, clear the counters, make the empty free-list head, then make the whole range
  * one block {hdr = 0xFF << 24 | size / 16, minus one; next / prev = the heap head; magic 0x87654321} and
@@ -13,7 +14,7 @@ extern char D_00000000[];
 struct Blk { unsigned hdr; Blk *next; Blk *prev; unsigned magic; };
 struct Heap { Blk head; Blk list; unsigned n20; unsigned n24; int size; };
 extern "C" void Mem_init(Heap *h, Blk *b, char *end) {
-    gl_func_00000000(D_00000000 + 0x219F8, b, end, 0x10);
+    CALL(dbg_printf)(D_00000000 + 0x219F8, b, end, 0x10);
     h->n24 = 0;
     int size = end - (char *)b;
     h->size = size;

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) NM-only comparison donor for gfx_screenRaycast (0x428 / 266 words), agent-g run 194.
  * Screen-point -> world raycast picker as C++ (kit CXLVI lead: the target re-reads the ray direction from memory
  * for the K* products = by-reference inline operators). The ray direction is built member by member, rotated
@@ -62,8 +63,8 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
     dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&gGfxLib_4F2DC_b + 0x128);
-    gl_func_00000000(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
-    gl_func_00000000(&dir);
+    CALL(math_mtx4MulVec3)(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
+    CALL(math_vec3Normalize)(&dir);
     d = dir;
     /* agent-g run 297: the product reads d through a const reference (zero code): uopt no longer forwards the
      * operator= parameter temp's words to the `d * k` reads, which now load d's own home (sp+212..220) like the
@@ -85,7 +86,7 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     { PadK<4> pq; } /* agent-c run 307: unreferenced block-scope frame pad (frame 424 = target with the named operator* result) */
     char *p = *(char **)&gCourseColl_4F2DC_e; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
-        count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
+        count = CALL(CollShape_raycast)(p, 8, dists, surfs, &start, &e, 0, hits);
     }
     if (count != 0) {
         int besti = -1;

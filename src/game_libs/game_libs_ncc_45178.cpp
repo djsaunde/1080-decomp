@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for gfx_emitProjection (0x21C / 135 words), agent-c run 162.
  * History-lane clamp (-32700 / 32700 literals) + one Mtx slot from the context's matrix pool + one
  * stock-gbi gDma1p packet (0x01030040 = F3DEX gSPMatrix(m, 3, 64)) + three camera Vec3 calls.
@@ -51,17 +52,17 @@ extern "C" void gfx_emitProjection(Obj *o) {
     o->h[2] = r;
     c = o->own->ctx;
     i = c->mh->count++; m = &c->mh->buf[i];
-    gl_func_00000000(D_00000000 + 0x60, m);
+    CALL(guMtxF2L)(D_00000000 + 0x60, m);
     n3 = c->dl->count++;
-    gDma1p(&c->dl->buf[n3], 1, gl_func_00000000_i(m), 64, 3);
+    gDma1p(&c->dl->buf[n3], 1, XCALL(gl_func_00000000_i, gl_osVirtualToPhysical)(m), 64, 3);
     t = o->own->cam;
     q = t->q;
     if (t != 0) {
         a.x = q[0]; a.y = q[4]; a.z = q[8];
         b.x = q[1]; b.y = q[5]; b.z = q[9];
-        gl_func_00000000(&gLookAtA_45178, &a, &b);
-        gl_func_00000000(&gLookAtB_45178, &a, &b);
+        CALL(gfx_makeLookAt_00042F4C)(&gLookAtA_45178, &a, &b);
+        CALL(gfx_makeLookAt_00042F4C)(&gLookAtB_45178, &a, &b);
         a.y = 0.0f; a.z = 0.0f; b.x = 0.0f; b.y = 0.0f; a.x = 1.0f; b.z = -1.0f;
-        gl_func_00000000(&gLookAtFixed_45178, &a, &b);
+        CALL(gfx_makeLookAt_00042F4C)(&gLookAtFixed_45178, &a, &b);
     }
 }

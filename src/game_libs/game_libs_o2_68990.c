@@ -41,6 +41,7 @@
  *    own scheduling of the else-arm call args; no C needed. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 typedef struct {
     int unk0;
@@ -80,14 +81,14 @@ void ImageFile_load_00068990(char *o) {
         case 4:
             gl_ref_0007C928((int *)(o + 0x2C));
             if (gSysLib_0005C6E0.unk4 == 0) {
-                saved = gl_func_00000000(0);
-                v = gl_func_00000000(*(int *)(o + 0x2C));
+                saved = CALL(app_setHeapMode)(0);
+                v = CALL(mem_new)(*(int *)(o + 0x2C));
                 *(int *)(o + 8) = v;
-                gl_func_00000000(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C));
-                gl_func_00000000(saved);
+                CALL(fs_gdlReadFile)(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C));
+                CALL(app_setHeapMode)(saved);
             } else {
-                *(int *)(o + 0x28) = gl_func_00000000(&gSysLib_0005C6E0, 1, 0);
-                gl_func_00000000(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C));
+                *(int *)(o + 0x28) = CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0);
+                CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C));
             }
             break;
         case -1:
@@ -96,7 +97,7 @@ void ImageFile_load_00068990(char *o) {
         case 0:
         case 3:
         default:
-            gl_func_00000000(GL_DATA_STR(0x2B430, "Bad Img cmd at : %x"), gl_func_00000000(&gSysLib_0005C6E0, 1, 0));
+            CALL(sys_fatal)(GL_DATA_STR(0x2B430, "Bad Img cmd at : %x"), CALL(fs_gdlSeekFile)(&gSysLib_0005C6E0, 1, 0));
             break;
         }
         if (done != 0) break;

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CollShape_nearestHit -- EXACT (agent-c run 250), spliced over the post0b placeholder on both
  * build paths via REPLACE_FUNC_BODY. History: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00).
  * agent-c run 177 (94.26 -> 96.05, 864 -> 868 bytes, target 872): the limit constant read into a block-scope
@@ -62,7 +63,7 @@ extern "C" int CollShape_nearestHit(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
     acc.x = i;
     acc.y = i;
     acc.z = i;
-    n = gl_func_00000000(o, 8, dist, hitbuf, *r, 0);
+    n = CALL(CollShape_query)(o, 8, dist, hitbuf, *r, 0);
     dd = 0.0f;
     lim = 1000000.0f; /* agent-g run 217 (kit CCXIV): bootup.uso RoData 0x1AB8 = 0x49742400 is the literal 1e6, no k copy: 96.78 -> 98.24 */
     best = -1;

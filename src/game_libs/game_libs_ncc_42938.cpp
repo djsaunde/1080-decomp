@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for dbg_screenOverlay_00042938 (0x614 / 389 words), agent-c run 160 lift, agent-g run 381
  * exact (REPLACE_FUNC_BODY-spliced over a placeholder on both build paths).
  * A C++ frame-setup / text-overlay draw: three guarded one-time initialisations (edg's function-local static
@@ -138,7 +139,7 @@ extern "C" void dbg_screenOverlay_00042938(void) {
         c = G.o->ctx->me();
         t = (int)c->vph; n = ((VpHead *)t)->count; ((VpHead *)t)->count = n + 1; Vp *v = &c->vph->buf[n]; /* agent-g run 379: Vp *v = c->me()->me()->vA(): two zero-code me() hops move vA()'s EDG pool temps to fresh slots (vph / count t0 / v0 like the target) with the gDma1p slot on nA(): 99.692 -> 99.769 */
         setvp(v, 0, 0, 320, 240);
-        { g = (Gfx *)(c->nA()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(func_00000000(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
+        { g = (Gfx *)(c->nA()); g->w0 = (_SHIFTL((0x03), 24, 8) | _SHIFTL((0x80), 16, 8) | _SHIFTL((sizeof(Vp)), 0, 16)); g->w1 = (u32)(FCALL(gl_osVirtualToPhysical)(v)); } /* gDma1p(c->next(), 0x03, func_00000000(v), sizeof(Vp), 0x80) through g */
     }
     /* agent-c run 307: the chained `G.m228 = G.m224 = 8` split into two statements (store-order grid with the unmasked
      * vtrans[0]): the after-call ring back in phase, 98.650 -> 98.838; then the 0x32 / 0x50 pair back in its run-157
@@ -152,18 +153,18 @@ extern "C" void dbg_screenOverlay_00042938(void) {
      * then `+ 0 * (w + w)` (two more counted uses of w: it now colours before the x / y phantoms, t0 like the target):
      * 99.537 -> 99.563 */
     /* agent-g run 381: w is the function-scope `t` (see the top) */
-    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &sFmt_num_1FCCC, x + 0 * (gGfxFbWidth_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
-    func_00000000(&G, &gl_d_42938_z, 320);
+    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; FCALL(gl_sprintf)(&gl_d_42938_cb, &sFmt_num_1FCCC, x + 0 * (gGfxFbWidth_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
+    FCALL(gfx_drawText)(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
     G.m21c = 0x78;
     G.m220 = 0x78;
-    func_00000000(&gl_d_42938_cb, &sFmt_X_1FCE8, gl_d_42938_sa);
-    func_00000000(&G, &gl_d_42938_z, 320);
-    func_00000000(&gl_d_42938_cb, &sFmt_Y_1FCF0, gl_d_42938_sb);
-    func_00000000(&G, &gl_d_42938_z, 320);
+    FCALL(gl_sprintf)(&gl_d_42938_cb, &sFmt_X_1FCE8, gl_d_42938_sa);
+    FCALL(gfx_drawText)(&G, &gl_d_42938_z, 320);
+    FCALL(gl_sprintf)(&gl_d_42938_cb, &sFmt_Y_1FCF0, gl_d_42938_sb);
+    FCALL(gfx_drawText)(&G, &gl_d_42938_z, 320);
     if (gl_d_42938_ck != 0) {
-        func_00000000(&G, &sStr_Hold_1FCF8, 320);
+        FCALL(gfx_drawText)(&G, &sStr_Hold_1FCF8, 320);
         return;
     }
     /* agent-c run 279: the tail written with NO named locals (the record via a macro, every global read

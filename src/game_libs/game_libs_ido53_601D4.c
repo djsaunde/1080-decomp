@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O2 -mips2 donor for memtrack_end = lazy-init tracker
  * update. PROVEN EXACT 30/30 standalone against the 0x601D4..0x60248
  * stream (the .s was already boundary-merged 2026-05-30: splat's 2-word
@@ -45,9 +46,9 @@ int memtrack_end(void) {
     int v0;
 
     if (v1 == 0) {
-        gl_func_00000000_init601((char *)D_00000000 + 0x21CA4);
+        XCALL(gl_func_00000000_init601, sys_fatal)((char *)D_00000000 + 0x21CA4);
     }
-    v0 = gl_func_00000000_get601();
+    v0 = XCALL(gl_func_00000000_get601, memtrack_heapUsed)();
     v1->f04 = v0;
     v1->f08 = v1->f08 + v0 - v1->f00;
     gMemTrackerMgr_trk601->f40 = (Rec601 *)v1->f20;

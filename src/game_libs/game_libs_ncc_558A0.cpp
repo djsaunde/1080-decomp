@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for nodelist_dispatchList_000558A0 (0x7C / 31 words): command
  * stream walker. The by-value parameter s = {pp, w, ...} is homed at sp+32
  * and &s goes to every callee; each command word is stored into s.w.
@@ -21,7 +22,7 @@ extern "C" void nodelist_dispatchList_000558A0(St558A0 s) {
     s.w = w;
     while (w != 0) {
         s.w &= 0xFFFF;
-        gl_func_00000000(&s);
+        CALL(nodelist_dispatch)(&s);
         w = s.next();
         s.w = w;
     }

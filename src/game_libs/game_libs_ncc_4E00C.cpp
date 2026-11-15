@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_initMtxBlock_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
  * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees).
  * agent-c run 160: the 0x144 mode word as five plain read-modify-write statements through the non-volatile base
@@ -38,9 +39,9 @@ extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     int i;
     s0[0x1C8 / 4] = 0;
     s0[0] = 0;
-    gl_func_00000000((char *)s0 + 0xA0);
-    gl_func_00000000((char *)s0 + 0x60);
-    gl_func_00000000((char *)s0 + 0x20);
+    CALL(math_mtx4Identity)((char *)s0 + 0xA0);
+    CALL(math_mtx4Identity)((char *)s0 + 0x60);
+    CALL(math_mtx4Identity)((char *)s0 + 0x20);
     s0[0xE4 / 4] = 0;
     v = (int *)((char *)s0 + 0x140); if (s0) {}
     v[1] = (v[1] & 0xF00) | 0x400;
@@ -51,8 +52,8 @@ extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     *(float *)((char *)s0 + 0x130) = 1.0f;
     *(float *)((char *)s0 + 0x12C) = 1.0f;
     *(float *)((char *)s0 + 0x128) = 1.0f;
-    gl_func_00000000((char *)s0 + 0xE8);
-    gl_func_00000000((char *)s0 + 0xE8, (char *)s0 + 0x128);
+    CALL(math_mtx4Identity)((char *)s0 + 0xE8);
+    CALL(math_mtxScaleRows)((char *)s0 + 0xE8, (char *)s0 + 0x128);
     s0[0x1CC / 4] = 0;
     s0[0x18C / 4] = 0;
     *(float *)((char *)s0 + 0x1D0) = 0.0f;
@@ -61,5 +62,5 @@ extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     *(float *)((char *)s0 + 0x1DC) = 0.5f;
     ((Blk *)((char *)s0 + 0x148))->clear();
     ((Blk2 *)((char *)s0 + 0x160))->clear();
-    gl_func_00000000(s0, 0);
+    CALL(gfx_setShadowLight)(s0, 0);
 }

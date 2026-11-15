@@ -19,6 +19,7 @@
  * __osRestoreInt (blank jals).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_pi.h" /* OSPiHandle, __OSTranxInfo (was a private copy) */
+#include "uso_call.h"
 
 typedef struct {
     u8 pageSize;    /* LeoDiskHandle+6 */
@@ -62,6 +63,6 @@ OSPiHandle *gl_osLeoDiskInit(void) {
     gl_LeoDiskHandle_leodisk.next = gl___osPiTable_pitable;
     gl___osPiTable_pitable = &gl_LeoDiskHandle_leodisk;
     D_00000000_diskhandle = &gl_LeoDiskHandle_leodisk;
-    gl_func_00000000_resint(saveMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
     return &gl_LeoDiskHandle_leodisk;
 }

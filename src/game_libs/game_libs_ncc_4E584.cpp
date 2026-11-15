@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for Window_vfn0_0004E584 (0x84 / 33 words): it is the
  * static-initializer (__sti__) of a global object -- an 8-byte member zeroed by its
  * ctor at +0 and a wrapped 4-byte member at +0x28, each built through the cfront
@@ -7,7 +8,7 @@
  * renames the __sti__ symbol to Window_vfn0_0004E584 (a symbol name only). Spliced into
  * game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void *gl_func_00000000(...);
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct M8 { int a, b; M8() { b = 0; a = 0; } };
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for ItemType_hostioParms (0xAC / 43 words): notify,
  * then walk the owner's child list with a stack iterator and hand every
  * object to the callee, then two closing calls.
@@ -22,9 +23,9 @@ struct Iter3D4 {
 };
 struct Owner3D4 { char pad[0x10]; Link3D4 *head; char pad14[0x18]; int x2c; };
 extern "C" void ItemType_hostioParms(Owner3D4 *o) {
-    gl_func_00000000(&D_00000000, &o->x2c, 1);
+    CALL(hostio_beginGroup)(&D_00000000, &o->x2c, 1);
     Iter3D4 it(o->head);
-    while (it.next()) gl_func_00000000(it.get());
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(o);
+    while (it.next()) CALL(Node_hostioLink)(it.get());
+    CALL(hostio_endGroup)(&D_00000000);
+    CALL(Node_hostioParms)(o);
 }

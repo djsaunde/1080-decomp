@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gui_drawImage_00003B80.
  *
  * Image blitter (27A0's sibling for a plain {tex, w, h, mode} image): append
@@ -57,7 +58,7 @@ extern "C" void gui_drawImage_00003B80(Img *img, int x, int y) {
     h = img->height();
     if (budget < w * h) {
         hh = h;
-        tile = gl_func_00000000(budget / h);
+        tile = CALL(gui_floorPow2)(budget / h);
         h = 0;
         rem = img->width();
         sy = (hh << 10) / hh;
@@ -66,14 +67,14 @@ extern "C" void gui_drawImage_00003B80(Img *img, int x, int y) {
             if (tile < rem) {
                 sx = (tile << 10) / tile;
                 fn(CTX, img->tex, w, img->h, srcx, 0, tile, hh, 0);
-                gl_func_00000000(CTX, x, y, tile, hh, sx, sy);
+                CALL(gui_texRect_00004568)(CTX, x, y, tile, hh, sx, sy);
                 srcx += tile;
                 rem -= tile;
                 x += tile;
             } else {
                 tile = rem;
                 fn(CTX, img->tex, w, img->h, srcx, 0, rem, hh, 0);
-                gl_func_00000000(CTX, x, y, rem, hh, (rem << 10) / rem, sy);
+                CALL(gui_texRect_00004568)(CTX, x, y, rem, hh, (rem << 10) / rem, sy);
                 rem -= tile;
             }
         }
@@ -81,6 +82,6 @@ extern "C" void gui_drawImage_00003B80(Img *img, int x, int y) {
         fn(CTX, img->tex, w, h, 0, 0, w, h, 0);
         w = img->width();
         h = img->height();
-        gl_func_00000000(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);
+        CALL(gui_texRect_00004568)(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);
     }
 }

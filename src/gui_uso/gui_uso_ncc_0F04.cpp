@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for gui_drawStringScaled_00000F04 (313 words, 1252 bytes): spliced over the empty
  * placeholder in gui_uso.c on both build trees (REPLACE_FUNC_BODY). agent-g run 294: EXACT (kit CCCLXVI).
  * History (was the NON_MATCHING comparison donor gui_uso_ncc_0F04_nm.cpp):
@@ -90,9 +91,9 @@ extern "C" void gui_drawStringScaled_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f
     /* agent-g run 292: the texture and RDPHALF_2 appends through a nested zero-code accessor me(me(f->ctx))
      * (kit CCLXXXIV per-pkt accessor grid, 81 + 241 combos): 98.588 -> 98.843 standalone */
     gSPTextureS(gpa, me(me(f->ctx))->nextc(), 0x8000, 0x8000, 0, 0, 1);
-    cx = -((f32)gl_func_00000000(f, str) / 2.0f) - 2.0f;
+    cx = -((f32)CALL(gui_stringWidth_00001514)(f, str) / 2.0f) - 2.0f;
     cy = -((f32)f->h10 / 2.0f);
-    for (p = str, i = 0; i < (unsigned int)gl_func_00000000(str); p++, i++) {
+    for (p = str, i = 0; i < (unsigned int)CALL(str_len)(str); p++, i++) {
         if (*p != ' ') {
             fh = h * sy;
             x = (f32)x0 + cx * sx;

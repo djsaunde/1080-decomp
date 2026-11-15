@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for app_staticInit_000412E8 (0x23C / 143 words), agent-c run 163.
  * It is the static initializer (__sti__) of four global objects, each built through edg's cfront
  * `this == 0 -> allocate` protocol for every user-declared constructor:
@@ -13,7 +14,7 @@
  * the El ctor / vtables / __vec_new references (symbol names only). Spliced over an empty
  * placeholder in both build trees. */
 extern "C" void *gl_func_00000000(...);
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct M8 { int a, b; M8() { b = 0; a = 0; } };
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };

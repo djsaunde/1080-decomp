@@ -8,6 +8,7 @@
  * PFS_ERR_NEW_PACK=2 (this build), PFS_ERR_INCONSISTENT=3, OS_WRITE=1,
  * DIR_STATUS_EMPTY=0, PFS_CORRUPTED=2. */
 #include "libultra/os_cont.h" /* OSPfs + base types (were private copies) */
+#include "uso_call.h"
 
 typedef union {
     struct { u8 bank; u8 page; } inode_t;
@@ -50,15 +51,15 @@ s32 osPfsChecker(OSPfs *pfs)
     int offset;
 
     fixed = 0;
-    ret = gl_func_00000000(pfs);
+    ret = CALL(__osCheckId)(pfs);
     if (ret == 2)
-        ret = gl_func_00000000(pfs);
+        ret = CALL(__osGetId)(pfs);
     if (ret != 0)
         return ret;
-    ERRCK(gl_func_00000000(pfs, &cache));
+    ERRCK(CALL(corrupted_init)(pfs, &cache));
     for (j = 0; j < pfs->dir_size; j++)
     {
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir));
+        ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir));
         if (tmp_dir.company_code != 0 && tmp_dir.game_code != 0)
         {
             next_page = tmp_dir.start_page;
@@ -70,11 +71,11 @@ s32 osPfsChecker(OSPfs *pfs)
                 if (bank != next_page.inode_t.bank)
                 {
                     bank = next_page.inode_t.bank;
-                    ret = gl_func_00000000(pfs, &tmp_inode, 0, bank);
+                    ret = CALL(__osPfsRWInode)(pfs, &tmp_inode, 0, bank);
                     if (ret != 0 && ret != 3)
                         return ret;
                 }
-                cc = gl_func_00000000(pfs, next_page, &cache) - cl;
+                cc = CALL(corrupted)(pfs, next_page, &cache) - cl;
                 if (cc != 0)
                     break;
                 cl = 1;
@@ -90,9 +91,9 @@ s32 osPfsChecker(OSPfs *pfs)
             tmp_dir.data_sum = 0;
             if (pfs->activebank != 0) {
                 pfs->activebank = 0;
-                ERRCK(gl_func_00000000(pfs))
+                ERRCK(CALL(__osPfsSelectBank)(pfs))
             }
-            ERRCK(gl_func_00000000(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir, 0));
+            ERRCK(CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir, 0));
             fixed++;
         }
         else
@@ -106,15 +107,15 @@ s32 osPfsChecker(OSPfs *pfs)
             tmp_dir.data_sum = 0;
             if (pfs->activebank != 0) {
                 pfs->activebank = 0;
-                ERRCK(gl_func_00000000(pfs))
+                ERRCK(CALL(__osPfsSelectBank)(pfs))
             }
-            ERRCK(gl_func_00000000(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir, 0));
+            ERRCK(CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir, 0));
             fixed++;
         }
     }
     for (j = 0; j < pfs->dir_size; j++)
     {
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir));
+        ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, pfs->dir_table + j, (u8*)&tmp_dir));
 
         if (tmp_dir.company_code != 0 && tmp_dir.game_code != 0 &&
             tmp_dir.start_page.ipage >= ((__OSInodeUnit *)&(pfs->inode_start_page) + 1)->ipage)
@@ -128,7 +129,7 @@ s32 osPfsChecker(OSPfs *pfs)
     }
     for (bank = 0; bank < pfs->banks; bank++)
     {
-        ret = gl_func_00000000(pfs, &tmp_inode, 0, bank);
+        ret = CALL(__osPfsRWInode)(pfs, &tmp_inode, 0, bank);
         if (ret != 0 && ret != 3)
             return ret;
         if (bank > 0)
@@ -155,7 +156,7 @@ s32 osPfsChecker(OSPfs *pfs)
                 file_next_node[j] = checked_inode.inode_page[pp] = tmp_inode.inode_page[pp];
             }
         }
-        ERRCK(gl_func_00000000(pfs, &checked_inode, 1, bank));
+        ERRCK(CALL(__osPfsRWInode)(pfs, &checked_inode, 1, bank));
     }
     if (fixed)
         pfs->status |= 2;

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gui_drawSprite.
  *
  * Tiled sprite blitter: adjust x/y by the sprite size per the alignment flags
@@ -56,26 +57,26 @@ extern "C" void gui_drawSprite(W *self, int x, int y, int flags) {
     h = self->spr->h;
     t = (int)self->spr;
     if (budget < w * h) {
-        int tile = gl_func_00000000(budget / h, (Spr*)t);
+        int tile = CALL(gui_floorPow2)(budget / h, (Spr*)t);
         int rem = w;
         int sy = (h << 10) / h;
         while (rem != 0) {
             if (tile < rem) {
                 int sx = (tile << 10) / tile;
                 p = self->spr; fn(CTX, p->tex, w, h, srcx, 0, tile, h, 0);
-                gl_func_00000000(CTX, x, y, tile, h, sx, sy);
+                CALL(gui_texRect_00004568)(CTX, x, y, tile, h, sx, sy);
                 x += tile;
                 srcx += tile;
                 rem -= tile;
             } else {
                 tile = rem;
                 p = self->spr; fn(CTX, p->tex, w, h, srcx, 0, rem, h, 0);
-                gl_func_00000000(CTX, x, y, rem, h, (rem << 10) / rem, sy);
+                CALL(gui_texRect_00004568)(CTX, x, y, rem, h, (rem << 10) / rem, sy);
                 rem -= tile;
             }
         }
     } else {
         fn(CTX, p->tex, w, h, 0, 0, w, h, 0);
-        gl_func_00000000(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);
+        CALL(gui_texRect_00004568)(CTX, x, y, w, h, (w << 10) / w, (h << 10) / h);
     }
 }

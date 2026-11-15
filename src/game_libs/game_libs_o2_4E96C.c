@@ -15,6 +15,7 @@
  * separate locals give v0/v1 the other way round. */
 #include "common.h"
 #include "gdl/window.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 
@@ -63,7 +64,7 @@ void Window_doCommand(char *a0, C4E96C *a1) {
         ((Window *)a0)->far = A4E96C(a1);
         break;
     default:
-        gl_func_00000000(a0, a1);
+        CALL(Node_doCommand)(a0, a1);
         break;
     }
 }

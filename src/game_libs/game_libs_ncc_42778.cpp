@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_calcHilite_00042778: normalised a2 + matrix column -> two fixed-point coordinates.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 134) 42778 = Vec3 a2 + matrix column 2 of a1, normalised when
@@ -26,7 +27,7 @@ extern "C" void gfx_calcHilite_00042778(int *a0, float *a1, float *a2) {
     x = a2[0] + a1[2];
     y = a2[1] + a1[6];
     z = a2[2] + a1[10];
-    len = gl_func_00000000_42778(x * x + y * y + z * z);
+    len = XCALL(gl_func_00000000_42778, sqrtf)(x * x + y * y + z * z);
     if (len > *(f64 *)((char *)&D_00000000 + 0x1B30)) {
         len = 1.0 / len;
         x *= len;

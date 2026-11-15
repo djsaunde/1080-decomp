@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for osPfsInitPak = libultra osPfsInitPak
  * (io/pfsinitpak.c verbatim, 1080 2.0-era OSPfs layout: status+0 /
  * queue+4 / channel+8, id[32]+0xC, label[32]+0x2C, version+0x4C ..
@@ -64,28 +65,28 @@ s32 osPfsInitPak(OSMesgQueue *queue, OSPfs *pfs, int channel)
     __OSPackId *id;
     __OSPackId newid;
     ret = 0;
-    gl_func_00000000();                       /* __osSiGetAccess */
-    ret = gl_func_00000000(queue, channel);   /* __osPfsGetStatus */
-    gl_func_00000000();                       /* __osSiRelAccess */
+    CALL(gl___osSiGetAccess)();                       /* __osSiGetAccess */
+    ret = CALL(__osPfsGetStatus)(queue, channel);   /* __osPfsGetStatus */
+    CALL(gl___osSiRelAccess)();                       /* __osSiRelAccess */
     if (ret != 0)
         return ret;
     pfs->queue = queue;
     pfs->channel = channel;
     pfs->status = 0;
     pfs->activebank = 0;
-    ERRCK(gl_func_00000000(pfs));             /* __osPfsSelectBank */
-    ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 1, (u8*)temp)); /* __osContRamRead */
-    gl_func_00000000((u16*)temp, &sum, &isum); /* __osIdCheckSum */
+    ERRCK(CALL(__osPfsSelectBank)(pfs));             /* __osPfsSelectBank */
+    ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 1, (u8*)temp)); /* __osContRamRead */
+    CALL(__osIdCheckSum)((u16*)temp, &sum, &isum); /* __osIdCheckSum */
     id = (__OSPackId *)temp;
     if (id->checksum != sum || id->inverted_checksum != isum)
     {
-        ERRCK(gl_func_00000000(pfs, id));     /* __osCheckPackId */
+        ERRCK(CALL(__osCheckPackId)(pfs, id));     /* __osCheckPackId */
         if (ret != 0)
             return ret;
     }
     if ((id->deviceid & 1) == 0)
     {
-        ERRCK(gl_func_00000000(pfs, id, &newid)); /* __osRepairPackId */
+        ERRCK(CALL(__osRepairPackId)(pfs, id, &newid)); /* __osRepairPackId */
         id = &newid;
         if ((id->deviceid & 1) == 0)
             return 11; /* PFS_ERR_DEVICE */
@@ -101,8 +102,8 @@ s32 osPfsInitPak(OSMesgQueue *queue, OSPfs *pfs, int channel)
     pfs->inode_table = 8;
     pfs->minode_table = pfs->banks * 8 + 8;   /* PFS_ONE_PAGE */
     pfs->dir_table = pfs->minode_table + pfs->banks * 8;
-    ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 7, pfs->label)); /* __osContRamRead */
-    ret = gl_func_00000000(pfs);              /* osPfsChecker */
+    ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 7, pfs->label)); /* __osContRamRead */
+    ret = CALL(osPfsChecker)(pfs);              /* osPfsChecker */
     pfs->status |= 1; /* PFS_INITIALIZED */
     return ret;
 }

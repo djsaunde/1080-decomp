@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_transformLightDirs_000432BC (0x1A8 / 106 words): for every
  * child without flag 0x80, dst = src (by-value V3 operator=, the sp+68 temp) or
  * dst = -src, then a callback, an inline 3x3 transform of dst, and a second callback.
@@ -30,9 +31,9 @@ extern "C" void gfx_transformLightDirs_000432BC(int a0, float *m, int neg) {
         if (!(o->flags & 0x80)) {
             if (neg) { o->dst.x = -o->src.x; o->dst.y = -o->src.y; o->dst.z = -o->src.z; }
             else o->dst = o->src;
-            gl_func_00000000(&o->dst, a0);
+            CALL(math_mtx4MulVec3)(&o->dst, a0);
             o->dst.xform(m);
-            gl_func_00000000(&o->dst);
+            CALL(math_vec3Normalize)(&o->dst);
         }
     }
 }

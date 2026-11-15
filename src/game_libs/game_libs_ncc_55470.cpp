@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for nodelist_dispatch (0x430 / 268 words): the command-stream
  * opcode dispatcher. A `switch` under edg is a compare chain in CASE order (1014, 1012,
  * ... 1018), which is why the cfe goto-ladder NM needed `if (1) goto` tricks. Shapes:
@@ -36,16 +37,16 @@ extern "C" void nodelist_dispatch(Strm *s) {
     case 1014:
         break;
     case 1012:
-        s->next(); if (!(s->f18 & s->cmd)) gl_func_00000000(s);
+        s->next(); if (!(s->f18 & s->cmd)) CALL(nodelist_skipBlock)(s);
         break;
     case 1015:
-        gl_func_00000000(s);
+        CALL(nodelist_skipBlock)(s);
         break;
     case 1010:
-        if (s->next() != s->f16) gl_func_00000000(s);
+        if (s->next() != s->f16) CALL(nodelist_skipBlock)(s);
         break;
     case 1011:
-        if (s->next() != s->f17) gl_func_00000000(s);
+        if (s->next() != s->f17) CALL(nodelist_skipBlock)(s);
         break;
     case 1016:
         s->f14 = s->next();
@@ -73,7 +74,7 @@ extern "C" void nodelist_dispatch(Strm *s) {
         Strm t = *s;
         int v = s->next();
         t.cp = (int **)&v;
-        gl_func_00000000(t);
+        CALL(nodelist_dispatchList_000558A0)(t);
         break;
     }
     case 1003: {
@@ -81,13 +82,13 @@ extern "C" void nodelist_dispatch(Strm *s) {
         t.w3 = 0;
         t.obj = 0;
         t.w15 = (int)s;
-        gl_func_00000000(t);
+        CALL(nodelist_walk_0005534C)(t);
         break;
     }
     case 113:
         s->f13 = 1;
     default: {
-        gl_func_00000000(s);
+        CALL(nodelist_checkNode)(s);
         { int c = s->cmd; vt.set(c, (int)*s->cp); }
         if (1) {}
         s->obj->m7(&vt.a);
@@ -95,7 +96,7 @@ extern "C" void nodelist_dispatch(Strm *s) {
         break;
     }
     case 1018:
-        gl_func_00000000(D_00000000 + 0x211B0, s->next());
+        CALL(dbg_printf)(D_00000000 + 0x211B0, s->next());
         break;
     }
 }

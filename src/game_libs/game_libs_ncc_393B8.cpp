@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for MNode_update (0x26C / 155 words): lock the owner,
  * then for every child with flag 8: if flag 0x200, not 0x20000 and not x2c&1,
  * pass its matrix pair to a callback (owner flag 2) or multiply it by the
@@ -30,7 +31,7 @@ extern "C" int MNode_update(Root393 *r) {
         if (n->x18 & 8) {
             if ((n->flags & 0x200) && !(n->flags & 0x20000) && !(n->x2c & 1)) {
                 if (r->x2c & 2) {
-                    gl_func_00000000(n->m30, n->m70);
+                    CALL(math_mtx4Copy)(n->m30, n->m70);
                 } else {
                     float *src = n->m30, *w = r->m70; int e0; e0 = 0;
                     float res[16];
@@ -40,7 +41,7 @@ extern "C" int MNode_update(Root393 *r) {
                             for (int k = 0; k < 4; k++)
                                 res[i * 4 + j] += src[i * 4 + k] * w[k * 4 + j];
                         }
-                    gl_func_00000000(res, n->m70);
+                    CALL(math_mtx4Copy)(res, n->m70);
                 }
             }
             if (r->x2c & 2) *(Root393 **)D_00000000 = r;
@@ -49,5 +50,5 @@ extern "C" int MNode_update(Root393 *r) {
         }
         n = it.next();
     }
-    return gl_func_00000000_i();
+    return XCALL(gl_func_00000000_i, sys_imout)();
 }

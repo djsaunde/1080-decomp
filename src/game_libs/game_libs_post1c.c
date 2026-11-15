@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 /* DRIFT AUDIT 2026-06-10: this unit has ~2 internal byte-drop points in
  * [0x70314..0x70C44) -- guMtxL2F sits -8 and __osViInit
@@ -147,8 +148,8 @@ void guMtxIdentF(int m) {
  * absorbed via SUFFIX_BYTES; mechanism REMOVED 2026-05-23 as match-faking. */
 void gl_guMtxIdent(int a0) {
     char buf[0x40];
-    gl_func_00000000(buf);
-    gl_func_00000000(buf, a0);
+    CALL(guMtxIdentF)(buf);
+    CALL(guMtxF2L)(buf, a0);
 }
 
 /* guMtxL2F = guMtxL2F (libultra gu/mtxutil.c verbatim, IDO 5.3

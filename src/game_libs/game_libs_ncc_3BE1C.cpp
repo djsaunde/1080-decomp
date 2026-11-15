@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for CollShape_query (0x620 / 392 words), agent-c run 178 lift, agent-g run 325 exact
  * (spliced over a placeholder on both build paths; the residual notes below are history).
  * Real C++ `int Obj::query(int max, f32 *dist, Tri **out, V3 p)` (vertical ray / ground query, sibling of
@@ -98,7 +99,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     cc = col;
     cnt = 0;
     if (cc == 0) return 0;
-    if (cc->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C); /* agent-g run 277: the run-238 folded use of col dropped (inert after the face() change below; kit CCCXXIX prune) */
+    if (cc->grid == 0) CALL(sys_fatal)(D_00000000 + 0x1EE9C); /* agent-g run 277: the run-238 folded use of col dropped (inert after the face() change below; kit CCCXXIX prune) */
     p.x *= gGfxLib_3BE1C_128[0];
     p.y *= gGfxLib_3BE1C_128[1];
     p.z *= gGfxLib_3BE1C_128[2];
@@ -114,7 +115,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
          * expansion's `this` temp is the v0 copy; on `col->face(i)` the load took t0 (99.11 -> 99.17) */
         cc = col;
         f = (cc + i * 0)->face(i) + 0 * (int)(*list); /* agent-g run 210: fourth pass (list points at the next entry or the -1 terminator): 97.26 -> 97.33, 1564 -> 1568 bytes = target */
-        int r = gl_func_00000000(cc, f->mat) | 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568); agent-g run 267: `|` not `+` -- the `+ 0` form kept an `addu a0,v0,zero` for the result copy, `| 0` gives the target's `or a0,v0,zero` (98.78 -> 98.94) */
+        int r = CALL(BasePolyShape_getMatCodeNum_00052A64)(cc, f->mat) | 0 * (int)(cc); /* agent-g run 210: folded counted use (zero-use sweep): 95.48 -> 96.38, 1556 -> 1560 bytes (target 1568); agent-g run 267: `|` not `+` -- the `+ 0` form kept an `addu a0,v0,zero` for the result copy, `| 0` gives the target's `or a0,v0,zero` (98.78 -> 98.94) */
         if (r & 0x100) { /* agent-c run 292: agent-g run 266's folded `+ 0 * (int)(cc)` here dropped -- stale after the t->d fix below (kit CCCXXIX re-test): 98.98 -> 99.268 */
             ok = 1;
             n = (V3 *)((char *)col->nrm + off);

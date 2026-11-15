@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for coll_contactPushOut (0x17C / 95 words), agent-c run 162.
  * Contact / push-out test: guarded by o->flags bits 1|2; sets bit 2, n = other->pos - o->pos through
  * V3 operator- (ctor temp -> return slot -> by-value operator= parameter -> float copies, the target's
@@ -42,7 +43,7 @@ extern "C" int coll_contactPushOut(Obj *o, Obj *other) {
         return 0;
     }
     n = o->nrm;
-    gl_func_00000000(&n);
+    CALL(math_vec3Normalize)(&n);
     n *= -r;
     o->flags |= 1;
     { volatile int z1, z2; }

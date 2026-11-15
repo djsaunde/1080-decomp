@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for gl_osEPiRawStartDma = libultra osEPiRawStartDma
  * (io/epirawdma.c verbatim, 2.0I): EPI_SYNC (WAIT_ON_IOBUSY spin on
  * PI_STATUS_REG, then domain-latch — if __osCurrentHandle[domain] !=
@@ -71,7 +72,7 @@ s32 gl_osEPiRawStartDma(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *
         D_00000000_curhdl[domain] = pihandle;
     }
 
-    IO_WRITE(0xA4600000, gl_func_00000000_vtop(dramAddr));
+    IO_WRITE(0xA4600000, XCALL(gl_func_00000000_vtop, gl_osVirtualToPhysical)(dramAddr));
     IO_WRITE(0xA4600004, (pihandle->baseAddress | devAddr) & 0x1FFFFFFF);
     switch (direction) {
     case 0: /* OS_READ */

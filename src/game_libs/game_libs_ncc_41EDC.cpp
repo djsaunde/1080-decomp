@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for App_Display (0xB4 / 45 words): walk the child
  * list and fire virtual slot 2 on every child with flag 4. Entry next() via an
  * inline first() { return next(); } (own return temp: v1); the body is an
@@ -21,10 +22,10 @@ struct Iter {
 };
 struct Owner { char pad[0x2C]; Link *head; };
 extern "C" void App_Display(Owner *o) {
-    gl_func_00000000(D_00000000 + 0x1F6D0);
+    CALL(sys_imin)(D_00000000 + 0x1F6D0);
     Iter it(o->head);
     for (Node *n = it.first(); n; n = it.next()) {
         it.get()->tick();
     }
-    gl_func_00000000();
+    CALL(sys_imout)();
 }

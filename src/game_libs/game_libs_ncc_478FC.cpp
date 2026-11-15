@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_selectLights_000478FC (0x1B8 / 110 words): for every
  * child whose mask matches, mark it (flag 2), remember the 0x80 one, rebuild
  * its offset from the anchor when flag 0x40 is clear (count it, callee, dirty
@@ -34,7 +35,7 @@ extern "C" void gfx_selectLights_000478FC(Own *ow, V3 *p, int mask, float k, int
                 o->d.x = o->pos.x - p->x;
                 o->d.y = o->pos.y - p->y;
                 o->d.z = o->pos.z - p->z;
-                gl_func_00000000(&o->d);
+                CALL(math_vec3Normalize)(&o->d);
                 o->dirty = 1;
             }
             if (ow->any = ow->any | o->dirty | force) {

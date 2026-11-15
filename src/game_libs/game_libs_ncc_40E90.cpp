@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for QNode_updateChildren (0x174 / 93 words): for every child
  * with flag 0x20000, copy its source record (three V3 + a float, the implicit
  * Rec::operator= through the by-value V3 temp at sp+60) into the cached one,
@@ -29,7 +30,7 @@ extern "C" void QNode_updateChildren(Own *ow) {
     for (Obj *o = it.first(); o; o = it.next()) {
         if (o->flags & 0x20000) {
             if (ow->flags & 2) o->dst = o->src;
-            else gl_func_00000000(ow->xdc, &o->src, &o->dst);
+            else CALL(math_xformCombine)(ow->xdc, &o->src, &o->dst);
         }
         o->tick();
         { int z0; z0 = 0; }

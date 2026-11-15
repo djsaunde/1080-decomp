@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osSpTaskYielded — 32-insn flag-extract + conditional
  * bit-set/clear (frame 0x20, saves ra only). PROVEN EXACT 32/32 at IDO 7.1
  * -O1 (2026-07-08 standalone probe; plain -O1, no -g3; 5.3 -O1 emits the
@@ -16,7 +17,7 @@ int gl_osSpTaskYielded(int *arg) {
     int state;
     int flag;
 
-    state = gl_func_00000000();
+    state = CALL(gl___osSpGetStatus)();
     if (state & 0x100) {
         flag = 1;
     } else {

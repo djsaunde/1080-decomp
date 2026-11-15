@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for GfxObj_vfn0_0004E244 (0x138 / 78 words): call the
  * third virtual of every element of a pointer array, through the array's
  * by-value index iterator (12-byte {arr, idx, last}).
@@ -14,7 +15,7 @@
 extern "C" {
 void *gl_func_00000000(...);
 }
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct Pad40 { char pad[0x28]; };
 struct Elem : Pad40 { virtual void v1(); virtual void v2(); virtual void v3(); };
 struct AIter;

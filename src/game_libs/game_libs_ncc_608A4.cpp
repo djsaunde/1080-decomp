@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for TextWin_draw (0x1D0 / 116 words), agent-c run 175, spliced over an empty
  * placeholder in game_libs_post0b.c in both build trees (Makefile rename of draw__7TextWinFi).
  * `void TextWin::draw(int big)`: the cfe body (83.91, m2c temps) as a C++ text-window member -- an optional big-font
@@ -36,28 +37,28 @@ struct TextWin {
     void draw(int big);
 };
 void TextWin::draw(int big) {
-    if (big) gl_func_00000000(&D_00000000, 1);
+    if (big) CALL(gfx_setCpuDraw)(&D_00000000, 1);
     Pt p(0, 0x408);
     if (big) {
         cw = 8;
         ch = 8;
     } else {
-        gl_func_00000000(&D_00000000, color);
+        CALL(gfx_setPrimColour)(&D_00000000, color);
     }
     int w = cols * cw;
     int right = x + w;
     if (right > 290) right = 290;
-    gl_func_00000000(&D_00000000, x, y, w + 8, vis * ch + 16, &p);
+    CALL(gfx_fillRect)(&D_00000000, x, y, w + 8, vis * ch + 16, &p);
     D_00000000.size(8, 8);
     D_00000000.pos(x + 4, y + 1);
-    gl_func_00000000(&D_00000000, font, right);
+    CALL(gfx_drawText)(&D_00000000, font, right);
     D_00000000.size(cw, ch);
     int yy = y + 12;
     for (int i = top; i < top + vis; i++, yy += ch) {
         if (hs < rows[i].len) {
             D_00000000.pos(x + 4, yy);
-            gl_func_00000000(&D_00000000, rows[i].s + hs, right);
+            CALL(gfx_drawText)(&D_00000000, rows[i].s + hs, right);
         }
     }
-    gl_func_00000000(&D_00000000, 0);
+    CALL(gfx_setCpuDraw)(&D_00000000, 0);
 }

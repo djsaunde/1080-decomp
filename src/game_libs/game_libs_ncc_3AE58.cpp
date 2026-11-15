@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for CollShape_ctorPoly (0x17C / 95 words), agent-c run 162 lift, agent-c run 287
  * exact (phantom pk + named dst argument, see the loop); REPLACE_FUNC_BODY-spliced over a placeholder on both
  * build paths. History below.
@@ -28,11 +29,11 @@ extern "C" Obj *CollShape_ctorPoly(Obj *a0, Mesh *a1) {
     f32 fv[3];
     volatile int q0, q1, q2, q3;
     int pk; /* agent-c run 287: phantom int LR (two frame words: q4 / q5 / q6 dropped, frame 0x70 kept) */
-    if (a0 != 0 || (a0 = (Obj *)gl_func_00000000(0x90)) != 0) {
-        gl_func_00000000(a0, &sStr_polyshape_CollShape_1EE5C);
-        gl_func_00000000(&sStr_CollShape_1EE70, 0);
+    if (a0 != 0 || (a0 = (Obj *)CALL(mem_new)(0x90)) != 0) {
+        CALL(Node_ctor)(a0, &sStr_polyshape_CollShape_1EE5C);
+        CALL(memtrack_begin)(&sStr_CollShape_1EE70, 0);
         a0->m = a1;
-        a0->x2C = (char *)gl_func_00000000(a1->n * 12);
+        a0->x2C = (char *)CALL(mem_new)(a1->n * 12);
         unsigned i;
         int off;
         for (i = 0, off = 0; i < a1->n; i++, off += 12) {
@@ -48,9 +49,9 @@ extern "C" Obj *CollShape_ctorPoly(Obj *a0, Mesh *a1) {
              * evaluated before the call's first argument, so the ugen ring gives m / x54 / x2C t2 / t3 / t4 like the
              * target (99.79 -> 100) */
             char *dst = ((Own *)a0->m)->x54 + off;
-            gl_func_00000000(a0->x2C + off + 0 * (pk + pk), fv, dst, i);
+            CALL(CollShape_initTriPlane)(a0->x2C + off + 0 * (pk + pk), fv, dst, i);
         }
-        gl_func_00000000();
+        CALL(memtrack_end)();
     }
     return a0;
 }

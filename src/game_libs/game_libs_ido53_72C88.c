@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* game_libs ido53 carve unit: corrupted_init, the first -Olimit-fallback
  * match (IDO 5.3, -O1 -Olimit 1 -- uopt skipped so the emit is -O0-shaped
  * with homed args and per-use reloads, but the -O1 pipeline still fills
@@ -51,7 +52,7 @@ s32 corrupted_init(OSPfs *pfs, u8 *map) {
             } else {
                 startpage = pfs->inode_start_page;
             }
-            ret = gl_func_00000000(pfs, &inode, 0, bank);
+            ret = CALL(__osPfsRWInode)(pfs, &inode, 0, bank);
             if (ret != 0) {
                 if (ret != 3) {
                     return ret;
@@ -102,7 +103,7 @@ s32 corrupted(OSPfs *pfs, __OSInodeUnit fpage, __OSInodeCache *cache)
         {
             if (bank != cache->bank)
             {
-                ret = gl_func_00000000(pfs, &cache->inode, 0, bank);
+                ret = CALL(__osPfsRWInode)(pfs, &cache->inode, 0, bank);
                 if (ret != 0 && ret != 3)
                     return ret;
                 cache->bank = bank;

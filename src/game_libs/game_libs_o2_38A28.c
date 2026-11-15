@@ -22,6 +22,7 @@
  *  - declaration order + pad[4] give the 64-byte frame and the 60 / 36 homes. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -50,10 +51,10 @@ void Node_doCommand(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000(sFmt_Global_out_of_range_1EC6C, key);
+                CALL(sys_fatal)(sFmt_Global_out_of_range_1EC6C, key);
             }
             r = *(char **)((char *)&gNodeGlobals + key * 4);
-            gl_func_00000000(r + 0x10, o);
+            CALL(list_append)(r + 0x10, o);
             if (*(int *)(o + 0x14) != 0) {
                 *(int *)(o + 0x4) = 1;
             }
@@ -64,7 +65,7 @@ void Node_doCommand(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000(sFmt_Global_out_of_range_1EC84, key);
+                CALL(sys_fatal)(sFmt_Global_out_of_range_1EC84, key);
             }
             *(char **)((char *)&gNodeGlobals + key * 4) = o;
             return;
@@ -72,5 +73,5 @@ void Node_doCommand(char *o, char *c) {
             return;
     }
     key = code; code = 0;
-    p = *(int **)(o + 0xC); gl_func_00000000(sFmt_unknown_Node_cmd_for_1EC9C, key, p);
+    p = *(int **)(o + 0xC); CALL(sys_fatal)(sFmt_unknown_Node_cmd_for_1EC9C, key, p);
 }

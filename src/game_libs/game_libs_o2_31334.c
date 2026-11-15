@@ -24,6 +24,7 @@
  *    reload it.
  *  - jal 0x44F18 is a baked in-unit call (gl_ref_00044F18). */
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -32,50 +33,50 @@ extern void gl_ref_00044F18();
 extern int gl_func_00000000_fi(int, float, int);
 
 void snd_HandleSeqEnd(int a, int b, int c) {
-    gl_func_00000000(0);
-    gl_func_00000000(1);
+    CALL(snd_Player0ChannelIOPreset_2F934)(0);
+    CALL(snd_Player0ChannelIOPreset_2F934)(1);
     *(int *)&D_00000000 = 1;
-    gl_func_00000000_fi(0xFF, 0.0f, 0);
+    XCALL(gl_func_00000000_fi, snd_UpdateChannel10Emitter)(0xFF, 0.0f, 0);
     switch (D_31334_st) {
         case -1:
             break;
         case 0:
             if (a != 4 && a != 0) {
-                gl_func_00000000(0x83010000, 0x50);
+                CALL(AudioThread_QueueCmdS32)(0x83010000, 0x50);
             }
             break;
         case 3:
-            gl_func_00000000(0x83010000, 0x50);
+            CALL(AudioThread_QueueCmdS32)(0x83010000, 0x50);
             break;
         case 4:
             if (a == 5) {
                 if (D_31334_x == 0) {
-                    gl_func_00000000(0x83010000, 2000);
+                    CALL(AudioThread_QueueCmdS32)(0x83010000, 2000);
                 } else if (D_31334_y != 1) {
-                    gl_func_00000000(0x83010000, 0x50);
+                    CALL(AudioThread_QueueCmdS32)(0x83010000, 0x50);
                 }
             } else if (a == 6) {
-                gl_func_00000000(0x83010000, 2000);
+                CALL(AudioThread_QueueCmdS32)(0x83010000, 2000);
             } else {
-                gl_func_00000000(0x83010000, 320);
+                CALL(AudioThread_QueueCmdS32)(0x83010000, 320);
                 gl_ref_00044F18(0);
-                gl_func_00000000_fi(0xFF, 0.0f, 0);
+                XCALL(gl_func_00000000_fi, snd_UpdateChannel10Emitter)(0xFF, 0.0f, 0);
             }
             break;
         case 5:
             if (D_31334_z == 13) break;
             if (D_31334_z == 14) break;
-            gl_func_00000000();
+            CALL(snd_StopPlayer1Seq)();
             break;
         case 7:
             if (a != 7) {
-                gl_func_00000000(0x83010000, 0x50);
+                CALL(AudioThread_QueueCmdS32)(0x83010000, 0x50);
             }
             break;
         case 10:
         case 11:
         case 12:
-            gl_func_00000000(0x83010000, 400);
+            CALL(AudioThread_QueueCmdS32)(0x83010000, 400);
             break;
         case 13:
             break;

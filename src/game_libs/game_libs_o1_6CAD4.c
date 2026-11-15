@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO -O1 donor for gl___osSiRawStartDma = libultra __osSiRawStartDma
  * (references/libreultra/src/io/sirawdma.c, verbatim: SI busy guard,
  * OS_WRITE(1) pre-writeback, SI_DRAM_ADDR_REG = osVirtualToPhysical,
@@ -18,7 +19,7 @@ extern u32 gl_func_00000002(void *);          /* osVirtualToPhysical */
 extern void gl_func_00000003(void *, s32);    /* osInvalDCache */
 
 s32 gl___osSiRawStartDma(s32 direction, void *dramAddr) {
-    if (gl_func_00000000())
+    if (CALL(gl___osSiDeviceBusy)())
         return -1;
 
     if (direction == 1)

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for CollShape_height (0x3B4 / 237 words), spliced over a placeholder in both
  * build trees (agent-g run 238; was the agent-c run 177 NM-only comparison donor).
  * agent-g run 238 (kit CCLIV): the last 3 words were the `*list++` old-value copy at the loop bottom (target t4,
@@ -62,7 +63,7 @@ int Obj::height(int max, f32 *out, f32 x, f32 z) {
     z *= K(0x130);
     cnt = 0;
     if (col == 0) return 0;
-    if (col->grid == 0) gl_func_00000000(D_00000000 + 0x1EE8C);
+    if (col->grid == 0) CALL(sys_fatal)(D_00000000 + 0x1EE8C);
     p.x = x; p.z = z; p.y = 0.0f;
     cell = cellOf(p);
     if (cell < 0) return 0;

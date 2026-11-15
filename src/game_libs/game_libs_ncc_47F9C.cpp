@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_updateLights_00047F9C (0x168 / 90 words): for every
  * child, reset its dirty word from a global, fetch its position into a V3
  * local through a callee, set dirty if it differs from the cached copy, then
@@ -30,7 +31,7 @@ extern "C" void gfx_updateLights_00047F9C(Own *ow) {
         o->e0 = gl_d_0001F970;
         V3 p;
         p.set(o->a0);
-        gl_func_00000000(&p);
+        CALL(math_vec3Normalize)(&p);
         if (p.x != o->e4.x || p.y != o->e4.y || p.z != o->e4.z) o->e0 = 1;
         o->e4 = p;
         o->fc = o->q124;

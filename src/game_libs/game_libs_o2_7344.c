@@ -31,6 +31,7 @@
  *    v0 or grows the frame by 8. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
@@ -96,7 +97,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
             spB = arg0->unk164;
         }
         if (mode != 2) {
-            gl_func_00000000(arg0);
+            CALL(RaceProcess_raiseMessage)(arg0);
         }
         arg0->unk28->unkFC(arg0->unk28->unkF8 + (char *)arg0);
         break;
@@ -105,7 +106,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         target = (char *)arg0 + 0x648;
         spB = arg0->unk434;
         if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
-            gl_func_00000000(arg0);
+            CALL(RaceProcess_raiseMessage)(arg0);
         }
         arg0->unk28->unkFC(arg0->unk28->unkF8 + (char *)arg0);
         break;
@@ -114,7 +115,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         target = (char *)arg0 + 0x630;
         spB = arg0->unk1AC;
         if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
-            gl_func_00000000(arg0);
+            CALL(RaceProcess_dropMessage)(arg0);
         }
         break;
     case 6:
@@ -122,7 +123,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         target = (char *)arg0 + 0x678;
         spB = arg0->unk23C;
         if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
-            gl_func_00000000(arg0);
+            CALL(RaceProcess_dropMessage)(arg0);
         }
         arg0->unk28->unk104(arg0->unk28->unk100 + (char *)arg0);
         break;
@@ -131,7 +132,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         target = (char *)arg0 + 0x660;
         spB = arg0->unk1F4;
         if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
-            gl_func_00000000(arg0);
+            CALL(RaceProcess_dropMessage)(arg0);
         }
         break;
     }
@@ -143,8 +144,8 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
                 arg0->unk554 = 175.0f;
             }
         }
-        gl_func_00000000(&D_00000000, arg0->unk544, &spA, &spB);
-        gl_func_00000000(target);
-        gl_func_00000000(target, 0xA0, arg2, 3);
+        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, arg0->unk544, &spA, &spB);
+        CALL(gui_spriteRefresh)(target);
+        CALL(gui_drawSprite)(target, 0xA0, arg2, 3);
     }
 }

@@ -32,6 +32,7 @@ s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum)
  * (real identities: __osPfsSelectBank, __osContRamRead, __osContRamWrite,
  * osGetCount, __osIdCheckSum=__osIdCheckSum above). 262/262 words. */
 #include "libultra/os_cont.h" /* OSPfs (was a private copy) */
+#include "uso_call.h"
 
 typedef struct {
     u32 repaired;
@@ -66,7 +67,7 @@ s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
     mask = 0;
     if (pfs->activebank != 0) {
         pfs->activebank = 0;
-        ERRCK(gl_func_00000000(pfs))
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
     newid->repaired = -1;
     newid->random = gl_func_00000000();
@@ -75,15 +76,15 @@ s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
     for (j = 0; j < 62;)
     {
         pfs->activebank = j;
-        ERRCK(gl_func_00000000(pfs))
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 0, (u8*)&temp));
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
+        ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 0, (u8*)&temp));
         temp[0] = j | 0x80;
         for (i = 1; i < 32; i++)
         {
             temp[i] = ~temp[i];
         }
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 0, (u8*)temp, 0));
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 0, (u8*)&comp));
+        ERRCK(CALL(__osContRamWrite)(pfs->queue, pfs->channel, 0, (u8*)temp, 0));
+        ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 0, (u8*)&comp));
         for (i = 0; i < 32; i++)
         {
             if (comp[i] != temp[i])
@@ -94,15 +95,15 @@ s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
         if (j > 0)
         {
             pfs->activebank = 0;
-            ERRCK(gl_func_00000000(pfs));
-            ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 0, (u8*)temp));
+            ERRCK(CALL(__osPfsSelectBank)(pfs));
+            ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 0, (u8*)temp));
             if (temp[0] != 128)
                 break;
         }
         j++;
     }
     pfs->activebank = 0;
-    ERRCK(gl_func_00000000(pfs));
+    ERRCK(CALL(__osPfsSelectBank)(pfs));
     if (j > 0)
         mask = 1;
     else
@@ -110,16 +111,16 @@ s32 __osRepairPackId(OSPfs *pfs, __OSPackId *badid, __OSPackId *newid)
     newid->deviceid = (badid->deviceid & (u16)~1) | mask;
     newid->banks = j;
     newid->version = badid->version;
-    gl_func_00000000((u16*)newid, &newid->checksum, &newid->inverted_checksum);
+    CALL(__osIdCheckSum)((u16*)newid, &newid->checksum, &newid->inverted_checksum);
     index[0] = 1;
     index[1] = 3;
     index[2] = 4;
     index[3] = 6;
     for (i = 0; i < 4; i++)
     {
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, index[i], (u8*)newid, 1));
+        ERRCK(CALL(__osContRamWrite)(pfs->queue, pfs->channel, index[i], (u8*)newid, 1));
     }
-    ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 1, (u8*)temp));
+    ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 1, (u8*)temp));
     for (i = 0; i < 32; i++)
     {
         if (temp[i] != ((u8 *)newid)[i])
@@ -146,7 +147,7 @@ s32 __osCheckPackId(OSPfs *pfs, __OSPackId *temp)
     ret = 0;
     if (pfs->activebank != 0) {
         pfs->activebank = 0;
-        ERRCK(gl_func_00000000(pfs))
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
     index[0] = 1;
     index[1] = 3;
@@ -154,8 +155,8 @@ s32 __osCheckPackId(OSPfs *pfs, __OSPackId *temp)
     index[3] = 6;
     for (i = 1; i < 4; i++)
     {
-        ERRCK(gl_func_00000000(pfs->queue, pfs->channel, index[i], (u8*)temp));
-        gl_func_00000000((u16 *)temp, &sum, &isum);
+        ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, index[i], (u8*)temp));
+        CALL(__osIdCheckSum)((u16 *)temp, &sum, &isum);
         if (temp->checksum == sum && temp->inverted_checksum == isum)
             break;
     }
@@ -165,7 +166,7 @@ s32 __osCheckPackId(OSPfs *pfs, __OSPackId *temp)
     {
         if (j != i)
         {
-            ERRCK(gl_func_00000000(pfs->queue, pfs->channel, index[j], (u8*)temp, 1));
+            ERRCK(CALL(__osContRamWrite)(pfs->queue, pfs->channel, index[j], (u8*)temp, 1));
         }
     }
     return 0;
@@ -191,17 +192,17 @@ s32 __osGetId(OSPfs *pfs)
 
     if (pfs->activebank != 0) {
         pfs->activebank = 0;
-        ERRCK(gl_func_00000000(pfs))
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
-    ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 1, (u8*)temp));
-    gl_func_00000000((u16*)temp, &sum, &isum);
+    ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 1, (u8*)temp));
+    CALL(__osIdCheckSum)((u16*)temp, &sum, &isum);
     id = (__OSPackId*)temp;
     if (id->checksum != sum || id->inverted_checksum != isum)
     {
-        ret = gl_func_00000000(pfs, id);
+        ret = CALL(__osCheckPackId)(pfs, id);
         if (ret == 10)
         {
-            ERRCK(gl_func_00000000(pfs, id, &newid));
+            ERRCK(CALL(__osRepairPackId)(pfs, id, &newid));
             id = &newid;
         }
         else if (ret != 0)
@@ -211,7 +212,7 @@ s32 __osGetId(OSPfs *pfs)
     }
     if ((id->deviceid & 1) == 0)
     {
-        ERRCK(gl_func_00000000(pfs, id, &newid));
+        ERRCK(CALL(__osRepairPackId)(pfs, id, &newid));
         id = &newid;
         if ((id->deviceid & 1) == 0)
             return 11;
@@ -227,7 +228,7 @@ s32 __osGetId(OSPfs *pfs)
     pfs->inode_table = 8;
     pfs->minode_table = pfs->banks * 8 + 8;
     pfs->dir_table = pfs->minode_table + pfs->banks * 8;
-    ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 7, pfs->label));
+    ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 7, pfs->label));
     return 0;
 }
 
@@ -239,15 +240,15 @@ s32 __osCheckId(OSPfs *pfs)
 
     if (pfs->activebank != 0) {
         pfs->activebank = 0;
-        ERRCK(gl_func_00000000(pfs))
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
-    ret = gl_func_00000000(pfs->queue, pfs->channel, 1, (u8*)temp);
+    ret = CALL(__osContRamRead)(pfs->queue, pfs->channel, 1, (u8*)temp);
     if (ret != 0)
     {
         if (ret != 2)
             return ret;
         else
-            ERRCK(gl_func_00000000(pfs->queue, pfs->channel, 1, (u8*)temp));
+            ERRCK(CALL(__osContRamRead)(pfs->queue, pfs->channel, 1, (u8*)temp));
     }
     for (k = 0; k < 32; k++)
     {
@@ -288,7 +289,7 @@ s32 __osPfsRWInode(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
 
     if (pfs->activebank != 0) {
         pfs->activebank = 0;
-        ERRCK(gl_func_00000000(pfs))
+        ERRCK(CALL(__osPfsSelectBank)(pfs))
     }
     if (bank > 0)
         offset = 1;
@@ -296,39 +297,39 @@ s32 __osPfsRWInode(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
         offset = pfs->inode_start_page;
 
     if (flag == 1)
-        inode->inode_page[0].inode_t.page = gl_func_00000000((u8*)&inode->inode_page[offset], (-offset) * 2 + 256);
+        inode->inode_page[0].inode_t.page = CALL(__osSumcalc)((u8*)&inode->inode_page[offset], (-offset) * 2 + 256);
 
     for (j = 0; j < 8; j++)
     {
         addr = ((u8 *)inode->inode_page + j * 32);
         if (flag == 1)
         {
-            ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr, 0);
-            ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr, 0);
+            ret = CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr, 0);
+            ret = CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr, 0);
         }
         else
         {
-            ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr);
+            ret = CALL(__osContRamRead)(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr);
         }
         if (ret != 0)
             return ret;
     }
     if (flag == 0)
     {
-        sum = gl_func_00000000((u8*)&inode->inode_page[offset], (-offset) * 2 + 256);
+        sum = CALL(__osSumcalc)((u8*)&inode->inode_page[offset], (-offset) * 2 + 256);
         if (sum != inode->inode_page[0].inode_t.page)
         {
             for (j = 0; j < 8; j++)
             {
                 addr = ((u8 *)inode->inode_page + j * 32);
-                ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr);
+                ret = CALL(__osContRamRead)(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr);
             }
             if (sum != inode->inode_page[0].inode_t.page)
                 return 3;
             for (j = 0; j < 8; j++)
             {
                 addr = ((u8 *)inode->inode_page + j * 32);
-                ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr, 0);
+                ret = CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->inode_table + bank * 8 + j, addr, 0);
             }
         }
         else
@@ -336,7 +337,7 @@ s32 __osPfsRWInode(OSPfs *pfs, __OSInode *inode, u8 flag, u8 bank)
             for (j = 0; j < 8; j++)
             {
                 addr = ((u8 *)inode->inode_page + j * 32);
-                ret = gl_func_00000000(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr, 0);
+                ret = CALL(__osContRamWrite)(pfs->queue, pfs->channel, pfs->minode_table + bank * 8 + j, addr, 0);
             }
         }
     }
@@ -357,7 +358,7 @@ s32 __osPfsSelectBank(OSPfs *pfs)
     {
         temp[i] = pfs->activebank;
     }
-    ret = gl_func_00000000(pfs->queue, pfs->channel, 0x400, temp, 0);
+    ret = CALL(__osContRamWrite)(pfs->queue, pfs->channel, 0x400, temp, 0);
     return ret;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00072550_pad.s")

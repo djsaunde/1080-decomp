@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for snd_SetChannel8Mode (0xF8 / 62 words = the old
  * 7-word head snd_SetChannel8Mode + gl_func_000308C8, one function; neither
  * 0x308AC's successor 0x308C8 is exported nor called). Mode setter for a
@@ -28,7 +29,7 @@ extern "C" void snd_SetChannel8Mode(int mode) {
     switch (mode) {
     case 0:
         { f32 &r = A308.f14; r = *(f32 *)(kRo_snd_SetChannel8Mode_186C + 0x186C); }
-        gl_func_00000000_f(0x01000800, 0.0f);
+        XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, 0.0f);
         return;
     case 1:
         { int &r = A308.f4; r = 0; }
@@ -41,6 +42,6 @@ extern "C" void snd_SetChannel8Mode(int mode) {
         break;
     }
     { f32 &r = A308.f10; f32 &q = A308.f14; r = q; }
-    { int &r = A308.f4; gl_func_00000000(0x06000800, (s8)r); }
-    { f32 &r = A308.f10; gl_func_00000000_f(0x01000800, r); }
+    { int &r = A308.f4; CALL(AudioThread_QueueCmdS8)(0x06000800, (s8)r); }
+    { f32 &r = A308.f10; XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x01000800, r); }
 }

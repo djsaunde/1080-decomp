@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO -O1 donor for osGetTime = libultra osGetTime
  * (references/libreultra/src/os/gettime.c, verbatim: saveMask =
  * __osDisableInt(); tmptime = osGetCount(); elapseCount = tmptime -
@@ -32,6 +33,6 @@ OSTime osGetTime(void)
     tmptime = gl_func_00000000_count();
     elapseCount = tmptime - D_00000000_basecnt;
     currentCount = gl___osCurrentTime_curtime;
-    gl_func_00000000_resint(saveMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
     return currentCount + elapseCount;
 }

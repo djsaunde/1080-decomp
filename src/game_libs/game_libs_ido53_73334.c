@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* game_libs ido53 carve: contramwrite.c pair, verbatim at IDO 5.3 -O1.
  * __osContRamWrite = __osContRamWrite (129/129) and __osPackRamWriteData =
  * __osPackRamWriteData (84/84), both first try. PARITY NOTE: this carve
@@ -46,15 +47,15 @@ s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
     retry = 2;
     if (force != 1 && address < 7 && address != 0)
         return 0;
-    gl_func_00000000();
+    CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_73334_lastcmd = 3;
     gl_ref_00087BA4(channel, address, buffer);
-    ret = gl_func_00000000(1, &gl___osPfsPifRam_73334_pifram);
-    gl_func_00000000(mq, 0, 1);
+    ret = CALL(gl___osSiRawStartDma)(1, &gl___osPfsPifRam_73334_pifram);
+    CALL(gl_osRecvMesg)(mq, 0, 1);
     do
     {
-        ret = gl_func_00000000(0, &gl___osPfsPifRam_73334_pifram);
-        gl_func_00000000(mq, 0, 1);
+        ret = CALL(gl___osSiRawStartDma)(0, &gl___osPfsPifRam_73334_pifram);
+        CALL(gl_osRecvMesg)(mq, 0, 1);
         ptr = (u8 *)&gl___osPfsPifRam_73334_pifram;
         if (channel != 0)
             for (i = 0; i < channel; i++)
@@ -65,12 +66,12 @@ s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
         ret = ((ramreadformat.rxsize & 0xC0) >> 4);
         if (ret == 0)
         {
-            if (gl_func_00000000(buffer) != ramreadformat.datacrc)
+            if (CALL(__osContDataCrc)(buffer) != ramreadformat.datacrc)
             {
-                ret = gl_func_00000000(mq, channel);
+                ret = CALL(__osPfsGetStatus)(mq, channel);
                 if (ret != 0)
                 {
-                    gl_func_00000000();
+                    CALL(gl___osSiRelAccess)();
                     return ret;
                 }
                 ret = 4;
@@ -83,7 +84,7 @@ s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
         if (ret != 4)
             break;
     } while ((retry-- >= 0));
-    gl_func_00000000();
+    CALL(gl___osSiRelAccess)();
     return ret;
 }
 
@@ -99,7 +100,7 @@ void __osPackRamWriteData(int channel, u16 address, u8 *buffer)
     ramreadformat.txsize = 35;
     ramreadformat.rxsize = 1;
     ramreadformat.cmd = 3;
-    ramreadformat.address = (address << 0x5) | gl_func_00000000(address);
+    ramreadformat.address = (address << 0x5) | CALL(__osContAddressCrc)(address);
     ramreadformat.datacrc = 255;
     for (i = 0; i < 32; i++)
     {

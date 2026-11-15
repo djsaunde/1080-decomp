@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for boot_halt_00066A50 (0x94 / 37 words): the panic
  * handler that logs, resets the two canary words to 0x12345678 (checked by
  * the sibling boot_checkStacks_00066AF0) and hangs. The "shared-$at canary cell cap"
@@ -17,11 +18,11 @@ extern int D_00000000;
 static long long s66a50_canary;
 extern "C" void gl_ncc_66a50_phase(int *p) { p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0; p[5] = 0; }
 extern "C" void boot_halt_00066A50(int a0) {
-    gl_func_00000000((char *)&D_00000000 + 0x3F160, 2, &D_00000000, 0,
+    CALL(gl_osCreateThread)((char *)&D_00000000 + 0x3F160, 2, &D_00000000, 0,
                      (char *)&D_00000000 + 0x41310, 0xA);
     s66a50_canary = 0x1234567812345678LL;
-    gl_func_00000000((char *)&D_00000000 + 0x3F160);
-    gl_func_00000000(0, 0);
+    CALL(gl_osStartThread)((char *)&D_00000000 + 0x3F160);
+    CALL(gl_osSetThreadPri)(0, 0);
     for (;;) {
     }
 }

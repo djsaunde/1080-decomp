@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO -O1 donor for gl___osSpRawStartDma = libultra __osSpRawStartDma
  * (references/libreultra/src/io/sprawdma.c, verbatim: SP busy guard,
  * SP_MEM_ADDR_REG = devAddr, SP_DRAM_ADDR_REG = osVirtualToPhysical,
@@ -14,7 +15,7 @@ extern s32 gl_func_00000000(void);   /* __osSpDeviceBusy */
 extern u32 gl_func_00000001(void *); /* osVirtualToPhysical */
 
 s32 gl___osSpRawStartDma(s32 direction, u32 devAddr, void *dramAddr, u32 size) {
-    if (gl_func_00000000())
+    if (CALL(gl___osSpDeviceBusy)())
         return -1;
     *(volatile u32 *)0xA4040000 = devAddr;
     *(volatile u32 *)0xA4040004 = gl_func_00000001(dramAddr);

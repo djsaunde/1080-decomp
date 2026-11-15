@@ -31,6 +31,7 @@
  *    if/else triples for the x/y offsets; every declared scalar takes a
  *    home (pad70[10] + dummies rebuild the 200-byte frame). */
 #include "common.h"
+#include "uso_call.h"
 
 typedef struct { int a, b, c, d; } Quad4;
 
@@ -84,7 +85,7 @@ void CourseGadget_display(GlObj2B94 *self) {
 
     temp_a1 = self->unk1F0;
     if (temp_a1 != 0) {
-        gl_func_00000000(temp_a1);
+        CALL(gui_spriteRefresh)(temp_a1);
         temp_a0 = self->unk1F0;
         sub = *(char **)(temp_a0 + 0x10);
         half = *(s16 *)(sub + 0x20);
@@ -98,16 +99,16 @@ void CourseGadget_display(GlObj2B94 *self) {
         spB8[0] = 1.0f;
         spA8 = self->e[14].q;
         temp_a0 = self->unk1F0;
-        gl_func_00000000(temp_a0, (s32) (255.0f * D_2B94_alpha), &spA8, 0xFF);
-        gl_func_00000000(self->unk1F0, self->e[0].q.a, self->e[1].q.a, 0);
+        CALL(gui_setColorEnvPrim_000017DC)(temp_a0, (s32) (255.0f * D_2B94_alpha), &spA8, 0xFF);
+        CALL(gui_drawSprite)(self->unk1F0, self->e[0].q.a, self->e[1].q.a, 0);
         var_s1 = (char *)self + 0x224;
-        gl_func_00000000(var_s1);
-        gl_func_00000000(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
-        gl_func_00000000(var_s1, self->e[2].q.a + self->e[4].q.a + self->e[0].q.a, self->e[3].q.a + self->e[5].q.a + self->e[1].q.a, 3);
+        CALL(gui_spriteRefresh)(var_s1);
+        CALL(gui_setColorEnvPrim_000017DC)(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
+        CALL(gui_drawSprite)(var_s1, self->e[2].q.a + self->e[4].q.a + self->e[0].q.a, self->e[3].q.a + self->e[5].q.a + self->e[1].q.a, 3);
         var_s1 = (char *)self + 0x23C;
-        gl_func_00000000(var_s1);
-        gl_func_00000000(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
-        gl_func_00000000(var_s1, self->e[6].q.a + self->e[8].q.a + self->e[0].q.a, self->e[7].q.a + self->e[9].q.a + self->e[1].q.a, 3);
+        CALL(gui_spriteRefresh)(var_s1);
+        CALL(gui_setColorEnvPrim_000017DC)(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
+        CALL(gui_drawSprite)(var_s1, self->e[6].q.a + self->e[8].q.a + self->e[0].q.a, self->e[7].q.a + self->e[9].q.a + self->e[1].q.a, 3);
         spA4 = (s32) (((f32) self->e[7].q.a - (f32) self->e[3].q.a) * ((self->unk1D4 - self->unk1E4) / self->unk1EC));
         spA0 = (s32) (((f32) self->e[7].q.a - (f32) self->e[3].q.a) * ((self->unk1D8 - self->unk1E8) / self->unk1EC));
         sp9C = (s32) (((f32) self->e[7].q.a - (f32) self->e[3].q.a) * ((self->unk1DC - self->unk1E4) / self->unk1EC));
@@ -121,9 +122,9 @@ void CourseGadget_display(GlObj2B94 *self) {
             sp90 = -0x13;
             sp8C = 2;
         }
-        gl_func_00000000(var_s1);
-        gl_func_00000000(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
-        gl_func_00000000(var_s1, self->e[2].q.a + self->e[0].q.a + spA4 + sp90, self->e[3].q.a + self->e[1].q.a + spA0 + sp8C, 0);
+        CALL(gui_spriteRefresh)(var_s1);
+        CALL(gui_setColorEnvPrim_000017DC)(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
+        CALL(gui_drawSprite)(var_s1, self->e[2].q.a + self->e[0].q.a + spA4 + sp90, self->e[3].q.a + self->e[1].q.a + spA0 + sp8C, 0);
         var_a0 = 0;
         if (self->unk1C0 & 2) {
             var_a0 = 1;
@@ -149,9 +150,9 @@ void CourseGadget_display(GlObj2B94 *self) {
             }
         }
         if (var_a0 != 0) {
-            gl_func_00000000(var_s1);
-            gl_func_00000000(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
-            gl_func_00000000(var_s1, self->e[2].q.a + self->e[0].q.a + sp9C + sp90, self->e[3].q.a + self->e[1].q.a + sp98 + sp8C, 0);
+            CALL(gui_spriteRefresh)(var_s1);
+            CALL(gui_setColorEnvPrim_000017DC)(var_s1, (s32) (255.0f * D_2B94_alpha), spB8, 0xFF);
+            CALL(gui_drawSprite)(var_s1, self->e[2].q.a + self->e[0].q.a + sp9C + sp90, self->e[3].q.a + self->e[1].q.a + sp98 + sp8C, 0);
         }
         var_v0_3 = self->unk1C0 & 8;
         if (var_v0_3 != 0) {
@@ -168,19 +169,19 @@ void CourseGadget_display(GlObj2B94 *self) {
                 sp74[3] = 0.0f;
                 var_s1 = (char *)self + 0x20C;
             }
-            gl_func_00000000(var_s1);
+            CALL(gui_spriteRefresh)(var_s1);
             self->e[10].q.a = (s32) (self->e[6].q.a + self->e[0].q.a);
             self->e[11].q.a = (s32) ((self->e[7].q.a + self->e[1].q.a) - 0x18);
-            gl_func_00000000(var_s1, (s32) (255.0f * D_2B94_alpha), sp74, 0xFF);
-            gl_func_00000000(var_s1, self->e[10].q.a, self->e[11].q.a, 3);
+            CALL(gui_setColorEnvPrim_000017DC)(var_s1, (s32) (255.0f * D_2B94_alpha), sp74, 0xFF);
+            CALL(gui_drawSprite)(var_s1, self->e[10].q.a, self->e[11].q.a, 3);
             var_v0_3 = self->unk1C0 & 8;
         }
         if (var_v0_3 != 0) {
-            gl_func_00000000_2B94f(self, 0, self->unk1DC, self->unk1E0, self->e[13].q.a);
+            XCALL(gl_func_00000000_2B94f, CourseGadget_drawMarker)(self, 0, self->unk1DC, self->unk1E0, self->e[13].q.a);
         }
         if (self->unk1C0 & 0x20) {
-            gl_func_00000000_2B94f(self, 0, self->unk1DC, self->unk1E0, self->e[13].q.a - 0x6E);
-            gl_func_00000000_2B94f(self, 1, self->unk1D4, self->unk1D8, self->e[13].q.a);
+            XCALL(gl_func_00000000_2B94f, CourseGadget_drawMarker)(self, 0, self->unk1DC, self->unk1E0, self->e[13].q.a - 0x6E);
+            XCALL(gl_func_00000000_2B94f, CourseGadget_drawMarker)(self, 1, self->unk1D4, self->unk1D8, self->e[13].q.a);
         }
     }
 }

@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for the word-identical twins gl_osMotorStop and
  * gl_osMotorStart — 104-insn Nintendo-modified __osContRamRead-family
  * mempack transaction verifiers (cf. references/libreultra/src/io/
@@ -50,7 +51,7 @@ s32 gl_osMotorStop(PFS *pfs) {
     ptr = gl___osPfsPifRam_pifram;
     if (D_00000000_table[pfs->channel] == 0)
         return 5;
-    gl_func_00000000();
+    CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_lastcmd = 3;
     gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
     gl_func_00000002(pfs->queue, 0, 1);
@@ -79,7 +80,7 @@ s32 gl_osMotorStart(PFS *pfs) {
     ptr = gl___osPfsPifRam_pifram;
     if (D_00000000_table[pfs->channel] == 0)
         return 5;
-    gl_func_00000000();
+    CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_lastcmd = 3;
     gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
     gl_func_00000002(pfs->queue, 0, 1);

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for BasePolyShape_addPoints (0x1E8 / 122 words), REPLACE_FUNC_BODY-spliced over the empty
  * placeholder in game_libs_post0b.c in both build trees (symbol `intern` renamed in the Makefile).
  * Vertex intern: truncate the position (3 floats) and uv (2) to s16 keys, scan the mesh's position / uv tables
@@ -32,7 +33,7 @@ struct S2 {
 };
 struct Mesh { char pad[0x40]; unsigned n; char pad44[0x1C]; S3 *pos; S2 *uv; };
 extern "C" unsigned intern(int start, Mesh *m, float *pos, float *uv, unsigned max) {
-    if (m->uv == 0) gl_func_00000000(D_00000000 + 0x20E3C);
+    if (m->uv == 0) CALL(sys_fatal)(D_00000000 + 0x20E3C);
     S3 p(pos[0], pos[1], pos[2]);
     S2 t;
     t.s = uv[0];
@@ -44,6 +45,6 @@ extern "C" unsigned intern(int start, Mesh *m, float *pos, float *uv, unsigned m
     }
     m->uv[m->n] = t;
     m->pos[m->n] = p;
-    if ((m->n += 1) >= max) gl_func_00000000(D_00000000 + 0x20E4C);
+    if ((m->n += 1) >= max) CALL(sys_fatal)(D_00000000 + 0x20E4C);
     return m->n - 1 + 0 * (int)(pos);
 }

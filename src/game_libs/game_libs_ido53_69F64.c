@@ -11,6 +11,7 @@
  * __osPopThread / osStartThread) collapse to the address-0 placeholder
  * gl_func_00000000; __osRunningThread maps to D_00000000. */
 #include "libultra/os_message.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000000; /* __osRunningThread (OSThread *) */
@@ -20,7 +21,7 @@ int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
 
     while (mq->validCount == 0) {
         if (flags == OS_MESG_NOBLOCK) {
-            gl_func_00000000(saveMask);
+            CALL(gl___osRestoreInt)(saveMask);
             return -1;
         }
         ((OSThread *)gl___osRunningThread)->state = 8; /* OS_STATE_WAITING */
@@ -32,8 +33,8 @@ int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
     mq->first = (mq->first + 1) % mq->msgCount;
     mq->validCount--;
     if (mq->fullqueue->next != 0) {
-        gl_func_00000000(gl_func_00000000((int *)&mq->fullqueue));
+        CALL(gl_osStartThread)(CALL(gl___osPopThread)((int *)&mq->fullqueue));
     }
-    gl_func_00000000(saveMask);
+    CALL(gl___osRestoreInt)(saveMask);
     return 0;
 }

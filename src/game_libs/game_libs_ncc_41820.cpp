@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for App_softReset (0x24C / 147 words), agent-c run 173, spliced over an
  * empty placeholder in game_libs_post0b.c in both build trees
  * (from the run-164 draft, kit CXVI item 5). `void Self::init()` (rename init__4SelfFv): D_41820_e = new Arr(10)
@@ -24,7 +25,7 @@ extern char gSysLib_3c740[];
 extern char gGfxLib_41820_c[], D_41820_d[];
 extern int D_41820_g;
 }
-inline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }
 struct Rec { int f0; int f4; int f8; int fC; int f10; void *f14; };
 struct Arr { int *data; int f4; int cap; int n; int f10; Arr(int c) { cap = c; n = 0; data = new int[c]; } };
 struct B44 : Rec { char pad[0x28 - 0x18]; B44(char *name); };
@@ -43,36 +44,36 @@ struct Self : SB {
     void link(Rec *q) { if (0) { q = 0; } gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
     void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
 };
-inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }
-inline void lnkB(Rec *q, Self *s) { if (0) { q = 0; } int r = gl_func_00000000(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} if (r) {} }
+inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } CALL(list_append)(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }
+inline void lnkB(Rec *q, Self *s) { if (0) { q = 0; } int r = CALL(list_append)(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} if (r) {} }
 void Self::init() {
     int local[3];
-    gl_func_00000000(D_00000000 + 0x1F5F0, D_41820_a++);
+    CALL(dbg_printf)(D_00000000 + 0x1F5F0, D_41820_a++);
     if (import_80000310 != 0x17D7) {
-        gl_func_00000000(D_00000000 + 0x1F600);
+        CALL(sys_fatal)(D_00000000 + 0x1F600);
     }
-    gl_func_00000000(D_00000000 + 0x1F618);
-    gl_func_00000000(gConsoleNode_3EF04_41820_b, 1);
-    gl_func_00000000(D_00000000 + 0x1F624);
-    gl_func_00000000(gSysLib_3c740, 1);
+    CALL(dbg_printf)(D_00000000 + 0x1F618);
+    CALL(ConsoleMgr_closeOwnerWins)(gConsoleNode_3EF04_41820_b, 1);
+    CALL(dbg_printf)(D_00000000 + 0x1F624);
+    CALL(sys_listRemove_00061D1C)(gSysLib_3c740, 1);
     local[0] = 0x10;
-    gl_func_00000000(this, local);
-    gl_func_00000000(gSysLib_3c740);
-    gl_func_00000000(gGfxLib_41820_c);
-    gl_func_00000000(1);
-    gl_func_00000000(1);
-    gl_func_00000000(D_41820_d, 100);
+    CALL(Node_broadcastMsg)(this, local);
+    CALL(dma_waitAll)(gSysLib_3c740);
+    CALL(gfx_waitRcpIdle)(gGfxLib_41820_c);
+    CALL(app_freeAllOfType)(1);
+    CALL(app_setHeapMode)(1);
+    CALL(DynArr_init_000665A4)(D_41820_d, 100);
     D_41820_e = new Arr(10);
-    gl_func_00000000(1);
-    gl_func_00000000(D_41820_f, 1);
-    gl_func_00000000_41820v();
+    CALL(app_setHeapMode)(1);
+    CALL(MemTracker_walkAll)(D_41820_f, 1);
+    XCALL(gl_func_00000000_41820v, BasePolyShape_initGeomGlobals_00052674)();
     m10 = 0;
     m2C = 0;
     D_41820_g = 0;
     lnkB(D_41820_f, this);
     lnk(gConsoleNode_3EF04_41820_b, this);
-    gl_func_00000000(gSysLib_3c740);
-    gl_func_00000000(gGfxLib_41820_c);
+    CALL(sys_pollDevices_00034B64)(gSysLib_3c740);
+    CALL(GfxLib_reset)(gGfxLib_41820_c);
     linkN(new O44);
     v12();
     { volatile int e0; }

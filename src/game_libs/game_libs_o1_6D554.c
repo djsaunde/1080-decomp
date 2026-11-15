@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 7.1 -O1 donor for osPfsIsPlug — 104-insn osPfsIsPlug (libultra
  * pfsisplug.c, identified 2026-07-09 vs references/libreultra/src/io/
  * pfsisplug.c; decode matches line-for-line). PROVEN EXACT 104/104 at plain
@@ -42,7 +43,7 @@ s32 osPfsIsPlug(void *queue, u8 *pattern) {
     ret = 0;
     bits = 0;
     crc_error_cnt = 3;
-    gl_func_00000000();
+    CALL(gl___osSiGetAccess)();
     while (1) {
         gl_func_00000001(0);
         ret = gl_func_00000002(1, gl___osPfsPifRam_pifram);

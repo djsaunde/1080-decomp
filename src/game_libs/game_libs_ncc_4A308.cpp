@@ -14,6 +14,7 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 extern int D_00000000;
 extern int gl_func_00000000(...);
@@ -43,21 +44,21 @@ extern "C" s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int ar
         sp6C = 0xFF;
     }
     if (*(char **)(arg0 + 0x50) != 0) {
-        gl_func_00000000(&gGfxLib,sp74, *(char **)(arg0 + 0x50) + t0 * 4);
-        gl_func_00000000(&gGfxLib,sp70, *(char **)(arg0 + 0x50) + *(unsigned short *)(*(char **)(arg0 + 0x6C) + arg3 * 8 + 6) * 4);
-        gl_func_00000000((char *)&D_00000000 + 0x20030, sp74[0], sp74[1], sp74[2]);
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp74, *(char **)(arg0 + 0x50) + t0 * 4);
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp70, *(char **)(arg0 + 0x50) + *(unsigned short *)(*(char **)(arg0 + 0x6C) + arg3 * 8 + 6) * 4);
+        CALL(dbg_printf)((char *)&D_00000000 + 0x20030, sp74[0], sp74[1], sp74[2]);
     } else {
         unsigned char col[4];
         col[0] = (u32)(*(float *)(arg4 + 0) * 255.0f);
         col[1] = (u32)(*(float *)(arg4 + 4) * 255.0f);
         col[2] = (u32)(*(float *)(arg4 + 8) * 255.0f);
-        gl_func_00000000(&gGfxLib,sp74, col);
-        gl_func_00000000(&gGfxLib,sp70, col);
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp74, col);
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp70, col);
     }
-    gl_func_00000000(&gGfxLib,sp48, sp7C, 0, (s32) sp6C, sp74);
-    gl_func_00000000(&gGfxLib,sp58, sp78, 0, (s32) sp6E, sp70);
+    CALL(gfx_makeVtx_00048104)(&gGfxLib,sp48, sp7C, 0, (s32) sp6C, sp74);
+    CALL(gfx_makeVtx_00048104)(&gGfxLib,sp58, sp78, 0, (s32) sp6E, sp70);
     if (arg1 != 0) {
-        return gl_func_00000000(arg2, sp48);
+        return CALL(gfx_findFaceVtxs_0004880C)(arg2, sp48);
     }
     return 0;
 }

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for Node_display (0xEC / 59 words): lock the owner's
  * sub-object, then for every child with flag 4 back-link it to the owner and
  * fire virtual slot 2 when its mask overlaps the callee's result. The entry
@@ -25,9 +26,9 @@ extern "C" void Node_display(Owner *o) {
     for (NodeB *n = it.first(); n; n = it.next()) {
         if (it.get()->flags & 4) {
             if (it.get()->x4) it.get()->x14 = o;
-            int m = gl_func_00000000();
+            int m = CALL(Node_getDisplayMask)();
             if (it.get()->mask & m) it.get()->fire();
         }
     }
-    gl_func_00000000();
+    CALL(sys_imout)();
 }

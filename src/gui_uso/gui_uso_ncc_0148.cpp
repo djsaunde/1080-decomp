@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gui_fontCreate (0x414 / 261 words).
  *
  * Glyph-grid layout constructor (find-or-create a 40-byte grid, scan each
@@ -50,7 +51,7 @@ extern "C" GuiGlyphGrid148 *gui_fontCreate(GuiGlyphGrid148 *a0, int a1, int a2, 
     int minx;
 
     if (a0 == 0) {
-        a0 = (GuiGlyphGrid148 *)gl_func_00000000(sizeof(GuiGlyphGrid148));
+        a0 = (GuiGlyphGrid148 *)CALL(mem_new)(sizeof(GuiGlyphGrid148));
         if (a0 == 0) {
             goto end;
         }
@@ -64,7 +65,7 @@ extern "C" GuiGlyphGrid148 *gui_fontCreate(GuiGlyphGrid148 *a0, int a1, int a2, 
     a0->height_14 = gh;
     a0->atlas_width = a2;
     a0->atlas_height = a3;
-    a0->cells = (GuiGlyphCell148 *)gl_func_00000000(rows * cols * sizeof(GuiGlyphCell148));
+    a0->cells = (GuiGlyphCell148 *)CALL(mem_new)(rows * cols * sizeof(GuiGlyphCell148));
 
     a1 = 0;
     maxw = 0;

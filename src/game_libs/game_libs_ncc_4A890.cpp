@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for MorphPoly_genUpdateList (0x160 / 88 words): EXACT, REPLACE_FUNC_BODY-spliced over the
  * game_libs_post0b.c placeholder in both build trees (agent-g run 257). `s16 *Map::build(s32 n, s16 *ids)` (renamed
  * to MorphPoly_genUpdateList with objcopy, name only): for every id, the id then the indices of the map entries equal to it
@@ -47,11 +48,11 @@ s16 *Map::build(s32 n, s16 *ids) {
     }
     list[t0++] = -1;
     if (t0 >= 299) {
-        gl_func_00000000(D_00000000 + 0x20058);
+        CALL(sys_fatal)(D_00000000 + 0x20058);
     }
     volatile s32 sz;
     n = t0 * 2 + 0 * (int)(n);
-    s16 *r = (s16 *)gl_func_00000000(n);
-    gl_func_00000000(r, list, n);
+    s16 *r = (s16 *)CALL(mem_new)(n);
+    CALL(memcpy)(r, list, n);
     return r;
 }

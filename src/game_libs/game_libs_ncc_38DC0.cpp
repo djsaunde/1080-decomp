@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for MNode_updateChildren (0x220 / 136 words): for every child
  * with flag 0x200 and not x2c&1, either pass its matrix pair to a callback (owner
  * flag 2) or compute child = m30 * owner.m70 with the natural triple loop, then
@@ -23,7 +24,7 @@ extern "C" void MNode_updateChildren(Root *r) {
     for (Node *n = it.first(); n; n = it.next()) {
         if ((n->flags & 0x200) && !(n->x2c & 1)) {
             if (r->x2c & 2) {
-                gl_func_00000000(n->m30, n->m70);
+                CALL(math_mtx4Copy)(n->m30, n->m70);
             } else {
                 float *src = n->m30, *w = r->m70;
                 float res[16];
@@ -33,7 +34,7 @@ extern "C" void MNode_updateChildren(Root *r) {
                         for (int k = 0; k < 4; k++)
                             res[i * 4 + j] += src[i * 4 + k] * w[k * 4 + j];
                     }
-                gl_func_00000000(res, n->m70);
+                CALL(math_mtx4Copy)(res, n->m70);
             }
         }
         n->tick();

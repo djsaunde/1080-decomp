@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for Node_update (0x108 / 66 words): lock the
  * owner's sub-object, walk the child list ({cur, nxt} iterator of
  * ItemType_hostioParms) and, for each object with flag 8, rebuild its matrix
@@ -26,10 +27,10 @@ extern "C" void Node_update(Owner387 *o) {
     o->x0c->lock();
     for (Node387 *n = it.next(); n; n = it.next()) {
         if (n->x18 & 8) {
-            if ((n->x8 & 0x200) && !(n->x8 & 0x20000) && !(n->x2c & 1)) gl_func_00000000(n->m30, n->m70);
+            if ((n->x8 & 0x200) && !(n->x8 & 0x20000) && !(n->x2c & 1)) CALL(math_mtx4Copy)(n->m30, n->m70);
             if (n->x4) n->x14 = o;
             n->upd();
         }
     }
-    gl_func_00000000();
+    CALL(sys_imout)();
 }

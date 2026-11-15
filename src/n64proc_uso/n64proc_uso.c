@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 
@@ -28,15 +29,15 @@ void n64_procMain(int arg0, int arg1) {
     do {
         switch (arg1) {
         case 0:
-            gl_func_00000000(base, one, 0, 0);
+            CALL(snd_playSeq_000120A8)(base, one, 0, 0);
             flag = one;
-            r = gl_func_00000000(0);
-            gl_func_00000000(arg0, one, r);
+            r = CALL(N64DemoProcess_ctor)(0);
+            CALL(app_runProcess)(arg0, one, r);
             break;
         case 1:
-            cur = (int*)gl_func_00000000(0, one, 0);
+            cur = (int*)CALL(QuitProcess_ctor)(0, one, 0);
             flag = one;
-            gl_func_00000000(base10, cur);
+            CALL(list_append)(base10, cur);
             if (*(int*)((char*)cur + 0x14) != 0) {
                 *(int*)((char*)cur + 0x4) = one;
             }
@@ -90,25 +91,25 @@ void *N64DemoProcess_ctor(void *a0) {
     void *r;
 
     if (a0 != 0) goto have0;
-    a0 = (void*)gl_func_00000000(0x88);
+    a0 = (void*)CALL(mem_new)(0x88);
     if (a0 == 0) goto end;
 have0:
     q = a0;
     if (a0 != 0) goto have1;
-    q = (void*)gl_func_00000000(0x50);
+    q = (void*)CALL(mem_new)(0x50);
     if (q == 0) goto Lp28;
 have1:
     r = q;
     if (q != 0) goto have2;
-    r = (void*)gl_func_00000000(0x2C);
+    r = (void*)CALL(mem_new)(0x2C);
     if (r == 0) goto Lq28;
-have2: gl_func_00000000(r, (char*)&D_n64_100_a + 0xB0); *(int*)((char*)r + 0x28) = (int)&D_n64_100_b;
+have2: CALL(Node_ctor)(r, (char*)&D_n64_100_a + 0xB0); *(int*)((char*)r + 0x28) = (int)&D_n64_100_b;
 Lq28:
     *(int*)((char*)q + 0x28) = (int)&D_n64_100_c;
 Lp28:
     *(int*)((char*)a0 + 0x28) = (int)((char*)&D_n64_100_d + 0x18);
     *(int*)((char*)a0 + 0xC)  = (int)((char*)&D_n64_100_e + 0xB8);
-    gl_func_00000000(a0);
+    CALL(n64_loadSprites_00000230)(a0);
 
     *(int*)((char*)a0 + 0x50) = 0;
     *(int*)((char*)a0 + 0x3C) = 0x64;
@@ -119,11 +120,11 @@ Lp28:
      * spills into one home slot 0x24 (frame 0x30 -> 0x28). A block-scoped
      * `int *z` gave q=$v1 + three distinct slots (the old 13-word cap). */
     q = *(void**)((char*)&D_n64_100_f + 0x190);
-    gl_func_00000000((char*)a0 + 0x10, q);
+    CALL(list_append)((char*)a0 + 0x10, q);
     if (((int*)q)[0x14 / 4] != 0) ((int*)q)[1] = 1;
     ((int*)q)[0x14 / 4] = (int)a0;
-    gl_func_00000000(*(int*)((char*)&D_n64_100_f + 0x190), 2, 0);
-    gl_func_00000000(0xA3);
+    CALL(Fader_start)(*(int*)((char*)&D_n64_100_f + 0x190), 2, 0);
+    CALL(snd_postEvent)(0xA3);
     *(int*)((char*)a0 + 0x48) = 0;
     *(int*)((char*)a0 + 0x30) = 0;
     *(int*)((char*)a0 + 0x2C) = 0;
@@ -132,8 +133,8 @@ end:
 }
 
 void n64_loadSprites_00000230(char *a0) {
-    gl_func_00000000(a0 + 0x58, 6);
-    gl_func_00000000(a0 + 0x70, 3);
+    CALL(gui_spriteLoad)(a0 + 0x58, 6);
+    CALL(gui_spriteLoad)(a0 + 0x70, 3);
 }
 
 /* N64DemoProcess_handleInput: MATCHED 2026-06-01. State machine on a0->0x50
@@ -166,9 +167,9 @@ void N64DemoProcess_handleInput(int *a0) {
         a0[0x54/4] += 8;
         if (a0[0x54/4] >= 0x100) a0[0x54/4] = 0xFF;
         a0[0x3C/4]--;
-        if (a0[0x3C/4] == 0 || (a0[0x3C/4] < 0x55 && gl_func_00000000(&D_00000000, 0x40100) != 0)) {
+        if (a0[0x3C/4] == 0 || (a0[0x3C/4] < 0x55 && CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) != 0)) {
             ((InputMgr *)&D_00000000)->procState = 1;
-            gl_func_00000000(a0, 0, 0);
+            CALL(Process_fadeOut_0000F954)(a0, 0, 0);
         }
         break;
     }
@@ -194,15 +195,15 @@ void N64DemoProcess_drawGui(char *a0) {
     switch (key) {
     case 0:
         val = *(int*)(a0 + 0x54);
-        gl_func_00000000(&D_00000000, val, buf);
-        gl_func_00000000(a0 + 0x58);
-        gl_func_00000000(a0 + 0x58, 0xA0, 0x78, 3);
+        CALL(gui_setColor_00001A5C)(&D_00000000, val, buf);
+        CALL(gui_spriteRefresh)(a0 + 0x58);
+        CALL(gui_drawSprite)(a0 + 0x58, 0xA0, 0x78, 3);
         break;
     case 1:
         val = *(int*)(a0 + 0x54);
-        gl_func_00000000(&D_00000000, val, buf);
-        gl_func_00000000(a0 + 0x70);
-        gl_func_00000000(a0 + 0x70, 0xA0, 0x78, 3);
+        CALL(gui_setColor_00001A5C)(&D_00000000, val, buf);
+        CALL(gui_spriteRefresh)(a0 + 0x70);
+        CALL(gui_drawSprite)(a0 + 0x70, 0xA0, 0x78, 3);
         break;
     }
 }

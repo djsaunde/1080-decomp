@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for Node_updateChildren (0xA4 / 41 words): walk the
  * owner's child list; for each object with flag 0x200 rebuild its matrix
  * pair (callee(&m30, &m70)), then fire virtual slot 1.
@@ -25,7 +26,7 @@ struct Owner385 { char pad[0x10]; Link385 *head; };
 extern "C" void Node_updateChildren(Owner385 *o) {
     Iter385 it(o->head);
     for (Node385 *n = it.next(); n; n = it.next()) {
-        if (n->flags & 0x200) gl_func_00000000(n->m30, n->m70);
+        if (n->flags & 0x200) CALL(math_mtx4Copy)(n->m30, n->m70);
         n->tick();
     }
 }

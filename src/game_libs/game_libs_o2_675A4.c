@@ -17,6 +17,7 @@
  * and the dead `while (0) { temp_f2 = y; }` anchor. */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -48,7 +49,7 @@ void pad_update(char *arg0) {
         if (temp_t0 != 0) {
             temp_v0 = (*(s16*)((char*)arg0 + 0x74));
             (*(s16*)((char*)arg0 + 0x74)) = (s16) (temp_v0 + 1);
-            gl_func_00000000(&gSysLib, temp_v1 - 1, ((u8*)temp_t0)[temp_v0], arg0);
+            CALL(pad_setSlotValueGlobal)(&gSysLib, temp_v1 - 1, ((u8*)temp_t0)[temp_v0], arg0);
             if (*(u8*)((*(s16*)((char*)arg0 + 0x74)) + FW(arg0, 0x78)) == 0xFF) {
                 FW(arg0, 0x78) = 0;
                 (*(s16*)((char*)arg0 + 0x76)) = 0;
@@ -59,7 +60,7 @@ void pad_update(char *arg0) {
     FW(arg0, 0x10) = 0;
     if (FW(arg0, 0x68) == 0) {
         if (FW(arg0, 0x34) != 0) {
-            gl_func_00000000(&gSysLib, arg0);
+            CALL(pad_decodeButtonMap_00034CC8)(&gSysLib, arg0);
         }
         if (FW(arg0, 0x70) != 0) {
             (*(s8*)((char*)arg0 + 0x8)) = (s8) -(*(s8*)((char*)arg0 + 0x8));

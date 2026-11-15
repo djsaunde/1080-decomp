@@ -15,6 +15,7 @@
  * __osRunningThread (OSThread*, lui/lw pair).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_message.h"
+#include "uso_call.h"
 
 extern u32 gl_func_00000000_disint(void);              /* __osDisableInt */
 extern void gl_func_00000000_enqyield(OSThread **);    /* __osEnqueueAndYield */
@@ -32,7 +33,7 @@ s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
             gl___osRunningThread_runthread->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000_enqyield(&mq->fullqueue);
         } else {
-            gl_func_00000000_resint(saveMask);
+            XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
             return -1;
         }
     }
@@ -41,8 +42,8 @@ s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
     mq->msg[mq->first] = msg;
     mq->validCount++;
     if (mq->mtqueue->next != 0) {
-        gl_func_00000000_startthr(gl_func_00000000_popthr(&mq->mtqueue));
+        XCALL(gl_func_00000000_startthr, gl_osStartThread)(XCALL(gl_func_00000000_popthr, gl___osPopThread)(&mq->mtqueue));
     }
-    gl_func_00000000_resint(saveMask);
+    XCALL(gl_func_00000000_resint, gl___osRestoreInt)(saveMask);
     return 0;
 }

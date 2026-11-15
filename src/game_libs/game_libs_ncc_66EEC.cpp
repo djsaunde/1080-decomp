@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for pad_threadLoop_00066EEC (0x198 / 102 words): message-pump
  * loop. osRecvMesg-style receive (mq @+0x11B0, &msg, 1) then a `switch` on the
  * message type with the cases in SOURCE order 0/5/6/1/4/2: edg lowers a switch
@@ -24,7 +25,7 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
 
     flag = 0;
     for (;;) {
-        func_00000000(arg0 + 0x11B0, &sp54, 1);
+        FCALL(gl_osRecvMesg)(arg0 + 0x11B0, &sp54, 1);
         v = *sp54;
         switch (v) {
         case 0:
@@ -32,11 +33,11 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
         case 5: {
             u8 sp4F;
             sp4F = 0;
-            func_00000000(arg0 + 0x11B0, &sp4F);
+            FCALL(osPfsIsPlug)(arg0 + 0x11B0, &sp4F);
             for (i = 0; i != 4; i++) {
                 if (sp4F & (1 << i)) {
-                    if (func_00000000(arg0 + 0x11B0, (int)arg0 + i * 0x68 + 0x1228, i) == 0) {
-                        func_00000000((int)arg0 + i * 0x68 + 0x1228);
+                    if (FCALL(osMotorInit)(arg0 + 0x11B0, (int)arg0 + i * 0x68 + 0x1228, i) == 0) {
+                        FCALL(gl_osMotorStop)((int)arg0 + i * 0x68 + 0x1228);
                     }
                 }
             }
@@ -48,18 +49,18 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
         case 1:
             if (flag == 0) {
                 for (i = 0; i != 4; i++) {
-                    func_00000000(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));
+                    FCALL(pad_updateMotor_00067084)(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));
                 }
             }
-            func_00000000(arg0 + 0x11B0);
+            FCALL(osContStartReadData)(arg0 + 0x11B0);
             *(int *)(arg0 + 0x13E8) = 0;
             break;
         case 4:
             break;
         case 2:
-            func_00000000(arg0 + 0x1200);
+            FCALL(gl___osContGetInitData)(arg0 + 0x1200);
             if (flag == 0) {
-                func_00000000(arg0);
+                FCALL(pad_initMotors_00067264)(arg0);
             }
             *(int *)(arg0 + 0x13E8) = 1;
             break;

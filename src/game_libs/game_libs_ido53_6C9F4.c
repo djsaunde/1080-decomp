@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* gl_osPiRawStartDma = libultra __osPiRawStartDma (io/pirawdma.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of the matched kernel
@@ -22,7 +23,7 @@ int gl_osPiRawStartDma(int direction, unsigned int devAddr, int dramAddr, unsign
 
     while ((status = *(volatile unsigned int*)0xA4600010) & 3) ;
 
-    *(volatile unsigned int*)0xA4600000 = gl_func_00000000(dramAddr);
+    *(volatile unsigned int*)0xA4600000 = CALL(gl_osVirtualToPhysical)(dramAddr);
     *(volatile unsigned int*)0xA4600004 = (D_00000000 | devAddr) & 0x1FFFFFFF;
 
     switch (direction) {

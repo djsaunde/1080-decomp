@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gfx_emitLineBatch_000488A0 (EXACT, agent-c run 155): the NM C body lifted under NCC (agent-c run 134 sweep, cfe 81.4 -> NCC 98.6, 112 words = target). Run 136: the post-increment split `n = ctx->dl->count; ctx->dl->count = n + 1;` moves count to v1.
  * Run 155 (uopt dump, -Wo,-zdbug:5): ctx, n and the ctx->dl load all have adjsave 31.5, so they colour in
  * itab-bit order. A named DL cursor d plus a dead `while (0) { d = 0; n = 0; }` at the top gives d and n bits
@@ -65,7 +66,7 @@ extern "C" void gfx_emitLineBatch_000488A0(Obj488A0 *obj) {
         ctx = obj->ctx; d = ctx->dl; n = d->count; d->count = n + 1;
         g = &ctx->dl->base[n];
         g->w0 = 0x04000000 | (((obj->nv << 10) | ((obj->nv << 4) - 1)) & 0xFFFF); c2 = obj->ctx; if (obj) {}
-        g->w1 = gl_func_00000000(*c2->vtx + obj->vbase);
+        g->w1 = CALL(gl_osVirtualToPhysical)(*c2->vtx + obj->vbase);
         *(int *)((char *)obj + 0x58C) += obj->nv;
         for (i = 0; i < obj->nline; i++) {
             if (obj->wd[i] != 1) {
@@ -81,5 +82,5 @@ extern "C" void gfx_emitLineBatch_000488A0(Obj488A0 *obj) {
             }
         }
     }
-    gl_func_00000000(obj);
+    CALL(gfx_vtxBatchBegin_000483A0)(obj);
 }

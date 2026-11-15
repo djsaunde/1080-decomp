@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* gl___osSiRawWriteIo_000747F4 = libultra __osPiRawWriteIo (io/pirawwrite.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of matched kernel
@@ -9,7 +10,7 @@
 extern int gl_func_00000000();
 
 int gl___osSiRawWriteIo_000747F4(int devAddr, int data) {
-    if (gl_func_00000000() != 0) {
+    if (CALL(gl___osSiDeviceBusy)() != 0) {
         return -1;
     }
     *(volatile int *)(0xA0000000 | devAddr) = data;

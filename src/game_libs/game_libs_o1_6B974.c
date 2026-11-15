@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osPiReadIo — 16-insn call-sandwich wrapper:
  * hook(); r = work(a0, a1); unhook(); return r.
  * PROVEN EXACT 16/16 at IDO 7.1 -O1 (2026-07-08 standalone probe; plain -O1,
@@ -14,8 +15,8 @@ extern int gl_func_00000000();
 
 int gl_osPiReadIo(int a0, int a1) {
     register int r;
-    gl_func_00000000();
-    r = gl_func_00000000(a0, a1);
-    gl_func_00000000();
+    CALL(gl___osPiGetAccess)();
+    r = CALL(gl_osPiRawReadIo_0006BA7C)(a0, a1);
+    CALL(gl___osPiRelAccess)();
     return r;
 }

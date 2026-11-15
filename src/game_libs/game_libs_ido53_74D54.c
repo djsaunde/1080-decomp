@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* game_libs ido53 carve: gl_osViSetYScale -- 1080 interrupt-bracket float
  * setter, verbatim shape at IDO 5.3 -O1, 22/22 first try with ALL words
  * (incl. reloc fields) matching: sr = __osDisableInt-class call;
@@ -13,5 +14,5 @@ void gl_osViSetYScale(float f) {
     sr = gl_func_00000000();
     *(float *)(gl___osViNext_74D54_p1 + 0x24) = f;
     *gl___osViNext_74D54_p2 |= 4;
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }

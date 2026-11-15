@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osSetTimer — 53-insn 8-word record init + u64-return
  * call + conditional u64-arg call (frame 0x20, saves ra). PROVEN EXACT 53/53
  * at IDO 7.1 -O1 (2026-07-08 standalone probe; 5.3 -O1 emits the identical
@@ -30,9 +31,9 @@ int gl_osSetTimer(int *dst, unsigned long long p, unsigned long long q, int g, i
     }
     dst[6] = g;
     dst[7] = h;
-    r = gl_func_00000000_ll(dst);
+    r = XCALL(gl_func_00000000_ll, __osInsertTimer)(dst);
     if (*D_00000000_a == dst) {
-        gl_func_00000000(r);
+        CALL(__osSetTimerIntr)(r);
     }
     return 0;
 }

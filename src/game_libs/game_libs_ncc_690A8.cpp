@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for SkinAnim_bind (0x2FC / 191 words): vertex transform. EXACT; spliced
  * into BOTH build trees via REPLACE_FUNC_BODY over the INCLUDE_ASM body (Makefile GAMELIBS_690A8_DONOR).
  * agent-g run 182 (docs/IDO_CODEGEN.md kit CXXXI): the cfe body (86.90) needed scrambled operand orders
@@ -38,9 +39,9 @@ extern "C" void SkinAnim_bind(Obj *o, Mgr *t, V3s *mgrBindVerts) {
     for (i = 0; i < o->count; i++) {
         t->weights[o->weights[i].vert] -= o->weights[i].weight;
     }
-    o->bindVerts = (V3s *)gl_func_00000000(o->count * sizeof(V3s));
+    o->bindVerts = (V3s *)CALL(mem_new)(o->count * sizeof(V3s));
     o->boneAtBind = o->bone->mtx;
-    gl_func_00000000(&o->bone->mtx, &o->invBone);           /* invert */
+    CALL(math_mtx4Inverse)(&o->bone->mtx, &o->invBone);           /* invert */
     for (i = 0; i < o->count; i++) {
         V3s *s = &mgrBindVerts[o->weights[i].vert];
         v.x = s->x; v.y = s->y; v.z = s->z;

@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* game_libs ido53 carve: contramread.c pair, verbatim at IDO 5.3 -O1.
  * __osContRamRead = __osContRamRead (135/135) and __osPackRamReadData =
  * __osPackRamReadData (79/79), both first try -- mirror of the
@@ -38,15 +39,15 @@ s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
     ret = 0;
     ptr = (u8 *)&gl___osPfsPifRam_748A4_pifram;
     retry = 2;
-    gl_func_00000000();
+    CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_748A4_lastcmd = 2;
     gl_ref_0008912C(channel, address);
-    ret = gl_func_00000000(1, &gl___osPfsPifRam_748A4_pifram);
-    gl_func_00000000(mq, 0, 1);
+    ret = CALL(gl___osSiRawStartDma)(1, &gl___osPfsPifRam_748A4_pifram);
+    CALL(gl_osRecvMesg)(mq, 0, 1);
     do
     {
-        ret = gl_func_00000000(0, &gl___osPfsPifRam_748A4_pifram);
-        gl_func_00000000(mq, 0, 1);
+        ret = CALL(gl___osSiRawStartDma)(0, &gl___osPfsPifRam_748A4_pifram);
+        CALL(gl_osRecvMesg)(mq, 0, 1);
         ptr = (u8 *)&gl___osPfsPifRam_748A4_pifram;
         if (channel != 0)
         {
@@ -60,13 +61,13 @@ s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
         if (ret == 0)
         {
             u8 c;
-            c = gl_func_00000000((u8*)&ramreadformat.data);
+            c = CALL(__osContDataCrc)((u8*)&ramreadformat.data);
             if (c != ramreadformat.datacrc)
             {
-                ret = gl_func_00000000(mq, channel);
+                ret = CALL(__osPfsGetStatus)(mq, channel);
                 if (ret != 0)
                 {
-                    gl_func_00000000();
+                    CALL(gl___osSiRelAccess)();
                     return ret;
                 }
                 ret = 4;
@@ -86,7 +87,7 @@ s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
         if (ret != 4)
             break;
     } while (retry-- >= 0);
-    gl_func_00000000();
+    CALL(gl___osSiRelAccess)();
     return ret;
 }
 
@@ -102,7 +103,7 @@ void __osPackRamReadData(int channel, u16 address)
     ramreadformat.txsize = 3;
     ramreadformat.rxsize = 33;
     ramreadformat.cmd = 2;
-    ramreadformat.address = (address << 0x5) | gl_func_00000000(address);
+    ramreadformat.address = (address << 0x5) | CALL(__osContAddressCrc)(address);
     ramreadformat.datacrc = 255;
     for (i = 0; i < 32; i++)
     {

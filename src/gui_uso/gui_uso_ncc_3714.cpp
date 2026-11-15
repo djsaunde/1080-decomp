@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for gui_drawSpriteScroll_00003714 (256 words; this body 256). EXACT (agent-g run 300):
  * spliced into gui_uso.c.o on both build trees via REPLACE_FUNC_BODY.
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): rewritten from the cfe-shaped PKT macro body (93.54) as
@@ -59,7 +60,7 @@ extern "C" void gui_drawSpriteScroll_00003714(Obj *arg0, s32 arg1, s32 arg2, s32
       _g->words.w0 = (_SHIFTL(G_TEXTURE, 24, 8) | _SHIFTL(0, 16, 8) | _SHIFTL(0, 11, 3) | _SHIFTL(0, 8, 3) | _SHIFTL(1, 0, 8)); _g->words.w1 = (_SHIFTL(0x8000, 16, 16) | _SHIFTL(0x8000, 0, 16)); }
     spr = arg0->spr;
     h = spr->h + 0 * (int)(spr->w); /* agent-g run 210: folded counted use (zero-use sweep): 96.51 -> 97.27 */
-    gui_func_00000000(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); /* agent-c run 287: the `if (arg3) {} if (1) {}` pair after this call dropped (stale: removal sweep, instruction stream identical at 99.00); agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33; run 268 re-tune: `if (arg3) {}` */
+    XCALL(gui_func_00000000, gui_loadTileIA8)(CTX, spr->tex, spr->w, h, arg3, 0, arg4, h, 0); /* agent-c run 287: the `if (arg3) {} if (1) {}` pair after this call dropped (stale: removal sweep, instruction stream identical at 99.00); agent-c run 263: code-free test + BB split after the loader call (kit CCC random search): 98.25 -> 98.33; run 268 re-tune: `if (arg3) {}` */
     w = arg4; /* run 268 re-tune: the agent-g run 210 folded use dropped */
     x = (f32)arg1 + (-((f32)w / 2) * arg5);
     fw = w * arg5;

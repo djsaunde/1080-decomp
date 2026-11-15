@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for BasePolyShape_sampleTri (0x358 / 214 words), agent-c run 175, spliced over an empty
  * placeholder in game_libs_post0b.c in both build trees (Makefile rename of sample__4MeshFR2V3T1i).
  * The cfe body (85.11: volatile Vec3 locals, a `mult` variable for the multu, an int-copy temp) is plain C++:
@@ -29,8 +30,8 @@ struct Mesh {
     void sample(V3 &p, V3 &n, int t);
 };
 void Mesh::sample(V3 &p, V3 &n, int t) {
-    float u = gl_func_00000000();
-    float v = gl_func_00000000();
+    float u = CALL(sys_randf)();
+    float v = CALL(sys_randf)();
     if (u + v > 1.0f) {
         u = 1.0f - u;
         v = 1.0f - v;

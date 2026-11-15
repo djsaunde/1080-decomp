@@ -1,4 +1,5 @@
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 /* IDO 7.1 -O2 donor for dbg_faultThread (0x13C / 79 words, the
  * subsystem poll loop) and sys_hang (0x20, the hang stub).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
@@ -49,12 +50,12 @@ int dbg_printThreads() {
     int outB, outA;
     int s1;
     int vB;
-    gl_func_00000000(GL_DATA_STR(0x1E3F4, "Threads: \n"));
+    CALL(dbg_printf)(GL_DATA_STR(0x1E3F4, "Threads: \n"));
     while (*(int *)(n + 4) != -1) {
         (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
-        s1 = gl_func_00000000(*(int *)(n + 0x14));
-        vB = gl_func_00000000(*(unsigned short *)(n + 0x10));
-        gl_func_00000000(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
+        s1 = CALL(dbg_threadName)(*(int *)(n + 0x14));
+        vB = CALL(dbg_threadStateName)(*(unsigned short *)(n + 0x10));
+        CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
                          outA, outB, *(int *)(n + 0x11C));
         n = *(char **)(n + 0xC);
     }
@@ -67,29 +68,29 @@ void dbg_faultThread(void *a0) {
     char *s0;
     int sp54, sp50;
     int r5;
-    gl_func_00000000(0xC, GL_BSS(0x3BB18), 0x10);
+    CALL(gl_osSetEventMesg)(0xC, GL_BSS(0x3BB18), 0x10);
     *(int *)(GL_BSS(0x3BB38)) = 0;
     for (;;) {
-        gl_func_00000000(GL_BSS(0x3BB18), &sp5C, 1);
-        if ((D_34548_slot = (char *)gl_func_00000000()) == 0) {
+        CALL(gl_osRecvMesg)(GL_BSS(0x3BB18), &sp5C, 1);
+        if ((D_34548_slot = (char *)CALL(gl___osGetCurrFaultedThread)()) == 0) {
             continue;
         }
         s0 = D_34548_slot + 0x20;
         (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
-        gl_func_00000000(GL_DATA_STR(0x1E424, "****************\n"));
-        gl_func_00000000(D_34548_slot);
-        r5 = gl_func_00000000(*(int *)(D_34548_slot + 0x14));
-        gl_func_00000000(GL_DATA_STR(0x1E438, "Fault (%s,0x%x) 0x%x in Thread %s (%d)\n"), sp50, sp54, *(int *)(s0 + 0xFC), r5,
+        CALL(dbg_printf)(GL_DATA_STR(0x1E424, "****************\n"));
+        CALL(fault_printThread)(D_34548_slot);
+        r5 = CALL(dbg_threadName)(*(int *)(D_34548_slot + 0x14));
+        CALL(sys_fatal)(GL_DATA_STR(0x1E438, "Fault (%s,0x%x) 0x%x in Thread %s (%d)\n"), sp50, sp54, *(int *)(s0 + 0xFC), r5,
                          *(int *)(D_34548_slot + 0x14));
     }
 }
 
 extern int func_00000000();
 void dbg_startFaultThread(void) {
-    func_00000000(GL_BSS(0x3BB18), GL_BSS(0x3BB30), 1);
-    func_00000000(GL_BSS(0x3B968), 5, &D_00000000, 0,
+    FCALL(gl_osCreateMesgQueue)(GL_BSS(0x3BB18), GL_BSS(0x3BB30), 1);
+    FCALL(gl_osCreateThread)(GL_BSS(0x3B968), 5, &D_00000000, 0,
                    (char*)&D_00000000 + 0x3C040, 12);
-    func_00000000(GL_BSS(0x3B968));
+    FCALL(gl_osStartThread)(GL_BSS(0x3B968));
 }
 
 int dbg_printfSink(int a0, char *src, int n) {
@@ -114,7 +115,7 @@ int dbg_printfSink(int a0, char *src, int n) {
 
 void dbg_printf(int a0, ...) {
     int aligned = (((int)((char *)&a0 + 4)) + 3) & ~3;
-    gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
+    CALL(_Printf)((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }
 
 /* 3485C: hang stub (8/8 words). `&a0` homes the argument at 0(sp) with no

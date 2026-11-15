@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CMod_vfn0_0005165C (0x40 / 16 words incl. its
  * 2-word hoisted head at 0x51654): alloc-or-passthrough zeroing setter.
  * The old "shared-$at store-pair cap" (one `lui at` + `sw zero,4(at); sw
@@ -15,7 +16,7 @@ static int s5165c[2];
 extern "C" void CMod_vfn0_0005165C(void) {
     int *p = gPolyFlags_3EEC4_5165C_arr;
     if ((unsigned)p == 0) {
-        p = (int*)gl_func_00000000(4);
+        p = (int*)CALL(mem_new)(4);
         if (p == 0) {
             goto skip;
         }

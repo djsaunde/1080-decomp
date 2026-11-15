@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -74,10 +75,10 @@ extern int gl_func_00000000();
 extern char sStr_rom_viewrec_uso_D150;
 void app_launchViewRec(int a0, int a1, int a2, int a3) {
     register int rv;
-    gl_func_00000000(&gInputMgr, &sStr_rom_viewrec_uso_D150);
-    gl_func_00000000(&gInputMgr, 8, 0, 0);
+    CALL(game_loadUso)(&gInputMgr, &sStr_rom_viewrec_uso_D150);
+    CALL(snd_playSeq_000120A8)(&gInputMgr, 8, 0, 0);
     rv = gl_func_00000000(0, a1, a2, a3);
-    gl_func_00000000(a0, 1, rv);
+    CALL(app_runProcess)(a0, 1, rv);
 }
 
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
@@ -181,18 +182,18 @@ void app_runProcess(int a0, int a1, int *a2) {
     register int *obj;    /* s0 = a2 */
     register char *base;  /* s1 = &D */
     register char *p;     /* s2 */
-    D_w0 = gl_func_00000000(a2, a1);
+    D_w0 = CALL(game_createProcessWindow)(a2, a1);
     obj = a2;
     base = (char *)&gInputMgr;
     p = base + 0x10;
-    gl_func_00000000(p, obj);
+    CALL(list_append)(p, obj);
     if (*(int *)((char *)obj + 0x14) != 0) {
         *(int *)((char *)obj + 0x4) = 1;
     }
     p = base;
     *(int *)((char *)obj + 0x14) = (int)p;
     obj = a2;
-    gl_func_00000000(D_w0, obj);
-    gl_func_00000000(gInputMgr_w134);
+    CALL(node_linkBack_0004E888)(D_w0, obj);
+    CALL(game_stub_000031B8)(gInputMgr_w134);
     (void)a0;
 }

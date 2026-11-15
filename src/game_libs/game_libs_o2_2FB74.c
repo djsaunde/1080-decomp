@@ -30,6 +30,7 @@
  *    names keep a lui per access), in-unit jals 0x423A4 / 0x42428 /
  *    0x44B70 (gl_ref_ pins / the pinned gl_func_00042428). */
 #include "common.h"
+#include "uso_call.h"
 
 extern void gl2FB74_snd();                  /* USO-relocated submit (jal 0) */
 extern int gl_func_00000000_f(int, float);  /* (int, float) blank alias */
@@ -280,7 +281,7 @@ void snd_HandleEvent_2FB74(s32 sel, s32 v) {
             D_2FB74_g7 = 0;
         }
         if (D_2FB74_mode == 1) {
-            gl_func_00000000_f(0x1010300, 0.0f);
+            XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x1010300, 0.0f);
             D_2FB74_st.w18 = 0;
         }
         c = 1;

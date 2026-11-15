@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for DNodeAccum_apply_00064388 (post1b, 128 words), EXACT.
  * agent-g run 148 (docs/IDO_CODEGEN.md kit LXXIV): the 5062C V3 class with a
  * by-value assign through set(v), a void operator/=, and a named `float k = s`
@@ -46,10 +47,10 @@ extern "C" void DNodeAccum_apply_00064388(Obj *o, char *a1, V3 *a2, float a3) {
     if (!((double)o->len < *(double *)(&D_00000000 + 0x20C8))) {
         o->dir /= o->len;
         g.assign(pv - qv);
-        spd = gl_func_00000000_sq64388(o->v1C.x * o->v1C.x + o->v1C.y * o->v1C.y + o->v1C.z * o->v1C.z)
+        spd = XCALL(gl_func_00000000_sq64388, math_vec3Length_0005BBCC)(o->v1C.x * o->v1C.x + o->v1C.y * o->v1C.y + o->v1C.z * o->v1C.z)
               / *(float *)(&D_00000000 + 0x20D0) * a3;
-        gl_func_00000000_n64388(&o->v1C);
-        gl_func_00000000_p64388(a1, &o->v1C, spd);
+        XCALL(gl_func_00000000_n64388, math_vec3Normalize)(&o->v1C);
+        XCALL(gl_func_00000000_p64388, math_quatRotateAxisAngle)(a1, &o->v1C, spd);
         m = rv * 1.0f;
         a2->x = a2->x + m.x;
         a2->y = a2->y + m.y;

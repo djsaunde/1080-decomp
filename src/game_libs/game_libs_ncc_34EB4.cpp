@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for app_run (0x2B0 / 172 words): the frame
  * main loop. Pumps the per-object list, the app's virtual hooks (v3/v4/v13/v15
  * on a 40-byte base, so the vptr is at +0x28) and the one-shot callback at
@@ -26,45 +27,45 @@ struct Node { char pad[0x60]; Node *next; };
 struct St { int flags; int pad4, pad8; Node *list; int f10; int count; };
 extern "C" void app_run(St *a0, App *a1) {
     int quit;
-    gl_func_00000000(DB + 0x1E47C);
-    if (gHostio_34EB4_flags & 1) gl_func_00000000();
+    CALL(sys_imin)(DB + 0x1E47C);
+    if (gHostio_34EB4_flags & 1) CALL(hostio_start)();
     for (quit = 0;;) {
         a0->flags &= ~1;
         a1->v4();
-        gl_func_00000000();
+        CALL(snd_PlayPlayer0Seq0)();
         do {
             Node *n;
-            for (n = a0->list; n != 0; n = n->next) gl_func_00000000(n);
+            for (n = a0->list; n != 0; n = n->next) CALL(pad_update)(n);
             if (FW(FW(DB, 0x218), 0x48) != 0) a1->v15();
             while (a0->flags & 4) {
                 a0->f10 = 0;
-                gl_func_00000000();
+                CALL(gl_osYieldThread)();
             }
             a0->f10 = 0;
-            gl_func_00000000(DB + 0x1E484);
-            gl_func_00000000(DB);
-            gl_func_00000000(DB + 0x1E490);
-            gl_func_00000000();
-            gl_func_00000000(DB + 0x1E494);
-            gl_func_00000000(DB + 0x1E4A0);
+            CALL(sys_imin)(DB + 0x1E484);
+            CALL(gfx_start)(DB);
+            CALL(prof_timerStart)(DB + 0x1E490);
+            CALL(sys_imout)();
+            CALL(sys_imin)(DB + 0x1E494);
+            CALL(prof_timerStart)(DB + 0x1E4A0);
             a1->v4();
-            gl_func_00000000(DB + 0x1E4AC);
-            gl_func_00000000();
-            gl_func_00000000(DB + 0x1E4B8);
-            gl_func_00000000(DB + 0x1E4C4);
+            CALL(prof_beginSection)(DB + 0x1E4AC);
+            CALL(sys_imout)();
+            CALL(sys_imin)(DB + 0x1E4B8);
+            CALL(prof_timerStart)(DB + 0x1E4C4);
             a1->v3();
-            gl_func_00000000(DB + 0x1E4D0);
-            gl_func_00000000();
-            gl_func_00000000(DB + 0x1E4DC);
-            gl_func_00000000(DB);
-            gl_func_00000000();
-            gl_func_00000000(DB + 0x1E4E4);
-            gl_func_00000000(DB + 0x1E4F0);
-            gl_func_00000000(DB + 0x1E4F4);
-            gl_func_00000000(DB + 0x1E500);
-            gl_func_00000000();
-            gl_func_00000000(DB + 0x1E508);
-            gl_func_00000000();
+            CALL(prof_timerStop)(DB + 0x1E4D0);
+            CALL(sys_imout)();
+            CALL(sys_imin)(DB + 0x1E4DC);
+            CALL(gfx_end)(DB);
+            CALL(sys_imout)();
+            CALL(prof_timerStop)(DB + 0x1E4E4);
+            CALL(prof_timerStop)(DB + 0x1E4F0);
+            CALL(sys_imin)(DB + 0x1E4F4);
+            CALL(prof_timerStart)(DB + 0x1E500);
+            CALL(snd_FrameUpdate)();
+            CALL(prof_timerStop)(DB + 0x1E508);
+            CALL(sys_imout)();
             a0->count++;
             if (a1->cb) {
                 a1->cb();

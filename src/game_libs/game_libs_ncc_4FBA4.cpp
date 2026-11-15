@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for Mat_clone_0004FBA4 (0x15C / 87 words), agent-c run 163.
  * Factory: o = new Der (edg's new + inline ctors: Base re-tests this == 0 with a 0x60 fallback,
  * stores the Base vptr at +0x5C, builds its M8 / M4 members through the this==0 protocol, calls
@@ -9,7 +10,7 @@
  * The cfe body reached 77.78. The Makefile renames both vtables (symbol names only). Spliced
  * over an empty placeholder in both build trees. */
 extern "C" void *gl_func_00000000(...);
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct M8 { int a, b; M8() { b = 0; a = 0; } };
 struct M4 { int a; M4() { a = 0; } };
 struct It { int key; unsigned *p; int next() { return key = *p++ & 0xFFFF; } };

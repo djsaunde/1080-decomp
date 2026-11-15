@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -16,7 +17,7 @@ void boarder5_uso_func_00000000(int *dst) {
 
 void fs_gdlReadQuad_boarder5_00000040(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -35,13 +36,13 @@ void boarder5_readQuadParm_00000098(char *dst) {
 
 void fs_gdlReadInt_boarder5_000000D4(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_boarder5_00000110(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 

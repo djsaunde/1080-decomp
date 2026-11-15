@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl__VirtualToPhysicalTask — 71-insn pointer-relocation fixup driver
  * (frame 0x20, ra only). PROVEN EXACT 71/71 at IDO 7.1 -O1 (2026-07-08
  * standalone probe: 69/71 raw with the 2 remaining words being the UNBAKED
@@ -17,27 +18,27 @@ int gl__VirtualToPhysicalTask(int a0) {
     char *obj;
 
     obj = D_00041710;
-    gl_func_00000000(a0, obj, 0x40);
+    CALL(gl_bcopy)(a0, obj, 0x40);
     if (*(int *)(obj + 0x10)) {
-        *(int *)(obj + 0x10) = gl_func_00000000(*(int *)(obj + 0x10));
+        *(int *)(obj + 0x10) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x10));
     }
     if (*(int *)(obj + 0x18)) {
-        *(int *)(obj + 0x18) = gl_func_00000000(*(int *)(obj + 0x18));
+        *(int *)(obj + 0x18) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x18));
     }
     if (*(int *)(obj + 0x20)) {
-        *(int *)(obj + 0x20) = gl_func_00000000(*(int *)(obj + 0x20));
+        *(int *)(obj + 0x20) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x20));
     }
     if (*(int *)(obj + 0x28)) {
-        *(int *)(obj + 0x28) = gl_func_00000000(*(int *)(obj + 0x28));
+        *(int *)(obj + 0x28) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x28));
     }
     if (*(int *)(obj + 0x2C)) {
-        *(int *)(obj + 0x2C) = gl_func_00000000(*(int *)(obj + 0x2C));
+        *(int *)(obj + 0x2C) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x2C));
     }
     if (*(int *)(obj + 0x30)) {
-        *(int *)(obj + 0x30) = gl_func_00000000(*(int *)(obj + 0x30));
+        *(int *)(obj + 0x30) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x30));
     }
     if (*(int *)(obj + 0x38)) {
-        *(int *)(obj + 0x38) = gl_func_00000000(*(int *)(obj + 0x38));
+        *(int *)(obj + 0x38) = CALL(gl_osVirtualToPhysical)(*(int *)(obj + 0x38));
     }
     return (int)obj;
 }
