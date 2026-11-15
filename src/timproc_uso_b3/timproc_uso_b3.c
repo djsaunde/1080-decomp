@@ -830,7 +830,7 @@ void trk_drawScore_000013B8(char *arg0, s32 arg1, f32 *arg2) {
  * template; deltas: init-call base +0x3dc, a1 float @+0x72c,
  * packed-id ptr field @+0x6b0). Crack lever: the packed-id call's id
  * chain must be ucode-created before the ptr chain — spell the ptr chain
- * as a two-level typed member chain ((Tim1660_A *)arg0)->b->v (cfe then
+ * as a two-level typed member chain ((TimRace *)MODENAMEENT(arg0)->race)->recordRank (cfe then
  * follows textual order). Siblings: arcproc 199C, timproc_b1 16F8, mgrproc 2940. */
 extern int gl_func_00000000();
 extern char D_tim1660_v[];   /* init-call a1 base (&sym+0x3dc) */
@@ -840,8 +840,6 @@ extern char D_tim1660_y[];   /* a2->0x28 (level-2) */
 extern char D_tim1660_z[];   /* s0->0x28 (level-1/main) */
 extern int D_tim1660_id;     /* packed-id value read */
 
-typedef struct Tim1660_B { char pad[0x6b0]; int v; } Tim1660_B;
-typedef struct Tim1660_A { char p0[0xD4]; Tim1660_B *b; } Tim1660_A;
 
 char *TrkNameEntry_ctor_00001660(char *arg0, char *arg1, int arg2) {
     char *a2;   /* level-2 (0xD4), home 0x2C(sp) */
@@ -873,7 +871,7 @@ char *TrkNameEntry_ctor_00001660(char *arg0, char *arg1, int arg2) {
         MODENAMEENT(arg0)->alpha = 1.0f;
         TIMRACE(arg1)->recordFade = 1.0f;
         CALL(gui_spriteInit)(MODENAMEENT(arg0)->banner,
-            ((D_tim1660_id + 0x23) << 16) | (((Tim1660_A *)arg0)->b->v + 7));
+            ((D_tim1660_id + 0x23) << 16) | (((TimRace *)MODENAMEENT(arg0)->race)->recordRank + 7));
     }
     return arg0;
 }
@@ -1505,17 +1503,20 @@ extern int D_b3_294C_g20C;
 void TrkMenu_update_0000294C(int *a0)
 {
   int new_var;
-  switch (a0[0x50 / 4])
+  switch (MENUPROC(a0)->state)
   {
     case 0:
       if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) != 0)
     {
+      /* base[i] = the menu shifted by i rows (Row294C = one GuiRow), so slot's rows[0] is
+       * rows[cursor]; the 2D-array (IXA) index is the addu-order lever (&menu->rows[cursor]
+       * costs an extra addiu) */
       typedef int Row294C[10];
-      Row294C *base = (Row294C *) a0[0x48 / 4];
-      int *slot = base[((int *) base)[0x7C / 4]];
-      if (slot[0x90 / 4] != 0)
+      Row294C *base = (Row294C *) MENUPROC(a0)->menu;
+      int *slot = base[GUIMENU(base)->cursor];
+      if (GUIMENU(slot)->rows[0].arg != 0)
       {
-        if (slot[0x88 / 4] != 0)
+        if (GUIMENU(slot)->rows[0].enabled != 0)
         {
           int *base2;
           int *slot2;
@@ -1523,12 +1524,12 @@ void TrkMenu_update_0000294C(int *a0)
           if (1)
           {
           }
-          slot = a0;
-          D_b3_294C_g208 = slot[0x48 / 4];
+          slot = a0; /* reusing slot for a0 is load-bearing */
+          D_b3_294C_g208 = MENUPROC(slot)->menu;
           D_b3_294C_g20C = (int) a0;
-          base2 = (int *) slot[0x48 / 4];
+          base2 = (int *) MENUPROC(slot)->menu;
           ;
-          ((void (*)(void)) ((int *) (base2 + (base2[0x7C / 4] * 0xA)))[(0x90 ^ 0) / (new_var = 4)])();
+          ((void (*)(void)) ((int *) (base2 + (GUIMENU(base2)->cursor * 0xA)))[(0x90 ^ 0) / (new_var = 4)])();
         }
         else
         {

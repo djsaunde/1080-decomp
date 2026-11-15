@@ -1070,7 +1070,7 @@ void arc_drawNumber_000016F4(char *arg0, s32 arg1, f32 *arg2) {
  * ((D+0x23)<<16) must be ucode-created BEFORE the ptr chain (temp ring
  * t6,t7,t8 vs t9,t0,t1 + or operand order). cfe evaluates a register-rooted
  * cast-deref chain FIRST regardless of textual order; spelling the ptr chain
- * as a TWO-LEVEL TYPED MEMBER CHAIN ((Arc199C_A *)arg0)->b->v flips the
+ * as a TWO-LEVEL TYPED MEMBER CHAIN ((ArcRace *)MODENAMEENT(arg0)->race)->recordRank flips the
  * evaluation to textual (id first) with identical bytes — the crack lever.
  * Twins: TimNameEntry_ctor_000016F8, TrkNameEntry_ctor_00001660
  * (offset variants), MgrNameEntry_ctor_00002940 (111-insn family variant,
@@ -1083,8 +1083,6 @@ extern char D_arc199C_y[];   /* sym164: a2->0x28 (level-2) */
 extern char D_arc199C_z[];   /* sym34:  s0->0x28 (level-1/main) */
 extern int D_arc199C_id;     /* sym133: packed-id value read */
 
-typedef struct Arc199C_B { char pad[0x6B4]; int v; } Arc199C_B;
-typedef struct Arc199C_A { char p0[0xD4]; Arc199C_B *b; } Arc199C_A;
 
 char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
     char *a2;   /* level-2 (0xD4), home 0x2C(sp) */
@@ -1116,7 +1114,7 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
         MODENAMEENT(arg0)->alpha = 1.0f;
         ARCRACE(arg1)->resultFade = 1.0f;
         CALL(gui_spriteInit)(MODENAMEENT(arg0)->banner,
-            ((D_arc199C_id + 0x23) << 16) | (((Arc199C_A *)arg0)->b->v + 7));
+            ((D_arc199C_id + 0x23) << 16) | (((ArcRace *)MODENAMEENT(arg0)->race)->recordRank + 7));
     }
     return arg0;
 }
@@ -1138,20 +1136,22 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
  * the def BB is separated by a branch; no C shape found that pins the def
  * in the pre-branch BB. Cross-branch-shared-base cap. */
 extern int gl_func_00000000();
-extern char D_arc1B04_a;
+extern char D_arc1B04_a;      /* both are the GameFlow import (bootup Bss 0xF8, game/input.h) */
 extern int D_arc1B04_state[];
+/* (CALL() is not used in this NM reference body: name-placeholder-calls.py checks it against
+ * the INCLUDE_ASM jals, which carry no callee names; the callees are in the comments.) */
 void ArcNameEntry_update_00001B04(int *arg) {
     int v0;
-    v0 = gl_func_00000000(&D_arc1B04_a, 0x40100);
+    v0 = gl_func_00000000(&D_arc1B04_a, 0x40100); /* input_checkPressed_00011E00 */
     if (v0 == 0) return;
-    v0 = gl_func_00000000((int *)MODENAMEENT(arg)->base.entry);
+    v0 = gl_func_00000000((int *)MODENAMEENT(arg)->base.entry); /* Backup_sessionHasNew */
     if (v0 != 0) {
         MODENAMEENT(arg)->base.phase = 1;
-        D_arc1B04_state[16] = 8;
-        D_arc1B04_state[17] = 6;
+        GAMEFLOW(D_arc1B04_state)->procState = 8;
+        GAMEFLOW(D_arc1B04_state)->nextProcState = 6;
     } else {
-        D_arc1B04_state[16] = 6;
-        gl_func_00000000(arg, 7, 0);
+        GAMEFLOW(D_arc1B04_state)->procState = 6;
+        gl_func_00000000(arg, 7, 0); /* Process_fadeOut_0000F954 */
     }
 }
 #else
@@ -1729,8 +1729,9 @@ void ARCMenuProcess_handleInput(int *a0)
   {
     int *p0 = 0;
     new_var2 = 0x7C / 4;
-    p0 = (int *) a0[0x48 / 4];
-    if ((*((int *) ((((char *) p0) + (p0[0x7C / 4] * 0x28)) + 0x90))) != ((0, 0)))
+    p0 = (int *) MENUPROC(a0)->menu;
+    /* rows[cursor].arg through the menu shifted by cursor rows (multiply-first spelling) */
+    if (GUIMENU(((char *) p0) + (GUIMENU(p0)->cursor * 0x28))->rows[0].arg != ((0, 0)))
     {
       XCALL(gl_func_00000000_void, snd_postEvent)(5);
       D_arc_27BC_g70 = a0[new_var = 0x48 / 4];
