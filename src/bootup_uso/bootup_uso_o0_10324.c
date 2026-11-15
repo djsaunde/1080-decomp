@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/guimenu.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -20,7 +21,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * #o0-two-block-predicate-not-adjacent-leaf-cap). 10/10 words. */
 typedef struct { char d[0x28]; } Row10324;
 char *gui_getCurrentRow_00010324(a0) char *a0; {
-    return ((Row10324*)(a0 + 0x84))[*(int*)(a0 + 0x7C)].d;
+    return (char *)&GUIMENU(a0)->rows[GUIMENU(a0)->cursor];
 }
 
 /* 2026-07-10 -O0 island carve (this file was bootup_uso_tail3a.c until

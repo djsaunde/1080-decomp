@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/guimenu.h"
 
 extern int func_00000000();
 /* The FP literal pool gui_centerRows_0001016C reads is reached through the symbol splat
@@ -33,12 +34,12 @@ extern struct { float f0, f1, f2; } func_00000C10;
  *      first addu operand. */
 void gui_initRows_000100F0(int *a0, int a1) {
     register int *p;
-    *(int*)((char*)a0 + 0x2C) = a1;
-    *(int*)((char*)a0 + 0x7C) = 0;
+    GUIMENU(a0)->arg = a1;
+    GUIMENU(a0)->cursor = 0;
     func_00000000(a0);
     (**(void (**)())((char*)p + 0x64))(
         *(short*)((char*)(p = (int*)*(int*)((char*)a0 + 0x28)) + 0x60) + (int)a0);
-    *(float*)((char*)a0 + 0x74) = 17.0f;
+    GUIMENU(a0)->rowHeight = 17.0f;
 }
 
 /* gui_centerRows_0001016C: -O0 FP-init for the a0->0x3C sub-struct (38 insns). MATCHED.
@@ -53,11 +54,11 @@ void gui_initRows_000100F0(int *a0, int a1) {
  * lui $at,%hi(func_00000C10+N); lwc1 %lo(func_00000C10+N)($at). */
 void gui_centerRows_0001016C(int *a0) {
     register float *q;
-    *(float*)((char*)a0 + 0x6C) = 160.0f;
-    *(float*)((char*)a0 + 0x70) =
-        120.0f - (*(float*)((char*)a0 + 0x74) / 2.0f) * (float)*(int*)((char*)a0 + 0x78);
-    *(int*)((char*)a0 + 0x34) = 0xFF;
-    *(int*)((char*)a0 + 0x38) = 0;
+    GUIMENU(a0)->x = 160.0f;
+    GUIMENU(a0)->y =
+        120.0f - (float)GUIMENU(a0)->numRows * (GUIMENU(a0)->rowHeight / 2.0f);
+    GUIMENU(a0)->alpha = 0xFF;
+    GUIMENU(a0)->timer = 0;
     q = (float*)((char*)a0 + 0x3C);
     q[0] = func_00000C10.f0;
     q[1] = func_00000C10.f1;
