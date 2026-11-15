@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SequencePlayerProcessSequence (0x7CC / 499 words) = OoT's
  * AudioSeq_SequencePlayerProcessSequence (seqplayer.c) in its older form: the
@@ -23,7 +24,7 @@ typedef struct {
     u8 *shortNoteVelocityTable; u8 *shortNoteGateTimeTable; char notePool[0x44]; s32 scriptCounter;
     char padE4[0x158 - 0xE4]; s8 seqScriptIO[8];
 } gl_2C7A4_SeqPlayer;
-typedef struct { char pad[0x2074]; s16 tempoInternalToExternal; char pad2076[0x2154 - 0x2076]; u32 audioRandom; } gl_2C7A4_Ctx;
+typedef AudioContext gl_2C7A4_Ctx; /* include/audio.h (tempoInternalToExternal 0x2074, audioRandom 0x2154) */
 extern int D_00000000;
 #define gAudioCtx (*(gl_2C7A4_Ctx *)&D_00000000)
 extern int gl_func_00000000();

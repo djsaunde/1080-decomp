@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioLoad_AsyncLoadInner (0x290 / 164 words) = OoT's
  * AudioLoad_AsyncLoadInner (load.c), the older form without
@@ -12,9 +13,7 @@
  * gl_ref_0003959C (StartAsyncLoad). */
 typedef struct { u32 romAddr; u32 size; s8 medium; s8 cachePolicy; s16 shortData1; s16 shortData2; s16 shortData3; } gl_240A0_TableEntry;
 typedef struct { s16 numEntries; s16 unkMediumParam; u32 romAddr; char pad[8]; gl_240A0_TableEntry entries[1]; } gl_240A0_Table;
-typedef struct {
-    char pad0[0x2C10]; u8 sampleFontLoadStatus[0x30]; u8 fontLoadStatus[0x30]; u8 seqLoadStatus[0x80];
-} gl_240A0_Ctx;
+typedef AudioContext gl_240A0_Ctx; /* include/audio.h (load-status arrays 0x2C10 / 0x2C40 / 0x2C70) */
 #define ALIGN16(val) (((val) + 0xF) & ~0xF)
 extern int D_00000000;
 #define gAudioCtx (*(gl_240A0_Ctx *)&D_00000000)

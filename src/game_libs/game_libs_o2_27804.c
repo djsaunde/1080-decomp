@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for Audio_InitSampleState (0x444 / 273 words) = OoT's
  * Audio_InitSampleState (playback.c; Audio_InitNoteSub in older names) in its
@@ -33,7 +34,7 @@ typedef struct {
     char pad0[0x35]; u8 stereoHeadsetEffects; char pad36[0xB0 - 0x36];
     gl_27804_NoteSampleState sampleState;
 } gl_27804_Note;
-typedef struct { char pad[0x2076]; s8 soundOutputMode; } gl_27804_Ctx;
+typedef AudioContext gl_27804_Ctx; /* include/audio.h (soundOutputMode 0x2076) */
 extern gl_27804_Ctx gl_27804_gAudioCtx;
 #define gAudioCtx gl_27804_gAudioCtx
 extern u16 gl_27804_gHaasEffectDelaySizes[];

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SequenceChannelProcessScript (0xC28 / 778 words) = OoT's
  * AudioSeq_SequenceChannelProcessScript (seqplayer.c) in its older form: eight
@@ -35,7 +36,7 @@ struct gl_2BB7C_Channel {
     gl_2BB7C_SeqScriptState scriptState; gl_2BB7C_AdsrSettings adsr; char notePool[0x40];
     s8 seqScriptIO[8]; s16 *filter; gl_2BB7C_Stereo stereo;
 };
-typedef struct { char pad[0x2028]; u8 *sequenceFontTable; char pad202c[0x2154 - 0x202C]; u32 audioRandom; } gl_2BB7C_Ctx;
+typedef AudioContext gl_2BB7C_Ctx; /* include/audio.h (sequenceFontTable 0x2028, audioRandom 0x2154) */
 extern gl_2BB7C_Ctx gl_2BB7C_gAudioCtx;
 #define gAudioCtx gl_2BB7C_gAudioCtx
 extern u8 gl_2BB7C_sSeqInstructionArgsTable[];

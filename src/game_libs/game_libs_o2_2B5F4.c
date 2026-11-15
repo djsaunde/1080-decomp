@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep3 (0x444 / 273 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep3 (seqplayer.c) verbatim. Spliced into
@@ -31,7 +32,7 @@ typedef struct {
     s16 shortNoteDefaultDelay; s16 lastDelay; char pad16[0x38 - 0x16]; f32 velocitySquare2; f32 velocitySquare;
     char pad40[0x50 - 0x40]; gl_2B5F4_Channel *channel; gl_2B5F4_SeqScriptState scriptState;
 } gl_2B5F4_Layer;
-typedef struct { char pad[0x2154]; u32 audioRandom; } gl_2B5F4_Ctx;
+typedef AudioContext gl_2B5F4_Ctx; /* include/audio.h (audioRandom 0x2154) */
 extern int D_00000000;
 extern gl_2B5F4_Ctx gl_2B5F4_audioRandom;
 #define gAudioCtx gl_2B5F4_audioRandom
