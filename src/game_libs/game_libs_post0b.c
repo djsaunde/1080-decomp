@@ -10,6 +10,9 @@
 #include "gdl/light.h"
 #include "gdl/material.h"
 #include "gdl/sprite.h"
+#include "gdl/console.h"
+#include "gdl/mnode.h"
+#include "gdl/coll.h"
 extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -3078,8 +3081,8 @@ void MNode_def(int a0) {
     gl_func_00000000(a0);
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
-        gl_func_00000000(o, GL_DATA_STR(0x1EBE4, "DefMNode"));
-        *(char **)(o + 0x28) = (char *)&MNode_vtbl;
+        gl_func_00000000(o, (char *)&D_00000000 + 0x0001EBE4);
+        MNODE(o)->node.vptr = (s32)((char *)&MNode_vtbl);
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)gl_func_00000000(0x04);
@@ -3102,10 +3105,10 @@ void MNode_def(int a0) {
     *(char **)(a0 + 0x10) = o;
     if (*(int *)(a0 + 0x38) != 0) {
         gl_func_00000000_37AF0v((tmp = *(int *)(*(char **)(a0 + 0x3C) + 0x10)) + 0x10, o);
-        if (*(int *)(o + 0x14) != 0) {
-            *(int *)(o + 0x4) = 1;
+        if (MNODE(o)->node.parent != 0) {
+            MNODE(o)->node.unk04 = 1;
         }
-        *(int *)(o + 0x14) = tmp;
+        MNODE(o)->node.parent = tmp;
     }
 }
 
@@ -4288,9 +4291,9 @@ void MNode_initMatrices(char *a0) {
     int *p;
     gl_func_00000000(a0 + 0x30);
     gl_func_00000000(a0 + 0x70);
-    *(int *)(a0 + 0x2C) = 0;
-    *(int *)(a0 + 0xB0) = 0;
-    *(int *)(a0 + 0x8) |= 0x200;
+    MNODE(a0)->mflags = 0;
+    MNODE(a0)->mtxMode = 0;
+    MNODE(a0)->node.flags |= 0x200;
     p = (int *)(a0 + 0x18);
     goto mid;
 mid:
@@ -4499,13 +4502,13 @@ void MNode_handleMsg(int *a0, int *a1) {
         break;
     case 7:
         src = (float*)a1[0x4/4];
-        *(float*)((char*)a0 + 0xA0) = src[0];
-        *(float*)((char*)a0 + 0xA4) = src[1];
-        *(float*)((char*)a0 + 0xA8) = src[2];
+        MNODE(a0)->cmtx[3][0] = src[0];
+        MNODE(a0)->cmtx[3][1] = src[1];
+        MNODE(a0)->cmtx[3][2] = src[2];
         src = (float*)a1[0x4/4];
-        *(float*)((char*)a0 + 0x60) = src[0];
-        *(float*)((char*)a0 + 0x64) = src[1];
-        *(float*)((char*)a0 + 0x68) = src[2];
+        MNODE(a0)->mtx[3][0] = src[0];
+        MNODE(a0)->mtx[3][1] = src[1];
+        MNODE(a0)->mtx[3][2] = src[2];
         break;
     default:
         gl_func_00000000(a0, a1);
@@ -4571,7 +4574,7 @@ void MNode_vslot9_00039960(char *a0, char *a1) {
 }
 
 int *MNode_vslot10_00039988(int *a0) {
-    return (int*)((char*)a0 + 0x70);
+    return (int *)MNODE(a0)->cmtx;
 }
 
 void MNode_addChild(int *a0, int *a1) {
@@ -4612,12 +4615,12 @@ int *SNode_ctor(int *self) {
     gl_func_00000000(self, sSNodeName);
     ((Node *)self)->vptr = (s32)&SNode_vtbl;
     self[0x84/4] = 0;
-    *(float *)((char *)self + 0x74) = 0.0f;
-    *(float *)((char *)self + 0x78) = 0.0f;
-    *(float *)((char *)self + 0x7C) = 0.0f;
-    *(float *)((char *)self + 0x80) = 0.0f;
-    *(float *)((char *)self + 0x6C) = 0.0f;
-    *(float *)((char *)self + 0x70) = 1.0f;
+    SNODE(self)->rotX = 0.0f;
+    SNODE(self)->rotY = 0.0f;
+    SNODE(self)->rotZ = 0.0f;
+    SNODE(self)->radius = 0.0f;
+    SNODE(self)->height = 0.0f;
+    SNODE(self)->scale = 1.0f;
     gl_func_00000000((char *)self + 0x2C);
     arg = 19;
     gl_func_00000000(self, &arg);
@@ -4653,9 +4656,9 @@ void SNode_loadData(int *a0) {
     (void)pad_bot; (void)pad_top;
     (void)&a0;           /* spill a0 to its home slot (sp+0x40), reload each use */
     func_0004C2DC(buf);
-    *(float*)((char*)a0 + 0x5C) = buf[0];
-    *(float*)((char*)a0 + 0x60) = buf[1];
-    *(float*)((char*)a0 + 0x64) = buf[2];
+    SNODE(a0)->pos[0] = buf[0];
+    SNODE(a0)->pos[1] = buf[1];
+    SNODE(a0)->pos[2] = buf[2];
     func_0004C34C((char*)a0 + 0x6C);
     sp_arg = 19;
     {
@@ -4678,9 +4681,9 @@ extern int func_0004C414();
 void SNode_saveData(int *a0) {
     float buf[3];
     volatile int p0, p1, p2;
-    buf[0] = *(float*)((char*)a0 + 0x5C);
-    buf[1] = *(float*)((char*)a0 + 0x60);
-    buf[2] = *(float*)((char*)a0 + 0x64);
+    buf[0] = SNODE(a0)->pos[0];
+    buf[1] = SNODE(a0)->pos[1];
+    buf[2] = SNODE(a0)->pos[2];
     func_0004C3B4(buf, a0);
     func_0004C414((char*)a0 + 0x6C, a0);
 }
@@ -4714,25 +4717,25 @@ void SNode_handleMsg(int *a0, int *a1) {
     int state = a1[0];
     if (state == 7) {
         float *src = (float*)a1[1];
-        *(float*)((char*)a0 + 0x5C) = src[0];
-        *(float*)((char*)a0 + 0x60) = src[1];
-        *(float*)((char*)a0 + 0x64) = src[2];
+        SNODE(a0)->pos[0] = src[0];
+        SNODE(a0)->pos[1] = src[1];
+        SNODE(a0)->pos[2] = src[2];
     } else if (state == 19) {
         int *target = (int*)((char*)a0 + 0x2C);
         float scratch_a[3];
         float scratch_b[3];
         float scratch_c[3];
-        scratch_a[0] = *(float*)((char*)a0 + 0x5C);
-        scratch_a[1] = *(float*)((char*)a0 + 0x60);
-        scratch_a[2] = *(float*)((char*)a0 + 0x64);
+        scratch_a[0] = SNODE(a0)->pos[0];
+        scratch_a[1] = SNODE(a0)->pos[1];
+        scratch_a[2] = SNODE(a0)->pos[2];
         gl_func_00000000(target, scratch_a);
-        scratch_b[0] = *(float*)((char*)a0 + 0x70);
-        scratch_b[1] = *(float*)((char*)a0 + 0x70);
-        scratch_b[2] = *(float*)((char*)a0 + 0x70);
+        scratch_b[0] = SNODE(a0)->scale;
+        scratch_b[1] = SNODE(a0)->scale;
+        scratch_b[2] = SNODE(a0)->scale;
         gl_func_00000000(target, scratch_b);
-        scratch_c[0] = *(float*)((char*)a0 + 0x74);
-        scratch_c[1] = *(float*)((char*)a0 + 0x78);
-        scratch_c[2] = *(float*)((char*)a0 + 0x7C);
+        scratch_c[0] = SNODE(a0)->rotX;
+        scratch_c[1] = SNODE(a0)->rotY;
+        scratch_c[2] = SNODE(a0)->rotZ;
         gl_func_00000000(target, 2, scratch_c[2], 0);
         gl_func_00000000(target, 0, scratch_c[0], 0);
         gl_func_00000000(target, 1, scratch_c[1], 0);
@@ -5992,8 +5995,8 @@ int CollObjMgr_ctor(int *a0) {
     }
     gl_func_00000000(a0, sCollObjMgrName);
     ((Node *)a0)->vptr = (s32)&CollObjMgr_vtbl;
-    a0[0x2C/4] = 0;
-    a0[0x30/4] = 0;
+    COLLOBJMGR(a0)->statics = 0;
+    COLLOBJMGR(a0)->dynamics = 0;
 end:
     return (int)a0;
 }
@@ -6052,83 +6055,80 @@ end:
 #endif
 typedef char *(*GP_0003C86C)();
 #define SH_3C86C(p, o) (*(s16 *)((char *)(p) + (o)))
-/* contact-result scratch: normal at +0x00, partner ptr at +0x28, 0x40 total
-   (frame math: two of these at sp+0x40/sp+0x80 tile the 0xC0 frame exactly) */
-typedef struct {
-    f32 n[3];          /* 0x00 contact normal (negated for the B->A callback) */
-    char pad_C[0x1C];  /* 0x0C */
-    char *other;       /* 0x28 partner object */
-    char pad_2C[0x14]; /* 0x2C */
-} GCol_0003C86C;       /* 0x40 */
+/* contact-result scratch: a CollContact (include/gdl/coll.h; normal at +0x00, partner at +0x28,
+   0x40 total; frame math: two of these at sp+0x40/sp+0x80 tile the 0xC0 frame exactly).
+   agent-b run 500: in the field form the mask tests are spelled `hitMask & category` -- the raw
+   `SH(other, 0x16) & SH(self, 0x14)` order, kept as written, swaps the two lh (cfe orders the
+   operands of a commutative op differently for a field access than for a raw deref). */
 void CollObjMgr_update(char *arg0) {
-    GCol_0003C86C sp80;
-    GCol_0003C86C sp40;
+    CollContact sp80;
+    CollContact sp40;
     char *var_s1;
     char *var_s0;
     char *vt;
-    var_s1 = (char *) FW(arg0, 0x30);
+    var_s1 = (char *)COLLOBJMGR(arg0)->dynamics;
     if (var_s1 != 0) {
         do {
-            var_s0 = (char *) FW(var_s1, 4);
+            var_s0 = (char *)COLLOBJ(var_s1)->next;
             if (var_s0 != 0) {
                 do {
                     if (var_s0 != var_s1) {
-                        vt = (char *) FW(var_s1, 0x30);
+                        vt = (char *)COLLOBJ(var_s1)->vptr;
                         if (((GP_0003C86C) FW(vt, 0xC))(SH_3C86C(vt, 8) + var_s1, var_s0, &sp80) != 0) {
-                            if (SH_3C86C(var_s0, 0x16) & SH_3C86C(var_s1, 0x14)) {
-                                sp80.other = var_s0;
-                                vt = (char *) FW(var_s1, 0x30);
+                            if (COLLOBJ(var_s1)->hitMask & COLLOBJ(var_s0)->category) {
+                                sp80.other = COLLOBJ(var_s0);
+                                vt = (char *)COLLOBJ(var_s1)->vptr;
                                 ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s1, &sp80);
                             }
-                            if (SH_3C86C(var_s1, 0x16) & SH_3C86C(var_s0, 0x14)) {
-                                sp80.other = var_s1;
-                                sp80.n[0] *= -1.0f;
-                                sp80.n[1] *= -1.0f;
-                                sp80.n[2] *= -1.0f;
-                                vt = (char *) FW(var_s0, 0x30);
+                            if (COLLOBJ(var_s0)->hitMask & COLLOBJ(var_s1)->category) {
+                                sp80.other = COLLOBJ(var_s1);
+                                sp80.normal[0] *= -1.0f;
+                                sp80.normal[1] *= -1.0f;
+                                sp80.normal[2] *= -1.0f;
+                                vt = (char *)COLLOBJ(var_s0)->vptr;
                                 ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s0, &sp80);
                             }
                         }
                     }
-                    var_s0 = (char *) FW(var_s0, 4);
+                    var_s0 = (char *)COLLOBJ(var_s0)->next;
                 } while (var_s0 != 0);
             }
-            var_s1 = (char *) FW(var_s1, 4);
+            var_s1 = (char *)COLLOBJ(var_s1)->next;
         } while (var_s1 != 0);
     }
-    var_s1 = (char *) FW(arg0, 0x30);
+    var_s1 = (char *)COLLOBJMGR(arg0)->dynamics;
     if (var_s1 != 0) {
         do {
-            var_s0 = (char *) FW(arg0, 0x2C);
+            var_s0 = (char *)COLLOBJMGR(arg0)->statics;
             if (var_s0 != 0) {
                 do {
-                    vt = (char *) FW(var_s1, 0x30);
+                    vt = (char *)COLLOBJ(var_s1)->vptr;
                     if (((GP_0003C86C) FW(vt, 0xC))(SH_3C86C(vt, 8) + var_s1, var_s0, &sp40) != 0) {
-                        if (SH_3C86C(var_s0, 0x16) & SH_3C86C(var_s1, 0x14)) {
-                            sp40.other = var_s0;
-                            vt = (char *) FW(var_s1, 0x30);
+                        if (COLLOBJ(var_s1)->hitMask & COLLOBJ(var_s0)->category) {
+                            sp40.other = COLLOBJ(var_s0);
+                            vt = (char *)COLLOBJ(var_s1)->vptr;
                             ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s1, &sp40);
                         }
-                        if (SH_3C86C(var_s1, 0x16) & SH_3C86C(var_s0, 0x14)) {
-                            sp40.other = var_s1;
-                            sp40.n[0] *= -1.0f;
-                            sp40.n[1] *= -1.0f;
-                            sp40.n[2] *= -1.0f;
-                            vt = (char *) FW(var_s0, 0x30);
+                        if (COLLOBJ(var_s0)->hitMask & COLLOBJ(var_s1)->category) {
+                            sp40.other = COLLOBJ(var_s1);
+                            sp40.normal[0] *= -1.0f;
+                            sp40.normal[1] *= -1.0f;
+                            sp40.normal[2] *= -1.0f;
+                            vt = (char *)COLLOBJ(var_s0)->vptr;
                             ((GP_0003C86C) FW(vt, 0x14))(SH_3C86C(vt, 0x10) + var_s0, &sp40);
                         }
                     }
-                    var_s0 = (char *) FW(var_s0, 4);
+                    var_s0 = (char *)COLLOBJ(var_s0)->next;
                 } while (var_s0 != 0);
             }
-            var_s1 = (char *) FW(var_s1, 4);
+            var_s1 = (char *)COLLOBJ(var_s1)->next;
         } while (var_s1 != 0);
     }
 }
 
-void CollObjMgr_addStatic(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x2C); *(int*)((char*)a0 + 0x2C) = (int)a1; }
+void CollObjMgr_addStatic(int *a0, int *a1) { COLLOBJ(a1)->next = COLLOBJMGR(a0)->statics; COLLOBJMGR(a0)->statics = COLLOBJ(a1); }
 
-void CollObjMgr_addDynamic(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x30); *(int*)((char*)a0 + 0x30) = (int)a1; }
+void CollObjMgr_addDynamic(int *a0, int *a1) { COLLOBJ(a1)->next = COLLOBJMGR(a0)->dynamics; COLLOBJMGR(a0)->dynamics = COLLOBJ(a1); }
 
 /* coll_boxCtor_0003CAA0: 24-insn alloc-or-given Vec6-zero constructor. */
 int* coll_boxCtor_0003CAA0(int *a0) {
@@ -6136,15 +6136,15 @@ int* coll_boxCtor_0003CAA0(int *a0) {
         a0 = (int*)gl_func_00000000(0x34);
         if (a0 == 0) goto end;
     }
-    a0[0x30/4] = (int)&CollBox_vtbl;
-    a0[1] = 0;
-    a0[0] = 0;
-    *(float*)((char*)a0 + 0x18) = 0.0f;
-    *(float*)((char*)a0 + 0x1C) = 0.0f;
-    *(float*)((char*)a0 + 0x20) = 0.0f;
-    *(float*)((char*)a0 + 0x24) = 0.0f;
-    *(float*)((char*)a0 + 0x28) = 0.0f;
-    *(float*)((char*)a0 + 0x2C) = 0.0f;
+    COLLOBJ(a0)->vptr = (int)&CollBox_vtbl;
+    COLLOBJ(a0)->next = 0;
+    COLLOBJ(a0)->owner = 0;
+    COLLOBJ(a0)->pos[0] = 0.0f;
+    COLLOBJ(a0)->pos[1] = 0.0f;
+    COLLOBJ(a0)->pos[2] = 0.0f;
+    COLLOBJ(a0)->vel[0] = 0.0f;
+    COLLOBJ(a0)->vel[1] = 0.0f;
+    COLLOBJ(a0)->vel[2] = 0.0f;
 end:
     return a0;
 }
@@ -6155,12 +6155,12 @@ end:
  * emitted 0x16-before-0x14. */
 void CollObj_init(int *a0, int a1, int a2, short a3) {
     int v = 0xFFFF;
-    a0[0] = a1;
-    a0[2] = a2;
-    *(short*)((char*)a0 + 0x16) = v;
-    *(short*)((char*)a0 + 0x14) = v;
-    *(short*)((char*)a0 + 0xC) = a3;
-    a0[4] = 0;
+    COLLOBJ(a0)->owner = a1;
+    COLLOBJ(a0)->kind = a2;
+    COLLOBJ(a0)->category = v;
+    COLLOBJ(a0)->hitMask = v;
+    COLLOBJ(a0)->id = a3;
+    COLLOBJ(a0)->flags = 0;
 }
 
 /* 16-insn indirect dispatcher. Sibling of RaceTracker_sendTimeUpResult/DE80/DED0
@@ -6205,9 +6205,9 @@ extern int gl_func_00000000();
 
 void CollObj_initCylinder(char *a0, int a1, int a2, float a3, float a4) {
     gl_func_00000000(a0, a1, 1, (short)a2);
-    *(float*)(a0 + 0x3C) = a3;
-    *(float*)(a0 + 0x34) = a3;
-    *(float*)(a0 + 0x38) = a4;
+    COLLCYL(a0)->radius2 = a3;
+    COLLCYL(a0)->radius = a3;
+    COLLCYL(a0)->halfHeight = a4;
 }
 
 // CollObj_sphereHitTest — STRUCTURAL PASS (0x3E0 / 248 words, no episode).
@@ -6274,14 +6274,14 @@ s32 CollObj_sphereHitTest(char *arg0, char *arg1, char *arg2) {
     f32 sum[3];
 
     ret = 0;
-    if (*(s32 *)(arg1 + 0x8) == 1) {
+    if (COLLCYL(arg1)->obj.kind == 1) {
         fzero = 0.0f;
-        if (ABS3(dv.z = *(f32 *)(arg0 + 0x20) - *(f32 *)(arg1 + 0x20)) < 1000.0f) {
-            if (ABS3(dv.x = *(f32 *)(arg0 + 0x18) - *(f32 *)(arg1 + 0x18)) < 1000.0f) {
+        if (ABS3(dv.z = COLLCYL(arg0)->obj.pos[2] - COLLCYL(arg1)->obj.pos[2]) < 1000.0f) {
+            if (ABS3(dv.x = COLLCYL(arg0)->obj.pos[0] - COLLCYL(arg1)->obj.pos[0]) < 1000.0f) {
                 av = (f32 *)(arg0 + 0x24);
                 bv = (f32 *)(arg1 + 0x24);
-                if (ABS3(dv.y = *(f32 *)(arg0 + 0x1C) - *(f32 *)(arg1 + 0x1C)) <
-                    *(f32 *)(arg0 + 0x38) + *(f32 *)(arg1 + 0x38)) {
+                if (ABS3(dv.y = COLLCYL(arg0)->obj.pos[1] - COLLCYL(arg1)->obj.pos[1]) <
+                    COLLCYL(arg0)->halfHeight + COLLCYL(arg1)->halfHeight) {
                     tx = av[0] - bv[0];
                     ty = av[1] - bv[1];
                     tz = av[2] - bv[2]; if (1) {}
@@ -6304,30 +6304,30 @@ s32 CollObj_sphereHitTest(char *arg0, char *arg1, char *arg2) {
                     apos[1] = fzero;
                     bpos[1] = fzero;
                     if (gl_func_00000000_3cbb4r(apos, start, bpos,
-                            *(f32 *)(arg0 + 0x34) + *(f32 *)(arg1 + 0x34), out) != 0) {
+                            COLLCYL(arg0)->radius + COLLCYL(arg1)->radius, out) != 0) {
                         gl_func_00000000_3cbb4m(rel[0] * rel[0] + rel[1] * rel[1] + rel[2] * rel[2]);
-                        *(f32 *)(arg2 + 0xC) = -(rel[0] * out[0] + rel[1] * out[1] + rel[2] * out[2]);
-                        if (*(f32 *)(arg2 + 0xC) > fzero) {
+                        COLLCONTACT(arg2)->depth = -(rel[0] * out[0] + rel[1] * out[1] + rel[2] * out[2]);
+                        if (COLLCONTACT(arg2)->depth > fzero) {
                             gl_func_00000000_3cbb4n((f32 *)&dv);
                             ret = 1;
                             *(Tri3i *)tmp = *(Tri3i *)out;
-                            *(f32 *)(arg2 + 0x0) = tmp[0];
-                            *(f32 *)(arg2 + 0x4) = tmp[1];
-                            *(f32 *)(arg2 + 0x8) = tmp[2];
+                            COLLCONTACT(arg2)->normal[0] = tmp[0];
+                            COLLCONTACT(arg2)->normal[1] = tmp[1];
+                            COLLCONTACT(arg2)->normal[2] = tmp[2];
                         }
-                    } else if (*(s32 *)(arg1 + 0x10) & 1) {
-                        *(f32 *)(arg2 + 0x0) = fzero;
-                        *(f32 *)(arg2 + 0x4) = fzero;
-                        *(f32 *)(arg2 + 0x8) = fzero;
-                        *(f32 *)(arg2 + 0xC) = fzero;
+                    } else if (COLLCYL(arg1)->obj.flags & 1) {
+                        COLLCONTACT(arg2)->normal[0] = fzero;
+                        COLLCONTACT(arg2)->normal[1] = fzero;
+                        COLLCONTACT(arg2)->normal[2] = fzero;
+                        COLLCONTACT(arg2)->depth = fzero;
                         ret = 1;
                     }
                 }
             }
         }
     } else {
-        ret = ((s32 (*)()) * (s32 *)(*(char **)(arg1 + 0x30) + 0xC))(
-            arg1 + *(s16 *)(*(char **)(arg1 + 0x30) + 0x8), arg0, arg2);
+        ret = ((s32 (*)()) * (s32 *)((char *)COLLCYL(arg1)->obj.vptr + 0xC))(
+            arg1 + *(s16 *)((char *)COLLCYL(arg1)->obj.vptr + 0x8), arg0, arg2);
     }
     return ret;
 }
@@ -9224,9 +9224,9 @@ s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();
 void QNode_translate(int *a0, float dx, float dy, float dz) {
- *((float *) (((char *) a0) + 0xB4)) += dx; *((float *) (((char *) a0) + 0xB8)) += dy;
-  *((float *) (((char *) a0) + 0xBC)) += dz;
-  gl_func_00000000(((char *) a0) + 0xB4, ((char *) a0) + 0x30, a0);
+ QNODE(a0)->vqs.trans[0] += dx; QNODE(a0)->vqs.trans[1] += dy;
+  QNODE(a0)->vqs.trans[2] += dz;
+  gl_func_00000000(&QNODE(a0)->vqs, QNODE(a0)->mnode.mtx, a0); /* rebuild the local Mtx from the VQS */
 }
 
 
@@ -9523,23 +9523,23 @@ void QNode_handleMsg(char *a0, int *a1) {
     switch (*a1) {
     case 6: {
         d = *(V3_40CAC *)((char *)a1[1] + 0xEC);
-        *(float *)(a0 + 0xDC) = *(float *)(a0 + 0xDC) + d.x;
-        *(float *)(a0 + 0xE0) = *(float *)(a0 + 0xE0) + d.y;
-        *(float *)(a0 + 0xE4) = *(float *)(a0 + 0xE4) + d.z;
-        *(float *)(a0 + 0xB4) = *(float *)(a0 + 0xB4) + d.x;
-        *(float *)(a0 + 0xB8) = *(float *)(a0 + 0xB8) + d.y;
-        *(float *)(a0 + 0xBC) = *(float *)(a0 + 0xBC) + d.z;
+        QNODE(a0)->cvqs.trans[0] = QNODE(a0)->cvqs.trans[0] + d.x;
+        QNODE(a0)->cvqs.trans[1] = QNODE(a0)->cvqs.trans[1] + d.y;
+        QNODE(a0)->cvqs.trans[2] = QNODE(a0)->cvqs.trans[2] + d.z;
+        QNODE(a0)->vqs.trans[0] = QNODE(a0)->vqs.trans[0] + d.x;
+        QNODE(a0)->vqs.trans[1] = QNODE(a0)->vqs.trans[1] + d.y;
+        QNODE(a0)->vqs.trans[2] = QNODE(a0)->vqs.trans[2] + d.z;
         break;
     }
     case 7: {
         v = *(V3_40CAC *)a1[1];
-        *(float *)(a0 + 0xDC) = v.x;
-        *(float *)(a0 + 0xE0) = v.y;
-        *(float *)(a0 + 0xE4) = v.z;
+        QNODE(a0)->cvqs.trans[0] = v.x;
+        QNODE(a0)->cvqs.trans[1] = v.y;
+        QNODE(a0)->cvqs.trans[2] = v.z;
         v = *(V3_40CAC *)a1[1];
-        *(float *)(a0 + 0xB4) = v.x;
-        *(float *)(a0 + 0xB8) = v.y;
-        *(float *)(a0 + 0xBC) = v.z;
+        QNODE(a0)->vqs.trans[0] = v.x;
+        QNODE(a0)->vqs.trans[1] = v.y;
+        QNODE(a0)->vqs.trans[2] = v.z;
         gl_func_00000000();
         break;
     }
@@ -9675,18 +9675,18 @@ void QNode_vslot9_00041008(char *a0, char *a1) {
     ib = (W3 *)buf;
     if (0) { ib = 0; }                                       /* multi-def: block buf<->ib base CSE (float reads stay sp-based) */
     *ib = *(W3 *)(a1 + 0xD0);                                /* first lw is IDO-hoisted ABOVE addiu sp (was the splat mis-split) */
-    *(float *)(a0 + 0xB4) = buf[0];
-    *(float *)(a0 + 0xB8) = buf[1];
-    *(float *)(a0 + 0xBC) = buf[2];
+    QNODE(a0)->vqs.trans[0] = buf[0];
+    QNODE(a0)->vqs.trans[1] = buf[1];
+    QNODE(a0)->vqs.trans[2] = buf[2];
     *ib = *(W3 *)(a1 + 0xDC);
-    *(float *)(a0 + 0xC0) = buf[0];
-    *(float *)(a0 + 0xC4) = buf[1];
-    *(float *)(a0 + 0xC8) = buf[2];
+    QNODE(a0)->vqs.scale[0] = buf[0];
+    QNODE(a0)->vqs.scale[1] = buf[1];
+    QNODE(a0)->vqs.scale[2] = buf[2];
     *ib = *(W3 *)(a1 + 0xE8);
-    *(float *)(a0 + 0xCC) = buf[0];
-    *(float *)(a0 + 0xD0) = buf[1];
-    *(float *)(a0 + 0xD4) = buf[2];
-    *(float *)(a0 + 0xD8) = *(float *)(a1 + 0xF4);
+    QNODE(a0)->vqs.quat[0] = buf[0];
+    QNODE(a0)->vqs.quat[1] = buf[1];
+    QNODE(a0)->vqs.quat[2] = buf[2];
+    QNODE(a0)->vqs.quat[3] = ((Animator *)a1)->dst.quat[3];
 }
 
 /* hostio_readQuadParm_000410AC: 12-insn 2-call wrapper. Mid-function aliases
@@ -25937,21 +25937,21 @@ extern int gl_func_00000000();
 void MemTracker_ctor(int *a0, int a1) {
     int v0;
     int local_buf[26];
-    gl_func_00000000((char*)a0 + 0x24, a1);
-    gl_func_00000000(GL_DATA_STR(0x21C50, "MemTracker::MemTracker"));
+    gl_func_00000000(MEMTRACKER(a0)->name, a1);
+    gl_func_00000000((char*)&D_00000000 + 0x21C50);
     v0 = gl_func_00000000(a1, &local_buf[2]);
     if (v0 != 0) {
-        gl_func_00000000((char*)a0 + 0x24, &local_buf[2]);
+        gl_func_00000000(MEMTRACKER(a0)->name, &local_buf[2]);
     }
     if (*(int*)&gMemTrackerMgr == 0) {
         gl_func_00000000(GL_DATA_STR(0x21C68, "No MemtrackerMgr"));
     }
-    *(int*)((char*)a0 + 0x18) = 0;
-    *(int*)((char*)a0 + 0x14) = 0;
-    *(int*)((char*)a0 + 0x1C) = 0;
-    *(int*)((char*)a0 + 0x8) = 0;
+    MEMTRACKER(a0)->children = 0;
+    MEMTRACKER(a0)->sibling = 0;
+    MEMTRACKER(a0)->parent = 0;
+    MEMTRACKER(a0)->bytes = 0;
     gl_func_00000000();
-    *(int*)((char*)a0 + 0x10) = gl_func_00000000();
+    MEMTRACKER(a0)->heapId = gl_func_00000000();
 }
 
 /* MemTracker_printTree: 47-insn header-dump + chain-walk debug formatter (0xBC, frame 0x70).
@@ -25990,14 +25990,14 @@ void MemTracker_printTree(int *a0) {
     char buf[64];
     float ratio;
     int *s0;
-    ratio = (float)(u32)a0[0x8 / 4] / (f32)1024;
-    *(float *)((char *)a0 + 0xC) = ratio;
-    gl_func_00000000(buf, GL_DATA_STR(0x21C7C, "%s - %5.1fk\n"), (char *)a0 + 0x24, (double)ratio);
+    ratio = (float)MEMTRACKER(a0)->bytes / (f32)1024;
+    MEMTRACKER(a0)->kb = ratio;
+    gl_func_00000000(buf, (char *)&D_00000000 + 0x21C7C, MEMTRACKER(a0)->name, (double)ratio);
     gl_func_00000000(&gHostio, buf, 0);
-    s0 = (int*)a0[0x18 / 4];
+    s0 = (int *)MEMTRACKER(a0)->children;
     while (s0 != 0) {
         gl_func_00000000(s0);
-        s0 = (int*)s0[0x14 / 4];
+        s0 = (int *)MEMTRACKER(s0)->sibling;
     }
     gl_func_00000000(&gHostio);
 }
@@ -26016,21 +26016,21 @@ int memtrack_find(char *a0) {
     char *g;
     if (gl_func_00000000(a0, buf)) a0 = buf;
     g = *(char**)&gMemTrackerMgr;
-    if (g != NULL) return gl_func_00000000(g, a0, *(int*)(g + 0x44));
+    if (g != NULL) return gl_func_00000000(g, a0, MEMTRACKERMGR(g)->root);
     return 0;
 }
 
 int MemTracker_find_00060028(int* a0, int a1) {
     int* n;
     int r;
-    if (!gl_func_00000000((char*)a0 + 0x24, a1, a0)) {
+    if (!gl_func_00000000(MEMTRACKER(a0)->name, a1, a0)) {
         return (int)a0;
     }
-    n = (int*)a0[6];  // a0->0x18
+    n = (int *)MEMTRACKER(a0)->children;
     while (n != 0) {
         r = gl_func_00000000(n, a1);
         if (r != 0) return r;
-        n = (int*)n[5];  // n->0x14
+        n = (int *)MEMTRACKER(n)->sibling;
     }
     return 0;
 }
@@ -26196,16 +26196,16 @@ void MemTracker_printByName(char *a0) {
  *     1/1024 (lui 0x3A80); `(float)1024` in a local also works. */
 void MemTracker_printEntry(int *a0) {
     int **pp = &a0;
-    gl_func_00000000(GL_DATA_STR(0x21CD8, "  %s = %6.3fk\n"), (char *)*pp + 0x24,
-                     (double)((float)(unsigned int)(*pp)[2] / 1024));
+    gl_func_00000000((char *)&D_00000000 + 0x21CD8, MEMTRACKER(*pp)->name,
+                     (double)((float)MEMTRACKER(*pp)->bytes / 1024));
 }
 
 void MemTracker_walk_00060318(int *a0, int a1) {
-    int *p = (int*)a0[0x18/4];
-    if (a1 == a0[0x10/4]) a0[0x8/4] = 0;
+    int *p = (int *)MEMTRACKER(a0)->children;
+    if (a1 == MEMTRACKER(a0)->heapId) MEMTRACKER(a0)->bytes = 0;
     while (p != 0) {
         func_00000000(p, a1);
-        p = (int*)p[0x14/4];
+        p = (int *)MEMTRACKER(p)->sibling;
     }
 }
 
@@ -26223,18 +26223,18 @@ char *MemTrackerMgr_ctor(char *o) {
     char *a;
     int b;
     char *c;
-    int *p;
+    MemTrackerPool *p;
     if (o == 0) {
         o = (char *)gl_func_00000000(72);
         if (o == 0) goto out;
     }
     gl_func_00000000(o, sMemTrackerMgrName);
-    *(int **)(o + 0x28) = &MemTrackerMgr_vtbl_sym_a_00060370;
-    p = (int *)(o + 44);
-    if (p != 0 || (p = (int *)gl_func_00000000(20)) != 0) {
-        p[2] = 80;
-        p[3] = 0;
-        p[0] = gl_func_00000000(5440);
+    MEMTRACKERMGR(o)->node.vptr = (int)&MemTrackerMgr_vtbl_sym_a_00060370;
+    p = &MEMTRACKERMGR(o)->pool;
+    if (p != 0 || (p = (MemTrackerPool *)gl_func_00000000(20)) != 0) {
+        p->capacity = 80;
+        p->count = 0;
+        p->items = (MemTracker *)gl_func_00000000(5440);
     }
     gMemTrackerMgr_global_00060370 = o;
     gl_func_00000000(o);
@@ -26242,8 +26242,8 @@ char *MemTrackerMgr_ctor(char *o) {
     b = gl_func_00000000(&gSysLib_sym_b_00060370);
     c = (char *)gl_func_00000000(sMemTrackBootUp, 0);
     gl_func_00000000();
-    *(int *)(c + 8) = b;
-    *(int *)(a + 8) += b;
+    MEMTRACKER(c)->bytes = b;
+    MEMTRACKER(a)->bytes += b;
 out:
     return o;
 }
@@ -26265,24 +26265,24 @@ void MemTrackerMgr_hostioParms(int *a0) {
     int *q;
     int v;
     v = gl_func_00000000();
-    ((R_00060468 *)a0[0x44 / 4])->b = v;
-    q = &((R_00060468 *)a0[0x44 / 4])->c;
-    p = (R_00060468 *)a0[0x44 / 4];
+    ((R_00060468 *)MEMTRACKERMGR(a0)->root)->b = v;
+    q = &((R_00060468 *)MEMTRACKERMGR(a0)->root)->c;
+    p = (R_00060468 *)MEMTRACKERMGR(a0)->root;
     *q += p->b - p->a;
-    gl_func_00000000(a0[0x44 / 4], q);
-    ((R_00060468 *)a0[0x44 / 4])->a = gl_func_00000000();
+    gl_func_00000000(MEMTRACKERMGR(a0)->root, q);
+    ((R_00060468 *)MEMTRACKERMGR(a0)->root)->a = gl_func_00000000();
 }
 
 /* memtrack_walk: 23-insn linked-list walk-and-call. Walks a2->[0x18]
  * via [0x14] next-ptrs; calls gl_func(node, a1) on each; stops on first
  * non-zero return. Returns the last call's result (or 0). */
 int memtrack_walk(int a0_unused, int a1, int *a2) {
-    int *p = (int*)a2[0x18/4];
+    int *p = (int *)MEMTRACKER(a2)->children;
     int rc = 0;
     while (p != 0) {
         rc = gl_func_00000000(p, a1);
         if (rc != 0) break;
-        p = (int*)p[0x14/4];
+        p = (int *)MEMTRACKER(p)->sibling;
     }
     return rc;
 }
@@ -26306,8 +26306,8 @@ void MemTracker_walkAll(int *a0_arg, int a1_arg) {
 }
 
 void MemTrackerMgr_clearList(int *a0) {
-    *(int*)((char*)a0 + 0x40) = 0;
-    *(int*)((char*)a0 + 0x44) = 0;
+    MEMTRACKERMGR(a0)->open = 0;
+    MEMTRACKERMGR(a0)->root = 0;
 }
 
 /* TextWin_ctor — grid/table constructor (0x27C / 159 insns).
@@ -26322,8 +26322,7 @@ void MemTrackerMgr_clearList(int *a0) {
  * the s1 copy, and the (arg2+1) CSE spill moves from sp+0x20 to sp+0x24
  * (docs/IDO_CODEGEN.md#feedback-ido-remove-local-recompute-inline-for-jal-delay-spill,
  * arg-alias extension). */
-typedef struct { int a, b, c, d; } S_00060584;
-typedef struct { char *row; int pad; } R_00060584;
+typedef struct { int a, b, c, d; } S_00060584; /* TextWin.colour, passed by value */
 void *TextWin_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, int arg5, S_00060584 s) {
     int i;
 
@@ -26331,68 +26330,69 @@ void *TextWin_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, int arg5,
         arg0 = (char *)gl_func_00000000(0x58);
         if (arg0 == 0) goto end;
     }
-    *(int *)(arg0 + 0x40) = arg1;
-    *(S_00060584 *)(arg0 + 0x48) = s;
-    *(int *)(arg0 + 0x44) = gl_func_00000000();
-    *(int *)(arg0 + 0xC) = arg3;
-    *(int *)(arg0 + 0x8) = arg2;
-    *(int *)(arg0 + 0x14) = arg5;
-    *(int *)(arg0 + 0x1C) = arg4;
-    *(int *)(arg0 + 0x18) = 0;
-    *(int *)(arg0 + 0x10) = 0;
-    *(int *)(arg0 + 0x4) = gl_func_00000000((arg2 + 1) * arg3);
-    *(int *)(arg0 + 0x0) = gl_func_00000000(arg3 * 8);
+    TEXTWIN(arg0)->title = (char *)arg1;
+    *(S_00060584 *)TEXTWIN(arg0)->colour = s;
+    TEXTWIN(arg0)->owner = gl_func_00000000();
+    TEXTWIN(arg0)->nRows = arg3;
+    TEXTWIN(arg0)->maxCols = arg2;
+    TEXTWIN(arg0)->visRows = arg5;
+    TEXTWIN(arg0)->cols = arg4;
+    TEXTWIN(arg0)->top = 0;
+    TEXTWIN(arg0)->hScroll = 0;
+    TEXTWIN(arg0)->buf = (char *)gl_func_00000000((arg2 + 1) * arg3);
+    TEXTWIN(arg0)->rows = (TextWinRow *)gl_func_00000000(arg3 * 8);
     for (i = 0; i < arg3; i++) {
-        ((R_00060584 *)*(int *)(arg0 + 0x0))[i].row = (char *)(*(int *)(arg0 + 0x4) + (i * (arg2 + 1)));
-        ((R_00060584 *)*(int *)(arg0 + 0x0))[i].row[arg2] = 0;
+        TEXTWIN(arg0)->rows[i].text = TEXTWIN(arg0)->buf + (i * (arg2 + 1));
+        TEXTWIN(arg0)->rows[i].text[arg2] = 0;
     }
     gl_func_00000000(arg0);
-    *(int *)(arg0 + 0x28) = 8;
-    *(int *)(arg0 + 0x24) = 6;
-    *(int *)(arg0 + 0x2C) = 0x14;
-    *(int *)(arg0 + 0x30) = 0x28;
-    *(int *)(arg0 + 0x34) = 0;
+    TEXTWIN(arg0)->ch = 8;
+    TEXTWIN(arg0)->cw = 6;
+    TEXTWIN(arg0)->x = 0x14;
+    TEXTWIN(arg0)->y = 0x28;
+    TEXTWIN(arg0)->muted = 0;
     gl_func_00000000(D_00000000, arg0);
 end:
     return arg0;
 }
 
-void TextWin_toggleFlag34(int *a0) { *(int*)((char*)a0 + 0x34) ^= 0x1; }
+void TextWin_toggleFlag34(int *a0) { TEXTWIN(a0)->muted ^= 0x1; }
 
+/* The four ConsoleMgr_scroll* helpers take the TextWin (include/gdl/console.h), not the ConsoleMgr. */
 void ConsoleMgr_scrollUp(int *a0) {
-    int v = *(int*)((char*)a0 + 0x18);
+    int v = TEXTWIN(a0)->top;
     if (v > 0) {
-        *(int*)((char*)a0 + 0x18) = v - 1;
+        TEXTWIN(a0)->top = v - 1;
     }
 }
 
-// Bump field 0x18 by 1 when it's below the (0xC-0x14) span and 0x18+0x14 fits
-// under field 0x20. LANDED fuzzy=100. Historical INSN_PATCH (3/16,
+// Bump top by 1 when it's below nRows - visRows and cur is past the last visible
+// row. LANDED fuzzy=100. Historical INSN_PATCH (3/16,
 // register-exact reorder for t8<->t9 inner-compare-trio renumber) was
 // REMOVED 2026-05-23 as match-faking; function still lands.
 void ConsoleMgr_scrollDown(int *a0)
 {
-  if (a0[6] < (a0[3] - a0[5]))
+  if (TEXTWIN(a0)->top < (TEXTWIN(a0)->nRows - TEXTWIN(a0)->visRows))
   {
-    if ((a0[8] + 1) > (a0[5] + a0[6]))
+    if ((TEXTWIN(a0)->cur + 1) > (TEXTWIN(a0)->top + TEXTWIN(a0)->visRows)) /* field form: operands swapped vs the a0[5] + a0[6] array form for the same addu order */
     {
-      a0[6]++;
+      TEXTWIN(a0)->top++;
     }
   }
 }
 
 
 void ConsoleMgr_scrollLeft(int *a0) {
-    int v = *(int*)((char*)a0 + 0x10);
+    int v = TEXTWIN(a0)->hScroll;
     if (v > 0) {
-        *(int*)((char*)a0 + 0x10) = v - 1;
+        TEXTWIN(a0)->hScroll = v - 1;
     }
 }
 
 void ConsoleMgr_scrollRight(int *a0) {
-    int v = a0[4];
-    if (v < a0[2] - a0[7]) {
-        a0[4] = v + 1;
+    int v = TEXTWIN(a0)->hScroll;
+    if (v < TEXTWIN(a0)->maxCols - TEXTWIN(a0)->cols) {
+        TEXTWIN(a0)->hScroll = v + 1;
     }
 }
 
@@ -26423,7 +26423,7 @@ extern int D_00000000;
 extern int D_60A88_owner;
 extern int gl_func_00000000();
 void TextWin_printf(int a0, int a1, ...) {
-    if (*(int *)((char *)a0 + 0x34) == 0) {
+    if (TEXTWIN(a0)->muted == 0) {
         char *ap = (char *)(((int)&a1 + 4 + 3) & ~3);
         D_60A88_owner = a0;
         gl_func_00000000(&D_00000000, 0, a1, ap);
@@ -26498,14 +26498,14 @@ int TextWin_write(int *self, int a1, char *src, int count) {
         end = count + src;
         do {
             unsigned char ch = *cursor;
-            rec = (int*)(self[0] + self[0x20 / 4] * 8);
+            rec = (int*)((int)TEXTWIN(self)->rows + TEXTWIN(self)->cur * 8);
             if (ch == 10) {
                 *(char*)(rec[0] + rec[1]) = 0;
                 gl_func_00000000(self);
                 cursor++;
             } else {
                 a1 = rec[1];
-                if (a1 >= self[8 / 4]) {
+                if (a1 >= TEXTWIN(self)->maxCols) {
                     *(char*)(rec[0] + a1) = 0;
                     gl_func_00000000(self);
                     cursor--;
@@ -26517,7 +26517,7 @@ int TextWin_write(int *self, int a1, char *src, int count) {
             }
         } while (cursor < end);
     }
-    rec = (int*)(self[0] + self[0x20 / 4] * 8);
+    rec = (int*)((int)TEXTWIN(self)->rows + TEXTWIN(self)->cur * 8);
     *(char*)(rec[0] + rec[1]) = 0;
     return 1;
 }
@@ -26536,37 +26536,25 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", TextWin_write);
  * Line-buffer advance (the newline / overflow callback of the 60AD0 word-wrap
  * filler): if there is a spare line below cur, bump cur; else rotate line 0
  * to the end (8-byte {buf,len} struct copies, index i + strength-reduced
- * i*8 in v1) and clear it. Then visible = cur - top + 1, clamped at 0.
- * Sibling of TextWin_clear (same {buf,len}[count] layout). */
-typedef struct { char *buf; int len; } LineRec60BD4;
-typedef struct {
-    LineRec60BD4 *recs;  /* 0x00 */
-    int w04;             /* 0x04 */
-    int limit;           /* 0x08 max chars per line (60AD0) */
-    int count;           /* 0x0C line count */
-    int w10;             /* 0x10 */
-    int top;             /* 0x14 */
-    int visible;         /* 0x18 */
-    int w1c;             /* 0x1C */
-    int cur;             /* 0x20 current line index */
-} LineBuf60BD4;
-void TextWin_newLine(LineBuf60BD4 *self) {
+ * i*8 in v1) and clear it. Then top = cur - visRows + 1, clamped at 0.
+ * Sibling of TextWin_clear (same {text,len}[nRows] layout: include/gdl/console.h). */
+void TextWin_newLine(TextWin *self) {
     int cur = self->cur;
-    if (cur < self->count - 1) {
+    if (cur < self->nRows - 1) {
         self->cur = cur + 1;
     } else {
-        LineRec60BD4 tmp;
+        TextWinRow tmp;
         int i;
-        tmp = self->recs[0];
-        for (i = 0; i < self->count - 1; i++) {
-            self->recs[i] = self->recs[i + 1];
+        tmp = self->rows[0];
+        for (i = 0; i < self->nRows - 1; i++) {
+            self->rows[i] = self->rows[i + 1];
         }
-        self->recs[i] = tmp;
-        self->recs[i].buf[0] = 0;
-        self->recs[i].len = 0;
+        self->rows[i] = tmp;
+        self->rows[i].text[0] = 0;
+        self->rows[i].len = 0;
     }
-    self->visible = self->cur - self->top + 1;
-    if (self->visible < 0) self->visible = 0;
+    self->top = self->cur - self->visRows + 1;
+    if (self->top < 0) self->top = 0;
 }
 
 // Per-entry reset over a0->0xC entries of an 8-byte-stride array at a0->0:
@@ -26576,15 +26564,15 @@ void TextWin_newLine(LineBuf60BD4 *self) {
 void TextWin_clear(int *a0) {
     int i = 0;
     int off = 0;
-    if (a0[3] > 0) {
+    if (TEXTWIN(a0)->nRows > 0) {
         do {
-            *(char *)(*(int *)((char *)a0[0] + off)) = 0;
-            *(int *)((char *)a0[0] + off + 4) = 0;
+            *(char *)(*(int *)((char *)TEXTWIN(a0)->rows + off)) = 0;
+            *(int *)((char *)TEXTWIN(a0)->rows + off + 4) = 0;
             off += 8;
             i++;
-        } while (i < a0[3]);
+        } while (i < TEXTWIN(a0)->nRows);
     }
-    a0[8] = 0;
+    TEXTWIN(a0)->cur = 0;
 }
 
 extern int gl_func_00000000();
@@ -26607,13 +26595,13 @@ int* ConsoleMgr_ctor(int *s0) {
         if (s0 == 0) goto end;
     }
     gl_func_00000000(s0, sConsoleMgrName);
-    s0[0x28/4] = (int)&ConsoleMgr_vtbl;
-    s0[0x34/4] = 0;
-    s0[0x30/4] = 0;
-    s0[0x2C/4] = 0;
+    CONSOLEMGR(s0)->node.vptr = (int)&ConsoleMgr_vtbl;
+    CONSOLEMGR(s0)->input = 0;
+    CONSOLEMGR(s0)->winList = 0;
+    CONSOLEMGR(s0)->curWin = 0;
     gl_func_00000000(s0, 0);
     gl_func_00000000(s0, 3);
-    s0[0x38/4] = 0;
+    CONSOLEMGR(s0)->unk38 = 0;
 end:
     return s0;
 }
@@ -26633,41 +26621,41 @@ void ConsoleMgr_update(int a0) {
  * of it. The first 0x800-arm call passes NO argument: the target's `jal; nop`
  * leaves a0 = self from entry (an explicit `self` arg emits `or a0,s1`). */
 void ConsoleMgr_display(int *self) {
-    int *s0 = (int*)self[0x2C / 4];
+    int *s0 = (int *)CONSOLEMGR(self)->curWin;
     volatile int *v0;
     if (s0 == 0) return;
-    v0 = (volatile int*)self[0x34 / 4];
+    v0 = (volatile int *)CONSOLEMGR(self)->input;
     if (v0[0x10 / 4] & 0x800) {
         if (v0[0x18 / 4] & 0x1) {
             gl_func_00000000();
-            v0 = (volatile int*)self[0x34 / 4];
+            v0 = (volatile int *)CONSOLEMGR(self)->input;
         }
         if (v0[0x18 / 4] & 0x2) {
             gl_func_00000000(self);
         }
-        s0 = (int*)self[0x2C / 4];
+        s0 = (int *)CONSOLEMGR(self)->curWin;
     } else {
         if (v0[0x10 / 4] & 0x4) {
             gl_func_00000000(s0);
-            s0 = (int*)self[0x2C / 4];
-            v0 = (volatile int*)self[0x34 / 4];
+            s0 = (int *)CONSOLEMGR(self)->curWin;
+            v0 = (volatile int *)CONSOLEMGR(self)->input;
         }
         if (v0[0x10 / 4] & 0x8) {
             gl_func_00000000(s0);
-            s0 = (int*)self[0x2C / 4];
-            v0 = (volatile int*)self[0x34 / 4];
+            s0 = (int *)CONSOLEMGR(self)->curWin;
+            v0 = (volatile int *)CONSOLEMGR(self)->input;
         }
         if (v0[0x10 / 4] & 0x1) {
             gl_func_00000000(s0);
-            s0 = (int*)self[0x2C / 4];
-            v0 = (volatile int*)self[0x34 / 4];
+            s0 = (int *)CONSOLEMGR(self)->curWin;
+            v0 = (volatile int *)CONSOLEMGR(self)->input;
         }
         if (v0[0x10 / 4] & 0x2) {
             gl_func_00000000(s0);
-            s0 = (int*)self[0x2C / 4];
+            s0 = (int *)CONSOLEMGR(self)->curWin;
         }
     }
-    gl_func_00000000(s0, self[0x38 / 4]);
+    gl_func_00000000(s0, CONSOLEMGR(self)->unk38);
 }
 
 /* TextWin_remove_00060ED0: walk a circular list (head a0->0x30, next at node->0x38),
@@ -26678,16 +26666,16 @@ extern int gl_func_00000000();
 void TextWin_remove_00060ED0(int *a0, int a1) {
     int *self = a0;
     int key = a1;
-    int *node = (int *)a0[0xC];
+    int *node = (int *)CONSOLEMGR(a0)->winList;
     if (node == 0) {
         return;
     }
     do {
-        if (key == node[0x11]) {
+        if (key == TEXTWIN(node)->owner) {
             gl_func_00000000(self, node);
         }
-        node = (int *)node[0xE];
-        if (node == (int *)self[0xC]) {
+        node = (int *)TEXTWIN(node)->next;
+        if (node == (int *)CONSOLEMGR(self)->winList) {
             node = 0;
         }
     } while (node != 0);
@@ -26700,17 +26688,17 @@ void TextWin_remove_00060ED0(int *a0, int a1) {
  * points to itself; else splice a1 before head (the 3x arg0->0x30 reloads are
  * forced by the intervening stores). */
 void TextWin_link_00060F44(int *a0, int *a1) {
-    int *v0 = (int*)a0[0x30 / 4];
+    int *v0 = (int *)CONSOLEMGR(a0)->winList;
     if (v0 == 0) {
-        a1[0x3C / 4] = (int)a1;
-        a1[0x38 / 4] = (int)a1;
-        a0[0x30 / 4] = (int)a1;
-        a0[0x2C / 4] = (int)a1;
+        TEXTWIN(a1)->prev = TEXTWIN(a1);
+        TEXTWIN(a1)->next = TEXTWIN(a1);
+        CONSOLEMGR(a0)->winList = TEXTWIN(a1);
+        CONSOLEMGR(a0)->curWin = TEXTWIN(a1);
     } else {
-        a1[0x38 / 4] = (int)v0;
-        a1[0x3C / 4] = ((int*)a0[0x30 / 4])[0x3C / 4];
-        ((int*)((int*)a0[0x30 / 4])[0x3C / 4])[0x38 / 4] = (int)a1;
-        ((int*)a0[0x30 / 4])[0x3C / 4] = (int)a1;
+        TEXTWIN(a1)->next = TEXTWIN(v0);
+        TEXTWIN(a1)->prev = CONSOLEMGR(a0)->winList->prev;
+        CONSOLEMGR(a0)->winList->prev->next = TEXTWIN(a1);
+        CONSOLEMGR(a0)->winList->prev = TEXTWIN(a1);
     }
 }
 
@@ -26723,36 +26711,36 @@ void TextWin_link_00060F44(int *a0, int *a1) {
  * (mine had an extra `or a2,a0,zero` move). The prior "branch-likely-reorg cap"
  * comment was a misdiagnosis — it was a 2-statement-order regalloc lever. */
 void TextWin_unlink_00060F90(int *a0, int *a1) {
-    int *next = (int *)a1[15];
-    int *prev = (int *)a1[14];
+    int *next = (int *)TEXTWIN(a1)->prev; /* the local names predate the struct: "next" is the ring's prev link */
+    int *prev = (int *)TEXTWIN(a1)->next;
     int cur;
     if (next == prev) {
         if (a1 == prev) {
-            a0[12] = 0;
+            CONSOLEMGR(a0)->winList = 0;
             cur = 0;
             goto end;
         }
     }
-    prev[15] = (int)next;
-    ((int *)a1[15])[14] = a1[14];
-    cur = a0[12];
-    if (a1 == (int *)a0[12]) {
-        cur = a1[14];
-        a0[12] = a1[14];
+    TEXTWIN(prev)->prev = TEXTWIN(next);
+    TEXTWIN(a1)->prev->next = TEXTWIN(a1)->next;
+    cur = (int)CONSOLEMGR(a0)->winList;
+    if (a1 == (int *)CONSOLEMGR(a0)->winList) {
+        cur = (int)TEXTWIN(a1)->next;
+        CONSOLEMGR(a0)->winList = TEXTWIN(a1)->next;
     }
 end:
-    a0[11] = cur;
+    CONSOLEMGR(a0)->curWin = (TextWin *)cur;
 }
 
-void ConsoleMgr_nextWin(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x38); }
+void ConsoleMgr_nextWin(int *a0) { CONSOLEMGR(a0)->curWin = CONSOLEMGR(a0)->curWin->next; }
 
-void ConsoleMgr_prevWin(int *a0) { *(int*)((char*)a0 + 0x2C) = *(int*)((char*)(*(int*)((char*)a0 + 0x2C)) + 0x3C); }
+void ConsoleMgr_prevWin(int *a0) { CONSOLEMGR(a0)->curWin = CONSOLEMGR(a0)->curWin->prev; }
 
 /* Conditional flag set/clear on a0->0x18 bit 2. Merged: success-clear path
  * (61018: *p &= ~4) was splat-split off as game_libs_func_00061018, UNSHARED
  * (only 60FFC's beqz reaches it); merged back (0x1C -> 0x34). */
 void ConsoleMgr_setFlag_00060FFC(int *a0, int a1) {
-    int *p = (int*)((char*)a0 + 0x18);
+    int *p = &CONSOLEMGR(a0)->node.doFlags; /* DoDisplay = console visible */
     if (a1) {
         *p |= 4;
     } else {
@@ -26760,7 +26748,7 @@ void ConsoleMgr_setFlag_00060FFC(int *a0, int a1) {
     }
 }
 
-void ConsoleMgr_toggleVisible(int *a0) { *(int*)((char*)a0 + 0x18) ^= 0x4; }
+void ConsoleMgr_toggleVisible(int *a0) { CONSOLEMGR(a0)->node.doFlags ^= 0x4; }
 
 /* Hex formatter: writes the 8 nibbles of arg1 (high first) as chars from the
  * hex LUT (&D_00000000), NUL-terminates, returns the end ptr. A plain rolled
@@ -27971,32 +27959,32 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
             ((a0p = v1p, (v1p != 0)) || (a0p = (int *)gl_func_00000000(4, a1p), (a0p != 0)))) {
             *a0p = 0;
         }
-        *(int *)(self + 0x10C) = arg4;
-        *(int *)(self + 0x54) = arg1;
-        *(int *)(self + 8) |= 0x1000;
-        *(int *)(self + 0x48) = arg3;
+        ((Animator *)self)->nodeIndex = arg4;
+        ((Animator *)self)->target = arg1;
+        ((Animator *)self)->node.flags |= 0x1000;
+        ((Animator *)self)->unk48 = arg3;
         *a1p &= ~1;
-        if (0) { *(float *)(self + 0xF4) = 1.0f; }
-        *(float *)(self + 0xF0) = 0.0f;
-    *(float *)(self + 0xEC) = 0.0f;
-    *(float *)(self + 0xE8) = 0.0f;
-    *(float *)(self + 0xD8) = 0.0f;
-    *(float *)(self + 0xD4) = 0.0f;
-    *(float *)(self + 0xD0) = 0.0f;
-    *(float *)(self + 0x78) = 0.0f;
-    *(float *)(self + 0x74) = 0.0f;
-    *(float *)(self + 0x70) = 0.0f;
-    *(float *)(self + 0x60) = 0.0f;
-    *(float *)(self + 0x5C) = 0.0f;
-    *(float *)(self + 0x58) = 0.0f;
-    *(float *)(self + 0xF4) = 1.0f;
-    *(float *)(self + 0xDC) = 1.0f;
-    *(float *)(self + 0xE0) = 1.0f;
-    *(float *)(self + 0xE4) = 1.0f;
-    *(float *)(self + 0x7C) = 1.0f;
-    *(float *)(self + 0x64) = 1.0f;
-    *(float *)(self + 0x68) = 1.0f;
-    *(float *)(self + 0x6C) = 1.0f;
+        if (0) { ((Animator *)self)->dst.quat[3] = 1.0f; }
+        ((Animator *)self)->dst.quat[2] = 0.0f;
+    ((Animator *)self)->dst.quat[1] = 0.0f;
+    ((Animator *)self)->dst.quat[0] = 0.0f;
+    ((Animator *)self)->dst.trans[2] = 0.0f;
+    ((Animator *)self)->dst.trans[1] = 0.0f;
+    ((Animator *)self)->dst.trans[0] = 0.0f;
+    ((Animator *)self)->rest.quat[2] = 0.0f;
+    ((Animator *)self)->rest.quat[1] = 0.0f;
+    ((Animator *)self)->rest.quat[0] = 0.0f;
+    ((Animator *)self)->rest.trans[2] = 0.0f;
+    ((Animator *)self)->rest.trans[1] = 0.0f;
+    ((Animator *)self)->rest.trans[0] = 0.0f;
+    ((Animator *)self)->dst.quat[3] = 1.0f;
+    ((Animator *)self)->dst.scale[0] = 1.0f;
+    ((Animator *)self)->dst.scale[1] = 1.0f;
+    ((Animator *)self)->dst.scale[2] = 1.0f;
+    ((Animator *)self)->rest.quat[3] = 1.0f;
+    ((Animator *)self)->rest.scale[0] = 1.0f;
+    ((Animator *)self)->rest.scale[1] = 1.0f;
+    ((Animator *)self)->rest.scale[2] = 1.0f;
         gl_func_00000000(arg2 + 0x30, self);
     }
     return self;

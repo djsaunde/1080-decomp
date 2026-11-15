@@ -1,6 +1,8 @@
 #ifndef GDL_MEM_H
 #define GDL_MEM_H
 
+#include "gdl/node.h"
+
 /* libgdl heap ("Mem::Alloc" / "Mem::Free", game_libs 0x5AFD4-0x5B90C in
  * src/game_libs/game_libs_post0b.c). A heap is two circular doubly linked
  * block lists: the free list (its sentinel is the heap head itself, so the
@@ -40,5 +42,51 @@ typedef char MemBlock_size_check[sizeof(MemBlock) == 0x10 ? 1 : -1];
 typedef char MemHeap_usedList_check[(int)&((MemHeap *)0)->usedList == 0x10 ? 1 : -1];
 typedef char MemHeap_id_check[(int)&((MemHeap *)0)->id == 0x20 ? 1 : -1];
 typedef char MemHeap_usedSize_check[(int)&((MemHeap *)0)->usedSize == 0x24 ? 1 : -1];
+
+/* Memory accounting (game_libs 0x5FE14-0x60370, MemTracker_* / memtrack_*).
+ * A MemTracker (0x44) is one named section ("Total", "BootUp", ...) of a tree:
+ * memtrack_begin(name) finds or appends the child of the open tracker, makes it
+ * the open one (saving the previous in prevOpen) and records a start mark from
+ * the heap; the end call folds (endMark - startMark) into bytes
+ * (MemTrackerMgr_hostioParms does the same for the root). MemTracker_printTree /
+ * MemTracker_printEntry print bytes / 1024 as KB. Trackers are 68-byte records
+ * of the manager's pool (MemTracker_listAppend; ctor alloc(80 * 68)). */
+typedef struct MemTracker {
+    /* 0x00 */ s32 startMark;       /* heap mark at begin */
+    /* 0x04 */ s32 endMark;
+    /* 0x08 */ u32 bytes;           /* accumulated endMark - startMark */
+    /* 0x0C */ f32 kb;              /* bytes / 1024, MemTracker_printTree */
+    /* 0x10 */ s32 heapId;          /* ctor: blank call; MemTracker_walk_00060318 zeroes bytes for a matching id */
+    /* 0x14 */ struct MemTracker *sibling; /* next child of the parent */
+    /* 0x18 */ struct MemTracker *children;
+    /* 0x1C */ struct MemTracker *parent;
+    /* 0x20 */ struct MemTracker *prevOpen; /* open tracker before memtrack_begin */
+    /* 0x24 */ char name[0x20];
+} MemTracker;
+
+/* MemTrackerMgr (0x48, MemTrackerMgr_ctor 0x60370, sMemTrackerMgrName): a Node
+ * holding the tracker pool, the open tracker and the root. */
+typedef struct MemTrackerPool {
+    /* 0x00 */ MemTracker *items;   /* alloc(5440) = 80 records */
+    /* 0x04 */ s32 unk04;
+    /* 0x08 */ s32 capacity;        /* 80 */
+    /* 0x0C */ s32 count;
+    /* 0x10 */ s32 unk10;
+} MemTrackerPool;
+
+typedef struct MemTrackerMgr {
+    /* 0x00 */ Node node;
+    /* 0x2C */ MemTrackerPool pool;
+    /* 0x40 */ MemTracker *open;    /* innermost open section (MemTrackerMgr_clearList zeroes both) */
+    /* 0x44 */ MemTracker *root;
+} MemTrackerMgr;
+
+typedef char MemTracker_size_check[sizeof(MemTracker) == 0x44 ? 1 : -1];
+typedef char MemTracker_name_check[(int)&((MemTracker *)0)->name == 0x24 ? 1 : -1];
+typedef char MemTrackerMgr_size_check[sizeof(MemTrackerMgr) == 0x48 ? 1 : -1];
+typedef char MemTrackerMgr_root_check[(int)&((MemTrackerMgr *)0)->root == 0x44 ? 1 : -1];
+
+#define MEMTRACKER(p) ((MemTracker *)(p))
+#define MEMTRACKERMGR(p) ((MemTrackerMgr *)(p))
 
 #endif /* GDL_MEM_H */
