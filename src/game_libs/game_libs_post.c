@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/dma.h"
 #include "audio.h" /* AudioContext / SequencePlayer / Note layouts (docs/1080_AUDIO.md) */
 
 extern int D_00000000;
@@ -16251,21 +16252,25 @@ void fs_bufWrite_334E8(void) {
 //   s1 and is never homed) and the 7-arg call's 4th arg is the otherwise
 //   unused param b (`lw a3,64(sp)`), not c: gl_func(rec, 0, 0, b, flags, c,
 //   rec+0x18). Both fixes are the call-shape scan's missing-arg class.
-void dma_startRead(int id, unsigned flags, int b, int c) {
-    char *rec;
-    if (flags & 7) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2C0, id, flags);
+/* Field view (run 448; the notes above predate the names): flags = dram, b = devAddr,
+ * c = len. The 7-arg call is osPiStartDma(&rec->ioMesg, 0, OS_READ, devAddr, dram,
+ * len, &rec->mq); the two checks are "read not aligned" / "bad read len".
+ * DmaSlot: include/gdl/dma.h. */
+void dma_startRead(int id, unsigned dram, int devAddr, int len) {
+    DmaSlot *rec;
+    if (dram & 7) {
+        gl_func_00000000((char *)&D_00000000 + 0x0001E2C0, id, dram);
     }
-    if (c & 1) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2D8, c);
+    if (len & 1) {
+        gl_func_00000000((char *)&D_00000000 + 0x0001E2D8, len);
     }
-    rec = (char *)&D_00000000 + id * 0x44;
-    *(int *)(rec + 0x3C) = 1;
-    gl_func_00000000(flags, c);
-    gl_func_00000000(rec, 0, 0, b, flags, c, rec + 0x18);
-    *(int *)(rec + 0x34) = flags;
-    *(int *)(rec + 0x38) = c;
-    *(int *)(rec + 0x40) = 1;
+    rec = (DmaSlot *)((char *)&D_00000000 + id * 0x44);
+    rec->busy = 1;
+    gl_func_00000000(dram, len);
+    gl_func_00000000(rec, 0, 0, devAddr, dram, len, rec->mq);
+    rec->dram = dram;
+    rec->len = len;
+    rec->invalidate = 1;
 }
 
 // dma_startWrite — STRUCTURAL PASS (0xDC / 55 words, no episode).
@@ -16311,19 +16316,21 @@ void dma_startRead(int id, unsigned flags, int b, int c) {
 //   under-counted it (jr's delay slot is `addiu sp`, not `nop`, so a
 //   jr;nop-terminated word extractor bled into the successor and
 //   reported phantom trailing diffs). make + cmp tenshoe==baserom clean.
-void dma_startWrite(int id, int a1, unsigned flags, int d) {
-    char *rec;
-    if (flags & 7) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E2EC, d);
+/* Field view (run 448): a1 = devAddr, flags = dram, d = len.
+ * osPiStartDma(&rec->ioMesg, 0, OS_WRITE, devAddr, dram, len, &rec->mq). */
+void dma_startWrite(int id, int devAddr, unsigned dram, int len) {
+    DmaSlot *rec;
+    if (dram & 7) {
+        gl_func_00000000((char *)&D_00000000 + 0x0001E2EC, len);
     }
-    if (d & 1) {
-        gl_func_00000000((char *)&D_00000000 + 0x0001E308, d);
+    if (len & 1) {
+        gl_func_00000000((char *)&D_00000000 + 0x0001E308, len);
     }
-    rec = (char *)&D_00000000 + id * 0x44;
-    *(int *)(rec + 0x3C) = 1;
-    gl_func_00000000(flags, d);
-    gl_func_00000000(rec, 0, 1, a1, flags, d, rec + 0x18);
-    *(int *)(rec + 0x40) = 0;
+    rec = (DmaSlot *)((char *)&D_00000000 + id * 0x44);
+    rec->busy = 1;
+    gl_func_00000000(dram, len);
+    gl_func_00000000(rec, 0, 1, devAddr, dram, len, rec->mq);
+    rec->invalidate = 0;
 }
 
 
@@ -16344,20 +16351,20 @@ void dma_startWrite(int id, int a1, unsigned flags, int d) {
  *     rec->[0x3C] = 0; }   (beqzl merges the common tail store) */
 void dma_wait(int idx) {
     int local;
-    char *rec;
-    rec = (char *)&D_00000000 + idx * 0x44;
-    if (*(int *)(rec + 0x3C) != 0) {
-        gl_func_00000000(rec + 0x18, &local, 1);
-        if (*(int *)(rec + 0x40) != 0) {
-            gl_func_00000000(*(int *)(rec + 0x34), *(int *)(rec + 0x38));
+    DmaSlot *rec;
+    rec = (DmaSlot *)((char *)&D_00000000 + idx * 0x44);
+    if (rec->busy != 0) {
+        gl_func_00000000(rec->mq, &local, 1);
+        if (rec->invalidate != 0) {
+            gl_func_00000000(rec->dram, rec->len);
         }
-        *(int *)(rec + 0x3C) = 0;
+        rec->busy = 0;
     }
 }
 
 /* dma_read: 27-insn busy-wait + 2-call. */
 void dma_read(int a0, int a1, int a2) {
-    while (*(int*)((char*)&D_00000000 + 0x3C) != 0) {
+    while (((DmaSlot *)&D_00000000)->busy != 0) {
         func_00000000();
     }
     func_00000000(0, a0, a1, a2);
@@ -16366,7 +16373,7 @@ void dma_read(int a0, int a1, int a2) {
 
 /* dma_write: 27-insn busy-wait + 2-call wrapper. */
 void dma_write(int a0, int a1, int a2) {
-    while (*(int*)((char*)&D_00000000 + 0x3C) != 0) {
+    while (((DmaSlot *)&D_00000000)->busy != 0) {
         func_00000000();
     }
     func_00000000(0, a0, a1, a2);
@@ -16377,11 +16384,11 @@ void dma_write(int a0, int a1, int a2) {
  * &D_0 + 0x44 (stride 0x44); returns index of first record where
  * field_0x3C == 0; if none, calls gl_func(&D_0 + 0x1E31C) and returns 0. */
 int dma_allocSlot(void) {
-    char *p = (char*)&D_00000000 + 0x44;
+    DmaSlot *p = (DmaSlot *)&D_00000000 + 1;
     int i;
-    for (i = 1; i != 10; i++) {
-        if (*(int*)(p + 0x3C) == 0) return i;
-        p += 0x44;
+    for (i = 1; i != DMA_NUM_SLOTS; i++) {
+        if (p->busy == 0) return i;
+        p++;
     }
     gl_func_00000000((char*)&D_00000000 + 0x1E31C);
     return 0;
