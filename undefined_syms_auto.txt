@@ -618,6 +618,7 @@ D_0000C764 = 0x0000C764;
 D_0000C83C = 0x0000C83C;
 sStr_TimeGadget_Parms_CAAC = 0x0000CAAC;
 sTag_xps_CAC0 = 0x0000CAC0;
+sFloatParmsTags_CAE8 = 0x0000CAE8;  /* Data 0xCAE8: [1] "xps", [2] "yps" = the tags of the second "TimeGadget::Parms" (Data 0xCAD8, TimeGadgetParms_ctor_0001438C); was spelled with the coincident Text symbol SnowBoarder_func_0000CAE8 */
 sTag_yps_CAC4 = 0x0000CAC4;
 sTag_lbx_CAC8 = 0x0000CAC8;
 D_A0000200 = 0xA0000200;

@@ -4,7 +4,7 @@
   "renames": {
     "bootup_1438C_alloc": "snw_port_func_0001438C_bootup_1438C_alloc",
     "func_0000CACC": "snw_port_func_0001438C_func_0000CACC",
-    "SnowBoarder_func_0000CAE8": "snw_port_func_0001438C_func_0000CAE8",
+    "sFloatParmsTags_CAE8": "snw_port_func_0001438C_func_0000CAE8",
     "bootup_1438C_init": "snw_port_func_0001438C_bootup_1438C_init",
     "D_0000C83C": "snw_port_func_0001438C_D_0000C83C"
   },

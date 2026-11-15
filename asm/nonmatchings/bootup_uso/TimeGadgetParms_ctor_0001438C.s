@@ -23,8 +23,8 @@ glabel TimeGadgetParms_ctor_0001438C
     /* DE4E3C 000143D0 AC6E0000 */  sw         $t6, 0x0($v1)
     /* DE4E40 000143D4 AC600004 */  sw         $zero, 0x4($v1)
   .L000143D8:
-    /* DE4E44 000143D8 3C0F0001 */  lui        $t7, %hi(SnowBoarder_func_0000CAE8 + 0x4)
-    /* DE4E48 000143DC 8DEFCAEC */  lw         $t7, %lo(SnowBoarder_func_0000CAE8 + 0x4)($t7)
+    /* DE4E44 000143D8 3C0F0001 */  lui        $t7, %hi(sFloatParmsTags_CAE8 + 0x4)
+    /* DE4E48 000143DC 8DEFCAEC */  lw         $t7, %lo(sFloatParmsTags_CAE8 + 0x4)($t7)
     /* DE4E4C 000143E0 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DE4E50 000143E4 26040008 */  addiu      $a0, $s0, 0x8
     /* DE4E54 000143E8 AFAF003C */  sw         $t7, 0x3C($sp)
@@ -50,8 +50,8 @@ glabel TimeGadgetParms_ctor_0001438C
     /* DE4EA0 00014434 AC800014 */  sw         $zero, 0x14($a0)
     /* DE4EA4 00014438 E4840010 */  swc1       $f4, 0x10($a0)
   .L0001443C:
-    /* DE4EA8 0001443C 3C090001 */  lui        $t1, %hi(SnowBoarder_func_0000CAE8 + 0x8)
-    /* DE4EAC 00014440 8D29CAF0 */  lw         $t1, %lo(SnowBoarder_func_0000CAE8 + 0x8)($t1)
+    /* DE4EA8 0001443C 3C090001 */  lui        $t1, %hi(sFloatParmsTags_CAE8 + 0x8)
+    /* DE4EAC 00014440 8D29CAF0 */  lw         $t1, %lo(sFloatParmsTags_CAE8 + 0x8)($t1)
     /* DE4EB0 00014444 2401FFE0 */  addiu      $at, $zero, -0x20
     /* DE4EB4 00014448 26040020 */  addiu      $a0, $s0, 0x20
     /* DE4EB8 0001444C AFA90038 */  sw         $t1, 0x38($sp)

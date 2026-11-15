@@ -573,7 +573,7 @@ void BestGadget_display_00014228(char *s0) {
  *           s1->0x0 = &func_0000CACC[0xC];        // fn/descriptor
  *           s1->0x4 = 0;
  *       }
- *       v = *(int*)(SnowBoarder_func_0000CAE8 + 4);
+ *       v = sFloatParmsTags_CAE8[1];             // "xps"
  *       if (o != (void*)-8) {                     // defensive guard
  *           c = alloc(0x18);
  *           if (c) {
@@ -583,7 +583,7 @@ void BestGadget_display_00014228(char *s0) {
  *               c->0x10 = 30.0f;                  // 0x41F00000
  *           }
  *       }
- *       v = *(int*)(SnowBoarder_func_0000CAE8 + 8);
+ *       v = sFloatParmsTags_CAE8[2];             // "yps"
  *       if (o != (void*)-0x20) {
  *           c = alloc(0x18);
  *           if (c) {
@@ -599,8 +599,10 @@ void BestGadget_display_00014228(char *s0) {
  * s1 = 8-byte aux: s1->0x0 (0) fn/descriptor ptr (&func_0000CACC+
  * 0xC), s1->0x4 (4) = 0. child = 0x18-byte sub-object: child->0xC
  * (12) descriptor ptr (&D_0000C83C), child->0x10 (16) f32 = 30.0,
- * child->0x14 (20) = 0; built twice with values from the global
- * table SnowBoarder_func_0000CAE8+4 / +8. The `o != -8 / -0x20` tests are the
+ * child->0x14 (20) = 0; built twice with the parm tags "xps" / "yps"
+ * (sFloatParmsTags_CAE8[1] / [2]). The children are GdlParmF (gdl/gadget.h): a
+ * second "TimeGadget::Parms" (Data 0xCAD8) with two float parms (default 30).
+ * The `o != -8 / -0x20` tests are the
  * `c = o+8; if (c != 0 || alloc)` get-or-create guard folded by IDO.
  * 2026-07-30 agent-g: 13D40 recipe applied (65.0 -> 87.9, word-exact
  * 50/74, STRUCTURE-EXACT 74/74 mnemonics+offsets+slots): Val13D40 p
@@ -619,7 +621,7 @@ void BestGadget_display_00014228(char *s0) {
  * extern "C" {
  * void *func_00000000(...);
  * extern int func_0000CACC[];
- * extern int SnowBoarder_func_0000CAE8[];
+ * extern int sFloatParmsTags_CAE8[];
  * extern char D_0000C83C;
  * }
  * struct Val { int v; Val(int x) { v = x; } };
@@ -635,9 +637,10 @@ void BestGadget_display_00014228(char *s0) {
  *     D m2;
  *     Obj();
  * };
- * Obj::Obj() : m1(this, Val(SnowBoarder_func_0000CAE8[1])), m2(this, Val(SnowBoarder_func_0000CAE8[2])) {}
+ * Obj::Obj() : m1(this, Val(sFloatParmsTags_CAE8[1])), m2(this, Val(sFloatParmsTags_CAE8[2])) {}
  */
-extern int SnowBoarder_func_0000CAE8[];  /* data words 0xCAE8/0xCAEC/0xCAF0 (table) */
+extern int sFloatParmsTags_CAE8[];  /* Data 0xCAE8: [1] "xps", [2] "yps" (the parm tags after this
+                                     * Parms' name at Data 0xCAD8) */
 extern char D_0000C83C;
 char *TimeGadgetParms_ctor_0001438C(char *arg0) {
     char *o;
@@ -658,7 +661,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
         *(char **)(s + 0) = (char *)&func_0000CACC[3];
         *(int *)(s + 4) = 0;
     }
-    p.v = SnowBoarder_func_0000CAE8[1]; A[4] = p.v;
+    p.v = sFloatParmsTags_CAE8[1]; A[4] = p.v;
     c = o + 8;
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);
@@ -667,7 +670,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
         *(int *)(c + 0x14) = 0;
         *(float *)(c + 0x10) = 30.0f;
     }
-    p.v = SnowBoarder_func_0000CAE8[2]; A[3] = p.v;
+    p.v = sFloatParmsTags_CAE8[2]; A[3] = p.v;
     c = o + 0x20;
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);

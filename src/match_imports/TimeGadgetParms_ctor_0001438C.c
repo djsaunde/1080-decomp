@@ -18,7 +18,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
             *(int *)(s + 4) = 0;
         }
     }
-    x = SnowBoarder_func_0000CAE8[1];
+    x = sFloatParmsTags_CAE8[1];
     p.v = x.v;
     c = arg0 + 8;
     if (c != 0 || (c = bootup_1438C_alloc(0x18)) != 0) {
@@ -27,7 +27,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
         *(int *)(c + 0x14) = 0;
         *(float *)(c + 0x10) = 30.0f;
     }
-    y = SnowBoarder_func_0000CAE8[2];
+    y = sFloatParmsTags_CAE8[2];
     p.v = y.v;
     c = arg0 + 0x20;
     if (c != 0 || (c = bootup_1438C_alloc(0x18)) != 0) {
