@@ -11,7 +11,7 @@
  *     carries D_8001B656 = 0x8001B656 (relDuration = %lo(D_8001B656)+1
  *     links byte-identically to the .s's D_8001B657 reloc).
  *   - CartRomHandle typed `extern void *` (the 0x00 `next` field):
- *     `CartRomHandle = D_8000A46C` emits the direct lui-$at global store
+ *     `CartRomHandle = __osPiTable` emits the direct lui-$at global store
  *     (a struct/array deref form materializes a base pointer instead).
  *   - bzero arg `(u8 *)&CartRomHandle + 0x14` keeps the unfolded
  *     lui/addiu %lo/addiu +0x14 pair with the hoisted lui.
@@ -34,7 +34,7 @@ extern u8 D_8001B658;               /* pulse */
 extern u8 D_8001B659;               /* domain */
 extern volatile u32 D_8001B65C;     /* baseAddress */
 extern u32 D_8001B660;              /* speed */
-extern void *D_8000A46C;            /* __osPiTable */
+extern void *__osPiTable;            /* __osPiTable */
 extern s32 func_80002DB0(s32, u32 *);   /* osPiRawReadIo */
 extern void func_800030D0(void *, s32); /* bzero */
 extern s32 func_800066B0(void);         /* __osDisableInt */
@@ -62,8 +62,8 @@ void *osCartRomInit(void) {
     D_8001B660 = 0;
     func_800030D0((u8 *)&CartRomHandle + 0x14, 0x60);
     saveMask = func_800066B0();
-    CartRomHandle = D_8000A46C;
-    D_8000A46C = &CartRomHandle;
+    CartRomHandle = __osPiTable;
+    __osPiTable = &CartRomHandle;
     func_800066D0(saveMask);
     return &CartRomHandle;
 }

@@ -47,14 +47,14 @@ glabel osLeoDiskInit
     /* 5EFC 80004EFC 24050060 */   addiu     $a1, $zero, 0x60
     /* 5F00 80004F00 0C0019AC */  jal        func_800066B0
     /* 5F04 80004F04 00000000 */   nop
-    /* 5F08 80004F08 3C098001 */  lui        $t1, %hi(D_8000A46C)
-    /* 5F0C 80004F0C 8D29A46C */  lw         $t1, %lo(D_8000A46C)($t1)
+    /* 5F08 80004F08 3C098001 */  lui        $t1, %hi(__osPiTable)
+    /* 5F0C 80004F0C 8D29A46C */  lw         $t1, %lo(__osPiTable)($t1)
     /* 5F10 80004F10 3C018002 */  lui        $at, %hi(D_800195D0)
     /* 5F14 80004F14 3C0A8002 */  lui        $t2, %hi(D_800195D0)
     /* 5F18 80004F18 AC2995D0 */  sw         $t1, %lo(D_800195D0)($at)
-    /* 5F1C 80004F1C 3C018001 */  lui        $at, %hi(D_8000A46C)
+    /* 5F1C 80004F1C 3C018001 */  lui        $at, %hi(__osPiTable)
     /* 5F20 80004F20 254A95D0 */  addiu      $t2, $t2, %lo(D_800195D0)
-    /* 5F24 80004F24 AC2AA46C */  sw         $t2, %lo(D_8000A46C)($at)
+    /* 5F24 80004F24 AC2AA46C */  sw         $t2, %lo(__osPiTable)($at)
     /* 5F28 80004F28 AFA2001C */  sw         $v0, 0x1C($sp)
     /* 5F2C 80004F2C 3C018002 */  lui        $at, %hi(D_80019644)
     /* 5F30 80004F30 AC2A9644 */  sw         $t2, %lo(D_80019644)($at)

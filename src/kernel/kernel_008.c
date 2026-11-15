@@ -5,7 +5,7 @@ typedef struct {
 } OSPiHandle;
 
 extern OSPiHandle CartRomHandle;
-extern void* D_8000A46C;
+extern void* __osPiTable;
 extern u8 D_8001B654;
 extern u8 D_8001B655;
 extern u8 D_8001B656;
@@ -51,8 +51,8 @@ OSPiHandle* osCartRomInit(void) {
     D_8001B660 = 0;
     func_800030D0((u8*)&CartRomHandle + 0x14, 0x60);
     saveMask = func_800066B0();
-    *(void**)&CartRomHandle = D_8000A46C;
-    D_8000A46C = &CartRomHandle;
+    *(void**)&CartRomHandle = __osPiTable;
+    __osPiTable = &CartRomHandle;
     func_800066D0(saveMask);
     return &CartRomHandle;
 }

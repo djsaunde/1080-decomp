@@ -47,15 +47,15 @@ glabel osCartRomInit
     /* 6964 80005964 24050060 */   addiu     $a1, $zero, 0x60
     /* 6968 80005968 0C0019AC */  jal        func_800066B0
     /* 696C 8000596C 00000000 */   nop
-    /* 6970 80005970 3C0E8001 */  lui        $t6, %hi(D_8000A46C)
-    /* 6974 80005974 8DCEA46C */  lw         $t6, %lo(D_8000A46C)($t6)
+    /* 6970 80005970 3C0E8001 */  lui        $t6, %hi(__osPiTable)
+    /* 6974 80005974 8DCEA46C */  lw         $t6, %lo(__osPiTable)($t6)
     /* 6978 80005978 3C018002 */  lui        $at, %hi(CartRomHandle)
     /* 697C 8000597C 3C0F8002 */  lui        $t7, %hi(CartRomHandle)
     /* 6980 80005980 AC2EB650 */  sw         $t6, %lo(CartRomHandle)($at)
     /* 6984 80005984 AFA20018 */  sw         $v0, 0x18($sp)
-    /* 6988 80005988 3C018001 */  lui        $at, %hi(D_8000A46C)
+    /* 6988 80005988 3C018001 */  lui        $at, %hi(__osPiTable)
     /* 698C 8000598C 25EFB650 */  addiu      $t7, $t7, %lo(CartRomHandle)
-    /* 6990 80005990 AC2FA46C */  sw         $t7, %lo(D_8000A46C)($at)
+    /* 6990 80005990 AC2FA46C */  sw         $t7, %lo(__osPiTable)($at)
     /* 6994 80005994 0C0019B4 */  jal        func_800066D0
     /* 6998 80005998 8FA40018 */   lw        $a0, 0x18($sp)
     /* 699C 8000599C 3C028002 */  lui        $v0, %hi(CartRomHandle)

@@ -3583,3 +3583,4 @@ D_80009E60	k_gFsDevices
 D_8000A59C	gBootUsoPath
 D_8000A744	gKmcExcCodeTable
 D_8000ABC0	gKernelBssStart
+D_8000A46C	__osPiTable
