@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003B6A0 (0x320 / 200 words). EXACT (agent-c run 304): spliced into
+/* IDO 7.1 NCC (C++) donor for CollShape_below (0x320 / 200 words). EXACT (agent-c run 304): spliced into
  * game_libs_post0b.c.o on both build trees via REPLACE_FUNC_BODY; the next-vertex table is D_3B6A0_tbl (pinned 0,
  * the target's blank lui / addiu). Originally agent-c run 160:
  * Rewritten as real C++ (was the run-134 C lift under NCC with two parameter empty tests, 72.22): `int Obj::below(int max,
- * f32 *outd, TriB **outp, f32 *pt)` (renamed to gl_func_0003B6A0 with objcopy): for every collision triangle, the 2D
+ * f32 *outd, TriB **outp, f32 *pt)` (renamed to CollShape_below with objcopy): for every collision triangle, the 2D
  * edge-sign test on the triangle's dropped axis pair (`{a, b}` from the Tri record, the {1, 2, 0} next-vertex table) and,
  * when inside, the plane distance below the point within 50 units, collected up to max (-1 when full; the triangle count
  * re-read after each hit). Typed records instead of byte offsets, the face pick as an if / else (the target re-reads

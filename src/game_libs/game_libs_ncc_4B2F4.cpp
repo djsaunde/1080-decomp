@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_libs_func_0004B2F4 (0x32C / 203 words), agent-c run 162; EXACT agent-g run 265.
+/* IDO 7.1 NCC (C++) donor for Shadow_display_0004B2F4 (0x32C / 203 words), agent-c run 162; EXACT agent-g run 265.
  * The cfe body (98.23) compiled under NCC with: no `if (0) f(&arg0)` home keep (NCC homes arg0 anyway), the
  * Mtx and DL slot reads as explicit `n = h->count; h->count = n + 1;` (each post-increment costs an edg temp
  * slot), and the matrix product as `mtx[i][j] = mtx[i][j] + ...` (the `+=` form costs two more temp words):
@@ -35,7 +35,7 @@ extern u32 F_4B2F4_list(void *, u32 *, s32 *);
 }
 #define W(p, o) (*(s32 *)((char *)(p) + (o)))
 #define P(p, o) (*(char **)((char *)(p) + (o)))
-extern "C" void game_libs_func_0004B2F4(char *arg0) {
+extern "C" void Shadow_display_0004B2F4(char *arg0) {
     s32 i, j, k;
     f32 mtx[4][4];
     f32 (*a)[4];

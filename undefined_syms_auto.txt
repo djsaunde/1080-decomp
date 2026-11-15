@@ -3162,13 +3162,13 @@ gl_d_578b4_s2b = 0x00000000;  /* gfx_loadTexture: base-0 alias -- 0x219C4 addiu-
 gl_578b4_c34458 = 0x00000000;
 /* gl_func_000454C4 NCC donor: the 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_454c4_c34458 = 0x00000000;
-/* gl_func_0004B0A8 NCC donor: blank USO jal words (0x34458 calls, Base ctor) and the blank lui/addiu vtable */
+/* Shadow_ctor_0004B0A8 NCC donor: blank USO jal words (0x34458 calls, Base ctor) and the blank lui/addiu vtable */
 gl_4b0a8_c34458 = 0x00000000;
 gl_4b0a8_base = 0x00000000;
 gl_4b0a8_vtbl = 0x00000000;
-gl_d_49dbc_t2 = 0x00000000;   /* gl_func_00049DBC: base-0 alias -- else-arm final call arg2 (lui/addiu a2) */
-gl_d_49dbc_t3 = 0x00000000;   /* gl_func_00049DBC: base-0 alias -- else-arm final call arg3 (own lui/addiu a3; distinct sym busts the CSE) */
-gl_func_00000000_49DBCv = 0x00000000;  /* gl_func_00049DBC: void alias of the blank-call placeholder (0x54 palette path calls) */
+gl_d_49dbc_t2 = 0x00000000;   /* PolyShape_shade_00049DBC: base-0 alias -- else-arm final call arg2 (lui/addiu a2) */
+gl_d_49dbc_t3 = 0x00000000;   /* PolyShape_shade_00049DBC: base-0 alias -- else-arm final call arg3 (own lui/addiu a3; distinct sym busts the CSE) */
+gl_func_00000000_49DBCv = 0x00000000;  /* PolyShape_shade_00049DBC: void alias of the blank-call placeholder (0x54 palette path calls) */
 gl_D_2200_thr = 0;
 gl_flag_AFC4_bit2 = 0;
 gl_ref_0000CB60 = 0x0000CB60;
@@ -3504,9 +3504,9 @@ gl_d_4c5e4_clr = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- final 0x254 c
 gl_func_0004C5E4_c34458 = 0x00000000;  /* gl_func_0004C5E4 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00041D40_c34458 = 0x00000000;  /* App_Update NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00046050_c34458 = 0x00000000;  /* gl_func_00046050 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
-gl_d_4b0a8_tbl = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- handler-table bind self->0x28 */
-gl_d_4b0a8_vt = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x140 2-word vtable copy source */
-gl_d_4b0a8_w214 = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x214 word arg of sub-registration */
+gl_d_4b0a8_tbl = 0x00000000;  /* Shadow_ctor_0004B0A8: base-0 alias -- handler-table bind self->0x28 */
+gl_d_4b0a8_vt = 0x00000000;  /* Shadow_ctor_0004B0A8: base-0 alias -- +0x140 2-word vtable copy source */
+gl_d_4b0a8_w214 = 0x00000000;  /* Shadow_ctor_0004B0A8: base-0 alias -- +0x214 word arg of sub-registration */
 D_arc251C_a = 0x00000000;
 D_arc251C_b = 0x00000000;
 D_arc251C_c = 0x00000000;
@@ -3899,11 +3899,11 @@ gl_func_00000000_5e944 = 0x00000000;  /* (ptr, int, float) void blank for math_m
 gl_func_00000000_5eb4c = 0x00000000;  /* (ptr, Vec3 *, float) void blank for absrot_matrix4 */
 gl_func_00000000_5ed54 = 0x00000000;  /* (ptr, Vec3 *, float) void blank for math_mtxRotateOwnRow */
 gl_func_00000000_5d628 = 0x00000000;  /* (float)->float sqrt blank for math_quatSplitSwing */
-gl_func_0003C43C_rodata = 0x00001AB8;
-gl_func_0003B9C0_rodata = 0x00001AA8;  /* gl_func_0003B9C0 1e-5 / -1e-4 doubles in RoData at +0x1AA8 / +0x1AB0; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_ncc_3B9C0.cpp) */
-gl_func_0003B9C0_sqrtf = 0x00000000;  /* (float)->float sqrt blank USO jal for gl_func_0003B9C0 */
-gl_func_00000000_vnorm3 = 0x00000000;  /* (V3 *) normalise blank USO jal for gl_func_0003B9C0 */
-D_3B9C0_c = 0x00000000;  /* gl_func_0003B9C0 next-vertex table (blank lui / addiu +6) */
+CollShape_nearestHit_rodata = 0x00001AB8;
+CollShape_raycast_rodata = 0x00001AA8;  /* CollShape_raycast 1e-5 / -1e-4 doubles in RoData at +0x1AA8 / +0x1AB0; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_ncc_3B9C0.cpp) */
+gl_func_0003B9C0_sqrtf = 0x00000000;  /* (float)->float sqrt blank USO jal for CollShape_raycast */
+gl_func_00000000_vnorm3 = 0x00000000;  /* (V3 *) normalise blank USO jal for CollShape_raycast */
+D_3B9C0_c = 0x00000000;  /* CollShape_raycast next-vertex table (blank lui / addiu +6) */
 gl_sqrtf_36694 = 0x00000000;  /* (float)->float sqrt blank USO jal for gl_func_00036694 (game_libs_ncc_36694.cpp) */
 gl_normalize_36694 = 0x00000000;  /* (V3 *) normalise blank USO jal for gl_func_00036694 */
 CollShape_ctor_rodata = 0x00001A90;  /* CollShape_ctor 5-entry jumptable (cases 0..4) in bootup.uso RoData at +0x1A90; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_3AC5C.c) */
@@ -4200,7 +4200,7 @@ D_493AC_a = 0x00000000;  /* PolyShape_init per-access aliases for the +0x1C4 fla
 D_493AC_b = 0x00000000;
 D_493AC_c = 0x00000000;
 D_493AC_d = 0x00000000;  /* PolyShape_init per-access alias for the +0x214 context read (own lui/lw, no held &D base) */
-D_4BAF4_cam = 0x000000A0;  /* gl_func_0004BAF4 camera block (blank USO data ref: lui 0 / addiu 0xA0 held base, fields at +0x30) */
+D_4BAF4_cam = 0x000000A0;  /* Sprite_display_0004BAF4 camera block (blank USO data ref: lui 0 / addiu 0xA0 held base, fields at +0x30) */
 D_38108_d = 0x00000000;  /* Node_Load: 4th report arg (USO load-resolved, distinct from the &D CSE) */
 D_4e760_f0 = 0x0;  /* gl_func_0004E760: bootup.uso RoData base, per-access alias (+0x1B70 table) */
 D_4e760_f1 = 0x0;
@@ -5440,11 +5440,11 @@ D_15FC_c88 = 0x00000C88;
 D_15FC_c8c = 0x00000C8C;
 D_15FC_c90 = 0x00000C90;
 D_15FC_c94 = 0x00000C94;
-/* blank alias: the gl_func_0004B620 NM donor base ctor (renamed __ct__2BBFPcPvi) */
+/* blank alias: the Sprite_ctor_0004B620 NM donor base ctor (renamed __ct__2BBFPcPvi) */
 gl_func_00000000_4b620_base = 0x00000000;
-/* gl_func_0004BAF4 flag word (blank USO data ref, per-site lui 0 / lw 0x1C4) */
+/* Sprite_display_0004BAF4 flag word (blank USO data ref, per-site lui 0 / lw 0x1C4) */
 D_4BAF4_flags = 0x00000000;
-/* gl_func_00048AEC blank USO data bases (game_libs_ncc_48AEC.cpp): mt slot (lui 4 / addiu -0x3760 = +0x3C8A0) and the matrix source (+0xA0) */
+/* PolyShape_display blank USO data bases (game_libs_ncc_48AEC.cpp): mt slot (lui 4 / addiu -0x3760 = +0x3C8A0) and the matrix source (+0xA0) */
 D_48AEC_mt = 0x00000000;
 D_48AEC_src = 0x00000000;
 /* ItemMgr_hostioParms EXACT donor (agent-c run 270): vtable words as the target's absolute USO values, blank jal words */
@@ -5662,7 +5662,7 @@ fn_31c0_A2 = 0x00000000;
 fn_31c0_A4 = 0x00000000;
 fn_31c0_B3 = 0x00000000;
 cam_create_rodata = 0x00000530;
-/* gl_func_00048510 EXACT NCC donor (agent-c run 271): blank USO jal words */
+/* PolyShape_addFace_00048510 EXACT NCC donor (agent-c run 271): blank USO jal words */
 gl_func_00048510_c34458 = 0x00000000;
 /* AudioLoad_ProcessAsyncLoad EXACT (agent-g run 278): typed gAudioCtx extern (sampleBankTable 0x2024, soundFontList 0x2030) + blank USO jal words */
 gl_250C8_gAudioCtx = 0x00000000;

@@ -1693,14 +1693,14 @@ int MemberCallback_invoke(char *a0) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00035A18_pad.s")
 
 extern int gl_func_00000000();
-void gl_func_00035AA4(int *dst) {
+void fs_gdlReadInt_00035AA4(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00035AE0(int *dst) {
+void fs_gdlReadInt_00035AE0(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -3164,7 +3164,7 @@ void Node_def(char *p) {
     }
 }
 
-void gl_func_00037C70(Vec3 *dst) {
+void fs_gdlReadVec3_00037C70(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -3177,19 +3177,19 @@ void gl_func_00037C70(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* gl_func_00037CE0: 26-insn read-into-local-then-copy-to-arg.
- * Mirror of byte-matched gl_func_00037DA8 (which copies a0→local then
+/* fs_gdlRead24_00037CE0: 26-insn read-into-local-then-copy-to-arg.
+ * Mirror of byte-matched fs_gdlWrite24_00037DA8 (which copies a0→local then
  * calls). This one calls then copies local→a0. Apply struct-assign
  * lever per docs/IDO_CODEGEN.md#feedback-ido-struct-copy-vs-field-copy-treg-order
  * for the 6-int copy. */
 struct gl_func_00037CE0_Six { int a, b, c, d, e, f; };
-void gl_func_00037CE0(struct gl_func_00037CE0_Six *a0) {
+void fs_gdlRead24_00037CE0(struct gl_func_00037CE0_Six *a0) {
     struct gl_func_00037CE0_Six buf;
     func_00000000(&D_00000000, &buf, 24);
     *a0 = buf;
 }
 
-/* gl_func_00037D48: 24-insn 3-int→3-float reinterpret + call wrapper.
+/* fs_gdlWriteVec3_00037D48: 24-insn 3-int→3-float reinterpret + call wrapper.
  *   tmp[0..2] = a0[0..2];        // int copies via stack
  *   fbuf[0..2] = (float)tmp[0..2];
  *   func(&D, fbuf, 12);
@@ -3212,7 +3212,7 @@ void gl_func_00037CE0(struct gl_func_00037CE0_Six *a0) {
  *     tmp(0x24)/padC[3](0x18). GOTCHA: `(void)pad` on a SCALAR volatile
  *     emits `lw zero` — pads must be arrays.
  * EXACT (unwrapped run 95): func_00000000 / D_00000000 are real symbols at 0. */
-void gl_func_00037D48(int *a0) {
+void fs_gdlWriteVec3_00037D48(int *a0) {
     volatile int padA[1];
     float fbuf[3];
     volatile int padB[2];
@@ -3226,7 +3226,7 @@ void gl_func_00037D48(int *a0) {
     (void)padC;
 }
 
-/* gl_func_00037DA8: 23-insn copy-6-ints + send-buffer helper. Copies
+/* fs_gdlWrite24_00037DA8: 23-insn copy-6-ints + send-buffer helper. Copies
  * a0[0..5] into stack local then calls gl_func(&D_0, local, 24).
  * Target uses `addiu a1, sp, 0x18; sw via a1+off` pattern (a1 = call
  * arg 2 = &local, reused as dest pointer for the 6 stores). Struct-
@@ -3234,23 +3234,23 @@ void gl_func_00037D48(int *a0) {
  * because `local = *src;` compiles to a memcpy-style inline with an
  * explicit dest-pointer register. */
 struct gl_func_00037DA8_Six { int a, b, c, d, e, f; };
-void gl_func_00037DA8(struct gl_func_00037DA8_Six *a0) {
+void fs_gdlWrite24_00037DA8(struct gl_func_00037DA8_Six *a0) {
     struct gl_func_00037DA8_Six local;
     local = *a0;
     gl_func_00000000(&D_00000000, &local, 0x18);
 }
 
 extern int gl_func_00000000();
-void gl_func_00037E04(int *dst) {
+void fs_gdlReadInt_00037E04(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
-/* Quad4 reader template — sibling of gl_func_0003A9E8 / gl_func_0000975C.
+/* Quad4 reader template — sibling of fs_gdlReadQuad_0003A9E8 / fs_gdlReadQuad_0000975C.
  * 22 insns. Required boundary fix (split-fragments) — original .s was a
  * 4-function bundle. */
-void gl_func_00037E40(Quad4 *dst) {
+void fs_gdlReadQuad_00037E40(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 0x10);
     *dst = buf;
@@ -5142,7 +5142,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003A58C);
 #endif
 
 extern int gl_func_00000000();
-void gl_func_0003A9AC(int *dst) {
+void fs_gdlReadInt_0003A9AC(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -5151,7 +5151,7 @@ void gl_func_0003A9AC(int *dst) {
 /* Quad4 reader template (16-byte struct copy via gl_func_00000000(&D_0, &buf, 16)
  * + element-wise unrolled copy to dst). 22 insns, exact at -O2. Matches the
  * Quad4-reader signature in feedback_uso_accessor_template_reuse.md. */
-void gl_func_0003A9E8(Quad4 *dst) {
+void fs_gdlReadQuad_0003A9E8(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 0x10);
     *dst = buf;
@@ -5236,7 +5236,7 @@ int *CollShape_ctor(int *arg0, int *arg1) {
 
 #ifdef NON_MATCHING
 /* CollShape_ctorPoly: 95-insn (0x17C) constructor-like alloc + 2-init + loop.
- * Sibling of gl_func_0003A9E8 (recently-matched Quad4 reader) by adjacency
+ * Sibling of fs_gdlReadQuad_0003A9E8 (recently-matched Quad4 reader) by adjacency
  * in 0x3A9E8-0x3B000. Initial decode 2026-05-07 — entry decoded; body
  * still TBD.
  *
@@ -5434,13 +5434,13 @@ void game_libs_func_0003B1A8(char *a0, f32 *m) {
     }
 }
 
-// gl_func_0003B2EC — STRUCTURAL PASS (0x3B4 / 237 words, no episode).
+// CollShape_height — STRUCTURAL PASS (0x3B4 / 237 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — large 0x98 FP frame, saves s0-s7). A large flag-gated
 // FP geometry / transform routine. One of the bigger nodes in this
 // vein.
 //
-//   void gl_func_0003B2EC(O *o, ?, ?, float a3) {
+//   void CollShape_height(O *o, ?, ?, float a3) {
 //     float k0 = *(float*)(&D_0 + 0x128);        // FP literal pool
 //     float k1 = *(float*)(&D_0 + 0x130);
 //     float u  = a3 * k0;
@@ -5487,11 +5487,11 @@ void game_libs_func_0003B1A8(char *a0, f32 *m) {
  * (real `int Obj::height(int max, f32 *out, f32 x, f32 z)`; agent-c run 177 lift, agent-g run 238 exact),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. The earlier C lifts (agent-c runs
  * 110-152, 91.56) are in git history. */
-s32 gl_func_0003B2EC(char *self) {
+s32 CollShape_height(char *self) {
     return 0;
 }
 
-// gl_func_0003B6A0 — PASS-2 hand re-derivation 2026-09-04 (agent-g): 12.4 -> 66.6
+// CollShape_below — PASS-2 hand re-derivation 2026-09-04 (agent-g): 12.4 -> 66.6
 // (target 0x320 / build 0x314; single clean function). Semantics below in the
 // body comment. Residual: target homes o (sw a0,128) and reloads it per
 // iteration while using $ra as the found-counter and s-regs for tri/face/verts
@@ -5504,17 +5504,17 @@ s32 gl_func_0003B2EC(char *self) {
  * (real `int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt)`; agent-c run 160 lift, agent-c run 304 exact),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. The earlier C lift (agent-g pass 2,
  * 66.6) is in git history. */
-int gl_func_0003B6A0(char *o) {
+int CollShape_below(char *o) {
     return 0;
 }
 
-// gl_func_0003B9C0 — STRUCTURAL PASS (0x45C / 279 words, no episode).
+// CollShape_raycast — STRUCTURAL PASS (0x45C / 279 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — very large 0xE8 frame, saves s0-s8 AND three FP
 // callee-save doubles f20/f22/f24). The LARGEST geometry node in
 // this vein.
 //
-//   void gl_func_0003B9C0(O *o, P *a, P *b, ...) {
+//   void CollShape_raycast(O *o, P *a, P *b, ...) {
 //     if (o->p_84 == 0) return;                   // active gate
 //     P *p = (P*)sp_FC;                            // point source 1
 //     P *q = (P*)sp_F8;                            // point source 2
@@ -5538,7 +5538,7 @@ int gl_func_0003B6A0(char *o) {
 //   node decoded in the gl_func_0003Bxx / 00036xx / 00037xx
 //   geometry family — likely the distance and direction-and-
 //   magnitude solver
-//   the gl_func_0003B6A0 6-part transform and gl_func_0003B2EC
+//   the CollShape_below 6-part transform and CollShape_height
 //   blend nodes call into (consumes the matrices/points the
 //   gl_func_0003B1AC matrix-apply produces).
 // Caps (DEFERRED): 0x45C raw-word USO + flag-gated Vec3-difference
@@ -5548,7 +5548,7 @@ int gl_func_0003B6A0(char *o) {
 //   only. Byte-match deferred. Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
 /* 2026-10-17 run 110 re-decode (agent-c): segment-vs-triangle-set raycast,
- * sibling of gl_func_0003BE1C (same Obj/Col/Tri/Face views). d = *b - *a,
+ * sibling of CollShape_query (same Obj/Col/Tri/Face views). d = *b - *a,
  * normalized if longer than eps (else straight down), then for every
  * front-facing triangle: plane hit t, hit point p = a + d*t, 3-edge 2D
  * cross test; hits fill dist[]/tris[]/pts[] (pts optional) up to max.
@@ -5569,7 +5569,7 @@ typedef struct { char pad0[0x2C]; TriB9 *tris; char pad30[0x54]; ColB9 *col; } O
 extern float sqrtf(float);
 extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
-s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
+s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
     s32 cnt;
     u32 i;
     s32 off;
@@ -5670,13 +5670,13 @@ s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3B9C0.cpp (agent-c run 134 lift,
  * agent-c run 387 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees; the two double literals' donor-local .rodata reloc is
- * pinned as gl_func_0003B9C0_rodata (RoData +0x1AA8). */
-s32 gl_func_0003B9C0(char *self) {
+ * pinned as CollShape_raycast_rodata (RoData +0x1AA8). */
+s32 CollShape_raycast(char *self) {
     return 0;
 }
 #endif
 
-// gl_func_0003BE1C — RECONSTRUCTION (0x620 / 392 words, no episode).
+// CollShape_query — RECONSTRUCTION (0x620 / 392 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — 0xF0=-240 frame, saves s0-s7+ra; 3 stack-passed f32 args
 // at sp+0x100/0x104/0x108). The LARGEST node decoded in this vein.
@@ -5695,7 +5695,7 @@ s32 gl_func_0003B9C0(char *self) {
 //   shifted s16 values; clean C if/else emits ~50 fewer shift insns).
 //   Documented intractable class for this gl_func_0003Bxx family.
 //
-//   void gl_func_0003BE1C(O *o, ...) {
+//   void CollShape_query(O *o, ...) {
 //     S *s = o->p_84;
 //     if (s == 0) return;                         // active gate
 //     if (s->w_A0 == 0)
@@ -5716,12 +5716,12 @@ s32 gl_func_0003B9C0(char *self) {
 //   reference 0x0001EE9C (gated on s->0xA0), then drives an
 //   extensive multiply/add FP pipeline whose coefficients come
 //   from the LITERAL POOL at &D_0+0x128 (the SAME pool base used
-//   by gl_func_0003B2EC — confirming a shared FP coefficient table
+//   by CollShape_height — confirming a shared FP coefficient table
 //   at &D_0+0x128; deferred FP-pool symbolization per
 //   docs/N64_FORENSICS.md, same class as the &D_0+0x19F0 clamp
 //   table site). The aggregate of this family — it likely composes
 //   the full object transform from the sub-results the
-//   gl_func_0003B9C0 distance solver, the gl_func_0003B6A0 6-part
+//   CollShape_raycast distance solver, the CollShape_below 6-part
 //   transform, the gl_func_0003B1AC matrix-apply and the
 //   gl_func_00036694 matrix-concat leaves produce, and feeds the
 //   dbg_printThreads render traversal.
@@ -5768,7 +5768,7 @@ extern char D_3BE1C_1EE9C[];
 /* run 151 (agent-c, 76.33 -> 76.69): the grid cell index is an if/else with
  * `cell = -1` in the else arm (target `b join` after the multiply; 1524 -> 1528 of
  * 1568 bytes). The list pointer in the same form scores lower here. */
-s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
+s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     s32 cnt;
     s32 cell;
     s16 *lp;
@@ -5902,17 +5902,17 @@ s32 gl_func_0003BE1C(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
  * (real `int Obj::query(int max, f32 *dist, Tri **out, V3 p)`; agent-c run 178 lift, agent-g run 325 exact),
  * REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference)
  * in both build trees. */
-int gl_func_0003BE1C(char *o) {
+int CollShape_query(char *o) {
     return 0;
 }
 #endif
 
-// gl_func_0003C43C — nearest-hit picker (0x368).
+// CollShape_nearestHit — nearest-hit picker (0x368).
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3C43C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 250); the 1e6
- * limit literal's donor-local .rodata reloc is pinned as gl_func_0003C43C_rodata
+ * limit literal's donor-local .rodata reloc is pinned as CollShape_nearestHit_rodata
  * (bootup.uso RoData +0x1AB8). */
-int gl_func_0003C43C(char *o, int *r, float s, void *a3) {
+int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
     return 0;
 }
 
@@ -6225,8 +6225,8 @@ void gl_func_0003CB6C(char *a0, int a1, int a2, float a3, float a4) {
 //   by CamMan_ctor's FP-default init and the gl_func_00035E6C
 //   projector). A bounding-box / radius proximity node of the
 //   game_libs object subsystem (the cheap AABB-style pre-test that
-//   complements the precise gl_func_0003B9C0 distance solver and
-//   feeds the gl_func_0003C43C spatial-query node — together the
+//   complements the precise CollShape_raycast distance solver and
+//   feeds the CollShape_nearestHit spatial-query node — together the
 //   collision/visibility front-end).
 // Caps (DEFERRED): 0x3E0 raw-word USO + flag-gated per-component
 //   abs-delta vs 1000.0f bound + extensive FP compare chain; object
@@ -6335,49 +6335,49 @@ int gl_func_0003CF94(char *a0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0003CFC4(int *dst) {
+void fs_gdlReadInt_0003CFC4(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D000(int *a0) {
+void fs_gdlWriteInt_0003D000(int *a0) {
     int pad, scratch;
     scratch = *a0;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D034(int *a0) {
+void fs_gdlWriteInt_0003D034(int *a0) {
     int pad, scratch;
     scratch = *a0;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D068(int *a0) {
+void fs_gdlWriteInt_0003D068(int *a0) {
     int pad, scratch;
     scratch = *a0;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D09C(int *dst) {
+void fs_gdlReadInt_0003D09C(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D0D8(int *dst) {
+void fs_gdlReadInt_0003D0D8(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_0003D114(Quad4 *dst) {
+void fs_gdlReadQuad_0003D114(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
@@ -6997,7 +6997,7 @@ end:
 //   reaches the third-arg target). A spatial-query / find-by-
 //   position node of the game_libs object subsystem — the
 //   list-search counterpart of the gl_func_0003CBB4 proximity test
-//   and the gl_func_0003C43C spatial-query wrapper (same
+//   and the CollShape_nearestHit spatial-query wrapper (same
 //   collection convention: list head +0x10, next +0x04, position
 //   triple at +0x30).
 // Caps: raw-word USO + intrusive-list walk + FP abs-vs-epsilon
@@ -7043,7 +7043,7 @@ char *game_libs_func_0003DA14(char *o, char *ref, char *excl) {
 //   &D_0+0x1AB8 query limit). A find-min/max-by-position node of
 //   the game_libs object subsystem, the value-extremum counterpart
 //   to game_libs_func_0003DA14's nearest-by-vector search and the
-//   gl_func_0003CBB4 / gl_func_0003C43C spatial-query family
+//   gl_func_0003CBB4 / CollShape_nearestHit spatial-query family
 //   (same collection convention: list head +0x10, next +0x04,
 //   scalar at +0x38).
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + FP
@@ -10581,27 +10581,27 @@ int gl_func_00042540(int a0) {
 
 /* Quad4 writer: copy a 16-byte Quad4 from *a0 onto stack buf, call
  * gl_func(&D, &buf, 16). Writer counterpart of the int-reader template. */
-void gl_func_00042570(Quad4 *src) {
+void fs_gdlWriteQuad_00042570(Quad4 *src) {
     Quad4 buf = *src;
     gl_func_00000000(&D_00000000, &buf, 16);
 }
 
 extern int gl_func_00000000();
-void gl_func_000425BC(int *a0) {
+void fs_gdlWriteInt_000425BC(int *a0) {
     int pad, scratch;
     scratch = *a0;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
 }
 
 extern int gl_func_00000000();
-void gl_func_000425F0(Quad4 *dst) {
+void fs_gdlReadQuad_000425F0(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00042648(int *dst) {
+void fs_gdlReadInt_00042648(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -11139,8 +11139,8 @@ void gl_func_00043584(int *a0) {
     }
 }
 
-/* gl_func_000435FC: 22-insn 7-arg + 1-arg call chain. */
-int gl_func_000435FC(int *a0, int a1) {
+/* PolyShape_allocLightDL_000435FC: 22-insn 7-arg + 1-arg call chain. */
+int PolyShape_allocLightDL_000435FC(int *a0, int a1) {
     int v = gl_func_00000000(0, (char*)&D_00000000 + 0x1FD14, 10, 0, 1, 0, 0);
     a0[0x60/4] = v;
     return gl_func_00000000(v);
@@ -13465,12 +13465,12 @@ void game_libs_func_000483A0(int *a0) {
 void gl_func_000483BC(char *a0) {
 }
 
-// gl_func_00048510 — STRUCTURAL PASS (0x20C / 132 words, no episode). Raw-.word
+// PolyShape_addFace_00048510 — STRUCTURAL PASS (0x20C / 132 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x78
 // (saves ra + s0..s8). Counted-collection iterate-and-process driver
 // (cb = jal 0 USO-relocated).
 //
-//   void gl_func_00048510(void *a0, int a1, int a2, int *a3, int a4) {
+//   void PolyShape_addFace_00048510(void *a0, int a1, int a2, int *a3, int a4) {
 //     self = a0;
 //     *a3 = 0;                                         // ACE00000 clear
 //     int n = self->p594;                              // element count
@@ -13500,10 +13500,10 @@ void gl_func_000483BC(char *a0) {
 // blez skip-all, the cb1 per-element dispatch and the self->0x590->4 bound
 // are exact. Caps: self struct + cb signature untyped. Full body
 // INCLUDE_ASM-preserved.
-/* gl_func_00048510: EXACT via the IDO 7.1 NCC (C++) donor src/game_libs/game_libs_ncc_48510.cpp
+/* PolyShape_addFace_00048510: EXACT via the IDO 7.1 NCC (C++) donor src/game_libs/game_libs_ncc_48510.cpp
  * (`void Strip::add(Vtx *, s16 *, int *, u16 *)`), REPLACE_FUNC_BODY-spliced over this placeholder on
  * both build paths (agent-c run 271). The old cfe structural pass is kept below for reference only. */
-void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
+void PolyShape_addFace_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
     volatile int r = 0;
 }
 #if 0
@@ -13511,7 +13511,7 @@ void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_00048510)();
-void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
+void PolyShape_addFace_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
     s32 sp6C;
     s32 *var_s3;
     s32 *var_v0;
@@ -13774,7 +13774,7 @@ void game_libs_func_00048A60(int a0, int a1, int a2, int a3) {
  * gl_func_000378D0 / 0003D5BC). */
 extern int func_00000000();
 extern int D_00000000;
-int *gl_func_00048A74(int *a0, int a1, int a2, int a3) {
+int *PolyShape_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0xC0)) != 0) {
         func_00000000(a0, a1, a2, a3);
         a0[0x28/4] = (int)&D_00000000;
@@ -13791,7 +13791,7 @@ int *gl_func_00048A74(int *a0, int a1, int a2, int a3) {
  * triple nested loop (array-indexed, inner k-loop) which IDO fully unrolls
  * (k) and rotates/pipelines (j) -- NOT a hand-pipelined do-while;
  * (2) iterator setup in all 3 arms is the ctor-with-alloc || idiom (same
- * as gl_func_00048A74 above): it=&itA; if (it||(it=alloc(0xC))) init;
+ * as PolyShape_ctor above): it=&itA; if (it||(it=alloc(0xC))) init;
  * then DOUBLE struct copy itA -> tmp -> itB (shared tmp slot sp+196);
  * (3) element access is list[0][idx] (extra deref), and the dispatch arg
  * is pool[0] + node->sh8A*8 (extra [0] deref); (4) pool pointers re-read
@@ -13821,7 +13821,7 @@ typedef struct NodeIter {
  * `lw 12(v0)` after `addiu v0,v0,132`); each advance is an if/else with the
  * NULL in the else arm; and the three element reads per node use three
  * spellings (target re-adds base + i*4 for each). */
-void gl_func_00048AEC(char *arg0) {
+void PolyShape_display(char *arg0) {
     f32 mtx[4][4];               /* sp+276 */
     NodeIter itB1;               /* sp+208 */
     NodeIter tmp;                /* sp+196 (shared copy temp) */
@@ -14017,7 +14017,7 @@ void gl_func_00048AEC(char *arg0) {
  * exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference) in
  * both build trees; the blank USO data refs are pinned (D_48AEC_mt / D_48AEC_src = 0), the jal words go through
  * gl_func_00000000. */
-void gl_func_00048AEC(char *arg0) {
+void PolyShape_display(char *arg0) {
 }
 #endif
 
@@ -14335,7 +14335,7 @@ s32 PolyShape_init(char *self) {
 void PolyShape_hostioParms(void) {
 }
 
-// gl_func_00049DBC — DECODE PROGRESS ~58.6% (was ~46%, no episode). 339 words.
+// PolyShape_shade_00049DBC — DECODE PROGRESS ~58.6% (was ~46%, no episode). 339 words.
 // Raw-.word USO. ONE clean function, prologue frame 0xB0 (saves ra, s0, s1).
 // Per-axis record decode + accumulate (cb = jal 0 / lui-zero = USO-relocated
 // placeholder gl_func_00000000 / &D_00000000).
@@ -14357,13 +14357,13 @@ void PolyShape_hostioParms(void) {
 extern int gl_func_00000000();
 extern void gl_func_00000000_49DBCv();
 #endif
-u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
+u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
 }
 
 // gl_func_0004A308 — STRUCTURAL PASS (0x364 / 218 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x80
 // (saves ra, s0). Structured-record-to-fields decoder (sibling of
-// gl_func_00049DBC; ×6-stride record-table variant).
+// PolyShape_shade_00049DBC; ×6-stride record-table variant).
 //
 //   void gl_func_0004A308(void *a0, int a1, int a2, int a3) {
 //     self = a0;
@@ -14383,7 +14383,7 @@ u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
 // fields (rec+4, rec+6) as ×6-byte-stride indices into the self->0x60 table,
 // then unpacking byte/halfword sub-fields (lbu/lhu, 0xFF-masked, with a
 // 0xFF=absent sentinel) into a packed sp output struct. Family: structured
-// record decode + table lookup (sibling of gl_func_00049DBC; this one keys a
+// record decode + table lookup (sibling of PolyShape_shade_00049DBC; this one keys a
 // 6-byte-entry table — e.g. a 3×u16 / RGB-ish palette record).
 //
 // Caps (DEFERRED): record/table/self struct untyped; per-field
@@ -14405,7 +14405,7 @@ s32 gl_func_0004A308(char *arg0, int arg1, int arg2, int arg3, char *arg4) {
 }
 
 /* gl_func_0004A670: 30-insn alloc-or-given + init + cond-followup. Mirror
- * of gl_func_00048A74 with alloc size 0xDC instead of 0xC0. Same `||`
+ * of PolyShape_ctor with alloc size 0xDC instead of 0xC0. Same `||`
  * short-circuit FALL-THROUGH-WITH-NULL-GUARD recipe. */
 int *gl_func_0004A670(int *a0, int a1, int a2, int a3) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0xDC)) != 0) {
@@ -14862,12 +14862,12 @@ void gl_func_0004B040(int *a0) {
     }
 }
 
-// gl_func_0004B0A8 — STRUCTURAL PASS (0x248 / 149 words, no episode). Raw-.word
+// Shadow_ctor_0004B0A8 — STRUCTURAL PASS (0x248 / 149 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0xA8
 // (saves ra + s0..s2). Object constructor/init (cb = jal 0 USO-relocated;
 // name keys &D_0002F0EC / F0F4).
 //
-//   void *gl_func_0004B0A8(void *a0, void *a1) {
+//   void *Shadow_ctor_0004B0A8(void *a0, void *a1) {
 //     self = a0; arg = a1;
 //     if (a0 == 0) {
 //       self = cb1(0x44);                              // alloc 0x44-byte obj
@@ -14904,7 +14904,7 @@ extern u8 gl_d_4b0a8_vt;   /* absolute alias @0x140: 2-word vtable copy source *
 extern u8 gl_d_4b0a8_w214; /* absolute alias @0x214: word arg of sub-registration */
 typedef struct { char *src; s32 idx; s32 end; } Q_0004B0A8;
 typedef struct { int a, b; } P2_0004B0A8;
-int *gl_func_0004B0A8(int *arg0, char *arg1) {
+int *Shadow_ctor_0004B0A8(int *arg0, char *arg1) {
     int spA0[2];
     Q_0004B0A8 sp94;
     s32 pad90;
@@ -14999,12 +14999,12 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4B0A8.cpp (agent-c run 164 lift,
  * agent-c run 240 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-int *gl_func_0004B0A8(int *arg0, char *arg1) {
+int *Shadow_ctor_0004B0A8(int *arg0, char *arg1) {
     return arg0;
 }
 #endif
 
-/* game_libs_func_0004B2F4: complete 203-instruction graphics submission.
+/* Shadow_display_0004B2F4: complete 203-instruction graphics submission.
  * Sym[1898] exports module Text+0x5F960, referenced by DataReloc+0x1FBA0;
  * the former gl_func_0004B2FC was an internal split after the flag load.
  * Global bit 0 gates a 4x4 matrix product, float matrix copy, guMtxF2L,
@@ -15089,16 +15089,16 @@ void game_libs_func_0004B2F4_old_cfe(char *arg0) {
 #undef W
 #undef P
 #endif
-void game_libs_func_0004B2F4(char *arg0) {
+void Shadow_display_0004B2F4(char *arg0) {
     volatile char *ret = arg0;
 }
 
-// gl_func_0004B620 — STRUCTURAL PASS (0x4CC / 309 words, no episode). Raw-.word
+// Sprite_ctor_0004B620 — STRUCTURAL PASS (0x4CC / 309 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function (large constructor). Single
 // prologue frame 0xB0 (saves ra + s0..s4). Object constructor/init (sibling
-// of gl_func_0004B0A8; cb = jal 0 USO-relocated; name key &D_0002F0FC).
+// of Shadow_ctor_0004B0A8; cb = jal 0 USO-relocated; name key &D_0002F0FC).
 //
-//   void *gl_func_0004B620(void *a0, void *a1) {
+//   void *Sprite_ctor_0004B620(void *a0, void *a1) {
 //     self = a0; arg = a1;
 //     if (a0 == 0) {
 //       self = cb1(0xD8);                              // alloc 0xD8-byte obj
@@ -15196,7 +15196,7 @@ typedef struct {
 /* Inlined iterator over the collection at obj->0x84. */
 typedef struct { s32 **ptr; s32 idx; s32 count; } Iter620;
 
-char *gl_func_0004B620(char *arg0, char *arg1) {
+char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
     Iter620 it;
     Iter620 it2;
     Iter620 it3;
@@ -15276,16 +15276,16 @@ char *gl_func_0004B620(char *arg0, char *arg1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4B620.cpp (agent-c run 157 lift,
  * agent-g run 366 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-char *gl_func_0004B620(char *arg0, char *arg1) {
+char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
 }
 #endif
 
-// gl_func_0004BAF4 — STRUCTURAL PASS (0x698 / 423 words, no episode). Raw-.word
+// Sprite_display_0004BAF4 — STRUCTURAL PASS (0x698 / 423 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function (very large FP driver). Single
 // prologue frame 0xF0 (saves ra). Per-frame FP transform / emit driver
 // (cb = jal 0 USO-relocated).
 //
-//   void gl_func_0004BAF4(void *a0) {
+//   void Sprite_display_0004BAF4(void *a0) {
 //     float *g = (float*)(&D_g + 0xA0);
 //     float x = g[0x30/4], y = g[0x34/4], z = g[0x38/4];  // global Vec3
 //     float scrA[..]; float scrB[..];                      // sp+0xE4 / sp+0xA0
@@ -15364,7 +15364,7 @@ typedef struct { char pad[0x30]; V4B p; } Cam4B;
 /* the 0x1C4 flag word is a separate blank USO data ref (per-site lui in the target) */
 extern int D_4BAF4_flags;
 extern Cam4B D_4BAF4_cam; /* pinned at 0xA0 (blank USO data ref, base held in a register) */
-void gl_func_0004BAF4(char *self) {
+void Sprite_display_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
     int iz;
@@ -15473,7 +15473,7 @@ void gl_func_0004BAF4(char *self) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4BAF4.cpp (agent-c run 157 lift, agent-c run 405
  * exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference) in
  * both build trees; the blank USO data refs stay pinned (D_4BAF4_cam = 0xA0, D_4BAF4_flags = 0). */
-void gl_func_0004BAF4(char *self) {
+void Sprite_display_0004BAF4(char *self) {
 }
 #endif
 
@@ -15598,7 +15598,7 @@ void gl_func_0004C288(int *self, int a1) {
 // (testing bits 0x200/0x400/0x800) and a size product (self->0xB8 *
 // self->0xBC) to parameterise the remaining initialisation. Family:
 // cb-driven constructor/reset + config-flag extract (siblings
-// gl_func_0004B0A8 / 0004B620 / 00040070). Post-flag setup tail
+// Shadow_ctor_0004B0A8 / 0004B620 / 00040070). Post-flag setup tail
 // representative; the cleared/defaulted field offsets (0x1B0=1, 0x1A8/0x1AC
 // =-1, 0x1B8/0x1A4/0x144=0), the &D_0002F128 key, the 0x78 flag bits
 // (0x200/0x400/0x800) and the 0xB8*0xBC product are exact. Caps: self
@@ -16564,7 +16564,7 @@ void RcpMgr_removeTask(int node, int *head) {
 // zero the object header (self->0x00/0x04/0x08/0x0C and 0x44), then allocate
 // a 0x78-byte (x0x10) sub-array and wire it in. Family: cb-driven
 // constructor + name registration + ROM-resource load (siblings
-// gl_func_0004B0A8 / 0004B620 / 00040070). Sub-array wiring tail
+// Shadow_ctor_0004B0A8 / 0004B620 / 00040070). Sub-array wiring tail
 // representative; the 0x50 alloc, the &D_0002F1F4 key, the 0xB0000B70 cart
 // address, the &D_0004EB00 dest, the zeroed header block and the cb4(0x78,
 // 0x10) sub-alloc are exact. Caps: object struct + cb signatures untyped.
@@ -16917,7 +16917,7 @@ end:
 // 0x20/0xE8), builds a render-mode flag word at self->0x140->0x04 by
 // masking to 0xF00 then OR-ing in the 0x400/0x2/0x1/0x10 bits, and seeds a
 // 1.0f scale/identity triple at self->0x128/0x12C/0x130. Family: cb-driven
-// constructor/init + flag-pack + scale-identity (siblings gl_func_0004B0A8
+// constructor/init + flag-pack + scale-identity (siblings Shadow_ctor_0004B0A8
 // / 0004C300 / 0004D688). Trailing leaf at 0x4E134 = small stub (deferred
 // re-split). The cleared fields, the cb1..cb4 sub-block offsets, the
 // 0xF00-mask | 0x400|2|1|0x10 flag pack and the 1.0f scale triple at
@@ -18149,7 +18149,7 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
 //     return 0;
 //   }
 // Family: structured-record key-match + dedup-merge driver (sibling of
-// gl_func_00049DBC / 0004A308 / 0004FD18). Field widths nailed from
+// PolyShape_shade_00049DBC / 0004A308 / 0004FD18). Field widths nailed from
 // mnemonics: 0x44=s32 count, 0x60=rec base (6B / 3x s16 keys), 0x68=dir
 // base (stride 8, candidate indices at field_2/4/6 as u16), 0x78=u8
 // byte-list. The 6-byte record stride is t8*6 (sll2-sub-sll1 for recA,

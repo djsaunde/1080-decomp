@@ -6,7 +6,7 @@ typedef struct { int a, b, c, d; } Quad4;
 
 /* -O0 sub-file prep — sibling to game_libs_o0_949C.c. Holds the
  * 0x8944..0x8A40 region with verified -O0 bodies for the int-reader
- * (gl_func_00008944) and float-reader (gl_func_000089F4) accessor
+ * (fs_gdlReadInt_00008944) and float-reader (fs_gdlReadFloat_000089F4) accessor
  * templates.
  *
  * STATUS — step 0 of multi-tick split. This commit creates the file
@@ -16,14 +16,14 @@ typedef struct { int a, b, c, d; } Quad4;
  *      (the section between this file's tail and the o0_949C cluster).
  *   3. Update Makefile: add this file with `OPT_FLAGS := -O0` +
  *      `TRUNCATE_TEXT := 0xFC` + INSN_PATCH for the 1 jal in each
- *      reader (gl_func_00008944=0x1c:0xJALTARGET, similarly for 89F4)
- *      + the INCLUDE_ASM-sandwich gl_func_00008990 (0x64) just emits
+ *      reader (fs_gdlReadInt_00008944=0x1c:0xJALTARGET, similarly for 89F4)
+ *      + the INCLUDE_ASM-sandwich fs_gdlReadQuad_00008990 (0x64) just emits
  *      from .s, no patches needed.
  *   4. Update tenshoe.ld: insert this .o + game_libs_mid.c.o between
  *      game_libs.c.o and game_libs_o0_949C.c.o.
- *   5. Strip the gl_func_00008944 + gl_func_000089F4 NM wraps from
+ *   5. Strip the fs_gdlReadInt_00008944 + fs_gdlReadFloat_000089F4 NM wraps from
  *      game_libs.c (they'll move to this file as C bodies; the
- *      gl_func_00008990 INCLUDE_ASM moves here as a sandwich stub).
+ *      fs_gdlReadQuad_00008990 INCLUDE_ASM moves here as a sandwich stub).
  *   6. Add unit entry to objdiff.json (-O0 c_flags).
  *
  * Until step 1 lands, this file is dead-storage — not built, not linked.
@@ -36,24 +36,24 @@ typedef struct { int a, b, c, d; } Quad4;
  * would have been needed anyway.)
  *
  * Verified standalone at -O0 (2026-05-07):
- *   gl_func_00008944: 19 insns / 0x4C, byte-exact.
- *   gl_func_000089F4: 19 insns / 0x4C, byte-exact (lwc1/swc1 form). */
+ *   fs_gdlReadInt_00008944: 19 insns / 0x4C, byte-exact.
+ *   fs_gdlReadFloat_000089F4: 19 insns / 0x4C, byte-exact (lwc1/swc1 form). */
 
 /* Step-1 migration completed 2026-05-07: brackets removed, game_libs.c
  * truncated at 0x8944, game_libs_mid.c handles 0x8A40..0x949C. */
-void gl_func_00008944(int *dst) {
+void fs_gdlReadInt_00008944(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void gl_func_00008990(Quad4 *dst) {
+void fs_gdlReadQuad_00008990(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 0x10);
     *dst = buf;
 }
 
-void gl_func_000089F4(float *dst) {
+void fs_gdlReadFloat_000089F4(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];

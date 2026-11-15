@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00048510 (0x210 / 132 words), agent-c run 160 (lift) / run 271 (exact),
+/* IDO 7.1 NCC (C++) EXACT donor for PolyShape_addFace_00048510 (0x210 / 132 words), agent-c run 160 (lift) / run 271 (exact),
  * REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.
  * Rewritten as real C++ (was the run-134 C lift under NCC, 91.11): `void Strip::add(Vtx *v, s16 *out, int *full,
- * u16 *id)` (renamed to gl_func_00048510 with objcopy). Strip: mesh at 0, vertex / triangle counts at 4 / 8, 200
+ * u16 *id)` (renamed to PolyShape_addFace_00048510 with objcopy). Strip: mesh at 0, vertex / triangle counts at 4 / 8, 200
  * 3-index triangles at 0x14, vertex ids at 0x4C4, limits at 0x590 / 0x594 and its vptr at 0x598 (a class that introduces
  * virtuals puts the vptr after its own data: the cfront `flush()` call through vtbl+8). Per vertex: look up an existing
  * index (`i == 0 || n594 == 2` as the flag), else flush when full (and restart at i = 0), append the vertex to the

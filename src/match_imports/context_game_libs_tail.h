@@ -297,11 +297,11 @@ typedef struct {
 typedef struct { GlSaveEntry entries[3]; } GlSaveRecord;
 int gl_func_0000959C();
 extern int gl_func_00000000();
-void gl_func_00009674(int *dst);
+void fs_gdlReadInt_00009674(int *dst);
 extern int gl_func_00000000();
-void gl_func_000096B0(float *dst);
-void gl_func_000096EC(Vec3 *dst);
-void gl_func_0000975C(Quad4 *dst);
+void fs_gdlReadFloat_000096B0(float *dst);
+void fs_gdlReadVec3_000096EC(Vec3 *dst);
+void fs_gdlReadQuad_0000975C(Quad4 *dst);
 void backup_checksum(s32 *out, s32 *src, s32 len, s32 key);
 int backup_checksumOk(s32 *out, s32 *src, s32 len, s32 key);
 int backup_checksumEqual(s32 *a0, s32 *a1);
@@ -521,12 +521,12 @@ struct GlExisting {
 int *gl_func_0000C5B0(int *arg0);
 void _asmpp_func3(void);
 extern int gl_func_00000000();
-void gl_func_0000C644(int *dst);
+void fs_gdlReadInt_0000C644(int *dst);
 extern int gl_func_00000000();
-void gl_func_0000C680(float *dst);
+void fs_gdlReadFloat_0000C680(float *dst);
 extern int gl_func_00000000();
-void gl_func_0000C6BC(Quad4 *dst);
-void gl_func_0000C714(Vec3 *dst);
+void fs_gdlReadQuad_0000C6BC(Quad4 *dst);
+void fs_gdlReadVec3_0000C714(Vec3 *dst);
 typedef struct {
                char *field_00;
                s32 field_04;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0004B0A8 (0x24C / 147 words), agent-c run 164 (was the
+/* IDO 7.1 NCC (C++) EXACT donor for Shadow_ctor_0004B0A8 (0x24C / 147 words), agent-c run 164 (was the
  * run-134 C lift, 94.76). The function is the constructor `Obj::Obj(Src *s) : Base(name)` (Makefile rename of
  * __ct__3ObjFP3Src): cfront `this == 0 -> new(0x44)`, out-of-line Base(char *) (Base = 0x28 data bytes + the
  * virtual, so Obj's own vptr store lands at +0x28), a Pair copied from the vt+0x140 template, f0 = 2, f40 from an

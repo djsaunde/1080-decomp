@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0004BAF4 (0x69C / 423 words; exact since agent-c run 405), lifted in agent-c run 157:
+/* IDO 7.1 NCC (C++) EXACT donor for Sprite_display_0004BAF4 (0x69C / 423 words; exact since agent-c run 405), lifted in agent-c run 157:
  * the cfe NM body (billboard sprite draw) lifted under NCC with the display-list appends as cfront
  * inlines (Ctx4B::next / Ctx4B::add). What moved it (cfe 92.03 -> 95.58, length 1680 -> 1692 = target):
  * - the viewport clip test reads the half-extents 0xB8 / 0xBC as VOLATILE ints: the target re-loads them
@@ -49,7 +49,7 @@ template <class T> inline T idv(T v) { return v; } /* agent-g run 300: zero-code
 /* agent-c run 402 (kit CDLXXXVI): the B4 x clamp's MAX through a by-value int inline -- its parameter is an edg
  * pool word, so the merge temps move onto the target's v1 / a1 (99.693 -> 99.835) */
 inline int mx4B(int v) { return MAX(v, 0); }
-extern "C" void gl_func_0004BAF4(char *self) {
+extern "C" void Sprite_display_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
     int iz;

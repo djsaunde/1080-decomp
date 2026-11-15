@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003B9C0 (0x45C / 279 words), agent-c run 387: REPLACE_FUNC_BODY-spliced
+/* IDO 7.1 NCC (C++) EXACT donor for CollShape_raycast (0x45C / 279 words), agent-c run 387: REPLACE_FUNC_BODY-spliced
  * over the placeholder in game_libs_post0b.c on both build trees. The two double literals' donor-local .rodata reloc
- * is renamed by the splice to gl_func_0003B9C0_rodata (pinned to the USO RoData +0x1AA8); the blank jal words are
+ * is renamed by the splice to CollShape_raycast_rodata (pinned to the USO RoData +0x1AA8); the blank jal words are
  * gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 and the next-vertex table D_3B9C0_c (all pinned 0).
  * agent-c run 387 (re-decode from the target asm, then ported here): p[ia] / p[ib] / sgn read in the edge loop (no
  * qa / qb / sg variables: the &p lda stays an uncoloured ugen base), ia named (iav), stale folds dropped, the face
@@ -40,7 +40,7 @@ extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
 }
 inline void zf(f32 &f, int z) { f = z; }
-extern "C" s32 gl_func_0003B9C0(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
+extern "C" s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
     s32 cnt;
     u32 i;
     s16 *v0; /* agent-c run 285: v0 takes the dead-stored opad's word and ey shares ex's word: the declared-word

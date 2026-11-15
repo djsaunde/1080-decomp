@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003B2EC (0x3B4 / 237 words), spliced over a placeholder in both
+/* IDO 7.1 NCC (C++) EXACT donor for CollShape_height (0x3B4 / 237 words), spliced over a placeholder in both
  * build trees (agent-g run 238; was the agent-c run 177 NM-only comparison donor).
  * agent-g run 238 (kit CCLIV): the last 3 words were the `*list++` old-value copy at the loop bottom (target t4,
  * here v0). edg rotates the loop and emits the condition twice; each copy's old-value temp comes from edg's

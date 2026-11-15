@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003C43C -- EXACT (agent-c run 250), spliced over the post0b placeholder on both
+/* IDO 7.1 NCC (C++) donor for CollShape_nearestHit -- EXACT (agent-c run 250), spliced over the post0b placeholder on both
  * build paths via REPLACE_FUNC_BODY. History: the NM C body lifted under NCC (agent-c run 134 sweep, cfe 93.00).
  * agent-c run 177 (94.26 -> 96.05, 864 -> 868 bytes, target 872): the limit constant read into a block-scope
  * `k` then copied into lim (the target's f16 constant + `mov.s f12` copy, kept apart from the -600 constant), and
@@ -45,7 +45,7 @@ extern short idx;
 extern Vec3 vtx;
 extern float f24;
 }
-extern "C" int gl_func_0003C43C(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
+extern "C" int CollShape_nearestHit(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
     float dist[8];
     char *hitbuf[8];
     Vec3 acc;

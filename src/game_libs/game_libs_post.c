@@ -9017,7 +9017,7 @@ void Audio_InitNoteList(int *a0) {
 }
 
 /* Audio_InitNoteLists: 20-insn 4-call init wrapper for 4 contiguous 0x10-byte
- * blocks. Calls gl_func_0003D074 (alt-entry inside gl_func_0003D068 at +0xC)
+ * blocks. Calls gl_func_0003D074 (alt-entry inside fs_gdlWriteInt_0003D068 at +0xC)
  * on each block, then sets each block's [0xC] field to self-reference (= a0).
  * Byte-exact: 4 jals resolve to gl_func_0003D074 (0x3D074). */
 extern void gl_func_0003D074();

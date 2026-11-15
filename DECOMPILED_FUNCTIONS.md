@@ -55,7 +55,7 @@ regress during the O1/O2 file split, restore from the sources listed.
 
 ## Fragment Merges Performed
 
-- `gl_func_0004B2FC` merged into `game_libs_func_0004B2F4`: the two
+- `gl_func_0004B2FC` merged into `Shadow_display_0004B2F4`: the two
   hoisted instructions load global render flags, not an incoming argument.
   Sym[1898] exports Text+0x5F960, with DataReloc+0x1FBA0 referencing it;
   Text+0x5F968 is internal. Combined original span: 0x32C / 203 instructions.

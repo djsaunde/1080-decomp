@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor (agent-g run 366) for gl_func_0004B620 (0x4D4 / 309 words), agent-c run 157.
+/* IDO 7.1 NCC (C++) EXACT donor (agent-g run 366) for Sprite_ctor_0004B620 (0x4D4 / 309 words), agent-c run 157.
  * The function is a C++ constructor Obj::Obj(void *a1) : Base(a1): cfront's `this == 0 -> new(0xD8)`
  * protocol, the inline Base ctor (its own `new(0xCC)` fallback, external BB ctor, FP / field defaults),
  * the vptr store at 0x28, two display lists built with an inline DL::add, and a walk of the element array
@@ -17,7 +17,7 @@
  * (`&head->buf[head->inc()]`, no keep): edg's `this` temp is the target's head-in-s0 / old-count-in-s3
  * pair; append 2 keeps the direct `count++` with the hi / lo keep (addOK). 98.98 -> 99.37 (objdiff, NM tree).
  * Left: appends 1-2 old count s3 (target s0), the loop's ++idx / ref temps s0<->s3, appends 5-6 g a1/v0.
- * agent-g run 366: EXACT -- spliced over the gl_func_0004B620 placeholder in both build trees (see the run-366
+ * agent-g run 366: EXACT -- spliced over the Sprite_ctor_0004B620 placeholder in both build trees (see the run-366
  * notes on set0 / curM() / satD() below). */
 extern "C" {
 void *gl_func_00000000(...);

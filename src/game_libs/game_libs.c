@@ -1874,21 +1874,21 @@ int game_libs_func_000040F4(int a0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00004104(int *dst) {
+void fs_gdlReadInt_00004104(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00004140(Quad4 *dst) {
+void fs_gdlReadQuad_00004140(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00004198(float *dst) {
+void fs_gdlReadFloat_00004198(float *dst) {
     int pad;
     float scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
@@ -1897,7 +1897,7 @@ void gl_func_00004198(float *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void gl_func_000041D4(Vec3 *dst) {
+void fs_gdlReadVec3_000041D4(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];

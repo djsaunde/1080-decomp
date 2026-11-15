@@ -64,7 +64,7 @@ typedef struct { float x, y, z; } Vec3;
  * when colored to an s-reg — moving p1/p2 decls AFTER raw drops their two home
  * slots below raw, lifting &raw from sp+0x40 to sp+0x48 frame-neutrally.
  * The old sweep only permuted the aggregates, never the register decls. */
-void gl_func_00008A40(Vec3 *dst) {
+void fs_gdlReadVec3_00008A40(Vec3 *dst) {
     register Vec3 *q;
     Tri3i raw;
     register Vec3 *p1;

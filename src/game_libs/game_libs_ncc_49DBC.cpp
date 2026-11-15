@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00049DBC: three textured-vertex builds from one
+/* IDO 7.1 NCC (C++) donor for PolyShape_shade_00049DBC: three textured-vertex builds from one
  * 8-byte index record (vertex lookups, optional 0x7C alpha table, colour source by
  * flag: per-vertex call / 0x54 table / 0x50 table / the arg4 float RGB * 255).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY.
@@ -24,7 +24,7 @@ extern void gl_func_00000000_49DBCv(...);
 extern char gl_d_49dbc_t2[];
 extern char gl_d_49dbc_t3[];
 }
-extern "C" u8 *gl_func_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
+extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
     void *spAC;
     void *spA8;
     void *spA4;

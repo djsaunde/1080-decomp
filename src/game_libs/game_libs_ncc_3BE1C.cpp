@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003BE1C (0x620 / 392 words), agent-c run 178 lift, agent-g run 325 exact
+/* IDO 7.1 NCC (C++) EXACT donor for CollShape_query (0x620 / 392 words), agent-c run 178 lift, agent-g run 325 exact
  * (spliced over a placeholder on both build paths; the residual notes below are history).
  * Real C++ `int Obj::query(int max, f32 *dist, Tri **out, V3 p)` (vertical ray / ground query, sibling of
  * 3B2EC Obj::height and 3B9C0), ported from the run-110..152 cfe body (77.27): the grid lookup through the

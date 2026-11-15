@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00048AEC (0x81C / 519 words), agent-c run 159.
- * `void Obj::draw()` (renamed to gl_func_00048AEC with objcopy): the matrix concat into a local f32[4][4],
+/* IDO 7.1 NCC (C++) NM-only comparison donor for PolyShape_display (0x81C / 519 words), agent-c run 159.
+ * `void Obj::draw()` (renamed to PolyShape_display with objcopy): the matrix concat into a local f32[4][4],
  * Ctx::mtx() / next() appends on the GState context (next() with a named count `n`: the target's dl
  * pointer in a caller-saved register, re-read for the buf; mtx() as `&mh->buf[mh->count++]`, frame 0x160 = target), load(m) / prim(hi, lo) / dlcall(p) DL helpers
  * (named `g` / `t` per expansion, like the target's per-arm disp homes), three `AIter it = arr.iter();` loops, one per arm (block-scoped `it`, the

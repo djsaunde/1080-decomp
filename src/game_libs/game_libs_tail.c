@@ -3,7 +3,7 @@
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
- * Covers gl_func_00009674 onwards (gl_func_0000959C, an -O0 function,
+ * Covers fs_gdlReadInt_00009674 onwards (gl_func_0000959C, an -O0 function,
  * moved to game_libs_o0_949C.c 2026-10-15). Type definitions Tri3i/Vec3
  * (originally declared at game_libs.c:290) re-declared here. */
 
@@ -14,21 +14,21 @@ typedef struct { float x, y, z; } Vec3;
 
 
 extern int gl_func_00000000();
-void gl_func_00009674(int *dst) {
+void fs_gdlReadInt_00009674(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_000096B0(float *dst) {
+void fs_gdlReadFloat_000096B0(float *dst) {
     int pad;
     float scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
-void gl_func_000096EC(Vec3 *dst) {
+void fs_gdlReadVec3_000096EC(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -41,11 +41,11 @@ void gl_func_000096EC(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* Quad4 reader template — sibling of gl_func_0003A9E8 (matched last iteration).
+/* Quad4 reader template — sibling of fs_gdlReadQuad_0003A9E8 (matched last iteration).
  * Standard 22-insn shape: gl_func_00000000(&D_0, &buf, 16); *dst = buf;
  * Required boundary fix: original .s was a 36-function bundle (0x65C / 35
  * jr-ra sequences), split via scripts/split-fragments.py. */
-void gl_func_0000975C(Quad4 *dst) {
+void fs_gdlReadQuad_0000975C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 0x10);
     *dst = buf;
@@ -2007,14 +2007,14 @@ int *gl_func_0000C5B0(int *arg0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000C644(int *dst) {
+void fs_gdlReadInt_0000C644(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_0000C680(float *dst) {
+void fs_gdlReadFloat_0000C680(float *dst) {
     int pad;
     float scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
@@ -2022,13 +2022,13 @@ void gl_func_0000C680(float *dst) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000C6BC(Quad4 *dst) {
+void fs_gdlReadQuad_0000C6BC(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
-void gl_func_0000C714(Vec3 *dst) {
+void fs_gdlReadVec3_0000C714(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
