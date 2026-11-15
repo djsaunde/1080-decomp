@@ -4,7 +4,7 @@
  * list-header ctor chain with edg's this == 0 fallback) and the float-returning count read.
  * The cfe body (99.82, 6 words) evaluated the last vararg into a coloured variable (v1, target t7) and
  * folded the holder store into a t-register base; as C++ the varargs load in source order (t5 / t6 / t7)
- * and `gl(D_445AC_b.x1C = new A40, 0x64, 1)` -- the store as the call's first argument, no named
+ * and `gl(gSysLib_445AC_b.x1C = new A40, 0x64, 1)` -- the store as the call's first argument, no named
  * pointer -- makes the holder base a v0 variable with the target's lui / addiu / sw 28(v0) and frees the
  * home that a named `p` cost (frame 0x60 -> 0x58 = target). Spliced over an empty placeholder in both trees. */
 typedef unsigned int u32;
@@ -23,7 +23,7 @@ struct A40 {
     A40() { x18 = (char *)gl_func_00000000(32); gl_func_00000000(this, x18, 8); }
 };
 struct Holder { char pad[0x1C]; A40 *x1C; };
-extern "C" Holder D_445AC_b;
+extern "C" Holder gSysLib_445AC_b;
 struct L20 {
     int x0; int x4; int x8; int xC; int x10;
     L20() { x8 = 10; xC = 0; x0 = gl_func_00000000(40); }
@@ -46,7 +46,7 @@ extern "C" void GfxLib_init(Obj *a0) {
     gl_func_00000000(S(0x1FE14), 0);
     a0->x214 = gl_func_00000000(0, S(0x1FE24), D_445AC_ga, D_445AC_gb, D_445AC_gc, D_445AC_gd, D_445AC_ge);
     gl_func_00000000();
-    gl_func_00000000(D_445AC_b.x1C = new A40, 0x64, 1);
+    gl_func_00000000(gSysLib_445AC_b.x1C = new A40, 0x64, 1);
     a0->x22C = new L24;
     a0->x218 = gl_func_00000000(0);
     gl_func_00000000(a0);

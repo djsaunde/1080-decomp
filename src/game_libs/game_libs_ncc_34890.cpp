@@ -15,7 +15,7 @@ inline void *operator new(unsigned n) { return dbg_printThreads(n); }
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Pair { int a, b; };
 extern "C" Pair D_34890_tmpl;
-extern "C" char D_34890_d[], D_34890_e[];
+extern "C" char gHostio_34890_d[], gHostio_34890_e[];
 struct Link { void *data; Link *next; };
 struct O { char pad[0xC]; int h; Link *list; char pad14[4]; int flags; };
 struct LIter {
@@ -38,7 +38,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
  * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's
  * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
  * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */
-inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); dbg_printThreads(D_34890_d, h, a, o->flags & 2); }
+inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); dbg_printThreads(gHostio_34890_d, h, a, o->flags & 2); }
 extern "C" void hostio_sendNodeTree(O *o) {
     make(o->h, o);
     /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in
@@ -52,5 +52,5 @@ extern "C" void hostio_sendNodeTree(O *o) {
         do { rv = dbg_printThreads(it.cur->data); } while (I3(it.nxi()));
         if (rv) {}
     }
-    dbg_printThreads(D_34890_e);
+    dbg_printThreads(gHostio_34890_e);
 }

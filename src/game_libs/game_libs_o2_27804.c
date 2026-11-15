@@ -35,8 +35,8 @@ typedef struct {
     gl_27804_NoteSampleState sampleState;
 } gl_27804_Note;
 typedef AudioContext gl_27804_Ctx; /* include/audio.h (soundOutputMode 0x2076) */
-extern gl_27804_Ctx gl_27804_gAudioCtx;
-#define gAudioCtx gl_27804_gAudioCtx
+extern gl_27804_Ctx gAudioContext_27804;
+#define gAudioCtx gAudioContext_27804
 extern u16 gl_27804_gHaasEffectDelaySizes[];
 extern f32 gl_27804_gHeadsetPanVolume[];
 extern f32 gl_27804_gStereoPanVolume[];

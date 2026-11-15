@@ -17,7 +17,7 @@
  * continued, leaving a short baseline. Default builds now use the
  * size-guarded zero suffix (no-op at 0x50). Compiled C is unchanged.
  * Blank externs (USO load-time relocs, existing pins = 0):
- * D_00000000_pitable = __osPiTable, gl_func_00000000_disint =
+ * gl___osPiTable_pitable = __osPiTable, gl_func_00000000_disint =
  * __osDisableInt, gl_func_00000000_resint = __osRestoreInt. Spliced into
  * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned int u32;
@@ -36,10 +36,10 @@ typedef struct OSPiHandle_s {
     /* 0x14 */ u32 transferInfo[2];
 } OSPiHandle;
 
-extern OSPiHandle *D_00000000_pitable;      /* __osPiTable */
+extern OSPiHandle *gl___osPiTable_pitable;      /* __osPiTable */
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
-#define __osPiTable D_00000000_pitable
+#define __osPiTable gl___osPiTable_pitable
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 

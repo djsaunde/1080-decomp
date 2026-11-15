@@ -84,8 +84,8 @@ void AudioSynth_InitNextRingBuf(int n, int j, int k) {
 /* AudioSynth_SyncSampleStates: publish the flagged 0x20-byte element of every record
  * (TU-local, baked jal callee; section 0x31304 not exported). Base = bootup.uso
  * Data sym1255 @0x345C0 (lui/addiu t0 held), spelled as a TYPED struct through the
- * per-site alias D_345c0_1CC98 (pinned 0 in undefined_syms_auto.txt; the file's
- * plain `extern int D_00000000_345c0` can't be retyped in this TU). For each of
+ * per-site alias gAudioContext_345c0_1CC98 (pinned 0 in undefined_syms_auto.txt; the file's
+ * plain `extern int gAudioContext_345c0` can't be retyped in this TU). For each of
  * count (+0x2070) records (stride 0xD0, element at +0xB0) in recs (+0x2CFC): if the
  * element's top flag bit is set, struct-copy it into elems (+0x14)[count*arg0 + i]
  * and clear its bit 30, else clear the destination's top bit; then zero byte +6.
@@ -150,14 +150,14 @@ typedef struct {
     char p3[0x5378 - 0x2D00];
     char tbl5378[4];
 } gl_1CC98_GS;
-extern gl_1CC98_GS D_345c0_1CC98;
+extern gl_1CC98_GS gAudioContext_345c0_1CC98;
 void AudioSynth_SyncSampleStates(int arg0) {
     int i;
     gl_1CC98_Elem *s;
     gl_1CC98_Elem *d;
-    for (i = 0; i < D_345c0_1CC98.count; i++) {
-        s = &D_345c0_1CC98.recs[i].e;
-        d = &D_345c0_1CC98.elems[D_345c0_1CC98.count * arg0 + i];
+    for (i = 0; i < gAudioContext_345c0_1CC98.count; i++) {
+        s = &gAudioContext_345c0_1CC98.recs[i].e;
+        d = &gAudioContext_345c0_1CC98.elems[gAudioContext_345c0_1CC98.count * arg0 + i];
         if (s->flag) {
             *d = *s;
             s->live = 0;
@@ -169,7 +169,7 @@ void AudioSynth_SyncSampleStates(int arg0) {
 }
 
 /* AudioSynth_Update: per-frame batch builder over bootup.uso sym1255 (shared typed alias
- * D_345c0_1CC98; all three lui/addiu pairs are sym1255 addend 0). Exported (section
+ * gAudioContext_345c0_1CC98; all three lui/addiu pairs are sym1255 addend 0). Exported (section
  * 0x313D0 = sym1259, TextReloc ref @0x3ACA4). Points G.elems (+0x14) at a 4 KB stack
  * buffer; drains n = G.n2040 (+0x2040) calling blank sym1260(n-1) and the TU-local
  * 1CC98(G.n2040 - n) (baked jal gl_ref_00031304); then for each remaining batch portions
@@ -198,43 +198,43 @@ gl_1CD64_Gfx *AudioSynth_Update(gl_1CD64_Gfx *gfx, int *outLen, int *src, int bu
     int v;
     gl_1CC98_Elem buf[128];
 
-    D_345c0_1CC98.elems = buf;
+    gAudioContext_345c0_1CC98.elems = buf;
     p = gfx;
-    for (n = D_345c0_1CC98.n2040; n > 0; n--) {
+    for (n = gAudioContext_345c0_1CC98.n2040; n > 0; n--) {
         gl_func_00000000(n - 1);
-        gl_ref_00031304(D_345c0_1CC98.n2040 - n);
+        gl_ref_00031304(gAudioContext_345c0_1CC98.n2040 - n);
     }
     cur = src;
-    D_345c0_1CC98.w10 = 0;
-    for (n = D_345c0_1CC98.n2040; n > 0; n--) {
-        total = D_345c0_1CC98.n2040;
+    gAudioContext_345c0_1CC98.w10 = 0;
+    for (n = gAudioContext_345c0_1CC98.n2040; n > 0; n--) {
+        total = gAudioContext_345c0_1CC98.n2040;
         if (n == 1) {
             portion = budget;
         } else {
             v = budget / n;
-            if (v >= D_345c0_1CC98.h2044) {
-                portion = D_345c0_1CC98.h2044;
-            } else if (v <= D_345c0_1CC98.h2046) {
-                portion = D_345c0_1CC98.h2046;
+            if (v >= gAudioContext_345c0_1CC98.h2044) {
+                portion = gAudioContext_345c0_1CC98.h2044;
+            } else if (v <= gAudioContext_345c0_1CC98.h2046) {
+                portion = gAudioContext_345c0_1CC98.h2046;
             } else {
-                portion = D_345c0_1CC98.h2042;
+                portion = gAudioContext_345c0_1CC98.h2042;
             }
         }
-        for (i = 0; i < D_345c0_1CC98.nslots; i++) {
-            if (D_345c0_1CC98.slots[i].b1) {
+        for (i = 0; i < gAudioContext_345c0_1CC98.nslots; i++) {
+            if (gAudioContext_345c0_1CC98.slots[i].b1) {
                 gl_ref_00031050(portion, total - n, i);
-                total = D_345c0_1CC98.n2040;
+                total = gAudioContext_345c0_1CC98.n2040;
             }
         }
         p = gl_ref_00032320(cur, portion, p, total - n);
         budget -= portion;
         cur += portion;
     }
-    for (i = 0; i < D_345c0_1CC98.nslots; i++) {
-        if (D_345c0_1CC98.slots[i].b2) {
-            D_345c0_1CC98.slots[i].b2--;
+    for (i = 0; i < gAudioContext_345c0_1CC98.nslots; i++) {
+        if (gAudioContext_345c0_1CC98.slots[i].b2) {
+            gAudioContext_345c0_1CC98.slots[i].b2--;
         }
-        D_345c0_1CC98.slots[i].b3 ^= 1;
+        gAudioContext_345c0_1CC98.slots[i].b3 ^= 1;
     }
     *outLen = p - gfx;
     return p;
@@ -492,7 +492,7 @@ unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, 
 }
 
 /* AudioSynth_FilterReverb: display-list emitter for registry record a2 (bootup.uso
- * Data sym1255 @0x345C0 = D_00000000_345c0, stride 0x158). For each nonzero
+ * Data sym1255 @0x345C0 = gAudioContext_345c0, stride 0x158). For each nonzero
  * pointer at rec+0x118 / rec+0x11C emit two 0x07 packets: {0x0702 | (a1 & 0xFFFF),
  * ptr} then {0x07 | rec[0x18] << 16 | 0x0C80 / 0x0E20, rec+0x120 / rec+0x124};
  * return the advanced cursor. BYTE-EXACT 52/52 with the gbi-macro packet shape:
@@ -501,11 +501,11 @@ unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, 
  * zero-emission `& 0xFF` on the lbu byte is the phantom that skips t2). The old NM
  * wrap (75.3) used `a0[0..1]` + `a0 += 2`, which folds both packets onto one +16
  * cursor bump. */
-extern int D_00000000_345c0;
+extern int gAudioContext_345c0;
 typedef struct { unsigned int w0, w1; } gl_1D3E0_Gfx;
 #define SHL_1D3E0(v, s, w) ((((unsigned int)(v)) & ((1 << (w)) - 1)) << (s))
 gl_1D3E0_Gfx *AudioSynth_FilterReverb(gl_1D3E0_Gfx *gfx, int a1, int a2) {
-    char *rec = (char *)&D_00000000_345c0 + a2 * 0x158;
+    char *rec = (char *)&gAudioContext_345c0 + a2 * 0x158;
     if (*(int *)(rec + 0x118) != 0) {
         { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = *(int *)(rec + 0x118); }
         { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(*(unsigned char *)(rec + 0x18), 16, 8) | SHL_1D3E0(0xC80, 0, 16); _g->w1 = *(int *)(rec + 0x120); }
@@ -1109,8 +1109,8 @@ typedef struct {
     char unk_0; s8 numSynthesisReverbs; char pad2[0x12]; gl_dcb4_SampleState *sampleStates;
     SynthesisReverb synthesisReverbs[4]; char pad578[0x2070 - 0x578]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_dcb4_Note *notes;
 } gl_dcb4_Ctx;
-extern gl_dcb4_Ctx gl_dcb4_gAudioCtx;
-#define gAudioCtx gl_dcb4_gAudioCtx
+extern gl_dcb4_Ctx gAudioContext_dcb4;
+#define gAudioCtx gAudioContext_dcb4
 extern gl_dcb4_Acmd *gl_1dcb4_f1(gl_dcb4_Acmd *, s32, s16, s16);
 extern gl_dcb4_Acmd *gl_1dcb4_f2(s32, gl_dcb4_SampleState *, gl_dcb4_SynthState *, s16 *, s32, gl_dcb4_Acmd *, s32);
 extern gl_dcb4_Acmd *gl_1dcb4_f3(gl_dcb4_Acmd *, s32, s32);
@@ -1276,8 +1276,8 @@ typedef struct {
     u16 samplePosFrac; s32 samplePosInt; gl_e134_SynthBufs *synthesisBuffers; s16 curVolLeft; s16 curVolRight;
     char pad14[6]; u8 combFilterNeedsInit;
 } gl_e134_SynthState;
-extern AudioContext gl_e134_gAudioCtx;
-#define gAudioCtx gl_e134_gAudioCtx
+extern AudioContext gAudioContext_e134;
+#define gAudioCtx gAudioContext_e134
 extern s16 gl_e134_D_8012FBA8[];
 
 extern gl_e134_Acmd *gl_e134_LoadWaveSamples(gl_e134_Acmd *, NoteSampleState *, gl_e134_SynthState *, s32);
@@ -2244,7 +2244,7 @@ void AudioHeap_InitAdsrDecayTable(void) {
 
 /* Reset 3 byte-arrays in the global D struct: entries in D+0x2C40[48],
  * D+0x2C10[48], D+0x2C70[128]; if entry != 5 set it to 0 (beql 5,entry).
- * EXACT (unwrapped 2026-10-16; 50 words). gl_d_1fa20_a/b/c are base-0
+ * EXACT (unwrapped 2026-10-16; 50 words). gAudioContext_1fa20_a/b/c are base-0
  * placeholder externs (real symbols unknown), pinned to 0 in
  * undefined_syms_auto.txt; the ROM has lui 0 / addiu 0 for each.
  * Levers: distinct placeholder extern per loop busts the cross-loop base CSE
@@ -2255,21 +2255,21 @@ void AudioHeap_InitAdsrDecayTable(void) {
  * dead e-expr claims the EARLY ucode bit so end colors v0 / cursor v1 despite
  * cursor emitting first, and the for-comma-init `for (p = A, e = A + 0x30;...)`
  * pins the preheader schedule luiP,luiE,addiuE,addiuP (plain defs give p,e,p,e). */
-extern u8 gl_d_1fa20_a[];
-extern u8 gl_d_1fa20_b[];
-extern u8 gl_d_1fa20_c[];
+extern u8 gAudioContext_1fa20_a[];
+extern u8 gAudioContext_1fa20_b[];
+extern u8 gAudioContext_1fa20_c[];
 void AudioHeap_ResetLoadStatus(void) {
     unsigned char *e;
     unsigned char *p;
 
-    while (0) { e = gl_d_1fa20_a + 0x30; }
-    for (p = gl_d_1fa20_a, e = gl_d_1fa20_a + 0x30; p < e; p++) {
+    while (0) { e = gAudioContext_1fa20_a + 0x30; }
+    for (p = gAudioContext_1fa20_a, e = gAudioContext_1fa20_a + 0x30; p < e; p++) {
         if (5 != p[0x2C40]) {
             p[0x2C40] = 0;
         }
     }
-    while (0) { e = gl_d_1fa20_b + 0x30; }
-    for (p = gl_d_1fa20_b, e = gl_d_1fa20_b + 0x30; p < e; p++) {
+    while (0) { e = gAudioContext_1fa20_b + 0x30; }
+    for (p = gAudioContext_1fa20_b, e = gAudioContext_1fa20_b + 0x30; p < e; p++) {
         if (5 != p[0x2C10]) {
             p[0x2C10] = 0;
         }
@@ -2277,8 +2277,8 @@ void AudioHeap_ResetLoadStatus(void) {
     {
         int i;
         for (i = 0; i != 0x80; i++) {
-            if (5 != gl_d_1fa20_c[i + 0x2C70]) {
-                gl_d_1fa20_c[i + 0x2C70] = 0;
+            if (5 != gAudioContext_1fa20_c[i + 0x2C70]) {
+                gAudioContext_1fa20_c[i + 0x2C70] = 0;
             }
         }
     }
@@ -2286,7 +2286,7 @@ void AudioHeap_ResetLoadStatus(void) {
 
 /* AudioHeap_DiscardFont: "reactivate records of group a0" sweep (exported, section
  * 0x34154). Same sym1255 block and 0xD0 record table as AudioSynth_SyncSampleStates
- * (shared typed alias D_345c0_1CC98 / gl_1CC98_* types): for every record whose
+ * (shared typed alias gAudioContext_345c0_1CC98 / gl_1CC98_* types): for every record whose
  * byte +0x33 == a0, if +0x34 == 0 && +0x30 != 0 clear the top flag bit and set
  * bit 30 of the element it points to (+0x44), then call three in-unit callees
  * (sym1266 @0x3C42C, sym1267 @0x3D454, sym1268 @0x3EEF0; blank jal relocs) as
@@ -2299,8 +2299,8 @@ void AudioHeap_ResetLoadStatus(void) {
 void AudioHeap_DiscardFont(int a0) {
     int i;
     gl_1CC98_Rec *r;
-    for (i = 0; i < D_345c0_1CC98.count; i++) {
-        r = &D_345c0_1CC98.recs[i];
+    for (i = 0; i < gAudioContext_345c0_1CC98.count; i++) {
+        r = &gAudioContext_345c0_1CC98.recs[i];
         if (r->b33 == a0) {
             if (r->b34 == 0 && r->b30 != 0) {
                 r->elem->flag = 0;
@@ -2308,7 +2308,7 @@ void AudioHeap_DiscardFont(int a0) {
             }
             gl_func_00000000(r);
             gl_func_00000000(r);
-            gl_func_00000000(D_345c0_1CC98.tbl5378, r);
+            gl_func_00000000(gAudioContext_345c0_1CC98.tbl5378, r);
         }
     }
 }
@@ -2320,15 +2320,15 @@ void AudioHeap_DiscardFont(int a0) {
 // callback with the record pointer. The 2-insn orphan at 1FBCC (hoisted
 // lui v0 / lh v0,0x2048(v0) loop-bound load) was merged 2026-07-23.
 // EXACT (unwrapped 2026-10-16): the callback is gl_func_00000000 (absolute 0)
-// and the wrap-only record base gl_d_1fbcc is pinned to 0 in
+// and the wrap-only record base gAudioContext_1fbcc is pinned to 0 in
 // undefined_syms_auto.txt (ROM: lui s0,0 / addiu s0,s0,0).
 extern int gl_func_00000000();
 extern int D_00000000;
-extern u8 gl_d_1fbcc[];
+extern u8 gAudioContext_1fbcc[];
 /* Post-merge body (2026-07-23): entry gate = the merged-in hoisted global
  * bound *(s16*)(D+0x2048) (folded lui/lh, scalar &D spelling), NOT arg a0;
  * byte gate polarity is == (bnel skips on !=, fires the callback on match);
- * record base = HELD &D in s0 (gl_d_1fbcc array extern, big offsets
+ * record base = HELD &D in s0 (gAudioContext_1fbcc array extern, big offsets
  * 0x2D00/0x2D04, stride on the base) with call arg p+0x2D00; bound reloads
  * after the call only (uopt call-clobber), i++ dup'd into the likely delays. */
 void AudioHeap_DiscardSequence(int key) {
@@ -2336,7 +2336,7 @@ void AudioHeap_DiscardSequence(int key) {
     int i;
     i = 0;
     if (*(short *)((char *)&D_00000000 + 0x2048) > 0) {
-        p = (char *)gl_d_1fbcc;
+        p = (char *)gAudioContext_1fbcc;
         do {
             if (*(unsigned int *)(p + 0x2D00) >> 31) {
                 if (*(unsigned char *)(p + 0x2D04) == key) {
@@ -2756,8 +2756,8 @@ typedef struct {
     gl_1CC98_Rec *recs;
     gl_201B8_Obj objs[8];
 } gl_201B8_GS;
-extern gl_201B8_GS D_345c0_201B8;
-#define G D_345c0_201B8
+extern gl_201B8_GS gAudioContext_345c0_201B8;
+#define G gAudioContext_345c0_201B8
 extern void gl_ref_00034238();
 extern void gl_func_00000000_201B8v();
 
@@ -3356,7 +3356,7 @@ int AudioHeap_ResetStep(void) {
 }
 
 // AudioHeap_Init — sprite record-set (re)build state (0x894, 549 insns).
-// Base = bootup.uso Data sym1255 @0x345C0 through the typed alias D_345c0_21498;
+// Base = bootup.uso Data sym1255 @0x345C0 through the typed alias gAudioContext_345c0_21498;
 // rec table = sym1299 @0x1CC10 (stride 0x38, own zero alias D_1cc10_21498), the
 // h2 divisor = sym1284 @0x1CDD0 +2, the 0xE90 float = sym1 +0xE90 (zero aliases so
 // the addends stay in the immediates). Plain indexed loops over the typed view
@@ -3453,11 +3453,11 @@ typedef struct {
     int w2CF8, w2CFC;
     char recs2D00[8][0x160];
 } gl_21498_GS;
-extern gl_21498_GS D_345c0_21498;
+extern gl_21498_GS gAudioContext_345c0_21498;
 extern gl_21498_Rec D_1cc10_21498[];
 extern char D_1cdd0_21498[];
 extern char D_sym1_21498[];
-#define G D_345c0_21498
+#define G gAudioContext_345c0_21498
 extern void gl_ref_0003408C();
 extern void gl_ref_00033D20();
 extern void gl_func_00000000_21498v();
@@ -3634,7 +3634,7 @@ void AudioHeap_Init(void) {
  * rec val (+0x2538) of first record matching (a0,a1) on keys +0x2540/+0x2542
  * (SIGNED shorts -> lh), else 0.
  * MATCH KEYS (each verified load-bearing):
- *  - gl_d_21d2c_n vs gl_d_21d2c_tbl DISTINCT base-0 externs: busts the
+ *  - gAudioContext_21d2c_n vs gAudioContext_21d2c_tbl DISTINCT base-0 externs: busts the
  *    lui CSE so the n-load folds (lui;lw) while the cursor materializes
  *    separately (lui;addiu) like the target;
  *  - dead n-reload inside the loop: CSE'd to ZERO insns (no stores in
@@ -3645,30 +3645,30 @@ void AudioHeap_Init(void) {
  *  - `b = a1; a1 = 0;` e-split kill: b's copy can't coalesce with the
  *    multi-def a1 web -> `move a2,a1` materializes, freeing $a1 for the
  *    cursor (coloring i=v0/n=v1/cursor=a1/b=a2);
- *  - `cursor = (i = 0) + gl_d_21d2c_tbl;` fused init: orders the guard
+ *  - `cursor = (i = 0) + gAudioContext_21d2c_tbl;` fused init: orders the guard
  *    block [move;addiu] so as1 sinks i=0 (not the cursor addiu) into the
  *    blez delay slot;
  *  - do-while + the dead reload also defeats the x4 unroller (goto form
  *    alone bne-converts; for/do-while forms without the reload unroll).
  * (Historical negative findings from pass 1 2026-06-10 retained in git
  * history; the "regalloc/rotation hybrid cap" verdict is RETRACTED.) */
-extern char gl_d_21d2c_tbl[];
-extern char gl_d_21d2c_n[];
+extern char gAudioContext_21d2c_tbl[];
+extern char gAudioContext_21d2c_n[];
 int AudioHeap_SearchPermanentCache(int a0, int a1) {
     int i = 0;
-    int n = *(int *)(gl_d_21d2c_n + 0x2534);
+    int n = *(int *)(gAudioContext_21d2c_n + 0x2534);
     char *cursor;
     int b = a1;
     a1 = 0;
     while (0) { a0 += 1; }
     if (n > 0) {
-        cursor = (i = 0) + gl_d_21d2c_tbl;
+        cursor = (i = 0) + gAudioContext_21d2c_tbl;
         do {
             i++;
             if (a0 == *(short *)(cursor + 0x2540) && b == *(short *)(cursor + 0x2542)) {
                 return *(int *)(cursor + 0x2538);
             }
-            n = *(int *)(gl_d_21d2c_n + 0x2534);
+            n = *(int *)(gAudioContext_21d2c_n + 0x2534);
             cursor += 0xC;
         } while (i < n);
     }
@@ -3811,7 +3811,7 @@ void AudioHeap_InitSampleCaches(int a0, int a1) {
 //   (collision-safe). gl_func_00000000 = canonical never-defined
 //   USO placeholder for the helpers.
 /* EXACT (run 143, agent-c): OoT AudioHeap_AllocTemporarySampleCacheEntry under a
- * TYPED gAudioCtx extern (gl_21F40_gAudioCtx) with OoT's own `index =
+ * TYPED gAudioCtx extern (gAudioContext_21F40) with OoT's own `index =
  * cache->numEntries++;` -- run 140 needed the absolute-member spelling only
  * because of the `*(Ctx *)&D_00000000` cast form. */
 extern int gl_func_00000000();
@@ -3842,8 +3842,8 @@ typedef struct {
     char pad0[0x630]; gl_heap_PreloadReq preloadSampleStack[1]; char pad644[0x1034 - 0x644]; s32 preloadSampleStackTop;
     char pad1038[0x294C - 0x1038]; gl_heap_SampleCache temporarySampleCache;
 } gl_heap_Ctx;
-extern gl_heap_Ctx gl_21F40_gAudioCtx;
-#define gl_heap_gAudioCtx gl_21F40_gAudioCtx
+extern gl_heap_Ctx gAudioContext_21F40;
+#define gl_heap_gAudioCtx gAudioContext_21F40
 extern int gl_func_00036844();
 #define AudioHeap_Alloc (void *)gl_func_00000000
 #define AudioHeap_DiscardSampleCacheEntry gl_func_00036844
@@ -3985,7 +3985,7 @@ typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_221D8_TunedSample
 typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0xE]; } gl_221D8_SoundFont;
 typedef struct { s16 numEntries; } gl_221D8_Table;
 typedef struct { char pad[0x2020]; gl_221D8_Table *soundFontTable; char pad2024[0xC]; gl_221D8_SoundFont *soundFontList; } gl_221D8_Ctx;
-extern gl_221D8_Ctx gl_221D8_gAudioCtx;
+extern gl_221D8_Ctx gAudioContext_221D8;
 
 void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
     s32 fontId;
@@ -3993,10 +3993,10 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
     s32 sampleBankId1;
     s32 sampleBankId2;
 
-    numFonts = gl_221D8_gAudioCtx.soundFontTable->numEntries;
+    numFonts = gAudioContext_221D8.soundFontTable->numEntries;
     for (fontId = 0; fontId < numFonts; fontId++) {
-        sampleBankId1 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId1;
-        sampleBankId2 = gl_221D8_gAudioCtx.soundFontList[fontId].sampleBankId2;
+        sampleBankId1 = gAudioContext_221D8.soundFontList[fontId].sampleBankId1;
+        sampleBankId2 = gAudioContext_221D8.soundFontList[fontId].sampleBankId2;
         if (!(((sampleBankId1 != 0xFF) && (entry->sampleBankId == sampleBankId1)) ||
               ((sampleBankId2 != 0xFF) && (entry->sampleBankId == sampleBankId2)) || entry->sampleBankId == 0)) {
             continue;
@@ -4009,7 +4009,7 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
                     s32 instId;
                     s32 drumId;
 
-                    for (instId = 0; instId < gl_221D8_gAudioCtx.soundFontList[fontId].numInstruments; instId++) {
+                    for (instId = 0; instId < gAudioContext_221D8.soundFontList[fontId].numInstruments; instId++) {
                         inst = (gl_221D8_Instrument *)gl_func_00000000(fontId, instId);
                         if (inst != NULL) {
                             if (inst->normalRangeLo != 0) {
@@ -4022,7 +4022,7 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
                         }
                     }
 
-                    for (drumId = 0; drumId < gl_221D8_gAudioCtx.soundFontList[fontId].numDrums; drumId++) {
+                    for (drumId = 0; drumId < gAudioContext_221D8.soundFontList[fontId].numDrums; drumId++) {
                         drum = (gl_221D8_Drum *)gl_func_00000000(fontId, drumId);
                         if (drum != NULL) {
                             gl_func_00036A04(entry, drum->tunedSample.sample);
@@ -4133,8 +4133,8 @@ typedef struct { gl_22464_TableHdr header; } gl_22464_Table;
 typedef struct { char pad[0x10]; } gl_22464_Pool;
 typedef struct { gl_22464_Pool pool; gl_22464_CacheEntry entries[32]; s32 numEntries; } gl_22464_SampleCache;
 typedef struct { char pad0[0x2020]; gl_22464_Table *soundFontTable; char pad2024[0x2030 - 0x2024]; gl_22464_Font *soundFontList; char pad2034[0x26B8 - 0x2034]; gl_22464_SampleCache persistentSampleCache; } gl_22464_Ctx;
-extern gl_22464_Ctx gl_22464_gAudioCtxT;
-#define gl_22464_gAudioCtx gl_22464_gAudioCtxT
+extern gl_22464_Ctx gAudioContext_22464T;
+#define gl_22464_gAudioCtx gAudioContext_22464T
 extern int gl_func_00036A04();
 #define AudioHeap_SearchCaches (void *)gl_func_00000000
 #define AudioLoad_IsFontLoadComplete gl_func_00000000
@@ -4201,7 +4201,7 @@ void AudioHeap_DiscardSampleCaches(void) {
 
 /* AudioLoad_DecreaseSampleDmaTtls (bootup.uso Sym 1322, jal'd from TextReloc @0x3AAFC; the
  * HI16/LO16 pair @0x36CE0/0x36CE4 = Data sym1255 @0x345C0, addend 0 -> the existing
- * own zero extern D_00000000_345c0, the registry base of the 24E28 block).
+ * own zero extern gAudioContext_345c0, the registry base of the 24E28 block).
  * Two-pass countdown/timer processor over the global record array (base
  * REG[0x1E08], stride 0x10, ONE contiguous array): pass 1 covers records
  * [0, REG[0x1E10]), pass 2 continues [REG[0x1E10], REG[0x1E0C)) (0x1E0C is a
@@ -4214,8 +4214,8 @@ void AudioHeap_DiscardSampleCaches(void) {
  * `if (rec[14] == 0)` keeps the decrement in temps; `rec = (u8*)(i*16); rec +=
  * base;` mutation form gives the offset-first addu (008e1821). Counts reloaded
  * per iteration (char-store alias). */
-extern int D_00000000_345c0;
-#define gAudioCtx_22674 (*(AudioContext *)&D_00000000_345c0)
+extern int gAudioContext_345c0;
+#define gAudioCtx_22674 (*(AudioContext *)&gAudioContext_345c0)
 void AudioLoad_DecreaseSampleDmaTtls(void) {
     unsigned int i;
     unsigned int cd;
@@ -4311,7 +4311,7 @@ void AudioLoad_DecreaseSampleDmaTtls(void) {
 // Residual is permuter territory (coloring/frame); not reached 0 here.
 /* EXACT 2026-10-24 (agent-c run 141, 98.25 -> 100): OoT's AudioLoad_DmaSampleData
  * (load.c) verbatim with OoT's RdPos-first empty tests, once gAudioCtx is a TYPED
- * extern struct (gl_22760_gAudioCtxT) instead of the `*(T *)&D` cast (run 140,
+ * extern struct (gAudioContext_22760T) instead of the `*(T *)&D` cast (run 140,
  * 98.19: 206 of 207 words, the cast form needed WrPos-first spellings).
  * gAudioCtx: curAudioFrameDmaQueue 0x16BC, curAudioFrameDmaIoMsgBuf 0x17D4,
  * curAudioFrameDmaCount 0x207C; "SUPERDMA" literal = module rodata 0x1AA84
@@ -4328,8 +4328,8 @@ typedef struct {
     u8 sampleDmaReuseQueue1RdPos; u8 sampleDmaReuseQueue2RdPos; u8 sampleDmaReuseQueue1WrPos; u8 sampleDmaReuseQueue2WrPos;
     char pad201c[0x207C - 0x201C]; s32 curAudioFrameDmaCount;
 } gl_22760_Ctx;
-extern gl_22760_Ctx gl_22760_gAudioCtxT;
-#define gl_22760_gAudioCtx gl_22760_gAudioCtxT
+extern gl_22760_Ctx gAudioContext_22760T;
+#define gl_22760_gAudioCtx gAudioContext_22760T
 extern char gl_22760_superDma[];
 extern int gl_ref_00038604();
 #define AudioLoad_Dma gl_ref_00038604
@@ -4712,15 +4712,15 @@ void AudioLoad_InitTable(short *a0, int a1, unsigned short a2) {
  * gl_ref_00037EA4); then *out = last (0xFF if the run is empty); return ret
  * (uninitialised on an empty run = the `lw v0,0x28(sp)` home fill).
  * BYTE-EXACT 2026-10-14 (agent-c), 71.68 -> 100, rewritten from the target
- * words with the 232E8 recipe: struct-TYPED extern alias gl_d_22FC0 (base 0,
+ * words with the 232E8 recipe: struct-TYPED extern alias gAudioContext_22FC0 (base 0,
  * own type because it also carries the +0x202C limit), `*(cur + buf)`
  * index-first run-length read, top-tested `while (cnt > 0)` with `cnt--`
  * after the call. The old body wrote a guarded do-while and initialised the
  * run length after the first load. */
 extern int gl_ref_00037EA4();
 typedef struct { char p0[0x2028]; unsigned char *buf; unsigned short lim; } gl_22FC0_GS;
-extern gl_22FC0_GS gl_d_22FC0;
-#define GS_22FC0 gl_d_22FC0
+extern gl_22FC0_GS gAudioContext_22FC0;
+#define GS_22FC0 gAudioContext_22FC0
 int AudioLoad_SyncLoadSeqFonts(int idx, int *out) {
     int cur;
     int cnt;
@@ -4918,7 +4918,7 @@ void AudioLoad_AsyncLoadSampleBank(int a0, int a1, int a2, int a3) {
  * BYTE-EXACT 2026-10-14 (agent-c), 86.72 -> 100, rewritten from the target words:
  *   - struct view of D (`GS.buf` at +0x2028) keeps &D in s5 and re-reads the
  *     buffer pointer per element (`lw t9,0x2028(s5)` in the bgtzl delay). It
- *     must be a struct-TYPED extern alias (gl_d_232E8, undefined_syms = 0): the
+ *     must be a struct-TYPED extern alias (gAudioContext_232E8, undefined_syms = 0): the
  *     cast view `(*(GS *)&D_00000000).buf` flips the run-length `addu` to
  *     base-first;
  *   - `*(cur + buf)` (index first) for the run-length read = `addu t8,s0,v0`;
@@ -4929,8 +4929,8 @@ void AudioLoad_AsyncLoadSampleBank(int a0, int a1, int a2, int a3) {
 extern int gl_ref_00038174();
 extern int gl_ref_0003870C();
 typedef struct { char p0[0x2028]; unsigned char *buf; } gl_232E8_GS;
-extern gl_232E8_GS gl_d_232E8;
-#define GS_232E8 gl_d_232E8
+extern gl_232E8_GS gAudioContext_232E8;
+#define GS_232E8 gAudioContext_232E8
 void AudioLoad_AsyncLoadFont(int idx, int a1, int a2, int a3) {
     int cur;
     int cnt;
@@ -4951,7 +4951,7 @@ void AudioLoad_AsyncLoadFont(int idx, int a1, int a2, int a3) {
  * *out = c; returns tbl-refetched + off on nonzero c, else 0. Includes the
  * splat-split tail 000233D4 (merged 0x34 -> 0x44 earlier).
  * MATCH KEYS:
- *  - gl_d_233A0 base-0 ARRAY extern referenced DIRECTLY in both derefs ->
+ *  - gAudioContext_233A0 base-0 ARRAY extern referenced DIRECTLY in both derefs ->
  *    base materialized ONCE (lui;addiu, colored $a2) instead of per-use
  *    scalar-fold lui;lw;
  *  - `*out = ...; if (*out == 0)` store-to-load-forwarding form: the test
@@ -4963,15 +4963,15 @@ void AudioLoad_AsyncLoadFont(int idx, int a1, int a2, int a3) {
  *    legitimately blocks CSE, reproducing the target's reload ($t1);
  *  - `off++ + (int)tbl` post-increment spelling gives the target's
  *    addu operand order (off first). */
-extern char gl_d_233A0[];
+extern char gAudioContext_233A0[];
 int AudioLoad_GetFontsForSequence(int a0, int *a1) {
-    char *tbl = *(char **)(gl_d_233A0 + 0x2028);
+    char *tbl = *(char **)(gAudioContext_233A0 + 0x2028);
     int off = ((unsigned short *)tbl)[a0];
     *a1 = *(unsigned char *)(off++ + (int)tbl);
     if (*a1 == 0) {
         return 0;
     }
-    return (int)(*(char **)(gl_d_233A0 + 0x2028) + off);
+    return (int)(*(char **)(gAudioContext_233A0 + 0x2028) + off);
 }
 
 /* AudioLoad_DiscardSeqFonts (0xB0, 44 insns): run-list consumer over the halfword-indexed
@@ -4981,14 +4981,14 @@ int AudioLoad_GetFontsForSequence(int a0, int *a1) {
  * run the TU-local deregister (baked jal 0x37B00 = gl_ref_00037B00) and then
  * handler(p, 0) (jal-0 USO slot), both inside the if.
  * `*(cur + buf)` for the run-length read gives the index-first `addu t8,s1,v0`
- * (only through the struct-typed alias gl_d_232E8 shared with AudioLoad_AsyncLoadFont;
+ * (only through the struct-typed alias gAudioContext_232E8 shared with AudioLoad_AsyncLoadFont;
  * the cast view of D_00000000 flips it); the struct view keeps &D in s3 across
  * the loop (`lw t9,0x2028(s3)` per element).
  * 2026-10-22 (agent-c run 120) EXACT: the "branch-likely cap" was a decode error --
  * the `bnez v0` skips BOTH calls (its target is the loop test, not the handler);
  * a branch-target-masked diff hid it. Moving handler(p, 0) into the if is exact. */
 extern int gl_ref_00037B00();
-#define GS_233E4 gl_d_232E8
+#define GS_233E4 gAudioContext_232E8
 void AudioLoad_DiscardSeqFonts(int idx) {
     int cur;
     int cnt;
@@ -5023,8 +5023,8 @@ void AudioLoad_DiscardSeqFonts(int idx) {
  * folds every scalar access under its own `lui` and holds only `&rec+0x2308`
  * (baked addend) as the loop base, so each site gets its own zero alias
  * (IDO_CODEGEN#alias-budget-call-free-same-symbol-pair-349e0): D_00000000 for
- * the head load, D_23494_a/b/c for the two marker stores + the second load,
- * D_23494_d for the list base (a load AND a store on one symbol also fuse into
+ * the head load, gAudioContext_23494_a/b/c for the two marker stores + the second load,
+ * gAudioContext_23494_d for the list base (a load AND a store on one symbol also fuse into
  * a held base, so the stores need their own aliases too).
  *
  * Levers (IDO_CODEGEN#loop-constant-web-split-unsigned-carrier-indexed-iv-23494):
@@ -5045,21 +5045,21 @@ void AudioLoad_DiscardSeqFonts(int idx) {
  *     reload inside the loop goes through the held base; `id` copies to a2 in
  *     the head bne delay by itself. BYTE-EXACT 42/42 standalone.
  * gl_func_0002349C wrap (70.8) + .s retired. */
-extern int D_23494_a;
-extern int D_23494_b;
-extern int D_23494_c;
-extern int D_23494_d;
+extern int gAudioContext_23494_a;
+extern int gAudioContext_23494_b;
+extern int gAudioContext_23494_c;
+extern int gAudioContext_23494_d;
 void AudioLoad_DiscardFont(int id)
 {
     char *base;
     int i;
     unsigned neg = 0xFFFFFFFF;
     if (id == *(short *)((char *)&D_00000000 + 0x23FA)) {
-        *(short *)((char *)&D_23494_a + 0x23FA) = -1;
-    } else if (id == *(short *)((char *)&D_23494_b + 0x2406)) {
-        *(short *)((char *)&D_23494_c + 0x2406) = -1;
+        *(short *)((char *)&gAudioContext_23494_a + 0x23FA) = -1;
+    } else if (id == *(short *)((char *)&gAudioContext_23494_b + 0x2406)) {
+        *(short *)((char *)&gAudioContext_23494_c + 0x2406) = -1;
     }
-    base = (char *)&D_23494_d + 0x2308;
+    base = (char *)&gAudioContext_23494_d + 0x2308;
     for (i = 0; (unsigned)i < *(unsigned int *)base; i++) {
         if (id == *(short *)(base + i * 0xC + 0x1E)) {
             *(short *)(base + i * 0xC + 0x1E) = neg;
@@ -5111,7 +5111,7 @@ int AudioLoad_SyncInitSeqPlayerSkipTicks(int a0, int a1, int a2) {
  * (jal-0) refreshes the record and stores b4 = bufIdx, b5 = last, w18 = w78 = p,
  * flag bit7 = 1 / bit6 = 0, b90 = h10 = 0, and a final jal-0 on the record.
  * BYTE-EXACT 2026-10-14 (agent-c), 76.0 -> 100, rewritten from the target words:
- *   - struct-typed alias gl_d_235E4 + `*(cur + buf)` (232E8 recipe);
+ *   - struct-typed alias gAudioContext_235E4 + `*(cur + buf)` (232E8 recipe);
  *   - the tail `li 0; li 16; addiu 4; bnel; addiu 4` is IDO's unrolled empty
  *     delay loop `for (i = 0; i < 16; i++) {}` (falls off the end, v0 = the
  *     counter), with `if (1) {}` before it so the counter takes v0 (34180 kit);
@@ -5148,8 +5148,8 @@ typedef struct {
     char p202E[0x2D00 - 0x202E];
     gl_235E4_Rec recs[1];
 } gl_235E4_GS;
-extern gl_235E4_GS gl_d_235E4;
-#define GS_235E4 gl_d_235E4
+extern gl_235E4_GS gAudioContext_235E4;
+#define GS_235E4 gAudioContext_235E4
 int AudioLoad_SyncInitSeqPlayerInternal(int recIdx, int bufIdx, int arg) {
     gl_235E4_Rec *rec;
     int cur;
@@ -5454,9 +5454,9 @@ int AudioLoad_SearchCaches(int a0, int a1) {
  * (docs/IDO_CODEGEN.md#single-result-local-if-chain-2831c). A switch is
  * required (an if/else-if chain tests with bne + fallthrough); case order
  * inside the switch is inert. */
-extern char gl_d_23B98[];
+extern char gAudioContext_23B98[];
 int AudioLoad_GetLoadTable(int idx) {
-    char *g = gl_d_23B98;
+    char *g = gAudioContext_23B98;
     int r;
     switch (idx) {
     case 0:
@@ -6179,7 +6179,7 @@ void AudioLoad_DmaSlowCopyUnkMedium(int a0, int a1, int a2, int a3) {
 
 /* AudioLoad_SlowLoadSeq (0x108, 66 insns): bounds-checked registry-record
  * creator over the same D+0x157C record pair as AudioLoad_SlowLoadSample (registry
- * base = bootup.uso Data sym1255 @0x345C0, own zero extern D_00000000_345c0;
+ * base = bootup.uso Data sym1255 @0x345C0, own zero extern gAudioContext_345c0;
  * limit u16 @+0x202C). Callees are baked text jals 0x38174 (poll(0, idx)) and
  * 0x38204 (bank(0)) = gl_ref_00038174 / gl_ref_00038204. The 3-word orphan
  * head was merged 2026-09-06 (agent-c, 76.2 -> 78.68).
@@ -6194,19 +6194,19 @@ void AudioLoad_DmaSlowCopyUnkMedium(int a0, int a1, int a2, int a3) {
  *     `tmp += 15; tmp &= ~15;` after the state/xC stores (store/load order
  *     found by a 240-way permutation of the store block);
  *   - `rec->tag = src->b8;` BEFORE `rec->id = idx;` (target: sw x8, lb, sb id). */
-extern int D_00000000_345c0;
+extern int gAudioContext_345c0;
 extern int gl_ref_00038174();
 extern int gl_ref_00038204();
 typedef struct { int w0; int w1; signed char b8; char p9[7]; } gl_24E28_Ent;
 typedef struct { short h0; short h2; char p4[12]; gl_24E28_Ent e[1]; } gl_24E28_Bank;
-#define GS_24E28 (*(gl_2495C_GS *)&D_00000000_345c0)
+#define GS_24E28 (*(gl_2495C_GS *)&gAudioContext_345c0)
 int AudioLoad_SlowLoadSeq(int idx, int a1, char *a2) {
     gl_24E28_Bank *base;
     gl_24E28_Ent *src;
     gl_2495C_Rec *rec;
     int tmp;
 
-    if (idx >= *(unsigned short *)((char *)&D_00000000_345c0 + 0x202C)) {
+    if (idx >= *(unsigned short *)((char *)&gAudioContext_345c0 + 0x202C)) {
         *a2 = 0;
         return -1;
     }
@@ -6418,8 +6418,8 @@ typedef struct { s32 sampleBankId1; s32 sampleBankId2; s32 baseAddr1; s32 baseAd
 typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; char pad4[0x10]; } gl_250C8_SoundFont;
 typedef struct { s16 numEntries; s16 unkMediumParam; } gl_250C8_AudioTable;
 typedef struct { char pad0[0x2024]; gl_250C8_AudioTable *sampleBankTable; char pad2028[8]; gl_250C8_SoundFont *soundFontList; } gl_250C8_Ctx;
-extern gl_250C8_Ctx gl_250C8_gAudioCtx;
-#define gAudioCtx gl_250C8_gAudioCtx
+extern gl_250C8_Ctx gAudioContext_250C8;
+#define gAudioCtx gAudioContext_250C8
 extern s32 gl_250C8_osRecvMesg(void *, void *, s32);
 extern s32 gl_250C8_osSendMesg(void *, u32, s32);
 extern void gl_250C8_SetSeqLoadStatus(s32, s32);
@@ -6578,13 +6578,13 @@ void AudioLoad_AsyncDmaUnkMedium(int a0, int a1, int a2, int a3) {
  * AudioLoad_RelocateSample (load.c) verbatim, including the AUDIO_RELOC
  * `reloc = ...` assignment macro. 1080 usedSamples has 0x300 entries
  * (gAudioCtx +0x430, numUsedSamples +0x1030); gAudioCtx is the run 139 fn-typed
- * blank base (gl_253c4_fd, pinned 0). */
+ * blank base (gAudioContext_253c4_fd, pinned 0). */
 typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; void *loop; void *book; } gl_253C4_Sample;
 typedef struct { gl_253C4_Sample *sample; f32 tuning; } gl_253C4_TunedSample;
 typedef struct { s32 sampleBankId1; s32 sampleBankId2; u32 baseAddr1; u32 baseAddr2; u32 medium1; u32 medium2; } gl_253C4_RelocInfo;
 typedef struct { char pad0[0x430]; gl_253C4_Sample *usedSamples[0x300]; s32 numUsedSamples; } gl_253C4_Ctx;
-extern void gl_253c4_fd();
-#define gl_253C4_gAudioCtx (*(gl_253C4_Ctx *)gl_253c4_fd)
+extern void gAudioContext_253c4_fd();
+#define gl_253C4_gAudioCtx (*(gl_253C4_Ctx *)gAudioContext_253c4_fd)
 typedef u8 gl_253C4_FontData;
 
 void AudioLoad_RelocateSample(gl_253C4_TunedSample *tunedSample, gl_253C4_FontData *fontData, gl_253C4_RelocInfo *sampleBankReloc) {
@@ -6700,7 +6700,7 @@ void AudioLoad_RelocateSample(gl_253C4_TunedSample *tunedSample, gl_253C4_FontDa
 // 2026-10-15 agent-c run 66: 65.6 -> 93.6 -- the "mask remat cap" above is the
 // BITFIELD-extract tell (IDO_CODEGEN #bitfield-extract-and-with-at-macro-258cc): word0
 // is the Desc258 layout {pad:4, sh:2, pad:2, msk:24} of AudioLoad_ProcessSamplePreloads (same
-// registry D_00000000_345c0: count 0x1030, pending 0x1034, records 0x620 stride 0x14,
+// registry gAudioContext_345c0: count 0x1030, pending 0x1034, records 0x620 stride 0x14,
 // blob 0x1684), and `& 0xFFF3` on byte 0 is `e->sh = 0`. Other levers: both arg3
 // dispatches are 2-label switches (beqz / beql s7 ladder, case bodies in order), the
 // `e->key = cur; e->sh = 0` pair is duplicated into both arms of the sh==1 test (target
@@ -6729,8 +6729,8 @@ typedef struct {
     char pad0[0x430]; gl_25504_Sample *usedSamples[0x80]; gl_25504_Req preloadSampleStack[0x80]; s32 numUsedSamples; s32 preloadSampleStackTop;
     char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x18]; char pad169C[0x2024 - 0x169C]; gl_25504_Table *sampleBankTable;
 } gl_25504_Ctx;
-extern gl_25504_Ctx gl_25504_gAudioCtx;
-#define gAudioCtx gl_25504_gAudioCtx
+extern gl_25504_Ctx gAudioContext_25504;
+#define gAudioCtx gAudioContext_25504
 extern s32 gl_25504_D_8016B780;
 #define D_8016B780 gl_25504_D_8016B780
 extern void gl_25504_RelocateFont(s32, void *, gl_25504_RelocInfo *);
@@ -6843,7 +6843,7 @@ void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, gl_2550
 
 /* AudioLoad_ProcessSamplePreloads (0x1C0, 112 insns): config-descriptor apply +
  * pending-entry drain. Registry base = bootup.uso Data sym1255 @0x345C0
- * (addend 0 -> own zero extern D_00000000_345c0, the 24E28 block), held in a3
+ * (addend 0 -> own zero extern gAudioContext_345c0, the 24E28 block), held in a3
  * across the whole function (re-materialised after each call). Pending count
  * @+0x1034; descriptor blob @+0x1684 parsed by the blank-jal callee (sym1341 =
  * text 0x7E5D0, `jal 0` in the ROM -> gl_func_00000000) into the stack word
@@ -6894,8 +6894,8 @@ void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, gl_2550
 typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_258C0_Sample;
 typedef struct { u32 endAndMediumKey; gl_258C0_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_258C0_Req;
 typedef struct { char pad0[0x630]; gl_258C0_Req preloadSampleStack[0x80]; s32 numUsedSamples; s32 preloadSampleStackTop; char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x18]; } gl_258C0_Ctx;
-extern gl_258C0_Ctx gl_258C0_gAudioCtx;
-#define gAudioCtx gl_258C0_gAudioCtx
+extern gl_258C0_Ctx gAudioContext_258C0;
+#define gAudioCtx gAudioContext_258C0
 extern s32 gl_258C0_osRecvMesg(void *, void *, s32);
 extern void gl_258C0_StartAsyncLoad(u32, u8 *, u32, s32, s32, void *, u32);
 #define osRecvMesg gl_258C0_osRecvMesg
@@ -7115,7 +7115,7 @@ void AudioLoad_PreloadSamplesForFont(s32 fontId, s32 async, void *sampleBankRelo
 
 /* AudioLoad_LoadPermanentSamples: registry resolve sweep (TU-local; three baked in-unit jals
  * pinned gl_ref_00038204 / gl_ref_00038174 / gl_ref_0003A2C0). Base = bootup.uso
- * sym1255 (D_00000000_345c0) through the shared typed alias D_345c0_1CC98:
+ * sym1255 (gAudioContext_345c0) through the shared typed alias gAudioContext_345c0_1CC98:
  * tbl = 38204(2); for each of nents (+0x2534) entries (+0x2540, stride 0xC) whose
  * active halfword == 1: j = 38174(1, key); rec = &regs (+0x2030)[j] (stride 0x14);
  * frame {b0,b4,..,b10,b14} gets rec's two selector bytes, each non-0xFF one is
@@ -7137,10 +7137,10 @@ void AudioLoad_LoadPermanentSamples(void) {
     struct { int b0; int b4; int pad8; int padc; int b10; int b14; } frame;
 
     tbl = (void *)gl_ref_00038204(2);
-    for (i = 0; i < D_345c0_1CC98.nents; i++) {
-        if (D_345c0_1CC98.ents[i].active == 1) {
-            j = gl_ref_00038174(1, D_345c0_1CC98.ents[i].key);
-            rec = (gl_260B4_Reg *)((char *)D_345c0_1CC98.regs + j * 0x14);
+    for (i = 0; i < gAudioContext_345c0_1CC98.nents; i++) {
+        if (gAudioContext_345c0_1CC98.ents[i].active == 1) {
+            j = gl_ref_00038174(1, gAudioContext_345c0_1CC98.ents[i].key);
+            rec = (gl_260B4_Reg *)((char *)gAudioContext_345c0_1CC98.regs + j * 0x14);
             frame.b0 = rec->sel0;
             frame.b4 = rec->sel1;
             if (frame.b0 != 0xFF) {
@@ -7361,7 +7361,7 @@ void AudioThread_QueueCmdU16(int a0, short a1) {
  * Sym exports text 0x3B338 (= splat 0x26CCC); 0x26CF0 is not exported and has
  * no reloc/baked-jal reference. The old "caller-set t6/v0/v1 cap" on 26CF0 was
  * this hoisted head: v1 = held registry base (sym1255 @ Data 0x345C0, addend 0
- * = D_00000000_345c0), v0/a3 = the two queue bytes +0x53B8/+0x53B9, t6 = the
+ * = gAudioContext_345c0), v0/a3 = the two queue bytes +0x53B8/+0x53B9, t6 = the
  * high-water word at Data base + 0x1B594 (sym2 HI/LO with the addend baked),
  * a0 = the COMPUTED pending count (cur - committed + 256) & 0xFF.
  * Enqueue-commit helper: track the high-water pending count, submit
@@ -7370,7 +7370,7 @@ void AudioThread_QueueCmdU16(int a0, short a1) {
  * 0x7E470 = gl_osSendMesg). */
 extern int gl_func_00000000();
 extern int D_00000000;
-extern int D_00000000_345c0;
+extern int gAudioContext_345c0;
 /* Lever: the registry base must be spelled INLINE at every site (macro), not
  * a named `unsigned char *reg = &sym` local -- the named pointer is its own
  * candidate (a1, dropped at the if-join, per-site lui at/t0 after the call);
@@ -7378,7 +7378,7 @@ extern int D_00000000_345c0;
  * v1 held across the if-join for the three pre-call reads and re-formed
  * (lui/addiu) for the post-call lbu/sb pair. `volatile` pointee and a typed
  * struct pointer both keep the named-candidate shape (20-21 diff words). */
-#define gAudioCtx_26CCC (*(AudioContext *)&D_00000000_345c0)
+#define gAudioCtx_26CCC (*(AudioContext *)&gAudioContext_345c0)
 void AudioThread_ScheduleProcessCmds(void) {
     int cur, committed, n, r;
 
@@ -7446,7 +7446,7 @@ void AudioThread_ResetCmdQueue(void) {
  * words, frame 0x68, 142/230 word-identical (mnemonic sequence differs in
  * ONE swap). Levers, each confirmed standalone (docs/IDO_CODEGEN.md
  * #extern-struct-array-base-keeps-sreg-opaque-26d64):
- *  (1) base = `extern St26D64 D_26D64_arr[]; g = &D_26D64_arr[0]` -- an
+ *  (1) base = `extern St26D64 gAudioContext_26D64_arr[]; g = &gAudioContext_26D64_arr[0]` -- an
  *      ARRAY-element address stays a register variable ($s5 for EVERY
  *      access incl. the exit `sb zero,21434(s5)` and the in-loop
  *      `lh 8264(s5)`, base-first `addu s3,s5,t3`); `(St*)&D_00000000`
@@ -7632,17 +7632,17 @@ int AudioThread_ResetAudioHeap(int a0) {
  * unfolds the absolute store ($at-macro sw sym+0x215C form -> compiler-held
  * lui/addiu base + disp store, matching target t7/t8); (2) per-site-extern
  * %hi-CSE-kill (27784 osAiSetNextBuffer precedent): a SECOND zero-based
- * extern (gl_d_272c4) for the post-call store kills the cross-call value-CSE
+ * extern (gAudioContext_272c4) for the post-call store kills the cross-call value-CSE
  * that otherwise spills the base to a frame slot (frame 0x20+spill vs target
  * 0x18+remat). EXACT (unwrapped run 95): gl_func_00000000 is a real symbol
- * at 0, and gl_d_23f98 / gl_d_272c4 are pinned to 0 in undefined_syms_auto.txt
+ * at 0, and gAudioContext_23f98 / gAudioContext_272c4 are pinned to 0 in undefined_syms_auto.txt
  * (ROM words are lui 0 / addiu 0). */
-extern unsigned char gl_d_23f98[];
-extern unsigned char gl_d_272c4[];
+extern unsigned char gAudioContext_23f98[];
+extern unsigned char gAudioContext_272c4[];
 extern int gl_func_00000000();
 void AudioThread_PreNMIInternal(void) {
-    int g = (int)gl_d_23f98;
-    int h = (int)gl_d_272c4;
+    int g = (int)gAudioContext_23f98;
+    int h = (int)gAudioContext_272c4;
     *(int *)(g + 0x215C) = 1;
     gl_func_00000000(0);
     *(unsigned char *)(h + 0x2CF0) = 0;
@@ -7956,9 +7956,9 @@ void AudioThread_WaitForAudioTask(void) {
  *    (out of as1's 9-insn dup window -> plain bne+nop to a far [jr;move]);
  *  - tail operands NAMED (`end`/`start`, end assigned first) -> color
  *    $a1/$a2 with the target's subu order. */
-extern char gl_d_275F4[];
+extern char gAudioContext_275F4[];
 int AudioThread_GetLayerSamplesLeft(int a0, int a1, int a2) {
-    char *rec = gl_d_275F4 + a0 * 0x160;
+    char *rec = gAudioContext_275F4 + a0 * 0x160;
     char *p1;
     char *p2;
     char *q;
@@ -8275,7 +8275,7 @@ void Audio_NoteDisable(char *a0) {
  * (note, &attrs) (no sampleStates[] entry), the two disabling arms inside `out:` end
  * with `goto skip` instead of `continue` (the loop tail is shared), and the
  * combFilterGain copy precedes combFilterSize. Load-bearing: gAudioCtx as a TYPED
- * extern struct (gl_27E24_gAudioCtx; the `*(T *)&D` cast form emits the notes[i]
+ * extern struct (gAudioContext_27E24; the `*(T *)&D` cast form emits the notes[i]
  * addu base-first), NoteSampleState bitField0 + bitField1 as one u32 bitfield run
  * (lw tests), the Stereo union copies (the held &sampleStateAttrs.stereo in s7 the
  * old NM could not produce), playbackState / sampleState pointer locals. */
@@ -8313,7 +8313,7 @@ typedef struct gl_27E24_Note {
     char padB4[0xD0 - 0xB4];
 } gl_27E24_Note;
 typedef struct { char pad[0x204C]; f32 resampleRate; f32 ticksPerUpdateInv; char pad2054[0x2070 - 0x2054]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_27E24_Note *notes; } gl_27E24_Ctx;
-extern gl_27E24_Ctx gl_27E24_gAudioCtx;
+extern gl_27E24_Ctx gAudioContext_27E24;
 
 #define gl_27E24_NO_LAYER ((gl_27E24_Layer *)(-1))
 extern f32 gl_func_00000000_27E24f();
@@ -8332,8 +8332,8 @@ void Audio_ProcessNotes(void) {
     f32 scale;
     s32 i;
 
-    for (i = 0; i < gl_27E24_gAudioCtx.numNotes; i++) {
-        note = &gl_27E24_gAudioCtx.notes[i];
+    for (i = 0; i < gAudioContext_27E24.numNotes; i++) {
+        note = &gAudioContext_27E24.notes[i];
         playbackState = &note->playbackState;
         if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
             if ((u32)playbackState->parentLayer < 0x7FFFFFFF) {
@@ -8342,7 +8342,7 @@ void Audio_ProcessNotes(void) {
 
             if (note != playbackState->parentLayer->note && playbackState->unk_04 == 0) {
                 playbackState->adsr.action.s.release = 1;
-                playbackState->adsr.fadeOutVel = gl_27E24_gAudioCtx.ticksPerUpdateInv;
+                playbackState->adsr.fadeOutVel = gAudioContext_27E24.ticksPerUpdateInv;
                 playbackState->priority = 1;
                 playbackState->unk_04 = 2;
                 goto out;
@@ -8450,7 +8450,7 @@ void Audio_ProcessNotes(void) {
             }
 
             sampleStateAttrs.frequency *= playbackState->vibratoFreqScale * playbackState->portamentoFreqScale;
-            sampleStateAttrs.frequency *= gl_27E24_gAudioCtx.resampleRate;
+            sampleStateAttrs.frequency *= gAudioContext_27E24.resampleRate;
             sampleStateAttrs.velocity *= scale;
             gl_ref_0003BE70(note, &sampleStateAttrs);
             sampleState->u.bitField1.bookOffset = bookOffset;
@@ -9077,7 +9077,7 @@ void Audio_InitNoteFreeList(void) {
 typedef struct gl_28B0C_ListItem { struct gl_28B0C_ListItem *prev; struct gl_28B0C_ListItem *next; void *u; void *pool; } gl_28B0C_ListItem;
 typedef struct { gl_28B0C_ListItem disabled; gl_28B0C_ListItem decaying; gl_28B0C_ListItem releasing; gl_28B0C_ListItem active; } gl_28B0C_NotePool;
 typedef struct { char pad[0x5378]; gl_28B0C_NotePool noteFreeLists; } gl_28B0C_Ctx;
-extern gl_28B0C_Ctx gl_28B0C_gAudioCtx;
+extern gl_28B0C_Ctx gAudioContext_28B0C;
 
 void Audio_NotePoolClear(gl_28B0C_NotePool *pool) {
     s32 i;
@@ -9089,19 +9089,19 @@ void Audio_NotePoolClear(gl_28B0C_NotePool *pool) {
         switch (i) {
             case 0:
                 source = &pool->disabled;
-                dest = &gl_28B0C_gAudioCtx.noteFreeLists.disabled;
+                dest = &gAudioContext_28B0C.noteFreeLists.disabled;
                 break;
             case 1:
                 source = &pool->decaying;
-                dest = &gl_28B0C_gAudioCtx.noteFreeLists.decaying;
+                dest = &gAudioContext_28B0C.noteFreeLists.decaying;
                 break;
             case 2:
                 source = &pool->releasing;
-                dest = &gl_28B0C_gAudioCtx.noteFreeLists.releasing;
+                dest = &gAudioContext_28B0C.noteFreeLists.releasing;
                 break;
             case 3:
                 source = &pool->active;
-                dest = &gl_28B0C_gAudioCtx.noteFreeLists.active;
+                dest = &gAudioContext_28B0C.noteFreeLists.active;
                 break;
         }
 
@@ -9576,7 +9576,7 @@ null_return:
 #undef AudioSeq_AudioListPushBack
 
 /* Audio_NoteInitAll: reset every record of the sym1255 record table (shared typed alias
- * D_345c0_1CC98; count +0x2070, recs +0x2CFC stride 0xD0): copy the 0x20-byte template
+ * gAudioContext_345c0_1CC98; count +0x2070, recs +0x2CFC stride 0xD0): copy the 0x20-byte template
  * element (bootup.uso Data sym1243 @0x197A4 -> own zero alias D_197a4_29494) into rec->e,
  * clear the state bytes/halves, set the three handles to -1, f58 = 0.0f, then
  * rec->w1C = sym1276(&G.tbl2198, 0x1C0) through the gl_func_00000000 blank.
@@ -9589,8 +9589,8 @@ extern gl_1CC98_Elem D_197a4_29494;
 void Audio_NoteInitAll(void) {
     int i;
     gl_1CC98_Rec *r;
-    for (i = 0; i < D_345c0_1CC98.count; i++) {
-        r = &D_345c0_1CC98.recs[i];
+    for (i = 0; i < gAudioContext_345c0_1CC98.count; i++) {
+        r = &gAudioContext_345c0_1CC98.recs[i];
         r->e = D_197a4_29494;
         r->b30 = 0;
         r->b34 = 0;
@@ -9605,7 +9605,7 @@ void Audio_NoteInitAll(void) {
         r->h82 = 0;
         r->h84 = 0;
         r->b35 = 0;
-        r->w1C = gl_func_00000000(D_345c0_1CC98.tbl2198, 0x1C0);
+        r->w1C = gl_func_00000000(gAudioContext_345c0_1CC98.tbl2198, 0x1C0);
     }
 }
 
@@ -10698,7 +10698,7 @@ int AudioSeq_AudioListPopBack(void *a0) {
 }
 
 /* AudioSeq_InitLayerFreelist: pool bring-up over the registry block (bootup.uso Data
- * sym1255 @0x345C0 = D_00000000_345c0; every HI16/LO16 pair in the body is that
+ * sym1255 @0x345C0 = gAudioContext_345c0; every HI16/LO16 pair in the body is that
  * symbol with the offset baked as the addend). The list anchor at +0x5368 is
  * made empty (head = tail = &anchor, +0x5370/+0x5374 = 0), then 64 0x80-byte
  * elements at +0x32F0 get w8 = &table[i] (+0x3280, stride 0x80), w0 = 0 and are
@@ -10709,9 +10709,9 @@ int AudioSeq_AudioListPopBack(void *a0) {
  * cursor (the call arg) and the s2 table cursor, and replaces `i < 64` with
  * `s1 != s4` (s4 = &REG + 0x52F0). The old NM wrap (70.65) spelled the cursors
  * as hand-held pointers, which is what made IDO merge/derive the bases. */
-/* gAudioCtx through this function's own base (D_00000000_345c0 = the same
+/* gAudioCtx through this function's own base (gAudioContext_345c0 = the same
  * Data block, sym1255 addend 0). */
-#define gAudioCtx_2A904 (*(AudioContext *)&D_00000000_345c0)
+#define gAudioCtx_2A904 (*(AudioContext *)&gAudioContext_345c0)
 void AudioSeq_InitLayerFreelist(void) {
     int i;
     gAudioCtx_2A904.layerFreeList.prev = &gAudioCtx_2A904.layerFreeList;
@@ -11460,7 +11460,7 @@ void AudioSeq_SequencePlayerProcessSequence(void *o) {
 
 /* AudioSeq_ProcessSequences (0xB4, 45 insns): per-record activate sweep over the
  * 0x160-stride record table @+0x2D00 of the registry block (bootup.uso Data
- * sym1255 @0x345C0, addend 0 -> own zero extern D_00000000_345c0; the
+ * sym1255 @0x345C0, addend 0 -> own zero extern gAudioContext_345c0; the
  * 24E28 / 258C0 base). Head: caches (h2040 - a0 - 1) * w2070 into +0x5364.
  * Loop: for each of the h2048 records whose word0 sign bit is set, call the
  * baked text jal 0x40E10 (gl_ref_00040E10, mid-body alt-entry of
@@ -11484,10 +11484,10 @@ void AudioSeq_SequencePlayerProcessSequence(void *o) {
  * and the bnel tail-dup `addiu s2,s2,1`; the record pointer as
  * `REG + 0x2D00 + i * 0x160` = s1 induction on REG with 0x2D00 folded into
  * the lw / `addiu s0,s1,0x2D00`. */
-extern int D_00000000_345c0;
+extern int gAudioContext_345c0;
 extern int gl_func_00000000();
 extern int gl_ref_00040E10();    /* mid-body alt-entry (baked jal 0x0C010384) */
-#define gAudioCtx_2CF60 (*(AudioContext *)&D_00000000_345c0)
+#define gAudioCtx_2CF60 (*(AudioContext *)&gAudioContext_345c0)
 void AudioSeq_ProcessSequences(int a0) {
     unsigned int i;
 
@@ -11748,7 +11748,7 @@ extern int D_2D37C_mode, D_2D37C_flag, D_2D37C_st, D_2D37C_arg, D_2D37C_g5, D_2D
 extern int D_2D37C_tmr;
 #define TW_2D37C(o) (*(int *)((char *)&D_2D37C_tmr + (o)))
 extern int D_2D37C_rec[];
-extern u16 D_2D37C_raw[];
+extern u16 gAudioContext_2D37C_raw[];
 extern f32 D_2D37C_f358s[], D_2D37C_f358l[], D_2D37C_f35Cs[], D_2D37C_f35Cl[], D_2D37C_f35Cw[], D_2D37C_f360s[], D_2D37C_f360l[];   /* per-site pool aliases of &D_0+0x358/35C/360 (fresh lui at per access) */
 /* agent-c run 179: the decremented count is written as `c - 1` at the store (no named n):
  * 680 -> 676 bytes = target; the count store after the d load and no `if (half) {}`
@@ -11813,7 +11813,7 @@ void snd_UpdateTimers(void) {
     c = TW_2D37C(0xC);
     if (c != 0) {
         if (c == 256) {
-#define raw (D_2D37C_raw[0x2E68 / 2])
+#define raw (gAudioContext_2D37C_raw[0x2E68 / 2])
             z = 0; /* agent-g run 227: own literal spelling (kit CCXXVIII), not the 0x1010300 call's 0.0f */
             fr = (f32)raw;
             half = (int)raw >> 1;
@@ -15982,11 +15982,11 @@ void heap_tempFreeDefault_0003341C(int a0) { gl_func_00000000(&gSysLib, a0); }
  * t6,0x20C(t6)`) while the call arg `&D_00000000` is built as `lui a0` /
  * `addiu a0` (delay slot): spelling both off &D_00000000 CSEs the address
  * into a held `lui a0; addiu a0; lw t6,0x20C(a0)` (+1 word, 18 diffs), so
- * the counter reads through the per-site alias D_33444_a (= 0x0 in
+ * the counter reads through the per-site alias gGfxLib_33444_a (= 0x0 in
  * undefined_syms_auto.txt; the ROM word bakes the 0x20C addend either way). */
-extern int D_33444_a;
+extern int gGfxLib_33444_a;
 float sys_timeInFrames_00033444(void) {
-    float a = (float)*(unsigned int *)((char *)&D_33444_a + 0x20C);
+    float a = (float)*(unsigned int *)((char *)&gGfxLib_33444_a + 0x20C);
     return (float)(unsigned int)gl_func_00000000(&D_00000000) / a;
 }
 
@@ -16066,7 +16066,7 @@ void sys_assertFail(int a0, int a1, int a2) {
  * locals give the target frame 104; `src = (s32)p; rem = 8; call(base);` on
  * one line gives the entry order. */
 extern int gl_func_00000000();
-extern u8 gl_d_334e8_dst;
+extern u8 gFsStream0_334e8_dst;
 extern u8 gl_ref_0001E280;
 extern u8 gl_ref_0001E29C;
 extern u8 gl_ref_0001E2B0;
@@ -16082,7 +16082,7 @@ void fs_bufWrite_334E8(void) {
     u32 cnt;
     s32 cpsrc;
     u8 *cpdst;
-    u8 *g = &gl_d_334e8_dst;
+    u8 *g = &gFsStream0_334e8_dst;
     u8 *p;
 
     p = buf;
@@ -16105,7 +16105,7 @@ void fs_bufWrite_334E8(void) {
                 }
                 cnt = 0;
                 if (chunk != 0) {
-                    cpsrc = src; cpdst = &gl_d_334e8_dst;
+                    cpsrc = src; cpdst = &gFsStream0_334e8_dst;
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
@@ -16529,7 +16529,7 @@ void dma_init(void) {
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sites) */
 /* (the old per-site gl_d_33be4_8a.. aliases were retired in run 177: the heap
  * words are read through the local base pointer g below) */
-extern u8 gl_d_33be4_dst;               /* base-0 alias: copy-loop dest (fresh lui/addiu into a0) */
+extern u8 gFsStream1_33be4_dst;               /* base-0 alias: copy-loop dest (fresh lui/addiu into a0) */
 extern u8 gl_ref_0001E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
 extern u8 gl_ref_0001E344;              /* baked USO data sym */
 extern u8 gl_ref_0001E358;              /* baked USO data sym */
@@ -16545,7 +16545,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     s32 cpsrc;
     u8 *cpdst;
     s32 sent;
-    u8 *g = &gl_d_33be4_dst;
+    u8 *g = &gFsStream1_33be4_dst;
 
     rem = flags; src = src0;
     if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E330);
@@ -16571,7 +16571,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
                 }
                 cnt = 0;
                 if (chunk != 0) {
-                    cpsrc = src; cpdst = &gl_d_33be4_dst;
+                    cpsrc = src; cpdst = &gFsStream1_33be4_dst;
                     do {
                         *cpdst = *(u8 *)cpsrc;
                         cnt += 1;
@@ -16714,7 +16714,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
 extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all 16 call sites) */
 /* (the old per-site gl_d_33eb8_8a.. aliases were retired in run 177: the heap
  * words are read through the local base pointer g below) */
-extern u8 gl_d_33eb8_src;               /* base-0 alias: copy-loop src (fresh lui/addiu into v1) */
+extern u8 gFsStream2_33eb8_src;               /* base-0 alias: copy-loop src (fresh lui/addiu into v1) */
 extern u8 gl_ref_0001E368;              /* baked USO data sym (lui 2 / addiu -0x1C98) */
 extern u8 gl_ref_0001E37C;              /* baked USO data sym */
 extern u8 gl_ref_0001E394;              /* baked USO data sym */
@@ -16728,7 +16728,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     u32 cnt;
     u8 *src;
     s32 cpdst;
-    u8 *g = &gl_d_33eb8_src;
+    u8 *g = &gFsStream2_33eb8_src;
 
     rem = flags; dst = dst0;
     if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E368);
@@ -16776,7 +16776,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                     cnt = 0;
                     gl_func_00000000(base, *(s32 *)(g + 0xC), base, flags);
                     if (flags != 0) {
-                        src = (cpdst = dst, &gl_d_33eb8_src);
+                        src = (cpdst = dst, &gFsStream2_33eb8_src);
                         do {
                             *(u8 *)cpdst = *src;
                             cnt += 1;
@@ -16899,7 +16899,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 // EXACT 2026-10-16 (87.4 -> 100): the record pointer, the poll arg, the two
 //   cb args and the config table were all one &D_00000000 placeholder. Target
 //   has distinct symbols: D_34240_G (record ptr, address hoisted to s4),
-//   D_34240_X / D_34240_Y (cb args, fresh lui/addiu each), D_34240_P (poll
+//   gGfxLib_34240_X / gGfxLib_34240_Y (cb args, fresh lui/addiu each), D_34240_P (poll
 //   arg, s3, rematerialized per loop) and the table D_0001E21C (pinned to its
 //   real address; `&D_00000000 + 0x1E21C` folds the first test into
 //   `lui; lw -7652`, a zero-offset symbol keeps `lw 0(s2)`). No param (the
@@ -16909,7 +16909,7 @@ void sys_fatalSwapBuffer_00034180(void) {
 //   its use instead of right after `sw s1`.
 extern int D_00000000;
 extern char *D_34240_G;
-extern char D_0001E21C, D_34240_X, D_34240_P, D_34240_Y;
+extern char D_0001E21C, gGfxLib_34240_X, D_34240_P, gGfxLib_34240_Y;
 void sys_fatalHaltLoop(void) {
     char d[0x80];
     int saved34;
@@ -16921,7 +16921,7 @@ void sys_fatalHaltLoop(void) {
     if (D_34240_G) {}
     gl_func_00000000(dp = d, -1);
     saved34 = *(int *)(D_34240_G + 0x34);
-    gl_func_00000000(&D_34240_X, 1);
+    gl_func_00000000(&gGfxLib_34240_X, 1);
 
     cfg = &D_0001E21C;
     s0 = cfg;
@@ -16940,7 +16940,7 @@ void sys_fatalHaltLoop(void) {
     }
 
     gl_func_00000000(0);
-    gl_func_00000000(&D_34240_Y, 0);
+    gl_func_00000000(&gGfxLib_34240_Y, 0);
 
     (*(void (**)(char *))(*(char **)(D_34240_G + 0x28) + 0x1C))(D_34240_G + *(short *)(*(char **)(D_34240_G + 0x28) + 0x18));
     gl_func_00000000();

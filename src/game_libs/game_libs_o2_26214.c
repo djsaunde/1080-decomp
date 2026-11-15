@@ -28,8 +28,8 @@ typedef struct {
     volatile u8 resetStatus; u8 specId; char pad2cf2[0x53BA - 0x2CF2]; u8 threadCmdQueueFinished;
     char pad53bb[0x53C4 - 0x53BB]; void *audioResetQueueP; void *taskStartQueueP; void *threadCmdProcQueueP;
 } gl_26214_Ctx;
-extern gl_26214_Ctx gl_26214_gAudioCtx;
-#define gAudioCtx gl_26214_gAudioCtx
+extern gl_26214_Ctx gAudioContext_26214;
+#define gAudioCtx gAudioContext_26214
 extern void (*gl_26214_gAudioCustomUpdateFunction)(void);
 extern s32 gl_26214_sMaxAbiCmdCnt;
 extern s32 gl_26214_sMaxAbiCmdCntW;

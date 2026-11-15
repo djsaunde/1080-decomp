@@ -3,7 +3,7 @@
  * decode matches field-for-field). PROVEN EXACT 98/98 at both IDO 7.1 and
  * 5.3 -O1 (standalone probe, relocs baked with the gl_ref values below);
  * built here with 7.1 (plain -O1).
- * KEY LEVER — TU-DEFINED DevMgr: `DevMgr gl_devmgr_6DA74 = {0};` (a
+ * KEY LEVER — TU-DEFINED DevMgr: `DevMgr gl___osPiDevMgr_devmgr_6DA74 = {0};` (a
  * definition, NOT extern) is what makes IDO emit the 4+3 store cluster
  * with ONE `lui $at` per group + batched value materializations (every
  * extern/array/pointer/comma spelling emits a `lui $at` per store — floor
@@ -38,12 +38,12 @@ extern unsigned int gl_func_00000006(void);
 extern void gl_func_00000007(void *, int, void (*)(void *), void *, void *, OSPri);
 extern void gl_func_00000008(void *);
 extern void gl_func_00000009(unsigned int);
-DevMgr gl_devmgr_6DA74 = {0};
+DevMgr gl___osPiDevMgr_devmgr_6DA74 = {0};
 void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
     unsigned int savedMask;
     OSPri oldPri;
     OSPri myPri;
-    if (!gl_devmgr_6DA74.f0) {
+    if (!gl___osPiDevMgr_devmgr_6DA74.f0) {
         gl_func_00000000(cmdQ, cmdBuf, cmdMsgCnt);
         gl_func_00000001(gl_ref_00043E90, gl_ref_00043EA8, 1);
         if (!D_00000000_b) {
@@ -57,14 +57,14 @@ void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
             gl_func_00000005(0, pri);
         }
         savedMask = gl_func_00000006();
-        gl_devmgr_6DA74.f0 = 1;
-        gl_devmgr_6DA74.f4 = gl_ref_00042CE0;
-        gl_devmgr_6DA74.f8 = cmdQ;
-        gl_devmgr_6DA74.f12 = gl_ref_00043E90;
-        gl_devmgr_6DA74.f16 = &D_00000000_f;
-        gl_devmgr_6DA74.f20 = &D_00000000_g;
-        gl_devmgr_6DA74.f24 = &D_00000000_h;
-        gl_func_00000007(gl_ref_00042CE0, 0, D_00000000_main, &gl_devmgr_6DA74, gl_ref_00042E90 + 0x1000, pri);
+        gl___osPiDevMgr_devmgr_6DA74.f0 = 1;
+        gl___osPiDevMgr_devmgr_6DA74.f4 = gl_ref_00042CE0;
+        gl___osPiDevMgr_devmgr_6DA74.f8 = cmdQ;
+        gl___osPiDevMgr_devmgr_6DA74.f12 = gl_ref_00043E90;
+        gl___osPiDevMgr_devmgr_6DA74.f16 = &D_00000000_f;
+        gl___osPiDevMgr_devmgr_6DA74.f20 = &D_00000000_g;
+        gl___osPiDevMgr_devmgr_6DA74.f24 = &D_00000000_h;
+        gl_func_00000007(gl_ref_00042CE0, 0, D_00000000_main, &gl___osPiDevMgr_devmgr_6DA74, gl_ref_00042E90 + 0x1000, pri);
         gl_func_00000008(gl_ref_00042CE0);
         gl_func_00000009(savedMask);
         if (oldPri != -1) {

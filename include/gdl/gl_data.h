@@ -37,7 +37,7 @@
  *   (char *)&gGfxLib + 0xA0   == (char *)&D_00000000 + 0xA0
  *   INPUT_MGR(gInputMgr).pads == INPUT_MGR(D_00000000).pads   (game/input.h)
  * Only sites spelled with plain D_00000000 can use them. Per-site zero aliases
- * (D_415A4_s1, D_00000000_3c740, gl_d_4c5e4_flag, ...) exist to defeat IDO's
+ * (gSysLib_415A4_s1, gSysLib_3c740, gGfxLib_4c5e4_flag, ...) exist to defeat IDO's
  * address CSE and must keep their own symbol; they are listed against their
  * object in READABILITY_PLAN 9.1, not replaced.
  *

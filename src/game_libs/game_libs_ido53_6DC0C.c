@@ -10,7 +10,7 @@
  * The old "caller-set $t6" reading was wrong: $t6 is
  * CartRomHandle.baseAddress loaded by the stolen prologue
  * (0xB0000000 = PHYS_TO_K1(PI_DOM1_ADDR2), the cart-ROM base).
- * Blank externs: D_00000000_cartrom = __CartRomHandle, D_00000000_pitable
+ * Blank externs: gl_CartRomHandle_cartrom = __CartRomHandle, gl___osPiTable_pitable
  * = __osPiTable; gl_func_00000000_rdio / _bzero / _disint / _resint =
  * osPiRawReadIo / bzero / __osDisableInt / __osRestoreInt (blank jals).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
@@ -39,8 +39,8 @@ typedef struct {
     u8 relDuration; /* CartRomHandle+7 */
 } PgsRls;
 
-extern OSPiHandle D_00000000_cartrom;       /* __CartRomHandle */
-extern OSPiHandle *D_00000000_pitable;      /* __osPiTable */
+extern OSPiHandle gl_CartRomHandle_cartrom;       /* __CartRomHandle */
+extern OSPiHandle *gl___osPiTable_pitable;      /* __osPiTable */
 extern void gl_func_00000000_rdio(u32, u32 *);   /* osPiRawReadIo */
 extern void gl_func_00000000_bzero(void *, int); /* bzero */
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
@@ -59,27 +59,27 @@ OSPiHandle *gl_osCartRomInit(void) {
     u32 saveMask;
 
     domain = 0;
-    if (D_00000000_cartrom.baseAddress == 0xB0000000) { /* PHYS_TO_K1(PI_DOM1_ADDR2) */
-        return &D_00000000_cartrom;
+    if (gl_CartRomHandle_cartrom.baseAddress == 0xB0000000) { /* PHYS_TO_K1(PI_DOM1_ADDR2) */
+        return &gl_CartRomHandle_cartrom;
     }
-    D_00000000_cartrom.type = 0;                 /* DEVICE_TYPE_CART */
-    D_00000000_cartrom.baseAddress = 0xB0000000;
+    gl_CartRomHandle_cartrom.type = 0;                 /* DEVICE_TYPE_CART */
+    gl_CartRomHandle_cartrom.baseAddress = 0xB0000000;
 
     gl_func_00000000_rdio(0, &domain);           /* read BSD DOM1 config */
 
-    D_00000000_cartrom.latency = domain & 0xFF;
-    D_00000000_cartrom.pulse = (domain >> 8) & 0xFF;
+    gl_CartRomHandle_cartrom.latency = domain & 0xFF;
+    gl_CartRomHandle_cartrom.pulse = (domain >> 8) & 0xFF;
     D_00000006_cartpgs.pageSize = (domain >> 16) & 0xF;
     D_00000006_cartpgs.relDuration = (domain >> 20) & 0xF;
-    D_00000000_cartrom.domain = 0;               /* PI_DOMAIN1 */
-    D_00000000_cartrom.speed = 0;
+    gl_CartRomHandle_cartrom.domain = 0;               /* PI_DOMAIN1 */
+    gl_CartRomHandle_cartrom.speed = 0;
 
-    gl_func_00000000_bzero(&D_00000000_cartrom.transferInfo, sizeof(__OSTranxInfo));
+    gl_func_00000000_bzero(&gl_CartRomHandle_cartrom.transferInfo, sizeof(__OSTranxInfo));
 
     saveMask = gl_func_00000000_disint();
-    D_00000000_cartrom.next = D_00000000_pitable;
-    D_00000000_pitable = &D_00000000_cartrom;
+    gl_CartRomHandle_cartrom.next = gl___osPiTable_pitable;
+    gl___osPiTable_pitable = &gl_CartRomHandle_cartrom;
     gl_func_00000000_resint(saveMask);
 
-    return &D_00000000_cartrom;
+    return &gl_CartRomHandle_cartrom;
 }

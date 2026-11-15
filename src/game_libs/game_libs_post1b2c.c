@@ -369,7 +369,7 @@ GLOBAL_ASM("src/libultra/game_libs/getcount.s")
  * was this function at the wrong opt level: the 0x18 record is the OSIoMesg
  * (type DMAREAD 11 / DMAWRITE 12, pri, retQueue, dramAddr, devAddr, size,
  * piHandle = NULL), the gate global is __osPiDevMgr.active (the 6DA74
- * donor's gl_devmgr_6DA74), and the "builder pair" is osJamMesg /
+ * donor's gl___osPiDevMgr_devmgr_6DA74), and the "builder pair" is osJamMesg /
  * osSendMesg(osPiGetCmdQueue(), mb, OS_MESG_NOBLOCK) on OS_MESG_PRI_HIGH;
  * reloading every arg from its sp+0x28.. home before each use is the -O1
  * tell. The old .s's trailing zero word (section 0x820DC, not exported) is
@@ -831,9 +831,9 @@ void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
     gl_func_00000000(sr);
 }
 
-extern int *D_6F614_X;
+extern int *gl___osRunningThread_6F614_X;
 int gl_osGetThreadPri(int *a0) {
-    if (a0 == 0) a0 = D_6F614_X;
+    if (a0 == 0) a0 = gl___osRunningThread_6F614_X;
     return a0[1];
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006F534_pad.s")
@@ -975,8 +975,8 @@ typedef struct Timer6FC70_s {
     Queue6FC70 *mq;
     Mesg6FC70 msg;
 } Timer6FC70;
-extern Timer6FC70 *gl_timerlist_6FC70;
-extern unsigned int gl_timercounter_6FC70;
+extern Timer6FC70 *gl___osTimerList_timerlist_6FC70;
+extern unsigned int gl___osTimerCounter_timercounter_6FC70;
 extern void gl_setcompare_6FC70(unsigned int);
 extern unsigned int gl_getcount_6FC70(void);
 extern void gl_settimerintr_6FC70(Time6FC70);
@@ -988,20 +988,20 @@ void __osTimerInterrupt(void)
 	unsigned int count;
 	unsigned int elapsed_cycles;
 
-	if (gl_timerlist_6FC70->next == gl_timerlist_6FC70)
+	if (gl___osTimerList_timerlist_6FC70->next == gl___osTimerList_timerlist_6FC70)
 		return;
 	while (1)
 	{
-		t = gl_timerlist_6FC70->next;
-		if (t == gl_timerlist_6FC70)
+		t = gl___osTimerList_timerlist_6FC70->next;
+		if (t == gl___osTimerList_timerlist_6FC70)
 		{
 			gl_setcompare_6FC70(0);
-			gl_timercounter_6FC70 = 0;
+			gl___osTimerCounter_timercounter_6FC70 = 0;
 			break;
 		}
 		count = gl_getcount_6FC70();
-		elapsed_cycles = count - gl_timercounter_6FC70;
-		gl_timercounter_6FC70 = count;
+		elapsed_cycles = count - gl___osTimerCounter_timercounter_6FC70;
+		gl___osTimerCounter_timercounter_6FC70 = count;
 		if (elapsed_cycles < t->value)
 		{
 			t->value -= elapsed_cycles;

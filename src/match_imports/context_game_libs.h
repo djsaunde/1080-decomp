@@ -840,7 +840,7 @@ void RaceProcess_updateSub1(int a0);
 void RaceProcess_updateSub2(int a0);
 void RaceProcess_updateSub3(int a0);
 void RaceProcess_onMessageBounce(int a0);
-extern char D_00000000_76F0;
+extern char gInputMgr_76F0;
 void RaceProcess_handleInput(char *arg0);
 typedef int (*GP_00007FF4)();
 extern int gl_func_00000000();

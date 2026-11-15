@@ -13,8 +13,8 @@ typedef struct Timer6FC70_s {
     Queue6FC70 *mq;
     Mesg6FC70 msg;
 } Timer6FC70;
-extern Timer6FC70 *gl_timerlist_6FC70;
-extern unsigned int gl_timercounter_6FC70;
+extern Timer6FC70 *gl___osTimerList_timerlist_6FC70;
+extern unsigned int gl___osTimerCounter_timercounter_6FC70;
 extern void gl_setcompare_6FC70(unsigned int);
 extern unsigned int gl_getcount_6FC70(void);
 extern void gl_settimerintr_6FC70(Time6FC70);
@@ -26,20 +26,20 @@ void __osTimerInterrupt(void)
 	unsigned int count;
 	unsigned int elapsed_cycles;
 
-	if (gl_timerlist_6FC70->next == gl_timerlist_6FC70)
+	if (gl___osTimerList_timerlist_6FC70->next == gl___osTimerList_timerlist_6FC70)
 		return;
 	while (1)
 	{
-		t = gl_timerlist_6FC70->next;
-		if (t == gl_timerlist_6FC70)
+		t = gl___osTimerList_timerlist_6FC70->next;
+		if (t == gl___osTimerList_timerlist_6FC70)
 		{
 			gl_setcompare_6FC70(0);
-			gl_timercounter_6FC70 = 0;
+			gl___osTimerCounter_timercounter_6FC70 = 0;
 			break;
 		}
 		count = gl_getcount_6FC70();
-		elapsed_cycles = count - gl_timercounter_6FC70;
-		gl_timercounter_6FC70 = count;
+		elapsed_cycles = count - gl___osTimerCounter_timercounter_6FC70;
+		gl___osTimerCounter_timercounter_6FC70 = count;
 		if (elapsed_cycles < t->value)
 		{
 			t->value -= elapsed_cycles;
@@ -84,8 +84,8 @@ void __osSetTimerIntr(Time6FC70 tim)
 	Time6FC70 NewTime;
 	unsigned int savedMask;
 	savedMask = gl_disint_6FC70();
-	gl_timercounter_6FC70 = gl_getcount_6FC70();
-	NewTime = tim + gl_timercounter_6FC70;
+	gl___osTimerCounter_timercounter_6FC70 = gl_getcount_6FC70();
+	NewTime = tim + gl___osTimerCounter_timercounter_6FC70;
 	gl_setcompare_6FC70(NewTime);
 	gl_resint_6FC70(savedMask);
 }

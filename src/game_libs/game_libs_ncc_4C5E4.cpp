@@ -21,7 +21,7 @@
 extern "C" {
 int dbg_printThreads(...);
 extern char D_00000000[];
-extern char gl_d_4c5e4_sh[], gl_d_4c5e4_flag[], gl_d_4c5e4_word[], gl_d_4c5e4_reg[], gl_d_4c5e4_arg[], gl_d_4c5e4_clr[];
+extern char gGfxLib_4c5e4_sh[], gGfxLib_4c5e4_flag[], gl_d_4c5e4_word[], gGfxLib_4c5e4_reg[], gGfxLib_4c5e4_arg[], gGfxLib_4c5e4_clr[];
 }
 #define S(o) (D_00000000 + (o))
 #define SI(o) (*(int *)S(o))
@@ -76,13 +76,13 @@ void Obj::run() {
     *(Obj **)(g + 0x254) = this;
     fbIndex = *(int *)(g + 0x204);
     curBg = bgDL[fbIndex];
-    *(short *)(gl_d_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */
+    *(short *)(gGfxLib_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */
     unk1B4 = 0;
     g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */
     dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
     char *s1;
-    if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */
+    if (*(int *)(gGfxLib_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */
         int f = ((unk104 & 2) != 0) + 0 * (int)(unkC0); /* agent-c run 210: folded counted use of the member unkC0 (zero code) */
         s1 = (char *)fbOwner->zBuffer;
         if (f) f = (flags & 2) != 0;
@@ -106,7 +106,7 @@ void Obj::run() {
     dbg_printThreads(dl);
     dbg_printThreads(mark15C);
     dbg_printThreads(mark168, dl);
-    dbg_printThreads(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
+    dbg_printThreads(gGfxLib_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
     /* agent-c run 261 (kit CCXCIX): the G_DL / G_MOVEMEM appends share ONE named head (hh) and ONE named count
      * (nn) -- the target's a2 / a1 in both -- and the Vp append has its own named vh / vn (v1 / t0); folded uses
@@ -137,6 +137,6 @@ void Obj::run() {
     { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = dbg_printThreads(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
     }
     dbg_printThreads(this);
-    dbg_printThreads(gl_d_4c5e4_arg, this);
-    *(int *)(gl_d_4c5e4_clr + 0x254) = 0;
+    dbg_printThreads(gGfxLib_4c5e4_arg, this);
+    *(int *)(gGfxLib_4c5e4_clr + 0x254) = 0;
 }

@@ -12,8 +12,8 @@
 # USO module code: every address field is a load-time relocation (zero in the
 # ROM), so data and call targets are symbols pinned to 0 in
 # undefined_syms_auto.txt: gl_exc_threadsave (__osThreadSave),
-# D_00000000_runthread (__osRunningThread), gl_exc_runqueue (__osRunQueue),
-# D_00000000_gim (__OSGlobalIntMask), D_00000000_rcpim (__osRcpImTable),
+# gl___osRunningThread_runthread (__osRunningThread), gl_exc_runqueue (__osRunQueue),
+# gl___OSGlobalIntMask_gim (__OSGlobalIntMask), D_00000000_rcpim (__osRcpImTable),
 # gl_exc_intofftable / gl_exc_inttable (__osIntOffTable / __osIntTable; pinned
 # to their module offsets 0x2360 / 0x2380 -- the ROM bakes the lo16 halves),
 # gl_exc_hwinttable (__osHwIntTable), gl_exc_intstack (interrupt-callback
@@ -45,8 +45,8 @@ glabel gl___osExceptionPreamble
     mfc0    $t0, $13
     # savecontext: copy the scratch saves to __osRunningThread's context
     or      $t0, $k0, $zero
-    lui     $k0, %hi(D_00000000_runthread)
-    lw      $k0, %lo(D_00000000_runthread)($k0)
+    lui     $k0, %hi(gl___osRunningThread_runthread)
+    lw      $k0, %lo(gl___osRunningThread_runthread)($k0)
     ld      $t1, 32($t0)
     sd      $t1, 32($k0)
     ld      $t1, 280($t0)
@@ -89,8 +89,8 @@ glabel gl___osExceptionPreamble
     sd      $ra, 256($k0)
     beqz    $t1, .Lgl_savercp
      sd     $t0, 272($k0)
-    lui     $t0, %hi(D_00000000_gim)
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t0, 0($t0)
     addiu   $at, $zero, -1
     xor     $t2, $t0, $at
@@ -110,8 +110,8 @@ glabel gl___osExceptionPreamble
     lw      $t1, 12($t1)
     beqz    $t1, .Lgl_endrcp
      nop
-    lui     $t0, %hi(D_00000000_gim)
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t0, 0($t0)
     lw      $t4, 296($k0)
     addiu   $at, $zero, -1
@@ -214,8 +214,8 @@ glabel gl___osExceptionPreamble
      nop
     b       .Lgl_next_interrupt
      nop
-    lui     $t0, %hi(D_00000000_gim)
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t0, 0($t0)
     lui     $s1, 0xa430
     lw      $s1, 8($s1)
@@ -444,8 +444,8 @@ glabel gl___osExceptionPreamble
     sw      $t1, 24($k0)
     b       .Lgl_enqueueRunning
      sw     $k1, 280($k0)
-    lui     $a1, %hi(D_00000000_runthread)
-    lw      $a1, %lo(D_00000000_runthread)($a1)
+    lui     $a1, %hi(gl___osRunningThread_runthread)
+    lw      $a1, %lo(gl___osRunningThread_runthread)($a1)
     mfc0    $t0, $12
     lw      $k1, 24($a1)
     ori     $t0, $t0, 0x2
@@ -477,8 +477,8 @@ glabel gl___osExceptionPreamble
     andi    $t1, $k1, 0xff00
     beqz    $t1, .Lgl_yield_savercp
      nop
-    lui     $t0, %hi(D_00000000_gim)
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t0, 0($t0)
     addiu   $at, $zero, -1
     xor     $t0, $t0, $at
@@ -494,8 +494,8 @@ glabel gl___osExceptionPreamble
     lw      $k1, 12($k1)
     beqz    $k1, .Lgl_yield_endrcp
      nop
-    lui     $k0, %hi(D_00000000_gim)
-    addiu   $k0, $k0, %lo(D_00000000_gim)
+    lui     $k0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $k0, $k0, %lo(gl___OSGlobalIntMask_gim)
     lw      $k0, 0($k0)
     lw      $t0, 296($a1)
     addiu   $at, $zero, -1

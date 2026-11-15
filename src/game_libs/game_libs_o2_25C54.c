@@ -22,8 +22,8 @@ typedef struct {
     s32 numUsedSamples; s32 preloadSampleStackTop; char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x2024 - 0x1684];
     gl_25C54_AudioTable *sampleBankTable; char pad2028[8]; gl_25C54_SoundFont *soundFontList;
 } gl_25C54_Ctx;
-extern gl_25C54_Ctx gl_25C54_gAudioCtx;
-#define gAudioCtx gl_25C54_gAudioCtx
+extern gl_25C54_Ctx gAudioContext_25C54;
+#define gAudioCtx gAudioContext_25C54
 extern gl_25C54_Instrument *gl_25C54_GetInstrumentInner(s32, s32);
 extern gl_25C54_Drum *gl_25C54_GetDrum(s32, s32);
 extern void gl_ref_0003A268(gl_25C54_TunedSample *);

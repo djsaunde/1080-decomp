@@ -4,8 +4,8 @@
 extern int gl_func_00000000();
 extern char D_00000000;
 extern int D_8C3C_arg;
-extern char D_8C3C_child_desc;
-extern char D_8C3C_mid_desc;
+extern char Process_vtbl_8C3C_child_desc;
+extern char Process_vtbl_C3A0_8C3C_mid_desc;
 extern char D_8C3C_root_desc;
 
 /* Mid section of game_libs.c, split off on 2026-05-07 along with
@@ -32,7 +32,7 @@ extern char D_8C3C_root_desc;
  * No new undefined_syms needed (D_0000D138/D_0000D148/D_8C3C_* already present). */
 extern int gl_func_00000000();
 extern char D_00000000;
-extern char D_8C3C_child_desc, D_8C3C_mid_desc, D_8C3C_root_desc;
+extern char Process_vtbl_8C3C_child_desc, Process_vtbl_C3A0_8C3C_mid_desc, D_8C3C_root_desc;
 extern char D_0000D138, D_0000D148, D_8C3C_v0;
 app_launchNameEnt(a0, a1) int * a0; int a1; {
     int *call_root;       /* declared FIRST -> top local slot 0x34 (-O0 slots are decl-order top-down; register vars reserve the slots below) */
@@ -51,9 +51,9 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
             child = mid;
             if (child != 0 || (child = (int*)gl_func_00000000(0x2C)) != 0) {
                 gl_func_00000000(child, &D_0000D148);
-                child[0x28 / 4] = (int)&D_8C3C_child_desc;
+                child[0x28 / 4] = (int)&Process_vtbl_8C3C_child_desc;
             }
-            mid[0x28 / 4] = (int)&D_8C3C_mid_desc;
+            mid[0x28 / 4] = (int)&Process_vtbl_C3A0_8C3C_mid_desc;
         }
         root[0x28 / 4] = (int)&D_8C3C_root_desc;
     }

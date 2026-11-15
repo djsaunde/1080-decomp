@@ -6,7 +6,7 @@
  * target needs ONE extra temporary between the div and the row shift and no (u8) burn. The row offset written as two
  * shifts `(c / 16) << 5 << 5` (c / 16 is 0..7 here, so the shifts are well-defined and equal * 1024) gives ugen
  * `sll $24,$14,5; sll $25,$24,5`, which as1 merges into the single `sll t9,t6,10` of the target: 99.25 -> 100.
- * Spliced over a placeholder on both build trees via REPLACE_FUNC_BODY; D_46790_g / D_46790_font pinned 0 (blank USO words). */
+ * Spliced over a placeholder on both build trees via REPLACE_FUNC_BODY; gGfxLib_46790_g / D_46790_font pinned 0 (blank USO words). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
@@ -18,7 +18,7 @@ extern char *o;
 extern char *c;
 extern short idx;
 extern float q[4];
-extern char D_46790_g[];
+extern char gGfxLib_46790_g[];
 extern unsigned char D_46790_font[];
 }
 static inline void put(unsigned short *&d, unsigned short v) { *d++ = v; }
@@ -31,7 +31,7 @@ extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y)
     unsigned short px;
 
     if (1) { q = &dst; }
-    dst = *(unsigned short **)(*(char **)(D_46790_g + 576) + *(int *)(o + 516) * 4 + 244);
+    dst = *(unsigned short **)(*(char **)(gGfxLib_46790_g + 576) + *(int *)(o + 516) * 4 + 244);
     dst += y * 320 + x;
     c = ch;
     if (c < 128) {

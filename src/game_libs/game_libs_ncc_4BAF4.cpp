@@ -13,7 +13,7 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 extern "C" {
 extern int D_00000000;
-extern int D_4BAF4_flags;
+extern int gGfxLib_4BAF4_flags;
 int gl_func_00000000(...);
 }
 typedef struct { u32 w0, w1; } Gfx4B;
@@ -126,7 +126,7 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
      * the target's `addu t1; andi t6; sll t9; sw w0; sw w1` WAR order comes out; the three extra `& 8` below (period 4)
      * put the ring back for the rest of the body: 98.021 -> 98.617, same length */
     me(me(F4B(GS4B, 0x158, Ctx4B *)))->add(0xEE000000, ((iz & 0x7FFF) & 0x7FFF) << 16); /* agent-g run 332: 0xEE receiver through two me() (receiver-depth re-grid on the else-arm-d base, final add depth 0): 99.137 -> 99.196 */
-    if (*(s32 *)((char *)&D_4BAF4_flags + 0x1C4) & 2) {
+    if (*(s32 *)((char *)&gGfxLib_4BAF4_flags + 0x1C4) & 2) {
         if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) { /* agent-g run 332: one `& 8` again (ring re-tuned for the else arm's d) */
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }

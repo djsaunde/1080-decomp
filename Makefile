@@ -1867,7 +1867,7 @@ GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MorphPoly_applyUpdateList_0004A9F0=$(GAMELIBS_4A9F0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A9F0_DONOR)
 # 46790 = NM C body lifted under NCC (agent-c run 134 sweep, cfe 75.10).
-# agent-g run 305: EXACT NCC donor over a placeholder on both build paths (row offset as two shifts: ugen FIFO, kit CCCXCI; D_46790_g / D_46790_font pinned 0).
+# agent-g run 305: EXACT NCC donor over a placeholder on both build paths (row offset as two shifts: ugen FIFO, kit CCCXCI; gGfxLib_46790_g / D_46790_font pinned 0).
 GAMELIBS_46790_DONOR := build/src/game_libs/game_libs_ncc_46790.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_drawFbChar_00046790=$(GAMELIBS_46790_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_DONOR)
@@ -1936,7 +1936,7 @@ GAMELIBS_4B0A8_DONOR := build/src/game_libs/game_libs_ncc_4B0A8.cpp.o
 $(GAMELIBS_4B0A8_DONOR): src/game_libs/game_libs_ncc_4B0A8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=Shadow_ctor_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=gl_4b0a8_vtbl --redefine-sym dbg_printThreads=gl_4b0a8_c34458 $@
+	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=Shadow_ctor_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=Shadow_vtbl_4b0a8_vtbl --redefine-sym dbg_printThreads=gl_4b0a8_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Shadow_ctor_0004B0A8=$(GAMELIBS_4B0A8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_DONOR)
 # 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
@@ -1955,13 +1955,13 @@ GAMELIBS_41820_DONOR := build/src/game_libs/game_libs_ncc_41820.cpp.o
 $(GAMELIBS_41820_DONOR): src/game_libs/game_libs_ncc_41820.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym init__4SelfFv=App_softReset --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
+	$(OBJCOPY) --redefine-sym init__4SelfFv=App_softReset --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=Node_vtbl_1F748_41820_h $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += App_softReset=$(GAMELIBS_41820_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_DONOR)
 # 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents (agent-c run 157, cfe 92.03).
 # agent-c run 405: EXACT NCC donor over a placeholder on both build trees (the three 0x06 packets' counts as the 5th
 # by-value parameter of nQ4(): one edg pool word = one live range with the B4 y-MIN merge, coloured a2). The blank USO
-# data refs stay pinned (D_4BAF4_cam = 0xA0, D_4BAF4_flags = 0); the jal words go through gl_func_00000000.
+# data refs stay pinned (D_4BAF4_cam = 0xA0, gGfxLib_4BAF4_flags = 0); the jal words go through gl_func_00000000.
 GAMELIBS_4BAF4_DONOR := build/src/game_libs/game_libs_ncc_4BAF4.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Sprite_display_0004BAF4=$(GAMELIBS_4BAF4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4BAF4_DONOR)
@@ -1978,7 +1978,7 @@ GAMELIBS_40070_DONOR := build/src/game_libs/game_libs_ncc_40070.cpp.o
 $(GAMELIBS_40070_DONOR): src/game_libs/game_libs_ncc_40070.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=QNode_ctor --redefine-sym dbg_printThreads=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
+	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=QNode_ctor --redefine-sym dbg_printThreads=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=QNode_vtbl_40070_vtb --redefine-sym __vtbl__4Base=MNode_vtbl_40070_vta $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += QNode_ctor=$(GAMELIBS_40070_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40070_DONOR)
 # 3C43C = nearest-hit picker (struct-by-value query arg, acc cleared from int i = 0); EXACT NCC donor over a placeholder (agent-c run 250). Its 1e6 literal's .rodata reloc is renamed CollShape_nearestHit_rodata by the splice (pinned to bootup.uso RoData 0x1AB8).
@@ -2074,7 +2074,7 @@ $(GAMELIBS_45178_DONOR): src/game_libs/game_libs_ncc_45178.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Window_func_00045178=$(GAMELIBS_45178_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45178_DONOR)
-# 445AC = UI / object bootstrap as NCC C++ (agent-c run 162: source-order varargs; `gl(D_445AC_b.x1C = new A40, 0x64, 1)` = the target's v0 holder base and frame). EXACT NCC donor over an empty placeholder.
+# 445AC = UI / object bootstrap as NCC C++ (agent-c run 162: source-order varargs; `gl(gSysLib_445AC_b.x1C = new A40, 0x64, 1)` = the target's v0 holder base and frame). EXACT NCC donor over an empty placeholder.
 GAMELIBS_445AC_DONOR := build/src/game_libs/game_libs_ncc_445AC.cpp.o
 $(GAMELIBS_445AC_DONOR): src/game_libs/game_libs_ncc_445AC.cpp
 	@mkdir -p $(dir $@)
@@ -2177,7 +2177,7 @@ GAMELIBS_412E8_DONOR := build/src/game_libs/game_libs_ncc_412E8.cpp.o
 $(GAMELIBS_412E8_DONOR): src/game_libs/game_libs_ncc_412E8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_staticInit_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=D_412E8_j --redefine-sym __vtbl__1L=D_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_staticInit_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=ConsoleDev_vtbl_412E8_j --redefine-sym __vtbl__1L=HostioDev_vtbl_1E1B8_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_staticInit_000412E8=$(GAMELIBS_412E8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_412E8_DONOR)
 # 4FBA4 = cfront factory: new Der + key-list virtual dispatch (iterator next() inline) EXACT NCC donor over an empty placeholder (agent-c run 163).
@@ -2185,7 +2185,7 @@ GAMELIBS_4FBA4_DONOR := build/src/game_libs/game_libs_ncc_4FBA4.cpp.o
 $(GAMELIBS_4FBA4_DONOR): src/game_libs/game_libs_ncc_4FBA4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __vtbl__4Base=gl_4FBA4_vtbl_base --redefine-sym __vtbl__3Der=gl_4FBA4_vtbl_der $@
+	$(OBJCOPY) --redefine-sym __vtbl__4Base=BaseMat_vtbl_4FBA4_vtbl_base --redefine-sym __vtbl__3Der=Mat_vtbl_4FBA4_vtbl_der $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mat_clone_0004FBA4=$(GAMELIBS_4FBA4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FBA4_DONOR)
 # 3FC58 = message pump (plain switch = the target compare chain; named W temp; flag aliases) EXACT NCC donor over an empty placeholder (agent-c run 163).
@@ -2268,12 +2268,12 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # agent-g run 435: EXACT NCC donor over a placeholder on both build trees (one function-scope variable carries the
 # s0 family; the loops' packets take the context as the last parameter of free inlines, so no pool slot 7 is created
 # before the loops and the else g home is vfp-124 = target). Blank USO refs: the jal words go through gl_func_00000000,
-# the two data bases are pinned D_48AEC_mt / D_48AEC_src = 0 (D_00000000 / _g / _h already pinned 0).
+# the two data bases are pinned D_48AEC_mt / gGfxLib_48AEC_src = 0 (D_00000000 / _g / _h already pinned 0).
 GAMELIBS_48AEC_DONOR := build/src/game_libs/game_libs_ncc_48AEC.cpp.o
 $(GAMELIBS_48AEC_DONOR): src/game_libs/game_libs_ncc_48AEC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym draw__3ObjFv=PolyShape_display --redefine-sym func_00000000=gl_func_00000000 --redefine-sym D_00000000_i=D_48AEC_mt --redefine-sym D_00000000_j=D_48AEC_src $@
+	$(OBJCOPY) --redefine-sym draw__3ObjFv=PolyShape_display --redefine-sym func_00000000=gl_func_00000000 --redefine-sym D_00000000_i=D_48AEC_mt --redefine-sym D_00000000_j=gGfxLib_48AEC_src $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_display=$(GAMELIBS_48AEC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48AEC_DONOR)
 # 454C4 = real C++ `void Obj::setLights(Ctx *, f32 *, f32)` (agent-c run 160, cfe 63.85): stock-gbi gSPLight / gSPNumLights macros, by-value list iterator; symbols renamed (names only). EXACT NCC donor over an empty
@@ -2496,7 +2496,7 @@ GAMELIBS_526D0_DONOR := build/src/game_libs/game_libs_ncc_526D0.cpp.o
 $(GAMELIBS_526D0_DONOR): src/game_libs/game_libs_ncc_526D0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFPvT1P3Obj=BasePolyShape_ctor --redefine-sym __ct__4BaseFPv=gl_func_00000000_526d0_base --redefine-sym __vtbl__3Obj=D_00000000_526d0_vtbl $@
+	$(OBJCOPY) --redefine-sym __ct__3ObjFPvT1P3Obj=BasePolyShape_ctor --redefine-sym __ct__4BaseFPv=gl_func_00000000_526d0_base --redefine-sym __vtbl__3Obj=BasePolyShape_vtbl_526d0_vtbl $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BasePolyShape_ctor=$(GAMELIBS_526D0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_526D0_DONOR)
 # 49B3C = EXACT NCC (C++) donor (agent-g run 190: local-reference cur(), if-form list next()),

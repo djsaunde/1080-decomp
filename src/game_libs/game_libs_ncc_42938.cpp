@@ -64,13 +64,13 @@ extern Rec gl_d_42938_rec[];
 extern int gl_d_42938_ia, gl_d_42938_ib;
 extern char gl_d_42938_cb, gl_d_42938_z;
 extern int gl_d_42938_fa[], gl_d_42938_fb[], gl_d_42938_fc[];
-extern GState gl_d_42938_gb;
+extern GState gGfxLib_42938_gb;
 extern int gl_d_42938_pa, gl_d_42938_pb, gl_d_42938_pc, gl_d_42938_sa, gl_d_42938_sb, gl_d_42938_ck;
 extern char gl_d_42938_qa, gl_d_42938_qb, gl_d_42938_qc, gl_d_42938_qd;
 void *func_00000000(...);
 void gl_func_00000000_void(...); /* agent-g run 377: pinned void alias (=0x0) for the ctx call, kit CCCXLVII */
 }
-#define G gl_d_42938_gb
+#define G gGfxLib_42938_gb
 #define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
 #define gImmp1(pkt, c, p0) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL((c), 24, 8); _g->w1 = (u32)(p0); }
 #define gDPSetScissor(pkt, mode, ulx, uly, lrx, lry) { Gfx *_g = (Gfx *)(pkt); \

@@ -45,20 +45,20 @@ extern f32 D_55A0_ro598, D_55A0_ro59C, D_55A0_ro5A0, D_55A0_ro5A4, D_55A0_ro5A8,
 typedef struct { int w; } S4_55A0;
 typedef struct { float x, y, z, w; } V4_55A0;
 extern S4_55A0 D_55A0_v0, D_55A0_v1, D_55A0_v2, D_55A0_v3;
-extern char D_55A0_s28_0, D_55A0_s28_1, D_55A0_s28_2, D_55A0_s28_3;
+extern char SNodeItemType_vtbl_55A0_s28_0, SNodeItemType_vtbl_55A0_s28_1, SNodeItemType_vtbl_55A0_s28_2, SNodeItemType_vtbl_55A0_s28_3;
 extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
 extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
 typedef struct { int a, b; } P8_55A0;
 extern P8_55A0 D_55A0_pair;
 extern char D_55A0_la, D_55A0_lb, D_55A0_n4, D_55A0_n2;
-extern char D_55A0_tb, D_55A0_o28_4, D_55A0_s28_5, D_55A0_o28_5;
+extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s28_5, D_55A0_o28_5;
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
 typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
 extern G2_55A0 D_55A0_G;
 extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
-extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
-#define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
+extern char D_55A0_lb0, D_55A0_fmt, gInputMgr_55A0_cfg;
+#define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 }
 static inline f32 fi(int v) { return v; }
 extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
@@ -153,7 +153,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_0;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_0;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_0;
             node = obj + 0x5C;
@@ -177,7 +177,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_1;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_1;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_1;
             n2 = obj + 0x5C;
@@ -204,7 +204,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_2;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_2;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_2;
             n2 = obj + 0x5C;
@@ -230,7 +230,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, nl0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_3;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_3;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_3;
             n2 = obj + 0x48;
@@ -265,7 +265,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     if (nl) {} /* agent-g run 241: nl's reload before the obj test (target lw a2 above the beqz) */
     if (obj != 0) {
         func_00000000(obj, p1, nl);
-        OI(obj, 0x28) = (int)&D_55A0_o28_4;
+        OI(obj, 0x28) = (int)&SNodeItemType_vtbl_55A0_o28_4;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -277,7 +277,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         s5 = obj;
         if (s5 != 0 || (s5 = (char *)func_00000000(0x48)) != 0) {
             func_00000000(s5, p2, D_55A0_g5);
-            OI(s5, 0x28) = (int)&D_55A0_s28_5;
+            OI(s5, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_5;
         }
         OI(obj, 0x28) = (int)&D_55A0_o28_5;
     }

@@ -12,7 +12,7 @@
  * control @0xC; OSViMode: type u8 @0, comRegs.ctrl @4. VI_STATE_01 =
  * VI_STATE_MODE_UPDATED.
  * Blank externs (USO load-time relocs, existing pins = 0):
- * D_00000000_vinext = __osViNext, gl_func_00000000_disint = __osDisableInt,
+ * gl___osViNext_vinext = __osViNext, gl_func_00000000_disint = __osDisableInt,
  * gl_func_00000000_resint = __osRestoreInt. Spliced into
  * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY; the 2-word
  * gl_func_0006CD44_pad.s (inter-object pad before the contpfs.c pair at
@@ -60,10 +60,10 @@ typedef struct {
 
 #define VI_STATE_01 0x01 /* VI_STATE_MODE_UPDATED */
 
-extern OSViContext *D_00000000_vinext;      /* __osViNext */
+extern OSViContext *gl___osViNext_vinext;      /* __osViNext */
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
-#define __osViNext D_00000000_vinext
+#define __osViNext gl___osViNext_vinext
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 

@@ -16,11 +16,11 @@
 extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000[];
-extern char D_4D688_g1[];
+extern char gSysLib_4D688_g1[];
 extern int D_4D688_g2;
 extern char D_4D688_g3[];
 extern int D_4D468_x, D_4D468_y, D_4D468_z;
-extern char D_4D468_w[];
+extern char gSysLib_4D468_w[];
 extern char D_4D468_a2[];
 }
 static long long sG;
@@ -79,9 +79,9 @@ extern "C" S4D *RcpMgr_ctor(S4D *s) {
     s->w2C = gl_func_00000000(0x400, 16);
     gl_func_00000000(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);
     sG = 0x1234567812345678LL;
-    bind(9, *(int *)(D_4D468_w + 0x1C), 102);
-    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }
-    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }
+    bind(9, *(int *)(gSysLib_4D468_w + 0x1C), 102);
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }
     gl_func_00000000(D_00000000 + 0x3C950);
     s->w20 = 0;
     s->w1C = 0;
@@ -126,13 +126,13 @@ void Obj::run()
     cur = 0;
     pend = 0;
     keep = 0;
-    gl_func_00000000(D_4D688_g1);
+    gl_func_00000000(gSysLib_4D688_g1);
     for (;;) {
         if (sG != 0x1234567812345678LL) {
             gl_func_00000000(DSTR(0x20224));
         }
         int k; /* run 204: homed above e */
-        Ev *e = ((Q *)D_4D688_g1)->ev;
+        Ev *e = ((Q *)gSysLib_4D688_g1)->ev;
         D_4D688_g2 = 0;
         gl_func_00000000(e, &e->key, 1);
         k = e->key;
@@ -178,8 +178,8 @@ void Obj::run()
             e = (Ev *)n; /* agent-g run 256: the old n through the dead e (its poll web reloads into a0; kit CCLXX / CCLXXX) */
             n++;
             if ((int)e & 1) {
-                gl_func_00000000(D_4D688_g1, k);
-                gl_func_00000000(D_4D688_g1);
+                gl_func_00000000(gSysLib_4D688_g1, k);
+                gl_func_00000000(gSysLib_4D688_g1);
             }
             pend = cur;
             if (cur != 0) {

@@ -9,7 +9,7 @@
  * No `register` on saveMask (the source's spelling): the __osDisableInt
  * result spills to sp+0x1C instead of s0 -- same as osEPiLinkHandle.
  * Blank externs (USO load-time relocs, existing pins = 0):
- * D_00000000_vinext = __osViNext, gl_func_00000000_disint = __osDisableInt,
+ * gl___osViNext_vinext = __osViNext, gl_func_00000000_disint = __osDisableInt,
  * gl_func_00000000_resint = __osRestoreInt. Spliced into
  * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY; no pad (guPositionF
  * follows directly), the C body is the same 0x50 as the old .s. */
@@ -30,10 +30,10 @@ typedef struct {
 
 #define VI_STATE_10 0x10 /* VI_STATE_BUFFER_UPDATED */
 
-extern OSViContext *D_00000000_vinext;      /* __osViNext */
+extern OSViContext *gl___osViNext_vinext;      /* __osViNext */
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
-#define __osViNext D_00000000_vinext
+#define __osViNext gl___osViNext_vinext
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 

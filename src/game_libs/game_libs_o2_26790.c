@@ -9,7 +9,7 @@
  * AudioThread_ProcessGlobalCmd_rodata, pinned to the USO tables at +0xEE0. Load-bearing:
  * gAudioCtx as a typed extern struct (cursor-first notes[i] addu), seqPlayer /
  * NoteSampleState flags as u32 bitfield runs, the mute / unmute loops walking a
- * byte pointer from their own base symbol (gl_26790_ent) so the bound re-reads
+ * byte pointer from their own base symbol (gAudioContext_26790_ent) so the bound re-reads
  * and the two read-modify-write stores stay. */
 
 typedef struct {
@@ -39,9 +39,9 @@ typedef struct {
     char pad[0x53BC - 0x2D00 - 4 * 0x160]; u16 threadCmdChannelMask[4];
 } gl_26790_Ctx;
 extern int D_00000000;
-extern gl_26790_Ctx gl_26790_gAudioCtx;
-#define gAudioCtx gl_26790_gAudioCtx
-extern u8 gl_26790_ent[];
+extern gl_26790_Ctx gAudioContext_26790;
+#define gAudioCtx gAudioContext_26790
+extern u8 gAudioContext_26790_ent[];
 extern int gl_26790_w;
 extern int gl_func_00000000();
 extern int func_3b164(), func_3b110();
@@ -82,7 +82,7 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             break;
 
         case 0xF2:
-            p = gl_26790_ent;
+            p = gAudioContext_26790_ent;
             for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {
                 ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 1;
                 ((gl_26790_Ctx *)p)->seqPlayers[0].recalculateVolume = 1;
@@ -103,7 +103,7 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
                 }
             }
         case 0xF0:
-            p = gl_26790_ent;
+            p = gAudioContext_26790_ent;
             for (i = 0; i < gAudioCtx.numSequencePlayers; i++) {
                 ((gl_26790_Ctx *)p)->seqPlayers[0].muted = 0;
                 ((gl_26790_Ctx *)p)->seqPlayers[0].recalculateVolume = 1;

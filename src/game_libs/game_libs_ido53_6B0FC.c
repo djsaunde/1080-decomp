@@ -12,7 +12,7 @@
  * load, so the donor's true entry is 0x6B0F4 and the splice covers
  * 0x6B0F4..0x6B790 (orphan words absorbed into the host .s; the leading
  * alignment nop at 0x6B0F0 stays as the 1-word pad INCLUDE_ASM).
- * Blank externs: D_00000000_ldh = __osDiskHandle, D_00000000_gim =
+ * Blank externs: D_00000000_ldh = __osDiskHandle, gl___OSGlobalIntMask_gim =
  * __OSGlobalIntMask, gl_func_00000000_edma = osEPiRawStartDma (blank
  * in-segment jal = gl_osEPiRawStartDma); baked jals gl_ref_0007FEEC =
  * __osLeoResume / gl_ref_0007FE04 = __osLeoAbnormalResume (out-of-
@@ -58,7 +58,7 @@ typedef struct OSPiHandle_s {
 } OSPiHandle;
 
 extern OSPiHandle *D_00000000_ldh;  /* __osDiskHandle */
-extern u32 D_00000000_gim;          /* __OSGlobalIntMask */
+extern u32 gl___OSGlobalIntMask_gim;          /* __OSGlobalIntMask */
 extern void gl_ref_0007FEEC(void);  /* __osLeoResume */
 extern void gl_ref_0007FE04(void);  /* __osLeoAbnormalResume */
 extern s32 gl_func_00000000_edma(OSPiHandle *, s32, u32, void *, u32); /* osEPiRawStartDma */
@@ -81,7 +81,7 @@ s32 gl___osLeoInterrupt(void)
     blockInfo = &info->block[info->blockNum];
     pi_stat = IO_READ(0xA4600010);
     if (pi_stat & 1) { /* PI_STATUS_DMA_BUSY */
-        D_00000000_gim = D_00000000_gim & ~0x800; /* ~SR_IBIT4 */
+        gl___OSGlobalIntMask_gim = gl___OSGlobalIntMask_gim & ~0x800; /* ~SR_IBIT4 */
         blockInfo->errStatus = 29;                /* LEO_ERROR_29 */
         gl_ref_0007FEEC();
         return 1;
@@ -102,7 +102,7 @@ s32 gl___osLeoInterrupt(void)
         blockInfo->errStatus = 22; /* LEO_ERROR_22 */
         gl_ref_0007FEEC();
         IO_WRITE(0xA4600010, 2); /* PI_STATUS_CLR_INTR */
-        D_00000000_gim |= 0x00100401; /* OS_IM_PI */
+        gl___OSGlobalIntMask_gim |= 0x00100401; /* OS_IM_PI */
         return 1;
     }
     if (info->cmdType == 1) {
@@ -113,7 +113,7 @@ s32 gl___osLeoInterrupt(void)
                 return 1;
             }
             IO_WRITE(0xA4600010, 2);
-            D_00000000_gim |= 0x00100401;
+            gl___OSGlobalIntMask_gim |= 0x00100401;
             blockInfo->errStatus = 0;
             gl_ref_0007FEEC();
             return 1;
@@ -167,7 +167,7 @@ s32 gl___osLeoInterrupt(void)
                 blockInfo->errStatus = 22;
             } else {
                 IO_WRITE(0xA4600010, 2);
-                D_00000000_gim |= 0x00100401;
+                gl___OSGlobalIntMask_gim |= 0x00100401;
                 info->cmdType = 2;
                 blockInfo->errStatus = 0;
             }

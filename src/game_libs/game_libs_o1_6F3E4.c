@@ -11,7 +11,7 @@
  * 38.75% m2c stub was an -O2 misread.
  * Blank externs: _disint = __osDisableInt, _enqyield =
  * __osEnqueueAndYield, _resint = __osRestoreInt, _popthr =
- * __osPopThread, _startthr = osStartThread; D_00000000_runthread =
+ * __osPopThread, _startthr = osStartThread; gl___osRunningThread_runthread =
  * __osRunningThread (OSThread*, lui/lw pair).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_message.h"
@@ -21,7 +21,7 @@ extern void gl_func_00000000_enqyield(OSThread **);    /* __osEnqueueAndYield */
 extern void gl_func_00000000_resint(u32);              /* __osRestoreInt */
 extern OSThread *gl_func_00000000_popthr(OSThread **); /* __osPopThread */
 extern void gl_func_00000000_startthr(OSThread *);     /* osStartThread */
-extern OSThread *D_00000000_runthread;                 /* __osRunningThread */
+extern OSThread *gl___osRunningThread_runthread;                 /* __osRunningThread */
 
 s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
 {
@@ -29,7 +29,7 @@ s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
 
     while (mq->validCount >= mq->msgCount) {
         if (flag == OS_MESG_BLOCK) {
-            D_00000000_runthread->state = 8; /* OS_STATE_WAITING */
+            gl___osRunningThread_runthread->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000_enqyield(&mq->fullqueue);
         } else {
             gl_func_00000000_resint(saveMask);

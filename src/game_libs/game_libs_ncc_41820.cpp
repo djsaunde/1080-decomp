@@ -4,7 +4,7 @@
  * (inline ctor cap / n / data = new int[c]), Self : SB (0x28 data bytes + 12 virtuals, m2C at +0x2C), the attach
  * blocks as the member Self::link(Rec *q) with a KEPT q (`if (0) { q = 0; }`: the q reload from its pooled home
  * and the this reload into v0 like the target; draft 93.98 -> 97.57 at 588 bytes = target), the third attach on
- * `new O44` (out-of-line base ctor B44(name), vptr = D_41820_h) through a keep-free linkN (97.73), and the closing
+ * `new O44` (out-of-line base ctor B44(name), vptr = Node_vtbl_1F748_41820_h) through a keep-free linkN (97.73), and the closing
  * virtual v12() through the vptr at +0x28; two end-of-body block volatiles give frame 0x40.
  * The first two attaches as a FREE inline lnk(Rec *q, Self *s) with q first and kept: a member call on this
  * allocates a pooled `this` temp that took the Arr temp's slot, so q sat one slot lower (0x2C); q-first puts q in
@@ -20,8 +20,8 @@ void gl_func_00000000_41820v();
 extern char D_00000000[];
 extern int D_41820_a;
 extern int import_80000310;
-extern char D_00000000_3c740[];
-extern char D_41820_c[], D_41820_d[];
+extern char gSysLib_3c740[];
+extern char gGfxLib_41820_c[], D_41820_d[];
 extern int D_41820_g;
 }
 inline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }
@@ -54,11 +54,11 @@ void Self::init() {
     gl_func_00000000(D_00000000 + 0x1F618);
     gl_func_00000000(D_41820_b, 1);
     gl_func_00000000(D_00000000 + 0x1F624);
-    gl_func_00000000(D_00000000_3c740, 1);
+    gl_func_00000000(gSysLib_3c740, 1);
     local[0] = 0x10;
     gl_func_00000000(this, local);
-    gl_func_00000000(D_00000000_3c740);
-    gl_func_00000000(D_41820_c);
+    gl_func_00000000(gSysLib_3c740);
+    gl_func_00000000(gGfxLib_41820_c);
     gl_func_00000000(1);
     gl_func_00000000(1);
     gl_func_00000000(D_41820_d, 100);
@@ -71,8 +71,8 @@ void Self::init() {
     D_41820_g = 0;
     lnkB(D_41820_f, this);
     lnk(D_41820_b, this);
-    gl_func_00000000(D_00000000_3c740);
-    gl_func_00000000(D_41820_c);
+    gl_func_00000000(gSysLib_3c740);
+    gl_func_00000000(gGfxLib_41820_c);
     linkN(new O44);
     v12();
     { volatile int e0; }

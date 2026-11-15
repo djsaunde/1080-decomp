@@ -40,10 +40,10 @@ int dbg_threadStateName(int a0) {
     }
 }
 
-extern char *D_34458_head;
+extern char *gl___osActiveQueue_34458_head;
 extern char *D_34458_obj;
 int dbg_printThreads() {
-    char *n = D_34458_head;
+    char *n = gl___osActiveQueue_34458_head;
     volatile int pad;
     int outB, outA;
     int s1;

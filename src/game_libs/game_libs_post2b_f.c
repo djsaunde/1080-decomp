@@ -50,9 +50,9 @@ void gl_viMgrMain(char *arg0) {
  * The symbol was mis-split as 75248 (3 leading zero pad words now in the
  * _pad sidecar); cc's natural function padding supplies the trailing
  * alignment pad (see below). */
-extern int D_75254_v;
+extern int gl___osViCurr_75254_v;
 int gl___osViGetCurrentContext(void) {
-    return D_75254_v;
+    return gl___osViCurr_75254_v;
 }
 
 /* The zero word at 0x75260 is 75254's trailing alignment pad, appended to

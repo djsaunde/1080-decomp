@@ -14,14 +14,14 @@
  *   uopt schedules the x store before the a0 %lo (one swapped pair); IDO
  *   line boundaries limit the scheduler (PERM_FORCE_SAMELINE effect).
  * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o
- * via REPLACE_FUNC_BODY; bu_485c_root / bu_485c_g are blank (0) aliases. */
+ * via REPLACE_FUNC_BODY; bu_485c_root / gGfxLib_485c_g are blank (0) aliases. */
 struct V3 { float x, y, z;
     V3(float a, float b, float c) { set(a, b, c); }
     void set(float a, float b, float c) { x = a; y = b; z = c; } };
 extern "C" {
 void func_00000000(...);
 extern char func_00000080[];
-extern char bu_485c_g[];
+extern char gGfxLib_485c_g[];
 extern char *bu_485c_root;
 }
 #define STR (func_00000080 + 0x20)
@@ -33,7 +33,7 @@ extern "C" void Mountain_display(char *a0) {
     func_00000000(STR, &b1);
     v0 = *(char **)(bu_485c_root + 0x70);
     {
-        V3 b2(F(v0,0xA0) * F(bu_485c_g,0x128), F(v0,0xA4) * F(bu_485c_g,0x12C) + F(a0,0x2C), F(v0,0xA8) * F(bu_485c_g,0x130)); func_00000000(STR, &b2);
+        V3 b2(F(v0,0xA0) * F(gGfxLib_485c_g,0x128), F(v0,0xA4) * F(gGfxLib_485c_g,0x12C) + F(a0,0x2C), F(v0,0xA8) * F(gGfxLib_485c_g,0x130)); func_00000000(STR, &b2);
     }
     func_00000000(a0);
 }

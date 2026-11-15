@@ -20,16 +20,16 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef struct { u8 dummy; u8 txsize; u8 rxsize; u8 cmd; u8 typeh; u8 typel; u8 status; u8 dummy1; } ReqFormat;
 typedef struct { u16 type; u8 status; u8 errnum; } StatusData;
-extern u8 D_00000000_pifram[];
-extern u8 D_00000000_max;
+extern u8 gl___osPfsPifRam_pifram[];
+extern u8 gl___osMaxControllers_max;
 void __osPfsGetInitData(u8 *pattern, StatusData *data) {
     u8 *ptr;
     ReqFormat requestformat;
     int i;
     u8 bits;
     bits = 0;
-    ptr = D_00000000_pifram;
-    for (i = 0; i < D_00000000_max; i++, ptr += sizeof(ReqFormat)) {
+    ptr = gl___osPfsPifRam_pifram;
+    for (i = 0; i < gl___osMaxControllers_max; i++, ptr += sizeof(ReqFormat)) {
         requestformat = *(ReqFormat *)ptr;
         data->errnum = (requestformat.rxsize & 0xc0) >> 4;
         if (data->errnum == 0) {

@@ -1692,7 +1692,7 @@ extern void func_000003F8();  /* used as data-symbol base */
  * func_074710(&D_000073E8, 0), func_059354 per entry, func_074840. */
 extern f32 bu_2c94_k4f0;
 extern f32 bu_2c94_dst[];
-extern char bu_2c94_src[], bu_2c94_ctx[], D_000073E8;
+extern char bu_2c94_src[], gGfxLib_2c94_ctx[], D_000073E8;
 extern int bu_2c94_mode, bu_2c94_x_ld, bu_2c94_x_st, bu_2c94_y_ld[], bu_2c94_y_st[];
 extern int bu_2c94_tbl[], bu_2c94_gate;
 void game_initDdm_00002C94(void *a0, void *a1) {
@@ -1718,7 +1718,7 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     func_00000000(&D_000073E8, 0);
     if (bu_2c94_gate != 0) {
         do {
-            func_00000000(bu_2c94_ctx, p[0], p[1]);
+            func_00000000(gGfxLib_2c94_ctx, p[0], p[1]);
             p += 2;
         } while (p[0] != 0);
     }
@@ -1814,9 +1814,9 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  * cap was the shared func_000003F8 base: three scalar f32 globals pinned at
  * the real offsets (D_00000524/528/52C = func_000003F8+0x12C/0x130/0x134)
  * each get their own `lui at; lwc1`. Other levers:
- *  - the three registration calls take a base-0 object (D_2F90_reg, one
+ *  - the three registration calls take a base-0 object (gGfxLib_2F90_reg, one
  *    symbol: the target holds it in s0), not a literal 0; m->0x28 is the
- *    base-0 address D_2F90_m28, and the s1->0x90 link call passes p90 as a1;
+ *    base-0 address LightTarget_vtbl_2F90_m28, and the s1->0x90 link call passes p90 as a1;
  *  - `p = obj; if (1) { p += 0xC4; } *(int *)p |= K;` for the addiu-base RMWs,
  *    with ONE reused pointer (p90, colours a2) for every s1->0x90/0x94 reload
  *    and the link block; a second reused pointer `o` (s0) for the third child,
@@ -1831,7 +1831,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  *    0x48 and vec at 0x3C (frame 0x60). */
 extern char D_0000741C, D_00007424, D_00007434, D_00007444, D_00007454;
 extern float D_00000524, D_00000528, D_0000052C;
-extern char D_2F90_reg, D_2F90_m28;
+extern char gGfxLib_2F90_reg, LightTarget_vtbl_2F90_m28;
 extern void func_00000000_2F90_v();
 extern void func_00000000_2F90_f(char *, char *, float, float, float);
 void game_createLights(char *s1) {
@@ -1872,9 +1872,9 @@ void game_createLights(char *s1) {
     vec[1] = D_00000528;
     func_00000000_2F90_v(o + 0x70, vec);
     c = o; if (1) { c += 0xC4; } *(int *)c |= 0x40;
-    func_00000000_2F90_v(&D_2F90_reg, *(int *)(s1 + 0x94));
-    func_00000000_2F90_v(&D_2F90_reg, *(int *)(s1 + 0x90));
-    func_00000000_2F90_v(&D_2F90_reg, *(int *)(s1 + 0x94));
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x94));
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x90));
+    func_00000000_2F90_v(&gGfxLib_2F90_reg, *(int *)(s1 + 0x94));
     p90 = *(char **)(s1 + 0x90);
     o = *(char **)(s1 + 0x84);
     func_00000000_2F90_v(o + 0x10, p90);
@@ -1886,7 +1886,7 @@ void game_createLights(char *s1) {
     if (o != 0) {
         func_00000000_2F90_f(o, &D_00007454, 0.0f, 0.0f, 0.0f);
         k2 = D_0000052C;
-        *(int *)(o + 0x28) = (int)&D_2F90_m28; *(int *)(o + 0x120) = 0xFFFF;
+        *(int *)(o + 0x28) = (int)&LightTarget_vtbl_2F90_m28; *(int *)(o + 0x120) = 0xFFFF;
         *(float *)(o + 0x108) = k2;
         *(float *)(o + 0x10C) = k2;
         *(float *)(o + 0x110) = k2;
@@ -2282,7 +2282,7 @@ void game_setupDemoSolo(char *s1, int a1) {
  *  (2) the r2 builder call has FIVE args: func(s1, 2, s1->0x80, r, o) —
  *      arg3 = r (or a3,v0 in the jal delay), o goes to the stack slot;
  *      matches sibling 39D8's decoded b3=builder(s2,2,s2->0x80,r1,o1);
- *  (3) array-decay retype `extern int D_38c0_z[]` + indexed loads shares the
+ *  (3) array-decay retype `extern int gInputMgr_38c0_z[]` + indexed loads shares the
  *      Dz base in ONE lui/addiu register pair across 0x4C/0x50/0x54 (the
  *      char*-held + per-use-cast form folded per-use).
  * 2026-07-15 (agent-g wave 3 round 2, 91.3 -> objdiff-100 / byte-exact vs
@@ -2294,11 +2294,11 @@ void game_setupDemoSolo(char *s1, int a1) {
  * dead $v0 def was excluding $v0 from the CSE temps (cfg stole v1, Dz fell
  * to ring t0); with it gone Dz=v1/cfg=v0 as in target (082F8/102CC lever).
  * Unwrapped EXACT 2026-10-16 (run 96): every callee/data name resolves to 0
- * (D_38c0_z pinned at the end of undefined_syms_auto.txt). */
+ * (gInputMgr_38c0_z pinned at the end of undefined_syms_auto.txt). */
 /* typed-float proto (0x0-alias): args 7,8 are single floats on the stack
  * (target swc1 0x18); K&R func_00000000 double-promotes them. */
 extern char *func_38c0_r(void *, int, int, int, void *, int, float, float, int, int);
-extern int D_38c0_z[];   /* D_z global — array-typed so the base is held in ONE reg */
+extern int gInputMgr_38c0_z[];   /* D_z global — array-typed so the base is held in ONE reg */
 /* void-returning alias for reg_b: kills the dead $v0 def so Dz/cfg color v1/v0 */
 extern void func_00000000_38C0_v(void *, void *, int);
 void game_setupSolo(char *s1, int a1) {
@@ -2312,11 +2312,11 @@ void game_setupSolo(char *s1, int a1) {
     }
     func_00000000(&D_00000000, o);          /* reg_a — D_x placeholder */
     func_00000000_38C0_v(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
-    r = func_38c0_r(s1, 0, D_38c0_z[0x4C / 4], D_38c0_z[0x54 / 4],
+    r = func_38c0_r(s1, 0, gInputMgr_38c0_z[0x4C / 4], gInputMgr_38c0_z[0x54 / 4],
                     o, *(int*)(s1 + 0x80),
                     *(float*)(*(char**)(s1 + 0x98) + 0xC4),
                     *(float*)(*(char**)(s1 + 0x98) + 0xCC),
-                    (D_38c0_z[0x50 / 4] | 1) | 0x10000 | 0x40000, 0x1B);
+                    (gInputMgr_38c0_z[0x50 / 4] | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o);
     row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
     res = (char*)func_00000000(s1, row, r2);
@@ -2349,7 +2349,7 @@ void game_setupSolo(char *s1, int a1) {
  * Unwrapped EXACT 2026-10-16 (run 96): every reloc resolves to 0. */
 /* typed-float proto (0x0-alias): 10-arg builders, args 7,8 single floats. */
 extern char *func_39d8_r(char *, int, int, int, char *, int, float, float, int, int);
-extern unsigned char D_39d8_g[];  /* D_g placeholder alias — array-typed so base lives in $s0 */
+extern unsigned char gInputMgr_39d8_g[];  /* D_g placeholder alias — array-typed so base lives in $s0 */
 void game_setupVsGhost(char *s2, int a1) {
     char *o1;
     char *o2;
@@ -2364,19 +2364,19 @@ void game_setupVsGhost(char *s2, int a1) {
     if (o2 != 0) {
         func_00000000(o2, 0);
     }
-    func_00000000(D_39d8_g, o1);
-    func_00000000(D_39d8_g, o2);
-    func_00000000(D_39d8_g, o1, o2);
-    r1 = func_39d8_r(s2, 0, *(int*)(D_39d8_g + 0x4C), *(int*)(D_39d8_g + 0x54),
+    func_00000000(gInputMgr_39d8_g, o1);
+    func_00000000(gInputMgr_39d8_g, o2);
+    func_00000000(gInputMgr_39d8_g, o1, o2);
+    r1 = func_39d8_r(s2, 0, *(int*)(gInputMgr_39d8_g + 0x4C), *(int*)(gInputMgr_39d8_g + 0x54),
                      o1, *(int*)(s2 + 0x80),
                      *(float*)(*(char**)(s2 + 0x98) + 0xC4),
                      *(float*)(*(char**)(s2 + 0x98) + 0xCC),
-                     (*(int*)(D_39d8_g + 0x50) | 1) | 0x10000 | 0x40000, 0x1B);
-    r2 = func_39d8_r(s2, 0, *(unsigned char*)(D_39d8_g + 0x181), *(unsigned char*)(D_39d8_g + 0x183),
+                     (*(int*)(gInputMgr_39d8_g + 0x50) | 1) | 0x10000 | 0x40000, 0x1B);
+    r2 = func_39d8_r(s2, 0, *(unsigned char*)(gInputMgr_39d8_g + 0x181), *(unsigned char*)(gInputMgr_39d8_g + 0x183),
                      o2, *(int*)(s2 + 0x80),
                      *(float*)(*(char**)(s2 + 0x98) + 0xC4),
                      *(float*)(*(char**)(s2 + 0x98) + 0xCC),
-                     (*(unsigned char*)(D_39d8_g + 0x182) | 0x8) | 0x8000, 0x14);
+                     (*(unsigned char*)(gInputMgr_39d8_g + 0x182) | 0x8) | 0x8000, 0x14);
     *(int*)(r2 + 0x38C) = 0;
     b3 = (char*)func_00000000(s2, 2, *(int*)(s2 + 0x80), r1, o1);
     f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
@@ -2425,7 +2425,7 @@ void game_setupVsGhost(char *s2, int a1) {
  *  (1) void-typed alias for the second CFG reg call (frees $v0 so cfg colours
  *      v0 and the CFG base v1, as in target);
  *  (2) o / o2 / big merged into ONE $s0 web; register C dropped (the array-
- *      typed CFG_3b78 base is CSE'd into v1 by itself) -> r1/b2/b3/f1 spill
+ *      typed gInputMgr_CFG_3b78 base is CSE'd into v1 by itself) -> r1/b2/b3/f1 spill
  *      homes 0x58..0x4C exact;
  *  (3) four unused volatile pads between f1 and v1_84 = the ghost words that
  *      put v1_84's home at 0x38;
@@ -2435,7 +2435,7 @@ void game_setupVsGhost(char *s2, int a1) {
  *      temp was one ring slot early). See docs/IDO_CODEGEN.md
  *      #split-or-constant-ring-burn-3b78. */
 extern char *func_3b78_r(char *, int, int, int, char *, int, float, float, int, int);
-extern unsigned char CFG_3b78[];
+extern unsigned char gInputMgr_CFG_3b78[];
 extern void func_00000000_3B78_v(void *, void *, int);
 void game_setupReplay(char *s1, int a1) {
     char *o;
@@ -2446,14 +2446,14 @@ void game_setupReplay(char *s1, int a1) {
     if (o != 0) {
         func_00000000(o, 0);
     }
-    func_00000000(CFG_3b78, o);
-    func_00000000_3B78_v(CFG_3b78, o, 0);
+    func_00000000(gInputMgr_CFG_3b78, o);
+    func_00000000_3B78_v(gInputMgr_CFG_3b78, o, 0);
     r1 = func_3b78_r(s1, 0,
-                     CFG_3b78[0x181],
-                     CFG_3b78[0x183],
+                     gInputMgr_CFG_3b78[0x181],
+                     gInputMgr_CFG_3b78[0x183],
                      o, *(int*)(s1 + 0x80),
                      *(float*)(*(char**)(s1 + 0x98) + 0xC4), *(float*)(*(char**)(s1 + 0x98) + 0xCC),
-                     (CFG_3b78[0x182] | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
+                     (gInputMgr_CFG_3b78[0x182] | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
     b2 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), r1, o);
     b3 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r1, o);
     f1 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
@@ -2633,7 +2633,7 @@ void game_setupVs2P(char *s1, int a1) {
  * r[2], block temps for the cross link) plus the tail: a third new-expression
  * (ctor flag 1) passed to func_002420(0, t, r[0], f, b3, b4), linked into
  * s1->0x84 + 0x10 by func_07ACE0. */
-extern char bu_411c_d7294[], bu_411c_d00_b;
+extern char bu_411c_d7294[], gInputMgr_411c_d00_b;
 extern int bu_411c_t90[];
 extern f32 bu_411c_k544, bu_411c_k548;
 extern f32 func_00000000_411c_f(void);
@@ -2650,7 +2650,7 @@ void game_setupDemoRace(char *s1, int a1) {
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 0);
     func_00000000(&gInputMgr, o1);
-    func_00000000(&bu_411c_d00_b, t);
+    func_00000000(&gInputMgr_411c_d00_b, t);
     idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
     idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
     r[0] = func_00000000_3d3cm(s1, 0, idx1, bu_411c_t90[idx1], o1, *(int*)(s1 + 0x80),
@@ -2702,7 +2702,7 @@ void game_setupDemoRace(char *s1, int a1) {
  * add gets its own zero alias of import_000200FC, so nothing is held in an
  * s-reg. The two spawn results are an ARRAY r[2] (frame 80/84); the cross
  * link and the first link call go through block temps a/b (a = a3). */
-extern char bu_43d4_d7294[], bu_43d4_d00_b;
+extern char bu_43d4_d7294[], gInputMgr_43d4_d00_b;
 extern int bu_43d4_t90[];
 extern f32 bu_43d4_k54c, bu_43d4_k550;
 extern f32 func_00000000_43d4_f(void);
@@ -2717,7 +2717,7 @@ void game_setupDemoSplit(char *s0, int a1) {
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 0);
     func_00000000(&gInputMgr, o1);
-    func_00000000(&bu_43d4_d00_b, t);
+    func_00000000(&gInputMgr_43d4_d00_b, t);
     idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
     idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
     r[0] = func_00000000_3d3cm(s0, 0, idx1, bu_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),
@@ -3402,20 +3402,20 @@ extern f32 D_bu_ro_598, D_bu_ro_59C, D_bu_ro_5A0, D_bu_ro_5A4, D_bu_ro_5A8, D_bu
 typedef struct { int w; } S4_55A0;
 typedef struct { float x, y, z, w; } V4_55A0;
 extern S4_55A0 D_55A0_v0, D_55A0_v1, D_55A0_v2, D_55A0_v3;
-extern char D_55A0_s28_0, D_55A0_s28_1, D_55A0_s28_2, D_55A0_s28_3;
+extern char SNodeItemType_vtbl_55A0_s28_0, SNodeItemType_vtbl_55A0_s28_1, SNodeItemType_vtbl_55A0_s28_2, SNodeItemType_vtbl_55A0_s28_3;
 extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
 extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
 typedef struct { int a, b; } P8_55A0;
 extern P8_55A0 D_55A0_pair;
 extern char D_55A0_la, D_55A0_lb, D_55A0_n4, D_55A0_n2;
-extern char D_55A0_tb, D_55A0_o28_4, D_55A0_s28_5, D_55A0_o28_5;
+extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s28_5, D_55A0_o28_5;
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
 typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
 extern G2_55A0 D_55A0_G;
 extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
-extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
-#define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
+extern char D_55A0_lb0, D_55A0_fmt, gInputMgr_55A0_cfg;
+#define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
@@ -3497,7 +3497,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_0;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_0;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_0;
             node = obj + 0x5C;
@@ -3520,7 +3520,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_1;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_1;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_1;
             node = obj + 0x5C;
@@ -3543,7 +3543,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&D_55A0_s28_2;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_2;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_2;
             node = obj + 0x5C;
@@ -3568,7 +3568,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, nl);
-                OI(sub, 0x28) = (int)&D_55A0_s28_3;
+                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_3;
             }
             OI(obj, 0x28) = (int)&D_55A0_o28_3;
             n2 = obj + 0x48;
@@ -3602,7 +3602,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
         func_00000000(obj, p1, nl);
-        OI(obj, 0x28) = (int)&D_55A0_o28_4;
+        OI(obj, 0x28) = (int)&SNodeItemType_vtbl_55A0_o28_4;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -3614,7 +3614,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
         sub = obj;
         if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
             func_00000000(sub, p2, D_55A0_g5);
-            OI(sub, 0x28) = (int)&D_55A0_s28_5;
+            OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_5;
         }
         OI(obj, 0x28) = (int)&D_55A0_o28_5;
     }
@@ -4725,7 +4725,7 @@ void Tv1Tmpl_display(char *a0) {
  * copy. INCLUDE_ASM remains build path. */
 /* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc: the
  * mode word is import_000200FC + 0x2C (= D_00000000), the globals block is
- * import_0005C108 (zero alias bu_7ec8_g: +0x130 scale, +0x254 game object,
+ * import_0005C108 (zero alias gGfxLib_7ec8_g: +0x130 scale, +0x254 game object,
  * +0x18 a 24-byte record), the backup record is import_0001FFC8 (bu_7ec8_h);
  * (the asm spells the mode word func_00000008 + 0x2C = 0x34, alias
  * bu_7ec8_m, and the record func_0000027C + 0x18 = 0x294, alias
@@ -4735,7 +4735,7 @@ void Tv1Tmpl_display(char *a0) {
  * inline (a scale local colours f2/f0 the wrong way round) and written
  * scale * field for the target mul.s operand order. */
 typedef struct { int a, b, c, d, e, f; } S24_7EC8;
-extern char bu_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
+extern char gGfxLib_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
 extern int bu_7ec8_m;
 extern void func_00000000_7ec8_c(char *, char *, float);
 extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
@@ -4744,9 +4744,9 @@ void Fog_display(char *s0) {
     int hit;
     if (bu_7ec8_m != 8) {
         frac = 0.0f;
-        limit = *(float *)(bu_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(bu_7ec8_g + 0x254) + 0x70) + 0xA8);
+        limit = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(gGfxLib_7ec8_g + 0x254) + 0x70) + 0xA8);
         hit = 0;
-        p = *(float *)(bu_7ec8_g + 0x130) * *(float *)(s0 + 0x38);
+        p = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(s0 + 0x38);
         end = *(float *)(s0 + 0x54) + p;
         if (p < limit && limit < end) {
             hit = 1;
@@ -4764,7 +4764,7 @@ void Fog_display(char *s0) {
             func_00000000_7ec8_c(bu_7ec8_src, s0 + 0x74, frac);
         }
     } else {
-        if (func_00000000_7ec8_t(*(int *)(bu_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
+        if (func_00000000_7ec8_t(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
                           *(int *)(s0 + 0x34), *(float *)(s0 + 0x38), 0, 0.0f) != 0) {
             func_00000000(s0);
         }
@@ -5495,7 +5495,7 @@ void SnowBCollider_onContact(char *b) {
 /* ShpNode_ctor: 36-insn (0x90) optional-alloc + multi-call init. */
 extern char D_00008708;
 extern char D_00008710;
-extern char D_8F18_vtable;
+extern char ShpNode_vtbl_8F18_vtable;
 extern char D_8F18_call_arg;
 char *ShpNode_ctor(char *self) {
     int handle;
@@ -5504,7 +5504,7 @@ char *ShpNode_ctor(char *self) {
         if (self == 0) goto end;
     }
     func_00000000(self, &D_00008708);
-    *(char**)(self + 0x28) = &D_8F18_vtable;
+    *(char**)(self + 0x28) = &ShpNode_vtbl_8F18_vtable;
     handle = func_00000000(0, &D_00008710, &D_8F18_call_arg, 0);
     func_00000000(self, handle);
     *(int*)(self + 0x3D4) = 100;
@@ -5709,7 +5709,7 @@ extern char bu_90cc_vt545_d;  /* per-cascade base-0 aliases of symIdx 545 -- bus
 extern char bu_90cc_vt546;
 extern char bu_90cc_vt547;
 extern char bu_90cc_vt548;
-extern char bu_90cc_d207dc;
+extern char LightTarget_vtbl_90cc_d207dc;
 extern char bu_90cc_imp30;  /* +0x30 import ptr in the 0x878 cascade (target 0xA2F8 lui/addiu/sw pair; was decoded as literal 0) */
 /* target 0xAC34-0xAD3C per-site blank globals (each site = own symbol; busts base GCSE).
  * Scalar/array form (not cast-arith) so the lo16 folds into the load offset (lui rd; lw rd,4(rd))
@@ -5720,8 +5720,8 @@ extern char bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
 extern s32 bu_90cc_gown;
 extern char bu_90cc_gtbl;
 extern char bu_90cc_gpair;
-extern char bu_90cc_gdev;
-extern char bu_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
+extern char gGfxLib_90cc_gdev;
+extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
 /* vtable draw slot (+0x5C): trailing two args are single-precision f32.
  * Prototyping defeats the K&R float->double promotion so single swc1
  * arg stores emit (matches target; no cvt.d.s/sdc1). */
@@ -5850,7 +5850,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 
     if ((arg0 != 0) || (temp_v0_5 = func_00000000(0xA8C), arg0 = temp_v0_5, (temp_v0_5 != 0))) {
         func_00000000(arg0, &D_00008730);
-        *(s32 *)((char *)(arg0) + 0x28) = (s32) &bu_90cc_vt_self;
+        *(s32 *)((char *)(arg0) + 0x28) = (s32) &SnowBoarder_vtbl_90cc_vt_self;
         var_s0 = arg0 + 0x3EC;
         if (((arg0 != (void *)-0x3EC) || ((var_s0 = func_00000000(0x154)) != 0)) && ((func_00000000(var_s0, &D_00008738), *(s32 *)((char *)(var_s0) + 0x28) = (s32) &D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = func_00000000(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = var_s1;
@@ -6483,7 +6483,7 @@ sw_end:
         if (var_s1 != 0) {
             func_00000000_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
             temp_f0 = D_000008B4;
-            *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF; *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_d207dc;
+            *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF; *(s32 *)((char *)(var_s1) + 0x28) = (s32) &LightTarget_vtbl_90cc_d207dc;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x10C) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x110) = temp_f0;
@@ -6522,9 +6522,9 @@ sw_end:
         }
         *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
         *(s32 *)&bu_90cc_gpair = 0;
-        *(s32 *)((char *)(arg0) + 0x8F4) = func_00000000(&bu_90cc_gdev, 1, 0);
-        *(s32 *)((char *)(arg0) + 0x8F8) = func_00000000(&bu_90cc_gdev, 2, 0);
-        *(s32 *)((char *)(arg0) + 0x8FC) = func_00000000(&bu_90cc_gdev, 3, 0);
+        *(s32 *)((char *)(arg0) + 0x8F4) = func_00000000(&gGfxLib_90cc_gdev, 1, 0);
+        *(s32 *)((char *)(arg0) + 0x8F8) = func_00000000(&gGfxLib_90cc_gdev, 2, 0);
+        *(s32 *)((char *)(arg0) + 0x8FC) = func_00000000(&gGfxLib_90cc_gdev, 3, 0);
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {

@@ -11,7 +11,7 @@
  * scriptState +0x54. Channel: flag word 0 (muted bit 3, largeNotes bit 5),
  * muteBehavior +3, velocity / gate random variance +0xD / +0xE, seqPlayer +0x4C.
  * SeqPlayer: muted bit 2, skipTicks +0xDC. audioRandom (+0x2154) is read through its
- * own symbol (gl_2B5F4_audioRandom, SM64's separate gAudioRandom global): through the
+ * own symbol (gAudioContext_2B5F4_audioRandom, SM64's separate gAudioRandom global): through the
  * shared gAudioCtx base both random-variance products load their operands in the
  * other order (mul.s / multu operand swap). */
 typedef struct {
@@ -34,8 +34,8 @@ typedef struct {
 } gl_2B5F4_Layer;
 typedef AudioContext gl_2B5F4_Ctx; /* include/audio.h (audioRandom 0x2154) */
 extern int D_00000000;
-extern gl_2B5F4_Ctx gl_2B5F4_audioRandom;
-#define gAudioCtx gl_2B5F4_audioRandom
+extern gl_2B5F4_Ctx gAudioContext_2B5F4_audioRandom;
+#define gAudioCtx gAudioContext_2B5F4_audioRandom
 extern int gl_ref_0003F05C();
 #define AudioSeq_ScriptReadCompressedU16 gl_ref_0003F05C
 #define SQ(x) ((x) * (x))

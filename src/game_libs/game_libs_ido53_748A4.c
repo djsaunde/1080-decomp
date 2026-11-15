@@ -25,8 +25,8 @@ typedef struct {
 
 extern int gl_func_00000000();
 extern int gl_ref_0008912C();
-extern GlPifRam D_748A4_pifram;
-extern u8 D_748A4_lastcmd;
+extern GlPifRam gl___osPfsPifRam_748A4_pifram;
+extern u8 gl___osContLastCmd_748A4_lastcmd;
 
 s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
 {
@@ -36,18 +36,18 @@ s32 __osContRamRead(void *mq, int channel, u16 address, u8 *buffer)
     __OSContRamReadFormat ramreadformat;
     int retry;
     ret = 0;
-    ptr = (u8 *)&D_748A4_pifram;
+    ptr = (u8 *)&gl___osPfsPifRam_748A4_pifram;
     retry = 2;
     gl_func_00000000();
-    D_748A4_lastcmd = 2;
+    gl___osContLastCmd_748A4_lastcmd = 2;
     gl_ref_0008912C(channel, address);
-    ret = gl_func_00000000(1, &D_748A4_pifram);
+    ret = gl_func_00000000(1, &gl___osPfsPifRam_748A4_pifram);
     gl_func_00000000(mq, 0, 1);
     do
     {
-        ret = gl_func_00000000(0, &D_748A4_pifram);
+        ret = gl_func_00000000(0, &gl___osPfsPifRam_748A4_pifram);
         gl_func_00000000(mq, 0, 1);
-        ptr = (u8 *)&D_748A4_pifram;
+        ptr = (u8 *)&gl___osPfsPifRam_748A4_pifram;
         if (channel != 0)
         {
             for (i = 0; i < channel; i++)
@@ -96,8 +96,8 @@ void __osPackRamReadData(int channel, u16 address)
     __OSContRamReadFormat ramreadformat;
     int i;
 
-    ptr = (u8 *)D_748A4_pifram.ramarray;
-    D_748A4_pifram.pifstatus = 1;
+    ptr = (u8 *)gl___osPfsPifRam_748A4_pifram.ramarray;
+    gl___osPfsPifRam_748A4_pifram.pifstatus = 1;
     ramreadformat.dummy = 255;
     ramreadformat.txsize = 3;
     ramreadformat.rxsize = 33;

@@ -91,7 +91,7 @@ extern char bu_90cc_vt546;
 extern char bu_90cc_vt547;
 extern char bu_90cc_vt548;
 extern char bu_90cc_vt548_b;
-extern char bu_90cc_d207dc;
+extern char LightTarget_vtbl_90cc_d207dc;
 extern char bu_90cc_imp30;  /* +0x30 import ptr in the 0x878 cascade (target 0xA2F8 lui/addiu/sw pair; was decoded as literal 0) */
 /* target 0xAC34-0xAD3C per-site blank globals (each site = own symbol; busts base GCSE).
  * Scalar/array form (not cast-arith) so the lo16 folds into the load offset (lui rd; lw rd,4(rd))
@@ -102,8 +102,8 @@ extern char bu_90cc_g8_ld, bu_90cc_g8_st;      /* load/store alias pair: same ad
 extern s32 bu_90cc_gown;
 extern char bu_90cc_gtbl;
 extern char bu_90cc_gpair;
-extern char bu_90cc_gdev;
-extern char bu_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
+extern char gGfxLib_90cc_gdev;
+extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
 /* vtable draw slot (+0x5C): trailing two args are single-precision f32.
  * Prototyping defeats the K&R float->double promotion so single swc1
  * arg stores emit (matches target; no cvt.d.s/sdc1). */
@@ -235,7 +235,7 @@ extern "C" void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
 
     if ((arg0 != 0) || (temp_v0_5 = func_00000000(0xA8C), arg0 = temp_v0_5, (temp_v0_5 != 0))) {
         func_00000000(arg0, &D_00008730);
-        *(s32 *)((char *)(arg0) + 0x28) = (s32) &bu_90cc_vt_self;
+        *(s32 *)((char *)(arg0) + 0x28) = (s32) &SnowBoarder_vtbl_90cc_vt_self;
         var_s0 = arg0 + 0x3EC;
         if (((arg0 != (void *)-0x3EC) || ((var_s0 = func_00000000(0x154)) != 0)) && ((func_00000000(var_s0, &D_00008738), *(s32 *)((char *)(var_s0) + 0x28) = (s32) &D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = func_00000000(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = (s32)var_s1;
@@ -870,7 +870,7 @@ sw_end:
         if (var_s1 != 0) {
             func_00000000_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
             temp_f0 = D_000008B4;
-            *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
+            *(s32 *)((char *)(var_s1) + 0x28) = (s32) &LightTarget_vtbl_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x10C) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x110) = temp_f0;
@@ -909,9 +909,9 @@ sw_end:
         }
         *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
         *(s32 *)&bu_90cc_gpair = 0;
-        *(char **)((char *)(arg0) + 0x8F4) = func_00000000(&bu_90cc_gdev, 1, 0);
-        *(char **)((char *)(arg0) + 0x8F8) = func_00000000(&bu_90cc_gdev, 2, 0);
-        *(char **)((char *)(arg0) + 0x8FC) = func_00000000(&bu_90cc_gdev, 3, 0);
+        *(char **)((char *)(arg0) + 0x8F4) = func_00000000(&gGfxLib_90cc_gdev, 1, 0);
+        *(char **)((char *)(arg0) + 0x8F8) = func_00000000(&gGfxLib_90cc_gdev, 2, 0);
+        *(char **)((char *)(arg0) + 0x8FC) = func_00000000(&gGfxLib_90cc_gdev, 3, 0);
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {

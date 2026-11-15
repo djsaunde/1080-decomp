@@ -4,7 +4,7 @@
  * alignment word -> SUFFIX_BYTES_FORCE, _pad.s sidecar deleted).
  * The vi[2] context array is game_libs-internal data BAKED to 0x2E4C0
  * (lui 3 / addiu -0x1B40) -> gl_ref_0002E4C0. All other globals are
- * blanked USO reloc words: D_00000000_vicurr/vinext (__osViCurr/Next),
+ * blanked USO reloc words: gl___osViCurr_vicurr/vinext (__osViCurr/Next),
  * D_00000000_tvtype (osTvType), D_00000000_pal/mpal/ntsc
  * (osViModePalLan1/MpalLan1/NtscLan1). Callees (blank jal 0x0C000000):
  * gl_func_00000000 = bzero, gl_func_00000001 = __osViSwapContext
@@ -49,8 +49,8 @@ typedef struct {
 } __OSViContext;      /* sizeof 0x30 */
 
 extern __OSViContext gl_ref_0002E4C0[2];    /* vi[2] (baked 0x2E4C0) */
-extern __OSViContext *D_00000000_vicurr;    /* __osViCurr */
-extern __OSViContext *D_00000000_vinext;    /* __osViNext */
+extern __OSViContext *gl___osViCurr_vicurr;    /* __osViCurr */
+extern __OSViContext *gl___osViNext_vinext;    /* __osViNext */
 extern s32 D_00000000_tvtype;               /* osTvType */
 extern OSViMode D_00000000_pal;             /* osViModePalLan1 */
 extern OSViMode D_00000000_mpal;            /* osViModeMpalLan1 */
@@ -64,21 +64,21 @@ extern void gl_func_00000001(void);         /* __osViSwapContext = __osViSwapCon
 
 void __osViInit(void) {
     gl_func_00000000(vi, sizeof(vi)); /* bzero */
-    D_00000000_vicurr = &vi[0];
-    D_00000000_vinext = &vi[1];
-    D_00000000_vinext->retraceCount = 1;
-    D_00000000_vicurr->retraceCount = 1;
-    D_00000000_vinext->framep = (void *)0x80000000;
-    D_00000000_vicurr->framep = (void *)0x80000000;
+    gl___osViCurr_vicurr = &vi[0];
+    gl___osViNext_vinext = &vi[1];
+    gl___osViNext_vinext->retraceCount = 1;
+    gl___osViCurr_vicurr->retraceCount = 1;
+    gl___osViNext_vinext->framep = (void *)0x80000000;
+    gl___osViCurr_vicurr->framep = (void *)0x80000000;
     if (D_00000000_tvtype == 0) { /* OS_TV_PAL */
-        D_00000000_vinext->modep = &D_00000000_pal;
+        gl___osViNext_vinext->modep = &D_00000000_pal;
     } else if (D_00000000_tvtype == 2) { /* OS_TV_MPAL */
-        D_00000000_vinext->modep = &D_00000000_mpal;
+        gl___osViNext_vinext->modep = &D_00000000_mpal;
     } else {
-        D_00000000_vinext->modep = &D_00000000_ntsc;
+        gl___osViNext_vinext->modep = &D_00000000_ntsc;
     }
-    D_00000000_vinext->state = 0x20; /* VI_STATE_BLACK */
-    D_00000000_vinext->control = D_00000000_vinext->modep->comRegs.ctrl;
+    gl___osViNext_vinext->state = 0x20; /* VI_STATE_BLACK */
+    gl___osViNext_vinext->control = gl___osViNext_vinext->modep->comRegs.ctrl;
     while (IO_READ(0xA4400010) > 10) /* VI_CURRENT_REG */
         ;
     IO_WRITE(0xA4400000, 0); /* VI_CONTROL_REG */

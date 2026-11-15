@@ -10,7 +10,7 @@ extern "C" {
 int gl_func_00000000(...);
 void gl_49B3C_regf(char *, char *, char *, float, float, int);
 extern char D_00000000[];
-extern char D_49B3C_s1[], D_49B3C_s2[], D_49B3C_s3[], D_49B3C_s4[], D_49B3C_s5[], D_49B3C_s6[];
+extern char gHostio_49B3C_s1[], gHostio_49B3C_s2[], gHostio_49B3C_s3[], gHostio_49B3C_s4[], gHostio_49B3C_s5[], gHostio_49B3C_s6[];
 }
 inline void *operator new(unsigned n) { return (void *)gl_func_00000000(n); }
 struct E1 { char pad[0x5C]; virtual void a(); virtual void b(); virtual void tick(); };
@@ -33,22 +33,22 @@ inline void regp(char *a, char *b, char *p) { if (0) { p = 0; } gl_func_00000000
 struct Grp { char pad[0x10]; L *head; };
 extern "C" void PolyShape_hostioParms(char *self) {
      
-    gl_func_00000000(D_49B3C_s1, D_00000000 + 0x1FFD4, 0);
-     regp(D_49B3C_s2, D_00000000 + 0x1FFE0, self + 64); 
-     regp(D_49B3C_s3, D_00000000 + 0x1FFE8, self + 68); 
-    gl_49B3C_regf(D_49B3C_s4, D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);
+    gl_func_00000000(gHostio_49B3C_s1, D_00000000 + 0x1FFD4, 0);
+     regp(gHostio_49B3C_s2, D_00000000 + 0x1FFE0, self + 64); 
+     regp(gHostio_49B3C_s3, D_00000000 + 0x1FFE8, self + 68); 
+    gl_49B3C_regf(gHostio_49B3C_s4, D_00000000 + 0x1FFF4, self + 156, 0.0f, 10.0f, 0);
      
      AIter it = iter((Arr *)(self + 132)); 
     while (it.next()) {
           it.cur()->tick(); 
     }
-    gl_func_00000000(D_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
+    gl_func_00000000(gHostio_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
      if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); 
         LI li(g->head); while (li.next()) {
              callu(li.cur->data); 
         }
     }
-    gl_func_00000000(D_49B3C_s6);
+    gl_func_00000000(gHostio_49B3C_s6);
      
     gl_func_00000000(self);
 }

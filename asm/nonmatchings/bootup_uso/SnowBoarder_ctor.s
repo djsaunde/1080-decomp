@@ -1864,8 +1864,8 @@ glabel SnowBoarder_ctor
     /* DDB608 0000AB9C C42008B4 */  lwc1       $f0, %lo(SndHandle_setScaleIdx15)($at)
     /* DDB60C 0000ABA0 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DDB610 0000ABA4 44813000 */  mtc1       $at, $f6
-    /* DDB614 0000ABA8 3C0D0000 */  lui        $t5, %hi(bu_90cc_d207dc)
-    /* DDB618 0000ABAC 25AD0000 */  addiu      $t5, $t5, %lo(bu_90cc_d207dc)
+    /* DDB614 0000ABA8 3C0D0000 */  lui        $t5, %hi(LightTarget_vtbl_90cc_d207dc)
+    /* DDB618 0000ABAC 25AD0000 */  addiu      $t5, $t5, %lo(LightTarget_vtbl_90cc_d207dc)
     /* DDB61C 0000ABB0 340EFFFF */  ori        $t6, $zero, 0xFFFF
     /* DDB620 0000ABB4 AE2E0120 */  sw         $t6, 0x120($s1)
     /* DDB624 0000ABB8 AE2D0028 */  sw         $t5, 0x28($s1)

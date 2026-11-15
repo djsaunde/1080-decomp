@@ -10,7 +10,7 @@
 extern "C" {
 void gl_func_00000000(...);
 extern char D_00000000[];
-extern int D_34EB4_flags;
+extern int gHostio_34EB4_flags;
 }
 #define DB D_00000000
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -27,7 +27,7 @@ struct St { int flags; int pad4, pad8; Node *list; int f10; int count; };
 extern "C" void app_run(St *a0, App *a1) {
     int quit;
     gl_func_00000000(DB + 0x1E47C);
-    if (D_34EB4_flags & 1) gl_func_00000000();
+    if (gHostio_34EB4_flags & 1) gl_func_00000000();
     for (quit = 0;;) {
         a0->flags &= ~1;
         a1->v4();

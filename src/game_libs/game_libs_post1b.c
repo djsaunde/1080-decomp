@@ -2101,7 +2101,7 @@ void hostio_readIntParm_00065EB4(int a0) {
  * (0x3F070), region 3's to sym1544 (0x3F0B0); addends 0x08/0x0C/0x24..0x34
  * and 0 for the &record args. The next BSS symbol is sym2414 at 0x3F0F0, so
  * each record is 0x40 bytes: three separate globals of one struct type,
- * D_65EE4_rgn0/1/2 (pinned = 0 like every USO BSS import). Callees
+ * gFsStream0_65EE4_rgn0/1/2 (pinned = 0 like every USO BSS import). Callees
  * (all blank R_MIPS_26): @+0x4C/+0x68 sym1524 = fs_piWriteWord_000662E8 (3-arg),
  * @+0x7C/+0x9C sym1525 = fs_piReadWord_00066210 (returns the word read at a1),
  * @+0xB8 sym2417 = fs_piXfer_0006612C (the successor); all three live in this
@@ -2135,16 +2135,16 @@ typedef struct Save65EE4 {
     int f34;             /* 0x34: cleared before the successor call */
     char pad38[8];       /* 0x40 bytes: the three records sit 0x40 apart */
 } Save65EE4;
-extern Save65EE4 D_65EE4_rgn0;   /* sym1520 (BSS 0x3F030) */
-extern Save65EE4 D_65EE4_rgn1;   /* sym1542 (BSS 0x3F070) */
-extern Save65EE4 D_65EE4_rgn2;   /* sym1544 (BSS 0x3F0B0) */
+extern Save65EE4 gFsStream0_65EE4_rgn0;   /* sym1520 (BSS 0x3F030) */
+extern Save65EE4 gFsStream1_65EE4_rgn1;   /* sym1542 (BSS 0x3F070) */
+extern Save65EE4 gFsStream2_65EE4_rgn2;   /* sym1544 (BSS 0x3F0B0) */
 extern void gl_func_000662E8_65EE4(Save65EE4 *, int, int);
 extern int gl_func_00066210_65EE4(Save65EE4 *, int);
 extern void gl_func_0006612C_65EE4(Save65EE4 *);
 void fs_piXfer_00065EE4(void) {
-    { Save65EE4 *s = &D_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FF0000 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
-    { Save65EE4 *s = &D_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; gl_func_000662E8_65EE4(s, 0xB1FF2710 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
-    { Save65EE4 *s = &D_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FFC350 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
+    { Save65EE4 *s = &gFsStream0_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FF0000 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
+    { Save65EE4 *s = &gFsStream1_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; gl_func_000662E8_65EE4(s, 0xB1FF2710 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
+    { Save65EE4 *s = &gFsStream2_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FFC350 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
 }
 
 /* fs_piXfer_0006612C: magic-value spin-handshake helper (0xAC, frame 0x20,
@@ -4465,7 +4465,7 @@ end:
  * spill slot at sp+0x1C; b first gives the target sp+0x18). The unused a0
  * param supplies the home store sw a0,0x20(sp).
  * docs/IDO_CODEGEN.md#inlined-ctor-pair-decl-order-spill-slot-688f8 */
-extern int D_00000000_688f8;
+extern int ImageFile_vtbl_688f8;
 int *ImageFileMgr_newFile_000688F8(int a0) {
     int *b;
     int *p;
@@ -4478,7 +4478,7 @@ int *ImageFileMgr_newFile_000688F8(int a0) {
 store:
     b[7] = (int)&BinFile_vtbl;
 skip:
-    p[7] = (int)&D_00000000_688f8;
+    p[7] = (int)&ImageFile_vtbl_688f8;
 end:
     return p;
 }
@@ -4530,21 +4530,21 @@ void ImageFile_load_00068990(char *o) {
  * D_X is an int[] at a fixed address: dispatchers take its ADDRESS (a0=&D_X via
  * lui/addiu), and D_X[1] is a direct word load 0x4(&D_X) (no pointer indirection).
  * func5's 2nd arg is reloaded from self[0x8] memory, not the SSA v0 register.
- * 2026-10-16 agent-g: UNWRAPPED. D_X is the base-0 placeholder D_gl68B04 (= 0 in
+ * 2026-10-16 agent-g: UNWRAPPED. D_X is the base-0 placeholder gSysLib_gl68B04 (= 0 in
  * undefined_syms_auto.txt; the ROM words are lui 0 / addiu 0 / lw 4).
  */
 void ImageFile_vfn1_00068B04(int *self) {
-    extern int D_gl68B04[];
+    extern int gSysLib_gl68B04[];
     int saved_dx1;
     if (*self & 1) return;
     if (self[0x8 / 4] != 0) return;
     self[0x8 / 4] = (int)gl_func_00000000(self[0x2C / 4]);
-    saved_dx1 = D_gl68B04[1];
-    gl_func_00000000(D_gl68B04, 1);
-    gl_func_00000000(D_gl68B04, ((int*)self[0xC / 4])[0x2C / 4]);
-    gl_func_00000000(D_gl68B04, 0, self[0x28 / 4]);
-    gl_func_00000000(D_gl68B04, self[0x8 / 4], self[0x2C / 4]);
-    gl_func_00000000(D_gl68B04, saved_dx1);
+    saved_dx1 = gSysLib_gl68B04[1];
+    gl_func_00000000(gSysLib_gl68B04, 1);
+    gl_func_00000000(gSysLib_gl68B04, ((int*)self[0xC / 4])[0x2C / 4]);
+    gl_func_00000000(gSysLib_gl68B04, 0, self[0x28 / 4]);
+    gl_func_00000000(gSysLib_gl68B04, self[0x8 / 4], self[0x2C / 4]);
+    gl_func_00000000(gSysLib_gl68B04, saved_dx1);
 }
 
 void ImageFile_free_00068BAC(int *a0) {
@@ -5074,19 +5074,19 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinMgr_skinVerts_000693A4);
  *     target order sw zero,0x38 / sw t7,0x90 but hoists the a2 home
  *     reload to the label head (source order only moves the lw).
  * 2026-10-16 agent-g: UNWRAPPED. The three in-unit AnimPlayer_update calls go
- * through the blank alias gl_func_00062F64_695F4 and D_sym_695F4 is pinned to 0
+ * through the blank alias gl_func_00062F64_695F4 and SkinMgr_vtbl_sym_695F4 is pinned to 0
  * (both in undefined_syms_auto.txt); every ROM word is a base-0 load-time reloc. */
 extern int gl_func_00062F64_695F4();
 int* SkinMgr_ctor(int *a0, int a1, int a2) {
     extern int D_00000000;
-    extern int D_sym_695F4;
+    extern int SkinMgr_vtbl_sym_695F4;
     int *v1;
     if (a0 == 0) {
         a0 = (int*)gl_func_00062F64_695F4(0x98);
         if (a0 == 0) goto end;
     }
     gl_func_00062F64_695F4(a0, (char*)&D_00000000 + 0x2C5A8);
-    a0[0x28 / 4] = (int)&D_sym_695F4;
+    a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
     v1 = (int*)((char*)a0 + 0x48);
     if (a0 != (int*)-72) goto store;
     v1 = (int*)gl_func_00062F64_695F4(4);

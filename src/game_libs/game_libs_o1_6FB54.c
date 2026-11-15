@@ -11,7 +11,7 @@
  * sltu carry).
  * Blank externs: _disint = __osDisableInt, _count = osGetCount,
  * _resint = __osRestoreInt; D_00000000_basecnt = __osBaseCounter (u32),
- * D_00000000_curtime = __osCurrentTime (u64, per-half lui pair).
+ * gl___osCurrentTime_curtime = __osCurrentTime (u64, per-half lui pair).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned int u32;
 typedef unsigned long long OSTime;
@@ -20,7 +20,7 @@ extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern u32 gl_func_00000000_count(void);    /* osGetCount */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 extern u32 D_00000000_basecnt;              /* __osBaseCounter */
-extern OSTime D_00000000_curtime;           /* __osCurrentTime */
+extern OSTime gl___osCurrentTime_curtime;           /* __osCurrentTime */
 
 OSTime osGetTime(void)
 {
@@ -31,7 +31,7 @@ OSTime osGetTime(void)
     saveMask = gl_func_00000000_disint();
     tmptime = gl_func_00000000_count();
     elapseCount = tmptime - D_00000000_basecnt;
-    currentCount = D_00000000_curtime;
+    currentCount = gl___osCurrentTime_curtime;
     gl_func_00000000_resint(saveMask);
     return currentCount + elapseCount;
 }

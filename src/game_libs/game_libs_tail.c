@@ -1511,25 +1511,25 @@ end:
 }
 
 extern int gl_func_00000000();
-extern int gl_data_B884_arg, gl_data_B89C_arg, gl_data_B8AC_arg, gl_data_B8C0_arg;
+extern int gSysLib_data_B884_arg, gSysLib_data_B89C_arg, gSysLib_data_B8AC_arg, gSysLib_data_B8C0_arg;
 extern int D_00000000;
 
 void Backup_read(int a0, int a1, int a2, int a3) {
-    gl_func_00000000(&gl_data_B884_arg, 2);
-    gl_func_00000000(&gl_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
-    gl_func_00000000(&gl_data_B8AC_arg, 0, a2);
-    gl_func_00000000(&gl_data_B8C0_arg, a1, a3);
+    gl_func_00000000(&gSysLib_data_B884_arg, 2);
+    gl_func_00000000(&gSysLib_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
+    gl_func_00000000(&gSysLib_data_B8AC_arg, 0, a2);
+    gl_func_00000000(&gSysLib_data_B8C0_arg, a1, a3);
 }
 
 extern int gl_func_00000000();
-extern int gl_data_B8FC_arg, gl_data_B914_arg, gl_data_B924_arg, gl_data_B938_arg;
+extern int gSysLib_data_B8FC_arg, gSysLib_data_B914_arg, gSysLib_data_B924_arg, gSysLib_data_B938_arg;
 extern int D_00000000;
 
 void Backup_write(int a0, int a1, int a2, int a3) {
-    gl_func_00000000(&gl_data_B8FC_arg, 2);
-    gl_func_00000000(&gl_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
-    gl_func_00000000(&gl_data_B924_arg, 0, a1);
-    gl_func_00000000(&gl_data_B938_arg, a2, a3);
+    gl_func_00000000(&gSysLib_data_B8FC_arg, 2);
+    gl_func_00000000(&gSysLib_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
+    gl_func_00000000(&gSysLib_data_B924_arg, 0, a1);
+    gl_func_00000000(&gSysLib_data_B938_arg, a2, a3);
 }
 
 /* Backup_wordsEqual: 69-insn word-array equality predicate. Compares a3/4 words

@@ -9,14 +9,14 @@
  * -O2 NM decode: the 64-bit sltu-chain compares are u64 `tim >
  * timep->value` at -O1, not heap sizes.
  * Blank externs: _disint = __osDisableInt, _resint = __osRestoreInt;
- * D_00000000_timerlist = __osTimerList (OSTimer*, next+0 prev+4
+ * gl___osTimerList_timerlist = __osTimerList (OSTimer*, next+0 prev+4
  * interval+8 value+0x10).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 #include "libultra/os_timer.h"
 
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
-extern OSTimer *D_00000000_timerlist;       /* __osTimerList */
+extern OSTimer *gl___osTimerList_timerlist;       /* __osTimerList */
 
 OSTime __osInsertTimer(OSTimer *t)
 {
@@ -24,14 +24,14 @@ OSTime __osInsertTimer(OSTimer *t)
     OSTime tim;
     u32 savedMask;
     savedMask = gl_func_00000000_disint();
-    for (timep = D_00000000_timerlist->next, tim = t->value;
-         timep != D_00000000_timerlist && tim > timep->value;
+    for (timep = gl___osTimerList_timerlist->next, tim = t->value;
+         timep != gl___osTimerList_timerlist && tim > timep->value;
          tim -= timep->value, timep = timep->next)
     {
         ;
     }
     t->value = tim;
-    if (timep != D_00000000_timerlist)
+    if (timep != gl___osTimerList_timerlist)
         timep->value -= tim;
     t->next = timep;
     t->prev = timep->prev;

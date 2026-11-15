@@ -5,7 +5,7 @@
  * locals; the f32->u32 y.scale cast is the inline cfc1/ctc1 dance and
  * the 0x30-byte *__osViNext = *__osViCurr tail is the 12-byte/iter
  * lwl-free struct-copy loop.
- * Blank externs: D_00000000_vicurr/vinext (__osViCurr/__osViNext),
+ * Blank externs: gl___osViCurr_vicurr/vinext (__osViCurr/__osViNext),
  * gl_func_00000000_v2p = osVirtualToPhysical (blank jal).
  * Spliced into game_libs_post1c.c.o via REPLACE_FUNC_BODY. */
 typedef signed int s32;
@@ -46,8 +46,8 @@ typedef struct {
     __OSViScale y;    /* 0x24 */
 } __OSViContext;      /* sizeof 0x30 */
 
-extern __OSViContext *D_00000000_vicurr;   /* __osViCurr */
-extern __OSViContext *D_00000000_vinext;   /* __osViNext */
+extern __OSViContext *gl___osViCurr_vicurr;   /* __osViCurr */
+extern __OSViContext *gl___osViNext_vinext;   /* __osViNext */
 extern u32 gl_func_00000000_v2p(void *);   /* osVirtualToPhysical */
 
 #define IO_READ(a) (*(volatile u32 *)((a) | 0xA0000000))
@@ -71,7 +71,7 @@ void __osViSwapContext(void) {
     u32 field;
 
     field = 0;
-    vc = D_00000000_vinext;
+    vc = gl___osViNext_vinext;
     vm = vc->modep;
 
     field = IO_READ(0xA4400010) & 1; /* VI_CURRENT_REG */
@@ -115,7 +115,7 @@ void __osViSwapContext(void) {
     IO_WRITE(0xA4400034, vc->y.scale);                  /* VI_Y_SCALE */
     IO_WRITE(0xA4400000, vc->control);                  /* VI_CONTROL */
 
-    D_00000000_vinext = D_00000000_vicurr;
-    D_00000000_vicurr = vc;
-    *D_00000000_vinext = *D_00000000_vicurr;
+    gl___osViNext_vinext = gl___osViCurr_vicurr;
+    gl___osViCurr_vicurr = vc;
+    *gl___osViNext_vinext = *gl___osViCurr_vicurr;
 }

@@ -17,14 +17,14 @@ struct G;
 struct Cam { char pad[0x30]; V3 v; void mul(G &g); };
 struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; int root; };
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
-extern "C" G D_39E24_g;
+extern "C" G gGfxLib_39E24_g;
 extern "C" void SNode_display(char *a0) {
-    if (gl_proto_39E24(D_39E24_g.root, 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),
+    if (gl_proto_39E24(gGfxLib_39E24_g.root, 3, *(float *)(a0 + 0x5C), *(float *)(a0 + 0x60),
                     *(float *)(a0 + 0x64), 0, 0.0f) != 0) {
-        gl_func_00000000_39E24v(&D_39E24_g, a0 + 0x2C);
+        gl_func_00000000_39E24v(&gGfxLib_39E24_g, a0 + 0x2C);
         {
-            Cam &c = D_39E24_g.cam;
-            c.mul(D_39E24_g);
+            Cam &c = gGfxLib_39E24_g.cam;
+            c.mul(gGfxLib_39E24_g);
             c.v.y += *(float *)(a0 + 0x6C);
         }
         gl_func_00000000(a0);

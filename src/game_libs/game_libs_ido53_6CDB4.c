@@ -30,13 +30,13 @@ typedef unsigned short u16;
 typedef int s32;
 typedef struct { u8 dummy; u8 txsize; u8 rxsize; u8 cmd; u16 address; u8 data[32]; u8 datacrc; } RamReadFormat;
 typedef struct { int unk0; void *queue; int channel; } PFS;
-extern u8 D_00000000_pifram[];
+extern u8 gl___osPfsPifRam_pifram[];
 extern s32 D_00000000_table[];
 extern u8 D_00000000_bank[];
-extern u8 D_00000000_pifram2[];
-extern u8 D_00000000_base[];
+extern u8 gl___osPfsPifRam_pifram2[];
+extern u8 gl___osPfsPifRam_base[];
 extern u8 D_00000000_crcbuf[];
-extern u8 D_00000000_lastcmd;
+extern u8 gl___osContLastCmd_lastcmd;
 extern void gl_func_00000000(void);
 extern s32 gl_func_00000001(s32, void *);
 extern s32 gl_func_00000002(void *, void *, s32);
@@ -47,16 +47,16 @@ s32 gl_osMotorStop(PFS *pfs) {
     s32 ret;
     u8 *ptr;
     RamReadFormat ramreadformat;
-    ptr = D_00000000_pifram;
+    ptr = gl___osPfsPifRam_pifram;
     if (D_00000000_table[pfs->channel] == 0)
         return 5;
     gl_func_00000000();
-    D_00000000_lastcmd = 3;
+    gl___osContLastCmd_lastcmd = 3;
     gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
     gl_func_00000002(pfs->queue, 0, 1);
-    ret = gl_func_00000001(0, D_00000000_pifram2);
+    ret = gl_func_00000001(0, gl___osPfsPifRam_pifram2);
     gl_func_00000002(pfs->queue, 0, 1);
-    ptr = D_00000000_base;
+    ptr = gl___osPfsPifRam_base;
     if (pfs->channel != 0) {
         for (i = 0; i < pfs->channel; i++) {
             ptr++;
@@ -76,16 +76,16 @@ s32 gl_osMotorStart(PFS *pfs) {
     s32 ret;
     u8 *ptr;
     RamReadFormat ramreadformat;
-    ptr = D_00000000_pifram;
+    ptr = gl___osPfsPifRam_pifram;
     if (D_00000000_table[pfs->channel] == 0)
         return 5;
     gl_func_00000000();
-    D_00000000_lastcmd = 3;
+    gl___osContLastCmd_lastcmd = 3;
     gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
     gl_func_00000002(pfs->queue, 0, 1);
-    ret = gl_func_00000001(0, D_00000000_pifram2);
+    ret = gl_func_00000001(0, gl___osPfsPifRam_pifram2);
     gl_func_00000002(pfs->queue, 0, 1);
-    ptr = D_00000000_base;
+    ptr = gl___osPfsPifRam_base;
     if (pfs->channel != 0) {
         for (i = 0; i < pfs->channel; i++) {
             ptr++;

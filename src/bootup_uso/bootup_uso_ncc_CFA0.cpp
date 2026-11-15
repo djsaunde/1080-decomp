@@ -22,7 +22,7 @@
  * k970 0x970, k978 0x978, the per-site blank args a..f and the two callees 0). */
 extern "C" {
 char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
-extern char bu_cfa0_a, bu_cfa0_b, bu_cfa0_c, bu_cfa0_d, bu_cfa0_e, bu_cfa0_f;
+extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
 extern char *bu_cfa0_ctx;
 extern int bu_cfa0_flag;
 extern float bu_cfa0_k970;
@@ -58,15 +58,15 @@ extern "C" void SnowBoarder_display(char *st) {
     changed = (*(float *)(ctx + 0x98) < out) || (ctx != *(char **)(st + 0x8DC));
     if ((*(int *)(st + 0xA58) & 0x10000) && *(short *)(st + 0x9A0) == 0x61 &&
         *(short *)(st + 0x904) != 9 && *(int *)(st + 0x938) != 0) {
-        p = (char *)func_00000000(&bu_cfa0_a, 0xD);
+        p = (char *)func_00000000(&gGfxLib_cfa0_a, 0xD);
         *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;
         bu_cfa0_v(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
         c[3] = bu_cfa0_k970;
-        bu_cfa0_v(&bu_cfa0_b, c);
+        bu_cfa0_v(&gGfxLib_cfa0_b, c);
         bu_cfa0_v(0x10);
         DISPATCH_CFA0(0x824);
-        p = (char *)func_00000000(&bu_cfa0_c, 6);
+        p = (char *)func_00000000(&gGfxLib_cfa0_c, 6);
         *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;
     }
     if (!changed || !(*(int *)(st + 0x8B8) & 4)) {
@@ -77,7 +77,7 @@ extern "C" void SnowBoarder_display(char *st) {
             bu_cfa0_v(st);
             bu_cfa0_v(0x11);
             t = st + 0x8E0;
-            bu_cfa0_v(&bu_cfa0_d, t);
+            bu_cfa0_v(&gGfxLib_cfa0_d, t);
             bu_cfa0_v(st);
             bu_cfa0_v(st);
             bu_cfa0_flag = 0;
@@ -94,7 +94,7 @@ extern "C" void SnowBoarder_display(char *st) {
                 *(float *)(st + 0x9EC) = (float)(unsigned int)cg / div255;
                 *(float *)(st + 0x9F0) = (float)(unsigned int)cb / div255;
                 *(float *)(st + 0x9F4) = 112.0f / div255;
-                bu_cfa0_v(&bu_cfa0_e, st + 0x9E8);
+                bu_cfa0_v(&gGfxLib_cfa0_e, st + 0x9E8);
                 if (*(int *)(st + 0x8B8) & 2) {
                     bu_cfa0_v(2);
                     DISPATCH_CFA0(0x814);
@@ -119,7 +119,7 @@ extern "C" void SnowBoarder_display(char *st) {
         bu_cfa0_v(0x14);
         t = st + 0x8E0;
     }
-    bu_cfa0_v(&bu_cfa0_f, t);
+    bu_cfa0_v(&gGfxLib_cfa0_f, t);
     bu_cfa0_v(st);
     bu_cfa0_v(*(int *)(CTX + 0x108));
 }

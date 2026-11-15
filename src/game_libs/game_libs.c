@@ -3467,7 +3467,7 @@ void RaceProcess_handleInput(char *self) {
  * func_00000000(0, X) actually passes &D_00000000 as arg0 (lui/addiu a0 pair);
  * bit-16/20/19 tests: sll-form at +0x588/+0x4F4-vtable/final-0x300 sites
  * (<<15/<<11/<<12 >>31), and-form elsewhere; per-site absolute derefs for
- * &D+0xE2C..0xE3C/+0x34 via distinct base-0 extern D_00000000_76F0 (CSE break
+ * &D+0xE2C..0xE3C/+0x34 via distinct base-0 extern gInputMgr_76F0 (CSE break
  * vs the held &D+0 float base); store-then-reread spelling for the -=1 counter
  * copies (move tN in delays). Residual: 3 external USO jumptable dispatches
  * (structural cap) + scattered regalloc.
@@ -3509,7 +3509,7 @@ void RaceProcess_handleInput(char *self) {
  * the 0x4E4 decrement (statement-order / --/-=/break-form probes neutral);
  * (4) switch3 `or v0,v1` switch-temp copy (switch on a named local, cast,
  * or assignment-expr all coalesce - neutral). */
-extern char D_00000000_76F0;
+extern char gInputMgr_76F0;
 typedef struct GlObj76F0VtEnt {
     s16 off;
     s16 pad;
@@ -3601,7 +3601,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                         self->unk550 = 0.0f; /* agent-c run 326: 0.0 before 160 (FP ring: 0.0 f8, 160 f10 as in the target) */
                         self->unk548 = 160.0f;
                         self->unk54C = 120.0f;
-                        if (*(s32 *)((char *)&D_00000000_76F0 + 0x34) == 2) {
+                        if (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) == 2) {
                             self->unk54C = 60.0f;
                         }
                         break;
@@ -3706,7 +3706,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
             if (D_76F0_fadeA < 1.0f) {
                 D_76F0_fadeA += 0.1f;
             }
-            if (*(s32 *)((char *)&D_00000000_76F0 + 0x34) != 3) {
+            if (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) != 3) {
                 if (D_76F0_fadeB < 1.0f) {
                     D_76F0_fadeB += 0.1f;
                 }
@@ -3751,7 +3751,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                     }
                 }
             }
-            if ((self->unk4F8 == 0) && (*(s32 *)((char *)&D_00000000_76F0 + 0x34) == 3)) {
+            if ((self->unk4F8 == 0) && (*(s32 *)((char *)&gInputMgr_76F0 + 0x34) == 3)) {
                 if (D_76F0_fadeC < 1.0f) {
                     D_76F0_fadeC += 0.1f;
                 }

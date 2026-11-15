@@ -11,9 +11,9 @@
 extern "C" {
 void gl_func_00000000(...);
 extern char D_00000000[];
-extern int D_3FC58_flags, D_3FC58_flagsW, D_3FC58_flags2, D_3FC58_flags2W;
-extern char D_3FC58_s1[];
-extern char D_3FC58_g[];
+extern int gSysLib_3FC58_flags, gSysLib_3FC58_flagsW, gSysLib_3FC58_flags2, gSysLib_3FC58_flags2W;
+extern char gHostio_3FC58_s1[];
+extern char gGfxLib_3FC58_g[];
 }
 struct W { int w; W(int x) { w = x; } };
 struct O28 { char p[0x28]; virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(const W &); };
@@ -34,7 +34,7 @@ extern "C" void hostio_dispatch(int arg0) {
     Msg out;
     volatile int p0, p1, p2, p3, p4, p5;
     gl_func_00000000(&msg);
-    D_3FC58_flagsW = D_3FC58_flags | 4;
+    gSysLib_3FC58_flagsW = gSysLib_3FC58_flags | 4;
     switch (msg.type) {
     case 52: {
         O28 *o = (O28 *)msg.p8;
@@ -44,7 +44,7 @@ extern "C" void hostio_dispatch(int arg0) {
     }
     case 22:
         ((O28 *)msg.obj)->f1();
-        gl_func_00000000(D_3FC58_s1);
+        gl_func_00000000(gHostio_3FC58_s1);
         break;
     case 10:
         out = msg;
@@ -82,7 +82,7 @@ extern "C" void hostio_dispatch(int arg0) {
         gl_func_00000000();
         break;
     case 28: {
-        O28 *o = *(O28 **)(D_3FC58_g + 0x1C8);
+        O28 *o = *(O28 **)(gGfxLib_3FC58_g + 0x1C8);
         out.type = 25;
         out.obj = o;
         if (o == 0) {
@@ -97,5 +97,5 @@ extern "C" void hostio_dispatch(int arg0) {
         gl_func_00000000(D_00000000 + 0x1F3CC, msg.type);
         break;
     }
-    D_3FC58_flags2W = D_3FC58_flags2 & ~4;
+    gSysLib_3FC58_flags2W = gSysLib_3FC58_flags2 & ~4;
 }

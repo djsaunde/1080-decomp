@@ -20,16 +20,16 @@ typedef unsigned char u8;
 typedef int s32;
 typedef struct { u8 dummy; u8 txsize; u8 rxsize; u8 cmd; u8 typeh; u8 typel; u8 status; u8 dummy1; } ReqFormat;
 typedef struct { u8 ramarray[60]; s32 pifstatus; } PifRam;
-extern PifRam D_00000000_pifram;
-extern u8 D_00000000_max;
-extern u8 D_00000000_lastcmd;
+extern PifRam gl___osPfsPifRam_pifram;
+extern u8 gl___osMaxControllers_max;
+extern u8 gl___osContLastCmd_lastcmd;
 void __osPfsRequestData(u8 cmd) {
     u8 *ptr;
     ReqFormat requestformat;
     int i;
-    ptr = (u8 *)&D_00000000_pifram;
-    D_00000000_lastcmd = cmd;
-    D_00000000_pifram.pifstatus = 1;
+    ptr = (u8 *)&gl___osPfsPifRam_pifram;
+    gl___osContLastCmd_lastcmd = cmd;
+    gl___osPfsPifRam_pifram.pifstatus = 1;
     requestformat.dummy = 0xff;
     requestformat.txsize = 1;
     requestformat.rxsize = 3;
@@ -38,7 +38,7 @@ void __osPfsRequestData(u8 cmd) {
     requestformat.typel = 0xff;
     requestformat.status = 0xff;
     requestformat.dummy1 = 0xff;
-    for (i = 0; i < D_00000000_max; i++) {
+    for (i = 0; i < gl___osMaxControllers_max; i++) {
         *(ReqFormat *)ptr = requestformat;
         ptr += sizeof(ReqFormat);
     }

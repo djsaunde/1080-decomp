@@ -22,7 +22,7 @@
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8;
 extern "C" {
 extern char D_00000000[];
-extern int D_493AC_a, D_493AC_b, D_493AC_c, D_493AC_d;
+extern int gGfxLib_493AC_a, gGfxLib_493AC_b, gGfxLib_493AC_c, gGfxLib_493AC_d;
 void *gl_func_00000000(...);
 }
 #define S(o) (D_00000000 + (o))
@@ -139,7 +139,7 @@ int Mgr::run() {
     gl_func_00000000(S(0x1FF88));
     int total = 0;
     u8 *buf;
-    if (G1C4(D_493AC_a) & 8) {
+    if (G1C4(gGfxLib_493AC_a) & 8) {
         pad1 = (int)this; if (1) { pad1 += 0x30; } *(int *)pad1 |= 0x80; /* agent-g run 221: pointer mutation behind if (1) = the target's addiu v0,s6,48 + lw/sw 0(v0) */
         buf = (u8 *)gl_func_00000000(D_00000000, n44);
         for (pad2 = 0; pad2 < n44; pad2++) { /* agent-c run 302: the clear loop counts in the (zeroed, otherwise dead) pad2 word, not a block-scoped u32 i2: i2's edg temp word sat between the two iter() return temps (second one at sp+132, target sp+136); with it gone and the `Ctx *g = 0;` home-keeping local back in the second loop every sp offset is the target's (pad2 < n44 compares unsigned like i2 did): 99.6467 -> 99.6488, same length */
@@ -155,14 +155,14 @@ int Mgr::run() {
          * local: stored to o->ctx6C and re-read through the member (uopt forwards the store), rec.ctx taken before
          * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) --
          * agent-c run 299: g dropped, the first loop's block-scoped e1 now holds that home word */
-        o->ctx6C = *(Ctx **)((char *)&D_493AC_d + 0x214);
+        o->ctx6C = *(Ctx **)((char *)&gGfxLib_493AC_d + 0x214);
         o->n8A = o->ctx6C->count();
         rec.ctx = o->ctx6C;
         rec.n58C = 0;
         rec.f590 = 32; rec.f594 = 3; /* agent-g run 233: one line (32 materialised first, stores 0x674 then 0x670 as the target) */
         gl_func_00000000(&rec);
         int cnt = 0; /* agent-g run 233: after the call (the target's `or s5,zero,zero` follows the &rec argument) */
-        if (G1C4(D_493AC_b) & 8) {
+        if (G1C4(gGfxLib_493AC_b) & 8) {
             int k = 0;
             if (grid == 0) {
                 gl_func_00000000(S(0x1FF90), S(0x1FFA0), 3287);
@@ -223,7 +223,7 @@ int Mgr::run() {
         }
     }
     gl_func_00000000(S(0x1FFAC), m0c, total);
-    if (G1C4(D_493AC_c) & 8) {
+    if (G1C4(gGfxLib_493AC_c) & 8) {
         gl_func_00000000(D_00000000, buf);
     }
     gl_func_00000000();

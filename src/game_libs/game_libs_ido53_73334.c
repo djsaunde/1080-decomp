@@ -8,7 +8,7 @@
  * __osPackRamWriteData via the BUILD-TIME-PATCHED hardcoded jal
  * gl_ref_00087BA4 (= USO 0x73538 + game_libs reloc base 0x1466C); other
  * callees are runtime-patch placeholders. Data placeholders:
- * D_73334_pifram = __osPfsPifRam, D_73334_lastcmd = __osContLastCmd.
+ * gl___osPfsPifRam_73334_pifram = __osPfsPifRam, gl___osContLastCmd_73334_lastcmd = __osContLastCmd.
  * Literals: CONT_CMD_WRITE_MEMPACK=3, WRITE_MEMPACK_TX=35, RX=1,
  * CONT_CMD_NOP=255, CONT_CMD_END=254, CONT_CMD_EXE=1, CONTRFAIL=4,
  * NOPACK=1. */
@@ -30,8 +30,8 @@ typedef struct {
 
 extern int gl_func_00000000();
 extern int gl_ref_00087BA4();
-extern GlPifRam D_73334_pifram;
-extern u8 D_73334_lastcmd;
+extern GlPifRam gl___osPfsPifRam_73334_pifram;
+extern u8 gl___osContLastCmd_73334_lastcmd;
 
 s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
 {
@@ -42,20 +42,20 @@ s32 __osContRamWrite(void *mq, int channel, u16 address, u8 *buffer, int force)
     int retry;
 
     ret = 0;
-    ptr = (u8 *)&D_73334_pifram;
+    ptr = (u8 *)&gl___osPfsPifRam_73334_pifram;
     retry = 2;
     if (force != 1 && address < 7 && address != 0)
         return 0;
     gl_func_00000000();
-    D_73334_lastcmd = 3;
+    gl___osContLastCmd_73334_lastcmd = 3;
     gl_ref_00087BA4(channel, address, buffer);
-    ret = gl_func_00000000(1, &D_73334_pifram);
+    ret = gl_func_00000000(1, &gl___osPfsPifRam_73334_pifram);
     gl_func_00000000(mq, 0, 1);
     do
     {
-        ret = gl_func_00000000(0, &D_73334_pifram);
+        ret = gl_func_00000000(0, &gl___osPfsPifRam_73334_pifram);
         gl_func_00000000(mq, 0, 1);
-        ptr = (u8 *)&D_73334_pifram;
+        ptr = (u8 *)&gl___osPfsPifRam_73334_pifram;
         if (channel != 0)
             for (i = 0; i < channel; i++)
                 ptr++;
@@ -93,8 +93,8 @@ void __osPackRamWriteData(int channel, u16 address, u8 *buffer)
     __OSContRamReadFormat ramreadformat;
     int i;
 
-    ptr = (u8 *)D_73334_pifram.ramarray;
-    D_73334_pifram.pifstatus = 1;
+    ptr = (u8 *)gl___osPfsPifRam_73334_pifram.ramarray;
+    gl___osPfsPifRam_73334_pifram.pifstatus = 1;
     ramreadformat.dummy = 255;
     ramreadformat.txsize = 35;
     ramreadformat.rxsize = 1;

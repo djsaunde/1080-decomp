@@ -16,11 +16,11 @@
  * and met cur()'s `Arr &r` temp (a3, priority 20); cur() as `return (*a)[idx];` and next() through `*me()->a` move the
  * pool temps so `this` takes a3 (12.5) with every other colour unchanged; the two dropped homes are paid back by an
  * initialised `{ int p1 = 0, p2 = 0; }` after the loop (frame 0xA8). Spliced over a placeholder in both build trees;
- * the blank jal / lui-addiu relocations go to the 0-pinned gl_4b0a8_c34458 / gl_4b0a8_base / gl_4b0a8_vtbl (Makefile). */
+ * the blank jal / lui-addiu relocations go to the 0-pinned gl_4b0a8_c34458 / gl_4b0a8_base / Shadow_vtbl_4b0a8_vtbl (Makefile). */
 extern "C" {
 void *dbg_printThreads(...);
 extern char D_00000000[];
-extern char gl_d_4b0a8_tbl, gl_d_4b0a8_vt, gl_d_4b0a8_w214;
+extern char gl_d_4b0a8_tbl, gGfxLib_4b0a8_vt, gGfxLib_4b0a8_w214;
 }
 inline void *operator new(unsigned n) { return dbg_printThreads(n); }
 struct Pair { int a, b; };
@@ -54,9 +54,9 @@ struct Obj : Base {
     Obj(Src *s);
 };
 Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
-    Pair p = *(Pair *)(&gl_d_4b0a8_vt + 0x140);
+    Pair p = *(Pair *)(&gGfxLib_4b0a8_vt + 0x140);
     f0 = 2;
-    f40 = (DL *)dbg_printThreads(0, D_00000000 + 0x200F4, *(int *)(&gl_d_4b0a8_w214 + 0x214));
+    f40 = (DL *)dbg_printThreads(0, D_00000000 + 0x200F4, *(int *)(&gGfxLib_4b0a8_w214 + 0x214));
     dbg_printThreads(f40, &p);
     dbg_printThreads(f40, &p);
     dbg_printThreads(f40, &p);

@@ -18,8 +18,8 @@ typedef SequenceLayer gl_2BB7C_Layer;
 typedef SequenceChannel gl_2BB7C_Channel;
 typedef SequencePlayer gl_2BB7C_SeqPlayer;
 typedef AudioContext gl_2BB7C_Ctx; /* include/audio.h (sequenceFontTable 0x2028, audioRandom 0x2154) */
-extern gl_2BB7C_Ctx gl_2BB7C_gAudioCtx;
-#define gAudioCtx gl_2BB7C_gAudioCtx
+extern gl_2BB7C_Ctx gAudioContext_2BB7C;
+#define gAudioCtx gAudioContext_2BB7C
 extern u8 gl_2BB7C_sSeqInstructionArgsTable[];
 extern f32 gl_2BB7C_gBendPitchOneOctaveFrequencies[];
 extern f32 gl_2BB7C_gBendPitchTwoSemitonesFrequencies[];

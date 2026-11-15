@@ -16,20 +16,20 @@
  * SUFFIX_BYTES_FORCE on __osViSwapContext (post1c.c), and the 8 bytes
  * of natural -g3 .text zero-padding here cover the 0x70FCC/0x70FD0 pad
  * nops before fcos (= cosf, post2.c).
- * Blank externs (runtime-reloc'd words): D_00000000_vistate (guard
- * flag), D_00000000_vibuf (+8 field read; struct-field spelling keeps
+ * Blank externs (runtime-reloc'd words): gl___osPiDevMgr_vistate (guard
+ * flag), gl___osPiDevMgr_vibuf (+8 field read; struct-field spelling keeps
  * the %lo fold). Identity: sits between __osViSwapContext and fcos --
  * plausibly a framebuffer/VI-state getter of the game's VI wrapper. */
-extern int D_00000000_vistate;
+extern int gl___osPiDevMgr_vistate;
 extern struct {
     int a;
     int b;
     int c;
-} D_00000000_vibuf;
+} gl___osPiDevMgr_vibuf;
 
 int gl_osPiGetCmdQueue(void) {
-    if (D_00000000_vistate == 0) {
+    if (gl___osPiDevMgr_vistate == 0) {
         return 0;
     }
-    return D_00000000_vibuf.c;
+    return gl___osPiDevMgr_vibuf.c;
 }

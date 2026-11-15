@@ -20,7 +20,7 @@ extern "C" {
 extern int gl_func_00000000(...);
 extern char D_00000000[];
 extern int D_4D468_x, D_4D468_y, D_4D468_z;
-extern char D_4D468_w[];
+extern char gSysLib_4D468_w[];
 extern char D_4D468_a2[];
 }
 struct E { E() {} char pad[0x78]; };
@@ -48,9 +48,9 @@ extern "C" S4D *RcpMgr_ctor(S4D *s) {
     s->w2C = gl_func_00000000(0x400, 16);
     gl_func_00000000(D_00000000 + 0x3C950, 4, D_4D468_a2, s, D_00000000 + 0x3EB00, 11);
     sCanL = 0x1234567812345678LL;
-    bind(9, *(int *)(D_4D468_w + 0x1C), 102);
-    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }
-    { int h = *(int *)(D_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }
+    bind(9, *(int *)(gSysLib_4D468_w + 0x1C), 102);
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); gl_func_00000000(4, h, 101); }
+    { int h = *(int *)(gSysLib_4D468_w + 0x1C); gl_func_00000000(14, h, 108); }
     gl_func_00000000(D_00000000 + 0x3C950);
     s->w20 = 0;
     s->w1C = 0;

@@ -9,7 +9,7 @@
 # USO module code: the two data addresses are load-time relocations, so they
 # are referenced through symbols pinned to 0 (undefined_syms_auto.txt), which
 # leaves the zero fields the ROM ships:
-#   D_00000000_gim = __OSGlobalIntMask, D_00000000_rcpim = __osRcpImTable
+#   gl___OSGlobalIntMask_gim = __OSGlobalIntMask, D_00000000_rcpim = __osRcpImTable
 #   0xA430000C = MI_INTR_MASK_REG (KSEG1)
 
 glabel gl_osSetIntMask
@@ -18,8 +18,8 @@ glabel gl_osSetIntMask
     # u32 osSetIntMask(u32 im)
     mfc0    $t4, $12                    # t4 = C0_SR
     andi    $v0, $t4, 0xFF01            # OS_IM_CPU
-    lui     $t0, %hi(D_00000000_gim)    # &__OSGlobalIntMask
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)    # &__OSGlobalIntMask
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t3, 0x0($t0)
     addiu   $at, $zero, -0x1
     xor     $t0, $t3, $at

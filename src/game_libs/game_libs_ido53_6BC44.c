@@ -50,7 +50,7 @@ void osContGetReadData(u8 *maskOut, u8 *pads) {
  * pifstatus store BEFORE ptr init; ptr += 8 at body end (not in the
  * comma-update) so the ptr store fills the loop's bne delay slot. */
 typedef struct { int ramarray[15]; int pifstatus; } GlPifRam;
-extern GlPifRam D_6BD14_pifram;
+extern GlPifRam gl___osContPifRam_6BD14_pifram;
 
 void __osPackReadData(u8 cmd) {
     u8 *ptr;
@@ -60,7 +60,7 @@ void __osPackReadData(u8 cmd) {
     for (i = 0; i < 15; i++) {
         *(int *)((char *)&D_00000000 + i * 4) = 0;
     }
-    D_6BD14_pifram.pifstatus = 1;
+    gl___osContPifRam_6BD14_pifram.pifstatus = 1;
     ptr = (u8 *)&D_00000000;
     fmt.dummy = 0xFF;
     fmt.txsize = 1;

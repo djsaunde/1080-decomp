@@ -26,7 +26,7 @@
  * `A = GS->ctx`, so the context load follows the element reads (ugen temp order = target), behind an unused
  * leading parameter that keeps the old `this` pool slot. The else count is held in the dead variable `B`.
  * No pool slot 7 is created before the loops, so the else g lands on vfp-124 (sp+228) = target. Symbols renamed
- * in the Makefile (names only): func_00000000 -> gl_func_00000000, D_00000000_i / _j -> D_48AEC_mt / D_48AEC_src. */
+ * in the Makefile (names only): func_00000000 -> gl_func_00000000, D_00000000_i / _j -> D_48AEC_mt / gGfxLib_48AEC_src. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
 extern char D_00000000[];

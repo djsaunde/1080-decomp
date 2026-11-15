@@ -8,10 +8,10 @@
 extern "C" void gl_func_00000000(...);
 extern "C" void *gl_alloc_2D130(...);
 extern "C" char D_00000000[];
-extern "C" char D_41A9C_s1[], D_41A9C_s2[], D_41A9C_s3[], D_41A9C_s4[], D_41A9C_s5[];
-extern "C" char D_41A9C_s6[], D_41A9C_s7[], D_41A9C_s8[], D_41A9C_s9[], D_41A9C_s10[];
-extern "C" char D_41A9C_s12[], D_41A9C_s14[], D_41A9C_s15[], D_41A9C_s16[];
-extern "C" char D_41A9C_s17[], D_41A9C_s18[];
+extern "C" char gHostio_41A9C_s1[], gHostio_41A9C_s2[], gHostio_41A9C_s3[], gHostio_41A9C_s4[], gHostio_41A9C_s5[];
+extern "C" char gHostio_41A9C_s6[], gHostio_41A9C_s7[], gSysLib_41A9C_s8[], gHostio_41A9C_s9[], gSysLib_41A9C_s10[];
+extern "C" char gHostio_41A9C_s12[], gHostio_41A9C_s14[], gHostio_41A9C_s15[], gHostio_41A9C_s16[];
+extern "C" char gHostio_41A9C_s17[], gHostio_41A9C_s18[];
 extern "C" int D_41A9C_v1[], D_41A9C_v2[], D_41A9C_v3[], D_41A9C_v4[];
 extern "C" int D_41A9C_t1[], D_41A9C_t2[];
 struct Link41A { void *obj; Link41A *next; };
@@ -31,25 +31,25 @@ struct E41 : B41 { int x; E41() { vt = (int)D_41A9C_v3; x = (int)D_41A9C_v4; } }
 struct Self41A { char pad[0x2C]; Link41A *head; char pad30[0xC]; char name[4]; };
 extern "C" void App_hostioParms(Self41A *self) {
     char buf[64];
-    gl_func_00000000(D_41A9C_s1, D_00000000 + 0x1F658, 0);
-    gl_func_00000000(D_41A9C_s2, D_00000000 + 0x1F65C);
+    gl_func_00000000(gHostio_41A9C_s1, D_00000000 + 0x1F658, 0);
+    gl_func_00000000(gHostio_41A9C_s2, D_00000000 + 0x1F65C);
     gl_func_00000000(self->name, buf);
-    gl_func_00000000(D_41A9C_s3, buf);
+    gl_func_00000000(gHostio_41A9C_s3, buf);
     gl_func_00000000(self->name, buf);
-    gl_func_00000000(D_41A9C_s4, buf);
-    gl_func_00000000(D_41A9C_s5);
-    gl_func_00000000(D_41A9C_s6, D_00000000 + 0x1F668, new D41, 0);
-    gl_func_00000000(D_41A9C_s7, D_00000000 + 0x1F670, D_41A9C_s8, 1);
-    gl_func_00000000(D_41A9C_s9, D_00000000 + 0x1F678, D_41A9C_s10, 4);
+    gl_func_00000000(gHostio_41A9C_s4, buf);
+    gl_func_00000000(gHostio_41A9C_s5);
+    gl_func_00000000(gHostio_41A9C_s6, D_00000000 + 0x1F668, new D41, 0);
+    gl_func_00000000(gHostio_41A9C_s7, D_00000000 + 0x1F670, gSysLib_41A9C_s8, 1);
+    gl_func_00000000(gHostio_41A9C_s9, D_00000000 + 0x1F678, gSysLib_41A9C_s10, 4);
     gl_func_00000000(buf, D_00000000 + 0x1F680, D_41A9C_t1[2], D_41A9C_t1[0]);
-    gl_func_00000000(D_41A9C_s12, buf);
+    gl_func_00000000(gHostio_41A9C_s12, buf);
     gl_func_00000000(buf, D_00000000 + 0x1F690, D_41A9C_t2[2], D_41A9C_t2[0]);
-    gl_func_00000000(D_41A9C_s14, buf);
-    gl_func_00000000(D_41A9C_s15, D_00000000 + 0x1F6A0, new E41, 1);
-    gl_func_00000000(D_41A9C_s16, D_00000000 + 0x1F6AC);
+    gl_func_00000000(gHostio_41A9C_s14, buf);
+    gl_func_00000000(gHostio_41A9C_s15, D_00000000 + 0x1F6A0, new E41, 1);
+    gl_func_00000000(gHostio_41A9C_s16, D_00000000 + 0x1F6AC);
     for (Iter41A it(self->head); it.next(); )
         gl_func_00000000(it.get());
-    gl_func_00000000(D_41A9C_s17);
-    gl_func_00000000(D_41A9C_s18);
+    gl_func_00000000(gHostio_41A9C_s17);
+    gl_func_00000000(gHostio_41A9C_s18);
     gl_func_00000000(self);
 }

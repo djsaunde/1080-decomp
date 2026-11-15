@@ -15,9 +15,9 @@
  * the pointer per statement, which is -O1 (no uopt), matching libultra's
  * os/ build flags.
  * Reloc story: every masked word is a blank USO import -> pins = 0
- * (gl_fbe4_CurrentTime is this TU's own .bss definition, imported by the
+ * (gl___osCurrentTime_fbe4_CurrentTime is this TU's own .bss definition, imported by the
  * splice as an undefined symbol and pinned to 0 like gl_viDevMgr;
- * gl_BaseCounter / gl_viIntrCount / D_00000000_timerlist are the existing
+ * gl_BaseCounter / gl_viIntrCount / gl___osTimerList_timerlist are the existing
  * pins). Spliced over the placeholder in game_libs_post1b2c.c via
  * REPLACE_FUNC_BODY. The 3 zero words before the entry (0x6FBD8..0x6FBE0)
  * are osGetTime's (osGetTime, 0x84) 16-byte inter-object pad:
@@ -37,13 +37,13 @@ typedef struct OSTimer_s {
 } OSTimer;
 #define NULL 0
 
-extern OSTimer *D_00000000_timerlist;   /* __osTimerList (USO .data 0x2E4B0) */
-OSTime gl_fbe4_CurrentTime;             /* __osCurrentTime -- MUST be defined in-TU */
+extern OSTimer *gl___osTimerList_timerlist;   /* __osTimerList (USO .data 0x2E4B0) */
+OSTime gl___osCurrentTime_fbe4_CurrentTime;             /* __osCurrentTime -- MUST be defined in-TU */
 extern u32 gl_BaseCounter;              /* __osBaseCounter */
 extern u32 gl_viIntrCount;              /* __osViIntrCount */
 
-#define __osTimerList D_00000000_timerlist
-#define __osCurrentTime gl_fbe4_CurrentTime
+#define __osTimerList gl___osTimerList_timerlist
+#define __osCurrentTime gl___osCurrentTime_fbe4_CurrentTime
 #define __osBaseCounter gl_BaseCounter
 #define __osViIntrCount gl_viIntrCount
 

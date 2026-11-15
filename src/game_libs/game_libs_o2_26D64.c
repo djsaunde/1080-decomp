@@ -60,8 +60,8 @@ typedef struct {
     /* 0x53BC */ u16 masks[0x3A];
     /* 0x5430 */ u8 queue[0x100][8];
 } St26D64;
-extern St26D64 D_26D64_arr[];
-#define g (&D_26D64_arr[0])
+extern St26D64 gAudioContext_26D64_arr[];
+#define g (&gAudioContext_26D64_arr[0])
 void AudioThread_ProcessCmds(u32 arg0) {
     s32 lo;
     s32 cur;

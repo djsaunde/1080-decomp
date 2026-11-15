@@ -6,7 +6,7 @@
 # donor game_libs_o1_6AF0C.c); its first two instructions used to be counted
 # in this symbol (boundary fixed 2026-10-24, agent-g run 158).
 # USO load-time relocations go through symbols pinned to 0 (see exceptasm.s):
-# gl_exc_runqueue, D_00000000_runthread, D_00000000_gim, D_00000000_rcpim,
+# gl_exc_runqueue, gl___osRunningThread_runthread, gl___OSGlobalIntMask_gim, D_00000000_rcpim,
 # gl_func_00000000_popthr, gl_exc_destroythread (osDestroyThread).
 
 glabel gl___osDispatchThread
@@ -14,14 +14,14 @@ glabel gl___osDispatchThread
     lui     $a0, %hi(gl_exc_runqueue)     # __osRunQueue
     jal     gl_func_00000000_popthr       # __osPopThread
      addiu  $a0, $a0, %lo(gl_exc_runqueue)
-    lui     $at, %hi(D_00000000_runthread)
-    sw      $v0, %lo(D_00000000_runthread)($at)  # __osRunningThread = popped
+    lui     $at, %hi(gl___osRunningThread_runthread)
+    sw      $v0, %lo(gl___osRunningThread_runthread)($at)  # __osRunningThread = popped
     addiu   $t0, $zero, 4             # OS_STATE_RUNNING
     sh      $t0, 16($v0)
     or      $k0, $v0, $zero
-    lui     $t0, %hi(D_00000000_gim)      # __OSGlobalIntMask
+    lui     $t0, %hi(gl___OSGlobalIntMask_gim)      # __OSGlobalIntMask
     lw      $k1, 280($k0)
-    addiu   $t0, $t0, %lo(D_00000000_gim)
+    addiu   $t0, $t0, %lo(gl___OSGlobalIntMask_gim)
     lw      $t0, 0($t0)
     lui     $at, 0xffff
     andi    $t1, $k1, 0xff00
@@ -89,8 +89,8 @@ glabel gl___osDispatchThread
     ldc1    $f30, 424($k0)
 .Lgl_dispatch_nofpu:
     lw      $k1, 296($k0)
-    lui     $k0, %hi(D_00000000_gim)
-    addiu   $k0, $k0, %lo(D_00000000_gim)
+    lui     $k0, %hi(gl___OSGlobalIntMask_gim)
+    addiu   $k0, $k0, %lo(gl___OSGlobalIntMask_gim)
     lw      $k0, 0($k0)
     srl     $k0, $k0, 0x10
     and     $k1, $k1, $k0

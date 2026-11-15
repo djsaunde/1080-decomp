@@ -7,14 +7,14 @@
  * head IDO schedules before the addiu-sp prologue; true entry = 0x70034).
  * The orphan's word 0 (0x70030) is the previous fn's trailing pad nop ->
  * SUFFIX_BYTES_FORCE on gl___osSetGlobalIntMask.
- * Blank extern: D_00000000_viclock = osViClock (USO reloc word, blanked).
+ * Blank extern: gl_osViClock_viclock = osViClock (USO reloc word, blanked).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 typedef signed int s32;
 typedef unsigned int u32;
 typedef unsigned char u8;
 typedef float f32;
 
-extern s32 D_00000000_viclock; /* osViClock */
+extern s32 gl_osViClock_viclock; /* osViClock */
 
 #define IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
@@ -23,7 +23,7 @@ s32 osAiSetFrequency(u32 frequency) {
     register u8 bitRate;
     register f32 f;
 
-    f = D_00000000_viclock / (f32)frequency + .5f;
+    f = gl_osViClock_viclock / (f32)frequency + .5f;
     dacRate = f;
     if (dacRate < 132) {
         return -1;
@@ -35,5 +35,5 @@ s32 osAiSetFrequency(u32 frequency) {
     IO_WRITE(0xA4500010, dacRate - 1); /* AI_DACRATE_REG */
     IO_WRITE(0xA4500014, bitRate - 1); /* AI_BITRATE_REG */
     IO_WRITE(0xA4500008, 1);           /* AI_CONTROL_REG = DMA_ON */
-    return D_00000000_viclock / (s32)dacRate;
+    return gl_osViClock_viclock / (s32)dacRate;
 }

@@ -9,16 +9,16 @@
  * statements share one global load via same-BB CSE. */
 typedef unsigned int u32;
 extern int gl_func_00000000();
-extern char *D_74DB4_p1;
-extern unsigned short *D_74DB4_p2;
+extern char *gl___osViNext_74DB4_p1;
+extern unsigned short *gl___osViNext_74DB4_p2;
 
 void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
     sr = gl_func_00000000();
-    *(float *)(D_74DB4_p1 + 0x18) = f;
-    *D_74DB4_p2 |= 2;
-    v = *(int *)(*(char **)(D_74DB4_p1 + 0x8) + 0x20) & 0xFFF;
-    *(int *)(D_74DB4_p1 + 0x20) = (u32)(*(float *)(D_74DB4_p1 + 0x18) * (float)(u32)v) & 0xFFF;
+    *(float *)(gl___osViNext_74DB4_p1 + 0x18) = f;
+    *gl___osViNext_74DB4_p2 |= 2;
+    v = *(int *)(*(char **)(gl___osViNext_74DB4_p1 + 0x8) + 0x20) & 0xFFF;
+    *(int *)(gl___osViNext_74DB4_p1 + 0x20) = (u32)(*(float *)(gl___osViNext_74DB4_p1 + 0x18) * (float)(u32)v) & 0xFFF;
     gl_func_00000000(sr);
 }

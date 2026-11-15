@@ -10,7 +10,7 @@
  * The old "caller-set $t6 == 0xA6000000 gate cap" reading was wrong: $t6
  * is DriveRomHandle.baseAddress loaded by the stolen prologue
  * (0xA6000000 = PHYS_TO_K1(PI_DOM1_ADDR1), the 64DD drive-ROM base).
- * Blank externs: D_00000000_drvrom = DriveRomHandle, D_00000000_pitable
+ * Blank externs: gl_DriveRomHandle_drvrom = DriveRomHandle, gl___osPiTable_pitable
  * = __osPiTable; gl_func_00000000_bzero / _disint / _resint = bzero /
  * __osDisableInt / __osRestoreInt (blank jals).
  * Spliced into game_libs_post1b2.c.o via REPLACE_FUNC_BODY. */
@@ -21,8 +21,8 @@ typedef struct {
     u8 relDuration; /* DriveRomHandle+7 */
 } PgsRls;
 
-extern OSPiHandle D_00000000_drvrom;        /* DriveRomHandle */
-extern OSPiHandle *D_00000000_pitable;      /* __osPiTable */
+extern OSPiHandle gl_DriveRomHandle_drvrom;        /* DriveRomHandle */
+extern OSPiHandle *gl___osPiTable_pitable;      /* __osPiTable */
 extern void gl_func_00000000_bzero(void *, int); /* bzero */
 extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
@@ -38,24 +38,24 @@ PgsRls D_00000006_drvpgs = {0};
 OSPiHandle *gl_osDriveRomInit(void) {
     u32 saveMask;
 
-    if (D_00000000_drvrom.baseAddress == 0xA6000000) { /* PHYS_TO_K1(PI_DOM1_ADDR1) */
-        return &D_00000000_drvrom;
+    if (gl_DriveRomHandle_drvrom.baseAddress == 0xA6000000) { /* PHYS_TO_K1(PI_DOM1_ADDR1) */
+        return &gl_DriveRomHandle_drvrom;
     }
-    D_00000000_drvrom.type = 1;                  /* DEVICE_TYPE_BULK */
-    D_00000000_drvrom.baseAddress = 0xA6000000;
-    D_00000000_drvrom.latency = 64;
-    D_00000000_drvrom.pulse = 7;
+    gl_DriveRomHandle_drvrom.type = 1;                  /* DEVICE_TYPE_BULK */
+    gl_DriveRomHandle_drvrom.baseAddress = 0xA6000000;
+    gl_DriveRomHandle_drvrom.latency = 64;
+    gl_DriveRomHandle_drvrom.pulse = 7;
     D_00000006_drvpgs.pageSize = 7;
     D_00000006_drvpgs.relDuration = 2;
-    D_00000000_drvrom.domain = 0;                /* PI_DOMAIN1 */
-    D_00000000_drvrom.speed = 0;
+    gl_DriveRomHandle_drvrom.domain = 0;                /* PI_DOMAIN1 */
+    gl_DriveRomHandle_drvrom.speed = 0;
 
-    gl_func_00000000_bzero(&D_00000000_drvrom.transferInfo, sizeof(__OSTranxInfo));
+    gl_func_00000000_bzero(&gl_DriveRomHandle_drvrom.transferInfo, sizeof(__OSTranxInfo));
 
     saveMask = gl_func_00000000_disint();
-    D_00000000_drvrom.next = D_00000000_pitable;
-    D_00000000_pitable = &D_00000000_drvrom;
+    gl_DriveRomHandle_drvrom.next = gl___osPiTable_pitable;
+    gl___osPiTable_pitable = &gl_DriveRomHandle_drvrom;
     gl_func_00000000_resint(saveMask);
 
-    return &D_00000000_drvrom;
+    return &gl_DriveRomHandle_drvrom;
 }

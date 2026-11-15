@@ -10,7 +10,7 @@
  * .rodata jumptable reloc (portamento mode switch) to AudioSeq_SeqLayerProcessScriptStep4_rodata,
  * pinned to the USO table at +0x1098. Load-bearing: channel / seqPlayer loaded before
  * instOrWave; ticksPerUpdate read through its own audio-buffer-parameters symbol
- * (gl_2B09C_bufParams, SM64's separate gAudioBufferParameters global): through
+ * (gAudioContext_2B09C_bufParams, SM64's separate gAudioBufferParameters global): through
  * gAudioCtx the portamentoTime * ticksPerUpdate operands load in the other order. */
 typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; TunedSample tunedSample; void *envelope; } gl_2B09C_Drum;
 typedef struct { TunedSample tunedSample; } gl_2B09C_SoundEffect;
@@ -34,7 +34,7 @@ typedef struct {
 } gl_2B09C_Ctx;
 extern int D_00000000;
 #define gAudioCtx (*(gl_2B09C_Ctx *)&D_00000000)
-extern gl_2B09C_Ctx gl_2B09C_bufParams;
+extern gl_2B09C_Ctx gAudioContext_2B09C_bufParams;
 extern f32 gl_2B09C_gPitchFrequencies[];
 #define gPitchFrequencies gl_2B09C_gPitchFrequencies
 extern void *gl_func_00000000();
@@ -174,7 +174,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(gl_2B09C_Layer *layer, s32 cmd) {
                     speed = seqPlayer->tempo * 0x8000 / gAudioCtx.maxTempo;
                     speed = speed * 0x100 / (layer->delay * layer->portamentoTime);
                 } else {
-                    speed = 0x20000 / (layer->portamentoTime * gl_2B09C_bufParams.ticksPerUpdate);
+                    speed = 0x20000 / (layer->portamentoTime * gAudioContext_2B09C_bufParams.ticksPerUpdate);
                 }
 
                 if (speed >= 0x7FFF) {

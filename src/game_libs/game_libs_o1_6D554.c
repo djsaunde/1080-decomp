@@ -23,8 +23,8 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef int s32;
 typedef struct { u16 type; u8 status; u8 errnum; } StatusData;
-extern u8 D_00000000_pifram[];
-extern u8 D_00000000_max;
+extern u8 gl___osPfsPifRam_pifram[];
+extern u8 gl___osMaxControllers_max;
 extern void gl_func_00000000(void);
 extern void gl_func_00000001(u8);
 extern s32 gl_func_00000002(s32, void *);
@@ -45,21 +45,21 @@ s32 osPfsIsPlug(void *queue, u8 *pattern) {
     gl_func_00000000();
     while (1) {
         gl_func_00000001(0);
-        ret = gl_func_00000002(1, D_00000000_pifram);
+        ret = gl_func_00000002(1, gl___osPfsPifRam_pifram);
         gl_func_00000003(queue, &dummy, 1);
-        ret = gl_func_00000002(0, D_00000000_pifram);
+        ret = gl_func_00000002(0, gl___osPfsPifRam_pifram);
         gl_func_00000003(queue, &dummy, 1);
         gl_func_00000004(&bitpattern, data);
-        for (channel = 0; channel < D_00000000_max; channel++) {
+        for (channel = 0; channel < gl___osMaxControllers_max; channel++) {
             if ((data[channel].status & 4) == 0) {
                 crc_error_cnt--;
                 break;
             }
         }
-        if (D_00000000_max == channel)
+        if (gl___osMaxControllers_max == channel)
             crc_error_cnt = 0;
         if (crc_error_cnt < 1) {
-            for (channel = 0; channel < D_00000000_max; channel++) {
+            for (channel = 0; channel < gl___osMaxControllers_max; channel++) {
                 if (data[channel].errnum == 0 && (data[channel].status & 1) != 0)
                     bits |= 1 << channel;
             }

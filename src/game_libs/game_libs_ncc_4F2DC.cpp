@@ -8,12 +8,12 @@
  * kvec loads after the in-place products. cfe body 90.36 -> 94.78 standalone, length = target (1064).
  * agent-c run 307: EXACT (named operator* result via set(), pads in operator+ and before p, no code-free test before
  * the getPos call). Spliced over a placeholder on both build paths. Blank-USO data refs carry in-place addends:
- * D_4F2DC_b / D_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
+ * gGfxLib_4F2DC_b / D_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
  * gfx_screenRaycast_rodata by the splice and pinned to the USO RoData at 0x1BA8. */
 typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
-extern int D_4F2DC_b;
+extern int gGfxLib_4F2DC_b;
 extern int D_4F2DC_e;
 extern f32 D_00000000F[3];
 }
@@ -61,7 +61,7 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     V3 e;
     V3 d; /* agent-g run 224 (decl-move sweep): declared before dir, 95.46 -> 95.67 */
     V3 dir;
-    dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&D_4F2DC_b + 0x128);
+    dir.x = -((f32)x - 160.0f); dir.y = (f32)y - 120.0f; dir.z = 8.0f / *(f32 *)((char *)&gGfxLib_4F2DC_b + 0x128);
     gl_func_00000000(&dir, (*(Cam **)(arg0 + 0x70))->mtx);
     gl_func_00000000(&dir);
     d = dir;
