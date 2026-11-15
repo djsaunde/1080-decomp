@@ -155,10 +155,12 @@ typedef struct SelectWin {
     s32 chosenItem[4];      /* 0x3E0 */
     s32 prevStage;          /* 0x3F0: saveFocus */
     s32 prevItem;           /* 0x3F4 */
-    s32 unk3F8;             /* 0x3F8 */
-    s32 unk3FC;             /* 0x3FC */
+    s32 prevItemActive;     /* 0x3F8: 1 from beginTransition; SelectWin_update keeps updating the
+                             * previous focus item while set; cleared once fade reaches 0 */
+    s32 unk3FC;             /* 0x3FC: = unk404 at beginTransition, SelectWin_update counts it
+                             * down by 4 to 0 */
     s32 unk400;             /* 0x400 */
-    s32 unk404;             /* 0x404 */
+    s32 unk404;             /* 0x404: 0x40 (SelectWin_init) */
     char pad408[0x40C - 0x408];
     SelItemsMgr *itemsMgr;  /* 0x40C */
     s32 unk410;             /* 0x410 */
@@ -168,10 +170,13 @@ typedef struct SelectWin {
     char pad420[0x480 - 0x420];
     f32 fade;               /* 0x480 */
     f32 unk484;             /* 0x484 */
-    s32 unk488;             /* 0x488 */
+    s32 idleTimer;          /* 0x488: Parms +0x104 frames; counted down in the stage state, at < 0
+                             * the focused item is chosen automatically (state 1) */
     s32 blink;              /* 0x48C: frame counter, arrows blink on bit 3 */
     s32 frame;              /* 0x490 */
-    f32 unk494[3];          /* 0x494 */
+    f32 unk494;             /* 0x494: camera fov at SelectWin_init */
+    f32 fovTarget;          /* 0x498: SelectWin_update: fovBase + f(fade) * item zoom fov */
+    f32 fovBase;            /* 0x49C */
     f32 unk4A0;             /* 0x4A0 */
     /* Cheat input (pad sequences typed on the character / board stage; state3 /
      * state6 match them, SelectWin_resetCheat clears them). */
@@ -181,8 +186,10 @@ typedef struct SelectWin {
     s32 cheatTimer;         /* 0x4B0: input timeout, reloaded from Data 0xF18 per key */
     s32 busy;               /* 0x4B4: set by beginTransition */
     s32 unk4B8;             /* 0x4B8 */
-    f32 unk4BC;             /* 0x4BC */
-    f32 unk4C0;             /* 0x4C0: beginTransition copies scene->0xC->0x70->0x14C */
+    f32 transition;         /* 0x4BC: 0 -> 1 at Parms +0xBC per frame while busy (SelectWin_update);
+                             * drives the camera lerps and the fov blend */
+    f32 fovFrom;            /* 0x4C0: the camera fov (scene->0xC->0x70 +0x14C, degrees) at
+                             * beginTransition; blended toward fovTarget by transition */
     f32 camPos[3];          /* 0x4C4: beginTransition copies scene->0x10 +0x60..0x68 */
     char pad4D0[0x4D4 - 0x4D0];
     s32 eventFlags;         /* 0x4D4: ctor arg 11 (0 / 0x80), ORed into the select event */

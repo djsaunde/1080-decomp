@@ -16,8 +16,13 @@
  * 0x498 updates written base-first (`0x49C + fn(..) * 0x14C`), and the final
  * blend `0x4C0 + (0x498 - 0x4C0) * fn(..)` without the named f2 local (which
  * IDO spilled across the call: +8 frame). IDO 7.1 cfe emits the add/mul
- * operands in the reverse of the source order here. */
+ * operands in the reverse of the source order here.
+ * Readability (agent-c run 490): the SelectWin scalars are SELWIN fields, except the
+ * three `K * *(f32 *)(arg0 + 0x4BC)` (transition) operands of the 07E7B0 calls: as a
+ * member read the lwc1 pair swaps f16/f18 and f6/f8. fade (0x480) is passed as its
+ * int bits and the pointer fields stay FW reads. */
 #include "common.h"
+#include "game/select.h"
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 
@@ -50,17 +55,17 @@ void SelectWin_update_00005FC0(char *arg0) {
     char *v0;
     char *v1;
 
-    if (FW(arg0, 0x3BC) == 2) {
-        if ((FW(arg0, 0x3C8) == 4) &&
-            (FW(SelectionMgr_otherWin_00001CF0((int *)FW(arg0, 0x41C), FW(arg0, 0x3B8)), 0x3C8) == 4)) {
+    if (SELWIN(arg0)->numPlayers == 2) {
+        if ((SELWIN(arg0)->stageBit == 4) &&
+            (FW(SelectionMgr_otherWin_00001CF0((int *)FW(arg0, 0x41C), SELWIN(arg0)->player), 0x3C8) == 4)) {
             import_000A7ECC(&import_80020098, -1);
         } else {
-            import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
+            import_000A7ECC(&import_80020098, SELWIN(arg0)->player);
         }
     } else {
-        import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
+        import_000A7ECC(&import_80020098, SELWIN(arg0)->player);
     }
-    switch ((u32)FW(arg0, 0x3CC)) {
+    switch ((u32)SELWIN(arg0)->state) {
     case 0:
         SelectWin_state0_00007078(arg0);
         break;
@@ -95,21 +100,21 @@ void SelectWin_update_00005FC0(char *arg0) {
         SelectWin_state10_000085E0(arg0);
         break;
     }
-    if (FW(arg0, 0x4B4) != 0) {
-        *(f32 *)(arg0 + 0x4BC) += *(f32 *)(arg0 + 0xBC);
-        if (*(f32 *)(arg0 + 0x4BC) >= 1.0f) {
-            *(f32 *)(arg0 + 0x4BC) = 1.0f;
-            FW(arg0, 0x4B4) = 0;
-            FW(arg0, 0x4B8) = 0;
+    if (SELWIN(arg0)->busy != 0) {
+        SELWIN(arg0)->transition += *(f32 *)(arg0 + 0xBC);
+        if (SELWIN(arg0)->transition >= 1.0f) {
+            SELWIN(arg0)->transition = 1.0f;
+            SELWIN(arg0)->busy = 0;
+            SELWIN(arg0)->unk4B8 = 0;
         }
     }
-    if (FW(arg0, 0x3FC) != 0) {
-        FW(arg0, 0x3FC) = FW(arg0, 0x3FC) - 4;
-        if (FW(arg0, 0x3FC) <= 0) {
-            FW(arg0, 0x3FC) = 0;
+    if (SELWIN(arg0)->unk3FC != 0) {
+        SELWIN(arg0)->unk3FC = SELWIN(arg0)->unk3FC - 4;
+        if (SELWIN(arg0)->unk3FC <= 0) {
+            SELWIN(arg0)->unk3FC = 0;
         }
     }
-    if (FW(arg0, 0x3F8) != 0) {
+    if (SELWIN(arg0)->prevItemActive != 0) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(arg0);
         v1 = (char *)FW(v0, 0x28);
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
@@ -128,14 +133,14 @@ void SelectWin_update_00005FC0(char *arg0) {
         v1 = (char *)FW(v0, 0x28);
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     }
-    if (FW(arg0, 0x3CC) == 5) {
+    if (SELWIN(arg0)->state == 5) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_lerpCamToItemZoom_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        *(f32 *)(arg0 + 0x498) =
-            *(f32 *)(arg0 + 0x49C) +
+        SELWIN(arg0)->fovTarget =
+            SELWIN(arg0)->fovBase +
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x14C);
     } else {
@@ -144,13 +149,13 @@ void SelectWin_update_00005FC0(char *arg0) {
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        *(f32 *)(arg0 + 0x498) =
-            *(f32 *)(arg0 + 0x49C) +
+        SELWIN(arg0)->fovTarget =
+            SELWIN(arg0)->fovBase +
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x134);
     }
     *(f32 *)(FW(FW(FW(arg0, 0x414), 0xC), 0x70) + 0x14C) =
-        *(f32 *)(arg0 + 0x4C0) +
-        (*(f32 *)(arg0 + 0x498) - *(f32 *)(arg0 + 0x4C0)) *
+        SELWIN(arg0)->fovFrom +
+        (SELWIN(arg0)->fovTarget - SELWIN(arg0)->fovFrom) *
         timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));
 }

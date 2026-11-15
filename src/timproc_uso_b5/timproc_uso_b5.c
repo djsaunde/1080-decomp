@@ -3345,8 +3345,8 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     }
     SelectWin_beginTransition_00008688(arg0, 0);
     SELWIN(arg0)->unk404 = 0x40;
-    SELWIN(arg0)->unk488 = *(int *)(arg0 + 0x104);
-    SELWIN(arg0)->unk4BC = 1.0f;
+    SELWIN(arg0)->idleTimer = *(int *)(arg0 + 0x104);
+    SELWIN(arg0)->transition = 1.0f;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_init_00005BF0);
@@ -4199,8 +4199,8 @@ void SelectWin_state0_00007078(char *arg0) {
         *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x134));
         *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x138));
     } else {
-        SELWIN(arg0)->unk488 = SELWIN(arg0)->unk488 - 1;
-        if (SELWIN(arg0)->unk488 < 0) {
+        SELWIN(arg0)->idleTimer = SELWIN(arg0)->idleTimer - 1;
+        if (SELWIN(arg0)->idleTimer < 0) {
             timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (FW(timproc_uso_b5_alias(arg0), 0x2B0) + 1) | FW(arg0, 0x4D4));
             SELWIN(arg0)->state = 1;
             SELWIN(arg0)->unk484 = 1.0f;
@@ -4234,8 +4234,8 @@ void SelectWin_state0_00007078(char *arg0) {
             SELWIN(arg0)->unk484 = 1.0f;
         }
     }
-    if ((SELWIN(arg0)->unk3F8 != 0) && (SELWIN(arg0)->fade == 0.0f)) {
-        SELWIN(arg0)->unk3F8 = 0;
+    if ((SELWIN(arg0)->prevItemActive != 0) && (SELWIN(arg0)->fade == 0.0f)) {
+        SELWIN(arg0)->prevItemActive = 0;
     }
     FW(arg0, 0x408) = 0;
 }
@@ -4436,9 +4436,9 @@ void SelectWin_state3_00007430(char *scr) {
         SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
         SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
         SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        SELWIN(scr)->unk4C0 = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
         SELWIN(scr)->busy = 2;
-        SELWIN(scr)->unk4BC = 0.0f;
+        SELWIN(scr)->transition = 0.0f;
     } else if (func_00000000(&D_00000000, 0x14203)) {
         if (func_00000000(&D_00000000, 0x200)) {
             obj = (char *)func_00000000(scr);
@@ -4532,9 +4532,9 @@ void SelectWin_state4_000077D8(char *scr) {
         SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
         SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
         SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        SELWIN(scr)->unk4C0 = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
         SELWIN(scr)->busy = 2;
-        SELWIN(scr)->unk4BC = 0.0f;
+        SELWIN(scr)->transition = 0.0f;
     } else if (func_00000000(&D_00000000, 0x200)) {
         func_00000000(0x802);
         SELWIN(scr)->state = 3;
@@ -5040,7 +5040,7 @@ void SelectWin_state8_000080F4(char *arg0) {
         flags = SELWIN(arg0)->busy;
         q = (char *) 1;
     }
-    if (*(f32 *)((char *)arg0 + 0x44) < SELWIN(arg0)->unk4BC) {
+    if (*(f32 *)((char *)arg0 + 0x44) < SELWIN(arg0)->transition) {
         e = (char *) SelectWin_curItem_00008A38(arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x7C))(*(s16*)((char *)FW(e, 0x28) + 0x78) + e);
     }
@@ -5221,12 +5221,12 @@ void SelectWin_state10_000085E0(int *a0) {
         if (*(volatile float *)((char *)a0 + 0x480) < b) {
             SELWIN(a0)->fade = b;
             SELWIN(a0)->state = 0;
-            SELWIN(a0)->unk488 = *(int *)((char *)a0 + 0x104);
+            SELWIN(a0)->idleTimer = *(int *)((char *)a0 + 0x104);
         }
     } else {
         SELWIN(a0)->fade = b;
         SELWIN(a0)->state = 0;
-        SELWIN(a0)->unk488 = *(int *)((char *)a0 + 0x104);
+        SELWIN(a0)->idleTimer = *(int *)((char *)a0 + 0x104);
         v0 = (int *)SelectWin_curItem_00008A38(a0);
         v1 = (int *)v0[0x28 / 4];
         ((void (*)(int))v1[0x64 / 4])(*(short *)((char *)v1 + 0x60) + (int)v0);
@@ -5255,11 +5255,11 @@ void SelectWin_beginTransition_00008688(SelectWin *w, int mode) {
     w->camPos[0] = *(f32 *)(*(char **)(n + 0x10) + 0x60);
     w->camPos[1] = *(f32 *)(*(char **)(n + 0x10) + 0x64);
     w->camPos[2] = *(f32 *)(*(char **)(n + 0x10) + 0x68);
-    w->unk4C0 = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
+    w->fovFrom = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
     w->busy = 1;
-    w->unk3F8 = 1;
-    w->unk488 = *(s32 *)((char *)w + 0x104);
-    w->unk4BC = 0.0f;
+    w->prevItemActive = 1;
+    w->idleTimer = *(s32 *)((char *)w + 0x104);
+    w->transition = 0.0f;
     w->unk484 = 0.0f;
     w->unk3FC = w->unk404;
     w->unk400 = (f32)*(s32 *)((char *)w + 0x104) * 0.75f;
