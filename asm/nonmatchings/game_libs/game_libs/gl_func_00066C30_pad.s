@@ -1,4 +1,4 @@
-/* trailing alignment padding for gl_func_00066C30 */
+/* trailing alignment padding for boot_entry_00066C30 */
 glabel _pad_gl_func_00066C30, local
 .word 0x00000000
 .word 0x00000000

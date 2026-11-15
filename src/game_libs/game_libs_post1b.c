@@ -1869,7 +1869,7 @@ void DNode_solveContacts(char *arg0) {
  */
 typedef struct Node659D0 {char *data; struct Node659D0 *next;} Node659D0;
 #define VEC_FIELD_659D0(p, o) (*(float *)((char *)(p) + (o)))
-void gl_func_000659D0(char *self) {
+void DNode_func_000659D0(char *self) {
     Node659D0 *it[2];
     float x,y,z;
     char *child;
@@ -2298,13 +2298,13 @@ void fs_gdlWriteInt_000663D0(int *a0) {
 }
 
 /* Standard int-reader accessor template (15 insns / 0x3C). Split out of
- * splat-bundled gl_func_00066404 (was 32 insns / 0x80 with 3 jr-ra) into
- * separate symbols via split-fragments.py: gl_func_00066404 (this clean
+ * splat-bundled fs_read_00066404 (was 32 insns / 0x80 with 3 jr-ra) into
+ * separate symbols via split-fragments.py: fs_read_00066404 (this clean
  * int-reader), dlist_remove_00066440 (8-insn fragment), and
  * game_libs_func_00066460 (9-insn fragment, predecessor-state-dependent).
  * The 2 split-off fragments stay INCLUDE_ASM (chain-state, no clean C). */
 extern int gl_func_00000000();
-void gl_func_00066404(int *dst) {
+void fs_read_00066404(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
@@ -2312,7 +2312,7 @@ void gl_func_00066404(int *dst) {
 
 /* dlist_remove_00066440: circular doubly-linked-list remove-self (17 insns;
  * the 00066460 tail was splat's jr-ra over-split of the v1==prev==a0 early
- * return, merged back here). The predecessor gl_func_00066404 ends `jr ra; nop`
+ * return, merged back here). The predecessor fs_read_00066404 ends `jr ra; nop`
  * (a complete separate int-reader), so this reads a0 fresh and is its own fn.
  * The combined self-link `a0[0] = (a0[1] = a0)` is the permuter-found form that
  * schedules the unlink's `next->prev = prev` to load a0->0 before a0->4 (no
@@ -2574,19 +2574,19 @@ void list_append(int **head, int data) {
  * link 66714 in the base ROM despite its 666FC name (splat-era naming).
  * Reordered 2026-06-10 during the full-ROM word-diff drive. */
 
-/* game_libs_func_000666E4: setter for the segment-base int global (*D = a0).
+/* sys_setSegBase_000666E4: setter for the segment-base int global (*D = a0).
  * Byte-exact plain C — the single &D_00000000 ref is offset-0, so objdiff's
  * reloc-aware compare resolves it to addr 0 and matches the reloc-blind
  * expected. Plain (compiled in BOTH build paths) so it counts in report.json
  * (was trapped in the #else branch -> fuzzy=None / uncounted). */
-void game_libs_func_000666E4(int a0) {
+void sys_setSegBase_000666E4(int a0) {
     *(int *)&D_00000000 = a0;
 }
 
-/* game_libs_func_000666F0: getter for the segment-base int global (return *D).
+/* sys_getSegBase_000666F0: getter for the segment-base int global (return *D).
  * Byte-exact plain C (offset-0 &D_00000000 ref, reloc-aware match like 000666E4).
  * Was trapped as INCLUDE_ASM in block A's #else -> fuzzy=None / uncounted. */
-int game_libs_func_000666F0(void) {
+int sys_getSegBase_000666F0(void) {
     return *(int *)&D_00000000;
 }
 
@@ -2598,7 +2598,7 @@ int game_libs_func_000666F0(void) {
  * #feedback-return-const-lui-addiu-vs-lui-ori. */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/_pad_pre_666FC.s")
 extern char D_gl_00041310;
-int game_libs_func_000666FC(void) {
+int sys_getSegBaseAddr_000666FC(void) {
     return (int)&D_gl_00041310;
 }
 
@@ -2845,7 +2845,7 @@ void boot_halt_00066A50(char *arg0) {
  *   if (*(D+0x3F310) != magic || *(D+0x3F314) != magic) report(&D+0x21BC);
  *   if (*(D+0x414C0) != magic || *(D+0x414C4) != magic) report(&D+0x21D8);
  * Slots 0x3F310/0x3F314 are the pair SET by the panic sibling boot_halt_00066A50;
- * 0x414C0/0x414C4 are set by gl_func_00066B64. Stays NM wrap: callees are
+ * 0x414C0/0x414C4 are set by boot_startThread_00066B64. Stays NM wrap: callees are
  * jal-0 placeholders (gl_func_00000000) => no episode even at fuzzy-100.
  *
  * RESIDUAL (46.4 -> 56.8 merged, agent-h probe matrix): target re-materializes
@@ -2875,7 +2875,7 @@ void boot_checkStacks_00066AF0(void) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", boot_checkStacks_00066AF0);
 #endif
 
-/* gl_func_00066B64: 28-insn 3-call init + magic-write.
+/* boot_startThread_00066B64: 28-insn 3-call init + magic-write.
  *   func(a0);
  *   func(&D+0x41310, 1, &D, a0, &D+0x415C0, 1);
  *   D[0x414C0] = 0x12345678; D[0x414C4] = 0x12345678;
@@ -2896,7 +2896,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", boot_checkStacks_00066AF0);
  * INCLUDE_ASM is the build path. */
 extern int func_00000000();
 extern int D_00000000;
-/* gl_func_00066B64: 28-insn 3-call init + magic-write.
+/* boot_startThread_00066B64: 28-insn 3-call init + magic-write.
  *   AnimPlayer_update(a0);
  *   AnimPlayer_update(&D+0x41310, 1, &D, a0, &D+0x415C0, 1);
  *   D[0x414C0] = 0x12345678; D[0x414C4] = 0x12345678;
@@ -2919,7 +2919,7 @@ extern int func_00000000();
 extern int AnimPlayer_update();
 extern int D_00000000;
 #ifdef NON_MATCHING
-void gl_func_00066B64(int *a0) {
+void boot_startThread_00066B64(int *a0) {
     char *base = (char *)&D_00000000;
     AnimPlayer_update(a0);
     AnimPlayer_update(base + 0x41310, 1, base, a0, base + 0x415C0, 1);
@@ -2928,11 +2928,11 @@ void gl_func_00066B64(int *a0) {
     AnimPlayer_update(base + 0x41310);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00066B64);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", boot_startThread_00066B64);
 #endif
 
-/* gl_func_00066BD4: 23-insn 3-call chain with mixed-arg middle call. */
-void gl_func_00066BD4(int a0) {
+/* boot_startThread_00066BD4: 23-insn 3-call chain with mixed-arg middle call. */
+void boot_startThread_00066BD4(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x20(sp) */
     gl_func_00000000(*p);
     gl_func_00000000((char*)&D_00000000 + 0x41310, 1, &D_00000000, 0,
@@ -2942,16 +2942,16 @@ void gl_func_00066BD4(int a0) {
 
 /* 8-insn: stores arg to D_00000000, calls gl_func_00000000(0).
  * Splat originally bundled 2 trailing empty (jr ra; nop) leaves —
- * split off 2026-05-15 as game_libs_func_00066C58 / _00066C60 below. */
+ * split off 2026-05-15 as boot_stub_00066C58 / _00066C60 below. */
 extern int D_00000000;
-void gl_func_00066C30(int a0) {
+void boot_entry_00066C30(int a0) {
     D_00000000 = a0;
     gl_func_00000000(0);
 }
 
-void game_libs_func_00066C58(void) {}
+void boot_stub_00066C58(void) {}
 
-void game_libs_func_00066C60(void) {}
+void boot_stub_00066C60(void) {}
 
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00066C30_pad.s")
 
@@ -3187,7 +3187,7 @@ void pad_updateMotor_00067084(char *a0, int a1, int a2) {
 extern int gl_func_00000000();
 extern int gl_ref_000416C0;
 
-void gl_func_00067134(char *a0) {
+void pad_sendMsg_00067134(char *a0) {
     gl_ref_000416C0 = 6;
     gl_func_00000000(a0 + 0x11B0, &gl_ref_000416C0, 1);
 }
@@ -3195,24 +3195,24 @@ void gl_func_00067134(char *a0) {
 extern int gl_func_00000000();
 extern int gl_ref_000416D0;
 
-void gl_func_00067168(char *a0) {
+void pad_sendMsg_00067168(char *a0) {
     gl_ref_000416D0 = 5;
     gl_func_00000000(a0 + 0x11B0, &gl_ref_000416D0, 1);
 }
 
-/* gl_func_0006719C was 18-insn 2-function bundle. Split via
+/* pad_sync_0006719C was 18-insn 2-function bundle. Split via
  * split-fragments.py 2026-05-08:
- *   parent gl_func_0006719C (14 insns / 0x38, conditional+unconditional call)
- *   game_libs_func_000671D4 (5 insns / 0x10, indexed short-array store) */
+ *   parent pad_sync_0006719C (14 insns / 0x38, conditional+unconditional call)
+ *   pad_setSlotValue_000671D4 (5 insns / 0x10, indexed short-array store) */
 extern int gl_func_00000000();
-void gl_func_0006719C(int *a0) {
+void pad_sync_0006719C(int *a0) {
     if (*(int*)((char*)a0 + 0x13E8) == 0) {
         gl_func_00000000(a0);
     }
     gl_func_00000000(a0);
 }
 
-void game_libs_func_000671D4(short *a0, int a1, int a2) {
+void pad_setSlotValue_000671D4(short *a0, int a1, int a2) {
     *(short*)((char*)a0 + (a1 * 2) + 0x13E0) = a2;
 }
 
@@ -3226,16 +3226,16 @@ void game_libs_func_000671D4(short *a0, int a1, int a2) {
  * makes IDO re-materialize it twice (two luis) and regresses this to 67.7%. */
 extern int gl_func_00000000();
 extern int gl_ref_000416E0;
-void gl_func_000671E4(char *a0) {
+void pad_request_000671E4(char *a0) {
     *(int*)(a0 + 0x13E8) = 0;
     *(int*)&gl_ref_000416E0 = 1;
     gl_func_00000000(a0 + 0x11B0, &gl_ref_000416E0, 1);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000671E4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", pad_request_000671E4);
 #endif
 
-/* gl_func_00067220: 17-insn (0x44) busy-wait loop on a0->[0x13E8] (a flag
+/* pad_waitIdle_00067220: 17-insn (0x44) busy-wait loop on a0->[0x13E8] (a flag
  * another thread sets). EXACT 2026-10-14 agent-g: the flag read is
  * VOLATILE. The old 4-word "prologue-schedule tie" (target `sw s0; or
  * s0,a0,zero; sw ra; lw t6,0x13E8(s0)` vs build `sw ra; sw s0; lw
@@ -3243,7 +3243,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000671E4);
  * copy-propagated onto the raw a0; a volatile load is not propagated, so
  * the param lives in s0 from the prologue (docs/IDO_CODEGEN.md
  * #volatile-poll-read-pins-param-sreg-67220). */
-void gl_func_00067220(char *a0) {
+void pad_waitIdle_00067220(char *a0) {
     while (*(volatile int *)(a0 + 0x13E8) == 0) {
         gl_func_00000000();
     }
@@ -3287,11 +3287,11 @@ void pad_initMotors_00067264(char *self) {
     *(int *)(self + 0x13F0) = 0;
 }
 
-int game_libs_func_00067358(char *a0, int a1) {
+int pad_getSlotState_00067358(char *a0, int a1) {
     return *(int *)((char *)a0 + a1 * 4 + 0x13C8);
 }
 
-int game_libs_func_00067368(char *a0) {
+int pad_getFlag_00067368(char *a0) {
     return *(unsigned char *)(a0 + 0x13EC);
 }
 
@@ -3305,11 +3305,11 @@ void pad_threadEntry_00067370(void) {
     gl_func_00000000();
 }
 
-/* gl_func_00067394: 26-insn rv-store + sign-flip-or-assert + call.
+/* pad_func_00067394: 26-insn rv-store + sign-flip-or-assert + call.
  *   rv = func(a0, a1); a0->[0x64] = rv;
  *   if (a1 > 0) a1 = -a1; else func(&D, a0);
  *   func(a0, a1); return 1; */
-int gl_func_00067394(int *a0, int a1) {
+int pad_func_00067394(int *a0, int a1) {
     int rv = func_00000000(a0, a1);
     a0[0x64/4] = rv;
     if (a1 >= 0) {
@@ -3321,7 +3321,7 @@ int gl_func_00067394(int *a0, int a1) {
     return 1;
 }
 
-void gl_func_000673FC(int *a0, int a1) {
+void pad_reset_000673FC(int *a0, int a1) {
     *(short *)((char *)a0 + 0x74) = 0;
     a0[0x78 / 4] = 0;
     *(short *)((char *)a0 + 0x76) = 0;
@@ -3356,14 +3356,14 @@ void pad_setPause_00067470(int* a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_000674DC(int *a0) {
+void pad_func_000674DC(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
         gl_func_00000000(gl_func_00000000, v - 1, 0);
     }
 }
 
-int gl_func_00067510(int *a0) {
+int pad_func_00067510(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
         return gl_func_00000000(&D_00000000, v - 1);
@@ -3371,7 +3371,7 @@ int gl_func_00067510(int *a0) {
     return 0;
 }
 
-/* gl_func_00067550: 21-insn bit-test helper. If a0->[0x34] != 0:
+/* pad_testButton_00067550: 21-insn bit-test helper. If a0->[0x34] != 0:
  * call gl_func(&D_0, a0); return v0 & (1 << (a0->[0x34] + 31)); else return 0.
  *
  * MATCH (2026-06-21, agent-b, permuter): the residual was the commutative-AND
@@ -3380,7 +3380,7 @@ int gl_func_00067510(int *a0) {
  * v0 operand in a `(0, v0)` comma expression forces v0 to be re-materialized as
  * the rs operand at coloring time, flipping the AND to the target order.
  * Byte-exact in-tree (reloc-filtered word-compare: 0 diffs). */
-int gl_func_00067550(int *a0) {
+int pad_testButton_00067550(int *a0) {
     int v0 = 0;
     if (a0[0x34 / 4] != 0) {
         v0 = gl_func_00000000(&D_00000000, a0);
@@ -3389,7 +3389,7 @@ int gl_func_00067550(int *a0) {
     return v0;
 }
 
-/* gl_func_000675A4: input-debounce / flag-update routine (1048B).
+/* pad_func_000675A4: input-debounce / flag-update routine (1048B).
  * WAVE-3 2026-07-15 (agent-h): word-diff 134 -> 46 (all residual are pure
  * reg-number cells; objdiff fuzzy is register-blind so stays ~95.1). Fixed:
  * de-named 0x10->0x14 handoff (ring t4, un-shifts head ring); temp_t0 typed
@@ -3441,7 +3441,7 @@ int gl_func_00067550(int *a0) {
  * (a literal is a constant candidate coloured after the 0.0f one, which
  * fixes the zero/threshold f12/f14 swap). Body below is a placeholder for
  * the splice. */
-void gl_func_000675A4(char *arg0) {
+void pad_func_000675A4(char *arg0) {
     volatile int ret = 0;
     if (arg0[0x34] != 0) {
         ret = 1;
@@ -3472,7 +3472,7 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
     gl_func_00000000((char *)&D_00000000 + 0x22604, *(int*)(a0 + 0x34));
 }
 
-/* gl_func_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
+/* pad_setIfNewer_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
  * Splat grouped 3 distinct functions + a 3-insn trailing fragment under one symbol.
  * Candidate for split-fragments.py — needs the script to recurse on each newly-
  * split-off boundary until no more splits happen.
@@ -3518,7 +3518,7 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
  *    "too-big-N-function-bundle".
  *  - Now split to 0x3C (this fn only); decoded 2026-05-24. */
 extern int gl_func_00000000();
-void gl_func_00067A54(int a0, int a1, int a2) {
+void pad_setIfNewer_00067A54(int a0, int a1, int a2) {
     if (a1 == *(int *)(a0 + 0x78)) {
         return;
     }
@@ -3528,13 +3528,13 @@ void gl_func_00067A54(int a0, int a1, int a2) {
     gl_func_00000000(a0, a1, a2);
 }
 
-void game_libs_func_00067A90(char *a0, int a1, int a2) {
+void pad_set_00067A90(char *a0, int a1, int a2) {
     *(int *)(a0 + 0x78) = a1;
     *(short *)(a0 + 0x76) = a2;
     *(short *)(a0 + 0x74) = 0;
 }
 
-void game_libs_func_00067AA0(int *a0) {
+void pad_clear_00067AA0(int *a0) {
     a0[8] = 0;
     a0[4] = 0;
     a0[5] = 0;
@@ -3544,13 +3544,13 @@ void game_libs_func_00067AA0(int *a0) {
 }
 
 /* The 2 zero words at 0x67ABC/0x67AC0 (the 8-byte gap before
- * game_libs_func_00067AC4) are alignment padding, not a function: they are
- * appended to game_libs_func_00067AA0 as an all-zero SUFFIX_BYTES_FORCE
+ * math_func_00067AC4) are alignment padding, not a function: they are
+ * appended to pad_clear_00067AA0 as an all-zero SUFFIX_BYTES_FORCE
  * (Makefile, both trees; was the pseudo-function game_libs_func_00067ABC).
  * The `mtc1 $zero,$f12` word at 0x67AC4 is the real function's hoisted
  * first-arg materialization (2026-09-05, below). */
 
-/* game_libs_func_00067AC4 (0x24, 9 insns): call the placeholder callee with
+/* math_func_00067AC4 (0x24, 9 insns): call the placeholder callee with
  * (0.0f, 0.0f). bootup.uso's Sym table exports 0x67AC4 (section offset
  * 0x7C130 = ROM 0xE4CB9C - 0xDD0A6C); 0x67ABC / 0x67AC0 / 0x67AC8 are not
  * exported. IDO 7.1 -O2 schedules the `mtc1 $zero,$f12` (first 0.0f arg)
@@ -3560,12 +3560,12 @@ void game_libs_func_00067AA0(int *a0) {
  * #orphan-sweep-agent-c-25th-h2hproc-timproc); retired 2026-09-05. */
 extern int game_libs_func_00067AC4_inner(float, float);
 
-void game_libs_func_00067AC4(void) {
+void math_func_00067AC4(void) {
     game_libs_func_00067AC4_inner(0.0f, 0.0f);
 }
 
 /* Varargs empty stub (sibling of matched gl_func_0006F144). */
-void gl_func_00067AE8(int a0, ...) {
+void sys_printStub_00067AE8(int a0, ...) {
 }
 
 /* str_compare_00067B04: 29-insn (0x74) string-compare/prefix-match loop.
@@ -3784,7 +3784,7 @@ unsigned char *str_findLast(unsigned char *a0, int a1) {
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_67D50.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 137). */
-void *game_libs_func_00067D50(void *s, int c, int n) {
+void *str_func_00067D50(void *s, int c, int n) {
 }
 
 /* Returns 0 (sibling of matched _0003D480). */

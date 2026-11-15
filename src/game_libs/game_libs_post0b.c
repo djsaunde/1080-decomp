@@ -906,7 +906,7 @@ long long gl_func_00035164_inner(int a0);
  * sw a0,0x18(sp) into the jal delay slot (vs the default empty nop). The
  * historical INSN_PATCH bridge (overwriting the nop byte to spill a0) was
  * REMOVED 2026-05-23 as match-faking; the &a0 C lever replaces it. Twin of
- * gl_func_00066BD4. */
+ * boot_startThread_00066BD4. */
 int gl_func_00035164(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x18(sp) */
     long long r = gl_func_00035164_inner(*p);
