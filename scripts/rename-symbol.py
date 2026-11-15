@@ -41,7 +41,9 @@ bytes are guarded here):
   * OLD appearing mangled (`OLD__F...`, C++ objcopy --redefine-sym maps);
   * OLD is a zero-address sentinel (`*_00000000*`, USO import/base placeholders);
   * NEW not a valid identifier / is a C keyword / already a symbol in any
-    expected or build object, undefined_syms, symbol_addrs or tenshoe.ld;
+    expected or build object, undefined_syms, symbol_addrs or tenshoe.ld
+    (exception, "alias merge": NEW is only a second undefined_syms pin of
+    OLD's own address and no object defines either; the pins are deduped);
   * NEW already used as a CODE token (comments stripped) in a file that
     contains OLD (two meanings would merge inside one TU, e.g. a local
     `#define osSendMesg gl_func_00000000`);
@@ -257,6 +259,48 @@ def copies_identical(old, host_seg):
     return True, ""
 
 
+def pinned_addr(name):
+    """Address NAME is assigned in undefined_syms_auto.txt, or None."""
+    m = re.search(r"(?m)^\s*" + re.escape(name) + r"\s*=\s*(0x[0-9A-Fa-f]+)\s*;", read_text("undefined_syms_auto.txt") or "")
+    return int(m.group(1), 16) if m else None
+
+
+def alias_merge(old, new, idx):
+    """NEW may already exist when it is only a second absolute pin of the same
+    address as OLD (an SDK-name pin added for a donor next to the splat `D_`
+    pin of the same address) and no object defines either name: renaming
+    OLD then just folds two spellings of one address into one (agent-a run 472)."""
+    a = pinned_addr(old)
+    if a is None or a != pinned_addr(new):
+        return False
+    for syms in idx.obj_syms.values():
+        if any(d and n in (old, new) for n, d in syms):
+            return False
+    return True
+
+
+def dedupe_pin(new, dry):
+    """After an alias merge undefined_syms_auto.txt assigns NEW twice (same
+    address): keep the first assignment line, drop the later ones."""
+    t = read_text("undefined_syms_auto.txt")
+    pat = re.compile(r"^\s*" + re.escape(new) + r"\s*=\s*(0x[0-9A-Fa-f]+)\s*;")
+    out, seen = [], None
+    for line in t.splitlines(keepends=True):
+        m = pat.match(line)
+        if m:
+            if seen is not None:
+                if int(m.group(1), 16) != seen:
+                    sys.exit(f"alias merge {new}: conflicting pins")
+                continue
+            seen = int(m.group(1), 16)
+        out.append(line)
+    t2 = "".join(out)
+    if t2 != t:
+        _text_cache["undefined_syms_auto.txt"] = t2
+        if not dry:
+            (ROOT / "undefined_syms_auto.txt").write_text(t2, encoding="utf-8", errors="surrogateescape")
+
+
 def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     errs, warns = [], []
     if not IDENT.match(new) or new in C_KEYWORDS:
@@ -265,8 +309,14 @@ def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
         errs.append("OLD == NEW")
     if "00000000" in old:
         errs.append(f"{old} is a zero-address sentinel/placeholder name (USO import/base); never rename")
-    if new in idx.all_names or new in pending_new:
-        errs.append(f"NEW {new} already exists as a symbol (object/undefined_syms/symbol_addrs/ld/batch)")
+    if new in pending_new:
+        errs.append(f"NEW {new} already used earlier in this batch")
+    elif new in idx.all_names:
+        if alias_merge(old, new, idx):
+            warns.append(f"alias merge: {new} is already pinned at {old}'s address and defined nowhere; "
+                         f"{old} folds into it")
+        else:
+            errs.append(f"NEW {new} already exists as a symbol (object/undefined_syms/symbol_addrs/ld/batch)")
     for d in DERIVED:
         if f"{new}_{d}" in idx.all_names:
             errs.append(f"derived NEW {new}_{d} already exists")
@@ -524,6 +574,8 @@ def apply(renames, dry, allow_scoped_alias=False):
             moved[a] = b
         if kernel and kept:
             pin_alias(old, new, dry)
+        if new in idx.linker_names:
+            dedupe_pin(new, dry)
         # every derived pin must have followed (files now reflect the rewrite)
         cur = [moved.get(f, f) for f in files]
         stale = derived_tokens(old, cur)
