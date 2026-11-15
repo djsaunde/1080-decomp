@@ -65,8 +65,10 @@ typedef struct BaseMat {
 #define MAT_TEX_MIRROR_T 0x4000
 
 typedef char BaseMat_size_check[sizeof(BaseMat) == 0x60 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BaseMat_format_check[(int)&((BaseMat *)0)->format == 0x24 ? 1 : -1];
 typedef char BaseMat_name_check[(int)&((BaseMat *)0)->name == 0x44 ? 1 : -1];
 typedef char BaseMat_vptr_check[(int)&((BaseMat *)0)->vptr == 0x5C ? 1 : -1];
+#endif
 
 #endif /* GDL_MATERIAL_H */

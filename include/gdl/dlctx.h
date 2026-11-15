@@ -45,8 +45,10 @@ typedef struct DLContext {
 
 typedef char DLBuf_size_check[sizeof(DLBuf) == 0x10 ? 1 : -1];
 typedef char DLContext_size_check[sizeof(DLContext) == 0x7C ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char DLContext_name_check[(int)&((DLContext *)0)->name == 0x70 ? 1 : -1];
 typedef char DLContext_flags_check[(int)&((DLContext *)0)->flags == 0x78 ? 1 : -1];
+#endif
 
 /* field access through untyped `char *` cursors (the hand-inlined gSP/gDP appends:
  * `buf = DLCTX(ctx)->gfx.cur; n = DLBUF(buf)->count; DLBUF(buf)->count = n + 1;
