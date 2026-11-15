@@ -726,7 +726,9 @@ typedef struct SoundObj {
     u8 pad19;
     s16 unk1A;              /* 0x1A: snd_SoundObjSetFlag1A */
     u8 flags1C;             /* 0x1C: bit0 = positional (Start does nothing) */
-    u8 unk1D;               /* 0x1D */
+    u8 reverbOn;            /* 0x1D: bootup snd_soundObjSetReverb; on a change Update queues
+                             * AUDIOCMD 0x05 (CHANNEL_SET_REVERB_VOLUME) 0x40 (on) / 8 (off) to
+                             * player 0 all channels and player 2 channel 0 / 1 (by kind) */
     u8 unk1E;               /* 0x1E */
     u8 unk1F;               /* 0x1F: bootup 0xA50 */
     u8 fired;               /* 0x20 */
@@ -747,7 +749,7 @@ typedef struct SoundObj {
     u16 eventType;          /* 0x30: low byte 0x31 read by snd_SoundObjEventIndex */
     u8 scaleIdx;            /* 0x32: freq / vol multiplier table index (15 / 31) */
     u8 unk33;               /* 0x33 */
-    u8 unk34;               /* 0x34 */
+    u8 reverbOnSent;        /* 0x34: the reverbOn value last sent */
     u8 pad35[3];
     s32 unk38;              /* 0x38 */
     u8 pad3C[8];

@@ -12667,8 +12667,8 @@ void snd_SoundObjInit(SoundObj *o, int a1) {
     o->flags = 0;
     o->unk1A = 0;
     o->unk17 = 0;
-    o->unk1D = 0;
-    o->unk34 = 0;
+    o->reverbOn = 0;
+    o->reverbOnSent = 0;
     o->unk1E = 0;
     o->fired = 1;
     o->unk26 = 0;
@@ -13153,8 +13153,8 @@ void snd_SoundObjUpdate(SoundObj *arg0, s32 arg1) {
             if (arg0->speed == 0.0f) {
                 arg0->unk26 = 0U;
             }
-            if (arg0->unk34 != arg0->unk1D) {
-                if (arg0->unk1D == 1) {
+            if (arg0->reverbOnSent != arg0->reverbOn) {
+                if (arg0->reverbOn == 1) {
                     var_v0 = 0x40;
                 } else {
                     var_v0 = 8;
@@ -13178,7 +13178,7 @@ void snd_SoundObjUpdate(SoundObj *arg0, s32 arg1) {
                     func_00000000(0x05020100, (s8) var_v0);
                     break;
                 }
-                arg0->unk34 = arg0->unk1D;
+                arg0->reverbOnSent = arg0->reverbOn;
             }
             if (arg0->flags1C & 1) {
                 temp_f0 = arg0->volScale;
