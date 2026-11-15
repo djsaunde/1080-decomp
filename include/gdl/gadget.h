@@ -70,7 +70,7 @@ typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1
 
 /* PointsPopup (0xD4, PointsGadget_ctor_00000ED0, name "PointsGadget"): one score pop-up. The 0x168
  * points list (PointsGadget_ctor_00003138) builds 8 of them at +0x2C; PointsGadget_allocSlot_00003B1C
- * (game_libs.c GlSlot3B1C is the same object) takes a free one, the RaceTracker_pop* / onGateCleared /
+ * (game_libs.c) takes a free one, the RaceTracker_pop* / onGateCleared /
  * onCheckpoint functions colour it, and PointsGadget_update_00003430 (donor game_libs_o2_3430.c)
  * runs it: state 5.. counts timer down while moving pos by vel, then flies it to (100, 40) or
  * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). */

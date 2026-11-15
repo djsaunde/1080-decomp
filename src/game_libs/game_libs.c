@@ -1644,55 +1644,38 @@ void PointsGadget_display_000038F4(char *arg0) {
  *    the whole loop);
  *  - store order 78, A0, 98, B0, 80, 84, A8 (the only order of the seven
  *    that schedules like the target). */
-typedef struct GlSlot3B1C {
-    char pad0[0x78];
-    s32 unk78;
-    s32 unk7C;
-    s32 unk80;
-    s32 unk84;
-    char pad88[0x94 - 0x88];
-    s32 unk94;
-    s32 unk98;
-    s32 unk9C;
-    s32 unkA0;
-    f32 unkA4;
-    f32 unkA8;
-    f32 unkAC;
-    s32 unkB0;
-    char unkB4[4];
-} GlSlot3B1C;
-
+/* The slots are PointsPopup objects (gdl/gadget.h, agent-h run 501; was a private GlSlot3B1C view). */
 typedef struct GlOwn3B1C {
     char pad0[0x2C];
-    GlSlot3B1C *slots[8];
+    PointsPopup *slots[8];
     char pad4C[0x54 - 0x4C];
     s32 unk54;
 } GlOwn3B1C;
 
 extern void *gl_func_00000000_i3ff(int, int, int, float, float);
-GlSlot3B1C *PointsGadget_allocSlot_00003B1C(GlOwn3B1C *arg0, s32 arg1, s32 arg2, s32 arg3) {
+PointsPopup *PointsGadget_allocSlot_00003B1C(GlOwn3B1C *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 i;
-    GlSlot3B1C *slot;
+    PointsPopup *slot;
 
     for (i = 0; i != 8; i++) {
-        if (arg0->slots[i]->unk94 == 0) {
+        if (arg0->slots[i]->state == 0) {
             slot = arg0->slots[i];
             if (arg3 != 0) {
-                slot->unk94 = 5;
-                slot->unk9C = 32;
+                slot->state = 5;
+                slot->timer = 32;
             } else {
-                slot->unk94 = 5;
-                slot->unk9C = 0;
+                slot->state = 5;
+                slot->timer = 0;
             }
             gl_func_00000000_i3ff((int)slot, 161, arg2 + 90, 1.0f, 1.0f);
-            slot->unk78 = 255;
-            slot->unkA0 = 0;
-            slot->unk98 = arg1;
-            slot->unkB0 = arg0->unk54;
+            slot->alpha = 255;
+            slot->font = 0;
+            slot->value = arg1;
+            slot->arg = arg0->unk54;
             slot->unk80 = 0;
             slot->unk84 = -18;
-            slot->unkA8 = 0.0f;
-            gl_func_00000000(slot->unkB4, GL_DATA(0xCD00), arg1);
+            slot->velY = 0.0f;
+            gl_func_00000000(slot->text, (char *)&D_00000000 + 0xCD00, arg1);
             return slot;
         }
     }
