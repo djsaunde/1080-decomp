@@ -814,12 +814,12 @@ void Friction_reset_00064124(char *a0) {
     *(float*)(a0 + 0x144) = (float)0;
 }
 
-/* DNode_func_00064170: 26-insn 10-float zero + 3-int-to-float bit-copy.
+/* DNodeAccum_reset_00064170: 26-insn 10-float zero + 3-int-to-float bit-copy.
  * $f0=0.0 prologue-stolen from predecessor Friction_reset_00064124's
  * trailing `mtc1 zero,$f0`. PROLOGUE_STEALS=4 splices the C-emit's
  * duplicate leading `mtc1 zero,$f0`. Splice script extended 2026-05-16
  * to accept opcode 0x11 mtc1-zero prefixes. */
-/* gl_func_00064174 -> DNode_func_00064170 — EXACT 27/27 (2026-07-03), but ONLY
+/* gl_func_00064174 -> DNodeAccum_reset_00064170 — EXACT 27/27 (2026-07-03), but ONLY
  * after a REVERSE-MERGE splat boundary fix (docs/MATCHING_WORKFLOW.md
  * "direction 4", 4-byte variant):
  *
@@ -835,12 +835,12 @@ void Friction_reset_00064124(char *a0) {
  * ASM SURGERY (already validated, full `make` = byte-identical ROM):
  * 1. asm/nonmatchings/game_libs/game_libs/Friction_reset_00064124.s:
  *    delete last .word line (`00064170 44800000`), header 0x50 -> 0x4C.
- * 2. gl_func_00064174.s -> DNode_func_00064170.s: header
- *    "nonmatching DNode_func_00064170, 0x6C"; insert
+ * 2. gl_func_00064174.s -> DNodeAccum_reset_00064170.s: header
+ *    "nonmatching DNodeAccum_reset_00064170, 0x6C"; insert
  *    `    /+ E49248 00064170 44800000 +/  .word 0x44800000` (fix comment
  *    delimiters) right after the renamed glabel; rename glabel/endlabel.
  * 3. src/game_libs/game_libs_post1b.c: rename all 4 occurrences of
- *    gl_func_00064174 -> DNode_func_00064170.
+ *    gl_func_00064174 -> DNodeAccum_reset_00064170.
  *
  * C levers: union (int3 struct / float[3]) gives the int struct-assign
  * lw/sw chain via materialized t6=&tmp (t8,t7,t8 temp reuse) AND folded
@@ -849,7 +849,7 @@ void Friction_reset_00064124(char *a0) {
  * z-reserve@0 -> frame 0x20, tmp@0xC. z=0.0f emits the leading mtc1.
  */
 typedef struct GlInt3_64174 { int a, b, c; } GlInt3_64174;
-void DNode_func_00064170(float *a0, int *a1) {
+void DNodeAccum_reset_00064170(float *a0, int *a1) {
     volatile int q1, q2;
     union {
         GlInt3_64174 i;
@@ -866,7 +866,7 @@ void DNode_func_00064170(float *a0, int *a1) {
     a0[12] = tmp.f[2];
 }
 
-/* DNode_func_000641DC: Vec3 force/torque accumulator (107 words, EXACT
+/* DNodeAccum_addForce_000641DC: Vec3 force/torque accumulator (107 words, EXACT
  * 2026-10-14 agent-g; was 84.70 NM). The old "IDO won't promote self to
  * s0" residual was the v10 accumulate: through a `Vec3 *pp = &a0->v10`
  * pointer local the a2 web loses the s0 contest to a0 (direct
@@ -883,7 +883,7 @@ typedef struct S641DC_s {
     Vec3 v10;
     Vec3 v1C;
 } S641DC;
-void DNode_func_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
+void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     Vec3 *pp;
     Vec3 out;
     Vec3 local;
@@ -916,7 +916,7 @@ void DNode_func_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
 }
 
 #ifdef NON_MATCHING
-/* DNode_func_00064388: normalize-and-apply step. EXACT via the NCC donor game_libs_ncc_64388.cpp
+/* DNodeAccum_apply_00064388: normalize-and-apply step. EXACT via the NCC donor game_libs_ncc_64388.cpp
  * (spliced into both build trees, agent-g run 163); this cfe body is the older comparison form.
  * Layout: every declared scalar owns a home slot, so the decl order interleaving
  * scalars between the Vec3 locals reproduces the target frame (0xB0) exactly:
@@ -932,7 +932,7 @@ void DNode_func_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
 extern f32 gl_func_00000000_sq64388(f32);
 extern void gl_func_00000000_n64388(char *);
 extern void gl_func_00000000_p64388(char *, char *, f32);
-void DNode_func_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
+void DNodeAccum_apply_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
     Vec3 m;
     f32 len;
     f32 g[3];
@@ -991,7 +991,7 @@ void DNode_func_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", DNode_func_00064388);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", DNodeAccum_apply_00064388);
 #endif
 
 /* DNode_ctor - STRUCTURAL PASS (big-swing 2026-06-02).
@@ -1380,7 +1380,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
 #undef FW64
 #undef FF64
 
-/* DNode_integrateRot_00064DEC: velocity integrate + delta/prev snapshot + direction normalize
+/* DNode_integrate_00064DEC: velocity integrate + delta/prev snapshot + direction normalize
  * (157 insns, frame 0xA8) -- EXACT 157/157 (2026-09-11 agent-g; was NM 91.5).
  * All 5 jals are USO-reloc blanks (jal 0x0); the sqrt-family callee goes through the
  * prototyped f32(f32) blank gl_func_00000000_sqf (K&R would promote to double).
@@ -1402,7 +1402,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
  * copy fixes the last pre-jal ring order. The unused `sumsq` decl is load-bearing:
  * removing it moves both arg spill homes down 4 (33 byte diffs). See docs/IDO_CODEGEN.md#comma-expression-emits-right-to-left-64dec. */
 extern f32 gl_func_00000000_sqf(f32);
-void DNode_integrateRot_00064DEC(char *arg0) {
+void DNode_integrate_00064DEC(char *arg0) {
     f32 spA4[1];
     Vec3 *pB;
     Vec3 *pC;
@@ -1594,7 +1594,7 @@ mid:
     gl_func_00062F64_blank(arg0);
 }
 
-/* DNode_func_00065148: 66-insn 3D affine-transform helper (size 0x108, frame 0x50).
+/* DNode_resetAccums_00065148: 66-insn 3D affine-transform helper (size 0x108, frame 0x50).
  *
  * Performs:
  *   1. Two leading jal calls (likely matrix-composition / pre-update)
@@ -1664,7 +1664,7 @@ mid:
 //     r0 f14 / r1 f16 / r2 f18 (same if(1)-block FP-colouring lever as
 //     docs/IDO_CODEGEN.md #decl-order-frame-map-carrier-copy-64388; wrapping
 //     the row DEFS instead, or defs+stores, makes it worse).
-void DNode_func_00065148(char *obj) {
+void DNode_resetAccums_00065148(char *obj) {
     int pad_a[4];
     Tri3i tmp;
     float x, y;
@@ -1687,7 +1687,7 @@ void DNode_func_00065148(char *obj) {
     }
 }
 
-/* DNode_func_00065250 — verified structural decode (Vec3-diff + double
+/* DNode_addImpulseAt_00065250 — verified structural decode (Vec3-diff + double
  * struct-copy + call, 33 insns; FPU-load-order + struct-copy sp-slot
  * allocation diverges from clean C = documented sub-80 struct-copy class
  * → INCLUDE_ASM build path; struct-typing reference).
@@ -1700,7 +1700,7 @@ void DNode_func_00065148(char *obj) {
  * struct-copy+FP-load-order class — multi-run/permuter, not a clean
  * vein win. INCLUDE_ASM is the build path (no episode). */
 typedef struct Vec3_f { float x, y, z; } Vec3_f;
-/* DNode_func_00065250 — Vec3-diff (a1 - a0->0x324) duplicated twice on the
+/* DNode_addImpulseAt_00065250 — Vec3-diff (a1 - a0->0x324) duplicated twice on the
  * stack, last copy passed to AnimPlayer_update(a0+0x294, &f). 33 insns.
  * Bugs fixed this pass: (1) WRONG-FUNCTION — was calling gl_func_00000000;
  * the target jal is AnimPlayer_update (K&R direct call -> jal). (2) LOAD-ORDER
@@ -1710,7 +1710,7 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * reverse-order sub shape. 66.85% -> 94.38% fuzzy. Residual = struct-copy
  * sp-slot allocation (52/68/84 vs 44/.. ; frame -88 vs -96); documented
  * finicky struct-copy class. INCLUDE_ASM is the build path (no episode). */
-/* DNode_func_00065250 — EXACT 34/34 (2026-07-03). Levers (in order cracked):
+/* DNode_addImpulseAt_00065250 — EXACT 34/34 (2026-07-03). Levers (in order cracked):
  * 1. FP pool-coloring: named float diffs dx,dy,dz (defs x,y,z) -> f0,f2,f12
  *    from pool START; the 6 field loads stay expression temps (f4-f18) by
  *    reading a1->N / sub->N directly in the sub expressions.
@@ -1728,12 +1728,12 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  *    x,y,z: put all three defs on ONE SOURCE LINE (as1 line-window
  *    grouping); stores written z,y,x on separate lines.
  * 2026-10-20 agent-g: UNWRAPPED (twin-finder: nm100, structural 1.000 vs the
- * exact sibling DNode_func_000652D8). The NM body was already 34/34; only the
+ * exact sibling DNode_addMoveAt_000652D8). The NM body was already 34/34; only the
  * callee needed the blank USO-jal alias gl_func_00062F64_65250 (= 0 in
  * undefined_syms_auto.txt) -- a direct in-unit call bakes 0x0C018BD9.
  */
 extern int gl_func_00062F64_65250();
-void DNode_func_00065250(int a0, Vec3_f *a1) {
+void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;
@@ -1754,9 +1754,9 @@ void DNode_func_00065250(int a0, Vec3_f *a1) {
     gl_func_00062F64_65250(a0 + 0x294, &f);
 }
 
-/* DNode_func_000652D8: 34-insn Vec3-diff + buf-copy chain + dispatch (0x88, frame 0x60).
+/* DNode_addMoveAt_000652D8: 34-insn Vec3-diff + buf-copy chain + dispatch (0x88, frame 0x60).
  *
- * 2026-07-17 (agent-h): EXACT SIBLING of DNode_func_00065250 — the two
+ * 2026-07-17 (agent-h): EXACT SIBLING of DNode_addImpulseAt_00065250 — the two
  * bodies are raw-word IDENTICAL except the single dispatch-base word
  * (addiu a0,a0,0x294 vs 0x2C8); same subtrahend Vec3 a0+0x324, same
  * 0x10-stride triple-buf frame (d@0x34/e@0x44/f@0x54, volatile pads),
@@ -1771,7 +1771,7 @@ void DNode_func_00065250(int a0, Vec3_f *a1) {
  * blank alias gl_func_00062F64_652D8 (= 0 in undefined_syms_auto.txt): the USO word
  * is a load-time reloc, a direct in-unit call would bake 0x0C018BD9. */
 extern int gl_func_00062F64_652D8();
-void DNode_func_000652D8(int a0, Vec3_f *a1) {
+void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
     Vec3_f f;
     volatile int pad2;
     Vec3_f e;
@@ -1844,7 +1844,7 @@ void DNode_resetXform_00065360(char *a0, Vec3_f *a1) {
 
 extern int gl_func_00000000();
 
-void DNode_func_00065448(char *a0) {
+void DNode_applyAccums_00065448(char *a0) {
     gl_func_00000000(a0 + 0x294, a0 + 0x2FC, a0 + 0x318, *(int*)(a0 + 0x1E0));
     gl_func_00000000(a0 + 0x2C8, a0 + 0xCC, a0 + 0xB4, *(int*)(a0 + 0x1E0));
 }

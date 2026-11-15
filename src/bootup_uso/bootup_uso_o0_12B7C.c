@@ -6,7 +6,7 @@ extern int func_00000000();
 extern int D_00000000;
 extern int D_A0000200;
 
-/* func_00012818: 99.73% NON_MATCHING. Sole diff (0x5C/0x64): the
+/* settings_set8_00012818: 99.73% NON_MATCHING. Sole diff (0x5C/0x64): the
  * `if (D_A0000200 == 0xAC290000)` value-load. IDO -O0 emits
  *   lui $t5,%hi; lw $t5,%lo($t5); bne $t5,$at   (REUSES the %hi base $t5)
  * but the target uses a FRESH dest:
@@ -40,7 +40,7 @@ extern int D_A0000200;
  * All prior negatives had probed only SYMBOL spellings. objdiff shows
  * 99.73 as an artifact (expected .o carries %hi/%lo relocs with zeroed
  * fields); the linked ROM is byte-identical (cmp clean). */
-void func_00012818(char *a0, char *a1) {
+void settings_set8_00012818(char *a0, char *a1) {
     int i;
     register int *unused;
 

@@ -6,7 +6,7 @@ glabel RiderAnim_func_000115EC
     /* 0115F4 000115F4 AC850108 */  .word 0xAC850108
     jal RiderAnim_func_00011624   /* 0115F8 0C000000 -> RiderAnim_func_00011624 */
     /* 0115FC 000115FC AFA40018 */  .word 0xAFA40018
-    jal RiderAnim_clearRiderSpin_00011868   /* 011600 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    jal RiderAnim_clearRiderEdge_00011868   /* 011600 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 011604 00011604 8FA40018 */  .word 0x8FA40018
     /* 011608 00011608 8FA40018 */  .word 0x8FA40018
     jal RiderAnim_clearNextState_0000D5DC   /* 01160C 0C000000 -> RiderAnim_clearNextState_0000D5DC */

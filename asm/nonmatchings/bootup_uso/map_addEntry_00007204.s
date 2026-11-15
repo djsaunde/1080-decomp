@@ -1,6 +1,6 @@
-nonmatching func_00007204, 0x84
+nonmatching map_addEntry_00007204, 0x84
 
-glabel func_00007204
+glabel map_addEntry_00007204
     /* DD7C70 00007204 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DD7C74 00007208 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD7C78 0000720C AFA40030 */  sw         $a0, 0x30($sp)
@@ -37,4 +37,4 @@ glabel func_00007204
     /* DD7CE8 0000727C 27BD0030 */  addiu      $sp, $sp, 0x30
     /* DD7CEC 00007280 03E00008 */  jr         $ra
     /* DD7CF0 00007284 00000000 */   nop
-endlabel func_00007204
+endlabel map_addEntry_00007204

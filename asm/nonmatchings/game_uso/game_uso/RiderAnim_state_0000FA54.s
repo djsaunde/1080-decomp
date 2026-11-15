@@ -12,7 +12,7 @@ glabel RiderAnim_state_0000FA54
     /* 00FA74 0000FA74 24060002 */  .word 0x24060002
     jal import_0010DB28   /* 00FA78 0C000000 -> import_0010DB28 */
     /* 00FA7C 0000FA7C 24070001 */  .word 0x24070001
-    jal RiderAnim_clearRiderSpin_00011868   /* 00FA80 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    jal RiderAnim_clearRiderEdge_00011868   /* 00FA80 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 00FA84 0000FA84 8FA40020 */  .word 0x8FA40020
     lui $t8, %hi(game_uso_D_807FF430)   /* 00FA88 3C180000 -> game_uso_D_807FF430 */
     /* 00FA8C 0000FA8C 27180E40 */  .word 0x27180E40

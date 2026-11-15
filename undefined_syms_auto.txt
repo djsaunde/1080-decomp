@@ -1920,7 +1920,7 @@ RiderAnim_startFinish_000110A4 = 0;
 RiderAnim_func_000115EC = 0;
 RiderAnim_func_00011624 = 0;
 RiderAnim_func_00011750 = 0;
-RiderAnim_clearRiderSpin_00011868 = 0;
+RiderAnim_clearRiderEdge_00011868 = 0;
 RiderAnim_func_00011888 = 0;
 RiderAnim_func_0001189C = 0;
 game_uso_func_00E124 = 0;
@@ -3432,10 +3432,10 @@ D_0001B710_w1 = 0x0001B710;
 D_0001B710_w0 = 0x0001B710;
 D_3BE1C_128 = 0x00000128;
 D_3BE1C_1EE9C = 0x0001EE9C;
-gl_func_00000000_sq64388 = 0x00000000;  /* f32(f32) blank sqrt-family callee for DNode_func_00064388 */
-gl_func_00000000_sq641DC = 0x00000000;  /* f32(f32) blank magnitude callee for DNode_func_000641DC (both calls) */
-gl_func_00000000_n64388 = 0x00000000;  /* void(char*) blank normalize callee for DNode_func_00064388 */
-gl_func_00000000_p64388 = 0x00000000;  /* void(char*,char*,f32) blank callee for DNode_func_00064388 */
+gl_func_00000000_sq64388 = 0x00000000;  /* f32(f32) blank sqrt-family callee for DNodeAccum_apply_00064388 */
+gl_func_00000000_sq641DC = 0x00000000;  /* f32(f32) blank magnitude callee for DNodeAccum_addForce_000641DC (both calls) */
+gl_func_00000000_n64388 = 0x00000000;  /* void(char*) blank normalize callee for DNodeAccum_apply_00064388 */
+gl_func_00000000_p64388 = 0x00000000;  /* void(char*,char*,f32) blank callee for DNodeAccum_apply_00064388 */
 gl_func_00000000_3a58cn = 0x00000000;  /* void(Vec3*) blank normalize callee for CollShape_func_0003A58C */
 gl_func_00000000_3a58cs = 0x00000000;  /* f32(f32) blank sqrt callee for CollShape_func_0003A58C */
 gl_Genld_rodata = 0x00002540;  /* xldtob.c donor .rodata base (pows[] table; "0" string at +0x50 -> 0x2590) -- renamed donor-local reloc, see game_libs_ido53_73904.c */
@@ -4001,7 +4001,7 @@ D_2DE24_b = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 store target (sw zer
 D_2DE24_c = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 final call arg (lui a1; lw a1,0(a1)) */
 import_80263D60_30 = 0x00000030;
 game_setupMode_rodata = 0x000004F4;  /* game_setupMode 12-entry jumptable (cases 1..12): bootup_uso ships it in RoData at +0x4F4 (file offset +0x4F8); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_2DA4.c) */
-func_0000E270_rodata = 0x00000998;  /* func_0000E270 f32 literal pi in bootup.uso RoData +0x998; donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E270.c) */
+SnowBoarder_yawPiOver_0000E270_rodata = 0x00000998;  /* SnowBoarder_yawPiOver_0000E270 f32 literal pi in bootup.uso RoData +0x998; donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E270.c) */
 func_00000000_4948_ff = 0x00000000;  /* SnowBCollider_func_0000E2D0 f32(f32) sqrt-alias import (jal bakes RAW to 0) */
 SnowBCollider_func_0000E2D0_rodata = 0x000009A0;  /* SnowBCollider_func_0000E2D0 f64 literal 0.1 in bootup.uso RoData +0x9A0 (target reloc SndHandle_triggerEvent1_0000098C + 0x14); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E2D0.c) */
 func_00000000_2DA4_v = 0x00000000;  /* game_setupMode void-typed blank alias (kills dead $v0 defs; config value -> v0) */
@@ -4023,9 +4023,9 @@ D_gl66850_h2 = 0x00000000;
 D_gl66850_h3 = 0x00000000;
 D_gl66850_h4 = 0x00000000;
 D_gl66850_h5 = 0x00000000;
-/* DNode_func_00065250: blank USO jal alias of the in-unit AnimPlayer_update */
+/* DNode_addImpulseAt_00065250: blank USO jal alias of the in-unit AnimPlayer_update */
 gl_func_00062F64_65250 = 0x00000000;
-/* DNode_func_000652D8: blank USO jal alias of the in-unit AnimPlayer_update */
+/* DNode_addMoveAt_000652D8: blank USO jal alias of the in-unit AnimPlayer_update */
 gl_func_00062F64_652D8 = 0x00000000;
 /* DNode_solveContacts: four blank USO jals (in-unit AnimPlayer_update callees) */
 gl_func_00062F64_65494 = 0x00000000;
@@ -5645,10 +5645,10 @@ gl_3df58_k1adc = 0x00000000;
 /* math_lookAtF NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
 gl_func_0005F5F0_sqrtf = 0x00000000;
 gl_func_0005F5F0_normalize = 0x00000000;
-/* SnowBoarder_func_0000B75C NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, FogTmpl_create + 0x4C, literal pool SndHandle_setScaleIdx15_000008B4 + 0x14 = 0x8C8) */
+/* SnowBoarder_updateOrient NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, FogTmpl_create + 0x4C, literal pool SndHandle_setScaleIdx15_000008B4 + 0x14 = 0x8C8) */
 bu_b75c_mvf = 0x00000000;
 D_00008170 = FogTmpl_create + 0x4C;
-SnowBoarder_func_0000B75C_rodata = 0x000008C8;
+SnowBoarder_updateOrient_rodata = 0x000008C8;
 /* cam_create EXACT NCC donor (agent-c run 271): blank USO jal words (jal func_00000000) and the two -1500.0f literals (func_000003F8 + 0x138 / + 0x13C = donor .rodata +0 / +4) */
 fn_31c0_alloc = 0x00000000;
 fn_31c0_fin = 0x00000000;

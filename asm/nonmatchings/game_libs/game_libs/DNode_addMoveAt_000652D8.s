@@ -1,6 +1,6 @@
-nonmatching DNode_func_000652D8, 0x88
+nonmatching DNode_addMoveAt_000652D8, 0x88
 
-glabel DNode_func_000652D8
+glabel DNode_addMoveAt_000652D8
     /* E4A3B0 000652D8 27BDFFA0 */  .word 0x27BDFFA0
     /* E4A3B4 000652DC AFBF0014 */  .word 0xAFBF0014
     /* E4A3B8 000652E0 24820324 */  .word 0x24820324
@@ -35,4 +35,4 @@ glabel DNode_func_000652D8
     /* E4A42C 00065354 27BD0060 */  .word 0x27BD0060
     /* E4A430 00065358 03E00008 */  .word 0x03E00008
     /* E4A434 0006535C 00000000 */  .word 0x00000000
-endlabel DNode_func_000652D8
+endlabel DNode_addMoveAt_000652D8

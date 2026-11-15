@@ -5,7 +5,7 @@
  * B holds 0x28 bytes of data, so the vptr (declared by Dv's first virtual)
  * sits at +0x28: `sw t6, 0x28(at)` with the object at 0.
  *
- * Same mechanism as func_00006204 (see bootup_uso_ncc_6204.cpp): the __sti__
+ * Same mechanism as boot_staticInit_00006204 (see bootup_uso_ncc_6204.cpp): the __sti__
  * is emitted at the end of the translation unit and its prologue carries the
  * last source line, while the constructor call carries the earlier object
  * definition line, which is why `lui a0` is scheduled above `sw ra`.

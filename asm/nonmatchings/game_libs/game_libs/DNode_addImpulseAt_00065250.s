@@ -1,6 +1,6 @@
-nonmatching DNode_func_00065250, 0x88
+nonmatching DNode_addImpulseAt_00065250, 0x88
 
-glabel DNode_func_00065250
+glabel DNode_addImpulseAt_00065250
     /* E4A328 00065250 27BDFFA0 */  .word 0x27BDFFA0
     /* E4A32C 00065254 AFBF0014 */  .word 0xAFBF0014
     /* E4A330 00065258 24820324 */  .word 0x24820324
@@ -35,4 +35,4 @@ glabel DNode_func_00065250
     /* E4A3A4 000652CC 27BD0060 */  .word 0x27BD0060
     /* E4A3A8 000652D0 03E00008 */  .word 0x03E00008
     /* E4A3AC 000652D4 00000000 */  .word 0x00000000
-endlabel DNode_func_00065250
+endlabel DNode_addImpulseAt_00065250

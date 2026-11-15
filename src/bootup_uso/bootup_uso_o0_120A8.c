@@ -22,7 +22,7 @@ void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
     *(int*)(a0 + 0x144) = 0;
 }
 
-void func_00012110(int a0) {
+void GameFlow_releaseFiles_00012110(int a0) {
     func_00000000(D_00000150);
     func_00000000(7);
 }

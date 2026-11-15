@@ -9,7 +9,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * -O0 set-bit-and-call helper) matched at -O0 and moved to
  * bootup_uso_o0_120A8.c (the adjacent -O0 run-8 file). See that file. */
 
-/* func_000122C4 (0x12C, 75 insns, -O0): scripted-sequence step gate, EXACT
+/* settings_stepSequence_000122C4 (0x12C, 75 insns, -O0): scripted-sequence step gate, EXACT
  * 2026-09-05 (agent-c). a0->0x154 = ptr to a sequence-state struct whose
  * u16 at +2 is the current step; a0->0x4C = a progress/score value; a1 = an
  * event/phase id. Steps 0..3 advance when a1+1 == step; step 4 additionally
@@ -36,7 +36,7 @@ extern Tbl3 D_0000C69C;
 typedef struct Seq22C4 { unsigned short h0; unsigned short step; } Seq22C4;
 typedef struct TblView22C4 { int v[3]; } TblView22C4;
 typedef struct Obj22C4 { char pad0[0x4C]; int score; char pad1[0x104]; Seq22C4 *seq; } Obj22C4;
-void func_000122C4(char *a0, int a1) {
+void settings_stepSequence_000122C4(char *a0, int a1) {
     Tbl3 tbl;
     register char *st;
     tbl = D_0000C69C;

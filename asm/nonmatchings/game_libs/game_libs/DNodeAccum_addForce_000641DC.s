@@ -1,6 +1,6 @@
-nonmatching DNode_func_000641DC, 0x1AC
+nonmatching DNodeAccum_addForce_000641DC, 0x1AC
 
-glabel DNode_func_000641DC
+glabel DNodeAccum_addForce_000641DC
     /* E492B4 000641DC 27BDFF80 */  .word 0x27BDFF80
     /* E492B8 000641E0 AFBF001C */  .word 0xAFBF001C
     /* E492BC 000641E4 AFB00018 */  .word 0xAFB00018
@@ -108,4 +108,4 @@ glabel DNode_func_000641DC
     /* E49454 0006437C 27BD0080 */  .word 0x27BD0080
     /* E49458 00064380 03E00008 */  .word 0x03E00008
     /* E4945C 00064384 00000000 */  .word 0x00000000
-endlabel DNode_func_000641DC
+endlabel DNodeAccum_addForce_000641DC

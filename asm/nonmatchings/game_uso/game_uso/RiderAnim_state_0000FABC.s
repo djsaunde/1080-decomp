@@ -3,7 +3,7 @@ nonmatching RiderAnim_state_0000FABC, 0x48
 glabel RiderAnim_state_0000FABC
     /* 00FABC 0000FABC 27BDFFE8 */  .word 0x27BDFFE8
     /* 00FAC0 0000FAC0 AFBF0014 */  .word 0xAFBF0014
-    jal RiderAnim_clearRiderSpin_00011868   /* 00FAC4 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    jal RiderAnim_clearRiderEdge_00011868   /* 00FAC4 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 00FAC8 0000FAC8 AFA40018 */  .word 0xAFA40018
     lui $t6, %hi(game_uso_D_807FF430)   /* 00FACC 3C0E0000 -> game_uso_D_807FF430 */
     /* 00FAD0 0000FAD0 25CE0E40 */  .word 0x25CE0E40

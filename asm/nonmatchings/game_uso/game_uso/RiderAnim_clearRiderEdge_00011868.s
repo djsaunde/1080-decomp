@@ -1,6 +1,6 @@
-nonmatching RiderAnim_clearRiderSpin_00011868, 0x20
+nonmatching RiderAnim_clearRiderEdge_00011868, 0x20
 
-glabel RiderAnim_clearRiderSpin_00011868
+glabel RiderAnim_clearRiderEdge_00011868
     /* 011868 00011868 44800000 */  .word 0x44800000
     /* 01186C 0001186C 8C8E00B4 */  .word 0x8C8E00B4
     /* 011870 00011870 E5C00970 */  .word 0xE5C00970
@@ -9,4 +9,4 @@ glabel RiderAnim_clearRiderSpin_00011868
     /* 01187C 0001187C 8C9800B4 */  .word 0x8C9800B4
     /* 011880 00011880 03E00008 */  .word 0x03E00008
     /* 011884 00011884 E7000978 */  .word 0xE7000978
-endlabel RiderAnim_clearRiderSpin_00011868
+endlabel RiderAnim_clearRiderEdge_00011868

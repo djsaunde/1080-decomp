@@ -1,6 +1,6 @@
-nonmatching func_00007BF4, 0x80
+nonmatching MemberCallback_invoke_00007BF4, 0x80
 
-glabel func_00007BF4
+glabel MemberCallback_invoke_00007BF4
     /* DD8660 00007BF4 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD8664 00007BF8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD8668 00007BFC 848F000A */  lh         $t7, 0xA($a0)
@@ -36,4 +36,4 @@ glabel func_00007BF4
     /* DD86D4 00007C68 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD86D8 00007C6C 03E00008 */  jr         $ra
     /* DD86DC 00007C70 00000000 */   nop
-endlabel func_00007BF4
+endlabel MemberCallback_invoke_00007BF4

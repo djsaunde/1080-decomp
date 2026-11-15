@@ -1357,7 +1357,7 @@ void RiderAnim_func_00011624(int *a0);
 void RiderAnim_func_000116D4(void *a0);
 extern char game_uso_D_807FF490;
 void RiderAnim_func_00011750(char *obj);
-void RiderAnim_clearRiderSpin_00011868(int *a0);
+void RiderAnim_clearRiderEdge_00011868(int *a0);
 void RiderAnim_func_00011888(int *a0);
 void RiderAnim_func_0001189C(int *a0, int a1, int a2);
 void game_readFloatParm_000119D4(char *dst);

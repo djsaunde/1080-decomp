@@ -13,7 +13,7 @@ glabel RiderAnim_state_0000EF20
     /* 00EF44 0000EF44 8DC60004 */  .word 0x8DC60004
     jal RiderAnim_setNextState_0000D5BC   /* 00EF48 0C000000 -> RiderAnim_setNextState_0000D5BC */
     /* 00EF4C 0000EF4C AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearRiderSpin_00011868   /* 00EF50 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    jal RiderAnim_clearRiderEdge_00011868   /* 00EF50 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 00EF54 0000EF54 8FA40018 */  .word 0x8FA40018
     jal RiderAnim_state_00010694   /* 00EF58 0C000000 -> RiderAnim_state_00010694 */
     /* 00EF5C 0000EF5C 8FA40018 */  .word 0x8FA40018

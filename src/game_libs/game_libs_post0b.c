@@ -2668,7 +2668,7 @@ void CamMan_update(char *arg0) {
  *   addresses p+0x64/0x68 via `addiu base,48; swc1 ,52/56(base)`
  *   (sub-struct at p+48 reached as +0x34/+0x38) — flat
  *   *(float*)(p+0x64) C is 2 insns short. The struct-base-reuse
- *   divergence class (cf DNode_func_00065250). Real-C STRUCTURAL body
+ *   divergence class (cf DNode_addImpulseAt_00065250). Real-C STRUCTURAL body
  *   below. Byte-match deferred. Name pre-checked: no extern reuse. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_372D4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The dead handle store is a one-pointer smart-pointer aggregate. */

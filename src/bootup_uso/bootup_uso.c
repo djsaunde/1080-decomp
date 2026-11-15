@@ -3817,7 +3817,7 @@ void stream_readVec3_00006194(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* func_00006204: EXACT via an IDO 7.1 NCC (C++) donor,
+/* boot_staticInit_00006204: EXACT via an IDO 7.1 NCC (C++) donor,
  * src/bootup_uso/bootup_uso_ncc_6204.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 349). It is not a hand-written function but the
  * edg static initializer (__sti__) for a global object with an out-of-line
@@ -3825,7 +3825,7 @@ void stream_readVec3_00006194(Vec3 *dst) {
  * and the ctor call the object definition's earlier line, so `lui a0` is
  * scheduled above `sw ra` (no C function can give the call an earlier line
  * than its own `{`). */
-void func_00006204(void) {
+void boot_staticInit_00006204(void) {
     volatile int r = 0;
 }
 
@@ -4114,20 +4114,20 @@ end:
     return a0;
 }
 
-/* func_00007204: 33-insn alloc/link helper. NATURAL CEILING: 90.15% NM.
+/* map_addEntry_00007204: 33-insn alloc/link helper. NATURAL CEILING: 90.15% NM.
  * Built emits 0x28 frame / 31 insns; target needs 0x30 frame / 33 insns
  * with defensive a2 dead-spill at jal-delay + a1<->a2 regalloc swap +
  * base-pointer form for a2 reload. The historical SUFFIX_BYTES_FORCE
  * (+8 bytes, 2 nops) + 31-entry INSN_PATCH promotion was REMOVED
  * 2026-05-23 as match-faking. Last of the 3-function bootup_uso regalloc
  * cluster (7C74/7B08/7204) per project_1080_bootup_regalloc_cluster.md. */
-/* func_00007204: allocate a {word, M4} record (cfront new + inline ctors with
+/* map_addEntry_00007204: allocate a {word, M4} record (cfront new + inline ctors with
  * the member this==0 protocol) and add it to the list at a0 + 0x2C.
  * EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_7204.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 123). The add is
  * an inline list member forwarding to the import, which keeps the new-expression
  * result a separate web from the call argument (target a2, copied to a1). */
-void func_00007204(int a0, int a1, int a2) {
+void map_addEntry_00007204(int a0, int a1, int a2) {
     volatile int r = 0;
 }
 
@@ -4589,11 +4589,11 @@ void ColourItem_readParms_00007BC8(char *a0) {
     func_00000000(a0);
 }
 
-/* func_00007BF4 - EXACT (run 113 agent-c): twin port of MemberCallback_invoke
+/* MemberCallback_invoke_00007BF4 - EXACT (run 113 agent-c): twin port of MemberCallback_invoke
  * (same vtable-dispatch thunk). Keys from the twin: plain if/else idx select
  * (no goto / branch-likely), loaded-value-LAST entry add, and the arg load +
  * accumulate joined on one line (hoists the lh above the lw). */
-int func_00007BF4(char *a0) {
+int MemberCallback_invoke_00007BF4(char *a0) {
     char *arg;
     char *v1;
     char *entry;
@@ -6965,14 +6965,14 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     }
 }
 
-// SnowBoarder_func_0000B75C — STRUCTURAL PASS (0x830 / 524 insns, no episode).
+// SnowBoarder_updateOrient — STRUCTURAL PASS (0x830 / 524 insns, no episode).
 // agent-g run 242: the NM comparison object now uses the NCC port bootup_uso_ncc_B75C_nm.cpp (edg-shaped,
 // 99.97, 524 words, frame 120); the cfe body below is kept as the reference lift.
 // Per-frame camera/transform interpolation update over a large scene-
 // state struct (compute-heavy: f64 lerp/curve math, only 11 dispatcher
 // calls; ~70 accesses to the state struct via a3 = a0).
 //
-//   void SnowBoarder_func_0000B75C(State *st) {           // st kept in a3
+//   void SnowBoarder_updateOrient(State *st) {           // st kept in a3
 //     // local default Vec @ sp+0x6C..0x74 = {0.0, 1.0f, 0.0}
 //     float t = *(float*)st->0x800;            // a normalized phase/time
 //     double k0 = DBL(SndHandle_setScaleIdx15_000008B4+0x14), k1 = DBL(SndHandle_setScaleIdx15_000008B4+0x1C);
@@ -7003,7 +7003,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
 //   table — byte-match blocked by deferred pool symbolization.
 //   Real-C STRUCTURAL body below — per-frame camera/transform
 //   interpolation skeleton. Name pre-checked: no extern reuse.
-/* SnowBoarder_func_0000B75C: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_B75C.cpp, REPLACE_FUNC_BODY-spliced
+/* SnowBoarder_updateOrient: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_B75C.cpp, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-c run 258: the 0x990 load read in place at both tests +
  * the dot3 value held in var_f0 = the target's uopt spilltemps slot order). The superseded cfe lift is kept for
  * reference under BOOTUP_B75C_OLD_DECODE (never defined). */
@@ -7063,7 +7063,7 @@ extern char D_00008170[];
  * that value to sp+0x1C); de-naming it re-colours the FP block (92.47). */
 #define temp_f12_2 (-0.2f)
 #define temp_f12_3 (0.2f)
-void SnowBoarder_func_0000B75C(char *arg0) {
+void SnowBoarder_updateOrient(char *arg0) {
     f32 sp6C[3];
     f32 sp1Ck = 0; /* agent-g run 235: home keeper (sp1C declared last: its home is the target's sp+0x1C) */
     s32 var_v0;
@@ -7257,7 +7257,7 @@ block_67:
 #undef temp_f12_2
 #undef temp_f12_3
 #else
-void SnowBoarder_func_0000B75C(char *arg0) {
+void SnowBoarder_updateOrient(char *arg0) {
     volatile char *r = arg0;
 }
 #endif
@@ -7818,7 +7818,7 @@ void func_0000CACC(char *a0) {
 //     (bit 0x20); 0xB4/B8/BC + 0x318/31C/320 pos Vec3s snapshotted to
 //     0x890.. / 0x89C..; 0x768/0x9D0/0x840/0x804/0xC sub-objs.
 //   Folded refs (literal-pool/placeholder fold family — SndHandle_triggerEvent3_00000940
-//   +0x18 corroborates the contiguous strided table from SnowBoarder_func_0000B75C;
+//   +0x18 corroborates the contiguous strided table from SnowBoarder_updateOrient;
 //   func_00000008+0x2C a mode global; func_00008A7C+0x40 a folded
 //   struct; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
@@ -8671,14 +8671,14 @@ void SnowBoarder_func_0000E124(SnowBoarder *sb) {
     }
 }
 
-/* func_0000E270: ratio wrapper. EXACT via the IDO 7.1 -O2 donor
+/* SnowBoarder_yawPiOver_0000E270: ratio wrapper. EXACT via the IDO 7.1 -O2 donor
  * bootup_uso_o2_E270.c (REPLACE_FUNC_BODY): the constant is the f32 literal pi
- * at bootup.uso RoData +0x998 (func_0000E270_rodata pin). The in-unit body is
+ * at bootup.uso RoData +0x998 (SnowBoarder_yawPiOver_0000E270_rodata pin). The in-unit body is
  * the same C (keeps the .text size); the splice swaps in the donor body so the
  * .rodata reloc resolves to the RoData pool. Old "spill-slot pair swap" residue
  * was the named `ratio` local (one frame word too many). */
 extern void aE270(void*, void*, float); /* float-proto alias; jal bakes RAW to 0 */
-void func_0000E270(char *arg0, float arg1) {
+void SnowBoarder_yawPiOver_0000E270(char *arg0, float arg1) {
     aE270(arg0 + 0xCC, arg0 + 0x3B0, 3.14159265f / arg1);
     aE270(arg0 + 0xF4, arg0 + 0x3B0, 3.14159265f / arg1);
 }
@@ -8981,7 +8981,7 @@ void stream_readQuad_0000E9A4(Quad4 *dst) {
  * for a global object of a class whose inline ctor calls the out-of-line base
  * ctor and then stores the vtable address into the vptr at +0x28 (the ROM
  * word is `sw t6, 0x28(at)` with the object at 0); same end-of-TU line
- * mechanism as func_00006204 (`lui a0` above `sw ra`). */
+ * mechanism as boot_staticInit_00006204 (`lui a0` above `sw ra`). */
 void SnowBoard_func_0000E9FC(void) {
     volatile int r = 0;
 }

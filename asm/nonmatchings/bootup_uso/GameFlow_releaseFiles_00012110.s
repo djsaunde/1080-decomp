@@ -1,6 +1,6 @@
-nonmatching func_00012110, 0x40
+nonmatching GameFlow_releaseFiles_00012110, 0x40
 
-glabel func_00012110
+glabel GameFlow_releaseFiles_00012110
     /* DE2B7C 00012110 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE2B80 00012114 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE2B84 00012118 AFA40018 */  sw         $a0, 0x18($sp)
@@ -18,4 +18,4 @@ glabel func_00012110
     /* DE2BB0 00012144 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE2BB4 00012148 03E00008 */  jr         $ra
     /* DE2BB8 0001214C 00000000 */   nop
-endlabel func_00012110
+endlabel GameFlow_releaseFiles_00012110

@@ -1,6 +1,6 @@
-nonmatching DNode_integrateRot_00064DEC, 0x274
+nonmatching DNode_integrate_00064DEC, 0x274
 
-glabel DNode_integrateRot_00064DEC
+glabel DNode_integrate_00064DEC
     /* E49EC4 00064DEC 27BDFF58 */  .word 0x27BDFF58
     /* E49EC8 00064DF0 AFB00018 */  .word 0xAFB00018
     /* E49ECC 00064DF4 00808025 */  .word 0x00808025
@@ -158,4 +158,4 @@ glabel DNode_integrateRot_00064DEC
     /* E4A12C 00065054 27BD00A8 */  .word 0x27BD00A8
     /* E4A130 00065058 03E00008 */  .word 0x03E00008
     /* E4A134 0006505C 00000000 */  .word 0x00000000
-endlabel DNode_integrateRot_00064DEC
+endlabel DNode_integrate_00064DEC

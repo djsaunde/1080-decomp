@@ -383,14 +383,14 @@ void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int 
     *(int*)(a0 + 0xBC) = arg5;
 }
 
-void func_00014004(char *a0, int a1, int a2) {
+void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
     *(int*)(a0 + 0x104) = a1;
     *(int*)(a0 + 0x108) = a2;
 }
 
-/* func_00014010 - verified structural decode (0xB4, 45 insns,
+/* gadget_decodeStringE4_00014010 - verified structural decode (0xB4, 45 insns,
  * in-place string substitution cipher).
- *   void func_00014010(char *a0) {
+ *   void gadget_decodeStringE4_00014010(char *a0) {
  *       char *s = a0 + 0xE4;                      // string field
  *       u32 n = strlen_like(s);                   // func_00000000(s)
  *       u32 i = 0;
@@ -418,7 +418,7 @@ void func_00014004(char *a0, int a1, int a2) {
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
-void func_00014010(char *a0) {
+void gadget_decodeStringE4_00014010(char *a0) {
     unsigned int i;
     unsigned char c;
     for (i = 0; i < (unsigned int)func_00000000(a0 + 0xE4); i++) {
@@ -691,9 +691,9 @@ void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
     *(float*)((char*)a0 + 0x8C) = a2;
 }
 
-/* func_000144F4 - verified structural decode (leaf, 43 insns, FP
+/* gadget_slideStep_000144F4 - verified structural decode (leaf, 43 insns, FP
  * physics integrator). Returns s32 (0 = running, 1 = clamped).
- *   s32 func_000144F4(void *a0, s32 a1) {
+ *   s32 gadget_slideStep_000144F4(void *a0, s32 a1) {
  *       s32 r = 0;
  *       f32 spd = a0->0xA8;                  // rate/accumulator
  *       if (spd < 16.0f)                     // ramp-up gate
@@ -722,7 +722,7 @@ void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
  * condition (an assignment-expression: a separate statement schedules the
  * lwc1 before the 16.0f mtc1), x / (f32)4 keeps the div.s, and r = 1 is the
  * inner (6 < spd) branch only; both stores follow it unconditionally. */
-int func_000144F4(char *a0, int a1) {
+int gadget_slideStep_000144F4(char *a0, int a1) {
     int r = 0;
     float spd;
     float pos;
@@ -742,11 +742,11 @@ int func_000144F4(char *a0, int a1) {
     return r;
 }
 
-/* func_00014598 - verified structural decode (0xB4, 45 insns).
- * INSTRUCTION-IDENTICAL SIBLING of func_00014010 (the in-place
+/* gadget_decodeStringB4_00014598 - verified structural decode (0xB4, 45 insns).
+ * INSTRUCTION-IDENTICAL SIBLING of gadget_decodeStringE4_00014010 (the in-place
  * string substitution cipher); the ONLY difference is the string
  * field offset 0xB4 here vs 0xE4 there.
- *   void func_00014598(char *a0) {
+ *   void gadget_decodeStringB4_00014598(char *a0) {
  *       char *s = a0 + 0xB4;                      // string field (180)
  *       u32 i = 0, n = strlen_like(s);            // func_00000000(s)
  *       while (i < n) {
@@ -757,18 +757,18 @@ int func_000144F4(char *a0, int a1) {
  *       }
  *   }
  * Struct-typing reference: a0->0xB4 (180) = char[] name/id string
- * buffer (the func_00014010 cipher applied to a different field; an
+ * buffer (the gadget_decodeStringE4_00014010 cipher applied to a different field; an
  * object with cipher-able strings at BOTH 0xB4 and 0xE4). Caps <80:
  * bnel branch-likely loop + reloc func_00000000 strlen-recompute
  * bound + 4 char constants hoisted s3-s6 (8-sreg, allocator order-
- * sensitive) - same as func_00014010. Full body INCLUDE_ASM-
+ * sensitive) - same as gadget_decodeStringE4_00014010. Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
 /* EXACT (agent-c run 115). strlen (func_07C610, jal 0) re-evaluated in the
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
-void func_00014598(char *a0) {
+void gadget_decodeStringB4_00014598(char *a0) {
     unsigned int i;
     unsigned char c;
     for (i = 0; i < (unsigned int)func_00000000(a0 + 0xB4); i++) {

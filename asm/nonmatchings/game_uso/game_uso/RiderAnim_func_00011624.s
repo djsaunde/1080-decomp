@@ -4,7 +4,7 @@ glabel RiderAnim_func_00011624
     /* 011624 00011624 27BDFFD8 */  .word 0x27BDFFD8
     /* 011628 00011628 AFBF0024 */  .word 0xAFBF0024
     /* 01162C 0001162C AFB00020 */  .word 0xAFB00020
-    jal RiderAnim_clearRiderSpin_00011868   /* 011630 0C000000 -> RiderAnim_clearRiderSpin_00011868 */
+    jal RiderAnim_clearRiderEdge_00011868   /* 011630 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 011634 00011634 00808025 */  .word 0x00808025
     /* 011638 00011638 8E050108 */  .word 0x8E050108
     /* 01163C 0001163C 240E0001 */  .word 0x240E0001

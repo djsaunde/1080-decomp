@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for SnowBoarder_func_0000B75C (0x830 / 524 words), agent-g run 242.
+/* IDO 7.1 NCC (C++) NM-only comparison donor for SnowBoarder_updateOrient (0x830 / 524 words), agent-g run 242.
  * The in-tree cfe C body (bootup_uso.c, 94.38) ported to NCC: the target is edg-shaped (kit CCXLIII tells --
  * `sp60 *= 2.0f` stays mul.s, the 20.0f / 30.0f literals hoist in the target order, the 0x974 store / reload
  * colours match). cfe-only levers dropped (sp1C home keeper, folded `0 * *arg0` uses, the goto block_67 tail):
@@ -19,7 +19,7 @@
  * it takes the first slot (coloured v0: the never-stored word) and the 0x3C4 spill drops one slot; holding the
  * dot3 value in var_f0 drops its home, moving the whole temp block up one word (target float 0x1C, unused 0x20,
  * a0 0x24, a1 0x28). Spliced over the bootup_uso.c placeholder on both build paths; the literal pool is the donor
- * .rodata (SnowBoarder_func_0000B75C_rodata pin = 0x8C8, same layout as the USO's 0x8C8..0x914 pool). */
+ * .rodata (SnowBoarder_updateOrient_rodata pin = 0x8C8, same layout as the USO's 0x8C8..0x914 pool). */
 typedef float f32; typedef double f64; typedef int s32; typedef short s16;
 extern "C" {
 void bu_b75c_mvf(char *, char *, f32, char *);
@@ -27,10 +27,10 @@ extern char D_00008170[];
 void func_00000000(...);
 #define temp_f12_2 (-0.2f)
 #define temp_f12_3 (0.2f)
-void SnowBoarder_func_0000B75C(char *arg0);
+void SnowBoarder_updateOrient(char *arg0);
 }
 static inline f32 dot3(char *p, f32 *v) { return (*(f32 *)(p + 0x3BC) * v[0]) + (*(f32 *)(p + 0x3C0) * v[1]) + (*(f32 *)(p + 0x3C4) * v[2]); }
-void SnowBoarder_func_0000B75C(char *arg0) {
+void SnowBoarder_updateOrient(char *arg0) {
     f32 sp6C[3];
     f32 temp_f12;
     s32 var_v0;

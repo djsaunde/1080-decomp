@@ -1,6 +1,6 @@
-nonmatching func_000122C4, 0x12C
+nonmatching settings_stepSequence_000122C4, 0x12C
 
-glabel func_000122C4
+glabel settings_stepSequence_000122C4
     /* DE2D30 000122C4 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DE2D34 000122C8 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE2D38 000122CC AFA40030 */  sw         $a0, 0x30($sp)
@@ -80,4 +80,4 @@ glabel func_000122C4
     /* DE2E50 000123E4 27BD0030 */  addiu      $sp, $sp, 0x30
     /* DE2E54 000123E8 03E00008 */  jr         $ra
     /* DE2E58 000123EC 00000000 */   nop
-endlabel func_000122C4
+endlabel settings_stepSequence_000122C4

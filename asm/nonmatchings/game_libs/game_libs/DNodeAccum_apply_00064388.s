@@ -1,6 +1,6 @@
-nonmatching DNode_func_00064388, 0x200
+nonmatching DNodeAccum_apply_00064388, 0x200
 
-glabel DNode_func_00064388
+glabel DNodeAccum_apply_00064388
     /* E49460 00064388 27BDFF50 */  .word 0x27BDFF50
     /* E49464 0006438C AFBF001C */  .word 0xAFBF001C
     /* E49468 00064390 AFB00018 */  .word 0xAFB00018
@@ -129,4 +129,4 @@ glabel DNode_func_00064388
     /* E49654 0006457C 27BD00B0 */  .word 0x27BD00B0
     /* E49658 00064580 03E00008 */  .word 0x03E00008
     /* E4965C 00064584 00000000 */  .word 0x00000000
-endlabel DNode_func_00064388
+endlabel DNodeAccum_apply_00064388

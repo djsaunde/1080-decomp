@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_00006204 (0x24 / 9 words): NOT a hand-written
+/* IDO 7.1 NCC (C++) donor for boot_staticInit_00006204 (0x24 / 9 words): NOT a hand-written
  * function -- it is the static initializer (edg `__sti__<stamp>`) that NCC
  * generates for a namespace-scope object whose class has an out-of-line
  * default constructor. Body = `T::T(&obj)`.
@@ -13,7 +13,7 @@
  * the definition (a definition on the file's last line gives `sw ra` first).
  *
  * Symbols renamed after compile (names only, no bytes change):
- * __sti__<timestamp> -> func_00006204, __ct__8Bu6204ObFv -> func_00000000.
+ * __sti__<timestamp> -> boot_staticInit_00006204, __ct__8Bu6204ObFv -> func_00000000.
  * The object keeps C linkage under its pinned name D_00000000. */
 struct Bu6204Ob {
     Bu6204Ob();

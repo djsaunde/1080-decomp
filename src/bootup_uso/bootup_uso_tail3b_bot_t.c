@@ -58,7 +58,7 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
 /* 19-insn 8-byte copy loop. Logic: copy 8 bytes from
  * (*(char**)(a0+0x154))+6 to a1[0..7].
  * Promoted from NM wrap 2026-05-17 (file is -O0 per file split). */
-void func_000127CC(char *a0, char *a1) {
+void settings_get8_000127CC(char *a0, char *a1) {
     int i;
     for (i = 0; i < 8; i++) {
         a1[i] = (*(char**)(a0 + 0x154))[i + 6];

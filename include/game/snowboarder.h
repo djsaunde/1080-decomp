@@ -139,7 +139,7 @@ typedef struct SnowBoarder {
     char pad964[0x968 - 0x964];
     f32 contactDepth;       /* 0x968: summed contact amounts, averaged like contactNormal */
     char pad96C[0x970 - 0x96C];
-    SnowBVec3 spin;         /* 0x970: rotation rates; RiderAnim_clearRiderSpin_00011868 zeroes all three,
+    SnowBVec3 spin;         /* 0x970: rotation rates; RiderAnim_clearRiderEdge_00011868 zeroes all three,
                              * RiderAnim_selectAnim tests |spin.x|, spin.z is negated on a mirror flip */
     char pad97C[0x990 - 0x97C];
     s32 crouch;             /* 0x990: input stick y < -0.75 (updateDyn); adds |spin.x| * k to friction */

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_00007204: allocate a two-field record
+/* IDO 7.1 NCC (C++) donor for map_addEntry_00007204: allocate a two-field record
  * (new Pair(a1, p): word + M4 member with its own cfront this==0 protocol)
  * and hand it to the list at a0 + 0x2C. 33/33 words.
  *
@@ -19,7 +19,7 @@ struct Pair {
     Pair(int x, Val p) { a = x; *(Val *)&b = p; }
 };
 struct L { void add(Pair *n) { func_00000000(this, n); } };
-extern "C" void func_00007204(char *a0, int a1, Val p) {
+extern "C" void map_addEntry_00007204(char *a0, int a1, Val p) {
     Pair *o = new Pair(a1, p);
     ((L *)(a0 + 0x2C))->add(o);
 }

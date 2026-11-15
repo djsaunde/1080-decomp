@@ -1,6 +1,6 @@
-nonmatching func_0000E270, 0x60
+nonmatching SnowBoarder_yawPiOver_0000E270, 0x60
 
-glabel func_0000E270
+glabel SnowBoarder_yawPiOver_0000E270
     /* DDECDC 0000E270 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent1_0000098C + 0xC)
     /* DDECE0 0000E274 44856000 */  mtc1       $a1, $f12
     /* DDECE4 0000E278 C4240998 */  lwc1       $f4, %lo(SndHandle_triggerEvent1_0000098C + 0xC)($at)
@@ -25,4 +25,4 @@ glabel func_0000E270
     /* DDED30 0000E2C4 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DDED34 0000E2C8 03E00008 */  jr         $ra
     /* DDED38 0000E2CC 00000000 */   nop
-endlabel func_0000E270
+endlabel SnowBoarder_yawPiOver_0000E270

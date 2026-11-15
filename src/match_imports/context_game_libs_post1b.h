@@ -391,7 +391,7 @@ void Friction_vfn11_00063F34(SnwBaseRecord *arg0, f32 arg1, SnwRecordVec3 *arg2,
 void Friction_handleMsg_000640E4(int a0, int *a1);
 void Friction_reset_00064124(SnwBaseRecord *a0);
 typedef struct GlInt3_64174 { int a, b, c; } GlInt3_64174;
-void DNode_func_00064170(float *a0, int *a1);
+void DNodeAccum_reset_00064170(float *a0, int *a1);
 extern float gl_func_00000000_sqrt641DC(float magSq);
 extern void gl_func_00000000_xform641DC(Vec3 *local, Vec3 *input, Vec3 *out);
 typedef struct S641DC_s {
@@ -401,12 +401,12 @@ typedef struct S641DC_s {
     Vec3 v1C;
     Vec3 v28;
 } S641DC;
-void DNode_func_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2);
+void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2);
 typedef struct { s32 x, y, z; } V3_64388;
 extern f32 gl_func_00000000_sq64388(f32);
 extern void gl_func_00000000_n64388(char *);
 extern void gl_func_00000000_p64388(char *, char *, f32);
-void DNode_func_00064388(char *arg0, char *arg1, char *arg2, f32 arg3);
+void DNodeAccum_apply_00064388(char *arg0, char *arg1, char *arg2, f32 arg3);
 extern int gl_func_0001CA10();
 extern int gl_init_0001CA10_64588(void *, void *, float, float, float);
 extern char gl_ref_00000000_64588;
@@ -451,7 +451,7 @@ struct Box64588 { struct SB64588 u; V364588 max; V364588 min; V364588 zero; };
 struct VS64588 { V364588 v; float w; };
 void *DNode_ctor(void *arg0, void *arg1);
 extern f32 gl_func_00000000_sqf(f32);
-void DNode_integrateRot_00064DEC(char *arg0);
+void DNode_integrate_00064DEC(char *arg0);
 extern void gl_func_00062F64_blank(char *);
 void DNode_init_00065060(char *arg0);
 struct Dispatch65360;
@@ -476,10 +476,10 @@ typedef struct GLMotionState65148 {
     Vec3 field_324;
 } GLMotionState65148;
 extern void gl_import_64170(S641DC *out, const Vec3 *source_bits);
-void DNode_func_00065148(GLMotionState65148 *obj);
+void DNode_resetAccums_00065148(GLMotionState65148 *obj);
 typedef struct Vec3_f { float x, y, z; } Vec3_f;
-void DNode_func_00065250(int a0, Vec3_f *a1);
-void DNode_func_000652D8(int a0, Vec3_f *a1);
+void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1);
+void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1);
 struct V3i_65360 { int a, b, c; };
 struct Dispatch65360 {
     char unknown_00[0x10];
@@ -489,7 +489,7 @@ struct Dispatch65360 {
 };
 void DNode_resetXform_00065360(GLMotionState65148 *a0, const Vec3 *a1);
 extern int gl_func_00000000();
-void DNode_func_00065448(char *a0);
+void DNode_applyAccums_00065448(char *a0);
 typedef struct { int a, b, c; } V3i_65494;
 typedef void (*FP_65494)(char *, f32, f32 *, int);
 extern int AnimPlayer_update();

@@ -1,6 +1,6 @@
-nonmatching func_00014598, 0xB4
+nonmatching gadget_decodeStringB4_00014598, 0xB4
 
-glabel func_00014598
+glabel gadget_decodeStringB4_00014598
     /* DE5004 00014598 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DE5008 0001459C AFB30024 */  sw         $s3, 0x24($sp)
     /* DE500C 000145A0 AFB20020 */  sw         $s2, 0x20($sp)
@@ -49,4 +49,4 @@ glabel func_00014598
     /* DE50AC 00014640 8FB60030 */  lw         $s6, 0x30($sp)
     /* DE50B0 00014644 03E00008 */  jr         $ra
     /* DE50B4 00014648 27BD0038 */   addiu     $sp, $sp, 0x38
-endlabel func_00014598
+endlabel gadget_decodeStringB4_00014598

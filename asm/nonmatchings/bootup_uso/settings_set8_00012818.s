@@ -1,6 +1,6 @@
-nonmatching func_00012818, 0x94
+nonmatching settings_set8_00012818, 0x94
 
-glabel func_00012818
+glabel settings_set8_00012818
     /* DE3284 00012818 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE3288 0001281C AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE328C 00012820 AFA40028 */  sw         $a0, 0x28($sp)
@@ -41,4 +41,4 @@ glabel func_00012818
     /* DE330C 000128A0 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE3310 000128A4 03E00008 */  jr         $ra
     /* DE3314 000128A8 00000000 */   nop
-endlabel func_00012818
+endlabel settings_set8_00012818

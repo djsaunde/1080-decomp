@@ -1,6 +1,6 @@
-nonmatching func_000127CC, 0x4C
+nonmatching settings_get8_000127CC, 0x4C
 
-glabel func_000127CC
+glabel settings_get8_000127CC
     /* DE3238 000127CC 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE323C 000127D0 AFA00004 */  sw         $zero, 0x4($sp)
   .L000127D4:
@@ -22,4 +22,4 @@ glabel func_000127CC
     /* DE3278 0001280C 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE327C 00012810 03E00008 */  jr         $ra
     /* DE3280 00012814 00000000 */   nop
-endlabel func_000127CC
+endlabel settings_get8_000127CC

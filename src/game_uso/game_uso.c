@@ -11053,7 +11053,7 @@ void RiderAnim_func_00011750(char *obj) {
     }
 }
 
-void RiderAnim_clearRiderSpin_00011868(int *a0) {
+void RiderAnim_clearRiderEdge_00011868(int *a0) {
     RA(a0)->rider->spin.x = 0.0f;
     RA(a0)->rider->spin.y = 0.0f;
     RA(a0)->rider->spin.z = 0.0f;

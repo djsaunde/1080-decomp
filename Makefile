@@ -182,7 +182,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_A9C_DONOR)
 # 7204 = new {word, M4} record + inline L::add(n) forwarding to the import (separate result web); NCC donor.
 BOOTUP_7204_DONOR := build/src/bootup_uso/bootup_uso_ncc_7204.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00007204=$(BOOTUP_7204_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += map_addEntry_00007204=$(BOOTUP_7204_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7204_DONOR)
 # CA0 = D::D(int, int, int): cfront this==0 -> new protocol, out-of-line base ctor, vptr +0x28,
 # vertex-corner table (last corner one store per line: as1 reorders only within a .loc group);
@@ -202,13 +202,13 @@ BOOTUP_6204_DONOR := build/src/bootup_uso/bootup_uso_ncc_6204.cpp.o
 $(BOOTUP_6204_DONOR): src/bootup_uso/bootup_uso_ncc_6204.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=func_00006204 --redefine-sym __ct__8Bu6204ObFv=func_00000000 $@
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=boot_staticInit_00006204 --redefine-sym __ct__8Bu6204ObFv=func_00000000 $@
 BOOTUP_E9FC_DONOR := build/src/bootup_uso/bootup_uso_ncc_E9FC.cpp.o
 $(BOOTUP_E9FC_DONOR): src/bootup_uso/bootup_uso_ncc_E9FC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_func_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR) SnowBoard_func_0000E9FC=$(BOOTUP_E9FC_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += boot_staticInit_00006204=$(BOOTUP_6204_DONOR) SnowBoard_func_0000E9FC=$(BOOTUP_E9FC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR) $(BOOTUP_E9FC_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
@@ -223,7 +223,7 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
 # target literal hoist order; agent-g run 242). EXACT in agent-c run 258 (uopt spilltemps slot order: the 0x990 load read
 # in place at both tests + the dot3 value held), spliced over the placeholder on both paths.
 BOOTUP_B75C_DONOR := build/src/bootup_uso/bootup_uso_ncc_B75C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000B75C=$(BOOTUP_B75C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_updateOrient=$(BOOTUP_B75C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B75C_DONOR)
 # 63B4 = minimap marker projection, NCC donor (C++: inline M3::xf(V3 &) through ctx->view->rot; agent-g run 184). EXACT.
 BOOTUP_63B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4.cpp.o
@@ -270,9 +270,9 @@ BOOTUP_55A0_DONOR := build/src/bootup_uso/bootup_uso_ncc_55A0.cpp.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += item_registerTemplates=$(BOOTUP_55A0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_55A0_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
-# +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
+# +0x998 (SnowBoarder_yawPiOver_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
 BOOTUP_E270_DONOR := build/src/bootup_uso/bootup_uso_o2_E270.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E270=$(BOOTUP_E270_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_yawPiOver_0000E270=$(BOOTUP_E270_DONOR)
 # E2D0 = plane reflect / scale helper; the f64 literal 0.1 is in bootup.uso RoData
 # +0x9A0 (SnowBCollider_func_0000E2D0_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
 # (agent-h run 408: code-free tests after the 9F8 line rotate the FP temp ring).
@@ -2543,7 +2543,7 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66A50_DONOR)
 # 64388 = normalize-and-apply step (V3 class); NCC donor, EXACT (agent-g run 163: operator/= via dv(*this, *this, s) pre-allocates the two pointer temps operator- reuses).
 GAMELIBS_64388_DONOR := build/src/game_libs/game_libs_ncc_64388.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += DNode_func_00064388=$(GAMELIBS_64388_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += DNodeAccum_apply_00064388=$(GAMELIBS_64388_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_64388_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o

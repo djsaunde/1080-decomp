@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000B75C, 0x830
+nonmatching SnowBoarder_updateOrient, 0x830
 
-glabel SnowBoarder_func_0000B75C
+glabel SnowBoarder_updateOrient
     /* DDC1C8 0000B75C 44800000 */  mtc1       $zero, $f0
     /* DDC1CC 0000B760 27BDFF88 */  addiu      $sp, $sp, -0x78
     /* DDC1D0 0000B764 3C013F80 */  lui        $at, (0x3F800000 >> 16)
@@ -562,4 +562,4 @@ glabel SnowBoarder_func_0000B75C
     /* DDC9EC 0000BF80 27BD0078 */  addiu      $sp, $sp, 0x78
     /* DDC9F0 0000BF84 03E00008 */  jr         $ra
     /* DDC9F4 0000BF88 00000000 */   nop
-endlabel SnowBoarder_func_0000B75C
+endlabel SnowBoarder_updateOrient
