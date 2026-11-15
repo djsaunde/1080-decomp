@@ -1478,7 +1478,7 @@ void CamDirector_update(CamDirector *self) {
     self->pollTimer = (int)s0 + 1;
     if ((int)s0 >= 0x3C) {
         tb.w = sStr_cam_7324;
-        p = (char *)func_00000000(D_24B8_tbl, tb, self->rider->dnode.vqs.trans, 0);
+        p = (char *)FCALL(ItemMgr_queryType)(D_24B8_tbl, tb, self->rider->dnode.vqs.trans, 0);
         if (p != 0 && p != self->lastCamNode) {
             k2 = FW(p, 0x3C);
             if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
@@ -2267,8 +2267,8 @@ void game_setupVsGhost(char *s2, int a1) {
                      *(float*)(WORLDREG(s2)->unk98 + 0xCC),
                      (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
     SNOWB(r2)->dnode.unk38C = 0;
-    b3 = (char*)func_00000000(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
-    f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
+    b3 = (char*)FCALL(cam_create)(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
+    f1 = (char*)FCALL(game_create3DWindow)(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
     SNOWB(r1)->camera = f1;
     SNOWB(r2)->camera = f1;
 }
@@ -5021,7 +5021,7 @@ void ShpNode_func_00008FA8(int *self) {
     SHPNODE(self)->dnode.cvqs.quat[1] = *(float*)&scratch.b;
     SHPNODE(self)->dnode.cvqs.quat[2] = *(float*)&scratch.c;
     SHPNODE(self)->dnode.cvqs.quat[3] = SHPNODE(self)->dnode.vqs.quat[3];
-    func_00000000(self);
+    FCALL(DNode_update)(self);
     {
         int counter = SHPNODE(self)->life;
         SHPNODE(self)->life = counter - 1;
@@ -5287,7 +5287,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
         sb->maxSpeed = sb->parms.max.value;
     }
     if (sb->maxSpeed < sb->dnode.speed) {
-        func_00000000(sb->dnode.vel, sb);  /* normalize */
+        FCALL(math_vec3Normalize)(sb->dnode.vel, sb);  /* normalize */
         k = sb->maxSpeed;
         sb->dnode.vel[0] = sb->dnode.vel[0] * k;
         sb->dnode.vel[1] = sb->dnode.vel[1] * k;
