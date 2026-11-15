@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* timproc_uso_b3_func_000000B0 — -O0 donor (REPLACE_FUNC_BODY into
+/* trk_main — -O0 donor (REPLACE_FUNC_BODY into
  * timproc_uso_b3.c.o). 14-case state-machine dispatcher on arg1; loop
  * re-reads the next state from D_00000000.f40 until a case sets `done`.
  * -O0 keeps the switch jumptable in .rodata at offset 0, so the lui/lw
@@ -34,7 +34,7 @@ extern TimProcState D_00000000;
  * CSE-sharing the &D_00000000 already loaded into a0. */
 extern char D_00000000_raw[];
 
-void timproc_uso_b3_func_000000B0(int *arg0, int arg1) {
+void trk_main(int *arg0, int arg1) {
     int v;
     int done = 0;
     register int s0v;

@@ -17159,7 +17159,7 @@ void gl_func_0004E584(void) {
  *
  * The sentinel-vs-passthrough pattern (compare a0 against -OFFSET, branch
  * to a0+OFFSET fallback) is the same idiom seen in gl_func_0004E584 and
- * timproc_uso_b3_func_00001660. Initial wrap; not byte-matched yet —
+ * TrkNameEntry_ctor_00001660. Initial wrap; not byte-matched yet —
  * structural decode only. */
 extern int gl_func_00000000();
 /* EXACT 2026-10-20 (agent-c run 114, 27.1 -> 74/74 words, C is the build

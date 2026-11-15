@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for arcproc_uso_func_000016F4, EXACT (twin of timproc_uso_b3_func_000013B8;
+/* IDO 7.1 NCC (C++) donor for arcproc_uso_func_000016F4, EXACT (twin of trk_drawScore_000013B8;
  * see that donor). agent-g run 184 (kit CXXXIII): ported from the b3 C++ rewrite -- sprite member objects
  * (sA 0x704, sB 0x71C, sC 0x734, tim 0x74C, alpha 0x77C) and the inline `Spr::width()` with a named image pointer.
  * Same run, later: the tim panel's width / height through the members and the BB split after its begin call.

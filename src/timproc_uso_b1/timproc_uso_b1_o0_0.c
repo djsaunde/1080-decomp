@@ -18,7 +18,7 @@ void timproc_uso_b1_func_00000000(int *dst) {
 }
 
 /* Quad4-reader (0x64 / 25 insns) */
-void timproc_uso_b1_func_0000004C(Quad4 *dst) {
+void tim_streamReadQuad_0000004C(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;

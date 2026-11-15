@@ -149,7 +149,7 @@ void edd_DataManager_update(char *a0) {
  *       `lui;addiu;sw`). This ALSO un-folds the dead guards: with no shared reg
  *       the stage-2/3 `bne` guards reappear and the alloc checks flip to the
  *       target's fail-branches-forward `beq v0,zero,store` sense. Recipe per
- *       timproc_uso_b3_func_000021F4 (EXACT, 2026-05-03).
+ *       TrkMenu_rowGhost_000021F4 (EXACT, 2026-05-03).
  *   (2) REUSE the `a0` param as the obj0 accumulator (not a fresh `a2` local) so
  *       its cross-jal spill homes at sp+0x20 (a0's incoming arg slot), matching
  *       target's spill layout obj0->0x20 / v1->0x1c / obj2->0x18.
@@ -174,7 +174,7 @@ void *edd_EditorsProcess_ctor_0000025C(int *a0, int *a1) {
      * matching target). goto-chain dispatch keeps the dead stage-guards as
      * `bne` (target shape). Three DISTINCT vtable externs bust IDO's address
      * CSE so the `&D` vtable materializes 3× (t6/t7/t8) per store instead of a
-     * single hoisted reg — recipe per timproc_uso_b3_func_000021F4 (EXACT). */
+     * single hoisted reg — recipe per TrkMenu_rowGhost_000021F4 (EXACT). */
     if (a0 != 0) goto have0;
     a0 = (int*)gl_func_00000000(0x54);
     if (a0 == 0) goto Ret;

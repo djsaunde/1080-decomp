@@ -406,7 +406,7 @@ void ARCRaceProcess_release_00000EBC(int *a0) {
  * and its 0xEC field is non-zero. MATCHED 2026-05-28: `goto ret0` to a
  * shared `return 0` emits the beql branch-likely idiom (12 insns); the
  * plain `if(...)return 0` form emitted bnel and grew to 14 (the prior cap).
- * Same fix as timproc_uso_b3_func_00000E30. */
+ * Same fix as TrkRace_isHudBusy_00000E30. */
 int arcproc_uso_func_00000EEC(int *a0) {
     int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
     if (p == 0) {
@@ -621,7 +621,7 @@ void ARCRaceProcess_setupRace_00000FA8(char *a0) {
  * / 0x70 bytes absorbing F2 + F3) was REMOVED 2026-05-23 as match-faking.
  * Symbol is now 0x80 / 32 insns (F1 only); F2 and F3 are separate symbols.
  * Sibling family of ARCRaceProcess_release_00000EBC, gl_func_000070A0,
- * timproc_uso_b3_func_00000DE4 (all same recipe-cleanup pattern).
+ * TrkRace_freeLabels_00000DE4 (all same recipe-cleanup pattern).
  *
  * F1 @ 0x1170-0x11EC: gate + indirect callback via vtable.
  *   if (gl_func(D[0x190], a0)) {
@@ -872,7 +872,7 @@ void arcproc_uso_func_000014A8(void) {
  * volatile-array trick doesn't reproduce the layout (regressed to 90.4%). Plus
  * a0/s0 regalloc + FP-load scheduling. NON_MATCHING.
  * 2026-10-20 agent-g: EXACT via twin port (twin-finder.py, 0.775) of
- * timproc_uso_b3_func_00001240: the Vec4 is a plain (void)-used float[4] with
+ * TrkRace_drawHud_00001240: the Vec4 is a plain (void)-used float[4] with
  * `char pad[28]` + a named `saved` arg-spill local (frame 0x58, color at
  * sp+0x48), and the comma constant `x * (0, 255.0f)` orders mul.s K-first.
  * Notes above are historical. */
@@ -1048,7 +1048,7 @@ void arcproc_uso_func_00001604(int *s0) {
  * one call instead. No C spelling found that flips the split decision. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/arcproc_uso/arcproc_uso_ncc_16F4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 197, kit CLXI; twin of
- * timproc_uso_b3_func_000013B8). The history above describes the earlier cfe decode (removed). */
+ * trk_drawScore_000013B8). The history above describes the earlier cfe decode (removed). */
 void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
     volatile s32 r = arg1;
 }
@@ -1064,7 +1064,7 @@ void arcproc_uso_func_000016F4(char *arg0, s32 arg1, f32 *arg2) {
  * cast-deref chain FIRST regardless of textual order; spelling the ptr chain
  * as a TWO-LEVEL TYPED MEMBER CHAIN ((Arc199C_A *)arg0)->b->v flips the
  * evaluation to textual (id first) with identical bytes — the crack lever.
- * Twins: timproc_uso_b1_func_000016F8, timproc_uso_b3_func_00001660
+ * Twins: TimNameEntry_ctor_000016F8, TrkNameEntry_ctor_00001660
  * (offset variants), MgrNameEntry_ctor_00002940 (111-insn family variant,
  * extra registration-call tail). All four EXACT 2026-07-09. */
 extern int gl_func_00000000();
@@ -1163,7 +1163,7 @@ arcproc_uso_func_00001B88(a0) int * a0; {
 /* arcproc_uso_func_00001BBC: decay-tick handler (sub = self->0xD4;
  * sub->f_77C -= rate D+0x44, clamp at 0, 140-event mid-call with sub->0x6B0,
  * threshold call once <= 0). EXACT 2026-10-20 via twin port (twin-finder.py):
- * masked-identical to timproc_uso_b1_func_00001908 after the boundary fix
+ * masked-identical to TimNameEntry_vfunc18_00001908 after the boundary fix
  * (its 2 trailing words were 1C74's hoisted 1.0f head) -- only the field
  * offsets differ (0x72C->0x77C, 0x6AC->0x6B0, rate 0x48->0x44). */
 void arcproc_uso_func_00001BBC(int *self) {
@@ -1193,7 +1193,7 @@ void arcproc_uso_func_00001BBC(int *self) {
 
 /* arcproc_uso_func_00001C74: historical name, true entry 0x1C6C.
  * EXACT 2026-10-20 via twin port (twin-finder.py): byte-identical to
- * timproc_uso_b1_func_000019C0 (entry 0x19B8) / b3_func_00001920. BOUNDARY
+ * TimNameEntry_drawTitle_000019C0 (entry 0x19B8) / b3_func_00001920. BOUNDARY
  * FIX: the 2 words at 0x1C6C (lui at,0x3F80; mtc1 at,$f0 = buf[]'s 1.0f
  * hoisted above the prologue) moved from 1BBC.s's tail into this .s head.
  * The old "FP pair-swap" residual is the b1 recipe: field * (scale = 255.0f)
@@ -1229,7 +1229,7 @@ void arcproc_uso_func_00001C74(int *a0) {
  * +0x80/84 ints, +0xA0 ptr, clear bit 4 of +0x18, float cb via gl_proto_1d18) and
  * link into the arg0+0x10 list. Fresh decode 2026-05-29 (m2c-confirmed), upgraded
  * from structural ceiling marker. Caps: structs + cb prototypes untyped (USO-reloc).
- * 2026-10-20 agent-g (run 109) 94.05 -> EXACT, twin of timproc_uso_b3_func_000019CC:
+ * 2026-10-20 agent-g (run 109) 94.05 -> EXACT, twin of TrkDataManager_init_000019CC:
  * the 0x18 RMW is `sub += 0x18` (if(1) block) then `*(int *)sub = *(int *)sub & ~4`
  * through the pointer (no tv local, which pre-loaded the field and shifted the
  * t-ring for the rest of the function); the 0x4C = arg4 store is written before
@@ -1770,7 +1770,7 @@ void ARCMenuProcess_drawGui(void) {
  *    sweep (split-decl, single-expr s1, ptr-walk bp++, buf.w[0]*0 init, commuted
  *    24*buf.w[i], base-after-buf-copy) all 0-effect. IMMUNE. Stays NM, size-exact.
  *  - 2026-10-20 agent-g: EXACT via twin port (twin-finder.py, 0.784 structural)
- *    of timproc_uso_b1_func_00002BE4: base as a MUTATED pointer
+ *    of TimMenu_drawHeader_00002BE4: base as a MUTATED pointer
  *    (s4 = &D; if (1) { s4 += 0x10; }) instead of a const-folded base, the
  *    compound-assign split `s2 = s4; s2 += vec4[i]*0x18;`, and the inner
  *    counter derived as i*0x40 inside a for(i) loop. Old notes above are

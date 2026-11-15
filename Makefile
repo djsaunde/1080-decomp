@@ -1238,31 +1238,31 @@ TIMPROC_B1_65C_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o
 # timproc_uso_b1/b3_func_000000B0: -O0 twins (317 insns each, all 28 jal
 # delays unfilled) inside the -O2 hosts; spliced via -O0 donors like 5A4/65C.
 TIMPROC_B1_B0_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o
-build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: REPLACE_FUNC_BODY := timproc_uso_b1_func_000000B0=$(TIMPROC_B1_B0_DONOR) timproc_uso_b1_func_000005A4=$(TIMPROC_B1_5A4_DONOR) timproc_uso_b1_func_0000065C=$(TIMPROC_B1_65C_DONOR)
+build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: REPLACE_FUNC_BODY := tim_main=$(TIMPROC_B1_B0_DONOR) tim_openSession_000005A4=$(TIMPROC_B1_5A4_DONOR) tim_closeSession_0000065C=$(TIMPROC_B1_65C_DONOR)
 # 1340 = timer-HUD draw (23FC / b3 13B8 / arcproc 16F4 family) as C++ (Spr / Img inline members, edg pool-temp order); NCC donor.
 TIMPROC_B1_1340_DONOR := build/src/timproc_uso_b1/timproc_uso_b1_ncc_1340.cpp.o
-build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: private REPLACE_FUNC_BODY += timproc_uso_b1_func_00001340=$(TIMPROC_B1_1340_DONOR)
+build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: private REPLACE_FUNC_BODY += tim_drawTime_00001340=$(TIMPROC_B1_1340_DONOR)
 build/src/timproc_uso_b1/timproc_uso_b1.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1.c.o: $(TIMPROC_B1_1340_DONOR)
 build/src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_65C.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o build/non_matching/src/timproc_uso_b1/timproc_uso_b1_o0_B0.c.o: OPT_FLAGS := -O0
-# timproc_uso_b3_func_0000065C: byte-identical sibling of the b1 0x65C donor.
-# timproc_uso_b3_func_000005A4: masked-shape twin of the b1 0x5A4 donor (same
+# trk_closeSession_0000065C: byte-identical sibling of the b1 0x65C donor.
+# trk_openSession_000005A4: masked-shape twin of the b1 0x5A4 donor (same
 # 46-insn -O0 wrapper, differs only in two immediates 0x1->0x2).
 TIMPROC_B3_65C_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o
 TIMPROC_B3_5A4_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o
 TIMPROC_B3_B0_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o
-build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: REPLACE_FUNC_BODY := timproc_uso_b3_func_000000B0=$(TIMPROC_B3_B0_DONOR) timproc_uso_b3_func_000005A4=$(TIMPROC_B3_5A4_DONOR) timproc_uso_b3_func_0000065C=$(TIMPROC_B3_65C_DONOR)
+build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: REPLACE_FUNC_BODY := trk_main=$(TIMPROC_B3_B0_DONOR) trk_openSession_000005A4=$(TIMPROC_B3_5A4_DONOR) trk_closeSession_0000065C=$(TIMPROC_B3_65C_DONOR)
 # 13B8 = timer-HUD draw (23FC / 1340 / arcproc 16F4 family) as C++ (Spr / Img inline members, edg pool-temp order); NCC donor.
 TIMPROC_B3_13B8_DONOR := build/src/timproc_uso_b3/timproc_uso_b3_ncc_13B8.cpp.o
-build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: private REPLACE_FUNC_BODY += timproc_uso_b3_func_000013B8=$(TIMPROC_B3_13B8_DONOR)
+build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: private REPLACE_FUNC_BODY += trk_drawScore_000013B8=$(TIMPROC_B3_13B8_DONOR)
 build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: $(TIMPROC_B3_13B8_DONOR)
-# timproc_uso_b3_func_0000217C: byte-correct real-def whose target symbol has an extra
+# ParmVec3_read_0000217C: byte-correct real-def whose target symbol has an extra
 # trailing alignment nop (target 0x34/13w vs build 0x30/12w). Grow the non_matching
 # symbol with one all-zero word so objdiff scores 13w. ROM-neutral (non_matching .o).
-build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := timproc_uso_b3_func_0000217C=0x00000000
+build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := ParmVec3_read_0000217C=0x00000000
 # Default build: the same zero word, now that 217C is plain C (was a 13-word GLOBAL_ASM).
-build/src/timproc_uso_b3/timproc_uso_b3.c.o: private SUFFIX_BYTES_FORCE += timproc_uso_b3_func_0000217C=0x00000000
+build/src/timproc_uso_b3/timproc_uso_b3.c.o: private SUFFIX_BYTES_FORCE += ParmVec3_read_0000217C=0x00000000
 build/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o: OPT_FLAGS := -O0

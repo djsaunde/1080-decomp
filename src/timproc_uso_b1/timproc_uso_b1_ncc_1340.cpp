@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b1_func_00001340 (0x3B8 / 238 words), EXACT:
+/* IDO 7.1 NCC (C++) donor for tim_drawTime_00001340 (0x3B8 / 238 words), EXACT:
  * timer HUD draw with the mm:ss.cc split (the 23FC / timproc_b3 13B8 / arcproc 16F4 family). agent-g
  * run 172 (kit CXVII): the cfe NM body as plain C++ (228 of 238 words, 86.53).
  * agent-g run 184 (kit CXXXIII): ported from the 13B8 C++ rewrite -- sprite member objects and the inline
@@ -18,7 +18,7 @@
 typedef float f32; typedef int s32; typedef short s16;
 extern "C" {
 extern char D_00000000;
-int timproc_uso_b1_func_000000B0(...);
+int tim_main(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
 struct Spr {
@@ -34,7 +34,7 @@ struct Obj {
     f32 alpha;
 };
 #define FL(o) (*(Flags **)((char *)(o) + 0x528))
-extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
+extern "C" void tim_drawTime_00001340(Obj *arg0, s32 arg1, s32 arg2) {
     f32 one[4];
     char buf[128];
     s32 min;
@@ -52,15 +52,15 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         sec = arg2 / 1000;
         arg2 -= sec * 1000;
         arg2 = arg2 / 10;
-        timproc_uso_b1_func_000000B0(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        timproc_uso_b1_func_000000B0(&arg0->tim); if (1) {}
+        tim_main(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
+        tim_main(&arg0->tim); if (1) {}
         glyph = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
-        timproc_uso_b1_func_000000B0(&arg0->sA);
-        timproc_uso_b1_func_000000B0(&arg0->sB);
-        timproc_uso_b1_func_000000B0(&arg0->sC);
-        timproc_uso_b1_func_000000B0(buf, &D_00000000 + 0x3F4, min, sec, arg2);
+        tim_main(&arg0->sA);
+        tim_main(&arg0->sB);
+        tim_main(&arg0->sC);
+        tim_main(buf, &D_00000000 + 0x3F4, min, sec, arg2);
         {
-        s32 count = timproc_uso_b1_func_000000B0(buf);
+        s32 count = tim_main(buf);
         s32 x, pos4, posA1, pos6;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
         x = 160 - (pC->pw() + count * 13 + pA->pw() + pB->pw() + 16) / 2;
@@ -68,7 +68,7 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
         posA1 = pA->pw() + pos4 + 4;
         pos6 = pC->pw() + posA1 + 8;
         volatile s32 pad0, pad1, pad2;
-        timproc_uso_b1_func_000000B0(&arg0->sC, posA1, arg1 + 0x32, 2);
+        tim_main(&arg0->sC, posA1, arg1 + 0x32, 2);
         for (i = 0; i < count; i++) {
             if (buf[i] == 0x5B) {
                 buf[i] = 0xA;
@@ -77,12 +77,12 @@ extern "C" void timproc_uso_b1_func_00001340(Obj *arg0, s32 arg1, s32 arg2) {
             } else {
                 buf[i] = buf[i] - 0x30;
             }
-            timproc_uso_b1_func_000000B0(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->gh() / 2) + 0x32, buf[i] * glyph, glyph);
+            tim_main(&arg0->tim, pos6 + i * 13, (arg1 - arg0->tim.img->gh() / 2) + 0x32, buf[i] * glyph, glyph);
         }
-        timproc_uso_b1_func_000000B0(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        timproc_uso_b1_func_000000B0(&arg0->sA, pos4, arg1 + 0x32, 2);
-        timproc_uso_b1_func_000000B0(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
-        timproc_uso_b1_func_000000B0(&arg0->sB, x, arg1 + 0x32, 2);
+        tim_main(&arg0->sA, (s32)(255.0f * arg0->alpha), one, 0xFF);
+        tim_main(&arg0->sA, pos4, arg1 + 0x32, 2);
+        tim_main(&arg0->sB, (s32)(255.0f * arg0->alpha), one, 0xFF);
+        tim_main(&arg0->sB, x, arg1 + 0x32, 2);
         }
     }
 }

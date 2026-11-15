@@ -74,7 +74,7 @@ regress during the O1/O2 file split, restore from the sources listed.
   direct jal at ROM 0xE08534 targets the head (module Text+0x37B00).
 
 - 2026-09-09: the two-word timproc b1 orphan at 0x19B8 was merged into
-  historical `timproc_uso_b1_func_000019C0` (now 0xAC bytes). timproc.uso
+  historical `TimNameEntry_drawTitle_000019C0` (now 0xAC bytes). timproc.uso
   Sym163 exports 0x19B8 and TextReloc 0x18DC/0x1910 target it; 0x19C0
   has neither an export nor a call reference. All 43 instructions are
   emitted by C, matching the b3 1920 sibling and original ROM Text.

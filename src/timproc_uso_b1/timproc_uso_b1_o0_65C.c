@@ -17,7 +17,7 @@ extern int D_0000014C;
  *   - `*(int*)0x14C`                -> 1 insn (zero-relative, lui dropped).
  * Real fix is the spimdisasm USO-reloc migration (expected/ becomes reloc-aware),
  * not a per-fn C change. See docs/MATCHING_WORKFLOW.md reloc-blind-donor entry. */
-void timproc_uso_b1_func_0000065C(int *a0) {
+void tim_closeSession_0000065C(int *a0) {
     register int zero;
     gl_func_00000000((int*)a0[0], 3);
     zero = 0;

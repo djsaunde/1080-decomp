@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b3_func_000013B8 (0x2A8 / 170 words), EXACT:
- * timer HUD draw (twin of arcproc_uso_func_000016F4 / timproc_uso_b1_func_00001340, same family as
+/* IDO 7.1 NCC (C++) donor for trk_drawScore_000013B8 (0x2A8 / 170 words), EXACT:
+ * timer HUD draw (twin of arcproc_uso_func_000016F4 / tim_drawTime_00001340, same family as
  * mgrproc 23FC). agent-g run 172 (kit CXVII): the cfe NM body as plain C++, 162 of 171 words (89.18).
  * agent-g run 184 (kit CXXXIII): the five panels are sprite MEMBER objects of the owner (0x18 bytes each,
  * image pointer at +0x10, image width / height s16 at +0x20 / +0x22) and the widths come from an inline
@@ -30,7 +30,7 @@
 typedef float f32; typedef int s32; typedef unsigned char u8; typedef short s16;
 extern "C" {
 extern char D_b3_1240_base;
-int timproc_uso_b3_func_000000B0(...);
+int trk_main(...);
 }
 struct Img { char p[0x20]; s16 w; s16 h; s32 gh() { return h; } s32 gw() { return w; } };
 struct Spr {
@@ -46,7 +46,7 @@ struct Obj {
     f32 alpha;
 };
 #define FL(o) (*(Flags **)((char *)(o) + 0x528))
-extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
+extern "C" void trk_drawScore_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     f32 one[4];
     u8 buf[0x80];
     s32 i;
@@ -56,14 +56,14 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
     one[2] = 1.0f;
     one[3] = 1.0f;
     if (FL(arg0)->f & 2) {
-        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        timproc_uso_b3_func_000000B0(&arg0->tim); if (1) {}
+        trk_main(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
+        trk_main(&arg0->tim); if (1) {}
         s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
-        timproc_uso_b3_func_000000B0(&arg0->sA);
-        timproc_uso_b3_func_000000B0(&arg0->sB);
-        timproc_uso_b3_func_000000B0(&arg0->sC);
-        timproc_uso_b3_func_000000B0(buf, &D_b3_1240_base + 0x3D8, arg2);
-        s32 n = timproc_uso_b3_func_000000B0(buf);
+        trk_main(&arg0->sA);
+        trk_main(&arg0->sB);
+        trk_main(&arg0->sC);
+        trk_main(buf, &D_b3_1240_base + 0x3D8, arg2);
+        s32 n = trk_main(buf);
         {
         s32 xoff, xb, xa, x;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
@@ -72,14 +72,14 @@ extern "C" void timproc_uso_b3_func_000013B8(Obj *arg0, s32 arg1, f32 *arg2) {
         xa = pA->pw() + xb + 4;
         x = pC->pw() + xa + 8;
         volatile s32 pad0, pad1, pad2;
-        timproc_uso_b3_func_000000B0(&arg0->sC, xa, arg1 + 0x32, 2);
+        trk_main(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            timproc_uso_b3_func_000000B0(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
+            trk_main(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
         }
-        timproc_uso_b3_func_000000B0(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
-        timproc_uso_b3_func_000000B0(&arg0->sA, xb, arg1 + 0x32, 2);
-        timproc_uso_b3_func_000000B0(&arg0->sB, xoff, arg1 + 0x32, 2);
+        trk_main(&D_b3_1240_base, (s32)(255.0f * arg0->alpha), one);
+        trk_main(&arg0->sA, xb, arg1 + 0x32, 2);
+        trk_main(&arg0->sB, xoff, arg1 + 0x32, 2);
         }
     }
 }

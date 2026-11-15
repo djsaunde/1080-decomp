@@ -35,7 +35,7 @@ quality), it does NOT flip a cap. The reloc-blind CAPS are the opposite shape: t
 | function (real-C body)            | expected (baked)        | build (reloc-form) | class        |
 |-----------------------------------|-------------------------|--------------------|--------------|
 | edd_DataManager_init         | `sw zero, 4(at)`        | `sw zero, 0(at)`+LO16 | scalar %lo |
-| timproc_uso_b1_func_0000065C      | `sw s0, 0x14C(at)`      | `sw s0, 0(at)`+LO16   | scalar %lo |
+| tim_closeSession_0000065C      | `sw s0, 0x14C(at)`      | `sw s0, 0(at)`+LO16   | scalar %lo |
 | game_uso_func_00003968 (×many)    | `jal 0x280` (baked)     | `jal 0`+R_MIPS_26     | intra jal  |
 | RiderAnim_applyDamage_0000EDD4            | `lw t6, 0x224(at)`      | `lw t6, 0x14(at)` (local jtbl) | jumptable |
 

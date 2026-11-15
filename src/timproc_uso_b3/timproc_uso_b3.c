@@ -32,7 +32,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * concatenated into the Yay0 block (region 0) before compression. See the
  * timproc_uso_block3_yay0 rule in the Makefile. */
 
-/* timproc_uso_b3_func_000000B0: 317-insn (0x4F4) -O0 state-machine
+/* trk_main: 317-insn (0x4F4) -O0 state-machine
  * dispatcher: 14-case jumptable switch on arg1, loops re-reading the next
  * state from D+0x40 until a case sets `done`. EXACT 2026-07-09 via the -O0
  * donor timproc_uso_b3_o0_B0.c spliced in through REPLACE_FUNC_BODY (same
@@ -41,9 +41,9 @@ typedef struct { int a, b, c, d; } Quad4;
  * The old "rodata jumptable = structural cap" note applied to the -O2
  * in-TU compile; the -O0 donor emits its jumptable at .rodata offset 0,
  * so the lui/lw dispatch words carry in-place addend 0 = the target's raw
- * pre-USO-reloc words. Twin: timproc_uso_b1_func_000000B0 (4 immediates
+ * pre-USO-reloc words. Twin: tim_main (4 immediates
  * differ: case5/case7 second-a3 1->2, case12 mask 0x2000->0x4000). */
-timproc_uso_b3_func_000000B0(a0, a1) int * a0; int a1; {
+trk_main(a0, a1) int * a0; int a1; {
     char *d = (char *)&D_00000000;
     int done = 0;
     int v, s0v;
@@ -139,7 +139,7 @@ extern int D_0000014C;
 extern int D_00000068;
 
 /* 46-insn -O0 allocator-wrapper (0xB8). LANDED 2026-06-21 as a masked-shape
- * TWIN-PORT of timproc_uso_b1_func_000005A4: the two target functions are
+ * TWIN-PORT of tim_openSession_000005A4: the two target functions are
  * instruction-for-instruction identical except two immediates (b1 0x1, b3
  * 0x2). Matched via the same splice-import-donor-relocs recipe as b1 — the
  * -O0 donor timproc_uso_b3_o0_5A4.c is spliced in via REPLACE_FUNC_BODY, which
@@ -150,7 +150,7 @@ extern int D_00000068;
  *
  * -O0 indicators preserved (the donor IS compiled at -O0): unfilled jal delay
  * slots, `move s0,v0` save, trailing `b epilogue; nop`, frame -0x28. */
-void timproc_uso_b3_func_000005A4(int **arg0, int arg1, int arg2) {
+void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
     int handle = gl_func_00000000(2);
     register int new_obj = gl_func_00000000(0, D_00000148, 2, arg2);
     *arg0 = (int*)new_obj;
@@ -165,14 +165,14 @@ void timproc_uso_b3_func_000005A4(int **arg0, int arg1, int arg2) {
 }
 
 /* 21-insn -O0 cleanup wrapper. Single gl_func + zero a0[0] + zero D[0x14C].
- * Byte-identical .s to the EXACT timproc_uso_b1_func_0000065C (same 0x65C).
+ * Byte-identical .s to the EXACT tim_closeSession_0000065C (same 0x65C).
  * Matched 2026-05-30 via the -O0 REPLACE_FUNC_BODY donor splice (donor
  * src/timproc_uso_b3/timproc_uso_b3_o0_65C.c). This was unblocked by fixing
  * scripts/replace-function-body.py to re-align post-.text sections after the
  * size-growing (+0x1C) splice — previously the misaligned sections made
  * objdiff reject the object. This -O2 body is what the main object compiles;
  * the donor's -O0 bytes are spliced over it. */
-void timproc_uso_b3_func_0000065C(int *a0) {
+void trk_closeSession_0000065C(int *a0) {
     gl_func_00000000((int*)a0[0], 3);
     a0[0] = 0;
     *(int*)((char*)&D_00000000 + 0x14C) = 0;
@@ -182,7 +182,7 @@ extern int D_b3_06B0_a;
 extern int *D_b3_06B0_b;     /* pointer-typed: 2nd call passes (*D_b3_06B0_b)[0x6A8/4] */
 extern int D_b3_06B0_c;
 extern int D_b3_06B0_d;
-void timproc_uso_b3_func_000006B0(void) {
+void TrkRace_pauseContinue_000006B0(void) {
     gl_func_00000000(D_b3_06B0_a);
     gl_func_00000000(D_b3_06B0_b[0x6A8/4]);
     gl_func_00000000(D_b3_06B0_c);
@@ -193,7 +193,7 @@ extern int D_b3_06FC_a;
 extern int D_b3_06FC_b;
 extern int D_b3_06FC_c;
 extern int D_b3_06FC_d;
-void timproc_uso_b3_func_000006FC(void) {
+void TrkRace_pauseRow1_000006FC(void) {
     gl_func_00000000(D_b3_06FC_a);
     gl_func_00000000(D_b3_06FC_b);
     gl_func_00000000(&D_b3_06FC_c);
@@ -203,7 +203,7 @@ void timproc_uso_b3_func_000006FC(void) {
  * correction (orphan lui v0,0; addiu v0,0 moved from func_000006FC's pad into
  * this fn's .s; 0x3C->0x44, starts 0x744). Same recipe as b1 chain 0x734-0x800. */
 extern int D_state_b3_74C;
-void timproc_uso_b3_func_0000074C(void) {
+void TrkRace_pauseExit1_0000074C(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 1;
     gl_func_00000000(D_state_b3_74C, -1, 0);
@@ -211,7 +211,7 @@ void timproc_uso_b3_func_0000074C(void) {
 /* Chain sibling: t7=2. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_0000074C's pad into this fn's .s; 0x3C->0x44, starts 0x788). */
 extern int D_state_b3_790;
-void timproc_uso_b3_func_00000790(void) {
+void TrkRace_pauseExit2_00000790(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
     gl_func_00000000(D_state_b3_790, -1, 0);
@@ -219,7 +219,7 @@ void timproc_uso_b3_func_00000790(void) {
 /* Chain sibling: t7=3. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_00000790's pad into this fn's .s; 0x3C->0x44, starts 0x7CC). */
 extern int D_state_b3_7D4;
-void timproc_uso_b3_func_000007D4(void) {
+void TrkRace_pauseExit3_000007D4(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 3;
     gl_func_00000000(D_state_b3_7D4, -1, 0);
@@ -229,25 +229,25 @@ void timproc_uso_b3_func_000007D4(void) {
  * 0x810). Unique extern D_state_b3_818 (=0) at the gl_func arg breaks IDO's
  * &D-CSE so the target's fresh lui+lw at the call site reproduces. */
 extern int D_state_b3_818;
-void timproc_uso_b3_func_00000818(void) {
+void TrkRace_pauseQuit_00000818(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 0xD;
     gl_func_00000000(D_state_b3_818, -1, 0);
 }
 
-static void timproc_uso_b3_func_00000854(int *dst) {
+static void trk_streamReadS32_00000854(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void timproc_uso_b3_func_00000890(float *dst) {
+static void trk_streamReadF32_00000890(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-static void timproc_uso_b3_func_000008CC(Quad4 *dst) {
+static void trk_streamReadQuad_000008CC(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -255,7 +255,7 @@ static void timproc_uso_b3_func_000008CC(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-static void timproc_uso_b3_func_00000924(Vec3 *dst) {
+static void trk_streamReadVec3_00000924(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -268,7 +268,7 @@ static void timproc_uso_b3_func_00000924(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* timproc_uso_b3_func_00000994: 243-insn constructor (sibling of titproc
+/* TrkRace_ctor: 243-insn constructor (sibling of titproc
  * 1E9C / timproc_b1 97C / timproc_b5 478). jal-0 = cross-USO placeholder
  * gl_func_00000000.
  *
@@ -300,7 +300,7 @@ extern char D_b3_994_v4;
 extern char D_b3_994_g;
 extern char D_b3_994_r;
 extern void gl_func_00000000_994v();
-void *timproc_uso_b3_func_00000994(char *obj, int a1, int a2, int a3) {
+void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
     char *o1;
     char *o2;
     char *o3;
@@ -393,11 +393,11 @@ void *timproc_uso_b3_func_00000994(char *obj, int a1, int a2, int a3) {
     return obj;
 }
 
-/* timproc_uso_b3_func_00000D60: 33-insn (0x84) 5-call gl_func_00000000
+/* TrkRace_initLabels_00000D60: 33-insn (0x84) 5-call gl_func_00000000
  * dispatcher with computed (s0+offset, immediate-or-globalload) args.
  * First 2 calls use D[0x4C/0x54] OR'd with high-half flags 0x001D/0x001E;
  * latter 3 use precomputed 32-bit constants 0x0021_xxxx. */
-void timproc_uso_b3_func_00000D60(char *a0) {
+void TrkRace_initLabels_00000D60(char *a0) {
     gl_func_00000000(a0 + 0x6B4, *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
     gl_func_00000000(a0 + 0x6CC, *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
     gl_func_00000000(a0 + 0x6FC, 0x0021000B);
@@ -405,7 +405,7 @@ void timproc_uso_b3_func_00000D60(char *a0) {
     gl_func_00000000(a0 + 0x6E4, 0x00210009);
 }
 
-/* timproc_uso_b3_func_00000DE4: F1 (19-insn 5-call wrapper) only.
+/* TrkRace_freeLabels_00000DE4: F1 (19-insn 5-call wrapper) only.
  *
  * The 2026-05-07 SUFFIX_BYTES recipe (absorbing 12 words / 0x30 bytes for
  * F2 + F3) was REMOVED 2026-05-23 as instruction-byte match-faking (per
@@ -418,7 +418,7 @@ void timproc_uso_b3_func_00000D60(char *a0) {
  *     a0->[0x6A8]->[0x6C]->[0xEC] != 0).
  * F3 @ 0xE54-0xE5C: `return 0;` 3-insn stub. */
 extern int func_00000000();
-void timproc_uso_b3_func_00000DE4(char *a0) {
+void TrkRace_freeLabels_00000DE4(char *a0) {
     func_00000000(a0 + 0x6B4);
     func_00000000(a0 + 0x6CC);
     func_00000000(a0 + 0x6FC);
@@ -426,13 +426,13 @@ void timproc_uso_b3_func_00000DE4(char *a0) {
     func_00000000(a0 + 0x6E4);
 }
 
-/* timproc_uso_b3_func_00000E30: triple-deref non-null check RECOVERED +
+/* TrkRace_isHudBusy_00000E30: triple-deref non-null check RECOVERED +
  * MATCHED 2026-05-28 from the Yay0 block_3 gap. Returns 1 iff a0->0x6A8->
  * 0x6C is non-null and its 0xEC field is non-zero. KEY: `goto ret0` to a
  * shared `return 0` produces the beql branch-likely idiom (v0=0 in the
  * delay slot) — the plain `if(...)return 0` form emits bnel and grows to
  * 14 insns (the cap that NM'd sibling arcproc_uso_func_00000EEC). */
-int timproc_uso_b3_func_00000E30(int *a0) {
+int TrkRace_isHudBusy_00000E30(int *a0) {
     int *p = (int*)((int*)a0[0x6A8 / 4])[0x6C / 4];
     if (p == 0) {
         goto ret0;
@@ -445,8 +445,8 @@ ret0:
     return 0;
 }
 
-/* timproc_uso_b3_func_00000E60: state-machine dispatcher, sibling of
- * timproc_uso_b1_func_00000EE8 and ARCRaceProcess_setupRace_00000FA8.
+/* TrkRace_checkRecord_00000E60: state-machine dispatcher, sibling of
+ * TimRace_checkRecord_00000EE8 and ARCRaceProcess_setupRace_00000FA8.
  *
  * Decoded state 0 and state 1 bodies from the target asm. State 0 walks a
  * 0x30-stride table selected by D[0x64], searching for an entry whose
@@ -476,7 +476,7 @@ ret0:
  * local, which took v0). The break now exits to the base re-assignment, giving
  * the target's bne + nop instead of bnel.
  */
-void timproc_uso_b3_func_00000E60(char *a0) {
+void TrkRace_checkRecord_00000E60(char *a0) {
     volatile int *base = (int*)&D_00000000;
     char *saved = a0;
     int state = *(int*)(a0 + 0x504);
@@ -530,18 +530,18 @@ state1:
         gl_func_00000000(base[0x190 / 4], 1, 1);
 }
 
-/* timproc_uso_b3_func_00000FF4: F1 (32-insn 0x80) gate-then-update wrapper
+/* TrkRace_onFinish_00000FF4: F1 (32-insn 0x80) gate-then-update wrapper
  * only. The 2026-05-07 SUFFIX_BYTES recipe (absorbing 7 words / 0x1C bytes
  * for the trailing D[0x40]=9 stub at 0x1074 and the 2-word splat-pulled
  * fragment at 0x1088) was REMOVED 2026-05-23 as instruction-byte
  * match-faking. Symbol is now 0x80 / 32 insns (F1 only); the absorbed
  * pieces are tracked as separate symbols. Function lands at fuzzy=100
- * naturally — same pattern as timproc_uso_b3_func_00000DE4 /
+ * naturally — same pattern as TrkRace_freeLabels_00000DE4 /
  * ARCRaceProcess_release_00000EBC.
  *
  * F1: gate=gl_func(a0->0x528). If non-zero set D[0x40]=0xC,D[0x44]=9.
  *     Else set D[0x40]=9. Tail: if(a0->0x4F8) gl_func(a0,-1,0); else a0->0x504=0. */
-void timproc_uso_b3_func_00000FF4(char *a0) {
+void TrkRace_onFinish_00000FF4(char *a0) {
     if (gl_func_00000000(*(char**)(a0 + 0x528)) != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
@@ -559,11 +559,11 @@ void timproc_uso_b3_func_00000FF4(char *a0) {
  * from build). MATCHED -- D[0x40]=9 setter with unused-arg save; the
  * global-store-in-delay-slot vs arg-save order matches in-tree (standalone
  * diverged, see MATCHING_WORKFLOW.md#feedback-standalone-false-convergence-verify-in-tree). */
-void timproc_uso_b3_func_00001074(int a0) {
+void TrkRace_setMenuState_00001074(int a0) {
     *(int*)((char*)&D_00000000 + 0x40) = 9;
 }
 
-/* timproc_uso_b3_func_00001088 (0x2C, 11 insns): hoisted-head merge of 1088 +
+/* TrkRace_showMessage_00001088 (0x2C, 11 insns): hoisted-head merge of 1088 +
  * 1090 (2026-09-05 agent-c, TWENTY-FIFTH mis-split class, see
  * docs/MATCHING_WORKFLOW.md #hoisted-head-119c-11a4-mgrproc). The 8-byte
  * "alt-entry" `lui a1; lw a1,0x170(a1)` is this function's own first statement
@@ -572,10 +572,10 @@ void timproc_uso_b3_func_00001074(int a0) {
  * wrapper ROM 0x5B3DBA, inner header 0x5B3DE2): Sym[89] EXPORTS text offset
  * 0x1088 and DataReloc @0x33C stores its address in a function-pointer table;
  * 0x1090 has no export and no R_MIPS_26. Old 1090 "exact" = fake `char *a1`
- * parameter (episode retired). Twin: timproc_uso_b1_func_000010D4. */
+ * parameter (episode retired). Twin: TimRace_showMessage_000010D4. */
 void timproc_uso_b3_func_00000000();
 
-void timproc_uso_b3_func_00001088(int a0) {
+void TrkRace_showMessage_00001088(int a0) {
     timproc_uso_b3_func_00000000(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
@@ -583,12 +583,12 @@ extern int gl_ref_00000040;
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void timproc_uso_b3_func_000010B4(int a0) {
+void TrkRace_quit_000010B4(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
     gl_func_00000000(a0, -1, 0);
 }
 
-/* Vtable-entry dispatcher (twin of timproc_uso_b1_func_00001130). Pass 2 2026-06-10:
+/* Vtable-entry dispatcher (twin of TimRace_runPauseRow_00001130). Pass 2 2026-06-10:
  * re-decode fixed the OLD body's structure -- the *40 is a real multu
  * with the stride in a register (variable stride; old body's shift
  * decomposition was wrong), the gl(5) arg loads EARLY into a0 before
@@ -602,7 +602,7 @@ void timproc_uso_b3_func_000010B4(int a0) {
  * value (a0 freed after the jal consumed the 5); none of the three
  * pseudo-order levers (BB-split / web-inversion / early-pseudo)
  * address arg-reg targeting. Remaining lever: uoptlist dump. */
-/* EXACT (2026-06-21, ported from byte-identical twin timproc_uso_b1_func_00001130).
+/* EXACT (2026-06-21, ported from byte-identical twin TimRace_runPauseRow_00001130).
  * The single residual addu operand-order diff (target `addu rd,base,prod` vs the
  * inline-web's `addu rd,prod,base`) is resolved by two scheduler/coloring nudges:
  *   - `self[(0x48 / 4) ^ 0]` (identity XOR) re-orders the index web so the final
@@ -612,7 +612,7 @@ void timproc_uso_b3_func_000010B4(int a0) {
  * Both are semantic no-ops; verified in-tree (0 non-reloc word diffs). */
 extern int D_arg_b3_10E4[];
 extern int D_cur_b3_10E4;
-void timproc_uso_b3_func_000010E4(int *self) {
+void TrkRace_runPauseRow_000010E4(int *self) {
   int *v0;
   int new_var;
   int v1;
@@ -639,11 +639,11 @@ void timproc_uso_b3_func_000010E4(int *self) {
   }
 }
 
-/* timproc_uso_b3_func_00001184: 20-insn (func1 of the split bundle).
+/* TrkRace_startHud_00001184: 20-insn (func1 of the split bundle).
  *   if (a0->0x4FC == 0) { X(a0->0x6A8,0,1); X(a0->0x6A8); a0->0x4FC=1; }
  * orig a0 saved @sp+0x18, reloaded across the 2 calls. USO: call ->
  * func_00000000. */
-void timproc_uso_b3_func_00001184(int *a0) {
+void TrkRace_startHud_00001184(int *a0) {
     if (a0[0x4FC / 4] == 0) {
         func_00000000((int *)a0[0x6A8 / 4], 0, 1);
         func_00000000((int *)a0[0x6A8 / 4]);
@@ -651,7 +651,7 @@ void timproc_uso_b3_func_00001184(int *a0) {
     }
 }
 
-void timproc_uso_b3_func_000011D4(int *a0) {
+void TrkRace_showHud_000011D4(int *a0) {
     int *p;
 
     p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x6C);
@@ -662,7 +662,7 @@ void timproc_uso_b3_func_000011D4(int *a0) {
     *p &= ~4;
 }
 
-void timproc_uso_b3_func_0000120C(int *a0) {
+void TrkRace_hideHud_0000120C(int *a0) {
     int *p;
 
     p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x6C);
@@ -673,7 +673,7 @@ void timproc_uso_b3_func_0000120C(int *a0) {
     *p |= 4;
 }
 
-/* timproc_uso_b3_func_00001240: 94-insn FP accumulator/dispatch helper.
+/* TrkRace_drawHud_00001240: 94-insn FP accumulator/dispatch helper.
  * b3 variant of timproc_uso_b1_func_000011D8. Boundary-checked: one jr ra.
  *
  * Structure:
@@ -706,7 +706,7 @@ extern float D_b3_1240_f0;
 extern float D_b3_1240_f40;
 extern float D_b3_1240_f44;
 extern char *D_b3_1240_ptr138;
-/* timproc_uso_b3_func_00001240 — IMPROVED 2026-07-03: 81/94 -> 92/94 raw words.
+/* TrkRace_drawHud_00001240 — IMPROVED 2026-07-03: 81/94 -> 92/94 raw words.
  *
  * REQUIRES undefined_syms_auto.txt edits (distinct base-alias, value 0x0):
  *   D_b3_1240_f40    = 0x00000000;   (was 0x00000040)
@@ -735,7 +735,7 @@ extern char *D_b3_1240_ptr138;
  * with the frame unchanged. The undefined_syms values above are not needed
  * for the bytes (the .text is taken from the unlinked object).
  */
-void timproc_uso_b3_func_00001240(char *a0) {
+void TrkRace_drawHud_00001240(char *a0) {
     float color[4];
     char pad[28];
     char *saved;
@@ -783,14 +783,14 @@ void timproc_uso_b3_func_00001240(char *a0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/timproc_uso_b3/timproc_uso_b3_ncc_13B8.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 197, kit CLXI). The history
  * below describes the earlier cfe decode (removed). */
-void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
+void trk_drawScore_000013B8(char *arg0, s32 arg1, f32 *arg2) {
     volatile s32 r = arg1;
 }
-/* timproc_uso_b3_func_000013B8: 2026-10-24 agent-g run 155: body replaced by a port of
+/* trk_drawScore_000013B8: 2026-10-24 agent-g run 155: body replaced by a port of
  * arcproc_uso_func_000016F4's C (opcode-identical twin, offsets -0x50 / -0x38, flag 4 -> 2):
  * 80.36 -> 85.36 (= 16F4's score). Notes below describe the previous body.
  * 170-insn timer-HUD draw, twin of
- * timproc_uso_b1_func_00001340 (no min:sec split — sprintf(buf, fmt, arg2)
+ * tim_drawTime_00001340 (no min:sec split — sprintf(buf, fmt, arg2)
  * with the f32* arg passed raw; loop digit remap is plain -0x30, no [/]).
  * 2026-07-30 redecode 65.9 -> 77.55 fixing old m2c body decode errors:
  *  - alpha is a FLOAT load *(f32*)(arg0+0x72C) (was FW int load + cvt.s.w);
@@ -819,7 +819,7 @@ void timproc_uso_b3_func_000013B8(char *arg0, s32 arg1, f32 *arg2) {
  * Next: find what prices an lda temp into a callee-saved reg at 2 refs
  * (uopt cupcosts?); count -> s3 should then cascade the tail exact. */
 
-/* timproc_uso_b3_func_00001660 — EXACT (90/90 words incl. relocs, 2026-07-09).
+/* TrkNameEntry_ctor_00001660 — EXACT (90/90 words incl. relocs, 2026-07-09).
  * Twin of ArcNameEntry_ctor_0000199C (same 4-level alloc-cascade ctor
  * template; deltas: init-call base +0x3dc, a1 float @+0x72c,
  * packed-id ptr field @+0x6b0). Crack lever: the packed-id call's id
@@ -837,7 +837,7 @@ extern int D_tim1660_id;     /* packed-id value read */
 typedef struct Tim1660_B { char pad[0x6b0]; int v; } Tim1660_B;
 typedef struct Tim1660_A { char p0[0xD4]; Tim1660_B *b; } Tim1660_A;
 
-char *timproc_uso_b3_func_00001660(char *arg0, char *arg1, int arg2) {
+char *TrkNameEntry_ctor_00001660(char *arg0, char *arg1, int arg2) {
     char *a2;   /* level-2 (0xD4), home 0x2C(sp) */
     char *v1;   /* level-3 (0x50), home 0x28(sp) */
     char *a0;   /* level-4 (0x2C), home 0x24(sp) */
@@ -872,7 +872,7 @@ char *timproc_uso_b3_func_00001660(char *arg0, char *arg1, int arg2) {
     return arg0;
 }
 
-void timproc_uso_b3_func_000017C8(int *a0) {
+void TrkNameEntry_update_000017C8(int *a0) {
     if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) == 0) return;
     if (gl_func_00000000(&D_00000000, 0x40100) == 0) return;
     if (gl_func_00000000(a0[0x50/4]) != 0) {
@@ -882,7 +882,7 @@ void timproc_uso_b3_func_000017C8(int *a0) {
     }
 }
 
-void timproc_uso_b3_func_0000183C(int *a0) {
+void TrkNameEntry_vfunc17_0000183C(int *a0) {
     int *p;
     gl_func_00000000(a0);
     p = (int*)a0[0xD4/4];
@@ -897,7 +897,7 @@ void timproc_uso_b3_func_0000183C(int *a0) {
  * through the inlined full chain (fresh temp t6) rather than the sub
  * variable (whose web would color a0). bc1fl delay structure falls out
  * naturally from the val-carried if/if shape. */
-void timproc_uso_b3_func_00001870(int *self) {
+void TrkNameEntry_vfunc18_00001870(int *self) {
     char *base = &D_00000000;
     int *sub;
     float *fp;
@@ -923,7 +923,7 @@ void timproc_uso_b3_func_00001870(int *self) {
 }
 
 
-/* timproc_uso_b3_func_00001920 (0xAC, 43 insns): hoisted-head merge of 1920 +
+/* TrkNameEntry_drawTitle_00001920 (0xAC, 43 insns): hoisted-head merge of 1920 +
  * 1928 (2026-09-05 agent-c, TWENTY-FIFTH mis-split class, see
  * docs/MATCHING_WORKFLOW.md #hoisted-head-119c-11a4-mgrproc). The 8-byte
  * "alt-entry" `lui at,0x3F80; mtc1 at,$f0` is this function's own `buf[i] = 1.0f`
@@ -941,7 +941,7 @@ void timproc_uso_b3_func_00001870(int *self) {
  * The scalar home plus pad[0x1C] retain the original frame/buffer layout.
  * This retracts the FP-pair cap; all 43 words match the original ROM's
  * decompressed Text, not merely the reloc-tolerant block verifier. */
-void timproc_uso_b3_func_00001920(int *a0) {
+void TrkNameEntry_drawTitle_00001920(int *a0) {
     float buf[4];
     char *tgt;
     float scale;
@@ -963,7 +963,7 @@ void timproc_uso_b3_func_00001920(int *a0) {
         }
     }
 }
-/* timproc_uso_b3_func_000019CC 2026-07-15 (agent-g wave 3): 94.04 -> 99.81.
+/* TrkDataManager_init_000019CC 2026-07-15 (agent-g wave 3): 94.04 -> 99.81.
  * Levers: (1) sp44-call arg swapped to (D_64*0x30) + *(*arg3) (right-first +
  * eval numbers the ptr chain t0/t1 like target); (2) 0x18 RMW respelled as
  * single-mutated pointer q with if(1){} advance (B850/C044 idiom: lw 24(a2),
@@ -986,7 +986,7 @@ void timproc_uso_b3_func_00001920(int *a0) {
  * gone, four volatile pads put the arg0+0x10 CSE spill at 44. */
 extern int gl_proto_19cc(void *, int, int, float, float);
 extern char D_b3_19CC_0C;
-void timproc_uso_b3_func_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
+void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     char *o;
     char *sub;
     char *sp44;
@@ -1053,15 +1053,15 @@ void timproc_uso_b3_func_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     }
 }
 
-/* timproc_uso_b3_func_00001C20: orphan-merge of a stolen-prologue. The orphan
- * timproc_uso_b3_func_00001C20 (lui t6; lw t6,0x64(t6) = TIMB3_D_64) was the
+/* TrkDataManager_vfunc8_00001C20: orphan-merge of a stolen-prologue. The orphan
+ * TrkDataManager_vfunc8_00001C20 (lui t6; lw t6,0x64(t6) = TIMB3_D_64) was the
  * stolen prologue of func_00001C28 — it loads the global compared to 1 at the
  * top. Merged FORWARD (one 0x48 symbol; successor .s deleted, no jal targets).
  * Reading TIMB3_D_64 inline at the `== 1` test hoists the lui;lw above the
  * prologue (same recipe as AudioThread_InitMesgQueuesImpl). Also fixed the old decode:
  * a0->0xD8 = 1 (the SAME literal 1 IDO materializes for the `== 1` test, in v0,
  * stored in the jal delay slot — NOT the call return). MATCHED 2026-05-30. */
-void timproc_uso_b3_func_00001C20(char *a0) {
+void TrkDataManager_vfunc8_00001C20(char *a0) {
     if (*(int*)((char*)&D_00000000 + 0x64) == 1) {
         *(int*)(a0 + 0xA0) = 50000;
     } else {
@@ -1076,7 +1076,7 @@ void timproc_uso_b3_func_00001C20(char *a0) {
  * through the (int, int, float) blank alias gl_proto_1c94; the r > 0 bump reads
  * the counter as fl[8] off the re-read 0x44 pointer (target lw 32(v1), no
  * addiu fl); `if (arg0) {}` after the (arg0, 1) call and after the flag-4 RMW. */
-/* timproc_uso_b3_func_00001C68: UI animation/draw orchestrator (sibling of
+/* TrkDataManager_update_00001C68: UI animation/draw orchestrator (sibling of
  * arc_DataManager_update / mgrproc per-frame steps). cb(); gate arg0->0xB8
  * bit-16 && ->0x4DC==1: bump 0x30, decrement 0xA0 by 0x21 (floor 0 + cleanup that
  * sets sub->0x554=192.0f, ->0x544=0xFF). cb(arg0). Gated block: state-2 sync of
@@ -1110,7 +1110,7 @@ void timproc_uso_b3_func_00001C20(char *a0) {
  * allocator/scheduler-internal class as the Two-s-reg kit II residuals. */
 extern int gl_proto_1c68(void *, int, int, float, float);
 extern int gl_proto_1c94(int, int, float);
-void timproc_uso_b3_func_00001C68(char *arg0) {
+void TrkDataManager_update_00001C68(char *arg0) {
     int *fl;
     int v0;
     int v0b;
@@ -1220,32 +1220,32 @@ void timproc_uso_b3_func_00001C68(char *arg0) {
 }
 
 
-void timproc_uso_b3_func_0000205C(char *dst) {
+void ParmInt_read_0000205C(char *dst) {
     int tmp;
-    timproc_uso_b3_func_00000854(&tmp);
-    timproc_uso_b3_func_00000854((int*)(dst + 0x10));
+    trk_streamReadS32_00000854(&tmp);
+    trk_streamReadS32_00000854((int*)(dst + 0x10));
 }
 
-void timproc_uso_b3_func_0000208C(char *dst) {
+void ParmFloat_read_0000208C(char *dst) {
     int tmp;
-    timproc_uso_b3_func_00000854(&tmp);
-    timproc_uso_b3_func_00000890((float*)(dst + 0x10));
+    trk_streamReadS32_00000854(&tmp);
+    trk_streamReadF32_00000890((float*)(dst + 0x10));
 }
 
-void timproc_uso_b3_func_000020BC(char *dst) {
+void ParmQuad_read_000020BC(char *dst) {
     int tmp;
-    timproc_uso_b3_func_00000854(&tmp);
-    timproc_uso_b3_func_000008CC((Quad4*)(dst + 0x10));
+    trk_streamReadS32_00000854(&tmp);
+    trk_streamReadQuad_000008CC((Quad4*)(dst + 0x10));
 }
 
-/* timproc_uso_b3_func_000020EC: 36-insn (0x90) constructor — BYTE-IDENTICAL
+/* TrkItemType_create_000020EC: 36-insn (0x90) constructor — BYTE-IDENTICAL
  * mirror of edd_ItemType_create_000003BC family (5th clone). Apply the
  * eddproc lever (volatile-ptr-to-arg + late head reload) per
  * docs/IDO_CODEGEN.md#feedback-ido-arg-addr-via-volatile-ptr-forces-caller-spill.
  * Expected to land in the 89% file-context band per
  * docs/IDO_CODEGEN.md#feedback-ido-file-context-affects-frame-size
  * (timproc_uso_b3.c is a large multi-function file). */
-void *timproc_uso_b3_func_000020EC(int *arg0) {
+void *TrkItemType_create_000020EC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -1268,33 +1268,33 @@ void *timproc_uso_b3_func_000020EC(int *arg0) {
     return p2;
 }
 
-/* timproc_uso_b3_func_0000217C: 2-call wrapper (twin of edd_readVec3Parm_0000044C).
+/* ParmVec3_read_0000217C: 2-call wrapper (twin of edd_readVec3Parm_0000044C).
  * The ROM symbol is 13 words: the 12-word body plus the zero alignment word
  * before 21B0. A 1-word GLOBAL_ASM pad sidecar emits 8 bytes (+4 shift), so
  * the zero word comes from an all-zero SUFFIX_BYTES_FORCE in both builds
  * (Makefile, next to the NON_MATCHING_SUFFIX_BYTES_FORCE line). */
-void timproc_uso_b3_func_0000217C(char *dst) {
+void ParmVec3_read_0000217C(char *dst) {
     int tmp;
-    timproc_uso_b3_func_00000854(&tmp);
-    timproc_uso_b3_func_00000924((Vec3*)(dst + 0x10));
+    trk_streamReadS32_00000854(&tmp);
+    trk_streamReadVec3_00000924((Vec3*)(dst + 0x10));
 }
 
-void timproc_uso_b3_func_000021B0(void) {
+void TrkMenu_rowRetry_000021B0(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 4;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-/* func_000021F4 (0x44): byte-identical twin of timproc_uso_b1_func_000020AC
+/* func_000021F4 (0x44): byte-identical twin of TimMenu_rowExit1_000020AC
  * (matched) except the state constant (li 6 vs li 1). Ported donor body w/
  * gl_ref_00000040 = 6. */
-void timproc_uso_b3_func_000021F4(void) {
+void TrkMenu_rowGhost_000021F4(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 6;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-/* Dual-branch state setter, twin of timproc_uso_b1_func_00002028.
+/* Dual-branch state setter, twin of TimMenu_rowToggle_00002028.
  * Starts at 0x2238 (was split as a 2-word orphan + func_00002240 taking
  * a0 as a parameter): the lui/lw of D+0x148 is the first call's argument,
  * hoisted by IDO above the addiu sp prologue (see the b1 twin).
@@ -1304,7 +1304,7 @@ void timproc_uso_b3_func_000021F4(void) {
  * in each arm (v0/v1 lever). */
 extern int D_call_b3_2240_a;
 extern int * volatile D_cur_b3_2240;
-void timproc_uso_b3_func_00002238(void) {
+void TrkMenu_rowToggle_00002238(void) {
     if (gl_func_00000000(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
         gl_func_00000000(D_call_b3_2240_a);
         if (1) {}
@@ -1318,7 +1318,7 @@ void timproc_uso_b3_func_00002238(void) {
     }
 }
 
-void timproc_uso_b3_func_000022BC(void) {
+void TrkMenu_rowExit1_000022BC(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 1;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1327,7 +1327,7 @@ void timproc_uso_b3_func_000022BC(void) {
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void timproc_uso_b3_func_00002300(void) {
+void TrkMenu_rowExit2_00002300(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 2;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1336,13 +1336,13 @@ void timproc_uso_b3_func_00002300(void) {
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void timproc_uso_b3_func_00002344(void) {
+void TrkMenu_rowExit3_00002344(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 3;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-void timproc_uso_b3_func_00002388(void) {
+void TrkMenu_rowQuit_00002388(void) {
     gl_func_00000000(gl_ref_00000208);
     gl_ref_00000040 = 0xD;
     gl_func_00000000(gl_ref_0000020C, -1, 0);
@@ -1350,9 +1350,9 @@ void timproc_uso_b3_func_00002388(void) {
 
 /* 000023CC/23D4/23DC: 3 empty stubs RECOVERED 2026-05-28 from the Yay0 gap
  * (no .s, missing from build; bytes from block_3). void f(void){} -> jr ra;nop. */
-void timproc_uso_b3_func_000023CC(void) {}
-void timproc_uso_b3_func_000023D4(void) {}
-void timproc_uso_b3_func_000023DC(void) {}
+void trk_nop_000023CC(void) {}
+void trk_nop_000023D4(void) {}
+void trk_nop_000023DC(void) {}
 
 /* Alloc-cascade ctor (sibling of ARCMenuProcess_ctor): alloc 108/80/44
  * + ->0x28=&D + &D+1160/1168 descriptors, then a registration tail. Decoded
@@ -1381,7 +1381,7 @@ void timproc_uso_b3_func_000023DC(void) {}
  *  #same-line-registration-schedule-23e4. */
 extern int D_b3_23E4_17D7;
 extern char D_b3_23E4_base;
-char *timproc_uso_b3_func_000023E4(char *arg0) {
+char *TrkMenu_ctor(char *arg0) {
     char *a3;
     char *a0;
     char *v0;
@@ -1439,13 +1439,13 @@ char *timproc_uso_b3_func_000023E4(char *arg0) {
     return arg0;
 }
 
-/* Byte-identical sibling of timproc_uso_b1_func_000024F4 (147 insns).
+/* Byte-identical sibling of TimMenu_initLabels_000024F4 (147 insns).
  * Same display-list build pattern. The 0x260000-series `or a1, s1, tN` wants
  * the hoisted constant (s1) as rs; IDO defaults to value-as-rs. Forced via the
  * assignment-expression operand-order lever `value | (t = 0x260000)` (pins the
  * const as rs at the op; CSE keeps the single lui). See
  * docs/IDO_CODEGEN.md#feedback-ido-commutative-op-operand-order. */
-void timproc_uso_b3_func_00002700(int a0) {
+void TrkMenu_initLabels_00002700(int a0) {
     int t;
     gl_func_00000000((char *)&D_00000000 + 112,
                      (*(int *)&D_00000000 << 3) | (t = 0x260000));
@@ -1487,7 +1487,7 @@ void timproc_uso_b3_func_00002700(int a0) {
     (void)a0;
 }
 
-/* Twin of timproc_uso_b1_func_00002740 (byte-identical). MATCHED 2026-06-11
+/* Twin of TimMenu_update_00002740 (byte-identical). MATCHED 2026-06-11
  * via the array-IXA lever derived from the uopt source (references/ido):
  * a 2D-array row index (Row294C *base; base[idx]) keeps the IXA ucode form,
  * which ugen lowers as addu rd, base, scaled (base FIRST); flat ptr-arith
@@ -1496,7 +1496,7 @@ void timproc_uso_b3_func_00002700(int a0) {
  * "addu operand order" uopt-source entry. */
 extern int D_b3_294C_g208;
 extern int D_b3_294C_g20C;
-void timproc_uso_b3_func_0000294C(int *a0)
+void TrkMenu_update_0000294C(int *a0)
 {
   int new_var;
   switch (a0[0x50 / 4])
@@ -1542,8 +1542,8 @@ void timproc_uso_b3_func_0000294C(int *a0)
 
 }
 
-/* timproc_uso_b3_func_00002A44: HUD draw dispatcher, byte-twin of
- * timproc_uso_b1_func_00002838 (only middle panel ID differs 0x1C0->0x1D8).
+/* TrkMenu_draw_00002A44: HUD draw dispatcher, byte-twin of
+ * TimMenu_draw_00002838 (only middle panel ID differs 0x1C0->0x1D8).
  * 2026-07-17 agent-g: 149/149 words EXACT (was 86.64) via verbatim backport
  * of the 2838 crack: shared obj local colors the s0 web (44EDC recipe);
  * &D+0 first arg (not literal 0); single-def x = v0-0x27 after
@@ -1555,7 +1555,7 @@ void timproc_uso_b3_func_0000294C(int *a0)
  * (23E4, 1240); the Yay0 block is cut from the unlinked .o, so the raw
  * slice (149/149 words == expected/) is what reaches the ROM block. */
 extern void glv_2a44();
-void timproc_uso_b3_func_00002A44(char *arg0) {
+void TrkMenu_draw_00002A44(char *arg0) {
     char *obj = arg0; /* shared obj local colors the recurring s0 web (44EDC recipe) */
     int f;
     int v0;
@@ -1623,7 +1623,7 @@ void timproc_uso_b3_func_00002A44(char *arg0) {
  * basic-block boundary that colors o48 into the dead $v0 (vt into $v1),
  * matching the target (was a 98.26% v0/v1 near-miss). Same lever as
  * mgrproc_uso_func_00001324 / the timproc_uso_b5 dispatch family. */
-void timproc_uso_b3_func_00002C98(char *obj) {
+void TrkMenu_handleInput_00002C98(char *obj) {
     char *o48;
     char *vt;
 
@@ -1664,7 +1664,7 @@ void timproc_uso_b3_func_00002C98(char *obj) {
     }
 }
 
-/* timproc_uso_b3_func_00002DF0: 63-insn (0x100) grid-render setup.
+/* TrkMenu_drawHeader_00002DF0: 63-insn (0x100) grid-render setup.
  *
  * Structure:
  *   1. Copy 5 ints from D[0x4A0..0x4B0] into a local stack buf[5]
@@ -1725,7 +1725,7 @@ void timproc_uso_b3_func_00002C98(char *obj) {
  * indexed by buf[col] selecting from a 24-byte struct table at &D+0x10. */
 typedef struct { int v[5]; } B3Vec5_2DF0;
 typedef struct { char pad[0x18]; } B3S18_2DF0;
-void timproc_uso_b3_func_00002DF0(int *a0) {
+void TrkMenu_drawHeader_00002DF0(int *a0) {
     int vec4[5];
     B3S18_2DF0 *s4;
     char *s2;
@@ -1759,7 +1759,7 @@ void timproc_uso_b3_func_00002DF0(int *a0) {
  * bust lever; both directions now documented). Boundary: reverse-merge
  * from 2DF0's tail, done 2026-05-30. */
 extern char D_b3_2EF0_table;
-void timproc_uso_b3_func_00002EEC(int a0, int a1, int a2) {
+void TrkMenu_drawLabel_00002EEC(int a0, int a1, int a2) {
     char *entry, *spillee;
     (void)a0;
     (void)spillee;
@@ -1770,7 +1770,7 @@ void timproc_uso_b3_func_00002EEC(int a0, int a1, int a2) {
     gl_func_00000000(entry, 0xA0, a2, 3);
 }
 
-/* timproc_uso_b3_func_00002F48: 66-insn (0x108) two-pass render-helper.
+/* TrkMenu_drawPair_00002F48: 66-insn (0x108) two-pass render-helper.
  * Sibling of recently-NM-wrapped func_00002EF0.
  *
  * Decoded structure:
@@ -1805,7 +1805,7 @@ void timproc_uso_b3_func_00002EEC(int a0, int a1, int a2) {
 extern int gl_func_00000000();
 extern int func_00000000();
 extern char D_00000000;
-void timproc_uso_b3_func_00002F48(int *a0, int a1) {
+void TrkMenu_drawPair_00002F48(int *a0, int a1) {
     float quad4[4];
     char pad[32];
     (void)pad;
@@ -1831,10 +1831,10 @@ void timproc_uso_b3_func_00002F48(int *a0, int a1) {
     gl_func_00000000((char*)&D_00000000 + 0x1A8, 0xC8, a1, 3);
 }
 
-/* timproc_uso_b3_func_00003050: byte-identical mirror of
- * timproc_uso_b1_func_00002E50. Same Quad4 dispatcher recipe — see
+/* TrkMenu_drawLabel130_00003050: byte-identical mirror of
+ * TimMenu_drawLabel130_00002E50. Same Quad4 dispatcher recipe — see
  * the b1 wrap doc for the structural notes. */
-void timproc_uso_b3_func_00003050(int *a0, int a1) {
+void TrkMenu_drawLabel130_00003050(int *a0, int a1) {
     float quad_a[4];
     float quad_b[4];
     char pad[32];
@@ -1855,8 +1855,8 @@ void timproc_uso_b3_func_00003050(int *a0, int a1) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3/timproc_uso_b3_func_00003050_pad.s")
 
-/* timproc_uso_b3_func_00000E30 + 00000E54: SUFFIX_BYTES-absorbed orphans ←
- * timproc_uso_b3_func_00000DE4 (12 words exact:
+/* TrkRace_isHudBusy_00000E30 + 00000E54: SUFFIX_BYTES-absorbed orphans ←
+ * TrkRace_freeLabels_00000DE4 (12 words exact:
  *   0x8C8E06A8,0x8DC2006C,0x50400007,0x00001025,0x8C4F00EC,0x51E00004,
  *   0x00001025,0x03E00008,0x24020001,0x00001025,0x03E00008,0x00000000).
  * _00000E54 was a C-body stub (`int f(void) { return 0; }`) with both
@@ -1868,13 +1868,13 @@ void timproc_uso_b3_func_00003050(int *a0, int a1) {
 
 /* SUFFIX_BYTES-absorbed orphan (per
  * docs/MATCHING_WORKFLOW.md#feedback-splat-orphan-duplicate-symbol-pruning,
- * no-truncate variant): timproc_uso_b3_func_00001074 (7 words) ←
- * timproc_uso_b3_func_00000FF4 SUFFIX_BYTES (exact 7-word match
+ * no-truncate variant): TrkRace_setMenuState_00001074 (7 words) ←
+ * TrkRace_onFinish_00000FF4 SUFFIX_BYTES (exact 7-word match
  * 0x240E0009,0x3C010000,0xAFA40000,0x03E00008,0xAC2E0040,0x3C050000,0x8CA50170).
  * Pre-prune the orphan symbol was at .o offset 0x3114 (tail). */
 
-/* timproc_uso_b3_func_000023CC + 000023D4: SUFFIX_BYTES-absorbed orphans
- * ← timproc_uso_b3_func_00002388 (6 words exact:
+/* trk_nop_000023CC + 000023D4: SUFFIX_BYTES-absorbed orphans
+ * ← TrkMenu_rowQuit_00002388 (6 words exact:
  *   0x03E00008,0x00000000,0x03E00008,0x00000000,0x03E00008,0x00000000).
  * _000023D4 had its own 2-word SUFFIX_BYTES recipe (`0x00000000,0x00000000`)
  * that emitted 2 nops at the .o tail past its orphan position — those
@@ -1887,5 +1887,5 @@ void timproc_uso_b3_func_00003050(int *a0, int a1) {
  *   _000021F4: was missing entirely (no INCLUDE_ASM line; -0x4C damage) --
  *   restored at its address-ordered position after 21B0.
  *   _00002238: was a 2-word stolen-prologue orphan; merged 2026-11-15 into
- *   timproc_uso_b3_func_00002238 (formerly _00002240) as its hoisted first
+ *   TrkMenu_rowToggle_00002238 (formerly _00002240) as its hoisted first
  *   load, compiled from C. */
