@@ -1,6 +1,6 @@
-nonmatching func_00011CD8, 0x68
+nonmatching input_setActive_00011CD8, 0x68
 
-glabel func_00011CD8
+glabel input_setActive_00011CD8
     /* DE2744 00011CD8 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE2748 00011CDC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE274C 00011CE0 AFA40018 */  sw         $a0, 0x18($sp)
@@ -30,4 +30,4 @@ glabel func_00011CD8
     /* DE27A0 00011D34 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE27A4 00011D38 03E00008 */  jr         $ra
     /* DE27A8 00011D3C 00000000 */   nop
-endlabel func_00011CD8
+endlabel input_setActive_00011CD8

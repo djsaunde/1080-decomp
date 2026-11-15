@@ -1,6 +1,6 @@
-nonmatching func_000126EC, 0xE0
+nonmatching settings_setFlag4_000126EC, 0xE0
 
-glabel func_000126EC
+glabel settings_setFlag4_000126EC
     /* DE3158 000126EC 27BDFFC0 */  addiu      $sp, $sp, -0x40
     /* DE315C 000126F0 AFBF0024 */  sw         $ra, 0x24($sp)
     /* DE3160 000126F4 AFA40040 */  sw         $a0, 0x40($sp)
@@ -61,4 +61,4 @@ glabel func_000126EC
     /* DE322C 000127C0 27BD0040 */  addiu      $sp, $sp, 0x40
     /* DE3230 000127C4 03E00008 */  jr         $ra
     /* DE3234 000127C8 00000000 */   nop
-endlabel func_000126EC
+endlabel settings_setFlag4_000126EC

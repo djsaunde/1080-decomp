@@ -1,6 +1,6 @@
-nonmatching func_00011C70, 0x34
+nonmatching input_addPad_00011C70, 0x34
 
-glabel func_00011C70
+glabel input_addPad_00011C70
     /* DE26DC 00011C70 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE26E0 00011C74 00803825 */  or         $a3, $a0, $zero
     /* DE26E4 00011C78 8CE60120 */  lw         $a2, 0x120($a3)
@@ -15,4 +15,4 @@ glabel func_00011C70
     /* DE2704 00011C98 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE2708 00011C9C 03E00008 */  jr         $ra
     /* DE270C 00011CA0 00000000 */   nop
-endlabel func_00011C70
+endlabel input_addPad_00011C70

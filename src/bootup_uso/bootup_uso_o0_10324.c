@@ -27,12 +27,12 @@ char *func_00010324(a0) char *a0; {
  * 2026-09-05): PauseMenu_func_0001034C moved to bootup_uso_o0_1034C.c
  * and MATCHED there at -O0 (125/125). PauseMenu_func_00010540 (INCLUDE_ASM, honest NM;
  * its own blocker is also -O0 but the 343-insn body has pervasive typed-struct
- * eval-order divergence, see its wrap doc) + func_00010A9C + func_00010AA8
- * moved to bootup_uso_tail3a_10540.c (-O2 -g3). func_00010AB0 moved to
+ * eval-order divergence, see its wrap doc) + gui_clearRows_00010A9C + func_00010AA8
+ * moved to bootup_uso_tail3a_10540.c (-O2 -g3). gui_addRow_00010AB0 moved to
  * bootup_uso_o0_10AB0.c and MATCHED there at -O0 (47/47). tail3a now ends at
  * 0x1034C (TRUNCATE_TEXT 0x848 -> 0x28). */
 
-/* func_00010B6C (0x10B6C..0x10C8B) split to bootup_uso_o0_10B6C.c on
+/* gui_addRowSub_00010B6C (0x10B6C..0x10C8B) split to bootup_uso_o0_10B6C.c on
  * 2026-07-10 and MATCHED there at -O0 (72/72). tail3a now ends at 0x10B6C
  * (TRUNCATE_TEXT 0x848); the 0x10C8C..0x116C7 remainder (GameFlow_create +
  * GameFlow_func_00010FEC, both honest-NM INCLUDE_ASM) moved to
@@ -60,8 +60,8 @@ char *func_00010324(a0) char *a0; {
  * bootup_uso_tail3a_mid.c as INCLUDE_ASM to keep the .text layout
  * contiguous before the existing 11C70 split.
  *
- * func_00011C70 split out to bootup_uso_o0_11C70.c on 2026-05-07 (verified
- * byte-exact at -O0). replay_addInput + func_00011CD8 also moved into that
+ * input_addPad_00011C70 split out to bootup_uso_o0_11C70.c on 2026-05-07 (verified
+ * byte-exact at -O0). replay_addInput + input_setActive_00011CD8 also moved into that
  * file as INCLUDE_ASM stubs (INCLUDE_ASM is opt-level-independent) so the
  * 11C70..11D40 .o region is contiguous; they migrate to C bodies in
  * future passes when individually verified at -O0.

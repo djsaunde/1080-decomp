@@ -15,7 +15,7 @@
 extern int func_00000000();
 extern int D_00000150;
 
-void func_000120A8(char *a0, int a1, int a2, int a3) {
+void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
     *(int*)(a0 + 0x13C) = a1;
     *(int*)(a0 + 0x144) = a2;
     func_00000000(*(int*)(a0 + 0x13C), *(int*)(a0 + 0x144), 0);

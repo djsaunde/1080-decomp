@@ -1,6 +1,6 @@
-nonmatching func_0000F954, 0x94
+nonmatching Process_fadeOut_0000F954, 0x94
 
-glabel func_0000F954
+glabel Process_fadeOut_0000F954
     /* DE03C0 0000F954 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE03C4 0000F958 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE03C8 0000F95C AFA40018 */  sw         $a0, 0x18($sp)
@@ -40,4 +40,4 @@ glabel func_0000F954
     /* DE0448 0000F9DC 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE044C 0000F9E0 03E00008 */  jr         $ra
     /* DE0450 0000F9E4 00000000 */   nop
-endlabel func_0000F954
+endlabel Process_fadeOut_0000F954

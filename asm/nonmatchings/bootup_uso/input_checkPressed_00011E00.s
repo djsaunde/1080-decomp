@@ -1,6 +1,6 @@
-nonmatching func_00011E00, 0xD4
+nonmatching input_checkPressed_00011E00, 0xD4
 
-glabel func_00011E00
+glabel input_checkPressed_00011E00
     /* DE286C 00011E00 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE2870 00011E04 8C8E018C */  lw         $t6, 0x18C($a0)
     /* DE2874 00011E08 15C0002C */  bnez       $t6, .L00011EBC
@@ -60,4 +60,4 @@ glabel func_00011E00
     /* DE2934 00011EC8 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE2938 00011ECC 03E00008 */  jr         $ra
     /* DE293C 00011ED0 00000000 */   nop
-endlabel func_00011E00
+endlabel input_checkPressed_00011E00

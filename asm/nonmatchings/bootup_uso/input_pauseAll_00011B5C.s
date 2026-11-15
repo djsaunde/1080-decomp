@@ -1,6 +1,6 @@
-nonmatching func_00011B5C, 0x94
+nonmatching input_pauseAll_00011B5C, 0x94
 
-glabel func_00011B5C
+glabel input_pauseAll_00011B5C
     /* DE25C8 00011B5C 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DE25CC 00011B60 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE25D0 00011B64 AFA40020 */  sw         $a0, 0x20($sp)
@@ -41,4 +41,4 @@ glabel func_00011B5C
     /* DE2650 00011BE4 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DE2654 00011BE8 03E00008 */  jr         $ra
     /* DE2658 00011BEC 00000000 */   nop
-endlabel func_00011B5C
+endlabel input_pauseAll_00011B5C

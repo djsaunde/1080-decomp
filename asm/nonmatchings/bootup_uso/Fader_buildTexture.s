@@ -1,6 +1,6 @@
-nonmatching func_00013B20, 0x144
+nonmatching Fader_buildTexture, 0x144
 
-glabel func_00013B20
+glabel Fader_buildTexture
     /* DE458C 00013B20 3C030000 */  lui        $v1, %hi(func_0000023C + 0x4)
     /* DE4590 00013B24 8C630240 */  lw         $v1, %lo(func_0000023C + 0x4)($v1)
     /* DE4594 00013B28 27BDFFE8 */  addiu      $sp, $sp, -0x18
@@ -85,7 +85,7 @@ glabel func_00013B20
     /* DE46C4 00013C58 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE46C8 00013C5C 03E00008 */  jr         $ra
     /* DE46CC 00013C60 00000000 */   nop
-endlabel func_00013B20
+endlabel Fader_buildTexture
     /* DE46D0 00013C64 00000000 */  nop
     /* DE46D4 00013C68 00000000 */  nop
     /* DE46D8 00013C6C 00000000 */  nop

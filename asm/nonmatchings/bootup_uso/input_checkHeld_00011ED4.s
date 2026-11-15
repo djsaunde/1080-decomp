@@ -1,6 +1,6 @@
-nonmatching func_00011ED4, 0xD4
+nonmatching input_checkHeld_00011ED4, 0xD4
 
-glabel func_00011ED4
+glabel input_checkHeld_00011ED4
     /* DE2940 00011ED4 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE2944 00011ED8 8C8E018C */  lw         $t6, 0x18C($a0)
     /* DE2948 00011EDC 15C0002C */  bnez       $t6, .L00011F90
@@ -60,4 +60,4 @@ glabel func_00011ED4
     /* DE2A08 00011F9C 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE2A0C 00011FA0 03E00008 */  jr         $ra
     /* DE2A10 00011FA4 00000000 */   nop
-endlabel func_00011ED4
+endlabel input_checkHeld_00011ED4

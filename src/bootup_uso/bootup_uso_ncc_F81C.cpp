@@ -62,7 +62,7 @@ void *game_createProcessWindow(int a0, int a1) {
     return (void *)result;
 }
 
-/* func_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
+/* Process_fadeOut_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
  * (cluster -O0 split; F954 is a byte-exact -O0 match, F9E8 stays NM at 1w off).
  * Moved together so tail1.c keeps only the -O2 game_createProcessWindow and the linker layout
  * stays contiguous. */

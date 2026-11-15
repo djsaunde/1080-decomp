@@ -1,6 +1,6 @@
-nonmatching func_00011FA8, 0xD4
+nonmatching input_checkReleased_00011FA8, 0xD4
 
-glabel func_00011FA8
+glabel input_checkReleased_00011FA8
     /* DE2A14 00011FA8 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE2A18 00011FAC 8C8E018C */  lw         $t6, 0x18C($a0)
     /* DE2A1C 00011FB0 15C0002C */  bnez       $t6, .L00012064
@@ -60,4 +60,4 @@ glabel func_00011FA8
     /* DE2ADC 00012070 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE2AE0 00012074 03E00008 */  jr         $ra
     /* DE2AE4 00012078 00000000 */   nop
-endlabel func_00011FA8
+endlabel input_checkReleased_00011FA8

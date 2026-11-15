@@ -1,6 +1,6 @@
-nonmatching func_000139B0, 0x170
+nonmatching Fader_start, 0x170
 
-glabel func_000139B0
+glabel Fader_start
     /* DE441C 000139B0 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DE4420 000139B4 AFBF0044 */  sw         $ra, 0x44($sp)
     /* DE4424 000139B8 AFB40040 */  sw         $s4, 0x40($sp)
@@ -101,4 +101,4 @@ glabel func_000139B0
     /* DE4580 00013B14 8FB40040 */  lw         $s4, 0x40($sp)
     /* DE4584 00013B18 03E00008 */  jr         $ra
     /* DE4588 00013B1C 27BD0048 */   addiu     $sp, $sp, 0x48
-endlabel func_000139B0
+endlabel Fader_start

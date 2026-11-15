@@ -4,7 +4,7 @@ extern int func_00000000();
 typedef struct { int a, b, c, d; } Quad4;
 extern Quad4 D_00000000;
 
-void func_0001266C(char *a0, int a1) {
+void settings_applySoundMode_0001266C(char *a0, int a1) {
     register u16 *p;
 
     p = (u16 *)(*(char **)(a0 + 0x154) + 4);
@@ -14,7 +14,7 @@ void func_0001266C(char *a0, int a1) {
     func_00000000((*(u16 *)(*(char **)(a0 + 0x154) + 4)) & 3);
 }
 
-/* func_000126EC — 56/56 EXACT (2026-07-03, agent-e). Previous "capped 84.95%"
+/* settings_setFlag4_000126EC — 56/56 EXACT (2026-07-03, agent-e). Previous "capped 84.95%"
  * comment was WRONG on the logic: the tail is NOT FW(r,0x30) — it is
  * lh (SIGNED short) at 0x30(s2) PLUS the materialized &D_00000000 base, with
  * s2 = *(char**)(&D+0x28) and an `or s0,s1` q-copy passed as a1 via reusing p.
@@ -33,7 +33,7 @@ void func_0001266C(char *a0, int a1) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000126EC)();
-void func_000126EC(char *arg0, s32 arg1) {
+void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
     register u16 *p;
     register s32 *q;
     s32 sp34;

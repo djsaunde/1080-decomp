@@ -8,8 +8,8 @@
 
 extern int func_00000000();
 
-/* func_00010B6C: record-append+init, the with-sub-object sibling of
- * func_00010AB0 (same 0x28-stride record array at +0x84, counter at +0x78).
+/* gui_addRowSub_00010B6C: record-append+init, the with-sub-object sibling of
+ * gui_addRow_00010AB0 (same 0x28-stride record array at +0x84, counter at +0x78).
  * MATCHED 2026-07-10 (72/72, zero diffs pre-link).
  * Key -O0 shapes: (1) STRUCT MEMBER-ARRAY form is load-bearing for the call
  * arg: `&a0->recs[a0->count].sub` emits `addu a0, <base>, <idx>` (base-first,
@@ -37,7 +37,7 @@ typedef struct {
     Rec10B6C recs[1];
 } Container10B6C;
 
-void func_00010B6C(Container10B6C *a0, void *a1, int a2, int a3) {
+void gui_addRowSub_00010B6C(Container10B6C *a0, void *a1, int a2, int a3) {
     register Container10B6C *p;
 
     a0->recs[a0->count].f88 = 1;

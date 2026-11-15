@@ -1,6 +1,6 @@
-nonmatching func_00013924, 0x5C
+nonmatching Fader_checkDone_00013924, 0x5C
 
-glabel func_00013924
+glabel Fader_checkDone_00013924
     /* DE4390 00013924 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE4394 00013928 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE4398 0001392C 3C013F80 */  lui        $at, (0x3F800000 >> 16)
@@ -26,4 +26,4 @@ glabel func_00013924
     /* DE43E0 00013974 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE43E4 00013978 03E00008 */  jr         $ra
     /* DE43E8 0001397C 00000000 */   nop
-endlabel func_00013924
+endlabel Fader_checkDone_00013924

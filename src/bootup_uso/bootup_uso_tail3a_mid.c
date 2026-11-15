@@ -6,11 +6,11 @@ extern int func_00000000();
  * Holds 0x11B5C..0x11C70 so the following o0_11C70 split keeps its offset. */
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_11B5C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-s32 func_00011B5C(s32 *a0) {
+s32 input_pauseAll_00011B5C(s32 *a0) {
     return 0;
 }
 
-void func_00011BF0(char *a0) {
+void input_unpauseAll_00011BF0(char *a0) {
     s32 i;
 
     i = 0;

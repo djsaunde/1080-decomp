@@ -1,6 +1,6 @@
-nonmatching func_00012C64, 0x100
+nonmatching replay_saveGhost, 0x100
 
-glabel func_00012C64
+glabel replay_saveGhost
     /* DE36D0 00012C64 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DE36D4 00012C68 AFBF0024 */  sw         $ra, 0x24($sp)
     /* DE36D8 00012C6C AFA40030 */  sw         $a0, 0x30($sp)
@@ -66,4 +66,4 @@ glabel func_00012C64
     /* DE37C4 00012D58 27BD0030 */  addiu      $sp, $sp, 0x30
     /* DE37C8 00012D5C 03E00008 */  jr         $ra
     /* DE37CC 00012D60 00000000 */   nop
-endlabel func_00012C64
+endlabel replay_saveGhost

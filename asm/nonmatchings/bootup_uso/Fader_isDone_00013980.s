@@ -1,6 +1,6 @@
-nonmatching func_00013980, 0x30
+nonmatching Fader_isDone_00013980, 0x30
 
-glabel func_00013980
+glabel Fader_isDone_00013980
     /* DE43EC 00013980 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DE43F0 00013984 44812000 */  mtc1       $at, $f4
     /* DE43F4 00013988 C4860048 */  lwc1       $f6, 0x48($a0)
@@ -14,4 +14,4 @@ glabel func_00013980
   .L000139A8:
     /* DE4414 000139A8 03E00008 */  jr         $ra
     /* DE4418 000139AC 00000000 */   nop
-endlabel func_00013980
+endlabel Fader_isDone_00013980

@@ -1,6 +1,6 @@
-nonmatching func_00012C10, 0x54
+nonmatching replay_freeRecord, 0x54
 
-glabel func_00012C10
+glabel replay_freeRecord
     /* DE367C 00012C10 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE3680 00012C14 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE3684 00012C18 AFA40018 */  sw         $a0, 0x18($sp)
@@ -24,4 +24,4 @@ glabel func_00012C10
     /* DE36C4 00012C58 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE36C8 00012C5C 03E00008 */  jr         $ra
     /* DE36CC 00012C60 00000000 */   nop
-endlabel func_00012C10
+endlabel replay_freeRecord

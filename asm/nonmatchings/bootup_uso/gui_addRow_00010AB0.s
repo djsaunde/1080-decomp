@@ -1,6 +1,6 @@
-nonmatching func_00010AB0, 0xBC
+nonmatching gui_addRow_00010AB0, 0xBC
 
-glabel func_00010AB0
+glabel gui_addRow_00010AB0
     /* DE151C 00010AB0 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* DE1520 00010AB4 240E0001 */  addiu      $t6, $zero, 0x1
     /* DE1524 00010AB8 8C8F0078 */  lw         $t7, 0x78($a0)
@@ -51,4 +51,4 @@ glabel func_00010AB0
     /* DE15CC 00010B60 27BD0008 */  addiu      $sp, $sp, 0x8
     /* DE15D0 00010B64 03E00008 */  jr         $ra
     /* DE15D4 00010B68 00000000 */   nop
-endlabel func_00010AB0
+endlabel gui_addRow_00010AB0

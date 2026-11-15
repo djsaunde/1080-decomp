@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donors for func_00011E00 / func_00011ED4 / func_00011FA8
+/* IDO 7.1 NCC (C++) -O0 donors for input_checkPressed_00011E00 / input_checkHeld_00011ED4 / input_checkReleased_00011FA8
  * (0xD4 / 53 words each): "first slot whose mask word (+0x18 / +0x10 / +0x1C)
  * has an a1 bit" (slot[] = a0 + 0xE0, a0->[0x128] == -1 scans all a0->[0x120]
  * slots). bootup_uso is C++: under cfe -O0 every fn carried an extra dead
@@ -6,7 +6,7 @@
  * return-value dead-double-b gap); edg's -O0 ucode has no such marker, so the
  * same body compiles to the shipped 53 words.
  * Spliced into bootup_uso_o0_11E00.c.o via REPLACE_FUNC_BODY. */
-extern "C" int func_00011E00(register int *a0, register int a1) {
+extern "C" int input_checkPressed_00011E00(register int *a0, register int a1) {
     int i;
     register int *p;
     if (a0[0x18C/4] == 0) {
@@ -25,7 +25,7 @@ ret0:
     return 0;
 }
 
-extern "C" int func_00011ED4(register int *a0, register int a1) {
+extern "C" int input_checkHeld_00011ED4(register int *a0, register int a1) {
     int i;
     register int *p;
     if (a0[0x18C/4] == 0) {
@@ -44,7 +44,7 @@ ret0:
     return 0;
 }
 
-extern "C" int func_00011FA8(register int *a0, register int a1) {
+extern "C" int input_checkReleased_00011FA8(register int *a0, register int a1) {
     int i;
     register int *p;
     if (a0[0x18C/4] == 0) {

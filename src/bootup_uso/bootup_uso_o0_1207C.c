@@ -11,10 +11,10 @@
  * word-for-word these -O0 bodies (the -g3 only bought the unfilled jr delay).
  * See docs/MATCHING_WORKFLOW.md twenty-first beql case. */
 
-void func_0001207C(int *a0, int a1) {
+void input_setActivePad_0001207C(int *a0, int a1) {
     *(int*)((char*)a0 + 0x128) = a1;
 }
 
-void func_00012090(int *a0) {
+void input_clearActivePad_00012090(int *a0) {
     *(int*)((char*)a0 + 0x128) = -1;
 }

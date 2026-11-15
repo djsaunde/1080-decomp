@@ -134,7 +134,7 @@ void Fader_func_0001304C(char *arg0) {
     volatile int r = 0;
 }
 
-int func_00013924(int *a0) {
+int Fader_checkDone_00013924(int *a0) {
     if (*(float*)((char*)a0 + 0x48) == 1.0f) {
         if (*(int*)((char*)a0 + 0x68) == 0) {
             func_00000000(&D_00000000, 1);
@@ -144,14 +144,14 @@ int func_00013924(int *a0) {
     return 0;
 }
 
-int func_00013980(float *a0) {
+int Fader_isDone_00013980(float *a0) {
     if (*(float*)((char*)a0 + 0x48) == 1.0f) {
         return 1;
     }
     return 0;
 }
 
-/* func_000139B0 - verified structural decode (0x170, 92 insns,
+/* Fader_start - verified structural decode (0x170, 92 insns,
  * 2D grid reset + random scatter).
  * (rand01 = func_00000000() with no args -> f0, a 0..1 RNG.)
  * Struct-typing reference: s1->0x58 (88) = base ptr of a 2D f32
@@ -169,7 +169,7 @@ extern float D_00000C64;
  * loops (grid[i++] = 0.0f, grid re-read from s1->0x58 each store); i and y
  * are zeroed in the for-init AFTER the early return (IDO hoists them, with
  * the 4 for s1->0x44, above the beq). The RNG (bootup.uso func_075EE4)
- * returns a float in f0; the finisher is func_00013B20(s1) (both jal 0).
+ * returns a float in f0; the finisher is Fader_buildTexture(s1) (both jal 0).
  * The scatter scale D_00000C64 is read once into a local before the loop
  * (a global read inside the loop would be reloaded after every call). The
  * bound 5 is a LOCAL (n = 5): a constant bound gets LFTR'd to bne, the
@@ -177,7 +177,7 @@ extern float D_00000C64;
  * index (the hand-shifted byte form takes one more t-register). */
 extern f32 func_00000000_139B0_f(void);
 extern void func_00000000_139B0_v(char *);
-void func_000139B0(char *s1, int a1, int a2) {
+void Fader_start(char *s1, int a1, int a2) {
     int i, k;
     int x, y, n;
     f32 sc;
@@ -214,9 +214,9 @@ void func_000139B0(char *s1, int a1, int a2) {
     *(float *)(s1 + 0x48) = 0.0f;
 }
 
-/* func_00013B20 - verified structural decode (0x144, 84 insns,
+/* Fader_buildTexture - verified structural decode (0x144, 84 insns,
  * LUT index->value remap with all-ones fallback).
- *   void func_00013B20(St *a0) {
+ *   void Fader_buildTexture(St *a0) {
  *       root = *(void**)(func_0000023C + 4);
  *       v = root->0x28;
  *       lut = (u16*)(*(fn)v->0x64)((s16)v->0x60 + root); // vtable
@@ -257,7 +257,7 @@ void func_000139B0(char *s1, int a1, int a2) {
  * own counters i / j; the root load is followed by two empty blocks (ring
  * lever). Three all-zero alignment words follow (SUFFIX_BYTES_FORCE). */
 extern char *bu_13b20_root;
-void func_00013B20(char *arg0) {
+void Fader_buildTexture(char *arg0) {
     char *o;
     char *vt;
     u16 *pal;
@@ -371,12 +371,12 @@ char *TimeGadget_ctor_00013D40(char *self) {
     return self;
 }
 
-void func_00013FE0(char *a0, int a1, int a2) {
+void TimeGadgetParms_setPos_00013FE0(char *a0, int a1, int a2) {
     *(int*)(a0 + 0x44) = a1;
     *(int*)(a0 + 0x5C) = a2;
 }
 
-void func_00013FEC(char *a0, int a1, int a2, int a3, int arg5) {
+void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int arg5) {
     *(int*)(a0 + 0x74) = a1;
     *(int*)(a0 + 0x8C) = a2;
     *(int*)(a0 + 0xA4) = a3;
@@ -679,7 +679,7 @@ end:
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadget_func_0001438C);
 #endif
 
-void func_000144B4(int *a0, int a1, int a2, float a3, float arg5) {
+void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5) {
     *(float*)((char*)a0 + 0x44) = (float)a1;
     *(float*)((char*)a0 + 0x5C) = (float)a2;
     *(float*)((char*)a0 + 0x88) = a3;

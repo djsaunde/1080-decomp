@@ -1,6 +1,6 @@
-nonmatching func_000120A8, 0x68
+nonmatching snd_playSeq_000120A8, 0x68
 
-glabel func_000120A8
+glabel snd_playSeq_000120A8
     /* DE2B14 000120A8 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE2B18 000120AC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE2B1C 000120B0 AFA40018 */  sw         $a0, 0x18($sp)
@@ -28,4 +28,4 @@ glabel func_000120A8
     /* DE2B70 00012104 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE2B74 00012108 03E00008 */  jr         $ra
     /* DE2B78 0001210C 00000000 */   nop
-endlabel func_000120A8
+endlabel snd_playSeq_000120A8

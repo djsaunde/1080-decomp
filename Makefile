@@ -381,10 +381,10 @@ build/src/bootup_uso/bootup_uso_o0_11A34.c.o: TRUNCATE_TEXT := 0x80
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11AB4.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_11AB4.c.o: TRUNCATE_TEXT := 0xA8
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: OPT_FLAGS := -O0
-# 11B5C: -O0 C++ donor(s) for func_00011B5C (edg -O0 has no dead closing-brace branch)
+# 11B5C: -O0 C++ donor(s) for input_pauseAll_00011B5C (edg -O0 has no dead closing-brace branch)
 BOOTUP_11B5C_DONOR := build/src/bootup_uso/bootup_uso_ncc_11B5C.cpp.o
 $(BOOTUP_11B5C_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: private REPLACE_FUNC_BODY += func_00011B5C=$(BOOTUP_11B5C_DONOR)
+build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: private REPLACE_FUNC_BODY += input_pauseAll_00011B5C=$(BOOTUP_11B5C_DONOR)
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: $(BOOTUP_11B5C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail3a_mid.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x114
 build/src/bootup_uso/bootup_uso_tail3a_mid.c.o: TRUNCATE_TEXT := 0x114
@@ -430,7 +430,7 @@ build/src/bootup_uso/bootup_uso_o0_11E00.c.o: TRUNCATE_TEXT := 0x27C
 build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x27C
 BOOTUP_11E00_DONOR := build/src/bootup_uso/bootup_uso_ncc_11E00.cpp.o
 $(BOOTUP_11E00_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: private REPLACE_FUNC_BODY += func_00011E00=$(BOOTUP_11E00_DONOR) func_00011ED4=$(BOOTUP_11E00_DONOR) func_00011FA8=$(BOOTUP_11E00_DONOR)
+build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: private REPLACE_FUNC_BODY += input_checkPressed_00011E00=$(BOOTUP_11E00_DONOR) input_checkHeld_00011ED4=$(BOOTUP_11E00_DONOR) input_checkReleased_00011FA8=$(BOOTUP_11E00_DONOR)
 build/src/bootup_uso/bootup_uso_o0_11E00.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_11E00.c.o: $(BOOTUP_11E00_DONOR)
 build/src/bootup_uso/bootup_uso_o0_1207C.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_1207C.c.o: OPT_FLAGS := -O0
 # 0x2C = two frameless -O0 FALL-OFF fns (1207C 0xC + its dead `$exit` pair
@@ -458,16 +458,16 @@ build/non_matching/src/bootup_uso/bootup_uso_o0_12BF8.c.o: NON_MATCHING_TRUNCATE
 build/src/bootup_uso/bootup_uso_o0_12DA4.c.o: TRUNCATE_TEXT := 0x1F0
 # 0x184C = exact len of the tail4 region (0x12E00..0x1464C); was 0x1850 (+4).
 build/src/bootup_uso/bootup_uso_tail4.c.o: TRUNCATE_TEXT := 0x184C
-# func_00013B20 (agent-c run 115): exact C body ends at 0x13C64; the target
+# Fader_buildTexture (agent-c run 115): exact C body ends at 0x13C64; the target
 # carries three all-zero alignment words before the next function. FORCE for
 # the natural-epilogue skip path; mirrored onto the NM object for the report.
-build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
+build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := Fader_buildTexture=0x00000000,0x00000000,0x00000000
 # 1304C = fire-grid blur + texture DL; C++ (inline next() appends, uopt block
 # boundaries placed with empty ifs). NCC donor, exact.
 BOOTUP_1304C_DONOR := build/src/bootup_uso/bootup_uso_ncc_1304C.cpp.o
 build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_func_0001304C=$(BOOTUP_1304C_DONOR)
 build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: $(BOOTUP_1304C_DONOR)
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := Fader_buildTexture=0x00000000,0x00000000,0x00000000
 # game_libs split around the 56 KB RSP microcode blob at 0xEBF8..0x1CA10.
 # Reduce sh_addralign to 4 so the three objects link back-to-back without
 # 16-byte padding between them. Size targets match the natural compiled

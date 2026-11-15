@@ -1,6 +1,6 @@
-nonmatching func_0001266C, 0x80
+nonmatching settings_applySoundMode_0001266C, 0x80
 
-glabel func_0001266C
+glabel settings_applySoundMode_0001266C
     /* DE30D8 0001266C 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE30DC 00012670 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE30E0 00012674 AFA40028 */  sw         $a0, 0x28($sp)
@@ -34,4 +34,4 @@ glabel func_0001266C
     /* DE314C 000126E0 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE3150 000126E4 03E00008 */  jr         $ra
     /* DE3154 000126E8 00000000 */   nop
-endlabel func_0001266C
+endlabel settings_applySoundMode_0001266C

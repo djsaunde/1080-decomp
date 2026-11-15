@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* bootup_uso 0x10C8C..0x116C7 remainder of the former tail3a mid-section,
- * moved out of bootup_uso_tail3a.c on 2026-07-10 when func_00010B6C
+ * moved out of bootup_uso_tail3a.c on 2026-07-10 when gui_addRowSub_00010B6C
  * (0x10B6C, -O0) was carved into bootup_uso_o0_10B6C.c. Same OPT_FLAGS as
  * tail3a was -O2 -g3 but both residents are -O0 (flipped 2026-07-10):
  * GameFlow_create is MATCHED (real C in build path); GameFlow_func_00010FEC is an
