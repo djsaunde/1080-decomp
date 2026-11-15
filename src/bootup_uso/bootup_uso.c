@@ -1332,7 +1332,7 @@ CamDirector *CamDirector_ctor(CamDirector *a0, int pad, int rider, int window, i
         if (a0 == 0) goto end;
     }
     func_00000000(a0, &D_0000731C); /* Node init, "<Node>" */
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000; /* vptr (Data 0x6FD8) */
+    *(int*)((char*)a0 + 0x28) = (int)&CamDirector_vtbl; /* vptr (Data 0x6FD8) */
     a0->pad = (struct RiderInput *)pad;
     a0->rider = (SnowBoarder *)rider;
     a0->window = (CamWindow *)window;

@@ -2438,7 +2438,7 @@ int* CamFollow_ctor(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char*)&D_00000000 + 0x1EA08);
-    ((Node *)a0)->vptr = (s32)&D_00000000;
+    ((Node *)a0)->vptr = (s32)&CamFollow_vtbl;
     a0[0x38/4] = a1;
     *(float*)((char*)a0 + 0x34) = 0.0f;
     *(float*)((char*)a0 + 0x30) = 0.0f;
