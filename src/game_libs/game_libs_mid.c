@@ -12,7 +12,7 @@ extern char D_8C3C_root_desc;
  * Covers gl_func_00008AE4..gl_func_000093DC (offset 0x8AE4..0x949C).
  * Built at -O2 (default). */
 
-/* gl_func_00008C3C — VERIFIED 92/92 reloc-resolved EXACT (2026-07-03, agent-e W5).
+/* app_launchNameEnt — VERIFIED 92/92 reloc-resolved EXACT (2026-07-03, agent-e W5).
  * Baseline was 88/92 raw = 84 byte-identical + 4 reloc-false (D_0000D138/D_0000D148
  * HI16/LO16: syms valued 0xD138/0xD148 in undefined_syms_auto.txt resolve to the
  * target's lui 0x1 / addiu -0x2EC8 words at link).
@@ -33,7 +33,7 @@ extern int gl_func_00000000();
 extern char D_00000000;
 extern char D_8C3C_child_desc, D_8C3C_mid_desc, D_8C3C_root_desc;
 extern char D_0000D138, D_0000D148, D_8C3C_v0;
-gl_func_00008C3C(a0, a1) int * a0; int a1; {
+app_launchNameEnt(a0, a1) int * a0; int a1; {
     int *call_root;       /* declared FIRST -> top local slot 0x34 (-O0 slots are decl-order top-down; register vars reserve the slots below) */
     register int *root;
     register int *mid;
@@ -63,7 +63,7 @@ gl_func_00008C3C(a0, a1) int * a0; int a1; {
     gl_func_00000000(a0, 0, root);
 }
 
-/* gl_func_00008DAC: 39-insn 4-call init sequencer. -O0 island (file built
+/* app_launchViewRec: 39-insn 4-call init sequencer. -O0 island (file built
  * OPT_FLAGS := -O0: all 4 args spilled at entry, unfilled jal delays, b-to-epilogue).
  * The 2nd arg is the data symbol at offset 0xD150 referenced DIRECTLY as
  * &D_0000D150 (defined = 0x0000D150 in undefined_syms) so -O0 emits the 2-insn
@@ -71,7 +71,7 @@ gl_func_00008C3C(a0, a1) int * a0; int a1; {
  * insns at -O0). rv kept in s0 via `register`. */
 extern int gl_func_00000000();
 extern char D_0000D150;
-void gl_func_00008DAC(int a0, int a1, int a2, int a3) {
+void app_launchViewRec(int a0, int a1, int a2, int a3) {
     register int rv;
     gl_func_00000000(&D_00000000, &D_0000D150);
     gl_func_00000000(&D_00000000, 8, 0, 0);
@@ -134,7 +134,7 @@ int gl_func_00008FFC(int a0, int a1, int a2) {
  * return-from-home; register int *obj keeps it in s1) — identical to 8FFC. */
 extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
 extern int D_0000004C, D_00000064;
-/* gl_func_00009100 [-O0 temp-slot CAP, 93.5%]: same class as gl_func_00008C3C /
+/* gl_func_00009100 [-O0 temp-slot CAP, 93.5%]: same class as app_launchNameEnt /
  * gl_func_00008FFC. obj is correctly `register` (s1) — objdiff reloc-resolves the
  * distinct-extern D_xxx loads so the lbu-0-vs-377 immediates already score matching;
  * the residual is the obj home-spill (target sw v0,52(sp) / reload, returns from the

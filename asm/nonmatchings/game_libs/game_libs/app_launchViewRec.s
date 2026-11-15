@@ -1,6 +1,6 @@
-nonmatching gl_func_00008DAC, 0x9C
+nonmatching app_launchViewRec, 0x9C
 
-glabel gl_func_00008DAC
+glabel app_launchViewRec
     /* DEDE84 00008DAC 27BDFFD8 */  .word 0x27BDFFD8
     /* DEDE88 00008DB0 AFBF001C */  .word 0xAFBF001C
     /* DEDE8C 00008DB4 AFA40028 */  .word 0xAFA40028
@@ -40,4 +40,4 @@ glabel gl_func_00008DAC
     /* DEDF14 00008E3C 27BD0028 */  .word 0x27BD0028
     /* DEDF18 00008E40 03E00008 */  .word 0x03E00008
     /* DEDF1C 00008E44 00000000 */  .word 0x00000000
-endlabel gl_func_00008DAC
+endlabel app_launchViewRec

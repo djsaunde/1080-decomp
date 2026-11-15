@@ -1,6 +1,6 @@
-nonmatching gl_func_00004244, 0x26BC
+nonmatching ColourParms_ctor, 0x26BC
 
-glabel gl_func_00004244
+glabel ColourParms_ctor
     /* DE931C 00004244 27BDF8B8 */  .word 0x27BDF8B8
     /* DE9320 00004248 AFB00028 */  .word 0xAFB00028
     /* DE9324 0000424C 00808025 */  .word 0x00808025
@@ -2480,4 +2480,4 @@ glabel gl_func_00004244
     /* DEB9CC 000068F4 8FB20030 */  .word 0x8FB20030
     /* DEB9D0 000068F8 03E00008 */  .word 0x03E00008
     /* DEB9D4 000068FC 27BD0748 */  .word 0x27BD0748
-endlabel gl_func_00004244
+endlabel ColourParms_ctor

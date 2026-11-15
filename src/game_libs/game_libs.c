@@ -1910,8 +1910,8 @@ void gl_func_000041D4(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-// gl_func_00004244 -- EXACT 2026-10-16 (agent-g); see the note above the function. Historical notes follow.
-/* gl_func_00004244 — BEST VERIFIED STATE 2363/2479 words (95.3% positional,
+// ColourParms_ctor -- EXACT 2026-10-16 (agent-g); see the note above the function. Historical notes follow.
+/* ColourParms_ctor — BEST VERIFIED STATE 2363/2479 words (95.3% positional,
  * byte-level vs own .s, 2026-07-03 agent-e w5). NOT exact; deliverable is this
  * best state + the corrected residual map below. Source below is byte-identical
  * to the in-tree NM wrap (no change improved it this session).
@@ -2124,7 +2124,7 @@ typedef struct { s32 v; } GlF1_4244;
  * only C forms that share a slot either drop the spill entirely or force
  * volatile reloads); 50 = lui-order schedule swap; 6 = prologue or-first.
  * Canonical "spilltemps region-sharing unreproduced" cap. */
-void *gl_func_00004244(char *arg0) {
+void *ColourParms_ctor(char *arg0) {
     GlV4_4244 u1_a;
     GlV4_4244 u1_b;
     GlV4_4244 u1_c;

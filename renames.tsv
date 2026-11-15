@@ -589,3 +589,6 @@ gl_func_0000C210	Backup_readGhost
 gl_func_0000C28C	Backup_writeGhost
 gl_func_0000C378	Backup_checkGhost
 gl_func_0000C46C	Backup_resetGhost
+gl_func_00004244	ColourParms_ctor
+gl_func_00008C3C	app_launchNameEnt
+gl_func_00008DAC	app_launchViewRec

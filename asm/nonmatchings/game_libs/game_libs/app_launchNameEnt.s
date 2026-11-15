@@ -1,6 +1,6 @@
-nonmatching gl_func_00008C3C, 0x170
+nonmatching app_launchNameEnt, 0x170
 
-glabel gl_func_00008C3C
+glabel app_launchNameEnt
     /* DEDD14 00008C3C 27BDFFC8 */  .word 0x27BDFFC8
     /* DEDD18 00008C40 AFBF0024 */  .word 0xAFBF0024
     /* DEDD1C 00008C44 AFA40038 */  .word 0xAFA40038
@@ -93,4 +93,4 @@ glabel gl_func_00008C3C
     /* DEDE78 00008DA0 27BD0038 */  .word 0x27BD0038
     /* DEDE7C 00008DA4 03E00008 */  .word 0x03E00008
     /* DEDE80 00008DA8 00000000 */  .word 0x00000000
-endlabel gl_func_00008C3C
+endlabel app_launchNameEnt
