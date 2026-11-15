@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00003558, 0x3F0
+nonmatching SnowChaseActor_update, 0x3F0
 
-glabel game_uso_func_00003558
+glabel SnowChaseActor_update
     /* 003558 00003558 27BDFF00 */  .word 0x27BDFF00
     /* 00355C 0000355C AFBF0024 */  .word 0xAFBF0024
     /* 003560 00003560 AFB00020 */  .word 0xAFB00020
@@ -253,4 +253,4 @@ glabel game_uso_func_00003558
     /* 00393C 0000393C 8FB00020 */  .word 0x8FB00020
     /* 003940 00003940 03E00008 */  .word 0x03E00008
     /* 003944 00003944 27BD0100 */  .word 0x27BD0100
-endlabel game_uso_func_00003558
+endlabel SnowChaseActor_update

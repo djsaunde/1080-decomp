@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_00003558 (0x3F0 / 252 words): EXACT
+/* IDO 7.1 NCC (C++) donor for SnowChaseActor_update (0x3F0 / 252 words): EXACT
  * (agent-c run 340, 1008 / 1008 bytes), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_uso.c on both paths (MATCHING_WORKFLOW
  * #game-uso-ncc-cplusplus-donor-recipe). Was the NM-only comparison donor
@@ -74,7 +74,7 @@ void game_uso_func_071028(Vec3 *);
 void game_uso_func_072EE8(void *, Vec3 *);
 }
 struct Ctx { Node *out; Node *getOut() const { return out; } };
-extern "C" void game_uso_func_00003558(S *s0) {
+extern "C" void SnowChaseActor_update(S *s0) {
     if (1) {} Ctx c = { s0->node }; if (1) {} /* agent-c run 340: block splits around the ctx init (constrained climb, kit CDXXXII 6) */
     Vec3 va;
     Vec3 vb;

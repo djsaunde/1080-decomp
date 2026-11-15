@@ -3053,7 +3053,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_E35C_DONOR)
 # 57D8 = mode-value pick (8-way switch = edg case-order chain; cfe jumptables it) + mode dispatch; 81/81 under NCC, cfe capped at 82.5%.
 GAMEUSO_57D8_DONOR := build/src/game_uso/game_uso_ncc_57D8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000057D8=$(GAMEUSO_57D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_update=$(GAMEUSO_57D8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_57D8_DONOR)
 # 6A30: Vec3 value class + derived-class ctor protocol (bnez &pt / new(12)); cfe capped at 93.2%.
 GAMEUSO_6A30_DONOR := build/src/game_uso/game_uso_ncc_6A30.cpp.o
@@ -3085,7 +3085,7 @@ $(GAMEUSO_3AC0_DONOR): src/game_uso/game_uso_ncc_3AC0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -woff 3255 -o $@ $<
 	$(OBJCOPY) --redefine-sym __nw__FUi=game_uso_func_055750 $@
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003AC0=$(GAMEUSO_3AC0_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += CourseMarker_registerTemplates=$(GAMEUSO_3AC0_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3AC0_DONOR)
 # 0000: cubic B-spline basis; the 1/6 is a float literal (a uopt constant
 # candidate, coloured after omt/t2/t3) -- 40/40 words. The host placeholder
@@ -3208,7 +3208,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # getPos through an inline `mtx.me()` gives both matrix pointers their own LR (v1); named V3 e, dead early f23D4 call
 # and a two-int block before the matrix read = the target's homes).
 GAMEUSO_1DDC_DONOR := build/src/game_uso/game_uso_ncc_1DDC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00001DDC=$(GAMEUSO_1DDC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorCam_update=$(GAMEUSO_1DDC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_1DDC_DONOR)
 # 28C0: NM-only NCC donor (camera homing, V3 class; regs/one else-arm slot differ).
 GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
@@ -4112,16 +4112,16 @@ build/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4
 build/non_matching/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_uso_func_000028C0.c.o: src/match_imports/game_uso_func_000028C0.c src/match_imports/context_game_uso.h
+build/src/match_imports/SnowChaseActorLook_update.c.o: src/match_imports/SnowChaseActorLook_update.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_uso_func_000028C0.c.o: src/match_imports/game_uso_func_000028C0.c src/match_imports/context_game_uso.h
+build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o: src/match_imports/SnowChaseActorLook_update.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_uso_func_000041C0.c.o: src/match_imports/game_uso_func_000041C0.c src/match_imports/context_game_uso.h
+build/src/match_imports/CourseMarkerTmpl_create.c.o: src/match_imports/CourseMarkerTmpl_create.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_uso_func_000041C0.c.o: src/match_imports/game_uso_func_000041C0.c src/match_imports/context_game_uso.h
+build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o: src/match_imports/CourseMarkerTmpl_create.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/game_uso_func_00007448.c.o: src/match_imports/game_uso_func_00007448.c src/match_imports/context_game_uso.h
@@ -4678,18 +4678,18 @@ build/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/src/match_imports
 build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o scripts/match-origins-gl_func_000697C4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000697C4-nm.ld -e gl_func_000697C4 -o $@ $@.stripped.o
-build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf: build/src/match_imports/game_uso_func_000028C0.c.o scripts/match-origins-game_uso_func_000028C0.ld
+build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf: build/src/match_imports/SnowChaseActorLook_update.c.o scripts/match-origins-SnowChaseActorLook_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000028C0.ld -e game_uso_func_000028C0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o scripts/match-origins-game_uso_func_000028C0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowChaseActorLook_update.ld -e SnowChaseActorLook_update -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf: build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o scripts/match-origins-SnowChaseActorLook_update-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000028C0-nm.ld -e game_uso_func_000028C0 -o $@ $@.stripped.o
-build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf: build/src/match_imports/game_uso_func_000041C0.c.o scripts/match-origins-game_uso_func_000041C0.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowChaseActorLook_update-nm.ld -e SnowChaseActorLook_update -o $@ $@.stripped.o
+build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf: build/src/match_imports/CourseMarkerTmpl_create.c.o scripts/match-origins-CourseMarkerTmpl_create.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000041C0.ld -e game_uso_func_000041C0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o scripts/match-origins-game_uso_func_000041C0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CourseMarkerTmpl_create.ld -e CourseMarkerTmpl_create -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf: build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o scripts/match-origins-CourseMarkerTmpl_create-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_000041C0-nm.ld -e game_uso_func_000041C0 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CourseMarkerTmpl_create-nm.ld -e CourseMarkerTmpl_create -o $@ $@.stripped.o
 build/src/match_imports/game_uso_func_00007448.c.o.linked.elf: build/src/match_imports/game_uso_func_00007448.c.o scripts/match-origins-game_uso_func_00007448.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_00007448.ld -e game_uso_func_00007448 -o $@ $@.stripped.o
@@ -5108,14 +5108,14 @@ build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/src/mat
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4.json $@
 build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4-nm.json $@
-build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000028C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000028C0.json $@
-build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000028C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000028C0-nm.json $@
-build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000041C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000041C0.json $@
-build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf scripts/match-bindings-game_uso_func_000041C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_000041C0-nm.json $@
+build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf scripts/match-bindings-SnowChaseActorLook_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowChaseActorLook_update.json $@
+build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf scripts/match-bindings-SnowChaseActorLook_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowChaseActorLook_update-nm.json $@
+build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf: build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf scripts/match-bindings-CourseMarkerTmpl_create.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CourseMarkerTmpl_create.json $@
+build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf scripts/match-bindings-CourseMarkerTmpl_create-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CourseMarkerTmpl_create-nm.json $@
 build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_00007448.c.o.linked.elf scripts/match-bindings-game_uso_func_00007448.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_00007448.json $@
 build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf scripts/match-bindings-game_uso_func_00007448-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5486,14 +5486,14 @@ build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_0
 build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000697C4=build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000028C0=build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000028C0.c scripts/match-bindings-game_uso_func_000028C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000028C0=build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000028C0.c scripts/match-bindings-game_uso_func_000028C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000041C0=build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000041C0.c scripts/match-bindings-game_uso_func_000041C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000041C0=build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_000041C0.c scripts/match-bindings-game_uso_func_000041C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorLook_update=build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/SnowChaseActorLook_update.c scripts/match-bindings-SnowChaseActorLook_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorLook_update=build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/SnowChaseActorLook_update.c scripts/match-bindings-SnowChaseActorLook_update-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += CourseMarkerTmpl_create=build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/CourseMarkerTmpl_create.c scripts/match-bindings-CourseMarkerTmpl_create.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += CourseMarkerTmpl_create=build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/CourseMarkerTmpl_create.c scripts/match-bindings-CourseMarkerTmpl_create-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007448=build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
 build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00007448.c scripts/match-bindings-game_uso_func_00007448.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00007448=build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
@@ -5517,7 +5517,7 @@ build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_00
 # 3558: EXACT (agent-c run 340, kit CDXXXII) via the NCC (C++) donor game_uso_ncc_3558.cpp (was the NM-only
 # comparison donor _nm.cpp, agent-g run 160 value-class rewrite), spliced over the placeholder on both paths.
 GAMEUSO_3558_DONOR := build/src/game_uso/game_uso_ncc_3558.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00003558=$(GAMEUSO_3558_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActor_update=$(GAMEUSO_3558_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_DONOR)
 # 7C1C: EXACT (agent-c run 231) via the cfront-style cfe C donor game_uso_7C1C.c (kits CCXL / CCXLI),
 # filtered out of C_FILES and spliced over the placeholder on both paths. The placeholder re-emits the
@@ -5530,7 +5530,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # `v0 * 1` const-first compare and the selector inner joins through `scale`), filtered out of C_FILES
 # and spliced over the placeholder on both paths. No rodata / late_rodata.
 GAMEUSO_591C_DONOR := build/src/game_uso/game_uso_591C.c.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000591C=$(GAMEUSO_591C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_0000591C=$(GAMEUSO_591C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_591C_DONOR)
 # 8CD8: EXACT MIPSpro 7.2.1 donor (709/709; agent-h run 428 on agent-c run 426's frame body): native 4-entry phase
 # table at RoData +0x100 = in-place %lo (layout-only game_uso_func_00008CD8_lay in the donor);
@@ -5892,14 +5892,14 @@ build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000697
 build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
-build/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_uso_func_000028C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
-build/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_uso_func_000041C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
+build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf
+build/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CourseMarkerTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf
 build/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_00007448.c.o.linked.elf.bound.elf

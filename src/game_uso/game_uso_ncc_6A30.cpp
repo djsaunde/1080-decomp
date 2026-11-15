@@ -55,7 +55,7 @@ struct W {
 };
 struct Self;
 extern "C" {
-int game_uso_func_00007ACC(Self *, int *, Vec3 *, int);
+int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
 Vec3 game_uso_func_00007C1C(Self *, int, int, Vec3 *, int);
 float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
 void game_uso_func_000110A4(int);
@@ -75,7 +75,7 @@ extern "C" void game_uso_func_00006A30(Self *s0) {
         int r1;
         int v94;
         va += s0->w->vel * s0->fA8;
-        r1 = game_uso_func_00007ACC(s0, &v94, &va, 0);
+        r1 = SnowAI_func_00007ACC(s0, &v94, &va, 0);
         if (r1 == 0) return;
         Vec3 rv = game_uso_func_00007C1C(s0, r1, v94, &va, 0);
         XZ pt(s0->w->at);

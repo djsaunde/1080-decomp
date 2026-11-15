@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000B8D4, 0x2B8
+nonmatching LensFlare_create, 0x2B8
 
-glabel game_uso_func_0000B8D4
+glabel LensFlare_create
     /* 00B8D4 0000B8D4 27BDFF80 */  .word 0x27BDFF80
     /* 00B8D8 0000B8D8 AFB20020 */  .word 0xAFB20020
     /* 00B8DC 0000B8DC AFB00018 */  .word 0xAFB00018
@@ -175,4 +175,4 @@ glabel game_uso_func_0000B8D4
     /* 00BB80 0000BB80 8FB1001C */  .word 0x8FB1001C
     /* 00BB84 0000BB84 03E00008 */  .word 0x03E00008
     /* 00BB88 0000BB88 27BD0080 */  .word 0x27BD0080
-endlabel game_uso_func_0000B8D4
+endlabel LensFlare_create

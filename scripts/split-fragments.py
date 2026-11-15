@@ -16,7 +16,7 @@ Usage:
     scripts/split-fragments.py --list
 
     # Split a specific function at its first mid-jr boundary:
-    scripts/split-fragments.py game_uso_func_00001D30
+    scripts/split-fragments.py SnowChaseActorCam_ctor
 
     # Split every high-confidence candidate (leaf-shaped tail, ≥3 insns):
     scripts/split-fragments.py --all

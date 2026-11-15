@@ -1,5 +1,5 @@
 {
-  "function": "game_uso_func_000041C0",
+  "function": "CourseMarkerTmpl_create",
   "raw_sha256": "6bb35d05c4ba0983b8abcb50bbe310a4caea88987eaee8243b7d4171c04ea219",
   "renames": {
     "game_uso_func_055750": "snw_port_game_uso_func_000041C0_game_uso_func_055750",

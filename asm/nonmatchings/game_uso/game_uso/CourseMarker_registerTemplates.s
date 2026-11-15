@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00003AC0, 0x414
+nonmatching CourseMarker_registerTemplates, 0x414
 
-glabel game_uso_func_00003AC0
+glabel CourseMarker_registerTemplates
     /* 003AC0 00003AC0 27BDFF90 */  .word 0x27BDFF90
     lui $t6, %hi(game_uso_D_807FEC70)   /* 003AC4 3C0E0000 -> game_uso_D_807FEC70 */
     /* 003AC8 00003AC8 8DCE0680 */  .word 0x8DCE0680
@@ -262,7 +262,7 @@ glabel game_uso_func_00003AC0
     /* 003EC8 00003EC8 27BD0070 */  .word 0x27BD0070
     /* 003ECC 00003ECC 03E00008 */  .word 0x03E00008
     /* 003ED0 00003ED0 00000000 */  .word 0x00000000
-endlabel game_uso_func_00003AC0
+endlabel CourseMarker_registerTemplates
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */

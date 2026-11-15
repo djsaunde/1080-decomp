@@ -12173,7 +12173,7 @@ void snd_SetPlayer2VolumeLevel_2D784(int a0) {
  * combo precedent exists in feedback-prefix-bytes-plus-insn-patch-
  * breaks-documented-caps.
  *
- * 2026-05-08 (later, after game_uso_func_00001DDC `0.0f*0.0f` → memory-load
+ * 2026-05-08 (later, after SnowChaseActorCam_update `0.0f*0.0f` → memory-load
  * +0.73pp finding): no zero-term cite-applicable here — this function uses
  * integer args (0x41010000 etc as int constants, not float-zero terms).
  * 2026-05-11: had promoted with the measured C body plus

@@ -1,5 +1,5 @@
 {
-  "function": "game_uso_func_000028C0",
+  "function": "SnowChaseActorLook_update",
   "raw_sha256": "fdb0ed386d1c9c39b161c9edbfead7460ff2baf3f8b404190de20e293a68eb4d",
   "renames": {
     "game_uso_28C0_rotate": "snw_port_game_uso_func_000028C0_game_uso_28C0_rotate",

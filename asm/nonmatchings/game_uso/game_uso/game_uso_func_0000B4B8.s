@@ -163,7 +163,7 @@ endlabel game_uso_func_0000B4B8
 .word 0x3C23D70A, 0x00000000
 /* +0x158..+0x160: double of NCC-donor fn game_uso_func_0000B750 (ldc1 %lo 0x158) */
 .word 0x3FB99999, 0x9999999A
-/* +0x160..+0x168: 2 floats of C fn game_uso_func_0000B8D4 (lwc1 %lo 0x160/0x164) */
+/* +0x160..+0x168: 2 floats of C fn LensFlare_create (lwc1 %lo 0x160/0x164) */
 .word 0x3F4CCCCD, 0x3F19999A
 /* +0x168..+0x180: 3 doubles of NCC-donor fn game_uso_func_0000BB8C (ldc1 %lo 0x168..0x178) */
 .word 0x3FB99999, 0x9999999A, 0x3F847AE1, 0x47AE147B

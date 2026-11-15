@@ -1031,13 +1031,13 @@ extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
  * constant stores -- the target stores them in source order reusing f0 for
  * 0/-1000/1000 (64 in f4); here uopt hoists all four constants and reorders
  * the stores. */
-/* game_uso_func_000018FC: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
+/* SnowChaseActorCam_readParms: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
  * with the 3018 recipe (docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018):
  * per-stage struct copy `prm = T`, s0 as the parameter, `if (1) {}` between
  * the stage-1 vectors and int zeros in hi, and the pad map re-fit (no g8,
  * g0[3], one int after o1). */
 typedef struct { int w; } T4_18FC;
-void *game_uso_func_000018FC(char *s0) {
+void *SnowChaseActorCam_readParms(char *s0) {
     Vec3 hi;
     Vec3 lo;
     struct { T4_18FC idx; Vec3 v; } big;
@@ -1114,7 +1114,7 @@ void *game_uso_func_000018FC(char *s0) {
  * (drop the `register char *p = a0;` fresh local). With direct
  * param-mutation, IDO schedules `move s0, a0` BEFORE the sw ra/a1/a2
  * chain (matching target) instead of into the bne delay slot. */
-char *game_uso_func_00001D30(char *a0, int a1, int a2, int a3) {
+char *SnowChaseActorCam_ctor(char *a0, int a1, int a2, int a3) {
     if (a0 == 0) {
         a0 = (char*)gl_func_00000000(0x124);
         if (a0 == 0) goto end;
@@ -1138,7 +1138,7 @@ void game_uso_func_00001DC4(void *a0) {
     *(f32*)((char*)a0 + 0x34) = 0.0f;
 }
 
-/* game_uso_func_00001DDC: 0x5F8 (382 words). Two-pass entity homing.
+/* SnowChaseActorCam_update: 0x5F8 (382 words). Two-pass entity homing.
  * key 0 does nothing; key 3 mirrors the source orientation into out+0x60
  * and out+0xA0. Other keys apply planar and vertical magnitude clamps,
  * emit each correction via 072EE8, and commit the frame-delta Vec3.
@@ -1196,7 +1196,7 @@ extern float game_uso_func_070238(float);
 extern void game_uso_func_071028(Vec3 *v);
 extern void game_uso_func_072EE8(char *dst, Vec3 *v);
 
-void game_uso_func_00001DDC(int *a0) {
+void SnowChaseActorCam_update(int *a0) {
     /* Descending stack homes; dead slots retain the target layout. */
     float m[3];
     char *outh[1];
@@ -1376,7 +1376,7 @@ void game_uso_func_00001DDC(int *a0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_1DDC.cpp (agent-g run 168 lift,
  * agent-c run 240 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-void game_uso_func_00001DDC(int *a0) {
+void SnowChaseActorCam_update(int *a0) {
 }
 #endif
 
@@ -1409,7 +1409,7 @@ Vec3* game_uso_func_000023D4(Vec3 *a0, char *a1) {
 
 extern void game_uso_func_00000000();
 
-void game_uso_func_0000249C(char *a0) {
+void SnowChaseActorCam_func_0000249C(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
@@ -1430,7 +1430,7 @@ void game_uso_func_00002714(int *a0, unsigned int a1, int a2) {
     game_uso_func_000024BC(a0, (int *)a2);
 }
 
-/* game_uso_func_00002744: 52-insn (0xD0) lazy-init/sub-allocator wrapper.
+/* SnowChaseActorLook_readParms: 52-insn (0xD0) lazy-init/sub-allocator wrapper.
  * Pattern: take optional pre-existing pointer; if NULL, alloc(0x20). Then if
  * matched a sentinel constraint (a1 == -8), alloc(0x18) for an inner object
  * and chain-init via gl_func_00000000(.., .., handle, 1).
@@ -1477,9 +1477,9 @@ void game_uso_func_00002714(int *a0, unsigned int a1, int a2) {
  * var_a1 spill at sp+0x38 vs sp+0x2C, plus the dead-store(0x34)/spill(0x1C)
  * two-homes-no-reload pattern that IDO only emits with the original (lost)
  * source. NATURAL CEILING ~95.40% NM; remaining gap = sp-offset coloring. */
-/* game_uso_func_00002744 — EXACT 52/52 words (self-verified clean rebuild of
+/* SnowChaseActorLook_readParms — EXACT 52/52 words (self-verified clean rebuild of
  * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/game_uso_func_00002744.s; jal words
+ * asm/nonmatchings/game_uso/game_uso/SnowChaseActorLook_readParms.s; jal words
  * 0x0C000000 both sides).
  * Levers that cracked the "sp-offset coloring / two-homes-no-reload" cap:
  *  (1) PARAM REUSE: drop var_a1, reassign arg0 itself -> IDO homes the spill
@@ -1497,7 +1497,7 @@ void game_uso_func_00002714(int *a0, unsigned int a1, int a2) {
  *  (4) STRUCT-BY-VALUE ARG (One1): passing init_arg_copy (1-word struct) to
  *      K&R gl_func emits lw a2,0x1C + outgoing-arg home sw a2,8(sp) in the
  *      jal delay (int arg would drop the home store). */
-void *game_uso_func_00002744(void *arg0) {
+void *SnowChaseActorLook_readParms(void *arg0) {
   int init_arg;
   void *var_v1;
   volatile int pad_a;
@@ -1545,10 +1545,10 @@ void *game_uso_func_00002744(void *arg0) {
 
 }
 
-/* Mirror of game_uso_func_00001D30 (alloc(0x64) variant; dispatch table
+/* Mirror of SnowChaseActorCam_ctor (alloc(0x64) variant; dispatch table
  * at &D_0+0x360). Lever: reuse a0 (drop the `register char *p = a0`
  * fresh local). */
-char *game_uso_func_00002814(char *a0, int a1, int a2, int a3) {
+char *SnowChaseActorLook_ctor(char *a0, int a1, int a2, int a3) {
     if (a0 == 0) {
         a0 = (char*)gl_func_00000000(0x64);
         if (a0 == 0) goto end;
@@ -1572,14 +1572,14 @@ void game_uso_func_000028A8(void *a0) {
     *(f32*)((char*)a0 + 0x34) = 0.0f;
 }
 
-// game_uso_func_000028C0 — STRUCTURAL PASS (0x3E8 / 250 words,
+// SnowChaseActorLook_update — STRUCTURAL PASS (0x3E8 / 250 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic segment). Hand-decoded entry/shape; multi-run target.
 //
 // Per-object FP transform / world-matrix builder, gated by object
 // state.
 //
-//   void game_uso_func_000028C0(Obj *obj) {              // obj -> a2
+//   void SnowChaseActorLook_update(Obj *obj) {              // obj -> a2
 //     sp.cache0 = obj->0x14;                              // sp+0xE4
 //     sp.cache1 = obj->0x3C->0x38;                        // sp+0xE0
 //     if (obj->0x40 == 0) return;
@@ -1606,7 +1606,7 @@ void game_uso_func_000028A8(void *a0) {
 //   body. Multi-run.
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
 #ifdef NON_MATCHING
-/* game_uso_func_070238/071028/072EE8 declared near game_uso_func_00001DDC. */
+/* game_uso_func_070238/071028/072EE8 declared near SnowChaseActorCam_update. */
 /* 2CC8/A0E8-family per-object world-transform builder. mode=a0->0x40 dispatch.
  * Both arms compute a position-delta Vec3 (relative to out->0xA0 origin),
  * route it through scratch Vec3 slots (IDO emits 3-word lw/sw block copies),
@@ -1618,7 +1618,7 @@ void game_uso_func_000028A8(void *a0) {
  *   plus a local-frame offset from game_uso_func_000023D4).
  * mode!=0,1: build a +/-1000 z-axis probe (sign from mode==3), rotate it by
  *   the s 3x3 matrix at s->0x70.., add s->0x38->0xA0 origin, delta vs out. */
-void game_uso_func_000028C0(char *a0) {
+void SnowChaseActorLook_update(char *a0) {
     /* Fresh-Vec3 / 1DDC-family kit: descending slot ladder, dead-gap pads,
      * two-hop diff->scratch->dc2 chain (mode 1), single-hop axis->axisc +
      * in-place diff over the ssv home (else arm). Ground truth expected/.o:
@@ -1726,10 +1726,10 @@ void game_uso_func_000028C0(char *a0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000028C0);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowChaseActorLook_update);
 #endif
 
-void game_uso_func_00002CA8(char *a0) {
+void SnowChaseActorLook_func_00002CA8(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
@@ -1754,7 +1754,7 @@ void game_uso_func_00002FF8(void) {
     game_uso_func_00000000();
 }
 
-/* game_uso_func_00003018: EXACT 2026-10-21 (agent-g run 116), from 93.1 NM.
+/* SnowChaseActor_readParms: EXACT 2026-10-21 (agent-g run 116), from 93.1 NM.
  * Three changes to the run-106 body: (1) each stage stores the template word
  * into its per-stage struct and copies the STRUCT (`T.w = G; prm = T;`) --
  * the `.w` copy put the load in v0 and the shared store first; (2) s0 is the
@@ -1765,7 +1765,7 @@ void game_uso_func_00002FF8(void) {
  * stores: every constant then lives in $f0 in turn, as in the target.
  * docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018.
  *
- * game_uso_func_00003018: 291-insn (0x48C) alloc-cascade constructor, frame
+ * SnowChaseActor_readParms: 291-insn (0x48C) alloc-cascade constructor, frame
  * -0xE8. RECONSTRUCTED from expected/game_uso.c.o to the REAL callees + globals:
  *   alloc  = game_uso_func_055750(size)
  *   init   = game_uso_func_04A188(obj, s0, *D_807FE9xx[+TVAL], 1)
@@ -1815,7 +1815,7 @@ extern char game_uso_D_807FE608, game_uso_D_807FE620, game_uso_D_807FE964,
             game_uso_D_807FE96C, game_uso_D_807FE970, game_uso_D_807FE974,
             game_uso_D_807FE978, game_uso_D_807FE97C, game_uso_D_807FE980,
             game_uso_D_807FE984, game_uso_D_807FE988, game_uso_D_807FE98C;
-void *game_uso_func_00003018(char *s0) {
+void *SnowChaseActor_readParms(char *s0) {
     Vec3 hi;
     Vec3 lo;
     struct { T4_3018 idx; Vec3 v; } big;
@@ -1886,7 +1886,7 @@ T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
 }
 
 
-/* game_uso_func_000034A4: 45-insn alloc-or-passthrough constructor, sibling of
+/* SnowChaseActor_ctor: 45-insn alloc-or-passthrough constructor, sibling of
  * game_uso_func_00000858 (same alloc-if-null + init + set-vtable + conditional
  * 04C774(self,1,a3) + field-init-with-floats idiom). MATCHED 2026-06-20 by
  * reconstruction from the resolved .s: the prior body used gl_func_00000000
@@ -1903,16 +1903,16 @@ T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
 extern char game_uso_D_807FE990;
 extern char game_uso_D_807FE8A8;
 extern void game_uso_func_04C678(int *dst, void *tmpl);
-extern void *game_uso_func_00003018();
+extern void *SnowChaseActor_readParms();
 
-int *game_uso_func_000034A4(int *a0, int a1, int a2, int a3) {
+int *SnowChaseActor_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 == 0) {
         a0 = (int *)game_uso_func_055750(0x138);
         if (a0 == 0) goto out;
     }
     game_uso_func_04C678(a0, (char *)&game_uso_D_807FE990 + 0x3A0);
     *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8;
-    game_uso_func_00003018((int*)((char*)a0 + 0x50));
+    SnowChaseActor_readParms((int*)((char*)a0 + 0x50));
     if (a3 != 0) game_uso_func_04C774(a0, 1, a3);
     *(int*)((char*)a0 + 0x48) = a1;
     *(int*)((char*)a0 + 0x4C) = a2;
@@ -1927,7 +1927,7 @@ out:
     return a0;
 }
 
-/* game_uso_func_00003558: 252-insn (0x3F0) heavy state-builder. Frame -0x100,
+/* SnowChaseActor_update: 252-insn (0x3F0) heavy state-builder. Frame -0x100,
  * saves s0/ra and double-FPU $f20/$f21 (sdc1 at 0x18). Sibling of
  * game_uso_func_00003A4C (also frame-0xB0+ data-init).
  *
@@ -1978,9 +1978,9 @@ out:
  * the sub-frame build at p->[0x48] (mtc1 zero,$f20 + 2 gl_func, currently
  * elided). Picked source-2 (sibling of 0x3AC0). INCLUDE_ASM is the build
  * path so ROM stays byte-correct. */
-/* game_uso_func_00003558: 252-insn (0x3F0) camera/spring vector solve. Frame
+/* SnowChaseActor_update: 252-insn (0x3F0) camera/spring vector solve. Frame
  * -0x100, saves s0/ra + double $f20/$f21 (sdc1 0x18 / ldc1 epilogue), f20=0.0f
- * sentinel used by the 3-way clamp. Sibling of game_uso_func_00001DDC's solve
+ * sentinel used by the 3-way clamp. Sibling of SnowChaseActorCam_update's solve
  * tail; shares the Vec3 double-buffer fanout and the (070238 / 071028 / 072EE8)
  * callee triple.
  *
@@ -2057,7 +2057,7 @@ extern void game_uso_func_072EE8(char *dst, Vec3 *v);
 #endif
 
 #if 0 /* cfe reference body (pre-NCC), not compiled */
-void game_uso_func_00003558(char *s0) {
+void SnowChaseActor_update(char *s0) {
     char * volatile p;       /* home sp+0xFC (reloaded per use) */
     float va[3];             /* sp+0xF0 */
     float vb[3];             /* sp+0xE4 */
@@ -2176,13 +2176,13 @@ void game_uso_func_00003558(char *s0) {
 
 
 #else
-void game_uso_func_00003558(char *s0) {
+void SnowChaseActor_update(char *s0) {
     /* placeholder; the body is spliced from game_uso_ncc_3558.cpp (no rodata / data) */
     s0[0] = 0;
 }
 #endif
 
-void game_uso_func_00003948(char *a0) {
+void SnowChaseActor_func_00003948(char *a0) {
     game_uso_func_00000000(a0 + 0x50);
 }
 
@@ -2246,7 +2246,7 @@ int *game_uso_func_00003A28(int *arg0) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_uso/game_uso/game_uso_func_00003A28_pad.s")
 
-/* game_uso_func_00003AC0: 261-insn (0x414) list builder, EXACT from the IDO
+/* CourseMarker_registerTemplates: 261-insn (0x414) list builder, EXACT from the IDO
  * 7.1 NCC donor src/game_uso/game_uso_ncc_3AC0.cpp (REPLACE_FUNC_BODY).
  * Twelve `add(arg0, new Item(name_k), -1)` statements: name_k is read from
  * game_uso_D_807FEC70+0x680 .. game_uso_D_807FEC9C+0x6AC, Item is 0x58 bytes
@@ -2258,7 +2258,7 @@ int *game_uso_func_00003A28(int *arg0) {
  * the 3ED4 .rodata word the old .s carried (+0x90, 0x40490FDB) stays put.
  * docs/IDO_CODEGEN.md#ncc-3ac0-new-expr-param-pool. Body below is a
  * placeholder for the splice. */
-float game_uso_func_00003AC0(int *a0) {
+float CourseMarker_registerTemplates(int *a0) {
     volatile int *ret = a0;
     return 3.14159274f; /* keeps game_uso_func_00003ED4's .rodata pi at +0x90 */
 }
@@ -2396,7 +2396,7 @@ static void game_uso_func_00004168(Quad4 *dst) {
 }
 
 #ifdef NON_MATCHING
-/* game_uso_func_000041C0: cascading subsystem-init constructor (frame -0x48).
+/* CourseMarkerTmpl_create: cascading subsystem-init constructor (frame -0x48).
  * Whole-body re-decode 2026-06-24 from expected/.o (size 0x218). alloc(0x8C)
  * + init(051C28) + set vtable slot 0x28; obj = p1+0x3C (realloc(0x50) only if
  * obj==0). Three dead sentinel-guarded sub-stages (obj == -8/-0x20/-0x38,
@@ -2437,7 +2437,7 @@ typedef struct { int w; } T4_41C0;
  * the argument is the earlier load (3A28's trick). Frame and every slot
  * match. LEFT: the target puts the node store `sw v0,64` in the 07ACE0 jal
  * delay slot and the p1 spill before it; here the order is swapped. */
-int *game_uso_func_000041C0(int a0) {
+int *CourseMarkerTmpl_create(int a0) {
     char *p1;
     char *x;
     char *obj;
@@ -2501,7 +2501,7 @@ int *game_uso_func_000041C0(int a0) {
     return (int *)p1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_000041C0);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", CourseMarkerTmpl_create);
 #endif
 
 /* game_uso_func_000043D8: nearest neighbours of a1's value among the owner's
@@ -2519,12 +2519,12 @@ void *game_uso_func_000043D8(int **a0, int *a1, void *a2) {
     return 0;
 }
 
-void game_uso_func_000044C8(char *a0) {
+void CourseMarker_func_000044C8(char *a0) {
     game_uso_func_00000000(a0);
     game_uso_func_00000000(a0 + 0x3C);
 }
 
-/* game_uso_func_000044F4: 0x1234 (1165 insns, 4.6 KB) — spine candidate #1
+/* SnowAI_ctor: 0x1234 (1165 insns, 4.6 KB) — spine candidate #1
  * "main GameState constructor" per project_1080_game_uso_map.md.
  *
  * 2026-06-11 STATUS: C body scores 100.0 on objdiff, exact-word LCS
@@ -2570,7 +2570,7 @@ void game_uso_func_000044C8(char *a0) {
  * function) IN THE C-EMIT PATH. The DEFAULT INCLUDE_ASM (#else) path
  * is BYTE-IDENTICAL to expected/.o (verified 2026-05-06: `cmp` shows
  * identical .text section, no-aliases objdump diff is empty). An
- * episode is logged at episodes/game_uso_func_000044F4.json — the
+ * episode is logged at episodes/SnowAI_ctor.json — the
  * function is BYTE-CORRECT in ROM via the INCLUDE_ASM path per
  * docs/MATCHING_WORKFLOW.md feedback-byte-correct-match-via-include-asm-not-c-body.
  * The 62% score is the .NON_MATCHING-alias scoring quirk on the C-body
@@ -2938,7 +2938,7 @@ extern char D_44F4_iterCC_p, D_44F4_iterDD_t, D_44F4_iterDD_p, D_44F4_iterDD_f, 
 extern char D_44F4_iterFF_p, D_44F4_iterFF_f, D_44F4_iterGG_t, D_44F4_iterGG_p, D_44F4_iterHH_t, D_44F4_iterHH_p, D_44F4_iterII_t, D_44F4_iterII_p;
 extern char D_44F4_iterJJ_t, D_44F4_iterJJ_p, D_44F4_iterKK_t, D_44F4_iterKK_p, D_44F4_iterLL_t, D_44F4_iterLL_p, D_44F4_iterMM_t, D_44F4_iterMM_p;
 extern char D_44F4_iterNN_t, D_44F4_iterNN_p;
-void *game_uso_func_000044F4(char *a0, int a1, int a2) {
+void *SnowAI_ctor(char *a0, int a1, int a2) {
     /* 2026-06-11 STRUCT-MARSHALLING REWRITE (agent-x):
      *  - The marshalling slot (sp+0x2C, held in $s2) is a 4-byte STRUCT
      *    passed BY VALUE as the init call's 3rd arg. Struct-by-value args
@@ -3602,24 +3602,24 @@ void game_uso_func_00005780(int *a0, int a1) {
     }
 }
 
-void game_uso_func_000057B8(char *a0) {
+void SnowAI_func_000057B8(char *a0) {
     game_uso_func_00000000(a0 + 0xE4);
 }
 
-/* game_uso_func_000057D8: EXACT via REPLACE_FUNC_BODY donor splice: the real body is
+/* SnowAI_update: EXACT via REPLACE_FUNC_BODY donor splice: the real body is
  * the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_57D8.cpp (81/81 words). The
  * cfe NM capped at 82.5: cfe turns the 8-way selector switch into a jumptable, edg
  * into the target's case-order compare chain (agent-g run 123). Placeholder body; the
  * 24 .late_rodata words the 57D8 .s carried (44F4's float pool, RoData +0x9C) moved to
- * the end of game_uso_func_0000591C.s, the next INCLUDE_ASM block in text order. */
-void game_uso_func_000057D8(char *a0) {
+ * the end of SnowAI_func_0000591C.s, the next INCLUDE_ASM block in text order. */
+void SnowAI_update(char *a0) {
 }
 
-/* game_uso_func_0000591C: 0x1114 (1102 insns, 4.3 KB) — strategy-memo spine
+/* SnowAI_func_0000591C: 0x1114 (1102 insns, 4.3 KB) — strategy-memo spine
  * candidate #2 (~29 cross-USO calls).  0x1D0-byte stack frame.
  *
  * Boundary-fixed 2026-04-20: splat originally put the glabel at 0x5924,
- * but the preceding `game_uso_func_000057D8` had 2 trailing `.word`
+ * but the preceding `SnowAI_update` had 2 trailing `.word`
  * instructions (`lui $t6, 0; lw $t6, 0x78($t6)`) that semantically
  * belong to this function as its $t6 setup — without them, the `bne
  * $t6, zero, epilogue` at 0x5930 reads an uninitialized register. Per
@@ -3654,7 +3654,7 @@ void game_uso_func_000057D8(char *a0) {
  *
  * Full decode deferred — 1100 insns and requires typed struct for the
  * 0x4E0-byte main object (same struct constructed by
- * game_uso_func_000044F4). Multi-run decomp expected.
+ * SnowAI_ctor). Multi-run decomp expected.
  *
  * 2026-04-21: started partial NM body capturing the 4-way dispatcher
  * at the function head (insns 1-30 of 1102). First 3 dispatches handle
@@ -3936,7 +3936,7 @@ void game_uso_func_000057D8(char *a0) {
  *   - pervasive register/FP coloring + per-slot stack layout.
  * No episode: not exact. */
 #ifdef NON_MATCHING
-/* game_uso_func_0000591C (spine, 1093w) — three-scalar separation pass.
+/* SnowAI_func_0000591C (spine, 1093w) — three-scalar separation pass.
  *
  * 2026-06-24 agent-e: prior C conflated THREE distinct stack floats into one
  * `metric`, discarding the float return of game_uso_func_00007A98(self):
@@ -3950,10 +3950,10 @@ void game_uso_func_000057D8(char *a0) {
  * `if (self->0x74 != 0) goto commit` early-skip after the metric block.
  * SELF-VERIFY only; not exact — coloring/frame-layout cap dominates. */
 /* forward decls for 591C real callees (defined later in this TU) */
-void game_uso_func_0000A3C4();
+void SnowAI_func_0000A3C4();
 void game_uso_func_0000A604(char *);
 void game_uso_func_0000A7F8(char *);
-int game_uso_func_00007ACC();
+int SnowAI_func_00007ACC();
 float game_uso_func_00007A98(int *);
 int game_uso_func_00007C1C();
 void *game_uso_func_00008CD8();
@@ -3961,20 +3961,20 @@ void game_uso_func_000074D8(char *);
 void game_uso_func_0000751C(char *);
 void game_uso_func_00007448(char *);
 void game_uso_func_00007424(void *);
-int game_uso_func_00009B88();
+int SnowAI_func_00009B88();
 void game_uso_func_0000A7D8(int *);
-int game_uso_func_0000A0E8(char *, char *, char *);
+int SnowAI_func_0000A0E8(char *, char *, char *);
 void game_uso_func_0000AB98(void *);
 void game_uso_func_000071A4(int *);
 int game_uso_func_00006FA8(int *);
 void game_uso_func_00007538();
 #endif
-/* game_uso_func_0000591C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
+/* SnowAI_func_0000591C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c
  * run 237). The superseded in-unit body is kept for its decode history under
  * GAMEUSO_591C_OLD_DECODE (never defined). */
 #ifdef GAMEUSO_591C_OLD_DECODE
-void game_uso_func_0000591C(int *a0) {
+void SnowAI_func_0000591C(int *a0) {
     /* 2026-09-09: 76.42 -> 81.96 -> 88.18 -> 91.19 -> 92.85 -> 93.99 -> 94.09% NM.
      * Word-typed staging copies preserve
      * the sub-pointer reload; both state dispatches are switches; the five
@@ -4082,7 +4082,7 @@ void game_uso_func_0000591C(int *a0) {
 
     v0 = *(int*)((char*)self + 0x68);
     if (v0 & 1) {
-        game_uso_func_0000A3C4();
+        SnowAI_func_0000A3C4();
         return;
     }
     if (v0 & 2) {
@@ -4118,7 +4118,7 @@ void game_uso_func_0000591C(int *a0) {
     staged_axis.y += copy2.y;
     staged_axis.z += copy2.z;
 
-    helper_ptr = (char*)game_uso_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
+    helper_ptr = (char*)SnowAI_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
     if (helper_ptr == 0) return;
     state_flag = *(int*)(helper_ptr + 0x84);
     if (hit_obj != 0) {
@@ -4534,13 +4534,13 @@ tail_common:
     }
 
     if (state_flag & 0x20) {
-        if (game_uso_func_00009B88(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
             game_uso_func_0000A7D8(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
-        if (game_uso_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
             game_uso_func_0000AB98(self);
             goto commit_flags;
         }
@@ -4619,7 +4619,7 @@ commit_flags:
     game_uso_func_00007538(self, out_flags);
 }
 #else
-void game_uso_func_0000591C(int *a0) {
+void SnowAI_func_0000591C(int *a0) {
     volatile int *ret = a0;
 }
 #endif
@@ -5087,7 +5087,7 @@ float game_uso_func_00007A98(int *a0) {
     return ret;
 }
 
-/* game_uso_func_00007ACC: 0x150 (84 insns). Function-table dispatcher.
+/* SnowAI_func_00007ACC: 0x150 (84 insns). Function-table dispatcher.
  * a0[0x40] indexes a 12-entry struct-pointer table at &D + 0x548; the
  * first word of the selected struct goes to game_uso_func_0000A374 as a
  * 1-word struct BY VALUE (that is what emits both `sw a1,0x34(sp)` and the
@@ -5106,9 +5106,9 @@ float game_uso_func_00007A98(int *a0) {
  *    renumber t1.. -> t2..;
  *  - `r` declared before `v` puts r's call-spill slot at 0x30 (not 0x2C). */
 extern void game_uso_func_047B1C();
-/* game_uso_func_071028 declared near game_uso_func_00001DDC. */
+/* game_uso_func_071028 declared near SnowChaseActorCam_update. */
 typedef struct { int a; } S1_7ACC;
-int game_uso_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
+int SnowAI_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
     S1_7ACC av;
     int *r;
     int v;
@@ -6000,7 +6000,7 @@ int game_uso_func_000097EC(char *a0) {
 
 extern void game_uso_func_047B1C();
 extern char game_uso_D_807FEDB8;
-/* game_uso_func_00009B88: XZ segment-side predicate, 344 target words.
+/* SnowAI_func_00009B88: XZ segment-side predicate, 344 target words.
  * 2026-09-12: exact C, all 344 words; 0x560 bytes, 0x1A8-byte frame.
  *
  * Project a2's position onto XZ, subtract a1's position, rotate/normalize
@@ -6025,7 +6025,7 @@ extern char game_uso_D_807FEDB8;
  * See agent docs/IDO_CODEGEN.md#vector-staging-stack-map-9b88 and
  * #vector-endpoint-scopes-exact-9b88.
  */
-int game_uso_func_00009B88(a0, a1, a2)
+int SnowAI_func_00009B88(a0, a1, a2)
     int *a0;
     int *a1;
     int *a2;
@@ -6238,7 +6238,7 @@ skip9:;
         float cross1 = (*(float*)&local_160[2] * *(float*)&local_154[0]) - (*(float*)&local_154[2] * *(float*)&local_160[0]); return ((*(float*)&local_178[2] * *(float*)&local_16C[0]) - (*(float*)&local_16C[2] * *(float*)&local_178[0])) * cross1 < (float)0;
     }
 }
-/* game_uso_func_0000A0E8: projected-height predicate, 163 target words.
+/* SnowAI_func_0000A0E8: projected-height predicate, 163 target words.
  * Build two XZ vectors relative to a1->position: a2's position and
  * a0's child position at +0xB4. Compare their projected height against
  * the child height above a1.y - 400. The three length calls are retained.
@@ -6256,7 +6256,7 @@ skip9:;
  */
 extern float game_uso_func_082880(float);
 extern char game_uso_D_807FEDD0;
-int game_uso_func_0000A0E8(char *a0, char *a1, char *a2) {
+int SnowAI_func_0000A0E8(char *a0, char *a1, char *a2) {
     volatile int local_BC[3];
     volatile int local_B0[3];
     char pad_AC[4];
@@ -6341,7 +6341,7 @@ int a0, a1, a2;
     return (int)game_uso_func_000043D8((int **)r, (int *)a2, 0);
 }
 
-/* game_uso_func_0000A3C4 - MATCHED 2026-07-08 (144/144 words + ROM byte-exact;
+/* SnowAI_func_0000A3C4 - MATCHED 2026-07-08 (144/144 words + ROM byte-exact;
  * prior "sub-80 table-dispatch ceiling" note was FALSE). Picks the nearer of the
  * two table entries (a0->0x40 vs a0->0x7C) to the ref point ctx->0x908+0xB4 by
  * squared XZ distance and re-targets a0->0x40. Levers that cracked it:
@@ -6369,7 +6369,7 @@ extern char game_uso_D_807FEDF8;
 extern char game_uso_D_807FEE20;
 typedef struct { float x, y, z; } V3_A3C4;
 typedef struct { int a; } S1_A3C4;
-void game_uso_func_0000A3C4(int *a0) {
+void SnowAI_func_0000A3C4(int *a0) {
     V3_A3C4 *p;
     S1_A3C4 v1, v2;
     V3_A3C4 buf2, buf3;
@@ -6576,8 +6576,8 @@ void game_uso_func_0000A604(char *obj) {
     if (v0var != 0) {
         t = *(int *)(v0var + 0x2C);
         if (t != 0) {
-            if (game_uso_func_00009B88(obj, v0var, t) != 0) {
-                if (game_uso_func_0000A0E8(obj, v0var, (char *)t) != 0) {
+            if (SnowAI_func_00009B88(obj, v0var, t) != 0) {
+                if (SnowAI_func_0000A0E8(obj, v0var, (char *)t) != 0) {
                     f0 = tbuf.z - *(float *)(v0var + 0x38);
                     if (f0 < 0.0f) {
                         f0 += 250.0f * *(float *)(v0var + 0x54);
@@ -6666,7 +6666,7 @@ void game_uso_func_0000A7F8(char *obj) {
         slots[0] = (char *)cnt;
         if (cnt != 0) {
             slots[1] = r1;
-            if (game_uso_func_0000A0E8(obj, r1, (char *)cnt) != 0) {
+            if (SnowAI_func_0000A0E8(obj, r1, (char *)cnt) != 0) {
                 f0 = blockA.z - *(float *)(slots[1] + 0x38);
                 if (f0 < 0.0f) f0 += 250.0f * *(float *)(slots[1] + 0x54);
                 if (f0 >= 0.0f) {
@@ -7249,7 +7249,7 @@ void game_uso_func_0000B884(char *dst) {
     game_uso_func_0000AD10((float*)(dst + 0x20));
 }
 
-/* game_uso_func_0000B8D4 — EXACT 174/174 words (2026-07-07, agent-e/w30).
+/* LensFlare_create — EXACT 174/174 words (2026-07-07, agent-e/w30).
  * Alloc-cascade constructor, sibling of 0000AE1C/00003018/000044F4. Main obj
  * 0x278 (find-or-create), sub-obj 0xB4 via 04C678(&D_807FF360+0xD70) +
  * vtable &import_80086288 + zero-node @+0x2C + 04D3D0 + Vec3-zero 072EE8;
@@ -7273,7 +7273,7 @@ extern char game_uso_D_807FF368;
 extern char game_uso_D_807FF388;
 extern char game_uso_D_807FF2D8;
 extern char D_B8D4_st2, D_B8D4_st3;
-void *game_uso_func_0000B8D4(void *arg0, int arg1, int arg2) {
+void *LensFlare_create(void *arg0, int arg1, int arg2) {
     typedef struct { char *p; } S0000B8D4;
     unsigned int i;        /* @0x7C (loop-counter spill home) */
     volatile int pad78;

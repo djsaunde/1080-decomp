@@ -1,6 +1,6 @@
-nonmatching game_uso_func_000057D8, 0x144
+nonmatching SnowAI_update, 0x144
 
-glabel game_uso_func_000057D8
+glabel SnowAI_update
     /* 0057D8 000057D8 27BDFFE8 */  .word 0x27BDFFE8
     /* 0057DC 000057DC AFBF0014 */  .word 0xAFBF0014
     /* 0057E0 000057E0 8C8E04D8 */  .word 0x8C8E04D8
@@ -64,7 +64,7 @@ glabel game_uso_func_000057D8
     /* 0058C8 000058C8 00000000 */  .word 0x00000000
     /* 0058CC 000058CC 10000010 */  .word 0x10000010
     /* 0058D0 000058D0 8FBF0014 */  .word 0x8FBF0014
-    jal game_uso_func_0000591C   /* 0058D4 0C000000 -> game_uso_func_0000591C */
+    jal SnowAI_func_0000591C   /* 0058D4 0C000000 -> SnowAI_func_0000591C */
     /* 0058D8 000058D8 00000000 */  .word 0x00000000
     /* 0058DC 000058DC 1000000C */  .word 0x1000000C
     /* 0058E0 000058E0 8FBF0014 */  .word 0x8FBF0014
@@ -82,13 +82,13 @@ glabel game_uso_func_000057D8
     /* 005910 00005910 27BD0018 */  .word 0x27BD0018
     /* 005914 00005914 03E00008 */  .word 0x03E00008
     /* 005918 00005918 00000000 */  .word 0x00000000
-endlabel game_uso_func_000057D8
+endlabel SnowAI_update
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
 /* jumptable lands at its ROM %lo offset; layout order = text order. */
 .late_rodata
-/* +0x09C..+0x0FC: 24 floats of C fn game_uso_func_000044F4 (lwc1 %lo 0x9C..0xF8) */
+/* +0x09C..+0x0FC: 24 floats of C fn SnowAI_ctor (lwc1 %lo 0x9C..0xF8) */
 .word 0xC61C4000, 0xC61C4000, 0xC61C4000, 0xC53B8000
 .word 0xC66A6000, 0xC66A6000, 0xC61C4000, 0xC61C4000
 .word 0xC61C4000, 0xC61C4000, 0xC61C4000, 0xC61C4000

@@ -996,7 +996,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00064388);
 
 /* gl_func_00064588 - STRUCTURAL PASS (big-swing 2026-06-02).
  * game_libs get-or-alloc slot constructor (same idiom family as the
- * game_uso spine entry game_uso_func_000044F4). 0x864 / 537 insns, sole
+ * game_uso spine entry SnowAI_ctor). 0x864 / 537 insns, sole
  * callee gl_func_0001CA10 (alloc when 1 arg / init when 4 args -- the
  * file-wide generic placeholder, K&R int return, cast to ptr for allocs).
  *

@@ -78,7 +78,7 @@ Examples:
   scripts/blockcut-search.py --unit src/game_libs/game_libs_post0b gl_func_00051ED8 --k 2
   scripts/blockcut-search.py --file src/gui_uso/gui_uso_ncc_16A4.cpp gui_uso_func_000016A4 \\
       --expected expected/src/gui_uso/gui_uso.c.o --k 2 --swap 'next()=>nextb()'
-  scripts/blockcut-search.py --unit src/game_uso/game_uso game_uso_func_00001DDC --varref --k 0
+  scripts/blockcut-search.py --unit src/game_uso/game_uso SnowChaseActorCam_update --varref --k 0
 
 Caveats: an explicit cut that a live PARAMETER crosses can home the
 parameters at entry (kit XXXV #4); the 20-load route has no labels.  A result

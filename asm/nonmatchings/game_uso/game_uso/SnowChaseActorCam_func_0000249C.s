@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000249C, 0x20
+nonmatching SnowChaseActorCam_func_0000249C, 0x20
 
-glabel game_uso_func_0000249C
+glabel SnowChaseActorCam_func_0000249C
     /* 00249C 0000249C 27BDFFE8 */  .word 0x27BDFFE8
     /* 0024A0 000024A0 AFBF0014 */  .word 0xAFBF0014
     jal game_uso_func_04A2D8   /* 0024A4 0C000000 -> game_uso_func_04A2D8 */
@@ -9,4 +9,4 @@ glabel game_uso_func_0000249C
     /* 0024B0 000024B0 27BD0018 */  .word 0x27BD0018
     /* 0024B4 000024B4 03E00008 */  .word 0x03E00008
     /* 0024B8 000024B8 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000249C
+endlabel SnowChaseActorCam_func_0000249C

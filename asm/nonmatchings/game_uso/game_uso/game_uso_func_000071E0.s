@@ -85,7 +85,7 @@ glabel game_uso_func_000071E0
     /* 007324 00007324 E7A6008C */  .word 0xE7A6008C
     /* 007328 00007328 46049180 */  .word 0x46049180
     /* 00732C 0000732C E7B00090 */  .word 0xE7B00090
-    jal game_uso_func_00007ACC   /* 007330 0C000000 -> game_uso_func_00007ACC */
+    jal SnowAI_func_00007ACC   /* 007330 0C000000 -> SnowAI_func_00007ACC */
     /* 007334 00007334 E7A60094 */  .word 0xE7A60094
     /* 007338 00007338 10400035 */  .word 0x10400035
     /* 00733C 0000733C 00403025 */  .word 0x00403025

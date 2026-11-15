@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000591C, 0x1114
+nonmatching SnowAI_func_0000591C, 0x1114
 
-glabel game_uso_func_0000591C
+glabel SnowAI_func_0000591C
     lui $t6, %hi(import_80020110)   /* 00591C 3C0E0000 -> import_80020110 */
     /* 005920 00005920 8DCE0078 */  .word 0x8DCE0078
     /* 005924 00005924 27BDFE30 */  .word 0x27BDFE30
@@ -16,7 +16,7 @@ glabel game_uso_func_0000591C
     /* 00594C 0000594C 30580001 */  .word 0x30580001
     /* 005950 00005950 13000005 */  .word 0x13000005
     /* 005954 00005954 30590002 */  .word 0x30590002
-    jal game_uso_func_0000A3C4   /* 005958 0C000000 -> game_uso_func_0000A3C4 */
+    jal SnowAI_func_0000A3C4   /* 005958 0C000000 -> SnowAI_func_0000A3C4 */
     /* 00595C 0000595C 00000000 */  .word 0x00000000
     /* 005960 00005960 1000042F */  .word 0x1000042F
     /* 005964 00005964 8FBF0024 */  .word 0x8FBF0024
@@ -83,7 +83,7 @@ glabel game_uso_func_0000591C
     /* 005A58 00005A58 C7A401CC */  .word 0xC7A401CC
     /* 005A5C 00005A5C E7AA01BC */  .word 0xE7AA01BC
     /* 005A60 00005A60 46049180 */  .word 0x46049180
-    jal game_uso_func_00007ACC   /* 005A64 0C000000 -> game_uso_func_00007ACC */
+    jal SnowAI_func_00007ACC   /* 005A64 0C000000 -> SnowAI_func_00007ACC */
     /* 005A68 00005A68 E7A601C0 */  .word 0xE7A601C0
     /* 005A6C 00005A6C 104003EB */  .word 0x104003EB
     /* 005A70 00005A70 AFA201B0 */  .word 0xAFA201B0
@@ -884,7 +884,7 @@ glabel game_uso_func_0000591C
     /* 0066DC 000066DC 31AE0020 */  .word 0x31AE0020
     /* 0066E0 000066E0 51C0000B */  .word 0x51C0000B
     /* 0066E4 000066E4 8FB801A4 */  .word 0x8FB801A4
-    jal game_uso_func_00009B88   /* 0066E8 0C000000 -> game_uso_func_00009B88 */
+    jal SnowAI_func_00009B88   /* 0066E8 0C000000 -> SnowAI_func_00009B88 */
     /* 0066EC 000066EC 8FA601AC */  .word 0x8FA601AC
     /* 0066F0 000066F0 44808000 */  .word 0x44808000
     /* 0066F4 000066F4 54400006 */  .word 0x54400006
@@ -899,7 +899,7 @@ glabel game_uso_func_0000591C
     /* 006718 00006718 330F0040 */  .word 0x330F0040
     /* 00671C 0000671C 51E0000B */  .word 0x51E0000B
     /* 006720 00006720 8FA201A0 */  .word 0x8FA201A0
-    jal game_uso_func_0000A0E8   /* 006724 0C000000 -> game_uso_func_0000A0E8 */
+    jal SnowAI_func_0000A0E8   /* 006724 0C000000 -> SnowAI_func_0000A0E8 */
     /* 006728 00006728 8FA601AC */  .word 0x8FA601AC
     /* 00672C 0000672C 44808000 */  .word 0x44808000
     /* 006730 00006730 54400006 */  .word 0x54400006
@@ -1094,5 +1094,5 @@ glabel game_uso_func_0000591C
     /* 006A24 00006A24 27BD01D0 */  .word 0x27BD01D0
     /* 006A28 00006A28 03E00008 */  .word 0x03E00008
     /* 006A2C 00006A2C 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000591C
+endlabel SnowAI_func_0000591C
 /* (the 44F4 .late_rodata words that followed here moved to game_uso_func_00007448.s) */

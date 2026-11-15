@@ -6929,7 +6929,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  *
  *   2. 12-byte struct copy with fanout (0xB1AC-0xB1D4): reads t6+0/4/8
  *      writes a2+0/4/8 AND a4+0/4/8 (the canonical "save-old + write-new"
- *      idiom — same shape as game_uso_func_00001DDC tail, see that
+ *      idiom — same shape as SnowChaseActorCam_update tail, see that
  *      function's notes). Followed by jal cross-USO call.
  *
  *   3. Four sequential 3-float scale + jal blocks (0xB1D8-0xB28C): each

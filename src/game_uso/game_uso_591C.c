@@ -1,4 +1,4 @@
-/* game_uso_func_0000591C: EXACT donor, IDO 7.1 cfe -O2 C (agent-c run 237, from the
+/* SnowAI_func_0000591C: EXACT donor, IDO 7.1 cfe -O2 C (agent-c run 237, from the
  * in-unit NM body: agent-e / agent-g / agent-c runs 182-236, 99.977 -> 100),
  * REPLACE_FUNC_BODY-spliced over the placeholder in src/game_uso/game_uso.c on both
  * build paths (GAMEUSO_591C_DONOR). The superseded in-unit body (with its decode
@@ -20,10 +20,10 @@ typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
 extern int game_uso_func_055750();
 float game_uso_func_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
-void game_uso_func_0000A3C4();
+void SnowAI_func_0000A3C4();
 void game_uso_func_0000A604(char *);
 void game_uso_func_0000A7F8(char *);
-int game_uso_func_00007ACC();
+int SnowAI_func_00007ACC();
 float game_uso_func_00007A98(int *);
 int game_uso_func_00007C1C();
 void *game_uso_func_00008CD8();
@@ -31,14 +31,14 @@ void game_uso_func_000074D8(char *);
 void game_uso_func_0000751C(char *);
 void game_uso_func_00007448(char *);
 void game_uso_func_00007424(void *);
-int game_uso_func_00009B88();
+int SnowAI_func_00009B88();
 void game_uso_func_0000A7D8(int *);
-int game_uso_func_0000A0E8(char *, char *, char *);
+int SnowAI_func_0000A0E8(char *, char *, char *);
 void game_uso_func_0000AB98(void *);
 void game_uso_func_000071A4(int *);
 int game_uso_func_00006FA8(int *);
 void game_uso_func_00007538();
-void game_uso_func_0000591C(int *a0) {
+void SnowAI_func_0000591C(int *a0) {
     Vec3 copy2;
     Vec3 staged_axis;
     int out_flags;
@@ -103,7 +103,7 @@ void game_uso_func_0000591C(int *a0) {
     if (import_8006EF48 == 0) return;
     v0 = *(int*)((char*)self + 0x68);
     if (v0 & 1) {
-        game_uso_func_0000A3C4();
+        SnowAI_func_0000A3C4();
         return;
     }
     if (v0 & 2) {
@@ -132,7 +132,7 @@ void game_uso_func_0000591C(int *a0) {
     staged_axis.x += copy2.x;
     staged_axis.y += copy2.y;
     staged_axis.z += copy2.z;
-    helper_ptr = (char*)game_uso_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
+    helper_ptr = (char*)SnowAI_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
     if (helper_ptr == 0) return;
     state_flag = *(int*)(helper_ptr + 0x84);
     if (hit_obj != 0) {
@@ -462,13 +462,13 @@ tail_common:
         *(int*)((char*)self + 0x54) = 0;
     }
     if (state_flag & 0x20) {
-        if (game_uso_func_00009B88(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
             game_uso_func_0000A7D8(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
-        if (game_uso_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
             game_uso_func_0000AB98(self);
             goto commit_flags;
         }

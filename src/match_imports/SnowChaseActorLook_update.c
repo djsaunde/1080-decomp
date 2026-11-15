@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
-void game_uso_func_000028C0(GameUsoHomingPrefix *a0) {
+void SnowChaseActorLook_update(GameUsoHomingPrefix *a0) {
     GameUsoVectorOutput *out_home[1];
     GameUsoVectorOutput *s_home[1];
     GameUsoVectorOutput *pose;

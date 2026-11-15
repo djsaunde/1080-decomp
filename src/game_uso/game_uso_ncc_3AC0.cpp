@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_00003AC0 (0x414 / 261 words).
+/* IDO 7.1 NCC (C++) donor for CourseMarker_registerTemplates (0x414 / 261 words).
  *
  * Twelve `list->add(new Item(name_k), -1)` statements: each reads one
  * 4-byte name from the USO import table, allocates a 0x58 Item through the
@@ -38,7 +38,7 @@ struct Item {
 };
 #define NM(s, o) (*(Name *)(&game_uso_D_##s + (o)))
 #define BLK(k, s, o) Q q##k(NM(s, o)); game_uso_func_052F70(arg0, new Item(q##k), -1);
-extern "C" void game_uso_func_00003AC0(void *arg0) {
+extern "C" void CourseMarker_registerTemplates(void *arg0) {
     BLK(0, 807FEC70, 0x680)
     BLK(1, 807FEC74, 0x684)
     BLK(2, 807FEC78, 0x688)

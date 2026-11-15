@@ -43,11 +43,11 @@ endlabel game_uso_func_00007448
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
 /* jumptable lands at its ROM %lo offset; layout order = text order. */
-/* (moved here from game_uso_func_000057D8.s when 57D8 became an NCC donor, then from */
-/* game_uso_func_0000591C.s when 591C became a cfe donor; the C fns between 591C and */
+/* (moved here from SnowAI_update.s when 57D8 became an NCC donor, then from */
+/* SnowAI_func_0000591C.s when 591C became a cfe donor; the C fns between 591C and */
 /* 7448 emit no rodata) */
 .late_rodata
-/* +0x09C..+0x0FC: 24 floats of C fn game_uso_func_000044F4 (lwc1 %lo 0x9C..0xF8) */
+/* +0x09C..+0x0FC: 24 floats of C fn SnowAI_ctor (lwc1 %lo 0x9C..0xF8) */
 .word 0xC61C4000, 0xC61C4000, 0xC61C4000, 0xC53B8000
 .word 0xC66A6000, 0xC66A6000, 0xC61C4000, 0xC61C4000
 .word 0xC61C4000, 0xC61C4000, 0xC61C4000, 0xC61C4000

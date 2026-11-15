@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for game_uso_func_00001DDC (0x5F8 / 382 words), spliced over a placeholder in
+/* IDO 7.1 NCC (C++) EXACT donor for SnowChaseActorCam_update (0x5F8 / 382 words), spliced over a placeholder in
  * both build trees (agent-c run 240).
  *
  * agent-c run 240 (99.969 -> 100): the frame comes from the named V3 e (last product), no named references in
@@ -50,7 +50,7 @@ void game_uso_func_072EE8(void *, V3 *);
 }
 struct Ctx { Out *out; Ctx(Self *s) { out = s->out; }
     Out *getOut() const { return out; } };
-extern "C" void game_uso_func_00001DDC(Self *a0) {
+extern "C" void SnowChaseActorCam_update(Self *a0) {
     if (a0->key == 0) return;
     if (a0->key == 3) {
         V3 m;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_000028C0 (0x3E8 / 250 words).
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for SnowChaseActorLook_update (0x3E8 / 250 words).
  *
  * Camera-homing update (sibling of 1DDC / 24BC / 2CC8): key 1 homes the
  * output node onto the target node's matrix translation plus the rotated
@@ -50,7 +50,7 @@ void game_uso_func_072EE8(void *, V3 *);
 }
 struct Ctx { Node *tgt; Node *out; Ctx(Self *s) { out = s->out; tgt = s->src->body; }
     Node *getOut() const { return out; } Node *getTgt() const { return tgt; } };
-extern "C" void game_uso_func_000028C0(Self *a0) {
+extern "C" void SnowChaseActorLook_update(Self *a0) {
     Ctx c(a0);
     int key;
     V3 r; V3 p; V3 q; V3 d;

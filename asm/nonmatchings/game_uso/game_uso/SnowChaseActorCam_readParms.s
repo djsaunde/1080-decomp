@@ -1,6 +1,6 @@
-nonmatching game_uso_func_000018FC, 0x434
+nonmatching SnowChaseActorCam_readParms, 0x434
 
-glabel game_uso_func_000018FC
+glabel SnowChaseActorCam_readParms
     /* 0018FC 000018FC 27BDFF20 */  .word 0x27BDFF20
     /* 001900 00001900 AFB00018 */  .word 0xAFB00018
     /* 001904 00001904 00808025 */  .word 0x00808025
@@ -270,4 +270,4 @@ glabel game_uso_func_000018FC
     /* 001D24 00001D24 8FB00018 */  .word 0x8FB00018
     /* 001D28 00001D28 03E00008 */  .word 0x03E00008
     /* 001D2C 00001D2C 27BD00E0 */  .word 0x27BD00E0
-endlabel game_uso_func_000018FC
+endlabel SnowChaseActorCam_readParms

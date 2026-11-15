@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
-char *game_uso_func_000041C0(char *owner) {
+char *CourseMarkerTmpl_create(char *owner) {
     char *result;
     union { char *allocated; char *nodes[1]; } carrier;
     char *embedded;

@@ -1,6 +1,6 @@
-nonmatching game_uso_func_000041C0, 0x218
+nonmatching CourseMarkerTmpl_create, 0x218
 
-glabel game_uso_func_000041C0
+glabel CourseMarkerTmpl_create
     /* 0041C0 000041C0 27BDFFB8 */  .word 0x27BDFFB8
     /* 0041C4 000041C4 AFBF0014 */  .word 0xAFBF0014
     /* 0041C8 000041C8 AFA40048 */  .word 0xAFA40048
@@ -135,4 +135,4 @@ glabel game_uso_func_000041C0
     /* 0043CC 000043CC 00601025 */  .word 0x00601025
     /* 0043D0 000043D0 03E00008 */  .word 0x03E00008
     /* 0043D4 000043D4 00000000 */  .word 0x00000000
-endlabel game_uso_func_000041C0
+endlabel CourseMarkerTmpl_create

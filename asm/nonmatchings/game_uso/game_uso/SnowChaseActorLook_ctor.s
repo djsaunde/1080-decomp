@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00002814, 0x94
+nonmatching SnowChaseActorLook_ctor, 0x94
 
-glabel game_uso_func_00002814
+glabel SnowChaseActorLook_ctor
     /* 002814 00002814 27BDFFE0 */  .word 0x27BDFFE0
     /* 002818 00002818 AFB00018 */  .word 0xAFB00018
     /* 00281C 0000281C 00808025 */  .word 0x00808025
@@ -20,7 +20,7 @@ glabel game_uso_func_00002814
     lui $t6, %hi(game_uso_D_807FE848)   /* 002854 3C0E0000 -> game_uso_D_807FE848 */
     /* 002858 00002858 25CE0000 */  .word 0x25CE0000
     /* 00285C 0000285C AE0E0028 */  .word 0xAE0E0028
-    jal game_uso_func_00002744   /* 002860 0C000000 -> game_uso_func_00002744 */
+    jal SnowChaseActorLook_readParms   /* 002860 0C000000 -> SnowChaseActorLook_readParms */
     /* 002864 00002864 26040044 */  .word 0x26040044
     /* 002868 00002868 8FAF002C */  .word 0x8FAF002C
     /* 00286C 0000286C 02002025 */  .word 0x02002025
@@ -38,4 +38,4 @@ glabel game_uso_func_00002814
     /* 00289C 0000289C 8FB00018 */  .word 0x8FB00018
     /* 0028A0 000028A0 03E00008 */  .word 0x03E00008
     /* 0028A4 000028A4 27BD0020 */  .word 0x27BD0020
-endlabel game_uso_func_00002814
+endlabel SnowChaseActorLook_ctor

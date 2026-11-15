@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00002CA8, 0x20
+nonmatching SnowChaseActorLook_func_00002CA8, 0x20
 
-glabel game_uso_func_00002CA8
+glabel SnowChaseActorLook_func_00002CA8
     /* 002CA8 00002CA8 27BDFFE8 */  .word 0x27BDFFE8
     /* 002CAC 00002CAC AFBF0014 */  .word 0xAFBF0014
     jal game_uso_func_04A2D8   /* 002CB0 0C000000 -> game_uso_func_04A2D8 */
@@ -9,4 +9,4 @@ glabel game_uso_func_00002CA8
     /* 002CBC 00002CBC 27BD0018 */  .word 0x27BD0018
     /* 002CC0 00002CC0 03E00008 */  .word 0x03E00008
     /* 002CC4 00002CC4 00000000 */  .word 0x00000000
-endlabel game_uso_func_00002CA8
+endlabel SnowChaseActorLook_func_00002CA8
