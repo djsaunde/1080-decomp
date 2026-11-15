@@ -85,14 +85,21 @@ typedef struct CourseItemTmpl {
 
 /* ---- race gates (game_libs RaceTracker_findGates) ----
  * Items of type "chk" (checkpoint) and "gtl" / "gtr" (the left / right gates of a fork) found by
- * ItemMgr_func_0003EAE0(itemMgr, type, pos, 0). RaceEntry.gate / gateA / gateB (include/gdl/race.h)
- * point at them. Only the fields findGates / RaceTracker_update read are named. */
+ * ItemMgr_func_0003EAE0(itemMgr, type, pos, 0) nearest the rider's lastPos (SnowBoarder +0xDC).
+ * RaceEntry.gate / gateA / gateB (include/gdl/race.h) point at them. Only the fields findGates /
+ * RaceTracker_passCheckpoints read are named (agent-g run 485).
+ * The course coordinate is world z: RaceTracker.courseZ / courseLength are the MapProp start.z (0xCC) and
+ * goal.z (0xD8) - start.z, RaceEntry.progress is on the same axis, and findGates orders a fork's two gates
+ * by `gate->z - rider->lastPos.z` (the rider +0xE4 it subtracts = lastPos.z). passCheckpoints moves
+ * entries[0].gate to gate->next once gate->z <= entries[0].progress, then calls a gate test (gate, rider
+ * pos, entry); a non-zero result is reported through the tracker's vtable (the +0x60 / +0x64 slot). Note: findGates looks up with
+ * entries[0]'s rider and stores the "chk" result in entries[0].gate on every iteration (only the fork
+ * pair is per entry), so checkpoints are tracked for the first rider only. */
 typedef struct RaceGate {
     char unk00[0x64];
-    f32 progress;               /* 0x64: course coordinate of the gate (compared after subtracting the
-                                   rider's +0xE4) */
+    f32 z;                      /* 0x64: the gate's course coordinate (world z) */
     char unk68[0x84 - 0x68];
-    struct RaceGate *next;      /* 0x84: next gate */
+    struct RaceGate *next;      /* 0x84: the next gate along the course */
 } RaceGate;
 
 /* ---- course markers (game.uso, the AI path) ----
@@ -188,7 +195,7 @@ COURSE_ASSERT(WorldRegistry, mainGame, 0x8C);
 COURSE_ASSERT(WorldRegistry, light1, 0x94);
 COURSE_ASSERT(WorldRegistry, numWindows, 0x104);
 COURSE_ASSERT_SIZE(CourseItemTmpl, 0xC);
-COURSE_ASSERT(RaceGate, progress, 0x64);
+COURSE_ASSERT(RaceGate, z, 0x64);
 COURSE_ASSERT(RaceGate, next, 0x84);
 COURSE_ASSERT_SIZE(CourseParm, 0x18);
 COURSE_ASSERT_SIZE(CourseMarkerParms, 0x50);
