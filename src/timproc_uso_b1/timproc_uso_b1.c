@@ -4,6 +4,7 @@
 #include "game/nameentry.h"
 #include "game/modemenu.h"
 #include "game/guimenu.h"
+#include "game/input.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -34,50 +35,50 @@ tim_main(a0, a1) int * a0; int a1; {
         switch (a1) {
         case 0:
             gl_func_00000000(a0, 1, 7, 1);
-            *(int *)(d + 0x44) = 4; *(int *)(d + 0x48) = 13; done = 1;
+            GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 1:
             gl_func_00000000(a0, 1, 7, 1);
-            *(int *)(d + 0x44) = 4; *(int *)(d + 0x48) = 13; done = 1;
+            GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 2:
             gl_func_00000000(a0, 1, 7, 2);
-            *(int *)(d + 0x44) = 4; *(int *)(d + 0x48) = 13; done = 1;
+            GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 3:
             gl_func_00000000(a0, 1, 7, 4);
-            *(int *)(d + 0x44) = 4; *(int *)(d + 0x48) = 13; done = 1;
+            GAMEFLOW(d)->nextProcState = 4; GAMEFLOW(d)->thenProcState = 13; done = 1;
             break;
         case 4:
-            gl_func_00000000(a0, 1, *(int *)(d + 0x64));
-            *(int *)(d + 0x40) = 5;
+            gl_func_00000000(a0, 1, GAMEFLOW(d)->course);
+            GAMEFLOW(d)->procState = 5;
             break;
         case 5:
             gl_func_00000000(d, *(int *)(d + 4));
-            gl_func_00000000(d, 4, *(int *)(d + 0x64), 1);
+            gl_func_00000000(d, 4, GAMEFLOW(d)->course, 1);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
             gl_func_00000000(a0, 0, s0v);
             done = 1;
             break;
         case 6:
-            gl_func_00000000(a0, 0, *(unsigned char *)(d + 0x178));
-            *(int *)(d + 0x40) = 7;
+            gl_func_00000000(a0, 0, GAMEFLOW(d)->recCourse);
+            GAMEFLOW(d)->procState = 7;
             break;
         case 7:
-            gl_func_00000000(d, 10, *(int *)(d + 0x64), 1);
+            gl_func_00000000(d, 10, GAMEFLOW(d)->course, 1);
             v = gl_func_00000000(a0, *a0, 1);
-            s0v = gl_func_00000000(0, *(int *)(d + 0x170) + 0x1A000F, v, *a0);
+            s0v = gl_func_00000000(0, GAMEFLOW(d)->replayLen[0] + 0x1A000F, v, *a0);
             gl_func_00000000(a0, 0, s0v);
             done = 1;
             break;
         case 8:
             gl_func_00000000(a0);
-            *(int *)(d + 0x40) = *(int *)(d + 0x44);
+            GAMEFLOW(d)->procState = GAMEFLOW(d)->nextProcState;
             break;
         case 9:
             gl_func_00000000(a0);
-            *(int *)(d + 0x40) = 10;
+            GAMEFLOW(d)->procState = 10;
             break;
         case 10:
             gl_func_00000000(d, 7, 0, 0);
@@ -87,33 +88,33 @@ tim_main(a0, a1) int * a0; int a1; {
             break;
         case 11:
             v = gl_func_00000000(a0, *a0, 4);
-            s0v = gl_func_00000000(0, *(int *)(d + 0x170) + 0x20000, v, *a0);
+            s0v = gl_func_00000000(0, GAMEFLOW(d)->replayLen[0] + 0x20000, v, *a0);
             {
                 char *r = (char *)s0v;
-                gl_func_00000000(d + 0x10, r);
-                if (*(int *)(r + 0x14) != 0) *(int *)(r + 4) = 1;
-                *(int *)(r + 0x14) = (int)d;
+                gl_func_00000000(&NODE(d)->children, r);
+                if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
+                NODE(r)->parent = (int)d;
             }
             gl_func_00000000(a0, *a0);
             done = 1;
             break;
         case 12:
-            s0v = gl_func_00000000(*(int *)(d + 0x64));
-            gl_func_00000000(a0, (*(int *)(d + 0x64) | 0x2000) | s0v, 0x2000, *a0);
+            s0v = gl_func_00000000(GAMEFLOW(d)->course);
+            gl_func_00000000(a0, (GAMEFLOW(d)->course | 0x2000) | s0v, 0x2000, *a0);
             done = 1;
             break;
         case 13:
             s0v = gl_func_00000000(0, 1, 0);
             {
                 char *r = (char *)s0v;
-                gl_func_00000000(d + 0x10, r);
-                if (*(int *)(r + 0x14) != 0) *(int *)(r + 4) = 1;
-                *(int *)(r + 0x14) = (int)d;
+                gl_func_00000000(&NODE(d)->children, r);
+                if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
+                NODE(r)->parent = (int)d;
             }
             done = 1;
             break;
         }
-        a1 = *(int *)(d + 0x40);
+        a1 = GAMEFLOW(d)->procState;
     } while (done == 0);
 }
 
