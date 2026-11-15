@@ -64,7 +64,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
         slot = p->slot;
         off += 4;
         if (slot->unk94 == 0) {
-            XCALL(gl_func_00000000_i3ff, TimeGadgetParms_setPosF_000144B4)((int)slot, 160, arg2 + 90, 1.0f, 1.0f);
+            XCALL(gl_func_00000000_i3ff, PointsPopup_setPosScale)((int)slot, 160, arg2 + 90, 1.0f, 1.0f);
             p->slot->unkA0 = 0;
             p->slot->unk7C = 1;
             q = (s32 *)(*(char **)(*(char **)((char *)&gInputMgr + 0x138) + 0x44) + 0x14);
@@ -72,7 +72,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             if (arg3 != 0) {
                 p->slot->unk94 = 3;
                 p->slot->unk9C = 14;
-                XCALL(gl_func_00000000_3c0cff, TimeGadget_setPos_000144E0)(p->slot, 0.1f, 0.1f);
+                XCALL(gl_func_00000000_3c0cff, PointsPopup_setScale)(p->slot, 0.1f, 0.1f);
                 p->slot->unk78 = 0;
             } else {
                 p->slot->unk94 = 3;

@@ -57,6 +57,6 @@ G::G(int arg1) : B(sStr_Node_CC58) {
     CALL(gui_spriteInit)(self + 0x150, 0x50009);
     CALL(gui_spriteInit)(((char *)this) + 0x180, 0x5000B);
     CALL(gui_spriteInit)(((char *)this) + 0x168, 0x5001C);
-    CALL(CoolGadget_setPair_000017F4)(((char *)this), ((char *)this) + 0x168, ((char *)this) + 0x180);
-    CALL(CoolGadget_setQuad_00001800)(self, -0x49, -2, -0x32, -1);
+    CALL(CoolGadget_setLabels)(((char *)this), ((char *)this) + 0x168, ((char *)this) + 0x180);
+    CALL(CoolGadget_setLabelPos)(self, -0x49, -2, -0x32, -1);
 }
