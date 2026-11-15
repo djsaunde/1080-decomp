@@ -12748,14 +12748,14 @@ void snd_SoundObjSetFlag1A(SoundObj *o) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0002E0C4)();
-void snd_SoundObjTriggerEvent_2E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void snd_SoundObjTriggerEvent_2E0C4(SoundObj *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 temp_f0;
 
-    if (((FW(arg0, 0x48) == 0) && !(*(u8 *)(arg0 + 0x16) & 4)) || (((*(u16 *)(arg0 + 0x30) != 1) || (*(u8 *)(arg0 + 0x29) != 3)) && ((s32) *(u8 *)(arg0 + 0x29) >= (s32) *(u8 *)(arg0 + 0x2D)))) {
-        *(u16 *)(arg0 + 0x30) = arg1;
-        *(u8 *)(arg0 + 0x16) = *(u8 *)(arg0 + 0x16) | 4;
+    if (((arg0->unk48 == 0) && !(arg0->flags & 4)) || (((arg0->eventType != 1) || (arg0->level != 3)) && ((s32) arg0->level >= (s32) arg0->lastLevel))) {
+        arg0->eventType = arg1;
+        arg0->flags = arg0->flags | 4;
         if (arg1 != 1) {
-            temp_f0 = *(f32 *)(arg0 + 0x0);
+            temp_f0 = arg0->speed;
             if (temp_f0 >= 50.0f) {
                 arg2 = 3;
             } else if (temp_f0 >= 38.0f) {
@@ -12767,9 +12767,9 @@ void snd_SoundObjTriggerEvent_2E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
                 }
             }
         }
-        *(u8 *)(arg0 + 0x29) = arg2;
-        *(u8 *)(arg0 + 0x2E) = arg3;
-        *(u8 *)(arg0 + 0x2D) = arg2;
+        arg0->level = arg2;
+        arg0->eventArg = arg3;
+        arg0->lastLevel = arg2;
     }
 }
 #else
@@ -13045,7 +13045,7 @@ extern s32 D_E354_GB[];
  * NM-only like gl_E354_emitf). With an int result the call defines v0 inside the 8 / 0x40 pick's live range and uopt
  * forbids the pick v0 (zdbug:5 `forbidden: [1 ...]`); the target keeps the pick in v0 across these calls. */
 extern void gl_E354_v(s32, s32);
-void snd_SoundObjUpdate(char *arg0, s32 arg1) {
+void snd_SoundObjUpdate(SoundObj *arg0, s32 arg1) {
     /* agent-g run 224: declaration order and count from the target frame (0x80: saves end 0x28,
      * spill 0x2C, 20 home words 0x30..0x7F): sp7D at frame-3 behind two u8s, three words before
      * sp6B (frame-21) whose word holds three more u8s, var_v0's home at frame-40 (the target's
@@ -13083,17 +13083,17 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
     if (temp_v0 != 0) {
         if (temp_v0 == 4) {
             temp_v0_7 = D_stateC_E354; /* agent-g run 251: u32 web (keeps temp_v1 off v0 after the switch-5 move) */ if (1) {} /* agent-g run 271: BB split lengthens sp60's LR so the o->0*o->4*100 product (temp_f18) colours f18 first */
-            if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (*(u8 *)((char *)(arg0) + 0x1C) == 1U) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
-                *(u8 *)((char *)(arg0) + 0x21) = 2U;
-                *(f32 *)((char *)(arg0) + 0x54) = 0.0f;
+            if ((((u32)temp_v0_7 == 1) || ((u32)temp_v0_7 == 2) || ((u32)temp_v0_7 == 3)) && (arg0->flags1C == 1U) && (arg0->kind == 0)) {
+                arg0->kind = 2U;
+                arg0->volScale = 0.0f;
             }
         }
         if (D_stateB_E354 == 1) {
-            *(u8 *)((char *)(arg0) + 0x23) = 0U;
+            arg0->unk23 = 0U;
             return;
         }
-        if ((D_stateD_E354 != 1) && (*(u8 *)((char *)(arg0) + 0x23) != 0)) {
-            if (*(u8 *)((char *)(arg0) + 0x20) == 0) {
+        if ((D_stateD_E354 != 1) && (arg0->unk23 != 0)) {
+            if (arg0->fired == 0) {
                 func_00000000(arg0);
                 return;
             }
@@ -13103,20 +13103,20 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
              * keeps them in f2 / f14 / f16 on the fall-through path and reloads
              * them in the 0x32 block after the o->0x4 store); the product is
              * spelled o4 * o0 (cfe swaps it to the target's lwc1 f2,0; f14,4). */
-            temp_f18 = *(f32 *)((char *)(arg0) + 0x4) * *(f32 *)((char *)(arg0) + 0x0) * 100.0f;
-            temp_v1_32 = *(u8 *)((char *)(arg0) + 0x32);
-            *(u8 *)((char *)(arg0) + 0x20) = 0U; if (1) {} /* agent-g run 250: BB split (bbsplit sweep) */
+            temp_f18 = arg0->unk04 * arg0->speed * 100.0f;
+            temp_v1_32 = arg0->scaleIdx;
+            arg0->fired = 0U; if (1) {} /* agent-g run 250: BB split (bbsplit sweep) */
             if (temp_v1_32) { /* agent-g run 271: truth test (no colourable (s32) cvt web, frees a0 for the hoisted 1); dead temp_v0_2 = temp_v1_32 * 4 dropped */
                 sp64 = D_E354_1C330[temp_v1_32];
                 temp_f0 = D_E354_1C3B0[temp_v1_32];
                 sp60 *= temp_f0;
-                *(f32 *)((char *)(arg0) + 0x4) = (f32) (*(f32 *)((char *)(arg0) + 0x4) * temp_f0);
+                arg0->unk04 = (f32) (arg0->unk04 * temp_f0);
                 /* agent-g run 281: no folded use here any more (run 209's `+ 0 * (int)(arg0)` only cost one ugen
                  * temp: ours used t5 for the decrement, target t4); the temp is spent at the (u8) narrowing of
                  * temp_v1 below instead */
-                *(u8 *)((char *)(arg0) + 0x32) = (u8) (temp_v1_32 - 1);
+                arg0->scaleIdx = (u8) (temp_v1_32 - 1);
             }
-            temp_f0 = *(f32 *)((char *)(arg0) + 0x50) - *(f32 *)((char *)(arg0) + 0x0);
+            temp_f0 = arg0->unk50 - arg0->speed;
             if (0.5f <= temp_f0) {
                 temp_f0 = temp_f0 + 0.5f;
                 if (2.0f <= temp_f0) {
@@ -13124,11 +13124,11 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                 }
                 sp60 *= temp_f0;
             }
-            *(f32 *)((char *)(arg0) + 0x50) = (f32) ((*(f32 *)((char *)(arg0) + 0x0) + *(f32 *)((char *)(arg0) + 0x50)) * 0.5f);
-            *(f32 *)((char *)(arg0) + 0x44) = (f32) ((*(f32 *)((char *)(arg0) + 0x44) + temp_f18) * 0.5f);
-            sp7D = gl_func_00043824(*(f32 *)((char *)(arg0) + 0x4) * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
+            arg0->unk50 = (f32) ((arg0->speed + arg0->unk50) * 0.5f);
+            arg0->unk44 = (f32) ((arg0->unk44 + temp_f18) * 0.5f);
+            sp7D = gl_func_00043824(arg0->unk04 * 120.0f, (s32)((char *)&D_00000000 + 0x1C250), 0x10);
             /* run 152: arg0->0 is read AFTER the call (target lwc1 f2,0(s0) after the jal; reading it first spilled f2, 89.28 -> 89.49) */
-            temp_v1 = (u8)((gl_func_00043824(*(f32 *)((char *)(arg0) + 0x44), (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF); /* agent-g run 281: a value-preserving (u8) narrowing of the masked product: costs the one ugen temp the target spends between the o->0x32 decrement (t4) and the `sll t6 / andi t7` here (99.848 -> 99.859, same length) */
+            temp_v1 = (u8)((gl_func_00043824(arg0->unk44, (s32)((char *)&D_00000000 + 0x1C290), 0x20) * 4) & 0xFF); /* agent-g run 281: a value-preserving (u8) narrowing of the masked product: costs the one ugen temp the target spends between the o->0x32 decrement (t4) and the `sll t6 / andi t7` here (99.848 -> 99.859, same length) */
             /* agent-g run 271: the o->0 / 200 + D_16E0 sum is a ugen ring temp in the target (f4), not a
              * coloured variable: built in sp78 itself (plain memory home, two stores kept) instead of temp_f18;
              * temp_f16 assigned inside the division (target materialises 200.0f before the o->0 load).
@@ -13137,18 +13137,18 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
              * the sum is written K + o->0 / 200 in one statement (same value: one IEEE add, operands commuted);
              * with temp_f16 gone from this line its web no longer interferes with the o->0 load web (f2 kept):
              * 99.8263 -> 99.8371, same length */
-            sp78 = *(f32 *)((char *)&D_00000000 + 0x16E0) + *(f32 *)((char *)(arg0) + 0x0) / 200.0f;
+            sp78 = *(f32 *)((char *)&D_00000000 + 0x16E0) + arg0->speed / 200.0f;
             temp_v0_2 = temp_v1;
             var_f4 = (f32) (u32) temp_v0_2;
             sp78 = sp78 * sp64;
             temp_f10_2 = var_f4 * sp60;
             var_t9 = (u32) temp_f10_2; /* recomposed (u32)float */
-            *(u8 *)((char *)(arg0) + 0x26) = (u8) (((s32) *(u8 *)((char *)(arg0) + 0x26) / 2) + ((s32) (var_t9 & 0xFF) / 2));
-            if (*(f32 *)((char *)(arg0) + 0x0) == 0.0f) {
-                *(u8 *)((char *)(arg0) + 0x26) = 0U;
+            arg0->unk26 = (u8) (((s32) arg0->unk26 / 2) + ((s32) (var_t9 & 0xFF) / 2));
+            if (arg0->speed == 0.0f) {
+                arg0->unk26 = 0U;
             }
-            if (*(u8 *)((char *)(arg0) + 0x34) != *(u8 *)((char *)(arg0) + 0x1D)) {
-                if (*(u8 *)((char *)(arg0) + 0x1D) == 1) {
+            if (arg0->unk34 != arg0->unk1D) {
+                if (arg0->unk1D == 1) {
                     var_v0 = 0x40;
                 } else {
                     var_v0 = 8;
@@ -13156,7 +13156,7 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                 /* agent-g run 284: the selector in the (otherwise unused) parameter arg1, not the u8 temp_v1_3: an
                  * s32 web has no u8 -> int cvt LR (the cvt phantom took v0 at adjsave 2.5), and the parameter adds no
                  * home word (a new local moved the (s8) spill 0x2C -> 0x28); temp_v1_3 stays declared for the frame */
-                arg1 = *(u8 *)((char *)(arg0) + 0x21); if (var_v0 != arg1) {} /* agent-g run 272: code-free compare (both set on every path): a use of var_v0 in the switch head block raises its priority */
+                arg1 = arg0->kind; if (var_v0 != arg1) {} /* agent-g run 272: code-free compare (both set on every path): a use of var_v0 in the switch head block raises its priority */
                 switch (arg1) {                     /* switch 1; irregular */
                 case 0:                             /* switch 1 */
                     /* agent-g run 284: folded counted uses of the pick in each arm's first call (kit CCCXLVI adjsave):
@@ -13172,58 +13172,58 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                     func_00000000(0x05020100, (s8) var_v0);
                     break;
                 }
-                *(u8 *)((char *)(arg0) + 0x34) = *(u8 *)((char *)(arg0) + 0x1D);
+                arg0->unk34 = arg0->unk1D;
             }
-            if (*(u8 *)((char *)(arg0) + 0x1C) & 1) {
-                temp_f0 = *(f32 *)((char *)(arg0) + 0x54);
+            if (arg0->flags1C & 1) {
+                temp_f0 = arg0->volScale;
                 /* agent-g run 250: the (u32) result goes straight into the store (target ugen temp t3);
                  * the colourable variable is the o->0x60 read (target lbu v0,0x60)
                  * agent-g run 271: the whole (f32)(u32) o->0x26 * temp_f0 chain inline (target ugen f10/f4) */
-                *(u8 *)((char *)(arg0) + 0x26) = (u32) ((f32) (u32) *(u8 *)((char *)(arg0) + 0x26) * temp_f0);
-                sp78 *= *(f32 *)((char *)(arg0) + 0x58); /* agent-g run 271: compound form (now that sp78 is plain, target loads sp78 into f6 first) */
-                temp_v0 = *(u8 *)((char *)(arg0) + 0x60); /* not var_v0: that variable carries an a2 argument preference */
-                *(u8 *)((char *)(arg0) + 0x28) = (u8) ((s32) (temp_v0 + *(u8 *)((char *)(arg0) + 0x28)) >> 1);
-                if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
+                arg0->unk26 = (u32) ((f32) (u32) arg0->unk26 * temp_f0);
+                sp78 *= arg0->unk58; /* agent-g run 271: compound form (now that sp78 is plain, target loads sp78 into f6 first) */
+                temp_v0 = arg0->pan[0]; /* not var_v0: that variable carries an a2 argument preference */
+                arg0->unk28 = (u8) ((s32) (temp_v0 + arg0->unk28) >> 1);
+                if (arg0->kind == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
-                    func_00000000(0x03020000, (s8) *(u8 *)((char *)(arg0) + 0x28));
+                    func_00000000(0x03020000, (s8) arg0->unk28);
                     func_00000000(0x90000000, 0x806);
                     func_00000000(0x0C00FF00, *(s8 *)((char *)(arg0) + 0x63));
                     temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
                 } else {
                     gl_E354_setf(0x01020100, temp_f0);
-                    func_00000000(0x03020100, (s8) *(u8 *)((char *)(arg0) + 0x28));
+                    func_00000000(0x03020100, (s8) arg0->unk28);
                     func_00000000(0x90000000, 0x1060);
                     func_00000000(0x0C00FF00, *(s8 *)((char *)(arg0) + 0x63));
                     temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
                 }
             } else {
                 if (D_stateF_E354 == 4) {
-                    switch (*(u8 *)((char *)(arg0) + 0x21)) {            /* switch 2; irregular */
+                    switch (arg0->kind) {            /* switch 2; irregular */
                     case 0:                         /* switch 2 */
-                        *(u8 *)((char *)(arg0) + 0x28) = 0x10U;
+                        arg0->unk28 = 0x10U;
                         break;
                     case 1:                         /* switch 2 */
-                        *(u8 *)((char *)(arg0) + 0x28) = 0x70U;
+                        arg0->unk28 = 0x70U;
                         break;
                     }
                 } else {
-                    *(u8 *)((char *)(arg0) + 0x28) = 0x40U;
+                    arg0->unk28 = 0x40U;
                 }
-                if (*(u8 *)((char *)(arg0) + 0x21) == 0) {
+                if (arg0->kind == 0) {
                     func_00000000(0x01020000, 0x3F800000);
-                    temp_f10_2 = func_00000000(0x03020000, (s8) *(u8 *)((char *)(arg0) + 0x28));
+                    temp_f10_2 = func_00000000(0x03020000, (s8) arg0->unk28);
                 } else {
                     func_00000000(0x01020100, 0x3F800000);
-                    temp_f10_2 = func_00000000(0x03020100, (s8) *(u8 *)((char *)(arg0) + 0x28));
+                    temp_f10_2 = func_00000000(0x03020100, (s8) arg0->unk28);
                 }
             }
-            if (*(u8 *)((char *)(arg0) + 0x16) & 1) {
-                *(f32 *)((char *)(arg0) + 0x8) = (f32) (*(f32 *)((char *)(arg0) + 0x8) + 50.0f);
-                gl_func_00043BE4(arg0, 0, *(u8 *)((char *)(arg0) + 0x2C) - 1, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
+            if (arg0->flags & 1) {
+                arg0->unk08 = (f32) (arg0->unk08 + 50.0f);
+                gl_func_00043BE4(arg0, 0, arg0->unk2C - 1, arg0->unk08, (s32) arg0->unk28);
                 temp_f10_2 = func_00000000(arg0, (*(u32 *)((char *)&D_00000000 + 0x2154) & 7) + 0x20);
-                *(u8 *)((char *)(arg0) + 0x16) = (u8) (*(u8 *)((char *)(arg0) + 0x16) & ~1);
+                arg0->flags = (u8) (arg0->flags & ~1);
             }
-            var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+            var_v0_2 = arg0->unk14;
             /* agent-g run 283 (zdbug:5 dump): the target's `or t0,v0` copy is the 0x14 SELECTOR variable of switch 6
              * (t0: its 0x23-block web forbids v0..a3), not a separate u8 temp: any plain copy was copy-propagated
              * into the zero test (the a0 register was the u8 -> int cvt LR); the value-preserving re-read of o->0x14
@@ -13232,15 +13232,15 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
             temp_v0_2 = var_v0_2; if (1) {}
             /* agent-g run 272: o->0x2C read in place at both tests (lever-sweep denaming; no store between them):
              * target `beql v0,v1` operand order, 99.767 -> 99.777 */
-            if (var_v0_2 != *(u8 *)((char *)(arg0) + 0x2C)) {
-                if (*(u8 *)((char *)(arg0) + 0x2C) == 0) {
-                    temp_v0 = *(s32 *)((char *)(arg0) + 0x38);
-                    *(f32 *)((char *)(arg0) + 0x8) = (f32) ((f32) temp_v0 * 3.0f);
+            if (var_v0_2 != arg0->unk2C) {
+                if (arg0->unk2C == 0) {
+                    temp_v0 = arg0->unk38;
+                    arg0->unk08 = (f32) ((f32) temp_v0 * 3.0f);
                     if (temp_v0 < 0xA) {
-                        *(f32 *)((char *)(arg0) + 0x8) = 0.0f;
+                        arg0->unk08 = 0.0f;
                     }
                     var_v0_2 = 1;
-                    if (*(u8 *)((char *)(arg0) + 0x14) == 1) {
+                    if (arg0->unk14 == 1) {
                         /* agent-g run 282 (zdbug:5 dump): o->0x15 read into var_t9 itself and switched on without a
                          * cast (the s32 holds the u8 value; every arm then overwrites it). temp_v1 (v0 for the
                          * whole function) made its web live here and forbade v0 to the hoisted constant 1 (target
@@ -13248,7 +13248,7 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                          * temp_v1 + (u8) switch cast (target v1, no `or v1,v0` copy): 98.24 -> 98.41 */
                         /* agent-g run 284: o->0x15 held in arg1 (the switch-1 selector's variable, coloured v1 like the
                          * target's `lbu v1,21(s0)`; every arm below writes var_t9, so the pick stays alone in a2) */
-                        arg1 = *(u8 *)((char *)(arg0) + 0x15);
+                        arg1 = arg0->unk15;
                         switch (arg1) { /* agent-g run 224: a switch (target: beq 1 / beq 2 compare chain, `b; li 2` default fall-through, one `b` block per case) */
                         /* agent-g run 272: the 0..3 a2 pick in var_t9, not var_v0 (target: two variables -- the
                          * 8 / 0x40 pick keeps var_v0's home 0x58 and colours alone, this one is the a2 web) */
@@ -13261,31 +13261,31 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                          * case-2 arm keeps its own `b; move a2,v0` block like the target) */
                         var_t9 = 3;
                     }
-                    switch (*(u8 *)((char *)(arg0) + 0x22)) {
+                    switch (arg0->surface) {
                     case 3: case 4:
-                        gl_func_00043BE4(arg0, 8, var_t9, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
+                        gl_func_00043BE4(arg0, 8, var_t9, arg0->unk08, (s32) arg0->unk28);
                         break;
                     case 1: case 2: case 5:
                     default:
-                        gl_func_00043BE4(arg0, 0xC, var_t9, *(f32 *)((char *)(arg0) + 0x8), (s32) *(u8 *)((char *)(arg0) + 0x28));
+                        gl_func_00043BE4(arg0, 0xC, var_t9, arg0->unk08, (s32) arg0->unk28);
                         break;
                     }
                     /* agent-g run 250: own read + goto past block_81 (target: the case-3/4 arm's
                      * `b; nop` lands on this `b` instead of threading to the store) */
-                    var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                    var_v0_2 = arg0->unk14;
                     goto block_2C;
                 } else {
                 /* case 3 (switch 3, flattened) */
-                    var_v0_2 = *(u8 *)((char *)(arg0) + 0x14); if (temp_v0_2 == 0) {
-                        *(s32 *)((char *)(arg0) + 0x38) = 0;
-                        *(u8 *)((char *)(arg0) + 0x33) = 0U;
+                    var_v0_2 = arg0->unk14; if (temp_v0_2 == 0) {
+                        arg0->unk38 = 0;
+                        arg0->unk33 = 0U;
                         goto block_81;
                     }
                     goto block_2C;
 block_81:
-                        var_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                        var_v0_2 = arg0->unk14;
 block_2C:
-                    *(u8 *)((char *)(arg0) + 0x2C) = var_v0_2;
+                    arg0->unk2C = var_v0_2;
                     goto block_83;
                 }
             } else {
@@ -13298,8 +13298,8 @@ block_83:
                      * the t-ring. The 0x48 test reads the field directly (target ugen temp t2). 97.93 -> 98.05;
                      * length 3684 -> 3688: the old length was a coincidence (the missing re-spill offset the
                      * extra switch-6 selector copy `or v1,a0` that still steals the raceC lui's delay slot). */
-                    if (*(s32 *)((char *)(arg0) + 0x48) == 0) {
-                        temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
+                    if (arg0->unk48 == 0) {
+                        temp_f16 = arg0->speed;
                         sp6B = 0x11;
                         if (75.0f <= temp_f16) {
                             sp6B = 0x13;
@@ -13307,18 +13307,18 @@ block_83:
                             sp6B = 0x12;
                         }
                         if (25.0f <= temp_f16) {
-                            gl_func_00043BE4(arg0, 0x10, sp6B, 127.0f, (s32) *(u8 *)((char *)(arg0) + 0x28));
+                            gl_func_00043BE4(arg0, 0x10, sp6B, 127.0f, (s32) arg0->unk28);
                         }
                     }
-                    *(u8 *)((char *)(arg0) + 0x2A) = sp6B;
+                    arg0->unk2A = sp6B;
                     *(u16 *)((char *)(arg0) + 0x1A) = 0U;
-                    *(s32 *)((char *)(arg0) + 0x48) = 5;
+                    arg0->unk48 = 5;
                 }
-                if (*(u8 *)((char *)(arg0) + 0x16) & 4) {
+                if (arg0->flags & 4) {
                     sp50 = 4;
                     { int rv = gl_func_000428FC(arg0); var_v0_2 = rv; /* run 138: int return (target slti v0,11) */
                     sp6B = rv;
-                    temp_v1_2 = *(u8 *)((char *)(arg0) + 0x29);
+                    temp_v1_2 = arg0->level;
                     temp_f10_2 = D_E354_1C310[temp_v1_2];
                     if (rv < 0xB) {
                         /* run 152 (agent-c): each arm re-truncates through the u8 copy (target re-emits
@@ -13344,15 +13344,15 @@ block_83:
                          * its own `b; andi` block instead of folding into the pre-switch value) */
                         var_t9 = var_v0_2;
                     } }
-                    if ((*(u16 *)((char *)(arg0) + 0x30) != 1) || (temp_v1_2 != 3)) {
-                        temp_v1_5 = *(u8 *)((char *)(arg0) + 0x22); /* agent-g run 272: own u8 (the o->0x21 switch-1 web alone in temp_v1_3) */
+                    if ((arg0->eventType != 1) || (temp_v1_2 != 3)) {
+                        temp_v1_5 = arg0->surface; /* agent-g run 272: own u8 (the o->0x21 switch-1 web alone in temp_v1_3) */
                         if ((s32) temp_v1_5 >= 6) {
                             var_t9 = temp_v1_5 + 0xE;
                         }
-                        if ((*(s32 *)(D_E354_G + 0) /* M2C unset $t4 */ == 4) || (*(u8 *)((char *)(arg0) + 0x1C) & 1)) {
-                            gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) *(u8 *)((char *)(arg0) + 0x28)); var_v0_2 = 0; /* M2C: v0-after-void-call */
+                        if ((*(s32 *)(D_E354_G + 0) /* M2C unset $t4 */ == 4) || (arg0->flags1C & 1)) {
+                            gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) arg0->unk28); var_v0_2 = 0; /* M2C: v0-after-void-call */
                         } else {
-                            var_v0_3 = *(u8 *)((char *)(arg0) + 0x2E); /* run 192: selector and result share v0 */
+                            var_v0_3 = arg0->eventArg; /* run 192: selector and result share v0 */
                             if (var_v0_3 == 1) {
                                 var_v0_3 = 0x7F;
                             } else if (var_v0_3 == 3) {
@@ -13360,7 +13360,7 @@ block_83:
                             } else {
                                 var_v0_3 = 0x40;
                             }
-                            if (*(u8 *)((char *)(arg0) + 0x1E) != 0) {
+                            if (arg0->unk1E != 0) {
                                 var_v0_3 = (0x7F - var_v0_3) & 0xFF;
                             }
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, var_v0_3); var_v0_2 = 0; /* M2C: v0-after-void-call */
@@ -13384,7 +13384,7 @@ block_83:
                         break;
                     default:                        /* odd cases */
                         temp_v1 = 0x10;
-                        temp_v0_7 = *(u8 *)((char *)(arg0) + 0x29); /* agent-g run 251: the selector in the u32 temp_v0_7 (target v1; the base takes v0) */
+                        temp_v0_7 = arg0->level; /* agent-g run 251: the selector in the u32 temp_v0_7 (target v1; the base takes v0) */
                         switch ((unsigned)temp_v0_7) {
                         case 0:
                             sp50 = 6;
@@ -13405,20 +13405,20 @@ block_83:
                      * operand ranks like the remainder, so the base stays first: target `addu a1,v0,t2`; plain
                      * `temp_v1 + rem` / `rem + temp_v1` both give `addu a1,t2,v0`): 99.8371 -> 99.8480 */
                     func_00000000(arg0, ((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50) + (0, temp_v1));
-                    *(s32 *)((char *)(arg0) + 0x48) = 0xA;
-                    *(u8 *)((char *)(arg0) + 0x29) = 0U;
-                    *(u8 *)((char *)(arg0) + 0x2B) = sp6B;
-                    *(u8 *)((char *)(arg0) + 0x16) = (u8) (*(u8 *)((char *)(arg0) + 0x16) & 0xFFFB);
+                    arg0->unk48 = 0xA;
+                    arg0->level = 0U;
+                    arg0->unk2B = sp6B;
+                    arg0->flags = (u8) (arg0->flags & 0xFFFB);
                 }
             }
             /* agent-g run 270: field test + pre-decrement in the test (target ugen temps v0 / t9, no
              * coloured variable; m2c's temp_v0 / temp_v0_2 pair took v0 / v1): 98.79 -> 99.01 */
-            if (*(s32 *)((char *)(arg0) + 0x48) != 0) {
-                if (--*(s32 *)((char *)(arg0) + 0x48) == 0) {
-                    *(u8 *)((char *)(arg0) + 0x2D) = 0;
+            if (arg0->unk48 != 0) {
+                if (--arg0->unk48 == 0) {
+                    arg0->lastLevel = 0;
                 }
             }
-            if (*(u8 *)((char *)(arg0) + 0x23) != 0) {
+            if (arg0->unk23 != 0) {
                 /* agent-g run 269: o->0x14 read into the u8 temp_v1_2 BEFORE the race test and re-read into the same
                  * variable at switch 6 (target t0 throughout; the old s32 temp_v1 selector took a0 and needed the
                  * `or v0,a0` copy that stole the raceC lui's delay slot): 98.15 -> 98.24, length 3688 -> 3684.
@@ -13436,19 +13436,19 @@ block_83:
                  * the hoisted 4 goes first like the target's `beq v1,v0` / `bne v1,v0`: 99.9077 -> 99.9294 */
                 /* agent-g run 283: the selector in temp_v0_2 (its earlier `temp_v0_2 = temp_v1` web is dead here),
                  * var_v0 keeps only the 8 / 0x40 pick */
-                temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
-                if ((D_raceA_E354 == 1) && (((u32)D_raceB_E354 == 4) || ((u32)D_raceB_E354 == 0xA)) && (((u32)D_raceB_E354 != 4) || (*(u8 *)((char *)(arg0) + 0x21) != 2))) {
+                temp_v0_2 = arg0->unk14;
+                if ((D_raceA_E354 == 1) && (((u32)D_raceB_E354 == 4) || ((u32)D_raceB_E354 == 0xA)) && (((u32)D_raceB_E354 != 4) || (arg0->kind != 2))) {
                     if (temp_v0_2 == 0) {
-                        var_v0_3 = *(s32 *)((char *)(arg0) + 0x38); /* agent-g run 250: var_v0_3 (variable-split sweep) */
+                        var_v0_3 = arg0->unk38; /* agent-g run 250: var_v0_3 (variable-split sweep) */
                         if (var_v0_3 == 0) {
-                            temp_f16 = *(f32 *)((char *)(arg0) + 0x0);
+                            temp_f16 = arg0->speed;
                             D_E354_1C738_a = temp_f16;
                             if (temp_f16 == 0.0f) {
                                 temp_f16 = 1.0; /* agent-g run 250: target mtc1 f2 */
                                 D_E354_1C738_b = temp_f16;
                             }
                         } else if (var_v0_3 >= 7) {
-                            temp_f16 = D_E354_1C738_c; temp_f10_2 = *(f32 *)((char *)(arg0) + 0x0) / temp_f16; if (1) {} /* agent-g run 250: one bound variable (target f2) for divisor / 1.0 / 0x1724 */
+                            temp_f16 = D_E354_1C738_c; temp_f10_2 = arg0->speed / temp_f16; if (1) {} /* agent-g run 250: one bound variable (target f2) for divisor / 1.0 / 0x1724 */
                             if (temp_f10_2 <= 0.5f) { /* run 183: target c.le.s x,0.5 + bc1fl (not !(0.5 <= x)) */
                                 temp_f10_2 = 0.5f;
                             }
@@ -13471,7 +13471,7 @@ block_83:
                              * target recomputes the base for this store instead of reusing the GA register) */
                             D_E354_GB[5] = 0x20;
                             D_E354_1C73C_a = temp_f10_2; if (temp_v0_2) {} /* agent-g run 283: code-free read of the selector (set at the block head on every path) */
-                            gl_E354_setf(0x04010900, temp_f10_2); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                            gl_E354_setf(0x04010900, temp_f10_2); temp_v0_2 = arg0->unk14;
                         }
                     } else {
                         temp_v0 = D_E354_GB[5];
@@ -13488,62 +13488,62 @@ block_83:
                             }
                             D_E354_GB[5] = (s32) (temp_v0 - 1);
                             D_E354_1C73C_c = temp_f0;
-                            gl_E354_setf(0x04010900, temp_f0); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                            gl_E354_setf(0x04010900, temp_f0); temp_v0_2 = arg0->unk14;
                         } else {
-                            gl_E354_setf(0x04010900, 1.0f); temp_v0_2 = *(u8 *)((char *)(arg0) + 0x14);
+                            gl_E354_setf(0x04010900, 1.0f); temp_v0_2 = arg0->unk14;
                         }
                     }
                 }
                 switch ((unsigned)temp_v0_2) {              /* switch 6; irregular */
                 case 0:                             /* switch 6 */
                     if (D_raceC_E354 == 0) {
-                        *(s32 *)((char *)(arg0) + 0x38) = (s32) (*(s32 *)((char *)(arg0) + 0x38) + 1);
+                        arg0->unk38 = (s32) (arg0->unk38 + 1);
                     } if (1) {} /* agent-g run 271: BB split after the D_raceC arm (was leading inside it, run 270): the 0x38 load is a ugen temp (t3) again */
                     /* agent-g run 276 (kit CCCXXX): a volatile read of o->0x21 here -- the target loads it into the ugen
                      * temp t2 (bnezl slot + test), ours had it in the coloured a0 web, one ugen ring step short for the
                      * rest of switch 6 */
-                    if ((*(volatile u8 *)((char *)(arg0) + 0x21) == 0) && (*(s32 *)((char *)(arg0) + 0x38) == 0x1E)) {
+                    if ((*(volatile u8 *)((char *)(arg0) + 0x21) == 0) && (arg0->unk38 == 0x1E)) {
                         func_00000000(0x20, 0x12, 0);
                     }
                     if (D_raceD_E354) {} /* agent-g run 281: code-free test of the same global first (kit CCCXL creation order): the raceD load then colours v1 like the target (`lui v1; lw v1; beqzl v1`, was v0): 99.859 -> 99.891 */
                     var_v0_3 = D_raceD_E354; /* agent-g run 269: var_v0_3, not the selector temp_v0_2 (target v1) */
                     if ((var_v0_3 != 0) && (var_v0_3 != 1) && (var_v0_3 != 8)) {
-                        temp_v1 = *(s32 *)((char *)(arg0) + 0x48);
+                        temp_v1 = arg0->unk48;
                         if (temp_v1 != 0) {
-                            *(u8 *)((char *)(arg0) + 0x33) = 0x1AU;
+                            arg0->unk33 = 0x1AU;
                         }
                         /* agent-g run 270: the 0x172C literal read in place (target ugen ft0, not the coloured temp_f0) */
-                        if (*(f32 *)((char *)&D_00000000 + 0x172C) < *(f32 *)((char *)(arg0) + 0xC)) {
-                            if (++*(u8 *)((char *)(arg0) + 0x33) == 0x19) { /* agent-g run 276: no & 0xFF (with the volatile o->0x21 read above, the inc / andi temps t8 / t9 like the target) */ /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
+                        if (*(f32 *)((char *)&D_00000000 + 0x172C) < arg0->unk0C) {
+                            if (++arg0->unk33 == 0x19) { /* agent-g run 276: no & 0xFF (with the volatile o->0x21 read above, the inc / andi temps t8 / t9 like the target) */ /* agent-g run 269: pre-increment in the test (target ugen temps t7 / t8 / t9, no variable) */
                                 func_00000000(arg0, 0x3C);
                             }
                         }
                     }
-                    *(u8 *)((char *)(arg0) + 0x26) = 0U;
-                    *(f32 *)((char *)(arg0) + 0x4) = 0.0f;
+                    arg0->unk26 = 0U;
+                    arg0->unk04 = 0.0f;
                     /* fallthrough */
                 case 1:                             /* switch 6 */
-                    if (*(f32 *)((char *)(arg0) + 0x4) > 0.5f) {
-                        var_t9 = *(s8 *)((char *)(arg0) + 0x18);
-                        if (*(u8 *)((char *)(arg0) + 0x1E) == 0) {
+                    if (arg0->unk04 > 0.5f) {
+                        var_t9 = arg0->unk18;
+                        if (arg0->unk1E == 0) {
                             var_t9 = -var_t9;
                         }
-                        func_00000000(*(u8 *)((char *)(arg0) + 0x21), *(u8 *)((char *)(arg0) + 0x15), var_t9);
+                        func_00000000(arg0->kind, arg0->unk15, var_t9);
                     } else {
-                        func_00000000(*(u8 *)((char *)(arg0) + 0x21));
+                        func_00000000(arg0->kind);
                     }
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, (s32) *(u8 *)((char *)(arg0) + 0x15), (s32) *(u8 *)((char *)(arg0) + 0x28));
+                    gl_E354_emitf(arg0->kind, sp7D * 0x10, arg0->unk26, sp78, (s32) arg0->unk15, (s32) arg0->unk28);
                     break;
                 default:                            /* switch 6 */
-                    gl_E354_emitf(*(u8 *)((char *)(arg0) + 0x21), sp7D * 0x10, *(u8 *)((char *)(arg0) + 0x26), sp78, temp_v0_2 + 2, (s32) *(u8 *)((char *)(arg0) + 0x28));
-                    func_00000000(*(u8 *)((char *)(arg0) + 0x21));
+                    gl_E354_emitf(arg0->kind, sp7D * 0x10, arg0->unk26, sp78, temp_v0_2 + 2, (s32) arg0->unk28);
+                    func_00000000(arg0->kind);
                     break;
                 }
                 gl_func_000438F4(arg0);
             }
-            if ((D_stateE_E354 == 1) && (*(u8 *)((char *)(arg0) + 0x21) == 0)) {
+            if ((D_stateE_E354 == 1) && (arg0->kind == 0)) {
                 /* agent-g run 270: the o->0x10 + 1 sum in temp_f0 (target add.s into the coloured f0) */
-                temp_f0 = *(f32 *)((char *)(arg0) + 0x10) + 1.0f;
+                temp_f0 = arg0->unk10 + 1.0f;
                 gl_func_00044C38((s32) (temp_f0 * 63.5f));
             }
         }
@@ -13670,10 +13670,10 @@ extern void gl_setf_2F288(int, float);
 extern int D_2F288_g[];
 extern char D_2F288_a[], D_2F288_b[], D_2F288_c[], D_2F288_d[], D_2F288_n[], D_2F288_m[], D_2F288_r[], D_2F288_e[];
 extern float D_2F288_ta[], D_2F288_tb[]; /* file-static tables at D+0x1C330 / D+0x1C3B0 */
-void snd_SoundObjUpdateChannel_2F288(char *o) {
-    u8 mode = o[0x21];
-    float f = *(float *)o;
-    int k = o[0x14];
+void snd_SoundObjUpdateChannel_2F288(SoundObj *o) {
+    u8 mode = o->kind;
+    float f = o->speed;
+    int k = o->unk14;
     u8 c;
     u8 idx;
     u8 v;
@@ -13685,11 +13685,11 @@ void snd_SoundObjUpdateChannel_2F288(char *o) {
     int cmd;
     int n;
 
-    if (mode != 2 && o[0x1C] == 0) {
+    if (mode != 2 && o->flags1C == 0) {
     if (mode == 0) t0 = 3; else t0 = 7;
     t = D_2F288_g[1];
     f = *(float *)(D_2F288_a + 0x1730) * (float)t + f;
-    if (k == 0 && *(int *)(o + 0x38) >= 21) {
+    if (k == 0 && o->unk38 >= 21) {
         switch (D_2F288_g[4]) {
         case 0:
         default:
@@ -13707,7 +13707,7 @@ void snd_SoundObjUpdateChannel_2F288(char *o) {
         sc = *(float *)(D_2F288_c + 0x1738);
     }
     v += t;
-    c = o[0x1F];
+    c = o->unk1F;
     if (c != 0) {
         n = *(int *)(D_2F288_n + 0x1C740) - 1;
         *(int *)(D_2F288_m + 0x1C740) = n;
@@ -13724,7 +13724,7 @@ void snd_SoundObjUpdateChannel_2F288(char *o) {
         }
     }
     ff = f / 80.0f + *(float *)(D_2F288_d + 0x173C); if (1) {}
-    idx = o[0x32];
+    idx = o->scaleIdx;
     if (idx != 0) {
         ff *= D_2F288_ta[idx];
         sc *= D_2F288_tb[idx];
@@ -13739,7 +13739,7 @@ void snd_SoundObjUpdateChannel_2F288(char *o) {
         cmd = hi | 0x06000000;
         gl_seti_2F288(cmd | 6, 0);
     }
-    if (o[0x1C] & 1) sc = 0.0f;
+    if (o->flags1C & 1) sc = 0.0f;
     gl_seti_2F288(cmd | 5, (s8)v);
     gl_setf_2F288(hi | 0x04000000, ff);
     gl_setf_2F288(hi | 0x01000000, sc);
@@ -13770,7 +13770,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjUpdateChannel_2F
  * in the if-arm, forwarded otherwise), and missed the trailing 5-arg jal-0
  * dispatch (o->0x21 byte, a1/a2 forwarded untouched, (int)w clamped [0,127],
  * b). w = |v|+15.0 is a separate float local (fresh $f2 web, v stays $f12). */
-void snd_SoundObjPlay(char *o, int a1, int a2, f32 v, unsigned char b) {
+void snd_SoundObjPlay(SoundObj *o, int a1, int a2, f32 v, unsigned char b) {
     int iv;
     float w;
 
@@ -13781,9 +13781,9 @@ void snd_SoundObjPlay(char *o, int a1, int a2, f32 v, unsigned char b) {
     if (127.0f < w) {
         w = 127.0f;
     }
-    if (*(unsigned char *)(o + 0x1C) & 1) {
-        w = *(float *)(o + 0x54) * w;
-        b = *(unsigned char *)(o + 0x60);
+    if (o->flags1C & 1) {
+        w = o->volScale * w;
+        b = o->pan[0];
     }
     iv = (int)w;
     if (iv >= 0x80) {
@@ -13792,7 +13792,7 @@ void snd_SoundObjPlay(char *o, int a1, int a2, f32 v, unsigned char b) {
     if (iv < 0) {
         iv = 0;
     }
-    gl_func_00000000(*(unsigned char *)(o + 0x21), a1, a2, iv, b);
+    gl_func_00000000(o->kind, a1, a2, iv, b);
 }
 
 void snd_Stub_2F630(void) {

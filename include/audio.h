@@ -731,14 +731,15 @@ typedef struct SoundObj {
     u8 unk1F;               /* 0x1F: bootup 0xA50 */
     u8 fired;               /* 0x20 */
     u8 kind;                /* 0x21: 0 -> player-0 channel 3, else 7; 2 = Stop requests no cue */
-    u8 pad22;
+    u8 surface;             /* 0x22: with kind, the cue key of snd_SoundObjRequestCue; Update switches on it */
     u8 unk23;               /* 0x23 */
     u8 pad24[2];
     u8 unk26;               /* 0x26 */
     u8 pad27;
     u8 unk28;               /* 0x28: 0x40 at init; Start's last argument */
     u8 level;               /* 0x29 */
-    u8 pad2A[2];
+    u8 unk2A;               /* 0x2A: Update stores sp6B here */
+    u8 unk2B;               /* 0x2B */
     u8 unk2C;               /* 0x2C */
     u8 lastLevel;           /* 0x2D */
     u8 eventArg;            /* 0x2E */

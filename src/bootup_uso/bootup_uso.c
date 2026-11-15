@@ -272,13 +272,13 @@ extern char D_00006584;
  * div.s (a 4.0f literal folds to * 0.25). Residual: frame 0x38 vs 0x30
  * (sp28/sp24 sit 8 bytes higher; pads only grow it). */
 extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (func_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
-void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
-    int o;
+void snd_updatePlayer(SndHandle *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+    SoundObj *o;
     f32 sp28;
     int sp24;
     f32 var_f0;
 
-    o = arg0[0];
+    o = arg0->obj;
     if (o != 0) {
         arg5 = (f32) ((f64) arg5 / D_bu_ro_d058);
         if (arg5 < 0.0f) {
@@ -288,47 +288,47 @@ void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
         } else {
             var_f0 = arg5;
         }
-        *(f32*)((char*)o + 0xC) = var_f0;
+        o->unk0C = var_f0;
         if (arg4 < 0.0f) {
             var_f0 = -arg4;
         } else {
             var_f0 = arg4;
         }
-        *(f32*)((char*)arg0[0] + 0x4) = (f32) ((f64) var_f0 + D_bu_ro_d060);
-        *(s8*)((char*)arg0[0] + 0x18) = (s8) (s32) (arg4 * 63.0f);
-        *(s8*)((char*)arg0[0] + 0x1E) = (s8) ((arg8 & 0x80) != 0);
+        arg0->obj->unk04 = (f32) ((f64) var_f0 + D_bu_ro_d060);
+        arg0->obj->unk18 = (s8) (s32) (arg4 * 63.0f);
+        arg0->obj->unk1E = (s8) ((arg8 & 0x80) != 0);
         switch (arg6) {
         case 0x0:
-            *(s8*)((char*)arg0[0] + 0x15) = 1;
-            *(s8*)((char*)arg0[0] + 0x14) = 0;
+            arg0->obj->unk15 = 1;
+            arg0->obj->unk14 = 0;
             break;
         case 0x61:
-            *(s8*)((char*)arg0[0] + 0x15) = 1;
-            *(s8*)((char*)arg0[0] + 0x14) = 1;
+            arg0->obj->unk15 = 1;
+            arg0->obj->unk14 = 1;
             break;
         case 0x62:
-            *(s8*)((char*)arg0[0] + 0x15) = 3;
-            *(s8*)((char*)arg0[0] + 0x14) = 1;
+            arg0->obj->unk15 = 3;
+            arg0->obj->unk14 = 1;
             break;
         case 0x63:
-            *(s8*)((char*)arg0[0] + 0x15) = 2;
-            *(s8*)((char*)arg0[0] + 0x14) = 1;
+            arg0->obj->unk15 = 2;
+            arg0->obj->unk14 = 1;
             break;
         case 0x64:
-            *(s8*)((char*)arg0[0] + 0x15) = 2;
-            *(s8*)((char*)arg0[0] + 0x14) = 2;
+            arg0->obj->unk15 = 2;
+            arg0->obj->unk14 = 2;
             break;
         }
-        *(f32*)((char*)arg0[0] + 0x0) = arg2 / (f32)4;
-        *(f32*)((char*)arg0[0] + 0x8) = arg3 / (f32)4;
-        *(s8*)((char*)arg0[0] + 0x20) = 1;
-        *(u8*)((char*)arg0[0] + 0x1C) = (u8) ((arg8 & 0x8000) != 0);
-        if (*(u8*)((char*)arg0[0] + 0x1C) != 0) {
+        arg0->obj->speed = arg2 / (f32)4;
+        arg0->obj->unk08 = arg3 / (f32)4;
+        arg0->obj->fired = 1;
+        arg0->obj->flags1C = (u8) ((arg8 & 0x8000) != 0);
+        if (arg0->obj->flags1C != 0) {
             func_00000000(*(int*)&arg1, &sp28, &sp24, arg7);
-            func_00000000(arg0[0], *(int*)&sp28, (s8) sp24);
+            func_00000000(arg0->obj, *(int*)&sp28, (s8) sp24);
         }
         func_00000000(&D_00006584);
-        func_00000000(arg0[0], 0);
+        func_00000000(arg0->obj, 0);
         func_00000000();
     }
 }
