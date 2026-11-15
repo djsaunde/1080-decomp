@@ -14,6 +14,7 @@
 #include "gdl/mnode.h"
 #include "gdl/coll.h"
 #include "gdl/item.h"
+#include "game/camera.h"
 extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -2444,9 +2445,9 @@ int* CamFollow_ctor(int *a0, int a1) {
     gl_func_00000000(a0, GL_DATA_STR(0x1EA08, "<Node>"));
     ((Node *)a0)->vptr = (s32)&CamFollow_vtbl;
     a0[0x38/4] = a1;
-    *(float*)((char*)a0 + 0x34) = 0.0f;
-    *(float*)((char*)a0 + 0x30) = 0.0f;
-    *(float*)((char*)a0 + 0x2C) = 0.0f;
+    ((CamFollow *)a0)->unk2C.z = 0.0f;
+    ((CamFollow *)a0)->unk2C.y = 0.0f;
+    ((CamFollow *)a0)->unk2C.x = 0.0f;
 end:
     return a0;
 }
@@ -2473,6 +2474,9 @@ end:
 //     +0x34/+0x38 element offsets (nested sub-struct base shape).
 //   - p zeroed p[2],p[1],p[0] (reverse, shares mtc1 $f0); q zeroed forward.
 //   - pos as float[3] at +0x30 of S36C08; per-site addiu a0,{s0,t9},48.
+/* S36C08 is a view of MCamera (include/game/camera.h): pos = mnode.local (+0x30, passed as the matrix
+ * to translate), sub.v = mnode.world[3] (+0xA0, the world position), child = target (+0xF4). The
+ * private view stays because the levers above depend on its member shapes. */
 typedef struct S36C08 {
     char pad00[0x30];
     float pos[3];                                   /* 0x30 */
@@ -2482,8 +2486,8 @@ typedef struct S36C08 {
     struct S36C08 *child;                           /* 0xF4 */
 } S36C08;
 void CamFollow_update(char *o) {
-    S36C08 *ctx = *(S36C08 **)(o + 0x14);
-    char *st = *(char **)(*(char **)(o + 0x38) + 0xB4);
+    S36C08 *ctx = (S36C08 *)((CamFollow *)o)->cam;
+    char *st = *(char **)((char *)((CamFollow *)o)->owner + 0xB4);
     float p[3];
     float q[3];
     float r[3];
@@ -2497,11 +2501,11 @@ void CamFollow_update(char *o) {
     p[1] = 0.0f;
     p[0] = 0.0f;
     if (*(int *)(st + 0x10) & 0x200) {
-        p[0] = *(float *)(*(char **)(o + 0x38) + 0xD4) * -10.0f;
-        p[1] = *(float *)(*(char **)(o + 0x38) + 0xD8) * 10.0f;
-        p[2] = *(float *)(*(char **)(o + 0x38) + 0xDC) * 30.0f;
+        p[0] = *(float *)((char *)((CamFollow *)o)->owner + 0xD4) * -10.0f;
+        p[1] = *(float *)((char *)((CamFollow *)o)->owner + 0xD8) * 10.0f;
+        p[2] = *(float *)((char *)((CamFollow *)o)->owner + 0xDC) * 30.0f;
     }
-    gl_func_00000000(p, *(char **)(*(char **)(*(char **)(o + 0x38) + 0x110) + 0x70) + 0xB4);
+    gl_func_00000000(p, ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view); /* p turned into the view frame */
     t = *pc;
     gl_func_00000000(t->child->pos, p);
     t = *pc;
@@ -2536,9 +2540,9 @@ void CamFollow_update(char *o) {
     t = *pc;
     gl_func_00000000(t->pos, 1, *(int *)&q[1], 0);
 
-    u[0] = *(float *)(*(char **)(*(char **)(*(char **)(o + 0x38) + 0x110) + 0x70) + 0xB4);
-    u[1] = *(float *)(*(char **)(*(char **)(*(char **)(o + 0x38) + 0x110) + 0x70) + 0xC4);
-    u[2] = *(float *)(*(char **)(*(char **)(*(char **)(o + 0x38) + 0x110) + 0x70) + 0xD4);
+    u[0] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[0][0];
+    u[1] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[1][0];
+    u[2] = ((CamWindow *)*(char **)((char *)((CamFollow *)o)->owner + 0x110))->cam->view[2][0];
     t = *pc;
     gl_func_00000000(t->pos, u, *(int *)&q[0]);
 
@@ -2601,13 +2605,13 @@ char *CamMan_ctor(char *o, int a1, int a2) {
     }
     gl_func_00000000(o, GL_DATA_STR(0x1EA10, "cam man"));
     ((Node *)o)->vptr = (s32)&D_00000000;
-    *(int *)(o + 0x4C) = a2;
-    *(f32 *)(o + 0x2C) = 1000.0f;
-    *(f32 *)(o + 0x30) = -90.0f;
-    *(f32 *)(o + 0x34) = 180.0f;
-    *(f32 *)(o + 0x38) = 0.0f;
+    ((FreeCam *)o)->ctl = (void *)a2;
+    ((FreeCam *)o)->dist = 1000.0f;
+    ((FreeCam *)o)->pitch = -90.0f;
+    ((FreeCam *)o)->yaw = 180.0f;
+    ((FreeCam *)o)->unk38 = 0.0f;
     *(int *)(o + 0x00) = 0x40;
-    *(int *)(o + 0x3C) = 0;
+    ((FreeCam *)o)->accel = 0;
 out:
     return o;
 }
