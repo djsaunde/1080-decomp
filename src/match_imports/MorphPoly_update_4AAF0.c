@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
-void gl_func_0004AAF0(Owner4AAF0 *self) {
+void MorphPoly_update_4AAF0(Owner4AAF0 *self) {
  int i;
  if(self->sourceC0==0) {
   gl_4AAF0_diag(&gl_4AAF0_data+0x2006C);

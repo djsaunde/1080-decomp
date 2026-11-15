@@ -1,6 +1,6 @@
-nonmatching gl_func_0003695C, 0xEC
+nonmatching math_arcballPoint, 0xEC
 
-glabel gl_func_0003695C
+glabel math_arcballPoint
     /* E1BA34 0003695C 27BDFFD0 */  .word 0x27BDFFD0
     /* E1BA38 00036960 AFA60038 */  .word 0xAFA60038
     /* E1BA3C 00036964 C7A40038 */  .word 0xC7A40038
@@ -60,4 +60,4 @@ glabel gl_func_0003695C
     /* E1BB14 00036A3C 27BD0030 */  .word 0x27BD0030
     /* E1BB18 00036A40 03E00008 */  .word 0x03E00008
     /* E1BB1C 00036A44 00000000 */  .word 0x00000000
-endlabel gl_func_0003695C
+endlabel math_arcballPoint

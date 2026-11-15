@@ -1,5 +1,5 @@
 {
-  "function": "gl_func_0004AAF0",
+  "function": "MorphPoly_update_4AAF0",
   "raw_sha256": "9f9af02c87c6ed40e8ddb1d1508be2bf2b84dd05db32a19293cfe955fb2d73af",
   "renames": {
     "gl_4AAF0_diag": "snw_port_gl_func_0004AAF0_gl_4AAF0_diag",

@@ -1,6 +1,6 @@
-nonmatching gl_func_0004AAF0, 0xE8
+nonmatching MorphPoly_update_4AAF0, 0xE8
 
-glabel gl_func_0004AAF0
+glabel MorphPoly_update_4AAF0
     /* E2FBC8 0004AAF0 27BDFFE8 */  .word 0x27BDFFE8
     /* E2FBCC 0004AAF4 AFBF0014 */  .word 0xAFBF0014
     /* E2FBD0 0004AAF8 8C8E00C0 */  .word 0x8C8E00C0
@@ -59,4 +59,4 @@ glabel gl_func_0004AAF0
     /* E2FCA4 0004ABCC 27BD0018 */  .word 0x27BD0018
     /* E2FCA8 0004ABD0 03E00008 */  .word 0x03E00008
     /* E2FCAC 0004ABD4 00000000 */  .word 0x00000000
-endlabel gl_func_0004AAF0
+endlabel MorphPoly_update_4AAF0

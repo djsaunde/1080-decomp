@@ -1,6 +1,6 @@
-nonmatching gl_func_00048354, 0x4C
+nonmatching gfx_addWindow, 0x4C
 
-glabel gl_func_00048354
+glabel gfx_addWindow
     /* E2D42C 00048354 27BDFFE8 */  .word 0x27BDFFE8
     /* E2D430 00048358 AFBF0014 */  .word 0xAFBF0014
     /* E2D434 0004835C 8C820258 */  .word 0x8C820258
@@ -20,4 +20,4 @@ glabel gl_func_00048354
     /* E2D46C 00048394 27BD0018 */  .word 0x27BD0018
     /* E2D470 00048398 03E00008 */  .word 0x03E00008
     /* E2D474 0004839C 00000000 */  .word 0x00000000
-endlabel gl_func_00048354
+endlabel gfx_addWindow

@@ -2354,11 +2354,11 @@ void *gl_func_00036694(void *out) {
 }
 #endif
 
-// gl_func_0003695C — STRUCTURAL PASS (0xEC / 59 words, no episode).
+// math_arcballPoint — STRUCTURAL PASS (0xEC / 59 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). An FP vector-normalize / direction-vector routine.
 //
-//   void gl_func_0003695C(? out, ?, float *p) {  // p = sp+0x38..0x50
+//   void math_arcballPoint(? out, ?, float *p) {  // p = sp+0x38..0x50
 //     float s  = p[z];                          // common divisor
 //     float dx = (p[0] - p[1]) / s;
 //     float dy = (p[2] - p[3]) / s;
@@ -2394,7 +2394,7 @@ void *gl_func_00036694(void *out) {
  * struct-return copy, which the float-copy scan flagged as an int copy of
  * floats; the earlier float *out body stored with swc1. */
 extern float gl_func_00000000_695c(float);
-Vec3 gl_func_0003695C(int a1, float x0, float y0, float u1,
+Vec3 math_arcballPoint(int a1, float x0, float y0, float u1,
                       float x1, float y1, float u2, float scale) {
     Vec3 res;
     float len2;
@@ -2627,7 +2627,7 @@ out:
 //   sizable geometry / animation-parameter node of the game_libs
 //   object subsystem — the per-axis enable/scale stage that pairs
 //   with the gl_func_00036C08 anchor-offset builder, the
-//   gl_func_0003695C normalizer and the gl_func_00036224 viewport
+//   math_arcballPoint normalizer and the gl_func_00036224 viewport
 //   matrix (consumes their outputs / feeds the render traversal;
 //   the flag bits select which axes/parameters are active).
 // Caps (DEFERRED): 0x3C8 raw-word USO + chained-pointer flag word
@@ -2704,7 +2704,7 @@ void gl_func_000372D4(int *a0, float *a1) {
 //   docs/N64_FORENSICS.md bootup_uso-FP-pool note; same class as
 //   the &D_0+0x186C/0x1868/0x1730 sites recorded earlier in this
 //   file). A signal-conditioning leaf of the game_libs object
-//   subsystem (companion of the gl_func_0003695C normalizer and the
+//   subsystem (companion of the math_arcballPoint normalizer and the
 //   gl_func_0002F584 quantizer — the input-clamp stage feeding the
 //   geometry/command pipeline).
 // 2026-09-04 agent-g: 49.9 -> 93.1 (126/126 insns, frame 0x70 exact).
@@ -10004,7 +10004,7 @@ void App_Reset(App *self) {
     ((void(*)(int, int*))vtable[0x34/4])(*(short*)((char*)vtable + 0x30) + (int)self, &local);
 }
 
-/* gl_func_000417CC: 21-insn 2-vtable-call dispatcher.
+/* App_func_000417CC: 21-insn 2-vtable-call dispatcher.
  *   gl_func_00000000();   // unrelated jal
  *   p = a0->0x28;        // vtable ptr (reloaded twice)
  *   a0->0x30 = 0;
@@ -10023,7 +10023,7 @@ void App_Reset(App *self) {
  * Adding `volatile int spill = (int)a0; (void)spill;` could force the
  * spill but tested on adjacent wraps (e.g. SnowBCollider_ctor) it shifts
  * register allocation cascade — net regression. Permuter-class. */
-void gl_func_000417CC(App *a0) {
+void App_func_000417CC(App *a0) {
     int *p;
     gl_func_00000000();
     p = (int *)a0->node.vptr;
@@ -10033,7 +10033,7 @@ void gl_func_000417CC(App *a0) {
     ((void(*)(int))p[0x84/4])(*(short*)((char*)p + 0x80) + (int)a0);
 }
 
-/* game_libs_func_00041820 -- MERGED 2026-09-09 (agent-c): the 3-word orphan
+/* App_func_00041820 -- MERGED 2026-09-09 (agent-c): the 3-word orphan
  * `lui v0; addiu v0,0; lw a1,0(v0)` was the hoisted init-counter load of
  * gl_func_0004182C (splat mis-split; 0x41820 IS the export, sym742, jal'd from
  * text 0xF414 and a DataReloc fn-table entry @0x1F540; 0x4182C is a
@@ -10048,7 +10048,7 @@ void gl_func_000417CC(App *a0) {
  * D_00000000_3c740, sym154/805/1799/1802/541/1671/1827 = D_41820_a..h), two
  * alloc(N) records with field init, three attach(self+0x10, e) blocks each
  * followed by `if (e->0x14) e->4 = 1; e->0x14 = self;`, and the same
- * self->0x28->fn_0x64(self + short 0x60) callback tail as gl_func_000417CC.
+ * self->0x28->fn_0x64(self + short 0x60) callback tail as App_func_000417CC.
  * All 20 callees are R_MIPS_26 imports (blank jal): sym76/306/1821/1822/61/
  * 1587/1823/808/627/1815/113/1824/1825/144/1580/1826/153.
  *
@@ -10069,7 +10069,7 @@ void gl_func_000417CC(App *a0) {
  * so the build is 4 bytes SHORTER (146 vs 147 words). objdiff 94.59. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41820.cpp (`void Self::init()`),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 173). */
-void game_libs_func_00041820(char *self) {
+void App_func_00041820(char *self) {
 }
 
 void game_libs_func_00041A6C(int a0) {}
@@ -11025,7 +11025,7 @@ void game_libs_func_000430D8(char *self, int flag) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00043284(int *a0, int a1) {
+void gfx_assertTexAligned(int *a0, int a1) {
     if ((*a0 & 7) != 0) {
         gl_func_00000000(((char *)&D_00000000 + 0x0001FD00));
     }
@@ -13407,7 +13407,7 @@ void game_libs_func_00048184(char *a0) {
     }
 }
 
-/* gl_func_00048354: bounded queue append (ctr @+0x258, slots @+0x25C, cap 8;
+/* gfx_addWindow: bounded queue append (ctr @+0x258, slots @+0x25C, cap 8;
  * overflow calls placeholder(&D+0x1FF30)). BYTE-EXACT 19/19 (2026-07-15,
  * 88.89 -> 100): SAME-LINE JOIN of the post-increment and the indexed store
  * (as1 debug-line tie-break) slides the ctr writeback sw below the addu
@@ -13416,7 +13416,7 @@ void game_libs_func_00048184(char *a0) {
  * splitting idx/writeback lets CSE feed idx+1 to the compare = -2 words).
  * EXACT: unwrapped 2026-10-16 (gl_func_00000000 and D_00000000 are both
  * symbols at 0). */
-void gl_func_00048354(char *a0, int a1) {
+void gfx_addWindow(char *a0, int a1) {
     int idx = (*(int*)(a0 + 0x258))++; ((int*)(a0 + 0x25C))[idx] = a1;
     if ((unsigned int)*(int*)(a0 + 0x258) >= 8) {
         gl_func_00000000((char*)&D_00000000 + 0x1FF30);
@@ -14578,7 +14578,7 @@ void gl_func_0004AA90(int *a0, int a1) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0004AAF0: gather-copy of 6-byte records with -1 skip.
+/* MorphPoly_update_4AAF0: gather-copy of 6-byte records with -1 skip.
  * Decoded from bare stub 2026-05-19. void f(int *self):
  *   if (self->0xC0 == 0) { cb_assert(&D_00000000 + 0x2006C); return; }
  *   d4 = (s16)self->0xD4;
@@ -14603,7 +14603,7 @@ void gl_func_0004AA90(int *a0, int a1) {
  * decoded C preserved; INCLUDE_ASM build path. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_0004AAF0(int *self) {
+void MorphPoly_update_4AAF0(int *self) {
     int i;
     int t0;
     int d4;
@@ -14629,11 +14629,11 @@ void gl_func_0004AAF0(int *self) {
     *(int *)((char *)self + 0xC0) = 0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004AAF0);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", MorphPoly_update_4AAF0);
 #endif
 
-/* gl_func_0004ABD8: EXACT (0xF4 / 61 words). Gather-copy of 3-byte records
- * with -1 skip, the byte-copy sibling of gl_func_0004AAF0:
+/* MorphPoly_updateColours: EXACT (0xF4 / 61 words). Gather-copy of 3-byte records
+ * with -1 skip, the byte-copy sibling of MorphPoly_update_4AAF0:
  *   if (self->C4 == 0) { report(0x2008C); return; }
  *   report(0x200AC);
  *   for (i = 0, off = 0; i < self->D6 - self->D4; i++, off += 2) {
@@ -14651,7 +14651,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0004AAF0);
  * `i * 16 + (d4 * 16 + base)` gives the target ring order (base chain t5/t6,
  * d4*16 t7). Report strings are gl_ref_ pins. */
 extern char gl_ref_0002008C, gl_ref_000200AC;
-void gl_func_0004ABD8(char *self) {
+void MorphPoly_updateColours(char *self) {
     int i;
     int t0;
     short idx;

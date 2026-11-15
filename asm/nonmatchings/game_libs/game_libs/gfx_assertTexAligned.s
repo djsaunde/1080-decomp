@@ -1,6 +1,6 @@
-nonmatching gl_func_00043284, 0x38
+nonmatching gfx_assertTexAligned, 0x38
 
-glabel gl_func_00043284
+glabel gfx_assertTexAligned
     /* E2835C 00043284 27BDFFE8 */  .word 0x27BDFFE8
     /* E28360 00043288 AFBF0014 */  .word 0xAFBF0014
     /* E28364 0004328C AFA5001C */  .word 0xAFA5001C
@@ -15,4 +15,4 @@ glabel gl_func_00043284
     /* E28388 000432B0 27BD0018 */  .word 0x27BD0018
     /* E2838C 000432B4 03E00008 */  .word 0x03E00008
     /* E28390 000432B8 00000000 */  .word 0x00000000
-endlabel gl_func_00043284
+endlabel gfx_assertTexAligned
