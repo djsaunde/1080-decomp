@@ -4363,7 +4363,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 
 /* pad_setSlotValue_000671D4 split off from pad_sync_0006719C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
-/* MemTrackerMgr_func_00060574 split off from MemTracker_func_0006052C bundle on 2026-05-08; decompiled in game_libs_post.c. */
+/* MemTrackerMgr_clearList split off from MemTracker_walkAll bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
 /* game_libs_func_0006833{8,40,48} split off from BinFile_init_000682F8 bundle on 2026-05-08; INCLUDE_ASMs in game_libs_post.c. */
 

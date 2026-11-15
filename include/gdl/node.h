@@ -39,7 +39,7 @@ typedef char Node_vptr_check[(int)&((Node *)0)->vptr == 0x28 ? 1 : -1];
 typedef struct App {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C;
-    /* 0x30 */ s32 unk30;          /* cleared by the vtable method App_func_000417CC */
+    /* 0x30 */ s32 unk30;          /* cleared by the vtable method App_restart */
 } App;
 
 typedef char App_unk30_check[(int)&((App *)0)->unk30 == 0x30 ? 1 : -1];

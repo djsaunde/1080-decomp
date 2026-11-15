@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for app_func_000412E8 (0x23C / 143 words), agent-c run 163.
+/* IDO 7.1 NCC (C++) EXACT donor for app_staticInit_000412E8 (0x23C / 143 words), agent-c run 163.
  * It is the static initializer (__sti__) of four global objects, each built through edg's cfront
  * `this == 0 -> allocate` protocol for every user-declared constructor:
  *  - D_412E8_a: a holder with NO user ctor (so no protocol of its own) whose members A (0x1E0: two

@@ -62,7 +62,7 @@ regress during the O1/O2 file split, restore from the sources listed.
   Full matrix/graphics submission reconstructed as NON_MATCHING C.
 
 - 2026-09-09: `gl_func_00042484` merged into its two-word hoisted head
-  `hostio_func_0004247C` (0x5C/23 words), based on agent-c's merge.
+  `GfxLib_hostioSendFbB_0004247C` (0x5C/23 words), based on agent-c's merge.
   bootup.uso Sym1935 exports Text+0x56AE8; TextReloc 0x588B8/0x588BC
   takes its address. Text+0x56AF0 (old 42484) is not exported. The callback
   return, not the pre-call class pointer, supplies the final call's a2.

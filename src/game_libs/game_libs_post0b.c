@@ -8178,13 +8178,13 @@ int item_func_0003EC5C(char *a0) {
 /* game_libs_func_0003ECDC BOUNDARY-CORRECTED 2026-06-10: the old 0x10
  * symbol was TWO stray alignment nops (the predecessor's inter-fn pad,
  * misattributed by splat) + a true 2-insn empty function. Split into
- * the _pad sidecar (2 nops) and hostio_func_0003ECE4 (jr ra; nop =
+ * the _pad sidecar (2 nops) and hostio_stub_0003ECE4 (jr ra; nop =
  * `void f(void) {}`). The empty fn is trivially matchable C but sits
  * mid-file in game_libs (in-place promote layout-blocked); both stay
  * INCLUDE until the relayout session. The old "leading-nop injection"
  * cap note is obsolete -- the nops were never part of the function. */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/game_libs_func_0003ECDC_pad.s")
-void hostio_func_0003ECE4(void) {
+void hostio_stub_0003ECE4(void) {
 }
 
 extern int gl_func_00000000();
@@ -8212,7 +8212,7 @@ void hostio_updateFloat(float *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void hostio_func_0003ED8C(int *a0) {
+void hostio_reset(int *a0) {
     a0[1] = 0;
     a0[0] &= ~1;
     gl_func_00000000();
@@ -9046,7 +9046,7 @@ void hostio_endGroup(int a0) {
 }
 
 extern int gl_func_00000000();
-void hostio_func_0003FC2C(int *a0) {
+void hostio_connect(int *a0) {
     gl_func_00000000(a0);
     a0[1] = 1;
 }
@@ -9797,7 +9797,7 @@ int heap_new(unsigned int s1, int arg1) {
 }
 
 extern int gl_func_00000000();
-int mem_func_00041258() {
+int mem_heapNewThunk_00041258() {
     return gl_func_00000000();
 }
 
@@ -9806,7 +9806,7 @@ int mem_func_00041258() {
  * SUCCESSOR — `lui t6,0x4; lw t6,0xC160(t6)`) was REMOVED 2026-05-23 as
  * match-faking. Those insns belong to separate symbols now; the previously-
  * documented 0x28 size is stale. */
-void mem_func_00041278(void) {
+void mem_deleteThunk_00041278(void) {
     gl_func_00000000();
 }
 
@@ -9815,7 +9815,7 @@ void mem_func_00041278(void) {
  * 0x4 + sign-ext low 0xC160 = 0x3C160). Orphan was in game_libs.c, merged FORWARD
  * into the body .s; reading the flag inline at the != 0 test hoists the lui;lw
  * above the prologue. MATCHED 2026-05-30. Historical note below kept for context:
- * (old) Sibling/successor of mem_func_00041278 (SUFFIX_BYTES absorbed the
+ * (old) Sibling/successor of mem_deleteThunk_00041278 (SUFFIX_BYTES absorbed the
  * `lui t6, 4; lw t6, 0xC160(t6)` setup that this function
  * needs at entry). 412A0's body uses the pre-loaded t6 value:
  *   if (D[0x4C160] != 0) f(0x1F5B8, a0);
@@ -9838,9 +9838,9 @@ void mem_delete(int a0) {
     gl_func_00000000(&D_00000000, a0);
 }
 
-void app_func_000412E0(void) {}
+void app_stub_000412E0(void) {}
 
-// app_func_000412E8 — decode-errors-first pass 2 2026-07-23 (0x23C / 143
+// app_staticInit_000412E8 — decode-errors-first pass 2 2026-07-23 (0x23C / 143
 // words, expected @0xce90 — NOTE: disasm-func.py defaults to the BUILD .o;
 // pass 1 mistakenly reverse-engineered the old build's guard-FOLDED body).
 // True target: root guard (s0 = &D_root, alloc 0x1E0 on null) wrapping four
@@ -9854,7 +9854,7 @@ void app_func_000412E0(void) {}
 // dbg_printThreads (K&R, direct jal). Full body INCLUDE_ASM-preserved.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_412E8.cpp, REPLACE_FUNC_BODY-spliced over
  * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
-void app_func_000412E8(void) {
+void app_staticInit_000412E8(void) {
 }
 
 /* App_ctor: alloc-or-given constructor + init + vtable
@@ -10012,7 +10012,7 @@ void App_Reset(App *self) {
     ((void(*)(int, int*))vtable[0x34/4])(*(short*)((char*)vtable + 0x30) + (int)self, &local);
 }
 
-/* App_func_000417CC: 21-insn 2-vtable-call dispatcher.
+/* App_restart: 21-insn 2-vtable-call dispatcher.
  *   gl_func_00000000();   // unrelated jal
  *   p = a0->0x28;        // vtable ptr (reloaded twice)
  *   a0->0x30 = 0;
@@ -10031,7 +10031,7 @@ void App_Reset(App *self) {
  * Adding `volatile int spill = (int)a0; (void)spill;` could force the
  * spill but tested on adjacent wraps (e.g. SnowBCollider_ctor) it shifts
  * register allocation cascade — net regression. Permuter-class. */
-void App_func_000417CC(App *a0) {
+void App_restart(App *a0) {
     int *p;
     gl_func_00000000();
     p = (int *)a0->node.vptr;
@@ -10041,7 +10041,7 @@ void App_func_000417CC(App *a0) {
     ((void(*)(int))p[0x84/4])(*(short*)((char*)p + 0x80) + (int)a0);
 }
 
-/* App_func_00041820 -- MERGED 2026-09-09 (agent-c): the 3-word orphan
+/* App_softReset -- MERGED 2026-09-09 (agent-c): the 3-word orphan
  * `lui v0; addiu v0,0; lw a1,0(v0)` was the hoisted init-counter load of
  * gl_func_0004182C (splat mis-split; 0x41820 IS the export, sym742, jal'd from
  * text 0xF414 and a DataReloc fn-table entry @0x1F540; 0x4182C is a
@@ -10056,7 +10056,7 @@ void App_func_000417CC(App *a0) {
  * D_00000000_3c740, sym154/805/1799/1802/541/1671/1827 = D_41820_a..h), two
  * alloc(N) records with field init, three attach(self+0x10, e) blocks each
  * followed by `if (e->0x14) e->4 = 1; e->0x14 = self;`, and the same
- * self->0x28->fn_0x64(self + short 0x60) callback tail as App_func_000417CC.
+ * self->0x28->fn_0x64(self + short 0x60) callback tail as App_restart.
  * All 20 callees are R_MIPS_26 imports (blank jal): sym76/306/1821/1822/61/
  * 1587/1823/808/627/1815/113/1824/1825/144/1580/1826/153.
  *
@@ -10077,7 +10077,7 @@ void App_func_000417CC(App *a0) {
  * so the build is 4 bytes SHORTER (146 vs 147 words). objdiff 94.59. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41820.cpp (`void Self::init()`),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 173). */
-void App_func_00041820(char *self) {
+void App_softReset(char *self) {
 }
 
 void App_vslot14_00041A6C(int a0) {}
@@ -10265,20 +10265,20 @@ void fs_readRecord_00041F90(char *obj, int a1) {
 // Store a1 to global at segment offset 0x3C160; first arg unused (homed).
 // (Standalone shows a 2/4 home/store delay-slot swap, but the full-TU
 // schedule matches cleanly — no INSN_PATCH needed.)
-void app_func_00042080(int a0, int a1) {
+void app_setCurrentHeap(int a0, int a1) {
     *(int *)((char *)&D_00000000 + 0x3C160) = a1;
 }
 
-/* app_func_00042098: boundary-corrected. The 2-word orphan
+/* app_setHeapMode: boundary-corrected. The 2-word orphan
  * game_libs_func_00042090 (`lui t6, 0; lw t6, 0x20(t6)`) was a splat
  * mis-split of THIS function's prologue (it preloads t6 from D[0x20]);
- * merged back into app_func_00042098.s (size 0x50 -> 0x58, words prepended
+ * merged back into app_setHeapMode.s (size 0x50 -> 0x58, words prepended
  * at 0x42090/0x42094). C emits the same lui+lw at the start, so the merged
  * boundary matches byte-for-byte. */
 extern int gl_data_42098_msgA;
 extern int gl_data_42098_msgB;
 
-int app_func_00042098(void *a0) {
+int app_setHeapMode(void *a0) {
     int t6_val = *(int*)((char*)&gl_data_00000000 + 0x20);
     if (a0 != 0) {
         gl_func_00000000(&gl_data_42098_msgA);
@@ -10289,21 +10289,21 @@ int app_func_00042098(void *a0) {
     return t6_val;
 }
 
-/* app_func_000420E8: 3-insn leaf getter. Split off from
- * app_func_00042098 via split-fragments.py 2026-05-17 (was a trailing
- * bundle: `lui v0; jr ra; lw v0,0x20(v0)` after app_func_00042098's
+/* app_getHeapMode: 3-insn leaf getter. Split off from
+ * app_setHeapMode via split-fragments.py 2026-05-17 (was a trailing
+ * bundle: `lui v0; jr ra; lw v0,0x20(v0)` after app_setHeapMode's
  * proper jr ra at 0x420E0). */
-int app_func_000420E8(void) {
+int app_getHeapMode(void) {
     return *(int*)((char*)&D_00000000 + 0x20);
 }
 
 extern int gl_func_00000000();
-int app_func_000420F4(int a0) {
+int app_freeAllOfType(int a0) {
     return gl_func_00000000(gl_func_00000000, a0);
 }
 
 extern int gl_func_00000000();
-int app_func_0004211C(int a0) {
+int app_printHeapOfType(int a0) {
     return gl_func_00000000(gl_func_00000000, a0);
 }
 
@@ -10332,12 +10332,12 @@ void heap_printStats(void) {
     gl_func_00000000();
 }
 
-// dbg_func_000421D4 — STRUCTURAL PASS (0xB0 / 45 words, no episode). Raw-.word
+// dbg_hostioHexDump — STRUCTURAL PASS (0xB0 / 45 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x68
 // (saves ra, s0). Multi-step parse/validate-and-link (cb = jal 0
 // USO-relocated; string-literal keys &D_0002F718/F71C/F724/F728).
 //
-//   void dbg_func_000421D4(void) {
+//   void dbg_hostioHexDump(void) {
 //     char scr[..];                                 // s0 = sp+0x28 scratch
 //     cb_parse(&scr, &D_0002F718);                   // step 1: seed/parse
 //     if (cb_lookup(&D_g, &D_0002F71C, &scr) == 0)   // step 2: keyed lookup
@@ -10363,7 +10363,7 @@ void heap_printStats(void) {
 //   untyped. Real-C STRUCTURAL body below. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
 extern int D_00000000;
-void dbg_func_000421D4(void) {
+void dbg_hostioHexDump(void) {
     char scr[0x40];
     int h;
     int v;
@@ -10379,11 +10379,11 @@ void dbg_func_000421D4(void) {
 }
 
 extern int gl_func_00000000();
-int memtrack_func_00042288() {
+int memtrack_heapUsed() {
     return gl_func_00000000(gl_func_00000000);
 }
 
-/* app_func_000422AC: alloc-if-null + conditional sub-alloc. p = a0 ?:
+/* app_newListHead_000422AC: alloc-if-null + conditional sub-alloc. p = a0 ?:
  * alloc(12); if(!p) return p; q = p+4; if (p == (void*)-4) { q =
  * alloc(8); if(!q) return p; } q[1]=0; q[0]=0; return p.
  * Lever: reuse the `a0` parameter as the resource (no fresh `void *p =
@@ -10391,7 +10391,7 @@ int memtrack_func_00042288() {
  * minimal -0x18 frame with the spill at 0x18 (a0's home). See
  * docs/IDO_CODEGEN.md#feedback-ido-reuse-param-as-object-caller-slot-spill. */
 extern int gl_func_00000000();
-void* app_func_000422AC(void *a0) {
+void* app_newListHead_000422AC(void *a0) {
     char *q;
     if (a0 == 0) {
         a0 = (void*)gl_func_00000000(12);
@@ -10409,9 +10409,9 @@ end:
 }
 
 /* game_libs_func_0004230C (folded 2026-10-24 agent-c run 150): 10 all-zero pad words, now an
- * all-zero SUFFIX_BYTES_FORCE on app_func_000422AC; expected/ symbol deleted, app_func_000422AC grown by 40. */
+ * all-zero SUFFIX_BYTES_FORCE on app_newListHead_000422AC; expected/ symbol deleted, app_newListHead_000422AC grown by 40. */
 
-/* app_func_00042338: 16-insn FP-zero-init wrapper. MATCHED.
+/* app_orthoZero_00042338: 16-insn FP-zero-init wrapper. MATCHED.
  * Body: gl_func_00000000(&buf, 0.0f x7).
  * Was 93.3% stolen-prologue near-miss: this fn's leading `mtc1 zero,$f0`
  * (the f0=0.0f setup) was a trailing orphan in the predecessor padding region
@@ -10424,12 +10424,12 @@ end:
  * scope (without clashing with the file-scope K&R `gl_func_00000000`), forcing
  * a direct `jal` + float args via swc1 (vs K&R double-promote). */
 extern void gl_func_00000000_42338(void*, float, float, float, float, float, float, float);
-void app_func_00042338(void) {
+void app_orthoZero_00042338(void) {
     int local[16];
     gl_func_00000000_42338(local, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-/* app_func_00042374: 25-insn ushort grid fill, BYTE-EXACT 2026-10-14
+/* dbg_fillFbRect: 25-insn ushort grid fill, BYTE-EXACT 2026-10-14
  * (was NM 58.32 "const-fold + bnel cost-model cap"). The rolled 4-store inner
  * loop is IDO's x4 unroll of a plain 100-trip y loop over a 320-wide ushort
  * grid (0x280 row stride, 0x7D00 = 50 rows); the outer x loop is strength-
@@ -10440,7 +10440,7 @@ void app_func_00042338(void) {
  * (`sh -2560(a0)`) instead of the pointer bump. See docs/IDO_CODEGEN.md
  * #same-line-inner-unrolled-loop-42374. */
 typedef unsigned short GridRow_42374[320];
-void app_func_00042374(int a0) {
+void dbg_fillFbRect(int a0) {
     GridRow_42374 *g;
     int x, y;
     g = ((GridRow_42374 **)(*(int **)(*(int *)((char *)&D_00000000 + 0x240) + 0x148)))[a0 + 0x3D];
@@ -10449,35 +10449,35 @@ void app_func_00042374(int a0) {
     }
 }
 
-void app_func_000423D8(void) {
+void dbg_fillFbRectBoth(void) {
     gl_func_00000000(0);
     gl_func_00000000(1);
 }
 
-/* app_func_00042400: 10-insn leaf, table-driven pack:
+/* app_shiftAddLookup_00042400: 10-insn leaf, table-driven pack:
  *   entry = D[a1 * 8]; return (a0 << entry[0]) + entry[1];
  * NATURAL CEILING: 97.5% NM. The 4-insn diff is a $t-register rename
  * ($t9/$t8/$t0 -> $t8/$t0/$t9). Was previously documented as
  * INSN_PATCH-promoted; INSN_PATCH REMOVED 2026-05-23 as match-faking
  * (per feedback_no_instruction_forcing_matches_policy). Default build is
  * INCLUDE_ASM. */
-unsigned short app_func_00042400(int a0, int a1) {
+unsigned short app_shiftAddLookup_00042400(int a0, int a1) {
   int *entry = (int *) (((char *) (&D_00000000)) + (a1 * 8));
   return entry[1] + (a0 << entry[0]);
 }
 
 
-unsigned short app_func_00042428(int a0, int a1) {
+unsigned short app_pack3_00042428(int a0, int a1) {
     return (a0 << 3) | a1;
 }
 
-/* hostio_func_00042438 (cross... same-TU orphan merge, MATCHED 2026-05-30): the
- * orphan hostio_func_00042438 (lui v0; lw v0,0x240 = p) was merged into this
+/* GfxLib_hostioSendFbA_00042438 (cross... same-TU orphan merge, MATCHED 2026-05-30): the
+ * orphan GfxLib_hostioSendFbA_00042438 (lui v0; lw v0,0x240 = p) was merged into this
  * body .s; INCLUDE_ASM removed. The old note's $v1/$t6 cap on `sub` is CRACKED:
  * INLINE the (p->0x148)->0xF0 deref (don't name `sub`) so it lands in the throwaway
  * $t6, not the named-local $v1 — the inline-deref-throwaway lever (cf snd_SoundObjStop).
  * (old) gl_func_00042440: 17-insn (0x44) single-call wrapper with PROLOGUE-STEALS-PREDECESSOR
- * pattern. Predecessor app_func_000423D8's tail sets `$v0 = *(D + 0x240)` via
+ * pattern. Predecessor dbg_fillFbRectBoth's tail sets `$v0 = *(D + 0x240)` via
  * `lui v0, 0; lw v0, 0x240(v0)` — those 2 insns logically belong to this
  * function's prologue. Trailing 8 bytes (lui v1, 0; lw v1, 0x240(v1)) form
  * the STOLEN-PROLOGUE-PREDECESSOR pattern for this function's successor too.
@@ -10490,7 +10490,7 @@ unsigned short app_func_00042428(int a0, int a1) {
  *
  * 2026-05-30 — ORPHAN-MERGE tested (PROLOGUE_STEALS is banned; the real fix is the
  * boundary merge that landed RiderAnim_state_0001155C). Prepending the 0x8 orphan
- * (hostio_func_00042438) to this body's .s and writing `int *p =
+ * (GfxLib_hostioSendFbA_00042438) to this body's .s and writing `int *p =
  * *(int**)((char*)&D_00000000 + 0x240)` DOES hoist the p-load above the prologue
  * and reproduces the orphan exactly. BUT the body carries a $v1/$t6 regalloc cap:
  * `sub = p[0x148/4]` lands in $v1 (both standalone AND in-tree), where the target
@@ -10501,7 +10501,7 @@ unsigned short app_func_00042428(int a0, int a1) {
  * the $v0/$v1-skip lever is found. (A stale /tmp byte-cmp falsely showed exact —
  * ALWAYS confirm orphan merges via in-tree objdiff, not a standalone byte compare.) */
 extern char gl_data_42440_arg;   /* = &D (undefined_syms); the call's a0 */
-void hostio_func_00042438(void)
+void GfxLib_hostioSendFbA_00042438(void)
 {
   int *p = *(int **)((char *)&D_00000000 + 0x240);  /* was placeholder D_state_0042440 */
   int **new_var = (int **)((char *)&D_00000000 + 0x240);
@@ -10511,14 +10511,14 @@ void hostio_func_00042438(void)
 
 
 
-/* hostio_func_0004247C (0x5C, 23 words) = the old 2-word orphan
- * hostio_func_0004247C + gl_func_00042484, merged 2026-09-09 (agent-c).
+/* GfxLib_hostioSendFbB_0004247C (0x5C, 23 words) = the old 2-word orphan
+ * GfxLib_hostioSendFbB_0004247C + gl_func_00042484, merged 2026-09-09 (agent-c).
  * bootup.uso Sym table exports section offset 0x56AE8 = splat 0x4247C (ROM
  * 0xE27554 - 0xDD0A6C; address taken by the HI16/LO16 pair at TextReloc
  * 0x588B8/0x588BC); 0x56AF0 = 0x42484 is NOT exported. The `lui v1; lw
  * v1,0x240(v1)` head is the successor's hoisted first statement: the read of
  * the current-object pointer at D+0x240 (sym154 @0x3C168 + 0x240, the same
- * pair as the matched predecessor hostio_func_00042438) scheduled above
+ * pair as the matched predecessor GfxLib_hostioSendFbA_00042438) scheduled above
  * `addiu sp`. The old "PROLOGUE-STOLEN / p live across jalr" verdict was a
  * decode error: `or a2,v0,zero` after the jalr is the CALLBACK'S RETURN
  * VALUE (v0), not p -- p (v0 before the call) dies at the lh.
@@ -10555,7 +10555,7 @@ void hostio_func_00042438(void)
  * still a partial, not a proven C impossibility. The assembled full entry,
  * default object, and pure-ASM expected symbol match ROM E27554:E275B0. */
 /* EXACT (agent-c run 122, permuter-found and re-verified with rdiff --raw --pins): the global is re-read at each use, and the 5th argument is a named int read before the call (two more t-ring slots: t1 like the target). */
-void hostio_func_0004247C(void)
+void GfxLib_hostioSendFbB_0004247C(void)
 {
 #define G4247C (*(int **)((char *)&D_00000000 + 0x240))
     int bc;
@@ -10569,12 +10569,12 @@ void hostio_func_0004247C(void)
 }
 
 extern int gl_func_00000000();
-int app_func_000424D8() {
+int GfxLib_hostioForceError() {
     return gl_func_00000000(((char *)&D_00000000 + 0x0001FCB4));
 }
 
 extern int gl_func_00000000();
-void app_func_000424FC(void) {
+void GfxLib_hostioPrintDLUsage(void) {
     gl_func_00000000(*(int *)((char *)&D_00000000 + 0x214));
     gl_func_00000000(*(int *)(*(int *)((char *)&D_00000000 + 0x240) + 0x180));
     gl_func_00000000(*(int *)(*(int *)((char *)&D_00000000 + 0x240) + 0x184));
@@ -10582,7 +10582,7 @@ void app_func_000424FC(void) {
 
 extern int gl_func_00000000();
 
-int dbg_func_00042540(int a0) {
+int dbg_printSet_00042540(int a0) {
     return gl_func_00000000(((char *)&D_00000000 + 0x0001FCBC), a0,
                             *(int *)((char *)&D_00000000 + 0x0001FB14));
 }
@@ -23752,7 +23752,7 @@ void Mem_freeAllOfType(int *a0, int a1) {
     } while (next != sentinel);
 }
 
-/* Mem_func_0005B5D8: replace the top byte of the word at a1[-4] with
+/* Mem_setBlockType: replace the top byte of the word at a1[-4] with
  * a2, keeping its low 24-bit field. EXACT 2026-10-14 (agent-c), 96.11 -> 100.
  * The "skipped-temp ring cap" (lw t8 / sll t7 / and t9 / addu t0, t6 unused)
  * was two decode errors: (1) the homed-but-unused first param is a `char`
@@ -23765,7 +23765,7 @@ typedef struct {
     unsigned int top : 8;
     unsigned int low : 24;
 } Bf5B5D8;
-void Mem_func_0005B5D8(char a0, int *a1, int a2) {
+void Mem_setBlockType(char a0, int *a1, int a2) {
     a1[-4] = ((a2 & 0xFF) << 24) + ((Bf5B5D8 *)&a1[-4])->low;
 }
 
@@ -23783,7 +23783,7 @@ int Mem_freeBytes(int *a0) {
     return sum;
 }
 
-int Mem_func_0005B630(int *a0) {
+int Mem_getUsed(int *a0) {
     return *(int *)((char *)a0 + 0x24) << 4;
 }
 
@@ -25976,7 +25976,7 @@ int math_newMtx_0005FCC4(int *a0) {
  * via SUFFIX_BYTES_FORCE, see below). The historical instruction-appending
  * SUFFIX_BYTES recipe (3 trailing "stolen-prologue" insns for the successor)
  * was REMOVED 2026-05-23 as match-faking; the lui/lw pair turned out to be
- * MemTracker_func_0005FDC4's own hoisted head (2026-09-05). */
+ * MemTracker_buildName's own hoisted head (2026-09-05). */
 extern int gl_func_00000000();
 void math_printBounds(float *a0) {
     (void)gl_func_00000000((char*)&D_00000000 + 0x21B6C, a0,
@@ -25988,13 +25988,13 @@ void math_printBounds(float *a0) {
 }
 
 /* The single all-zero inter-function pad word at 0x5FDC0 (between the
- * `jr ra; nop` of math_printBounds and MemTracker_func_0005FDC4) is appended
+ * `jr ra; nop` of math_printBounds and MemTracker_buildName) is appended
  * to math_printBounds as an all-zero SUFFIX_BYTES_FORCE in the Makefile: a
  * lone 1-word INCLUDE_ASM emits 2 words and shifts the unit +4 (documented
  * trap). The former 3-word game_libs_func_0005FDC0 orphan (nop; lui a2;
  * lw a2) was that pad plus the real successor's hoisted global load. */
 
-/* MemTracker_func_0005FDC4 (0x50, 20 insns): 2-call wrapper guarded on a
+/* MemTracker_buildName (0x50, 20 insns): 2-call wrapper guarded on a
  * global. bootup.uso's Sym table exports section offset 0x74430 = splat
  * 0x5FDC4 (ROM 0xE44E9C - 0xDD0A6C; jal'd from TextReloc @0x74518 and
  * @0x74648); the pad word 0x5FDC0 and 0x5FDCC are NOT exported. IDO 7.1
@@ -26003,7 +26003,7 @@ void math_printBounds(float *a0) {
  * fake-param head-stolen split: its a2 is this load
  * (docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c);
  * retired 2026-09-05. */
-int MemTracker_func_0005FDC4(int a0, int a1) {
+int MemTracker_buildName(int a0, int a1) {
     int v = D_00000000;     /* Data 0x21C3C: its own reloc symbol, LO16 = 0 */
 
     if (v != 0) {
@@ -26278,7 +26278,7 @@ N600A4 *memtrack_begin(char *arg0, int a1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", memtrack_begin);
 #endif
 
-void MemTracker_func_000601B4(int a0) {
+void memtrack_beginFlagged(int a0) {
     gl_func_00000000(a0, 1);
 }
 /* memtrack_end: lazy-init tracker update (entry 0x601D4 — the 2-word
@@ -26297,7 +26297,7 @@ int memtrack_end(void) {
     return 0;
 }
 
-void MemTracker_func_0006024C(int a0) {
+void MemTracker_setPrefix(int a0) {
     gl_data_00000000 = a0;
 }
 
@@ -26423,13 +26423,13 @@ int memtrack_walk(int a0_unused, int a1, int *a2) {
     return rc;
 }
 
-/* MemTracker_func_0006052C was 21-insn 2-function bundle. Split via
+/* MemTracker_walkAll was 21-insn 2-function bundle. Split via
  * split-fragments.py 2026-05-08:
- *   parent MemTracker_func_0006052C (18 insns / 0x48, list-iter callback loop)
- *   MemTrackerMgr_func_00060574 (3 insns / 0xC, dual-zero setter) */
+ *   parent MemTracker_walkAll (18 insns / 0x48, list-iter callback loop)
+ *   MemTrackerMgr_clearList (3 insns / 0xC, dual-zero setter) */
 extern int gl_func_00000000();
 typedef struct Node0006052C { char pad[0x14]; struct Node0006052C *next; } Node0006052C;
-void MemTracker_func_0006052C(int *a0_arg, int a1_arg) {
+void MemTracker_walkAll(int *a0_arg, int a1_arg) {
     Node0006052C *s0;
     int s1 = a1_arg;
     s0 = (Node0006052C*)((int*)a0_arg)[0x44/4];
@@ -26441,7 +26441,7 @@ void MemTracker_func_0006052C(int *a0_arg, int a1_arg) {
     }
 }
 
-void MemTrackerMgr_func_00060574(int *a0) {
+void MemTrackerMgr_clearList(int *a0) {
     *(int*)((char*)a0 + 0x40) = 0;
     *(int*)((char*)a0 + 0x44) = 0;
 }

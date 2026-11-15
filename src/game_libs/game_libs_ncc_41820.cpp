@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for App_func_00041820 (0x24C / 147 words), agent-c run 173, spliced over an
+/* IDO 7.1 NCC (C++) EXACT donor for App_softReset (0x24C / 147 words), agent-c run 173, spliced over an
  * empty placeholder in game_libs_post0b.c in both build trees
  * (from the run-164 draft, kit CXVI item 5). `void Self::init()` (rename init__4SelfFv): D_41820_e = new Arr(10)
  * (inline ctor cap / n / data = new int[c]), Self : SB (0x28 data bytes + 12 virtuals, m2C at +0x2C), the attach

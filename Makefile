@@ -488,7 +488,7 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # math_printBounds: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
 # pad at 0x5FDC0 (was the lone-word game_libs_func_0005FDC0 INCLUDE_ASM, which
 # emits 2 words / +4 drift -- documented trap). FORCE: ends jr-ra;nop. The real
-# successor MemTracker_func_0005FDC4 starts at the exported 0x5FDC4 (2026-09-05).
+# successor MemTracker_buildName starts at the exported 0x5FDC4 (2026-09-05).
 # Mem_listInsert_0005AFB0: its .s began with a 1-word 0x00000000 pad (ROM 0x5AFB0); the
 # real body starts at 0x5AFB4 -> all-zero pad on the predecessor gfx_initDLChild_0005AF64.
 # expected/ metadata: 5AF64 size 0x4c->0x50, 5AFB0 value +4, size 0x24->0x20 (2026-10-15).
@@ -500,8 +500,8 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # console_formatHex8: .s began with 5 all-zero pad words (ROM 0x61040-0x61053); the real
 # body starts at 0x61054. Pad -> 61030 SUFFIX (both builds); expected/ metadata: 61030 size
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_func_00060574=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := CMod_callbackInvoke_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 MemTrackerMgr_clearList=0x00000000 hostio_readQuadParm_00055B10=0x00000000 gfx_initDLChild_0005AF64=0x00000000 RcpMgr_insert_0004DCD4=0x00000000,0x00000000 ConsoleMgr_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # RcpTask_ctor's leading zero word (0x4D0B0) is vFP1_invokeFn_0004D084's all-zero tail pad (agent-c run 122):
 # 4D0B4 is plain C again; the NM symbol of 4D084 is resized back to 0x2c in the clip line below.
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += vFP1_invokeFn_0004D084=0x00000000
@@ -509,8 +509,8 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # game_libs_func_00035E5C (2 words) / game_libs_func_0004230C (10 words): all-zero inter-function pads
 # folded into their exact predecessors as zero SUFFIX words (agent-c run 150; expected/ symbols deleted
 # with scripts/elf-symtab-delete.py, predecessors grown; .text + relocs unchanged).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_func_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_func_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += Parms_func_00035DAC=0x00000000,0x00000000 app_newListHead_000422AC=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 # hostio_readQuadParm_00055B10: byte-correct real-def, IDO trailing jr-delay nop -> symbol 0x30
 # vs target 0x2c (nop is baserom alignment). Resize non_matching symbol to 0x2c so
 # objdiff scores 11w not 12w. ROM-neutral (non_matching .o only). (Same class as EBC8.)
@@ -604,13 +604,13 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # base-ctor chain) grew the NM body 0x110 -> 0x150 (target size); 62F08 tail
 # keeps 0x50 at 0x2d4f4.)
 # Clip re-probed 2026-09-05 (5FDC0 lone-pad INCLUDE_ASM -> 5FD20 SUFFIX + merged
-# MemTracker_func_0005FDC4): tail symbol AnimPlayer_reset NM offset + 0x50 (re-probed at landing).
+# MemTracker_buildName): tail symbol AnimPlayer_reset NM offset + 0x50 (re-probed at landing).
 # 2026-09-09: merged 4247C's corrected callback-return C shortens the NM
 # stream. With the later 4CDB0 merge, 62F08 is at 0x2d578, size 0x50,
 # so the combined real end is 0x2d5c8 (re-probed after integration).
 # 4B2F4's complete matrix/graphics body replaces the old short skeleton.
 # With upstream 4CEFC, last NM symbol 62F08 is at 0x2d758, size 0x50.
-# MemTracker_func_0005FDC4): tail symbol AnimPlayer_reset @0x2d538 + 0x50.
+# MemTracker_buildName): tail symbol AnimPlayer_reset @0x2d538 + 0x50.
 # Clip re-probed 2026-09-11 (4F0C8 exact merged with gl_func_0004F0E0; the old
 # 4F0E0 NM stub was 0x160 smaller than the exact): 62F08 NM offset 0x2d7ec + 0x50.
 # Clip re-probed 2026-09-11 (470E4/47394/47B28 colour-packet twins merged as NM wraps,
@@ -1955,8 +1955,8 @@ GAMELIBS_41820_DONOR := build/src/game_libs/game_libs_ncc_41820.cpp.o
 $(GAMELIBS_41820_DONOR): src/game_libs/game_libs_ncc_41820.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym init__4SelfFv=App_func_00041820 --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += App_func_00041820=$(GAMELIBS_41820_DONOR)
+	$(OBJCOPY) --redefine-sym init__4SelfFv=App_softReset --redefine-sym __ct__3B44FPc=gl_func_00000000_41820_base --redefine-sym __vtbl__3O44=D_41820_h $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += App_softReset=$(GAMELIBS_41820_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41820_DONOR)
 # 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents (agent-c run 157, cfe 92.03).
 # agent-c run 405: EXACT NCC donor over a placeholder on both build trees (the three 0x06 packets' counts as the 5th
@@ -2177,8 +2177,8 @@ GAMELIBS_412E8_DONOR := build/src/game_libs/game_libs_ncc_412E8.cpp.o
 $(GAMELIBS_412E8_DONOR): src/game_libs/game_libs_ncc_412E8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_func_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=D_412E8_j --redefine-sym __vtbl__1L=D_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_func_000412E8=$(GAMELIBS_412E8_DONOR)
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_staticInit_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=D_412E8_j --redefine-sym __vtbl__1L=D_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_staticInit_000412E8=$(GAMELIBS_412E8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_412E8_DONOR)
 # 4FBA4 = cfront factory: new Der + key-list virtual dispatch (iterator next() inline) EXACT NCC donor over an empty placeholder (agent-c run 163).
 GAMELIBS_4FBA4_DONOR := build/src/game_libs/game_libs_ncc_4FBA4.cpp.o
