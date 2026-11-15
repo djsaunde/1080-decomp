@@ -225,7 +225,7 @@ void osDestroyThread(int *target) {
  * sp-resident at -O1) and its static sibling at 0x43E4 (sp -0x20) into one
  * .s. Port of game_libs' copy gl___osLeoInterrupt (game_libs_ido53_6B0FC.c,
  * twin-finder.py 0.936; the +58 words were __osLeoAbnormalResume).
- *   __osDiskHandle = __osDiskHandle, __OSGlobalIntMask = __OSGlobalIntMask,
+ *   __osDiskHandle (was D_80019644), __OSGlobalIntMask,
  *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry
  *   used by this copy, func_800056F0 = osEPiRawStartDma (post-addiu entry).
  * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and D_80003FE0 point
@@ -271,7 +271,7 @@ typedef struct LeoPiHandle_s {
     __OSTranxInfo transferInfo; /* 0x14 */
 } LeoPiHandle;
 
-extern LeoPiHandle *__osDiskHandle;     /* __osDiskHandle */
+extern LeoPiHandle *__osDiskHandle;     /* 0x80019644, set by osLeoDiskInit */
 #define LEO_PI_STATUS (*(volatile u32 *)0xA4600010) /* PI_STATUS_REG */
 #define LEO_STATUS    (*(volatile u32 *)0xA5000508)
 #define LEO_BM_CTL    (*(volatile u32 *)0xA5000510) /* write CTL / read STATUS */
