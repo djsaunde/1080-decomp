@@ -7,6 +7,9 @@
  * titproc_uso.c. */
 #include "common.h"
 #include "game/input.h" /* d = the bootup input manager import */
+/* States 7 / 9 (vs ghost): copy the saved ghost's rider / board flag /
+ * board into InputMgr ghostRider / ghostFlags / ghostBoard for game_setupVsGhost and
+ * take its course; `*(int *)(*(int *)a0 + 8)` is the open BackupSession's ghost. */
 extern char import_00020098;
 extern int titproc_uso_func_0120A8();
 extern int titproc_uso_func_0027E8();
@@ -109,9 +112,9 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             titproc_uso_func_000B6C(a0, 2);
             done = 1;
-            *(char *)(d + 0x181) = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x182) = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x183) = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
             if (t != 0) {
                 titproc_uso_func_0120A8(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 2);
             } else {
@@ -144,9 +147,9 @@ void tit_procMain(char *a0, int a1) {
             mask = (s5v | 0x8020000) | 0x80000;
             titproc_uso_func_000B6C(a0, 1);
             done = 1;
-            *(char *)(d + 0x181) = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x182) = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
-            *(char *)(d + 0x183) = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostRider = tit_imp_Backup_ghostGetRider(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostFlags = tit_imp_Backup_ghostGetBoardFlag(*(int *)(*(int *)a0 + 8));
+            ((InputMgr *)d)->ghostBoard = tit_imp_Backup_ghostGetBoard(*(int *)(*(int *)a0 + 8));
             if (t != 0) {
                 titproc_uso_func_0120A8(d, 10, tit_imp_Backup_ghostGetCourse(*(int *)(*(int *)a0 + 8)), 1);
             } else {
