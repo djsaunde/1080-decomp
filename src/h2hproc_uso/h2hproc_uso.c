@@ -1337,7 +1337,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     int *src;
     int *sub1, *sub2, *sub3;
     char *self_p10;
-    *(int*)((char*)self + 0xC) = (int)(base + 0x41C);
+    self->base.name = (int)(base + 0x41C);
     self->race = (int)a1;
     self->unkD4 = 0;
     self->base.pointsListArg = a2;
@@ -1351,7 +1351,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     self_p10 = self->base.children;
     sub1 = (int*)gl_func_00000000(0, 90);
     self->gadgetE8 = (int)sub1;
-    gl_func_00000000(sub1, self->base.entries[0].unk28);
+    gl_func_00000000(sub1, self->base.entries[0].health);
     gl_func_00000000(self->gadgetE8, 68, 21);
     sub1 = (int*)self->gadgetE8;
     gl_func_00000000(self_p10, sub1);
@@ -1360,7 +1360,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
 
     sub2 = (int*)gl_func_00000000(0, 90);
     self->unkEC = (int)sub2;
-    gl_func_00000000(sub2, self->base.entries[1].unk28);
+    gl_func_00000000(sub2, self->base.entries[1].health);
     gl_func_00000000(self->unkEC, 68, 130);
     sub2 = (int*)self->unkEC;
     gl_func_00000000(self_p10, sub2);

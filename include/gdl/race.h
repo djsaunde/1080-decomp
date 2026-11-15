@@ -159,15 +159,15 @@ typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 :
 typedef struct RaceEntry {
     /* 0x00 */ s32 rider;               /* the rider Node (key of RaceTracker_findEntry) */
     /* 0x04 */ s32 flags;               /* bit 0: active */
-    /* 0x08 */ f32 unk08;
+    /* 0x08 */ f32 posX;                /* RaceTracker_setEntryXZ (x; progress is z) */
     /* 0x0C */ f32 progress;            /* course coordinate; -6553600 before the first gate */
-    /* 0x10 */ f32 unk10;
+    /* 0x10 */ f32 speed;               /* RaceTracker_setEntrySpeed; 0 on add / reset */
     /* 0x14 */ s32 time;
     /* 0x18 */ s32 unk18;
     /* 0x1C */ s32 pendingPoints;       /* accumulated, flushed by RaceTracker_endTrick */
     /* 0x20 */ s32 unk20;
     /* 0x24 */ s32 pending;             /* 1 while pendingPoints is unflushed */
-    /* 0x28 */ s32 unk28;               /* 50 on add */
+    /* 0x28 */ s32 health;              /* 50 on add, 0 on reset; RaceTracker_setEntryHealth (active entries only); h2h shows it in its two gauges */
     /* 0x2C */ s32 unk2C;
     /* 0x30 */ f32 pct;                 /* progress along the course, 0..100 */
     /* 0x34 */ s32 finished;            /* frames at 100 % */
@@ -195,7 +195,8 @@ typedef char RaceEntry_gate_check[(int)&((RaceEntry *)0)->gate == 0x4C ? 1 : -1]
 #define RTF_LOOKUP     0x10
 
 typedef struct RaceTracker {
-    /* 0x00 */ char unk00[0x10];
+    /* 0x00 */ char unk00[0xC];
+    /* 0x0C */ s32 name;                 /* Node name: "DataManager"; h2hDataManager_ctor stores base + 0x41C */
     /* 0x10 */ char children[0x18];      /* node child list (address taken only) */
     /* 0x28 */ s32 vptr;                 /* Cfront vtable (Data+0xD678 + ...) */
     /* 0x2C */ s32 active;               /* RaceTracker_update runs while set */

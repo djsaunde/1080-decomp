@@ -2116,15 +2116,15 @@ void RaceTracker_reset(RaceTracker *self) {
     char *p;
 
     for (i = 0; i != 0x300; i += 0x60) {
-        RACE_ENTRY_AT(self, i)->unk08 = 0.0f;
+        RACE_ENTRY_AT(self, i)->posX = 0.0f;
         RACE_ENTRY_AT(self, i)->progress = 0.0f;
-        RACE_ENTRY_AT(self, i)->unk10 = 0.0f;
+        RACE_ENTRY_AT(self, i)->speed = 0.0f;
         RACE_ENTRY_AT(self, i)->unk18 = 0;
         RACE_ENTRY_AT(self, i)->time = 0;
         RACE_ENTRY_AT(self, i)->pendingPoints = 0;
         RACE_ENTRY_AT(self, i)->unk20 = 0;
         RACE_ENTRY_AT(self, i)->pending = 0;
-        RACE_ENTRY_AT(self, i)->unk28 = 0;
+        RACE_ENTRY_AT(self, i)->health = 0;
         RACE_ENTRY_AT(self, i)->pct = 0.0f;
         RACE_ENTRY_AT(self, i)->finished = 0;
         RACE_ENTRY_AT(self, i)->rank[0] = 3;
@@ -2154,13 +2154,13 @@ void RaceTracker_reset(RaceTracker *self) {
 void RaceTracker_addEntry(RaceTracker *arg0, s32 arg1, s32 arg2) {
     arg0->entries[arg0->numEntries].rider = arg1;
     arg0->entries[arg0->numEntries].flags = arg2;
-    arg0->entries[arg0->numEntries].unk10 = 0.0f;
+    arg0->entries[arg0->numEntries].speed = 0.0f;
     arg0->entries[arg0->numEntries].unk18 = 0;
     arg0->entries[arg0->numEntries].time = 0;
     arg0->entries[arg0->numEntries].pendingPoints = 0;
     arg0->entries[arg0->numEntries].unk20 = 0;
     arg0->entries[arg0->numEntries].pending = -1;
-    arg0->entries[arg0->numEntries].unk28 = 0x32;
+    arg0->entries[arg0->numEntries].health = 0x32;
     arg0->entries[arg0->numEntries].pct = 0.0f;
     arg0->entries[arg0->numEntries].finished = 0;
     arg0->numEntries = (s32) (arg0->numEntries + 1);
