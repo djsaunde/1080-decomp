@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/anim.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int gl_data_67470_addr;

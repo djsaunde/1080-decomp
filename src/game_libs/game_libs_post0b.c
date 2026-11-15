@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "gdl/node.h"
+#include "gdl/anim.h"
 #include "gdl/mem.h"
 #include "gdl/dlctx.h"
 #include "gdl/rcp.h"
