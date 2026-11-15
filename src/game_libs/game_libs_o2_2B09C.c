@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h" /* TunedSample / Portamento / AdsrSettings (docs/1080_AUDIO.md) */
 
 /* IDO 7.1 -O2 donor for AudioSeq_SeqLayerProcessScriptStep4 (0x558 / 342 words) = OoT's
  * AudioSeq_SeqLayerProcessScriptStep4 (seqplayer.c) in its older (SM64-era)
@@ -11,11 +12,8 @@
  * instOrWave; ticksPerUpdate read through its own audio-buffer-parameters symbol
  * (gl_2B09C_bufParams, SM64's separate gAudioBufferParameters global): through
  * gAudioCtx the portamentoTime * ticksPerUpdate operands load in the other order. */
-typedef struct { void *sample; f32 tuning; } gl_2B09C_TunedSample;
-typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_2B09C_TunedSample tunedSample; void *envelope; } gl_2B09C_Drum;
-typedef struct { gl_2B09C_TunedSample tunedSample; } gl_2B09C_SoundEffect;
-typedef struct { u8 mode; u16 cur; u16 speed; f32 extent; } gl_2B09C_Portamento;
-typedef struct { u8 decayIndex; u8 sustain; void *envelope; } gl_2B09C_AdsrSettings;
+typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; TunedSample tunedSample; void *envelope; } gl_2B09C_Drum;
+typedef struct { TunedSample tunedSample; } gl_2B09C_SoundEffect;
 typedef struct { char pad[8]; u16 tempo; char padA[4]; s16 transposition; } gl_2B09C_SeqPlayer;
 typedef struct {
     u8 enabled : 1; u8 finished : 1; u8 stopScript : 1; u8 muted : 1; u8 hasInstrument : 1; u8 b5 : 3;
@@ -26,10 +24,10 @@ typedef struct {
     u8 enabled : 1; u8 finished : 1; u8 muted : 1; u8 continuousNotes : 1; u8 bit3 : 1; u8 ignoreDrumPan : 1; u8 bit1 : 1; u8 notePropertiesNeedInit : 1;
     u8 stereo; u8 instOrWave; u8 gateTime; u8 portamentoTargetNote; u8 pan; char pad6[2];
     s16 delay; s16 gateDelay; s16 delay2; u16 portamentoTime; s16 transposition; s16 shortNoteDefaultDelay; s16 lastDelay; char pad16[2];
-    gl_2B09C_AdsrSettings adsr; gl_2B09C_Portamento portamento; char pad2c[4]; f32 freqScale; f32 bend;
-    char pad38[0x48 - 0x38]; void *instrument; gl_2B09C_TunedSample *tunedSample; gl_2B09C_Channel *channel;
+    AdsrSettings adsr; Portamento portamento; char pad2c[4]; f32 freqScale; f32 bend;
+    char pad38[0x48 - 0x38]; void *instrument; TunedSample *tunedSample; gl_2B09C_Channel *channel;
 } gl_2B09C_Layer;
-typedef struct { char pad[0x128]; gl_2B09C_TunedSample tunedSample; char pad130[0x158 - 0x130]; } gl_2B09C_SynthesisReverb;
+typedef struct { char pad[0x128]; TunedSample tunedSample; char pad130[0x158 - 0x130]; } gl_2B09C_SynthesisReverb;
 typedef struct {
     gl_2B09C_SynthesisReverb synthesisReverbs[4]; char pad560[0x2040 - 0x560]; s16 ticksPerUpdate;
     char pad2042[0x205C - 0x2042]; f32 unk_2870; char pad2060[0x2074 - 0x2060]; s16 maxTempo;
@@ -42,7 +40,7 @@ extern f32 gl_2B09C_gPitchFrequencies[];
 extern void *gl_func_00000000();
 #define Audio_GetDrum (gl_2B09C_Drum *)gl_func_00000000
 #define Audio_GetSoundEffect (gl_2B09C_SoundEffect *)gl_func_00000000
-#define Audio_GetInstrumentTunedSample (gl_2B09C_TunedSample *)gl_func_00000000
+#define Audio_GetInstrumentTunedSample (TunedSample *)gl_func_00000000
 #define PORTAMENTO_MODE(p) ((p).mode & ~0x80)
 #define PORTAMENTO_IS_SPECIAL(p) ((p).mode & 0x80)
 
@@ -52,10 +50,10 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(gl_2B09C_Layer *layer, s32 cmd) {
     s32 speed;
     f32 temp_f14;
     f32 temp_f2;
-    gl_2B09C_Portamento *portamento;
+    Portamento *portamento;
     f32 freqScale;
     f32 freqScale2;
-    gl_2B09C_TunedSample *tunedSample;
+    TunedSample *tunedSample;
     void *instrument;
     gl_2B09C_Drum *drum;
     gl_2B09C_SoundEffect *soundEffect;

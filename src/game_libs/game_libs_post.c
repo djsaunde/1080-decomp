@@ -395,8 +395,7 @@ typedef union { gl_1D17C_Awords words; long long force_structure_alignment; } gl
 #define DMEM_WET_LEFT_CH 0xC80
 #define DMEM_WET_RIGHT_CH 0xE20
 #define aMix(pkt, f, g, i, o) { gl_1D17C_Acmd *_a = (gl_1D17C_Acmd *)pkt; _a->words.w0 = (_SHIFTL(A_MIXER, 24, 8) | _SHIFTL(f, 16, 8) | _SHIFTL(g, 0, 16)); _a->words.w1 = _SHIFTL(i, 16, 16) | _SHIFTL(o, 0, 16); }
-typedef struct { char pad[0x28]; u16 leakRtl; u16 leakLtr; char pad2c[0x158 - 0x2C]; } gl_1D17C_Reverb;
-#define gl_1D17C_gSynthesisReverbs ((gl_1D17C_Reverb *)&D_00000000)
+#define gl_1D17C_gSynthesisReverbs (((AudioContext *)&D_00000000)->synthesisReverbs)
 
 gl_1D17C_Acmd *AudioSynth_LeakReverb(gl_1D17C_Acmd *cmd, s32 reverbIndex) {
     aDMEMMove(cmd++, DMEM_WET_LEFT_CH, DMEM_WET_TEMP, DMEM_1CH_SIZE);
@@ -992,20 +991,11 @@ Gfx1DA7C *AudioSynth_LoadReverbSamples(Gfx1DA7C *dl, int a1, short a2, short a3)
  * 0x3204C / 0x31D64. */
 typedef struct { u32 w0; u32 w1; } gl_1DB88_Awords;
 typedef union { gl_1DB88_Awords words; long long force_structure_alignment; } gl_1DB88_Acmd;
-typedef struct {
-    s16 numSamplesAfterDownsampling; s16 chunkLen; s16 *toDownsampleLeft; s16 *toDownsampleRight;
-    s32 startPos; s16 lengthA; s16 lengthB;
-} gl_1DB88_RingItem;
-typedef struct {
-    char pad0[0x18]; u8 resampleFlags; char pad19[2]; u8 curFrame; u8 downsampleRate; char pad1d[0x50 - 0x1D];
-    gl_1DB88_RingItem items[2][5];
-    char pad[0x158 - 0x50 - 200];
-} gl_1DB88_Reverb;
-#define gl_1DB88_gSynthesisReverbs ((gl_1DB88_Reverb *)&D_00000000)
+#define gl_1DB88_gSynthesisReverbs (((AudioContext *)&D_00000000)->synthesisReverbs)
 extern gl_1DB88_Acmd *gl_1db88_saveRingBufferPart(gl_1DB88_Acmd *cmd, u16 dmem, u16 startPos, s32 size, s16 reverbIndex);
 extern void gl_1db88_saveBuffer(gl_1DB88_Acmd *cmd, s32 dmemSrc, s32 size, u32 addrDest);
 gl_1DB88_Acmd *AudioSynth_SaveReverbSamples(gl_1DB88_Acmd *cmd, s16 reverbIndex, s16 updateIndex) {
-    gl_1DB88_RingItem *bufItem = &gl_1DB88_gSynthesisReverbs[reverbIndex].items[gl_1DB88_gSynthesisReverbs[reverbIndex].curFrame][updateIndex];
+    ReverbRingBufferItem *bufItem = &gl_1DB88_gSynthesisReverbs[reverbIndex].items[gl_1DB88_gSynthesisReverbs[reverbIndex].curFrame][updateIndex];
 
     switch (gl_1DB88_gSynthesisReverbs[reverbIndex].downsampleRate) {
     case 1:
@@ -1114,10 +1104,9 @@ typedef struct {
 } gl_dcb4_SampleState;
 typedef struct { char pad[0x20]; } gl_dcb4_SynthState;
 typedef struct { char pad0[0x10]; gl_dcb4_SynthState synthesisState; char pad30[0xD0 - 0x30]; } gl_dcb4_Note;
-typedef struct { u8 resampleFlags; u8 useReverb; u8 framesToIgnore; u8 curFrame; u8 downsampleRate; s8 unk_05; char pad6[0xFA]; s16 *filterLeft; s16 *filterRight; char pad108[0x158 - 0x108]; } gl_dcb4_Reverb;
 typedef struct {
     char unk_0; s8 numSynthesisReverbs; char pad2[0x12]; gl_dcb4_SampleState *sampleStates;
-    gl_dcb4_Reverb synthesisReverbs[4]; char pad578[0x2070 - 0x578]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_dcb4_Note *notes;
+    SynthesisReverb synthesisReverbs[4]; char pad578[0x2070 - 0x578]; s32 numNotes; char pad2074[0x2CFC - 0x2074]; gl_dcb4_Note *notes;
 } gl_dcb4_Ctx;
 extern gl_dcb4_Ctx gl_dcb4_gAudioCtx;
 #define gAudioCtx gl_dcb4_gAudioCtx
@@ -1279,35 +1268,18 @@ typedef union { gl_e134_Awords words; long long force_structure_alignment; } gl_
 #define CODEC_SMALL_ADPCM 3
 #define MEDIUM_RAM 0
 
-typedef struct { s32 order; s32 numPredictors; s16 book[1]; } gl_e134_AdpcmBook;
-typedef struct { u32 start; u32 end; u32 count; char pad[4]; s16 predictorState[16]; } gl_e134_AdpcmLoop;
-typedef struct {
-    u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24;
-    u8 *sampleAddr; gl_e134_AdpcmLoop *loop; gl_e134_AdpcmBook *book;
-} gl_e134_Sample;
-typedef struct { gl_e134_Sample *sample; f32 tuning; } gl_e134_TunedSample;
-typedef struct {
-    u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 unused : 1;
-    u32 stereoStrongRight : 1; u32 stereoStrongLeft : 1; u32 stereoHeadsetEffects : 1; u32 usesHeadsetPanEffects : 1;
-    u32 reverbIndex : 3; u32 bookOffset : 2; u32 isSyntheticWave : 1; u32 hasTwoParts : 1; u32 useHaasEffect : 1;
-    u8 gain; u8 haasEffectLeftDelaySize; u8 haasEffectRightDelaySize; u8 reverbVol; u8 harmonicIndexCurAndPrev; u8 combFilterSize;
-    u16 targetVolLeft; u16 targetVolRight; u16 resamplingRateFixedPoint; u16 combFilterGain;
-    gl_e134_TunedSample *tunedSample;
-    s16 *filter;
-} gl_e134_SampleState;
+/* Sample / TunedSample / AdpcmLoop / AdpcmBook / NoteSampleState / Note: audio.h. */
 typedef struct { s16 adpcmdecState[0x20]; s16 mixEnvelopeState[0x40]; s16 combFilterState[1]; } gl_e134_SynthBufs;
 typedef struct {
     u8 restart; u8 sampleDmaIndex; u8 prevHaasEffectLeftDelaySize; u8 prevHaasEffectRightDelaySize; u8 reverbVol; u8 numParts;
     u16 samplePosFrac; s32 samplePosInt; gl_e134_SynthBufs *synthesisBuffers; s16 curVolLeft; s16 curVolRight;
     char pad14[6]; u8 combFilterNeedsInit;
 } gl_e134_SynthState;
-typedef struct { char pad0[0xB0]; gl_e134_SampleState sampleState; char padC8[0xD0 - 0xB0 - sizeof(gl_e134_SampleState)]; } gl_e134_Note;
-typedef struct { char pad0[0x10]; s16 *curLoadedBook; char pad14[0x2CFC - 0x14]; gl_e134_Note *notes; } gl_e134_Ctx;
-extern gl_e134_Ctx gl_e134_gAudioCtx;
+extern AudioContext gl_e134_gAudioCtx;
 #define gAudioCtx gl_e134_gAudioCtx
 extern s16 gl_e134_D_8012FBA8[];
 
-extern gl_e134_Acmd *gl_e134_LoadWaveSamples(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32);
+extern gl_e134_Acmd *gl_e134_LoadWaveSamples(gl_e134_Acmd *, NoteSampleState *, gl_e134_SynthState *, s32);
 extern void *gl_e134_DmaSampleData(u32, u32, s32, u8 *, s32);
 extern void gl_e134_ClearBuffer(gl_e134_Acmd *, s32, s32);
 extern void gl_e134_func_800DB2C0(s32, s32);
@@ -1324,8 +1296,8 @@ extern void gl_e134_DMemMove(gl_e134_Acmd *, s32, s32, u32);
 extern void gl_e134_LoadBuffer(gl_e134_Acmd *, s32, s32, void *);
 extern void gl_e134_SaveBuffer(gl_e134_Acmd *, s32, s32, void *);
 extern void gl_e134_Mix(gl_e134_Acmd *, s32, s32, s32, s32);
-extern gl_e134_Acmd *gl_e134_ProcessEnvelope(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32, u16, s32, s32);
-extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, gl_e134_SampleState *, gl_e134_SynthState *, s32, s32, s32);
+extern gl_e134_Acmd *gl_e134_ProcessEnvelope(gl_e134_Acmd *, NoteSampleState *, gl_e134_SynthState *, s32, u16, s32, s32);
+extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, NoteSampleState *, gl_e134_SynthState *, s32, s32, s32);
 #define AudioSynth_LoadWaveSamples gl_e134_LoadWaveSamples
 #define AudioLoad_DmaSampleData gl_e134_DmaSampleData
 #define AudioSynth_ClearBuffer gl_e134_ClearBuffer
@@ -1345,11 +1317,7 @@ extern gl_e134_Acmd *gl_e134_ApplyHaasEffect(gl_e134_Acmd *, gl_e134_SampleState
 #define AudioSynth_Mix gl_e134_Mix
 #define AudioSynth_ProcessEnvelope gl_e134_ProcessEnvelope
 #define AudioSynth_ApplyHaasEffect gl_e134_ApplyHaasEffect
-#define NoteSampleState gl_e134_SampleState
 #define NoteSynthesisState gl_e134_SynthState
-#define Sample gl_e134_Sample
-#define AdpcmLoop gl_e134_AdpcmLoop
-#define Note gl_e134_Note
 #define D_8012FBA8 gl_e134_D_8012FBA8
 
 gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState, NoteSynthesisState *synthState, s16 *aiBuf,
@@ -1802,11 +1770,7 @@ gl_e134_Acmd *AudioSynth_ProcessNote(s32 noteIndex, NoteSampleState *sampleState
 #undef AudioSynth_Mix
 #undef AudioSynth_ProcessEnvelope
 #undef AudioSynth_ApplyHaasEffect
-#undef NoteSampleState
 #undef NoteSynthesisState
-#undef Sample
-#undef AdpcmLoop
-#undef Note
 #undef D_8012FBA8
 
 // AudioSynth_FinalResample — STRUCTURAL PASS (0xA8 / 42 words, no episode).
@@ -8313,26 +8277,24 @@ void Audio_NoteDisable(char *a0) {
  * addu base-first), NoteSampleState bitField0 + bitField1 as one u32 bitfield run
  * (lw tests), the Stereo union copies (the held &sampleStateAttrs.stereo in s7 the
  * old NM could not produce), playbackState / sampleState pointer locals. */
-typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_27E24_Stereo;
 typedef struct { u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 rest : 29; } gl_27E24_SeqPlayer;
 typedef struct {
     char pad0[3]; u8 muteBehavior; u8 targetReverbVol; char pad5[4]; u8 bookOffset; char padA[2]; u8 gain; char padD[2]; u8 combFilterGain;
     char pad10[0x20 - 0x10]; u16 combFilterSize; char pad22[0x4C - 0x22]; gl_27E24_SeqPlayer *seqPlayer;
-    char pad50[0xDC - 0x50]; s16 *filter; gl_27E24_Stereo stereo;
+    char pad50[0xDC - 0x50]; s16 *filter; Stereo stereo;
 } gl_27E24_Channel;
 typedef struct gl_27E24_Layer {
     u8 enabled : 1; u8 finished : 1; u8 muted : 1; u8 continuousNotes : 1; u8 bit3 : 1; u8 ignoreDrumPan : 1; u8 bit1 : 1; u8 notePropertiesNeedInit : 1;
-    gl_27E24_Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x2C - 7]; struct gl_27E24_Note *note; char pad30[0x40 - 0x30];
+    Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x2C - 7]; struct gl_27E24_Note *note; char pad30[0x40 - 0x30];
     f32 noteVelocity; f32 noteFreqScale; char pad48[0x50 - 0x48]; gl_27E24_Channel *channel;
 } gl_27E24_Layer;
-typedef struct { u8 reverb; u8 gain; u8 pan; gl_27E24_Stereo stereo; u8 combFilterGain; char pad5; u16 combFilterSize; f32 freqScale; f32 velocity; s16 *filter; } gl_27E24_Attrs;
-typedef struct { u8 reverbVol; u8 gain; u8 pan; gl_27E24_Stereo stereo; f32 frequency; f32 velocity; char padC[4]; s16 *filter; u8 combFilterGain; char pad15; u16 combFilterSize; } gl_27E24_SampleStateAttrs;
+typedef struct { u8 reverbVol; u8 gain; u8 pan; Stereo stereo; f32 frequency; f32 velocity; char padC[4]; s16 *filter; u8 combFilterGain; char pad15; u16 combFilterSize; } gl_27E24_SampleStateAttrs;
 typedef struct { u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4; } gl_27E24_AdsrBits;
 typedef struct { char pad0[0xC]; char *pool; } gl_27E24_ListItem;
 typedef struct {
     u8 priority; char pad1[3]; u8 unk_04; char pad5[3]; f32 portamentoFreqScale; f32 vibratoFreqScale;
     struct gl_27E24_Layer *prevParentLayer; struct gl_27E24_Layer *parentLayer; struct gl_27E24_Layer *wantedParentLayer;
-    gl_27E24_Attrs attributes;
+    NoteAttributes attributes;
     struct { union { gl_27E24_AdsrBits s; u8 asByte; } action; char pad1[0xB]; f32 fadeOutVel; } adsr;
     char pad40[0x80 - 0x40];
 } gl_27E24_PlaybackState;
@@ -8358,7 +8320,7 @@ extern void gl_ref_0003D414();
 
 void Audio_ProcessNotes(void) {
     s32 pad[2];
-    gl_27E24_Attrs *attrs;
+    NoteAttributes *attrs;
     gl_27E24_SampleState *sampleState2;
     gl_27E24_SampleState *sampleState;
     gl_27E24_Note *note;
@@ -8746,37 +8708,34 @@ int Audio_GetSoundEffect(int a0, int a1) {
  * Offsets: note playbackState at +0x30 (prev / parent / wanted layer +0x40..0x48,
  * attributes +0x4C, adsr action +0x60, sustain +0x64, fadeOutVel +0x6C, current
  * +0x70), ticksPerUpdateInv 0x2050, adsrDecayTable 0x2CF8. */
-typedef union { struct { u8 unused : 2; u8 bit2 : 2; u8 strongRight : 1; u8 strongLeft : 1; u8 stereoHeadsetEffects : 1; u8 usesHeadsetPanEffects : 1; } s; u8 asByte; } gl_28604_Stereo;
 typedef struct { u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 rest : 29; } gl_28604_SeqPlayer;
 typedef struct { u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4; } gl_28604_AdsrBits;
 typedef struct {
     char pad0[3]; u8 muteBehavior; u8 targetReverbVol; char pad5; u8 someOtherPriority; char pad7[0xC - 7];
     u8 gain; char padD[2]; u8 combFilterGain; char pad10[0x20 - 0x10]; u16 combFilterSize;
     char pad22[0x4C - 0x22]; gl_28604_SeqPlayer *seqPlayer; char pad50[0x8C - 0x50];
-    u8 adsrDecayIndex; u8 adsrSustain; char pad8e[0xDC - 0x8E]; s16 *filter; gl_28604_Stereo stereo;
+    u8 adsrDecayIndex; u8 adsrSustain; char pad8e[0xDC - 0x8E]; s16 *filter; Stereo stereo;
 } gl_28604_Channel;
 typedef struct gl_28604_Layer {
-    u8 bits0; gl_28604_Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x18 - 7]; u8 adsrDecayIndex;
+    u8 bits0; Stereo stereo; char pad2[4]; u8 notePan; char pad7[0x18 - 7]; u8 adsrDecayIndex;
     char pad19[0x2C - 0x19]; struct gl_28604_Note *note; char pad30[0x40 - 0x30];
     f32 noteVelocity; f32 noteFreqScale; char pad48[0x50 - 0x48]; gl_28604_Channel *channel;
 } gl_28604_Layer;
-typedef struct { u8 reverb; u8 gain; u8 pan; gl_28604_Stereo stereo; u8 combFilterGain; char pad5; u16 combFilterSize; f32 freqScale; f32 velocity; s16 *filter; } gl_28604_Attrs;
 typedef struct gl_28604_Note {
     char pad0[0xC]; char *pool; char pad10[0x30 - 0x10];
     u8 priority; char pad31[3]; u8 unk_04; char pad35[0x40 - 0x35];
     gl_28604_Layer *prevParentLayer; gl_28604_Layer *parentLayer; gl_28604_Layer *wantedParentLayer;
-    gl_28604_Attrs attributes;
+    NoteAttributes attributes;
     union { gl_28604_AdsrBits s; u8 asByte; } action; char pad61[3]; f32 sustain; char pad68[4]; f32 fadeOutVel; f32 current;
     char pad74[0xB0 - 0x74];
     struct { volatile u8 enabled : 1; u8 needsInit : 1; u8 finished : 1; u8 rest : 5; } bitField0;
 } gl_28604_Note;
-typedef struct { char pad0[0x2050]; f32 ticksPerUpdateInv; char pad2054[0x2CF8 - 0x2054]; f32 *adsrDecayTable; } gl_28604_Ctx;
-#define gl_28604_gAudioCtx (*(gl_28604_Ctx *)&D_00000000)
+#define gl_28604_gAudioCtx (*(AudioContext *)&D_00000000)
 #define gl_28604_NO_LAYER ((gl_28604_Layer *)(-1))
 
 void Audio_SeqLayerDecayRelease(gl_28604_Layer *layer, s32 target) {
     gl_28604_Note *note;
-    gl_28604_Attrs *attrs;
+    NoteAttributes *attrs;
     gl_28604_Channel *channel;
 
     if (layer == gl_28604_NO_LAYER) {
@@ -9530,15 +9489,12 @@ extern char *gl_ref_0003D734();
  * +0x9C; note->playbackState.prevParentLayer +0x40, wantedParentLayer +0x48;
  * gAudioCtx.noteFreeLists +0x5378. */
 #define GL291C0_NO_LAYER ((gl_291C0_Layer *)(-1))
-typedef struct gl_291C0_ListItem { struct gl_291C0_ListItem *prev; struct gl_291C0_ListItem *next; void *u; struct gl_291C0_NotePool *pool; } gl_291C0_ListItem;
-typedef struct gl_291C0_NotePool { gl_291C0_ListItem disabled; gl_291C0_ListItem decaying; gl_291C0_ListItem releasing; gl_291C0_ListItem active; } gl_291C0_NotePool;
-typedef struct gl_291C0_SeqPlayer { char pad[0x9C]; gl_291C0_NotePool notePool; } gl_291C0_SeqPlayer;
-typedef struct gl_291C0_Channel { u8 b0; u8 b1; u8 noteAllocPolicy; char pad3[0x4C - 3]; gl_291C0_SeqPlayer *seqPlayer; char pad50[0x94 - 0x50]; gl_291C0_NotePool notePool; } gl_291C0_Channel;
+typedef struct gl_291C0_SeqPlayer { char pad[0x9C]; NotePool notePool; } gl_291C0_SeqPlayer;
+typedef struct gl_291C0_Channel { u8 b0; u8 b1; u8 noteAllocPolicy; char pad3[0x4C - 3]; gl_291C0_SeqPlayer *seqPlayer; char pad50[0x94 - 0x50]; NotePool notePool; } gl_291C0_Channel;
 typedef struct gl_291C0_Layer { u8 enabled : 1; u8 finished : 1; u8 stopSomething : 1; u8 continuousNotes : 1; u8 bit3 : 1; char pad1[0x2C - 1]; struct gl_291C0_Note *note; char pad30[0x50 - 0x30]; gl_291C0_Channel *channel; } gl_291C0_Layer;
 typedef struct { char pad[0x30]; gl_291C0_Layer *prevParentLayer; gl_291C0_Layer *parentLayer; gl_291C0_Layer *wantedParentLayer; } gl_291C0_PlaybackState;
-typedef struct gl_291C0_Note { gl_291C0_ListItem listItem; gl_291C0_PlaybackState playbackState; } gl_291C0_Note;
-typedef struct { char pad0[0x5378]; gl_291C0_NotePool noteFreeLists; } gl_291C0_Ctx;
-#define gl_291C0_gAudioCtx (*(gl_291C0_Ctx *)&D_00000000)
+typedef struct gl_291C0_Note { AudioListItem listItem; gl_291C0_PlaybackState playbackState; } gl_291C0_Note;
+#define gl_291C0_gAudioCtx (*(AudioContext *)&D_00000000)
 #define Audio_NoteReleaseAndTakeOwnership gl_ref_0003D66C
 #define Audio_AllocNoteFromDisabled (gl_291C0_Note *)gl_ref_0003D698
 #define Audio_AllocNoteFromDecaying (gl_291C0_Note *)gl_ref_0003D6E4
@@ -11048,11 +11004,9 @@ void AudioSeq_SeqLayerProcessScriptStep1(char *o) {
  * one u32 bitfield run (lw + shifts) and `sameTunedSample` declared u32: then its
  * `== 1` test shares the unsigned constant 1 the bitfield compares hold in a0 (an s32
  * parameter gets its own `li at,1`). All five callees are blank USO jals. */
-typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; } gl_2ABC0_Sample;
-typedef struct { gl_2ABC0_Sample *sample; f32 tuning; } gl_2ABC0_TunedSample;
 typedef struct gl_2ABC0_Layer {
     u32 enabled : 1; u32 finished : 1; u32 muted : 1; u32 continuousNotes : 1; u32 bit3 : 1; u32 ignoreDrumPan : 1; u32 bit1 : 1; u32 notePropertiesNeedInit : 1;
-    char pad1[0x2C - 4]; struct gl_2ABC0_Note *note; char pad30[0x4C - 0x30]; gl_2ABC0_TunedSample *tunedSample;
+    char pad1[0x2C - 4]; struct gl_2ABC0_Note *note; char pad30[0x4C - 0x30]; TunedSample *tunedSample;
 } gl_2ABC0_Layer;
 typedef struct { char pad[0x30]; gl_2ABC0_Layer *prevParentLayer; gl_2ABC0_Layer *parentLayer; gl_2ABC0_Layer *wantedParentLayer; } gl_2ABC0_PlaybackState;
 typedef struct gl_2ABC0_Note { char listItem[0x10]; gl_2ABC0_PlaybackState playbackState; } gl_2ABC0_Note;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h" /* Note (docs/1080_AUDIO.md) */
 
 /* IDO 7.1 -O2 donor for AudioHeap_ResetStep (0x2FC / 191 words) = OoT's
  * AudioHeap_ResetStep (heap.c) verbatim, minus the AudioHeap_DiscardSampleBanks
@@ -11,22 +12,13 @@
  * aiBuffers 0x2140, aiBufLengths 0x214C, resetStatus 0x2CF0,
  * audioResetFadeOutFramesLeft 0x2CF4, notes 0x2CFC (stride 0xD0), seqPlayers
  * 0x2D00 (stride 0x160). */
-typedef struct {
-    u8 unk0 : 1; u8 hang : 1; u8 decay : 1; u8 release : 1; u8 state : 4;
-} gl_2119C_AdsrBits;
-typedef struct {
-    char pad00[0x60]; union { gl_2119C_AdsrBits s; u8 asByte; } action; char pad61[0x6C - 0x61]; f32 fadeOutVel;
-    char pad70[0xB0 - 0x70];
-    struct { u32 enabled : 1; u32 needsInit : 1; u32 finished : 1; u32 rest : 29; } bitField0;
-    char padB4[0xD0 - 0xB4];
-} gl_2119C_Note;
 typedef struct { char pad[0x160]; } gl_2119C_SeqPlayer;
 typedef struct {
     char pad0[0x2034]; s16 specUnk4; char pad2036[0x203C - 0x2036]; s16 maxAiBufferLength;
     char pad203e[0x2048 - 0x203E]; s16 numSequencePlayers; char pad204a[0x2050 - 0x204A]; f32 ticksPerUpdateInv;
     char pad2054[0x2070 - 0x2054]; s32 numNotes; char pad2074[0x2140 - 0x2074];
     s16 *aiBuffers[3]; s16 aiBufLengths[3]; char pad2152[0x2CF0 - 0x2152];
-    volatile u8 resetStatus; char pad2cf1[3]; s32 audioResetFadeOutFramesLeft; char pad2cf8[4]; gl_2119C_Note *notes;
+    volatile u8 resetStatus; char pad2cf1[3]; s32 audioResetFadeOutFramesLeft; char pad2cf8[4]; Note *notes;
     gl_2119C_SeqPlayer seqPlayers[4];
 } gl_2119C_Ctx;
 extern int D_00000000;
@@ -68,10 +60,10 @@ s32 AudioHeap_ResetStep(void) {
                 AudioHeap_UpdateReverbs();
             } else {
                 for (i = 0; i < gAudioCtx.numNotes; i++) {
-                    if (gAudioCtx.notes[i].bitField0.enabled &&
-                        gAudioCtx.notes[i].action.s.state != 0) {
-                        gAudioCtx.notes[i].fadeOutVel = gAudioCtx.ticksPerUpdateInv;
-                        gAudioCtx.notes[i].action.s.release = 1;
+                    if (gAudioCtx.notes[i].sampleState.enabled &&
+                        gAudioCtx.notes[i].playbackState.adsr.action.s.state != 0) {
+                        gAudioCtx.notes[i].playbackState.adsr.fadeOutVel = gAudioCtx.ticksPerUpdateInv;
+                        gAudioCtx.notes[i].playbackState.adsr.action.s.release = 1;
                     }
                 }
                 gAudioCtx.audioResetFadeOutFramesLeft = 8 / sp24;
