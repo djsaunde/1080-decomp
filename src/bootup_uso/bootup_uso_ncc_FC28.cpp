@@ -137,7 +137,7 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
  *   p = a0->field_28; (*p->field_64)(a0 + (short)p->field_60).
  * MATCHED 2026-07-10 (w50 island sweep, 18/18): the long-documented
  * "double-reload residual cap" (19 vs 18 insns) was the cfe DAG-share
- * lever from func_0000F6C4 — single expression statement with the
+ * lever from Process_update — single expression statement with the
  * register-p assignment EMBEDDED IN THE ARG:
  *   (*(void(**)(...))(p + 0x64))(*(short*)((p = *(char**)(a0+0x28)) + 0x60) + a0);
  * The arg's `+ a0` DAG-shares the assignment chain's a0 home reload

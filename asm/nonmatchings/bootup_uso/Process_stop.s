@@ -1,6 +1,6 @@
-nonmatching func_0000F4CC, 0x98
+nonmatching Process_stop, 0x98
 
-glabel func_0000F4CC
+glabel Process_stop
     /* DDFF38 0000F4CC 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DDFF3C 0000F4D0 24850018 */  addiu      $a1, $a0, 0x18
     /* DDFF40 0000F4D4 00A03025 */  or         $a2, $a1, $zero
@@ -44,4 +44,4 @@ glabel func_0000F4CC
     /* DDFFC4 0000F558 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DDFFC8 0000F55C 03E00008 */  jr         $ra
     /* DDFFCC 0000F560 00000000 */   nop
-endlabel func_0000F4CC
+endlabel Process_stop

@@ -1,6 +1,6 @@
-nonmatching func_00008BD4, 0x344
+nonmatching SnowBCollider_onContact, 0x344
 
-glabel func_00008BD4
+glabel SnowBCollider_onContact
     /* DD9640 00008BD4 27BDFF48 */  addiu      $sp, $sp, -0xB8
     /* DD9644 00008BD8 AFBF002C */  sw         $ra, 0x2C($sp)
     /* DD9648 00008BDC AFB10028 */  sw         $s1, 0x28($sp)
@@ -223,4 +223,4 @@ glabel func_00008BD4
     /* DD9978 00008F0C 8FB10028 */  lw         $s1, 0x28($sp)
     /* DD997C 00008F10 03E00008 */  jr         $ra
     /* DD9980 00008F14 27BD00B8 */   addiu     $sp, $sp, 0xB8
-endlabel func_00008BD4
+endlabel SnowBCollider_onContact

@@ -10019,7 +10019,7 @@ void gl_func_00041768(int *self) {
  * (`sw a0, 0x18(sp)`) AND reloads twice (`lw t9, ...(sp)` at offsets
  * 0x10 and 0x1c), whereas IDO -O2 keeps a0 in $a1 for the duration.
  * Adding `volatile int spill = (int)a0; (void)spill;` could force the
- * spill but tested on adjacent wraps (e.g. func_00008B44) it shifts
+ * spill but tested on adjacent wraps (e.g. SnowBCollider_ctor) it shifts
  * register allocation cascade — net regression. Permuter-class. */
 void gl_func_000417CC(int *a0) {
     int *p;

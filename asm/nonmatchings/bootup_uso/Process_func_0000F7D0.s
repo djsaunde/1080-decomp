@@ -1,6 +1,6 @@
-nonmatching func_0000F7D0, 0x24
+nonmatching Process_func_0000F7D0, 0x24
 
-glabel func_0000F7D0
+glabel Process_func_0000F7D0
     /* DE023C 0000F7D0 AFA40000 */  sw         $a0, 0x0($sp)
     /* DE0240 0000F7D4 3C0E0000 */  lui        $t6, (0x0 >> 16)
     /* DE0244 0000F7D8 25CE0000 */  addiu      $t6, $t6, 0x0
@@ -11,4 +11,4 @@ glabel func_0000F7D0
   .L0000F7EC:
     /* DE0258 0000F7EC 03E00008 */  jr         $ra
     /* DE025C 0000F7F0 00000000 */   nop
-endlabel func_0000F7D0
+endlabel Process_func_0000F7D0

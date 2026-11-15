@@ -29,7 +29,7 @@ void SnowBoard_func_0000F404(int a0) {
  * p1->$a1, p2->$a2, set->$a3, t->$t0, u->$t1; the final clear-branch uses the
  * DISTINCT var `u` (target allocates $t1 there, while `t` stays $t0 in the
  * other three branches; a single shared `t` renumbers everything). */
-void func_0000F434(int *a0) {
+void Process_start(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;
@@ -52,7 +52,7 @@ void func_0000F434(int *a0) {
  * p1->$a1, p2->$a2, set->$a3, t->$t0, u->$t1; the final clear-branch uses the
  * DISTINCT var `u` (target allocates $t1 there, while `t` stays $t0 in the
  * other three branches; a single shared `t` renumbers everything). */
-void func_0000F4CC(int *a0) {
+void Process_stop(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;
@@ -70,7 +70,7 @@ void func_0000F4CC(int *a0) {
 }
 
 /* Single-block bit set/clear — set=0, mask=8. */
-void func_0000F564(int *a0) {
+void Node_clearFlag8_0000F564(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;
@@ -82,7 +82,7 @@ void func_0000F564(int *a0) {
 }
 
 /* Single-block bit set/clear — set=1, mask=8. */
-void func_0000F5BC(int *a0) {
+void Node_setFlag8_0000F5BC(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;
@@ -94,7 +94,7 @@ void func_0000F5BC(int *a0) {
 }
 
 /* Single-block bit set/clear — set=0, mask=4. */
-void func_0000F614(int *a0) {
+void Node_clearFlag4_0000F614(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;
@@ -106,7 +106,7 @@ void func_0000F614(int *a0) {
 }
 
 /* Single-block bit set/clear — set=1, mask=4. */
-void func_0000F66C(int *a0) {
+void Node_setFlag4_0000F66C(int *a0) {
     register int *p1, *p2;
     register int set;
     register int *t;

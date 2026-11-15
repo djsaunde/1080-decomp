@@ -1,6 +1,6 @@
-nonmatching func_000076F4, 0xDC
+nonmatching Tv1_func_000076F4, 0xDC
 
-glabel func_000076F4
+glabel Tv1_func_000076F4
     /* DD8160 000076F4 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DD8164 000076F8 AFB00028 */  sw         $s0, 0x28($sp)
     /* DD8168 000076FC 00808025 */  or         $s0, $a0, $zero
@@ -59,4 +59,4 @@ glabel func_000076F4
     /* DD8230 000077C4 27BD0030 */  addiu      $sp, $sp, 0x30
     /* DD8234 000077C8 03E00008 */  jr         $ra
     /* DD8238 000077CC 00000000 */   nop
-endlabel func_000076F4
+endlabel Tv1_func_000076F4

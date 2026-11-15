@@ -1,6 +1,6 @@
-nonmatching func_00008B44, 0x90
+nonmatching SnowBCollider_ctor, 0x90
 
-glabel func_00008B44
+glabel SnowBCollider_ctor
     /* DD95B0 00008B44 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD95B4 00008B48 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DD95B8 00008B4C AFA50024 */  sw         $a1, 0x24($sp)
@@ -40,4 +40,4 @@ glabel func_00008B44
     /* DD9634 00008BC8 00801025 */  or         $v0, $a0, $zero
     /* DD9638 00008BCC 03E00008 */  jr         $ra
     /* DD963C 00008BD0 00000000 */   nop
-endlabel func_00008B44
+endlabel SnowBCollider_ctor

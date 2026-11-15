@@ -1,6 +1,6 @@
-nonmatching func_00007C74, 0x90
+nonmatching Tv1Tmpl_create, 0x90
 
-glabel func_00007C74
+glabel Tv1Tmpl_create
     /* DD86E0 00007C74 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DD86E4 00007C78 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD86E8 00007C7C AFA40028 */  sw         $a0, 0x28($sp)
@@ -39,4 +39,4 @@ glabel func_00007C74
     /* DD8764 00007CF8 00C01025 */  or         $v0, $a2, $zero
     /* DD8768 00007CFC 03E00008 */  jr         $ra
     /* DD876C 00007D00 00000000 */   nop
-endlabel func_00007C74
+endlabel Tv1Tmpl_create

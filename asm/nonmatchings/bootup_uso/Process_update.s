@@ -1,6 +1,6 @@
-nonmatching func_0000F6C4, 0xA8
+nonmatching Process_update, 0xA8
 
-glabel func_0000F6C4
+glabel Process_update
     /* DE0130 0000F6C4 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE0134 0000F6C8 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE0138 0000F6CC AFA40028 */  sw         $a0, 0x28($sp)
@@ -46,4 +46,4 @@ glabel func_0000F6C4
     /* DE01CC 0000F760 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE01D0 0000F764 03E00008 */  jr         $ra
     /* DE01D4 0000F768 00000000 */   nop
-endlabel func_0000F6C4
+endlabel Process_update

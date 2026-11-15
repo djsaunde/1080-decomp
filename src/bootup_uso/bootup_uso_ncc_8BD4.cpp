@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_00008BD4 (collision impulse, 209 words).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for SnowBCollider_onContact (collision impulse, 209 words).
  * agent-g run 157 / 182: the cfe NM body under NCC (amt in $f20), 97.77.
  * agent-g run 184 (kit CXXXIII): rewritten as C++ -- `lwc1 180(a0); addiu a0,a0,180` = an inline
  * V3::operator+=(const V3 &) on b->ctx->vel (and ctx->acc), `addiu v1,v1,2408 / 2576` = edg's compound-assignment
@@ -50,7 +50,7 @@ struct Ctx {
 };
 struct G { char p[0x84]; int h; };
 struct Body { char p0[0x114]; char s114[0xC]; char s120[0x2C]; int k14C; char p150[0x170 - 0x150]; Ctx *ctx; u16 fl; };
-extern "C" void func_00008BD4(Body *b, float amt, V3 *dir, int a3) {
+extern "C" void SnowBCollider_onContact(Body *b, float amt, V3 *dir, int a3) {
     u16 fl = b->fl;
     int skip;
     int code;

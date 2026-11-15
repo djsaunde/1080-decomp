@@ -14,11 +14,11 @@ extern int func_00000000(...);
 extern void *D_55A0_root; /* zero-page USO-GOT global (gRoot); reloaded per use (no CSE) */
 /* tail-block init globals (decode-progress 2026-06-26): the four transform-group
  * registrations + final 0x58 block pass a distinct per-group global as arg2
- * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and func_00007E50's
+ * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and Tv1Tmpl_func_00007E50's
  * word value, the 2nd 0x48 uses D_00007E54, and obj+0x28 stores &D_00007600. */
 extern int D_00007E48, D_00007E54, D_00007E58, D_00007E5C, D_00007E60, D_00007E64, D_00007E68;
 extern char D_00007600;
-extern void func_00007E50(int *a0);
+extern void Tv1Tmpl_func_00007E50(int *a0);
 extern int D_00007E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
 extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
 extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
@@ -259,7 +259,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
     nl = (char *)func_00000000(0, &D_00007E48, &D_55A0_tb, 0);
-    *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&func_00007E50);
+    *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&Tv1Tmpl_func_00007E50);
     p1.w = t4.w;
     obj = (char *)func_00000000(0x48);
     if (nl) {} /* agent-g run 241: nl's reload before the obj test (target lw a2 above the beqz) */

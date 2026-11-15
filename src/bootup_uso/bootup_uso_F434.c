@@ -27,7 +27,7 @@ extern struct { int a, b, c; } func_00000188;
  * Assignment placed in the FN expression instead evaluates the arg with
  * stale m (wrong order AND wrong bytes). Two-statement forms (the old
  * 91.31% body) always reload a0 (+1 word per block). */
-void func_0000F6C4(char *a0) {
+void Process_update(char *a0) {
     register char *m;
     if (*(int*)(a0 + 0x2C) == 0) {
         (*(int(**)())(m + 0x6C))(*(short*)((m = *(char**)(a0 + 0x28)) + 0x68) + a0);

@@ -1,6 +1,6 @@
-nonmatching func_0000F76C, 0x64
+nonmatching Process_func_0000F76C, 0x64
 
-glabel func_0000F76C
+glabel Process_func_0000F76C
     /* DE01D8 0000F76C 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE01DC 0000F770 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE01E0 0000F774 AFA40028 */  sw         $a0, 0x28($sp)
@@ -27,4 +27,4 @@ glabel func_0000F76C
     /* DE0230 0000F7C4 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE0234 0000F7C8 03E00008 */  jr         $ra
     /* DE0238 0000F7CC 00000000 */   nop
-endlabel func_0000F76C
+endlabel Process_func_0000F76C

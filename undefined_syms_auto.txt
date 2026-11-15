@@ -4362,8 +4362,8 @@ bu_4948_k0 = 0x00000000;  /* cam_func_00004948 snap scale (lwc1 0(at)) */
 bu_4948_k1 = 0x00000000;  /* cam_func_00004948 snap y scale (lwc1 0(at)) */
 bu_4948_klo = 0x00000000;  /* cam_func_00004948 angle clamp low (lwc1 0(at)) */
 bu_4948_khi = 0x00000000;  /* cam_func_00004948 angle clamp high (lwc1 0(at)) */
-D_7D04_root = 0x0000023C;  /* func_00007D04 root context table = func_0000023C (lui/lw 0x18 -> 0x254) */
-func_7D04_randf = 0x00000000;  /* func_00007D04 float rand helper (jal 0) */
+D_7D04_root = 0x0000023C;  /* Tv1Tmpl_func_00007D04 root context table = func_0000023C (lui/lw 0x18 -> 0x254) */
+func_7D04_randf = 0x00000000;  /* Tv1Tmpl_func_00007D04 float rand helper (jal 0) */
 
 /* Audited local port carriers. */
 snw_port_arcproc_uso_func_00001B04_D_arc1B04_a = 0x0;
@@ -5530,7 +5530,7 @@ func_00000000_63b4_fpp = 0x00000000;
 func_00000000_63b4_pq = 0x00000000;
 func_00000000_63b4_p = 0x00000000;
 func_8bd4_c = 0x00000000;
-/* func_00008BD4 NCC donor (agent-c run 238): target reloc jal func_00000000 */
+/* SnowBCollider_onContact NCC donor (agent-c run 238): target reloc jal func_00000000 */
 func_8bd4_heavy = 0x00000000;
 /* item_registerTemplates NCC donor (agent-g run 241): blank (reloc-free) lui/addiu pairs in the target -> 0 */
 D_55A0_G = 0x00000000;

@@ -1,6 +1,6 @@
-nonmatching func_00007E70, 0x58
+nonmatching Tv1Tmpl_func_00007E70, 0x58
 
-glabel func_00007E70
+glabel Tv1Tmpl_func_00007E70
     /* DD88DC 00007E70 27BDFFE8 */  addiu      $sp, $sp, -0x18
   alabel D_00007E74
     /* DD88E0 00007E74 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -34,4 +34,4 @@ glabel func_00007E70
     /* DD892C 00007EC0 03E00008 */  jr         $ra
   alabel D_00007EC4
     /* DD8930 00007EC4 00000000 */   nop
-endlabel func_00007E70
+endlabel Tv1Tmpl_func_00007E70

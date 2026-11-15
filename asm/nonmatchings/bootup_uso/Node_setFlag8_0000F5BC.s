@@ -1,6 +1,6 @@
-nonmatching func_0000F5BC, 0x58
+nonmatching Node_setFlag8_0000F5BC, 0x58
 
-glabel func_0000F5BC
+glabel Node_setFlag8_0000F5BC
     /* DE0028 0000F5BC 27BDFFF0 */  addiu      $sp, $sp, -0x10
     /* DE002C 0000F5C0 24850018 */  addiu      $a1, $a0, 0x18
     /* DE0030 0000F5C4 00A03025 */  or         $a2, $a1, $zero
@@ -26,4 +26,4 @@ glabel func_0000F5BC
     /* DE0074 0000F608 27BD0010 */  addiu      $sp, $sp, 0x10
     /* DE0078 0000F60C 03E00008 */  jr         $ra
     /* DE007C 0000F610 00000000 */   nop
-endlabel func_0000F5BC
+endlabel Node_setFlag8_0000F5BC

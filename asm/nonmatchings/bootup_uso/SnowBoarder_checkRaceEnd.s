@@ -28,7 +28,7 @@ glabel SnowBoarder_checkRaceEnd
     /* DDE3CC 0000D960 240C0005 */   addiu     $t4, $zero, 0x5
     /* DDE3D0 0000D964 240103ED */  addiu      $at, $zero, 0x3ED
     /* DDE3D4 0000D968 104100E3 */  beq        $v0, $at, .L0000DCF8
-    /* DDE3D8 0000D96C 3C040001 */   lui       $a0, %hi(func_00008B44 + 0x10)
+    /* DDE3D8 0000D96C 3C040001 */   lui       $a0, %hi(SnowBCollider_ctor + 0x10)
     /* DDE3DC 0000D970 240103EE */  addiu      $at, $zero, 0x3EE
     /* DDE3E0 0000D974 104100E0 */  beq        $v0, $at, .L0000DCF8
     /* DDE3E4 0000D978 240103EF */   addiu     $at, $zero, 0x3EF
@@ -249,12 +249,12 @@ glabel SnowBoarder_checkRaceEnd
   .L0000DCB4:
     /* DDE720 0000DCB4 8CE90A58 */  lw         $t1, 0xA58($a3)
     /* DDE724 0000DCB8 ACE80A54 */  sw         $t0, 0xA54($a3)
-    /* DDE728 0000DCBC 3C040001 */  lui        $a0, %hi(func_00008B44 + 0x4)
+    /* DDE728 0000DCBC 3C040001 */  lui        $a0, %hi(SnowBCollider_ctor + 0x4)
     /* DDE72C 0000DCC0 352A0004 */  ori        $t2, $t1, 0x4
     /* DDE730 0000DCC4 ACEA0A58 */  sw         $t2, 0xA58($a3)
     /* DDE734 0000DCC8 AFA70090 */  sw         $a3, 0x90($sp)
     /* DDE738 0000DCCC 0C000000 */  jal        func_00000000
-    /* DDE73C 0000DCD0 24848B48 */   addiu     $a0, $a0, %lo(func_00008B44 + 0x4)
+    /* DDE73C 0000DCD0 24848B48 */   addiu     $a0, $a0, %lo(SnowBCollider_ctor + 0x4)
     /* DDE740 0000DCD4 8FA70090 */  lw         $a3, 0x90($sp)
     /* DDE744 0000DCD8 0C000000 */  jal        func_00000000
     /* DDE748 0000DCDC 8CE40804 */   lw        $a0, 0x804($a3)
@@ -271,15 +271,15 @@ glabel SnowBoarder_checkRaceEnd
   .L0000DCFC:
     /* DDE768 0000DCFC AFA70090 */  sw         $a3, 0x90($sp)
     /* DDE76C 0000DD00 0C000000 */  jal        func_00000000
-    /* DDE770 0000DD04 24848B54 */   addiu     $a0, $a0, %lo(func_00008B44 + 0x10)
+    /* DDE770 0000DD04 24848B54 */   addiu     $a0, $a0, %lo(SnowBCollider_ctor + 0x10)
     /* DDE774 0000DD08 8FA70090 */  lw         $a3, 0x90($sp)
     /* DDE778 0000DD0C 24010002 */  addiu      $at, $zero, 0x2
-    /* DDE77C 0000DD10 3C0E0001 */  lui        $t6, %hi(func_00008B44 + 0x24)
+    /* DDE77C 0000DD10 3C0E0001 */  lui        $t6, %hi(SnowBCollider_ctor + 0x24)
     /* DDE780 0000DD14 8CED0848 */  lw         $t5, 0x848($a3)
-    /* DDE784 0000DD18 3C0F0001 */  lui        $t7, %hi(func_00008B44 + 0x28)
-    /* DDE788 0000DD1C 25CE8B68 */  addiu      $t6, $t6, %lo(func_00008B44 + 0x24)
+    /* DDE784 0000DD18 3C0F0001 */  lui        $t7, %hi(SnowBCollider_ctor + 0x28)
+    /* DDE788 0000DD1C 25CE8B68 */  addiu      $t6, $t6, %lo(SnowBCollider_ctor + 0x24)
     /* DDE78C 0000DD20 15A10007 */  bne        $t5, $at, .L0000DD40
-    /* DDE790 0000DD24 25EF8B6C */   addiu     $t7, $t7, %lo(func_00008B44 + 0x28)
+    /* DDE790 0000DD24 25EF8B6C */   addiu     $t7, $t7, %lo(SnowBCollider_ctor + 0x28)
     /* DDE794 0000DD28 AFAE0084 */  sw         $t6, 0x84($sp)
     /* DDE798 0000DD2C 8CE40840 */  lw         $a0, 0x840($a3)
     /* DDE79C 0000DD30 0C000000 */  jal        func_00000000
@@ -310,8 +310,8 @@ glabel SnowBoarder_checkRaceEnd
     /* DDE7F8 0000DD8C 1000000A */  b          .L0000DDB8
     /* DDE7FC 0000DD90 8FBF0014 */   lw        $ra, 0x14($sp)
   .L0000DD94:
-    /* DDE800 0000DD94 3C040001 */  lui        $a0, %hi(func_00008B44 + 0x2C)
-    /* DDE804 0000DD98 24848B70 */  addiu      $a0, $a0, %lo(func_00008B44 + 0x2C)
+    /* DDE800 0000DD94 3C040001 */  lui        $a0, %hi(SnowBCollider_ctor + 0x2C)
+    /* DDE804 0000DD98 24848B70 */  addiu      $a0, $a0, %lo(SnowBCollider_ctor + 0x2C)
     /* DDE808 0000DD9C 0C000000 */  jal        func_00000000
     /* DDE80C 0000DDA0 8FA50084 */   lw        $a1, 0x84($sp)
     /* DDE810 0000DDA4 10000004 */  b          .L0000DDB8

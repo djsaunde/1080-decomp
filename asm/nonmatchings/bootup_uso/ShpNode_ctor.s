@@ -1,6 +1,6 @@
-nonmatching func_00008F18, 0x90
+nonmatching ShpNode_ctor, 0x90
 
-glabel func_00008F18
+glabel ShpNode_ctor
     /* DD9984 00008F18 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD9988 00008F1C AFB00018 */  sw         $s0, 0x18($sp)
     /* DD998C 00008F20 00808025 */  or         $s0, $a0, $zero
@@ -39,4 +39,4 @@ glabel func_00008F18
     /* DD9A08 00008F9C 8FB00018 */  lw         $s0, 0x18($sp)
     /* DD9A0C 00008FA0 03E00008 */  jr         $ra
     /* DD9A10 00008FA4 27BD0020 */   addiu     $sp, $sp, 0x20
-endlabel func_00008F18
+endlabel ShpNode_ctor

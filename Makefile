@@ -148,7 +148,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_485C_DONOR)
 # 76F4 = 39E24 twin, NCC donor (camera member of the global block, inline Cam::mul(G &) on a local reference).
 BOOTUP_76F4_DONOR := build/src/bootup_uso/bootup_uso_ncc_76F4.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000076F4=$(BOOTUP_76F4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += Tv1_func_000076F4=$(BOOTUP_76F4_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_76F4_DONOR)
 # CFA0 = ground-contact / tint refresh, NCC donor (virtual hooks, V3 copies).
 BOOTUP_CFA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CFA0.cpp.o
@@ -238,7 +238,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # EXACT in agent-c run 238 (second scaling inline with r declared after its scalars, one |f970| variable, vel += through
 # a named reference), spliced over the placeholder on both paths.
 BOOTUP_8BD4_DONOR := build/src/bootup_uso/bootup_uso_ncc_8BD4.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008BD4=$(BOOTUP_8BD4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBCollider_onContact=$(BOOTUP_8BD4_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_8BD4_DONOR)
 # 1A44 = gSPMatrix + gSPDisplayList draw as C++ (camera * G operand order, w1 read before the
 # 0x06 packet's slot, `_n = ms->count++`; agent-g run 172, cfe 92.23); NCC donor, exact.

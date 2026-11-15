@@ -1,6 +1,6 @@
-nonmatching func_0000F614, 0x58
+nonmatching Node_clearFlag4_0000F614, 0x58
 
-glabel func_0000F614
+glabel Node_clearFlag4_0000F614
     /* DE0080 0000F614 27BDFFF0 */  addiu      $sp, $sp, -0x10
     /* DE0084 0000F618 24850018 */  addiu      $a1, $a0, 0x18
     /* DE0088 0000F61C 00A03025 */  or         $a2, $a1, $zero
@@ -26,4 +26,4 @@ glabel func_0000F614
     /* DE00CC 0000F660 27BD0010 */  addiu      $sp, $sp, 0x10
     /* DE00D0 0000F664 03E00008 */  jr         $ra
     /* DE00D4 0000F668 00000000 */   nop
-endlabel func_0000F614
+endlabel Node_clearFlag4_0000F614
