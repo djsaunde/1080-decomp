@@ -17594,37 +17594,31 @@ void gfx_stub_0004F0C0(int a0) {}
  * an unused `float pad[5]` (uncoloured locals keep their slots; z declared
  * after it lands at sp+0 in the 0x18 frame). */
 typedef struct { float x, y, z; } Vec3_4F0C8;
-typedef struct {
-    char pad0[0x30];
-    float m[4][4];              /* 0x30: row-major, row 3 = translation */
-    char pad1[0xC0 - 0x70];
-    int c0, c1;                 /* 0xC0, 0xC4: viewport offset */
-    int w, h;                   /* 0xC8, 0xCC: viewport size */
-    int d0, d1;                 /* 0xD0, 0xD4: second offset */
-} Cam4F0C8;
-int Window_projectPoint(Cam4F0C8 *cam, Vec3_4F0C8 *v, int flag, float *outw) {
+/* (agent-b run 489) the old local Cam4F0C8 view was a Window: m = proj, c0 / c1 = originX / Y,
+ * w / h = vpW / vpH, d0 / d1 = vpX / vpY (same offsets and types) */
+int Window_projectPoint(Window *cam, Vec3_4F0C8 *v, int flag, float *outw) {
     float pad[5];
     float z, w, y, x;
     float inv;
     int c;
-    w = cam->m[3][3] + (cam->m[2][3] * v->z + (cam->m[1][3] * v->y + cam->m[0][3] * v->x));
-    x = cam->m[3][0] + (cam->m[2][0] * v->z + (cam->m[1][0] * v->y + cam->m[0][0] * v->x));
-    y = cam->m[3][1] + (cam->m[2][1] * v->z + (cam->m[1][1] * v->y + cam->m[0][1] * v->x));
-    z = cam->m[3][2] + (cam->m[2][2] * v->z + (cam->m[1][2] * v->y + cam->m[0][2] * v->x));
+    w = cam->proj[3][3] + (cam->proj[2][3] * v->z + (cam->proj[1][3] * v->y + cam->proj[0][3] * v->x));
+    x = cam->proj[3][0] + (cam->proj[2][0] * v->z + (cam->proj[1][0] * v->y + cam->proj[0][0] * v->x));
+    y = cam->proj[3][1] + (cam->proj[2][1] * v->z + (cam->proj[1][1] * v->y + cam->proj[0][1] * v->x));
+    z = cam->proj[3][2] + (cam->proj[2][2] * v->z + (cam->proj[1][2] * v->y + cam->proj[0][2] * v->x));
     v->y = y;
     v->x = x;
     v->z = z;
-    if (w <= 0.0f) return 0;
+    if (w <= 0.0f) return 0;           /* behind the eye */
     inv = 1.0f / w;
     v->x *= inv; v->y *= inv; v->z *= inv;
-    v->x = v->x * (cam->w * 0.5);
-    v->y = v->y * (-cam->h * 0.5);
+    v->x = v->x * (cam->vpW * 0.5);
+    v->y = v->y * (-cam->vpH * 0.5);
     if (outw) *outw = inv;
-    if (flag) {
-        c = cam->c0;
-        v->x = v->x + (cam->w * 0.5 + c + cam->d0);
-        c = cam->c1;
-        v->y = v->y + (cam->h * 0.5 + c + cam->d1);
+    if (flag) {                        /* to frame-buffer pixels */
+        c = cam->originX;
+        v->x = v->x + (cam->vpW * 0.5 + c + cam->vpX);
+        c = cam->originY;
+        v->y = v->y + (cam->vpH * 0.5 + c + cam->vpY);
     }
     return 1;
 }
