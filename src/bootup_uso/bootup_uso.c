@@ -128,7 +128,7 @@ void snd_postEvent(void) {
 }
 
 void snd_sendEvent(void) {
-    FCALL(snd_HandleEvent_2FB74)();
+    FCALL(snd_dispatchEvent)();
 }
 
 void snd_updateChannel10Emitter(int a0, int a1, int a2) {

@@ -1,6 +1,6 @@
-nonmatching snd_HandleEvent_2FB74, 0x990
+nonmatching snd_dispatchEvent, 0x990
 
-glabel snd_HandleEvent_2FB74
+glabel snd_dispatchEvent
     /* E14C4C 0002FB74 27BDFFD8 */  .word 0x27BDFFD8
     /* E14C50 0002FB78 24020013 */  .word 0x24020013
     /* E14C54 0002FB7C AFBF0014 */  .word 0xAFBF0014
@@ -613,4 +613,4 @@ glabel snd_HandleEvent_2FB74
     /* E155D0 000304F8 27BD0028 */  .word 0x27BD0028
     /* E155D4 000304FC 03E00008 */  .word 0x03E00008
     /* E155D8 00030500 00000000 */  .word 0x00000000
-endlabel snd_HandleEvent_2FB74
+endlabel snd_dispatchEvent

@@ -14062,10 +14062,10 @@ void snd_ResetPlayer0ChannelIO1_2FB10(int a0) {
 
 extern int gl_func_00000000();
 int snd_PostEvent(int a0) {
-    return CALL(snd_HandleEvent_2FB74)(a0, 0);
+    return CALL(snd_dispatchEvent)(a0, 0);
 }
 
-/* snd_HandleEvent_2FB74: event -> sound command dispatcher (0x990 / 612 words).
+/* snd_dispatchEvent: event -> sound command dispatcher (0x990 / 612 words).
  * Gate switch on st.w10 (sel 19..39), then the main switch over sel (dense
  * 2..50 table + sparse 160/256/258/260/309/405/512/523/934/1190), each arm
  * issuing USO-relocated sound submits and ending cmd = D_2FB74_cmdsrc; the
@@ -14073,9 +14073,9 @@ int snd_PostEvent(int a0) {
  * WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in the IDO 7.1
  * -O2 donor unit game_libs_o2_2FB74.c (612/612 words); the splice renames the
  * two switches' donor-local .rodata jumptable reloc to
- * snd_HandleEvent_2FB74_rodata (pinned to the USO tables at +0x1750 / +0x17A4).
+ * snd_dispatchEvent_rodata (pinned to the USO tables at +0x1750 / +0x17A4).
  * Body below is a placeholder for the splice. */
-void snd_HandleEvent_2FB74(s32 sel, s32 v) {
+void snd_dispatchEvent(s32 sel, s32 v) {
     volatile int ret = sel;
 }
 
@@ -14178,7 +14178,7 @@ void snd_SetPlayer0Channel8Pan_305CC(int a0) {
 //   selector at &D_0+4, then performs FP scaling against a 1.5f
 //   constant (0x3FC00000). A control/state-bookkeeping node of the
 //   game_libs object subsystem (the kind of mode-arbitration helper
-//   the snd_HandleEvent_2FB74 interpreter and the emitter family call to
+//   the snd_dispatchEvent interpreter and the emitter family call to
 //   resolve which command opcode applies).
 // Caps (DEFERRED): raw-word USO + global-state &D_0 base + multi-
 //   branch mode cascade + conditional commit — byte-match needs
@@ -14400,7 +14400,7 @@ void snd_SetLevelRampTarget(int sel) {
 //   (*p + 0x29 / *p + 0x04). A state-gated registration/command-
 //   submission node of the game_libs object subsystem (companion to
 //   the gl_func_000309B4 selector-recorder; both stash into the
-//   &D_0 global record and feed the snd_HandleEvent_2FB74 interpreter).
+//   &D_0 global record and feed the snd_dispatchEvent interpreter).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks + &D_0
 //   global state gate + branch-likely thresholds — byte-match
 //   needs USO mnemonic disasm + reloc-pad jal infra. Real-C
@@ -14482,7 +14482,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_StartPlayer2Seq);
 //   - extensive FP field seeding (74 lwc1 / 42 swc1): default
 //     matrices / ramps / thresholds for the object.
 //   It is the producer for the consumers documented across this
-//   vein: the snd_HandleEvent_2FB74 command interpreter, the
+//   vein: the snd_dispatchEvent command interpreter, the
 //   gl_func_0002F584/0002F72C quantizer/table-apply leaves, the
 //   canned-sequence and multi-bank emitters, and the
 //   gl_func_000307B0 per-frame timer all run against the record
@@ -15617,7 +15617,7 @@ void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
 //   inits before returning the constructed object. The args
 //   (a/b/c/d, spilled to sp+0x64..0x6C) select the construction
 //   variant. A producer leaf of the game_libs object subsystem —
-//   it manufactures the records the snd_HandleEvent_2FB74 interpreter,
+//   it manufactures the records the snd_dispatchEvent interpreter,
 //   the emitter family and the snd_HandleSeqEvent_30AF4 top-level
 //   constructor operate on (0x0001E178 is the deferred-symbolization
 //   template-data site; the 0x150 / 0xB4 sizes are the struct sizes
@@ -15759,7 +15759,7 @@ end:
 //   classic position / velocity / transform update shape. Uses a
 //   large 0x90 stack frame purely as FP scratch (Vec3 spills at
 //   sp+0x54..0x8C). A geometry/kinematics leaf of the game_libs
-//   object subsystem (the per-object math the snd_HandleEvent_2FB74
+//   object subsystem (the per-object math the snd_dispatchEvent
 //   interpreter and the integrator family (0002F288 / 0002F584 /
 //   00031A74) drive each frame; o->0xF4 is the child/parent link
 //   also touched by the MCamera_ctor constructor's sub-record).
@@ -15808,7 +15808,7 @@ int MCamera_updateLookAt(char *o) {
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem (the per-instance counterpart to the MCamera_ctor
 //   constructor and the snd_StartPlayer2Seq registration node; the
-//   list it enlists into is the collection the snd_HandleEvent_2FB74
+//   list it enlists into is the collection the snd_dispatchEvent
 //   interpreter iterates).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 factory/insert
 //   callbacks + intrusive-list splice — byte-match needs USO
@@ -16414,7 +16414,7 @@ int dma_writeAsync(int a0, int a1, int a2) {{
 //   form the lifecycle trio for the registry table of the
 //   game_libs object subsystem (per-frame or per-state-change
 //   teardown before re-registration; the table is the collection
-//   the snd_HandleEvent_2FB74 interpreter iterates).
+//   the snd_dispatchEvent interpreter iterates).
 // BYTE-EXACT 30/30 2026-09-11 (agent-c): the 98.67% wrap's residual (the four
 //   preheader `addiu sN,sN,K` cursor inits emitted s0..s3 where the target has
 //   s3..s0, colours already right) was the eliminated-induction-variable shape of

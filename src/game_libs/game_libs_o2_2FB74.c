@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for snd_HandleEvent_2FB74 -- event -> sound command
+/* IDO 7.1 -O2 donor for snd_dispatchEvent -- event -> sound command
  * dispatcher (612/612 words; st_size 0x990).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post.c.o (the
@@ -6,7 +6,7 @@
  * 31334). Both jumptables land in this unit's local .rodata (the st.w10 gate
  * switch, 21 entries for sel 19..39, at +0; the main switch, 49 entries for
  * sel 2..50, at +0x54); the splice renames the reloc to
- * snd_HandleEvent_2FB74_rodata, pinned to 0x1750, so the %lo words link to
+ * snd_dispatchEvent_rodata, pinned to 0x1750, so the %lo words link to
  * 0x1750 / 0x17A4 as the USO ships them.
  *
  * Load-bearing shapes (97.0 -> exact, 2026-10-15 agent-c):
@@ -77,7 +77,7 @@ typedef struct Gl2FB74Bank {
 } Gl2FB74Bank;
 extern Gl2FB74Bank D_2FB74_bank;
 
-void snd_HandleEvent_2FB74(s32 sel, s32 v) {
+void snd_dispatchEvent(s32 sel, s32 v) {
     s32 t;
     s32 cmd;
     s32 c;

@@ -292,7 +292,7 @@
 #define kRo_snd_SoundObjUpdate                     GL_RODATA(0x16E0) /* RoData+0x16E0..0x172C, 6 K: 16E0=0.6f 16E4=jtbl 16F8=jtbl 1724=1.6f 1728=1.6f 172C=0.8f */
 #define kRo_snd_SoundObjUpdateChannel              GL_RODATA(0x1730) /* RoData+0x1730..0x173C, 4 K: 1730=1.3f 1734=0.85f 1738=0.8f 173C=0.7f */
 #define kRo_snd_SoundObjSetAngle                   GL_RODATA(0x1740) /* RoData+0x1740..0x174C, 4 K: 1740=0.6f 1744=0.4f 1748=0.8f 174C=1.2f */
-#define kRo_snd_HandleEvent_2FB74                  GL_RODATA(0x1750) /* RoData+0x1750..0x17A4, 2 K: 1750=jtbl 17A4=jtbl */
+#define kRo_snd_dispatchEvent                  GL_RODATA(0x1750) /* RoData+0x1750..0x17A4, 2 K: 1750=jtbl 17A4=jtbl */
 #define kRo_snd_SetChannel8Mode                    GL_RODATA(0x1868) /* RoData+0x1868..0x1870, 3 K: 1868=0.01f 186C=0.1f 1870=0.004f */
 #define kRo_snd_HandleSeqEvent_30AF4               GL_RODATA(0x1874) /* RoData+0x1874..0x18E0, 4 K: 1874=jtbl 18AC=0.1f 18B0=jtbl 18E0=jtbl */
 #define kRo_snd_HandleSeqEnd                       GL_RODATA(0x1900) /* RoData+0x1900..0x193C, 2 K: 1900=jtbl 193C=jtbl */

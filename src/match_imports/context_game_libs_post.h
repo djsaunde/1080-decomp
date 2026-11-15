@@ -1491,7 +1491,7 @@ extern s32 D_2FB74_tgl, D_2FB74_tglw;
 extern GlState30AF4 D_2FB74_st;
 extern GlChannelWord D_2FB74_chan;
 extern Gl2FB74Bank D_2FB74_bank;
-void snd_HandleEvent_2FB74(s32 sel, s32 v);
+void snd_dispatchEvent(s32 sel, s32 v);
 extern int gl_func_00000000();
 void snd_SetPlayer0Channel0IO_30504(int a0);
 void snd_SetPlayer0Channel8IO1_30564(void);

@@ -427,7 +427,7 @@ void sys_setRegion_0003487C(int a0, int a1) {
 //   back-reference (the o argument) at offset +0x04. A factory leaf
 //   of the game_libs object subsystem (manufactures a 3-part typed
 //   object; companion to the MCamera_ctor / cam_createDefault_00033228
-//   constructors and consumed by the snd_HandleEvent_2FB74 interpreter —
+//   constructors and consumed by the snd_dispatchEvent interpreter —
 //   0x0001E1E8 / 0x0001E1B0 are the object's vtable/type tables,
 //   deferred data-segment symbolization sites; the 0x10/0x10/0x04
 //   sizes are the struct sizes to type when this family is
@@ -1655,7 +1655,7 @@ void dma_rawRead(int a0, int a1, int a2, int a3) {
 //   dispatch leaf of the game_libs object subsystem (the 8-byte
 //   {tag, handler} table is the per-message handler array; sibling
 //   of the MemberCallback_invoke-family vtable dispatchers and the
-//   snd_HandleEvent_2FB74 interpreter's opcode arms — this one keys on
+//   snd_dispatchEvent interpreter's opcode arms — this one keys on
 //   the record's own 0x08/0x0A id fields rather than a global
 //   handler vtable).
 // Caps (DEFERRED): raw-word USO + jalr through an 8-byte {tag,
@@ -3151,7 +3151,7 @@ void MNode_def(int a0) {
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem — the template-driven sibling of cam_createDefault_00033228;
 //   the list it enlists into is the collection the
-//   dbg_printThreads processor / snd_HandleEvent_2FB74 interpreter
+//   dbg_printThreads processor / snd_dispatchEvent interpreter
 //   iterate. 0x0001EBF0 is a deferred data-segment template-
 //   symbolization site.
 // NOTE: the splice tests/writes the NEW node n (n->0x14 / n->0x04) and
@@ -3935,7 +3935,7 @@ void Node_update(char *o) {
 //   operation. A factored command handler of the game_libs object
 //   subsystem's command VM — the same per-tag dispatch shape as
 //   MCamera_doCommand (which keyed tag 0x69 and o->0xF4); together
-//   they are the externalized arms of the snd_HandleEvent_2FB74
+//   they are the externalized arms of the snd_dispatchEvent
 //   interpreter for specific opcodes.
 // Caps (DEFERRED): raw-word USO + command-tag switch + USO-reloc jal-0 cb.
 //   2026-05-31 FULL DECODE + completion 49.3->84.6%: the sketch had the case
@@ -4100,7 +4100,7 @@ int Node_broadcastMsg(char *o, void *ctx) {
 //   template at 0x0001EC6C. The jump-table-driven sibling of the
 //   if/else command handlers MCamera_doCommand (tag 0x69) and
 //   Node_handleMsg (tags 0xC/0xD/0xE/2); together they are the
-//   externalized opcode arms of the snd_HandleEvent_2FB74 command
+//   externalized opcode arms of the snd_dispatchEvent command
 //   interpreter (the &D_0+0x1A1C table and 0x0001EC6C template are
 //   deferred symbolization sites — the table is the 9-entry
 //   opcode-0x64.. dispatch array to symbolize).
@@ -4946,7 +4946,7 @@ int MemberCallback_invoke_0003A044(char *a0) {
 //   dispatch trampolines over the 8-byte {tag, fn-ptr} handler
 //   array (cf. MemberCallback_invoke). A polymorphic-dispatch cluster
 //   of the game_libs object subsystem (sibling of the
-//   snd_HandleEvent_2FB74 interpreter's opcode arms; the handler table
+//   snd_dispatchEvent interpreter's opcode arms; the handler table
 //   is the per-message routing array to type when this family is
 //   formalized).
 // Caps (DEFERRED): raw-word USO + ~10-fn no-frame-leaf bundle + jalr

@@ -2597,10 +2597,10 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 2FB74 = event -> sound command dispatcher with two jumptable switches (21 +
 # 49 entries), IDO 7.1 -O2 donor: game_libs_o2_2FB74.c (612/612 words).
 # Spliced only so the donor-local .rodata reloc (both tables, +0 and +0x54) is
-# renamed snd_HandleEvent_2FB74_rodata and pinned to the USO tables at +0x1750 (the
+# renamed snd_dispatchEvent_rodata and pinned to the USO tables at +0x1750 (the
 # 29CCC / 31334 recipe). Uses += (composes).
 GAMELIBS_2FB74_DONOR := build/src/game_libs/game_libs_o2_2FB74.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleEvent_2FB74=$(GAMELIBS_2FB74_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_dispatchEvent=$(GAMELIBS_2FB74_DONOR)
 # 26D64 = sound-command queue drain (14-entry switch on the command code),
 # IDO 7.1 -O2 donor: game_libs_o2_26D64.c (230/230 words). Spliced only so the
 # donor-local .rodata jumptable reloc is renamed AudioThread_ProcessCmds_rodata and
