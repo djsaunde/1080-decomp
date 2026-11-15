@@ -20,7 +20,10 @@
  * Readability (agent-c run 490): the SelectWin scalars are SELWIN fields, except the
  * three `K * *(f32 *)(arg0 + 0x4BC)` (transition) operands of the 07E7B0 calls: as a
  * member read the lwc1 pair swaps f16/f18 and f6/f8. fade (0x480) is passed as its
- * int bits and the pointer fields stay FW reads. */
+ * int bits and the pointer fields stay FW reads.
+ * Run 525: owner / itemsMgr->tesuri[] / the Window camera are members now. The item's
+ * zoom-fov reads (`*(f32 *)(sp2C + 0x14C)` = parms.cf2.value, `+ 0x134` = parms.cfv.value)
+ * stay raw: as SELITEM members the two mul.s swap their operands (f10,f0 -> f0,f10). */
 #include "common.h"
 #include "game/select.h"
 
@@ -57,7 +60,7 @@ void SelectWin_update_00005FC0(char *arg0) {
 
     if (SELWIN(arg0)->numPlayers == 2) {
         if ((SELWIN(arg0)->stageBit == 4) &&
-            (FW(SelectionMgr_otherWin_00001CF0((int *)FW(arg0, 0x41C), SELWIN(arg0)->player), 0x3C8) == 4)) {
+            (SELWIN(SelectionMgr_otherWin_00001CF0((int *)SELWIN(arg0)->owner, SELWIN(arg0)->player))->stageBit == 4)) {
             import_000A7ECC(&import_80020098, -1);
         } else {
             import_000A7ECC(&import_80020098, SELWIN(arg0)->player);
@@ -122,14 +125,14 @@ void SelectWin_update_00005FC0(char *arg0) {
     v0 = (char *)SelectWin_curItem_00008A38(arg0);
     v1 = (char *)FW(v0, 0x28);
     ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    v1 = (char *)FW(FW(arg0, 0x40C), 0x54);
+    v1 = (char *)SELWIN(arg0)->itemsMgr->tesuri[0];
     v0 = (char *)FW(v1, 0x28);
     ((FPv)FW(v0, 0xBC))(*(s16 *)(v0 + 0xB8) + v1, FW(arg0, 0x480));
-    v0 = (char *)FW(FW(arg0, 0x40C), 0x58);
+    v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[1];
     v1 = (char *)FW(v0, 0x28);
     ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     if (*(s32 *)(&import_800200CC + 0x34) != 2) {
-        v0 = (char *)FW(FW(arg0, 0x40C), 0x5C);
+        v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[2];
         v1 = (char *)FW(v0, 0x28);
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     }
@@ -154,7 +157,7 @@ void SelectWin_update_00005FC0(char *arg0) {
             gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x134);
     }
-    *(f32 *)(FW(FW(FW(arg0, 0x414), 0xC), 0x70) + 0x14C) =
+    *(f32 *)(SELWIN_VIEW(SELWIN(arg0))->camera + 0x14C) =
         SELWIN(arg0)->fovFrom +
         (SELWIN(arg0)->fovTarget - SELWIN(arg0)->fovFrom) *
         gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));
