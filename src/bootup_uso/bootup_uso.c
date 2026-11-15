@@ -6897,7 +6897,7 @@ void func_0000B49C(int idx, int j) {
 extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
 extern f64 bu_b520_kc;               /* rodata f64 (target func_000008B4 + 0xC) */
 #define F520(p, o) (*(f32 *)((char *)(p) + (o)))
-void SnowBoarder_func_0000B520(char *arg0) {
+void SnowBoarder_func_0000B520(SnowBoarder *sb) {
     Vec3 v74;
     Vec3 vB;
     Vec3 v5C;
@@ -6913,10 +6913,10 @@ void SnowBoarder_func_0000B520(char *arg0) {
     char *p;
     char *q;
 
-    q = arg0 + 0x3C8;
+    q = (char *)&sb->dir;
     t = 0.0f;
-    if (FW(arg0, 0xA58) & 0x100) {
-        p = (char *)FW(arg0, 0x800);
+    if (sb->flags & SNOWB_FLAG_NUDGE) {
+        p = sb->input;
         if (FW(p, 0x10) & 4) {
             t += 10.0f;
         }
@@ -6931,36 +6931,36 @@ void SnowBoarder_func_0000B520(char *arg0) {
     v50.x = px; v50.y = py; v50.z = pz;
     v5C = v50;
     v74 = v5C;
-    F520(arg0, 0x318) = F520(arg0, 0x318) + v74.x;
-    F520(arg0, 0x31C) = F520(arg0, 0x31C) + v74.y;
-    F520(arg0, 0x320) = F520(arg0, 0x320) + v74.z;
-    if ((FW(arg0, 0xA58) << 14) < 0) {
-        p = (char *)FW(arg0, 0x908);
-        t = F520(arg0, 0x768);
+    sb->vel.x = sb->vel.x + v74.x;
+    sb->vel.y = sb->vel.y + v74.y;
+    sb->vel.z = sb->vel.z + v74.z;
+    if (((s32)sb->flags << 14) < 0) {  /* SNOWB_FLAG_CATCHUP */
+        p = (char *)sb->rival;
+        t = sb->baseMaxSpeed;
         if (p != NULL) {
-            d = F520(p, 0xBC) - F520(arg0, 0xBC);
+            d = ((SnowBoarder *)p)->pos.z - sb->pos.z;
             if (bu_b520_k48 < d) {
                 t += bu_b520_k44;
             } else if (d < -bu_b520_k48) {
                 t -= bu_b520_k44;
             }
         }
-        k = F520(arg0, 0xA78);
-        F520(arg0, 0xA78) = (f64)k + (f64)(t - k) * bu_b520_kc;
+        k = sb->maxSpeed;
+        sb->maxSpeed = (f64)k + (f64)(t - k) * bu_b520_kc;
     } else {
-        F520(arg0, 0xA78) = F520(arg0, 0x768);
+        sb->maxSpeed = sb->baseMaxSpeed;
     }
-    if (F520(arg0, 0xA78) < F520(arg0, 0x348)) {
-        func_00000000(arg0 + 0x318, arg0);
-        k = F520(arg0, 0xA78);
-        F520(arg0, 0x318) = F520(arg0, 0x318) * k;
-        F520(arg0, 0x31C) = F520(arg0, 0x31C) * k;
-        F520(arg0, 0x320) = F520(arg0, 0x320) * k;
+    if (sb->maxSpeed < sb->speed) {
+        func_00000000(&sb->vel, sb);  /* normalize */
+        k = sb->maxSpeed;
+        sb->vel.x = sb->vel.x * k;
+        sb->vel.y = sb->vel.y * k;
+        sb->vel.z = sb->vel.z * k;
     }
-    if (FW(arg0, 0x938) == 0) {
-        k = 1.0f - F520(arg0, 0x6C0);
-        F520(arg0, 0x318) = F520(arg0, 0x318) * k;
-        F520(arg0, 0x320) = F520(arg0, 0x320) * k;
+    if (sb->unk938 == 0) {
+        k = 1.0f - sb->dragXZ;
+        sb->vel.x = sb->vel.x * k;
+        sb->vel.z = sb->vel.z * k;
     }
 }
 
