@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "game/modeproc.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -269,7 +270,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
             *(int *)(o2 + 0x28) = (int)&D_arc_A3C_v4;
         }
         *(int *)(obj + 0x6AC) = (int)o2;
-        INPUT_MGR(D_00000000).dataMgr = o2;
+        INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
         o1 = *(char **)(obj + 0x6AC);
         *(int *)(o1 + 0xB4) = 7;
 
@@ -326,32 +327,32 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
  * (vs holding in a `v1` named local) flips IDO's $t6/$t7 allocation order
  * to match target. */
 extern char D_arc_D70_base;
-void arc_loadSprites_00000D70(char *a0) {
-    int *p;
-    gl_func_00000000(a0 + 0x6BC, *(int*)(&D_arc_D70_base + 0x64) | 0xA0000);
-    gl_func_00000000(a0 + 0x6D4, 0x210000);
-    p = *(int**)(a0 + 0x6A8);
+void arc_loadSprites_00000D70(ArcRace *a0) {
+    int *p;                  /* ArcCourseList: p[1] idx, p[2] count (array form keeps the t6/t7 order) */
+    gl_func_00000000(&a0->sprites[0], *(int*)(&D_arc_D70_base + 0x64) | 0xA0000);
+    gl_func_00000000(&a0->sprites[1], 0x210000);
+    p = (int *)a0->courseList;
     if (p[2] == p[1] + 1) {
-        gl_func_00000000(a0 + 0x6EC, 0x210001);
+        gl_func_00000000(&a0->sprites[2], 0x210001);
     } else {
-        gl_func_00000000(a0 + 0x6EC, (p[1] + 2) | 0x210000);
+        gl_func_00000000(&a0->sprites[2], (p[1] + 2) | 0x210000);
     }
-    gl_func_00000000(a0 + 0x71C, *(int*)(&D_arc_D70_base + 0x4C) | 0x1D0000);
-    gl_func_00000000(a0 + 0x704, *(int*)(&D_arc_D70_base + 0x54) | 0x1E0000);
-    gl_func_00000000(a0 + 0x734, 0x21000B);
-    gl_func_00000000(a0 + 0x74C, 0x21000D);
-    gl_func_00000000(a0 + 0x764, 0x210009);
+    gl_func_00000000(&a0->sprites[4], *(int*)(&D_arc_D70_base + 0x4C) | 0x1D0000);
+    gl_func_00000000(&a0->sprites[3], *(int*)(&D_arc_D70_base + 0x54) | 0x1E0000);
+    gl_func_00000000(&a0->sprites[5], 0x21000B);
+    gl_func_00000000(&a0->sprites[6], 0x21000D);
+    gl_func_00000000(&a0->sprites[7], 0x210009);
 }
 
-void arc_releaseSprites_00000E58(char *a0) {
-    arcproc_uso_func_00000000(a0 + 0x6BC);
-    arcproc_uso_func_00000000(a0 + 0x6D4);
-    arcproc_uso_func_00000000(a0 + 0x6EC);
-    arcproc_uso_func_00000000(a0 + 0x71C);
-    arcproc_uso_func_00000000(a0 + 0x704);
-    arcproc_uso_func_00000000(a0 + 0x734);
-    arcproc_uso_func_00000000(a0 + 0x74C);
-    arcproc_uso_func_00000000(a0 + 0x764);
+void arc_releaseSprites_00000E58(ArcRace *a0) {
+    arcproc_uso_func_00000000(&a0->sprites[0]);
+    arcproc_uso_func_00000000(&a0->sprites[1]);
+    arcproc_uso_func_00000000(&a0->sprites[2]);
+    arcproc_uso_func_00000000(&a0->sprites[4]);
+    arcproc_uso_func_00000000(&a0->sprites[3]);
+    arcproc_uso_func_00000000(&a0->sprites[5]);
+    arcproc_uso_func_00000000(&a0->sprites[6]);
+    arcproc_uso_func_00000000(&a0->sprites[7]);
 }
 
 /* ARCRaceProcess_onCountdownStart: F1 (11-insn bit-test wrapper) ONLY.
@@ -396,8 +397,8 @@ void arc_releaseSprites_00000E58(char *a0) {
  * USO splits also break expected/.o. Reverted; bundle stays as-is until
  * the split-script is fixed to write into the right .c. */
 extern int gl_func_00000000();
-void ARCRaceProcess_onCountdownStart(int *a0) {
-    if (*(int*)((char*)a0 + 0x4F0) & 0x10000) {
+void ARCRaceProcess_onCountdownStart(ArcRace *a0) {
+    if (a0->race.flags & RACEF_SPRITES) {
         gl_func_00000000();
     }
 }
@@ -408,8 +409,8 @@ void ARCRaceProcess_onCountdownStart(int *a0) {
  * shared `return 0` emits the beql branch-likely idiom (12 insns); the
  * plain `if(...)return 0` form emitted bnel and grew to 14 (the prior cap).
  * Same fix as TrkRace_endTimerEnabled. */
-int ARCRaceProcess_endTimerEnabled(int *a0) {
-    int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
+int ARCRaceProcess_endTimerEnabled(ArcRace *a0) {
+    int *p = (int*)((ArcDataManager *)a0->dataMgr)->base.pointsList;
     if (p == 0) {
         goto ret0;
     }
@@ -426,18 +427,18 @@ ret0:
  * the set-4 store in the delay slot (+ a dead duplicate at 0xF34, the
  * branch-likely natural-position artifact). NM (bnel idiom not C-reachable);
  * build uses INCLUDE_ASM. */
-void ARCRaceProcess_onEndTimerDone(int *a0) {
-    if (*(int*)((char*)a0 + 0x6B8) == 0) {
-        *(int*)((char*)a0 + 0x504) = 0;
+void ARCRaceProcess_onEndTimerDone(ArcRace *a0) {
+    if (a0->retry == 0) {
+        a0->race.unk504 = 0;
     } else {
-        *(int*)((char*)a0 + 0x504) = 4;
+        a0->race.unk504 = 4;
     }
 }
 
 /* ARCRaceProcess_onAltEndTimerDone: 2-insn store stub, RECOVERED 2026-05-28.
  * a0->0x504 = 0 (store in the jr-ra delay slot). */
-void ARCRaceProcess_onAltEndTimerDone(int *a0) {
-    *(int*)((char*)a0 + 0x504) = 0;
+void ARCRaceProcess_onAltEndTimerDone(ArcRace *a0) {
+    a0->race.unk504 = 0;
 }
 
 /* ARCRaceProcess_onTimeout: 12-insn cross-USO wrapper (0x30), BOUNDARY MERGE
@@ -470,9 +471,9 @@ void ARCRaceProcess_onTimeout(int a0) {
  * Positive nested form matches the branch-likely structure and keeps the
  * second deref/test temp in `t7` (per docs/IDO_CODEGEN.md branch-likely
  * arm-choice guidance). */
-int ARCRaceProcess_altEndTimerEnabled(int *a0) {
+int ARCRaceProcess_altEndTimerEnabled(ArcRace *a0) {
     int *v;
-    v = *(int**)((char*)*(int**)((char*)a0 + 0x6AC) + 0x6C);
+    v = (int *)((ArcDataManager *)a0->dataMgr)->base.pointsList;
     if (v != 0) {
         if (*(int*)((char*)v + 0xEC) != 0) {
             return 1;
@@ -568,29 +569,29 @@ extern int gl_func_00000000();
  * `((int *)v0)[v0[1] + 4]` for addu v0,t0. All locals at function scope,
  * declared before i/s1 (frame 48, buf home 32). */
 extern void gl_func_00000000_FA8v();
-void ARCRaceProcess_onRaceOver(char *a0) {
+void ARCRaceProcess_onRaceOver(ArcRace *a0) {
     int *list;
     char *r;
     char *node;
     char *buf;
     int *v0;
-    int i = *(int*)(a0 + 0x504);
-    char *s1 = a0;
+    int i = a0->race.unk504;
+    ArcRace *s1 = a0;
 
     switch (i) {
     case 0:
-        list = *(int**)(s1 + 0x6AC);
-        *(int*)(s1 + 0x6B0) = *(int*)(*(char**)((char*)list + 0x44) + 0x14);
-        *(int*)(s1 + 0x6B4) = *(int*)(*(char**)((char*)list + 0x44) + 0x40);
-        for (i = *(int*)(s1 + 0x6B4) - 1; i >= 0; i--) {
-            r = (char *)gl_func_00000000(*(int*)(*(char**)(s1 + 0x528) + 0x4), i);
-            if (*(int*)(s1 + 0x6B0) != *(int*)(r + 0x1C)) break;
-            *(int*)(s1 + 0x6B4) = *(int*)(s1 + 0x6B4) - 1;
+        list = (int *)s1->dataMgr;
+        s1->finalTime = *(int*)(*(char**)((char*)list + 0x44) + 0x14);
+        s1->recordRank = *(int*)(*(char**)((char*)list + 0x44) + 0x40);
+        for (i = s1->recordRank - 1; i >= 0; i--) {
+            r = (char *)gl_func_00000000(*(int*)((char *)s1->race.session + 0x4), i);
+            if (s1->finalTime != *(int*)(r + 0x1C)) break;
+            s1->recordRank = s1->recordRank - 1;
         }
-        *(int*)(s1 + 0x4D8) = 1;
+        s1->race.subState = 1;
         gl_func_00000000(7, 0, 0);
         gl_func_00000000(INPUT_MGR(D_00000000).fader, 3, 1);
-        *(int*)(s1 + 0x504) = 1;
+        s1->race.unk504 = 1;
         break;
     case 1:
         if (gl_func_00000000(INPUT_MGR(D_00000000).fader) == 0) return;
@@ -599,10 +600,10 @@ void ARCRaceProcess_onRaceOver(char *a0) {
         gl_func_00000000(s1);
         gl_func_00000000(7, 0, 0);
         gl_func_00000000(s1, INPUT_MGR(D_00000000).replayLen[0] + 0x26000F);
-        *(int*)(s1 + 0x524) = gl_func_00000000(0, s1, 0);
-        gl_func_00000000_FA8v(*(int*)(s1 + 0x524), *(int*)(s1 + 0x528));
-        node = *(char**)(s1 + 0x524);
-        buf = *(char**)(s1 + 0x56C);
+        s1->race.unk524 = gl_func_00000000(0, s1, 0);
+        gl_func_00000000_FA8v(s1->race.unk524, s1->race.session);
+        node = (char *)s1->race.unk524;
+        buf = (char *)s1->race.handler;
         gl_func_00000000_FA8v(buf + 16, node);
         if (*(int*)(node + 0x14) != 0) {
             *(int*)(node + 0x4) = 1;
@@ -611,7 +612,7 @@ void ARCRaceProcess_onRaceOver(char *a0) {
         gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 1);
         break;
     case 4:
-        v0 = *(int**)(s1 + 0x6A8);
+        v0 = (int *)s1->courseList;
         gl_func_00000000(s1, 4, ((int*)v0)[v0[1] + 4]);
         break;
     }
@@ -682,11 +683,11 @@ void ARCRaceProcess_onPauseSelect(int *a0) {
  * on both a0->0x6AC->0x6C and a0->0x6AC->0x94. Exact 2026-06-01: using an
  * explicit field pointer forces IDO to materialize `addiu v0, v0, 0x18`
  * before the store, matching the target's `sw ..., 0(v0)` shape. */
-void ARCRaceProcess_onPause(int *a0) {
-    int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
+void ARCRaceProcess_onPause(ArcRace *a0) {
+    int *p = (int *)((ArcDataManager *)a0->dataMgr)->base.pointsList;
     p = (int*)((char*)p + 0x18);
     *p &= ~4;
-    p = (int*)((int*)a0[0x6AC / 4])[0x94 / 4];
+    p = (int *)((ArcDataManager *)a0->dataMgr)->base.points94;
     p = (int*)((char*)p + 0x18);
     *p &= ~4;
 }
@@ -694,11 +695,11 @@ void ARCRaceProcess_onPause(int *a0) {
 /* arc_resumePlayers_00001228: 13-insn dual-field bit-set, RECOVERED
  * 2026-05-28 (sibling of 000011F0, sets bit 2 instead of clearing). Exact
  * 2026-06-01 via the same explicit field-pointer shape. */
-void arc_resumePlayers_00001228(int *a0) {
-    int *p = (int*)((int*)a0[0x6AC / 4])[0x6C / 4];
+void arc_resumePlayers_00001228(ArcRace *a0) {
+    int *p = (int *)((ArcDataManager *)a0->dataMgr)->base.pointsList;
     p = (int*)((char*)p + 0x18);
     *p |= 4;
-    p = (int*)((int*)a0[0x6AC / 4])[0x94 / 4];
+    p = (int *)((ArcDataManager *)a0->dataMgr)->base.points94;
     p = (int*)((char*)p + 0x18);
     *p |= 4;
 }
@@ -959,34 +960,34 @@ void arc_drawResultScore_000014C8(char *a0) {
  * re-read p = s0->0x6A8 INSIDE each of the v1==1/v1==2 branches (not a hoisted
  * local) — that triggers the target's `bnel` (branch-likely) with the p-reload
  * in the delay slot. cb = gl_func_00000000. */
-void ARCRaceProcess_onLeave(int *s0) {
+void ARCRaceProcess_onLeave(ArcRace *s0) {
     int v1 = 0;
-    if (s0[0x4FC / 4] != 0) {
+    if (s0->race.unk4FC != 0) {
         return;
     }
-    if (s0[0x4F8 / 4] == 0) {
-        if (gl_func_00000000(s0[0x6A8 / 4], ((int *)((int *)s0[0x6AC / 4])[0x44 / 4])[0x14 / 4]) != 0) {
+    if (s0->race.result == 0) {
+        if (gl_func_00000000(s0->courseList, ((ArcDataManager *)s0->dataMgr)->base.entries[0].time) != 0) {
             v1 = 1;
         } else {
-            s0[0x6B8 / 4] = 1;
+            s0->retry = 1;
         }
     } else {
-        if (gl_func_00000000(s0[0x6A8 / 4], ((int *)((int *)s0[0x6AC / 4])[0x44 / 4])[0x14 / 4]) != 0) {
+        if (gl_func_00000000(s0->courseList, ((ArcDataManager *)s0->dataMgr)->base.entries[0].time) != 0) {
             v1 = 2;
         } else {
-            s0[0x6B8 / 4] = 1;
+            s0->retry = 1;
         }
     }
     if (v1 != 0) {
         if (v1 == 1) {
-            int *p = (int *)s0[0x6A8 / 4];
-            gl_func_00000000(s0[0x6AC / 4], (char *)p + 0x20, p[8 / 4]);
+            ArcCourseList *p = (ArcCourseList *)s0->courseList;
+            gl_func_00000000(s0->dataMgr, p->times, p->count);
         } else {
-            int *p = (int *)s0[0x6A8 / 4];
-            gl_func_00000000(s0[0x6AC / 4], (char *)p + 0x20, p[4 / 4] + 1);
+            ArcCourseList *p = (ArcCourseList *)s0->courseList;
+            gl_func_00000000(s0->dataMgr, p->times, p->idx + 1);
         }
     }
-    s0[0x4FC / 4] = 1;
+    s0->race.unk4FC = 1;
 }
 
 /* arc_drawNumber_000016F4 - verified structural decode (~170-insn FPU
