@@ -320,11 +320,11 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
         gl_func_00000000(o1 + 0x50);
     }
     *(int *)(obj + 0x28) = (int)&D_b3_994_v3;
-    *(int *)(obj + 0x568) = 0;
+    RACEPROC(obj)->spriteSet = 0;
     gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
-    *(int *)(obj + 0x528) = a3;
+    RACEPROC(obj)->session = (BackupSession *)a3;
     gl_func_00000000(obj);
-    *(float *)(obj + 0x72C) = 0.0f;
+    TIMRACE(obj)->recordFade = 0.0f;
     gl_func_00000000((char *)&D_00000000 + 0x3D0, 0);
     gl_func_00000000(&D_00000000, 0);
 
@@ -334,23 +334,23 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             gl_func_00000000(o2);
             *(int *)(o2 + 0x28) = (int)&D_b3_994_v4;
         }
-        *(int *)(obj + 0x6A8) = (int)o2;
+        TIMRACE(obj)->dataManager = (int)o2;
         *(char **)((char *)&D_b3_994_g + 0x138) = o2;
-        if ((*(int *)(obj + 0x4F0) << 15) < 0) {
-            o1 = *(char **)(obj + 0x6A8);
+        if ((RACEPROC(obj)->flags << 15) < 0) {
+            o1 = (char *)TIMRACE(obj)->dataManager;
             *(int *)(o1 + 0xB4) = 11;
         } else {
-            o1 = *(char **)(obj + 0x6A8);
+            o1 = (char *)TIMRACE(obj)->dataManager;
             *(int *)(o1 + 0xB4) = 0;
         }
 
-        gl_func_00000000_994v(*(int *)(obj + 0x6A8), obj, *(int *)(obj + 0x568), *(int *)(obj + 0x528));
+        gl_func_00000000_994v(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
 
-        w = *(char **)(obj + 0x6A8);
+        w = (char *)TIMRACE(obj)->dataManager;
         o1 = *(char **)(w + 0x28);
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        o1 = *(char **)(obj + 0x6A8);
+        o1 = (char *)TIMRACE(obj)->dataManager;
         gl_func_00000000(obj + 16, o1);
         if (*(int *)(o1 + 0x14) != 0) {
             *(int *)(o1 + 0x4) = 1;
@@ -359,18 +359,18 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
 
         gl_func_00000000(obj, a1);
 
-        if ((*(int *)(obj + 0x4F0) << 15) < 0) {
-            *(int *)(obj + 0x48) = gl_func_00000000(0);
-            gl_func_00000000(*(int *)(obj + 0x48), obj);
-            *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
-            gl_func_00000000(*(int *)(obj + 0x48), (*(int *)&D_b3_994_r + 3) << 16, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_b3_994_r + 3) << 16) | 1, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_b3_994_r + 3) << 16) | 4, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_b3_994_r + 3) << 16) | 3, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_b3_994_r + 3) << 16) | 2, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_b3_994_r + 3) << 16) | 5, -1, &D_00000000);
-            gl_func_00000000(*(int *)(obj + 0x48));
-            o1 = *(char **)(obj + 0x48);
+        if ((RACEPROC(obj)->flags << 15) < 0) {
+            RACEPROC(obj)->unk048 = gl_func_00000000(0);
+            gl_func_00000000(RACEPROC(obj)->unk048, obj);
+            *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
+            gl_func_00000000(RACEPROC(obj)->unk048, (*(int *)&D_b3_994_r + 3) << 16, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b3_994_r + 3) << 16) | 1, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b3_994_r + 3) << 16) | 4, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b3_994_r + 3) << 16) | 3, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b3_994_r + 3) << 16) | 2, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b3_994_r + 3) << 16) | 5, -1, &D_00000000);
+            gl_func_00000000(RACEPROC(obj)->unk048);
+            o1 = (char *)RACEPROC(obj)->unk048;
             gl_func_00000000(obj + 16, o1);
             if (*(int *)(o1 + 0x14) != 0) {
                 *(int *)(o1 + 0x4) = 1;
@@ -378,7 +378,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             *(int *)(o1 + 0x14) = (int)obj;
         } else {
             *(int *)(obj + 0x4F4) = a1 & 0xFFFF;
-            *(int *)(obj + 0x48) = 0;
+            RACEPROC(obj)->unk048 = 0;
         }
 
         o1 = *(char **)((char *)&D_00000000 + 0x190);
@@ -495,13 +495,13 @@ void TrkRace_onRaceOver(char *a0) {
     goto state1;
 
 state0:
-        obj = *(char**)(saved + 0x6A8);
+        obj = (char *)TIMRACE(saved)->dataManager;
         base = (volatile int*)&D_00000000;
-        *(int*)(saved + 0x6AC) = *(int*)(*(char**)(obj + 0x44) + 0x14);
+        TIMRACE(saved)->finalTime = *(int*)(*(char**)(obj + 0x44) + 0x14);
         *(int*)(saved + 0x6B0) = *(int*)(*(char**)(obj + 0x44) + 0x3C);
         for (state = *(int*)(saved + 0x6B0) - 1; state >= 0; state--) {
-            ret = (int*)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int*)*(char**)(saved + 0x528), state);
-            if (*(int*)(saved + 0x6AC) != ret[1]) break;
+            ret = (int*)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int *)RACEPROC(saved)->session, state);
+            if (TIMRACE(saved)->finalTime != ret[1]) break;
             *(int*)(saved + 0x6B0) = *(int*)(saved + 0x6B0) - 1;
         }
 state0_done:
@@ -519,8 +519,8 @@ state1:
         gl_func_00000000(base);
         gl_func_00000000(saved);
         gl_func_00000000(saved, base[0x170 / 4] + 0x00220000);
-        *(int*)(saved + 0x524) = gl_func_00000000(0, saved, 0);
-        gl_func_00000000(*(int*)(saved + 0x524), *(int*)(saved + 0x528));
+        RACEPROC(saved)->unk524 = gl_func_00000000(0, saved, 0);
+        gl_func_00000000(RACEPROC(saved)->unk524, (int)RACEPROC(saved)->session);
         created = *(int**)(saved + 0x524);
         link = *(char**)(saved + 0x56C);
         gl_func_00000000(link + 0x10, created);
@@ -866,7 +866,7 @@ char *TrkNameEntry_ctor_00001660(char *arg0, char *arg1, int arg2) {
         *(int *)(arg0 + 0xE8) = 0xA0;
         *(int *)(arg0 + 0xEC) = 0x69;
         *(float *)(arg0 + 0x108) = 1.0f;
-        *(float *)(arg1 + 0x72c) = 1.0f;
+        TIMRACE(arg1)->recordFade = 1.0f;
         gl_func_00000000(arg0 + 0xF0,
             ((D_tim1660_id + 0x23) << 16) | (((Tim1660_A *)arg0)->b->v + 7));
     }
@@ -887,7 +887,7 @@ void TrkNameEntry_drawEntryOverlay(int *a0) {
     int *p;
     gl_func_00000000(a0);
     p = (int*)a0[0xD4/4];
-    gl_func_00000000(p, 0x8C, *(int*)((char*)p + 0x6AC));
+    gl_func_00000000(p, 0x8C, TIMRACE(p)->finalTime);
 }
 
 /* Decay-tick handler: decrement sub->f_72C by the global rate (D+0x48),
@@ -911,12 +911,12 @@ void TrkNameEntry_drawExitOverlay(int *self) {
     if (val > 0.0f) {
         *fp -= *(float *)(base + 0x48);
         sub = (int *)self[0xD4 / 4];
-        if (*(float *)((char *)sub + 0x72C) < 0.0f) {
-            *(float *)((char *)sub + 0x72C) = 0.0f;
+        if (TIMRACE(sub)->recordFade < 0.0f) {
+            TIMRACE(sub)->recordFade = 0.0f;
             sub = (int *)self[0xD4 / 4];
         }
-        gl_func_00000000(sub, 140, *(int *)((char *)sub + 0x6AC));
-        val = *(float *)((char *)(int *)self[0xD4 / 4] + 0x72C);
+        gl_func_00000000(sub, 140, TIMRACE(sub)->finalTime);
+        val = TIMRACE(self[0xD4 / 4])->recordFade;
     }
     if (val <= 0.0f) {
         gl_func_00000000(self);
@@ -1002,7 +1002,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     *(char **)(arg0 + 0x50) = arg1;
     *(int **)(arg0 + 0x4C) = arg3;
     *(int *)(arg0 + 0xAC) = 0;
-    if (*(int *)(arg1 + 0x4F0) & 0x10000) {
+    if (RACEPROC(arg1)->flags & 0x10000) {
         *(int *)(arg0 + 0x54) = arg2;
         *(int *)(arg0 + 0xD0) = 0xFF;
         *(int *)(arg0 + 0xD4) = 0;
@@ -1121,7 +1121,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
     int t1;
 
     gl_func_00000000();
-    if ((*(int *)(*(char **)(arg0 + 0xB8) + 0x4F0) & 0x10000) && (*(int *)(*(char **)(arg0 + 0xB8) + 0x4DC) == 1)) {
+    if ((RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000) && (RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 1)) {
         *(int *)(arg0 + 0x30) = *(int *)(arg0 + 0x30) + 0x21;
         gl_func_00000000(arg0);
         *(int *)(arg0 + 0xA0) = *(int *)(arg0 + 0xA0) - 0x21;
@@ -1129,21 +1129,21 @@ void TrkDataManager_update_00001C68(char *arg0) {
             *(int *)(arg0 + 0xA0) = 0;
             gl_func_00000000(*(int *)(arg0 + 0x84), 0, 0);
             gl_func_00000000(*(char **)(arg0 + 0xB8));
-            *(float *)(*(char **)(arg0 + 0xB8) + 0x554) = 192.0f;
-            *(int *)(*(char **)(arg0 + 0xB8) + 0x544) = 0xFF;
+            RACEPROC(*(char **)(arg0 + 0xB8))->msgFloor = 192.0f;
+            RACEPROC(*(char **)(arg0 + 0xB8))->msgAlpha = 0xFF;
             *(int *)(arg0 + 0x2C) = 0;
         }
     }
     gl_func_00000000(arg0);
-    v0 = *(int *)(*(char **)(arg0 + 0xB8) + 0x4F0) & 0x10000;
-    if ((v0 != 0) && (*(int *)(*(char **)(arg0 + 0xB8) + 0x4DC) == 1)) {
+    v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
+    if ((v0 != 0) && (RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 1)) {
         if (*(int *)(arg0 + 0x48) == 2) {
             if ((*(int *)(arg0 + 0xD8) == 1) &&
                 (*(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C) == 0)) {
                 gl_func_00000000(arg0, 1); if (arg0) {}
             }
             *(int *)(arg0 + 0xD8) = *(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C);
-            v0 = *(int *)(*(char **)(arg0 + 0xB8) + 0x4F0) & 0x10000;
+            v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
         }
         if (*(int *)(*(char **)(arg0 + 0x44) + 0x34) != 0) {
             if (v0 != 0) {
@@ -1152,7 +1152,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
                 gl_func_00000000(*(int *)(arg0 + 0x84), *(int *)(arg0 + 0xA0), 0);
             }
             gl_func_00000000(*(char **)(arg0 + 0xB8));
-            v0 = *(int *)(*(char **)(arg0 + 0xB8) + 0x4F0) & 0x10000;
+            v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
         }
     }
     if (v0 != 0) {
@@ -1160,18 +1160,18 @@ void TrkDataManager_update_00001C68(char *arg0) {
         rem = *(int *)(*(char **)(arg0 + 0x44) + 0x18) - t1;
         if (rem >= 0xFA) {
             *(int *)(arg0 + 0xA8) = t1 + 0xFA;
-            v0b = *(int *)(*(int *)(arg0 + 0xB8) + 0x4DC);
+            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
         } else if (rem >= 0x32) {
             *(int *)(arg0 + 0xA8) = t1 + 0x32;
-            v0b = *(int *)(*(int *)(arg0 + 0xB8) + 0x4DC);
+            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
         } else if (rem >= 0x19) {
             *(int *)(arg0 + 0xA8) = t1 + 0x19;
-            v0b = *(int *)(*(int *)(arg0 + 0xB8) + 0x4DC);
+            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
         } else {
             if (rem > 0) {
                 *(int *)(arg0 + 0xA8) = t1 + 1;
             }
-            v0b = *(int *)(*(char **)(arg0 + 0xB8) + 0x4DC);
+            v0b = RACEPROC(*(char **)(arg0 + 0xB8))->raceState;
         }
         if (v0b == 1) {
             gl_func_00000000(*(int *)(arg0 + 0x84), *(int *)(arg0 + 0xA0), 1);
@@ -1206,7 +1206,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
             fl = (int *)(*(char **)(arg0 + 0x94) + 0x18);
             *fl = *fl & ~4;
         }
-        if ((*(int *)(*(char **)(arg0 + 0xB8) + 0x4DC) == 2) && (*(int *)(*(char **)(arg0 + 0xB8) + 0x4F8) == 0)) {
+        if ((RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 2) && (RACEPROC(*(char **)(arg0 + 0xB8))->result == 0)) {
             *(int *)(arg0 + 0xAC) = *(int *)(arg0 + 0xAC) + 1;
             if (*(int *)(arg0 + 0xAC) & 8) {
                 fl = (int *)(*(char **)(arg0 + 0x8C) + 0x18);
@@ -1640,16 +1640,16 @@ void TrkMenu_handleInput_00002C98(char *obj) {
         if (*(int *)(obj + 0x58) == 0) {
             gl_func_00000000(5);
             gl_func_00000000((char *)&D_00000000, 2);
-            *(int *)(*(char **)(obj + 0x48) + 0xD8) = 0;
+            *(int *)((char *)RACEPROC(obj)->unk048 + 0xD8) = 0;
             if (1) {}
-            o48 = *(char **)(obj + 0x48);
+            o48 = (char *)RACEPROC(obj)->unk048;
             *(int *)(obj + 0x50) = 0;
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         } else {
             gl_func_00000000(0x802);
             if (1) {}
-            o48 = *(char **)(obj + 0x48);
+            o48 = (char *)RACEPROC(obj)->unk048;
             *(int *)(obj + 0x50) = 0;
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
@@ -1658,7 +1658,7 @@ void TrkMenu_handleInput_00002C98(char *obj) {
     if (gl_func_00000000((char *)&D_00000000, 0x200) != 0) {
         gl_func_00000000(0x802);
         if (1) {}
-        o48 = *(char **)(obj + 0x48);
+        o48 = (char *)RACEPROC(obj)->unk048;
         *(int *)(obj + 0x50) = 0;
         vt = *(char **)(o48 + 0x28);
         ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);

@@ -152,6 +152,13 @@ typedef struct TimRace {
 typedef char TimRace_size_check[sizeof(TimRace) == 0x730 ? 1 : -1];
 typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 : -1];
 
+/* Field access through an untyped pointer (agent-h run 487). The Tim / Trk ctors and the
+ * DataManager / name-entry methods keep their `char *` / `int` parameters and locals, because
+ * those spellings are matching levers; `RACEPROC(p)->flags` lowers to the same base + 0x4F0
+ * access as `*(int *)(p + 0x4F0)`. */
+#define RACEPROC(p) ((RaceProcess *)(p))
+#define TIMRACE(p)  ((TimRace *)(p))
+
 /* ---- RaceTracker (game_libs 0xC784.., alloc 0xB8; vtable Data+0xD678) ----
  * The race-progress / HUD object: per-rider entries, the time limit, and the
  * HUD gadgets (hud_add<X>Gadget, include/gdl/hud.h: Hud is this type). Each mode
