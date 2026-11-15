@@ -171,12 +171,16 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(V + 0x10, W); if (1) {} if (FP(W, 0x14)) FW(W, 4) = 1; FP(W, 0x14) = V; }
 #define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
 #define CFGS(S) FP(&S, 0x134)
-/* S70 row: cfront ctor(this) with nested base-ctor allocation check */
+/* The four stage lists (Character / Board / Course / LevelList, 0x70 = SelItemList):
+ * cfront ctor(this) with the nested base-ctor allocation check. VT is the SelItemList
+ * base vtable (Data 0xA94), VT2 the class vtable (0xB04 / 0xB74 / 0xBE4 / 0xC54), NM
+ * the node name; the three CommonInfo words and dispItems are copied in, count = 0. */
+#define SIL(p) ((SelItemList *)(p))
 #define NEWS70(P, D, VT, VT2, NM, S) { n = MGR->dispItems; t = ALLOC(0x70); \
     if (t) { w = t; if (w || (w = ALLOC(0x70))) { \
-        gen_imp_Node_ctor(w, D); FP(w, 0x28) = (VT); } \
-      FP(t, 0x28) = (VT2); FP(t, 0xC) = NM; FW(t, 0x2C) = FW(CFGS(S), 0x84); FW(t, 0x30) = FW(CFGS(S), 0x80); \
-       FW(t, 0x34) = FW(CFGS(S), 0x8C); FP(t, 0x38) = n; FW(t, 0x6C) = 0;  } \
+        gen_imp_Node_ctor(w, D); SIL(w)->vptr = (VT); } \
+      SIL(t)->vptr = (VT2); FP(t, 0xC) = NM; SIL(t)->cfg2C = FW(CFGS(S), 0x84); SIL(t)->parent = FP(CFGS(S), 0x80); \
+       SIL(t)->cfg34 = FW(CFGS(S), 0x8C); SIL(t)->dispItems = n; SIL(t)->count = 0;  } \
     P = t; }
 #define NEWPANEL(P, D, NM, VT) { w = ALLOC(0x2BC); \
     if (w) { _wp = w; if (_wp || (_wp = ALLOC(0x2B8))) { \

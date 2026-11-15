@@ -239,10 +239,22 @@ typedef struct SelectionMgr {
                              * SelectWin as its scene */
     s32 numPlayers;         /* 0x30 */
     struct SelectWin *wins[2]; /* 0x34 */
-    char pad3C[0x48 - 0x3C];
-    s32 unk48;              /* 0x48 */
-    s32 busy;               /* 0x4C */
-} SelectionMgr;
+    /* The 2-player split screen (agent-c run 522: SelectionMgr_ctor, SelectionMgr_update
+     * (ncc_1F14), SelectionMgr_setSplit (ncc_1DB0), SelectionMgr_finish). `split` is
+     * wins[0]->centerX and 0xF0 - split is wins[1]'s; 0x78 is the even split. When one
+     * window waits in state 8 (board accepted) and the other joins it, the waiting
+     * window slides to the full screen: zoomWin picks it, splitT ramps 0 -> 1 by 0.05
+     * and split follows (120 +- splitT * 120). */
+    s32 waitMask;           /* 0x3C: bit 0 / 1 = wins[0] / wins[1] in SelectWin state 8 (rebuilt
+                             * every update; 3 = both) */
+    s32 prevWaitMask;       /* 0x40: last update's waitMask */
+    s32 split;              /* 0x44: wins[0]->centerX (0x78 even, 0xF0 = wins[0] full screen) */
+    s32 zoomWin;            /* 0x48: 1 = wins[0] / 2 = wins[1] takes the screen, 0 = none;
+                             * finish sends the result of that window */
+    s32 busy;               /* 0x4C: 1 while the split slides */
+    s32 shownMask;          /* 0x50: bit 0 / 1 = wins[0] / wins[1] has a nonzero centerX */
+    f32 splitT;             /* 0x54: slide progress 0..1 (also the fov / aspect blend) */
+} SelectionMgr;             /* 0x58 (SelectionMgr_ctor allocates 0x58) */
 
 typedef struct SelectWin {
     char pad000[0x28];
@@ -384,6 +396,10 @@ SELECT_ASSERT(mgr_tesuri, (int)&((SelItemsMgr *)0)->tesuri == 0x54);
 SELECT_ASSERT(mgr_size, sizeof(SelItemsMgr) == 0x60);
 SELECT_ASSERT(selmgr_scene, (int)&((SelectionMgr *)0)->sceneSet == 0x2C);
 SELECT_ASSERT(selmgr_busy, (int)&((SelectionMgr *)0)->busy == 0x4C);
+SELECT_ASSERT(selmgr_wait, (int)&((SelectionMgr *)0)->waitMask == 0x3C);
+SELECT_ASSERT(selmgr_split, (int)&((SelectionMgr *)0)->split == 0x44);
+SELECT_ASSERT(selmgr_splitt, (int)&((SelectionMgr *)0)->splitT == 0x54);
+SELECT_ASSERT(selmgr_size, sizeof(SelectionMgr) == 0x58);
 SELECT_ASSERT(win_player, (int)&((SelectWin *)0)->player == 0x3B8);
 SELECT_ASSERT(win_cur, (int)&((SelectWin *)0)->curItem == 0x3D0);
 SELECT_ASSERT(win_prev, (int)&((SelectWin *)0)->prevItem == 0x3F4);

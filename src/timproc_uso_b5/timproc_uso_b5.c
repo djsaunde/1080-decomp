@@ -1125,21 +1125,21 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             FW(w, 0x14) = arg0;
             FW(((GenScene *)E)->room->modifier, 0x3C) = (int)((SelectionMgr *)arg0)->wins[1];
             if (((SelectionMgr *)arg0)->wins[0]->stageBit != 4) {
-                FW(arg0, 0x3C) = 0;
-                FW(arg0, 0x40) = 0;
-                FW(arg0, 0x44) = 0x78;
-                FW(arg0, 0x48) = 0;
-                FW(arg0, 0x50) = 3;
-                FW(arg0, 0x4C) = 0;
-                *(f32 *)((char *)arg0 + 0x54) = 0.0f;
+                ((SelectionMgr *)arg0)->waitMask = 0;
+                ((SelectionMgr *)arg0)->prevWaitMask = 0;
+                ((SelectionMgr *)arg0)->split = 0x78;
+                ((SelectionMgr *)arg0)->zoomWin = 0;
+                ((SelectionMgr *)arg0)->shownMask = 3;
+                ((SelectionMgr *)arg0)->busy = 0;
+                ((SelectionMgr *)arg0)->splitT = 0.0f;
             } else {
-                FW(arg0, 0x3C) = 3;
-                FW(arg0, 0x40) = 3;
-                FW(arg0, 0x4C) = 0;
-                FW(arg0, 0x48) = 1;
-                FW(arg0, 0x44) = 0xF0;
-                FW(arg0, 0x50) = 1;
-                *(f32 *)((char *)arg0 + 0x54) = 1.0f;
+                ((SelectionMgr *)arg0)->waitMask = 3;
+                ((SelectionMgr *)arg0)->prevWaitMask = 3;
+                ((SelectionMgr *)arg0)->busy = 0;
+                ((SelectionMgr *)arg0)->zoomWin = 1;
+                ((SelectionMgr *)arg0)->split = 0xF0;
+                ((SelectionMgr *)arg0)->shownMask = 1;
+                ((SelectionMgr *)arg0)->splitT = 1.0f;
                 SelectionMgr_setSplit_00001DB0(arg0);
             }
         }
@@ -1208,7 +1208,7 @@ void SelectionMgr_finish_00001C08(char *st) {
     char *r;
     int s0;
     if (((SelectionMgr *)st)->numPlayers == 2) {
-        if (((SelectionMgr *)st)->unk48 == 1) {
+        if (((SelectionMgr *)st)->zoomWin == 1) {
             i = 0;
         } else {
             i = 1;
