@@ -1,6 +1,6 @@
-nonmatching snd_Player0ChannelIOPreset_2F8A0, 0x94
+nonmatching snd_soundObjChannelsOn, 0x94
 
-glabel snd_Player0ChannelIOPreset_2F8A0
+glabel snd_soundObjChannelsOn
     /* E14978 0002F8A0 27BDFFE8 */  .word 0x27BDFFE8
     /* E1497C 0002F8A4 10800009 */  .word 0x10800009
     /* E14980 0002F8A8 AFBF0014 */  .word 0xAFBF0014
@@ -38,4 +38,4 @@ glabel snd_Player0ChannelIOPreset_2F8A0
     /* E14A00 0002F928 27BD0018 */  .word 0x27BD0018
     /* E14A04 0002F92C 03E00008 */  .word 0x03E00008
     /* E14A08 0002F930 00000000 */  .word 0x00000000
-endlabel snd_Player0ChannelIOPreset_2F8A0
+endlabel snd_soundObjChannelsOn

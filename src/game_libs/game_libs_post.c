@@ -12698,7 +12698,7 @@ void snd_SoundObjInit(SoundObj *o, int a1) {
     o->unk58 = 1.0f;
     o->unk5C = (float)1;
     if (*(int*)&D_00000000 != 0) {
-        CALL(snd_Player0ChannelIOPreset_2F8A0)(a1 & 0xFF);
+        CALL(snd_soundObjChannelsOn)(a1 & 0xFF);
     }
 }
 
@@ -12735,7 +12735,7 @@ void snd_SoundObjReset(SoundObj *o) {
     o->unk23 = 0;
     o->speed = 0.0f;
     o->unk04 = 0.0f;
-    CALL(snd_Player0ChannelIOPreset_2F934)(o->kind);
+    CALL(snd_soundObjChannelsOff)(o->kind);
 }
 
 void snd_SoundObjSetScaleIdx15(SoundObj *o) {
@@ -13799,17 +13799,17 @@ void snd_SoundObjPlay(SoundObj *o, int a1, int a2, f32 v, unsigned char b) {
     if (iv < 0) {
         iv = 0;
     }
-    CALL(snd_SetPlayer0ChannelPanIO_2F638)(o->kind, a1, a2, iv, b);
+    CALL(snd_soundObjSendPlay)(o->kind, a1, a2, iv, b);
 }
 
 void snd_Stub_2F630(void) {
 }
 
-// snd_SetPlayer0ChannelPanIO_2F638 — STRUCTURAL PASS (0xF4 / 61 words, no episode).
+// snd_soundObjSendPlay — STRUCTURAL PASS (0xF4 / 61 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A command-word emitter / mode dispatcher leaf.
 //
-//   void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4,
+//   void snd_soundObjSendPlay(int a0, int sel, int arg3, int arg4,
 //                         ... byte at sp+0x43 ...) {
 //     int op = a0 ? 6 : 2;                  // opcode select from arg0
 //     int sub = op & 0xFF;
@@ -13845,7 +13845,7 @@ extern int gl_func_00000000();
  * gl(cmd3, (s8)stk_43). Then sel in {0,8,12} → gl(cmd6|6,(s8)arg4),
  * gl(cmd6|1,(s8)(sel+arg3)); otherwise → gl(cmd6|5,(s8)arg4),
  * gl(cmd6,(s8)(sel+arg3)). */
-void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4, int stk_43) {
+void snd_soundObjSendPlay(int a0, int sel, int arg3, int arg4, int stk_43) {
     int v1 = (((a0 == 0) ? 2 : 6) & 0xFF) << 8;
     CALL(AudioThread_QueueCmdS8)(0x03000000 | v1, (signed char)stk_43);
     if (sel == 0 || sel == 8 || sel == 12) {
@@ -13864,11 +13864,11 @@ void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
 }
 
 
-// snd_Player0ChannelIOPreset_2F8A0 — STRUCTURAL PASS (0x94 / 37 words, no episode).
+// snd_soundObjChannelsOn — STRUCTURAL PASS (0x94 / 37 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
 // bundle). A small command-sequence selector by mode.
 //
-//   void snd_Player0ChannelIOPreset_2F8A0(int mode) {
+//   void snd_soundObjChannelsOn(int mode) {
 //     switch (mode) {
 //       case 0:
 //         emit(0x06000100, 1);              // jal 0 (USO callback)
@@ -13893,13 +13893,13 @@ void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
 //   submitted via a USO-relocated callback (jal 0 → resolved at load)
 //   with the second arg fixed at 1. A canned-sequence emitter leaf of
 //   the game_libs object subsystem (issues preset command groups; the
-//   0x06000000 bank matches snd_SetPlayer0ChannelPanIO_2F638's command-word banks).
+//   0x06000000 bank matches snd_soundObjSendPlay's command-word banks).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks +
 //   canned switch dispatch — byte-match needs USO mnemonic disasm
 //   + reloc-pad jal infra. Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
 extern int gl_func_00000000();
-void snd_Player0ChannelIOPreset_2F8A0(int mode) {
+void snd_soundObjChannelsOn(int mode) {
     switch (mode) {
         case 0:
             CALL(AudioThread_QueueCmdS8)(0x06000100, 1);
@@ -13917,8 +13917,8 @@ void snd_Player0ChannelIOPreset_2F8A0(int mode) {
     }
 }
 
-/* snd_Player0ChannelIOPreset_2F934: canned command-sequence selector (0xA0 / 40 words),
- * sibling of snd_Player0ChannelIOPreset_2F8A0. mode 0 emits 0x06000100/0x06000101 (-1) and
+/* snd_soundObjChannelsOff: canned command-sequence selector (0xA0 / 40 words),
+ * sibling of snd_soundObjChannelsOn. mode 0 emits 0x06000100/0x06000101 (-1) and
  * 0x06000300 (0); modes 1 AND 2 share one body (0x06000700, 0;
  * 0x06000500, -1; 0x06000501, -1); anything else is a no-op.
  * The old wrap gave mode 2 only the last call: the target's `beql a0,2`
@@ -13926,7 +13926,7 @@ void snd_Player0ChannelIOPreset_2F8A0(int mode) {
  * case-1 test's delay slot `move a1,zero` covers both modes, so the two
  * labels share the arm. */
 extern int gl_func_00000000();
-void snd_Player0ChannelIOPreset_2F934(int mode) {
+void snd_soundObjChannelsOff(int mode) {
     switch (mode) {
         case 0:
             CALL(AudioThread_QueueCmdS8)(0x06000100, -1);
@@ -13968,7 +13968,7 @@ void snd_Player0ChannelIOPreset_2F934(int mode) {
 //   is 127.0f); the rest pass sign-extended byte args (the b arg and
 //   stack bytes sp+0x43 / sp+0x47) plus arg4. A multi-attribute
 //   command-submission leaf of the game_libs object subsystem
-//   (richer sibling of snd_SetPlayer0ChannelPanIO_2F638 — same 0x03/0x06 banks plus
+//   (richer sibling of snd_soundObjSendPlay — same 0x03/0x06 banks plus
 //   the 0x01/0x04 attribute banks and the /127 normalization).
 // 2026-07-11 (agent-g): the "/127.0f normalize" was NOT a cap — the residual
 //   cvt.d.s was the K&R float->double promotion of the placeholder call (same
@@ -14018,7 +14018,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer0ChannelParams_
 //   }
 //
 // Struct-typing reference: a compact command-stream builder, a close
-//   sibling of snd_SetPlayer0ChannelPanIO_2F638. arg0 selects the opcode (1 vs 5),
+//   sibling of snd_soundObjSendPlay. arg0 selects the opcode (1 vs 5),
 //   packed as an 8-bit subfield (<<8) into a 0x06000000-bank command
 //   word. A byte index is formed as arg2 + 0x40 and saturated to
 //   0x7F (the recurring bias-then-clamp idiom of this subsystem),
@@ -14026,7 +14026,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer0ChannelParams_
 //   (jal 0 → resolved at load) with tag bits 2 then 1; the second
 //   passes a sign-extended (arg1 + 8). A two-attribute command-submit
 //   leaf of the game_libs object subsystem (same 0x06000000 bank and
-//   sign-extend-byte-arg convention as snd_SetPlayer0ChannelPanIO_2F638 /
+//   sign-extend-byte-arg convention as snd_soundObjSendPlay /
 //   snd_SetPlayer0ChannelParams_2F9D4).
 // Caps (DEFERRED): raw-word USO + USO-reloc jal-0 callbacks +
 //   bias/clamp index — byte-match needs USO mnemonic disasm +
@@ -15295,7 +15295,7 @@ int snd_CueQueueUpdate(int *a0) {
 //   vs a "zero state" variant (subfield 0x00/0x100, a1 = the
 //   sign-extended state byte). A per-frame two-channel command
 //   flush leaf of the game_libs object subsystem (the 0x06020000
-//   bank is the snd_SetPlayer0ChannelPanIO_2F638 / 0002F9D4 emitter family with a
+//   bank is the snd_soundObjSendPlay / 0002F9D4 emitter family with a
 //   0x02xx sub-bank; the query helper 0x0117C1 is shared with the
 //   snd_RequestCue2 table cluster).
 // 2026-05-31 FULL DECODE 45.0->95.66%: it is THREE identical blocks (not

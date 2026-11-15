@@ -33,8 +33,8 @@ extern void gl_ref_00044F18();
 extern int gl_func_00000000_fi(int, float, int);
 
 void snd_HandleSeqEnd(int a, int b, int c) {
-    CALL(snd_Player0ChannelIOPreset_2F934)(0);
-    CALL(snd_Player0ChannelIOPreset_2F934)(1);
+    CALL(snd_soundObjChannelsOff)(0);
+    CALL(snd_soundObjChannelsOff)(1);
     *(int *)&D_00000000 = 1;
     XCALL(gl_func_00000000_fi, snd_UpdateChannel10Emitter)(0xFF, 0.0f, 0);
     switch (D_31334_st) {
