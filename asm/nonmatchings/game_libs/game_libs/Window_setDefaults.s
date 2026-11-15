@@ -1,6 +1,6 @@
-nonmatching Window_func_0004E760, 0x128
+nonmatching Window_setDefaults, 0x128
 
-glabel Window_func_0004E760
+glabel Window_setDefaults
     /* E33838 0004E760 27BDFFE8 */  .word 0x27BDFFE8
     /* E3383C 0004E764 AFBF0014 */  .word 0xAFBF0014
     /* E33840 0004E768 8C8E0008 */  .word 0x8C8E0008
@@ -75,4 +75,4 @@ glabel Window_func_0004E760
     /* E33954 0004E87C 27BD0018 */  .word 0x27BD0018
     /* E33958 0004E880 03E00008 */  .word 0x03E00008
     /* E3395C 0004E884 00000000 */  .word 0x00000000
-endlabel Window_func_0004E760
+endlabel Window_setDefaults

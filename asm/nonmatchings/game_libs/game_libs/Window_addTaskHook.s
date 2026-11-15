@@ -1,6 +1,6 @@
-nonmatching Window_func_0004EE18, 0x2C
+nonmatching Window_addTaskHook, 0x2C
 
-glabel Window_func_0004EE18
+glabel Window_addTaskHook
     /* E33EF0 0004EE18 8C8E011C */  .word 0x8C8E011C
     /* E33EF4 0004EE1C 000E7880 */  .word 0x000E7880
     /* E33EF8 0004EE20 008FC021 */  .word 0x008FC021
@@ -12,4 +12,4 @@ glabel Window_func_0004EE18
     /* E33F10 0004EE38 AC99011C */  .word 0xAC99011C
     /* E33F14 0004EE3C 03E00008 */  .word 0x03E00008
     /* E33F18 0004EE40 00000000 */  .word 0x00000000
-endlabel Window_func_0004EE18
+endlabel Window_addTaskHook

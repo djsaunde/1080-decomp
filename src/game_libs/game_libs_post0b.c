@@ -9219,7 +9219,7 @@ s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
  * swc1 cluster: build emits B4->B8->BC; target uses B8->B4-via-addiu->BC
  * (pure load/store order swap + matching fpu-reg renames). Was previously
  * documented as INSN_PATCH-promotable (same recipe family as
- * Window_forEach_0004ED0C / RaceTracker_endAllTricks); INSN_PATCH REMOVED 2026-05-23
+ * Window_runHooks_0004ED0C / RaceTracker_endAllTricks); INSN_PATCH REMOVED 2026-05-23
  * as match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();
@@ -12215,13 +12215,13 @@ void gfx_end(char *arg0) {
     gl_func_00000000(arg0);
 }
 
-// Window_func_00045178 — STRUCTURAL PASS (0x22C / 140 words, no episode). Raw-.word
+// gfx_emitProjection — STRUCTURAL PASS (0x22C / 140 words, no episode). Raw-.word
 // USO. realjr=2, regjr=0 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends
 // at the jr at 0x4538C; a tiny trailing leaf at 0x45394 (DEFERRED USO
 // RE-SPLIT — belongs to the next symbol). Named fn = FP clamp-and-shift over
 // object history fields (FP-heavy, no calls).
 //
-//   void Window_func_00045178(void *a0) {
+//   void gfx_emitProjection(void *a0) {
 //     self = a0;
 //     float lo = *(float*)(&D_0 + 0x1B60);           // FP-pool clamp bounds
 //     float a  = *(float*)(&D_0 + 0x1B64);
@@ -12251,7 +12251,7 @@ void gfx_end(char *arg0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_45178.cpp (gbi gDma1p `_g` homed after the
  * post-increment temp = the target's sp+0x24 spill), REPLACE_FUNC_BODY-spliced over this placeholder in both build
  * trees (agent-c run 162). The old cfe body (99.99, packet-pointer spill at its home sp+0x28) is retired. */
-void Window_func_00045178(char *arg0) {
+void gfx_emitProjection(char *arg0) {
 }
 
 /* Empty 4-arg stub (sibling of _00023F84). */
@@ -17203,7 +17203,7 @@ void Window_dtor(char *a0, int a1) {
     }
 }
 
-/* Window_func_0004E760: 74-insn / 0x128 struct initializer.
+/* Window_setDefaults: 74-insn / 0x128 struct initializer.
  *
  * Sets bit 0x80 in arg0->0x8, then bulk-copies fields from extern data
  * tables (D+0x10, +0x28, +0x30, +0x1B70..0x1B80) to arg0 at fixed offsets,
@@ -17250,7 +17250,7 @@ typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
 extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
-void Window_func_0004E760(char *a0) {
+void Window_setDefaults(char *a0) {
     char *base = (char *)&gWindowDefaults;
     char *vt;
     *(int *)(a0 + 0x8) |= 0x80;
@@ -17435,7 +17435,7 @@ void Window_update(int a0) {
     gl_func_00000000(((char *)&D_00000000 + 0x000205F0));
 }
 
-/* Window_forEach_0004ED0C: 28-insn array-iter + vtable-dispatch loop.
+/* Window_runHooks_0004ED0C: 28-insn array-iter + vtable-dispatch loop.
  *   for (i = 0; i < self->[0x120]; i++) {
  *     v1 = self[0x134 + i*4];
  *     ((void(*)(int))v1[0]->[0xC])((s16)v1[0]->[0x8] + (int)v1);
@@ -17446,7 +17446,7 @@ void Window_update(int a0) {
  * note is STALE: the function is no longer NM-wrapped and the default build IS
  * this C (verified 0-diff vs expected 2026-05-30). Do not re-attempt. (Distinct
  * from still-capped caller-saved-temp renumbers like fs_gdlFileInfo $v1/$a2.) */
-void Window_forEach_0004ED0C(int *self)
+void Window_runHooks_0004ED0C(int *self)
 {
   int *iter;
   int i;
@@ -17465,13 +17465,13 @@ void Window_forEach_0004ED0C(int *self)
 }
 
 
-/* gfx_forEach_0004ED7C: byte-identical twin of matched
+/* Window_runTaskHooks: byte-identical twin of matched
  * SelItemsMgr_loadData_0000A97C (indirect-dispatch iterator). Same shape,
  * different struct offsets: count a0+0x11C (vs 0x3C), cursor p+0x124 (vs 0x40),
  * v1->v0 at +0x0 (vs 0x28), fn at v0+0xC (vs 0x4C), short off at v0+0x8 (vs
  * 0x48). Ported the donor's exact match-form incl. the `if (1) {}` block-
  * boundary lever (flips v0/v1 caller-save alloc to target's). */
-void gfx_forEach_0004ED7C(char *a0) {
+void Window_runTaskHooks(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -17491,14 +17491,14 @@ void gfx_forEach_0004ED7C(char *a0) {
     } while (i < *(int*)(a0 + 0x11C));
 }
 
-void Window_func_0004EDEC(int *a0, int a1) {
+void Window_addHook_0004EDEC(int *a0, int a1) {
     *(int *)((char *)a0 + a0[0x48] * 4 + 0x134) = a1;
     if (a0[0x48] < 3) {
         a0[0x48] += 1;
     }
 }
 
-void Window_func_0004EE18(int *a0, int a1) {
+void Window_addTaskHook(int *a0, int a1) {
     *(int *)((char *)a0 + a0[0x47] * 4 + 0x124) = a1;
     if (a0[0x47] < 3) {
         a0[0x47] += 1;

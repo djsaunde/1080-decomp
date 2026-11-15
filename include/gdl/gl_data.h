@@ -185,7 +185,7 @@
 #define gPolyFlags_3EEC4       D_00000000 /* Bss+0x3EEC4 Sym 289, 4 bytes: render flag word (game_createMap sets/clears bits 0x8 / 0x100 per map pass; SnowBoarder_ctor |= 8); zeroed by the CMod static ctor (CMod_vfn0_0005165C). agent-b area: alias only */
 #define gPolyGeomMode_3EEC8    D_00000000 /* Bss+0x3EEC8 Sym 290, 8 bytes: two mode words, [1] = geometry-mode-like bits (BasePolyShape_func_00052674 sets 1|0x2000|0x8000|0x20000, game_createMap 0xA8002 / |0x20000); [0] cleared with it. agent-b area: alias only */
 #define gMainHeap              D_00000000 /* Bss+0x3C770 Sym 1797, 44 bytes: the default heap object: heap_printStats prints its free/largest and used/size (+0x28 = size; "%dk/%dk used/size"), app_setHeapMode / getHeapMode swap +0x20; heap_new, mem_delete, app_freeAllOfType use it */
-#define gWindowDefaults        D_00000000 /* Bss+0x3EC20 Sym 324, 64 bytes: Window defaults template: Window_func_0004E760 copies +0x0/+0x8../+0x2C/+0x30 into each new Window; App_main fills it; game_create3DWindow / createProcessWindow read +0x30 */
+#define gWindowDefaults        D_00000000 /* Bss+0x3EC20 Sym 324, 64 bytes: Window defaults template: Window_setDefaults copies +0x0/+0x8../+0x2C/+0x30 into each new Window; App_main fills it; game_create3DWindow / createProcessWindow read +0x30 */
 #define gMemTrackerMgr         D_00000000 /* Bss+0x3EEF0 Sym 2306, POINTER to the MemTrackerMgr singleton: MemTrackerMgr_ctor stores `this` there; memtrack_begin / end / find walk its head / tail */
 #define gl_osViModeTable       D_00000000 /* Data+0x2D700 Sym 1947, 3360 bytes = 42 x 0x50 OSViMode (type byte i at entry i, NTSC/PAL/MPAL x 14): game_libs' libultra osViModeTable; gfx_setVideoMode indexes it */
 

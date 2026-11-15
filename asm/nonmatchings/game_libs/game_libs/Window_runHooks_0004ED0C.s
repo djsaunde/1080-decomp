@@ -1,6 +1,6 @@
-nonmatching Window_forEach_0004ED0C, 0x70
+nonmatching Window_runHooks_0004ED0C, 0x70
 
-glabel Window_forEach_0004ED0C
+glabel Window_runHooks_0004ED0C
     /* E33DE4 0004ED0C 27BDFFD8 */  .word 0x27BDFFD8
     /* E33DE8 0004ED10 AFBF0024 */  .word 0xAFBF0024
     /* E33DEC 0004ED14 AFB20020 */  .word 0xAFB20020
@@ -29,4 +29,4 @@ glabel Window_forEach_0004ED0C
     /* E33E48 0004ED70 8FB20020 */  .word 0x8FB20020
     /* E33E4C 0004ED74 03E00008 */  .word 0x03E00008
     /* E33E50 0004ED78 27BD0028 */  .word 0x27BD0028
-endlabel Window_forEach_0004ED0C
+endlabel Window_runHooks_0004ED0C

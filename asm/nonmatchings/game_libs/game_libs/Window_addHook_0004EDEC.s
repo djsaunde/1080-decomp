@@ -1,6 +1,6 @@
-nonmatching Window_func_0004EDEC, 0x2C
+nonmatching Window_addHook_0004EDEC, 0x2C
 
-glabel Window_func_0004EDEC
+glabel Window_addHook_0004EDEC
     /* E33EC4 0004EDEC 8C8E0120 */  .word 0x8C8E0120
     /* E33EC8 0004EDF0 000E7880 */  .word 0x000E7880
     /* E33ECC 0004EDF4 008FC021 */  .word 0x008FC021
@@ -12,4 +12,4 @@ glabel Window_func_0004EDEC
     /* E33EE4 0004EE0C AC990120 */  .word 0xAC990120
     /* E33EE8 0004EE10 03E00008 */  .word 0x03E00008
     /* E33EEC 0004EE14 00000000 */  .word 0x00000000
-endlabel Window_func_0004EDEC
+endlabel Window_addHook_0004EDEC

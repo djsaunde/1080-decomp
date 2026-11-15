@@ -1,6 +1,6 @@
-nonmatching Window_func_00045178, 0x21C
+nonmatching gfx_emitProjection, 0x21C
 
-glabel Window_func_00045178
+glabel gfx_emitProjection
     /* E2A250 00045178 27BDFF98 */  .word 0x27BDFF98
     /* E2A254 0004517C AFBF001C */  .word 0xAFBF001C
     /* E2A258 00045180 AFB00018 */  .word 0xAFB00018
@@ -136,4 +136,4 @@ glabel Window_func_00045178
     /* E2A460 00045388 27BD0068 */  .word 0x27BD0068
     /* E2A464 0004538C 03E00008 */  .word 0x03E00008
     /* E2A468 00045390 00000000 */  .word 0x00000000
-endlabel Window_func_00045178
+endlabel gfx_emitProjection

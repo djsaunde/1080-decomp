@@ -650,7 +650,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # gfx_drawFbChar_00046790 re-decode: 0x2e654 -> 0x2e694; agent-g run 103 math decodes: -> 0x2e674 -> 0x2e668 (54144 NM).
 # Re-probed 2026-10-17 agent-c run 105 (Window_doCommand NM body -> donor splice): 0x2e668 -> 0x2e65c.
 # run 105 stub re-decodes (4E424 / 4E244): 0x2e65c -> 0x2e75c.
-# Window_func_00045178 tail re-decode: 0x2e75c -> 0x2e77c.
+# gfx_emitProjection tail re-decode: 0x2e75c -> 0x2e77c.
 # agent-g run 104: 550CC + 54144 EXACT (real bodies vs old NM bodies): 0x2e77c -> 0x2e79c.
 # agent-g run 104: 61C9C EXACT (32w vs old 30w NM body): 0x2e79c -> 0x2e7a4.
 # agent-g run 104: 6264C (40w vs 43w NM) -> 0x2e798; 62540 / 6275C exact + 61B30 NM re-decodes -> 0x2e780.
@@ -2067,12 +2067,12 @@ $(GAMELIBS_43D38_DONOR): src/game_libs/game_libs_ncc_43D38.cpp
 	$(OBJCOPY) --redefine-sym clip__4ElemFv=RcpMgr_func_00043D38 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += RcpMgr_func_00043D38=$(GAMELIBS_43D38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_43D38_DONOR)
-# 45178 = history clamp + gSPMatrix packet as NCC C++ (agent-c run 162: the gDma1p `_g` homed after the post-increment temp = the target's sp+0x24 spill). EXACT NCC donor over an empty placeholder; the literals' .rodata reloc is renamed Window_func_00045178_rodata (pinned to the USO RoData at +0x1B60).
+# 45178 = history clamp + gSPMatrix packet as NCC C++ (agent-c run 162: the gDma1p `_g` homed after the post-increment temp = the target's sp+0x24 spill). EXACT NCC donor over an empty placeholder; the literals' .rodata reloc is renamed gfx_emitProjection_rodata (pinned to the USO RoData at +0x1B60).
 GAMELIBS_45178_DONOR := build/src/game_libs/game_libs_ncc_45178.cpp.o
 $(GAMELIBS_45178_DONOR): src/game_libs/game_libs_ncc_45178.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Window_func_00045178=$(GAMELIBS_45178_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitProjection=$(GAMELIBS_45178_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_45178_DONOR)
 # 445AC = UI / object bootstrap as NCC C++ (agent-c run 162: source-order varargs; `gl(gSysLib_445AC_b.x1C = new A40, 0x64, 1)` = the target's v0 holder base and frame). EXACT NCC donor over an empty placeholder.
 GAMELIBS_445AC_DONOR := build/src/game_libs/game_libs_ncc_445AC.cpp.o

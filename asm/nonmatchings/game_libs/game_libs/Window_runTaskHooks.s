@@ -1,6 +1,6 @@
-nonmatching gfx_forEach_0004ED7C, 0x70
+nonmatching Window_runTaskHooks, 0x70
 
-glabel gfx_forEach_0004ED7C
+glabel Window_runTaskHooks
     /* E33E54 0004ED7C 27BDFFD8 */  .word 0x27BDFFD8
     /* E33E58 0004ED80 AFBF0024 */  .word 0xAFBF0024
     /* E33E5C 0004ED84 AFB20020 */  .word 0xAFB20020
@@ -29,4 +29,4 @@ glabel gfx_forEach_0004ED7C
     /* E33EB8 0004EDE0 8FB20020 */  .word 0x8FB20020
     /* E33EBC 0004EDE4 03E00008 */  .word 0x03E00008
     /* E33EC0 0004EDE8 27BD0028 */  .word 0x27BD0028
-endlabel gfx_forEach_0004ED7C
+endlabel Window_runTaskHooks
