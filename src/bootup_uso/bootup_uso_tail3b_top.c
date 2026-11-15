@@ -5,7 +5,7 @@ extern char D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
 
-/* func_00012188 (0x12188, struct initializer) and func_00012244 (0x12244,
+/* input_initDefaults_00012188 (0x12188, struct initializer) and settings_setBit_00012244 (0x12244,
  * -O0 set-bit-and-call helper) matched at -O0 and moved to
  * bootup_uso_o0_120A8.c (the adjacent -O0 run-8 file). See that file. */
 

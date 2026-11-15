@@ -7715,7 +7715,7 @@
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 55168,
@@ -7838,14 +7838,14 @@
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56056,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56080,
@@ -7868,77 +7868,77 @@
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56572,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56640,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56708,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56764,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56828,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56892,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 56952,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 57032,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 57104,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 57168,
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 57216,
@@ -7952,7 +7952,7 @@
 "kind": "jal",
 "resolved": 8370284,
 "class": "func",
-"name": "func_0000EDCC"
+"name": "boot_readFloatParm_0000EDCC"
 },
 {
 "off": 57320,
@@ -8721,7 +8721,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "func_0000E2D0"
+"name": "SnowBCollider_func_0000E2D0"
 },
 {
 "off": 62596,
@@ -9444,7 +9444,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "func_0000E2D0"
+"name": "SnowBCollider_func_0000E2D0"
 },
 {
 "off": 65796,
@@ -9552,7 +9552,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "func_0000E2D0"
+"name": "SnowBCollider_func_0000E2D0"
 },
 {
 "off": 66224,
@@ -9566,7 +9566,7 @@
 "kind": "jal",
 "resolved": 8367472,
 "class": "func",
-"name": "func_0000E2D0"
+"name": "SnowBCollider_func_0000E2D0"
 },
 {
 "off": 66304,

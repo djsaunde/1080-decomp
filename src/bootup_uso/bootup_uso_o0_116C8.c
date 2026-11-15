@@ -19,7 +19,7 @@ extern int D_bu_116C8_40;
 
 typedef int (*FN116C8)();
 
-/* func_000116C8: subsystem init/teardown orchestrator (structural decode
+/* GameFlow_restart_000116C8: subsystem init/teardown orchestrator (structural decode
  * retained in bootup_uso_tail3a.c history).
  * MATCHED 2026-07-10 (77/77, only link-resolved reloc fields differ pre-link).
  * Key -O0 shapes: (1) `D_00000000 = 0;` as a DIRECT global store emits the
@@ -38,7 +38,7 @@ typedef int (*FN116C8)();
  * alloc(0xC)) != 0) p->f0 = 8;` (same lever as o0_117FC). (5) frame -0x30 /
  * local at sp+0x24 needs TWO int locals with `local` declared SECOND
  * (first-declared sits at 0x28, unused). */
-void func_000116C8(void) {
+void GameFlow_restart_000116C8(void) {
     register char *p;
     int pad;
     int local;

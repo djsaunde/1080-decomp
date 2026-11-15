@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* func_00011D78: -O0 island carved out of bootup_uso_tail3a_bot.c on
+/* input_getStickX_00011D78: -O0 island carved out of bootup_uso_tail3a_bot.c on
  * 2026-07-10 and MATCHED at -O0. 17/17 words = 0x44 since 2026-09-05: the
  * 2-word "func_00011DB4" (jr ra; nop) that followed it was never a function
  * but this fn's own dead `$exit: j $31` block (11D40/"11D70" precedent, see
@@ -17,7 +17,7 @@
  * ((float**)(a0+0xE0))[idx] for base-first addu $t9,$a0,$t8 + folded 0xE0;
  * the target's interior dead jr-ra pair between the main return and the
  * zero block is a lexically-dead bare `return;` INSIDE the if arm. */
-float func_00011D78(register char *a0) {
+float input_getStickX_00011D78(register char *a0) {
     if (*(int*)(a0 + 0x18C) == 0) {
         return *(((float**)(a0 + 0xE0))[*(int*)(a0 + 0x128)]);
         return;

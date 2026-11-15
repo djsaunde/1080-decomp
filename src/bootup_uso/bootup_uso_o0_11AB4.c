@@ -4,7 +4,7 @@ extern int func_00000000();
 
 /* Sibling in the 0x11A34 O0 cluster. Clears the small object lists/counts,
  * probes a0->0xC0 twice, and initializes each live child slot. */
-void func_00011AB4(char *a0) {
+void GameFlow_addPads_00011AB4(char *a0) {
     s32 i;
 
     *(s32*)(a0 + 0x120) = 0;

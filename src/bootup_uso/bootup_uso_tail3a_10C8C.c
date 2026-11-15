@@ -9,7 +9,7 @@
 
 extern int func_00000000();
 extern int D_00000000;
-extern char *func_00010324();
+extern char *gui_getCurrentRow_00010324();
 
 /* GameFlow_create: -O0 object constructor (216 insns). Inits arg0's struct
  * fields, builds a temp Vec4-ish stack record (sp6C) passed by value to a

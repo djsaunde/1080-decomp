@@ -7,7 +7,7 @@ typedef signed char s8; typedef signed short s16; typedef signed int s32; typede
 extern "C" {
 extern int func_00000000(...);
 
-/* Mid-tail assembly gap after func_00011AB4 was split to an -O0 file.
+/* Mid-tail assembly gap after GameFlow_addPads_00011AB4 was split to an -O0 file.
  * Holds 0x11B5C..0x11C70 so the following o0_11C70 split keeps its offset. */
 /* input_pauseAll_00011B5C: 37-insn -O0 flag-set + per-element-1-call loop, returns the
  * old _188 flag (saves it, sets _188=1, calls helper(arg,1) per item).

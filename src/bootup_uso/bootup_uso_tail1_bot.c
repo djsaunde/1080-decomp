@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* bootup_uso 0xFC28..0x100F0 region, split off bootup_uso_tail1.c on
- * 2026-05-28 so that func_0000FBCC could move to a -O0 sub-file
+ * 2026-05-28 so that Process_setWindowFlag8_0000FBCC could move to a -O0 sub-file
  * (bootup_uso_o0_FBCC.c) and land as a byte-exact match. These four
  * functions stay INCLUDE_ASM NM-wraps (documented -O0 alloc-cascade /
  * dead-BB / t-reg caps — see per-function notes). TRUNCATE_TEXT clips
@@ -31,7 +31,7 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
     return 0;
 }
 
-/* func_0000FEA0: 18-insn indirect-call wrapper:
+/* QuitProcess_func_0000FEA0: 18-insn indirect-call wrapper:
  *   p = a0->field_28; (*p->field_64)(a0 + (short)p->field_60).
  * MATCHED 2026-07-10 (w50 island sweep, 18/18): the long-documented
  * "double-reload residual cap" (19 vs 18 insns) was the cfe DAG-share
@@ -43,7 +43,7 @@ void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
  * Required flipping this file to -O0 (all other members stay INCLUDE_ASM
  * so the flag only affects this compiled body). Old exhaustive-variant
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
-void func_0000FEA0(char *a0) {
+void QuitProcess_func_0000FEA0(char *a0) {
     register char *p;
     (*(void(**)())(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
 }

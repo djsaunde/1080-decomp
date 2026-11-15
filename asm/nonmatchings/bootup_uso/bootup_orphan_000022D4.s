@@ -1,6 +1,6 @@
 /* vram 0x22D4: 3-word all-zero inter-function alignment pad between */
-/* func_00002244 (ends jr ra; nop at 0x22D0) and func_000022E0. Was */
-/* emitted by func_00002244's INCLUDE_ASM tail; restored as a standalone */
+/* boot_ItemType_create_00002244 (ends jr ra; nop at 0x22D0) and stream_readS32_000022E0. Was */
+/* emitted by boot_ItemType_create_00002244's INCLUDE_ASM tail; restored as a standalone */
 /* >=2-word GLOBAL_ASM orphan block (emits exactly at -O2) when 2244 was */
 /* promoted to matched C 2026-07-15. NOTE: SUFFIX_BYTES_FORCE injection */
 /* is UNSAFE this early in the file — inject-suffix-bytes.py shifts */

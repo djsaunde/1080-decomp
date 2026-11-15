@@ -495,8 +495,8 @@ glabel item_registerTemplates
     /* DD6728 00005CBC 00002025 */  or         $a0, $zero, $zero
     /* DD672C 00005CC0 0C000000 */  jal        func_00000000
     /* DD6730 00005CC4 00003825 */   or        $a3, $zero, $zero
-    /* DD6734 00005CC8 3C0F0000 */  lui        $t7, %hi(Tv1Tmpl_func_00007E50)
-    /* DD6738 00005CCC 8DEF7E50 */  lw         $t7, %lo(Tv1Tmpl_func_00007E50)($t7)
+    /* DD6734 00005CC8 3C0F0000 */  lui        $t7, %hi(Tv1Tmpl_update)
+    /* DD6738 00005CCC 8DEF7E50 */  lw         $t7, %lo(Tv1Tmpl_update)($t7)
     /* DD673C 00005CD0 24040048 */  addiu      $a0, $zero, 0x48
     /* DD6740 00005CD4 AFA200BC */  sw         $v0, 0xBC($sp)
     /* DD6744 00005CD8 AFAF017C */  sw         $t7, 0x17C($sp)

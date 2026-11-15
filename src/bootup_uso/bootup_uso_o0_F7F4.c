@@ -29,4 +29,4 @@ void Process_func_0000F7D0(int a0) {
 
 void Process_func_0000F7F4(int a0) {}
 
-void func_0000F808(int a0) {}
+void Process_stub_0000F808(int a0) {}

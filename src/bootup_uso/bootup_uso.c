@@ -30,7 +30,7 @@ extern char D_00000000;
  */
 #endif
 /* BOOT_SELF_PTR graduated to unconditional 2026-07-03: promoted exact bodies
- * (Snower_func_000082F8/item_createHem) use it in the default build. */
+ * (Snower_display/item_createHem) use it in the default build. */
 #define BOOT_SELF_PTR (*(int**)((char*)&D_00000000 + 0x254))
 
 void func_00000008(int *dst) {
@@ -79,7 +79,7 @@ void func_00000188(int a0, int a1, int a2) {
     func_00000000(a0, a1, a2);
 }
 
-void func_000001C8(int a0) {
+void snd_setLevelRampTarget_000001C8(int a0) {
     if (a0 != 0) {
         func_00000000(2);
     } else {
@@ -91,7 +91,7 @@ void func_000001FC(void) {
     func_00000000();
 }
 
-void func_0000021C(void) {
+void snd_setPlayer1VolumeLevel_0000021C(void) {
     func_00000000();
 }
 
@@ -99,7 +99,7 @@ void func_0000023C(void) {
     func_00000000();
 }
 
-void func_0000025C(void) {
+void snd_setPlayer2VolumeLevel_0000025C(void) {
     func_00000000();
 }
 
@@ -115,7 +115,7 @@ void snd_unmuteAll_000002BC(void) {
     func_00000000();
 }
 
-void func_000002DC(void) {
+void snd_postEvent_000002DC(void) {
     func_00000000();
 }
 
@@ -123,29 +123,29 @@ void snd_sendEvent_000002FC(void) {
     func_00000000();
 }
 
-void func_0000031C(int a0, int a1, int a2) {
+void snd_updateChannel10Emitter_0000031C(int a0, int a1, int a2) {
     int local1, local2;
     func_00000000(a1, &local1, &local2, a2);
     func_00000000(a0, local1, (signed char)local2);
 }
 
 extern char D_00006550;
-void func_00000360(void) {
+void snd_addSoundHeap_00000360(void) {
     func_00000000();
     func_00000000(&D_00006550);
 }
 
 extern char D_00006568;
-void func_0000038C(void) {
+void snd_removeSoundHeap_0000038C(void) {
     func_00000000();
     func_00000000(&D_00006568);
 }
 
-void func_000003B8(void) {
+void snd_setPlayer1Channel15IO_000003B8(void) {
     func_00000000();
 }
 
-void func_000003D8(void) {
+void snd_setPlayer3FreqScaleFromStick_000003D8(void) {
     func_00000000();
 }
 
@@ -446,7 +446,7 @@ void SndHandle_setEventArg_00000A94(SndHandle *h, int a1) {
  * can't move it; duplicate-block forms leave a ghost twin, 32 insns).
  * = the documented "branch-likely vs regular branch" as1 cap class
  * (docs/IDO_CODEGEN branch-likely entry). Stays NM at 2 diffs. */
-/* func_00000A9C — best NM body (28/30 words, 97.83%). CAP CONFIRMED 2026-07-02
+/* snd_soundObjEventIndex_00000A9C — best NM body (28/30 words, 97.83%). CAP CONFIRMED 2026-07-02
  * (agent-e deep session, ~25 new C shapes + 4 phase-split configs + IDO 5.3 + -g1/2/3).
  *
  * The two residual words: target stages the n/s-case 8 in $v1
@@ -498,12 +498,12 @@ void SndHandle_setEventArg_00000A94(SndHandle *h, int a1) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 121). The old
  * goto chain returned constants directly; the target is a switch that assigns
  * one result variable (the 'n'/'s' value is hoisted into v1). */
-int func_00000A9C(int a0, int a1) {
+int snd_soundObjEventIndex_00000A9C(int a0, int a1) {
     volatile int r = 0;
     return r;
 }
 
-void func_00000B14(int **a0, int a1) {
+void snd_soundObjSetByte1D_00000B14(int **a0, int a1) {
     int *v0 = *a0;
     if (v0 != 0) {
         ((char*)v0)[0x1D] = (char)a1;
@@ -511,38 +511,38 @@ void func_00000B14(int **a0, int a1) {
 }
 
 extern float D_00000068;
-void func_00000B2C(void **a0, float a1) {
+void snd_soundObjSetScaled_00000B2C(void **a0, float a1) {
     a1 = a1 / D_00000068;
     if (*a0 != 0) {
         *(float*)((char*)*a0 + 0x10) = a1;
     }
 }
 
-void func_00000B50(char *a0) {
+void boot_readFloatParm_00000B50(char *a0) {
     int scratch;
     func_00000008(&scratch);
     func_00000044((float*)(a0 + 0x10));
 }
 
-void func_00000B80(char *a0) {
+void boot_readVec3Parm_00000B80(char *a0) {
     int scratch;
     func_00000008(&scratch);
     func_00000080(a0 + 0x10);
 }
 
-void func_00000BB0(char *a0) {
+void boot_readQuadParm_00000BB0(char *a0) {
     int scratch;
     func_00000008(&scratch);
     func_000000F0(a0 + 0x10);
 }
 
-void func_00000BE0(char *a0) {
+void boot_readIntParm_00000BE0(char *a0) {
     int scratch;
     func_00000008(&scratch);
     func_00000008((int*)(a0 + 0x10));
 }
 
-/* func_00000C10: mirror of func_000046EC / func_00007B08 / func_0000E690.
+/* func_00000C10: mirror of boot_ItemType_create_000046EC / boot_ItemType_create_00007B08 / boot_ItemType_create_0000E690.
  * BYTE-EXACT twin of donor edd_ItemType_create_000003BC, via the donor's clean C
  * form (p2/head/p1 decl order + char*-cast field access + p1[0x40/4] re-read).
  * Was once force-matched via 22-word INSN_PATCH (banned 2026-05-23, recipe
@@ -959,7 +959,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
 
 /* U64BGWall_func_00001A44 - verified structural decode (0x1CC, 115 insns,
  * FP transform/draw + DL list-append). Same family as
- * Mountain_func_0000485C / Tv1_func_000076F4 (global root vector scaled by the
+ * Mountain_display / Tv1_display (global root vector scaled by the
  * Dc->0x128/0x12C/0x130 triple, reloc draw helper, command-list
  * append).
  *   void U64BGWall_func_00001A44(Obj *a0) {
@@ -990,7 +990,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * entries, first word = 0x01020040 marker. root = *(&D_root),
  * root->0x70 (112) -> transform obj, ->0xA0/0xA4/0xA8 (160/164/
  * 168) f32 Vec3 scaled per-component by Dc->0x128/0x12C/0x130
- * (296/300/304) (the Mountain_func_0000485C scale triple). a0->0x2C/0x30/
+ * (296/300/304) (the Mountain_display scale triple). a0->0x2C/0x30/
  * 0x34 (44/48/52) s32 -> converted to f32 draw params; 1.0f
  * const. Caps <80: FP-heavy cvt.s.w/mul.s + global gate + 2x &D
  * + reloc draw + list-append (count bump + 8-byte stride).
@@ -1018,20 +1018,20 @@ void U64BGWall_func_00001A44(char *a0) {
     volatile int r = 0;
 }
 
-void func_00001C10(int *dst) {
+void stream_readS32_00001C10(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_00001C4C(float *dst) {
+void stream_readF32_00001C4C(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_00001C88();
-void func_00001C88(Vec3 *dst) {
+extern void stream_readVec3_00001C88();
+void stream_readVec3_00001C88(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -1044,26 +1044,26 @@ void func_00001C88(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_00001CF8(int *dst) {
+void stream_readS32_00001CF8(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_00001D34(Quad4 *dst) {
+void stream_readQuad_00001D34(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void *func_00001D8C(void *a0) {
+void *WorldRegistry_ctor_00001D8C(void *a0) {
     if (a0 == 0) {
         a0 = (void*)func_00000000(0x48);
     }
     return a0;
 }
 
-void *func_00001DB8(void *a0, int a1, int a2) {
+void *WorldCourse_ctor_00001DB8(void *a0, int a1, int a2) {
     if (a0 == 0) {
         a0 = (void*)func_00000000(0x48);
         if (a0 == 0) goto end;
@@ -1074,7 +1074,7 @@ end:
     return a0;
 }
 
-/* func_00001E08 - verified structural decode (0x170, 92 insns,
+/* WorldRegistry_create_00001E08 - verified structural decode (0x170, 92 insns,
  * get-or-create constructor + bulk property registration).
  * (reg = func_00000000(obj, &descriptor, 0).) Struct-typing
  * reference: o = 0x118-byte object. o->0x28 (40) descriptor ptr
@@ -1096,7 +1096,7 @@ extern char D_00006E8C, D_00006E98, D_00006EA8, D_00006EB8, D_00006EC4;
 /* per-site base-0 placeholders (target lui 0 / addiu 0 each, no CSE) */
 extern char D_1E08_d, D_1E08_a, D_1E08_b, D_1E08_c, D_1E08_e, D_1E08_f;
 extern char D_1E08_g, D_1E08_h, D_1E08_i, D_1E08_j;
-void *func_00001E08(char *o) {
+void *WorldRegistry_create_00001E08(char *o) {
     char *pad;
     char *sub;
     if (o == 0) {
@@ -1131,7 +1131,7 @@ end:
 // target uses $a3 — documented-unflippable from C, see
 // docs/IDO_CODEGEN.md#feedback-ido-arg-save-reg-pick (this func is that
 // entry's canonical example). Permuter-only; no episode (tautology-trap rule).
-void func_00001F78(void *obj, int d1, int d2) {
+void WorldRegistry_addCourse_00001F78(void *obj, int d1, int d2) {
     void *n;
     n = func_00000000(0, d1, d2, obj);
     *(void **)((char *)n + 0x44) = *(void **)((char *)(*(void **)((char *)obj + 0x74)) + 0x44);
@@ -1140,7 +1140,7 @@ void func_00001F78(void *obj, int d1, int d2) {
     *(int *)((char *)obj + 0x78) += 1;
 }
 
-void *func_00001FC8(char *a0, int a1) {
+void *game_getNthChild_00001FC8(char *a0, int a1) {
     void *p = *(void**)(a0 + 0x70);
     int i;
     for (i = 0; i < a1; i++) {
@@ -1149,7 +1149,7 @@ void *func_00001FC8(char *a0, int a1) {
     return p;
 }
 
-void *func_00002014(char *a0, int a1) {
+void *game_getNthChild_00002014(char *a0, int a1) {
     void *p = *(void**)(a0 + 0x70);
     int i;
     for (i = 0; i < a1; i++) {
@@ -1158,7 +1158,7 @@ void *func_00002014(char *a0, int a1) {
     return p;
 }
 
-void func_00002060(char *a0, int a1, int a2, int a3, int a4, int a5) {
+void game_setParams_00002060(char *a0, int a1, int a2, int a3, int a4, int a5) {
     *(int*)(a0 + 0x80) = a1;
     *(int*)(a0 + 0x84) = a2;
     *(int*)(a0 + 0x88) = a4;
@@ -1166,7 +1166,7 @@ void func_00002060(char *a0, int a1, int a2, int a3, int a4, int a5) {
     *(int*)(a0 + 0x8C) = a3;
 }
 
-void func_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
+void game_clearWindows_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
 
 /* append to count+entries list at 0x104 (count) + 0x108 (4-byte entries).
  * MATCHED 2026-06-21: the long-standing `addu`-before-`sw count` cap was an
@@ -1175,28 +1175,28 @@ void func_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
  * scheduler interleave them by data-readiness (it hoists `addu t8,a0,t7` so
  * t8 is ready for the delay-slot `sw a1,0x108(t8)`), producing the target's
  * addu-before-sw order. Same-line lever (cf. game_createBGBox). Sibling
- * func_000020AC cracked identically. */
-void func_00002088(char *a0, int a1) {
+ * game_addPlayer_000020AC cracked identically. */
+void game_addWindow_00002088(char *a0, int a1) {
     int idx = *(int *)(a0 + 0x104);
     *(int *)(a0 + 0x104) = idx + 1; *(int *)(a0 + idx * 4 + 0x108) = a1;
 }
 
-void func_000020A4(int *a0) { *(int*)((char*)a0 + 0xC0) = 0; }
+void game_clearPlayers_000020A4(int *a0) { *(int*)((char*)a0 + 0xC0) = 0; }
 
 /* append-pair to a count+entries list at offset 0xC0 (count) + 0xC4 (pairs
- * of 8). MATCHED 2026-06-21: same as1 SCHEDULER TIE as func_00002088 — the
+ * of 8). MATCHED 2026-06-21: same as1 SCHEDULER TIE as game_addWindow_00002088 — the
  * `sw t9,0xC0(a0)`-before-`addu t1,a0,t0` cap was a per-statement-line
  * tie-break. Collapsing the count-store and entry-store onto one source line
  * lets as1 hoist the addu (t1 needed for the delay-slot store), matching the
  * target's addu-before-sw order. */
-void func_000020AC(int *a0, int a1, int a2) {
+void game_addPlayer_000020AC(int *a0, int a1, int a2) {
     int idx;
     *(int*)((char*)a0 + *(int*)((char*)a0 + 0xC0) * 8 + 0xC8) = a2;
     idx = *(int*)((char*)a0 + 0xC0);
     *(int*)((char*)a0 + 0xC0) = idx + 1; *(int*)((char*)a0 + idx * 8 + 0xC4) = a1;
 }
 
-void func_000020D8(char *a0, int a1) {
+void game_forEachPlayer_000020D8(char *a0, int a1) {
     int i;
     char *p;
     if (*(int*)(a0 + 0xC0) > 0) {
@@ -1210,40 +1210,40 @@ void func_000020D8(char *a0, int a1) {
     }
 }
 
-void func_0000214C(int a0) {
+void game_stub_0000214C(int a0) {
 }
 
-void func_00002154(char *a0) {
+void boot_readFloatParm_00002154(char *a0) {
     int scratch;
-    func_00001C10(&scratch);
-    func_00001C4C((float*)(a0 + 0x10));
+    stream_readS32_00001C10(&scratch);
+    stream_readF32_00001C4C((float*)(a0 + 0x10));
 }
 
-void func_00002184(char *a0) {
+void boot_readVec3Parm_00002184(char *a0) {
     int scratch;
-    func_00001C10(&scratch);
-    func_00001C88(a0 + 0x10);
+    stream_readS32_00001C10(&scratch);
+    stream_readVec3_00001C88(a0 + 0x10);
 }
 
-void func_000021B4(char *a0) {
+void boot_readIntParm_000021B4(char *a0) {
     int scratch;
-    func_00001C10(&scratch);
-    func_00001CF8((int*)(a0 + 0x10));
+    stream_readS32_00001C10(&scratch);
+    stream_readS32_00001CF8((int*)(a0 + 0x10));
 }
 
-void func_000021E4(char *a0) {
+void boot_readQuadParm_000021E4(char *a0) {
     int scratch;
-    func_00001C10(&scratch);
-    func_00001D34((Quad4*)(a0 + 0x10));
+    stream_readS32_00001C10(&scratch);
+    stream_readQuad_00001D34((Quad4*)(a0 + 0x10));
 }
 
-void func_00002214(char *a0) {
+void boot_readIntParm_00002214(char *a0) {
     int scratch;
-    func_00001C10(&scratch);
-    func_00001C10((int*)(a0 + 0x10));
+    stream_readS32_00001C10(&scratch);
+    stream_readS32_00001C10((int*)(a0 + 0x10));
 }
 
-/* func_00002244: byte-identical twin of func_0000EBE8 (alloc-or-fail +
+/* boot_ItemType_create_00002244: byte-identical twin of boot_ItemType_create_0000EBE8 (alloc-or-fail +
  * linked-list-prepend). EXACT 2026-07-15 (82.4% -> 36/36, ROM byte-exact)
  * via the EBE8 recipe: ret=p + destructive p+=4 in-place advance (2nd def
  * blocks copyprop, p colors $a0), condition-tests-expression with the
@@ -1254,7 +1254,7 @@ void func_00002214(char *a0) {
  * this early in the file — see the orphan .s header). Retires the old
  * volatile-int-pp NM ceiling verdict. */
 extern int func_00000000();
-int *func_00002244(int *caller_a0) {
+int *boot_ItemType_create_00002244(int *caller_a0) {
     int *ret;
     int *target;
     int *p;
@@ -1278,20 +1278,20 @@ int *func_00002244(int *caller_a0) {
 
 #pragma GLOBAL_ASM("asm/nonmatchings/bootup_uso/bootup_orphan_000022D4.s")
 
-void func_000022E0(int *dst) {
+void stream_readS32_000022E0(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000231C(float *dst) {
+void stream_readF32_0000231C(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_00002358();
-void func_00002358(Vec3 *dst) {
+extern void stream_readVec3_00002358();
+void stream_readVec3_00002358(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -1304,7 +1304,7 @@ void func_00002358(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_000023C8(Quad4 *dst) {
+void stream_readQuad_000023C8(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -1343,7 +1343,7 @@ end:
 
 // CamDirector_update(obj): per-frame state/animation tick for a bootup_uso scene object.
 // Sibling of the obj->0x28 vtable-dispatch family (the 0x6C/0x68 jalr idiom appears 3x,
-// same shape as Mountain_func_0000485C draw-delegate path).
+// same shape as Mountain_display draw-delegate path).
 //
 // Pseudocode:
 //   cfg = obj->0x38;  world = obj->0x2C;  cam = world->0x70;
@@ -1684,7 +1684,7 @@ void *game_init(char *scene, int a1, int a2, int a3) {
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_init);
 #endif
 
-/* func_00002C94 - verified structural decode (0x110, 68 insns,
+/* game_initDdm_00002C94 - verified structural decode (0x110, 68 insns,
  * subsystem init: scratch-vec setup + global flag config + table
  * walk).
  * Struct-typing reference: func_000003F8+0xF8 = f32 default value;
@@ -1713,7 +1713,7 @@ extern f32 bu_2c94_dst[];
 extern char bu_2c94_src[], bu_2c94_ctx[], D_000073E8;
 extern int bu_2c94_mode, bu_2c94_x_ld, bu_2c94_x_st, bu_2c94_y_ld[], bu_2c94_y_st[];
 extern int bu_2c94_tbl[], bu_2c94_gate;
-void func_00002C94(void *a0, void *a1) {
+void game_initDdm_00002C94(void *a0, void *a1) {
     f32 k;
     int *p;
     int e;
@@ -1803,7 +1803,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
 
 /* game_createLights - verified structural decode (0x228, 138 insns,
  * multi-widget builder + per-child init). Builder+register family
- * (cf. func_00001E08 / MapProp_func_00006734).
+ * (cf. WorldRegistry_create_00001E08 / MapProp_hostioParms).
  *   void game_createLights(St *s1) {
  *       func_00000000(&D_0000741C, 0);            // pre-init
  *       c = func_00000000(0, &D_00007424);        // build child 0
@@ -1919,7 +1919,7 @@ void game_createLights(char *s1) {
     func_00000000_2F90_v();
 }
 
-void func_000031B8(int a0) {
+void game_stub_000031B8(int a0) {
 }
 
 // cam_create — STRUCTURAL PASS (0x328 / 202 insns, no episode).
@@ -2800,40 +2800,40 @@ void game_setupDemoSplit(char *s0, int a1) {
     *(char**)(r[1] + 0x8DC) = b4;
 }
 
-void func_0000462C(char *a0) {
+void boot_readFloatParm_0000462C(char *a0) {
     int scratch;
-    func_000022E0(&scratch);
-    func_0000231C((int*)(a0 + 0x10));
+    stream_readS32_000022E0(&scratch);
+    stream_readF32_0000231C((int*)(a0 + 0x10));
 }
 
-void func_0000465C(char *a0) {
+void boot_readVec3Parm_0000465C(char *a0) {
     int scratch;
-    func_000022E0(&scratch);
-    func_00002358((int*)(a0 + 0x10));
+    stream_readS32_000022E0(&scratch);
+    stream_readVec3_00002358((int*)(a0 + 0x10));
 }
 
-void func_0000468C(char *a0) {
+void boot_readQuadParm_0000468C(char *a0) {
     int scratch;
-    func_000022E0(&scratch);
-    func_000023C8((int*)(a0 + 0x10));
+    stream_readS32_000022E0(&scratch);
+    stream_readQuad_000023C8((int*)(a0 + 0x10));
 }
 
-void func_000046BC(char *a0) {
+void boot_readIntParm_000046BC(char *a0) {
     int scratch;
-    func_000022E0(&scratch);
-    func_000022E0((int*)(a0 + 0x10));
+    stream_readS32_000022E0(&scratch);
+    stream_readS32_000022E0((int*)(a0 + 0x10));
 }
 
 extern char D_00000000;
 
-/* func_000046EC: 36-insn (0x90) entry-list constructor. BYTE-EXACT, ported
+/* boot_ItemType_create_000046EC: 36-insn (0x90) entry-list constructor. BYTE-EXACT, ported
  * from its masked-hash twin donor edd_ItemType_create_000003BC (byte-identical
  * body, 0 non-reloc word diffs). The donor's clean C form (p2/head/p1 decl
  * order + char*-cast field access + p1[0x40/4] re-read) reproduces the target's
  * $a0/$v1 regalloc + 0x28 frame that the prior node[]/head[] array-index NM
  * body (89.31% ceiling) couldn't. Was once force-matched via 22-entry
  * INSN_PATCH (banned 2026-05-23); this is the genuine C match. */
-void *func_000046EC(int *arg0) {
+void *boot_ItemType_create_000046EC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -2856,8 +2856,8 @@ void *func_000046EC(int *arg0) {
     return p2;
 }
 
-/* Mountain_func_0000477C - verified structural decode (0xE0, 56 insns,
- * slider/parameter registration). SIBLING of MapProp_func_00006734 (same
+/* Mountain_hostioParms - verified structural decode (0xE0, 56 insns,
+ * slider/parameter registration). SIBLING of MapProp_hostioParms (same
  * registration-builder shape, here with float range/step params).
  * (reg = func_00000000; a3 = min/step as f32 bits, 5th/6th args =
  * max + flag on the stack at sp+0x10 / sp+0x14.)
@@ -2874,7 +2874,7 @@ extern char D_000074F4, D_00007500, D_00007508, D_00007510;
 /* MATCHED 2026-06-02: typed-float proto (0x0-alias) makes args 4,5 pass as
  * single floats (a3 reg + swc1 0x10 stack) instead of K&R double-promote. */
 extern void func_477c_reg(void *, void *, void *, float, float, int);
-void Mountain_func_0000477C(char *a0) {
+void Mountain_hostioParms(char *a0) {
     func_00000000(&D_00000000, &D_000074F4, 0);
     func_477c_reg(&D_00000000, &D_00007500, a0 + 0x2C, -2000.0f,  2000.0f, 0);
     func_477c_reg(&D_00000000, &D_00007508, a0 + 0x34,    0.01f,    1.0f, 0);
@@ -2883,7 +2883,7 @@ void Mountain_func_0000477C(char *a0) {
     func_00000000(a0);
 }
 
-/* Mountain_func_0000485C - verified structural decode (0xB8, 46 insns,
+/* Mountain_display - verified structural decode (0xB8, 46 insns,
  * FP transform/draw helper).
  * Struct-typing reference: a0 = object; a0->0x2C/0x30/0x34 (44/48/52)
  * f32 source vector components; global root *(&D_a) ->0x70 (112) ptr
@@ -2898,7 +2898,7 @@ extern void func_00000080();  /* used as data-symbol base */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_485C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): V3 ctor
  * forwarding to set(), b2 in an inner block (allocated after b1's pool slots). */
-void Mountain_func_0000485C(char *a0) {
+void Mountain_display(char *a0) {
     volatile char *r = a0;
 }
 
@@ -2920,13 +2920,13 @@ void cam_func_00004948(char *obj) {
     volatile int r = 0;
 }
 
-void func_00004FF0(int *dst) {
+void stream_readS32_00004FF0(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000502C(int *dst) {
+void stream_readS32_0000502C(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
@@ -3435,11 +3435,11 @@ end:
 extern void *gRoot; /* zero-page USO-GOT global; reloaded per use (no CSE) */
 /* tail-block init globals (decode-progress 2026-06-26): the four transform-group
  * registrations + final 0x58 block pass a distinct per-group global as arg2
- * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and Tv1Tmpl_func_00007E50's
+ * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and Tv1Tmpl_update's
  * word value, the 2nd 0x48 uses D_00007E54, and obj+0x28 stores &D_00007600. */
 extern int D_00007E48, D_00007E54, D_00007E58, D_00007E5C, D_00007E60, D_00007E64, D_00007E68;
 extern char D_00007600;
-extern void Tv1Tmpl_func_00007E50(int *a0);
+extern void Tv1Tmpl_update(int *a0);
 extern int D_00007E20, D_00007E24; /* arg1==1 list-init globals (decode 2026-06-26) */
 extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
 extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
@@ -3661,7 +3661,7 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
     nl = (char *)func_00000000(0, &D_00007E48, &D_55A0_tb, 0);
-    *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&Tv1Tmpl_func_00007E50);
+    *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&Tv1Tmpl_update);
     p1.w = t4.w;
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
@@ -3704,7 +3704,7 @@ void item_registerTemplates(char *b) {
 }
 #endif
 
-void func_00005EF8(int *dst) {
+void stream_readS32_00005EF8(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
@@ -3791,20 +3791,20 @@ char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
   return s1;
 }
 
-void func_00006100(float *dst) {
+void stream_readF32_00006100(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000613C(Quad4 *dst) {
+void stream_readQuad_0000613C(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-extern void func_00006194();
-void func_00006194(Vec3 *dst) {
+extern void stream_readVec3_00006194();
+void stream_readVec3_00006194(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -3829,8 +3829,8 @@ void func_00006204(void) {
     volatile int r = 0;
 }
 
-void func_00006228(char *a0) {
-    func_0000502C((int*)(a0 + 0x3C));
+void ColourItem_readParms_00006228(char *a0) {
+    stream_readS32_0000502C((int*)(a0 + 0x3C));
     func_00000000(a0);
 }
 
@@ -3897,7 +3897,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     return a0;
 }
 
-// MapProp_func_000063B4 — 0x380 / 224 insns. Minimap marker projection. 23.4 -> 76.0
+// MapProp_display — 0x380 / 224 insns. Minimap marker projection. 23.4 -> 76.0
 // (agent-f 2026-09-04, hand reconstruction from the target .s; old body was
 // a 78-insn stub that dropped the whole 3x3 transform + clamp cascade).
 // Shape recovered: obj homed at 0x90(sp) (no s-regs); K = folded const
@@ -3929,11 +3929,11 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 184: an inline M3::xf(V3 &) called
  * through ctx->view->rot, plus set() / addz() members on the two frame vectors). The cfe decode
  * (83.21) is in git history. */
-void MapProp_func_000063B4(char *obj) {
+void MapProp_display(char *obj) {
     volatile char *r = obj;
 }
 
-/* MapProp_func_00006734 - verified structural decode (0xD4, 53 insns,
+/* MapProp_hostioParms - verified structural decode (0xD4, 53 insns,
  * 4-entry registration/builder).
  * (reg = func_00000000; the 5th/6th args are passed on the stack at
  * sp+0x10 / sp+0x14, the documented IDO stack-arg slots.)
@@ -3945,7 +3945,7 @@ void MapProp_func_000063B4(char *obj) {
  * pairs. Caps <80: 6x reloc calls + 4x &D reloc + 5th/6th stack-arg
  * passing (sp+0x10/0x14). INCLUDE_ASM remains build path. */
 extern char D_00007EA4, D_00007EA8, D_00007EAC, D_00007EB0;
-void MapProp_func_00006734(char *a0) {
+void MapProp_hostioParms(char *a0) {
     func_00000000(&D_00000000, &D_00007EA4, 0);
     func_00000000(&D_00000000, &D_00007EA8, a0 + 0xB8, 0, 0x7F, 1);
     func_00000000(&D_00000000, &D_00007EAC, a0 + 0xC0, 0, 0x7F, 1);
@@ -3987,7 +3987,7 @@ void MapProp_func_00006734(char *a0) {
 //     func_00000000 + 0x4  = a WRITABLE global mode word (RMW |0x20000);
 //     func_00000188 + 0x3C = a folded table (read 6x);
 //     func_0000057C + 0x38 = a folded f32 const (sibling of the
-//                            func_0000057C+0x34 ref in MapProp_func_000063B4).
+//                            func_0000057C+0x34 ref in MapProp_display).
 // Caps (DEFERRED): 594-insn dispatcher-heavy ctor w/ folded globals
 //   — byte-match blocked by deferred pool symbolization + GOT-base
 //   coloring (arg0->s7, two module globals pinned in s4/s5, the running
@@ -4131,7 +4131,7 @@ void func_00007204(int a0, int a1, int a2) {
     volatile int r = 0;
 }
 
-/* EnvSettings_func_00007288: 40-insn (0xA0) two-conditional state-init helper.
+/* EnvSettings_display: 40-insn (0xA0) two-conditional state-init helper.
  *
  * Structure:
  *   self = D[0x254];   // global state pointer at &D_00000000 + 0x254
@@ -4169,7 +4169,7 @@ void func_00007204(int a0, int a1, int a2) {
  * named-web free-pool tie class. NM. */
 typedef struct { int w[4]; } Q7288;
 extern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
-void EnvSettings_func_00007288(int *a0) {
+void EnvSettings_display(int *a0) {
     if (a0[0x38/4] & 2) {
         char *base = (char*)&D_00000000;
         *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)a0[0x30/4];
@@ -4192,8 +4192,8 @@ void EnvSettings_func_00007288(int *a0) {
  * lui 0x3F800000 / mtc1, no pool).
  *
  * Structure (verified vs .s):
- *   while (func_00005EF8(&flag), flag != 0) {
- *       func_0000502C(&outv);
+ *   while (stream_readS32_00005EF8(&flag), flag != 0) {
+ *       stream_readS32_0000502C(&outv);
  *       node = s3->0x2C; cval = node ? node->0x4 : node;
  *       for (; node && node->0x0; node = cval, cval = node->0x4)
  *           if (flag == node->0x0->0x4) { match = node->0x0; break; }
@@ -4202,7 +4202,7 @@ void EnvSettings_func_00007288(int *a0) {
  *       else { func_00000000(&D_00007FA0,&flag);
  *              func_00000000(&D,1,outv); }
  *   }
- *   func_0000502C(&s3->0x38); ...flag-1 -> reg-desc; flag-2 -> free 0x30/0x34;
+ *   stream_readS32_0000502C(&s3->0x38); ...flag-1 -> reg-desc; flag-2 -> free 0x30/0x34;
  *   mode=*(int*)(0x3C); if(mode==6||mode==0xB){ *(float*)0x2A0=1.0f;
  *       s3->0x34=0x320; s3->0x38|=2; }
  *
@@ -4216,13 +4216,13 @@ void EnvSettings_func_00007288(int *a0) {
  * permuter-immune coloring cap (project_1080_cap_analysis_2026-05-28):
  * same logic, spill-slot + saved-reg-number divergence, solvable only by
  * per-function exact-structure RE of the original stack-buffer shape
- * (func_00005EF8/keybuf likely wrote/compared a small stack STRUCT, not a
+ * (stream_readS32_00005EF8/keybuf likely wrote/compared a small stack STRUCT, not a
  * scalar). All three folded-symbol refs (func_0000027C+0x18,
  * func_00000008+0x34, func_0000029C+0x4) and the jal-0 callees ARE
  * reloc-correct here. INCLUDE_ASM remains build path. */
 extern char D_00007F90;
 extern char D_00007FA0;
-/* func_00005EF8 / func_0000502C already file-scope-declared. */
+/* stream_readS32_00005EF8 / stream_readS32_0000502C already file-scope-declared. */
 extern void func_0000027C();   /* K&R data-symbol base (0x27C) */
 extern void func_0000029C();   /* K&R data-symbol base (0x29C) */
 extern void func_00000008();   /* K&R data-symbol base (0x08)  */
@@ -4331,8 +4331,8 @@ void func_00007620(char *a0, int a1) {
 }
 #undef ST_7620
 
-/* Tv1_func_000076F4 - verified structural decode (0xDC, 55 insns).
- * Same FP transform/draw family as Mountain_func_0000485C (shared globals:
+/* Tv1_display - verified structural decode (0xDC, 55 insns).
+ * Same FP transform/draw family as Mountain_display (shared globals:
  * root *(func_0000023C+0x18), scratch vector func_00000080+0x20,
  * scale consts &D+0x128/0x12C/0x130, a global emit counter).
  * Struct-typing reference: s0 = drawable/emitter object. s0->0x5C
@@ -4341,7 +4341,7 @@ void func_00007620(char *a0, int a1) {
  * arg, s0->0x6C (108) f32 y-offset, s0+0x2C = a sub-struct pointer
  * arg. root = *(func_0000023C+0x18) global context; func_00000080+
  * 0x20 = shared f32 scratch vector {0x30,0x34,0x38} scaled per-frame
- * by the &D+0x128/0x12C/0x130 scale triple (same as Mountain_func_0000485C).
+ * by the &D+0x128/0x12C/0x130 scale triple (same as Mountain_display).
  * reloc_emit returns nonzero to proceed with the transform+draw.
  * Caps <80: FP mul.s/add.s chains + 3x reloc + cross-symbol data
  * refs (func_0000023C+0x18, func_00000080+0x20) + f32 stack-arg.
@@ -4357,7 +4357,7 @@ extern void func_0000023C();  /* used as data-symbol base */
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 180, the gl 39E24 shape:
  * the camera vector is a member of the global block, scaled through an inline
  * Cam::mul(G &) called on a local reference). The cfe decode (99.82) is in git history. */
-void Tv1_func_000076F4(char *s0) {
+void Tv1_display(char *s0) {
     volatile char *r = s0;
 }
 
@@ -4525,29 +4525,29 @@ m1:
 
 void func_00007A48(char *a0) {
     int scratch;
-    func_00004FF0(&scratch);
-    func_00006100((int*)(a0 + 0x10));
+    stream_readS32_00004FF0(&scratch);
+    stream_readF32_00006100((int*)(a0 + 0x10));
 }
 
-void func_00007A78(char *a0) {
+void boot_readQuadParm_00007A78(char *a0) {
     int scratch;
-    func_00004FF0(&scratch);
-    func_0000613C((int*)(a0 + 0x10));
+    stream_readS32_00004FF0(&scratch);
+    stream_readQuad_0000613C((int*)(a0 + 0x10));
 }
 
-void func_00007AA8(char *a0) {
+void boot_readIntParm_00007AA8(char *a0) {
     int scratch;
-    func_00004FF0(&scratch);
-    func_00004FF0((int*)(a0 + 0x10));
+    stream_readS32_00004FF0(&scratch);
+    stream_readS32_00004FF0((int*)(a0 + 0x10));
 }
 
-void func_00007AD8(char *a0) {
+void boot_readVec3Parm_00007AD8(char *a0) {
     int scratch;
-    func_00004FF0(&scratch);
-    func_00006194((int*)(a0 + 0x10));
+    stream_readS32_00004FF0(&scratch);
+    stream_readVec3_00006194((int*)(a0 + 0x10));
 }
 
-/* func_00007B08: 36-insn (0x90) alloc/init/link constructor. BYTE-EXACT,
+/* boot_ItemType_create_00007B08: 36-insn (0x90) alloc/init/link constructor. BYTE-EXACT,
  * ported from its masked-hash twin donor edd_ItemType_create_000003BC — the two
  * bodies are byte-identical (0 non-reloc word diffs). The donor's clean C
  * form (int* param + p2/head/p1 decl order + p1[0x40/4] int-array indexing)
@@ -4555,7 +4555,7 @@ void func_00007AD8(char *a0) {
  * which the prior permuter-mangled char* NM body (93.72% ceiling) could not
  * reach. Was once force-matched via 25-entry INSN_PATCH (banned 2026-05-23);
  * this is the genuine C match. */
-void *func_00007B08(int *arg0) {
+void *boot_ItemType_create_00007B08(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -4578,14 +4578,14 @@ void *func_00007B08(int *arg0) {
     return p2;
 }
 
-void func_00007B98(char *a0) {
+void boot_readIntParm_00007B98(char *a0) {
     int scratch;
-    func_00004FF0(&scratch);
-    func_0000502C((int*)(a0 + 0x10));
+    stream_readS32_00004FF0(&scratch);
+    stream_readS32_0000502C((int*)(a0 + 0x10));
 }
 
-void func_00007BC8(char *a0) {
-    func_00004FF0((int*)(a0 + 0x3C));
+void ColourItem_readParms_00007BC8(char *a0) {
+    stream_readS32_00004FF0((int*)(a0 + 0x3C));
     func_00000000(a0);
 }
 
@@ -4753,14 +4753,14 @@ end:
     *(int *)(s0 + 0x5C) = a3;
 }
 
-void Tv1Tmpl_func_00007E50(int *a0) {
+void Tv1Tmpl_update(int *a0) {
     *(int*)((char*)a0 + 0x68) = 0;
     func_00000000(a0);
 }
 
 extern int D_func_00007E70_a;
 extern int D_func_00007E70_b;
-void Tv1Tmpl_func_00007E70(char *a0) {
+void Tv1Tmpl_display(char *a0) {
     D_func_00007E70_a = 0;
     func_00000000(a0);
     if (D_func_00007E70_b != 0) {
@@ -4772,7 +4772,7 @@ void Tv1Tmpl_func_00007E70(char *a0) {
     }
 }
 
-/* Fog_func_00007EC8 - verified structural decode (0x1B0, 108 insns,
+/* Fog_display - verified structural decode (0x1B0, 108 insns,
  * FP 1D collision / threshold-crossing test).
  * Struct-typing reference: s0->0x38 (56) f32 = position, s0->0x54
  * (84) f32 = velocity, s0->0x6C (108) f32 = a derived value,
@@ -4803,7 +4803,7 @@ extern char bu_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
 extern int bu_7ec8_m;
 extern void func_00000000_7ec8_c(char *, char *, float);
 extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
-void Fog_func_00007EC8(char *s0) {
+void Fog_display(char *s0) {
     float scale, limit, p, end, frac;
     int hit;
     if (bu_7ec8_m != 8) {
@@ -4835,7 +4835,7 @@ void Fog_func_00007EC8(char *s0) {
     }
 }
 
-void Fog_func_00008078(char *a0) {
+void Fog_hostioParms(char *a0) {
     func_00000000(a0 + 0x3C, 0);
     func_00000000(a0 + 0x74);
     func_00000000(a0);
@@ -4847,7 +4847,7 @@ void Fog_func_000080B4(char *a0) {
     func_00000000(a0);
 }
 
-void Fog_func_000080EC(char *a0) {
+void Fog_readParms(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000((int*)(a0 + 0x74));
     func_00000000(a0);
@@ -4974,7 +4974,7 @@ char *FogTmpl_create(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", FogTmpl_create);
 #endif
 
-/* Snower_func_000082F8 — EXACT (54/54 post-link) 2026-07-03 agent-e. CRACKED the
+/* Snower_display — EXACT (54/54 post-link) 2026-07-03 agent-e. CRACKED the
  * documented "base $v0-vs-$v1 caller-saved renumber cap" (header note B, 2026-06-20).
  *
  * LEVER (NEW): call-1's callee was the K&R int-returning func_00000000 — its
@@ -4995,7 +4995,7 @@ extern int func_00000000_082F8(int, int, int, int, float, int, float);
 extern void func_00000000_082F8_v(int, int);
 extern char D_00000000_a;
 extern char D_func_00000008_data;
-void Snower_func_000082F8(int *a0) {
+void Snower_display(int *a0) {
     float f0 = *(float*)((char*)&D_00000000 + 0x130);
     float f2 = *(float*)((char*)*(int**)((char*)BOOT_SELF_PTR + 0x70) + 0xA8) * f0;
     float f12 = *(float*)((char*)a0 + 0x38) * f0;
@@ -5020,7 +5020,7 @@ void Snower_func_000082F8(int *a0) {
     }
 }
 
-/* Snower_func_000083D0: 30-insn (0x78) 5-call init/dispatch wrapper. Callee
+/* Snower_hostioParms: 30-insn (0x78) 5-call init/dispatch wrapper. Callee
  * func_00000000 is the K&R cross-USO placeholder.
  *
  * Decoded: single int* arg, makes 5 sequential calls, no return:
@@ -5035,7 +5035,7 @@ void Snower_func_000082F8(int *a0) {
  * 2/3/5). All delay slots are filled with addiu/move/lw arg setup. */
 extern char D_00007FD4;
 extern char D_00007FDC;
-void Snower_func_000083D0(int *a0) {
+void Snower_hostioParms(int *a0) {
     func_00000000(&D_00000000, &D_00007FD4, 0);
     func_00000000(&D_00000000, &D_00007FDC, (int)a0 + 0x6C, 1);
     func_00000000((int)a0 + 0x3C, 0);
@@ -5060,7 +5060,7 @@ void Snower_func_00008448(char *a0) {
     func_00000000(a0);
 }
 
-void Snower_func_00008474(char *a0) {
+void Snower_readParms(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000(a0);
 }
@@ -5180,7 +5180,7 @@ char *SnowTmpl_create(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowTmpl_create);
 #endif
 
-void Tree_func_00008664(char *a0, int *a1) {
+void Tree_handleMsg(char *a0, int *a1) {
     func_00000000(a0);
     if (*a1 == 7 || *a1 == 19) {
         *(float*)(a0 + 0xA0) = *(float*)(a0 + 0x5C);
@@ -5189,7 +5189,7 @@ void Tree_func_00008664(char *a0, int *a1) {
     }
 }
 
-/* TreeTmpl_func_000086C0: 33-insn (0x84) two-init + linked-list dispatcher.
+/* TreeTmpl_display: 33-insn (0x84) two-init + linked-list dispatcher.
  *
  * Matching notes: reusing arg0 as the list iterator makes IDO keep it in
  * $s0 across the two init calls; the separate `node` null-test produces the
@@ -5198,7 +5198,7 @@ void Tree_func_00008664(char *a0, int *a1) {
 extern int func_00000000();
 extern char gl_ref_00000294;
 
-void TreeTmpl_func_000086C0(char *arg0) {
+void TreeTmpl_display(char *arg0) {
     char *node;
     char *obj;
 
@@ -5221,7 +5221,7 @@ void TreeTmpl_func_000086C0(char *arg0) {
 
 extern char D_func_00008744_arg1;
 extern char D_func_00008744_arg2;
-void TreeTmpl_func_00008744(char *a0) {
+void TreeTmpl_hostioParms(char *a0) {
     int arg = *(int*)(a0 + 0xC);
     func_00000000(&D_func_00008744_arg1, arg, 0);
     func_00000000(a0 + 0x4C, 0);
@@ -5233,7 +5233,7 @@ void TreeTmpl_func_00008744(char *a0) {
 extern char D_00007FF4;
 extern float D_000005F0;
 
-/* TreeTmpl_create: allocator/init sibling of TreeTmpl_func_000086C0. EXACT 2026-10-16
+/* TreeTmpl_create: allocator/init sibling of TreeTmpl_display. EXACT 2026-10-16
  * (agent-c). The old caps were all C-reachable:
  *  - the three bare `lui r,0` bases at the top are three DISTINCT base-0
  *    globals (D_87A4_rd read, D_87A4_wr OR-store, D_87A4_cfg +4/+0 stores),
@@ -5319,7 +5319,7 @@ int game_loadUsoOnce(int arg0) {
     return 0;
 }
 
-void func_000089C0(int *dst) {
+void stream_readS32_000089C0(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
@@ -5678,7 +5678,7 @@ void ShpNode_func_00008FA8(int *self) {
  *       if (!sub1) return 0;
  *   }
  *   func(sub1, &D_00008738);
- *   sub1->[0x28] = &Fog_func_000080EC + 0x1C; // child vtable
+ *   sub1->[0x28] = &Fog_readParms + 0x1C; // child vtable
  *
  *   // cascade sub2: at sub1+0x2C if sub1 exists, else alloc 0x128
  *   if (sub1 != (int*)0xFFFFFFD4) {
@@ -5820,12 +5820,12 @@ extern void func_00000000_iipif(s32, s32, void *, f32, f32);
  * locals fill the target's gaps (4 above sp144, var_a2 + 2 below sp118, ...).
  * Self is the PARAM (move s2,a0 inside the save sequence, IDO_CODEGEN
  * #prologue-move-param-vs-copy-62368). The four rgb table bases are per-site
- * symbols (target lui/addiu %hi/%lo(Tree_func_00008664+0x24..0x30) + lbu 0/1/2).
+ * symbols (target lui/addiu %hi/%lo(Tree_handleMsg+0x24..0x30) + lbu 0/1/2).
  * Every sp-relative word now lands on the target slot. Residual: the arg2
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
@@ -6711,11 +6711,11 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 }
 #endif
 
-// func_0000B1B4 — STRUCTURAL PASS (0x2E8 / 186 insns, no episode).
+// SnowBoarder_loadBoardModel_0000B1B4 — STRUCTURAL PASS (0x2E8 / 186 insns, no episode).
 // Sound/resource-bank lazy loader + global-table registrar + play
 // dispatcher.
 //
-//   void func_0000B1B4(int cat, int idx, a2, a3) {
+//   void SnowBoarder_loadBoardModel_0000B1B4(int cat, int idx, a2, a3) {
 //     if (idx >= 0xA) idx = 9;               // clamp [0,9]
 //     if (cat >= 9)   cat = 8;               // clamp [0,8]
 //     if (cat == 7 || cat == 6) {            // banked categories
@@ -6727,7 +6727,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //         // optional sub-allocs keyed by sentinel addrs (-0x34/-0x58):
 //         //   alloc 8 -> {0,0} ; alloc 4 -> {0}
 //         func_00000000(s);  s2->0x5C = &D_0;
-//         r->0x24 = 0x110;  r->0x5C = &Snower_func_000083D0+0x70;  // folded vtbl
+//         r->0x24 = 0x110;  r->0x5C = &Snower_hostioParms+0x70;  // folded vtbl
 //         void *buf = func_00000000(0x1000);
 //         r->0x28 = 0x1100;  r->0x22 = (s16)0x20;  r->0x20 = (s16)0x40;
 //         r->0x38 = 0x402C4B;  r->0x1C = buf;  r->0x34 = 0;  r->0x18 = 0;
@@ -6752,7 +6752,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //   cat/idx = category & sub indices (clamped); a2/a3 forwarded to the
 //     final play call. Resource R (0x90): 0x18 state, 0x1C buffer ptr,
 //     0x20/0x22 s16 dims (0x40/0x20), 0x24=0x110 mode, 0x28=0x1100,
-//     0x34 flag, 0x38=0x402C4B id, 0x5C vtable(&Snower_func_000083D0+0x70).
+//     0x34 flag, 0x38=0x402C4B id, 0x5C vtable(&Snower_hostioParms+0x70).
 //   func_00000148 = WRITABLE global resource table: [0]=loaded-root,
 //     [0x14]=entry count, [n] = registered R ptrs. tableA/tableB =
 //     other global index->entry arrays.
@@ -6760,7 +6760,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //   vtables + name data; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
 //     func_00000148 (writable table), func_000089FC+0x2C /
-//     func_00008A40+0x8/+0x14 (name/string data), Snower_func_000083D0+0x70
+//     func_00008A40+0x8/+0x14 (name/string data), Snower_hostioParms+0x70
 //     (vtable).
 // Caps (DEFERRED): 186-insn lazy-init + table-register + multi-dispatch.
 //   2026-05-31 partial completion 55.9->67.1%: added the two sentinel-keyed
@@ -6770,7 +6770,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 //   2026-06-23 decode pass (agent-t) 161->177 insns (target 186), sim
 //   35.7->37.5%: (1) CORRECTNESS FIX — replaced all D_00000000+off named-table
 //   refs with the REAL symbols the .s relocs name: func_00000148 (writable
-//   table+flag+count), func_000089FC+0x2C (name data), Snower_func_000083D0+0x70
+//   table+flag+count), func_000089FC+0x2C (name data), Snower_hostioParms+0x70
 //   (vtable), func_00008A40+0x8/+0x14 (string data). Build reloc set now
 //   matches target's named relocs. (2) Reconstructed the nested ||-allocator-
 //   fallback cascade (m2c shape): r=alloc(0x90); r||(r=alloc) ; s=r||(s=alloc
@@ -6807,11 +6807,11 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The
  * last residual (counter in v0, target a1) was the registry: an inline
  * Reg::add() on the 5-slot table at func_00000148 doing `tbl[n++] = b`. */
-void func_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
+void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
     volatile unsigned int r = cat;
 }
 
-/* func_0000B49C: 33-insn (0x84) clamped-index dispatcher. EXACT 2026-07-15.
+/* SnowBoarder_createBoardShape_0000B49C: 33-insn (0x84) clamped-index dispatcher. EXACT 2026-07-15.
  *
  *   j = clamp(idx, 9); v = table1[j];
  *   if (gl_func(v, j) == 0) gl_func(&table1, v);
@@ -6838,7 +6838,7 @@ void func_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
  * all stay -40: local/register/inner-scope/named-off variants probed.) */
 extern char gl_ref_00008A58;
 extern int D_00000000_b49c[];  /* base-0 alias: 3rd table's separate lui (no CSE with 1st table's addr temp) */
-void func_0000B49C(int idx, int j) {
+void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     j = idx;
     if (j >= 10) j = 9;
     if (gl_func_00000000(((int*)&D_00000000)[j], j) == 0) {
@@ -7918,7 +7918,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
     func_00000000(st, g4);
 }
 
-// SnowBoarder_func_0000CFA0 — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
+// SnowBoarder_display — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
 // Per-frame active-object sync + draw-state / color update on a large
 // state struct (st = a0 = s0).
 //
@@ -7942,7 +7942,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 //   (no intervening barrier) while the target reloads each — no C knob forces
 //   the reload. Net: correct logic, divergent regalloc — permuter/cc territory.
 //
-//   void SnowBoarder_func_0000CFA0(State *st) {
+//   void SnowBoarder_display(State *st) {
 //     int *ctx = *(int**)(func_0000023C+0x18);          // global ctx ptr
 //     if ((st->0xA58 & 0x2000) && ctx == st->0x8DC) return;   // unchanged
 //     R *r = func_00000000(ctx, st->0xB4, st->0xB8, st->0xBC,
@@ -8008,7 +8008,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_CFA0.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): real
  * virtual calls, V3 copies, ctx first defined as the call argument. */
-void SnowBoarder_func_0000CFA0(char *st) {
+void SnowBoarder_display(char *st) {
     volatile char *r = st;
 }
 
@@ -8521,7 +8521,7 @@ cdef:
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_handleMsg);
 #endif
 
-void func_0000DDC4(int a0) {
+void SnowBoarder_stub_0000DDC4(int a0) {
 }
 
 /* SnowBoarder_func_0000DDCC - verified structural decode (0x138, 78 insns).
@@ -8683,9 +8683,9 @@ void func_0000E270(char *arg0, float arg1) {
     aE270(arg0 + 0xF4, arg0 + 0x3B0, 3.14159265f / arg1);
 }
 
-/* func_0000E2D0 - verified structural decode (0x20C, 131 insns,
+/* SnowBCollider_func_0000E2D0 - verified structural decode (0x20C, 131 insns,
  * FP vector reflect/project math helper).
- *   void func_0000E2D0(Obj *a0, int a1, Vec3f *a2, Vec3f *a3) {
+ *   void SnowBCollider_func_0000E2D0(Obj *a0, int a1, Vec3f *a2, Vec3f *a3) {
  *       // pass 1: input vector a2 vs axis a3
  *       Vec3f v = *a2;                            // sp+0x64
  *       f32 d = v.x*a3->x + v.y*a3->y + v.z*a3->z;// dot
@@ -8724,7 +8724,7 @@ void func_0000E270(char *arg0, float arg1) {
  * + spilled f-temps + the file-split needed to fold the pool load. Full body
  * INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode).
  * EXACT (agent-h run 408) via the IDO 7.1 -O2 donor bootup_uso_o2_E2D0.c
- * (REPLACE_FUNC_BODY, func_0000E2D0_rodata = 0x9A0 for the 0.1 literal). The
+ * (REPLACE_FUNC_BODY, SnowBCollider_func_0000E2D0_rodata = 0x9A0 for the 0.1 literal). The
  * in-unit body is the same C (keeps the .text size). The post-call FP ring:
  * the two code-free tests after the 9F8 line hand ugen a shared v[]
  * sub-expression that it evaluates into ring temps which as1 deletes as dead,
@@ -8743,7 +8743,7 @@ void func_0000E270(char *arg0, float arg1) {
  * Residual: d and the arg3->x load colour f2/f0 swapped, the dot/scale tail
  * colours, frame 0x50 vs 0x70. */
 /* Run 123 (agent-c, raw 55 -> 19 words): the f64 at RoData +0x9A0 is the literal
- * 0.1 (exact needs a donor, func_0000E2D0_rodata = 0x9A0 - 0); the frame is 112:
+ * 0.1 (exact needs a donor, SnowBCollider_func_0000E2D0_rodata = 0x9A0 - 0); the frame is 112:
  * one unused word between s and dot and seven below dot (dot's home at sp+68);
  * dot and s are ONE variable (f0 across the call, spilled to its home); the
  * normalise call takes only &v[0] but arg3 stays live in a3 (spilled at 124),
@@ -8755,7 +8755,7 @@ void func_0000E270(char *arg0, float arg1) {
  * ring offset it causes in the final scale block.
  * NCC compiles of this body are much worse (frame 80, no pads). */
 extern f64 bu_e2d0_k9a0;  /* rodata f64 (target SndHandle_triggerEvent1_0000098C + 0x14) */
-void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
+void SnowBCollider_func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     Vec3 v[2];
     f32 d;
     f32 lim;
@@ -8798,13 +8798,13 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     }
 }
 
-/* SnowBoarder_func_0000E4DC - verified structural decode (0xAC, 43 insns).
+/* SnowBoarder_readParms - verified structural decode (0xAC, 43 insns).
  * Per-frame update/teardown over a composite object a0 (= s2). Uses
  * the documented obj->0x28 vtable-dispatch idiom (PATTERNS.md
  * #feedback-1080-obj-0x28-vtable-dispatch), 0x4C/0x48 offset variant.
  * Struct-typing reference: a0 composite object; a0+0x540 / a0+0x108
  * sub-regions passed to reloc sub-init/deinit; a0+0x8C8 s16 array of
- * `n` elements (n produced by func_000089C0, per-element processed by
+ * `n` elements (n produced by stream_readS32_000089C0, per-element processed by
  * func_000089FC); a0->0x840 (2112) child A ptr, a0->0x804 (2052)
  * child B ptr; child->0x28 (40) vtable ptr with fn @0x4C (76) and
  * s16 base-adjust @0x48 (72). Caps <80: 2x reloc + 2x vtable jalr +
@@ -8817,14 +8817,14 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
  * diffs are ALL the frame-layout delta: target reserves -0x38, build
  * -0x40 (8 extra bytes of IDO spill-pad between the saved-reg block and
  * the `&n` slot at sp+0x34 vs sp+0x3C). Pure allocator frame-reservation
- * (the `&n` escapes to func_000089C0); not C-reachable. Stays NM. */
-void SnowBoarder_func_0000E4DC(char *a0) {
+ * (the `&n` escapes to stream_readS32_000089C0); not C-reachable. Stays NM. */
+void SnowBoarder_readParms(char *a0) {
   int n;
   short *p;
   int i;
   int *v;
   func_00000000(a0 + 0x540);
-  func_000089C0(&n);
+  stream_readS32_000089C0(&n);
   i = 0;
   p = (short *) (a0 + 0x8C8);
   for (; i < n; i++)
@@ -8842,15 +8842,15 @@ void SnowBoarder_func_0000E4DC(char *a0) {
   }
 }
 
-void func_0000E588(char *a0) {
+void boot_readFloatParm_0000E588(char *a0) {
     int scratch;
-    func_000089C0(&scratch);
+    stream_readS32_000089C0(&scratch);
     func_00008A40((int*)(a0 + 0x10));
 }
 
-void func_0000E5B8(char *a0) {
+void boot_readVec3Parm_0000E5B8(char *a0) {
     int scratch;
-    func_000089C0(&scratch);
+    stream_readS32_000089C0(&scratch);
     func_00008A7C((int*)(a0 + 0x10));
 }
 
@@ -8860,28 +8860,28 @@ void ShpNode_func_0000E5F0(char *a0) {
     func_00000000(a0 + 0x108);
 }
 
-void ShpNode_func_0000E610(char *a0) {
+void ShpNode_readParms(char *a0) {
     func_00000000(a0 + 0x108);
 }
 
-void func_0000E630(char *a0) {
+void boot_readQuadParm_0000E630(char *a0) {
     int scratch;
-    func_000089C0(&scratch);
+    stream_readS32_000089C0(&scratch);
     func_00008AEC((int*)(a0 + 0x10));
 }
 
-void func_0000E660(char *a0) {
+void boot_readIntParm_0000E660(char *a0) {
     int scratch;
-    func_000089C0(&scratch);
-    func_000089C0((int*)(a0 + 0x10));
+    stream_readS32_000089C0(&scratch);
+    stream_readS32_000089C0((int*)(a0 + 0x10));
 }
 
-/* func_0000E690: byte-identical mirror of func_00000C10 / func_000046EC /
- * func_00007B08 — all byte-exact twins of donor edd_ItemType_create_000003BC.
+/* boot_ItemType_create_0000E690: byte-identical mirror of func_00000C10 / boot_ItemType_create_000046EC /
+ * boot_ItemType_create_00007B08 — all byte-exact twins of donor edd_ItemType_create_000003BC.
  * BYTE-EXACT via the donor's clean C form (p2/head/p1 decl order + char*-cast
  * field access + p1[0x40/4] re-read). Was once force-matched via INSN_PATCH
  * (banned 2026-05-23); this is the genuine C match. */
-void *func_0000E690(int *arg0) {
+void *boot_ItemType_create_0000E690(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -8904,11 +8904,11 @@ void *func_0000E690(int *arg0) {
     return p2;
 }
 
-void func_0000E720(char *a0) {
+void SnowBChild_readParms_0000E720(char *a0) {
     func_00000000(a0 + 0x2C);
 }
 
-/* func_0000E740 - verified structural decode (0xB4, 48 insns,
+/* SnowBoarder_func_0000E740 - verified structural decode (0xB4, 48 insns,
  * 2D strided->packed halfword blit / unswizzle).
  * Struct-typing reference: global root *(func_0000023C+4); root->0x28
  * (40) vtable ptr with fn @0x64 (100) + s16 base-adjust @0x60 (96)
@@ -8921,7 +8921,7 @@ void func_0000E720(char *a0) {
  * INCLUDE_ASM remains build path. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E740.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
-void func_0000E740(char *a0, int a1) {
+void SnowBoarder_func_0000E740(char *a0, int a1) {
     volatile char *r = a0;
 }
 
@@ -8943,20 +8943,20 @@ void SnowBoard_func_0000E800(void) {
     volatile int r = 0;
 }
 
-void func_0000E8BC(int *dst) {
+void stream_readS32_0000E8BC(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000E8F8(float *dst) {
+void stream_readF32_0000E8F8(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_0000E934();
-void func_0000E934(Vec3 *dst) {
+extern void stream_readVec3_0000E934();
+void stream_readVec3_0000E934(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -8969,7 +8969,7 @@ void func_0000E934(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_0000E9A4(Quad4 *dst) {
+void stream_readQuad_0000E9A4(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -9017,31 +9017,31 @@ void SnowBoard_func_0000EAF8(int a0) {
     func_00000000(D_00000190, 3, 0);
 }
 
-void func_0000EB28(char *a0) {
+void boot_readFloatParm_0000EB28(char *a0) {
     int scratch;
-    func_0000E8BC(&scratch);
-    func_0000E8F8((int*)(a0 + 0x10));
+    stream_readS32_0000E8BC(&scratch);
+    stream_readF32_0000E8F8((int*)(a0 + 0x10));
 }
 
-void func_0000EB58(char *a0) {
+void boot_readVec3Parm_0000EB58(char *a0) {
     int scratch;
-    func_0000E8BC(&scratch);
-    func_0000E934((int*)(a0 + 0x10));
+    stream_readS32_0000E8BC(&scratch);
+    stream_readVec3_0000E934((int*)(a0 + 0x10));
 }
 
-void func_0000EB88(char *a0) {
+void boot_readQuadParm_0000EB88(char *a0) {
     int scratch;
-    func_0000E8BC(&scratch);
-    func_0000E9A4((int*)(a0 + 0x10));
+    stream_readS32_0000E8BC(&scratch);
+    stream_readQuad_0000E9A4((int*)(a0 + 0x10));
 }
 
-void func_0000EBB8(char *a0) {
+void boot_readIntParm_0000EBB8(char *a0) {
     int scratch;
-    func_0000E8BC(&scratch);
-    func_0000E8BC((int*)(a0 + 0x10));
+    stream_readS32_0000E8BC(&scratch);
+    stream_readS32_0000E8BC((int*)(a0 + 0x10));
 }
 
-/* func_0000EBE8: 36-insn alloc-or-fail + linked-list-prepend wrapper.
+/* boot_ItemType_create_0000EBE8: 36-insn alloc-or-fail + linked-list-prepend wrapper.
  * EXACT 2026-07-15 (84.5% -> 36/36, ROM byte-exact with C as build path).
  * Three coupled levers cracked the old "0x20-frame $a2" residual:
  *  (1) `ret = p; p += 4;` — the target's `addiu a0,a0,0x10` is a DESTRUCTIVE
@@ -9057,7 +9057,7 @@ void func_0000EBB8(char *a0) {
  *      (p->0x1C, target->0x20, ret->0x24).
  * Trailing 2 alignment nops (0xEC78/EC7C) restored via all-zero
  * SUFFIX_BYTES_FORCE in the Makefile (genuine pad, not instructions). */
-int *func_0000EBE8(int *caller_a0) {
+int *boot_ItemType_create_0000EBE8(int *caller_a0) {
     int *ret;
     int *target;
     int *p;
@@ -9079,20 +9079,20 @@ int *func_0000EBE8(int *caller_a0) {
     return ret;
 }
 
-void func_0000EC80(int *dst) {
+void stream_readS32_0000EC80(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000ECBC(float *dst) {
+void stream_readF32_0000ECBC(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_0000ECF8();
-void func_0000ECF8(Vec3 *dst) {
+extern void stream_readVec3_0000ECF8();
+void stream_readVec3_0000ECF8(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -9105,7 +9105,7 @@ void func_0000ECF8(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_0000ED68(Quad4 *dst) {
+void stream_readQuad_0000ED68(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -9113,42 +9113,42 @@ void func_0000ED68(Quad4 *dst) {
 
 void game_setupEmpty(int a0, int a1) {}
 
-void func_0000EDCC(char *a0) {
+void boot_readFloatParm_0000EDCC(char *a0) {
     int scratch;
-    func_0000EC80(&scratch);
-    func_0000ECBC((int*)(a0 + 0x10));
+    stream_readS32_0000EC80(&scratch);
+    stream_readF32_0000ECBC((int*)(a0 + 0x10));
 }
 
-void func_0000EDFC(char *a0) {
+void boot_readVec3Parm_0000EDFC(char *a0) {
     int scratch;
-    func_0000EC80(&scratch);
-    func_0000ECF8((int*)(a0 + 0x10));
+    stream_readS32_0000EC80(&scratch);
+    stream_readVec3_0000ECF8((int*)(a0 + 0x10));
 }
 
-void func_0000EE2C(char *a0) {
+void boot_readQuadParm_0000EE2C(char *a0) {
     int scratch;
-    func_0000EC80(&scratch);
-    func_0000ED68((int*)(a0 + 0x10));
+    stream_readS32_0000EC80(&scratch);
+    stream_readQuad_0000ED68((int*)(a0 + 0x10));
 }
 
-void func_0000EE5C(char *a0) {
+void boot_readIntParm_0000EE5C(char *a0) {
     int scratch;
-    func_0000EC80(&scratch);
-    func_0000EC80((int*)(a0 + 0x10));
+    stream_readS32_0000EC80(&scratch);
+    stream_readS32_0000EC80((int*)(a0 + 0x10));
 }
 
-/* func_0000EE8C: alloc-cascade constructor, sibling of func_0000EBE8.
+/* boot_ItemType_create_0000EE8C: alloc-cascade constructor, sibling of boot_ItemType_create_0000EBE8.
  * BYTE-EXACT + LANDED (2026-06-21). The body was byte-exact once `ret` was
  * declared FIRST (IDO assigns it the highest local slot 0x24, matching target);
  * the only residual was the target's single trailing 8-byte-alignment nop at
- * 0xEF1C (so func_0000EF20 sits at 0xEF20). Resolved by appending that one
- * all-zero (nop) word via `SUFFIX_BYTES_FORCE := func_0000EE8C=0x00000000` in
+ * 0xEF1C (so stream_readS32_0000EF20 sits at 0xEF20). Resolved by appending that one
+ * all-zero (nop) word via `SUFFIX_BYTES_FORCE := boot_ItemType_create_0000EE8C=0x00000000` in
  * the Makefile — the SAME legitimate alignment-pad mechanism already used for
  * gui_fontAdjustAdvance / h2hproc fns. The earlier "cannot land" note assumed a
  * GLOBAL_ASM dummy (8-byte -O2 floor → +4 overshoot); SUFFIX_BYTES_FORCE appends
- * exactly one word, so func_0000EF20 lands at 0xEF20 and the ROM stays exact.
+ * exactly one word, so stream_readS32_0000EF20 lands at 0xEF20 and the ROM stays exact.
  * This works mid-segment (with a following symbol), not just at segment-end. */
-void *func_0000EE8C(void *caller_a0) {
+void *boot_ItemType_create_0000EE8C(void *caller_a0) {
   void *ret;
   void *target;
   register void *p;
@@ -9174,20 +9174,20 @@ void *func_0000EE8C(void *caller_a0) {
   return ret;
 }
 
-void func_0000EF20(int *dst) {
+void stream_readS32_0000EF20(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000EF5C(float *dst) {
+void stream_readF32_0000EF5C(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-extern void func_0000EF98();
-void func_0000EF98(Vec3 *dst) {
+extern void stream_readVec3_0000EF98();
+void stream_readVec3_0000EF98(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -9200,52 +9200,52 @@ void func_0000EF98(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void func_0000F008(Quad4 *dst) {
+void stream_readQuad_0000F008(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void func_0000F060(char *a0) {
+void boot_readFloatParm_0000F060(char *a0) {
     int scratch;
-    func_0000EF20(&scratch);
-    func_0000EF5C((int*)(a0 + 0x10));
+    stream_readS32_0000EF20(&scratch);
+    stream_readF32_0000EF5C((int*)(a0 + 0x10));
 }
 
-void func_0000F090(char *a0) {
+void boot_readVec3Parm_0000F090(char *a0) {
     int scratch;
-    func_0000EF20(&scratch);
-    func_0000EF98((int*)(a0 + 0x10));
+    stream_readS32_0000EF20(&scratch);
+    stream_readVec3_0000EF98((int*)(a0 + 0x10));
 }
 
-void func_0000F0C0(char *a0) {
+void boot_readQuadParm_0000F0C0(char *a0) {
     int scratch;
-    func_0000EF20(&scratch);
-    func_0000F008((int*)(a0 + 0x10));
+    stream_readS32_0000EF20(&scratch);
+    stream_readQuad_0000F008((int*)(a0 + 0x10));
 }
 
-void func_0000F0F0(char *a0) {
+void boot_readIntParm_0000F0F0(char *a0) {
     int scratch;
-    func_0000EF20(&scratch);
-    func_0000EF20((int*)(a0 + 0x10));
+    stream_readS32_0000EF20(&scratch);
+    stream_readS32_0000EF20((int*)(a0 + 0x10));
 }
 
-void func_0000F120(int *dst) {
+void stream_readS32_0000F120(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_0000F15C(Quad4 *dst) {
+void stream_readQuad_0000F15C(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-/* func_0000F1B4: composite int+Quad4 reader (cross-USO template).
+/* boot_readQuadParm_0000F1B4: composite int+Quad4 reader (cross-USO template).
  * Body is 12 insns (0x30); FUNC st_size in expected is 60 (0x3C) because
  * 3 trailing alignment nops at 0xF1E4-0xF1EC are PART of the symbol's reach
- * (next function func_0000F1F0 is 16-byte aligned).
+ * (next function stream_readS32_0000F1F0 is 16-byte aligned).
  *
  * SUFFIX_BYTES recipe (Makefile) appends 3 nops post-cc, growing the
  * symbol from 0x30 to 0x3C in place. Drops the prior NM wrap.
@@ -9253,15 +9253,15 @@ void func_0000F15C(Quad4 *dst) {
  * matches expected; trailing nops match). Per
  * feedback_suffix_bytes_unblocks_4byte_stolen_prologue.md (multi-insn
  * extension). */
-void func_0000F1B4(char *a0) {
+void boot_readQuadParm_0000F1B4(char *a0) {
     int scratch;
-    func_0000F120(&scratch);
-    func_0000F15C((Quad4*)(a0 + 0x10));
+    stream_readS32_0000F120(&scratch);
+    stream_readQuad_0000F15C((Quad4*)(a0 + 0x10));
 }
 
-/* func_0000F1F0, F23C, F288, F2EC moved to bootup_uso_o0_F1F0.c (-O0 file
+/* stream_readS32_0000F1F0, F23C, F288, F2EC moved to bootup_uso_o0_F1F0.c (-O0 file
  * split, see Makefile + tenshoe.ld). The 4 -O0 accessor templates promote
  * to byte-correct in the new file.
- * func_0000F390, SnowBoard_func_0000F3D4, SnowBoard_func_0000F404 moved to bootup_uso_o0_F390.c
+ * input_ctor_0000F390, SnowBoard_func_0000F3D4, SnowBoard_func_0000F404 moved to bootup_uso_o0_F390.c
  * (-O0 file split, see Makefile + tenshoe.ld).
  * Process_start..Process_update moved to bootup_uso_F434.c (layout shim). */

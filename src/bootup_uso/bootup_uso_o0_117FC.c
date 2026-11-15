@@ -10,7 +10,7 @@
 extern int func_00000000();
 extern char D_00000000;
 
-/* func_000117FC: handle replace-with-validation + re-init (structural
+/* GameFlow_loadProcUso_000117FC: handle replace-with-validation + re-init (structural
  * decode retained in bootup_uso_tail3a.c history).
  * MATCHED 2026-07-10 (w50 island sweep, 58/58, zero diffs pre-link).
  * Key -O0 shapes: (1) the validate guard is a FUSED-|| wrapper around the
@@ -21,7 +21,7 @@ extern char D_00000000;
  * (`or a1,t7` — same DAG-share lever as F6C4/FEA0);
  * (2) the free block re-tests the slot as a SEPARATE statement (fresh t0
  * reload, no share); (3) h is the only named local (slot 0x1C). */
-void func_000117FC(char *a0, void *a1) {
+void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
     int h;
 
     if (*(void**)(a0 + 0x2C) == 0 ||

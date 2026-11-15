@@ -1,9 +1,9 @@
 #include "common.h"
 
 extern int func_00000000();
-extern void func_0000F1F0(int *dst);
-extern void func_0000F23C(int *dst);
-extern void func_0000F2EC(int *dst);
+extern void stream_readS32_0000F1F0(int *dst);
+extern void stream_readF32_0000F23C(int *dst);
+extern void stream_readVec3_0000F2EC(int *dst);
 
 void replay_freeRecord(char *a0) {
     *(int*)(a0 + 0x168) = 0;
@@ -34,16 +34,16 @@ void replay_saveGhost(char *arg0, int arg1) {
     *(int*)(arg0 + 0x6C) = -1;
 }
 
-void func_00012D64(char *dst) {
+void boot_readFloatParm_00012D64(char *dst) {
     int tmp;
-    func_0000F1F0(&tmp);
-    func_0000F23C((int*)(dst + 0x10));
+    stream_readS32_0000F1F0(&tmp);
+    stream_readF32_0000F23C((int*)(dst + 0x10));
 }
 
-void func_00012DA4(int a0) {}
+void QuitProcess_stub_00012DA4(int a0) {}
 
-void func_00012DB8(char *dst) {
+void boot_readVec3Parm_00012DB8(char *dst) {
     int tmp;
-    func_0000F1F0(&tmp);
-    func_0000F2EC((int*)(dst + 0x10));
+    stream_readS32_0000F1F0(&tmp);
+    stream_readVec3_0000F2EC((int*)(dst + 0x10));
 }

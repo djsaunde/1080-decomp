@@ -10,7 +10,7 @@ extern int func_00000000();
 extern char D_00000000;
 extern char D_0000C574;
 
-void func_0000F390(void) {
+void input_ctor_0000F390(void) {
     register char *p = &D_00000000;
     func_00000000(p, &D_0000C574);
 }

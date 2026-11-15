@@ -20,7 +20,7 @@ glabel SnowChaseActorLook_ctor
     lui $t6, %hi(game_uso_D_807FE848)   /* 002854 3C0E0000 -> game_uso_D_807FE848 */
     /* 002858 00002858 25CE0000 */  .word 0x25CE0000
     /* 00285C 0000285C AE0E0028 */  .word 0xAE0E0028
-    jal SnowChaseActorLook_readParms   /* 002860 0C000000 -> SnowChaseActorLook_readParms */
+    jal SnowChaseActorLookParms_ctor   /* 002860 0C000000 -> SnowChaseActorLookParms_ctor */
     /* 002864 00002864 26040044 */  .word 0x26040044
     /* 002868 00002868 8FAF002C */  .word 0x8FAF002C
     /* 00286C 0000286C 02002025 */  .word 0x02002025

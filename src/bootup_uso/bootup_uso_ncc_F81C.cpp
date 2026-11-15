@@ -62,12 +62,12 @@ void *game_createProcessWindow(int a0, int a1) {
     return (void *)result;
 }
 
-/* Process_fadeOut_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
+/* Process_fadeOut_0000F954 + Process_pause_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
  * (cluster -O0 split; F954 is a byte-exact -O0 match, F9E8 stays NM at 1w off).
  * Moved together so tail1.c keeps only the -O2 game_createProcessWindow and the linker layout
  * stays contiguous. */
 
-/* func_0000FAE8 split out to bootup_uso_o0_FAE8.c on 2026-06-23 — it's an -O0
+/* Process_resume_0000FAE8 split out to bootup_uso_o0_FAE8.c on 2026-06-23 — it's an -O0
  * function (reloads self each use, register-var bit-manip in s0-s3, if(1)
  * dead-branch); now a byte-exact -O0 C match there (same recipe as 100F0/118E4). */
 

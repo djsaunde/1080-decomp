@@ -18,25 +18,25 @@ typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
 
-void func_0000F1F0(int *a0) {
+void stream_readS32_0000F1F0(int *a0) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *a0 = buf[0];
 }
 
-void func_0000F23C(float *a0) {
+void stream_readF32_0000F23C(float *a0) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *a0 = buf[0];
 }
 
-void func_0000F288(Quad4 *a0) {
+void stream_readQuad_0000F288(Quad4 *a0) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *a0 = buf;
 }
 
-/* func_0000F2EC: Vec3 reader at -O0 (41 insns / 0xA4). Built at -O0
+/* stream_readVec3_0000F2EC: Vec3 reader at -O0 (41 insns / 0xA4). Built at -O0
  * (per per-file Makefile override). Body uses 4 register-typed locals
  * (Vec3* p1/p2/q, float* src) + Tri3i raw + Tri3i tmp on stack.
  *
@@ -53,7 +53,7 @@ void func_0000F288(Quad4 *a0) {
  *       leading 8-byte local to push it up regresses to 92% (verified
  *       2026-06-02) — the -O0 allocator re-packs everything. Coupled to (a).
  * Logic byte-identical; residual is -O0 frame-pack + s-reg renumber. NM. */
-/* func_0000F2EC — EXACT (41/41) verified 2026-07-02 on agent-e.
+/* stream_readVec3_0000F2EC — EXACT (41/41) verified 2026-07-02 on agent-e.
  * TU: src/bootup_uso/bootup_uso_o0_F1F0.c (per-file OPT_FLAGS := -O0).
  * Lever: -O0 slot allocation is TOP-DOWN in DECLARATION ORDER, and each
  * `register` var reserves a 4-byte home slot even when it gets an s-reg.
@@ -67,7 +67,7 @@ void func_0000F288(Quad4 *a0) {
  *   typedef struct { float x, y, z; } Vec3;
  *   extern int func_00000000(); extern char D_00000000;
  */
-void func_0000F2EC(Vec3 *dst) {
+void stream_readVec3_0000F2EC(Vec3 *dst) {
     register Vec3 *q;
     Tri3i raw;
     register Vec3 *p1;

@@ -1,9 +1,9 @@
-/* IDO 7.1 -O2 donor for func_0000E2D0 -- plane reflect / scale helper (0x20C / 131 words).
+/* IDO 7.1 -O2 donor for SnowBCollider_func_0000E2D0 -- plane reflect / scale helper (0x20C / 131 words).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the E270 recipe):
  * the f64 literal 0.1 lives in bootup.uso RoData at +0x9A0 (target reloc
  * SndHandle_triggerEvent1_0000098C + 0x14); the donor-local .rodata reloc is renamed
- * func_0000E2D0_rodata and pinned to 0x9A0.
+ * SnowBCollider_func_0000E2D0_rodata and pinned to 0x9A0.
  *
  * The post-call FP temp ring (1.0 f8 / arg4 f16 / sum f18, then f4 f10 f16 /
  * f6 f8 f18 in the scale block) comes from the two code-free tests after the
@@ -19,7 +19,7 @@ typedef struct { float x, y, z; } Vec3;
 extern float func_00000000_4948_ff(float);
 void func_00000000();
 
-void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
+void SnowBCollider_func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     Vec3 v[2];
     f32 d;
     f32 lim;

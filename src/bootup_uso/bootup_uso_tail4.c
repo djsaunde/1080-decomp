@@ -279,19 +279,19 @@ void Fader_buildTexture(char *arg0) {
     }
 }
 
-void func_00013C70(int *dst) {
+void stream_readS32_00013C70(int *dst) {
     int buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_00013CAC(float *dst) {
+void stream_readF32_00013CAC(float *dst) {
     float buf[2];
     func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void func_00013CE8(Quad4 *dst) {
+void stream_readQuad_00013CE8(Quad4 *dst) {
     Quad4 buf;
     func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -428,16 +428,16 @@ void func_00014010(char *a0) {
     }
 }
 
-/* func_000140C4 - 3-element draw/place dispatcher. EXACT TWIN of
- * func_00014228 (byte-for-byte identical TARGET except the function
+/* TimeGadget_display_000140C4 - 3-element draw/place dispatcher. EXACT TWIN of
+ * BestGadget_display_00014228 (byte-for-byte identical TARGET except the function
  * address): same prologue, same body, same epilogue. Same NM C body
- * applied (the levers that landed func_00014228's body verbatim:
+ * applied (the levers that landed BestGadget_display_00014228's body verbatim:
  * `volatile int pad[12]` after col[4] for frame 0x68/col@0x58;
  * global-first FP `*(f32*)&D * (float)count` for cvt-reg coloring;
  * high-offset-first addends; direct-deref `if(*(int*)(s0+N))` to keep
  * the beql branch-likely).
  * STATE (2026-06-23 agent-b): body BYTE-EXACT. Residual = 6 insns,
- * ALL in the FIRST block's prologue, identical to the func_00014228
+ * ALL in the FIRST block's prologue, identical to the BestGadget_display_00014228
  * twin's documented as1-scheduler + register-coloring cap:
  *   target: sw s0,0x18 / or s0,a0 (in gap) / sw ra,0x1C / ...
  *           lw a0,0x104(a0) / beql a0 / jal-delay = nop
@@ -455,15 +455,15 @@ void func_00014010(char *a0) {
  * beql), array-index condition, int param, float temp - all 10-or-worse;
  * permuter has no regalloc randomizer (floored prior). Genuine
  * as1+coloring cap. INCLUDE_ASM remains build path (no episode). */
-/* func_000140C4 — EXACT (89/89) verified 2026-07-02 on agent-e.
+/* TimeGadget_display_000140C4 — EXACT (89/89) verified 2026-07-02 on agent-e.
  * TU: src/bootup_uso/bootup_uso_tail4.c (default flags, -O2).
- * EXACT TWIN of func_00014228 — identical body, identical new lever:
+ * EXACT TWIN of BestGadget_display_00014228 — identical body, identical new lever:
  * `if (1) { }` BB-barrier after the col[] init stops uopt sinking the
  * a0->s0 param copy past the first handle load, so the handle colors into
  * $a0 (lw a0,0x104(a0); beql a0; jal delay nop) and the prologue becomes
  * sw s0 / or s0,a0 / sw ra. Fixes all 10 residual words.
  * See /tmp/body_ex14228.c for the full lever writeup. */
-void func_000140C4(char *s0) {
+void TimeGadget_display_000140C4(char *s0) {
     float col[4];
     volatile int pad[12];
     int n;
@@ -491,7 +491,7 @@ void func_000140C4(char *s0) {
     func_00000000(*(int*)(s0 + 0xE0), *(int*)(s0 + 0x44), *(int*)(s0 + 0x5C), s0 + 0xE4);
 }
 
-/* func_00014228 - 3-element draw/place dispatcher (twin of func_000140C4).
+/* BestGadget_display_00014228 - 3-element draw/place dispatcher (twin of TimeGadget_display_000140C4).
  * NM body brought to 10 non-reloc diffs (from 24) - body is byte-exact
  * except the 10-word prologue/save-order cluster (as1 scheduler-tie).
  * Levers that landed the body:
@@ -516,7 +516,7 @@ void func_000140C4(char *s0) {
  * the FIRST block diverges. Tried: held-temp (spills + downgrades beql),
  * array-index condition, int param, float temp - all 10 or worse.
  * INCLUDE_ASM build path (no episode; NM body for %-progress only). */
-/* func_00014228 — EXACT (89/89) verified 2026-07-02 on agent-e.
+/* BestGadget_display_00014228 — EXACT (89/89) verified 2026-07-02 on agent-e.
  * TU: src/bootup_uso/bootup_uso_tail4.c (default flags, -O2).
  * NEW LEVER vs the previous 10-diff residual (documented "as1+coloring cap"):
  * `if (1) { }` BB-barrier inserted between the col[] init and the first
@@ -531,7 +531,7 @@ void func_000140C4(char *s0) {
  * All other levers unchanged: volatile int pad[12] AFTER col (frame
  * 0x68/col@0x58); global-first FP mul `*(f32*)&D * (float)count`;
  * high-offset-first addends; direct-deref conditions to keep beql. */
-void func_00014228(char *s0) {
+void BestGadget_display_00014228(char *s0) {
     float col[4];
     volatile int pad[12];
     int n;
@@ -686,7 +686,7 @@ void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float a
     *(float*)((char*)a0 + 0x8C) = arg5;
 }
 
-void func_000144E0(void *a0, float a1, float a2) {
+void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
     *(float*)((char*)a0 + 0x88) = a1;
     *(float*)((char*)a0 + 0x8C) = a2;
 }

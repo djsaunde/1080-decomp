@@ -35,8 +35,8 @@ glabel SnowBoarder_ctor
     /* DD9BAC 00009140 24A58738 */  addiu      $a1, $a1, %lo(D_00008738)
     /* DD9BB0 00009144 0C000000 */  jal        func_00000000
     /* DD9BB4 00009148 02002025 */   or        $a0, $s0, $zero
-    /* DD9BB8 0000914C 3C0F0001 */  lui        $t7, %hi(Fog_func_000080EC + 0x1C)
-    /* DD9BBC 00009150 25EF8108 */  addiu      $t7, $t7, %lo(Fog_func_000080EC + 0x1C)
+    /* DD9BB8 0000914C 3C0F0001 */  lui        $t7, %hi(Fog_readParms + 0x1C)
+    /* DD9BBC 00009150 25EF8108 */  addiu      $t7, $t7, %lo(Fog_readParms + 0x1C)
     /* DD9BC0 00009154 2401FFD4 */  addiu      $at, $zero, -0x2C
     /* DD9BC4 00009158 AE0F0028 */  sw         $t7, 0x28($s0)
     /* DD9BC8 0000915C 16010005 */  bne        $s0, $at, .L00009174
@@ -58,8 +58,8 @@ glabel SnowBoarder_ctor
     /* DD9C00 00009194 ACD80000 */  sw         $t8, 0x0($a2)
     /* DD9C04 00009198 ACC00004 */  sw         $zero, 0x4($a2)
   .L0000919C:
-    /* DD9C08 0000919C 3C190001 */  lui        $t9, %hi(TreeTmpl_func_00008744 + 0x4)
-    /* DD9C0C 000091A0 8F398748 */  lw         $t9, %lo(TreeTmpl_func_00008744 + 0x4)($t9)
+    /* DD9C08 0000919C 3C190001 */  lui        $t9, %hi(TreeTmpl_hostioParms + 0x4)
+    /* DD9C0C 000091A0 8F398748 */  lw         $t9, %lo(TreeTmpl_hostioParms + 0x4)($t9)
     /* DD9C10 000091A4 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DD9C14 000091A8 26240008 */  addiu      $a0, $s1, 0x8
     /* DD9C18 000091AC AFB90144 */  sw         $t9, 0x144($sp)
@@ -85,8 +85,8 @@ glabel SnowBoarder_ctor
     /* DD9C64 000091F8 C4240868 */  lwc1       $f4, %lo(SndHandle_start_0000085C + 0xC)($at)
     /* DD9C68 000091FC E4840010 */  swc1       $f4, 0x10($a0)
   .L00009200:
-    /* DD9C6C 00009200 3C180001 */  lui        $t8, %hi(TreeTmpl_func_00008744 + 0x8)
-    /* DD9C70 00009204 8F18874C */  lw         $t8, %lo(TreeTmpl_func_00008744 + 0x8)($t8)
+    /* DD9C6C 00009200 3C180001 */  lui        $t8, %hi(TreeTmpl_hostioParms + 0x8)
+    /* DD9C70 00009204 8F18874C */  lw         $t8, %lo(TreeTmpl_hostioParms + 0x8)($t8)
     /* DD9C74 00009208 2401FFE0 */  addiu      $at, $zero, -0x20
     /* DD9C78 0000920C 26240020 */  addiu      $a0, $s1, 0x20
     /* DD9C7C 00009210 AFB80140 */  sw         $t8, 0x140($sp)
@@ -112,8 +112,8 @@ glabel SnowBoarder_ctor
     /* DD9CC8 0000925C C426086C */  lwc1       $f6, %lo(SndHandle_start_0000085C + 0x10)($at)
     /* DD9CCC 00009260 E4860010 */  swc1       $f6, 0x10($a0)
   .L00009264:
-    /* DD9CD0 00009264 3C0F0001 */  lui        $t7, %hi(TreeTmpl_func_00008744 + 0xC)
-    /* DD9CD4 00009268 8DEF8750 */  lw         $t7, %lo(TreeTmpl_func_00008744 + 0xC)($t7)
+    /* DD9CD0 00009264 3C0F0001 */  lui        $t7, %hi(TreeTmpl_hostioParms + 0xC)
+    /* DD9CD4 00009268 8DEF8750 */  lw         $t7, %lo(TreeTmpl_hostioParms + 0xC)($t7)
     /* DD9CD8 0000926C 2401FFC8 */  addiu      $at, $zero, -0x38
     /* DD9CDC 00009270 26240038 */  addiu      $a0, $s1, 0x38
     /* DD9CE0 00009274 AFAF013C */  sw         $t7, 0x13C($sp)
@@ -139,8 +139,8 @@ glabel SnowBoarder_ctor
     /* DD9D2C 000092C0 AC800014 */  sw         $zero, 0x14($a0)
     /* DD9D30 000092C4 E4880010 */  swc1       $f8, 0x10($a0)
   .L000092C8:
-    /* DD9D34 000092C8 3C0E0001 */  lui        $t6, %hi(TreeTmpl_func_00008744 + 0x10)
-    /* DD9D38 000092CC 8DCE8754 */  lw         $t6, %lo(TreeTmpl_func_00008744 + 0x10)($t6)
+    /* DD9D34 000092C8 3C0E0001 */  lui        $t6, %hi(TreeTmpl_hostioParms + 0x10)
+    /* DD9D38 000092CC 8DCE8754 */  lw         $t6, %lo(TreeTmpl_hostioParms + 0x10)($t6)
     /* DD9D3C 000092D0 2401FFB0 */  addiu      $at, $zero, -0x50
     /* DD9D40 000092D4 26240050 */  addiu      $a0, $s1, 0x50
     /* DD9D44 000092D8 AFAE0138 */  sw         $t6, 0x138($sp)
@@ -166,8 +166,8 @@ glabel SnowBoarder_ctor
     /* DD9D90 00009324 C42A0870 */  lwc1       $f10, %lo(SndHandle_start_0000085C + 0x14)($at)
     /* DD9D94 00009328 E48A0010 */  swc1       $f10, 0x10($a0)
   .L0000932C:
-    /* DD9D98 0000932C 3C0D0001 */  lui        $t5, %hi(TreeTmpl_func_00008744 + 0x14)
-    /* DD9D9C 00009330 8DAD8758 */  lw         $t5, %lo(TreeTmpl_func_00008744 + 0x14)($t5)
+    /* DD9D98 0000932C 3C0D0001 */  lui        $t5, %hi(TreeTmpl_hostioParms + 0x14)
+    /* DD9D9C 00009330 8DAD8758 */  lw         $t5, %lo(TreeTmpl_hostioParms + 0x14)($t5)
     /* DD9DA0 00009334 2401FF98 */  addiu      $at, $zero, -0x68
     /* DD9DA4 00009338 26240068 */  addiu      $a0, $s1, 0x68
     /* DD9DA8 0000933C AFAD0134 */  sw         $t5, 0x134($sp)
@@ -193,8 +193,8 @@ glabel SnowBoarder_ctor
     /* DD9DF4 00009388 C4300874 */  lwc1       $f16, %lo(SndHandle_start_0000085C + 0x18)($at)
     /* DD9DF8 0000938C E4900010 */  swc1       $f16, 0x10($a0)
   .L00009390:
-    /* DD9DFC 00009390 3C190001 */  lui        $t9, %hi(TreeTmpl_func_00008744 + 0x18)
-    /* DD9E00 00009394 8F39875C */  lw         $t9, %lo(TreeTmpl_func_00008744 + 0x18)($t9)
+    /* DD9DFC 00009390 3C190001 */  lui        $t9, %hi(TreeTmpl_hostioParms + 0x18)
+    /* DD9E00 00009394 8F39875C */  lw         $t9, %lo(TreeTmpl_hostioParms + 0x18)($t9)
     /* DD9E04 00009398 2401FF80 */  addiu      $at, $zero, -0x80
     /* DD9E08 0000939C 26240080 */  addiu      $a0, $s1, 0x80
     /* DD9E0C 000093A0 AFB90130 */  sw         $t9, 0x130($sp)
@@ -220,8 +220,8 @@ glabel SnowBoarder_ctor
     /* DD9E58 000093EC C4320878 */  lwc1       $f18, %lo(SndHandle_start_0000085C + 0x1C)($at)
     /* DD9E5C 000093F0 E4920010 */  swc1       $f18, 0x10($a0)
   .L000093F4:
-    /* DD9E60 000093F4 3C180001 */  lui        $t8, %hi(TreeTmpl_func_00008744 + 0x1C)
-    /* DD9E64 000093F8 8F188760 */  lw         $t8, %lo(TreeTmpl_func_00008744 + 0x1C)($t8)
+    /* DD9E60 000093F4 3C180001 */  lui        $t8, %hi(TreeTmpl_hostioParms + 0x1C)
+    /* DD9E64 000093F8 8F188760 */  lw         $t8, %lo(TreeTmpl_hostioParms + 0x1C)($t8)
     /* DD9E68 000093FC 2401FF68 */  addiu      $at, $zero, -0x98
     /* DD9E6C 00009400 26240098 */  addiu      $a0, $s1, 0x98
     /* DD9E70 00009404 AFB8012C */  sw         $t8, 0x12C($sp)
@@ -247,8 +247,8 @@ glabel SnowBoarder_ctor
     /* DD9EBC 00009450 C424087C */  lwc1       $f4, %lo(.L0000087C)($at)
     /* DD9EC0 00009454 E4840010 */  swc1       $f4, 0x10($a0)
   .L00009458:
-    /* DD9EC4 00009458 3C0F0001 */  lui        $t7, %hi(TreeTmpl_func_00008744 + 0x20)
-    /* DD9EC8 0000945C 8DEF8764 */  lw         $t7, %lo(TreeTmpl_func_00008744 + 0x20)($t7)
+    /* DD9EC4 00009458 3C0F0001 */  lui        $t7, %hi(TreeTmpl_hostioParms + 0x20)
+    /* DD9EC8 0000945C 8DEF8764 */  lw         $t7, %lo(TreeTmpl_hostioParms + 0x20)($t7)
     /* DD9ECC 00009460 2401FF50 */  addiu      $at, $zero, -0xB0
     /* DD9ED0 00009464 262400B0 */  addiu      $a0, $s1, 0xB0
     /* DD9ED4 00009468 AFAF0128 */  sw         $t7, 0x128($sp)
@@ -273,8 +273,8 @@ glabel SnowBoarder_ctor
     /* DD9F1C 000094B0 AC800014 */  sw         $zero, 0x14($a0)
     /* DD9F20 000094B4 E4860010 */  swc1       $f6, 0x10($a0)
   .L000094B8:
-    /* DD9F24 000094B8 3C0E0001 */  lui        $t6, %hi(TreeTmpl_func_00008744 + 0x24)
-    /* DD9F28 000094BC 8DCE8768 */  lw         $t6, %lo(TreeTmpl_func_00008744 + 0x24)($t6)
+    /* DD9F24 000094B8 3C0E0001 */  lui        $t6, %hi(TreeTmpl_hostioParms + 0x24)
+    /* DD9F28 000094BC 8DCE8768 */  lw         $t6, %lo(TreeTmpl_hostioParms + 0x24)($t6)
     /* DD9F2C 000094C0 2401FF38 */  addiu      $at, $zero, -0xC8
     /* DD9F30 000094C4 262400C8 */  addiu      $a0, $s1, 0xC8
     /* DD9F34 000094C8 AFAE0124 */  sw         $t6, 0x124($sp)
@@ -300,8 +300,8 @@ glabel SnowBoarder_ctor
     /* DD9F80 00009514 C4280880 */  lwc1       $f8, %lo(D_00000880)($at)
     /* DD9F84 00009518 E4880010 */  swc1       $f8, 0x10($a0)
   .L0000951C:
-    /* DD9F88 0000951C 3C0D0001 */  lui        $t5, %hi(TreeTmpl_func_00008744 + 0x28)
-    /* DD9F8C 00009520 8DAD876C */  lw         $t5, %lo(TreeTmpl_func_00008744 + 0x28)($t5)
+    /* DD9F88 0000951C 3C0D0001 */  lui        $t5, %hi(TreeTmpl_hostioParms + 0x28)
+    /* DD9F8C 00009520 8DAD876C */  lw         $t5, %lo(TreeTmpl_hostioParms + 0x28)($t5)
     /* DD9F90 00009524 2401FF20 */  addiu      $at, $zero, -0xE0
     /* DD9F94 00009528 262400E0 */  addiu      $a0, $s1, 0xE0
     /* DD9F98 0000952C AFAD0120 */  sw         $t5, 0x120($sp)
@@ -327,8 +327,8 @@ glabel SnowBoarder_ctor
     /* DD9FE4 00009578 AC800014 */  sw         $zero, 0x14($a0)
     /* DD9FE8 0000957C E48A0010 */  swc1       $f10, 0x10($a0)
   .L00009580:
-    /* DD9FEC 00009580 3C190001 */  lui        $t9, %hi(TreeTmpl_func_00008744 + 0x2C)
-    /* DD9FF0 00009584 8F398770 */  lw         $t9, %lo(TreeTmpl_func_00008744 + 0x2C)($t9)
+    /* DD9FEC 00009580 3C190001 */  lui        $t9, %hi(TreeTmpl_hostioParms + 0x2C)
+    /* DD9FF0 00009584 8F398770 */  lw         $t9, %lo(TreeTmpl_hostioParms + 0x2C)($t9)
     /* DD9FF4 00009588 2401FF08 */  addiu      $at, $zero, -0xF8
     /* DD9FF8 0000958C 262400F8 */  addiu      $a0, $s1, 0xF8
     /* DD9FFC 00009590 AFB9011C */  sw         $t9, 0x11C($sp)
@@ -354,8 +354,8 @@ glabel SnowBoarder_ctor
     /* DDA048 000095DC AC800014 */  sw         $zero, 0x14($a0)
     /* DDA04C 000095E0 E4900010 */  swc1       $f16, 0x10($a0)
   .L000095E4:
-    /* DDA050 000095E4 3C180001 */  lui        $t8, %hi(TreeTmpl_func_00008744 + 0x30)
-    /* DDA054 000095E8 8F188774 */  lw         $t8, %lo(TreeTmpl_func_00008744 + 0x30)($t8)
+    /* DDA050 000095E4 3C180001 */  lui        $t8, %hi(TreeTmpl_hostioParms + 0x30)
+    /* DDA054 000095E8 8F188774 */  lw         $t8, %lo(TreeTmpl_hostioParms + 0x30)($t8)
     /* DDA058 000095EC 2401FEF0 */  addiu      $at, $zero, -0x110
     /* DDA05C 000095F0 26240110 */  addiu      $a0, $s1, 0x110
     /* DDA060 000095F4 AFB80118 */  sw         $t8, 0x118($sp)
@@ -396,13 +396,13 @@ glabel SnowBoarder_ctor
     /* DDA0E0 00009674 10400005 */  beqz       $v0, .L0000968C
     /* DDA0E4 00009678 00408825 */   or        $s1, $v0, $zero
   .L0000967C:
-    /* DDA0E8 0000967C 3C0F0001 */  lui        $t7, %hi(TreeTmpl_func_00008744 + 0x34)
-    /* DDA0EC 00009680 25EF8778 */  addiu      $t7, $t7, %lo(TreeTmpl_func_00008744 + 0x34)
+    /* DDA0E8 0000967C 3C0F0001 */  lui        $t7, %hi(TreeTmpl_hostioParms + 0x34)
+    /* DDA0EC 00009680 25EF8778 */  addiu      $t7, $t7, %lo(TreeTmpl_hostioParms + 0x34)
     /* DDA0F0 00009684 AE2F0000 */  sw         $t7, 0x0($s1)
     /* DDA0F4 00009688 AE200004 */  sw         $zero, 0x4($s1)
   .L0000968C:
-    /* DDA0F8 0000968C 3C180001 */  lui        $t8, %hi(TreeTmpl_func_00008744 + 0x48)
-    /* DDA0FC 00009690 8F18878C */  lw         $t8, %lo(TreeTmpl_func_00008744 + 0x48)($t8)
+    /* DDA0F8 0000968C 3C180001 */  lui        $t8, %hi(TreeTmpl_hostioParms + 0x48)
+    /* DDA0FC 00009690 8F18878C */  lw         $t8, %lo(TreeTmpl_hostioParms + 0x48)($t8)
     /* DDA100 00009694 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DDA104 00009698 26040008 */  addiu      $a0, $s0, 0x8
     /* DDA108 0000969C AFB80100 */  sw         $t8, 0x100($sp)
@@ -428,8 +428,8 @@ glabel SnowBoarder_ctor
     /* DDA154 000096E8 C4240884 */  lwc1       $f4, %lo(D_00000884)($at)
     /* DDA158 000096EC E4840010 */  swc1       $f4, 0x10($a0)
   .L000096F0:
-    /* DDA15C 000096F0 3C0F0001 */  lui        $t7, %hi(TreeTmpl_func_00008744 + 0x4C)
-    /* DDA160 000096F4 8DEF8790 */  lw         $t7, %lo(TreeTmpl_func_00008744 + 0x4C)($t7)
+    /* DDA15C 000096F0 3C0F0001 */  lui        $t7, %hi(TreeTmpl_hostioParms + 0x4C)
+    /* DDA160 000096F4 8DEF8790 */  lw         $t7, %lo(TreeTmpl_hostioParms + 0x4C)($t7)
     /* DDA164 000096F8 27B800FC */  addiu      $t8, $sp, 0xFC
     /* DDA168 000096FC 27B1007C */  addiu      $s1, $sp, 0x7C
     /* DDA16C 00009700 AFAF00FC */  sw         $t7, 0xFC($sp)
@@ -458,8 +458,8 @@ glabel SnowBoarder_ctor
     /* DDA1C4 00009758 AC800014 */  sw         $zero, 0x14($a0)
     /* DDA1C8 0000975C E4860010 */  swc1       $f6, 0x10($a0)
   .L00009760:
-    /* DDA1CC 00009760 3C190001 */  lui        $t9, %hi(TreeTmpl_func_00008744 + 0x50)
-    /* DDA1D0 00009764 8F398794 */  lw         $t9, %lo(TreeTmpl_func_00008744 + 0x50)($t9)
+    /* DDA1CC 00009760 3C190001 */  lui        $t9, %hi(TreeTmpl_hostioParms + 0x50)
+    /* DDA1D0 00009764 8F398794 */  lw         $t9, %lo(TreeTmpl_hostioParms + 0x50)($t9)
     /* DDA1D4 00009768 27AD00F8 */  addiu      $t5, $sp, 0xF8
     /* DDA1D8 0000976C 2401FFC8 */  addiu      $at, $zero, -0x38
     /* DDA1DC 00009770 AFB900F8 */  sw         $t9, 0xF8($sp)
@@ -487,8 +487,8 @@ glabel SnowBoarder_ctor
     /* DDA230 000097C4 AC800014 */  sw         $zero, 0x14($a0)
     /* DDA234 000097C8 E4880010 */  swc1       $f8, 0x10($a0)
   .L000097CC:
-    /* DDA238 000097CC 3C0E0001 */  lui        $t6, %hi(TreeTmpl_func_00008744 + 0x54)
-    /* DDA23C 000097D0 8DCE8798 */  lw         $t6, %lo(TreeTmpl_func_00008744 + 0x54)($t6)
+    /* DDA238 000097CC 3C0E0001 */  lui        $t6, %hi(TreeTmpl_hostioParms + 0x54)
+    /* DDA23C 000097D0 8DCE8798 */  lw         $t6, %lo(TreeTmpl_hostioParms + 0x54)($t6)
     /* DDA240 000097D4 27AF00F4 */  addiu      $t7, $sp, 0xF4
     /* DDA244 000097D8 2401FFB0 */  addiu      $at, $zero, -0x50
     /* DDA248 000097DC AFAE00F4 */  sw         $t6, 0xF4($sp)
@@ -516,8 +516,8 @@ glabel SnowBoarder_ctor
     /* DDA29C 00009830 AC800014 */  sw         $zero, 0x14($a0)
     /* DDA2A0 00009834 E48A0010 */  swc1       $f10, 0x10($a0)
   .L00009838:
-    /* DDA2A4 00009838 3C180001 */  lui        $t8, %hi(TreeTmpl_func_00008744 + 0x58)
-    /* DDA2A8 0000983C 8F18879C */  lw         $t8, %lo(TreeTmpl_func_00008744 + 0x58)($t8)
+    /* DDA2A4 00009838 3C180001 */  lui        $t8, %hi(TreeTmpl_hostioParms + 0x58)
+    /* DDA2A8 0000983C 8F18879C */  lw         $t8, %lo(TreeTmpl_hostioParms + 0x58)($t8)
     /* DDA2AC 00009840 27B900F0 */  addiu      $t9, $sp, 0xF0
     /* DDA2B0 00009844 2401FF98 */  addiu      $at, $zero, -0x68
     /* DDA2B4 00009848 AFB800F0 */  sw         $t8, 0xF0($sp)
@@ -545,8 +545,8 @@ glabel SnowBoarder_ctor
     /* DDA308 0000989C AC800014 */  sw         $zero, 0x14($a0)
     /* DDA30C 000098A0 E4900010 */  swc1       $f16, 0x10($a0)
   .L000098A4:
-    /* DDA310 000098A4 3C0D0001 */  lui        $t5, %hi(TreeTmpl_func_00008744 + 0x5C)
-    /* DDA314 000098A8 8DAD87A0 */  lw         $t5, %lo(TreeTmpl_func_00008744 + 0x5C)($t5)
+    /* DDA310 000098A4 3C0D0001 */  lui        $t5, %hi(TreeTmpl_hostioParms + 0x5C)
+    /* DDA314 000098A8 8DAD87A0 */  lw         $t5, %lo(TreeTmpl_hostioParms + 0x5C)($t5)
     /* DDA318 000098AC 27AE00EC */  addiu      $t6, $sp, 0xEC
     /* DDA31C 000098B0 2401FF80 */  addiu      $at, $zero, -0x80
     /* DDA320 000098B4 AFAD00EC */  sw         $t5, 0xEC($sp)
@@ -1337,8 +1337,8 @@ glabel SnowBoarder_ctor
     /* DDAE78 0000A40C 55620052 */  bnel       $t3, $v0, .L0000A558
     /* DDAE7C 0000A410 3C01437F */   lui       $at, (0x437F0000 >> 16)
     /* DDAE80 0000A414 11400027 */  beqz       $t2, .L0000A4B4
-    /* DDAE84 0000A418 3C050001 */   lui       $a1, %hi(Tree_func_00008664 + 0x28)
-    /* DDAE88 0000A41C 24A5868C */  addiu      $a1, $a1, %lo(Tree_func_00008664 + 0x28)
+    /* DDAE84 0000A418 3C050001 */   lui       $a1, %hi(Tree_handleMsg + 0x28)
+    /* DDAE88 0000A41C 24A5868C */  addiu      $a1, $a1, %lo(Tree_handleMsg + 0x28)
     /* DDAE8C 0000A420 90A20000 */  lbu        $v0, 0x0($a1)
     /* DDAE90 0000A424 3C01437F */  lui        $at, (0x437F0000 >> 16)
     /* DDAE94 0000A428 44810000 */  mtc1       $at, $f0
@@ -1380,8 +1380,8 @@ glabel SnowBoarder_ctor
     /* DDAF18 0000A4AC 10000029 */  b          .L0000A554
     /* DDAF1C 0000A4B0 E65008EC */   swc1      $f16, 0x8EC($s2)
   .L0000A4B4:
-    /* DDAF20 0000A4B4 3C050001 */  lui        $a1, %hi(Tree_func_00008664 + 0x24)
-    /* DDAF24 0000A4B8 24A58688 */  addiu      $a1, $a1, %lo(Tree_func_00008664 + 0x24)
+    /* DDAF20 0000A4B4 3C050001 */  lui        $a1, %hi(Tree_handleMsg + 0x24)
+    /* DDAF24 0000A4B8 24A58688 */  addiu      $a1, $a1, %lo(Tree_handleMsg + 0x24)
     /* DDAF28 0000A4BC 90A20000 */  lbu        $v0, 0x0($a1)
     /* DDAF2C 0000A4C0 3C01437F */  lui        $at, (0x437F0000 >> 16)
     /* DDAF30 0000A4C4 44810000 */  mtc1       $at, $f0
@@ -1430,8 +1430,8 @@ glabel SnowBoarder_ctor
     /* DDAFC8 0000A55C 5566004E */  bnel       $t3, $a2, .L0000A698
     /* DDAFCC 0000A560 2401FFFB */   addiu     $at, $zero, -0x5
     /* DDAFD0 0000A564 11400025 */  beqz       $t2, .L0000A5FC
-    /* DDAFD4 0000A568 3C050001 */   lui       $a1, %hi(Tree_func_00008664 + 0x30)
-    /* DDAFD8 0000A56C 24A58694 */  addiu      $a1, $a1, %lo(Tree_func_00008664 + 0x30)
+    /* DDAFD4 0000A568 3C050001 */   lui       $a1, %hi(Tree_handleMsg + 0x30)
+    /* DDAFD8 0000A56C 24A58694 */  addiu      $a1, $a1, %lo(Tree_handleMsg + 0x30)
     /* DDAFDC 0000A570 90A20000 */  lbu        $v0, 0x0($a1)
     /* DDAFE0 0000A574 90A30001 */  lbu        $v1, 0x1($a1)
     /* DDAFE4 0000A578 90A40002 */  lbu        $a0, 0x2($a1)
@@ -1471,8 +1471,8 @@ glabel SnowBoarder_ctor
     /* DDB060 0000A5F4 10000027 */  b          .L0000A694
     /* DDB064 0000A5F8 E64808EC */   swc1      $f8, 0x8EC($s2)
   .L0000A5FC:
-    /* DDB068 0000A5FC 3C050001 */  lui        $a1, %hi(Tree_func_00008664 + 0x2C)
-    /* DDB06C 0000A600 24A58690 */  addiu      $a1, $a1, %lo(Tree_func_00008664 + 0x2C)
+    /* DDB068 0000A5FC 3C050001 */  lui        $a1, %hi(Tree_handleMsg + 0x2C)
+    /* DDB06C 0000A600 24A58690 */  addiu      $a1, $a1, %lo(Tree_handleMsg + 0x2C)
     /* DDB070 0000A604 90A20000 */  lbu        $v0, 0x0($a1)
     /* DDB074 0000A608 90A30001 */  lbu        $v1, 0x1($a1)
     /* DDB078 0000A60C 90A40002 */  lbu        $a0, 0x2($a1)

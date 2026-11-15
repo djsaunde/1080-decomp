@@ -339,9 +339,9 @@ typedef struct BootupRoot13B20 {
 } BootupRoot13B20;
 extern char func_0000023C[];
 void Fader_buildTexture(BootupGrid139B0 *arg0);
-void func_00013C70(int *dst);
-void func_00013CAC(float *dst);
-void func_00013CE8(Quad4 *dst);
+void stream_readS32_00013C70(int *dst);
+void stream_readF32_00013CAC(float *dst);
+void stream_readQuad_00013CE8(Quad4 *dst);
 typedef struct { int v; } Val13D40;
 extern char D_0000CAAC;
 extern int D_0000CAC0;
@@ -362,8 +362,8 @@ void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int 
 void func_00014004(char *a0, int a1, int a2);
 extern u32 bootup_14010_strlen(char *s);
 void func_00014010(char *a0);
-void func_000140C4(char *s0);
-void func_00014228(char *s0);
+void TimeGadget_display_000140C4(char *s0);
+void BestGadget_display_00014228(char *s0);
 extern int func_0000CACC[];
 extern Val13D40 SnowBoarder_func_0000CAE8[];
 extern char D_0000C83C;
@@ -371,7 +371,7 @@ extern char *bootup_1438C_alloc(s32);
 extern char *bootup_1438C_init(char *, char *, Val13D40, int);
 char *TimeGadget_func_0001438C(char *arg0);
 void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5);
-void func_000144E0(void *a0, float a1, float a2);
+void TimeGadget_setPos_000144E0(void *a0, float a1, float a2);
 typedef struct {
     char unknown_00[0x5C];
     f32 field_5C;

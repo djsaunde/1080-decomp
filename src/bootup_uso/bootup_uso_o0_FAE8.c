@@ -3,9 +3,9 @@
 extern int func_00000000();
 extern char D_00000000;
 
-/* -O0 split of func_0000FAE8 from bootup_uso_tail1.c (target is -O0; the
+/* -O0 split of Process_resume_0000FAE8 from bootup_uso_tail1.c (target is -O0; the
  * bit-manip intermediates land in callee-saved s0-s3 via `register`). */
-void func_0000FAE8(int *self) {
+void Process_resume_0000FAE8(int *self) {
     register int *q, *r;
     register int flag;
     register int *x;

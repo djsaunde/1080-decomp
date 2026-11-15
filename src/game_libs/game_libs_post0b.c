@@ -10015,7 +10015,7 @@ void App_Reset(App *self) {
  *   p = a0->0x28;        // reload (target reloads explicitly)
  *   ((void(*)(int))p->0x84)(a0 + (short)p->0x80);
  *
- * Similar vtable-callback pattern as func_0000FEA0; explicit reload to
+ * Similar vtable-callback pattern as QuitProcess_func_0000FEA0; explicit reload to
  * match target's lw + lw between the two calls (IDO doesn't CSE across
  * the jalr).
  *

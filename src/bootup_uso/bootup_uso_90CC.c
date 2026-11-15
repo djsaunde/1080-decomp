@@ -142,12 +142,12 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
  * locals fill the target's gaps (4 above sp144, var_a2 + 2 below sp118, ...).
  * Self is the PARAM (move s2,a0 inside the save sequence, IDO_CODEGEN
  * #prologue-move-param-vs-copy-62368). The four rgb table bases are per-site
- * symbols (target lui/addiu %hi/%lo(Tree_func_00008664+0x24..0x30) + lbu 0/1/2).
+ * symbols (target lui/addiu %hi/%lo(Tree_handleMsg+0x24..0x30) + lbu 0/1/2).
  * Every sp-relative word now lands on the target slot. Residual: the arg2
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];

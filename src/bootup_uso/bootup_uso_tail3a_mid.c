@@ -2,7 +2,7 @@
 
 extern int func_00000000();
 
-/* Mid-tail assembly gap after func_00011AB4 was split to an -O0 file.
+/* Mid-tail assembly gap after GameFlow_addPads_00011AB4 was split to an -O0 file.
  * Holds 0x11B5C..0x11C70 so the following o0_11C70 split keeps its offset. */
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_11B5C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */

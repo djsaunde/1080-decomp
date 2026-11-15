@@ -14,14 +14,14 @@ glabel EnvSettings_load
     /* DD7DB4 00007348 27B10034 */  addiu      $s1, $sp, 0x34
     /* DD7DB8 0000734C AFA00054 */  sw         $zero, 0x54($sp)
   .L00007350:
-    /* DD7DBC 00007350 0C0017BE */  jal        func_00005EF8
+    /* DD7DBC 00007350 0C0017BE */  jal        stream_readS32_00005EF8
     /* DD7DC0 00007354 02002025 */   or        $a0, $s0, $zero
     /* DD7DC4 00007358 8FAE0054 */  lw         $t6, 0x54($sp)
     /* DD7DC8 0000735C 27A40050 */  addiu      $a0, $sp, 0x50
   alabel D_00007360
     /* DD7DCC 00007360 11C0003A */  beqz       $t6, .L0000744C
     /* DD7DD0 00007364 00000000 */   nop
-    /* DD7DD4 00007368 0C00140B */  jal        func_0000502C
+    /* DD7DD4 00007368 0C00140B */  jal        stream_readS32_0000502C
     /* DD7DD8 0000736C 00009025 */   or        $s2, $zero, $zero
     /* DD7DDC 00007370 8E6F002C */  lw         $t7, 0x2C($s3)
   alabel D_00007374
@@ -100,7 +100,7 @@ glabel EnvSettings_load
     /* DD7EB0 00007444 1000FFC2 */  b          .L00007350
     /* DD7EB4 00007448 AFA00054 */   sw        $zero, 0x54($sp)
   .L0000744C:
-    /* DD7EB8 0000744C 0C00140B */  jal        func_0000502C
+    /* DD7EB8 0000744C 0C00140B */  jal        stream_readS32_0000502C
     /* DD7EBC 00007450 26640038 */   addiu     $a0, $s3, 0x38
   alabel D_00007454
     /* DD7EC0 00007454 8E620038 */  lw         $v0, 0x38($s3)
@@ -118,9 +118,9 @@ glabel EnvSettings_load
     /* DD7EE4 00007478 11400005 */  beqz       $t2, .L00007490
     /* DD7EE8 0000747C 00000000 */   nop
   alabel D_00007480
-    /* DD7EEC 00007480 0C0013FC */  jal        func_00004FF0
+    /* DD7EEC 00007480 0C0013FC */  jal        stream_readS32_00004FF0
     /* DD7EF0 00007484 26640030 */   addiu     $a0, $s3, 0x30
-    /* DD7EF4 00007488 0C0013FC */  jal        func_00004FF0
+    /* DD7EF4 00007488 0C0013FC */  jal        stream_readS32_00004FF0
     /* DD7EF8 0000748C 26640034 */   addiu     $a0, $s3, 0x34
   .L00007490:
     /* DD7EFC 00007490 3C020000 */  lui        $v0, %hi(func_00000008 + 0x34)

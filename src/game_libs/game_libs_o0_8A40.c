@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* -O0 Vec3 reader at 0x8A40. Mirrors bootup_uso func_0000F2EC:
+/* -O0 Vec3 reader at 0x8A40. Mirrors bootup_uso stream_readVec3_0000F2EC:
  * same logical body, same s-reg/stack-offset encoding patch class.
  *
  * NATURAL CEILING 99.90% — 4 `addiu rX, sp, OFF` diffs: target places

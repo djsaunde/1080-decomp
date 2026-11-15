@@ -1,11 +1,11 @@
-/* IDO 7.1 NCC (C++) donor for func_0000B1B4 (0x2E8 / 186 words) -- sound /
+/* IDO 7.1 NCC (C++) donor for SnowBoarder_loadBoardModel_0000B1B4 (0x2E8 / 186 words) -- sound /
  * resource bank lazy loader: clamp (cat, idx), on the banked categories 6/7
  * build the bank object once and register it, then load + play.
  *
  * The bank object is `new Bank`: a cfront chain Bank : Mid : Base where Base
  * has an out-of-line ctor, two member objects with their own `this == 0`
  * alloc protocol (Pair at +0x34, Word at +0x58) and a vptr at +0x5C. Only
- * Bank's vtable is a real bootup symbol (Snower_func_000083D0 + 0x70); Base and
+ * Bank's vtable is a real bootup symbol (Snower_hostioParms + 0x70); Base and
  * Mid's are blank USO refs.
  *
  * The four words that kept the cfe/NCC ports off (the counter read into v0,
@@ -37,7 +37,7 @@ struct Bb4Bank : Bb4Mid {
 struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) func_00000000(); Bb4Base *o = b; tbl[n++] = o; } };
 extern "C" Bb4Reg func_00000148;
 struct Bb4Req { int pad[3]; int a4a, a4b; int pad2[11]; int cat, idx, a2; };
-extern "C" void func_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
+extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
     Bb4Req o;
     if (idx >= 10) idx = 9;
     if (cat >= 9) cat = 8;

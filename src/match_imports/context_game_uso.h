@@ -591,7 +591,7 @@ extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
             game_uso_D_807FE918, game_uso_D_807FE91C, game_uso_D_807FE920,
             game_uso_D_807FE924, game_uso_D_807FE928, game_uso_D_807FE92C,
             game_uso_D_807FE608, game_uso_D_807FE620;
-void *SnowChaseActorCam_readParms(void *a0);
+void *SnowChaseActorCamParms_ctor(void *a0);
 char *SnowChaseActorCam_ctor(char *a0, int a1, int a2, int a3);
 void SnowChaseActorCam_reset_00001DC4(void *a0);
 extern Vec3* cam_toTargetLocal_000023D4(Vec3 *out, char *a1);
@@ -605,7 +605,7 @@ void SnowChaseActorCam_func_0000249C(char *a0);
 extern int game_uso_normalize_024BC(Vec3 *v);
 void SnowChaseActorCam_applyMode_000024BC(int *a0, int *a1);
 void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2);
-void *SnowChaseActorLook_readParms(void *arg0);
+void *SnowChaseActorLookParms_ctor(void *arg0);
 char *SnowChaseActorLook_ctor(char *a0, int a1, int a2, int a3);
 void SnowChaseActorLook_reset_000028A8(void *a0);
 extern float game_uso_func_070238(float squared_length);
@@ -623,11 +623,11 @@ extern char game_uso_D_807FE608, game_uso_D_807FE620, game_uso_D_807FE964,
             game_uso_D_807FE96C, game_uso_D_807FE970, game_uso_D_807FE974,
             game_uso_D_807FE978, game_uso_D_807FE97C, game_uso_D_807FE980,
             game_uso_D_807FE984, game_uso_D_807FE988, game_uso_D_807FE98C;
-void *SnowChaseActor_readParms(void *a0);
+void *SnowChaseActorParms_ctor(void *a0);
 extern char game_uso_D_807FE990;
 extern char game_uso_D_807FE8A8;
 extern void game_uso_func_04C678(int *dst, void *tmpl);
-extern void *SnowChaseActor_readParms();
+extern void *SnowChaseActorParms_ctor();
 int *SnowChaseActor_ctor(int *a0, int a1, int a2, int a3);
 extern float game_uso_func_070238(float);
 extern void game_uso_func_071028(Vec3 *v);

@@ -11,7 +11,7 @@
 
 extern int func_00000000();
 
-void func_000123F0(char *a0) {
+void settings_vol1Down_000123F0(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x12) > 0) {
         p = *(char**)(a0 + 0x154);
@@ -20,7 +20,7 @@ void func_000123F0(char *a0) {
     func_00000000(*(unsigned char*)(*(char**)(a0 + 0x154) + 0x12));
 }
 
-void func_00012458(char *a0) {
+void settings_vol1Up_00012458(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x12) < 10) {
         p = *(char**)(a0 + 0x154);
@@ -29,7 +29,7 @@ void func_00012458(char *a0) {
     func_00000000(*(unsigned char*)(*(char**)(a0 + 0x154) + 0x12));
 }
 
-void func_000124C4(char *a0) {
+void settings_vol0Down_000124C4(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x13) > 0) {
         p = *(char**)(a0 + 0x154);
@@ -38,7 +38,7 @@ void func_000124C4(char *a0) {
     func_00000000(*(unsigned char*)(*(char**)(a0 + 0x154) + 0x13));
 }
 
-void func_0001252C(char *a0) {
+void settings_vol0Up_0001252C(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x13) < 10) {
         p = *(char**)(a0 + 0x154);
@@ -47,7 +47,7 @@ void func_0001252C(char *a0) {
     func_00000000(*(unsigned char*)(*(char**)(a0 + 0x154) + 0x13));
 }
 
-void func_00012598(char *a0) {
+void settings_vol2Down_00012598(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x14) > 0) {
         p = *(char**)(a0 + 0x154);
@@ -56,7 +56,7 @@ void func_00012598(char *a0) {
     func_00000000(*(unsigned char*)(*(char**)(a0 + 0x154) + 0x14));
 }
 
-void func_00012600(char *a0) {
+void settings_vol2Up_00012600(char *a0) {
     register char *p;
     if ((int)*(unsigned char*)(*(char**)(a0 + 0x154) + 0x14) < 10) {
         p = *(char**)(a0 + 0x154);

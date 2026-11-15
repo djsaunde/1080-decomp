@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for MapProp_func_000063B4 (minimap marker projection, 0x380 / 224 words), EXACT.
+/* IDO 7.1 NCC (C++) donor for MapProp_display (minimap marker projection, 0x380 / 224 words), EXACT.
  * agent-g run 184 (docs/IDO_CODEGEN.md kit CXXXIII). The cfe body sat at 83.21 with frame-struct tricks; the
  * target is C++:
  * - the matrix this-adjust tell `lwc1 180(v0); addiu v0,v0,180` (kit CXXXI) = an inline `M3::xf(V3 &)` called
@@ -44,7 +44,7 @@ struct Rec { char p[0xC]; int o; char p10[4]; f32 d; };
 struct Rr { char p[0xA0]; Rec *r; };
 struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
 #define gG ((G *)&D_00000000)
-extern "C" void MapProp_func_000063B4(Obj *obj) {
+extern "C" void MapProp_display(Obj *obj) {
     V3 A;
     V3 B;
     A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34)));

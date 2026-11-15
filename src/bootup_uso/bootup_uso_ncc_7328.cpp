@@ -15,9 +15,9 @@
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 void func_00000000(...);
-void func_00005EF8(void *);
-void func_0000502C(void *);
-void func_00004FF0(void *);
+void stream_readS32_00005EF8(void *);
+void stream_readS32_0000502C(void *);
+void stream_readS32_00004FF0(void *);
 extern char D_00000000, D_00007F90, D_00007FA0;
 extern char func_0000027C[], func_00000008[], func_0000029C[];
 }
@@ -38,10 +38,10 @@ extern "C" void EnvSettings_load(char *self) {
     Entry73 *found;
     for (;;) {
         msg.id = 0;
-        func_00005EF8(&msg);
+        stream_readS32_00005EF8(&msg);
         if (msg.id == 0) break;
         Iter73 it;
-        func_0000502C(&out);
+        stream_readS32_0000502C(&out);
         found = 0;
         it.start(*(Link73 **)(self + 0x2C));
         while (it.next() != 0) {
@@ -59,13 +59,13 @@ extern "C" void EnvSettings_load(char *self) {
             func_00000000(&D_00000000, 1, out);
         }
     }
-    func_0000502C(self + 0x38);
+    stream_readS32_0000502C(self + 0x38);
     if (*(int *)(self + 0x38) & 1) {
         func_00000000(func_0000027C + 0x18);
     }
     if (*(int *)(self + 0x38) & 2) {
-        func_00004FF0(self + 0x30);
-        func_00004FF0(self + 0x34);
+        stream_readS32_00004FF0(self + 0x30);
+        stream_readS32_00004FF0(self + 0x34);
     }
     { int mode = *(int *)(func_00000008 + 0x34);
     if (mode == 6 || mode == 11) {

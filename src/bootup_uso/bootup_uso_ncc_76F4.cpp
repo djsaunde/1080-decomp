@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for Tv1_func_000076F4 (0xDC / 55 words) -- the bootup twin of SNode_display
+/* IDO 7.1 NCC (C++) donor for Tv1_display (0xDC / 55 words) -- the bootup twin of SNode_display
  * (docs/IDO_CODEGEN.md kit CXXVIII / CXXIX): query the root (G+0x18) through a 7-arg prototyped call; on
  * success hand the global block and s0+0x2C to a callee, scale the camera vector by the block's scale
  * triple (+0x128) through an inline member Cam::mul(G &) called on a local reference `Cam &c = g.cam`, add
@@ -22,7 +22,7 @@ struct Cam { char pad[0x30]; V3 v; void mul(G &g); };
 struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad134[0x254 - 0x134]; void *root; };
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
 extern "C" G bu_76f4_g;
-extern "C" void Tv1_func_000076F4(char *s0) {
+extern "C" void Tv1_display(char *s0) {
     if (func_00000000_76f4_q(bu_76f4_g.root, 3, *(int *)(s0 + 0x5C), *(int *)(s0 + 0x60),
                     *(float *)(s0 + 0x64), 0, *(float *)(s0 + 0x80) * *(float *)(s0 + 0x70)) != 0) {
         func_00000000_76f4_v(&bu_76f4_g, s0 + 0x2C);

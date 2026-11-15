@@ -8,7 +8,7 @@
  * dead `$exit: j $31` block of this frameless FALL-OFF fn (no return
  * statement: its own `jr ra; nop` is the fall-off return, the exit pair comes
  * after it), not a function (a standalone -O0 empty fn is
- * `sw a0; b .+1; nop; jr ra; nop`, func_00010310). Our -O0 emits exactly the
+ * `sw a0; b .+1; nop; jr ra; nop`, gui_stub_00010310). Our -O0 emits exactly the
  * 0xC body + that ONE pair = 0x14; TRUNCATE_TEXT 0x14 only clips IDO's
  * section pad. 102A4+"102E8" precedent;
  * docs/IDO_CODEGEN.md#o0-two-block-predicate-not-adjacent-leaf-cap. 5/5 words. */

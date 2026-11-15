@@ -1,0 +1,23 @@
+nonmatching gui_centerAt_000102A4, 0x4C
+
+glabel gui_centerAt_000102A4
+    /* DE0D10 000102A4 8C8E0078 */  lw         $t6, 0x78($a0)
+    /* DE0D14 000102A8 448E2000 */  mtc1       $t6, $f4
+    /* DE0D18 000102AC 00000000 */  nop
+    /* DE0D1C 000102B0 468021A0 */  cvt.s.w    $f6, $f4
+    /* DE0D20 000102B4 C4880074 */  lwc1       $f8, 0x74($a0)
+    /* DE0D24 000102B8 46083282 */  mul.s      $f10, $f6, $f8
+    /* DE0D28 000102BC 3C014000 */  lui        $at, (0x40000000 >> 16)
+    /* DE0D2C 000102C0 44818000 */  mtc1       $at, $f16
+    /* DE0D30 000102C4 00000000 */  nop
+    /* DE0D34 000102C8 46105483 */  div.s      $f18, $f10, $f16
+    /* DE0D38 000102CC 44852000 */  mtc1       $a1, $f4
+    /* DE0D3C 000102D0 00000000 */  nop
+    /* DE0D40 000102D4 468021A0 */  cvt.s.w    $f6, $f4
+    /* DE0D44 000102D8 46123201 */  sub.s      $f8, $f6, $f18
+    /* DE0D48 000102DC E4880070 */  swc1       $f8, 0x70($a0)
+    /* DE0D4C 000102E0 03E00008 */  jr         $ra
+    /* DE0D50 000102E4 00000000 */   nop
+    /* DE0D54 000102E8 03E00008 */  jr         $ra
+    /* DE0D58 000102EC 00000000 */   nop
+endlabel gui_centerAt_000102A4

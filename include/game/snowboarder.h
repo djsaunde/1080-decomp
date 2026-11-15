@@ -6,10 +6,10 @@
  *
  * Evidence: SnowBoarder_ctor (bootup 0x90CC) does `this == 0 -> new(0xA8C)`,
  * calls the base Node ctor with the name "SnowB" and stores the vtable
- * (bootup Data 0x83D0) at +0x28. Its vtable slots are SnowBoarder_func_0000CFA0
+ * (bootup Data 0x83D0) at +0x28. Its vtable slots are SnowBoarder_display
  * (2), SnowBoarder_update (3, the "SnowB" perf section with the SnowBai /
  * SnowBDyn / SnowBAnm / SnowBChild sub-sections), SnowBoarder_handleMsg (4)
- * and SnowBoarder_func_0000E4DC (8). The physics step SnowBoarder_updateDyn and
+ * and SnowBoarder_readParms (8). The physics step SnowBoarder_updateDyn and
  * the collision pass SnowBoarder_procColl take the same `this`.
  *
  * Only the fields below are typed. Their offsets are proven by the matched

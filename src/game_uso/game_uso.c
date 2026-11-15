@@ -9,7 +9,7 @@
  * between two matched C fns -- kept as sidecar, the Makefile recipe
  * drops the asserted-zero placeholder leftover at 0xC0F0), +0x80 at
  * 0xD5BC (func_0000D458.s over-extended into duplicated copies of
- * D5BC/D5DC/D5F8/D634 -- trimmed), an out-of-order func_00000B14
+ * D5BC/D5DC/D5F8/D634 -- trimmed), an out-of-order snd_soundObjSetByte1D_00000B14
  * definition (moved), and +8 derivative tail alignment. Gate it with
  * `make verify-blocks` after any change to this unit. See
  * docs/MATCHING_WORKFLOW.md, asm-processor 1-word-pad defect. */
@@ -1033,13 +1033,13 @@ extern char game_uso_D_807FE908, game_uso_D_807FE910, game_uso_D_807FE914,
  * constant stores -- the target stores them in source order reusing f0 for
  * 0/-1000/1000 (64 in f4); here uopt hoists all four constants and reorders
  * the stores. */
-/* SnowChaseActorCam_readParms: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
+/* SnowChaseActorCamParms_ctor: EXACT 2026-10-21 (agent-g run 116), from 91.2 NM,
  * with the 3018 recipe (docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018):
  * per-stage struct copy `prm = T`, s0 as the parameter, `if (1) {}` between
  * the stage-1 vectors and int zeros in hi, and the pad map re-fit (no g8,
  * g0[3], one int after o1). */
 typedef struct { int w; } T4_18FC;
-void *SnowChaseActorCam_readParms(char *s0) {
+void *SnowChaseActorCamParms_ctor(char *s0) {
     Vec3 hi;
     Vec3 lo;
     struct { T4_18FC idx; Vec3 v; } big;
@@ -1432,7 +1432,7 @@ void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2) {
     SnowChaseActorCam_applyMode_000024BC(a0, (int *)a2);
 }
 
-/* SnowChaseActorLook_readParms: 52-insn (0xD0) lazy-init/sub-allocator wrapper.
+/* SnowChaseActorLookParms_ctor: 52-insn (0xD0) lazy-init/sub-allocator wrapper.
  * Pattern: take optional pre-existing pointer; if NULL, alloc(0x20). Then if
  * matched a sentinel constraint (a1 == -8), alloc(0x18) for an inner object
  * and chain-init via gl_func_00000000(.., .., handle, 1).
@@ -1479,9 +1479,9 @@ void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2) {
  * var_a1 spill at sp+0x38 vs sp+0x2C, plus the dead-store(0x34)/spill(0x1C)
  * two-homes-no-reload pattern that IDO only emits with the original (lost)
  * source. NATURAL CEILING ~95.40% NM; remaining gap = sp-offset coloring. */
-/* SnowChaseActorLook_readParms — EXACT 52/52 words (self-verified clean rebuild of
+/* SnowChaseActorLookParms_ctor — EXACT 52/52 words (self-verified clean rebuild of
  * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/SnowChaseActorLook_readParms.s; jal words
+ * asm/nonmatchings/game_uso/game_uso/SnowChaseActorLookParms_ctor.s; jal words
  * 0x0C000000 both sides).
  * Levers that cracked the "sp-offset coloring / two-homes-no-reload" cap:
  *  (1) PARAM REUSE: drop var_a1, reassign arg0 itself -> IDO homes the spill
@@ -1499,7 +1499,7 @@ void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2) {
  *  (4) STRUCT-BY-VALUE ARG (One1): passing init_arg_copy (1-word struct) to
  *      K&R gl_func emits lw a2,0x1C + outgoing-arg home sw a2,8(sp) in the
  *      jal delay (int arg would drop the home store). */
-void *SnowChaseActorLook_readParms(void *arg0) {
+void *SnowChaseActorLookParms_ctor(void *arg0) {
   int init_arg;
   void *var_v1;
   volatile int pad_a;
@@ -1756,7 +1756,7 @@ void CameraBase_update_00002FF8(void) {
     game_uso_func_00000000();
 }
 
-/* SnowChaseActor_readParms: EXACT 2026-10-21 (agent-g run 116), from 93.1 NM.
+/* SnowChaseActorParms_ctor: EXACT 2026-10-21 (agent-g run 116), from 93.1 NM.
  * Three changes to the run-106 body: (1) each stage stores the template word
  * into its per-stage struct and copies the STRUCT (`T.w = G; prm = T;`) --
  * the `.w` copy put the load in v0 and the shared store first; (2) s0 is the
@@ -1767,7 +1767,7 @@ void CameraBase_update_00002FF8(void) {
  * stores: every constant then lives in $f0 in turn, as in the target.
  * docs/IDO_CODEGEN.md#cfront-ctor-stage-struct-copy-3018.
  *
- * SnowChaseActor_readParms: 291-insn (0x48C) alloc-cascade constructor, frame
+ * SnowChaseActorParms_ctor: 291-insn (0x48C) alloc-cascade constructor, frame
  * -0xE8. RECONSTRUCTED from expected/game_uso.c.o to the REAL callees + globals:
  *   alloc  = game_uso_func_055750(size)
  *   init   = game_uso_func_04A188(obj, s0, *D_807FE9xx[+TVAL], 1)
@@ -1817,7 +1817,7 @@ extern char game_uso_D_807FE608, game_uso_D_807FE620, game_uso_D_807FE964,
             game_uso_D_807FE96C, game_uso_D_807FE970, game_uso_D_807FE974,
             game_uso_D_807FE978, game_uso_D_807FE97C, game_uso_D_807FE980,
             game_uso_D_807FE984, game_uso_D_807FE988, game_uso_D_807FE98C;
-void *SnowChaseActor_readParms(char *s0) {
+void *SnowChaseActorParms_ctor(char *s0) {
     Vec3 hi;
     Vec3 lo;
     struct { T4_3018 idx; Vec3 v; } big;
@@ -1905,7 +1905,7 @@ T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
 extern char game_uso_D_807FE990;
 extern char game_uso_D_807FE8A8;
 extern void game_uso_func_04C678(int *dst, void *tmpl);
-extern void *SnowChaseActor_readParms();
+extern void *SnowChaseActorParms_ctor();
 
 int *SnowChaseActor_ctor(int *a0, int a1, int a2, int a3) {
     if (a0 == 0) {
@@ -1914,7 +1914,7 @@ int *SnowChaseActor_ctor(int *a0, int a1, int a2, int a3) {
     }
     game_uso_func_04C678(a0, (char *)&game_uso_D_807FE990 + 0x3A0);
     *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE8A8;
-    SnowChaseActor_readParms((int*)((char*)a0 + 0x50));
+    SnowChaseActorParms_ctor((int*)((char*)a0 + 0x50));
     if (a3 != 0) game_uso_func_04C774(a0, 1, a3);
     *(int*)((char*)a0 + 0x48) = a1;
     *(int*)((char*)a0 + 0x4C) = a2;

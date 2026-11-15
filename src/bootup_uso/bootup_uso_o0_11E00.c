@@ -9,7 +9,7 @@ extern char D_00000000;
  * 53-word "find first slot whose mask word has an a1 bit set" leaves that differ
  * only in the slot mask offset (0x18 / 0x10 / 0x1C). The old -O2 -g3 setting was
  * a leftover of the "adjacent empty stub blocks the -O0 move" note: that 8-byte
- * "func_00011DF8" stub was func_00011DBC's dead -O0 `$exit` pair (absorbed into
+ * "func_00011DF8" stub was input_getStickY_00011DBC's dead -O0 `$exit` pair (absorbed into
  * o0_11DBC.c), and the 1207C/12090 fall-off tail is now o0_1207C.c, so nothing
  * blocks -O0 here. TRUNCATE_TEXT 0x27C = 3 x 0xD4 (INCLUDE_ASM path). */
 

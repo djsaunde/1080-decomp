@@ -20,7 +20,7 @@ glabel SnowChaseActorCam_ctor
     lui $t6, %hi(game_uso_D_807FE7E8)   /* 001D70 3C0E0000 -> game_uso_D_807FE7E8 */
     /* 001D74 00001D74 25CE0000 */  .word 0x25CE0000
     /* 001D78 00001D78 AE0E0028 */  .word 0xAE0E0028
-    jal SnowChaseActorCam_readParms   /* 001D7C 0C000000 -> SnowChaseActorCam_readParms */
+    jal SnowChaseActorCamParms_ctor   /* 001D7C 0C000000 -> SnowChaseActorCamParms_ctor */
     /* 001D80 00001D80 26040044 */  .word 0x26040044
     /* 001D84 00001D84 8FAF002C */  .word 0x8FAF002C
     /* 001D88 00001D88 02002025 */  .word 0x02002025

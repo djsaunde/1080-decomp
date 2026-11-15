@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) donor for func_00000A9C: mode letter -> flag bit.
+/* IDO 7.1 NCC (C++) donor for snd_soundObjEventIndex_00000A9C: mode letter -> flag bit.
  * A switch whose cases assign one result variable: edg lowers it to a compare
  * chain (NCC never emits jumptables) and the 'n'/'s' arm's `r = 8` is hoisted
  * into the 'n' compare's delay slot (v1), returned through `or v0,v1`.
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-c run 121). */
-extern "C" int func_00000A9C(int a0, int a1) {
+extern "C" int snd_soundObjEventIndex_00000A9C(int a0, int a1) {
     int r;
     switch (a1) {
     case 0: r = 1; break;
