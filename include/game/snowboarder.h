@@ -137,7 +137,12 @@ typedef struct RiderInput {
                              * CamDirector: 8 / 4 fov up / down, 0x400 / 0x1000 to the manual hook */
     s32 unk14;
     s32 pressed;            /* 0x18: buttons pressed this frame: CamDirector 0x40 toggles manual mode, CourseCam
-                             * 0x40 cycles chaseMode */
+                             * 0x40 cycles chaseMode. pad_update also sets stick-direction bits in held (and so
+                             * in pressed): 0x2000 up, 0x4000 right, 0x8000 down, 0x10000 left (|stick| > 0.5) */
+    char pad1C[0x7C - 0x1C];
+    s16 stickDir;           /* 0x7C: stick direction code, 0 = centred, else 1..8 around the circle: pad_update
+                             * (game_libs 0x675A4) looks the four direction bits (held >> 13 & 0xF) up in a byte
+                             * table. RiderAnim_readStickSpin_0000EAF4 counts its steps to detect stick spins */
 } RiderInput;
 
 typedef struct SnowBoarder {

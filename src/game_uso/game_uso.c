@@ -3,6 +3,7 @@
 #include "game/rideranim.h"
 #include "game/camera.h"
 #include "game/course.h"
+#include "game/sun.h"
 
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
@@ -2463,7 +2464,7 @@ int *CourseMarkerTmpl_create(int a0) {
     if (1) { void *q = &t1; q = &t2; q = &t3; q = &x; }
     if ((x = (char *)game_uso_func_055750(0x8C)) != 0) {
         game_uso_func_051C28(x);
-        *(char **)(x + 0x28) = &game_uso_D_807FEB68;
+        ((CourseMarker *)x)->vptr = (s32)&game_uso_D_807FEB68;
         obj = x + 0x3C;
         if (obj != 0 || (obj = (char *)game_uso_func_055750(0x50)) != 0) {
             b = obj;
@@ -2476,27 +2477,27 @@ int *CourseMarkerTmpl_create(int a0) {
             s = obj + 8;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
-                *(char **)(s + 0xC) = &game_uso_D_807FE9B8 + 0x3C8;
-                *(int *)(s + 0x14) = 0;
-                *(f32 *)(s + 0x10) = 1.0f;
+                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FE9B8 + 0x3C8);
+                ((CourseParm *)s)->value2 = 0;
+                ((CourseFParm *)s)->value = 1.0f;
             }
             t2.w = ((T4_41C0 *)(&game_uso_D_807FECB8 + 0x6C8))->w;
             prm = t2;
             s = obj + 0x20;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
-                *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
-                *(int *)(s + 0x10) = 0;
-                *(int *)(s + 0x14) = 0;
+                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + 0x410);
+                ((CourseParm *)s)->value = 0;
+                ((CourseParm *)s)->value2 = 0;
             }
             t3.w = ((T4_41C0 *)(&game_uso_D_807FECBC + 0x6CC))->w;
             prm = t3;
             s = obj + 0x38;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 0);
-                *(char **)(s + 0xC) = &game_uso_D_807FEA00 + 0x410;
-                *(int *)(s + 0x14) = 0;
-                *(int *)(s + 0x10) = 0;
+                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + 0x410);
+                ((CourseParm *)s)->value2 = 0;
+                ((CourseParm *)s)->value = 0;
             }
         }
     }
@@ -2504,10 +2505,10 @@ int *CourseMarkerTmpl_create(int a0) {
     obj = *(char **)(a0 + 0x40);
     if (*(char **)(a0 + 0x40) != 0) {
         game_uso_func_07ACE0(p1 + 0x10, x = obj);
-        if (*(int *)(x + 0x14) != 0) {
-            *(int *)(x + 4) = 1;
+        if (NODE(x)->parent != 0) {
+            NODE(x)->unk04 = 1;
         }
-        *(char **)(x + 0x14) = p1;
+        NODE(x)->parent = (s32)p1;
     }
     return (int *)p1;
 }
@@ -2532,7 +2533,7 @@ void *CourseMarker_findNearestZ_000043D8(int **a0, int *a1, void *a2) {
 
 void CourseMarker_readParms(char *a0) {
     game_uso_func_00000000(a0);
-    game_uso_func_00000000(a0 + 0x3C);
+    game_uso_func_00000000(&((CourseMarker *)a0)->parms);
 }
 
 /* SnowAI_ctor: 0x1234 (1165 insns, 4.6 KB) — spine candidate #1
@@ -4683,7 +4684,7 @@ void SnowAI_timeoutRun(int *a0) {
     (void)pad;
     /* stage-1 sub is DE-NAMED (inline deref -> ring temp t7); the named sub
      * web starts at the stage-2 reload. */
-    base_vec = *(V3_6A30 *)(*(char**)((char*)a0 + 0x30) + 0xB4);
+    base_vec = *(V3_6A30 *)&((SnowAI *)a0)->rider->pos;
     dispatch_arg = 0;    /* early: move a1,zero schedules into the stage-1 copy */
 
     /* int-typed read: not CSE'd with the char** read above, so the target's
@@ -4691,8 +4692,8 @@ void SnowAI_timeoutRun(int *a0) {
     p = (char*)a0[0x30 / 4];
     {
         register float scale;     /* block-scope: $f0, no home */
-        scale = *(float*)((char*)a0 + 0xA8);
-        p += 0x318;               /* bump FIRST, read through it: copyprop
+        scale = ((SnowAI *)a0)->unkA8;
+        p += 0x318;               /* &rider->vel; bump FIRST, read through it: copyprop
                                      folds the reads to 0x318(v0).. but the
                                      bump survives as the dead addiu */
         rx = *(float*)(p + 0) * scale;
@@ -4711,21 +4712,21 @@ void SnowAI_timeoutRun(int *a0) {
     base_vec.y = base_vec.y + added_vec.y;
     base_vec.z = base_vec.z + added_vec.z;
 
-    if (*(int*)((char*)a0 + 0x6C) == 0) {
+    if (((SnowAI *)a0)->unk6C == 0) {
         dispatch_arg = 0x10;
     }
-    p = *(char**)((char*)a0 + 0x30);
-    if (*(int*)(p + 0x938) != 0 && *(int*)(p + 0xA54) != 0) {
-        timer = *(int*)((char*)a0 + 0x70);
+    p = (char *)((SnowAI *)a0)->rider;
+    if (((SnowBoarder *)p)->contactCount != 0 && ((SnowBoarder *)p)->raceResult != 0) {
+        timer = ((SnowAI *)a0)->unk70;
         if (timer < 60) {
-            if (*(float*)(p + 0x348) <= 30.0f) {
-                RiderAnim_startTimeout_00011024(*(int*)(p + 0x840), dispatch_arg);
+            if (((SnowBoarder *)p)->speed <= 30.0f) {
+                RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
                 *(int*)((char*)a0 + 0x70) = 61;
             } else {
                 *(int*)((char*)a0 + 0x70) = timer + 1;
             }
         } else if (timer == 60) {
-            RiderAnim_startTimeout_00011024(*(int*)(p + 0x840), dispatch_arg);
+            RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
             *(int*)((char*)a0 + 0x70) = 61;
         }
     }
@@ -6860,6 +6861,7 @@ extern char game_uso_D_807FF340, game_uso_D_807FF24C, game_uso_D_807FEE38,
 extern char import_80086288, gPolyGeomMode_3EEC8_8005EE6C;
 extern int import_000F5ADC();
 
+#define SUN(p) ((Sun *)(p))
 void *Sun_ctor(void *arg0) {
     /* Declaration order preserves the original 0xA0 stack frame. */
     char *s0;
@@ -6936,8 +6938,8 @@ skip_sub:
             }
             *(int *)p = (int)((char *)&game_uso_D_807FEE38 + 0x848);
         o16_fill:
-            *(int *)(r + 4) = (int)arg0;
-            *(Pair2 *)(r + 8) = *(Pair2 *)((char *)&game_uso_D_807FEE30 + 0x840);
+            ((MemberCallback *)r)->obj = arg0;
+            ((MemberCallback *)r)->pmf = *(Pair2 *)((char *)&game_uso_D_807FEE30 + 0x840);
         }
     o16_set:
         *(int *)s0 = (int)((char *)&game_uso_D_807FF234 + 0xC44);
@@ -6968,9 +6970,9 @@ after_o140hdr:
             if (nfirst == NULL) goto node1;
         }
         game_uso_func_04A188(nfirst, s0, idx_arg, 1);
-        *(int *)(nfirst + 12) = (int)((char *)&game_uso_D_807FEE50 + 0x860);
-        *(int *)(nfirst + 20) = 0;
-        *(float *)(nfirst + 16) = 0.0f;
+        ((SunParm *)nfirst)->vptr = (char *)&game_uso_D_807FEE50 + 0x860;
+        ((SunParm *)nfirst)->unk14 = 0;
+        ((SunParm *)nfirst)->value.f = 0.0f;
     }
 node1:
     {
@@ -6982,9 +6984,9 @@ node1:
             if (n == NULL) goto node2;
         }
         game_uso_func_04A188(n, s0, idx_arg, 1);
-        { if (1) { tbl1 = (char *)&game_uso_D_807FEE50 + 0x860; } *(int *)(n + 12) = (int)tbl1; }
-        *(int *)(n + 20) = 0;
-        *(float *)(n + 16) = 0.0f;
+        { if (1) { tbl1 = (char *)&game_uso_D_807FEE50 + 0x860; } ((SunParm *)n)->vptr = tbl1; }
+        ((SunParm *)n)->unk14 = 0;
+        ((SunParm *)n)->value.f = 0.0f;
     }
 node2:
     {
@@ -6996,9 +6998,9 @@ node2:
             if (n == NULL) goto node3;
         }
         game_uso_func_04A188(n, s0, idx_arg, 1);
-        { if (1) { tbl2 = (char *)&game_uso_D_807FEE50 + 0x860; } *(int *)(n + 12) = (int)tbl2; }
-        *(int *)(n + 20) = 0;
-        *(float *)(n + 16) = 2.0f;
+        { if (1) { tbl2 = (char *)&game_uso_D_807FEE50 + 0x860; } ((SunParm *)n)->vptr = tbl2; }
+        ((SunParm *)n)->unk14 = 0;
+        ((SunParm *)n)->value.f = 2.0f;
     }
 node3:
     {
@@ -7010,9 +7012,9 @@ node3:
             if (n == NULL) goto node4;
         }
         game_uso_func_04A188(n, s0, idx_arg, 0);
-        *(int *)(n + 12) = (int)((char *)&game_uso_D_807FEE68 + 0x878);
-        *(int *)(n + 20) = 0;
-        *(int *)(n + 16) = 0;
+        ((SunParm *)n)->vptr = (char *)&game_uso_D_807FEE68 + 0x878;
+        ((SunParm *)n)->unk14 = 0;
+        ((SunParm *)n)->value.i = 0;
     }
 node4:;
     {
@@ -7029,9 +7031,9 @@ node4:;
             (o36 = (char *)game_uso_func_055750(36), o36 != NULL)) {
 
         game_uso_func_04A188(o36, s0, idx_arg, 0);
-        *(int *)(o36 + 12) = (int)((char *)&game_uso_D_807FEE80 + 0x890);
-        *(int *)(o36 + 32) = 0;
-        *(Quad4 *)(o36 + 16) = v4_copy;
+        ((SunColorParm *)o36)->vptr = (char *)&game_uso_D_807FEE80 + 0x890;
+        ((SunColorParm *)o36)->unk20 = 0;
+        *(Quad4 *)((SunColorParm *)o36)->value = v4_copy;
         }
     }
 
@@ -7044,10 +7046,10 @@ tail_init:
         flags &= ~2;
         if (1) { state = (int *)((char *)&gPolyGeomMode_3EEC8_8005EE6C + 4); } *state = flags;
     }
-    *(float *)((char *)arg0 + 0xC8) = 1.0f;
+    ((Sun *)arg0)->fade = 1.0f;
     game_uso_func_04D3C8(arg0, 2);
-    *(int *)((char *)arg0 + 0xC4) = import_000F5ADC(0, &game_uso_D_807FF214);
-    *(float *)((char *)arg0 + 0xCC) = 0.0f;
+    ((Sun *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
+    ((Sun *)arg0)->visibility = 0.0f;
 end_ret:
     return arg0;
 }
@@ -7092,37 +7094,37 @@ void Sun_display(char *s0) {
 
     if ((double)*(float *)(s1 + 0x2A0) > *(double *)(&game_uso_D_807FFA40 + 0x120)) return;
 
-    vec[0] = *(float *)(s0 + 0xA0);
-    vec[1] = *(float *)(s0 + 0xA4);
-    vec[2] = *(float *)(s0 + 0xA8);
+    vec[0] = SUN(s0)->mnode.world[3][0];
+    vec[1] = SUN(s0)->mnode.world[3][1];
+    vec[2] = SUN(s0)->mnode.world[3][2];
     if (game_uso_func_063734(*(int *)(s1 + 0x254), &vec[0], 1, 0) == 0) return;
 
-    *(int *)(s0 + 0xD0) = (int)vec[0];
-    *(int *)(s0 + 0xD4) = (int)vec[1];
-    import_000F8678(s1, s0 + 0xDC);
-    *(int *)(s0 + 0xD8) = *(int *)(s1 + 0x254);
-    *(float *)(s0 + 0xC8) = *(float *)(s0 + 0xCC);
+    SUN(s0)->screenX = (int)vec[0];
+    SUN(s0)->screenY = (int)vec[1];
+    import_000F8678(s1, &SUN(s0)->visCallback);
+    SUN(s0)->depthImage = *(void **)(s1 + 0x254);
+    SUN(s0)->fade = SUN(s0)->visibility;
 
     if (*(double *)(&game_uso_D_807FFA48 + 0x128) < (double)*(float *)(s1 + 0x2A0)) {
-        *(float *)(s0 + 0xC8) *= (1.0 - (((double)*(float *)(s1 + 0x2A0) - *(double *)(&game_uso_D_807FFA48 + 0x128)) / *(double *)(&game_uso_D_807FFA50 + 0x130)));
+        SUN(s0)->fade *= (1.0 - (((double)*(float *)(s1 + 0x2A0) - *(double *)(&game_uso_D_807FFA48 + 0x128)) / *(double *)(&game_uso_D_807FFA50 + 0x130)));
     }
 
-    if (!(*(double *)(&game_uso_D_807FFA58 + 0x138) < (double)*(float *)(s0 + 0xC8))) return;
+    if (!(*(double *)(&game_uso_D_807FFA58 + 0x138) < (double)SUN(s0)->fade)) return;
 
     game_uso_func_04D700(s0);
 
     dst = &import_8005C1A8 + 0xA0;
-    *(float *)(dst + 0x30) = *(float *)(s0 + 0xA0);
-    *(float *)(dst + 0x34) = *(float *)(s0 + 0xA4);
-    *(float *)(dst + 0x38) = *(float *)(s0 + 0xA8);
-    r = *(float *)(s0 + 0xC8) * *(float *)(s0 + 0x134);
-    game_uso_func_05B750(s1, s0 + 0x164);
+    *(float *)(dst + 0x30) = SUN(s0)->mnode.world[3][0];
+    *(float *)(dst + 0x34) = SUN(s0)->mnode.world[3][1];
+    *(float *)(dst + 0x38) = SUN(s0)->mnode.world[3][2];
+    r = SUN(s0)->fade * SUN(s0)->parms.scl.value.f;
+    game_uso_func_05B750(s1, SUN(s0)->parms.col.value);
 
-    *(short *)(*(char **)(s0 + 0xC4) + 0xC0) = *(int *)(s0 + 0x14C);
-    *(float *)(*(char **)(s0 + 0xC4) + 0xB0) = r;
-    *(float *)(*(char **)(s0 + 0xC4) + 0xB4) = r;
+    SUN(s0)->sprite->unkC0 = SUN(s0)->parms.mat.value.i;
+    SUN(s0)->sprite->scaleX = r;
+    SUN(s0)->sprite->scaleY = r;
 
-    v1 = *(char **)(s0 + 0xC4);
+    v1 = (char *)SUN(s0)->sprite;
     vt = *(int **)(v1 + 0x28);
     (*(void (**)(char *))((char *)vt + 0x1C))((char *)((int)(short)*(short *)((char *)vt + 0x18) + (int)v1));
 }
@@ -7146,15 +7148,15 @@ void Sun_update(int *a0) {
     buf[3] = 0.0f;
     buf[4] = *(float*)((char*)&D_00000000 + 0x140);      /* sp+0x2C = D[0x140] */
     /* float-first arg (-> $f12); a0 is saved across the calls, not passed */
-    game_uso_func_070338(*(float*)((char*)a0 + 0x11C), &buf[3], &buf[4]);
-    game_uso_func_070338(*(float*)((char*)a0 + 0x104), &buf[2], &buf[4]);
-    *(float*)((char*)a0 + 0x60) = buf[2];
-    *(float*)((char*)a0 + 0x64) = buf[3];
-    *(float*)((char*)a0 + 0x68) = buf[4];
+    game_uso_func_070338(((Sun *)a0)->parms.ele.value.f, &buf[3], &buf[4]);
+    game_uso_func_070338(((Sun *)a0)->parms.rot.value.f, &buf[2], &buf[4]);
+    ((Sun *)a0)->mnode.local[3][0] = buf[2];
+    ((Sun *)a0)->mnode.local[3][1] = buf[3];
+    ((Sun *)a0)->mnode.local[3][2] = buf[4];
     game_uso_func_04DA24(a0);
 }
 void Sun_readParms(char *a0) {
-    game_uso_func_00000000(a0 + 0xEC);
+    game_uso_func_00000000(&((Sun *)a0)->parms);
 }
 
 /* B4B8: nine-neighbor sentinel count, then asymmetric smoothing (150 words).
@@ -7186,13 +7188,13 @@ extern char game_uso_D_807FFA68;
 #define GAME_D_807FFA68_148 (*(double *)(&game_uso_D_807FFA68 + 0x148))
 int Sun_measureVisibility(char *obj) {
     char *c = *(char **)(&import_8005C348 + 0x240);
-    char *grid = *(char **)(obj + 0xD8);
+    char *grid = SUN(obj)->depthImage;
     unsigned short *data = *(unsigned short **)(*(char **)(c + 0x148) + 0xF0);
     short *tbl = game_uso_D_807FF2B4;
     int w = *(int *)(grid + 0xB8);
     int h = *(int *)(grid + 0xBC);
-    int y = *(int *)(obj + 0xD4);
-    int x = *(int *)(obj + 0xD0);
+    int y = SUN(obj)->screenY;
+    int x = SUN(obj)->screenX;
     int count = 0;
     int i;
     int idx;
@@ -7206,11 +7208,11 @@ int Sun_measureVisibility(char *obj) {
         }
     }
     result = (float)count / 9.0f;
-    prev = *(float *)(obj + 0xCC);
+    prev = SUN(obj)->visibility;
     if (result < prev) {
-        *(float *)(obj + 0xCC) = result;
+        SUN(obj)->visibility = result;
     } else {
-        *(float *)(obj + 0xCC) =
+        SUN(obj)->visibility =
             (float)((double)prev + (double)(result - prev) * GAME_D_807FFA68_148);
     }
     return count;
@@ -7223,15 +7225,15 @@ void LensFlareElem_init_0000B710(char *a0) {
     float one = 1.0f;
     float zero = 0.0f;
 
-    *(float*)(a0 + 0x10) = one;
-    *(float*)(a0 + 0x0C) = one;
-    *(float*)(a0 + 0x08) = one;
-    *(float*)(a0 + 0x04) = one;
-    *(float*)(a0 + 0x00) = zero;
-    *(float*)(a0 + 0x14) = *(float*)(&D_00000000 + 0x150);
-    *(s32*)(a0 + 0x18) = 0;
-    *(s32*)(a0 + 0x1C) = 8;
-    *(float*)(a0 + 0x20) = zero;
+    ((LensFlareElem *)a0)->color[3] = one;
+    ((LensFlareElem *)a0)->color[2] = one;
+    ((LensFlareElem *)a0)->color[1] = one;
+    ((LensFlareElem *)a0)->color[0] = one;
+    ((LensFlareElem *)a0)->pos = zero;
+    ((LensFlareElem *)a0)->size = *(float*)(&D_00000000 + 0x150);
+    ((LensFlareElem *)a0)->image = 0;
+    ((LensFlareElem *)a0)->flags = 8;
+    ((LensFlareElem *)a0)->minDot = zero;
 }
 
 /* LensFlareElem_draw_0000B750 (0x134 / 77 words): basis/scale update. f0 =
@@ -7254,12 +7256,12 @@ void LensFlareElem_draw_0000B750(char *a0, char *s0, float *a2, float *a3, float
 }
 
 void LensFlareElem_read_0000B884(char *dst) {
-    stream_readF32_0000AD10((float*)dst);
-    stream_readF32_0000AD10((float*)(dst + 0x14));
-    stream_readS32_0000AD4C((int*)(dst + 0x18));
-    stream_readQuad_0000AD88((Quad4*)(dst + 0x4));
-    stream_readS32_0000AD4C((int*)(dst + 0x1C));
-    stream_readF32_0000AD10((float*)(dst + 0x20));
+    stream_readF32_0000AD10(&((LensFlareElem *)dst)->pos);
+    stream_readF32_0000AD10(&((LensFlareElem *)dst)->size);
+    stream_readS32_0000AD4C(&((LensFlareElem *)dst)->image);
+    stream_readQuad_0000AD88((Quad4 *)((LensFlareElem *)dst)->color);
+    stream_readS32_0000AD4C(&((LensFlareElem *)dst)->flags);
+    stream_readF32_0000AD10(&((LensFlareElem *)dst)->minDot);
 }
 
 /* LensFlare_create — EXACT 174/174 words (2026-07-07, agent-e/w30).
@@ -7343,7 +7345,7 @@ after_node:
 skip_sub:
 
     *(int *)((char *)arg0 + 0x28) = (int)&game_uso_D_807FF2D8;
-    *(int *)((char *)arg0 + 0x220) = a2v;
+    ((LensFlare *)arg0)->sun = (Sun *)a2v;
     sp1 = (char *)arg0 + 0x224;
     if (arg0 == (void *)-0x224) {
         sp1 = (char *)game_uso_func_055750(0x50);
@@ -7365,9 +7367,9 @@ stage_a:
         if (n == NULL) goto stage_b;
     }
     game_uso_func_04A188(n, sp1, marsh, 1);
-    *(int *)(n + 0xC) = (int)((char *)&game_uso_D_807FEE50 + 0x860);
-    *(int *)(n + 0x14) = 0;
-    *(float *)(n + 0x10) = *(float *)((char *)&game_uso_D_807FF380 + 0x160);
+    ((SunParm *)n)->vptr = (char *)&game_uso_D_807FEE50 + 0x860;
+    ((SunParm *)n)->unk14 = 0;
+    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF380 + 0x160);
 stage_b:
     slot_b.p = *(char **)((char *)&game_uso_D_807FF380 + 0xD90);
     marsh = slot_b;
@@ -7377,9 +7379,9 @@ stage_b:
         if (n == NULL) goto stage_c;
     }
     game_uso_func_04A188(n, sp1, marsh, 1);
-    *(int *)(n + 0xC) = (int)((char *)&D_B8D4_st2 + 0x860);
-    *(int *)(n + 0x14) = 0;
-    *(float *)(n + 0x10) = *(float *)((char *)&game_uso_D_807FF384 + 0x164);
+    ((SunParm *)n)->vptr = (char *)&D_B8D4_st2 + 0x860;
+    ((SunParm *)n)->unk14 = 0;
+    ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF384 + 0x164);
 stage_c:
     slot_c.p = *(char **)((char *)&game_uso_D_807FF384 + 0xD94);
     marsh = slot_c;
@@ -7389,20 +7391,20 @@ stage_c:
         if (n == NULL) goto finalize;
     }
     game_uso_func_04A188(n, sp1, marsh, 1);
-    *(int *)(n + 0xC) = (int)((char *)&D_B8D4_st3 + 0x860);
-    *(int *)(n + 0x14) = 0;
-    *(float *)(n + 0x10) = 0.0f;
+    ((SunParm *)n)->vptr = (char *)&D_B8D4_st3 + 0x860;
+    ((SunParm *)n)->unk14 = 0;
+    ((SunParm *)n)->value.f = 0.0f;
 finalize:
     *(int *)((char *)arg0 + 0xC) = (int)((char *)&game_uso_D_807FF388 + 0xD98);
-    *(int *)((char *)arg0 + 0xB4) = import_000F5ADC(0, &game_uso_D_807FF214);
-    *(int *)((char *)arg0 + 0x274) = 10;
+    ((LensFlare *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
+    ((LensFlare *)arg0)->numElems = LENSFLARE_MAX_ELEMS;
     i = 0;
-    n = (char *)arg0 + 0xB8;
+    n = (char *)((LensFlare *)arg0)->elems;
     do {
         LensFlareElem_init_0000B710(n);
         n += 0x24;
         i++;
-    } while (i < *(unsigned int *)((char *)arg0 + 0x274));
+    } while (i < ((LensFlare *)arg0)->numElems);
     game_uso_func_04C774((int *)arg0, 1, arg1);
 end_ret:
     return arg0;
@@ -7679,9 +7681,9 @@ void LensFlare_readParms(char *a0) {
     char *base = a0;
     int i;
     char *p;
-    game_uso_func_04A2D8(base + 0x224);
-    stream_readS32_0000ADE0((int*)(base + 0x274));
-    for (i = 0, p = base + 0xB8; i != 0x168; p += 0x24, i += 0x24) {
+    game_uso_func_04A2D8(&((LensFlare *)base)->parms);
+    stream_readS32_0000ADE0((int *)&((LensFlare *)base)->numElems);
+    for (i = 0, p = (char *)((LensFlare *)base)->elems; i != sizeof(((LensFlare *)base)->elems); p += 0x24, i += 0x24) {
         LensFlareElem_read_0000B884(p);
     }
 }
@@ -8598,11 +8600,11 @@ void RiderAnim_flipStance_0000D6E4(char *a0) {
  * local had pushed it to 0x20). */
 int RiderAnim_trickCrash_0000D74C(char *a0) {
     int arg;
-    if (*(int*)(*(char**)(a0 + 0xB4) + 0x938)) {
+    if (RA(a0)->rider->contactCount) {
         gl_func_00000000(a0, 1);
         gl_func_00000000(a0, 2, 0);
-        arg = *(int*)(a0 + 0xFC) | RANIM_CRASH_SLIDE;
-        if (*(int*)(*(char**)(a0 + 0xB4) + 0xA14) <= 0) {
+        arg = RA(a0)->animSet | RANIM_CRASH_SLIDE;
+        if (RA(a0)->rider->health <= 0) {
             arg = 0x0006000A;
             *(int*)(*(char**)(a0 + 0xB4) + 0x960) = 0x64;
         }
@@ -8624,14 +8626,14 @@ int RiderAnim_trickCrash_0000D74C(char *a0) {
  * after the banned INSN_PATCH that previously faked it was removed 2026-05-23).
  * See docs/MATCHING_WORKFLOW.md addend form. */
 void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
-    int *data = *(int**)(a0 + 0xB4);
-    if (*(float*)((char*)data + 0xA38) < -20.0f) {
-        if (*(int*)((char*)data + 0x938) != 0) {
+    SnowBoarder *data = RA(a0)->rider;
+    if (data->fwdSpeed < -20.0f) {
+        if (data->contactCount != 0) {
             gl_func_00000000(a0, 1, 2);
-            gl_func_00000000(a0, *(int*)(a0 + 0xFC) | RANIM_BUMP_R_BREAK, 0, 1, 1, 1);
+            gl_func_00000000(a0, RA(a0)->animSet | RANIM_BUMP_R_BREAK, 0, 1, 1, 1);
             gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE90), 1);
             gl_func_00000000(a0);
-            *(int*)(a0 + 0x114) = 0;
+            RA(a0)->trickPhase = 0;
         }
     }
 }
@@ -8641,7 +8643,7 @@ void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
  * the condition shifts it to $t6 (target's contiguous t6/t7/t8 numbering).
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_checkBrake_0000D8A8(char *a0) {
-    if (*(int*)((char*)*(int**)(a0 + 0xB4) + 0x990) != 0) {
+    if (RA(a0)->rider->crouch != 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE70));
     }
 }
@@ -8676,27 +8678,27 @@ void RiderAnim_checkJump_0000D8EC(int *a0) {
     int *v0;
     int a1;
 
-    if (*(int*)((char*)(int*)*(int*)((char*)a0 + 0xB4) + 0x938) == 0) goto L_BC;
+    if (RA(a0)->rider->contactCount == 0) goto L_BC;
     if (*(int**)&D_00000000 != 0) {
         a1 = 0;
-        if (*(int*)((char*)a0 + 0x118) != 0) {
-            v0 = (int*)*(int*)((char*)(int*)*(int*)((char*)a0 + 0xB4) + 0x800);
-            if ((*(int*)((char*)v0 + 0x18) & 0x100) != 0) a1 = 1;
+        if (RA(a0)->jumpRepress != 0) {
+            v0 = (int *)RA(a0)->rider->input;
+            if ((((RiderInput *)v0)->pressed & 0x100) != 0) a1 = 1;
         } else {
-            v0 = (int*)*(int*)((char*)(int*)*(int*)((char*)a0 + 0xB4) + 0x800);
-            if ((*(int*)((char*)v0 + 0x10) & 0x100) != 0) a1 = 1;
+            v0 = (int *)RA(a0)->rider->input;
+            if ((((RiderInput *)v0)->held & 0x100) != 0) a1 = 1;
         }
         if (a1 != 0) {
             gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xEB8));
-            *(short*)((char*)a0 + 0xE4) = 0;
-            *(int*)((char*)a0 + 0x118) = 0;
+            RA(a0)->jumpCharge = 0;
+            RA(a0)->jumpRepress = 0;
         }
     } else {
-        *(short*)((char*)a0 + 0xE4) = 0;
+        RA(a0)->jumpCharge = 0;
         gl_func_00000000(a0);
     }
 L_BC:
-    if (*(int*)((char*)(int*)*(int*)((char*)a0 + 0xB4) + 0x9D4) >= 11) {
+    if (RA(a0)->rider->airFrames >= 11) {
         gl_func_00000000(a0);
     }
 }
@@ -8767,15 +8769,15 @@ extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FF458;
 extern char game_uso_D_807FF440;
 void RiderAnim_checkRow_0000E1FC(char *obj) {
-    char *s = *(char **)(obj + 0xB4);
-    char *sub = s;
+    SnowBoarder *s = RA(obj)->rider;
+    char *sub = (char *)s;
     float raw, m;
-    if(1){ sub += 0x740; }
-    if (!(*(float *)(sub + 0x10) > *(float *)(s + 0x348))) return;
-    sub = *(char **)(s + 0x800);
-    if (!(*(int *)(sub + 0x18) & 0x2000)) return;
-    if (*(int *)(s + 0x9CC) != 0) goto callA;
-    raw = *(float *)(s + 0x970);
+    if(1){ sub += 0x740; } /* &s->parms.min */
+    if (!(((SnowBParm *)sub)->value > s->speed)) return;
+    sub = (char *)s->input;
+    if (!(((RiderInput *)sub)->pressed & 0x2000)) return;
+    if (s->useDParms != 0) goto callA;
+    raw = s->edge;
     m = (raw < 0.0f) ? -raw : raw;
     if (*(double *)((char *)&game_uso_D_807FF458 + 0x208) < (double)m) {
     callA:
@@ -8803,14 +8805,14 @@ char *a0;
     float *acc;
 
     if (*(int*)&game_uso_D_807FF684 == 0 && (frame = RA(a0)->jumpCharge, frame >= 0)) {
-        block = *(char**)(*(char**)(a0 + 0xB4) + 0x800);
-        if (*(int*)(block + 0x10) & 0x300) {
+        block = (char *)RA(a0)->rider->input;
+        if (((RiderInput *)block)->held & 0x300) {
             RA(a0)->jumpCharge = (s16)frame + 1;
-            if ((s16)frame < *(int*)(a0 + 0x1CC)) {
-                char *parent = *(char**)(a0 + 0xB4);
-                acc = (float*)(parent + 0x31C);
-                if ((*(int*)(parent + 0x9A8) & 1) == 0) {
-                    *acc += *(float*)(a0 + 0x1E4);
+            if ((s16)frame < RA(a0)->parms.jlt.value.i) {
+                SnowBoarder *parent = RA(a0)->rider;
+                acc = &parent->vel.y;
+                if ((parent->groundFlags & 1) == 0) {
+                    *acc += RA(a0)->parms.jli.value.f;
                 }
             }
         } else {
@@ -8968,28 +8970,28 @@ void RiderAnim_readTrickInput_0000E5C8(char *a0, int a1) {
     unsigned int v0;
 
     /* src = a0->0xB4->0x800->(0x18 if a0->0xF4 else 0x10) */
-    if (*(int *)(a0 + 0xF4) != 0) {
-        src = *(unsigned int *)(*(char **)(*(char **)(a0 + 0xB4) + 0x800) + 0x18);
+    if (RA(a0)->curTrick != 0) {
+        src = RA(a0)->rider->input->pressed;
     } else {
-        src = *(unsigned int *)(*(char **)(*(char **)(a0 + 0xB4) + 0x800) + 0x10);
+        src = RA(a0)->rider->input->held;
     }
     /* unrolled mask->outbit permutation into a3->0xE8 (read-modify-write) */
-    if (src & 0x200)   *(int *)(a3 + 0xE8) |= 0x2;
-    if (src & 0x1000)  *(int *)(a3 + 0xE8) |= 0x4;
-    if (src & 0x400)   *(int *)(a3 + 0xE8) |= 0x1;
-    if (src & 0x10000) *(int *)(a3 + 0xE8) |= 0x10;
-    if (src & 0x4000)  *(int *)(a3 + 0xE8) |= 0x20;
-    if (src & 0x2000)  *(int *)(a3 + 0xE8) |= 0x40;
-    if (src & 0x8000)  *(int *)(a3 + 0xE8) |= 0x80;
+    if (src & 0x200)   RA(a3)->trickButtons |= 0x2;
+    if (src & 0x1000)  RA(a3)->trickButtons |= 0x4;
+    if (src & 0x400)   RA(a3)->trickButtons |= 0x1;
+    if (src & 0x10000) RA(a3)->trickButtons |= 0x10;
+    if (src & 0x4000)  RA(a3)->trickButtons |= 0x20;
+    if (src & 0x2000)  RA(a3)->trickButtons |= 0x40;
+    if (src & 0x8000)  RA(a3)->trickButtons |= 0x80;
 
-    v0 = *(unsigned int *)(*(char **)(a3 + 0xB4) + 0xA58);
+    v0 = RA(a3)->rider->flags;
     {
         unsigned int g = v0 & 0x20;
         RiderAnim_readStickSpin_0000EAF4(a3, g && (v0 & 0x40), g);
     }
 
     {
-        int k = *(int *)(a3 + 0x12C);
+        int k = RA(a3)->spinKind;
         if (k != 0) {
             if (k != 5) {
                 if (k != 6) {
@@ -9005,30 +9007,30 @@ void RiderAnim_readTrickInput_0000E5C8(char *a0, int a1) {
             } else goto c5;
         }
         goto cdone;
-c5:     *(int *)(a3 + 0xE8) |= 0x20000; if (1) goto cdone;
-c6:     *(int *)(a3 + 0xE8) |= 0x10000; if (1) goto cdone;
-c2:     *(int *)(a3 + 0xE8) |= 0x4000;  if (1) goto cdone;
-c1:     *(int *)(a3 + 0xE8) |= 0x1000;  if (1) goto cdone;
-c4:     *(int *)(a3 + 0xE8) |= 0x8000;  if (1) goto cdone;
-c3:     *(int *)(a3 + 0xE8) |= 0x2000;
+c5:     RA(a3)->trickButtons |= 0x20000; if (1) goto cdone;
+c6:     RA(a3)->trickButtons |= 0x10000; if (1) goto cdone;
+c2:     RA(a3)->trickButtons |= 0x4000;  if (1) goto cdone;
+c1:     RA(a3)->trickButtons |= 0x1000;  if (1) goto cdone;
+c4:     RA(a3)->trickButtons |= 0x8000;  if (1) goto cdone;
+c3:     RA(a3)->trickButtons |= 0x2000;
 cdone:  ;
     }
 
     /* bit-clearing, gated by 0xE8 bit 0x4 and a3->0xF4->0x2C flags */
     {
-        unsigned int e8 = *(unsigned int *)(a3 + 0xE8);
+        unsigned int e8 = RA(a3)->trickButtons;
         if (e8 & 0x4) {
-            char *f4 = *(char **)(a3 + 0xF4); if (1) {}
+            char *f4 = (char *)RA(a3)->curTrick; if (1) {}
             *(unsigned int *)(a3 + 0xE8) = e8 & 0x3F007;
             if (f4 != 0) {
-                unsigned int m = *(unsigned int *)(f4 + 0x2C);
+                unsigned int m = ((TrickEntry *)f4)->inputMask;
                 if (m & 0x5000) {
                     *(unsigned int *)(a3 + 0xE8) &= 0xFFFF5FFF;
-                    m = *(unsigned int *)(*(char **)(a3 + 0xF4) + 0x2C);
+                    m = RA(a3)->curTrick->inputMask;
                 }
                 if (m & 0xA000) {
                     *(unsigned int *)(a3 + 0xE8) &= 0xFFFFAFFF;
-                    m = *(unsigned int *)(*(char **)(a3 + 0xF4) + 0x2C);
+                    m = RA(a3)->curTrick->inputMask;
                 }
                 if (m & 0xC000) {
                     if (m & 0x100000) {
@@ -9042,7 +9044,7 @@ cdone:  ;
     }
 
     /* counter advance: 0xEC++ while 0xE8 nonzero, else reset */
-    if (*(int *)(a3 + 0xE8) != 0) {
+    if (RA(a3)->trickButtons != 0) {
         *(int *)(a3 + 0xEC) += 1;
     } else {
         *(int *)(a3 + 0xEC) = 0;
@@ -9050,17 +9052,17 @@ cdone:  ;
 
     /* stride-64 search over the table when 0xEC exceeds the 0x214 bound */
     {
-        unsigned int t0 = *(unsigned int *)(a3 + 0xEC);
-        if (t0 > *(unsigned int *)(a3 + 0x214)) {
+        unsigned int t0 = RA(a3)->trickInputFrames;
+        if (t0 > (unsigned int)RA(a3)->parms.tkt.value.i) {
             unsigned int v1;
             char *base;
             char *obj;
             char *e;
-            for (v1 = 0, base = *(char **)&game_uso_D_807FFBC0, obj = *(char **)(a3 + 0xB4), e = base; v1 < *(unsigned int *)&D_00000000; v1++, e += 64) {
-                if ((*(int *)(e + 0x34) & *(int *)(obj + 0x8C0)) == 0) continue;
-                if (*(int *)(e + 0x2C) != *(int *)(a3 + 0xE8)) continue;
-                if ((*(int *)(e + 0x38) & 0x4) && !(*(int *)(obj + 0x9A8) & 0x1)) continue;
-                if (*(int *)(obj + 0x938) != 0) continue;
+            for (v1 = 0, base = *(char **)&game_uso_D_807FFBC0, obj = (char *)RA(a3)->rider, e = base; v1 < *(unsigned int *)&D_00000000; v1++, e += 64) {
+                if ((((TrickEntry *)e)->riderMask & ((SnowBoarder *)obj)->unk8C0) == 0) continue;
+                if (((TrickEntry *)e)->inputMask != RA(a3)->trickButtons) continue;
+                if ((((TrickEntry *)e)->flags & TRICK_FLAG_GROUND) && !(((SnowBoarder *)obj)->groundFlags & 0x1)) continue;
+                if (((SnowBoarder *)obj)->contactCount != 0) continue;
                 *(char **)(a3 + 0xF0) = base + v1 * 64;
                 *(int *)(a3 + 0xE8) = 0;
                 *(int *)(a3 + 0x12C) = 0;
@@ -9122,46 +9124,48 @@ void RiderAnim_checkGroundSpin_0000E91C(char *a0) {
     Pair2 homed;
     int pad2;
 
-    *(int *)(a0 + 0xB0) = 0;
-    cond = ((*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x20) != 0);
+    RA(a0)->spinAnim = 0;
+    /* rider->flags is u32; the (s32) keeps the target's signed AND web (an unsigned one is a different CSE
+     * expression from the (unsigned) argument below and moves the andi / sltu). */
+    cond = (((s32)RA(a0)->rider->flags & 0x20) != 0);
     if (cond) {
-        cond = ((*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x40) != 0);
+        cond = (((s32)RA(a0)->rider->flags & 0x40) != 0);
     }
-    RiderAnim_readStickSpin_0000EAF4(a0, cond, (unsigned)(*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x20));
+    RiderAnim_readStickSpin_0000EAF4(a0, cond, (unsigned)((s32)RA(a0)->rider->flags & 0x20));
 
-    cond = *(int *)(*(char **)(a0 + 0xB4) + 0x800);
-    if (*(unsigned int *)(cond + 0x10) & 0x1000) {
-        cond = *(int *)(a0 + 0x12C);
+    cond = (int)RA(a0)->rider->input;
+    if (((RiderInput *)cond)->held & 0x1000) {
+        cond = RA(a0)->spinKind;
         if (cond == 2) goto L2;
         if (cond == 1) goto L1;
         if (cond == 4) goto L4;
         if (cond != 3) goto done_switch;
         goto L3;
     L2:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_360F;
+        RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_360F;
         homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
-        import_00096724(*(char **)(a0 + 0xB4) + 0x808);
+        import_00096724(RA(a0)->rider->sound);
         goto done_switch;
     L1:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_180F;
+        RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_180F;
         homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
-        import_00096704(*(char **)(a0 + 0xB4) + 0x808);
+        import_00096704(RA(a0)->rider->sound);
         goto done_switch;
     L4:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_360B;
+        RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_360B;
         homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
-        import_00096724(*(char **)(a0 + 0xB4) + 0x808);
+        import_00096724(RA(a0)->rider->sound);
         goto done_switch;
     L3:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_180B;
+        RA(a0)->spinAnim = RA(a0)->animSet | RANIM_TO_FAKIE_180B;
         homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
-        import_00096704(*(char **)(a0 + 0xB4) + 0x808);
+        import_00096704(RA(a0)->rider->sound);
     done_switch:;
     }
 
-    if (*(int *)(a0 + 0xB0) != 0) {
-        *(int *)(a0 + 0x12C) = 0;
-        import_0010DB28(a0, *(int *)(a0 + 0xB0), 0, 1, 1, 1);
+    if (RA(a0)->spinAnim != 0) {
+        RA(a0)->spinKind = 0;
+        import_0010DB28(a0, RA(a0)->spinAnim, 0, 1, 1, 1);
         RiderAnim_setState_0000D5F8(a0, homed, 1);
         RiderAnim_clearNextState_0000D5DC(a0);
     }
@@ -9216,6 +9220,9 @@ void RiderAnim_checkGroundSpin_0000E91C(char *a0) {
 //   (lw 0x18(a2) / lw 8(sp)) annulled into each branch delay slot — an IDO
 //   -O2 reorg-annul scheduling choice not steerable from C (per-test re-read
 //   yields plain beq here, not beql). Same reorg-annul class as func_0000174C.
+/* RIDER_V: obj->rider read through a volatile lvalue: the per-use reloads are the CSE/PRE breakers of
+ * lever (4) below (the target reloads rider on every path). */
+#define RIDER_V(o) (*(SnowBoarder * volatile *)&RA(o)->rider)
 int RiderAnim_readStickSpin_0000EAF4(char *obj, int a1, int a2) {
     int flag;
     int result;
@@ -9225,58 +9232,58 @@ int RiderAnim_readStickSpin_0000EAF4(char *obj, int a1, int a2) {
 
     result = 0;
     flag = 0;
-    tgt = *(short *)(*(char **)(*(char * volatile *)(obj + 0xB4) + 0x800) + 0x7C);
+    tgt = RIDER_V(obj)->input->stickDir;
     if (tgt != 0) {
         d = 0;
-        cur = *(short *)(obj + 0x124);
+        cur = RA(obj)->lastStickDir;
         if (cur != 0) {
             d = tgt - cur;
         }
         if (d >= 8) d = 7 - d;
         if (d < -7) d = -7 - d;
         if (d >= 3 || d < -2) d = 0;
-        if (*(short *)(obj + 0x126) == 0) {
-            *(short *)(obj + 0x126) = 1;
-            *(short *)(obj + 0x128) = 0;
-            *(int *)(obj + 0x12C) = 0;
+        if (RA(obj)->spinFrames == 0) {
+            RA(obj)->spinFrames = 1;
+            RA(obj)->spinSteps = 0;
+            RA(obj)->spinKind = 0;
         }
         if (d == 0) {
-            cur = (int)*(char **)(*(char * volatile *)(obj + 0xB4) + 0x800);
-            if (*(volatile unsigned int *)(cur + 0x18) & 0x10000) {
+            cur = (int)RIDER_V(obj)->input;
+            if (((volatile RiderInput *)cur)->pressed & 0x10000) {
                 d = -1;
-            } else if (*(volatile unsigned int *)(cur + 0x18) & 0x4000) {
+            } else if (((volatile RiderInput *)cur)->pressed & 0x4000) {
                 d = 1;
-            } else if (*(volatile unsigned int *)(cur + 0x18) & 0x2000) {
-                *(int *)(obj + 0x12C) = 5;
-            } else if (*(volatile unsigned int *)(cur + 0x18) & 0x8000) {
-                *(int *)(obj + 0x12C) = 6;
+            } else if (((volatile RiderInput *)cur)->pressed & 0x2000) {
+                RA(obj)->spinKind = 5;
+            } else if (((volatile RiderInput *)cur)->pressed & 0x8000) {
+                RA(obj)->spinKind = 6;
             }
         }
-        *(short *)(obj + 0x128) = *(short *)(obj + 0x128) + d;
-        tgt = *(short *)(*(char **)(*(char * volatile *)(obj + 0xB4) + 0x800) + 0x7C);
+        RA(obj)->spinSteps = RA(obj)->spinSteps + d;
+        tgt = RIDER_V(obj)->input->stickDir;
     } else {
         flag = 1;
     }
-    d = *(short *)(obj + 0x126);
-    *(short *)(obj + 0x124) = tgt;
+    d = RA(obj)->spinFrames;
+    RA(obj)->lastStickDir = tgt;
     if (d != 0) {
-        *(short *)(obj + 0x126) = (short)d + 1;
+        RA(obj)->spinFrames = (short)d + 1;
         if ((short)d >= 6) {
             flag = 1;
         }
     }
     if (flag != 0) {
-        if (*(short *)(obj + 0x126) != 0) {
-            *(short *)(obj + 0x126) = 0;
+        if (RA(obj)->spinFrames != 0) {
+            RA(obj)->spinFrames = 0;
             if (a1 != 0) {
-                if (*(int *)(*(char * volatile *)(obj + 0xB4) + 0xA58) & 0x80) {
-                    *(short *)(obj + 0x128) = -*(short *)(obj + 0x128);
+                if (RIDER_V(obj)->flags & 0x80) {
+                    RA(obj)->spinSteps = -RA(obj)->spinSteps;
                 }
             }
             if (a2 != 0) {
-                *(short *)(obj + 0x128) = -*(short *)(obj + 0x128);
+                RA(obj)->spinSteps = -RA(obj)->spinSteps;
             }
-            flag = *(short *)(obj + 0x128);
+            flag = RA(obj)->spinSteps;
             if (flag >= 3) {
                 result = 4;
             } else if (flag > 0) {
@@ -9286,7 +9293,7 @@ int RiderAnim_readStickSpin_0000EAF4(char *obj, int a1, int a2) {
             } else if (flag < 0) {
                 result = 1;
             }
-            *(int *)(obj + 0x12C) = result;
+            RA(obj)->spinKind = result;
         }
     }
     return result;
@@ -9351,27 +9358,27 @@ int RiderAnim_readStickSpin_0000EAF4(char *obj, int a1, int a2) {
  * a0->0x110 = 1; } else { v->0x960 += b; a0->0x110 = 0; } */
 void RiderAnim_updateSlowdown_0000ECEC(char *obj) {
     int ab[2];
-    int *v;
+    SnowBoarder *v;
     int *base;
-    int idx = *(int *)(obj + 0x10C);
+    int idx = RA(obj)->hitKind;
     if (idx == 0) return;
     switch (idx - 1) {
-        case 0: ab[1] = *(int *)(obj + 0x43C); ab[0] = *(int *)(obj + 0x3AC); break;
-        case 1: ab[1] = *(int *)(obj + 0x43C); ab[0] = *(int *)(obj + 0x3C4); break;
-        case 2: ab[1] = *(int *)(obj + 0x43C); ab[0] = *(int *)(obj + 0x3DC); break;
-        case 3: ab[1] = *(int *)(obj + 0x424); ab[0] = *(int *)(obj + 0x3F4); break;
-        case 4: ab[1] = *(int *)(obj + 0x424); ab[0] = *(int *)(obj + 0x40C); break;
+        case 0: ab[1] = RA(obj)->parms.stm.value.i; ab[0] = RA(obj)->parms.st1.value.i; break;
+        case 1: ab[1] = RA(obj)->parms.stm.value.i; ab[0] = RA(obj)->parms.st2.value.i; break;
+        case 2: ab[1] = RA(obj)->parms.stm.value.i; ab[0] = RA(obj)->parms.st3.value.i; break;
+        case 3: ab[1] = RA(obj)->parms.slm.value.i; ab[0] = RA(obj)->parms.sl1.value.i; break;
+        case 4: ab[1] = RA(obj)->parms.slm.value.i; ab[0] = RA(obj)->parms.sl2.value.i; break;
     }
     /* base FIRST (full expr), v SECOND (CSE'd) — flips v0/v1 coloring
      * (2026-07-08); thr must read via v, not *base (VN unification). */
-    base = (int *)(*(char **)(obj + 0xB4) + 0x960);
-    v = *(int **)(obj + 0xB4);
-    if ((ab[1] < *(int *)((char *)v + 0x960)) && (*(int *)((char *)v + 0x938) != 0)) {
-        *(int *)(obj + 0x10C) = 0;
-        *(int *)(obj + 0x110) = 1;
+    base = &RA(obj)->rider->slowdown;
+    v = RA(obj)->rider;
+    if ((ab[1] < v->slowdown) && (v->contactCount != 0)) {
+        RA(obj)->hitKind = 0;
+        RA(obj)->slowCrash = 1;
     } else {
         *base = ab[0] + *base;
-        *(int *)(obj + 0x110) = 0;
+        RA(obj)->slowCrash = 0;
     }
 }
 
@@ -9423,7 +9430,7 @@ void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, int a2) {
 
 void RiderAnim_addTrickPoints_0000EE30(char *a0, int a1, int a2) {
     int *dptr = (int*)((char*)&D_00000000 + 0x138);
-    gl_func_00000000(*dptr, *(int*)(a0 + 0xB4), a1 * a2);
+    gl_func_00000000(*dptr, (int)RA(a0)->rider, a1 * a2);
 }
 
 void RiderAnim_stateStopped(void *a0) {
@@ -9572,17 +9579,17 @@ void RiderAnim_statePreJumpHold(int *a0, int *a1) {
 extern int gl_func_00000000();
 void RiderAnim_statePreJumpCancel(int *a0) {
     int m;
-    gl_func_00000000((char *)a0[0xB4 / 4] + 0x808);
-    if (*(int *)((char *)a0[0xB4 / 4] + 0x9CC) != 0) {
+    gl_func_00000000(RA(a0)->rider->sound);
+    if (RA(a0)->rider->useDParms != 0) {
         m = (RANIM_GROUP_DEEP | RANIM_UP_DOWN);
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE60), -1);
     } else {
-        m = a0[0xFC / 4] | RANIM_UP_DOWN;
+        m = RA(a0)->animSet | RANIM_UP_DOWN;
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), -1);
     }
-    a0[0x118 / 4] = 1;
+    RA(a0)->jumpRepress = 1;
     gl_func_00000000(a0);
-    gl_func_00000000(a0, m, 0, 0, 0x100, a0[0x19C / 4]);
+    gl_func_00000000(a0, m, 0, 0, 0x100, RA(a0)->parms.jot.value.i);
 }
 
 /* RiderAnim_jumpTakeoff_0000F360: 49-insn float-compare-gated state-mux update. EXACT.
@@ -9636,24 +9643,24 @@ void RiderAnim_jumpTakeoff_0000F360(int *a0) {
         RA(a0)->jumpCharge = 0;
         v0 = RA(a0)->jumpCharge;
     }
-    p = *(int**)((char*)a0 + 0xB4);
-    f2 = *(float*)((char*)a0 + 0x1B4) * (float)v0;
-    b770 = (char*)p; if (1) { b770 += 0x770; }
-    b510 = (char*)p; if (1) { b510 += 0x510; }
-    if (*(int*)((char*)p + 0x9CC) != 0) {
-        b788 = (char*)p; if (1) { b788 += 0x788; }
-        f0 = *(float*)(b788 + 0x10) + f2;
+    p = (int *)RA(a0)->rider;
+    f2 = RA(a0)->parms.jca.value.f * (float)v0;
+    b770 = (char*)p; if (1) { b770 += 0x770; } /* &rider->parms.jmp */
+    b510 = (char*)p; if (1) { b510 += 0x510; } /* &rider->child.parms.flx */
+    if (((SnowBoarder *)p)->useDParms != 0) {
+        b788 = (char*)p; if (1) { b788 += 0x788; } /* &rider->parms.djp */
+        f0 = ((SnowBParm *)b788)->value + f2;
     } else {
-        f0 = *(float*)(b770 + 0x10) + f2;
+        f0 = ((SnowBParm *)b770)->value + f2;
     }
-    if (*(short*)((char*)p + 0x9A2) == 0x62) {
+    if (((SnowBoarder *)p)->surface == 'b') {
         f0 = (float)(0.7 * (double)f0);
     }
-    b31C = (char*)p; if (1) { b31C += 0x31C; }
-    f0 *= *(float*)(b510 + 0x10);
+    b31C = (char*)p; if (1) { b31C += 0x31C; } /* &rider->vel.y */
+    f0 *= ((SnowBParm *)b510)->value;
     *(float*)(b31C) = *(float*)(b31C) + f0;
     RA(a0)->queuedTrick = 0;
-    import_00096874((int)(*(char**)((char*)a0 + 0xB4) + 0x808));
+    import_00096874((int)RA(a0)->rider->sound);
     RiderAnim_startHop_0001001C(a0);
 }
 
@@ -9665,12 +9672,12 @@ void RiderAnim_stateTrickAir(int *a0) {
     float *pc;
 
     *(int*)(*(char**)((char*)a0 + 0xB4) + 0xA18) = 0;
-    a0[0x114 / 4] = 1;
-    w = *(char**)((char*)a0 + 0xB4);
-    pa = (float*)(w + 0x170);
-    pb = (float*)(w + 0x698);
-    pc = (float*)(w + 0x31C);
-    if ((*(int*)(w + 0x9A8) & 1) == 0) {
+    RA(a0)->trickPhase = 1;
+    w = (char *)RA(a0)->rider;
+    pa = (float*)(w + 0x170); /* &rider->dparms.gvt */
+    pb = (float*)(w + 0x698); /* &rider->parms.axr .. */
+    pc = (float*)(w + 0x31C); /* &rider->vel.y */
+    if ((((SnowBoarder *)w)->groundFlags & 1) == 0) {
         pc[0] += -pa[4] * pb[4];
         RiderAnim_holdJumpLift_0000E2D0((char*)a0, pa, pb);
     }
@@ -9696,11 +9703,11 @@ void RiderAnim_stateTrickAir(int *a0) {
 /* MATCHED via struct-by-value arg-home: D[0xDF0]/D[0xDF4] pair passed as
  * `*(Pair2*)(&D+0xDF0)` homes a1,a2 to sp+4/sp+8. */
 void RiderAnim_stateTrickEnd(int *a0) {
-    a0[0x114/4] = 2;
+    RA(a0)->trickPhase = 2;
     if (RA(a0)->curTrick->flags & TRICK_FLAG_HALF_TURN) {
         gl_func_00000000(a0);
     }
-    ((int*)a0[0xB4/4])[0xA18/4] = 1;
+    RA(a0)->rider->unkA18 = 1;
     RA(a0)->curTrick = 0;
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDF0));
     gl_func_00000000(a0);
@@ -9894,8 +9901,8 @@ void RiderAnim_stateResumeRide(int a0) {
  * `*(Pair2*)(&D+0xE40)` homes a1,a2 to sp+4/sp+8. */
 void RiderAnim_stateCrashRecover(int *a0) {
     gl_func_00000000(a0);
-    if (a0[0x110/4] != 0) {
-        gl_func_00000000(a0, a0[0x108/4], 2, 1, 1, 1);
+    if (RA(a0)->slowCrash != 0) {
+        gl_func_00000000(a0, RA(a0)->selectedAnim, 2, 1, 1, 1);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
     }
 }
@@ -10063,7 +10070,7 @@ void RiderAnim_stateOllieRise(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieHang(char *a0) {
     gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 4, 5, 2, 1);
-    if (*(float*)(*(char**)(a0 + 0xB4) + 0x9D0) < 1000.0f) {
+    if (RA(a0)->rider->groundDist < 1000.0f) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE38));
     }
 }
@@ -10074,7 +10081,7 @@ void RiderAnim_stateOllieHang(char *a0) {
  * `gl_func(a0, *(Pair2*)(&D+0xE10), 1)`. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieLand(char *a0) {
-    if (*(int*)(*(int**)(a0 + 0xB4) + 0x938 / 4) != 0) {
+    if (RA(a0)->rider->contactCount != 0) {
         gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 1, 1, 1);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
     }
@@ -10290,14 +10297,14 @@ void RiderAnim_stateHopRise(int *a0) {
     TrickEntry *inner;
     int *mid;
 
-    ((int*)a0[0xB4 / 4])[0xA18 / 4] = 1;
-    mid = (int*)((int*)a0[0xB4 / 4])[0x800 / 4];
-    if ((mid[0x18 / 4] & 0x400) != 0) {
+    RA(a0)->rider->unkA18 = 1;
+    mid = (int *)RA(a0)->rider->input;
+    if ((((RiderInput *)mid)->pressed & 0x400) != 0) {
         RiderAnim_setNextState_0000D5BC((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3D0 + 0xDE0));
     }
-    if (*(float*)((char*)(int*)a0[0xB4 / 4] + 0x9D0) < 1000.0f) {
-        if (((int*)a0[0xB4 / 4])[0x938 / 4] != 0) {
+    if (RA(a0)->rider->groundDist < 1000.0f) {
+        if (RA(a0)->rider->contactCount != 0) {
             RiderAnim_setNextState_0000D5BC((char*)a0,
                              *(Pair2*)((char*)&game_uso_D_807FF3D8 + 0xDE8));
         }
@@ -10422,14 +10429,14 @@ void RiderAnim_stateHopDrop(int *arg0) {
 void RiderAnim_stateHopLand(char *a0) {
 
     gl_func_00000000(a0);
-    (*(int **)(a0 + 0xB4))[0x286] = 1;
+    RA(a0)->rider->unkA18 = 1;
     gl_func_00000000(a0, 0);
 
     if (gl_func_00000000(a0) == 0) {
-        if ((*(int **)(a0 + 0xB4))[0x24E] != 0) {
+        if (RA(a0)->rider->contactCount != 0) {
             gl_func_00000000(a0, 1);
             gl_func_00000000(a0);
-            gl_func_00000000(a0, *(int *)(a0 + 0xFC) | RANIM_HOP, 5, 1, 1, 1);
+            gl_func_00000000(a0, RA(a0)->animSet | RANIM_HOP, 5, 1, 1, 1);
             gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE10), 1);
             gl_func_00000000(a0);
         }
@@ -10554,8 +10561,8 @@ void RiderAnim_stateBrakeDeep(int *a0) {
 void RiderAnim_stateRideBlendIn(char *a0) {
     int v0;
     gl_func_00000000(a0);
-    v0 = *(int*)(a0 + 0xFC);
-    gl_func_00000000(a0, v0 | 2, v0 | 3, *(int*)(*(char**)(a0 + 0xB4) + 0x970), 0x100, 10);
+    v0 = RA(a0)->animSet;
+    gl_func_00000000(a0, v0 | 2, v0 | 3, *(int *)&RA(a0)->rider->edge, 0x100, 10);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), -1);
 }
 
@@ -10575,14 +10582,14 @@ void RiderAnim_stateRideDeepBlendIn(int *a0) {
  * put it in $v1; inline keeps it in $t6 like target). See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_blendWeight_00010BAC(char *a0) {
-    int state = *(int*)(a0 + 0xFC);
-    gl_func_00000000(a0, state | 7, state | 6, *(int*)(*(char**)(a0 + 0xB4) + 0xA04), 0, 1);
+    int state = RA(a0)->animSet;
+    gl_func_00000000(a0, state | 7, state | 6, *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (*(int*)(a0 + 0xD8) == 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
     }
 
-    if (*(int*)(*(char**)(a0 + 0xB4) + 0x9CC) != 0) {
+    if (RA(a0)->rider->useDParms != 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
     }
 }
@@ -10594,29 +10601,29 @@ void RiderAnim_blendWeight_00010BAC(char *a0) {
  * .text identical to expected/.o. See docs/IDO_CODEGEN.md STALE-CAP CATCH. */
 void RiderAnim_blendWeightDeep_00010C4C(char *a0) {
     gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_WEIGHT_B), (RANIM_GROUP_DEEP | RANIM_WEIGHT_F),
-                     *(int*)(*(char**)(a0 + 0xB4) + 0xA04), 0, 1);
+                     *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (*(int*)(a0 + 0xD8) == 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
     }
 
-    if (*(int*)(*(char**)(a0 + 0xB4) + 0x9CC) == 0) {
+    if (RA(a0)->rider->useDParms == 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
     }
 }
 
 void RiderAnim_stateBrakeBlendIn(char *a0) {
-    char *sub;
+    SnowBoarder *sub;
 
-    sub = *(char**)(a0 + 0xB4);
-    if (*(int*)(sub + 0x9CC) != 0) {
-        gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_BRAKE_B), (RANIM_GROUP_DEEP | RANIM_BRAKE_F), *(int*)(sub + 0x970), ANIM_BLENDIN, 10);
+    sub = RA(a0)->rider;
+    if (sub->useDParms != 0) {
+        gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_BRAKE_B), (RANIM_GROUP_DEEP | RANIM_BRAKE_F), *(int *)&sub->edge, ANIM_BLENDIN, 10);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE78), -1);
     } else {
         int state;
 
-        state = *(int*)(a0 + 0xFC);
-        gl_func_00000000(a0, state | 4, state | 5, *(int*)(sub + 0x970), 0x100, 10);
+        state = RA(a0)->animSet;
+        gl_func_00000000(a0, state | 4, state | 5, *(int *)&sub->edge, 0x100, 10);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE80), -1);
     }
     gl_func_00000000(a0);
@@ -10665,8 +10672,8 @@ void RiderAnim_stateTimeUpLose(int a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStand(int *a0) {
     game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_STAND), 0, 1, 1, 1);
-    *(int*)((char*)a0 + 0x114) = 0;
-    *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x960) = 100;
+    RA(a0)->trickPhase = 0;
+    RA(a0)->rider->slowdown = 100;
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xF58));
 }
 
@@ -11044,21 +11051,21 @@ void RiderAnim_crashRecover_000116D4(void *a0) {
 extern char game_uso_D_807FF490;
 void RiderAnim_checkBackwardSwitch_00011750(char *obj) {
     short cnt;
-    if (*(float *)(*(char **)(obj + 0xB4) + 0xA38) < -30.0f) {   /* hard hit */
-        cnt = *(short *)(obj + 0x130);
-        *(short *)(obj + 0x130) = cnt + 1;        /* always advance (delay slot) */
+    if (RA(obj)->rider->fwdSpeed < -30.0f) {   /* hard hit */
+        cnt = RA(obj)->backHits;
+        RA(obj)->backHits = cnt + 1;        /* always advance (delay slot) */
         if (cnt < 3) return;                      /* not yet armed */
-        *(short *)(obj + 0x130) = 0;
-        if (*(int *)(*(char **)(obj + 0xB4) + 0x9CC) != 0) {
-            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
+        RA(obj)->backHits = 0;
+        if (RA(obj)->rider->useDParms != 0) {
+            game_uso_func_077C44(obj, RA(obj)->animSet | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         } else {
-            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
+            game_uso_func_077C44(obj, RA(obj)->animSet | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         }
         RiderAnim_clearNextState_0000D5DC(obj);
     } else {
-        *(short *)(obj + 0x130) = 0;              /* not a hard hit: reset */
+        RA(obj)->backHits = 0;              /* not a hard hit: reset */
     }
 }
 
@@ -11072,7 +11079,7 @@ void RiderAnim_clearTricks_00011888(int *a0) {
     RA(a0)->trickButtons = 0;
     RA(a0)->trickInputFrames = 0;
     RA(a0)->queuedTrick = 0;
-    a0[0x12C / 4] = 0;
+    RA(a0)->spinKind = 0;
 }
 
 /* RiderAnim_hitFeedback_0001189C — verified decode, 77/78 (99%), single-insn blocker.

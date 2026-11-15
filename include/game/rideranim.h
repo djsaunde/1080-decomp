@@ -57,7 +57,8 @@ typedef struct RiderAnim {
     AnimPlayer player;      /* 0x00: base. player.eventKey (0x64) = setState's key when it is not -1,
                              * player.blendEvent (0x68) = -1 for setState(.., -1); reset sets both to
                              * ANIM_NO_KEY */
-    s32 unkB0;              /* 0xB0 */
+    s32 spinAnim;           /* 0xB0: ground spin anim picked by checkGroundSpin (animSet | RANIM_TO_FAKIE_*),
+                             * 0 = none; cleared at the top of every check */
     SnowBoarder *rider;     /* 0xB4 */
     char pad0B8[0xC0 - 0xB8];
     Pair2 state;            /* 0xC0: current state PMF */
@@ -79,9 +80,29 @@ typedef struct RiderAnim {
     s32 unk104;             /* 0x104: -1 from init */
     s32 selectedAnim;       /* 0x108: selectAnim's result (animSet | anim number) */
     s32 hitKind;            /* 0x10C: 1..5, set by game_uso 0xEDCC; ECEC uses it to pick st1..st3 / sl1 / sl2 */
-    char pad110[0x120 - 0x110];
+    s32 slowCrash;          /* 0x110: updateSlowdown sets it (and clears hitKind) when rider->slowdown passes the
+                             * slm / stm limit while in contact, else clears it; stateCrashRecover replays the
+                             * crash anim (selectedAnim) while it is set */
+    s32 trickPhase;         /* 0x114: 1 = in a trick (stateTrickAir), 2 = trick ended (stateTrickEnd; also the
+                             * init value), 0 = riding (stateStand, checkReverseBrake, crashes in D9CC). D9CC
+                             * drops a pending hit anim while it is 1 */
+    s32 jumpRepress;        /* 0x118: set by statePreJumpCancel: checkJump then needs a fresh press (input
+                             * pressed 0x100) instead of the held button, and clears it on the jump */
+    f32 unk11C;             /* 0x11C: 1.0 from init and after a hit (D9CC compares it with 1.0) */
     s32 unk120;             /* 0x120: set to 1 by endTrick */
-    char pad124[0x13C - 0x124];
+    s16 lastStickDir;       /* 0x124: rider->input->stickDir seen last frame (readStickSpin) */
+    s16 spinFrames;         /* 0x126: frames of the running stick-spin gesture: 1 at the first step, counts up;
+                             * the gesture ends (and is scored) at 6 frames or when the stick centres */
+    s16 spinSteps;          /* 0x128: signed sum of the stick direction steps (+-1..2 each) during the gesture;
+                             * negated for a mirrored / switch rider */
+    s16 pad12A;
+    s32 spinKind;           /* 0x12C: readStickSpin's result: 0 none, 1 / 2 = 180 / 360 one way (steps -1..-2 /
+                             * < -2), 3 / 4 = 180 / 360 the other (1..2 / >= 3), 5 / 6 = stick flicked up / down
+                             * (pressed 0x2000 / 0x8000). checkGroundSpin maps 1..4 to the TO_FAKIE_180F / 360F /
+                             * 180B / 360B anims */
+    s16 backHits;           /* 0x130: checkBackwardSwitch: consecutive frames with rider->fwdSpeed < -30 (riding
+                             * backwards); past 3 the rider switches stance (anim SWITCH_STANCE / DEEP_SWITCH) */
+    char pad132[0x13C - 0x132];
     RiderAnimParms parms;   /* 0x13C: read by RiderAnim_readParms (vtbl slot 8) */
 } RiderAnim;
 
@@ -101,7 +122,15 @@ RIDERANIM_ASSERT_OFFSET(animSet, 0xFC);
 RIDERANIM_ASSERT_OFFSET(comboCount, 0x100);
 RIDERANIM_ASSERT_OFFSET(selectedAnim, 0x108);
 RIDERANIM_ASSERT_OFFSET(hitKind, 0x10C);
+RIDERANIM_ASSERT_OFFSET(slowCrash, 0x110);
+RIDERANIM_ASSERT_OFFSET(trickPhase, 0x114);
+RIDERANIM_ASSERT_OFFSET(jumpRepress, 0x118);
+RIDERANIM_ASSERT_OFFSET(unk11C, 0x11C);
 RIDERANIM_ASSERT_OFFSET(unk120, 0x120);
+RIDERANIM_ASSERT_OFFSET(lastStickDir, 0x124);
+RIDERANIM_ASSERT_OFFSET(spinSteps, 0x128);
+RIDERANIM_ASSERT_OFFSET(spinKind, 0x12C);
+RIDERANIM_ASSERT_OFFSET(backHits, 0x130);
 RIDERANIM_ASSERT_OFFSET(parms, 0x13C);
 RIDERANIM_ASSERT_OFFSET(parms.dm1, 0x33C);
 RIDERANIM_ASSERT_OFFSET(parms.st1, 0x39C);
