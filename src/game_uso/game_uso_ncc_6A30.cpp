@@ -56,10 +56,10 @@ struct W {
 struct Self;
 extern "C" {
 int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
-Vec3 game_uso_func_00007C1C(Self *, int, int, Vec3 *, int);
+Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
 float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
 void game_uso_func_000110A4(int);
-void game_uso_func_00007538(Self *, int);
+void SnowAI_func_00007538(Self *, int);
 }
 struct Self {
     char pad0[0x30]; W *w;   /* 0x30 */
@@ -77,7 +77,7 @@ extern "C" void game_uso_func_00006A30(Self *s0) {
         va += s0->w->vel * s0->fA8;
         r1 = SnowAI_func_00007ACC(s0, &v94, &va, 0);
         if (r1 == 0) return;
-        Vec3 rv = game_uso_func_00007C1C(s0, r1, v94, &va, 0);
+        Vec3 rv = SnowAI_func_00007C1C(s0, r1, v94, &va, 0);
         XZ pt(s0->w->at);
         float yaw = game_uso_func_00003ED4(&pt, &rv, 0);
         s0->f3C = -yaw * (1.0f + s0->w->speed / s0->fB0) * s0->fAC / s0->w->lim.getMax();
@@ -104,5 +104,5 @@ extern "C" void game_uso_func_00006A30(Self *s0) {
             s0->f70 = 61;
         }
     }
-    game_uso_func_00007538(s0, flag);
+    SnowAI_func_00007538(s0, flag);
 }

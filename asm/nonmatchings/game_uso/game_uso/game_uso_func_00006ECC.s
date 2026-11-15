@@ -10,13 +10,13 @@ glabel game_uso_func_00006ECC
     /* 006EE4 00006EE4 8DCF0848 */  .word 0x8DCF0848
     /* 006EE8 00006EE8 51E1000B */  .word 0x51E1000B
     /* 006EEC 00006EEC 8FBF001C */  .word 0x8FBF001C
-    jal game_uso_func_000071A4   /* 006EF0 0C000000 -> game_uso_func_000071A4 */
+    jal SnowAI_func_000071A4   /* 006EF0 0C000000 -> SnowAI_func_000071A4 */
     /* 006EF4 00006EF4 00000000 */  .word 0x00000000
     jal game_uso_func_00006F38   /* 006EF8 0C000000 -> game_uso_func_00006F38 */
     /* 006EFC 00006EFC 02002025 */  .word 0x02002025
     /* 006F00 00006F00 10400004 */  .word 0x10400004
     /* 006F04 00006F04 AE020080 */  .word 0xAE020080
-    jal game_uso_func_00006FA8   /* 006F08 0C000000 -> game_uso_func_00006FA8 */
+    jal SnowAI_func_00006FA8   /* 006F08 0C000000 -> SnowAI_func_00006FA8 */
     /* 006F0C 00006F0C 02002025 */  .word 0x02002025
     /* 006F10 00006F10 AE020040 */  .word 0xAE020040
     /* 006F14 00006F14 8FBF001C */  .word 0x8FBF001C

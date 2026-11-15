@@ -1,6 +1,6 @@
-nonmatching func_0001016C, 0xE0
+nonmatching gui_centerRows_0001016C, 0xE0
 
-glabel func_0001016C
+glabel gui_centerRows_0001016C
     /* DE0BD8 0001016C 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE0BDC 00010170 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE0BE0 00010174 AFA40028 */  sw         $a0, 0x28($sp)
@@ -58,4 +58,4 @@ glabel func_0001016C
     /* DE0CAC 00010240 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE0CB0 00010244 03E00008 */  jr         $ra
     /* DE0CB4 00010248 00000000 */   nop
-endlabel func_0001016C
+endlabel gui_centerRows_0001016C

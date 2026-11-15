@@ -1860,26 +1860,26 @@ SnowAI_func_0000591C = 0;
 game_uso_func_00006A30 = 0;
 game_uso_func_00006CF0 = 0;
 game_uso_func_00006F38 = 0;
-game_uso_func_00006FA8 = 0;
-game_uso_func_000071A4 = 0;
+SnowAI_func_00006FA8 = 0;
+SnowAI_func_000071A4 = 0;
 game_uso_func_000071E0 = 0;
-game_uso_func_00007424 = 0;
-game_uso_func_00007448 = 0;
-game_uso_func_000074D8 = 0;
-game_uso_func_0000751C = 0;
-game_uso_func_00007538 = 0;
-game_uso_func_00007A98 = 0;
+SnowAI_func_00007424 = 0;
+SnowAI_func_00007448 = 0;
+SnowAI_func_000074D8 = 0;
+SnowAI_func_0000751C = 0;
+SnowAI_func_00007538 = 0;
+SnowAI_func_00007A98 = 0;
 SnowAI_func_00007ACC = 0;
-game_uso_func_00007C1C = 0;
-game_uso_func_00008CD8 = 0;
+SnowAI_func_00007C1C = 0;
+SnowAI_func_00008CD8 = 0;
 SnowAI_func_00009B88 = 0;
 SnowAI_func_0000A0E8 = 0;
 game_uso_func_0000A374 = 0;
 SnowAI_func_0000A3C4 = 0;
-game_uso_func_0000A604 = 0;
-game_uso_func_0000A7D8 = 0;
-game_uso_func_0000A7F8 = 0;
-game_uso_func_0000AB98 = 0;
+SnowAI_func_0000A604 = 0;
+SnowAI_func_0000A7D8 = 0;
+SnowAI_func_0000A7F8 = 0;
+SnowAI_func_0000AB98 = 0;
 game_uso_func_0000B710 = 0;
 game_uso_func_0000B750 = 0;
 game_uso_func_0000B884 = 0;
@@ -4164,7 +4164,7 @@ gl_1f6a8_kE70 = 0x00000E70;
 gl_1f6a8_kE74 = 0x00000E74;
 gl_ref_00000148_51AD8 = 0x00000148;
 gl_ref_00000160_51AD8 = 0x00000160;
-bu_b520_k48 = FogTmpl_create + 0x48;  /* SnowBoarder_func_0000B520 rodata pool reads (target relocs FogTmpl_create + 0x48 / + 0x44, func_000008B4 + 0xC) */
+bu_b520_k48 = FogTmpl_create + 0x48;  /* SnowBoarder_limitSpeed rodata pool reads (target relocs FogTmpl_create + 0x48 / + 0x44, func_000008B4 + 0xC) */
 bu_b520_k44 = FogTmpl_create + 0x44;
 bu_b520_kc = func_000008B4 + 0xC;
 gl_func_00000000_5ef00q = 0x00000000;  /* (float)->float sqrt-slot blank for math_mtxAlignAxis */
@@ -4326,9 +4326,9 @@ D_74e8_h = 0x000000F0;  /* FallingSnow_create: = func_000000F0 (expected reloc b
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
 D_43D8_fmin = 0x00000000;  /* game_uso_func_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
-game_uso_func_00007C1C_rodata = 0x00000000;
+SnowAI_func_00007C1C_rodata = 0x00000000;
 game_uso_func_00000B3C_rodata = 0x00000000;  /* game_uso_func_00000B3C MIPSpro 7.2.1 donor: renamed donor-local .rodata reloc; its 4-entry jump table is at donor .rodata +0x50 = game_uso RoData +0x50 (in-place addend), content re-emitted by the host placeholder */
-game_uso_func_00008CD8_rodata = 0x00000000;  /* game_uso_func_00008CD8 MIPSpro 7.2.1 donor (agent-h run 428): renamed donor-local .rodata reloc; its 4-entry phase table is at donor .rodata +0x100 = game_uso RoData +0x100 (in-place addend), content re-emitted by the host placeholder */
+SnowAI_func_00008CD8_rodata = 0x00000000;  /* SnowAI_func_00008CD8 MIPSpro 7.2.1 donor (agent-h run 428): renamed donor-local .rodata reloc; its 4-entry phase table is at donor .rodata +0x100 = game_uso RoData +0x100 (in-place addend), content re-emitted by the host placeholder */
 gl_ref_0001E6B0 = 0x0001E6B0;  /* Parms_addParm blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
 D_34EB4_flags = 0x00000000;  /* app_run flags-word test: distinct zero alias so the test does not share base's s3 */

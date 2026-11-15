@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000B520, 0x23C
+nonmatching SnowBoarder_limitSpeed, 0x23C
 
-glabel SnowBoarder_func_0000B520
+glabel SnowBoarder_limitSpeed
     /* DDBF8C 0000B520 27BDFF80 */  addiu      $sp, $sp, -0x80
     /* DDBF90 0000B524 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DDBF94 0000B528 8C8E0A58 */  lw         $t6, 0xA58($a0)
@@ -154,4 +154,4 @@ glabel SnowBoarder_func_0000B520
     /* DDC1BC 0000B750 27BD0080 */  addiu      $sp, $sp, 0x80
     /* DDC1C0 0000B754 03E00008 */  jr         $ra
     /* DDC1C4 0000B758 00000000 */   nop
-endlabel SnowBoarder_func_0000B520
+endlabel SnowBoarder_limitSpeed

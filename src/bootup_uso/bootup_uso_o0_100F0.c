@@ -1,7 +1,7 @@
 #include "common.h"
 
 extern int func_00000000();
-/* The FP literal pool func_0001016C reads is reached through the symbol splat
+/* The FP literal pool gui_centerRows_0001016C reads is reached through the symbol splat
  * assigned to that reloc — func_00000C10 (module-offset 0xC10). Referencing it
  * as a float struct reproduces the exact `lui $at,%hi(func_00000C10+N);
  * lwc1 %lo(func_00000C10+N)($at)` loads byte-for-byte (same reloc the ROM has),
@@ -16,7 +16,7 @@ extern struct { float f0, f1, f2; } func_00000C10;
  * Pattern: -O0 frame -0x28 with K&R-style arg-save (a0/a1 -> sp+0x28/0x2C)
  * and per-statement sp+0x1C reload of intermediate results. */
 
-/* func_000100F0: 31-insn init+dispatch wrapper (-O0). Sets two struct fields,
+/* gui_initRows_000100F0: 31-insn init+dispatch wrapper (-O0). Sets two struct fields,
  * calls a cross-USO helper, dispatches through a struct vtable, then writes
  * a float constant (17.0f).
  *
@@ -31,7 +31,7 @@ extern struct { float f0, f1, f2; } func_00000C10;
  *      arg add, which only happens within a single expression tree;
  *  (3) arg order `*(short*)(p+0x60) + (int)a0` puts the lh result in the
  *      first addu operand. */
-void func_000100F0(int *a0, int a1) {
+void gui_initRows_000100F0(int *a0, int a1) {
     register int *p;
     *(int*)((char*)a0 + 0x2C) = a1;
     *(int*)((char*)a0 + 0x7C) = 0;
@@ -41,7 +41,7 @@ void func_000100F0(int *a0, int a1) {
     *(float*)((char*)a0 + 0x74) = 17.0f;
 }
 
-/* func_0001016C: -O0 FP-init for the a0->0x3C sub-struct (38 insns). MATCHED.
+/* gui_centerRows_0001016C: -O0 FP-init for the a0->0x3C sub-struct (38 insns). MATCHED.
  *   a0->0x6C = 160.0f;
  *   a0->0x70 = 120.0f - (a0->0x74 / 2.0f) * (float)a0->0x78;
  *   a0->0x34 = 0xFF;  a0->0x38 = 0;
@@ -51,7 +51,7 @@ void func_000100F0(int *a0, int a1) {
  * Keys: `register float *q` keeps the a0+0x3C base in $s0; the division as the
  * LEFT mul operand matches IDO's f18*f10 order; the pool loads fold to
  * lui $at,%hi(func_00000C10+N); lwc1 %lo(func_00000C10+N)($at). */
-void func_0001016C(int *a0) {
+void gui_centerRows_0001016C(int *a0) {
     register float *q;
     *(float*)((char*)a0 + 0x6C) = 160.0f;
     *(float*)((char*)a0 + 0x70) =

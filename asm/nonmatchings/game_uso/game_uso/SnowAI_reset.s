@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00005728, 0x58
+nonmatching SnowAI_reset, 0x58
 
-glabel game_uso_func_00005728
+glabel SnowAI_reset
     /* 005728 00005728 44800000 */  .word 0x44800000
     /* 00572C 0000572C 240E0001 */  .word 0x240E0001
     /* 005730 00005730 AC800034 */  .word 0xAC800034
@@ -23,4 +23,4 @@ glabel game_uso_func_00005728
     /* 005774 00005774 E4800038 */  .word 0xE4800038
     /* 005778 00005778 03E00008 */  .word 0x03E00008
     /* 00577C 0000577C E480003C */  .word 0xE480003C
-endlabel game_uso_func_00005728
+endlabel SnowAI_reset

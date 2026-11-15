@@ -3572,7 +3572,7 @@ epi:
 }
 
 
-void game_uso_func_00005728(void *a0) {
+void SnowAI_reset(void *a0) {
     *(s32*)((char*)a0 + 0x34) = 0;
     *(s32*)((char*)a0 + 0x44) = 0;
     *(s32*)((char*)a0 + 0x48) = 0;
@@ -3594,7 +3594,7 @@ void game_uso_func_00005728(void *a0) {
     *(f32*)((char*)a0 + 0x3C) = 0.0f;
 }
 
-void game_uso_func_00005780(int *a0, int a1) {
+void SnowAI_dtor(int *a0, int a1) {
     if (a0 == 0) return;
     *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
     if (a1 & 1) {
@@ -3687,7 +3687,7 @@ void SnowAI_update(char *a0) {
  *
  * Following insns (50+): FPU-heavy quaternion/matrix math against
  * (a2->0x18->+0x318) Mat4-like region — same structural fingerprint as
- * game_uso_func_00007C1C (sp+0x348/0x38C dual-buffer). Likely THIS
+ * SnowAI_func_00007C1C (sp+0x348/0x38C dual-buffer). Likely THIS
  * function and 6A30/7C1C all build the same per-frame transform output
  * but from different entry contexts (boarder physics, AI, replay?).
  *
@@ -3939,8 +3939,8 @@ void SnowAI_update(char *a0) {
 /* SnowAI_func_0000591C (spine, 1093w) — three-scalar separation pass.
  *
  * 2026-06-24 agent-e: prior C conflated THREE distinct stack floats into one
- * `metric`, discarding the float return of game_uso_func_00007A98(self):
- *   metric_a    = game_uso_func_00007A98(self)            -> sp+0x19C (412)
+ * `metric`, discarding the float return of SnowAI_func_00007A98(self):
+ *   metric_a    = SnowAI_func_00007A98(self)            -> sp+0x19C (412)
  *   yaw_metric  = fabs(game_uso_func_00003ED4(...))       -> sp+0x170 (368)
  *   accel_metric= fabs(self->0x3C)                        -> sp+0x16C (364)
  * Each tail comparison was routed to the slot the EXPECTED .o actually loads
@@ -3951,23 +3951,23 @@ void SnowAI_update(char *a0) {
  * SELF-VERIFY only; not exact — coloring/frame-layout cap dominates. */
 /* forward decls for 591C real callees (defined later in this TU) */
 void SnowAI_func_0000A3C4();
-void game_uso_func_0000A604(char *);
-void game_uso_func_0000A7F8(char *);
+void SnowAI_func_0000A604(char *);
+void SnowAI_func_0000A7F8(char *);
 int SnowAI_func_00007ACC();
-float game_uso_func_00007A98(int *);
-int game_uso_func_00007C1C();
-void *game_uso_func_00008CD8();
-void game_uso_func_000074D8(char *);
-void game_uso_func_0000751C(char *);
-void game_uso_func_00007448(char *);
-void game_uso_func_00007424(void *);
+float SnowAI_func_00007A98(int *);
+int SnowAI_func_00007C1C();
+void *SnowAI_func_00008CD8();
+void SnowAI_func_000074D8(char *);
+void SnowAI_func_0000751C(char *);
+void SnowAI_func_00007448(char *);
+void SnowAI_func_00007424(void *);
 int SnowAI_func_00009B88();
-void game_uso_func_0000A7D8(int *);
+void SnowAI_func_0000A7D8(int *);
 int SnowAI_func_0000A0E8(char *, char *, char *);
-void game_uso_func_0000AB98(void *);
-void game_uso_func_000071A4(int *);
-int game_uso_func_00006FA8(int *);
-void game_uso_func_00007538();
+void SnowAI_func_0000AB98(void *);
+void SnowAI_func_000071A4(int *);
+int SnowAI_func_00006FA8(int *);
+void SnowAI_func_00007538();
 #endif
 /* SnowAI_func_0000591C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c
@@ -4086,11 +4086,11 @@ void SnowAI_func_0000591C(int *a0) {
         return;
     }
     if (v0 & 2) {
-        game_uso_func_0000A604(self);
+        SnowAI_func_0000A604(self);
         return;
     }
     if (v0 & 4) {
-        game_uso_func_0000A7F8(self);
+        SnowAI_func_0000A7F8(self);
         return;
     }
 
@@ -4126,7 +4126,7 @@ void SnowAI_func_0000591C(int *a0) {
     } else {
         resolved_state = 0;
     }
-    metric_a = game_uso_func_00007A98(self);
+    metric_a = SnowAI_func_00007A98(self);
 
     /* first state region (0x184): vsel drives the transform dispatch and
      * self->0x74 may be promoted/demoted. Compares are against metric_a
@@ -4173,14 +4173,14 @@ void SnowAI_func_0000591C(int *a0) {
      * result words -> fresh V276/V264 -> V252 -> transform_out floats. */
     switch (v0 = *(int*)((char*)self + 0x74)) {
     case 0:
-        v0 = game_uso_func_00007C1C(&stage, self, helper_ptr, hit_parent,
+        v0 = SnowAI_func_00007C1C(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
-        v0 = (int)game_uso_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
+        v0 = (int)SnowAI_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
         if (1) {}
@@ -4428,7 +4428,7 @@ yaw_region:
     /* 0x4C4 counter machine (0xAA8-0xC18): keyed off state_flag&8 */
     if (state_flag & 8) {
         if (*(int*)((char*)self + 0x4C4) > 0) {
-            game_uso_func_000074D8(self);
+            SnowAI_func_000074D8(self);
             *(int*)((char*)self + 0x4C4) = 0;
         }
         goto tail_common;
@@ -4443,7 +4443,7 @@ yaw_region:
              : v0 == 2 ? *(float*)((char*)self + 0x2C4)
                        : *(float*)((char*)self + 0x2AC);
         if (metric_a < fsel) {
-            game_uso_func_0000751C(self);
+            SnowAI_func_0000751C(self);
             v0 = *(int*)((char*)self + 0x2C);
             fsel = v0 == 3 ? *(float*)((char*)self + 0x324)
                  : v0 == 2 ? *(float*)((char*)self + 0x30C)
@@ -4454,7 +4454,7 @@ yaw_region:
     } else if (v0 > 0) {
         *(int*)((char*)self + 0x4C4) = v0 - 1;
         if (*(int*)((char*)self + 0x4C4) == 0) {
-            game_uso_func_000074D8(self);
+            SnowAI_func_000074D8(self);
         }
     } else {
         v0 = *(int*)((char*)self + 0x2C);
@@ -4464,7 +4464,7 @@ yaw_region:
                            : *(float*)((char*)self + 0x384);
             if (fsel < metric_a) {
                 *(int*)((char*)self + 0x4C4) = 0x10000;
-                game_uso_func_00007448(self);
+                SnowAI_func_00007448(self);
             }
         }
     }
@@ -4527,7 +4527,7 @@ tail_common:
         if (child_flags) {}
         if (cnt >= 75) {
             *(int*)((char*)self + 0x54) = 0;
-            game_uso_func_00007424(self);
+            SnowAI_func_00007424(self);
         } }
     } else {
         *(int*)((char*)self + 0x54) = 0;
@@ -4535,20 +4535,20 @@ tail_common:
 
     if (state_flag & 0x20) {
         if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
-            game_uso_func_0000A7D8(self);
+            SnowAI_func_0000A7D8(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
         if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
-            game_uso_func_0000AB98(self);
+            SnowAI_func_0000AB98(self);
             goto commit_flags;
         }
     }
 
     if (resolved_state & 0x400) {
-        game_uso_func_000071A4(self);
-        *(int*)((char*)self + 0x40) = game_uso_func_00006FA8(self);
+        SnowAI_func_000071A4(self);
+        *(int*)((char*)self + 0x40) = SnowAI_func_00006FA8(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
@@ -4616,7 +4616,7 @@ tail_common:
     }
 
 commit_flags:
-    game_uso_func_00007538(self, out_flags);
+    SnowAI_func_00007538(self, out_flags);
 }
 #else
 void SnowAI_func_0000591C(int *a0) {
@@ -4643,7 +4643,7 @@ void game_uso_func_00006A30(int *a0) {
  * sub->{0xB4..0xBC} (sub = a0->0x30), adds sub->0x318 Vec3 scaled by
  * a0->0xA8, gates on sub->0x938 / 0xA54 and the a0->0x70 timer (dispatch
  * through game_uso_func_00011024(sub->0x840, flag) when sub->0x348 <= 30 or
- * timer == 60), then tail-calls game_uso_func_00007538(a0, flag); flag is 0x10
+ * timer == 60), then tail-calls SnowAI_func_00007538(a0, flag); flag is 0x10
  * when a0->0x6C == 0.
  *
  * Exact-match notes (see the agent-g 2026-07-15 / 2026-10-15 passes in
@@ -4656,7 +4656,7 @@ void game_uso_func_00006A30(int *a0) {
  * the target; (2) the dead `addiu v0,v0,0x318` is `p += 0x318` placed BEFORE
  * the three reads, which read through p (folded back to 0x318(v0)..). */
 void game_uso_func_00011024();
-void game_uso_func_00007538();
+void SnowAI_func_00007538();
 void game_uso_func_00006CF0(int *a0) {
     V3_6A30 added_vec;   /* sp+0x7C */
     V3_6A30 base_vec;    /* sp+0x70 */
@@ -4719,7 +4719,7 @@ void game_uso_func_00006CF0(int *a0) {
         }
     }
 
-    game_uso_func_00007538(a0, dispatch_arg);
+    SnowAI_func_00007538(a0, dispatch_arg);
 }
 
 void game_uso_func_00006E88(int *a0) {
@@ -4783,7 +4783,7 @@ int game_uso_func_00006F38(int *a0) {
     return b;
 }
 
-/* game_uso_func_00006FA8: closer-of-two-lookups compare (0x1FC / 127 words).
+/* SnowAI_func_00006FA8: closer-of-two-lookups compare (0x1FC / 127 words).
  * EXACT via REPLACE_FUNC_BODY donor splice: the real body lives in the IDO
  * 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_6FA8.cpp (Vec3 value class;
  * the d / e word-copy hops are edg return slots, and the frame is set by a
@@ -4791,12 +4791,12 @@ int game_uso_func_00006F38(int *a0) {
  * 79.7%. docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe and
  * docs/IDO_CODEGEN.md#ncc-temp-order-named-assign-6fa8. Body below is a
  * placeholder for the splice. */
-int game_uso_func_00006FA8(int *a0) {
+int SnowAI_func_00006FA8(int *a0) {
     volatile int *ret = a0;
     return 0;
 }
 
-void game_uso_func_000071A4(int *a0) {
+void SnowAI_func_000071A4(int *a0) {
     *(int*)((char*)a0 + 0x64) = 1;
     *(int*)((char*)a0 + 0x70) = 0;
     if (*(int*)((char*)a0 + 0x4C4) > 0) {
@@ -4816,13 +4816,13 @@ void game_uso_func_000071E0(int *a0) {
     volatile int *ret = a0;
 }
 
-void game_uso_func_00007424(void *a0) {
+void SnowAI_func_00007424(void *a0) {
     *(int*)((char*)a0 + 0x64) = 3;
     gl_func_00000000(a0);
 }
 
 #ifdef NON_MATCHING
-void game_uso_func_00007448(char *a0) {
+void SnowAI_func_00007448(char *a0) {
     char *t;
     char *table;
     char *q;
@@ -4861,7 +4861,7 @@ void game_uso_func_00007448(char *a0) {
     *(float*)(t + 0x10) = *(float*)(q + 0x10);
 }
 
-/* game_uso_func_00007448 — 24/36 exact, LENGTH-EXACT, structure fully aligned
+/* SnowAI_func_00007448 — 24/36 exact, LENGTH-EXACT, structure fully aligned
  * (was 73.5%; ~86% fuzzy now). NOT exact — genuine coloring cap. 2026-07-03
  * (agent-e). Levers that landed (see also docs/IDO_CODEGEN.md):
  *  (1) base materialization: `t = table; if (1) { t += K; }` — if(1){} blocks
@@ -4877,10 +4877,10 @@ void game_uso_func_00007448(char *a0) {
  * leaving v0/v1 free post-block1 — uopt's lowest-available-reuse picker can't
  * produce that from any of 12 probed candidate-order permutations. */
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00007448);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_func_00007448);
 #endif
 
-void game_uso_func_000074D8(char *a0) {
+void SnowAI_func_000074D8(char *a0) {
     char *t;
     t = *(char**)(a0 + 0x30) + 0x758;
     *(float*)(t + 0x10) = *(float*)(a0 + 0x4C8);
@@ -4892,7 +4892,7 @@ void game_uso_func_000074D8(char *a0) {
     *(float*)(t + 0x10) = *(float*)(a0 + 0x4D4);
 }
 
-void game_uso_func_0000751C(char *a0) {
+void SnowAI_func_0000751C(char *a0) {
     char *t = *(char**)(a0 + 0x30) + 0x758;
     *(float*)(t + 0x10) = *(float*)(a0 + 0x354) * *(float*)(a0 + 0x4C8);
 }
@@ -4924,7 +4924,7 @@ extern char game_uso_D_807FEC28;
 #define FF7(p, o) (*(float *)((char *)(p) + (o)))
 #define O938(a) FW(FW(a, 0x30), 0x938)
 #define TBL ((float *)((char *)&game_uso_D_807FEC28 + 0x638))
-void game_uso_func_00007538(char *a0, int arg) {
+void SnowAI_func_00007538(char *a0, int arg) {
     float zero = 0.0f;
     float fx = zero;
     float fy = zero;
@@ -5058,10 +5058,10 @@ end:
 
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00007538);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_func_00007538);
 #endif
 
-/* game_uso_func_00007A98 (13 insns, 0x34): returns the float delta
+/* SnowAI_func_00007A98 (13 insns, 0x34): returns the float delta
  *   v0 = a0->0x30; v1 = v0->0x908;  v1 ? v1->0xBC - v0->0xBC : 0.0f
  * BOUNDARY MERGE 2026-09-05: the former "game_uso_func_00007ABC" (4 insns at
  * 0x7ABC: mtc1 zero,f2; nop; jr ra; mov.s f0,f2) was NOT a function and NOT a
@@ -5075,7 +5075,7 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00007538);
  * {non-null; jr ra; null; jr ra} with a forward beql. The old `if (v1 == 0)`
  * ordering emits bnezl-skip with the null epilogue inline (12 insns, the
  * "cap" every prior note described). */
-float game_uso_func_00007A98(int *a0) {
+float SnowAI_func_00007A98(int *a0) {
     int *v0 = (int *)a0[0x30 / 4];
     int *v1 = (int *)v0[0x908 / 4];
     float ret;
@@ -5150,13 +5150,13 @@ int SnowAI_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
     return (int)r;
 }
 
-/* game_uso_func_00007C1C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_7C1C.c,
+/* SnowAI_func_00007C1C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_7C1C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c run 231,
  * kits CCXL / CCXLI). The placeholder re-emits the unit's .rodata +0xFC word (3000.0f) the
- * donor reads through game_uso_func_00007C1C_rodata (= 0) + 0xFC. The superseded in-unit
+ * donor reads through SnowAI_func_00007C1C_rodata (= 0) + 0xFC. The superseded in-unit
  * decode is kept for reference under GAMEUSO_7C1C_OLD_DECODE (never defined). */
 #ifdef GAMEUSO_7C1C_OLD_DECODE
-/* game_uso_func_00007C1C: 0x10BC (1071 insns). Collision/penetration sweep:
+/* SnowAI_func_00007C1C: 0x10BC (1071 insns). Collision/penetration sweep:
  * builds an xz-plane "closest approach" vector by walking the arg3->0x2C
  * collider chain. Re-decoded 2026-06-24 from expected/.o via fan-out subagent.
  * 2026-07-17 (agent-g, 62.85 -> 75.75) FRESH-RING RESTRUCTURE from the raw
@@ -5180,7 +5180,7 @@ int SnowAI_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
  * the C++ Vec3 operator=), not struct assignment (lw/sw). */
 /* NM object: replaced by the NCC comparison donor game_uso_ncc_7C1C_nm.cpp (89.3). */
 
-int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
+int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5) {
     Vec3 result;                     /* sp+932 */
     Vec3 cpA;                        /* sp+920 */
@@ -5304,7 +5304,7 @@ int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
         *(Tri3i *)&stg2 = *(Tri3i *)&stg1;
 
         if (*(int *)(*(int *)(arg1 + 0x30) + 0x908) != 0) {
-            float dot = game_uso_func_00007A98((int *)arg1);
+            float dot = SnowAI_func_00007A98((int *)arg1);
             int active = *(int *)(arg1 + 0xA4);
             if (active == 0) {
                 if (*(f32 *)(arg1 + 0xA0) <= dot) {
@@ -5588,21 +5588,21 @@ int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
     return (int)arg0;
 }
 #else
-int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
+int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5) {
     *arg5 = 3000.0f;
     return 0;
 }
 #endif
 
-/* game_uso_func_00008CD8: segment-relative position update (709 words). EXACT 2026-11-14 (agent-h run 428)
+/* SnowAI_func_00008CD8: segment-relative position update (709 words). EXACT 2026-11-14 (agent-h run 428)
  * through the MIPSpro 7.2.1 C++ front end donor src/game_uso/game_uso_mp72_8CD8.cpp (tools/ncc721.sh),
  * REPLACE_FUNC_BODY-spliced in both trees (the B3C recipe: its 4-label phase switch is a native 4-entry jump
  * table, which only EDG 2.29 emits). The placeholder below only re-emits the 8 RoData words the INCLUDE_ASM .s
  * carried as .late_rodata (+0x100..+0x120: the 4-word table, the A7D8 / AB98 floats and two pad words) at its
  * place in the layout; IDO merges equal literals, so the stand-ins are distinct, and none has a zero low half.
  * Its text and relocs are dropped by the splice. The cfe NM body is kept under #if 0 for reference. */
-void *game_uso_func_00008CD8(char *arg0) {
+void *SnowAI_func_00008CD8(char *arg0) {
     *(volatile float *)arg0 = 1.1f;
     *(volatile float *)arg0 = 1.2f;
     *(volatile float *)arg0 = 1.3f;
@@ -5615,7 +5615,7 @@ void *game_uso_func_00008CD8(char *arg0) {
 }
 
 #if 0
-/* game_uso_func_00008CD8: large vector/triangle integrator.
+/* SnowAI_func_00008CD8: large vector/triangle integrator.
  * Reconstructed from EXPECTED .o (0x8cd8..0x97ec, 0xb14/709w).
  * arg0 = out Vec3* (returned). arg1 = self obj. arg2 = ref obj.
  * arg3 = aux obj. arg4 = flag selecting the two main branches.
@@ -5636,7 +5636,7 @@ void *game_uso_func_00008CD8(char *arg0) {
  * phase is `*= (f32)0` (a 0.0f literal multiply is folded away). Open: the
  * target's phase switch is a 4-entry jumptable (cc lowers 4 labels to a beq
  * chain; the NCC front end likely differs). */
-void *game_uso_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32 arg4) {
+void *SnowAI_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32 arg4) {
     Vec3 sp204;   /* sp+516 */
     Vec3 sp1F8;   /* sp+504 */
     Vec3 dotv;    /* sp+492 */
@@ -5958,7 +5958,7 @@ tail:
     *(Tri3i *)arg0 = *(Tri3i *)&sp174;
     return arg0;
 }
-#endif /* cfe reference body of game_uso_func_00008CD8 */
+#endif /* cfe reference body of SnowAI_func_00008CD8 */
 
 // game_uso_func_000097EC — STRUCTURAL PASS (0x39C / 231 words,
 // no episode). Raw-.word USO form (single function, game_uso main
@@ -6445,14 +6445,14 @@ skip3:
     }
 }
 
-// game_uso_func_0000A604 — STRUCTURAL PASS (0x1D4 / 117 words,
+// SnowAI_func_0000A604 — STRUCTURAL PASS (0x1D4 / 117 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic; boundary already split by commit 66d6c531 — named fn
 // itself was still undecoded). Hand-decoded.
 //
 // Per-object physics/state advance step.
 //
-//   void game_uso_func_0000A604(Obj *obj) {              // obj -> s0
+//   void SnowAI_func_0000A604(Obj *obj) {              // obj -> s0
 //     World *w = obj->0x30;
 //     // copy obj->0xB4/0xB8/0xBC transform into sp scratch;
 //     // scale a Vec3 (w->0x318/0x31C/0x320) by w->0xA8, matrix*
@@ -6500,9 +6500,9 @@ skip3:
 //   commutative) -> genuine slot-allocation cap. .text-only ROM gate
 //   would land IF the frame matched; it does not. Left NM at 89.54%.
 //   Name pre-checked: no extern reuse.
-/* game_uso_func_0000A604 — EXACT 117/117 words (self-verified clean rebuild of
+/* SnowAI_func_0000A604 — EXACT 117/117 words (self-verified clean rebuild of
  * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/game_uso_func_0000A604.s; jal words
+ * asm/nonmatchings/game_uso/game_uso/SnowAI_func_0000A604.s; jal words
  * 0x0C000000 both sides). Was the "frame-spread coloring cap" NM at 90.01%.
  *
  * PREREQUISITE (outside this body): the game_uso_func_0000A374 DEFINITION
@@ -6537,7 +6537,7 @@ skip3:
  *      prologue (the last 20-diff residual). Plain reassign without if(1)
  *      does NOT work.
  */
-void game_uso_func_0000A604(char *obj) {
+void SnowAI_func_0000A604(char *obj) {
     Vec3 copy2;
     One1 a1arg;
     Vec3 tbuf;
@@ -6597,13 +6597,13 @@ void game_uso_func_0000A604(char *obj) {
     }
 }
 
-void game_uso_func_0000A7D8(int *a0) {
+void SnowAI_func_0000A7D8(int *a0) {
     a0[0x5C / 4] = 0;
     a0[0x68 / 4] |= 2;
     *(float *)((char *)a0 + 0x60) = *(float *)((char *)&D_00000000 + 0x110);
 }
 
-/* game_uso_func_0000A7F8: nearest projected-segment distance update.
+/* SnowAI_func_0000A7F8: nearest projected-segment distance update.
  * MATCHED: 232/232 target words. Predict the child position from
  * obj's scale and child direction, query the indexed segment, test its
  * projected height, then minimize squared XZ distance to the segment line.
@@ -6623,7 +6623,7 @@ void game_uso_func_0000A7D8(int *a0) {
  *   equality operands; name b3.z before the squared-length expression.
  * See docs/IDO_CODEGEN.md#projected-distance-exact-a7f8.
  */
-void game_uso_func_0000A7F8(char *obj) {
+void SnowAI_func_0000A7F8(char *obj) {
     Vec3 c2;
     One1 node;
     Vec3 blockA;
@@ -6739,7 +6739,7 @@ void game_uso_func_0000A7F8(char *obj) {
     if (cnt >= 10) *(int *)(obj + 0x68) &= ~4;
 }
 
-void game_uso_func_0000AB98(void *a0) {
+void SnowAI_func_0000AB98(void *a0) {
     *(int*)((char*)a0 + 0x5C) = 0;
     *(int*)((char*)a0 + 0x68) |= 4;
     *(float*)((char*)a0 + 0x60) = *(float*)(&D_00000000 + 0x114);
@@ -6830,7 +6830,7 @@ static void game_uso_func_0000ADE0(int *dst) {
     *dst = buf[0];
 }
 
-/* game_uso_func_0000AE1C: primary + embedded-child constructor, 278 words.
+/* Sun_ctor: primary + embedded-child constructor, 278 words.
  * Exact stock IDO 7.1 -O2: 0x458 bytes, 0xA0 frame. The final child is
  * at (arg0 + 0xEC) + 0x68, with that sub-object passed as its parent.
  * Sub-object/last-child allocation failure skips children, not the tail.
@@ -6847,7 +6847,7 @@ extern char game_uso_D_807FF340, game_uso_D_807FF24C, game_uso_D_807FEE38,
 extern char import_80086288, import_8005EE6C;
 extern int import_000F5ADC();
 
-void *game_uso_func_0000AE1C(void *arg0) {
+void *Sun_ctor(void *arg0) {
     /* Declaration order preserves the original 0xA0 stack frame. */
     char *s0;
     char *r;

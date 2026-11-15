@@ -22,13 +22,13 @@ glabel SnowAI_func_0000591C
     /* 005964 00005964 8FBF0024 */  .word 0x8FBF0024
     /* 005968 00005968 13200005 */  .word 0x13200005
     /* 00596C 0000596C 30490004 */  .word 0x30490004
-    jal game_uso_func_0000A604   /* 005970 0C000000 -> game_uso_func_0000A604 */
+    jal SnowAI_func_0000A604   /* 005970 0C000000 -> SnowAI_func_0000A604 */
     /* 005974 00005974 02002025 */  .word 0x02002025
     /* 005978 00005978 10000429 */  .word 0x10000429
     /* 00597C 0000597C 8FBF0024 */  .word 0x8FBF0024
     /* 005980 00005980 51200006 */  .word 0x51200006
     /* 005984 00005984 8E0A0030 */  .word 0x8E0A0030
-    jal game_uso_func_0000A7F8   /* 005988 0C000000 -> game_uso_func_0000A7F8 */
+    jal SnowAI_func_0000A7F8   /* 005988 0C000000 -> SnowAI_func_0000A7F8 */
     /* 00598C 0000598C 02002025 */  .word 0x02002025
     /* 005990 00005990 10000423 */  .word 0x10000423
     /* 005994 00005994 8FBF0024 */  .word 0x8FBF0024
@@ -95,7 +95,7 @@ glabel SnowAI_func_0000591C
     /* 005A88 00005A88 10000002 */  .word 0x10000002
     /* 005A8C 00005A8C AFA301A0 */  .word 0xAFA301A0
     /* 005A90 00005A90 AFA001A0 */  .word 0xAFA001A0
-    jal game_uso_func_00007A98   /* 005A94 0C000000 -> game_uso_func_00007A98 */
+    jal SnowAI_func_00007A98   /* 005A94 0C000000 -> SnowAI_func_00007A98 */
     /* 005A98 00005A98 AFA301A4 */  .word 0xAFA301A4
     /* 005A9C 00005A9C E7A0019C */  .word 0xE7A0019C
     /* 005AA0 00005AA0 8E030074 */  .word 0x8E030074
@@ -180,7 +180,7 @@ glabel SnowAI_func_0000591C
     /* 005BDC 00005BDC AFAB0010 */  .word 0xAFAB0010
     /* 005BE0 00005BE0 02002825 */  .word 0x02002825
     /* 005BE4 00005BE4 8FA601B0 */  .word 0x8FA601B0
-    jal game_uso_func_00007C1C   /* 005BE8 0C000000 -> game_uso_func_00007C1C */
+    jal SnowAI_func_00007C1C   /* 005BE8 0C000000 -> SnowAI_func_00007C1C */
     /* 005BEC 00005BEC 8FA701AC */  .word 0x8FA701AC
     /* 005BF0 00005BF0 8C4E0000 */  .word 0x8C4E0000
     /* 005BF4 00005BF4 27A30114 */  .word 0x27A30114
@@ -208,7 +208,7 @@ glabel SnowAI_func_0000591C
     /* 005C4C 00005C4C 02002825 */  .word 0x02002825
     /* 005C50 00005C50 8FA601B0 */  .word 0x8FA601B0
     /* 005C54 00005C54 8FA701AC */  .word 0x8FA701AC
-    jal game_uso_func_00008CD8   /* 005C58 0C000000 -> game_uso_func_00008CD8 */
+    jal SnowAI_func_00008CD8   /* 005C58 0C000000 -> SnowAI_func_00008CD8 */
     /* 005C5C 00005C5C AFA80010 */  .word 0xAFA80010
     /* 005C60 00005C60 8C4A0000 */  .word 0x8C4A0000
     /* 005C64 00005C64 27A30108 */  .word 0x27A30108
@@ -689,7 +689,7 @@ glabel SnowAI_func_0000591C
     /* 0063D0 000063D0 8E0C04C4 */  .word 0x8E0C04C4
     /* 0063D4 000063D4 19800088 */  .word 0x19800088
     /* 0063D8 000063D8 00000000 */  .word 0x00000000
-    jal game_uso_func_000074D8   /* 0063DC 0C000000 -> game_uso_func_000074D8 */
+    jal SnowAI_func_000074D8   /* 0063DC 0C000000 -> SnowAI_func_000074D8 */
     /* 0063E0 000063E0 02002025 */  .word 0x02002025
     /* 0063E4 000063E4 44808000 */  .word 0x44808000
     /* 0063E8 000063E8 AE0004C4 */  .word 0xAE0004C4
@@ -717,7 +717,7 @@ glabel SnowAI_func_0000591C
     /* 006440 00006440 00000000 */  .word 0x00000000
     /* 006444 00006444 4500006C */  .word 0x4500006C
     /* 006448 00006448 00000000 */  .word 0x00000000
-    jal game_uso_func_0000751C   /* 00644C 0C000000 -> game_uso_func_0000751C */
+    jal SnowAI_func_0000751C   /* 00644C 0C000000 -> SnowAI_func_0000751C */
     /* 006450 00006450 02002025 */  .word 0x02002025
     /* 006454 00006454 8E02002C */  .word 0x8E02002C
     /* 006458 00006458 44808000 */  .word 0x44808000
@@ -743,7 +743,7 @@ glabel SnowAI_func_0000591C
     /* 0064A8 000064A8 2443FFFF */  .word 0x2443FFFF
     /* 0064AC 000064AC 14600005 */  .word 0x14600005
     /* 0064B0 000064B0 AE0304C4 */  .word 0xAE0304C4
-    jal game_uso_func_000074D8   /* 0064B4 0C000000 -> game_uso_func_000074D8 */
+    jal SnowAI_func_000074D8   /* 0064B4 0C000000 -> SnowAI_func_000074D8 */
     /* 0064B8 000064B8 02002025 */  .word 0x02002025
     /* 0064BC 000064BC 44808000 */  .word 0x44808000
     /* 0064C0 000064C0 00000000 */  .word 0x00000000
@@ -771,7 +771,7 @@ glabel SnowAI_func_0000591C
     /* 006518 00006518 45020008 */  .word 0x45020008
     /* 00651C 0000651C 24010003 */  .word 0x24010003
     /* 006520 00006520 AE0304C4 */  .word 0xAE0304C4
-    jal game_uso_func_00007448   /* 006524 0C000000 -> game_uso_func_00007448 */
+    jal SnowAI_func_00007448   /* 006524 0C000000 -> SnowAI_func_00007448 */
     /* 006528 00006528 02002025 */  .word 0x02002025
     /* 00652C 0000652C 44808000 */  .word 0x44808000
     /* 006530 00006530 8E040030 */  .word 0x8E040030
@@ -872,7 +872,7 @@ glabel SnowAI_func_0000591C
     /* 0066AC 000066AC 2861004B */  .word 0x2861004B
     /* 0066B0 000066B0 14200007 */  .word 0x14200007
     /* 0066B4 000066B4 AE030054 */  .word 0xAE030054
-    jal game_uso_func_00007424   /* 0066B8 0C000000 -> game_uso_func_00007424 */
+    jal SnowAI_func_00007424   /* 0066B8 0C000000 -> SnowAI_func_00007424 */
     /* 0066BC 000066BC AE000054 */  .word 0xAE000054
     /* 0066C0 000066C0 44808000 */  .word 0x44808000
     /* 0066C4 000066C4 10000003 */  .word 0x10000003
@@ -889,7 +889,7 @@ glabel SnowAI_func_0000591C
     /* 0066F0 000066F0 44808000 */  .word 0x44808000
     /* 0066F4 000066F4 54400006 */  .word 0x54400006
     /* 0066F8 000066F8 8FB801A4 */  .word 0x8FB801A4
-    jal game_uso_func_0000A7D8   /* 0066FC 0C000000 -> game_uso_func_0000A7D8 */
+    jal SnowAI_func_0000A7D8   /* 0066FC 0C000000 -> SnowAI_func_0000A7D8 */
     /* 006700 00006700 02002025 */  .word 0x02002025
     /* 006704 00006704 100000C3 */  .word 0x100000C3
     /* 006708 00006708 02002025 */  .word 0x02002025
@@ -904,7 +904,7 @@ glabel SnowAI_func_0000591C
     /* 00672C 0000672C 44808000 */  .word 0x44808000
     /* 006730 00006730 54400006 */  .word 0x54400006
     /* 006734 00006734 8FA201A0 */  .word 0x8FA201A0
-    jal game_uso_func_0000AB98   /* 006738 0C000000 -> game_uso_func_0000AB98 */
+    jal SnowAI_func_0000AB98   /* 006738 0C000000 -> SnowAI_func_0000AB98 */
     /* 00673C 0000673C 02002025 */  .word 0x02002025
     /* 006740 00006740 100000B4 */  .word 0x100000B4
     /* 006744 00006744 02002025 */  .word 0x02002025
@@ -913,9 +913,9 @@ glabel SnowAI_func_0000591C
     /* 006750 00006750 30590400 */  .word 0x30590400
     /* 006754 00006754 13200007 */  .word 0x13200007
     /* 006758 00006758 30490010 */  .word 0x30490010
-    jal game_uso_func_000071A4   /* 00675C 0C000000 -> game_uso_func_000071A4 */
+    jal SnowAI_func_000071A4   /* 00675C 0C000000 -> SnowAI_func_000071A4 */
     /* 006760 00006760 02002025 */  .word 0x02002025
-    jal game_uso_func_00006FA8   /* 006764 0C000000 -> game_uso_func_00006FA8 */
+    jal SnowAI_func_00006FA8   /* 006764 0C000000 -> SnowAI_func_00006FA8 */
     /* 006768 00006768 02002025 */  .word 0x02002025
     /* 00676C 0000676C 100000A8 */  .word 0x100000A8
     /* 006770 00006770 AE020040 */  .word 0xAE020040
@@ -1087,7 +1087,7 @@ glabel SnowAI_func_0000591C
     /* 006A08 00006A08 AE0A0040 */  .word 0xAE0A0040
     /* 006A0C 00006A0C AFAD01B4 */  .word 0xAFAD01B4
     /* 006A10 00006A10 02002025 */  .word 0x02002025
-    jal game_uso_func_00007538   /* 006A14 0C000000 -> game_uso_func_00007538 */
+    jal SnowAI_func_00007538   /* 006A14 0C000000 -> SnowAI_func_00007538 */
     /* 006A18 00006A18 8FA501B4 */  .word 0x8FA501B4
     /* 006A1C 00006A1C 8FBF0024 */  .word 0x8FBF0024
     /* 006A20 00006A20 8FB00020 */  .word 0x8FB00020
@@ -1095,4 +1095,4 @@ glabel SnowAI_func_0000591C
     /* 006A28 00006A28 03E00008 */  .word 0x03E00008
     /* 006A2C 00006A2C 00000000 */  .word 0x00000000
 endlabel SnowAI_func_0000591C
-/* (the 44F4 .late_rodata words that followed here moved to game_uso_func_00007448.s) */
+/* (the 44F4 .late_rodata words that followed here moved to SnowAI_func_00007448.s) */

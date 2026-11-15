@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_00006FA8 (0x1FC / 127 words).
+/* IDO 7.1 NCC (C++) donor for SnowAI_func_00006FA8 (0x1FC / 127 words).
  *
  * Picks the closer of two 0xA374 lookups (handles from D_807FEB60+0x570 /
  * D_807FEB64+0x574) to s0->w->pos: returns 10 if the first is closer,
@@ -34,12 +34,12 @@ struct Self { char pad0[0x30]; W *w; };
 extern "C" {
 extern char game_uso_D_807FEB60;
 extern char game_uso_D_807FEB64;
-float game_uso_func_00007A98(Self *);
+float SnowAI_func_00007A98(Self *);
 Obj *game_uso_func_0000A374(Self *, Handle, Vec3 *);
 }
-extern "C" int game_uso_func_00006FA8(Self *s0) {
+extern "C" int SnowAI_func_00006FA8(Self *s0) {
     int result = 0;
-    if (game_uso_func_00007A98(s0) < 0.0f) {
+    if (SnowAI_func_00007A98(s0) < 0.0f) {
         Handle h1;
         Handle h2;
         Obj *a;

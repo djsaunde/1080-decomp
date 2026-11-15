@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00007C1C, 0x10BC
+nonmatching SnowAI_func_00007C1C, 0x10BC
 
-glabel game_uso_func_00007C1C
+glabel SnowAI_func_00007C1C
     /* 007C1C 00007C1C 27BDFC50 */  .word 0x27BDFC50
     /* 007C20 00007C20 AFB00038 */  .word 0xAFB00038
     /* 007C24 00007C24 8FB003C4 */  .word 0x8FB003C4
@@ -127,7 +127,7 @@ glabel game_uso_func_00007C1C
     /* 007E08 00007E08 8D090908 */  .word 0x8D090908
     /* 007E0C 00007E0C 5120005C */  .word 0x5120005C
     /* 007E10 00007E10 27B20268 */  .word 0x27B20268
-    jal game_uso_func_00007A98   /* 007E14 0C000000 -> game_uso_func_00007A98 */
+    jal SnowAI_func_00007A98   /* 007E14 0C000000 -> SnowAI_func_00007A98 */
     /* 007E18 00007E18 03202025 */  .word 0x03202025
     /* 007E1C 00007E1C 8FA503B4 */  .word 0x8FA503B4
     /* 007E20 00007E20 24010001 */  .word 0x24010001
@@ -1072,7 +1072,7 @@ glabel game_uso_func_00007C1C
     /* 008CCC 00008CCC 8FA203B0 */  .word 0x8FA203B0
     /* 008CD0 00008CD0 03E00008 */  .word 0x03E00008
     /* 008CD4 00008CD4 27BD03B0 */  .word 0x27BD03B0
-endlabel game_uso_func_00007C1C
+endlabel SnowAI_func_00007C1C
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */

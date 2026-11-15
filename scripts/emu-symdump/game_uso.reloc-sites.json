@@ -175,14 +175,14 @@
 "kind": "jal",
 "resolved": 8310108,
 "class": "func",
-"name": "func_000002BC"
+"name": "snd_unmuteAll_000002BC"
 },
 {
 "off": 1856,
 "kind": "jal",
 "resolved": 8310108,
 "class": "func",
-"name": "func_000002BC"
+"name": "snd_unmuteAll_000002BC"
 },
 {
 "off": 1864,

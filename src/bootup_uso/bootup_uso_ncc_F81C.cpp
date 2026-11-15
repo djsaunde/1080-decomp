@@ -71,7 +71,7 @@ void *game_createProcessWindow(int a0, int a1) {
  * function (reloads self each use, register-var bit-manip in s0-s3, if(1)
  * dead-branch); now a byte-exact -O0 C match there (same recipe as 100F0/118E4). */
 
-/* func_000100F0 + func_0001016C split out to bootup_uso_o0_100F0.c on
+/* gui_initRows_000100F0 + gui_centerRows_0001016C split out to bootup_uso_o0_100F0.c on
  * 2026-05-14 for -O0 build (same recipe as game_loadUso ->
  * bootup_uso_o0_118E4.c earlier this date). */
 }

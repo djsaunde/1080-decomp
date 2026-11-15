@@ -9,7 +9,7 @@ glabel game_uso_func_000071E0
     /* 0071F4 000071F4 31CF0004 */  .word 0x31CF0004
     /* 0071F8 000071F8 51E00006 */  .word 0x51E00006
     /* 0071FC 000071FC 8E180030 */  .word 0x8E180030
-    jal game_uso_func_0000A7F8   /* 007200 0C000000 -> game_uso_func_0000A7F8 */
+    jal SnowAI_func_0000A7F8   /* 007200 0C000000 -> SnowAI_func_0000A7F8 */
     /* 007204 00007204 00000000 */  .word 0x00000000
     /* 007208 00007208 10000082 */  .word 0x10000082
     /* 00720C 0000720C 8FBF0024 */  .word 0x8FBF0024
@@ -94,7 +94,7 @@ glabel game_uso_func_000071E0
     /* 007348 00007348 27A4005C */  .word 0x27A4005C
     /* 00734C 0000734C 02002825 */  .word 0x02002825
     /* 007350 00007350 8FA70084 */  .word 0x8FA70084
-    jal game_uso_func_00007C1C   /* 007354 0C000000 -> game_uso_func_00007C1C */
+    jal SnowAI_func_00007C1C   /* 007354 0C000000 -> SnowAI_func_00007C1C */
     /* 007358 00007358 AFA00014 */  .word 0xAFA00014
     /* 00735C 0000735C 8C4A0000 */  .word 0x8C4A0000
     /* 007360 00007360 27A80078 */  .word 0x27A80078
@@ -139,7 +139,7 @@ glabel game_uso_func_000071E0
     /* 0073FC 000073FC 11A00002 */  .word 0x11A00002
     /* 007400 00007400 00000000 */  .word 0x00000000
     /* 007404 00007404 AFAE0098 */  .word 0xAFAE0098
-    jal game_uso_func_00007538   /* 007408 0C000000 -> game_uso_func_00007538 */
+    jal SnowAI_func_00007538   /* 007408 0C000000 -> SnowAI_func_00007538 */
     /* 00740C 0000740C 8FA50098 */  .word 0x8FA50098
     /* 007410 00007410 8FBF0024 */  .word 0x8FBF0024
     /* 007414 00007414 8FB00020 */  .word 0x8FB00020

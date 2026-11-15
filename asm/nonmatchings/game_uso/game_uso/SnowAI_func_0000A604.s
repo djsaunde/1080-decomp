@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000A604, 0x1D4
+nonmatching SnowAI_func_0000A604, 0x1D4
 
-glabel game_uso_func_0000A604
+glabel SnowAI_func_0000A604
     /* 00A604 0000A604 27BDFF68 */  .word 0x27BDFF68
     /* 00A608 0000A608 AFBF001C */  .word 0xAFBF001C
     /* 00A60C 0000A60C AFB00018 */  .word 0xAFB00018
@@ -118,4 +118,4 @@ glabel game_uso_func_0000A604
     /* 00A7CC 0000A7CC 27BD0098 */  .word 0x27BD0098
     /* 00A7D0 0000A7D0 03E00008 */  .word 0x03E00008
     /* 00A7D4 0000A7D4 00000000 */  .word 0x00000000
-endlabel game_uso_func_0000A604
+endlabel SnowAI_func_0000A604

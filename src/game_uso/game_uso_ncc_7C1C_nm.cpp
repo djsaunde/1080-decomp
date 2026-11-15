@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_00007C1C
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for SnowAI_func_00007C1C
  * (1071 words). NM object only (build/non_matching); the ROM build keeps
  * INCLUDE_ASM.
  *
@@ -64,9 +64,9 @@ extern char D_00000000;
 void game_uso_func_00003FAC(float *, float *, float *, float, float);
 float game_uso_func_082880(float);
 void game_uso_func_071028(Vec3 *v);
-float game_uso_func_00007A98(Self *);
+float SnowAI_func_00007A98(Self *);
 }
-extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
+extern "C" Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
     float m2; /* agent-g run 206: the walk's m2 declared at function scope (lever-sweep hoist): 95.239 -> 95.261 */
     if (out != 0) {
@@ -81,7 +81,7 @@ extern "C" Vec3 game_uso_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, flo
         Node *a_al = a + 0 * (int)(out); /* agent-c run 195: alias copy (s-reg tie); agent-g run 210: folded counted use of out, 96.14 -> 96.19 */
         Vec3 seg = XZ(b->pos) - a_al->pos;
         if (s->w->other != 0) {
-            float dot = game_uso_func_00007A98(s);
+            float dot = SnowAI_func_00007A98(s);
             int active = s->active;
             if (active == 0) {
                 if (s->lim <= dot) {

@@ -1,6 +1,6 @@
-nonmatching game_uso_func_0000AE1C, 0x458
+nonmatching Sun_ctor, 0x458
 
-glabel game_uso_func_0000AE1C
+glabel Sun_ctor
     /* 00AE1C 0000AE1C 27BDFF60 */  .word 0x27BDFF60
     /* 00AE20 0000AE20 AFBF001C */  .word 0xAFBF001C
     /* 00AE24 0000AE24 AFB00018 */  .word 0xAFB00018
@@ -279,4 +279,4 @@ glabel game_uso_func_0000AE1C
     /* 00B268 0000B268 8FB00018 */  .word 0x8FB00018
     /* 00B26C 0000B26C 03E00008 */  .word 0x03E00008
     /* 00B270 0000B270 27BD00A0 */  .word 0x27BD00A0
-endlabel game_uso_func_0000AE1C
+endlabel Sun_ctor

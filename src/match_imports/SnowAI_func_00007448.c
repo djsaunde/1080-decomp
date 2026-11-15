@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_uso/game_uso.c. Target bytes unchanged. */
 #include "context_game_uso.h"
-void game_uso_func_00007448(char *a0) {
+void SnowAI_func_00007448(char *a0) {
     char *snapshot_slot;
     char *linked;
     char *replacement_slot;

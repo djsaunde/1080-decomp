@@ -22,23 +22,23 @@ typedef struct { int a, b, c; } Tri3i;
 extern int game_uso_func_055750();
 float game_uso_func_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
 void SnowAI_func_0000A3C4();
-void game_uso_func_0000A604(SnowAI *);
-void game_uso_func_0000A7F8(SnowAI *);
+void SnowAI_func_0000A604(SnowAI *);
+void SnowAI_func_0000A7F8(SnowAI *);
 int SnowAI_func_00007ACC();
-float game_uso_func_00007A98(SnowAI *);
-int game_uso_func_00007C1C();
-void *game_uso_func_00008CD8();
-void game_uso_func_000074D8(SnowAI *);
-void game_uso_func_0000751C(SnowAI *);
-void game_uso_func_00007448(SnowAI *);
-void game_uso_func_00007424(void *);
+float SnowAI_func_00007A98(SnowAI *);
+int SnowAI_func_00007C1C();
+void *SnowAI_func_00008CD8();
+void SnowAI_func_000074D8(SnowAI *);
+void SnowAI_func_0000751C(SnowAI *);
+void SnowAI_func_00007448(SnowAI *);
+void SnowAI_func_00007424(void *);
 int SnowAI_func_00009B88();
-void game_uso_func_0000A7D8(SnowAI *);
+void SnowAI_func_0000A7D8(SnowAI *);
 int SnowAI_func_0000A0E8(SnowAI *, char *, char *);
-void game_uso_func_0000AB98(void *);
-void game_uso_func_000071A4(SnowAI *);
-int game_uso_func_00006FA8(SnowAI *);
-void game_uso_func_00007538();
+void SnowAI_func_0000AB98(void *);
+void SnowAI_func_000071A4(SnowAI *);
+int SnowAI_func_00006FA8(SnowAI *);
+void SnowAI_func_00007538();
 void SnowAI_func_0000591C(int *a0) {
     Vec3 copy2;
     Vec3 staged_axis;
@@ -108,11 +108,11 @@ void SnowAI_func_0000591C(int *a0) {
         return;
     }
     if (v0 & 2) {
-        game_uso_func_0000A604(self);
+        SnowAI_func_0000A604(self);
         return;
     }
     if (v0 & 4) {
-        game_uso_func_0000A7F8(self);
+        SnowAI_func_0000A7F8(self);
         return;
     }
     *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->pos;
@@ -141,7 +141,7 @@ void SnowAI_func_0000591C(int *a0) {
     } else {
         resolved_state = 0;
     }
-    metric_a = game_uso_func_00007A98(self);
+    metric_a = SnowAI_func_00007A98(self);
     t0 = 0;
     switch (v0 = self->unk74) {
     case 0:
@@ -170,14 +170,14 @@ void SnowAI_func_0000591C(int *a0) {
     if (1) { p = &scratch_xz; }
     switch (v0 = self->unk74) {
     case 0:
-        v0 = game_uso_func_00007C1C(&stage, self, helper_ptr, hit_parent,
+        v0 = SnowAI_func_00007C1C(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
-        v0 = (int)game_uso_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
+        v0 = (int)SnowAI_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
         if (1) {}
@@ -383,7 +383,7 @@ yaw_region:
     }
     if (state_flag & 8) {
         if (self->unk4C4 > 0) {
-            game_uso_func_000074D8(self);
+            SnowAI_func_000074D8(self);
             self->unk4C4 = 0;
         }
         goto tail_common;
@@ -393,7 +393,7 @@ yaw_region:
         v0 = self->level;
         fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD0 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD0 + 1].value : self->parms.parm[SNOWAI_PARM_DD0].value, scale);
         if (metric_a < fsel) {
-            game_uso_func_0000751C(self);
+            SnowAI_func_0000751C(self);
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD1 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD1 + 1].value : self->parms.parm[SNOWAI_PARM_DD1].value, scale);
             self->unk4C4 = (int)fsel;
@@ -402,7 +402,7 @@ yaw_region:
     } else if (v0 > 0) {
         self->unk4C4 = v0 - 1;
         if (self->unk4C4 == 0) {
-            game_uso_func_000074D8(self);
+            SnowAI_func_000074D8(self);
         }
     } else {
         v0 = self->level;
@@ -410,7 +410,7 @@ yaw_region:
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DP + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DP + 1].value : self->parms.parm[SNOWAI_PARM_DP].value, scale);
             if (fsel < metric_a) {
                 self->unk4C4 = 0x10000;
-                game_uso_func_00007448(self);
+                SnowAI_func_00007448(self);
             }
         }
     }
@@ -457,26 +457,26 @@ tail_common:
         if (child_flags) {}
         if (cnt >= 75) {
             self->unk54 = 0;
-            game_uso_func_00007424(self);
+            SnowAI_func_00007424(self);
         } }
     } else {
         self->unk54 = 0;
     }
     if (state_flag & 0x20) {
         if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
-            game_uso_func_0000A7D8(self);
+            SnowAI_func_0000A7D8(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
         if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
-            game_uso_func_0000AB98(self);
+            SnowAI_func_0000AB98(self);
             goto commit_flags;
         }
     }
     if (resolved_state & 0x400) {
-        game_uso_func_000071A4(self);
-        self->unk40 = game_uso_func_00006FA8(self);
+        SnowAI_func_000071A4(self);
+        self->unk40 = SnowAI_func_00006FA8(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
@@ -532,5 +532,5 @@ tail_common:
         }
     }
 commit_flags:
-    game_uso_func_00007538(self, out_flags);
+    SnowAI_func_00007538(self, out_flags);
 }

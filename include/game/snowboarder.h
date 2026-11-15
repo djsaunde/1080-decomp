@@ -31,7 +31,7 @@ typedef struct SnowBVec3 {
 typedef struct SnowBoarder {
     char pad000[0x0B4];
     SnowBVec3 pos;          /* 0x0B4: world position (the node position: the ctor also sets a child node's
-                             * +0xB4 to (0, 100, 0)). SnowBoarder_func_0000B520 compares rival->pos.z - pos.z;
+                             * +0xB4 to (0, 100, 0)). SnowBoarder_limitSpeed compares rival->pos.z - pos.z;
                              * SnowAI (game.uso) seeds its target from rider->pos */
     char pad0C0[0x318 - 0x0C0];
     SnowBVec3 vel;          /* 0x318: velocity. B520 adds dir * nudge, then rescales it to maxSpeed
@@ -87,8 +87,8 @@ typedef struct SnowBoarder {
 #define SNOWB_FLAG_08     0x08  /* SnowBoarder_func_0000E124: selects the notify-call form */
 #define SNOWB_FLAG_20     0x20  /* SnowBoarder_func_0000E124: gates the 180-degree re-orient */
 #define SNOWB_FLAG_MIRROR 0x80  /* left/right stance flip, toggled by SnowBoarder_func_0000E124 */
-#define SNOWB_FLAG_NUDGE  0x100 /* SnowBoarder_func_0000B520: input bits 4 / 8 push the rider along dir */
-#define SNOWB_FLAG_CATCHUP 0x20000 /* SnowBoarder_func_0000B520: maxSpeed gets +-k when the rival is > k' ahead / behind in z */
+#define SNOWB_FLAG_NUDGE  0x100 /* SnowBoarder_limitSpeed: input bits 4 / 8 push the rider along dir */
+#define SNOWB_FLAG_CATCHUP 0x20000 /* SnowBoarder_limitSpeed: maxSpeed gets +-k when the rival is > k' ahead / behind in z */
 
 /* compile-time offset checks (array size -1 => error) */
 #define SNOWB_ASSERT_OFFSET(field, off) \

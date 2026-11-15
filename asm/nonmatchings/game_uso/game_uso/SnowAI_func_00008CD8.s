@@ -1,6 +1,6 @@
-nonmatching game_uso_func_00008CD8, 0xB14
+nonmatching SnowAI_func_00008CD8, 0xB14
 
-glabel game_uso_func_00008CD8
+glabel SnowAI_func_00008CD8
     /* 008CD8 00008CD8 27BDFDF0 */  .word 0x27BDFDF0
     /* 008CDC 00008CDC 8FAE0220 */  .word 0x8FAE0220
     /* 008CE0 00008CE0 AFBF0014 */  .word 0xAFBF0014
@@ -710,7 +710,7 @@ glabel game_uso_func_00008CD8
     /* 0097E0 000097E0 27BD0210 */  .word 0x27BD0210
     /* 0097E4 000097E4 03E00008 */  .word 0x03E00008
     /* 0097E8 000097E8 00000000 */  .word 0x00000000
-endlabel game_uso_func_00008CD8
+endlabel SnowAI_func_00008CD8
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
@@ -719,9 +719,9 @@ endlabel game_uso_func_00008CD8
 /* +0x100..+0x110: own 4-entry jumptable (lw %lo 0x100 at 0x969C) */
 .word 0x000096A8, 0x0000970C, 0x000096A8, 0x000096E0
 /* Moved from game_uso_func_000097EC.s (97EC is now a C/NCC donor, no INCLUDE_ASM): */
-/* +0x110..+0x114: float of C fn game_uso_func_0000A7D8 (lwc1 %lo 0x110) */
+/* +0x110..+0x114: float of C fn SnowAI_func_0000A7D8 (lwc1 %lo 0x110) */
 .word 0x7F7FFFFF
-/* +0x114..+0x118: float of C fn game_uso_func_0000AB98 (lwc1 %lo 0x114) */
+/* +0x114..+0x118: float of C fn SnowAI_func_0000AB98 (lwc1 %lo 0x114) */
 .word 0x7F7FFFFF
 /* +0x118..+0x120: two zero words before the 8-aligned doubles (unreferenced) */
 .word 0x00000000, 0x00000000

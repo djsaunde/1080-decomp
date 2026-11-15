@@ -1,6 +1,6 @@
-nonmatching func_000100F0, 0x7C
+nonmatching gui_initRows_000100F0, 0x7C
 
-glabel func_000100F0
+glabel gui_initRows_000100F0
     /* DE0B5C 000100F0 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* DE0B60 000100F4 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DE0B64 000100F8 AFA40028 */  sw         $a0, 0x28($sp)
@@ -33,4 +33,4 @@ glabel func_000100F0
     /* DE0BCC 00010160 27BD0028 */  addiu      $sp, $sp, 0x28
     /* DE0BD0 00010164 03E00008 */  jr         $ra
     /* DE0BD4 00010168 00000000 */   nop
-endlabel func_000100F0
+endlabel gui_initRows_000100F0

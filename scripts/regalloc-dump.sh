@@ -15,7 +15,7 @@
 # <monorepo>/tools/ido-static-recomp-dump (override: IDO_DUMP_CC=/path/to/cc).
 # Never build objects with the dump copy.
 #
-# Usage: scripts/regalloc-dump.sh game_uso_func_00007538
+# Usage: scripts/regalloc-dump.sh SnowAI_func_00007538
 set -euo pipefail
 
 fn="${1:?usage: regalloc-dump.sh <function_name>}"

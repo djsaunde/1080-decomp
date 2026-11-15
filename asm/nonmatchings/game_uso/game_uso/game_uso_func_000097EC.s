@@ -234,5 +234,5 @@ glabel game_uso_func_000097EC
     /* 009B84 00009B84 00000000 */  .word 0x00000000
 endlabel game_uso_func_000097EC
 
-/* (game_uso .rodata +0x110..+0x120 moved to the end of game_uso_func_00008CD8.s: */
+/* (game_uso .rodata +0x110..+0x120 moved to the end of SnowAI_func_00008CD8.s: */
 /* 97EC is built from a C/NCC donor, so this .s is no longer INCLUDE_ASM'd.) */

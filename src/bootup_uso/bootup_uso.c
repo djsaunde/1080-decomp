@@ -110,7 +110,7 @@ void func_0000029C(void) {
     func_00000000();
 }
 
-void func_000002BC(void) {
+void snd_unmuteAll_000002BC(void) {
     func_00000000();
 }
 
@@ -118,7 +118,7 @@ void func_000002DC(void) {
     func_00000000();
 }
 
-void func_000002FC(void) {
+void snd_sendEvent_000002FC(void) {
     func_00000000();
 }
 
@@ -6846,9 +6846,9 @@ void func_0000B49C(int idx, int j) {
     gl_func_00000000(0, &gl_ref_00008A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
 }
 
-/* SnowBoarder_func_0000B520 - verified structural decode (0x23C, 143 insns,
+/* SnowBoarder_limitSpeed - verified structural decode (0x23C, 143 insns,
  * FP directional-nudge / input-driven position update).
- *   void SnowBoarder_func_0000B520(St *a1) {
+ *   void SnowBoarder_limitSpeed(St *a1) {
  *       if (!(a1->0xA58 & 0x100)) return;          // enable gate
  *       blk = a1->0x800;
  *       f32 mag = 0.0f;
@@ -6897,7 +6897,7 @@ void func_0000B49C(int idx, int j) {
 extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
 extern f64 bu_b520_kc;               /* rodata f64 (target func_000008B4 + 0xC) */
 #define F520(p, o) (*(f32 *)((char *)(p) + (o)))
-void SnowBoarder_func_0000B520(SnowBoarder *sb) {
+void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     Vec3 v74;
     Vec3 vB;
     Vec3 v5C;
