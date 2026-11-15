@@ -337,7 +337,7 @@ typedef struct GLAllocatorState {
     int field_24;
     int field_28;
 } GLAllocatorState;
-extern int game_libs_func_00062F08();
+extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b; } Pair2;
@@ -3011,12 +3011,12 @@ typedef struct Owner62E10 {
 } Owner62E10;
 extern char gl_62E10_data;
 extern void gl_62E10_assert(s32,s32,s32);
-void gl_func_00062E10(Owner62E10 *a0, int a1, int a2);
+void AnimCmd_setTableEntry(Owner62E10 *a0, int a1, int a2);
 typedef struct {BootupObjectBase base;u32 field2C;s32 field30;u8 unknown34[0x24];s32 field58;} Object62E80;
 extern char *gl_3D16C_alloc(int);
 extern BootupObjectBase *gl_3D16C_base_init(BootupObjectBase *,int);
 extern char gl_3D16C_descriptor_base;
 extern char gl_62E80_methods;
 extern int gl_62E80_reset(Object62E80 *);
-Object62E80 *gl_func_00062E80(Object62E80 *o,s32 a1);
-int game_libs_func_00062F08();
+Object62E80 *AnimPlayer_ctor(Object62E80 *o,s32 a1);
+int AnimPlayer_reset();

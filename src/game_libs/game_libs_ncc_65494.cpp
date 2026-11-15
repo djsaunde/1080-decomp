@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00065494 (0x538 / 334 words), spliced over the
+/* IDO 7.1 NCC (C++) EXACT donor for DNode_solveContacts (0x538 / 334 words), spliced over the
  * empty placeholder in game_libs_post1b.c (both trees): the per-frame contact solve over the
  * self->0x39C child list. The four calls are blank USO jals (0-pinned aliases of the in-unit
- * gl_func_00062F64 callees). agent-g run 186: whole-function
+ * AnimPlayer_update callees). agent-g run 186: whole-function
  * C++ port of the cfe NM body (80.62): the {cur, nxt} list iterator with an if/return
  * next(), Vec3 value class with the by-value operator= (word copy into the pooled
  * parameter temp, then float stores), named-result operator- / operator* / dot, the
@@ -92,7 +92,7 @@ int gl_func_00062F64_b(int, Vec3 *, int, Hit *);
 void gl_func_00062F64_d(Self *, Vec3 *, const Vec3 &);
 void gl_func_00062F64_e(Self *, Vec3 *, Vec3 *);
 }
-extern "C" void gl_func_00065494(Self *self) {
+extern "C" void DNode_solveContacts(Self *self) {
     Iter it(self->list);
     Vec3 psum;
     Vec3 nsum;

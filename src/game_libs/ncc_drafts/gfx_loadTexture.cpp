@@ -30,7 +30,7 @@
  */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32; typedef signed char s8; typedef short s16; typedef int s32; typedef float f32;
 #include "gbi_subset.h"
-extern "C" { int game_libs_func_00062F08(int); int dbg_printThreads(...); }
+extern "C" { int AnimPlayer_reset(int); int dbg_printThreads(...); }
 extern "C" char gl_d_578b4_s1[];
 extern "C" char gl_d_578b4_s2a[];
 
@@ -87,8 +87,8 @@ extern "C" void gfx_loadTexture(GCtx *ctx, TexDesc *tex, s32 tmem) {
     s32 flags;
     s32 fmt;
 
-    masks = game_libs_func_00062F08(tex->w);
-    maskt = game_libs_func_00062F08(tex->h);
+    masks = AnimPlayer_reset(tex->w);
+    maskt = AnimPlayer_reset(tex->h);
     cmt = 0;
     cms = 0;
     gDPSetTextureLUT(GDL(ctx), G_TT_NONE);

@@ -4,7 +4,7 @@
 #include "gdl/dlctx.h"
 #include "gdl/rcp.h"
 #include "gdl/polyshape.h"
-extern int game_libs_func_00062F08();
+extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b; } Pair2;
@@ -96,7 +96,7 @@ extern void gl_func_0003D074();
 //
 /* NOTE 2026-06-04: dbg_printThreads is K&R (variadic char-emit). Its 35
  * `((int(*)())dbg_printThreads)` casts are NOT worth the K&R cast-removal sweep
- * (docs/MATCHING_WORKFLOW.md#... gl_func_00062F64). Measured: file-wide removal
+ * (docs/MATCHING_WORKFLOW.md#... AnimPlayer_update). Measured: file-wide removal
  * is NET NEGATIVE (+2.6pp across 2 / -6.8pp across 4) — dbg_printThreads is
  * LOW call-density per function (1-2 calls), so no jalr-address-caching to undo;
  * the only high-density caller (fault_printThread, 21 calls) gains +0.9pp but its
@@ -2668,7 +2668,7 @@ void CamMan_update(char *arg0) {
  *   addresses p+0x64/0x68 via `addiu base,48; swc1 ,52/56(base)`
  *   (sub-struct at p+48 reached as +0x34/+0x38) — flat
  *   *(float*)(p+0x64) C is 2 insns short. The struct-base-reuse
- *   divergence class (cf gl_func_00065250). Real-C STRUCTURAL body
+ *   divergence class (cf DNode_func_00065250). Real-C STRUCTURAL body
  *   below. Byte-match deferred. Name pre-checked: no extern reuse. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_372D4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The dead handle store is a one-pointer smart-pointer aggregate. */
@@ -4276,7 +4276,7 @@ void game_libs_func_00038D5C(int *a0, int a1) {
  * colours a1 (first call takes one arg, docs/IDO_CODEGEN.md#c8b8-param-in-a1-
  * means-single-arg-call); the `addiu v0,a1,0x18; lw/ori/sw 0(v0)` unfolded
  * pointer is the goto-mid anti-fold (docs/IDO_CODEGEN.md#goto-mid-pointer-
- * antifold-65060) -- same 0x18 |= 0x10 idiom as gl_func_00065060. */
+ * antifold-65060) -- same 0x18 |= 0x10 idiom as DNode_init_00065060. */
 extern int gl_func_00000000();
 void gl_func_00038D64(char *a0) {
     int *p;
@@ -6640,7 +6640,7 @@ int game_libs_func_0003D480(int a0) {
 //   list struct untyped. Real-C STRUCTURAL body below — sibling of
 //   Node_printContents. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
-/* Run 113 (agent-c): 75.8 -> 98.6, port of the exact twin gl_func_00069B94
+/* Run 113 (agent-c): 75.8 -> 98.6, port of the exact twin SkinMgr_reset
  * (address-taken iterator locals via the if(1){bar=&node;bar=&next;}
  * barrier, pre-loop advance + tail advance reading through next) and two
  * decode fixes: the final call takes o (target reloads a0 from its home in
@@ -7646,7 +7646,7 @@ void ItemMgr_Load(char *arg0) {
 loop_1:
     dbg_printThreads(0, &sp50, 4);
     if (sp50 != 0) {
-        ((int(*)())game_libs_func_00062F08)(&sp48);
+        ((int(*)())AnimPlayer_reset)(&sp48);
         sp3C = sp50;
         sp4C = sp3C;
         var_v0 = dbg_printThreads(arg0, sp4C);
@@ -21159,7 +21159,7 @@ void sys_dumpMemory(int arg0, unsigned char *byte_array, int outer_count) {
 #define FD_55C34(p, o) (*(double *)((char *)(p) + (o)))
 /* Unwrapped EXACT 2026-10-16 (run 97): the 18 jal-0 sites go through the
  * blank alias gl_func_00034458_55C34 (= 0), and the 3 baked in-unit jal
- * 0x6A620 words (+0x4c/+0x64/+0x284, the game_libs_func_00062F08 calls)
+ * 0x6A620 words (+0x4c/+0x64/+0x284, the AnimPlayer_reset calls)
  * through game_libs_func_00062F08_55C34, pinned to 0x6A620 in
  * undefined_syms_auto.txt, so the link writes the ROM 0x0C01A988 at each. */
 extern int gl_func_00034458_55C34();
@@ -28202,12 +28202,12 @@ void anim_unpackKey(s32 a0, s16 *a1, f32 *a2) {
     a2[2] = a1[2];
 }
 
-/* gl_func_00062E10: 28-insn assert-then-store.  EXACT (2026-10-15
+/* AnimCmd_setTableEntry: 28-insn assert-then-store.  EXACT (2026-10-15
  * agent-c): the old 2-word `li at,0x17` vs `lui a0` slot swap was the
  * comparison spelling, not an as1 tie -- the assert is written
  * `if (!(tag == 0x17)) fail(...)` (a != test emits the other order).
  * The base re-read after the call is just a second a0->0x48 read. */
-void gl_func_00062E10(int *a0, int a1, int a2) {
+void AnimCmd_setTableEntry(int *a0, int a1, int a2) {
     int tag;
     tag = ((int *)a0[0x48/4])[0];
     tag = tag & 0xFFFF;
@@ -28215,7 +28215,7 @@ void gl_func_00062E10(int *a0, int a1, int a2) {
     ((int *)a0[0x48/4])[a1 + 3] = a2;
 }
 
-/* gl_func_00062E80: 34-insn constructor (was bundled w/ 62F08+62F58, split 2026-05-16).
+/* AnimPlayer_ctor: 34-insn constructor (was bundled w/ 62F08+62F58, split 2026-05-16).
  *   s0 = a0;
  *   if (a0 == 0) { s0 = alloc(0xB0); if (!s0) return s0; }
  *   init(s0, &D+0x22178);
@@ -28233,7 +28233,7 @@ void gl_func_00062E10(int *a0, int a1, int a2) {
  * `s0 = a0` copy, so the prologue moves a0 into s0 early) and store a1 at
  * 0x58 BEFORE the final call (the target's `sw t7,88(s0)` sits in that
  * jal's delay slot, so it runs first). */
-void *gl_func_00062E80(void *s0, int a1) {
+void *AnimPlayer_ctor(void *s0, int a1) {
     if (s0 == 0) {
         s0 = (void *)func_00000000(0xB0);
         if (s0 == 0) goto end;
@@ -28255,10 +28255,10 @@ end:
     return s0;
 }
 
-/* game_libs_func_00062F08: 20-insn no-frame multi-field init.
+/* AnimPlayer_reset: 20-insn no-frame multi-field init.
  * Bulk-initializes 15 fields of struct a0 with constants -1, -1000, 0, 1
  * + one float 0.0f. */
-game_libs_func_00062F08(a0) int * a0; {
+AnimPlayer_reset(a0) int * a0; {
     a0[0x50/4] = -1;
     a0[0x4C/4] = -1;
     a0[0x64/4] = -1000;

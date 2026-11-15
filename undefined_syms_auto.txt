@@ -654,12 +654,12 @@ D_412E8_i = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_000
 D_412E8_j = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_26D64_a = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
 D_26D64_b = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
-D_65EE4_rgn0 = 0x00000000;  /* game_libs_func_00065EE4 region-1 backup-store record = sym1520 (BSS 0x3F030, 0x40 bytes); blank USO import */
-D_65EE4_rgn1 = 0x00000000;  /* game_libs_func_00065EE4 region-2 backup-store record = sym1542 (BSS 0x3F070, 0x40 bytes); blank USO import */
-D_65EE4_rgn2 = 0x00000000;  /* game_libs_func_00065EE4 region-3 backup-store record = sym1544 (BSS 0x3F0B0, 0x40 bytes); blank USO import */
-gl_func_000662E8_65EE4 = 0x00000000;  /* gl_func_000662E8 (sym1524) called from the in-unit game_libs_func_00065EE4: blank USO jal (a direct in-unit call would bake the address) */
-gl_func_00066210_65EE4 = 0x00000000;  /* gl_func_00066210 (sym1525) called from the in-unit game_libs_func_00065EE4: blank USO jal */
-gl_func_0006612C_65EE4 = 0x00000000;  /* gl_func_0006612C (sym2417) called from the in-unit game_libs_func_00065EE4: blank USO jal */
+D_65EE4_rgn0 = 0x00000000;  /* fs_piXfer_00065EE4 region-1 backup-store record = sym1520 (BSS 0x3F030, 0x40 bytes); blank USO import */
+D_65EE4_rgn1 = 0x00000000;  /* fs_piXfer_00065EE4 region-2 backup-store record = sym1542 (BSS 0x3F070, 0x40 bytes); blank USO import */
+D_65EE4_rgn2 = 0x00000000;  /* fs_piXfer_00065EE4 region-3 backup-store record = sym1544 (BSS 0x3F0B0, 0x40 bytes); blank USO import */
+gl_func_000662E8_65EE4 = 0x00000000;  /* fs_piWriteWord_000662E8 (sym1524) called from the in-unit fs_piXfer_00065EE4: blank USO jal (a direct in-unit call would bake the address) */
+gl_func_00066210_65EE4 = 0x00000000;  /* fs_piReadWord_00066210 (sym1525) called from the in-unit fs_piXfer_00065EE4: blank USO jal */
+gl_func_0006612C_65EE4 = 0x00000000;  /* fs_piXfer_0006612C (sym2417) called from the in-unit fs_piXfer_00065EE4: blank USO jal */
 D_26D64_c = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
 D_26D64_d = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
 D_26D64_arr = 0x00000000;  /* AudioThread_ProcessCmds struct-ARRAY alias of D_00000000: &arr[0] keeps the base an opaque $s5 (a plain &D folds to lui-at forms) */
@@ -667,7 +667,7 @@ D_412E8_k = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_000
 D_412E8_l = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_412E8_m = 0x00000000;  /* gl_func_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_00000000_trk601 = 0x00000000;  /* tracker-state ptr global for the memtrack_end donor (USO load-resolved) */
-D_00000000_dbg669 = 0x00000000;  /* debug-state ptr global for the gl_func_000669B8 donor (USO load-resolved) */
+D_00000000_dbg669 = 0x00000000;  /* debug-state ptr global for the boot_reloadMainUso_000669B8 donor (USO load-resolved) */
 D_8FFC_base = 0x00000000;  /* gl_func_00008FFC/00008E48: base-0 alias of D_00000000 -- defeats -O0 &D CSE between call arg0 and the +8 read (target re-materializes lui/addiu per use) */
 D_4F9E4_head = 0x00000000;  /* BasePolyShape_genPointNormals registry-head alias of D_00000000 (per-use lui/addiu, defeats &D CSE) */
 D_4F9E4_tab = 0x00000000;  /* BasePolyShape_genPointNormals u16 index-table alias of D_00000000 */
@@ -1190,7 +1190,7 @@ D_00000008 = 0x00000008;
 D_000000A8 = 0x000000A8;
 gl_func_00000000_init601 = 0x00000000;  /* blank init call for the memtrack_end donor (game_libs_ido53_601D4.c) */
 gl_func_00000000_get601 = 0x00000000;  /* blank int-returning sampler for the memtrack_end donor */
-gl_func_00000000_print669 = 0x00000000;  /* blank print sink for the gl_func_000669B8 donor (game_libs_ido53_669AC.c) */
+gl_func_00000000_print669 = 0x00000000;  /* blank print sink for the boot_reloadMainUso_000669B8 donor (game_libs_ido53_669AC.c) */
 gl_func_00000000_62a2c_get = 0x00000000;  /* blank getter import for the anim_blendPose NCC donor (game_libs_ncc_62A2C.cpp) */
 gl_func_00000000_i = 0x00000000;  /* blank int-returning import for NCC donors (MNode_update): a non-void declaration keeps v0 live after the call */
 gl_func_00000000_62a2c_lerp = 0x00000000;  /* blank lerp import for the anim_blendPose NCC donor */
@@ -1200,11 +1200,11 @@ gl_func_00000000_va = 0x00000000;
 gl_func_00000000_42338 = 0x00000000;
 gl_func_00000000_f = 0x00000000;
 gl_func_00000000_c = 0x00000000;
-gl_func_00000000_s = 0x00000000;  /* prototyped f32(f32) blank (sqrtf) for game_libs_func_00063F34 */
-D_63F34_20A0 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f64 at +0x20A0) */
-D_63F34_20A8 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f64 at +0x20A8) */
-D_63F34_20B0 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f64 at +0x20B0) */
-D_63F34_20B8 = 0x00000000;  /* game_libs_func_00063F34 per-constant alias of D_00000000 (f32 at +0x20B8) */
+gl_func_00000000_s = 0x00000000;  /* prototyped f32(f32) blank (sqrtf) for Friction_vfn11_00063F34 */
+D_63F34_20A0 = 0x00000000;  /* Friction_vfn11_00063F34 per-constant alias of D_00000000 (f64 at +0x20A0) */
+D_63F34_20A8 = 0x00000000;  /* Friction_vfn11_00063F34 per-constant alias of D_00000000 (f64 at +0x20A8) */
+D_63F34_20B0 = 0x00000000;  /* Friction_vfn11_00063F34 per-constant alias of D_00000000 (f64 at +0x20B0) */
+D_63F34_20B8 = 0x00000000;  /* Friction_vfn11_00063F34 per-constant alias of D_00000000 (f32 at +0x20B8) */
 gl_func_00000000_b0a8v = 0x00000000;  /* void-returning blank extern (dead-$v0 exclusion) for gl_func_0000B0A8 cleanup call */
 gl_func_00000000_ff = 0x00000000;
 gl_func_00000000_sqf = 0x00000000;  /* prototyped float(float) sqrt-like blank for gl_func_00002840 (single-prec $f12, no K&R double promotion) */
@@ -1400,7 +1400,7 @@ gl_ref_00039200 = 0x00039200;
 gl_ref_000393FC = 0x000393FC;
 gl_ref_00039480 = 0x00039480;
 gl_ref_0002B3B8 = 0x0002B3B8;
-game_libs_func_000683C4 = 0x683C4;
+BinFile_set_000683C4 = 0x683C4;
 gl_ref_0002B420 = 0x0002B420;
 gl_ref_00000368 = 0x00000368;
 
@@ -3235,12 +3235,12 @@ D_39d8_g = 0x00000000;  /* D_g placeholder alias (array-typed base held in $s0) 
 func_00000000_3734_v = 0x00000000;  /* void-typed reg-call alias (kills dead $v0 def; cfg -> v0) in game_setupDemoSolo */
 D_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in game_setupDemoSolo (lui/lw) */
 func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in game_createPlayers */
-/* gl_func_00064588 kit-transfer aliases (2026-07-15 agent-h): per-site distinct
+/* DNode_ctor kit-transfer aliases (2026-07-15 agent-h): per-site distinct
  * symbols bust the shared-&D-base-pin CSE; addresses are D_00000000-relative. */
-gl_init_00000000_64588 = 0x00000000;  /* blank (jal 0) prototyped float init for gl_func_00064588 */
+gl_init_00000000_64588 = 0x00000000;  /* blank (jal 0) prototyped float init for DNode_ctor */
 gl_ref_00000000_64588 = 0x00000000;
 gl_ref_000223C0_64588 = 0x000223C0;
-/* gl_func_00063884 per-site ANSI f32-alias (2026-07-17 agent-h) */
+/* PhysQNode_ctor_00063884 per-site ANSI f32-alias (2026-07-17 agent-h) */
 gl_init_00000000_63884 = 0x0;
 gl_ref_000223D0_64588_i = 0x000223D0;
 gl_ref_000223D4_64588_i = 0x000223D4;
@@ -3432,10 +3432,10 @@ D_0001B710_w1 = 0x0001B710;
 D_0001B710_w0 = 0x0001B710;
 D_3BE1C_128 = 0x00000128;
 D_3BE1C_1EE9C = 0x0001EE9C;
-gl_func_00000000_sq64388 = 0x00000000;  /* f32(f32) blank sqrt-family callee for gl_func_00064388 */
-gl_func_00000000_sq641DC = 0x00000000;  /* f32(f32) blank magnitude callee for gl_func_000641DC (both calls) */
-gl_func_00000000_n64388 = 0x00000000;  /* void(char*) blank normalize callee for gl_func_00064388 */
-gl_func_00000000_p64388 = 0x00000000;  /* void(char*,char*,f32) blank callee for gl_func_00064388 */
+gl_func_00000000_sq64388 = 0x00000000;  /* f32(f32) blank sqrt-family callee for DNode_func_00064388 */
+gl_func_00000000_sq641DC = 0x00000000;  /* f32(f32) blank magnitude callee for DNode_func_000641DC (both calls) */
+gl_func_00000000_n64388 = 0x00000000;  /* void(char*) blank normalize callee for DNode_func_00064388 */
+gl_func_00000000_p64388 = 0x00000000;  /* void(char*,char*,f32) blank callee for DNode_func_00064388 */
 gl_func_00000000_3a58cn = 0x00000000;  /* void(Vec3*) blank normalize callee for gl_func_0003A58C */
 gl_func_00000000_3a58cs = 0x00000000;  /* f32(f32) blank sqrt callee for gl_func_0003A58C */
 gl_Genld_rodata = 0x00002540;  /* xldtob.c donor .rodata base (pows[] table; "0" string at +0x50 -> 0x2590) -- renamed donor-local reloc, see game_libs_ido53_73904.c */
@@ -3707,11 +3707,11 @@ gl_ref_00002058_f = 0x00002058;  /* 0.017453292f (pi/180) literal (game_libs dat
 gl_d_34180_dev = 0x00000000;  /* game_libs_func_00034180: base-0 alias of D_00000000 -- the hoisted head load `lui v1; lw v1,0(v1)` is a distinct symbol (lo16 field 0, NOT &D+0x240 which bakes 0x240); the later held-base loads use &D_00000000+0x240/0x204 */
 snd_SoundObjEventIndex_2E290_rodata = 0x00001660;  /* switch(sel) 32-entry jumptable (cases 1..32): USO ships it in game_libs rodata at +0x1660; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2E290.c) */
 game_libs_func_000343F4_rodata = 0x000019B8;  /* switch(a0) 8-entry jumptable (cases 1..8): USO ships it in game_libs rodata at +0x19B8; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_343F4.c) */
-gl_func_00068990_rodata = 0x00002220;  /* switch(tag) 6-entry jumptable (tags -1..4): bootup.uso ships it in RoData at +0x2220; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_68990.c) */
-gl_ref_0007C8EC = 0x0007C8EC;  /* gl_func_00068990 baked USO jal (0x0C01F23B) = fs_gdlReadInt_00068280 int reader (splat + 0x1466C) */
-gl_ref_0007C860 = 0x0007C860;  /* gl_func_00068990 baked USO jal (0x0C01F218) = fs_gdlReadInt_000681F4 int reader */
-gl_ref_0007C928 = 0x0007C928;  /* gl_func_00068990 baked USO jal (0x0C01F24A) = fs_gdlReadInt_000682BC int reader */
-gl_func_00062F64_blank = 0x00000000;  /* gl_func_00062F64 called from the in-unit gl_func_00065060: blank USO jal (a direct in-unit call would bake the address) */
+ImageFile_load_00068990_rodata = 0x00002220;  /* switch(tag) 6-entry jumptable (tags -1..4): bootup.uso ships it in RoData at +0x2220; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_68990.c) */
+gl_ref_0007C8EC = 0x0007C8EC;  /* ImageFile_load_00068990 baked USO jal (0x0C01F23B) = fs_gdlReadInt_00068280 int reader (splat + 0x1466C) */
+gl_ref_0007C860 = 0x0007C860;  /* ImageFile_load_00068990 baked USO jal (0x0C01F218) = fs_gdlReadInt_000681F4 int reader */
+gl_ref_0007C928 = 0x0007C928;  /* ImageFile_load_00068990 baked USO jal (0x0C01F24A) = fs_gdlReadInt_000682BC int reader */
+gl_func_00062F64_blank = 0x00000000;  /* AnimPlayer_update called from the in-unit DNode_init_00065060: blank USO jal (a direct in-unit call would bake the address) */
 D_33444_a = 0x00000000;  /* game_libs_func_00033444 per-site alias of D_00000000 (defeats &D CSE: counter load must stay folded `lui t6; lw t6,0x20C(t6)` while the call arg holds `lui a0; addiu a0`) */
 D_349E0_a = 0x00000000;  /* hostio_start per-site alias of D_00000000 (defeats &D CSE: the `|= 4` / `&= ~4` load and store must each fold under their own lui; adjacent same-symbol accesses hold a base) */
 D_349E0_b = 0x00000000;  /* hostio_start per-site alias of D_00000000 for the three call-site args (accesses separated by a call re-lui on their own, so one alias serves all three) */
@@ -3737,12 +3737,12 @@ gl_ffunc_00001818 = 0x00000000;
 gl_reset_3298 = 0x00000000;  /* Typed float-argument import, runtime TextReloc patches jal 0. */
 gl_func_000032B0 = 0x0001791C;  /* Historical internal split, module Text-relative address. */
 gl_ref_00001818_scale_f = 0x00000000;
-D_69CC4_2268 = 0x00000000;  /* game_libs_func_00069CC4 per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
-D_69CC4_2270 = 0x00000000;  /* game_libs_func_00069CC4 per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
-D_69CC4_2278 = 0x00000000;  /* game_libs_func_00069CC4 per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
-D_69CC4_227C = 0x00000000;  /* game_libs_func_00069CC4 per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
-D_69CC4_2280 = 0x00000000;  /* game_libs_func_00069CC4 per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
-D_69CC4_tbl = 0x00000000;  /* game_libs_func_00069CC4 u16 table base (bootup.uso sym2 section, +0x2C650) */
+D_69CC4_2268 = 0x00000000;  /* math_acosf per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
+D_69CC4_2270 = 0x00000000;  /* math_acosf per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
+D_69CC4_2278 = 0x00000000;  /* math_acosf per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
+D_69CC4_227C = 0x00000000;  /* math_acosf per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
+D_69CC4_2280 = 0x00000000;  /* math_acosf per-constant pad-struct alias of D_00000000 (at-macro form; one base CSEs into v1) */
+D_69CC4_tbl = 0x00000000;  /* math_acosf u16 table base (bootup.uso sym2 section, +0x2C650) */
 gl_fbe4_CurrentTime = 0x00000000;  /* __osCurrentTime (u64, USO .bss 0x44060): DEFINED in the game_libs_ido53_6FBE4.c donor TU (shared-$at u64 store), imported by the splice as an undefined symbol -> blank USO reloc */
 gl_ExceptionPreamble = 0x00000000;  /* __osExceptionPreamble (handler stub copied to the 4 exception vectors) -- game_libs_ido53_6C484.c donor (osInitialize), blank USO reloc */
 gl_ResetType = 0x00000000;  /* osResetType -- 6C484 donor, blank USO reloc */
@@ -3796,17 +3796,17 @@ gl_ref_00037D98 = 0x00037D98;  /* AudioLoad_SyncInitSeqPlayerInternal baked USO 
 gl_d_235E4 = 0x00000000;      /* AudioLoad_SyncInitSeqPlayerInternal: struct-typed alias of D_00000000 (run-list buf +0x2028, limit +0x202C, 0x160-byte records at +0x2D00) */
 gl_ref_00037DCC = 0x00037DCC;  /* AudioLoad_SyncLoadFont baked USO jal (0x0C00DF73) */
 gl_ref_00039B70 = 0x00039B70;  /* AudioLoad_SyncLoadFont baked USO jal (0x0C00E6DC) */
-gl_func_00062F64_6612c = 0x00000000;  /* gl_func_00062F64 called from the in-unit gl_func_0006612C: blank USO jal (a direct in-unit call would bake the address) */
-gl_func_00000000_635d8_v = 0x00000000;  /* void-typed alias (frees v0 from the dead return def so the a3 home reload colours v0) in gl_func_000635D8 */
-D_00000000_688f8 = 0x00000000;  /* gl_func_000688F8: 2nd base-0 vtable symbol (derived store), busts lui/addiu CSE with the base store */
-gl_func_00062F64f = 0x00000000;  /* prototyped (float 6th arg) alias of the blank gl_func_00062F64 callee in gl_func_0006337C: blank USO jal */
-gl_func_00062F64_69b94 = 0x00000000;  /* gl_func_00062F64 called from the in-unit gl_func_00069B94: blank USO jal (a direct in-unit call would bake the address) */
+gl_func_00062F64_6612c = 0x00000000;  /* AnimPlayer_update called from the in-unit fs_piXfer_0006612C: blank USO jal (a direct in-unit call would bake the address) */
+gl_func_00000000_635d8_v = 0x00000000;  /* void-typed alias (frees v0 from the dead return def so the a3 home reload colours v0) in AnimPlayer_start */
+D_00000000_688f8 = 0x00000000;  /* ImageFileMgr_newFile_000688F8: 2nd base-0 vtable symbol (derived store), busts lui/addiu CSE with the base store */
+gl_func_00062F64f = 0x00000000;  /* prototyped (float 6th arg) alias of the blank AnimPlayer_update callee in AnimPlayer_applyPose: blank USO jal */
+gl_func_00062F64_69b94 = 0x00000000;  /* AnimPlayer_update called from the in-unit SkinMgr_reset: blank USO jal (a direct in-unit call would bake the address) */
 gl_d_23B98 = 0x00000000;   /* AudioLoad_GetLoadTable USO data base (runtime reloc; offsets 0x201C..0x2024 in the lw immediates) */
 gl_func_00000000_d548f = 0x00000000;  /* prototyped (int*,int,int,float,float) blank alias for the 0x86 float call in gl_func_0000D548: blank USO jal */
 gl_ref_0003EF70 = 0x0003EF70;  /* AudioSeq_InitSequencePlayers baked USO jal (0x0C00FBDC) */
 gl_ref_00041890 = 0x00041890;  /* AudioSeq_InitSequencePlayers baked USO jal (0x0C010624) */
-D_68044_2210 = 0x00000000;  /* gl_func_00068044 pad-struct alias of D_00000000 (+0x2210 float scale; named-variable operand gives the mul.s f10,f16 order) */
-gl_ref_0007C650 = 0x0007C650;  /* gl_func_00068044 baked USO jal to game_libs_func_00067FE4 (0x0C01F194) */
+D_68044_2210 = 0x00000000;  /* math_atan2s_00068044 pad-struct alias of D_00000000 (+0x2210 float scale; named-variable operand gives the mul.s f10,f16 order) */
+gl_ref_0007C650 = 0x0007C650;  /* math_atan2s_00068044 baked USO jal to math_atanLookup_00067FE4 (0x0C01F194) */
 D_D0D0_D680 = 0x0000D680;  /* RaceTracker_findGates NM body: int at D+0xD680 (D_00000000 = 0) copied into a 4-byte struct passed by value */
 D_D0D0_D684 = 0x0000D684;  /* RaceTracker_findGates NM body: int at D+0xD684 (D_00000000 = 0) copied into a 4-byte struct passed by value */
 D_D0D0_D688 = 0x0000D688;  /* RaceTracker_findGates NM body: int at D+0xD688 (D_00000000 = 0) copied into a 4-byte struct passed by value */
@@ -4015,7 +4015,7 @@ D_00000540 = 0x00000540;  /* game_create3DWindow source float 2 (== func_000003F
 import_800200DC_b = 0x00000000;
 import_800200DC_c = 0x00000000;
 import_80020100_b = 0x00000000;
-/* gl_func_00066850: blank USO jal alias of the in-unit gl_func_00062F64, and six distinct base-0 store addresses (lui;addiu 0 each) */
+/* boot_main_00066850: blank USO jal alias of the in-unit AnimPlayer_update, and six distinct base-0 store addresses (lui;addiu 0 each) */
 gl_func_00062F64_66850 = 0x00000000;
 D_gl66850_h0 = 0x00000000;
 D_gl66850_h1 = 0x00000000;
@@ -4023,18 +4023,18 @@ D_gl66850_h2 = 0x00000000;
 D_gl66850_h3 = 0x00000000;
 D_gl66850_h4 = 0x00000000;
 D_gl66850_h5 = 0x00000000;
-/* gl_func_00065250: blank USO jal alias of the in-unit gl_func_00062F64 */
+/* DNode_func_00065250: blank USO jal alias of the in-unit AnimPlayer_update */
 gl_func_00062F64_65250 = 0x00000000;
-/* gl_func_000652D8: blank USO jal alias of the in-unit gl_func_00062F64 */
+/* DNode_func_000652D8: blank USO jal alias of the in-unit AnimPlayer_update */
 gl_func_00062F64_652D8 = 0x00000000;
-/* gl_func_00065494: four blank USO jals (in-unit gl_func_00062F64 callees) */
+/* DNode_solveContacts: four blank USO jals (in-unit AnimPlayer_update callees) */
 gl_func_00062F64_65494 = 0x00000000;
 gl_func_00062F64_b = 0x00000000;
 gl_func_00062F64_d = 0x00000000;
 gl_func_00062F64_e = 0x00000000;
-/* gl_func_00068B04: base-0 dispatch table placeholder (lui 0; addiu 0) */
+/* ImageFile_vfn1_00068B04: base-0 dispatch table placeholder (lui 0; addiu 0) */
 D_gl68B04 = 0x00000000;
-/* gl_func_000695F4: blank USO jal alias of the in-unit gl_func_00062F64, and the base-0 vtable store address */
+/* SkinMgr_ctor: blank USO jal alias of the in-unit AnimPlayer_update, and the base-0 vtable store address */
 gl_func_00062F64_695F4 = 0x00000000;
 D_sym_695F4 = 0x00000000;
 D_87A4_rd = 0x00000000;  /* TreeTmpl_create base-0 config word read (target lui t8 / lw 0(t8)) */
@@ -5262,7 +5262,7 @@ D_307A8_p = 0x00000000;
 D_00000000_1c0a8 = 0x00000000;
 app_initSystem_bss = 0x0003B8F6;  /* app_initSystem NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
 gl_func_0005165C_bss = 0x00000000;  /* gl_func_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
-gl_func_00066A50_bss = 0x0003F310;  /* gl_func_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
+boot_halt_00066A50_bss = 0x0003F310;  /* boot_halt_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
 gl_3d71c_dA0 = 0x000000A0;  /* ColourItem_display NM: fn-typed blank base of the D+0xA0 copy destination (lui/addiu 160, no USO reloc) */
 bu_90cc_fz = 0x00000000;  /* SnowBoarder_ctor NM: fn-typed blank base for the 0x814..0x81C copies (lui/addiu 0, no reloc) */
 bu_90cc_fz2 = 0x00000000;  /* SnowBoarder_ctor NM: fn-typed blank base of the sp174 list-walk head */

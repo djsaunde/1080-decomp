@@ -1,7 +1,7 @@
 #include "common.h"
 extern int D_00000000;
 extern int gl_data_00000000;
-extern int gl_func_00062F64();
+extern int AnimPlayer_update();
 extern int gl_data_67470_addr;
 extern int gl_data_6C9F4_devCfg;
 extern char gl_data_BE14_b;
@@ -895,7 +895,7 @@ void guPosition(void *m) {
  * differ), PI_DRAM_ADDR = osVirtualToPhysical(dramAddr), PI_CART_ADDR =
  * K1_TO_PHYS(baseAddress|devAddr), kick WR_LEN/RD_LEN by direction,
  * unknown direction -1. The old NM wrap's gl_pidma_tbl WAS
- * __osCurrentHandle and its gl_func_00062F64 call is a blank jal in the
+ * __osCurrentHandle and its AnimPlayer_update call is a blank jal in the
  * ROM (osVirtualToPhysical via USO reloc), NOT the 62F64 helper. Needs
  * IDO 5.3 -O1 (stack-resident locals, direction promoted to s0), so the
  * real C lives in the donor unit game_libs_ido53_6F8A4.c (137/137 words

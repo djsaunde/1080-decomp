@@ -5,7 +5,7 @@
  * src/game_libs/game_libs_tail.c). Each hud_add<X>Gadget lazily builds the
  * sprite sets it needs (hud_initSprites_*), constructs the gadget with
  * <X>Gadget_ctor(0, ...), stores it in its slot, then links it as a child
- * through the node child list at +0x10 (gl_func_00066674) and sets the
+ * through the node child list at +0x10 (list_append) and sets the
  * gadget's parent back-link (gadget +0x14). hud_releaseGadgets calls each
  * slot's <X>Gadget_release.
  *

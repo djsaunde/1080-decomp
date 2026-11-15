@@ -4364,9 +4364,9 @@ int *gl_func_000088B4(int *arg0) {
 
 /* game_libs_func_00060574 split off from gl_func_0006052C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
-/* game_libs_func_0006833{8,40,48} split off from gl_func_000682F8 bundle on 2026-05-08; INCLUDE_ASMs in game_libs_post.c. */
+/* game_libs_func_0006833{8,40,48} split off from BinFile_init_000682F8 bundle on 2026-05-08; INCLUDE_ASMs in game_libs_post.c. */
 
-/* game_libs_func_000683C4 split off from gl_func_00068350 bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
+/* BinFile_set_000683C4 split off from BinFile_load_00068350 bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
 /* ScreenWindow_getCurBuffer_0004D014 split off from PolyShape_vfn10_0004CFD4 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
@@ -4421,7 +4421,7 @@ int *gl_func_000088B4(int *arg0) {
 /* game_libs_func_00066200 + game_libs_func_00066208 + game_libs_func_0002D7C0:
  * SUFFIX_BYTES-absorbed orphans whose bytes are emitted by the post-cc
  * recipes on adjacent gl_func_* entries in game_libs_post.c.o (see Makefile:
- * gl_func_000661D8 SUFFIX_BYTES covers 0x66200/0x66208; snd_SetPlayer2VolumeLevel_2D784
+ * fs_fatal_000661D8 SUFFIX_BYTES covers 0x66200/0x66208; snd_SetPlayer2VolumeLevel_2D784
  * INSN_PATCH+SUFFIX_BYTES + snd_ResetVolumeLevels_2D7C0 PROLOGUE_STEALS cover 0x2D7C0).
  * The .s files existed as splat-extracted symbol entries but were never used
  * by the build (game_libs.c.o gets truncated to 0x8944, dropping any

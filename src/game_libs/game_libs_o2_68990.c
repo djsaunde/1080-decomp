@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00068990 -- record-stream reader that
+/* IDO 7.1 -O2 donor for ImageFile_load_00068990 -- record-stream reader that
  * fills an object header from a tagged token stream (exported bootup.uso
  * sym 2482, section 0x7CFFC, 0x174 / 93 words). PROVEN EXACT 93/93 words
  * standalone (the six link-resolved words are the five reloc jals and the
@@ -8,7 +8,7 @@
  * 2E290 / 6DD14 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-
  * jumptable-rodata-rename): the C `switch` puts its 6-entry jumptable in
  * the donor's local .rodata; the splice renames that reloc to
- * gl_func_00068990_rodata, pinned in undefined_syms_auto.txt to the table
+ * ImageFile_load_00068990_rodata, pinned in undefined_syms_auto.txt to the table
  * the USO ships in bootup.uso RoData at +0x2220 (RoDataReloc symIdx 1 x 6).
  * Shipped words 0x2220..0x2238 = 0, 68AB0, 68AB8, 68A04, 68A28, 68AB8 and an
  * unrelocated 68A38 just past the table -- the 2E290 "zero first entry +
@@ -56,7 +56,7 @@ extern void gl_ref_0007C860(int *); /* fs_gdlReadInt_000681F4 */
 extern void gl_ref_0007C928(int *); /* fs_gdlReadInt_000682BC */
 extern int gl_func_00000000();
 
-void gl_func_00068990(char *o) {
+void ImageFile_load_00068990(char *o) {
     int done;
     int b;
     int a;

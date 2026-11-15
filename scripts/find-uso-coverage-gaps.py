@@ -22,7 +22,7 @@ real bugs.
 FALSE POSITIVES — always `grep src/` for the gap's function FIRST:
   - matched-C functions have NO .s (they're unconditional C compiled
     directly), so their region shows as an uncovered "gap" though the build
-    has them (e.g. game_libs_func_000683C4). NOT a bug — skip.
+    has them (e.g. BinFile_set_000683C4). NOT a bug — skip.
   - a TRUNCATED .s (e.g. RcpMgr_insertTask: .s 0x34 but real fn 0x48)
     shows the dropped tail as a gap AFTER the function. If src already has a
     full NM/matched C body, just extend the .s to the true size + unwrap —

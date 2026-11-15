@@ -3,7 +3,7 @@
 /* The TLB-probe callee is an intra-module call that the USO loader relocates
  * at runtime; the ROM stores it as a bare `jal 0` (0x0C000000). Calling the
  * address-0 placeholder gl_func_00000000 reproduces those .text bytes exactly
- * (resolving the real symbol gl_func_00062F64 would emit a non-zero jal that
+ * (resolving the real symbol AnimPlayer_update would emit a non-zero jal that
  * diverges from the ROM). Standard 1080 USO placeholder-callee convention. */
 extern u32 gl_func_00000000();
 

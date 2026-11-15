@@ -604,13 +604,13 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # base-ctor chain) grew the NM body 0x110 -> 0x150 (target size); 62F08 tail
 # keeps 0x50 at 0x2d4f4.)
 # Clip re-probed 2026-09-05 (5FDC0 lone-pad INCLUDE_ASM -> 5FD20 SUFFIX + merged
-# game_libs_func_0005FDC4): tail symbol game_libs_func_00062F08 NM offset + 0x50 (re-probed at landing).
+# game_libs_func_0005FDC4): tail symbol AnimPlayer_reset NM offset + 0x50 (re-probed at landing).
 # 2026-09-09: merged 4247C's corrected callback-return C shortens the NM
 # stream. With the later 4CDB0 merge, 62F08 is at 0x2d578, size 0x50,
 # so the combined real end is 0x2d5c8 (re-probed after integration).
 # 4B2F4's complete matrix/graphics body replaces the old short skeleton.
 # With upstream 4CEFC, last NM symbol 62F08 is at 0x2d758, size 0x50.
-# game_libs_func_0005FDC4): tail symbol game_libs_func_00062F08 @0x2d538 + 0x50.
+# game_libs_func_0005FDC4): tail symbol AnimPlayer_reset @0x2d538 + 0x50.
 # Clip re-probed 2026-09-11 (4F0C8 exact merged with gl_func_0004F0E0; the old
 # 4F0E0 NM stub was 0x160 smaller than the exact): 62F08 NM offset 0x2d7ec + 0x50.
 # Clip re-probed 2026-09-11 (470E4/47394/47B28 colour-packet twins merged as NM wraps,
@@ -1709,7 +1709,7 @@ build/src/game_libs/game_libs_o1_6DA74.c.o build/non_matching/src/game_libs/game
 # 68990 = record-stream reader (6-entry jumptable switch on the tag -1..4),
 # IDO 7.1 -O2 donor: game_libs_o2_68990.c (93/93 word-exact). Spliced only so
 # the C switch's donor-local .rodata jumptable reloc is renamed
-# gl_func_00068990_rodata and pinned to the USO's table at RoData +0x2220
+# ImageFile_load_00068990_rodata and pinned to the USO's table at RoData +0x2220
 # (in-unit compile cannot bake the %lo). Defined ABOVE the := line below.
 # 2B94 = HUD gauge draw (0x5A4), IDO 7.1 -O2 donor: game_libs_o2_2B94.c
 # (361/361 word-exact). Spliced only so the donor-local .rodata reloc of its
@@ -2504,7 +2504,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_49B3C_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_hostioParms=$(GAMELIBS_49B3C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49B3C_DONOR)
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_osPiRawReadIo_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_osSendMesg=$(GAMELIBS_69E04_DONOR) gl_osRecvMesg=$(GAMELIBS_69F64_DONOR) gl___osDequeueThread=$(GAMELIBS_6AF0C_DONOR) gl__VirtualToPhysicalTask=$(GAMELIBS_6A304_DONOR) gl_osDestroyThread=$(GAMELIBS_6AF44_DONOR) gl___osLeoResume=$(GAMELIBS_6B880_DONOR) gl_osPiReadIo=$(GAMELIBS_6B974_DONOR) gl_osContInit=$(GAMELIBS_6BAD4_DONOR) gl___osLeoAbnormalResume=$(GAMELIBS_6B7A0_DONOR) gl___osLeoInterrupt=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) osSpTaskLoad=$(GAMELIBS_6A420_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := boot_reloadMainUso_000669B8=$(GAMELIBS_669AC_DONOR) gl_osPiRawReadIo_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_osSendMesg=$(GAMELIBS_69E04_DONOR) gl_osRecvMesg=$(GAMELIBS_69F64_DONOR) gl___osDequeueThread=$(GAMELIBS_6AF0C_DONOR) gl__VirtualToPhysicalTask=$(GAMELIBS_6A304_DONOR) gl_osDestroyThread=$(GAMELIBS_6AF44_DONOR) gl___osLeoResume=$(GAMELIBS_6B880_DONOR) gl_osPiReadIo=$(GAMELIBS_6B974_DONOR) gl_osContInit=$(GAMELIBS_6BAD4_DONOR) gl___osLeoAbnormalResume=$(GAMELIBS_6B7A0_DONOR) gl___osLeoInterrupt=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) ImageFile_load_00068990=$(GAMELIBS_68990_DONOR) osSpTaskLoad=$(GAMELIBS_6A420_DONOR)
 # 675A4 = input debounce / stick flags, IDO 7.1 -O2 donor: game_libs_o2_675A4.c
 # (262/262 word-exact). Spliced so the donor-local .rodata reloc of the 0.2
 # dead-zone double literal is renamed gl_func_000675A4_rodata and pinned to
@@ -2516,15 +2516,15 @@ build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
 GAMELIBS_63964_DONOR := build/src/game_libs/game_libs_ncc_63964.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00063964=$(GAMELIBS_63964_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += PhysQNode_vfn11_00063964=$(GAMELIBS_63964_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_DONOR)
-# 65494 = child-list contact solve (C++ port of the cfe NM body: list iterator, by-value Vec3 operator=; agent-g run 186; agent-c runs 213-215: operator* parameter temp from `* -h`). EXACT NCC donor over an empty placeholder (blank USO jals: 0-pinned gl_func_00062F64 aliases).
+# 65494 = child-list contact solve (C++ port of the cfe NM body: list iterator, by-value Vec3 operator=; agent-g run 186; agent-c runs 213-215: operator* parameter temp from `* -h`). EXACT NCC donor over an empty placeholder (blank USO jals: 0-pinned AnimPlayer_update aliases).
 GAMELIBS_65494_DONOR := build/src/game_libs/game_libs_ncc_65494.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00065494=$(GAMELIBS_65494_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += DNode_solveContacts=$(GAMELIBS_65494_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_65494_DONOR)
 # 690A8 = vertex transform; NCC donor, EXACT (agent-g run 182: inline M4::xf(V3 &) on one stack V3 declared before loop 1).
 GAMELIBS_690A8_DONOR := build/src/game_libs/game_libs_ncc_690A8.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000690A8=$(GAMELIBS_690A8_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_bindPose_000690A8=$(GAMELIBS_690A8_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_690A8_DONOR)
 # 67D50 = memset; NCC donor (cfe capped at 2 raw).
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
@@ -2534,16 +2534,16 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 # The donor .cpp opens with a 0x18-byte phase function so as1's 32-byte dead-epilogue alignment
 # gives the target's single nop (see the donor header).
 GAMELIBS_66EEC_DONOR := build/src/game_libs/game_libs_ncc_66EEC.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066EEC=$(GAMELIBS_66EEC_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_threadLoop_00066EEC=$(GAMELIBS_66EEC_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66EEC_DONOR)
 # 66A50 = panic handler; NCC donor: the canary pair is one static long long (shared lui at, constant in t8).
 # The donor .cpp opens with a 0x1C-byte phase function (dead-epilogue alignment, kit LXI).
 GAMELIBS_66A50_DONOR := build/src/game_libs/game_libs_ncc_66A50.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066A50=$(GAMELIBS_66A50_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += boot_halt_00066A50=$(GAMELIBS_66A50_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_66A50_DONOR)
 # 64388 = normalize-and-apply step (V3 class); NCC donor, EXACT (agent-g run 163: operator/= via dv(*this, *this, s) pre-allocates the two pointer temps operator- reuses).
 GAMELIBS_64388_DONOR := build/src/game_libs/game_libs_ncc_64388.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00064388=$(GAMELIBS_64388_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += DNode_func_00064388=$(GAMELIBS_64388_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_64388_DONOR)
 
 GAMELIBS_70FCC_DONOR := build/src/game_libs/game_libs_o2_70FCC.c.o
@@ -2717,15 +2717,15 @@ GAMELIBS_71624_DONOR := build/src/game_libs/game_libs_ido53_71624.c.o
 build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: REPLACE_FUNC_BODY := gl___osPfsRequestOneChannel=$(GAMELIBS_71708_DONOR) fcos=$(GAMELIBS_70FCC_DONOR) __osPfsGetStatus=$(GAMELIBS_71624_DONOR) osPfsInitPak=$(GAMELIBS_71384_DONOR) __osPfsGetOneChannelData=$(GAMELIBS_717C8_DONOR) osViSetSpecialFeatures=$(GAMELIBS_71144_DONOR)
 # osViSetEvent: full, unmodified IDO -O1 function body; no instruction patches.
 build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: private REPLACE_FUNC_BODY += osViSetEvent=$(GAMELIBS_71304_DONOR)
-# gl_func_00067370: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
+# pad_threadEntry_00067370: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
 # pad at 0x67390 (folded into the 0x24 .s symbol). FORCE: ends jr-ra;nop.
 # gl_osSendMesg (osSendMesg, donor-spliced) + osViGetCurrentLine
 # (osViGetCurrentLine): the 16-byte inter-object pads at 0x69F50 / 0x69F60 that
 # the old 0x14 "game_libs_func_00069F50" symbol carried as a leading + trailing
 # zero word (Sym export oracle: only 0x69F54 is exported). Twenty-sixth mis-split
 # case, docs/MATCHING_WORKFLOW #leading-nop-cap-is-inter-object-pad-sym-oracle-74844.
-build/src/game_libs/game_libs_post1b.c.o: SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post1b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post1b.c.o: SUFFIX_BYTES_FORCE := pad_threadEntry_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 osViGetCurrentLine=0x00000000 Functor_call_00069C94=0x00000000,0x00000000,0x00000000 str_len=0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post1b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := pad_threadEntry_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 osViGetCurrentLine=0x00000000 Functor_call_00069C94=0x00000000,0x00000000,0x00000000 str_len=0x00000000,0x00000000,0x00000000
 build/src/game_libs/game_libs_post2b_e.c.o build/non_matching/src/game_libs/game_libs_post2b_e.c.o: REPLACE_FUNC_BODY := gl_osStartThread=$(GAMELIBS_74C04_DONOR)
 build/src/game_libs/game_libs_post1c.c.o build/non_matching/src/game_libs/game_libs_post1c.c.o: REPLACE_FUNC_BODY := gl___osResetGlobalIntMask=$(GAMELIBS_70634_DONOR) __osViInit=$(GAMELIBS_70B04_DONOR) __osViSwapContext=$(GAMELIBS_70C44_DONOR) guOrthoF=$(GAMELIBS_70694_DONOR) guOrtho=$(GAMELIBS_70694_DONOR) guMtxIdentF=$(GAMELIBS_70954_DONOR) guMtxL2F=$(GAMELIBS_70A14_DONOR) guMtxF2L=$(GAMELIBS_70854_DONOR)
 # 73904/73E74 = Plauger libc _Genld/_Ldtob (xldtob.c verbatim), ONE IDO
@@ -4070,16 +4070,16 @@ build/non_matching/src/match_imports/sys_fatal.c.o: src/match_imports/sys_fatal.
 	$(ASM_PROC) -O2 $< > build/non_matching/$<
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) -I include/match_imports $(CPPFLAGS) -DNON_MATCHING -o $@ build/non_matching/$<
 	$(ASM_PROC) -O2 $< --post-process $@ --assembler "$(AS) $(ASFLAGS)" --asm-prelude $(ASM_PRELUDE)
-build/src/match_imports/gl_func_00066264.c.o: src/match_imports/gl_func_00066264.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/fs_readBytes_00066264.c.o: src/match_imports/fs_readBytes_00066264.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_00066264.c.o: src/match_imports/gl_func_00066264.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/fs_readBytes_00066264.c.o: src/match_imports/fs_readBytes_00066264.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_00066AF0.c.o: src/match_imports/gl_func_00066AF0.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/boot_checkStacks_00066AF0.c.o: src/match_imports/boot_checkStacks_00066AF0.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_00066AF0.c.o: src/match_imports/gl_func_00066AF0.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o: src/match_imports/boot_checkStacks_00066AF0.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_00066B64.c.o: src/match_imports/gl_func_00066B64.c src/match_imports/context_game_libs_post1b.h
@@ -4094,22 +4094,22 @@ build/src/match_imports/gl_func_000671E4.c.o: src/match_imports/gl_func_000671E4
 build/non_matching/src/match_imports/gl_func_000671E4.c.o: src/match_imports/gl_func_000671E4.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_00068C14.c.o: src/match_imports/gl_func_00068C14.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_00068C14.c.o: src/match_imports/gl_func_00068C14.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_000693A4.c.o: src/match_imports/gl_func_000693A4.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_000693A4.c.o: src/match_imports/gl_func_000693A4.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/SkinMgr_update.c.o: src/match_imports/SkinMgr_update.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_000697C4.c.o: src/match_imports/gl_func_000697C4.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/SkinMgr_update.c.o: src/match_imports/SkinMgr_update.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/SnowChaseActorLook_update.c.o: src/match_imports/SnowChaseActorLook_update.c src/match_imports/context_game_uso.h
@@ -4636,18 +4636,18 @@ build/src/match_imports/sys_fatal.c.o.linked.elf: build/src/match_imports/sys_fa
 build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf: build/non_matching/src/match_imports/sys_fatal.c.o scripts/match-origins-sys_fatal-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-sys_fatal-nm.ld -e sys_fatal -o $@ $@.stripped.o
-build/src/match_imports/gl_func_00066264.c.o.linked.elf: build/src/match_imports/gl_func_00066264.c.o scripts/match-origins-gl_func_00066264.ld
+build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf: build/src/match_imports/fs_readBytes_00066264.c.o scripts/match-origins-fs_readBytes_00066264.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066264.ld -e gl_func_00066264 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00066264.c.o scripts/match-origins-gl_func_00066264-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-fs_readBytes_00066264.ld -e fs_readBytes_00066264 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf: build/non_matching/src/match_imports/fs_readBytes_00066264.c.o scripts/match-origins-fs_readBytes_00066264-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066264-nm.ld -e gl_func_00066264 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_00066AF0.c.o.linked.elf: build/src/match_imports/gl_func_00066AF0.c.o scripts/match-origins-gl_func_00066AF0.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-fs_readBytes_00066264-nm.ld -e fs_readBytes_00066264 -o $@ $@.stripped.o
+build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf: build/src/match_imports/boot_checkStacks_00066AF0.c.o scripts/match-origins-boot_checkStacks_00066AF0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066AF0.ld -e gl_func_00066AF0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00066AF0.c.o scripts/match-origins-gl_func_00066AF0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-boot_checkStacks_00066AF0.ld -e boot_checkStacks_00066AF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf: build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o scripts/match-origins-boot_checkStacks_00066AF0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066AF0-nm.ld -e gl_func_00066AF0 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-boot_checkStacks_00066AF0-nm.ld -e boot_checkStacks_00066AF0 -o $@ $@.stripped.o
 build/src/match_imports/gl_func_00066B64.c.o.linked.elf: build/src/match_imports/gl_func_00066B64.c.o scripts/match-origins-gl_func_00066B64.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00066B64.ld -e gl_func_00066B64 -o $@ $@.stripped.o
@@ -4660,24 +4660,24 @@ build/src/match_imports/gl_func_000671E4.c.o.linked.elf: build/src/match_imports
 build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000671E4.c.o scripts/match-origins-gl_func_000671E4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000671E4-nm.ld -e gl_func_000671E4 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_00068C14.c.o.linked.elf: build/src/match_imports/gl_func_00068C14.c.o scripts/match-origins-gl_func_00068C14.ld
+build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o scripts/match-origins-skin_cmdSkinMgr_00068C14.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00068C14.ld -e gl_func_00068C14 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00068C14.c.o scripts/match-origins-gl_func_00068C14-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr_00068C14.ld -e skin_cmdSkinMgr_00068C14 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o scripts/match-origins-skin_cmdSkinMgr_00068C14-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00068C14-nm.ld -e gl_func_00068C14 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_000693A4.c.o.linked.elf: build/src/match_imports/gl_func_000693A4.c.o scripts/match-origins-gl_func_000693A4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr_00068C14-nm.ld -e skin_cmdSkinMgr_00068C14 -o $@ $@.stripped.o
+build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o scripts/match-origins-SkinMgr_skinVerts_000693A4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000693A4.ld -e gl_func_000693A4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000693A4.c.o scripts/match-origins-gl_func_000693A4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_skinVerts_000693A4.ld -e SkinMgr_skinVerts_000693A4 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o scripts/match-origins-SkinMgr_skinVerts_000693A4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000693A4-nm.ld -e gl_func_000693A4 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/src/match_imports/gl_func_000697C4.c.o scripts/match-origins-gl_func_000697C4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_skinVerts_000693A4-nm.ld -e SkinMgr_skinVerts_000693A4 -o $@ $@.stripped.o
+build/src/match_imports/SkinMgr_update.c.o.linked.elf: build/src/match_imports/SkinMgr_update.c.o scripts/match-origins-SkinMgr_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000697C4.ld -e gl_func_000697C4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o scripts/match-origins-gl_func_000697C4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_update.ld -e SkinMgr_update -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf: build/non_matching/src/match_imports/SkinMgr_update.c.o scripts/match-origins-SkinMgr_update-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000697C4-nm.ld -e gl_func_000697C4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_update-nm.ld -e SkinMgr_update -o $@ $@.stripped.o
 build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf: build/src/match_imports/SnowChaseActorLook_update.c.o scripts/match-origins-SnowChaseActorLook_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowChaseActorLook_update.ld -e SnowChaseActorLook_update -o $@ $@.stripped.o
@@ -5080,14 +5080,14 @@ build/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf: build/src/match_impo
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-sys_fatal.json $@
 build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf scripts/match-bindings-sys_fatal-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-sys_fatal-nm.json $@
-build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066264.c.o.linked.elf scripts/match-bindings-gl_func_00066264.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066264.json $@
-build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf scripts/match-bindings-gl_func_00066264-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066264-nm.json $@
-build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066AF0.c.o.linked.elf scripts/match-bindings-gl_func_00066AF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066AF0.json $@
-build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf scripts/match-bindings-gl_func_00066AF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066AF0-nm.json $@
+build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf: build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf scripts/match-bindings-fs_readBytes_00066264.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-fs_readBytes_00066264.json $@
+build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf scripts/match-bindings-fs_readBytes_00066264-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-fs_readBytes_00066264-nm.json $@
+build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf: build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf scripts/match-bindings-boot_checkStacks_00066AF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-boot_checkStacks_00066AF0.json $@
+build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf scripts/match-bindings-boot_checkStacks_00066AF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-boot_checkStacks_00066AF0-nm.json $@
 build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00066B64.c.o.linked.elf scripts/match-bindings-gl_func_00066B64.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00066B64.json $@
 build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf scripts/match-bindings-gl_func_00066B64-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5096,18 +5096,18 @@ build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: build/src/mat
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000671E4.json $@
 build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf scripts/match-bindings-gl_func_000671E4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000671E4-nm.json $@
-build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00068C14.c.o.linked.elf scripts/match-bindings-gl_func_00068C14.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00068C14.json $@
-build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf scripts/match-bindings-gl_func_00068C14-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00068C14-nm.json $@
-build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000693A4.c.o.linked.elf scripts/match-bindings-gl_func_000693A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000693A4.json $@
-build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf scripts/match-bindings-gl_func_000693A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000693A4-nm.json $@
-build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_000697C4.c.o.linked.elf scripts/match-bindings-gl_func_000697C4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4.json $@
-build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000697C4-nm.json $@
+build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr_00068C14.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr_00068C14.json $@
+build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json $@
+build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf scripts/match-bindings-SkinMgr_skinVerts_000693A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_skinVerts_000693A4.json $@
+build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json $@
+build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: build/src/match_imports/SkinMgr_update.c.o.linked.elf scripts/match-bindings-SkinMgr_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_update.json $@
+build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf scripts/match-bindings-SkinMgr_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_update-nm.json $@
 build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf scripts/match-bindings-SnowChaseActorLook_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowChaseActorLook_update.json $@
 build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf scripts/match-bindings-SnowChaseActorLook_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5458,14 +5458,14 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_fatal
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/sys_fatal.c scripts/match-bindings-sys_fatal.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_fatal=build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/sys_fatal.c scripts/match-bindings-sys_fatal-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066264=build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066264.c scripts/match-bindings-gl_func_00066264.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066264=build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066264.c scripts/match-bindings-gl_func_00066264-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066AF0=build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066AF0.c scripts/match-bindings-gl_func_00066AF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066AF0=build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066AF0.c scripts/match-bindings-gl_func_00066AF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += fs_readBytes_00066264=build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/fs_readBytes_00066264.c scripts/match-bindings-fs_readBytes_00066264.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += fs_readBytes_00066264=build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/fs_readBytes_00066264.c scripts/match-bindings-fs_readBytes_00066264-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += boot_checkStacks_00066AF0=build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/boot_checkStacks_00066AF0.c scripts/match-bindings-boot_checkStacks_00066AF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += boot_checkStacks_00066AF0=build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/boot_checkStacks_00066AF0.c scripts/match-bindings-boot_checkStacks_00066AF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066B64=build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00066B64.c scripts/match-bindings-gl_func_00066B64.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00066B64=build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
@@ -5474,18 +5474,18 @@ build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_0
 build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000671E4.c scripts/match-bindings-gl_func_000671E4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000671E4=build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000671E4.c scripts/match-bindings-gl_func_000671E4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00068C14=build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00068C14.c scripts/match-bindings-gl_func_00068C14.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_00068C14=build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_00068C14.c scripts/match-bindings-gl_func_00068C14-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000693A4=build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000693A4.c scripts/match-bindings-gl_func_000693A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000693A4=build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000693A4.c scripts/match-bindings-gl_func_000693A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000697C4=build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000697C4=build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/gl_func_000697C4.c scripts/match-bindings-gl_func_000697C4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr_00068C14=build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c scripts/match-bindings-skin_cmdSkinMgr_00068C14.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr_00068C14=build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_skinVerts_000693A4=build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c scripts/match-bindings-SkinMgr_skinVerts_000693A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_skinVerts_000693A4=build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_update=build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_update.c scripts/match-bindings-SkinMgr_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_update=build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_update.c scripts/match-bindings-SkinMgr_update-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorLook_update=build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
 build/src/game_uso/game_uso.c.o: src/match_imports/SnowChaseActorLook_update.c scripts/match-bindings-SnowChaseActorLook_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorLook_update=build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
@@ -5864,14 +5864,14 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/sys_fatal.c.o.
 build/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/sys_fatal.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf
+build/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/fs_readBytes_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf
+build/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/boot_checkStacks_00066AF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066B64.c.o.linked.elf.bound.elf
@@ -5880,18 +5880,18 @@ build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000671
 build/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_000697C4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
+build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
+build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
+build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_uso/game_uso.c.o: build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf
 build/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/SnowChaseActorLook_update.c.o.linked.elf.bound.elf

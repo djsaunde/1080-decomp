@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for gl_func_000669B8 = 5-call debug-print
+/* IDO 5.3 -O2 -mips2 donor for boot_reloadMainUso_000669B8 = 5-call debug-print
  * dispatch. PROVEN EXACT 41/41 standalone against the concatenated
  * 0x669AC..0x66A4C stream.
  * BOUNDARY FIX: splat's game_libs_func_000669AC (0xC, no jr ra:
@@ -35,7 +35,7 @@ extern Dbg669 *D_00000000_dbg669;
 extern char D_00000000[];
 extern void gl_func_00000000_print669();
 
-void gl_func_000669B8(void) {
+void boot_reloadMainUso_000669B8(void) {
     int rc;
     Dbg669 *st = D_00000000_dbg669;
 

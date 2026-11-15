@@ -202,7 +202,7 @@ void uso_syncCache(s32 a0, s32 a1) {
 
 /* uso_strcmp: string-difference predicate (0 if equal, 1 if different).
  * EXACT via twin port (2026-10-20, twin-finder.py): structurally identical
- * (1.000) to game_libs_func_00067B04 (post1b, exact 29/29), whose C carries
+ * (1.000) to str_compare_00067B04 (post1b, exact 29/29), whose C carries
  * the two levers the old 18-diff "loop-body CSE cap" lacked: the dead in-guard
  * `q = arg1;` reassignment (q coalesces with c0 in $v0, p takes $v1, plain
  * beq with `move v1,a0` delay instead of beqzl+sltu) and the dead `int r = 0;`
@@ -390,7 +390,7 @@ void fs_initFile(Struct00480Dst* dst, Struct00480Src* src) {
  * epilogue stub" that four callers supposedly jal'd) was one function: the
  * kernel's jal targets are 0x400 above our symbol numbering, so `jal
  * func_80000568` is really a call to uso_strcmp (the string compare,
- * exact twin of game_libs_func_00067B04). func_80000568 stays an absolute
+ * exact twin of str_compare_00067B04). func_80000568 stays an absolute
  * undefined_syms entry for those jals.
  * Levers: `s32 i = 0` initialized at the declaration with a while loop
  * (the pre-loop i*20 and the separate first-name load come from that), and

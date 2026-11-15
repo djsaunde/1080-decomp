@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00064388 (post1b, 128 words), EXACT.
+/* IDO 7.1 NCC (C++) donor for DNode_func_00064388 (post1b, 128 words), EXACT.
  * agent-g run 148 (docs/IDO_CODEGEN.md kit LXXIV): the 5062C V3 class with a
  * by-value assign through set(v), a void operator/=, and a named `float k = s`
  * local in operator* reproduce the frame (176), every home and the FP
@@ -36,7 +36,7 @@ struct Obj {
     V3 v1C;
     V3 v28;
 };
-extern "C" void gl_func_00064388(Obj *o, char *a1, V3 *a2, float a3) {
+extern "C" void DNode_func_00064388(Obj *o, char *a1, V3 *a2, float a3) {
     V3 m;
     V3 &rv = o->v10;
     V3 g;

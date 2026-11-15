@@ -1,7 +1,7 @@
 #include "common.h"
 extern int D_00000000;
 extern int gl_data_00000000;
-extern int gl_func_00062F64();
+extern int AnimPlayer_update();
 extern int gl_data_67470_addr;
 extern int gl_data_6C9F4_devCfg;
 extern char gl_data_BE14_b;

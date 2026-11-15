@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00066EEC (0x198 / 102 words): message-pump
+/* IDO 7.1 NCC (C++) donor for pad_threadLoop_00066EEC (0x198 / 102 words): message-pump
  * loop. osRecvMesg-style receive (mq @+0x11B0, &msg, 1) then a `switch` on the
  * message type with the cases in SOURCE order 0/5/6/1/4/2: edg lowers a switch
  * to a source-order compare chain whose last test is `beq last; nop; b default`
@@ -16,7 +16,7 @@ typedef unsigned char u8;
 typedef short s16;
 extern "C" int func_00000000(...);
 extern "C" int gl_ncc_66eec_phase(int *p) { p[0] = 1; p[1] = 2; return 0; }
-extern "C" void gl_func_00066EEC(char *arg0) {
+extern "C" void pad_threadLoop_00066EEC(char *arg0) {
     s32 i;
     s32 flag;
     u32 *sp54;
