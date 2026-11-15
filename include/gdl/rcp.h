@@ -31,8 +31,9 @@ typedef struct RcpTask {
     /* 0x64 */ s32 unk64;
     /* 0x68 */ s32 unk68;          /* 1 or 2, set with the output buffer */
     /* 0x6C */ s32 unk6C;
-    /* 0x70 */ s32 unk70;
-    /* 0x74 */ s32 unk74;
+    /* 0x70 */ s32 clipShape;      /* PolyShape *: RcpMgr_startTask runs PolyShape_clipToWindow on it */
+    /* 0x74 */ s32 window;         /* ScreenWindow *: its task hooks run (Window_runTaskHooks) and it is
+                                    * the current window (GfxLib +0x254) during the clip */
 } RcpTask;
 
 typedef struct RcpMgr {

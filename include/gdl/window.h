@@ -67,7 +67,8 @@ typedef struct Window {
     /* 0x100 */ s32 unk100;          /* Window_doCommand 109 zeroes it */
     /* 0x104 */ s32 clearFlags;      /* bit 2: clear the Z buffer (with flag 0x2); Window_doCommand 109 */
     /* 0x108 */ s32 displayMask;     /* Window_display: Node_setDisplayMask(displayMask); doCommand 117; 1 by default */
-    /* 0x10C */ s32 unk10C[2];       /* MapProp_display stores two values clamped to 0..127 here */
+    /* 0x10C */ s32 clipRowLo;       /* row range [lo, hi] of row-structured shapes to draw: */
+    /* 0x110 */ s32 clipRowHi;       /* PolyShape_clipRows / clipToWindow; MapProp_display sets it (0..127) */
     /* 0x114 */ s32 unk114;
     /* 0x118 */ s32 unk118;
     /* 0x11C */ s32 nTaskHooks;      /* zeroed at the start of Window_display */

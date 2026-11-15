@@ -24,7 +24,7 @@ struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
 struct Ctx { char pad[0xC]; DLHead *dl; Gfx *at(int i) { if (0) { i = 0; } return &dl->buf[i]; }
     Gfx *at2(int i) { return &dl->buf[i]; } };
-struct GState { char pad[0x10C]; int lo; int hi; };
+struct GState { char pad[0x10C]; int lo; int hi; };  /* ScreenWindow clipRowLo / clipRowHi (window.h) */
 #define GS (*(GState **)(gGfxLib + 0x254)) /* GfxLib current ScreenWindow (Sym 154) */
 #define _SHIFTL(v, s, w) (((u32)(v) & ((1 << (w)) - 1)) << (s))
 #define gDPNoOp(pkt) { Gfx *_g = (Gfx *)(pkt); _g->w0 = _SHIFTL(0xC0, 24, 8); _g->w1 = 0; }

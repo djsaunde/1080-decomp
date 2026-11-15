@@ -14048,7 +14048,7 @@ void PolyShape_clipToWindow_00049308(char *self) {
     for (i = 0; i < *(int *)(self + 0x90); i++) {
         char *rec = (*(char ***)(self + 0x84))[i];
         char *q = *(char **)((char *)&gGfxLib_41820_c + 0x254);
-        if (*(int *)(rec + 0x54) >= *(int *)(q + 0x10C) && *(int *)(rec + 0x50) <= *(int *)(q + 0x110)) {
+        if (*(int *)(rec + 0x54) >= ((Window *)q)->clipRowLo && *(int *)(rec + 0x50) <= ((Window *)q)->clipRowHi) {
             gl_func_00000000(rec);
         }
     }
@@ -16351,8 +16351,8 @@ void RcpTask_init(RcpTask *a0, int a1, int a2) {
     a0->unk58 = a2;
     a0->unk6C = a1;
     a0->unk5C = 0;
-    a0->unk70 = 0;
-    a0->unk74 = 0;
+    a0->clipShape = 0;
+    a0->window = 0;
     a0->task.type = 1;
     a0->task.flags = 0;
     a0->task.ucode_boot = (u64 *)((char *)&D_00000000 + 0x0003EB00);
@@ -16613,14 +16613,14 @@ int RcpMgr_startTask(RcpMgr *self) {
     if ((self->active = self->queue) != 0) {
         gl_func_00000000(self->active, &self->queue);
         c = self->active;
-        if (c->unk74 != 0) {
-            gl_func_00000000(c->unk74);
+        if (c->window != 0) {
+            gl_func_00000000(c->window);                     /* Window_runTaskHooks */
         }
         c = self->active;
-        if (c->unk70 != 0) {
+        if (c->clipShape != 0) {
             g = *(int *)((char *)&gGfxLib + 0x254);
-            *(int *)((char *)&gGfxLib + 0x254) = c->unk74;
-            gl_func_00000000(self->active->unk70);
+            *(int *)((char *)&gGfxLib + 0x254) = c->window;  /* current window = the task's */
+            gl_func_00000000(self->active->clipShape);       /* PolyShape_clipToWindow */
             *(int *)((char *)&gGfxLib + 0x254) = g;
         }
         c = self->active;
