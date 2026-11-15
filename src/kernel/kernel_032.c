@@ -9,7 +9,7 @@ typedef struct {
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; } RmonMsg2;
 
 /* __rmonGetExeName */
-s32 func_80006BD8(RmonMsg2* msg) {
+s32 __rmonListProcesses(RmonMsg2* msg) {
     RmonMsg2* p = msg;
     RmonHdr24 hdr;
     hdr.zeroed = 0;

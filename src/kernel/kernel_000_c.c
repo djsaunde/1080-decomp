@@ -96,22 +96,22 @@ extern UsoSlotGroup D_800182E4;
 
 
 
-/* func_800047E4 merged into func_800047B0 — see kernel_027.c. The
+/* func_800047E4 merged into kdebug_string_to_u32 — see kernel_027.c. The
  * 9-insn body that USED $t2/$t5 from "predecessor" was actually the
  * tail of a single 22-insn unaligned-big-endian-load function that
  * splat mis-split at 0x800047E4. Symbol kept as alt-entry via
  * undefined_syms_auto.txt for direct callers (jal func_800047E4). */
 
-/* func_80004808 / func_8000487C: KMC debugger port helpers, IDO 7.1 -O1
+/* kdebug_send_packet / kdebug_clear_IP6: KMC debugger port helpers, IDO 7.1 -O1
  * (the whole unit is -O1 now; both were -O2 NM 73.0 / 91.1). 4808 sends a
  * one-word packet {cmd:6 = 0xC, len:2, data[3]} to 0xC0000000 (plain
  * `pkt.len = arg1;`, the bitfield store does the masking; pkt declared
  * before i = the -O1 slot order). 487C waits on bit 0x2000 with two plain
  * while loops around the 0xC000000C clear. EXACT 2026-10-20 (agent-g run
  * 112).
- * ===== (old) func_80004808: -O2 double-store / coloring cap (NOT branch-likely) =====
+ * ===== (old) kdebug_send_packet: -O2 double-store / coloring cap (NOT branch-likely) =====
  * CORRECTION 2026-06-23: the older "branch-LIKELY-emission cap" header (below, in
- * spirit) is STALE for func_80004808. The current clean -O2 C body emits REGULAR
+ * spirit) is STALE for kdebug_send_packet. The current clean -O2 C body emits REGULAR
  * beqz/bnez — identical branch TYPE to the target. There is NO branch-likely diff.
  * The real residual is a STRUCTURAL/coloring gap: target = 29 insns, clean -O2 C = 26.
  * The 3 extra target insns form the "double-store" idiom for the sp+0x4 header byte:
@@ -141,7 +141,7 @@ extern UsoSlotGroup D_800182E4;
  * memory round-trip + andi 0xFF reload-truncate); IDO register-caches
  * sp4[0] across the two assigns and emits one store (volatile sp4 forces
  * the round-trip but over-corrects the loop -> 67.6%). */
-void func_80004808(u8 *arg0, u32 arg1) {
+void kdebug_send_packet(u8 *arg0, u32 arg1) {
     struct { u8 cmd : 6; u8 len : 2; u8 data[3]; } pkt;
     u32 i;
 
@@ -169,7 +169,7 @@ void func_80004808(u8 *arg0, u32 arg1) {
  * residual is likely-slot FILL policy (uopt/as1 branch-likely emission),
  * not register coloring or frame slots; the wave's same-name-web/dead-home/
  * ring-burn levers have no purchase. Cap stands on the 2026-07-10 matrix. */
-void func_8000487C(void) {
+void kdebug_clear_IP6(void) {
     while (!(func_80009EA0() & 0x2000)) {
     }
     *(volatile u32 *)0xC000000C = 0;

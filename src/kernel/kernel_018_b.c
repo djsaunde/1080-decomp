@@ -80,15 +80,15 @@ extern OSEventState __osEventStateTab[];
 
 /* func_800066F0 split out to kernel_048.c (-O1) */
 
-/* func_80006720 split out to kernel_049.c (-O1) */
+/* __rmonCopyWords split out to kernel_049.c (-O1) */
 
-/* func_80006754 split out to kernel_047.c (-O1) */
+/* rmon_strcpy split out to kernel_047.c (-O1) */
 
-/* func_80006790 - verified structural decode (kernel, 0x1FC, 127
+/* __rmonReadMem - verified structural decode (kernel, 0x1FC, 127
  * insns, rmon memory-read command handler). rmon family (cf.
- * func_80009584 / func_80007564; __rmonUtilityBuffer /
- * __rmonSendHeader).
- *   s32 func_80006790(RmonMsg *msg) {
+ * __rmonGetVRegs / __rmonListThreads; __rmonUtilityBuffer /
+ * __rmonMaskIdleThreadInts).
+ *   s32 __rmonReadMem(RmonMsg *msg) {
  *       UB *ub = &__rmonUtilityBuffer;
  *       ub->0x4 = msg->0x4;                       // domain
  *       ub->0xC = msg->0xC;                       // type/id echo
@@ -106,7 +106,7 @@ extern OSEventState __osEventStateTab[];
  *           func_800074A0(phys, ...);             // PI read
  *           func_800066F0(ub->payload, ..., n);   // copy out
  *       }
- *       __rmonSendHeader(ub, len, flag);          // ship reply
+ *       __rmonMaskIdleThreadInts(ub, len, flag);          // ship reply
  *       return 0;
  *   }
  * Struct-typing reference: RmonMsg msg - msg->0x4 (4) u8 domain,
@@ -116,7 +116,7 @@ extern OSEventState __osEventStateTab[];
  * (must be < 0x401 / 1024). __rmonUtilityBuffer: ->0x4 domain,
  * ->0x6 (6) u16 cleared, ->0xC status/echo. func_80004B30 =
  * osVirtualToPhysical, func_800074A0 = PI/cart IO read,
- * func_800066F0 = bounded copy, __rmonSendHeader = the shared rmon
+ * func_800066F0 = bounded copy, __rmonMaskIdleThreadInts = the shared rmon
  * emit. The RSP DMEM/IMEM range gate prevents reads outside the
  * SP memory window. Caps <80: rmon buffer build + multi-range
  * sltu validation + osVirtualToPhysical/PI-read + branch-likely +
@@ -141,7 +141,7 @@ extern char __rmonUtilityBuffer;
  * func_80004B30. Then set the reply length (len+0x10), poll 4 bytes of the read
  * token (func_800066F0), send the header, and kick the transfer
  * (func_800074A0(addr, len)). */
-s32 func_80006790(void *arg0) {
+s32 __rmonReadMem(void *arg0) {
     char *p;
     s32 sp38;
     s32 sp34;
@@ -198,7 +198,7 @@ s32 func_80006790(void *arg0) {
 #ifndef FW
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 #endif
-/* rmon memory-write command handler (write sibling of func_80006790). Validate
+/* rmon memory-write command handler (write sibling of __rmonReadMem). Validate
  * the RDRAM address (func_80004B30) / length (<=0x400). For an SP-window address
  * (0x04000000..0x05000000): unaligned single-byte write -> read-modify-write
  * via func_80006A98/func_80006A50 (the byte-merge is an if/else-if/else CHAIN
@@ -218,7 +218,7 @@ extern void func_80006A50(s32, s32);
 extern void func_80006AEC(s32, void *, s32);
 extern void func_800073F8(void *, s32, s32);
 
-s32 func_8000698C(void *sp48) {
+s32 __rmonWriteMem(void *sp48) {
     register void *arg0;
     struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } sp34;
     s32 sp30;

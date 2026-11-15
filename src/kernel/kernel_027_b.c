@@ -7,7 +7,7 @@ extern s32 func_80005120(void*);
 
 /* [RESOLVED 2026-07-10 — cap cracked via |= compound-assign; see the exact
  * body below. Historical characterization retained:]
- * func_800047B0: 22-insn unaligned-big-endian-u32 load from byte array.
+ * kdebug_string_to_u32: 22-insn unaligned-big-endian-u32 load from byte array.
  * Merged 2026-05-14 from 47B0 (13-insn prologue) + 47E4 (9-insn tail)
  * splat fragments. Alt-entry at 47E4 preserved via undefined_syms_auto.txt.
  *
@@ -55,7 +55,7 @@ extern s32 func_80005120(void*);
  * `acc = acc | expr` (canonicalizes rs=new / rt=acc) and from
  * register/volatile-sink hybrids (pin the accumulator). No donor needed:
  * this file is already -O1. */
-u32 func_800047B0(u8 *a0) {
+u32 kdebug_string_to_u32(u8 *a0) {
     u32 v;
     v = (a0[0] & 0xFF) << 24;
     v |= (a0[1] & 0xFF) << 16;

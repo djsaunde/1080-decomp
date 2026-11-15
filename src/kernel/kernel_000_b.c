@@ -91,25 +91,25 @@ extern UsoSlotGroup D_800182E4;
 /* split from kernel_000.c - 2026-06-10 kernel ROM-order relayout */
 
 
-/* func_800029B0 + func_80002A10 split out to kernel_045.c (-O1) */
+/* osPiRawReadIo + k___ull_rshift split out to kernel_045.c (-O1) */
 
-/* func_80002A3C split out to kernel_056.c (-O2 -mips3) */
+/* k___ull_rem split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002A78 split out to kernel_056.c (-O2 -mips3) */
+/* k___ull_div split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002AB4 split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_lshift split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002AE0 split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_rem split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002B1C split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_div split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002B78 split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_mul split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002BA8 split out to kernel_056.c (-O1 -mips3, d-arithmetic helper) */
+/* k___ull_divremi split out to kernel_056.c (-O1 -mips3, d-arithmetic helper) */
 
-/* func_80002C08 split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_mod split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002CA4 split out to kernel_056.c (-O2 -mips3) */
+/* k___ll_rshift split out to kernel_056.c (-O2 -mips3) */
 
 /* bzero = bzero (libultra handwritten libc/bzero.s). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/libc/bzero.s")
@@ -126,20 +126,20 @@ GLOBAL_ASM("src/libultra/os/writebackdcache.s")
 /* __osExceptionPreamble = __osExceptionPreamble (first half), real source in src/libultra/os/exceptasm_preamble.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_preamble.s")
 
-/* func_80002E78 = exception vector stubs + rdb/KMC front end of __osException, real source in src/libultra/os/exceptasm_rdb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* exceptasm_rdbFront = exception vector stubs + rdb/KMC front end of __osException, real source in src/libultra/os/exceptasm_rdb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb.s")
 
-/* func_80002F78 / func_800030D0 merged into func_80002E78.s as alabel
+/* func_80002F78 / func_800030D0 merged into exceptasm_rdbFront.s as alabel
  * alternative entries (2026-08-22): one contiguous handwritten exception/rdb
  * handler stream -- 2E78 falls through into 2F78 (mfc0 tail, no jr ra), 2F78
  * ends with a branch whose DELAY SLOT is 30D0's first insn, and both branch
  * forward into __osException's labels. jal callers (osInitialize,
  * osLeoDiskInit, osCartRomInit) resolve via the global alabel symbols. */
 
-/* func_800031D0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_2.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* exceptasm_rdbStore_part2: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_2.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb_2.s")
 
-/* func_800031E0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_3.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* exceptasm_rdbStore_part3: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_3.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb_3.s")
 
 /* __osException = __osException core (savecontext, interrupt dispatch,
@@ -440,7 +440,7 @@ void __osLeoAbnormalResume(void)
     D_8000A3E0 |= 0x00100401;
 }
 
-/* func_800044CC - kernel PI-event message dispatch (inlined send_mesg from
+/* __osLeoResume - kernel PI-event message dispatch (inlined send_mesg from
  * libultra exceptasm.s). Sends __osEventStateTab[OS_EVENT_PI].message to the
  * registered queue and wakes any blocked thread.
  * Reference: libreultra src/os/exceptasm.s send_mesg / __osPopThread /
@@ -469,7 +469,7 @@ void __osLeoAbnormalResume(void)
  *     a second store, a `register` here recolors to s-regs), `t` as
  *     `register` (colors s0, no slot; frame 0x30 with the 0x20 hole). */
 extern void func_80003E0C(void *, void *);  /* __osEnqueueThread */
-void func_800044CC(void) {
+void __osLeoResume(void) {
     struct { OSMesgQueue *mq_; OSEventState *es_; } v;
     s32 last;
     register void *t;

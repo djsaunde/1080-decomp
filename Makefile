@@ -97,7 +97,7 @@ build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 # 2026-05-27: removed instruction-appending PREFIX_BYTES for game_libs_func_0003ECDC,
-# Mem_listInsert_0005AFB0, kernel func_80007FC8 — all were leading-nop / self-branch
+# Mem_listInsert_0005AFB0, kernel __rmonPanic — all were leading-nop / self-branch
 # instruction-faking that violated the 2026-05-23 no-instruction-forcing-matches policy
 # (per feedback_no_instruction_forcing_matches_policy). USO-header PREFIX_BYTES for
 # n64proc_uso_func_00000000 / h2hproc_uso_func_00000000 above stay (genuine USO segment
@@ -1080,7 +1080,7 @@ build/src/kernel/kernel_029.c.o build/non_matching/src/kernel/kernel_029.c.o: OP
 build/src/kernel/kernel_030.c.o build/non_matching/src/kernel/kernel_030.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_031.c.o build/non_matching/src/kernel/kernel_031.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_031.c.o: TRUNCATE_TEXT := 0x48  # 0x44 content + ROM pad word at 0x802C (2026-06-10 relayout)
-# kernel_031b: file-split holding func_80008030 (compiled at -O2). Per
+# kernel_031b: file-split holding __rmonRCPrunning (compiled at -O2). Per
 # feedback_insn_patch_on_reloc_instructions_breaks_byte_verify.md: skip
 # patching offsets 0x0/0x4 (R_MIPS_HI16/LO16 for D_A4040010); only patch
 # non-reloc offsets 0xC/0x10/0x18/0x20.
@@ -1091,7 +1091,7 @@ build/src/kernel/kernel_033.c.o build/non_matching/src/kernel/kernel_033.c.o: OP
 build/src/kernel/kernel_034.c.o build/non_matching/src/kernel/kernel_034.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_035.c.o build/non_matching/src/kernel/kernel_035.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_036.c.o build/non_matching/src/kernel/kernel_036.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_036.c.o build/non_matching/src/kernel/kernel_036.c.o: TRUNCATE_TEXT := 0xFC  # func_800073DC = __rmonGetTCB is whole here (was clipped to 0x1C + body in kernel_018_e); drop the 4-byte .text align pad
+build/src/kernel/kernel_036.c.o build/non_matching/src/kernel/kernel_036.c.o: TRUNCATE_TEXT := 0xFC  # __rmonGetTCB = __rmonGetTCB is whole here (was clipped to 0x1C + body in kernel_018_e); drop the 4-byte .text align pad
 build/src/kernel/kernel_037.c.o build/non_matching/src/kernel/kernel_037.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_038.c.o build/non_matching/src/kernel/kernel_038.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_039.c.o build/non_matching/src/kernel/kernel_039.c.o: OPT_FLAGS := -O1
@@ -1110,7 +1110,7 @@ build/src/kernel/kernel_049.c.o build/non_matching/src/kernel/kernel_049.c.o: OP
 build/src/kernel/kernel_050.c.o build/non_matching/src/kernel/kernel_050.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_053.c.o build/non_matching/src/kernel/kernel_053.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_054.c.o build/non_matching/src/kernel/kernel_054.c.o: OPT_FLAGS := -O1
-# kernel_022_o1 (func_800087B4 = MIPS insn classifier): IDO 5.3 -O1 island —
+# kernel_022_o1 (rmon_IsJump = MIPS insn classifier): IDO 5.3 -O1 island —
 # 5.3 emits the target's AND-into-temp + copy-back that 7.1 -O1 folds in
 # place. Single-function unit, flipped wholesale (no donor).
 build/src/kernel/kernel_022_o1.c.o build/non_matching/src/kernel/kernel_022_o1.c.o: CC := $(IDO53_DIR)/cc
@@ -1122,7 +1122,7 @@ build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: OP
 build/src/kernel/kernel_006_b.c.o build/non_matching/src/kernel/kernel_006_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c.o: OPT_FLAGS := -O1
 # kernel_000_b: C fns osDestroyThread (osDestroyThread), __osLeoInterrupt/43E4
-# (__osLeoInterrupt/__osLeoAbnormalResume) and func_800044CC (send_mesg), which
+# (__osLeoInterrupt/__osLeoAbnormalResume) and __osLeoResume (send_mesg), which
 # is -O1-shaped (no branch-likely, stack-spilled mq/es). All other fns in this
 # unit are INCLUDE_ASM (raw bytes, opt-independent), so -O1 is safe here.
 build/src/kernel/kernel_000_b.c.o build/non_matching/src/kernel/kernel_000_b.c.o: OPT_FLAGS := -O1
@@ -1144,7 +1144,7 @@ build/src/kernel/kernel_018_d.c.o build/non_matching/src/kernel/kernel_018_d.c.o
 build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_g.c.o build/non_matching/src/kernel/kernel_018_g.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_020_b.c.o build/non_matching/src/kernel/kernel_020_b.c.o: OPT_FLAGS := -O1
-# kernel_020_c (func_80008264 = rmon set-breakpoint): IDO 5.3 -O1 island —
+# kernel_020_c (__rmonSetBreak = rmon set-breakpoint): IDO 5.3 -O1 island —
 # 5.3 emits the target's 4 temp+move $a1 arg copies that 7.1 -O1 folds in
 # place. Single-function unit, flipped wholesale (no donor).
 build/src/kernel/kernel_020_c.c.o build/non_matching/src/kernel/kernel_020_c.c.o: CC := $(IDO53_DIR)/cc
@@ -1172,7 +1172,7 @@ build/src/kernel/kernel_000_c.c.o build/non_matching/src/kernel/kernel_000_c.c.o
 build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c.o: TRUNCATE_TEXT := 0x1D8
 build/src/kernel/kernel_038.c.o build/non_matching/src/kernel/kernel_038.c.o: TRUNCATE_TEXT := 0x140
 build/src/kernel/kernel_017.c.o build/non_matching/src/kernel/kernel_017.c.o: TRUNCATE_TEXT := 0x9C
-# 2026-09-05 func_800066EC/66F0 hoisted-head merge: kernel_018 now holds the whole 0x34 fn (IDO pads .text to 0x40); kernel_048 retired
+# 2026-09-05 __rmonMemcpy/66F0 hoisted-head merge: kernel_018 now holds the whole 0x34 fn (IDO pads .text to 0x40); kernel_048 retired
 build/src/kernel/kernel_018.c.o build/non_matching/src/kernel/kernel_018.c.o: TRUNCATE_TEXT := 0x34
 build/src/kernel/kernel_049.c.o build/non_matching/src/kernel/kernel_049.c.o: TRUNCATE_TEXT := 0x34
 build/src/kernel/kernel_047.c.o build/non_matching/src/kernel/kernel_047.c.o: TRUNCATE_TEXT := 0x3C
@@ -1188,15 +1188,15 @@ build/src/kernel/kernel_018_g.c.o build/non_matching/src/kernel/kernel_018_g.c.o
 build/src/kernel/kernel_030.c.o build/non_matching/src/kernel/kernel_030.c.o: TRUNCATE_TEXT := 0x148
 build/src/kernel/kernel_020_b.c.o build/non_matching/src/kernel/kernel_020_b.c.o: TRUNCATE_TEXT := 0x7C
 build/src/kernel/kernel_020_c.c.o build/non_matching/src/kernel/kernel_020_c.c.o: TRUNCATE_TEXT := 0x254
-# 2026-08-22 func_80008454 (0x44) moved from kernel_022.c into kernel_021.c (merge into func_80008430.s): 0x30+0x44 / 0x360-0x44
+# 2026-08-22 func_80008454 (0x44) moved from kernel_022.c into kernel_021.c (merge into __rmonClearBreak.s): 0x30+0x44 / 0x360-0x44
 build/src/kernel/kernel_021.c.o build/non_matching/src/kernel/kernel_021.c.o: TRUNCATE_TEXT := 0x168
 build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: TRUNCATE_TEXT := 0x228
-# func_8000858C = rmon __rmonGetBranchTarget, IDO 5.3 -O1 donor; its two switch-table refs
-# (.rodata +0 / +0x60) are renamed func_8000858C_rodata by the splice, pinned to 0x8000AA90.
+# __rmonGetBranchTarget = rmon __rmonGetBranchTarget, IDO 5.3 -O1 donor; its two switch-table refs
+# (.rodata +0 / +0x60) are renamed __rmonGetBranchTarget_rodata by the splice, pinned to 0x8000AA90.
 KERNEL022_858C_DONOR := build/src/kernel/kernel_022_ido53_858C.c.o
 build/src/kernel/kernel_022_ido53_858C.c.o build/non_matching/src/kernel/kernel_022_ido53_858C.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_022_ido53_858C.c.o build/non_matching/src/kernel/kernel_022_ido53_858C.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: private REPLACE_FUNC_BODY += func_8000858C=$(KERNEL022_858C_DONOR)
+build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: private REPLACE_FUNC_BODY += __rmonGetBranchTarget=$(KERNEL022_858C_DONOR)
 build/src/kernel/kernel_022.c.o build/non_matching/src/kernel/kernel_022.c.o: $(KERNEL022_858C_DONOR)
 build/src/kernel/kernel_022_o1.c.o build/non_matching/src/kernel/kernel_022_o1.c.o: TRUNCATE_TEXT := 0x94
 build/src/kernel/kernel_041.c.o build/non_matching/src/kernel/kernel_041.c.o: TRUNCATE_TEXT := 0x104
@@ -1209,11 +1209,11 @@ build/src/kernel/kernel_022_e.c.o build/non_matching/src/kernel/kernel_022_e.c.o
 build/src/kernel/kernel_054_b.c.o build/non_matching/src/kernel/kernel_054_b.c.o: TRUNCATE_TEXT := 0x16C
 build/src/kernel/kernel_022_f.c.o build/non_matching/src/kernel/kernel_022_f.c.o: TRUNCATE_TEXT := 0x1C4
 build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: TRUNCATE_TEXT := 0x110
-# func_80009474 = rmon RSP state restore, IDO 5.3 -O1 donor (5.3 gives the target's andi/or temp copy).
+# __rmonSetSRegs = rmon RSP state restore, IDO 5.3 -O1 donor (5.3 gives the target's andi/or temp copy).
 KERNEL054C_9474_DONOR := build/src/kernel/kernel_054_c_ido53_9474.c.o
 build/src/kernel/kernel_054_c_ido53_9474.c.o build/non_matching/src/kernel/kernel_054_c_ido53_9474.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_054_c_ido53_9474.c.o build/non_matching/src/kernel/kernel_054_c_ido53_9474.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: private REPLACE_FUNC_BODY += func_80009474=$(KERNEL054C_9474_DONOR)
+build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: private REPLACE_FUNC_BODY += __rmonSetSRegs=$(KERNEL054C_9474_DONOR)
 build/src/kernel/kernel_054_c.c.o build/non_matching/src/kernel/kernel_054_c.c.o: $(KERNEL054C_9474_DONOR)
 build/src/kernel/kernel_022_g.c.o build/non_matching/src/kernel/kernel_022_g.c.o: TRUNCATE_TEXT := 0x118
 build/src/kernel/kernel_054_d.c.o build/non_matching/src/kernel/kernel_054_d.c.o: TRUNCATE_TEXT := 0xC4
@@ -1266,7 +1266,7 @@ build/src/timproc_uso_b3/timproc_uso_b3.c.o: private SUFFIX_BYTES_FORCE += ParmV
 build/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o: OPT_FLAGS := -O0
-# gl___ull_divremi: byte-identical twin of kernel func_80002BA8 (64-bit
+# gl___ull_divremi: byte-identical twin of kernel k___ull_divremi (64-bit
 # divmod). Needs -O1 -mips3 (ddivu/ld/sd), which game_libs_post1b2c (default
 # -O2 -mips2) can't use TU-wide, so splice the -O1 -mips3 donor's 0x60 body
 # (no relocs) in via REPLACE_FUNC_BODY. Size matches target so TRUNCATE_TEXT
@@ -1364,15 +1364,15 @@ KERNEL008_58C0_DONOR := build/src/kernel/kernel_008_o1_58C0.c.o
 # osEPiRawWriteIo = libultra osEPiRawWriteIo (spans former 9AB0+9B60 fragments):
 # baked-constant IO_REG donor, proven exact 100/100 standalone (see header).
 KERNEL024_9AB0_DONOR := build/src/kernel/kernel_024_o1_9AB0.c.o
-# func_80007564 = rmon thread-list handler: IDO 5.3 -O1 island inside the
+# __rmonListThreads = rmon thread-list handler: IDO 5.3 -O1 island inside the
 # 7.1 -O1 kernel_018_f unit (7.1 folds the tail sll with no temp - 1 insn
 # short; 5.3 emits the target's sll-temp+move). Proven 77/77 standalone.
 KERNEL018F_7564_DONOR := build/src/kernel/kernel_018_f_ido53_7564.c.o
-# func_800070A0 = rmon word-streamer: IDO 5.3 -O1 island inside the 7.1 -O1
+# __rmonSendData = rmon word-streamer: IDO 5.3 -O1 island inside the 7.1 -O1
 # kernel_018_d unit (int* post-increment materializes old-p; 7.1 folds -4
 # in place - 6-word permuter-immune residual was version-specific).
 KERNEL018D_70A0_DONOR := build/src/kernel/kernel_018_d_ido53_70A0.c.o
-# func_8000698C = rmon memory-write handler: IDO 5.3 -O1 island inside the
+# __rmonWriteMem = rmon memory-write handler: IDO 5.3 -O1 island inside the
 # 7.1 -O1 kernel_018_b unit (deferred prologue `or s0,t6` commit +
 # register-var dead-home frame map; 7.1 folds the param load into s0 and
 # top-flushes the locals +4). Proven 147/147 standalone.
@@ -1676,17 +1676,17 @@ build/src/kernel/kernel_010.c.o: TRUNCATE_TEXT := 0x4A0
 build/non_matching/src/kernel/kernel_010.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x4A0
 build/src/kernel/kernel_018_f_ido53_7564.c.o build/non_matching/src/kernel/kernel_018_f_ido53_7564.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_018_f_ido53_7564.c.o build/non_matching/src/kernel/kernel_018_f_ido53_7564.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: REPLACE_FUNC_BODY := func_80007564=$(KERNEL018F_7564_DONOR)
+build/src/kernel/kernel_018_f.c.o build/non_matching/src/kernel/kernel_018_f.c.o: REPLACE_FUNC_BODY := __rmonListThreads=$(KERNEL018F_7564_DONOR)
 build/src/kernel/kernel_018_d_ido53_70A0.c.o build/non_matching/src/kernel/kernel_018_d_ido53_70A0.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_018_d_ido53_70A0.c.o build/non_matching/src/kernel/kernel_018_d_ido53_70A0.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_018_d.c.o build/non_matching/src/kernel/kernel_018_d.c.o: REPLACE_FUNC_BODY := func_800070A0=$(KERNEL018D_70A0_DONOR)
+build/src/kernel/kernel_018_d.c.o build/non_matching/src/kernel/kernel_018_d.c.o: REPLACE_FUNC_BODY := __rmonSendData=$(KERNEL018D_70A0_DONOR)
 build/src/kernel/kernel_018_b_ido53_698C.c.o build/non_matching/src/kernel/kernel_018_b_ido53_698C.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_018_b_ido53_698C.c.o build/non_matching/src/kernel/kernel_018_b_ido53_698C.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o: REPLACE_FUNC_BODY := func_8000698C=$(KERNEL018B_698C_DONOR)
+build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o: REPLACE_FUNC_BODY := __rmonWriteMem=$(KERNEL018B_698C_DONOR)
 build/src/kernel/kernel_006_o1_5520.c.o build/non_matching/src/kernel/kernel_006_o1_5520.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: REPLACE_FUNC_BODY := osCreatePiManager=$(KERNEL006_5520_DONOR)
 # kernel_006: the 5520 host C body is sized to 0x1EC (slot 0x1CC + 0x20) so
-# the splice shifts func_800056EC by exactly 0x20 and keeps as1's 32-byte
+# the splice shifts pimgr_ramromMain by exactly 0x20 and keeps as1's 32-byte
 # alignment of its dead epilogue. .text is 0x2E0 after the splice (ROM-true:
 # __osPiCreateAccessQueue now starts kernel_006_b at 0x80005800), no truncation needed.
 build/src/kernel/kernel_008_o1_58C0.c.o build/non_matching/src/kernel/kernel_008_o1_58C0.c.o: OPT_FLAGS := -O1
@@ -1699,10 +1699,10 @@ build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: TR
 # kernel_000 tail: C-body path leaves a 4-byte alignment residue after the
 # func_800029A0_pad block (.text 0x29B4 vs ROM-true 0x29B0) — trim it.
 # uso_unbindImports (exact C, 0x7C) + the two all-zero alignment words before the 16-aligned
-# handwritten func_800023E0 (the INCLUDE_ASM .s carried them: 0x84).
+# handwritten uso_decodeYay0 (the INCLUDE_ASM .s carried them: 0x84).
 build/src/kernel/kernel_000.c.o: private SUFFIX_BYTES_FORCE := uso_unbindImports=0x00000000,0x00000000
 build/non_matching/src/kernel/kernel_000.c.o: private NON_MATCHING_SUFFIX_BYTES_FORCE := uso_unbindImports=0x00000000,0x00000000
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private TRUNCATE_TEXT := 0x2900  # was 0x29B0 before the entry stub + func_80000060 (0xB0) moved to kernel_000_entry.c
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private TRUNCATE_TEXT := 0x2900  # was 0x29B0 before the entry stub + kernel_boot (0xB0) moved to kernel_000_entry.c
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_o1_6DA74.c.o build/non_matching/src/game_libs/game_libs_o1_6DA74.c.o: OPT_FLAGS := -O1
@@ -4178,16 +4178,16 @@ build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o: src/match_imports/
 build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c src/match_imports/context_h2hproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_800000B0.c.o: src/match_imports/func_800000B0.c src/match_imports/context_kernel_000.h
+build/src/match_imports/uso_alloc.c.o: src/match_imports/uso_alloc.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_800000B0.c.o: src/match_imports/func_800000B0.c src/match_imports/context_kernel_000.h
+build/non_matching/src/match_imports/uso_alloc.c.o: src/match_imports/uso_alloc.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src/match_imports/context_kernel_000.h
+build/src/match_imports/uso_bindLocalSyms.c.o: src/match_imports/uso_bindLocalSyms.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_800021A4.c.o: src/match_imports/func_800021A4.c src/match_imports/context_kernel_000.h
+build/non_matching/src/match_imports/uso_bindLocalSyms.c.o: src/match_imports/uso_bindLocalSyms.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c src/match_imports/context_mgrproc_uso.h
@@ -4744,18 +4744,18 @@ build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf: build/s
 build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o scripts/match-origins-h2h_WinsDisplay_display_00001360-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-h2h_WinsDisplay_display_00001360-nm.ld -e h2h_WinsDisplay_display_00001360 -o $@ $@.stripped.o
-build/src/match_imports/func_800000B0.c.o.linked.elf: build/src/match_imports/func_800000B0.c.o scripts/match-origins-func_800000B0.ld
+build/src/match_imports/uso_alloc.c.o.linked.elf: build/src/match_imports/uso_alloc.c.o scripts/match-origins-uso_alloc.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800000B0.ld -e func_800000B0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf: build/non_matching/src/match_imports/func_800000B0.c.o scripts/match-origins-func_800000B0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-uso_alloc.ld -e uso_alloc -o $@ $@.stripped.o
+build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf: build/non_matching/src/match_imports/uso_alloc.c.o scripts/match-origins-uso_alloc-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800000B0-nm.ld -e func_800000B0 -o $@ $@.stripped.o
-build/src/match_imports/func_800021A4.c.o.linked.elf: build/src/match_imports/func_800021A4.c.o scripts/match-origins-func_800021A4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-uso_alloc-nm.ld -e uso_alloc -o $@ $@.stripped.o
+build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf: build/src/match_imports/uso_bindLocalSyms.c.o scripts/match-origins-uso_bindLocalSyms.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800021A4.ld -e func_800021A4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf: build/non_matching/src/match_imports/func_800021A4.c.o scripts/match-origins-func_800021A4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-uso_bindLocalSyms.ld -e uso_bindLocalSyms -o $@ $@.stripped.o
+build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o scripts/match-origins-uso_bindLocalSyms-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_800021A4-nm.ld -e func_800021A4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-uso_bindLocalSyms-nm.ld -e uso_bindLocalSyms -o $@ $@.stripped.o
 build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld -e MGRRaceProcess_drawOverlay_00001C90 -o $@ $@.stripped.o
@@ -5152,14 +5152,14 @@ build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.el
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_WinsDisplay_display_00001360.json $@
 build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json $@
-build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800000B0.json $@
-build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf scripts/match-bindings-func_800000B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800000B0-nm.json $@
-build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/src/match_imports/func_800021A4.c.o.linked.elf scripts/match-bindings-func_800021A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4.json $@
-build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_800021A4-nm.json $@
+build/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf: build/src/match_imports/uso_alloc.c.o.linked.elf scripts/match-bindings-uso_alloc.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_alloc.json $@
+build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf scripts/match-bindings-uso_alloc-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_alloc-nm.json $@
+build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf scripts/match-bindings-uso_bindLocalSyms.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_bindLocalSyms.json $@
+build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf scripts/match-bindings-uso_bindLocalSyms-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_bindLocalSyms-nm.json $@
 build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json $@
 build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5555,14 +5555,14 @@ build/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_WinsDisp
 build/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c scripts/match-bindings-h2h_WinsDisplay_display_00001360.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: private REPLACE_FUNC_BODY += h2h_WinsDisplay_display_00001360=build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: src/match_imports/h2h_WinsDisplay_display_00001360.c scripts/match-bindings-h2h_WinsDisplay_display_00001360-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
-build/src/kernel/kernel_000.c.o: src/match_imports/func_800000B0.c scripts/match-bindings-func_800000B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800000B0=build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
-build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/func_800000B0.c scripts/match-bindings-func_800000B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
-build/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_800021A4=build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
-build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/func_800021A4.c scripts/match-bindings-func_800021A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_alloc=build/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf
+build/src/kernel/kernel_000.c.o: src/match_imports/uso_alloc.c scripts/match-bindings-uso_alloc.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_alloc=build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf
+build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/uso_alloc.c scripts/match-bindings-uso_alloc-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_bindLocalSyms=build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
+build/src/kernel/kernel_000.c.o: src/match_imports/uso_bindLocalSyms.c scripts/match-bindings-uso_bindLocalSyms.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_bindLocalSyms=build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
+build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/uso_bindLocalSyms.c scripts/match-bindings-uso_bindLocalSyms-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
 build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
@@ -5936,14 +5936,14 @@ build/src/h2hproc_uso/h2hproc_uso.c.o: build/src/match_imports/h2h_WinsDisplay_d
 build/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/h2h_WinsDisplay_display_00001360.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
-build/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_800000B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/kernel/kernel_000.c.o: build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
-build/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_800021A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/kernel/kernel_000.c.o: build/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf
+build/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/uso_alloc.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/kernel/kernel_000.c.o: build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
+build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
 build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf

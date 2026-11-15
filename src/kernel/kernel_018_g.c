@@ -86,13 +86,13 @@ extern OSEventState __osEventStateTab[];
 
 
 /* func_80007A98 (old head of this unit) was the body of __rmonStopThread;
- * merged into func_800079F4 in kernel_034.c (C, exact). */
+ * merged into __rmonStopThread in kernel_034.c (C, exact). */
 
-/* func_80007B3C - verified structural decode (kernel, 0x294, 165
+/* __rmonRunThread - verified structural decode (kernel, 0x294, 165
  * insns, rmon breakpoint / thread-control command handler). rmon
- * family (cf. func_80007564 / func_80009584; __rmonRcpAtBreak,
- * func_800073F8 = __rmonSendHeader, func_80009C30 = thread list).
- *   s32 func_80007B3C(RmonMsg *msg) {
+ * family (cf. __rmonListThreads / __rmonGetVRegs; __rmonRcpAtBreak,
+ * func_800073F8 = __rmonMaskIdleThreadInts, func_80009C30 = thread list).
+ *   s32 __rmonRunThread(RmonMsg *msg) {
  *       switch (msg->0x9) {                        // command kind
  *       case 0:                                    // set/arm break
  *           t = func_80009C30();                   // thread head
@@ -106,7 +106,7 @@ extern OSEventState __osEventStateTab[];
  *           if (msg->0x10 & 0x2)                    // opt arg
  *               t->0x11C = msg->0x14;
  *           ... (program RCP/HW break via func_80006A50/_80006A98,
- *                __rmonRcpAtBreak; __rmonSendHeader reply) ...
+ *                __rmonRcpAtBreak; __rmonMaskIdleThreadInts reply) ...
  *           break;
  *       case 1: ...                                 // continue/clear
  *       default: ...
@@ -122,7 +122,7 @@ extern OSEventState __osEventStateTab[];
  * 0x14 (20) thread id, node->0x11C (284) = a programmable break
  * value. Returns -2 (no such thread) / -4 (wrong state). Programs
  * the RCP/CPU breakpoint via func_80006A50/func_80006A98 +
- * __rmonRcpAtBreak, then __rmonSendHeader (func_800073F8). MATCHED
+ * __rmonRcpAtBreak, then __rmonMaskIdleThreadInts (func_800073F8). MATCHED
  * byte-exact: cmd/var_s0/var_s1 pinned to s2/s0/s1 via register
  * hints + decl-order (buf/header/sp94 layout), shared SendHeader
  * epilogue (case 0 -> var_s1=1 -> wake), loop compare operand-order
@@ -150,7 +150,7 @@ extern u8 __rmonRcpAtBreak;
  * RCP single-step - arm/disarm the RCP break (func_80006A50 / func_8000898C /
  * __rmonRcpAtBreak), ack, and if stepping set the temp break
  * (func_80007A98 -> func_80008D0C -> 0x4C reply). default: -4. */
-s32 func_80007B3C(void *arg0) {
+s32 __rmonRunThread(void *arg0) {
     extern s32 func_80008430();
     extern void func_80007A98();
     extern void func_800073F8();

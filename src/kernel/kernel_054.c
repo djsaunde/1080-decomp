@@ -52,9 +52,9 @@ typedef struct {
     s32  field_90;
 } RmonPkt98;
 
-/*(piece 1: func_8000894C; pieces b/c/d split out) from kernel_054.c - 2026-06-10 kernel ROM-order relayout */
+/*(piece 1: rmonSendBreakMessage; pieces b/c/d split out) from kernel_054.c - 2026-06-10 kernel ROM-order relayout */
 
-void func_8000894C(s32 arg0, s32 arg1) {
+void rmonSendBreakMessage(s32 arg0, s32 arg1) {
     RmonBuf76B buf;
     register s32 id;
 

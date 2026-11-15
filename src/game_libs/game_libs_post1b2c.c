@@ -69,21 +69,21 @@ u64 gl___ull_rshift(u64 a, u64 b) { return a >> b; }  /* __ull_rshift */
  * of the matched kernel_056.c funcs (0 relocs, self-contained). Real C lives in
  * the donor unit game_libs_mips3_6C740.c (-O2 -mips3 so IDO inlines the
  * d-arithmetic); spliced in via REPLACE_FUNC_BODY because this TU is -mips2. */
-u64 gl___ull_rem(u64 a, u64 b) { return a % b; }   /* __ull_rem  <- func_80002A3C */
+u64 gl___ull_rem(u64 a, u64 b) { return a % b; }   /* __ull_rem  <- k___ull_rem */
 
-u64 gl___ull_div(u64 a, u64 b) { return a / b; }   /* __ull_div  <- func_80002A78 */
+u64 gl___ull_div(u64 a, u64 b) { return a / b; }   /* __ull_div  <- k___ull_div */
 
-u64 gl___ll_lshift(u64 a, u64 b) { return a << b; }  /* __ll_lshift <- func_80002AB4 */
+u64 gl___ll_lshift(u64 a, u64 b) { return a << b; }  /* __ll_lshift <- k___ll_lshift */
 
-/* __ull_rem (duplicate) <- kernel func_80002AE0. TWIN-PORT, donor game_libs_mips3_6C740.c. */
+/* __ull_rem (duplicate) <- kernel k___ll_rem. TWIN-PORT, donor game_libs_mips3_6C740.c. */
 u64 gl___ll_rem(u64 a, u64 b) { return a % b; }
 
-s64 gl___ll_div(s64 a, s64 b) { return a / b; }   /* __ll_div   <- func_80002B1C */
+s64 gl___ll_div(s64 a, s64 b) { return a / b; }   /* __ll_div   <- k___ll_div */
 
-s64 gl___ll_mul(s64 a, s64 b) { return a * b; }   /* __ll_mul   <- func_80002B78 */
+s64 gl___ll_mul(s64 a, s64 b) { return a * b; }   /* __ll_mul   <- k___ll_mul */
 
 /* 64-bit-by-short divmod. LANDED 2026-06-21 as a byte-identical TWIN-PORT of
- * kernel func_80002BA8 (kernel_056): same 0x60-byte ddivu body, no relocs.
+ * kernel k___ull_divremi (kernel_056): same 0x60-byte ddivu body, no relocs.
  * Needs -O1 -mips3, which this -O2/-mips2 TU can't use, so the -O1 -mips3
  * donor (game_libs_o1_6C8AC.c) is spliced in via REPLACE_FUNC_BODY. */
 void gl___ull_divremi(u64 *quot, u64 *rem, u64 val, u16 d) {
@@ -92,7 +92,7 @@ void gl___ull_divremi(u64 *quot, u64 *rem, u64 val, u16 d) {
 }
 
 /* gl___ll_mod: Euclidean (floored) signed 64-bit modulo. LANDED 2026-06-21
- * as a byte-identical TWIN-PORT of the matched kernel func_80002C08 (kernel_056):
+ * as a byte-identical TWIN-PORT of the matched kernel k___ll_mod (kernel_056):
  * identical 0x9c-byte ddiv body, no relocs. Needs -O1 -mips3 (keeps arg-homing,
  * 39 insns; the -O2 standalone form leaf-optimizes to 33 insns), which this
  * -O2/-mips2 TU can't use, so the -O1 -mips3 donor (game_libs_o1_6C8AC.c) is
@@ -106,7 +106,7 @@ long long gl___ll_mod(long long a, long long b) {
 }
 
 
-/* __ll_rshift <- kernel func_80002CA4. TWIN-PORT, donor game_libs_mips3_6C740.c. */
+/* __ll_rshift <- kernel k___ll_rshift. TWIN-PORT, donor game_libs_mips3_6C740.c. */
 s64 gl___ll_rshift(s64 a, s64 b) { return a >> b; }
 
 /* gl___osSetSR = __osSetSR (game_libs libultra copy): real source in src/libultra/game_libs/setsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */

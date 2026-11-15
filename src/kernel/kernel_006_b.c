@@ -3,7 +3,7 @@
 /* __osPiCreateAccessQueue starts its own TU: kernel_006 (osCreatePiManager + the PI
  * event-pump loop) ends at 0x80005800 after IDO's 16-byte .text pad, and
  * this unit's .text starts on the next 32-byte boundary. Moved out of
- * kernel_006.c so func_800056EC's dead-epilogue alignment can match. */
+ * kernel_006.c so pimgr_ramromMain's dead-epilogue alignment can match. */
 
 extern s32 __osPiAccessQueue;
 extern s32 D_8000A480;

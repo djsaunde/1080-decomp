@@ -8,16 +8,16 @@
  * into game_libs_post1b2c.c.o (default -O2 -mips2) via REPLACE_FUNC_BODY, same
  * recipe as the landed gl___ull_divremi divmod. */
 
-unsigned long long gl___ull_rem(unsigned long long a, unsigned long long b) { return a % b; }  /* __ull_rem  <- func_80002A3C */
-unsigned long long gl___ll_rem(unsigned long long a, unsigned long long b) { return a % b; }  /* __ull_rem (dup) <- func_80002AE0 */
-unsigned long long gl___ull_div(unsigned long long a, unsigned long long b) { return a / b; }  /* __ull_div  <- func_80002A78 */
-unsigned long long gl___ll_lshift(unsigned long long a, unsigned long long b) { return a << b; } /* __ll_lshift <- func_80002AB4 */
-long long gl___ll_div(long long a, long long b) { return a / b; }  /* __ll_div <- func_80002B1C */
-long long gl___ll_mul(long long a, long long b) { return a * b; }  /* __ll_mul <- func_80002B78 */
-long long gl___ll_rshift(long long a, long long b) { return a >> b; } /* __ll_rshift <- func_80002CA4 */
+unsigned long long gl___ull_rem(unsigned long long a, unsigned long long b) { return a % b; }  /* __ull_rem  <- k___ull_rem */
+unsigned long long gl___ll_rem(unsigned long long a, unsigned long long b) { return a % b; }  /* __ull_rem (dup) <- k___ll_rem */
+unsigned long long gl___ull_div(unsigned long long a, unsigned long long b) { return a / b; }  /* __ull_div  <- k___ull_div */
+unsigned long long gl___ll_lshift(unsigned long long a, unsigned long long b) { return a << b; } /* __ll_lshift <- k___ll_lshift */
+long long gl___ll_div(long long a, long long b) { return a / b; }  /* __ll_div <- k___ll_div */
+long long gl___ll_mul(long long a, long long b) { return a * b; }  /* __ll_mul <- k___ll_mul */
+long long gl___ll_rshift(long long a, long long b) { return a >> b; } /* __ll_rshift <- k___ll_rshift */
 unsigned long long gl___ull_rshift(unsigned long long a, unsigned long long b) { return a >> b; } /* __ull_rshift (entry 0x6C714; the old "6C710" symbol carried 6C484's inter-object pad word, agent-g 2026-09-09) */
 
-/* gl___ll_mod (Euclidean mod <- func_80002C08) LANDED 2026-06-21 in the
+/* gl___ll_mod (Euclidean mod <- k___ll_mod) LANDED 2026-06-21 in the
  * -O1 -mips3 donor game_libs_o1_6C8AC.c, NOT here: the divergence was OPT_FLAGS
  * (this unit is -O2 → leaf-optimizes to 33 insns), not TU-context. At -O1 -mips3
  * IDO keeps arg-homing → byte-exact 39-insn (0x9c) form. */

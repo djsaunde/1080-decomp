@@ -4,7 +4,7 @@ extern u32 D_80000308;
 
 #define PI_STATUS (*(volatile u32*)0xA4600010)
 
-s32 func_800029B0(u32 arg0, u32* arg1) {
+s32 osPiRawReadIo(u32 arg0, u32* arg1) {
     char pad[4];
     register u32 s;
     s = PI_STATUS;
@@ -15,4 +15,4 @@ s32 func_800029B0(u32 arg0, u32* arg1) {
     return 0;
 }
 
-/* func_80002A10 split out to kernel_056.c (-O1 -mips3, 64-bit helper) */
+/* k___ull_rshift split out to kernel_056.c (-O1 -mips3, 64-bit helper) */

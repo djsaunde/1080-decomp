@@ -9,7 +9,7 @@ extern void func_800073F8(void*, s32, s32);
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
 
 /* __rmonGetRegionCount */
-s32 func_80006C64(RmonMsg* msg) {
+s32 __rmonGetExeName(RmonMsg* msg) {
     RmonMsg* p = msg;
     s32* buf = (s32*)__rmonUtilityBuffer;
     *(u8*)((char*)buf + 4) = p->type;

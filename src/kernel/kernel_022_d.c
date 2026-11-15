@@ -74,7 +74,7 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_80008C30 - MATCHED (byte-exact, -O1). RSP/RDP-style command emit:
+/* rmon_LoadStoreSU - MATCHED (byte-exact, -O1). RSP/RDP-style command emit:
  * a0/a1 carry small signed bitfields (6-bit x from a0, 5-bit y from a1)
  * packed into a 4-byte stack command word (byte0 bits 2-7 = x<<2, byte1
  * bits 0-4 = y), then func_80006A50(0x04001000, word) submits and
@@ -102,7 +102,7 @@ typedef union {
     s32 w;
 } CmdU8C30;
 
-void func_80008C30(int a0, int a1) {
+void rmon_LoadStoreSU(int a0, int a1) {
     CmdU8C30 u;
     u.w = 0;
     u.c.x = (a0 << 26) >> 26;
@@ -111,8 +111,8 @@ void func_80008C30(int a0, int a1) {
     func_80006A50(0x04080000, 0);
 }
 
-/* func_80008CB4: 0x80008CB4-0x80008D44 - MATCHED (byte-exact, -O1). Sibling of
- * func_80008C30; same int-bitfield + union technique. Adds a 3rd field z at
+/* rmon_LoadStoreVU: 0x80008CB4-0x80008D44 - MATCHED (byte-exact, -O1). Sibling of
+ * rmon_LoadStoreSU; same int-bitfield + union technique. Adds a 3rd field z at
  * byte2 bits 3-7 (`int z:5; int b2lo:3`), set to 4 so (4<<3)=0x20 -> the
  * `andi 0xff07; ori 0x20` byte2 RMW matches. */
 typedef struct {
@@ -130,7 +130,7 @@ typedef union {
     s32 w;
 } CmdUCB4;
 
-void func_80008CB4(int a0, int a1) {
+void rmon_LoadStoreVU(int a0, int a1) {
     CmdUCB4 u;
     u.w = 0;
     u.c.x = (a0 << 26) >> 26;

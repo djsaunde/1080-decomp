@@ -70,5 +70,5 @@ if __name__ == '__main__':
     # smoke test: harness executes kernel code (returns garbage until allocator
     # init, but proves fetch+mem+jal work through the TLB)
     v, err = call(mu, 0x800000B0, 0x11, 0x8)
-    print('harness smoke test func_800000B0(0x11,0x8) ->', hex(v) if v is not None else err)
+    print('harness smoke test uso_alloc(0x11,0x8) ->', hex(v) if v is not None else err)
     print('Harness OK. See module docstring for the remaining loader-drive steps.')

@@ -1,5 +1,5 @@
-/* IDO 5.3 -O1 donor for func_80009474 (0x110 / 68 words): rmon RSP state
- * restore -- fail with -4 while the RCP runs (func_80008430), then write the
+/* IDO 5.3 -O1 donor for __rmonSetSRegs (0x110 / 68 words): rmon RSP state
+ * restore -- fail with -4 while the RCP runs (__rmonClearBreak), then write the
  * 32 saved words through func_80006A50 (__rmonWriteWordTo) with a per-word
  * step (func_80009030 / func_80008498), SP_DRAM_ADDR / SP_MEM_ADDR, the PC
  * masked to 12 bits, SP_STATUS fields, and reply with a 16-byte header
@@ -8,7 +8,7 @@
  * The "andi into a pre-coloured a1" cap (target `lw a1; andi t8,a1,0xfff;
  * or a1,t8`) is IDO 5.3: with the mask written inline in the call argument,
  * 5.3 -O1 emits exactly that temp copy (7.1 folds it into `andi a1,a1`).
- * Same compiler as the other rmon donors (func_8000858C). Kept out of
+ * Same compiler as the other rmon donors (__rmonGetBranchTarget). Kept out of
  * C_FILES (Makefile). */
 #include "common.h"
 
@@ -29,7 +29,7 @@ extern void func_80006A50(u32 addr, u32 val);
 extern void func_80009030(s32, s32);
 extern void func_800073F8(void *hdr, s32 size, s32 flags);
 
-s32 func_80009474(s32 *volatile msg) {
+s32 __rmonSetSRegs(s32 *volatile msg) {
     register s32 *p;
     RmonHdr16 hdr;
     register s32 i;

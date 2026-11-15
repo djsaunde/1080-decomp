@@ -7,7 +7,7 @@ extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
 /* __rmonSetBreak */
-void func_800080D0(s32* arg0, s32* arg1) {
+void rmon_SetTempBreakpoint(s32* arg0, s32* arg1) {
     *((s32*)((char*)&rmonbrk_bss_0000 + 4)) = *arg0;
     *arg0 = 0x40D;
     func_800031F0(arg0, 4);
@@ -22,7 +22,7 @@ void func_800080D0(s32* arg0, s32* arg1) {
     }
 }
 
-/* func_8000817C: __rmonClearBreak — inverse of __rmonSetBreak above.
+/* rmon_ClearTempBreakpoint: __rmonClearBreak — inverse of __rmonSetBreak above.
  * 21-insn entry block (0x54) that falls through into func_800081D0
  * (37-insn continuation, 0x94). Combined 0xE8 / 58 insns total.
  *
@@ -56,8 +56,8 @@ void func_800080D0(s32* arg0, s32* arg1) {
  * compiles byte-exact here. TRUNCATE_TEXT=0x194 (Makefile) keeps the whole
  * 0xE8/58-insn body (0x800080D0..0x80008264) instead of clipping at block 1.
  * The mid-function alt-entry label func_800081D0 (jal'd from kernel_018_o2.c
- * and func_8000745C) is exposed in tenshoe.ld as `func_800081D0 =
- * func_8000817C + 0x54` (section-relative so R_MIPS_26 jal relocs resolve).
+ * and __rmonStopUserThreads) is exposed in tenshoe.ld as `func_800081D0 =
+ * rmon_ClearTempBreakpoint + 0x54` (section-relative so R_MIPS_26 jal relocs resolve).
  * kernel_020_c.c no longer owns func_800081D0 — its INCLUDE_ASM fragment was
  * removed and the orphaned asm/nonmatchings/kernel/func_800081D0.s deleted.
  * Full ROM verified cmp-clean vs baserom.
@@ -74,7 +74,7 @@ void func_800080D0(s32* arg0, s32* arg1) {
  * (instr_b) gives it a separate slot (0x18(sp)) — one diff word. REUSING the
  * single local `instr_a` for both blocks (their lifetimes don't overlap)
  * coalesces to 0x1C(sp), matching the target's `sw t7,0x1C(sp)`. */
-void func_8000817C(void) {
+void rmon_ClearTempBreakpoint(void) {
     s32 instr_a;
 
     if (((s32 *)&rmonbrk_bss_0000)[0] != 0) {

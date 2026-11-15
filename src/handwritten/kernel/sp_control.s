@@ -7,7 +7,7 @@
 #   set intr_break | clr dma_busy... (see kernel_020_b.c); 0x125 = clr sig1 |
 #   clr sstep | clr intr | clr halt. MI_INTR_MASK 2 = clear SP mask.
 
-glabel func_80008054
+glabel __rmonIdleRCP
     # entry 0: wait for SP DMA idle, set status 0x82, wait for halt|broke
     lui     $a0, 0xA404                 # a0 = SP_DMA_BUSY_REG (0xA4040018)
     ori     $a0, $a0, 0x18
@@ -44,4 +44,4 @@ glabel func_80008054
     addiu   $a1, $zero, 0x125
     jr      $ra
      sw     $a1, 0x0($a0)
-endlabel func_80008054
+endlabel __rmonIdleRCP

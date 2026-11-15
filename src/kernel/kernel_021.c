@@ -61,12 +61,12 @@ extern OSEventState __osEventStateTab[];
 
 
 /* __rmonWriteWordTo (unimplemented stub) */
-s32 func_80008424(s32 arg0) {
+s32 __rmonListBreak(s32 arg0) {
     return -1;
 }
 
 
-/* func_80008430 = __rmonClearBreak (libultra rmon/rmonbrk.c), IDO 7.1
+/* __rmonClearBreak = __rmonClearBreak (libultra rmon/rmonbrk.c), IDO 7.1
  * -O1, EXACT. One function [0x8430,0x858C); it used to be four .s pieces
  * across two units (8430+alabel 8454 here, 8498/84AC/84D0 at the head of
  * kernel_022, joined by absolute .L label syms). The jal'd 0x80008454 /
@@ -87,7 +87,7 @@ extern void func_800031F0(void *, s32);
 extern void func_80005350(void *, s32);
 extern void func_800073F8(void *, s32, s32);
 
-s32 func_80008430(ClrBkptRequest *req) {
+s32 __rmonClearBreak(ClrBkptRequest *req) {
     register ClrBkptRequest *request = req;
     register BreakInfo *whichBreak;
     BkptReply reply;

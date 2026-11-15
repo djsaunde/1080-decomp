@@ -1,6 +1,6 @@
 # __osExceptionPreamble (first half) -- libultra handwritten assembly.
 # Copied to the CPU exception vectors; loads the handler address into k0.
-# splat splits it: the jr k0 / nop pair opens func_80002E78
+# splat splits it: the jr k0 / nop pair opens exceptasm_rdbFront
 # (exceptasm_rdb.s). D_80003344 is the handler's runtime address
 # (.Lexc_save_scratch; the kernel image runs 0x400 above its link address).
 

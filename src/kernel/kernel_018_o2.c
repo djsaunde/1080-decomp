@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* kernel_018_o2: carve-out of func_8000745C (rmon thread/request-chain walker).
+/* kernel_018_o2: carve-out of __rmonStopUserThreads (rmon thread/request-chain walker).
  *
  * NOTE: despite the historical "_o2" filename, this function actually builds at
  * -O1 (see OPT_FLAGS override in the Makefile). The target uses register vars in
@@ -26,7 +26,7 @@ extern RmonNode *func_80009C30(void);
  * request (0 < unk4 < 0x80), service it via func_800081D0; returns arg0.
  * arg0 == 0: service every live node in the chain; returns -1.
  * unk4 == -1 is the chain end sentinel; unkC links to the next node. */
-s32 func_8000745C(s32 arg0) {
+s32 __rmonStopUserThreads(s32 arg0) {
     register s32 result;
     register RmonNode *p;
 

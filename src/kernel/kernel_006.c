@@ -134,7 +134,7 @@ void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
 }
 /* (donor bytes replace the body above in the .o; see comment + Makefile)
  * Host-size rule: this placeholder must compile to 0x1EC = slot 0x1CC + 0x20.
- * The splice then moves func_800056EC down by exactly 0x20, which keeps the
+ * The splice then moves pimgr_ramromMain down by exactly 0x20, which keeps the
  * 32-byte alignment as1 gives its unreachable epilogue (the 7 nops before
  * 0x800057E0). The dead `sp24 = 0;` is the one word that makes it 0x1EC. */
 
@@ -152,7 +152,7 @@ extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
  * forever — block on queue A, run handler __osDevMgrMain, poll func_800066F0
  * until it returns non-zero, block on queue B, run handler func_80005C94.
  * 2026-06-04: kernel_006 flipped to -O1 (whole-file, all funcs prefer or are
- * opt-indifferent to -O1): func_800056EC 47->91.3%, osCreatePiManager 68->77%,
+ * opt-indifferent to -O1): pimgr_ramromMain 47->91.3%, osCreatePiManager 68->77%,
  * __osPiCreateAccessQueue stays 100%.
  * 2026-07-10 (44CC lever kit): the "loop-accumulator spill" residual FELL —
  * the accumulator is a LOCAL-STRUCT member (`v.sum`, sp-resident at -O1,
@@ -168,7 +168,7 @@ extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
  * sized 0x1EC so the donor splice shifts this function by exactly 0x20, and
  * __osPiCreateAccessQueue starts a new TU (kernel_006_b.c) at 0x80005800 -- the three
  * zero words after this function's jr are kernel_006's own 16-byte .text pad. */
-void func_800056EC(s32 arg0) {
+void pimgr_ramromMain(s32 arg0) {
     struct { s32 sum; } v;
     s32 sp28;
     register s32 r;

@@ -22,7 +22,7 @@ typedef struct {
  * packet to the local-write register (0xC0000000) if D_8000A490 is set, then fill
  * the __osRdb_IP6 ring buffer (slot = CurWrite*4 + Data) until the source is
  * drained or the ring is full. Returns the number of chars queued. */
-u32 func_800062F0(s32 arg0, u32 arg1, s32 arg2) {
+u32 __osRdbSend(s32 arg0, u32 arg1, s32 arg2) {
     rdbPacket *sp34;
     rdbPacket sp30;
     u32 sp2C;

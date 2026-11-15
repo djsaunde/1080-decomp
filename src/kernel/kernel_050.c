@@ -1,11 +1,11 @@
 #include "common.h"
 
-/* 2026-06-10 kernel-relayout: kernel_051 (func_800050C0), kernel_050
- * (func_80005134), kernel_052 (func_80005184) and kernel_055
- * (func_800051F0) merged into ONE unit in ROM order [0x50C0..0x52C0).
+/* 2026-06-10 kernel-relayout: kernel_051 (__rmonSendFault), kernel_050
+ * (__rmonIOflush), kernel_052 (__rmonIOputw) and kernel_055
+ * (__rmonIOhandler) merged into ONE unit in ROM order [0x50C0..0x52C0).
  * They are one original TU: the functions are back-to-back with NO
  * inter-fn padding (separate .o files would 16-align each), and
- * func_800051F0's unreachable epilogue is 32-byte-aligned by IDO from
+ * __rmonIOhandler's unreachable epilogue is 32-byte-aligned by IDO from
  * the TU-relative offset — it only lands pad-free when the function
  * sits at TU offset 0x130, i.e. after the other three. */
 
@@ -22,7 +22,7 @@ extern s32 func_800066F0(void*, s32, s32);
 /* Receive 0x1B0 bytes into arg0 buffer via repeated func_800066F0 calls.
  * The unused float local (`dummy = 0.0f`) is preserved from the original
  * — IDO emits the mtc1+swc1 even though the value is never read. */
-void func_800050C0(void* arg0) {
+void __rmonSendFault(void* arg0) {
     f32 dummy;
     void* p;
     s32 totalRecv;
@@ -37,7 +37,7 @@ void func_800050C0(void* arg0) {
 
 /* Polls func_800066F0 until it returns a positive value. Used to wait
  * for a single byte of host I/O. */
-void func_80005134(void) {
+void __rmonIOflush(void) {
     s32 totalRecv;
     s32 buf;
     totalRecv = 0;
@@ -48,7 +48,7 @@ void func_80005134(void) {
 }
 
 /* Receive 4 bytes from host I/O into the caller's arg0 stack slot. */
-void func_80005184(s32 arg0) {
+void __rmonIOputw(s32 arg0) {
     s32 totalRecv;
     char* p;
     totalRecv = 0;
@@ -60,7 +60,7 @@ void func_80005184(s32 arg0) {
 }
 
 /* __osRdb_ReadThread — forever-loop reading the debug read buffer. */
-void func_800051F0(void) {
+void __rmonIOhandler(void) {
     s32 total;
     s32 buf;
 

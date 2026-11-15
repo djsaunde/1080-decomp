@@ -54,10 +54,10 @@ typedef struct {
 
 /* split from kernel_054.c - 2026-06-10 kernel ROM-order relayout */
 
-/* NOTE: func_80009148 is defined BEFORE func_800091FC - ROM order
+/* NOTE: __rmonGetFRegisters is defined BEFORE __rmonSetFRegisters - ROM order
  * (0x9144 then 0x91FC); the old file had them reversed. */
 
-s32 func_80009148(RmonMsg91FC* msg) {
+s32 __rmonGetFRegisters(RmonMsg91FC* msg) {
     register RmonMsg91FC* p;
     char pad[8];
     RmonPkt98 pkt;
@@ -83,7 +83,7 @@ s32 func_80009148(RmonMsg91FC* msg) {
 }
 
 
-s32 func_800091FC(RmonMsg91FC* msg) {
+s32 __rmonSetFRegisters(RmonMsg91FC* msg) {
     register RmonMsg91FC* p;
     RmonHdr16 hdr;
     s32* buf;

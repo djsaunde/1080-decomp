@@ -2,8 +2,8 @@
 
 /* kernel_022_o1: -O1 carve-out of the kernel_022 functions that are genuinely
  * -O1 (spill-every-local). The file is otherwise -O2 (the bitfield packers
- * func_80008C30/CB4 and the exact-match func_800092B0 REGRESS at -O1). Carved
- * here: osEPiRawReadIo (PI raw read, 45->85%) and func_800087B4 (MIPS insn
+ * rmon_LoadStoreSU/CB4 and the exact-match rmonGetRcpRegister REGRESS at -O1). Carved
+ * here: osEPiRawReadIo (PI raw read, 45->85%) and rmon_IsJump (MIPS insn
  * classifier, 44->52%). objdiff is per-function so .ld placement is cosmetic.
  * Verified 2026-06-04 via the mixed-opt diagnostic. */
 
@@ -15,8 +15,8 @@
  * 7.1's `andi $a1,$a1` AND-in-place, permuter-immune 24k iters) is the
  * 7.1-only copy-propagation fold — 5.3 -O1 emits the temp+copy-back form
  * from this identical C (3rd crack of the class; see docs/IDO_CODEGEN.md
- * 5.3-vs-7.1 residual-class discriminator, func_80007564/func_80008264). */
-s32 func_800087B4(u32 inst) {
+ * 5.3-vs-7.1 residual-class discriminator, __rmonListThreads/__rmonSetBreak). */
+s32 rmon_IsJump(u32 inst) {
     switch ((inst >> 26) & 0x3F) {
     case 0:
         if (((inst >> 5) & 0x7FFF) == 0 && (inst & 0x3F) == 8) return 1;

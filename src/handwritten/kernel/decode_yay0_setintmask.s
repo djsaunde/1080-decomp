@@ -1,5 +1,5 @@
 # Yay0 decoder + osSetIntMask -- handwritten assembly.
-# splat symbol func_800023E0 spans two original routines:
+# splat symbol uso_decodeYay0 spans two original routines:
 #   0x800023E0  Nintendo's Yay0 decompressor (decode.s; the same routine is
 #               references/papermario/src/os/decode_yay0.s -- addi/add/sub
 #               forms IDO never emits)
@@ -11,7 +11,7 @@
 #   header: +4 decompressed size, +8 link (copy-group) table offset,
 #           +0xC chunk (literal byte) table offset, +0x10 layout bit words
 
-glabel func_800023E0
+glabel uso_decodeYay0
     lw      $a3, 0x8($a0)               # a3 = link table offset
     lw      $t9, 0xC($a0)               # t9 = chunk table offset
     lw      $t8, 0x4($a0)               # t8 = decompressed size
@@ -108,4 +108,4 @@ glabel func_800023E0
     nop
     jr      $ra
      nop
-endlabel func_800023E0
+endlabel uso_decodeYay0

@@ -89,7 +89,7 @@ extern UsoSlotGroup D_80013274;
 extern UsoSlotGroup D_800182E4;
 
 
-/* func_80000000 (entry stub) + func_80000060 (boot main) live in kernel_000_entry.c */
+/* kernel_entrypoint (entry stub) + kernel_boot (boot main) live in kernel_000_entry.c */
 
 extern u32 gUsoHeapCur;
 extern u32 gUsoHeapEnd;
@@ -168,7 +168,7 @@ extern s32 gUsoMemUsed;
  *   `$t9/$t1/$t3` allocation, e.g. `register u32 new_top asm("$25");`, are not
  *   accepted by IDO cfe (`Syntax Error` at `asm`). This lever is unavailable. */
 #ifdef NON_MATCHING
-u32 func_800000B0(u32 size, u32 alignment) {
+u32 uso_alloc(u32 size, u32 alignment) {
     u32 v;   /* old heap top -> $v1, the returned ptr on success */
     u32 r;   /* result: r=v then forced to 0 on OOM, lives in return reg */
 
@@ -188,7 +188,7 @@ u32 func_800000B0(u32 size, u32 alignment) {
     return r;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800000B0);
+INCLUDE_ASM("asm/nonmatchings/kernel", uso_alloc);
 #endif
 
 /* Boot init */
@@ -578,7 +578,7 @@ s32 uso_skip_to_end(FileState *file)
 
 
 /* uso_file_check — always returns 1 (success) */
-s32 func_800007C4(s32 a0, s32 a1) {
+s32 uso_returnOne_800007C4(s32 a0, s32 a1) {
     return 1;
 }
 
@@ -969,10 +969,10 @@ void* uso_getContext(void) {
 }
 
 /* uso_set_callbacks (no-op) */
-void func_800010C0(s32 a0, s32 a1) {
+void uso_nop_800010C0(s32 a0, s32 a1) {
 }
 
-void func_800010CC(s32 a0, ...) {
+void uso_nullPrintf(s32 a0, ...) {
 }
 
 extern s32 D_8000A34C;
@@ -1147,7 +1147,7 @@ void fs_closeFile(s32 arg0) {
 }
 
 /* uso_ret_zero — returns 0.0f */
-float func_8000149C(void) {
+float uso_returnZeroF_8000149C(void) {
     return 0.0f;
 }
 
@@ -1196,7 +1196,7 @@ void uso_init(void) {
 
 
 
-void func_800017B4(void) {
+void uso_nop_800017B4(void) {
 }
 
 /* uso_allocSlot: allocate the first free module slot (in_use byte at +0x98)
@@ -1478,7 +1478,7 @@ s32 uso_loadSections(s32* arg0, void* file) {
 }
 
 
-/* func_800021A4: 43-insn entry-list walker (absorbed func_800021D0 fragment
+/* uso_bindLocalSyms: 43-insn entry-list walker (absorbed func_800021D0 fragment
  * via merge-fragments). objdiff 94.53% (2026-06-23, agent-e) — up from the
  * old ~85% ceiling after a structural rewrite: insn COUNT now exact (43),
  * the comparison constants 2/4/3 are correctly hoisted before the loop, the
@@ -1508,7 +1508,7 @@ s32 uso_loadSections(s32* arg0, void* file) {
  * ifs give it. Left: i/p/count land in a1/v1/a2 instead of v1/a2/a1 (decl
  * order inert, 120 perms), and the t==3 test inverts (permuter 8 min: 96.3
  * only with a junk `s++; s--;`). */
-int func_800021A4(int *a0) {
+int uso_bindLocalSyms(int *a0) {
     RelSym18F0 *syms;
     RelSym18F0 *s;
     s32 i;
@@ -1540,10 +1540,10 @@ int func_800021A4(int *a0) {
     return 0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/kernel", func_800021A4);
+INCLUDE_ASM("asm/nonmatchings/kernel", uso_bindLocalSyms);
 #endif
 
-/* func_800021D0 is now an alabel inside func_800021A4 (merged via splat
+/* func_800021D0 is now an alabel inside uso_bindLocalSyms (merged via splat
  * fragment-merge — the original split-at-0x800021D0 was a splat boundary
  * artifact since 0x800021D0 has no prologue and uses registers set up
  * by the 0x800021A4 prologue). */
@@ -1674,7 +1674,7 @@ int uso_unbindImports(Obj8000235C *o, int id) {
     return 0;
 }
 
-/* func_800023E0 = Yay0 decoder + osSetIntMask (two handwritten routines in one splat symbol), real source in src/handwritten/kernel/decode_yay0_setintmask.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). */
+/* uso_decodeYay0 = Yay0 decoder + osSetIntMask (two handwritten routines in one splat symbol), real source in src/handwritten/kernel/decode_yay0_setintmask.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). */
 GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
 
 /* osInitialize = libultra osInitialize (KMC kernel variant). EXACT via
@@ -1689,7 +1689,7 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
  * (func_80009DF0), reads the clock via osPiRawReadIo(4,..)
  * (__osSetSR); D_8000A3D0 = osClockRate is a u64 (OSTime):
  * `osClockRate = osClockRate * 3 / 4` calls the 64-bit helpers
- * func_80002F78 (__ll_mul) / func_80002E78 (__ll_div); D_8000A3D8 =
+ * func_80002F78 (__ll_mul) / exceptasm_rdbFront (__ll_div); D_8000A3D8 =
  * osViClock by D_80000300 = osTvType; then the KMC debugger hook: if
  * *(u32*)0xBFF00000 == 'KMC\0', copy the 9-word stub at D_80003280 to the
  * general-exception vector, and if the KMC flags word lacks bit 4, copy the
@@ -1809,6 +1809,6 @@ void osInitialize(void) {
 
 
 
-void func_800029A0(void) {
+void kernel_nop_800029A0(void) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/kernel/func_800029A0_pad.s")

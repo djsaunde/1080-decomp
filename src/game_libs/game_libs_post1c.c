@@ -63,7 +63,7 @@ GLOBAL_ASM("src/libultra/game_libs/bcopy.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070244_pad.s")
 
 /* gl___osResetGlobalIntMask = libultra global-int-mask bit-clear. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80006250 (kernel_013) -- NOT
+ * byte-identical TWIN-PORT of matched kernel k___osResetGlobalIntMask (kernel_013) -- NOT
  * the "85.45% 2-global cap" the prior wrap guessed: it is disable-int, AND-NOT
  * the (mask & ~0x401) bits out of ONE global int-mask word, restore-int. The
  * two calls are osDisableInt/osRestoreInt. Real C lives in the donor unit

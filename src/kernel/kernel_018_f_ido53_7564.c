@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for func_80007564 — rmon thread-list command handler
+/* IDO 5.3 -O1 donor for __rmonListThreads — rmon thread-list command handler
  * (__rmonListThreads family; 77 insns, frame 0x30). PROVEN EXACT 77/77
- * (2026-07-10 standalone probe vs asm/nonmatchings/kernel/func_80007564.s;
+ * (2026-07-10 standalone probe vs asm/nonmatchings/kernel/__rmonListThreads.s;
  * only HI16/LO16(__rmonUtilityBuffer) + R_MIPS_26 reloc placeholders differ,
  * resolved at link). The parent unit kernel_018_f.c is IDO 7.1 -O1, which
  * caps 1 insn short: 7.1 folds the tail's `count*4` shift in place
@@ -15,11 +15,11 @@
  * splice). */
 typedef signed int s32;
 
-extern void func_800073F8();        /* __rmonSendHeader */
+extern void func_800073F8();        /* __rmonMaskIdleThreadInts */
 extern char __rmonUtilityBuffer;
 extern char *func_80009C30(void);   /* __osGetActiveQueue */
 
-s32 func_80007564(char *msg) {
+s32 __rmonListThreads(char *msg) {
     int pad;
     char *ub = &__rmonUtilityBuffer;
     register char *m = msg;

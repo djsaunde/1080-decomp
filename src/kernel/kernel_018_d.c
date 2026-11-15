@@ -85,7 +85,7 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_800070A0 - verified structural decode (kernel, 0x120, 72
+/* __rmonSendData - verified structural decode (kernel, 0x120, 72
  * insns, memory-dump / word-stream transmit; rmon-family helper).
  * Struct-typing reference: addr/len are a raw memory range; the
  * routine streams ceil(len/4) 32-bit words out via func_80005584
@@ -95,7 +95,7 @@ extern OSEventState __osEventStateTab[];
  * everything else is a direct lw. A misaligned base forces every
  * word through func_80006AEC (unaligned 4-byte read). func_80005534
  * = end-of-stream flush. (Same rmon memory-inspect family as
- * func_80009584 / the __rmon* handlers.) Caps <80: alignment
+ * __rmonGetVRegs / the __rmon* handlers.) Caps <80: alignment
  * branch + cart-range sltu check + 4 callees + decrement loop with
  * spilled counter/cursor at sp+0x30/0x34. INCLUDE_ASM remains build
  * path (no episode; tautology-trap rule).
@@ -128,7 +128,7 @@ extern void func_80005534(void);
  * separate cursor p + two distinct tmps + `p += 4; func(p - 4)` hoist.
  * NEGATIVE at 5.3: explicit `char *oldp = p; p += 4;` homes oldp (+4 insns,
  * frame 0x40) — only the post-increment expression temp stays register-only. */
-void func_800070A0(char *addr, int len) {
+void __rmonSendData(char *addr, int len) {
     int *p = (int *)addr;
     unsigned int n = ((unsigned int)len + 3) >> 2;
     int tmp;
@@ -169,7 +169,7 @@ extern s32 __rmonMQ;
  * each set bit (2 -> func_80008E08, 4 -> func_80008E38, 8 -> func_80008EA0,
  * 0x10 -> just clear), clearing the bit as it goes; bit 0x20 is a one-shot
  * (clear and continue), otherwise re-loop. */
-void func_800071C0(void) {
+void rmonMain(void) {
     register s32 phantom;
     s32 sp20;
 

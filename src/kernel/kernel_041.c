@@ -5,7 +5,7 @@ extern void func_800084D0(s32, s32);
 extern s32 func_80008BB4(s32);
 
 /* __rmonStepBreak */
-s32 func_80008848(s32 arg0, s32* arg1) {
+s32 __rmonSetSingleStep(s32 arg0, s32* arg1) {
     s32 result = func_8000898C(0, arg0, (s32)arg1);
     if (result & 3) {
         func_800084D0((s32)arg1 + 4, 0);
@@ -40,7 +40,7 @@ typedef struct {
     s32 field_30;
 } RmonInit;
 
-void func_8000890C(RmonInit* p) {
+void __rmonGetExceptionStatus(RmonInit* p) {
     p->field_0C = 1;
     p->field_10 = 2;
     p->field_12 = 0;

@@ -5965,7 +5965,7 @@ void gl___osPiRelAccess(void) {
 }
 
 /* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_800029B0 (kernel_045): read
+ * byte-identical TWIN-PORT of matched kernel osPiRawReadIo (kernel_045): read
  * PI_STATUS once, if busy spin until idle, then read the KSEG1-uncached cart
  * word ((D | devAddr) | 0xA0000000) into *out. The leaf `char pad[4]` frame and
  * the `lui 0xA460; lw 0x10` PI_STATUS form (prior "byte-level cap") come for free

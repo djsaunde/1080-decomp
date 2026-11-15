@@ -65,13 +65,13 @@ extern OSEventState __osEventStateTab[];
 
 
 /* func_80008498 / func_800084AC / func_800084D0 (old head of this unit) were
- * the body of __rmonClearBreak; merged into func_80008430 (kernel_021.c, C,
+ * the body of __rmonClearBreak; merged into __rmonClearBreak (kernel_021.c, C,
  * exact). Their addresses stay absolute undefined_syms entries. */
 
-/* func_8000858C - verified structural decode (kernel, 0x228, 138
+/* __rmonGetBranchTarget - verified structural decode (kernel, 0x228, 138
  * insns, rmon MIPS instruction decoder / branch-target helper).
  * Part of the rmon single-step / breakpoint machinery.
- *   void func_8000858C(s32 mode, void *ctx, void *addr) {
+ *   void __rmonGetBranchTarget(s32 mode, void *ctx, void *addr) {
  *       u32 insn = (mode == 1) ? func_80006A98((u32)addr) // reg rd
  *                              : *(u32*)addr;             // mem rd
  *       u32 op = (insn >> 26) & 0x3F;                     // opcode
@@ -128,6 +128,6 @@ extern OSEventState __osEventStateTab[];
  * in the ROM 0x400 below the absolute addresses (kernel runtime numbering).
  * Body = IDO 5.3 -O1 donor src/kernel/kernel_022_ido53_858C.c (ultralib
  * __rmonGetBranchTarget); this is only the splice placeholder. */
-s32 func_8000858C(s32 method, s32 thread, char *addr) {
+s32 __rmonGetBranchTarget(s32 method, s32 thread, char *addr) {
     return 0;
 }

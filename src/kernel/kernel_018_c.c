@@ -86,6 +86,6 @@ extern OSEventState __osEventStateTab[];
 
 
 /* __rmonWriteWordTo (unimplemented stub) */
-s32 func_80006C58(s32 arg0) {
+s32 __rmonLoadProgram(s32 arg0) {
     return -1;
 }

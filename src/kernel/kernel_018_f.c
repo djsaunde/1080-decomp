@@ -79,9 +79,9 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_80007564 - verified structural decode (kernel, 0x134, rmon
- * thread-list command handler). rmon family (cf. func_8000798C /
- * func_80009584 / func_80007A98; libreultra rmon).
+/* __rmonListThreads - verified structural decode (kernel, 0x134, rmon
+ * thread-list command handler). rmon family (cf. __rmonThreadStatus /
+ * __rmonGetVRegs / func_80007A98; libreultra rmon).
  * Struct-typing reference: __rmonUtilityBuffer (UB) - UB->0x4 (4)
  * u8 domain, UB->0x6 (6) u16 cleared, UB->0xC (12) s32 status/echo
  * (0x3EA = error code when msg->0xC==-1), UB->0x10 (16) u16 entry
@@ -90,9 +90,9 @@ extern OSEventState __osEventStateTab[];
  * request id (-1 = invalid). Thread chain node (from func_80009C30
  * = __osThreadList/queue head): node->0x4 (4) sentinel (-1 = end),
  * node->0xC (12) next, node->0x14 (20) thread id. func_800073F8 =
- * __rmonSendHeader(buf, len = count*4 + 0x14, flag = 1). Caps <80:
+ * __rmonMaskIdleThreadInts(buf, len = count*4 + 0x14, flag = 1). Caps <80:
  * rmon utility-buffer build + thread-chain walk + branch-likely +
- * __rmonSendHeader. INCLUDE_ASM remains build path (no episode;
+ * __rmonMaskIdleThreadInts. INCLUDE_ASM remains build path (no episode;
  * tautology-trap rule).
  * 2026-06-04 (22.9 -> 37.99%): control-flow fix. The old C `goto send`
  * from the msg->0xC==-1 and msg->9==1 arms SKIPPED the `ub->4=msg->4;
@@ -142,8 +142,8 @@ extern void func_800073F8(); /* needed by the C body; split piece lost the chunk
 extern char __rmonUtilityBuffer;
 extern char *func_80009C30(void);
 /* func_800073F8 is forward-declared 0-arg above (fragment stub); cast at
- * call site to its real 3-arg __rmonSendHeader signature. */
-s32 func_80007564(char *msg) {
+ * call site to its real 3-arg __rmonMaskIdleThreadInts signature. */
+s32 __rmonListThreads(char *msg) {
     int pad;
     char *ub = &__rmonUtilityBuffer;
     register char *m = msg;
@@ -205,7 +205,7 @@ extern u8 __rmonRcpAtBreak;
  * that would otherwise yield a homeless temp. Verified across 12+ variants
  * (named/block/register temp, ternary, arg0-reuse, inline, ptr-snapshot,
  * store-then-fixup, RW(&sp18) volatile-addr, non-volatile do-while). The other
- * 6 word-diffs are R_MIPS_26/HI16/LO16 reloc placeholders (func_80008430,
+ * 6 word-diffs are R_MIPS_26/HI16/LO16 reloc placeholders (__rmonClearBreak,
  * func_80006A98, func_80009C30, __rmonRcpAtBreak) that resolve at link. */
 /* EXACT 2026-10-20 (agent-g run 112): the chain node is a plain local (not
  * volatile) walked with a `while (node->unk4 != -1) { if (id match) break;
@@ -214,7 +214,7 @@ extern u8 __rmonRcpAtBreak;
  * then-arm). The two in-function branches to "func_8000785C" in the .s are
  * now a local label (that address is a jal target 0x400 above
  * __rmonStopUserThreads, an absolute undefined_syms entry). */
-s32 func_80007698(s32 arg0, s32 arg1, void *arg2) {
+s32 __rmonGetThreadStatus(s32 arg0, s32 arg1, void *arg2) {
     extern s32 func_80008430();
     s32 sp1C;
     void *sp18;

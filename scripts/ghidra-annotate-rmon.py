@@ -1,5 +1,5 @@
 """Type-annotation workflow on rmon family. Define RmonMsg struct, apply to
-func_80006D0C, decompile to verify, then check sibling.
+__rmonGetRegionCount, decompile to verify, then check sibling.
 """
 import sys
 from pathlib import Path
@@ -44,8 +44,8 @@ def main():
     project = open_project(PROJECT_DIR, "tenshoe", create=False)
     try:
         with program_context(project, "/baserom.z64") as program:
-            f_target = fn(program, "func_80006D0C")
-            f_sibling = fn(program, "func_80006C64")
+            f_target = fn(program, "__rmonGetRegionCount")
+            f_sibling = fn(program, "__rmonGetExeName")
             print(f"BEFORE signatures:")
             print(f"  target:  {show_signature(f_target)}")
             print(f"  sibling: {show_signature(f_sibling)}")
@@ -83,7 +83,7 @@ def main():
                     True,            # force = override existing
                     SourceType.USER_DEFINED,
                 )
-                print(f"  func_80006D0C updated.")
+                print(f"  __rmonGetRegionCount updated.")
             finally:
                 program.endTransaction(tx_id, True)
 
@@ -99,11 +99,11 @@ def main():
             decomp.openProgram(program)
             print()
             print("=" * 70)
-            print("AFTER decompile of func_80006D0C:")
+            print("AFTER decompile of __rmonGetRegionCount:")
             print("=" * 70)
             print(decompile_text(decomp, f_target))
             print("=" * 70)
-            print("AFTER decompile of func_80006C64 (sibling, NOT annotated):")
+            print("AFTER decompile of __rmonGetExeName (sibling, NOT annotated):")
             print("=" * 70)
             print(decompile_text(decomp, f_sibling))
     finally:

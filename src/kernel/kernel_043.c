@@ -3,7 +3,7 @@
 extern s32 func_800066F0(void*, s32, s32);
 
 /* __rmonSendData */
-void func_80006F60(char* buf, s32 size, s32 domain) {
+void k___rmonSendHeader(char* buf, s32 size, s32 domain) {
     s32 totalSent;
     char* p = buf;
 
@@ -22,8 +22,8 @@ extern void __rmonSendHeader(s32*, s32, s32);
 extern void func_80005534(void);
 
 /* writes the 32-bit value arg1 at *arg0, copies 4 bytes from arg1's
- * stack slot via func_800066F0, then __rmonSendHeader + func_80005534. */
-void func_80006FF8(s32* arg0, s32 arg1, s32 arg2) {
+ * stack slot via func_800066F0, then __rmonMaskIdleThreadInts + func_80005534. */
+void __rmonSendReply(s32* arg0, s32 arg1, s32 arg2) {
     char* p;
     s32 totalRecv;
     totalRecv = 0;

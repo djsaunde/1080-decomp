@@ -69,7 +69,7 @@ extern OSEventState __osEventStateTab[];
 
 
 
-void func_80008AA0(void) {
+void __rmonHitCpuFault(void) {
     func_80007760();
     func_8000785C(0);
     func_80008ED0();

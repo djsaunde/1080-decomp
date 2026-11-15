@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* func_80008030: SP idle-check (HALT|BROKE bits clear?). Compiled at -O2,
+/* __rmonRCPrunning: SP idle-check (HALT|BROKE bits clear?). Compiled at -O2,
  * not the surrounding kernel_031.c's -O1 default. Split here to apply
  * file-level OPT_FLAGS := -O2.
  *
@@ -47,5 +47,5 @@
  *    disposition rather than further C grinding. */
 extern u32 D_A4040010;  /* SP_STATUS_REG */
 
-/* func_80008030: handwritten assembly, real source in src/handwritten/kernel/sp_halted.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
+/* __rmonRCPrunning: handwritten assembly, real source in src/handwritten/kernel/sp_halted.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
 GLOBAL_ASM("src/handwritten/kernel/sp_halted.s")

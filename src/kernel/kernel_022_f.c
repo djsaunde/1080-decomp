@@ -34,7 +34,7 @@ extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
 extern void func_80005400(s32, s32);
-extern s32 func_80008430(); /* K&R no-proto: see func_800092B0 note */
+extern s32 func_80008430(); /* K&R no-proto: see rmonGetRcpRegister note */
 extern void func_80009148(s32);
 extern void func_80009030(s32, s32);
 extern void func_80008498(void);
@@ -67,14 +67,14 @@ extern OSEventState __osEventStateTab[];
 /* split from kernel_022.c - 2026-06-10 kernel ROM-order relayout */
 
 
-/* func_80009148 split out to kernel_054.c (-O1, absorbed func_800091F0 fragment) */
+/* __rmonGetFRegisters split out to kernel_054.c (-O1, absorbed func_800091F0 fragment) */
 
-/* func_800091F0 merged into func_80009148 */
+/* func_800091F0 merged into __rmonGetFRegisters */
 
-/* func_800091FC split out to kernel_054.c (-O1) */
+/* __rmonSetFRegisters split out to kernel_054.c (-O1) */
 
 /* rmon execute */
-s32 func_800092B0(s32 a0) {
+s32 rmonGetRcpRegister(s32 a0) {
     s32 result;
     /* 2026-06-10 kernel-relayout: call with NO explicit arg (K&R decl;
      * $a0 still holds `a0` at the call, runtime-identical). Passing the
@@ -92,18 +92,18 @@ s32 func_800092B0(s32 a0) {
     return result;
 }
 
-/* func_80009314 - verified structural decode (kernel, 0x160, rmon
- * register-dump command handler). rmon family (cf. func_80009584 /
- * func_80007564; func_800073F8 = __rmonSendHeader).
+/* __rmonGetSRegs - verified structural decode (kernel, 0x160, rmon
+ * register-dump command handler). rmon family (cf. __rmonGetVRegs /
+ * __rmonListThreads; func_800073F8 = __rmonMaskIdleThreadInts).
  * Struct-typing reference: s0 = RmonMsg (s0->0x4 u8 domain, s0->0xC
- * type - same family layout as func_80007564/func_80009584).
+ * type - same family layout as __rmonListThreads/__rmonGetVRegs).
  * func_80006A98(addr) = a single MMIO/coprocessor register read
  * (addr in the N64 0x0404xxxx RSP/RDP command+status block and
  * 0x04080000 SP PC, plus 0x04000000 RDRAM-config; the +0x04001000
  * applied to the SP read is the DP/PI command-region bias). The
  * 32-iteration loop (func_80009030(0x2B,i) + func_80008498 +
  * func_80006A98(RDRAM)) snapshots a 32-entry register window;
- * 8 fixed RSP/RDP regs follow. Shipped via __rmonSendHeader
+ * 8 fixed RSP/RDP regs follow. Shipped via __rmonMaskIdleThreadInts
  * (func_800073F8), flag 1.
  * rmon stack-buffer build + 32x callee loop + 8 MMIO-read calls.
  * MATCHED byte-exact 2026-06-23 (agent-d): register-pin arg->s0 + loop
@@ -127,7 +127,7 @@ typedef struct RmonRegDump {
     /* 0x10 */ int regs[40];   /* 32 loop entries + 8 fixed */
 } RmonRegDump;                 /* 0xB0 bytes */
 
-s32 func_80009314(char *arg0) {
+s32 __rmonGetSRegs(char *arg0) {
     register char *s0 = arg0;
     RmonRegDump dump;
     register int i;

@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for func_8000698C — rmon memory-write handler (147
+/* IDO 5.3 -O1 donor for __rmonWriteMem — rmon memory-write handler (147
  * insns, frame 0x48). PROVEN EXACT 147/147 (2026-07-10 standalone probe vs
- * asm/nonmatchings/kernel/func_8000698C.s; only R_MIPS_26 jal placeholders
+ * asm/nonmatchings/kernel/__rmonWriteMem.s; only R_MIPS_26 jal placeholders
  * differ, resolved at link). 5th 5.3-vs-7.1 temp-rematerialization crack
  * (7564/8264/87B4/70A0 family). The documented "coloring + frame-layout
  * cap" (deferred `move s0,t6` prologue + slot-offset cascade) decomposes
@@ -39,7 +39,7 @@ extern void func_80006A50(s32, s32);
 extern void func_80006AEC(s32, void *, s32);
 extern void func_800073F8(void *, s32, s32);
 
-s32 func_8000698C(void *sp48) {
+s32 __rmonWriteMem(void *sp48) {
     register void *arg0;
     struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } sp34;
     s32 sp30;

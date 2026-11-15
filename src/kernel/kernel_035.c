@@ -8,7 +8,7 @@ extern void func_800073F8(void*, s32, s32);
 extern u8 __rmonRcpAtBreak;
 
 /* __rmonHitSpBreak */
-void func_80008A38(void) {
+void __rmonHitSpBreak(void) {
     s32 buf[19];
     register s32 val = func_80006A98(0x04080000);
     func_80006A50(0x04080000, val - 4);

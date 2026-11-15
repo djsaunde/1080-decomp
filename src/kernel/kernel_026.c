@@ -13,7 +13,7 @@
  * the trailing 4 zero bytes.
  *
  * Names: func_80009EA0 / func_80009EB0 keep their names because kernel code
- * jals those addresses (func_8000487C, __osDevMgrMain, kernel_000_c.c). The
+ * jals those addresses (kdebug_clear_IP6, __osDevMgrMain, kernel_000_c.c). The
  * linker resolves those calls to these labels, so renaming would break the
  * link. The objdiff target (expected/src/kernel/kernel_026.c.o) is built from
  * the INCLUDE_ASM .s files in asm/nonmatchings/kernel/, which carry the same

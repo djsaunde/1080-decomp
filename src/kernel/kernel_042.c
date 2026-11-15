@@ -16,7 +16,7 @@ extern s32 __osRdb_IP6_CurWrite;
 extern s32 __osRdb_IP6_CurSend;
 
 /* __osRdb_IP6_Init */
-void func_800045C0(s32 addr, u32 size) {
+void osInitRdb(s32 addr, u32 size) {
     s32 saveMask;
 
     size >>= 2;

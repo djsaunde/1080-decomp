@@ -6,7 +6,7 @@
  * Decode corrections vs the old NM body:
  *   - D_8000A3D0 is osClockRate, a u64 (OSTime): `osClockRate = osClockRate
  *     * 3 / 4` emits the __ll_mul/__ll_div helper calls func_80002F78/
- *     func_80002E78 with v0/v1 pair returns spilled to sp20/sp24;
+ *     exceptasm_rdbFront with v0/v1 pair returns spilled to sp20/sp24;
  *   - TU-defined D_8000A3D0/D_8000A3D8 (osClockRate/osViClock are defined in
  *     initialize.c) = shared-$at single-lui for the u64 store;
  *   - exception-vector installs are literal-address struct copies

@@ -3,10 +3,10 @@
 # and references/papermario/src/boot/entry_point.s). IPL3 jumps here.
 # addi (trapping add) is assembler output IDO never emits for C.
 #   D_8000ABC0 = start of .bss, 0x153E0 = .bss size (cleared 8 bytes a loop)
-#   D_80000460 = runtime address of func_80000060 (boot main; the kernel
+#   D_80000460 = runtime address of kernel_boot (boot main; the kernel
 #   runs at +0x400), gUsoCtx = boot stack top
 
-glabel func_80000000
+glabel kernel_entrypoint
     lui     $t0, %hi(D_8000ABC0)        # t0 = bss start
     lui     $t1, 0x1                    # t1 = bss size (0x153E0)
     addiu   $t0, $t0, %lo(D_8000ABC0)
@@ -32,4 +32,4 @@ glabel func_80000000
     nop
     nop
     nop
-endlabel func_80000000
+endlabel kernel_entrypoint

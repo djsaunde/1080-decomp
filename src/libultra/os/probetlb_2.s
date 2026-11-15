@@ -1,8 +1,8 @@
-# __osProbeTLB, part 2 of 2 (splat symbol func_80004DB8).
+# __osProbeTLB, part 2 of 2 (splat symbol __osProbeTLB_part2).
 # Continues src/libultra/os/probetlb.s -- see the header there.
 # Reference: references/oot/src/libultra/os/probetlb.s
 
-glabel func_80004DB8
+glabel __osProbeTLB_part2
     and     $t5, $a0, $t3               # page offset of vaddr
     add     $v0, $v0, $t5               # paddr = pfn + offset
     b       .LprobeTLB_done
@@ -13,6 +13,6 @@ glabel func_80004DB8
     mtc0    $t0, $10                    # restore C0_ENTRYHI
     jr      $ra
      nop
-endlabel func_80004DB8
+endlabel __osProbeTLB_part2
     nop                                 # object alignment padding
     nop

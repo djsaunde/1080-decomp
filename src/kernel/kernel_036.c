@@ -11,8 +11,8 @@ typedef struct RmonThreadNode {
     s32 threadId;
 } RmonThreadNode;
 
-/* __rmonSendHeader — find free comm slot and configure it */
-void __rmonSendHeader(void) {
+/* __rmonMaskIdleThreadInts — find free comm slot and configure it */
+void __rmonMaskIdleThreadInts(void) {
     register s32* node = (s32*)func_80009C30();
     while (node[1] != -1) {
         if (node[1] == 0) {
@@ -24,15 +24,15 @@ void __rmonSendHeader(void) {
     }
 }
 
-/* func_800073DC = __rmonGetTCB (rmon/rmonmisc), IDO 7.1 -O1, whole function
+/* __rmonGetTCB = __rmonGetTCB (rmon/rmonmisc), IDO 7.1 -O1, whole function
  * [0x73DC,0x745C). Splat had cut it at 0x73F8 (prologue + first jal here,
  * body + epilogue as func_800073F8.s in kernel_018_e) and this unit clipped
  * the C to 0x1C. The "external callers of func_800073F8" were never calling
  * this body: kernel jal targets sit 0x400 above our numbering, so
- * jal func_800073F8 is __rmonSendHeader at our 0x6FF8 and
+ * jal func_800073F8 is __rmonMaskIdleThreadInts at our 0x6FF8 and
  * jal func_800077DC is THIS function. Merged 2026-10-20 (agent-g run 112);
  * the only post-cc step left is TRUNCATE_TEXT dropping the 4-byte align pad. */
-RmonThreadNode* func_800073DC(s32 threadId) {
+RmonThreadNode* __rmonGetTCB(s32 threadId) {
     register RmonThreadNode* node;
 
     node = func_80009C30();

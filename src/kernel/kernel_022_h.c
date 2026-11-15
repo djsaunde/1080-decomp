@@ -67,7 +67,7 @@ extern OSEventState __osEventStateTab[];
 /* split from kernel_022.c - 2026-06-10 kernel ROM-order relayout */
 
 
-/* func_8000969C split out to kernel_054.c (-O1, NON_MATCHING) */
+/* __rmonSetVRegs split out to kernel_054.c (-O1, NON_MATCHING) */
 
 
 /* __osSetFpcCsr: libultra handwritten assembly (cfc1/ctc1 on the FPU control

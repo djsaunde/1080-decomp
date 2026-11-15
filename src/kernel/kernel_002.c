@@ -1,7 +1,7 @@
 #include "common.h"
 
 
-/* func_80004B10: RDB host-read with lazy message-queue init.
+/* osReadHost: RDB host-read with lazy message-queue init.
  * Lazy-inits a message queue (D_8000A440 flag-guarded) on first call,
  * publishes (buf, ct) to __osRdb_Read_Data_Buf/Ct, then loops the recv
  * helper until a non-zero count accumulates, and releases the queue. */
@@ -15,7 +15,7 @@ extern int readhost_bss_0018;
 extern int __osRdb_Read_Data_Buf;
 extern int __osRdb_Read_Data_Ct;
 
-void func_80004B10(void* buf, int ct) {
+void osReadHost(void* buf, int ct) {
     int msg;
     int count = 0;
     if (D_8000A440 == 0) {
@@ -98,6 +98,6 @@ s32 osRecvMesg(RecvMesgQueue *mq, s32 *msg, s32 flag) {
 #pragma GLOBAL_ASM("asm/nonmatchings/kernel/func_80004BE0_pad.s")
 
 
-/* __osProbeTLB (+ splat-split tail func_80004DB8, a jal target of __osException): libultra handwritten tlbp/tlbr CP0 assembly, real source in src/libultra/os/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osProbeTLB (+ splat-split tail __osProbeTLB_part2, a jal target of __osException): libultra handwritten tlbp/tlbr CP0 assembly, real source in src/libultra/os/probetlb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/probetlb.s")
 GLOBAL_ASM("src/libultra/os/probetlb_2.s")

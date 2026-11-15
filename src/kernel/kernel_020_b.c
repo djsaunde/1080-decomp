@@ -18,9 +18,9 @@ extern void func_80005350(void*, s32);
 
 
 
-/* func_80008054: 31-insn (0x7C) bundled libultra SP/MI helper. Contains THREE
+/* __rmonIdleRCP: 31-insn (0x7C) bundled libultra SP/MI helper. Contains THREE
  * separately-callable entry points (similar alt-entry cap class as
- * func_8000817C / osEPiRawStartDma / __rmonReadWordAt):
+ * rmon_ClearTempBreakpoint / osEPiRawStartDma / __rmonReadWordAt):
  *
  *   Entry 0 @ 0x80008054: __osSpDeviceBusy + status reset
  *     while (*SP_DMA_BUSY_REG != 0) ;   // wait for DMA idle
@@ -42,7 +42,7 @@ extern void func_80005350(void*, s32);
  * not reachable from a single-entry C body). Was previously documented
  * as "Exact-match path: compile entry 0 from C, use INSN_PATCH to force
  * the hand-scheduled non-branch-likely poll loops (same SP_STATUS cap
- * family as func_80008030), then append jr ra; nop + the two raw
+ * family as __rmonRCPrunning), then append jr ra; nop + the two raw
  * relocation-free alt-entry tails with SUFFIX_BYTES" — INSN_PATCH +
  * instruction-appending SUFFIX_BYTES REMOVED 2026-05-23 as match-faking
  * (per feedback_no_instruction_forcing_matches_policy).
@@ -53,5 +53,5 @@ extern void func_80005350(void*, s32);
  *   0x125 = 0x100|0x25 = clr_sig1 + clr_sstep + clr_dma_busy + clr_halt
  *
  * Default build is INCLUDE_ASM. */
-/* func_80008054: handwritten assembly, real source in src/handwritten/kernel/sp_control.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
+/* __rmonIdleRCP: handwritten assembly, real source in src/handwritten/kernel/sp_control.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
 GLOBAL_ASM("src/handwritten/kernel/sp_control.s")

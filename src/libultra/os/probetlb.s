@@ -11,7 +11,7 @@
 #        $10 = C0_ENTRYHI
 #
 # splat splits this routine into two symbols (__osException jal's the tail
-# at func_80004DB8 directly). asm-processor sizes the first glabel of a
+# at __osProbeTLB_part2 directly). asm-processor sizes the first glabel of a
 # GLOBAL_ASM block to the whole block, so each splat symbol is its own block:
 # the routine continues in probetlb_2.s (labels resolve across blocks; all
 # GLOBAL_ASM blocks of a unit are assembled as one file).

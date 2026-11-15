@@ -11,26 +11,26 @@ regress during the O1/O2 file split, restore from the sources listed.
 | 0x80000474 | fs_setDeviceTable | uso_set_alloc | kernel.c |
 | 0x8000058C | fs_close | uso_stub_ret0 | kernel.c |
 | 0x80000688 | fs_skip | uso_advance_position | kernel.c |
-| 0x800007C4 | func_800007C4 | uso_file_check | kernel.c |
+| 0x800007C4 | uso_returnOne_800007C4 | uso_file_check | kernel.c |
 | 0x80000E58 | uso_printVersion | callback | kernel.c |
 | 0x800010B4 | uso_getContext | uso_get_vtable | kernel.c |
-| 0x800010C0 | func_800010C0 | uso_set_callbacks | kernel.c |
-| 0x800010CC | func_800010CC | osSyncPrintf (variadic no-op) | kernel.c |
+| 0x800010C0 | uso_nop_800010C0 | uso_set_callbacks | kernel.c |
+| 0x800010CC | uso_nullPrintf | osSyncPrintf (variadic no-op) | kernel.c |
 | 0x800012AC | uso_getErrno | uso_get_error | kernel.c |
 | 0x80001414 | fs_readChecked | uso_read | kernel.c |
 | 0x80001460 | fs_tell | uso_file_end | kernel.c |
 | 0x80001470 | fs_seek | uso_seek | kernel.c |
 | 0x80001494 | fs_closeFile | uso_file_close | kernel.c |
-| 0x8000149C | func_8000149C | uso_ret_zero | kernel.c |
-| 0x800017B4 | func_800017B4 | empty | kernel.c |
+| 0x8000149C | uso_returnZeroF_8000149C | uso_ret_zero | kernel.c |
+| 0x800017B4 | uso_nop_800017B4 | empty | kernel.c |
 | 0x800018A8 | func_800018A8 | empty | kernel.c |
 | 0x80005800 | __osPiCreateAccessQueue | __osSiCreateAccessQueue | kernel.c |
 | 0x80005894 | __osPiRelAccess | __osPiRelAccess | kernel.c |
 | 0x80006240 | osPiGetStatus | __osPiReadStatus | kernel.c |
-| 0x80006C58 | func_80006C58 | rmon stub (-1) | kernel.c |
-| 0x80008A08 | func_80008A08 | __rmonInit | kernel.c |
-| 0x80008AA0 | func_80008AA0 | __rmonSetFault | kernel.c |
-| 0x800092B0 | func_800092B0 | rmon execute | kernel.c |
+| 0x80006C58 | __rmonLoadProgram | rmon stub (-1) | kernel.c |
+| 0x80008A08 | __rmonHitBreak | __rmonInit | kernel.c |
+| 0x80008AA0 | __rmonHitCpuFault | __rmonSetFault | kernel.c |
+| 0x800092B0 | rmonGetRcpRegister | rmon execute | kernel.c |
 | 0x80009830 | __osGetActiveQueue | __osGetActiveQueue | kernel.c |
 
 ## O1 Functions (15) — compiled at -O1, source in src/o1/
@@ -45,11 +45,11 @@ regress during the O1/O2 file split, restore from the sources listed.
 | 0x800060F0 | osGetThreadPri | osGetThreadPri | src/o1/osGetThreadPri.c |
 | 0x80006110 | osSetThreadPri | osSetThreadPri | src/o1/osSetThreadPri.c |
 | 0x800061F0 | __osSetGlobalIntMask | __osSetGlobalIntMask | src/o1/__osSetGlobalIntMask.c |
-| 0x80006250 | func_80006250 | __rmonWriteWordTo (bitwise) | src/o1/func_80006250.c |
+| 0x80006250 | k___osResetGlobalIntMask | __rmonWriteWordTo (bitwise) | src/o1/k___osResetGlobalIntMask.c |
 | 0x80006650 | __rmonWriteWordTo | __rmonWriteWordTo (loop) | src/o1/__rmonWriteWordTo.c |
-| 0x800065B0 | func_800065B0 | rmon stub (-1) | src/o1/func_800065B0.c |
+| 0x800065B0 | rmon_NotImplemented | rmon stub (-1) | src/o1/rmon_NotImplemented.c |
 | 0x80007DD0 | osStopThread | osStopThread | src/o1/osStopThread.c |
-| 0x80008424 | func_80008424 | rmon stub (-1) | src/o1/func_80008424.c |
+| 0x80008424 | __rmonListBreak | rmon stub (-1) | src/o1/__rmonListBreak.c |
 | 0x80009A50 | osYieldThread | osYieldThread | src/o1/osYieldThread.c |
 | 0x80009C90 | __osSpRawWriteIo | osPiRawWriteIo | src/o1/__osSpRawWriteIo.c |
 
@@ -139,14 +139,14 @@ splat, ensure these are NOT treated as separate function boundaries.
 | func_8000060C | fs_read | mid-function continuation; shares `fs_read` stack frame and branches to `.L80000678` |
 | func_80000660 | fs_read | tail continuation; restores `fs_read` locals from stack and returns through the shared epilogue |
 | func_80001CF0 | uso_relocateSections | 4-byte prologue fragment |
-| func_800056EC | func_800056F0 | 4-byte prologue fragment |
+| pimgr_ramromMain | func_800056F0 | 4-byte prologue fragment |
 | __osSpRawReadIo | func_80008BB4 | 4-byte prologue fragment |
-| func_80008D48 | func_80008D4C | 4-byte prologue fragment |
-| func_80009144 | func_80009148 | 4-byte prologue fragment |
+| rmon_SetUpForRCPop | func_80008D4C | 4-byte prologue fragment |
+| func_80009144 | __rmonGetFRegisters | 4-byte prologue fragment |
 | func_800066D0 | func_800066B0 | tail/epilogue continuation; same .c file (kernel_018.c). |
 | func_800066B0 | __rmonReadWordAt | full 3-way .s merge: 0x80006698 (0x18) + 0x800066B0 (0x3C) → 0x54 (21 insns). Byte-merge already produced by __rmonReadWordAt C body in kernel_017.c (episodes/__rmonReadWordAt.json, 100% exact). undefined_syms_auto.txt keeps func_800066B0/func_800066D0 as labels for callers that jal into the merged body. |
 | func_800053D0 + func_80005400 + func_800054C0 | func_80005350 | same-.c partial merge of the `osEPiRawStartDma` tail chain; full merge is cross-file-blocked because the prologue parent lives in kernel_005.c. Combined kernel_006 subset is 0x1D0 bytes and preserves entry labels via undefined_syms_auto.txt. |
-| func_800021D0 | func_800021A4 | body continuation; same .c file (kernel_000.c). Combined 0xAC = 43 insns. Fragment had no prologue, used `$t1`/`$t2`/`$a1` set by parent's prologue at 0x800021A4. |
+| func_800021D0 | uso_bindLocalSyms | body continuation; same .c file (kernel_000.c). Combined 0xAC = 43 insns. Fragment had no prologue, used `$t1`/`$t2`/`$a1` set by parent's prologue at 0x800021A4. |
 | timproc_uso_b5_func_0000C7B4 | CourseItem_updateHighlight_0000C710 | tail continuation; bc1f at C710+0x94 branches PAST own declared 0xA4 size into C7B4's body; C7B4 has no prologue + uses caller-set $v1/$at. Combined 0xD8 = 54 insns. |
 | timproc_uso_b5_func_00006890 + _000068A8 + _000068EC | SelectWin_canScrollPrev_0000687C | 4-way merge: bgez at 68EC+0 branches BACKWARDS (-10*4 bytes) into 68A8's body, forming a table-search loop with multi-exit. Splat split at the 4 internal jr-ras. Combined 0x84 = 33 insns. |
 | game_libs_func_0003AC50 | CollShape_func_0003AA5C | bc1fl at 3AC40 (inside parent) targets 3AC54 (inside fragment). Fragment was over-extracted by recursive split-fragments.py — 3-insn `sb t2, 3(a0); jr ra; nop` tail of parent's bc1fl branch landing zone. No prologue, uses caller-set $t2/$a0. Combined 0x200 = 128 insns. |

@@ -6,7 +6,7 @@ typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 id; s32 
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
 
 /* __rmonWriteMem */
-s32 func_80006D0C(RmonMsg* msg) {
+s32 __rmonGetRegionCount(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonHdr hdr;
     hdr.type = p->type;
@@ -24,7 +24,7 @@ s32 func_80006D0C(RmonMsg* msg) {
 /* __rmonListRegisters — build register descriptor packet */
 extern s32 __rmonUtilityBuffer;
 
-s32 func_80006D7C(char* msg) {
+s32 __rmonGetRegions(char* msg) {
     char* p = msg;
     char* buf = (char*)&__rmonUtilityBuffer;
     s32 count;

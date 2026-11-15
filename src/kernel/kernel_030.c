@@ -6,7 +6,7 @@ typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 id; } Rm
 typedef struct { s32 pad0; u8 type; char pad5[7]; s32 id; } RmonMsg;
 
 /* __rmonListProcesses */
-s32 func_80007EA0(RmonMsg* msg) {
+s32 __rmonSetFault(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonHdr16 hdr;
     hdr.type = p->type;
@@ -30,7 +30,7 @@ extern void func_80005F10(void*, s32, void*, s32, void*, s32);
 extern void func_80005920(s32, void*, void*, s32);
 extern void func_8000A110(void*);
 
-void func_80007EEC(void) {
+void __rmonInit(void) {
     func_800053D0(&__rmonMQ, &rmonmisc_bss_01C8, 8);
     func_800051E0(0xA, &__rmonMQ, 2);
     func_800051E0(0xB, &__rmonMQ, 4);
@@ -47,7 +47,7 @@ void func_80007EEC(void) {
  * placing jr ra at function+0x18, exactly as in the ROM. A standalone unit
  * starts at zero and adds eight extra padding bytes before that return.
  * No instruction patching or artificial prefix is needed. */
-void func_80007FC8(void) {
+void __rmonPanic(void) {
     for (;;) {
     }
 }

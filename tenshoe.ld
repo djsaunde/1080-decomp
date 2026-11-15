@@ -94,10 +94,10 @@ SECTIONS
         build/src/kernel/kernel_020_b.c.o(.text);
         build/src/kernel/kernel_040.c.o(.text);
         /* func_800081D0: mid-function alt-entry into __rmonClearBreak
-           (func_8000817C). The continuation bytes are real compiled C in
+           (rmon_ClearTempBreakpoint). The continuation bytes are real compiled C in
            kernel_040.c (TRUNCATE_TEXT=0x194); this exposes the second entry
            label that splat would otherwise emit as its own glabel. */
-        func_800081D0 = func_8000817C + 0x54;
+        func_800081D0 = rmon_ClearTempBreakpoint + 0x54;
         build/src/kernel/kernel_020_c.c.o(.text);
         build/src/kernel/kernel_021.c.o(.text);
         build/src/kernel/kernel_022.c.o(.text);

@@ -16,13 +16,13 @@ extern void func_80005350(void*, s32);
 
 /* func_800081D0: the no-prologue CONTINUATION (second half) of the single
  * logical function __rmonClearBreak. The matching bytes for 0x800081D0..0x80008264
- * are emitted by the full C body of func_8000817C in kernel_040.c (verified
+ * are emitted by the full C body of rmon_ClearTempBreakpoint in kernel_040.c (verified
  * byte-exact, reloc-correct). kernel_040.c.o now compiles the WHOLE function
  * (TRUNCATE_TEXT=0x194) so the continuation is real compiled C, not asm.
  * The mid-function entry label func_800081D0 (jal'd from kernel_018_o2.c /
- * func_8000745C) is provided as a fixed address symbol in symbol_addrs.txt —
+ * __rmonStopUserThreads) is provided as a fixed address symbol in symbol_addrs.txt —
  * splat would emit the same glabel. There is no standalone C body here because
- * the entry has no stack frame of its own (it reuses func_8000817C's frame). */
+ * the entry has no stack frame of its own (it reuses rmon_ClearTempBreakpoint's frame). */
 
 #ifndef FW
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
@@ -46,7 +46,7 @@ extern void func_800073F8(void *, s32, s32);
  * arg op sra/and/sll/ori into a fresh temp + `move $a1,tN` copy-back, 4
  * redundant moves; 7.1 -O1 folds them in place, 4 words short) is a 7.1-ONLY
  * fold — 5.3 -O1 emits the temp+move form from the identical C (same
- * discriminator as func_80007564; see docs/IDO_CODEGEN.md 5.3-vs-7.1
+ * discriminator as __rmonListThreads; see docs/IDO_CODEGEN.md 5.3-vs-7.1
  * residual-class entry). Two follow-up levers closed the tail: (1) the reply
  * struct is declared AFTER the register vars (decl-order slot lever: before
  * them, 5.3 homes it at sp+0x38 instead of the target's sp+0x28); (2) tail
@@ -55,7 +55,7 @@ extern void func_800073F8(void *, s32, s32);
  * keyword pins arg0->s0 + the 3 table pointers->s1/s2/s3, and the reversed
  * loop-compare operand order (FW(s0,0x10) == *var_s2) fixes the commutative
  * load-order — both carried over from the 2026-06-23 rebuild. */
-s32 func_80008264(void *arg0) {
+s32 __rmonSetBreak(void *arg0) {
     register void *s0 = arg0;
     register char *var_s1;
     register char *var_s2;

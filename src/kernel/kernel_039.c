@@ -5,7 +5,7 @@ extern s32 func_800096B0(s32);
 extern s32 D_8000A41C;
 
 /* __rmonGetRegisterContents */
-s32 func_80009760(s32 arg0, s32 arg1, s32 arg2) {
+s32 __rmonGetRegisterContents(s32 arg0, s32 arg1, s32 arg2) {
     if (arg0 == 0) {
         if (arg2 > 0 && arg2 < 0x1A) {
             arg2 -= 1;

@@ -1,16 +1,16 @@
 #include "common.h"
 
 /* kernel_000_o1: -O1 file-split holding the two tail functions of kernel_000
- * (func_800048E8, func_800049B8) that are genuinely -O1 (verified 2026-06-04:
+ * (kdebug_send, kdebugserver) that are genuinely -O1 (verified 2026-06-04:
  * each spills every local to the stack and reloads per use; an -O2 build keeps
  * them in $s/$a regs and scores ~34-39%, an -O1 build scores 72-78%). Their
- * kernel_000 siblings func_80004808 / func_8000487C stay -O2 (they score HIGHER
+ * kernel_000 siblings kdebug_send_packet / kdebug_clear_IP6 stay -O2 (they score HIGHER
  * at -O2), so only these two are carved out. objdiff compares per-function so the
  * .ld placement (right after kernel_000.c.o) is purely cosmetic. */
 
 extern void* D_8000A420;
 
-/* func_800048E8: chunked-write driver. Borrows hardware (init via
+/* kdebug_send: chunked-write driver. Borrows hardware (init via
  * func_80004C7C if D_8000A490 was clear), processes arg1 bytes from arg0
  * in chunks of <=3 via func_80004C08, re-arming the hardware between chunks,
  * then conditionally re-invokes func_80004C7C if D_8000A490 was already set
@@ -18,7 +18,7 @@ extern void* D_8000A420;
 extern s32 D_8000A490;
 extern void func_80004C7C(void);
 extern void func_80004C08(char *p, s32 n);
-void func_800048E8(char *arg0, s32 arg1) {
+void kdebug_send(char *arg0, s32 arg1) {
     s32 chunkSize;
     s32 offset;
     s32 wasInit;
@@ -46,7 +46,7 @@ void func_800048E8(char *arg0, s32 arg1) {
     }
 }
 
-/* func_800049B8: 64-insn rmon/kdebugserver packet parser. Receives 24
+/* kdebugserver: 64-insn rmon/kdebugserver packet parser. Receives 24
  * bits per call (high 3 bytes of arg0); appends them to packet buffer
  * kdebugserver_bss_01B0[] at write-position D_8000A430. After append:
  *   - if buf[0] == 2: send a fixed-size packet (0x190 bytes from
@@ -62,7 +62,7 @@ extern u32 D_8000A430;
 extern u8 kdebugserver_bss_01B0[];
 extern void func_80004CE8(u32 a, u32 b);
 extern u32 func_80004BB0(u8 *p);
-void func_800049B8(u32 arg0) {
+void kdebugserver(u32 arg0) {
     s32 i;
     u32 Y, X;
 

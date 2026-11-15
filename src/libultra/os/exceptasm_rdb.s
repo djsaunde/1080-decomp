@@ -13,7 +13,7 @@
 # address names (.Lrdb_debug_done, .Lrdb_check_ip6, .Lrdb_send_wait, .Lrdb_restore_eret = restore
 # scratch + eret, .Lsavecontext = savecontext).
 
-glabel func_80002E78
+glabel exceptasm_rdbFront
     jr      $k0
      nop
     sw      $k0, -0x10($sp)
@@ -263,5 +263,5 @@ alabel func_800030D0
     sb      $t2, 0x0($t3)
     beq     $zero, $t1, .Lrdb_debug_done
      addi   $t3, $t3, 0x1
-endlabel func_80002E78
+endlabel exceptasm_rdbFront
 

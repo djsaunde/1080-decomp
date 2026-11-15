@@ -15,7 +15,7 @@ extern s32 func_80009C30(void);
 extern void func_80008D4C(s32, s32);
 extern void func_800054C0(void*);
 
-void func_80008AD0(void) {
+void rmonFindFaultedThreads(void) {
     register s32* t = (s32*)func_80009C30();
 
     while (*(s32*)((char*)t + 4) != -1) {

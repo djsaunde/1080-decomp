@@ -76,10 +76,10 @@ extern OSEventState __osEventStateTab[];
 extern void *func_800077DC(s32);
 extern void func_800073F8();
 
-/* func_80008E98 = __rmonGetGRegisters-style register FETCH (libultra rmon),
+/* __rmonGetGRegisters = __rmonGetGRegisters-style register FETCH (libultra rmon),
  * IDO 7.1 -O1: read the thread context's 64-bit GPRs (low words) into a
  * 0xA4-byte reply, copy the 3 special registers, send it (jal func_800073F8
- * = __rmonSendHeader at our 0x6FF8; jal func_800077DC = __rmonGetTCB at our
+ * = __rmonMaskIdleThreadInts at our 0x6FF8; jal func_800077DC = __rmonGetTCB at our
  * 0x73DC). Returns -2 on a non-CPU request or a missing thread.
  * EXACT 2026-10-20 (agent-g run 112; was NM 88.9). The "alt entries"
  * func_80008EA0/ED0/FB0 (alabels in the .s, now dropped) are not entries:
@@ -93,7 +93,7 @@ extern void func_800073F8();
  *   it);
  * - the -2 for a non-CPU request is an `else { return -2; }` arm and the
  *   send is in the common tail (block order). */
-s32 func_80008E98(void *arg0) {
+s32 __rmonGetGRegisters(void *arg0) {
     register s32 *msg = arg0;
     struct {
         s32 w0;
@@ -140,13 +140,13 @@ s32 func_80008E98(void *arg0) {
     return 0;
 }
 
-/* func_80008FF4 = the matching register STORE (inverse of 8E98), IDO 7.1
+/* __rmonSetGRegisters = the matching register STORE (inverse of 8E98), IDO 7.1
  * -O1: write the request's GPRs into the thread context as sign-extended
  * 64-bit values, copy the 3 special registers, send a 0x10 ack.
  * EXACT 2026-10-20 (agent-g run 112; was NM 83.5) with the same recipe as
  * 8E98 (decl order msg, hdr, ctx, p, `register i` last; else-return arm;
  * header filled in the tail as id, tag, zero). */
-s32 func_80008FF4(void *arg0) {
+s32 __rmonSetGRegisters(void *arg0) {
     register s32 *msg = arg0;
     struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } hdr;
     void *ctx;

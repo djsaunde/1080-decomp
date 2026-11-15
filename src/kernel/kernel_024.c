@@ -17,7 +17,7 @@
  * former func_80009C30 fragment, the 4-insn fall-through tail at
  * 0x80009C30 `or t2,t5,at; sw a2,0(t2); jr ra; or v0,0,0`. The address
  * 0x80009C30 is re-exported via undefined_syms_auto.txt for callers like
- * func_80008AD0/__rmonHitCpuBreak that jal directly into the tail.) */
+ * rmonFindFaultedThreads/__rmonHitCpuBreak that jal directly into the tail.) */
 
 #define IO_REG(a) (*(volatile u32 *)(a))
 

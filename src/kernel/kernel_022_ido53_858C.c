@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for func_8000858C (0x228 / 138 words) = libultra rmon's
+/* IDO 5.3 -O1 donor for __rmonGetBranchTarget (0x228 / 138 words) = libultra rmon's
  * __rmonGetBranchTarget(method, thread, addr): decode the MIPS instruction at
  * addr (method 1 reads it through __rmonReadWordAt = func_80006A98) and return
  * the branch / jump destination, or -1. func_80009B60 = __rmonGetRegisterContents
@@ -8,12 +8,12 @@
  * kernel numbering offset: the 24-entry opcode table and the 20-entry REGIMM
  * table sit in the ROM at our 0xA690 / 0xA6F0 (runtime 0x8000AA90 / 0x8000AAF0,
  * entries = runtime case addresses). The donor's two .rodata references (+0 and
- * +0x60) are renamed func_8000858C_rodata by the splice and pinned to 0x8000AA90.
+ * +0x60) are renamed __rmonGetBranchTarget_rodata by the splice and pinned to 0x8000AA90.
  * JALR test is `(inst & 0x7FF) == 9`; IDO 5.3 (not 7.1) gives the andi / or
  * temp copies. Kept out of C_FILES (Makefile). */
 extern unsigned int func_80006A98(unsigned int *);
 extern int func_80009B60(int, int, int);
-int func_8000858C(int method, int thread, char *addr) {
+int __rmonGetBranchTarget(int method, int thread, char *addr) {
     int inst;
 
     if (method == 1) {

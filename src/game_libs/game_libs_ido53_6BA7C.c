@@ -2,7 +2,7 @@
 
 /* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant (PI status spin + uncached
  * cart read), statically linked into the game_libs USO. Byte-exact masked-twin
- * of matched kernel func_800029B0 (kernel_045): spin while PI_STATUS & 3, then
+ * of matched kernel osPiRawReadIo (kernel_045): spin while PI_STATUS & 3, then
  * read the KSEG1-uncached cart word ((D | devAddr) | 0xA0000000) into *out.
  * IDO 5.3 -O1, spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. The
  * cart-base global (kernel D_80000308) maps to the zero-resolving D_00000000;

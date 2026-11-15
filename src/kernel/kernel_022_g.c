@@ -67,15 +67,15 @@ extern OSEventState __osEventStateTab[];
 /* split from kernel_022.c - 2026-06-10 kernel ROM-order relayout */
 
 
-/* func_80009474 split out to kernel_054.c (-O1, NON_MATCHING) */
+/* __rmonSetSRegs split out to kernel_054.c (-O1, NON_MATCHING) */
 
-/* func_80009584 (rmon debug command handler, 0x118): MATCHED 2026-07-15
+/* __rmonGetVRegs (rmon debug command handler, 0x118): MATCHED 2026-07-15
  * (agent-h), retracting the "pure IDO coloring/scheduling cap, permuter
  * ~5500 iters never 0" verdict. Four levers:
  *  - `char* volatile arg0` + `s0 = arg0;` BEFORE the guard: direct home
  *    reload `lw s0,0x250(sp)` hoisted by as1 into the jal delay slot
  *    (fixes prologue sw s0 order + kills the dead `lw a0` reload).
- *  - zero-arg K&R call `func_80008430()` (extern decl de-prototyped):
+ *  - zero-arg K&R call `__rmonClearBreak()` (extern decl de-prototyped):
  *    a0 still holds arg0 from the prologue, no arg setup emitted.
  *  - decl-order frame map: `register char* s0` reserves a DEAD HOME even
  *    at -O1 in this aggregate-bearing frame; moving its decl below `val`
@@ -89,7 +89,7 @@ extern void func_800074A0(s32, s32);
 
 typedef struct { s32 zero0; u8 type; char pad5; u16 flags; s32 pad8; s32 code; } RmonHdr16;
 
-s32 func_80009584(char* volatile arg0) {
+s32 __rmonGetVRegs(char* volatile arg0) {
     char* p;
     s32 cnt;
     s32 val;

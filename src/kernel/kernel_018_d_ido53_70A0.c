@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for func_800070A0 — rmon word-streamer (72 insns,
+/* IDO 5.3 -O1 donor for __rmonSendData — rmon word-streamer (72 insns,
  * frame 0x38). PROVEN EXACT 72/72 (2026-07-10 standalone probe vs
- * asm/nonmatchings/kernel/func_800070A0.s; only R_MIPS_26 jal placeholders
+ * asm/nonmatchings/kernel/__rmonSendData.s; only R_MIPS_26 jal placeholders
  * differ, resolved at link). 4th 5.3-vs-7.1 temp-rematerialization crack
  * (7564/8264/87B4 family). Two levers on top of the 2026-06-23 7.1 rebuild:
  *   (1) `int *p` + POST-INCREMENT at the use site (`func(p++)`, `*p++`)
@@ -25,7 +25,7 @@ extern void func_80005584(int word);
 extern void func_80008FB0(void *src, void *dst);
 extern void func_80005534(void);
 
-void func_800070A0(char *addr, int len) {
+void __rmonSendData(char *addr, int len) {
     int *p = (int *)addr;
     unsigned int n = ((unsigned int)len + 3) >> 2;
     int tmp;

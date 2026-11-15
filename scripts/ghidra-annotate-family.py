@@ -1,7 +1,7 @@
 """Batch-apply a struct prototype to a family of related functions.
 
 Common workflow:
-  1. Find family via xref to a shared callee (e.g. __rmonSendHeader → 27 rmon
+  1. Find family via xref to a shared callee (e.g. __rmonMaskIdleThreadInts → 27 rmon
      callers in 1080). Either MCP `list_xrefs` or via Ghidra GUI.
   2. Decide which functions take the same struct as their first arg.
   3. Run this script to define the struct and apply `<Struct> *<argname>`
@@ -17,7 +17,7 @@ Example:
   python3 scripts/ghidra-annotate-family.py \\
     --struct-template RmonMsg \\
     --param-name msg \\
-    --funcs func_80006D0C,func_80006C64,func_80006BD8
+    --funcs __rmonGetRegionCount,__rmonGetExeName,__rmonListProcesses
 
   python3 scripts/ghidra-annotate-family.py \\
     --struct-spec 'MyStruct{4:int pad0;4:byte type;9:byte domain;C:int id}' \\

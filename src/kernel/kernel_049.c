@@ -2,7 +2,7 @@
 
 /* word memcpy: copies n words from src to dst. Uses an internal counter
  * variable so the loop guard is independent of the per-iteration count. */
-void func_80006720(u32* dst, u32* src, s32 n) {
+void __rmonCopyWords(u32* dst, u32* src, s32 n) {
     register s32 ctr = n;
     char pad[4];
     n--;

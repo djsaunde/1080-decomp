@@ -75,9 +75,9 @@ extern OSEventState __osEventStateTab[];
  * 800066D0 caller-entry symbol preserved via undefined_syms_auto.txt
  * (still resolves at 0x800066D0 inside the merged 800066B0 body). */
 
-/* func_800066EC: byte copy, `while (n--) *dst++ = *src++;` -- 13 insns at
+/* __rmonMemcpy: byte copy, `while (n--) *dst++ = *src++;` -- 13 insns at
  * -O1, BYTE-EXACT. Boundary merge 2026-09-05: the 1-word "alias entry"
- * (`or $a3, $a2, $zero`) that splat split off as func_800066EC is this
+ * (`or $a3, $a2, $zero`) that splat split off as __rmonMemcpy is this
  * function's own `n` copy, hoisted above the `addiu $sp` prologue by IDO
  * -O1's scheduler (hoisted-head orphan, see
  * docs/MATCHING_WORKFLOW.md#feedback-callerset-t6-orphan-head-is-hoisted-prologue).
@@ -87,7 +87,7 @@ extern OSEventState __osEventStateTab[];
  * (buf, size, RDB_TYPE_GtoH_*) -- the __osRdbSend contract; 0x800066F0 is
  * kept as an alt-entry symbol via undefined_syms_auto.txt
  * (`func_800066F0 = 0x800066F0;`, same mechanism as func_800066D0). */
-void func_800066EC(u8 *dst, u8 *src, s32 n) {
+void __rmonMemcpy(u8 *dst, u8 *src, s32 n) {
     while (n--) {
         *dst++ = *src++;
     }

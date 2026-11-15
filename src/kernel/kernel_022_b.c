@@ -69,10 +69,10 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_8000894C split out to kernel_054.c (-O1) */
+/* rmonSendBreakMessage split out to kernel_054.c (-O1) */
 
 
-void func_80008A08(void) {
+void __rmonHitBreak(void) {
     func_8000857C();
     func_8000785C(0);
     func_80008ED0();

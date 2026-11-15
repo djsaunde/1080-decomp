@@ -7,7 +7,7 @@ typedef struct { s32 pad0; u8 type; char pad5; s16 flags; s32 data[17]; } RmonBu
 typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
 
 /* __rmonGetGRegisters */
-s32 func_8000798C(RmonMsg* msg) {
+s32 __rmonThreadStatus(RmonMsg* msg) {
     RmonMsg* p = msg;
     RmonBuf76 buf;
     if (func_80007A98(p->domain, p->id, &buf) != 0) {
@@ -19,14 +19,14 @@ s32 func_8000798C(RmonMsg* msg) {
     return 0;
 }
 
-/* func_800079F4 = __rmonStopThread (libultra rmon), IDO 7.1 -O1, EXACT.
+/* __rmonStopThread = __rmonStopThread (libultra rmon), IDO 7.1 -O1, EXACT.
  * One function [0x79F4,0x7B3C): it used to be split across units, with
  * the head here (no jr ra, "tail-jumps into func_80007A98's shared
  * return") and the body as func_80007A98 at the head of kernel_018_g
  * (no prologue, starting with this head's last bnez delay-slot nop).
  * The jal'd 0x80007A98 is NOT that body: every kernel jal target sits
  * 0x400 above our symbol numbering (the kernel really runs at 0x80000400),
- * so jal func_80007A98 = __rmonGetThreadStatus = func_80007698. It stays
+ * so jal func_80007A98 = __rmonGetThreadStatus = __rmonGetThreadStatus. It stays
  * an absolute undefined_syms_auto.txt entry.
  * Callees (all +0x400 names): 785C __rmonStopUserThreads, 8430
  * __rmonRCPrunning, 8454 __rmonIdleRCP, 6A98 __rmonReadWordAt(SP_PC_REG),
@@ -41,7 +41,7 @@ extern u32 func_8000898C(s32, s32, u32);
 extern void func_80008498(void);
 typedef struct { s32 pad0; u8 type; char pad5; s16 flags; s32 pad8; s32 why; s32 data[15]; } RmonStatusReply;
 
-s32 func_800079F4(RmonMsg *msg) {
+s32 __rmonStopThread(RmonMsg *msg) {
     RmonMsg *p = msg;
     RmonStatusReply buf;
     u32 pc;

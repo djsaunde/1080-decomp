@@ -61,12 +61,12 @@ extern void func_800091F0(s32);
 extern void func_80006A50(u32 addr, u32 val);
 extern void func_80009030(s32, s32);
 
-/* func_80009474 -- EXACT (agent-g run 145) via the IDO 5.3 -O1 donor
+/* __rmonSetSRegs -- EXACT (agent-g run 145) via the IDO 5.3 -O1 donor
  * src/kernel/kernel_054_c_ido53_9474.c; this definition is only the splice
  * placeholder. The long-standing "andi into pre-coloured a1" residual
  * (target `lw a1; andi t8,a1,0xfff; or a1,t8`) is simply IDO 5.3: the mask
  * written inline in the call argument compiles to the target under 5.3 -O1
  * (7.1 folds it into `andi a1,a1`). */
-s32 func_80009474(s32* volatile msg) {
+s32 __rmonSetSRegs(s32* volatile msg) {
     return 0;
 }

@@ -6,7 +6,7 @@ typedef struct { s32 pad0; u8 type; char pad5; u16 flags; s32 pad8; s32 pad12; }
 typedef struct { s32 pad0; u8 type; } RmonMsgSmall;
 
 /* __rmonSendAck */
-s32 func_80007FE8(RmonMsgSmall* msg) {
+s32 __rmonSetComm(RmonMsgSmall* msg) {
     RmonAck ack;
     ack.type = msg->type;
     ack.pad12 = 0;
@@ -15,6 +15,6 @@ s32 func_80007FE8(RmonMsgSmall* msg) {
     return 0;
 }
 
-/* func_80008030 moved to kernel_031b.c (file-split for -O2 OPT_FLAGS).
+/* __rmonRCPrunning moved to kernel_031b.c (file-split for -O2 OPT_FLAGS).
  * INSN_PATCH applied on non-reloc offsets only, per
  * feedback_insn_patch_on_reloc_instructions_breaks_byte_verify.md. */

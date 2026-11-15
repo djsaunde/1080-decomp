@@ -64,12 +64,12 @@ extern OSEventState __osEventStateTab[];
 
 
 /* __rmonWriteWordTo (unimplemented stub) */
-s32 func_800065B0(s32 arg0) {
+s32 rmon_NotImplemented(s32 arg0) {
     return -1;
 }
 
 
-/* func_800065BC + func_800065F0 (cross-file fragment merge from kernel_016.c).
+/* __rmonExecute + func_800065F0 (cross-file fragment merge from kernel_016.c).
  * Combined size 0x90 (36 insns). Function-pointer dispatch with bounds
  * check + error-packet send on negative result.
  *
@@ -88,7 +88,7 @@ typedef struct {
     s16 result;
     char pad8[4];
 } ErrPkt;
-s32 func_800065BC(u8 *a0) {
+s32 __rmonExecute(u8 *a0) {
     s32 v0;
     ErrPkt pkt;
     if (a0[4] >= 0x35) {

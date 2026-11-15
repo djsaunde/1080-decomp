@@ -1,0 +1,31 @@
+
+/* Handwritten function */
+nonmatching kernel_entrypoint, 0x60
+
+glabel kernel_entrypoint
+    /* 1000 80000000 3C088001 */  lui        $t0, %hi(D_8000ABC0)
+    /* 1004 80000004 3C090001 */  lui        $t1, (0x153E0 >> 16)
+    /* 1008 80000008 2508ABC0 */  addiu      $t0, $t0, %lo(D_8000ABC0)
+    /* 100C 8000000C 352953E0 */  ori        $t1, $t1, (0x153E0 & 0xFFFF)
+  .L80000010:
+    /* 1010 80000010 2129FFF8 */  addi       $t1, $t1, -0x8 /* handwritten instruction */
+    /* 1014 80000014 AD000000 */  sw         $zero, 0x0($t0)
+    /* 1018 80000018 AD000004 */  sw         $zero, 0x4($t0)
+    /* 101C 8000001C 1520FFFC */  bnez       $t1, .L80000010
+    /* 1020 80000020 21080008 */   addi      $t0, $t0, 0x8 /* handwritten instruction */
+    /* 1024 80000024 3C0A8000 */  lui        $t2, %hi(D_80000460)
+    /* 1028 80000028 3C1D8001 */  lui        $sp, %hi(gUsoCtx)
+    /* 102C 8000002C 254A0460 */  addiu      $t2, $t2, %lo(D_80000460)
+    /* 1030 80000030 01400008 */  jr         $t2
+    /* 1034 80000034 27BD2BC0 */   addiu     $sp, $sp, %lo(gUsoCtx)
+    /* 1038 80000038 00000000 */  nop
+    /* 103C 8000003C 00000000 */  nop
+    /* 1040 80000040 00000000 */  nop
+    /* 1044 80000044 00000000 */  nop
+    /* 1048 80000048 00000000 */  nop
+    /* 104C 8000004C 00000000 */  nop
+    /* 1050 80000050 00000000 */  nop
+    /* 1054 80000054 00000000 */  nop
+    /* 1058 80000058 00000000 */  nop
+    /* 105C 8000005C 00000000 */  nop
+endlabel kernel_entrypoint

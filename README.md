@@ -73,7 +73,7 @@ A persistent Ghidra project at `build/ghidra-project/tenshoe.gpr` complements `m
 # See ~/.claude/projects/.../memory/feedback_pyghidra_mcp_setup_for_n64_decomp.md
 
 bash scripts/setup-ghidra.sh           # build project + import 2,000+ symbols
-bash scripts/ghidra-decompile-func.sh func_80008430   # one-shot decomp
+bash scripts/ghidra-decompile-func.sh __rmonClearBreak   # one-shot decomp
 ```
 
 Use Ghidra by trigger only (struct shape unknown, function family >3, stuck <50% fuzzy with structural unknowns) — m2c remains the default. See the `/decompile` skill for the trigger list.

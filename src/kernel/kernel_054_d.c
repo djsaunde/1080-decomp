@@ -65,10 +65,10 @@ extern void func_800091F0(s32);
  *    param forces a direct home reload `lw s0,0x38(sp)` (plain `p = msg` went
  *    through a t6 temp; `*(s32* volatile*)&msg` materialized an addiu addr temp).
  *    as1 hoists the callee-saved load into the jal delay slot.
- *  - zero-arg K&R call `func_80008430()` (a0 still holds msg from the prologue):
+ *  - zero-arg K&R call `__rmonClearBreak()` (a0 still holds msg from the prologue):
  *    removes the redundant `lw a0,0x38(sp)` arg reload.
  * Prologue sw s0/sw s1 order flipped to match as a side effect of p's real def. */
-s32 func_8000969C(s32* volatile msg) {
+s32 __rmonSetVRegs(s32* volatile msg) {
     register s32* p;
     RmonHdr16 hdr;
     register s32 i;
