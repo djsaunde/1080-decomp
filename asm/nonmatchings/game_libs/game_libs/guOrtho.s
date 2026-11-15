@@ -1,6 +1,6 @@
-nonmatching gl_func_000707E8, 0x68
+nonmatching guOrtho, 0x68
 
-glabel gl_func_000707E8
+glabel guOrtho
     /* E558C0 000707E8 27BDFF98 */  .word 0x27BDFF98
     /* E558C4 000707EC 44856000 */  .word 0x44856000
     /* E558C8 000707F0 44867000 */  .word 0x44867000
@@ -27,4 +27,4 @@ glabel gl_func_000707E8
     /* E5591C 00070844 27BD0068 */  .word 0x27BD0068
     /* E55920 00070848 03E00008 */  .word 0x03E00008
     /* E55924 0007084C 00000000 */  .word 0x00000000
-endlabel gl_func_000707E8
+endlabel guOrtho

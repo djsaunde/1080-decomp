@@ -36,7 +36,7 @@ typedef union {
 typedef float Matrix[4][4];
 
 extern void gl_func_00000000_frustumf(float mf[4][4], float l, float r, float b, float t, float n, float f, float scale); /* guFrustumF = game_libs_func_0006F684 */
-extern void gl_func_00000000_f2l706(float mf[4][4], Mtx *m);                                                         /* guMtxF2L = game_libs_func_00070854 */
+extern void gl_func_00000000_f2l706(float mf[4][4], Mtx *m);                                                         /* guMtxF2L = guMtxF2L */
 #define guFrustumF gl_func_00000000_frustumf
 #define guMtxF2L gl_func_00000000_f2l706
 

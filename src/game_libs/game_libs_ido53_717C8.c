@@ -1,6 +1,6 @@
 /* IDO 5.3 -O1 donor for gl_func_000717CC = libultra
  * __osPfsGetOneChannelData (io/pfsgetstatus.c verbatim, 2.0I layout) --
- * pfs sibling family; __osPfsGetStatus=gl_func_00071624 jals this as its
+ * pfs sibling family; __osPfsGetStatus=__osPfsGetStatus jals this as its
  * last call. TRUE ENTRY 0x717C8: the compiled function's first insn is
  * `lui $t6,%hi(__osPfsPifRam)`, which the old split carried as the
  * 1-word _pad_pre_717CC stolen-prologue orphan (split off

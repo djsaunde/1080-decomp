@@ -1,6 +1,6 @@
-nonmatching gl_func_000718C0, 0x68
+nonmatching __osIdCheckSum, 0x68
 
-glabel gl_func_000718C0
+glabel __osIdCheckSum
     /* E56998 000718C0 27BDFFF8 */  .word 0x27BDFFF8
     /* E5699C 000718C4 A7A00006 */  .word 0xA7A00006
     /* E569A0 000718C8 A4C00000 */  .word 0xA4C00000
@@ -27,4 +27,4 @@ glabel gl_func_000718C0
     /* E569F4 0007191C 00001025 */  .word 0x00001025
     /* E569F8 00071920 03E00008 */  .word 0x03E00008
     /* E569FC 00071924 27BD0008 */  .word 0x27BD0008
-endlabel gl_func_000718C0
+endlabel __osIdCheckSum

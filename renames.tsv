@@ -1,0 +1,12 @@
+# old	new  (ledger of readability renames; docs/ keep the old names)
+game_libs_func_0006F17C	memcpy
+gl_func_000743C4	lldiv
+gl_func_000744CC	ldiv
+gl_func_00071384	osPfsInitPak
+gl_func_00071624	__osPfsGetStatus
+gl_func_00071864	__osSumcalc
+gl_func_000718C0	__osIdCheckSum
+gl_func_000707E8	guOrtho
+game_libs_func_00070854	guMtxF2L
+game_libs_func_00070954	guMtxIdentF
+gl_func_00070A14	guMtxL2F

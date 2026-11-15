@@ -649,7 +649,7 @@ void gl_func_0006F144(int a0, ...) {
 void gl_func_0006F160(int a0, ...) {
 }
 
-/* game_libs_func_0006F17C = libc memcpy (Plauger verbatim, IDO 5.3 -O2
+/* memcpy = libc memcpy (Plauger verbatim, IDO 5.3 -O2
  * donor: game_libs_ido53_6F17C.c). LANDED 2026-08-22 via
  * REPLACE_FUNC_BODY donor splice: 11/11 body words exact, ZERO relocs.
  * The old "UNROLL CAP" verdict retired -- 5.3 -O2 emits the
@@ -660,7 +660,7 @@ void gl_func_0006F160(int a0, ...) {
  * for the splice. */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/game_libs_func_0006F17C_pad.s")
 
-void *game_libs_func_0006F17C(void *a0, void *a1, unsigned int a2) {
+void *memcpy(void *a0, void *a1, unsigned int a2) {
     volatile int memcpy_spliced = 0;
     if (a2 != 0) {
         memcpy_spliced = a2;

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 donor for gl_func_000744CC = libc ldiv (xldiv.c verbatim).
+/* IDO 5.3 -O2 donor for ldiv = libc ldiv (xldiv.c verbatim).
  * PROVEN EXACT 33/33 standalone at IDO 5.3 -O2 against the concatenated
  * 0x744C4..0x74548 stream (7.1 -O2 = 29/33: only the sret struct-copy
  * scratch regs differ, $at/$t0 vs $t9/$t8 — 5.3 codegen signature).
@@ -17,7 +17,7 @@ typedef struct {
     int rem;  /* 0x4 */
 } ldiv_t;
 
-ldiv_t gl_func_000744CC(int numer, int denom) {
+ldiv_t ldiv(int numer, int denom) {
     ldiv_t ret;
 
     ret.quot = numer / denom;

@@ -1,6 +1,6 @@
-/* IDO 5.3 -O2 -mips2 donor for gl_func_000743C4 = libc lldiv
+/* IDO 5.3 -O2 -mips2 donor for lldiv = libc lldiv
  * (ldiv.c/xldiv.c verbatim, the long-long sibling of the already-landed
- * gl_func_000744CC = ldiv). PROVEN EXACT 2026-08-22: 64/64 words
+ * ldiv = ldiv). PROVEN EXACT 2026-08-22: 64/64 words
  * identical at -O2 first compile. o32 struct return: $a0 = sret
  * pointer, ($a2,$a3) = numer, (sp+0x40,0x44) = denom. The two jal-0
  * words are the compiler-generated __ll_div / __ll_mul intrinsics --
@@ -14,7 +14,7 @@
  * its frame/aliasing residual notes are retired -- the "two chained
  * 64-bit helpers" were __ll_div and __ll_mul, and the whole fn is
  * verbatim Plauger lldiv. POST_COMPILE renames lldiv ->
- * gl_func_000743C4 for the REPLACE_FUNC_BODY splice key. Spliced into
+ * lldiv for the REPLACE_FUNC_BODY splice key. Spliced into
  * game_libs_post2b_d.c.o. */
 
 typedef struct {

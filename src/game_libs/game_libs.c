@@ -4453,7 +4453,7 @@ int *gl_func_000088B4(int *arg0) {
  * orphan symbol pre-prune sat at .o offset 0x8944 (= TRUNCATE_TEXT cap)
  * with size 0 — its bytes never reached the link. */
 
-/* game_libs_func_00070A0C RE-HOMED 2026-06-10: it was gl_func_00070A14's
+/* game_libs_func_00070A0C RE-HOMED 2026-06-10: it was guMtxL2F's
  * stolen prologue (lui/mtc1 FP-constant setup) emitting at the wrong
  * position (build 0x8938); the words are now prepended to 70A14's .s
  * in post1c where ROM has them. (Relayout ledger event.) */

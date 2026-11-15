@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for game_libs_func_00070954 = guMtxIdentF
+/* IDO 5.3 -O2 -mips2 donor for guMtxIdentF = guMtxIdentF
  * (libreultra src/gu/mtxutil.c verbatim). PROVEN EXACT 2026-08-22:
  * 34/34 words identical at -O2 (and -O3; -O1 fully rescheduled), ZERO
  * relocs -- the fn is pure code (lui 0x3F80 = 1.0f, mtc1 zero, the
@@ -8,7 +8,7 @@
  * carve-outs, not one mtxutil TU. Neighbor 70850 is F2L-shaped but
  * 64/64-word divergent from libreultra guMtxF2L at every opt level
  * (different variant/source) -- negative result, stays NM.
- * POST_COMPILE renames guMtxIdentF -> game_libs_func_00070954 for the
+ * POST_COMPILE renames guMtxIdentF -> guMtxIdentF for the
  * REPLACE_FUNC_BODY splice key. Spliced into game_libs_post1c.c.o. */
 
 void guMtxIdentF(float mf[4][4])

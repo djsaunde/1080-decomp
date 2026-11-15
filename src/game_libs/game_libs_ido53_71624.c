@@ -1,7 +1,7 @@
-/* IDO 5.3 -O1 donor for gl_func_00071624 = libultra __osPfsGetStatus
+/* IDO 5.3 -O1 donor for __osPfsGetStatus = libultra __osPfsGetStatus
  * (io/pfsgetstatus.c verbatim, 2.0I layout) -- pfs sibling family of
- * gl_func_00071384 = osPfsInitPak (which jals this at its PFS_GET_STATUS
- * head). PROVEN EXACT 57/57 vs expected gl_func_00071624 (first compile,
+ * osPfsInitPak = osPfsInitPak (which jals this at its PFS_GET_STATUS
+ * head). PROVEN EXACT 57/57 vs expected __osPfsGetStatus (first compile,
  * 2026-07-30 probe): masked-reloc word compare 0 mismatches AND every
  * reloc imm field already 0 on both sides (__osPfsPifRam refs are
  * addend-0 lui/addiu pairs = blank D_00000000 extern; all 6 jals are
@@ -26,7 +26,7 @@ typedef struct
 extern int gl_func_00000000();
 extern u8 D_00000000; /* __osPfsPifRam */
 
-s32 gl_func_00071624(OSMesgQueue *queue, int channel)
+s32 __osPfsGetStatus(OSMesgQueue *queue, int channel)
 {
     s32 ret;
     OSMesg dummy;

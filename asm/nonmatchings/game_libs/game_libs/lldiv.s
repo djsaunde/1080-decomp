@@ -1,6 +1,6 @@
-nonmatching gl_func_000743C4, 0x100
+nonmatching lldiv, 0x100
 
-glabel gl_func_000743C4
+glabel lldiv
     /* E5949C 000743C4 27BDFFD0 */  .word 0x27BDFFD0
     /* E594A0 000743C8 AFA40030 */  .word 0xAFA40030
     /* E594A4 000743CC AFBF0014 */  .word 0xAFBF0014
@@ -65,4 +65,4 @@ glabel gl_func_000743C4
     /* E59590 000744B8 27BD0030 */  .word 0x27BD0030
     /* E59594 000744BC 03E00008 */  .word 0x03E00008
     /* E59598 000744C0 00000000 */  .word 0x00000000
-endlabel gl_func_000743C4
+endlabel lldiv

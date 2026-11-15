@@ -1,6 +1,6 @@
-nonmatching gl_func_00070A14, 0xb4
+nonmatching guMtxL2F, 0xb4
 
-glabel gl_func_00070A14
+glabel guMtxL2F
     /* E55AE4 00070A0C 3C013780 */  .word 0x3C013780
     /* E55AE8 00070A10 44810000 */  .word 0x44810000
     /* E55AEC 00070A14 27BDFFF0 */  .word 0x27BDFFF0
@@ -46,4 +46,4 @@ glabel gl_func_00070A14
     /* E55B8C 00070AB4 25080010 */  .word 0x25080010
     /* E55B90 00070AB8 03E00008 */  .word 0x03E00008
     /* E55B94 00070ABC 27BD0010 */  .word 0x27BD0010
-endlabel gl_func_00070A14
+endlabel guMtxL2F

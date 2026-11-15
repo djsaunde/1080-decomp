@@ -1,13 +1,13 @@
 #include "common.h"
 
 /* DRIFT AUDIT 2026-06-10: this unit has ~2 internal byte-drop points in
- * [0x70314..0x70C44) -- gl_func_00070A14 sits -8 and gl_func_00070B04
+ * [0x70314..0x70C44) -- guMtxL2F sits -8 and gl_func_00070B04
  * -4 relative to neighbors, re-aligning by gl_func_00070C44. Candidate
  * for the dropped-former-SUFFIX class (see the confirmed B5AC case +
  * docs/MATCHING_WORKFLOW suffix-fallout audit). GAP CONTENTS verified
  * 2026-06-10: [0x70A0C..0x70A14) = lui at,0x3780; mtc1 at,$f2 (REAL
  * dropped code -- 709DC's former FP-constant suffix, prepend target =
- * gl_func_00070A14.s); the other two gaps are surplus pad words. A
+ * guMtxL2F.s); the other two gaps are surplus pad words. A
  * net-zero local fix (+8 prepend, -4 -4 pad deletions) was ATTEMPTED
  * and REVERTED: the emission accounting has another contributor (the
  * section grew and diffs ran to the end) -- precise emission tracing
@@ -77,7 +77,7 @@ void gl_func_00070634(int mask) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070634_pad.s")
 
-/* gl_func_00070694 = guOrthoF + gl_func_000707E8 = guOrtho (libultra
+/* gl_func_00070694 = guOrthoF + guOrtho = guOrtho (libultra
  * gu/ortho.c verbatim, ONE IDO 5.3 -O3 -mips2 whole-TU donor:
  * game_libs_ido53_70694.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice, first-compile 111/111 FULL-word identical (the three
@@ -95,14 +95,14 @@ void gl_func_00070694(int mf) {
     }
 }
 
-void gl_func_000707E8(int m) {
+void guOrtho(int m) {
     volatile int ortho_spliced = 0;
     if (m != 0) {
         ortho_spliced = m;
     }
 }
 
-/* game_libs_func_00070854 = guMtxF2L (libultra gu/mtxutil.c verbatim,
+/* guMtxF2L = guMtxF2L (libultra gu/mtxutil.c verbatim,
  * IDO 5.3 -O2 single-fn carve-out donor game_libs_ido53_70854.c, sibling
  * of guMtxIdentF 70954 below). BOUNDARY FIX 2026-09-09 (twenty-sixth
  * mis-split case, docs/MATCHING_WORKFLOW
@@ -111,20 +111,20 @@ void gl_func_000707E8(int m) {
  * bootup.uso's Sym export table says section 0x84EC0 (= splat 0x70854,
  * the `lui at,0x4780` = 65536.0f) is the export (sym 1998, several
  * R_MIPS_26 refs) and 0x84EBC (the zero) is not -- it is the 16-byte
- * inter-object pad closing guOrtho (gl_func_000707E8, 0x68), restored as
+ * inter-object pad closing guOrtho (guOrtho, 0x68), restored as
  * an all-zero SUFFIX_BYTES_FORCE on 707E8. The 2026-08-22 "64/64-word
  * divergent from libreultra guMtxF2L at every opt level" negative was an
  * off-by-one-word comparison against the padded .s: the verbatim source
  * is 64/64 at IDO 5.3 -O2 (and -O3), ZERO relocs. LANDED via
  * REPLACE_FUNC_BODY donor splice; body below is a placeholder. */
-void game_libs_func_00070854(int m) {
+void guMtxF2L(int m) {
     volatile int f2l_spliced = 0;
     if (m != 0) {
         f2l_spliced = m;
     }
 }
 
-/* game_libs_func_00070954 = guMtxIdentF (libultra gu/mtxutil.c
+/* guMtxIdentF = guMtxIdentF (libultra gu/mtxutil.c
  * verbatim, IDO 5.3 -O2 single-fn carve-out donor:
  * game_libs_ido53_70954.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice, 34/34 words exact, ZERO relocs. The old NM wrap had
@@ -133,7 +133,7 @@ void game_libs_func_00070854(int m) {
  * 5.3 donor emits the target's a0..a3 consts + bnel pattern natively.
  * (The verbatim source is the if/else diagonal form, not the ternary.)
  * Body below is a placeholder for the splice. */
-void game_libs_func_00070954(int m) {
+void guMtxIdentF(int m) {
     volatile int identf_spliced = 0;
     if (m != 0) {
         identf_spliced = m;
@@ -150,7 +150,7 @@ void gl_func_000709DC(int a0) {
     gl_func_00000000(buf, a0);
 }
 
-/* gl_func_00070A14 = guMtxL2F (libultra gu/mtxutil.c verbatim, IDO 5.3
+/* guMtxL2F = guMtxL2F (libultra gu/mtxutil.c verbatim, IDO 5.3
  * -O2 single-fn carve-out donor: game_libs_ido53_70A14.c). LANDED
  * 2026-08-22 via REPLACE_FUNC_BODY donor splice, 45/45 words exact,
  * ZERO relocs. The .s block spans 0x70A0C..0x70AC0: the leading
@@ -161,7 +161,7 @@ void gl_func_000709DC(int a0) {
  * stale splat boundary. The 4x2 loop recombines 16.16 halves from
  * m (ints) and m+0x20 (fracs) into floats. Body below is a
  * placeholder for the splice. */
-void gl_func_00070A14(int m) {
+void guMtxL2F(int m) {
     volatile int l2f_spliced = 0;
     if (m != 0) {
         l2f_spliced = m;
@@ -174,7 +174,7 @@ void gl_func_00070A14(int m) {
  * jr ra; nop` -- the pre-2.0I form without the __OSGlobalIntMask logic).
  * Sym oracle 2026-09-09 (agent-g): true entry 0x70AC4 = section 0x85130 =
  * export sym 2511 (three jal refs); the leading zero word at 0x70AC0
- * (0x8512C, not exported) is gl_func_00070A14's object pad. Now
+ * (0x8512C, not exported) is guMtxL2F's object pad. Now
  * real assembly source (below). The many blank `gl_func_00000000_disint` jals in
  * the -O1 donors resolve to this symbol at USO load time. */
 /* game_libs_func_00070AC0 = __osDisableInt (game_libs libultra copy): real source in src/libultra/game_libs/disableint.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */

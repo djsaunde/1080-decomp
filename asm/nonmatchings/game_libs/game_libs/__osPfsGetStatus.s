@@ -1,6 +1,6 @@
-nonmatching gl_func_00071624, 0xE4
+nonmatching __osPfsGetStatus, 0xE4
 
-glabel gl_func_00071624
+glabel __osPfsGetStatus
     /* E566FC 00071624 27BDFFD8 */  .word 0x27BDFFD8
     /* E56700 00071628 AFBF0014 */  .word 0xAFBF0014
     /* E56704 0007162C AFA40028 */  .word 0xAFA40028
@@ -58,4 +58,4 @@ glabel gl_func_00071624
     /* E567D4 000716FC 27BD0028 */  .word 0x27BD0028
     /* E567D8 00071700 03E00008 */  .word 0x03E00008
     /* E567DC 00071704 00000000 */  .word 0x00000000
-endlabel gl_func_00071624
+endlabel __osPfsGetStatus

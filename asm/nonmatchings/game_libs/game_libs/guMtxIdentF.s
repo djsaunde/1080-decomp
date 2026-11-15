@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00070954, 0x88
+nonmatching guMtxIdentF, 0x88
 
-glabel game_libs_func_00070954
+glabel guMtxIdentF
     /* E55A2C 00070954 3C013F80 */  .word 0x3C013F80
     /* E55A30 00070958 00801825 */  .word 0x00801825
     /* E55A34 0007095C 44810000 */  .word 0x44810000
@@ -35,4 +35,4 @@ glabel game_libs_func_00070954
     /* E55AA8 000709D0 24630010 */  .word 0x24630010
     /* E55AAC 000709D4 03E00008 */  .word 0x03E00008
     /* E55AB0 000709D8 00000000 */  .word 0x00000000
-endlabel game_libs_func_00070954
+endlabel guMtxIdentF

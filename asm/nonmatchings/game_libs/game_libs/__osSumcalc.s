@@ -1,6 +1,6 @@
-nonmatching gl_func_00071864, 0x5C
+nonmatching __osSumcalc, 0x5C
 
-glabel gl_func_00071864
+glabel __osSumcalc
     /* E5693C 00071864 27BDFFF0 */  .word 0x27BDFFF0
     /* E56940 00071868 AFA00008 */  .word 0xAFA00008
     /* E56944 0007186C AFA40004 */  .word 0xAFA40004
@@ -24,4 +24,4 @@ glabel gl_func_00071864
     /* E5698C 000718B4 97A2000A */  .word 0x97A2000A
     /* E56990 000718B8 03E00008 */  .word 0x03E00008
     /* E56994 000718BC 27BD0010 */  .word 0x27BD0010
-endlabel gl_func_00071864
+endlabel __osSumcalc

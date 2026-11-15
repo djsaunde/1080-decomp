@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for gl_func_00070A14 = guMtxL2F
+/* IDO 5.3 -O2 -mips2 donor for guMtxL2F = guMtxL2F
  * (libreultra src/gu/mtxutil.c verbatim). PROVEN EXACT 2026-08-22:
  * 45/45 words identical at -O2 first compile, ZERO relocs. The .s
  * block spans 0x70A0C..0x70AC0 (splat's glabel name is +8 into the
@@ -8,7 +8,7 @@
  * (the $f0 producer was merely on the wrong side of a stale splat
  * boundary note). Single-fn carve-out like neighbor 70954 =
  * guMtxIdentF (the gu cluster does not follow mtxutil.c TU order).
- * POST_COMPILE renames guMtxL2F -> gl_func_00070A14 for the
+ * POST_COMPILE renames guMtxL2F -> guMtxL2F for the
  * REPLACE_FUNC_BODY splice key. Spliced into game_libs_post1c.c.o. */
 
 typedef long Mtx_t[4][4];

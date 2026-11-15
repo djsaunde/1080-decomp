@@ -10,7 +10,7 @@
  *     @+0x4C, "0" @+0x50, 1.0e8 @+0x58): target bakes .rodata base
  *     0x2540 (USO data segment); pins gl_func_00073904_rodata /
  *     gl_func_00073E74_rodata = 0x2540 in undefined_syms_auto.txt.
- *   - blank USO jals (memcpy x6, ldiv=gl_func_000744CC): field 0 both
+ *   - blank USO jals (memcpy x6, ldiv=ldiv): field 0 both
  *     sides (gl_func_00000000_* externs).
  *   - the ONE intra-TU jal _Ldtob->_Genld: target bakes 0x0C021FDC
  *     (jal 0x87F70, the USO's original-link address of _Genld); donor
@@ -62,7 +62,7 @@ typedef struct ldiv_t
 } ldiv_t;
 
 /* blank USO-reloc externs (jal field 0): memcpy and ldiv
- * (= gl_func_000744CC, already landed as the ldiv identity). */
+ * (= ldiv, already landed as the ldiv identity). */
 extern void *gl_func_00000000_mcpy73(void *, const void *, size_t);
 extern ldiv_t gl_func_00000000_ldiv73(long, long);
 #define memcpy gl_func_00000000_mcpy73

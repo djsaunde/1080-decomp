@@ -80,18 +80,18 @@ void gl_func_00071304(void *mq, void *m, unsigned int retraceCount) {
 /* game_libs_func_00071370 = __osSetFpcCsr (game_libs libultra copy, + 1 leading pad word): handwritten cfc1/ctc1 assembly, real source in src/libultra/game_libs/setfpccsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/setfpccsr.s")
 
-/* gl_func_00071384 = libultra osPfsInitPak (io/pfsinitpak.c verbatim,
+/* osPfsInitPak = libultra osPfsInitPak (io/pfsinitpak.c verbatim,
  * 1080 2.0-era OSPfs layout) -- the pfs-family head. The old NM body
  * (46.3%) had the exact call/field skeleton; only IDO 5.3 -O1 reproduces
  * the stack-resident locals + sequential sp-reload chains.
  * LANDED 2026-07-30 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_71384.c (165/165 raw-word
  * identical incl. reloc imms; no data relocs, 10 blank USO jals =
- * __osSiGetAccess, __osPfsGetStatus=gl_func_00071624, __osSiRelAccess,
- * __osPfsSelectBank, __osContRamRead x2, __osIdCheckSum=gl_func_000718C0,
+ * __osSiGetAccess, __osPfsGetStatus=__osPfsGetStatus, __osSiRelAccess,
+ * __osPfsSelectBank, __osContRamRead x2, __osIdCheckSum=__osIdCheckSum,
  * __osCheckPackId=gl_func_00071D40, __osRepairPackId=gl_func_00071928,
  * osPfsChecker). Body below is a placeholder for the splice. */
-int gl_func_00071384(void *queue, void *pfs, int channel) {
+int osPfsInitPak(void *queue, void *pfs, int channel) {
     volatile int ret = 0;
     if (channel != 0) {
         ret = channel;
@@ -100,8 +100,8 @@ int gl_func_00071384(void *queue, void *pfs, int channel) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00071384_pad.s")
 
-/* gl_func_00071624 = libultra __osPfsGetStatus (io/pfsgetstatus.c
- * verbatim, 2.0I layout) -- pfs sibling family of gl_func_00071384 =
+/* __osPfsGetStatus = libultra __osPfsGetStatus (io/pfsgetstatus.c
+ * verbatim, 2.0I layout) -- pfs sibling family of osPfsInitPak =
  * osPfsInitPak (its PFS_GET_STATUS head jals this). The old NM body had
  * the exact semantics (status-flag decode 2/1/4) but 7.1 -O2 register
  * shapes; only IDO 5.3 -O1 reproduces the stack-resident locals.
@@ -111,7 +111,7 @@ int gl_func_00071384(void *queue, void *pfs, int channel) {
  * = blank USO jals: __osPfsRequestOneChannel, __osSiRawStartDma x2,
  * osRecvMesg x2, __osPfsGetOneChannelData=gl_func_000717CC).
  * Body below is a placeholder for the splice. */
-int gl_func_00071624(void *queue, int channel) {
+int __osPfsGetStatus(void *queue, int channel) {
     volatile int ret = 0;
     if (channel != 0) {
         ret = channel;
@@ -157,7 +157,7 @@ void gl_func_00071708(int a0) {
 
 
 /* gl_func_000717CC = libultra __osPfsGetOneChannelData (io/pfsgetstatus.c
- * verbatim, 2.0I layout) -- pfs sibling family; gl_func_00071624 =
+ * verbatim, 2.0I layout) -- pfs sibling family; __osPfsGetStatus =
  * __osPfsGetStatus jals this last. TRUE ENTRY 0x717C8: the compiled
  * fn's first insn (lui $t6,%hi(__osPfsPifRam)) was the old
  * _pad_pre_717CC stolen-prologue orphan inside gl_func_000717CC.s,

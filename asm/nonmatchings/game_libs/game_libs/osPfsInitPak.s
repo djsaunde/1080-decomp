@@ -1,6 +1,6 @@
-nonmatching gl_func_00071384, 0x294
+nonmatching osPfsInitPak, 0x294
 
-glabel gl_func_00071384
+glabel osPfsInitPak
     /* E5645C 00071384 27BDFF98 */  .word 0x27BDFF98
     /* E56460 00071388 AFBF0014 */  .word 0xAFBF0014
     /* E56464 0007138C AFA40068 */  .word 0xAFA40068
@@ -166,4 +166,4 @@ glabel gl_func_00071384
     /* E566E4 0007160C 27BD0068 */  .word 0x27BD0068
     /* E566E8 00071610 03E00008 */  .word 0x03E00008
     /* E566EC 00071614 00000000 */  .word 0x00000000
-endlabel gl_func_00071384
+endlabel osPfsInitPak

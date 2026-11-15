@@ -1,6 +1,6 @@
-nonmatching gl_func_000744CC, 0x84
+nonmatching ldiv, 0x84
 
-glabel gl_func_000744CC
+glabel ldiv
     /* E5959C 000744C4 00A6001A */  .word 0x00A6001A
     /* E595A0 000744C8 00001012 */  .word 0x00001012
     /* E595A4 000744CC 27BDFFF8 */  .word 0x27BDFFF8
@@ -34,4 +34,4 @@ glabel gl_func_000744CC
     /* E59614 0007453C 27BD0008 */  .word 0x27BD0008
     /* E59618 00074540 03E00008 */  .word 0x03E00008
     /* E5961C 00074544 AC880004 */  .word 0xAC880004
-endlabel gl_func_000744CC
+endlabel ldiv

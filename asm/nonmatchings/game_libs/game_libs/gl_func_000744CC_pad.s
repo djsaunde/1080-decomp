@@ -1,4 +1,4 @@
-/* trailing alignment padding for gl_func_000744CC */
+/* trailing alignment padding for ldiv */
 glabel _pad_gl_func_000744CC, local
 .word 0x00000000
 .word 0x00000000

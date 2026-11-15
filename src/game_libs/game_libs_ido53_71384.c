@@ -1,13 +1,13 @@
-/* IDO 5.3 -O1 donor for gl_func_00071384 = libultra osPfsInitPak
+/* IDO 5.3 -O1 donor for osPfsInitPak = libultra osPfsInitPak
  * (io/pfsinitpak.c verbatim, 1080 2.0-era OSPfs layout: status+0 /
  * queue+4 / channel+8, id[32]+0xC, label[32]+0x2C, version+0x4C ..
  * inode_start_page+0x60, banks+0x64, activebank+0x65). PROVEN EXACT
- * 165/165 vs expected gl_func_00071384 (first compile, 2026-07-30
+ * 165/165 vs expected osPfsInitPak (first compile, 2026-07-30
  * probe): masked-reloc word compare 0 mismatches AND every reloc imm
  * already 0 on both sides. No data relocs at all -- the only relocs are
  * the 10 blank USO jals (= gl_func_00000000 placeholder; real callees
- * __osSiGetAccess, __osPfsGetStatus=gl_func_00071624, __osSiRelAccess,
- * __osPfsSelectBank, __osContRamRead x2, __osIdCheckSum=gl_func_000718C0,
+ * __osSiGetAccess, __osPfsGetStatus=__osPfsGetStatus, __osSiRelAccess,
+ * __osPfsSelectBank, __osContRamRead x2, __osIdCheckSum=__osIdCheckSum,
  * __osCheckPackId=gl_func_00071D40, __osRepairPackId=gl_func_00071928,
  * osPfsChecker). post2 builds -O2 7.1; only 5.3 -O1 reproduces the
  * stack-resident ret/temp/newid locals and sequential sp-reload chains.
@@ -54,7 +54,7 @@ extern int gl_func_00000000();
     if (ret != 0) \
         return ret;
 
-s32 gl_func_00071384(OSMesgQueue *queue, OSPfs *pfs, int channel)
+s32 osPfsInitPak(OSMesgQueue *queue, OSPfs *pfs, int channel)
 {
     int k;
     s32 ret;

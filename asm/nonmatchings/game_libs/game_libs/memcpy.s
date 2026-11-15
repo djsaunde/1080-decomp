@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006F17C, 0x2C
+nonmatching memcpy, 0x2C
 
-glabel game_libs_func_0006F17C
+glabel memcpy
     /* E5425C 0006F184 00801025 */  .word 0x00801025
     /* E54260 0006F188 10C00007 */  .word 0x10C00007
     /* E54264 0006F18C 00A01825 */  .word 0x00A01825
@@ -12,4 +12,4 @@ glabel game_libs_func_0006F17C
     /* E5427C 0006F1A4 A04EFFFF */  .word 0xA04EFFFF
     /* E54280 0006F1A8 03E00008 */  .word 0x03E00008
     /* E54284 0006F1AC 00801025 */  .word 0x00801025
-endlabel game_libs_func_0006F17C
+endlabel memcpy

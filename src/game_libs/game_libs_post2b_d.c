@@ -97,7 +97,7 @@ void game_libs_func_00073E6C(void) {}
  * s-reg-linkage jal to _Genld (target bakes jal 0x87F70 = the USO's
  * original-link _Genld address; donor's local .text reloc renamed
  * gl_func_00073E74_text by the splice, pinned 0x87F70). Blank jals:
- * memcpy x1 + ldiv (= gl_func_000744CC identity, "a divmod helper" as
+ * memcpy x1 + ldiv (= ldiv identity, "a divmod helper" as
  * the old wrap guessed). .rodata pins: pows[] table @0x2540, "Inf"
  * 0x2588 / "NaN" 0x258C / 1.0e8 @0x2598 (base 0x2540).
  * Body below is a placeholder for the splice. */
@@ -112,8 +112,8 @@ void gl_func_00073E74(void *px, int code) {
  * shifted links 743C4..748A0 +4; the trailing 747F4_pad then got clipped
  * by TRUNCATE_TEXT 0x1210). */
 
-/* gl_func_000743C4 = libc lldiv (ldiv.c verbatim, long-long sibling of
- * gl_func_000744CC = ldiv; IDO 5.3 -O2 donor: game_libs_ido53_743C4.c).
+/* lldiv = libc lldiv (ldiv.c verbatim, long-long sibling of
+ * ldiv = ldiv; IDO 5.3 -O2 donor: game_libs_ido53_743C4.c).
  * LANDED 2026-08-22 via REPLACE_FUNC_BODY donor splice, 64/64 words
  * exact. The old "timestamp/range helper" re-derivation (54.8%) is
  * retired: the two chained jal-0 "64-bit helpers" are the compiler's
@@ -123,7 +123,7 @@ void gl_func_00073E74(void *px, int code) {
  * Corroboration: the xlitob.c donor (_Litob) ships a blank lldiv jal
  * whose USO load-time reloc targets this address. Body below is a
  * placeholder for the splice. */
-void gl_func_000743C4(int m) {
+void lldiv(int m) {
     volatile int lldiv_spliced = 0;
     if (m != 0) {
         lldiv_spliced = m;
@@ -132,7 +132,7 @@ void gl_func_000743C4(int m) {
 
 
 /* game_libs_func_000744C4 (0x8 orphan, no jr ra: div/mflo) was the HOISTED
- * HEAD of gl_func_000744CC = ldiv — absorbed into the donor splice below
+ * HEAD of ldiv = ldiv — absorbed into the donor splice below
  * (true entry 0x744C4, spliced symbol covers 0x744C4..0x74548). */
 
 #if 0
@@ -141,7 +141,7 @@ void gl_func_000743C4(int m) {
  * pre-prologue `div $zero,$a1,$a2; mflo $v0` head (splat orphan
  * game_libs_func_000744C4). Real identity: libc ldiv (o32 struct return,
  * $a0 = sret ptr). See the donor unit game_libs_ido53_744C4.c. */
-/* gl_func_000744CC: 31-insn divide-correction helper w/ IDO trap prologue (0x7C, frame 0x08).
+/* ldiv: 31-insn divide-correction helper w/ IDO trap prologue (0x7C, frame 0x08).
  *
  * Decoded structure (raw-word disasm) — division codegen idioms:
  *
@@ -167,7 +167,7 @@ void gl_func_000743C4(int m) {
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path (the
  * `multu $a2, $v0` w/ caller-set v0 is unreproducible from standard C).
  */
-void gl_func_000744CC(int *a0_out, int a1_dividend_lo, int a2_divisor) {
+void ldiv(int *a0_out, int a1_dividend_lo, int a2_divisor) {
     /* Custom-convention divide-correction helper. Real C below shows shape;
      * cannot byte-match due to caller-set $v0_guess. */
     extern int v0_caller_guess;
@@ -186,7 +186,7 @@ void gl_func_000744CC(int *a0_out, int a1_dividend_lo, int a2_divisor) {
 }
 #endif
 
-/* gl_func_000744CC = libc ldiv (xldiv.c verbatim): quot = numer/denom
+/* ldiv = libc ldiv (xldiv.c verbatim): quot = numer/denom
  * (the div/mflo hoisted above the prologue = the absorbed 0x8 orphan),
  * rem = numer - denom*quot, then the C-rounding fixup
  * (quot<0 && rem>0 => quot++, rem-=denom), returned as an o32 sret
@@ -195,7 +195,7 @@ void gl_func_000744CC(int *a0_out, int a1_dividend_lo, int a2_divisor) {
  * real C lives in the donor unit game_libs_ido53_744C4.c (33/33 exact,
  * zero relocs). Body below is a placeholder for the REPLACE_FUNC_BODY
  * splice (its bytes are replaced by the donor). */
-void gl_func_000744CC(void) {
+void ldiv(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
 }

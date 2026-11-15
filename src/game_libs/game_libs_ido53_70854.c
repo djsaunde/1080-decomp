@@ -1,4 +1,4 @@
-/* IDO 5.3 -O2 -mips2 donor for game_libs_func_00070854 = guMtxF2L
+/* IDO 5.3 -O2 -mips2 donor for guMtxF2L = guMtxF2L
  * (libreultra src/gu/mtxutil.c verbatim, FTOFIX32 from gu.h). PROVEN
  * EXACT 2026-09-09: 64/64 words identical at -O2 (and -O3; -O1 is 1/64),
  * ZERO relocs (lui 0x4780 = 65536.0f, the unrolled j<2 inner pair). The
@@ -7,7 +7,7 @@
  * guOrtho's inter-object pad word at 0x70850; the export is 0x70854).
  * Single-fn carve-out like guMtxIdentF 70954 (the game's gu cluster does
  * not follow mtxutil.c's TU emit order). POST_COMPILE renames
- * guMtxF2L -> game_libs_func_00070854 for the REPLACE_FUNC_BODY splice
+ * guMtxF2L -> guMtxF2L for the REPLACE_FUNC_BODY splice
  * key. Spliced into game_libs_post1c.c.o. */
 
 typedef union {

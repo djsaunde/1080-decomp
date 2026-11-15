@@ -1,13 +1,13 @@
 #include "common.h"
 extern int D_00000000;
 
-/* gl_func_000718C0 = libultra __osIdCheckSum (io/contpfs.c), statically
+/* __osIdCheckSum = libultra __osIdCheckSum (io/contpfs.c), statically
  * linked into game_libs. Byte-exact ONLY with IDO 5.3 -O1 (per-file
  * CC/OPT_FLAGS override) from the verbatim libreultra source — same story
- * as gl_func_00071864 in the sibling unit. This unit starts 16-aligned
+ * as __osSumcalc in the sibling unit. This unit starts 16-aligned
  * (0x718C0) and also carries gl_func_00071928's INCLUDE_ASM so the
  * following unit can start at the 16-aligned 0x71D40. */
-s32 gl_func_000718C0(u16 *ptr, u16 *csum, u16 *icsum)
+s32 __osIdCheckSum(u16 *ptr, u16 *csum, u16 *icsum)
 {
     u16 data;
     u32 j;
@@ -30,7 +30,7 @@ s32 gl_func_000718C0(u16 *ptr, u16 *csum, u16 *icsum)
  * literal. All 12 calls are runtime-patched USO relocations (target jal
  * words are 0x0C000000), so every callee is the gl_func_00000000 placeholder
  * (real identities: __osPfsSelectBank, __osContRamRead, __osContRamWrite,
- * osGetCount, __osIdCheckSum=gl_func_000718C0 above). 262/262 words. */
+ * osGetCount, __osIdCheckSum=__osIdCheckSum above). 262/262 words. */
 typedef struct {
     int status;
     void *queue;
