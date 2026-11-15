@@ -395,9 +395,9 @@ void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
     GADGET(a0)->label2 = a2;
 }
 
-/* gadget_decodeStringE4_00014010 - verified structural decode (0xB4, 45 insns,
+/* Gadget_flipDigits_00014010 - verified structural decode (0xB4, 45 insns,
  * in-place string substitution cipher).
- *   void gadget_decodeStringE4_00014010(char *a0) {
+ *   void Gadget_flipDigits_00014010(char *a0) {
  *       char *s = a0 + 0xE4;                      // string field
  *       u32 n = strlen_like(s);                   // func_00000000(s)
  *       u32 i = 0;
@@ -425,7 +425,7 @@ void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
-void gadget_decodeStringE4_00014010(char *a0) {
+void Gadget_flipDigits_00014010(char *a0) {
     unsigned int i;
     unsigned char c;
     for (i = 0; i < (unsigned int)FCALL(str_len)(a0 + 0xE4); i++) {
@@ -752,11 +752,11 @@ int PointsPopup_slideStep(char *a0, int a1) {
     return r;
 }
 
-/* gadget_decodeStringB4_00014598 - verified structural decode (0xB4, 45 insns).
- * INSTRUCTION-IDENTICAL SIBLING of gadget_decodeStringE4_00014010 (the in-place
+/* PointsPopup_flipDigits_00014598 - verified structural decode (0xB4, 45 insns).
+ * INSTRUCTION-IDENTICAL SIBLING of Gadget_flipDigits_00014010 (the in-place
  * string substitution cipher); the ONLY difference is the string
  * field offset 0xB4 here vs 0xE4 there.
- *   void gadget_decodeStringB4_00014598(char *a0) {
+ *   void PointsPopup_flipDigits_00014598(char *a0) {
  *       char *s = a0 + 0xB4;                      // string field (180)
  *       u32 i = 0, n = strlen_like(s);            // func_00000000(s)
  *       while (i < n) {
@@ -767,18 +767,18 @@ int PointsPopup_slideStep(char *a0, int a1) {
  *       }
  *   }
  * Struct-typing reference: a0->0xB4 (180) = char[] name/id string
- * buffer (the gadget_decodeStringE4_00014010 cipher applied to a different field; an
+ * buffer (the Gadget_flipDigits_00014010 cipher applied to a different field; an
  * object with cipher-able strings at BOTH 0xB4 and 0xE4). Caps <80:
  * bnel branch-likely loop + reloc func_00000000 strlen-recompute
  * bound + 4 char constants hoisted s3-s6 (8-sreg, allocator order-
- * sensitive) - same as gadget_decodeStringE4_00014010. Full body INCLUDE_ASM-
+ * sensitive) - same as Gadget_flipDigits_00014010. Full body INCLUDE_ASM-
  * preserved (.s = source of truth). INCLUDE_ASM (no episode;
  * tautology-trap rule). */
 /* EXACT (agent-c run 115). strlen (func_07C610, jal 0) re-evaluated in the
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
-void gadget_decodeStringB4_00014598(char *a0) {
+void PointsPopup_flipDigits_00014598(char *a0) {
     unsigned int i;
     unsigned char c;
     for (i = 0; i < (unsigned int)FCALL(str_len)(a0 + 0xB4); i++) {

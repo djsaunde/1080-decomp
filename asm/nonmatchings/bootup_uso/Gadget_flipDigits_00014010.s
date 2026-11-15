@@ -1,6 +1,6 @@
-nonmatching gadget_decodeStringE4_00014010, 0xB4
+nonmatching Gadget_flipDigits_00014010, 0xB4
 
-glabel gadget_decodeStringE4_00014010
+glabel Gadget_flipDigits_00014010
     /* DE4A7C 00014010 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DE4A80 00014014 AFB30024 */  sw         $s3, 0x24($sp)
     /* DE4A84 00014018 AFB20020 */  sw         $s2, 0x20($sp)
@@ -49,4 +49,4 @@ glabel gadget_decodeStringE4_00014010
     /* DE4B24 000140B8 8FB60030 */  lw         $s6, 0x30($sp)
     /* DE4B28 000140BC 03E00008 */  jr         $ra
     /* DE4B2C 000140C0 27BD0038 */   addiu     $sp, $sp, 0x38
-endlabel gadget_decodeStringE4_00014010
+endlabel Gadget_flipDigits_00014010

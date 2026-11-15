@@ -361,7 +361,7 @@ void TimeGadgetParms_setPos_00013FE0(char *a0, int a1, int a2);
 void TimeGadgetParms_setLabelPos_00013FEC(char *a0, int a1, int a2, int a3, int arg5);
 void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2);
 extern u32 bootup_14010_strlen(char *s);
-void gadget_decodeStringE4_00014010(char *a0);
+void Gadget_flipDigits_00014010(char *a0);
 void TimeGadget_display_000140C4(char *s0);
 void BestGadget_display_00014228(char *s0);
 extern int sTimeGadgetParmsTags_CACC[];
@@ -380,4 +380,4 @@ typedef struct {
 } Bootup144F4State;
 s32 PointsPopup_slideStep(Bootup144F4State *state, s32 limit);
 extern s32 bootup_strlen_07C610(char *text);
-void gadget_decodeStringB4_00014598(char *object);
+void PointsPopup_flipDigits_00014598(char *object);

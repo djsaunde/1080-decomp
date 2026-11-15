@@ -154,7 +154,7 @@ typedef char FloatPosParms_size_check[sizeof(FloatPosParms) == 0x38 ? 1 : -1];
  * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). The position is the
  * float Parms at +0x2C (parms.xps.value = x at 0x44, parms.yps.value = y at 0x5C): the bootup
  * helpers PointsPopup_setPosScale (x, y, scaleX, scaleY), PointsPopup_setScale
- * (scale), PointsPopup_slideStep (y += velY up to a limit) and gadget_decodeStringB4_00014598
+ * (scale), PointsPopup_slideStep (y += velY up to a limit) and PointsPopup_flipDigits_00014598
  * (text) work on it (callers: uso-imports.py; agent-h run 509). */
 typedef struct PointsPopup {
     /* 0x00 */ Node node;          /* node.name = "PointsGadget" */
@@ -179,7 +179,7 @@ typedef struct PointsPopup {
     /* 0xAC */ f32 accelY;         /* update: velY += accelY */
     /* 0xB0 */ s32 arg;            /* ctor arg 1; allocSlot copies the list's +0x54 */
     /* 0xB4 */ char text[0xD4 - 0xB4]; /* sprintf target (PointsGadget_setValue, allocSlot);
-                                    * gadget_decodeStringB4_00014598 deciphers it in place */
+                                    * PointsPopup_flipDigits_00014598 deciphers it in place */
 } PointsPopup;
 
 typedef char PointsPopup_size_check[sizeof(PointsPopup) == 0xD4 ? 1 : -1];
