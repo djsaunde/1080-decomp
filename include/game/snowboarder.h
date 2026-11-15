@@ -202,19 +202,32 @@ typedef struct SnowBoarder {
     char *unk81C;           /* 0x81C: ctor: word 1; update stores landImpact at +0x94 when unk8B8 & 1 */
     char *bodyNodes[7];     /* 0x820..0x838: rider model nodes read by the ctor from the shape-file node registry
                              * (gNodeGlobals slots). SnowBoarder_update jitters the +0x64 float of [1] [2] [4] by
-                             * the shake amount, [5] [3] by half of it and [6] by minus half (agent-h run 496) */
+                             * the shake amount, [5] [3] by half of it and [6] by minus half (agent-h run 496).
+                             * By registry slot (the rider node list, bootup Data 0xABBC; agent-g run 502):
+                             * [0] slot 34 "boarder_a" (the skinned body), [1] 27 "board_a", [2] 2 "legL_jnt_3",
+                             * [3] 1 "legL_jnt_2", [4] 7 "legR_jnt_3", [5] 6 "legR_jnt_2", [6] 20 "waist_jnt_1":
+                             * the shake runs from the board up the legs to the waist */
     char pad83C[0x840 - 0x83C];
     struct RiderAnim *anim; /* 0x840: the RiderAnim (game.uso C48C) built by the ctor; the SnowAI run-out steps and
                              * SnowBoarder_handleMsg's ending ("en1" / "en2") call its state methods */
-    char *unk844;           /* 0x844: child object A; its +0x30 float is negated on a mirror flip */
+    char *unk844;           /* 0x844: registry slot 28, MNode "top" (the model root); its +0x30 float is negated on
+                             * a mirror flip */
     s32 controller;         /* 0x848: ctor arg 1 (also passed to the 0x808 member). 0 = pad rider, 2 = CPU rider
                              * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
     char pad84C[0x850 - 0x84C];
     char *light;            /* 0x850: a light object; procColl passes unk91C to it (light_setF124_000550A0) */
-    char pad854[0x864 - 0x854];
-    char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
+    char *unk854;           /* 0x854: registry slot 29: a bootup-data shape (Data 0xA42C) under "board_a", built
+                             * when the list mask has bit 8 */
+    char *headShape;        /* 0x858: registry slot 31: the per-character shape on the head node (characters 2..5
+                             * and 8 only; from the boarder USO, mod14..17) */
+    char *bodySkin;         /* 0x85C: registry slot 30: the per-character SkinShape (mask bit 1) */
+    char *unk860;           /* 0x860: registry slot 33: a bootup-data SkinShape (Data 0xC104, mask bit 2) */
+    char *unk864;           /* 0x864: registry slot 32: the unnamed MNode under "board_a" that holds the board
+                             * shape (one of the nine board USOs by board index); may be NULL; transform at +0x30 */
     char pad868[0x874 - 0x868];
-    char *camSource;        /* 0x874: a node of the rider model: slot 22 of the shape-file node registry
+    char *camSource;        /* 0x874: the rider's HEAD node: slot 22 of the shape-file node registry, the unnamed
+                             * MNode child of "chest_jnt_2" that carries the head shape (slot 31) (agent-g run 502:
+                             * the rider node list at bootup Data 0xABBC);
                              * (bootup Bss 0x3C058, Sym 550, 40 slots; shape cmd 0x67 registers the current
                              * node in a slot, cmd 0x66 parents to one: Node_doCommand), read by the ctor
                              * right after the model is built, like 0x820..0x864 (agent-g run 488).
@@ -362,6 +375,8 @@ SNOWB_ASSERT_OFFSET(controller, 0x848);
 SNOWB_ASSERT_OFFSET(light, 0x850);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
 SNOWB_ASSERT_OFFSET(camSource, 0x874);
+SNOWB_ASSERT_OFFSET(unk854, 0x854);
+SNOWB_ASSERT_OFFSET(unk860, 0x860);
 SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
 SNOWB_ASSERT_OFFSET(character, 0x8C4);
 SNOWB_ASSERT_OFFSET(tint, 0x8E0);
