@@ -46,14 +46,22 @@ typedef struct InputMgr {
     /* 0x120 */ s32 numPads;
     /* 0x124 */ s32 numReplayInputs;
     /* 0x128 */ s32 activePad;     /* -1 = any pad; input_setActivePad / input_clearActivePad */
-    char pad12C[0x138 - 0x12C];
-    /* 0x138 */ void *dataMgr;     /* the running race's DataManager (a RaceTracker subclass,
-                                    * node "DataManager"); every race / demo ctor stores it */
+    char pad12C[0x134 - 0x12C];
+    /* 0x134 */ char *game;        /* boot Bss 0x22C: the game world object. +0xC4 / +0xCC the
+                                    * two players (their +0x800 is the pad), +0x108 / +0x10C the
+                                    * camera windows (RaceProcess replayCam / savedCam swap in) */
+    /* 0x138 */ struct RaceTracker *dataMgr; /* the running race's DataManager (include/gdl/race.h:
+                                    * a RaceTracker subclass, node "DataManager"); every race /
+                                    * demo ctor stores it */
     char pad13C[0x148 - 0x13C];
     /* 0x148 */ void *backup;      /* the save-data object, arg 2 of Backup_openSession */
     /* 0x14C */ s32 *session;      /* the open Backup session (<pfx>_openSession / closeSession);
                                     * session[1] / [2] feed replayLen / replayData */
-    char pad150[0x168 - 0x150];
+    char pad150[0x154 - 0x150];
+    /* 0x154 */ char *unlocks;     /* the unlock / option record: +0 u16 unlock bits (1 << n),
+                                    * +4 u16 option bits (8 = the title language menu),
+                                    * +0x12..0x14 u8 settings */
+    char pad158[0x168 - 0x158];
     /* 0x168 */ s32 replayData[2]; /* per player: recorded input, pad_startPlay arg 2 */
     /* 0x170 */ s32 replayLen[2];  /* per player: pad_startPlay arg 3; the replay timeouts
                                     * (h2h / mgr / arc onTimeout) are built from it */
@@ -81,6 +89,8 @@ typedef char InputMgr_pads_check[(int)&((InputMgr *)0)->pads == 0xE0 ? 1 : -1];
 typedef char InputMgr_replayInputs_check[(int)&((InputMgr *)0)->replayInputs == 0x100 ? 1 : -1];
 typedef char InputMgr_numPads_check[(int)&((InputMgr *)0)->numPads == 0x120 ? 1 : -1];
 typedef char InputMgr_activePad_check[(int)&((InputMgr *)0)->activePad == 0x128 ? 1 : -1];
+typedef char InputMgr_game_check[(int)&((InputMgr *)0)->game == 0x134 ? 1 : -1];
+typedef char InputMgr_unlocks_check[(int)&((InputMgr *)0)->unlocks == 0x154 ? 1 : -1];
 typedef char InputMgr_dataMgr_check[(int)&((InputMgr *)0)->dataMgr == 0x138 ? 1 : -1];
 typedef char InputMgr_backup_check[(int)&((InputMgr *)0)->backup == 0x148 ? 1 : -1];
 typedef char InputMgr_session_check[(int)&((InputMgr *)0)->session == 0x14C ? 1 : -1];

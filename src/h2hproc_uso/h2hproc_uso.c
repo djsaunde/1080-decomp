@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "game/modeproc.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -226,8 +227,8 @@ void h2h_pauseContinue_0000045C(void) {
  * only via a fake `char *a0` parameter. See docs/MATCHING_WORKFLOW.md
  * #hoisted-head-119c-11a4-mgrproc (same mechanism, same fix). */
 void h2h_pauseForfeit_0000049C(void) {
-    char *a0 = *(char **)&D_00000000;
-    gl_func_00000000(a0, *(int*)(a0 + 0x6B4) ^ 1);
+    H2HRace *a0 = *(H2HRace **)&D_00000000;
+    gl_func_00000000(a0, a0->pausePlayer ^ 1);
     gl_func_00000000(*(int*)&D_00000000);
     gl_func_00000000(&D_00000000);
 }
@@ -394,7 +395,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
             *(int *)(o2 + 0x28) = (int)&D_00000000;
         }
         *(int *)(obj + 0x6B0) = (int)o2;
-        INPUT_MGR(D_00000000).dataMgr = o2;
+        INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
 
         gl_func_00000000_620v(*(int *)(obj + 0x6B0), obj, *(int *)(obj + 0x568));
 
@@ -511,9 +512,9 @@ extern int gl_func_h2hproc_8EC_f();
  * 2nd arg keeps it live in $a1 across the call so the post-jal reload
  * goes to $a1 (matching) instead of $t7. No volatile/spill-shaping needed.
  * (Lever: faithful arg count from the asm beats reg-alloc grinding.) */
-void h2h_winByFinish_000008EC(char *a0, int a1) {
-    *(int*)(a0 + 0x6B8) = a1;
-    gl_func_h2hproc_8EC_pre(*(int*)(a0 + 0x6A8), a1);
+void h2h_winByFinish_000008EC(H2HRace *a0, int a1) {
+    a0->winner = a1;
+    gl_func_h2hproc_8EC_pre(a0->wins, a1);
     if (a1 == 0) {
         gl_func_h2hproc_8EC_f(a0);
     } else {
@@ -522,9 +523,9 @@ void h2h_winByFinish_000008EC(char *a0, int a1) {
 }
 
 /* MATCHED 2026-05-29: byte-identical sibling of 000008EC; same 2-arg-call1 fix. */
-void h2h_winByRetire_00000944(char *a0, int a1) {
-    *(int*)(a0 + 0x6B8) = a1;
-    gl_func_h2hproc_8EC_pre(*(int*)(a0 + 0x6A8), a1);
+void h2h_winByRetire_00000944(H2HRace *a0, int a1) {
+    a0->winner = a1;
+    gl_func_h2hproc_8EC_pre(a0->wins, a1);
     if (a1 == 0) {
         gl_func_h2hproc_8EC_f(a0);
     } else {
@@ -532,12 +533,12 @@ void h2h_winByRetire_00000944(char *a0, int a1) {
     }
 }
 
-void H2HRaceProcess_onPause(int *a0) {
+void H2HRaceProcess_onPause(H2HRace *a0) {
     int v;
-    gl_func_00000000(&D_00000000, *(int*)((char*)a0 + 0x514) - 1);
-    v = *(int*)((char*)a0 + 0x514) - 1;
-    *(int*)((char*)a0 + 0x6B4) = v;
-    gl_func_00000000(*(int*)((char*)a0 + 0x48), v * 120 + 60);
+    gl_func_00000000(&D_00000000, a0->race.unk514 - 1);
+    v = a0->race.unk514 - 1;
+    a0->pausePlayer = v;
+    gl_func_00000000(a0->race.unk048, v * 120 + 60);
 }
 
 /* H2HRaceProcess_onPauseSelect: 34-insn indirect-method dispatch.
@@ -593,8 +594,8 @@ void H2HRaceProcess_onPauseSelect(int *a0) {
 
 /* func_00000A80: 2-insn leaf bundled into 9F8's nonmatching SIZE by splat.
  * Simple `a0->[0x504] = 0` setter. */
-void H2HRaceProcess_onEndTimerDone(int *a0) {
-    *(int*)((char*)a0 + 0x504) = 0;
+void H2HRaceProcess_onEndTimerDone(H2HRace *a0) {
+    a0->race.unk504 = 0;
 }
 
 /* H2HRaceProcess_onRaceOver: 0x124 state-machine dispatcher on a0->0x504.
@@ -612,16 +613,16 @@ void H2HRaceProcess_onEndTimerDone(int *a0) {
  * void alias for the local helper at 0xC18, twin-indexed array extern for
  * the lui+addiu,0 paired base, decl order tmp/s0/a3/base. */
 extern unsigned A88_diffpair[];
-extern void h2hproc_call_00000C18(int *);
-void H2HRaceProcess_onRaceOver(int *a0) {
-    int tmp = *(int*)((char*)a0 + 0x504);
-    int *s0 = a0;
+extern void h2hproc_call_00000C18(H2HRace *);
+void H2HRaceProcess_onRaceOver(H2HRace *a0) {
+    int tmp = a0->race.unk504;
+    H2HRace *s0 = a0;
     int a3;
     char *base = &D_00000000;
     switch (tmp) {
     case 0:
         gl_func_00000000(*(int*)(base + 0x190), 3, 1);
-        *(int*)((char*)s0 + 0x504) = 1;
+        s0->race.unk504 = 1;
         gl_func_00000000(7, 0, 0);
         break;
     case 1: {
@@ -634,8 +635,8 @@ void H2HRaceProcess_onRaceOver(int *a0) {
         if ((unsigned)tmp < min) min = (unsigned)tmp;
         gl_func_00000000(s0, min + 0x26000F, A88_diffpair);
         tmp = gl_func_00000000(0, s0);
-        a3 = *(int*)((char*)s0 + 0x56C);
-        *(int*)((char*)s0 + 0x6AC) = tmp;
+        a3 = s0->race.handler;
+        s0->postMenu = tmp;
         gl_func_00000000(a3 + 0x10, tmp);
         if (*(int*)(tmp + 0x14) != 0) {
             *(int*)(tmp + 0x4) = 1;
@@ -647,11 +648,11 @@ void H2HRaceProcess_onRaceOver(int *a0) {
     }
 }
 
-void H2HRaceProcess_onTimeout(int *a0) {
+void H2HRaceProcess_onTimeout(H2HRace *a0) {
     int v0, v1;
 
-    if (*(int*)((char*)*(int**)((char*)*(int**)((char*)a0 + 0x6AC) + 0x34) + 0x3C) < 0xFF) {
-        *(int*)((char*)a0 + 0x4F4) = 1;
+    if (*(int*)((char*)*(int**)((char*)a0->postMenu + 0x34) + 0x3C) < 0xFF) {
+        a0->race.timeout = 1;
         return;
     }
     v0 = INPUT_MGR(D_00000000).replayLen[0];

@@ -241,4 +241,14 @@ typedef char RaceTracker_course_check[(int)&((RaceTracker *)0)->course == 0x80 ?
 typedef char RaceTracker_coolValue_check[(int)&((RaceTracker *)0)->coolValue == 0x9C ? 1 : -1];
 typedef char RaceTracker_hudFlags_check[(int)&((RaceTracker *)0)->hudFlags == 0xB4 ? 1 : -1];
 
+/* ---- DataManager (agent-h run 473) ----
+ * "DataManager" is the node name of the RaceTracker class itself (game_libs 0xC784,
+ * vtable Data+0xD678): titproc's demo processes build a plain one (base ctor with 0),
+ * every race mode derives its own (TimDataManager / ArcDataManager 0xD8 / MgrDataManager
+ * 0xE0 / H2HDataManager 0xF0, include/game/modeproc.h). InputMgr.dataMgr (bootup Bss
+ * 0xF8 + 0x138) points at the running one. The mode subclasses agree on nothing past
+ * 0xB8 (arc / mgr: 0xB8 course list, 0xBC owner race; tim / h2h: 0xB8 owner race), so
+ * the base is the RaceTracker layout. */
+typedef RaceTracker DataManager;
+
 #endif
