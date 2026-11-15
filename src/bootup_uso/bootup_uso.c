@@ -6958,7 +6958,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
         sb->vel.y = sb->vel.y * k;
         sb->vel.z = sb->vel.z * k;
     }
-    if (sb->unk938 == 0) {
+    if (sb->contactCount == 0) {
         k = 1.0f - sb->parms.wfr.value;
         sb->vel.x = sb->vel.x * k;
         sb->vel.z = sb->vel.z * k;

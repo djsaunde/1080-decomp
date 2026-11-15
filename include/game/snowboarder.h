@@ -53,6 +53,27 @@ typedef struct SnowBoarderParms {
     SnowBParm jmp, djp, ufs, bdm, cdm, tch; /* 0x230..0x2A8 */
 } SnowBoarderParms;
 
+/* The 0x154-byte child at SnowBoarder +0x3EC (vtbl bootup Data 0x8108, perf label "SnowBChild"; its vtbl slot 8 is
+ * SnowBChild_readParms_0000E720). Its embedded "Parms" (+0x2C = rider +0x418) holds the ground-handling parms that
+ * SnowBoarder_updateDyn selects every frame. Tags in construction order; the letters read as n = normal set,
+ * d = the alternate set chosen while useDParms is set, i / d (ied, ifr / ded, dfr) = the surface 'c' / 'b' scales. */
+typedef struct SnowBChildParms {
+    const char *name;       /* 0x00: "Parms" */
+    s32 unk04;              /* 0x04: parm list head */
+    SnowBParm ied, ifr;     /* 0x08, 0x20 (rider value 0x430, 0x448): surface 'c' scales of edgeGrip / friction */
+    SnowBParm ded, dfr;     /* 0x38, 0x50 (0x460, 0x478): surface 'b' scales of edgeGrip / friction */
+    SnowBParm efr;          /* 0x68 (0x490): copied to edgeFriction every frame */
+    SnowBParm nbf, nel;     /* 0x80, 0x98 (0x4A8, 0x4C0): base friction / edge grip, normal set */
+    SnowBParm dbf, del;     /* 0xB0, 0xC8 (0x4D8, 0x4F0): base friction / edge grip, alternate set */
+    SnowBParm res;          /* 0xE0 (0x508): turnRate = res * nts (or dts) */
+    SnowBParm flx, sta;     /* 0xF8, 0x110 */
+} SnowBChildParms;
+
+typedef struct SnowBChild {
+    char pad00[0x2C];
+    SnowBChildParms parms;  /* 0x2C */
+} SnowBChild;
+
 struct SnowAI;
 struct RiderAnim;
 
@@ -66,13 +87,18 @@ typedef struct SnowBoarder {
                              * (normalize + scale) when speed > maxSpeed */
     char pad324[0x348 - 0x324];
     f32 speed;              /* 0x348: |vel|, compared against maxSpeed (B520) and 30 / 10 thresholds */
-    char pad34C[0x38C - 0x34C];
+    char pad34C[0x360 - 0x34C];
+    f32 friction;           /* 0x360: ground friction, rebuilt each frame by SnowBoarder_updateDyn: nbf / dbf, + |spin.x| * k
+                             * while crouching, * ifr / dfr on surface 'c' / 'b', + k off the ground, * parms.bdf,
+                             * + slowdown / 100 */
+    char pad364[0x38C - 0x364];
     s32 unk38C;             /* 0x38C: set to 1 by SnowBoarder_ctor */
     char pad390[0x3A4 - 0x390];
     SnowBVec3 startPos;     /* 0x3A4: spawn point: ctor args (x, z), y = ground height at (x, z) + a RoData offset */
     char pad3B0[0x3C8 - 0x3B0];
     SnowBVec3 dir;          /* 0x3C8: unit forward direction (B520 nudge axis; dotted with vel in updateDyn) */
-    char pad3D4[0x540 - 0x3D4];
+    char pad3D4[0x3EC - 0x3D4];
+    SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
     SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
     char *input;            /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
                              * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
@@ -88,7 +114,9 @@ typedef struct SnowBoarder {
                              * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
     char pad84C[0x864 - 0x84C];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
-    char pad868[0x8C0 - 0x868];
+    char pad868[0x89C - 0x868];
+    SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
+    char pad8A8[0x8C0 - 0x8A8];
     s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
     u32 character;          /* 0x8C4: rider character 1..8: ctor arg 2 = game_createPlayers' index + 1; SnowAI_update
                              * picks ms1..ms8 by it; 6 and 7 get special ctor handling and DDCC skips them */
@@ -102,11 +130,34 @@ typedef struct SnowBoarder {
     struct SnowBoarder *rival; /* 0x908: the other rider; game_setupVsCpu links the two riders through it,
                                 * B520's catch-up compares positions with it */
     char pad90C[0x938 - 0x90C];
-    s32 unk938;             /* 0x938: B520 applies dragXZ only while this is 0 (contact / state flag) */
-    char pad93C[0x970 - 0x93C];
+    s32 contactCount;       /* 0x938: collider contacts this frame: SnowBoarder_procColl clears it, SnowBCollider_onContact
+                             * increments it; SnowBoarder_limitSpeed applies the wfr air drag only while it is 0 */
+    SnowBVec3 contactNormal; /* 0x93C: summed contact directions, divided by contactCount in procColl */
+    char pad948[0x960 - 0x948];
+    s32 slowdown;           /* 0x960: percent: updateDyn zeroes edgeGrip, adds slowdown / 100 to friction and scales vel.xz
+                             * by 1 - sfr; 100 with speed < 30 stops the rider (RiderAnim sets 100; st / sl parms drive it) */
+    char pad964[0x968 - 0x964];
+    f32 contactDepth;       /* 0x968: summed contact amounts, averaged like contactNormal */
+    char pad96C[0x970 - 0x96C];
     SnowBVec3 spin;         /* 0x970: rotation rates; RiderAnim_clearRiderSpin_00011868 zeroes all three,
                              * RiderAnim_selectAnim tests |spin.x|, spin.z is negated on a mirror flip */
-    char pad97C[0xA10 - 0x97C];
+    char pad97C[0x990 - 0x97C];
+    s32 crouch;             /* 0x990: input stick y < -0.75 (updateDyn); adds |spin.x| * k to friction */
+    char pad994[0x9A0 - 0x994];
+    s16 groundSurface;      /* 0x9A0: surface code of the ground below (procColl ground query) */
+    s16 surface;            /* 0x9A2: groundSurface while close enough to the ground, else 0. updateDyn: 'a' (0x61) plain,
+                             * 'b' / 'c' scale by ded, dfr / ied, ifr, 0 (airborne) zeroes the edge terms */
+    s16 contactSurface;     /* 0x9A4: surface code of the last object contact */
+    char pad9A6[0x9A8 - 0x9A6];
+    s32 groundFlags;        /* 0x9A8: ground attribute bits; 0x400 switches the sub808 member on */
+    char pad9AC[0x9CC - 0x9AC];
+    s32 useDParms;          /* 0x9CC: input bit 0x400 held: updateDyn uses the d* parms (dbf, del, dts) instead of n* */
+    f32 groundDist;         /* 0x9D0: distance to the ground below (a RoData default when nothing is found) */
+    char pad9D4[0x9F8 - 0x9D4];
+    f32 edgeFriction;       /* 0x9F8: child parms efr; 0 off the ground */
+    f32 edgeGrip;           /* 0x9FC: nel / del, * ied / ded on 'c' / 'b', * parms.edf; 0 off the ground or while slowed */
+    f32 turnRate;           /* 0xA00: res * nts (or dts with useDParms) */
+    char padA04[0xA10 - 0xA04];
     u16 hitFlags;           /* 0xA10: SnowBoarder_handleMsg msg 20 (bumped by an object) sets 0x1F0;
                              * RiderAnim_selectAnim picks a stumble anim while (hitFlags & 0x1F0) */
     char padA12[0xA14 - 0xA12];
@@ -159,7 +210,25 @@ SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);
 SNOWB_ASSERT_OFFSET(unk902, 0x902);
 SNOWB_ASSERT_OFFSET(rival, 0x908);
-SNOWB_ASSERT_OFFSET(unk938, 0x938);
+SNOWB_ASSERT_OFFSET(friction, 0x360);
+SNOWB_ASSERT_OFFSET(child, 0x3EC);
+SNOWB_ASSERT_OFFSET(child.parms.efr, 0x480);
+SNOWB_ASSERT_OFFSET(child.parms.nbf, 0x498);
+SNOWB_ASSERT_OFFSET(child.parms.res, 0x4F8);
+SNOWB_ASSERT_OFFSET(prevVel, 0x89C);
+SNOWB_ASSERT_OFFSET(contactCount, 0x938);
+SNOWB_ASSERT_OFFSET(contactNormal, 0x93C);
+SNOWB_ASSERT_OFFSET(slowdown, 0x960);
+SNOWB_ASSERT_OFFSET(contactDepth, 0x968);
+SNOWB_ASSERT_OFFSET(crouch, 0x990);
+SNOWB_ASSERT_OFFSET(groundSurface, 0x9A0);
+SNOWB_ASSERT_OFFSET(surface, 0x9A2);
+SNOWB_ASSERT_OFFSET(groundFlags, 0x9A8);
+SNOWB_ASSERT_OFFSET(useDParms, 0x9CC);
+SNOWB_ASSERT_OFFSET(groundDist, 0x9D0);
+SNOWB_ASSERT_OFFSET(edgeFriction, 0x9F8);
+SNOWB_ASSERT_OFFSET(edgeGrip, 0x9FC);
+SNOWB_ASSERT_OFFSET(turnRate, 0xA00);
 SNOWB_ASSERT_OFFSET(spin, 0x970);
 SNOWB_ASSERT_OFFSET(hitFlags, 0xA10);
 SNOWB_ASSERT_OFFSET(health, 0xA14);
@@ -169,6 +238,7 @@ SNOWB_ASSERT_OFFSET(unkA38, 0xA38);
 SNOWB_ASSERT_OFFSET(flags, 0xA58);
 SNOWB_ASSERT_OFFSET(maxSpeed, 0xA78);
 typedef char snowb_assert_parm_size[sizeof(SnowBParm) == 0x18 ? 1 : -1];
+typedef char snowb_assert_child_size[sizeof(SnowBChild) == 0x154 ? 1 : -1];
 typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
 typedef char snowb_assert_size[sizeof(SnowBoarder) == 0xA8C ? 1 : -1];
 
