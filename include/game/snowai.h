@@ -88,7 +88,12 @@ typedef struct SnowAI {
     char pad0DC[0xE4 - 0xDC];
     SnowAIParms parms;      /* 0x0E4: embedded "SnowAI::Parms" (0x3E0) */
     s32 unk4C4;             /* 0x4C4: countdown, reloaded from a level parm */
-    char pad4C8[0x4D8 - 0x4C8];
+    /* the rider parm values SnowAI_scaleRiderParms saves before scaling them (and SnowAI_restoreRiderParms /
+     * SnowAI_scaleRiderMax use): */
+    f32 savedMax;           /* 0x4C8: rider->parms.max.value (scaled by dd2, or dd3 in scaleRiderMax) */
+    f32 savedNts;           /* 0x4CC: rider->parms.nts.value (scaled by dd4) */
+    f32 savedDts;           /* 0x4D0: rider->parms.dts.value (scaled by dd4) */
+    f32 savedNbf;           /* 0x4D4: rider->child.parms.nbf.value (replaced by dbf while scaled) */
     s32 initPending;        /* 0x4D8: set by SnowAI_reset; the next SnowAI_update clears it and, for a CPU
                              * rider racing a human, sets rider +0x758 from ms1..ms8 by the rival's 0x8C4 */
     s32 unk4DC;             /* 0x4DC: 3 from the ctor; limit term in 7538 */
@@ -124,6 +129,8 @@ SNOWAI_ASSERT_OFFSET(SnowAI, unk78, 0x78);
 SNOWAI_ASSERT_OFFSET(SnowAI, altNode, 0x7C);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkA0, 0xA0);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkA4, 0xA4);
+SNOWAI_ASSERT_OFFSET(SnowAI, savedMax, 0x4C8);
+SNOWAI_ASSERT_OFFSET(SnowAI, savedNbf, 0x4D4);
 SNOWAI_ASSERT_OFFSET(SnowAI, initPending, 0x4D8);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk4DC, 0x4DC);
 typedef char snowai_assert_parm_size[sizeof(SnowAIParm) == 0x18 ? 1 : -1];

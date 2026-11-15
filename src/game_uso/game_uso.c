@@ -5,6 +5,12 @@
 #include "game/course.h"
 #include "game/sun.h"
 
+/* typed views of an untyped object pointer (same base + offset access as the raw form) */
+#define MN(p) ((CamMNode *)(p))              /* a libgdl matrix node: local[3] / world[3] = position */
+#define CAMC(p) ((SnowChaseActorCam *)(p))
+#define LOOK(p) ((SnowChaseActorLook *)(p))
+#define AI(p) ((SnowAI *)(p))
+
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
  * field diffs). The +0x90 damage was: +4 at 0x3F4 (1-word pad sidecar,
@@ -1251,42 +1257,42 @@ void SnowChaseActorCam_update(int *a0) {
      * UNINITIALISED local (banned). Removed; 99.93 -> 99.10 accepted. Legal
      * stand-ins (if (a0), if (key), if (*a0), fz = 0 + test, if (1)) all
      * score the same 99.10. */
-    key = a0[0x40 / 4];
+    key = CAMC(a0)->mode;
 
     if (key == 0) {
         return;
     }
     if (key == 3) {
         /* Store first, then read the home: the forwarded value stays a ugen temp (t6). */
-        outh[0] = (char *)a0[0x14 / 4];
+        outh[0] = (char *)CAMC(a0)->body;
         out = outh[0];
-        src = (char *)a0[0x3C / 4];
-        m[0] = *(float *)(src + 0xA0);
-        src += 0x70;
+        src = (char *)CAMC(a0)->source;
+        m[0] = MN(src)->world[3][0];
+        src += 0x70; /* &->world: +0x34 / +0x38 = world[3][1] / [2] */
         m[1] = *(float *)(src + 0x34);
         m[2] = *(float *)(src + 0x38);
-        *(float *)(out + 0x60) = m[0];
-        *(float *)(out + 0x64) = m[1];
-        *(float *)(out + 0x68) = m[2];
+        MN(out)->local[3][0] = m[0];
+        MN(out)->local[3][1] = m[1];
+        MN(out)->local[3][2] = m[2];
         /* Same source line preserves IDO's target reload scheduling. */
-        out = outh[0]; *(float *)(out + 0xA0) = m[0];
-        *(float *)(out + 0xA4) = m[1];
-        *(float *)(out + 0xA8) = m[2];
+        out = outh[0]; MN(out)->world[3][0] = m[0];
+        MN(out)->world[3][1] = m[1];
+        MN(out)->world[3][2] = m[2];
         return;
     }
 
     {
         /* Keep the output pointer homed across both emit calls. */
-        out_home[0] = (char *)a0[0x14 / 4];
+        out_home[0] = (char *)CAMC(a0)->body;
 
         { char *mo = out_home[0]; /* named read of the home keeps the t-ring in step */
-        ref_v.x = *(float *)(mo + 0xA0);
-        ref_v.y = *(float *)(mo + 0xA4);
-        ref_v.z = *(float *)(mo + 0xA8); }
+        ref_v.x = MN(mo)->world[3][0];
+        ref_v.y = MN(mo)->world[3][1];
+        ref_v.z = MN(mo)->world[3][2]; }
 
-        src = (char *)a0[0x38 / 4];
-        self_v[0] = *(float *)(src + 0xA0);
-        src += 0x70;
+        src = (char *)CAMC(a0)->target;
+        self_v[0] = MN(src)->world[3][0];
+        src += 0x70; /* &->world: +0x34 / +0x38 = world[3][1] / [2] */
         self_v[1] = *(float *)(src + 0x34);
         self_v[2] = *(float *)(src + 0x38);
 
@@ -1297,7 +1303,7 @@ void SnowChaseActorCam_update(int *a0) {
         self_v[1] = self_v[1] + dcopy.y;
         if (1) { self_v[2] = self_v[2] + dcopy.z; }
 
-        speed = *(float *)((char *)a0 + 0x94);
+        speed = CAMC(a0)->parms.txz.value;
         diff.y = (fz = (float)0); /* retain the target's zero-square term */
         mag = self_v[2] - ref_v.z; diff.z = mag;
         excess = self_v[0] - ref_v.x; diff.x = excess;
@@ -1310,7 +1316,7 @@ void SnowChaseActorCam_update(int *a0) {
         if (1) { hopA = (Tri3i *)scratch; }
         /* run 140: the threshold in fz and the excess in fy (same-name web
          * reuse) colour them f2 / f0 as in the target (raw 10 -> 7). */
-        fz = *(float *)((char *)a0 + 0x7C);
+        fz = CAMC(a0)->parms.mxz.value;
         if (mag < fz) {
             /* run 145: z product in fy and the st_c1.y product in mag
              * (web reuse) colour f14 / f12 as in the target (raw 7 -> 5). */
@@ -1325,25 +1331,25 @@ void SnowChaseActorCam_update(int *a0) {
             *hopA = *(Tri3i *)&st_p1e;
             *(Tri3i *)&hop_p1e = *hopA;
             if (1) { scaled_src = &hop_p1e; }
-            st_p1e2.x = (fz = (excess = *(float *)((char *)a0 + 0xAC), scaled_src->x * excess)); st_p1e2.y = (fx = scaled_src->y * excess); st_p1e2.z = (fy = scaled_src->z * excess);
+            st_p1e2.x = (fz = (excess = CAMC(a0)->parms.cxz.value, scaled_src->x * excess)); st_p1e2.y = (fx = scaled_src->y * excess); st_p1e2.z = (fy = scaled_src->z * excess);
             *(Tri3i *)&hopB = *(Tri3i *)&st_p1e2;
             *(Tri3i *)&fin_e = *(Tri3i *)&hopB;
             acc.x = fin_e.x; acc.y = fin_e.y; acc.z = fin_e.z;
         }
         out = out_home[0];
-        game_uso_func_072EE8(out + 0x30, &acc);
+        game_uso_func_072EE8((char *)MN(out)->local, &acc);
 
         if (1) { scaled_src = (Vec3 *)&diff; }
         if (1) { hopA = (Tri3i *)scratch; }
         st_c1.x = (excess = scaled_src->x * speed); st_c1.y = (mag = scaled_src->y * speed); st_c1.z = (fz = scaled_src->z * speed);
         *hopA = *(Tri3i *)&st_c1;
         *(Tri3i *)&hopB = *hopA;
-        *(float *)((char *)a0 + 0x2C) = hopB.x;
-        *(float *)((char *)a0 + 0x30) = hopB.y;
-        *(float *)((char *)a0 + 0x34) = hopB.z;
+        CAMC(a0)->eyeOffset.x = hopB.x;
+        CAMC(a0)->eyeOffset.y = hopB.y;
+        CAMC(a0)->eyeOffset.z = hopB.z;
 
-        excess = (a0[0x40 / 4] == 2) ? *(float *)((char *)a0 + 0xF4)
-                                  : *(float *)((char *)a0 + 0xDC);
+        excess = (CAMC(a0)->mode == 2) ? CAMC(a0)->parms.ty2.value
+                                  : CAMC(a0)->parms.toy.value;
 
         sel = excess;
         diff.x = 0.0f;
@@ -1351,8 +1357,8 @@ void SnowChaseActorCam_update(int *a0) {
         diff.z = 0.0f;
         mag = ref_v.y - self_v[1];
         if (1) { scaled_src = &diff; }
-        if (mag < *(float *)((char *)a0 + 0xC4)) {
-            excess = *(float *)((char *)a0 + 0xC4) - mag; if (1) {}
+        if (mag < CAMC(a0)->parms.miy.value) {
+            excess = CAMC(a0)->parms.miy.value - mag; if (1) {}
             st_p2t.x = (fx = scaled_src->x * excess); st_p2t.y = (fz = scaled_src->y * excess); st_p2t.z = (y_excess_unused = scaled_src->z * excess);
             *hopA = *(Tri3i *)&st_p2t;
             *(Tri3i *)&hopB = *hopA;
@@ -1363,22 +1369,22 @@ void SnowChaseActorCam_update(int *a0) {
             *hopA = *(Tri3i *)&st_p2e;
             *(Tri3i *)&hop_p2e = *hopA;
             if (1) { scaled_src = &hop_p2e; }
-            st_p2e2.x = (fz = (excess = *(float *)((char *)a0 + 0x10C), scaled_src->x * excess)); st_p2e2.y = (fx = scaled_src->y * excess); st_p2e2.z = (fy = scaled_src->z * excess);
+            st_p2e2.x = (fz = (excess = CAMC(a0)->parms.chy.value, scaled_src->x * excess)); st_p2e2.y = (fx = scaled_src->y * excess); st_p2e2.z = (fy = scaled_src->z * excess);
             *(Tri3i *)&hopB = *(Tri3i *)&st_p2e2;
             *(Tri3i *)&fin_e = *(Tri3i *)&hopB;
             acc.x = fin_e.x; acc.y = fin_e.y; acc.z = fin_e.z;
         }
         out = out_home[0];
-        game_uso_func_072EE8(out + 0x30, &acc);
+        game_uso_func_072EE8((char *)MN(out)->local, &acc);
 
         if (1) { scaled_src = (Vec3 *)&diff; }
         if (1) { hopA = (Tri3i *)scratch; }
         st_c2.x = (excess = scaled_src->x * sel); st_c2.y = (fx = scaled_src->y * sel); st_c2.z = (fz = scaled_src->z * sel);
         *hopA = *(Tri3i *)&st_c2;
         *(Tri3i *)&fin_c2 = *hopA;
-        *(float *)((char *)a0 + 0x2C) -= fin_c2.x;
-        *(float *)((char *)a0 + 0x30) -= fin_c2.y;
-        *(float *)((char *)a0 + 0x34) -= fin_c2.z;
+        CAMC(a0)->eyeOffset.x -= fin_c2.x;
+        CAMC(a0)->eyeOffset.y -= fin_c2.y;
+        CAMC(a0)->eyeOffset.z -= fin_c2.z;
     }
 }
 #else
@@ -1656,20 +1662,20 @@ void SnowChaseActorLook_update(char *a0) {
     Vec3 *delta;
     float f, dirv, ax, ay, az, zerof;
 
-    out = *(char **)(a0 + 0x14);
-    s = *(char **)(*(char **)(a0 + 0x3C) + 0x38);
-    mode = *(int *)(a0 + 0x40);
+    out = (char *)LOOK(a0)->body;
+    s = (char *)LOOK(a0)->cam->target;
+    mode = LOOK(a0)->mode;
     if (mode == 0) {
         return;
     }
     if (mode == 1) {
-        refv1.x = *(float *)(out + 0xA0);
-        refv1.y = *(float *)(out + 0xA4);
-        refv1.z = *(float *)(out + 0xA8);
-        v2v[0] = *(float *)(s + 0xA0);
-        v2v[1] = *(float *)(s + 0xA4);
-        v2v[2] = *(float *)(s + 0xA8);
-        delta = cam_toTargetLocal_000023D4((Vec3 *)scratch, *(char **)(a0 + 0x3C));
+        refv1.x = MN(out)->world[3][0];
+        refv1.y = MN(out)->world[3][1];
+        refv1.z = MN(out)->world[3][2];
+        v2v[0] = MN(s)->world[3][0];
+        v2v[1] = MN(s)->world[3][1];
+        v2v[2] = MN(s)->world[3][2];
+        delta = cam_toTargetLocal_000023D4((Vec3 *)scratch, (char *)LOOK(a0)->cam);
         *(Tri3i *)&dcopy = *(Tri3i *)delta;
         v2v[0] = v2v[0] + dcopy.x;
         v2v[1] = v2v[1] + dcopy.y;
@@ -1681,26 +1687,26 @@ void SnowChaseActorLook_update(char *a0) {
         *(Tri3i *)&dc2 = *(Tri3i *)scratch;
         mag = game_uso_func_070238(dc2.x * dc2.x + dc2.y * dc2.y + dc2.z * dc2.z);
         game_uso_func_071028(&dc2);
-        f = mag * *(float *)(a0 + 0x5C);
+        f = mag * LOOK(a0)->parms.ch0.value;
         dc2.x = dc2.x * f;
         dc2.y = dc2.y * f;
         dc2.z = dc2.z * f;
-        game_uso_func_072EE8(out + 0x30, &dc2);
-        *(float *)(out + 0xA0) = *(float *)(out + 0x60);
-        *(float *)(out + 0xA4) = *(float *)(out + 0x64);
-        *(float *)(out + 0xA8) = *(float *)(out + 0x68);
+        game_uso_func_072EE8((char *)MN(out)->local, &dc2);
+        MN(out)->world[3][0] = MN(out)->local[3][0];
+        MN(out)->world[3][1] = MN(out)->local[3][1];
+        MN(out)->world[3][2] = MN(out)->local[3][2];
     } else {
         char *ss;
 
-        refv2[0] = *(float *)(out + 0xA0);
-        refv2[1] = *(float *)(out + 0xA4);
-        refv2[2] = *(float *)(out + 0xA8);
-        ss = *(char **)(a0 + 0x38);
-        ssv.x = *(float *)(ss + 0xA0);
-        ss += 0x70;
+        refv2[0] = MN(out)->world[3][0];
+        refv2[1] = MN(out)->world[3][1];
+        refv2[2] = MN(out)->world[3][2];
+        ss = (char *)LOOK(a0)->anchor;
+        ssv.x = MN(ss)->world[3][0];
+        ss += 0x70; /* &anchor->world: +0x34 / +0x38 = world[3][1] / [2] */
         ssv.y = *(float *)(ss + 0x34);
         ssv.z = *(float *)(ss + 0x38);
-        if (*(int *)(a0 + 0x40) == 3) {
+        if (LOOK(a0)->mode == 3) {
             dirv = -1000.0f;
         } else {
             dirv = 1000.0f;
@@ -1715,9 +1721,9 @@ void SnowChaseActorLook_update(char *a0) {
         ax = axisc.x;
         ay = axisc.y;
         az = axisc.z;
-        axisc.x = *(float *)(s + 0x70) * ax + *(float *)(s + 0x80) * ay + *(float *)(s + 0x90) * az;
-        axisc.y = *(float *)(s + 0x74) * ax + *(float *)(s + 0x84) * ay + *(float *)(s + 0x94) * az;
-        axisc.z = *(float *)(s + 0x78) * ax + *(float *)(s + 0x88) * ay + *(float *)(s + 0x98) * az;
+        axisc.x = MN(s)->world[0][0] * ax + MN(s)->world[1][0] * ay + MN(s)->world[2][0] * az;
+        axisc.y = MN(s)->world[0][1] * ax + MN(s)->world[1][1] * ay + MN(s)->world[2][1] * az;
+        axisc.z = MN(s)->world[0][2] * ax + MN(s)->world[1][2] * ay + MN(s)->world[2][2] * az;
         ssv.x = ssv.x + axisc.x;
         ssv.y = ssv.y + axisc.y;
         ssv.z = ssv.z + axisc.z;
@@ -1726,14 +1732,14 @@ void SnowChaseActorLook_update(char *a0) {
         ssv.z = ssv.z - refv2[2];
         mag2 = game_uso_func_070238(ssv.x * ssv.x + ssv.y * ssv.y + ssv.z * ssv.z);
         game_uso_func_071028(&ssv);
-        f = mag2 * *(float *)(a0 + 0x5C);
+        f = mag2 * LOOK(a0)->parms.ch0.value;
         ssv.x = ssv.x * f;
         ssv.y = ssv.y * f;
         ssv.z = ssv.z * f;
-        game_uso_func_072EE8(out + 0x30, &ssv);
-        *(float *)(out + 0xA0) = *(float *)(out + 0x60);
-        *(float *)(out + 0xA4) = *(float *)(out + 0x64);
-        *(float *)(out + 0xA8) = *(float *)(out + 0x68);
+        game_uso_func_072EE8((char *)MN(out)->local, &ssv);
+        MN(out)->world[3][0] = MN(out)->local[3][0];
+        MN(out)->world[3][1] = MN(out)->local[3][1];
+        MN(out)->world[3][2] = MN(out)->local[3][2];
     }
 }
 #else
@@ -4829,7 +4835,7 @@ void SnowAI_recoverStuck(int *a0) {
 }
 
 void SnowAI_enterRecover(void *a0) {
-    *(int*)((char*)a0 + 0x64) = 3;
+    AI(a0)->aiState = 3;
     gl_func_00000000(a0);
 }
 
@@ -4842,35 +4848,35 @@ void SnowAI_scaleRiderParms(char *a0) {
 
     t = a0;
     while (0) { t += 1; }
-    table = *(char**)(a0 + 0x30);
+    table = (char *)AI(a0)->rider;
     t = table;
-    if (1) { t += 0x758; }
-    *(float*)(a0 + 0x4C8) = *(float*)(t + 0x10);
+    if (1) { t += 0x758; } /* &rider->parms.max */
+    AI(a0)->savedMax = ((SnowBParm *)t)->value;
     t = table;
-    if (1) { t += 0x6F8; }
-    *(float*)(a0 + 0x4CC) = *(float*)(t + 0x10);
+    if (1) { t += 0x6F8; } /* &rider->parms.nts */
+    AI(a0)->savedNts = ((SnowBParm *)t)->value;
     t = table;
-    if (1) { t += 0x6E0; }
-    *(float*)(a0 + 0x4D0) = *(float*)(t + 0x10);
+    if (1) { t += 0x6E0; } /* &rider->parms.dts */
+    AI(a0)->savedDts = ((SnowBParm *)t)->value;
     t = table;
-    if (1) { t += 0x498; }
+    if (1) { t += 0x498; } /* &rider->child.parms.nbf */
     fc = a0;
-    if (1) { fc += 0x35C; }
-    *(float*)(a0 + 0x4D4) = *(float*)(t + 0x10);
-    *(float*)(table + 0x768) = *(float*)(a0 + 0x33C) * *(float*)(a0 + 0x4C8);
+    if (1) { fc += 0x35C; } /* &parms.parm[SNOWAI_PARM_DD2 + 2] (dd4) */
+    AI(a0)->savedNbf = ((SnowBParm *)t)->value;
+    ((SnowBoarder *)table)->parms.max.value = AI(a0)->parms.parm[SNOWAI_PARM_DD2].value * AI(a0)->savedMax;
 
-    t = *(char**)(a0 + 0x30) + 0x6F8;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x36C) * *(float*)(a0 + 0x4CC);
+    t = (char *)&AI(a0)->rider->parms.nts;
+    ((SnowBParm *)t)->value = AI(a0)->parms.parm[SNOWAI_PARM_DD2 + 2].value * AI(a0)->savedNts;
 
-    t = *(char**)(a0 + 0x30) + 0x6E0;
-    *(float*)(t + 0x10) = *(float*)(fc + 0x10) * *(float*)(a0 + 0x4D0);
+    t = (char *)&AI(a0)->rider->parms.dts;
+    ((SnowBParm *)t)->value = ((SnowAIParm *)fc)->value * AI(a0)->savedDts;
 
-    table = *(char**)(a0 + 0x30);
+    table = (char *)AI(a0)->rider;
     q = table;
-    if (1) { q += 0x4C8; }
+    if (1) { q += 0x4C8; } /* &rider->child.parms.dbf */
     t = table;
-    if (1) { t += 0x498; }
-    *(float*)(t + 0x10) = *(float*)(q + 0x10);
+    if (1) { t += 0x498; } /* &rider->child.parms.nbf */
+    ((SnowBParm *)t)->value = ((SnowBParm *)q)->value;
 }
 
 /* SnowAI_scaleRiderParms — 24/36 exact, LENGTH-EXACT, structure fully aligned
@@ -4896,17 +4902,18 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_scaleRiderParms);
 void SnowAI_restoreRiderParms(char *a0) {
     SnowBParm *t;
     t = &((SnowAI *)a0)->rider->parms.max;
-    t->value = *(float*)(a0 + 0x4C8);
+    t->value = AI(a0)->savedMax;
     t = &((SnowAI *)a0)->rider->parms.nts;
-    t->value = *(float*)(a0 + 0x4CC);
+    t->value = AI(a0)->savedNts;
     t = &((SnowAI *)a0)->rider->parms.dts;
-    t->value = *(float*)(a0 + 0x4D0);
-    t = (SnowBParm *)((char *)((SnowAI *)a0)->rider + 0x498); /* parm 5 ("nbf") of the 0x3EC child's "Parms" */
-    t->value = *(float*)(a0 + 0x4D4);
+    t->value = AI(a0)->savedDts;
+    t = &((SnowAI *)a0)->rider->child.parms.nbf;
+    t->value = AI(a0)->savedNbf;
 }
 
 /* rider max speed = saved max * dd3 */
 void SnowAI_scaleRiderMax(char *a0) {
+    /* savedMax stays a char-based read: as a member the two loads swap (lwc1 order) */
     SnowBParm *t = &((SnowAI *)a0)->rider->parms.max;
     t->value = ((SnowAI *)a0)->parms.parm[SNOWAI_PARM_DD2 + 1].value * *(float*)(a0 + 0x4C8);
 }
@@ -6009,7 +6016,7 @@ tail:
  * REPLACE_FUNC_BODY-spliced over the placeholder below in both build trees
  * (agent-g run 237). */
 int SnowAI_func_000097EC(char *a0) {
-    return *(int *)(a0 + 0x30);
+    return (int)AI(a0)->rider;
 }
 
 extern void game_uso_func_047B1C();
@@ -6308,7 +6315,7 @@ int SnowAI_func_0000A0E8(char *a0, char *a1, char *a2) {
     p[2] = fz;
     p[1] = 0.0f;
 skip1:;
-    w = (float*)*(char**)(a0 + 0x30); if (1) { w = (float*)((char*)w + 0xB4); }
+    w = (float*)AI(a0)->rider; if (1) { w = (float*)((char*)w + 0xB4); } /* &rider->pos */
     fy = w[0] - q[0]; fx = w[1] - q[1]; fz = w[2] - q[2];
     local_30[0] = fy;
     local_30[1] = fx;
@@ -6333,8 +6340,8 @@ skip2:;
     } else {
         fx = (float)0;
     }
-    fz = *(float*)(a1 + 0x34);
-    return mag * (*(float*)(*(char**)(a0 + 0x30) + 0xB8) - (fz - 400.0f)) > (*(float*)(a2 + 0x34) - fz)*fx;
+    fz = ((CourseMarker *)a1)->pos[1];
+    return mag * (AI(a0)->rider->pos.y - (fz - 400.0f)) > (((CourseMarker *)a2)->pos[1] - fz)*fx;
 }
 
 /* MATCHED 2026-06-20 (stale-cap catch): the "2 pre-jal a1 spills" cap
@@ -6588,13 +6595,13 @@ void SnowAI_scanNodes(SnowAI *obj) {
     a1arg.a = **(int **)((char *)&D_00000000 + 0x548 + obj->scanIndex * 4);
     v0var = (char *)SnowAI_findNearestMarker_0000A374((int)obj, a1arg, (int)&tbuf);
     if (v0var != 0) {
-        t = *(int *)(v0var + 0x2C);
+        t = (int)((CourseMarker *)v0var)->link;
         if (t != 0) {
             if (SnowAI_func_00009B88(obj, v0var, t) != 0) {
                 if (SnowAI_func_0000A0E8((char *)obj, v0var, (char *)t) != 0) {
-                    f0 = tbuf.z - *(float *)(v0var + 0x38);
+                    f0 = tbuf.z - ((CourseMarker *)v0var)->pos[2];
                     if (f0 < 0.0f) {
-                        f0 += 250.0f * *(float *)(v0var + 0x54);
+                        f0 += 250.0f * ((CourseMarker *)v0var)->parms.wid.value;
                     }
                     if (0.0f <= f0 && f0 < obj->scanBestDist) {
                         obj->scanBestDist = f0;
