@@ -757,8 +757,11 @@ def check_fast(path, src, rom, quiet=False):
                 continue
             rv, rsz, _ = rfuncs[f]
             for off, sym in rrel.items():
-                if rv <= off < rv + rsz and (sym == tok or sym.startswith(tok + '__') or sym.startswith('sect:')):
-                    have[rom.jal_target(md, base + off - rv)] += 1   # (tok__F...: a C++-mangled decl)
+                # C++: any placeholder (a recipe's objcopy may rename func_00000000 -> gl_func_00000000,
+                # or a decl may be mangled tok__F...)
+                if rv <= off < rv + rsz and (sym == tok or sym.startswith('sect:') or
+                                             (cpp and PH_RE.fullmatch(sym))):
+                    have[rom.jal_target(md, base + off - rv)] += 1
         over = cnt - have
         if over:
             bad += sum(over.values())
