@@ -16038,12 +16038,12 @@ void gl_func_000334B0(int a0, int a1, int a2) {
     gl_func_00000000((char *)&D_00000000 + 0x1E250, a0, a1, a2);
 }
 
-// gl_func_000334E8 — STRUCTURAL PASS (0x2C4 / 177 words, no episode).
+// fs_bufWrite_334E8 — STRUCTURAL PASS (0x2C4 / 177 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — large 0x68 frame, saves s0-s5). A region / block
 // allocator-management routine.
 //
-//   void gl_func_000334E8(void *a) {
+//   void fs_bufWrite_334E8(void *a) {
 //     Desc d;                                 // local at sp+0x60
 //     callback(a, (void*)0x0001E280);         // jal 0 (USO cb)
 //     B *base = &D_0_base;
@@ -16077,7 +16077,7 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 //   byte-match needs USO mnemonic disasm + allocator structs typed.
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-// gl_func_000334E8 — FULL m2c DECODE (53.45% -> 60.08% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
+// fs_bufWrite_334E8 — FULL m2c DECODE (53.45% -> 60.08% NM, no episode). game_libs non-jumptable via scripts/decomp-uso-cf.py.
 // WIDTH-BLOAT SWEEP 2026-07-11: the ring/DMA globals at +8/+0x24/+0x28/+0x2C
 //   are WORD fields (target lw/sw from a struct base), not byte absolutes —
 //   m2c mis-decoded them as *(char *)N (lbu/sb). Retyped to *(s32 *)N (drops
@@ -16085,7 +16085,7 @@ void gl_func_000334B0(int a0, int a1, int a2) {
 //   a BYTE copy (target lbu 0(v1) / sb -1(a0)); its *(int*)var_v1 + FW word
 //   ops retyped to *(u8 *). Still NON_MATCHING: the struct base is a stripped
 //   reloc (lui 0x0), so absolute-vs-based addressing + exact bytes stay deferred.
-/* 2026-10-24 agent-c run 147: SIBLING PORT of gl_func_00033BE4 (scan ratio 0.94).
+/* 2026-10-24 agent-c run 147: SIBLING PORT of fs_bufWrite_33BE4 (scan ratio 0.94).
  * 334E8 is 33BE4 with the source fixed to an 8-byte stack buffer (filled by the
  * first callback, template 0x1E280), length 8 and no flag gate. buf declared
  * first (target home sp+96); one result temp shared (avail) gives frame 104.
@@ -16114,7 +16114,7 @@ extern u8 gl_ref_0001E280;
 extern u8 gl_ref_0001E29C;
 extern u8 gl_ref_0001E2B0;
 #define base ((u8 *)&D_00000000)   /* one hoisted address constant, not a variable (frame + entry order) */
-void gl_func_000334E8(void) {
+void fs_bufWrite_334E8(void) {
     u8 buf[8];
     s32 src;
     u32 chunk;
@@ -16207,11 +16207,11 @@ void gl_func_000334E8(void) {
 }
 #undef base
 
-// gl_func_000337AC — STRUCTURAL PASS (0xD4 / 53 words, no episode).
+// dma_startRead — STRUCTURAL PASS (0xD4 / 53 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A flag-gated record register-and-init routine.
 //
-//   void gl_func_000337AC(int id, unsigned flags, int b, int c) {
+//   void dma_startRead(int id, unsigned flags, int b, int c) {
 //     if (flags & 7) {
 //       callback((void*)0x0001E2C0, id);      // jal 0 (USO cb)
 //     }
@@ -16251,7 +16251,7 @@ void gl_func_000334E8(void) {
 //   s1 and is never homed) and the 7-arg call's 4th arg is the otherwise
 //   unused param b (`lw a3,64(sp)`), not c: gl_func(rec, 0, 0, b, flags, c,
 //   rec+0x18). Both fixes are the call-shape scan's missing-arg class.
-void gl_func_000337AC(int id, unsigned flags, int b, int c) {
+void dma_startRead(int id, unsigned flags, int b, int c) {
     char *rec;
     if (flags & 7) {
         gl_func_00000000((char *)&D_00000000 + 0x0001E2C0, id, flags);
@@ -16268,13 +16268,13 @@ void gl_func_000337AC(int id, unsigned flags, int b, int c) {
     *(int *)(rec + 0x40) = 1;
 }
 
-// gl_func_00033880 — STRUCTURAL PASS (0xDC / 55 words, no episode).
+// dma_startWrite — STRUCTURAL PASS (0xDC / 55 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The direct SIBLING / variant of gl_func_000337AC
+// prologue). The direct SIBLING / variant of dma_startRead
 // (immediately above) — same flag-gated record register-and-init
 // shape, different arg slots + template set.
 //
-//   void gl_func_00033880(int id, int a1, unsigned flags, int d) {
+//   void dma_startWrite(int id, int a1, unsigned flags, int d) {
 //     if (flags & 7) {
 //       callback((void*)0x0001E2EC, d);       // jal 0 (USO cb)
 //     }
@@ -16288,16 +16288,16 @@ void gl_func_000337AC(int id, unsigned flags, int b, int c) {
 //   }
 //
 // Struct-typing reference: a flag-driven registration / slot-init
-//   leaf, the sibling of gl_func_000337AC. Identical structure:
+//   leaf, the sibling of dma_startRead. Identical structure:
 //   low flag bits gate optional USO-relocated setup callbacks
 //   (jal 0 → resolved at load) carrying fixed data-segment
 //   templates — here `flags & 7` → 0x0001E2EC and `d & 1` →
-//   0x0001E308 (vs gl_func_000337AC's 0x0001E2C0 / 0x0001E2D8) —
+//   0x0001E308 (vs dma_startRead's 0x0001E2C0 / 0x0001E2D8) —
 //   then indexes the SAME &D_0 record array with stride 0x44
 //   (id*16 + id then *4 = id*0x44 shift/add multiply), sets the
 //   per-record active flag at +0x3C, and runs a third callback to
 //   initialize the record's sub-block at +0x18. The only deltas vs
-//   gl_func_000337AC are the argument positions (flags arrives in
+//   dma_startRead are the argument positions (flags arrives in
 //   a2, the secondary gate keys off arg d) and the template pair.
 //   The two together form a register/activate pair over the same
 //   0x44-stride registry table of the game_libs object subsystem
@@ -16311,7 +16311,7 @@ void gl_func_000337AC(int id, unsigned flags, int b, int c) {
 //   under-counted it (jr's delay slot is `addiu sp`, not `nop`, so a
 //   jr;nop-terminated word extractor bled into the successor and
 //   reported phantom trailing diffs). make + cmp tenshoe==baserom clean.
-void gl_func_00033880(int id, int a1, unsigned flags, int d) {
+void dma_startWrite(int id, int a1, unsigned flags, int d) {
     char *rec;
     if (flags & 7) {
         gl_func_00000000((char *)&D_00000000 + 0x0001E2EC, d);
@@ -16327,8 +16327,8 @@ void gl_func_00033880(int id, int a1, unsigned flags, int d) {
 }
 
 
-/* gl_func_0003395C: deactivate/stop the id*0x44 registry record (sibling
- * closer of the gl_func_00033880 register/activate pair above). EXACT
+/* dma_wait: deactivate/stop the id*0x44 registry record (sibling
+ * closer of the dma_startWrite register/activate pair above). EXACT
  * 29/29 (2026-07-30) at unit default 7.1 -O2 -mips2 once the mis-split
  * is healed: the former 7-word orphan game_libs_func_00033940 (v0 =
  * &D + a0*68; t8 = v0->[0x3C]) was this function's stolen prologue —
@@ -16342,7 +16342,7 @@ void gl_func_00033880(int id, int a1, unsigned flags, int d) {
  *   if (rec->[0x3C]) { cb(rec+0x18, &local, 1);
  *     if (rec->[0x40]) cb(rec->[0x34], rec->[0x38]);
  *     rec->[0x3C] = 0; }   (beqzl merges the common tail store) */
-void gl_func_0003395C(int idx) {
+void dma_wait(int idx) {
     int local;
     char *rec;
     rec = (char *)&D_00000000 + idx * 0x44;
@@ -16355,8 +16355,8 @@ void gl_func_0003395C(int idx) {
     }
 }
 
-/* gl_func_000339B4: 27-insn busy-wait + 2-call. */
-void gl_func_000339B4(int a0, int a1, int a2) {
+/* dma_read: 27-insn busy-wait + 2-call. */
+void dma_read(int a0, int a1, int a2) {
     while (*(int*)((char*)&D_00000000 + 0x3C) != 0) {
         func_00000000();
     }
@@ -16364,8 +16364,8 @@ void gl_func_000339B4(int a0, int a1, int a2) {
     func_00000000(0);
 }
 
-/* gl_func_00033A20: 27-insn busy-wait + 2-call wrapper. */
-void gl_func_00033A20(int a0, int a1, int a2) {
+/* dma_write: 27-insn busy-wait + 2-call wrapper. */
+void dma_write(int a0, int a1, int a2) {
     while (*(int*)((char*)&D_00000000 + 0x3C) != 0) {
         func_00000000();
     }
@@ -16373,10 +16373,10 @@ void gl_func_00033A20(int a0, int a1, int a2) {
     func_00000000(0);
 }
 
-/* gl_func_00033A8C: 22-insn table-scan helper. Walks 9 records at
+/* dma_allocSlot: 22-insn table-scan helper. Walks 9 records at
  * &D_0 + 0x44 (stride 0x44); returns index of first record where
  * field_0x3C == 0; if none, calls gl_func(&D_0 + 0x1E31C) and returns 0. */
-int gl_func_00033A8C(void) {
+int dma_allocSlot(void) {
     char *p = (char*)&D_00000000 + 0x44;
     int i;
     for (i = 1; i != 10; i++) {
@@ -16388,20 +16388,20 @@ int gl_func_00033A8C(void) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00033AE4(int a0, int a1, int a2) {{
+int dma_readAsync(int a0, int a1, int a2) {{
     int r = gl_func_00000000(a0, a1, a2);
     gl_func_00000000(r, a0, a1, a2);
     return r;
 }}
 
 extern int gl_func_00000000();
-int gl_func_00033B28(int a0, int a1, int a2) {{
+int dma_writeAsync(int a0, int a1, int a2) {{
     int r = gl_func_00000000(a0, a1, a2);
     gl_func_00000000(r, a0, a1, a2);
     return r;
 }}
 
-// gl_func_00033B6C — STRUCTURAL PASS (0x78 / 30 words, no episode).
+// dma_init — STRUCTURAL PASS (0x78 / 30 words, no episode).
 // 2026-05-27 lever pass: decl-order swap (f30 first) brought 24/30→26/30.
 // Reverse-decl (end first) regressed to 22/30. Remaining 4 diffs are
 // addiu-scheduling within the lui+addiu sequence (target schedules the 4
@@ -16416,9 +16416,9 @@ int gl_func_00033B28(int a0, int a1, int a2) {{
 // from C; as1 group-scheduling tie. Cap reconfirmed.
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A sweep / reset-all over the &D_0 registry table —
-// the teardown counterpart to gl_func_000337AC / gl_func_00033880.
+// the teardown counterpart to dma_startRead / dma_startWrite.
 //
-//   void gl_func_00033B6C(void) {
+//   void dma_init(void) {
 //     R   *rec = (R*)(&D_0 + 0x00);
 //     u8  *f18 = (u8*)(&D_0 + 0x18);
 //     u8  *f30 = (u8*)(&D_0 + 0x30);
@@ -16432,8 +16432,8 @@ int gl_func_00033B28(int a0, int a1, int a2) {{
 //   }
 //
 // Struct-typing reference: a bulk reset over the SAME 0x44-stride
-//   record array (based at &D_0) that gl_func_000337AC and
-//   gl_func_00033880 register individual slots into. It iterates
+//   record array (based at &D_0) that dma_startRead and
+//   dma_startWrite register individual slots into. It iterates
 //   every record from &D_0 up to the limit &D_0+0x2D8 — with the
 //   0x44 stride that is ((0x2D8-0x30)/0x44) = 0x0A ≈ 10 records —
 //   zeroing each record's active flag at +0x3C (the very field the
@@ -16457,7 +16457,7 @@ int gl_func_00033B28(int a0, int a1, int a2) {{
 //   (s3) and leaves no k corpse (k has only linear uses). Hand-stepped cursors
 //   in any decl order stay at 4 swapped words. Ten records of 0x44 bytes.
 //   Callee = the gl_func_00000000 blank (USO-reloc jal). Name pre-checked.
-void gl_func_00033B6C(void) {
+void dma_init(void) {
     int k;
 
     for (k = 0; k < 10; k++) {
@@ -16466,13 +16466,13 @@ void gl_func_00033B6C(void) {
     }
 }
 
-// gl_func_00033BE4 — STRUCTURAL PASS (0x2D4 / 181 words, no episode).
+// fs_bufWrite_33BE4 — STRUCTURAL PASS (0x2D4 / 181 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The SIBLING / variant of gl_func_000334E8 — the same
+// prologue). The SIBLING / variant of fs_bufWrite_334E8 — the same
 // region/block allocator-management routine, flag-gated entry +
 // different data-segment template.
 //
-//   void gl_func_00033BE4(void *a, unsigned flags) {
+//   void fs_bufWrite_33BE4(void *a, unsigned flags) {
 //     if (flags & 1) {
 //       callback(a, (void*)0x0001E330);       // jal 0 (USO cb)
 //     }
@@ -16487,18 +16487,18 @@ void gl_func_00033B6C(void) {
 //   }
 //
 // Struct-typing reference: a heap/region block manager, the direct
-//   sibling of gl_func_000334E8. Same core machinery: the magic
+//   sibling of fs_bufWrite_334E8. Same core machinery: the magic
 //   block-header sentinel 0x12340002 (`lui 0x1234; ori 0x0002`),
 //   the used/free span from the global cursor pair (&D_0+0x08 start,
 //   &D_0+0x2C current), and 8-byte-granule pointer alignment. The
-//   deltas vs gl_func_000334E8: this variant is FLAG-GATED on entry
+//   deltas vs fs_bufWrite_334E8: this variant is FLAG-GATED on entry
 //   (`flags & 1` selects whether the first USO-relocated setup
 //   callback runs, jal 0 → resolved at load), uses the data-segment
 //   template 0x0001E330 (vs 000334E8's 0x0001E280), takes a
 //   zero-flags early-out, and is slightly larger (0x2D4 vs 0x2C4) —
 //   consistent with this being the "allocate/grow with options"
 //   entry vs 000334E8's "init/setup" entry of the SAME allocator.
-//   Together with gl_func_000334E8 these form the alloc front-end
+//   Together with fs_bufWrite_334E8 these form the alloc front-end
 //   for the snd_HandleSeqEvent_30AF4 0x45010 arena and the
 //   gl_func_00032E18 / gl_func_00033228 sub-record allocations
 //   (0x12340002 is the shared heap block magic; 0x0001E280 /
@@ -16507,12 +16507,12 @@ void gl_func_00033B6C(void) {
 //   region cursors + 0x12340002 block-magic + flag gate / alignment
 //   math — byte-match needs USO mnemonic disasm + allocator structs
 //   typed. Real-C STRUCTURAL body below per the analysis (sibling
-//   of gl_func_000334E8). Byte-match deferred. Name pre-checked:
+//   of fs_bufWrite_334E8). Byte-match deferred. Name pre-checked:
 //   no extern reuse.
-// gl_func_00033BE4 — CORRECT-C RECONSTRUCTION (NM, no episode). PERMANENT CAP for byte-land.
+// fs_bufWrite_33BE4 — CORRECT-C RECONSTRUCTION (NM, no episode). PERMANENT CAP for byte-land.
 //
 // WHY THIS CANNOT BYTE-LAND (raw-.word USO form):
-//   asm/nonmatchings/.../gl_func_00033BE4.s is a flat `.word` dump and the
+//   asm/nonmatchings/.../fs_bufWrite_33BE4.s is a flat `.word` dump and the
 //   expected/.o (game_libs_post.c.o) carries ZERO relocations. Every call is
 //   baked `0x0C000000` (jal 0) and every global ref is baked `lui 0 / addiu 0`
 //   (or `lui 0 / lw N(.)`). These are USO-relocated sites patched at load time;
@@ -16522,7 +16522,7 @@ void gl_func_00033B6C(void) {
 //   from the expected unrelocated `0x0C000000` / `lui 0`. So the ONLY byte-exact
 //   form is INCLUDE_ASM (the #else path, which bakes the raw words). A real C
 //   definition would CHANGE the ROM. No episode — honest NON_MATCHING cap.
-//   (Same family as gl_func_000334E8 / 00033EB8 / 00030AF4; none have landed.)
+//   (Same family as fs_bufWrite_334E8 / 00033EB8 / 00030AF4; none have landed.)
 //
 // The body below is a faithful semantic reconstruction (correct-C decode
 // progress), not a match. Decoded from objdump of expected game_libs_post.c.o:
@@ -16570,7 +16570,7 @@ extern u8 gl_d_33be4_dst;               /* base-0 alias: copy-loop dest (fresh l
 extern u8 gl_ref_0001E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
 extern u8 gl_ref_0001E344;              /* baked USO data sym */
 extern u8 gl_ref_0001E358;              /* baked USO data sym */
-void gl_func_00033BE4(s32 src0, u32 flags) {
+void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     s32 src;
     u8 *base;
     u32 chunk;
@@ -16667,12 +16667,12 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
     gl_func_00000000(base);
 }
 
-// gl_func_00033EB8 — STRUCTURAL PASS (0x2D0 / 180 words, no episode).
+// fs_bufRead_33EB8 — STRUCTURAL PASS (0x2D0 / 180 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The THIRD member of the gl_func_000334E8 /
-// gl_func_00033BE4 allocator family — the heap RESET / RE-BASE entry.
+// prologue). The THIRD member of the fs_bufWrite_334E8 /
+// fs_bufWrite_33BE4 allocator family — the heap RESET / RE-BASE entry.
 //
-//   void gl_func_00033EB8(void *a, unsigned flags) {
+//   void fs_bufRead_33EB8(void *a, unsigned flags) {
 //     if (flags & 1) {
 //       callback(a, (void*)0x0001E368);       // jal 0 (USO cb)
 //     }
@@ -16688,8 +16688,8 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
 //   }
 //
 // Struct-typing reference: the third entry of the region/block
-//   allocator family (with gl_func_000334E8 = init/setup,
-//   gl_func_00033BE4 = alloc/grow). Same flag-gated prologue
+//   allocator family (with fs_bufWrite_334E8 = init/setup,
+//   fs_bufWrite_33BE4 = alloc/grow). Same flag-gated prologue
 //   (`flags & 1` selects the first USO-relocated setup callback,
 //   jal 0 → resolved at load) and a data-segment template, here
 //   0x0001E368. The distinguishing behavior: it handles BOTH block
@@ -16711,7 +16711,7 @@ void gl_func_00033BE4(s32 src0, u32 flags) {
 //   front-end completing the allocator trio with 000334E8 init +
 //   00033BE4 alloc). Byte-match deferred. Name pre-checked: no
 //   extern reuse.
-// gl_func_00033EB8 — AUDIT REWRITE EXECUTED 2026-07-17 agent-h: 70.0 -> 90.3 NM.
+// fs_bufRead_33EB8 — AUDIT REWRITE EXECUTED 2026-07-17 agent-h: 70.0 -> 90.3 NM.
 // All 6 audit items applied: 16x gl_func_00000000 (jal 0), &gl_ref_0001E368/37C/
 // 394/3AC baked syms, per-SITE gl_d_33eb8_* base-0 aliases (one extern per access
 // site — per-WORD aliases got their addresses CSE'd into s-regs, and volatile
@@ -16756,7 +16756,7 @@ extern u8 gl_ref_0001E368;              /* baked USO data sym (lui 2 / addiu -0x
 extern u8 gl_ref_0001E37C;              /* baked USO data sym */
 extern u8 gl_ref_0001E394;              /* baked USO data sym */
 extern u8 gl_ref_0001E3AC;              /* baked USO data sym */
-void gl_func_00033EB8(s32 dst0, u32 flags) {
+void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     s32 pad[3];
     s32 dst;
     u8 *base;

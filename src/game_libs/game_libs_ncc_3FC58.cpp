@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003FC58 (0x2E8 / 186 words + 1 all-zero pad word), agent-c run 163.
+/* IDO 7.1 NCC (C++) EXACT donor for hostio_dispatch (0x2E8 / 186 words + 1 all-zero pad word), agent-c run 163.
  * Message pump: read one message, set flag bit 2, dispatch on msg.type, clear bit 2 of the second
  * flag word. The cfe body (85.12) spelled the compare chain with gotos; under NCC a plain switch IS
  * the target's chain (52, 22, 10, 9, 7, 8, 21, 23, 25, 27, 28; NCC never emits a jumptable).
@@ -29,7 +29,7 @@ struct Msg {
     int p4C;
     char pad50[0x50];
 };
-extern "C" void gl_func_0003FC58(int arg0) {
+extern "C" void hostio_dispatch(int arg0) {
     Msg msg;
     Msg out;
     volatile int p0, p1, p2, p3, p4, p5;

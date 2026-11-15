@@ -1209,8 +1209,8 @@ gl_func_00000000_b0a8v = 0x00000000;  /* void-returning blank extern (dead-$v0 e
 gl_func_00000000_ff = 0x00000000;
 gl_func_00000000_sqf = 0x00000000;  /* prototyped float(float) sqrt-like blank for gl_func_00002840 (single-prec $f12, no K&R double promotion) */
 gl_func_00000000_c43c = 0x00000000;  /* (float,float,int,int) cb for math_det3x3 */
-gl_func_00000000_5be20 = 0x00000000;  /* (float,float,int*7) 3x3-det (gl_func_00034458) for math_mtx4Adjugate */
-gl_func_00000000_5f3e0 = 0x00000000;  /* gl_func_00034458 (guMtxIdentF slot) for math_orthoF (guOrthoF) */
+gl_func_00000000_5be20 = 0x00000000;  /* (float,float,int*7) 3x3-det (dbg_printThreads) for math_mtx4Adjugate */
+gl_func_00000000_5f3e0 = 0x00000000;  /* dbg_printThreads (guMtxIdentF slot) for math_orthoF (guOrthoF) */
 gl_func_00000000_33338 = 0x00000000;  /* (int,int,int,float,float,int) 6-arg for gl_func_00033338 */
 gl_func_00000000_f54c = 0x00000000;  /* (float)->float cb for gl_func_0005F54C */
 gl_func_00000000_695c = 0x00000000;  /* (float)->float sqrt-helper for gl_func_0003695C */
@@ -1240,7 +1240,7 @@ func_00000000_03FAC = 0x00000000;
 func_00000000_087A4 = 0x00000000;
 func_00000000_082F8 = 0x00000000;
 func_00000000_082F8_v = 0x00000000;  /* void-typed call-1 callee alias (kills dead $v0 def; base->$v0) */
-gl_proto_41148 = 0x00000000;  /* (int,int,int,int,int,double) debug-format for gl_func_00041148 */
+gl_proto_41148 = 0x00000000;  /* (int,int,int,int,int,double) debug-format for heap_new */
 gl_proto_5c810 = 0x00000000;  /* (int,int,int,float,float,int) float-diff log for math_logFloatDiffs (ex gl_func_0005C810, merged 2026-09-06) */
 /* distinct &D for timproc_uso_b5_func_0000E5D8 base load (defeat CSE so base read = compact lui+lw) */
 D_b5_E5D8_base = 0x00000000;
@@ -3158,9 +3158,9 @@ __ull_div = 0x80002E78;
 gl_d_578b4_s1 = 0x00000000;   /* gfx_loadTexture: base-0 alias -- 0x219B8 addiu-form (&sym+N) const, switch-1 default call arg0 */
 gl_d_578b4_s2a = 0x00000000;  /* gfx_loadTexture: base-0 alias -- 0x219C4 addiu-form const, switch-2 falling-case call arg0 */
 gl_d_578b4_s2b = 0x00000000;  /* gfx_loadTexture: base-0 alias -- 0x219C4 addiu-form const, switch-2 default call arg0 (distinct sym per site: busts cross-site lui CSE) */
-/* gfx_loadTexture NCC donor: the 15 gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
+/* gfx_loadTexture NCC donor: the 15 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_578b4_c34458 = 0x00000000;
-/* gl_func_000454C4 NCC donor: the 4 gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
+/* gl_func_000454C4 NCC donor: the 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_454c4_c34458 = 0x00000000;
 /* gl_func_0004B0A8 NCC donor: blank USO jal words (0x34458 calls, Base ctor) and the blank lui/addiu vtable */
 gl_4b0a8_c34458 = 0x00000000;
@@ -3341,19 +3341,19 @@ bu_6808_gb = 0;
 gl_d_2b5f4_f = 0x00000000;    /* AudioSeq_SeqLayerProcessScriptStep3: base-0 alias of D_00000000 -- per-site fold, 0x10AC f32 const */
 gl_d_2b5f4_r1 = 0x00000000;   /* AudioSeq_SeqLayerProcessScriptStep3: base-0 alias -- RNG word 0x2154, ramp block */
 gl_d_2b5f4_r2 = 0x00000000;   /* AudioSeq_SeqLayerProcessScriptStep3: base-0 alias -- RNG word 0x2154, percent block */
-gl_d_33eb8_src = 0x00000000;  /* gl_func_00033EB8: base-0 alias -- copy-loop src fresh lui/addiu */
-gl_ref_0001E368 = 0x0001E368; /* gl_func_00033EB8: baked USO data sym (fmt/template) */
-gl_ref_0001E37C = 0x0001E37C; /* gl_func_00033EB8: baked USO data sym */
-gl_ref_0001E394 = 0x0001E394; /* gl_func_00033EB8: baked USO data sym */
-gl_ref_0001E3AC = 0x0001E3AC; /* gl_func_00033EB8: baked USO data sym */
-gl_ref_0001E330 = 0x0001E330; /* gl_func_00033BE4: baked USO data sym (fmt/template) */
-gl_ref_0001E344 = 0x0001E344; /* gl_func_00033BE4: baked USO data sym */
-gl_ref_0001E358 = 0x0001E358; /* gl_func_00033BE4: baked USO data sym */
-gl_d_33be4_dst = 0x00000000;  /* gl_func_00033BE4: base-0 alias -- copy-loop dest fresh lui/addiu */
-gl_ref_0001E280 = 0x0001E280; /* gl_func_000334E8: baked USO data sym (fmt/template) */
-gl_ref_0001E29C = 0x0001E29C; /* gl_func_000334E8: baked USO data sym */
-gl_ref_0001E2B0 = 0x0001E2B0; /* gl_func_000334E8: baked USO data sym */
-gl_d_334e8_dst = 0x00000000;  /* gl_func_000334E8: base-0 alias -- copy-loop dest */
+gl_d_33eb8_src = 0x00000000;  /* fs_bufRead_33EB8: base-0 alias -- copy-loop src fresh lui/addiu */
+gl_ref_0001E368 = 0x0001E368; /* fs_bufRead_33EB8: baked USO data sym (fmt/template) */
+gl_ref_0001E37C = 0x0001E37C; /* fs_bufRead_33EB8: baked USO data sym */
+gl_ref_0001E394 = 0x0001E394; /* fs_bufRead_33EB8: baked USO data sym */
+gl_ref_0001E3AC = 0x0001E3AC; /* fs_bufRead_33EB8: baked USO data sym */
+gl_ref_0001E330 = 0x0001E330; /* fs_bufWrite_33BE4: baked USO data sym (fmt/template) */
+gl_ref_0001E344 = 0x0001E344; /* fs_bufWrite_33BE4: baked USO data sym */
+gl_ref_0001E358 = 0x0001E358; /* fs_bufWrite_33BE4: baked USO data sym */
+gl_d_33be4_dst = 0x00000000;  /* fs_bufWrite_33BE4: base-0 alias -- copy-loop dest fresh lui/addiu */
+gl_ref_0001E280 = 0x0001E280; /* fs_bufWrite_334E8: baked USO data sym (fmt/template) */
+gl_ref_0001E29C = 0x0001E29C; /* fs_bufWrite_334E8: baked USO data sym */
+gl_ref_0001E2B0 = 0x0001E2B0; /* fs_bufWrite_334E8: baked USO data sym */
+gl_d_334e8_dst = 0x00000000;  /* fs_bufWrite_334E8: base-0 alias -- copy-loop dest */
 /* distinct alias externs for timproc_uso_b5_func_00002B74 redecode (bust cross-expansion &sym CSE) */
 D_timb5_2B74_vt0 = 0;
 D_timb5_2B74_vt1 = 0;
@@ -3501,9 +3501,9 @@ gl_d_4c5e4_word = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- flag-2 call 
 gl_d_4c5e4_reg = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- +0x294 registration arg */
 gl_d_4c5e4_arg = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- tail-call base arg */
 gl_d_4c5e4_clr = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- final 0x254 clear */
-gl_func_0004C5E4_c34458 = 0x00000000;  /* gl_func_0004C5E4 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
-gl_func_00041D40_c34458 = 0x00000000;  /* gl_func_00041D40 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
-gl_func_00046050_c34458 = 0x00000000;  /* gl_func_00046050 NCC donor: its gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
+gl_func_0004C5E4_c34458 = 0x00000000;  /* gl_func_0004C5E4 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
+gl_func_00041D40_c34458 = 0x00000000;  /* gl_func_00041D40 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
+gl_func_00046050_c34458 = 0x00000000;  /* gl_func_00046050 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_d_4b0a8_tbl = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- handler-table bind self->0x28 */
 gl_d_4b0a8_vt = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x140 2-word vtable copy source */
 gl_d_4b0a8_w214 = 0x00000000;  /* gl_func_0004B0A8: base-0 alias -- +0x214 word arg of sub-registration */
@@ -3713,23 +3713,23 @@ gl_ref_0007C860 = 0x0007C860;  /* gl_func_00068990 baked USO jal (0x0C01F218) = 
 gl_ref_0007C928 = 0x0007C928;  /* gl_func_00068990 baked USO jal (0x0C01F24A) = gl_func_000682BC int reader */
 gl_func_00062F64_blank = 0x00000000;  /* gl_func_00062F64 called from the in-unit gl_func_00065060: blank USO jal (a direct in-unit call would bake the address) */
 D_33444_a = 0x00000000;  /* game_libs_func_00033444 per-site alias of D_00000000 (defeats &D CSE: counter load must stay folded `lui t6; lw t6,0x20C(t6)` while the call arg holds `lui a0; addiu a0`) */
-D_349E0_a = 0x00000000;  /* game_libs_func_000349E0 per-site alias of D_00000000 (defeats &D CSE: the `|= 4` / `&= ~4` load and store must each fold under their own lui; adjacent same-symbol accesses hold a base) */
-D_349E0_b = 0x00000000;  /* game_libs_func_000349E0 per-site alias of D_00000000 for the three call-site args (accesses separated by a call re-lui on their own, so one alias serves all three) */
-D_34A78_rec = 0x00000000;  /* gl_func_00034A78 per-site alias of D_00000000: record pointer read twice (adjacent same-symbol reads hold the target's `lui v0; addiu v0` base) */
-D_34A78_b = 0x00000000;  /* gl_func_00034A78 per-site alias of D_00000000: &D stored at record+0x8C (own `lui t6; addiu`) */
-D_34A78_c = 0x00000000;  /* gl_func_00034A78 per-site alias of D_00000000: &D stored at record+0x90 (own `lui t8; addiu`) */
-gl_ref_0003B8EC = 0x0003B8EC;  /* gl_func_00034A78 config block (base-0 USO data + 0x3B8xx): self-pointer slot */
-gl_ref_0003B8F0 = 0x0003B8F0;  /* gl_func_00034A78 config block: init target / self-pointer value */
-gl_ref_0003B8F4 = 0x0003B8F4;  /* gl_func_00034A78 config block byte = 3 */
-gl_ref_0003B8F5 = 0x0003B8F5;  /* gl_func_00034A78 config block byte = 5 */
-gl_ref_0003B8F6 = 0x0003B8F6;  /* gl_func_00034A78 config block byte = 13 */
-gl_ref_0003B8F7 = 0x0003B8F7;  /* gl_func_00034A78 config block byte = 2 */
-gl_ref_0003B8F8 = 0x0003B8F8;  /* gl_func_00034A78 config block byte = 12 */
-gl_ref_0003B8F9 = 0x0003B8F9;  /* gl_func_00034A78 config block byte = 1 */
-gl_ref_0003B8FC = 0x0003B8FC;  /* gl_func_00034A78 config block: KSEG1 base gate LOAD (alias split from the store so neither CSEs) */
-gl_ref_0003B8FC_st = 0x0003B8FC;  /* gl_func_00034A78 config block: KSEG1 base STORE alias */
-gl_ref_0003B900 = 0x0003B900;  /* gl_func_00034A78 config block word = 0 */
-gl_ref_0003B904 = 0x0003B904;  /* gl_func_00034A78 config block: 96-byte buffer passed to init cb */
+D_349E0_a = 0x00000000;  /* hostio_start per-site alias of D_00000000 (defeats &D CSE: the `|= 4` / `&= ~4` load and store must each fold under their own lui; adjacent same-symbol accesses hold a base) */
+D_349E0_b = 0x00000000;  /* hostio_start per-site alias of D_00000000 for the three call-site args (accesses separated by a call re-lui on their own, so one alias serves all three) */
+D_34A78_rec = 0x00000000;  /* app_initSystem per-site alias of D_00000000: record pointer read twice (adjacent same-symbol reads hold the target's `lui v0; addiu v0` base) */
+D_34A78_b = 0x00000000;  /* app_initSystem per-site alias of D_00000000: &D stored at record+0x8C (own `lui t6; addiu`) */
+D_34A78_c = 0x00000000;  /* app_initSystem per-site alias of D_00000000: &D stored at record+0x90 (own `lui t8; addiu`) */
+gl_ref_0003B8EC = 0x0003B8EC;  /* app_initSystem config block (base-0 USO data + 0x3B8xx): self-pointer slot */
+gl_ref_0003B8F0 = 0x0003B8F0;  /* app_initSystem config block: init target / self-pointer value */
+gl_ref_0003B8F4 = 0x0003B8F4;  /* app_initSystem config block byte = 3 */
+gl_ref_0003B8F5 = 0x0003B8F5;  /* app_initSystem config block byte = 5 */
+gl_ref_0003B8F6 = 0x0003B8F6;  /* app_initSystem config block byte = 13 */
+gl_ref_0003B8F7 = 0x0003B8F7;  /* app_initSystem config block byte = 2 */
+gl_ref_0003B8F8 = 0x0003B8F8;  /* app_initSystem config block byte = 12 */
+gl_ref_0003B8F9 = 0x0003B8F9;  /* app_initSystem config block byte = 1 */
+gl_ref_0003B8FC = 0x0003B8FC;  /* app_initSystem config block: KSEG1 base gate LOAD (alias split from the store so neither CSEs) */
+gl_ref_0003B8FC_st = 0x0003B8FC;  /* app_initSystem config block: KSEG1 base STORE alias */
+gl_ref_0003B900 = 0x0003B900;  /* app_initSystem config block word = 0 */
+gl_ref_0003B904 = 0x0003B904;  /* app_initSystem config block: 96-byte buffer passed to init cb */
 D_5165C_arr = 0x00000000;  /* gl_func_0005165C head base (array-extern spelling of D_00000000: lui+addiu held base) */
 D_5165C_b = 0x00000000;  /* gl_func_0005165C per-site alias of D_00000000 for the second tail store (two luis; the target's shared-$at pair is the 66A50 cap) */
 D_4E584_arr = 0x00000000;  /* gl_func_0004E584 head base (array-extern spelling of D_00000000: lui+addiu held base, re-assigned after the first alloc) */
@@ -3965,16 +3965,16 @@ gl_ref_0006F620 = 0x0006F620;  /* Mem_free baked in-unit jal (game_libs_func_000
 gl_func_00000000_d414 = 0x00000000;  /* (float, int *, int *) blank cb for gl_func_0005D414 */
 gl_func_00000000_37bec = 0x00000000;  /* (void *, void *) void blank list-splice cb for gl_func_00037BEC */
 gl_ref_0003B844 = 0x0003B844;  /* AudioThread_ResetAudioHeap baked in-unit jal (0x0C00EE11) */
-gl_ref_0003B8E8 = 0x0003B8E8;  /* gl_func_00035440 baked counter word (config block, lui/lw + lui/sw) */
-gl_ref_0003B8E8_35648_ld = 0x0003B8E8;  /* gl_func_00035648 counter word, kind-2 a1==1 load */
-gl_ref_0003B8E8_35648_st = 0x0003B8E8;  /* gl_func_00035648 counter word, kind-2 a1==1 store */
-gl_ref_0003B8E8_35648_rd = 0x0003B8E8;  /* gl_func_00035648 counter word, kind-2 result read */
-gl_ref_0001E5AC = 0x0001E5AC;  /* gl_func_00035440 baked lui/addiu message address (kind-2 report) */
-gl_ref_0001E5C8 = 0x0001E5C8;  /* gl_func_00035440 baked lui/addiu message address (a1 & 7 report) */
-gl_ref_0001E5DC = 0x0001E5DC;  /* gl_func_00035440 baked lui/addiu message address (r < 0 report) */
-gl_ref_0001E608 = 0x0001E608;  /* gl_func_000356FC baked lui/addiu message address (kind-1 report) */
-gl_ref_0001E61C = 0x0001E61C;  /* gl_func_000356FC baked lui/addiu message address (kind-2 report) */
-gl_ref_0001E638 = 0x0001E638;  /* gl_func_000356FC baked lui/addiu message address (a1 & 7 report) */
+gl_ref_0003B8E8 = 0x0003B8E8;  /* fs_gdlReadFile baked counter word (config block, lui/lw + lui/sw) */
+gl_ref_0003B8E8_35648_ld = 0x0003B8E8;  /* fs_gdlSeekFile counter word, kind-2 a1==1 load */
+gl_ref_0003B8E8_35648_st = 0x0003B8E8;  /* fs_gdlSeekFile counter word, kind-2 a1==1 store */
+gl_ref_0003B8E8_35648_rd = 0x0003B8E8;  /* fs_gdlSeekFile counter word, kind-2 result read */
+gl_ref_0001E5AC = 0x0001E5AC;  /* fs_gdlReadFile baked lui/addiu message address (kind-2 report) */
+gl_ref_0001E5C8 = 0x0001E5C8;  /* fs_gdlReadFile baked lui/addiu message address (a1 & 7 report) */
+gl_ref_0001E5DC = 0x0001E5DC;  /* fs_gdlReadFile baked lui/addiu message address (r < 0 report) */
+gl_ref_0001E608 = 0x0001E608;  /* fs_gdlWriteFile baked lui/addiu message address (kind-1 report) */
+gl_ref_0001E61C = 0x0001E61C;  /* fs_gdlWriteFile baked lui/addiu message address (kind-2 report) */
+gl_ref_0001E638 = 0x0001E638;  /* fs_gdlWriteFile baked lui/addiu message address (a1 & 7 report) */
 gl_ref_0002008C = 0x0002008C;  /* gl_func_0004ABD8 baked lui/addiu message address (no-records report) */
 gl_ref_000200AC = 0x000200AC;  /* gl_func_0004ABD8 baked lui/addiu message address (work-path report) */
 gl_func_00000000_42778 = 0x00000000;  /* (float)->float sqrt blank for gl_func_00042778 */
@@ -3984,10 +3984,10 @@ gl_func_00000000_5db58b = 0x00000000;  /* (int, int, float, int) void blank for 
 gl_func_00000000_5db00c = 0x00000000;  /* (int, int, float, float) void blank for game_libs_func_0005DB00 */
 D_44DE4_tag = 0x00000000;  /* gl_func_00044DE4 1st base-0 global store (teardown tag); distinct from D_44DE4_val so each store keeps its own lui at */
 D_44DE4_val = 0x00000000;  /* gl_func_00044DE4 2nd base-0 global store (self->0x218->0x24) */
-D_34458_head = 0x00000000;  /* gl_func_00034458 base-0 list-head global (lui s0; lw s0,0(s0)) */
-D_34458_obj = 0x00000000;  /* gl_func_00034458 base-0 vtable record global, distinct from D_34458_head (hoisted lui s4; addiu s4) */
-D_34548_obj = 0x00000000;  /* gl_func_00034548 base-0 vtable record global (lui s6; addiu s6) */
-D_34548_slot = 0x0003BB34;  /* gl_func_00034548 poll-result global (lui s1,4; addiu s1,-0x44CC; lw 0(s1)) */
+D_34458_head = 0x00000000;  /* dbg_printThreads base-0 list-head global (lui s0; lw s0,0(s0)) */
+D_34458_obj = 0x00000000;  /* dbg_printThreads base-0 vtable record global, distinct from D_34458_head (hoisted lui s4; addiu s4) */
+D_34548_obj = 0x00000000;  /* dbg_faultThread base-0 vtable record global (lui s6; addiu s6) */
+D_34548_slot = 0x0003BB34;  /* dbg_faultThread poll-result global (lui s1,4; addiu s1,-0x44CC; lw 0(s1)) */
 D_34240_G = 0x00000000;  /* gl_func_00034240 base-0 record-pointer global (address hoisted to s4) */
 D_34240_X = 0x00000000;  /* gl_func_00034240 base-0 cb arg (cb(&X, 1)), distinct so it is not CSE'd with G/P */
 D_34240_Y = 0x00000000;  /* gl_func_00034240 base-0 cb arg (cb(&Y, 0)) */
@@ -4054,18 +4054,18 @@ func_00000000_2F90_f = 0x00000000;  /* game_createLights prototyped (char*,char*
 gl_func_00000000_d9e4b = 0x00000000;
 /* AudioHeap_InitCachePools blank alias for the in-unit reporter gl_func_0001CA10 (ROM word is jal 0) */
 gl_func_0001CA10_1FFAC = 0x00000000;
-/* Window_display blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+/* Window_display blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_4EB54 = 0x00000000;
 /* Window_display register-self slot, per-site alias of D_00000000 (target lui at / sw s0,0(at)) */
 D_g_0004EB54 = 0x00000000;
-/* gl_func_0004F85C blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+/* gl_func_0004F85C blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_4F85C = 0x00000000;
-/* BaseMat_declParms blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+/* BaseMat_declParms blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_5185C = 0x00000000;
-/* gfx_initRDPState NCC donor: its 4 gl_func_00034458 calls are blank USO jal words (0x0C000000) in the target */
+/* gfx_initRDPState NCC donor: its 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00034458_59E80 = 0x00000000;
 gl_func_00034458_51F5C = 0x00000000;  /* blank alias used by the BasePolyShape_parseMats NCC donor */
-/* math_planeFrom3Points blank alias for the in-unit callee gl_func_00034458 (ROM word is jal 0) */
+/* math_planeFrom3Points blank alias for the in-unit callee dbg_printThreads (ROM word is jal 0) */
 gl_func_00034458_5CB68 = 0x00000000;
 /* AudioHeap_ResetLoadStatus base-0 byte-array placeholders, one per loop (target lui 0 / addiu 0 each) */
 gl_d_1fa20_a = 0x00000000;
@@ -4331,7 +4331,7 @@ game_uso_func_00000B3C_rodata = 0x00000000;  /* game_uso_func_00000B3C MIPSpro 7
 game_uso_func_00008CD8_rodata = 0x00000000;  /* game_uso_func_00008CD8 MIPSpro 7.2.1 donor (agent-h run 428): renamed donor-local .rodata reloc; its 4-entry phase table is at donor .rodata +0x100 = game_uso RoData +0x100 (in-place addend), content re-emitted by the host placeholder */
 gl_ref_0001E6B0 = 0x0001E6B0;  /* gl_func_00035B1C blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
-D_34EB4_flags = 0x00000000;  /* gl_func_00034EB4 flags-word test: distinct zero alias so the test does not share base's s3 */
+D_34EB4_flags = 0x00000000;  /* app_run flags-word test: distinct zero alias so the test does not share base's s3 */
 bu_7288_src = 0x00000294;  /* EnvSettings_func_00007288 16-byte record copy source (asm: func_0000027C + 0x18) */
 gl_ref_000317E8 = 0x000317E8;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_0003186C = 0x0003186C;  /* baked in-unit jal (agent-c run 122) */
@@ -5260,7 +5260,7 @@ D_307A8_n = 0x00000000;
 D_307A8_o = 0x00000000;
 D_307A8_p = 0x00000000;
 D_00000000_1c0a8 = 0x00000000;
-gl_func_00034A78_bss = 0x0003B8F6;  /* gl_func_00034A78 NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
+app_initSystem_bss = 0x0003B8F6;  /* app_initSystem NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
 gl_func_0005165C_bss = 0x00000000;  /* gl_func_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
 gl_func_00066A50_bss = 0x0003F310;  /* gl_func_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
 gl_3d71c_dA0 = 0x000000A0;  /* gl_func_0003D71C NM: fn-typed blank base of the D+0xA0 copy destination (lui/addiu 160, no USO reloc) */
@@ -5594,7 +5594,7 @@ D_000019E8 = 0x000019E8;
 D_0001EC6C = 0x0001EC6C;
 D_0001EC84 = 0x0001EC84;
 D_0001EC9C = 0x0001EC9C;
-/* gl_func_0006126C blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+/* gl_func_0006126C blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_6126C = 0x00000000;
 gl_func_00038A28_rodata = 0x00001A1C;
 gl_func_00036F0C_rodata = 0x000019E8;

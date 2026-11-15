@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00034548 (0x13C / 79 words, the
+/* IDO 7.1 -O2 donor for dbg_faultThread (0x13C / 79 words, the
  * subsystem poll loop) and game_libs_func_0003485C (0x20, the hang stub).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
  * functions are imported.
@@ -42,7 +42,7 @@ int game_libs_func_000343F4(int a0) {
 
 extern char *D_34458_head;
 extern char *D_34458_obj;
-int gl_func_00034458() {
+int dbg_printThreads() {
     char *n = D_34458_head;
     volatile int pad;
     int outB, outA;
@@ -61,7 +61,7 @@ int gl_func_00034458() {
 
 extern char *D_34548_obj;
 extern char *D_34548_slot;
-void gl_func_00034548(void *a0) {
+void dbg_faultThread(void *a0) {
     int sp5C;
     char *s0;
     int sp54, sp50;
@@ -84,7 +84,7 @@ void gl_func_00034548(void *a0) {
 }
 
 extern int func_00000000();
-void gl_func_00034684(void) {
+void dbg_startFaultThread(void) {
     func_00000000((char*)&D_00000000 + 0x3BB18, (char*)&D_00000000 + 0x3BB30, 1);
     func_00000000((char*)&D_00000000 + 0x3B968, 5, &D_00000000, 0,
                    (char*)&D_00000000 + 0x3C040, 12);
@@ -111,7 +111,7 @@ int gl_func_000346F0(int a0, char *src, int n) {
     return 1;
 }
 
-void gl_func_00034810(int a0, ...) {
+void dbg_printf(int a0, ...) {
     int aligned = (((int)((char *)&a0 + 4)) + 3) & ~3;
     gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }

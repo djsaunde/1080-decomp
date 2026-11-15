@@ -4412,7 +4412,7 @@ int *gl_func_000088B4(int *arg0) {
  * game_libs_post.c next to parent gl_func_00039960. */
 
 /* game_libs_func_00035360 split 2026-05-15; INCLUDE_ASM lives in
- * game_libs_post.c next to parent gl_func_00035338. */
+ * game_libs_post.c next to parent heap_tempFree. */
 
 /* game_libs_func_00066C58 / _00066C60 split 2026-05-15 from gl_func_00066C30;
  * bodies live in game_libs_post.c next to parent. */

@@ -67,7 +67,7 @@ typedef union FI_0006126C {
     int i;
     f64 d;
 } FI_0006126C;
-extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;

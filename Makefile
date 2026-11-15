@@ -1936,7 +1936,7 @@ GAMELIBS_4B0A8_DONOR := build/src/game_libs/game_libs_ncc_4B0A8.cpp.o
 $(GAMELIBS_4B0A8_DONOR): src/game_libs/game_libs_ncc_4B0A8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=gl_4b0a8_vtbl --redefine-sym gl_func_00034458=gl_4b0a8_c34458 $@
+	$(OBJCOPY) --redefine-sym __ct__3ObjFP3Src=gl_func_0004B0A8 --redefine-sym __ct__4BaseFPc=gl_4b0a8_base --redefine-sym __vtbl__3Obj=gl_4b0a8_vtbl --redefine-sym dbg_printThreads=gl_4b0a8_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004B0A8=$(GAMELIBS_4B0A8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B0A8_DONOR)
 # 4B620 = C++ ctor (cfront protocol, inline Base ctor, inline DL::add appends, by-value index iterator); NCC donor (agent-c run 157, cfe 94.48), ctor symbol renamed (name only).
@@ -1965,12 +1965,12 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_4BAF4_DONOR := build/src/game_libs/game_libs_ncc_4BAF4.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004BAF4=$(GAMELIBS_4BAF4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4BAF4_DONOR)
-# 3E5E0 = three `new` member-function callback objects (K root vptr, CB {obj, PMF}, CB1 / CB2 leaves); EXACT NCC donor over a placeholder (agent-c run 270: CB ctor mem-initialisers + the loop as a free inline with one dummy pool parameter). Symbols renamed (names only): vtables -> the target's absolute vtable words (gl_3e5e0_vk / _v1 / _v2), gl_func_00034458 -> the blank USO jal words (gl_3e5e0_c34458 = 0).
+# 3E5E0 = three `new` member-function callback objects (K root vptr, CB {obj, PMF}, CB1 / CB2 leaves); EXACT NCC donor over a placeholder (agent-c run 270: CB ctor mem-initialisers + the loop as a free inline with one dummy pool parameter). Symbols renamed (names only): vtables -> the target's absolute vtable words (gl_3e5e0_vk / _v1 / _v2), dbg_printThreads -> the blank USO jal words (gl_3e5e0_c34458 = 0).
 GAMELIBS_3E5E0_DONOR := build/src/game_libs/game_libs_ncc_3E5E0.cpp.o
 $(GAMELIBS_3E5E0_DONOR): src/game_libs/game_libs_ncc_3E5E0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __vtbl__1K=gl_3e5e0_vk --redefine-sym __vtbl__3CB1=gl_3e5e0_v1 --redefine-sym __vtbl__3CB2=gl_3e5e0_v2 --redefine-sym gl_func_00034458=gl_3e5e0_c34458 $@
+	$(OBJCOPY) --redefine-sym __vtbl__1K=gl_3e5e0_vk --redefine-sym __vtbl__3CB1=gl_3e5e0_v1 --redefine-sym __vtbl__3CB2=gl_3e5e0_v2 --redefine-sym dbg_printThreads=gl_3e5e0_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003E5E0=$(GAMELIBS_3E5E0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3E5E0_DONOR)
 # 40070 = C++ ctor (cfront protocol, inline Base ctor with W4 member, W4f wrapper at 0x104 with an int element, by-value Vec3 set()); NCC donor, EXACT (agent-c run 181), symbols renamed (names only).
@@ -1978,7 +1978,7 @@ GAMELIBS_40070_DONOR := build/src/game_libs/game_libs_ncc_40070.cpp.o
 $(GAMELIBS_40070_DONOR): src/game_libs/game_libs_ncc_40070.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=gl_func_00040070 --redefine-sym gl_func_00034458=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
+	$(OBJCOPY) --redefine-sym __ct__3ObjFPvfN22=gl_func_00040070 --redefine-sym dbg_printThreads=gl_func_00000000 --redefine-sym __ct__2BBFPv=gl_func_00000000_40070_base --redefine-sym __vtbl__3Obj=D_40070_vtb --redefine-sym __vtbl__4Base=D_40070_vta $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00040070=$(GAMELIBS_40070_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_40070_DONOR)
 # 3C43C = nearest-hit picker (struct-by-value query arg, acc cleared from int i = 0); EXACT NCC donor over a placeholder (agent-c run 250). Its 1e6 literal's .rodata reloc is renamed gl_func_0003C43C_rodata by the splice (pinned to bootup.uso RoData 0x1AB8).
@@ -1994,20 +1994,20 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_44CE8_DONOR := build/src/game_libs/game_libs_ncc_44CE8.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00044CE8=$(GAMELIBS_44CE8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_44CE8_DONOR)
-# 48510 = real C++ `void Strip::add()` (agent-c run 160; was the run-134 NCC C lift, cfe 80.23); EXACT NCC donor over a placeholder (agent-c run 271). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00048510_c34458 = 0.
+# 48510 = real C++ `void Strip::add()` (agent-c run 160; was the run-134 NCC C lift, cfe 80.23); EXACT NCC donor over a placeholder (agent-c run 271). Symbols renamed (names only): the dbg_printThreads calls are the target's blank USO jal words -> gl_func_00048510_c34458 = 0.
 GAMELIBS_48510_DONOR := build/src/game_libs/game_libs_ncc_48510.cpp.o
 $(GAMELIBS_48510_DONOR): src/game_libs/game_libs_ncc_48510.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 --redefine-sym gl_func_00034458=gl_func_00048510_c34458 $@
+	$(OBJCOPY) --redefine-sym add__5StripFP3VtxPsPiPUs=gl_func_00048510 --redefine-sym dbg_printThreads=gl_func_00048510_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048510=$(GAMELIBS_48510_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48510_DONOR)
-# 4C5E4 = C++ `void Obj::run()` (agent-g run 191: the cfe NM body ported to NCC); EXACT NCC donor over a placeholder (agent-c run 261). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_0004C5E4_c34458 = 0.
+# 4C5E4 = C++ `void Obj::run()` (agent-g run 191: the cfe NM body ported to NCC); EXACT NCC donor over a placeholder (agent-c run 261). Symbols renamed (names only): the dbg_printThreads calls are the target's blank USO jal words -> gl_func_0004C5E4_c34458 = 0.
 GAMELIBS_4C5E4_DONOR := build/src/game_libs/game_libs_ncc_4C5E4.cpp.o
 $(GAMELIBS_4C5E4_DONOR): src/game_libs/game_libs_ncc_4C5E4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 --redefine-sym gl_func_00034458=gl_func_0004C5E4_c34458 $@
+	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 --redefine-sym dbg_printThreads=gl_func_0004C5E4_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_DONOR)
 # 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target).
@@ -2118,12 +2118,12 @@ $(GAMELIBS_3AE58_DONOR): src/game_libs/game_libs_ncc_3AE58.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003AE58=$(GAMELIBS_3AE58_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3AE58_DONOR)
-# 41D40 = registry dump with the by-value array iterator under NCC (agent-c run 162: cfe 92.99 -> 96.11, length = target; run 164: free iter() -> 99.32; run 174: for-init iterator, 99.17 -> 99.26 objdiff diff). EXACT NCC donor over a placeholder (agent-c run 262: explicit if / do-while with a named-pointer bottom advance). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00041D40_c34458 = 0.
+# 41D40 = registry dump with the by-value array iterator under NCC (agent-c run 162: cfe 92.99 -> 96.11, length = target; run 164: free iter() -> 99.32; run 174: for-init iterator, 99.17 -> 99.26 objdiff diff). EXACT NCC donor over a placeholder (agent-c run 262: explicit if / do-while with a named-pointer bottom advance). Symbols renamed (names only): the dbg_printThreads calls are the target's blank USO jal words -> gl_func_00041D40_c34458 = 0.
 GAMELIBS_41D40_DONOR := build/src/game_libs/game_libs_ncc_41D40.cpp.o
 $(GAMELIBS_41D40_DONOR): src/game_libs/game_libs_ncc_41D40.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym gl_func_00034458=gl_func_00041D40_c34458 $@
+	$(OBJCOPY) --redefine-sym dbg_printThreads=gl_func_00041D40_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00041D40=$(GAMELIBS_41D40_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41D40_DONOR)
 # 37938 = V3 push-apart under NCC (agent-c run 162: cfe 93.73 -> 98.55, kept-parameter getPos burns the target's ring slot). EXACT NCC donor over an
@@ -2149,13 +2149,13 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_59E80_DONOR)
 # 34890 = `new X(o)` cfront-protocol alloc cascade + register + list walk under NCC (agent-c run 164: cfe 90.35 -> 98.10, NM body 0x148 -> 0x150 bytes = target; run 174: for-init list iterator -> 98.27 objdiff diff).
 # agent-g run 321: EXACT NCC donor over a placeholder on both build paths (block-scope rv kept live across the bottom
-# step); Base / X vtables -> the target's absolute USO words (gl_34890_vb / gl_34890_vx), gl_func_00034458 -> the blank
+# step); Base / X vtables -> the target's absolute USO words (gl_34890_vb / gl_34890_vx), dbg_printThreads -> the blank
 # jal words (gl_34890_c34458 = 0), D_34890_tmpl pinned at 0x1E1B0, no .rodata.
 GAMELIBS_34890_DONOR := build/src/game_libs/game_libs_ncc_34890.cpp.o
 $(GAMELIBS_34890_DONOR): src/game_libs/game_libs_ncc_34890.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __vtbl__4Base=gl_34890_vb --redefine-sym __vtbl__1X=gl_34890_vx --redefine-sym gl_func_00034458=gl_34890_c34458 $@
+	$(OBJCOPY) --redefine-sym __vtbl__4Base=gl_34890_vb --redefine-sym __vtbl__1X=gl_34890_vx --redefine-sym dbg_printThreads=gl_34890_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034890=$(GAMELIBS_34890_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34890_DONOR)
 # 37348 = input deadzone + two pushes under NCC (agent-c run 164 / 173: kept Node * inline parameters, block-scoped ctor-built push vector, second-vector zeros through an int inline parameter). EXACT NCC donor over an empty placeholder (agent-c run 173).
@@ -2193,11 +2193,11 @@ GAMELIBS_3FC58_DONOR := build/src/game_libs/game_libs_ncc_3FC58.cpp.o
 $(GAMELIBS_3FC58_DONOR): src/game_libs/game_libs_ncc_3FC58.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003FC58=$(GAMELIBS_3FC58_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += hostio_dispatch=$(GAMELIBS_3FC58_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3FC58_DONOR)
 # 3FC58's target carries one trailing all-zero alignment word after jr ra (the donor ends at the delay slot).
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_0003FC58=0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_0003FC58=0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += hostio_dispatch=0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += hostio_dispatch=0x00000000
 # 34548 = subsystem poll loop (34458 sibling recipe), IDO 7.1 -O2 donor:
 # game_libs_o2_34548.c (79/79 words). The loop is infinite and IDO puts the
 # unreachable epilogue on a 32-byte .text boundary, so the donor is the
@@ -2205,7 +2205,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # gives the target's 2 nops (in post0b's own layout the same C has 3).
 # 3485C (hang stub, same unit, epilogue alignment too) comes from the same donor.
 GAMELIBS_34548_DONOR := build/src/game_libs/game_libs_o2_34548.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034548=$(GAMELIBS_34548_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += dbg_faultThread=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += game_libs_func_0003485C=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_DONOR)
 # 488A0 = line-list emitter (gSPVertex + G_LINE3D packets); NCC donor, EXACT (agent-c run 155: early-bit DL cursor d / n, c2 before the BB split).
@@ -2213,9 +2213,9 @@ GAMELIBS_488A0_DONOR := build/src/game_libs/game_libs_ncc_488A0.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000488A0=$(GAMELIBS_488A0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_488A0_DONOR)
 # 34A78 = KSEG1 config-block install; the F6/F7 byte pair is one static object (shared lui at); NCC donor.
-# Its .bss reloc is renamed gl_func_00034A78_bss by the splice (pinned to 0x3B8F6 in undefined_syms_auto.txt).
+# Its .bss reloc is renamed app_initSystem_bss by the splice (pinned to 0x3B8F6 in undefined_syms_auto.txt).
 GAMELIBS_34A78_DONOR := build/src/game_libs/game_libs_ncc_34A78.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034A78=$(GAMELIBS_34A78_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_initSystem=$(GAMELIBS_34A78_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34A78_DONOR)
 # 5165C = alloc-or-passthrough zeroing setter; NCC donor with the tail pair as one static object (kit LXI).
 GAMELIBS_5165C_DONOR := build/src/game_libs/game_libs_ncc_5165C.cpp.o
@@ -2256,12 +2256,12 @@ $(GAMELIBS_3B9C0_DONOR): src/game_libs/game_libs_ncc_3B9C0.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003B9C0=$(GAMELIBS_3B9C0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B9C0_DONOR)
-# 46050 = textured-font string renderer as C++ (agent-c run 152 NM lift, agent-g run 220 C++ appends); EXACT NCC donor over a placeholder (agent-c run 268: the F5801000 append's ctx through a two-statement free inline's local = the target's t0). Symbols renamed (names only): the gl_func_00034458 calls are the target's blank USO jal words -> gl_func_00046050_c34458 = 0.
+# 46050 = textured-font string renderer as C++ (agent-c run 152 NM lift, agent-g run 220 C++ appends); EXACT NCC donor over a placeholder (agent-c run 268: the F5801000 append's ctx through a two-statement free inline's local = the target's t0). Symbols renamed (names only): the dbg_printThreads calls are the target's blank USO jal words -> gl_func_00046050_c34458 = 0.
 GAMELIBS_46050_DONOR := build/src/game_libs/game_libs_ncc_46050.cpp.o
 $(GAMELIBS_46050_DONOR): src/game_libs/game_libs_ncc_46050.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym gl_func_00034458=gl_func_00046050_c34458 $@
+	$(OBJCOPY) --redefine-sym dbg_printThreads=gl_func_00046050_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046050=$(GAMELIBS_46050_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46050_DONOR)
 # 48AEC = real C++ `void Obj::draw()` (agent-c run 159, cfe 88.11); symbols renamed (names only).
@@ -2473,7 +2473,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46FA8_DONOR)
 # 34EB4 = frame main loop (object list pump + app virtual hooks + one-shot callback); NCC donor.
 GAMELIBS_34EB4_DONOR := build/src/game_libs/game_libs_ncc_34EB4.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00034EB4=$(GAMELIBS_34EB4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_run=$(GAMELIBS_34EB4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34EB4_DONOR)
 # 3DE48 = nearest-child search by Manhattan distance, skipping one node ({cur, nxt} iterator, first(), ABS macro sum); NCC donor.
 GAMELIBS_3DE48_DONOR := build/src/game_libs/game_libs_ncc_3DE48.cpp.o
@@ -3910,10 +3910,10 @@ build/src/match_imports/gl_func_000346F0.c.o: src/match_imports/gl_func_000346F0
 build/non_matching/src/match_imports/gl_func_000346F0.c.o: src/match_imports/gl_func_000346F0.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/gl_func_00035268.c.o: src/match_imports/gl_func_00035268.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/heap_tempAlloc.c.o: src/match_imports/heap_tempAlloc.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/gl_func_00035268.c.o: src/match_imports/gl_func_00035268.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/heap_tempAlloc.c.o: src/match_imports/heap_tempAlloc.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gl_func_00035C6C.c.o: src/match_imports/gl_func_00035C6C.c src/match_imports/context_game_libs_o2_35C6C.h
@@ -4480,12 +4480,12 @@ build/src/match_imports/gl_func_000346F0.c.o.linked.elf: build/src/match_imports
 build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_000346F0.c.o scripts/match-origins-gl_func_000346F0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_000346F0-nm.ld -e gl_func_000346F0 -o $@ $@.stripped.o
-build/src/match_imports/gl_func_00035268.c.o.linked.elf: build/src/match_imports/gl_func_00035268.c.o scripts/match-origins-gl_func_00035268.ld
+build/src/match_imports/heap_tempAlloc.c.o.linked.elf: build/src/match_imports/heap_tempAlloc.c.o scripts/match-origins-heap_tempAlloc.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035268.ld -e gl_func_00035268 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf: build/non_matching/src/match_imports/gl_func_00035268.c.o scripts/match-origins-gl_func_00035268-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-heap_tempAlloc.ld -e heap_tempAlloc -o $@ $@.stripped.o
+build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf: build/non_matching/src/match_imports/heap_tempAlloc.c.o scripts/match-origins-heap_tempAlloc-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035268-nm.ld -e gl_func_00035268 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-heap_tempAlloc-nm.ld -e heap_tempAlloc -o $@ $@.stripped.o
 build/src/match_imports/gl_func_00035C6C.c.o.linked.elf: build/src/match_imports/gl_func_00035C6C.c.o scripts/match-origins-gl_func_00035C6C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gl_func_00035C6C.ld -e gl_func_00035C6C -o $@ $@.stripped.o
@@ -4976,10 +4976,10 @@ build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/src/mat
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000346F0.json $@
 build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf scripts/match-bindings-gl_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_000346F0-nm.json $@
-build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00035268.c.o.linked.elf scripts/match-bindings-gl_func_00035268.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035268.json $@
-build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf scripts/match-bindings-gl_func_00035268-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035268-nm.json $@
+build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: build/src/match_imports/heap_tempAlloc.c.o.linked.elf scripts/match-bindings-heap_tempAlloc.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-heap_tempAlloc.json $@
+build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf scripts/match-bindings-heap_tempAlloc-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-heap_tempAlloc-nm.json $@
 build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: build/src/match_imports/gl_func_00035C6C.c.o.linked.elf scripts/match-bindings-gl_func_00035C6C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gl_func_00035C6C.json $@
 build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf scripts/match-bindings-gl_func_00035C6C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5354,10 +5354,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000346F0.c scripts/match-bindings-gl_func_000346F0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_000346F0=build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_000346F0.c scripts/match-bindings-gl_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035268=build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035268.c scripts/match-bindings-gl_func_00035268.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035268=build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035268.c scripts/match-bindings-gl_func_00035268-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += heap_tempAlloc=build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/heap_tempAlloc.c scripts/match-bindings-heap_tempAlloc.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += heap_tempAlloc=build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/heap_tempAlloc.c scripts/match-bindings-heap_tempAlloc-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035C6C=build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gl_func_00035C6C.c scripts/match-bindings-gl_func_00035C6C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00035C6C=build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
@@ -5760,10 +5760,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000346
 build/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
-build/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/gl_func_00035268.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
+build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00035C6C.c.o.linked.elf.bound.elf

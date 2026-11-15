@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00034EB4 (0x2B0 / 172 words): the frame
+/* IDO 7.1 NCC (C++) donor for app_run (0x2B0 / 172 words): the frame
  * main loop. Pumps the per-object list, the app's virtual hooks (v3/v4/v13/v15
  * on a 40-byte base, so the vptr is at +0x28) and the one-shot callback at
  * +0x30, forever: `quit` is never set, so the epilogue is unreachable and the
@@ -24,7 +24,7 @@ struct AppB : Pad40 {
 struct App : AppB { char pad2[4]; void (*cb)(); };
 struct Node { char pad[0x60]; Node *next; };
 struct St { int flags; int pad4, pad8; Node *list; int f10; int count; };
-extern "C" void gl_func_00034EB4(St *a0, App *a1) {
+extern "C" void app_run(St *a0, App *a1) {
     int quit;
     gl_func_00000000(DB + 0x1E47C);
     if (D_34EB4_flags & 1) gl_func_00000000();

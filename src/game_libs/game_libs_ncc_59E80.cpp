@@ -5,7 +5,7 @@
  * optional z-buffer gSPSetGeometryMode(1) after the 0xF0 sub-call and the final call. Packets on
  * `Ctx::next() { int n = dl->count++; return &dl->buf[n]; }`; the two DisplayList packets through an inline
  * dlist(c, v). REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.
- * The gl_func_00034458 calls are the target's blank USO jal words (0x0C000000): they go through the 0-pinned
+ * The dbg_printThreads calls are the target's blank USO jal words (0x0C000000): they go through the 0-pinned
  * gl_func_00034458_59E80 alias (undefined_syms_auto.txt); D_00000000 is the existing 0 pin (blank lui / addiu). */
 extern "C" int gl_func_00034458_59E80(...);
 extern "C" char D_00000000[];

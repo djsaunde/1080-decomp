@@ -22,9 +22,9 @@
  * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees). */
 typedef int s32;
 extern "C" {
-void *gl_func_00034458(...);
+void *dbg_printThreads(...);
 }
-inline void *operator new(unsigned n) { return gl_func_00034458(n); }
+inline void *operator new(unsigned n) { return dbg_printThreads(n); }
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };
 struct M4f { int a; M4f() { a = 0; } };
@@ -36,10 +36,10 @@ struct Base : BB {
     W4 m2c;
     char m30[0xB4 - 0x30];
     Base(void *a1) : BB(a1) {
-        gl_func_00034458(this);
+        dbg_printThreads(this);
         zero(); { volatile int p1, p2, p3, p4; }
     }
-    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; gl_func_00034458(m30, z); }
+    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; dbg_printThreads(m30, z); }
     virtual void f();
 };
 struct Obj : Base {
@@ -66,5 +66,5 @@ Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
     dc.set(b4);
     e8.set(c0);
     f4.set(rq);
-    gl_func_00034458(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
+    dbg_printThreads(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
 }

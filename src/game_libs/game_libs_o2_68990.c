@@ -22,8 +22,8 @@
  *     relative relocs: called via gl_ref_0007C8EC / _7C860 / _7C928 pins,
  *     the host symbols themselves link at splat addresses, 0x1466C low);
  *   sym 627 = gl_func_00042090 (x2: save/restore a current-context handle),
- *   sym 113 = gl_func_000410E4, sym 74 = gl_func_00035440,
- *   sym 454 = gl_func_00035648 (x3), sym 306 = sys_fatal -- all
+ *   sym 113 = mem_new, sym 74 = fs_gdlReadFile,
+ *   sym 454 = fs_gdlSeekFile (x3), sym 306 = sys_fatal -- all
  *   blank load-time relocs, named through the catch-all gl_func_00000000;
  *   s2 = &import_0005C6E0 (sym 73, pinned 0), s6 = Data +0x2B430 (sym 2).
  *

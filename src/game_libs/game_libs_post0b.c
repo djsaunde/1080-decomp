@@ -85,18 +85,18 @@ extern void *gl_func_000365AC();
 extern void gl_func_0003D074();
 
 
-// gl_func_00034458 — STRUCTURAL PASS (0xF0 / 60 words, no episode).
+// dbg_printThreads — STRUCTURAL PASS (0xF0 / 60 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A collection processor with per-element vtable dispatch.
 //
-/* NOTE 2026-06-04: gl_func_00034458 is K&R (variadic char-emit). Its 35
- * `((int(*)())gl_func_00034458)` casts are NOT worth the K&R cast-removal sweep
+/* NOTE 2026-06-04: dbg_printThreads is K&R (variadic char-emit). Its 35
+ * `((int(*)())dbg_printThreads)` casts are NOT worth the K&R cast-removal sweep
  * (docs/MATCHING_WORKFLOW.md#... gl_func_00062F64). Measured: file-wide removal
- * is NET NEGATIVE (+2.6pp across 2 / -6.8pp across 4) — gl_func_00034458 is
+ * is NET NEGATIVE (+2.6pp across 2 / -6.8pp across 4) — dbg_printThreads is
  * LOW call-density per function (1-2 calls), so no jalr-address-caching to undo;
  * the only high-density caller (fault_printThread, 21 calls) gains +0.9pp but its
  * jalr->jal SHRINK shifts the downstream sys_fatal -1.8pp. Keep the casts. */
-//   int gl_func_00034458() {
+//   int dbg_printThreads() {
 //     R *r = *(R**)&D_0;                       // global record
 //     callback((void*)0x0001E3F4);             // jal 0 (USO cb)
 //     N *n = r->head_4;
@@ -126,7 +126,7 @@ extern void gl_func_0003D074();
 //   the per-frame UPDATE/RENDER traversal over the collection that
 //   the device-object family builds: it pairs with gl_func_00034240
 //   (init/constructor) and gl_func_00034188 (device tick) over the
-//   same &D_0-rooted record; the gl_func_00033B6C registry sweep
+//   same &D_0-rooted record; the dma_init registry sweep
 //   resets the slots this pass walks.
 // 2026-05-31: 56.0% -> 86.7% by COMPLETING the logic (prior sketch was WRONG:
 //   extra no-arg call, missing the cbB(n->h16) call, wrong cbC args, and used
@@ -146,7 +146,7 @@ extern void gl_func_0003D074();
 extern char D_0001E3F4, D_0001E400;
 extern char *D_34458_head;
 extern char *D_34458_obj;
-int gl_func_00034458() {
+int dbg_printThreads() {
     char *n = D_34458_head;
     volatile int pad;
     int outB, outA;
@@ -163,11 +163,11 @@ int gl_func_00034458() {
     }
 }
 
-// gl_func_00034548 — STRUCTURAL PASS (0x13C / 79 words, no episode).
+// dbg_faultThread — STRUCTURAL PASS (0x13C / 79 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A one-time global subsystem-table initializer.
 //
-//   void gl_func_00034548(void *a0) {
+//   void dbg_faultThread(void *a0) {
 //     setup(0xC, (void*)0x0003BB18, 0x10);     // jal 0 (USO cb)
 //     *(int*)0x0003BB38 = 0;                    // clear global
 //     int *slot = (int*)0x0003BB34;
@@ -216,7 +216,7 @@ int gl_func_00034458() {
 extern char *D_34548_obj;
 extern char *D_34548_slot;
 #define SLOT_34548 D_34548_slot
-void gl_func_00034548(void *a0) {
+void dbg_faultThread(void *a0) {
     int sp5C;
     char *s0;
     int sp54, sp50;
@@ -238,11 +238,11 @@ void gl_func_00034548(void *a0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00034548);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", dbg_faultThread);
 #endif
 
-/* gl_func_00034684: 27-insn 3-call config init. */
-void gl_func_00034684(void) {
+/* dbg_startFaultThread: 27-insn 3-call config init. */
+void dbg_startFaultThread(void) {
     func_00000000((char*)&D_00000000 + 0x3BB18, (char*)&D_00000000 + 0x3BB30, 1);
     func_00000000((char*)&D_00000000 + 0x3B968, 5, &D_00000000, 0,
                    (char*)&D_00000000 + 0x3C040, 12);
@@ -314,7 +314,7 @@ int gl_func_000346F0(int a0, char *src, int n) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000346F0);
 #endif
 
-// gl_func_00034810 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// dbg_printf — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x80 / 32 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE (the no-frame-leaf shape — see
@@ -329,8 +329,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000346F0);
 //       $a0,0($at)` then jr with `sw $a1,0($at)` in the delay slot
 //       (publishes two args into &D_0 globals; no prologue).
 //
-// Leading fn gl_func_00034810 (varargs debug-print wrapper):
-//   void gl_func_00034810(int a0, int a1, int a2, int a3, ...) {
+// Leading fn dbg_printf (varargs debug-print wrapper):
+//   void dbg_printf(int a0, int a1, int a2, int a3, ...) {
 //     printf_like((char*)0x00058D5C, &varargs);  // jal 0 (USO cb)
 //   }
 // i.e. it spills a0..a3 to the stack, forms a varargs pointer
@@ -356,7 +356,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000346F0);
 //   call is func(str, 0, a0, ap) with a0 RELOADED from its home
 //   (`lw a2,0x20(sp)`) because &a0 is address-taken. EXACT: unwrapped
 //   2026-10-16 (gl_func_00000000 is a real symbol at 0).
-void gl_func_00034810(int a0, ...) {
+void dbg_printf(int a0, ...) {
     int aligned = (((int)((char *)&a0 + 4)) + 3) & ~3;
     gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }
@@ -479,11 +479,11 @@ void gl_func_00034890(char *o) {
     char *node;
 
     h = *(int *)(o + 0x0C);
-    if ((a = (char *)gl_func_00034458(0x10, h)) != 0) {
+    if ((a = (char *)dbg_printThreads(0x10, h)) != 0) {
         char *b;
-        if ((b = a) != 0 || (b = (char *)gl_func_00034458(0x10, h)) != 0) {
+        if ((b = a) != 0 || (b = (char *)dbg_printThreads(0x10, h)) != 0) {
             char *c;
-            if ((c = b) != 0 || (c = (char *)gl_func_00034458(4, h)) != 0) {
+            if ((c = b) != 0 || (c = (char *)dbg_printThreads(4, h)) != 0) {
                 *(char **)c = (char *)&D_34890_a + 0x1E1E8;
             }
             *(char **)(b + 4) = o;
@@ -492,16 +492,16 @@ void gl_func_00034890(char *o) {
         *(char **)a = (char *)&D_34890_c + 0x1E238;
     }
     if (1) {}
-    gl_func_00034458(&D_34890_d, h, a, *(int *)(o + 0x18) & 2); if (1) {}
+    dbg_printThreads(&D_34890_d, h, a, *(int *)(o + 0x18) & 2); if (1) {}
     p = &it;
     p->next = *(Link34890 **)(o + 0x10);
     ITER34890_STEP(p, nx, node);
     while (node != 0) {
-        gl_func_00034458(p->cur->data);
+        dbg_printThreads(p->cur->data);
         if (1) {}
         ITER34890_STEP(p, nx, node);
     }
-    gl_func_00034458(&D_34890_e);
+    dbg_printThreads(&D_34890_e);
 }
 #else
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_34890.cpp (agent-c run 164 lift,
@@ -512,11 +512,11 @@ void gl_func_00034890(char *o) {
 #endif
 
 
-/* game_libs_func_000349E0 -- guarded 3-call init: set flag bit 4, call
+/* hostio_start -- guarded 3-call init: set flag bit 4, call
  * init(&D, &D+0x1E460, 900, 900) / step(*(int*)&D) / fini(&D), clear bit 4
  * (0x74 / 29 words, EXACT).
  *
- * Boundary: the 8-byte "head fragment" game_libs_func_000349E0 (`lui t6;
+ * Boundary: the 8-byte "head fragment" hostio_start (`lui t6;
  * lw t6,0(t6)`, no prologue, no jr ra) was the first load of its successor
  * gl_func_000349E8 (56% NM wrap, "needs PROLOGUE_STEALS + predecessor
  * boundary analysis"), hoisted above `addiu sp` by the -O2 scheduler.
@@ -536,7 +536,7 @@ void gl_func_00034890(char *o) {
  * base-0 word, cf. D_34890_d/e), and the call-site &D is D_349E0_b.
  * `volatile` on a single flag symbol does NOT split the base (13 diffs). */
 extern int D_349E0_a, D_349E0_b;
-void game_libs_func_000349E0(void) {
+void hostio_start(void) {
     D_349E0_a = D_00000000 | 4;
     gl_func_00000000(&D_349E0_b, (char *)&D_00000000 + 0x1E460, 900, 900);
     gl_func_00000000(D_349E0_b);
@@ -546,15 +546,15 @@ void game_libs_func_000349E0(void) {
 
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00034A54() {
+int __pure_virtual_called() {
     return gl_func_00000000((char *)&D_00000000 + 0x1E468);
 }
 
-// gl_func_00034A78 — STRUCTURAL PASS (0xEC / 59 words, no episode).
+// app_initSystem — STRUCTURAL PASS (0xEC / 59 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A subsystem bring-up / device-config initializer.
 //
-//   void gl_func_00034A78(void *a0) {
+//   void app_initSystem(void *a0) {
 //     callback0();                            // jal 0 (USO cb 1)
 //     callback0();                            // cb 2
 //     callback0();                            // cb 3
@@ -583,7 +583,7 @@ int gl_func_00034A54() {
 //   0x0004B8FC. 0xA8000000 is the N64 KSEG1 (uncached, direct-
 //   mapped) window base, so 0x0004B8FC is a DMA/IO uncached buffer-
 //   base slot: this is device/DMA channel setup. A bring-up leaf of
-//   the game_libs object subsystem (companion to gl_func_00034548's
+//   the game_libs object subsystem (companion to dbg_faultThread's
 //   0x0003BBxx table init and gl_func_00034188's device tick; the
 //   0x0004B8Fx config block is a deferred absolute-symbol site —
 //   `gl_ref_0004B8Fx` extern candidates per
@@ -626,7 +626,7 @@ int gl_func_00034A54() {
  * REPLACE_FUNC_BODY-spliced over this placeholder. The residual (1) above was the
  * shared-`lui at` byte pair: one static 2-byte object in the donor (pinned 0x3B8F6),
  * every other access its own extern alias as in the old body. */
-void gl_func_00034A78(int a0) {
+void app_initSystem(int a0) {
 }
 
 extern int gl_func_00000000();
@@ -708,13 +708,13 @@ void gl_func_00034C14() {
 }
 
 extern int gl_func_00000000();
-void gl_func_00034C44(int a0, int a1) {
+void dma_writebackCache(int a0, int a1) {
     int r = gl_func_00000000(1);
     gl_func_00000000();
     gl_func_00000000(r);
 }
 
-// gl_func_00034C7C — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// dma_invalCache — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x140 / 80 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
@@ -731,8 +731,8 @@ void gl_func_00034C44(int a0, int a1) {
 //       0x10) to branch on entry attributes. A "populate record
 //       from static table entry" accessor.
 //
-// Leading fn gl_func_00034C7C (4-callback orchestration wrapper):
-//   int gl_func_00034C7C(void *a0, void *a1) {
+// Leading fn dma_invalCache (4-callback orchestration wrapper):
+//   int dma_invalCache(void *a0, void *a1) {
 //     int r = callback(1);                    // jal 0 (USO cb1)
 //     callback(a0, a1);                        // cb2
 //     callback(a0, a1);                        // cb3
@@ -763,7 +763,7 @@ void gl_func_00034C44(int a0, int a1) {
 //   mnemonic disasm + boundary re-split. Real-C STRUCTURAL body
 //   below for the NAMED leading 4-callback orchestration wrapper
 //   only. Byte-match deferred. Name pre-checked: no extern reuse.
-int gl_func_00034C7C(void *a0, void *a1) {
+int dma_invalCache(void *a0, void *a1) {
     int r = gl_func_00000000(1);
     gl_func_00000000(a0, a1);
     gl_func_00000000(a0, a1);
@@ -835,11 +835,11 @@ void gl_func_00034E8C(int a0) {
     gl_func_00000000(gl_func_00000000);
 }
 
-// gl_func_00034EB4 — STRUCTURAL PASS (0x2B0 / 172 words, no episode).
+// app_run — STRUCTURAL PASS (0x2B0 / 172 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A subsystem (re-)initialization / multi-resource setup.
 //
-//   void gl_func_00034EB4(O *o, int a1) {
+//   void app_run(O *o, int a1) {
 //     callback((void*)0x0001E47C);            // jal 0 (USO cb1)
 //     if (*(int*)&D_0 & 1) {                    // global flag bit 0
 //       callback();                             // cb2 (conditional)
@@ -862,11 +862,11 @@ void gl_func_00034E8C(int a0) {
 //   (0x0001E484 / 0x0001E490 / 0x0001E494 / 0x0001E4A0 — a parallel
 //   bank of resource descriptors/names) keyed off object fields
 //   (o->0x28 etc.). A bring-up/constructor node of the game_libs
-//   object subsystem (companion to gl_func_00034A78 /
-//   gl_func_00034548 initializers; the 0x0001E47C..E4A0 templates
+//   object subsystem (companion to app_initSystem /
+//   dbg_faultThread initializers; the 0x0001E47C..E4A0 templates
 //   are deferred data-segment symbolization sites — a contiguous
 //   descriptor table to type together).
-// gl_func_00034EB4 — CORRECT-C RECONSTRUCTION (94.01% NM, 167/167 words, no
+// app_run — CORRECT-C RECONSTRUCTION (94.01% NM, 167/167 words, no
 //   episode). Major lift over the prior 53.84% raw-integer decode:
 //   - Data-seg template pointers (0x1E47C..0x1E508) and the global base
 //     are now referenced as `(char*)&D_00000000 + off`, so IDO emits the
@@ -891,7 +891,7 @@ void gl_func_00034E8C(int a0) {
 // game_libs non-jumptable via scripts/decomp-uso-cf.py.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_34EB4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 124). */
-void gl_func_00034EB4(char *arg0, char *arg1) {
+void app_run(char *arg0, char *arg1) {
 }
 
 long long gl_func_00035164_inner(int a0);
@@ -908,7 +908,7 @@ int gl_func_00035164(int a0) {
     return (int)r;
 }
 
-/* gl_func_00035188: 25-insn 2-vtable-call + conditional assert.
+/* app_loadUso: 25-insn 2-vtable-call + conditional assert.
  *   g = *(int**)&D_0; g->[0x74](a0, a1);
  *   g = *(int**)&D_0; rv = g->[0x40](a1);
  *   if (rv < 0) func(&D + 0x1E510, a1, rv);
@@ -918,7 +918,7 @@ int gl_func_00035164(int a0) {
  * SOLE residual = register-renumber: the global g sits in $v0 (both loads) but
  * target uses $t6/$t7. Permuter improved 75->55, never 0 (register pool choice for
  * a short-lived global-into-vtable-base is not C-controllable here). */
-void gl_func_00035188(int a0, int a1) {
+void app_loadUso(int a0, int a1) {
     int rv;
     int *p = &a0;
     /* 2026-06-11 rules-sweep CRACK (rule 2 / inline-don't-name): naming g
@@ -933,12 +933,12 @@ void gl_func_00035188(int a0, int a1) {
 }
 
 
-/* gl_func_000351EC: 20-insn vtable dispatch + error helper. Loads
+/* app_unloadUso: 20-insn vtable dispatch + error helper. Loads
  * function pointer from (*(int**)&D_0)[0x11], calls it with arg1, and
  * if result < 0 calls gl_func(error_string, arg1, rc). Byte-exact: inlining
  * the indirect call (no named table/fn locals) puts the fn ptr in $t9 (canonical
  * jalr reg) + table in $t6 to match; named locals force $v0/$v1. */
-void gl_func_000351EC(int a0, int a1) {
+void app_unloadUso(int a0, int a1) {
     int rc = ((int(*)(int))(*(int**)&D_00000000)[0x44/4])(a1);
     if (rc < 0) {
         gl_func_00000000((char*)&D_00000000 + 0x1E534, a1, rc);
@@ -951,11 +951,11 @@ void gl_func_0003523C(int a0, int a1, int a2) {
     gl_func_00000000(gl_func_00000000, a1, a1 + a2);
 }
 
-// gl_func_00035268 — STRUCTURAL PASS (0xD0 / 52 words, no episode).
+// heap_tempAlloc — STRUCTURAL PASS (0xD0 / 52 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A config-validate + diagnostic-report routine.
 //
-//   void gl_func_00035268(int a0, int a1) {
+//   void heap_tempAlloc(int a0, int a1) {
 //     Cfg *c = *(Cfg**)(&D_0 + 0x218);          // global config ptr
 //     if (c->w_1C != 0 && c->w_04 != 0 && c->w_0C == 0) {
 //       printf_like((char*)0x0001E54C);          // jal 0 (USO cb)
@@ -990,7 +990,7 @@ void gl_func_0003523C(int a0, int a1, int a2) {
 //   STRUCTURAL body below per the analysis. Byte-match deferred.
 //   Name pre-checked: no extern reuse.
 #ifdef NON_MATCHING
-void gl_func_00035268(int a0, int a1) {
+void heap_tempAlloc(int a0, int a1) {
     char *c = *(char **)((char *)&D_00000000 + 0x218);
     float f;
     (void)a0;
@@ -1006,13 +1006,13 @@ void gl_func_00035268(int a0, int a1) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035268);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", heap_tempAlloc);
 #endif
 
-/* gl_func_00035338: 10-insn 1-call wrapper. Split off 4-insn
+/* heap_tempFree: 10-insn 1-call wrapper. Split off 4-insn
  * game_libs_func_00035360 (`return *D_X` with arg-shadow). */
 extern char D_35338_X;
-void gl_func_00035338(int a0) {
+void heap_tempFree(int a0) {
     gl_func_00000000(&D_35338_X);
     (void)a0;
 }
@@ -1022,11 +1022,11 @@ int game_libs_func_00035360(int a0) {
     return D_35360_X;
 }
 
-// gl_func_00035370 — STRUCTURAL PASS (0xD0 / 52 words, no episode).
+// fs_gdlOpenFile — STRUCTURAL PASS (0xD0 / 52 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A kind-dispatch command handler with vtable indirect.
 //
-//   void gl_func_00035370(O *o, int a1) {
+//   void fs_gdlOpenFile(O *o, int a1) {
 //     switch (o->kind_4) {
 //       case 1: {
 //         H *h = *(H**)&D_0;
@@ -1067,10 +1067,10 @@ int game_libs_func_00035360(int a0) {
 //   Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
 /* EXACT 2026-10-17 agent-c run 107 (86.2 -> 100): same dispatch shape as
- * gl_func_00035648 -- unsigned selector, nested-!= goto chain for the 1, 0, 2
+ * fs_gdlSeekFile -- unsigned selector, nested-!= goto chain for the 1, 0, 2
  * compare order (docs/IDO_CODEGEN.md #nested-ne-goto-chain-35648). */
 extern int gl_ref_0003B8E8; /* baked counter word 0x3B8E8 (pinned) */
-int gl_func_00035370(char *o, int a1) {
+int fs_gdlOpenFile(char *o, int a1) {
     int r;
     unsigned k = *(int *)(o + 4);
     if (k != 1) {
@@ -1101,8 +1101,8 @@ end:
     return *(int *)(o + 0x20);
 }
 
-/* gl_func_00035440: EXACT (0x160 / 88 words). Kind dispatch on o->0x04, the
- * sibling of gl_func_00035370 (vtable slot 0x50 here):
+/* fs_gdlReadFile: EXACT (0x160 / 88 words). Kind dispatch on o->0x04, the
+ * sibling of fs_gdlOpenFile (vtable slot 0x50 here):
  *   1: r = (*&D)->0x50(o->0x20, a1, a2)    0: r = cb(&D, a1, a2)
  *   2: report(fmt 0x1E5AC, a1, a2, counter 0x3B8E8); if (a2) { optional
  *      report(0x1E5C8) when a1 & 7; build a message block on the stack and
@@ -1134,7 +1134,7 @@ typedef struct {
     int a2;
     int rest[6];
 } Msg35440;
-int gl_func_00035440(char *o, int a1, int a2) {
+int fs_gdlReadFile(char *o, int a1, int a2) {
     int r = 0;
     int k = *(int *)(o + 4);
     if (k == 1) goto L1;
@@ -1176,12 +1176,12 @@ end:
     return r;
 }
 
-// gl_func_000355A0 — STRUCTURAL PASS (0x84 / 33 words, no episode).
+// fs_gdlReadFileAsync — STRUCTURAL PASS (0x84 / 33 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). Same dispatch family as gl_func_00035370 /
-// gl_func_00035440 — a kind-validated vtable-dispatch wrapper.
+// prologue). Same dispatch family as fs_gdlOpenFile /
+// fs_gdlReadFile — a kind-validated vtable-dispatch wrapper.
 //
-//   int gl_func_000355A0(O *o, int a1, int a2) {
+//   int fs_gdlReadFileAsync(O *o, int a1, int a2) {
 //     if (o->kind_4 != 1)
 //       report((char*)0x0001E5F0);             // jal 0 (USO cb)
 //     H *h = *(H**)&D_0;
@@ -1192,7 +1192,7 @@ end:
 //   }
 //
 // Struct-typing reference: a kind-checked dispatch wrapper, sibling
-//   of gl_func_00035370 (vtable slot 0x4C) and gl_func_00035440
+//   of fs_gdlOpenFile (vtable slot 0x4C) and fs_gdlReadFile
 //   (slot 0x50). This one ASSERTS the object's type/kind field
 //   o->0x04 == 1 (emitting a diagnostic via a USO-relocated printf-
 //   shaped callback, jal 0 → resolved at load, with format string
@@ -1200,7 +1200,7 @@ end:
 //   handler object's vtable method at the next slot (*&D_0)+0x60
 //   (passing o->0x20), and chains two further USO-relocated
 //   callbacks threading the method's result (returns the first
-//   chained call's value). Together gl_func_00035370 / 00035440 /
+//   chained call's value). Together fs_gdlOpenFile / 00035440 /
 //   000355A0 walk consecutive method slots 0x4C / 0x50 / 0x60 of
 //   the same global handler vtable — a family of typed entry points
 //   over the device-object subsystem (gl_func_00034188 /
@@ -1216,7 +1216,7 @@ end:
 /* EXACT 2026-10-17 agent-c run 106 (87.9 -> 100): vtable slot 0x60 called
  * inline, its result passed straight to the second call with a2, and the
  * error string is &D + 0x1E5F0 (not the literal 0x1E5F0). */
-int gl_func_000355A0(char *o, int a1, int a2) {
+int fs_gdlReadFileAsync(char *o, int a1, int a2) {
     int r; /* unused: homes the sp+28 word so v lands at sp+24 */
     int v;
     if (*(int *)(o + 4) != 1) {
@@ -1228,16 +1228,16 @@ int gl_func_000355A0(char *o, int a1, int a2) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00035624(int a0, int a1) {
+void fs_gdlWaitFile(int a0, int a1) {
     gl_func_00000000(a1);
 }
 
-// gl_func_00035648 — STRUCTURAL PASS (0xB4 / 45 words, no episode).
+// fs_gdlSeekFile — STRUCTURAL PASS (0xB4 / 45 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). Same dispatch family as gl_func_00035370 / 00035440 /
+// prologue). Same dispatch family as fs_gdlOpenFile / 00035440 /
 // 000355A0 — kind-switch, here with the device-config-write arm.
 //
-//   void gl_func_00035648(O *o, int a1, int a2) {
+//   void fs_gdlSeekFile(O *o, int a1, int a2) {
 //     switch (o->kind_4) {
 //       case 1: {
 //         H *h = *(H**)&D_0;
@@ -1256,7 +1256,7 @@ void gl_func_00035624(int a0, int a1) {
 //   }
 //
 // Struct-typing reference: another sibling of the kind-dispatch
-//   family (gl_func_00035370 = vtable slot 0x4C, 00035440 = 0x50,
+//   family (fs_gdlOpenFile = vtable slot 0x4C, 00035440 = 0x50,
 //   000355A0 = 0x60). This one's kind==1 arm uses the global
 //   handler vtable slot (*&D_0)+0x54, kind==0 a USO-relocated
 //   callback (jal 0 → resolved at load), and the kind==2 arm
@@ -1264,7 +1264,7 @@ void gl_func_00035624(int a0, int a1) {
 //   absolute address 0x0004B8E8 — either storing a flag (a1==0
 //   path) or accumulating a2 into it (a1==1 path: `*0x0004B8E8 +=
 //   a2`). This confirms 0x0004B8E8 (inside the 0x0004B8xx config
-//   block that gl_func_00034A78 initializes and gl_func_00035440
+//   block that app_initSystem initializes and fs_gdlReadFile
 //   reads) is a MUTABLE device-config / counter accumulator. The
 //   00035370/00035440/000355A0/00035648 group are typed entry
 //   points walking consecutive handler-vtable slots
@@ -1290,7 +1290,7 @@ void gl_func_00035624(int a0, int a1) {
  * The counter word 0x3B8E8 is accessed through per-site pins (load and two
  * stores and the final read each lui separately). */
 extern int gl_ref_0003B8E8, gl_ref_0003B8E8_35648_ld, gl_ref_0003B8E8_35648_st, gl_ref_0003B8E8_35648_rd;
-int gl_func_00035648(char *o, int a1, int a2) {
+int fs_gdlSeekFile(char *o, int a1, int a2) {
     int r;
     unsigned k = *(int *)(o + 4);
     if (k != 1) {
@@ -1317,7 +1317,7 @@ end:
     return r;
 }
 
-// gl_func_000356FC — STRUCTURAL PASS + small BUNDLE BOUNDARY NOTE
+// fs_gdlWriteFile — STRUCTURAL PASS + small BUNDLE BOUNDARY NOTE
 // (0x138 / 78 words, no episode). Raw-.word USO form (game_libs).
 //
 // realjr=2 / one 27BDFF90 prologue. The 2nd jr is the LAST
@@ -1330,10 +1330,10 @@ end:
 // split/merge — needs the spimdisasm-USO migration). No merge
 // attempted; no episode.
 //
-// Named fn gl_func_000356FC — same kind-dispatch family as
-// gl_func_00035370 / 00035440 / 000355A0 / 00035648:
+// Named fn fs_gdlWriteFile — same kind-dispatch family as
+// fs_gdlOpenFile / 00035440 / 000355A0 / 00035648:
 //
-//   void gl_func_000356FC(O *o, int a1, int a2) {
+//   void fs_gdlWriteFile(O *o, int a1, int a2) {
 //     switch (o->kind_4) {
 //       case 0:
 //         callback((char*)0x0001E608);          // jal 0 (USO cb)
@@ -1353,13 +1353,13 @@ end:
 // Struct-typing reference: another sibling of the kind-dispatch
 //   family — switches on o->0x04 ∈ {0,1,2}. The kind==1 arm reads
 //   the global DEVICE-CONFIG word at the FIXED absolute address
-//   0x0004B8E8 (the mutable accumulator gl_func_00035648 writes,
-//   gl_func_00035440 reads, gl_func_00034A78 initializes), masks
+//   0x0004B8E8 (the mutable accumulator fs_gdlSeekFile writes,
+//   fs_gdlReadFile reads, app_initSystem initializes), masks
 //   its low 3 bits (cfg & 7) and, when set, emits a diagnostic via
 //   a USO-relocated printf-shaped callback (jal 0 → resolved at
 //   load). Three fixed format strings select the per-kind message
 //   (0x0001E608 / 0x0001E61C / 0x0001E638). Together with
-//   gl_func_00035370 / 00035440 / 000355A0 / 00035648 this is the
+//   fs_gdlOpenFile / 00035440 / 000355A0 / 00035648 this is the
 //   typed-entry-point / validate family over the device-object
 //   subsystem (gl_func_00034188 / 00034458); the 0x0004B8E8 config
 //   and 0x0001E6xx strings are deferred symbolization sites.
@@ -1381,13 +1381,13 @@ end:
 // Tail (always, kind==2): *0x4B8E8 += a2; return a2. Absolute data addrs
 // (0x4B8E8/0x4B8EC, 0x1E6xx strings) are deferred USO-symbolization sites.
 /* EXACT 2026-10-17 agent-c run 107 (69.8 -> 100): the twin of the exact
- * gl_func_00035440 (same 0x70 frame, message struct and per-site pins). Kind 1
+ * fs_gdlReadFile (same 0x70 frame, message struct and per-site pins). Kind 1
  * and the default share `end: return 0;` (two predecessors, so the block
  * survives as the dead `or v0,zero,zero` after the kind-2 return), kind 0
  * returns the callback directly, kind 2 returns a2. The queue send passes 1. */
 extern int D_00000000;
 extern char gl_ref_0001E608, gl_ref_0001E61C, gl_ref_0001E638;
-int gl_func_000356FC(char *o, int a1, int a2) {
+int fs_gdlWriteFile(char *o, int a1, int a2) {
     int k = *(int *)(o + 4);
     if (k == 1) goto L1;
     if (k == 0) goto L0;
@@ -1428,7 +1428,7 @@ void game_libs_func_0003582C(int *a0, int a1) {
     a0[8] = a1;
 }
 
-/* gl_func_00035834: 24-insn fn-ptr dispatch with conditional assert.
+/* fs_gdlFileInfo: 24-insn fn-ptr dispatch with conditional assert.
  *   g = *(int**)&D_00000000;
  *   r = g->[0x48](a1, a2);
  *   if (r < 0) func(&D + 0x1E64C, a1);
@@ -1445,7 +1445,7 @@ void game_libs_func_0003582C(int *a0, int a1) {
  * param to hold r regresses (99.08%). Permuter/INSN_PATCH-class. */
 extern int func_00000000();
 extern int D_00000000;
-/* gl_func_00035834: indirect-call wrapper (D->0x48)(a1,a2); if <0, call
+/* fs_gdlFileInfo: indirect-call wrapper (D->0x48)(a1,a2); if <0, call
  * func_00000000(&D+0x1E64C, a1); return r. 99.38% — residual is a register-renumber:
  * `r` (the return, spilled across the 2nd call + reloaded) lands in $v1, target uses
  * $a2. PERMUTER FLOORS at 25 (no crack, 840s total 2026-05-24) — this register-
@@ -1482,7 +1482,7 @@ extern int D_00000000;
  * "unnatural" arg-reg carrier of a saved value = suspect an extra trailing
  * call argument before writing an allocator-cap note.
  * EXACT (unwrapped run 95): func_00000000 and D_00000000 are real symbols at 0. */
-int gl_func_00035834(int a0, int a1, int a2) {
+int fs_gdlFileInfo(int a0, int a1, int a2) {
     int r = ((int(*)(int,int))(*(int**)&D_00000000)[0x48/4])(a1, a2);
     if (r < 0) {
         func_00000000((char*)&D_00000000 + 0x1E64C, a1, r);
@@ -1500,14 +1500,14 @@ int gl_func_00035894(int *a0) {
     return 0;
 }
 
-/* gl_func_000358DC: kind-dispatch (vtable slot 0x58).
+/* fs_gdlCloseFile: kind-dispatch (vtable slot 0x58).
  * 2026-10-14 EXACT (agent-c): the forward `beq v0,1,L1 / beqz v0,L0 / b end`
  * dispatch (each case's lui in the branch delay) is NOT a switch (IDO sorts
  * switch tests 0-first) nor if/else-if (bne fallthrough): it is
  * `if (k == 1) goto L1; if (k != 0) return; goto L0;` with the two case blocks
  * laid out L1, L0. Both calls pass a0 as their 2nd arg (the hoisted
  * `or a1,a0,zero`); the vtable call is written as one expression (t6/t9). */
-void gl_func_000358DC(char *a0) {
+void fs_gdlCloseFile(char *a0) {
     int k = *(int *)(a0 + 4);
     if (k == 1) goto L1;
     if (k != 0) return;
@@ -1537,7 +1537,7 @@ L0:
 //       returning 0.
 //
 // Leading fn gl_func_0003593C — same kind-dispatch family as
-// gl_func_00035370 / 00035440 / 000355A0 / 00035648 / 000356FC:
+// fs_gdlOpenFile / 00035440 / 000355A0 / 00035648 / 000356FC:
 //   int gl_func_0003593C(O *o) {
 //     if (o->kind_4 != 1) return 0;            // branch-likely gate
 //     H *h = *(H**)&D_0;
@@ -1599,9 +1599,9 @@ int game_libs_func_000359B8(int a0) {
     return 0;
 }
 
-/* gl_func_000359C4: 21-insn 3-call dispatcher. All 4 args homed at entry,
+/* dma_rawRead: 21-insn 3-call dispatcher. All 4 args homed at entry,
  * reloaded per call: f(a1,a3); f(0,a2,a1,a3); f(a1,a3). a0 homed but unused. */
-void gl_func_000359C4(int a0, int a1, int a2, int a3) {
+void dma_rawRead(int a0, int a1, int a2, int a3) {
     gl_func_00000000(a1, a3);
     gl_func_00000000(0, a2, a1, a3);
     gl_func_00000000(a1, a3);
@@ -1792,7 +1792,7 @@ void game_libs_func_00035C60(int a0, int a1) {
 //   fields (0x5C vs 0x4C). A find/min/aggregate-over-list operation
 //   of the game_libs object subsystem (the list it walks is the
 //   collection the gl_func_00033228 enlist helper builds and the
-//   gl_func_00034458 processor iterates; 0x0001E6C0 is a referenced
+//   dbg_printThreads processor iterates; 0x0001E6C0 is a referenced
 //   deferred data-segment template-symbolization site).
 // Caps (DEFERRED): raw-word USO + fixed intra-USO call (0x012844) +
 //   linked-list walk + stack accumulator struct — byte-match needs
@@ -1873,7 +1873,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00035C6C);
 //   gl_func_00035C6C this establishes a small iterator API in this
 //   USO — 0x012844 = begin/init, 0x012853 = step/get — over the
 //   game_libs object subsystem's collections (the same lists the
-//   gl_func_00033228 enlist / gl_func_00034458 process family
+//   gl_func_00033228 enlist / dbg_printThreads process family
 //   touch).
 // Caps (DEFERRED): raw-word USO + fixed intra-USO iterator API.
 //   2026-05-31: body completed 40.0->62.1%. The sketch passed &it (base)
@@ -2199,7 +2199,7 @@ void gl_func_00036224(char *o, char *arg1) {
         *(f32 *)(o + 0xB0) = rv.y;
         *(f32 *)(o + 0xB4) = rv.z;
     }
-    gl_func_00034458(*(char **)(o + 0x1D0) + 0xB4, mtx);
+    dbg_printThreads(*(char **)(o + 0x1D0) + 0xB4, mtx);
     x = *(f32 *)(o + 0xA0);
     y = *(f32 *)(o + 0xA4);
     z = *(f32 *)(o + 0xA8);
@@ -2220,24 +2220,24 @@ void gl_func_00036224(char *o, char *arg1) {
     *(f32 *)(o + 0xB4) = out2[2];
     src = *(char **)(o + 0x1CC);
     if ((*(int *)(*(char **)(src + 0xB4) + 0x10) & *(int *)(o + 0x1D4)) && (*(int *)(src + 0x108) != 0)) {
-        gl_func_00034458(o + 0x68, o + 0xA0, o + 0xAC);
-        gl_func_00034458(o + 0x68, o + 0x58, o + 0x48);
-        gl_func_00034458(o + 0x78, o + 0xD0, o + 0xAC);
+        dbg_printThreads(o + 0x68, o + 0xA0, o + 0xAC);
+        dbg_printThreads(o + 0x68, o + 0x58, o + 0x48);
+        dbg_printThreads(o + 0x78, o + 0xD0, o + 0xAC);
         tmp.v = *(Vec3 *)(o + 0xAC);
         *(f32 *)(o + 0xD0) = tmp.v.x;
         *(f32 *)(o + 0xD4) = tmp.v.y;
         *(f32 *)(o + 0xD8) = tmp.v.z;
     } else {
-        gl_func_00034458(o + 0x78, o + 0x48, o + 0x48);
+        dbg_printThreads(o + 0x78, o + 0x48, o + 0x48);
         tmp.v = *(Vec3 *)(o + 0x48);
         *(f32 *)(o + 0x58) = tmp.v.x;
         *(f32 *)(o + 0x5C) = tmp.v.y;
         *(f32 *)(o + 0x60) = tmp.v.z;
         *(f32 *)(o + 0x64) = *(f32 *)(o + 0x54);
     }
-    gl_func_00034458(o + 0x48, &vecC);
-    gl_func_00034458(arg1, &vecC);
-    gl_func_00034458(arg1, o + 0x38);
+    dbg_printThreads(o + 0x48, &vecC);
+    dbg_printThreads(arg1, &vecC);
+    dbg_printThreads(arg1, o + 0x38);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00036224);
@@ -2718,7 +2718,7 @@ void gl_func_000372D4(int *a0, float *a1) {
 //   o, k, lim (two promoted-scalar ghost homes 0x64/0x68), saved[3]@0x58,
 //   v2[3]@0x4C, v1[8]@0x2C (8-float first vector fills the 0x2C..0x4B gap),
 //   x/y/ab bottom scalars = every slot exact. Call = direct K&R
-//   `gl_func_00034458(o+0x30, vec, arg0)` (3 args, no cvt.d.s).
+//   `dbg_printThreads(o+0x30, vec, arg0)` (3 args, no cvt.d.s).
 // RESIDUAL: the o-reload web colors ugen t-temps (t7/t8/t9/a0..) vs the
 //   target's single v0 candidate (same t-vs-v0 residual as sibling 37540);
 //   post-call `mtc1 zero` f0 vs f2 (FP zero web) follows from it.
@@ -2781,7 +2781,7 @@ void gl_func_00037540(char *o) {
     Tmp_37540 tmp;
 
     r = (char *)FW(o, 0x14);
-    if (0) { gl_func_00034458(&r); }
+    if (0) { dbg_printThreads(&r); }
     v = (char *)FW(o, 0x2C);
     a = FF37540(o, 0x3C) * FF37540(v, 4);
     if (a < 0.0f) {
@@ -2810,7 +2810,7 @@ void gl_func_00037540(char *o) {
     arg.y = -b;
     arg.z = 0.0f;
     arg.x = 0.0f;
-    gl_func_00034458(r + 0x30, &arg, o);
+    dbg_printThreads(r + 0x30, &arg, o);
     { f32 h_x = FF37540(r, 0x50); f32 h_y = FF37540(r, 0x54); f32 h_z = FF37540(r, 0x58);
     g.vB4.x = h_x * a; g.vB4.y = h_y * a; g.vB4.z = h_z * a; }
     FF37540(r, 0x60) = g.saved.x;
@@ -2835,7 +2835,7 @@ void gl_func_00037540(char *o) {
     g.v9C.x = g.v6C.x + g.v9C.x;
     g.v9C.y = g.v6C.y + g.v9C.y;
     g.v9C.z = g.v9C.z + g.v6C.z;
-    gl_func_00034458(r + 0x30, o + 0x30, o);
+    dbg_printThreads(r + 0x30, o + 0x30, o);
     L3 = D_37540_1A00[0x1A00 / 4];
     tmp.v = g.v9C;
     g.v90.z = tmp.v.z;
@@ -2849,7 +2849,7 @@ void gl_func_00037540(char *o) {
     g.v90.z = g.v90.z + g.v6C.z;
     FF37540(o, 0x30) = FF37540(o, 0x30) * L3;
     FF37540(o, 0x38) = FF37540(o, 0x38) * L3;
-    gl_func_00034458(r + 0x30, &g.vB4, o);
+    dbg_printThreads(r + 0x30, &g.vB4, o);
 }
 #else
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_37540.cpp (agent-c run 200 lift,
@@ -3131,7 +3131,7 @@ void gl_func_00037AF0(int a0) {
 //   object-lifecycle / registration leaf of the game_libs object
 //   subsystem — the template-driven sibling of gl_func_00033228;
 //   the list it enlists into is the collection the
-//   gl_func_00034458 processor / snd_HandleEvent_2FB74 interpreter
+//   dbg_printThreads processor / snd_HandleEvent_2FB74 interpreter
 //   iterate. 0x0001EBF0 is a deferred data-segment template-
 //   symbolization site.
 // NOTE: the splice tests/writes the NEW node n (n->0x14 / n->0x04) and
@@ -3443,7 +3443,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003800C);
 //   0x0001EC1C (the report lines), gated on argument / return
 //   values — and finally dereferences the object's chain
 //   (o->0x28 → fields 0x4C / 0x48) to print its state. Same
-//   printf-callback diagnostic family as gl_func_00035268 (the
+//   printf-callback diagnostic family as heap_tempAlloc (the
 //   config-validate reporter). A debug/trace node of the game_libs
 //   object subsystem; the 0x0001EBF8..0x0001EC1C strings form a
 //   deferred contiguous string-data symbolization block (a message
@@ -3518,7 +3518,7 @@ void gl_func_00038108(char *o, int a1, int a2) {
 //   a VTABLE function pointer at obj->0x28+0x44 (passing
 //   obj->0x28->0x40 halfword + obj — a self-relative arg), and
 //   emits a final report line. Together gl_func_00038108 /
-//   gl_func_000381F8 (and the gl_func_00035268 config-validator)
+//   gl_func_000381F8 (and the heap_tempAlloc config-validator)
 //   form the diagnostic/trace family of the game_libs object
 //   subsystem over a shared message table; the obj->0x28->0x44
 //   slot ties this to the device-object vtable family
@@ -3669,7 +3669,7 @@ void gl_func_0003829C(int *arg0) {
 //   diagnostic string table. Each line prints a different field of
 //   the object passed in a0 (offsets read at +0x1C / +0x20 / +0x18
 //   / +0x08 …). Together gl_func_00038108 / 000381F8 / 00038360
-//   (with gl_func_00035268) are the diagnostic/trace family of the
+//   (with heap_tempAlloc) are the diagnostic/trace family of the
 //   game_libs object subsystem; this one is the verbose
 //   object-state printer. The string range is a deferred
 //   contiguous string-data symbolization block (a message table to
@@ -3737,7 +3737,7 @@ void gl_func_00038360(char *arg0) {
 // gl_func_00038598 — STRUCTURAL PASS (0xA4 / 41 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-traversal + per-node flag-gated vtable dispatch
-// — sibling of gl_func_00035C6C / gl_func_00034458.
+// — sibling of gl_func_00035C6C / dbg_printThreads.
 //
 //   void gl_func_00038598(O *o) {
 //     N *n = o->p_10;
@@ -3760,7 +3760,7 @@ void gl_func_00038360(char *arg0) {
 //   dispatches through a VTABLE method at node->0x28+0x14 (the
 //   handler object reached via node->0x28), passing node-relative
 //   arguments (node->0x30, node->0x70, and node->0x28->0x10
-//   halfword + node). Same shape as the gl_func_00034458 collection
+//   halfword + node). Same shape as the dbg_printThreads collection
 //   processor / gl_func_00035C6C list-fold but with the device-
 //   object vtable indirection (node->0x28 is the per-node handler;
 //   slot 0x14 of that family — cf. the 0x4C/0x50/0x54/0x5C/0x60
@@ -3811,7 +3811,7 @@ void gl_func_00038598(char *a0) {
 //   node->0x20 — dispatches a VTABLE method at node->0x28+0x1C
 //   (the per-node handler reached via node->0x28). Same collection-
 //   processor shape as gl_func_00038598 (flag bit 0x200, slot
-//   0x14) / gl_func_00035C6C / gl_func_00034458 but with flag bit
+//   0x14) / gl_func_00035C6C / dbg_printThreads but with flag bit
 //   4 and handler-vtable slot 0x1C — extending the device-object
 //   handler-vtable slot map (0x14 / 0x1C / 0x4C / 0x50 / 0x54 /
 //   0x5C / 0x60). A per-frame "fix up & process active nodes"
@@ -3860,7 +3860,7 @@ void gl_func_0003863C(char *arg0) {
 //   relative pointers (&node->0x30, &node->0x70). A per-frame
 //   "process only fully-eligible nodes" traversal of the game_libs
 //   object subsystem (same list/collection the gl_func_00033228
-//   enlist / gl_func_00034458 / 00035C6C family operate on; the
+//   enlist / dbg_printThreads / 00035C6C family operate on; the
 //   &D_0-base mask is a global enable/category gate).
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + USO-relocated
 //   jal-0 cbs. 2026-05-31: body completed to full logic 41.2->64.4%.
@@ -4322,7 +4322,7 @@ void gl_func_00038FE0(char *a0) {
  *
  * 2026-05-14: started INCLUDE_ASM-only, then decoded-skeleton NM wrap.
  * 2026-06-22 DEEP RECONSTRUCTION (52.09% -> 81.54%): real callee name
- * gl_func_00034458 (variadic K&R -> jal); switch state-machine with the
+ * dbg_printThreads (variadic K&R -> jal); switch state-machine with the
  * `if(state!=0) switch(...){case 0;case 1..8}` guard reproducing target's
  * `beqz; sltiu<9; beqz; sll*4; jtbl` (0-based, no -1 adjust); 16-word
  * struct-copy in case 8 (3-word unroll, sp+0x48); distinct base-0
@@ -4338,7 +4338,7 @@ void gl_func_00038FE0(char *a0) {
  * stack slot (148 vs 156) and the first-call `move a0,a1` schedule. These
  * are coloring/frame-layout caps (permuter territory), not logic bugs.
  */
-extern int gl_func_00034458();
+extern int dbg_printThreads();
 /* Distinct base-0 placeholders so IDO re-materializes lui/addiu per use
  * (matching target) instead of CSE-promoting one shared base into a saved
  * reg. arg = singleton-record-pointer passed as arg0; dat = the +0xE8/+0x128
@@ -4364,50 +4364,50 @@ int gl_func_00039094(int *root) {
         case 0:
             break;
         case 1:
-            gl_func_00034458(&D_39094_a1, (char*)&D_39094_dat + 0xE8);
+            dbg_printThreads(&D_39094_a1, (char*)&D_39094_dat + 0xE8);
             break;
         case 2: {
             int *vt2;
             gl_func_00034458_39094v(&D_39094_a2a, (char*)&D_39094_dat + 0xE8);
             vt2 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt2[0x5C/4])(*(short*)((char*)vt2 + 0x58) + (int)root);
-            gl_func_00034458(&D_39094_a2b, ret);
+            dbg_printThreads(&D_39094_a2b, ret);
             break;
         }
         case 3: {
             int *vt3 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt3[0x5C/4])(*(short*)((char*)vt3 + 0x58) + (int)root);
-            gl_func_00034458(&D_39094_a3, ret);
+            dbg_printThreads(&D_39094_a3, ret);
             break;
         }
         case 4: {
             int *vt4 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt4[0x5C/4])(*(short*)((char*)vt4 + 0x58) + (int)root);
-            gl_func_00034458(&D_39094_a4, ret);
+            dbg_printThreads(&D_39094_a4, ret);
             break;
         }
         case 5: {
             int *gr = *(int**)&D_00000000;
             int *vt5 = (int*)gr[0x28/4];
             ret = ((int(*)(int))vt5[0x5C/4])(*(short*)((char*)vt5 + 0x58) + (int)gr);
-            gl_func_00034458(&D_39094_a5a, ret);
+            dbg_printThreads(&D_39094_a5a, ret);
             vt5 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt5[0x5C/4])(*(short*)((char*)vt5 + 0x58) + (int)root);
-            gl_func_00034458(&D_39094_a5b, ret);
+            dbg_printThreads(&D_39094_a5b, ret);
             break;
         }
         case 6: {
             int *gr = *(int**)&D_00000000;
             int *vt6 = (int*)gr[0x28/4];
             ret = ((int(*)(int))vt6[0x5C/4])(*(short*)((char*)vt6 + 0x58) + (int)gr);
-            gl_func_00034458(&D_39094_a6a, ret);
+            dbg_printThreads(&D_39094_a6a, ret);
             vt6 = (int*)root[0x28/4];
             ret = ((int(*)(int))vt6[0x5C/4])(*(short*)((char*)vt6 + 0x58) + (int)root);
-            gl_func_00034458(&D_39094_a6b, ret);
+            dbg_printThreads(&D_39094_a6b, ret);
             break;
         }
         case 7:
-            gl_func_00034458(&D_39094_a7);
+            dbg_printThreads(&D_39094_a7);
             break;
         case 8: {
             struct gl_39094_blk16 vec;                           /* sp+0x48, 64 bytes */
@@ -4417,8 +4417,8 @@ int gl_func_00039094(int *root) {
             scaled[0] = *(float*)((char*)root + 0xA0) * gv[0];
             scaled[1] = *(float*)((char*)root + 0xA4) * gv[1];
             scaled[2] = *(float*)((char*)root + 0xA8) * gv[2];
-            gl_func_00034458(&D_39094_a8a, scaled);
-            gl_func_00034458(&D_39094_a8b, &vec);
+            dbg_printThreads(&D_39094_a8a, scaled);
+            dbg_printThreads(&D_39094_a8b, &vec);
             break;
         }
     }
@@ -4442,7 +4442,7 @@ int gl_func_00039094(int *root) {
                 }
                 t1 = (int*)node[0x4/4];
                 if (t1 != 0) node[0x14/4] = (int)root;
-                ret = gl_func_00034458();
+                ret = dbg_printThreads();
                 node = (int*)cur[0];
                 if (node[0x20/4] & ret) {
                     vt = (int*)node[0x28/4];
@@ -4458,7 +4458,7 @@ int gl_func_00039094(int *root) {
     }
 
 done:
-    gl_func_00034458();
+    dbg_printThreads();
     return 0;
 }
 #else
@@ -5722,7 +5722,7 @@ s32 gl_func_0003B9C0(char *self) {
 //   gl_func_0003B9C0 distance solver, the gl_func_0003B6A0 6-part
 //   transform, the gl_func_0003B1AC matrix-apply and the
 //   gl_func_00036694 matrix-concat leaves produce, and feeds the
-//   gl_func_00034458 render traversal.
+//   dbg_printThreads render traversal.
 // Caps (DEFERRED): 0x620 raw-word USO + flag-gated USO-relocated
 //   jal-0 callback + FP-literal-pool coefficient table
 //   (&D_0+0x128 unsymbolized) + data-seg ref + very heavy FP
@@ -7636,15 +7636,15 @@ void gl_func_0003E39C(char *arg0) {
     char *var_s0;
     char *var_v0;
 
-    gl_func_00034458();
-    gl_func_00034458((char *)0x1F2EC);
+    dbg_printThreads();
+    dbg_printThreads((char *)0x1F2EC);
 loop_1:
-    gl_func_00034458(0, &sp50, 4);
+    dbg_printThreads(0, &sp50, 4);
     if (sp50 != 0) {
         ((int(*)())game_libs_func_00062F08)(&sp48);
         sp3C = sp50;
         sp4C = sp3C;
-        var_v0 = gl_func_00034458(arg0, sp4C);
+        var_v0 = dbg_printThreads(arg0, sp4C);
         var_s0 = var_v0;
         if (var_v0 == 0) {
             var_a1 = FW(arg0, 0x30);
@@ -7656,7 +7656,7 @@ loop_5:
                     sp34 = temp_t2;
                     if ((int)sp50 == temp_t2) {
                         if (FW(var_a1, 0x8) & FW(arg0, 0x34)) {
-                            var_v0 = gl_func_00034458(arg0, var_a1);
+                            var_v0 = dbg_printThreads(arg0, var_a1);
                             var_s0 = var_v0;
                         }
                     } else {
@@ -7670,18 +7670,18 @@ loop_5:
             }
         }
         if (var_v0 == 0) {
-            gl_func_00034458((char *)0x1F2FC, &sp50);
+            dbg_printThreads((char *)0x1F2FC, &sp50);
         }
         if ((var_s0 != 0) && (FW(arg0, 0x34) & FW(var_s0, 0x44))) {
             temp_v0 = FW(var_s0, 0x28);
             ((GP_0003E39C)FW(temp_v0, 0x4C))(FW(temp_v0, 0x48) + var_s0);
         } else {
-            gl_func_00034458(0, (int *)1, sp48);
+            dbg_printThreads(0, (int *)1, sp48);
         }
         goto loop_1;
     }
-    gl_func_00034458(arg0);
-    gl_func_00034458();
+    dbg_printThreads(arg0);
+    dbg_printThreads();
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E39C);
@@ -8178,18 +8178,18 @@ void game_libs_func_0003ECE4(void) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0003ECEC(int a0) {
+int hostio_send(int a0) {
     return gl_func_00000000(gl_func_00000000, a0, 0xA0);
 }
 
 extern int gl_func_00000000();
-int gl_func_0003ED18(int a0) {
+int hostio_recv(int a0) {
     return gl_func_00000000(gl_func_00000000, a0, 0xA0);
 }
 
 extern int gl_func_00000000();
 
-void gl_func_0003ED44(float *a0, int a1) {
+void hostio_updateFloat(float *a0, int a1) {
     char buf[0xA0];
     *(char*)&buf[0x08] = 0;
     *(int*)&buf[0x48] = 2;
@@ -8208,7 +8208,7 @@ void gl_func_0003ED8C(int *a0) {
     gl_func_00000000();
 }
 
-/* gl_func_0003EDBC (0x60, 24 insns): posts a 0xA0-byte stack message record
+/* hostio_init (0x60, 24 insns): posts a 0xA0-byte stack message record
  * (type field zeroed) twice; if the returned type is not 1, reports it via
  * the D+0x1F398 format string; then sets bit 0 of *a0 and returns 1. The old
  * INSN_PATCH notes (slot sp+0x1C vs 0x28, v0/v1 swap, li v0 placement) were
@@ -8218,7 +8218,7 @@ void gl_func_0003ED8C(int *a0) {
  * base + late `li v0,1` (instead of v1 base + early li) = `return 1` in its
  * own basic block -- an empty `if (1) {}` after the |= store (BB lever). */
 typedef struct { int type; char p[0xA0 - 4]; } GlMsg3EDBC;
-int gl_func_0003EDBC(int *a0) {
+int hostio_init(int *a0) {
     GlMsg3EDBC s;
     char pad[16];
     s.type = 0;
@@ -8277,7 +8277,7 @@ void gl_func_0003EE50(int a0, int a1, int *a2, int a3, int a4, int a5) {
     gl_func_00000000(&s);
 }
 
-/* gl_func_0003EEC0 (0x6C, 27 insns): float twin of 3EE50 -- same 0xA0 stack
+/* hostio_addFloat (0x6C, 27 insns): float twin of 3EE50 -- same 0xA0 stack
  * message record (type 2), float fields at 0x4C (= *a2), 0x58, 0x5C. The old
  * NM ("sp-slot divergence class", char buf[]) was the untyped record plus
  * statement order; see docs/IDO_CODEGEN.md#record-store-order-picks-treg-3ee50.
@@ -8295,7 +8295,7 @@ typedef struct {
     int f60;
     char p1[0xA0 - 0x64];
 } GlMsg3EEC0;
-void gl_func_0003EEC0(int a0, int a1, float *a2, float a3, float a4, int a5) {
+void hostio_addFloat(int a0, int a1, float *a2, float a3, float a4, int a5) {
     GlMsg3EEC0 s;
     gl_func_00000000(s.sub, a1);
     s.f60 = a5;
@@ -8493,7 +8493,7 @@ void gl_func_0003F3A4(int a0) {
     gl_func_00000000(&scratch);
 }
 
-void gl_func_0003F3D0(int a0, int a1, int a2) {
+void hostio_beginGroup(int a0, int a1, int a2) {
     char buf[0xA0];
     func_00000000(&buf[0x08], a1);
     *(int*)&buf[0x48] = a2;
@@ -9028,7 +9028,7 @@ void gl_func_0003FB6C(void *a0, int a1, int a2, int a3, int a4) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0003FC00(int a0) {
+void hostio_endGroup(int a0) {
     char pad[0x98];
     int pad2, scratch;
     scratch = 0xB;
@@ -9043,7 +9043,7 @@ void gl_func_0003FC2C(int *a0) {
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3FC58.cpp, REPLACE_FUNC_BODY-spliced over
  * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
-void gl_func_0003FC58(int arg0) {
+void hostio_dispatch(int arg0) {
 }
 
 // gl_func_0003FF44 — STRUCTURAL PASS (0x94 / 38 words, no episode). Raw-.word
@@ -9191,7 +9191,7 @@ void gl_func_00040018(Quad4 *dst) {
 // cascade jal (mine once at merge; named fzero spill-homes = wrong shape);
 // (b) round-2 cascade accumulator colors a2 in target vs v1 here
 // (while(0) anchor inert); (c) FP-ring phase f4/f18 swap in the tail.
-// Placeholder callees (gl_func_00034458) — stays NM wrap regardless.
+// Placeholder callees (dbg_printThreads) — stays NM wrap regardless.
 /* gl_func_00040070: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_40070.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 181): Obj::Obj(void *, float, float, float);
  * the 0x104 element is an int store and the W4f wrapper ctor tests a float zero (keeps the FP-zero
@@ -9693,12 +9693,12 @@ void gl_func_000410AC(char *a0) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000410AC_pad.s")
 
 extern int gl_func_00000000();
-int gl_func_000410E4(int a0) {
+int mem_new(int a0) {
     return gl_func_00000000(a0, 0);
 }
 
 extern int gl_func_00000000();
-int gl_func_00041104() {
+int mem_newAligned() {
     return gl_func_00000000();
 }
 
@@ -9707,12 +9707,12 @@ int gl_func_00041124() {
     return gl_func_00000000(((char *)&D_00000000 + 0x0001F568));
 }
 
-// gl_func_00041148 — STRUCTURAL PASS (0x10C / 68 words, no episode). Raw-.word
+// heap_new — STRUCTURAL PASS (0x10C / 68 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x38
 // (saves ra + s0..s2). Memory/size-report diagnostic (cbN = jal 0
 // USO-relocated; FP size formatting, string literals &D_0002F57C/F598).
 //
-//   void gl_func_00041148(char *a0, int a1) {
+//   void heap_new(char *a0, int a1) {
 //     char *end = a1 ? (a0 + a1) : a0;             // buffer-end pointer (s1)
 //     int mode = *(int*)(&D_g + 0x20);             // global state selector
 //     int r;
@@ -9744,7 +9744,7 @@ int gl_func_00041124() {
 // keys and the u32->float/1024 conversion are exact. Caps: &D_g/0x4C160
 // globals, the &D_0002F5xx strings and cbN signatures untyped. Full body
 // INCLUDE_ASM-preserved.
-/* gl_func_00041148: debug-instrumented allocator. size = arg0 (+arg1 align pad);
+/* heap_new: debug-instrumented allocator. size = arg0 (+arg1 align pad);
  * dispatch on D+0x20 state (1/7 vs other) to two allocators; on failure logs
  * (D+0x1F57C, size>>10); if D+0x3C160 debug-flag set, format-logs (D+0x1F598,
  * blk, (blk[-4]>>24), size, arg1, (double)((float)(unsigned)size/1024)); finally
@@ -9759,7 +9759,7 @@ int gl_func_00041124() {
 extern int gl_func_00000000();
 extern void gl_proto_41148(int, int, int, int, int, double);
 extern int D_00000000;
-int gl_func_00041148(unsigned int s1, int arg1) {
+int heap_new(unsigned int s1, int arg1) {
     int *s0;
     float div = 1024.0f;
     if (arg1 != 0) {
@@ -9800,7 +9800,7 @@ void gl_func_00041278(void) {
     gl_func_00000000();
 }
 
-/* game_libs_func_00041298 (cross-TU orphan merge): orphan lui t6,4; lw t6,0xC160
+/* mem_delete (cross-TU orphan merge): orphan lui t6,4; lw t6,0xC160
  * = the global flag at &D+0x3C160 (NOT 0x4C160 — the old decode was wrong; lui
  * 0x4 + sign-ext low 0xC160 = 0x3C160). Orphan was in game_libs.c, merged FORWARD
  * into the body .s; reading the flag inline at the != 0 test hoists the lui;lw
@@ -9821,7 +9821,7 @@ void gl_func_00041278(void) {
  * splat lumped into 412A0 — would need splat re-run to break out, but
  * USO splits break expected/.o per feedback_uso_split_fragments_breaks_expected_match.md. */
 extern int gl_func_00000000();
-void game_libs_func_00041298(int a0) {
+void mem_delete(int a0) {
     if (*(int*)((char*)&D_00000000 + 0x3C160) != 0) {
         gl_func_00000000((char*)&D_00000000 + 0x1F5B8, a0);
     }
@@ -9841,7 +9841,7 @@ void game_libs_func_000412E0(void) {}
 // every &D-derived null-compare defeat IDO's address-nonnull guard fold;
 // distinct per-section extern aliases (D_412E8_a..m, = 0 in
 // undefined_syms_auto.txt) defeat cross-section &D CSE/spill. cb =
-// gl_func_00034458 (K&R, direct jal). Full body INCLUDE_ASM-preserved.
+// dbg_printThreads (K&R, direct jal). Full body INCLUDE_ASM-preserved.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_412E8.cpp, REPLACE_FUNC_BODY-spliced over
  * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
 void gl_func_000412E8(void) {
@@ -10155,7 +10155,7 @@ void gl_func_00041A9C(char *self) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41D40.cpp
  * (by-value array iterator walk as an explicit if / do-while), REPLACE_FUNC_BODY-
  * spliced over this placeholder on both build paths (agent-c run 262). Its
- * gl_func_00034458 calls are renamed to the blank gl_func_00041D40_c34458 = 0
+ * dbg_printThreads calls are renamed to the blank gl_func_00041D40_c34458 = 0
  * (the target's jal words are blank USO calls). */
 void gl_func_00041D40(s32 arg0) {
 }
@@ -10297,7 +10297,7 @@ int gl_func_0004211C(int a0) {
     return gl_func_00000000(gl_func_00000000, a0);
 }
 
-/* gl_func_00042144: 36-insn diagnostic dump -- two printf-like calls with
+/* heap_printStats: 36-insn diagnostic dump -- two printf-like calls with
  * fixed format-string addresses (0x1F6EC, 0x1F704) and >>10 (byte->KB)
  * scaled call results / a global field. BYTE-EXACT 2026-10-14: the
  * "a1-vs-a3 renumber / spill-slot 0x18-vs-0x1C cap" was the call SHAPE --
@@ -10310,7 +10310,7 @@ int gl_func_0004211C(int a0) {
  * scheduled before the jal instead of into its delay slot. Do not reformat. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00042144(void) {
+void heap_printStats(void) {
     unsigned int r;
     gl_func_00000000();
     r = gl_func_00000000(&D_00000000); gl_func_00000000((int)((char *)&D_00000000 + 0x1F6EC), r >> 10,
@@ -10731,7 +10731,7 @@ void gl_func_00042778(int *a0, float *a1, float *a2) {
 // active display-list buffer — gfxp = *(D+0x254); buf = gfxp->f158->fC; w =
 // buf->count; buf->count = w+1; *(u64*)(buf->base + w*8) = <ED/B6/B9/B7/BA cmd>.
 // The ED000000 (SetTextureImage-ish), B600/B900031D (442478), B7000000,
-// BA001402 words + two gl_func_00034458 calls + a tri/vtx block (sh stores of
+// BA001402 words + two dbg_printThreads calls + a tri/vtx block (sh stores of
 // 320*2, 240*2 scaled coords) are gDPxxx/gSPxxx emissions. Tail (when
 // D[0x1FCC8]==0) writes 3 color words into a 0x50-stride record via a
 // per-channel ((hi+c)%65535<<16)|((lo+c)%65535) blend (the div/break pairs).
@@ -11373,13 +11373,13 @@ void gl_func_00043BEC(char *arg0, char *arg1) {
     if (FW(arg0, 0x6C) != 0) {
         temp_a0 = FW(arg0, 0x48);
         if ((temp_a0 != 0) && (*(s32 *)0x3C7C4 != temp_a0)) {
-            gl_func_00034458(temp_a0);
+            dbg_printThreads(temp_a0);
             *(s32 *)0x3C7C4 = (s32) FW(arg0, 0x48);
         }
         temp_v0 = FW(arg0, 0x60);
         FW(arg0, 0x70) = (s32) FW(FW(arg1, 0xC), 0x4);
         if (temp_v0 != 0) {
-            temp_v0_2 = gl_func_00034458(FW(temp_v0, 0x60));
+            temp_v0_2 = dbg_printThreads(FW(temp_v0, 0x60));
             temp_v1 = FW(arg1, 0xC);
             temp_a0_2 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a0_2 + 1);
@@ -11388,7 +11388,7 @@ void gl_func_00043BEC(char *arg0, char *arg1) {
             FW(temp_a1, 0x4) = temp_v0_2;
         }
         temp_v1_3 = FW(arg0, 0x64);
-        temp_v0_3 = gl_func_00034458(*(int*)FW(temp_v1_3, 0xC) + (*(s16*)((char*)arg0 + 0x88) * 8));
+        temp_v0_3 = dbg_printThreads(*(int*)FW(temp_v1_3, 0xC) + (*(s16*)((char*)arg0 + 0x88) * 8));
         temp_a1_2 = FW(arg1, 0xC);
         temp_a2 = FW(temp_a1_2, 0x4);
         FW(temp_a1_2, 0x4) = (s32) (temp_a2 + 1);
@@ -11396,7 +11396,7 @@ void gl_func_00043BEC(char *arg0, char *arg1) {
         FW(temp_a3, 0x0) = 0x06000000;
         FW(temp_a3, 0x4) = temp_v0_3;
         temp_v1_4 = FW(arg0, 0x6C);
-        temp_v0_4 = gl_func_00034458(*(int*)FW(temp_v1_4, 0xC) + (*(s16*)((char*)arg0 + 0x8A) * 8), temp_a1_2, temp_a2, temp_a3);
+        temp_v0_4 = dbg_printThreads(*(int*)FW(temp_v1_4, 0xC) + (*(s16*)((char*)arg0 + 0x8A) * 8), temp_a1_2, temp_a2, temp_a3);
         temp_a1_3 = FW(arg1, 0xC); if (1) {}
         temp_a2_2 = FW(temp_a1_3, 0x4);
         FW(temp_a1_3, 0x4) = (s32) (temp_a2_2 + 1);
@@ -12452,8 +12452,8 @@ void gl_func_00045E20(void *a0, char *a1, char *a2) {
             do {
                 int v;
                 *(int *)(node + 0x3C) = s1++;
-                gl_func_00034458(a1, node, s2acc);
-                v = gl_func_00034458(node);
+                dbg_printThreads(a1, node, s2acc);
+                v = dbg_printThreads(node);
                 node = *(char **)(node + 0x40);
                 s2acc += v / 8;
             } while (node != 0);
@@ -13540,14 +13540,14 @@ void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
             if (var_a1 == 0) {
                 var_a1 = var_t0 == 2;
             }
-            temp_v0 = gl_func_00034458(arg0, var_a1, var_s2);
+            temp_v0 = dbg_printThreads(arg0, var_a1, var_s2);
             *var_s3 = temp_v0;
             if (temp_v0 < 0) {
                 if (FW(arg0, 0x4) >= (FW(arg0, 0x590) - 1)) {
                     temp_a1 = FW(arg0, 0x598);
                     var_s1 = 0;
                     ((GP_00048510)FW(temp_a1, 0xC))(FW(temp_a1, 0x8) + (int)arg0, temp_a1);
-                    gl_func_00034458(arg0);
+                    dbg_printThreads(arg0);
                     var_s2 = arg1;
                     var_s3 = &sp6C;
                 }
@@ -13591,7 +13591,7 @@ void gl_func_00048510(char *arg0, char *arg1, char *arg2, s32 *arg3, s32 arg4) {
     temp_t6 = FW(arg0, 0x8) + 1;
     FW(arg0, 0x8) = temp_t6;
     if (temp_t6 >= 0xC8) {
-        gl_func_00034458((char *)0x1FF44);
+        dbg_printThreads((char *)0x1FF44);
     }
 }
 #endif /* superseded cfe structural pass (reference only) */
@@ -14931,21 +14931,21 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
     char *a1v;
 
     self = arg0;
-    if ((arg0 != 0) || (res = (int *)gl_func_00034458(0x44), self = res, (res != 0))) {
-        gl_func_00034458(self, (char *)&D_00000000 + 0x200EC);
+    if ((arg0 != 0) || (res = (int *)dbg_printThreads(0x44), self = res, (res != 0))) {
+        dbg_printThreads(self, (char *)&D_00000000 + 0x200EC);
         FW(self, 0x28) = (int)&gl_d_4b0a8_tbl;
         ps = spA0;
         *(P2_0004B0A8 *)ps = *(P2_0004B0A8 *)((char *)&gl_d_4b0a8_vt + 0x140);
         self[0] = 2;
-        res = (int *)gl_func_00034458(0, (char *)&D_00000000 + 0x200F4, *(s32 *)((char *)&gl_d_4b0a8_w214 + 0x214));
+        res = (int *)dbg_printThreads(0, (char *)&D_00000000 + 0x200F4, *(s32 *)((char *)&gl_d_4b0a8_w214 + 0x214));
         FW(self, 0x40) = (int)res;
-        gl_func_00034458(res, ps);
-        gl_func_00034458(FW(self, 0x40), ps);
-        gl_func_00034458(FW(self, 0x40), ps);
-        gl_func_00034458(FW(self, 0x40), ps);
+        dbg_printThreads(res, ps);
+        dbg_printThreads(FW(self, 0x40), ps);
+        dbg_printThreads(FW(self, 0x40), ps);
+        dbg_printThreads(FW(self, 0x40), ps);
         ps = (int *)&sp78;
         qa = (Q_0004B0A8 *)ps;
-        if (((u32)ps > 0U) || (qa = (Q_0004B0A8 *)gl_func_00034458(0xC), (qa != 0))) {
+        if (((u32)ps > 0U) || (qa = (Q_0004B0A8 *)dbg_printThreads(0xC), (qa != 0))) {
             tmp = arg1 + 0x84;
             ((volatile Q_0004B0A8 *)qa)->idx = -1;
             ((volatile Q_0004B0A8 *)qa)->src = tmp;
@@ -14972,7 +14972,7 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
                     e2 = *(char *volatile *)((int)base2 + iv);
                     a1v = (char *)FW(e1, 0x6C); if (1) {}
                     a2v = *(s16 *)(e2 + 0x8A);
-                    cbres = (int *)gl_func_00034458(*(int *)FW(a1v, 0xC) + (a2v * 8), a1v, a2v);
+                    cbres = (int *)dbg_printThreads(*(int *)FW(a1v, 0xC) + (a2v * 8), a1v, a2v);
                     vp = (int *)FW(ps, 0xC);
                     cnt = vp[1];
                     vp[1] = cnt + 1;
@@ -14989,7 +14989,7 @@ int *gl_func_0004B0A8(int *arg0, char *arg1) {
                 }
             } while (nxt != 0);
         }
-        gl_func_00034458(FW(self, 0x40));
+        dbg_printThreads(FW(self, 0x40));
     }
     return self;
 }
@@ -15561,7 +15561,7 @@ void gl_func_0004C288(int *self, int a1) {
 // ScreenWindow_allocBuffers — FAITHFUL RECONSTRUCTION (0x2E4 / 185 words, no episode).
 // Raw-.word USO. realjr=1, regjr=0 → ONE clean function. Frame 0x60 (saves
 // ra + s0..s8 + one spilled temp at sp+0x54). Object state-reset/init +
-// flag-extract (cb = gl_func_00034458, jal 0 USO-relocated; name keys
+// flag-extract (cb = dbg_printThreads, jal 0 USO-relocated; name keys
 // &D_0002xxxx). NM body now reproduces the full control/data flow: the
 // 0x800/0x400/0x200 flag size math, the v0->sp+0x54 spill + reload, the
 // 0xF0/0xF4/0xF8/0xFC/0x148 field writes, the 6-distinct-global loop hoist
@@ -15713,7 +15713,7 @@ void ScreenWindow_allocBuffers(char *self) {
 // gl_func_0004C5E4 — object draw/registration step (0x344).
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4C5E4.cpp
  * (`void Obj::run()`), REPLACE_FUNC_BODY-spliced over this placeholder on both
- * build paths (agent-c run 261). Its gl_func_00034458 calls are renamed to the
+ * build paths (agent-c run 261). Its dbg_printThreads calls are renamed to the
  * blank gl_func_0004C5E4_c34458 = 0 (the target's jal words are blank USO
  * calls); the base-0 aliases gl_d_4c5e4_* keep their existing zero pins. */
 void gl_func_0004C5E4(char *arg0) {
@@ -15806,7 +15806,7 @@ struct Obj4C928 {           /* arg1->0x10C target object */
 } while (0)
 #define WAIT_READY(s) do { \
     ST_TEST(s, ready); \
-    if (ready != 0) { do { gl_func_00034458(); ST_TEST(s, ready); } while (ready != 0); } \
+    if (ready != 0) { do { dbg_printThreads(); ST_TEST(s, ready); } while (ready != 0); } \
 } while (0)
 
 typedef s32 (*GP_0004C928)();
@@ -15869,7 +15869,7 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
     {
       do
       {
-        gl_func_00034458();
+        dbg_printThreads();
         do
         {
           ready = st->p1C != 0;
@@ -15901,13 +15901,13 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
   old_d4 = ready;
   arg0->dD4 = (s32) (4.0f - arg1->fC0);
   *((s32 *) (((char *) (&D_00000000)) + 0x1C4)) = (*((s32 *) (((char *) (&D_00000000)) + 0x1C4))) | 2;
-  gl_func_00034458(arg0);
+  dbg_printThreads(arg0);
   new_var2 = ((char *) (&D_00000000)) + 0x1C4;
   *((s32 *) new_var2) = (*((s32 *) new_var2)) & (~2);
   arg0->dD0 = old_d0;
   arg0->dD4 = old_d4;
   new_var = &a2blk;
-  gl_func_00034458(arg0, 1);
+  dbg_printThreads(arg0, 1);
   st = *((struct St4C928 **) (((char *) (&D_00000000)) + 0x218));
   do
   {
@@ -15928,7 +15928,7 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
     {
       do
       {
-        gl_func_00034458();
+        dbg_printThreads();
         do
         {
           ready = st->p1C != 0;
@@ -15950,7 +15950,7 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
     }
   }
   while (0);
-  gl_func_00034458(*((s32 *) (((char *) (&D_00000000)) + 0x1C)), 0x68, 1);
+  dbg_printThreads(*((s32 *) (((char *) (&D_00000000)) + 0x1C)), 0x68, 1);
   st = *((struct St4C928 **) (((char *) (&D_00000000)) + (0x218 & 0xFF)));
   do
   {
@@ -15971,7 +15971,7 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
     {
       do
       {
-        gl_func_00034458();
+        dbg_printThreads();
         do
         {
           ready = st->p1C != 0;
@@ -16006,13 +16006,13 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
   cnt = *((u16 *) (((char *) (*((s32 **) ((char *) (&D_00000000))))) + 0x48));
   *((volatile s32 *) (&arg0->d1A8)) = cnt;
   arg0->d1A8 = ((s32) cnt) >> 1;
-  arg1->p10C = (struct Obj4C928 *) gl_func_00034458(arg0, arg0->d1A8);
+  arg1->p10C = (struct Obj4C928 *) dbg_printThreads(arg0, arg0->d1A8);
   gl_func_00034458_4C928v((char *) (&D_str_2017C), arg0->d1A8);
   *((s32 *) (((char *) (&D_00000000)) + 0x1C8)) = (s32) arg1->p10C;
   new_var2 = (char *) arg1->p10C;
   if (arg1->p10C != 0)
   {
-    gl_func_00034458((char *) (&D_str_20188), *((s32 *) (new_var2 + 0xC)));
+    dbg_printThreads((char *) (&D_str_20188), *((s32 *) (new_var2 + 0xC)));
     a1blk.n = 4;
     a1blk.p = (struct StackB *) arg1;
     cb = arg1->p10C;
@@ -17347,7 +17347,7 @@ void Window_updateAspect(int *a0) {
 void game_libs_func_0004EB4C(int a0) {}
 
 // Window_display — EXACT (unwrapped 2026-10-16; 0x190 / 100 words).
-// Every `jal` in the ROM is `jal 0`, but gl_func_00034458 is defined in this
+// Every `jal` in the ROM is `jal 0`, but dbg_printThreads is defined in this
 // directly linked unit, so the body calls it through the blank alias
 // gl_func_00034458_4EB54 (= 0 in undefined_syms_auto.txt). The &D_00000000+K
 // HI/LO pairs and D_g_0004EB54 resolve to absolute 0 + K. Raw-.word
@@ -17452,7 +17452,7 @@ void Window_update(int a0) {
  * target. The old "98.75% / 6-insn v0/v1 swap / INSN_PATCH / default INCLUDE_ASM"
  * note is STALE: the function is no longer NM-wrapped and the default build IS
  * this C (verified 0-diff vs expected 2026-05-30). Do not re-attempt. (Distinct
- * from still-capped caller-saved-temp renumbers like gl_func_00035834 $v1/$a2.) */
+ * from still-capped caller-saved-temp renumbers like fs_gdlFileInfo $v1/$a2.) */
 void gl_func_0004ED0C(int *self)
 {
   int *iter;
@@ -17810,7 +17810,7 @@ int gl_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out,
 }
 
 // gl_func_0004F85C — EXACT (unwrapped 2026-10-16; 0x150 / 84 words).
-// The ROM's jal words are `jal 0`; gl_func_00034458 is defined in this
+// The ROM's jal words are `jal 0`; dbg_printThreads is defined in this
 // directly linked unit, so the body calls it through the blank alias
 // gl_func_00034458_4F85C (= 0 in undefined_syms_auto.txt). D_4F85C_a/b are
 // pinned to 0. Raw-.word USO. One clean function, frame 0x20 (saves ra).
@@ -18104,7 +18104,7 @@ s32 game_libs_func_0004FD00(char *arg0, s32 arg1, s32 arg2) {
 // Raw-.word USO (zero relocs in expected/...post0b.c.o → UNLANDABLE,
 // decode-only). Frame 0x38, saves ra + s0..s7. Both jal-0 sites are the
 // SAME USO-relocated callback `cb(self, idxA, idxB)` returning int — NOT
-// gl_func_00034458 (prior decode mis-named it). Verified instruction by
+// dbg_printThreads (prior decode mis-named it). Verified instruction by
 // instruction against objdump of the raw words. Shape:
 //   int gl_func_000500EC(self, n) {
 //     count = self->field_44;                        // s32 list length
@@ -18601,7 +18601,7 @@ void game_libs_func_000517E4(int *a0) {
 }
 
 // BaseMat_declParms — EXACT (unwrapped 2026-10-16; was OBJDIFF-100 since
-// 2026-07-15 agent-f). The ROM's jal words are `jal 0`; gl_func_00034458 is
+// 2026-07-15 agent-f). The ROM's jal words are `jal 0`; dbg_printThreads is
 // defined in this directly linked unit, so the body calls it through the
 // blank alias gl_func_00034458_5185C (= 0 in undefined_syms_auto.txt).
 // D_00000000_a..d are pinned to 0.
@@ -19786,7 +19786,7 @@ block_24:
  * the index lookup and store the integer cross product (b-a) x (c-b) as floats
  * into the 12-byte normal array at 0x54, then call the normalize slot with the
  * normal pointer only (its stray a1 is just the last s16 load). Callees go
- * through the blank gl_func_00000000 alias (a direct gl_func_00034458 call
+ * through the blank gl_func_00000000 alias (a direct dbg_printThreads call
  * bakes the in-unit jal target into the ROM). EXACT once the
  * m2c temps were dropped: plain struct-member cross product + one-arg K&R
  * call (the m2c `(u16)temp_a1_2` 2nd arg forced an andi + a3 copy of c). */
@@ -20583,7 +20583,7 @@ void gl_func_00054E78(char *arg0, char *arg1) {
     f32 two;
     f32 d;
 
-    gl_func_00034458(arg0 + 0x12C);
+    dbg_printThreads(arg0 + 0x12C);
     two = (f32)2; if (1) {}
     d = (f32)0;
     MF54(0x12C) = 1.0f - (QF54(0) * QF54(0)) * two; if (1) {} /* agent-c run 180 (lever-sweep bbsplit) */
@@ -21598,7 +21598,7 @@ void gfx_checkDLOverflow(char *a0) {
  * 2026-10-14 agent-c: BYTE-EXACT 56/56 -- the lw pair swap is the as1
  * same-line tie-break: the a and b pair declarations (the first three are
  * load-bearing) MUST share ONE source line, so the 0x1C load issues before
- * the 0xC load. Do not reformat. The callee (gl_func_00034458, varargs
+ * the 0xC load. Do not reformat. The callee (dbg_printThreads, varargs
  * emit) is a baked 0C000000 jal in the ROM, so it goes through the
  * gl_func_00000000 blank (a direct call resolves the jal to 0x34458). */
 extern int gl_func_00000000();
@@ -22356,7 +22356,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             n = FW(g, 0x4);
             FW(g, 0x4) = n + 1;
             sp1C4 = (char *) (FW(FW(arg0, 0xC), 0x0) + (n * 8));
-            FW(sp1C4, 0x0) = ((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD180000; FW(sp1C4, 0x4) = gl_func_00034458(FW(sp1DC, 0x0), n, sp1DC, arg0);
+            FW(sp1C4, 0x0) = ((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD180000; FW(sp1C4, 0x4) = dbg_printThreads(FW(sp1DC, 0x0), n, sp1DC, arg0);
             g = FW(arg0, 0xC);
             n = FW(g, 0x4);
             FW(g, 0x4) = n + 1;
@@ -22404,7 +22404,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             sp1A8 = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
             FW(sp1A8, 0x0) = (s32) (((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD100000);
-            FW(sp1A8, 0x4) = gl_func_00034458(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
+            FW(sp1A8, 0x4) = dbg_printThreads(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -22452,7 +22452,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             sp18C = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
             FW(sp18C, 0x0) = (s32) (((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD680000);
-            FW(sp18C, 0x4) = gl_func_00034458(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
+            FW(sp18C, 0x4) = dbg_printThreads(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -22500,7 +22500,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             sp170 = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
             FW(sp170, 0x0) = (s32) (((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD880000);
-            FW(sp170, 0x4) = gl_func_00034458(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
+            FW(sp170, 0x4) = dbg_printThreads(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -22548,7 +22548,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             sp154 = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
             FW(sp154, 0x0) = (s32) (((((s32) FW(sp1DC, 0xC) >> 1) - 1) & 0xFFF) | 0xFD880000);
-            FW(sp154, 0x4) = gl_func_00034458(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
+            FW(sp154, 0x4) = dbg_printThreads(FW(sp1DC, 0x0), temp_a1_9, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -22632,7 +22632,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
             sp118 = FW(FW(arg0, 0xC), 0x0) + (temp_a1_9 * 8);
-            FW(sp118, 0x0) = (s32) (((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD480000); FW(sp118, 0x4) = gl_func_00034458(FW(temp_t1_7, 0x8), temp_a1_9, sp1DC, arg0);
+            FW(sp118, 0x0) = (s32) (((FW(sp1DC, 0xC) - 1) & 0xFFF) | 0xFD480000); FW(sp118, 0x4) = dbg_printThreads(FW(temp_t1_7, 0x8), temp_a1_9, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1_9 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1_9 + 1);
@@ -22675,7 +22675,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_t0_19, 0x4) = (s32) ((((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF) | ((((((FW(sp1DC, 0x4) + (*(s16 *)((char *)arg1 + 0x20))) - FW(sp1DC, 0x4)) - 1) << 2) & 0xFFF) << 0xC));
             return;
         s1_def:                                    /* switch 1 */
-            gl_func_00034458((int *)(gl_d_578b4_s1 + 0x219B8), temp_a1, sp1DC, arg0);
+            dbg_printThreads((int *)(gl_d_578b4_s1 + 0x219B8), temp_a1, sp1DC, arg0);
             return;
         }
     } else {
@@ -22688,7 +22688,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             spFC = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(spFC, 0x0) = 0xFD180000; FW(spFC, 0x4) = gl_func_00034458(FW(arg1, 0x1C), temp_a1, spFC, arg0);
+            FW(spFC, 0x0) = 0xFD180000; FW(spFC, 0x4) = dbg_printThreads(FW(arg1, 0x1C), temp_a1, spFC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -22745,7 +22745,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             spE0 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(spE0, 0x0) = 0xFD100000; FW(spE0, 0x4) = gl_func_00034458(FW(arg1, 0x1C), temp_a1, spE0, arg0);
+            FW(spE0, 0x0) = 0xFD100000; FW(spE0, 0x4) = dbg_printThreads(FW(arg1, 0x1C), temp_a1, spE0, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -22802,7 +22802,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             spC4 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(spC4, 0x0) = 0xFD700000; FW(spC4, 0x4) = gl_func_00034458(FW(arg1, 0x1C), temp_a1, spC4, arg0);
+            FW(spC4, 0x0) = 0xFD700000; FW(spC4, 0x4) = dbg_printThreads(FW(arg1, 0x1C), temp_a1, spC4, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -22859,7 +22859,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             spA8 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(spA8, 0x0) = 0xFD900000; FW(spA8, 0x4) = gl_func_00034458(FW(arg1, 0x1C), temp_a1, spA8, arg0);
+            FW(spA8, 0x0) = 0xFD900000; FW(spA8, 0x4) = dbg_printThreads(FW(arg1, 0x1C), temp_a1, spA8, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -22916,7 +22916,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             sp8C = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
-            FW(sp8C, 0x0) = 0xFD900000; FW(sp8C, 0x4) = gl_func_00034458(FW(arg1, 0x1C), temp_a1, sp8C, arg0);
+            FW(sp8C, 0x0) = 0xFD900000; FW(sp8C, 0x4) = dbg_printThreads(FW(arg1, 0x1C), temp_a1, sp8C, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -23012,7 +23012,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             sp50 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
             FW(sp50, 0x0) = 0xFD500000;
             var_a2 = (s32) sp1DC;
-            FW(sp50, 0x4) = gl_func_00034458(FW(temp_t1_7, 0x8), temp_a1, sp1DC, arg0);
+            FW(sp50, 0x4) = dbg_printThreads(FW(temp_t1_7, 0x8), temp_a1, sp1DC, arg0);
             temp_v1 = FW(arg0, 0xC);
             temp_a1 = FW(temp_v1, 0x4);
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
@@ -23065,10 +23065,10 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_v1, 0x4) = (s32) (temp_a1 + 1);
             temp_v0_4 = FW(FW(arg0, 0xC), 0x0) + (temp_a1 * 8);
             FW(temp_v0_4, 0x0) = 0xF2000000; FW(temp_v0_4, 0x4) = (s32) (((((FW(var_a2, 0xC) - 1) << 2) & 0xFFF) << 0xC) | (((FW(var_a2, 0x10) - 1) << 2) & 0xFFF) | ((FW(arg1, 0x3C) & 7) << 0x18));
-            if (0) { gl_func_00034458((s32 *)&sp34); }
+            if (0) { dbg_printThreads((s32 *)&sp34); }
             temp_a1 = sp34 = FW(arg1, 0x24);
         s2_def:                                    /* switch 2 */
-            gl_func_00034458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1);
+            dbg_printThreads((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1);
             return;
         }
     }
@@ -23083,9 +23083,9 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
  * builder. Each block appends one 8-byte command word pair to the DL buffer at
  * arg0->0xC (a {data_ptr, count} cursor): cmd = buf->data[count++]; cmd[0]=word0;
  * cmd[1]=word1. The two leading 0x06000000 (gsSPDisplayList/branch) commands take
- * sub-DL pointers returned by gl_func_00034458(&D_00000000) (K&R variadic builder;
+ * sub-DL pointers returned by dbg_printThreads(&D_00000000) (K&R variadic builder;
  * first arg is a %hi/%lo NULL global, hence lui/addiu a0 not `move a0,zero`).
- * Logic + all command words + relocs (D_00000000 hi/lo, gl_func_00034458 jal) are
+ * Logic + all command words + relocs (D_00000000 hi/lo, dbg_printThreads jal) are
  * exact and the function is SIZE-EXACT (0x444). Residual ~6% is pure IDO as1
  * cross-block constant-pipelining + register coloring (permuter-plateaued at 94%
  * fuzzy, base 75.8% -> 94.0%). NOTE: the long collapsed statement line is
@@ -23106,7 +23106,7 @@ void gfx_initRDPState(char *arg0, char *arg1)
   p = (*((char **) ((*((char **) (arg0 + 0xC))) + 0))) + (cnt * 8);
   *((s32 *) (p + 0)) = 0xBC000006;
   *((s32 *) (p + 4)) = 0;
-  r1 = gl_func_00034458(&D_00000000);
+  r1 = dbg_printThreads(&D_00000000);
   new_var2 = arg0 + 0xC;
   base = *((char **) new_var2);
   cnt = *((s32 *) (base + 4));
@@ -23114,7 +23114,7 @@ void gfx_initRDPState(char *arg0, char *arg1)
   p = (*((char **) ((*((char **) (arg0 + 0xC))) + 0))) + (cnt * 8);
   *((s32 *) (p + 0)) = 0x06000000;
   *((s32 *) (p + 4)) = r1;
-  r2 = gl_func_00034458(&D_00000000);
+  r2 = dbg_printThreads(&D_00000000);
   base = *((char **) new_var2);
   cnt = *((s32 *) (base + 4));
   *((s32 *) (base + 4)) = cnt + 1;
@@ -23136,7 +23136,7 @@ void gfx_initRDPState(char *arg0, char *arg1)
   *((s32 *) (p + 4)) = 0xFFFD;
   if ((*((s32 *) (arg1 + 0x104))) & 2)
   {
-    gl_func_00034458(arg0, *((s32 *) ((*((char **) (arg1 + 0x148))) + 0xF0)));
+    dbg_printThreads(arg0, *((s32 *) ((*((char **) (arg1 + 0x148))) + 0xF0)));
     base = *((char **) (arg0 + 0xC));
     cnt = *((s32 *) (base + 4));
     *((s32 *) (base + 4)) = cnt + 1;
@@ -23147,7 +23147,7 @@ void gfx_initRDPState(char *arg0, char *arg1)
   if ((base && base) && base)
   {
   }
-  gl_func_00034458(arg0);
+  dbg_printThreads(arg0);
 }
 #else
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_59E80.cpp (agent-c run 164 lift,
@@ -23496,7 +23496,7 @@ s32 *gl_func_0005AB84(s32 *arg0, s32 *arg1, s32 *arg2) {
  * last statement's separate `lw a0,40(sp)` reload of arg2 into the delay
  * slot comes from the goto-skip test (`if (arg2 == 0) goto skip;`) -- a
  * plain `if (arg2 != 0)` CSEs the test's t2 into `sll a0,t2,3` (-1 word).
- * Callee via the blank alias (gl_func_00034458 is in-unit). */
+ * Callee via the blank alias (dbg_printThreads is in-unit). */
 extern int gl_func_00034458_5AD54(); /* blank alias (= 0): ROM jal words are jal 0 */
 int *gl_func_0005AD54(int *arg0, s32 arg1, s32 arg2, int *arg3) {
     int *base;
@@ -23959,11 +23959,11 @@ void Mem_dumpStats(N5B90C *arg0) {
     }
     for (i = 0; i < 10; i++) {
         if (counts[i] != 0) {
-            gl_func_00034458((char *)&D_00000000 + 0x21A6C, i, (f64)((f32)sizes[i] / (f32)1024), counts[i]);
+            dbg_printThreads((char *)&D_00000000 + 0x21A6C, i, (f64)((f32)sizes[i] / (f32)1024), counts[i]);
         }
     }
-    gl_func_00034458(arg0);
-    gl_func_00034458((char *)&D_00000000 + 0x21A84, nA, nB);
+    dbg_printThreads(arg0);
+    dbg_printThreads((char *)&D_00000000 + 0x21A84, nA, nB);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Mem_dumpStats);
@@ -24136,7 +24136,7 @@ void math_mtx4Recip(float *src, float *dst) {
 
 /* math_mtx4Adjugate - 4x4 matrix ADJUGATE/cofactor builder (fresh decode
  * 2026-07). Each output element O[c][r] = +/- det3x3(minor of arg0) via the
- * 3x3-determinant helper gl_func_00034458, stored in the target's column-
+ * 3x3-determinant helper dbg_printThreads, stored in the target's column-
  * interleaved order (O[0],O[4],O[8],O[12], O[1],O[5],... ).
  * The 2026-06-10 "bitwise-FP oversize (+0xC4 cvt.d/sdc1 bloat)" note was the
  * K&R-int-prototype DOUBLE-PROMOTION trap: declaring the helper int() promotes
@@ -24194,7 +24194,7 @@ void math_mtx4Adjugate(void *arg0, void *arg1) {
 }
 
 /* math_mtx4Determinant - 4x4 matrix DETERMINANT by cofactor expansion along row 0
- * through the 3x3-determinant helper gl_func_00034458 (the same float-typed
+ * through the 3x3-determinant helper dbg_printThreads (the same float-typed
  * alias as math_mtx4Adjugate). EXACT 2026-10-17. Frame homes follow the
  * column-wise declaration order (5BE20 rule); M is declared FIRST (its unused
  * home is the top word, 124). The three cofactors go through named temps
@@ -24510,7 +24510,7 @@ int math_aabbCornerInside(Aabb_5CA78 *a, Aabb_5CA78 *b) {
  * (normalize = USO-relocated jal 0), out[3] = dot(n, a).
  * EXACT (unwrapped 2026-10-16): normalize is called through the blank alias
  * gl_func_00034458_5CB68 (= 0 in undefined_syms_auto.txt); calling the in-unit
- * gl_func_00034458 directly would link 0x34458 into the ROM's `jal 0`.
+ * dbg_printThreads directly would link 0x34458 into the ROM's `jal 0`.
  * Vec3 struct locals stay memory-homed (IDO never registerizes aggregates):
  * v1@0x74 v2@0x68, cross result n@0x38, then two whole-struct copies
  * n->t1@0x4C->t2@0x24 (int lw/sw) and a memberwise float store-out. */
@@ -25810,7 +25810,7 @@ void game_libs_func_0005F27C(f32 *d, f32 *b, f32 *c) {
  * shape of the walker — 15+ negatives); spelling the OUTER loop as
  * `i=0; while (i<4) { inner for; i++; }` (or do-while) flips the drain
  * tie and matches all 85 words in-TU at 7.1 -O2. Inner for unchanged.
- * jal gl_func_00034458 (= guMtxIdentF slot) ships BLANK (USO load-time
+ * jal dbg_printThreads (= guMtxIdentF slot) ships BLANK (USO load-time
  * reloc): call via the pinned-zero alias gl_func_00000000_5f3e0
  * (undefined_syms_auto.txt) so the linked jal bakes 0x0C000000. */
 extern int gl_func_00000000_5f3e0();
@@ -26984,7 +26984,7 @@ int game_libs_func_000611E4(int a0, int a1) {
 }
 
 /* printf-style mini-formatter: walks fmt (5th arg), emitting into the buffer
- * (arg0) via the external char-emit helper gl_func_00034458. arg2 holds the
+ * (arg0) via the external char-emit helper dbg_printThreads. arg2 holds the
  * value (homed in a2, used as both float and raw int-bits). %d/%x set the
  * mode flag at &D_00000000; %f emits integer + '.' + fractional parts;
  * digits set precision/width; any other char emits a fixed glyph (&D+0x21E08)
@@ -27033,7 +27033,7 @@ typedef union FI_0006126C {
     int i;
     f64 d;
 } FI_0006126C;
-extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;
@@ -27169,7 +27169,7 @@ int game_libs_func_0006170C(void) {
  * `if (count >= 63) debugprint(msg); table[count] = e; table[count + 1] =
  * 0; count++` with msg = sym2 + 0x21EB4; the callee is a blank R_MIPS_26
  * import (TextReloc sym306 = text 0x75AE4 = splat 0x61478 = the 61478 table-dump
- * wrap just above), NOT the TU-local gl_func_00034458 the old wrap guessed -- a
+ * wrap just above), NOT the TU-local dbg_printThreads the old wrap guessed -- a
  * baked in-TU jal breaks the ROM word 0C000000. Old wrap read the count
  * from the (nonexistent) a3 param. BYTE-EXACT 29/29 in-tree (agent-c 2026-09-09).
  *

@@ -1,5 +1,5 @@
 /* IDO 7.1 NCC (C++) donor for gl_func_0004C5E4 (0x344 / 209 words) -- EXACT (agent-c run 261), spliced over the
- * post0b placeholder on both build paths via REPLACE_FUNC_BODY (gl_func_00034458 calls renamed to the blank
+ * post0b placeholder on both build paths via REPLACE_FUNC_BODY (dbg_printThreads calls renamed to the blank
  * gl_func_0004C5E4_c34458 = 0: the target's jal words are blank USO calls). First NM donor: agent-g run 191.
  * The cfe NM body (79.69, 212 words) ported to C++: `void Obj::run()` (renamed with objcopy). Registers this
  * object in the module global, picks its DL from the sub-object's per-index table, issues one of two draw calls
@@ -19,7 +19,7 @@
  * agent-c runs 260 / 261: named viewport conversions (length = target), named shared head / count for the two
  * G_DL appends, then folded counted uses in the else arm: EXACT. */
 extern "C" {
-int gl_func_00034458(...);
+int dbg_printThreads(...);
 extern char D_00000000[];
 extern char gl_d_4c5e4_sh[], gl_d_4c5e4_flag[], gl_d_4c5e4_word[], gl_d_4c5e4_reg[], gl_d_4c5e4_arg[], gl_d_4c5e4_clr[];
 }
@@ -71,11 +71,11 @@ void Obj::run() {
     *(Obj **)(g + 0x254) = this;
     idx = *(int *)(g + 0x204);
     m1C0 = a180[idx];
-    *(short *)(gl_d_4c5e4_sh + 0x208) = gl_func_00034458(g, mAC, mB0);
+    *(short *)(gl_d_4c5e4_sh + 0x208) = dbg_printThreads(g, mAC, mB0);
     m1B4 = 0;
     g = m15C; /* agent-g run 260 (kit CCXCIII spilltemps): the m15C address first mentioned before the sub load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)sub + idx * 4))[0x198 / 4];
-    gl_func_00034458(g, dl);
+    dbg_printThreads(g, dl);
     char *s1;
     if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) {
         int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
@@ -83,7 +83,7 @@ void Obj::run() {
         if (f) f = (m78 & 2) != 0;
         float buf[4]; int one = 1; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word); run 261: za / e1 / e2 dropped for the named hh / nn / vh / vn homes */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        gl_func_00034458(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, m1B0);
+        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, m1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = sub;
@@ -96,12 +96,12 @@ void Obj::run() {
          * 3.0 and the codeless sub-load item to 2.0, so that item is coloured after bc and takes t3 -- sb8 then gets
          * the target's t4 (99.95 -> 100). `0 * (signed char)f` / `0 * (unsigned)(sub)` keep the folds distinct
          * expressions (a repeated `0 * f` is one CSE item that gets a colour of its own). */
-        gl_func_00034458(dl, s1, pf, m4, f + 0 * f, mDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(sub), m1B0);
+        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, mDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(sub), m1B0);
     }
-    gl_func_00034458(dl);
-    gl_func_00034458(m15C);
-    gl_func_00034458(m168, dl);
-    gl_func_00034458(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
+    dbg_printThreads(dl);
+    dbg_printThreads(m15C);
+    dbg_printThreads(m168, dl);
+    dbg_printThreads(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
     /* agent-c run 261 (kit CCXCIX): the G_DL / G_MOVEMEM appends share ONE named head (hh) and ONE named count
      * (nn) -- the target's a2 / a1 in both -- and the Vp append has its own named vh / vn (v1 / t0); folded uses
@@ -109,7 +109,7 @@ void Obj::run() {
      * (99.59 -> 99.95) */
     s1 = (char *)dl; DLHead *hh; int nn;
     Sub2 *e = s14c[idx];
-    int v = gl_func_00034458(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
+    int v = dbg_printThreads(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
     { hh = ((DL *)s1)->head; nn = hh->count++; Gfx *p = &((DL *)s1)->head->buf[nn]; p->w0 = 0x06000000; p->w1 = v + 0 * nn; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
@@ -129,9 +129,9 @@ void Obj::run() {
     vp->vscale[1] = cy * 2.0f;
     vp->vtrans[0] = cw * 4.0f + cx * 2.0f;
     vp->vtrans[1] = ch * 4.0f + cy * 2.0f;
-    { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = gl_func_00034458(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
+    { hh = d->head; nn = hh->count++; Gfx *p = &d->head->buf[nn]; unsigned c3 = 0x03800010; p->w0 = c3; p->w1 = dbg_printThreads(vp); } /* agent-c run 232: used c3 below p -> p home sp+0x50 = target (88.72 -> 88.73) */
     }
-    gl_func_00034458(this);
-    gl_func_00034458(gl_d_4c5e4_arg, this);
+    dbg_printThreads(this);
+    dbg_printThreads(gl_d_4c5e4_arg, this);
     *(int *)(gl_d_4c5e4_clr + 0x254) = 0;
 }

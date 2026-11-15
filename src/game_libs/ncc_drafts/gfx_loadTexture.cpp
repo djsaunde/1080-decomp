@@ -30,7 +30,7 @@
  */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32; typedef signed char s8; typedef short s16; typedef int s32; typedef float f32;
 #include "gbi_subset.h"
-extern "C" { int game_libs_func_00062F08(int); int gl_func_00034458(...); }
+extern "C" { int game_libs_func_00062F08(int); int dbg_printThreads(...); }
 extern "C" char gl_d_578b4_s1[];
 extern "C" char gl_d_578b4_s2a[];
 
@@ -121,35 +121,35 @@ extern "C" void gfx_loadTexture(GCtx *ctx, TexDesc *tex, s32 tmem) {
         goto s1_def;
         {
         s1_rgba32:
-            gDPLoadTextureTileO(GDL(ctx), gl_func_00034458(sub->img), G_IM_FMT_RGBA, G_IM_SIZ_32b, sub->width, sub->height,
+            gDPLoadTextureTileO(GDL(ctx), dbg_printThreads(sub->img), G_IM_FMT_RGBA, G_IM_SIZ_32b, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         s1_rgba16:
-            gDPLoadTextureTileO(GDL(ctx), gl_func_00034458(sub->img), G_IM_FMT_RGBA, G_IM_SIZ_16b, sub->width, sub->height,
+            gDPLoadTextureTileO(GDL(ctx), dbg_printThreads(sub->img), G_IM_FMT_RGBA, G_IM_SIZ_16b, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         s1_ia8:
-            gDPLoadTextureTileO(GDL(ctx), gl_func_00034458(sub->img), G_IM_FMT_IA, G_IM_SIZ_8b, sub->width, sub->height,
+            gDPLoadTextureTileO(GDL(ctx), dbg_printThreads(sub->img), G_IM_FMT_IA, G_IM_SIZ_8b, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         s1_i8:
-            gDPLoadTextureTileO(GDL(ctx), gl_func_00034458(sub->img), G_IM_FMT_I, G_IM_SIZ_8b, sub->width, sub->height,
+            gDPLoadTextureTileO(GDL(ctx), dbg_printThreads(sub->img), G_IM_FMT_I, G_IM_SIZ_8b, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         s1_i4:
-            gDPLoadTextureTile_4bO(GDL(ctx), gl_func_00034458(sub->img), G_IM_FMT_I, sub->width, sub->height,
+            gDPLoadTextureTile_4bO(GDL(ctx), dbg_printThreads(sub->img), G_IM_FMT_I, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         s1_ci8: {
             CITex *ci = (CITex *)sub->img;
             gDPLoadTLUT_pal256(GDL(ctx), ci->tlut);
             gDPSetTextureLUT(GDL(ctx), G_TT_RGBA16);
-            gDPLoadTextureTileO(GDL(ctx), gl_func_00034458(ci->pixels), G_IM_FMT_CI, G_IM_SIZ_8b, sub->width, sub->height,
+            gDPLoadTextureTileO(GDL(ctx), dbg_printThreads(ci->pixels), G_IM_FMT_CI, G_IM_SIZ_8b, sub->width, sub->height,
                 sub->x, sub->y, sub->x + tex->w - 1, sub->y + tex->h - 1, 0, cms, cmt, masks, maskt, 0, 0);
             return;
         }
         s1_def:
-            gl_func_00034458(gl_d_578b4_s1 + 0x219B8, tex->fmt);
+            dbg_printThreads(gl_d_578b4_s1 + 0x219B8, tex->fmt);
             return;
         }
     } else {
@@ -164,34 +164,34 @@ extern "C" void gfx_loadTexture(GCtx *ctx, TexDesc *tex, s32 tmem) {
         goto s2_def;
         {
         s2_rgba32:
-            gDPLoadMultiBlock(GDL(ctx), gl_func_00034458(tex->img), tmem, tex->rtile, G_IM_FMT_RGBA, G_IM_SIZ_32b, tex->w, tex->h,
+            gDPLoadMultiBlock(GDL(ctx), dbg_printThreads(tex->img), tmem, tex->rtile, G_IM_FMT_RGBA, G_IM_SIZ_32b, tex->w, tex->h,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
             return;
         s2_rgba16:
-            gDPLoadMultiBlock(GDL(ctx), gl_func_00034458(tex->img), tmem, tex->rtile, G_IM_FMT_RGBA, G_IM_SIZ_16b, tex->w, tex->h,
+            gDPLoadMultiBlock(GDL(ctx), dbg_printThreads(tex->img), tmem, tex->rtile, G_IM_FMT_RGBA, G_IM_SIZ_16b, tex->w, tex->h,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
             return;
         s2_ia8:
-            gDPLoadMultiBlock(GDL(ctx), gl_func_00034458(tex->img), tmem, tex->rtile, G_IM_FMT_IA, G_IM_SIZ_8b, tex->w, tex->h,
+            gDPLoadMultiBlock(GDL(ctx), dbg_printThreads(tex->img), tmem, tex->rtile, G_IM_FMT_IA, G_IM_SIZ_8b, tex->w, tex->h,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
             return;
         s2_i8:
-            gDPLoadMultiBlock(GDL(ctx), gl_func_00034458(tex->img), tmem, tex->rtile, G_IM_FMT_I, G_IM_SIZ_8b, tex->w, tex->h,
+            gDPLoadMultiBlock(GDL(ctx), dbg_printThreads(tex->img), tmem, tex->rtile, G_IM_FMT_I, G_IM_SIZ_8b, tex->w, tex->h,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
             return;
         s2_i4:
-            gDPLoadMultiBlock_4b(GDL(ctx), gl_func_00034458(tex->img), tmem, tex->rtile, G_IM_FMT_I, tex->w, tex->h,
+            gDPLoadMultiBlock_4b(GDL(ctx), dbg_printThreads(tex->img), tmem, tex->rtile, G_IM_FMT_I, tex->w, tex->h,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
             return;
         s2_ci8: {
             CITex *ci = (CITex *)sub->img;
             gDPLoadTLUT_pal256(GDL(ctx), ci->tlut);
             gDPSetTextureLUT(GDL(ctx), G_TT_RGBA16);
-            gDPLoadMultiBlock(GDL(ctx), gl_func_00034458(ci->pixels), tmem, tex->rtile, G_IM_FMT_CI, G_IM_SIZ_8b, sub->width, sub->height,
+            gDPLoadMultiBlock(GDL(ctx), dbg_printThreads(ci->pixels), tmem, tex->rtile, G_IM_FMT_CI, G_IM_SIZ_8b, sub->width, sub->height,
                 0, cms, cmt, masks, maskt, tex->shifts, tex->shiftt);
         }
         s2_def:
-            gl_func_00034458(gl_d_578b4_s2a + 0x219C4, tex->fmt);
+            dbg_printThreads(gl_d_578b4_s2a + 0x219C4, tex->fmt);
             return;
         }
     }
