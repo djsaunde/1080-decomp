@@ -5,7 +5,7 @@ glabel SnowAI_func_00006FA8
     /* 006FAC 00006FAC AFBF001C */  .word 0xAFBF001C
     /* 006FB0 00006FB0 AFB00018 */  .word 0xAFB00018
     /* 006FB4 00006FB4 00808025 */  .word 0x00808025
-    jal SnowAI_func_00007A98   /* 006FB8 0C000000 -> SnowAI_func_00007A98 */
+    jal SnowAI_rivalLeadZ   /* 006FB8 0C000000 -> SnowAI_rivalLeadZ */
     /* 006FBC 00006FBC AFA000BC */  .word 0xAFA000BC
     /* 006FC0 00006FC0 44802000 */  .word 0x44802000
     lui $t6, %hi(game_uso_D_807FEB60)   /* 006FC4 3C0E0000 -> game_uso_D_807FEB60 */

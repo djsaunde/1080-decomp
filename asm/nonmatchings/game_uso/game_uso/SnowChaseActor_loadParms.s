@@ -1,6 +1,6 @@
-nonmatching SnowChaseActor_func_00003948, 0x20
+nonmatching SnowChaseActor_loadParms, 0x20
 
-glabel SnowChaseActor_func_00003948
+glabel SnowChaseActor_loadParms
     /* 003948 00003948 27BDFFE8 */  .word 0x27BDFFE8
     /* 00394C 0000394C AFBF0014 */  .word 0xAFBF0014
     jal game_uso_func_04A2D8   /* 003950 0C000000 -> game_uso_func_04A2D8 */
@@ -9,4 +9,4 @@ glabel SnowChaseActor_func_00003948
     /* 00395C 0000395C 27BD0018 */  .word 0x27BD0018
     /* 003960 00003960 03E00008 */  .word 0x03E00008
     /* 003964 00003964 00000000 */  .word 0x00000000
-endlabel SnowChaseActor_func_00003948
+endlabel SnowChaseActor_loadParms

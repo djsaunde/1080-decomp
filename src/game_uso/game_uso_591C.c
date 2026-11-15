@@ -24,8 +24,8 @@ float math_signedAngleXZ_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
 void SnowAI_pickFork();
 void SnowAI_scanNodes(SnowAI *);
 void SnowAI_scanSegments(SnowAI *);
-int SnowAI_func_00007ACC();
-float SnowAI_func_00007A98(SnowAI *);
+int SnowAI_updateMarker();
+float SnowAI_rivalLeadZ(SnowAI *);
 int SnowAI_func_00007C1C();
 void *SnowAI_func_00008CD8();
 void SnowAI_restoreRiderParms(SnowAI *);
@@ -133,7 +133,7 @@ void SnowAI_steer(int *a0) {
     staged_axis.x += copy2.x;
     staged_axis.y += copy2.y;
     staged_axis.z += copy2.z;
-    helper_ptr = (char*)SnowAI_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
+    helper_ptr = (char*)SnowAI_updateMarker(self, &hit_parent, &staged_axis, &hit_obj);
     if (helper_ptr == 0) return;
     state_flag = *(int*)(helper_ptr + 0x84);
     if (hit_obj != 0) {
@@ -141,7 +141,7 @@ void SnowAI_steer(int *a0) {
     } else {
         resolved_state = 0;
     }
-    metric_a = SnowAI_func_00007A98(self);
+    metric_a = SnowAI_rivalLeadZ(self);
     t0 = 0;
     switch (v0 = self->unk74) {
     case 0:

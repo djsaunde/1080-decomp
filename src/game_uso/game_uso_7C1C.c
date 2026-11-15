@@ -25,7 +25,7 @@ extern void *game_uso_func_055750(unsigned);
 extern void math_rotateXZPair_00003FAC(float *, float *, float *, float, float);
 extern float game_uso_func_082880(float);
 extern void game_uso_func_071028(Vec3 *v);
-extern float SnowAI_func_00007A98(Self *);
+extern float SnowAI_rivalLeadZ(Self *);
 
 /* XZ(const Vec3 &v): Vec3(v.x, 0, v.z) into temp T through pointer P */
 #define XZV(P, T, V) vp = (V); P = &(T); if (P || (P = (Vec3 *)game_uso_func_055750(12))) { tx = vp->x; tz = vp->z; P->x = tx; P->y = 0.0f; P->z = tz; }
@@ -143,7 +143,7 @@ Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         R = t2b4; t334 = R;
         seg = t334;
         if (s->w->other != 0) {
-            DOTV = SnowAI_func_00007A98(s);
+            DOTV = SnowAI_rivalLeadZ(s);
             active = s->active;
             if (active == 0) {
                 if (s->lim <= DOTV) {

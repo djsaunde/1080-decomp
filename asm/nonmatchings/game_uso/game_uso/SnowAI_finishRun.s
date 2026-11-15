@@ -58,7 +58,7 @@ glabel SnowAI_finishRun
     /* 006B08 00006B08 E7B2009C */  .word 0xE7B2009C
     /* 006B0C 00006B0C 46105480 */  .word 0x46105480
     /* 006B10 00006B10 E7A800A0 */  .word 0xE7A800A0
-    jal SnowAI_func_00007ACC   /* 006B14 0C000000 -> SnowAI_func_00007ACC */
+    jal SnowAI_updateMarker   /* 006B14 0C000000 -> SnowAI_updateMarker */
     /* 006B18 00006B18 E7B200A4 */  .word 0xE7B200A4
     /* 006B1C 00006B1C 1040006F */  .word 0x1040006F
     /* 006B20 00006B20 00403025 */  .word 0x00403025

@@ -83,7 +83,7 @@ glabel SnowAI_steer
     /* 005A58 00005A58 C7A401CC */  .word 0xC7A401CC
     /* 005A5C 00005A5C E7AA01BC */  .word 0xE7AA01BC
     /* 005A60 00005A60 46049180 */  .word 0x46049180
-    jal SnowAI_func_00007ACC   /* 005A64 0C000000 -> SnowAI_func_00007ACC */
+    jal SnowAI_updateMarker   /* 005A64 0C000000 -> SnowAI_updateMarker */
     /* 005A68 00005A68 E7A601C0 */  .word 0xE7A601C0
     /* 005A6C 00005A6C 104003EB */  .word 0x104003EB
     /* 005A70 00005A70 AFA201B0 */  .word 0xAFA201B0
@@ -95,7 +95,7 @@ glabel SnowAI_steer
     /* 005A88 00005A88 10000002 */  .word 0x10000002
     /* 005A8C 00005A8C AFA301A0 */  .word 0xAFA301A0
     /* 005A90 00005A90 AFA001A0 */  .word 0xAFA001A0
-    jal SnowAI_func_00007A98   /* 005A94 0C000000 -> SnowAI_func_00007A98 */
+    jal SnowAI_rivalLeadZ   /* 005A94 0C000000 -> SnowAI_rivalLeadZ */
     /* 005A98 00005A98 AFA301A4 */  .word 0xAFA301A4
     /* 005A9C 00005A9C E7A0019C */  .word 0xE7A0019C
     /* 005AA0 00005AA0 8E030074 */  .word 0x8E030074

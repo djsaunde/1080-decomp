@@ -1,6 +1,6 @@
-nonmatching CourseMarker_func_000044C8, 0x2C
+nonmatching CourseMarker_readParms, 0x2C
 
-glabel CourseMarker_func_000044C8
+glabel CourseMarker_readParms
     /* 0044C8 000044C8 27BDFFE8 */  .word 0x27BDFFE8
     /* 0044CC 000044CC AFBF0014 */  .word 0xAFBF0014
     jal game_uso_func_051CF8   /* 0044D0 0C000000 -> game_uso_func_051CF8 */
@@ -12,4 +12,4 @@ glabel CourseMarker_func_000044C8
     /* 0044E8 000044E8 27BD0018 */  .word 0x27BD0018
     /* 0044EC 000044EC 03E00008 */  .word 0x03E00008
     /* 0044F0 000044F0 00000000 */  .word 0x00000000
-endlabel CourseMarker_func_000044C8
+endlabel CourseMarker_readParms

@@ -64,7 +64,7 @@ extern char D_00000000;
 void math_rotateXZPair_00003FAC(float *, float *, float *, float, float);
 float game_uso_func_082880(float);
 void game_uso_func_071028(Vec3 *v);
-float SnowAI_func_00007A98(Self *);
+float SnowAI_rivalLeadZ(Self *);
 }
 extern "C" Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
@@ -81,7 +81,7 @@ extern "C" Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float
         Node *a_al = a + 0 * (int)(out); /* agent-c run 195: alias copy (s-reg tie); agent-g run 210: folded counted use of out, 96.14 -> 96.19 */
         Vec3 seg = XZ(b->pos) - a_al->pos;
         if (s->w->other != 0) {
-            float dot = SnowAI_func_00007A98(s);
+            float dot = SnowAI_rivalLeadZ(s);
             int active = s->active;
             if (active == 0) {
                 if (s->lim <= dot) {

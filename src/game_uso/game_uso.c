@@ -1411,7 +1411,7 @@ Vec3* cam_toTargetLocal_000023D4(Vec3 *a0, char *a1) {
 
 extern void game_uso_func_00000000();
 
-void SnowChaseActorCam_func_0000249C(char *a0) {
+void SnowChaseActorCam_loadParms(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
@@ -1731,7 +1731,7 @@ void SnowChaseActorLook_update(char *a0) {
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowChaseActorLook_update);
 #endif
 
-void SnowChaseActorLook_func_00002CA8(char *a0) {
+void SnowChaseActorLook_loadParms(char *a0) {
     game_uso_func_00000000(a0 + 0x44);
 }
 
@@ -2184,7 +2184,7 @@ void SnowChaseActor_update(char *s0) {
 }
 #endif
 
-void SnowChaseActor_func_00003948(char *a0) {
+void SnowChaseActor_loadParms(char *a0) {
     game_uso_func_00000000(a0 + 0x50);
 }
 
@@ -2521,7 +2521,7 @@ void *CourseMarker_findNearestZ_000043D8(int **a0, int *a1, void *a2) {
     return 0;
 }
 
-void CourseMarker_func_000044C8(char *a0) {
+void CourseMarker_readParms(char *a0) {
     game_uso_func_00000000(a0);
     game_uso_func_00000000(a0 + 0x3C);
 }
@@ -3604,7 +3604,7 @@ void SnowAI_dtor(int *a0, int a1) {
     }
 }
 
-void SnowAI_func_000057B8(char *a0) {
+void SnowAI_readParms(char *a0) {
     game_uso_func_00000000(a0 + 0xE4);
 }
 
@@ -3941,8 +3941,8 @@ void SnowAI_update(char *a0) {
 /* SnowAI_steer (spine, 1093w) — three-scalar separation pass.
  *
  * 2026-06-24 agent-e: prior C conflated THREE distinct stack floats into one
- * `metric`, discarding the float return of SnowAI_func_00007A98(self):
- *   metric_a    = SnowAI_func_00007A98(self)            -> sp+0x19C (412)
+ * `metric`, discarding the float return of SnowAI_rivalLeadZ(self):
+ *   metric_a    = SnowAI_rivalLeadZ(self)            -> sp+0x19C (412)
  *   yaw_metric  = fabs(math_signedAngleXZ_00003ED4(...))       -> sp+0x170 (368)
  *   accel_metric= fabs(self->0x3C)                        -> sp+0x16C (364)
  * Each tail comparison was routed to the slot the EXPECTED .o actually loads
@@ -3955,8 +3955,8 @@ void SnowAI_update(char *a0) {
 void SnowAI_pickFork();
 void SnowAI_scanNodes(SnowAI *);
 void SnowAI_scanSegments(SnowAI *);
-int SnowAI_func_00007ACC();
-float SnowAI_func_00007A98(int *);
+int SnowAI_updateMarker();
+float SnowAI_rivalLeadZ(int *);
 int SnowAI_func_00007C1C();
 void *SnowAI_func_00008CD8();
 void SnowAI_restoreRiderParms(char *);
@@ -4120,7 +4120,7 @@ void SnowAI_steer(int *a0) {
     staged_axis.y += copy2.y;
     staged_axis.z += copy2.z;
 
-    helper_ptr = (char*)SnowAI_func_00007ACC(self, &hit_parent, &staged_axis, &hit_obj);
+    helper_ptr = (char*)SnowAI_updateMarker(self, &hit_parent, &staged_axis, &hit_obj);
     if (helper_ptr == 0) return;
     state_flag = *(int*)(helper_ptr + 0x84);
     if (hit_obj != 0) {
@@ -4128,7 +4128,7 @@ void SnowAI_steer(int *a0) {
     } else {
         resolved_state = 0;
     }
-    metric_a = SnowAI_func_00007A98(self);
+    metric_a = SnowAI_rivalLeadZ(self);
 
     /* first state region (0x184): vsel drives the transform dispatch and
      * self->0x74 may be promoted/demoted. Compares are against metric_a
@@ -5065,7 +5065,7 @@ end:
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_applyStickInput);
 #endif
 
-/* SnowAI_func_00007A98 (13 insns, 0x34): returns the float delta
+/* SnowAI_rivalLeadZ (13 insns, 0x34): returns the float delta
  *   v0 = a0->0x30; v1 = v0->0x908;  v1 ? v1->0xBC - v0->0xBC : 0.0f
  * BOUNDARY MERGE 2026-09-05: the former "game_uso_func_00007ABC" (4 insns at
  * 0x7ABC: mtc1 zero,f2; nop; jr ra; mov.s f0,f2) was NOT a function and NOT a
@@ -5079,7 +5079,7 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_applyStickInput);
  * {non-null; jr ra; null; jr ra} with a forward beql. The old `if (v1 == 0)`
  * ordering emits bnezl-skip with the null epilogue inline (12 insns, the
  * "cap" every prior note described). */
-float SnowAI_func_00007A98(int *a0) {
+float SnowAI_rivalLeadZ(int *a0) {
     int *v0 = (int *)a0[0x30 / 4];
     int *v1 = (int *)v0[0x908 / 4];
     float ret;
@@ -5091,7 +5091,7 @@ float SnowAI_func_00007A98(int *a0) {
     return ret;
 }
 
-/* SnowAI_func_00007ACC: 0x150 (84 insns). Function-table dispatcher.
+/* SnowAI_updateMarker: 0x150 (84 insns). Function-table dispatcher.
  * a0[0x40] indexes a 12-entry struct-pointer table at &D + 0x548; the
  * first word of the selected struct goes to SnowAI_findNearestMarker_0000A374 as a
  * 1-word struct BY VALUE (that is what emits both `sw a1,0x34(sp)` and the
@@ -5112,7 +5112,7 @@ float SnowAI_func_00007A98(int *a0) {
 extern void game_uso_func_047B1C();
 /* game_uso_func_071028 declared near SnowChaseActorCam_update. */
 typedef struct { int a; } S1_7ACC;
-int SnowAI_func_00007ACC(int *a0, int *a1, int arg3, int *arg4) {
+int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
     S1_7ACC av;
     int *r;
     int v;
@@ -5308,7 +5308,7 @@ int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
         *(Tri3i *)&stg2 = *(Tri3i *)&stg1;
 
         if (*(int *)(*(int *)(arg1 + 0x30) + 0x908) != 0) {
-            float dot = SnowAI_func_00007A98((int *)arg1);
+            float dot = SnowAI_rivalLeadZ((int *)arg1);
             int active = *(int *)(arg1 + 0xA4);
             if (active == 0) {
                 if (*(f32 *)(arg1 + 0xA0) <= dot) {

@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00007ACC, 0x150
+nonmatching SnowAI_updateMarker, 0x150
 
-glabel SnowAI_func_00007ACC
+glabel SnowAI_updateMarker
     /* 007ACC 00007ACC 27BDFFC8 */  .word 0x27BDFFC8
     /* 007AD0 00007AD0 AFBF001C */  .word 0xAFBF001C
     /* 007AD4 00007AD4 AFB00018 */  .word 0xAFB00018
@@ -85,4 +85,4 @@ glabel SnowAI_func_00007ACC
     /* 007C10 00007C10 27BD0038 */  .word 0x27BD0038
     /* 007C14 00007C14 03E00008 */  .word 0x03E00008
     /* 007C18 00007C18 00000000 */  .word 0x00000000
-endlabel SnowAI_func_00007ACC
+endlabel SnowAI_updateMarker

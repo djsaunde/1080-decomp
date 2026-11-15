@@ -34,12 +34,12 @@ struct Self { char pad0[0x30]; W *w; };
 extern "C" {
 extern char game_uso_D_807FEB60;
 extern char game_uso_D_807FEB64;
-float SnowAI_func_00007A98(Self *);
+float SnowAI_rivalLeadZ(Self *);
 Obj *SnowAI_findNearestMarker_0000A374(Self *, Handle, Vec3 *);
 }
 extern "C" int SnowAI_func_00006FA8(Self *s0) {
     int result = 0;
-    if (SnowAI_func_00007A98(s0) < 0.0f) {
+    if (SnowAI_rivalLeadZ(s0) < 0.0f) {
         Handle h1;
         Handle h2;
         Obj *a;
