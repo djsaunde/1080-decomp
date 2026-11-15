@@ -65,6 +65,7 @@
 #define gl___osRunQueue        D_00000000 /* Data+0x2D698 Sym 2533: __osRunQueue (__osDispatchThread, __osExceptionPreamble, __osLeoResume) */
 #define gl___osActiveQueue     D_00000000 /* Data+0x2D69C Sym 1557: __osActiveQueue (osCreateThread, osDestroyThread, dbg_printThreads) */
 #define gl___osRunningThread   D_00000000 /* Data+0x2D6A0 Sym 2512: __osRunningThread (__osDispatchThread, __osExceptionPreamble, osDestroyThread) */
+#define gl___osContinitialized D_00000000 /* Data+0x2D6C0 Sym 2561: __osContinitialized (osContInit: `if (it) return; it = 1;`) */
 #define gl_osClockRate         D_00000000 /* Data+0x2D6E0 Sym 2579: osClockRate (u64, osInitialize) */
 #define gl_osViClock           D_00000000 /* Data+0x2D6E8 Sym 2580: osViClock (osInitialize, osAiSetFrequency) */
 #define gl___OSGlobalIntMask   D_00000000 /* Data+0x2D6F0 Sym 2517: __OSGlobalIntMask (__osDispatchThread, __osExceptionPreamble, osSetIntMask) */
@@ -78,6 +79,7 @@
 #define gl___osContLastCmd     D_00000000 /* Bss+0x427B0 Sym 2556: __osContLastCmd (u8; __osContRamRead / Write, __osPfsRequestData) */
 #define gl___osMaxControllers  D_00000000 /* Bss+0x427B1 Sym 2557: __osMaxControllers (u8; osPfsIsPlug, __osPfsGetInitData, __osPfsRequestData, __osPackReadData) */
 #define gl___osPfsPifRam       D_00000000 /* Bss+0x42CA0 Sym 2605: __osPfsPifRam (__osContRamRead / Write, __osPfsGetInitData / RequestData, osMotorStart / Stop; +0x3C = pifstatus) */
+#define gl___osEventStateTab   D_00000000 /* Bss+0x43F30 Sym 2537, 128 bytes: __osEventStateTab (osSetEventMesg, __osExceptionPreamble; __osLeoResume reads +0x40 = [OS_EVENT_PI]) */
 #define gl_DriveRomHandle      D_00000000 /* Bss+0x42820 Sym 2576: DriveRomHandle (OSPiHandle, osDriveRomInit) */
 #define gl_CartRomHandle       D_00000000 /* Bss+0x43EB0 Sym 2616: CartRomHandle (OSPiHandle, osCartRomInit) */
 #define gl_LeoDiskHandle       D_00000000 /* Bss+0x43FB0 Sym 2617: LeoDiskHandle (OSPiHandle, osLeoDiskInit) */

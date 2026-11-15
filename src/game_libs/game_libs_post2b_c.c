@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Vec3i;
@@ -120,7 +121,7 @@ extern int gl_func_00000000();
 extern int gl_data_00000000;
 void gl_osYieldThread(void) {
     register int sr = gl_func_00000000();
-    *(short *)((char *)D_00000000 + 0x10) = 2;
+    *(short *)((char *)gl___osRunningThread + 0x10) = 2;
     gl_func_00000000(&gl_data_00000000);
     gl_func_00000000(sr);
 }

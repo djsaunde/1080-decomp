@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* bootup_uso 0x10C8C..0x116C7 remainder of the former tail3a mid-section,
  * moved out of bootup_uso_tail3a.c on 2026-07-10 when gui_addRowSub_00010B6C
@@ -66,7 +67,7 @@ void GameFlow_create(int *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x70) = 0;
     *(int *)((char *)arg0 + 0x13C) = 0;
     sp84 = func_00000000(0);
-    func_00000000(&D_00000000, &D_0000C5E4);
+    func_00000000(&gSysLib, &D_0000C5E4);
     p = 0;
     if (p != 0 || (p = (char *)func_00000000(0x80)) != 0) {
         func_00000000(p, 1);

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x117FC..0x118E3 (single function,
  * 58 insns, 0xE8 bytes), split from the tail of bootup_uso_tail3a.c
@@ -27,13 +28,13 @@ void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
     if (*(void**)(a0 + 0x2C) == 0 ||
         func_00000000(a1, *(void**)(a0 + 0x2C)) != 0) {
         if (*(void**)(a0 + 0x2C) != 0) {
-            func_00000000(&D_00000000, *(void**)(a0 + 0x2C));
+            func_00000000(&gSysLib, *(void**)(a0 + 0x2C));
             func_00000000(3);
         }
         h = func_00000000(3);
-        func_00000000(&D_00000000, 1);
-        func_00000000(&D_00000000, a1);
-        func_00000000(&D_00000000, 0);
+        func_00000000(&gSnowBoard, 1);
+        func_00000000(&gSysLib, a1);
+        func_00000000(&gSnowBoard, 0);
         func_00000000(h);
         *(void**)(a0 + 0x2C) = a1;
     }

@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* -O1 donor for gl___osLeoResume — 59-insn ring-buffer append with notify
  * callback (frame 0x30, saves s0). PROVEN EXACT 59/59 at IDO 7.1 -O1
  * (2026-07-08 standalone probe; plain -O1, no -g3). post1b builds -O2 (the
@@ -20,8 +21,8 @@ void gl___osLeoResume(void) {
     int slot;
     register int res;
 
-    bufp = (int *)((char *)&D_00000000 + 0x40);
-    if ((head = *(char **)((char *)&D_00000000 + 0x40)) == 0 ||
+    bufp = (int *)((char *)&gl___osEventStateTab + 0x40);
+    if ((head = *(char **)((char *)&gl___osEventStateTab + 0x40)) == 0 ||
         *(int *)(head + 8) >= *(int *)(head + 0x10)) {
         return;
     }
@@ -30,6 +31,6 @@ void gl___osLeoResume(void) {
     *(int *)(head + 8) = *(int *)(head + 8) + 1;
     if (**(int ***)head != 0) {
         res = gl_func_00000000(head);
-        gl_func_00000000((char *)&D_00000000, res);
+        gl_func_00000000((char *)&gl___osRunQueue, res);
     }
 }

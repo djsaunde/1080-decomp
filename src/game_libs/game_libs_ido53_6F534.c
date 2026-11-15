@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl_osSetThreadPri = libultra osSetThreadPri (sched/setthreadpri.c / thread
  * priority), statically linked into the game_libs USO. Byte-exact masked-twin
@@ -28,16 +29,16 @@ typedef struct Thread {
 void gl_osSetThreadPri(Thread *thread, int pri) {
     register int sr = gl_func_00000000();
     if (thread == 0) {
-        thread = (Thread *)D_00000000;
+        thread = (Thread *)gl___osRunningThread;
     }
     if (thread->pri != pri) {
         thread->pri = pri;
-        if ((Thread *)(void *)thread != (Thread *)D_00000000 && thread->state != 1) {
+        if ((Thread *)(void *)thread != (Thread *)gl___osRunningThread && thread->state != 1) {
             gl_func_00000000(thread->queue, thread);
             gl_func_00000000(thread->queue, thread);
         }
-        if (((Thread *)D_00000000)->pri < ((Thread *)gl_data_00000000)->pri) {
-            ((Thread *)D_00000000)->state = 2;
+        if (((Thread *)gl___osRunningThread)->pri < ((Thread *)gl_data_00000000)->pri) {
+            ((Thread *)gl___osRunningThread)->state = 2;
             gl_func_00000000(&gl_data_00000000);
         }
     }

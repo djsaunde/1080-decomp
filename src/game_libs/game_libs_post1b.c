@@ -2567,7 +2567,7 @@ void list_removeKey_00066620(List66620 *list, int key) {
  * pad[2]` declared after cur (the documented +8-frame lever). The
  * factory argument is a global int passed by value (blank &D, offset 0). */
 void list_append(int **head, int data) {
-    int *node = (int*)gl_func_00000000(D_00000000);
+    int *node = (int*)gl_func_00000000(gBootBss);
     int *cur;
     volatile int pad[2];
     int *last;
@@ -2960,7 +2960,7 @@ void boot_startThread_00066BD4(int a0) {
  * split off 2026-05-15 as boot_stub_00066C58 / _00066C60 below. */
 extern int D_00000000;
 void boot_entry_00066C30(int a0) {
-    D_00000000 = a0;
+    gSysApi = a0;
     gl_func_00000000(0);
 }
 
@@ -5420,7 +5420,7 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
     register int last;
     while (mq->validCount >= mq->msgCount) {
         if (flags == 1) {
-            ((Thread_69E04 *)D_00000000)->state = 8;
+            ((Thread_69E04 *)gl___osRunningThread)->state = 8;
             gl_func_00000000((int *)&mq->fullqueue);
         } else {
             gl_func_00000000(saveMask);
@@ -5476,7 +5476,7 @@ int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
             gl_func_00000000(saveMask);
             return -1;
         }
-        ((Thread_69F64 *)D_00000000)->state = 8;
+        ((Thread_69F64 *)gl___osRunningThread)->state = 8;
         gl_func_00000000((int *)&mq->mtqueue);
     }
     if (msg != 0) {
@@ -5739,16 +5739,16 @@ void gl_osDestroyThread(int *target) {
 
     prelim = gl_func_00000000();
     if (target == 0) {
-        target = *(int **)&D_00000000;
+        target = *(int **)&gl___osRunningThread;
     } else {
         if (*(unsigned short *)((char *)target + 0x10) != 1) {
             gl_func_00000000(target[2], target);
         }
     }
-    if (*(int **)&D_00000000 == target) {
-        *(int **)&D_00000000 = (int *)(*(int **)&D_00000000)[3];
+    if (*(int **)&gl___osActiveQueue == target) {
+        *(int **)&gl___osActiveQueue = (int *)(*(int **)&gl___osActiveQueue)[3];
     } else {
-        curr = *(int **)&D_00000000;
+        curr = *(int **)&gl___osActiveQueue;
         while (curr[1] != -1) {
             next = (int *)curr[3];
             if (next == target) {
@@ -5758,7 +5758,7 @@ void gl_osDestroyThread(int *target) {
             curr = next;
         }
     }
-    if (target == *(int **)&D_00000000) {
+    if (target == *(int **)&gl___osRunningThread) {
         gl_func_00000000();
     }
     gl_func_00000000(prelim);
@@ -5913,8 +5913,8 @@ void gl___osLeoResume(void) {
     int slot;
     register int res;
 
-    bufp = (int *)((char *)&D_00000000 + 0x40);
-    if ((head = *(char **)((char *)&D_00000000 + 0x40)) == 0 ||
+    bufp = (int *)((char *)&gl___osEventStateTab + 0x40);
+    if ((head = *(char **)((char *)&gl___osEventStateTab + 0x40)) == 0 ||
         *(int *)(head + 8) >= *(int *)(head + 0x10)) {
         return;
     }
@@ -5923,7 +5923,7 @@ void gl___osLeoResume(void) {
     *(int *)(head + 8) = *(int *)(head + 8) + 1;
     if (**(int ***)head != 0) {
         res = gl_func_00000000(head);
-        gl_func_00000000((char *)&D_00000000, res);
+        gl_func_00000000((char *)&gl___osRunQueue, res);
     }
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006B880_pad.s")
@@ -6026,10 +6026,10 @@ int gl_osContInit(int a0, int a1, int a2) {
     int q[6];
 
     ret = 0;
-    if (D_00000000 != 0) {
+    if (gl___osContinitialized != 0) {
         return 0;
     }
-    D_00000000 = 1;
+    gl___osContinitialized = 1;
     time = gl_func_00000000_ll();
     if (time < (unsigned long long)0x165A0BC) {
         gl_func_00000000(q, &msg, 1);
@@ -6038,9 +6038,9 @@ int gl_osContInit(int a0, int a1, int a2) {
     }
     D_00000000_b = 4;
     gl_func_00000000(0);
-    ret = gl_func_00000000(1, &D_00000000);
+    ret = gl_func_00000000(1, &gl___osContPifRam);
     gl_func_00000000(a0, &msg, 1);
-    ret = gl_func_00000000(0, &D_00000000);
+    ret = gl_func_00000000(0, &gl___osContPifRam);
     gl_func_00000000(a0, &msg, 1);
     gl_func_00000000(a1, a2);
     D_00000000_b = 0;

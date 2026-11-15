@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl_osSendMesg = libultra osSendMesg (sched/sendmesg.c), statically linked
  * into the game_libs USO. Byte-exact masked-twin of matched kernel osSendMesg
@@ -17,7 +18,7 @@ int gl_osSendMesg(OSMesgQueue *mq, OSMesg msg, int flags) {
     register int last;
     while (mq->validCount >= mq->msgCount) {
         if (flags == OS_MESG_BLOCK) {
-            ((OSThread *)D_00000000)->state = 8; /* OS_STATE_WAITING */
+            ((OSThread *)gl___osRunningThread)->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000((int *)&mq->fullqueue);
         } else {
             gl_func_00000000(saveMask);

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl___osSetGlobalIntMask = libultra __osSetGlobalIntMask (os/setglobalintmask.c),
  * statically linked into the game_libs USO. Byte-exact masked-twin of matched
@@ -12,6 +13,6 @@ extern int D_00000000;
 
 void gl___osSetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
-    D_00000000 |= mask;
+    gl___OSGlobalIntMask |= mask;
     gl_func_00000000(sr);
 }

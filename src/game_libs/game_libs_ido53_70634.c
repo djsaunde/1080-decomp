@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl___osResetGlobalIntMask = libultra __osDisableGlobalIntMask-ish (clears bits from the
  * global int-mask word), statically linked into the game_libs USO. Byte-exact
@@ -12,6 +13,6 @@ extern int D_00000000;
 
 void gl___osResetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
-    D_00000000 &= ~(mask & ~0x401);
+    gl___OSGlobalIntMask &= ~(mask & ~0x401);
     gl_func_00000000(sr);
 }

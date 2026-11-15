@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int func_00000000();
 typedef struct { int a, b, c, d; } Quad4;
@@ -52,7 +53,7 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
         *q = 0x15;
     }
     p = (u16 *)q;
-    ((GP_000126EC)FW(r, 0x34))((int)&D_00000000 + *(short *)((r = *(char **)((char *)&D_00000000 + 0x28)) + 0x30), p);
+    ((GP_000126EC)FW(r, 0x34))((int)&gSnowBoard + *(short *)((r = *(char **)((char *)&gSnowBoard + 0x28)) + 0x30), p);
 }
 
 /* 19-insn 8-byte copy loop. Logic: copy 8 bytes from

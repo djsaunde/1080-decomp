@@ -38,7 +38,7 @@ void gl_osStartThread(Thread_74C04 *t) {
     if ((int)gl_data_00000000 == 0) {
         gl_func_00000000();
     } else {
-        if (((Thread_74C04 *)gl_data_00000000)->pri < ((Thread_74C04 *)D_00000000)->pri) {
+        if (((Thread_74C04 *)gl_data_00000000)->pri < ((Thread_74C04 *)gl___osRunQueue)->pri) {
             ((Thread_74C04 *)gl_data_00000000)->state = 2;
             gl_func_00000000(&gl___osRunQueue);
         }

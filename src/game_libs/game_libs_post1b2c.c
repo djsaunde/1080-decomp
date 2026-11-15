@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int AnimPlayer_update();
@@ -815,16 +816,16 @@ s32 gl_osJamMesg(char *arg0, s32 arg1, s32 arg2) {
 void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
     register int sr = gl_func_00000000();
     if (thread == 0) {
-        thread = (Thread_0006F534 *)D_00000000;
+        thread = (Thread_0006F534 *)gl___osRunningThread;
     }
     if (thread->pri != pri) {
         thread->pri = pri;
-        if ((Thread_0006F534 *)(void *)thread != (Thread_0006F534 *)D_00000000 && thread->state != 1) {
+        if ((Thread_0006F534 *)(void *)thread != (Thread_0006F534 *)gl___osRunningThread && thread->state != 1) {
             gl_func_00000000(thread->queue, thread);
             gl_func_00000000(thread->queue, thread);
         }
-        if (((Thread_0006F534 *)D_00000000)->pri < ((Thread_0006F534 *)gl_data_00000000)->pri) {
-            ((Thread_0006F534 *)D_00000000)->state = 2;
+        if (((Thread_0006F534 *)gl___osRunningThread)->pri < ((Thread_0006F534 *)gl_data_00000000)->pri) {
+            ((Thread_0006F534 *)gl___osRunningThread)->state = 2;
             gl_func_00000000(&gl_data_00000000);
         }
     }
@@ -1068,7 +1069,7 @@ long long __osInsertTimer(void *t) {
  * via REPLACE_FUNC_BODY. Global int-mask word -> D_00000000. */
 void gl___osSetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
-    D_00000000 |= mask;
+    gl___OSGlobalIntMask |= mask;
     gl_func_00000000(sr);
 }
 

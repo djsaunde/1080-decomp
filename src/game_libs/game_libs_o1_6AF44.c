@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* -O1 donor for gl_osDestroyThread — 65-insn list-unlink + cleanup (frame 0x38,
  * saves s0/s1/s2). PROVEN EXACT 65/65 at IDO 7.1 -O1 (2026-07-08 standalone
  * probe; plain -O1, no -g3). post1b builds -O2, where `target` gets promoted
@@ -22,16 +23,16 @@ void gl_osDestroyThread(int *target) {
 
     prelim = gl_func_00000000();
     if (target == 0) {
-        target = D_00000000;
+        target = gl___osRunningThread;
     } else {
         if (*(unsigned short *)((char *)target + 0x10) != 1) {
             gl_func_00000000(target[2], target);
         }
     }
-    if (D_00000000 == target) {
-        D_00000000 = (int *)D_00000000[3];
+    if (gl___osActiveQueue == target) {
+        gl___osActiveQueue = (int *)gl___osActiveQueue[3];
     } else {
-        curr = D_00000000;
+        curr = gl___osActiveQueue;
         while (curr[1] != -1) {
             next = (int *)curr[3];
             if (next == target) {
@@ -41,7 +42,7 @@ void gl_osDestroyThread(int *target) {
             curr = next;
         }
     }
-    if (target == D_00000000) {
+    if (target == gl___osRunningThread) {
         gl_func_00000000();
     }
     gl_func_00000000(prelim);

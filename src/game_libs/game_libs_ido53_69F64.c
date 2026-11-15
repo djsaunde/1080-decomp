@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl_osRecvMesg = libultra osRecvMesg (os/recvmesg.c verbatim), statically
  * linked into the game_libs USO right after osSendMesg (gl_osSendMesg) and
@@ -22,7 +23,7 @@ int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
             gl_func_00000000(saveMask);
             return -1;
         }
-        ((OSThread *)D_00000000)->state = 8; /* OS_STATE_WAITING */
+        ((OSThread *)gl___osRunningThread)->state = 8; /* OS_STATE_WAITING */
         gl_func_00000000((int *)&mq->mtqueue);
     }
     if (msg != 0) {

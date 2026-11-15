@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* DRIFT AUDIT 2026-06-10: this unit has ~2 internal byte-drop points in
  * [0x70314..0x70C44) -- guMtxL2F sits -8 and __osViInit
@@ -72,7 +73,7 @@ GLOBAL_ASM("src/libultra/game_libs/bcopy.s")
 extern int gl_func_00000000();
 void gl___osResetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
-    D_00000000 &= ~(mask & ~0x401);
+    gl___OSGlobalIntMask &= ~(mask & ~0x401);
     gl_func_00000000(sr);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070634_pad.s")

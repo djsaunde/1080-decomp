@@ -548,11 +548,11 @@ void hostio_sendNodeTree(char *o) {
  * `volatile` on a single flag symbol does NOT split the base (13 diffs). */
 extern int gSysLib_349E0_a, D_349E0_b;
 void hostio_start(void) {
-    gSysLib_349E0_a = D_00000000 | 4;
+    gSysLib_349E0_a = gSysLib | 4;
     gl_func_00000000(&D_349E0_b, (char *)&D_00000000 + 0x1E460, 900, 900);
     gl_func_00000000(D_349E0_b);
     gl_func_00000000(&D_349E0_b);
-    D_00000000 = gSysLib_349E0_a & ~4;
+    gSysLib = gSysLib_349E0_a & ~4;
 }
 
 extern int gl_func_00000000();
@@ -26123,7 +26123,7 @@ void MemTracker_ctor(int *a0, int a1) {
  * the target keeps div.s by 1024 -- `/ (f32)1024` (int literal cast) is not
  * folded (same cfe rule as the `(f32)1 * s` multiply). */
 void MemTracker_printTree(int *a0) {
-    extern int D_00000000;
+    extern int gHostio;
     char buf[64];
     float ratio;
     int *s0;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x116C8..0x117FB (single function,
  * 77 insns, 0x134 bytes), split from the tail of bootup_uso_tail3a.c
@@ -43,23 +44,23 @@ void GameFlow_restart_000116C8(void) {
     int pad;
     int local;
 
-    func_00000000(&D_00000000);
-    func_00000000(&D_00000000);
+    func_00000000(&gInputMgr);
+    func_00000000(&gInputMgr);
     D_00000000 = 0;
     func_00000000(1);
     func_00000000(&D_0000C624);
-    func_00000000(&D_00000000);
+    func_00000000(&gSnowBoard);
     func_00000000();
     func_00000000(&D_0000C65C);
-    func_00000000(&D_00000000, D_bu_116C8_34, D_bu_116C8_40);
+    func_00000000(&gInputMgr, D_bu_116C8_34, D_bu_116C8_40);
     (*(FN116C8)*(int *)(p + 0x14))(
-        *(short *)((p = *(char **)((char *)&D_00000000 + 0x28)) + 0x10) + (int)&D_00000000);
+        *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x10) + (int)&gSnowBoard);
     p = (char *)&local;
     if (p != 0 || (p = (char *)func_00000000(0xC)) != 0) {
         *(int *)p = 8;
     }
     (*(FN116C8)*(int *)(p + 0x34))(
-        *(short *)((p = *(char **)((char *)&D_00000000 + 0x28)) + 0x30) + (int)&D_00000000,
+        *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x30) + (int)&gSnowBoard,
         &local);
     func_00000000(&D_0000C694);
 }

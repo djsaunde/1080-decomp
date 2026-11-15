@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* -O1 donor for gl_osContInit — 92-insn one-shot shutdown/timer-wait driver
  * (frame 0x70, no s-regs). PROVEN EXACT 92/92 at IDO 7.1 -O1 (2026-07-08
  * standalone probe; plain -O1, no -g3). Shape: guard on a state flag, flag=1,
@@ -31,10 +32,10 @@ int gl_osContInit(int a0, int a1, int a2) {
     int q[6];
 
     ret = 0;
-    if (D_00000000 != 0) {
+    if (gl___osContinitialized != 0) {
         return 0;
     }
-    D_00000000 = 1;
+    gl___osContinitialized = 1;
     time = gl_func_00000000_ll();
     if (time < (unsigned long long)0x165A0BC) {
         gl_func_00000000(q, &msg, 1);
@@ -43,9 +44,9 @@ int gl_osContInit(int a0, int a1, int a2) {
     }
     D_00000000_b = 4;
     gl_func_00000000(0);
-    ret = gl_func_00000000(1, &D_00000000);
+    ret = gl_func_00000000(1, &gl___osContPifRam);
     gl_func_00000000(a0, &msg, 1);
-    ret = gl_func_00000000(0, &D_00000000);
+    ret = gl_func_00000000(0, &gl___osContPifRam);
     gl_func_00000000(a0, &msg, 1);
     gl_func_00000000(a1, a2);
     D_00000000_b = 0;
