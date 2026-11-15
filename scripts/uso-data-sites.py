@@ -16,6 +16,9 @@ relocs: a HI16 remembers its half, each following LO16 folds hi<<16 + sext(lo).
 
 Subcommands:
   sites [FUNC ...]   per-function site list (all functions if none given)
+  calls [--to] FUNC..
+                     resolved jal targets from the TextReloc R_MIPS_26 entries (what FUNC calls,
+                     or with --to who calls FUNC inside bootup.uso); names the placeholder calls
   census [-n N] [--direct]
                      objects ranked by LO16 site count (+ functions, distinct offsets, size
                      inferred from the next named object, DataReloc words inside it: N/MT =
@@ -341,6 +344,24 @@ def cmd_sites(c, a):
             ph = s.placeholder or '-'
             print(f'  T+0x{s.off:05X} K=0x{s.k:X} {ph:22s} {c.obj_label(s.obj)}'
                   f'{"" if not s.objoff else f" +0x{s.objoff:X}"}')
+
+
+def cmd_calls(c, a):
+    """Resolved jal targets (TextReloc type 1 = R_MIPS_26: the reloc names the callee's Sym, so the
+    `jal 0` / gl_func_00000000 placeholder calls get their real callee). `calls F..` lists what F
+    calls, in address order; `calls --to F..` lists who calls F inside bootup.uso. Callers in other
+    USOs go through import hashes and are not found here."""
+    want = set(a.funcs)
+    tr = c.secs['TextReloc']
+    for i in range(len(tr) // 12):
+        info, off, _orig = struct.unpack_from('>III', tr, i * 12)
+        if info & 7 != 1:
+            continue
+        sym = c.syms[info >> 4]
+        caller = c.func_at(off)
+        callee = sym.name or sym.label()
+        if (callee if a.to else caller) in want:
+            print(f'{caller:40s} T+0x{off:05X} -> {callee}')
 
 
 def census_rows(c):
@@ -788,6 +809,8 @@ def main():
                     help='never run make; only warn when build/tenshoe.map is older than the sources')
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('sites'); p.add_argument('funcs', nargs='*')
+    p = sub.add_parser('calls'); p.add_argument('funcs', nargs='+')
+    p.add_argument('--to', action='store_true', help='list the callers of FUNCS instead of their callees')
     p = sub.add_parser('census'); p.add_argument('-n', type=int, default=50)
     p.add_argument('--direct', action='store_true')
     p = sub.add_parser('object'); p.add_argument('obj')
@@ -799,8 +822,8 @@ def main():
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
-    c = Census('.', a.no_build)
-    sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
+    c = Census('.')
+    sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert}[a.cmd](c, a) or 0)
 
 
