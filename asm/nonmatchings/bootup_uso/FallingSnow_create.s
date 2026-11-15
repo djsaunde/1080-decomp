@@ -2,20 +2,20 @@ nonmatching FallingSnow_create, 0x138
 
 glabel FallingSnow_create
     /* DD7F54 000074E8 3C0E0000 */  lui        $t6, %hi(func_00000008 + 0x2C)
-  alabel D_000074EC
+  alabel sStr_Player2_74EC
     /* DD7F58 000074EC 8DCE0034 */  lw         $t6, %lo(func_00000008 + 0x2C)($t6)
     /* DD7F5C 000074F0 27BDFFD8 */  addiu      $sp, $sp, -0x28
-  alabel D_000074F4
+  alabel sStr_Mountain_74F4
     /* DD7F60 000074F4 24010008 */  addiu      $at, $zero, 0x8
     /* DD7F64 000074F8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD7F68 000074FC 11C10044 */  beq        $t6, $at, .L00007610
-  alabel D_00007500
+  alabel sStr_Pos_Y_7500
     /* DD7F6C 00007500 AFA40028 */   sw        $a0, 0x28($sp)
-    /* DD7F70 00007504 3C040000 */  lui        $a0, %hi(D_00007FB0)
-  alabel D_00007508
-    /* DD7F74 00007508 24847FB0 */  addiu      $a0, $a0, %lo(D_00007FB0)
+    /* DD7F70 00007504 3C040000 */  lui        $a0, %hi(sStr_FallingSnow_7FB0)
+  alabel sStr_Scale_Y_7508
+    /* DD7F74 00007508 24847FB0 */  addiu      $a0, $a0, %lo(sStr_FallingSnow_7FB0)
     /* DD7F78 0000750C 0C000000 */  jal        func_00000000
-  alabel D_00007510
+  alabel sStr_Scale_XZ_7510
     /* DD7F7C 00007510 00002825 */   or        $a1, $zero, $zero
     /* DD7F80 00007514 0C000000 */  jal        func_00000000
     /* DD7F84 00007518 24040134 */   addiu     $a0, $zero, 0x134
@@ -33,8 +33,8 @@ glabel FallingSnow_create
   alabel D_00007540
     /* DD7FAC 00007540 00402025 */   or        $a0, $v0, $zero
   .L00007544:
-    /* DD7FB0 00007544 3C050000 */  lui        $a1, %hi(D_00007FBC)
-    /* DD7FB4 00007548 24A57FBC */  addiu      $a1, $a1, %lo(D_00007FBC)
+    /* DD7FB0 00007544 3C050000 */  lui        $a1, %hi(sStr_Node_7FBC)
+    /* DD7FB4 00007548 24A57FBC */  addiu      $a1, $a1, %lo(sStr_Node_7FBC)
     /* DD7FB8 0000754C AFA4001C */  sw         $a0, 0x1C($sp)
     /* DD7FBC 00007550 0C000000 */  jal        func_00000000
     /* DD7FC0 00007554 AFA60020 */   sw        $a2, 0x20($sp)

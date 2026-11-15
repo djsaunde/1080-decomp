@@ -14,12 +14,12 @@ extern int func_00000000(...);
 extern void *D_55A0_root; /* zero-page USO-GOT global (gRoot); reloaded per use (no CSE) */
 /* tail-block init globals (decode-progress 2026-06-26): the four transform-group
  * registrations + final 0x58 block pass a distinct per-group global as arg2
- * (D_00007E58..68), the first 0x48 node uses &D_00007E48 and Tv1Tmpl_update's
- * word value, the 2nd 0x48 uses D_00007E54, and obj+0x28 stores &D_00007600. */
-extern int D_00007E48, D_00007E54, D_00007E58, D_00007E5C, D_00007E60, D_00007E64, D_00007E68;
+ * (sTag_gol_7E58..68), the first 0x48 node uses &sStr_light01_7E48 and Tv1Tmpl_update's
+ * word value, the 2nd 0x48 uses sTag_lig_7E54, and obj+0x28 stores &D_00007600. */
+extern int sStr_light01_7E48, sTag_lig_7E54, sTag_gol_7E58, sTag_st0_7E5C, sTag_en1_7E60, sTag_en2_7E64, sTag_cam_7E68;
 extern char D_00007600;
 extern void Tv1Tmpl_update(int *a0);
-extern int D_00007E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
+extern int sTag_pyr_7E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
 extern int D_00007E34; /* actor-0 sub-init preload value (decode 2026-06-26) */
 extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)
@@ -44,7 +44,7 @@ extern f32 D_55A0_ro598, D_55A0_ro59C, D_55A0_ro5A0, D_55A0_ro5A4, D_55A0_ro5A8,
  * list-iterator spill shape, t-register numbering. */
 typedef struct { int w; } S4_55A0;
 typedef struct { float x, y, z, w; } V4_55A0;
-extern S4_55A0 D_55A0_v0, D_55A0_v1, D_55A0_v2, D_55A0_v3;
+extern S4_55A0 sTag_tr1_7E34, sTag_tr2_7E38, sTag_tr3_7E3C, sTag_tv1_7E44;
 extern char SNodeItemType_vtbl_55A0_s28_0, SNodeItemType_vtbl_55A0_s28_1, SNodeItemType_vtbl_55A0_s28_2, SNodeItemType_vtbl_55A0_s28_3;
 extern char D_55A0_o28_0, D_55A0_o28_1, D_55A0_o28_2, D_55A0_o28_3;
 extern char D_55A0_o48_0, D_55A0_o48_1, D_55A0_o48_2;
@@ -57,7 +57,7 @@ typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
 extern G2_55A0 gPolyGeomMode_3EEC8_55A0_G;
 extern int gPolyFlags_3EEC4_55A0_w0, gPolyFlags_3EEC4_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
-extern char D_55A0_lb0, D_55A0_fmt, gInputMgr_55A0_cfg;
+extern char D_55A0_lb0, sFmt_register_7E24, gInputMgr_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 }
 static inline f32 fi(int v) { return v; }
@@ -105,11 +105,11 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     if (arg1 == 1) {
         gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
         gPolyGeomMode_3EEC8_55A0_G.a = 0;
-        D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
+        D_55A0_list = func_00000000(0, &sTag_pyr_7E20, &D_55A0_lb0, 0);
         it = (R12_55A0 *)&D_55A0_it0;
         if (D_55A0_listchk != 0) {
             do {
-                func_00000000(&D_55A0_fmt, it->w, it);
+                func_00000000(&sFmt_register_7E24, it->w, it);
                 func_00000000(D_55A0_list2, it);
                 it++;
             } while (it->w != 0);
@@ -146,7 +146,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         /* actor 0 (0x74) */
         /* agent-g run 241: whole-struct copies (one load, two stores through a ugen temp, not a coloured
          * register; v0 stored first); the other actors copy p1 from their v: 98.07 -> 98.98 */
-        p1.w = (v0 = D_55A0_v0).w;
+        p1.w = (v0 = sTag_tr1_7E34).w;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
             p2.w = p1.w;
@@ -168,7 +168,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* actor 1 (0x74) */
-        v1 = D_55A0_v1;
+        v1 = sTag_tr2_7E38;
         p1 = v1;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
@@ -195,7 +195,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         /* agent-g run 241: a dead nested call-result temp grows edg's pool here, so the dead-stored call-result
          * vreg is homed above vec2 (vec2 sp+0x28 = target) instead of below it */
         if (0) { func_00000000(func_00000000(0)); }
-        v2 = D_55A0_v2;
+        v2 = sTag_tr3_7E3C;
         p1 = v2;
         obj = (char *)func_00000000(0x74);
         if (obj != 0) {
@@ -222,7 +222,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
         gPolyGeomMode_3EEC8_55A0_G.a = 0;
         nl0 = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
-        v3 = D_55A0_v3;
+        v3 = sTag_tv1_7E44;
         p1 = v3;
         obj = (char *)func_00000000(0x6C);
         if (obj != 0) {
@@ -258,7 +258,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     func_00000000(DROOT, DP(0));
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
-    nl = (char *)func_00000000(0, &D_00007E48, &D_55A0_tb, 0);
+    nl = (char *)func_00000000(0, &sStr_light01_7E48, &D_55A0_tb, 0);
     *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&Tv1Tmpl_update);
     p1.w = t4.w;
     obj = (char *)func_00000000(0x48);
@@ -269,7 +269,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
-    t5 = *(S4_55A0 *)&D_00007E54;
+    t5 = *(S4_55A0 *)&sTag_lig_7E54;
     p1 = t5;
     obj = (char *)func_00000000(0x48);
     if (obj != 0) {
@@ -283,12 +283,12 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
-    func_00000000(DROOT, func_00000000(0, (t6.w = *(int *)&D_00007E58, t6), D_55A0_g6, &M(0x144)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t7.w = *(int *)&D_00007E5C, t7), D_55A0_g7, &M(0x114)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t8.w = *(int *)&D_00007E60, t8), D_55A0_g8, &M(0xD4)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t9.w = *(int *)&D_00007E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t6.w = *(int *)&sTag_gol_7E58, t6), D_55A0_g6, &M(0x144)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t7.w = *(int *)&sTag_st0_7E5C, t7), D_55A0_g7, &M(0x114)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t8.w = *(int *)&sTag_en1_7E60, t8), D_55A0_g8, &M(0xD4)), 0xFFFF);
+    func_00000000(DROOT, func_00000000(0, (t9.w = *(int *)&sTag_en2_7E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
 
-    t10 = *(S4_55A0 *)&D_00007E68;
+    t10 = *(S4_55A0 *)&sTag_cam_7E68;
     p1 = t10;
     obj = (char *)func_00000000(0x58);
     if (obj != 0) {

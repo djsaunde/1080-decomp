@@ -2,7 +2,7 @@
   "function": "game_createPlayers",
   "raw_sha256": "683f819402585f0433bdfa71a5d31e9ca6529055705e80ecfaa35f0fa79456dd",
   "renames": {
-    "D_000074DC": "snw_port_func_00003638_D_000074DC",
+    "sStr_Players_74DC": "snw_port_func_00003638_D_000074DC",
     "func_00000000_3638_v": "snw_port_func_00003638_func_00000000_3638_v",
     "func_3638_node": "snw_port_func_00003638_func_3638_node",
     "func_3638_attach": "snw_port_func_00003638_func_3638_attach",

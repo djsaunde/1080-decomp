@@ -16,7 +16,7 @@ extern "C" {
 void func_00000000(...);
 extern char D_00000000;
 extern char gSysLib_e800_g1, gSysLib_e800_g2, gSysLib_e800_g3, gSnowBoard_e800_g4, SnowBoard_vtbl_e800_v;
-extern char D_00008D34, D_00008D48, D_00008D5C;
+extern char sStr_rom_audio_seq_uso_8D34, sStr_rom_audio_wave_uso_8D48, sStr_rom_audio_bank_uso_8D5C;
 extern char func_00000008[];
 }
 struct VO { char pad[0x28];
@@ -28,9 +28,9 @@ extern "C" void SnowBoard_ctor(void) {
     int z, x, y;
     func_00000000();
     z = 0; x = 0; y = 0;
-    func_00000000(&gSysLib_e800_g1, &D_00008D34, &x);
-    func_00000000(&gSysLib_e800_g2, &D_00008D48, &y);
-    func_00000000(&gSysLib_e800_g3, &D_00008D5C, &z);
+    func_00000000(&gSysLib_e800_g1, &sStr_rom_audio_seq_uso_8D34, &x);
+    func_00000000(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
+    func_00000000(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
     func_00000000(x, z, y);
     func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v;
     root = (VO *)&D_00000000;

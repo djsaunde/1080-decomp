@@ -21,8 +21,8 @@ glabel MapProp_ctor
     /* DD6D00 00006294 10400027 */  beqz       $v0, .L00006334
     /* DD6D04 00006298 00403025 */   or        $a2, $v0, $zero
   .L0000629C:
-    /* DD6D08 0000629C 3C050000 */  lui        $a1, %hi(D_00007E74)
-    /* DD6D0C 000062A0 24A57E74 */  addiu      $a1, $a1, %lo(D_00007E74)
+    /* DD6D08 0000629C 3C050000 */  lui        $a1, %hi(sStr_MNode_7E74)
+    /* DD6D0C 000062A0 24A57E74 */  addiu      $a1, $a1, %lo(sStr_MNode_7E74)
     /* DD6D10 000062A4 00C02025 */  or         $a0, $a2, $zero
     /* DD6D14 000062A8 0C000000 */  jal        func_00000000
     /* DD6D18 000062AC AFA6004C */   sw        $a2, 0x4C($sp)
@@ -64,9 +64,9 @@ glabel MapProp_ctor
     /* DD6D9C 00006330 E7A0003C */   swc1      $f0, 0x3C($sp)
   .L00006334:
     /* DD6DA0 00006334 3C0F0000 */  lui        $t7, (0x0 >> 16)
-    /* DD6DA4 00006338 3C180000 */  lui        $t8, %hi(D_00007E7C)
+    /* DD6DA4 00006338 3C180000 */  lui        $t8, %hi(sStr_Course_7E7C)
     /* DD6DA8 0000633C 25EF0000 */  addiu      $t7, $t7, 0x0
-    /* DD6DAC 00006340 27187E7C */  addiu      $t8, $t8, %lo(D_00007E7C)
+    /* DD6DAC 00006340 27187E7C */  addiu      $t8, $t8, %lo(sStr_Course_7E7C)
     /* DD6DB0 00006344 AE0F0028 */  sw         $t7, 0x28($s0)
     /* DD6DB4 00006348 AE18000C */  sw         $t8, 0xC($s0)
     /* DD6DB8 0000634C 8FB90054 */  lw         $t9, 0x54($sp)
@@ -75,11 +75,11 @@ glabel MapProp_ctor
     /* DD6DC4 00006358 0C000000 */  jal        func_00000000
     /* DD6DC8 0000635C 8FA50054 */   lw        $a1, 0x54($sp)
     /* DD6DCC 00006360 8E0800B4 */  lw         $t0, 0xB4($s0)
-    /* DD6DD0 00006364 3C040000 */  lui        $a0, %hi(D_00007E84)
-    /* DD6DD4 00006368 3C050000 */  lui        $a1, %hi(D_00007E98)
+    /* DD6DD0 00006364 3C040000 */  lui        $a0, %hi(sStr_shp_pGrid_NULL_7E84)
+    /* DD6DD4 00006368 3C050000 */  lui        $a1, %hi(sStr_mapprop_cpp_7E98)
     /* DD6DD8 0000636C 8D0900A0 */  lw         $t1, 0xA0($t0)
-    /* DD6DDC 00006370 24A57E98 */  addiu      $a1, $a1, %lo(D_00007E98)
-    /* DD6DE0 00006374 24847E84 */  addiu      $a0, $a0, %lo(D_00007E84)
+    /* DD6DDC 00006370 24A57E98 */  addiu      $a1, $a1, %lo(sStr_mapprop_cpp_7E98)
+    /* DD6DE0 00006374 24847E84 */  addiu      $a0, $a0, %lo(sStr_shp_pGrid_NULL_7E84)
     /* DD6DE4 00006378 55200004 */  bnel       $t1, $zero, .L0000638C
     /* DD6DE8 0000637C 8FAA005C */   lw        $t2, 0x5C($sp)
     /* DD6DEC 00006380 0C000000 */  jal        func_00000000

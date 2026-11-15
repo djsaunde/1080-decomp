@@ -39,13 +39,13 @@ glabel SnowTmpl_create
     /* DD8F90 00008524 10400005 */  beqz       $v0, .L0000853C
     /* DD8F94 00008528 00401825 */   or        $v1, $v0, $zero
   .L0000852C:
-    /* DD8F98 0000852C 3C180000 */  lui        $t8, %hi(D_00007FE4)
-    /* DD8F9C 00008530 27187FE4 */  addiu      $t8, $t8, %lo(D_00007FE4)
+    /* DD8F98 0000852C 3C180000 */  lui        $t8, %hi(sStr_Parms_7FE4)
+    /* DD8F9C 00008530 27187FE4 */  addiu      $t8, $t8, %lo(sStr_Parms_7FE4)
     /* DD8FA0 00008534 AC780000 */  sw         $t8, 0x0($v1)
     /* DD8FA4 00008538 AC600004 */  sw         $zero, 0x4($v1)
   .L0000853C:
-    /* DD8FA8 0000853C 3C190000 */  lui        $t9, %hi(D_00007FEC)
-    /* DD8FAC 00008540 8F397FEC */  lw         $t9, %lo(D_00007FEC)($t9)
+    /* DD8FA8 0000853C 3C190000 */  lui        $t9, %hi(sTag_rng_7FEC)
+    /* DD8FAC 00008540 8F397FEC */  lw         $t9, %lo(sTag_rng_7FEC)($t9)
     /* DD8FB0 00008544 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DD8FB4 00008548 24A40008 */  addiu      $a0, $a1, 0x8
     /* DD8FB8 0000854C AFB90040 */  sw         $t9, 0x40($sp)
@@ -74,8 +74,8 @@ glabel SnowTmpl_create
     /* DD9010 000085A4 AC800014 */  sw         $zero, 0x14($a0)
     /* DD9014 000085A8 E4840010 */  swc1       $f4, 0x10($a0)
   .L000085AC:
-    /* DD9018 000085AC 3C0B0000 */  lui        $t3, %hi(D_00007FF0)
-    /* DD901C 000085B0 8D6B7FF0 */  lw         $t3, %lo(D_00007FF0)($t3)
+    /* DD9018 000085AC 3C0B0000 */  lui        $t3, %hi(sTag_sta_7FF0)
+    /* DD901C 000085B0 8D6B7FF0 */  lw         $t3, %lo(sTag_sta_7FF0)($t3)
     /* DD9020 000085B4 2401FFE0 */  addiu      $at, $zero, -0x20
     /* DD9024 000085B8 24A40020 */  addiu      $a0, $a1, 0x20
     /* DD9028 000085BC AFAB003C */  sw         $t3, 0x3C($sp)

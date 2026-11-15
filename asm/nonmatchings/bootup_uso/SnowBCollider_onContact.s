@@ -91,39 +91,39 @@ glabel SnowBCollider_onContact
     /* DD9794 00008D28 8E040170 */  lw         $a0, 0x170($s0)
     /* DD9798 00008D2C C7AA00A0 */  lwc1       $f10, 0xA0($sp)
     /* DD979C 00008D30 C48800B4 */  lwc1       $f8, 0xB4($a0)
-  alabel D_00008D34
+  alabel sStr_rom_audio_seq_uso_8D34
     /* DD97A0 00008D34 248400B4 */  addiu      $a0, $a0, 0xB4
     /* DD97A4 00008D38 C4840004 */  lwc1       $f4, 0x4($a0)
     /* DD97A8 00008D3C 460A4480 */  add.s      $f18, $f8, $f10
     /* DD97AC 00008D40 C48A0008 */  lwc1       $f10, 0x8($a0)
     /* DD97B0 00008D44 E4920000 */  swc1       $f18, 0x0($a0)
-  alabel D_00008D48
+  alabel sStr_rom_audio_wave_uso_8D48
     /* DD97B4 00008D48 C7A600A4 */  lwc1       $f6, 0xA4($sp)
     /* DD97B8 00008D4C 46062200 */  add.s      $f8, $f4, $f6
     /* DD97BC 00008D50 E4880004 */  swc1       $f8, 0x4($a0)
     /* DD97C0 00008D54 C7B200A8 */  lwc1       $f18, 0xA8($sp)
     /* DD97C4 00008D58 46125100 */  add.s      $f4, $f10, $f18
-  alabel D_00008D5C
+  alabel sStr_rom_audio_bank_uso_8D5C
     /* DD97C8 00008D5C E4840008 */  swc1       $f4, 0x8($a0)
     /* DD97CC 00008D60 8E020170 */  lw         $v0, 0x170($s0)
     /* DD97D0 00008D64 C6280000 */  lwc1       $f8, 0x0($s1)
     /* DD97D4 00008D68 C446093C */  lwc1       $f6, 0x93C($v0)
     /* DD97D8 00008D6C C4520940 */  lwc1       $f18, 0x940($v0)
-  alabel D_00008D70
+  alabel sStr_SnowBoard_8D70
     /* DD97DC 00008D70 2442093C */  addiu      $v0, $v0, 0x93C
     /* DD97E0 00008D74 46083280 */  add.s      $f10, $f6, $f8
     /* DD97E4 00008D78 C4480008 */  lwc1       $f8, 0x8($v0)
-  alabel D_00008D7C
+  alabel sStr_rom_version_bin_8D7C
     /* DD97E8 00008D7C E44A0000 */  swc1       $f10, 0x0($v0)
     /* DD97EC 00008D80 C6240004 */  lwc1       $f4, 0x4($s1)
     /* DD97F0 00008D84 46049180 */  add.s      $f6, $f18, $f4
     /* DD97F4 00008D88 E4460004 */  swc1       $f6, 0x4($v0)
-  alabel D_00008D8C
+  alabel sStr_rom_anims_bin_8D8C
     /* DD97F8 00008D8C C62A0008 */  lwc1       $f10, 0x8($s1)
     /* DD97FC 00008D90 460A4480 */  add.s      $f18, $f8, $f10
     /* DD9800 00008D94 E4520008 */  swc1       $f18, 0x8($v0)
     /* DD9804 00008D98 8E030170 */  lw         $v1, 0x170($s0)
-  alabel D_00008D9C
+  alabel sStr_Node_8D9C
     /* DD9808 00008D9C C4640968 */  lwc1       $f4, 0x968($v1)
     /* DD980C 00008DA0 24630968 */  addiu      $v1, $v1, 0x968
     /* DD9810 00008DA4 46142180 */  add.s      $f6, $f4, $f20

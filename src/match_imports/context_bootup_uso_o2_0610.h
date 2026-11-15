@@ -344,5 +344,5 @@ extern void bootup_0610_reset(GlState2E0C4 *, s32);
 extern void bootup_0610_finish(void);
 extern struct { u8 opaque[0x58]; f64 value; } bootup_0610_scale;
 extern struct { u8 opaque[0x60]; f64 value; } bootup_0610_bias;
-extern char D_00006584;
+extern char sStr_NA_UpdPl_6584;
 void snd_updatePlayer(GlState2E0C4 **arg0, Vec3 *arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, char *arg7, s32 arg8);

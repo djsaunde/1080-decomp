@@ -20,12 +20,12 @@ glabel TreeTmpl_display
     /* DD9168 000086FC 51E00007 */  beql       $t7, $zero, .L0000871C
     /* DD916C 00008700 8E100084 */   lw        $s0, 0x84($s0)
     /* DD9170 00008704 8E020028 */  lw         $v0, 0x28($s0)
-  alabel D_00008708
+  alabel sStr_QNode_8708
     /* DD9174 00008708 8C59001C */  lw         $t9, 0x1C($v0)
     /* DD9178 0000870C 84580018 */  lh         $t8, 0x18($v0)
-  alabel D_00008710
+  alabel sStr_shp_8710
     /* DD917C 00008710 0320F809 */  jalr       $t9
-  alabel D_00008714
+  alabel sStr_Too_many_objects_for_List_8714
     /* DD9180 00008714 03102021 */   addu      $a0, $t8, $s0
     /* DD9184 00008718 8E100084 */  lw         $s0, 0x84($s0)
   .L0000871C:
@@ -35,12 +35,12 @@ glabel TreeTmpl_display
     /* DD9190 00008724 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
     /* DD9194 00008728 0C000000 */  jal        func_00000000
     /* DD9198 0000872C 24840294 */   addiu     $a0, $a0, %lo(func_0000027C + 0x18)
-  alabel D_00008730
+  alabel sStr_SnowB_8730
     /* DD919C 00008730 8FBF001C */  lw         $ra, 0x1C($sp)
     /* DD91A0 00008734 8FB00018 */  lw         $s0, 0x18($sp)
-  alabel D_00008738
+  alabel sStr_Node_8738
     /* DD91A4 00008738 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD91A8 0000873C 03E00008 */  jr         $ra
-  alabel D_00008740
+  alabel sStr_Parms_8740
     /* DD91AC 00008740 00000000 */   nop
 endlabel TreeTmpl_display

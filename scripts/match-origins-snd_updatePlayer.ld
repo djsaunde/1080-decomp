@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_00006584 = 0x0;
+sStr_NA_UpdPl_6584 = 0x0;
 bootup_0610_apply = 0x0;
 bootup_0610_bias = 0xffffffbc;
 bootup_0610_decode = 0x0;

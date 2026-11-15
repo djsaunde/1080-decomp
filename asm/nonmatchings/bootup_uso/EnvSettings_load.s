@@ -26,7 +26,7 @@ glabel EnvSettings_load
     /* DD7DDC 00007370 8E6F002C */  lw         $t7, 0x2C($s3)
   alabel D_00007374
     /* DD7DE0 00007374 00001025 */  or         $v0, $zero, $zero
-    /* DD7DE4 00007378 3C040000 */  lui        $a0, %hi(D_00007FA0)
+    /* DD7DE4 00007378 3C040000 */  lui        $a0, %hi(sFmt_Env_Skip_7FA0)
     /* DD7DE8 0000737C AFAF0048 */  sw         $t7, 0x48($sp)
   alabel D_00007380
     /* DD7DEC 00007380 11E00005 */  beqz       $t7, .L00007398
@@ -41,7 +41,7 @@ glabel EnvSettings_load
   .L00007398:
     /* DD7E04 00007398 10400016 */  beqz       $v0, .L000073F4
   alabel D_0000739C
-    /* DD7E08 0000739C 24847FA0 */   addiu     $a0, $a0, %lo(D_00007FA0)
+    /* DD7E08 0000739C 24847FA0 */   addiu     $a0, $a0, %lo(sFmt_Env_Skip_7FA0)
     /* DD7E0C 000073A0 8FA90044 */  lw         $t1, 0x44($sp)
   .L000073A4:
     /* DD7E10 000073A4 8E0B0000 */  lw         $t3, 0x0($s0)
@@ -64,45 +64,45 @@ glabel EnvSettings_load
     /* DD7E48 000073DC 8DF80004 */  lw         $t8, 0x4($t7)
     /* DD7E4C 000073E0 AFB80048 */  sw         $t8, 0x48($sp)
     /* DD7E50 000073E4 10000001 */  b          .L000073EC
-  alabel D_000073E8
+  alabel sStr_ddm_73E8
     /* DD7E54 000073E8 8DE20000 */   lw        $v0, 0x0($t7)
   .L000073EC:
     /* DD7E58 000073EC 5440FFED */  bnel       $v0, $zero, .L000073A4
     /* DD7E5C 000073F0 8FA90044 */   lw        $t1, 0x44($sp)
   .L000073F4:
     /* DD7E60 000073F4 1240000C */  beqz       $s2, .L00007428
-  alabel D_000073F8
+  alabel sStr_rom_tricks_bin_73F8
     /* DD7E64 000073F8 26450004 */   addiu     $a1, $s2, 0x4
-    /* DD7E68 000073FC 3C040000 */  lui        $a0, %hi(D_00007F90)
+    /* DD7E68 000073FC 3C040000 */  lui        $a0, %hi(sFmt_Env_Load_7F90)
     /* DD7E6C 00007400 0C000000 */  jal        func_00000000
-    /* DD7E70 00007404 24847F90 */   addiu     $a0, $a0, %lo(D_00007F90)
-  alabel D_00007408
+    /* DD7E70 00007404 24847F90 */   addiu     $a0, $a0, %lo(sFmt_Env_Load_7F90)
+  alabel sStr_unknown_GAME_MODE_7408
     /* DD7E74 00007408 8E430000 */  lw         $v1, 0x0($s2)
     /* DD7E78 0000740C 8C620028 */  lw         $v0, 0x28($v1)
     /* DD7E7C 00007410 8C59004C */  lw         $t9, 0x4C($v0)
     /* DD7E80 00007414 84480048 */  lh         $t0, 0x48($v0)
     /* DD7E84 00007418 0320F809 */  jalr       $t9
-  alabel D_0000741C
+  alabel sStr_Lights_741C
     /* DD7E88 0000741C 01032021 */   addu      $a0, $t0, $v1
     /* DD7E8C 00007420 1000FFCB */  b          .L00007350
-  alabel D_00007424
+  alabel sStr_Ambient_Light_7424
     /* DD7E90 00007424 AFA00054 */   sw        $zero, 0x54($sp)
   .L00007428:
     /* DD7E94 00007428 0C000000 */  jal        func_00000000
     /* DD7E98 0000742C 02002825 */   or        $a1, $s0, $zero
     /* DD7E9C 00007430 3C040000 */  lui        $a0, (0x0 >> 16)
-  alabel D_00007434
+  alabel sStr_Infinite_Light_7434
     /* DD7EA0 00007434 24840000 */  addiu      $a0, $a0, 0x0
     /* DD7EA4 00007438 24050001 */  addiu      $a1, $zero, 0x1
     /* DD7EA8 0000743C 0C000000 */  jal        func_00000000
     /* DD7EAC 00007440 8FA60050 */   lw        $a2, 0x50($sp)
-  alabel D_00007444
+  alabel sStr_Shadow_Light_7444
     /* DD7EB0 00007444 1000FFC2 */  b          .L00007350
     /* DD7EB4 00007448 AFA00054 */   sw        $zero, 0x54($sp)
   .L0000744C:
     /* DD7EB8 0000744C 0C00140B */  jal        stream_readS32_0000502C
     /* DD7EBC 00007450 26640038 */   addiu     $a0, $s3, 0x38
-  alabel D_00007454
+  alabel sStr_lighttarget_7454
     /* DD7EC0 00007454 8E620038 */  lw         $v0, 0x38($s3)
     /* DD7EC4 00007458 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
     /* DD7EC8 0000745C 30490001 */  andi       $t1, $v0, 0x1
@@ -144,13 +144,13 @@ glabel EnvSettings_load
     /* DD7F34 000074C8 AE6C0038 */  sw         $t4, 0x38($s3)
   .L000074CC:
     /* DD7F38 000074CC 8FBF0024 */  lw         $ra, 0x24($sp)
-  alabel D_000074D0
+  alabel sStr_3DWindow_74D0
     /* DD7F3C 000074D0 8FB00014 */  lw         $s0, 0x14($sp)
     /* DD7F40 000074D4 8FB10018 */  lw         $s1, 0x18($sp)
     /* DD7F44 000074D8 8FB2001C */  lw         $s2, 0x1C($sp)
-  alabel D_000074DC
+  alabel sStr_Players_74DC
     /* DD7F48 000074DC 8FB30020 */  lw         $s3, 0x20($sp)
     /* DD7F4C 000074E0 03E00008 */  jr         $ra
-  alabel D_000074E4
+  alabel sStr_Player1_74E4
     /* DD7F50 000074E4 27BD0058 */   addiu     $sp, $sp, 0x58
 endlabel EnvSettings_load

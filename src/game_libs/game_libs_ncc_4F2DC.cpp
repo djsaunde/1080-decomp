@@ -8,13 +8,13 @@
  * kvec loads after the in-place products. cfe body 90.36 -> 94.78 standalone, length = target (1064).
  * agent-c run 307: EXACT (named operator* result via set(), pads in operator+ and before p, no code-free test before
  * the getPos call). Spliced over a placeholder on both build paths. Blank-USO data refs carry in-place addends:
- * gGfxLib_4F2DC_b / D_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
+ * gGfxLib_4F2DC_b / gCourseColl_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
  * gfx_screenRaycast_rodata by the splice and pinned to the USO RoData at 0x1BA8. */
 typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
 extern int gGfxLib_4F2DC_b;
-extern int D_4F2DC_e;
+extern int gCourseColl_4F2DC_e;
 extern f32 D_00000000F[3];
 }
 template <int K> struct PadK { int a[K]; PadK() {} }; /* agent-c run 289: unreferenced frame pad (a class with a ctor keeps its home) */
@@ -83,7 +83,7 @@ extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     start *= KV;
     e *= KV;
     { PadK<4> pq; } /* agent-c run 307: unreferenced block-scope frame pad (frame 424 = target with the named operator* result) */
-    char *p = *(char **)&D_4F2DC_e; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
+    char *p = *(char **)&gCourseColl_4F2DC_e; /* agent-c run 287: run 209's folded cam use dropped (stale: instruction stream identical, 95.72) */
     if (p != 0) {
         count = gl_func_00000000(p, 8, dists, surfs, &start, &e, 0, hits);
     }

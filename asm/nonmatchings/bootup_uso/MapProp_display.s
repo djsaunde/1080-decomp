@@ -98,22 +98,22 @@ glabel MapProp_display
     /* DD6F98 0000652C E7A4001C */  swc1       $f4, 0x1C($sp)
     /* DD6F9C 00006530 C4440014 */  lwc1       $f4, 0x14($v0)
     /* DD6FA0 00006534 E7AA0018 */  swc1       $f10, 0x18($sp)
-  alabel D_00006538
+  alabel sStr_Poop_start_6538
     /* DD6FA4 00006538 46064202 */  mul.s      $f8, $f8, $f6
     /* DD6FA8 0000653C C7AA001C */  lwc1       $f10, 0x1C($sp)
     /* DD6FAC 00006540 460A2102 */  mul.s      $f4, $f4, $f10
-  alabel D_00006544
+  alabel sStr_Poop_end_6544
     /* DD6FB0 00006544 46044200 */  add.s      $f8, $f8, $f4
     /* DD6FB4 00006548 C4440024 */  lwc1       $f4, 0x24($v0)
     /* DD6FB8 0000654C E7A6001C */  swc1       $f6, 0x1C($sp)
-  alabel D_00006550
+  alabel sStr_Poop_Added_sound_heap_6550
     /* DD6FBC 00006550 C7A60018 */  lwc1       $f6, 0x18($sp)
     /* DD6FC0 00006554 46062102 */  mul.s      $f4, $f4, $f6
     /* DD6FC4 00006558 46044400 */  add.s      $f16, $f8, $f4
     /* DD6FC8 0000655C C7A4001C */  lwc1       $f4, 0x1C($sp)
     /* DD6FCC 00006560 C4480008 */  lwc1       $f8, 0x8($v0)
     /* DD6FD0 00006564 46044202 */  mul.s      $f8, $f8, $f4
-  alabel D_00006568
+  alabel sStr_Poop_Removed_sound_heap_6568
     /* DD6FD4 00006568 C4440018 */  lwc1       $f4, 0x18($v0)
     /* DD6FD8 0000656C 460A2102 */  mul.s      $f4, $f4, $f10
     /* DD6FDC 00006570 46044280 */  add.s      $f10, $f8, $f4
@@ -121,7 +121,7 @@ glabel MapProp_display
     /* DD6FE4 00006578 E7B0007C */  swc1       $f16, 0x7C($sp)
     /* DD6FE8 0000657C E7AE0078 */  swc1       $f14, 0x78($sp)
     /* DD6FEC 00006580 46064102 */  mul.s      $f4, $f8, $f6
-  alabel D_00006584
+  alabel sStr_NA_UpdPl_6584
     /* DD6FF0 00006584 C4C60130 */  lwc1       $f6, 0x130($a2)
     /* DD6FF4 00006588 46045000 */  add.s      $f0, $f10, $f4
     /* DD6FF8 0000658C E7A00080 */  swc1       $f0, 0x80($sp)
@@ -199,13 +199,13 @@ glabel MapProp_display
   .L000066A0:
     /* DD710C 000066A0 4600020D */  trunc.w.s  $f8, $f0
     /* DD7110 000066A4 8CE200C0 */  lw         $v0, 0xC0($a3)
-  alabel D_000066A8
+  alabel sStr_Node_66A8
     /* DD7114 000066A8 440C4000 */  mfc1       $t4, $f8
     /* DD7118 000066AC 00621823 */  subu       $v1, $v1, $v0
-  alabel D_000066B0
+  alabel sStr_Node_66B0
     /* DD711C 000066B0 04610002 */  bgez       $v1, .L000066BC
     /* DD7120 000066B4 01822021 */   addu      $a0, $t4, $v0
-  alabel D_000066B8
+  alabel sStr_U64BGWall_66B8
     /* DD7124 000066B8 00001825 */  or         $v1, $zero, $zero
   .L000066BC:
     /* DD7128 000066BC 28610080 */  slti       $at, $v1, 0x80

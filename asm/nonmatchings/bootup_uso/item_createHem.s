@@ -4,9 +4,9 @@ glabel item_createHem
     /* DD5B0C 000050A0 27BDFFB8 */  addiu      $sp, $sp, -0x48
     /* DD5B10 000050A4 AFA40048 */  sw         $a0, 0x48($sp)
     /* DD5B14 000050A8 AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5B18 000050AC 3C040000 */  lui        $a0, %hi(D_00007DA4)
+    /* DD5B18 000050AC 3C040000 */  lui        $a0, %hi(sStr_rom_heli_uso_7DA4)
     /* DD5B1C 000050B0 0C000000 */  jal        func_00000000
-    /* DD5B20 000050B4 24847DA4 */   addiu     $a0, $a0, %lo(D_00007DA4)
+    /* DD5B20 000050B4 24847DA4 */   addiu     $a0, $a0, %lo(sStr_rom_heli_uso_7DA4)
     /* DD5B24 000050B8 44800000 */  mtc1       $zero, $f0
     /* DD5B28 000050BC 8FAE0048 */  lw         $t6, 0x48($sp)
     /* DD5B2C 000050C0 24040058 */  addiu      $a0, $zero, 0x58

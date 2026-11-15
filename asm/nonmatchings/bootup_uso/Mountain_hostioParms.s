@@ -5,8 +5,8 @@ glabel Mountain_hostioParms
     /* DD51EC 00004780 AFA40020 */  sw         $a0, 0x20($sp)
     /* DD51F0 00004784 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DD51F4 00004788 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DD51F8 0000478C 3C050000 */  lui        $a1, %hi(D_000074F4)
-    /* DD51FC 00004790 24A574F4 */  addiu      $a1, $a1, %lo(D_000074F4)
+    /* DD51F8 0000478C 3C050000 */  lui        $a1, %hi(sStr_Mountain_74F4)
+    /* DD51FC 00004790 24A574F4 */  addiu      $a1, $a1, %lo(sStr_Mountain_74F4)
     /* DD5200 00004794 24840000 */  addiu      $a0, $a0, 0x0
     /* DD5204 00004798 0C000000 */  jal        func_00000000
     /* DD5208 0000479C 00003025 */   or        $a2, $zero, $zero
@@ -14,8 +14,8 @@ glabel Mountain_hostioParms
     /* DD5210 000047A4 44812000 */  mtc1       $at, $f4
     /* DD5214 000047A8 8FA60020 */  lw         $a2, 0x20($sp)
     /* DD5218 000047AC 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DD521C 000047B0 3C050000 */  lui        $a1, %hi(D_00007500)
-    /* DD5220 000047B4 24A57500 */  addiu      $a1, $a1, %lo(D_00007500)
+    /* DD521C 000047B0 3C050000 */  lui        $a1, %hi(sStr_Pos_Y_7500)
+    /* DD5220 000047B4 24A57500 */  addiu      $a1, $a1, %lo(sStr_Pos_Y_7500)
     /* DD5224 000047B8 24840000 */  addiu      $a0, $a0, 0x0
     /* DD5228 000047BC 3C07C4FA */  lui        $a3, (0xC4FA0000 >> 16)
     /* DD522C 000047C0 AFA00014 */  sw         $zero, 0x14($sp)
@@ -26,10 +26,10 @@ glabel Mountain_hostioParms
     /* DD5240 000047D4 44813000 */  mtc1       $at, $f6
     /* DD5244 000047D8 8FA60020 */  lw         $a2, 0x20($sp)
     /* DD5248 000047DC 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DD524C 000047E0 3C050000 */  lui        $a1, %hi(D_00007508)
+    /* DD524C 000047E0 3C050000 */  lui        $a1, %hi(sStr_Scale_Y_7508)
     /* DD5250 000047E4 3C073C23 */  lui        $a3, (0x3C23D70A >> 16)
     /* DD5254 000047E8 34E7D70A */  ori        $a3, $a3, (0x3C23D70A & 0xFFFF)
-    /* DD5258 000047EC 24A57508 */  addiu      $a1, $a1, %lo(D_00007508)
+    /* DD5258 000047EC 24A57508 */  addiu      $a1, $a1, %lo(sStr_Scale_Y_7508)
     /* DD525C 000047F0 24840000 */  addiu      $a0, $a0, 0x0
     /* DD5260 000047F4 AFA00014 */  sw         $zero, 0x14($sp)
     /* DD5264 000047F8 24C60034 */  addiu      $a2, $a2, 0x34
@@ -39,10 +39,10 @@ glabel Mountain_hostioParms
     /* DD5274 00004808 44814000 */  mtc1       $at, $f8
     /* DD5278 0000480C 8FA60020 */  lw         $a2, 0x20($sp)
     /* DD527C 00004810 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DD5280 00004814 3C050000 */  lui        $a1, %hi(D_00007510)
+    /* DD5280 00004814 3C050000 */  lui        $a1, %hi(sStr_Scale_XZ_7510)
     /* DD5284 00004818 3C073C23 */  lui        $a3, (0x3C23D70A >> 16)
     /* DD5288 0000481C 34E7D70A */  ori        $a3, $a3, (0x3C23D70A & 0xFFFF)
-    /* DD528C 00004820 24A57510 */  addiu      $a1, $a1, %lo(D_00007510)
+    /* DD528C 00004820 24A57510 */  addiu      $a1, $a1, %lo(sStr_Scale_XZ_7510)
     /* DD5290 00004824 24840000 */  addiu      $a0, $a0, 0x0
     /* DD5294 00004828 AFA00014 */  sw         $zero, 0x14($sp)
     /* DD5298 0000482C 24C60030 */  addiu      $a2, $a2, 0x30

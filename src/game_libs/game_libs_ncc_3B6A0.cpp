@@ -1,5 +1,5 @@
 /* IDO 7.1 NCC (C++) donor for CollShape_below (0x320 / 200 words). EXACT (agent-c run 304): spliced into
- * game_libs_post0b.c.o on both build trees via REPLACE_FUNC_BODY; the next-vertex table is D_3B6A0_tbl (pinned 0,
+ * game_libs_post0b.c.o on both build trees via REPLACE_FUNC_BODY; the next-vertex table is gTriEdgeNext_3B6A0_tbl (pinned 0,
  * the target's blank lui / addiu). Originally agent-c run 160:
  * Rewritten as real C++ (was the run-134 C lift under NCC with two parameter empty tests, 72.22): `int Obj::below(int max,
  * f32 *outd, TriB **outp, f32 *pt)` (renamed to CollShape_below with objcopy): for every collision triangle, the 2D
@@ -28,7 +28,7 @@ struct TriB { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; };
 struct Face { u16 mat; u16 vi[3]; };
 struct V3 { f32 x, y, z; };
 struct Col { char pad[0x44]; unsigned int ntri; char pad48[4]; s16 *remap; char pad50[4]; V3 *nrm; char pad58[8]; s16 (*verts)[3]; char pad64[4]; Face *faces; Face *face(int i) { return remap ? &faces[remap[i]] : &faces[i]; } };
-extern "C" { extern s16 D_3B6A0_tbl[3]; }
+extern "C" { extern s16 gTriEdgeNext_3B6A0_tbl[3]; }
 struct Obj {
     char pad[0x2C]; TriB *tris; char pad30[0x84 - 0x30]; Col *col;
     int below(int max, f32 *outd, TriB **outp, f32 *pt);
@@ -81,7 +81,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
             a = t->a;
             b = t->b;
             /* agent-c run 304 (sixth step): tp on the inner do line (as1 tie: the hoisted &pt[b] / &pt[a] before tp's lui, as the target): 98.675 -> 99.675 */
-            tp = D_3B6A0_tbl + 0 * (int)(t); u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
+            tp = gTriEdgeNext_3B6A0_tbl + 0 * (int)(t); u16 *fp = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie, the 3BE1C edge-loop lever): 96.375 -> 96.65 */
                 v = verts[fp[1]];
                 w = verts[f->vi[*tp]];
                 px = (int)(pt[a] - v[a]); /* agent-g run 210's folded `+ 0 * (int)(inside)` dropped by agent-c run 304 (see the f fold below) */
@@ -91,7 +91,7 @@ int Obj::below(int max, f32 *outd, TriB **outp, f32 *pt) {
                 if (0.0f < ((f32)ex * (f32)py - (f32)ey * (f32)px) * dir) {
                     inside = 0 + 0 * (int)(f) + 0 * (int)(pt); /* agent-c run 304 (second step): c / cc folds replaced by pt; earlier: */ /* agent-g run 210: fourth pass: 96.22 -> 96.25; run 258: + cc (zero-use re-sweep): 96.325 -> 96.375; agent-c run 304: + f with the px fold of inside dropped -- f outranks inside (target f = t4 colours before inside, which then takes s2): 96.65 -> 96.85 */
                 }
-            } while (inside && (fp++, ++tp != D_3B6A0_tbl + 3));
+            } while (inside && (fp++, ++tp != gTriEdgeNext_3B6A0_tbl + 3));
             if (inside) {
                 n = (V3 *)((char *)c->nrm + off);
                 d = pt[0] * n->x + pt[1] * n->y + pt[2] * n->z - t->d;

@@ -22,8 +22,8 @@ glabel U64BGWall_ctor
     /* DD191C 00000EB0 104002D7 */  beqz       $v0, .L00001A10
     /* DD1920 00000EB4 AFA201D8 */   sw        $v0, 0x1D8($sp)
   .L00000EB8:
-    /* DD1924 00000EB8 3C050000 */  lui        $a1, %hi(D_000066B0)
-    /* DD1928 00000EBC 24A566B0 */  addiu      $a1, $a1, %lo(D_000066B0)
+    /* DD1924 00000EB8 3C050000 */  lui        $a1, %hi(sStr_Node_66B0)
+    /* DD1928 00000EBC 24A566B0 */  addiu      $a1, $a1, %lo(sStr_Node_66B0)
     /* DD192C 00000EC0 0C000000 */  jal        func_00000000
     /* DD1930 00000EC4 8FA401D8 */   lw        $a0, 0x1D8($sp)
     /* DD1934 00000EC8 8FB801D8 */  lw         $t8, 0x1D8($sp)
@@ -31,8 +31,8 @@ glabel U64BGWall_ctor
     /* DD193C 00000ED0 25EF0000 */  addiu      $t7, $t7, 0x0
     /* DD1940 00000ED4 AF0F0028 */  sw         $t7, 0x28($t8)
     /* DD1944 00000ED8 8FAE01D8 */  lw         $t6, 0x1D8($sp)
-    /* DD1948 00000EDC 3C190000 */  lui        $t9, %hi(D_000066B8)
-    /* DD194C 00000EE0 273966B8 */  addiu      $t9, $t9, %lo(D_000066B8)
+    /* DD1948 00000EDC 3C190000 */  lui        $t9, %hi(sStr_U64BGWall_66B8)
+    /* DD194C 00000EE0 273966B8 */  addiu      $t9, $t9, %lo(sStr_U64BGWall_66B8)
     /* DD1950 00000EE4 ADD9000C */  sw         $t9, 0xC($t6)
     /* DD1954 00000EE8 8E0F0008 */  lw         $t7, 0x8($s0)
     /* DD1958 00000EEC 8FB901D8 */  lw         $t9, 0x1D8($sp)

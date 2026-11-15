@@ -4,9 +4,9 @@ glabel item_createBal
     /* DD5B90 00005124 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD5B94 00005128 AFA40038 */  sw         $a0, 0x38($sp)
     /* DD5B98 0000512C AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5B9C 00005130 3C040000 */  lui        $a0, %hi(D_00007DB4)
+    /* DD5B9C 00005130 3C040000 */  lui        $a0, %hi(sStr_rom_balloon_uso_7DB4)
     /* DD5BA0 00005134 0C000000 */  jal        func_00000000
-    /* DD5BA4 00005138 24847DB4 */   addiu     $a0, $a0, %lo(D_00007DB4)
+    /* DD5BA4 00005138 24847DB4 */   addiu     $a0, $a0, %lo(sStr_rom_balloon_uso_7DB4)
     /* DD5BA8 0000513C 8FAE0038 */  lw         $t6, 0x38($sp)
     /* DD5BAC 00005140 2404004C */  addiu      $a0, $zero, 0x4C
     /* DD5BB0 00005144 0C000000 */  jal        func_00000000

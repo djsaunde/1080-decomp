@@ -9,9 +9,9 @@ glabel game_createBGBox
     /* DD69B4 00005F48 AFBF0024 */  sw         $ra, 0x24($sp)
     /* DD69B8 00005F4C AFA40040 */  sw         $a0, 0x40($sp)
     /* DD69BC 00005F50 AFA60048 */  sw         $a2, 0x48($sp)
-    /* DD69C0 00005F54 3C050000 */  lui        $a1, %hi(D_00007E6C)
+    /* DD69C0 00005F54 3C050000 */  lui        $a1, %hi(sStr_BGBox_7E6C)
     /* DD69C4 00005F58 AFB10020 */  sw         $s1, 0x20($sp)
-    /* DD69C8 00005F5C 24A57E6C */  addiu      $a1, $a1, %lo(D_00007E6C)
+    /* DD69C8 00005F5C 24A57E6C */  addiu      $a1, $a1, %lo(sStr_BGBox_7E6C)
     /* DD69CC 00005F60 00003025 */  or         $a2, $zero, $zero
     /* DD69D0 00005F64 0C000000 */  jal        func_00000000
     /* DD69D4 00005F68 00002025 */   or        $a0, $zero, $zero

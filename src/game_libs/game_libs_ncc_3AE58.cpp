@@ -16,7 +16,7 @@
 typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
-extern char gl_data_0001EE5C, gl_data_0001EE70;
+extern char sStr_polyshape_CollShape_1EE5C, sStr_CollShape_1EE70;
 }
 struct Ent { short a; unsigned short vi; int pad; };
 struct SV { short x, y, z; };
@@ -29,8 +29,8 @@ extern "C" Obj *CollShape_ctorPoly(Obj *a0, Mesh *a1) {
     volatile int q0, q1, q2, q3;
     int pk; /* agent-c run 287: phantom int LR (two frame words: q4 / q5 / q6 dropped, frame 0x70 kept) */
     if (a0 != 0 || (a0 = (Obj *)gl_func_00000000(0x90)) != 0) {
-        gl_func_00000000(a0, &gl_data_0001EE5C);
-        gl_func_00000000(&gl_data_0001EE70, 0);
+        gl_func_00000000(a0, &sStr_polyshape_CollShape_1EE5C);
+        gl_func_00000000(&sStr_CollShape_1EE70, 0);
         a0->m = a1;
         a0->x2C = (char *)gl_func_00000000(a1->n * 12);
         unsigned i;

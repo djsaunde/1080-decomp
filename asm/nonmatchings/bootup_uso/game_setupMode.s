@@ -5,16 +5,16 @@ glabel game_setupMode
     /* DD3814 00002DA8 00803825 */  or         $a3, $a0, $zero
     /* DD3818 00002DAC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD381C 00002DB0 AFA50024 */  sw         $a1, 0x24($sp)
-    /* DD3820 00002DB4 3C040000 */  lui        $a0, %hi(D_000073EC)
-    /* DD3824 00002DB8 248473EC */  addiu      $a0, $a0, %lo(D_000073EC)
+    /* DD3820 00002DB4 3C040000 */  lui        $a0, %hi(sStr_ImgFileMgr_73EC)
+    /* DD3824 00002DB8 248473EC */  addiu      $a0, $a0, %lo(sStr_ImgFileMgr_73EC)
     /* DD3828 00002DBC 00002825 */  or         $a1, $zero, $zero
     /* DD382C 00002DC0 AFA70020 */  sw         $a3, 0x20($sp)
     /* DD3830 00002DC4 0C000000 */  jal        func_00000000
     /* DD3834 00002DC8 AFA60028 */   sw        $a2, 0x28($sp)
     /* DD3838 00002DCC 0C000000 */  jal        func_00000000
     /* DD383C 00002DD0 00000000 */   nop
-    /* DD3840 00002DD4 3C050000 */  lui        $a1, %hi(D_000073F8)
-    /* DD3844 00002DD8 24A573F8 */  addiu      $a1, $a1, %lo(D_000073F8)
+    /* DD3840 00002DD4 3C050000 */  lui        $a1, %hi(sStr_rom_tricks_bin_73F8)
+    /* DD3844 00002DD8 24A573F8 */  addiu      $a1, $a1, %lo(sStr_rom_tricks_bin_73F8)
     /* DD3848 00002DDC 0C000000 */  jal        func_00000000
     /* DD384C 00002DE0 00002025 */   or        $a0, $zero, $zero
     /* DD3850 00002DE4 8FA70020 */  lw         $a3, 0x20($sp)
@@ -119,9 +119,9 @@ glabel game_setupMode
     /* DD39D8 00002F6C 10000005 */  b          .L00002F84
     /* DD39DC 00002F70 8FBF0014 */   lw        $ra, 0x14($sp)
   .L00002F74:
-    /* DD39E0 00002F74 3C040000 */  lui        $a0, %hi(D_00007408)
+    /* DD39E0 00002F74 3C040000 */  lui        $a0, %hi(sStr_unknown_GAME_MODE_7408)
     /* DD39E4 00002F78 0C000000 */  jal        func_00000000
-    /* DD39E8 00002F7C 24847408 */   addiu     $a0, $a0, %lo(D_00007408)
+    /* DD39E8 00002F7C 24847408 */   addiu     $a0, $a0, %lo(sStr_unknown_GAME_MODE_7408)
   .L00002F80:
     /* DD39EC 00002F80 8FBF0014 */  lw         $ra, 0x14($sp)
   .L00002F84:

@@ -7,7 +7,7 @@
     "bootup_0610_decode": "snw_port_func_00000610_bootup_0610_decode",
     "bootup_0610_apply": "snw_port_func_00000610_bootup_0610_apply",
     "bootup_0610_select": "snw_port_func_00000610_bootup_0610_select",
-    "D_00006584": "snw_port_func_00000610_D_00006584",
+    "sStr_NA_UpdPl_6584": "snw_port_func_00000610_D_00006584",
     "bootup_0610_reset": "snw_port_func_00000610_bootup_0610_reset",
     "bootup_0610_finish": "snw_port_func_00000610_bootup_0610_finish"
   },

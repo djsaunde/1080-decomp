@@ -39,10 +39,10 @@ glabel EnvSettings_display
     /* DD7D7C 00007310 8DD80008 */  lw         $t8, 0x8($t6)
     /* DD7D80 00007314 ADB800E4 */  sw         $t8, 0xE4($t5)
     /* DD7D84 00007318 8DCF000C */  lw         $t7, 0xC($t6)
-  alabel D_0000731C
+  alabel sStr_Node_731C
     /* DD7D88 0000731C ADAF00E8 */  sw         $t7, 0xE8($t5)
   .L00007320:
     /* DD7D8C 00007320 03E00008 */  jr         $ra
-  alabel D_00007324
+  alabel sStr_cam_7324
     /* DD7D90 00007324 00000000 */   nop
 endlabel EnvSettings_display

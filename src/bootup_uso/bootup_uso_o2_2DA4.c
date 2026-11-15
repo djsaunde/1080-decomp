@@ -10,7 +10,7 @@
  * imm + 4, the word at 0x4F4 is the preceding 0.04f literal). Table words
  * (cases 1..12): 2F10 2E98 2ED4 2EAC 2EE8 2EFC 2F74 2F74 2F38 2F4C 2F60 2EC0,
  * so the arms lay out in SOURCE order 2, 4, 12, 3, 5, 6, 1, 9, 10, 11 and
- * cases 7/8 share the default (&D_00007408). The 2026-07-10 NM decode had the
+ * cases 7/8 share the default (&sStr_unknown_GAME_MODE_7408). The 2026-07-10 NM decode had the
  * table one entry late (3,5,1,4,...); extract-uso-jumptable.py drops the
  * LAST entry here (0x2EC0), not the first.
  *
@@ -33,7 +33,7 @@
 
 extern int func_00000000();
 extern void func_00000000_2DA4_v();
-extern char D_000073EC, D_000073F8, D_00007408;
+extern char sStr_ImgFileMgr_73EC, sStr_rom_tricks_bin_73F8, sStr_unknown_GAME_MODE_7408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
 extern char D_00000000, gPolyGeomMode_3EEC8_2DA4_cfg;
 
@@ -43,9 +43,9 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;
-    func_00000000_2DA4_v(&D_000073EC, 0);
+    func_00000000_2DA4_v(&sStr_ImgFileMgr_73EC, 0);
     func_00000000_2DA4_v();
-    D_2DA4_obj = func_00000000(0, &D_000073F8);
+    D_2DA4_obj = func_00000000(0, &sStr_rom_tricks_bin_73F8);
     v1 = (char *)FW(arg0, 0x84);
     a1 = (char *)D_2DA4_obj_rd;
     func_00000000_2DA4_v(v1 + 0x10, a1);
@@ -72,7 +72,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     case 10: func_00000000_2DA4_v(arg0, arg2); break;
     case 11: func_00000000_2DA4_v(arg0, arg2); break;
     default:
-        func_00000000_2DA4_v(&D_00007408);
+        func_00000000_2DA4_v(&sStr_unknown_GAME_MODE_7408);
         break;
     }
 }

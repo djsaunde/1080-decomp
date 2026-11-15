@@ -4,9 +4,9 @@ glabel game_createPlayers
     /* DD40A4 00003638 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD40A8 0000363C AFA40038 */  sw         $a0, 0x38($sp)
     /* DD40AC 00003640 AFBF002C */  sw         $ra, 0x2C($sp)
-    /* DD40B0 00003644 3C040000 */  lui        $a0, %hi(D_000074DC)
+    /* DD40B0 00003644 3C040000 */  lui        $a0, %hi(sStr_Players_74DC)
     /* DD40B4 00003648 AFA5003C */  sw         $a1, 0x3C($sp)
-    /* DD40B8 0000364C 248474DC */  addiu      $a0, $a0, %lo(D_000074DC)
+    /* DD40B8 0000364C 248474DC */  addiu      $a0, $a0, %lo(sStr_Players_74DC)
     /* DD40BC 00003650 AFA60040 */  sw         $a2, 0x40($sp)
     /* DD40C0 00003654 0C000000 */  jal        func_00000000
     /* DD40C4 00003658 AFA70044 */   sw        $a3, 0x44($sp)

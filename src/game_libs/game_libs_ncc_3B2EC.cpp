@@ -19,7 +19,7 @@ typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
 extern char D_00000000[];
 void gl_func_00000000(...);
-extern s16 D_3B2EC_a[], D_3B2EC_b[], D_3B2EC_c[];
+extern s16 D_3B2EC_a[], D_3B2EC_b[], gTriEdgeNext_3B2EC_c[];
 }
 #define K(o) (*(f32 *)(D_00000000 + (o)))
 struct V3 { f32 x, y, z; };
@@ -77,7 +77,7 @@ int Obj::height(int max, f32 *out, f32 x, f32 z) {
         int k;
         for (k = 0; k < 3; k++) {
             s16 *v0 = vt[f->vi[k]];
-            s16 *v1 = vt[f->vi[D_3B2EC_c[k]]];
+            s16 *v1 = vt[f->vi[gTriEdgeNext_3B2EC_c[k]]];
             s16 dx = (int)(x - v0[0]); /* run 193: dx / dz before ex / ez (3BE1C twin decode) */
             s16 dz = (int)(z - v0[2]);
             s16 ex = v1[0] - v0[0];

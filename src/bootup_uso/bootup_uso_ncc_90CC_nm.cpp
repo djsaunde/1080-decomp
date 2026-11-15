@@ -20,9 +20,9 @@ extern "C" {
 extern char D_00000000;
 extern char *func_00000000(...);
 extern f32 D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4;
-extern char D_00008730;
-extern char D_00008738;
-extern char D_00008740;
+extern char sStr_SnowB_8730;
+extern char sStr_Node_8738;
+extern char sStr_Parms_8740;
 extern char D_00008018;
 /* per-site aliases of D_00008018: bust cross-cascade addr GCSE (target rematerializes lui/addiu per +0xC store, post-jal temp not pre-jal s-reg) */
 extern char D_00008018_s02;
@@ -68,17 +68,17 @@ extern char D_00008060_s3;
 extern char D_00008108;
 extern char D_00008800;
 extern char D_00008808;
-extern char D_00008814;
-extern char D_00008820;
-extern char D_0000882C;
-extern char D_00008834;
-extern char D_0000883C;
-extern char D_00008844;
-extern char D_0000884C;
-extern char D_0000885C;
-extern char D_00008868;
-extern char D_00008880;
-extern char D_00008888;
+extern char sStr_DispTrails_8814;
+extern char sStr_DispTrails_8820;
+extern char sStr_Node_882C;
+extern char sStr_Node_8834;
+extern char sStr_Node_883C;
+extern char sStr_Node_8844;
+extern char sStr_AnimationData_884C;
+extern char sStr_lighttarget_885C;
+extern char sFmt_Global_out_of_range_8868;
+extern char sStr_Trails_8880;
+extern char sStr_Trails_8888;
 /* SnowBoarder_ctor alloc-cascade +0x28 child-vtable pointers: USO relocs blanked in the
  * .s (lui/addiu 0x0). Resolved from bootup.uso TextReloc @0xd9fe28: symIdx 545 =
  * shared 0x174-fallback vtable (imports), 546/547/548 = per-class vtables (imports),
@@ -109,7 +109,7 @@ extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as
  * arg stores emit (matches target; no cvt.d.s/sdc1). */
 typedef void (*Vfn_ff)(char *, s32, s32, void *, s32, s32, f32, f32);
 typedef struct { s32 w; } W90;
-extern char D_00008778;
+extern char sStr_SnowBoarder_Parms_8778;
 extern void func_00000000_p4f(void *, char *, s32, s32, f32);
 extern void func_00000000_iipif(s32, s32, void *, f32, f32);
 /* PASS-2 2026-06-10 (big-swing): FULL 2106-insn m2c graft replacing the
@@ -156,7 +156,7 @@ extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st,
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
 extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void func_00000000_p4d(void *, char *, f64, f32);
-extern void bu_90cc_fz(...);  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
+extern void gProcNodeList_41700_90cc_fz(...);  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2(...);  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 }
 static inline f32 fi(int v) { return v; }
@@ -234,13 +234,13 @@ extern "C" void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
     s32 temp_v0_51;
 
     if ((arg0 != 0) || (temp_v0_5 = func_00000000(0xA8C), arg0 = temp_v0_5, (temp_v0_5 != 0))) {
-        func_00000000(arg0, &D_00008730);
+        func_00000000(arg0, &sStr_SnowB_8730);
         *(s32 *)((char *)(arg0) + 0x28) = (s32) &SnowBoarder_vtbl_90cc_vt_self;
         var_s0 = arg0 + 0x3EC;
-        if (((arg0 != (void *)-0x3EC) || ((var_s0 = func_00000000(0x154)) != 0)) && ((func_00000000(var_s0, &D_00008738), *(s32 *)((char *)(var_s0) + 0x28) = (s32) &D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = func_00000000(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
+        if (((arg0 != (void *)-0x3EC) || ((var_s0 = func_00000000(0x154)) != 0)) && ((func_00000000(var_s0, &sStr_Node_8738), *(s32 *)((char *)(var_s0) + 0x28) = (s32) &D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = func_00000000(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = (s32)var_s1;
             if ((var_s1 != 0) || (temp_v0_5 = func_00000000(8), var_a2 = (s32)temp_v0_5, (temp_v0_5 != 0))) {
-                *(s32 *)((char *)(var_a2) + 0x0) = (s32) &D_00008740;
+                *(s32 *)((char *)(var_a2) + 0x0) = (s32) &sStr_Parms_8740;
                 *(s32 *)((char *)(var_a2) + 0x4) = 0;
             }
             sp144.w = *(s32 *)((char *)&D_00000000 + 0x8748);
@@ -356,7 +356,7 @@ extern "C" void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 
         if ((arg0 != (void *)-0x540) || (temp_v0_5 = func_00000000(0x2C0), var_s0 = temp_v0_5, (temp_v0_5 != 0))) {
             var_s1 = var_s0;
             if ((var_s0 != 0) || (temp_v0_5 = func_00000000(8), var_s1 = temp_v0_5, (temp_v0_5 != 0))) {
-                *(s32 *)((char *)(var_s1) + 0x0) = (s32) &D_00008778;
+                *(s32 *)((char *)(var_s1) + 0x0) = (s32) &sStr_SnowBoarder_Parms_8778;
                 *(s32 *)((char *)(var_s1) + 0x4) = 0;
             }
             sp100.w = *(s32 *)((char *)&D_00000000 + 0x878C);
@@ -769,7 +769,7 @@ sw_end:
         if (*(s32 *)((char *)(arg0) + 0xA58) & 3) {
             func_00000000(bu_90cc_d87A4 + 0x5C, 0);
             *(char **)((char *)(arg0) + 0x86C) = func_00000000(0, bu_90cc_d87A4 + 0x64);
-            *(char **)((char *)(arg0) + 0x868) = func_00000000(0, &D_00008814);
+            *(char **)((char *)(arg0) + 0x868) = func_00000000(0, &sStr_DispTrails_8814);
             var_s0 = *(char **)((char *)(arg0) + 0x86C);
             var_s0 += 0x18;
             *(s32 *)var_s0 &= ~8;
@@ -780,7 +780,7 @@ sw_end:
                 *(s32 *)((char *)(var_s1) + 0x4) = 1;
             }
             *(s32 *)((char *)(var_s1) + 0x14) = (s32) var_s0;
-            temp_v0_5 = func_00000000(0, &D_00008820);
+            temp_v0_5 = func_00000000(0, &sStr_DispTrails_8820);
             *(char **)((char *)(arg0) + 0x868) = temp_v0_5;
             fq = (s32 *)temp_v0_5;
             if (1) { fq += 6; }
@@ -797,7 +797,7 @@ sw_end:
             if (var_s0 != 0) {
                 var_s1 = var_s0;
                 if ((var_s1 != 0) || (var_s1 = func_00000000(0x174), (var_s1 != 0))) {
-                    func_00000000(var_s1, &D_0000882C);
+                    func_00000000(var_s1, &sStr_Node_882C);
                     *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_vt545;
                 }
                 *(s32 *)((char *)(var_s0) + 0x28) = (s32) &bu_90cc_vt546;
@@ -814,7 +814,7 @@ sw_end:
                 if (var_s1 != 0) {
                     var_a2 = (s32) var_s1;
                     if ((var_a2 != 0) || (var_a2 = (s32)func_00000000(0x174), (var_a2 != 0))) {
-                        func_00000000((char *)var_a2, &D_00008834);
+                        func_00000000((char *)var_a2, &sStr_Node_8834);
                         *(s32 *)((char *)(var_a2) + 0x28) = (s32) &bu_90cc_vt545_b;
                     }
                     *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_vt547;
@@ -832,7 +832,7 @@ sw_end:
             if (var_s1 != 0) {
                 var_a2 = (s32) var_s1;
                 if ((var_a2 != 0) || (var_a2 = (s32)func_00000000(0x174), (var_a2 != 0))) {
-                    func_00000000((char *)var_a2, &D_0000883C);
+                    func_00000000((char *)var_a2, &sStr_Node_883C);
                     *(s32 *)((char *)(var_a2) + 0x28) = (s32) &bu_90cc_vt545_c;
                 }
                 *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_vt548;
@@ -849,7 +849,7 @@ sw_end:
             if (var_s1 != 0) {
                 var_a2 = (s32) var_s1;
                 if ((var_a2 != 0) || (var_a2 = (s32)func_00000000(0x174), (var_a2 != 0))) {
-                    func_00000000((char *)var_a2, &D_00008844);
+                    func_00000000((char *)var_a2, &sStr_Node_8844);
                     *(s32 *)((char *)(var_a2) + 0x28) = (s32) &bu_90cc_vt545_d;
                 }
                 *(s32 *)((char *)(var_s1) + 0x28) = (s32) &bu_90cc_vt548_b;
@@ -865,10 +865,10 @@ sw_end:
             func_00000000(0xFFFF);
             func_00000000();
         }
-        func_00000000(&D_0000884C, 0);
+        func_00000000(&sStr_AnimationData_884C, 0);
         var_s1 = func_00000000(0x16C);
         if (var_s1 != 0) {
-            func_00000000_p4d(var_s1, &D_0000885C, 0.0, 0.0f);
+            func_00000000_p4d(var_s1, &sStr_lighttarget_885C, 0.0, 0.0f);
             temp_f0 = D_000008B4;
             *(s32 *)((char *)(var_s1) + 0x28) = (s32) &LightTarget_vtbl_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
@@ -903,7 +903,7 @@ sw_end:
         for (sp58 = 0; sp58 != 0x23; sp58++) {
             var_a2 = sp58;
             if (sp58 >= 0x28U) {
-                func_00000000(&D_00008868, sp58);
+                func_00000000(&sFmt_Global_out_of_range_8868, sp58);
             }
             *(s32 *)((char *)&gNodeGlobals_90cc_gtbl + var_a2 * 4) = 0;
         }
@@ -939,8 +939,8 @@ sw_end:
         { s32 v840 = *(s32 *)((char *)(arg0) + 0x840); func_00000000(arg2, arg3, *(s32 *)((char *)(arg0) + 0x8B8), v840, arg0); }
         func_00000000(arg0, *(s32 *)((char *)(arg0) + 0xA58) & 1);
         if (*(s32 *)((char *)(arg0) + 0xA58) & 3) {
-            func_00000000(&D_00008880, 0);
-            temp_v0_5 = func_00000000(0, &D_00008888);
+            func_00000000(&sStr_Trails_8880, 0);
+            temp_v0_5 = func_00000000(0, &sStr_Trails_8888);
             *(char **)((char *)(arg0) + 0x870) = temp_v0_5;
             fq = (s32 *)temp_v0_5;
             if (1) { fq += 6; }
@@ -998,9 +998,9 @@ sw_end:
             func_00000000(0xFFFF);
             func_00000000();
         }
-        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)bu_90cc_fz + 0);
-        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)bu_90cc_fz + 8);
-        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)bu_90cc_fz + 4);
+        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 0);
+        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 8);
+        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 4);
         var_s0 = (char *)gNodeGlobals_90cc_d44_03.f28;
         *(s32 *)((char *)(arg0) + 0x824) = (s32)var_s0;
         var_s0 = (char *)gNodeGlobals_90cc_d80_01.f08;

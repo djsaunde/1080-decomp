@@ -22,10 +22,10 @@ BootObject90 *FogTmpl_create(BootContext44 *arg0) {
         if (u != 0 || (u = boot8124_alloc(0x38)) != 0) {
             s = u;
             if (s != 0 || (s = boot8124_alloc(8)) != 0) {
-                s->f00 = &D_00007FC4;
+                s->f00 = &sStr_Parms_7FC4;
                 s->f04 = 0;
             }
-            first.x = D_00007FCC.x;
+            first.x = sTag_fin_7FCC.x;
             p = first;
             c = (BootChild18 *)((char *)u + 8);
             if (c != 0 || (c = boot8124_alloc(0x18)) != 0) {

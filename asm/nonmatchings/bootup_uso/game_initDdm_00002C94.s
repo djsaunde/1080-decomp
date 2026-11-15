@@ -40,10 +40,10 @@ glabel game_initDdm_00002C94
     /* DD3790 00002D24 00411025 */  or         $v0, $v0, $at
     /* DD3794 00002D28 3C010000 */  lui        $at, %hi(func_00000000 + 0x4)
     /* DD3798 00002D2C 3C100000 */  lui        $s0, (0x0 >> 16)
-    /* DD379C 00002D30 3C040000 */  lui        $a0, %hi(D_000073E8)
+    /* DD379C 00002D30 3C040000 */  lui        $a0, %hi(sStr_ddm_73E8)
     /* DD37A0 00002D34 AC220004 */  sw         $v0, %lo(func_00000000 + 0x4)($at)
     /* DD37A4 00002D38 26100000 */  addiu      $s0, $s0, 0x0
-    /* DD37A8 00002D3C 248473E8 */  addiu      $a0, $a0, %lo(D_000073E8)
+    /* DD37A8 00002D3C 248473E8 */  addiu      $a0, $a0, %lo(sStr_ddm_73E8)
     /* DD37AC 00002D40 0C000000 */  jal        func_00000000
     /* DD37B0 00002D44 00002825 */   or        $a1, $zero, $zero
     /* DD37B4 00002D48 3C190000 */  lui        $t9, (0x0 >> 16)

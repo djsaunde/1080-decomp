@@ -1,7 +1,7 @@
 /* IDO 7.1 NCC (C++) EXACT donor for CollShape_raycast (0x45C / 279 words), agent-c run 387: REPLACE_FUNC_BODY-spliced
  * over the placeholder in game_libs_post0b.c on both build trees. The two double literals' donor-local .rodata reloc
  * is renamed by the splice to CollShape_raycast_rodata (pinned to the USO RoData +0x1AA8); the blank jal words are
- * gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 and the next-vertex table D_3B9C0_c (all pinned 0).
+ * gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 and the next-vertex table gTriEdgeNext_3B9C0_c (all pinned 0).
  * agent-c run 387 (re-decode from the target asm, then ported here): p[ia] / p[ib] / sgn read in the edge loop (no
  * qa / qb / sg variables: the &p lda stays an uncoloured ugen base), ia named (iav), stale folds dropped, the face
  * pick without the `if (1) {}` split with the then-arm remap read through self->col (the test's col->remap is then
@@ -36,7 +36,7 @@ extern signed char b;
 extern char *p;
 extern void gl_func_00034458_36F0C(f32, f32 *, f32 *);
 extern float gl_func_0003B9C0_sqrtf(float); /* blank USO jal (pinned 0) */
-extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
+extern int D_3B9C0_a, D_3B9C0_b, gTriEdgeNext_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
 }
 inline void zf(f32 &f, int z) { f = z; }
@@ -148,7 +148,7 @@ extern "C" s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V
                                                                      * the inner loop) and a code-free 0.0f test here (raises the hoisted 0.0f over n->x / n->y / n->z):
                                                                      * 0.0f f14 / n->z f20 like the target, 99.122 -> 99.211 (grid r8, 156); agent-c run 286: the run-285 nz use dropped with nz; + num (set before the loop on every path; zero-use --keep-float, 99.01 -> 99.07); agent-c run 286: two folded f uses in the inner-loop arm (a hoisted loop-invariant use counts outer-loop weight only) raise f's adjsave 32.5 -> 82.5, between vt 73.3 and the 100 group: f t4 / vt t5 / ia, ib ra, s0 like the target, 96.83 -> 97.13; agent-c run 285: + nz (zero-use --keep-float, set before the loop on every path, 96.77 -> 96.83); agent-g run 210: third pass: 93.89 -> 93.96; run 231: + self, 93.96 -> 94.27; agent-c run 284: + self dropped (stale after the off split, rm2 removal sweep 96.11 -> 96.52) */
             }
-        } while (ok && (fv++, nx != (s16 *)((char *)&D_3B9C0_c + 6)));
+        } while (ok && (fv++, nx != (s16 *)((char *)&gTriEdgeNext_3B9C0_c + 6)));
         if (ok) { /* agent-c run 287: agent-g run 258's folded vt use dropped (stale) */
             dist[cnt] = t;
             out[cnt] = &self->tris[i];

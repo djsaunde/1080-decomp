@@ -12,7 +12,7 @@ typedef struct {
 extern void gl_25320_Audio_InvalDCache(void *, u32);
 extern void gl_25320_osCreateMesgQueue(void *, void *, s32);
 extern s32 gl_ref_00038604(void *, s32, s32, u32, void *, u32, void *, s32, char *);
-extern char gl_25320_BGLOAD[];
+extern char sStr_BGCOPY_1B0C0[];
 #define ALIGN16(x) (((x) + 0xF) & ~0xF)
 
 void AudioLoad_AsyncDma(gl_25320_AudioAsyncLoad *asyncLoad, u32 size) {
@@ -21,5 +21,5 @@ void AudioLoad_AsyncDma(gl_25320_AudioAsyncLoad *asyncLoad, u32 size) {
     if (size) {}
     gl_25320_osCreateMesgQueue(&asyncLoad->msgQueue, &asyncLoad->msg, 1);
     gl_ref_00038604(&asyncLoad->ioMesg, 0, 0, asyncLoad->curDevAddr, asyncLoad->curRamAddr, size, &asyncLoad->msgQueue,
-                    asyncLoad->medium, gl_25320_BGLOAD);
+                    asyncLoad->medium, sStr_BGCOPY_1B0C0);
 }

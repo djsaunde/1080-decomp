@@ -5262,8 +5262,8 @@ int *CollShape_ctor(int *arg0, int *arg1) {
  *       a0 = alloc(0x90);
  *       if (a0 == 0) return 0;
  *   }
- *   gl_func_00000000(a0, &gl_data_0001EE5C);    // init #1
- *   gl_func_00000000(&gl_data_0001EE70, 0);     // init #2
+ *   gl_func_00000000(a0, &sStr_polyshape_CollShape_1EE5C);    // init #1
+ *   gl_func_00000000(&sStr_CollShape_1EE70, 0);     // init #2
  *   a0->[0x84] = a1;                            // store input arg2
  *   a0->[0x2C] = gl_func_00000000(a1->[0x44] * 12);  // alloc count*12 array
  *
@@ -5281,7 +5281,7 @@ int *CollShape_ctor(int *arg0, int *arg1) {
  * Residual ~7%: frame -0x70 vs -0x50 (extra 0x20 spill region) + loop
  * $t-reg renumbering + loop-back bnel-vs-beq;beq — regalloc/scheduler-tier. */
 extern int gl_func_00000000();
-extern char gl_data_0001EE5C, gl_data_0001EE70;
+extern char sStr_polyshape_CollShape_1EE5C, sStr_CollShape_1EE70;
 int *CollShape_ctorPoly(int *a0, int *a1) {
     unsigned int i;
     int off;
@@ -5291,8 +5291,8 @@ int *CollShape_ctorPoly(int *a0, int *a1) {
     float fv[3];
     volatile int padq[8]; /* run 138: frame = target */
     if (a0 != 0 || (a0 = (int*)gl_func_00000000(0x90), a0 != 0)) {
-        gl_func_00000000(a0, &gl_data_0001EE5C);
-        gl_func_00000000(&gl_data_0001EE70, 0);
+        gl_func_00000000(a0, &sStr_polyshape_CollShape_1EE5C);
+        gl_func_00000000(&sStr_CollShape_1EE70, 0);
         *(int*)((char*)a0 + 0x84) = (int)a1;
         *(int*)((char*)a0 + 0x2C) = gl_func_00000000(*(int*)((char*)a1 + 0x44) * 0xC);
         i = 0;
@@ -5584,7 +5584,7 @@ typedef struct {
 } ColB9;
 typedef struct { char pad0[0x2C]; TriB9 *tris; char pad30[0x54]; ColB9 *col; } ObjB9;
 extern float sqrtf(float);
-extern int D_3B9C0_a, D_3B9C0_b, D_3B9C0_c;
+extern int D_3B9C0_a, D_3B9C0_b, gTriEdgeNext_3B9C0_c;
 extern void gl_func_00000000_vnorm3(V3B9 *);
 s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
     s32 cnt;
@@ -5666,7 +5666,7 @@ s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B
                 ok = 0;
             }
             fv++;
-        } while (ok && nx != (s16 *)((char *)&D_3B9C0_c + 6));
+        } while (ok && nx != (s16 *)((char *)&gTriEdgeNext_3B9C0_c + 6));
         if (ok) {
             dist[cnt] = t;
             out[cnt] = &self->tris[i];
@@ -14516,7 +14516,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", MorphPoly_update_4AAF0);
  * takes a2 (the target's lw a2,532(t4)); the slot sum written
  * `i * 16 + (d4 * 16 + base)` gives the target ring order (base chain t5/t6,
  * d4*16 t7). Report strings are gl_ref_ pins. */
-extern char gl_ref_0002008C, gl_ref_000200AC;
+extern char sStr_Morphpoly_nothing_to_update_2008C, sStr_new_colours_200AC;
 void MorphPoly_updateColours(char *self) {
     int i;
     int t0;
@@ -14524,10 +14524,10 @@ void MorphPoly_updateColours(char *self) {
     char *slot;
     char *g;
     if (*(int *)(self + 0xC4) == 0) {
-        gl_func_00000000(&gl_ref_0002008C);
+        gl_func_00000000(&sStr_Morphpoly_nothing_to_update_2008C);
         return;
     }
-    gl_func_00000000(&gl_ref_000200AC);
+    gl_func_00000000(&sStr_new_colours_200AC);
     for (i = 0, t0 = 0; i < *(short *)(self + 0xD6) - *(short *)(self + 0xD4); i++, t0 += 2) {
         idx = *(short *)(*(char **)(self + 0xD0) + t0);
         if (idx != -1) {
@@ -14708,11 +14708,11 @@ int MorphPoly_shade(char *self, int a1, int a2, int aux, int a4) {
 typedef struct { int w0; unsigned short h4, h6; } Gl4AFB4Ent;
 extern void gl_func_00000000_4afb4v(); /* void blank alias: the 2nd call defines no v0, so the a3<<3 web keeps v0 across it */
 int MorphPoly_vslot12_0004AFB4(int *a0, int a1, int a2, int a3, int stack_arg) {
-    extern short D_4AFB4_s[];
+    extern short gMorphPolyShade_4AFB4_s[];
     int r = gl_func_00000000(a0, a1, a2, a3, stack_arg);
     if (a1 == 0) {
-        gl_func_00000000_4afb4v(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, D_4AFB4_s[0]);
-        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, D_4AFB4_s[1]);
+        gl_func_00000000_4afb4v(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h4, gMorphPolyShade_4AFB4_s[0]);
+        gl_func_00000000(a0, ((Gl4AFB4Ent *)a0[0x6C / 4])[a3].h6, gMorphPolyShade_4AFB4_s[1]);
     }
     return r;
 }
@@ -17040,7 +17040,7 @@ extern int gl_func_00000000();
 typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
-extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
+extern f32 D_4e760_f0[], D_4e760_f1[], sStr_FCP_1B78[], sStr_GCP_1B7C[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
 /* base = gWindowDefaults (Bss Sym 324, 0x40 bytes): +0x0 the unk100 / clearFlags pair, +0x8 width,
  * +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType,
  * +0x30 clearColour (agent-b run 489: window.h field names; same offsets / widths) */
@@ -17063,9 +17063,9 @@ void Window_setDefaults(char *a0) {
     *(Q2E760 *)&W->unk100 = *(Q2E760 *)base;
     W->unk84[0] = D_4e760_f0[0x1B70 / 4];
     W->unk84[1] = D_4e760_f1[0x1B74 / 4];
-    W->unk84[2] = D_4e760_f2[0x1B78 / 4];
+    W->unk84[2] = sStr_FCP_1B78[0x1B78 / 4];
     W->unk84[3] = 19584.0f;
-    W->unk84[4] = D_4e760_f3[0x1B7C / 4];
+    W->unk84[4] = sStr_GCP_1B7C[0x1B7C / 4];
     *(float *)&W->unk80 = D_4e760_f4[0x1B80 / 4];
     (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
     W->displayMask = 1;
@@ -19897,8 +19897,8 @@ int CMod_display(char *a0) {
  * barrier-immune scheduling tie). */
 extern char MNode_vtbl_546E8_a;
 extern char BaseLight_vtbl_546E8_b;
-extern char gl_ref_546E8_c;
-extern char gl_ref_546E8_d;
+extern char sStr_Parms_21084;
+extern char sTag_col_2108C;
 extern char gl_ref_546E8_e;
 struct SB546E8 { int v; };
 struct V4_546E8 { f32 x, y, z, w; };
@@ -19945,10 +19945,10 @@ s32 *BaseLight_ctor(char *self, int arg1) {
         }
         if ((s1 = self + 0x10C) != 0 || (s1 = (char *)gl_func_00000000(0x2C)) != 0) {
             if ((v1 = s1) != 0 || (v1 = (char *)gl_func_00000000(8)) != 0) {
-                FW(v1, 0) = (int)(&gl_ref_546E8_c + 0x21084);
+                FW(v1, 0) = (int)(&sStr_Parms_21084 + 0x21084);
                 FW(v1, 4) = 0;
             }
-            u1.v = *(int *)(&gl_ref_546E8_d + 0x2108C);
+            u1.v = *(int *)(&sTag_col_2108C + 0x2108C);
             sp94.x = 0.0f;
             sp94.y = 0.0f;
             sp94.z = 0.0f;
@@ -21758,7 +21758,7 @@ void gfx_endDL(DLContext *a0) {
  * now lw a1,36(s0) with clean nop-delay chain (was t0 + sw temploc).
  * Constants 0x219B8/0x219C4 are addiu-form = &SYM+N addresses (docs
  * IDO_CODEGEN lui-addiu discriminator): distinct base-0 externs
- * gl_d_578b4_s1/s2a/s2b (undefined_syms_auto). NEW NEGATIVES:
+ * sStr_unkown_tile_219B8/s2a/s2b (undefined_syms_auto). NEW NEGATIVES:
  * volatile-slot arg-fold (sp34=... inside call arg) promotes the
  * selector web to s0 + frame 520 (-4pp); ANY named temp for the tail
  * value (fresh or reused) gets a dead home store at the wrong slot --

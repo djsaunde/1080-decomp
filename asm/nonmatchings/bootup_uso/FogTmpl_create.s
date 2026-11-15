@@ -31,13 +31,13 @@ glabel FogTmpl_create
     /* DD8BF8 0000818C 10400005 */  beqz       $v0, .L000081A4
     /* DD8BFC 00008190 00401825 */   or        $v1, $v0, $zero
   .L00008194:
-    /* DD8C00 00008194 3C0F0000 */  lui        $t7, %hi(D_00007FC4)
-    /* DD8C04 00008198 25EF7FC4 */  addiu      $t7, $t7, %lo(D_00007FC4)
+    /* DD8C00 00008194 3C0F0000 */  lui        $t7, %hi(sStr_Parms_7FC4)
+    /* DD8C04 00008198 25EF7FC4 */  addiu      $t7, $t7, %lo(sStr_Parms_7FC4)
     /* DD8C08 0000819C AC6F0000 */  sw         $t7, 0x0($v1)
     /* DD8C0C 000081A0 AC600004 */  sw         $zero, 0x4($v1)
   .L000081A4:
-    /* DD8C10 000081A4 3C180000 */  lui        $t8, %hi(D_00007FCC)
-    /* DD8C14 000081A8 8F187FCC */  lw         $t8, %lo(D_00007FCC)($t8)
+    /* DD8C10 000081A4 3C180000 */  lui        $t8, %hi(sTag_fin_7FCC)
+    /* DD8C14 000081A8 8F187FCC */  lw         $t8, %lo(sTag_fin_7FCC)($t8)
     /* DD8C18 000081AC 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DD8C1C 000081B0 24A40008 */  addiu      $a0, $a1, 0x8
     /* DD8C20 000081B4 AFB80040 */  sw         $t8, 0x40($sp)

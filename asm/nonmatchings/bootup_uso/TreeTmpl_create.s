@@ -20,8 +20,8 @@ glabel TreeTmpl_create
     /* DD9250 000087E4 3508A002 */  ori        $t0, $t0, (0xAA002 & 0xFFFF)
     /* DD9254 000087E8 AC480004 */  sw         $t0, 0x4($v0)
     /* DD9258 000087EC AC400000 */  sw         $zero, 0x0($v0)
-    /* DD925C 000087F0 3C050000 */  lui        $a1, %hi(D_00007FF4)
-    /* DD9260 000087F4 24A57FF4 */  addiu      $a1, $a1, %lo(D_00007FF4)
+    /* DD925C 000087F0 3C050000 */  lui        $a1, %hi(sStr_tree_7FF4)
+    /* DD9260 000087F4 24A57FF4 */  addiu      $a1, $a1, %lo(sStr_tree_7FF4)
     /* DD9264 000087F8 00002025 */  or         $a0, $zero, $zero
     /* DD9268 000087FC 00003825 */  or         $a3, $zero, $zero
     /* DD926C 00008800 0C000000 */  jal        func_00000000
@@ -30,48 +30,48 @@ glabel TreeTmpl_create
     /* DD9278 0000880C AD420040 */  sw         $v0, 0x40($t2)
   .L00008810:
     /* DD927C 00008810 0C000000 */  jal        func_00000000
-  alabel D_00008814
+  alabel sStr_DispTrails_8814
     /* DD9280 00008814 240400C8 */   addiu     $a0, $zero, 0xC8
     /* DD9284 00008818 10400012 */  beqz       $v0, .L00008864
     /* DD9288 0000881C 00408825 */   or        $s1, $v0, $zero
-  alabel D_00008820
+  alabel sStr_DispTrails_8820
     /* DD928C 00008820 0C000000 */  jal        func_00000000
     /* DD9290 00008824 00402025 */   or        $a0, $v0, $zero
     /* DD9294 00008828 3C0B0000 */  lui        $t3, %hi(func_00007A48 + 0x10)
-  alabel D_0000882C
+  alabel sStr_Node_882C
     /* DD9298 0000882C 256B7A58 */  addiu      $t3, $t3, %lo(func_00007A48 + 0x10)
     /* DD929C 00008830 2401FF78 */  addiu      $at, $zero, -0x88
-  alabel D_00008834
+  alabel sStr_Node_8834
     /* DD92A0 00008834 AE2B0028 */  sw         $t3, 0x28($s1)
     /* DD92A4 00008838 16210005 */  bne        $s1, $at, .L00008850
-  alabel D_0000883C
+  alabel sStr_Node_883C
     /* DD92A8 0000883C 26300088 */   addiu     $s0, $s1, 0x88
     /* DD92AC 00008840 0C000000 */  jal        func_00000000
-  alabel D_00008844
+  alabel sStr_Node_8844
     /* DD92B0 00008844 24040040 */   addiu     $a0, $zero, 0x40
     /* DD92B4 00008848 10400006 */  beqz       $v0, .L00008864
-  alabel D_0000884C
+  alabel sStr_AnimationData_884C
     /* DD92B8 0000884C 00408025 */   or        $s0, $v0, $zero
   .L00008850:
     /* DD92BC 00008850 0C000000 */  jal        func_00000000
     /* DD92C0 00008854 02002025 */   or        $a0, $s0, $zero
     /* DD92C4 00008858 3C0C0000 */  lui        $t4, (0x0 >> 16)
-  alabel D_0000885C
+  alabel sStr_lighttarget_885C
     /* DD92C8 0000885C 258C0000 */  addiu      $t4, $t4, 0x0
     /* DD92CC 00008860 AE0C0030 */  sw         $t4, 0x30($s0)
   .L00008864:
     /* DD92D0 00008864 3C014120 */  lui        $at, (0x41200000 >> 16)
-  alabel D_00008868
+  alabel sFmt_Global_out_of_range_8868
     /* DD92D4 00008868 44812000 */  mtc1       $at, $f4
     /* DD92D8 0000886C 240D0013 */  addiu      $t5, $zero, 0x13
     /* DD92DC 00008870 02208025 */  or         $s0, $s1, $zero
     /* DD92E0 00008874 E6240070 */  swc1       $f4, 0x70($s1)
     /* DD92E4 00008878 AFAD0044 */  sw         $t5, 0x44($sp)
     /* DD92E8 0000887C 8E220028 */  lw         $v0, 0x28($s1)
-  alabel D_00008880
+  alabel sStr_Trails_8880
     /* DD92EC 00008880 27A50044 */  addiu      $a1, $sp, 0x44
     /* DD92F0 00008884 8C59002C */  lw         $t9, 0x2C($v0)
-  alabel D_00008888
+  alabel sStr_Trails_8888
     /* DD92F4 00008888 844E0028 */  lh         $t6, 0x28($v0)
     /* DD92F8 0000888C 0320F809 */  jalr       $t9
     /* DD92FC 00008890 01D12021 */   addu      $a0, $t6, $s1

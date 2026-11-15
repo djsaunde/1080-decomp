@@ -10,8 +10,8 @@ glabel EnvSettings_ctor
     /* DD7BD4 00007168 10400021 */  beqz       $v0, .L000071F0
     /* DD7BD8 0000716C 00403025 */   or        $a2, $v0, $zero
   .L00007170:
-    /* DD7BDC 00007170 3C050000 */  lui        $a1, %hi(D_00007F84)
-    /* DD7BE0 00007174 24A57F84 */  addiu      $a1, $a1, %lo(D_00007F84)
+    /* DD7BDC 00007170 3C050000 */  lui        $a1, %hi(sStr_EnvSettings_7F84)
+    /* DD7BE0 00007174 24A57F84 */  addiu      $a1, $a1, %lo(sStr_EnvSettings_7F84)
     /* DD7BE4 00007178 00C02025 */  or         $a0, $a2, $zero
     /* DD7BE8 0000717C 0C000000 */  jal        func_00000000
     /* DD7BEC 00007180 AFA60018 */   sw        $a2, 0x18($sp)

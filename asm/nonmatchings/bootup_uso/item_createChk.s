@@ -4,9 +4,9 @@ glabel item_createChk
     /* DD5CF0 00005284 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD5CF4 00005288 AFA40038 */  sw         $a0, 0x38($sp)
     /* DD5CF8 0000528C AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5CFC 00005290 3C040000 */  lui        $a0, %hi(D_00007DD4)
+    /* DD5CFC 00005290 3C040000 */  lui        $a0, %hi(sStr_rom_checkpoint_uso_7DD4)
     /* DD5D00 00005294 0C000000 */  jal        func_00000000
-    /* DD5D04 00005298 24847DD4 */   addiu     $a0, $a0, %lo(D_00007DD4)
+    /* DD5D04 00005298 24847DD4 */   addiu     $a0, $a0, %lo(sStr_rom_checkpoint_uso_7DD4)
     /* DD5D08 0000529C 8FAE0038 */  lw         $t6, 0x38($sp)
     /* DD5D0C 000052A0 2404004C */  addiu      $a0, $zero, 0x4C
     /* DD5D10 000052A4 0C000000 */  jal        func_00000000

@@ -12,8 +12,8 @@ glabel CamDirector_ctor
     /* DD2EAC 00002440 10400018 */  beqz       $v0, .L000024A4
     /* DD2EB0 00002444 00402025 */   or        $a0, $v0, $zero
   .L00002448:
-    /* DD2EB4 00002448 3C050000 */  lui        $a1, %hi(D_0000731C)
-    /* DD2EB8 0000244C 24A5731C */  addiu      $a1, $a1, %lo(D_0000731C)
+    /* DD2EB4 00002448 3C050000 */  lui        $a1, %hi(sStr_Node_731C)
+    /* DD2EB8 0000244C 24A5731C */  addiu      $a1, $a1, %lo(sStr_Node_731C)
     /* DD2EBC 00002450 0C000000 */  jal        func_00000000
     /* DD2EC0 00002454 AFA40018 */   sw        $a0, 0x18($sp)
     /* DD2EC4 00002458 8FA40018 */  lw         $a0, 0x18($sp)

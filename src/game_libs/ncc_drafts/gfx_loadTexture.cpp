@@ -31,7 +31,7 @@
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32; typedef signed char s8; typedef short s16; typedef int s32; typedef float f32;
 #include "gbi_subset.h"
 extern "C" { int AnimPlayer_reset(int); int dbg_printThreads(...); }
-extern "C" char gl_d_578b4_s1[];
+extern "C" char sStr_unkown_tile_219B8[];
 extern "C" char gl_d_578b4_s2a[];
 
 #define gDPLoadTextureTileO(pkt, timg, fmt, siz, width, height, uls, ult, lrs, lrt, pal, cms, cmt, masks, maskt, shifts, shiftt) \
@@ -149,7 +149,7 @@ extern "C" void gfx_loadTexture(GCtx *ctx, TexDesc *tex, s32 tmem) {
             return;
         }
         s1_def:
-            dbg_printThreads(gl_d_578b4_s1 + 0x219B8, tex->fmt);
+            dbg_printThreads(sStr_unkown_tile_219B8 + 0x219B8, tex->fmt);
             return;
         }
     } else {

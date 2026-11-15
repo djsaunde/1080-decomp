@@ -25,7 +25,7 @@
 #include "common.h"
 
 extern int gl_func_00000000();
-extern char gl_ref_0001EE18_3AC5C, gl_ref_0001EE24_3AC5C, gl_ref_0001EE3C_3AC5C, gl_ref_0001EE48_3AC5C;
+extern char sStr_CollShape_1EE18, sStr_CollShape_CollShape_1EE24, sStr_colshape_1EE3C, sStr_unknown_coll_cmd_1EE48;
 
 int *CollShape_ctor(int *arg0, int *arg1) {
     int *q;    /* v0 post-increment temp */
@@ -39,10 +39,10 @@ int *CollShape_ctor(int *arg0, int *arg1) {
             goto ret;
         }
     }
-    gl_func_00000000(arg0, &gl_ref_0001EE18_3AC5C);
+    gl_func_00000000(arg0, &sStr_CollShape_1EE18);
     *(int **)((char *)arg0 + 0x34) = arg1;
     flag = 0;
-    gl_func_00000000(&gl_ref_0001EE24_3AC5C);
+    gl_func_00000000(&sStr_CollShape_CollShape_1EE24);
     *(int *)((char *)arg0 + 0x30) = 0;
     if (1) {
     q = arg1; arg1 = q + 1; cmd = *q;
@@ -67,14 +67,14 @@ int *CollShape_ctor(int *arg0, int *arg1) {
             break;
         case 3:
             q = arg1; arg1 = q + 1; v = *q;
-            *(int *)((char *)arg0 + 0x84) = gl_func_00000000(0, &gl_ref_0001EE3C_3AC5C, v, 0);
+            *(int *)((char *)arg0 + 0x84) = gl_func_00000000(0, &sStr_colshape_1EE3C, v, 0);
             break;
         case 4:
             arg1 += 1;
             q = arg1; arg1 = q + 1; flag = *q;
             break;
         default:
-            gl_func_00000000(&gl_ref_0001EE48_3AC5C);
+            gl_func_00000000(&sStr_unknown_coll_cmd_1EE48);
             break;
         }
         q = arg1; arg1 = q + 1; cmd = *q;

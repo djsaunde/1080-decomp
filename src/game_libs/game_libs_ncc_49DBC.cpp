@@ -22,7 +22,7 @@ extern int arg3;
 extern int arg4;
 extern int arg1;
 extern void gl_func_00000000_49DBCv(...);
-extern char gl_d_49dbc_t2[];
+extern char gMorphPolyShade_49dbc_t2[];
 extern char gl_d_49dbc_t3[];
 }
 extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3, char *arg4) {
@@ -102,6 +102,6 @@ extern "C" u8 *PolyShape_shade_00049DBC(char *arg0, s32 arg1, s32 arg2, s32 arg3
     if (arg1 != 0) {
         return (u8 *)gl_func_00000000(arg2, &sp50);
     }
-    gl_func_00000000(arg2, &sp50, gl_d_49dbc_t2, gl_d_49dbc_t3, (*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 2);
+    gl_func_00000000(arg2, &sp50, gMorphPolyShade_49dbc_t2, gl_d_49dbc_t3, (*(s32 *)(arg0 + 0x68)) + (arg3 * 8) + 2);
     return NULL;
 }

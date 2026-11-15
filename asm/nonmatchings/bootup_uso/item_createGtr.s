@@ -4,9 +4,9 @@ glabel item_createGtr
     /* DD5DA0 00005334 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD5DA4 00005338 AFA40038 */  sw         $a0, 0x38($sp)
     /* DD5DA8 0000533C AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5DAC 00005340 3C040000 */  lui        $a0, %hi(D_00007DE8)
+    /* DD5DAC 00005340 3C040000 */  lui        $a0, %hi(sStr_rom_checkpoint_uso_7DE8)
     /* DD5DB0 00005344 0C000000 */  jal        func_00000000
-    /* DD5DB4 00005348 24847DE8 */   addiu     $a0, $a0, %lo(D_00007DE8)
+    /* DD5DB4 00005348 24847DE8 */   addiu     $a0, $a0, %lo(sStr_rom_checkpoint_uso_7DE8)
     /* DD5DB8 0000534C 8FAE0038 */  lw         $t6, 0x38($sp)
     /* DD5DBC 00005350 24040050 */  addiu      $a0, $zero, 0x50
     /* DD5DC0 00005354 0C000000 */  jal        func_00000000

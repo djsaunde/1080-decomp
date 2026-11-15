@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_000074DC = 0x0;
+sStr_Players_74DC = 0x0;
 func_00000000_3638_v = 0x0;
 func_3638_attach = 0x0;
 func_3638_finalize = 0x0;

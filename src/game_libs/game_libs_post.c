@@ -3461,7 +3461,7 @@ typedef struct {
 } gl_21498_GS;
 extern gl_21498_GS gAudioContext_345c0_21498;
 extern gl_21498_Rec D_1cc10_21498[];
-extern char D_1cdd0_21498[];
+extern char gAudioHeapInitSizes_1cdd0_21498[];
 extern char D_sym1_21498[];
 #define G gAudioContext_345c0_21498
 extern void gl_ref_0003408C();
@@ -3510,7 +3510,7 @@ void AudioHeap_Init(void) {
         G.n2048 = 4;
     }
     G.h2 = rec->h14;
-    G.h2074 = (unsigned int)((float)a3 * *(float *)(D_sym1_21498 + 0xE90) / *(short *)(D_1cdd0_21498 + 2) / G.f2138);
+    G.h2074 = (unsigned int)((float)a3 * *(float *)(D_sym1_21498 + 0xE90) / *(short *)(gAudioHeapInitSizes_1cdd0_21498 + 2) / G.f2138);
     G.f205C = (float)t1 * (float)a3 / (float)(unsigned int)G.h2038 / G.h2074;
     G.h2034 = rec->b4;
     n = G.h2034;
@@ -4321,7 +4321,7 @@ void AudioLoad_DecreaseSampleDmaTtls(void) {
  * 98.19: 206 of 207 words, the cast form needed WrPos-first spellings).
  * gAudioCtx: curAudioFrameDmaQueue 0x16BC, curAudioFrameDmaIoMsgBuf 0x17D4,
  * curAudioFrameDmaCount 0x207C; "SUPERDMA" literal = module rodata 0x1AA84
- * (gl_22760_superDma, pinned 0x1AA84). Run-140 residual (now gone):
+ * (sStr_SUPERDMA_1AA84, pinned 0x1AA84). Run-140 residual (now gone):
  * `if (ttl == 0) { ...; RdPos1++; }` (target: beql with the increment in the delay
  * slot, one word longer) and two compare-operand / t-register orders. */
 typedef struct { u8 *ramAddr; u32 devAddr; u16 sizeUnused; u16 size; u8 unused; u8 reuseIndex; u8 ttl; } gl_22760_SampleDma;
@@ -4336,7 +4336,7 @@ typedef struct {
 } gl_22760_Ctx;
 extern gl_22760_Ctx gAudioContext_22760T;
 #define gl_22760_gAudioCtx gAudioContext_22760T
-extern char gl_22760_superDma[];
+extern char sStr_SUPERDMA_1AA84[];
 extern int gl_ref_00038604();
 #define AudioLoad_Dma gl_ref_00038604
 
@@ -4421,7 +4421,7 @@ void *AudioLoad_DmaSampleData(u32 devAddr, u32 size, s32 arg2, u8 *dmaIndexRef, 
     dma->devAddr = dmaDevAddr;
     dma->sizeUnused = transfer;
     AudioLoad_Dma(&gl_22760_gAudioCtx.curAudioFrameDmaIoMsgBuf[gl_22760_gAudioCtx.curAudioFrameDmaCount++], 0, 0,
-                  dmaDevAddr, dma->ramAddr, transfer, &gl_22760_gAudioCtx.curAudioFrameDmaQueue, medium, gl_22760_superDma);
+                  dmaDevAddr, dma->ramAddr, transfer, &gl_22760_gAudioCtx.curAudioFrameDmaQueue, medium, sStr_SUPERDMA_1AA84);
     *dmaIndexRef = dmaIndex;
     return (devAddr - dmaDevAddr) + dma->ramAddr;
 }
@@ -5644,8 +5644,8 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
 typedef struct { char pad[0x18]; } gl_23E60_MQ;
 typedef struct { char pad[0x18]; } gl_23E60_IoMesg;
 typedef struct { char pad0[0x1DD4]; gl_23E60_MQ syncDmaQueue; char pad1dec[4]; gl_23E60_IoMesg syncDmaIoMesg; } gl_23E60_Ctx;
-extern char gl_23e60_fastCopy1[];  /* "FastCopy" at 0x1ACC0, pinned */
-extern char gl_23e60_fastCopy2[];  /* "FastCopy" at 0x1ACCC, pinned */
+extern char sStr_FastCopy_1ACC0[];  /* "FastCopy" at 0x1ACC0, pinned */
+extern char sStr_FastCopy_1ACCC[];  /* "FastCopy" at 0x1ACCC, pinned */
 extern int gl_func_00038604();
 void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
     gl_23E60_MQ *msgQueue = &((gl_23E60_Ctx *)&D_00000000)->syncDmaQueue;
@@ -5658,7 +5658,7 @@ void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
         if (size < 0x400) {
             break;
         }
-        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, 0x400, msgQueue, medium, gl_23e60_fastCopy1);
+        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, 0x400, msgQueue, medium, sStr_FastCopy_1ACC0);
         gl_func_00000000(msgQueue, NULL, 1);
         size -= 0x400;
         devAddr += 0x400;
@@ -5666,7 +5666,7 @@ void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
     }
 
     if (size != 0) {
-        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, size, msgQueue, medium, gl_23e60_fastCopy2);
+        gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, size, msgQueue, medium, sStr_FastCopy_1ACCC);
         gl_func_00000000(msgQueue, NULL, 1);
     }
 }
@@ -5805,8 +5805,8 @@ typedef struct {
 } gl_24378_Ctx;
 #define gl_24378_gAudioCtx (*(gl_24378_Ctx *)&gAudioContext)
 extern void *gl_24378_gAudioCustomUpdateFunction;
-extern u8 gl_24378_gAudioHeap[];
-extern gl_24378_HeapInitSizes gl_24378_gAudioHeapInitSizes;
+extern u8 gAudioHeap_24378[];
+extern gl_24378_HeapInitSizes gAudioHeapInitSizes_24378;
 extern s32 gl_24378_osTvType;
 extern u8 gl_24378_rodata[];
 extern gl_24378_Table gl_24378_gSequenceTable, gl_24378_gSoundFontTable, gl_24378_gSampleBankTable;
@@ -5824,8 +5824,8 @@ void AudioLoad_Init(void) {
     gl_24378_gAudioCustomUpdateFunction = NULL;
     gl_24378_gAudioCtx.resetTimer = 0;
 
-    for (i = 0; i < gl_24378_gAudioHeapInitSizes.heapSize / 8; i++) {
-        ((u64 *)gl_24378_gAudioHeap)[i] = 0;
+    for (i = 0; i < gAudioHeapInitSizes_24378.heapSize / 8; i++) {
+        ((u64 *)gAudioHeap_24378)[i] = 0;
     }
 
     {
@@ -5875,7 +5875,7 @@ void AudioLoad_Init(void) {
     *(void **)((char *)&gl_24378_gAudioCtx + 0x1644) = (void *)gl_func_00000000();
     *(void **)((char *)&gl_24378_gAudioCtx + 0x1648) = (void *)gl_func_00000000();
 
-    gl_func_00000000(gl_24378_gAudioHeapInitSizes.initPoolSize);
+    gl_func_00000000(gAudioHeapInitSizes_24378.initPoolSize);
 
     for (i = 0; i < 3; i++) {
         gl_24378_gAudioCtx.aiBuffers[i] = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, 0xB00);
@@ -5905,12 +5905,12 @@ void AudioLoad_Init(void) {
         gl_24378_gAudioCtx.soundFontList[i].numSfx = gl_24378_gAudioCtx.soundFontTable->entries[i].shortData3;
     }
 
-    ramAddr = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, gl_24378_gAudioHeapInitSizes.permanentPoolSize);
+    ramAddr = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, gAudioHeapInitSizes_24378.permanentPoolSize);
     if (ramAddr == NULL) {
-        gl_24378_gAudioHeapInitSizes.permanentPoolSize = 0;
+        gAudioHeapInitSizes_24378.permanentPoolSize = 0;
     }
 
-    gl_func_00000000(&gl_24378_gAudioCtx.permanentPool, ramAddr, gl_24378_gAudioHeapInitSizes.permanentPoolSize);
+    gl_func_00000000(&gl_24378_gAudioCtx.permanentPool, ramAddr, gAudioHeapInitSizes_24378.permanentPoolSize);
     gl_func_00000000(gl_24378_gAudioCtx.taskStartQueueP, gl_24378_gAudioCtx.totalTaskCount, 0);
 }
 #undef gl_24378_gAudioCtx

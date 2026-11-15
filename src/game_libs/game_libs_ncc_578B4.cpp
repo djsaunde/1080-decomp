@@ -31,9 +31,9 @@ typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
 int gl_578b4_c34458(...);
 int game_libs_func_00062F08_578B4(...);
-extern char gl_d_578b4_s1[];
+extern char sStr_unkown_tile_219B8[];
 extern char gl_d_578b4_s2a[];
-extern char gl_d_578b4_s2b[];
+extern char sFmt_bad_texfmt_num_219C4[];
 }
 extern "C"
 void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
@@ -509,7 +509,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             FW(temp_t0_19, 0x4) = (s32) (((((((FW(sp1DC, 0x4) + (*(s16 *)((char *)arg1 + 0x20))) - FW(sp1DC, 0x4)) - 1) << 2) & 0xFFF) << 0xC) | (((((temp_v0_6 + (*(s16 *)((char *)arg1 + 0x22))) - temp_v0_6) - 1) << 2) & 0xFFF));
             return;
         s1_def:                                    /* switch 1 */
-            gl_578b4_c34458((int *)(gl_d_578b4_s1 + 0x219B8), temp_a1, sp1DC, arg0);
+            gl_578b4_c34458((int *)(sStr_unkown_tile_219B8 + 0x219B8), temp_a1, sp1DC, arg0);
             return;
         }
     } else {
@@ -901,7 +901,7 @@ void gfx_loadTexture(char *arg0, char *arg1, s32 arg2) {
             if (0) { gl_578b4_c34458((s32 *)&sp34); }
             temp_a1 = sp34 = FW(arg1, 0x24);
         s2_def:                                    /* switch 2 */
-            gl_578b4_c34458((int *)(gl_d_578b4_s2b + 0x219C4), temp_a1);
+            gl_578b4_c34458((int *)(sFmt_bad_texfmt_num_219C4 + 0x219C4), temp_a1);
             return;
         }
     }

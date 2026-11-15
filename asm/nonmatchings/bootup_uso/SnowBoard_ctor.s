@@ -6,23 +6,23 @@ glabel SnowBoard_ctor
     /* DDF274 0000E808 0C000000 */  jal        func_00000000
     /* DDF278 0000E80C 00000000 */   nop
     /* DDF27C 0000E810 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DDF280 0000E814 3C050001 */  lui        $a1, %hi(D_00008D34)
+    /* DDF280 0000E814 3C050001 */  lui        $a1, %hi(sStr_rom_audio_seq_uso_8D34)
     /* DDF284 0000E818 AFA00028 */  sw         $zero, 0x28($sp)
     /* DDF288 0000E81C AFA00024 */  sw         $zero, 0x24($sp)
     /* DDF28C 0000E820 AFA00020 */  sw         $zero, 0x20($sp)
-    /* DDF290 0000E824 24A58D34 */  addiu      $a1, $a1, %lo(D_00008D34)
+    /* DDF290 0000E824 24A58D34 */  addiu      $a1, $a1, %lo(sStr_rom_audio_seq_uso_8D34)
     /* DDF294 0000E828 24840000 */  addiu      $a0, $a0, 0x0
     /* DDF298 0000E82C 0C000000 */  jal        func_00000000
     /* DDF29C 0000E830 27A60024 */   addiu     $a2, $sp, 0x24
     /* DDF2A0 0000E834 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DDF2A4 0000E838 3C050001 */  lui        $a1, %hi(D_00008D48)
-    /* DDF2A8 0000E83C 24A58D48 */  addiu      $a1, $a1, %lo(D_00008D48)
+    /* DDF2A4 0000E838 3C050001 */  lui        $a1, %hi(sStr_rom_audio_wave_uso_8D48)
+    /* DDF2A8 0000E83C 24A58D48 */  addiu      $a1, $a1, %lo(sStr_rom_audio_wave_uso_8D48)
     /* DDF2AC 0000E840 24840000 */  addiu      $a0, $a0, 0x0
     /* DDF2B0 0000E844 0C000000 */  jal        func_00000000
     /* DDF2B4 0000E848 27A60020 */   addiu     $a2, $sp, 0x20
     /* DDF2B8 0000E84C 3C040000 */  lui        $a0, (0x0 >> 16)
-    /* DDF2BC 0000E850 3C050001 */  lui        $a1, %hi(D_00008D5C)
-    /* DDF2C0 0000E854 24A58D5C */  addiu      $a1, $a1, %lo(D_00008D5C)
+    /* DDF2BC 0000E850 3C050001 */  lui        $a1, %hi(sStr_rom_audio_bank_uso_8D5C)
+    /* DDF2C0 0000E854 24A58D5C */  addiu      $a1, $a1, %lo(sStr_rom_audio_bank_uso_8D5C)
     /* DDF2C4 0000E858 24840000 */  addiu      $a0, $a0, 0x0
     /* DDF2C8 0000E85C 0C000000 */  jal        func_00000000
     /* DDF2CC 0000E860 27A60028 */   addiu     $a2, $sp, 0x28

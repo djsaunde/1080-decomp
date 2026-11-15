@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) donor for BGBox_ctor (0xF4 / 61 words): the
  * constructor D::D(int, int, int) of a 0x40-byte class with a base B whose
- * ctor is out of line (B(&D_000066A8), import) and a vptr at +0x28 (B
+ * ctor is out of line (B(&sStr_Node_66A8), import) and a vptr at +0x28 (B
  * declares the virtual). edg's ctor protocol supplies the get-or-create head
  * (`if (this == 0) this = new(0x40); if (this) { ... } return this;`) with the
  * alloc forwarded through an inline operator new. Body: scale (1,1,1), 0.0
@@ -15,7 +15,7 @@
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-g run 150). */
 extern "C" {
 void *func_00000000(...);
-extern char D_000066A8;
+extern char sStr_Node_66A8;
 extern int bu_ca0_g[], bu_ca0_g_b[];
 }
 inline void *operator new(unsigned n) { return func_00000000(n); }
@@ -23,7 +23,7 @@ struct V { short x, y, z, w; int p, q; void set(int a, int b, int c) { x = a; y 
 extern "C" V bu_ca0_box[];
 struct B { int p0[3]; int a1; int p1[6]; B(char *); virtual void g(); };
 struct D : B { float sx, sy, sz, r; int a2; D(int a1, int a2, int a3); virtual void g(); };
-D::D(int a1_, int a2_, int a3) : B(&D_000066A8) {
+D::D(int a1_, int a2_, int a3) : B(&sStr_Node_66A8) {
     int h, nh;
     a1 = a1_;
     sz = 1.0f;

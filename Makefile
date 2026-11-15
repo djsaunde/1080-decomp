@@ -1872,7 +1872,7 @@ GAMELIBS_46790_DONOR := build/src/game_libs/game_libs_ncc_46790.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_drawFbChar_00046790=$(GAMELIBS_46790_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46790_DONOR)
 # 3B6A0 = real C++ `int Obj::below()` (agent-c run 160; was the run-134 NCC C lift, cfe 65.26); symbol renamed (name only).
-# agent-c run 304: EXACT NCC donor over the placeholder on both build trees (the next-vertex table D_3B6A0_tbl pinned 0).
+# agent-c run 304: EXACT NCC donor over the placeholder on both build trees (the next-vertex table gTriEdgeNext_3B6A0_tbl pinned 0).
 GAMELIBS_3B6A0_DONOR := build/src/game_libs/game_libs_ncc_3B6A0.cpp.o
 $(GAMELIBS_3B6A0_DONOR): src/game_libs/game_libs_ncc_3B6A0.cpp
 	@mkdir -p $(dir $@)
@@ -1920,7 +1920,7 @@ $(GAMELIBS_3B2EC_DONOR): src/game_libs/game_libs_ncc_3B2EC.cpp
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_height=$(GAMELIBS_3B2EC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B2EC_DONOR)
 # 3BE1C = real C++ `int Obj::query()` (agent-c run 178; cfe 77.27); symbol renamed (name only).
-# agent-g run 325: EXACT NCC donor over the placeholder on both build trees (D_3BE1C_c / gGfxLib_3BE1C_128 pinned as before).
+# agent-g run 325: EXACT NCC donor over the placeholder on both build trees (gTriEdgeNext_3BE1C_c / gGfxLib_3BE1C_128 pinned as before).
 GAMELIBS_3BE1C_DONOR := build/src/game_libs/game_libs_ncc_3BE1C.cpp.o
 $(GAMELIBS_3BE1C_DONOR): src/game_libs/game_libs_ncc_3BE1C.cpp
 	@mkdir -p $(dir $@)
@@ -2111,7 +2111,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4B2F4_DONOR)
 # 3AE58 = mesh-vertex table build under NCC (agent-c run 162: cfe 92.91 -> 98.37, loop rotation / frame / length = target).
 # agent-c run 287: EXACT NCC donor over a placeholder (phantom pk + named dst argument); the blank jal / lui-addiu words
-# bind to the existing gl_func_00000000 = 0 and gl_data_0001EE5C / gl_data_0001EE70 pins (no new symbols).
+# bind to the existing gl_func_00000000 = 0 and sStr_polyshape_CollShape_1EE5C / sStr_CollShape_1EE70 pins (no new symbols).
 GAMELIBS_3AE58_DONOR := build/src/game_libs/game_libs_ncc_3AE58.cpp.o
 $(GAMELIBS_3AE58_DONOR): src/game_libs/game_libs_ncc_3AE58.cpp
 	@mkdir -p $(dir $@)
@@ -2249,7 +2249,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # agent-c run 387: EXACT NCC donor over a placeholder on both build trees (p[ia] / p[ib] / sgn read in the edge loop,
 # face pick without the BB split, off declared last). The donor-local .rodata (1e-5 / -1e-4 doubles) is renamed by the
 # splice to CollShape_raycast_rodata (pinned to RoData 0x1AA8); gl_func_0003B9C0_sqrtf / gl_func_00000000_vnorm3 are
-# blank USO jal words and D_3B9C0_c the next-vertex table (all pinned 0).
+# blank USO jal words and gTriEdgeNext_3B9C0_c the next-vertex table (all pinned 0).
 GAMELIBS_3B9C0_DONOR := build/src/game_libs/game_libs_ncc_3B9C0.cpp.o
 $(GAMELIBS_3B9C0_DONOR): src/game_libs/game_libs_ncc_3B9C0.cpp
 	@mkdir -p $(dir $@)

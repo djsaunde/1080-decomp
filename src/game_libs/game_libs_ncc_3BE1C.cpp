@@ -33,7 +33,7 @@ typedef int s32; typedef unsigned int u32; typedef float f32;
 extern "C" {
 extern char D_00000000[];
 int gl_func_00000000(...);
-extern s16 D_3BE1C_c[];
+extern s16 gTriEdgeNext_3BE1C_c[];
 extern f32 gGfxLib_3BE1C_128[];
 }
 #define K(o) (*(f32 *)(D_00000000 + (o)))
@@ -155,7 +155,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
 #define qb q[b]
 #define sg ((f32)t->sgn)
 #define vt (col->verts)
-                nx = D_3BE1C_c; fv = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie: the q[b] lwc1 before nx's addiu %lo, as the target): 99.27 -> 99.78 */
+                nx = gTriEdgeNext_3BE1C_c; fv = (u16 *)f; do { /* agent-c run 300: one line (as1 source-line tie: the q[b] lwc1 before nx's addiu %lo, as the target): 99.27 -> 99.78 */
                     v0 = vt[fv[1]];
                     v1 = vt[f->vi[*nx]];
                     nx++;
@@ -171,7 +171,7 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
                      * code-free test of v0[a] (three uses in one test at the end of the block, no new block) lifts it to the
                      * tie, which v0[a] wins by LR order (v0 / v1 as the target). The run-231 folds of v1 / v0 on ok dropped. */
                     if (((f32)ex * (f32)dy - (f32)ey * (f32)dx) * sg > 10.0f) ok = 0;
-                } while (ok && (fv++, nx < D_3BE1C_c + 3));
+                } while (ok && (fv++, nx < gTriEdgeNext_3BE1C_c + 3));
             }
             if (ok) {
                 dist[cnt] = d / K(0x12C);

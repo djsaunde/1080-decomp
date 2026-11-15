@@ -74,15 +74,15 @@ void func_000000F0(Quad4 *dst) {
     *dst = buf;
 }
 
-extern char D_00006538;
+extern char sStr_Poop_start_6538;
 void func_00000148(int a0, int a1, int a2) {
-    func_00000000(&D_00006538);
+    func_00000000(&sStr_Poop_start_6538);
     func_00000000(a0, a1, a2);
 }
 
-extern char D_00006544;
+extern char sStr_Poop_end_6544;
 void func_00000188(int a0, int a1, int a2) {
-    func_00000000(&D_00006544);
+    func_00000000(&sStr_Poop_end_6544);
     func_00000000(a0, a1, a2);
 }
 
@@ -136,16 +136,16 @@ void snd_updateChannel10Emitter(int a0, int a1, int a2) {
     func_00000000(a0, local1, (signed char)local2);
 }
 
-extern char D_00006550;
+extern char sStr_Poop_Added_sound_heap_6550;
 void snd_addSoundHeap(void) {
     func_00000000();
-    func_00000000(&D_00006550);
+    func_00000000(&sStr_Poop_Added_sound_heap_6550);
 }
 
-extern char D_00006568;
+extern char sStr_Poop_Removed_sound_heap_6568;
 void snd_removeSoundHeap(void) {
     func_00000000();
-    func_00000000(&D_00006568);
+    func_00000000(&sStr_Poop_Removed_sound_heap_6568);
 }
 
 void snd_setPlayer1Channel15IO(void) {
@@ -250,7 +250,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  *   - o->0x20 = 1 ;  o->0x1C = (arg8 & 0x8000) != 0
  *   - if(o->0x1C) { func_00000000((int)arg1bits,&sp28,&sp24,arg7);
  *                   func_00000000(arg0[0],*(int*)&sp28,(s8)sp24); }
- *   - func_00000000(&D_00006584); func_00000000(arg0[0],0);
+ *   - func_00000000(&sStr_NA_UpdPl_6584); func_00000000(arg0[0],0);
  *     func_00000000();
  * The &func_00000044+off ldc1 doubles are f64 consts embedded in
  * func_00000044's literal pool (same idiom as CamDirector_update line ~1794,
@@ -269,7 +269,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  *      slots, shifting arg-home + $f-register numbering throughout.
  * INCLUDE_ASM-preserved (.s = source of truth). */
 #ifdef NON_MATCHING
-extern char D_00006584;
+extern char sStr_NA_UpdPl_6584;
 /* Run 109 (agent-c, 93.18 -> 99.75): per-address pool doubles; arg5 is
  * reassigned with the scaled value (target keeps it in f2); ONE float local
  * carries both the clamp and the fabs results (f0); `/ (f32)4` keeps the
@@ -331,7 +331,7 @@ void snd_updatePlayer(SndHandle *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f
             func_00000000(*(int*)&arg1, &sp28, &sp24, arg7);
             func_00000000(arg0->obj, *(int*)&sp28, (s8) sp24);
         }
-        func_00000000(&D_00006584);
+        func_00000000(&sStr_NA_UpdPl_6584);
         func_00000000(arg0->obj, 0);
         func_00000000();
     }
@@ -585,7 +585,7 @@ void *func_00000C10(int *arg0) {
  *       if (o == 0) {
  *           o = alloc(0x40);                      // func_00000000
  *           if (o == 0) return 0;
- *           init(o, &D_000066A8);                 // func_00000000
+ *           init(o, &sStr_Node_66A8);                 // func_00000000
  *       }
  *       o->0x28 = &D_desc;
  *       o->0x34 = 1.0f; o->0x30 = 1.0f;           // scale = (1,1,1)
@@ -608,7 +608,7 @@ void *func_00000C10(int *arg0) {
  * round) is written as a box/quad corner pattern into a global s16
  * vertex table (4 entries, 0x10 stride, x/y/z at +0/+2/+4 - all z =
  * +h, xy = the 4 (+-h) corners); a3 also stored to two global int
- * slots (&D and func_00000000+4). D_000066A8 = init datum.
+ * slots (&D and func_00000000+4). sStr_Node_66A8 = init datum.
  * 2026-06-20 reconstruction 61->79%: (1) control flow rewritten to
  * `if (a0 || (o=alloc())) { body }` + shared-epilogue `return o`
  * (was a separate `return 0` path); (2) added the missing
@@ -621,7 +621,7 @@ void *func_00000C10(int *arg0) {
 /* BGBox_ctor: EXACT via an IDO 7.1 NCC (C++) donor,
  * src/bootup_uso/bootup_uso_ncc_CA0.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-g run 150). It is the real constructor D::D(a1, a2, a3):
- * edg's this==0 -> new(0x40) protocol, out-of-line base ctor B(&D_000066A8)
+ * edg's this==0 -> new(0x40) protocol, out-of-line base ctor B(&sStr_Node_66A8)
  * (import), D's vptr at +0x28 (the stores now schedule as in the target), and
  * the last vertex corner written one store per source line (as1 reorders only
  * inside a .loc line group; the cfe body colored h/-h v0/a0, 97.2). */
@@ -643,7 +643,7 @@ void BGBox_ctor(int a0, int a1, int a2, int a3) {
  * INCLUDE_ASM remains build path. */
 extern void func_00000044();  /* used as data-symbol base */
 extern void func_0000027C();  /* used as data-symbol base */
-extern int D_00007324;
+extern int sStr_cam_7324;
 /* EXACT (agent-c run 115). Globals block import_0005C108 (alias gGfxLib_d94_g),
  * threshold = RoData f64 at +0x70 (func_00000044 + 0x2C), record at 0x294
  * (func_0000027C + 0x18, alias gGfxLib_d94_src); callees func_05B750(g, rec) and
@@ -677,9 +677,9 @@ void BGBox_func_00000D94(char *a0) {
 //   void *U64BGWall_ctor(void *self, Cfg *a1, void *owner2, void *owner3,
 //                       arg5)  // arg5 @ sp+0x1E8; a1->s0 owner2->s1 owner3->s2
 //     if (!self) { self = func_00000000(0x4C); if (!self) return 0; }  // alloc
-//     func_00000000(self, &D_000066B0);          // register / base-init
+//     func_00000000(self, &sStr_Node_66B0);          // register / base-init
 //     self->0x28 = 0;
-//     self->0x0C = &D_000066B8;                   // vtable/template
+//     self->0x0C = &sStr_U64BGWall_66B8;                   // vtable/template
 //     self->0x2C = owner2;  self->0x30 = owner3;  self->0x34 = arg5;
 //     self->0x3C = self->0x40 = self->0x44 = self->0x48 = 1.0f;  // scale/uv
 //     // cache a1->0x8, a1->0xC into locals (grid dims)
@@ -696,10 +696,10 @@ void BGBox_func_00000D94(char *a0) {
 //   }
 //
 // Struct-typing reference:
-//   self: 0x0C vtable(&D_000066B8), 0x28 fnptr=0, 0x2C/0x30 owner ptrs,
+//   self: 0x0C vtable(&sStr_U64BGWall_66B8), 0x28 fnptr=0, 0x2C/0x30 owner ptrs,
 //         0x34 arg5, 0x3C/0x40/0x44/0x48 f32=1.0 (scale/uv defaults), size 0x4C.
 //   owner2(s1)->0x0C = a {data,count} index-list handle.
-//   D_000066B0 base-init descriptor; D_000066B8 instance vtable.
+//   sStr_Node_66B0 base-init descriptor; sStr_U64BGWall_66B8 instance vtable.
 //   func_00000000 + 0x4 = a placeholder/folded data ref (same JAL-target-0
 //   + folded-pool family as the SndHandle_triggerEvent1_0000098C/func_00000044 literal-pool bug,
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
@@ -731,7 +731,7 @@ void BGBox_func_00000D94(char *a0) {
  * agent-g run 169 (87.04 -> 88.82): `k = 0` set right before phase 2 (its only
  * user) instead of before phase 1: the shorter k live range outranks buf, which
  * is now spilled to 0x1CC and reloaded like the target. */
-extern char D_000066B0, D_000066B8;
+extern char sStr_Node_66B0, sStr_U64BGWall_66B8;
 extern char D_e68_vtx;  /* bootup.uso data sym163 (D_0065AC): 4-vertex quad */
 typedef struct { u32 w0, w1; } GwE68;
 typedef struct { GwE68 *buf; s32 count; } DlE68;
@@ -811,9 +811,9 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
 
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
-        func_00000000(self, &D_000066B0);
+        func_00000000(self, &sStr_Node_66B0);
         NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
-        NODE(self)->name = (s32)(&D_000066B8);
+        NODE(self)->name = (s32)(&sStr_U64BGWall_66B8);
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
         ((U64BGWall *)self)->mesh = arg2;
@@ -1085,10 +1085,10 @@ end:
  * get-or-create constructor + bulk property registration).
  * (reg = func_00000000(obj, &descriptor, 0).) Struct-typing
  * reference: o = 0x118-byte object. o->0x28 (40) descriptor ptr
- * (&D), o->0xC (12) type/vtable ptr (&D_00006E38), o->0x70 (112) =
+ * (&D), o->0xC (12) type/vtable ptr (&sStr_World_Registry_6E38), o->0x70 (112) =
  * 0, o->0x78 (120) = 0, o->0x74 (116) = &o[0x2C] (an embedded
  * sub-struct self-pointer; o+0x2C is init'd by the second reloc
- * call). D_00006E48..D_00006EC4 (and the .L00006EA8 entry) = ~10
+ * call). sStr_One_Make_6E48..sStr_Test_Grid_6EC4 (and the .L00006EA8 entry) = ~10
  * property/field descriptor data blobs registered into o via the
  * reg helper (a property-table builder; arg3 = 0 default).
  * EXACT 2026-10-16 agent-c (run 97): arg3 is NOT 0 but a per-site
@@ -1096,10 +1096,10 @@ end:
  * s-reg) -> D_1E08_a..j, o->0x28 = D_1E08_d, all pinned 0; the param is
  * reused as `o` (prologue or s0 / bnez / sw ra delay, as in the exact
  * 8F18 sibling) and an unused `pad` local gives frame 0x30 + the 0x24
- * spill slot for `sub`; .L00006EA8 -> D_00006EA8 pinned to 0x6EA8. */
-extern char D_00006E30, D_00006E38;
-extern char D_00006E48, D_00006E54, D_00006E60, D_00006E70, D_00006E80;
-extern char D_00006E8C, D_00006E98, D_00006EA8, D_00006EB8, D_00006EC4;
+ * spill slot for `sub`; .L00006EA8 -> sStr_Black_Diamond_6EA8 pinned to 0x6EA8. */
+extern char sStr_Node_6E30, sStr_World_Registry_6E38;
+extern char sStr_One_Make_6E48, sStr_HalfPipe_6E54, sStr_Slalom_Course_6E60, sStr_Stunt_Course_6E70, sStr_Long_Course_6E80;
+extern char sStr_New_Course_6E8C, sStr_Night_Course_6E98, sStr_Black_Diamond_6EA8, sStr_Practice_6EB8, sStr_Test_Grid_6EC4;
 /* per-site base-0 placeholders (target lui 0 / addiu 0 each, no CSE) */
 extern char D_1E08_d, D_1E08_a, D_1E08_b, D_1E08_c, D_1E08_e, D_1E08_f;
 extern char D_1E08_g, D_1E08_h, D_1E08_i, D_1E08_j;
@@ -1110,24 +1110,24 @@ void *WorldRegistry_create_00001E08(char *o) {
         o = (char*)func_00000000(0x118);
         if (o == 0) goto end;
     }
-    func_00000000(o, &D_00006E30);
+    func_00000000(o, &sStr_Node_6E30);
     ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
     sub = (char *)&((WorldRegistry *)o)->head;
     func_00000000(sub);
-    *(void**)(o + 0xC) = &D_00006E38; /* Node name "World Registry" */
+    *(void**)(o + 0xC) = &sStr_World_Registry_6E38; /* Node name "World Registry" */
     ((WorldRegistry *)o)->head.next = 0;
     ((WorldRegistry *)o)->numCourses = 0;
     ((WorldRegistry *)o)->tail = (WorldCourse *)sub;
-    func_00000000(o, &D_00006E48, &D_1E08_a);
-    func_00000000(o, &D_00006E54, &D_1E08_b);
-    func_00000000(o, &D_00006E60, &D_1E08_c);
-    func_00000000(o, &D_00006E70, &D_1E08_d);
-    func_00000000(o, &D_00006E80, &D_1E08_e);
-    func_00000000(o, &D_00006E8C, &D_1E08_f);
-    func_00000000(o, &D_00006E98, &D_1E08_g);
-    func_00000000(o, &D_00006EA8, &D_1E08_h);
-    func_00000000(o, &D_00006EB8, &D_1E08_i);
-    func_00000000(o, &D_00006EC4, &D_1E08_j);
+    func_00000000(o, &sStr_One_Make_6E48, &D_1E08_a);
+    func_00000000(o, &sStr_HalfPipe_6E54, &D_1E08_b);
+    func_00000000(o, &sStr_Slalom_Course_6E60, &D_1E08_c);
+    func_00000000(o, &sStr_Stunt_Course_6E70, &D_1E08_d);
+    func_00000000(o, &sStr_Long_Course_6E80, &D_1E08_e);
+    func_00000000(o, &sStr_New_Course_6E8C, &D_1E08_f);
+    func_00000000(o, &sStr_Night_Course_6E98, &D_1E08_g);
+    func_00000000(o, &sStr_Black_Diamond_6EA8, &D_1E08_h);
+    func_00000000(o, &sStr_Practice_6EB8, &D_1E08_i);
+    func_00000000(o, &sStr_Test_Grid_6EC4, &D_1E08_j);
 end:
     return o;
 }
@@ -1324,17 +1324,17 @@ void stream_readQuad_000023C8(Quad4 *dst) {
  * the `a0->0x34 = s5;` statement up to be adjacent to `a0->0x30 = s4;` pins
  * both sp-loaded stores together ahead of the zero/const block, matching the
  * target schedule exactly (0 non-reloc diffs vs expected; reloc symbol set =
- * func_00000000 x2 + D_0000731C HI/LO; the a0+0x28 store's `&D_00000000`
+ * func_00000000 x2 + sStr_Node_731C HI/LO; the a0+0x28 store's `&D_00000000`
  * materialises as `lui 0; addiu 0` post-link, byte-identical to the target's
  * reloc-stripped `lui (0x0>>16); addiu 0x0`). */
-extern char D_0000731C;
+extern char sStr_Node_731C;
 /* include/game/camera.h CamDirector (agent-g run 475 field form) */
 CamDirector *CamDirector_ctor(CamDirector *a0, int pad, int rider, int window, int cam0, int cam1) {
     if (a0 == 0) {
         a0 = (CamDirector *)func_00000000(0x50);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, &D_0000731C); /* Node init, "<Node>" */
+    func_00000000(a0, &sStr_Node_731C); /* Node init, "<Node>" */
     *(int*)((char*)a0 + 0x28) = (int)&CamDirector_vtbl; /* vptr (Data 0x6FD8) */
     a0->pad = (struct RiderInput *)pad;
     a0->rider = (SnowBoarder *)rider;
@@ -1359,7 +1359,7 @@ end:
 // Match history:
 // NM body now structurally faithful: gate read folds via FW(&func_00000044,0x20)
 //   HI16/LO16 reloc; 0x68 delegate base is s16 (lh, FH macro); cam->0x14C activate
-//   is a FLOAT store (FF, was wrongly FW=int 85); D_00007324 is the poll-table
+//   is a FLOAT store (FF, was wrongly FW=int 85); sStr_cam_7324 is the poll-table
 //   global (extern int); 2.0f hoisted to `two` local so cfg->0x4/0x0 emit mul.s
 //   (not strength-reduced x+x); cam field updates via &cam->field pointer temps.
 // Reg-agnostic similarity ~82% (166/175 insns). RESIDUAL CAP = register coloring +
@@ -1371,7 +1371,7 @@ end:
 /* 2026-10-16 agent-c rewrite: gate read through gInputMgr_00000064 (pinned 0x64 ==
  * func_00000044+0x20, folds into the lw like the target); the two cfg->0x10
  * reads stay separate because the second is read as u32 (one type CSEs them);
- * D_00007324 is passed as a 4-byte struct by value (`tb.w = D; f(.., tb, ..)`
+ * sStr_cam_7324 is passed as a 4-byte struct by value (`tb.w = D; f(.., tb, ..)`
  * gives the target `sw a1,56(sp); sw a1,4(sp)`); ONE reused `s0` pointer var
  * for cfg / vtable desc / FP field pointers (the target keeps it in s0 and
  * does not fold `&cam->f` into the lwc1/swc1). Residual: that var colours a3
@@ -1476,7 +1476,7 @@ void CamDirector_update(CamDirector *self) {
     s0 = (char *)self->pollTimer;
     self->pollTimer = (int)s0 + 1;
     if ((int)s0 >= 0x3C) {
-        tb.w = D_00007324;
+        tb.w = sStr_cam_7324;
         p = (char *)func_00000000(D_24B8_tbl, tb, &self->rider->pos, 0);
         if (p != 0 && p != self->lastCamNode) {
             k2 = FW(p, 0x3C);
@@ -1681,11 +1681,11 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_init);
  * (clears bit1, sets the 0x2000 and 0x80000 feature bits). &D_tbl =
  * a {int a; int b;} stride-8 table (next-probe reads p[0] after the
  * advance) walked until a zero terminator, each (a,b) passed to the
- * reloc helper with a fixed &D_ctx. D_000073E8 = init datum.
+ * reloc helper with a fixed &D_ctx. sStr_ddm_73E8 = init datum.
  * Caps <80: ~6 reloc calls + cross-symbol data refs (func_000003F8/
  * 000000F0/00000080/00000000+off) + multi-global flag RMW + table-
  * walk branch-likely. INCLUDE_ASM remains build path. */
-extern char D_000073E8;
+extern char sStr_ddm_73E8;
 extern void func_000003F8();  /* used as data-symbol base */
 /* EXACT (agent-c run 115). Identities/offsets from the TextReloc and the
  * asm addends: scale = RoData pool +0x4F0, dst = 0x128 / src = 0xE8 (both
@@ -1693,10 +1693,10 @@ extern void func_000003F8();  /* used as data-symbol base */
  * load/store aliases), cfg word import_0005EE6C + 4 through a named int v
  * (target keeps it in v0), table/gate D_00719C (two aliases so the gate is
  * its own load), ctx import_0005C108; callees func_072E58, func_072F1C,
- * func_074710(&D_000073E8, 0), func_059354 per entry, func_074840. */
+ * func_074710(&sStr_ddm_73E8, 0), func_059354 per entry, func_074840. */
 extern f32 bu_2c94_k4f0;
 extern f32 gGfxLib_2c94_dst[];
-extern char gGfxLib_2c94_src[], gGfxLib_2c94_ctx[], D_000073E8;
+extern char gGfxLib_2c94_src[], gGfxLib_2c94_ctx[], sStr_ddm_73E8;
 extern int bu_2c94_mode, gPolyFlags_3EEC4_2c94_x_ld, gPolyFlags_3EEC4_2c94_x_st, gPolyGeomMode_3EEC8_2c94_y_ld[], gPolyGeomMode_3EEC8_2c94_y_st[];
 extern int bu_2c94_tbl[], bu_2c94_gate;
 void game_initDdm_00002C94(void *a0, void *a1) {
@@ -1719,7 +1719,7 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     v |= 0x80000;
     gPolyGeomMode_3EEC8_2c94_y_st[1] = v;
     p = bu_2c94_tbl;
-    func_00000000(&D_000073E8, 0);
+    func_00000000(&sStr_ddm_73E8, 0);
     if (bu_2c94_gate != 0) {
         do {
             func_00000000(gGfxLib_2c94_ctx, p[0], p[1]);
@@ -1730,11 +1730,11 @@ void game_initDdm_00002C94(void *a0, void *a1) {
 }
 
 /* game_setupMode: bootup_uso subsystem init + 12-way command dispatch
- * (0x1EC / 123 words). init(&D_000073EC, 0); create -> global; attach the
+ * (0x1EC / 123 words). init(&sStr_ImgFileMgr_73EC, 0); create -> global; attach the
  * new object under arg0->0x84 (+0x10 list, 0x14 back-link, 0x4 linked flag);
  * config word |= 0x82000 | 0x20000; then switch (arg1) 1..12 -> per-mode
  * handler(arg0, arg2) (case 1: handler(arg0, 0) + obj->0x18 |= 4; cases
- * 7/8 and out-of-range: func(&D_00007408)).
+ * 7/8 and out-of-range: func(&sStr_unknown_GAME_MODE_7408)).
  * Exact C (identical to the IDO 7.1 -O2 donor unit bootup_uso_o2_2DA4.c,
  * 123/123 words; levers documented there). WIRED via REPLACE_FUNC_BODY donor
  * splice: the in-unit compile's .rodata jumptable is discarded by the link, so
@@ -1744,7 +1744,7 @@ void game_initDdm_00002C94(void *a0, void *a1) {
  * the section-relative %lo(.L...) addends of later INCLUDE_ASM functions
  * (replace-function-body.py does not rebase those). */
 extern void func_00000000_2DA4_v();
-extern char D_000073EC, D_000073F8, D_00007408;
+extern char sStr_ImgFileMgr_73EC, sStr_rom_tricks_bin_73F8, sStr_unknown_GAME_MODE_7408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
 extern char gPolyGeomMode_3EEC8_2DA4_cfg;
 #define FW2DA4(p, o) (*(int *)((char *)(p) + (o)))
@@ -1752,9 +1752,9 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;
-    func_00000000_2DA4_v(&D_000073EC, 0);
+    func_00000000_2DA4_v(&sStr_ImgFileMgr_73EC, 0);
     func_00000000_2DA4_v();
-    D_2DA4_obj = func_00000000(0, &D_000073F8);
+    D_2DA4_obj = func_00000000(0, &sStr_rom_tricks_bin_73F8);
     v1 = (char *)FW2DA4(arg0, 0x84);
     a1 = (char *)D_2DA4_obj_rd;
     func_00000000_2DA4_v(v1 + 0x10, a1);
@@ -1781,7 +1781,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     case 10: func_00000000_2DA4_v(arg0, arg2); break;
     case 11: func_00000000_2DA4_v(arg0, arg2); break;
     default:
-        func_00000000_2DA4_v(&D_00007408);
+        func_00000000_2DA4_v(&sStr_unknown_GAME_MODE_7408);
         break;
     }
 }
@@ -1791,29 +1791,29 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  * multi-widget builder + per-child init). Builder+register family
  * (cf. WorldRegistry_create_00001E08 / MapProp_hostioParms).
  *   void game_createLights(St *s1) {
- *       func_00000000(&D_0000741C, 0);            // pre-init
- *       c = func_00000000(0, &D_00007424);        // build child 0
+ *       func_00000000(&sStr_Lights_741C, 0);            // pre-init
+ *       c = func_00000000(0, &sStr_Ambient_Light_7424);        // build child 0
  *       s1->0x90 = c;
  *       f32 k = *(f32*)(func_000003F8 + 0x12C);
  *       c->0x124 = c->0x128 = c->0x12C = k;       // colour rgb
  *       c->0x130 = 1.0f;                          // alpha
  *       c->0xD0  = 1;                             // type tag
  *       c->0xC4 |= 0x40;  c->0xC4 |= 0x80;        // flag bits
- *       c = func_00000000(0, &D_00007434);        // build child 1
+ *       c = func_00000000(0, &sStr_Infinite_Light_7434);        // build child 1
  *       s1->0x94 = c;
  *       c->0x124..0x130 = 1.0f;                   // white
  *       c->0xD0  = 2;
  *       c->0xC4 |= 0x40; ...
- *       ... (repeats for D_00007444 / D_00007454 children) ...
+ *       ... (repeats for sStr_Shadow_Light_7444 / sStr_lighttarget_7454 children) ...
  *   }
  * Struct-typing reference: s1->0x90 (144) / s1->0x94 (148) / ... =
- * slots holding the built child widgets (D_00007424/7434/7444/
+ * slots holding the built child widgets (sStr_Ambient_Light_7424/7434/7444/
  * 7454 = each child's key/descriptor data). Per child: ->0x124
  * (292) / 0x128 (296) / 0x12C (300) f32 = RGB colour (child 0 uses
  * the global func_000003F8+0x12C value; later children use 1.0),
  * ->0x130 (304) f32 = 1.0 alpha, ->0xD0 (208) s32 = type tag
  * (1,2,...), ->0xC4 (196) u32 flags (bits 0x40 then 0x80 OR'd in).
- * D_0000741C = pre-init datum. EXACT (see the comment on the body). */
+ * sStr_Lights_741C = pre-init datum. EXACT (see the comment on the body). */
 /* EXACT 2026-10-16 (agent-c, 75.4 -> 100). The old "held float-pool base"
  * cap was the shared func_000003F8 base: three scalar f32 globals pinned at
  * the real offsets (D_00000524/528/52C = func_000003F8+0x12C/0x130/0x134)
@@ -1833,7 +1833,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  *    order; s1->0x90 store after the k load;
  *  - slots: volatile pads pad0 / pad..pad3 put p90's spill at sp+0x58, n2 at
  *    0x48 and vec at 0x3C (frame 0x60). */
-extern char D_0000741C, D_00007424, D_00007434, D_00007444, D_00007454;
+extern char sStr_Lights_741C, sStr_Ambient_Light_7424, sStr_Infinite_Light_7434, sStr_Shadow_Light_7444, sStr_lighttarget_7454;
 extern float D_00000524, D_00000528, D_0000052C;
 extern char gGfxLib_2F90_reg, LightTarget_vtbl_2F90_m28;
 extern void func_00000000_2F90_v();
@@ -1849,8 +1849,8 @@ void game_createLights(char *s1) {
     float k2;
     char *o;
     char *c;
-    func_00000000_2F90_v(&D_0000741C, 0);
-    c = (char *)func_00000000(0, &D_00007424);
+    func_00000000_2F90_v(&sStr_Lights_741C, 0);
+    c = (char *)func_00000000(0, &sStr_Ambient_Light_7424);
     {
         float k = D_00000524;
         WORLDREG(s1)->light0 = (s32)c;
@@ -1862,7 +1862,7 @@ void game_createLights(char *s1) {
     p90 = (char *)WORLDREG(s1)->light0; ((BaseLight *)p90)->mask = 1;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x80;
-    c = (char *)func_00000000(0, &D_00007434);
+    c = (char *)func_00000000(0, &sStr_Infinite_Light_7434);
     WORLDREG(s1)->light1 = (s32)c;
     *(float *)(c + 0x130) = 1.0f;
     *(float *)(c + 0x12C) = 1.0f;
@@ -1870,7 +1870,7 @@ void game_createLights(char *s1) {
     *(float *)(c + 0x124) = 1.0f;
     p90 = (char *)WORLDREG(s1)->light1; ((BaseLight *)p90)->mask = 2;
     p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 += 0xC4; } *(int *)p90 |= 0x40;
-    o = (char *)func_00000000(0, &D_00007444);
+    o = (char *)func_00000000(0, &sStr_Shadow_Light_7444);
     vec[0] = 0.0f;
     vec[2] = 0.0f;
     vec[1] = D_00000528;
@@ -1888,7 +1888,7 @@ void game_createLights(char *s1) {
     NODE(p90)->parent = (int)o;
     o = (char *)func_00000000(0x16C);
     if (o != 0) {
-        func_00000000_2F90_f(o, &D_00007454, 0.0f, 0.0f, 0.0f);
+        func_00000000_2F90_f(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
         k2 = D_0000052C;
         NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
         ((LightTarget *)o)->unk108[0] = k2;
@@ -1943,7 +1943,7 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
  * 0x64 head, 0x6D terminator-ish). Result r: r->0x70 (112) = a2,
  * and r is published to the global func_00000008+0x24. a0->0x84
  * (132) / a0->0x80 (128) = optional-callback gates; final
- * func_00000000(a0, r) attaches r to a0. D_000074D0 = builder datum.
+ * func_00000000(a0, r) attaches r to a0. sStr_3DWindow_74D0 = builder datum.
  * 2026-06-20 correctness fixes (67->68.6%): removed a spurious
  * `*(+0x24)=r` store (not in target); `r->0x70=a2` placed correctly
  * (2nd-call delay slot); the two optional-callback calls take TWO args
@@ -1956,7 +1956,7 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
  * in v0 with 0/4/8/C displacements as in the target. Each optional callback
  * reads its gate once (`if ((p = a0->0x84) != 0) f(r, p)`), and the r->0x70
  * store precedes the publish call (it lands in that jal's delay slot). */
-extern char D_000074D0;
+extern char sStr_3DWindow_74D0;
 extern f32 D_00000538, D_0000053C, D_00000540;
 extern float D_00000030[4];
 extern char gSnowBoard_0000002C;
@@ -1971,7 +1971,7 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
     g[1] = D_0000053C;
     g[2] = D_00000540;
     g[3] = 0.0f;
-    r = (char *)func_00000000(0, 0x64, &D_000074D0, 0x6D,
+    r = (char *)func_00000000(0, 0x64, &sStr_3DWindow_74D0, 0x6D,
                               2, 0x6E, a1[0], a1[1], 0x6F, a1[2], a1[3],
                               0x70, a1[6] | 2, 0x71, 1, 0x73, a1[4],
                               0x74, a1[5], 0);
@@ -1988,7 +1988,7 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
  *   void *game_createPlayers(void *a0, int a1, int a2, int a3,
  *                       int e0, f32 e1, f32 e2, int flags,
  *                       int e4, void *parent) {   // e* = stack args
- *       reloc_init(&D_000074DC);
+ *       reloc_init(&sStr_Players_74DC);
  *       flags |= 0x2;                              // force bit 1
  *       r = reloc_create(0, a1, a2 + 1, a3 + 1,
  *                        e0, e1, e2, e4);          // big factory call
@@ -2010,7 +2010,7 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
  * sp+0x58) gets bit 1 (0x2) forced on, and bits 0xC select the
  * post-link notify path. a2/a3 are incremented by 1 before the
  * factory call (1-based -> 0-based or count+1). e1/e2 are f32
- * stack args (lwc1/swc1 through sp+0x14/0x18). D_000074DC = init
+ * stack args (lwc1/swc1 through sp+0x14/0x18). sStr_Players_74DC = init
  * datum. Caps <80: 5x func_00000000 reloc calls + f32 stack-arg
  * passing + beql branch-likely link guard + flags-bit branch.
  * Full body INCLUDE_ASM-preserved (.s = source of truth).
@@ -2038,7 +2038,7 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
  * `sw a3` (addiu %lo early), build fills it with the addiu (sw a2/a3 early).
  * Probed if(1)-wrap / array-decay / named-address-local — all inert.
  * AS1-TIE CAP (li-at/lui-slot class); stays NM (INCLUDE_ASM build path). */
-extern char D_000074DC;
+extern char sStr_Players_74DC;
 /* typed-float proto (0x0-alias): args 6,7 are single floats on the stack
  * (target swc1 0x14/0x18); K&R func_00000000 double-promotes them. */
 extern void *func_3638_node(int, void *, int, int, int, float, float, int, int);
@@ -2048,7 +2048,7 @@ void *game_createPlayers(int *arg0, void *arg1, int arg2, int arg3, int arg4, ch
                     float arg6, float arg7, int arg8, int arg9) {
     void *node;
     char *p;
-    func_00000000_3638_v(&D_000074DC);
+    func_00000000_3638_v(&sStr_Players_74DC);
     arg8 |= 2;
     node = func_3638_node(0, arg1, arg2 + 1, arg3 + 1, arg4, arg6, arg7, arg8, arg9);
     p = node;   /* copy spilled at 0x30 before the attach jal; guard reads NODE via p */
@@ -2426,12 +2426,12 @@ void game_setupVsCpu(char *s1, int a1) {
  * chain as game_setupVsCpu): alloc func_055750, ctor func_07BA00, list adds
  * func_011CA4 x2 + func_0129A0 on import_000200FC, spawn game_createPlayers x2,
  * link cam_create x2, attach game_create3DWindow x2 on &D_007294 + a1 * 0x1C
- * (zero alias), r->0xC = D_000074E4 / D_000074EC (baked). No early returns:
+ * (zero alias), r->0xC = sStr_Player1_74E4 / sStr_Player2_74EC (baked). No early returns:
  * the two new-expression results share temp t and are copied into an object
  * ARRAY o[2] (slots 104/108, re-read from memory for the link calls); b3/f1
  * are their own variables (sharing t's register drops the param to s2); the
  * if (1) { } after the copies lowers t below r1 (s3 vs s2). */
-extern char D_000074E4[], D_000074EC[], bu_3f00_d7294[];
+extern char sStr_Player1_74E4[], sStr_Player2_74EC[], bu_3f00_d7294[];
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void game_setupVs2P(char *s1, int a1) {
     char *o[2], *t, *r1, *r2, *x, *y, *b4, *f2, *row;
@@ -2451,8 +2451,8 @@ void game_setupVs2P(char *s1, int a1) {
     r2 = func_00000000_3d3cm(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
                              t, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
-    NODE(r1)->name = (s32)D_000074E4;
-    NODE(r2)->name = (s32)D_000074EC;
+    NODE(r1)->name = (s32)sStr_Player1_74E4;
+    NODE(r2)->name = (s32)sStr_Player2_74EC;
     SNOWB(r1)->rival = SNOWB(r2);
     SNOWB(r2)->rival = SNOWB(r1);
     x = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
@@ -2687,22 +2687,22 @@ void *boot_ItemType_create_000046EC(int *arg0) {
  * max + flag on the stack at sp+0x10 / sp+0x14.)
  * Constants decoded: 0xC4FA0000 = -2000.0f, 0x44FA0000 = 2000.0f,
  * 0x3C23D70A = 0.01f, 0x3F800000 = 1.0f.
- * Struct-typing reference: D_000074F4/7500/7508/7510 = four
+ * Struct-typing reference: sStr_Mountain_74F4/7500/7508/7510 = four
  * slider/param key data; bound object fields a0->0x2C (44) [range
  * +-2000.0, step 0], a0->0x34 (52) and a0->0x30 (48) [step 0.01,
  * max 1.0] - i.e. one wide unbounded-ish axis plus two fine 0..1
  * normalized params (entry 0 binds no field). Caps <80: 6x reloc +
  * 4x &D reloc + f32-const-as-(a3/stack)-arg passing.
  * INCLUDE_ASM remains build path. */
-extern char D_000074F4, D_00007500, D_00007508, D_00007510;
+extern char sStr_Mountain_74F4, sStr_Pos_Y_7500, sStr_Scale_Y_7508, sStr_Scale_XZ_7510;
 /* MATCHED 2026-06-02: typed-float proto (0x0-alias) makes args 4,5 pass as
  * single floats (a3 reg + swc1 0x10 stack) instead of K&R double-promote. */
 extern void func_477c_reg(void *, void *, void *, float, float, int);
 void Mountain_hostioParms(char *a0) {
-    func_00000000(&gHostio, &D_000074F4, 0);
-    func_477c_reg(&gHostio, &D_00007500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
-    func_477c_reg(&gHostio, &D_00007508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
-    func_477c_reg(&gHostio, &D_00007510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
+    func_00000000(&gHostio, &sStr_Mountain_74F4, 0);
+    func_477c_reg(&gHostio, &sStr_Pos_Y_7500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
+    func_477c_reg(&gHostio, &sStr_Scale_Y_7508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
+    func_477c_reg(&gHostio, &sStr_Scale_XZ_7510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
     func_00000000(&gHostio);
     func_00000000(a0);
 }
@@ -2771,7 +2771,7 @@ void item_createHel(int a0) {
 }
 
 /* 33-insn / 0x84 init+alloc+populate.
- *   func_00000000(&D_00007DA4);       ; init call
+ *   func_00000000(&sStr_rom_heli_uso_7DA4);       ; init call
  *   buf[4] = {0.0f, 0.0f, 0.0f, 0.0f}  ; 16-byte stack-local cleared via mtc1+swc1
  *   p = func_00000000(0x58);           ; alloc 0x58 bytes
  *   if (p == 0) return 0;
@@ -2828,7 +2828,7 @@ void item_createHel(int a0) {
  * earlier-spilled value taking the lower home is an IDO allocator choice not
  * reachable by reordering C (declaration-order + embedded-assign permutations
  * all regress, retested). Stays NM at 99.09%. */
-extern char D_00007DA4;
+extern char sStr_rom_heli_uso_7DA4;
 /* item_createHem — EXACT (33/33 post-link) 2026-07-03 agent-e. CRACKED the
  * documented "spill-slot-coloring cap" (wrap note 2026-06-21, 8 residual diffs).
  *
@@ -2845,8 +2845,8 @@ extern char D_00007DA4;
  *     buf@0x38(zeros 0x38-0x44), p@0x30, pad 0x20-0x2F, saved_a0@0x1C,
  *     align@0x18 -> frame -0x48 exact. 5 -> 0.
  *
- * .o-level residual = 1 reloc-class word [5]: addiu a0,a0,%lo(D_00007DA4);
- * D_00007DA4=0x7DA4 in undefined_syms_auto.txt -> links to 24847DA4 = target.
+ * .o-level residual = 1 reloc-class word [5]: addiu a0,a0,%lo(sStr_rom_heli_uso_7DA4);
+ * sStr_rom_heli_uso_7DA4=0x7DA4 in undefined_syms_auto.txt -> links to 24847DA4 = target.
  * All jals zero-target K&R func_00000000. No new wiring needed.
  */
 typedef struct { int v; } S50A0;
@@ -2856,7 +2856,7 @@ int item_createHem(int a0) {
   char pad[16];
   volatile int saved_a0;
   (void) pad;
-  func_00000000(&D_00007DA4);
+  func_00000000(&sStr_rom_heli_uso_7DA4);
   buf[1] = (0, 0.0f);
   buf[2] = 0.0f;
   buf[3] = 0.0f;
@@ -2876,7 +2876,7 @@ int item_createHem(int a0) {
  * Struct-typing reference: object = 0x4C bytes; obj->0x28 (40) and
  * obj->0x48 (72) descriptor/vtable ptrs (&D, runtime-patched); arg
  * passed through (spilled sp+0x2C / sp+0x1C / sp+0x4) into the dead
- * arm's sub2. D_00007DB4 = named init datum (label/string). Caps <80:
+ * arm's sub2. sStr_rom_balloon_uso_7DB4 = named init datum (label/string). Caps <80:
  * alloc-cascade + defensive-dead-check (bnez after beqz makes the
  * 0x48 arm unreachable, documented ceiling) + 3-4 func_00000000
  * reloc calls + 3x &D descriptor-store relocs. To MATCH this family
@@ -2890,7 +2890,7 @@ int item_createHem(int a0) {
  * the "dead arm" is a get-or-create fallback on a memory-homed copy, the
  * descriptor stores are base-0 placeholder externs (same bytes), see
  * docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124. */
-extern char D_00007DB4;
+extern char sStr_rom_balloon_uso_7DB4;
 /* item_createBal - alloc-cascade get-or-create constructor.
  * Reconstructed missing logic: the three descriptor stores
  * (obj->0x28 = A; obj->0x28 = B; obj->0x48 = C) target DISTINCT
@@ -2898,7 +2898,7 @@ extern char D_00007DB4;
  * &D_00000000 address-CSE that collapses them onto one base reg.
  * The 0x48 second-alloc arm is provably-dead (kept under -g) and
  * is written as a get-or-create fall-through so IDO keeps it. */
-extern char D_00007DB4;
+extern char sStr_rom_balloon_uso_7DB4;
 extern char D_00000000_a;
 extern char D_00000000_b;
 extern char D_00000000_c;
@@ -2917,7 +2917,7 @@ void *item_createBal(Box5124 arg) {
     char *o2;
     volatile int p2;
     Box5124 b2;
-    func_00000000(&D_00007DB4);
+    func_00000000(&sStr_rom_balloon_uso_7DB4);
     b1 = arg;
     obj = (char *)func_00000000(0x4C);
     if (obj != 0) {
@@ -2935,23 +2935,23 @@ void *item_createBal(Box5124 arg) {
 /* item_createBa2 - verified structural decode (0xB0, 44 insns).
  * BYTE-STRUCTURALLY IDENTICAL SIBLING of item_createBal (same
  * alloc-cascade constructor with defensive-dead-check; the ONLY
- * difference is the init datum D_00007DC4 here vs D_00007DB4 there).
+ * difference is the init datum sStr_rom_balloon_uso_7DC4 here vs sStr_rom_balloon_uso_7DB4 there).
  * Struct-typing reference: identical to item_createBal - object 0x4C
  * bytes, obj->0x28 (40) / obj->0x48 (72) descriptor/vtable ptrs (&D
  * runtime-patched). Caps <80: alloc-cascade + defensive-dead-check +
  * 3-4 reloc calls + 3x &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124).
  * NM body captures live behavior only — dead-arm artifacts not
  * recreated (same convention as item_createBal). */
-extern char D_00007DC4;
+extern char sStr_rom_balloon_uso_7DC4;
 /* item_createBa2 - alloc-cascade get-or-create constructor.
  * Reconstructed missing logic (sibling of item_createBal, init datum
- * D_00007DC4): the three descriptor stores (obj->0x28 = A; obj->0x28
+ * sStr_rom_balloon_uso_7DC4): the three descriptor stores (obj->0x28 = A; obj->0x28
  * = B; obj->0x48 = C) target DISTINCT registers (t9/t0/t1) -> three
  * DISTINCT externs to defeat the &D_00000000 address-CSE that
  * collapses them onto one base reg. The 0x48 second-alloc arm is
  * provably-dead (kept under -g) and is written as a get-or-create
  * fall-through so IDO keeps it. */
-extern char D_00007DC4;
+extern char sStr_rom_balloon_uso_7DC4;
 extern char D_00000000_a;
 extern char D_00000000_b;
 extern char D_00000000_c;
@@ -2971,7 +2971,7 @@ void *item_createBa2(Box51D4 arg) {
     char *o2;
     volatile int p2;
     Box51D4 b2;
-    func_00000000(&D_00007DC4);
+    func_00000000(&sStr_rom_balloon_uso_7DC4);
     b1 = arg;
     obj = (char *)func_00000000(0x4C);
     if (obj != 0) {
@@ -2989,26 +2989,26 @@ void *item_createBa2(Box51D4 arg) {
 /* item_createChk - verified structural decode (0xB0, 44 insns).
  * THIRD IDENTICAL SIBLING of the item_createBal / item_createBa2
  * alloc-cascade-ctor family (instruction-for-instruction identical
- * except the init datum D_00007DD4 and local label addresses).
+ * except the init datum sStr_rom_checkpoint_uso_7DD4 and local label addresses).
  * Struct-typing reference: identical to item_createBal — object 0x4C
  * bytes, obj->0x28 (40) / obj->0x48 (72) descriptor ptrs (&D runtime-
- * patched). D_00007DD4 = named init datum (family: D_00007DB4/DC4/DD4
+ * patched). sStr_rom_checkpoint_uso_7DD4 = named init datum (family: sStr_rom_balloon_uso_7DB4/DC4/DD4
  * at +0x10 stride). Caps <80: alloc-cascade + defensive-dead-check +
  * 3-4 reloc calls + 3x &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124).
  * NM body captures live behavior only — dead-arm artifacts not
  * recreated. */
-extern char D_00007DD4;
+extern char sStr_rom_checkpoint_uso_7DD4;
 /* item_createChk - alloc-cascade get-or-create constructor.
  * THIRD IDENTICAL SIBLING of item_createBal / item_createBa2
  * (instruction-for-instruction identical except the init datum
- * D_00007DD4 and local label addresses).
+ * sStr_rom_checkpoint_uso_7DD4 and local label addresses).
  * Reconstructed missing logic: the three descriptor stores
  * (obj->0x28 = A; obj->0x28 = B; obj->0x48 = C) target DISTINCT
  * registers (t9/t0/t1) -> three DISTINCT externs to defeat the
  * &D_00000000 address-CSE that collapses them onto one base reg.
  * The 0x48 second-alloc arm is provably-dead (kept under -g) and
  * is written as a get-or-create fall-through so IDO keeps it. */
-extern char D_00007DD4;
+extern char sStr_rom_checkpoint_uso_7DD4;
 /* 2026-09-04 (agent-f, pass 2): frame 0x38 slot layout = three `volatile int`
  * pads interleaved in decl order (pad,obj,b1,pad,o2,pad,b2 -> homes
  * 0x30/0x2C/0x24/0x1C); the beqz-on-v0 + delay-slot `sw a1,4(sp)` schedule
@@ -3024,7 +3024,7 @@ void *item_createChk(Box5284 arg) {
     char *o2;
     volatile int p2;
     Box5284 b2;
-    func_00000000(&D_00007DD4);
+    func_00000000(&sStr_rom_checkpoint_uso_7DD4);
     b1 = arg;
     obj = (char *)func_00000000(0x4C);
     if (obj != 0) {
@@ -3042,22 +3042,22 @@ void *item_createChk(Box5284 arg) {
 /* item_createGtr - verified structural decode (0xB4, 45 insns).
  * NEAR-SIBLING of the item_createBal/51D4/5284 alloc-cascade-ctor +
  * defensive-dead-check family. Variant: object size 0x50 (vs 0x4C),
- * init datum D_00007DE8, one extra insn (0xB4 vs 0xB0).
+ * init datum sStr_rom_checkpoint_uso_7DE8, one extra insn (0xB4 vs 0xB0).
  * Struct-typing reference: object = 0x50 bytes (this variant);
  * obj->0x28 (40) / obj->0x48 (72) descriptor ptrs (&D runtime-
  * patched). Caps <80: alloc-cascade + defensive-dead-check + 3-4
  * reloc + 3x &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124). NM body
  * captures live behavior only — dead-arm artifacts not recreated. */
-extern char D_00007DE8;
+extern char sStr_rom_checkpoint_uso_7DE8;
 /* item_createGtr - alloc-cascade get-or-create constructor (0x50 variant).
  * Reconstructed to the item_createBal family shape: object 0x50 bytes,
- * init datum D_00007DE8. Four descriptor stores target DISTINCT
+ * init datum sStr_rom_checkpoint_uso_7DE8. Four descriptor stores target DISTINCT
  * registers (t9 -> obj->0x28; t0 -> obj->0x28; t1 -> obj->0x4C; zero ->
  * obj->0x48) so the &D_00000000 address-CSE does not collapse them onto
  * one base register -> distinct lui/addiu per store. The 0x48 second-
  * alloc arm is provably dead (kept under -g) and written as a get-or-
  * create fall-through so IDO retains it. */
-extern char D_00007DE8;
+extern char sStr_rom_checkpoint_uso_7DE8;
 extern char D_00000000_a;
 extern char D_00000000_b;
 extern char D_00000000_c;
@@ -3076,7 +3076,7 @@ void *item_createGtr(Box5334 arg) {
     char *o2;
     volatile int p2;
     Box5334 b2;
-    func_00000000(&D_00007DE8);
+    func_00000000(&sStr_rom_checkpoint_uso_7DE8);
     b1 = arg;
     obj = (char *)func_00000000(0x50);
     if (obj != 0) {
@@ -3094,15 +3094,15 @@ void *item_createGtr(Box5334 arg) {
 /* item_createGtl - verified structural decode (0xB8, 46 insns).
  * NEAR-SIBLING of the item_createBal/51D4/5284/5334 alloc-cascade-ctor
  * family. Variant: object 0x50 (like item_createGtr), init datum
- * D_00007DFC, 0xB8 (one extra descriptor store vs 5334's 0xB4; uses
+ * sStr_rom_checkpoint_uso_7DFC, 0xB8 (one extra descriptor store vs 5334's 0xB4; uses
  * t2 reg where 5124 uses t1).
  * Struct-typing reference: object = 0x50 bytes; obj->0x28 (40) /
- * obj->0x48 (72) descriptor ptrs (&D runtime-patched); D_00007DFC =
- * named init datum (family data run D_00007DB4/DC4/DD4/DE8/DFC).
+ * obj->0x48 (72) descriptor ptrs (&D runtime-patched); sStr_rom_checkpoint_uso_7DFC =
+ * named init datum (family data run sStr_rom_balloon_uso_7DB4/DC4/DD4/DE8/DFC).
  * Caps <80: alloc-cascade + defensive-dead-check + 3-4 reloc calls +
  * &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124). NM body captures
  * live behavior only — dead-arm artifacts not recreated. */
-extern char D_00007DFC;
+extern char sStr_rom_checkpoint_uso_7DFC;
 /* item_createGtl - alloc-cascade get-or-create constructor.
  * Reconstructed missing logic: the three descriptor stores
  * (obj->0x28 = A in the live arm; obj->0x28 = B; obj->0x4C = C in
@@ -3111,7 +3111,7 @@ extern char D_00007DFC;
  * onto one base reg. The obj->0x48 store is the immediate 1. The
  * 0x48 second-alloc arm is provably-dead (kept under -g) and is
  * written as a get-or-create fall-through so IDO keeps it. */
-extern char D_00007DFC;
+extern char sStr_rom_checkpoint_uso_7DFC;
 extern char D_00000000_a;
 extern char D_00000000_b;
 extern char D_00000000_c;
@@ -3130,7 +3130,7 @@ void *item_createGtl(Box53E8 arg) {
     char *o2;
     volatile int p2;
     Box53E8 b2;
-    func_00000000(&D_00007DFC);
+    func_00000000(&sStr_rom_checkpoint_uso_7DFC);
     b1 = arg;
     obj = (char *)func_00000000(0x50);
     if (obj != 0) {
@@ -3149,9 +3149,9 @@ void *item_createGtl(Box53E8 arg) {
  * struct-by-value one-int recipe). Passing `*(struct OneI*)&a0` homes the
  * value to the outgoing a1 slot and reproduces the target's dead
  * `sw a1, 0x4(sp)` without instruction patching. */
-extern char D_00007E10;
+extern char sStr_rom_fire_uso_7E10;
 void item_createCfr(int a0) {
-    func_00000000(&D_00007E10);
+    func_00000000(&sStr_rom_fire_uso_7E10);
     func_00000000(0, *(struct OneI*)&a0);
 }
 
@@ -3221,7 +3221,7 @@ void stream_readS32_00005EF8(int *dst) {
 
 /* game_createBGBox - SIX-element list builder. 7 params (a0 unused + a1,a2,a3
  * in regs + a4,a5,a6 on the caller stack at sp+80/84/88). s1 = a container
- * object built from D_00007E6C; list = s1+0x10 is its child attach point.
+ * object built from sStr_BGBox_7E6C; list = s1+0x10 is its child attach point.
  * Per element: r = func_00000000(0, payload, A2, A3, 0) with an angle constant
  * threaded into a3 (0/90/180/270) for elements 0-3 and into a2 (-90/90) for
  * elements 4-5; then func_00000000(list, r) attaches it (return discarded),
@@ -3234,7 +3234,7 @@ void stream_readS32_00005EF8(int *dst) {
  * 3 args used). The +8 frame (64 vs 56) with list pinned at sp+0x28 needs
  * `volatile int pad[2]` declared LAST (8-aligned pad takes the bottom dead
  * space, leaving list at the top local slot). Result: 113/115 .text words
- * byte-exact (the remaining word is a R_MIPS_LO16 reloc to D_00007E6C, equal
+ * byte-exact (the remaining word is a R_MIPS_LO16 reloc to sStr_BGBox_7E6C, equal
  * once relocated).
  * MATCH (permuter as1-tie crack, 2026-06-21): the residual was a 2-insn
  * as1-scheduler tie — the target schedules `sw list,0x28(sp)` (home the
@@ -3246,11 +3246,11 @@ void stream_readS32_00005EF8(int *dst) {
  * statements one shared line re-anchors the tie to emit the list-home store
  * first, exactly matching the target. (Whitespace-only steer — the C is
  * identical; the SAME line is load-bearing, do not re-split it.) 115/115 .text
- * words byte-exact (the lone reloc word to D_00007E6C resolves equal).
+ * words byte-exact (the lone reloc word to sStr_BGBox_7E6C resolves equal).
  * Frame 64 with list at sp+0x28. */
-extern char D_00007E6C;
+extern char sStr_BGBox_7E6C;
 char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
-  char *s1 = (char *) func_00000000(0, &D_00007E6C, 0, a0);
+  char *s1 = (char *) func_00000000(0, &sStr_BGBox_7E6C, 0, a0);
   char *list;
   char *r;
   volatile int pad[2];
@@ -3346,13 +3346,13 @@ void ColourItem_readParms_00006228(char *a0) {
 /* MapProp_ctor - verified structural decode (0x160, 88 insns,
  * get-or-create constructor + sub-object + Vec3 init).
  * Struct-typing reference: o = 0xDC-byte object. o->0x28 (40)
- * descriptor ptr (&D), o->0xC (12) type/vtable ptr (&D_00007E7C),
+ * descriptor ptr (&D), o->0xC (12) type/vtable ptr (&sStr_Course_7E7C),
  * o->0xB4 (180) = a1 (a parent/owner handle; o->0xB4->0xA0 (160)
  * gated for an extra reloc registration), o->0xB8 (184)=a3, o->0xBC
  * (188)=a2, o->0xC0 (192)=a4. s = 0xB4-byte sub-object: s->0x28 (40)
  * descriptor (&D), s+0x30 (48) a Vec3f zero-initialized via the
  * reloc helper; plus a defensive 4-byte child alloc (*(int*)c = 0).
- * D_00007E74/7E7C/7E84/7E98 = init datums.
+ * sStr_MNode_7E74/7E7C/7E84/7E98 = init datums.
  * Caps <80: get-or-create + ~8 reloc + &D descriptors + defensive-
  * dead alloc guards + FP Vec3 + bnel branch-likely. INCLUDE_ASM
  * remains build path.
@@ -3360,7 +3360,7 @@ void ColourItem_readParms_00006228(char *a0) {
  * child alloc (c = s+0x2C; if(s==-44) c=alloc(4); if(!c) c=alloc(4); if(c)
  * *c=0) -> 64.9->67.3%. Remaining residual is the sub-object saved-reg(s1)-
  * vs-stack-spill(76sp) choice + the ~8 &D %hi/%lo reloc scheduling. */
-extern char D_00007E74, D_00007E7C, D_00007E84, D_00007E98;
+extern char sStr_MNode_7E74, sStr_Course_7E7C, sStr_shp_pGrid_NULL_7E84, sStr_mapprop_cpp_7E98;
 /* run 111 (agent-c): cfront ctor shape -- if (this || (this = new(0xDC))), the inlined base ctor
  * if (s || (s = new(0xB4))) and the doubly-inlined member ctor for the +0x2C cell; the param
  * itself is the object (no copy local); pads restore the 0x50 frame / home offsets; block-count
@@ -3374,7 +3374,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     if (a0 != 0 || (a0 = (char*)func_00000000(0xDC)) != 0) {
     s = a0;
     if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
-        func_00000000(s, &D_00007E74);
+        func_00000000(s, &sStr_MNode_7E74);
         NODE(s)->vptr = (s32)(&MNode_vtbl);
         {
             int *c = (int*)(s + 0x2C);
@@ -3390,11 +3390,11 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
     NODE(a0)->vptr = (s32)(&MapProp_vtbl);
-    *(void**)(a0 + 0xC) = &D_00007E7C;
+    *(void**)(a0 + 0xC) = &sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
     func_00000000(a0, a1);
     if (*(int*)((char*)((MapProp *)a0)->shape + 0xA0) == 0) /* shp->pGrid != NULL */
-        func_00000000(&D_00007E84, &D_00007E98, 0x3E4);
+        func_00000000(&sStr_shp_pGrid_NULL_7E84, &sStr_mapprop_cpp_7E98, 0x3E4);
     ((MapProp *)a0)->end = a3;
     ((MapProp *)a0)->angle = a2;
     ((MapProp *)a0)->add = a4;
@@ -3446,19 +3446,19 @@ void MapProp_display(char *obj) {
  * 4-entry registration/builder).
  * (reg = func_00000000; the 5th/6th args are passed on the stack at
  * sp+0x10 / sp+0x14, the documented IDO stack-arg slots.)
- * Struct-typing reference: D_00007EA4/EA8/EAC/EB0 = four registration
+ * Struct-typing reference: sStr_Map_7EA4/EA8/EAC/EB0 = four registration
  * key data (label/descriptor); the bound targets are object fields
  * a0->0xB8 (184), a0->0xC0 (192), a0->0xBC (188) respectively (entry
  * 0 binds no target). Per-entry trailing params: (a3=0, 0x7F, 1) for
  * EA8/EAC and (a3=0, 0x59, 0) for EB0 - look like {range/limit, flag}
  * pairs. Caps <80: 6x reloc calls + 4x &D reloc + 5th/6th stack-arg
  * passing (sp+0x10/0x14). INCLUDE_ASM remains build path. */
-extern char D_00007EA4, D_00007EA8, D_00007EAC, D_00007EB0;
+extern char sStr_Map_7EA4, sStr_end_7EA8, sStr_add_7EAC, sStr_angle_7EB0;
 void MapProp_hostioParms(char *a0) {
-    func_00000000(&gHostio, &D_00007EA4, 0);
-    func_00000000(&gHostio, &D_00007EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
-    func_00000000(&gHostio, &D_00007EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
-    func_00000000(&gHostio, &D_00007EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
+    func_00000000(&gHostio, &sStr_Map_7EA4, 0);
+    func_00000000(&gHostio, &sStr_end_7EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
+    func_00000000(&gHostio, &sStr_add_7EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
+    func_00000000(&gHostio, &sStr_angle_7EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
     func_00000000(&gHostio);
     func_00000000(a0);
 }
@@ -3583,7 +3583,7 @@ void *game_createMap(char *obj, char *arg1, s32 arg2) {
  * Object = 0x44 bytes: ->0x18 u32 flags (bit 3 cleared), ->0x28
  * descriptor ptr (&D runtime-patched), ->0x2C sub-ptr (inline &o+0x2C,
  * defensive alloc(4) arm when o == -0x2C), ->0x30 = 4, ->0x34 = 0xB00,
- * ->0x38 = 1, ->0x3C/0x40 = 0; D_00007F84 = init datum.
+ * ->0x38 = 1, ->0x3C/0x40 = 0; sStr_EnvSettings_7F84 = init datum.
  * Levers: (1) destructive a0 reuse (no local copy) -> spill goes to the
  * a0 HOME slot 0x18(sp), frame 0x18 not 0x20; (2) the flag RMW uses the
  * if(1)-pointer-mutation idiom `q = a0; if (1) { q += 0x18; } *(int*)q
@@ -3592,13 +3592,13 @@ void *game_createMap(char *obj, char *arg1, s32 arg2) {
  * (3) alloc(4) arm written `if ((v1 = r) == 0) goto after_v1;` so the
  * or v1,v0 copy fills the beqz delay slot (reload lw a2 hoists above
  * the branch). The if(1) braces and shared lines are LOAD-BEARING. */
-extern char D_00007F84;
+extern char sStr_EnvSettings_7F84;
 void *EnvSettings_ctor(char *a0) {
     if (a0 == 0) {
         a0 = (char*)func_00000000(0x44);
         if (a0 == 0) goto end;
     }
-    func_00000000(a0, &D_00007F84);
+    func_00000000(a0, &sStr_EnvSettings_7F84);
     NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
     {
         int *v1 = (int *)(a0 + 0x2C);
@@ -3708,7 +3708,7 @@ void EnvSettings_display(int *a0) {
  *           if (flag == node->0x0->0x4) { match = node->0x0; break; }
  *       if (match) { vt = match->0x0->0x28;                 // vtable
  *                    (*(vt->0x4C))((char*)(match->0x0) + (short)vt->0x48); }
- *       else { func_00000000(&D_00007FA0,&flag);
+ *       else { func_00000000(&sFmt_Env_Skip_7FA0,&flag);
  *              func_00000000(&D,1,outv); }
  *   }
  *   stream_readS32_0000502C(&s3->0x38); ...flag-1 -> reg-desc; flag-2 -> free 0x30/0x34;
@@ -3729,8 +3729,8 @@ void EnvSettings_display(int *a0) {
  * scalar). All three folded-symbol refs (func_0000027C+0x18,
  * func_00000008+0x34, func_0000029C+0x4) and the jal-0 callees ARE
  * reloc-correct here. INCLUDE_ASM remains build path. */
-extern char D_00007F90;
-extern char D_00007FA0;
+extern char sFmt_Env_Load_7F90;
+extern char sFmt_Env_Skip_7FA0;
 /* stream_readS32_00005EF8 / stream_readS32_0000502C already file-scope-declared. */
 extern void func_0000027C();   /* K&R data-symbol base (0x27C) */
 extern void func_0000029C();   /* K&R data-symbol base (0x29C) */
@@ -3750,11 +3750,11 @@ void EnvSettings_load(char *s3) {
  * owning slot for r. r linked into the global list whose head is
  * (*(func_000000F0+0x44))->0x88 via r->0x14 (back-link) / r->0x4
  * (=1 when already-linked). r->0x48 (72) s32 toggled 1 then 0,
- * r->0x4C (76) f32 = 0.0 (init state/flags). D_00007FB0 / D_00007FBC
+ * r->0x4C (76) f32 = 0.0 (init state/flags). sStr_FallingSnow_7FB0 / sStr_Node_7FBC
  * = init datums. Caps <80: global gate + ~6 reloc (alloc/init/
  * finalize) + &D descriptors + list-link beql + obj-0x28 vtable
  * jalr + FP. INCLUDE_ASM remains build path. */
-extern char D_00007FB0, D_00007FBC;
+extern char sStr_FallingSnow_7FB0, sStr_Node_7FBC;
 extern void func_000000F0();  /* used as data-symbol base */
 /* 2026-10-22 (agent-c run 120) EXACT: the final call takes NO argument (the target only stores p->0x48 = 0 in its delay slot; a0 is whatever the previous call left), and the child's init call and its +0x28 store share one source line (as1 line tie). */
 /* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),
@@ -3767,12 +3767,12 @@ void FallingSnow_create(char *a0) {
     char *sub;
     char *head;
     if (*(int*)((char*)&gInputMgr_74e8_g + 0x2C) == 8) return;
-    func_00000000(&D_00007FB0, 0);
+    func_00000000(&sStr_FallingSnow_7FB0, 0);
     r = (char*)func_00000000(0x134);
     if (r != 0) {
         sub = r;
         if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {
-            func_00000000(sub, &D_00007FBC); NODE(sub)->vptr = (s32)(&D_00000000);
+            func_00000000(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (s32)(&D_00000000);
         }
         NODE(r)->vptr = (s32)(&D_00000000);
     }
@@ -4366,16 +4366,16 @@ void Fog_readParms(char *a0) {
  * NEAR-SIBLING of TimeGadgetParms_ctor_0001438C / SnowTmpl_create (bootup_uso
  * get-or-create constructor + child sub-objects family); variant
  * params: object 0x90, init datum D_00007878, child descriptor
- * D_00007FC4, child type D_00007540, child->0x10 = 200.0f
- * (0x43480000), and FP/&D constants from D_00007FCC/0x7FD0.
+ * sStr_Parms_7FC4, child type D_00007540, child->0x10 = 200.0f
+ * (0x43480000), and FP/&D constants from sTag_fin_7FCC/0x7FD0.
  *   void *FogTmpl_create(void *a0) {
  *       o = a0 ? a0 : alloc(0x90); if (!o) return 0;
  *       init(o, &D_00007878);
  *       o->0x28 = &D_desc;
  *       s = alloc(0x38);
  *       c = alloc(8);                              // defensive arm
- *       if (c) { c->0x0 = &D_00007FC4; c->0x4 = 0; }
- *       v = *(int*)&D_00007FCC;
+ *       if (c) { c->0x0 = &sStr_Parms_7FC4; c->0x4 = 0; }
+ *       v = *(int*)&sTag_fin_7FCC;
  *       if (s != (void*)-8) {
  *           c2 = alloc(0x18);
  *           if (c2) {
@@ -4389,11 +4389,11 @@ void Fog_readParms(char *a0) {
  *   }
  * Struct-typing reference (same as TimeGadgetParms_ctor_0001438C): o = 0x90-byte
  * object, o->0x28 (40) descriptor (&D_00007878). s = 0x38-byte
- * sub; c = 8-byte aux (c->0x0 = &D_00007FC4 descriptor, c->0x4=0);
+ * sub; c = 8-byte aux (c->0x0 = &sStr_Parms_7FC4 descriptor, c->0x4=0);
  * c2 = 0x18-byte child: c2->0xC (12) type ptr (&D_00007540),
  * c2->0x10 (16) f32 = 200.0 / 300.0, c2->0x14 (20) = 0. The u !=
  * -0x3C / -0x8 / -0x20 / -0x74 tests are the `c = u+k; if (c != 0
- * || alloc)` get-or-create guards folded by IDO. D_00007FCC /
+ * || alloc)` get-or-create guards folded by IDO. sTag_fin_7FCC /
  * D_00007FD0 = global init values feeding the children.
  * 2026-07-30 agent-g: 13D40 recipe applied (69.5 -> 94.5,
  * 116/117 insns, locals+frame-slot layout fully matched: p home
@@ -4418,8 +4418,8 @@ void Fog_readParms(char *a0) {
  * (the 7204 inline-member separation; a cfe temp copy lengthens it by 4). */
 typedef struct { int v; } Val8124;
 extern char D_00007878;
-extern char D_00007FC4;
-extern int D_00007FCC;
+extern char sStr_Parms_7FC4;
+extern int sTag_fin_7FCC;
 extern int D_00007FD0;
 extern char D_00007540;
 char *FogTmpl_create(char *arg0) {
@@ -4440,10 +4440,10 @@ char *FogTmpl_create(char *arg0) {
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             c = u;
             if (c != 0 || (c = (char *)func_00000000(8)) != 0) {
-                *(char **)(c + 0) = &D_00007FC4;
+                *(char **)(c + 0) = &sStr_Parms_7FC4;
                 *(int *)(c + 4) = 0;
             }
-            p.v = D_00007FCC; A[4] = p.v;
+            p.v = sTag_fin_7FCC; A[4] = p.v;
             c = u + 8;
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
@@ -4533,8 +4533,8 @@ void Snower_display(int *a0) {
  * func_00000000 is the K&R cross-USO placeholder.
  *
  * Decoded: single int* arg, makes 5 sequential calls, no return:
- *   call(&D, &D_00007FD4, 0)
- *   call(&D, &D_00007FDC, (int)a0+0x6C, 1)
+ *   call(&D, &sStr_Snower_7FD4, 0)
+ *   call(&D, &sStr_Snow_7FDC, (int)a0+0x6C, 1)
  *   call((int)a0+0x3C, 0)
  *   call(&D)
  *   call(a0)
@@ -4542,11 +4542,11 @@ void Snower_display(int *a0) {
  * Pattern: $a0 saved at +0x18(sp) (= caller's a0 slot above this 0x18-byte
  * frame) at function entry, reloaded at every call that needs it (calls
  * 2/3/5). All delay slots are filled with addiu/move/lw arg setup. */
-extern char D_00007FD4;
-extern char D_00007FDC;
+extern char sStr_Snower_7FD4;
+extern char sStr_Snow_7FDC;
 void Snower_hostioParms(int *a0) {
-    func_00000000(&gHostio, &D_00007FD4, 0);
-    func_00000000(&gHostio, &D_00007FDC, (int)a0 + 0x6C, 1);
+    func_00000000(&gHostio, &sStr_Snower_7FD4, 0);
+    func_00000000(&gHostio, &sStr_Snow_7FDC, (int)a0 + 0x6C, 1);
     func_00000000((int)a0 + 0x3C, 0);
     func_00000000(&gHostio);
     func_00000000(a0);
@@ -4555,10 +4555,10 @@ void Snower_hostioParms(int *a0) {
  * expected/.o differ at EXACTLY ONE word (w5, 0x14): the call-1
  * arg2. Target's .s uses %hi/%lo of LOCAL label `.L00007FD4`
  * (assembled-in intra-segment → expected/.o bakes addiu a1,a1,0x7FC4,
- * NO reloc). This NM uses extern `&D_00007FD4` (D_00007FD4=0x7FD4 in
+ * NO reloc). This NM uses extern `&sStr_Snower_7FD4` (sStr_Snower_7FD4=0x7FD4 in
  * undefined_syms) → emits a reloc with placeholder 0 (build/.o
  * 24A50000). The 0x10 delta (0x7FD4 vs 0x7FC4) = lui/addiu %hi-carry
- * of a local-label pair, NOT a flat symbol. w12 (&D_00007FDC) is
+ * of a local-label pair, NOT a flat symbol. w12 (&sStr_Snow_7FDC) is
  * CORRECT (matches .o-vs-.o). Fix path: reference the local
  * `.L00007FD4` segment data symbol at the value that bakes 0x7FC4 in
  * %lo (account for %hi carry), not the flat extern. Reloc word →
@@ -4587,22 +4587,22 @@ void Snower_readParms(char *a0) {
  *       o->0x28 = &D_desc;
  *       s = alloc(0x38); if (!s) return;
  *       c = alloc(8);                              // defensive arm
- *       if (c) { c->0x0 = &D_00007FE4; c->0x4 = 0; }
- *       v = *(int*)&D_00007FEC;
+ *       if (c) { c->0x0 = &sStr_Parms_7FE4; c->0x4 = 0; }
+ *       v = *(int*)&sTag_rng_7FEC;
  *       if (s != (void*)-8) {                      // defensive guard
  *           c2 = alloc(0x18);
  *           if (c2) init2(c2, s, v, 1);            // func_00000000
  *       }
  *       ... (chain continues: more sub-allocs, FP 300.0f
- *           (0x43960000) param, &D_00007FF0/D_00007540 datums,
+ *           (0x43960000) param, &sTag_sta_7FF0/D_00007540 datums,
  *           func_00007620 helper - same shape as the family).
  *   }
  * Struct-typing reference: D_root global -> g, g->0x40 (64) =
  * built-once latch (nonzero = skip). o = 0x74-byte object,
  * o->0x28 (40) descriptor (&D_00007968 init datum). s = 0x38-byte
- * sub-object; c = 8-byte aux (c->0x0 = &D_00007FE4 descriptor,
+ * sub-object; c = 8-byte aux (c->0x0 = &sStr_Parms_7FE4 descriptor,
  * c->0x4 = 0); c2 = 0x18-byte child init'd from the global
- * D_00007FEC value. The `u != -0x3C / -0x8 / -0x20` tests are the
+ * sTag_rng_7FEC value. The `u != -0x3C / -0x8 / -0x20` tests are the
  * `c = u+k; if (c != 0 || alloc)` get-or-create guards folded by
  * IDO. FP const 0x43960000 = 300.0f; block2 kind a3=0 and child2
  * gets {0x10=1 (int), 0xC=&func_00007620+0x70, 0x14=0} instead of
@@ -4623,9 +4623,9 @@ void Snower_readParms(char *a0) {
 #ifdef NON_MATCHING
 typedef struct { int v; } Val84A0;
 extern char D_00007968;
-extern char D_00007FE4;
-extern int D_00007FEC;
-extern int D_00007FF0;
+extern char sStr_Parms_7FE4;
+extern int sTag_rng_7FEC;
+extern int sTag_sta_7FF0;
 extern char D_00007540;
 char *SnowTmpl_create(char *arg0) {
     char *o;
@@ -4651,10 +4651,10 @@ char *SnowTmpl_create(char *arg0) {
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             s = u;
             if (s != 0 || (s = (char *)func_00000000(8)) != 0) {
-                *(char **)(s + 0) = &D_00007FE4;
+                *(char **)(s + 0) = &sStr_Parms_7FE4;
                 *(int *)(s + 4) = 0;
             }
-            p.v = D_00007FEC; A[4] = p.v;
+            p.v = sTag_rng_7FEC; A[4] = p.v;
             c = u + 8;
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
@@ -4663,7 +4663,7 @@ char *SnowTmpl_create(char *arg0) {
                 ((CourseFParm *)c)->value2 = 0;
                 ((CourseFParm *)c)->value = 300.0f;
             }
-            p.v = D_00007FF0; A[3] = p.v;
+            p.v = sTag_sta_7FF0; A[3] = p.v;
             c = u + 0x20;
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 0);
@@ -4739,7 +4739,7 @@ void TreeTmpl_hostioParms(char *a0) {
     func_00000000(a0);
 }
 
-extern char D_00007FF4;
+extern char sStr_tree_7FF4;
 extern float D_000005F0;
 
 /* TreeTmpl_create: allocator/init sibling of TreeTmpl_display. EXACT 2026-10-16
@@ -4775,7 +4775,7 @@ void *TreeTmpl_create(char *arg0) {
         if (1) {}
         *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 4) = 0xAA002;
         *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 0) = 0;
-        *(int *)(arg0 + 0x40) = func_00000000(0, &D_00007FF4, *(int *)(arg0 + 0x48), 0);
+        *(int *)(arg0 + 0x40) = func_00000000(0, &sStr_tree_7FF4, *(int *)(arg0 + 0x48), 0);
     }
     s1 = (char *)func_00000000(0xC8);
     if (s1 != 0) {
@@ -4947,8 +4947,8 @@ void SnowBCollider_onContact(char *b) {
 }
 
 /* ShpNode_ctor: 36-insn (0x90) optional-alloc + multi-call init. */
-extern char D_00008708;
-extern char D_00008710;
+extern char sStr_QNode_8708;
+extern char sStr_shp_8710;
 extern char ShpNode_vtbl_8F18_vtable;
 extern char D_8F18_call_arg;
 char *ShpNode_ctor(char *self) {
@@ -4957,9 +4957,9 @@ char *ShpNode_ctor(char *self) {
         self = (char*)func_00000000(0x3D8);
         if (self == 0) goto end;
     }
-    func_00000000(self, &D_00008708);
+    func_00000000(self, &sStr_QNode_8708);
     NODE(self)->vptr = (s32)(&ShpNode_vtbl_8F18_vtable);
-    handle = func_00000000(0, &D_00008710, &D_8F18_call_arg, 0);
+    handle = func_00000000(0, &sStr_shp_8710, &D_8F18_call_arg, 0);
     func_00000000(self, handle);
     SHPNODE(self)->life = 100;
     SHPNODE(self)->unk260 = 50.0f;
@@ -4989,7 +4989,7 @@ end:
  * return is void; 0xFC written before 0x100; tbl spilled across realloc
  * (count re-read, tbl not). volatile pad_hi/pad_lo size the 0x48 frame
  * (zero-instruction phantom slots). RESIDUAL CAP: IDO as1 hoists the
- * &D_00008714 address into the pre-branch delay region, forcing `count`
+ * &sStr_Too_many_objects_for_List_8714 address into the pre-branch delay region, forcing `count`
  * off $a0 onto $v1 (coloring-renumber), plus the tbl-spill slot lands at
  * 0x1C instead of 0x40. Pure scheduler-tie + coloring; not C-fixable.
  * Run 129 (agent-c) 15 -> 13 raw: tbl declared at function scope between
@@ -4999,7 +4999,7 @@ end:
  * Run 131 (agent-c) EXACT: the pre-realloc compare reads tbl[3] directly and
  * count is assigned only AFTER the if (one load, not a count copy reloaded in
  * the then-arm) -> count colours a0 and the &D_8714 lui stays in the arm. */
-extern char D_00008714;
+extern char sStr_Too_many_objects_for_List_8714;
 typedef struct { int a, b, c; } Vec3i_8FA8;
 void ShpNode_func_00008FA8(int *self) {
     volatile int pad_t[1];
@@ -5028,7 +5028,7 @@ void ShpNode_func_00008FA8(int *self) {
             int count;
             tbl = *(int**)&D_00000000;
             if (tbl[3] >= tbl[2]) {
-                func_00000000(&D_00008714, self);
+                func_00000000(&sStr_Too_many_objects_for_List_8714, self);
             }
             count = tbl[3];
             tbl[3] = count + 1;
@@ -5152,7 +5152,7 @@ void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int
  *   gl_func(0, (char*)func_00008A40 + 0x18, table2[j], 0);   // dispatch
  *
  * The dispatched function ptr is `func_00008A40 + 0x18` — a code address
- * inside an existing function (alt-entry); gl_ref_00008A58 folds the +0x18.
+ * inside an existing function (alt-entry); sStr_board_8A58 folds the +0x18.
  *
  * CROSSED 2026-07-15 (was 99.94% "frame -40 vs -32 spill-allocator cap").
  * The +8 frame was the dead-scalar-home block for the named locals (j/elem):
@@ -5170,7 +5170,7 @@ void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int
  * (A 3rd `int *elem` param kills the frame but leaks `sw $a2,0x28(sp)` —
  * K&R param home-store; dead-redefinition doesn't DCE it. Named-local forms
  * all stay -40: local/register/inner-scope/named-off variants probed.) */
-extern char gl_ref_00008A58;
+extern char sStr_board_8A58;
 extern int D_00000000_b49c[];  /* base-0 alias: 3rd table's separate lui (no CSE with 1st table's addr temp) */
 void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     j = idx;
@@ -5178,7 +5178,7 @@ void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
     if (gl_func_00000000(((int*)&D_00000000)[j], j) == 0) {
         gl_func_00000000(&D_00000000, ((int*)&D_00000000)[j]);
     }
-    gl_func_00000000(0, &gl_ref_00008A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
+    gl_func_00000000(0, &sStr_board_8A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
 }
 
 /* SnowBoarder_limitSpeed - verified structural decode (0x23C, 143 insns,
@@ -6704,7 +6704,7 @@ void SnowBoarder_grabScreenThumb_0000E740(char *a0, int a1) {
 
 /* SnowBoard_ctor - verified structural decode (0xBC, 47 insns,
  * config-parse + init routine).
- * Struct-typing reference: D_00008D34 / D_00008D48 / D_00008D5C =
+ * Struct-typing reference: sStr_rom_audio_seq_uso_8D34 / sStr_rom_audio_wave_uso_8D48 / sStr_rom_audio_bank_uso_8D5C =
  * three config-key data (string/descriptor) parsed by the reloc
  * helper into a (x,y,z) triple on the stack, then consumed in
  * (x,z,y) order. func_00000008+0x20 = global slot set to &D
@@ -6713,7 +6713,7 @@ void SnowBoarder_grabScreenThumb_0000E740(char *a0, int a1) {
  * s16@0x58}). Caps <80: 7x reloc + 5x &D reloc + func_00000008+0x20
  * cross-symbol data store + vtable jalr.
  * INCLUDE_ASM remains build path. */
-extern char D_00008D34, D_00008D48, D_00008D5C;
+extern char sStr_rom_audio_seq_uso_8D34, sStr_rom_audio_wave_uso_8D48, sStr_rom_audio_bank_uso_8D5C;
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E800.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
 void SnowBoard_ctor(void) {
@@ -6763,10 +6763,10 @@ void SnowBoard_staticCtor_0000E9FC(void) {
     volatile int r = 0;
 }
 
-extern char D_00008D70;
-extern char D_00008D7C;
-extern char D_00008D8C;
-extern char D_00008D9C;
+extern char sStr_SnowBoard_8D70;
+extern char sStr_rom_version_bin_8D7C;
+extern char sStr_rom_anims_bin_8D8C;
+extern char sStr_Node_8D9C;
 extern char D_00000000_a;
 extern char D_00000000_b;
 void SnowBoard_InitInstance(char *arg0) {
@@ -6774,13 +6774,13 @@ void SnowBoard_InitInstance(char *arg0) {
     int saved;
 
     (void)pad;
-    *(int *)(arg0 + 0xC) = (int)&D_00008D70;
-    func_00000000(arg0, &D_00008D7C);
+    *(int *)(arg0 + 0xC) = (int)&sStr_SnowBoard_8D70;
+    func_00000000(arg0, &sStr_rom_version_bin_8D7C);
     saved = func_00000000(0);
-    *(int *)&D_00000000 = func_00000000(0, &D_00008D8C, 0x20, 0xC);
+    *(int *)&D_00000000 = func_00000000(0, &sStr_rom_anims_bin_8D8C, 0x20, 0xC);
     func_00000000(saved);
     /* Distinct zero-address aliases keep IDO from caching the base in $s0. */
-    func_00000000(&D_00000000_a, &D_00008D9C);
+    func_00000000(&D_00000000_a, &sStr_Node_8D9C);
     func_00000000(&D_00000000_b, arg0);
     if (func_00000000(&D_00000000) != 0) {
         func_00000000(&D_00000000_a, 1, 0);

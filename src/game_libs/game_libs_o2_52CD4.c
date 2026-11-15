@@ -47,7 +47,7 @@
 
 extern int gl_func_00000000();
 extern int D_00000000;
-extern char gl_ref_00020FD4_52CD4[], gl_ref_00020FDC_52CD4[], gl_ref_00020FF4_52CD4[];
+extern char sStr_Mats_20FD4[], sStr_parsed_materials_broken_20FDC[], sStr_shape_scale_dont_work_mate_20FF4[];
 
 s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
     s32 op;
@@ -88,7 +88,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 dflag = 1;
                 break;
             case 29:
-                gl_func_00000000(gl_ref_00020FD4_52CD4, 0);
+                gl_func_00000000(sStr_Mats_20FD4, 0);
                 q = cur; cur += 1; v = *q;
                 q = cur; cur += 1; BASEPOLY(arg0)->unk80 = *q;
                 BASEPOLY(arg0)->nMats = 0;
@@ -101,7 +101,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 gl_func_00000000();
                 break;
             case 31:
-                gl_func_00000000(gl_ref_00020FDC_52CD4);
+                gl_func_00000000(sStr_parsed_materials_broken_20FDC);
                 break;
             case 4:
                 q = cur; cur += 1; BASEPOLY(arg0)->unk64 = *q;
@@ -135,7 +135,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 break;
             case 36:
                 cur += 3;
-                gl_func_00000000(gl_ref_00020FF4_52CD4);
+                gl_func_00000000(sStr_shape_scale_dont_work_mate_20FF4);
                 break;
             case 12:
                 q = cur; cur += 1; BASEPOLY(arg0)->unk98 = *q;

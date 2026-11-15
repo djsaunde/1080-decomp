@@ -25,8 +25,8 @@ extern int gl_func_00000000();
 extern int D_00000000;
 extern int gl_ref_0007644C(); /* baked jal 0x0C01D913: stream int reader */
 extern int gl_ref_00076400(); /* baked jal 0x0C01D900: debug print */
-extern char gl_ref_0002205C_61F8C[], gl_ref_00022068_61F8C[], gl_ref_00022078_61F8C[];
-extern char gl_ref_00022088_61F8C[], gl_ref_00022098_61F8C[], gl_ref_000220AC_61F8C[];
+extern char sFmt_numkeys_2205C[], sFmt_numnodes_22068[], sFmt_frame_data_22078[];
+extern char sFmt_numframes_22088[], sFmt_unknown_anim_cmd_22098[], sStr_AMgr_bad_num_Nodes_220AC[];
 
 /* Strings: 1 "numkeys %d", 2 "numnodes %d", 3 "frame data %d", 5 "numframes %d",
  * default "unknown anim cmd %d", exit "AMgr: bad num Nodes". `base` is gSysLib, the stream
@@ -51,7 +51,7 @@ void AnimData_load(AnimData *self) {
             n = val * 8;
             if (self->keepKeys == 0) {
                 self->numKeys = val;
-                gl_ref_00076400(gl_ref_0002205C_61F8C, self->numKeys);
+                gl_ref_00076400(sFmt_numkeys_2205C, self->numKeys);
                 self->keys = gl_func_00000000(self->numKeys * 8);   /* mem_new */
                 gl_func_00000000(base, self->keys, n);              /* fs_gdlReadFile */
             } else {
@@ -62,11 +62,11 @@ void AnimData_load(AnimData *self) {
             break;
         case 2:
             self->numNodes = val;
-            gl_ref_00076400(gl_ref_00022068_61F8C, self->numNodes);
+            gl_ref_00076400(sFmt_numnodes_22068, self->numNodes);
             break;
         case 3: /* frame data: val bytes = numFrames * numNodes * 14 */
             n = val;
-            gl_ref_00076400(gl_ref_00022078_61F8C, n);
+            gl_ref_00076400(sFmt_frame_data_22078, n);
             if (((volatile int *)base)[1] == 0) {
                 self->frameData = gl_func_00000000(n, 8);         /* mem_newAligned */
                 gl_func_00000000(base, self->frameData, n);
@@ -81,17 +81,17 @@ void AnimData_load(AnimData *self) {
             break;
         case 5:
             self->numFrames = val;
-            gl_ref_00076400(gl_ref_00022088_61F8C, self->numFrames);
+            gl_ref_00076400(sFmt_numframes_22088, self->numFrames);
             break;
         default:
-            gl_func_00000000(gl_ref_00022098_61F8C, cmd);
+            gl_func_00000000(sFmt_unknown_anim_cmd_22098, cmd);
             break;
         }
     }
     /* the second numNodes read stays a raw `*(s16 *)` deref: spelled self->numNodes,
      * the beql operands swap (t3, v0 -> v0, t3) */
     if (self->numNodes != 0 && ((AnimDataMgr *)self->mgr)->numNodes != *(s16 *)((char *)self + 0)) {
-        gl_func_00000000(gl_ref_000220AC_61F8C);
+        gl_func_00000000(sStr_AMgr_bad_num_Nodes_220AC);
     }
     self->state = 7;
 }

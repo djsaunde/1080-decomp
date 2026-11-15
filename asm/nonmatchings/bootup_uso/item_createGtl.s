@@ -4,9 +4,9 @@ glabel item_createGtl
     /* DD5E54 000053E8 27BDFFC8 */  addiu      $sp, $sp, -0x38
     /* DD5E58 000053EC AFA40038 */  sw         $a0, 0x38($sp)
     /* DD5E5C 000053F0 AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5E60 000053F4 3C040000 */  lui        $a0, %hi(D_00007DFC)
+    /* DD5E60 000053F4 3C040000 */  lui        $a0, %hi(sStr_rom_checkpoint_uso_7DFC)
     /* DD5E64 000053F8 0C000000 */  jal        func_00000000
-    /* DD5E68 000053FC 24847DFC */   addiu     $a0, $a0, %lo(D_00007DFC)
+    /* DD5E68 000053FC 24847DFC */   addiu     $a0, $a0, %lo(sStr_rom_checkpoint_uso_7DFC)
     /* DD5E6C 00005400 8FAE0038 */  lw         $t6, 0x38($sp)
     /* DD5E70 00005404 24040050 */  addiu      $a0, $zero, 0x50
     /* DD5E74 00005408 0C000000 */  jal        func_00000000

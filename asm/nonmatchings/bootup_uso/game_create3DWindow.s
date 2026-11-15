@@ -48,11 +48,11 @@ glabel game_create3DWindow
     /* DD4004 00003598 AFAE0034 */  sw         $t6, 0x34($sp)
     /* DD4008 0000359C 8E190010 */  lw         $t9, 0x10($s0)
     /* DD400C 000035A0 AFA80044 */  sw         $t0, 0x44($sp)
-    /* DD4010 000035A4 3C060000 */  lui        $a2, %hi(D_000074D0)
+    /* DD4010 000035A4 3C060000 */  lui        $a2, %hi(sStr_3DWindow_74D0)
     /* DD4014 000035A8 AFB90040 */  sw         $t9, 0x40($sp)
     /* DD4018 000035AC 8E090014 */  lw         $t1, 0x14($s0)
     /* DD401C 000035B0 AFA0004C */  sw         $zero, 0x4C($sp)
-    /* DD4020 000035B4 24C674D0 */  addiu      $a2, $a2, %lo(D_000074D0)
+    /* DD4020 000035B4 24C674D0 */  addiu      $a2, $a2, %lo(sStr_3DWindow_74D0)
     /* DD4024 000035B8 00002025 */  or         $a0, $zero, $zero
     /* DD4028 000035BC 24050064 */  addiu      $a1, $zero, 0x64
     /* DD402C 000035C0 2407006D */  addiu      $a3, $zero, 0x6D

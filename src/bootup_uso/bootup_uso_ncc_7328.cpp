@@ -18,7 +18,7 @@ void func_00000000(...);
 void stream_readS32_00005EF8(void *);
 void stream_readS32_0000502C(void *);
 void stream_readS32_00004FF0(void *);
-extern char D_00000000, D_00007F90, D_00007FA0;
+extern char D_00000000, sFmt_Env_Load_7F90, sFmt_Env_Skip_7FA0;
 extern char func_0000027C[], func_00000008[], func_0000029C[];
 }
 struct Msg73 { int id; };
@@ -51,11 +51,11 @@ extern "C" void EnvSettings_load(char *self) {
             }
         }
         if (found != 0) {
-            func_00000000(&D_00007F90, &found->id);
+            func_00000000(&sFmt_Env_Load_7F90, &found->id);
             Handler73 *h = found->h;
             h->handle();
         } else {
-            func_00000000(&D_00007FA0, &msg);
+            func_00000000(&sFmt_Env_Skip_7FA0, &msg);
             func_00000000(&D_00000000, 1, out);
         }
     }

@@ -56,8 +56,8 @@ glabel ShpNode_func_00008FA8
     /* DD9AE4 00009078 008B082A */  slt        $at, $a0, $t3
     /* DD9AE8 0000907C 5420000A */  bnel       $at, $zero, .L000090A8
     /* DD9AEC 00009080 8C4D0000 */   lw        $t5, 0x0($v0)
-    /* DD9AF0 00009084 3C040001 */  lui        $a0, %hi(D_00008714)
-    /* DD9AF4 00009088 24848714 */  addiu      $a0, $a0, %lo(D_00008714)
+    /* DD9AF0 00009084 3C040001 */  lui        $a0, %hi(sStr_Too_many_objects_for_List_8714)
+    /* DD9AF4 00009088 24848714 */  addiu      $a0, $a0, %lo(sStr_Too_many_objects_for_List_8714)
     /* DD9AF8 0000908C AFA20040 */  sw         $v0, 0x40($sp)
     /* DD9AFC 00009090 0C000000 */  jal        func_00000000
     /* DD9B00 00009094 AFA50048 */   sw        $a1, 0x48($sp)

@@ -70,7 +70,7 @@ glabel Fog_display
     /* DD89E4 00007F78 00000000 */  nop
     /* DD89E8 00007F7C 45020004 */  bc1fl      .L00007F90
     /* DD89EC 00007F80 8E19008C */   lw        $t9, 0x8C($s0)
-  alabel D_00007F84
+  alabel sStr_EnvSettings_7F84
     /* DD89F0 00007F84 44819000 */  mtc1       $at, $f18
     /* DD89F4 00007F88 24020001 */  addiu      $v0, $zero, 0x1
   .L00007F8C:
@@ -80,39 +80,39 @@ glabel Fog_display
     /* DD8A00 00007F94 00000000 */   nop
     /* DD8A04 00007F98 8C8A0000 */  lw         $t2, 0x0($a0)
     /* DD8A08 00007F9C 3C080000 */  lui        $t0, (0x0 >> 16)
-  alabel D_00007FA0
+  alabel sFmt_Env_Skip_7FA0
     /* DD8A0C 00007FA0 25080000 */  addiu      $t0, $t0, 0x0
     /* DD8A10 00007FA4 AD0A0000 */  sw         $t2, 0x0($t0)
     /* DD8A14 00007FA8 8C890004 */  lw         $t1, 0x4($a0)
     /* DD8A18 00007FAC AD090004 */  sw         $t1, 0x4($t0)
-  alabel D_00007FB0
+  alabel sStr_FallingSnow_7FB0
     /* DD8A1C 00007FB0 8C8A0008 */  lw         $t2, 0x8($a0)
     /* DD8A20 00007FB4 AD0A0008 */  sw         $t2, 0x8($t0)
     /* DD8A24 00007FB8 8C89000C */  lw         $t1, 0xC($a0)
-  alabel D_00007FBC
+  alabel sStr_Node_7FBC
     /* DD8A28 00007FBC AD09000C */  sw         $t1, 0xC($t0)
     /* DD8A2C 00007FC0 8C8A0010 */  lw         $t2, 0x10($a0)
-  alabel D_00007FC4
+  alabel sStr_Parms_7FC4
     /* DD8A30 00007FC4 AD0A0010 */  sw         $t2, 0x10($t0)
     /* DD8A34 00007FC8 8C890014 */  lw         $t1, 0x14($a0)
-  alabel D_00007FCC
+  alabel sTag_fin_7FCC
     /* DD8A38 00007FCC AD090014 */  sw         $t1, 0x14($t0)
   alabel D_00007FD0
     /* DD8A3C 00007FD0 AE02008C */  sw         $v0, 0x8C($s0)
   .L00007FD4:
     /* DD8A40 00007FD4 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
     /* DD8A44 00007FD8 10400022 */  beqz       $v0, .L00008064
-  alabel D_00007FDC
+  alabel sStr_Snow_7FDC
     /* DD8A48 00007FDC 24840294 */   addiu     $a0, $a0, %lo(func_0000027C + 0x18)
     /* DD8A4C 00007FE0 8D6D0000 */  lw         $t5, 0x0($t3)
-  alabel D_00007FE4
+  alabel sStr_Parms_7FE4
     /* DD8A50 00007FE4 44069000 */  mfc1       $a2, $f18
     /* DD8A54 00007FE8 26050074 */  addiu      $a1, $s0, 0x74
-  alabel D_00007FEC
+  alabel sTag_rng_7FEC
     /* DD8A58 00007FEC AC8D0000 */  sw         $t5, 0x0($a0)
-  alabel D_00007FF0
+  alabel sTag_sta_7FF0
     /* DD8A5C 00007FF0 8D6C0004 */  lw         $t4, 0x4($t3)
-  alabel D_00007FF4
+  alabel sStr_tree_7FF4
     /* DD8A60 00007FF4 AC8C0004 */  sw         $t4, 0x4($a0)
     /* DD8A64 00007FF8 8D6D0008 */  lw         $t5, 0x8($t3)
     /* DD8A68 00007FFC AC8D0008 */  sw         $t5, 0x8($a0)

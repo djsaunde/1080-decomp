@@ -16,8 +16,8 @@ glabel SnowBoarder_ctor
     /* DD9B68 000090FC 10400826 */  beqz       $v0, .L0000B198
     /* DD9B6C 00009100 00409025 */   or        $s2, $v0, $zero
   .L00009104:
-    /* DD9B70 00009104 3C050001 */  lui        $a1, %hi(D_00008730)
-    /* DD9B74 00009108 24A58730 */  addiu      $a1, $a1, %lo(D_00008730)
+    /* DD9B70 00009104 3C050001 */  lui        $a1, %hi(sStr_SnowB_8730)
+    /* DD9B74 00009108 24A58730 */  addiu      $a1, $a1, %lo(sStr_SnowB_8730)
     /* DD9B78 0000910C 0C000000 */  jal        func_00000000
     /* DD9B7C 00009110 02402025 */   or        $a0, $s2, $zero
     /* DD9B80 00009114 3C0E0000 */  lui        $t6, (0x0 >> 16)
@@ -31,8 +31,8 @@ glabel SnowBoarder_ctor
     /* DD9BA0 00009134 10400144 */  beqz       $v0, .L00009648
     /* DD9BA4 00009138 00408025 */   or        $s0, $v0, $zero
   .L0000913C:
-    /* DD9BA8 0000913C 3C050001 */  lui        $a1, %hi(D_00008738)
-    /* DD9BAC 00009140 24A58738 */  addiu      $a1, $a1, %lo(D_00008738)
+    /* DD9BA8 0000913C 3C050001 */  lui        $a1, %hi(sStr_Node_8738)
+    /* DD9BAC 00009140 24A58738 */  addiu      $a1, $a1, %lo(sStr_Node_8738)
     /* DD9BB0 00009144 0C000000 */  jal        func_00000000
     /* DD9BB4 00009148 02002025 */   or        $a0, $s0, $zero
     /* DD9BB8 0000914C 3C0F0001 */  lui        $t7, %hi(Fog_readParms + 0x1C)
@@ -53,8 +53,8 @@ glabel SnowBoarder_ctor
     /* DD9BF0 00009184 10400005 */  beqz       $v0, .L0000919C
     /* DD9BF4 00009188 00403025 */   or        $a2, $v0, $zero
   .L0000918C:
-    /* DD9BF8 0000918C 3C180001 */  lui        $t8, %hi(D_00008740)
-    /* DD9BFC 00009190 27188740 */  addiu      $t8, $t8, %lo(D_00008740)
+    /* DD9BF8 0000918C 3C180001 */  lui        $t8, %hi(sStr_Parms_8740)
+    /* DD9BFC 00009190 27188740 */  addiu      $t8, $t8, %lo(sStr_Parms_8740)
     /* DD9C00 00009194 ACD80000 */  sw         $t8, 0x0($a2)
     /* DD9C04 00009198 ACC00004 */  sw         $zero, 0x4($a2)
   .L0000919C:
@@ -1637,9 +1637,9 @@ glabel SnowBoarder_ctor
     /* DDB2C8 0000A85C 24A58808 */  addiu      $a1, $a1, %lo(TreeTmpl_create + 0x64)
     /* DDB2CC 0000A860 0C000000 */  jal        func_00000000
     /* DDB2D0 0000A864 00002025 */   or        $a0, $zero, $zero
-    /* DDB2D4 0000A868 3C050001 */  lui        $a1, %hi(D_00008814)
+    /* DDB2D4 0000A868 3C050001 */  lui        $a1, %hi(sStr_DispTrails_8814)
     /* DDB2D8 0000A86C AE42086C */  sw         $v0, 0x86C($s2)
-    /* DDB2DC 0000A870 24A58814 */  addiu      $a1, $a1, %lo(D_00008814)
+    /* DDB2DC 0000A870 24A58814 */  addiu      $a1, $a1, %lo(sStr_DispTrails_8814)
     /* DDB2E0 0000A874 0C000000 */  jal        func_00000000
     /* DDB2E4 0000A878 00002025 */   or        $a0, $zero, $zero
     /* DDB2E8 0000A87C 8E50086C */  lw         $s0, 0x86C($s2)
@@ -1657,8 +1657,8 @@ glabel SnowBoarder_ctor
     /* DDB318 0000A8AC 0C000000 */  jal        func_00000000
     /* DDB31C 0000A8B0 26040010 */   addiu     $a0, $s0, 0x10
     /* DDB320 0000A8B4 8E2D0014 */  lw         $t5, 0x14($s1)
-    /* DDB324 0000A8B8 3C050001 */  lui        $a1, %hi(D_00008820)
-    /* DDB328 0000A8BC 24A58820 */  addiu      $a1, $a1, %lo(D_00008820)
+    /* DDB324 0000A8B8 3C050001 */  lui        $a1, %hi(sStr_DispTrails_8820)
+    /* DDB328 0000A8BC 24A58820 */  addiu      $a1, $a1, %lo(sStr_DispTrails_8820)
     /* DDB32C 0000A8C0 11A00003 */  beqz       $t5, .L0000A8D0
     /* DDB330 0000A8C4 00002025 */   or        $a0, $zero, $zero
     /* DDB334 0000A8C8 240E0001 */  addiu      $t6, $zero, 0x1
@@ -1698,8 +1698,8 @@ glabel SnowBoarder_ctor
     /* DDB3B4 0000A948 10400008 */  beqz       $v0, .L0000A96C
     /* DDB3B8 0000A94C 00408825 */   or        $s1, $v0, $zero
   .L0000A950:
-    /* DDB3BC 0000A950 3C050001 */  lui        $a1, %hi(D_0000882C)
-    /* DDB3C0 0000A954 24A5882C */  addiu      $a1, $a1, %lo(D_0000882C)
+    /* DDB3BC 0000A950 3C050001 */  lui        $a1, %hi(sStr_Node_882C)
+    /* DDB3C0 0000A954 24A5882C */  addiu      $a1, $a1, %lo(sStr_Node_882C)
     /* DDB3C4 0000A958 0C000000 */  jal        func_00000000
     /* DDB3C8 0000A95C 02202025 */   or        $a0, $s1, $zero
     /* DDB3CC 0000A960 3C0F0000 */  lui        $t7, %hi(bu_90cc_vt545)
@@ -1736,8 +1736,8 @@ glabel SnowBoarder_ctor
     /* DDB43C 0000A9D0 1040000A */  beqz       $v0, .L0000A9FC
     /* DDB440 0000A9D4 00403025 */   or        $a2, $v0, $zero
   .L0000A9D8:
-    /* DDB444 0000A9D8 3C050001 */  lui        $a1, %hi(D_00008834)
-    /* DDB448 0000A9DC 24A58834 */  addiu      $a1, $a1, %lo(D_00008834)
+    /* DDB444 0000A9D8 3C050001 */  lui        $a1, %hi(sStr_Node_8834)
+    /* DDB448 0000A9DC 24A58834 */  addiu      $a1, $a1, %lo(sStr_Node_8834)
     /* DDB44C 0000A9E0 00C02025 */  or         $a0, $a2, $zero
     /* DDB450 0000A9E4 0C000000 */  jal        func_00000000
     /* DDB454 0000A9E8 AFA60114 */   sw        $a2, 0x114($sp)
@@ -1774,8 +1774,8 @@ glabel SnowBoarder_ctor
     /* DDB4C4 0000AA58 1040000A */  beqz       $v0, .L0000AA84
     /* DDB4C8 0000AA5C 00403025 */   or        $a2, $v0, $zero
   .L0000AA60:
-    /* DDB4CC 0000AA60 3C050001 */  lui        $a1, %hi(D_0000883C)
-    /* DDB4D0 0000AA64 24A5883C */  addiu      $a1, $a1, %lo(D_0000883C)
+    /* DDB4CC 0000AA60 3C050001 */  lui        $a1, %hi(sStr_Node_883C)
+    /* DDB4D0 0000AA64 24A5883C */  addiu      $a1, $a1, %lo(sStr_Node_883C)
     /* DDB4D4 0000AA68 00C02025 */  or         $a0, $a2, $zero
     /* DDB4D8 0000AA6C 0C000000 */  jal        func_00000000
     /* DDB4DC 0000AA70 AFA60114 */   sw        $a2, 0x114($sp)
@@ -1812,8 +1812,8 @@ glabel SnowBoarder_ctor
     /* DDB54C 0000AAE0 1040000A */  beqz       $v0, .L0000AB0C
     /* DDB550 0000AAE4 00403025 */   or        $a2, $v0, $zero
   .L0000AAE8:
-    /* DDB554 0000AAE8 3C050001 */  lui        $a1, %hi(D_00008844)
-    /* DDB558 0000AAEC 24A58844 */  addiu      $a1, $a1, %lo(D_00008844)
+    /* DDB554 0000AAE8 3C050001 */  lui        $a1, %hi(sStr_Node_8844)
+    /* DDB558 0000AAEC 24A58844 */  addiu      $a1, $a1, %lo(sStr_Node_8844)
     /* DDB55C 0000AAF0 00C02025 */  or         $a0, $a2, $zero
     /* DDB560 0000AAF4 0C000000 */  jal        func_00000000
     /* DDB564 0000AAF8 AFA60114 */   sw        $a2, 0x114($sp)
@@ -1844,8 +1844,8 @@ glabel SnowBoarder_ctor
     /* DDB5BC 0000AB50 0C000000 */  jal        func_00000000
     /* DDB5C0 0000AB54 00000000 */   nop
   .L0000AB58:
-    /* DDB5C4 0000AB58 3C040001 */  lui        $a0, %hi(D_0000884C)
-    /* DDB5C8 0000AB5C 2484884C */  addiu      $a0, $a0, %lo(D_0000884C)
+    /* DDB5C4 0000AB58 3C040001 */  lui        $a0, %hi(sStr_AnimationData_884C)
+    /* DDB5C8 0000AB5C 2484884C */  addiu      $a0, $a0, %lo(sStr_AnimationData_884C)
     /* DDB5CC 0000AB60 0C000000 */  jal        func_00000000
     /* DDB5D0 0000AB64 00002825 */   or        $a1, $zero, $zero
     /* DDB5D4 0000AB68 0C000000 */  jal        func_00000000
@@ -1853,8 +1853,8 @@ glabel SnowBoarder_ctor
     /* DDB5DC 0000AB70 10400016 */  beqz       $v0, .L0000ABCC
     /* DDB5E0 0000AB74 00408825 */   or        $s1, $v0, $zero
     /* DDB5E4 0000AB78 44802000 */  mtc1       $zero, $f4
-    /* DDB5E8 0000AB7C 3C050001 */  lui        $a1, %hi(D_0000885C)
-    /* DDB5EC 0000AB80 24A5885C */  addiu      $a1, $a1, %lo(D_0000885C)
+    /* DDB5E8 0000AB7C 3C050001 */  lui        $a1, %hi(sStr_lighttarget_885C)
+    /* DDB5EC 0000AB80 24A5885C */  addiu      $a1, $a1, %lo(sStr_lighttarget_885C)
     /* DDB5F0 0000AB84 00402025 */  or         $a0, $v0, $zero
     /* DDB5F4 0000AB88 24060000 */  addiu      $a2, $zero, 0x0
     /* DDB5F8 0000AB8C 24070000 */  addiu      $a3, $zero, 0x0
@@ -1931,8 +1931,8 @@ glabel SnowBoarder_ctor
   .L0000ACA4:
     /* DDB710 0000ACA4 14200008 */  bnez       $at, .L0000ACC8
     /* DDB714 0000ACA8 00A03025 */   or        $a2, $a1, $zero
-    /* DDB718 0000ACAC 3C040001 */  lui        $a0, %hi(D_00008868)
-    /* DDB71C 0000ACB0 24848868 */  addiu      $a0, $a0, %lo(D_00008868)
+    /* DDB718 0000ACAC 3C040001 */  lui        $a0, %hi(sFmt_Global_out_of_range_8868)
+    /* DDB71C 0000ACB0 24848868 */  addiu      $a0, $a0, %lo(sFmt_Global_out_of_range_8868)
     /* DDB720 0000ACB4 AFA50058 */  sw         $a1, 0x58($sp)
     /* DDB724 0000ACB8 0C000000 */  jal        func_00000000
     /* DDB728 0000ACBC AFA60114 */   sw        $a2, 0x114($sp)
@@ -2035,12 +2035,12 @@ glabel SnowBoarder_ctor
     /* DDB888 0000AE1C 8E580A58 */  lw         $t8, 0xA58($s2)
     /* DDB88C 0000AE20 33190003 */  andi       $t9, $t8, 0x3
     /* DDB890 0000AE24 132000A2 */  beqz       $t9, .L0000B0B0
-    /* DDB894 0000AE28 3C040001 */   lui       $a0, %hi(D_00008880)
-    /* DDB898 0000AE2C 24848880 */  addiu      $a0, $a0, %lo(D_00008880)
+    /* DDB894 0000AE28 3C040001 */   lui       $a0, %hi(sStr_Trails_8880)
+    /* DDB898 0000AE2C 24848880 */  addiu      $a0, $a0, %lo(sStr_Trails_8880)
     /* DDB89C 0000AE30 0C000000 */  jal        func_00000000
     /* DDB8A0 0000AE34 00002825 */   or        $a1, $zero, $zero
-    /* DDB8A4 0000AE38 3C050001 */  lui        $a1, %hi(D_00008888)
-    /* DDB8A8 0000AE3C 24A58888 */  addiu      $a1, $a1, %lo(D_00008888)
+    /* DDB8A4 0000AE38 3C050001 */  lui        $a1, %hi(sStr_Trails_8888)
+    /* DDB8A8 0000AE3C 24A58888 */  addiu      $a1, $a1, %lo(sStr_Trails_8888)
     /* DDB8AC 0000AE40 0C000000 */  jal        func_00000000
     /* DDB8B0 0000AE44 00002025 */   or        $a0, $zero, $zero
     /* DDB8B4 0000AE48 AE420870 */  sw         $v0, 0x870($s2)

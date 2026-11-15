@@ -72,12 +72,12 @@ glabel item_registerTemplates
     /* DD611C 000056B0 E7A400F8 */   swc1      $f4, 0xF8($sp)
     /* DD6120 000056B4 3C0A0002 */  lui        $t2, (0x28002 >> 16)
     /* DD6124 000056B8 354A8002 */  ori        $t2, $t2, (0x28002 & 0xFFFF)
-    /* DD6128 000056BC 3C050000 */  lui        $a1, %hi(D_00007E20)
+    /* DD6128 000056BC 3C050000 */  lui        $a1, %hi(sTag_pyr_7E20)
     /* DD612C 000056C0 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD6130 000056C4 AD0A0004 */  sw         $t2, 0x4($t0)
     /* DD6134 000056C8 AD000000 */  sw         $zero, 0x0($t0)
     /* DD6138 000056CC 24C60000 */  addiu      $a2, $a2, 0x0
-    /* DD613C 000056D0 24A57E20 */  addiu      $a1, $a1, %lo(D_00007E20)
+    /* DD613C 000056D0 24A57E20 */  addiu      $a1, $a1, %lo(sTag_pyr_7E20)
     /* DD6140 000056D4 00002025 */  or         $a0, $zero, $zero
     /* DD6144 000056D8 0C000000 */  jal        func_00000000
     /* DD6148 000056DC 00003825 */   or        $a3, $zero, $zero
@@ -488,10 +488,10 @@ glabel item_registerTemplates
     /* DD670C 00005CA0 24A50000 */  addiu      $a1, $a1, 0x0
     /* DD6710 00005CA4 0C000000 */  jal        func_00000000
     /* DD6714 00005CA8 8C840000 */   lw        $a0, 0x0($a0)
-    /* DD6718 00005CAC 3C050000 */  lui        $a1, %hi(D_00007E48)
+    /* DD6718 00005CAC 3C050000 */  lui        $a1, %hi(sStr_light01_7E48)
     /* DD671C 00005CB0 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD6720 00005CB4 24C60000 */  addiu      $a2, $a2, 0x0
-    /* DD6724 00005CB8 24A57E48 */  addiu      $a1, $a1, %lo(D_00007E48)
+    /* DD6724 00005CB8 24A57E48 */  addiu      $a1, $a1, %lo(sStr_light01_7E48)
     /* DD6728 00005CBC 00002025 */  or         $a0, $zero, $zero
     /* DD672C 00005CC0 0C000000 */  jal        func_00000000
     /* DD6730 00005CC4 00003825 */   or        $a3, $zero, $zero
@@ -518,8 +518,8 @@ glabel item_registerTemplates
     /* DD6780 00005D14 02002825 */  or         $a1, $s0, $zero
     /* DD6784 00005D18 0C000000 */  jal        func_00000000
     /* DD6788 00005D1C 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD678C 00005D20 3C0A0000 */  lui        $t2, %hi(D_00007E54)
-    /* DD6790 00005D24 8D4A7E54 */  lw         $t2, %lo(D_00007E54)($t2)
+    /* DD678C 00005D20 3C0A0000 */  lui        $t2, %hi(sTag_lig_7E54)
+    /* DD6790 00005D24 8D4A7E54 */  lw         $t2, %lo(sTag_lig_7E54)($t2)
     /* DD6794 00005D28 24040048 */  addiu      $a0, $zero, 0x48
     /* DD6798 00005D2C AFAA0178 */  sw         $t2, 0x178($sp)
     /* DD679C 00005D30 0C000000 */  jal        func_00000000
@@ -555,8 +555,8 @@ glabel item_registerTemplates
     /* DD6808 00005D9C 02002825 */  or         $a1, $s0, $zero
     /* DD680C 00005DA0 0C000000 */  jal        func_00000000
     /* DD6810 00005DA4 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD6814 00005DA8 3C180000 */  lui        $t8, %hi(D_00007E58)
-    /* DD6818 00005DAC 8F057E58 */  lw         $a1, %lo(D_00007E58)($t8)
+    /* DD6814 00005DA8 3C180000 */  lui        $t8, %hi(sTag_gol_7E58)
+    /* DD6818 00005DAC 8F057E58 */  lw         $a1, %lo(sTag_gol_7E58)($t8)
     /* DD681C 00005DB0 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD6820 00005DB4 8CC60000 */  lw         $a2, 0x0($a2)
     /* DD6824 00005DB8 00002025 */  or         $a0, $zero, $zero
@@ -569,8 +569,8 @@ glabel item_registerTemplates
     /* DD6840 00005DD4 00402825 */  or         $a1, $v0, $zero
     /* DD6844 00005DD8 0C000000 */  jal        func_00000000
     /* DD6848 00005DDC 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD684C 00005DE0 3C090000 */  lui        $t1, %hi(D_00007E5C)
-    /* DD6850 00005DE4 8D257E5C */  lw         $a1, %lo(D_00007E5C)($t1)
+    /* DD684C 00005DE0 3C090000 */  lui        $t1, %hi(sTag_st0_7E5C)
+    /* DD6850 00005DE4 8D257E5C */  lw         $a1, %lo(sTag_st0_7E5C)($t1)
     /* DD6854 00005DE8 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD6858 00005DEC 8CC60000 */  lw         $a2, 0x0($a2)
     /* DD685C 00005DF0 00002025 */  or         $a0, $zero, $zero
@@ -583,8 +583,8 @@ glabel item_registerTemplates
     /* DD6878 00005E0C 00402825 */  or         $a1, $v0, $zero
     /* DD687C 00005E10 0C000000 */  jal        func_00000000
     /* DD6880 00005E14 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD6884 00005E18 3C0C0000 */  lui        $t4, %hi(D_00007E60)
-    /* DD6888 00005E1C 8D857E60 */  lw         $a1, %lo(D_00007E60)($t4)
+    /* DD6884 00005E18 3C0C0000 */  lui        $t4, %hi(sTag_en1_7E60)
+    /* DD6888 00005E1C 8D857E60 */  lw         $a1, %lo(sTag_en1_7E60)($t4)
     /* DD688C 00005E20 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD6890 00005E24 8CC60000 */  lw         $a2, 0x0($a2)
     /* DD6894 00005E28 00002025 */  or         $a0, $zero, $zero
@@ -597,8 +597,8 @@ glabel item_registerTemplates
     /* DD68B0 00005E44 00402825 */  or         $a1, $v0, $zero
     /* DD68B4 00005E48 0C000000 */  jal        func_00000000
     /* DD68B8 00005E4C 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD68BC 00005E50 3C0D0000 */  lui        $t5, %hi(D_00007E64)
-    /* DD68C0 00005E54 8DA57E64 */  lw         $a1, %lo(D_00007E64)($t5)
+    /* DD68BC 00005E50 3C0D0000 */  lui        $t5, %hi(sTag_en2_7E64)
+    /* DD68C0 00005E54 8DA57E64 */  lw         $a1, %lo(sTag_en2_7E64)($t5)
     /* DD68C4 00005E58 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD68C8 00005E5C 8CC60000 */  lw         $a2, 0x0($a2)
     /* DD68CC 00005E60 00002025 */  or         $a0, $zero, $zero
@@ -611,8 +611,8 @@ glabel item_registerTemplates
     /* DD68E8 00005E7C 00402825 */  or         $a1, $v0, $zero
     /* DD68EC 00005E80 0C000000 */  jal        func_00000000
     /* DD68F0 00005E84 3406FFFF */   ori       $a2, $zero, 0xFFFF
-    /* DD68F4 00005E88 3C0F0000 */  lui        $t7, %hi(D_00007E68)
-    /* DD68F8 00005E8C 8DEF7E68 */  lw         $t7, %lo(D_00007E68)($t7)
+    /* DD68F4 00005E88 3C0F0000 */  lui        $t7, %hi(sTag_cam_7E68)
+    /* DD68F8 00005E8C 8DEF7E68 */  lw         $t7, %lo(sTag_cam_7E68)($t7)
     /* DD68FC 00005E90 24040058 */  addiu      $a0, $zero, 0x58
     /* DD6900 00005E94 AFAF0164 */  sw         $t7, 0x164($sp)
     /* DD6904 00005E98 0C000000 */  jal        func_00000000

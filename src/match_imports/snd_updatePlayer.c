@@ -74,7 +74,7 @@ void snd_updatePlayer(GlState2E0C4 **arg0, Vec3 *arg1, f32 arg2, f32 arg3, f32 a
             bootup_0610_decode(arg1, &sp28, &sp24, arg7);
             bootup_0610_apply(arg0[0], sp28, (s8) sp24);
         }
-        bootup_0610_select(&D_00006584);
+        bootup_0610_select(&sStr_NA_UpdPl_6584);
         bootup_0610_reset(arg0[0], 0);
         bootup_0610_finish();
     }

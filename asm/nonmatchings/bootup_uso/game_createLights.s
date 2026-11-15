@@ -5,13 +5,13 @@ glabel game_createLights
     /* DD3A00 00002F94 AFB10020 */  sw         $s1, 0x20($sp)
     /* DD3A04 00002F98 00808825 */  or         $s1, $a0, $zero
     /* DD3A08 00002F9C AFBF0024 */  sw         $ra, 0x24($sp)
-    /* DD3A0C 00002FA0 3C040000 */  lui        $a0, %hi(D_0000741C)
+    /* DD3A0C 00002FA0 3C040000 */  lui        $a0, %hi(sStr_Lights_741C)
     /* DD3A10 00002FA4 AFB0001C */  sw         $s0, 0x1C($sp)
-    /* DD3A14 00002FA8 2484741C */  addiu      $a0, $a0, %lo(D_0000741C)
+    /* DD3A14 00002FA8 2484741C */  addiu      $a0, $a0, %lo(sStr_Lights_741C)
     /* DD3A18 00002FAC 0C000000 */  jal        func_00000000
     /* DD3A1C 00002FB0 00002825 */   or        $a1, $zero, $zero
-    /* DD3A20 00002FB4 3C050000 */  lui        $a1, %hi(D_00007424)
-    /* DD3A24 00002FB8 24A57424 */  addiu      $a1, $a1, %lo(D_00007424)
+    /* DD3A20 00002FB4 3C050000 */  lui        $a1, %hi(sStr_Ambient_Light_7424)
+    /* DD3A24 00002FB8 24A57424 */  addiu      $a1, $a1, %lo(sStr_Ambient_Light_7424)
     /* DD3A28 00002FBC 0C000000 */  jal        func_00000000
     /* DD3A2C 00002FC0 00002025 */   or        $a0, $zero, $zero
     /* DD3A30 00002FC4 3C010000 */  lui        $at, %hi(func_000003F8 + 0x12C)
@@ -25,10 +25,10 @@ glabel game_createLights
     /* DD3A50 00002FE4 E4440130 */  swc1       $f4, 0x130($v0)
     /* DD3A54 00002FE8 8E260090 */  lw         $a2, 0x90($s1)
     /* DD3A58 00002FEC 240E0001 */  addiu      $t6, $zero, 0x1
-    /* DD3A5C 00002FF0 3C050000 */  lui        $a1, %hi(D_00007434)
+    /* DD3A5C 00002FF0 3C050000 */  lui        $a1, %hi(sStr_Infinite_Light_7434)
     /* DD3A60 00002FF4 ACCE00D0 */  sw         $t6, 0xD0($a2)
     /* DD3A64 00002FF8 8E260090 */  lw         $a2, 0x90($s1)
-    /* DD3A68 00002FFC 24A57434 */  addiu      $a1, $a1, %lo(D_00007434)
+    /* DD3A68 00002FFC 24A57434 */  addiu      $a1, $a1, %lo(sStr_Infinite_Light_7434)
     /* DD3A6C 00003000 00002025 */  or         $a0, $zero, $zero
     /* DD3A70 00003004 8CCF00C4 */  lw         $t7, 0xC4($a2)
     /* DD3A74 00003008 24C600C4 */  addiu      $a2, $a2, 0xC4
@@ -49,8 +49,8 @@ glabel game_createLights
     /* DD3AB0 00003044 E4400128 */  swc1       $f0, 0x128($v0)
     /* DD3AB4 00003048 E4400124 */  swc1       $f0, 0x124($v0)
     /* DD3AB8 0000304C 8E260094 */  lw         $a2, 0x94($s1)
-    /* DD3ABC 00003050 3C050000 */  lui        $a1, %hi(D_00007444)
-    /* DD3AC0 00003054 24A57444 */  addiu      $a1, $a1, %lo(D_00007444)
+    /* DD3ABC 00003050 3C050000 */  lui        $a1, %hi(sStr_Shadow_Light_7444)
+    /* DD3AC0 00003054 24A57444 */  addiu      $a1, $a1, %lo(sStr_Shadow_Light_7444)
     /* DD3AC4 00003058 ACC900D0 */  sw         $t1, 0xD0($a2)
     /* DD3AC8 0000305C 8E260094 */  lw         $a2, 0x94($s1)
     /* DD3ACC 00003060 00002025 */  or         $a0, $zero, $zero
@@ -102,8 +102,8 @@ glabel game_createLights
     /* DD3B80 00003114 10400016 */  beqz       $v0, .L00003170
     /* DD3B84 00003118 00408025 */   or        $s0, $v0, $zero
     /* DD3B88 0000311C 44800000 */  mtc1       $zero, $f0
-    /* DD3B8C 00003120 3C050000 */  lui        $a1, %hi(D_00007454)
-    /* DD3B90 00003124 24A57454 */  addiu      $a1, $a1, %lo(D_00007454)
+    /* DD3B8C 00003120 3C050000 */  lui        $a1, %hi(sStr_lighttarget_7454)
+    /* DD3B90 00003124 24A57454 */  addiu      $a1, $a1, %lo(sStr_lighttarget_7454)
     /* DD3B94 00003128 44060000 */  mfc1       $a2, $f0
     /* DD3B98 0000312C 44070000 */  mfc1       $a3, $f0
     /* DD3B9C 00003130 00402025 */  or         $a0, $v0, $zero

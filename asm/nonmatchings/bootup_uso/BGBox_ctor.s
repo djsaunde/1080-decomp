@@ -15,8 +15,8 @@ glabel BGBox_ctor
     /* DD1738 00000CCC 1040002C */  beqz       $v0, .L00000D80
     /* DD173C 00000CD0 00408025 */   or        $s0, $v0, $zero
   .L00000CD4:
-    /* DD1740 00000CD4 3C050000 */  lui        $a1, %hi(D_000066A8)
-    /* DD1744 00000CD8 24A566A8 */  addiu      $a1, $a1, %lo(D_000066A8)
+    /* DD1740 00000CD4 3C050000 */  lui        $a1, %hi(sStr_Node_66A8)
+    /* DD1744 00000CD8 24A566A8 */  addiu      $a1, $a1, %lo(sStr_Node_66A8)
     /* DD1748 00000CDC 02002025 */  or         $a0, $s0, $zero
     /* DD174C 00000CE0 0C000000 */  jal        func_00000000
     /* DD1750 00000CE4 AFA7002C */   sw        $a3, 0x2C($sp)

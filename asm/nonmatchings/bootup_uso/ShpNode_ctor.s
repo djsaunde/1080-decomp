@@ -11,17 +11,17 @@ glabel ShpNode_ctor
     /* DD99A0 00008F34 10400017 */  beqz       $v0, .L00008F94
     /* DD99A4 00008F38 00408025 */   or        $s0, $v0, $zero
   .L00008F3C:
-    /* DD99A8 00008F3C 3C050001 */  lui        $a1, %hi(D_00008708)
-    /* DD99AC 00008F40 24A58708 */  addiu      $a1, $a1, %lo(D_00008708)
+    /* DD99A8 00008F3C 3C050001 */  lui        $a1, %hi(sStr_QNode_8708)
+    /* DD99AC 00008F40 24A58708 */  addiu      $a1, $a1, %lo(sStr_QNode_8708)
     /* DD99B0 00008F44 0C000000 */  jal        func_00000000
     /* DD99B4 00008F48 02002025 */   or        $a0, $s0, $zero
     /* DD99B8 00008F4C 3C0E0000 */  lui        $t6, (0x0 >> 16)
     /* DD99BC 00008F50 25CE0000 */  addiu      $t6, $t6, 0x0
-    /* DD99C0 00008F54 3C050001 */  lui        $a1, %hi(D_00008710)
+    /* DD99C0 00008F54 3C050001 */  lui        $a1, %hi(sStr_shp_8710)
     /* DD99C4 00008F58 3C060000 */  lui        $a2, (0x0 >> 16)
     /* DD99C8 00008F5C AE0E0028 */  sw         $t6, 0x28($s0)
     /* DD99CC 00008F60 24C60000 */  addiu      $a2, $a2, 0x0
-    /* DD99D0 00008F64 24A58710 */  addiu      $a1, $a1, %lo(D_00008710)
+    /* DD99D0 00008F64 24A58710 */  addiu      $a1, $a1, %lo(sStr_shp_8710)
     /* DD99D4 00008F68 00002025 */  or         $a0, $zero, $zero
     /* DD99D8 00008F6C 0C000000 */  jal        func_00000000
     /* DD99DC 00008F70 00003825 */   or        $a3, $zero, $zero

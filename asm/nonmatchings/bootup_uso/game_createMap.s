@@ -406,41 +406,41 @@ glabel game_createMap
     /* DD7890 00006E24 3C0D0000 */  lui        $t5, %hi(func_00000188 + 0x3C)
     /* DD7894 00006E28 00411024 */  and        $v0, $v0, $at
     /* DD7898 00006E2C 3C010000 */  lui        $at, (0x0 >> 16)
-  alabel D_00006E30
+  alabel sStr_Node_6E30
     /* DD789C 00006E30 AC220000 */  sw         $v0, 0x0($at)
     /* DD78A0 00006E34 26220030 */  addiu      $v0, $s1, 0x30
-  alabel D_00006E38
+  alabel sStr_World_Registry_6E38
     /* DD78A4 00006E38 8C4B0000 */  lw         $t3, 0x0($v0)
     /* DD78A8 00006E3C 3C010000 */  lui        $at, %hi(func_00000188 + 0x3C)
     /* DD78AC 00006E40 356C0040 */  ori        $t4, $t3, 0x40
     /* DD78B0 00006E44 AC4C0000 */  sw         $t4, 0x0($v0)
-  alabel D_00006E48
+  alabel sStr_One_Make_6E48
     /* DD78B4 00006E48 8DAD01C4 */  lw         $t5, %lo(func_00000188 + 0x3C)($t5)
     /* DD78B8 00006E4C 01B67024 */  and        $t6, $t5, $s6
     /* DD78BC 00006E50 0C000000 */  jal        func_00000000
-  alabel D_00006E54
+  alabel sStr_HalfPipe_6E54
     /* DD78C0 00006E54 AC2E01C4 */   sw        $t6, %lo(func_00000188 + 0x3C)($at)
     /* DD78C4 00006E58 3C040000 */  lui        $a0, %hi(sStr_MapLighter_7F44)
     /* DD78C8 00006E5C 24847F44 */  addiu      $a0, $a0, %lo(sStr_MapLighter_7F44)
-  alabel D_00006E60
+  alabel sStr_Slalom_Course_6E60
     /* DD78CC 00006E60 0C000000 */  jal        func_00000000
     /* DD78D0 00006E64 00002825 */   or        $a1, $zero, $zero
     /* DD78D4 00006E68 00002025 */  or         $a0, $zero, $zero
     /* DD78D8 00006E6C 02202825 */  or         $a1, $s1, $zero
-  alabel D_00006E70
+  alabel sStr_Stunt_Course_6E70
     /* DD78DC 00006E70 8EE60090 */  lw         $a2, 0x90($s7)
     /* DD78E0 00006E74 0C000000 */  jal        func_00000000
     /* DD78E4 00006E78 8EE70094 */   lw        $a3, 0x94($s7)
     /* DD78E8 00006E7C 8EF30084 */  lw         $s3, 0x84($s7)
-  alabel D_00006E80
+  alabel sStr_Long_Course_6E80
     /* DD78EC 00006E80 00408025 */  or         $s0, $v0, $zero
     /* DD78F0 00006E84 00409025 */  or         $s2, $v0, $zero
     /* DD78F4 00006E88 00402825 */  or         $a1, $v0, $zero
-  alabel D_00006E8C
+  alabel sStr_New_Course_6E8C
     /* DD78F8 00006E8C 0C000000 */  jal        func_00000000
     /* DD78FC 00006E90 26640010 */   addiu     $a0, $s3, 0x10
     /* DD7900 00006E94 8E4F0014 */  lw         $t7, 0x14($s2)
-  alabel D_00006E98
+  alabel sStr_Night_Course_6E98
     /* DD7904 00006E98 02002025 */  or         $a0, $s0, $zero
     /* DD7908 00006E9C 11E00002 */  beqz       $t7, .L00006EA8
     /* DD790C 00006EA0 24180001 */   addiu     $t8, $zero, 0x1
@@ -450,11 +450,11 @@ glabel game_createMap
     /* DD7918 00006EAC AE530014 */   sw        $s3, 0x14($s2)
     /* DD791C 00006EB0 0C000000 */  jal        func_00000000
     /* DD7920 00006EB4 00000000 */   nop
-  alabel D_00006EB8
+  alabel sStr_Practice_6EB8
     /* DD7924 00006EB8 8FA800B0 */  lw         $t0, 0xB0($sp)
     /* DD7928 00006EBC 24190001 */  addiu      $t9, $zero, 0x1
     /* DD792C 00006EC0 AEB90000 */  sw         $t9, 0x0($s5)
-  alabel D_00006EC4
+  alabel sStr_Test_Grid_6EC4
     /* DD7930 00006EC4 00002025 */  or         $a0, $zero, $zero
     /* DD7934 00006EC8 02202825 */  or         $a1, $s1, $zero
     /* DD7938 00006ECC 8FA600B8 */  lw         $a2, 0xB8($sp)

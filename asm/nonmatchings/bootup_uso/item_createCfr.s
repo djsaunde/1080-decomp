@@ -4,9 +4,9 @@ glabel item_createCfr
     /* DD5F0C 000054A0 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD5F10 000054A4 AFA40018 */  sw         $a0, 0x18($sp)
     /* DD5F14 000054A8 AFBF0014 */  sw         $ra, 0x14($sp)
-    /* DD5F18 000054AC 3C040000 */  lui        $a0, %hi(D_00007E10)
+    /* DD5F18 000054AC 3C040000 */  lui        $a0, %hi(sStr_rom_fire_uso_7E10)
     /* DD5F1C 000054B0 0C000000 */  jal        func_00000000
-    /* DD5F20 000054B4 24847E10 */   addiu     $a0, $a0, %lo(D_00007E10)
+    /* DD5F20 000054B4 24847E10 */   addiu     $a0, $a0, %lo(sStr_rom_fire_uso_7E10)
     /* DD5F24 000054B8 8FA50018 */  lw         $a1, 0x18($sp)
     /* DD5F28 000054BC 00002025 */  or         $a0, $zero, $zero
     /* DD5F2C 000054C0 0C000000 */  jal        func_00000000

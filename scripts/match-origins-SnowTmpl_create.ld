@@ -11,9 +11,9 @@ SECTIONS {
 }
 D_00007540 = 0x0;
 D_00007968 = 0x0;
-D_00007FE4 = 0x0;
-D_00007FEC = 0x0;
-D_00007FF0 = 0x0;
+sStr_Parms_7FE4 = 0x0;
+sTag_rng_7FEC = 0x0;
+sTag_sta_7FF0 = 0x0;
 bootup_84A0_expected_07620 = 0x0;
 bootup_84A0_func_04A188 = 0x0;
 bootup_84A0_func_051C28 = 0x0;

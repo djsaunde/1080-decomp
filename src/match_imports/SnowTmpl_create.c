@@ -24,10 +24,10 @@ BootupObjectBase *SnowTmpl_create(BootContext44 *arg0) {
         if (u != 0 || (u = bootup_84A0_func_055750(0x38)) != 0) {
             s = u;
             if (s != 0 || (s = bootup_84A0_func_055750(8)) != 0) {
-                s->f00 = &D_00007FE4;
+                s->f00 = &sStr_Parms_7FE4;
                 s->f04 = 0;
             }
-            first.x = D_00007FEC; p = first;
+            first.x = sTag_rng_7FEC; p = first;
             c = (BootChild18 *)((char *)u + 8);
             if (c != 0 || (c = bootup_84A0_func_055750(0x18)) != 0) {
                 group = u;
@@ -37,7 +37,7 @@ BootupObjectBase *SnowTmpl_create(BootContext44 *arg0) {
                 c->f14 = 0;
                 c->f10 = 300.0f;
             }
-            second.x = D_00007FF0; p = second;
+            second.x = sTag_sta_7FF0; p = second;
             c = (BootChild18 *)((char *)u + 0x20);
             if (c != 0 || (c = bootup_84A0_func_055750(0x18)) != 0) {
                 group = u;

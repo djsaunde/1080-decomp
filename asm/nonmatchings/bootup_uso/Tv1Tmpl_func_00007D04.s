@@ -45,30 +45,30 @@ glabel Tv1Tmpl_func_00007D04
   .L00007D9C:
     /* DD8808 00007D9C 8E080058 */  lw         $t0, 0x58($s0)
     /* DD880C 00007DA0 2509FFF6 */  addiu      $t1, $t0, -0xA
-  alabel D_00007DA4
+  alabel sStr_rom_heli_uso_7DA4
     /* DD8810 00007DA4 10000011 */  b          .L00007DEC
     /* DD8814 00007DA8 AE090058 */   sw        $t1, 0x58($s0)
     /* DD8818 00007DAC 8E030060 */  lw         $v1, 0x60($s0)
   .L00007DB0:
     /* DD881C 00007DB0 246A0001 */  addiu      $t2, $v1, 0x1
-  alabel D_00007DB4
+  alabel sStr_rom_balloon_uso_7DB4
     /* DD8820 00007DB4 2861005B */  slti       $at, $v1, 0x5B
     /* DD8824 00007DB8 1420000A */  bnez       $at, .L00007DE4
     /* DD8828 00007DBC AE0A0060 */   sw        $t2, 0x60($s0)
     /* DD882C 00007DC0 0C000000 */  jal        func_00000000
-  alabel D_00007DC4
+  alabel sStr_rom_balloon_uso_7DC4
     /* DD8830 00007DC4 00000000 */   nop
     /* DD8834 00007DC8 3C014040 */  lui        $at, (0x40400000 >> 16)
     /* DD8838 00007DCC 44812000 */  mtc1       $at, $f4
     /* DD883C 00007DD0 AE000060 */  sw         $zero, 0x60($s0)
-  alabel D_00007DD4
+  alabel sStr_rom_checkpoint_uso_7DD4
     /* DD8840 00007DD4 46040182 */  mul.s      $f6, $f0, $f4
     /* DD8844 00007DD8 4600320D */  trunc.w.s  $f8, $f6
     /* DD8848 00007DDC 44074000 */  mfc1       $a3, $f8
     /* DD884C 00007DE0 00000000 */  nop
   .L00007DE4:
     /* DD8850 00007DE4 240C0018 */  addiu      $t4, $zero, 0x18
-  alabel D_00007DE8
+  alabel sStr_rom_checkpoint_uso_7DE8
     /* DD8854 00007DE8 AE0C0058 */  sw         $t4, 0x58($s0)
   .L00007DEC:
     /* DD8858 00007DEC 8E030040 */  lw         $v1, 0x40($s0)
@@ -76,18 +76,18 @@ glabel Tv1Tmpl_func_00007D04
     /* DD885C 00007DF0 02002025 */  or         $a0, $s0, $zero
     /* DD8860 00007DF4 00003025 */  or         $a2, $zero, $zero
     /* DD8864 00007DF8 8C620084 */  lw         $v0, 0x84($v1)
-  alabel D_00007DFC
+  alabel sStr_rom_checkpoint_uso_7DFC
     /* DD8868 00007DFC 8C4D0000 */  lw         $t5, 0x0($v0)
     /* DD886C 00007E00 8DA5001C */  lw         $a1, 0x1C($t5)
     /* DD8870 00007E04 0C000000 */  jal        func_00000000
     /* DD8874 00007E08 AFA70024 */   sw        $a3, 0x24($sp)
     /* DD8878 00007E0C 8E030040 */  lw         $v1, 0x40($s0)
-  alabel D_00007E10
+  alabel sStr_rom_fire_uso_7E10
     /* DD887C 00007E10 8FA70024 */  lw         $a3, 0x24($sp)
     /* DD8880 00007E14 02002025 */  or         $a0, $s0, $zero
     /* DD8884 00007E18 8C620084 */  lw         $v0, 0x84($v1)
     /* DD8888 00007E1C 24060001 */  addiu      $a2, $zero, 0x1
-  alabel D_00007E20
+  alabel sTag_pyr_7E20
     /* DD888C 00007E20 8C4E0004 */  lw         $t6, 0x4($v0)
   alabel D_00007E24
     /* DD8890 00007E24 24420004 */  addiu      $v0, $v0, 0x4
@@ -104,7 +104,7 @@ glabel Tv1Tmpl_func_00007D04
     /* DD88AC 00007E40 8FB00018 */  lw         $s0, 0x18($sp)
   alabel D_00007E44
     /* DD88B0 00007E44 27BD0028 */  addiu      $sp, $sp, 0x28
-  alabel D_00007E48
+  alabel sStr_light01_7E48
     /* DD88B4 00007E48 03E00008 */  jr         $ra
     /* DD88B8 00007E4C 00000000 */   nop
 endlabel Tv1Tmpl_func_00007D04
