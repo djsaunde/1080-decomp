@@ -32,7 +32,11 @@ callees is refused.
 Subcommands (run from the project root after a full build; re-execs under the repo .venv
 when pyelftools / crunch64 are missing):
   plan FILE.. [--write] [-v]   name every provable placeholder call (dry run unless
-                               --write; adds the uso_call.h include)
+                               --write; adds the uso_call.h include after the first
+                               file-scope #include run, outside any #if). Files whose
+                               function-like macros spell a placeholder call are reported
+                               as "macro-hidden sites" (those jals have no source site, so
+                               the function fails the call count == reloc count rule)
   check [FILE..] [--strict]    every CALL/FCALL/GCALL/XCALL(name) must name a ROM callee of
                                its function: per function and token, the multiset of names
                                must be contained in the multiset of ROM jal targets of the
@@ -578,10 +582,11 @@ def compile_verify_cpp(path, text, mv, base):
 
 def plan_file(path, rom, mv, verbose=False):
     """-> dict(path, sites=[Site], derived={i: name}, left={i: reason}, error=str|None)."""
-    out = {'path': path, 'sites': [], 'derived': {}, 'left': {}, 'error': None}
+    out = {'path': path, 'sites': [], 'derived': {}, 'left': {}, 'error': None, 'hidden': {}}
     src = open(path, errors='replace').read()
     sites, m = scan(src)
     out['sites'] = sites
+    out['hidden'] = hidden = macro_hidden(src, m)
     if not sites:
         return out
     md = rom.module_for(path)
@@ -628,7 +633,9 @@ def plan_file(path, rom, mv, verbose=False):
         # placeholder via objcopy --redefine-sym). Each site is still pinned by its own npc_uc_N
         # reloc in a byte-identical object, so those extra jals cannot be mistaken for it.
         if real_ph - covered and not path.endswith('.cpp'):
-            bad_funcs[fn] = f'call count != reloc count ({len(covered)} sites, {len(real_ph)} placeholder jals)'
+            bad_funcs[fn] = f'call count != reloc count ({len(covered)} sites, {len(real_ph)} placeholder jals)' + \
+                (' -- macro-hidden sites: ' + ', '.join(f'{k} x{v}' for k, v in sorted(hidden[fn].items()))
+                 if hidden.get(fn) else '')
             continue
         if rom.func_off(md, fn) is None:
             bad_funcs[fn] = f'not (uniquely) in the {md.short} name table'
@@ -674,6 +681,29 @@ def spelled(tok, name):
     return f'{mac}({name})' if mac else f'XCALL({tok}, {name})'
 
 
+def include_point(src):
+    """Offset just after the first FILE-SCOPE run of #include lines (outside every #if), or 0.
+    agent-h run 514: inserting after the last #include in the first 20000 characters put the
+    include inside a mid-file `#ifdef NON_MATCHING` block of titproc_uso.c, so the matching build
+    never saw it."""
+    # comments blanked (same length), so a `#` or `#if` inside a comment does not count
+    t = re.sub(r'/\*.*?\*/', lambda m: re.sub(r'[^\n]', ' ', m.group(0)), src, flags=re.S)
+    t = re.sub(r'//[^\n]*', lambda m: ' ' * len(m.group(0)), t)
+    depth, pos, end, seen = 0, 0, None, False
+    for line in t.splitlines(keepends=True):
+        st = line.strip()
+        if re.match(r'#\s*if', st):
+            depth += 1
+        elif re.match(r'#\s*endif', st):
+            depth -= 1
+        elif depth == 0 and re.match(r'#\s*include\b', st):
+            seen, end = True, pos + len(line)
+        elif seen and depth == 0 and st and not st.startswith('#'):
+            break       # first code after the include run
+        pos += len(line)
+    return end if end is not None else 0
+
+
 def add_include(path, src):
     if 'uso_call.h"' in src:
         return src
@@ -681,9 +711,31 @@ def add_include(path, src):
         line = f'#include "{INCLUDE_REL}"  /* NCC donors build without -I include */\n'
     else:
         line = INCLUDE_LINE + '\n'
-    ms = list(re.finditer(r'^#include .*\n', src[:20000], re.M))
-    i = ms[-1].end() if ms else 0
+    i = include_point(src)
+    if i and src[i - 1] != '\n':
+        line = '\n' + line
     return src[:i] + line + src[i:]
+
+
+MACRO_DEF_RE = re.compile(r'^[ \t]*#[ \t]*define[ \t]+(\w+)\(([^)]*)\)((?:[^\n]*\\\n)*[^\n]*)', re.M)
+
+
+def macro_hidden(src, m):
+    """{function: Counter(macro name -> uses)} for uses of THIS file's function-like macros whose
+    body spells a placeholder call (`#define SEND(x) gl_func_00000000(x)`). scan() sees only the
+    macro name at the use, so those jals have no site: the function's site count falls short of
+    its jal count and plan refuses the whole function (agent-h run 514: game_createMap, 58 sites
+    vs 65 jals). Not expanded: a CALL name would have to go into the shared macro body."""
+    names = {mt.group(1) for mt in MACRO_DEF_RE.finditer(src) if PH_RE.search(mt.group(3))}
+    out = collections.defaultdict(collections.Counter)
+    if not names:
+        return out
+    blocks = [b for b in top_blocks(m) if func_header_name(m, b[0], b[1])]
+    for mt in re.finditer(r'\b(' + '|'.join(sorted(names)) + r')\s*\(', m):
+        blk = next((b for b in blocks if b[1] < mt.start() < b[2]), None)
+        if blk:
+            out[func_header_name(m, blk[0], blk[1])][mt.group(1)] += 1
+    return out
 
 
 def run_plans(files, rom, mv, verbose):
@@ -702,6 +754,11 @@ def cmd_plan(a, rom, mv):
             continue
         named = [s for s in raw if s.i in res['derived']]
         left = [s for s in raw if s.i not in res['derived']]
+        if res.get('hidden'):
+            hid = res['hidden']
+            print(f'{path}: macro-hidden sites (placeholder calls inside function-like macro bodies, not '
+                  f'counted as sites): ' + '; '.join(f'{f}: ' + ', '.join(f'{k} x{v}' for k, v in sorted(c.items()))
+                                                    for f, c in sorted(hid.items())))
         why = collections.Counter(re.sub(r'^\w+: ', '', res['left'][s.i]) for s in left)
         print(f'{path}: {len(named)} named, {len(left)} left')
         for r, n in why.most_common():
@@ -813,6 +870,11 @@ def cmd_selftest(a, rom, mv):
     i = src.index('CALL(fs_gdlReadFile)')
     wrong = src[:i] + 'CALL(mem_new)' + src[i + len('CALL(fs_gdlReadFile)'):]
     assert check_fast(path, wrong, rom, quiet=True)[1] == 1
+    # the include goes after the first file-scope include run, never into a later #if block
+    t = '/* #if x */\n#include "common.h"\n#include "a.h"\nint x;\n#ifdef NON_MATCHING\n#include "b.c"\n#endif\n'
+    assert add_include('x.c', t).split('\n')[3] == INCLUDE_LINE
+    t = '#define SEND(x) gl_func_00000000(x)\nvoid f(void) { SEND(1); gl_func_00000000(2); }\n'
+    assert dict(macro_hidden(t, mask(t))) == {'f': collections.Counter({'SEND': 1})}
     # a pre-rename spelling is flagged and maps back to the current name through renames.tsv
     current_name('')
     back = {v: k for k, v in _RENAMES.items()}
