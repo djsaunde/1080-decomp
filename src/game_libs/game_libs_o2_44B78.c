@@ -1,4 +1,4 @@
-/* game_libs_func_00044B78 -- video-mode selector (bootup.uso export sym1553,
+/* gfx_setVideoMode -- video-mode selector (bootup.uso export sym1553,
  * jal'd from text 0x4896C / 0x48A10 / 0x58F54).
  *
  * BOUNDARY FIX (2026-09-09, agent-c): ONE function that splat had split into
@@ -9,7 +9,7 @@
  * jumptable `%lo` field, which is why it is WIRED via the REPLACE_FUNC_BODY
  * donor splice into game_libs_post0b.c.o (the 29CCC recipe): the C `switch`
  * puts its 9-entry jumptable in this donor's local .rodata; the splice renames
- * that reloc to game_libs_func_00044B78_rodata, pinned in undefined_syms_auto
+ * that reloc to gfx_setVideoMode_rodata, pinned in undefined_syms_auto
  * to the table the USO ships in RoData at +0x1B3C (entries: 44C3C 44BB0 44C00
  * 44BC4 44C50 44BD8 44C50 44C50 44BEC = cases 0..8; the target's
  * `lui at,0; addu at,t8; lw t8,0x1B3C(at); jr t8`).
@@ -43,7 +43,7 @@ extern char D_44B78_modes;       /* OSViMode table (sym1947 @0x2D700), zero alia
 
 #define VIMODE_44B78(k) ((char *)&D_44B78_modes + (k))
 
-void game_libs_func_00044B78(int mode) {
+void gfx_setVideoMode(int mode) {
     int f;
 
     D_00000000_3c8e0 = mode;

@@ -3540,7 +3540,7 @@ void hud_initSprites_0000E5D0(Hud *self) {
  * 2026-05-28 MATCHED (byte-exact). The key was finalizing on the MAIN-call result
  * (the object) — held across the 3rd call (spilled + reloaded), with the 3rd call's
  * return DISCARDED — NOT on the 3rd call's return (the prior wrong decode). Same
- * back-link-finalizer family shape as gl_func_0003FF44. */
+ * back-link-finalizer family shape as QNode_def. */
 void hud_addPointsGadgetList(Hud *self) {
     int *obj;
     if (self->digitsTall == 0) {

@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000493AC (0x790 / 484 words), REPLACE_FUNC_BODY-spliced over the
+/* IDO 7.1 NCC (C++) EXACT donor for PolyShape_init (0x790 / 484 words), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post0b.c on both build paths (agent-g run 312, kit CDIV: virtual int hit(), cur2() on
  * one p34-call argument, me(me()) on the k-loop's closing noop, the AIter ctor's dead block dropped and three
  * zero-code me0() levels inside Arr::iter()).
  * agent-c run 159: rewritten as real C++ (was the run-152 C lift under NCC, 92.20). `int Mgr::run()`
- * (renamed to gl_func_000493AC with objcopy): BB declares the virtuals (vptr at 0x28, slot 12 = the per-hit
+ * (renamed to PolyShape_init with objcopy): BB declares the virtuals (vptr at 0x28, slot 12 = the per-hit
  * callback, edg {d, f} entries at 0x60 / 0x64), two `AIter` loops over `arr` (the 4B620 iterator: by-value
  * iter() through a return temp into `it`, the second one an assignment to the same `it`), a `Rec` with its
  * vptr AFTER 0x598 data bytes (`Rec rec;` declared where the target stores the vtable), Ctx::count() /

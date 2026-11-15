@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00049B3C (0x280 / 160 words), EXACT (agent-g run 190), spliced over
+/* IDO 7.1 NCC (C++) donor for PolyShape_hostioParms (0x280 / 160 words), EXACT (agent-g run 190), spliced over
  * the post0b.c placeholder in both trees.
  * agent-c run 174 built the shape (E1 / E2 virtual-call element types, kept-parameter iter(), for-init list walk).
  * Last three levers (agent-g run 190): AIter::cur() reads the array through a local reference
@@ -31,7 +31,7 @@ inline void callu(E2 *e) { if (0) { e = 0; } e->upd(); }
 inline void callt(E1 *e) { if (0) { e = 0; } e->tick(); }
 inline void regp(char *a, char *b, char *p) { if (0) { p = 0; } gl_func_00000000(a, b, p, 0); }
 struct Grp { char pad[0x10]; L *head; };
-extern "C" void gl_func_00049B3C(char *self) {
+extern "C" void PolyShape_hostioParms(char *self) {
      
     gl_func_00000000(D_49B3C_s1, D_00000000 + 0x1FFD4, 0);
      regp(D_49B3C_s2, D_00000000 + 0x1FFE0, self + 64); 

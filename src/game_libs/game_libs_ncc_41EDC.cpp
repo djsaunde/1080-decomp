@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00041EDC (0xB4 / 45 words): walk the child
+/* IDO 7.1 NCC (C++) donor for App_Display (0xB4 / 45 words): walk the child
  * list and fire virtual slot 2 on every child with flag 4. Entry next() via an
  * inline first() { return next(); } (own return temp: v1); the body is an
  * inline Node::tick() { if (flags & 4) update(); } on it.get(), whose this
@@ -20,7 +20,7 @@ struct Iter {
     Node *get() { return cur->obj; }
 };
 struct Owner { char pad[0x2C]; Link *head; };
-extern "C" void gl_func_00041EDC(Owner *o) {
+extern "C" void App_Display(Owner *o) {
     gl_func_00000000(D_00000000 + 0x1F6D0);
     Iter it(o->head);
     for (Node *n = it.first(); n; n = it.next()) {

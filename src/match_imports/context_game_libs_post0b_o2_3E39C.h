@@ -329,4 +329,4 @@ extern void gl_E39C_finish(GLLoadObject *);
 extern void gl_E39C_pop(void);
 extern char gl_E39C_stream[];
 extern char gl_E39C_data[];
-void gl_func_0003E39C(GLLoadObject *arg0);
+void ItemMgr_Load(GLLoadObject *arg0);

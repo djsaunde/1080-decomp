@@ -11506,7 +11506,7 @@ void AudioSeq_SequencePlayerProcessSequence(void *o) {
  * 24E28 / 258C0 base). Head: caches (h2040 - a0 - 1) * w2070 into +0x5364.
  * Loop: for each of the h2048 records whose word0 sign bit is set, call the
  * baked text jal 0x40E10 (gl_ref_00040E10, mid-body alt-entry of
- * gl_func_00040DE8 -- the 2D014 callee) then the blank jal sym1414 (text
+ * QNode_hostioParms -- the 2D014 callee) then the blank jal sym1414 (text
  * 0x3DDF8 = Audio_SequencePlayerProcessSound); afterwards the blank jal sym1397 (text 0x3C490
  * = Audio_ProcessNotes) with no args.
  *
@@ -11548,7 +11548,7 @@ void AudioSeq_ProcessSequences(int a0) {
 /* AudioSeq_SkipForwardSequence — EXACT (2026-07-03, agent-e): 19/20 raw words in build/non_matching .o;
  * the single word-7 "diff" is the R_MIPS_26 site jal gl_ref_00040E10, which ld bakes to
  * 0x0C010384 (0x40E10 >> 2 = 0x10384) = the target word (mid-function alt-entry into
- * gl_func_00040DE8's body; gl_ref_00040E10 = 0x00040E10; already in undefined_syms_auto.txt).
+ * QNode_hostioParms's body; gl_ref_00040E10 = 0x00040E10; already in undefined_syms_auto.txt).
  * objdiff fuzzy = 100.0.
  *
  * Crack (old comment's "$tN-vs-$vN allocator-weight cap" DISPROVEN): the counter must be

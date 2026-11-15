@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000445AC (0x36C / 219 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for GfxLib_init (0x36C / 219 words), agent-c run 162.
  * One-shot UI / object bootstrap: registration calls, a new-expression of A40 (inline ctor: a 32-byte
  * buffer + init call) stored into the global holder and passed on, a new-expression of L24 : L20 (the
  * list-header ctor chain with edg's this == 0 fallback) and the float-returning count read.
@@ -33,7 +33,7 @@ struct L24 : L20 {
     L24() { x14 = D_00000000; }
 };
 struct Obj { char pad[0x20C]; int x20C; int pad210; int x214; int x218; char pad21C[0x22C - 0x21C]; L24 *x22C; char pad230[0x240 - 0x230]; int x240; char pad244[0x280 - 0x244]; int x280; int x284; };
-extern "C" void gl_func_000445AC(Obj *a0) {
+extern "C" void GfxLib_init(Obj *a0) {
     gl_func_00000000(0x140, 0xF0);
     gl_func_00000000(0x140, 0xF0);
     gl_func_00000000(S(0x1FDE4), 0);

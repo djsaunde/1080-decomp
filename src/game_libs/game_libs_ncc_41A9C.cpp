@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00041A9C (0x2A4 / 169 words): debug-menu
+/* IDO 7.1 NCC (C++) donor for App_hostioParms (0x2A4 / 169 words): debug-menu
  * registration -- sixteen calls, two `new` objects (D41/E41 over the B41 base whose
  * ctor stores the 0x1F4B0 vptr), then a {cur, nxt} list walk calling every child.
  * next() is written as an if/return (kit XIX #2): with the ?: form the first next()
@@ -29,7 +29,7 @@ struct B41 {
 struct D41 : B41 { int x; D41() { vt = (int)D_41A9C_v1; x = (int)D_41A9C_v2; } };
 struct E41 : B41 { int x; E41() { vt = (int)D_41A9C_v3; x = (int)D_41A9C_v4; } };
 struct Self41A { char pad[0x2C]; Link41A *head; char pad30[0xC]; char name[4]; };
-extern "C" void gl_func_00041A9C(Self41A *self) {
+extern "C" void App_hostioParms(Self41A *self) {
     char buf[64];
     gl_func_00000000(D_41A9C_s1, D_00000000 + 0x1F658, 0);
     gl_func_00000000(D_41A9C_s2, D_00000000 + 0x1F65C);

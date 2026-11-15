@@ -1704,7 +1704,7 @@ void gl_func_00035AE0(int *dst) {
     *dst = scratch;
 }
 
-/* gl_func_00035B1C (0x134 / 77 words): list-append constructor. The old
+/* Parms_addParm (0x134 / 77 words): list-append constructor. The old
  * bundle note is stale: the .s is one function now (the three tail leaves are
  * their own symbols at 0x35C50 / 0x35C58 / 0x35C60).
  *   o = o ? o : alloc(0x10); if (o) { o->0C = &D (vtable); placement-construct
@@ -1724,7 +1724,7 @@ void gl_func_00035AE0(int *dst) {
  * gl_ref_0001E6B0 pin. */
 extern char gl_ref_0001E6B0;
 typedef struct { int v; } W35B1C;
-char *gl_func_00035B1C(char *o, char *a1, W35B1C a2, int a3) {
+char *Parms_addParm(char *o, char *a1, W35B1C a2, int a3) {
     int *a3p = &a3;
     W35B1C *q;
     char *last;
@@ -2022,7 +2022,7 @@ void game_libs_func_00035FCC(void) {}
  * = 0 in undefined_syms_auto.txt) instead of a fn-ptr cast, so it is a
  * direct jal (the cast was the lui t9; jalr residual). */
 extern int gl_func_00000000_35fd4f(char *, char *, int, float, float, int);
-void gl_func_00035FD4(char *a0) {
+void BallRotator_hostioParms(char *a0) {
     gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1E9F4, 0);
     gl_func_00000000_35fd4f(
         (char *)&D_00000000, (char *)&D_00000000 + 0x1EA00, (int)a0 + 0x44, 10.0f, 400.0f, 0);
@@ -2417,7 +2417,7 @@ int gl_func_00036A48(void *o, Vec3 dir, Vec3 *arr, int n) {
 }
 
 /* gl_func_00036B9C: 27-insn alloc-or-given + init constructor (sibling
- * of gl_func_0003C814 and gl_func_0003CAA0). Same `goto end` recipe
+ * of CollObjMgr_ctor and gl_func_0003CAA0). Same `goto end` recipe
  * (docs/PATTERNS.md#feedback-alloc-or-init-goto-pattern). a1 is spilled
  * to home slot (0x1C) before alloc, reloaded into t7 at end for the
  * a0[0x38] = a1 store. */
@@ -2987,9 +2987,9 @@ void gl_func_00037938(char *o) {
 void game_libs_func_00037A94(void) {
 }
 
-/* gl_func_00037A9C: 21-insn count-bounded loop. Calls
+/* dbg_printIndent: 21-insn count-bounded loop. Calls
  * gl_func(&D_0 + 0x1EBDC) `count` times if count > 0. */
-void gl_func_00037A9C(int count) {
+void dbg_printIndent(int count) {
     int i = 0;
     if (count > 0) {
         do {
@@ -2999,11 +2999,11 @@ void gl_func_00037A9C(int count) {
     }
 }
 
-// gl_func_00037AF0 — STRUCTURAL PASS (0xFC / 63 words, no episode).
+// MNode_def — STRUCTURAL PASS (0xFC / 63 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). An object constructor (chained alloc + template init).
 //
-//   O *gl_func_00037AF0(? a0) {
+//   O *MNode_def(? a0) {
 //     callback0(a0);                            // jal 0 (USO cb)
 //     O *o = alloc(0xB4);                        // main record
 //     if (o == 0) return 0;
@@ -3019,7 +3019,7 @@ void gl_func_00037A9C(int count) {
 //   }
 //
 // Struct-typing reference: a constructor of the same family as
-//   gl_func_00035B1C / gl_func_00034890 / gl_func_00032E18 /
+//   Parms_addParm / gl_func_00034890 / gl_func_00032E18 /
 //   gl_func_00036E74. It allocate-or-reuses a 0xB4-byte record via
 //   USO-relocated allocator callbacks (jal 0 → resolved at load),
 //   initializes it from a fixed data-segment template at
@@ -3057,7 +3057,7 @@ extern int D_00000000;
  * registration call returns nothing -- declared void via the alias
  * gl_func_00000000_37AF0v (its dead int return held v0). */
 extern void gl_func_00000000_37AF0v();
-void gl_func_00037AF0(int a0) {
+void MNode_def(int a0) {
     int tmp;
     volatile int padA[4];
     float zero[3];
@@ -3098,12 +3098,12 @@ void gl_func_00037AF0(int a0) {
     }
 }
 
-// gl_func_00037BEC — STRUCTURAL PASS (0x84 / 33 words, no episode).
+// Node_def — STRUCTURAL PASS (0x84 / 33 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). The direct SIBLING of gl_func_00033228 — an object
 // construct-and-enlist helper (template-init variant).
 //
-//   void gl_func_00037BEC(P *p) {
+//   void Node_def(P *p) {
 //     callback0(p);                             // jal 0 (factory)
 //     N *n = make(0, (void*)0x0001EBF0);        // 2nd cb (template)
 //     p->p_10 = n;
@@ -3136,7 +3136,7 @@ void gl_func_00037AF0(int a0) {
 //   symbolization site.
 // NOTE: the splice tests/writes the NEW node n (n->0x14 / n->0x04) and
 //   stores lst into n->0x14 (sketch above predates that correction).
-/* gl_func_00037BEC: EXACT. Two levers: (1) the list-splice callback is a
+/* Node_def: EXACT. Two levers: (1) the list-splice callback is a
  * VOID-returning blank alias (gl_func_00000000_37bec) -- with the int-returning
  * blank, call3 defines $v0, so lst (live across it) can't colour v0 and takes
  * v1; (2) read lst BEFORE n: with n read first uopt forwards the just-stored
@@ -3145,7 +3145,7 @@ void gl_func_00037AF0(int a0) {
 extern int D_00000000;
 extern int gl_func_00000000();
 extern void gl_func_00000000_37bec(void *, void *);
-void gl_func_00037BEC(char *p) {
+void Node_def(char *p) {
     char *lst;
     char *n;
     gl_func_00000000(p);
@@ -3318,12 +3318,12 @@ L_end:
     return a0;
 }
 
-// gl_func_0003800C — STRUCTURAL PASS (0xFC / 63 words, no episode).
+// Node_ctor — STRUCTURAL PASS (0xFC / 63 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A multi-block chained-alloc constructor with
 // sentinel initialization.
 //
-//   O *gl_func_0003800C(O *o, ?) {
+//   O *Node_ctor(O *o, ?) {
 //     if (o == 0) {
 //       o = alloc(0x2C);                        // jal 0 (USO alloc)
 //       if (o == 0) return 0;
@@ -3338,7 +3338,7 @@ L_end:
 //   }
 //
 // Struct-typing reference: a constructor of the same family as
-//   gl_func_00037AF0 / gl_func_00035B1C / gl_func_00034890. It
+//   MNode_def / Parms_addParm / gl_func_00034890. It
 //   allocate-or-reuses a 0x2C-byte record, then chain-allocates a
 //   0x18 sub-record, a 0x10 sub-record, and a 4-byte sub-block via
 //   USO-relocated allocator callbacks (jal 0 → resolved at load),
@@ -3368,7 +3368,7 @@ extern int D_00000000;
 // whatever the (o, 0) call left) -- a 1-arg call puts n in a0, an
 // uninitialised first arg gets a stack home and a reload. Unsolved.
 extern void gl_func_00000000_3800Cv();
-char *gl_func_0003800C(char *o, int a1) {
+char *Node_ctor(char *o, int a1) {
     char *p;
     char *q;
     char *r;
@@ -3411,14 +3411,14 @@ out:
     return o;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003800C);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Node_ctor);
 #endif
 
-// gl_func_00038108 — STRUCTURAL PASS (0xF0 / 60 words, no episode).
+// Node_Load — STRUCTURAL PASS (0xF0 / 60 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A diagnostic / state-report (printf-sequence) routine.
 //
-//   void gl_func_00038108(O *o, int a1, int a2) {
+//   void Node_Load(O *o, int a1, int a2) {
 //     report((char*)D0_str);                    // jal 0 (printf cb)
 //     if (a1 != 0) {
 //       report((char*)0x0001EBF8, (char*)0x0001EC00, &D_0);
@@ -3462,7 +3462,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003800C);
 //   blocks + p folded into the a2 home + a distinct 4th-arg symbol. 51.0 -> ~80.
 extern int D_00000000;
 extern char D_38108_d;
-void gl_func_00038108(char *o, int a1, int a2) {
+void Node_Load(char *o, int a1, int a2) {
     char *r;
     gl_func_00000000(&D_00000000);
     if (a1 == 0) {
@@ -3489,12 +3489,12 @@ void gl_func_00038108(char *o, int a1, int a2) {
     }
 }
 
-// gl_func_000381F8 — STRUCTURAL PASS (0x9C / 39 words, no episode).
+// Node_Save — STRUCTURAL PASS (0x9C / 39 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The SIBLING of gl_func_00038108 — a diagnostic-print
+// prologue). The SIBLING of Node_Load — a diagnostic-print
 // + vtable-dispatch routine.
 //
-//   void gl_func_000381F8(O *o) {
+//   void Node_Save(O *o) {
 //     report((char*)D0_str);                    // jal 0 (printf cb)
 //     if (report((char*)0x0001EC20, (char*)0x0001EC28, &D_0)) {
 //       if (report((char*)0x0001EC30, ...)) {
@@ -3508,22 +3508,22 @@ void gl_func_00038108(char *o, int a1, int a2) {
 //   }
 //
 // Struct-typing reference: the paired counterpart of
-//   gl_func_00038108 — a debug-report + dispatch leaf. It issues a
+//   Node_Load — a debug-report + dispatch leaf. It issues a
 //   conditional sequence of printf-shaped USO-relocated callbacks
 //   (jal 0 → resolved at load) using the NEXT entries of the same
 //   contiguous data-segment string table (0x0001EC20 / 0x0001EC28 /
-//   0x0001EC30 — immediately after gl_func_00038108's
+//   0x0001EC30 — immediately after Node_Load's
 //   0x0001EBF8..0x0001EC1C, confirming one contiguous message
 //   block), then dereferences the object chain (o->0x28) and calls
 //   a VTABLE function pointer at obj->0x28+0x44 (passing
 //   obj->0x28->0x40 halfword + obj — a self-relative arg), and
-//   emits a final report line. Together gl_func_00038108 /
-//   gl_func_000381F8 (and the heap_tempAlloc config-validator)
+//   emits a final report line. Together Node_Load /
+//   Node_Save (and the heap_tempAlloc config-validator)
 //   form the diagnostic/trace family of the game_libs object
 //   subsystem over a shared message table; the obj->0x28->0x44
 //   slot ties this to the device-object vtable family
 //   (gl_func_00034188 / 00034458 / 0003537x).
-// gl_func_000381F8: diagnostic-print + vtable-dispatch leaf. MATCHED
+// Node_Save: diagnostic-print + vtable-dispatch leaf. MATCHED
 //   byte-exact 2026-06-21. Levers: (1) distinct extern string symbols
 //   (D_strA..D_strD) defeat IDO's &D_00000000 CSE-into-s0 (each printf
 //   format string is a distinct symbol → per-call lui/addiu recompute,
@@ -3535,7 +3535,7 @@ extern int D_00000000_c;
 extern int D_00000000_d;
 extern int D_00000000_e;
 extern int D_00000000_f;
-void gl_func_000381F8(char *o) {
+void Node_Save(char *o) {
     char *r;
     gl_func_00000000(&D_00000000_c, 0);
     if (gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x0001EC20,
@@ -3570,7 +3570,7 @@ void game_libs_func_00038294(int a0) {
 //   }
 //
 // Struct-typing reference: a composite-object constructor of the
-//   gl_func_00034890 / gl_func_0003800C family. It chains three
+//   gl_func_00034890 / Node_ctor family. It chains three
 //   allocations (0x10 / 0x10 / 0x04) through a USO-relocated
 //   allocator callback (jal 0 → resolved at load), each guarded by
 //   an allocation-failure early-out (constructor rollback), then
@@ -3643,13 +3643,13 @@ void gl_func_0003829C(int *arg0) {
     gl_func_00000000((char *)&D_00000000, saved, a2);
 }
 
-// gl_func_00038360 — STRUCTURAL PASS (0x238 / 142 words, no episode).
+// Node_hostioParms — STRUCTURAL PASS (0x238 / 142 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). The larger member of the gl_func_00038108 /
-// gl_func_000381F8 diagnostic family — a multi-line object state
+// prologue). The larger member of the Node_Load /
+// Node_Save diagnostic family — a multi-line object state
 // dump.
 //
-//   void gl_func_00038360(O *o) {
+//   void Node_hostioParms(O *o) {
 //     report((char*)0x0001EC34);                // jal 0 (printf cb)
 //     report((char*)0x0001EC3C, o->w_1C);
 //     report((char*)0x0001EC40, o->w_20);
@@ -3664,11 +3664,11 @@ void gl_func_0003829C(int *arg0) {
 //   each with a SUCCESSIVE format string from the contiguous data-
 //   segment message table — 0x0001EC34 / 0x0001EC3C / 0x0001EC40 /
 //   0x0001EC44 / 0x0001EC50 / … — continuing directly from the
-//   gl_func_00038108 / gl_func_000381F8 block (0x0001EBF8..0x0001EC30),
+//   Node_Load / Node_Save block (0x0001EBF8..0x0001EC30),
 //   so the whole 0x0001EBF8..0x0001EC50+ range is ONE contiguous
 //   diagnostic string table. Each line prints a different field of
 //   the object passed in a0 (offsets read at +0x1C / +0x20 / +0x18
-//   / +0x08 …). Together gl_func_00038108 / 000381F8 / 00038360
+//   / +0x08 …). Together Node_Load / 000381F8 / 00038360
 //   (with heap_tempAlloc) are the diagnostic/trace family of the
 //   game_libs object subsystem; this one is the verbose
 //   object-state printer. The string range is a deferred
@@ -3680,7 +3680,7 @@ void gl_func_0003829C(int *arg0) {
 //   body below — representative report-cb sequence; precise per-line
 //   format / field selection deferred to FP-pool symbolization.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-// gl_func_00038360 EXACT (2026-10-16, lui-count sweep: target 6 more luis
+// Node_hostioParms EXACT (2026-10-16, lui-count sweep: target 6 more luis
 //   than the 80.1% m2c wrap). Every serializer call's first arg is the
 //   stream object &D_00000000 (`lui a0,0; addiu a0,0`), not the literal 0 the
 //   wrap passed. The two allocations are the alloc-or-reuse ctor protocol of
@@ -3690,7 +3690,7 @@ void gl_func_0003829C(int *arg0) {
 //   innermost pointer `v1b` FIRST shifts the spill homes of a2/v1/a1 to the
 //   target's sp+40/36/32 (declared last they took 44/40/36).
 typedef struct { int a, b; } Pair38360;
-void gl_func_00038360(char *arg0) {
+void Node_hostioParms(char *arg0) {
     int *v1b, *a2, *v1, *a1;
     char *p18;
     gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x1EC34, 0);
@@ -4041,7 +4041,7 @@ L2:
 int gl_func_00038964(char *o, void *ctx) {
 }
 
-// gl_func_00038A28 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// Node_doCommand — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x190 / 100 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
@@ -4055,9 +4055,9 @@ int gl_func_00038964(char *o, void *ctx) {
 // fixable with mnemonic split/merge — needs the spimdisasm-USO
 // migration).
 //
-// Leading fn gl_func_00038A28 — a command-stream JUMP-TABLE
+// Leading fn Node_doCommand — a command-stream JUMP-TABLE
 // interpreter step:
-//   void gl_func_00038A28(O *o, Cmd *c) {
+//   void Node_doCommand(O *o, Cmd *c) {
 //     int code = c->tag_0;
 //     unsigned i = (unsigned)(code - 0x64);
 //     if (i >= 9) return;                        // commands 0x64..0x6C
@@ -4111,11 +4111,11 @@ extern int D_00000000;
  * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
 extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
 #endif
-/* gl_func_00038A28: EXACT (agent-g run 209). WIRED via REPLACE_FUNC_BODY donor splice:
+/* Node_doCommand: EXACT (agent-g run 209). WIRED via REPLACE_FUNC_BODY donor splice:
  * the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_38A28.c; the splice renames
- * the donor-local jumptable reloc to gl_func_00038A28_rodata, pinned to the USO RoData at
+ * the donor-local jumptable reloc to Node_doCommand_rodata, pinned to the USO RoData at
  * +0x1A1C. Body below is a placeholder for the splice. */
-void gl_func_00038A28(char *o, char *c) {
+void Node_doCommand(char *o, char *c) {
     *(volatile int *)(o + 4) = 7;
 }
 
@@ -4221,12 +4221,12 @@ void gl_func_00038C70(int a0, int a1, int a2) {
     gl_func_00000000(a0, args);
 }
 
-// gl_func_00038C98 — STRUCTURAL PASS (0xC4 / 49 words, no episode).
+// Node_printContents — STRUCTURAL PASS (0xC4 / 49 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-walk diagnostic dump — diagnostic family with
-// gl_func_00038108 / gl_func_000381F8 / gl_func_00038360.
+// Node_Load / Node_Save / Node_hostioParms.
 //
-//   void gl_func_00038C98(O *o, int a1) {
+//   void Node_printContents(O *o, int a1) {
 //     if (a1 == 0)
 //       report((char*)0x0001ECB8, o->w_0C);     // header (jal 0)
 //     N *n = o->p_10;
@@ -4247,11 +4247,11 @@ void gl_func_00038C70(int a0, int a1, int a2) {
 //   format string 0x0001ECCC plus the node and its node->0x0C
 //   field. The format strings 0x0001ECB8 / 0x0001ECCC continue the
 //   SAME contiguous data-segment diagnostic string table mapped
-//   across gl_func_00038108 / 000381F8 / 00038360
+//   across Node_Load / 000381F8 / 00038360
 //   (0x0001EBF8..0x0001EC50+), so the whole 0x0001EBF8..0x0001ECCC+
 //   range is one message block. The list-iterating member of the
 //   game_libs object subsystem's diagnostic/trace family (dumps a
-//   whole collection vs the single-object dump of gl_func_00038360).
+//   whole collection vs the single-object dump of Node_hostioParms).
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + USO-relocated
 //   jal-0 printf cbs + contiguous fixed string-data table; string
 //   table / node struct untyped. Real-C STRUCTURAL body below.
@@ -4259,7 +4259,7 @@ void gl_func_00038C70(int a0, int a1, int a2) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38C98.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 133). The list
  * walk is the {cur, nxt} iterator of 3D48C; see the .cpp header. */
-void gl_func_00038C98(char *o, int a1) {
+void Node_printContents(char *o, int a1) {
 }
 
 void game_libs_func_00038D5C(int *a0, int a1) {
@@ -4291,7 +4291,7 @@ mid:
 int gl_func_00038DC0(int *root) {
 }
 
-void gl_func_00038FE0(char *a0) {
+void MNode_hostioParms(char *a0) {
     gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECD0, 0);
     gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECD8, a0 + 0xB0, 0);
     gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECE0, a0 + 0x2C, 0);
@@ -4576,7 +4576,7 @@ void gl_func_00039990(int *a0, int *a1) {
     }
 }
 
-/* gl_func_00039A04: 38-insn alloc + init helper. If a0 == NULL,
+/* SNode_ctor: 38-insn alloc + init helper. If a0 == NULL,
  * alloc(0x88); if alloc fails, return 0. Init fields: [0x28] = &D_0,
  * [0x84] = 0, [0x6C..0x80] = float-zero, [0x70] = 1.0f. Call gl_func
  * variants with various arg combos. Return self.
@@ -4590,7 +4590,7 @@ void gl_func_00039990(int *a0, int *a1) {
  * constructor shape (nested NULL check + goto out, as in 36E74/3E238), the
  * 0x70 = 1.0f store before the self+0x2C call, and pad locals around arg
  * (arg's home must be sp+0x2C in the 0x38 frame). */
-int *gl_func_00039A04(int *self) {
+int *SNode_ctor(int *self) {
     int pad[2];
     int arg;
     int pad2[2];
@@ -4735,7 +4735,7 @@ void gl_func_00039B58(int *a0, int *a1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039B58);
 #endif
 
-/* gl_func_00039C8C: 102-insn 12-call helper, "register float-bounded
+/* SNode_hostioParms: 102-insn 12-call helper, "register float-bounded
  * field" callback orchestrator.
  *   gl_func(&D_0, "string", 0)             init
  *   gl_func(&D_0, a0, 19)                  associate
@@ -4761,7 +4761,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00039B58);
 extern int gl_func_00000000();
 extern char D_39C8C_max;  /* distinct base (=0) so the 0x1A80 max-bound load
                              gets a fresh lui+lwc1 instead of CSE-reusing $s0 */
-void gl_func_00039C8C(int *a0) {
+void SNode_hostioParms(int *a0) {
     extern int gl_proto_39C8C(void*, void*, void*, float, float, int);
     gl_func_00000000(&D_00000000, (char*)&D_00000000 + 0x1ECFC, 0);
     gl_func_00000000(&D_00000000, a0, 19);
@@ -5216,7 +5216,7 @@ void game_libs_func_0003AA5C(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
     }
 }
 
-/* gl_func_0003AC5C: 127-insn (0x1FC) constructor + token-stream loop.
+/* CollShape_ctor: 127-insn (0x1FC) constructor + token-stream loop.
  * Allocs self (0x90) if null, inits it, then reads tokens until 6:
  * switch (cmd) 0..4 (six int->float words at 0x3C..0x50 / float 0x38 /
  * int 0x30 / 0x84 = cb(0, msg, word, 0) / skip + flag) else an error cb;
@@ -5225,15 +5225,15 @@ void game_libs_func_0003AA5C(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
  * -O2 donor unit game_libs_o2_3AC5C.c (127/127 word-exact; agent-g's
  * 2026-08-22 97.48 body plus two scheduler fixes and the case numbers read
  * from the USO table); the splice renames the donor-local .rodata jumptable
- * reloc to gl_func_0003AC5C_rodata, pinned to the USO RoData at +0x1A90.
+ * reloc to CollShape_ctor_rodata, pinned to the USO RoData at +0x1A90.
  * Body below is a placeholder for the splice. */
-int *gl_func_0003AC5C(int *arg0, int *arg1) {
+int *CollShape_ctor(int *arg0, int *arg1) {
     volatile int *ret = arg0;
     return (int *)ret;
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0003AE58: 95-insn (0x17C) constructor-like alloc + 2-init + loop.
+/* CollShape_ctorPoly: 95-insn (0x17C) constructor-like alloc + 2-init + loop.
  * Sibling of gl_func_0003A9E8 (recently-matched Quad4 reader) by adjacency
  * in 0x3A9E8-0x3B000. Initial decode 2026-05-07 — entry decoded; body
  * still TBD.
@@ -5263,7 +5263,7 @@ int *gl_func_0003AC5C(int *arg0, int *arg1) {
  * $t-reg renumbering + loop-back bnel-vs-beq;beq — regalloc/scheduler-tier. */
 extern int gl_func_00000000();
 extern char gl_data_0001EE5C, gl_data_0001EE70;
-int *gl_func_0003AE58(int *a0, int *a1) {
+int *CollShape_ctorPoly(int *a0, int *a1) {
     unsigned int i;
     int off;
     int tbl;
@@ -5306,14 +5306,14 @@ int *gl_func_0003AE58(int *a0, int *a1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3AE58.cpp (agent-c run 162 lift,
  * agent-c run 287 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-int *gl_func_0003AE58(int *a0, int *a1) {
+int *CollShape_ctorPoly(int *a0, int *a1) {
     return a0;
 }
 #endif
 
 extern int gl_func_00000000();
 
-int gl_func_0003AFD4(char *a0) {
+int NullCollShape_ctor(char *a0) {
     if (a0 == 0) {
         a0 = (char*)gl_func_00000000(0x90);
         if (a0 == 0) goto end;
@@ -5970,11 +5970,11 @@ void game_libs_func_0003C7A4(char *a0) {
     }
 }
 
-/* gl_func_0003C814: 22-insn optional-alloc + init constructor (sibling of
+/* CollObjMgr_ctor: 22-insn optional-alloc + init constructor (sibling of
  * gl_func_0003CAA0). Same alloc-or-init recipe — uses `goto end` to merge
  * the alloc-fail path into the shared epilogue.
  * docs/PATTERNS.md#feedback-alloc-or-init-goto-pattern. */
-int gl_func_0003C814(int *a0) {
+int CollObjMgr_ctor(int *a0) {
     if (a0 == 0) {
         a0 = (int*)gl_func_00000000(0x34);
         if (a0 == 0) goto end;
@@ -6383,8 +6383,8 @@ void gl_func_0003D114(Quad4 *dst) {
 
 // gl_func_0003D16C — STRUCTURAL PASS (0xBC / 47 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
-// prologue). An object constructor (same family as gl_func_00037AF0
-// / gl_func_0003800C / gl_func_00032E18).
+// prologue). An object constructor (same family as MNode_def
+// / Node_ctor / gl_func_00032E18).
 //
 //   O *gl_func_0003D16C(O *o, int a1, int a2) {
 //     if (o == 0) {
@@ -6418,7 +6418,7 @@ void gl_func_0003D114(Quad4 *dst) {
 //   template at 0x0001F2B8, back-links the global root at o->0x28,
 //   allocates a zeroed 4-byte sub-block anchored at o->0x2C, and
 //   stores the saved argument together with a -1 sentinel (the
-//   "no-handle / empty" marker of the gl_func_0003800C allocator
+//   "no-handle / empty" marker of the Node_ctor allocator
 //   family). 0x0001F2B8 is a deferred data-segment template-
 //   symbolization site; the 0x48 size + +0x28/+0x2C layout is the
 //   struct to type when this object family is formalized.
@@ -6515,11 +6515,11 @@ void gl_func_0003D288(char *a0, int a1) {
 void gl_func_0003D2C8(char *o) {
 }
 
-// gl_func_0003D3C4 — STRUCTURAL PASS (0xBC / 47 words, no episode).
+// ItemType_load — STRUCTURAL PASS (0xBC / 47 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A construct + wire + double-vtable-dispatch routine.
 //
-//   void gl_func_0003D3C4(O *o) {
+//   void ItemType_load(O *o) {
 //     o->w_10 = 0;
 //     R *r = fixed_helper_01458C(&out@sp+0x44);   // jal 0x01458C
 //     init((void*)0x0001F2C0, &o->f_2C);           // jal 0 (USO cb)
@@ -6536,7 +6536,7 @@ void gl_func_0003D2C8(char *o) {
 //   at 0x01458C, encoded `jal 0x01458C`, a real resolved target,
 //   plus a data-segment template init at 0x0001F2C0 and a
 //   self-referential back-link o->0x0C = &o->0x2C, as in
-//   gl_func_00037BEC / gl_func_0003D16C) with the device-object
+//   Node_def / gl_func_0003D16C) with the device-object
 //   VTABLE dispatch family — calling two methods on the handler
 //   reached via o->0x28: slot +0x5C then slot +0x4C (each with a
 //   self-relative arg from the handler's halfword + the object).
@@ -6573,7 +6573,7 @@ void gl_func_0003D2C8(char *o) {
 //   undefined_syms_auto.txt; the link writes the ROM's 0x0C01458C.
 extern int D_00000000;
 extern int gl_func_0003D3C4_51630();
-void gl_func_0003D3C4(char *o) {
+void ItemType_load(char *o) {
     int count;
     char *s3 = o + 0x2C;
     char *s0;
@@ -6607,7 +6607,7 @@ int game_libs_func_0003D480(int a0) {
 // gl_func_0003D48C — STRUCTURAL PASS (0xAC / 43 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-walk diagnostic dump — sibling of
-// gl_func_00038C98 (diagnostic/trace family).
+// Node_printContents (diagnostic/trace family).
 //
 //   void gl_func_0003D48C(O *o) {
 //     report(D0_fmt, o, 1);                       // jal 0 (header)
@@ -6624,16 +6624,16 @@ int game_libs_func_0003D480(int a0) {
 //   +0x04) issuing a per-node callback for each element, then emits
 //   a footer line. The format strings are &D_0-relative entries of
 //   the same contiguous diagnostic string table mapped across the
-//   gl_func_00038108 / 000381F8 / 00038360 / 00038C98 family. The
+//   Node_Load / 000381F8 / 00038360 / 00038C98 family. The
 //   o+0x2C anchor it computes is the list-bookkeeping handle (same
-//   +0x2C / +0x10 convention as the gl_func_0003D3C4 constructor's
+//   +0x2C / +0x10 convention as the ItemType_load constructor's
 //   o->0x2C sub-record and the collection-processor list heads). A
 //   diagnostic/trace node of the game_libs object subsystem — the
-//   list-iterating dumper, paired with gl_func_00038C98.
+//   list-iterating dumper, paired with Node_printContents.
 // Caps (DEFERRED): raw-word USO + intrusive-list walk + USO-relocated
 //   jal-0 printf cbs + &D_0-relative string table; string table /
 //   list struct untyped. Real-C STRUCTURAL body below — sibling of
-//   gl_func_00038C98. Byte-match deferred. Name pre-checked: no
+//   Node_printContents. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
 /* Run 113 (agent-c): 75.8 -> 98.6, port of the exact twin gl_func_00069B94
  * (address-taken iterator locals via the if(1){bar=&node;bar=&next;}
@@ -7089,7 +7089,7 @@ int game_libs_func_0003DBEC(int *a0, int *a1, float *a2) {
 //   the initial value and updating o->0x84 with the running
 //   result. Slot 0x84 extends the device-object handler-vtable
 //   slot map (0x14 / 0x1C / 0x4C / 0x50 / 0x54 / 0x5C / 0x60 /
-//   0x84) mapped across the gl_func_0003537x / gl_func_0003D3C4
+//   0x84) mapped across the gl_func_0003537x / ItemType_load
 //   group. The reduce counterpart of the gl_func_00038964 two-phase
 //   processor and the gl_func_0003C86C circular-list walk — a
 //   collection-aggregate node of the game_libs object subsystem
@@ -7155,7 +7155,7 @@ int gl_func_0003DC90(D914Obj *a0) {
 //   dispatch family — calling the handler method at
 //   (o->0x28)+0x2C with a self-relative arg and a pointer to a
 //   local 0x13 (=19) sentinel; (3) the construct-and-enlist family
-//   (cf. gl_func_00033228 / gl_func_00037BEC / gl_func_0003D3C4):
+//   (cf. gl_func_00033228 / Node_def / ItemType_load):
 //   splicing the new object into an intrusive list anchored at
 //   o->0x10 via a second USO callback and updating the list head
 //   (node->0x14 = o) plus an active flag (node->0x04 = 1) under a
@@ -7377,7 +7377,7 @@ extern char D_0002F970;
 extern char D_0002FD34, D_0002FD40, D_0002FD50, D_0002FD58, D_0002FD64;
 extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FDD4;
 
-/* gl_func_0003E0F0: 49-insn (0xC4) constructor. NATURAL CEILING: 81.71%
+/* MNode_ctor: 49-insn (0xC4) constructor. NATURAL CEILING: 81.71%
  * NM. Multi-class cap: frame-offset shifts (sp+0x30/0x4C vs sp+0x3C/...),
  * conditional-alloc branch shape, $s0-spill in epilogue, plus trailing
  * splat-boundary artifact (literal `lw t6, 0x10(a0)` for successor's
@@ -7427,11 +7427,11 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  *   (run-122 V3 / M4 / W4 / Base(const char *) + virtual / Obj classes)
  *   inline Obj *link(Obj *&q, Obj *n, char *a) {
  *       gl_func_00000000(q = n, *(int *)(a + 0x40)); return q; }
- *   extern "C" Obj *gl_func_0003E0F0(char *arg0) {
+ *   extern "C" Obj *MNode_ctor(char *arg0) {
  *       Obj *p; return link(p, new Obj, arg0); }
  * Left: frame 72 vs 80, the store takes s0 (target the a0 copy), W4 member
  * this a1 (target a0). docs/IDO_CODEGEN.md#kit-xxviii-agent-c-run-123 #4.
- * 2026-10-24 (agent-g run 154): rebuilt on its EXACT sibling gl_func_00037AF0
+ * 2026-10-24 (agent-g run 154): rebuilt on its EXACT sibling MNode_def
  * (opcode similarity 0.85): first-declared tmp + volatile padA[4] + float
  * zero[3] give frame 80 / zero[] at 48 / tmp home 76 exactly, and 37AF0's
  * s1/p2 sentinel chain gives the a0-based `sw zero`. 90.52 -> 93.88, 48 words
@@ -7447,7 +7447,7 @@ extern char D_0002FD6C, D_0002FD78, D_0002FD88, D_0002FD94, D_0002FDA4, D_0002FD
  * o is dead at the call, so the volatile tmp store takes the a0 argument copy in the jal
  * delay slot. p2 now gets a frame home, so it is declared above zero[] with padA[3]
  * (frame 80, zero[] at 48, tmp at 76 unchanged). */
-void *gl_func_0003E0F0(char *arg0) {
+void *MNode_ctor(char *arg0) {
     char *volatile tmp;
     volatile int padA[3];
     int *p2;
@@ -7579,7 +7579,7 @@ void gl_func_0003E2B0(void *a0) {
   gl_ref_000516D4(&term);
 }
 
-// gl_func_0003E39C — STRUCTURAL PASS (0x1AC / 108 words, no episode). Raw-.word
+// ItemMgr_Load — STRUCTURAL PASS (0x1AC / 108 words, no episode). Raw-.word
 // USO. realjr=2 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends at jr 0x3E51C;
 // a separate no-prologue leaf begins at 0x3E524 (DEFERRED USO RE-SPLIT — its
 // instructions belong to the next symbol).
@@ -7587,7 +7587,7 @@ void gl_func_0003E2B0(void *a0) {
 // Named fn = string-keyed registration + iterate-with-virtual-dispatch
 // (single prologue frame 0x58, saves ra + s0..s5; cb = jal 0 USO-relocated;
 // H_01458C from the contiguous 0x0145xx helper trio):
-//   void gl_func_0003E39C(Ctx a0) {
+//   void ItemMgr_Load(Ctx a0) {
 //     Ctx self = a0;
 //     cb(...);                              // entry hook
 //     cb(&D_0002F2EC);                      // register under string literal A
@@ -7623,7 +7623,7 @@ void gl_func_0003E2B0(void *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0003E39C)();
-void gl_func_0003E39C(char *arg0) {
+void ItemMgr_Load(char *arg0) {
     int *sp50;
     int *sp4C;
     s32 sp48;
@@ -7684,7 +7684,7 @@ loop_5:
     dbg_printThreads();
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0003E39C);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", ItemMgr_Load);
 #endif
 
 void game_libs_func_0003E524(int **a0) {
@@ -7745,7 +7745,7 @@ void gl_func_0003E594(int *a0) {
 //   }
 // All four-pointer stores follow the AE2x0000 / AE0y0004 / AE0z0008 /
 // AE0w000C quad pattern into the freshly-alloc'd 0x10 node. Family: same
-// string-literal-keyed cb registration idiom as gl_func_0003E39C and the
+// string-literal-keyed cb registration idiom as ItemMgr_Load and the
 // diagnostic/registration serializers in this segment.
 //
 // Caps (DEFERRED): registry-node struct + &D_0002Exxx/Fxxx
@@ -9046,12 +9046,12 @@ void gl_func_0003FC2C(int *a0) {
 void hostio_dispatch(int arg0) {
 }
 
-// gl_func_0003FF44 — STRUCTURAL PASS (0x94 / 38 words, no episode). Raw-.word
+// QNode_def — STRUCTURAL PASS (0x94 / 38 words, no episode). Raw-.word
 // USO. realjr=1, single prologue frame 0x30 (saves ra, s0) → ONE clean
 // function. Init/reset-with-formatted-log + node-link (cbN = jal 0
 // USO-relocated; FP-formatted emit, same cb-serialize/registration family).
 //
-//   void gl_func_0003FF44(void *a0) {
+//   void QNode_def(void *a0) {
 //     void *self = a0;                          // s0 = a0
 //     cb1(a0);                                  // entry hook
 //     float z = 0.0f;
@@ -9110,7 +9110,7 @@ void hostio_dispatch(int arg0) {
 // The float-arg callee alias gl_proto_FF44 is now pinned to 0 as well.
 extern int gl_proto_FF44(int, void*, float, float, float);
 extern void gl_func_00000000_ff44v();
-void gl_func_0003FF44(int *self) {
+void QNode_def(int *self) {
     int n;
     int *node;
 
@@ -9141,11 +9141,11 @@ void gl_func_00040018(Quad4 *dst) {
     *dst = scratch;
 }
 
-// gl_func_00040070 — STRUCTURAL PASS (0x230 / 141 words, no episode). Raw-.word
+// QNode_ctor — STRUCTURAL PASS (0x230 / 141 words, no episode). Raw-.word
 // USO. realjr=1, single prologue frame 0x70 (saves ra, s0) → ONE clean
 // function (constructor). cb = jal 0 USO-relocated alloc/lookup.
 //
-//   void *gl_func_00040070(void *a0, int a1, int a2, int a3) {
+//   void *QNode_ctor(void *a0, int a1, int a2, int a3) {
 //     self = a0;
 //     if (a0 == 0) { a0 = cb(0x108); }          // alloc primary (size 0x108)
 //     if (!a0) return 0;                         // beqz bail
@@ -9192,11 +9192,11 @@ void gl_func_00040018(Quad4 *dst) {
 // (b) round-2 cascade accumulator colors a2 in target vs v1 here
 // (while(0) anchor inert); (c) FP-ring phase f4/f18 swap in the tail.
 // Placeholder callees (dbg_printThreads) — stays NM wrap regardless.
-/* gl_func_00040070: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_40070.cpp,
+/* QNode_ctor: EXACT via an IDO 7.1 NCC (C++) donor, src/game_libs/game_libs_ncc_40070.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 181): Obj::Obj(void *, float, float, float);
  * the 0x104 element is an int store and the W4f wrapper ctor tests a float zero (keeps the FP-zero
  * constant live across the member protocol = the target's mtc1 zero after each alloc). */
-s32 *gl_func_00040070(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     return arg0;
 }
 
@@ -9538,12 +9538,12 @@ void gl_func_00040CAC(char *a0, int *a1) {
     }
 }
 
-// gl_func_00040DE8 — STRUCTURAL PASS (0xA4 / 42 words, no episode). Raw-.word
+// QNode_hostioParms — STRUCTURAL PASS (0xA4 / 42 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x18
 // (saves ra). String-keyed field-registration table (cb = jal 0
 // USO-relocated registrar; string-literal keys at &D_0002F494..F4A8).
 //
-//   void gl_func_00040DE8(void *a0) {
+//   void QNode_hostioParms(void *a0) {
 //     self = a0;                                  // spilled to sp+0x18
 //     void *g = &D_reloc;                          // global registrar base
 //     cb_begin(g, &D_0002F494, 0);                 // open registration scope
@@ -9565,7 +9565,7 @@ void gl_func_00040CAC(char *a0, int *a1) {
 //   signatures inferred from call shape. Real-C STRUCTURAL body below.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 extern int D_00000000;
-void gl_func_00040DE8(char *a0) {
+void QNode_hostioParms(char *a0) {
     char *g = (char *)&D_00000000;
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F494, 0);
     gl_func_00000000(g, (char *)&D_00000000 + 0x0001F49C, a0 + 0xB4, 0x3C);
@@ -9874,7 +9874,7 @@ end:
     return a0;
 }
 
-// gl_func_000415A4 -- NM decode 2026-10-17 agent-c (112/113 words).
+// App_main -- NM decode 2026-10-17 agent-c (112/113 words).
 // Module init: clear the 0x3C160 word, size/print the heap, register self in
 // a global and point self->0xC at the Data block +0x1F5D0, allocate two
 // handles, fill the 320x240 viewport/projection record (100.0 / 16000.0 clip
@@ -9905,7 +9905,7 @@ extern char D_415A4_u[];
 extern char D_415A4_v[];
 extern char *D_415A4_g4;
 
-void gl_func_000415A4(O415A4 *self) {
+void App_main(O415A4 *self) {
     int a;
     int b;
     char *p;
@@ -9966,7 +9966,7 @@ void gl_func_000415A4(O415A4 *self) {
     gl_func_00000000(D_415A4_s6, self);
 }
 
-/* gl_func_00041768: 25-insn 3-call vtable-dispatch.
+/* App_Reset: 25-insn 3-call vtable-dispatch.
  *   func(0x1F5E4);
  *   vtable = self->[0x28];
  *   vtable->[0x14]((s16)vtable->[0x10] + self);
@@ -9989,7 +9989,7 @@ void gl_func_000415A4(O415A4 *self) {
  * because IDO -O2 places locals first-declared-highest, so pad_upper
  * gets 0x28, local gets 0x24, the lower pads fill 0x20/0x1C. See
  * docs/IDO_CODEGEN.md "volatile-pad sandwich" entry. */
-void gl_func_00041768(int *self) {
+void App_Reset(int *self) {
     int *vtable;
     volatile int pad_upper;
     int local;
@@ -10073,16 +10073,16 @@ void game_libs_func_00041820(char *self) {
 void game_libs_func_00041A6C(int a0) {}
 
 extern int gl_func_00000000();
-void gl_func_00041A74(int a0) {
+void App_InitInstance(int a0) {
     gl_func_00000000(((char *)&D_00000000 + 0x0001F63C));
 }
 
-// gl_func_00041A9C — STRUCTURAL PASS (0x2A0 / 169 words, no episode). Raw-.word
+// App_hostioParms — STRUCTURAL PASS (0x2A0 / 169 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x78
 // (saves ra). Registration-with-formatted-name + node alloc (cb = jal 0
 // USO-relocated; string literals &D_0002F658/F65C, default &D_0002F4B0).
 //
-//   void gl_func_00041A9C(void *a0) {
+//   void App_hostioParms(void *a0) {
 //     cb(&D_reloc, &D_0002F658, 0);                 // open registration scope
 //     cb(&D_reloc, &D_0002F65C);
 //     char name[..];                                 // sp+0x38 scratch
@@ -10113,15 +10113,15 @@ void gl_func_00041A74(int a0) {
 // cb signatures untyped. Full body INCLUDE_ASM-preserved.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41A9C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 120). The cfe body was 99.7; the ?: next() coloured the first result v1. */
-void gl_func_00041A9C(char *self) {
+void App_hostioParms(char *self) {
 }
 
-// gl_func_00041D40 — STRUCTURAL PASS (0x198 / 103 words, no episode). Raw-.word
+// App_Update — STRUCTURAL PASS (0x198 / 103 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x88
 // (saves ra + s0..s2). Registry list-insert / entry-builder (cb = jal 0
 // USO-relocated; string literals &D_0002F6B4 / &D_0002F6C0).
 //
-//   void gl_func_00041D40(void *a0) {
+//   void App_Update(void *a0) {
 //     cb(a0, &D_0002F6B4);                          // open/register scope
 //     Reg *r = (Reg*)&D_reloc;                       // s2 = registry base
 //     void *head = r->p00;
@@ -10157,10 +10157,10 @@ void gl_func_00041A9C(char *self) {
  * spliced over this placeholder on both build paths (agent-c run 262). Its
  * dbg_printThreads calls are renamed to the blank gl_func_00041D40_c34458 = 0
  * (the target's jal words are blank USO calls). */
-void gl_func_00041D40(s32 arg0) {
+void App_Update(s32 arg0) {
 }
 
-// gl_func_00041EDC — NM WRAP 97.29 (2026-10-16 agent-c; was 80.2). cb-scoped
+// App_Display — NM WRAP 97.29 (2026-10-16 agent-c; was 80.2). cb-scoped
 // list-iterate-and-dispatch: cb1(&D+0x1F6D0); walk the {cur,next} cursor
 // rooted at self->0x2C; for each node with node->0x18 & 4 call
 // vt->0x1C((short)vt->0x18 + node) with vt = node->0x28; cb2().
@@ -10186,7 +10186,7 @@ void gl_func_00041D40(s32 arg0) {
 // on s/head, call-result-in-v0 occupancy.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_41EDC.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
-void gl_func_00041EDC(void *self) {
+void App_Display(void *self) {
 }
 
 // gl_func_00041F90 — STRUCTURAL PASS (0x100 / 66 words, no episode). Raw-.word
@@ -10217,7 +10217,7 @@ void gl_func_00041EDC(void *self) {
 // staging record then relinks its 0xC-byte sub-records into the target
 // object at +0x3C via a terminator-bounded copy loop, finishing with a
 // cb-emit keyed by &D_0002F6E4. Family: cb-driven registration + record
-// list/block copy (siblings gl_func_00041D40 / 00041A9C / 0004182C).
+// list/block copy (siblings App_Update / 00041A9C / 0004182C).
 // Trailing leaf at 0x42080 = small stub (deferred re-split). Copy-loop
 // bookkeeping representative; the cb keys, the a1 early-out, the 0x44
 // staging size and the 0xC-stride relink into a0+0x3C are exact. Caps:
@@ -10344,7 +10344,7 @@ void heap_printStats(void) {
 // steps over an sp+0x28 scratch, each lookup gated by a branch-likely beql
 // that aborts the whole routine on a 0 result; the two successfully
 // extracted handles are committed together via a final cb_link keyed by
-// &D_g. Family: cb-driven parse/registration (siblings gl_func_00041D40 /
+// &D_g. Family: cb-driven parse/registration (siblings App_Update /
 // 00041F90 / 0003E9C8). Per-step cb identity inferred from arg shape — the
 // string-literal key sequence, the two beql bail points and the final
 // h!=0-guarded link are exact.
@@ -11485,7 +11485,7 @@ void gl_func_00043F1C(short *a0) {
     gl_func_00000000((*(int **)((char *)&D_00000000 + 0x254))[0x56], a0[9], a0[0xB], a0);
 }
 
-void gl_func_00043F50(int *a0) {
+void FogParms_hostioParms(int *a0) {
     gl_func_00000000(&D_00000000, (int)((char*)&D_00000000 + 0x1FD20), 0);
     gl_func_00000000(a0, 0);
     gl_func_00000000(&D_00000000, (int)((char*)&D_00000000 + 0x1FD2C), (int)a0 + 16, 500, 1000, 1);
@@ -11555,7 +11555,7 @@ void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
     d = (f32) FW(arg0, 0x14); FW(arg0, 0x14) = (s32) ((((f32) FW(arg1, 0x14) - d) * temp_f0) + d);
 }
 
-// gl_func_00044144 — STRUCTURAL PASS (0x36C / 220 words, no episode). Raw-.word
+// GfxLib_hostioParms — STRUCTURAL PASS (0x36C / 220 words, no episode). Raw-.word
 // USO. realjr=5, regjr=0 → MULTI-FUNCTION BUNDLE + BOUNDARY NOTE: the tail
 // has a dense small-gap jr cluster at 0x44458 / 0x4446C / 0x44480 / 0x44490 /
 // 0x444AC (gaps ~0x14/0x14/0x10/0x1C with no interior 27BDFF prologue) —
@@ -11567,7 +11567,7 @@ void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
 //
 // Named fn = large string-keyed config-registration table builder (single
 // prologue frame 0x138, saves ra; cb = jal 0 USO-relocated registrar):
-//   void gl_func_00044144(void) {
+//   void GfxLib_hostioParms(void) {
 //     cb(&D_g, &D_0002FD34, 0);                      // register entry, int 0
 //     cb(&D_g, &D_0002FD40, &cfg_24C, 1.0f);          // ptr + float-1.0 const
 //     cb(&D_g, &D_0002FD50, &cfg_250, 0);
@@ -11583,7 +11583,7 @@ void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
 // the module registrar (string keys in the contiguous &D_0002FD34.. table,
 // values = config-struct field addresses or default-string pointers, with
 // 1.0f / 0x19000-style immediates). Family: cb-driven string-keyed
-// registration-table builder (siblings gl_func_000415A4 / 0004182C /
+// registration-table builder (siblings App_main / 0004182C /
 // 00040DE8). Per-entry value/const list representative (220-word driver) —
 // the cb call shape, the &D_0002FD34.. key table and the 1.0f/0x19000
 // immediates are exact. Trailing no-frame-leaf stack = deferred re-split.
@@ -11609,7 +11609,7 @@ void game_libs_func_0004406C(char *arg0, char *arg1, f32 arg2) {
 // &D_00000000 + offset (the lui a0,0x0 / addiu a0,a0,0 base-load pair).
 // a0 base = g = &D_00000000 throughout.
 extern void gl_func_00000000_44144v();
-void gl_func_00044144(char *arg0) {
+void GfxLib_hostioParms(char *arg0) {
     extern int gl_func_00000000f(void *, void *, void *, int, float, int);
     /* per-site base-0 aliases of D_00000000: target re-materializes a fresh
      * lui/addiu pair at EVERY use (no $s0 promotion, no saved regs at all);
@@ -11690,7 +11690,7 @@ void gl_func_00044144(char *arg0) {
     gl_func_00000000(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00044144);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", GfxLib_hostioParms);
 #endif
 
 void game_libs_func_00044460(int *a0, int *a1) { *(int*)a0 = (int)a1; *(int*)((char*)a0 + 4) = *(int*)((char*)(*(int*)((char*)a1 + 0xC)) + 4); }
@@ -11757,7 +11757,7 @@ void game_libs_func_00044540(int *a0, int **a1) {
   base[1] = rv;
 }
 
-// gl_func_000445AC — DEEP RECONSTRUCTION (0x368 / 219 words, no episode).
+// GfxLib_init — DEEP RECONSTRUCTION (0x368 / 219 words, no episode).
 // Raw-.word USO, single function, frame 0x58 (saves ra, s0). One-shot
 // command/keymap table init + object-list bootstrap driver.
 //
@@ -11779,7 +11779,7 @@ void game_libs_func_00044540(int *a0, int **a1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_445AC.cpp (source-order varargs, the holder
  * store as the call argument `gl(D_445AC_b.x1C = new A40, 0x64, 1)`), REPLACE_FUNC_BODY-spliced over this placeholder
  * in both build trees (agent-c run 162). The old cfe body (99.82) is retired. */
-void gl_func_000445AC(char *a0) {
+void GfxLib_init(char *a0) {
 }
 
 // gl_func_00044918 (0x1D4 / 117 words) — DECODE-CORRECTED PASS 2026-07-30,
@@ -11876,18 +11876,18 @@ void gl_func_00044AEC(int *arg0) {
 }
 
 
-/* game_libs_func_00044B78 (0x124, 73 words; merged with the former gl_func_00044B84
+/* gfx_setVideoMode (0x124, 73 words; merged with the former gl_func_00044B84
  * INCLUDE_ASM + STRUCTURAL PASS note, 2026-09-09 agent-c): video-mode selector,
  * bootup.uso export sym1553. 0x44B84 is a mid-function word; the 3-word orphan
  * `lui at; sw a0,0(at); andi t8,a0,0xff` is the hoisted first statement (the
  * D+0x3C8E0 flags-word store + the switch selector). The REAL body is the IDO 7.1
  * -O2 donor src/game_libs/game_libs_o2_44B78.c (73/73 word-exact), spliced in by
  * REPLACE_FUNC_BODY so the C switch's local .rodata jumptable reloc is renamed to
- * game_libs_func_00044B78_rodata and pinned to the USO RoData table at +0x1B3C
+ * gfx_setVideoMode_rodata and pinned to the USO RoData table at +0x1B3C
  * (the Audio_AdsrUpdate recipe). This stub only reserves the symbol; its
  * bytes never reach the ROM. */
 extern s32 D_00000000_3c8e0;
-void game_libs_func_00044B78(int mode) {
+void gfx_setVideoMode(int mode) {
     D_00000000_3c8e0 = mode;
 }
 
@@ -11906,7 +11906,7 @@ void game_libs_func_00044CB0(int a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00044CC4(int a0, int a1) {
+void gfx_viBlack(int a0, int a1) {
     gl_func_00000000((unsigned char)a1);
 }
 
@@ -12011,12 +12011,12 @@ int game_libs_func_00044DD4(int *a0, int a1) {
     return a0[a1 + 0xAB];
 }
 
-// gl_func_00044DE4 — STRUCTURAL PASS (0xF4 / 62 words, no episode). Raw-.word
+// gfx_start — STRUCTURAL PASS (0xF4 / 62 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x28
 // (saves ra + s0..s2). Subsystem teardown/reset (cb = jal 0 USO-relocated;
 // cleanup string keys &D_0002FEB4 / FEBC / FEC4).
 //
-//   void gl_func_00044DE4(void *a0) {
+//   void gfx_start(void *a0) {
 //     self = a0;
 //     *(void**)&D_g = &D_0002FEB4;                   // publish teardown tag
 //     *(int*)... = self->p218->p24;                   // snapshot a sub-field
@@ -12053,7 +12053,7 @@ int game_libs_func_00044DD4(int *a0, int a1) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 extern int D_44DE4_tag, D_44DE4_val;
-void gl_func_00044DE4(char *arg0) {
+void gfx_start(char *arg0) {
     s32 i;
     char *e;
     char *vt;
@@ -12080,12 +12080,12 @@ void gl_func_00044DE4(char *arg0) {
     }
 }
 
-// gl_func_00044EDC — STRUCTURAL PASS (0x298 / 167 words, no episode). Raw-.word
+// gfx_end — STRUCTURAL PASS (0x298 / 167 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x28
-// (saves ra + s0..s3). Subsystem teardown/reset — sibling of gl_func_00044DE4
+// (saves ra + s0..s3). Subsystem teardown/reset — sibling of gfx_start
 // (cb = jal 0 USO-relocated; cleanup string keys &D_0002FEC8 / FECC).
 //
-//   void gl_func_00044EDC(void *a0) {
+//   void gfx_end(void *a0) {
 //     self = a0;
 //     int i = *(int*)(&D_0 + 0x204);
 //     *(void**)&D_g = &D_0002FEC8;                   // publish teardown tag
@@ -12110,7 +12110,7 @@ void gl_func_00044DE4(char *arg0) {
 // self->0x258 entry count invoking a per-entry cb2 over the self->0x25C
 // table, performs a &D_0002FECC string-keyed cleanup, then validates
 // self->0x218->{0x04,0x0C} to gate the remaining cb teardown. Family:
-// cb-driven teardown/reset (sibling of gl_func_00044DE4; destructor
+// cb-driven teardown/reset (sibling of gfx_start; destructor
 // counterpart of the init/registration drivers). Loop-body and final
 // validation arms representative; the &D_0002FEC8 tag, the
 // self->0x280 + (&D_0+0x204)*4 index math, the self->0x258 count loop over
@@ -12138,7 +12138,7 @@ extern float gl_func_00000000_fret();
 extern char D_44EDC_a, D_44EDC_b, D_44EDC_c, D_44EDC_d, D_44EDC_e, D_44EDC_f,
     D_44EDC_h, D_44EDC_i;
 extern int D_44EDC_g[];
-void gl_func_00044EDC(char *arg0) {
+void gfx_end(char *arg0) {
     s32 k;
     s32 n;
     char *obj;
@@ -12722,7 +12722,7 @@ int gl_func_00046B44() {
     return gl_func_00000000();
 }
 
-/* gl_func_00046B64: 24-insn toggle-bit + vtable-dispatch + 2-call.
+/* gfx_swapBuffer: 24-insn toggle-bit + vtable-dispatch + 2-call.
  * Inlining a0[0x240/4] at each use (rather than caching in a local)
  * forces IDO to emit the lw a0,0x240 twice — matching target's insn count.
  * 2026-07-15 wave 3: BYTE-EXACT 24/24 (was 96.46 with a stale INSN_PATCH
@@ -12734,7 +12734,7 @@ int gl_func_00046B44() {
  * commute: writing `(int)a0[0x240/4] + *(short*)(vtable+0x60)` (ptr-value
  * textually FIRST) emits the target's `addu a0,t0,v0` (short-first).
  * EXACT (unwrapped run 95): func_00000000 is a real symbol at 0. */
-void gl_func_00046B64(int *a0) {
+void gfx_swapBuffer(int *a0) {
     int *vtable;
     int rv;
     ((int*)a0[0x240/4])[0x144/4] = (a0[0x204/4] ^= 1);
@@ -14041,13 +14041,13 @@ void gl_func_00049308(char *self) {
     }
 }
 
-// gl_func_000493AC — STRUCTURAL PASS (0x78C / 484 words, no episode). Raw-.word
+// PolyShape_init — STRUCTURAL PASS (0x78C / 484 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function (very large init builder).
 // Single prologue frame 0x6B8 (~1.7 KB stack scratch; saves ra + s0..s8).
 // String-keyed subsystem init/registration builder (cb = jal 0
 // USO-relocated; string keys in the &D_0002FF54.. table).
 //
-//   void gl_func_000493AC(void *a0) {
+//   void PolyShape_init(void *a0) {
 //     self = a0;
 //     if ((self->p30 & 1) == 0) goto done;           // bnez gate (else big
 //                                                    //   skip to tail)
@@ -14067,7 +14067,7 @@ void gl_func_00049308(char *self) {
 // &D_0002FF54.. block) and zeroes object state fields (e.g. the obj+0xB0
 // Vec3), using a ~1.7 KB stack scratch frame to assemble config before
 // committing. Family: cb-driven string-keyed registration/init builder
-// (siblings gl_func_00044144 / 000445AC / 0004182C; the large-frame
+// (siblings GfxLib_hostioParms / 000445AC / 0004182C; the large-frame
 // variant).
 //
 // RECONSTRUCTION 2026-06-22 (agent-b): drove fuzzy 57.58 -> 61.60 via three
@@ -14126,7 +14126,7 @@ extern int D_493AC_a, D_493AC_b, D_493AC_c, D_493AC_d;
  * (target re-adds base + i*4). Length 1904 -> 1908 (target 1936).
  * Later in run 151 (89.86 -> 90.60): the 0x4C remap pick is an if/else with
  * `j = i` in the else arm (kit XCIV `b .+8` fingerprint; 1908 -> 1912). */
-s32 gl_func_000493AC(char *self) {
+s32 PolyShape_init(char *self) {
     Obj493 *o;
     Grid493 *gr;
     int cnt;
@@ -14320,17 +14320,17 @@ s32 gl_func_000493AC(char *self) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_493AC.cpp (agent-c run 159 lift,
  * agent-g run 312 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-s32 gl_func_000493AC(char *self) {
+s32 PolyShape_init(char *self) {
 }
 #endif
 
-// gl_func_00049B3C (0x280 / 160 words): field registrations, then an array
+// PolyShape_hostioParms (0x280 / 160 words): field registrations, then an array
 // iterator over self->0x84 calling each element's virtual tick(), one more
 // registration, a {cur, next} list walk over (self->0x2C)->0x10 calling each
 // element's virtual upd(); banner; log self. C++.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_49B3C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 190). */
-void gl_func_00049B3C(void) {
+void PolyShape_hostioParms(void) {
 }
 
 // gl_func_00049DBC — DECODE PROGRESS ~58.6% (was ~46%, no episode). 339 words.
@@ -14538,7 +14538,7 @@ void gl_func_0004A84C(char *a0) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4A890.cpp (`s16 *Map::build(s32 n, s16 *ids)`,
  * the id -> matching-entry index list builder; NM history there), REPLACE_FUNC_BODY-spliced over this placeholder
  * in both build trees (agent-g run 257). */
-s16 *gl_func_0004A890(char *arg0, s32 arg1, s16 *arg2) {
+s16 *MorphPoly_genUpdateList(char *arg0, s32 arg1, s16 *arg2) {
     return 0;
 }
 
@@ -14887,7 +14887,7 @@ void gl_func_0004B040(int *a0) {
 // block from &D_g2+0x140 into self->0x00/0x04, bind the handler table at
 // self->0x28 = &D_g1, then register additional sub-fields via cb keyed by
 // &D_0002F0F4 (results stored at self->0x40 etc.). Family: cb-driven
-// constructor + name/handler registration (siblings gl_func_00040070 /
+// constructor + name/handler registration (siblings QNode_ctor /
 // 0003E5E0 / 0004B0A8 neighbours). Per-field wiring tail representative;
 // the 0x44 alloc, the &D_0002F0EC name key, the &D_g2+0x140 -> self->0/4
 // handler copy and the self->0x28 = &D_g1 bind are exact. Caps: object/
@@ -17000,7 +17000,7 @@ int game_libs_func_0004E23C(char *a0) {
 // gl_func_0004E244 — STRUCTURAL PASS (0x134 / 80 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x68
 // (saves ra). Registry list-insert + field-copy (same idiom as
-// gl_func_00041D40 / 00043BEC; cb = jal 0 USO-relocated).
+// App_Update / 00043BEC; cb = jal 0 USO-relocated).
 //
 //   void gl_func_0004E244(void *src) {
 //     char scrA[..];                                 // sp+0x3C (in-params)
@@ -17020,7 +17020,7 @@ int game_libs_func_0004E23C(char *a0) {
 // it ahead of the source (n->0 = src, n->4 = -1, n->8 = src->0xC - 1) and
 // migrates a 3-word field group from an sp+0x3C scratch into both the node
 // and a parallel sp scratch (sp+0x4C/0x5C). Family: cb-driven registry
-// list-insert + field-copy (siblings gl_func_00041D40 / 00043BEC /
+// list-insert + field-copy (siblings App_Update / 00043BEC /
 // 00041F90). Copied-field offsets representative; the 0xC alloc, the
 // null-check, the head-link triple (0 / 4 = -1 / 8 = src->0xC-1) and the
 // 3-word sp-scratch migration are exact.

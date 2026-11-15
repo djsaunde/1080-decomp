@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for gl_func_00041D40 (0x19C / 103 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) NM-only comparison donor for App_Update (0x19C / 103 words), agent-c run 162.
  * Registry dump: banner, clear the global array's count, log, then walk the global array with the by-value
  * index iterator of 4B620 / 49B3C (AIter(Arr *) with a kept parameter, Arr::iter() returning by value),
  * printing each element's +0xC and notifying its +0x14 owner. cfe body 92.99 (408 of 412 bytes) -> 96.11 at
@@ -43,7 +43,7 @@ struct AIter : IBase {
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter iter(Arr *a) { return AIter(a); }
-extern "C" void gl_func_00041D40(int arg0) {
+extern "C" void App_Update(int arg0) {
     dbg_printThreads(S(0x1F6B4));
     (*(Arr **)D_00000000)->count = 0;
     dbg_printThreads(arg0);

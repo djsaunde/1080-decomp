@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00040070 (0x234 / 141 words), EXACT (agent-c run 181; first draft agent-c run 157).
+/* IDO 7.1 NCC (C++) donor for QNode_ctor (0x234 / 141 words), EXACT (agent-c run 181; first draft agent-c run 157).
  * A C++ constructor Obj::Obj(void *a1, float x, float y, float z) : Base(a1): cfront `this == 0 -> new(0x108)`,
  * inline Base ctor (`new(0xB4)` fallback, external BB ctor -- BB itself declares a virtual, which is what puts
  * the vptr at 0x28 -- a W4 member at 0x2C with the 4E584 nested protocol, `gl(this)`, a zeroed float[3] passed

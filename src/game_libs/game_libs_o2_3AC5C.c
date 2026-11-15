@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_0003AC5C -- constructor + token-stream loop
+/* IDO 7.1 -O2 donor for CollShape_ctor -- constructor + token-stream loop
  * (0x1FC / 127 words; 127/127 word-exact standalone apart from reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
  * 29CCC / 44B78 / 52CD4 recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-
  * donor-52cd4). The C switch over cmd 0..4 puts its 5-entry jumptable in the
  * donor's local .rodata; the splice renames that reloc to
- * gl_func_0003AC5C_rodata, pinned to 0x1A90 in undefined_syms_auto.txt
+ * CollShape_ctor_rodata, pinned to 0x1A90 in undefined_syms_auto.txt
  * (bootup.uso RoData file offset 0x1A94.. = imm + 4; arms: case 0 -> +0xDC,
  * 1 -> +0xBC, 2 -> +0xA8, 3 -> +0x15C, 4 -> +0x180; raw word - 0x1466C -
  * 0x3AC5C). Arms are written in address (= source) order 2, 1, 0, 3, 4.
@@ -27,7 +27,7 @@
 extern int gl_func_00000000();
 extern char gl_ref_0001EE18_3AC5C, gl_ref_0001EE24_3AC5C, gl_ref_0001EE3C_3AC5C, gl_ref_0001EE48_3AC5C;
 
-int *gl_func_0003AC5C(int *arg0, int *arg1) {
+int *CollShape_ctor(int *arg0, int *arg1) {
     int *q;    /* v0 post-increment temp */
     int cmd;   /* v1 */
     int flag;  /* s5 */

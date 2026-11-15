@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004A890 (0x160 / 88 words): EXACT, REPLACE_FUNC_BODY-spliced over the
+/* IDO 7.1 NCC (C++) donor for MorphPoly_genUpdateList (0x160 / 88 words): EXACT, REPLACE_FUNC_BODY-spliced over the
  * game_libs_post0b.c placeholder in both build trees (agent-g run 257). `s16 *Map::build(s32 n, s16 *ids)` (renamed
- * to gl_func_0004A890 with objcopy, name only): for every id, the id then the indices of the map entries equal to it
+ * to MorphPoly_genUpdateList with objcopy, name only): for every id, the id then the indices of the map entries equal to it
  * (the entry count `hi - lo` through an inline `count()` re-read in the loop condition: the target re-loads
  * 0xD4 / 0xD6 only after a hit), each run closed by -1; then a heap copy of the list.
  * History (NM): agent-c run 160 real C++ (86.41 -> 88.70); run 179 `ids++` after the terminator store (93.47);
