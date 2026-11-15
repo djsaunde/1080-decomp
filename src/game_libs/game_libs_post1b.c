@@ -501,17 +501,17 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
         a0 = (void*)CALL(mem_new)(292);
         if (a0 == 0) goto end;
     }
-    gl_init_00000000_63884(a0, GL_DATA_STR(0x22388, "<QNode>"), 0.0f, 0.0f, 0.0f);
-    *(int*)((char*)a0 + 0x28) = (int)&PhysQNode_vtbl;
+    XCALL(gl_init_00000000_63884, QNode_ctor)(a0, GL_DATA_STR(0x22388, "<QNode>"), 0.0f, 0.0f, 0.0f);
+    PHYSQNODE(a0)->mnode.node.vptr = (int)&PhysQNode_vtbl;
     tmp = *(Tri3i*)a2;
-    *(float*)((char*)a0 + 0x10C) = *(float*)&tmp.a;
-    *(float*)((char*)a0 + 0x110) = *(float*)&tmp.b;
-    *(float*)((char*)a0 + 0x114) = *(float*)&tmp.c;
+    PHYSQNODE(a0)->probeA[0] = *(float*)&tmp.a;
+    PHYSQNODE(a0)->probeA[1] = *(float*)&tmp.b;
+    PHYSQNODE(a0)->probeA[2] = *(float*)&tmp.c;
     tmp = *(Tri3i*)a3;
-    *(float*)((char*)a0 + 0x118) = *(float*)&tmp.a;
-    *(float*)((char*)a0 + 0x11C) = *(float*)&tmp.b;
-    *(float*)((char*)a0 + 0x120) = *(float*)&tmp.c;
-    *(int*)((char*)a0 + 0x108) = a1;
+    PHYSQNODE(a0)->probeB[0] = *(float*)&tmp.a;
+    PHYSQNODE(a0)->probeB[1] = *(float*)&tmp.b;
+    PHYSQNODE(a0)->probeB[2] = *(float*)&tmp.c;
+    PHYSQNODE(a0)->owner = a1;
 end:
     return a0;
 }
@@ -558,13 +558,13 @@ extern int aD63DC4_4(void*, float, float, float);
 extern float aD63DC4_1(float);
 void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
     if (s0 != 0 || (s0 = (void*)CALL(mem_new)(368)) != 0) {
-        aD63DC4_5(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
-        *(int*)((char*)s0 + 0x28) = (int)&Friction_vtbl;
-        *(int*)((char*)s0 + 0x16C) = a1;
-        aD63DC4_4(s0, a2, a3, a4);
+        XCALL(aD63DC4_5, QNode_ctor)(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
+        FRICTION(s0)->mnode.node.vptr = (int)&Friction_vtbl;
+        FRICTION(s0)->owner = a1;
+        XCALL(aD63DC4_4, QNode_translate)(s0, a2, a3, a4);
         CALL(Friction_reset_00064124)(s0);
-        *(float*)((char*)s0 + 0x164) =
-            aD63DC4_1(a2 * a2 + a3 * a3 + a4 * a4);
+        FRICTION(s0)->offsetLen =
+            XCALL(aD63DC4_1, sqrtf)(a2 * a2 + a3 * a3 + a4 * a4);
     }
     return s0;
 }
@@ -603,9 +603,9 @@ extern int D_00000000;
 void Friction_hostioParms_00063E84(char *a0) {
     CALL(hostio_beginGroup)(&gHostio, GL_DATA_STR(0x22398, "Friction"), 0);
     XCALL(gl_func_00000000f, hostio_addFloat)(&gHostio, GL_DATA_STR(0x223A4, "Friction"),
-                      a0 + 0x150, 0.0f, 2.0f, 1);
+                      &FRICTION(a0)->coef, 0.0f, 2.0f, 1);
     XCALL(gl_func_00000000f, hostio_addFloat)(&gHostio, GL_DATA_STR(0x223B0, "Friction Limit"),
-                      a0 + 0x154, 0.0f, 10.0f, 1);
+                      &FRICTION(a0)->limit, 0.0f, 10.0f, 1);
     CALL(hostio_endGroup)(&gHostio);
     CALL(QNode_hostioParms)(a0);
 }
@@ -648,7 +648,8 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
     f32 var_f0;
 
     if (arg1 < 10.0f) {
-        *(V3i_63F34 *)&sp44 = *(V3i_63F34 *)(arg0 + 0x114);
+        /* arg2 = the unit contact normal */
+        *(V3i_63F34 *)&sp44 = *(V3i_63F34 *)FRICTION(arg0)->unk114;
         temp_f0 = (sp44.unk8 * *(f32 *)(arg2 + 0x8)) + ((sp44.unk4 * *(f32 *)(arg2 + 0x4)) + (*(f32 *)(arg2 + 0x0) * (0, sp44.unk0)));
         sp44.unk0 = (*(f32 *)(arg2 + 0x0) * (0, temp_f0)) - sp44.unk0;
         sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
@@ -656,7 +657,7 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
         sp40 = XCALL(gl_func_00000000_s, math_vec3Length_0005BBCC)((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
         if (kRo_Friction_vfn11_00063F34_20A0.v < (f64) sp40) {
             CALL(math_vec3Normalize)(&sp44);
-            var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * DNODE(FW(arg0, 0x16C))->friction) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
+            var_f0 = (f32) ((f64) ((FRICTION(arg0)->coef * DNODE(FRICTION(arg0)->owner)->friction) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
             var_f0 = var_f0 * var_f0;
             if (kRo_Friction_vfn11_00063F34_20B0.v < (f64) var_f0) {
                 var_f0 = kRo_Friction_vfn11_00063F34_20B8.v;
@@ -671,7 +672,7 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
             sp44.unk0 = tx;
             sp44.unk4 = ty;
             sp44.unk8 = tz;
-            CALL(DNode_addImpulseAt_00065250)(FW(arg0, 0x16C) /* owner DNode */, arg0 + 0x120, &sp44);
+            CALL(DNode_addImpulseAt_00065250)(FRICTION(arg0)->owner, FRICTION(arg0)->contactPoint, &sp44);
         }
     }
 }
@@ -704,19 +705,19 @@ void Friction_handleMsg_000640E4(int a0, int *a1) {
  *      matching the target's f0=1.0 / f2=0.0 assignment. IDO regroups the EMISSION by
  *      offset (0.0 group emitted first), so the final store order still matches. */
 void Friction_reset_00064124(char *a0) {
-    *(float*)(a0 + 0x150) = 1.0f;
-    *(float*)(a0 + 0x154) = 1.0f;
-    *(float*)(a0 + 0x148) = 1.0f;
-    *(int*)(a0 + 0x160) = 0;
-    *(int*)(a0 + 0x14C) = 0;
-    *(int*)(a0 + 0x168) = 256;
-    *(float*)(a0 + 0x12C) = 0.0f;
-    *(float*)(a0 + 0x130) = 0.0f;
-    *(float*)(a0 + 0x134) = 0.0f;
-    *(float*)(a0 + 0x108) = 0.0f;
-    *(float*)(a0 + 0x10C) = 0.0f;
-    *(float*)(a0 + 0x110) = 0.0f;
-    *(float*)(a0 + 0x144) = (float)0;
+    FRICTION(a0)->coef = 1.0f;
+    FRICTION(a0)->limit = 1.0f;
+    FRICTION(a0)->unk148 = 1.0f;
+    FRICTION(a0)->unk160 = 0;
+    FRICTION(a0)->unk14C = 0;
+    FRICTION(a0)->unk168 = 256;
+    FRICTION(a0)->unk12C[0] = 0.0f;
+    FRICTION(a0)->unk12C[1] = 0.0f;
+    FRICTION(a0)->unk12C[2] = 0.0f;
+    FRICTION(a0)->unk108[0] = 0.0f;
+    FRICTION(a0)->unk108[1] = 0.0f;
+    FRICTION(a0)->unk108[2] = 0.0f;
+    FRICTION(a0)->unk144 = (float)0;
 }
 
 /* DNodeAccum_reset_00064170: 26-insn 10-float zero + 3-int-to-float bit-copy.
@@ -1089,7 +1090,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
     int g18, g19, g20, g21;
 
     if (arg0 != 0 || (arg0 = (void *)CALL(mem_new)(0x3D4)) != 0) {
-        gl_init_00000000_64588(arg0, arg1, 0.0f, 0.0f, 0.0f);
+        XCALL(gl_init_00000000_64588, QNode_ctor)(arg0, arg1, 0.0f, 0.0f, 0.0f);
         DNODE(arg0)->mnode.node.vptr = (int)&gl_ref_00000000_64588; /* DNode_vtbl */
         if ((base = (char *)&DNODE(arg0)->parms) != 0 ||
             (base = (char *)CALL(mem_new)(0x180)) != 0) {

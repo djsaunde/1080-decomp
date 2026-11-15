@@ -116,4 +116,55 @@ typedef char DNode_cog_check[(int)&((DNode *)0)->parms.cog.value == 0x1F8 ? 1 : 
 
 #define DNODE(p) ((DNode *)(p))
 
+/* PhysQNode (0x124, "<QNode>", vtable PhysQNode_vtbl; PhysQNode_ctor_00063884(this, owner,
+ * &probeA, &probeB)): two body-space probe points of a DNode. Its vfn11
+ * (PhysQNode_vfn11_00063964) rotates each probe by cvqs.quat (math_quatRotateVec3), adds
+ * cvqs.trans, and for each probe below y = 0 pushes the owner up by the depth through
+ * DNode_addImpulseAt_00065250 at the (averaged) contact point. */
+typedef struct PhysQNode {
+    /* 0x000 */ MNode mnode;
+    /* 0x0B4 */ AnimPose vqs;
+    /* 0x0DC */ AnimPose cvqs;
+    /* 0x104 */ s32 unk104;
+    /* 0x108 */ s32 owner;          /* DNode * (ctor arg 1) */
+    /* 0x10C */ f32 probeA[3];      /* ctor arg 2 */
+    /* 0x118 */ f32 probeB[3];      /* ctor arg 3 */
+} PhysQNode;
+
+/* Friction (0x170, "<QNode>", vtable Friction_vtbl; Friction_ctor_00063DC4(this, owner, x,
+ * y, z): QNode_translate by (x, y, z), offsetLen = |(x, y, z)|). HostIO parms "Friction"
+ * (coef, 0..2) and "Friction Limit" (limit, 0..10). Friction_vfn11_00063F34(this, t,
+ * normal, k): while t < 10 it reflects unk114 about the unit normal and, when that is
+ * longer than a RoData epsilon, pushes the owner at contactPoint with it scaled by
+ * clamp(((coef * owner->friction + k) * K)^2). SnowBCollider_ctor builds one and
+ * SnowBCollider_onContact calls vfn11. Friction_reset_00064124 (message 9) clears it. */
+typedef struct Friction {
+    /* 0x000 */ MNode mnode;
+    /* 0x0B4 */ AnimPose vqs;
+    /* 0x0DC */ AnimPose cvqs;
+    /* 0x104 */ s32 unk104;
+    /* 0x108 */ f32 unk108[3];      /* 0 at reset */
+    /* 0x114 */ f32 unk114[3];      /* the vector vfn11 reflects about the normal */
+    /* 0x120 */ f32 contactPoint[3]; /* world point passed to DNode_addImpulseAt_00065250 */
+    /* 0x12C */ f32 unk12C[3];      /* 0 at reset */
+    /* 0x138 */ char pad138[0x144 - 0x138];
+    /* 0x144 */ f32 unk144;         /* 0 at reset */
+    /* 0x148 */ f32 unk148;         /* 1 at reset */
+    /* 0x14C */ s32 unk14C;         /* 0 at reset */
+    /* 0x150 */ f32 coef;           /* "Friction" (1 at reset) */
+    /* 0x154 */ f32 limit;          /* "Friction Limit" (1 at reset) */
+    /* 0x158 */ char pad158[0x160 - 0x158];
+    /* 0x160 */ s32 unk160;         /* 0 at reset */
+    /* 0x164 */ f32 offsetLen;      /* |ctor offset| */
+    /* 0x168 */ s32 unk168;         /* 256 at reset */
+    /* 0x16C */ s32 owner;          /* DNode * (ctor arg 1) */
+} Friction;
+
+typedef char PhysQNode_size_check[sizeof(PhysQNode) == 0x124 ? 1 : -1];
+typedef char Friction_size_check[sizeof(Friction) == 0x170 ? 1 : -1];
+typedef char Friction_coef_check[(int)&((Friction *)0)->coef == 0x150 ? 1 : -1];
+
+#define PHYSQNODE(p) ((PhysQNode *)(p))
+#define FRICTION(p) ((Friction *)(p))
+
 #endif /* GDL_DNODE_H */
