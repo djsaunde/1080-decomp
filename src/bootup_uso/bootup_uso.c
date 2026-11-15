@@ -517,7 +517,7 @@ void snd_soundObjSetByte1D_00000B14(int **a0, int a1) {
 }
 
 extern float D_00000068;
-void snd_soundObjSetScaled_00000B2C(void **a0, float a1) {
+void snd_soundObjSetPan_00000B2C(void **a0, float a1) {
     a1 = a1 / D_00000068;
     if (*a0 != 0) {
         *(float*)((char*)*a0 + 0x10) = a1;

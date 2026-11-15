@@ -7,7 +7,7 @@
  * Every mode module (titproc, n64proc, h2hproc, mgrproc, arcproc, timproc, trkproc) imports
  * it as one symbol and passes it as arg 0 to the bootup input_* functions
  * (input_checkPressed_00011E00 / input_checkHeld_00011ED4 / input_checkReleased_00011FA8,
- * input_setActivePad_0001207C, input_setActive_00011CD8). Besides the pad list it holds the
+ * input_setActivePad_0001207C, input_setRacePadsActive). Besides the pad list it holds the
  * game-flow words the mode state machines run on, so the mode modules read and write
  * those fields through the same import (relocations against bootup Bss 0xF8 + offset).
  *

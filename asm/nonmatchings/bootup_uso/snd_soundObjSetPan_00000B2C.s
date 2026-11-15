@@ -1,6 +1,6 @@
-nonmatching snd_soundObjSetScaled_00000B2C, 0x24
+nonmatching snd_soundObjSetPan_00000B2C, 0x24
 
-glabel snd_soundObjSetScaled_00000B2C
+glabel snd_soundObjSetPan_00000B2C
     /* DD1598 00000B2C 8C820000 */  lw         $v0, 0x0($a0)
     /* DD159C 00000B30 3C010000 */  lui        $at, %hi(func_00000044 + 0x24)
     /* DD15A0 00000B34 44856000 */  mtc1       $a1, $f12
@@ -11,4 +11,4 @@ glabel snd_soundObjSetScaled_00000B2C
   .L00000B48:
     /* DD15B4 00000B48 03E00008 */  jr         $ra
     /* DD15B8 00000B4C 00000000 */   nop
-endlabel snd_soundObjSetScaled_00000B2C
+endlabel snd_soundObjSetPan_00000B2C

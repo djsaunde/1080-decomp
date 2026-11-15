@@ -193,7 +193,7 @@ typedef struct SnowBoarder {
     struct SnowAI *ai;      /* 0x804: the AI controller (game.uso SnowAI_ctor(0, this, ...), the ctor's last child);
                              * SnowBoarder_handleMsg forwards win / lose / timeout to SnowAI_onWin / onLose / onTimeout */
     char sound[0xC];        /* 0x808: embedded 0xC-byte sound object, constructed in place with (ctor arg 1,
-                             * ctor arg 2); updateOrient calls snd_soundObjSetScaled_00000B2C on it, procColl
+                             * ctor arg 2); updateOrient calls snd_soundObjSetPan_00000B2C on it, procColl
                              * switches it with groundFlags & 0x400, update feeds it contactSurface / landImpact */
     char *unk814;           /* 0x814: ctor: word 0 of the bu_90cc_fz source table */
     char *unk818;           /* 0x818: ctor: word 2 of that table; update stores landImpact at +0x94 when unk8B8 & 4 */

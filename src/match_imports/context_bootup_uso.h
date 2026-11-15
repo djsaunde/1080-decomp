@@ -606,7 +606,7 @@ void SndHandle_setContactSurface(BootupCodeContextPrefix *a0, int a1);
 int SndHandle_contactEventType(BootupCodeContextPrefix *a0, int a1);
 void snd_soundObjSetByte1D_00000B14(int **a0, int a1);
 extern float D_00000068;
-void snd_soundObjSetScaled_00000B2C(void **a0, float a1);
+void snd_soundObjSetPan_00000B2C(void **a0, float a1);
 void boot_readFloatParm_00000B50(char *a0);
 void boot_readVec3Parm_00000B80(char *a0);
 void boot_readQuadParm_00000BB0(char *a0);

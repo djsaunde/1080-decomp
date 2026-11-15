@@ -39,7 +39,7 @@ void input_addRacePad(InputMgr *a0, InputPad *a1) {
 /* 26-insn -O0 if-else flag-setter. Sets a0->0x188 to 0 if a1 != 0 else 1.
  * Both branches call func_00000000(a0) (cross-USO placeholder). Verified
  * byte-exact at -O0 standalone (2026-05-07). */
-void input_setActive_00011CD8(int *a0, int a1) {
+void input_setRacePadsActive(int *a0, int a1) {
     if (a1 != 0) {
         func_00000000(a0);
         *(int*)((char*)a0 + 0x188) = 0;
