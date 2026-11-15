@@ -12058,21 +12058,21 @@ int gfx_getDdm(int *a0, int a1) {
 // representative; the &D_0002FEB4 tag store, the cleared offsets, the
 // 0x240 + idx*4 + 0x198/0x180 handler-table math and the &D_0002FExx keys
 // are exact. EXACT 2026-10-16: the two global stores are DISTINCT base-0
-// externs (D_44DE4_tag / D_44DE4_val, one `lui at` each), the string keys are
+// externs (gGfxPhase_44DE4 / D_44DE4_val, one `lui at` each), the string keys are
 // `&D_00000000 + K` (lui 2; addiu -X carry form), a volatile first self store
 // pins the self->s2 copy, the loop reads `((char **)(self + 0x148))[i]` so
 // IDO strength-reduces its own cursor, and a named 0x22C local takes v0.
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern int D_44DE4_tag, D_44DE4_val;
+extern int gGfxPhase_44DE4, D_44DE4_val;
 void gfx_start(char *arg0) {
     s32 i;
     char *e;
     char *vt;
     char *q;
 
-    D_44DE4_tag = (int)((char *)&D_00000000 + 0x1FEB4);
+    gGfxPhase_44DE4 = (int)((char *)&D_00000000 + 0x1FEB4);
     D_44DE4_val = FW(FW(arg0, 0x218), 0x24);
     *(volatile int *)(arg0 + 0x244) = 0;
     FW(arg0, 0x248) = 0;
@@ -12148,8 +12148,8 @@ void gfx_start(char *arg0) {
 typedef void (*VT_44EDC)();
 extern int gl_func_00000000();
 extern float gl_func_00000000_fret();
-extern char gGfxLib_44EDC_a, D_44EDC_b, gGfxLib_44EDC_c, gGfxLib_44EDC_d, D_44EDC_e, D_44EDC_f,
-    D_44EDC_h, gSysLib_44EDC_i;
+extern char gGfxLib_44EDC_a, gGfxPhase_44EDC_b, gGfxLib_44EDC_c, gGfxLib_44EDC_d, D_44EDC_e, gGfxPhase_44EDC_f,
+    gGfxPhase_44EDC_h, gSysLib_44EDC_i;
 extern int D_44EDC_g[];
 void gfx_end(char *arg0) {
     s32 k;
@@ -12161,7 +12161,7 @@ void gfx_end(char *arg0) {
     char *w;
     char *e;
 
-    *(char **)&D_44EDC_b = (char *)&D_00000000 + 0x1FEC8;
+    *(char **)&gGfxPhase_44EDC_b = (char *)&D_00000000 + 0x1FEC8;
     gl_func_00000000(((s32 *) arg0)[*(s32 *)(&gGfxLib_44EDC_a + 0x204) + 0xA0]);
     n = FW(arg0, 0x258);
     k = 0;
@@ -12202,13 +12202,13 @@ void gfx_end(char *arg0) {
     gl_func_00000000((char *)&D_00000000 + 0x1FEF4);
     gl_func_00000000((char *)&D_00000000 + 0x1FF00);
     *(float *)&D_44EDC_e = gl_func_00000000_fret((char *)&D_00000000 + 0x1FF08);
-    *(char **)&D_44EDC_f = (char *)&D_00000000 + 0x1FF10;
+    *(char **)&gGfxPhase_44EDC_f = (char *)&D_00000000 + 0x1FF10;
     while (FW(FW(arg0, 0x218), 0x24) == D_44EDC_g[0]) {
         gl_func_00000000();
     }
     gl_func_00000000(arg0);
     gl_func_00000000((char *)&D_00000000 + 0x1FF18);
-    *(char **)&D_44EDC_h = (char *)&D_00000000 + 0x1FF1C;
+    *(char **)&gGfxPhase_44EDC_h = (char *)&D_00000000 + 0x1FF1C;
     gl_func_00000000((char *)&D_00000000 + 0x1FF28);
     obj = *(char **)(&gSysLib_44EDC_i + 0x1C);
     gl_func_00000000(obj, 0x68, 1);
@@ -16760,26 +16760,26 @@ void RcpMgr_insert_0004DCD4(int *a0) {
     }
 }
 
-/* GfxLib_func_0004DD0C: EXACT 2026-10-15. The .s began with 2 all-zero pad words
+/* prof_timerStart: EXACT 2026-10-15. The .s began with 2 all-zero pad words
  * (ROM 0x4DD0C); they are now an all-zero SUFFIX_BYTES_FORCE on RcpMgr_insert_0004DCD4. */
-void GfxLib_func_0004DD0C(int a0) {}
+void prof_timerStart(int a0) {}
 
-void GfxLib_func_0004DD1C(int a0) {}
+void prof_timerStop(int a0) {}
 
-void GfxLib_func_0004DD24(int a0) {}
+void prof_beginSection(int a0) {}
 
-float GfxLib_func_0004DD2C(int a0) {
+float prof_timerRead_0004DD2C(int a0) {
     return 1.0f;
 }
 
 // Returns 1.0f (built via lui 0x3F80 + mtc1); first arg unused (homed).
-float GfxLib_func_0004DD3C(int a0) {
+float prof_timerRead_0004DD3C(int a0) {
     return 1.0f;
 }
 
-void GfxLib_func_0004DD4C(int a0) {}
+void prof_timerReset_0004DD4C(int a0) {}
 
-void GfxLib_func_0004DD54(int a0) {}
+void prof_endSection(int a0) {}
 
 void GfxLib_func_0004DD5C(void) {}
 

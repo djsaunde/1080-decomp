@@ -492,7 +492,7 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # Mem_listInsert_0005AFB0: its .s began with a 1-word 0x00000000 pad (ROM 0x5AFB0); the
 # real body starts at 0x5AFB4 -> all-zero pad on the predecessor gfx_initDLChild_0005AF64.
 # expected/ metadata: 5AF64 size 0x4c->0x50, 5AFB0 value +4, size 0x24->0x20 (2026-10-15).
-# GfxLib_func_0004DD0C: .s began with 2 all-zero pad words (ROM 0x4DD0C-0x4DD13); the real
+# prof_timerStart: .s began with 2 all-zero pad words (ROM 0x4DD0C-0x4DD13); the real
 # `void f(int a0) {}` body starts at 0x4DD14 -> pad on the predecessor RcpMgr_insert_0004DCD4.
 # expected/ metadata: 4DCD4 size 0x38->0x40, 4DD0C value +8, size 0x10->0x8 (2026-10-15).
 # CMod_callbackInvoke_000551E0 (unwrapped 2026-10-16 agent-c): its trailing alignment nop is an all-zero
