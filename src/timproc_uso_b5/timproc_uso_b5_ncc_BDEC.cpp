@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for CharacterItem_drawArrows_0000BDEC (0x258 / 150 words): the two-arrow
  * UI draw (centre icon at &D+0x6E8, left arrow x-30 at &D+0x700, right arrow x+30 at &D+0x718,
  * colour {c, c, c, a} with c = 192/255 or 64/255 by the 0x20000 dim flag, a = 255/255, the
@@ -21,7 +22,7 @@ inline int full() { return 255; } /* the alpha numerator: an int that uopt folds
 extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int arg2) {
     float col[5]; int s2; float c; float denom = 255.0f; float a;
     s2 = *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4);
-    gl_func_00000000(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,
+    CALL(SelItem_drawSpriteWhite_00003FF8)(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,
                      (int)(denom * *(float *)(arg1 + 0x4A0)));
     if (*(int *)(arg0 + 0x2B4) & 0x20000) {
         c = 192.0f / denom;
@@ -31,7 +32,7 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[2] = c;
         col[3] = a;
         if (arg2 & 8) {
-            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
+            CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
                              col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
         }
     } else {
@@ -41,7 +42,7 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[1] = c;
         col[2] = c;
         col[3] = a;
-        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
+        CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) - 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
                          col, (char *)&D_00000000 + 0x700, (int)(denom * *(float *)(arg1 + 0x4A0)));
     }
     if (!(*(int *)(arg0 + 0x2B4) & 0x20000)) {
@@ -51,7 +52,7 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[1] = c;
         col[2] = c;
         if (arg2 & 8) {
-            gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
+            CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
                              col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
         }
     } else {
@@ -60,7 +61,7 @@ extern "C" void CharacterItem_drawArrows_0000BDEC(char *arg0, char *arg1, int ar
         col[0] = c;
         col[1] = c;
         col[2] = c;
-        gl_func_00000000(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
+        CALL(SelItem_drawSpriteColor_00004068)(arg0, *(int *)(arg1 + 0x8C) + 0x1E, s2 + *(int *)(arg1 + 0xA4) + 0x14,
                          col, (char *)&D_00000000 + 0x718, (int)(denom * *(float *)(arg1 + 0x4A0)));
     }
 }

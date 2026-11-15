@@ -17,6 +17,7 @@
  * (the target keeps the dead first store); `if (mode == 0) k = 5; else
  * k = 2;` gives the b-around-b tail. */
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int gl_ref_000381B0();
@@ -46,28 +47,28 @@ int AudioLoad_SyncLoad(int a0, int a1, int *a2) {
         src = *(int *)(e + 0x10);
         switch (mode) {
         case 0:
-            r = gl_func_00000000(a0, a1, size);
+            r = CALL(AudioHeap_AllocPermanent)(a0, a1, size);
             if (r == 0) return r;
             break;
         case 1:
-            r = gl_func_00000000(a0, size, 1, a1);
+            r = CALL(AudioHeap_AllocCached)(a0, size, 1, a1);
             if (r == 0) return r;
             break;
         case 2:
-            r = gl_func_00000000(a0, size, 0, a1);
+            r = CALL(AudioHeap_AllocCached)(a0, size, 0, a1);
             if (r == 0) return r;
             break;
         case 3:
         case 4:
-            r = gl_func_00000000(a0, size, 2, a1);
+            r = CALL(AudioHeap_AllocCached)(a0, size, 2, a1);
             if (r == 0) return r;
             break;
         }
         *a2 = 1;
         if (kind == 1) {
-            gl_func_00000000(src, r, size, *(s16 *)(tbl + 2));
+            CALL(AudioLoad_SyncDmaUnkMedium)(src, r, size, *(s16 *)(tbl + 2));
         } else {
-            gl_func_00000000(src, r, size, kind);
+            CALL(AudioLoad_SyncDma)(src, r, size, kind);
         }
         if (mode == 0) {
             k = 5;
@@ -77,13 +78,13 @@ int AudioLoad_SyncLoad(int a0, int a1, int *a2) {
     }
     switch (a0) {
     case 0:
-        gl_func_00000000(a1, k);
+        CALL(AudioLoad_SetSeqLoadStatus)(a1, k);
         break;
     case 1:
-        gl_func_00000000(a1, k);
+        CALL(AudioLoad_SetFontLoadStatus)(a1, k);
         break;
     case 2:
-        gl_func_00000000(a1, k);
+        CALL(AudioLoad_SetSampleFontLoadStatus)(a1, k);
         break;
     }
     return r;

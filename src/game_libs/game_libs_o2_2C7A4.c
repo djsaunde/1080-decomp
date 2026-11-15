@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "audio.h"
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioSeq_SequencePlayerProcessSequence (0x7CC / 499 words) = OoT's
  * AudioSeq_SequencePlayerProcessSequence (seqplayer.c) in its older form: the
@@ -54,15 +55,15 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
         return;
     }
 
-    if (!gl_func_00000000(seqPlayer->seqId) || !gl_func_00000000(seqPlayer->defaultFont)) {
-        gl_func_00000000(seqPlayer->seqId);
-        gl_func_00000000(seqPlayer->defaultFont);
-        gl_func_00000000(seqPlayer);
+    if (!CALL(AudioLoad_IsSeqLoadComplete)(seqPlayer->seqId) || !CALL(AudioLoad_IsFontLoadComplete)(seqPlayer->defaultFont)) {
+        CALL(AudioLoad_IsSeqLoadComplete)(seqPlayer->seqId);
+        CALL(AudioLoad_IsSeqLoadComplete)(seqPlayer->defaultFont);
+        CALL(AudioSeq_SequencePlayerDisable)(seqPlayer);
         return;
     }
 
-    gl_func_00000000(seqPlayer->seqId, 2);
-    gl_func_00000000(seqPlayer->defaultFont, 2);
+    CALL(AudioLoad_SetSeqLoadStatus)(seqPlayer->seqId, 2);
+    CALL(AudioLoad_SetFontLoadStatus)(seqPlayer->defaultFont, 2);
 
     if (seqPlayer->muted && (seqPlayer->muteBehavior & 0x80)) {
         return;
@@ -97,7 +98,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
 
                 if (delay != 0) {
                     if (delay == -1) {
-                        gl_func_00000000(seqPlayer);
+                        CALL(AudioSeq_SequencePlayerDisable)(seqPlayer);
                     } else {
                         seqPlayer->delay = delay;
                     }
@@ -109,9 +110,9 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
             if (cmd >= 0xC0) {
                 switch (cmd) {
                     case 0xF1:
-                        gl_func_00000000(&seqPlayer->notePool);
+                        CALL(Audio_NotePoolClear)(&seqPlayer->notePool);
                         cmd = AudioSeq_ScriptReadU8(seqScript);
-                        gl_func_00000000(&seqPlayer->notePool, cmd);
+                        CALL(Audio_NotePoolFill)(&seqPlayer->notePool, cmd);
                         dummy = -1;
                         if (dummy < 0) {
                             dummy = 0;
@@ -123,7 +124,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
                         break;
 
                     case 0xF0:
-                        gl_func_00000000(&seqPlayer->notePool);
+                        CALL(Audio_NotePoolClear)(&seqPlayer->notePool);
                         break;
 
                     case 0xDF:
@@ -311,7 +312,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
                     break;
 
                 case 0x40:
-                    gl_func_00000000(seqPlayer->channels[cmdLowBits]);
+                    CALL(AudioSeq_SequenceChannelDisable)(seqPlayer->channels[cmdLowBits]);
                     break;
 
                 case 0x90:
@@ -328,7 +329,7 @@ void AudioSeq_SequencePlayerProcessSequence(gl_2C7A4_SeqPlayer *seqPlayer) {
                     cmd = AudioSeq_ScriptReadU8(seqScript);
                     temp = AudioSeq_ScriptReadS16(seqScript);
                     data2 = &seqPlayer->seqData[temp];
-                    gl_func_00000000(cmd, data2, &seqPlayer->seqScriptIO[cmdLowBits]);
+                    CALL(AudioLoad_SlowLoadSeq)(cmd, data2, &seqPlayer->seqScriptIO[cmdLowBits]);
                     break;
             }
         }

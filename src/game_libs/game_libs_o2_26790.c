@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* IDO 7.1 -O2 donor for AudioThread_ProcessGlobalCmd (0x314 / 197 words) = OoT's
  * AudioThread_ProcessGlobalCmd (thread.c) in its older form (the 1080 command set:
@@ -54,23 +55,23 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
 
     switch (cmd->op) {
         case 0x82:
-            gl_func_00000000(cmd->arg1, 3);
+            CALL(AudioLoad_SyncLoadSeqParts)(cmd->arg1, 3);
             break;
 
         case 0x83:
         case 0x89:
-            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2);
+            CALL(AudioLoad_SyncInitSeqPlayer)(cmd->arg0, cmd->arg1, cmd->arg2);
             func_3b164(cmd->arg0, cmd->asInt);
             break;
 
         case 0x86:
-            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->asInt);
+            CALL(AudioLoad_SyncInitSeqPlayerSkipTicks)(cmd->arg0, cmd->arg1, cmd->asInt);
             break;
 
         case 0x84:
             if (gAudioCtx.seqPlayers[cmd->arg0].enabled) {
                 if (cmd->asInt == 0) {
-                    gl_func_00000000(&gAudioCtx.seqPlayers[cmd->arg0]);
+                    CALL(AudioSeq_SequencePlayerDisable)(&gAudioCtx.seqPlayers[cmd->arg0]);
                 } else {
                     func_3b110(cmd->arg0, cmd->asInt);
                 }
@@ -112,19 +113,19 @@ void AudioThread_ProcessGlobalCmd(gl_26790_AudioCmd *cmd) {
             break;
 
         case 0xF4:
-            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2);
+            CALL(AudioLoad_SyncLoadInstrument)(cmd->arg0, cmd->arg1, cmd->arg2);
             break;
 
         case 0xF5:
-            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
+            CALL(AudioLoad_AsyncLoadSampleBank)(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
             break;
 
         case 0xF6:
-            gl_func_00000000(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
+            CALL(AudioLoad_AsyncLoadFont)(cmd->arg0, cmd->arg1, cmd->arg2, &gAudioCtx.externalLoadQueue);
             break;
 
         case 0xF7:
-            gl_func_00000000(cmd->arg1);
+            CALL(AudioLoad_DiscardSeqFonts)(cmd->arg1);
             break;
 
         case 0x90:
