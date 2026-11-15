@@ -74,7 +74,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
         do {
             switch (op) {
             case 35:
-                q = cur; cur += 1; BASEPOLY(arg0)->unkA0 = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->collGrid = (struct CollGrid *)*q;
                 break;
             case 6:
                 q = cur; cur += 1; v = *q;
@@ -121,7 +121,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
                 break;
             case 26:
                 q = cur; cur += 1; BASEPOLY(arg0)->nTris = *q;
-                q = cur; cur += 1; BASEPOLY(arg0)->unk4C = *q;
+                q = cur; cur += 1; BASEPOLY(arg0)->triList = (s16 *)*q;
                 break;
             case 0:
                 lflag = 1;

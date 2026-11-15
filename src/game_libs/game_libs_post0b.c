@@ -5288,28 +5288,28 @@ int *CollShape_ctorPoly(int *a0, int *a1) {
     if (a0 != 0 || (a0 = (int*)gl_func_00000000(0x90), a0 != 0)) {
         gl_func_00000000(a0, &sStr_polyshape_CollShape_1EE5C);
         gl_func_00000000(&sStr_CollShape_1EE70, 0);
-        *(int*)((char*)a0 + 0x84) = (int)a1;
-        *(int*)((char*)a0 + 0x2C) = gl_func_00000000(*(int*)((char*)a1 + 0x44) * 0xC);
+        COLLSHAPE(a0)->shape = BASEPOLY(a1);
+        COLLSHAPE(a0)->tris = (CollTri *)gl_func_00000000(BASEPOLY(a1)->nTris * 0xC);
         i = 0;
         off = 0;
-        if (*(int*)((char*)a1 + 0x44) != 0) {
-            tbl = *(int*)((char*)a1 + 0x4C);
+        if (BASEPOLY(a1)->nTris != 0) {
+            tbl = (int)BASEPOLY(a1)->triList;
             while (1) {
                 if (tbl != 0) {
-                    ent = *(short*)(tbl + i * 2) * 8 + *(int*)((char*)a1 + 0x68);
+                    ent = ((s16 *)tbl)[i] * 8 + (int)BASEPOLY(a1)->tris;
                 } else {
-                    ent = *(int*)((char*)a1 + 0x68) + i * 8;
+                    ent = (int)BASEPOLY(a1)->tris + i * 8;
                 }
-                v = (short*)(*(int*)((char*)a1 + 0x60) + (unsigned int)*(unsigned short*)(ent + 2) * 6);
+                v = (short*)((int)BASEPOLY(a1)->verts + (unsigned int)POLYTRI(ent)->v[0] * 6);
                 fv[0] = (float)(int)v[0];
                 fv[1] = (float)(int)v[1];
                 fv[2] = (float)(int)v[2];
-                gl_func_00000000(*(int*)((char*)a0 + 0x2C) + off, fv,
-                                 *(int*)(*(int*)((char*)a0 + 0x84) + 0x54) + off, i);
+                gl_func_00000000((int)COLLSHAPE(a0)->tris + off, fv,
+                                 (int)COLLSHAPE(a0)->shape->faceNormals + off, i);
                 i = i + 1;
                 off = off + 0xC;
-                if (*(unsigned int*)((char*)a1 + 0x44) <= i) break;
-                tbl = *(int*)((char*)a1 + 0x4C);
+                if (BASEPOLY(a1)->nTris <= i) break;
+                tbl = (int)BASEPOLY(a1)->triList;
             }
         }
         gl_func_00000000();
@@ -5631,8 +5631,8 @@ s32 CollShape_raycast(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 *
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
         col = self->shape;
-        if (POLY_TRILIST(col) != 0) {
-            f = &col->tris[POLY_TRILIST(col)[i]];
+        if (col->triList != 0) {
+            f = &col->tris[col->triList[i]];
         } else {
             f = &col->tris[i];
         }
@@ -5804,16 +5804,16 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
     if (col == 0) {
         return 0;
     }
-    if (POLY_COLLGRID(col) == 0) {
+    if (col->collGrid == 0) {
         gl_func_00000000(GL_DATA_STR(0x1EE9C, "no pGrid data"));
     }
     p.x *= gGfxLib_3BE1C_128[0];
     p.y *= gGfxLib_3BE1C_128[1];
     p.z *= gGfxLib_3BE1C_128[2];
-    c[1] = (p.x - (f32)POLY_COLLGRID(self->shape)->x0) / POLY_COLLGRID(self->shape)->cellW;
-    c[0] = (p.z - (f32)POLY_COLLGRID(self->shape)->z0) / POLY_COLLGRID(self->shape)->cellH;
-    if (c[1] >= 0 && c[1] < POLY_COLLGRID(self->shape)->w && c[0] >= 0 && c[0] < POLY_COLLGRID(self->shape)->h) {
-        cell = c[0] * POLY_COLLGRID(self->shape)->w + c[1];
+    c[1] = (p.x - (f32)self->shape->collGrid->x0) / self->shape->collGrid->cellW;
+    c[0] = (p.z - (f32)self->shape->collGrid->z0) / self->shape->collGrid->cellH;
+    if (c[1] >= 0 && c[1] < self->shape->collGrid->w && c[0] >= 0 && c[0] < self->shape->collGrid->h) {
+        cell = c[0] * self->shape->collGrid->w + c[1];
     } else {
         cell = -1;
     }
@@ -5821,8 +5821,8 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
         return 0;
     }
     list = 0;
-    if (POLY_COLLGRID(self->shape)->cells[cell] != -1) {
-        list = &POLY_COLLGRID(self->shape)->lists[POLY_COLLGRID(self->shape)->cells[cell]];
+    if (self->shape->collGrid->cells[cell] != -1) {
+        list = &self->shape->collGrid->lists[self->shape->collGrid->cells[cell]];
     }
     if (list == 0) {
         return 0;
@@ -5834,8 +5834,8 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
         }
         off = i * 12;
         col = self->shape;
-        if (POLY_TRILIST(col) != 0) {
-            f = &col->tris[POLY_TRILIST(col)[i]];
+        if (col->triList != 0) {
+            f = &col->tris[col->triList[i]];
         } else {
             f = &col->tris[i];
         }
@@ -19021,7 +19021,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->nTris = 0;
     arg0->nVerts = 0;
     arg0->unk48 = 0;
-    arg0->unk4C = 0;
+    arg0->triList = 0;
     arg0->unk50 = 0;
     arg0->faceNormals = 0;
     arg0->vtxNormals = 0;
@@ -19036,7 +19036,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->unk7C = 0;
     arg0->unk80 = 0;
     arg0->unk98 = -1;
-    arg0->unkA0 = 0;
+    arg0->collGrid = 0;
     arg0->unkA4 = -1;
     arg0->skinInvBone = 0;
     arg0->skinBoneMtx = 0;

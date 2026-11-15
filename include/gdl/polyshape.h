@@ -27,7 +27,8 @@ typedef struct BasePolyShape {
     /* 0x40 */ s32 nVerts;
     /* 0x44 */ u32 nTris;
     /* 0x48 */ s32 unk48;
-    /* 0x4C */ s32 unk4C;
+    /* 0x4C */ s16 *triList;     /* parse cmd 26 (with nTris): optional tri index list; when set,
+                                  * the CollShape ctorPoly / query paths use tris[triList[i]] */
     /* 0x50 */ s32 unk50;
     /* 0x54 */ f32 *faceNormals;   /* f32[3] per triangle */
     /* 0x58 */ f32 *vtxNormals;    /* f32[3] per vertex */
@@ -49,7 +50,8 @@ typedef struct BasePolyShape {
     /* 0x94 */ s32 unk94;
     /* 0x98 */ s32 unk98;          /* -1 after reset */
     /* 0x9C */ f32 unk9C;          /* 1.0f after reset */
-    /* 0xA0 */ s32 unkA0;
+    /* 0xA0 */ struct CollGrid *collGrid; /* parse cmd 35: the XZ cell grid (gdl/coll.h) that
+                                  * CollShape_query looks the point up in; 0 = linear scan */
     /* 0xA4 */ s32 unkA4;          /* -1 after reset */
     /* 0xA8 */ s32 skinInvBone;     /* f32 (*)[4]: SkinMgr_init stores the inverse main-bone
                                      * matrix (SkinMgr.invBone); 0 = not skinned. The display

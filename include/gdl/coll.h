@@ -115,9 +115,5 @@ typedef char CollShape_shape_check[(int)&((CollShape *)0)->shape == 0x84 ? 1 : -
 #define COLLCONTACT(p) ((CollContact *)(p))
 #define COLLOBJMGR(p) ((CollObjMgr *)(p))
 #define COLLSHAPE(p) ((CollShape *)(p))
-/* the collision fields of a BasePolyShape (polyshape.h) that are still unk words there:
- * +0x4C the optional s16 tri list (parse cmd 26) and +0xA0 the CollGrid (parse cmd 35) */
-#define POLY_TRILIST(ps) ((s16 *)(ps)->unk4C)
-#define POLY_COLLGRID(ps) ((CollGrid *)(ps)->unkA0)
 
 #endif /* GDL_COLL_H */
