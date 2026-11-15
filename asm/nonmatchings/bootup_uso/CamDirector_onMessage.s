@@ -1,6 +1,6 @@
-nonmatching func_000027C0, 0x28
+nonmatching CamDirector_onMessage, 0x28
 
-glabel func_000027C0
+glabel CamDirector_onMessage
     /* DD322C 000027C0 8CA20000 */  lw         $v0, 0x0($a1)
     /* DD3230 000027C4 240103ED */  addiu      $at, $zero, 0x3ED
     /* DD3234 000027C8 14410005 */  bne        $v0, $at, .L000027E0
@@ -12,4 +12,4 @@ glabel func_000027C0
   .L000027E0:
     /* DD324C 000027E0 03E00008 */  jr         $ra
     /* DD3250 000027E4 00000000 */   nop
-endlabel func_000027C0
+endlabel CamDirector_onMessage

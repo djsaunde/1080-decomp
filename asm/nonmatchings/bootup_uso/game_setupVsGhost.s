@@ -1,6 +1,6 @@
-nonmatching func_000039D8, 0x1A0
+nonmatching game_setupVsGhost, 0x1A0
 
-glabel func_000039D8
+glabel game_setupVsGhost
     /* DD4444 000039D8 27BDFFB0 */  addiu      $sp, $sp, -0x50
     /* DD4448 000039DC AFB20038 */  sw         $s2, 0x38($sp)
     /* DD444C 000039E0 00809025 */  or         $s2, $a0, $zero
@@ -107,4 +107,4 @@ glabel func_000039D8
     /* DD45D8 00003B6C 8FB00030 */  lw         $s0, 0x30($sp)
     /* DD45DC 00003B70 03E00008 */  jr         $ra
     /* DD45E0 00003B74 27BD0050 */   addiu     $sp, $sp, 0x50
-endlabel func_000039D8
+endlabel game_setupVsGhost

@@ -1,6 +1,6 @@
-nonmatching func_00002420, 0x98
+nonmatching CamDirector_ctor, 0x98
 
-glabel func_00002420
+glabel CamDirector_ctor
     /* DD2E8C 00002420 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD2E90 00002424 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD2E94 00002428 AFA5001C */  sw         $a1, 0x1C($sp)
@@ -41,4 +41,4 @@ glabel func_00002420
     /* DD2F18 000024AC 00801025 */  or         $v0, $a0, $zero
     /* DD2F1C 000024B0 03E00008 */  jr         $ra
     /* DD2F20 000024B4 00000000 */   nop
-endlabel func_00002420
+endlabel CamDirector_ctor

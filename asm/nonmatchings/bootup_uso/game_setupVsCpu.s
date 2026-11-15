@@ -1,6 +1,6 @@
-nonmatching func_00003D3C, 0x1C4
+nonmatching game_setupVsCpu, 0x1C4
 
-glabel func_00003D3C
+glabel game_setupVsCpu
     /* DD47A8 00003D3C 27BDFFA8 */  addiu      $sp, $sp, -0x58
     /* DD47AC 00003D40 AFB10034 */  sw         $s1, 0x34($sp)
     /* DD47B0 00003D44 00808825 */  or         $s1, $a0, $zero
@@ -116,4 +116,4 @@ glabel func_00003D3C
     /* DD4960 00003EF4 8FB00030 */  lw         $s0, 0x30($sp)
     /* DD4964 00003EF8 03E00008 */  jr         $ra
     /* DD4968 00003EFC 27BD0058 */   addiu     $sp, $sp, 0x58
-endlabel func_00003D3C
+endlabel game_setupVsCpu

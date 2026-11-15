@@ -1,6 +1,6 @@
-nonmatching func_00003734, 0x18C
+nonmatching game_setupDemoSolo, 0x18C
 
-glabel func_00003734
+glabel game_setupDemoSolo
     /* DD41A0 00003734 27BDFFA0 */  addiu      $sp, $sp, -0x60
     /* DD41A4 00003738 AFB10030 */  sw         $s1, 0x30($sp)
     /* DD41A8 0000373C 00808825 */  or         $s1, $a0, $zero
@@ -103,4 +103,4 @@ glabel func_00003734
     /* DD4320 000038B4 8FB0002C */  lw         $s0, 0x2C($sp)
     /* DD4324 000038B8 03E00008 */  jr         $ra
     /* DD4328 000038BC 27BD0060 */   addiu     $sp, $sp, 0x60
-endlabel func_00003734
+endlabel game_setupDemoSolo

@@ -1,6 +1,6 @@
-nonmatching func_00003B78, 0x1C4
+nonmatching game_setupReplay, 0x1C4
 
-glabel func_00003B78
+glabel game_setupReplay
     /* DD45E4 00003B78 27BDFFA0 */  addiu      $sp, $sp, -0x60
     /* DD45E8 00003B7C AFB10030 */  sw         $s1, 0x30($sp)
     /* DD45EC 00003B80 00808825 */  or         $s1, $a0, $zero
@@ -117,4 +117,4 @@ glabel func_00003B78
     /* DD479C 00003D30 8FB0002C */  lw         $s0, 0x2C($sp)
     /* DD47A0 00003D34 03E00008 */  jr         $ra
     /* DD47A4 00003D38 27BD0060 */   addiu     $sp, $sp, 0x60
-endlabel func_00003B78
+endlabel game_setupReplay

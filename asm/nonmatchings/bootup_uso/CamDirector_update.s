@@ -1,6 +1,6 @@
-nonmatching func_000024B8, 0x2BC
+nonmatching CamDirector_update, 0x2BC
 
-glabel func_000024B8
+glabel CamDirector_update
     /* DD2F24 000024B8 3C0E0000 */  lui        $t6, %hi(func_00000044 + 0x20)
     /* DD2F28 000024BC 8DCE0064 */  lw         $t6, %lo(func_00000044 + 0x20)($t6)
     /* DD2F2C 000024C0 27BDFFB0 */  addiu      $sp, $sp, -0x50
@@ -188,4 +188,4 @@ glabel func_000024B8
     /* DD31D4 00002768 8FB10018 */  lw         $s1, 0x18($sp)
     /* DD31D8 0000276C 03E00008 */  jr         $ra
     /* DD31DC 00002770 27BD0050 */   addiu     $sp, $sp, 0x50
-endlabel func_000024B8
+endlabel CamDirector_update

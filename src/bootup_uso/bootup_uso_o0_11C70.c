@@ -27,7 +27,7 @@ void func_00011C70(s32 *a0, s32 a1) {
  * (count) + 0x100 (4-byte entries). Verified byte-exact at -O0 with the
  * same `register s32 idx; register s32 *p = a0;` decl-order recipe
  * (2026-05-07). */
-void func_00011CA4(s32 *a0, s32 a1) {
+void replay_addInput(s32 *a0, s32 a1) {
     register s32 idx;
     register s32 *p = a0;
     idx = *(s32*)((char*)p + 0x124);

@@ -245,7 +245,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
  *   - func_00000000(&D_00006584); func_00000000(arg0[0],0);
  *     func_00000000();
  * The &func_00000044+off ldc1 doubles are f64 consts embedded in
- * func_00000044's literal pool (same idiom as func_000024B8 line ~1794,
+ * func_00000044's literal pool (same idiom as CamDirector_update line ~1794,
  * which emits the matching R_MIPS_HI16/LO16 func_00000044 relocs).
  * NM body now reproduces all relocs + the full call/switch/clamp shape
  * (100 residual diff words, down from 125). Residual classes — both
@@ -1320,7 +1320,7 @@ void func_000023C8(Quad4 *dst) {
  * materialises as `lui 0; addiu 0` post-link, byte-identical to the target's
  * reloc-stripped `lui (0x0>>16); addiu 0x0`). */
 extern char D_0000731C;
-int *func_00002420(int *a0, int a1, int a2, int a3, int s4, int s5) {
+int *CamDirector_ctor(int *a0, int a1, int a2, int a3, int s4, int s5) {
     if (a0 == 0) {
         a0 = (int*)func_00000000(0x50);
         if (a0 == 0) goto end;
@@ -1340,7 +1340,7 @@ end:
     return a0;
 }
 
-// func_000024B8(obj): per-frame state/animation tick for a bootup_uso scene object.
+// CamDirector_update(obj): per-frame state/animation tick for a bootup_uso scene object.
 // Sibling of the obj->0x28 vtable-dispatch family (the 0x6C/0x68 jalr idiom appears 3x,
 // same shape as Mountain_func_0000485C draw-delegate path).
 //
@@ -1429,7 +1429,7 @@ extern void func_00000000_24b8v();
  * latch to its own home at 76 and k2 at 44. Decl order k / v0 / v1 / p / pad / tb / r / s0 / k2 puts every
  * home on the target (76 / 64 / 56 / 44; the run-272 pad2 is no longer needed). The folded arg0[0x4C]
  * uses in the toggle test and `k = 1` are one zero-code CSE candidate across the head. */
-void func_000024B8(char *arg0) {
+void CamDirector_update(char *arg0) {
     int k;
     char *v0;
     char *v1;
@@ -1515,7 +1515,7 @@ void func_000024B8(char *arg0) {
     }
 }
 
-void func_00002774(char *a0, int a1) {
+void CamDirector_setActiveCam(char *a0, int a1) {
     if (*(int*)(a0 + 0x18) & 8) {
         char *p;
         *(int*)(a0 + 0x3C) = a1;
@@ -1527,7 +1527,7 @@ void func_00002774(char *a0, int a1) {
     }
 }
 
-void func_000027C0(char *a0, int *a1) {
+void CamDirector_onMessage(char *a0, int *a1) {
     int msg_type = *a1;
     int *flags = (int*)(a0 + 0x18);
     if (msg_type == 0x3ED) {
@@ -2249,12 +2249,12 @@ void *game_createPlayers(int *arg0, void *arg1, int arg2, int arg3, int arg4, ch
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
 #endif
 
-/* func_00003734 - verified structural decode (0x18C, 99 insns,
- * multi-stage builder chain). LARGER SIBLING of func_000038C0
+/* game_setupDemoSolo - verified structural decode (0x18C, 99 insns,
+ * multi-stage builder chain). LARGER SIBLING of game_setupSolo
  * (same alloc-0x80 + tagged-arg func_00000000 builder family,
  * idx*0x1C descriptor table, link via ->0x14/->0x4, r->0x8DC =
  * result).
- * Struct-typing reference (same family as func_000038C0): s1->0x80
+ * Struct-typing reference (same family as game_setupSolo): s1->0x80
  * (128) handle passed through; s1->0x98 (152) -> cfg with f32
  * 0xC4 (196)/0xCC (204) builder params; s1->0x84 (132) = parent
  * for the r5 list-link (r5->0x14 (20) back-link, r5->0x4 (4) =1
@@ -2293,7 +2293,7 @@ extern char *func_3734_r1(void *, int, int, int, void *, int, float, float, int,
 extern int D_3734_v;  /* VALUE load at func_00000080+0x14 (target lui/lw, not lui/addiu) */
 /* void-returning alias for the reg call: kills the dead $v0 def so cfg colors $v0 (38C0 recipe) */
 extern void func_00000000_3734_v(void *, void *);
-void func_00003734(char *s1, int a1) {
+void game_setupDemoSolo(char *s1, int a1) {
     char *s0;
     char *r1, *r2, *r3, *r4;
     volatile int pad1, pad2, pad3, pad4;  /* 4 ghost home words 0x3C-0x48 (phantom-slot lever) */
@@ -2323,7 +2323,7 @@ void func_00003734(char *s1, int a1) {
     *(char**)(r1 + 0x8DC) = r4;
 }
 
-/* func_000038C0 - verified structural decode (0x118, 70 insns,
+/* game_setupSolo - verified structural decode (0x118, 70 insns,
  * composite constructor + 3-stage builder chain).
  * Struct-typing reference: o = alloc'd 0x80-byte object. s1->0x80
  * (128) = a handle passed through; s1->0x98 (152) = ptr to a config
@@ -2338,7 +2338,7 @@ void func_00003734(char *s1, int a1) {
  *
  * 2026-06-02 (70.5->80.1%): the build1 call's args 7,8 are single floats
  * (cfg->0xC4/0xCC, target swc1 0x18) — typed-float proto func_38c0_r avoids
- * the K&R double-promote. Sibling of func_00003734 (double-promote-scan vein).
+ * the K&R double-promote. Sibling of game_setupDemoSolo (double-promote-scan vein).
  * 2026-07-15 (80.1->91.3, agent-g): TWO DECODE ERRORS + one lever:
  *  (1) alloc-fail does NOT return — target beq v0,zero,+4 skips ONLY the
  *      func(o,1) init call and continues the whole builder chain;
@@ -2364,7 +2364,7 @@ extern char *func_38c0_r(void *, int, int, int, void *, int, float, float, int, 
 extern int D_38c0_z[];   /* D_z global — array-typed so the base is held in ONE reg */
 /* void-returning alias for reg_b: kills the dead $v0 def so Dz/cfg color v1/v0 */
 extern void func_00000000_38C0_v(void *, void *, int);
-void func_000038C0(char *s1, int a1) {
+void game_setupSolo(char *s1, int a1) {
     char *o = (char*)func_00000000(0x80);
     char *r;
     char *r2;
@@ -2386,13 +2386,13 @@ void func_000038C0(char *s1, int a1) {
     *(char**)(r + 0x8DC) = res;
 }
 
-/* func_000039D8 - verified structural decode (0x1A0, 104 insns,
- * multi-stage builder chain). MEMBER of the func_000038C0 /
- * func_00003734 builder-chain family (same alloc-0x80 + tagged-arg
+/* game_setupVsGhost - verified structural decode (0x1A0, 104 insns,
+ * multi-stage builder chain). MEMBER of the game_setupSolo /
+ * game_setupDemoSolo builder-chain family (same alloc-0x80 + tagged-arg
  * func_00000000 builder pattern; flags = global|1|0x10000|0x40000,
  * tag 0x1B; s2 source, cfg = s2->0x98).
- * Struct-typing reference (same family as func_000038C0 /
- * func_00003734): s2->0x80 (128) pass-through handle; s2->0x98
+ * Struct-typing reference (same family as game_setupSolo /
+ * game_setupDemoSolo): s2->0x80 (128) pass-through handle; s2->0x98
  * (152) -> cfg with f32 0xC4 (196) / 0xCC (204) builder params;
  * D_g (a global, lui/addiu 0) ->0x50 (80) base flags OR'd with
  * 0x1|0x10000|0x40000 feature bits, ->0x4C (76) / ->0x54 (84)
@@ -2413,7 +2413,7 @@ void func_000038C0(char *s1, int a1) {
 /* typed-float proto (0x0-alias): 10-arg builders, args 7,8 single floats. */
 extern char *func_39d8_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char D_39d8_g[];  /* D_g placeholder alias — array-typed so base lives in $s0 */
-void func_000039D8(char *s2, int a1) {
+void game_setupVsGhost(char *s2, int a1) {
     char *o1;
     char *o2;
     char *r1, *r2, *b3, *f1;
@@ -2447,12 +2447,12 @@ void func_000039D8(char *s2, int a1) {
     *(char**)(r2 + 0x8DC) = f1;
 }
 
-/* func_00003B78 - verified structural decode (0x1C4, 113 insns,
- * multi-stage builder chain). MEMBER of the func_000038C0 /
- * func_00003734 / func_000039D8 builder-chain family (same
+/* game_setupReplay - verified structural decode (0x1C4, 113 insns,
+ * multi-stage builder chain). MEMBER of the game_setupSolo /
+ * game_setupDemoSolo / game_setupVsGhost builder-chain family (same
  * alloc-0x80 + tagged-arg func_00000000 builder pattern).
- * Struct-typing reference (same family as func_000038C0 /
- * func_00003734 / func_000039D8): s1->0x80 (128) pass-through
+ * Struct-typing reference (same family as game_setupSolo /
+ * game_setupDemoSolo / game_setupVsGhost): s1->0x80 (128) pass-through
  * handle; s1->0x98 (152) -> cfg with f32 0xC4 (196) / 0xCC (204)
  * builder params. CFG = a global byte-config block (lui/addiu 0):
  * CFG->0x181 (385) / 0x182 (386) / 0x183 (387) u8 fields supply
@@ -2500,7 +2500,7 @@ void func_000039D8(char *s2, int a1) {
 extern char *func_3b78_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char CFG_3b78[];
 extern void func_00000000_3B78_v(void *, void *, int);
-void func_00003B78(char *s1, int a1) {
+void game_setupReplay(char *s1, int a1) {
     char *o;
     char *r1, *b2, *b3, *f1;
     volatile int pad1, pad2, pad3, pad4;  /* ghost home words (phantom-slot lever) */
@@ -2535,12 +2535,12 @@ void func_00003B78(char *s1, int a1) {
     *(char**)(r1 + 0x8DC) = f1;
 }
 
-/* func_00003D3C - verified structural decode (0x1C4, 113 insns,
- * multi-stage builder chain). MEMBER of the func_000038C0 /
- * func_00003734 / func_000039D8 / func_00003B78 builder-chain
+/* game_setupVsCpu - verified structural decode (0x1C4, 113 insns,
+ * multi-stage builder chain). MEMBER of the game_setupSolo /
+ * game_setupDemoSolo / game_setupVsGhost / game_setupReplay builder-chain
  * family (same alloc-0x80 x2 + register-&D + tagged-arg
  * func_00000000 builder pattern; variant params).
- * Struct-typing reference (same family as func_000038C0 et al.):
+ * Struct-typing reference (same family as game_setupSolo et al.):
  * s1->0x80 (128) pass-through handle; s1->0x98 (152) -> cfg with
  * f32 0xC4 (196) / 0xCC (204) builder params; o1/o2 = 0x80-byte
  * builder objects cross-wired through the tagged func_00000000
@@ -2557,7 +2557,7 @@ void func_00003B78(char *s1, int a1) {
  * (seven declared locals, cfg unused but it holds the 0x58 frame). */
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 extern char bu_3d3c_d7294[];
-void func_00003D3C(char *s1, int a1) {
+void game_setupVsCpu(char *s1, int a1) {
     char *o2, *o3, *o1, *o4, *t, *r, *cfg;
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 1);
@@ -2584,12 +2584,12 @@ void func_00003D3C(char *s1, int a1) {
     *(char**)(o3 + 0x8DC) = o4;
 }
 
-/* func_00003F00 - verified structural decode (0x21C, 135 insns,
- * multi-stage builder chain). MEMBER of the func_000038C0 /
- * func_00003734 / func_000039D8 / func_00003B78 / func_00003D3C
+/* game_setupVs2P - verified structural decode (0x21C, 135 insns,
+ * multi-stage builder chain). MEMBER of the game_setupSolo /
+ * game_setupDemoSolo / game_setupVsGhost / game_setupReplay / game_setupVsCpu
  * builder-chain family (same alloc-0x80 x2 + register-&D +
  * tagged-arg func_00000000 builder pattern; variant params).
- * Struct-typing reference (same family as func_000038C0 et al.):
+ * Struct-typing reference (same family as game_setupSolo et al.):
  * s1->0x80 (128) pass-through handle; s1->0x98 (152) -> cfg with
  * f32 0xC4 (196) builder param, here biased by -500.0f
  * (0x43FA0000); D_g (a global) ->0x4C (76)/0x50 (80)/0x54 (84)
@@ -2598,7 +2598,7 @@ void func_00003D3C(char *s1, int a1) {
  * a1 indexes the 0x1C-stride descriptor table per the family.
  */
 /* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc (same
- * chain as func_00003D3C): alloc func_055750, ctor func_07BA00, list adds
+ * chain as game_setupVsCpu): alloc func_055750, ctor func_07BA00, list adds
  * func_011CA4 x2 + func_0129A0 on import_000200FC, spawn game_createPlayers x2,
  * link cam_create x2, attach game_create3DWindow x2 on &D_007294 + a1 * 0x1C
  * (zero alias), r->0xC = D_000074E4 / D_000074EC (baked). No early returns:
@@ -2608,7 +2608,7 @@ void func_00003D3C(char *s1, int a1) {
  * if (1) { } after the copies lowers t below r1 (s3 vs s2). */
 extern char D_000074E4[], D_000074EC[], bu_3f00_d7294[];
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
-void func_00003F00(char *s1, int a1) {
+void game_setupVs2P(char *s1, int a1) {
     char *o[2], *t, *r1, *r2, *x, *y, *b4, *f2, *row;
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 1);
@@ -2642,18 +2642,18 @@ void func_00003F00(char *s1, int a1) {
     *(char**)(f2 + 0x1B8) = y;
 }
 
-/* func_0000411C - verified structural decode (0x2B8, 174 insns,
+/* game_setupDemoRace - verified structural decode (0x2B8, 174 insns,
  * randomized multi-stage builder chain). MEMBER of the
- * func_000038C0 / func_00003734 / func_000043D4 builder-chain
+ * game_setupSolo / game_setupDemoSolo / game_setupDemoSplit builder-chain
  * family (alloc-0x80 x2 + register-&D + tagged-arg func_00000000
- * builder; rand-scaled params, same shape as func_000043D4).
- * Struct-typing reference (same family as func_000038C0 /
- * func_000043D4): o1/o2 = 0x80-byte builder objects (sp+0x68);
+ * builder; rand-scaled params, same shape as game_setupDemoSplit).
+ * Struct-typing reference (same family as game_setupSolo /
+ * game_setupDemoSplit): o1/o2 = 0x80-byte builder objects (sp+0x68);
  * rand01() = func_00000000() 0..1 f32; func_000003F8+0x14C /
  * +0x150 = f32 scale consts (one -> int table index via trunc,
  * one -> float param); func_00000080+0x10 = descriptor table
  * indexed by idx*4; tag 0x58005; flag 0x3. Per-call random
- * descriptor selection (same as func_000043D4).
+ * descriptor selection (same as game_setupDemoSplit).
  * Caps <80: ~10 reloc (incl. RNG) + FP mul.s/trunc.w.s + idx*4
  * table index + cross-symbol refs + FP stack-arg.
  *
@@ -2690,7 +2690,7 @@ void func_00003F00(char *s1, int a1) {
  *  2nd-use anchors have wrong reloc name/lo16 (semantically same address);
  *  downstream f10/f18 ring swap + mfc1 t8-vs-a2 idx-temp coloring couple to
  *  that. Struct-cast ((P*)func)->field does NOT fold either. */
-/* EXACT (agent-c run 115). The func_000043D4 shape (reloc identities,
+/* EXACT (agent-c run 115). The game_setupDemoSplit shape (reloc identities,
  * per-site pinned aliases for the RoData scales +0x544/+0x548 and the 0x90
  * descriptor table, zero alias for the second list add, spawn results in
  * r[2], block temps for the cross link) plus the tail: a third new-expression
@@ -2701,7 +2701,7 @@ extern int bu_411c_t90[];
 extern f32 bu_411c_k544, bu_411c_k548;
 extern f32 func_00000000_411c_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
-void func_0000411C(char *s1, int a1) {
+void game_setupDemoRace(char *s1, int a1) {
     char *t, *o1, *r[2];
     int idx1, idx2;
     char *b3, *b4, *f;
@@ -2735,12 +2735,12 @@ void func_0000411C(char *s1, int a1) {
     *(char**)(r[1] + 0x8DC) = f;
 }
 
-/* func_000043D4 - verified structural decode (0x258, 150 insns,
+/* game_setupDemoSplit - verified structural decode (0x258, 150 insns,
  * multi-stage builder chain w/ randomized params). MEMBER of the
- * func_000038C0 / func_00003734 / func_000039D8 / func_00003B78
+ * game_setupSolo / game_setupDemoSolo / game_setupVsGhost / game_setupReplay
  * builder-chain family (alloc-0x80 x2 + register-&D + tagged-arg
  * func_00000000 builder).
- * Struct-typing reference (same family as func_000038C0 et al.):
+ * Struct-typing reference (same family as game_setupSolo et al.):
  * o1/o2 = 0x80-byte builder objects (saved sp+0x58); rand01() =
  * func_00000000() returning a 0..1 f32; func_000003F8+0x154 /
  * +0x158 = f32 scale constants (one yields an int table index via
@@ -2757,8 +2757,8 @@ void func_0000411C(char *s1, int a1) {
  * 0x8004/0x8024, 0x15); r1<->r2 0x908 cross-link; b3/b4=builder(s0,2,s0->0x80,
  * rN,oN); bN->0x14C=55.0f; rowF=&D+a1*0x1C; f1/f2=builder(s0,rowF[+0x1C],bN);
  * rN->0x8DC=fN. All field stores byte-match; residual ~45% = regalloc. */
-/* EXACT (agent-c run 115). Same reloc-identified chain as func_00003D3C /
- * func_00003F00 (alloc, ctor, list add x2, RNG func_075EE4 x2, spawn
+/* EXACT (agent-c run 115). Same reloc-identified chain as game_setupVsCpu /
+ * game_setupVs2P (alloc, ctor, list add x2, RNG func_075EE4 x2, spawn
  * game_createPlayers x2, link cam_create x2, attach game_create3DWindow x2). The
  * RoData scales (pool +0x54C / +0x550) and the descriptor table (0x90) are
  * per-site data aliases pinned to their real offsets, and the second list
@@ -2770,7 +2770,7 @@ extern int bu_43d4_t90[];
 extern f32 bu_43d4_k54c, bu_43d4_k550;
 extern f32 func_00000000_43d4_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
-void func_000043D4(char *s0, int a1) {
+void game_setupDemoSplit(char *s0, int a1) {
     char *t, *o1, *r[2];
     int idx1, idx2;
     char *f1, *row, *b3, *b4;
@@ -9110,7 +9110,7 @@ void func_0000ED68(Quad4 *dst) {
     *dst = buf;
 }
 
-void func_0000EDC0(int a0, int a1) {}
+void game_setupEmpty(int a0, int a1) {}
 
 void func_0000EDCC(char *a0) {
     int scratch;

@@ -1,6 +1,6 @@
-nonmatching func_000043D4, 0x258
+nonmatching game_setupDemoSplit, 0x258
 
-glabel func_000043D4
+glabel game_setupDemoSplit
     /* DD4E40 000043D4 27BDFFA0 */  addiu      $sp, $sp, -0x60
     /* DD4E44 000043D8 AFB0002C */  sw         $s0, 0x2C($sp)
     /* DD4E48 000043DC 00808025 */  or         $s0, $a0, $zero
@@ -153,4 +153,4 @@ glabel func_000043D4
     /* DD508C 00004620 8FB0002C */  lw         $s0, 0x2C($sp)
     /* DD5090 00004624 03E00008 */  jr         $ra
     /* DD5094 00004628 27BD0060 */   addiu     $sp, $sp, 0x60
-endlabel func_000043D4
+endlabel game_setupDemoSplit

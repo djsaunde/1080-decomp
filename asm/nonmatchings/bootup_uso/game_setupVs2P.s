@@ -1,6 +1,6 @@
-nonmatching func_00003F00, 0x21C
+nonmatching game_setupVs2P, 0x21C
 
-glabel func_00003F00
+glabel game_setupVs2P
     /* DD496C 00003F00 27BDFF90 */  addiu      $sp, $sp, -0x70
     /* DD4970 00003F04 AFB10030 */  sw         $s1, 0x30($sp)
     /* DD4974 00003F08 00808825 */  or         $s1, $a0, $zero
@@ -138,4 +138,4 @@ glabel func_00003F00
     /* DD4B7C 00004110 8FB0002C */  lw         $s0, 0x2C($sp)
     /* DD4B80 00004114 03E00008 */  jr         $ra
     /* DD4B84 00004118 27BD0070 */   addiu     $sp, $sp, 0x70
-endlabel func_00003F00
+endlabel game_setupVs2P

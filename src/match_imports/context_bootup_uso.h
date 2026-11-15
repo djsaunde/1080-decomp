@@ -695,11 +695,11 @@ extern void func_00002358();
 void func_00002358(Vec3 *dst);
 void func_000023C8(Quad4 *dst);
 extern char D_0000731C;
-int *func_00002420(int *a0, int a1, int a2, int a3, int s4, int s5);
+int *CamDirector_ctor(int *a0, int a1, int a2, int a3, int s4, int s5);
 typedef char *(*GP_000024B8)();
-void func_000024B8(char *arg0);
-void func_00002774(char *a0, int a1);
-void func_000027C0(char *a0, int *a1);
+void CamDirector_update(char *arg0);
+void CamDirector_setActiveCam(char *a0, int a1);
+void CamDirector_onMessage(char *a0, int *a1);
 typedef struct BootupSceneSetup {
     u8 unk_00[0x3C];
     s32 field_3c;
@@ -811,14 +811,14 @@ Bootup3638Node *game_createPlayers(void *arg0, void *arg1, int arg2, int arg3,
 extern char *func_3734_r1(void *, int, int, int, void *, int, float, float, int, int);
 extern int D_3734_v;
 extern void func_00000000_3734_v(void *, void *);
-void func_00003734(char *s1, int a1);
+void game_setupDemoSolo(char *s1, int a1);
 extern char *func_38c0_r(void *, int, int, int, void *, int, float, float, int, int);
 extern int D_38c0_z[];
 extern void func_00000000_38C0_v(void *, void *, int);
-void func_000038C0(char *s1, int a1);
+void game_setupSolo(char *s1, int a1);
 extern char *func_39d8_r(char *, int, int, int, char *, int, float, float, int, int);
 extern unsigned char D_39d8_g[];
-void func_000039D8(char *s2, int a1);
+void game_setupVsGhost(char *s2, int a1);
 typedef struct BootupBuilderConfig {
     BootupObjectBase base_00;
     u8 unk_2c[0x98];
@@ -867,7 +867,7 @@ extern BootupObjectBase *bootup_3B78_finalize(BootupDescriptorList *, void *, Bo
 extern BootupObjectBase *bootup_3B78_composite(void *, void *, BootupPrimaryBuilder *,
     BootupObjectBase *, BootupBuilderChild *, BootupBuilderChild *);
 extern s32 bootup_3B78_attach();
-void func_00003B78(BootupDescriptorList *s1, int a1);
+void game_setupReplay(BootupDescriptorList *s1, int a1);
 typedef struct {
     unsigned char pad_00[0xC4];
     float field_C4;
@@ -907,7 +907,7 @@ extern char *bootup_3d3c_bind(char *, int, int, char *, char *);
 extern char *bootup_3d3c_describe(char *, void *, char *);
 extern unsigned char bootup_3d3c_config[];
 extern unsigned char bootup_3d3c_descriptors[];
-void func_00003D3C(char *s1, int a1);
+void game_setupVsCpu(char *s1, int a1);
 extern char *func_3f00_alloc(int);
 extern int func_3f00_init(char *, int);
 extern void func_3f00_register(void *, void *);
@@ -917,7 +917,7 @@ extern char *func_3f00_child(char *, int, int, char *, char *);
 extern char *func_3f00_finish(char *, char *, char *);
 extern int D_3f00_g[];
 extern char D_000074E4, D_000074EC;
-void func_00003F00(char *s1, int a1);
+void game_setupVs2P(char *s1, int a1);
 extern int bootup_411c_alloc();
 extern int bootup_411c_init();
 extern int bootup_411c_register();
@@ -934,7 +934,7 @@ extern struct {
 extern BootupBuilderGlobals bootup_411c_descriptors;
 extern char *func_411c_r(BootupDescriptorList *, int, int, int, char *, int, float, float, int, int);
 extern float func_411c_rf(void);
-void func_0000411C(BootupDescriptorList *s1, int a1);
+void game_setupDemoRace(BootupDescriptorList *s1, int a1);
 extern float func_43d4_rf(void);
 extern BootupPrimaryBuilder *func_43d4_r(BootupDescriptorList *, int, int, int, void *, BootupObjectBase *, float, float, int, int);
 extern void *bootup_43d4_alloc(s32);
@@ -946,7 +946,7 @@ extern struct {
     char padding[0x10];
     s32 entries[3];
 } func_43d4_descriptors;
-void func_000043D4(BootupDescriptorList *s0, int a1);
+void game_setupDemoSplit(BootupDescriptorList *s0, int a1);
 void func_0000462C(char *a0);
 void func_0000465C(char *a0);
 void func_0000468C(char *a0);
@@ -1736,7 +1736,7 @@ void func_0000ECBC(float *dst);
 extern void func_0000ECF8();
 void func_0000ECF8(Vec3 *dst);
 void func_0000ED68(Quad4 *dst);
-void func_0000EDC0(int a0, int a1);
+void game_setupEmpty(int a0, int a1);
 void func_0000EDCC(char *a0);
 void func_0000EDFC(char *a0);
 void func_0000EE2C(char *a0);

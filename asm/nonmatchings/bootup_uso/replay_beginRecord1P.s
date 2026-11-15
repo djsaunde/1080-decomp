@@ -1,6 +1,6 @@
-nonmatching func_00012AC4, 0xB8
+nonmatching replay_beginRecord1P, 0xB8
 
-glabel func_00012AC4
+glabel replay_beginRecord1P
     /* DE3530 00012AC4 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DE3534 00012AC8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DE3538 00012ACC AFA40018 */  sw         $a0, 0x18($sp)
@@ -50,4 +50,4 @@ glabel func_00012AC4
     /* DE35DC 00012B70 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DE35E0 00012B74 03E00008 */  jr         $ra
     /* DE35E4 00012B78 00000000 */   nop
-endlabel func_00012AC4
+endlabel replay_beginRecord1P

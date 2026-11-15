@@ -1,6 +1,6 @@
-nonmatching func_00002774, 0x4C
+nonmatching CamDirector_setActiveCam, 0x4C
 
-glabel func_00002774
+glabel CamDirector_setActiveCam
     /* DD31E0 00002774 8C8E0018 */  lw         $t6, 0x18($a0)
     /* DD31E4 00002778 0005C080 */  sll        $t8, $a1, 2
     /* DD31E8 0000277C 0098C821 */  addu       $t9, $a0, $t8
@@ -21,4 +21,4 @@ glabel func_00002774
   .L000027B8:
     /* DD3224 000027B8 03E00008 */  jr         $ra
     /* DD3228 000027BC 00000000 */   nop
-endlabel func_00002774
+endlabel CamDirector_setActiveCam

@@ -2730,8 +2730,8 @@ func_43d4_r = 0x00000000;
 func_411c_r = 0x00000000;
 func_411c_rf = 0x00000000;
 func_3b78_r = 0x00000000;
-CFG_3b78 = 0x00000000;  /* func_00003B78 byte-config block (USO lui/addiu 0) */
-func_00000000_3B78_v = 0x00000000;  /* void-typed reg call alias in func_00003B78 */
+CFG_3b78 = 0x00000000;  /* game_setupReplay byte-config block (USO lui/addiu 0) */
+func_00000000_3B78_v = 0x00000000;  /* void-typed reg call alias in game_setupReplay */
 gl_func_0003D414 = 0x0003D414;
 gl_func_0003C36C = 0x0003C36C;
 gl_func_0003ED2C = 0x0003ED2C;
@@ -3230,10 +3230,10 @@ gl_ref_0000CA34_1C54 = 0x0000CA34;
 gl_ref_00000C98_f = 0x00000C98;
 gl_data_00000000_11a4 = 0x00000000;  /* 11A4: distinct abs-0 alias busts &gl_data CSE between self->0x28 store and the 0x54 load */
 gl_data_00000000_15fc = 0x00000000;  /* 15FC: FW(0x28) abs-0 store (was mis-decoded as literal 0) */
-func_00000000_38C0_v = 0x00000000;  /* void-typed reg_b alias (kills dead $v0 def; Dz/cfg -> v1/v0) in func_000038C0 */
-D_39d8_g = 0x00000000;  /* D_g placeholder alias (array-typed base held in $s0) in func_000039D8 */
-func_00000000_3734_v = 0x00000000;  /* void-typed reg-call alias (kills dead $v0 def; cfg -> v0) in func_00003734 */
-D_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in func_00003734 (lui/lw) */
+func_00000000_38C0_v = 0x00000000;  /* void-typed reg_b alias (kills dead $v0 def; Dz/cfg -> v1/v0) in game_setupSolo */
+D_39d8_g = 0x00000000;  /* D_g placeholder alias (array-typed base held in $s0) in game_setupVsGhost */
+func_00000000_3734_v = 0x00000000;  /* void-typed reg-call alias (kills dead $v0 def; cfg -> v0) in game_setupDemoSolo */
+D_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in game_setupDemoSolo (lui/lw) */
 func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in game_createPlayers */
 /* gl_func_00064588 kit-transfer aliases (2026-07-15 agent-h): per-site distinct
  * symbols bust the shared-&D-base-pin CSE; addresses are D_00000000-relative. */
@@ -4043,7 +4043,7 @@ D_87A4_cfg = 0x00000000;  /* TreeTmpl_create base-0 +4/+0 store pair (target lui
 D_87A4_vt = 0x00000000;  /* TreeTmpl_create child +0x30 base-0 address (target lui t4 / addiu t4, no reloc) */
 D_87A4_tail = 0x00000000;  /* TreeTmpl_create final callback arg load (target lui a0 / lw 0(a0)) */
 func_00000000_087A4_f = 0x00000000;  /* TreeTmpl_create prototyped (char*,char*,int,float,float) blank alias: single-float stack arg via swc1 */
-D_24B8_tbl = 0x00000000;  /* func_000024B8 (NM) base-0 poll-table word (target lui a0 / lw a0,0(a0), no reloc) */
+D_24B8_tbl = 0x00000000;  /* CamDirector_update (NM) base-0 poll-table word (target lui a0 / lw a0,0(a0), no reloc) */
 D_00000524 = 0x00000524;  /* game_createLights colour literal (== func_000003F8+0x12C; target lui at / lwc1 0x12C(at)), distinct so the pool base is not held */
 D_00000528 = 0x00000528;  /* game_createLights vec[1] literal (== func_000003F8+0x130) */
 D_0000052C = 0x0000052C;  /* game_createLights alloc-init literal (== func_000003F8+0x134) */
@@ -4081,7 +4081,7 @@ D_2D788_a = 0x00000000;
 D_2D788_b = 0x00000000;
 /* timproc_uso_b1_func_00002838 blank callee alias (target jal 0 at every call site) */
 glv_2838 = 0x00000000;
-/* func_000038C0 D_z placeholder alias (array-typed, target lui 0 / addiu 0) */
+/* game_setupSolo D_z placeholder alias (array-typed, target lui 0 / addiu 0) */
 D_38c0_z = 0x00000000;
 /* Audio_NoteVibratoUpdate baked in-unit jal targets (ROM words 0x0C00F7D1 / 0x0C00F7F9) */
 gl_ref_00029B6C_3DF44 = 0x0003DF44;
@@ -4210,21 +4210,21 @@ D_4e760_f4 = 0x0;
 func_00000000_3F8_f = 0x00000000;  /* func_000003F8 sqrtf (float->float) callee, jal 0 */
 func_00000000_139B0_f = 0x00000000;  /* func_000139B0 RNG (void->float) jal-0 callee */
 func_00000000_139B0_v = 0x00000000;  /* func_000139B0 finisher func_00013B20 (jal 0 in ROM) */
-func_00000000_3d3cm = 0x00000000;  /* func_00003D3C spawn callee game_createPlayers (jal 0 in ROM), prototyped for swc1 float args */
-bu_3d3c_d7294 = 0x00000000;  /* func_00003D3C attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
-bu_3f00_d7294 = 0x00000000;  /* func_00003F00 attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
-func_00000000_43d4_f = 0x00000000;  /* func_000043D4 RNG func_075EE4 (void->float) jal-0 callee */
-bu_43d4_d00_b = 0x00000000;  /* func_000043D4 second list-add import_000200FC (per-site zero alias, kept unheld) */
-bu_43d4_d7294 = 0x00000000;  /* func_000043D4 attach-table base D_007294 (baked 0) */
-bu_43d4_t90 = 0x00000090;  /* func_000043D4 descriptor table at bootup+0x90 (func_00000080 + 0x10) */
-bu_43d4_k54c = 0x0000054C;  /* func_000043D4 RoData pool f32 at +0x54C (func_000003F8 + 0x154) */
-bu_43d4_k550 = 0x00000550;  /* func_000043D4 RoData pool f32 at +0x550 (func_000003F8 + 0x158) */
-func_00000000_411c_f = 0x00000000;  /* func_0000411C RNG func_075EE4 (void->float) jal-0 callee */
-bu_411c_d00_b = 0x00000000;  /* func_0000411C second list-add import_000200FC (per-site zero alias) */
-bu_411c_d7294 = 0x00000000;  /* func_0000411C attach-table base D_007294 (baked 0) */
-bu_411c_t90 = 0x00000090;  /* func_0000411C descriptor table at bootup+0x90 (func_00000080 + 0x10) */
-bu_411c_k544 = 0x00000544;  /* func_0000411C RoData pool f32 at +0x544 (func_000003F8 + 0x14C) */
-bu_411c_k548 = 0x00000548;  /* func_0000411C RoData pool f32 at +0x548 (func_000003F8 + 0x150) */
+func_00000000_3d3cm = 0x00000000;  /* game_setupVsCpu spawn callee game_createPlayers (jal 0 in ROM), prototyped for swc1 float args */
+bu_3d3c_d7294 = 0x00000000;  /* game_setupVsCpu attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
+bu_3f00_d7294 = 0x00000000;  /* game_setupVs2P attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
+func_00000000_43d4_f = 0x00000000;  /* game_setupDemoSplit RNG func_075EE4 (void->float) jal-0 callee */
+bu_43d4_d00_b = 0x00000000;  /* game_setupDemoSplit second list-add import_000200FC (per-site zero alias, kept unheld) */
+bu_43d4_d7294 = 0x00000000;  /* game_setupDemoSplit attach-table base D_007294 (baked 0) */
+bu_43d4_t90 = 0x00000090;  /* game_setupDemoSplit descriptor table at bootup+0x90 (func_00000080 + 0x10) */
+bu_43d4_k54c = 0x0000054C;  /* game_setupDemoSplit RoData pool f32 at +0x54C (func_000003F8 + 0x154) */
+bu_43d4_k550 = 0x00000550;  /* game_setupDemoSplit RoData pool f32 at +0x550 (func_000003F8 + 0x158) */
+func_00000000_411c_f = 0x00000000;  /* game_setupDemoRace RNG func_075EE4 (void->float) jal-0 callee */
+bu_411c_d00_b = 0x00000000;  /* game_setupDemoRace second list-add import_000200FC (per-site zero alias) */
+bu_411c_d7294 = 0x00000000;  /* game_setupDemoRace attach-table base D_007294 (baked 0) */
+bu_411c_t90 = 0x00000090;  /* game_setupDemoRace descriptor table at bootup+0x90 (func_00000080 + 0x10) */
+bu_411c_k544 = 0x00000544;  /* game_setupDemoRace RoData pool f32 at +0x544 (func_000003F8 + 0x14C) */
+bu_411c_k548 = 0x00000548;  /* game_setupDemoRace RoData pool f32 at +0x548 (func_000003F8 + 0x150) */
 func_00000000_7ec8_c = 0x00000000;  /* Fog_func_00007EC8 callee func_0586D8 (ptr, ptr, float), jal 0 */
 func_00000000_7ec8_t = 0x00000000;  /* Fog_func_00007EC8 callee func_063D70 (four ints, float, int, float), jal 0 */
 bu_7ec8_g = 0x00000000;  /* Fog_func_00007EC8 globals block import_0005C108 (baked 0) */

@@ -1,6 +1,6 @@
-nonmatching func_0000411C, 0x2B8
+nonmatching game_setupDemoRace, 0x2B8
 
-glabel func_0000411C
+glabel game_setupDemoRace
     /* DD4B88 0000411C 27BDFF90 */  addiu      $sp, $sp, -0x70
     /* DD4B8C 00004120 AFB10030 */  sw         $s1, 0x30($sp)
     /* DD4B90 00004124 00808825 */  or         $s1, $a0, $zero
@@ -179,4 +179,4 @@ glabel func_0000411C
     /* DD4E34 000043C8 8FB0002C */  lw         $s0, 0x2C($sp)
     /* DD4E38 000043CC 03E00008 */  jr         $ra
     /* DD4E3C 000043D0 27BD0070 */   addiu     $sp, $sp, 0x70
-endlabel func_0000411C
+endlabel game_setupDemoRace

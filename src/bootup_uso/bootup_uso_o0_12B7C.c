@@ -56,7 +56,7 @@ void func_00012818(char *a0, char *a1) {
     }
 }
 
-void func_000128AC(char *a0, char *a1, char *a2) {
+void replay_beginRecordWithGhost(char *a0, char *a1, char *a2) {
     if (a2 != 0) {
         *(int*)(a2 + 0x6C) = 0xFFFBFFFF;
         func_00000000(a2,
@@ -77,7 +77,7 @@ void func_000128AC(char *a0, char *a1, char *a2) {
     }
 }
 
-void func_000129A0(char *a0, char *a1, char *a2) {
+void replay_beginRecord2P(char *a0, char *a1, char *a2) {
     if (a1 != 0) {
         if (*(int*)(a0 + 0x168) == 0) {
             *(int*)(a0 + 0x168) = *(int*)(a0 + 0x160);
@@ -100,7 +100,7 @@ void func_000129A0(char *a0, char *a1, char *a2) {
     }
 }
 
-void func_00012AC4(char *a0, char *a1, int a2) {
+void replay_beginRecord1P(char *a0, char *a1, int a2) {
     if (a1 != 0) {
         if (*(int*)(a0 + 0x168) == 0) {
             *(int*)(a0 + 0x168) = *(int*)(a0 + 0x160);
@@ -115,7 +115,7 @@ void func_00012AC4(char *a0, char *a1, int a2) {
     }
 }
 
-void func_00012B7C(char *a0, int a1, int a2) {
+void replay_beginPlayback(char *a0, int a1, int a2) {
     if (a1 != 0) {
         func_00000000(a1, *(int*)(a0 + 0x168), *(int*)(a0 + 0x170));
     }
