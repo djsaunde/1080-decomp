@@ -1,6 +1,6 @@
-nonmatching gl_func_00041124, 0x24
+nonmatching dbg_printStarLine, 0x24
 
-glabel gl_func_00041124
+glabel dbg_printStarLine
     /* E261FC 00041124 27BDFFE8 */  .word 0x27BDFFE8
     /* E26200 00041128 AFBF0014 */  .word 0xAFBF0014
     /* E26204 0004112C 3C040002 */  .word 0x3C040002
@@ -10,4 +10,4 @@ glabel gl_func_00041124
     /* E26214 0004113C 27BD0018 */  .word 0x27BD0018
     /* E26218 00041140 03E00008 */  .word 0x03E00008
     /* E2621C 00041144 00000000 */  .word 0x00000000
-endlabel gl_func_00041124
+endlabel dbg_printStarLine

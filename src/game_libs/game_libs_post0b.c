@@ -7784,7 +7784,7 @@ void ItemMgr_hostioParms(char *arg0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0003E840(int a0) {
+void ItemMgr_errUnknownType(int a0) {
     gl_func_00000000(((char *)&D_00000000 + 0x0001F338));
 }
 
@@ -9708,7 +9708,7 @@ int mem_newAligned() {
 }
 
 extern int gl_func_00000000();
-int gl_func_00041124() {
+int dbg_printStarLine() {
     return gl_func_00000000(((char *)&D_00000000 + 0x0001F568));
 }
 
@@ -9852,12 +9852,12 @@ void game_libs_func_000412E0(void) {}
 void gl_func_000412E8(void) {
 }
 
-/* gl_func_00041524: alloc-or-given constructor + init + vtable
+/* App_ctor: alloc-or-given constructor + init + vtable
  * install + sub-alloc. Ternary-alloc form (obj reuses a0/a2, single
  * end label) per docs/IDO_CODEGEN.md ternary-alloc idiom. */
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00041524(int a0) {
+int App_ctor(int a0) {
     int *v1;
     if (a0 == 0) {
         a0 = gl_func_00000000(0x80);
@@ -14719,7 +14719,7 @@ void gl_func_0004ACD4(int *self) {
 }
 
 
-/* gl_func_0004ADB4: bounds-checked short[] index store (0x8C, frame 0x18):
+/* MorphPoly_checkVtx: bounds-checked short[] index store (0x8C, frame 0x18):
  * if ((unsigned)(idx - base) >= cap * 10) assert(file, msg, 0xAAF, self);
  * arr[idx - base] = val, with base = (short)self->0xD4 re-read after the
  * assert (cap = self->0x40, arr = self->0xD0, assert = blank jal-0, strings
@@ -14730,7 +14730,7 @@ void gl_func_0004ACD4(int *self) {
  * subscript into arr + idx*2 + -(base*2) itself. Every hand-distributed
  * spelling (`+ idx * 2 + ((base * 2) * -1)`, `- base * 2`, ptr-sub) is what
  * produced the neg-first or folded-subu forms. */
-void gl_func_0004ADB4(int *self, int val, int idx) {
+void MorphPoly_checkVtx(int *self, int val, int idx) {
     extern int D_00000000;
     short base;
     base = *(short*)((char*)self + 0xD4);
@@ -16061,7 +16061,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_pickNode);
  *   end: return a0;
  *   }
  * Same lazy-alloc-cascade + cb-register family as the LANDED
- * gl_func_00041524 (apply: goto-end single epilogue, reuse the a0
+ * App_ctor (apply: goto-end single epilogue, reuse the a0
  * param as the object, no extra named locals, per
  * docs/IDO_CODEGEN.md#feedback-ido-reuse-param-as-object-caller-
  * slot-spill).
@@ -18362,7 +18362,7 @@ void gl_func_000513CC(int* a0) {
 
 /* LightTarget_ctor: 54-insn lazy constructor + cb-register +
  * field-init (clean single fn). Decoded from bare stub 2026-05-19.
- * Same family as the LANDED gl_func_00041524 (goto-end single
+ * Same family as the LANDED App_ctor (goto-end single
  * epilogue, minimal locals). cb3 has a FLOAT 5th stack arg
  * (swc1 f0,0x10(sp) = 0.0f); the 0x108/10C/110 fields are set
  * from a float const *(&D_00000000 + 0x1BB0); 0x124 = 1.0f;

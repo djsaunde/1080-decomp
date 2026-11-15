@@ -1,6 +1,6 @@
-nonmatching gl_func_0003E840, 0x28
+nonmatching ItemMgr_errUnknownType, 0x28
 
-glabel gl_func_0003E840
+glabel ItemMgr_errUnknownType
     /* E23918 0003E840 27BDFFE8 */  .word 0x27BDFFE8
     /* E2391C 0003E844 AFA40018 */  .word 0xAFA40018
     /* E23920 0003E848 AFBF0014 */  .word 0xAFBF0014
@@ -11,4 +11,4 @@ glabel gl_func_0003E840
     /* E23934 0003E85C 27BD0018 */  .word 0x27BD0018
     /* E23938 0003E860 03E00008 */  .word 0x03E00008
     /* E2393C 0003E864 00000000 */  .word 0x00000000
-endlabel gl_func_0003E840
+endlabel ItemMgr_errUnknownType

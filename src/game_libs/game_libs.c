@@ -3011,7 +3011,7 @@ void *ColourParms_ctor(char *arg0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void gl_func_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void raceObj_init_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile int pad;
     char *sp28;
     char *temp_v0;

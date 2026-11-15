@@ -1,6 +1,6 @@
-nonmatching gl_func_00041524, 0x80
+nonmatching App_ctor, 0x80
 
-glabel gl_func_00041524
+glabel App_ctor
     /* E265FC 00041524 27BDFFE8 */  .word 0x27BDFFE8
     /* E26600 00041528 AFBF0014 */  .word 0xAFBF0014
     /* E26604 0004152C 14800005 */  .word 0x14800005
@@ -33,4 +33,4 @@ glabel gl_func_00041524
     /* E26670 00041598 00C01025 */  .word 0x00C01025
     /* E26674 0004159C 03E00008 */  .word 0x03E00008
     /* E26678 000415A0 00000000 */  .word 0x00000000
-endlabel gl_func_00041524
+endlabel App_ctor

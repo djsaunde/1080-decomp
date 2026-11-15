@@ -781,7 +781,7 @@ extern int D_00000000_d00c;
 typedef struct { f32 x, y, z, w; } GlV4_4244;
 typedef struct { s32 v; } GlF1_4244;
 void *ColourParms_ctor(char *arg0);
-void gl_func_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3);
+void raceObj_init_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3);
 extern int gl_func_00000000();
 int gl_func_00006A8C(char *a0, int a1);
 extern float gl_d_x, gl_d_y, gl_d_z;

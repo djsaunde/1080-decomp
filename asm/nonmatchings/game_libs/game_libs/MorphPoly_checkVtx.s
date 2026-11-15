@@ -1,6 +1,6 @@
-nonmatching gl_func_0004ADB4, 0x8C
+nonmatching MorphPoly_checkVtx, 0x8C
 
-glabel gl_func_0004ADB4
+glabel MorphPoly_checkVtx
     /* E2FE8C 0004ADB4 27BDFFE8 */  .word 0x27BDFFE8
     /* E2FE90 0004ADB8 AFBF0014 */  .word 0xAFBF0014
     /* E2FE94 0004ADBC AFA5001C */  .word 0xAFA5001C
@@ -36,4 +36,4 @@ glabel gl_func_0004ADB4
     /* E2FF0C 0004AE34 27BD0018 */  .word 0x27BD0018
     /* E2FF10 0004AE38 03E00008 */  .word 0x03E00008
     /* E2FF14 0004AE3C 00000000 */  .word 0x00000000
-endlabel gl_func_0004ADB4
+endlabel MorphPoly_checkVtx

@@ -1,6 +1,6 @@
-nonmatching gl_func_00006900, 0x18C
+nonmatching raceObj_init_00006900, 0x18C
 
-glabel gl_func_00006900
+glabel raceObj_init_00006900
     /* DEB9D8 00006900 27BDFFD0 */  .word 0x27BDFFD0
     /* DEB9DC 00006904 AFB00020 */  .word 0xAFB00020
     /* DEB9E0 00006908 AFBF0024 */  .word 0xAFBF0024
@@ -100,4 +100,4 @@ glabel gl_func_00006900
     /* DEBB58 00006A80 27BD0030 */  .word 0x27BD0030
     /* DEBB5C 00006A84 03E00008 */  .word 0x03E00008
     /* DEBB60 00006A88 00000000 */  .word 0x00000000
-endlabel gl_func_00006900
+endlabel raceObj_init_00006900
