@@ -989,7 +989,7 @@ def main():
     sub.add_parser('selftest')
     a = ap.parse_args()
     c = Census('.', a.no_build)
-    sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
+    sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert,
               'spell-base': cmd_spell_base}[a.cmd](c, a) or 0)
 
