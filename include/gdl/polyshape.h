@@ -51,8 +51,10 @@ typedef struct BasePolyShape {
     /* 0x9C */ f32 unk9C;          /* 1.0f after reset */
     /* 0xA0 */ s32 unkA0;
     /* 0xA4 */ s32 unkA4;          /* -1 after reset */
-    /* 0xA8 */ s32 unkA8;
-    /* 0xAC */ s32 unkAC;
+    /* 0xA8 */ s32 skinInvBone;     /* f32 (*)[4]: SkinMgr_init stores the inverse main-bone
+                                     * matrix (SkinMgr.invBone); 0 = not skinned. The display
+                                     * path passes skinBoneMtx and it to a call when set */
+    /* 0xAC */ s32 skinBoneMtx;     /* f32 (*)[4]: the main bone's world matrix (MNode +0x70) */
 } BasePolyShape;
 
 /* one row of BasePolyShape.verts (6 bytes) and one face / vertex normal (BasePolyShape_genNormals) */

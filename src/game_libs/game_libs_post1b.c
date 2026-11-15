@@ -3,6 +3,10 @@
 #include "gdl/anim.h"
 #include "gdl/skin.h"
 #include "gdl/dnode.h"
+#include "gdl/pad.h"
+#include "gdl/mem.h"
+#include "gdl/binfile.h"
+#include "gdl/polyshape.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -2275,9 +2279,9 @@ int DynArr_ctor_00066514(int a0, int a1) {
         a0 = CALL(mem_new)(0xC);
         if (a0 == 0) goto ret;
     }
-    *(int *)(a0 + 4) = 0;
-    *(int *)(a0 + 8) = a1;
-    *(int *)a0 = CALL(mem_new)(a1 << 3);
+    DYNARR(a0)->count = 0;
+    DYNARR(a0)->capacity = a1;
+    DYNARR(a0)->items = (char *)CALL(mem_new)(a1 << 3);
 ret:
     return a0;
 }
@@ -2288,12 +2292,12 @@ ret:
  * (0x20 -> 0x38). Inlining a0[2]-1 (no `cap` local) keeps the limit temp in $t6,
  * matching the target register allocation. */
 int DynArr_push_0006656C(int *a0) {
-    int idx = a0[1];
-    if ((unsigned)idx >= (unsigned)(a0[2] - 1)) {
+    int idx = DYNARR(a0)->count;
+    if ((unsigned)idx >= (unsigned)(DYNARR(a0)->capacity - 1)) {
         return 0;
     }
-    a0[1] = idx + 1;
-    return a0[0] + idx * 8;
+    DYNARR(a0)->count = idx + 1;
+    return (int)(DYNARR(a0)->items + idx * 8);
 }
 
 void DynArr_init_000665A4(int *a0, int a1) { *(int*)a0 = a1; *(int*)((char*)a0 + 8) = 0; *(int*)((char*)a0 + 4) = 0; }
@@ -2356,14 +2360,14 @@ int list_allocNode_000665B4(int a0) {
     int v1;
     int v0;
     do {
-        v1 = *(int *)(a0 + 4);
+        v1 = (int)DYNARRPOOL(a0)->cur;
         if (v1 == 0) {
-            v1 = *(int *)(a0 + 4) = CALL(DynArr_ctor_00066514)(0, *(int *)a0);
-            *(int *)(a0 + 8) += 1;
+            v1 = (int)(DYNARRPOOL(a0)->cur = (DynArr *)CALL(DynArr_ctor_00066514)(0, DYNARRPOOL(a0)->chunkSize));
+            DYNARRPOOL(a0)->nChunks += 1;
         }
         v0 = CALL(DynArr_push_0006656C)(v1);
         if (v0 == 0) {
-            *(int *)(a0 + 4) = 0;
+            DYNARRPOOL(a0)->cur = 0;
         }
     } while (v0 == 0);
     return v0;
@@ -2843,24 +2847,24 @@ void boot_stub_00066C60(void) {}
  * #volatile-first-store-pins-param-sreg-copy-66c74). */
 void pad_init_00066C74(char *self) {
     *(int*)(GL_BSS(0x416B0)) = 2;
-    *(volatile int*)(self + 0x13E8) = 0;
-    CALL(gl_osCreateMesgQueue)(self + 0x11B0, self + 0x11C8, 4);
-    CALL(gl_osSetEventMesg)(5, self + 0x11B0, GL_BSS(0x416B0));
-    *(int*)(self + 0x13F0) = 0;
+    ((volatile PadDev *)self)->readDone = 0;
+    CALL(gl_osCreateMesgQueue)(PADDEV(self)->mq, PADDEV(self)->msgs, 4);
+    CALL(gl_osSetEventMesg)(5, PADDEV(self)->mq, GL_BSS(0x416B0));
+    PADDEV(self)->motorRetry = 0;
     {
         int i;
         i = 0;
         do {
-            *(int*)(self + 0x13C8 + i*4) = 3;
-            self[0x13D8 + i] = 0;
-            self[0x13DC + i] = 0;
-            *(short*)(self + 0x13E0 + i*2) = 0;
+            PADDEV(self)->pakState[i] = 3;
+            PADDEV(self)->motorOn[i] = 0;
+            PADDEV(self)->hasMotor[i] = 0;
+            PADDEV(self)->motorValue[i] = 0;
             i++;
         } while (i < 4);
     }
     CALL(pad_probePaks_00066D54)(self);
-    CALL(gl_osCreateThread)(self + 0x1000, 6, (char*)&D_00000000, self, self + 0x1000, 14);
-    CALL(gl_osStartThread)(self + 0x1000);
+    CALL(gl_osCreateThread)(PADDEV(self)->thread, 6, (char*)&D_00000000, self, PADDEV(self)->thread, 14);
+    CALL(gl_osStartThread)(PADDEV(self)->thread);
 }
 
 /* pad_probePaks_00066D54: per-slot (4) controller/message poll loop (102 words,
@@ -2885,27 +2889,27 @@ void pad_probePaks_00066D54(char *arg0) {
     u8 sp53;
     s32 r;
 
-    CALL(gl_osContInit)(arg0 + 0x11B0, (int)arg0 + 0x13EC, (int)arg0 + 0x1218);
+    CALL(gl_osContInit)(PADDEV(arg0)->mq, &PADDEV(arg0)->present, PADDEV(arg0)->status);
     for (var_s1 = 0; var_s1 != 4; var_s1++) {
-        if (*(u8*)((char*)arg0 + 0x13EC) & (1 << var_s1)) {
-            if (!(*(u8*)((char*)((char *)&((int *)arg0)[var_s1]) + 0x121B) & 8)) {
+        if (PADDEV(arg0)->present & (1 << var_s1)) {
+            if (!(PADDEV(arg0)->status[var_s1].errNo & 8)) {
                 CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")), var_s1);
                 sp53 = 0;
-                CALL(osPfsIsPlug)((arg0 + 0x11B0), &sp53);
+                CALL(osPfsIsPlug)(PADDEV(arg0)->mq, &sp53);
                 if (sp53 & (1 << var_s1)) {
-                    r = CALL(osPfsInitPak)((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1);
+                    r = CALL(osPfsInitPak)(PADDEV(arg0)->mq, PADDEV(arg0)->pfs[var_s1], var_s1);
                     if (r == 10) {
-                        if (CALL(osMotorInit)((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1) != 0) {
+                        if (CALL(osMotorInit)(PADDEV(arg0)->mq, PADDEV(arg0)->pfs[var_s1], var_s1) != 0) {
                             CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x14);
-                            FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 0;
+                            PADDEV(arg0)->pakState[var_s1] = 0;
                         } else {
                             CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x1C);
-                            FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 2;
-                            *(u8*)((char*)arg0 + var_s1 + 0x13DC) = 1;
+                            PADDEV(arg0)->pakState[var_s1] = 2;
+                            PADDEV(arg0)->hasMotor[var_s1] = 1;
                         }
                     } else if (r == 0) {
                         CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x24);
-                        FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 1;
+                        PADDEV(arg0)->pakState[var_s1] = 1;
                     }
                 } else {
                     CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x28);
@@ -3042,15 +3046,18 @@ void pad_threadLoop_00066EEC(char *arg0) {
 }
 
 void pad_updateMotor_00067084(char *a0, int a1, int a2) {
+    /* v1 = this + port: v1[0x13DC] = hasMotor[port], v1[0x13D8] = motorOn[port]
+     * (PadDev, gdl/pad.h). The byte-row pointer is load-bearing: typed
+     * dev->motorOn[a1] uses keep `this` live across the call (spill, +2 words). */
     char *v1 = a0 + a1;
     if (v1[0x13DC] == 0) return;
     if ((unsigned char)v1[0x13D8] == a2) return;
     if (a2 != 0) {
-        if (CALL(gl_osMotorStart)((a0 + 0x1228) + 104 * a1) == 0) {
+        if (CALL(gl_osMotorStart)(PADDEV(a0)->pfs[a1]) == 0) {
             v1[0x13D8] = 3;
         }
     } else {
-        if (CALL(gl_osMotorStop)((a0 + 0x1228) + 104 * a1) != 0) {
+        if (CALL(gl_osMotorStop)(PADDEV(a0)->pfs[a1]) != 0) {
             if (v1[0x13D8] > 0) {
                 v1[0x13D8]--;
             }
@@ -3063,7 +3070,7 @@ extern int gl_ref_000416C0;
 
 void pad_sendMsg_00067134(char *a0) {
     gl_ref_000416C0 = 6;
-    CALL(gl_osSendMesg)(a0 + 0x11B0, &gl_ref_000416C0, 1);
+    CALL(gl_osSendMesg)(PADDEV(a0)->mq, &gl_ref_000416C0, 1);
 }
 
 extern int gl_func_00000000();
@@ -3071,7 +3078,7 @@ extern int gl_ref_000416D0;
 
 void pad_sendMsg_00067168(char *a0) {
     gl_ref_000416D0 = 5;
-    CALL(gl_osSendMesg)(a0 + 0x11B0, &gl_ref_000416D0, 1);
+    CALL(gl_osSendMesg)(PADDEV(a0)->mq, &gl_ref_000416D0, 1);
 }
 
 /* pad_sync_0006719C was 18-insn 2-function bundle. Split via
@@ -3080,14 +3087,14 @@ void pad_sendMsg_00067168(char *a0) {
  *   pad_setSlotValue_000671D4 (5 insns / 0x10, indexed short-array store) */
 extern int gl_func_00000000();
 void pad_sync_0006719C(int *a0) {
-    if (*(int*)((char*)a0 + 0x13E8) == 0) {
+    if (PADDEV(a0)->readDone == 0) {
         CALL(pad_waitIdle_00067220)(a0);
     }
     CALL(pad_request_000671E4)(a0);
 }
 
 void pad_setSlotValue_000671D4(short *a0, int a1, int a2) {
-    *(short*)((char*)a0 + (a1 * 2) + 0x13E0) = a2;
+    PADDEV(a0)->motorValue[a1] = a2;
 }
 
 #ifdef NON_MATCHING
@@ -3101,9 +3108,9 @@ void pad_setSlotValue_000671D4(short *a0, int a1, int a2) {
 extern int gl_func_00000000();
 extern int gl_ref_000416E0;
 void pad_request_000671E4(char *a0) {
-    *(int*)(a0 + 0x13E8) = 0;
+    PADDEV(a0)->readDone = 0;
     *(int*)&gl_ref_000416E0 = 1;
-    gl_func_00000000(a0 + 0x11B0, &gl_ref_000416E0, 1);
+    gl_func_00000000(PADDEV(a0)->mq, &gl_ref_000416E0, 1);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", pad_request_000671E4);
@@ -3118,7 +3125,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", pad_request_000671E4);
  * the param lives in s0 from the prologue (docs/IDO_CODEGEN.md
  * #volatile-poll-read-pins-param-sreg-67220). */
 void pad_waitIdle_00067220(char *a0) {
-    while (*(volatile int *)(a0 + 0x13E8) == 0) {
+    while (((volatile PadDev *)a0)->readDone == 0) {
         CALL(gl_osYieldThread)();
     }
 }
@@ -3140,33 +3147,33 @@ void pad_initMotors_00067264(char *self) {
     int counter;
     char slot_mask;
 
-    counter = *(int *)(self + 0x13F0);
-    *(int *)(self + 0x13F0) = counter + 1;
+    counter = PADDEV(self)->motorRetry;
+    PADDEV(self)->motorRetry = counter + 1;
     if ((unsigned int)counter < 0x1FU) {
         return;
     }
     slot_mask = 0;
-    CALL(osPfsIsPlug)(self + 0x11B0, &slot_mask);
+    CALL(osPfsIsPlug)(PADDEV(self)->mq, &slot_mask);
     for (i = 0; i != 4; i++) {
         if (slot_mask & (1 << i)) {
-            char *entry = (char *)&((GlRow104 *)self)[i] + 0x1228;
-            if ((int)CALL(osMotorInit)(self + 0x11B0, entry, i) == 0) {
+            char *entry = (char *)&((GlRow104 *)self)[i] + 0x1228;   /* &pfs[i] */
+            if ((int)CALL(osMotorInit)(PADDEV(self)->mq, entry, i) == 0) {
                 CALL(gl_osMotorStop)(entry);
-                (self + 0x13DC)[i] = 1;
+                PADDEV(self)->hasMotor[i] = 1;
             }
         } else {
-            (self + 0x13DC)[i] = 0;
+            PADDEV(self)->hasMotor[i] = 0;
         }
     }
-    *(int *)(self + 0x13F0) = 0;
+    PADDEV(self)->motorRetry = 0;
 }
 
 int pad_getSlotState_00067358(char *a0, int a1) {
-    return *(int *)((char *)a0 + a1 * 4 + 0x13C8);
+    return PADDEV(a0)->pakState[a1];
 }
 
 int pad_getFlag_00067368(char *a0) {
-    return *(unsigned char *)(a0 + 0x13EC);
+    return PADDEV(a0)->present;
 }
 
 /* pad_threadEntry_00067370: MATCHED. Single-call leaf (`gl_func_00000000();`). The 1-word
@@ -3185,7 +3192,7 @@ void pad_threadEntry_00067370(void) {
  *   func(a0, a1); return 1; */
 int pad_open(int *a0, int a1) {
     int rv = FCALL(app_getHeapMode)(a0, a1);
-    a0[0x64/4] = rv;
+    PADCTL(a0)->unk64 = rv;
     if (a1 >= 0) {
         FCALL(sys_listSplice_00061C88)(&gSysLib, a0);
     } else {
@@ -3196,25 +3203,25 @@ int pad_open(int *a0, int a1) {
 }
 
 void pad_reset_000673FC(int *a0, int a1) {
-    *(short *)((char *)a0 + 0x74) = 0;
-    a0[0x78 / 4] = 0;
-    *(short *)((char *)a0 + 0x76) = 0;
-    a0[0x6C / 4] = -1;
-    a0[0x68 / 4] = 0;
-    a0[0x4C / 4] = 0;
-    a0[0x34 / 4] = a1;
-    a0[0x30 / 4] = 0;
+    PADCTL(a0)->rumblePos = 0;
+    PADCTL(a0)->rumble = 0;
+    PADCTL(a0)->rumblePrio = 0;
+    PADCTL(a0)->recordMask = -1;
+    PADCTL(a0)->paused = 0;
+    PADCTL(a0)->replayMode = PAD_REPLAY_OFF;
+    PADCTL(a0)->port = a1;
+    PADCTL(a0)->unk30 = 0;
     CALL(pad_clear_00067AA0)(a0);
-    a0[0x28 / 4] = 0;
-    a0[0x2C / 4] = 0;
-    a0[0x38 / 4] = 0;
-    a0[0x3C / 4] = 0;
-    a0[0x40 / 4] = 0;
-    a0[0x70 / 4] = 0;
-    *(float *)((char *)a0 + 0x0) = 0.0f;
-    *(float *)((char *)a0 + 0x4) = 0.0f;
-    *(float *)((char *)a0 + 0x44) = 0.0f;
-    *(float *)((char *)a0 + 0x48) = 0.0f;
+    PADCTL(a0)->unk28 = 0;
+    PADCTL(a0)->unk2C = 0;
+    PADCTL(a0)->tapTimer = 0;
+    PADCTL(a0)->injectPending = 0;
+    PADCTL(a0)->injectButtons = 0;
+    PADCTL(a0)->mirrorX = 0;
+    PADCTL(a0)->stickX = 0.0f;
+    PADCTL(a0)->stickY = 0.0f;
+    PADCTL(a0)->injectStickX = 0.0f;
+    PADCTL(a0)->injectStickY = 0.0f;
 }
 
 /* pad_setPause_00067470: 27-insn 1-or-2 call dispatcher. Byte-exact (verified:
@@ -3222,23 +3229,23 @@ void pad_reset_000673FC(int *a0, int a1) {
  * jal-0 placeholders = the correct ROM bytes). No episode — placeholder relocs.
  * First call's arg uses absolute address 0x225D8 (lui $a0,0x2; addiu $a0,0x25D8). */
 void pad_setPause_00067470(int* a0, int a1) {
-    CALL(dbg_printf)(GL_DATA_STR(0x225D8, "Ctl %d: pause %d\n"), a0[13], a1);
-    if (a0[30] != 0) {
-        CALL(pad_setSlotValueGlobal)(&gl_data_00000000, a0[13] - 1, 0);
+    CALL(dbg_printf)(GL_DATA_STR(0x225D8, "Ctl %d: pause %d\n"), PADCTL(a0)->port, a1);
+    if (PADCTL(a0)->rumble != 0) {
+        CALL(pad_setSlotValueGlobal)(&gl_data_00000000, PADCTL(a0)->port - 1, 0);
     }
-    a0[26] = a1;
+    PADCTL(a0)->paused = a1;
 }
 
 extern int gl_func_00000000();
 void pad_clearSlot(int *a0) {
-    int v = a0[0xD];
+    int v = PADCTL(a0)->port;
     if (v != 0) {
         CALL(pad_setSlotValueGlobal)(gl_func_00000000, v - 1, 0);
     }
 }
 
 int pad_isSlotState2(int *a0) {
-    int v = a0[0xD];
+    int v = PADCTL(a0)->port;
     if (v != 0) {
         return CALL(pad_isSlotState2Global)(&gSysLib, v - 1);
     }
@@ -3256,9 +3263,9 @@ int pad_isSlotState2(int *a0) {
  * Byte-exact in-tree (reloc-filtered word-compare: 0 diffs). */
 int pad_testButton_00067550(int *a0) {
     int v0 = 0;
-    if (a0[0x34 / 4] != 0) {
+    if (PADCTL(a0)->port != 0) {
         v0 = CALL(pad_getFlagGlobal)(&gSysLib, a0);
-        return (1 << (a0[0x34 / 4] + 31)) & ((0, v0));
+        return (1 << (PADCTL(a0)->port + 31)) & ((0, v0));
     }
     return v0;
 }
@@ -3327,23 +3334,23 @@ void pad_update(char *arg0) {
  * a0 (offsets 0x4C, 0x50, 0x54, 0x58, 0x5C) and clears *a3, then calls
  * gl_func(&D_0 + 0x225EC, a0->[0x34]). */
 void pad_startRecord_000679BC(int *a0, int a1, int a2, int *a3) {
-    a0[0x5C/4] = a1;
-    a0[0x50/4] = 0;
-    a0[0x54/4] = a2;
-    a0[0x58/4] = (int)a3;
+    PADCTL(a0)->replayFrames = (void *)a1;
+    PADCTL(a0)->replayFrame = 0;
+    PADCTL(a0)->replayLen = a2;
+    PADCTL(a0)->replayLenOut = a3;
     *a3 = 0;
-    a0[0x4C/4] = 2;
-    CALL(dbg_printf)(GL_DATA_STR(0x225EC, "Ctl %d: start record\n"), a0[0x34/4]);
+    PADCTL(a0)->replayMode = PAD_REPLAY_RECORD;
+    CALL(dbg_printf)(GL_DATA_STR(0x225EC, "Ctl %d: start record\n"), PADCTL(a0)->port);
 }
 
 extern int gl_func_00000000();
 
 void pad_startPlay_00067A10(char *a0, int a1, int a2) {
-    *(int*)(a0 + 0x5C) = a1;
-    *(int*)(a0 + 0x50) = 0;
-    *(int*)(a0 + 0x54) = a2;
-    *(int*)(a0 + 0x4C) = 1;
-    CALL(dbg_printf)(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), *(int*)(a0 + 0x34));
+    PADCTL(a0)->replayFrames = (void *)a1;
+    PADCTL(a0)->replayFrame = 0;
+    PADCTL(a0)->replayLen = a2;
+    PADCTL(a0)->replayMode = PAD_REPLAY_PLAY;
+    CALL(dbg_printf)(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), PADCTL(a0)->port);
 }
 
 /* pad_setIfNewer_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
@@ -3393,28 +3400,28 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
  *  - Now split to 0x3C (this fn only); decoded 2026-05-24. */
 extern int gl_func_00000000();
 void pad_setIfNewer_00067A54(int a0, int a1, int a2) {
-    if (a1 == *(int *)(a0 + 0x78)) {
+    if ((u8 *)a1 == PADCTL(a0)->rumble) {
         return;
     }
-    if (a2 < *(short *)(a0 + 0x76)) {
+    if (a2 < PADCTL(a0)->rumblePrio) {
         return;
     }
     CALL(pad_set_00067A90)(a0, a1, a2);
 }
 
 void pad_set_00067A90(char *a0, int a1, int a2) {
-    *(int *)(a0 + 0x78) = a1;
-    *(short *)(a0 + 0x76) = a2;
-    *(short *)(a0 + 0x74) = 0;
+    PADCTL(a0)->rumble = (u8 *)a1;
+    PADCTL(a0)->rumblePrio = a2;
+    PADCTL(a0)->rumblePos = 0;
 }
 
 void pad_clear_00067AA0(int *a0) {
-    a0[8] = 0;
-    a0[4] = 0;
-    a0[5] = 0;
-    a0[6] = 0;
-    a0[7] = 0;
-    a0[9] = 0;
+    PADCTL(a0)->doubleTap = 0;
+    PADCTL(a0)->held = 0;
+    PADCTL(a0)->prevHeld = 0;
+    PADCTL(a0)->pressed = 0;
+    PADCTL(a0)->released = 0;
+    PADCTL(a0)->lastPressed = 0;
 }
 
 /* The 2 zero words at 0x67ABC/0x67AC0 (the 8-byte gap before
@@ -3993,10 +4000,10 @@ void fs_gdlReadInt_000682BC(int *dst) {
  * split-fragments separated as game_libs_func_0006833{8,40,48} —
  * those remain INCLUDE_ASM in this file (sandwich-ordered). */
 void BinFile_init_000682F8(int *self) {
-    CALL(str_copyEnd)(self + 5, GL_DATA_STR(0x2B3B8, "<empty>"), self);
-    self[4] = 0;
-    self[0] = 0;
-    self[2] = 0;
+    CALL(str_copyEnd)(BINFILE(self)->unk14, GL_DATA_STR(0x2B3B8, "<empty>"), self);
+    BINFILE(self)->size = 0;
+    BINFILE(self)->flags = 0;
+    BINFILE(self)->data = 0;
 }
 
 /* Three save-arg-sentinel stubs split from BinFile_init_000682F8 bundle. Each
@@ -4036,19 +4043,19 @@ void BinFile_load_00068350(int *self) {
     int *vtable = (int *)self[7];                         /* self->[0x1C] */
     /* inline function-ptr call → jalr $t9 per feedback-ido-indirect-call-t9 */
     (*(int(**)(int *))((char *)vtable + 0xC))((int *)(((short *)vtable)[4] + (char *)self));
-    gl_ref_0007C89C(self + 4);
+    gl_ref_0007C89C(&BINFILE(self)->size);
     if (*(int *)((char *)&D_00000000 + 4) == 0) {
-        self[0] |= 1;
+        BINFILE(self)->flags |= 1;
     } else {
-        self[1] = CALL(fs_gdlSeekFile)(&gSysLib, 1, 0);
+        BINFILE(self)->fileOffset = CALL(fs_gdlSeekFile)(&gSysLib, 1, 0);
     }
 }
 
 /* Split off from BinFile_load_00068350 bundle 2026-05-08: 4-insn field setter. */
 void BinFile_set_000683C4(int *a0, int a1) {
-    *(int*)((char*)a0 + 0xC) = a1;
-    *(int*)((char*)a0 + 0x8) = 0;
-    *(int*)((char*)a0 + 0x4) = 0;
+    BINFILE(a0)->mgr = (BinFileMgr *)a1;
+    BINFILE(a0)->data = 0;
+    BINFILE(a0)->fileOffset = 0;
 }
 
 /* BinFileMgr_loadFile_000683D4: 54-insn (0xD8) array-allocator + per-element vtable
@@ -4122,9 +4129,9 @@ int *BinFileMgr_ctor_000684AC(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, a1);
-    a0[0xA] = (int)&BinFileMgr_vtbl;
-    a0[0xD] = 0;
-    a0[0xC] = 0;
+    BINFILEMGR(a0)->node.vptr = (int)&BinFileMgr_vtbl;
+    BINFILEMGR(a0)->nGroups = 0;
+    BINFILEMGR(a0)->groups = 0;
     if (a2 != 0) {
         CALL(Node_Load)(a0, 1, a2);
     }
@@ -4143,18 +4150,18 @@ extern int gl_func_00000000();
 extern int func_7C860();
 void BinFileMgr_vfn8_00068524(int *a0, int a1) {
     int s1, s0;
-    a0[0x2C/4] = (int)CALL(fs_getHandle)(&gSysLib, a1);
-    func_7C860((int)&a0[0x34/4]);
-    a0[0x30/4] = (int)CALL(mem_new)(a0[0x34/4] << 4);
-    if (a0[0x34/4] != 0) {
+    BINFILEMGR(a0)->fileHandle = (int)CALL(fs_getHandle)(&gSysLib, a1);
+    func_7C860((int)&BINFILEMGR(a0)->nGroups);
+    BINFILEMGR(a0)->groups = (BinFileGroup *)CALL(mem_new)(BINFILEMGR(a0)->nGroups << 4);
+    if (BINFILEMGR(a0)->nGroups != 0) {
         s1 = 0;
         s0 = 0;
         do {
-            gl_func_00000000(a0[0x30/4] + s0, a0);
-            CALL(BinFileMgr_loadFile_000683D4)(a0[0x30/4] + s0);
+            gl_func_00000000((int)BINFILEMGR(a0)->groups + s0, a0);
+            CALL(BinFileMgr_loadFile_000683D4)((int)BINFILEMGR(a0)->groups + s0);
             s1++;
             s0 += 16;
-        } while ((unsigned int)s1 < (unsigned int)a0[0x34/4]);
+        } while ((unsigned int)s1 < (unsigned int)BINFILEMGR(a0)->nGroups);
     }
 }
 
@@ -4318,7 +4325,7 @@ int *ImageFileMgr_ctor(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     CALL(BinFileMgr_ctor_000684AC)(a0, sImageFileMgrName, 0);
-    a0[0xA] = (int)&ImageFileMgr_vtbl;
+    BINFILEMGR(a0)->node.vptr = (int)&ImageFileMgr_vtbl;
     if (a1 != 0) {
         CALL(Node_Load)(a0, 1, a1);
     }
@@ -4358,11 +4365,11 @@ end:
 
 extern int gl_func_00000000();
 void ImageFile_init_00068960(char *a0) {
-    *(short*)(a0 + 0x20) = 0;
-    *(short*)(a0 + 0x22) = 0;
-    *(int*)(a0 + 0x24) = 0;
-    *(int*)(a0 + 0x8) = 0;
-    *(int*)(a0 + 0x2C) = 0;
+    IMAGEFILE(a0)->width = 0;
+    IMAGEFILE(a0)->height = 0;
+    IMAGEFILE(a0)->format = 0;
+    IMAGEFILE(a0)->base.data = 0;
+    IMAGEFILE(a0)->dataSize = 0;
     CALL(BinFile_init_000682F8)();
 }
 
@@ -4409,32 +4416,32 @@ void ImageFile_load_00068990(char *o) {
 void ImageFile_vfn1_00068B04(int *self) {
     extern int gSysLib_gl68B04[];
     int saved_dx1;
-    if (*self & 1) return;
-    if (self[0x8 / 4] != 0) return;
-    self[0x8 / 4] = (int)CALL(mem_new)(self[0x2C / 4]);
+    if (IMAGEFILE(self)->base.flags & 1) return;
+    if (IMAGEFILE(self)->base.data != 0) return;
+    IMAGEFILE(self)->base.data = (char *)CALL(mem_new)(IMAGEFILE(self)->dataSize);
     saved_dx1 = gSysLib_gl68B04[1];
     CALL(sys_setWord4_00061D80)(gSysLib_gl68B04, 1);
-    CALL(fs_setHandle)(gSysLib_gl68B04, ((int*)self[0xC / 4])[0x2C / 4]);
-    CALL(fs_gdlSeekFile)(gSysLib_gl68B04, 0, self[0x28 / 4]);
-    CALL(fs_gdlReadFile)(gSysLib_gl68B04, self[0x8 / 4], self[0x2C / 4]);
+    CALL(fs_setHandle)(gSysLib_gl68B04, IMAGEFILE(self)->base.mgr->fileHandle);
+    CALL(fs_gdlSeekFile)(gSysLib_gl68B04, 0, IMAGEFILE(self)->dataOffset);
+    CALL(fs_gdlReadFile)(gSysLib_gl68B04, IMAGEFILE(self)->base.data, IMAGEFILE(self)->dataSize);
     CALL(sys_setWord4_00061D80)(gSysLib_gl68B04, saved_dx1);
 }
 
 void ImageFile_free_00068BAC(int *a0) {
-    if ((*a0 & 1) == 0) {
-        int *p = (int*)a0[2];
+    if ((BINFILE(a0)->flags & 1) == 0) {
+        int *p = (int*)BINFILE(a0)->data;
         if (p != 0) {
             CALL(mem_delete)(p);
         }
-        a0[2] = 0;
+        BINFILE(a0)->data = 0;
     }
 }
 
 /* ImageFile_vfn3_00068BF4: 7-insn sibling without the func call.
  *   if (!(*a0 & 1)) a0[2] = 0; */
 void ImageFile_vfn3_00068BF4(int *a0) {
-    if (!(*a0 & 1)) {
-        a0[2] = 0;
+    if (!(BINFILE(a0)->flags & 1)) {
+        BINFILE(a0)->data = 0;
     }
 }
 
@@ -4724,7 +4731,7 @@ void *SkinAnim_ctor(void *obj, int arg1, int arg2, int arg3) {
     }
     /* one-line grouping is LOAD-BEARING: flips the sw t7,0/sw t6,8 store order
      * to match target while keeping the li t6,0x8000-first schedule */
-    *(int*)((char*)inner + 0x8) = 0x8000; *(int*)((char*)inner + 0x0) = -1; *(int*)((char*)inner + 0x4) = 0;
+    ((SkinAnim *)inner)->flags = 0x8000; ((SkinAnim *)inner)->unk00 = -1; ((SkinAnim *)inner)->unk04 = 0;
 sentinel:
     inner = (char*)sub + 0x10;
     if (sub == (void*)0xFFFFFFF0) {
@@ -4862,9 +4869,10 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
         char *pb;
         char *pa;
         pa = (char*)SA693->bone; pb = (char*)SM693->bone;
-        ex = *(f32*)(pa+0xA0) - *(f32*)(pb+0xA0);
-        ey = *(f32*)(pa+0xA4) - *(f32*)(pb+0xA4);
-        ez = *(f32*)(pa+0xA8) - *(f32*)(pb+0xA8);
+        /* bone world position minus the main bone's (MNode cmtx[3]) */
+        ex = ((MNode *)pa)->cmtx[3][0] - ((MNode *)pb)->cmtx[3][0];
+        ey = ((MNode *)pa)->cmtx[3][1] - ((MNode *)pb)->cmtx[3][1];
+        ez = ((MNode *)pa)->cmtx[3][2] - ((MNode *)pb)->cmtx[3][2];
     }
     var_a3 = 0;
     if (SA693->count > 0) {
@@ -5013,28 +5021,28 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
         CALL(sys_fatal)((char *)&D_00000000 + 0x2C5B0); /* "SkinMgr already initialized" */
     }
     ((SkinMgr *)self)->bone = (int)arg1;
-    ((SkinMgr *)self)->bindVerts = CALL(mem_new)(*(int *)(arg2 + 0x40) * 6);
-    ((SkinMgr *)self)->outVerts = CALL(mem_new)(*(int *)(arg2 + 0x40) * 6);
-    ((SkinMgr *)self)->weights = CALL(mem_new)(*(int *)(arg2 + 0x40) * 2);
+    ((SkinMgr *)self)->bindVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
+    ((SkinMgr *)self)->outVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
+    ((SkinMgr *)self)->weights = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 2);
     ((SkinMgr *)self)->jitter = 0;
     i = 0;
-    if (*(int *)(arg2 + 0x40) != 0) {
+    if (BASEPOLY(arg2)->nVerts != 0) {
         do {
             *(short *)((char *)((SkinMgr *)self)->weights + i * 2) = 100;
             dst = (short *)((char *)((SkinMgr *)self)->bindVerts + i * 6);
-            src = (short *)(*(char **)(arg2 + 0x60) + i * 6);
+            src = (short *)((char *)BASEPOLY(arg2)->verts + i * 6);
             i += 1;
             dst[0] = src[0];
             dst[1] = src[1];
             dst[2] = src[2];
-        } while (i < (unsigned int)*(int *)(arg2 + 0x40));
+        } while (i < (unsigned int)BASEPOLY(arg2)->nVerts);
     }
     ((SkinMgr *)self)->shape = (int)arg2;
     CALL(SkinMgr_reset)(self);                                    /* SkinMgr_reset */
     p = arg1 + 0x70;                                           /* the bone's world matrix */
     CALL(math_mtx4Inverse)(p, ((SkinMgr *)self)->invBone);           /* math_mtx4Inverse */
-    *(char **)((char *)((SkinMgr *)self)->shape + 0xA8) = (char *)((SkinMgr *)self)->invBone;
-    *(char **)((char *)((SkinMgr *)self)->shape + 0xAC) = p;
+    BASEPOLY(((SkinMgr *)self)->shape)->skinInvBone = (int)((SkinMgr *)self)->invBone;
+    BASEPOLY(((SkinMgr *)self)->shape)->skinBoneMtx = (int)p;
     return (char *)((SkinMgr *)self)->shape;
 }
 

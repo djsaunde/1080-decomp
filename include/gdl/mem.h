@@ -89,4 +89,27 @@ typedef char MemTrackerMgr_root_check[(int)&((MemTrackerMgr *)0)->root == 0x44 ?
 #define MEMTRACKER(p) ((MemTracker *)(p))
 #define MEMTRACKERMGR(p) ((MemTrackerMgr *)(p))
 
+/* DynArr (0xC; DynArr_ctor_00066514 allocs it when this == 0): a fixed block of 8-byte
+ * slots handed out in order. DynArr_push_0006656C returns &items[count++] while
+ * count < capacity - 1, else 0 (full). */
+typedef struct DynArr {
+    /* 0x0 */ char *items;          /* alloc(capacity * 8) */
+    /* 0x4 */ s32 count;
+    /* 0x8 */ s32 capacity;
+} DynArr;
+
+/* DynArrPool: list_allocNode_000665B4 takes 8-byte slots from the current DynArr and
+ * starts a new one (DynArr_ctor(0, chunkSize)) when it is full or there is none.
+ * Full chunks are dropped, not freed. */
+typedef struct DynArrPool {
+    /* 0x0 */ s32 chunkSize;        /* slots per DynArr */
+    /* 0x4 */ DynArr *cur;
+    /* 0x8 */ s32 nChunks;          /* DynArrs created */
+} DynArrPool;
+
+typedef char DynArr_size_check[sizeof(DynArr) == 0xC ? 1 : -1];
+
+#define DYNARR(p) ((DynArr *)(p))
+#define DYNARRPOOL(p) ((DynArrPool *)(p))
+
 #endif /* GDL_MEM_H */

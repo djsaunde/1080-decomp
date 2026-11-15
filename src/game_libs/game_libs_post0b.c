@@ -19057,8 +19057,8 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->unk98 = -1;
     arg0->unkA0 = 0;
     arg0->unkA4 = -1;
-    arg0->unkA8 = 0;
-    arg0->unkAC = 0;
+    arg0->skinInvBone = 0;
+    arg0->skinBoneMtx = 0;
     arg0->unk3C = 0;
     arg0->unk9C = 1.0f;
 }
