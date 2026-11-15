@@ -14,25 +14,7 @@
  * = __osPiTable; gl_func_00000000_bzero / _disint / _resint = bzero /
  * __osDisableInt / __osRestoreInt (blank jals).
  * Spliced into game_libs_post1b2.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned int u32;
-typedef unsigned char u8;
-
-typedef struct {
-    u8 pad[0x60];
-} __OSTranxInfo; /* sizeof = 0x60 */
-
-typedef struct OSPiHandle_s {
-    struct OSPiHandle_s *next;  /* 0x00 */
-    u8 type;                    /* 0x04 */
-    u8 latency;                 /* 0x05 */
-    u8 pageSize;                /* 0x06 */
-    u8 relDuration;             /* 0x07 */
-    u8 pulse;                   /* 0x08 */
-    u8 domain;                  /* 0x09 */
-    u32 baseAddress;            /* 0x0C */
-    u32 speed;                  /* 0x10 */
-    __OSTranxInfo transferInfo; /* 0x14 */
-} OSPiHandle; /* sizeof = 0x74 */
+#include "libultra/os_pi.h" /* OSPiHandle, __OSTranxInfo (was a private copy) */
 
 typedef struct {
     u8 pageSize;    /* DriveRomHandle+6 */
