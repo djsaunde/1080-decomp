@@ -264,7 +264,6 @@ extern u32	osMemSize;
 extern s32	osAppNMIBuffer[];
 extern OSIntMask __OSGlobalIntMask;	 
 extern OSPiHandle      *__osPiTable;     
-extern OSPiHandle      *__osDiskHandle;  
 extern void		osCreateThread(OSThread *, OSId, void (*)(void *),
 				       void *, void *, OSPri);
 extern void		osDestroyThread(OSThread *);
@@ -444,8 +443,16 @@ extern void	bcopy(const void *, void *, int);
 extern int	bcmp(const void *, const void *, int);
 extern void	bzero(void *, int);
 extern void	blkclr(void *, int);
-OSPiHandle LeoDiskHandle;
-OSPiHandle *__osDiskHandle;
+/* agent-a run 479: leodiskinit.c DEFINES these two. `static` keeps the
+ * definition in this TU (an `extern` LeoDiskHandle loses the shared lui $at
+ * of the pageSize/relDuration sb pair: ROM mismatch) but stops the donor .o
+ * exporting a second LeoDiskHandle / __osDiskHandle, so the kernel's own
+ * symbols (D_800195D0 / D_80019644) can carry those names. The splice renames
+ * the .bss relocs to osLeoDiskInit_bss, pinned at 0x800195D0 in
+ * undefined_syms_auto.txt: LeoDiskHandle = bss+0, __osDiskHandle = bss+0x74
+ * (0x80019644 - 0x800195D0 = 0x74, the OSPiHandle size). */
+static OSPiHandle LeoDiskHandle;
+static OSPiHandle *__osDiskHandle;
 OSPiHandle *osLeoDiskInit()
 {
 	u32 saveMask;
