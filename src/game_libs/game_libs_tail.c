@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/hud.h"
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -3323,15 +3324,15 @@ void gl_func_0000E230(int *a0) {
  * `if (o->field) cb(o->field)` chain emits the beqzl-with-next-load-in-delay
  * idiom; cb is the gl_func_00000000 release placeholder. */
 extern int gl_func_00000000();
-void hud_releaseGadgets(int *o) {
-    if (o[0x6C / 4]) gl_func_00000000(o[0x6C / 4]);
-    if (o[0x70 / 4]) gl_func_00000000(o[0x70 / 4]);
-    if (o[0x8C / 4]) gl_func_00000000(o[0x8C / 4]);
-    if (o[0x78 / 4]) gl_func_00000000(o[0x78 / 4]);
-    if (o[0x80 / 4]) gl_func_00000000(o[0x80 / 4]);
-    if (o[0x84 / 4]) gl_func_00000000(o[0x84 / 4]);
-    if (o[0x94 / 4]) gl_func_00000000(o[0x94 / 4]);
-    if (o[0x98 / 4]) gl_func_00000000(o[0x98 / 4]);
+void hud_releaseGadgets(Hud *o) {
+    if (o->pointsList) gl_func_00000000(o->pointsList);
+    if (o->speed) gl_func_00000000(o->speed);
+    if (o->points) gl_func_00000000(o->points);
+    if (o->time) gl_func_00000000(o->time);
+    if (o->course) gl_func_00000000(o->course);
+    if (o->countDown) gl_func_00000000(o->countDown);
+    if (o->points94) gl_func_00000000(o->points94);
+    if (o->cool) gl_func_00000000(o->cool);
 }
 
 /* gl_func_0000E368: 42-insn gated flag toggle. Returns early unless bit 16 of
@@ -3470,23 +3471,23 @@ void game_libs_func_0000E490(char *a0) {
     *p = *p & ~4;
 }
 
-void hud_initSprites_0000E4A8(int *a0) {
+void hud_initSprites_0000E4A8(Hud *a0) {
     int r;
     r = gl_func_00000000(0, &D_00000000, 16, 320, 1, 10);
-    a0[0x58 / 4] = r;
+    a0->digitsTall = r;
     gl_func_00000000(r, -1);
     r = gl_func_00000000(0, &D_00000000, 160, 16, 10, 1);
-    a0[0x5C / 4] = r;
+    a0->digitsWide = r;
     gl_func_00000000(r, -1);
 }
 
-void hud_initSprites_0000E53C(int *a0) {
+void hud_initSprites_0000E53C(Hud *a0) {
     int r;
     r = gl_func_00000000(0, &D_00000000, 352, 17, 11, 1);
-    a0[0x64 / 4] = r;
+    a0->sprites64 = r;
     gl_func_00000000(r, -5);
     r = gl_func_00000000(0, &D_00000000, 240, 11, 10, 1);
-    a0[0x68 / 4] = r;
+    a0->sprites68 = r;
     gl_func_00000000(r, -4);
 }
 
@@ -3507,16 +3508,16 @@ void hud_initSprites_0000E53C(int *a0) {
  * docs/IDO_CODEGEN.md#wave3-round2-38c0-15fc). */
 struct gl_E5D0_factory { int n; char pad[0x1c]; int *sub; };
 extern void gl_func_00000000_e5d0_v();
-void hud_initSprites_0000E5D0(int *self) {
+void hud_initSprites_0000E5D0(Hud *self) {
     struct gl_E5D0_factory *factory =
         (struct gl_E5D0_factory *)gl_func_00000000(0, &D_00000000, 0xC0, 0xB, 0xC, 1);
-    self[0x60 / 4] = (int)factory;
+    self->sprites60 = (int)factory;
     gl_func_00000000_e5d0_v(factory, -2);
-    factory = (struct gl_E5D0_factory *)self[0x60 / 4];
+    factory = (struct gl_E5D0_factory *)self->sprites60;
     if (factory->n >= 0xB) {
         factory->sub[0xD4 / 4] = 8;
     }
-    factory = (struct gl_E5D0_factory *)self[0x60 / 4];
+    factory = (struct gl_E5D0_factory *)self->sprites60;
     if (factory->n >= 0xC) {
         factory->sub[0xE8 / 4] = 4;
     }
@@ -3540,14 +3541,14 @@ void hud_initSprites_0000E5D0(int *self) {
  * (the object) — held across the 3rd call (spilled + reloaded), with the 3rd call's
  * return DISCARDED — NOT on the 3rd call's return (the prior wrong decode). Same
  * back-link-finalizer family shape as gl_func_0003FF44. */
-void hud_addPointsGadgetList(int *self) {
+void hud_addPointsGadgetList(Hud *self) {
     int *obj;
-    if (self[0x58 / 4] == 0) {
+    if (self->digitsTall == 0) {
         gl_func_00000000(self);
     }
-    obj = (int*)gl_func_00000000(0, self[0x58 / 4], self[0x5C / 4], self[0x54 / 4]);
-    self[0x6C / 4] = (int)obj;
-    gl_func_00000000((char*)self + 0x10, obj);
+    obj = (int*)gl_func_00000000(0, self->digitsTall, self->digitsWide, self->pointsListArg);
+    self->pointsList = (int)obj;
+    gl_func_00000000(self->children, obj);
     if (obj[0x14 / 4] != 0) {
         obj[0x4 / 4] = 1;
     }
@@ -3601,18 +3602,18 @@ void hud_addPointsGadgetList(int *self) {
  * target layout (rule 4 dead-local sizing: the gap was 8 bytes, the pad must
  * match it). Same lever cracked E79C + E910 same day.
  */
-void hud_addSpeedGadget(int *self, int a1, int a2, float *a3_float) {
+void hud_addSpeedGadget(Hud *self, int a1, int a2, float *a3_float) {
     int *q;
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
-    self[0x74 / 4] = (int)a3_float;
-    if (self[0x60 / 4] == 0) {
+    self->speedValue = (int)a3_float;
+    if (self->sprites60 == 0) {
         gl_func_00000000();
     }
-    self[0x70 / 4] = gl_func_00000000(0, self[0x60 / 4]);
-    gl_func_00000000((int *)self[0x70 / 4], (int)*(float *)self[0x74 / 4]);
-    gl_func_00000000((int *)self[0x70 / 4], a1, a2);
-    q = (int *)self[0x70 / 4];
-    gl_func_00000000((char *)self + 0x10, q);
+    self->speed = gl_func_00000000(0, self->sprites60);
+    gl_func_00000000((int *)self->speed, (int)*(float *)self->speedValue);
+    gl_func_00000000((int *)self->speed, a1, a2);
+    q = (int *)self->speed;
+    gl_func_00000000(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3649,18 +3650,18 @@ void hud_addSpeedGadget(int *self, int a1, int a2, float *a3_float) {
  * gap is a consistent family spill-slot-packing cap, not float-related.
  * INCLUDE_ASM remains build path.
  */
-void hud_addCountDownGadget(int *self, int a1, int a2, int *a3_int_ptr) {
+void hud_addCountDownGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
-    self[0x88 / 4] = (int)a3_int_ptr;
-    if (self[0x64 / 4] == 0) {
+    self->countDownValue = (int)a3_int_ptr;
+    if (self->sprites64 == 0) {
         gl_func_00000000();
     }
-    self[0x84 / 4] = gl_func_00000000(0, self[0x64 / 4], self[0x68 / 4]);
-    gl_func_00000000((int *)self[0x84 / 4], *(int *)self[0x88 / 4], 1);
-    gl_func_00000000((int *)self[0x84 / 4], a1, a2);
-    q = (int *)self[0x84 / 4];
-    gl_func_00000000((char *)self + 0x10, q);
+    self->countDown = gl_func_00000000(0, self->sprites64, self->sprites68);
+    gl_func_00000000((int *)self->countDown, *(int *)self->countDownValue, 1);
+    gl_func_00000000((int *)self->countDown, a1, a2);
+    q = (int *)self->countDown;
+    gl_func_00000000(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3730,18 +3731,18 @@ void hud_addCourseGadget(int *s0, int a1, int a2, int a3) {
  * and the spill goes above; the target has them swapped, and local-vs-
  * spill slot ordering is not C-controllable (3 placements tested).
  * TRY THE SAME PAD ON E6E8/E79C (same family gap). */
-void hud_addTimeGadget(int *self, int a1, int a2, int *a3_int_ptr) {
+void hud_addTimeGadget(Hud *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];
-    if (self[0x60 / 4] == 0) {
+    if (self->sprites60 == 0) {
         gl_func_00000000();
     }
-    self[0x7C / 4] = (int)a3_int_ptr;
-    self[0x78 / 4] = gl_func_00000000(0, self[0x60 / 4]);
-    gl_func_00000000((int *)self[0x78 / 4], *(int *)self[0x7C / 4]);
-    gl_func_00000000((int *)self[0x78 / 4], a1, a2);
-    q = (int *)self[0x78 / 4];
-    gl_func_00000000((char *)self + 0x10, q);
+    self->timeValue = (int)a3_int_ptr;
+    self->time = gl_func_00000000(0, self->sprites60);
+    gl_func_00000000((int *)self->time, *(int *)self->timeValue);
+    gl_func_00000000((int *)self->time, a1, a2);
+    q = (int *)self->time;
+    gl_func_00000000(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3765,25 +3766,25 @@ void hud_addTimeGadget(int *self, int a1, int a2, int *a3_int_ptr) {
  * lazy-flag spilltemp to 32(sp) (frame 48 unchanged: q=44, inv=40, pad=36,
  * temp=32). */
 extern int gl_func_00000000();
-void hud_addPointsGadget(int *self, int a1, int a2, int a3) {
+void hud_addPointsGadget(Hud *self, int a1, int a2, int a3) {
     int *q;
     float inv;
     volatile int pad;
     inv = 255.0f;
-    if (self[0x60 / 4] == 0) {
+    if (self->sprites60 == 0) {
         gl_func_00000000();
     }
-    self[0x90 / 4] = a3;
-    self[0x8C / 4] = gl_func_00000000(0, self[0x60 / 4]);
-    gl_func_00000000((int *)self[0x8C / 4], a1, a2);
-    q = (int *)self[0x8C / 4];
+    self->pointsValue = a3;
+    self->points = gl_func_00000000(0, self->sprites60);
+    gl_func_00000000((int *)self->points, a1, a2);
+    q = (int *)self->points;
     q = (int *)((char *)q + 0xC4);
     ((float *)q)[0] = 250.0f / inv;
     ((float *)q)[1] = 235.0f / inv;
     ((float *)q)[2] = 100.0f / inv;
     ((float *)q)[3] = 0.0f / inv;
-    q = (int *)self[0x8C / 4];
-    gl_func_00000000((char *)self + 0x10, q);
+    q = (int *)self->points;
+    gl_func_00000000(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
@@ -3811,14 +3812,14 @@ void hud_addPointsGadget(int *self, int a1, int a2, int a3) {
  * finalizer. The simplest family member (no lazy-init, no a3-home-across-call)
  * so it has no frame-alignment gap — full byte match.
  */
-void hud_addCoolGadget(int *self, int a1, int a2, int a3) {
+void hud_addCoolGadget(Hud *self, int a1, int a2, int a3) {
     int *q;
-    self[0x9C / 4] = a3;
-    self[0x98 / 4] = gl_func_00000000(0, 0x4B);
-    gl_func_00000000((int *)self[0x98 / 4], *(int *)self[0x9C / 4]);
-    gl_func_00000000((int *)self[0x98 / 4], a1, a2);
-    q = (int *)self[0x98 / 4];
-    gl_func_00000000((char *)self + 0x10, q);
+    self->coolValue = a3;
+    self->cool = gl_func_00000000(0, 0x4B);
+    gl_func_00000000((int *)self->cool, *(int *)self->coolValue);
+    gl_func_00000000((int *)self->cool, a1, a2);
+    q = (int *)self->cool;
+    gl_func_00000000(self->children, q);
     if (q[0x14 / 4] != 0) {
         q[0x4 / 4] = 1;
     }
