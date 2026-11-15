@@ -3,7 +3,7 @@
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
 extern s32 D_8000A480;
-extern s32 D_80013004;
+extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
@@ -27,8 +27,8 @@ typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 D_80012C44;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
-extern s32 D_80012BC0;
-extern s32 D_8000A2E0;
+extern s32 gUsoCtx;
+extern s32 gFsDeviceTable;
 extern s32 D_8000A41C;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-void __osResetGlobalIntMask(s32 arg0, s32 arg1) {
+void __rmonWriteWordTo(s32 arg0, s32 arg1) {
     if (func_8000A090(arg0, arg1) != 0) {
         do {
         } while (func_8000A090(arg0, arg1) != 0);
@@ -71,7 +71,7 @@ void __osResetGlobalIntMask(s32 arg0, s32 arg1) {
 }
 
 
-/* func_80006698: 21-insn MMIO read-with-range-check helper covering bytes
+/* __rmonReadWordAt: 21-insn MMIO read-with-range-check helper covering bytes
  * 0x80006698-0x800066EC (0x54). Splat originally split this into 3
  * fragments at 0x80006698 / 0x800066B0 / 0x800066D0; .s files merged 2026-05-05
  * (see DECOMPILED_FUNCTIONS.md "Fragment Merges Performed").
@@ -83,7 +83,7 @@ void __osResetGlobalIntMask(s32 arg0, s32 arg1) {
  * because the ROM bytes are correct; "function" semantics at the inner
  * entries are misleading but byte-stable). */
 extern void func_80008FB0(s32, s32*);
-s32 func_80006698(s32 a0) {
+s32 __rmonReadWordAt(s32 a0) {
     s32 local;
     if ((u32)a0 >= 0x04000000U && (u32)a0 < 0x05000000U) {
         func_80008FB0(a0, &local);

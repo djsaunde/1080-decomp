@@ -6,12 +6,12 @@ u32 func_800000B0(u32 size, u32 alignment) {
     if ((size | 0) & (alignment - 1)) {
         size = (size + alignment) & ~(alignment - 1);
     }
-    v = D_8000A2D8;
-    D_8000A2D8 = v + size;
-    D_80012D5C += size;
+    v = gUsoHeapCur;
+    gUsoHeapCur = v + size;
+    gUsoMemUsed += size;
     r = v;
     v = 0;
-    if (D_8000A2D8 >= D_8000A2DC) {
+    if (gUsoHeapCur >= gUsoHeapEnd) {
         return 0;
     }
     return r;

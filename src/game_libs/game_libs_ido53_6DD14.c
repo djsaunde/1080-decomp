@@ -80,7 +80,7 @@ extern s32 gl_func_00000000_recv(void *, OSMesg *, s32);   /* osRecvMesg */
 extern s32 gl_func_00000000_send(void *, OSMesg, s32);     /* osSendMesg */
 extern s32 gl_func_00000000_ewio(OSPiHandle *, u32, u32);  /* osEPiRawWriteIo */
 extern s32 gl_func_00000000_erio(OSPiHandle *, u32, u32 *);/* osEPiRawReadIo */
-extern void gl_func_00000000_rgim(u32);                    /* __osResetGlobalIntMask */
+extern void gl_func_00000000_rgim(u32);                    /* __rmonWriteWordTo */
 extern void gl_func_00000000_sgim(u32);                    /* __osSetGlobalIntMask */
 extern void gl_func_00000000_yield(void);                  /* osYieldThread */
 

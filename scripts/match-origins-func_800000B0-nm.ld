@@ -9,6 +9,6 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_8000A2D8 = 0x0;
-D_8000A2DC = 0x0;
-D_80012D5C = 0x0;
+gUsoHeapCur = 0x0;
+gUsoHeapEnd = 0x0;
+gUsoMemUsed = 0x0;

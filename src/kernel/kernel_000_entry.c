@@ -5,9 +5,9 @@
  * stub (clear BSS, set sp, jump to runtime 0x80000460) plus its pad; the
  * kernel runs at 0x80000400, so that jump lands on func_80000060 here.
  * func_80000060 is plain IDO 7.1 -O2 C. Its callees use the +0x400 jal
- * names: func_80001994 = func_80001594 (USO loader init, given the memory
- * size), func_80000DEC = func_800009EC (load the first module, here the
- * boot USO named by D_8000A59C), func_80001088 = func_80000C88 (call its
+ * names: func_80001994 = uso_init (USO loader init, given the memory
+ * size), func_80000DEC = uso_load (load the first module, here the
+ * boot USO named by D_8000A59C), func_80001088 = uso_callEntry (call its
  * entry). IDO pads this unit's .text to 0xB0, which is where kernel_000
  * starts. */
 

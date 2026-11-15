@@ -5,10 +5,10 @@ glabel uso_find_file
     /* 21D0 800011D0 27BDFFA0 */  addiu      $sp, $sp, -0x60
     /* 21D4 800011D4 AFB30020 */  sw         $s3, 0x20($sp)
     /* 21D8 800011D8 AFB00014 */  sw         $s0, 0x14($sp)
-    /* 21DC 800011DC 3C108001 */  lui        $s0, %hi(D_80012FC0)
-    /* 21E0 800011E0 3C138001 */  lui        $s3, %hi(D_80012F80)
-    /* 21E4 800011E4 26732F80 */  addiu      $s3, $s3, %lo(D_80012F80)
-    /* 21E8 800011E8 26102FC0 */  addiu      $s0, $s0, %lo(D_80012FC0)
+    /* 21DC 800011DC 3C108001 */  lui        $s0, %hi(gUsoPathDir)
+    /* 21E0 800011E0 3C138001 */  lui        $s3, %hi(gUsoPathFile)
+    /* 21E4 800011E4 26732F80 */  addiu      $s3, $s3, %lo(gUsoPathFile)
+    /* 21E8 800011E8 26102FC0 */  addiu      $s0, $s0, %lo(gUsoPathDir)
     /* 21EC 800011EC AFBF0024 */  sw         $ra, 0x24($sp)
     /* 21F0 800011F0 AFA50064 */  sw         $a1, 0x64($sp)
     /* 21F4 800011F4 AFB2001C */  sw         $s2, 0x1C($sp)
@@ -22,16 +22,16 @@ glabel uso_find_file
     /* 2214 80001214 0C00022E */  jal        func_800008B8
     /* 2218 80001218 02002825 */   or        $a1, $s0, $zero
     /* 221C 8000121C 14400003 */  bnez       $v0, .L8000122C
-    /* 2220 80001220 3C118001 */   lui       $s1, %hi(D_800130A0)
+    /* 2220 80001220 3C118001 */   lui       $s1, %hi(gUsoModuleSlots)
     /* 2224 80001224 1000001A */  b          .L80001290
     /* 2228 80001228 2402FFEF */   addiu     $v0, $zero, -0x11
   .L8000122C:
-    /* 222C 8000122C 3C108001 */  lui        $s0, %hi(D_800130A0 + 0x72)
-    /* 2230 80001230 3C128002 */  lui        $s2, %hi(D_800130A0 + 0x52B6)
+    /* 222C 8000122C 3C108001 */  lui        $s0, %hi(gUsoModuleSlots + 0x72)
+    /* 2230 80001230 3C128002 */  lui        $s2, %hi(gUsoModuleSlots + 0x52B6)
     /* 2234 80001234 AFA0002C */  sw         $zero, 0x2C($sp)
-    /* 2238 80001238 26528356 */  addiu      $s2, $s2, %lo(D_800130A0 + 0x52B6)
-    /* 223C 8000123C 26103112 */  addiu      $s0, $s0, %lo(D_800130A0 + 0x72)
-    /* 2240 80001240 263130A0 */  addiu      $s1, $s1, %lo(D_800130A0)
+    /* 2238 80001238 26528356 */  addiu      $s2, $s2, %lo(gUsoModuleSlots + 0x52B6)
+    /* 223C 8000123C 26103112 */  addiu      $s0, $s0, %lo(gUsoModuleSlots + 0x72)
+    /* 2240 80001240 263130A0 */  addiu      $s1, $s1, %lo(gUsoModuleSlots)
   .L80001244:
     /* 2244 80001244 02002025 */  or         $a0, $s0, $zero
     /* 2248 80001248 0C00015A */  jal        func_80000568

@@ -20,7 +20,7 @@ extern void func_80005350(void*, s32);
 
 /* func_80008054: 31-insn (0x7C) bundled libultra SP/MI helper. Contains THREE
  * separately-callable entry points (similar alt-entry cap class as
- * func_8000817C / osEPiRawStartDma / func_80006698):
+ * func_8000817C / osEPiRawStartDma / __rmonReadWordAt):
  *
  *   Entry 0 @ 0x80008054: __osSpDeviceBusy + status reset
  *     while (*SP_DMA_BUSY_REG != 0) ;   // wait for DMA idle

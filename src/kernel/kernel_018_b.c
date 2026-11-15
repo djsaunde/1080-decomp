@@ -3,7 +3,7 @@
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
 extern s32 D_8000A480;
-extern s32 D_80013004;
+extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
@@ -27,8 +27,8 @@ typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 D_80012C44;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
-extern s32 D_80012BC0;
-extern s32 D_8000A2E0;
+extern s32 gUsoCtx;
+extern s32 gFsDeviceTable;
 extern s32 D_8000A41C;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
@@ -66,7 +66,7 @@ extern OSEventState __osEventStateTab[];
 
 /* func_800066B0+func_800066D0 INCLUDE_ASM moved to kernel_017.c on
  * 2026-05-05 to enable the 3-way merge with the parent fragment
- * func_80006698. Per
+ * __rmonReadWordAt. Per
  * feedback_cross_file_fragment_unblock_via_move_then_merge.md: moving
  * just the INCLUDE_ASM (no C body change) is layout-neutral when both
  * .o files reside in adjacent linker-script slots and the destination

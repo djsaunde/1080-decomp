@@ -8,8 +8,8 @@ reads the real reloc table and rewrites each relocated instruction to reference
 a canonical per-symbol name `usosym_<symIdx>`, emitting %hi/%lo/jal so the
 assembled .o carries proper R_MIPS_HI16/LO16/26 relocs.
 
-On-disk TextReloc entry (12 bytes), validated against the loader (func_80001ADC
-relocator + func_800018F0 un-relocator) and 15543 entries with 0 opcode errors:
+On-disk TextReloc entry (12 bytes), validated against the loader (uso_relocate
+relocator + uso_unrelocate un-relocator) and 15543 entries with 0 opcode errors:
   field0 = flag (1; entry0 has 0x08000000 start bit)
   field1 = (symIdx << 4) | (kind & 7)   ->  symIdx = field1>>4, kind = field1&7
   field2 = byte offset into the Text section (== splat project offset)

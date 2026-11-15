@@ -1,10 +1,10 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) donor for func_80001ADC (134 words, EXACT, agent-h run 363),
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) donor for uso_relocate (134 words, EXACT, agent-h run 363),
  * compiled by tools/ncc721.sh and spliced into kernel_000.c.o on both build paths over the placeholder.
- * USO relocation applier: see the decode comment at func_80001ADC in kernel_000.c.
+ * USO relocation applier: see the decode comment at uso_relocate in kernel_000.c.
  *
  * The target dispatches the 4-label `switch (type)` (1..4) through a native 4-entry jump table, which only
  * EDG 2.29's switch rule produces (cfe needs a phantom `case 5:` and gets sltiu 5). The donor's .rodata
- * reloc is renamed func_80001ADC_rodata by the splice and pinned to the ROM table jtbl_8000A63C (table at
+ * reloc is renamed uso_relocate_rodata by the splice and pinned to the ROM table jtbl_8000A63C (table at
  * donor .rodata +0). Levers (kits CDXLVII / CDXLIX):
  *   - the four head statements sit INSIDE the flags test's then-arm (`if (flags & 8) { ... } else { continue; }`):
  *     written after an empty then-arm they land in a join block that uopt folds into the test's fall-through
@@ -27,7 +27,7 @@ extern "C" char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoRelSym_1ADC;
 
-extern "C" s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
+extern "C" s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     s32 info; UsoRelSym_1ADC *sym;
     UsoRelSym_1ADC *symtab;
     s32 type, val, lo;

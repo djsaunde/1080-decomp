@@ -1621,35 +1621,35 @@ build/src/game_libs/game_libs_ido53_6C1B8.c.o build/non_matching/src/game_libs/g
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: REPLACE_FUNC_BODY := osInitialize=$(KERNEL000_2530_DONOR)
-# 1184 = zero D_80012D5C + an 11-word module-local static table (shared `lui at`); NCC donor.
-# Its .bss reloc is renamed func_80001184_bss by the splice (pinned to 0x80012D30 in undefined_syms_auto.txt).
+# 1184 = zero gUsoMemUsed + an 11-word module-local static table (shared `lui at`); NCC donor.
+# Its .bss reloc is renamed uso_clearMemStats_bss by the splice (pinned to 0x80012D30 in undefined_syms_auto.txt).
 KERNEL000_1184_DONOR := build/src/kernel/kernel_ncc_1184.cpp.o
 # 598 = `while (n--) *d++ = *s++;` byte copy; NCC keeps the post-increment temps (exact).
 KERNEL000_598_DONOR := build/src/kernel/kernel_ncc_598.cpp.o
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80000598=$(KERNEL000_598_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_bcopy=$(KERNEL000_598_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_598_DONOR)
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001184=$(KERNEL000_1184_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_clearMemStats=$(KERNEL000_1184_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1184_DONOR)
 # 1EC8 = USO section-record loader; cfe -O2 donor (kept out of C_FILES below). Its 12-entry
-# switch table reloc is renamed func_80001EC8_rodata by the splice and pinned to jtbl_8000A64C
+# switch table reloc is renamed uso_loadSections_rodata by the splice and pinned to jtbl_8000A64C
 # (0x8000A64C, table offset 0 in the donor .rodata) in undefined_syms_auto.txt.
 KERNEL000_1EC8_DONOR := build/src/kernel/kernel_000_1EC8.c.o
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001EC8=$(KERNEL000_1EC8_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_loadSections=$(KERNEL000_1EC8_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1EC8_DONOR)
 # 1594 = USO loader init; cfe -O2 donor (kept out of C_FILES below; agent-c run 229: the
-# slot-clear loop as a one-line index loop on i gives the func_80000480+0x30 CSE a2).
+# slot-clear loop as a one-line index loop on i gives the fs_initFile+0x30 CSE a2).
 # Its two local-label targets are pinned as func_80001594_L80000C5C / _L800007A8 in undefined_syms_auto.txt.
 KERNEL000_1594_DONOR := build/src/kernel/kernel_000_1594.c.o
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001594=$(KERNEL000_1594_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_init=$(KERNEL000_1594_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1594_DONOR)
 # 1ADC = USO relocation applier; EXACT MIPSpro 7.2.1 donor (native 4-entry type table; agent-h run 363),
-# built by tools/ncc721.sh like the other *_mp72_* donors. Its .rodata reloc is renamed func_80001ADC_rodata
+# built by tools/ncc721.sh like the other *_mp72_* donors. Its .rodata reloc is renamed uso_relocate_rodata
 # by the splice and pinned to the ROM table jtbl_8000A63C (donor .rodata +0) in undefined_syms_auto.txt.
 build/src/kernel/kernel_mp72_%.cpp.o: src/kernel/kernel_mp72_%.cpp $(TOOLS)/ncc721.sh
 	@mkdir -p $(dir $@)
 	$(TOOLS)/ncc721.sh $< $@ $(OPT_FLAGS)
 KERNEL000_1ADC_DONOR := build/src/kernel/kernel_mp72_1ADC.cpp.o
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001ADC=$(KERNEL000_1ADC_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_relocate=$(KERNEL000_1ADC_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1ADC_DONOR)
 # __osDevMgrMain = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
 # non-reloc-identical; renames map the callees to kernel addresses; the
@@ -1698,10 +1698,10 @@ build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: RE
 build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: TRUNCATE_TEXT := 0x190
 # kernel_000 tail: C-body path leaves a 4-byte alignment residue after the
 # func_800029A0_pad block (.text 0x29B4 vs ROM-true 0x29B0) — trim it.
-# func_8000235C (exact C, 0x7C) + the two all-zero alignment words before the 16-aligned
+# uso_unbindImports (exact C, 0x7C) + the two all-zero alignment words before the 16-aligned
 # handwritten func_800023E0 (the INCLUDE_ASM .s carried them: 0x84).
-build/src/kernel/kernel_000.c.o: private SUFFIX_BYTES_FORCE := func_8000235C=0x00000000,0x00000000
-build/non_matching/src/kernel/kernel_000.c.o: private NON_MATCHING_SUFFIX_BYTES_FORCE := func_8000235C=0x00000000,0x00000000
+build/src/kernel/kernel_000.c.o: private SUFFIX_BYTES_FORCE := uso_unbindImports=0x00000000,0x00000000
+build/non_matching/src/kernel/kernel_000.c.o: private NON_MATCHING_SUFFIX_BYTES_FORCE := uso_unbindImports=0x00000000,0x00000000
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private TRUNCATE_TEXT := 0x2900  # was 0x29B0 before the entry stub + func_80000060 (0xB0) moved to kernel_000_entry.c
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6D0F4.c.o build/non_matching/src/game_libs/game_libs_ido53_6D0F4.c.o: OPT_FLAGS := -O1

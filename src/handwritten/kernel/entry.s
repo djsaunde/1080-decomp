@@ -4,7 +4,7 @@
 # addi (trapping add) is assembler output IDO never emits for C.
 #   D_8000ABC0 = start of .bss, 0x153E0 = .bss size (cleared 8 bytes a loop)
 #   D_80000460 = runtime address of func_80000060 (boot main; the kernel
-#   runs at +0x400), D_80012BC0 = boot stack top
+#   runs at +0x400), gUsoCtx = boot stack top
 
 glabel func_80000000
     lui     $t0, %hi(D_8000ABC0)        # t0 = bss start
@@ -18,10 +18,10 @@ glabel func_80000000
     bnez    $t1, .Lentry_clearbss
      addi   $t0, $t0, 0x8
     lui     $t2, %hi(D_80000460)        # t2 = boot routine
-    lui     $sp, %hi(D_80012BC0)        # sp = boot stack top
+    lui     $sp, %hi(gUsoCtx)        # sp = boot stack top
     addiu   $t2, $t2, %lo(D_80000460)
     jr      $t2
-     addiu  $sp, $sp, %lo(D_80012BC0)
+     addiu  $sp, $sp, %lo(gUsoCtx)
     nop                                 # padding to 0x80000060
     nop
     nop

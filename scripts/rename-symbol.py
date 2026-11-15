@@ -259,7 +259,7 @@ def kernel_subn(path, text, tr, new):
     linker / symbol files, comments, docs) and leave references spelled OLD,
     which pin_alias() then pins as an absolute (OLD = its address)."""
     is_s = path.endswith((".s", ".inc"))
-    is_c = path.endswith((".c", ".h", ".cpp"))
+    is_c = path.endswith((".c", ".cpp"))  # headers (m2c contexts) declare the definitions: full rename
     if not (is_s or is_c):
         t2, n = tr.subn(lambda m: new + (m.group(1) or ""), text)
         return t2, n, 0
@@ -278,7 +278,7 @@ def kernel_subn(path, text, tr, new):
         else:
             code = line.strip()
             ren = bool(_C_ASM_LINE.match(line)) or (
-                re.match(r"^(?!extern\b|typedef\b|return\b)[A-Za-z_]", line) is not None
+                re.match(r'^(?:extern\s+"C"\s+)?(?!extern\b|typedef\b|return\b)[A-Za-z_]', line) is not None
                 and re.search(re.escape(m.group(0)) + r"\s*\(", line) is not None
                 and not code.endswith(";"))
         out.append(text[last:a])
@@ -299,8 +299,8 @@ def pin_alias(old, new, dry):
     if m:
         addr = int(m.group(1), 16)
     else:
-        sa = (ROOT / "symbol_addrs.txt").read_text(errors="replace")
-        mm = re.search(r"(?m)^\s*" + re.escape(new) + r"\s*=\s*(0x[0-9A-Fa-f]+)", sa)
+        sa = read_text("symbol_addrs.txt")
+        mm = re.search(r"(?m)^\s*(?:" + re.escape(new) + "|" + re.escape(old) + r")\s*=\s*(0x[0-9A-Fa-f]+)", sa)
         if mm:
             addr = int(mm.group(1), 16)
     if addr is None:
@@ -322,6 +322,7 @@ def apply(renames, dry):
     idx = Index()
     files = tracked_text_files()
     pending = set()
+    moved = {}
     all_errs = []
     plan = []
     for old, new in renames:
@@ -342,6 +343,8 @@ def apply(renames, dry):
         nrefs = 0
         kept = 0
         for p in hits:
+            while p in moved:  # an earlier rename in this batch git-mv'd the file
+                p = moved[p]
             t = read_text(p)
             if kernel:
                 t2, n, k = kernel_subn(p, t, tr, new)
@@ -380,6 +383,7 @@ def apply(renames, dry):
             if a in _text_cache:
                 _text_cache[b] = _text_cache.pop(a)
             files = [b if f == a else f for f in files]
+            moved[a] = b
         if kernel and kept:
             pin_alias(old, new, dry)
         print(f"{'[dry] ' if dry else ''}{old} -> {new}: {nrefs} refs in {nfiles} files, "

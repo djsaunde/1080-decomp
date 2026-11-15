@@ -55,7 +55,7 @@
  * -O1 donor: kernel_ido53_5C50.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice: 292/292 words -- every non-reloc word identical at first
  * compile; 22 jal fields resolve to osRecvMesg=4FE0 / osSendMesg=5DC0 /
- * __osResetGlobalIntMask=6650 / __osSetGlobalIntMask=65F0 /
+ * __rmonWriteWordTo=6650 / __osSetGlobalIntMask=65F0 /
  * osEPiRawWriteIo=9EB0 / osEPiRawReadIo=9C50 / osYieldThread=9E50, and
  * the one %hi/%lo pair is the switch jumptable pinned at 0x8000A770
  * (__osDevMgrMain_rodata; lui 0x8001/lw 0xa770 signed-lo wrap). This

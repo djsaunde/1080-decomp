@@ -18,13 +18,13 @@ functions execute + access translated memory correctly.
 
 REMAINING (the full loader drive): the loader is file-based --
 func_800015D0 (open) / func_800009D8(dst,size,count,fh) (read) / func_80000A88
-(seek) over a file object; func_80001EC8 = section loader; func_80001ADC =
+(seek) over a file object; uso_loadSections = section loader; uso_relocate =
 relocator (a0=module[->0x3C=symTable], a1=section base, a2=reloc table, a3=count);
-func_800018F0 = un-relocator. The SYM RESOLVER (writes symEntry+4 + sets
+uso_unrelocate = un-relocator. The SYM RESOLVER (writes symEntry+4 + sets
 symEntry+0 bit3) was not located statically. NEXT: either (a) stub
 open/read/seek to serve the bootup.uso ROM bytes + an allocator stub, then run
-the top-level load entry (callers of uso_file_open: func_800012BC/80001414/
-80001348) and hook func_80001ADC to dump a0->0x3C; or (b) manually load
+the top-level load entry (callers of uso_file_open: fs_openFile/80001414/
+80001348) and hook uso_relocate to dump a0->0x3C; or (b) manually load
 bootup.uso sections + build the module struct, set a UC_HOOK_MEM_WRITE on the
 Sym region, and run candidate loader fns to EMPIRICALLY identify the resolver by
 who writes symEntry+4.

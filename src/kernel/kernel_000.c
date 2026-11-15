@@ -3,7 +3,7 @@
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
 extern s32 D_8000A480;
-extern s32 D_80013004;
+extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
@@ -27,13 +27,13 @@ typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 D_80012C44;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
-extern s32 D_80012BC0;
+extern s32 gUsoCtx;
 extern s32 D_80012BE4;
-extern s32 D_80012C64;
-extern s32 D_80012C68;
-extern s32 D_80012D60[];
+extern s32 gUsoEntryIndex;
+extern s32 gUsoEntryModule;
+extern s32 gUsoModules[];
 extern s32 D_80013000;
-extern s32 D_8000A2E0;
+extern s32 gFsDeviceTable;
 extern s32 D_8000A41C;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
@@ -79,7 +79,7 @@ typedef struct {
 } UsoSlotGroup;
 
 extern u8 D_80013138;
-extern UsoSlot D_800130A0;
+extern UsoSlot gUsoModuleSlots;
 extern u8 D_800131D4;
 extern UsoSlot D_8001313C;
 extern u8 D_80013270;
@@ -90,9 +90,9 @@ extern UsoSlotGroup D_800182E4;
 
 /* func_80000000 (entry stub) + func_80000060 (boot main) live in kernel_000_entry.c */
 
-extern u32 D_8000A2D8;
-extern u32 D_8000A2DC;
-extern s32 D_80012D5C;
+extern u32 gUsoHeapCur;
+extern u32 gUsoHeapEnd;
+extern s32 gUsoMemUsed;
 
 /* Bump allocator with alignment + bookkeeping. NATURAL CEILING: 91.15% NM.
  * Was previously documented (2026-05-14) as "Promoted from 91.15% NM ->
@@ -104,15 +104,15 @@ extern s32 D_80012D5C;
  * the branch delay), making the function 1 insn larger than IDO's natural
  * emit. 11+ negative C-shape attempts confirmed the cap is unreachable
  * from naturally-emitted C; default build is INCLUDE_ASM.
- *   D_8000A2D8 = current heap top (bumps on each call)
- *   D_8000A2DC = heap end limit (returns NULL when exceeded)
- *   D_80012D5C = running total of bytes allocated
+ *   gUsoHeapCur = current heap top (bumps on each call)
+ *   gUsoHeapEnd = heap end limit (returns NULL when exceeded)
+ *   gUsoMemUsed = running total of bytes allocated
  *
  * Current match: 18/25 insns (~72%), 7 mnemonic diffs (was 15/26 ~58%).
  * 2026-06-23 NM-body rewrite (agent-i) cut the residual from 11 diffs to 7:
  *   - INLINE the alignment mask `(alignment - 1)` (drop the named `v` mask
  *     var) so IDO frees $a1/$a2 for the two global-pointer bases and hoists
- *     `lui %hi(D_80012D5C)` into the early beqz delay slot — the entire
+ *     `lui %hi(gUsoMemUsed)` into the early beqz delay slot — the entire
  *     address-materialization region (a1/a2 coloring) now MATCHES the target.
  *   - explicit `r = v; if (oom) r = 0; return r;` reserves $v0 for the result
  *     so the load/store/bookkeeping region matches too.
@@ -134,9 +134,9 @@ extern s32 D_80012D5C;
  * IDO to emit the +1-insn longer "preemptive set + nop delay" pattern.
  *
  * 2026-05-08 — additional negative attempts:
- *   (a) `if (new_top < D_8000A2DC) return result; return 0;` (flipped
+ *   (a) `if (new_top < gUsoHeapEnd) return result; return 0;` (flipped
  *       condition with early-return success): 91.15% → 88.65% (-2.5pp).
- *   (b) `ret = result; if (new_top >= D_8000A2DC) ret = 0; return ret;`
+ *   (b) `ret = result; if (new_top >= gUsoHeapEnd) ret = 0; return ret;`
  *       (explicit ret local to force preemptive set): 91.15% → 85.38%
  *       (-5.8pp). IDO collapses `ret` into `result` and emits the same
  *       shortened branch-delay pattern.
@@ -151,7 +151,7 @@ extern s32 D_80012D5C;
  *
  * 2026-05-27 retest #4 — split-jr-ra-via-goto-out lever (the same lever
  *   that landed AudioHeap_AllocZeroed / improved gl_func_00036E74 + 0003D16C):
- *   `if (new_top < D_8000A2DC) goto succ; return 0; succ: return result;`.
+ *   `if (new_top < gUsoHeapEnd) goto succ; return 0; succ: return result;`.
  *   Standalone-cc shows mine still places `or v0, v1, $0` in the bnez
  *   delay slot rather than target's BEFORE-sltu position. The goto-out
  *   lever splits the jr-ra into two but doesn't move the preemptive set
@@ -177,11 +177,11 @@ u32 func_800000B0(u32 size, u32 alignment) {
     if (size & (alignment - 1)) {
         size = (size + alignment) & ~(alignment - 1);
     }
-    v = D_8000A2D8;
-    D_8000A2D8 = v + size;
-    D_80012D5C += size;
+    v = gUsoHeapCur;
+    gUsoHeapCur = v + size;
+    gUsoMemUsed += size;
     r = v;
-    if (D_8000A2D8 >= D_8000A2DC) {
+    if (gUsoHeapCur >= gUsoHeapEnd) {
         r = 0U;
     }
     return r;
@@ -191,7 +191,7 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800000B0);
 #endif
 
 /* Boot init */
-void func_80000118(s32 a0, s32 a1) {
+void uso_syncCache(s32 a0, s32 a1) {
     s32 saved = func_80002890(1);
     func_8000A0E0();
     func_80005350(a0, a1);
@@ -199,14 +199,14 @@ void func_80000118(s32 a0, s32 a1) {
     func_80002890(saved);
 }
 
-/* func_80000168: string-difference predicate (0 if equal, 1 if different).
+/* uso_strcmp: string-difference predicate (0 if equal, 1 if different).
  * EXACT via twin port (2026-10-20, twin-finder.py): structurally identical
  * (1.000) to game_libs_func_00067B04 (post1b, exact 29/29), whose C carries
  * the two levers the old 18-diff "loop-body CSE cap" lacked: the dead in-guard
  * `q = arg1;` reassignment (q coalesces with c0 in $v0, p takes $v1, plain
  * beq with `move v1,a0` delay instead of beqzl+sltu) and the dead `int r = 0;`
  * initializer (r colors $v1). */
-s32 func_80000168(unsigned char *arg0, unsigned char *arg1) {
+s32 uso_strcmp(unsigned char *arg0, unsigned char *arg1) {
     int c0 = *arg0;
     unsigned char *q;
     unsigned char *p;
@@ -234,7 +234,7 @@ s32 func_80000168(unsigned char *arg0, unsigned char *arg1) {
     return r;
 }
 
-void func_800001DC(char* dst, char* src) {
+void uso_strcpy(char* dst, char* src) {
     char* s = src;
     unsigned char c = *src;
     char* d = dst;
@@ -258,7 +258,7 @@ void func_800001DC(char* dst, char* src) {
  * string reached. v0 trails v1 by one statement; the duplicate `v0 = v1;`
  * at the top of the loop body is the value-numbering nudge that lets IDO
  * fill both the entry-beqz and loop-back-bnel delay slots with `or v0,v1`. */
-s32 func_8000020C(char *arg0, s32 *arg1) {
+s32 uso_findSlash(char *arg0, s32 *arg1) {
     s32 v0;
     s32 v1;
 
@@ -283,12 +283,12 @@ extern s32 func_800005DC();
 extern s32 func_8000060C();
 extern void func_80000660();
 
-/* func_80000260: split "dir/file" at the first '/' (func_8000020C) into dir
- * (strcpy func_800001DC from a 0x40 stack copy) and file; no slash -> dir =
+/* uso_splitPath: split "dir/file" at the first '/' (uso_findSlash) into dir
+ * (strcpy uso_strcpy from a 0x40 stack copy) and file; no slash -> dir =
  * whole path, file = "". IDO 7.1 -O2. Kernel jal targets sit 0x400 above our
- * numbering: `jal func_8000060C` is func_8000020C and `jal func_800005DC` is
- * func_800001DC, so the calls go through the absolute names (the 5DC one via
- * the func_800005DC_d2c alias: func_800005DC is also a C definition in this
+ * numbering: `jal func_8000060C` is uso_findSlash and `jal fs_read` is
+ * uso_strcpy, so the calls go through the absolute names (the 5DC one via
+ * the func_800005DC_d2c alias: fs_read is also a C definition in this
  * TU). The byte loop is IDO's own 4x unroll of a plain for loop.
  * EXACT 2026-10-20 (agent-g run 112; the old NM wrote the unroll by hand and
  * sat at 0%): the file copy is a while loop (IDO peels its first test, so
@@ -297,7 +297,7 @@ extern void func_80000660();
  * strength-reduces the indices into pointers), and `if (1) {}` after j = 0
  * (BB lever: j in v1, the loaded char in v0). */
 extern s32 func_800005DC_d2c(void*, void*);
-void func_80000260(char *path, char *dir, char *file) {
+void uso_splitPath(char *path, char *dir, char *file) {
     char buf[0x40];
     s32 len;
     s32 i;
@@ -323,7 +323,7 @@ void func_80000260(char *path, char *dir, char *file) {
     }
 }
 
-void func_800003A8(s32 arg0, s32 arg1, s32 arg2) {
+void fs_romRead(s32 arg0, s32 arg1, s32 arg2) {
     s32 savedMask;
     s32 status;
     u16 first16;
@@ -350,9 +350,9 @@ void func_800003A8(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 /* uso_set_alloc */
-extern s32 D_8000A2E0;
-void func_80000474(s32 val) {
-    D_8000A2E0 = val;
+extern s32 gFsDeviceTable;
+void fs_setDeviceTable(s32 val) {
+    gFsDeviceTable = val;
 }
 
 typedef struct {
@@ -375,20 +375,20 @@ typedef struct {
  * CSE'd forwarding vs ROM's 14 (verified pre-relayout against a shifted
  * baseline). ROM truth is a 5-word struct assignment (t7/t6-alternating
  * block-copy idiom) + reload of dst->blk.unk8 + zero of unk4. */
-void func_80000480(Struct00480Dst* dst, Struct00480Src* src) {
+void fs_initFile(Struct00480Dst* dst, Struct00480Src* src) {
     dst->blk = *src;
     dst->unk1C = dst->blk.unk8;
     dst->unk4 = 0;
 }
 
-/* func_800004B8: named-handler lookup, IDO 7.1 -O2, EXACT. Walks the
- * 0x14-byte entry table at *D_8000A2E0 until a NULL name; on the first
+/* fs_openDevice: named-handler lookup, IDO 7.1 -O2, EXACT. Walks the
+ * 0x14-byte entry table at *gFsDeviceTable until a NULL name; on the first
  * entry whose name matches (func_80000568 == 0) it calls
  * func_80000880(a0, entry) and returns &D_80012C70[i] (0xC stride).
  * The old split (this .s without an epilogue + func_80000568.s "shared
  * epilogue stub" that four callers supposedly jal'd) was one function: the
  * kernel's jal targets are 0x400 above our symbol numbering, so `jal
- * func_80000568` is really a call to func_80000168 (the string compare,
+ * func_80000568` is really a call to uso_strcmp (the string compare,
  * exact twin of game_libs_func_00067B04). func_80000568 stays an absolute
  * undefined_syms entry for those jals.
  * Levers: `s32 i = 0` initialized at the declaration with a while loop
@@ -402,15 +402,15 @@ extern HandlerSlot D_80012C70[];
 extern void func_80000880();
 extern s32 func_80000568();
 
-HandlerSlot *func_800004B8(void *a0, char *name, s32 a2) {
+HandlerSlot *fs_openDevice(void *a0, char *name, s32 a2) {
     s32 i = 0;
 
-    if (*(HandlerEntry **)&D_8000A2E0 == NULL) {
+    if (*(HandlerEntry **)&gFsDeviceTable == NULL) {
         return NULL;
     }
-    while ((*(HandlerEntry **)&D_8000A2E0)[i].name != NULL) {
-        if (func_80000568((*(HandlerEntry **)&D_8000A2E0)[i].name, name) == 0) {
-            func_80000880(a0, (HandlerEntry *)((char *)*(HandlerEntry **)&D_8000A2E0 + i * 20));
+    while ((*(HandlerEntry **)&gFsDeviceTable)[i].name != NULL) {
+        if (func_80000568((*(HandlerEntry **)&gFsDeviceTable)[i].name, name) == 0) {
+            func_80000880(a0, (HandlerEntry *)((char *)*(HandlerEntry **)&gFsDeviceTable + i * 20));
             return &D_80012C70[i];
         }
         i++;
@@ -418,11 +418,11 @@ HandlerSlot *func_800004B8(void *a0, char *name, s32 a2) {
     return NULL;
 }
 
-/* func_80000568 (old "shared epilogue stub") = the tail of func_800004B8,
+/* func_80000568 (old "shared epilogue stub") = the tail of fs_openDevice,
  * merged into it; the address stays an absolute undefined_syms entry. */
 
 /* uso_stub_ret0 */
-s32 func_8000058C(s32 arg0) {
+s32 fs_close(s32 arg0) {
     return 0;
 }
 
@@ -472,19 +472,19 @@ s32 func_8000058C(s32 arg0) {
  * copy over char-pointer locals compiled as C++ keeps every post-increment /
  * post-decrement temp (the "dead ABI-dance ors" above, 16/16 words); cfe
  * folds them (12-15 words). This definition is only the splice placeholder. */
-void func_80000598(u8 *src, u8 *dst, s32 count) {
+void uso_bcopy(u8 *src, u8 *dst, s32 count) {
 }
 
-/* func_800005DC (really starts at 0x5D8: the .s glabel sits on the
+/* fs_read (really starts at 0x5D8: the .s glabel sits on the
  * prologue word) = bounded file read, IDO 7.1 -O2: buf must be 8-aligned
- * (else errno D_80013004 = -0x1C), size*n clamped to capacity - pos, read
+ * (else errno gUsoErrno = -0x1C), size*n clamped to capacity - pos, read
  * via the D_80012C40 hook, pos advanced. The alabels func_8000060C /
  * func_80000660 inside the .s are not entries: kernel jal targets sit 0x400
  * above our numbering, so `jal func_8000060C` / `jal func_80000660` are
- * calls to 0x20C / func_80000260 (absolute undefined_syms entries).
- * EXACT 2026-10-20 (agent-g run 112): `return D_80013004 = -0x1C;` is what
+ * calls to 0x20C / uso_splitPath (absolute undefined_syms entries).
+ * EXACT 2026-10-20 (agent-g run 112): `return gUsoErrno = -0x1C;` is what
  * puts the errno address in v1 and the value in v0. */
-extern s32 D_80013004;
+extern s32 gUsoErrno;
 typedef s32 (*ReadFunc)(void *, u32, void *);
 extern ReadFunc D_80012C40;
 typedef struct {
@@ -495,11 +495,11 @@ typedef struct {
     s32 padN[3];
     u32 capacity; /* +0x1C */
 } FileStateRdr;
-s32 func_800005DC(s32 buf, u32 size, u32 n, FileStateRdr *fp) {
+s32 fs_read(s32 buf, u32 size, u32 n, FileStateRdr *fp) {
     s32 total;
 
     if (buf & 7) {
-        return D_80013004 = -0x1C;
+        return gUsoErrno = -0x1C;
     }
     total = size * n;
     if (fp->capacity < total + fp->pos) {
@@ -516,7 +516,7 @@ s32 func_800005DC(s32 buf, u32 size, u32 n, FileStateRdr *fp) {
 }
 
 /* uso_advance_position */
-void func_80000688(s32* file, s32 offset) {
+void fs_skip(s32* file, s32 offset) {
     file[1] += offset;
 }
 
@@ -529,13 +529,13 @@ s32 uso_file_open(FileState* file, u32* arg1) {
     } header;
 
     if (func_800009D8(&header, 0xC, 1, file) < 0) {
-        return D_80013004;
+        return gUsoErrno;
     }
     if (header.type == 0xA) {
         return 0;
     }
     if (func_800009D8(arg1, header.size, 1, file) < 0) {
-        return D_80013004;
+        return gUsoErrno;
     }
     if (*arg1 != 0x12345678) {
         return -0x15;
@@ -564,7 +564,7 @@ s32 uso_skip_to_end(FileState *file)
     pad = header.type;
     if (new_var < 0)
     {
-      return D_80013004;
+      return gUsoErrno;
     }
     if (8 != pad)
     {
@@ -603,20 +603,20 @@ extern s32 D_8000A2E4;
 extern s32 D_80012F7C;
 
 typedef struct { u8 pad_00[0x72]; char name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlotF;
-/* func_800007D4: for every live module slot (D_80012D60[0..0x86]) call the
- * loader hook D_80012BC0.field_84(&D_8000A2E4, name, base, base + size).
+/* uso_printModules: for every live module slot (gUsoModules[0..0x86]) call the
+ * loader hook gUsoCtx.field_84(&D_8000A2E4, name, base, base + size).
  * IDO 7.1 -O2. EXACT 2026-10-20 (agent-g run 112; was NM 83.0, written as a
  * pointer walk with four `register` invariants and called a coloring cap):
- * a plain index loop lets uopt build the p/end walk and hold &D_80012BC0 in
+ * a plain index loop lets uopt build the p/end walk and hold &gUsoCtx in
  * s2 itself. */
-void func_800007D4(void) {
+void uso_printModules(void) {
     s32 i;
     UsoEntry74 *e;
 
     for (i = 0; i < 0x87; i++) {
-        e = ((UsoEntry74 **)&D_80012D60)[i];
+        e = ((UsoEntry74 **)&gUsoModules)[i];
         if (e != 0) {
-            ((UsoCallbacks84 *)&D_80012BC0)->field_84(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
+            ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
         }
     }
 }
@@ -628,36 +628,36 @@ typedef struct {
 
 extern s32 D_8000A2F4;
 
-/* func_8000085C: call the loader hook D_80012BC0.field_84(&D_8000A2F4, i,
+/* uso_printSlots: call the loader hook gUsoCtx.field_84(&D_8000A2F4, i,
  * slot->unk94, slot->name) for all 135 module slots. IDO 7.1 -O2. The old
  * NM (a hand pointer walk) was filed as a coloring cap. */
 /* EXACT 2026-10-20 (agent-g run 112): a plain index loop over the typed
  * 0x9C-byte slot array (the two "no-reloc absolute bases" are &slots[0] and
- * &slots[0].name; the .s now spells them %hi/%lo(D_800130A0[+0x72])). */
-void func_8000085C(void) {
+ * &slots[0].name; the .s now spells them %hi/%lo(gUsoModuleSlots[+0x72])). */
+void uso_printSlots(void) {
     s32 i;
 
     for (i = 0; i < 0x87; i++) {
-        ((UsoCallbacks84 *)&D_80012BC0)->field_84(&D_8000A2F4, i, ((UsoLoadSlotF *)&D_800130A0)[i].unk94, ((UsoLoadSlotF *)&D_800130A0)[i].name);
+        ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2F4, i, ((UsoLoadSlotF *)&gUsoModuleSlots)[i].unk94, ((UsoLoadSlotF *)&gUsoModuleSlots)[i].name);
     }
 }
 
 
 
-/* func_800008F0: unload a USO module by path. Debug-print via the
- * D_80012C44 hook, split the path (func_80000660 = func_80000260: dir ->
- * D_80012FC0, file -> D_80012F80), find the D_80012D60 slot whose name (+0x72)
- * equals the file (func_80000568 = func_80000168 strcmp, 0 = equal), clear it
+/* uso_unload: unload a USO module by path. Debug-print via the
+ * D_80012C44 hook, split the path (func_80000660 = uso_splitPath: dir ->
+ * gUsoPathDir, file -> gUsoPathFile), find the gUsoModules slot whose name (+0x72)
+ * equals the file (func_80000568 = uso_strcmp strcmp, 0 = equal), clear it
  * and notify every other live slot (func_800021D0 / func_8000275C, i.e. our
  * 0x1DD0 / 0x235C). IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112): the old NM called 568/660 through
  * function-pointer casts (jalr) believing they were shared-epilogue stubs;
  * kernel jal targets sit 0x400 above our numbering, so they are plain
  * direct calls to the absolute names. The inner loop's end pointer is
- * D_80012D60+0x21C (the target .s names it D_80012F7C; same address). */
+ * gUsoModules+0x21C (the target .s names it D_80012F7C; same address). */
 extern s32 D_8000A300;
-extern s32 D_80012F80;
-extern s32 D_80012FC0;
+extern s32 gUsoPathFile;
+extern s32 gUsoPathDir;
 extern s32 func_800021D0();
 extern s32 func_8000275C();
 extern s32 D_8000A314;
@@ -665,20 +665,20 @@ extern s32 D_8000A328;
 extern s32* func_800008B8(void*, void*, void*);
 extern s32 func_80000A98();
 
-s32 func_800008F0(char *path) {
+s32 uso_unload(char *path) {
     s32 i;
     s32 j;
     char *e;
 
     D_80012C44((void *)&D_8000A300, path);
-    func_80000660(path, &D_80012FC0, &D_80012F80);
+    func_80000660(path, &gUsoPathDir, &gUsoPathFile);
     for (i = 0; i < 0x87; i++) {
-        if (D_80012D60[i] != 0 &&
-            func_80000568(&D_80012F80, (char *)D_80012D60[i] + 0x72) == 0) {
-            *((char *)D_80012D60[i] + 0x98) = 0;
-            D_80012D60[i] = 0;
+        if (gUsoModules[i] != 0 &&
+            func_80000568(&gUsoPathFile, (char *)gUsoModules[i] + 0x72) == 0) {
+            *((char *)gUsoModules[i] + 0x98) = 0;
+            gUsoModules[i] = 0;
             for (j = 0; j < 0x87; j++) {
-                e = (char *)D_80012D60[j];
+                e = (char *)gUsoModules[j];
                 if (e != 0) {
                     func_800021D0(e, i);
                     func_8000275C(e, i);
@@ -694,26 +694,26 @@ s32 func_800008F0(char *path) {
  * merged into predecessor func_8000098C (size 0x4C → 0x60). Address re-exported
  * via undefined_syms_auto.txt for the many cross-jal callers (kernel_000.c
  * line 383, 389, 409, etc.). */
-/* func_800009EC: USO module loader, IDO 7.1 -O2. ONE function [0x9EC,0xC88)
- * split by splat into func_800009EC (no epilogue) + func_80000A88 + func_80000A98
+/* uso_load: USO module loader, IDO 7.1 -O2. ONE function [0x9EC,0xC88)
+ * split by splat into uso_load (no epilogue) + func_80000A88 + func_80000A98
  * (the jal'd 0x80000A88/0A98/0B34 are other functions: kernel jal targets
  * sit 0x400 above our symbol numbering). Callees by real address: 660 ->
- * 0x260, 8B8 -> func_800004B8 (handler lookup), 568 -> func_80000168
+ * 0x260, 8B8 -> fs_openDevice (handler lookup), 568 -> uso_strcmp
  * (strcmp), 22C8 -> 0x1EC8, 25A4/2650/20F4 -> 0x21A4/0x2250/0x1CF4.
- * 2026-10-20 (agent-g, run 111): the three .s merged into func_800009EC.s
- * (0x29C; the module-base lui/addiu re-symbolized as %hi/%lo(D_800130A0),
+ * 2026-10-20 (agent-g, run 111): the three .s merged into uso_load.s
+ * (0x29C; the module-base lui/addiu re-symbolized as %hi/%lo(gUsoModuleSlots),
  * the bnez into 0xB34 made a local label) and this redecode, 2 words off.
  * Levers found:
- * - the module base 0x800130A0 is a %hi/%lo symbol (D_800130A0; splat left
+ * - the module base 0x800130A0 is a %hi/%lo symbol (gUsoModuleSlots; splat left
  *   it a literal, which compiles to lui/ori);
- * - one `if (1) {}` after `err = 0` makes &D_8000A2D8 rematerialize
+ * - one `if (1) {}` after `err = 0` makes &gUsoHeapCur rematerialize
  *   (agent-c's BB-count lever) instead of holding it in s3;
  * - len/off named temps for the func_8000098C args;
- * - the three cleanup loops index D_80012D60[j] (IDO strength-reduces to the
+ * - the three cleanup loops index gUsoModules[j] (IDO strength-reduces to the
  *   target's s0/s1 pointer+end walk, incl. bnel on the third);
  * - header is s32[8] with off/len/new_var/desc declared BEFORE it (their
  *   homes fill 0x70..0x80), found at 0x48, i spills at 0x44;
- * - `new_var = D_80012D60` read in loop 1's test (permuter find) gives the
+ * - `new_var = gUsoModules` read in loop 1's test (permuter find) gives the
  *   target's mod-in-s1 / i-in-v1 coloring.
  * EXACT 2026-10-22 (agent-g run 118): the last 2 words (lui s0/s1 order)
  * were the loop-1 induction-variable shape. desc is NOT a separate stepped
@@ -731,18 +731,18 @@ typedef struct UsoModule {
     char pad98[4];
 } UsoModule;
 
-extern char D_80013112;                 /* = &D_800130A0[0].unk72 */
+extern char D_80013112;                 /* = &gUsoModuleSlots[0].unk72 */
 extern s32 D_8000A314;
 extern s32 D_8000A328;
-extern s32 D_80012FC0;
-extern s32 D_80012F80;
+extern s32 gUsoPathDir;
+extern s32 gUsoPathFile;
 extern void func_80001CB0();
 extern s32 func_800022C8();
 extern s32 func_800025A4();
 extern s32 func_80002650();
 extern s32 func_800020F4();
 
-s32 func_800009EC(s32 file) {
+s32 uso_load(s32 file) {
     s32 off;
     s32 len;
     s32 *new_var;
@@ -755,31 +755,31 @@ s32 func_800009EC(s32 file) {
     UsoModule *mod;
     s32 err;
 
-    D_80012C64 = -1;
-    D_80012C68 = -1;
+    gUsoEntryIndex = -1;
+    gUsoEntryModule = -1;
     err = 0;
     if (1) {
     }
     D_80012C44(&D_8000A314, (void *)file);
-    ((s32 *)&D_80012BC0)[6] = 0;
-    ((s16 *)&D_80012BC0)[0x16] = 0;
-    func_80000660(file, &D_80012FC0, &D_80012F80);
-    range = func_800008B8(header, &D_80012FC0, &D_8000A328);
+    ((s32 *)&gUsoCtx)[6] = 0;
+    ((s16 *)&gUsoCtx)[0x16] = 0;
+    func_80000660(file, &gUsoPathDir, &gUsoPathFile);
+    range = func_800008B8(header, &gUsoPathDir, &D_8000A328);
     if (range == NULL) {
         return -0x11;
     }
-    D_8000A2D8 = range[0];
-    D_8000A2DC = range[1];
+    gUsoHeapCur = range[0];
+    gUsoHeapEnd = range[1];
     found = NULL;
-    for (mod = (UsoModule *)&D_800130A0, i = 0; i != 0x87; mod++, i++) {
-        if (func_80000568(&D_80013112 + i * 0x9C, &D_80012F80) == 0) {
+    for (mod = (UsoModule *)&gUsoModuleSlots, i = 0; i != 0x87; mod++, i++) {
+        if (func_80000568(&D_80013112 + i * 0x9C, &gUsoPathFile) == 0) {
             found = mod;
             func_80001CB0(mod);
             mod->unk70 = i;
-            if (D_80012D60[i] != 0) {
+            if (gUsoModules[i] != 0) {
                 return -0x13;
             }
-            D_80012D60[i] = (s32)mod;
+            gUsoModules[i] = (s32)mod;
             header[1] = mod->unk94;
             err = func_800022C8(mod, header);
             if (err != 0) {
@@ -788,48 +788,48 @@ s32 func_800009EC(s32 file) {
             break;
         }
     }
-    new_var = D_80012D60;
+    new_var = gUsoModules;
     if (found == NULL) {
         return -0x14;
     }
     len = range[1] - range[0];
-    off = D_8000A2D8 - range[0];
-    ((s32 *)&D_80012BC0)[1] = len - off;
-    ((s32 *)&D_80012BC0)[0] = D_8000A2D8;
-    func_8000098C(header, len, off, &D_80012BC0);
+    off = gUsoHeapCur - range[0];
+    ((s32 *)&gUsoCtx)[1] = len - off;
+    ((s32 *)&gUsoCtx)[0] = gUsoHeapCur;
+    func_8000098C(header, len, off, &gUsoCtx);
     for (j = 0; j < 0x87; j++) {
         if (new_var[j] != 0) {
-            err |= func_800025A4(D_80012D60[j]);
+            err |= func_800025A4(gUsoModules[j]);
         }
     }
     if (err != 0) {
         return -0xA;
     }
     for (j = 0; j < 0x87; j++) {
-        if (D_80012D60[j] != 0) {
-            err |= func_80002650(D_80012D60[j]);
+        if (gUsoModules[j] != 0) {
+            err |= func_80002650(gUsoModules[j]);
         }
     }
     if (err != 0) {
         return -0xC;
     }
     for (j = 0; j < 0x87; j++) {
-        if (D_80012D60[j] != 0) {
-            err |= func_800020F4(D_80012D60[j]);
+        if (gUsoModules[j] != 0) {
+            err |= func_800020F4(gUsoModules[j]);
         }
     }
     if (err != 0) {
         return err;
     }
-    range[0] = D_8000A2D8;
+    range[0] = gUsoHeapCur;
     return found->unk70;
 }
 
 /* uso_call_init — dispatches a function from the USO module vtable */
 typedef s32 (*UsoFunc)(void*);
 
-s32 func_80000C88(void) {
-    s32 modIndex = D_80012C68;
+s32 uso_callEntry(void) {
+    s32 modIndex = gUsoEntryModule;
     s32* mod;
     s32 funcIndex;
     s32 funcTable;
@@ -838,12 +838,12 @@ s32 func_80000C88(void) {
         return -1;
     }
 
-    mod = (s32*)D_80012D60[modIndex];
+    mod = (s32*)gUsoModules[modIndex];
     if (mod == 0) {
         return -1;
     }
 
-    funcIndex = D_80012C64;
+    funcIndex = gUsoEntryIndex;
     if (funcIndex < 0) {
         return -1;
     }
@@ -861,21 +861,21 @@ s32 func_80000C88(void) {
          * non-reloc word diff.) */
         s32 t;
         UsoFunc fn = (UsoFunc)*(s32*)((t = funcTable) + funcIndex * 12 + 4);
-        D_80012BE4 = fn(&D_80012BC0);
+        D_80012BE4 = fn(&gUsoCtx);
     }
     return 0;
 }
 
-/* func_80000D2C: name-lookup. If D_80012D60[id] is set, strcpy its name (at
- * +0x72) into out and return 2. Else iterate the D_8000A2E0 list (0x14 stride):
+/* uso_getModuleName: name-lookup. If gUsoModules[id] is set, strcpy its name (at
+ * +0x72) into out and return 2. Else iterate the gFsDeviceTable list (0x14 stride):
  * for each entry, enumerate via func_80000880/func_80000A98; on an entry whose
- * +0x4 field == id, copy its name (func_800005DC, src=entry+0xC) and return 1;
- * func_80000B34<0 aborts with D_80013004. (Old 83% NM history: the frame
+ * +0x4 field == id, copy its name (fs_read, src=entry+0xC) and return 1;
+ * func_80000B34<0 aborts with gUsoErrno. (Old 83% NM history: the frame
  * excess was the byte-array locals, not an IDO cap -- see the note above the
  * definition below; the bne operand order and t3 flag resolved with it.) */
 extern s32 func_8000098C(void*);
 extern s32 func_80000B34(void*);
-/* func_800005DC is defined 4-arg earlier in this merged TU; call it 2-arg here
+/* fs_read is defined 4-arg earlier in this merged TU; call it 2-arg here
  * via an alias symbol (undefined_syms_auto.txt: func_800005DC_d2c = 0x800005DC)
  * so the redecl is legal and emits a direct jal (not the cast's lui+addiu+jalr).
  * See docs/MATCHING_WORKFLOW.md#feedback-alias-extern-via-undefined-syms. */
@@ -888,13 +888,13 @@ typedef struct { s32 head; s32 pad[4]; } UsoLoadReq;
 /* USO directory entry yielded by func_80000A98 (record + name). */
 typedef struct { s32 unk0; s32 idx; s32 unk8; u8 name[0x18]; } UsoLoadEnt;
 
-/* func_80000D2C: EXACT 2026-10-16 (agent-g). Typed stack aggregates fix the
+/* uso_getModuleName: EXACT 2026-10-16 (agent-g). Typed stack aggregates fix the
  * 8-byte frame excess the byte-array body had (0x98 vs 0x90): iterator 0x28
- * (same UsoLoadIter as func_800014A8) + entry 0x24, declared req, it, slot,
+ * (same UsoLoadIter as uso_scanRom) + entry 0x24, declared req, it, slot,
  * i, ent, c -- IDO maps the frame top-down in declaration order and the
  * scalar homes fill the holes, so both the aggregate sizes and the decl order
  * matter (found by a small size x order sweep; 3 of ~150 combos are exact). */
-s32 func_80000D2C(u8 *out, s32 id) {
+s32 uso_getModuleName(u8 *out, s32 id) {
     UsoLoadReq *req;
     UsoLoadIter it;
     u8 *slot;
@@ -902,8 +902,8 @@ s32 func_80000D2C(u8 *out, s32 id) {
     UsoLoadEnt ent;
     u8 c;
 
-    slot = (u8 *)D_80012D60[id];
-    req = (UsoLoadReq *)D_8000A2E0;
+    slot = (u8 *)gUsoModules[id];
+    req = (UsoLoadReq *)gFsDeviceTable;
     if (slot != NULL) {
         c = slot[0x72];
         i = 0;
@@ -911,7 +911,7 @@ s32 func_80000D2C(u8 *out, s32 id) {
         if (c != 0) {
             do {
                 i++;
-                c = ((u8 *)D_80012D60[id])[i + 0x72];
+                c = ((u8 *)gUsoModules[id])[i + 0x72];
                 out[i] = c;
             } while (c != 0);
         }
@@ -925,7 +925,7 @@ s32 func_80000D2C(u8 *out, s32 id) {
                 return 1;
             }
             if (func_80000B34(&it) < 0) {
-                return D_80013004;
+                return gUsoErrno;
             }
         }
         func_8000098C(&it);
@@ -933,23 +933,23 @@ s32 func_80000D2C(u8 *out, s32 id) {
     return 0;
 }
 
-void func_80000E58(void) {
+void uso_printVersion(void) {
     D_80012C44(&D_8000A32C, &D_8000A340);
 }
 
 extern s32 D_8000A344;
 /* Address -> loaded-USO resolver: scan the USO slot-pointer table
- * (&D_80012D60 .. &D_80012F7C); for the first loaded slot whose
+ * (&gUsoModules .. &D_80012F7C); for the first loaded slot whose
  * [field_4C, field_4C+field_14) range contains arg0, return its code base
  * (slot+0x72) and the in-USO offset (arg0 - field_4C). Not found -> &D_8000A344
  * / 0. IDO -O2 unrolls the simple slot loop x4 with a 3-iteration prologue.
  * The `tbl` decl inside the loop body is load-bearing: it makes IDO recompute
  * the table base each iteration (matching the target's coloring exactly). */
-void func_80000E8C(u32 arg0, void **arg1, s32 *arg2) {
+void uso_addrToModule(u32 arg0, void **arg1, s32 *arg2) {
     s32 i;
 
     for (i = 0; i < 135; i++) {
-        UsoEntry74 **tbl = (UsoEntry74 **) &D_80012D60;
+        UsoEntry74 **tbl = (UsoEntry74 **) &gUsoModules;
         UsoEntry74 *e = tbl[i];
         if (e != NULL) {
             if ((arg0 >= (u32) e->field_4C) && (arg0 < (u32) (e->field_4C + e->field_14))) {
@@ -964,9 +964,9 @@ void func_80000E8C(u32 arg0, void **arg1, s32 *arg2) {
 }
 
 /* uso_get_vtable — returns pointer to USO vtable */
-extern s32 D_80012BC0;
-void* func_800010B4(void) {
-    return &D_80012BC0;
+extern s32 gUsoCtx;
+void* uso_getContext(void) {
+    return &gUsoCtx;
 }
 
 /* uso_set_callbacks (no-op) */
@@ -979,45 +979,45 @@ void func_800010CC(s32 a0, ...) {
 extern s32 D_8000A34C;
 extern s32 D_8000A35C;
 extern s32 D_8000A2A0;
-extern s32 D_80012D30;
+extern s32 gUsoSectionBytes;
 
-/* func_800010E8: dump the 11 loader counters through the D_80012BC0.field_84
- * logger: one header line with D_80012D5C, then (&D_8000A35C, name[i],
- * D_80012D30[i]) per entry. IDO 7.1 -O2.
+/* uso_printMemStats: dump the 11 loader counters through the gUsoCtx.field_84
+ * logger: one header line with gUsoMemUsed, then (&D_8000A35C, name[i],
+ * gUsoSectionBytes[i]) per entry. IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112; was NM 58.5, a pointer walk with five
  * `register` locals filed as a 5th-callee-save coloring cap): a plain
- * index loop. The .s loop bound is now spelled %hi/%lo(D_80012D30 + 0x2C)
- * (same address as D_80012D5C, which the header line reads as a value). */
-void func_800010E8(void) {
+ * index loop. The .s loop bound is now spelled %hi/%lo(gUsoSectionBytes + 0x2C)
+ * (same address as gUsoMemUsed, which the header line reads as a value). */
+void uso_printMemStats(void) {
     s32 i;
 
-    ((UsoLooseCb *)&D_80012BC0)->field_84(&D_8000A34C, D_80012D5C);
+    ((UsoLooseCb *)&gUsoCtx)->field_84(&D_8000A34C, gUsoMemUsed);
     for (i = 0; i < 11; i++) {
-        ((UsoLooseCb *)&D_80012BC0)->field_84(&D_8000A35C, (&D_8000A2A0)[i], (&D_80012D30)[i]);
+        ((UsoLooseCb *)&gUsoCtx)->field_84(&D_8000A35C, (&D_8000A2A0)[i], (&gUsoSectionBytes)[i]);
     }
 }
 
-extern s32 D_80012D30;
+extern s32 gUsoSectionBytes;
 extern s32 D_80012D34;
 extern s32 D_80012D38;
 extern s32 D_80012D3C[];
-extern s32 D_80012D5C;
+extern s32 gUsoMemUsed;
 extern s32 D_80012D5C_alias; /* distinct extern @ 0x80012D5C: breaks store<->end CSE */
 
-/* func_80001184 -- EXACT (agent-g run 144) via the IDO 7.1 NCC donor
+/* uso_clearMemStats -- EXACT (agent-g run 144) via the IDO 7.1 NCC donor
  * src/kernel/kernel_ncc_1184.cpp; this definition is only the splice
  * placeholder. The old "two IDO caps" verdict (one `lui at` shared by the
  * 0x80012D30 / 0x80012D34 stores; loop pointer in v1) was module-local data:
  * with the 11-word table as a `static int sTab[11]`, as1 shares the `lui at`
  * and the plain zeroing loop compiles to the target (see the donor). */
-void func_80001184(void) {
+void uso_clearMemStats(void) {
 }
 
-/* uso_find_file(path, file): split the path (func_80000660 = func_80000260:
- * dir -> D_80012FC0, name -> D_80012F80), look the directory up
- * (func_800008B8 = func_800004B8, -0x11 if unknown), then scan the 135
- * 0x9C-byte module slots at D_800130A0 for that name (func_80000568 =
- * func_80000168 strcmp); on a hit copy slot->unk94 into file[1]. IDO 7.1 -O2.
+/* uso_find_file(path, file): split the path (func_80000660 = uso_splitPath:
+ * dir -> gUsoPathDir, name -> gUsoPathFile), look the directory up
+ * (func_800008B8 = fs_openDevice, -0x11 if unknown), then scan the 135
+ * 0x9C-byte module slots at gUsoModuleSlots for that name (func_80000568 =
+ * uso_strcmp strcmp); on a hit copy slot->unk94 into file[1]. IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112; was NM 92.3): the old pointer-walk
  * spelling left the loop-preamble addiu order and the found-block schedule
  * off; an index loop over a TYPED slot array (`slots[i].name` /
@@ -1028,15 +1028,15 @@ s32 uso_find_file(void *arg0, void *arg1) {
     s32 pad[11];
     s32 i;
     s32 found;
-    func_80000660(arg0, &D_80012FC0, &D_80012F80);
-    if (func_800008B8(arg1, &D_80012FC0, &D_8000A368) == 0) {
+    func_80000660(arg0, &gUsoPathDir, &gUsoPathFile);
+    if (func_800008B8(arg1, &gUsoPathDir, &D_8000A368) == 0) {
         return -0x11;
     }
     found = 0;
     for (i = 0; i < 135; i++) {
-        if (func_80000568(((UsoLoadSlotF *)&D_800130A0)[i].name, &D_80012F80) == 0) {
+        if (func_80000568(((UsoLoadSlotF *)&gUsoModuleSlots)[i].name, &gUsoPathFile) == 0) {
             found = 1;
-            ((s32 *)arg1)[1] = ((UsoLoadSlotF *)&D_800130A0)[i].unk94;
+            ((s32 *)arg1)[1] = ((UsoLoadSlotF *)&gUsoModuleSlots)[i].unk94;
             break;
         }
     }
@@ -1047,8 +1047,8 @@ s32 uso_find_file(void *arg0, void *arg1) {
 }
 
 /* uso_get_error — returns last error code */
-s32 func_800012AC(s32 arg0) {
-    return D_80013004;
+s32 uso_getErrno(s32 arg0) {
+    return gUsoErrno;
 }
 
 extern void* (*D_80012BF4)(s32, s32);
@@ -1058,7 +1058,7 @@ extern s32 func_800015D0(void*, void*);
  * 12-byte header. Byte-exact: the `char pad[8]` declared BEFORE `header`
  * makes IDO place header[3] at sp+0x18 (and the 8-byte pad in the 0x24-0x2B
  * gap) to match the target frame layout. */
-void* func_800012BC(void* arg0) {
+void* fs_openFile(void* arg0) {
     void* file;
     char pad[8];  /* frame padding to push header to sp+0x18 */
     s32 header[3];
@@ -1083,7 +1083,7 @@ extern void func_80000A88(void*, s32);
  * Byte-exact: `char pad_hi[4]` (above header) + `file` declared AFTER `header`
  * reproduce the target frame (file@sp+0x30, header@sp+0x58, frame 0x68); the
  * `result = header[0]` reuse pins the record-type into $v0 as the beql rs. */
-s32 func_80001348(void* arg0, s32* arg1) {
+s32 uso_findDataSection(void* arg0, s32* arg1) {
     char pad_hi[4];
     s32 header[3];
     s32 file[10];
@@ -1117,24 +1117,24 @@ s32 func_80001348(void* arg0, s32* arg1) {
 }
 
 /* uso_read */
-s32 func_80001414(void* file, void* buf, s32 size) {
-    extern s32 D_80013004;
+s32 fs_readChecked(void* file, void* buf, s32 size) {
+    extern s32 gUsoErrno;
     extern s32 func_800009D8(void*, s32, s32, void*);
     s32 result;
     result = func_800009D8(buf, size, 1, file);
     if (result < 0) {
-        return D_80013004;
+        return gUsoErrno;
     }
     return result;
 }
 
 /* uso_file_end — returns file position + size */
-s32 func_80001460(s32* file) {
+s32 fs_tell(s32* file) {
     return file[1] + file[3];
 }
 
 /* uso_seek — set or adjust file position */
-s32 func_80001470(s32* file, s32 whence, s32 offset) {
+s32 fs_seek(s32* file, s32 whence, s32 offset) {
     if (whence) {
         file[1] += offset;
     } else {
@@ -1144,7 +1144,7 @@ s32 func_80001470(s32* file, s32 whence, s32 offset) {
 }
 
 /* uso_file_close (no-op) */
-void func_80001494(s32 arg0) {
+void fs_closeFile(s32 arg0) {
 }
 
 /* uso_ret_zero — returns 0.0f */
@@ -1152,28 +1152,28 @@ float func_8000149C(void) {
     return 0.0f;
 }
 
-/* func_800014A8: USO loader main loop. Walk the pending-request list
- * (D_8000A2E0, 0x14-byte entries, NULL-head terminated); for each, open a
+/* uso_scanRom: USO loader main loop. Walk the pending-request list
+ * (gFsDeviceTable, 0x14-byte entries, NULL-head terminated); for each, open a
  * record iterator (func_80000880), and for every record yielded by
  * func_80000A98 whose slot index is valid, read the USO body into
- * D_800130A0[idx].name (+0x72, 0x9C-stride slot) and stamp slot +0x94 from
- * the iterator. EXACT 2026-10-16 after splitting func_80001594 out of the
+ * gUsoModuleSlots[idx].name (+0x72, 0x9C-stride slot) and stamp slot +0x94 from
+ * the iterator. EXACT 2026-10-16 after splitting uso_init out of the
  * bundled .s: the old 30% NM body used raw byte arrays + an explicit
  * do/while; typed stack structs + for/while give the 0x98 frame and the
  * s3=base / s4=0x9C coloring. */
 
-void func_800014A8(void) {
+void uso_scanRom(void) {
     UsoLoadIter it;
     u8 buf[0x24];
     UsoLoadRec rec;
     UsoLoadReq *req;
     UsoLoadSlot *slot;
 
-    for (req = (UsoLoadReq *)D_8000A2E0; req->head != 0; req++) {
+    for (req = (UsoLoadReq *)gFsDeviceTable; req->head != 0; req++) {
         func_80000880(&it, req);
         while (func_80000A98(&it, &rec) != 0) {
             if (rec.idx >= 0) {
-                slot = &((UsoLoadSlot *)&D_800130A0)[rec.idx];
+                slot = &((UsoLoadSlot *)&gUsoModuleSlots)[rec.idx];
                 func_800005DC_d2c(slot->name, buf);
                 slot->unk94 = it.unk4;
             }
@@ -1182,16 +1182,16 @@ void func_800014A8(void) {
     }
 }
 
-/* func_80001594: split out of func_800014A8.s (2026-10-16) -- the .s bundled
+/* uso_init: split out of uso_scanRom.s (2026-10-16) -- the .s bundled
  * two functions (14A8 ends jr ra at 0x158C; 1594 opens its own sp -0x20
- * prologue). USO loader init: fills the D_80012BC0 dispatch table, clears
- * the D_80012D60/D_800130A0 slot arrays, copies 16 segment records.
+ * prologue). USO loader init: fills the gUsoCtx dispatch table, clears
+ * the gUsoModules/gUsoModuleSlots slot arrays, copies 16 segment records.
  * EXACT (agent-c run 229) via the IDO 7.1 cfe donor src/kernel/kernel_000_1594.c
  * (the slot-clear loop is a one-line index loop on i, which gives the
- * func_80000480 + 0x30 address the target's a2); this definition is only the
+ * fs_initFile + 0x30 address the target's a2); this definition is only the
  * splice placeholder on both build paths (a C stub: the INCLUDE_ASM body
  * defines labels such as D_800016BC inside the replaced range). */
-void func_80001594(void) {
+void uso_init(void) {
 }
 
 
@@ -1200,8 +1200,8 @@ void func_80001594(void) {
 void func_800017B4(void) {
 }
 
-/* func_800017BC: allocate the first free module slot (in_use byte at +0x98)
- * of the 135 0x9C-byte slots at D_800130A0, or NULL. IDO 7.1 -O2.
+/* uso_allocSlot: allocate the first free module slot (in_use byte at +0x98)
+ * of the 135 0x9C-byte slots at gUsoModuleSlots, or NULL. IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112; was NM 67.0): it is one plain loop;
  * the three "singleton" checks are IDO peeling 135 % 4 = 3 iterations
  * before its x4 unroll. Char arithmetic for both the flag and the return
@@ -1209,21 +1209,21 @@ void func_800017B4(void) {
  * builds a second offset IV for the return). The old func_800018A8
  * ("empty function", jr ra; nop) was this function's return, split off by
  * splat; its address stays an absolute undefined_syms entry. The .s now
- * spells the slot addresses D_800130A0 + K (ROM bytes unchanged). */
-void* func_800017BC(void) {
+ * spells the slot addresses gUsoModuleSlots + K (ROM bytes unchanged). */
+void* uso_allocSlot(void) {
     s32 i;
 
     for (i = 0; i < 135; i++) {
-        if (((u8 *)&D_800130A0)[i * 0x9C + 0x98] == 0) {
-            ((u8 *)&D_800130A0)[i * 0x9C + 0x98] = 1;
-            return (u8 *)&D_800130A0 + i * 0x9C;
+        if (((u8 *)&gUsoModuleSlots)[i * 0x9C + 0x98] == 0) {
+            ((u8 *)&gUsoModuleSlots)[i * 0x9C + 0x98] = 1;
+            return (u8 *)&gUsoModuleSlots + i * 0x9C;
         }
     }
     return 0;
 }
 
 
-void func_800018B0(void* arg0) {
+void uso_initSlot(void* arg0) {
     s32 i;
     char* ptr;
 
@@ -1244,15 +1244,15 @@ void func_800018B0(void* arg0) {
     }
 }
 
-/* func_800018F0 - splat over-split repaired: merged former
+/* uso_unrelocate - splat over-split repaired: merged former
  * func_80001994 (0x148) back in (was split at the internal early-return
  * `bnez a2; jr ra; v0=0` ~0x80001900, NOT a function boundary). True
- * size 0x1EC (123 insns, ends 0x80001AD8); func_80001ADC is the next
+ * size 0x1EC (123 insns, ends 0x80001AD8); uso_relocate is the next
  * genuine function. (The asm's in-function `bnel ...,0x80001994` now
  * targets the local label .L80001994, agent-c run 282.)
  * Per docs/MATCHING_WORKFLOW.md#feedback-split-fragments-over-splits-
  * on-internal-early-return.
- * Structural decode: s32 func_800018F0(tbl a0, a1, a2, s32 a3, ...)
+ * Structural decode: s32 uso_unrelocate(tbl a0, a1, a2, s32 a3, ...)
  *   table-scan/insert helper. Early-outs: if (!a1) ret on a0->0x3C
  *   path; if (a2) continue else return 0; if (a3 <= 0) goto tail
  *   (return 0). Walks a3 entries of a 12-byte (0xC-stride) record
@@ -1286,7 +1286,7 @@ typedef struct { s32 info; s32 off; s32 val; } RelEnt18F0;
  * follows s), and the store address held in a named pointer with a code-free test (one more LR in the loop
  * pushes 12 / 1 over the constrained threshold; the address LR takes t0), arg1 bound through a dead
  * assignment so it is the addu's first operand. */
-s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
+s32 uso_unrelocate(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
     RelSym18F0 *syms = *(RelSym18F0 **)((char *)arg0 + 0x3C);
     RelSym18F0 *s;
     s32 i;
@@ -1320,7 +1320,7 @@ s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
     return 0;
 }
 
-/* func_80001ADC: USO/overlay relocation applier (decode 2026-10-17 agent-g;
+/* uso_relocate: USO/overlay relocation applier (decode 2026-10-17 agent-g;
  * EXACT 2026-11-12 agent-h run 363 via the MIPSpro 7.2.1 donor
  * src/kernel/kernel_mp72_1ADC.cpp -- this definition is only the splice
  * placeholder; the history below is the cfe-era NM decode).
@@ -1354,19 +1354,19 @@ s32 func_800018F0(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
  * 7.2.1 donor); the head's val load follows `addiu` only when the four head
  * statements sit inside the flags test's then-arm (they keep their source
  * lines), see the donor header. Its .rodata reloc is pinned as
- * func_80001ADC_rodata = jtbl_8000A63C. */
+ * uso_relocate_rodata = jtbl_8000A63C. */
 extern char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1ADC;
 
-s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
+s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     return 0;
 }
 
-/* func_80001CF4 - verified structural decode (kernel, 56 insns incl.
+/* uso_relocateSections - verified structural decode (kernel, 56 insns incl.
  * a leaked predecessor word).
  * BOUNDARY ARTIFACT: the .s text begins at 0x80001CF0 (addiu sp,sp,
- * 0x50) but the symbol func_80001CF4 = 0x80001CF4. That leading
+ * 0x50) but the symbol uso_relocateSections = 0x80001CF4. That leading
  * +0x50 is the PREDECESSOR's epilogue delay-slot (its jr ra +
  * addiu sp,sp,0x50), disassembled one word early by splat. The
  * real function starts at 0x80001CF4 = `addiu sp,sp,-0x20`. Harmless
@@ -1387,14 +1387,14 @@ s32 func_80001ADC(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
 #ifndef FW
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 #endif
-/* func_80001CF4: MATCHED 2026-06-21 (dead-#else promotion). Three-stage
+/* uso_relocateSections: MATCHED 2026-06-21 (dead-#else promotion). Three-stage
  * sub-object finalize/validate: for each non-NULL sub-object (unk54/unk50/
  * unk4C) run func_80001EDC(self, sub, paramA, paramB) + the func_80000518(
  * sub, paramC) cleanup (commit runs in the beql delay slot, BEFORE the
  * failure test); bail with -0xE/-0xF/-0x10 if the stage fails. The matching
  * body sat in a dead #else/#ifdef branch (never compiled) while the build
  * path was INCLUDE_ASM. ROM byte-identical to baserom. */
-s32 func_80001CF4(void *arg0) {
+s32 uso_relocateSections(void *arg0) {
     extern s32 func_80001EDC();
     s32 temp_s1;
 
@@ -1422,18 +1422,18 @@ s32 func_80001CF4(void *arg0) {
     return 0;
 }
 
-/* func_80001DD0: MATCHED 2026-06-23 (sibling of func_80001CF4). Three-stage
+/* uso_unrelocateSections: MATCHED 2026-06-23 (sibling of uso_relocateSections). Three-stage
  * sub-object finalize/validate with an extra threaded arg. For each non-NULL
  * handle slot (0x54/0x50/0x4C) it calls the 5-arg helper func_80001CF0(self,
  * handle, paramA, paramB, arg1) (self=a0 in s0; arg1 saved at sp+0x2c and
  * passed via the sp+0x10 stack-arg slot), then runs func_80000518(handle,
  * paramC) ALWAYS (commit emitted in the `beql s1,0,next` delay slot, BEFORE
  * the failure test), then bails -0xE/-0xF/-0x10 on failure. The 5-arg form
- * (self as the leading arg, like func_80001CF4 passes arg0 to func_80001EDC)
+ * (self as the leading arg, like uso_relocateSections passes arg0 to func_80001EDC)
  * is correct with this beql-commit-before-check shape — the old "5-arg
  * regresses" note was measured against the wrong (return-before-commit)
  * structure. ROM byte-identical to baserom. */
-s32 func_80001DD0(void *arg0, s32 arg1) {
+s32 uso_unrelocateSections(void *arg0, s32 arg1) {
     extern s32 func_80001CF0();
     s32 temp_s1;
 
@@ -1461,7 +1461,7 @@ s32 func_80001DD0(void *arg0, s32 arg1) {
     return 0;
 }
 
-/* func_80001EC8 -- EXACT (agent-g run 145) via the IDO 7.1 cfe donor
+/* uso_loadSections -- EXACT (agent-g run 145) via the IDO 7.1 cfe donor
  * src/kernel/kernel_000_1EC8.c; this definition is only the splice
  * placeholder. USO section-record loader: read 12-byte records until type 11,
  * allocate (flag bit 0: alloc98, else lookup34) or clear (type 8) each
@@ -1469,9 +1469,9 @@ s32 func_80001DD0(void *arg0, s32 arg1) {
  * size to the 0x80012D30 table and dispatch on the type through the 12-entry
  * jump table the ROM already carries at jtbl_8000A64C (runtime addresses,
  * +0x400). The old "runtime jump table" blocker is solved like
- * __osDevMgrMain's: the donor's .rodata reloc is renamed func_80001EC8_rodata
+ * __osDevMgrMain's: the donor's .rodata reloc is renamed uso_loadSections_rodata
  * and pinned to 0x8000A64C. */
-s32 func_80001EC8(s32* arg0, void* file) {
+s32 uso_loadSections(s32* arg0, void* file) {
     return 0;
 }
 
@@ -1547,7 +1547,7 @@ INCLUDE_ASM("asm/nonmatchings/kernel", func_800021A4);
  * by the 0x800021A4 prologue). */
 
 /* 2026-10-23 EXACT (agent-g run 144): the "arg0 vs counter saved-register
- * contest" above was a decode shape (sibling of func_8000235C):
+ * contest" above was a decode shape (sibling of uso_unbindImports):
  * - the error callback takes THREE arguments (msg, u, l): passing the counter
  *   as a fourth made it live into the call block and gave IT the saved
  *   register; with three, o takes s0 and the counter stays in a3;
@@ -1567,7 +1567,7 @@ typedef struct {
     unsigned char dirty;
 } Obj80002250;
 typedef struct { char p0[0x18]; int miss; char p1c[0x84 - 0x1C]; void (*field_84)(); } Cb80002250;
-int func_80002250(Obj80002250 *o) {
+int uso_bindImports(Obj80002250 *o) {
     Ent80002250 *e;
     Obj80002250 *u;
     Ent80002250 *l;
@@ -1583,14 +1583,14 @@ int func_80002250(Obj80002250 *o) {
     for (; i < o->count; i++) {
         if (!(e->type & 8) && (e->type & 7) == 1) {
             k = e->type >> 4;
-            u = ((Obj80002250 **)D_80012D60)[k];
+            u = ((Obj80002250 **)gUsoModules)[k];
             if (u == 0) {
                 o->dirty = 1;
-                ((Cb80002250 *)&D_80012BC0)->miss++;
+                ((Cb80002250 *)&gUsoCtx)->miss++;
             } else {
                 l = u->list;
                 if (l == 0) {
-                    ((Cb80002250 *)&D_80012BC0)->field_84(&D_8000A3A0, u, l);
+                    ((Cb80002250 *)&gUsoCtx)->field_84(&D_8000A3A0, u, l);
                     return -2;
                 }
                 e->type |= 8;
@@ -1603,7 +1603,7 @@ int func_80002250(Obj80002250 *o) {
     return 0;
 }
 
-/* func_8000235C: 33-insn entry-list clear-by-type helper.
+/* uso_unbindImports: 33-insn entry-list clear-by-type helper.
  *   if no entry list at a0+0x3C, return 0.
  *   For each 0xC-byte entry, if low type bits == 1, high bits match arg1,
  *   and bit 3 is set, clear bit 3 and mark a0+0x99 dirty.
@@ -1650,7 +1650,7 @@ typedef struct {
     char p40[0x59];
     unsigned char dirty;
 } Obj8000235C;
-int func_8000235C(Obj8000235C *o, int id) {
+int uso_unbindImports(Obj8000235C *o, int id) {
     Ent8000235C *e;
     int i;
     int n;
