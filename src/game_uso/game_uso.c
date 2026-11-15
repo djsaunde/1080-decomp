@@ -4882,21 +4882,23 @@ void SnowAI_scaleRiderParms(char *a0) {
 INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", SnowAI_scaleRiderParms);
 #endif
 
+/* puts back the rider parm values saved by SnowAI_scaleRiderParms (0x4C8..0x4D4 of SnowAI) */
 void SnowAI_restoreRiderParms(char *a0) {
-    char *t;
-    t = *(char**)(a0 + 0x30) + 0x758;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x4C8);
-    t = *(char**)(a0 + 0x30) + 0x6F8;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x4CC);
-    t = *(char**)(a0 + 0x30) + 0x6E0;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x4D0);
-    t = *(char**)(a0 + 0x30) + 0x498;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x4D4);
+    SnowBParm *t;
+    t = &((SnowAI *)a0)->rider->parms.max;
+    t->value = *(float*)(a0 + 0x4C8);
+    t = &((SnowAI *)a0)->rider->parms.nts;
+    t->value = *(float*)(a0 + 0x4CC);
+    t = &((SnowAI *)a0)->rider->parms.dts;
+    t->value = *(float*)(a0 + 0x4D0);
+    t = (SnowBParm *)((char *)((SnowAI *)a0)->rider + 0x498); /* parm 5 ("nbf") of the 0x3EC child's "Parms" */
+    t->value = *(float*)(a0 + 0x4D4);
 }
 
+/* rider max speed = saved max * dd3 */
 void SnowAI_scaleRiderMax(char *a0) {
-    char *t = *(char**)(a0 + 0x30) + 0x758;
-    *(float*)(t + 0x10) = *(float*)(a0 + 0x354) * *(float*)(a0 + 0x4C8);
+    SnowBParm *t = &((SnowAI *)a0)->rider->parms.max;
+    t->value = ((SnowAI *)a0)->parms.parm[SNOWAI_PARM_DD2 + 1].value * *(float*)(a0 + 0x4C8);
 }
 
 #ifdef NON_MATCHING
@@ -8370,8 +8372,10 @@ void RiderAnim_update_0000D204(int *a0) {
     *(volatile float *)a0 = 28555.0f;
 }
 
+#define RA(p) ((RiderAnim *)(p))
+
 void RiderAnim_readParms_0000D418(char *a0) {
-    gl_func_00000000(a0 + 0x13C);
+    gl_func_00000000(&RA(a0)->parms);
 }
 
 /* Set a0->0x64/0x68 = -1000 and copy the 8-byte pair a0->0xC0..0xC7 to 0xC8.
@@ -8380,9 +8384,9 @@ void RiderAnim_readParms_0000D418(char *a0) {
  * (was INSN_PATCH'd, banned 2026-05-23). Struct-copy vs separate-field-copy is the
  * lever for adjacent-field $t-renumber. Byte-exact. */
 void RiderAnim_reset_0000D438(char *a0) {
-    *(s32*)(a0 + 0x64) = -1000;
-    *(s32*)(a0 + 0x68) = -1000;
-    *(Pair2*)(a0 + 0xC8) = *(Pair2*)(a0 + 0xC0);
+    RA(a0)->stateArg = -1000;
+    RA(a0)->unk68 = -1000;
+    RA(a0)->nextState = RA(a0)->state;
 }
 
 /* RiderAnim_init_0000D458: parent F1 (frame -0x48, 90 words/0x164) + 4 helper
@@ -8459,7 +8463,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
  * The volatile-int-pointer form left the &a1 pointer in $v0 (was a regalloc cap);
  * struct-copy is the lever (same as RiderAnim_reset_0000D438). Byte-exact. */
 void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
-    *(Pair2*)(a0 + 0xC8) = pair;
+    RA(a0)->nextState = pair;
 }
 
 /* Copy the adjacent global pair D+0xDC8/0xDCC to adjacent a0->0xC8/0xCC.
@@ -8469,7 +8473,7 @@ void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
  * Byte-exact (in-tree verified). */
 extern char game_uso_D_807FF3B8;
 void RiderAnim_clearNextState_0000D5DC(char *a0) {
-    *(Pair2*)(a0 + 0xC8) = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8);
+    RA(a0)->nextState = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8); /* the null PMF */
 }
 
 /* Varargs (&a1) pair-sink: if a3==-1 set a0->0x68=a3 else a0->0x64=a3; then copy
@@ -8486,11 +8490,11 @@ void RiderAnim_clearNextState_0000D5DC(char *a0) {
  * 15/15 words byte-exact, 0 diffs. */
 void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3) {
     if (a3 == -1) {
-        *(int*)(a0 + 0x68) = a3;
+        RA(a0)->unk68 = a3;
     } else {
-        *(int*)(a0 + 0x64) = *(int*)&a3;
+        RA(a0)->stateArg = *(int*)&a3;
     }
-    *(Pair2*)(a0 + 0xC0) = pair;
+    RA(a0)->state = pair;
 }
 
 /* 2-insn leaf: jr ra; sw a0, 0(sp) (a0 spilled to its caller-arg slot in the
@@ -8528,7 +8532,7 @@ extern char game_uso_D_807FF7B4;
  *       value=call2-arg4, `value | 0` -> caller-saved $a3, `(idx*0)+10`. */
 void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
     int value;
-    int idx = *(int*)(a0 + 0x100);
+    int idx = RA(a0)->comboCount;
 
     value = 0;
 
@@ -8536,20 +8540,20 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
         if (idx > 0) {
             if (idx >= 10) {
                 idx = (idx * 0) + 10;
-                *(int*)(a0 + 0x100) = idx;
+                RA(a0)->comboCount = idx;
             }
             value = *(int*)((char*)&game_uso_D_807FF7B4 + (idx<<0<<1<<1));
             if (value != 0) {
                 import_000B8698(*(int*)((char*)&import_800201D0 + 0x138),
-                                *(int*)(a0 + 0xB4), value | 0, value);
+                                (int)RA(a0)->rider, value | 0, value);
             }
         }
     }
-    *(int*)(a0 + 0xF8) = 0;
-    *(int*)(a0 + 0x100) = 0;
+    RA(a0)->unkF8 = 0;
+    RA(a0)->comboCount = 0;
     game_uso_func_022784(*(int*)((char*)&import_800201D0 + 0x138),
-                         *(int*)(a0 + 0xB4), a1, value);
-    *(int*)(a0 + 0x120) = 1;
+                         (int)RA(a0)->rider, a1, value);
+    RA(a0)->unk120 = 1;
 }
 
 /* 26 insns. Toggle bit 0x40 in (a0->0xB4)[0xA58], call worker, test the
@@ -8563,13 +8567,13 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
  *       (which value goes into t1 vs t2). */
 extern int game_uso_func_00E124();
 void RiderAnim_flipStance_0000D6E4(char *a0) {
-    int *p = (int*)(*(char**)(a0 + 0xB4) + 0xA58);
+    int *p = (int *)&RA(a0)->rider->flags;
     *p ^= 0x40;
-    game_uso_func_00E124(*(char**)(a0 + 0xB4), a0);
-    if ((*(int*)(*(char**)(a0 + 0xB4) + 0xA58) & 0x40) != 0) {
-        *(int*)(a0 + 0xFC) = 0x00050000;
+    game_uso_func_00E124(RA(a0)->rider, a0);
+    if ((*(int *)&RA(a0)->rider->flags & 0x40) != 0) {
+        RA(a0)->animSet = 0x00050000;
     } else {
-        *(int*)(a0 + 0xFC) = 0x00010000;
+        RA(a0)->animSet = 0x00010000;
     }
 }
 
@@ -9363,7 +9367,7 @@ void game_uso_func_0000ECEC(char *obj) {
 }
 
 void game_uso_func_0000EDCC(int *a0, int a1) {
-    a0[0x10C / 4] = a1;
+    RA(a0)->hitKind = a1;
 }
 
 /* RiderAnim_applyDamage_0000EDD4: 23-insn 5-way switch + back-subtract.
@@ -11050,9 +11054,9 @@ void game_uso_func_00011750(char *obj) {
 }
 
 void RiderAnim_clearRiderSpin_00011868(int *a0) {
-    *(float *)((char *)a0[0xB4 / 4] + 0x970) = 0.0f;
-    *(float *)((char *)a0[0xB4 / 4] + 0x974) = 0.0f;
-    *(float *)((char *)a0[0xB4 / 4] + 0x978) = 0.0f;
+    RA(a0)->rider->spin.x = 0.0f;
+    RA(a0)->rider->spin.y = 0.0f;
+    RA(a0)->rider->spin.z = 0.0f;
 }
 
 void game_uso_func_00011888(int *a0) {
