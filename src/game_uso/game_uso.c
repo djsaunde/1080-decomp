@@ -3080,14 +3080,14 @@ finalize:;
         AI(a0)->turnGain = *(float*)((char*)&D_44F4_st12_E8 + 0xE8);
         AI(a0)->turnSpeedRef = 500.0f;
         AI(a0)->minSpeed = 70.0f;
-        AI(a0)->unkB8 = 230.0f;
-        AI(a0)->unkBC = *(float*)((char*)&D_44F4_st12_EC + 0xEC);
-        AI(a0)->unkC0 = 12.0f;
-        AI(a0)->unkC4 = *(float*)((char*)&D_44F4_st12_F0 + 0xF0);
-        AI(a0)->unkC8 = 2.0f;
+        AI(a0)->crouchSteerRef = 230.0f;
+        AI(a0)->stallYaw = *(float*)((char*)&D_44F4_st12_EC + 0xEC);
+        AI(a0)->reachTime = 12.0f;
+        AI(a0)->dParmsSteer = *(float*)((char*)&D_44F4_st12_F0 + 0xF0);
+        AI(a0)->dParmsSteerScale = 2.0f;
         AI(a0)->aimRange = 50.0f;
-        AI(a0)->unkD0 = 20.0f;
-        AI(a0)->unkD4 = 500.0f;
+        AI(a0)->rivalPathTime = 20.0f;
+        AI(a0)->rivalPathDist = 500.0f;
         AI(a0)->weaveLeadTime = 15.0f;
         AI(a0)->weaveSideScale = *(float*)((char*)&D_44F4_st12_F4 + 0xF4);
         AI(a0)->weaveLead = *(float*)((char*)&D_44F4_st12_F8 + 0xF8);
@@ -3109,7 +3109,7 @@ void SnowAI_reset(SnowAI *self) {
     self->unk58 = 0;
     self->targetNode = 0;
     self->aiState = 0;
-    self->unk70 = 0;
+    self->finishTimer = 0;
     self->modeFlags = 0;
     self->unk6C = 0;
     self->aimMode = 0;
@@ -3232,17 +3232,17 @@ void SnowAI_timeoutRun(int *a0) {
     }
     p = (char *)((SnowAI *)a0)->rider;
     if (((SnowBoarder *)p)->contactCount != 0 && ((SnowBoarder *)p)->raceResult != 0) {
-        timer = ((SnowAI *)a0)->unk70;
+        timer = ((SnowAI *)a0)->finishTimer;
         if (timer < 60) {
             if (((SnowBoarder *)p)->speed <= 30.0f) {
                 RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
-                *(int*)((char*)a0 + 0x70) = 61;
+                AI(a0)->finishTimer = 61;
             } else {
-                *(int*)((char*)a0 + 0x70) = timer + 1;
+                AI(a0)->finishTimer = timer + 1;
             }
         } else if (timer == 60) {
             RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
-            *(int*)((char*)a0 + 0x70) = 61;
+            AI(a0)->finishTimer = 61;
         }
     }
 
@@ -3253,26 +3253,26 @@ void SnowAI_onWin(int *a0) {
     int r;
     gl_func_00000000(a0);
     r = gl_func_00000000(a0);
-    *(int*)((char*)a0 + 0x80) = r;
+    AI(a0)->unk80 = r;
     if (r == 0) return;
-    *(int*)((char*)a0 + 0x40) = gl_func_00000000(a0);
+    AI(a0)->targetNode = gl_func_00000000(a0);
 }
 
 void SnowAI_onLose(int *a0) {
     int v;
-    if (*(int*)(*(int*)((char*)a0 + 0x30) + 0x848) != 2) {
+    if (AI(a0)->rider->controller != 2) {
         gl_func_00000000();
         v = gl_func_00000000(a0);
-        *(int*)((char*)a0 + 0x80) = v;
+        AI(a0)->unk80 = v;
         if (v != 0) {
-            *(int*)((char*)a0 + 0x40) = gl_func_00000000(a0);
+            AI(a0)->targetNode = gl_func_00000000(a0);
         }
     }
 }
 
 void SnowAI_onTimeout(int *a0) {
-    *(int*)((char*)a0 + 0x64) = 2;
-    *(int*)((char*)a0 + 0x70) = 0;
+    AI(a0)->aiState = 2;
+    AI(a0)->finishTimer = 0;
 }
 
 /* SnowAI_isAtFinish - MATCHED 2026-07-08 (28/28 words incl. reloc fields).
@@ -3324,11 +3324,11 @@ int SnowAI_pickFinishBranch(int *a0) {
 }
 
 void SnowAI_enterFinish(int *a0) {
-    *(int*)((char*)a0 + 0x64) = 1;
-    *(int*)((char*)a0 + 0x70) = 0;
-    if (*(int*)((char*)a0 + 0x4C4) > 0) {
+    AI(a0)->aiState = 1;
+    AI(a0)->finishTimer = 0;
+    if (AI(a0)->unk4C4 > 0) {
         gl_func_00000000(a0);
-        *(int*)((char*)a0 + 0x4C4) = 0;
+        AI(a0)->unk4C4 = 0;
     }
 }
 
@@ -5458,6 +5458,8 @@ extern char gu_c48c_tf0, gu_c48c_tf1, gu_c48c_tf2, gu_c48c_tf3, gu_c48c_tf4, gu_
  *     donor placeholder below emits D204's 28555.0f at +0x1F4. Extern-symbol
  *     spellings emitted no rodata and shifted every later %lo by 12 bytes. */
 struct C48CArg { int v; };
+/* each stage builds one RiderAnimParm in place: vptr = the float / int parm vtable, value, unk14 */
+#define RAP(o) ((RiderAnimParm *)(o))
 void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     int *s1;
     struct C48CArg u1;
@@ -5512,9 +5514,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x8);
         if (s1 != (int *)-0x8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf0 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 0.7f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf0 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =0.7f;
         }
     }
     {
@@ -5523,8 +5525,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x20);
         if (s1 != (int *)-0x20 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti0 + 0xfc0); obj[0x10 / 4] = 20;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti0 + 0xfc0); RAP(obj)->value.i =20;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5533,8 +5535,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x38);
         if (s1 != (int *)-0x38 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti1 + 0xfc0); obj[0x10 / 4] = 60;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti1 + 0xfc0); RAP(obj)->value.i =60;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5543,8 +5545,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x50);
         if (s1 != (int *)-0x50 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti2 + 0xfc0); obj[0x10 / 4] = 5;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti2 + 0xfc0); RAP(obj)->value.i =5;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5553,9 +5555,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x68);
         if (s1 != (int *)-0x68 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf1 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 1.72f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf1 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =1.72f;
         }
     }
     {
@@ -5564,8 +5566,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x80);
         if (s1 != (int *)-0x80 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti3 + 0xfc0); obj[0x10 / 4] = 20;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti3 + 0xfc0); RAP(obj)->value.i =20;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5574,9 +5576,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x98);
         if (s1 != (int *)-0x98 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf2 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 3.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf2 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =3.0f;
         }
     }
     {
@@ -5585,9 +5587,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0xb0);
         if (s1 != (int *)-0xb0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf3 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 7.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf3 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =7.0f;
         }
     }
     {
@@ -5596,8 +5598,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0xc8);
         if (s1 != (int *)-0xc8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti4 + 0xfc0); obj[0x10 / 4] = 3;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti4 + 0xfc0); RAP(obj)->value.i =3;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5606,9 +5608,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0xe0);
         if (s1 != (int *)-0xe0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf4 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 0.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf4 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =0.0f;
         }
     }
     {
@@ -5617,9 +5619,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0xf8);
         if (s1 != (int *)-0xf8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf5 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 4.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf5 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =4.0f;
         }
     }
     {
@@ -5628,9 +5630,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x110);
         if (s1 != (int *)-0x110 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf6 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 50.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf6 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =50.0f;
         }
     }
     {
@@ -5639,9 +5641,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x128);
         if (s1 != (int *)-0x128 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf7 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 25.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf7 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =25.0f;
         }
     }
     {
@@ -5650,9 +5652,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x140);
         if (s1 != (int *)-0x140 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf8 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 40.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf8 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =40.0f;
         }
     }
     {
@@ -5661,9 +5663,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x158);
         if (s1 != (int *)-0x158 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf9 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 100.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf9 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =100.0f;
         }
     }
     {
@@ -5672,9 +5674,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x170);
         if (s1 != (int *)-0x170 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf10 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 120.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf10 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =120.0f;
         }
     }
     {
@@ -5683,9 +5685,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x188);
         if (s1 != (int *)-0x188 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf11 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 80.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf11 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =80.0f;
         }
     }
     {
@@ -5694,9 +5696,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x1a0);
         if (s1 != (int *)-0x1a0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf12 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 100.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf12 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =100.0f;
         }
     }
     {
@@ -5705,9 +5707,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x1b8);
         if (s1 != (int *)-0x1b8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf13 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 150.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf13 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =150.0f;
         }
     }
     {
@@ -5716,9 +5718,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x1d0);
         if (s1 != (int *)-0x1d0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf14 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 100.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf14 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =100.0f;
         }
     }
     {
@@ -5727,9 +5729,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x1e8);
         if (s1 != (int *)-0x1e8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_tf15 + 0xf78);
-        obj[0x14 / 4] = 0;
-        *(float *)((char *)obj + 0x10) = 150.0f;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf15 + 0xf78);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.f =150.0f;
         }
     }
     {
@@ -5738,9 +5740,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x200);
         if (s1 != (int *)-0x200 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti5 + 0xfc0);
-        obj[0x14 / 4] = 0;
-        obj[0x10 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti5 + 0xfc0);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.i =0;
         }
     }
     {
@@ -5749,9 +5751,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x218);
         if (s1 != (int *)-0x218 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti6 + 0xfc0);
-        obj[0x14 / 4] = 0;
-        obj[0x10 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti6 + 0xfc0);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.i =0;
         }
     }
     {
@@ -5760,9 +5762,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x230);
         if (s1 != (int *)-0x230 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti7 + 0xfc0);
-        obj[0x14 / 4] = 0;
-        obj[0x10 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti7 + 0xfc0);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.i =0;
         }
     }
     {
@@ -5771,9 +5773,9 @@ stage0:;
         obj = (int *)((char *)s1 + 0x248);
         if (s1 != (int *)-0x248 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti8 + 0xfc0);
-        obj[0x14 / 4] = 0;
-        obj[0x10 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti8 + 0xfc0);
+        RAP(obj)->unk14 = 0;
+        RAP(obj)->value.i =0;
         }
     }
     {
@@ -5782,8 +5784,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x260);
         if (s1 != (int *)-0x260 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti9 + 0xfc0); obj[0x10 / 4] = 1;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti9 + 0xfc0); RAP(obj)->value.i =1;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5792,8 +5794,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x278);
         if (s1 != (int *)-0x278 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti10 + 0xfc0); obj[0x10 / 4] = 1;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti10 + 0xfc0); RAP(obj)->value.i =1;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5802,8 +5804,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x290);
         if (s1 != (int *)-0x290 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti11 + 0xfc0); obj[0x10 / 4] = 1;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti11 + 0xfc0); RAP(obj)->value.i =1;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5812,8 +5814,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x2a8);
         if (s1 != (int *)-0x2a8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti12 + 0xfc0); obj[0x10 / 4] = 1;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti12 + 0xfc0); RAP(obj)->value.i =1;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5822,8 +5824,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x2c0);
         if (s1 != (int *)-0x2c0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti13 + 0xfc0); obj[0x10 / 4] = 1;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti13 + 0xfc0); RAP(obj)->value.i =1;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5832,8 +5834,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x2d8);
         if (s1 != (int *)-0x2d8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti14 + 0xfc0); obj[0x10 / 4] = 30;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti14 + 0xfc0); RAP(obj)->value.i =30;
+        RAP(obj)->unk14 = 0;
         }
     }
     {
@@ -5842,8 +5844,8 @@ stage0:;
         obj = (int *)((char *)s1 + 0x2f0);
         if (s1 != (int *)-0x2f0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
         game_uso_func_04A188(obj, s1, t, 1);
-        obj[0xC / 4] = (int)((char *)&gu_c48c_ti15 + 0xfc0); obj[0x10 / 4] = 100;
-        obj[0x14 / 4] = 0;
+        RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti15 + 0xfc0); RAP(obj)->value.i =100;
+        RAP(obj)->unk14 = 0;
         }
     }
 tail:
@@ -5929,14 +5931,14 @@ void RiderAnim_init_0000D458(s32 arg0) {
     s32 var_v0;
 
     game_uso_func_07F6C0((char *)arg0 + 0xBC, (char *)arg0 + 0x138 - ((char *)arg0 + 0xBC));
-    FW(arg0, 0x114) = 2;
-    FW(arg0, 0xFC) = RANIM_GROUP_REGULAR;
+    RA(arg0)->trickPhase = 2;
+    RA(arg0)->animSet = RANIM_GROUP_REGULAR;
     RA(arg0)->rideContacts = 1;
-    FW(arg0, 0x104) = -1;
-    FW(arg0, 0x10C) = 0;
-    *(float *)((char *)arg0 + 0x11C) = 1.0f;
+    RA(arg0)->unk104 = -1;
+    RA(arg0)->hitKind = 0;
+    RA(arg0)->unk11C = 1.0f;
     game_uso_func_077574(arg0);
-    game_uso_func_077C44(arg0, FW(arg0, 0xFC) | RANIM_UP_DOWN, 0, 0, 1, 1);
+    game_uso_func_077C44(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (*(int *)((char *)&import_800200CC + 0x34) == 3) {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
@@ -6096,7 +6098,7 @@ int RiderAnim_trickCrash_0000D74C(char *a0) {
         arg = RA(a0)->animSet | RANIM_CRASH_SLIDE;
         if (RA(a0)->rider->health <= 0) {
             arg = 0x0006000A;
-            *(int*)(*(char**)(a0 + 0xB4) + 0x960) = 0x64;
+            RA(a0)->rider->slowdown = 0x64;
         }
         gl_func_00000000(a0, 3, 0, arg);
         gl_func_00000000(a0, arg);
@@ -6924,7 +6926,7 @@ void RiderAnim_addTrickPoints_0000EE30(char *a0, int a1, int a2) {
 }
 
 void RiderAnim_stateStopped(void *a0) {
-    *(s32*)((char*)*(s32**)((char*)a0 + 0xB4) + 0x960) = 100;
+    RA(a0)->rider->slowdown = 100;
 }
 
 /* RiderAnim_stateSwitchStance: 39-insn init/reset.
@@ -7161,7 +7163,7 @@ void RiderAnim_stateTrickAir(int *a0) {
     float *pb;
     float *pc;
 
-    *(int*)(*(char**)((char*)a0 + 0xB4) + 0xA18) = 0;
+    RA(a0)->rider->unkA18 = 0;
     RA(a0)->trickPhase = 1;
     w = (char *)RA(a0)->rider;
     pa = (float*)(w + 0x170); /* &rider->dparms.gvt */
@@ -7301,7 +7303,7 @@ void RiderAnim_stateTrickStart(char *a0) {
  * varargs-extern attempt failed because the spill is struct-by-value-driven,
  * not varargs. See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRowIn(int *a0) {
-    gl_func_00000000(a0, *(int*)((char*)a0 + 0xFC), 0, 0, 0x100, 5);
+    gl_func_00000000(a0, RA(a0)->animSet, 0, 0, 0x100, 5);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE50), -1);
 }
 
@@ -7338,11 +7340,11 @@ void RiderAnim_stateRow(int *a0) {
     float mx, my, mz;
     volatile int padbot[5];
 
-    import_0010DB28(a0, *(int*)((char*)a0 + 0xFC), 0, 2, 1, 1);
+    import_0010DB28(a0, RA(a0)->animSet, 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
 
     q = (float*)((char*)(int*)a0[0xB4 / 4] + 0x3C8);
-    scale = *(float*)((char*)a0 + 0x1FC);
+    scale = RA(a0)->parms.rfc.value.f;
     mx = q[0] * scale;
     my = q[1] * scale;
     mz = q[2] * scale;
@@ -7363,7 +7365,7 @@ void RiderAnim_stateRow(int *a0) {
  * call before the family-pattern body. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRowOut(int *a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0xFC), 2, 1, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->animSet, 2, 1, 1, 1);
     game_uso_func_00000000(a0);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
 }
@@ -7416,7 +7418,7 @@ void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
 }
 
 void RiderAnim_blendTurn_0000FBF8(int *a0) {
-    int v = *(int*)((char*)a0 + 0xFC);
+    int v = RA(a0)->animSet;
     game_uso_func_00000000(a0, v | 2, v | 3,
         *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x970), 0, 1);
 }
@@ -7590,7 +7592,7 @@ void RiderAnim_stateOllieDrop(int *a0) {
  * *(Pair2*) by value homes a1,a2 to sp+4/sp+8 exactly. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_startHop_0001001C(int *a0) {
-    *(int*)((char*)a0 + 0xF4) = 0;
+    RA(a0)->curTrick = 0;
     gl_func_00000000(a0);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDD0));
     gl_func_00000000(a0);
@@ -7603,7 +7605,7 @@ extern char D_00000000;
 void RiderAnim_stateHopStart(int *a0) {
     /* Call 1: 6-arg w/ 2 stack args */
     gl_func_00000000(a0,
-                     *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
+                     RA(a0)->animSet | RANIM_HOP,
                      0, 2,
                      0x100, 10);
     /* Call 2: 4-arg with D[0xDD8/0xDDC] */
@@ -7741,16 +7743,16 @@ void RiderAnim_stateHopRise(int *a0) {
         inner = RA(a0)->curTrick;
         if ((inner != 0) && (inner->flags & TRICK_FLAG_HALF_TURN)) {
             import_0010DB28(a0,
-                             *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
+                             RA(a0)->animSet | RANIM_HOP,
                              5, 5, 1, 1);
         } else {
             import_0010DB28(a0,
-                             *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
+                             RA(a0)->animSet | RANIM_HOP,
                              5, 5, 0x100, 10);
         }
     } else {
         import_0010DB28(a0,
-                         *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
+                         RA(a0)->animSet | RANIM_HOP,
                          2, 3, 1, 1);
         RiderAnim_setState_0000D5F8((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3E0 + 0xDF0),
@@ -7843,7 +7845,7 @@ void RiderAnim_stateHopAir(int *a0) {
  * int args); (2) inline the single-use spB4 deref (no named local) so it takes
  * a $t-reg instead of $v0. Same Pair2-by-value idiom as RiderAnim_stateCushionEnd. */
 void RiderAnim_stateHopDrop(int *arg0) {
-    gl_func_00000000(arg0, *(int*)((char*)arg0 + 0xFC) | RANIM_HOP, 4, 5, 1, 1);
+    gl_func_00000000(arg0, RA(arg0)->animSet | RANIM_HOP, 4, 5, 1, 1);
     gl_func_00000000(arg0, 0);
     if (gl_func_00000000(arg0) == 0) {
         if ((*(int**)((char*)arg0 + 0xB4))[0x938 / 4] != 0) {
@@ -7879,7 +7881,7 @@ void RiderAnim_stateHopLand(char *a0) {
 void RiderAnim_stateCushionIn(char *a0) {
     gl_func_00000000(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 0, ANIM_BLENDIN, 5);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
-    *(float*)(a0 + 0x11C) = *(float*)(a0 + 0x154);
+    RA(a0)->unk11C = RA(a0)->parms.lnc.value.f;
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E00/E04 pair). 27-insn 3-call
@@ -7902,7 +7904,7 @@ void RiderAnim_stateCushion(int *a0) {
  * First call passes a 2-int struct BY VALUE (homes a1->sp+4, a2->sp+8); the named
  * base `&D+0xDF8` keeps the addiu split (lw 0(t6)/4(t6)). Byte-exact. */
 void RiderAnim_stateCushionEnd(void *a0) {
-    *(float*)((char*)a0 + 0x11C) = 1.0f;
+    RA(a0)->unk11C = 1.0f;
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
     gl_func_00000000(a0);
 }
@@ -8063,7 +8065,7 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
  * RiderAnim_restartRide_00010E2C/000114FC. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_startLanding_00010DC8(int a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0xFC) | RANIM_LANDING, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->animSet | RANIM_LANDING, 0, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
 }
 
@@ -8322,7 +8324,7 @@ void RiderAnim_startEnding_000112E0(int *a0) {
  * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding1(int *a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 2, 3, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->player.anim, 2, 3, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xF08), 3);
 }
 
@@ -8330,12 +8332,12 @@ void RiderAnim_stateEnding1(int *a0) {
  * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding2(int *a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 3, 4, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->player.anim, 3, 4, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xF10), 4);
 }
 
 void RiderAnim_stateEnding3(int *a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 4, 1, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->player.anim, 4, 1, 1, 1);
 }
 
 /* RiderAnim_stateStartIntro: 39-insn — a1 = ((u)a0->0xB4->0x8C4 % 5)+10 | 0x70000;
@@ -8354,7 +8356,7 @@ void RiderAnim_stateStartIntro(int *a0) {
  * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStartIntroEnd(int *a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 2, 1, 1, 1);
+    game_uso_func_00000000(a0, RA(a0)->player.anim, 2, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDB8), 1);
 }
 
@@ -8378,14 +8380,14 @@ void RiderAnim_stateStartWait(int *a0) {
 }
 
 void RiderAnim_stateIdle(void *a0) {
-    *(s32*)((char*)*(s32**)((char*)a0 + 0xB4) + 0x960) = 100;
+    RA(a0)->rider->slowdown = 100;
 }
 
 void RiderAnim_playHitAnim_000115EC(int *a0, int a1) {
-    *(int*)((char*)a0 + 0x108) = a1;
+    RA(a0)->selectedAnim = a1;
     game_uso_func_00000000(a0);
     game_uso_func_00000000(a0);
-    *(int*)((char*)a0 + 0x114) = 0;
+    RA(a0)->trickPhase = 0;
     game_uso_func_00000000(a0);
 }
 
@@ -8399,13 +8401,13 @@ void RiderAnim_playHitAnim_000115EC(int *a0, int a1) {
  * t0/t3 base-pointer order. docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair */
 void RiderAnim_startHitAnim_00011624(int *a0) {
     gl_func_00000000(a0);
-    gl_func_00000000(a0, a0[0x108 / 4], 0, 1, 1, 1);
+    gl_func_00000000(a0, RA(a0)->selectedAnim, 0, 1, 1, 1);
     if (((int *)a0[0xB4 / 4])[0xA14 / 4] <= 0) {
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xDC8), 1);
     } else {
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
     }
-    a0[0x114 / 4] = 0;
+    RA(a0)->trickPhase = 0;
 }
 
 /* RiderAnim_crashRecover_000116D4: 31-insn (0x7C) flag-gated double-call wrapper.
@@ -8418,8 +8420,8 @@ void RiderAnim_startHitAnim_00011624(int *a0) {
 void RiderAnim_crashRecover_000116D4(void *a0) {
     void *s0 = a0;
     gl_func_00000000(s0);
-    if (*(int *)((char *)s0 + 0x110) != 0) {
-        gl_func_00000000(s0, *(int *)((char *)s0 + 0x108), 2, 1, 1, 1);
+    if (RA(s0)->slowCrash != 0) {
+        gl_func_00000000(s0, RA(s0)->selectedAnim, 2, 1, 1, 1);
         gl_func_00000000(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
     }
     *(int *)((char *)s0 + 0x114) = 0;

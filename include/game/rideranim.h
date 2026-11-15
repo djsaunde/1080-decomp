@@ -66,8 +66,10 @@ typedef struct RiderAnim {
     Pair2 pendingState;     /* 0xD0: state to enter at the next stateRide (null PMF = none): startFinish /
                              * startTimeout set stateFinish / stateTimeUp here, so a race that ends mid-move
                              * changes state once the rider is back to riding */
-    s32 unkD8;              /* 0xD8: 0 after init (no writer in game.uso); 0 lets blendWeight / blendWeightDeep
-                             * fall back to stateRide / stateRideDeep */
+    s32 unkD8;              /* 0xD8: always 0: RiderAnim_init's clear of 0xBC..0x138 zeroes it and nothing writes it
+                             * (run 506: no +0xD8 access through rider->anim (+0x840) in any built object, and the
+                             * only +0xD8 reads with `this` are blendWeight / blendWeightDeep). So those two always
+                             * fall back to stateRide / stateRideDeep: a dead hook */
     s32 rideContacts;       /* 0xDC: rider->contactCount sampled by stateRide; 1 from init */
     s32 unkE0;              /* 0xE0: no user found */
     s16 jumpCharge;         /* 0xE4: frames the jump has been held (statePreJumpHold, holdJumpLift: < jlt;

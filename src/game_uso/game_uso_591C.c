@@ -278,7 +278,7 @@ void SnowAI_steer(int *a0) {
         stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
         delta_b = stage;
         sub = *(char**)((char*)a0 + 0x30);
-        f2v = self->unkC0 * *(float*)(sub + 0x348);
+        f2v = self->reachTime * *(float*)(sub + 0x348);
         dist_sq = (delta_a.x * delta_a.x) + (delta_a.z * delta_a.z);
         if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -350,7 +350,7 @@ void SnowAI_steer(int *a0) {
     stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
     delta_g = stage;
     sub = (char *)self->rider;
-    f2v = (self->unkC0 + 12.0f) * *(float*)(sub + 0x348);
+    f2v = (self->reachTime + 12.0f) * *(float*)(sub + 0x348);
     dist_sq = (delta_e.x * delta_e.x) + (delta_e.z * delta_e.z);
     if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -364,7 +364,7 @@ void SnowAI_steer(int *a0) {
 yaw_region:
     sub = (char *)self->rider;
     dot = *(float*)(sub + 0x348);
-    if (self->unkBC <= yaw_metric) {
+    if (self->stallYaw <= yaw_metric) {
         if (dot < 50.0f) {
             out_flags |= 0x40;
         }
@@ -378,7 +378,7 @@ yaw_region:
             }
         }
     }
-    if (1.0f < (dot / self->unkB8) * accel_metric) {
+    if (1.0f < (dot / self->crouchSteerRef) * accel_metric) {
         out_flags |= 8;
     }
     if (state_flag & 8) {
@@ -419,11 +419,11 @@ yaw_region:
     sub = (char *)self->rider;
     if (fsel < metric_a) {
         if (*(int*)(sub + 0x9CC) != 0) {
-            f2v = self->unkC8;
+            f2v = self->dParmsSteerScale;
         } else {
             f2v = 1.0f;
         }
-        if (((accel_metric <= f2v * self->unkC4) + 0 * (int)(*a0))) {
+        if (((accel_metric <= f2v * self->dParmsSteer) + 0 * (int)(*a0))) {
             out_flags |= 2;
             goto tail_common;
         }
