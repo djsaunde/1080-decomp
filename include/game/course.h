@@ -165,6 +165,18 @@ typedef struct CourseMarkerParms {
     CourseParm flg;             /* 0x38: MARKER_F_* */
 } CourseMarkerParms;            /* 0x50 */
 
+/* The 0x40-byte item that game.uso's three ItemType_create factories build (game_ItemType_create_00003A28 /
+ * _0000AC78 / _00011A94, each the create method of an ItemType): a libgdl ColourItem (0x3C: Node + vptr + link
+ * + position; ColourItem_ctor) whose vptr is then set to import_8006ED80, plus one word cleared. When the type's
+ * unk40 node is set it becomes the item's child. */
+typedef struct ColourSubItem {
+    char node[0x28];            /* 0x00: Node */
+    s32 vptr;                   /* 0x28: import_8006ED80 */
+    s32 link;                   /* 0x2C: ColourItem link */
+    f32 pos[3];                 /* 0x30 */
+    s32 unk3C;                  /* 0x3C: 0 after the ctor; no reader in game.uso */
+} ColourSubItem;                /* 0x40 */
+
 /* CourseMarker instance (game.uso CourseMarkerTmpl_create: 0x8C, vtbl Data 0x578). The base is the
  * libgdl ColourItem (0x3C): Node + vptr + link + position. */
 typedef struct CourseMarker {
@@ -226,6 +238,7 @@ COURSE_ASSERT(RaceGate, next, 0x84);
 COURSE_ASSERT_SIZE(CourseParm, 0x18);
 COURSE_ASSERT_SIZE(CourseMarkerParms, 0x50);
 COURSE_ASSERT_SIZE(CourseMarker, 0x8C);
+COURSE_ASSERT_SIZE(ColourSubItem, 0x40);
 COURSE_ASSERT(CourseMarker, link, 0x2C);
 COURSE_ASSERT(CourseMarker, pos, 0x30);
 COURSE_ASSERT(CourseMarker, parms.wid.value, 0x54);

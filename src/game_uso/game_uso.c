@@ -297,24 +297,24 @@ int camPath_hasSpline_00000674(CamPath *a0) {
 /* MATCHED 2026-06-20. The stale ~90%-cap comment was wrong: cnt was already
  * in $v0 and the loop scheduling already matched. The ONLY residual diff was
  * the trailing tail store address: target `addu v1,s2,t7` (a0 base first) vs
- * built `addu v1,t7,s2` (index first). Writing the tail as true int-array
- * indexing `((int*)a0)[cnt+15] = ((int*)a0)[cnt+14]` makes IDO canonicalize
- * the commutative addu with the base register first → 0 diffs. */
+ * built `addu v1,t7,s2` (index first). Writing the tail as true array
+ * indexing (`keys[cnt + 1] = keys[cnt]`, run 528: same bytes as the old
+ * `((int*)a0)[cnt+15]` form) makes IDO canonicalize the commutative addu with
+ * the base register first → 0 diffs. keys[i] in the loop strength-reduces to
+ * the old walking word pointer. */
 void camPath_read_00000724(char *a0) {
   int i;
   int new_var;
   int cnt;
-  int *p;
-  stream_readQuad_000002BC((Quad4 *) a0);
+  stream_readQuad_000002BC((Quad4 *) &((CamPath *) a0)->lookMode);
   new_var = 0x30;
-  stream_readQuad_000002BC((Quad4 *) (a0 + 0x10));
-  stream_read8_00000314((Pair2 *) (a0 + 0x20));
-  stream_read8_00000314((Pair2 *) (a0 + 0x28));
-  stream_readWord_0000035C((int *) (a0 + new_var));
-  stream_readS32_00000280((int *) (a0 + 0x34));
-  cnt = *((int *) (a0 + 0x34));
+  stream_readQuad_000002BC((Quad4 *) &((CamPath *) a0)->eyeMode);
+  stream_read8_00000314((Pair2 *) &((CamPath *) a0)->upSpline);
+  stream_read8_00000314((Pair2 *) &((CamPath *) a0)->fovMode);
+  stream_readWord_0000035C((int *) (a0 + new_var)); /* rotMode */
+  stream_readS32_00000280(&((CamPath *) a0)->numKeys);
+  cnt = ((CamPath *) a0)->numKeys;
   i = 1;
-  p = (int *) (a0 + 4);
   if (cnt > 0)
   {
     do
@@ -322,21 +322,20 @@ void camPath_read_00000724(char *a0) {
       int tmp = game_uso_func_055750(0x38);
       if (1)
       {
-        *((int *) (((char *) p) + 0x38)) = tmp;
+        ((CamPath *) a0)->keys[i] = (CamKey *) tmp;
         game_uso_func_000003F4(tmp);
       }
-      camKey_read_000005B8((CamKey *) *((int *) (((char *) p) + 0x38)));
+      camKey_read_000005B8(((CamPath *) a0)->keys[i]);
       if (!a0)
       {
       }
-      cnt = *((int *) (a0 + 0x34));
+      cnt = ((CamPath *) a0)->numKeys;
       i++;
-      p++;
     }
     while (i <= cnt);
   }
-  *((int *) (a0 + 0x38)) = *((int *) (a0 + 0x3C));
-  ((int *) a0)[cnt + 15] = ((int *) a0)[cnt + 14];
+  ((CamPath *) a0)->keys[0] = ((CamPath *) a0)->keys[1];
+  ((CamPath *) a0)->keys[cnt + 1] = ((CamPath *) a0)->keys[cnt];
 }
 
 void camList_init_000007E0(int *a0) {
@@ -564,25 +563,25 @@ void cam_readParms_00001644(int *a0) {
 
     stream_readS32_00000280(&((CourseCam *)a0)->numPaths);
     i = 0;
-    p = a0; /* p walks a0 one word per entry: p + 0x1D4 = &paths[i], p + 0x158 = &lists[i] */
     while (i < ((CourseCam *)a0)->numPaths) {
         v = CALL(camPath_new_00000608)(0);
-        *(int*)((char*)p + 0x1D4) = v;
+        ((CourseCam *)a0)->paths[i] = (CamPath *)v;
         CALL(camPath_init_00000634)(v);
-        CALL(camPath_read_00000724)(*(int*)((char*)p + 0x1D4));
+        CALL(camPath_read_00000724)(((CourseCam *)a0)->paths[i]);
         i++;
-        p++;
     }
 
     i = 0;
     stream_readS32_00000280(&((CourseCam *)a0)->numLists);
     if (((CourseCam *)a0)->numLists > 0) {
+        /* p walks a0 one word per list, so ((CourseCam *)p)->lists[0] is lists[i]: indexing lists[i]
+         * here makes IDO rebuild the pointer from i after the read call (an extra sll / addu) */
         p = a0;
         do {
             v = CALL(mem_new)(sizeof(CamList));
-            *(int*)((char*)p + 0x158) = v;
+            ((CourseCam *)p)->lists[0] = (CamList *)v;
             CALL(camList_init_000007E0)(v);
-            CALL(camList_read_000007EC)(*(int*)((char*)p + 0x158));
+            CALL(camList_read_000007EC)(((CourseCam *)p)->lists[0]);
             i++;
             p++;
         } while (i < ((CourseCam *)a0)->numLists);
@@ -1568,11 +1567,11 @@ int *game_ItemType_create_00003A28(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -3912,11 +3911,11 @@ int *game_ItemType_create_0000AC78(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;
@@ -4058,7 +4057,7 @@ skip_sub:
     }
 after_o16:
 
-    /* The five children belong to this 140-byte sub-object, not arg0. */
+    /* The five children belong to this 140-byte sub-object (SunParms, Sun +0xEC), not arg0. */
     s0 = (char *)arg0 + 0xEC;
     if ((arg0 != (void *)-0xEC) ||
         (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(140), s0 != NULL)) {
@@ -4068,8 +4067,8 @@ after_o16:
             r = (char *)XCALL(game_uso_func_055750, mem_new)(8);
             if (r == NULL) goto after_o140hdr;
         }
-        *(int *)r = (int)((char *)&game_uso_D_807FF344 + 0xD54);
-        *(int *)(r + 4) = 0;
+        ((SunParms *)r)->name = (char *)&game_uso_D_807FF344 + 0xD54; /* "Parms" */
+        ((SunParms *)r)->head = 0;
     }
 after_o140hdr:
     {
@@ -4468,8 +4467,8 @@ skip_sub:
         hdr = (char *)XCALL(game_uso_func_055750, mem_new)(8);
         if (hdr == NULL) goto stage_a;
     }
-    *(int *)hdr = (int)((char *)&game_uso_D_807FF368 + 0xD78);
-    *(int *)(hdr + 4) = 0;
+    ((LensFlareParms *)hdr)->name = (char *)&game_uso_D_807FF368 + 0xD78; /* "LensFlare::Parms" */
+    ((LensFlareParms *)hdr)->head = 0;
 stage_a:
     slot_a.p = *(char **)((char *)&game_uso_D_807FF37C + 0xD8C);
     marsh = slot_a;
@@ -7835,11 +7834,11 @@ void *game_ItemType_create_00011A94(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(0x40);
+    p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0;
+        ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
     p1 = arg0;

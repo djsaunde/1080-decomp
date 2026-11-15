@@ -43,8 +43,9 @@ typedef struct SunColorParm {
 
 /* "Parms" of Sun (0x8C; tags at game.uso Data 0xD5C..0xD6C, in this order) */
 typedef struct SunParms {
-    const char *name;       /* 0x00: "Parms" (Data 0xD54) */
-    s32 unk04;              /* 0x04: parm list head */
+    const char *name;       /* 0x00: "Parms" (Data 0xD54); Sun_ctor stores name and head itself (the inlined
+                             * 8-byte Parms base) before adding the parms */
+    s32 head;               /* 0x04: parm list head (0 from the ctor) */
     SunParm rot;            /* 0x08 (sun value 0x104): azimuth, the second sin / cos of Sun_update */
     SunParm ele;            /* 0x20 (0x11C): elevation, the first sin / cos of Sun_update */
     SunParm scl;            /* 0x38 (0x134): sprite size (default 2.0); display draws scl * fade */
@@ -88,8 +89,8 @@ typedef struct LensFlareElem {
 
 /* "LensFlare::Parms" (0x50; tags fin / dlv / dfm at Data 0xD8C..0xD94) */
 typedef struct LensFlareParms {
-    const char *name;       /* 0x00: "LensFlare::Parms" (Data 0xD78) */
-    s32 unk04;
+    const char *name;       /* 0x00: "LensFlare::Parms" (Data 0xD78); stored by LensFlare_create with head */
+    s32 head;               /* 0x04: parm list head */
     SunParm fin;            /* 0x08 (flare value 0x23C): the alignment below which nothing is drawn */
     SunParm dlv;            /* 0x20 (0x254): alpha scale of the dimming disc drawn over the screen */
     SunParm dfm;            /* 0x38 (0x26C): the alignment where the dimming starts */
