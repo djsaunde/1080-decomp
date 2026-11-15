@@ -1,0 +1,520 @@
+#!/usr/bin/env python3
+"""bootup.uso Text (bootup_uso + game_libs) data-site census, resolver and accessor-macro checker.
+
+Every game_libs data reference is spelled off a zero placeholder (`(char *)&D_00000000 + K`,
+or a D_00000000_xxx / gl_data_00000000 alias), because the decomp links the USO at VRAM 0 and
+the ROM holds pre-relocation words. What K means is only in bootup.uso's TextReloc table: the
+reloc at that instruction names a Sym entry, and the Sym's tag byte says whether it is a
+SECTION BASE (K = section offset) or a named OBJECT (K = field offset inside it).
+See docs/READABILITY_PLAN.md 9.1 and docs/USO_FORMAT.md 6-7.
+
+This tool reads the ROM (bootup.uso Sym / TextReloc / DataReloc / RoDataReloc), the linker map
+(function placement, as Text section offsets: bootup_uso = VRAM, game_libs = VRAM + 0x1466C) and the built game_libs .o files
+(which placeholder symbol each site uses), and resolves every HI16/LO16 site to
+(section, Sym, object, offset-in-object). K is computed exactly the way uso_relocate pairs
+relocs: a HI16 remembers its half, each following LO16 folds hi<<16 + sext(lo).
+
+Subcommands:
+  sites [FUNC ...]   per-function site list (all functions if none given)
+  census [-n N] [--direct]
+                     objects ranked by LO16 site count (+ functions, distinct offsets, size
+                     inferred from the next named object, DataReloc words inside it: N/MT =
+                     N pointers of which M to Text, i.e. a vtable). "[via base]" rows are
+                     section-base sites that fall inside a named object's span (same-TU or
+                     string data after it); --direct keeps only object-relocated sites.
+  object SYM|SEC:OFF which functions touch one object (and at which offsets)
+  check              every placeholder accessor macro (`#define NAME ... &D_00000000 ...`)
+                     in include/ and src/game_libs: resolve the Sym it claims (comment
+                     `Sym N`, or GL_DATA/GL_RODATA/GL_BSS(K) = section base) and verify each
+                     function that uses it has a site against that Sym. Exit 1 on a mismatch.
+  selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
+
+Run from the project root, with the venv python (pyelftools, crunch64):
+  /home/danjs/code/decomp/.venv/bin/python scripts/uso-data-sites.py census -n 40
+Needs a built tree (build/tenshoe.map + build/src/game_libs/*.o).
+"""
+import argparse, bisect, collections, glob, os, re, struct, sys
+
+ROM = 'baserom.z64'
+MAP = 'build/tenshoe.map'
+INNER_HDR = 0xD9FE28          # bootup.uso inner module header (magic 0x12345678)
+TEXT_DELTA = 0x1466C          # game_libs VRAM -> bootup.uso Text section offset
+SECT_NAME = {5: 'Text', 6: 'Data', 7: 'RoData', 8: 'Bss'}
+SECT_ABBR = {5: 'T', 6: 'D', 7: 'R', 8: 'B'}
+BASE_MACRO = {'GL_DATA': 6, 'GL_RODATA': 7, 'GL_BSS': 8, 'GL_TEXT': 5}
+TYPES = {1: 'Sym', 2: 'TextReloc', 3: 'DataReloc', 4: 'RoDataReloc', 5: 'Text', 6: 'Data',
+         7: 'RoData', 9: 'EntrySym', 11: 'End'}
+
+
+def u32(b, o):
+    return struct.unpack_from('>I', b, o)[0]
+
+
+def parse_uso(rom, mod):
+    """Section table walk (same layout as scripts/uso-sym-oracle.py). Returns name -> bytes."""
+    import crunch64
+    assert u32(rom, mod) == 0x12345678
+    o = mod + 16
+    secs = {}
+    while o < len(rom) - 12:
+        for k in range(4):
+            t = u32(rom, o + k); fl = u32(rom, o + k + 8)
+            if t in TYPES and (fl >> 16) in (0x1000, 0x1001, 0x0800, 0x2000, 0x2001):
+                o += k
+                break
+        else:
+            break
+        t = u32(rom, o); size = u32(rom, o + 4); flag = u32(rom, o + 8); d0 = o + 12
+        if flag & 0x10000:
+            data = crunch64.yay0.decompress(rom[d0:d0 + size + 0x40000])
+            nxt = d0 + len(crunch64.yay0.compress(data))
+        else:
+            data = rom[d0:d0 + size]; nxt = d0 + size
+        secs.setdefault(TYPES[t], data)
+        o = nxt
+        if t in (9, 11) and 'Sym' in secs:
+            break
+    return secs
+
+
+class Sym:
+    __slots__ = ('idx', 'tag', 'value', 'kind', 'sect', 'name')
+
+    def __init__(self, idx, tag, value):
+        self.idx, self.tag, self.value = idx, tag, value
+        info = tag >> 16
+        self.kind = info & 7            # 1 import, 2 object, 3 absolute, 4 section base
+        self.sect = info >> 4           # kinds 2/4: section type; kind 1: exporting module id
+        self.name = None
+
+    @property
+    def is_obj(self):
+        return self.kind == 2
+
+    @property
+    def is_base(self):
+        return self.kind == 4
+
+    def label(self):
+        if self.kind == 4:
+            return f'{SECT_NAME.get(self.sect, self.sect)}-base(sym{self.idx})'
+        if self.kind == 2:
+            n = f' {self.name}' if self.name else ''
+            return f'{SECT_NAME.get(self.sect, self.sect)}+0x{self.value:X}(sym{self.idx}{n})'
+        if self.kind == 1:
+            return f'import mod{self.sect}(sym{self.idx})'
+        return f'abs 0x{self.value:X}(sym{self.idx})'
+
+
+class Site:
+    __slots__ = ('off', 'rtype', 'sym', 'k', 'func', 'placeholder', 'obj', 'objoff')
+
+    def key(self):
+        """(section, object start) this site lands in."""
+        return self.obj
+
+
+TEXT_ROM = 0xDD0A6C           # bootup.uso Text section data in the ROM
+SEGMENTS = ('.bootup_uso', '.game_libs_head', '.game_libs')   # = bootup.uso's Text section
+
+
+def load_map(path):
+    """Function symbols of the segments that make up bootup.uso's Text (bootup_uso then
+    game_libs), keyed by TEXT SECTION OFFSET (= load address - TEXT_ROM + (vram - section vram)),
+    plus each .o's (text offset, size, path)."""
+    funcs = {}            # text offset -> name
+    objs = []             # (text offset, size, objpath)
+    cur = None
+    lines = open(path).read().split('\n')
+    for i, line in enumerate(lines):
+        if line.startswith('.'):
+            cur = line.split()[0]
+            hdr = line if 'load address' in line else line + ' ' + lines[i + 1]
+            m = re.search(r'0x([0-9a-f]+)\s+0x[0-9a-f]+\s+load address 0x([0-9a-f]+)', hdr)
+            delta = (int(m.group(2), 16) - TEXT_ROM - int(m.group(1), 16)) if m else None
+            continue
+        if cur not in SEGMENTS:
+            continue
+        m = re.match(r'\s+\.text\s+0x([0-9a-f]+)\s+0x([0-9a-f]+)\s+(\S+\.o)$', line)
+        if m:
+            objs.append((int(m.group(1), 16) + delta, int(m.group(2), 16), m.group(3)))
+            continue
+        m = re.match(r'\s+0x([0-9a-f]+)\s+([A-Za-z_]\w*)$', line)
+        if m and not m.group(2).endswith(('_START', '_END', '_SIZE')) \
+                and not m.group(2).startswith(('_binary_', '__romPos')):
+            funcs.setdefault(int(m.group(1), 16) + delta, m.group(2))
+    return funcs, objs
+
+
+def load_objfiles(objs):
+    """Local function symbols + placeholder name of each HI16/LO16 reloc, keyed by text offset."""
+    from elftools.elf.elffile import ELFFile
+    funcs, ph = {}, {}
+    for base, size, path in objs:
+        if not os.path.exists(path):
+            continue
+        with open(path, 'rb') as f:
+            e = ELFFile(f)
+            symtab = e.get_section_by_name('.symtab')
+            tidx = [i for i, s in enumerate(e.iter_sections()) if s.name == '.text'][0]
+            for s in symtab.iter_symbols():
+                if s['st_shndx'] == tidx and s.name and s['st_info']['type'] in ('STT_FUNC', 'STT_NOTYPE') \
+                        and not s.name.startswith(('$', '.L', 'jtbl')):
+                    funcs.setdefault(base + s['st_value'], s.name)
+            for sec in e.iter_sections():
+                if sec.name in ('.rel.text', '.rela.text'):
+                    for r in sec.iter_relocations():
+                        if r['r_info_type'] in (5, 6):
+                            ph[base + r['r_offset']] = symtab.get_symbol(r['r_info_sym']).name
+    return funcs, ph
+
+
+class Census:
+    def __init__(self, root='.'):
+        os.chdir(root)
+        self.rom = open(ROM, 'rb').read()
+        secs = parse_uso(self.rom, INNER_HDR)
+        self.secs = secs
+        sd = secs['Sym']
+        self.syms = [Sym(i, *struct.unpack_from('>II', sd, i * 12)) for i in range(len(sd) // 12)]
+        self.text = secs['Text']
+        mfuncs, objs = load_map(MAP)
+        ofuncs, self.ph = load_objfiles(objs)
+        allf = dict(ofuncs)
+        allf.update(mfuncs)       # global names win over local aliases at the same address
+        # text Sym -> function name
+        self.by_text = {}
+        for s in self.syms:
+            if s.kind == 2 and s.sect == 5:
+                n = allf.get(s.value)
+                if n:
+                    s.name = n
+        self.fstarts = sorted(allf)
+        self.fnames = [allf[a] for a in self.fstarts]
+        # named objects per section, sorted by offset
+        self.objs = collections.defaultdict(list)
+        for s in self.syms:
+            if s.kind == 2:
+                self.objs[s.sect].append((s.value, s.idx))
+        for v in self.objs.values():
+            v.sort()
+        self.sect_size = {6: len(secs['Data']), 7: len(secs['RoData'])}
+        self._sites()
+        self._data_ptrs()
+
+    def func_at(self, vram):
+        i = bisect.bisect_right(self.fstarts, vram) - 1
+        return self.fnames[i] if i >= 0 else '?'
+
+    def resolve(self, sym, k):
+        """-> (object key, offset in object). Object key: ('sym', idx) or ('anon', sect, off)."""
+        if sym.kind == 2:
+            return ('sym', sym.idx), k
+        if sym.kind == 4:
+            lst = self.objs.get(sym.sect, [])
+            i = bisect.bisect_right(lst, (k, 1 << 30)) - 1
+            if i >= 0:
+                start, idx = lst[i]
+                end = lst[i + 1][0] if i + 1 < len(lst) else self.sect_size.get(sym.sect, 1 << 32)
+                if k < end and k - start < 0x10000:
+                    # a section-base site inside a named object's span: same TU / static
+                    # access. Identity is by position only (object sizes are inferred from
+                    # the next named object), so keep it distinguishable from a direct reloc.
+                    return ('via', idx), k - start
+            return ('anon', sym.sect, k), 0
+        return ('ext', sym.idx), k
+
+    def _sites(self):
+        tr = self.secs['TextReloc']
+        self.sites = []
+        hi = 0
+        for i in range(len(tr) // 12):
+            info, off, _orig = struct.unpack_from('>III', tr, i * 12)
+            rtype, si = info & 7, info >> 4
+            if rtype not in (2, 3):
+                continue
+            word = u32(self.text, off)
+            if rtype == 3:
+                hi = word & 0xFFFF
+                k = hi << 16
+            else:
+                lo = word & 0xFFFF
+                k = ((hi << 16) + (lo - 0x10000 if lo & 0x8000 else lo)) & 0xFFFFFFFF
+            s = Site()
+            s.off, s.rtype, s.sym, s.k = off, rtype, self.syms[si], k
+            s.func = self.func_at(off)
+            s.placeholder = self.ph.get(off)
+            if rtype == 2:
+                s.obj, s.objoff = self.resolve(s.sym, k)
+            else:
+                s.obj, s.objoff = None, None
+            self.sites.append(s)
+        self.by_func = collections.defaultdict(list)
+        for s in self.sites:
+            self.by_func[s.func].append(s)
+
+    def _data_ptrs(self):
+        """DataReloc words inside each Data object: vtables / string tables / fn tables."""
+        self.dptr = collections.defaultdict(list)    # obj key -> [(off, target sym)]
+        for secname, base in (('DataReloc', self.syms[2]), ('RoDataReloc', self.syms[1])):
+            dr = self.secs[secname]
+            for i in range(len(dr) // 12):
+                info, off, _ = struct.unpack_from('>III', dr, i * 12)
+                if info & 7 != 4:
+                    continue
+                key, o = self.resolve(base, off)
+                if key[0] == 'via':
+                    key = ('sym', key[1])
+                self.dptr[key].append((o, self.syms[info >> 4]))
+
+    def obj_label(self, key):
+        if key[0] in ('sym', 'via'):
+            s = self.syms[key[1]]
+            return s.label() + (' [via base]' if key[0] == 'via' else '')
+        if key[0] == 'anon':
+            return f'{SECT_NAME.get(key[1], key[1])}-base+0x{key[2]:X}'
+        return self.syms[key[1]].label()
+
+    def obj_size(self, key):
+        if key[0] not in ('sym', 'via'):
+            return None
+        s = self.syms[key[1]]
+        lst = self.objs[s.sect]
+        i = lst.index((s.value, s.idx))
+        end = lst[i + 1][0] if i + 1 < len(lst) else self.sect_size.get(s.sect)
+        return None if end is None else end - s.value
+
+
+def cmd_sites(c, a):
+    names = a.funcs or sorted(c.by_func, key=lambda f: c.by_func[f][0].off)
+    for f in names:
+        ss = [s for s in c.by_func.get(f, []) if s.rtype == 2]
+        if not ss:
+            continue
+        print(f'{f}:')
+        for s in ss:
+            ph = s.placeholder or '-'
+            print(f'  T+0x{s.off:05X} K=0x{s.k:X} {ph:22s} {c.obj_label(s.obj)}'
+                  f'{"" if not s.objoff else f" +0x{s.objoff:X}"}')
+
+
+def census_rows(c):
+    agg = collections.OrderedDict()
+    for s in c.sites:
+        if s.rtype != 2 or s.obj[0] == 'ext':
+            continue
+        r = agg.setdefault(s.obj, [0, set(), set()])
+        r[0] += 1
+        r[1].add(s.func)
+        r[2].add(s.objoff)
+    return sorted(agg.items(), key=lambda kv: (-kv[1][0], kv[0]))
+
+
+def cmd_census(c, a):
+    rows = census_rows(c)
+    if a.direct:
+        rows = [r for r in rows if r[0][0] == 'sym']
+    tot = sum(r[0] for _, r in rows)
+    print(f'{len(rows)} objects, {tot} LO16 sites')
+    print(f'{"sites":>5} {"fns":>4} {"offs":>4} {"size":>6} {"ptrs":>4}  object  [sample functions]')
+    for key, (n, fs, offs) in rows[:a.n]:
+        sz = c.obj_size(key)
+        ptrs = c.dptr.get(('sym', key[1]) if key[0] == 'via' else key, [])
+        tptr = sum(1 for _, t in ptrs if t.kind == 2 and t.sect == 5)
+        pdesc = f'{len(ptrs)}' + (f'/{tptr}T' if tptr else '')
+        sample = ', '.join(sorted(fs)[:3])
+        print(f'{n:5d} {len(fs):4d} {len(offs):4d} {sz if sz is not None else "-":>6} {pdesc:>4}  '
+              f'{c.obj_label(key)}  [{sample}]')
+
+
+def parse_objarg(c, s):
+    m = re.match(r'(?:sym)?(\d+)$', s)
+    if m:
+        return ('sym', int(m.group(1)))
+    m = re.match(r'(Data|RoData|Bss|D|R|B):(0x[0-9A-Fa-f]+|\d+)$', s)
+    if m:
+        sect = {'Data': 6, 'D': 6, 'RoData': 7, 'R': 7, 'Bss': 8, 'B': 8}[m.group(1)]
+        key, _ = c.resolve(Sym(-1, (sect << 20) | 0x40000, 0), int(m.group(2), 0))
+        return key
+    sys.exit(f'bad object {s}')
+
+
+def cmd_object(c, a):
+    key = parse_objarg(c, a.obj)
+    print(c.obj_label(key), 'size', c.obj_size(key))
+    for o, t in sorted(c.dptr.get(key, [])):
+        print(f'  ptr +0x{o:X} -> {t.label()}')
+    byf = collections.defaultdict(list)
+    for s in c.sites:
+        if s.rtype == 2 and (s.obj == key or (key[0] == 'sym' and s.obj == ('via', key[1]))):
+            byf[s.func].append(s.objoff)
+    for f in sorted(byf, key=lambda f: -len(byf[f])):
+        print(f'  {len(byf[f]):3d} {f}: ' + ' '.join(f'+0x{o:X}' for o in sorted(set(byf[f]))))
+
+
+# ---------------------------------------------------------------- macro checker
+DEF_RE = re.compile(r'^\s*#\s*define\s+(\w+)(\([^)]*\))?\s+(.*?)\s*$')
+
+
+def scan_macros():
+    """Accessor macros over the zero placeholder, in include/ and src/game_libs."""
+    out = []
+    files = sorted(glob.glob('include/**/*.h', recursive=True)) + \
+        sorted(glob.glob('src/game_libs/*.c')) + sorted(glob.glob('src/game_libs/*.cpp'))
+    for path in files:
+        lines = open(path, errors='replace').read().split('\n')
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            start = i
+            full = line
+            while full.endswith('\\') and i + 1 < len(lines):
+                i += 1
+                full = full[:-1] + ' ' + lines[i]
+            m = DEF_RE.match(full)
+            i += 1
+            if not m:
+                continue
+            name, params, body = m.group(1), m.group(2), m.group(3)
+            if name in BASE_MACRO:
+                continue
+            cm = re.search(r'/\*(.*?)(\*/|$)', body)
+            comment = cm.group(1) if cm else ''
+            # the comment block directly above the #define also counts
+            j = start - 1
+            if j >= 0 and lines[j].rstrip().endswith('*/'):
+                blk = []
+                while j >= 0:
+                    blk.append(lines[j])
+                    if '/*' in lines[j]:
+                        break
+                    j -= 1
+                comment += ' ' + ' '.join(reversed(blk))
+            body_nc = re.sub(r'/\*.*?(\*/|$)', '', body)
+            bm = re.search(r'\b(GL_DATA|GL_RODATA|GL_BSS|GL_TEXT)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*\)', body_nc)
+            uses_ph = re.search(r'&\s*\(?\s*(D_00000000\w*|gl_data_00000000\w*)\b', body_nc)
+            if not bm and not uses_ph:
+                continue
+            claim = None
+            sm = re.search(r'\b[Ss]ym\s*#?(\d+)\b', comment)
+            if bm:
+                claim = ('base', BASE_MACRO[bm.group(1)], int(bm.group(2), 0))
+            elif sm:
+                claim = ('sym', int(sm.group(1)))
+            out.append(dict(name=name, params=params, path=path, line=i, claim=claim,
+                            local=not path.startswith('include/')))
+    return out
+
+
+FUNC_RE = re.compile(r'^(?!\s)(?:[\w\*]+[\s\*]+)+?\**(\w+)\s*\(([^;{]*?)\)\s*\{', re.M | re.S)
+
+
+def func_bodies(path):
+    """name -> body text for top-level C function definitions (column-0 heuristic)."""
+    src = open(path, errors='replace').read()
+    out = {}
+    for m in FUNC_RE.finditer(src):
+        name = m.group(1)
+        if name in ('if', 'while', 'for', 'switch', 'return', 'sizeof'):
+            continue
+        end = src.find('\n}', m.end())
+        if end < 0:
+            continue
+        out.setdefault(name, src[m.end():end])
+    return out
+
+
+def claim_hits(c, func, cl):
+    """LO16 sites of `func` consistent with a macro's claim:
+    ('sym', N) -> relocated against Sym N, or a section-base site inside N's span;
+    ('base', sect, K) -> relocated against that section's base Sym with exactly K."""
+    ss = [s for s in c.by_func.get(func, []) if s.rtype == 2]
+    if cl[0] == 'sym':
+        return [s for s in ss if s.sym.idx == cl[1] or s.obj in (('sym', cl[1]), ('via', cl[1]))]
+    return [s for s in ss if s.sym.is_base and s.sym.sect == cl[1] and s.k == cl[2]]
+
+
+def cmd_check(c, a):
+    macros = scan_macros()
+    claimed = [m for m in macros if m['claim']]
+    srcs = sorted(glob.glob('src/game_libs/*.c')) + sorted(glob.glob('src/game_libs/*.cpp'))
+    bodies = {p: func_bodies(p) for p in srcs}
+    bad = ok = unused = 0
+    for m in claimed:
+        pat = re.compile(r'\b%s\b' % re.escape(m['name']))
+        files = [m['path']] if m['local'] else srcs
+        users = [(p, f) for p in files for f, b in bodies.get(p, {}).items() if pat.search(b)]
+        if not users:
+            unused += 1
+            if a.verbose:
+                print(f'unused   {m["name"]} ({m["path"]}:{m["line"]})')
+            continue
+        for p, f in users:
+            ss = [s for s in c.by_func.get(f, []) if s.rtype == 2]
+            if not ss:
+                continue   # not a game_libs function (name not in the map), or no sites
+            cl = m['claim']
+            if claim_hits(c, f, cl):
+                ok += 1
+                if a.verbose:
+                    print(f'ok       {m["name"]} in {f}')
+                continue
+            bad += 1
+            if cl[0] == 'sym':
+                want = c.syms[cl[1]].label() if cl[1] < len(c.syms) else f'sym{cl[1]}?'
+            else:
+                want = f'{SECT_NAME[cl[1]]}-base K=0x{cl[2]:X}'
+            near = sorted({c.obj_label(s.obj) for s in ss})[:6]
+            print(f'MISMATCH {m["name"]} ({m["path"]}:{m["line"]}) claims {want}; '
+                  f'{f} has no such site. Its objects: {near}')
+    print(f'check: {len(macros)} placeholder macros, {len(claimed)} with a Sym/section claim; '
+          f'{ok} (macro, function) uses verified, {bad} mismatches, {unused} claimed macros unused')
+    return 1 if bad else 0
+
+
+def cmd_selftest(c, a):
+    lo = [s for s in c.sites if s.rtype == 2]
+    hi = [s for s in c.sites if s.rtype == 3]
+    n_bss_obj = sum(1 for s in hi if s.sym.kind == 2 and s.sym.sect == 8)
+    n_data_obj = sum(1 for s in hi if s.sym.kind == 2 and s.sym.sect == 6)
+    print(f'HI16 {len(hi)}  LO16 {len(lo)}  HI16->Bss objects {n_bss_obj}  ->Data objects {n_data_obj}')
+    assert n_bss_obj == 1950 and n_data_obj == 778, 'USO_FORMAT.md census changed?'
+    assert c.syms[2].kind == 4 and c.syms[2].sect == 6 and c.syms[4].sect == 8
+    # DMA prototype: gDmaSlots = Bss object sym 1504, dma_* strings at Data-base K 0x1E2C0..
+    d = [s for s in c.by_func.get('dma_startRead', []) if s.rtype == 2]
+    assert any(s.sym.idx == 1504 for s in d), d
+    assert any(s.sym.is_base and s.sym.sect == 6 and s.k == 0x1E2C0 for s in d)
+    ph = collections.Counter(s.placeholder for s in lo)
+    print('placeholder names on LO16 sites:', ph.most_common(8))
+    nofunc = sum(1 for s in lo if s.func == '?')
+    assert nofunc == 0
+    # the checker must accept the real claims and reject swapped ones
+    assert claim_hits(c, 'dma_startRead', ('sym', 1504))
+    assert claim_hits(c, 'dma_startRead', ('base', 6, 0x1E2C0))
+    assert not claim_hits(c, 'dma_startRead', ('base', 8, 0x1E2C0)), 'Bss-base K accepted for a Data string'
+    assert not claim_hits(c, 'dma_startRead', ('sym', 1255)), 'audio heap accepted for the DMA table'
+    assert not claim_hits(c, 'dma_startRead', ('base', 6, 0x1E2C4))
+    # per-site resolution: every Bss-object site in dma_startRead names sym 1504 with K < 0x44*10
+    for s_ in c.by_func['dma_startRead']:
+        if s_.rtype == 2 and s_.sym.kind == 2:
+            assert s_.sym.idx == 1504 and s_.k < 0x2A8, (s_.sym.idx, hex(s_.k))
+    print('selftest OK')
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest='cmd', required=True)
+    p = sub.add_parser('sites'); p.add_argument('funcs', nargs='*')
+    p = sub.add_parser('census'); p.add_argument('-n', type=int, default=50)
+    p.add_argument('--direct', action='store_true')
+    p = sub.add_parser('object'); p.add_argument('obj')
+    p = sub.add_parser('check'); p.add_argument('-v', '--verbose', action='store_true')
+    sub.add_parser('selftest')
+    a = ap.parse_args()
+    c = Census('.')
+    sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
+              'check': cmd_check, 'selftest': cmd_selftest}[a.cmd](c, a) or 0)
+
+
+if __name__ == '__main__':
+    main()
