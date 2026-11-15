@@ -4,6 +4,10 @@
 #include "gdl/dlctx.h"
 #include "gdl/rcp.h"
 #include "gdl/polyshape.h"
+#include "gdl/window.h"
+#include "gdl/light.h"
+#include "gdl/material.h"
+#include "gdl/sprite.h"
 extern int AnimPlayer_reset();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;

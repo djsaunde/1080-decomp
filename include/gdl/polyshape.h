@@ -56,4 +56,36 @@ typedef char BasePolyShape_verts_check[(int)&((BasePolyShape *)0)->verts == 0x60
 typedef char BasePolyShape_remap_check[(int)&((BasePolyShape *)0)->remap == 0x70 ? 1 : -1];
 typedef char BasePolyShape_9C_check[(int)&((BasePolyShape *)0)->unk9C == 0x9C ? 1 : -1];
 
+/* PolyShape (0xC0, PolyShape_ctor 0x48A74) = BasePolyShape + 0x10 bytes;
+ * PolyShape_display builds the F3DEX list (G_VTX batches of up to 32 points,
+ * G_TRI1 / G_LINE3D, material state through gfx_emitStateAndPrimColour).
+ *
+ * MorphPoly (0xDC, MorphPoly_ctor 0x4A670) is a PolyShape whose vertices are
+ * rewritten every frame: MorphPoly_setVerts stores the new vertex source at
+ * +0xC0 and bumps the update counter at +0xD8 (genNormalsFast on every 5th
+ * update when flag 0x800 is set); MorphPoly_init copies the s16 update list
+ * between unkD4 and the static DL's Vtx count (vtxEnd) to its own buffer at
+ * +0xD0, which MorphPoly_applyUpdateList walks (-1 terminated groups). */
+typedef struct PolyShape {
+    /* 0x00 */ BasePolyShape base;
+    /* 0xB0 */ s32 unkB0[4];
+} PolyShape;
+
+typedef struct MorphPoly {
+    /* 0x00 */ PolyShape poly;
+    /* 0xC0 */ void *verts;            /* new vertex source, MorphPoly_setVerts */
+    /* 0xC4 */ s32 unkC4;
+    /* 0xC8 */ s32 unkC8;
+    /* 0xCC */ s32 unkCC;
+    /* 0xD0 */ s16 *updateList;        /* -1 terminated index groups */
+    /* 0xD4 */ s16 vtxStart;
+    /* 0xD6 */ s16 vtxEnd;             /* Vtx count of the static DL (gfx +0x214) at init */
+    /* 0xD8 */ s32 updateCount;
+} MorphPoly;
+
+typedef char PolyShape_size_check[sizeof(PolyShape) == 0xC0 ? 1 : -1];
+typedef char MorphPoly_size_check[sizeof(MorphPoly) == 0xDC ? 1 : -1];
+typedef char MorphPoly_updateList_check[(int)&((MorphPoly *)0)->updateList == 0xD0 ? 1 : -1];
+typedef char MorphPoly_updateCount_check[(int)&((MorphPoly *)0)->updateCount == 0xD8 ? 1 : -1];
+
 #endif /* GDL_POLYSHAPE_H */
