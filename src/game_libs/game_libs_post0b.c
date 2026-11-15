@@ -12501,7 +12501,7 @@ s32 gfx_drawText(void *arg0, u8 *arg1, s32 arg2) {
     return 0;
 }
 
-void gfx_func_00046788(int *a0, int a1) {
+void gfx_setCpuDraw(int *a0, int a1) {
     a0[163] = a1;
 }
 
@@ -12846,7 +12846,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_beginView_00046BC4);
 // `addiu s0,a0,0x1C` — target reuses the a0:=a1 copy made for the call arg
 // (IDO scheduling, 1 reg-source insn); (b)(c) the two `mul.s` put the cvt'd
 // product as fs where the target uses the call-return scale (f0) as fs — the
-// documented mul.s fs/ft operand-canonicalization cap (cf. gfx_texSize_000520B8 /
+// documented mul.s fs/ft operand-canonicalization cap (cf. gfx_texImageBytes /
 // 00052104), not C-flippable. Stays NM. The float-return `cb` is modeled via
 // gl_retf_46C4C (float-returning view of the jal-0 placeholder); h via gl_fn_578F0.
 extern int gl_func_00000000();
@@ -18346,7 +18346,7 @@ void light_addDefault_000513CC(int* a0) {
     r2[5] = (int)a3;
 }
 
-/* LightTarget_ctor: 54-insn lazy constructor + cb-register +
+/* shape_cmdLightTarget: 54-insn lazy constructor + cb-register +
  * field-init (clean single fn). Decoded from bare stub 2026-05-19.
  * Same family as the LANDED App_ctor (goto-end single
  * epilogue, minimal locals). cb3 has a FLOAT 5th stack arg
@@ -18386,7 +18386,7 @@ extern int D_00000000;
  * (`o->m120 = (o->vt = &vt, 0xFFFF)`, cfront's comma-expression shape): ugen evaluates the vtable
  * address first (t6), then 0xFFFF (t7), and the stores issue 0x120 first. */
 extern void gl_func_00000000_51448v();
-void LightTarget_ctor(char *a0) {
+void shape_cmdLightTarget(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
     char *l;
@@ -18883,7 +18883,7 @@ void BaseMat_func_00051ED8(a0, va_alist) char *a0; int va_alist; {
 void BasePolyShape_parseMats(char *arg0, int *arg1) {
 }
 
-/* gfx_texSize_000520B8: 19-insn float-mul wrapper. Sibling of gfx_texSize_00052104
+/* gfx_texImageBytes: 19-insn float-mul wrapper. Sibling of gfx_texRowBytes
  * (also NM cap). Multiplies scale by (a0->[0x20] * a0->[0x22]) — two
  * halfwords combined as int product. 2026-05-27: operand swap in the
  * source (write `a0->[0x22] * a0->[0x20]` to make IDO load 0x20 first
@@ -18894,7 +18894,7 @@ void BasePolyShape_parseMats(char *arg0, int *arg1) {
  * `scale * product`) — NO change. IDO canonicalizes the fresh-temp as fs
  * regardless of C operand order. Confirmed 1-insn permanent NM cap. */
 extern float gl_func_returns_float();
-int gfx_texSize_000520B8(int *a0) {
+int gfx_texImageBytes(int *a0) {
     float scale = gl_func_returns_float(a0);
     float t;
     return (int)((float)(*(short*)((char*)a0 + 0x20) * *(short*)((char*)a0 + 0x22)) * (t = scale));
@@ -18914,7 +18914,7 @@ int gfx_texSize_000520B8(int *a0) {
  * Genuine micro-cap; not C-reachable, permuter-resistant. Was INSN_PATCH'd
  * (removed 2026-05-23). Stays NM. */
 extern float gl_func_returns_float();
-int gfx_texSize_00052104(int *a0) {
+int gfx_texRowBytes(int *a0) {
     float scale = gl_func_returns_float(a0);
     float t;
     return (int)((float)*(short*)((char*)a0 + 0x20) * (t = scale));
@@ -18922,7 +18922,7 @@ int gfx_texSize_00052104(int *a0) {
 
 /* 45-insn float-returning state-code dispatcher: a0->[0x24] selects one
  * of {4.0f, 2.0f, 1.0f, 0.5f} or default-arm (cross-USO call + 0.0f).
- * Sibling of gfx_texSize_00052104.
+ * Sibling of gfx_texRowBytes.
  *
  * 2026-07-15 lever wave 3: 17 -> 11 word diffs (98.29 -> 99.4 fuzzy), size
  * exact (45). FIXED (a) regalloc via UNPASSED K&R EXTRA PARAM: 3rd K&R param

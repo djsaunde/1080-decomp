@@ -16,7 +16,7 @@
  *     picks one, scaled by 120 into the Light_t dir bytes);
  *   - +0xD0 light mask (0xFFFF), matched against a LightTarget's mask.
  *
- * LightTarget (0x16C, LightTarget_ctor 0x51448, name "lighttarget") is the node
+ * LightTarget (0x16C, shape_cmdLightTarget 0x51448, name "lighttarget") is the node
  * a shape uses to pick lights: LightTarget_display calls gfx_selectLights with
  * its position, mask (+0x120) and scale (+0x124). */
 

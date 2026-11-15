@@ -1,6 +1,6 @@
-nonmatching gfx_texSize_000520B8, 0x4C
+nonmatching gfx_texImageBytes, 0x4C
 
-glabel gfx_texSize_000520B8
+glabel gfx_texImageBytes
     /* E37190 000520B8 27BDFFE8 */  .word 0x27BDFFE8
     /* E37194 000520BC AFBF0014 */  .word 0xAFBF0014
     /* E37198 000520C0 0C000000 */  .word 0x0C000000
@@ -20,4 +20,4 @@ glabel gfx_texSize_000520B8
     /* E371D0 000520F8 44025000 */  .word 0x44025000
     /* E371D4 000520FC 03E00008 */  .word 0x03E00008
     /* E371D8 00052100 00000000 */  .word 0x00000000
-endlabel gfx_texSize_000520B8
+endlabel gfx_texImageBytes

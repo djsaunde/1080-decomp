@@ -1,6 +1,6 @@
-nonmatching LightTarget_ctor, 0xD8
+nonmatching shape_cmdLightTarget, 0xD8
 
-glabel LightTarget_ctor
+glabel shape_cmdLightTarget
     /* E36520 00051448 27BDFFD0 */  .word 0x27BDFFD0
     /* E36524 0005144C AFBF0024 */  .word 0xAFBF0024
     /* E36528 00051450 AFB10020 */  .word 0xAFB10020
@@ -55,4 +55,4 @@ glabel LightTarget_ctor
     /* E365EC 00051514 8FB0001C */  .word 0x8FB0001C
     /* E365F0 00051518 03E00008 */  .word 0x03E00008
     /* E365F4 0005151C 27BD0030 */  .word 0x27BD0030
-endlabel LightTarget_ctor
+endlabel shape_cmdLightTarget
