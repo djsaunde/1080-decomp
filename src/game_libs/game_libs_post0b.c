@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/node.h"
 extern int game_libs_func_00062F08();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -3397,16 +3398,16 @@ subc:
     }
     *(int *)r = 0;
 fields:
-    *(int *)(p + 0xC) = a1;
-    *(int *)(p + 0x14) = 0;
+    ((Node *)p)->name = a1;
+    ((Node *)p)->parent = 0;
 link:
-    *(char **)(o + 0x28) = (char *)&D_00000000;
-    gl_func_00000000(o + 0x18);
+    ((Node *)o)->vptr = (s32)&D_00000000;
+    gl_func_00000000(&((Node *)o)->unk18);
     gl_func_00000000_3800Cv(o, 0);
     n = *(int *)&D_00000000;
     *(int *)&D_00000000 = n + 1;
-    *(int *)(o + 0x1C) = n;
-    *(int *)(o + 0x20) = gl_func_00000000(o, n);
+    ((Node *)o)->serial = n;
+    ((Node *)o)->handle = gl_func_00000000(o, n);
 out:
     return o;
 }
@@ -9989,16 +9990,16 @@ void App_main(O415A4 *self) {
  * because IDO -O2 places locals first-declared-highest, so pad_upper
  * gets 0x28, local gets 0x24, the lower pads fill 0x20/0x1C. See
  * docs/IDO_CODEGEN.md "volatile-pad sandwich" entry. */
-void App_Reset(int *self) {
+void App_Reset(App *self) {
     int *vtable;
     volatile int pad_upper;
     int local;
     volatile int pad_lo_a, pad_lo_b;
-    func_00000000((char*)&D_00000000 + 0x1F5E4);
-    vtable = (int*)self[0x28/4];
+    func_00000000((char*)&D_00000000 + 0x1F5E4); /* "App::Reset\n" */
+    vtable = (int *)self->node.vptr;
     ((void(*)(int))vtable[0x14/4])(*(short*)((char*)vtable + 0x10) + (int)self);
     local = 9;
-    vtable = (int*)self[0x28/4];
+    vtable = (int *)self->node.vptr;
     ((void(*)(int, int*))vtable[0x34/4])(*(short*)((char*)vtable + 0x30) + (int)self, &local);
 }
 
@@ -10021,13 +10022,13 @@ void App_Reset(int *self) {
  * Adding `volatile int spill = (int)a0; (void)spill;` could force the
  * spill but tested on adjacent wraps (e.g. SnowBCollider_ctor) it shifts
  * register allocation cascade — net regression. Permuter-class. */
-void gl_func_000417CC(int *a0) {
+void gl_func_000417CC(App *a0) {
     int *p;
     gl_func_00000000();
-    p = (int*)a0[0x28/4];
-    a0[0x30/4] = 0;
+    p = (int *)a0->node.vptr;
+    a0->unk30 = 0;
     ((void(*)(int))p[0x74/4])(*(short*)((char*)p + 0x70) + (int)a0);
-    p = (int*)a0[0x28/4];
+    p = (int *)a0->node.vptr;
     ((void(*)(int))p[0x84/4])(*(short*)((char*)p + 0x80) + (int)a0);
 }
 
