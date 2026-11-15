@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C0EC, 0xF4
+nonmatching Backup_checkArcade, 0xF4
 
-glabel gl_func_0000C0EC
+glabel Backup_checkArcade
     /* DF11C4 0000C0EC 27BDFF08 */  .word 0x27BDFF08
     /* DF11C8 0000C0F0 AFBF001C */  .word 0xAFBF001C
     /* DF11CC 0000C0F4 AFB00018 */  .word 0xAFB00018
@@ -62,4 +62,4 @@ glabel gl_func_0000C0EC
     /* DF12AC 0000C1D4 27BD00F8 */  .word 0x27BD00F8
     /* DF12B0 0000C1D8 03E00008 */  .word 0x03E00008
     /* DF12B4 0000C1DC 00000000 */  .word 0x00000000
-endlabel gl_func_0000C0EC
+endlabel Backup_checkArcade

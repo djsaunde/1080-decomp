@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C1E0, 0x30
+nonmatching Backup_resetArcade, 0x30
 
-glabel gl_func_0000C1E0
+glabel Backup_resetArcade
     /* DF12B8 0000C1E0 27BDFF88 */  .word 0x27BDFF88
     /* DF12BC 0000C1E4 AFBF0014 */  .word 0xAFBF0014
     /* DF12C0 0000C1E8 AFA40078 */  .word 0xAFA40078
@@ -13,4 +13,4 @@ glabel gl_func_0000C1E0
     /* DF12DC 0000C204 27BD0078 */  .word 0x27BD0078
     /* DF12E0 0000C208 03E00008 */  .word 0x03E00008
     /* DF12E4 0000C20C 00000000 */  .word 0x00000000
-endlabel gl_func_0000C1E0
+endlabel Backup_resetArcade

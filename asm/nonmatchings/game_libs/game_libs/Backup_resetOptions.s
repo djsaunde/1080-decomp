@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BD78, 0x30
+nonmatching Backup_resetOptions, 0x30
 
-glabel gl_func_0000BD78
+glabel Backup_resetOptions
     /* DF0E50 0000BD78 27BDFFD0 */  .word 0x27BDFFD0
     /* DF0E54 0000BD7C AFBF0014 */  .word 0xAFBF0014
     /* DF0E58 0000BD80 AFA40030 */  .word 0xAFA40030
@@ -13,4 +13,4 @@ glabel gl_func_0000BD78
     /* DF0E74 0000BD9C 27BD0030 */  .word 0x27BD0030
     /* DF0E78 0000BDA0 03E00008 */  .word 0x03E00008
     /* DF0E7C 0000BDA4 00000000 */  .word 0x00000000
-endlabel gl_func_0000BD78
+endlabel Backup_resetOptions

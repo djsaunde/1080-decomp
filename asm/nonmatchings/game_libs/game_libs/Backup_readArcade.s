@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BFDC, 0x40
+nonmatching Backup_readArcade, 0x40
 
-glabel gl_func_0000BFDC
+glabel Backup_readArcade
     /* DF10B4 0000BFDC 27BDFFE0 */  .word 0x27BDFFE0
     /* DF10B8 0000BFE0 AFBF0014 */  .word 0xAFBF0014
     /* DF10BC 0000BFE4 AFA40020 */  .word 0xAFA40020
@@ -17,4 +17,4 @@ glabel gl_func_0000BFDC
     /* DF10E8 0000C010 27BD0020 */  .word 0x27BD0020
     /* DF10EC 0000C014 03E00008 */  .word 0x03E00008
     /* DF10F0 0000C018 00000000 */  .word 0x00000000
-endlabel gl_func_0000BFDC
+endlabel Backup_readArcade

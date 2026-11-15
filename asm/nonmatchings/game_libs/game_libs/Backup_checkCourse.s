@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BEB8, 0xF4
+nonmatching Backup_checkCourse, 0xF4
 
-glabel gl_func_0000BEB8
+glabel Backup_checkCourse
     /* DF0F90 0000BEB8 27BDFCC8 */  .word 0x27BDFCC8
     /* DF0F94 0000BEBC AFBF001C */  .word 0xAFBF001C
     /* DF0F98 0000BEC0 AFB00018 */  .word 0xAFB00018
@@ -62,4 +62,4 @@ glabel gl_func_0000BEB8
     /* DF1078 0000BFA0 27BD0338 */  .word 0x27BD0338
     /* DF107C 0000BFA4 03E00008 */  .word 0x03E00008
     /* DF1080 0000BFA8 00000000 */  .word 0x00000000
-endlabel gl_func_0000BEB8
+endlabel Backup_checkCourse

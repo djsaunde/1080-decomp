@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BFAC, 0x30
+nonmatching Backup_resetCourse, 0x30
 
-glabel gl_func_0000BFAC
+glabel Backup_resetCourse
     /* DF1084 0000BFAC 27BDFE68 */  .word 0x27BDFE68
     /* DF1088 0000BFB0 AFBF0014 */  .word 0xAFBF0014
     /* DF108C 0000BFB4 AFA40198 */  .word 0xAFA40198
@@ -13,4 +13,4 @@ glabel gl_func_0000BFAC
     /* DF10A8 0000BFD0 27BD0198 */  .word 0x27BD0198
     /* DF10AC 0000BFD4 03E00008 */  .word 0x03E00008
     /* DF10B0 0000BFD8 00000000 */  .word 0x00000000
-endlabel gl_func_0000BFAC
+endlabel Backup_resetCourse

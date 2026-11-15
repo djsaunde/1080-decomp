@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C01C, 0xD0
+nonmatching Backup_writeArcade, 0xD0
 
-glabel gl_func_0000C01C
+glabel Backup_writeArcade
     /* DF10F4 0000C01C 27BDFF78 */  .word 0x27BDFF78
     /* DF10F8 0000C020 AFB00018 */  .word 0xAFB00018
     /* DF10FC 0000C024 00808025 */  .word 0x00808025
@@ -53,4 +53,4 @@ glabel gl_func_0000C01C
     /* DF11B8 0000C0E0 27BD0088 */  .word 0x27BD0088
     /* DF11BC 0000C0E4 03E00008 */  .word 0x03E00008
     /* DF11C0 0000C0E8 00000000 */  .word 0x00000000
-endlabel gl_func_0000C01C
+endlabel Backup_writeArcade

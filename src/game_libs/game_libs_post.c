@@ -7303,7 +7303,7 @@ void AudioThread_SetFadeInTimer(int a0, int a1) {
 //   a0 (call-constrained) and ugen destination-coalesces the %hi temp;
 //   target's shape needs the hi in the ring (as1 rename-at-def of the arg
 //   copy) — no C grammar reaches ugen's temp choice. Same ugen-internal
-//   class as the gl_func_0000C28C skipped-ring-slot cap. Cap stands.
+//   class as the Backup_writeGhost skipped-ring-slot cap. Cap stands.
 //   re-audited 2026-10-15 with lever kit: EXACT. The "ugen destination-
 //   coalesce" cap was wrong source: call 1's arg0 is the RELOAD
 //   *(char **)(D+0x53C8), symmetric with calls 2/3 -- uopt forwards the

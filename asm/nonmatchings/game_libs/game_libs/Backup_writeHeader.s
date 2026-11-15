@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BB14, 0x9C
+nonmatching Backup_writeHeader, 0x9C
 
-glabel gl_func_0000BB14
+glabel Backup_writeHeader
     /* DF0BEC 0000BB14 27BDFFB8 */  .word 0x27BDFFB8
     /* DF0BF0 0000BB18 AFBF001C */  .word 0xAFBF001C
     /* DF0BF4 0000BB1C AFB00018 */  .word 0xAFB00018
@@ -40,4 +40,4 @@ glabel gl_func_0000BB14
     /* DF0C7C 0000BBA4 27BD0048 */  .word 0x27BD0048
     /* DF0C80 0000BBA8 03E00008 */  .word 0x03E00008
     /* DF0C84 0000BBAC 00000000 */  .word 0x00000000
-endlabel gl_func_0000BB14
+endlabel Backup_writeHeader

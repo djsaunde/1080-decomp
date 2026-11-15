@@ -1,6 +1,6 @@
-nonmatching gl_func_0000B77C, 0xEC
+nonmatching Backup_ctor, 0xEC
 
-glabel gl_func_0000B77C
+glabel Backup_ctor
     /* DF0854 0000B77C 27BDFFE0 */  .word 0x27BDFFE0
     /* DF0858 0000B780 AFB00018 */  .word 0xAFB00018
     /* DF085C 0000B784 00808025 */  .word 0x00808025
@@ -60,4 +60,4 @@ glabel gl_func_0000B77C
     /* DF0934 0000B85C 8FB00018 */  .word 0x8FB00018
     /* DF0938 0000B860 03E00008 */  .word 0x03E00008
     /* DF093C 0000B864 27BD0020 */  .word 0x27BD0020
-endlabel gl_func_0000B77C
+endlabel Backup_ctor

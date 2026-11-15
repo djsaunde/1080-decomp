@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C378, 0xF4
+nonmatching Backup_checkGhost, 0xF4
 
-glabel gl_func_0000C378
+glabel Backup_checkGhost
     /* DF1450 0000C378 27BDFFA8 */  .word 0x27BDFFA8
     /* DF1454 0000C37C AFBF001C */  .word 0xAFBF001C
     /* DF1458 0000C380 AFB00018 */  .word 0xAFB00018
@@ -62,4 +62,4 @@ glabel gl_func_0000C378
     /* DF1538 0000C460 27BD0058 */  .word 0x27BD0058
     /* DF153C 0000C464 03E00008 */  .word 0x03E00008
     /* DF1540 0000C468 00000000 */  .word 0x00000000
-endlabel gl_func_0000C378
+endlabel Backup_checkGhost

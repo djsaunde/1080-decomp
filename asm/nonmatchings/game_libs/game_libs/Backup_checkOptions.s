@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BC84, 0xF4
+nonmatching Backup_checkOptions, 0xF4
 
-glabel gl_func_0000BC84
+glabel Backup_checkOptions
     /* DF0D5C 0000BC84 27BDFF98 */  .word 0x27BDFF98
     /* DF0D60 0000BC88 AFBF001C */  .word 0xAFBF001C
     /* DF0D64 0000BC8C AFB00018 */  .word 0xAFB00018
@@ -62,4 +62,4 @@ glabel gl_func_0000BC84
     /* DF0E44 0000BD6C 27BD0068 */  .word 0x27BD0068
     /* DF0E48 0000BD70 03E00008 */  .word 0x03E00008
     /* DF0E4C 0000BD74 00000000 */  .word 0x00000000
-endlabel gl_func_0000BC84
+endlabel Backup_checkOptions

@@ -1,6 +1,6 @@
-nonmatching gl_func_0000BA6C, 0xA8
+nonmatching Backup_checkHeader, 0xA8
 
-glabel gl_func_0000BA6C
+glabel Backup_checkHeader
     /* DF0B44 0000BA6C 27BDFFB8 */  .word 0x27BDFFB8
     /* DF0B48 0000BA70 AFBF001C */  .word 0xAFBF001C
     /* DF0B4C 0000BA74 AFB00018 */  .word 0xAFB00018
@@ -43,4 +43,4 @@ glabel gl_func_0000BA6C
     /* DF0BE0 0000BB08 8FB00018 */  .word 0x8FB00018
     /* DF0BE4 0000BB0C 03E00008 */  .word 0x03E00008
     /* DF0BE8 0000BB10 27BD0048 */  .word 0x27BD0048
-endlabel gl_func_0000BA6C
+endlabel Backup_checkHeader

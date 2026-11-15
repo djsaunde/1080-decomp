@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C210, 0x7C
+nonmatching Backup_readGhost, 0x7C
 
-glabel gl_func_0000C210
+glabel Backup_readGhost
     /* DF12E8 0000C210 27BDFFE0 */  .word 0x27BDFFE0
     /* DF12EC 0000C214 AFBF001C */  .word 0xAFBF001C
     /* DF12F0 0000C218 AFA40020 */  .word 0xAFA40020
@@ -32,4 +32,4 @@ glabel gl_func_0000C210
     /* DF1358 0000C280 8FB00018 */  .word 0x8FB00018
     /* DF135C 0000C284 03E00008 */  .word 0x03E00008
     /* DF1360 0000C288 27BD0020 */  .word 0x27BD0020
-endlabel gl_func_0000C210
+endlabel Backup_readGhost

@@ -1,6 +1,6 @@
-nonmatching gl_func_0000C46C, 0x30
+nonmatching Backup_resetGhost, 0x30
 
-glabel gl_func_0000C46C
+glabel Backup_resetGhost
     /* DF1544 0000C46C 27BDFFD8 */  .word 0x27BDFFD8
     /* DF1548 0000C470 AFBF0014 */  .word 0xAFBF0014
     /* DF154C 0000C474 AFA40028 */  .word 0xAFA40028
@@ -13,4 +13,4 @@ glabel gl_func_0000C46C
     /* DF1568 0000C490 27BD0028 */  .word 0x27BD0028
     /* DF156C 0000C494 03E00008 */  .word 0x03E00008
     /* DF1570 0000C498 00000000 */  .word 0x00000000
-endlabel gl_func_0000C46C
+endlabel Backup_resetGhost

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0000986C, 0xD8
+nonmatching backup_checksumOk, 0xD8
 
-glabel game_libs_func_0000986C
+glabel backup_checksumOk
     /* DEE944 0000986C AFA40000 */  .word 0xAFA40000
     /* DEE948 00009870 00001025 */  .word 0x00001025
     /* DEE94C 00009874 00001825 */  .word 0x00001825
@@ -55,4 +55,4 @@ glabel game_libs_func_0000986C
     /* DEEA10 00009938 00001025 */  .word 0x00001025
     /* DEEA14 0000993C 03E00008 */  .word 0x03E00008
     /* DEEA18 00009940 00000000 */  .word 0x00000000
-endlabel game_libs_func_0000986C
+endlabel backup_checksumOk

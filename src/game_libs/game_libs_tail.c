@@ -52,7 +52,7 @@ void gl_func_0000975C(Quad4 *dst) {
 
 /* 0x97B4..0x9DB8 gap moved here from truncated game_libs.c on 2026-05-21. */
 
-/* game_libs_func_000097B4: checksum-pair writer. Sum the len/4 words at src;
+/* backup_checksum: checksum-pair writer. Sum the len/4 words at src;
  * out[0]=0xF251F205-sum; out[1]=key-(out[0]-sum). BYTE-EXACT 2026-07-23:
  * the three levers were (1) `q = src; src++; ... sum += *q;` old-pointer-copy
  * body (reproduces the per-load `or a0,a1` and frees a0, which homes `out` to
@@ -65,7 +65,7 @@ void gl_func_0000975C(Quad4 *dst) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void game_libs_func_000097B4(s32 *out, s32 *src, s32 len, s32 key) {
+void backup_checksum(s32 *out, s32 *src, s32 len, s32 key) {
     s32 sum = 0;
     s32 i = 0;
     s32 *q;
@@ -85,7 +85,7 @@ void game_libs_func_000097B4(s32 *out, s32 *src, s32 len, s32 key) {
     out[1] = key - sum;
 }
 
-/* game_libs_func_0000986C: checksum-pair VERIFIER, sibling of the writer
+/* backup_checksumOk: checksum-pair VERIFIER, sibling of the writer
  * 97B4 above (same auto-unrolled x4 sum loop, byte-identical bar the blez
  * delay slot: `lw t2,0(sp)` reload of the homed `out` vs the writer's lui).
  * Checks out[0] + sum == 0xF251F205 and out[1] + (out[0] - sum) == key.
@@ -104,7 +104,7 @@ void game_libs_func_000097B4(s32 *out, s32 *src, s32 len, s32 key) {
  * #feedback-ido-fp-commutative-operand-order-assignment-lever, integer form).
  * See docs/MATCHING_WORKFLOW.md #o0-predicate-misplit-merge-recipe and
  * #feedback-beql-next-symbol-plus-4-is-mis-split-branch-likely-block. */
-int game_libs_func_0000986C(s32 *out, s32 *src, s32 len, s32 key) {
+int backup_checksumOk(s32 *out, s32 *src, s32 len, s32 key) {
     s32 sum = 0;
     s32 i = 0;
     s32 *q;
@@ -129,7 +129,7 @@ int game_libs_func_0000986C(s32 *out, s32 *src, s32 len, s32 key) {
     return 1;
 }
 
-/* game_libs_func_00009944: 2-word equality compare -- 1 iff a0[0]==a1[0]
+/* backup_checksumEqual: 2-word equality compare -- 1 iff a0[0]==a1[0]
  * and a0[1]==a1[1].  BYTE-EXACT 2026-09-05 (agent-g) as ONE 13-word
  * function [0x9944,0x9978): the former "matched" 2-word stub 9970
  * (`jr ra; nop`, `void f(void){}` with an episode) was this function's own
@@ -142,7 +142,7 @@ int game_libs_func_0000986C(s32 *out, s32 *src, s32 len, s32 key) {
  * the `&&`-return-1 spelling flips the last branch to bne (13w, 3 diffs).
  * See docs/MATCHING_WORKFLOW.md
  * #feedback-beql-next-symbol-plus-4-is-mis-split-branch-likely-block. */
-int game_libs_func_00009944(s32 *a0, s32 *a1) {
+int backup_checksumEqual(s32 *a0, s32 *a1) {
     if (a0[0] != a1[0] || a0[1] != a1[1]) {
         return 0;
     }
@@ -1472,14 +1472,14 @@ void gl_func_0000B710(int *a0) {
     gl_func_00000000(a0[0x10/4], *(int*)((char*)&D_00000000 + 0x154));
 }
 
-/* gl_func_0000B77C: 59-insn alloc-if-null constructor (BBxx streaming
+/* Backup_ctor: 59-insn alloc-if-null constructor (BBxx streaming
  * family sibling). s0 = a0 ?: alloc(8); if(!s0) return 0; *s0 = 6400;
  * gl_func_00000000(&D+0xD43C); then 4x: if(gl_func_00000000(s0)==0){
  * gl_func_00000000(&D+strN); gl_func_00000000(s0);} then 2x
  * gl_func_00000000(s0); gl_func_00000000(&D+0xD4C0, 0x8004); return s0.
  * str addrs: lui 1 + addiu -N → 0x10000-N. */
 extern int gl_func_00000000();
-void* gl_func_0000B77C(void *a0) {
+void* Backup_ctor(void *a0) {
     if (a0 == 0) {
         a0 = (void*)gl_func_00000000(8);
         if (a0 == 0) {
@@ -1515,7 +1515,7 @@ extern int gl_func_00000000();
 extern int gl_data_B884_arg, gl_data_B89C_arg, gl_data_B8AC_arg, gl_data_B8C0_arg;
 extern int D_00000000;
 
-void gl_func_0000B868(int a0, int a1, int a2, int a3) {
+void Backup_read(int a0, int a1, int a2, int a3) {
     gl_func_00000000(&gl_data_B884_arg, 2);
     gl_func_00000000(&gl_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
     gl_func_00000000(&gl_data_B8AC_arg, 0, a2);
@@ -1526,7 +1526,7 @@ extern int gl_func_00000000();
 extern int gl_data_B8FC_arg, gl_data_B914_arg, gl_data_B924_arg, gl_data_B938_arg;
 extern int D_00000000;
 
-void gl_func_0000B8E0(int a0, int a1, int a2, int a3) {
+void Backup_write(int a0, int a1, int a2, int a3) {
     gl_func_00000000(&gl_data_B8FC_arg, 2);
     gl_func_00000000(&gl_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
     gl_func_00000000(&gl_data_B924_arg, 0, a1);
@@ -1566,13 +1566,13 @@ int gl_func_0000B958(int a0, register int *a1, int *a2, int a3) {
     return 1;
 }
 
-/* gl_func_0000BA6C: 42-insn save-game checksum verifier (sibling of
+/* Backup_checkHeader: 42-insn save-game checksum verifier (sibling of
  * BB14 — same magic 0xD1265205 + same 4 data chunks).
  * Reads 4 8-byte data chunks + existing hash, recomputes hash, returns
  * 1 if hashes mismatch, 0 if match. buf[0x28] sizes the frame for the
  * target's caller-slot-borrow into the high stores. */
 extern int gl_func_00000000();
-int gl_func_0000BA6C(int a0) {
+int Backup_checkHeader(int a0) {
     char buf[0x28];
     gl_func_00000000(a0, &buf[0x08], 0x188, 8);
     gl_func_00000000(a0, &buf[0x10], 0x1F0, 8);
@@ -1585,7 +1585,7 @@ int gl_func_0000BA6C(int a0) {
     return 1;
 }
 
-/* gl_func_0000BB14: reads 4 8-byte chunks from a0 (offsets
+/* Backup_writeHeader: reads 4 8-byte chunks from a0 (offsets
  * 0x188/0x1F0/0x210/0x228) into local data[32], hashes via 0xD1265205 into
  * hash[8], then submits at offset 0. The stack slot order is the match key:
  * declaring `hash` BEFORE `data` puts hash at the higher slot (sp+0x40) and
@@ -1593,7 +1593,7 @@ int gl_func_0000BA6C(int a0) {
  * called this "C-unreproducible / frame -0x60" — that was stale; the swap
  * makes it byte-exact. */
 extern int gl_func_00000000();
-void gl_func_0000BB14(int a0) {
+void Backup_writeHeader(int a0) {
     char hash[8];
     char data[0x20];
     gl_func_00000000(a0, &data[0],  0x188, 8);
@@ -1605,14 +1605,14 @@ void gl_func_0000BB14(int a0) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000BBB0(int a0) {
+int Backup_readOptions(int a0) {
     int tmp = gl_func_00000000(24);
     gl_func_00000000(a0, tmp, 504, 24);
     return tmp;
 }
 
-/* gl_func_0000BBF0: 37-insn 6-call streaming/checksum (sibling of
- * gl_func_0000BB14 family, 0xDEADBBAD magic). a0 saved in s0, a1 spilled.
+/* Backup_writeOptions: 37-insn 6-call streaming/checksum (sibling of
+ * Backup_writeHeader family, 0xDEADBBAD magic). a0 saved in s0, a1 spilled.
  *   gl_func_00000000(a0, 0x1F8, a1, 24);
  *   gl_func_00000000(buf, a1, 24, 0xDEADBBAD);
  *   gl_func_00000000(a0, 0x210, buf, 8);
@@ -1620,7 +1620,7 @@ int gl_func_0000BBB0(int a0) {
  *   gl_func_00000000(a0, 0x7FE0, buf, 8);
  *   gl_func_00000000(a0); */
 extern int gl_func_00000000();
-void gl_func_0000BBF0(int a0, int a1) {
+void Backup_writeOptions(int a0, int a1) {
     char buf[8];
     gl_func_00000000(a0, 0x1F8, a1, 24);
     gl_func_00000000(buf, a1, 24, 0xDEADBBAD);
@@ -1630,7 +1630,7 @@ void gl_func_0000BBF0(int a0, int a1) {
     gl_func_00000000(a0);
 }
 
-/* gl_func_0000BC84: record-pair load/compare/store with 0xDEADBBAD sentinel.
+/* Backup_checkOptions: record-pair load/compare/store with 0xDEADBBAD sentinel.
  * Loads two records (504/528) into stack bufs, builds a compare block, compares;
  * if first pair matches returns 1, else tries a second pair (0x7FC8/0x7FE0) and
  * on match stores it back + returns 1, else returns 0. MATCHED 2026-05-29 (fresh
@@ -1640,7 +1640,7 @@ void gl_func_0000BBF0(int a0, int a1) {
  * Buffer sizes (24/8) from the cb args; layout bufA@0x50/bufB@0x48/cmp@0x40/
  * bufC@0x28/bufD@0x20 falls out of declaration order. */
 extern int gl_func_00000000();
-int gl_func_0000BC84(int *s0) {
+int Backup_checkOptions(int *s0) {
     char bufA[24];
     char bufB[8];
     char cmp[8];
@@ -1663,7 +1663,7 @@ int gl_func_0000BC84(int *s0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000BD78(int a0) {
+void Backup_resetOptions(int a0) {
     int pad_arr[5];
     int scratch;
     gl_func_00000000(&scratch);
@@ -1671,13 +1671,13 @@ void gl_func_0000BD78(int a0) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000BDA8(int a0) {
+int Backup_readCourse(int a0) {
     int tmp = gl_func_00000000(384);
     gl_func_00000000(a0, tmp, 8, 384);
     return tmp;
 }
 
-/* gl_func_0000BDE8: copies a 384-byte struct from src into a stack buffer, then
+/* Backup_writeCourse: copies a 384-byte struct from src into a stack buffer, then
  * runs 7 callbacks marshalling buf1 (384B) and buf2 (8B) with a 0xDEADBBAD
  * sentinel and the field constants 8/384/392/0x7DD8/0x7F58. Fresh decode
  * 2026-05-29: 96.15%, everything exact (the 3-word-unrolled 384B copy, all 7
@@ -1696,7 +1696,7 @@ int gl_func_0000BDA8(int a0) {
 extern int gl_func_00000000();
 struct B384 { int w[96]; };
 struct B8 { int w[2]; };
-void gl_func_0000BDE8(int s0, struct B384 *src) { struct B384 buf1 = *src; struct B8 buf2;
+void Backup_writeCourse(int s0, struct B384 *src) { struct B384 buf1 = *src; struct B8 buf2;
     gl_func_00000000(&buf1);
     gl_func_00000000(s0, 8, &buf1, 384);
     gl_func_00000000(&buf2, &buf1, 384, 0xDEADBBAD);
@@ -1706,12 +1706,12 @@ void gl_func_0000BDE8(int s0, struct B384 *src) { struct B384 buf1 = *src; struc
     gl_func_00000000(s0);
 }
 
-/* gl_func_0000BEB8: record-pair load/compare/store, sibling of gl_func_0000BC84
+/* Backup_checkCourse: record-pair load/compare/store, sibling of Backup_checkOptions
  * (same 0xDEADBBAD-sentinel compare structure; bigger 384-byte records, keys
  * 8/392 then 0x7DD8/0x7F58). Fresh decode 2026-05-29 via the BC84 template
  * (shared `return 1`, second pair nested under `if (cmp1 == 0)`). */
 extern int gl_func_00000000();
-int gl_func_0000BEB8(int *s0) {
+int Backup_checkCourse(int *s0) {
     char bufA[384];
     char bufB[8];
     char cmp[8];
@@ -1734,7 +1734,7 @@ int gl_func_0000BEB8(int *s0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000BFAC(int a0) {
+void Backup_resetCourse(int a0) {
     int pad_arr[95];
     int scratch;
     gl_func_00000000(&scratch);
@@ -1742,16 +1742,16 @@ void gl_func_0000BFAC(int a0) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0000BFDC(int a0) {
+int Backup_readArcade(int a0) {
     int tmp = gl_func_00000000(96);
     gl_func_00000000(a0, tmp, 400, 96);
     return tmp;
 }
 
-/* gl_func_0000C01C: copy a 0x60-byte record to the stack, then six blank
+/* Backup_writeArcade: copy a 0x60-byte record to the stack, then six blank
  * cross-USO calls over it and an 8-byte scratch -- EXACT 52/52 (2026-10-15,
  * agent-g; was NM 52.3 with an unrolled-by-3 hand copy and a 4-arg K&R first
- * call). Same shape as gl_func_0000BDE8 above: the 3-word copy loop is IDO's
+ * call). Same shape as Backup_writeCourse above: the 3-word copy loop is IDO's
  * own struct-assign expansion (`buf60 = *arg1`), buf60 declared FIRST sits at
  * sp+0x28 above buf08 at sp+0x20, and the struct initializer must sit ON THE
  * BRACE LINE so `or t9,a0` (copy cursor) sinks before `sw ra`
@@ -1759,7 +1759,7 @@ int gl_func_0000BFDC(int a0) {
  * line layout is load-bearing, do not reformat. a1..a3 at the first jal are
  * leftovers (a1 survives because the copy reads through t8). */
 typedef struct { int w[24]; } Buf60;
-void gl_func_0000C01C(void *arg0, Buf60 *arg1) { Buf60 buf60 = *arg1; char buf08[8];
+void Backup_writeArcade(void *arg0, Buf60 *arg1) { Buf60 buf60 = *arg1; char buf08[8];
     func_00000000(&buf60);
     func_00000000(arg0, 0x190, &buf60, 0x60);
     func_00000000(buf08, &buf60, 0x60, 0xDEADBBAD);
@@ -1769,11 +1769,11 @@ void gl_func_0000C01C(void *arg0, Buf60 *arg1) { Buf60 buf60 = *arg1; char buf08
     func_00000000(arg0);
 }
 
-/* gl_func_0000C0EC: record-pair load/compare/store, sibling of gl_func_0000BC84
+/* Backup_checkArcade: record-pair load/compare/store, sibling of Backup_checkOptions
  * /BEB8 (same 0xDEADBBAD-sentinel structure; 96-byte records, keys 400/496 then
  * 0x7F60/0x7FC0). Fresh decode 2026-05-29 via the BC84 template. */
 extern int gl_func_00000000();
-int gl_func_0000C0EC(int *s0) {
+int Backup_checkArcade(int *s0) {
     char bufA[96];
     char bufB[8];
     char cmp[8];
@@ -1796,14 +1796,14 @@ int gl_func_0000C0EC(int *s0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000C1E0(int a0) {
+void Backup_resetArcade(int a0) {
     int pad_arr[23];
     int scratch;
     gl_func_00000000(&scratch);
     gl_func_00000000(a0, &scratch);
 }
 
-/* gl_func_0000C210: 31-insn alloc-init-conditional-finalize (0x7C, frame 0x20).
+/* Backup_readGhost: 31-insn alloc-init-conditional-finalize (0x7C, frame 0x20).
  *
  * Decoded structure (raw-word disasm, no caller-set float convention):
  *   obj = gl_func(0x10);                          // 16-byte alloc
@@ -1823,7 +1823,7 @@ void gl_func_0000C1E0(int a0) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 with
  * substantive decode (per feedback_doc_marker_is_bail.md).
  */
-void* gl_func_0000C210(void *arg0) {
+void* Backup_readGhost(void *arg0) {
     int *obj = (int*)gl_func_00000000(0x10);
     gl_func_00000000(arg0, obj, 0x218, 0x10);
     if (gl_func_00000000(obj) != 0) {
@@ -1835,7 +1835,7 @@ void* gl_func_0000C210(void *arg0) {
 }
 
 extern int gl_func_00000000();
-/* gl_func_0000C28C: 16-byte record copy + header writes (0xEC, frame 0x38).
+/* Backup_writeGhost: 16-byte record copy + header writes (0xEC, frame 0x38).
  * EXACT 59/59 (2026-10-14, agent-g). The 99.83 wrap's documented "t8 vs t9
  * skipped-temp uoptlist cap" (ugen pops one extra scratch between the 16-byte
  * move and the self->4 copy) was the copy's TYPE: self->4 = arg1->0 is a
@@ -1847,7 +1847,7 @@ extern int gl_func_00000000();
 typedef struct { int x; } C28C_W;
 typedef struct { int pad0; C28C_W f4; } C28C_Self;
 struct gl_func_0000C28C_Four { C28C_W a; int b, c, d; };
-void gl_func_0000C28C(C28C_Self *arg0, struct gl_func_0000C28C_Four *arg1) {
+void Backup_writeGhost(C28C_Self *arg0, struct gl_func_0000C28C_Four *arg1) {
     struct gl_func_0000C28C_Four buf10;
     int buf08[2];
 
@@ -1867,7 +1867,7 @@ void gl_func_0000C28C(C28C_Self *arg0, struct gl_func_0000C28C_Four *arg1) {
     gl_func_00000000(arg0);
 }
 
-int gl_func_0000C378(void *arg0) {
+int Backup_checkGhost(void *arg0) {
     int current16[4];
     int current8[2];
     int digest[2];
@@ -1891,7 +1891,7 @@ int gl_func_0000C378(void *arg0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000C46C(int a0) {
+void Backup_resetGhost(int a0) {
     int pad_arr[3];
     int scratch;
     gl_func_00000000(&scratch);
