@@ -575,6 +575,9 @@ def func_bodies(path):
 
 
 SITE_RE = re.compile(r'&D_00000000\b(?:(\s*\+\s*)(0x[0-9A-Fa-f]+|\d+)\b)?')
+# a bare value use (`D_00000000 |= mask`, `(Thread *)D_00000000`): a K = 0 site, unless a member
+# access follows (`D_00000000.f`, whose K would be the field offset)
+BARE_RE = re.compile(r'(?<![&\w])D_00000000\b(?!\s*\.)')
 
 
 GL_DATA_REL = '../../include/gdl/gl_data.h'
@@ -634,6 +637,9 @@ def cmd_convert(c, a):
                 k = int(mm.group(2), 0) if mm.group(2) else 0
                 if byk.get(k) == {n}:
                     edits.append((mm.start() + 1, mm.start() + 1 + len('D_00000000'), f))
+            if a.bare and byk.get(0) == {n}:
+                for mm in BARE_RE.finditer(src, b0, b1):
+                    edits.append((mm.start(), mm.end(), f))
         if not edits:
             continue
         fs = sorted({e[2] for e in edits})
@@ -788,6 +794,8 @@ def main():
     p = sub.add_parser('check'); p.add_argument('-v', '--verbose', action='store_true')
     p = sub.add_parser('convert'); p.add_argument('name'); p.add_argument('files', nargs='+')
     p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
+    p.add_argument('--bare', action='store_true',
+                   help='also respell bare value uses (`D_00000000 = x`) when every K = 0 site names the Sym')
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
