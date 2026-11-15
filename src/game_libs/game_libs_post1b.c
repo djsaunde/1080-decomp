@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "gdl/anim.h"
+#include "gdl/skin.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int gl_data_67470_addr;
@@ -5100,15 +5101,15 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
     }
     gl_func_00062F64_695F4(a0, (char*)&D_00000000 + 0x2C5A8);
     a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
-    v1 = (int*)((char*)a0 + 0x48);
+    v1 = &((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
     v1 = (int*)gl_func_00062F64_695F4(4);
     if (v1 == 0) goto after_store;
 store:
     *v1 = 0;
 after_store:
-    a0[0x90 / 4] = a2;
-    a0[0x38 / 4] = 0;
+    ((SkinMgr *)a0)->boneTable = a2;
+    ((SkinMgr *)a0)->bone = 0;
 end:
     return a0;
 }
@@ -5142,19 +5143,20 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
     short *dst;
     char *p;
 
-    if (*(int *)(self + 0x38) != 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C5B0);
+    /* self = SkinMgr, arg1 = main bone (MNode), arg2 = shape (MorphPoly; nVerts +0x40, verts +0x60) */
+    if (((SkinMgr *)self)->bone != 0) {
+        gl_func_00000000((char *)&D_00000000 + 0x2C5B0); /* "SkinMgr already initialized" */
     }
-    *(int *)(self + 0x38) = (int)arg1;
-    *(int *)(self + 0x3C) = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
-    *(int *)(self + 0x40) = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
-    *(int *)(self + 0x30) = gl_func_00000000(*(int *)(arg2 + 0x40) * 2);
-    *(int *)(self + 0x94) = 0;
+    ((SkinMgr *)self)->bone = (int)arg1;
+    ((SkinMgr *)self)->bindVerts = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
+    ((SkinMgr *)self)->outVerts = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
+    ((SkinMgr *)self)->weights = gl_func_00000000(*(int *)(arg2 + 0x40) * 2);
+    ((SkinMgr *)self)->jitter = 0;
     i = 0;
     if (*(int *)(arg2 + 0x40) != 0) {
         do {
-            *(short *)(*(char **)(self + 0x30) + i * 2) = 100;
-            dst = (short *)(*(char **)(self + 0x3C) + i * 6);
+            *(short *)((char *)((SkinMgr *)self)->weights + i * 2) = 100;
+            dst = (short *)((char *)((SkinMgr *)self)->bindVerts + i * 6);
             src = (short *)(*(char **)(arg2 + 0x60) + i * 6);
             i += 1;
             dst[0] = src[0];
@@ -5162,13 +5164,13 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
             dst[2] = src[2];
         } while (i < (unsigned int)*(int *)(arg2 + 0x40));
     }
-    *(char **)(self + 0x34) = arg2;
-    gl_func_00000000(self);
-    p = arg1 + 0x70;
-    gl_func_00000000(p, self + 0x50);
-    *(char **)(*(char **)(self + 0x34) + 0xA8) = self + 0x50;
-    *(char **)(*(char **)(self + 0x34) + 0xAC) = p;
-    return *(char **)(self + 0x34);
+    ((SkinMgr *)self)->shape = (int)arg2;
+    gl_func_00000000(self);                                    /* SkinMgr_reset */
+    p = arg1 + 0x70;                                           /* the bone's world matrix */
+    gl_func_00000000(p, ((SkinMgr *)self)->invBone);           /* math_mtx4Inverse */
+    *(char **)((char *)((SkinMgr *)self)->shape + 0xA8) = (char *)((SkinMgr *)self)->invBone;
+    *(char **)((char *)((SkinMgr *)self)->shape + 0xAC) = p;
+    return (char *)((SkinMgr *)self)->shape;
 }
 
 #ifdef NON_MATCHING
