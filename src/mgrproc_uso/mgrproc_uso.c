@@ -3,6 +3,10 @@
 #include "game/modeproc.h"
 #include "game/nameentry.h"
 #include "game/guimenu.h"
+#include "game/course.h"
+#include "game/snowboarder.h"
+#include "gdl/gadget.h"
+#include "gdl/pad.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -930,13 +934,13 @@ void mgr_startReplay_00001AD0(int *a0, int a1) {
     int *p1;
     CALL(RaceProcess_restart)(a0, a1);
     v0 = (int *)INPUT_MGR(D_00000000).game;
-    p0 = (int*)v0[0xC4 / 4];
-    p1 = (int*)v0[0xCC / 4];
-    n0 = *(int*)((char*)p0 + 0x800);
-    n1 = *(int*)((char*)p1 + 0x800);
+    p0 = (int*)WORLDREG(v0)->players[0].rider;
+    p1 = (int*)WORLDREG(v0)->players[1].rider;
+    n0 = (int)SNOWB(p0)->input;
+    n1 = (int)SNOWB(p1)->input;
     CALL(pad_reset_000673FC)(n0, 0);
     CALL(pad_startPlay_00067A10)(n0, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
-    CALL(pad_reset_000673FC)(n1, *(int*)((char*)n1 + 0x34));
+    CALL(pad_reset_000673FC)(n1, PADCTL(n1)->port);
     CALL(RaceProcess_callGlobalSlot11_00008674)(a0);
     ((MgrRace *)a0)->race.timeout = a1 & 0xFFFF;
 }
@@ -1752,7 +1756,7 @@ void mgr_DataManager_update(char *arg0) {
     if ((v0 != 0) && (RACEPROC(a1)->raceState == 1)) {
         p = (char *)DATAMGR(arg0)->entries;
         if (((RaceEntry *)p)->finished != 0) {
-            v1 = *(int *)(p + 0x94);
+            v1 = ((RaceEntry *)p)[1].finished;
             if (v1 == 0) {
                 import_000B1284(a1);
             } else if (v1 != 0) {
@@ -1768,11 +1772,11 @@ void mgr_DataManager_update(char *arg0) {
             MGRDATAMGR(arg0)->beepTimer = 0;
         }
         p = (char *)DATAMGR(arg0)->cool;
-        if ((p != 0) && (*(int *)(p + 0xC4) >= 0xC) && (MGRDATAMGR(arg0)->beepTimer == 0)) {
-            XCALL(mgrproc_uso_func_0002FC, snd_sendEvent)(0x135, 0);
+        if ((p != 0) && (COOLG(p)->seg >= 0xC) && (MGRDATAMGR(arg0)->beepTimer == 0)) {
+            mgrproc_uso_func_0002FC(0x135, 0);
         }
         p = (char *)DATAMGR(arg0)->cool;
-        if (*(int *)(p + 0xC8) <= 0) {
+        if (COOLG(p)->cur <= 0) {
             import_000B139C(MGRDATAMGR(arg0)->race);
         }
         a1 = (char *)MGRDATAMGR(arg0)->race;
@@ -1785,10 +1789,10 @@ void mgr_DataManager_update(char *arg0) {
             DATAMGR(arg0)->active = 0;
         }
         p = (char *)DATAMGR(arg0)->entries;
-        XCALL(mgrproc_uso_func_016BB8, CourseGadget_setFloat2_0000254C)(DATAMGR(arg0)->course, *(int *)(p + 0x30), *(int *)(p + 0x90));
+        mgrproc_uso_func_016BB8(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].pct, *(int *)&((RaceEntry *)p)[1].pct);
         p = (char *)DATAMGR(arg0)->entries;
-        XCALL(mgrproc_uso_func_016BEC, CourseGadget_setVec4_00002580)(DATAMGR(arg0)->course, *(int *)(p + 8), *(int *)(p + 0xC),
-                         *(int *)(p + 0x68), *(float *)(p + 0x6C));
+        mgrproc_uso_func_016BEC(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].posX, *(int *)&((RaceEntry *)p)[0].progress,
+                         *(int *)&((RaceEntry *)p)[1].posX, ((RaceEntry *)p)[1].progress);
     }
     XCALL(mgrproc_uso_func_04CD94, Node_update)(arg0);
 }

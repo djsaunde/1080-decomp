@@ -9,6 +9,11 @@
 #include "gdl/light.h"
 #include "game/envobj.h"
 #include "uso_call.h"
+#ifndef WORLD_MAP
+/* The course map of a WorldRegistry: unk98 is game_createMap's result (game_init stores it), a
+ * MapProp whose start / goal hold the course's st0 / gol positions (agent-h run 524). */
+#define WORLD_MAP(w) ((MapProp *)WORLDREG(w)->unk98)
+#endif
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -1115,7 +1120,7 @@ void *WorldRegistry_create_00001E08(char *o) {
     ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
     sub = (char *)&((WorldRegistry *)o)->head;
     FCALL(WorldCourse_ctorEmpty_00001D8C)(sub);
-    *(void**)(o + 0xC) = &sStr_World_Registry_6E38; /* Node name "World Registry" */
+    NODE(o)->name = (s32)&sStr_World_Registry_6E38; /* Node name "World Registry" */
     ((WorldRegistry *)o)->head.next = 0;
     ((WorldRegistry *)o)->numCourses = 0;
     ((WorldRegistry *)o)->tail = (WorldCourse *)sub;
@@ -1186,7 +1191,7 @@ void game_clearWindows_00002080(int *a0) { WORLDREG(a0)->numWindows = 0; }
  * game_addPlayer_000020AC cracked identically. */
 void game_addWindow_00002088(char *a0, int a1) {
     int idx = WORLDREG(a0)->numWindows;
-    WORLDREG(a0)->numWindows = idx + 1; *(int *)(a0 + idx * 4 + 0x108) = a1;
+    WORLDREG(a0)->numWindows = idx + 1; WORLDREG(a0)->windows[idx] = a1;
 }
 
 void game_clearPlayers_000020A4(int *a0) { WORLDREG(a0)->numPlayers = 0; }
@@ -1199,9 +1204,9 @@ void game_clearPlayers_000020A4(int *a0) { WORLDREG(a0)->numPlayers = 0; }
  * target's addu-before-sw order. */
 void game_addPlayer_000020AC(int *a0, int a1, int a2) {
     int idx;
-    *(int*)((char*)a0 + WORLDREG(a0)->numPlayers * 8 + 0xC8) = a2;
+    WORLDREG(a0)->players[WORLDREG(a0)->numPlayers].arg = a2;
     idx = WORLDREG(a0)->numPlayers;
-    WORLDREG(a0)->numPlayers = idx + 1; *(int*)((char*)a0 + idx * 8 + 0xC4) = a1;
+    WORLDREG(a0)->numPlayers = idx + 1; WORLDREG(a0)->players[idx].rider = (char *)a1;
 }
 
 void game_forEachPlayer_000020D8(char *a0, int a1) {
@@ -1211,7 +1216,7 @@ void game_forEachPlayer_000020D8(char *a0, int a1) {
         i = 0;
         p = a0;
         do {
-            FCALL(RaceTracker_addEntry)(a1, *(int*)(p + 0xC4), *(int*)(p + 0xC8));
+            FCALL(RaceTracker_addEntry)(a1, WORLDREG(p)->players[0].rider, WORLDREG(p)->players[0].arg); /* p steps one player */
             i++;
             p += 8;
         } while (i < WORLDREG(a0)->numPlayers);
@@ -2126,8 +2131,8 @@ void game_setupDemoSolo(char *s1, int a1) {
     XCALL(func_00000000_3734_v, input_addRacePad)(&D_00000000, s0);
     r1 = func_3734_r1(s1, 2, 1, gInputMgr_3734_v,
                       s0, WORLDREG(s1)->fgRoot,
-                      *(float*)(WORLDREG(s1)->unk98 + 0xC4),
-                      *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                      WORLD_MAP(s1)->start[0],
+                      WORLD_MAP(s1)->start[2],
                       0x58005, 0x1B);
     r2 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, r1, s0);
     r3 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r1, s0);
@@ -2199,8 +2204,8 @@ void game_setupSolo(char *s1, int a1) {
     XCALL(func_00000000_38C0_v, replay_beginRecordWithGhost)(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
     r = func_38c0_r(s1, 0, SOLO_MGR->playerRider, SOLO_MGR->playerBoard,
                     o, WORLDREG(s1)->fgRoot,
-                    *(float*)(WORLDREG(s1)->unk98 + 0xC4),
-                    *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                    WORLD_MAP(s1)->start[0],
+                    WORLD_MAP(s1)->start[2],
                     (SOLO_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r, o);
     row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
@@ -2258,13 +2263,13 @@ void game_setupVsGhost(char *s2, int a1) {
     FCALL(replay_beginRecordWithGhost)(gInputMgr_39d8_g, o1, o2);
     r1 = func_39d8_r(s2, 0, VG_MGR->playerRider, VG_MGR->playerBoard,
                      o1, WORLDREG(s2)->fgRoot,
-                     *(float*)(WORLDREG(s2)->unk98 + 0xC4),
-                     *(float*)(WORLDREG(s2)->unk98 + 0xCC),
+                     WORLD_MAP(s2)->start[0],
+                     WORLD_MAP(s2)->start[2],
                      (VG_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = func_39d8_r(s2, 0, VG_MGR->ghostRider, VG_MGR->ghostBoard,
                      o2, WORLDREG(s2)->fgRoot,
-                     *(float*)(WORLDREG(s2)->unk98 + 0xC4),
-                     *(float*)(WORLDREG(s2)->unk98 + 0xCC),
+                     WORLD_MAP(s2)->start[0],
+                     WORLD_MAP(s2)->start[2],
                      (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
     SNOWB(r2)->dnode.unk38C = 0;
     b3 = (char*)FCALL(cam_create)(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
@@ -2341,12 +2346,12 @@ void game_setupReplay(char *s1, int a1) {
                      RP_MGR->ghostRider,
                      RP_MGR->ghostBoard,
                      o, WORLDREG(s1)->fgRoot,
-                     *(float*)(WORLDREG(s1)->unk98 + 0xC4), *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                     WORLD_MAP(s1)->start[0], WORLD_MAP(s1)->start[2],
                      (RP_MGR->ghostFlags | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
     b2 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, r1, o);
     b3 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r1, o);
     f1 = (char*)FCALL(game_create3DWindow)(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
-    *(float*)(b2 + 0x14C) = 85.0f;
+    ((MCamera *)b2)->fov = 85.0f;
     o = (char*)FCALL(mem_new)(0x80);
     if (o != 0) {
         FCALL(pad_open)(o, 1);
@@ -2395,11 +2400,11 @@ void game_setupVsCpu(char *s1, int a1) {
     FCALL(input_addRacePad)(&gInputMgr, o2);
     FCALL(replay_beginRecordWithGhost)(&gInputMgr, o1, 0);
     r = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
-                             o1, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                             o1, WORLDREG(s1)->fgRoot, WORLD_MAP(s1)->start[0] - 500.0f, WORLD_MAP(s1)->start[2],
                              *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);
     o3 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),
                               *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, WORLDREG(s1)->fgRoot,
-                              *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x8004, 0x1D);
+                              WORLD_MAP(s1)->start[0] + 500.0f, WORLD_MAP(s1)->start[2], 0x8004, 0x1D);
     SNOWB(o3)->health = 0x989680;
     SNOWB(r)->rival = SNOWB(o3);
     SNOWB(o3)->rival = SNOWB(r);
@@ -2447,10 +2452,10 @@ void game_setupVs2P(char *s1, int a1) {
     FCALL(input_addRacePad)(&gInputMgr, t);
     FCALL(replay_beginRecord2P)(&gInputMgr, o[0], t);
     r1 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
-                             o[0], WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                             o[0], WORLDREG(s1)->fgRoot, WORLD_MAP(s1)->start[0] - 500.0f, WORLD_MAP(s1)->start[2],
                              *(int*)((char*)&D_00000000 + 0x50), 0x15);
     r2 = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
-                             t, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
+                             t, WORLDREG(s1)->fgRoot, WORLD_MAP(s1)->start[0] + 500.0f, WORLD_MAP(s1)->start[2],
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
     NODE(r1)->name = (s32)sStr_Player1_74E4;
     NODE(r2)->name = (s32)sStr_Player2_74EC;
@@ -2458,8 +2463,8 @@ void game_setupVs2P(char *s1, int a1) {
     SNOWB(r2)->rival = SNOWB(r1);
     x = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
     b4 = (char*)FCALL(cam_create)(s1, 2, WORLDREG(s1)->fgRoot, r2, o[1]);
-    *(float*)(x + 0x14C) = 55.0f;
-    *(float*)(b4 + 0x14C) = 55.0f;
+    ((MCamera *)x)->fov = 55.0f;
+    ((MCamera *)b4)->fov = 55.0f;
     row = bu_3f00_d7294 + a1 * 0x1C;
     y = (char*)FCALL(game_create3DWindow)(s1, row, x);
     f2 = (char*)FCALL(game_create3DWindow)(s1, row + 0x1C, b4);
@@ -2543,9 +2548,9 @@ void game_setupDemoRace(char *s1, int a1) {
     idx1 = (int)(XCALL(func_00000000_411c_f, sys_randf)() * kRo_game_setupDemoRace_544);
     idx2 = (int)(XCALL(func_00000000_411c_f, sys_randf)() * kRo_game_setupDemoRace_548 + (float)idx1 + 1.0f) % 3;
     r[0] = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, WORLDREG(s1)->fgRoot,
-                             *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x58005, 0x1B);
+                             WORLD_MAP(s1)->start[0] - 500.0f, WORLD_MAP(s1)->start[2], 0x58005, 0x1B);
     r[1] = XCALL(func_00000000_3d3cm, game_createPlayers)(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, WORLDREG(s1)->fgRoot,
-                             *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x48024, 0x1B);
+                             WORLD_MAP(s1)->start[0] + 500.0f, WORLD_MAP(s1)->start[2], 0x48024, 0x1B);
     { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
     b3 = (char*)FCALL(cam_create)(s1, 0, WORLDREG(s1)->fgRoot, a, o1); }
     b4 = (char*)FCALL(cam_create)(s1, 1, WORLDREG(s1)->fgRoot, r[0], o1);
@@ -2557,8 +2562,8 @@ void game_setupDemoRace(char *s1, int a1) {
     FCALL(list_append)(p84 + 0x10, t);
     if (NODE(t)->parent != 0) NODE(t)->unk04 = 1;
     NODE(t)->parent = (s32)p84;
-    *(char**)(r[0] + 0x8DC) = f;
-    *(char**)(r[1] + 0x8DC) = f;
+    SNOWB(r[0])->camera = f;
+    SNOWB(r[1])->camera = f;
 }
 
 /* game_setupDemoSplit - verified structural decode (0x258, 150 insns,
@@ -2610,19 +2615,19 @@ void game_setupDemoSplit(char *s0, int a1) {
     idx1 = (int)(XCALL(func_00000000_43d4_f, sys_randf)() * kRo_game_setupDemoSplit_54C);
     idx2 = (int)(XCALL(func_00000000_43d4_f, sys_randf)() * kRo_game_setupDemoSplit_550 + (float)idx1 + 1.0f) % 3;
     r[0] = XCALL(func_00000000_3d3cm, game_createPlayers)(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, WORLDREG(s0)->fgRoot,
-                             *(float*)(WORLDREG(s0)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8004, 0x15);
+                             WORLD_MAP(s0)->start[0] - 500.0f, WORLD_MAP(s0)->start[2], 0x8004, 0x15);
     r[1] = XCALL(func_00000000_3d3cm, game_createPlayers)(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, WORLDREG(s0)->fgRoot,
-                             *(float*)(WORLDREG(s0)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8024, 0x15);
+                             WORLD_MAP(s0)->start[0] + 500.0f, WORLD_MAP(s0)->start[2], 0x8024, 0x15);
     { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
     b3 = (char*)FCALL(cam_create)(s0, 2, WORLDREG(s0)->fgRoot, a, o1); }
     b4 = (char*)FCALL(cam_create)(s0, 2, WORLDREG(s0)->fgRoot, r[1], t);
-    *(float*)(b3 + 0x14C) = 55.0f;
-    *(float*)(b4 + 0x14C) = 55.0f;
+    ((MCamera *)b3)->fov = 55.0f;
+    ((MCamera *)b4)->fov = 55.0f;
     row = bu_43d4_d7294 + a1 * 0x1C;
     f1 = (char*)FCALL(game_create3DWindow)(s0, row, b3);
     b4 = (char*)FCALL(game_create3DWindow)(s0, row + 0x1C, b4);
-    *(char**)(r[0] + 0x8DC) = f1;
-    *(char**)(r[1] + 0x8DC) = b4;
+    SNOWB(r[0])->camera = f1;
+    SNOWB(r[1])->camera = b4;
 }
 
 void boot_readFloatParm_0000462C(char *a0) {
@@ -5948,11 +5953,11 @@ void SnowBoarder_update(char *st) {
      * each branch arm (one lands in the beql delay); plain derefs get CSE'd
      * into one hoisted load + two andis. */
     if (v0 != 0) {
-        if (*(int *)((char *)SNOWB(st)->input + 0x18) & 0x20) {
+        if (SNOWB(st)->input->pressed & 0x20) {
             SNOWB(st)->unkA28 ^= 1;
         }
         if (SNOWB(st)->unkA28 != 0) {
-            if (*(volatile int *)((char *)SNOWB(st)->input + 0x18) & 0x10) {
+            if (((volatile RiderInput *)SNOWB(st)->input)->pressed & 0x10) {
                 /* per-arm v0 recompute (duplicated statement, NOT a shared
                  * merge label): target's andi lands in this path's b delay. */
                 fl = (int)SNOWB(st)->flags;
@@ -5962,7 +5967,7 @@ void SnowBoarder_update(char *st) {
         } else {
             fl = (int)SNOWB(st)->flags;
             t5 = fl ^ 4;
-            if (*(volatile int *)((char *)SNOWB(st)->input + 0x18) & 0x10) {
+            if (((volatile RiderInput *)SNOWB(st)->input)->pressed & 0x10) {
                 SNOWB(st)->flags = t5;
                 fl = t5;
             }
@@ -5975,10 +5980,10 @@ void SnowBoarder_update(char *st) {
             sub = (char *)SNOWB(st)->input;
             /* volatile busts the duplicate-load CSE: target lw's 0x10(a0) TWICE
              * (one per bit test), plain int derefs merge to one lw. */
-            if ((!!(*(volatile int *)(sub + 0x10) & 0x80)) & (!!(*(volatile int *)(sub + 0x10) & 0x40))) {
+            if ((!!(((volatile RiderInput *)sub)->held & 0x80)) & (!!(((volatile RiderInput *)sub)->held & 0x40))) {
                 sp58 = 9;
                 vt = (char *)NODE(st)->vptr;
-                (*(void (**)(char *, int *))(vt + 0x2C))((char *)(*(short *)(vt + 0x28) + (int)st), &sp58);
+                ((void (*)(char *, int *))VT_SLOT(vt, 4).fn)((char *)(VT_SLOT(vt, 4).delta + (int)st), &sp58);
                 fl = (int)SNOWB(st)->flags;
             }
         }
@@ -5986,8 +5991,8 @@ void SnowBoarder_update(char *st) {
             *(int *)((char *)SNOWB(st)->input + 0x3C) = 1;
             func_00000000(&D_00008AD8);
             sub = (char *)SNOWB(st)->ai;
-            vt = *(char **)(sub + 0x28);
-            (*(void (**)(char *))(vt + 0x24))((char *)(sub + (short)*(short *)(vt + 0x20)));
+            vt = (char *)NODE(sub)->vptr;
+            ((void (*)(char *))VT_SLOT(vt, 3).fn)((char *)(sub + VT_SLOT(vt, 3).delta));
             func_00000000(&D_00008AE0);
             fl = (int)SNOWB(st)->flags;
         }
@@ -5999,7 +6004,7 @@ void SnowBoarder_update(char *st) {
         m = (char *)SNOWB(st)->anim;
         SNOWB(st)->contactSurface = 0;
         vt = (char *)NODE(m)->vptr;
-        (*(void (**)(char *))(vt + 0x24))((char *)(m + (short)*(short *)(vt + 0x20)));
+        ((void (*)(char *))VT_SLOT(vt, 3).fn)((char *)(m + VT_SLOT(vt, 3).delta));
         *(short *)(st + 0xA10) = 0;
         SNOWB(st)->bumpSide = 0.0f;
         SNOWB(st)->bumpUp = 0.0f;

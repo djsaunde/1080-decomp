@@ -4,7 +4,13 @@
 #include "gdl/gadget.h"
 #include "gdl/backup.h"
 #include "game/input.h"
+#include "game/course.h"
 #include "uso_call.h"
+#ifndef WORLD_MAP
+/* The course map of a WorldRegistry: unk98 is game_createMap's result (game_init stores it), a
+ * MapProp whose start / goal hold the course's st0 / gol positions (agent-h run 524). */
+#define WORLD_MAP(w) ((MapProp *)WORLDREG(w)->unk98)
+#endif
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -2137,16 +2143,16 @@ void RaceTracker_reset(RaceTracker *self) {
     self->elapsed = 0;
     self->timeLimit = 0x927C0;
     self->ghostFlag = 1;
-    self->courseStart = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xC4);
-    self->courseZ = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xCC);
-    self->courseLength = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xD8) - self->courseZ;
+    self->courseStart = WORLD_MAP(GAMEFLOW(&gInputMgr)->game)->start[0];
+    self->courseZ = WORLD_MAP(GAMEFLOW(&gInputMgr)->game)->start[2];
+    self->courseLength = WORLD_MAP(GAMEFLOW(&gInputMgr)->game)->goal[2] - self->courseZ;
     CALL(RaceTracker_findGates)(self);
     if (self->pointsList != 0) {
         CALL(TrickPointsGadget_reset_00003298)(self->pointsList, self);
     }
     p = (char *)self->cool;
     if (p != 0) {
-        FW(p, 0xC8) = 0x64;
+        COOLG(p)->cur = 0x64;
     }
     self->active = 1;
 }
@@ -2970,11 +2976,11 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
 
 void RaceTracker_sendEndingMsg(int a0, int a1, int a2) {
     char pad1[4];
-    int *v0 = *(int**)((char*)&D_00000000 + 0x28);
+    int *v0 = (int *)NODE(&gSnowBoard)->vptr;
     int local = 0x3ED;
     char pad2[12];
-    ((void(*)(int, int*))*(int*)((char*)v0 + 0x34))(
-        *(short*)((char*)v0 + 0x30) + (int)&gSnowBoard, &local);
+    ((void(*)(int, int*))VT_SLOT(v0, 5).fn)(
+        VT_SLOT(v0, 5).delta + (int)&gSnowBoard, &local);
 }
 
 /* RaceTracker_sendWinResult: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
@@ -2996,21 +3002,21 @@ void RaceTracker_sendWinResult(RaceTracker *self, int idx) {
     int pad_a[2]; int l0 = 1000; int pad_b[2];
     char *v1, *v0;
     v1 = (char *)self->entries[idx].rider;
-    v0 = *(char **)(v1 + 0x28);
-    (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l0);
+    v0 = (char *)NODE(v1)->vptr;
+    ((void (*)(char *, int *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &l0);
     if (self->numEntries == 2) {
         int pad_m;
-        if (*(int *)((char *)&gInputMgr + 0x34) == 3 || *(int *)((char *)&gInputMgr + 0x34) == 2) {
+        if (GAMEFLOW(&gInputMgr)->nextFlowMode == 3 || GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
             int l1 = 1001; int pad_c[2];
             v1 = (char *)self->entries[idx ^ 1].rider;
-            v0 = *(char **)(v1 + 0x28);
+            v0 = (char *)NODE(v1)->vptr;
             if (v0) {}
-            (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l1);
+            ((void (*)(char *, int *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &l1);
         } else {
             int l2 = 1000; int pad_d[1];
             v1 = (char *)self->entries[idx ^ 1].rider;
-            v0 = *(char **)(v1 + 0x28);
-            (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
+            v0 = (char *)NODE(v1)->vptr;
+            ((void (*)(char *, int *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &l2);
         }
     }
 }
@@ -3032,14 +3038,14 @@ void RaceTracker_sendLoseResult(RaceTracker *self, int idx) {
     int pad_a[2]; int sp34 = 1001; int pad_b[3]; int pad_c[1];
     char *v0; int sp1C; char *v1;
     v1 = (char *)self->entries[idx].rider;
-    v0 = *(char **)(v1 + 0x28);
-    (*(void (**)(char *, int *, char *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &sp34, self);
+    v0 = (char *)NODE(v1)->vptr;
+    ((void (*)(char *, int *, char *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &sp34, self);
     if (self->numEntries == 2) {
         sp1C = 1000;
         v1 = (char *)self->entries[idx ^ 1].rider;
-        v0 = *(char **)(v1 + 0x28);
+        v0 = (char *)NODE(v1)->vptr;
         if (v0) {}
-        (*(void (**)(char *, int *, char *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &sp1C, self);
+        ((void (*)(char *, int *, char *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &sp1C, self);
     }
 }
 
@@ -3055,13 +3061,13 @@ void RaceTracker_sendDrawResult(RaceTracker *a0, int a1) {
     int pad_top[2]; int l1 = 1001; int between[2]; int l2; int pad_bot[2];
     char *v0, *v1;
     v1 = (char *)a0->entries[a1].rider;
-    v0 = *(char **)(v1 + 0x28);
-    (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l1);
+    v0 = (char *)NODE(v1)->vptr;
+    ((void (*)(char *, int *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &l1);
     l2 = 1001;
     v1 = (char *)a0->entries[a1 ^ 1].rider;
-    v0 = *(char **)(v1 + 0x28);
+    v0 = (char *)NODE(v1)->vptr;
     if (v0) {}
-    (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
+    ((void (*)(char *, int *))VT_SLOT(v0, 4).fn)((char *)((int)VT_SLOT(v0, 4).delta + (int)v1), &l2);
 }
 
 /* 20-insn indirect dispatcher (sibling of RaceTracker_sendTimeUpResult/DE80/DED0/0003CB2C).
