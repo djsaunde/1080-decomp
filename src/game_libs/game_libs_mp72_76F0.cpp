@@ -35,6 +35,7 @@ typedef unsigned int u32;
 typedef float f32;
 int func_00000000(...);
 extern int D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern char gInputMgr_76F0;
 
 typedef struct GlObj76F0VtEnt {
@@ -153,13 +154,13 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk50C = self->unk50C + 1;
             }
             if ((sp24 == 1) && (sp20 == 0)) {
-                func_00000000((char *)&D_00000000, 1);
+                func_00000000((char *)&gInputMgr, 1);
                 if ((s32)((u32)self->unk4F0 << 15) < 0) {
                     func_00000000((char *)self + 0x588);
                 }
-                *(s32 *)((char *)&D_00000000 + 0x78) = 0;
+                *(s32 *)((char *)&gInputMgr + 0x78) = 0;
                 self->unk4DC = 1;
-                func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
+                func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
             }
             if (self->unk4E4 < 1 - self->unk4E8) {
                 self->unk4E0 = 2;
@@ -178,7 +179,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&D_00000000, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -198,7 +199,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x1F) && (func_00000000((char *)&D_00000000, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x1F) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -276,25 +277,25 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
     }
     if ((self->unk4DC != 2) && (self->unk4D8 == 0)) {
         if (self->unk30 == 0) {
-            if ((func_00000000(*(s32 *)((char *)&D_00000000 + 0x190)) != 0) && (self->unk48 != 0)) {
-                temp = func_00000000((char *)&D_00000000, 0x40000);
+            if ((func_00000000(*(s32 *)((char *)&gInputMgr + 0x190)) != 0) && (self->unk48 != 0)) {
+                temp = func_00000000((char *)&gInputMgr, 0x40000);
                 self->unk514 = temp;
                 if (temp != 0) {
                     ((VO76 *)self)->m17();
                     func_00000000(self);
-                    func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
+                    func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
                 }
             }
         } else {
             var_v0 = self->unk48->unk80;
             if (var_v0 == 0) {
-                if (func_00000000((char *)&D_00000000, 0x100) != 0) {
+                if (func_00000000((char *)&gInputMgr, 0x100) != 0) {
                     self->unk48->unk80 = 0x100;
                 }
-                if (func_00000000((char *)&D_00000000, 0x40000) != 0) {
+                if (func_00000000((char *)&gInputMgr, 0x40000) != 0) {
                     self->unk48->unk80 = 0x40000;
                 }
-            } else if (func_00000000((char *)&D_00000000, var_v0 + 0 * var_v0) != 0) {
+            } else if (func_00000000((char *)&gInputMgr, var_v0 + 0 * var_v0) != 0) {
                 ((VO76 *)self)->m26();
                 self->unk48->unk80 = 0;
             }
@@ -315,7 +316,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
         break;
     }
     if (((s32)((u32)self->unk4F0 << 12) < 0)
-        && ((func_00000000((char *)&D_00000000, 0x300) != 0) || (func_00000000((char *)&D_00000000, 0x40000) != 0))) {
+        && ((func_00000000((char *)&gInputMgr, 0x300) != 0) || (func_00000000((char *)&gInputMgr, 0x40000) != 0))) {
         ((VO76 *)self)->m27();
     }
 }

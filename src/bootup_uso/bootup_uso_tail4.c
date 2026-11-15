@@ -138,7 +138,7 @@ void Fader_display(char *arg0) {
 int Fader_checkDone_00013924(int *a0) {
     if (*(float*)((char*)a0 + 0x48) == 1.0f) {
         if (*(int*)((char*)a0 + 0x68) == 0) {
-            func_00000000(&D_00000000, 1);
+            func_00000000(&gGfxLib, 1);
         }
         return 1;
     }

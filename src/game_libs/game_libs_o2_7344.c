@@ -30,6 +30,7 @@
  *    local (alpha += 2, alpha = o->544 = alpha + 2, a second temp) colours
  *    v0 or grows the frame by 8. */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
@@ -84,7 +85,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
     switch (arg1) {
     case 0:
     case 5:
-        mode = *(int *)((char *)&D_00000000 + 0x34);
+        mode = *(int *)((char *)&gInputMgr + 0x34);
         if (mode == 3 || mode == 2) {
             spA = arg0->unk140;
             target = (char *)arg0 + 0x618;
@@ -103,7 +104,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         spA = arg0->unk410;
         target = (char *)arg0 + 0x648;
         spB = arg0->unk434;
-        if (*(int *)((char *)&D_00000000 + 0x34) != 2) {
+        if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
             gl_func_00000000(arg0);
         }
         arg0->unk28->unkFC(arg0->unk28->unkF8 + (char *)arg0);
@@ -112,7 +113,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         spA = arg0->unk188;
         target = (char *)arg0 + 0x630;
         spB = arg0->unk1AC;
-        if (*(int *)((char *)&D_00000000 + 0x34) != 2) {
+        if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
             gl_func_00000000(arg0);
         }
         break;
@@ -120,7 +121,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         spA = arg0->unk218;
         target = (char *)arg0 + 0x678;
         spB = arg0->unk23C;
-        if (*(int *)((char *)&D_00000000 + 0x34) != 2) {
+        if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
             gl_func_00000000(arg0);
         }
         arg0->unk28->unk104(arg0->unk28->unk100 + (char *)arg0);
@@ -129,7 +130,7 @@ void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
         spA = arg0->unk1D0;
         target = (char *)arg0 + 0x660;
         spB = arg0->unk1F4;
-        if (*(int *)((char *)&D_00000000 + 0x34) != 2) {
+        if (*(int *)((char *)&gInputMgr + 0x34) != 2) {
             gl_func_00000000(arg0);
         }
         break;

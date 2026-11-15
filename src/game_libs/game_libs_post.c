@@ -43,7 +43,7 @@ typedef struct { u8 pad[0x18]; VbSub sub; } VbRec;
 extern int gl_func_00000000();
 void AudioSynth_InitNextRingBuf(int n, int j, int k) {
     VbElem *e;
-    VbRec *r = &((VbRec *)&D_00000000)[k];
+    VbRec *r = &((VbRec *)&gAudioContext)[k];
     VbSub *s;
     int pad[2];
     int i, idx, q, rem;
@@ -322,7 +322,7 @@ int AudioSynth_LoadRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
-    rec = &((Rec_1CFDC *)&D_00000000)[spec.h1];
+    rec = &((Rec_1CFDC *)&gAudioContext)[spec.h1];
     e = &rec->grp[rec->attr].ent[spec.h3];
     r = gl_ref_00031FB0(code, 0x3E0, e->w, e->h, spec.h1);
     if (e->n != 0) {
@@ -371,7 +371,7 @@ int AudioSynth_SaveRingBuffer1AtTemp(int code, Spec8_1CFDC spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
-    rec = &((Rec_1CFDC *)&D_00000000)[spec.h1];
+    rec = &((Rec_1CFDC *)&gAudioContext)[spec.h1];
     e = &rec->grp[rec->attr].ent[spec.h3];
     r = gl_ref_0003204C(code, 0x3E0, e->w, e->h, spec.h1);
     if (e->n != 0) {
@@ -475,7 +475,7 @@ unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, 
     char *e;
     short w2;
     short wr;
-#define rec ((char *)&D_00000000 + a2 * 0x158)
+#define rec ((char *)&gAudioContext + a2 * 0x158)
     e = rec + ((struct { char p[0x1B]; unsigned char b; } *)rec)->b * 100 + a3 * 0x14 + 0x50;
     w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;
     wr = (w2 + ((struct { char p[0x10]; short h; } *)e)->h + 0xF) & ~0xF;
@@ -783,7 +783,7 @@ int AudioSynth_LoadRingBuffer1(int code, Spec12_1D870 spec) {
     Ent_1CFDC *e;
     Rec_1CFDC *rec;
     int r;
-    rec = &((Rec_1CFDC *)&D_00000000)[spec.h3];
+    rec = &((Rec_1CFDC *)&gAudioContext)[spec.h3];
     e = &rec->grp[rec->attr].ent[spec.h5];
     r = gl_ref_00031FB0(code, 0xC80, e->w, e->h, spec.h3);
     if (e->n != 0) {
@@ -910,7 +910,7 @@ typedef struct { unsigned int w0, w1; } Gfx1DA7C;
 #define G1DA7C(pkt, a, b) { Gfx1DA7C *_g = (Gfx1DA7C *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 Gfx1DA7C *AudioSynth_LoadReverbSamples(Gfx1DA7C *dl, int a1, short a2, short a3) {
     int pad[1];
-    char *rec = (char *)&D_00000000 + a2 * 0x158;
+    char *rec = (char *)&gAudioContext + a2 * 0x158;
     if (*(unsigned char *)(rec + 0x1C) == 1) {
         dl = gl_ref_00031EDC(dl, a1, a2, a3);
     } else {
@@ -2335,7 +2335,7 @@ void AudioHeap_DiscardSequence(int key) {
     char *p;
     int i;
     i = 0;
-    if (*(short *)((char *)&D_00000000 + 0x2048) > 0) {
+    if (*(short *)((char *)&gAudioContext + 0x2048) > 0) {
         p = (char *)gAudioContext_1fbcc;
         do {
             if (*(unsigned int *)(p + 0x2D00) >> 31) {
@@ -2345,7 +2345,7 @@ void AudioHeap_DiscardSequence(int key) {
             }
             i++;
             p += 0x160;
-        } while (i < *(short *)((char *)&D_00000000 + 0x2048));
+        } while (i < *(short *)((char *)&gAudioContext + 0x2048));
     }
 }
 
@@ -2357,8 +2357,8 @@ void AudioHeap_WritebackDCache(void) {
 /* 2026-05-31: BYTE-IDENTICAL to the now-100% AudioHeap_AllocAttemptExternal — applied its body. */
 int AudioHeap_AllocZeroedAttemptExternal(int a0, int a1) {
     int v1 = 0;
-    if (*(int*)((char*)&D_00000000 + 0x2178) != 0) {
-        v1 = gl_func_00000000((char*)&D_00000000 + 0x2178);
+    if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
+        v1 = gl_func_00000000((char*)&gAudioContext + 0x2178);
     }
     if (v1 == 0) {
         v1 = gl_func_00000000(a0, a1);
@@ -2376,8 +2376,8 @@ extern int gl_func_00000000();
  * merge is byte-exact. */
 int AudioHeap_AllocAttemptExternal(int a0, int a1) {
     int v1 = 0;
-    if (*(int*)((char*)&D_00000000 + 0x2178) != 0) {
-        v1 = gl_func_00000000((char*)&D_00000000 + 0x2178);
+    if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
+        v1 = gl_func_00000000((char*)&gAudioContext + 0x2178);
     }
     if (v1 == 0) {
         v1 = gl_func_00000000(a0, a1);
@@ -2614,7 +2614,7 @@ extern int D_00000000;
  * hoisted load *(D+0x2168) (was extern D_00000001 pre-merge). Same
  * formulation as sibling 1FFB8. */
 void AudioHeap_InitSessionPools(int *arg) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x216C) = *(int *)(D + 0x2168);
     r = gl_func_00000000(D + 0x2168, arg[0]);
@@ -2634,7 +2634,7 @@ void AudioHeap_InitSessionPools(int *arg) {
 // address (0x1CA10) into the jal and break cmp.
 extern int gl_func_0001CA10_1FFAC();
 void AudioHeap_InitCachePools(int *arg) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)&gAudioContext;
     int v;
     *(int *)(D + 0x21CC) = *(int *)(D + 0x21C8);
     v = gl_func_0001CA10_1FFAC(D + 0x21C8, arg[0]);
@@ -2659,7 +2659,7 @@ extern int D_00000000;
  * reporter's return value as arg1 of each value line (target's
  * `move a1,v0` + delay-slot lw a2), exactly the 1FF28/1FFAC shape. */
 void AudioHeap_InitPersistentPoolsAndCaches(int *obj) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x21DC) = *(int *)(D + 0x21D8);
     r = gl_func_00000000(D + 0x21D8, obj[0]);
@@ -2685,7 +2685,7 @@ extern int D_00000000;
 /* Post-merge body (2026-07-23): head store sources the merged-in hoisted
  * load *(D+0x21E8); chained r-return label/value pairs, twin of 20030. */
 void AudioHeap_InitTemporaryPoolsAndCaches(int *obj) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x21EC) = *(int *)(D + 0x21E8);
     r = gl_func_00000000(D + 0x21E8, obj[0]);
@@ -3028,9 +3028,9 @@ int AudioHeap_SearchRegularCaches(int mode, int flag, int key) {
     Gl20914Tbl *t;
 
     switch (mode) {
-    case 0:  base = (char *)&D_00000000 + 0x21F8; break;
-    case 1:  base = (char *)&D_00000000 + 0x2308; break;
-    case 2:  base = (char *)&D_00000000 + 0x2418; break;
+    case 0:  base = (char *)&gAudioContext + 0x21F8; break;
+    case 1:  base = (char *)&gAudioContext + 0x2308; break;
+    case 2:  base = (char *)&gAudioContext + 0x2418; break;
     }
     v1 = base + 0xD4;
     if (flag == 0) {
@@ -3257,10 +3257,10 @@ void AudioHeap_UpdateReverbs(void) {
 
     var_v0 = (*(s16 *)((char *)&D_00000000 + 0x2034) == 2) ? 2 : 1;
     var_v1 = 0;
-    if (*(s8 *)((char *)&D_00000000 + 1) > 0) {
+    if (*(s8 *)((char *)&gAudioContext + 1) > 0) {
         do {
             if (var_v0 > 0) {
-                rec = (char *)&D_00000000 + var_v1 * 0x158;
+                rec = (char *)&gAudioContext + var_v1 * 0x158;
                 var_a1 = 0;
                 do {
                     s32 f = *(u16 *)(rec + 0x24);
@@ -3269,7 +3269,7 @@ void AudioHeap_UpdateReverbs(void) {
                 } while (var_a1 != var_v0);
             }
             var_v1 += 1;
-        } while (var_v1 < *(s8 *)((char *)&D_00000000 + 1));
+        } while (var_v1 < *(s8 *)((char *)&gAudioContext + 1));
     }
 }
 
@@ -3694,8 +3694,8 @@ extern int func_00000000();
  * statement after the stores (v0 still holds the call result, as in the target); the
  * slot address recomputed per store (CSE'd) and base declared before count. */
 int AudioHeap_AllocPermanent(int a0, int a1, int a2) {
-    char *base = (char*)&D_00000000;
-    int count = *(int*)((char*)&D_00000000 + 0x2534);
+    char *base = (char*)&gAudioContext;
+    int count = *(int*)((char*)&gAudioContext + 0x2534);
     int v0 = func_00000000(base + 0x2528, a2);
     *(int*)(base + count * 12 + 0x2538) = v0;
     if (v0 == 0) {
@@ -3755,18 +3755,18 @@ end_zero:
  * cap-causing structural error. */
 extern int func_00000000();
 void AudioHeap_InitSampleCaches(int a0, int a1) {
-    int r0 = func_00000000((char*)&D_00000000 + 0x2198, a0);
+    int r0 = func_00000000((char*)&gAudioContext + 0x2198, a0);
     if (r0 == 0) {
-        *(int*)((char*)&D_00000000 + 0x26C0) = 0;
+        *(int*)((char*)&gAudioContext + 0x26C0) = 0;
     } else {
-        func_00000000((char*)&D_00000000 + 0x26B8, r0, a0);
+        func_00000000((char*)&gAudioContext + 0x26B8, r0, a0);
     }
     {
-        int r1 = func_00000000((char*)&D_00000000 + 0x2198, a1);
+        int r1 = func_00000000((char*)&gAudioContext + 0x2198, a1);
         if (r1 == 0) {
             *(int*)((char*)&D_00000000 + 0x2954) = 0;
         } else {
-            func_00000000((char*)&D_00000000 + 0x294C, r1, a1);
+            func_00000000((char*)&gAudioContext + 0x294C, r1, a1);
         }
     }
     *(int*)((char*)&D_00000000 + 0x2948) = 0;
@@ -4560,7 +4560,7 @@ void AudioLoad_InitSampleDmaBuffers(s32 numNotes) {
 extern int D_00000000;
 extern int gl_ref_00038174();
 int AudioLoad_IsFontLoadComplete(int a0) {
-    char *st = (char *)&D_00000000 + 0x2C40;
+    char *st = (char *)&gAudioContext + 0x2C40;
     int r;
     if (a0 == 0xFF) {
         return 1;
@@ -4613,7 +4613,7 @@ int AudioLoad_IsFontLoadComplete(int a0) {
 extern int D_00000000;
 extern int gl_ref_00038174();
 int AudioLoad_IsSeqLoadComplete(int a0) {
-    char *st = (char *)&D_00000000 + 0x2C70;
+    char *st = (char *)&gAudioContext + 0x2C70;
     int r;
     if (a0 == 0xFF) {
         return 1;
@@ -4636,7 +4636,7 @@ int AudioLoad_IsSeqLoadComplete(int a0) {
 //   `or a1,a0,zero` is the poll's REAL second argument (38174(2, a0)), and
 //   the final test is `>= 2 -> 1; return 0`.
 int AudioLoad_IsSampleLoadComplete(int a0) {
-    char *st = (char *)&D_00000000 + 0x2C10;
+    char *st = (char *)&gAudioContext + 0x2C10;
     int r;
     if (a0 == 0xFF) {
         return 1;
@@ -4653,24 +4653,24 @@ int AudioLoad_IsSampleLoadComplete(int a0) {
 
 void AudioLoad_SetFontLoadStatus(int a0, int a1) {
     if (a0 != 0xFF) {
-        if (*(unsigned char *)((char *)&D_00000000 + a0 + 0x2C40) != 5) {
-            *(unsigned char *)((char *)&D_00000000 + a0 + 0x2C40) = a1;
+        if (*(unsigned char *)((char *)&gAudioContext + a0 + 0x2C40) != 5) {
+            *(unsigned char *)((char *)&gAudioContext + a0 + 0x2C40) = a1;
         }
     }
 }
 
 void AudioLoad_SetSeqLoadStatus(int a0, int a1) {
     if (a0 != 0xFF) {
-        if (*(unsigned char *)((char *)&D_00000000 + a0 + 0x2C70) != 5) {
-            *(unsigned char *)((char *)&D_00000000 + a0 + 0x2C70) = a1;
+        if (*(unsigned char *)((char *)&gAudioContext + a0 + 0x2C70) != 5) {
+            *(unsigned char *)((char *)&gAudioContext + a0 + 0x2C70) = a1;
         }
     }
 }
 
 void AudioLoad_SetSampleFontLoadStatus(int a0, int a1) {
     if (a0 != 0xFF) {
-        if (*(unsigned char *)((char *)&D_00000000 + a0 + 0x2C10) != 5) {
-            *(unsigned char *)((char *)&D_00000000 + a0 + 0x2C10) = a1;
+        if (*(unsigned char *)((char *)&gAudioContext + a0 + 0x2C10) != 5) {
+            *(unsigned char *)((char *)&gAudioContext + a0 + 0x2C10) = a1;
         }
     }
 }
@@ -4760,7 +4760,7 @@ extern int gl_func_00000000();
 extern int gl_func_00037D98();
 void AudioLoad_SyncLoadSeqParts(int a0, int a1) {
     int local[2];
-    if (a0 < (int)*(unsigned short *)((char *)&D_00000000 + 0x202C)) {
+    if (a0 < (int)*(unsigned short *)((char *)&gAudioContext + 0x202C)) {
         if (a1 & 2) {
             gl_func_00000000(a0, local);
         }
@@ -5054,7 +5054,7 @@ void AudioLoad_DiscardFont(int id)
     char *base;
     int i;
     unsigned neg = 0xFFFFFFFF;
-    if (id == *(short *)((char *)&D_00000000 + 0x23FA)) {
+    if (id == *(short *)((char *)&gAudioContext + 0x23FA)) {
         *(short *)((char *)&gAudioContext_23494_a + 0x23FA) = -1;
     } else if (id == *(short *)((char *)&gAudioContext_23494_b + 0x2406)) {
         *(short *)((char *)&gAudioContext_23494_c + 0x2406) = -1;
@@ -5082,7 +5082,7 @@ void AudioLoad_DiscardFont(int id)
 extern int gl_func_00037C50();
 int AudioLoad_SyncInitSeqPlayer(int a0) {
     if (*(int*)((char*)&D_00000000 + 0x215C) != 0) return 0;
-    *(int*)((char*)&D_00000000 + a0 * 0x160 + 0x2DDC) = 0;
+    *(int*)((char*)&gAudioContext + a0 * 0x160 + 0x2DDC) = 0;
     return gl_func_00037C50(a0);
 }
 
@@ -5099,7 +5099,7 @@ int AudioLoad_SyncInitSeqPlayer(int a0) {
 extern int gl_func_00037C50();
 int AudioLoad_SyncInitSeqPlayerSkipTicks(int a0, int a1, int a2) {
     if (*(int*)((char*)&D_00000000 + 0x215C) != 0) return 0;
-    *(int*)((char*)&D_00000000 + a0 * 0x160 + 0x2DDC) = a2;
+    *(int*)((char*)&gAudioContext + a0 * 0x160 + 0x2DDC) = a2;
     return gl_func_00037C50(a0, a1, 0);
 }
 
@@ -5338,7 +5338,7 @@ int AudioLoad_SyncLoadFont(int a0) {
     int buf[7];                                              /* @0x20..0x3B(sp) */
     char *rec;
     a0 = gl_ref_00038174(1, a0);
-    rec = *(char **)((char *)&D_00000000 + 0x2030) + a0 * 0x14;
+    rec = *(char **)((char *)&gAudioContext + 0x2030) + a0 * 0x14;
     c2 = *(unsigned char *)(rec + 2);
     c3 = *(unsigned char *)(rec + 3);
     buf[0] = c2;
@@ -5951,7 +5951,7 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
         *s0 = 2;
         return 0;
     }
-    rec = &(*(gl_2495C_GS *)&D_00000000).recs[(*(gl_2495C_GS *)&D_00000000).cnt];
+    rec = &(*(gl_2495C_GS *)&gAudioContext).recs[(*(gl_2495C_GS *)&gAudioContext).cnt];
     if (rec->state == 3) {
         rec->state = 0;
     }
@@ -6080,8 +6080,8 @@ void AudioLoad_ProcessSlowLoads(int arg0) {
 
     one = 1;
     for (i = 0; i != 2; i++) {
-        state = (*(gl_2495C_GS *)&D_00000000).recs[i].state;
-        rec = &(*(gl_2495C_GS *)&D_00000000).recs[i];
+        state = (*(gl_2495C_GS *)&gAudioContext).recs[i].state;
+        rec = &(*(gl_2495C_GS *)&gAudioContext).recs[i];
         if (state != 1) {
             if (state != 2) {
                 continue;
@@ -7100,7 +7100,7 @@ void AudioLoad_AddUsedSample(Desc25BFC **a0) {
     if (p->kind == 0) {
         return;
     }
-    *(int *)((char *)&D_00000000 + *(int *)((char *)&D_00000000 + 0x1030) * 4 + 0x430) = (int)p;
+    *(int *)((char *)&gAudioContext + *(int *)((char *)&D_00000000 + 0x1030) * 4 + 0x430) = (int)p;
     *(int *)((char *)&D_00000000 + 0x1030) += 1;
 }
 
@@ -7229,7 +7229,7 @@ void AudioThread_ProcessGlobalCmd(unsigned char *cmd) {
  * computed after the if, the +0x2D00 folds into every access offset. */
 void AudioThread_SetFadeOutTimer(int a0, int a1) {
     SequencePlayer *player;
-    player = (SequencePlayer *)((char *)&D_00000000 + a0 * 352 + 0x2D00); /* &gAudioCtx.seqPlayers[a0] */
+    player = (SequencePlayer *)((char *)&gAudioContext + a0 * 352 + 0x2D00); /* &gAudioCtx.seqPlayers[a0] */
     if (a1 == 0) {
         a1 = 1;
     }
@@ -7284,15 +7284,15 @@ void AudioThread_SetFadeInTimer(int a0, int a1) {
 extern int gl_func_00000000();
 extern int D_00000000;
 void AudioThread_InitMesgQueuesImpl(void) {
-  ((char *) (&D_00000000))[0x53B8] = 0;
-  ((char *) (&D_00000000))[0x53B9] = 0;
-  ((char *) (&D_00000000))[0x53BA] = 0;
-  *((char **) (((char *) (&D_00000000)) + 0x53C8)) = ((char *) (&D_00000000)) + 0x53D0;
-  *((char **) (((char *) (&D_00000000)) + 0x53CC)) = ((char *) (&D_00000000)) + 0x53E8;
-  *((char **) (((char *) (&D_00000000)) + 0x53C4)) = ((char *) (&D_00000000)) + 0x5400;
-  gl_func_00000000(*((char **) (((char *) (&D_00000000)) + 0x53C8)), ((char *) (&D_00000000)) + 0x5418, 1);
-  gl_func_00000000(*((char **) (((char *) (&D_00000000)) + 0x53CC)), ((char *) (&D_00000000)) + 0x5420, 4);
-  gl_func_00000000(*((char **) (((char *) (&D_00000000)) + 0x53C4)), ((char *) (&D_00000000)) + 0x541C, 1);
+  ((char *) (&gAudioContext))[0x53B8] = 0;
+  ((char *) (&gAudioContext))[0x53B9] = 0;
+  ((char *) (&gAudioContext))[0x53BA] = 0;
+  *((char **) (((char *) (&gAudioContext)) + 0x53C8)) = ((char *) (&gAudioContext)) + 0x53D0;
+  *((char **) (((char *) (&gAudioContext)) + 0x53CC)) = ((char *) (&gAudioContext)) + 0x53E8;
+  *((char **) (((char *) (&gAudioContext)) + 0x53C4)) = ((char *) (&gAudioContext)) + 0x5400;
+  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53C8)), ((char *) (&gAudioContext)) + 0x5418, 1);
+  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53CC)), ((char *) (&gAudioContext)) + 0x5420, 4);
+  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53C4)), ((char *) (&gAudioContext)) + 0x541C, 1);
 }
 
 /* AudioThread_QueueCmd: ring-buffer push. head=u8 D[0x53B8],
@@ -7492,7 +7492,7 @@ void AudioThread_ProcessCmds(u32 arg0) {
  * else *a0 = local & 0xFFFFFF; return (unsigned)local >> 24. */
 int AudioThread_GetAsyncLoadStatus(int *a0) {
     int local;
-    int rv = func_00000000((char*)&D_00000000 + 0x164C, &local, 0);
+    int rv = func_00000000((char*)&gAudioContext + 0x164C, &local, 0);
     if (rv == -1) {
         *a0 = 0;
         return 0;
@@ -7511,9 +7511,9 @@ int AudioThread_GetFontsForSequence() {
 int AudioThread_CheckSpecChange(void) {
     int v;
     int local;
-    v = gl_func_00000000(*(int*)((char*)&D_00000000 + 0x53C4), &local, 0);
+    v = gl_func_00000000(*(int*)((char*)&gAudioContext + 0x53C4), &local, 0);
     if (v == -1) return 0;
-    if (local != *(unsigned char*)((char*)&D_00000000 + 0x2CF1)) {
+    if (local != *(unsigned char*)((char*)&gAudioContext + 0x2CF1)) {
         return 0;
     }
     return 1;
@@ -7666,7 +7666,7 @@ void AudioThread_PreNMIInternal(void) {
  * (not the ternary), array-index `((int*)(p+0x2D38))[a1]`, and the split
  * `char *q` inner pointer. Sibling of AudioThread_SetFadeInTimer. */
 int AudioThread_GetChannelIO(int a0, int a1, int a2) {
-    char *p = (char *)&D_00000000 + a0 * 352;
+    char *p = (char *)&gAudioContext + a0 * 352;
     if ((unsigned int)*(int *)(p + 0x2D00) >> 31) {
         char *q = (char *)((int *)(p + 0x2D38))[a1];
         return *(signed char *)(q + a2 + 0xD4);
@@ -7714,7 +7714,7 @@ void AudioThread_InitExternalPool(int a0, int a1) {
 }
 
 void AudioThread_ResetExternalPool(void) {
-    *(int *)((char *)&D_00000000 + 0x2178) = 0;
+    *(int *)((char *)&gAudioContext + 0x2178) = 0;
 }
 
 /* AudioThread_ProcessSeqPlayerCmd [0x273B8..0x27544): ONE 14-case jumptable
@@ -9341,7 +9341,7 @@ typedef struct {
 void Audio_NoteReleaseAndTakeOwnership(Gl29000Obj *a0, Gl29000Obj *a1) {
     a0->w48 = a1;
     a0->b30 = a1->w50->b5;
-    a0->f6C = *(float *)((char *)&D_00000000 + 0x2050);
+    a0->f6C = *(float *)((char *)&gAudioContext + 0x2050);
     a0->f60_3 = 1;
 }
 
@@ -11574,7 +11574,7 @@ void AudioSeq_ResetSequencePlayer(char *a0) {
  * prologue schedule. The final call is the nonzero 0x3E8C4 import. */
 extern int gl_alloc_2D130();
 void AudioSeq_InitSequencePlayerChannels(int a0) {
-    char *base = (char *)&D_00000000;
+    char *base = (char *)&gAudioContext;
     int *s3 = (int*)(base + (a0 * 0x160) + 0x2D00);
     char *d5280 = base + 0x5280;
     int *s1;
@@ -11682,13 +11682,13 @@ extern void gl_ref_00041890();
 void AudioSeq_InitSequencePlayers(void) {
     char *p, *s0, *end, *end2;
     gl_ref_0003EF70();
-    p = (char*)&D_00000000; end = (char*)&D_00000000 + 0x2000;
+    p = (char*)&gAudioContext; end = (char*)&gAudioContext + 0x2000;
     do {
         p += 0x80;
         *(int*)(p + 0x3250) = 0;
         *(unsigned char*)(p + 0x3200) &= 0xFF7F;
     } while (p < end);
-    s0 = (char*)&D_00000000 + 0x2D00; end2 = (char*)&D_00000000 + 0x3280;
+    s0 = (char*)&gAudioContext + 0x2D00; end2 = (char*)&gAudioContext + 0x3280;
     do {
         gl_ref_00041890(s0);
         s0 += 0x160;
@@ -15911,7 +15911,7 @@ void MCamera_doCommand(char *o, char *c) {
         if ((u32)idx >= 0x28) {
             gl_func_00000000((char *)&D_00000000 + 0x1E194, idx);
         }
-        val = *(int *)((char *)&D_00000000 + idx * 4);
+        val = *(int *)((char *)&gNodeGlobals + idx * 4);
         *(int *)(o + 0xF4) = val;
         return;
     }
@@ -15927,10 +15927,10 @@ void MCamera_doCommand(char *o, char *c) {
 extern int gl_func_00000000_33338(int, int, int, float, float, int);
 void MCamera_hostioParms(int *a0) {
     int arg1 = *(int*)((char*)a0 + 0xC);
-    gl_func_00000000(&D_00000000, arg1, 0);
-    gl_func_00000000_33338((int)&D_00000000, (int)((char*)&D_00000000 + 0x1E1AC),
+    gl_func_00000000(&gHostio, arg1, 0);
+    gl_func_00000000_33338((int)&gHostio, (int)((char*)&D_00000000 + 0x1E1AC),
                            (int)((char*)a0 + 0x14C), 0.0f, 180.0f, 0);
-    gl_func_00000000(&D_00000000);
+    gl_func_00000000(&gHostio);
 }
 
 void MCamera_vfn12_000333A4(int a0, int a1, int a2) {
@@ -15987,7 +15987,7 @@ void heap_tempFreeDefault_0003341C(int a0) { gl_func_00000000(&gSysLib, a0); }
 extern int gGfxLib_33444_a;
 float sys_timeInFrames_00033444(void) {
     float a = (float)*(unsigned int *)((char *)&gGfxLib_33444_a + 0x20C);
-    return (float)(unsigned int)gl_func_00000000(&D_00000000) / a;
+    return (float)(unsigned int)gl_func_00000000(&gSysLib) / a;
 }
 
 extern int gl_func_00000000();
@@ -16424,8 +16424,8 @@ void dma_init(void) {
     int k;
 
     for (k = 0; k < 10; k++) {
-        *(int *)((char *)&D_00000000 + k * 0x44 + 0x3C) = 0;
-        gl_func_00000000((char *)&D_00000000 + 0x18 + k * 0x44, (char *)&D_00000000 + 0x30 + k * 0x44, 1);
+        *(int *)((char *)gDmaSlots + k * 0x44 + 0x3C) = 0;
+        gl_func_00000000((char *)gDmaSlots + 0x18 + k * 0x44, (char *)gDmaSlots + 0x30 + k * 0x44, 1);
     }
 }
 

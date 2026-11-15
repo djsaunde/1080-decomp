@@ -9,8 +9,9 @@
 extern "C" {
 extern void gl_func_00000000(...);
 extern int D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 void Audio_InitNoteFreeList(void) {
-    char *tbl = (char *)&D_00000000 + 0x5378;
+    char *tbl = (char *)&gAudioContext + 0x5378;
     int i;
     int off;
     gl_func_00000000(tbl);

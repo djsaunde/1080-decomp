@@ -809,7 +809,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
-        *(void **)(self + 0x28) = &D_00000000;
+        *(void **)(self + 0x28) = &U64BGWall_vtbl;
         *(void **)(self + 0xC) = &D_000066B8;
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
@@ -2817,11 +2817,11 @@ extern char D_000074F4, D_00007500, D_00007508, D_00007510;
  * single floats (a3 reg + swc1 0x10 stack) instead of K&R double-promote. */
 extern void func_477c_reg(void *, void *, void *, float, float, int);
 void Mountain_hostioParms(char *a0) {
-    func_00000000(&D_00000000, &D_000074F4, 0);
-    func_477c_reg(&D_00000000, &D_00007500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
-    func_477c_reg(&D_00000000, &D_00007508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
-    func_477c_reg(&D_00000000, &D_00007510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
-    func_00000000(&D_00000000);
+    func_00000000(&gHostio, &D_000074F4, 0);
+    func_477c_reg(&gHostio, &D_00007500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
+    func_477c_reg(&gHostio, &D_00007508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
+    func_477c_reg(&gHostio, &D_00007510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
+    func_00000000(&gHostio);
     func_00000000(a0);
 }
 
@@ -3888,11 +3888,11 @@ void MapProp_display(char *obj) {
  * passing (sp+0x10/0x14). INCLUDE_ASM remains build path. */
 extern char D_00007EA4, D_00007EA8, D_00007EAC, D_00007EB0;
 void MapProp_hostioParms(char *a0) {
-    func_00000000(&D_00000000, &D_00007EA4, 0);
-    func_00000000(&D_00000000, &D_00007EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
-    func_00000000(&D_00000000, &D_00007EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
-    func_00000000(&D_00000000, &D_00007EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
-    func_00000000(&D_00000000);
+    func_00000000(&gHostio, &D_00007EA4, 0);
+    func_00000000(&gHostio, &D_00007EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
+    func_00000000(&gHostio, &D_00007EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
+    func_00000000(&gHostio, &D_00007EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
+    func_00000000(&gHostio);
     func_00000000(a0);
 }
 
@@ -4032,7 +4032,7 @@ void *EnvSettings_ctor(char *a0) {
         if (a0 == 0) goto end;
     }
     func_00000000(a0, &D_00007F84);
-    *(void**)(a0 + 0x28) = &D_00000000;
+    *(void**)(a0 + 0x28) = &EnvSettings_vtbl;
     {
         int *v1 = (int *)(a0 + 0x2C);
         if (v1 == 0) {
@@ -4113,12 +4113,12 @@ typedef struct { int w[4]; } Q7288;
 extern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void EnvSettings_display(int *a0) {
     if (a0[0x38/4] & 2) {
-        char *base = (char*)&D_00000000;
+        char *base = (char*)&gGfxLib;
         *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)a0[0x30/4];
         *(float*)(*(char**)(base + 0x254) + 0xB0) = (float)(int)a0[0x34/4];
     }
     if (a0[0x3C/4] == 0) {
-        char *b2 = (char*)&D_00000000;
+        char *b2 = (char*)&gGfxLib;
         int *q;
         q = *(int**)(b2 + 0x254);
         q = (int*)((char*)q + 0x78);
@@ -4609,7 +4609,7 @@ void *Tv1Tmpl_create(char *a0) {
     ret = (char*)func_00000000(0x88);
     if (ret != 0) {
         func_00000000(ret);
-        *(void**)(ret + 0x28) = &D_00000000;
+        *(void**)(ret + 0x28) = &Tv1_vtbl;
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
@@ -5144,7 +5144,7 @@ void TreeTmpl_display(char *arg0) {
     char *node;
     char *obj;
 
-    func_00000000(&D_00000000, arg0 + 0x4C);
+    func_00000000(&gGfxLib, arg0 + 0x4C);
     func_00000000(arg0 + 0x5C);
 
     node = *(char**)(arg0 + 0x34);
@@ -8494,13 +8494,13 @@ void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
         return;
     }
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xE);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xF);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xE);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xF);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xA);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xB);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xA);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xB);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xC);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xC);
 }
 
 /* SnowBoarder_func_0000DF04 - verified structural decode (0x110, 68 insns,
@@ -8517,13 +8517,13 @@ void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
 /* SnowBoarder_func_0000DF04 — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
 void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x11);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x12);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x11);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x12);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x14);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x15);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x14);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x15);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x16);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x16);
 }
 /* VERIFIED in-tree 68/68 EXACT on clean rebuild (was 97.8%).
    Single lever: Tri3i struct-assign cascade (same form as promoted E014/DDCC siblings).
@@ -8545,13 +8545,13 @@ void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
  * build path. */
 void SnowBoarder_func_0000E014(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, sb->unk902);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 8);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, sb->unk902);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 8);
     } else {
-        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, sb->unk900);
-        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 5);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, sb->unk900);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 5);
     }
-    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 6);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 6);
 }
 
 /* SnowBoarder_func_0000E124 - verified structural decode (0x14C, 83 insns,

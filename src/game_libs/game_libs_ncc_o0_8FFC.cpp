@@ -8,6 +8,7 @@
 extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern int D_0000004C, D_00000050, D_00000064;
 extern unsigned char D_0000017D;
 extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
@@ -19,11 +20,11 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
+    gl_func_00000000(&gInputMgr, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     gl_func_00000000(D_0000004C, D_0000017D);
     D_00000050 = D_00000050 & 0x20;
-    obj = gl_func_00000000(&D_00000000, D_00000064, 5, a2);
-    base = (char *)&D_00000000;
+    obj = gl_func_00000000(&gInputMgr, D_00000064, 5, a2);
+    base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
     gl_func_00000000(tmp, o);
@@ -32,7 +33,7 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&D_00000000, 0);
+    gl_func_00000000(&gInputMgr, 0);
     (void)a0;
     (void)a1;
     return obj;
@@ -48,8 +49,8 @@ int app_createGame_00009100(int a0, int a1, int a2) {
     D_00000182 = D_0000017A;
     D_00000183 = D_0000017B;
     gl_func_00000000(D_0000004C, D_0000004C);
-    obj = gl_func_00000000(&D_00000000, D_00000064, 4, a2);
-    base = (char *)&D_00000000;
+    obj = gl_func_00000000(&gInputMgr, D_00000064, 4, a2);
+    base = (char *)&gInputMgr;
     o = (int *)obj;
     tmp = base + 0x10;
     gl_func_00000000(tmp, o);
@@ -58,7 +59,7 @@ int app_createGame_00009100(int a0, int a1, int a2) {
     }
     tmp = base;
     o[0x14 / 4] = (int)tmp;
-    gl_func_00000000(&D_00000000, 0);
+    gl_func_00000000(&gInputMgr, 0);
     (void)a0;
     (void)a1;
     return obj;

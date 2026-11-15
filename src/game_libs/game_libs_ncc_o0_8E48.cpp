@@ -36,6 +36,7 @@ typedef long long s64; typedef unsigned long long u64;
 #endif
 extern int gl_func_00000000(...);  /* USO placeholder callee (jal 0) */
 extern char D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern int D_0000004C, D_00000064;
 extern unsigned char D_00000181, D_00000182, D_00000183;
 extern char gProcUsoPaths_8FFC_base;   /* base-0 alias of D_00000000 (see app_createGame_00008FFC note) */
@@ -48,7 +49,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     register char *tmp;    /* s2 */
 
     sp34 = sp38 = (char *)D_0000004C;
-    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
+    gl_func_00000000(&gInputMgr, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
         D_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));
         sp34 = (char *)(int)D_00000181;
@@ -57,11 +58,11 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     }
     gl_func_00000000(sp38, sp34);
     if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
-        sp3C = (char *)gl_func_00000000(&D_00000000, D_00000064, 3, arg2);
+        sp3C = (char *)gl_func_00000000(&gInputMgr, D_00000064, 3, arg2);
     } else {
-        sp3C = (char *)gl_func_00000000(&D_00000000, D_00000064, 2, arg2);
+        sp3C = (char *)gl_func_00000000(&gInputMgr, D_00000064, 2, arg2);
     }
-    base = (char *)&D_00000000;
+    base = (char *)&gInputMgr;
     o = sp3C;
     tmp = base + 0x10;
     gl_func_00000000(tmp, o);
@@ -70,7 +71,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     }
     tmp = base;
     FW(o, 0x14) = (int)tmp;
-    gl_func_00000000(&D_00000000, 0);
+    gl_func_00000000(&gInputMgr, 0);
     (void)arg1;
     return sp3C;
 }

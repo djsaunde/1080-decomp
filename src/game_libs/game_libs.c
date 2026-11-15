@@ -1214,7 +1214,7 @@ char *CourseGadget_ctor(char *arg0, s32 arg1) {
         *(f32 *)(arg0 + 0x1D4) = 0.0f;
         *(f32 *)(arg0 + 0x1E0) = 0.0f;
         *(f32 *)(arg0 + 0x1D8) = 0.0f;
-        gl_func_00000000(arg0, *(s32 *)((char *)&D_00000000 + 0x64));
+        gl_func_00000000(arg0, *(s32 *)((char *)&gInputMgr + 0x64));
         gl_func_00000000(arg0 + 0x1F4, 0x50019);
         gl_func_00000000(arg0 + 0x20C, 0x5001A);
         gl_func_00000000(arg0 + 0x224, 0x50010);
@@ -3081,7 +3081,7 @@ int RaceProcess_restart(RaceProcess *a0, int a1) {
  * base-0 aliases reproduce target's 3 separate lui $at,0 (no CSE). cmp clean. */
 extern float gl_d_x, gl_d_y, gl_d_z;  /* 3 global floats zeroed by this fn */
 void RaceProcess_reset(RaceProcess *a0) {
-    int *G = (int*)&D_00000000;
+    int *G = (int*)&gInputMgr;
     int *H;
     a0->unk030 = 0;
     a0->unk02C = 0;
@@ -3090,10 +3090,10 @@ void RaceProcess_reset(RaceProcess *a0) {
     a0->unk4FC = 0;
     a0->timeout = 0x1FFFF;
     G[0x78 / 4] = 1;
-    gl_func_00000000(&D_00000000, 0);
+    gl_func_00000000(&gInputMgr, 0);
     a0->countStep = 20;
     a0->timer = (a0->flags & RACEF_INTRO_DELAY) ? 120 : 0;
-    H = (int*)&D_00000000;
+    H = (int*)&gInputMgr;
     H[0x8C / 4] = a0->flags;
     a0->countAlpha = 255;
     a0->scaleX = 1.0f;
@@ -3121,12 +3121,12 @@ void RaceProcess_endRace(RaceProcess *a0, int a1, int a2) {
     a0->result = a2;
     a0->phase = RACE_PHASE_END;
     a0->raceState = RACE_STATE_ENDED;
-    gl_func_00000000(&D_00000000, 0);
+    gl_func_00000000(&gInputMgr, 0);
     a0->timer = a1;
     a0->unk4EC = 0;
     a0->endCounter = 0;
     a0->msgY = 120.0f;
-    if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
+    if (*(int *)((char *)&gInputMgr + 0x34) == 2) {
         a0->msgY = 60.0f;
     }
     a0->msgVel = 0.0f;
@@ -3147,12 +3147,12 @@ void RaceProcess_endRaceQuiet(RaceProcess *a0, int a1, int a2) {
     a0->result = a2;
     a0->phase = RACE_PHASE_END;
     a0->raceState = RACE_STATE_ENDED;
-    gl_func_00000000(&D_00000000, 0, a2, a0);
+    gl_func_00000000(&gInputMgr, 0, a2, a0);
     a0->timer = a1;
     a0->unk4EC = 0;
     a0->endCounter = 0;
     a0->msgY = 120.0f;
-    if (*(int*)((char*)&D_00000000 + 0x34) == 2) {
+    if (*(int*)((char*)&gInputMgr + 0x34) == 2) {
         a0->msgY = 60.0f;
     }
     a0->msgVel = 0.0f;
@@ -3172,7 +3172,7 @@ void RaceProcess_endRaceAlt(RaceProcess *a0, int a1, int a2) {
   a0->result = a2;
   a0->phase = RACE_PHASE_END;
   *((int *) v) = RACE_STATE_ENDED;
-  gl_func_00000000(&D_00000000, 0);
+  gl_func_00000000(&gInputMgr, 0);
   a0->timer = a1;
   a0->unk4EC = 0;
   a0->endCounter = 60;
@@ -3180,11 +3180,11 @@ void RaceProcess_endRaceAlt(RaceProcess *a0, int a1, int a2) {
   a1++;
   a1--;
   a0->msgY = 120.0f;
-  if ((*((int *) (((char *) (&D_00000000)) + 0x34))) == 2)
+  if ((*((int *) (((char *) (&gInputMgr)) + 0x34))) == 2)
   {
     a0->msgY = 60.0f;
   }
-  if ((*((int *) (((char *) (&D_00000000)) + 0x34))) == 3)
+  if ((*((int *) (((char *) (&gInputMgr)) + 0x34))) == 3)
   {
     gl_func_00000000(48);
   }
@@ -3205,7 +3205,7 @@ extern int *gl_ref_00000138;
 void RaceProcess_finishCourse(int a0) {
     int *p;
     gl_func_00000000(a0, 0x1E0, 0);
-    p = *(int **)((char *)&D_00000000 + 0x138);
+    p = *(int **)((char *)&gInputMgr + 0x138);
     p[45] = 0;
 }
 
@@ -3220,7 +3220,7 @@ void RaceProcess_endResult3_00006DF8(RaceProcess *a0) {
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
     gl_func_00000000(5, 0, 0);
-    gl_func_00000000(&D_00000000, 5, 0, 0);
+    gl_func_00000000(&gInputMgr, 5, 0, 0);
 }
 
 void RaceProcess_endResult2_00006E78(int a0_passthrough) {
@@ -3230,7 +3230,7 @@ void RaceProcess_endResult2_00006E78(int a0_passthrough) {
     p[0xB4/4] = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
     gl_func_00000000(5, 0, 0);
-    gl_func_00000000(&D_00000000, 5, 3, 0);
+    gl_func_00000000(&gInputMgr, 5, 3, 0);
 }
 
 /* Init function: zero-initialize a0 fields, store 120.0f at +0x554, clear
@@ -3245,13 +3245,13 @@ void RaceProcess_endResult4_00006EE0(RaceProcess *a0) {
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
     gl_func_00000000(6, 0, 0);
-    gl_func_00000000(&D_00000000, 6, 0, 0);
+    gl_func_00000000(&gInputMgr, 6, 0, 0);
 }
 
 void RaceProcess_endResult5_00006F60(int a0) {
     int *p;
     gl_func_00000000(a0, 0x1E0, 5);
-    p = *(int **)((char *)&D_00000000 + 0x138);
+    p = *(int **)((char *)&gInputMgr + 0x138);
     p[45] = 0;
 }
 
@@ -3266,7 +3266,7 @@ void RaceProcess_endResult4_00006F90(RaceProcess *a0) {
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
     gl_func_00000000(6, 0, 0);
-    gl_func_00000000(&D_00000000, 6, 0, 0);
+    gl_func_00000000(&gInputMgr, 6, 0, 0);
 }
 
 /* Sibling of RaceProcess_endResult2_00006E78 (matched 2026-05-08): same 26-insn 4-call
@@ -3280,7 +3280,7 @@ void RaceProcess_timeUp(int a0_passthrough) {
     p[0xB4/4] = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
     gl_func_00000000(6, 0, 0);
-    gl_func_00000000(&D_00000000, 6, 1, 0);
+    gl_func_00000000(&gInputMgr, 6, 1, 0);
 }
 
 /* 4-function bundle 0x7078..0x709F split via split-fragments.py 2026-05-08:
@@ -3631,13 +3631,13 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk50C = self->unk50C + 1;
             }
             if ((sp24 == 1) && (sp20 == 0)) {
-                func_00000000((char *)&D_00000000, 1);
+                func_00000000((char *)&gInputMgr, 1);
                 if (((u32)self->unk4F0 << 15) >> 31) {
                     func_00000000((char *)self + 0x588);
                 }
-                *(s32 *)((char *)&D_00000000 + 0x78) = 0;
+                *(s32 *)((char *)&gInputMgr + 0x78) = 0;
                 self->unk4DC = 1;
-                func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
+                func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
             }
             if (-self->unk4E8 >= (var_v0 = self->unk4E4)) { /* agent-c run 326: dead store into var_v0 (re-assigned before its only read) */
                 self->unk4E0 = 2;
@@ -3657,7 +3657,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&D_00000000, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -3679,7 +3679,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x1F) && (func_00000000((char *)&D_00000000, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x1F) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -3761,14 +3761,14 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
     }
     if ((self->unk4DC != 2) && (self->unk4D8 == 0)) {
         if (self->unk30 == 0) {
-            if ((func_00000000(*(s32 *)((char *)&D_00000000 + 0x190)) != 0) && (self->unk48 != 0)) {
-                temp = func_00000000((char *)&D_00000000, 0x40000);
+            if ((func_00000000(*(s32 *)((char *)&gInputMgr + 0x190)) != 0) && (self->unk48 != 0)) {
+                temp = func_00000000((char *)&gInputMgr, 0x40000);
                 self->unk514 = temp;
                 if (temp != 0) {
                     vt = self->vt;
                     vt->e[17].fn(vt->e[17].off + (char *)self);
                     func_00000000(self);
-                    func_00000000(*(s32 *)((char *)&D_00000000 + 0x138));
+                    func_00000000(*(s32 *)((char *)&gInputMgr + 0x138));
                 }
             }
         } else {
@@ -3778,13 +3778,13 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
              * target's) and the colour is v0 + `move a1,v0` as in the target. */
             var_v0 = self->unk48->unk80;
             if (var_v0 == 0) {
-                if (func_00000000((char *)&D_00000000, 0x100) != 0) {
+                if (func_00000000((char *)&gInputMgr, 0x100) != 0) {
                     self->unk48->unk80 = 0x100;
                 }
-                if (func_00000000((char *)&D_00000000, 0x40000) != 0) {
+                if (func_00000000((char *)&gInputMgr, 0x40000) != 0) {
                     self->unk48->unk80 = 0x40000;
                 }
-            } else if (func_00000000((char *)&D_00000000, var_v0 + 0 * var_v0) != 0) {
+            } else if (func_00000000((char *)&gInputMgr, var_v0 + 0 * var_v0) != 0) {
                 vt = self->vt;
                 vt->e[26].fn(vt->e[26].off + (char *)self);
                 self->unk48->unk80 = 0;
@@ -3812,7 +3812,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
         break;
     }
     if ((((u32)self->unk4F0 << 12) >> 31)
-        && ((func_00000000((char *)&D_00000000, 0x300) != 0) || (func_00000000((char *)&D_00000000, 0x40000) != 0))) {
+        && ((func_00000000((char *)&gInputMgr, 0x300) != 0) || (func_00000000((char *)&gInputMgr, 0x40000) != 0))) {
         vt = self->vt;
         vt->e[27].fn(vt->e[27].off + (char *)self);
     }
@@ -3892,7 +3892,7 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                         temp_a3 = (int *)&arg0->colour[5];
                         gl_func_00000000(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                         gl_func_00000000(sp8C, (s32)arg0->msgX, (s32)arg0->msgY, 3);
-                        if (*(s32 *)((char *)&D_00000000 + 0x34) == 2) {
+                        if (*(s32 *)((char *)&gInputMgr + 0x34) == 2) {
                             gl_func_00000000(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                             gl_func_00000000(sp8C, (s32)arg0->msgX, (s32)(arg0->msgY + 120.0f), 3);
                         }
@@ -3954,7 +3954,7 @@ int RaceProcess_loadData(RaceProcess *a0) {
 extern int gl_func_00000000();
 extern int gl_data_00000000_83cc;
 void RaceProcess_createReplayCam(RaceProcess *a0) {
-#define STATE (*(int**)((char*)&D_00000000 + 0x134))
+#define STATE (*(int**)((char*)&gInputMgr + 0x134))
     int *c4;
     int x800;
     int v70;
@@ -4031,7 +4031,7 @@ void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
     char *p;
     int *q;
 
-    state = *(char**)((char*)&D_00000000 + 0x134);
+    state = *(char**)((char*)&gInputMgr + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
     if (arg0->session->ghost->data != 0) {
@@ -4044,9 +4044,9 @@ void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
     }
     gl_func_00000000(p, *(int*)(p + 0x34));
     gl_func_00000000(p,
-        *(int*)((char*)&D_00000000 + 0x168),
-        *(int*)((char*)&D_00000000 + 0x164),
-        (char*)&D_00000000 + 0x170);
+        *(int*)((char*)&gInputMgr + 0x168),
+        *(int*)((char*)&gInputMgr + 0x164),
+        (char*)&gInputMgr + 0x170);
     gl_func_00000000(arg0);
 }
 
@@ -4065,7 +4065,7 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     int *q;
 
     gl_func_00000000(arg0);
-    state = *(char**)((char*)&D_00000000 + 0x134);
+    state = *(char**)((char*)&gInputMgr + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
     if (arg0->session->ghost->data != 0) {
@@ -4078,8 +4078,8 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     }
     gl_func_00000000(p, 0);
     gl_func_00000000(p,
-        *(int*)((char*)&D_00000000 + 0x168),
-        *(int*)((char*)&D_00000000 + 0x170));
+        *(int*)((char*)&gInputMgr + 0x168),
+        *(int*)((char*)&gInputMgr + 0x170));
     gl_func_00000000(arg0);
     arg0->timeout = arg1 & 0xFFFF;
 }
