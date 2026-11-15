@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002DF30, 0x34
+nonmatching snd_StopPlayer0Seq_2DF30, 0x34
 
-glabel game_libs_func_0002DF30
+glabel snd_StopPlayer0Seq_2DF30
     /* E13008 0002DF30 3C0E0000 */  .word 0x3C0E0000
     /* E1300C 0002DF34 8DCE2D00 */  .word 0x8DCE2D00
     /* E13010 0002DF38 27BDFFE8 */  .word 0x27BDFFE8
@@ -14,4 +14,4 @@ glabel game_libs_func_0002DF30
     /* E13030 0002DF58 27BD0018 */  .word 0x27BD0018
     /* E13034 0002DF5C 03E00008 */  .word 0x03E00008
     /* E13038 0002DF60 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002DF30
+endlabel snd_StopPlayer0Seq_2DF30

@@ -1,6 +1,6 @@
-nonmatching gl_func_0002D6C8, 0x44
+nonmatching snd_SetSoundOutputMode_2D6C8, 0x44
 
-glabel gl_func_0002D6C8
+glabel snd_SetSoundOutputMode_2D6C8
     /* E127A0 0002D6C8 27BDFFE8 */  .word 0x27BDFFE8
     /* E127A4 0002D6CC AFBF0014 */  .word 0xAFBF0014
     /* E127A8 0002D6D0 00802825 */  .word 0x00802825
@@ -18,4 +18,4 @@ glabel gl_func_0002D6C8
     /* E127D8 0002D700 27BD0018 */  .word 0x27BD0018
     /* E127DC 0002D704 03E00008 */  .word 0x03E00008
     /* E127E0 0002D708 00000000 */  .word 0x00000000
-endlabel gl_func_0002D6C8
+endlabel snd_SetSoundOutputMode_2D6C8

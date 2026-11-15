@@ -1,6 +1,6 @@
-nonmatching gl_func_0002DCF8, 0x38
+nonmatching snd_StopAudioCmds_2DCF8, 0x38
 
-glabel gl_func_0002DCF8
+glabel snd_StopAudioCmds_2DCF8
     /* E12DD0 0002DCF8 27BDFFE8 */  .word 0x27BDFFE8
     /* E12DD4 0002DCFC AFBF0014 */  .word 0xAFBF0014
     /* E12DD8 0002DD00 0C000000 */  .word 0x0C000000
@@ -15,4 +15,4 @@ glabel gl_func_0002DCF8
     /* E12DFC 0002DD24 27BD0018 */  .word 0x27BD0018
     /* E12E00 0002DD28 03E00008 */  .word 0x03E00008
     /* E12E04 0002DD2C 00000000 */  .word 0x00000000
-endlabel gl_func_0002DCF8
+endlabel snd_StopAudioCmds_2DCF8

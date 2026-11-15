@@ -1,6 +1,6 @@
-nonmatching gl_func_0002D7D0, 0x70
+nonmatching snd_ResetVolumeLevels_2D7C0, 0x70
 
-glabel gl_func_0002D7D0
+glabel snd_ResetVolumeLevels_2D7C0
     /* E12898 0002D7C0 24020008 */  .word 0x24020008
     /* E1289C 0002D7C4 3C010000 */  .word 0x3C010000
     /* E128A0 0002D7C8 AC220000 */  .word 0xAC220000
@@ -29,4 +29,4 @@ glabel gl_func_0002D7D0
     /* E128FC 0002D824 27BD0018 */  .word 0x27BD0018
     /* E12900 0002D828 03E00008 */  .word 0x03E00008
     /* E12904 0002D82C 00000000 */  .word 0x00000000
-endlabel gl_func_0002D7D0
+endlabel snd_ResetVolumeLevels_2D7C0

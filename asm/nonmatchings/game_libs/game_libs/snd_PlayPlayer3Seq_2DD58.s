@@ -1,6 +1,6 @@
-nonmatching gl_func_0002DD58, 0x38
+nonmatching snd_PlayPlayer3Seq_2DD58, 0x38
 
-glabel gl_func_0002DD58
+glabel snd_PlayPlayer3Seq_2DD58
     /* E12E30 0002DD58 27BDFFE8 */  .word 0x27BDFFE8
     /* E12E34 0002DD5C AFA40018 */  .word 0xAFA40018
     /* E12E38 0002DD60 00803025 */  .word 0x00803025
@@ -15,4 +15,4 @@ glabel gl_func_0002DD58
     /* E12E5C 0002DD84 27BD0018 */  .word 0x27BD0018
     /* E12E60 0002DD88 03E00008 */  .word 0x03E00008
     /* E12E64 0002DD8C 00000000 */  .word 0x00000000
-endlabel gl_func_0002DD58
+endlabel snd_PlayPlayer3Seq_2DD58

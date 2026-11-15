@@ -4429,8 +4429,8 @@ int *gl_func_000088B4(int *arg0) {
 /* game_libs_func_00066200 + game_libs_func_00066208 + game_libs_func_0002D7C0:
  * SUFFIX_BYTES-absorbed orphans whose bytes are emitted by the post-cc
  * recipes on adjacent gl_func_* entries in game_libs_post.c.o (see Makefile:
- * gl_func_000661D8 SUFFIX_BYTES covers 0x66200/0x66208; gl_func_0002D788
- * INSN_PATCH+SUFFIX_BYTES + gl_func_0002D7D0 PROLOGUE_STEALS cover 0x2D7C0).
+ * gl_func_000661D8 SUFFIX_BYTES covers 0x66200/0x66208; snd_SetPlayer2VolumeLevel_2D784
+ * INSN_PATCH+SUFFIX_BYTES + snd_ResetVolumeLevels_2D7C0 PROLOGUE_STEALS cover 0x2D7C0).
  * The .s files existed as splat-extracted symbol entries but were never used
  * by the build (game_libs.c.o gets truncated to 0x8944, dropping any
  * INCLUDE_ASM bytes placed past that offset). Removed to stop the discover
@@ -4443,8 +4443,8 @@ int *gl_func_000088B4(int *arg0) {
  * 0x3C020000,0x24420000,0x8C4E0008); game_libs_func_00030610 →
  * gl_func_000305CC SUFFIX_BYTES (3 words 0x3C020000,0x24420000,0x8C4E0000);
  * game_libs_func_0005FDC0 → gl_func_0005FD20 SUFFIX_BYTES (3 words
- * 0x00000000,0x3C060000,0x8CC60000); game_libs_func_0002DEF4 →
- * gl_func_0002DED0 SUFFIX_BYTES (3 words 0x000470C0,0x01C52021,0x2484001A).
+ * 0x00000000,0x3C060000,0x8CC60000); snd_PlayPlayer2Seq_2DEF4 →
+ * snd_PlayPlayer0Seq0_2DED0 SUFFIX_BYTES (3 words 0x000470C0,0x01C52021,0x2484001A).
  * All four predecessor recipes live on game_libs_post.c.o. */
 
 /* game_libs_func_00008668: SUFFIX_BYTES-absorbed orphan ← gl_func_000085B0
@@ -4473,8 +4473,8 @@ int *gl_func_000088B4(int *arg0) {
  * Each of those symbols starts at the orphan's address in the linked ROM. */
 
 /* game_libs_func_0002DF64 (ONE word, mtc1 a1,$f12 -- the stolen leading
- * insn of gl_func_0002DF68): re-homed during the relayout session as the
- * prepended first word of gl_func_0002DF68.s in post.c (74EFC-style
+ * insn of snd_SetPlayer0ChannelFreqScale_2DF64): re-homed during the relayout session as the
+ * prepended first word of snd_SetPlayer0ChannelFreqScale_2DF64.s in post.c (74EFC-style
  * leading-insn boundary correction). The orphan INCLUDE that used to sit
  * here emitted at game_libs.c.o offset 0x8944 (= TRUNCATE_TEXT cap) and
  * never reached the link; removed with the re-home. */

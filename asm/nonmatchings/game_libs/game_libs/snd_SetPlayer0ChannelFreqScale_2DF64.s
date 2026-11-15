@@ -1,6 +1,6 @@
-nonmatching gl_func_0002DF68, 0x34
+nonmatching snd_SetPlayer0ChannelFreqScale_2DF64, 0x34
 
-glabel gl_func_0002DF68
+glabel snd_SetPlayer0ChannelFreqScale_2DF64
     /* E1303C 0002DF64 44856000 */  .word 0x44856000
     /* E13040 0002DF68 27BDFFE8 */  .word 0x27BDFFE8
     /* E13044 0002DF6C 308400FF */  .word 0x308400FF
@@ -14,4 +14,4 @@ glabel gl_func_0002DF68
     /* E13064 0002DF8C 27BD0018 */  .word 0x27BD0018
     /* E13068 0002DF90 03E00008 */  .word 0x03E00008
     /* E1306C 0002DF94 00000000 */  .word 0x00000000
-endlabel gl_func_0002DF68
+endlabel snd_SetPlayer0ChannelFreqScale_2DF64

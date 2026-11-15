@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002D830, 0x38
+nonmatching snd_ApplyPlayer3VolumeLevel_2D830, 0x38
 
-glabel game_libs_func_0002D830
+glabel snd_ApplyPlayer3VolumeLevel_2D830
     /* E12908 0002D830 3C0E0000 */  .word 0x3C0E0000
     /* E1290C 0002D834 8DCE0000 */  .word 0x8DCE0000
     /* E12910 0002D838 27BDFFE8 */  .word 0x27BDFFE8
@@ -15,4 +15,4 @@ glabel game_libs_func_0002D830
     /* E12934 0002D85C 27BD0018 */  .word 0x27BD0018
     /* E12938 0002D860 03E00008 */  .word 0x03E00008
     /* E1293C 0002D864 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002D830
+endlabel snd_ApplyPlayer3VolumeLevel_2D830

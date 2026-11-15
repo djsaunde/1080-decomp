@@ -1,6 +1,6 @@
-nonmatching gl_func_0002D620, 0x58
+nonmatching snd_MuteAll_2D618, 0x58
 
-glabel gl_func_0002D620
+glabel snd_MuteAll_2D618
     /* E126F0 0002D618 3C0E0000 */  .word 0x3C0E0000
     /* E126F4 0002D61C 8DCE0000 */  .word 0x8DCE0000
     /* E126F8 0002D620 27BDFFE8 */  .word 0x27BDFFE8
@@ -23,4 +23,4 @@ glabel gl_func_0002D620
     /* E1273C 0002D664 27BD0018 */  .word 0x27BD0018
     /* E12740 0002D668 03E00008 */  .word 0x03E00008
     /* E12744 0002D66C 00000000 */  .word 0x00000000
-endlabel gl_func_0002D620
+endlabel snd_MuteAll_2D618

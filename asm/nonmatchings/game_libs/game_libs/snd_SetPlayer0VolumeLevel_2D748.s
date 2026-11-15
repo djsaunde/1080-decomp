@@ -1,6 +1,6 @@
-nonmatching gl_func_0002D74C, 0x3C
+nonmatching snd_SetPlayer0VolumeLevel_2D748, 0x3C
 
-glabel gl_func_0002D74C
+glabel snd_SetPlayer0VolumeLevel_2D748
     /* E12820 0002D748 00803025 */  .word 0x00803025
     /* E12824 0002D74C 27BDFFE8 */  .word 0x27BDFFE8
     /* E12828 0002D750 3C010000 */  .word 0x3C010000
@@ -16,4 +16,4 @@ glabel gl_func_0002D74C
     /* E12850 0002D778 27BD0018 */  .word 0x27BD0018
     /* E12854 0002D77C 03E00008 */  .word 0x03E00008
     /* E12858 0002D780 00000000 */  .word 0x00000000
-endlabel gl_func_0002D74C
+endlabel snd_SetPlayer0VolumeLevel_2D748

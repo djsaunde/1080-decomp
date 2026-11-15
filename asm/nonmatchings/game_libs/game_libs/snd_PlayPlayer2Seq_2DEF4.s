@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002DEF4, 0x3C
+nonmatching snd_PlayPlayer2Seq_2DEF4, 0x3C
 
-glabel game_libs_func_0002DEF4
+glabel snd_PlayPlayer2Seq_2DEF4
     /* E12FCC 0002DEF4 000470C0 */  .word 0x000470C0
     /* E12FD0 0002DEF8 01C52021 */  .word 0x01C52021
     /* E12FD4 0002DEFC 2484001A */  .word 0x2484001A
@@ -16,4 +16,4 @@ glabel game_libs_func_0002DEF4
     /* E12FFC 0002DF24 27BD0018 */  .word 0x27BD0018
     /* E13000 0002DF28 03E00008 */  .word 0x03E00008
     /* E13004 0002DF2C 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002DEF4
+endlabel snd_PlayPlayer2Seq_2DEF4

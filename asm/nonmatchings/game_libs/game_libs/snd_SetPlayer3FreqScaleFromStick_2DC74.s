@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0002DC74, 0x84
+nonmatching snd_SetPlayer3FreqScaleFromStick_2DC74, 0x84
 
-glabel game_libs_func_0002DC74
+glabel snd_SetPlayer3FreqScaleFromStick_2DC74
     /* E12D4C 0002DC74 3C0E0000 */  .word 0x3C0E0000
     /* E12D50 0002DC78 8DCE0000 */  .word 0x8DCE0000
     /* E12D54 0002DC7C 27BDFFE8 */  .word 0x27BDFFE8
@@ -34,4 +34,4 @@ glabel game_libs_func_0002DC74
     /* E12DC4 0002DCEC 27BD0018 */  .word 0x27BD0018
     /* E12DC8 0002DCF0 03E00008 */  .word 0x03E00008
     /* E12DCC 0002DCF4 00000000 */  .word 0x00000000
-endlabel game_libs_func_0002DC74
+endlabel snd_SetPlayer3FreqScaleFromStick_2DC74
