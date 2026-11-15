@@ -219,6 +219,14 @@
 #define gPlaceNames            D_00000000 /* Data+0xCF58 Sym 952, 3 char*: "1st", "2nd", "3rd" (no direct site) */
 #define gFaultFlagNames        D_00000000 /* Data+0x21130 Sym 2229, 82 char*: "BD", "IP8", "IP7", ... Cause / Status bit names (fault_printFlags, fault_printThread, ProcNodeList) */
 
+/* ---- wave 4 (agent-a run 498) ---- */
+#define gCourseColl          D_00000000 /* Bss+0x50 Sym 451, 4 bytes: pointer to the course collision object. game_createMap stores the object it builds from the map's morphpolyshape; coll_pushClear_00035E64 / gfx_screenRaycast / SnowBoarder_procColl / SnowBCollider_onContact / DNode_solveContacts raycast against it (null = no course loaded) */
+#define gTriEdgeNext         D_00000000 /* Data+0x1ED90 Sym 1708, s16[3] = {1, 2, 0} (+pad): edge k of a collision triangle runs vi[k] -> vi[gTriEdgeNext[k]] (CollShape_height / below / raycast / query, game_libs_ncc_3B2EC.cpp D_3B2EC_c) */
+#define gMorphPolyShade      D_00000000 /* Bss+0x3C8E4 Sym 1925, s16[3] (+pad): the three shade values MorphPoly_shade applies per vertex when self+0x38 & 0x8000 (MorphPoly_vslot12_0004AFB4, PolyShape_shade_00049DBC) */
+#define gProcNodeList_41700  D_00000000 /* Bss+0x41700 Sym 557, 80 bytes: ProcNodeList's state block (clears +0..+0xC on entry); its +0 list head is walked by SnowBoarder_ctor and the skin_cmdSkinMgr / SkinAnim / SkinShape node-list commands. Role inferred */
+#define gConsoleNode_3EF04   D_00000000 /* Bss+0x3EF04 Sym 805, 4 bytes: pointer to a Node (vptr +0x28, display slot +0x1C) created in App_main; every TextWin_ctor registers its window with it and the fatal-error paths (sys_fatalSwapBuffer_00034180, sys_fatalHaltLoop) display it directly. Role inferred */
+#define gNodeDbgOut_3C140    D_00000000 /* Bss+0x3C140 Sym 1675, 16 bytes: first argument of the debug-print calls in the MNode / QNode display / update debug-mode switch (root+0xB0). Role inferred */
+
 /* ---- class-name strings passed to the Node base ctor (Data-base sites; agent-a run 491) ---- */
 #define sTimeGadgetName        GL_DATA(0xCAFC)  /* "TimeGadget" (TimeGadget_ctor) */
 #define sBestTimeGadgetName    GL_DATA(0xCB20)  /* "BestTimeGadget" */
