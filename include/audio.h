@@ -22,6 +22,16 @@
  * names (a duplicate typedef is a cfe error). */
 
 #include "common.h"
+#include "libultra/os_task.h" /* OSTask_t (AudioTask) */
+
+/* One RSP audio task (OoT AudioTask, 0x50; AudioContext.rspTask[2]): AudioLoad_Init clears
+ * task.data_size of both, AudioThread_Update fills them (agent-c run 525). */
+typedef struct AudioTask {
+    /* 0x00 */ OSTask_t task;
+    /* 0x40 */ void *taskQueue;          /* OSMesgQueue * */
+    /* 0x44 */ void *unk_44;
+    /* 0x48 */ char unk_48[0x8];
+} AudioTask; /* size = 0x50 */
 
 /* AudioHeap_InitPool / AudioHeap_Alloc: start 0x0, cur 0x4, size 0x8, numEntries 0xC. */
 typedef struct AudioAllocPool {
@@ -47,12 +57,13 @@ typedef struct AudioCacheEntry {
 } AudioCacheEntry; /* size = 0xC */
 
 /* aud_AllocSampleCacheTemporary / Persistent write sampleBankId 0x2, sampleAddr
- * 0xC, origMedium 0x1 and return allocatedAddr 0x8. sampleBankId is u8 (the
- * matched AllocTemporarySampleCacheEntry view; OoT has s8). */
+ * 0xC, origMedium 0x1 and return allocatedAddr 0x8. sampleBankId is s8 as in OoT
+ * (run 525): DiscardSampleCacheEntry / DiscardSampleCaches compare it with lb; no
+ * matched reader needs the old u8. */
 typedef struct SampleCacheEntry {
     /* 0x00 */ s8 inUse;
     /* 0x01 */ s8 origMedium;
-    /* 0x02 */ u8 sampleBankId;
+    /* 0x02 */ s8 sampleBankId;
     /* 0x03 */ u8 unk_03[5];
     /* 0x08 */ u8 *allocatedAddr;
     /* 0x0C */ void *sampleAddr;
@@ -740,9 +751,10 @@ typedef struct AudioContext {
     /* 0x2084 */ s32 curAiBufIndex;
     /* 0x2088 */ u64 *abiCmdBufs[2];
     /* 0x2090 */ u64 *curAbiCmdBuf;
-    /* 0x2094 */ void *curTask;
-    /* 0x2098 */ u8 rspTask[2][0x50];
-    /* 0x2138 */ char unk_2138[0x2140 - 0x2138];
+    /* 0x2094 */ AudioTask *curTask;
+    /* 0x2098 */ AudioTask rspTask[2];
+    /* 0x2138 */ f32 maxTempoTvTypeFactors;           /* AudioLoad_Init: per osTvType (RoData) */
+    /* 0x213C */ s32 refreshRate;                     /* AudioLoad_Init: 50 (PAL) / 60 */
     /* 0x2140 */ s16 *aiBuffers[3];
     /* 0x214C */ s16 aiBufLengths[3];
     /* 0x2152 */ char unk_2152[2];
@@ -817,6 +829,8 @@ AUDIO_ASSERT_OFFSET(ticksPerUpdateInv, 0x2050);
 AUDIO_ASSERT_OFFSET(numNotes, 0x2070);
 AUDIO_ASSERT_OFFSET(soundOutputMode, 0x2076);
 AUDIO_ASSERT_OFFSET(rspTask, 0x2098);
+AUDIO_ASSERT_OFFSET(rspTask[1].task.data_size, 0x211C);
+AUDIO_ASSERT_OFFSET(refreshRate, 0x213C);
 AUDIO_ASSERT_OFFSET(aiBuffers, 0x2140);
 AUDIO_ASSERT_OFFSET(audioRandom, 0x2154);
 AUDIO_ASSERT_OFFSET(resetTimer, 0x215C);

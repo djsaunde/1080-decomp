@@ -3999,12 +3999,11 @@ SampleCacheEntry *AudioHeap_AllocTemporarySampleCacheEntry(u32 size) {
  * order fontId first puts numFonts at sp+0x40). Left: fontId / fontId*20 cursor colour
  * s5 / s4 swapped (s4 / s5 in the target). The run-137 hand decode is replaced. */
 extern int gl_func_00036A04();
-typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; } gl_221D8_CacheEntry;
-/* Instrument / Drum / SoundFont / AudioTable from audio.h (run 522); the entry keeps
- * its s8 sampleBankId view (lb, not lbu, in the compares). */
+/* Instrument / Drum / SoundFont / AudioTable from audio.h (run 522); the entry is a
+ * SampleCacheEntry (its s8 sampleBankId gives the lb, not lbu, in the compares). */
 extern AudioContext gAudioContext_221D8;
 
-void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
+void AudioHeap_DiscardSampleCacheEntry(SampleCacheEntry *entry) {
     s32 fontId;
     s32 numFonts;
     s32 sampleBankId1;
@@ -4139,10 +4138,8 @@ void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
  * facts: one 0xFF test compared unsigned ((u32)sampleBankId1 != 0xFF) so the two 255s
  * are separate constants (each a fresh li at,255, no hoisted t0), and a non-matching
  * cache entry BREAKS out of the entry loop (target bnezl to the font-loop tail). */
-/* Fonts / instruments / drums typed from audio.h (run 522). The cache entry keeps
- * the s8 sampleBankId view (audio.h's SampleCacheEntry has u8): the entry pointer is
- * cast from the typed persistentSampleCache.entries[j]. */
-typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; u8 unk_03[5]; u8 *allocatedAddr; void *sampleAddr; u32 size; } gl_22464_CacheEntry;
+/* Fonts / instruments / drums typed from audio.h (run 522); the cache entry is audio.h's
+ * SampleCacheEntry (s8 sampleBankId since run 525). */
 extern AudioContext gAudioContext_22464T;
 #define gl_22464_gAudioCtx gAudioContext_22464T
 extern int gl_func_00036A04();
@@ -4174,7 +4171,7 @@ void AudioHeap_DiscardSampleCaches(void) {
     Instrument *inst;
     s32 instId;
     s32 drumId;
-    gl_22464_CacheEntry *entry;
+    SampleCacheEntry *entry;
     s32 sampleBankId1;
     s32 sampleBankId2;
 
@@ -4185,7 +4182,7 @@ void AudioHeap_DiscardSampleCaches(void) {
         if ((((u32)sampleBankId1 != 0xFF) || (sampleBankId2 != 0xFF)) &&
             (AudioHeap_SearchCaches(1, 3, fontId) != NULL) && AudioLoad_IsFontLoadComplete(fontId)) {
             for (j = 0; j < gl_22464_gAudioCtx.persistentSampleCache.numEntries; j++) {
-                entry = (gl_22464_CacheEntry *)&gl_22464_gAudioCtx.persistentSampleCache.entries[j];
+                entry = &gl_22464_gAudioCtx.persistentSampleCache.entries[j];
                 if ((entry->sampleBankId != sampleBankId1) && (entry->sampleBankId != sampleBankId2) &&
                     (entry->sampleBankId != 0)) {
                     break;
@@ -5782,28 +5779,10 @@ void AudioLoad_SetUnusedHandler(int a0) { D_2436C_a = a0; }
  * AudioThread_InitMesgQueues (an int-returning callee coloured the aiBufLengths loop
  * cursor v1 instead of v0); decls pad[16], i, ramAddr, numFonts (numFonts spill at
  * sp+0x34). The tv-type floats are rodata words read through a pinned zero base. */
-/* AudioTable / SoundFont from include/audio.h (run 522). */
-typedef struct { char pad[0x10]; } gl_24378_Pool;
-typedef struct { char pad[0x18]; } gl_24378_MesgQueue;
+/* AudioContext from include/audio.h (run 525: the local Ctx view is gone; rspTask[] is
+ * AudioTask, 0x2138 / 0x213C are maxTempoTvTypeFactors / refreshRate). */
 typedef struct { s32 unk0; s32 heapSize; s32 initPoolSize; s32 permanentPoolSize; } gl_24378_HeapInitSizes;
-typedef struct {
-    char pad0[0x164C]; gl_24378_MesgQueue externalLoadQueue; void *externalLoadMsgBuf[8];
-    gl_24378_MesgQueue preloadSampleQueue; void *preloadSampleMsgBuf[8];
-    gl_24378_MesgQueue curAudioFrameDmaQueue; void *curAudioFrameDmaMsgBuf[0x40];
-    char pad17d4[0x1DD4 - 0x17D4];
-    gl_24378_MesgQueue syncDmaQueue; void *syncDmaMesg; char pad1df0[0x1E0C - 0x1DF0]; u32 sampleDmaCount;
-    char pad1e10[0x201C - 0x1E10];
-    AudioTable *sequenceTable; AudioTable *soundFontTable; AudioTable *sampleBankTable; u8 *sequenceFontTable;
-    s16 numSequences; char pad202e[2]; SoundFont *soundFontList;
-    char pad2034[0x2076 - 0x2034]; s8 soundOutputMode; char pad2077; s32 totalTaskCount; s32 curAudioFrameDmaCount;
-    s32 rspTaskIndex; s32 curAiBufIndex; char pad2088[0x2094 - 0x2088]; void *curTask;
-    char pad2098[0x20CC - 0x2098]; s32 dataSize0; char pad20d0[0x211C - 0x20D0]; s32 dataSize1;
-    char pad2120[0x2138 - 0x2120]; f32 maxTempoTvTypeFactors; s32 refreshRate; void *aiBuffers[3];
-    s16 aiBufLengths[3]; char pad2152[0x215C - 0x2152]; u32 resetTimer; char pad2160[0x2188 - 0x2160];
-    gl_24378_Pool initPool; char pad2198[0x2528 - 0x2198]; gl_24378_Pool permanentPool;
-    char pad2538[0x2CF0 - 0x2538]; u8 resetStatus; u8 specId; char pad2cf2[0x53C8 - 0x2CF2]; void *taskStartQueueP;
-} gl_24378_Ctx;
-#define gl_24378_gAudioCtx (*(gl_24378_Ctx *)&gAudioContext)
+#define gl_24378_gAudioCtx (*(AudioContext *)&gAudioContext)
 extern void *gl_24378_gAudioCustomUpdateFunction;
 extern u8 gAudioHeap_24378[];
 extern gl_24378_HeapInitSizes gAudioHeapInitSizes_24378;
@@ -5864,16 +5843,16 @@ void AudioLoad_Init(void) {
     gl_24378_gAudioCtx.curAiBufIndex = 0;
     gl_24378_gAudioCtx.soundOutputMode = 0;
     gl_24378_gAudioCtx.curTask = NULL;
-    gl_24378_gAudioCtx.dataSize0 = 0;
-    gl_24378_gAudioCtx.dataSize1 = 0;
+    gl_24378_gAudioCtx.rspTask[0].task.data_size = 0;
+    gl_24378_gAudioCtx.rspTask[1].task.data_size = 0;
     CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.syncDmaQueue, &gl_24378_gAudioCtx.syncDmaMesg, 1);
     CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.curAudioFrameDmaQueue, gl_24378_gAudioCtx.curAudioFrameDmaMsgBuf, 0x40);
     CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.externalLoadQueue, gl_24378_gAudioCtx.externalLoadMsgBuf, 8);
     CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.preloadSampleQueue, gl_24378_gAudioCtx.preloadSampleMsgBuf, 8);
     gl_24378_gAudioCtx.curAudioFrameDmaCount = 0;
     gl_24378_gAudioCtx.sampleDmaCount = 0;
-    *(void **)((char *)&gl_24378_gAudioCtx + 0x1644) = (void *)CALL(gl_osCartRomInit)();
-    *(void **)((char *)&gl_24378_gAudioCtx + 0x1648) = (void *)CALL(gl_osDriveRomInit)();
+    gl_24378_gAudioCtx.cartHandle = (void *)CALL(gl_osCartRomInit)();
+    gl_24378_gAudioCtx.driveHandle = (void *)CALL(gl_osDriveRomInit)();
 
     CALL(AudioHeap_InitMainPools)(gAudioHeapInitSizes_24378.initPoolSize);
 
