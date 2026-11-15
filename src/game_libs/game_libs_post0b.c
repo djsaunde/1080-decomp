@@ -15,6 +15,7 @@
 #include "gdl/coll.h"
 #include "gdl/item.h"
 #include "gdl/ballrot.h"
+#include "gdl/gfxlib.h"
 #include "game/camera.h"
 #include "uso_call.h"
 extern int AnimPlayer_reset();
@@ -5752,7 +5753,7 @@ s32 CollShape_raycast(char *self) {
  * before the branch; K base sym+0x128 held with addend in the target. */
 /* agent-b run 521: over gdl/coll.h CollShape / CollTri / CollGrid and polyshape.h BasePolyShape /
  * PolyTri (were the local views ObjBE / TriBE / ColBE / FaceBE / GridBE). */
-extern f32 gGfxLib_3BE1C_128[];
+extern f32 gGfxLib_3BE1C_128[]; /* GfxLib.worldScale: an alias pinned at gGfxLib + 0x128 */
 extern char D_3BE1C_1EE9C[];
 #define MAXS(a, b) ((a) > (b) ? (s16)(a) : (s16)(b))
 #define MINS(a, b) ((a) < (b) ? (s16)(a) : (s16)(b))
@@ -5886,7 +5887,7 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
             } while (ok && (fv++, nx < (s16 *)((char *)&D_00000000 + 6))); /* run 152: fv++ inside the condition = bne delay slot after the ok exit (76.69 -> 77.31) */
         }
         if (ok) {
-            dist[cnt] = d / *(f32 *)((char *)&gGfxLib + 0x12C);
+            dist[cnt] = d / gGfx->worldScale[1];
             out[cnt] = &self->tris[i];
             cnt++;
             if (cnt >= max) {
@@ -10376,7 +10377,7 @@ typedef unsigned short GridRow_42374[320];
 void dbg_fillFbRect(int a0) {
     GridRow_42374 *g;
     int x, y;
-    g = ((GridRow_42374 **)(*(int **)(*(int *)((char *)&gGfxLib + 0x240) + 0x148)))[a0 + 0x3D];
+    g = ((GridRow_42374 **)(*(int **)(((int)gGfx->mainWindow) + 0x148)))[a0 + 0x3D];
     for (x = 50; x < 150; x++) {
         for (y = 50; y < 150; y++) g[y][x] = 0xFFFF;
     }
@@ -10436,8 +10437,8 @@ unsigned short app_pack3_00042428(int a0, int a1) {
 extern char gHostio_data_42440_arg;   /* = &D (undefined_syms); the call's a0 */
 void GfxLib_hostioSendFbA_00042438(void)
 {
-  int *p = *(int **)((char *)&gGfxLib + 0x240);  /* was placeholder D_state_0042440 */
-  int **new_var = (int **)((char *)&gGfxLib + 0x240);
+  int *p = ((int *)gGfx->mainWindow);  /* was placeholder D_state_0042440 */
+  int **new_var = (int **)&gGfx->mainWindow;
   int new_var2 = p[0xBC / 4];
   CALL(hostio_sendImage)(&gHostio_data_42440_arg, 0x110, ((int *) (*new_var)[0x148 / 4])[0xF0 / 4], (*new_var)[0xB8 / 4], new_var2);
 }
@@ -10490,7 +10491,7 @@ void GfxLib_hostioSendFbA_00042438(void)
 /* EXACT (agent-c run 122, permuter-found and re-verified with rdiff --raw --pins): the global is re-read at each use, and the 5th argument is a named int read before the call (two more t-ring slots: t1 like the target). */
 void GfxLib_hostioSendFbB_0004247C(void)
 {
-#define G4247C (*(int **)((char *)&gGfxLib + 0x240))
+#define G4247C (((int *)gGfx->mainWindow))
     int bc;
     int *g;
     int *p = (int *)G4247C[0x28 / 4];
@@ -10508,9 +10509,9 @@ int GfxLib_hostioForceError() {
 
 extern int gl_func_00000000();
 void GfxLib_hostioPrintDLUsage(void) {
-    CALL(gfx_printDLUsage)(*(int *)((char *)&gGfxLib + 0x214));
-    CALL(gfx_printDLUsage)(*(int *)(*(int *)((char *)&gGfxLib + 0x240) + 0x180));
-    CALL(gfx_printDLUsage)(*(int *)(*(int *)((char *)&gGfxLib + 0x240) + 0x184));
+    CALL(gfx_printDLUsage)(((int)gGfx->staticDL));
+    CALL(gfx_printDLUsage)(*(int *)(((int)gGfx->mainWindow) + 0x180));
+    CALL(gfx_printDLUsage)(*(int *)(((int)gGfx->mainWindow) + 0x184));
 }
 
 extern int gl_func_00000000();
@@ -10715,7 +10716,7 @@ extern char sStr_Hold_1FCF8;
  * a0/a1/a3 webs). nd re-derefed for the entry base after the count++ store. */
 #define EM38(w0, w1) do {                                          \
     char *_e;                                                      \
-    cx = FP38(FP38(gGfxLib_42938_gb, 0x254), 0x158);                  \
+    cx = FP38((void *)GFXLIB(gGfxLib_42938_gb)->curWindow, 0x158);                  \
     nd = FP38(cx, 0xC);                                            \
     n = FI38(nd, 0x4);                                             \
     FI38(nd, 0x4) = n + 1;                                         \
@@ -10754,7 +10755,7 @@ void dbg_screenOverlay_00042938(void) {
     EM38(0xB6000000, -1);
     EM38(0xB900031D, 0x442478);
     {
-        char *cv = FP38(gGfxLib_42938_gb, 0x254);
+        char *cv = (void *)GFXLIB(gGfxLib_42938_gb)->curWindow;
         func_00000000(FP38(cv, 0x158), FI38(FP38(cv, 0x148), 0xF0));
     }
     EM38(0xB7000000, 1);
@@ -10768,7 +10769,7 @@ void dbg_screenOverlay_00042938(void) {
         char *vn;
         int vc;
         char *v;
-        cx = FP38(FP38(gGfxLib_42938_gb, 0x254), 0x158);
+        cx = FP38((void *)GFXLIB(gGfxLib_42938_gb)->curWindow, 0x158);
         vn = FP38(cx, 0x4C);
         vc = FI38(vn, 0x4);
         FI38(vn, 0x4) = vc + 1;
@@ -10788,22 +10789,22 @@ void dbg_screenOverlay_00042938(void) {
         FI38(e, 0x0) = 0x03800010;
         FI38(e, 0x4) = func_00000000();
     }
-    FI38(gGfxLib_42938_gb, 0x228) = 8;
-    FI38(gGfxLib_42938_gb, 0x224) = 8;
-    FI38(gGfxLib_42938_gb, 0x220) = 0x50;
-    FI38(gGfxLib_42938_gb, 0x21C) = 0x32;
+    GFXLIB(gGfxLib_42938_gb)->charH = 8;
+    GFXLIB(gGfxLib_42938_gb)->charW = 8;
+    GFXLIB(gGfxLib_42938_gb)->textY = 0x50;
+    GFXLIB(gGfxLib_42938_gb)->textX = 0x32;
     {
-        char *cv = FP38(gGfxLib_42938_gb, 0x254);
+        char *cv = (void *)GFXLIB(gGfxLib_42938_gb)->curWindow;
         func_00000000(&gl_d_42938_cb, &sFmt_num_1FCCC,
                       FI38(cv, 0xC0), FI38(cv, 0xC4),
                       FI38(cv, 0xB8) + FI38(cv, 0xC0),
                       FI38(cv, 0xC4) + FI38(cv, 0xBC));
     }
     func_00000000(gGfxLib_42938_gb, &gl_d_42938_z, 320);
-    FI38(gGfxLib_42938_gb, 0x224) = 0x10;
-    FI38(gGfxLib_42938_gb, 0x228) = 0x10;
-    FI38(gGfxLib_42938_gb, 0x21C) = 0x78;
-    FI38(gGfxLib_42938_gb, 0x220) = 0x78;
+    GFXLIB(gGfxLib_42938_gb)->charW = 0x10;
+    GFXLIB(gGfxLib_42938_gb)->charH = 0x10;
+    GFXLIB(gGfxLib_42938_gb)->textX = 0x78;
+    GFXLIB(gGfxLib_42938_gb)->textY = 0x78;
     func_00000000(&gl_d_42938_cb, &sFmt_X_1FCE8, gl_d_42938_sa);
     func_00000000(gGfxLib_42938_gb, &gl_d_42938_z, 320);
     func_00000000(&gl_d_42938_cb, &sFmt_Y_1FCF0, gl_d_42938_sb);
@@ -10936,7 +10937,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     char *base = **(char ***)(self + 0x2C);
     int idx = 0;
     char *slot;
-    p->next = *(Link_430D8 **)((char *)&gGfxLib + 0x18C); if (1) {}
+    p->next = ((Link_430D8 *)gGfx->lights); if (1) {}
     if (flag) {
         obj = ITER_FIRST_430D8(p);
         while (obj != 0) {
@@ -11045,7 +11046,7 @@ void gfx_clearFbRect_00043468(int x, int y, int w, int h) {
     int n;
     short *q;
     n = y * gGfxFbWidth_43468_a + x;
-    p = (short *)((int *)(*(int *)((char *)&gGfxLib + 0x240) + 0xF4))[*(int *)((char *)&gGfxLib + 0x204)] + n;
+    p = (short *)((int *)(((int)gGfx->mainWindow) + 0xF4))[gGfx->fbIndex] + n;
     for (i = 0; i < h; i++) {
         for (j = 0; j < w; j++) { q = p; p = q + 1; *q = 0; }
         p += gGfxFbWidth_43468_a - w;
@@ -11073,7 +11074,7 @@ void PolyShape_func_00043584(int *a0) {
     a0[0x6C/4] = 0;
     a0[0x70/4] = 0;
     a0[0x74/4] = 0;
-    if ((*(int*)((char*)&gGfxLib + 0x1C4) & 8) != 0) {
+    if ((gGfx->flags & 8) != 0) {
         a0[0x7C/4] = FCALL(mem_new)(0x100);
     } else {
         a0[0x7C/4] = 0;
@@ -11425,7 +11426,7 @@ void FogParms_set_00043EF0(struct game_libs_func_00043EF0_Four *a0, struct game_
 extern int gl_func_00000000();
 
 void FogParms_emit_00043F1C(short *a0) {
-    CALL(gfx_emitFog)((*(int **)((char *)&gGfxLib + 0x254))[0x56], a0[9], a0[0xB], a0);
+    CALL(gfx_emitFog)((((int *)gGfx->curWindow))[0x56], a0[9], a0[0xB], a0);
 }
 
 void FogParms_hostioParms(int *a0) {
@@ -12094,7 +12095,7 @@ void gfx_end(char *arg0) {
     char *e;
 
     *(char **)&gGfxPhase_44EDC_b = GL_DATA_STR(0x1FEC8, "End");
-    CALL(gfx_resetDLContext)(((s32 *) arg0)[*(s32 *)(&gGfxLib_44EDC_a + 0x204) + 0xA0]);
+    CALL(gfx_resetDLContext)(((s32 *) arg0)[GFXLIB(&gGfxLib_44EDC_a)->fbIndex + 0xA0]);
     n = FW(arg0, 0x258);
     k = 0;
     if (n != 0) {
@@ -12105,7 +12106,7 @@ void gfx_end(char *arg0) {
         } while ((u32) k < (u32) n);
     }
     CALL(prof_beginSection)(GL_DATA_STR(0x1FECC, "CPU"));
-    obj = *(char **)(&gGfxLib_44EDC_c + 0x218);
+    obj = ((char *)GFXLIB(&gGfxLib_44EDC_c)->rcp);
     while (FW(obj, 4) != 0 || FW(obj, 0xC) != 0) {
         CALL(gl_osYieldThread)();
     }
@@ -12114,7 +12115,7 @@ void gfx_end(char *arg0) {
     obj = *(char **)(r + 0x14);
     ((VT_44EDC) FW(obj, 0xC))(*(s16 *)(obj + 8) + r);
     CALL(prof_timerStop)(GL_DATA_STR(0x1FEDC, "MorphUpd"));
-    obj = *(char **)(&gGfxLib_44EDC_d + 0x218);
+    obj = ((char *)GFXLIB(&gGfxLib_44EDC_d)->rcp);
     cond = (FW(obj, 0x1C) != 0 || FW(obj, 4) != 0 || FW(obj, 0xC) != 0);
     while (cond) {
         CALL(gl_osYieldThread)();
@@ -12484,7 +12485,7 @@ void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y) {
     unsigned short px;
 
     if (1) { unsigned short **q = &dst; }
-    dst = *(unsigned short **)(*(char **)(gGfxLib_46790_g + 576) + *(int *)(o + 516) * 4 + 244);
+    dst = *(unsigned short **)(((char *)GFXLIB(gGfxLib_46790_g)->mainWindow) + *(int *)(o + 516) * 4 + 244);
     dst += y * 320 + x;
     c = ch;
     if (c < 128) {
@@ -13699,13 +13700,13 @@ void PolyShape_display(char *arg0) {
     if (0) { func_00000000(&arg0); }   /* address-escape: arg0 stays memory-homed (target reloads 352(sp)) */
     *(s32 *)((char *)&D_00000000_h + 0x3C7C4) = 0;
     if (*(s32 *)(arg0 + 0x30) & 0x80) {
-        func_00000000(*(int **)((char *)&gGfxLib + 0x254), arg0);
+        func_00000000(((int *)gGfx->curWindow), arg0);
     }
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 1) {
         return;
     }
 
-    B = *(f32 (**)[4])((char *)&gGfxLib + 0xE4);
+    B = gGfx->extraMtx;
     A = (f32 (*)[4])((char *)&D_00000000_j + 0xA0);
     if (B != NULL) {
         for (i = 0; i < 4; i++) {
@@ -13717,7 +13718,7 @@ void PolyShape_display(char *arg0) {
             }
         }
         func_00000000(mtx, (char *)&D_00000000_i + 0x3C8A0);
-        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
+        gctx = (int *)gGfx->curWindow->dl;
         slot = (*(int **)((char *)gctx + 0x3C))[1]++;
         cmd = (int *)((*(int **)((char *)gctx + 0x3C))[0] + (slot << 6));
         func_00000000((char *)&D_00000000_i + 0x3C8A0, cmd);
@@ -13726,7 +13727,7 @@ void PolyShape_display(char *arg0) {
         disp[0] = 0x01020040;
         disp[1] = func_00000000(cmd);
     } else {
-        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
+        gctx = (int *)gGfx->curWindow->dl;
         slot = (*(int **)((char *)gctx + 0x3C))[1]++;
         cmd = (int *)((*(int **)((char *)gctx + 0x3C))[0] + (slot << 6));
         func_00000000(A, cmd);
@@ -13735,11 +13736,11 @@ void PolyShape_display(char *arg0) {
         disp[0] = 0x01020040;
         disp[1] = func_00000000(cmd);
     }
-    func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158));
+    func_00000000((int *)gGfx->curWindow->dl);
 
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
         if ((*(s32 *)(arg0 + 0x30) & 8) && (node = *(int **)(arg0 + 0x14)) != NULL) {
-            func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158),
+            func_00000000((int *)gGfx->curWindow->dl,
                           arg0 + 0x34, *(s16 *)((char *)node + 0x1E));
             p = 0;
             if (1) { p = &itA1; }
@@ -13762,7 +13763,7 @@ void PolyShape_display(char *arg0) {
                 if (*(int *)(*(int *)((char *)*(int *)itB1.list + itB1.idx * 4) + 0x6C) != 0) {
                     int *p6c = (int *)*(int *)(((int *)*itB1.list)[itB1.idx] + 0x6C);
                     s32 h = *(s16 *)(*(int *)((char *)itB1.list[0] + itB1.idx * 4) + 0x8A);
-                    gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
+                    gctx = (int *)gGfx->curWindow->dl;
                     temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                     slot = (*(int **)((char *)gctx + 0xC))[1]++;
                     disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
@@ -13778,16 +13779,16 @@ void PolyShape_display(char *arg0) {
             }
         }
     } else if ((*(s32 *)((char *)(*(int **)(arg0 + 0x14)) + 0x18) & 0x80) &&
-               *(s32 *)&gGfxLib != 0) {
+               gGfx->every4thFrame != 0) {
         gbi[0] = *(s32 *)(arg0 + 0x34);
         gbi[1] = *(s32 *)(arg0 + 0x38);
         gbi[1] = (gbi[1] & ~0xF00) | 0x400;
         gbi[1] = gbi[1] & ~0x80000;
-        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
-        func_00000000(*(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158), gbi);
-        gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
+        func_00000000((int *)gGfx->curWindow->dl, gbi);
+        func_00000000((int *)gGfx->curWindow->dl, gbi);
+        func_00000000((int *)gGfx->curWindow->dl, gbi);
+        func_00000000((int *)gGfx->curWindow->dl, gbi);
+        gctx = (int *)gGfx->curWindow->dl;
         slot = (*(int **)((char *)gctx + 0xC))[1]++;
         disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
         disp[0] = 0xFA000000;
@@ -13813,7 +13814,7 @@ void PolyShape_display(char *arg0) {
             if (*(int *)(*(int *)((char *)*(int *)itB2.list + itB2.idx * 4) + 0x6C) != 0) {
                 int *p6c = (int *)*(int *)(((int *)*itB2.list)[itB2.idx] + 0x6C);
                 s32 h = *(s16 *)(*(int *)((char *)itB2.list[0] + itB2.idx * 4) + 0x8A);
-                gctx = *(int **)((char *)(*(int **)((char *)&gGfxLib + 0x254)) + 0x158);
+                gctx = (int *)gGfx->curWindow->dl;
                 temp = (int *)func_00000000((*(int **)((char *)p6c + 0xC))[0] + h * 8);
                 slot = (*(int **)((char *)gctx + 0xC))[1]++;
                 disp = (int *)((*(int **)((char *)gctx + 0xC))[0] + slot * 8);
@@ -13888,7 +13889,7 @@ void PolyShape_clipToWindow_00049308(char *self) {
     int i;
     for (i = 0; i < *(int *)(self + 0x90); i++) {
         char *rec = (*(char ***)(self + 0x84))[i];
-        char *q = *(char **)((char *)&gGfxLib_41820_c + 0x254);
+        char *q = ((char *)GFXLIB(&gGfxLib_41820_c)->curWindow);
         if (*(int *)(rec + 0x54) >= ((Window *)q)->clipRowLo && *(int *)(rec + 0x50) <= ((Window *)q)->clipRowHi) {
             CALL(PolyShape_clipRows_00043D38)(rec);
         }
@@ -13970,8 +13971,8 @@ typedef struct {
 } Obj493;
 #define STR493(o) ((char *)&D_00000000 + (o))
 extern int gGfxLib_493AC_a, gGfxLib_493AC_b, gGfxLib_493AC_c, gGfxLib_493AC_d;
-#define G1C4(S) (*(s32 *)((char *)&S + 0x1C4))
-#define G214 (*(Ctx493 **)((char *)&gGfxLib_493AC_d + 0x214))
+#define G1C4(S) (GFXLIB(&S)->flags)
+#define G214 (((Ctx493 *)GFXLIB(&gGfxLib_493AC_d)->staticDL))
 #define SELF(o, T) (*(T *)(self + (o)))
 /* run 151 (agent-c, 86.86 -> 89.86): the 0x214 context read goes through its own
  * zero-pinned alias gGfxLib_493AC_d (target `lui t6; lw t6,532(t6)`; through &D_00000000
@@ -14301,7 +14302,7 @@ void MorphPoly_init(MorphPoly *self) {
     CALL(MorphPoly_allocUpdateList)();
     CALL(PolyShape_init)(self);
     {
-        DLContext *g = *(DLContext **)((char *)&gGfxLib + 0x214); /* gfx MainStaticDL */
+        DLContext *g = ((DLContext *)gGfx->staticDL); /* gfx MainStaticDL */
         self->vtxEnd = g->vtx.cur->count;
     }
     dst = (short *)CALL(mem_new)((self->vtxEnd - self->vtxStart) * 2);
@@ -14513,7 +14514,7 @@ void MorphPoly_updateColours(char *self) {
     for (i = 0, t0 = 0; i < *(short *)(self + 0xD6) - *(short *)(self + 0xD4); i++, t0 += 2) {
         idx = *(short *)(*(char **)(self + 0xD0) + t0);
         if (idx != -1) {
-            g = *(char **)((char *)&gGfxLib + 0x214);
+            g = ((char *)gGfx->staticDL);
             slot = (char *)(i * 16 + (*(short *)(self + 0xD4) * 16 + **(int **)(g + 0x1C)));
             slot[0xC] = *(*(char **)(self + 0xC4) + idx * 4);
             slot[0xD] = *(*(char **)(self + 0xC4) + idx * 4 + 1);
@@ -14557,7 +14558,7 @@ void MorphPoly_allocUpdateList(int *self) {
         ((short *)self[0xD0 / 4])[i] = -1;
     }
     {
-        int *g = *(int **)((char *)&gGfxLib + 0x214);
+        int *g = ((int *)gGfx->staticDL);
         *(short *)((char *)self + 0xD4) =
             *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4);
     }
@@ -14785,9 +14786,9 @@ int *Shadow_ctor_0004B0A8(int *arg0, char *arg1) {
         dbg_printThreads(self, GL_DATA_STR(0x200EC, "copy"));
         FW(self, 0x28) = (int)&gl_d_4b0a8_tbl;
         ps = spA0;
-        *(P2_0004B0A8 *)ps = *(P2_0004B0A8 *)((char *)&gGfxLib_4b0a8_vt + 0x140);
+        *(P2_0004B0A8 *)ps = *(P2_0004B0A8 *)GFXLIB(&gGfxLib_4b0a8_vt)->unk140;
         self[0] = 2;
-        res = (int *)dbg_printThreads(0, GL_DATA_STR(0x200F4, "shadow"), *(s32 *)((char *)&gGfxLib_4b0a8_w214 + 0x214));
+        res = (int *)dbg_printThreads(0, GL_DATA_STR(0x200F4, "shadow"), ((s32)GFXLIB(&gGfxLib_4b0a8_w214)->staticDL));
         FW(self, 0x40) = (int)res;
         dbg_printThreads(res, ps);
         dbg_printThreads(FW(self, 0x40), ps);
@@ -15110,7 +15111,7 @@ typedef struct { Gfx4B *buf; int n; } GP4B;
 typedef struct { char pad[0xC]; GP4B *gfx; } Ctx4B;
 typedef struct { f32 x, y, z; } V4B;
 typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } Spr4B;
-#define GS4B (*(char **)((char *)&gGfxLib + 0x254))
+#define GS4B (((char *)gGfx->curWindow))
 #define F4B(p, o, T) (*(T *)((char *)(p) + (o)))
 #define PKT4B(c) (cx = (c), gp = cx->gfx, gi = gp->n, gp->n = gi + 1, &cx->gfx->buf[gi])
 #ifndef MAX
@@ -15185,7 +15186,7 @@ void Sprite_display_0004BAF4(char *self) {
     g = PKT4B(F4B(GS4B, 0x158, Ctx4B *));
     g->w0 = 0xEE000000;
     g->w1 = (iz & 0x7FFF) << 16;
-    if (*(s32 *)((char *)&gGfxLib_4BAF4_flags + 0x1C4) & 2) {
+    if (GFXLIB(&gGfxLib_4BAF4_flags)->flags & 2) {
         if ((F4B(self, 0x30, int) & 8) && F4B(self, 0x14, char *) != 0) {
             gl_func_00000000(F4B(GS4B, 0x158, Ctx4B *), (char *)spr + 0x34, F4B(F4B(self, 0x14, char *), 0x1E, s16));
         }
@@ -15318,7 +15319,7 @@ void ScreenWindow_updateAspect(int *self, int a1) {
         CALL(gfx_initRDPState)(p[0x14C / 4], self);
         p = (int*)((char*)p + 4);
     }
-    self[0x144 / 4] = *(int*)((char*)&gGfxLib + 0x204);
+    self[0x144 / 4] = gGfx->fbIndex;
 }
 
 // ScreenWindow_allocBuffers — FAITHFUL RECONSTRUCTION (0x2E4 / 185 words, no episode).
@@ -15398,7 +15399,7 @@ extern int D_4C300_g8;
 extern int D_4C300_g9;
 extern int gl_func_00034458_4C300();
 typedef char *(*GP_0004C300)();
-#define G240_4C300 (*(char **)((char *)&gGfxLib + 0x240)) /* the main ScreenWindow */
+#define G240_4C300 (((char *)gGfx->mainWindow)) /* the main ScreenWindow */
 extern void gl_func_00034458_4C300v();
 void ScreenWindow_allocBuffers(ScreenWindow *self) {
     s32 sz;
@@ -15925,7 +15926,7 @@ int gfx_stub_0004CDA4(int a0) {
 extern int gGfxLib_4CDB0_a;
 void gfx_submitFrame_0004CDB0(char *self, int flag)
 {
-    char *obj = *(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&gGfxLib + 0x204) * 4 + 0x280);
+    char *obj = *(char **)((char *)&gGfxLib_4CDB0_a + gGfx->fbIndex * 4 + 0x280);
     char *g; unsigned int *p; int i; int r; char *q;
     int k; /* packet-3 index: the dead while (0) store gives it an itab bit before the obj->0xC load */
     while (0) { k = 0; }
@@ -15978,14 +15979,14 @@ char *gfx_queueGfxTask_0004CEFC(char *self, int flag)
     char *rec;
     int r;
     int q;
-    CALL(gfx_endDL)(*(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&gGfxLib + 0x204) * 4 + 0x280));
+    CALL(gfx_endDL)(*(char **)((char *)&gGfxLib_4CDB0_a + gGfx->fbIndex * 4 + 0x280));
     p = self + 0x174;
     CALL(gfx_dlMarkEnd_00044474)(p);
-    rec = (char *)CALL(RcpMgr_queueTask)(*(int *)((char *)&gGfxLib + 0x218), 1);
+    rec = (char *)CALL(RcpMgr_queueTask)(((int)gGfx->rcp), 1);
     r = CALL(gfx_dlMarkStart_00044498)(p);
     q = CALL(gfx_dlMarkLength_00044488)(p);
-    CALL(RcpMgr_initTask)(*(int *)((char *)&gGfxLib + 0x218), rec, 0, r, q, flag);
-    CALL(RcpMgr_insert_0004DC08)(*(int *)((char *)&gGfxLib + 0x218), rec);
+    CALL(RcpMgr_initTask)(((int)gGfx->rcp), rec, 0, r, q, flag);
+    CALL(RcpMgr_insert_0004DC08)(((int)gGfx->rcp), rec);
     *(char **)(rec + 0x74) = self;
     return rec;
 }
@@ -16391,10 +16392,10 @@ int RcpMgr_startTask(RcpMgr *self) {
         }
         c = self->active;
         if (c->clipShape != 0) {
-            g = *(int *)((char *)&gGfxLib + 0x254);
-            *(int *)((char *)&gGfxLib + 0x254) = c->window;  /* current window = the task's */
+            g = ((int)gGfx->curWindow);
+            gGfx->curWindow = (ScreenWindow *)c->window;  /* current window = the task's */
             CALL(PolyShape_clipToWindow_00049308)(self->active->clipShape);       /* PolyShape_clipToWindow */
-            *(int *)((char *)&gGfxLib + 0x254) = g;
+            gGfx->curWindow = (ScreenWindow *)g;
         }
         c = self->active;
         self->rspTaskName = GL_DATA_STR(0x20308, "Gfx");
@@ -20178,7 +20179,7 @@ void light_setShadowMatrix_00054D04(char *self, int arg1, V3_54D04 *out) {
         }
         q = self + 300;
         gl_func_00000000(q, &v, arg1);
-        *(char **)((char *)&gGfxLib + 0xE4) = q;
+        gGfx->extraMtx = (f32 (*)[4])q;
     } else {
         gl_func_00000000((char *)&D_00000000 + 0x210EC);
     }
@@ -20246,7 +20247,7 @@ void light_setMirrorMatrix_00054E78(char *arg0, char *arg1) {
     MF54(0x15C) = d * QF54(0);
     MF54(0x160) = d * QF54(4);
     MF54(0x168) = 1.0f;
-    FW(&gGfxLib, 0xE4) = (int)(arg0 + 0x12C);
+    gGfx->extraMtx = (f32 (*)[4])(arg0 + 0x12C);
 }
 #else
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_54E78.cpp (agent-c run 175 lift,
@@ -21387,7 +21388,7 @@ void gfx_emitPerspNorm_00057574(DLContext *a0) {
     rec->count = idx + 1;
     arr = (int *)(a0->gfx.cur->base + idx * 8);
     arr[0] = 0xBC00000E;
-    arr[1] = *(unsigned short *)((char *)&gGfxLib + 0x208);
+    arr[1] = gGfx->perspNorm;
     rec = a0->gfx.cur;
     idx = rec->count;
     rec->count = idx + 1;
@@ -26098,12 +26099,12 @@ void sys_sprintf_00061B30(char *fmt, ...) {
     int h0;
     int h1;
     CALL(gfx_setCpuDraw)(gGfxLib_61B30_base, 1);
-    *(int *)(gGfxLib_61B30_base + 0x224) = 8;
-    *(int *)(gGfxLib_61B30_base + 0x228) = 8;
+    GFXLIB(gGfxLib_61B30_base)->charW = 8;
+    GFXLIB(gGfxLib_61B30_base)->charH = 8;
     h0 = D_61B30_h0; h1 = D_61B30_h1;
     ap = (char *)(((int)&fmt + sizeof(fmt) + 3) & ~3);
-    *(int *)(gGfxLib_61B30_base + 0x220) = h1;
-    *(int *)(gGfxLib_61B30_base + 0x21C) = h0;
+    GFXLIB(gGfxLib_61B30_base)->textY = h1;
+    GFXLIB(gGfxLib_61B30_base)->textX = h0;
     CALL(_Printf)(&D_61B30_out, 0, fmt, ap);
     CALL(gfx_setCpuDraw)(gGfxLib_61B30_base, 0);
 }
