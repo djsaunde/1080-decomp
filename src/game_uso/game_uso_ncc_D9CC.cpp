@@ -3,7 +3,7 @@
  * Per-frame landing/turn-state classifier. Under NCC two edg spellings fix
  * the cfe "andi temp coalesced into a1" t-ring cascade (kit XXI #2): the
  * 0x108 field is re-read through memory (no value local) in the `| 0x60000`
- * store and the `!= 0` test, and the three `vol * FF(arg0, K)` products of
+ * store and the `!= 0` test, and the three `bump * hitScale` products of
  * the 0xA1C..0xA24 block are written field-first (edg keeps source operand
  * order).
  * The first gate is TWO nested ifs (x > 30.0f, then the 0x1F0 mask), not one
@@ -21,11 +21,9 @@
 extern "C" {
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
-#include "../../include/game/snowboarder.h"
+#include "../../include/game/rideranim.h"
 #define RIDER(p) ((SnowBoarder *)(p))
-typedef struct { int a, b; } Pair2;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
-#define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 int game_uso_func_077C44(...);
 void RiderAnim_clearNextState_0000D5DC(char *a0);
 void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
@@ -52,16 +50,16 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     f32 var_f0_4;
     f32 var_f12;
     f32 var_f2;
-    char *temp_v0;
+    f32 *temp_v0;
     char *temp_v0_2;
-    char *temp_v0_3;
+    f32 *temp_v0_3;
     char *var_v1;
 
-    FW(arg0, 0x108) = 0;
+    RA(arg0)->selectedAnim = 0;
     sp30 = 1;
     sp2C = 0;
     sp28 = 0;
-    var_v1 = (char *)FW(arg0, 0xB4);
+    var_v1 = (char *)RA(arg0)->rider;
     var_a3 = 0;
     if (RIDER(var_v1)->dnode.speed > 30.0f) { if (RIDER(var_v1)->hitFlags & 0x1F0) {
         temp_f2 = RIDER(var_v1)->bumpSide;
@@ -70,19 +68,19 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
         } else {
             var_f0 = temp_f2;
         }
-        if (FF(arg0, 0x244) < var_f0) {
+        if (RA(arg0)->parms.b2f.value.f < var_f0) {
             sp30 = 0;
             sp28 = 2;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 1);
             var_a3 = 3;
-            if (FF(FW(arg0, 0xB4), 0xA1C) > 0.0f) {
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x16);
+            if (RA(arg0)->rider->bumpSide > 0.0f) {
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x16);
                 sp2C = (char *)1;
             } else {
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x17);
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x17);
                 sp2C = (char *)3;
             }
-            var_v1 = (char *)FW(arg0, 0xB4);
+            var_v1 = (char *)RA(arg0)->rider;
             goto after_24;
         }
         if (temp_f2 < 0.0f) {
@@ -90,10 +88,10 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
         } else {
             var_f0 = temp_f2;
         }
-        if (FF(arg0, 0x22C) < var_f0) {
+        if (RA(arg0)->parms.b1f.value.f < var_f0) {
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 4);
-            var_v1 = (char *)FW(arg0, 0xB4);
+            var_v1 = (char *)RA(arg0)->rider;
             var_a3 = 2;
             temp_f2_2 = RIDER(var_v1)->edge;
             if (temp_f2_2 < 0.0f) {
@@ -103,151 +101,151 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
             }
             if (*(f64 *)((char *)&game_uso_D_807FFB18 + 0x1F8) < (f64) var_f0) {
                 if (temp_f2_2 <= 0.0f) {
-                    FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xE);
+                    RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xE);
                     sp2C = (char *)3;
                 } else {
-                    FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xF);
+                    RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xF);
                     sp2C = (char *)1;
                 }
             } else if (RIDER(var_v1)->bumpSide > 0.0f) {
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xC);
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xC);
                 sp2C = (char *)1;
             } else {
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xD);
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xD);
                 sp2C = (char *)3;
             }
-            var_v1 = (char *)FW(arg0, 0xB4);
+            var_v1 = (char *)RA(arg0)->rider;
         }
     }
 after_24:;
     }
     if (RIDER(var_v1)->groundDist < 500.0f) {
-        temp_v0 = (char *)RIDER(var_v1)->dnode.vqs.quat;
+        temp_v0 = RIDER(var_v1)->dnode.vqs.quat;
         if ((f64) RIDER(var_v1)->localUp.z < *(f64 *)((char *)&game_uso_D_807FFB20 + 0x200)) {
-            FF(temp_v0, 0) = 0.0f; FF(temp_v0, 0x4) = 0.0f; FF(temp_v0, 0x8) = 0.0f; FF(temp_v0, 0xC) = 1.0f;
+            temp_v0[0] = 0.0f; temp_v0[1] = 0.0f; temp_v0[2] = 0.0f; temp_v0[3] = 1.0f;
             sp28 = 2;
             var_a3 = 4;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
-            if (RIDER(FW(arg0, 0xB4))->dnode.axes[2][1] < 0.0f) {
-                FW(arg0, 0x108) = 0x1002A;
+            if (RA(arg0)->rider->dnode.axes[2][1] < 0.0f) {
+                RA(arg0)->selectedAnim = 0x1002A;
             } else {
-                FW(arg0, 0x108) = 0x1002B;
+                RA(arg0)->selectedAnim = 0x1002B;
             }
-            var_v1 = (char *)FW(arg0, 0xB4);
+            var_v1 = (char *)RA(arg0)->rider;
         }
     }
     temp_v0_2 = (char *)&RIDER(var_v1)->child.parms.sta;
     if (!(RIDER(var_v1)->groundFlags & 1)) {
-        var_f12 = RIDER(var_v1)->bumpSide * FF(arg0, 0x11C);
-        var_f2 = RIDER(var_v1)->bumpUp * FF(arg0, 0x11C);
-        var_f0_4 = RIDER(var_v1)->bumpFwd * FF(arg0, 0x11C);
+        var_f12 = RIDER(var_v1)->bumpSide * RA(arg0)->hitScale;
+        var_f2 = RIDER(var_v1)->bumpUp * RA(arg0)->hitScale;
+        var_f0_4 = RIDER(var_v1)->bumpFwd * RA(arg0)->hitScale;
         if (!(RIDER(var_v1)->flags & 0x4000)) {
             var_f0_4 = 0.0f;
             var_f2 = 0.0f;
             var_f12 = 0.0f;
         }
-        if ((FF(arg0, 0x304) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
+        if ((RA(arg0)->parms.l3f.value.f * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 3;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
             var_a3 = 5;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x15);
-        } else if ((FF(arg0, 0x2EC) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x15);
+        } else if ((RA(arg0)->parms.l2f.value.f * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 0;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 5);
             var_a3 = 1;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2D);
-        } else if ((FF(arg0, 0x2D4) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2D);
+        } else if ((RA(arg0)->parms.l1f.value.f * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 0;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 4);
             var_a3 = 1;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2C);
-        } else if (FF(arg0, 0x2BC) <= var_f0_4) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2C);
+        } else if (RA(arg0)->parms.f4f.value.f <= var_f0_4) {
             sp28 = 4;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 3);
             var_a3 = 5;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x15);
-        } else if (FF(arg0, 0x2A4) <= var_f0_4) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x15);
+        } else if (RA(arg0)->parms.f3f.value.f <= var_f0_4) {
             sp28 = 3;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
             var_a3 = 4;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xB);
-        } else if (FF(arg0, 0x28C) <= var_f0_4) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xB);
+        } else if (RA(arg0)->parms.f2f.value.f <= var_f0_4) {
             sp28 = 2;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 1);
             var_a3 = 3;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xA);
-        } else if (FF(arg0, 0x274) <= var_f0_4) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0xA);
+        } else if (RA(arg0)->parms.f1f.value.f <= var_f0_4) {
             sp28 = 0;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 1);
             var_a3 = 1;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2C);
-        } else if (var_f0_4 <= -FF(arg0, 0x334)) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2C);
+        } else if (var_f0_4 <= -RA(arg0)->parms.r2f.value.f) {
             sp28 = 2;
             sp2C = (char *)2;
             var_a3 = 3;
             sp30 = 0; RiderAnim_setHitKind_0000EDCC((int *)arg0, 5);
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x16);
-        } else if (var_f0_4 <= -FF(arg0, 0x31C)) {
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x16);
+        } else if (var_f0_4 <= -RA(arg0)->parms.r1f.value.f) {
             sp28 = 0;
             sp2C = (char *)2;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 5);
             var_a3 = 1;
-            FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x14);
+            RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x14);
         } else {
-            temp_f0 = FF(arg0, 0x25C);
+            temp_f0 = RA(arg0)->parms.xf1.value.f;
             if (temp_f0 <= var_f12) {
                 sp28 = 3;
                 RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
                 var_a3 = 2;
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x13);
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x13);
             } else if (var_f12 <= -temp_f0) {
                 sp28 = 3;
                 RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
                 var_a3 = 2;
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x12);
-            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + 4248) <= var_f2) && ((f64) FF(arg0, 0x11C) == 1.0) && (RIDER(var_v1)->useDParms == 0)) {
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x12);
+            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + 4248) <= var_f2) && ((f64) RA(arg0)->hitScale == 1.0) && (RIDER(var_v1)->useDParms == 0)) {
                 sp28 = 0;
                 sp30 = 0;
-                FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2F);
+                RA(arg0)->selectedAnim = (s32) (RA(arg0)->animSet | 0x2F);
                 game_uso_func_07C0FC((int)RIDER(var_v1)->input,
                                      (char *)&game_uso_D_807FF68C + 4252, 0xA);
             }
         }
     }
-    if ((FW(arg0, 0x114) == 1) && (sp28 == 0)) {
-        FW(arg0, 0x108) = 0;
+    if ((RA(arg0)->trickPhase == 1) && (sp28 == 0)) {
+        RA(arg0)->selectedAnim = 0;
     }
-    if (FW(arg0, 0x108) != 0) {
+    if (RA(arg0)->selectedAnim != 0) {
         RiderAnim_hitFeedback_0001189C((int *)arg0, (s32) var_a3, sp2C);
-        FF(arg0, 0x11C) = 1.0f;
+        RA(arg0)->hitScale = 1.0f;
         RiderAnim_applyDamage_0000EDD4((int *)arg0, sp28, sp2C);
-        temp_v0_3 = (char *)RIDER(FW(arg0, 0xB4))->dnode.angVel;
-        FF(temp_v0_3, 0) = 0.0f; FF(temp_v0_3, 0x4) = 0.0f; FF(temp_v0_3, 0x8) = 0.0f; FF(temp_v0_3, 0xC) = 1.0f;
+        temp_v0_3 = RA(arg0)->rider->dnode.angVel;
+        temp_v0_3[0] = 0.0f; temp_v0_3[1] = 0.0f; temp_v0_3[2] = 0.0f; temp_v0_3[3] = 1.0f;
         RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));
-        FW(FW(arg0, 0xB4), 0x3DC) = 0;
+        FW(RA(arg0)->rider, 0x3DC) = 0;
         if (sp30 != 0) {
-            game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 2, 1, 1);
+            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 2, 1, 1);
             RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
         } else {
-            game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
+            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
             RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
         }
         RiderAnim_clearNextState_0000D5DC(arg0);
-        FW(arg0, 0x114) = 0;
+        RA(arg0)->trickPhase = 0;
     }
-    if (RIDER(FW(arg0, 0xB4))->health <= 0) {
-        FW(arg0, 0x114) = 0;
-        if (FW(arg0, 0x108) != 0) {
-            FW(arg0, 0x108) = (FW(arg0, 0x108) & 0xFFFF) | 0x60000;
-            game_uso_func_077C44(arg0, FW(arg0, 0x108), 0, 1, 1, 1);
+    if (RA(arg0)->rider->health <= 0) {
+        RA(arg0)->trickPhase = 0;
+        if (RA(arg0)->selectedAnim != 0) {
+            RA(arg0)->selectedAnim = (RA(arg0)->selectedAnim & 0xFFFF) | 0x60000;
+            game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
             RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
         }
-        FW(FW(arg0, 0xB4), 0x960) = 0x64;
+        RA(arg0)->rider->slowdown = 0x64;
         RiderAnim_clearNextState_0000D5DC(arg0);
     }
 }

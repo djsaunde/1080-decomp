@@ -18,6 +18,9 @@
  * emitting its own .data copy. NCC wants `0x104 != 0x74` (cfe wanted the
  * reverse) for the same `beq a1,t9`. */
 extern "C" {
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h"
 extern char import_80020098;
 extern char game_uso_D_807FF68C;
 extern char game_uso_D_807FF3B8;
@@ -39,11 +42,11 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
      * whose +0xB4 hudFlags get RTF_FLUSH | RTF_POINTS (3) while endTrickFlag (0x120) is set */
     if (I(&import_80020098, 0x64) == 0) {
         float th = F(&D_00000000, 0x1F4);
-        if (F(I(a0, 0xB4), 0xBC) < th) {
-            I(a0, 0x120) = 0;
+        if (RA(a0)->rider->dnode.vqs.trans[2] < th) {
+            RA(a0)->endTrickFlag = 0;
         }
-        if (F(I(a0, 0xB4), 0xBC) < th) goto clear_bits;
-        if (I(a3, 0x120) == 0) goto set_bits;
+        if (RA(a0)->rider->dnode.vqs.trans[2] < th) goto clear_bits;
+        if (RA(a3)->endTrickFlag == 0) goto set_bits;
     clear_bits:
         { int *child = (int *)(I(&import_80020098, 0x138) + 0xB4); *child &= ~3; }
         goto bits_done;
@@ -52,17 +55,17 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
     bits_done:;
     }
     {
-        int v0 = I(a3, 0xB4);
-        if (I(v0, 0x938) == 0 && F(v0, 0x9D0) < 700.0f && F(v0, 0x31C) < -100.0f) {
-            XCALL(game_uso_func_07C0C0, pad_startRumble)(I(v0, 0x800), &game_uso_D_807FF68C + 4252, 1);
+        SnowBoarder *v0 = RA(a3)->rider;
+        if (v0->contactCount == 0 && v0->groundDist < 700.0f && v0->dnode.vel[1] < -100.0f) {
+            XCALL(game_uso_func_07C0C0, pad_startRumble)((int)v0->input, &game_uso_D_807FF68C + 4252, 1);
         }
     }
-    if (I(a3, 0x114) != 0) RiderAnim_selectAnim_0000D9CC(a3);
+    if (RA(a3)->trickPhase != 0) RiderAnim_selectAnim_0000D9CC(a3);
     if (a3->pm != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*(a3->pm))();
     XCALL(game_uso_func_0000ECE8, RiderAnim_updateSlowdown_0000ECEC)(a3);
-    if (I(a3, 0x74) != 0) {
-        XCALL(game_uso_func_076E78, AnimDataMgr_lookup)(I(a3, 0x58), I(a3, 0x74)); /* AnimDataMgr_lookup(player.mgr, player.anim) */
-        if (I(a3, 0x104) != I(a3, 0x74)) I(a3, 0x104) = I(a3, 0x74);
+    if (RA(a3)->player.anim != 0) {
+        XCALL(game_uso_func_076E78, AnimDataMgr_lookup)(RA(a3)->player.mgr, RA(a3)->player.anim);
+        if (RA(a3)->loadedAnim != RA(a3)->player.anim) RA(a3)->loadedAnim = RA(a3)->player.anim;
     }
     XCALL(game_uso_func_0775F8, AnimPlayer_advance)(a3);
 }

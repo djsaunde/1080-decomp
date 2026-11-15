@@ -5249,8 +5249,6 @@ void RiderAnim_update_0000D204(int *a0) {
     *(volatile float *)a0 = 28555.0f;
 }
 
-#define RA(p) ((RiderAnim *)(p))
-
 void RiderAnim_readParms_0000D418(char *a0) {
     CALL(Parms_load_00035C6C)(&RA(a0)->parms);
 }

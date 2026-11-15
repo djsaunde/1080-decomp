@@ -1,10 +1,62 @@
 #ifndef GAME_RIDERANIM_H
 #define GAME_RIDERANIM_H
 
+#ifndef __cplusplus
 #include "game/snowboarder.h"
 #include "gdl/anim.h"
 #include "game/rideranim_anims.h"
 #include "game/tricktable.h"
+#else
+/* The edg (NCC) donors include this header by relative path, without -I include (so the includes
+ * below are same-directory), and edg rejects gdl/anim.h's &((T *)0)->f asserts. They get this mirror
+ * of include/gdl/anim.h's AnimPlayer instead: the same layout and member names, with the Node base
+ * left opaque. Keep the two in step (C builds check the offsets below). */
+#include "snowboarder.h"
+#include "rideranim_anims.h"
+#include "tricktable.h"
+#define ANIM_PLAY       0x001
+#define ANIM_LOOP       0x002
+#define ANIM_PINGPONG   0x004
+#define ANIM_WEIGHTED   0x080
+#define ANIM_BLENDIN    0x100
+#define ANIM_NO_KEY     (-1000)
+typedef struct AnimPlayer {
+    char node[0x2C];            /* 0x00: Node */
+    s32 unk2C;
+    s32 animators;              /* 0x30 */
+    s32 slot0;                  /* 0x34 */
+    s32 slot1;                  /* 0x38 */
+    s32 unk3C;
+    s32 unk40;
+    s32 pose0;                  /* 0x44 */
+    s32 pose1;                  /* 0x48 */
+    s32 frame0;                 /* 0x4C */
+    s32 frame1;                 /* 0x50 */
+    f32 frac;                   /* 0x54 */
+    s32 mgr;                    /* 0x58 */
+    s32 unk5C;
+    s32 unk60;
+    s32 eventKey;               /* 0x64 */
+    s32 blendEvent;             /* 0x68 */
+    s32 blendFrames;            /* 0x6C */
+    s32 blendCount;             /* 0x70 */
+    s32 anim;                   /* 0x74 */
+    f32 time;                   /* 0x78 */
+    s32 startKey;               /* 0x7C */
+    s32 endKey;                 /* 0x80 */
+    s32 reqStartKey;            /* 0x84 */
+    s32 reqEndKey;              /* 0x88 */
+    s32 weightAnimNeg;          /* 0x8C */
+    s32 weightAnimPos;          /* 0x90 */
+    f32 weight;                 /* 0x94 */
+    s32 flags;                  /* 0x98 */
+    s32 unk9C;
+    s32 updateCount;            /* 0xA0 */
+    s32 updateInterval;         /* 0xA4 */
+    f32 blendWeight;            /* 0xA8 */
+    s32 blendLeft;              /* 0xAC */
+} AnimPlayer;
+#endif
 
 /*
  * RiderAnim: the rider animation state machine of game.uso (C++ class at 0xC48C, vtable Data 0x115C,
@@ -122,6 +174,10 @@ typedef struct RiderAnim {
     RiderAnimParms parms;   /* 0x13C: read by RiderAnim_readParms (vtbl slot 8) */
 } RiderAnim;
 
+/* Field access through an untyped `char *` / `int *` RiderAnim pointer (the donors' arg0) */
+#define RA(p) ((RiderAnim *)(p))
+
+#ifndef __cplusplus /* edg rejects the &((T *)0)->f constant form */
 #define RIDERANIM_ASSERT_OFFSET(field, off) \
     typedef char rideranim_assert_##off[(int)&((RiderAnim *)0)->field == (off) ? 1 : -1]
 RIDERANIM_ASSERT_OFFSET(player.eventKey, 0x64);
@@ -157,5 +213,6 @@ RIDERANIM_ASSERT_OFFSET(parms.stm, 0x42C);
 typedef char rideranim_assert_parm_size[sizeof(RiderAnimParm) == 0x18 ? 1 : -1];
 typedef char rideranim_assert_parms_size[sizeof(RiderAnimParms) == 0x308 ? 1 : -1];
 typedef char rideranim_assert_size[sizeof(RiderAnim) == 0x444 ? 1 : -1];
+#endif
 
 #endif /* GAME_RIDERANIM_H */
