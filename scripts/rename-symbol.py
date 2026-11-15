@@ -217,6 +217,11 @@ def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
     if not known:
         errs.append(f"OLD {old} is not a symbol in any expected/build object or linker-symbol file")
     segs = idx.defining_segments(old)
+    # src/match_imports/OLD.c is a per-function port (REPLACE_FUNC_BODY donor) of the SAME
+    # function defined in its host segment, not a second function with the same name, so a
+    # {host, match_imports} pair is not ambiguous (agent-g run 447; the gate verifies the splice).
+    if len(segs) == 2 and "match_imports" in segs and (ROOT / "src" / "match_imports" / f"{old}.c").exists():
+        segs = segs - {"match_imports"}
     if len(segs) > 1:
         errs.append(f"{old} is defined in several segments {sorted(segs)}; rename is ambiguous")
     wr, nr = word_re(old), word_re(new)
