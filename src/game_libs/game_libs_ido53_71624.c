@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* IDO 5.3 -O1 donor for __osPfsGetStatus = libultra __osPfsGetStatus
  * (io/pfsgetstatus.c verbatim, 2.0I layout) -- pfs sibling family of
  * osPfsInitPak = osPfsInitPak (which jals this at its PFS_GET_STATUS
@@ -33,9 +34,9 @@ s32 __osPfsGetStatus(OSMesgQueue *queue, int channel)
     OSContStatus data;
     ret = 0;
     gl_func_00000000(channel);              /* __osPfsRequestOneChannel */
-    ret = gl_func_00000000(1, &D_00000000); /* __osSiRawStartDma(OS_WRITE, &__osPfsPifRam) */
+    ret = gl_func_00000000(1, &gl___osPfsPifRam); /* __osSiRawStartDma(OS_WRITE, &__osPfsPifRam) */
     gl_func_00000000(queue, &dummy, 1);     /* osRecvMesg(queue, &dummy, OS_MESG_BLOCK) */
-    ret = gl_func_00000000(0, &D_00000000); /* __osSiRawStartDma(OS_READ, &__osPfsPifRam) */
+    ret = gl_func_00000000(0, &gl___osPfsPifRam); /* __osSiRawStartDma(OS_READ, &__osPfsPifRam) */
     gl_func_00000000(queue, &dummy, 1);     /* osRecvMesg */
     gl_func_00000000(channel, &data);       /* __osPfsGetOneChannelData */
     if (((data.status & 1) != 0) && ((data.status & 2) != 0))

@@ -54,6 +54,41 @@
 #define gInputMgr     D_00000000 /* Bss+0xF8 Sym 272, 0x194 bytes: the InputMgr (include/game/input.h; 79 functions) */
 
 
+
+/* ---- game_libs libultra globals (agent-a run 482) ----
+ * game_libs statically links its own libultra (gl_ prefix, READABILITY_PLAN
+ * section 4); these are that copy's globals, identified by which libultra
+ * functions touch them and by the libultra 2.0I declaration order
+ * (thread.c: __osRunQueue, __osActiveQueue, __osRunningThread are adjacent
+ * here too). Most sites are per-site zero aliases, which keep their own
+ * symbol and take `<name>_<suffix>` names. */
+#define gl___osRunQueue        D_00000000 /* Data+0x2D698 Sym 2533: __osRunQueue (__osDispatchThread, __osExceptionPreamble, __osLeoResume) */
+#define gl___osActiveQueue     D_00000000 /* Data+0x2D69C Sym 1557: __osActiveQueue (osCreateThread, osDestroyThread, dbg_printThreads) */
+#define gl___osRunningThread   D_00000000 /* Data+0x2D6A0 Sym 2512: __osRunningThread (__osDispatchThread, __osExceptionPreamble, osDestroyThread) */
+#define gl_osClockRate         D_00000000 /* Data+0x2D6E0 Sym 2579: osClockRate (u64, osInitialize) */
+#define gl_osViClock           D_00000000 /* Data+0x2D6E8 Sym 2580: osViClock (osInitialize, osAiSetFrequency) */
+#define gl___OSGlobalIntMask   D_00000000 /* Data+0x2D6F0 Sym 2517: __OSGlobalIntMask (__osDispatchThread, __osExceptionPreamble, osSetIntMask) */
+#define gl___osPiDevMgr        D_00000000 /* Data+0x2E430 Sym 2612: __osPiDevMgr (osCreatePiManager, osEPiStartDma, osPiGetCmdQueue) */
+#define gl___osPiTable         D_00000000 /* Data+0x2E44C Sym 2577: __osPiTable (osCartRomInit, osDriveRomInit, osLeoDiskInit, osEPiLinkHandle) */
+#define gl___osTimerList       D_00000000 /* Data+0x2E4B0 Sym 2636: __osTimerList (__osTimerServicesInit, __osInsertTimer, __osTimerInterrupt) */
+#define gl___osViCurr          D_00000000 /* Data+0x2E520 Sym 2647: __osViCurr (__osViInit, __osViSwapContext, __osViGetCurrentContext) */
+#define gl___osViNext          D_00000000 /* Data+0x2E524 Sym 2599: __osViNext (__osViInit, __osViSwapContext, osViSetXScale / Mode / Event) */
+#define gl___osViDevMgr        D_00000000 /* Data+0x2E650 Sym 2672: __osViDevMgr (osCreateViManager) */
+#define gl___osContPifRam      D_00000000 /* Bss+0x42770 Sym 2555: __osContPifRam (__osContGetInitData, __osPackRequestData, __osPackReadData) */
+#define gl___osContLastCmd     D_00000000 /* Bss+0x427B0 Sym 2556: __osContLastCmd (u8; __osContRamRead / Write, __osPfsRequestData) */
+#define gl___osMaxControllers  D_00000000 /* Bss+0x427B1 Sym 2557: __osMaxControllers (u8; osPfsIsPlug, __osPfsGetInitData, __osPfsRequestData, __osPackReadData) */
+#define gl___osPfsPifRam       D_00000000 /* Bss+0x42CA0 Sym 2605: __osPfsPifRam (__osContRamRead / Write, __osPfsGetInitData / RequestData, osMotorStart / Stop; +0x3C = pifstatus) */
+#define gl_DriveRomHandle      D_00000000 /* Bss+0x42820 Sym 2576: DriveRomHandle (OSPiHandle, osDriveRomInit) */
+#define gl_CartRomHandle       D_00000000 /* Bss+0x43EB0 Sym 2616: CartRomHandle (OSPiHandle, osCartRomInit) */
+#define gl_LeoDiskHandle       D_00000000 /* Bss+0x43FB0 Sym 2617: LeoDiskHandle (OSPiHandle, osLeoDiskInit) */
+#define gl___osCurrentTime     D_00000000 /* Bss+0x44060 Sym 2632: __osCurrentTime (u64; __osTimerServicesInit, viMgrMain, osGetTime) */
+#define gl___osTimerCounter    D_00000000 /* Bss+0x44070 Sym 2634: __osTimerCounter (__osSetTimerIntr, __osTimerInterrupt) */
+
+/* ---- fs stream buffers (agent-a run 482) ---- */
+#define gFsStream0             D_00000000 /* Bss+0x3F030 Sym 1520, 64 bytes: stream buffer of fs_bufWrite_334E8; region 0 of fs_piXfer_00065EE4 */
+#define gFsStream1             D_00000000 /* Bss+0x3F070 Sym 1542, 64 bytes: stream buffer of fs_bufWrite_33BE4; region 1 of fs_piXfer_00065EE4 */
+#define gFsStream2             D_00000000 /* Bss+0x3F0B0 Sym 1544, 64 bytes: stream buffer of fs_bufRead_33EB8; region 2 of fs_piXfer_00065EE4 */
+
 /* ---- vtables (agent-a run 482) ----
  * Data objects whose span holds Text pointers in the Cfront layout (8-byte
  * entries, first function at +0xC, slot +0x1C = display, +0x24 = update,

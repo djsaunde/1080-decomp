@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 
 /* gl_osStartThread = libultra osStartThread (sched/startthread.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of matched kernel
@@ -21,16 +22,16 @@ void gl_osStartThread(Thread_74C04 *t) {
     switch (t->state) {
     case 8:
         t->state = 2;
-        gl_func_00000000(&D_00000000, t);
+        gl_func_00000000(&gl___osRunQueue, t);
         break;
     case 1:
-        if (t->queue == 0 || t->queue == (int)&D_00000000) {
+        if (t->queue == 0 || t->queue == (int)&gl___osRunQueue) {
             t->state = 2;
-            gl_func_00000000(&D_00000000, t);
+            gl_func_00000000(&gl___osRunQueue, t);
         } else {
             t->state = 8;
             gl_func_00000000((void *)t->queue, t);
-            gl_func_00000000(&D_00000000, gl_func_00000000((void *)t->queue));
+            gl_func_00000000(&gl___osRunQueue, gl_func_00000000((void *)t->queue));
         }
         break;
     }
@@ -39,7 +40,7 @@ void gl_osStartThread(Thread_74C04 *t) {
     } else {
         if (((Thread_74C04 *)gl_data_00000000)->pri < ((Thread_74C04 *)D_00000000)->pri) {
             ((Thread_74C04 *)gl_data_00000000)->state = 2;
-            gl_func_00000000(&D_00000000);
+            gl_func_00000000(&gl___osRunQueue);
         }
     }
     gl_func_00000000(saveMask);

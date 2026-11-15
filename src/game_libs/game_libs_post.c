@@ -16548,9 +16548,9 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     u8 *g = &gFsStream1_33be4_dst;
 
     rem = flags; src = src0;
-    if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E330);
+    if (flags & 1) { base = (u8 *)&gFsStream1; gl_func_00000000(base, &gl_ref_0001E330);
     }
-    base = (u8 *)&D_00000000;
+    base = (u8 *)&gFsStream1;
     gl_func_00000000(base);
     if (flags != 0) {
         sent = 0x12340002;
@@ -16731,9 +16731,9 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     u8 *g = &gFsStream2_33eb8_src;
 
     rem = flags; dst = dst0;
-    if (flags & 1) { base = (u8 *)&D_00000000; gl_func_00000000(base, &gl_ref_0001E368);
+    if (flags & 1) { base = (u8 *)&gFsStream2; gl_func_00000000(base, &gl_ref_0001E368);
     }
-    base = (u8 *)&D_00000000;
+    base = (u8 *)&gFsStream2;
     gl_func_00000000(base);
     if (flags != 0) {
         do {

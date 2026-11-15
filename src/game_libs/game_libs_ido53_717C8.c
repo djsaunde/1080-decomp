@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* IDO 5.3 -O1 donor for __osPfsGetOneChannelData = libultra
  * __osPfsGetOneChannelData (io/pfsgetstatus.c verbatim, 2.0I layout) --
  * pfs sibling family; __osPfsGetStatus=__osPfsGetStatus jals this as its
@@ -30,7 +31,7 @@ void __osPfsGetOneChannelData(int channel, OSContStatus *data)
     u8 *ptr;
     __OSContRequesFormatShort requestformat;
     int i;
-    ptr = &D_00000000;
+    ptr = &gl___osPfsPifRam;
     for (i = 0; i < channel; i++)
         ptr++;
     requestformat = *(__OSContRequesFormatShort *)ptr;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 extern char D_00000000;
 extern u8 gl_data_00000000;
 
@@ -24,7 +25,7 @@ void osContGetReadData(u8 *maskOut, u8 *pads) {
     u8 mask;
 
     mask = 0;
-    ptr = (u8 *)&D_00000000;
+    ptr = (u8 *)&gl___osContPifRam;
     for (i = 0; i < gl_data_00000000; i++, ptr += 8, pads += 4) {
         fmt = *(GlContReadFormat *)ptr;
         pads[3] = (fmt.rxsize & 0xC0) >> 4;
@@ -58,10 +59,10 @@ void __osPackReadData(u8 cmd) {
     int i;
 
     for (i = 0; i < 15; i++) {
-        *(int *)((char *)&D_00000000 + i * 4) = 0;
+        *(int *)((char *)&gl___osContPifRam + i * 4) = 0;
     }
     gl___osContPifRam_6BD14_pifram.pifstatus = 1;
-    ptr = (u8 *)&D_00000000;
+    ptr = (u8 *)&gl___osContPifRam;
     fmt.dummy = 0xFF;
     fmt.txsize = 1;
     fmt.rxsize = 3;
