@@ -5804,7 +5804,7 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
     if (col == 0) {
         return 0;
     }
-    if (col->grid == 0) {
+    if (POLY_COLLGRID(col) == 0) {
         gl_func_00000000(GL_DATA_STR(0x1EE9C, "no pGrid data"));
     }
     p.x *= gGfxLib_3BE1C_128[0];
@@ -15414,7 +15414,7 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
     self->unk1A8 = -1;
     self->unk1AC = -1;
     self->fbIndex = 0;
-    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20128, "FrameBuffers"), 0); /* "FrameBuffers" */
+    gl_func_00034458_4C300(GL_DATA_STR(0x20128, "FrameBuffers"), 0); /* "FrameBuffers" */
     bc = self->win.height;
     sz = self->win.width * bc;
     v1 = 0;
@@ -15448,23 +15448,23 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
         self->win.zBuffer = (u16 *)sp54;
     } else {
         if (G240_4C300 == 0) {
-            XCALL(gl_func_00034458_4C300v, sys_fatal)(GL_DATA_STR(0x20138, "no ScreenWindow for zbuffer")); /* "no ScreenWindow for zbuffer" */
+            gl_func_00034458_4C300v(GL_DATA_STR(0x20138, "no ScreenWindow for zbuffer")); /* "no ScreenWindow for zbuffer" */
         }
         self->win.zBuffer = ((ScreenWindow *)G240_4C300)->win.zBuffer;
     }
-    XCALL(gl_func_00034458_4C300, memtrack_end)();
-    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
+    gl_func_00034458_4C300();
+    gl_func_00034458_4C300(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
     /* p walks the two per-frame-buffer slots of startDL / setupDL / bgDL
      * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b). */
     for (i = 0, p = (char *)self; i != 8; i += 4, p += 4) {
-        FW(p, 0x14C) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
+        FW(p, 0x14C) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
         if (self->win.flags & 0x1000) {
-            FW(p, 0x198) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
+            FW(p, 0x198) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
                                             D_4C300_g2, D_4C300_g3, D_4C300_g4);
-            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
+            FW(p, 0x180) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
                                             D_4C300_g7, D_4C300_g8, D_4C300_g9);
         } else {
-            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLChild_0005AB84)(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
+            FW(p, 0x180) = gl_func_00034458_4C300(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
             FW(p, 0x198) = FW(G240_4C300 + i, 0x198);
         }
     }
@@ -17177,8 +17177,8 @@ void Window_display(char *arg0) {
     FW(arg0, 0x11C) = 0;
     FW(arg0, 0x120) = 0;
     if (FW(arg0, 0x78) & 0x20) {
-        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D0, "CPU")));
-        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D4, "Display()")));
+        gl_func_00034458_4EB54((GL_DATA_STR(0x205D0, "CPU")));
+        gl_func_00034458_4EB54((GL_DATA_STR(0x205D4, "Display()")));
     }
     gl_func_00034458_4EB54(FW(arg0, 0x108));
     D_g_0004EB54 = arg0;
@@ -17203,8 +17203,8 @@ void Window_display(char *arg0) {
     temp_v0_3 = (char*)FW(arg0, 0x28);
     ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
     if (FW(arg0, 0x78) & 0x20) {
-        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E0, "CPU")));
-        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E4, "Display()")));
+        gl_func_00034458_4EB54((GL_DATA_STR(0x205E0, "CPU")));
+        gl_func_00034458_4EB54((GL_DATA_STR(0x205E4, "Display()")));
     }
 }
 
@@ -18425,8 +18425,8 @@ void BaseMat_hostioParms(char *arg0) {
     s32 *o2;
     s32 *o3;
 
-    XCALL(gl_func_00034458_5185C, hostio_beginGroup)((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
-    XCALL(gl_func_00034458_5185C, gfx_declColourParm)(arg0, 0);
+    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
+    gl_func_00034458_5185C(arg0, 0);
     if (FW(arg0, 0x38) & 0x400000) {
         o1 = (s32 *)gl_func_00034458_5185C(0x10);
         if (o1 != 0) {
@@ -18441,11 +18441,11 @@ void BaseMat_hostioParms(char *arg0) {
             }
             *o1 = (s32)((char *)&D_00000000_d + 0x20D88);
         }
-        XCALL(gl_func_00034458_5185C, hostio_addButton)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
+        gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
     }
-    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
-    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
-    XCALL(gl_func_00034458_5185C, hostio_endGroup)((char *)&gHostio);
+    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
+    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
+    gl_func_00034458_5185C((char *)&gHostio);
 }
 
 /* Mat_print — W5 2026-07-03: IMPROVED 63/77 -> 71/77 words (in-tree
@@ -25753,7 +25753,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
-                XCALL(gl_func_00034458_6126C, str_copyEnd)(out, GL_DATA(0x21E08));
+                gl_func_00034458_6126C(out, GL_DATA(0x21E08));
                 out += 0xA;
             }
     }

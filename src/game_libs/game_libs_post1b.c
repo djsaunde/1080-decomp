@@ -4972,7 +4972,7 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
         a0 = (int*)gl_func_00062F64_695F4(0x98);
         if (a0 == 0) goto end;
     }
-    XCALL(gl_func_00062F64_695F4, Node_ctor)(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
+    gl_func_00062F64_695F4(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
     a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
     v1 = &((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
@@ -5206,7 +5206,7 @@ void SkinMgr_reset(int *self) {
         bar = &next;
     }
     if (((SkinMgr *)self)->bone == 0) {
-        XCALL(gl_func_00062F64_69b94, sys_fatal)((int)(GL_DATA_STR(0x2C5F0, "SkinMgr::Reset() not initialized"))); /* "SkinMgr::Reset() not initialized" */
+        gl_func_00062F64_69b94((int)(GL_DATA_STR(0x2C5F0, "SkinMgr::Reset() not initialized"))); /* "SkinMgr::Reset() not initialized" */
     }
     /* walk the anims list {SkinAnim *, next}: SkinAnim_bind(anim, mgr, bindVerts) */
     next = (int *)((SkinMgr *)self)->anims;
