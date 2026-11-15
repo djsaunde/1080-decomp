@@ -25,82 +25,87 @@ extern char gl_d_4c5e4_sh[], gl_d_4c5e4_flag[], gl_d_4c5e4_word[], gl_d_4c5e4_re
 }
 #define S(o) (D_00000000 + (o))
 #define SI(o) (*(int *)S(o))
+/* Local C++ views of include/gdl/dlctx.h (DLContext / DLBuf) and include/gdl/window.h (ScreenWindow), with the
+ * same field names (agent-b run 481). The donor keeps its own views because the matched register colouring rests
+ * on the exact member types here (near / far / aspect are passed as raw int words, the per-index tables are
+ * indexed through byte offsets), so retyping to the C headers is not byte-safe without a re-match. */
 struct Gfx { unsigned w0, w1; };
-struct DLHead { Gfx *buf; int count; };
+struct DLHead { Gfx *buf; int count; };              /* DLBuf {base, count} */
 struct Vp { short vscale[4]; short vtrans[4]; };
 struct VpHead { Vp *buf; int count; };
-struct DL {
+struct DL {                                          /* DLContext: head = gfx.cur (+0xC), vph = vp.cur (+0x4C) */
     int pad[3]; DLHead *head; char pad10[0x4C - 0x10]; VpHead *vph;
     /* agent-c run 260: inline appends for the G_DL packet and the Vp (own edg temporaries per expansion; the second
      * G_MOVEMEM packet pointer then colours v1 like the target) */
     Gfx *gnext() { return &head->buf[head->count++]; }
     Vp *vnext() { return &vph->buf[vph->count++]; }
 };
-struct Sub { char pad[0xB8]; int mB8; char padbc[0xF0 - 0xBC]; void *mF0; char padf4[0x198 - 0xF4]; DL *dl198[1]; };
-struct Sub2 { char pad[0x60]; int m60; };
-struct VT { char pad[0x60]; short off; short pad62; void *(*fn)(void *); };
-struct Obj {
+/* the fbOwner ScreenWindow: frame-buffer width, Z buffer, setupDL[2] */
+struct Sub { char pad[0xB8]; int width; char padbc[0xF0 - 0xBC]; void *zBuffer; char padf4[0x198 - 0xF4]; DL *setupDL[1]; };
+struct Sub2 { char pad[0x60]; int frameStart; };     /* DLContext.frameStart */
+struct VT { char pad[0x60]; short off; short pad62; void *(*fn)(void *); };  /* Cfront vtable entry at +0x60 */
+struct Obj {                                         /* ScreenWindow (window.h) */
     char pad0[0x28];
-    VT *vt;
+    VT *vt;              /* 28 node.vptr */
     char pad2c[0x78 - 0x2C];
-    int m78;
+    int flags;           /* 78 */
     char pad7c[0xAC - 0x7C];
-    int mAC, mB0;
-    int mB4;
-    int mB8, mBC, mC0, mC4;
-    int x, y, w, h;      /* C8 CC D0 D4 */
+    int nearWord, farWord; /* AC B0 f32 near / far as raw words (gfx_calcPerspNorm args) */
+    int aspectWord;      /* B4 */
+    int width, height, unkC0, unkC4; /* B8 BC C0 C4 */
+    int vpW, vpH, vpX, vpY; /* C8 CC D0 D4 */
     char padd8[0xDC - 0xD8];
-    char mDC[0x104 - 0xDC];
-    int m104;
+    char unkDC[0x104 - 0xDC];
+    int unk104;
     char pad108[0x144 - 0x108];
-    int idx;            /* 144 */
-    Sub *sub;           /* 148 */
-    Sub2 *s14c[3];      /* 14C */
-    DL *dl;             /* 158 */
-    char m15C[0x168 - 0x15C];
-    char m168[0x180 - 0x168];
-    int a180[0x1B0 / 4 - 0x180 / 4];
-    int m1B0;
-    int m1B4;
+    int fbIndex;         /* 144 */
+    Sub *fbOwner;        /* 148 */
+    Sub2 *startDL[3];    /* 14C */
+    DL *dl;              /* 158 */
+    char mark15C[0x168 - 0x15C];
+    char mark168[0x180 - 0x168];
+    int bgDL[0x1B0 / 4 - 0x180 / 4]; /* 180 bgDL[2] (indexed by fbIndex) */
+    int unk1B0;
+    int unk1B4;
     char pad1b8[0x1C0 - 0x1B8];
-    int m1C0;
+    int curBg;           /* 1C0 */
     void run();
 };
 void Obj::run() {
     char *g = S(0);
     *(Obj **)(g + 0x254) = this;
-    idx = *(int *)(g + 0x204);
-    m1C0 = a180[idx];
-    *(short *)(gl_d_4c5e4_sh + 0x208) = dbg_printThreads(g, mAC, mB0);
-    m1B4 = 0;
-    g = m15C; /* agent-g run 260 (kit CCXCIII spilltemps): the m15C address first mentioned before the sub load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
-    dl = ((DL **)((char *)sub + idx * 4))[0x198 / 4];
-    dbg_printThreads(g, dl);
+    fbIndex = *(int *)(g + 0x204);
+    curBg = bgDL[fbIndex];
+    *(short *)(gl_d_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */
+    unk1B4 = 0;
+    g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
+    dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */
+    dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
     char *s1;
-    if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) {
-        int f = ((m104 & 2) != 0) + 0 * (int)(mC0); /* agent-c run 210: folded counted use of the member mC0 (zero code) */
-        s1 = (char *)sub->mF0;
-        if (f) f = (m78 & 2) != 0;
+    if (*(int *)(gl_d_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */
+        int f = ((unk104 & 2) != 0) + 0 * (int)(unkC0); /* agent-c run 210: folded counted use of the member unkC0 (zero code) */
+        s1 = (char *)fbOwner->zBuffer;
+        if (f) f = (flags & 2) != 0;
         float buf[4]; int one = 1; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word); run 261: za / e1 / e2 dropped for the named hh / nn / vh / vn homes */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, m1B0);
+        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, unk1B0);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
-        Sub *sb = sub;
-        void *pf = sb->mF0;
-        int m4 = m78 & 4; /* run 205: m78 read at both uses (no named m); run 246: the folded 0 * mC0 dropped (c0 loads in the arm, v0, as the target) */
-        int f = (m104 & 2) != 0;
-        if (f) f = (m78 & 2) != 0;
-        int c0 = mC0, c4 = mC4, b8 = mB8, bc = mBC, sb8 = sb->mB8 + 0 * (int)(sub); /* run 246: folded counted use of sub: sb = t5 (target) and the ring phase */
+        Sub *sb = fbOwner;
+        void *pf = sb->zBuffer;
+        int m4 = flags & 4; /* run 205: flags read at both uses (no named m); run 246: the folded 0 * unkC0 dropped (c0 loads in the arm, v0, as the target) */
+        int f = (unk104 & 2) != 0;
+        if (f) f = (flags & 2) != 0;
+        int c0 = unkC0, c4 = unkC4, b8 = width, bc = height, sb8 = sb->width + 0 * (int)(fbOwner); /* run 246: folded counted use of fbOwner: sb = t5 (target) and the ring phase */
         /* agent-c run 261 (kit CCXCIX): folded counted uses lift f (3 uses) and c0 / c4 / b8 / bc (2 each) to priority
          * 3.0 and the codeless sub-load item to 2.0, so that item is coloured after bc and takes t3 -- sb8 then gets
          * the target's t4 (99.95 -> 100). `0 * (signed char)f` / `0 * (unsigned)(sub)` keep the folds distinct
          * expressions (a repeated `0 * f` is one CSE item that gets a colour of its own). */
-        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, mDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(sub), m1B0);
+        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, unkDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(fbOwner), unk1B0);
     }
     dbg_printThreads(dl);
-    dbg_printThreads(m15C);
-    dbg_printThreads(m168, dl);
+    dbg_printThreads(mark15C);
+    dbg_printThreads(mark168, dl);
     dbg_printThreads(gl_d_4c5e4_reg + 0x294); if (1) {} /* run 194 (lever-sweep bbsplit) */
     {
     /* agent-c run 261 (kit CCXCIX): the G_DL / G_MOVEMEM appends share ONE named head (hh) and ONE named count
@@ -108,8 +113,8 @@ void Obj::run() {
      * of nn and vh raise their uopt priorities above hh's, so hh is coloured after v1 / a0 / a1 are taken
      * (99.59 -> 99.95) */
     s1 = (char *)dl; DLHead *hh; int nn;
-    Sub2 *e = s14c[idx];
-    int v = dbg_printThreads(e->m60) + 0 * (int)(idx); /* agent-c run 210: folded counted use of the member idx (zero code) */
+    Sub2 *e = startDL[fbIndex];
+    int v = dbg_printThreads(e->frameStart) + 0 * (int)(fbIndex); /* osVirtualToPhysical; agent-c run 210: folded counted use of the member fbIndex (zero code) */
     { hh = ((DL *)s1)->head; nn = hh->count++; Gfx *p = &((DL *)s1)->head->buf[nn]; p->w0 = 0x06000000; p->w1 = v + 0 * nn; }
     s1 = (char *)dl;
 #define d ((DL *)s1)
@@ -117,10 +122,10 @@ void Obj::run() {
      * after it: the append's count store blocks copy propagation, so cw / ch / cy / cx are uopt-coloured LRs
      * (target f12 / f14 / f16 / f0) and the 2.0f constant loses its colour -> re-loaded per use like the target
      * (832 -> 836 bytes, 89.59 -> 99.48) */
-    float cw = (float)w;
-    float ch = (float)h;
-    float cx = (float)x;
-    float cy = (float)y;
+    float cw = (float)vpX;  /* (names kept from the match: cw / ch are the origin, cx / cy the size) */
+    float ch = (float)vpY;
+    float cx = (float)vpW;
+    float cy = (float)vpH;
     VpHead *vh = d->vph; int vn = vh->count; vh->count = vn + 1; Vp *vp = &d->vph->buf[vn + 0 * (int)vh];
     vp->vscale[2] = 0x1FF; vp->vscale[3] = 0;
     vp->vtrans[2] = 0x1FF; vp->vtrans[3] = 0;

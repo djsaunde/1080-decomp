@@ -8,10 +8,12 @@
  * The 0xCC base is a "sprite" node (scale 1.0 at +0xB0 / +0xB4, offsets
  * zeroed). Sprite adds its own "SS StartDL" display list (+0xCC) that the
  * ctor fills once with the 2D state: G_RDPPIPESYNC, G_SETOTHERMODE_H
- * cycle type (0xBA001402 = 1-cycle), G_SETOTHERMODE_L render mode
- * (0xB9000201 = 4), texture LOD/filter words and G_TEXTURE 0x80008000; then
- * Sprite_display draws through gfx_emitStateAndPrimColour. The ctor also walks
- * a child collection at +0x84. */
+ * cycle type (0xBA001402, 1-cycle), G_SETOTHERMODE_L z source
+ * (0xB9000201 / 4 = G_ZS_PRIM), texture filter bilerp, texture persp off and
+ * G_TEXTURE on (0x80008000); "SS EndDL" (+0xD0) restores G_TP_PERSP,
+ * G_ZS_PIXEL and G_TEXTURE off. Sprite_display draws through
+ * gfx_emitStateAndPrimColour. The ctor also gives every element of the child
+ * collection at +0x84 its own "sprblock" list (element +0x64). */
 
 typedef struct Sprite {
     /* 0x00 */ Node node;
@@ -27,7 +29,7 @@ typedef struct Sprite {
     /* 0xC4 */ s32 unkC4;
     /* 0xC8 */ f32 unkC8;
     /* 0xCC */ struct DLContext *startDL; /* "SS StartDL" (0x14 Gfx) */
-    /* 0xD0 */ struct DLContext *unkD0;
+    /* 0xD0 */ struct DLContext *endDL;   /* "SS EndDL" (0xA Gfx): restores persp, z source, texture off */
     /* 0xD4 */ s32 unkD4;
 } Sprite;
 

@@ -14448,30 +14448,26 @@ int *MorphPoly_ctor(int *a0, int a1, int a2, int a3) {
  * preserved; INCLUDE_ASM build path. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void MorphPoly_init(int *self) {
+void MorphPoly_init(MorphPoly *self) {
     short *dst;
     int i;
-    *(int *)((char *)self + 0xC8) = 0;
-    *(int *)((char *)self + 0xCC) = 0;
-    *(int *)((char *)self + 0xC0) = 0;
-    *(int *)((char *)self + 0xC4) = 0;
-    *(int *)((char *)self + 0xD8) = 0;
+    self->unkC8 = 0;
+    self->unkCC = 0;
+    self->verts = 0;
+    self->unkC4 = 0;
+    self->updateCount = 0;
     gl_func_00000000();
     gl_func_00000000(self);
     {
-        int *g = *(int **)((char *)&D_00000000 + 0x214);
-        *(short *)((char *)self + 0xD6) =
-            (*(int **)((char *)g + 0x1C))[1];
+        DLContext *g = *(DLContext **)((char *)&D_00000000 + 0x214); /* gfx MainStaticDL */
+        self->vtxEnd = g->vtx.cur->count;
     }
-    dst = (short *)gl_func_00000000(
-        (*(short *)((char *)self + 0xD6) -
-         *(short *)((char *)self + 0xD4)) * 2);
-    for (i = 0; i < *(short *)((char *)self + 0xD6) -
-                    *(short *)((char *)self + 0xD4); i++) {
-        dst[i] = *(short *)(*(int *)((char *)self + 0xD0) + i * 2);
+    dst = (short *)gl_func_00000000((self->vtxEnd - self->vtxStart) * 2);
+    for (i = 0; i < self->vtxEnd - self->vtxStart; i++) {
+        dst[i] = self->updateList[i];
     }
-    gl_func_00000000(&D_00000000, *(int *)((char *)self + 0xD0));
-    *(int *)((char *)self + 0xD0) = (int)dst;
+    gl_func_00000000(&D_00000000, self->updateList);
+    self->updateList = dst;
 }
 
 
@@ -15168,26 +15164,7 @@ extern int D_00000000;
 typedef struct { u32 w0, w1; } Gfx620;
 /* Display-list head: buf at +0x0, count at +0x4. */
 typedef struct { Gfx620 *buf; s32 count; } DLHead620;
-/* Display-list handle held at obj->0xCC / 0xD0; head ptr at +0xC. */
-typedef struct { s32 pad0[3]; DLHead620 *head; } DLList620;
-/* Self object (0xD8 bytes). */
-typedef struct {
-    s32 unk00[10];                    /* 0x00 */
-    s32 unk28;                        /* 0x28 */
-    s32 unk2C[0x16];                  /* 0x2C */
-    s32 unk84;                        /* 0x84 (collection lives here) */
-    s32 unk88[10];                    /* 0x88 */
-    f32 unkB0, unkB4, unkB8, unkBC;   /* 0xB0..0xBC */
-    s16 unkC0;                        /* 0xC0 (sh) */
-    s16 unkC2_pad;
-    s32 unkC4;                        /* 0xC4 */
-    f32 unkC8;                        /* 0xC8 */
-    DLList620 *unkCC;                 /* 0xCC */
-    DLList620 *unkD0;                 /* 0xD0 */
-    s32 unkD4;                        /* 0xD4 */
-} Obj620;
-
-/* Append a 2-word Gfx command (hi,lo) to a display-list handle expression.
+/* Append a 2-word Gfx command (hi,lo) to a DLContext's current Gfx chunk (gfx.cur, dlctx.h).
  * run 152 (agent-c, 94.41 -> 94.48): every block-scope local of the macro costs one frame word PER EXPANSION (9 expansions: frame 264 with
  * four block locals, 136 with none); _dl/_h at function scope and _n/_cmd block-local puts it3 at the target's sp+164 (frame 200, target 176). */
 #define DL_APPEND(handle, hi, lo) \
@@ -15195,10 +15172,10 @@ typedef struct {
         s32 _n; \
         Gfx620 *_cmd; \
         _dl = (handle); \
-        _h = _dl->head; \
+        _h = (DLHead620 *)_dl->gfx.cur; \
         _n = _h->count; \
         _h->count = _n + 1; \
-        _cmd = &_dl->head->buf[_n]; \
+        _cmd = &((DLHead620 *)_dl->gfx.cur)->buf[_n]; \
         _cmd->w0 = (hi); \
         _cmd->w1 = (lo); \
     } while (0)
@@ -15210,41 +15187,41 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
     Iter620 it;
     Iter620 it2;
     Iter620 it3;
-    Obj620 *self = (Obj620 *) arg0;
+    Sprite *self = (Sprite *) arg0;
     Iter620 *itp;
     s32 *cur;
     s32 *node;
-    DLList620 *_dl;
+    DLContext *_dl;
     DLHead620 *_h;
 
-    if ((arg0 != 0) || ((self = (Obj620 *) gl_func_00000000(0xD8)) != 0)) {
-        Obj620 *sub = self;
-        if ((self != 0) || ((sub = (Obj620 *) gl_func_00000000(0xCC)) != 0)) {
-            gl_func_00000000(sub, (char *)&D_00000000 + 0x200FC, arg1, 0);
+    if ((arg0 != 0) || ((self = (Sprite *) gl_func_00000000(0xD8)) != 0)) {
+        Sprite *sub = self;
+        if ((self != 0) || ((sub = (Sprite *) gl_func_00000000(0xCC)) != 0)) {
+            gl_func_00000000(sub, (char *)&D_00000000 + 0x200FC, arg1, 0); /* base ctor, "sprite" */
             sub->unkC0 = 0;
             sub->unkC4 = 0;
             sub->unkB8 = 0.0f;
             sub->unkBC = 0.0f;
             sub->unkC8 = 0.0f;
-            sub->unkB0 = 1.0f;
-            sub->unkB4 = 1.0f;
+            sub->scaleX = 1.0f;
+            sub->scaleY = 1.0f;
         }
-        self->unk28 = (s32) ((char *)&D_00000000 + 0);
-        self->unkD0 = 0;
+        self->node.vptr = (s32) ((char *)&D_00000000 + 0);
+        self->endDL = 0;
         self->unkD4 = 0;
-        self->unkCC = (DLList620 *) gl_func_00000000(0, (char *)&D_00000000 + 0x20104, 0x14, 0, 0, 0, 0);
-        DL_APPEND(self->unkCC, 0xE7000000, 0);
-        DL_APPEND(self->unkCC, 0xBA001402, 0);
-        DL_APPEND(self->unkCC, 0xB9000201, 4);
-        DL_APPEND(self->unkCC, 0xBA000C02, 0x2000);
-        DL_APPEND(self->unkCC, 0xBA001301, 0);
-        DL_APPEND(self->unkCC, 0xBB000001, 0x80008000);
-        gl_func_00000000(self->unkCC);
+        self->startDL = (DLContext *) gl_func_00000000(0, (char *)&D_00000000 + 0x20104, 0x14, 0, 0, 0, 0); /* "SS StartDL" */
+        DL_APPEND(self->startDL, 0xE7000000, 0);          /* G_RDPPIPESYNC */
+        DL_APPEND(self->startDL, 0xBA001402, 0);          /* G_SETOTHERMODE_H cycle type: 1-cycle */
+        DL_APPEND(self->startDL, 0xB9000201, 4);          /* G_SETOTHERMODE_L z source: G_ZS_PRIM */
+        DL_APPEND(self->startDL, 0xBA000C02, 0x2000);     /* texture filter: bilerp */
+        DL_APPEND(self->startDL, 0xBA001301, 0);          /* texture persp: none */
+        DL_APPEND(self->startDL, 0xBB000001, 0x80008000); /* G_TEXTURE on, scale 0x8000 */
+        gl_func_00000000(self->startDL);                  /* gfx_endDL */
 
         itp = 0;
         if (1) { itp = &it; }
         if ((itp != 0) || ((itp = (Iter620 *) gl_func_00000000(0xC)) != 0)) {
-            f32 *coll = &self->unk84;
+            s32 *coll = &self->children;
             itp->idx = -1;
             itp->ptr = (s32 **) coll;
             itp->count = ((s32 *) coll)[3] - 1;
@@ -15274,11 +15251,11 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
             } while (cur != 0);
         }
 
-        self->unkD0 = (DLList620 *) gl_func_00000000(0, (char *)&D_00000000 + 0x2011C, 0xA, 0, 0, 0, 0);
-        DL_APPEND(self->unkD0, 0xBA001301, 0x80000);
-        DL_APPEND(self->unkD0, 0xB9000201, 0);
-        DL_APPEND(self->unkD0, 0xBB000000, 0x80008000);
-        gl_func_00000000(self->unkD0);
+        self->endDL = (DLContext *) gl_func_00000000(0, (char *)&D_00000000 + 0x2011C, 0xA, 0, 0, 0, 0); /* "SS EndDL" */
+        DL_APPEND(self->endDL, 0xBA001301, 0x80000);    /* texture persp: G_TP_PERSP */
+        DL_APPEND(self->endDL, 0xB9000201, 0);          /* z source: G_ZS_PIXEL */
+        DL_APPEND(self->endDL, 0xBB000000, 0x80008000); /* G_TEXTURE off */
+        gl_func_00000000(self->endDL);
     }
     return (char *) self;
 }
@@ -15649,7 +15626,7 @@ extern int gl_func_00034458_4C300();
 typedef char *(*GP_0004C300)();
 #define G240_4C300 (*(char **)((char *)&D_00000000 + 0x240))
 extern void gl_func_00034458_4C300v();
-void ScreenWindow_allocBuffers(char *self) {
+void ScreenWindow_allocBuffers(ScreenWindow *self) {
     s32 sz;
     s32 bc;
     s32 sp54;
@@ -15657,55 +15634,57 @@ void ScreenWindow_allocBuffers(char *self) {
     char *p;
     s32 i;
 
-    FW(self, 0x1B8) = 0;
-    FW(self, 0x1B0) = 1;
-    FW(self, 0x1A4) = 0;
-    FW(self, 0x1A8) = -1;
-    FW(self, 0x1AC) = -1;
-    FW(self, 0x144) = 0;
-    gl_func_00034458_4C300((char *)&D_00000000 + 0x20128, 0);
-    bc = FW(self, 0xBC);
-    sz = FW(self, 0xB8) * bc;
+    self->unk1B8 = 0;
+    self->unk1B0 = 1;
+    self->unk1A4 = 0;
+    self->unk1A8 = -1;
+    self->unk1AC = -1;
+    self->fbIndex = 0;
+    gl_func_00034458_4C300((char *)&D_00000000 + 0x20128, 0); /* "FrameBuffers" */
+    bc = self->win.height;
+    sz = self->win.width * bc;
     v1 = 0;
-    if (FW(self, 0x78) & 0x800) {
+    if (self->win.flags & 0x800) {
         v1 += sz;
-        if (FW(self, 0x78) & 0x400) {
+        if (self->win.flags & 0x400) {
             v1 += sz;
         }
     }
-    if (FW(self, 0x78) & 0x200) {
+    if (self->win.flags & 0x200) {
         v1 += sz;
     }
     if (v1 != 0) {
-        sp54 = gl_func_00034458_4C300(v1 * 2, 0x40);
-        FW(self, 0xFC) = sp54;
+        sp54 = gl_func_00034458_4C300(v1 * 2, 0x40); /* RGBA5551 / 16-bit Z, 64-byte aligned */
+        self->win.bufAlloc = (u16 *)sp54;
     }
-    if (FW(self, 0x78) & 0x800) {
-        FW(self, 0xF4) = sp54;
-        if (FW(self, 0x78) & 0x400) {
+    if (self->win.flags & 0x800) {
+        self->win.colorBuf[0] = (u16 *)sp54;
+        if (self->win.flags & 0x400) {
             sp54 += sz * 2;
-            FW(self, 0xF8) = sp54;
+            self->win.colorBuf[1] = (u16 *)sp54;
         } else {
-            FW(self, 0xF8) = FW(self, 0xF4);
+            self->win.colorBuf[1] = self->win.colorBuf[0];
         }
-        FW(self, 0x148) = (s32) self;
+        self->fbOwner = self;
     } else {
-        FW(self, 0x148) = (s32) G240_4C300;
+        self->fbOwner = (ScreenWindow *)G240_4C300;
     }
-    if (FW(self, 0x78) & 0x200) {
+    if (self->win.flags & 0x200) {
         sp54 += sz << 1;
-        FW(self, 0xF0) = sp54;
+        self->win.zBuffer = (u16 *)sp54;
     } else {
         if (G240_4C300 == 0) {
-            gl_func_00034458_4C300v((char *)&D_00000000 + 0x20138);
+            gl_func_00034458_4C300v((char *)&D_00000000 + 0x20138); /* "no ScreenWindow for zbuffer" */
         }
-        FW(self, 0xF0) = FW(G240_4C300, 0xF0);
+        self->win.zBuffer = ((ScreenWindow *)G240_4C300)->win.zBuffer;
     }
     gl_func_00034458_4C300();
-    gl_func_00034458_4C300((char *)&D_00000000 + 0x20154, 0);
-    for (i = 0, p = self; i != 8; i += 4, p += 4) {
+    gl_func_00034458_4C300((char *)&D_00000000 + 0x20154, 0); /* "DLs" */
+    /* p walks the two per-frame-buffer slots of startDL / setupDL / bgDL
+     * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b). */
+    for (i = 0, p = (char *)self; i != 8; i += 4, p += 4) {
         FW(p, 0x14C) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20158, 0x28, 0, 0, 0, 1);
-        if (FW(self, 0x78) & 0x1000) {
+        if (self->win.flags & 0x1000) {
             FW(p, 0x198) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20164, D_4C300_g0, D_4C300_g1,
                                             D_4C300_g2, D_4C300_g3, D_4C300_g4);
             FW(p, 0x180) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20170, D_4C300_g5, D_4C300_g6,
@@ -15717,8 +15696,8 @@ void ScreenWindow_allocBuffers(char *self) {
     }
     gl_func_00034458_4C300();
     {
-        char *cb = (char *)FW(self, 0x28);
-        ((GP_0004C300)FW(cb, 0x5C))(*(s16 *)(cb + 0x58) + self, cb);
+        char *cb = (char *)self->win.node.vptr; /* Cfront vtable entry {s16 delta; s16 idx; fn} at +0x58 */
+        ((GP_0004C300)FW(cb, 0x5C))(*(s16 *)(cb + 0x58) + (char *)self, cb);
     }
 }
 
@@ -17545,23 +17524,23 @@ void Window_func_0004EE18(int *a0, int a1) {
 // out of this .s (154 words = named fn exactly).
 extern int aEE44_a(char *, int, int, int, float);
 extern int aEE44_c(char *, float, float, float, float, float, float, float);
-void Window_setupView(char *o) {
-    char *m30 = o + 0x30;
+void Window_setupView(Window *o) {
+    char *m30 = (char *)o->proj;
     gl_func_00000000(m30);
-    if (*(int *)(o + 0x7C) == 1) {
+    if (o->projType == 1) {
         float *src;
         int r;
         float result[16];
         int c, k;
-        if (*(char **)(o + 0x70) == 0) {
-            gl_func_00000000((char *)&D_00000000 + 0x20604, *(int *)(o + 0xC));
+        if (o->camera == 0) {
+            gl_func_00000000((char *)&D_00000000 + 0x20604, o->node.name); /* "no camera in Perspective Window '%s'\n" */
         }
         /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web
          * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
-         * add an 8-byte dead home). */
-        src = (float *)*(int *)(*(char **)(o + 0x70) + 0x14C);
-        aEE44_a(m30, (int)src, *(int *)(o + 0xB4), *(int *)(o + 0xAC), *(float *)(o + 0xB0));
-        src = (float *)(*(char **)(o + 0x70) + 0xB4);
+         * add an 8-byte dead home). The camera fov word, aspect and near go as raw words. */
+        src = (float *)*(int *)(o->camera + 0x14C);
+        aEE44_a(m30, (int)src, *(int *)&o->aspect, *(int *)&o->near, o->far);
+        src = (float *)(o->camera + 0xB4); /* the camera's view matrix */
         for (r = 0; r < 4; r++) {
             for (c = 0; c < 4; c++) {
                 result[r*4 + c] = 0.0f;
@@ -17572,9 +17551,9 @@ void Window_setupView(char *o) {
         }
         gl_func_00000000(result, m30);
     } else {
-        int w = *(int *)(o + 0xB8);
-        int h = *(int *)(o + 0xBC);
-        aEE44_c(m30, (float)(-w / 2), (float)(w / 2), (float)(-h / 2), (float)(h / 2), *(float *)(o + 0xAC), *(float *)(o + 0xB0), 1.0f);
+        int w = o->width;
+        int h = o->height;
+        aEE44_c(m30, (float)(-w / 2), (float)(w / 2), (float)(-h / 2), (float)(h / 2), o->near, o->far, 1.0f);
     }
 }
 
@@ -18411,30 +18390,30 @@ void LightTarget_ctor(char *a0) {
     extern int gl_func_00000000f3(void *, void *, float, float, float);
     extern int D_51448_vt;
     char *l;
-    char *n;
-    char *o;
+    LightTarget *n;
+    LightTarget *o;
     f32 k;
     gl_func_00000000(a0);
-    o = (char *)gl_func_00000000(0x16C);
+    o = (LightTarget *)gl_func_00000000(0x16C);
     if (o != 0) {
-        gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f);
+        gl_func_00000000f3(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f); /* "lighttarget" */
         k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
-        *(int *)(o + 0x120) = (*(int **)(o + 0x28) = &D_51448_vt, 0xFFFF);
-        *(f32 *)(o + 0x108) = k;
-        *(f32 *)(o + 0x10C) = k;
-        *(f32 *)(o + 0x110) = k;
-        *(f32 *)(o + 0x124) = 1.0f;
+        o->mask = (o->node.vptr = (s32)&D_51448_vt, 0xFFFF);
+        o->unk108[0] = k;
+        o->unk108[1] = k;
+        o->unk108[2] = k;
+        o->scale = 1.0f;
     }
-    *(char **)(a0 + 0x28) = o;
-    *(char **)(a0 + 0xC) = o;
-    *(char **)(a0 + 0x10) = o;
+    *(LightTarget **)(a0 + 0x28) = o;
+    *(LightTarget **)(a0 + 0xC) = o;
+    *(LightTarget **)(a0 + 0x10) = o;
     l = *(char **)(*(char **)(a0 + 0x3C) + 0x10);
     {
     gl_func_00000000_51448v(l + 0x10, (n = o, o = 0, n));
-    if (*(int *)(n + 0x14) != 0) {
-        *(int *)(n + 4) = 1;
+    if (n->node.parent != 0) {
+        n->node.unk04 = 1;
     }
-    *(char **)(n + 0x14) = l;
+    n->node.parent = (s32)l;
     }
 }
 
@@ -18587,30 +18566,30 @@ void Mat_printHex_000517B8(int *a0, int a1) {
 /* BaseMat_init_000517E4: struct-init/zero. a0->0x44 = &D + 0x20EBC (a SYMBOL
  * ref -> lui 0x2; addiu 0xEBC, not a literal which gives lui; ori). Decode the
  * symbol (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
-void BaseMat_init_000517E4(int *a0) {
-    a0[0x48 / 4] = 0;
-    a0[0x58 / 4] = 0;
-    a0[0x14 / 4] = 0;
-    a0[0x18 / 4] = -1;
-    a0[0x1C / 4] = 0;
-    a0[0x24 / 4] = 0;
-    *(short *)((char *)a0 + 0x20) = 0;
-    *(short *)((char *)a0 + 0x22) = 0;
-    a0[0x28 / 4] = 0;
-    *(short *)((char *)a0 + 0x2C) = 0;
-    *(short *)((char *)a0 + 0x2E) = 0;
-    a0[0x38 / 4] = 0;
-    a0[0x34 / 4] = 0;
-    a0[0x3C / 4] = 0;
-    a0[0x40 / 4] = 0;
-    a0[0x44 / 4] = (int)((char *)&D_00000000 + 0x20EBC);
-    *(char *)((char *)a0 + 0x32) = 0;
-    *(short *)((char *)a0 + 0x30) = 0;
-    *(float *)((char *)a0 + 0xC) = 0.0f;
-    *(float *)((char *)a0 + 0x8) = 0.0f;
-    *(float *)((char *)a0 + 0x4) = 0.0f;
-    *(float *)((char *)a0 + 0x0) = 0.0f;
-    *(float *)((char *)a0 + 0x10) = 1.0f;
+void BaseMat_init_000517E4(BaseMat *a0) {
+    a0->unk48 = 0;
+    a0->unk58 = 0;
+    a0->unk14 = 0;
+    a0->id = -1;
+    a0->texels = 0;
+    a0->format = 0;
+    a0->width = 0;
+    a0->height = 0;
+    a0->texFlags = 0;
+    a0->shiftS = 0;
+    a0->shiftT = 0;
+    a0->geomFlags = 0;
+    a0->unk34 = 0;
+    a0->tile = 0;
+    a0->next = 0;
+    a0->name = (char *)&D_00000000 + 0x20EBC; /* "<no name>" */
+    a0->unk32 = 0;
+    a0->unk30 = 0;
+    a0->colour[3] = 0.0f;
+    a0->colour[2] = 0.0f;
+    a0->colour[1] = 0.0f;
+    a0->colour[0] = 0.0f;
+    a0->unk10 = 1.0f;
 }
 
 // BaseMat_hostioParms — EXACT (unwrapped 2026-10-16; was OBJDIFF-100 since
