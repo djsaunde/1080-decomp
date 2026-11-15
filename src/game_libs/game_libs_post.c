@@ -4844,7 +4844,6 @@ s32 gl_func_000230D0(gl_230D0_Sample *sample, s32 fontId) {
 #undef AudioHeap_AllocSampleCache
 #undef AudioLoad_SyncDmaUnkMedium
 #undef AudioLoad_SyncDma
-#endif
 
 // gl_func_000231B4 — STRUCTURAL PASS (0xD0 / 52 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
