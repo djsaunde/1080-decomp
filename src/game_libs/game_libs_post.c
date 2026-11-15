@@ -12653,42 +12653,42 @@ void snd_SetPlayer0ChannelFreqScale_2DF64(int a0, float a2) {
  * No prologue-stolen complications. Sibling of 0002DF00 in
  * sibling-chain context (source 2 of /decompile). */
 extern int gl_func_00000000();
-void snd_SoundObjInit_2DF98(unsigned char *a0, int a1) {
-    a0[0x21] = a1;
-    a0[0x14] = 1;
-    a0[0x15] = 1;
-    a0[0x16] = 0;
-    *(short*)(a0 + 0x1A) = 0;
-    a0[0x17] = 0;
-    a0[0x1D] = 0;
-    a0[0x34] = 0;
-    a0[0x1E] = 0;
-    a0[0x20] = 1;
-    a0[0x26] = 0;
-    a0[0x23] = 1;
-    a0[0x2C] = 1;
-    *(int*)(a0 + 0x48) = 0;
-    *(int*)(a0 + 0x38) = 0;
-    a0[0x2D] = 0;
-    a0[0x29] = 0;
-    a0[0x18] = 0;
-    a0[0x28] = 0x40;
-    a0[0x32] = 0;
-    a0[0x33] = 0;
-    a0[0x1F] = 0;
-    a0[0x60] = 0;
-    a0[0x61] = 0;
-    a0[0x62] = 0;
-    *(float*)a0 = 0.0f;
-    *(float*)(a0 + 0x50) = 0.0f;
-    *(float*)(a0 + 0x4) = 0.0f;
-    *(float*)(a0 + 0x8) = 0.0f;
-    *(float*)(a0 + 0xC) = 0.0f;
-    *(float*)(a0 + 0x44) = 0.0f;
-    *(float*)(a0 + 0x10) = 0.0f;
-    *(float*)(a0 + 0x54) = 1.0f;
-    *(float*)(a0 + 0x58) = 1.0f;
-    *(float*)(a0 + 0x5C) = (float)1;
+void snd_SoundObjInit_2DF98(SoundObj *o, int a1) {
+    o->kind = a1;
+    o->unk14 = 1;
+    o->unk15 = 1;
+    o->flags = 0;
+    o->unk1A = 0;
+    o->unk17 = 0;
+    o->unk1D = 0;
+    o->unk34 = 0;
+    o->unk1E = 0;
+    o->fired = 1;
+    o->unk26 = 0;
+    o->unk23 = 1;
+    o->unk2C = 1;
+    o->unk48 = 0;
+    o->unk38 = 0;
+    o->lastLevel = 0;
+    o->level = 0;
+    o->unk18 = 0;
+    o->unk28 = 0x40;
+    o->scaleIdx = 0;
+    o->unk33 = 0;
+    o->unk1F = 0;
+    o->pan[0] = 0;
+    o->pan[1] = 0;
+    o->pan[2] = 0;
+    o->speed = 0.0f;
+    o->unk50 = 0.0f;
+    o->unk04 = 0.0f;
+    o->unk08 = 0.0f;
+    o->unk0C = 0.0f;
+    o->unk44 = 0.0f;
+    o->unk10 = 0.0f;
+    o->volScale = 1.0f;
+    o->unk58 = 1.0f;
+    o->unk5C = (float)1;
     if (*(int*)&D_00000000 != 0) {
         gl_func_00000000(a1 & 0xFF);
     }
@@ -12722,24 +12722,24 @@ void snd_SoundObjInit_2DF98(unsigned char *a0, int a1) {
 //   fn). Real-C STRUCTURAL body below per the analysis. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
 extern int gl_func_00000000();
-void snd_SoundObjReset_2E06C(char *o) {
-    *(unsigned char *)(o + 0x20) = 0;
-    *(unsigned char *)(o + 0x23) = 0;
-    *(float *)(o + 0) = 0.0f;
-    *(float *)(o + 4) = 0.0f;
-    gl_func_00000000(*(unsigned char *)(o + 0x21));
+void snd_SoundObjReset_2E06C(SoundObj *o) {
+    o->fired = 0;
+    o->unk23 = 0;
+    o->speed = 0.0f;
+    o->unk04 = 0.0f;
+    gl_func_00000000(o->kind);
 }
 
-void snd_SoundObjSetScaleIdx15_2E0A0(char *a0) {
-    a0[0x32] = 0xF;
+void snd_SoundObjSetScaleIdx15_2E0A0(SoundObj *o) {
+    o->scaleIdx = 0xF;
 }
 
-void snd_SoundObjSetScaleIdx31_2E0AC(char *a0) {
-    a0[0x32] = 0x1F;
+void snd_SoundObjSetScaleIdx31_2E0AC(SoundObj *o) {
+    o->scaleIdx = 0x1F;
 }
 
-void snd_SoundObjSetFlag1A_2E0B8(char *a0) {
-    *(short *)(a0 + 0x1A) = 1;
+void snd_SoundObjSetFlag1A_2E0B8(SoundObj *o) {
+    o->unk1A = 1;
 }
 
 #ifdef NON_MATCHING
@@ -12775,9 +12775,9 @@ void snd_SoundObjTriggerEvent_2E0C4(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjTriggerEvent_2E0C4);
 #endif
 
-void snd_SoundObjDisable_2E1A8(unsigned char *a0) {
-    a0[0x16] |= 1;
-    a0[0x16] &= ~0x20;
+void snd_SoundObjDisable_2E1A8(SoundObj *o) {
+    o->flags |= 1;
+    o->flags &= ~0x20;
 }
 
 // MATCHED 2026-05-30. Fire-once event trigger (counterpart to the
@@ -12794,17 +12794,17 @@ void snd_SoundObjDisable_2E1A8(unsigned char *a0) {
 //   so the reloc resolves — same intra-segment-jal recipe as gl_func_00037C50.
 //   Float in a3 lands as raw 0x42A00000 thanks to the float-PROTOTYPED extern
 //   (a0-a2 int, so arg4 float goes to the a3 GPR; K&R would double-promote it).
-extern void gl_func_00043BE4(char *o, int event, int zero, float vol, int idx);
-void snd_SoundObjStart_2E1C0(char *o) {
-    unsigned char f = *(unsigned char *)(o + 0x16);
+extern void gl_func_00043BE4(SoundObj *o, int event, int zero, float vol, int idx);
+void snd_SoundObjStart_2E1C0(SoundObj *o) {
+    unsigned char f = o->flags;
     if (f & 0x01) return;
     if (f & 0x20) return;
-    *(unsigned char *)(o + 0x16) = f | 0x20;
-    if (*(unsigned char *)(o + 0x1C) & 0x01) return;
-    if (*(unsigned char *)(o + 0x14) == 1) {
-        gl_func_00043BE4(o, 0x29, 0, 80.0f, *(unsigned char *)(o + 0x28));
+    o->flags = f | 0x20;
+    if (o->flags1C & 0x01) return;
+    if (o->unk14 == 1) {
+        gl_func_00043BE4(o, 0x29, 0, 80.0f, o->unk28);
     } else {
-        gl_func_00043BE4(o, 0x2A, 0, 80.0f, *(unsigned char *)(o + 0x28));
+        gl_func_00043BE4(o, 0x2A, 0, 80.0f, o->unk28);
     }
 }
 
@@ -12842,13 +12842,13 @@ void snd_SoundObjStart_2E1C0(char *o) {
 //   Reg-alloc crack: inline the o->0x21 deref (k → throwaway $t8) + a SEPARATE
 //   named local for the masked store value (→ $t7), leaving f in $v0.
 extern int gl_func_00000000();
-void snd_SoundObjStop_2E24C(char *o) {
-    unsigned char f = *(unsigned char *)(o + 0x16);
+void snd_SoundObjStop_2E24C(SoundObj *o) {
+    unsigned char f = o->flags;
     unsigned char nf;
     if (!(f & 0x20)) return;
     nf = f & ~0x20;
-    *(unsigned char *)(o + 0x16) = nf;
-    if (*(unsigned char *)(o + 0x21) == 2) return;
+    o->flags = nf;
+    if (o->kind == 2) return;
     gl_func_00000000(o, 0x3D);
 }
 

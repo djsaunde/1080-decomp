@@ -704,4 +704,75 @@ AUDIO_ASSERT_MEMBER(Note, synthesisState, 0x10);
 AUDIO_ASSERT_MEMBER(Note, playbackState, 0x30);
 AUDIO_ASSERT_MEMBER(Note, sampleState, 0xB0);
 
+/*
+ * SoundObj: the game-side 0x64-byte sound object of the glue layer (game_libs 0x2DF98..0x31608,
+ * agent-c runs 455 / 464). bootup 0x57C allocates it (mem_new(0x64)) and calls
+ * snd_SoundObjInit_2DF98(o, kind); bootup snd_updatePlayer drives it each frame through
+ * snd_SoundObjSetAngle_2F720 and snd_SoundObjUpdate_2E354. bootup keeps it in a SndHandle
+ * (obj at +0, the event argument at +8) and the one-call wrappers 0x85C..0xA94 forward to the
+ * snd_SoundObj* functions. Unnamed fields are named by offset.
+ */
+typedef struct SoundObj {
+    f32 speed;              /* 0x00: snd_SoundObjTriggerEvent picks level 1/2/3 at 25 / 38 / 50 */
+    f32 unk04;              /* 0x04 */
+    f32 unk08;              /* 0x08 */
+    f32 unk0C;              /* 0x0C: 0..1 */
+    f32 unk10;              /* 0x10 */
+    u8 unk14;               /* 0x14: 1 -> Start plays event 0x29, else 0x2A */
+    u8 unk15;               /* 0x15 */
+    u8 flags;               /* 0x16: bit0 disabled, bit2 event pending, bit5 started (Start / Stop latch) */
+    u8 unk17;               /* 0x17 */
+    s8 unk18;               /* 0x18 */
+    u8 pad19;
+    s16 unk1A;              /* 0x1A: snd_SoundObjSetFlag1A */
+    u8 flags1C;             /* 0x1C: bit0 = positional (Start does nothing) */
+    u8 unk1D;               /* 0x1D */
+    u8 unk1E;               /* 0x1E */
+    u8 unk1F;               /* 0x1F: bootup 0xA50 */
+    u8 fired;               /* 0x20 */
+    u8 kind;                /* 0x21: 0 -> player-0 channel 3, else 7; 2 = Stop requests no cue */
+    u8 pad22;
+    u8 unk23;               /* 0x23 */
+    u8 pad24[2];
+    u8 unk26;               /* 0x26 */
+    u8 pad27;
+    u8 unk28;               /* 0x28: 0x40 at init; Start's last argument */
+    u8 level;               /* 0x29 */
+    u8 pad2A[2];
+    u8 unk2C;               /* 0x2C */
+    u8 lastLevel;           /* 0x2D */
+    u8 eventArg;            /* 0x2E */
+    u8 pad2F;
+    u16 eventType;          /* 0x30: low byte 0x31 read by snd_SoundObjEventIndex */
+    u8 scaleIdx;            /* 0x32: freq / vol multiplier table index (15 / 31) */
+    u8 unk33;               /* 0x33 */
+    u8 unk34;               /* 0x34 */
+    u8 pad35[3];
+    s32 unk38;              /* 0x38 */
+    u8 pad3C[8];
+    f32 unk44;              /* 0x44 */
+    s32 unk48;              /* 0x48 */
+    u8 pad4C[4];
+    f32 unk50;              /* 0x50 */
+    f32 volScale;           /* 0x54: Play multiplies the volume by it when flags1C bit0 */
+    f32 unk58;              /* 0x58 */
+    f32 unk5C;              /* 0x5C */
+    u8 pan[4];              /* 0x60: pan bytes (SetAngle writes 0x60) */
+} SoundObj;
+
+AUDIO_ASSERT_MEMBER(SoundObj, flags, 0x16);
+AUDIO_ASSERT_MEMBER(SoundObj, kind, 0x21);
+AUDIO_ASSERT_MEMBER(SoundObj, eventType, 0x30);
+AUDIO_ASSERT_MEMBER(SoundObj, unk48, 0x48);
+AUDIO_ASSERT_MEMBER(SoundObj, volScale, 0x54);
+AUDIO_ASSERT_MEMBER(SoundObj, pan, 0x60);
+typedef char audio_soundobj_size_assert[sizeof(SoundObj) == 0x64 ? 1 : -1];
+
+/* bootup's handle around a SoundObj (the bootup wrappers 0x85C..0xA94 take it) */
+typedef struct SndHandle {
+    SoundObj *obj;          /* 0x0: NULL -> the wrappers do nothing */
+    s32 unk04;              /* 0x4 */
+    s32 eventArg;           /* 0x8: bootup 0xA94 sets it; 0x8F4..0x9D8 pass it to an event query */
+} SndHandle;
+
 #endif /* AUDIO_H */

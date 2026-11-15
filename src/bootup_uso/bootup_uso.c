@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/snowboarder.h"
+#include "audio.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -332,83 +333,83 @@ void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", snd_updatePlayer);
 #endif
 
-void func_0000085C(int *a0) {
-    int a1 = *a0;
-    if (a1 != 0) {
-        func_00000000(a1);
+void func_0000085C(SndHandle *h) {
+    SoundObj *o = h->obj;
+    if (o != 0) {
+        func_00000000(o);
     }
 }
 
-void func_00000888(int *a0) {
-    int a1 = *a0;
-    if (a1 != 0) {
-        func_00000000(a1);
+void func_00000888(SndHandle *h) {
+    SoundObj *o = h->obj;
+    if (o != 0) {
+        func_00000000(o);
     }
 }
 
-void func_000008B4(int *a0) {
-    func_00000000(*a0);
+void func_000008B4(SndHandle *h) {
+    func_00000000(h->obj);
 }
 
-void func_000008D4(int *a0) {
-    func_00000000(*a0);
+void func_000008D4(SndHandle *h) {
+    func_00000000(h->obj);
 }
 
-void func_000008F4(int *a0, int a1_orig) {
-    int ret = func_00000000(a0, a0[2]);
-    int node = *a0;
+void func_000008F4(SndHandle *h, int a1_orig) {
+    int ret = func_00000000(h, h->eventArg);
+    SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 0, a1_orig);
     }
 }
 
-void func_00000940(int *a0, int a1_orig) {
-    int ret = func_00000000(a0, a0[2]);
-    int node = *a0;
+void func_00000940(SndHandle *h, int a1_orig) {
+    int ret = func_00000000(h, h->eventArg);
+    SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 3, a1_orig);
     }
 }
 
-void func_0000098C(int *a0, int a1_orig) {
-    int ret = func_00000000(a0, a0[2]);
-    int node = *a0;
+void func_0000098C(SndHandle *h, int a1_orig) {
+    int ret = func_00000000(h, h->eventArg);
+    SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 1, a1_orig);
     }
 }
 
-void func_000009D8(int *a0, int a1_orig) {
-    int ret = func_00000000(a0, a0[2]);
-    int node = *a0;
+void func_000009D8(SndHandle *h, int a1_orig) {
+    int ret = func_00000000(h, h->eventArg);
+    SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 2, a1_orig);
     }
 }
 
-void func_00000A24(int *a0) {
-    int a1 = *a0;
-    if (a1 != 0) {
-        func_00000000(a1);
+void func_00000A24(SndHandle *h) {
+    SoundObj *o = h->obj;
+    if (o != 0) {
+        func_00000000(o);
     }
 }
 
-void func_00000A50(int **a0, int a1) {
-    int *v0 = *a0;
+void func_00000A50(SndHandle *h, int a1) {
+    SoundObj *v0 = h->obj;
     if (v0 != 0) {
-        ((char*)v0)[0x1F] = (char)a1;
+        v0->unk1F = (char)a1;
     }
 }
 
-void func_00000A68(int *a0) {
-    int a1 = *a0;
-    if (a1 != 0) {
-        func_00000000(a1);
+void func_00000A68(SndHandle *h) {
+    SoundObj *o = h->obj;
+    if (o != 0) {
+        func_00000000(o);
     }
 }
 
-void func_00000A94(int *a0, int a1) {
-    a0[2] = a1;
+void func_00000A94(SndHandle *h, int a1) {
+    h->eventArg = a1;
 }
 
 /* NATURAL CEILING: 97.83% NM (register-pick cap). IDO emits
