@@ -1,6 +1,6 @@
-nonmatching game_getNthChild_00001FC8, 0x4C
+nonmatching WorldRegistry_getCourse_00001FC8, 0x4C
 
-glabel game_getNthChild_00001FC8
+glabel WorldRegistry_getCourse_00001FC8
     /* DD2A34 00001FC8 8C830070 */  lw         $v1, 0x70($a0)
     /* DD2A38 00001FCC 18A0000F */  blez       $a1, .L0000200C
     /* DD2A3C 00001FD0 00001025 */   or        $v0, $zero, $zero
@@ -23,4 +23,4 @@ glabel game_getNthChild_00001FC8
   .L0000200C:
     /* DD2A78 0000200C 03E00008 */  jr         $ra
     /* DD2A7C 00002010 00601025 */   or        $v0, $v1, $zero
-endlabel game_getNthChild_00001FC8
+endlabel WorldRegistry_getCourse_00001FC8

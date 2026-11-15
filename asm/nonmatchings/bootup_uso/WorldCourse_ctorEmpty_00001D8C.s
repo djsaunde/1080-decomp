@@ -1,6 +1,6 @@
-nonmatching WorldRegistry_ctor_00001D8C, 0x2C
+nonmatching WorldCourse_ctorEmpty_00001D8C, 0x2C
 
-glabel WorldRegistry_ctor_00001D8C
+glabel WorldCourse_ctorEmpty_00001D8C
     /* DD27F8 00001D8C 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD27FC 00001D90 14800004 */  bnez       $a0, .L00001DA4
     /* DD2800 00001D94 AFBF0014 */   sw        $ra, 0x14($sp)
@@ -13,4 +13,4 @@ glabel WorldRegistry_ctor_00001D8C
     /* DD2818 00001DAC 00801025 */  or         $v0, $a0, $zero
     /* DD281C 00001DB0 03E00008 */  jr         $ra
     /* DD2820 00001DB4 00000000 */   nop
-endlabel WorldRegistry_ctor_00001D8C
+endlabel WorldCourse_ctorEmpty_00001D8C

@@ -46,7 +46,7 @@
 
 /* ---- World registry (bootup, 0x118, node name "World Registry") ----
  * Built once by WorldRegistry_create_00001E08 (GameFlow_create); game_init picks course N with
- * game_getNthChild_00002014 and passes it to game_createMap. The same object holds the scene's root
+ * WorldRegistry_getCourse_00002014 and passes it to game_createMap. The same object holds the scene's root
  * nodes (game_setParams_00002060) and the player / window lists. */
 typedef struct WorldCourse {
     char name[0x40];            /* 0x00: course name (str_copyEnd) */

@@ -1059,7 +1059,7 @@ void stream_readQuad_00001D34(Quad4 *dst) {
     *dst = buf;
 }
 
-void *WorldRegistry_ctor_00001D8C(void *a0) {
+void *WorldCourse_ctorEmpty_00001D8C(void *a0) {
     if (a0 == 0) {
         a0 = (void*)func_00000000(0x48);
     }
@@ -1143,7 +1143,7 @@ void WorldRegistry_addCourse_00001F78(WorldRegistry *obj, int d1, int d2) {
     obj->numCourses += 1;
 }
 
-void *game_getNthChild_00001FC8(WorldRegistry *a0, int a1) {
+void *WorldRegistry_getCourse_00001FC8(WorldRegistry *a0, int a1) {
     WorldCourse *p = a0->head.next;
     int i;
     for (i = 0; i < a1; i++) {
@@ -1152,7 +1152,7 @@ void *game_getNthChild_00001FC8(WorldRegistry *a0, int a1) {
     return p;
 }
 
-void *game_getNthChild_00002014(WorldRegistry *a0, int a1) {
+void *WorldRegistry_getCourse_00002014(WorldRegistry *a0, int a1) {
     WorldCourse *p = a0->head.next;
     int i;
     for (i = 0; i < a1; i++) {
