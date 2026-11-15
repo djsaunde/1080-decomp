@@ -35,7 +35,7 @@
 #define BACKUP_CHUNK_KEY    0xDEADBBAD  /* backup_checksum key of every chunk */
 #define BACKUP_HEADER_KEY   0xD1265205  /* key of the header hash */
 
-/* Valid bit in byte 0 of every record entry (Backup_func_00009A2C / 9B98 / 9CDC
+/* Valid bit in byte 0 of every record entry (Backup_timeEntryIsNew / 9B98 / 9CDC
  * test it, 9978 / 9AFC / 9BF4 clear it, the setters OR it in). */
 #define BACKUP_ENTRY_VALID  0x80
 
@@ -43,7 +43,7 @@
 
 /* Best-time entry (8). Setter 9AD8 (time + extra), 99DC (defaults: "ead"-style
  * initials stored as letter - 'a'), 9988 (initials + the packed flag bits a2 | a3 << 3).
- * Compare 9A50: time[0..2] most significant first; Backup_func_0000A1B0 builds the
+ * Compare 9A50: time[0..2] most significant first; Backup_courseRecordFindTimeRank builds the
  * triple from milliseconds as minutes, seconds, hundredths. */
 typedef struct BackupTimeEntry {
     /* 0x0 */ u8 flags;         /* BACKUP_ENTRY_VALID | (a3 << 3) | a2 (low 7 bits from 9988) */
@@ -134,7 +134,7 @@ typedef struct BackupSession {
 /* BackupSession.modes: the mode that opened the session (tim_openSession stores 1,
  * trk_openSession 2). B3DC / B450 write the course chunk back for 1 or 2 and the
  * arcade chunk for 4; B4A4 updates course times (1), course scores (2) or arcade (4).
- * The same value is the mode in BackupGhost.bits 0-1 (Backup_func_0000AA28). */
+ * The same value is the mode in BackupGhost.bits 0-1 (Backup_ghostMatches). */
 #define BACKUP_MODE_TIME    1   /* time attack: BackupCourseRecord.times */
 #define BACKUP_MODE_TRICK   2   /* trick mode: BackupCourseRecord.scores */
 #define BACKUP_MODE_ARCADE  4

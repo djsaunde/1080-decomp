@@ -1,0 +1,14 @@
+nonmatching Backup_scoreEntryIsNew, 0x24
+
+glabel Backup_scoreEntryIsNew
+    /* DEEC70 00009B98 908E0000 */  .word 0x908E0000
+    /* DEEC74 00009B9C 00001025 */  .word 0x00001025
+    /* DEEC78 00009BA0 31CF0080 */  .word 0x31CF0080
+    /* DEEC7C 00009BA4 11E00003 */  .word 0x11E00003
+    /* DEEC80 00009BA8 00000000 */  .word 0x00000000
+    /* DEEC84 00009BAC 03E00008 */  .word 0x03E00008
+    /* DEEC88 00009BB0 24020001 */  .word 0x24020001
+    /* DEEC8C 00009BB4 03E00008 */  .word 0x03E00008
+    /* DEEC90 00009BB8 00000000 */  .word 0x00000000
+endlabel Backup_scoreEntryIsNew
+

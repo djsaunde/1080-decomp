@@ -967,17 +967,17 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_SUFFIX_BYTES_F
 # ColourItem_create_0000C5B0=0x8c: same class — word-exact 35/35 twin-mirror of 88B4 but the
 # compiled NM body carries its own jr-delay nop (0x90); target symbol is 0x8c with
 # the nop as baserom alignment (_pad.s).
-# tail clip 0x5568 -> 0x5570 (2026-10-14 agent-g): Backup_func_0000ABBC real def is 64w vs its
+# tail clip 0x5568 -> 0x5570 (2026-10-14 agent-g): Backup_arcadeSetNewNames real def is 64w vs its
 # old 62w NM body; EBC8 NM offset 0x5538 -> 0x5540, clip = offset + 0x30.
 # tail clip 0x555c -> 0x5568 (2026-10-14 agent-g): RaceTracker_sendWinResult real def is 68w vs its
 # old 65w NM body; EBC8 NM offset 0x552c -> 0x5538, clip = offset + 0x30.
-# tail clip 0x5564 -> 0x555c (2026-10-14 agent-g): Backup_func_0000C49C real def is 21w vs its
+# tail clip 0x5564 -> 0x555c (2026-10-14 agent-g): Backup_cacheGhostBits real def is 21w vs its
 # old 23w NM body; EBC8 NM offset 0x5534 -> 0x552c, clip = offset + 0x30.
 # tail clip 0x5570 -> 0x557c (2026-10-14 agent-g): RaceTracker_popComboBonus real def is 52w vs its
 # old NM body (3 words shorter in-tree); EBC8 NM offset 0x5540 -> 0x554c, clip = offset + 0x30.
 # tail clip 0x557c -> 0x5578 (2026-10-14 agent-g): RaceTracker_onGateCleared real def is 86w vs its
 # old NM body (1 word longer in-tree); EBC8 NM offset 0x554c -> 0x5548, clip = offset + 0x30.
-# tail clip 0x5570 -> 0x5628 (2026-10-15 agent-g): Backup_func_0000B958 NM body is now the 69w
+# tail clip 0x5570 -> 0x5628 (2026-10-15 agent-g): Backup_wordsEqual NM body is now the 69w
 # unrolled form (was a 24w plain loop); EBC8 NM offset 0x5540 -> 0x55f8, clip = offset + 0x30.
 # tail clip 0x5628 -> 0x5590 (2026-10-15 agent-g): ColourItem_create_0000959C (old 0x98 -O2 NM body)
 # moved out to game_libs_o0_949C.c; EBC8 NM offset 0x55f8 -> 0x5560, clip = offset + 0x30.

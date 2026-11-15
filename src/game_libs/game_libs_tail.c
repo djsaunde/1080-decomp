@@ -151,7 +151,7 @@ int backup_checksumEqual(s32 *a0, s32 *a1) {
     return 1;
 }
 
-void Backup_func_00009978(BackupTimeEntry *arg0) {
+void Backup_timeEntryClearNew(BackupTimeEntry *arg0) {
     arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
 }
 
@@ -161,7 +161,7 @@ void Backup_func_00009978(BackupTimeEntry *arg0) {
  * unsigned char params emit BOTH the sw a2,8(sp)/sw a3,0xC(sp) arg homes AND
  * the eager andi 0xFF zero-extends; comma-init for-loop pre-header + trailing
  * if(n==3)break (99DC/9B60/9C04 recipe) gives li a1,3 + sb-in-delay. */
-void Backup_func_00009988(char *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_timeEntrySetName(char *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = a0, s = a1; ;) {
@@ -183,7 +183,7 @@ void Backup_func_00009988(char *a0, char *a1, unsigned char a2, unsigned char a3
  * trailing `if (n == 3) break;`. That ordering makes GCC materialize the
  * bound `li a1,3` immediately after the stores (before the setup moves),
  * exactly as the target schedules it. */
-void Backup_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5, int a6) {
+void Backup_timeEntryInit(char *a0, int a1, int a2, char *a3, int a4, int a5, int a6) {
     int n;
     char *d;
     char *s;
@@ -203,19 +203,19 @@ void Backup_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5, in
     a0[7] = a6;
 }
 
-/* Backup_func_00009A2C: flag-test accessor. splat's jr-ra heuristic split
+/* Backup_timeEntryIsNew: flag-test accessor. splat's jr-ra heuristic split
  * the return-0 tail (jr ra; nop) into 00009A48 — which coincidentally matched
  * as an empty `void f(void){}` stub. Merged it is one function: the `beqz`
  * return-0 path targets that tail. The `if(...)return 1; return 0;` form keeps
  * the early `move v0,zero` default + `li v0,1` in the taken jr-ra delay. */
-int Backup_func_00009A2C(BackupTimeEntry *a0) {
+int Backup_timeEntryIsNew(BackupTimeEntry *a0) {
     if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
 }
 
-/* Backup_func_00009A50 (34 insns, 0x88): strict date-triple compare,
+/* Backup_timeEntryIsSlower (34 insns, 0x88): strict date-triple compare,
  * returns 1 if the record's stored triple a0[5..7] is greater than the triple
  * a1[0..2] (field-by-field, most significant first), else 0. Inverse-setter is
  * 9AD8 (a0[5]=a1, a0[6]=a2, a0[7]=a3).
@@ -232,7 +232,7 @@ int Backup_func_00009A2C(BackupTimeEntry *a0) {
  * return 1;` -- IDO hoists `li v0,1` above the `bnez at` and branches to the
  * trailing `jr ra; nop`. `if (a1[2] < a0[7]) return 1; return 0;` puts the
  * `li v0,1` in a taken-branch delay slot instead (3 words differ). */
-int Backup_func_00009A50(BackupTimeEntry *a0, unsigned char *a1) {
+int Backup_timeEntryIsSlower(BackupTimeEntry *a0, unsigned char *a1) {
     if (a0->time[0] < a1[0]) return 0;
     if (a1[0] < a0->time[0]) return 1;
     if (a0->time[1] < a1[1]) return 0;
@@ -241,7 +241,7 @@ int Backup_func_00009A50(BackupTimeEntry *a0, unsigned char *a1) {
     return 1;
 }
 
-void Backup_func_00009AD8(BackupTimeEntry *a0, int a1, int a2, int a3, int a4) {
+void Backup_timeEntrySet(BackupTimeEntry *a0, int a1, int a2, int a3, int a4) {
     a0->time[0] = a1;
     a0->time[1] = a2;
     a0->time[2] = a3;
@@ -250,14 +250,14 @@ void Backup_func_00009AD8(BackupTimeEntry *a0, int a1, int a2, int a3, int a4) {
 }
 
 /* Clears MSB (sibling of matched _00009978). */
-void Backup_func_00009AFC(BackupScoreEntry *arg0) {
+void Backup_scoreEntryClearNew(BackupScoreEntry *arg0) {
     arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
 }
 
 /* Sibling of 00009988 (copy to a0[1..3] via d[0]; same flag-pack a0[0]).
  * EXACT 21/21 (2026-07-08) via the same uchar-param + comma-init-for-loop
  * lever (see 00009988 / 00009C04). */
-void Backup_func_00009B0C(char *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_scoreEntrySetName(char *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = a0, s = a1; ;) {
@@ -277,8 +277,8 @@ void Backup_func_00009B0C(char *a0, char *a1, unsigned char a2, unsigned char a3
  * `if (n==3) break;` exit: materializes `li a1,3` right after `sb a1,0(a0)`
  * (target schedule) AND keeps the loop-bottom order (store before branch,
  * `s++` in the delay slot). See docs/IDO_CODEGEN.md "for-loop comma-init
- * flips the loop-pre-header schedule" (sibling Backup_func_000099DC). */
-void Backup_func_00009B60(char *a0, int a1, char *a2, int a3) {
+ * flips the loop-pre-header schedule" (sibling Backup_timeEntryInit). */
+void Backup_scoreEntryInit(char *a0, int a1, char *a2, int a3) {
     int n;
     char *d, *s;
     a0[0] = a1;
@@ -296,23 +296,23 @@ void Backup_func_00009B60(char *a0, int a1, char *a2, int a3) {
 
 /* Flag/compare-test accessor family (sibling of 00009A2C): splat split each
  * return-0 tail into the following empty-stub symbol; merged each is one fn. */
-int Backup_func_00009B98(BackupScoreEntry *a0) {
+int Backup_scoreEntryIsNew(BackupScoreEntry *a0) {
     if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
 }
 
-int Backup_func_00009BBC(BackupScoreEntry *a0, int a1) {
+int Backup_scoreEntryIsLower(BackupScoreEntry *a0, int a1) {
     if (a0->score < a1) {
         return 1;
     }
     return 0;
 }
 
-void Backup_func_00009BE0(BackupScoreEntry *a0, int a1) { a0->score = a1; a0->flags |= BACKUP_ENTRY_VALID; }
+void Backup_scoreEntrySet(BackupScoreEntry *a0, int a1) { a0->score = a1; a0->flags |= BACKUP_ENTRY_VALID; }
 
-void Backup_func_00009BF4(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */ }
+void Backup_arcadeEntryClearNew(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */ }
 
 /* Word-variant sibling of 00009988: copy to a0[5..7] via d[4]; word flag-pack
  * *(int*)a0 = (*(int*)a0 & ~0x7F) | a2 | (a3<<3) (lw/sw, mask via li -0x80).
@@ -322,7 +322,7 @@ void Backup_func_00009BF4(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear B
  * sw a2,8(sp)/sw a3,0xC(sp) homes + eager andi zero-extends; comma-init
  * for-loop pre-header (sibling 99DC recipe) gives li a1,3 + sb-in-delay.
  * Siblings 9988/9B0C should re-try the same lever. */
-void Backup_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char a3) {
+void Backup_arcadeEntrySetName(int *a0, char *a1, unsigned char a2, unsigned char a3) {
     int n;
     char *d, *s;
     for (n = 0, d = (char *)a0, s = a1; ;) {
@@ -337,7 +337,7 @@ void Backup_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char a3)
     *a0 = (*a0 & ~0x7F) | a2 | (a3 << 3);
 }
 
-/* Backup_func_00009C5C: a0->0 = a1&0xFF; 3-iter char-transform loop
+/* Backup_arcadeEntryInit: a0->0 = a1&0xFF; 3-iter char-transform loop
  * (a0 bytes 5..7 = a2[0..2] - 0x61, family 99DC/9B60/9C04 comma-init recipe);
  * then a 5-word copy a0[2..6] = a3[1..5], a0 byte 4 = 5, a0[7] = a3[0].
  * EXACT 32/32 (2026-07-08). The old diagnosis ("shared strength-reduced
@@ -349,7 +349,7 @@ void Backup_func_00009C04(int *a0, char *a1, unsigned char a2, unsigned char a3)
  * MUST be phrased base-0 (`i=0..4`, indices i+2/i+1): the equivalent
  * `for (i = 1; i < 6; i++) a0[i+1] = a3[i];` materializes i=2 instead
  * (bases +8, offsets 0..C) = 23/32. */
-void Backup_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
+void Backup_arcadeEntryInit(int *a0, int a1, unsigned char *a2, int *a3) {
     int n;
     char *d;
     unsigned char *s;
@@ -371,21 +371,21 @@ void Backup_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
     a0[7] = a3[0];
 }
 
-int Backup_func_00009CDC(BackupArcadeEntry *a0) {
+int Backup_arcadeEntryIsNew(BackupArcadeEntry *a0) {
     if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
 }
 
-int Backup_func_00009D00(BackupArcadeEntry *a0, int a1) {
+int Backup_arcadeEntryIsLower(BackupArcadeEntry *a0, int a1) {
     if (a0->score < a1) {
         return 1;
     }
     return 0;
 }
 
-/* Backup_func_00009D24 — 37/37 EXACT (2026-07-03, agent-e w4).
+/* Backup_arcadeEntrySet — 37/37 EXACT (2026-07-03, agent-e w4).
  * Target is IDO -O2's 4x-unrolled copy loop (andi rem=n&3 remainder-first
  * pre-loop + pointer-compare main loop). Two source properties required:
  *  1. Natural `for (i = 0; i < arg3; i++)` — NOT m2c's
@@ -401,7 +401,7 @@ int Backup_func_00009D00(BackupArcadeEntry *a0, int a1) {
  *     after the entry beq) and test the strength-reduced source pointer.
  * Also: `sb a3` needs no mask (& 0xFFFF was harmless but pointless).
  */
-void Backup_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void Backup_arcadeEntrySet(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
   s32 i;
   *((int *) (((char *) arg0) + 0x1C)) = arg1;
   *((s8 *) (((char *) arg0) + 0x4)) = arg3;
@@ -411,7 +411,7 @@ void Backup_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
   *((int *) (((char *) arg0) + 0x0)) = (s32) ((*((int *) (((char *) arg0) + 0x0))) | 0x80);
 }
 
-/* Backup_func_00009DB8: 65-insn 3-iter batch dispatcher (size 0x104, frame 0x48, saves s0-s7).
+/* Backup_courseRecordResetTimes: 65-insn 3-iter batch dispatcher (size 0x104, frame 0x48, saves s0-s7).
  *
  * Iterates 3 times over a 3-element record array (12-byte stride), each
  * iteration computing a grid-index from (counter % 5) + (alignment-adjusted
@@ -493,7 +493,7 @@ void Backup_func_00009D24(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
  * ctx stays the inline `(char *)&D_00000000 + 0xD430` (uopt hoists it: lui
  * s6 / sw ra / addiu s6). */
 extern int gl_func_00000000();
-void Backup_func_00009DB8(int *out, int ia, int ib, int *src) {
+void Backup_courseRecordResetTimes(int *out, int ia, int ib, int *src) {
     int k;
     for (k = 0; k < 3; k++) {
         gl_func_00000000(out + k * 2, ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
@@ -502,7 +502,7 @@ void Backup_func_00009DB8(int *out, int ia, int ib, int *src) {
     }
 }
 
-/* Backup_func_00009EBC: 3-iteration loop dispatching to gl_func_00000000 with
+/* Backup_courseRecordResetScores: 3-iteration loop dispatching to gl_func_00000000 with
  * a 5x8 grid index computed as (a1 % 5) + ((a2 % 8) << 3). The signed
  * remainder of a2 by 8 comes from a sign-preserving bgez/andi/beq dance
  * (low 3 bits, adjusted by -8 when a2<0 and low bits nonzero). Args:
@@ -513,7 +513,7 @@ void Backup_func_00009DB8(int *out, int ia, int ib, int *src) {
  * 2026-09-11 (agent-g): EXACT 59/59. The 84.1% wrap hand-stepped four
  * cursors (dst += 8; row++; col++; a3++) inside `for (i = 0; i != 12; i += 4)`
  * and named the D+0xD434 arg as a pinned extern. Same shape as its sibling
- * Backup_func_00009DB8 (docs/IDO_CODEGEN.md
+ * Backup_courseRecordResetTimes (docs/IDO_CODEGEN.md
  * #iv-elimination-corollaries-candidate-first-addu-inline-cursors-aaec-9db8-afc4):
  * `for (k = 0; k < 3; k++)` with every cursor derived INLINE in the call --
  * x0 + 0x18 + k*8 (s0, first occurrence = a0 + 24), (a1 + k) % 5 (s1),
@@ -523,7 +523,7 @@ void Backup_func_00009DB8(int *out, int ia, int ib, int *src) {
  * `(char *)&D_00000000 + 0xD434` (uopt hoists it to s6, lui s6,1 /
  * addiu s6,s6,-11212 = the carry form). */
 extern int gl_func_00000000();
-void Backup_func_00009EBC(char *x0, int a1, int a2, int *a3) {
+void Backup_courseRecordResetScores(char *x0, int a1, int a2, int *a3) {
     int k;
     for (k = 0; k < 3; k++) {
         gl_func_00000000(x0 + 0x18 + k * 8, ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
@@ -531,10 +531,10 @@ void Backup_func_00009EBC(char *x0, int a1, int a2, int *a3) {
     }
 }
 
-/* Backup_func_00009FA8: 25-insn 3-iteration loop with 2 cross-USO calls per
+/* Backup_courseRecordClearNew: 25-insn 3-iteration loop with 2 cross-USO calls per
  * iter. Calls gl_func(a0+i) and gl_func(a0+0x18+i) for i = 0, 8, 0x10. */
 extern int gl_func_00000000();
-void Backup_func_00009FA8(char *a0) {
+void Backup_courseRecordClearNew(char *a0) {
     int i;
     char *p, *q;
     int limit;
@@ -551,13 +551,13 @@ void Backup_func_00009FA8(char *a0) {
     } while (i != limit);
 }
 
-/* Backup_func_0000A00C: process two parallel slot-arrays (a0 and a0+0x18), 3 iters
+/* Backup_courseRecordSetNewNames: process two parallel slot-arrays (a0 and a0+0x18), 3 iters
  * of stride 8: for each slot, if gl_func(slot) != 0, gl_func(slot, a1, a2, a3).
  * a2/a3 are `unsigned char` params -> IDO homes the raw args to their incoming
  * slots (sw a2,0x40; sw a3,0x44) AND eagerly zero-extends once at the top
  * (andi s4,a2,0xFF; andi s5,a3,0xFF), matching the target exactly. */
 extern int gl_func_00000000();
-void Backup_func_0000A00C(int a0, int a1, unsigned char a2, unsigned char a3) {
+void Backup_courseRecordSetNewNames(int a0, int a1, unsigned char a2, unsigned char a3) {
     int s3 = a1;
     int s4 = a2;
     int s5 = a3;
@@ -577,10 +577,10 @@ void Backup_func_0000A00C(int a0, int a1, unsigned char a2, unsigned char a3) {
     } while (s2 != 0x18);
 }
 
-/* Backup_func_0000A0CC: 25-insn 3-iter loop calling gl_func_00000000 on
+/* Backup_courseRecordCountNewTimes: 25-insn 3-iter loop calling gl_func_00000000 on
  * a0[0], a0+8, a0+0x10. Returns count of non-zero return values. */
 extern int gl_func_00000000();
-int Backup_func_0000A0CC(char *a0) {
+int Backup_courseRecordCountNewTimes(char *a0) {
     char *p;
     int count;
     int i;
@@ -598,7 +598,7 @@ int Backup_func_0000A0CC(char *a0) {
     return count;
 }
 
-/* Backup_func_0000A130: 25-insn 3-iter loop counting non-zero callee returns.
+/* Backup_courseRecordCountNewScores: 25-insn 3-iter loop counting non-zero callee returns.
  * CRACKED 2026-05-27 via first-assignment-order lever:
  *   - `int i, count; char *p;` (decl)
  *   - `count = 0;` then `i = 0;` then `p = a0 + 0x18;` (assignment order)
@@ -609,7 +609,7 @@ int Backup_func_0000A0CC(char *a0) {
  * (i); source-order `count = 0; i = 0;` (count assigned first) produces
  * exactly that. Bytes 25/25. */
 extern int gl_func_00000000();
-int Backup_func_0000A130(char *a0) {
+int Backup_courseRecordCountNewScores(char *a0) {
     int i, count;
     char *p;
     count = 0;
@@ -622,33 +622,33 @@ int Backup_func_0000A130(char *a0) {
     return count;
 }
 
-/* Backup_func_0000A194: 3-insn leaf — return base + a1*8.
+/* Backup_courseRecordGetTime: 3-insn leaf — return base + a1*8.
  *   sll t6, a1, 3; jr ra; addu v0, a0, t6 (delay).
  * Array stride-8 element pointer. Index-as-shift+add via int arith. */
-int Backup_func_0000A194(int a0, int a1) {
+int Backup_courseRecordGetTime(int a0, int a1) {
     int t = a1 << 3;
     return a0 + t;
 }
 
-/* Backup_func_0000A1A0: 4-insn leaf — return base + a1*8 + 0x18.
+/* Backup_courseRecordGetScore: 4-insn leaf — return base + a1*8 + 0x18.
  *   sll t6, a1, 3; addu v0, a0, t6; jr ra; addiu v0, v0, 0x18 (delay).
  * Same stride-8 element pointer + 0x18 field offset. */
-int Backup_func_0000A1A0(int a0, int a1) {
+int Backup_courseRecordGetScore(int a0, int a1) {
     int t = a1 << 3;
     return a0 + t + 0x18;
 }
 
-/* Backup_func_0000A1B0: ms -> {minutes, seconds, hundredths} byte triple,
+/* Backup_courseRecordFindTimeRank: ms -> {minutes, seconds, hundredths} byte triple,
  * then find-first-match over 3 stride-8 entries. BYTE-EXACT 66/66 (2026-09-09,
- * agent-g) as ONE function [0xA1B0,0xA2B8): the 4-word "Backup_func_0000A1B0"
+ * agent-g) as ONE function [0xA1B0,0xA2B8): the 4-word "Backup_courseRecordFindTimeRank"
  * (`ori a3,zero,0xEA60; div a1,a3; mflo v0; li t0,1000`) was the hoisted
  * `ms / 60000` head of the 0xF8 INCLUDE_ASM gl_func_0000A1C0 (agent-c's
  * fake-param class, docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
  * Sym oracle (section = splat + 0x1466C): 0x1E81C (0xA1B0) = export sym 1066
  * with 1 R_MIPS_26 ref (TextReloc @0x2154C); 0x1E82C (0xA1C0) not exported, no
  * baked jal. The jal at +0xC4 is blank R_MIPS_26 to sym1044 (text 0x1E0BC =
- * splat 0x9A50, Backup_func_00009A50) -> func_00000000, same callee shape as
- * the matched Backup_func_0000A4D0 sibling below (loop body identical: beqzl +
+ * splat 0x9A50, Backup_timeEntryIsSlower) -> func_00000000, same callee shape as
+ * the matched Backup_courseRecordFindScoreRank sibling below (loop body identical: beqzl +
  * `addiu s0` likely-fill, `b` + `or v0,s0` exit, tail-dup `addiu s0`).
  * Shape keys: (1) the remainders are written as `x - q * d` (IDO emits
  * `mflo q; multu q,d; subu` -- a `%` gives `mfhi` instead); (2) `int i`
@@ -657,7 +657,7 @@ int Backup_func_0000A1A0(int a0, int a1) {
  * to 0x50; (4) i/entry initialised in the for-header so their `or s0/s1` land
  * in the multu latency slot after the second div check, not above it. */
 extern int func_00000000();
-int Backup_func_0000A1B0(int *a0, int ms) {
+int Backup_courseRecordFindTimeRank(int *a0, int ms) {
     int i;
     unsigned char buf[4];
     char *entry;
@@ -677,10 +677,10 @@ int Backup_func_0000A1B0(int *a0, int ms) {
     return 3;
 }
 
-/* Backup_func_0000A2B8: insert a {min, sec, hundredths} record at slot idx of a
+/* Backup_courseRecordInsertTime: insert a {min, sec, hundredths} record at slot idx of a
  * 3-entry table of 8-byte unaligned records (shift entries [idx..1] up one,
  * then fill slot idx via the blank callee) -- EXACT 134/134 (2026-10-15,
- * agent-g). Sibling of Backup_func_0000A1B0 above (same ms split, same
+ * agent-g). Sibling of Backup_courseRecordFindTimeRank above (same ms split, same
  * `x - q * d` remainder form). Shape keys: (1) the record is a char[8]
  * struct (alignment 1 -> lwl/lwr + swl/swr struct copy; IDO unrolls the
  * shift loop by 4 with the negu'd (2-idx)&3 remainder prologue); (2) the
@@ -690,7 +690,7 @@ int Backup_func_0000A1B0(int *a0, int ms) {
  * be the byte-offset form `(char *)a0 + idx * 8` -- `&a0[idx]` / `a0 + idx`
  * swap the t2/t5 colours of the a0 reload vs the idx*8 shift. */
 typedef struct { char b[8]; } Entry8;
-void Backup_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
+void Backup_courseRecordInsertTime(Entry8 *a0, int idx, int ms, int arg3) {
     int i;
     int min, rem, sec;
     if (idx < 3) {
@@ -706,7 +706,7 @@ void Backup_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
     }
 }
 
-/* Backup_func_0000A4D0: 28-insn find-first-match-in-3-entries.
+/* Backup_courseRecordFindScoreRank: 28-insn find-first-match-in-3-entries.
  *   for (i = 0; i < 3; i++) {
  *     if (func(a0->[0x18 + i*8], a1) != 0) return i;
  *   }
@@ -718,7 +718,7 @@ void Backup_func_0000A2B8(Entry8 *a0, int idx, int ms, int arg3) {
  * BEFORE `entry` makes IDO emit the i-init first -> byte-exact. Replaces the
  * old banned 2-insn INSN_PATCH. */
 extern int func_00000000();
-int Backup_func_0000A4D0(int *a0, int a1) {
+int Backup_courseRecordFindScoreRank(int *a0, int a1) {
     int i = 0;
     char *entry = (char*)a0 + 0x18;
     for (; i < 3; i++) {
@@ -730,9 +730,9 @@ int Backup_func_0000A4D0(int *a0, int a1) {
     return 3;
 }
 
-/* Backup_func_0000A540: shift-insert into the 3-entry stride-8 table at +0x18
+/* Backup_courseRecordInsertScore: shift-insert into the 3-entry stride-8 table at +0x18
  * (aligned int pairs -> lw/sw), then blank callee(&e[idx], arg2) -- EXACT
- * 76/76 (2026-10-15, agent-g). Twin of Backup_func_0000A2B8 above: the target's
+ * 76/76 (2026-10-15, agent-g). Twin of Backup_courseRecordInsertTime above: the target's
  * unroll-by-4 is IDO's own (one element per source iteration -- the old
  * "double-unroll, per-file -O" note in docs/MATCHING_WORKFLOW.md came from
  * compiling m2c's already-unrolled loop), and the doubled `slti a1,2` entry
@@ -740,7 +740,7 @@ int Backup_func_0000A4D0(int *a0, int a1) {
  * (docs/IDO_CODEGEN.md#dup-loop-entry-test-explicit-guard-a2b8). */
 typedef struct { int a, b; } Pair8;
 typedef struct { char pad[0x18]; Pair8 e[3]; } PairTab;
-void Backup_func_0000A540(PairTab *a0, int idx, int arg2) {
+void Backup_courseRecordInsertScore(PairTab *a0, int idx, int arg2) {
     int i;
     if (idx < 3) {
         if (idx < 2) {
@@ -777,7 +777,7 @@ void Backup_resetCourseData_0000A670(s32 arg0) {
 
 extern int gl_func_00000000();
 
-void Backup_writeCourseData_0000A768(char *a0) {
+void Backup_courseClearNew(char *a0) {
     int i;
     char *p;
     i = 0;
@@ -788,7 +788,7 @@ void Backup_writeCourseData_0000A768(char *a0) {
     }
 }
 
-void Backup_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
+void Backup_courseSetNewNames(char *obj, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
     char *p = obj;
     int i;
     for (i = 0; i != 8; i++) {
@@ -815,23 +815,23 @@ void Backup_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3,
  *   - after third call: EXACT.
  * Multi-var conditions (a1&&c2 etc.) EMIT +4 insns; only single-var empty-if is free. */
 
-/* Bitfield getter/setter cluster — Backup_func_0000A7B4's tail-extracted micros.
+/* Bitfield getter/setter cluster — Backup_courseSetNewNames's tail-extracted micros.
  * Each get returns a sub-field; each set replaces it in place. */
 
 /* getter: bits 0..1 → return (*a0 & 3) */
-int Backup_func_0000A878(BackupGhost *a0) { return a0->bits & 3; }
+int Backup_ghostGetMode(BackupGhost *a0) { return a0->bits & 3; }
 
 /* setter: bits 0..1 ← a1. Target writes the cleared-value intermediate too. */
-void Backup_func_0000A884(BackupGhost *a0, int a1) {
+void Backup_ghostSetMode(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~3;
     a0->bits = a0->bits | (a1 & 3);
 }
 
 /* getter: bits 2..4 → return (a0->bits >> 2) & 7 */
-int Backup_func_0000A8A4(BackupGhost *a0) { return (a0->bits >> 2) & 7; }
+int Backup_ghostGetBits2(BackupGhost *a0) { return (a0->bits >> 2) & 7; }
 
 /* setter: bits 2..4 ← a1 */
-void Backup_func_0000A8B4(BackupGhost *a0, int a1) {
+void Backup_ghostSetBits2(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x1C;
     a0->bits = a0->bits | ((a1 & 7) << 2);
 }
@@ -845,9 +845,9 @@ void Backup_func_0000A8B4(BackupGhost *a0, int a1) {
  * function (shared-tail space optimization). Plain C cannot suppress the
  * trailing epilogue; would need a TRUNCATE_TEXT=8 post-cc strip, not
  * worth it for an 8-byte fn. Keep INCLUDE_ASM (no episode). */
-/* Backup_func_0000A8D8: bit-test accessor; splat split the return-0 tail
+/* Backup_ghostGetFlag5: bit-test accessor; splat split the return-0 tail
  * into the 0000A8F8 empty stub (sibling of the 00009A2C family). Merged. */
-int Backup_func_0000A8D8(BackupGhost *a0) {
+int Backup_ghostGetFlag5(BackupGhost *a0) {
     if ((a0->bits >> 5) & 1) {
         return 32;
     }
@@ -855,25 +855,25 @@ int Backup_func_0000A8D8(BackupGhost *a0) {
 }
 
 /* setter: bit 5 ← (a1 & 0x20) */
-void Backup_func_0000A900(BackupGhost *a0, int a1) {
+void Backup_ghostSetFlag5(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x20;
     if (a1 & 0x20) a0->bits = a0->bits | 0x20;
 }
 
 /* getter: bits 6..9 → return (a0->bits >> 6) & 0xF */
-int Backup_func_0000A928(BackupGhost *a0) { return (a0->bits >> 6) & 0xF; }
+int Backup_ghostGetBits6(BackupGhost *a0) { return (a0->bits >> 6) & 0xF; }
 
 /* setter: bits 6..9 ← a1 */
-void Backup_func_0000A938(BackupGhost *a0, int a1) {
+void Backup_ghostSetBits6(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x3C0;
     a0->bits = a0->bits | ((a1 & 0xF) << 6);
 }
 
 /* getter: bits 10..13 → return (a0->bits >> 10) & 0xF */
-int Backup_func_0000A95C(BackupGhost *a0) { return (a0->bits >> 10) & 0xF; }
+int Backup_ghostGetCourse(BackupGhost *a0) { return (a0->bits >> 10) & 0xF; }
 
 /* setter: bits 10..13 ← a1 */
-void Backup_func_0000A96C(BackupGhost *a0, int a1) {
+void Backup_ghostSetCourse(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x3C00;
     a0->bits = a0->bits | ((a1 & 0xF) << 10);
 }
@@ -891,13 +891,13 @@ void Backup_resetGhostData_0000A990(BackupGhost *a0) {
 
 extern int gl_func_00000000();
 
-int Backup_func_0000A9F4(int a0, int a1) {
+int Backup_ghostIsMode(int a0, int a1) {
     int r = gl_func_00000000(a0, a1);
     if (r == a1) return 1;
     return 0;
 }
 
-/* Backup_func_0000AA28 — 21/21 EXACT (2026-07-03, agent-e w4).
+/* Backup_ghostMatches — 21/21 EXACT (2026-07-03, agent-e w4).
  * Was documented "cap: IDO scheduling choice, redundant lw a1 reload not
  * reachable from C". FALSE — it was a LOGIC bug. The target has NO a1/a2
  * reloads before the second jal (only `lw a0,0x18(sp)` in the delay slot),
@@ -910,7 +910,7 @@ int Backup_func_0000A9F4(int a0, int a1) {
  * Sub-94% "scheduler cap" verdicts can hide arg-list logic diffs: check
  * which arg regs are (re)loaded before each jal FIRST. */
 extern int gl_func_00000000();
-int Backup_func_0000AA28(int a0, int a1, int a2) {
+int Backup_ghostMatches(int a0, int a1, int a2) {
     if (gl_func_00000000(a0, a1, a2) != a1) goto fail;
     if (gl_func_00000000(a0) != a2) goto fail;
     return 1;
@@ -920,7 +920,7 @@ fail:
 
 /* 28-insn / 0x70 5-call wrapper followed by 2-field commit. Each call passes
  * the same a0 plus a different arg as a1; result of last call is ignored. */
-void Backup_func_0000AA7C(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
+void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
     gl_func_00000000(a0, a1);
     gl_func_00000000(a0, a3);
     gl_func_00000000(a0, arg5);
@@ -975,7 +975,7 @@ void Backup_resetArcadeData_0000AAEC(char *a0) {
 
 extern int gl_func_00000000();
 
-void Backup_writeArcadeData_0000AB70(char *a0) {
+void Backup_arcadeClearNew(char *a0) {
     int i;
     char *p;
     i = 0;
@@ -986,7 +986,7 @@ void Backup_writeArcadeData_0000AB70(char *a0) {
     }
 }
 
-/* Backup_func_0000ABBC: 3-slot notify loop with flag-history update, BYTE-EXACT
+/* Backup_arcadeSetNewNames: 3-slot notify loop with flag-history update, BYTE-EXACT
  * 64/64 (2026-10-14 agent-g; the 83.2% wrap hand-carried i / one / limit /
  * cursor locals). For each 0x20-byte slot whose probe returns non-zero: call
  * the second handler with (slot, a1, a2, a3), then shift the history byte
@@ -997,7 +997,7 @@ void Backup_writeArcadeData_0000AB70(char *a0) {
  * constants, not locals; the case-1 value puts the shifted term FIRST,
  * `((*f & 2) << 1) | (*f & 1)` (andi-1 then takes t9 with the and-2/sll
  * pair in t0/t1 -- the written-second-is-allocated-first order). */
-void Backup_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
+void Backup_arcadeSetNewNames(char *a0, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
     int i;
     for (i = 0; i < 3; i++) {
         if (gl_func_00000000(a0 + i * 0x20) != 0) {
@@ -1015,7 +1015,7 @@ void Backup_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, 
     }
 }
 
-/* Backup_func_0000ACBC: 25-insn 3-iter loop, sibling of Backup_func_0000A0CC.
+/* Backup_arcadeCountNew: 25-insn 3-iter loop, sibling of Backup_courseRecordCountNewTimes.
  * Calls func_00000000 (NOTE: not gl_-prefixed — target's reloc references
  * the intra-segment `func_00000000` symbol, not `gl_func_00000000`).
  * Returns non-zero hit count. Source structurally identical to A0CC;
@@ -1025,7 +1025,7 @@ void Backup_func_0000ABBC(char *a0, int a1, unsigned char a2, unsigned char a3, 
  * match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int func_00000000();
-int Backup_func_0000ACBC(char *a0) {
+int Backup_arcadeCountNew(char *a0) {
     char *p;
     int count;
     int i;
@@ -1043,19 +1043,19 @@ int Backup_func_0000ACBC(char *a0) {
     return count;
 }
 
-char *Backup_func_0000AD20(char *a0, int a1) {
+char *Backup_arcadeGetEntry(char *a0, int a1) {
     int off = a1 * 0x20;
     return a0 + off;
 }
 
-/* Backup_func_0000AD2C: 28-insn 3-iter try-or-advance loop. MATCHED (byte-exact).
+/* Backup_arcadeFindRank: 28-insn 3-iter try-or-advance loop. MATCHED (byte-exact).
  * The "natural ceiling 92.14%" prologue-setup-reorder cap was MISDIAGNOSED:
  * it was a first-use ordering issue. Fix = a separate pointer local `p = a0`
  * AND initializing `i = 0` BEFORE `p = a0` (so the saved-reg copy order becomes
  *   move s2,a1 / sw ra / move s0,0 (i) / move s1,a0 (p)
  * matching target). Both levers needed: the bare-loop form copied s1=a0 first. */
 extern int gl_func_00000000();
-int Backup_func_0000AD2C(char *a0, int a1) {
+int Backup_arcadeFindRank(char *a0, int a1) {
     char *p;
     int i;
     i = 0;
@@ -1067,7 +1067,7 @@ int Backup_func_0000AD2C(char *a0, int a1) {
     return 3;
 }
 
-/* Backup_func_0000AD9C: insert-shift on a 3-slot array of 32-byte records:
+/* Backup_arcadeInsert: insert-shift on a 3-slot array of 32-byte records:
  * if idx < 3, move records [idx..1] up one slot (arr[i] = arr[i - 1] for
  * i = 2 down to idx + 1), then hand the freed slot &arr[idx] to the
  * callee with the three trailing args. The 138-word body is IDO's x4
@@ -1081,7 +1081,7 @@ int Backup_func_0000AD2C(char *a0, int a1) {
 struct AD9C_Rec {
     int w[8];
 };
-void Backup_func_0000AD9C(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
+void Backup_arcadeInsert(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
     s32 i;
 
     if (idx < 3) {
@@ -1198,7 +1198,7 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
 extern int gl_func_00000000();
 /* Calls: mem_new, Backup_readCourse / readArcade / readGhost, then the ghost is
  * kept only if its mode (bits 0-1) and course (bits 10-13; arg3 == -1 = any)
- * match (Backup_func_0000A95C / AA28); otherwise mode is cleared (A884) and the
+ * match (Backup_ghostGetCourse / AA28); otherwise mode is cleared (A884) and the
  * data freed (mem_delete). */
 int Backup_openSession(BackupSession *arg0, Backup *arg1, int arg2, int arg3) {
     int v1;
@@ -1252,7 +1252,7 @@ void Backup_closeSession(BackupSession *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-int Backup_func_0000B208(BackupSession *a0) {
+int Backup_sessionCountNew(BackupSession *a0) {
     int s0;
     int s1 = 0;
     int s2 = 0;
@@ -1269,7 +1269,7 @@ int Backup_func_0000B208(BackupSession *a0) {
 }
 
 extern int gl_func_00000000();
-int Backup_func_0000B290(BackupSession *a0) {
+int Backup_sessionCountNewCourses(BackupSession *a0) {
     int s0;
     int s2 = 0;
     for (s0 = 0; s0 != sizeof(BackupCourse); s0 += sizeof(BackupCourseRecord)) {
@@ -1281,7 +1281,7 @@ int Backup_func_0000B290(BackupSession *a0) {
     return s2;
 }
 
-/* Backup_func_0000B310: 40-insn 8-iter or-pair counter + index-array-fill.
+/* Backup_sessionListNewCourses: 40-insn 8-iter or-pair counter + index-array-fill.
  *   for (i = 0; i < 8; i++) {
  *     if (func(a0[0]+off) || func(a0[0]+off)) { a1[count++] = i; }
  *     off += 0x30;
@@ -1295,7 +1295,7 @@ int Backup_func_0000B290(BackupSession *a0) {
  * match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();
-/* Backup_func_0000B310 — 40/40 EXACT (2026-07-03, agent-e w4).
+/* Backup_sessionListNewCourses — 40/40 EXACT (2026-07-03, agent-e w4).
  * Was documented "NATURAL CEILING 92.93% — or v0,s2,zero delay-slot insertion
  * not naturally reachable". CRACKED with three coupled levers:
  *  1. Explicit copy-then-redefine order `r = count; count++; a1[r] = iter;`
@@ -1313,7 +1313,7 @@ extern int gl_func_00000000();
  *     store emits first (40/40). The shared line is LOAD-BEARING.
  */
 extern int gl_func_00000000();
-void Backup_func_0000B310(BackupSession *a0, int *a1) {
+void Backup_sessionListNewCourses(BackupSession *a0, int *a1) {
   int count = 0;
   int iter = 0;
   int offset = 0;
@@ -1329,7 +1329,7 @@ void Backup_func_0000B310(BackupSession *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-int Backup_func_0000B3B0() {
+int Backup_sessionHasNew() {
     int r = gl_func_00000000();
     if (r != 0) return 1;
     return 0;
@@ -1349,7 +1349,7 @@ void Backup_writeCourseArcadeOptions_0000B3DC(BackupSession *a0) {
     func_00000000(a0->backup, *(int*)((char*)&D_00000000 + 0x154));
 }
 
-void Backup_func_0000B450(BackupSession *a0) {
+void Backup_sessionClearNew(BackupSession *a0) {
     int flags = a0->modes;
     if (flags & (BACKUP_MODE_TIME | BACKUP_MODE_TRICK)) {
         gl_func_00000000(a0->course);
@@ -1363,7 +1363,7 @@ void Backup_func_0000B450(BackupSession *a0) {
 extern int gl_func_00000000();
 extern int D_00000000;
 
-void Backup_func_0000B4A4(BackupSession *a0, int a1, char a2, char a3) {
+void Backup_sessionSetNewNames(BackupSession *a0, int a1, char a2, char a3) {
     if (a0->modes & BACKUP_MODE_TIME) {
         gl_func_00000000(a0->course, a1, a2, a3,
             (*(char**)((char*)&D_00000000 + 0x154)) + 0xE);
@@ -1380,9 +1380,9 @@ void Backup_func_0000B4A4(BackupSession *a0, int a1, char a2, char a3) {
 
 /* 15-insn 2-call wrapper (0x3C). LANDED fuzzy=100. The historical 4-byte
  * SUFFIX_BYTES tail (`sll/subu/addiu/div` computing (a1*3)/5, supplying
- * stolen-prologue setup for successor Backup_func_0000B5AC) was REMOVED
+ * stolen-prologue setup for successor Backup_sessionResetCourseTimes) was REMOVED
  * 2026-05-23 as match-faking; those bytes now belong to B5AC's own symbol.
- * The 4 words [0xB59C,0xB5AC) were later restored to Backup_func_0000B5AC.s
+ * The 4 words [0xB59C,0xB5AC) were later restored to Backup_sessionResetCourseTimes.s
  * (relayout, 2026-06); they are B5AC's own hoisted head, matched as C
  * 2026-09-09 -- see the successor just below. */
 extern int gl_func_00000000();
@@ -1391,10 +1391,10 @@ void Backup_writeCourseArcade_0000B560(BackupSession *p) {
     gl_func_00000000(p->backup, p->arcade);
 }
 
-/* Backup_func_0000B5AC: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
+/* Backup_sessionResetCourseTimes: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
  * as ONE function [0xB59C,0xB628) -- the .s already carries the 4-word head
  * (`sll v0,a1,2; subu v0,v0,a1; li at,5; div v0,at`), which is the hoisted
- * `n = a1*3` + `n % 5` of the body, exactly as its twin Backup_func_0000B628
+ * `n = a1*3` + `n % 5` of the body, exactly as its twin Backup_sessionResetCourseScores
  * just below (docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
  * Sym oracle (section = splat + 0x1466C): 0x1FC08 (0xB59C) = export sym 1103;
  * 0x1FC18 (0xB5AC) is NOT exported. The 3-month "inherits $hi and $v0 from
@@ -1413,7 +1413,7 @@ void Backup_writeCourseArcade_0000B560(BackupSession *p) {
  * B628 (docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628).
  * Both jals are blank (R_MIPS_26 -> func_00000000). */
 extern int func_00000000();
-void Backup_func_0000B5AC(BackupSession *a0, int a1) {
+void Backup_sessionResetCourseTimes(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int k = a1 * 9;
     int *tbl;
@@ -1422,8 +1422,8 @@ void Backup_func_0000B5AC(BackupSession *a0, int a1) {
     func_00000000(a0);
 }
 
-/* Backup_func_0000B628: per-slot dispatch pair, BYTE-EXACT 33/33 (2026-09-09,
- * agent-g) as ONE function [0xB628,0xB6AC): the 4-word "Backup_func_0000B628"
+/* Backup_sessionResetCourseScores: per-slot dispatch pair, BYTE-EXACT 33/33 (2026-09-09,
+ * agent-g) as ONE function [0xB628,0xB6AC): the 4-word "Backup_sessionResetCourseScores"
  * (`sll v0,a1,2; subu v0,v0,a1; li at,5; div v0,at`) was the hoisted `n = a1*3`
  * + `n % 5` head of the 0x74 INCLUDE_ASM gl_func_0000B638 (agent-c's fake-param
  * class, docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c).
@@ -1446,7 +1446,7 @@ void Backup_func_0000B5AC(BackupSession *a0, int a1) {
  * D+0xD388 with the addend in the hi/lo pair (`sll t0,v0,2; addu a3,t0,t1`)
  * -- docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628. */
 extern int func_00000000();
-void Backup_func_0000B628(BackupSession *a0, int a1) {
+void Backup_sessionResetCourseScores(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
@@ -1455,13 +1455,13 @@ void Backup_func_0000B628(BackupSession *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void Backup_func_0000B6AC(BackupSession *a0) {
+void Backup_sessionResetArcade(BackupSession *a0) {
     gl_func_00000000(a0->arcade);
     gl_func_00000000(a0);
 }
 
 extern int gl_func_00000000();
-void Backup_func_0000B6D8(BackupSession *a0) {
+void Backup_sessionResetGhost(BackupSession *a0) {
     gl_func_00000000(a0->ghost);
     gl_func_00000000(a0->backup, a0->ghost);
 }
@@ -1539,7 +1539,7 @@ void Backup_write(int a0, int a1, int a2, int a3) {
     gl_func_00000000(&gl_data_B938_arg, a2, a3);
 }
 
-/* Backup_func_0000B958: 69-insn word-array equality predicate. Compares a3/4 words
+/* Backup_wordsEqual: 69-insn word-array equality predicate. Compares a3/4 words
  * (signed div, trunc-toward-zero) of a1[] vs a2[]; returns 0 on first
  * mismatch, 1 if all equal. a0 is dead (saved, never read). RELOC-FREE, -O2.
  * Target is IDO's OWN 4-way loop unroll (andi&3 remainder loop, v0 counts up,
@@ -1558,7 +1558,7 @@ void Backup_write(int a0, int a1, int a2, int a3) {
  * 2026-10-22 agent-g (run 127) EXACT: one empty `if (1) {}` at the top of the
  * loop body (a uopt basic-block boundary; scripts/blockcut-search.py found it
  * in a 45-variant search) moves the copy into the beq delay slot. */
-int Backup_func_0000B958(int a0, register int *a1, int *a2, int a3) {
+int Backup_wordsEqual(int a0, register int *a1, int *a2, int a3) {
     int i;
     int *x, *y;
     for (i = 0; i < a3 / 4; i++) {
@@ -1904,7 +1904,7 @@ void Backup_resetGhost(int a0) {
     gl_func_00000000(a0, &scratch);
 }
 
-/* Backup_func_0000C49C: 21-insn 3-call wrapper. r = g(self); self->1 = r->0;
+/* Backup_cacheGhostBits: 21-insn 3-call wrapper. r = g(self); self->1 = r->0;
  * if (r->2) g(r->2, r); g(r). EXACT 21/21 (2026-10-14, agent-g). Two levers
  * over the 82.29 wrap: (1) the last call takes ONE argument -- the target
  * never writes a1 after the `or a1,v0` at the top, so r colours a1 for the
@@ -1916,7 +1916,7 @@ void Backup_resetGhost(int a0) {
 typedef struct { int x; } C49C_W;
 typedef struct { int pad0; C49C_W f4; } C49C_Self;
 typedef struct { C49C_W f0; int pad4; int f8; } C49C_Rec;
-void Backup_func_0000C49C(C49C_Self *a0) {
+void Backup_cacheGhostBits(C49C_Self *a0) {
     C49C_Rec *r = (C49C_Rec *)gl_func_00000000(a0);
     a0->f4 = r->f0;
     if (r->f8 != 0) {
