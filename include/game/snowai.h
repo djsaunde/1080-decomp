@@ -75,7 +75,8 @@ typedef struct SnowAI {
                              * rivalLeadZ > the se parm or those fail) */
     void *unk78;            /* 0x78: last result cached by 7ACC */
     s32 altNode;            /* 0x7C: the other branch node; A3C4 keeps whichever of targetNode / altNode is nearer */
-    s32 unk80;
+    s32 atFinish;           /* 0x80: SnowAI_isAtFinish's result, stored by SnowAI_onWin / onLose at the race end
+                             * (non-zero: targetNode = SnowAI_pickFinishBranch); no reader in game_uso C */
     /* SnowAI_aimWeave (aimMode 1) state: two waypoints laid along the segment and a 4-phase side counter */
     SnowBVec3 weaveAim;     /* 0x84: current waypoint (XZ, y = 0); the aim is weaveAim - rider->pos */
     SnowBVec3 weavePrev;    /* 0x90: previous waypoint */
@@ -106,7 +107,11 @@ typedef struct SnowAI {
     f32 weaveLeadTime;      /* 0xDC: (15) weave waypoints are speed * weaveLeadTime / 2 ahead / behind */
     f32 weaveSideScale;     /* 0xE0: [F4] weave side offset = 250 * width * weaveSideScale */
     SnowAIParms parms;      /* 0x0E4: embedded "SnowAI::Parms" (0x3E0) */
-    s32 unk4C4;             /* 0x4C4: countdown, reloaded from a level parm */
+    s32 scaleTimer;         /* 0x4C4: the rider-parms boost state of SnowAI_steer (agent-g run 512): 0 = normal; when
+                             * the dp parm < the steer metric it scales the rider parms (SnowAI_scaleRiderParms) and
+                             * sets 0x10000 (armed); armed and the metric < dd0: SnowAI_scaleRiderMax, then dd1
+                             * frames of countdown; reaching 0 (or steer flag 8, or SnowAI_enterFinish) restores
+                             * them (SnowAI_restoreRiderParms) */
     /* the rider parm values SnowAI_scaleRiderParms saves before scaling them (and SnowAI_restoreRiderParms /
      * SnowAI_scaleRiderMax use): */
     f32 savedMax;           /* 0x4C8: rider->parms.max.value (scaled by dd2, or dd3 in scaleRiderMax) */
@@ -140,7 +145,7 @@ SNOWAI_ASSERT_OFFSET(SnowAI, aimRange, 0xCC);
 SNOWAI_ASSERT_OFFSET(SnowAI, weaveLead, 0xD8);
 SNOWAI_ASSERT_OFFSET(SnowAI, weaveSideScale, 0xE0);
 SNOWAI_ASSERT_OFFSET(SnowAI, parms, 0xE4);
-SNOWAI_ASSERT_OFFSET(SnowAI, unk4C4, 0x4C4);
+SNOWAI_ASSERT_OFFSET(SnowAI, scaleTimer, 0x4C4);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk34, 0x34);
 SNOWAI_ASSERT_OFFSET(SnowAI, targetNode, 0x40);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk58, 0x58);

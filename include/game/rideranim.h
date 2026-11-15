@@ -85,7 +85,9 @@ typedef struct RiderAnim {
                              * cleared by endTrick */
     s32 animSet;            /* 0xFC: 0x10000 regular / 0x50000 switch stance (flipStance); anim numbers are ORed in */
     s32 comboCount;         /* 0x100: tricks in the current combo (endTrick scores min(count, 10)) */
-    s32 unk104;             /* 0x104: -1 from init */
+    s32 loadedAnim;         /* 0x104: player.anim as last handed to the anim data manager: RiderAnim_update calls
+                             * game_uso 0x76E78(player.mgr, player.anim) when anim != 0 and latches it here;
+                             * -1 from init */
     s32 selectedAnim;       /* 0x108: selectAnim's result (animSet | anim number) */
     s32 hitKind;            /* 0x10C: 1..5, set by game_uso 0xEDCC; ECEC uses it to pick st1..st3 / sl1 / sl2 */
     s32 slowCrash;          /* 0x110: updateSlowdown sets it (and clears hitKind) when rider->slowdown passes the
@@ -96,8 +98,12 @@ typedef struct RiderAnim {
                              * drops a pending hit anim while it is 1 */
     s32 jumpRepress;        /* 0x118: set by statePreJumpCancel: checkJump then needs a fresh press (input
                              * pressed 0x100) instead of the held button, and clears it on the jump */
-    f32 unk11C;             /* 0x11C: 1.0 from init and after a hit (D9CC compares it with 1.0) */
-    s32 unk120;             /* 0x120: set to 1 by endTrick */
+    f32 hitScale;           /* 0x11C: selectAnim (D9CC) scales the rider's 0xA1C..0xA24 hit vector by it; the lnc parm
+                             * during stateCushionIn, 1.0 from init, after a hit and at stateCushionEnd; one hit
+                             * case needs it == 1.0 */
+    s32 endTrickFlag;       /* 0x120: set to 1 by endTrick; RiderAnim_update clears it when rider->pos.z < D+0x1F4
+                             * and, while it is set, ORs 3 into the word at (import_80020098+0x138)+0xB4 (else
+                             * clears those bits) */
     s16 lastStickDir;       /* 0x124: rider->input->stickDir seen last frame (readStickSpin) */
     s16 spinFrames;         /* 0x126: frames of the running stick-spin gesture: 1 at the first step, counts up;
                              * the gesture ends (and is scored) at 6 frames or when the stick centres */
@@ -136,8 +142,8 @@ RIDERANIM_ASSERT_OFFSET(hitKind, 0x10C);
 RIDERANIM_ASSERT_OFFSET(slowCrash, 0x110);
 RIDERANIM_ASSERT_OFFSET(trickPhase, 0x114);
 RIDERANIM_ASSERT_OFFSET(jumpRepress, 0x118);
-RIDERANIM_ASSERT_OFFSET(unk11C, 0x11C);
-RIDERANIM_ASSERT_OFFSET(unk120, 0x120);
+RIDERANIM_ASSERT_OFFSET(hitScale, 0x11C);
+RIDERANIM_ASSERT_OFFSET(endTrickFlag, 0x120);
 RIDERANIM_ASSERT_OFFSET(lastStickDir, 0x124);
 RIDERANIM_ASSERT_OFFSET(spinSteps, 0x128);
 RIDERANIM_ASSERT_OFFSET(spinKind, 0x12C);

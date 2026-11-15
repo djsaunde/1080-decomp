@@ -2934,7 +2934,7 @@ void SnowAI_reset(SnowAI *self) {
     self->aimMode = 0;
     self->unk78 = 0;
     self->sideBlock = 0;
-    self->unk4C4 = 0;
+    self->scaleTimer = 0;
     self->initPending = 1;
     self->unk38 = 0.0f;
     self->unk3C = 0.0f;
@@ -3072,7 +3072,7 @@ void SnowAI_onWin(int *a0) {
     int r;
     CALL(SnowAI_enterFinish)(a0);
     r = CALL(SnowAI_isAtFinish)(a0);
-    AI(a0)->unk80 = r;
+    AI(a0)->atFinish =r;
     if (r == 0) return;
     AI(a0)->targetNode = CALL(SnowAI_pickFinishBranch)(a0);
 }
@@ -3082,7 +3082,7 @@ void SnowAI_onLose(int *a0) {
     if (AI(a0)->rider->controller != 2) {
         CALL(SnowAI_enterFinish)();
         v = CALL(SnowAI_isAtFinish)(a0);
-        AI(a0)->unk80 = v;
+        AI(a0)->atFinish =v;
         if (v != 0) {
             AI(a0)->targetNode = CALL(SnowAI_pickFinishBranch)(a0);
         }
@@ -3145,9 +3145,9 @@ int SnowAI_pickFinishBranch(int *a0) {
 void SnowAI_enterFinish(int *a0) {
     AI(a0)->aiState = 1;
     AI(a0)->finishTimer = 0;
-    if (AI(a0)->unk4C4 > 0) {
+    if (AI(a0)->scaleTimer > 0) {
         CALL(SnowAI_restoreRiderParms)(a0);
-        AI(a0)->unk4C4 = 0;
+        AI(a0)->scaleTimer = 0;
     }
 }
 
@@ -5700,9 +5700,9 @@ void RiderAnim_init_0000D458(s32 arg0) {
     RA(arg0)->trickPhase = 2;
     RA(arg0)->animSet = RANIM_GROUP_REGULAR;
     RA(arg0)->rideContacts = 1;
-    RA(arg0)->unk104 = -1;
+    RA(arg0)->loadedAnim = -1;
     RA(arg0)->hitKind = 0;
-    RA(arg0)->unk11C = 1.0f;
+    RA(arg0)->hitScale = 1.0f;
     game_uso_func_077574(arg0);
     game_uso_func_077C44(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
@@ -5822,7 +5822,7 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
     RA(a0)->comboCount = 0;
     game_uso_func_022784(*(int*)((char*)&import_800201D0 + 0x138),
                          (int)RA(a0)->rider, a1, value);
-    RA(a0)->unk120 = 1;
+    RA(a0)->endTrickFlag = 1;
 }
 
 /* 26 insns. Toggle bit 0x40 in (a0->0xB4)[0xA58], call worker, test the
@@ -7550,7 +7550,7 @@ void RiderAnim_stateHopLand(char *a0) {
 void RiderAnim_stateCushionIn(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 0, ANIM_BLENDIN, 5);
     CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
-    RA(a0)->unk11C = RA(a0)->parms.lnc.value.f;
+    RA(a0)->hitScale = RA(a0)->parms.lnc.value.f;
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E00/E04 pair). 27-insn 3-call
@@ -7573,7 +7573,7 @@ void RiderAnim_stateCushion(int *a0) {
  * First call passes a 2-int struct BY VALUE (homes a1->sp+4, a2->sp+8); the named
  * base `&D+0xDF8` keeps the addiu split (lw 0(t6)/4(t6)). Byte-exact. */
 void RiderAnim_stateCushionEnd(void *a0) {
-    RA(a0)->unk11C = 1.0f;
+    RA(a0)->hitScale = 1.0f;
     CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
 }

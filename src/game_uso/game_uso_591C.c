@@ -54,7 +54,8 @@ void SnowAI_steer(int *a0) {
     int out_w;
     int hit_out;
     Vec3 scratch_xz;
-    char *sub;
+    char *sub; /* the rider; `*(float*)(sub + 0x348)` is rider->speed, kept raw: the field form moves FP registers
+                * (agent-g run 512; rival / useDParms convert cleanly) */
     float yaw_metric;
     float accel_metric;
     int v0;
@@ -295,7 +296,7 @@ void SnowAI_steer(int *a0) {
     if (bits != 0) goto tail_common;
     if (hit_parent == 0 || !((v0 = *(int*)(hit_parent + 0x84)) & 1)) goto yaw_region;
     if (v0 & 0x804) {
-        if (*(int*)(sub + 0x908) != 0) {
+        if (((SnowBoarder *)sub)->rival != 0) {
             if (!(metric_a <= -2000.0f)) goto yaw_region;
         }
     }
@@ -382,13 +383,13 @@ yaw_region:
         out_flags |= 8;
     }
     if (state_flag & 8) {
-        if (self->unk4C4 > 0) {
+        if (self->scaleTimer > 0) {
             SnowAI_restoreRiderParms(self);
-            self->unk4C4 = 0;
+            self->scaleTimer = 0;
         }
         goto tail_common;
     }
-    v0 = self->unk4C4;
+    v0 = self->scaleTimer;
     if (v0 * 1 == 0x10000) {
         v0 = self->level;
         fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD0 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD0 + 1].value : self->parms.parm[SNOWAI_PARM_DD0].value, scale);
@@ -396,12 +397,12 @@ yaw_region:
             SnowAI_scaleRiderMax(self);
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD1 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD1 + 1].value : self->parms.parm[SNOWAI_PARM_DD1].value, scale);
-            self->unk4C4 = (int)fsel;
+            self->scaleTimer = (int)fsel;
         }
         goto tail_common;
     } else if (v0 > 0) {
-        self->unk4C4 = v0 - 1;
-        if (self->unk4C4 == 0) {
+        self->scaleTimer = v0 - 1;
+        if (self->scaleTimer == 0) {
             SnowAI_restoreRiderParms(self);
         }
     } else {
@@ -409,7 +410,7 @@ yaw_region:
         if (v0 != 0) {
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DP + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DP + 1].value : self->parms.parm[SNOWAI_PARM_DP].value, scale);
             if (fsel < metric_a) {
-                self->unk4C4 = 0x10000;
+                self->scaleTimer = 0x10000;
                 SnowAI_scaleRiderParms(self);
             }
         }
@@ -418,7 +419,7 @@ yaw_region:
     fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DE + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DE + 1].value : self->parms.parm[SNOWAI_PARM_DE].value, scale);
     sub = (char *)self->rider;
     if (fsel < metric_a) {
-        if (*(int*)(sub + 0x9CC) != 0) {
+        if (((SnowBoarder *)sub)->useDParms != 0) {
             f2v = self->dParmsSteerScale;
         } else {
             f2v = 1.0f;
@@ -429,7 +430,7 @@ yaw_region:
         }
     }
     if (resolved_state & 0x800) {
-        if ((*(int*)(sub + 0x908) == 0) || (metric_a <= -2000.0f)) {
+        if ((((SnowBoarder *)sub)->rival == 0) || (metric_a <= -2000.0f)) {
             out_flags |= 0x80;
         }
     }
