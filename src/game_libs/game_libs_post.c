@@ -472,22 +472,29 @@ extern int gl_func_00031FB0();
  * the exact sibling AudioSynth_FilterReverb (`{ G *_g = gfx++; w0; w1; }`),
  * with the half-width terms as s16 locals. */
 typedef struct { unsigned int w0, w1; } G1D200;
+/* run 518: `rec` (= &gAudioCtx + idx * 0x158) + 0x18 is gAudioCtx.synthesisReverbs[idx].
+ * The reverb functions keep that base spelling (the indexed &synthesisReverbs[idx]
+ * form changes the bytes, see docs/1080_AUDIO.md) and name the fields through this
+ * cast; IDO folds the 0x18 into the field offset. Exception: LoadAuxBufferC's
+ * 0x05 packet keeps the raw rec + 0x18 (resampleFlags) and rec + 0x26 (unk_0E)
+ * reads -- as member reads they re-rank the `|` operands and the bytes change. */
+#define REVERB_AT(rec) ((SynthesisReverb *)((char *)(rec) + 0x18))
 unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, short a3) {
-    char *e;
+    char *e; /* &reverb->items[reverb->curFrame][a3] */
     short w2;
     short wr;
 #define rec ((char *)&gAudioContext + a2 * 0x158)
-    e = rec + ((struct { char p[0x1B]; unsigned char b; } *)rec)->b * 100 + a3 * 0x14 + 0x50;
-    w2 = (*(unsigned int *)(e + 0xC) & 7) * 2;
-    wr = (w2 + ((struct { char p[0x10]; short h; } *)e)->h + 0xF) & ~0xF;
-    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, (*(unsigned int *)(e + 0xC) - w2 / 2) & 0xFFFF, 0x1A0, a2);
-    if (*(short *)(e + 0x12) != 0) {
+    e = rec + REVERB_AT(rec)->curFrame * 100 + a3 * 0x14 + 0x50;
+    w2 = ((unsigned int)((ReverbRingBufferItem *)e)->startPos & 7) * 2;
+    wr = (w2 + ((ReverbRingBufferItem *)e)->lengthA + 0xF) & ~0xF;
+    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, ((unsigned int)((ReverbRingBufferItem *)e)->startPos - w2 / 2) & 0xFFFF, 0x1A0, a2);
+    if (((ReverbRingBufferItem *)e)->lengthB != 0) {
         gfx = (G1D200 *)gl_ref_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
     }
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x3E0) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0C800000; }
-    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x40) + 0x80000000; }
+    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = (int)REVERB_AT(rec)->unk_28 + 0x80000000; }
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x580) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0E200000; }
-    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = *(int *)(rec + 0x44) + 0x80000000; }
+    { G1D200 *_g = gfx++; _g->w0 = 0x05000000 | ((*(unsigned char *)(rec + 0x18) & 0xFF) << 16) | (*(unsigned short *)(rec + 0x26) & 0xFFFF); _g->w1 = (int)REVERB_AT(rec)->unk_2C + 0x80000000; }
     return (unsigned int *)gfx;
 #undef rec
 }
@@ -506,14 +513,14 @@ extern int gAudioContext_345c0;
 typedef struct { unsigned int w0, w1; } gl_1D3E0_Gfx;
 #define SHL_1D3E0(v, s, w) ((((unsigned int)(v)) & ((1 << (w)) - 1)) << (s))
 gl_1D3E0_Gfx *AudioSynth_FilterReverb(gl_1D3E0_Gfx *gfx, int a1, int a2) {
-    char *rec = (char *)&gAudioContext_345c0 + a2 * 0x158;
-    if (*(int *)(rec + 0x118) != 0) {
-        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = *(int *)(rec + 0x118); }
-        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(*(unsigned char *)(rec + 0x18), 16, 8) | SHL_1D3E0(0xC80, 0, 16); _g->w1 = *(int *)(rec + 0x120); }
+    char *rec = (char *)&gAudioContext_345c0 + a2 * 0x158; /* REVERB_AT(rec) = synthesisReverbs[a2] */
+    if (REVERB_AT(rec)->filterLeft != 0) {
+        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = (int)REVERB_AT(rec)->filterLeft; }
+        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(REVERB_AT(rec)->resampleFlags, 16, 8) | SHL_1D3E0(0xC80, 0, 16); _g->w1 = (int)REVERB_AT(rec)->filterLeftState; }
     }
-    if (*(int *)(rec + 0x11C) != 0) {
-        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = *(int *)(rec + 0x11C); }
-        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(*(unsigned char *)(rec + 0x18), 16, 8) | SHL_1D3E0(0xE20, 0, 16); _g->w1 = *(int *)(rec + 0x124); }
+    if (REVERB_AT(rec)->filterRight != 0) {
+        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(2, 16, 8) | SHL_1D3E0(a1, 0, 16); _g->w1 = (int)REVERB_AT(rec)->filterRight; }
+        { gl_1D3E0_Gfx *_g = gfx++; _g->w0 = SHL_1D3E0(0x07, 24, 8) | SHL_1D3E0(REVERB_AT(rec)->resampleFlags, 16, 8) | SHL_1D3E0(0xE20, 0, 16); _g->w1 = (int)REVERB_AT(rec)->filterRightState; }
     }
     return gfx;
 }
@@ -3273,21 +3280,24 @@ void AudioHeap_UpdateReverbs(void) {
     s32 var_a1;
     char *rec;
 
-    var_v0 = (*(s16 *)((char *)&D_00000000 + 0x2034) == 2) ? 2 : 1;
+    /* run 518: rec + 0x18 is gAudioCtx.synthesisReverbs[var_v1]; the base stays
+     * `&gAudioCtx + i * 0x158` (the lever above) and the field is reached
+     * through a cast of rec + 0x18 (IDO folds 0x18 + 0xC into 36(rec)). */
+    var_v0 = (gAudioCtx.specUnk4 == 2) ? 2 : 1;
     var_v1 = 0;
-    if (*(s8 *)((char *)&gAudioContext + 1) > 0) {
+    if (gAudioCtx.numSynthesisReverbs > 0) {
         do {
             if (var_v0 > 0) {
                 rec = (char *)&gAudioContext + var_v1 * 0x158;
                 var_a1 = 0;
                 do {
-                    s32 f = *(u16 *)(rec + 0x24);
-                    *(u16 *)(rec + 0x24) = f - f / 4;
+                    s32 f = ((SynthesisReverb *)(rec + 0x18))->decayRatio;
+                    ((SynthesisReverb *)(rec + 0x18))->decayRatio = f - f / 4;
                     var_a1 += 1;
                 } while (var_a1 != var_v0);
             }
             var_v1 += 1;
-        } while (var_v1 < *(s8 *)((char *)&gAudioContext + 1));
+        } while (var_v1 < gAudioCtx.numSynthesisReverbs);
     }
 }
 
@@ -8206,25 +8216,28 @@ void Audio_NoteSetResamplingRate(char *arg0, f32 arg1) {
 //   Name pre-checked: no extern reuse (collision-safe).
 /* 2026-10-22 (agent-c run 120) EXACT: the nibble clear is a double mask (f60 & 0xFFFF & ~0xF) -- permuter find; the single 0xFFF0 mask allocated the store temps one register off. */
 extern int gl_func_00000000();
-void Audio_NoteInit(int *obj) {
-    int *p = *(int **)((char *)obj + 0x44);
+/* run 518: Note / SequenceLayer fields (OoT playback.c Audio_NoteInit): the layer's
+ * adsr.decayIndex picks the channel's or the layer's envelope; adsr.action.asByte
+ * keeps the high nibble and sets state 1; sampleState = gZeroNoteSub (the 32-byte
+ * block copy stays a Blk8 copy). */
+void Audio_NoteInit(Note *note) {
+    SequenceLayer *p = note->playbackState.parentLayer;
     int *tmpl;
     unsigned char f60;
-    if (*(unsigned char *)((char *)p + 0x18) == 0) {
-        CALL(Audio_AdsrInit)((char *)obj + 0x60,
-                         *(int *)(*(char **)((char *)p + 0x50) + 0x90),
-                         (char *)obj + 0x36);
+    if (p->adsr.decayIndex == 0) {
+        CALL(Audio_AdsrInit)(&note->playbackState.adsr, p->channel->adsr.envelope,
+                         &note->playbackState.adsrVolScaleUnused);
     } else {
-        CALL(Audio_AdsrInit)((char *)obj + 0x60, *(int *)((char *)p + 0x1C),
-                         (char *)obj + 0x36);
+        CALL(Audio_AdsrInit)(&note->playbackState.adsr, p->adsr.envelope,
+                         &note->playbackState.adsrVolScaleUnused);
     }
-    f60 = *(unsigned char *)((char *)obj + 0x60);
-    *(unsigned char *)((char *)obj + 0x34) = 0;
-    *(unsigned char *)((char *)obj + 0x60) = (f60 & 0xFFFF & ~0xF) | 1;
+    f60 = note->playbackState.adsr.action.asByte;
+    note->playbackState.unk_04 = 0;
+    note->playbackState.adsr.action.asByte = (f60 & 0xFFFF & ~0xF) | 1;
     tmpl = (int *)&D_00000000;
     {
         struct Blk8 { int w[8]; };
-        *(struct Blk8 *)((char *)obj + 0xB0) = *(struct Blk8 *)tmpl;
+        *(struct Blk8 *)&note->sampleState = *(struct Blk8 *)tmpl;
     }
 }
 
@@ -9353,7 +9366,7 @@ typedef struct {
 void Audio_NoteReleaseAndTakeOwnership(Gl29000Obj *a0, Gl29000Obj *a1) {
     a0->w48 = a1;
     a0->b30 = a1->w50->b5;
-    a0->f6C = *(float *)((char *)&gAudioContext + 0x2050);
+    a0->f6C = gAudioCtx.ticksPerUpdateInv;
     a0->f60_3 = 1;
 }
 
@@ -9965,12 +9978,12 @@ f32 Audio_GetVibratoFreqScale(gl_29978_VibratoState *vib) {
 // its real address in undefined_syms_auto.txt.
 extern float gl_ref_00029B6C_3DF44();
 extern float gl_ref_00029B6C_3DFE4();
-void Audio_NoteVibratoUpdate(char *obj) {
-    if (*(unsigned char *)(obj + 0x80) != 0) {
-        *(float *)(obj + 0x38) = gl_ref_00029B6C_3DF44(obj + 0x80);
+void Audio_NoteVibratoUpdate(Note *note) {
+    if (note->playbackState.portamento.mode != 0) {
+        note->playbackState.portamentoFreqScale = gl_ref_00029B6C_3DF44(&note->playbackState.portamento);
     }
-    if (*(unsigned char *)(obj + 0xA0) != 0) {
-        *(float *)(obj + 0x3C) = gl_ref_00029B6C_3DFE4(obj + 0x8C);
+    if (note->playbackState.vibratoState.active != 0) {
+        note->playbackState.vibratoFreqScale = gl_ref_00029B6C_3DFE4(&note->playbackState.vibratoState);
     }
 }
 
@@ -10360,12 +10373,12 @@ void AudioSeq_SeqLayerDisable(unsigned char *a0) {
  * makes IDO pack the two pointer spills tightly (frame -0x20); the char*-pointer-
  * arithmetic form (a0 + a1*4) left a 4-byte spill gap (-0x28). Array-index vs
  * char*-arith changes spill-slot frame packing. Byte-exact (80 bytes). */
-void AudioSeq_SeqLayerFree(int **a0, int a1) {
-    int *obj = a0[a1 + 0x14];
-    if (obj != 0) {
-        CALL(AudioSeq_AudioListPushBack)((char *)&gAudioCtx.layerFreeList, (char*)obj + 0x70);
-        CALL(AudioSeq_SeqLayerDisable)(obj);
-        a0[a1 + 0x14] = 0;
+void AudioSeq_SeqLayerFree(SequenceChannel *channel, int layerIndex) {
+    SequenceLayer *layer = channel->layers[layerIndex];
+    if (layer != 0) {
+        CALL(AudioSeq_AudioListPushBack)(&gAudioCtx.layerFreeList, &layer->listItem);
+        CALL(AudioSeq_SeqLayerDisable)(layer);
+        channel->layers[layerIndex] = 0;
     }
 }
 
@@ -10659,23 +10672,26 @@ extern int gl_func_00000000();
 extern int gl_func_0003ED2C();
 extern int D_00000000;
 typedef struct { unsigned char b7 : 1; unsigned char b6 : 1; unsigned char rest : 6; } BF2A7D8;
-void AudioSeq_SequencePlayerDisable(char *o) {
+/* run 518: SequencePlayer / gAudioCtx fields (OoT seqplayer.c). b6 / b7 are
+ * finished / enabled through the u8-container view (the u32 audio.h bitfield
+ * would change the loads). */
+void AudioSeq_SequencePlayerDisable(SequencePlayer *seqPlayer) {
     int r;
-    gl_func_0003ED2C(o, 0xFFFF);
-    CALL(Audio_NotePoolClear)(o + 0x9C);
-    ((BF2A7D8 *)o)->b6 = 1;
-    ((BF2A7D8 *)o)->b7 = 0;
-    r = CALL(AudioLoad_IsSeqLoadComplete)(*(unsigned char *)(o + 4));
+    gl_func_0003ED2C(seqPlayer, 0xFFFF);
+    CALL(Audio_NotePoolClear)(&seqPlayer->notePool);
+    ((BF2A7D8 *)seqPlayer)->b6 = 1;
+    ((BF2A7D8 *)seqPlayer)->b7 = 0;
+    r = CALL(AudioLoad_IsSeqLoadComplete)(seqPlayer->seqId);
     if (r != 0) {
-        CALL(AudioLoad_SetSeqLoadStatus)(*(unsigned char *)(o + 4), 3);
+        CALL(AudioLoad_SetSeqLoadStatus)(seqPlayer->seqId, 3);
     }
-    if (CALL(AudioLoad_IsFontLoadComplete)(*(unsigned char *)(o + 5)) != 0) {
-        CALL(AudioLoad_SetFontLoadStatus)(*(unsigned char *)(o + 5), 4);
+    if (CALL(AudioLoad_IsFontLoadComplete)(seqPlayer->defaultFont) != 0) {
+        CALL(AudioLoad_SetFontLoadStatus)(seqPlayer->defaultFont, 4);
     }
-    if (*(unsigned char *)(o + 5) == *(short *)((char *)&D_00000000 + 0x23FA)) {
-        *(int *)((char *)&D_00000000 + 0x23DC) = 1;
-    } else if (*(unsigned char *)(o + 5) == *(short *)((char *)&D_00000000 + 0x2406)) {
-        *(int *)((char *)&D_00000000 + 0x23DC) = 0;
+    if (seqPlayer->defaultFont == gAudioCtx.fontCache.temporary.entries[0].id) {
+        gAudioCtx.fontCache.temporary.nextSide = 1;
+    } else if (seqPlayer->defaultFont == gAudioCtx.fontCache.temporary.entries[1].id) {
+        gAudioCtx.fontCache.temporary.nextSide = 0;
     }
 }
 
@@ -10697,16 +10713,16 @@ void AudioSeq_AudioListPushBack(int *a0, int *a1) {
  * and 0002A8D8 (the detach body, reached via the bnel over the early return);
  * both were mislabeled caps. Merged it is one function: $v1 is a0->next set in
  * the preamble, NOT caller-set. */
-int AudioSeq_AudioListPopBack(void *a0) {
-    void *v1 = *(void**)a0;
-    if (v1 == a0) {
+int AudioSeq_AudioListPopBack(AudioListItem *list) {
+    AudioListItem *item = list->prev;
+    if (item == list) {
         return 0;
     }
-    *(void**)((char*)*(void**)v1 + 4) = a0;
-    *(void**)a0 = *(void**)v1;
-    *(void**)v1 = 0;
-    *(int*)((char*)a0 + 8) = *(int*)((char*)a0 + 8) - 1;
-    return *(int*)((char*)v1 + 8);
+    item->prev->next = list;
+    list->prev = item->prev;
+    item->prev = 0;
+    list->u.count = list->u.count - 1;
+    return (int)item->u.value;
 }
 
 /* AudioSeq_InitLayerFreelist: pool bring-up over the registry block (bootup.uso Data
@@ -11531,14 +11547,14 @@ void AudioSeq_ProcessSequences(int a0) {
 extern int gl_func_00000000();
 extern int gl_ref_00040E10();    /* mid-body alt-entry (baked jal 0x0C010384) */
 
-void AudioSeq_SkipForwardSequence(int *a0) {
-    register int *s0 = a0;
-    if (*(int*)((char*)s0 + 0xDC) > 0) {
+void AudioSeq_SkipForwardSequence(SequencePlayer *a0) {
+    register SequencePlayer *s0 = a0;
+    if (s0->skipTicks > 0) {
         do {
             gl_ref_00040E10(s0);
             CALL(Audio_SequencePlayerProcessSound)(s0);   /* real callee: jal-0 USO placeholder */
-            *(int*)((char*)s0 + 0xDC) = *(int*)((char*)s0 + 0xDC) - 1;
-        } while (*(int*)((char*)s0 + 0xDC) > 0);
+            s0->skipTicks = s0->skipTicks - 1;
+        } while (s0->skipTicks > 0);
     }
 }
 
