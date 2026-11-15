@@ -516,7 +516,7 @@ end:
     return a0;
 }
 
-/* PhysQNode_vfn11_00063964 hand-redecode 2026-08-22 (agent-g): full structure from
+/* PhysQNode_pushProbes_00063964 hand-redecode 2026-08-22 (agent-g): full structure from
  * raw-word disasm. K&R def (all 4 args homed; f32 arg1 reused as the
  * accumulator, spilled to its OWN home slot 0x14C = the f16 tell).
  * Two probe calls fill va/vb; offset by o+0xDC vec; d = va-vb chained-
@@ -535,10 +535,10 @@ end:
  * unfolded); the K&R/address-taken spelling reloads arg0 into t6 and keeps
  * farg1 in memory, while an ANSI `(char *, f32, int, int)` def (all four
  * still homed) fixes farg1 but scores lower (73.7: arg0 -> s0 colouring). */
-/* PhysQNode_vfn11_00063964: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_63964.cpp, REPLACE_FUNC_BODY-spliced
+/* PhysQNode_pushProbes_00063964: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_63964.cpp, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-c run 238). The superseded in-unit decode was
  * removed in agent-b run 500 (git history has it). */
-void PhysQNode_vfn11_00063964(char *o) {
+void PhysQNode_pushProbes_00063964(char *o) {
     volatile char *r = o;
 }
 
@@ -1577,7 +1577,7 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
 /* DNode_addImpulseAt_00065250(dnode, point, force): add a force at a world point to the
  * impulse accumulator, as DNodeAccum_addForce_000641DC(&impulseAcc, point - worldCog, force)
  * (callee from the bootup TextReloc at 0x7992C; older notes called it AnimPlayer_update).
- * Callers: SnowBCollider_onContact / _edgeGrip_0000E2D0, PhysQNode_vfn11_00063964,
+ * Callers: SnowBCollider_onContact / _edgeGrip_0000E2D0, PhysQNode_pushProbes_00063964,
  * Friction_vfn11_00063F34. The force arrives in $a2 and is passed through untouched.
  * EXACT 34/34 (2026-07-03). Levers (in order cracked):
  * 1. FP pool-coloring: named float diffs dx,dy,dz (defs x,y,z) -> f0,f2,f12
@@ -1932,7 +1932,7 @@ void hostio_readVec3Parm_00065E0C(char *a0) {
     gl_ref_00077E28(a0 + 0x10);
 }
 
-float DNode_getF198_00065E3C(char *a0) {
+float DNode_getSuc(char *a0) {
     return DNODE(a0)->parms.suc.value;
 }
 

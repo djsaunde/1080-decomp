@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for PhysQNode_vfn11_00063964 (280 words; this body 278, cfe NM
+/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for PhysQNode_pushProbes_00063964 (280 words; this body 278, cfe NM
  * body 275). EXACT since agent-c run 238 (see the end of this comment).
  * agent-g run 165 (docs/IDO_CODEGEN.md kit CV): the cfe body's struct-copy staging (`t = d; n = t;`,
  * `t = s1; c1 = t; ... u = r1; w = u; out.x = w.x ...`) is plain C++ Vec3 arithmetic: inline by-value
@@ -52,7 +52,7 @@ inline V3 operator-(const V3 &a, const V3 &b) { return V3(a.x - b.x, a.y - b.y, 
 inline V3 operator+(const V3 &a, const V3 &b) { return V3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline V3 operator*(const V3 &a, f32 s) { return V3(a.x * s, a.y * s, a.z * s); }
 struct O { char p[0xDC]; V3 pos; char pE8[0xF4 - 0xE8]; char probe[0x108 - 0xF4]; int *tgt; V3 pa; V3 pb; };
-extern "C" void PhysQNode_vfn11_00063964(O *o, f32 acc, int a2, int a3) {
+extern "C" void PhysQNode_pushProbes_00063964(O *o, f32 acc, int a2, int a3) {
     V3 fin;
     V3 va;
     V3 vb;

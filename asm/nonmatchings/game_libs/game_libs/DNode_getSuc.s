@@ -1,6 +1,6 @@
-nonmatching DNode_getF198_00065E3C, 0x8
+nonmatching DNode_getSuc, 0x8
 
-glabel DNode_getF198_00065E3C
+glabel DNode_getSuc
     /* E4AF14 00065E3C 03E00008 */  .word 0x03E00008
     /* E4AF18 00065E40 C4800198 */  .word 0xC4800198
-endlabel DNode_getF198_00065E3C
+endlabel DNode_getSuc

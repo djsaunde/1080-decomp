@@ -20,7 +20,7 @@
  * (DNode_init_00065060); gvt.value is added to vel[1] every frame (integrate: gravity,
  * default -0.72); tsc.value scales both accumulators (applyAccums); cog.value is the centre
  * of gravity in body space (resetAccums -> worldCog); suc.value is read by
- * DNode_getF198_00065E3C. Defaults (ctor; RoData pool kRo_DNode_ctor): imp 0, spd 0.2,
+ * DNode_getSuc. Defaults (ctor; RoData pool kRo_DNode_ctor): imp 0, spd 0.2,
  * spl 100, spw 0, gvt -0.72, suc 0, vsc 0.216, usc 0.2, tsc 1, cog (0, 0, 0) in +-1000,
  * unc 0, dsc 1, csc 420, rad 150, cts (1, 1, 0) in +-10.
  */
@@ -118,7 +118,7 @@ typedef char DNode_cog_check[(int)&((DNode *)0)->parms.cog.value == 0x1F8 ? 1 : 
 
 /* PhysQNode (0x124, "<QNode>", vtable PhysQNode_vtbl; PhysQNode_ctor_00063884(this, owner,
  * &probeA, &probeB)): two body-space probe points of a DNode. Its vfn11
- * (PhysQNode_vfn11_00063964) rotates each probe by cvqs.quat (math_quatRotateVec3), adds
+ * (PhysQNode_pushProbes_00063964) rotates each probe by cvqs.quat (math_quatRotateVec3), adds
  * cvqs.trans, and for each probe below y = 0 pushes the owner up by the depth through
  * DNode_addImpulseAt_00065250 at the (averaged) contact point. */
 typedef struct PhysQNode {

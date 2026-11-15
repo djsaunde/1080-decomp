@@ -1,6 +1,6 @@
-nonmatching PhysQNode_vfn11_00063964, 0x460
+nonmatching PhysQNode_pushProbes_00063964, 0x460
 
-glabel PhysQNode_vfn11_00063964
+glabel PhysQNode_pushProbes_00063964
     /* E48A3C 00063964 27BDFEB8 */  .word 0x27BDFEB8
     /* E48A40 00063968 AFA70154 */  .word 0xAFA70154
     /* E48A44 0006396C 00803825 */  .word 0x00803825
@@ -281,4 +281,4 @@ glabel PhysQNode_vfn11_00063964
     /* E48E90 00063DB8 27BD0148 */  .word 0x27BD0148
     /* E48E94 00063DBC 03E00008 */  .word 0x03E00008
     /* E48E98 00063DC0 00000000 */  .word 0x00000000
-endlabel PhysQNode_vfn11_00063964
+endlabel PhysQNode_pushProbes_00063964

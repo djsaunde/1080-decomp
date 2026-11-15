@@ -2516,7 +2516,7 @@ build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
 GAMELIBS_63964_DONOR := build/src/game_libs/game_libs_ncc_63964.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += PhysQNode_vfn11_00063964=$(GAMELIBS_63964_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += PhysQNode_pushProbes_00063964=$(GAMELIBS_63964_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_63964_DONOR)
 # 65494 = child-list contact solve (C++ port of the cfe NM body: list iterator, by-value Vec3 operator=; agent-g run 186; agent-c runs 213-215: operator* parameter temp from `* -h`). EXACT NCC donor over an empty placeholder (blank USO jals: 0-pinned AnimPlayer_update aliases).
 GAMELIBS_65494_DONOR := build/src/game_libs/game_libs_ncc_65494.cpp.o
