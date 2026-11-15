@@ -2,6 +2,8 @@
 #include "gdl/gl_data.h"
 #include "gdl/gadget.h"
 #include "gdl/race.h"
+#include "game/input.h"
+#include "gdl/item.h"
 #include "uso_call.h"
 
 extern int D_00000000;
@@ -275,13 +277,13 @@ void CountDownGadget_display(char *arg0) {
     CALL(gui_setupRenderMode_0000055C)(COUNTDOWN(arg0)->arg1);
     a2 = arg0 + 0x94;
     CALL(gui_setPrimColor_000006B8)(COUNTDOWN(arg0)->arg1,
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha */
+                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha: the member spelling recolours the fp regs */
                      a2, COUNTDOWN(arg0)->unkA4);
     CALL(gui_drawString_00000D04)(COUNTDOWN(arg0)->arg1, COUNTDOWN(arg0)->parms.xps.value,
                      COUNTDOWN(arg0)->parms.yps.value, arg0 + 0xB4);
     CALL(gui_setupRenderMode_0000055C)(COUNTDOWN(arg0)->arg2);
     CALL(gui_setPrimColor_000006B8)(COUNTDOWN(arg0)->arg2,
-                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha */
+                     (int)(*(float *)&D_00000000 * (float)*(int *)(arg0 + 0xA8)), /* alpha: the member spelling recolours the fp regs */
                      a2, COUNTDOWN(arg0)->unkA4);
     CALL(gui_drawString_00000D04)(COUNTDOWN(arg0)->arg2,
                      COUNTDOWN(arg0)->parms.xps.value + COUNTDOWN(arg0)->parms.shx.value,
@@ -495,15 +497,15 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
     CALL(FloatPosParms_ctor)(node + 0x2C);
 initfields:
     v = *(float*)(GL_RODATA(0xC74));
-    *(int*)(a0 + 0xC) = (int)(sPointsGadgetName_CBE8);
-    *(int*)(a0 + 0x74) = 0;
-    *(int*)(a0 + 0x78) = 255;
-    *(float*)(a0 + 0x64) = v;
-    *(float*)(a0 + 0x68) = v;
-    *(float*)(a0 + 0x6C) = v;
-    *(float*)(a0 + 0x70) = 0.0f;
-    *(int*)(a0 + 0xB0) = a1;
-    *(int*)(a0 + 0xA0) = 0;
+    POPUP(a0)->node.name = (int)(sPointsGadgetName_CBE8);
+    POPUP(a0)->unk74 = 0;
+    POPUP(a0)->alpha = 255;
+    POPUP(a0)->colour[0] = v;
+    POPUP(a0)->colour[1] = v;
+    POPUP(a0)->colour[2] = v;
+    POPUP(a0)->colour[3] = 0.0f;
+    POPUP(a0)->arg = a1;
+    POPUP(a0)->font = 0;
 ret:
     return a0;
 }
@@ -638,7 +640,7 @@ void BoardsGadget_display(char *self) {
     s2 = ((BoardsGadget *)self)->sprite;
     CALL(gui_spriteRefresh)(s2);
     for (i = ((BoardsGadget *)self)->count - 1; i >= 0; i--) {
-        CALL(gui_drawSprite)(s2, *(int*)(self + 0x44) + i * 4, *(int*)(self + 0x5C) - i * 4, 3);
+        CALL(gui_drawSprite)(s2, ((BoardsGadget *)self)->parms.xps.value + i * 4, ((BoardsGadget *)self)->parms.yps.value - i * 4, 3);
     }
 }
 
@@ -1210,9 +1212,9 @@ char *CourseGadgetParms_ctor(char *self) {
 char *CourseGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0x2FC), (arg0 != 0))) {
         CALL(Node_ctor)(arg0, GL_DATA_STR(0xCCB4, "<Node>"));
-        *(s32 *)(arg0 + 0x28) = (s32)&CourseGadget_vtbl;
+        COURSEG(arg0)->node.vptr = (s32)&CourseGadget_vtbl;
         CALL(CourseGadgetParms_ctor)(arg0 + 0x2C);
-        *(s32 *)(arg0 + 0xC) = (s32)(sCourseGadgetName);
+        COURSEG(arg0)->node.name = (s32)(sCourseGadgetName);
         COURSEG(arg0)->arg1 = arg1;
         COURSEG(arg0)->marker[1][0] = 0.0f;
         COURSEG(arg0)->marker[0][0] = 0.0f;
@@ -1344,7 +1346,7 @@ void hud_findMarkers_000029F8(char *arg0) {
     key.v = *(s32 *)(GL_DATA_STR(0xCCCC, "mrk"));
     list = (char *)CALL(ItemMgr_findType_0003EA98)(gl_data_00000000, key);
     if (list != 0) {
-        it[1] = *(GlNode29F8 **)(list + 0x10);
+        it[1] = (GlNode29F8 *)ITEMTYPE(list)->node.children; /* the type's items */
         while (GL29F8_ITER_NEXT(it) != 0) {
             item = it[0]->data;
             x = (s32)(((*(f32 *)(item + 0x30) - COURSEG(arg0)->originX) / COURSEG(arg0)->extent) * (t = scale));
@@ -1398,35 +1400,35 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
     if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0x168), (arg0 != 0))) {
         CALL(Node_ctor)(arg0, GL_DATA_STR(0xCCD0, "<Node>"));
-        *(int *)(arg0 + 0x28) = (int)&PointsGadget_vtbl_CA4C;
-        FW(arg0, 0xC) = (int)(sPointsGadgetName_CCD8);
-        FW(arg0, 0x50) = arg3;
-        FW(arg0, 0x54) = arg1;
-        FW(arg0, 0x58) = arg2;
-        CALL(gui_spriteInit)(arg0 + 0xF0, 0x50003);
-        CALL(gui_spriteInit)(arg0 + 0x108, 0x50004);
-        CALL(gui_spriteInit)(arg0 + 0x120, 0x50006);
-        CALL(gui_spriteInit)(arg0 + 0x150, 0x50005);
-        CALL(gui_spriteInit)(arg0 + 0x138, 0x50021);
+        TPOINTS(arg0)->node.vptr = (int)&PointsGadget_vtbl_CA4C;
+        TPOINTS(arg0)->node.name = (int)(sPointsGadgetName_CCD8);
+        TPOINTS(arg0)->font = arg3;
+        TPOINTS(arg0)->popupArg = arg1;
+        TPOINTS(arg0)->popupArg2 = arg2;
+        CALL(gui_spriteInit)(TPOINTS(arg0)->sprite0, 0x50003);
+        CALL(gui_spriteInit)(TPOINTS(arg0)->sprite1, 0x50004);
+        CALL(gui_spriteInit)(TPOINTS(arg0)->sprite2, 0x50006);
+        CALL(gui_spriteInit)(TPOINTS(arg0)->sprite4, 0x50005);
+        CALL(gui_spriteInit)(TPOINTS(arg0)->sprite3, 0x50021);
         var_s0 = 0;
         var_s1 = arg0;
         do {
-            FW(var_s1, 0x2C) = CALL(PointsGadget_ctor_00000ED0)(0, arg1);
+            TPOINTS(var_s1)->slots[0] = (PointsPopup *)CALL(PointsGadget_ctor_00000ED0)(0, arg1);
             var_s1 += 4;
             var_s0 += 1;
         } while (var_s0 != 8);
         CALL(TrickPointsGadget_reset_00003298)(arg0);
         temp_f0 = (f32)255 / d255;
         temp_f2 = 102.0f / d255;
-        *(f32 *)(arg0 + 0xCC) = temp_f0;
-        *(f32 *)(arg0 + 0xD8) = temp_f0;
-        *(f32 *)(arg0 + 0xE0) = temp_f0;
-        *(f32 *)(arg0 + 0xE8) = temp_f0;
+        TPOINTS(arg0)->colour.r = temp_f0;
+        TPOINTS(arg0)->colour.a = temp_f0;
+        TPOINTS(arg0)->pointsColour.g = temp_f0;
+        TPOINTS(arg0)->pointsColour.a = temp_f0;
         temp_f12 = 80.0f / d255;
-        *(f32 *)(arg0 + 0xD0) = temp_f2;
-        *(f32 *)(arg0 + 0xDC) = temp_f2;
-        *(f32 *)(arg0 + 0xD4) = temp_f12;
-        *(f32 *)(arg0 + 0xE4) = temp_f12;
+        TPOINTS(arg0)->colour.g = temp_f2;
+        TPOINTS(arg0)->pointsColour.r = temp_f2;
+        TPOINTS(arg0)->colour.b = temp_f12;
+        TPOINTS(arg0)->pointsColour.b = temp_f12;
     }
     return arg0;
 }
@@ -1456,31 +1458,31 @@ void TrickPointsGadget_reset_00003298(int *a0) {
     float al = 0.0f / div255;
     int i;
     for (i = 0; i < 8; i++) {
-        *(int*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x98) = 0;
-        gl_reset_3298(*(int**)((char*)a0 + 0x2C + i * 4), 0xA0, 0x5A, 1.0f, 1.0f);
-        color = (Color3298*)((char*)*(int**)((char*)a0 + 0x2C + i * 4) + 0x64);
+        TPOINTS(a0)->slots[i]->value = 0;
+        gl_reset_3298(TPOINTS(a0)->slots[i], 0xA0, 0x5A, 1.0f, 1.0f);
+        color = (Color3298*)TPOINTS(a0)->slots[i]->colour;
         color->a = al;
         color->b = b;
         color->g = g;
         color->r = r;
-        *(int*)((char*)(*(int**)((char*)a0 + 0x2C + i * 4)) + 0x94) = 0;
+        TPOINTS(a0)->slots[i]->state = 0;
     }
-    *(int*)((char*)a0 + 0x5C) = 0;
-    *(int*)((char*)a0 + 0x9C) = 0;
-    *(int*)((char*)a0 + 0x8C) = 0xFF;
-    *(int*)((char*)a0 + 0x90) = 0xFF;
-    *(int*)((char*)a0 + 0x94) = 0xFF;
-    *(int*)((char*)a0 + 0x98) = 0xFF;
-    *(int*)((char*)a0 + 0x60) = 0;
-    *(int*)((char*)a0 + 0xA0) = 0;
-    *(int*)((char*)a0 + 0x64) = 0;
-    *(int*)((char*)a0 + 0xA4) = 0;
-    *(int*)((char*)a0 + 0x68) = 0;
-    *(int*)((char*)a0 + 0xA8) = 0;
-    *(int*)((char*)a0 + 0x84) = 0;
-    *(int*)((char*)a0 + 0x7C) = 0;
-    *(int*)((char*)a0 + 0x80) = 0;
-    *(int*)((char*)a0 + 0x88) = 0;
+    TPOINTS(a0)->text[0] = 0;
+    TPOINTS(a0)->alpha[0] = 0;
+    TPOINTS(a0)->age[0] = 0xFF;
+    TPOINTS(a0)->age[1] = 0xFF;
+    TPOINTS(a0)->age[2] = 0xFF;
+    TPOINTS(a0)->age[3] = 0xFF;
+    TPOINTS(a0)->text[1] = 0;
+    TPOINTS(a0)->alpha[1] = 0;
+    TPOINTS(a0)->text[2] = 0;
+    TPOINTS(a0)->alpha[2] = 0;
+    TPOINTS(a0)->text[3] = 0;
+    TPOINTS(a0)->alpha[3] = 0;
+    TPOINTS(a0)->count = 0;
+    TPOINTS(a0)->head = 0;
+    TPOINTS(a0)->tail = 0;
+    TPOINTS(a0)->scroll = 0;
     if (color) {}
 }
 
@@ -1545,7 +1547,7 @@ void PointsGadget_release_000033E4(char *a0) {
  * all 0.1f, are base-0 externs + the offset -- literals would merge; run 184
  * decode-scan: the bare externs read address 0, `--raw --pins` 15 -> 12). */
 void PointsGadget_update_00003430(char *arg0) {
-    *(s32 *)(arg0 + 0xEC) = 1;
+    TPOINTS(arg0)->allIdle = 1;
 }
 
 /* PointsGadget_display_000038F4 — EXACT MATCH 138/138 words (2026-07-03, agent-e w5).
@@ -1600,37 +1602,37 @@ void PointsGadget_display_000038F4(char *arg0) {
     s0v = 0;
     var_s2 = arg0;
     do {
-        temp_v1 = (char *)FW(var_s2, 0x2C);
-        if (FW(temp_v1, 0x94) != 0) {
+        temp_v1 = (char *)TPOINTS(var_s2)->slots[0];
+        if (POPUP(temp_v1)->state != 0) {
             tv0 = FW(temp_v1, 0x28);
             ((GP_000038F4)FW(tv0, 0x1C))(*(s16*)((char *)tv0 + 0x18) + temp_v1);
         }
         s0v += 4;
         var_s2 += 4;
     } while (s0v != (char *)0x20);
-    FCALL(gui_setupRenderMode_0000055C)(FW(arg0, 0x50));
+    FCALL(gui_setupRenderMode_0000055C)(TPOINTS(arg0)->font);
     var_s4 = 0;
-    temp_s7 = arg0 + 0xCC;
-    if (FW(arg0, 0x84) > 0) {
+    temp_s7 = (char *)&TPOINTS(arg0)->colour;
+    if (TPOINTS(arg0)->count > 0) {
         do {
-            tv0 = (FW(arg0, 0x80) + var_s4) & 3;
-            s0v = (char *)&((int *)arg0)[tv0];
-            temp_a3 = (int *)FW(s0v, 0x6C);
+            tv0 = (TPOINTS(arg0)->tail + var_s4) & 3;
+            s0v = (char *)&((int *)arg0)[tv0]; /* the list shifted by 4 * tv0: TPOINTS(s0v)->text[0] is text[tv0] (the named idx base is a lever) */
+            temp_a3 = (int *)TPOINTS(s0v)->points[0];
             if (temp_a3 != (int *)-1) {
-                FCALL(gl_sprintf)(spE4, &sFmt_pts_CCEC, FW(s0v, 0x5C), temp_a3);
-                FCALL(gl_sprintf)(sp64, &sFmt_pts_CCF8, FW(s0v, 0x6C));
-                temp_s2 = FCALL(gui_centerStringX)(FW(arg0, 0x50), FW(s0v, 0xAC), spE4);
-                temp_s3 = FCALL(gui_stringWidth)(FW(arg0, 0x50), FW(s0v, 0x5C)) + temp_s2;
-                FCALL(gui_setPrimColor_000006B8)(FW(arg0, 0x50), (s32) (*(f32 *)&D_00000000 * (f32) FW(s0v, 0x9C)), temp_s7, 0xFF);
-                FCALL(gui_drawString)(FW(arg0, 0x50), temp_s2, FW(s0v, 0xBC), FW(s0v, 0x5C));
-                FCALL(gui_setPrimColor_000006B8)(FW(arg0, 0x50), (s32) (*(f32 *)&D_00000000 * (f32) FW(s0v, 0x9C)), arg0 + 0xDC, 0xFF);
-                FCALL(gui_drawString)(FW(arg0, 0x50), temp_s3, FW(s0v, 0xBC), sp64);
+                FCALL(gl_sprintf)(spE4, &sFmt_pts_CCEC, TPOINTS(s0v)->text[0], temp_a3);
+                FCALL(gl_sprintf)(sp64, &sFmt_pts_CCF8, TPOINTS(s0v)->points[0]);
+                temp_s2 = FCALL(gui_centerStringX)(TPOINTS(arg0)->font, TPOINTS(s0v)->x[0], spE4);
+                temp_s3 = FCALL(gui_stringWidth)(TPOINTS(arg0)->font, TPOINTS(s0v)->text[0]) + temp_s2;
+                FCALL(gui_setPrimColor_000006B8)(TPOINTS(arg0)->font, (s32) (*(f32 *)&D_00000000 * (f32) TPOINTS(s0v)->alpha[0]), temp_s7, 0xFF);
+                FCALL(gui_drawString)(TPOINTS(arg0)->font, temp_s2, TPOINTS(s0v)->y[0], TPOINTS(s0v)->text[0]);
+                FCALL(gui_setPrimColor_000006B8)(TPOINTS(arg0)->font, (s32) (*(f32 *)&D_00000000 * (f32) TPOINTS(s0v)->alpha[0]), &TPOINTS(arg0)->pointsColour, 0xFF);
+                FCALL(gui_drawString)(TPOINTS(arg0)->font, temp_s3, TPOINTS(s0v)->y[0], sp64);
             } else {
-                FCALL(gui_setPrimColor_000006B8)(FW(arg0, 0x50), (s32) (*(f32 *)&D_00000000 * (f32) FW(s0v, 0x9C)), temp_s7, 0xFF);
-                FCALL(gui_drawString)(FW(arg0, 0x50), FCALL(gui_centerStringX)(FW(arg0, 0x50), FW(s0v, 0xAC), FW(s0v, 0x5C)), FW(s0v, 0xBC), FW(s0v, 0x5C));
+                FCALL(gui_setPrimColor_000006B8)(TPOINTS(arg0)->font, (s32) (*(f32 *)&D_00000000 * (f32) TPOINTS(s0v)->alpha[0]), temp_s7, 0xFF);
+                FCALL(gui_drawString)(TPOINTS(arg0)->font, FCALL(gui_centerStringX)(TPOINTS(arg0)->font, TPOINTS(s0v)->x[0], TPOINTS(s0v)->text[0]), TPOINTS(s0v)->y[0], TPOINTS(s0v)->text[0]);
             }
             var_s4 += 1;
-        } while (var_s4 < FW(arg0, 0x84));
+        } while (var_s4 < TPOINTS(arg0)->count);
     }
 }
 
@@ -1650,16 +1652,11 @@ void PointsGadget_display_000038F4(char *arg0) {
  *    the whole loop);
  *  - store order 78, A0, 98, B0, 80, 84, A8 (the only order of the seven
  *    that schedules like the target). */
-/* The slots are PointsPopup objects (gdl/gadget.h, agent-h run 501; was a private GlSlot3B1C view). */
-typedef struct GlOwn3B1C {
-    char pad0[0x2C];
-    PointsPopup *slots[8];
-    char pad4C[0x54 - 0x4C];
-    s32 unk54;
-} GlOwn3B1C;
+/* The owner is the TrickPointsGadget (gdl/gadget.h, agent-h run 519; was a private GlOwn3B1C view), the
+ * slots its PointsPopup objects (agent-h run 501). */
 
 extern void *gl_func_00000000_i3ff(int, int, int, float, float);
-PointsPopup *PointsGadget_allocSlot_00003B1C(GlOwn3B1C *arg0, s32 arg1, s32 arg2, s32 arg3) {
+PointsPopup *PointsGadget_allocSlot_00003B1C(TrickPointsGadget *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 i;
     PointsPopup *slot;
 
@@ -1677,7 +1674,7 @@ PointsPopup *PointsGadget_allocSlot_00003B1C(GlOwn3B1C *arg0, s32 arg1, s32 arg2
             slot->alpha = 255;
             slot->font = 0;
             slot->value = arg1;
-            slot->arg = arg0->unk54;
+            slot->arg = arg0->popupArg;
             slot->unk80 = 0;
             slot->unk84 = -18;
             slot->velY = 0.0f;
@@ -1716,60 +1713,38 @@ char *PointsGadget_allocSlot_00003C0C(char *arg0) {
  *    reloads lw x,0x2C(v1) per store (the target's reload-per-access shape);
  *  - the decrement through `s32 *p = &...->unk80; *p = *p - 6;` gives the
  *    target's addiu v0,v0,0x80 / sw 0(v0) base form. */
-typedef struct GlSlot3DB8 {
-    char pad0[0x78];
-    s32 unk78;
-    s32 unk7C;
-    s32 unk80;
-    s32 unk84;
-    char pad88[0x94 - 0x88];
-    s32 unk94;
-    s32 unk98;
-    s32 unk9C;
-    char *unkA0;
-    f32 unkA4;
-    f32 unkA8;
-    f32 unkAC;
-    s32 unkB0;
-    char unkB4[4];
-} GlSlot3DB8;
+/* Owner = TrickPointsGadget, slots = PointsPopup (gdl/gadget.h; were private GlOwn3DB8 / GlSlot3DB8
+ * views, agent-h run 519). */
 
-typedef struct GlOwn3DB8 {
-    char pad0[0x2C];
-    GlSlot3DB8 *slots[8];
-    char pad4C[0x58 - 0x4C];
-    s32 unk58;
-} GlOwn3DB8;
-
-GlSlot3DB8 *PointsGadget_allocSlot_00003DB8(GlOwn3DB8 *arg0, s32 arg1, int arg2, s32 arg3) {
+PointsPopup *PointsGadget_allocSlot_00003DB8(TrickPointsGadget *arg0, s32 arg1, int arg2, s32 arg3) {
     s32 i;
     s32 *p;
 
     for (i = 0; i != 8; i++) {
-        if (arg0->slots[i]->unk94 == 0) {
+        if (arg0->slots[i]->state == 0) {
             if (arg3 != 0) {
-                arg0->slots[i]->unk94 = 1;
-                arg0->slots[i]->unk9C = 16;
-                arg0->slots[i]->unk78 = 0;
+                arg0->slots[i]->state = 1;
+                arg0->slots[i]->timer = 16;
+                arg0->slots[i]->alpha = 0;
             } else {
-                arg0->slots[i]->unk94 = 1;
-                arg0->slots[i]->unk9C = 0;
-                arg0->slots[i]->unk78 = 255;
+                arg0->slots[i]->state = 1;
+                arg0->slots[i]->timer = 0;
+                arg0->slots[i]->alpha = 255;
             }
             XCALL(gl_func_00000000_i3ff, PointsPopup_setPosScale)((int)arg0->slots[i], 220, 120, 1.0f, 1.0f);
-            arg0->slots[i]->unk98 = 0;
-            arg0->slots[i]->unkA0 = (char *)arg0 + 0xF0;
-            arg0->slots[i]->unkA4 = 0.0f;
-            arg0->slots[i]->unkA8 = 0.0f;
-            arg0->slots[i]->unkAC = 0.0f;
+            arg0->slots[i]->value = 0;
+            arg0->slots[i]->font = (s32)arg0->sprite0;
+            arg0->slots[i]->velX = 0.0f;
+            arg0->slots[i]->velY = 0.0f;
+            arg0->slots[i]->accelY = 0.0f;
             arg0->slots[i]->unk80 = 0;
             if (arg1 >= 10) {
                 p = &arg0->slots[i]->unk80;
                 *p = *p - 6;
             }
             arg0->slots[i]->unk84 = 8;
-            arg0->slots[i]->unkB0 = arg0->unk58;
-            CALL(gl_sprintf)(arg0->slots[i]->unkB4, GL_DATA(0xCD08), arg1);
+            arg0->slots[i]->arg = arg0->popupArg2;
+            CALL(gl_sprintf)(arg0->slots[i]->text, GL_DATA(0xCD08), arg1);
             return arg0->slots[i];
         }
     }
@@ -1778,23 +1753,23 @@ GlSlot3DB8 *PointsGadget_allocSlot_00003DB8(GlOwn3DB8 *arg0, s32 arg1, int arg2,
 
 void TrickPointsGadget_push(int *a0, int a1, int a2) {
     int diff;
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x5C) = a1;
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x6C) = a2;
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x9C) = 0;
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0x8C) = 0;
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0xBC) = 200;
-    diff = *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0xBC) - a0[((a0[0x7C / 4] - 1) & 3) + 0x2F];
+    TPOINTS(a0)->text[TPOINTS(a0)->head] = a1;
+    TPOINTS(a0)->points[TPOINTS(a0)->head] = a2;
+    TPOINTS(a0)->alpha[TPOINTS(a0)->head] = 0;
+    TPOINTS(a0)->age[TPOINTS(a0)->head] = 0;
+    TPOINTS(a0)->y[TPOINTS(a0)->head] = 200;
+    diff = TPOINTS(a0)->y[TPOINTS(a0)->head] - TPOINTS(a0)->y[(TPOINTS(a0)->head - 1) & 3];
     if (diff < 15) {
-        *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0xBC) = a0[((a0[0x7C / 4] - 1) & 3) + 0x2F] + 16;
+        TPOINTS(a0)->y[TPOINTS(a0)->head] = TPOINTS(a0)->y[(TPOINTS(a0)->head - 1) & 3] + 16;
     }
-    *(int *)((char *)a0 + a0[0x7C / 4] * 4 + 0xAC) = 160;
-    a0[0x88 / 4] += 16;
-    a0[0x7C / 4] = (a0[0x7C / 4] + 1) & 3;
-    if (a0[0x80 / 4] == a0[0x7C / 4]) {
-        a0[0x80 / 4] = (a0[0x80 / 4] + 1) & 3;
+    TPOINTS(a0)->x[TPOINTS(a0)->head] = 160;
+    TPOINTS(a0)->scroll += 16;
+    TPOINTS(a0)->head = (TPOINTS(a0)->head + 1) & 3;
+    if (TPOINTS(a0)->head == TPOINTS(a0)->tail) { /* written head first: tail == head swaps the bne operands */
+        TPOINTS(a0)->tail = (TPOINTS(a0)->tail + 1) & 3;
     }
-    if (a0[0x84 / 4] < 4) {
-        a0[0x84 / 4] = a0[0x84 / 4] + 1;
+    if (TPOINTS(a0)->count < 4) {
+        TPOINTS(a0)->count = TPOINTS(a0)->count + 1;
     }
 }
 
@@ -3328,14 +3303,14 @@ extern int gl_data_00000000_70fc_1;
 #define G5 ((char*)&gl_data_00000000_70fc)
 void RaceProcess_leave(RaceProcess *a0) {
     int *next;
-    int *obj;
+    RaceTracker *obj;
     if (a0->leftOnce == 0) {
         next = (int*)a0->session;
         if (next != 0 && CALL(Backup_sessionHasNew)(next) != 0) {
-            CALL(RaceTracker_sendWinResult)(*(int*)(G1 + 0x138), 0);
+            CALL(RaceTracker_sendWinResult)(GAMEFLOW(G1)->dataMgr, 0);
             XCALL(gl_func_00000000_70fcv, func_00000188)(5, 0, 0);
-            if (*(int*)(G2 + 0x34) == 5 || *(int*)(G2 + 0x34) == 4 || *(int*)(G2 + 0x34) == 6) {
-                if (*(int*)(G2 + 0x7C) == 1) {
+            if (GAMEFLOW(G2)->nextFlowMode == 5 || GAMEFLOW(G2)->nextFlowMode == 4 || GAMEFLOW(G2)->nextFlowMode == 6) {
+                if (GAMEFLOW(G2)->unk7C == 1) {
                     CALL(snd_playSeq_000120A8)(G2, 5, 2, 0);
                 } else {
                     CALL(snd_playSeq_000120A8)(G2, 5, 1, 0);
@@ -3344,28 +3319,28 @@ void RaceProcess_leave(RaceProcess *a0) {
                 CALL(snd_playSeq_000120A8)(G2, 5, 1, 0);
             }
         } else {
-            if (*(int*)(G3 + 0x34) == 6 || *(int*)(G3 + 0x34) == 5) {
-                obj = *(int**)(G3 + 0x138);
-                if (*(int*)((char*)*(int**)((char*)obj + 0x44) + 0x14) == 0) {
+            if (GAMEFLOW(G3)->nextFlowMode == 6 || GAMEFLOW(G3)->nextFlowMode == 5) {
+                obj = GAMEFLOW(G3)->dataMgr;
+                if (obj->entries[0].time == 0) {
                     CALL(RaceTracker_sendLoseResult)(obj, 0);
                 } else {
                     CALL(RaceTracker_sendWinResult)(obj, 0);
                 }
             } else {
-                CALL(RaceTracker_sendWinResult)(*(int*)(G3 + 0x138), 0);
+                CALL(RaceTracker_sendWinResult)(GAMEFLOW(G3)->dataMgr, 0);
             }
             if (a0->result == 5) {
                 XCALL(gl_func_00000000_70fcv, func_00000188)(6, 0, 0);
                 CALL(snd_playSeq_000120A8)(G4, 6, 0, 0);
             } else {
                 XCALL(gl_func_00000000_70fcv, func_00000188)(5, 0, 0);
-                if (*(int*)(G5 + 0x34) == 5) {
-                    if (*(int*)(G5 + 0x64) == 4) {
+                if (GAMEFLOW(G5)->nextFlowMode == 5) {
+                    if (GAMEFLOW(G5)->course == 4) {
                         CALL(snd_playSeq_000120A8)(G5, 5, 0, 0);
                     } else {
                         CALL(snd_playSeq_000120A8)(G5, 5, 1, 0);
                     }
-                } else if (*(int*)(G5 + 0x34) == 4 || *(int*)(G5 + 0x34) == 6 || *(int*)(G5 + 0x34) == 5) {
+                } else if (GAMEFLOW(G5)->nextFlowMode == 4 || GAMEFLOW(G5)->nextFlowMode == 6 || GAMEFLOW(G5)->nextFlowMode == 5) {
                     CALL(snd_playSeq_000120A8)(G5, 5, 0, 0);
                 } else {
                     CALL(snd_playSeq_000120A8)(G5, 5, 1, 0);

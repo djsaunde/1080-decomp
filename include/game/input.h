@@ -96,7 +96,8 @@ typedef struct InputMgr {
     /* 0x70 */ s32 unk70;          /* GameFlow_create: 0 */
     /* 0x74 */ s32 unk74;          /* GameFlow_startMode clears 0x74 / 0x78 */
     /* 0x78 */ s32 unk78;
-    char pad7C[0x80 - 0x7C];
+    /* 0x7C */ s32 unk7C;          /* RaceProcess_leave (win path, flow modes 4..6): 1 -> victory
+                                    * seq variant 2, else variant 1 */
     /* 0x80 */ s32 unk80;          /* input_initDefaults_00012188: 0 */
     /* 0x84 */ s32 unk84;          /* GameFlow_create: 0 */
     /* 0x88 */ s32 unk88;          /* GameFlow_create: 1 */

@@ -98,7 +98,7 @@ typedef char Gadget_sprite1_check[(int)&((Gadget *)0)->sprite1 == 0x124 ? 1 : -1
  * draws `count` board icons, BoardsGadget_setCount (0x1354) stores it. */
 typedef struct BoardsGadget {
     /* 0x000 */ Node node;
-    /* 0x02C */ char unk2C[0xC4 - 0x2C];
+    /* 0x02C */ TimeGadgetParms parms; /* display: icon i at (xps + 4i, yps - 4i) */
     /* 0x0C4 */ f32 colour[4];
     /* 0x0D4 */ s32 unkD4;
     /* 0x0D8 */ s32 unkD8;
@@ -236,6 +236,47 @@ typedef char CoolGadget_phase_check[(int)&((CoolGadget *)0)->phase == 0x128 ? 1 
 typedef char CoolGadget_sprite_check[(int)&((CoolGadget *)0)->label2Sprite == 0x180 ? 1 : -1];
 
 #define COOLG(p) ((CoolGadget *)(p))
+
+/* TrickPointsGadget (0x168, PointsGadget_ctor_00003138, name Data 0xCCD8; RaceTracker.pointsList,
+ * game_libs.c): the 8 score pop-ups plus a 4-entry ring of trick messages. TrickPointsGadget_push
+ * (text, points) writes ring[head] (age 0, alpha 0, x 160, y 200, at least 16 below the previous
+ * entry), head = (head + 1) & 3, count up to 4 (tail follows head when full) and scroll += 16.
+ * PointsGadget_update_00003430 ages each entry to 0x80 (alpha +16 up to 0xFF while age < 0x70,
+ * then -16; at 0 y resets to 100), moves y up by 2 while scroll is set and clears allIdle while a
+ * pop-up is busy. PointsGadget_display_000038F4 draws count entries from tail: text in colour
+ * and, when points != -1, "<text> <points>" with the points in pointsColour (agent-h run 519). */
+typedef struct TrickPointsGadget {
+    /* 0x000 */ Node node;
+    /* 0x02C */ PointsPopup *slots[8]; /* PointsGadget_ctor_00000ED0(0, popupArg) each */
+    /* 0x04C */ s32 unk4C;
+    /* 0x050 */ s32 font;           /* ctor arg 3: the ring's text font (gui_drawString) */
+    /* 0x054 */ s32 popupArg;       /* ctor arg 1: PointsPopup.arg of the allocSlot_00003B1C pop-ups */
+    /* 0x058 */ s32 popupArg2;      /* ctor arg 2: PointsPopup.arg of the allocSlot_00003DB8 pop-ups */
+    /* 0x05C */ s32 text[4];        /* ring: the message string (push arg 1) */
+    /* 0x06C */ s32 points[4];      /* ring: the points (push arg 2; -1 = text only) */
+    /* 0x07C */ s32 head;           /* next ring entry push writes */
+    /* 0x080 */ s32 tail;           /* oldest entry (display starts here) */
+    /* 0x084 */ s32 count;          /* entries shown, up to 4 */
+    /* 0x088 */ s32 scroll;         /* +16 per push, -2 per frame while > 0 (entries move up) */
+    /* 0x08C */ s32 age[4];         /* frames since push, up to 0x80; reset sets 0xFF */
+    /* 0x09C */ s32 alpha[4];
+    /* 0x0AC */ s32 x[4];           /* centre x (160) */
+    /* 0x0BC */ s32 y[4];
+    /* 0x0CC */ GadgetRGBA colour;  /* the text: 255, 102, 80 / 255 */
+    /* 0x0DC */ GadgetRGBA pointsColour; /* the points: 102, 255, 80 / 255 */
+    /* 0x0EC */ s32 allIdle;        /* update: 1 unless a pop-up's unk7C is set */
+    /* 0x0F0 */ char sprite0[0x18]; /* gui_spriteInit ids 0x50003 (allocSlot_00003DB8 font), */
+    /* 0x108 */ char sprite1[0x18]; /*   0x50004, */
+    /* 0x120 */ char sprite2[0x18]; /*   0x50006, */
+    /* 0x138 */ char sprite3[0x18]; /*   0x50021, */
+    /* 0x150 */ char sprite4[0x18]; /*   0x50005 (init order 0, 1, 2, 4, 3) */
+} TrickPointsGadget;
+
+typedef char TrickPointsGadget_size_check[sizeof(TrickPointsGadget) == 0x168 ? 1 : -1];
+typedef char TrickPointsGadget_y_check[(int)&((TrickPointsGadget *)0)->y == 0xBC ? 1 : -1];
+typedef char TrickPointsGadget_allIdle_check[(int)&((TrickPointsGadget *)0)->allIdle == 0xEC ? 1 : -1];
+
+#define TPOINTS(p) ((TrickPointsGadget *)(p))
 
 /* A colour parm (0x24, type Data 0xCA34): an RGBA value instead of one word. */
 typedef struct GdlParmRGBA {
