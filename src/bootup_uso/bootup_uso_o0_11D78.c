@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 /* input_getStickX_00011D78: -O0 island carved out of bootup_uso_tail3a_bot.c on
  * 2026-07-10 and MATCHED at -O0. 17/17 words = 0x44 since 2026-09-05: the
@@ -18,8 +19,8 @@
  * the target's interior dead jr-ra pair between the main return and the
  * zero block is a lexically-dead bare `return;` INSIDE the if arm. */
 float input_getStickX_00011D78(register char *a0) {
-    if (*(int*)(a0 + 0x18C) == 0) {
-        return *(((float**)(a0 + 0xE0))[*(int*)(a0 + 0x128)]);
+    if (GAMEFLOW(a0)->locked == 0) {
+        return *(((float**)(a0 + 0xE0))[GAMEFLOW(a0)->activePad]);
         return;
     }
     return 0.0f;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 /* Run 8 of bootup_uso's -O0 region (0x120A8..0x122C3). 5 functions.
  * See project_1080_bootup_uso_o0_runs.md + feedback_ido_o0_empty_stub.md.
@@ -16,10 +17,10 @@ extern int func_00000000();
 extern int gInputMgr_00000150;
 
 void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
-    *(int*)(a0 + 0x13C) = a1;
-    *(int*)(a0 + 0x144) = a2;
-    func_00000000(*(int*)(a0 + 0x13C), *(int*)(a0 + 0x144), 0);
-    *(int*)(a0 + 0x144) = 0;
+    GAMEFLOW(a0)->seq = a1;
+    GAMEFLOW(a0)->seqArg = a2;
+    func_00000000(GAMEFLOW(a0)->seq, GAMEFLOW(a0)->seqArg, 0);
+    GAMEFLOW(a0)->seqArg = 0;
 }
 
 void GameFlow_releaseFiles_00012110(int a0) {
@@ -28,33 +29,33 @@ void GameFlow_releaseFiles_00012110(int a0) {
 }
 
 void settings_save_00012150(char *a0) {
-    func_00000000(*(int*)(a0 + 0x148), *(int*)(a0 + 0x154));
+    func_00000000(GAMEFLOW(a0)->backup, GAMEFLOW(a0)->unlocks);
 }
 
 void input_initDefaults_00012188(char *a0) {
     int i;
     register int v;
-    *(s32*)(a0 + 0x68) = 0;
-    *(s32*)(a0 + 0x4C) = 1;
-    *(s32*)(a0 + 0x50) = 0;
-    *(s32*)(a0 + 0x54) = 1;
-    *(s32*)(a0 + 0x58) = 1;
-    *(s32*)(a0 + 0x5C) = 0;
-    *(s32*)(a0 + 0x60) = 1;
-    *(s32*)(a0 + 0x64) = 2;
-    *(s32*)(a0 + 0x80) = 0;
+    GAMEFLOW(a0)->level = 0;
+    GAMEFLOW(a0)->playerRider = 1;
+    GAMEFLOW(a0)->playerFlags = 0;
+    GAMEFLOW(a0)->playerBoard = 1;
+    GAMEFLOW(a0)->rider2 = 1;
+    GAMEFLOW(a0)->flags2 = 0;
+    GAMEFLOW(a0)->board2 = 1;
+    GAMEFLOW(a0)->course = 2;
+    GAMEFLOW(a0)->unk80 = 0;
     for (i = 0; i < 3; i++) { *(a0 + i + 0x158) = 0x2A; }
-    *(s32*)(a0 + 0x15C) = 0;
-    v = 4; *(s32*)(a0 + 0x90) = v; *(s32*)(a0 + 0xB4) = v;
-    v = 3; *(s32*)(a0 + 0x94) = v; *(s32*)(a0 + 0xB0) = v;
-    v = 1; *(s32*)(a0 + 0x98) = v; *(s32*)(a0 + 0xA8) = v;
-    v = 2; *(s32*)(a0 + 0x9C) = v; *(s32*)(a0 + 0xAC) = v;
-    v = 5; *(s32*)(a0 + 0xA0) = v; *(s32*)(a0 + 0xA4) = v;
+    GAMEFLOW(a0)->unk15C = 0;
+    v = 4; GAMEFLOW(a0)->order90[0] = v; GAMEFLOW(a0)->orderA4[4] = v;
+    v = 3; GAMEFLOW(a0)->order90[1] = v; GAMEFLOW(a0)->orderA4[3] = v;
+    v = 1; GAMEFLOW(a0)->order90[2] = v; GAMEFLOW(a0)->orderA4[1] = v;
+    v = 2; GAMEFLOW(a0)->order90[3] = v; GAMEFLOW(a0)->orderA4[2] = v;
+    v = 5; GAMEFLOW(a0)->order90[4] = v; GAMEFLOW(a0)->orderA4[0] = v;
 }
 
 void settings_setBit_00012244(int *a0, int a1) {
-    if ((**(unsigned short**)((char*)a0 + 0x154) & (1 << a1)) == 0) {
-        register unsigned short *q = *(unsigned short**)((char*)a0 + 0x154);
+    if ((*(unsigned short *)GAMEFLOW(a0)->unlocks & (1 << a1)) == 0) {
+        register unsigned short *q = (unsigned short *)GAMEFLOW(a0)->unlocks;
         *q = *q | (1 << a1);
         func_00000000(a0);
     }

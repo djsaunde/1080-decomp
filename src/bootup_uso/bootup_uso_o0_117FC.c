@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "game/input.h"
 
 /* -O0 sub-file covering bootup_uso offset 0x117FC..0x118E3 (single function,
  * 58 insns, 0xE8 bytes), split from the tail of bootup_uso_tail3a.c
@@ -25,10 +26,10 @@ extern char D_00000000;
 void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
     int h;
 
-    if (*(void**)(a0 + 0x2C) == 0 ||
-        func_00000000(a1, *(void**)(a0 + 0x2C)) != 0) {
-        if (*(void**)(a0 + 0x2C) != 0) {
-            func_00000000(&gSysLib, *(void**)(a0 + 0x2C));
+    if (GAMEFLOW(a0)->procUsoPath == 0 ||
+        func_00000000(a1, GAMEFLOW(a0)->procUsoPath) != 0) {
+        if (GAMEFLOW(a0)->procUsoPath != 0) {
+            func_00000000(&gSysLib, GAMEFLOW(a0)->procUsoPath);
             func_00000000(3);
         }
         h = func_00000000(3);
@@ -36,6 +37,6 @@ void GameFlow_loadProcUso_000117FC(char *a0, void *a1) {
         func_00000000(&gSysLib, a1);
         func_00000000(&gSnowBoard, 0);
         func_00000000(h);
-        *(void**)(a0 + 0x2C) = a1;
+        GAMEFLOW(a0)->procUsoPath = a1;
     }
 }

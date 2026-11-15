@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int func_00000000();
 
@@ -7,13 +8,13 @@ extern int func_00000000();
 void GameFlow_addPads_00011AB4(char *a0) {
     s32 i;
 
-    *(s32*)(a0 + 0x120) = 0;
-    *(s32*)(a0 + 0x124) = 0;
-    *(s32*)(a0 + 0x128) = -1;
+    GAMEFLOW(a0)->numPads = 0;
+    GAMEFLOW(a0)->numRacePads = 0;
+    GAMEFLOW(a0)->activePad = -1;
     i = 0;
     do {
-        if (func_00000000(*(s32*)(a0 + 0xC0)) == 0) {
-            *(s32*)(a0 + 0x18C) = 1;
+        if (func_00000000(GAMEFLOW(a0)->ctrls[0]) == 0) {
+            GAMEFLOW(a0)->locked = 1;
         } else {
             func_00000000(a0, *(s32*)(a0 + 0xC0 + (i * 4)));
         }

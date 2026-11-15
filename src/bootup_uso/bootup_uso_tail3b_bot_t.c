@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "game/input.h"
 
 extern int func_00000000();
 typedef struct { int a, b, c, d; } Quad4;
@@ -8,11 +9,11 @@ extern Quad4 D_00000000;
 void settings_applySoundMode_0001266C(char *a0, int a1) {
     register u16 *p;
 
-    p = (u16 *)(*(char **)(a0 + 0x154) + 4);
+    p = (u16 *)(GAMEFLOW(a0)->unlocks + 4);
     *p = *p & ~3;
-    p = (u16 *)(*(char **)(a0 + 0x154) + 4);
+    p = (u16 *)(GAMEFLOW(a0)->unlocks + 4);
     *p = *p | a1;
-    func_00000000((*(u16 *)(*(char **)(a0 + 0x154) + 4)) & 3);
+    func_00000000((*(u16 *)(GAMEFLOW(a0)->unlocks + 4)) & 3);
 }
 
 /* settings_setFlag4_000126EC — 56/56 EXACT (2026-07-03, agent-e). Previous "capped 84.95%"
@@ -41,10 +42,10 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
     register char *r;
     s32 pad;
 
-    p = (u16 *)(*(char **)(arg0 + 0x154) + 4);
+    p = (u16 *)(GAMEFLOW(arg0)->unlocks + 4);
     *p = *p & ~4;
     if (arg1 != 0) {
-        p = (u16 *)(*(char **)(arg0 + 0x154) + 4);
+        p = (u16 *)(GAMEFLOW(arg0)->unlocks + 4);
         *p = *p | 4;
     }
     D_00000000.a = arg1;
@@ -62,6 +63,6 @@ void settings_setFlag4_000126EC(char *arg0, s32 arg1) {
 void settings_get8_000127CC(char *a0, char *a1) {
     int i;
     for (i = 0; i < 8; i++) {
-        a1[i] = (*(char**)(a0 + 0x154))[i + 6];
+        a1[i] = GAMEFLOW(a0)->unlocks[i + 6];
     }
 }
