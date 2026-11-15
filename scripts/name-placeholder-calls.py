@@ -207,13 +207,15 @@ def scan(src, m=None):
     m = m if m is not None else mask(src)
     blocks = [b for b in top_blocks(m) if func_header_name(m, b[0], b[1])]
     sites = []
-    for mt in PH_RE.finditer(m):
-        if is_decl(m, mt.start()):
-            continue
-        sites.append((mt.start(), mt.end(), mt.group(1), None))
+    spans = []
     for mt in MAC_RE.finditer(m):
         tok = TOK_OF[mt.group(1)] if mt.group(1) else mt.group(3)
         sites.append((mt.start(), mt.end(), tok, mt.group(2) or mt.group(4)))
+        spans.append((mt.start(), mt.end()))
+    for mt in PH_RE.finditer(m):
+        if is_decl(m, mt.start()) or any(a <= mt.start() < b for a, b in spans):
+            continue     # (the token inside an XCALL(tok, f) is that macro's site)
+        sites.append((mt.start(), mt.end(), mt.group(1), None))
     sites.sort()
     out = []
     for pos, end, tok, name in sites:
