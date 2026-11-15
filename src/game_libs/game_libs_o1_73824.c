@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_00073824 — 53-insn 8-word record init + u64-return
+/* -O1 donor for gl_osSetTimer — 53-insn 8-word record init + u64-return
  * call + conditional u64-arg call (frame 0x20, saves ra). PROVEN EXACT 53/53
  * at IDO 7.1 -O1 (2026-07-08 standalone probe; 5.3 -O1 emits the identical
  * 53 words). Signature is the load-bearing lever: params 2 and 3 are
@@ -17,7 +17,7 @@ extern unsigned long long gl_func_00000000_ll(int *);
 extern void gl_func_00000000(unsigned long long);
 extern int **D_00000000_a;
 
-int gl_func_00073824(int *dst, unsigned long long p, unsigned long long q, int g, int h) {
+int gl_osSetTimer(int *dst, unsigned long long p, unsigned long long q, int g, int h) {
     unsigned long long r;
 
     dst[0] = 0;

@@ -15,8 +15,8 @@ same name/offset/size is left alone; a same-name symbol with different
 placement is an error.
 
 First user: game_libs_ido53_73904.c (xldtob.c at IDO 5.3 -O3 — _Genld
-= gl_func_00073904 with its s-reg custom linkage, _Ldtob =
-gl_func_00073E74).
+= gl_Genld with its s-reg custom linkage, _Ldtob =
+gl_Ldtob).
 """
 import struct
 import sys

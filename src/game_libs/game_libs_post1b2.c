@@ -42,7 +42,7 @@ void gl___osSiRelAccess(void) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006BEA8_pad.s")
 
-/* gl_func_0006BF34: 81-insn struct-init constructor (self, a1, a2, a3,
+/* gl_osCreateThread: 81-insn struct-init constructor (self, a1, a2, a3,
  * arg5, arg6; arg5/arg6 stack-passed). Fields: +0x14=a1, +0x04=arg5,
  * +0x00/+0x08/+0x18=0, +0x11C=a2, +0x38=(s64)a3, +0xF0=(s64)arg6-16,
  * +0x100=(s64)(int)&D, +0x118=0xFF03, +0x128=(0x3FFF01&0x3F0000)>>16,
@@ -53,7 +53,7 @@ void gl___osSiRelAccess(void) {
  * register-int tmp colors s0; unsigned local for the srl). Body below is
  * a placeholder for the splice (its bytes are replaced by the donor). */
 extern int D_00000000;
-void gl_func_0006BF34(int *a0, int a1, int a2, int a3, int arg5, int arg6) {
+void gl_osCreateThread(int *a0, int a1, int a2, int a3, int arg5, int arg6) {
     volatile int keep = a1 + a2 + a3 + arg5 + arg6;
     a0[0] = keep;
 }
@@ -69,7 +69,7 @@ int osContStartReadData(void *mq) {
 }
 
 
-/* gl_func_0006C11C: 8-byte-record decoder loop (42 insns incl. the absorbed
+/* gl___osContGetInitData: 8-byte-record decoder loop (42 insns incl. the absorbed
  * 3-word orphan game_libs_func_0006C110 — its lui/lbu count-preload pair is
  * this function's stolen prologue, so the donor's true entry is 0x6C110 and
  * the spliced symbol covers 0x6C110..0x6C1B8; the orphan INCLUDE_ASM was
@@ -80,7 +80,7 @@ int osContStartReadData(void *mq) {
  * lwl/lwr struct-copy scratch $at; 7.1 uses $t1/$t0), spliced over this -O2
  * stand-in. Body below is a placeholder for the splice (its bytes are
  * replaced by the donor). */
-void gl_func_0006C11C(char *out, char *cursor, int count) {
+void gl___osContGetInitData(char *out, char *cursor, int count) {
     unsigned char rec[8];
     volatile int i;
     volatile char *cur = cursor;
@@ -102,9 +102,9 @@ void gl_func_0006C11C(char *out, char *cursor, int count) {
     }
 }
 
-/* gl_func_0006C1B8: 59-insn table-reset + 8-byte record emitter,
+/* gl___osPackRequestData: 59-insn table-reset + 8-byte record emitter,
  * reset-sibling of __osPackReadData (template {0xFF,1,4,1,0xFFFF,-1,-1},
- * type=4/subtype=1) and emitter-sibling of the landed gl_func_0006C11C
+ * type=4/subtype=1) and emitter-sibling of the landed gl___osContGetInitData
  * decoder. Zeroes D_c[0..14], sets D_c[15]=1, emits the template
  * D_a times via swl/swr struct copies, then a 0xFE terminator.
  * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in
@@ -112,7 +112,7 @@ void gl_func_0006C11C(char *out, char *cursor, int count) {
  * the struct-copy scratch $at; FOR-loop shape sinks the cursor store into
  * the bne delay slot, see donor header). Body below is a placeholder for
  * the splice (its bytes are replaced by the donor). */
-void gl_func_0006C1B8(void) {
+void gl___osPackRequestData(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
 }

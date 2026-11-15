@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for gl_func_0006C1B8 — 59-insn table-reset + 8-byte
+/* IDO 5.3 -O1 donor for gl___osPackRequestData — 59-insn table-reset + 8-byte
  * record emitter, reset-sibling of __osPackReadData and same family as the
- * landed gl_func_0006C11C decoder (frame 0x10, leaf). PROVEN EXACT 59/59
+ * landed gl___osContGetInitData decoder (frame 0x10, leaf). PROVEN EXACT 59/59
  * (2026-07-09 standalone probe). 5.3 required: it colors the struct-copy
  * scratch $at for the swl/swr pair (7.1 uses $t-regs — 44/59 floor).
  * Levers:
@@ -26,7 +26,7 @@ typedef struct { int arr[15]; int flag; } Zeros;
 extern unsigned char D_00000000_a;
 extern RecBytes D_00000000_b[];
 extern Zeros D_00000000_c;
-void gl_func_0006C1B8(void) {
+void gl___osPackRequestData(void) {
     RecBytes *cursor;
     Rec tmp;
     int i;

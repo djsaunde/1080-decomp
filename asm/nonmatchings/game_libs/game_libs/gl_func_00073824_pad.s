@@ -1,4 +1,4 @@
-/* trailing alignment padding for gl_func_00073824 */
+/* trailing alignment padding for gl_osSetTimer */
 glabel _pad_gl_func_00073824, local
 .word 0x00000000
 .word 0x00000000

@@ -4460,7 +4460,7 @@ int *gl_func_000088B4(int *arg0) {
  *                               spliced into post0b.c.o)
  *   0x51654 lui/addiu v1     -> gl_func_0005165C (game_libs_ncc_5165C.cpp donor
  *                               spliced into post0b.c.o)
- *   0x6BA74 lui 0xA460/lw    -> gl_func_0006BA7C (game_libs_ido53_6BA7C.c donor
+ *   0x6BA74 lui 0xA460/lw    -> gl_osPiRawReadIo_0006BA7C (game_libs_ido53_6BA7C.c donor
  *                               spliced into post1b.c.o)
  * Each of those symbols starts at the orphan's address in the linked ROM. */
 

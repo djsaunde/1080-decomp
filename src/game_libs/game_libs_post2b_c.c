@@ -8,10 +8,10 @@ typedef struct { float x, y, z; } Vec3;
 
 
 
-/* gl_func_00073034: 16-insn 3-call sandwich returning call-2's result:
+/* gl_osPiWriteIo: 16-insn 3-call sandwich returning call-2's result:
  * hook(); r = work(a0, a1); unhook(); return r.
  * 2026-07-17 (agent-h): raw-word IDENTICAL twin (16/16) of exact
- * gl_func_0006B974 found by the sibling scan — the old "permuter-range
+ * gl_osPiReadIo found by the sibling scan — the old "permuter-range
  * scheduling residual / v lives in s0" grind is RETRACTED; this is the
  * documented -O1 island call-sandwich (0x6B7A0..0x73824 batch). Real C
  * lives in the -O1 donor unit game_libs_o1_73034.c (mirror of the
@@ -19,7 +19,7 @@ typedef struct { float x, y, z; } Vec3;
  * across call 3), spliced over this -O2 stand-in via REPLACE_FUNC_BODY. */
 extern int gl_func_00000000();
 
-int gl_func_00073034(int a0, int a1) {
+int gl_osPiWriteIo(int a0, int a1) {
     register int r;
     gl_func_00000000();
     r = gl_func_00000000(a0, a1);
@@ -29,7 +29,7 @@ int gl_func_00073034(int a0, int a1) {
 
 
 /* game_libs_func_00073074 (0x8 orphan, no jr ra: lui/lw PI_STATUS_REG)
- * was the HOISTED HEAD of gl_func_0007307C = osPiRawWriteIo — absorbed
+ * was the HOISTED HEAD of gl_osPiRawWriteIo_0007307C = osPiRawWriteIo — absorbed
  * into the donor splice below (true entry 0x73074, spliced symbol covers
  * 0x73074..0x730C4). */
 
@@ -37,9 +37,9 @@ int gl_func_00073034(int a0, int a1) {
 /* SUPERSEDED DECODE (2026-07-18): the "caller-set $a2" implication below
  * was wrong — $a2 is the first PI_STATUS read, hoisted above the prologue
  * by IDO 5.3 -O1 (splat orphan game_libs_func_00073074). Real identity:
- * libultra osPiRawWriteIo variant, write-side twin of gl_func_0006BA7C
+ * libultra osPiRawWriteIo variant, write-side twin of gl_osPiRawReadIo_0006BA7C
  * __osPiRawReadIo. See the donor unit game_libs_ido53_73074.c. */
-/* gl_func_0007307C: 18-insn PI DMA-write helper. If (a2 & 3), spin-wait
+/* gl_osPiRawWriteIo_0007307C: 18-insn PI DMA-write helper. If (a2 & 3), spin-wait
  * for PI not busy. Then write a1 to (D_0 | a0) via KSEG1 uncached.
  * Returns 0.
  *
@@ -57,7 +57,7 @@ int gl_func_00073034(int a0, int a1) {
  * `addiu sp,+8` BEFORE the trailing stores. INSN_PATCH+SUFFIX_BYTES
  * promotion path: ~17 entry INSN_PATCH + 2-word SUFFIX_BYTES for the
  * literal trailing. Deferred for now. */
-int gl_func_0007307C(int a0, int a1, int a2) {
+int gl_osPiRawWriteIo_0007307C(int a0, int a1, int a2) {
     extern s32 D_A4600010;
     if (a2 & 3) {
         while (D_A4600010 & 3) {}
@@ -67,14 +67,14 @@ int gl_func_0007307C(int a0, int a1, int a2) {
 }
 #endif
 
-/* gl_func_0007307C = libultra osPiRawWriteIo variant: spin while
+/* gl_osPiRawWriteIo_0007307C = libultra osPiRawWriteIo variant: spin while
  * PI_STATUS & 3 (the first read hoisted above the prologue = the absorbed
  * 0x8 orphan), then write data to the KSEG1-uncached cart word
  * ((cartBase | devAddr) | 0xA0000000), return 0. Needs IDO 5.3 -O1, so
  * the real C lives in the donor unit game_libs_ido53_73074.c (20/20
  * exact). Body below is a placeholder for the REPLACE_FUNC_BODY splice
  * (its bytes are replaced by the donor). */
-int gl_func_0007307C(void) {
+int gl_osPiRawWriteIo_0007307C(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 0;

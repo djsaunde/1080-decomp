@@ -4,7 +4,7 @@
  * last call. TRUE ENTRY 0x717C8: the compiled function's first insn is
  * `lui $t6,%hi(__osPfsPifRam)`, which the old split carried as the
  * 1-word _pad_pre_717CC stolen-prologue orphan (split off
- * gl_func_00071708.s, see that donor's comment); folded back into
+ * gl___osPfsRequestOneChannel.s, see that donor's comment); folded back into
  * __osPfsGetOneChannelData.s so the symbol covers all 39 words. PROVEN EXACT
  * 39/39 vs the 0x717C8..0x71860 stream (2026-07-30 probe): donor word k
  * == expected[k-1] for the old 38-word symbol, word 0 == the orphan lui;

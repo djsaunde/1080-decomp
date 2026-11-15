@@ -5490,7 +5490,7 @@ GLOBAL_ASM("src/libultra/game_libs/setintmask.s")
  *   is just the n-odd negated-result tail), 6A2DC (the NaN check), 6A2F8
  *   (the old "prologue-stolen $at CAP" -- the `return zero.f` tail).
  * All six INCLUDE_ASMs merged into the single fsin.s
- * (0x1C0, 0x6A144..0x6A303); gl_func_0006A304 follows directly, no pad.
+ * (0x1C0, 0x6A144..0x6A303); gl__VirtualToPhysicalTask follows directly, no pad.
  * Static rodata (P[5]/rpi/pihi/pilo/zero) lives in the ROM's game_libs data
  * at segment offsets 0x2310..0x2353 -> extern gl_ref_* baked pins;
  * __libm_qnan_f is the runtime-reloc blanked extern D_00000000_qnanf.
@@ -5504,7 +5504,7 @@ float fsin(float x) {
     return ret;
 }
 
-/* gl_func_0006A304: pointer-relocation fixup driver. Gets the fixed object at
+/* gl__VirtualToPhysicalTask: pointer-relocation fixup driver. Gets the fixed object at
  * segment offset 0x41710, calls the init/register cb (a0, obj, 0x40), then for
  * each of 7 pointer fields (0x10/0x18/0x20/0x28/0x2C/0x30/0x38) if non-null
  * replaces it with cb(field), returns obj.
@@ -5516,7 +5516,7 @@ float fsin(float x) {
  * the baked lui 0x4/addiu 0x1710 base. Real C lives in the -O1 donor unit
  * game_libs_o1_6A304.c (71/71), spliced over this -O2 stand-in. */
 extern char D_00041710[];
-int gl_func_0006A304(int a0) {
+int gl__VirtualToPhysicalTask(int a0) {
     char *obj;
 
     obj = D_00041710;
@@ -5549,7 +5549,7 @@ int gl_func_0006A304(int a0) {
  * -O1 code (tp homed and reloaded around every field access, unfilled
  * delay slots): the real C lives in the -O1 donor unit
  * game_libs_o1_6A420.c, spliced over this -O2 stand-in (REPLACE_FUNC_BODY,
- * same recipe as gl_func_0006A304 just before it). The first call is the
+ * same recipe as gl__VirtualToPhysicalTask just before it). The first call is the
  * file-static _VirtualToPhysicalTask, baked as jal 0x0C01FA5C
  * (gl_ref_0007E970). 2026-10-17 agent-g (run 105): 52.6 -> EXACT. */
 typedef struct {
@@ -5593,7 +5593,7 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
         ;
 }
 
-/* gl_func_0006A5B0: poll-loop — call an intra-USO helper(a0); if nonzero, spin
+/* gl_osSpTaskStartGo: poll-loop — call an intra-USO helper(a0); if nonzero, spin
  * calling it until it returns 0; then call it with 293 (0x125). BYTE-EXACT.
  * Two keys: (1) `int *p = &a0; ...(*p)` (take the parameter's address) forces the
  * incoming-a0 home `sw a0,0x18(sp)` in the first jal delay slot — the arg-home that
@@ -5602,7 +5602,7 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
  * reloc-blind in expected (baked `0c000000`), so calls use the canonical
  * gl_func_00000000 placeholder (resolves to 0). No episode (reloc-blind jal-0). */
 extern int gl_func_00000000();
-void gl_func_0006A5B0(int a0) {
+void gl_osSpTaskStartGo(int a0) {
     int *p = &a0;
     if (gl_func_00000000(*p) != 0) {
         do {
@@ -5704,7 +5704,7 @@ void gl___osDequeueThread(GlDqThread **queue, GlDqThread *t) {
     }
 }
 
-/* gl_func_0006AF44: 65-insn list-unlink + cleanup (frame 0x38, saves
+/* gl_osDestroyThread: 65-insn list-unlink + cleanup (frame 0x38, saves
  * s0/s1/s2). prelim = hook(); if target NULL take the head as target, else
  * fire the pre-unlink callback when state(+0x10 halfword) != 1; unlink target
  * from the D[0] singleton list (tag==-1 sentinel walk); if target was the
@@ -5716,7 +5716,7 @@ void gl___osDequeueThread(GlDqThread **queue, GlDqThread *t) {
  * Real C lives in the -O1 donor unit game_libs_o1_6AF44.c (65/65 standalone),
  * spliced over this -O2 stand-in. Donor levers: null-arm-first if/else,
  * direct-global D access (LO16 fold), register decl order. */
-void gl_func_0006AF44(int *target) {
+void gl_osDestroyThread(int *target) {
     register int prelim;
     register int *curr;
     register int *next;
@@ -5859,7 +5859,7 @@ s32 gl___osLeoInterrupt(void) {
     return 1;
 }
 
-/* gl_func_0006B7A0: PI status-poll + 0xA5000510 DMA-register writes + hardcoded
+/* gl___osLeoAbnormalResume: PI status-poll + 0xA5000510 DMA-register writes + hardcoded
  * jal 0x7FEEC (58 insns incl. the absorbed 2-word orphan
  * game_libs_func_0006B798 — its lui/lw $t6 pair is this function's stolen
  * prologue, so the donor's true entry is 0x6B798 and the spliced symbol
@@ -5870,7 +5870,7 @@ s32 gl___osLeoInterrupt(void) {
  * (undefined_syms_auto.txt); the old caller-set-$t6 cap note is obsolete —
  * the "$t6 arg" was just the orphan prologue's D-load. Body below is a
  * placeholder for the splice (its bytes are replaced by the donor). */
-void gl_func_0006B7A0(int *a0) {
+void gl___osLeoAbnormalResume(int *a0) {
     /* Spin-wait PI not busy */
     while ((*(volatile int*)0xA4600010 & 3) != 0) { }
     *(volatile int*)0xA4600510 = (int)((char*)a0 + 0x14) | 0x10000000;
@@ -5880,7 +5880,7 @@ void gl_func_0006B7A0(int *a0) {
     ((void(*)(void))0x807EC)();
     *(volatile int*)0xA4600010 = 2;
 }
-/* gl_func_0006B880: 59-insn ring-buffer append with notify callback (frame
+/* gl___osLeoResume: 59-insn ring-buffer append with notify callback (frame
  * 0x30, saves s0). Ring singleton at &D+0x40, value at &D+0x44; drop if head
  * null or count>=cap; slot = (base + count) % cap (signed-div with IDO break
  * guards); slots[slot] = value; count++; if head->first->next fire
@@ -5891,7 +5891,7 @@ void gl_func_0006B7A0(int *a0) {
  * Donor levers: fused (head = load) == 0 || count >= cap guard (keeps the
  * load reg live across the beq), NESTED-IF tail (early return breaks the
  * jal-delay `or a0,t6` head reuse), register res = s0. */
-void gl_func_0006B880(void) {
+void gl___osLeoResume(void) {
     int *bufp;
     char *head;
     int slot;
@@ -5912,14 +5912,14 @@ void gl_func_0006B880(void) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006B880_pad.s")
 
-/* gl_func_0006B974: 16-insn 3-call sandwich returning call-2's result:
+/* gl_osPiReadIo: 16-insn 3-call sandwich returning call-2's result:
  * hook(); r = work(a0, a1); unhook(); return r.
  * LANDED 2026-07-08 via REPLACE_FUNC_BODY donor splice: target is plain IDO
  * 7.1 -O1 (0x6A09C..0x6BAD4 -O1 island) — a0/a1 homed to the incoming slots
  * and reloaded for call 2, register r = s0 across call 3. Real C lives in the
  * -O1 donor unit game_libs_o1_6B974.c (16/16 standalone), spliced over this
  * -O2 stand-in. */
-int gl_func_0006B974(int a0, int a1) {
+int gl_osPiReadIo(int a0, int a1) {
     register int r;
     gl_func_00000000();
     r = gl_func_00000000(a0, a1);
@@ -5927,26 +5927,26 @@ int gl_func_0006B974(int a0, int a1) {
     return r;
 }
 
-/* gl_func_0006B9B4: byte-identical twin of matched gl___osSiCreateAccessQueue (differs
+/* gl___osPiCreateAccessQueue: byte-identical twin of matched gl___osSiCreateAccessQueue (differs
  * only in the arg2 offset, 0x42750 vs 0x42800). Same crack: the 0x42750 arg is
  * a SYMBOL reference (&D_00000000 + 0x42750 -> lui 0x4; addiu 0x2750), not a
  * literal (which gives lui; ori). arg1 bases are distinct externs (gl_data_B9B4
  * _b/_c), mirroring gl___osSiCreateAccessQueue's gl_data_BE14_b/_c. */
 extern char gl_data_B9B4_b;
 extern char gl_data_B9B4_c;
-void gl_func_0006B9B4(void) {
+void gl___osPiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
     gl_func_00000000(&gl_data_B9B4_b, (char*)&D_00000000 + 0x42750, 1);
     gl_func_00000000(&gl_data_B9B4_c, 0, 0);
 }
 /* game_libs_func_0006BA04 (2-word splat mis-split: lui t6,0; lw t6,0(t6))
- * was the stolen prologue of gl_func_0006BA0C — forward-merged into it
+ * was the stolen prologue of gl___osPiGetAccess — forward-merged into it
  * (boundary correction; orphan-function removed). */
 
-/* gl_func_0006BA0C: MATCHED via forward-merge of the orphan prologue (above).
+/* gl___osPiGetAccess: MATCHED via forward-merge of the orphan prologue (above).
  * The leading `lui t6,0; lw t6,0(t6)` (= *(int*)&D_00000000 read) was split off
  * by splat as the fake 2-word function game_libs_func_0006BA04; merged back. */
-void gl_func_0006BA0C(void) {
+void gl___osPiGetAccess(void) {
     int local;
     int pad;
     if (*(int*)&D_00000000 == 0) {
@@ -5960,11 +5960,11 @@ void gl_func_0006BA0C(void) {
  * — N64 PI_STATUS_REG read setup) historically absorbed via SUFFIX_BYTES;
  * mechanism REMOVED 2026-05-23 as match-faking. Those insns belong to
  * separate symbols now. (Previously-documented 0x34 size is stale.) */
-void gl_func_0006BA48(void) {
+void gl___osPiRelAccess(void) {
     gl_func_00000000(&D_00000000, 0, 0);
 }
 
-/* gl_func_0006BA7C = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
+/* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel func_800029B0 (kernel_045): read
  * PI_STATUS once, if busy spin until idle, then read the KSEG1-uncached cart
  * word ((D | devAddr) | 0xA0000000) into *out. The leaf `char pad[4]` frame and
@@ -5974,7 +5974,7 @@ void gl_func_0006BA48(void) {
 #ifndef PI_STATUS_6BA7C
 #define PI_STATUS_6BA7C (*(volatile unsigned int *)0xA4600010)
 #endif
-int gl_func_0006BA7C(unsigned int devAddr, unsigned int *out) {
+int gl_osPiRawReadIo_0006BA7C(unsigned int devAddr, unsigned int *out) {
     char pad[4];
     register unsigned int s;
     s = PI_STATUS_6BA7C;
@@ -5986,7 +5986,7 @@ int gl_func_0006BA7C(unsigned int devAddr, unsigned int *out) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006BA7C_pad.s")
 
-/* gl_func_0006BAD4: 92-insn one-shot shutdown/timer-wait driver (frame 0x70).
+/* gl_osContInit: 92-insn one-shot shutdown/timer-wait driver (frame 0x70).
  * Guard on a state flag (return 0 if already set), set flag, time = now();
  * if time < 0x165A0BC { osCreateMesgQueue(&q,&msg,1); osSetTimer(&timer,
  * 0x165A0BC - time, 0LL, &q, &msg); osRecvMesg(&q,&msg,1); } then byte-state=4,
@@ -6002,7 +6002,7 @@ extern unsigned long long gl_func_00000000_ll();
 extern char D_00000000_b;
 extern int D_00000000_c;
 extern int D_00000000_d;
-int gl_func_0006BAD4(int a0, int a1, int a2) {
+int gl_osContInit(int a0, int a1, int a2) {
     int msg;
     int ret;
     unsigned long long time;

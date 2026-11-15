@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006A304 — 71-insn pointer-relocation fixup driver
+/* -O1 donor for gl__VirtualToPhysicalTask — 71-insn pointer-relocation fixup driver
  * (frame 0x20, ra only). PROVEN EXACT 71/71 at IDO 7.1 -O1 (2026-07-08
  * standalone probe: 69/71 raw with the 2 remaining words being the UNBAKED
  * HI16/LO16 of D_00041710, which link to the target's lui 0x4 / addiu 0x1710;
@@ -13,7 +13,7 @@
 extern int gl_func_00000000();
 extern char D_00041710[];
 
-int gl_func_0006A304(int a0) {
+int gl__VirtualToPhysicalTask(int a0) {
     char *obj;
 
     obj = D_00041710;

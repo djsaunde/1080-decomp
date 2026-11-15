@@ -1,6 +1,6 @@
 /* IDO 5.3 -O3 donor for the libc printf float pair:
- *   gl_func_00073904 = _Genld  (donor .text [0x000,0x568))
- *   gl_func_00073E74 = _Ldtob  (donor .text [0x570,0xAC0), incl. the
+ *   gl_Genld = _Genld  (donor .text [0x000,0x568))
+ *   gl_Ldtob = _Ldtob  (donor .text [0x570,0xAC0), incl. the
  *                               trailing alignment nop = target 0x550)
  * (Plauger libc xldtob.c verbatim, libreultra source.) PROVEN EXACT
  * 2026-08-22 probe: _Genld 348/348 words vs expected [0x270,0x7E0),
@@ -8,13 +8,13 @@
  * a reloc field with a single consistent story:
  *   - .rodata %hi/%lo pairs (pows table @+0x00, "Inf" @+0x48, "NaN"
  *     @+0x4C, "0" @+0x50, 1.0e8 @+0x58): target bakes .rodata base
- *     0x2540 (USO data segment); pins gl_func_00073904_rodata /
- *     gl_func_00073E74_rodata = 0x2540 in undefined_syms_auto.txt.
+ *     0x2540 (USO data segment); pins gl_Genld_rodata /
+ *     gl_Ldtob_rodata = 0x2540 in undefined_syms_auto.txt.
  *   - blank USO jals (memcpy x6, ldiv=ldiv): field 0 both
  *     sides (gl_func_00000000_* externs).
  *   - the ONE intra-TU jal _Ldtob->_Genld: target bakes 0x0C021FDC
  *     (jal 0x87F70, the USO's original-link address of _Genld); donor
- *     reloc vs local .text renamed to gl_func_00073E74_text by the
+ *     reloc vs local .text renamed to gl_Ldtob_text by the
  *     splice, pinned = 0x87F70.
  * WHY -O3: the WHOLE-TU interprocedural register allocation gives the
  * static _Genld its custom linkage -- it receives its five args in

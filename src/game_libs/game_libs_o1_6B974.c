@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006B974 — 16-insn call-sandwich wrapper:
+/* -O1 donor for gl_osPiReadIo — 16-insn call-sandwich wrapper:
  * hook(); r = work(a0, a1); unhook(); return r.
  * PROVEN EXACT 16/16 at IDO 7.1 -O1 (2026-07-08 standalone probe; plain -O1,
  * NO -g3 — -g3 pins the sw s0 out of the first jal delay slot and breaks it).
@@ -12,7 +12,7 @@
  * output; only blank-extern jal relocs, imported by the splice). */
 extern int gl_func_00000000();
 
-int gl_func_0006B974(int a0, int a1) {
+int gl_osPiReadIo(int a0, int a1) {
     register int r;
     gl_func_00000000();
     r = gl_func_00000000(a0, a1);

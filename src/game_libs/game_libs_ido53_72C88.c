@@ -120,11 +120,11 @@ s32 corrupted(OSPfs *pfs, __OSInodeUnit fpage, __OSInodeCache *cache)
     return hit;
 }
 
-/* game_libs_func_00073024: AI_LEN_REG-class volatile reader (0xA4500004),
- * 3 insns + the trailing pad nop that places gl_func_00073034 at 0x73034.
+/* gl_osAiGetLength: AI_LEN_REG-class volatile reader (0xA4500004),
+ * 3 insns + the trailing pad nop that places gl_osPiWriteIo at 0x73034.
  * Moved here from post2b_c so the pad comes from cc's natural function
  * padding (the GLOBAL_ASM pad sidecar 16-aligns and breaks placement when
  * the fn is unit-first). */
-int game_libs_func_00073024(void) {
+int gl_osAiGetLength(void) {
     return *(volatile int *)0xA4500004;
 }

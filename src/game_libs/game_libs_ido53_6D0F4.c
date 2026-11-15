@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006D0F4 — 95-insn 40-byte-record builder
+/* IDO 5.3 -O1 donor for gl__MakeMotorData — 95-insn 40-byte-record builder
  * (frame 0x48, saves ra; one jal). PROVEN EXACT 95/95 (2026-07-09
  * standalone probe; 7.1 -O1 = 76/95, $at struct-copy scratch again).
  * Zeroes out[0..14], sets out[15]=1, builds a 40-byte record {0xFF,35,1,3,
@@ -25,7 +25,7 @@ typedef struct {
     unsigned char b38, b39;         /* 38-39 */
 } Buf;
 extern int gl_func_00000000(unsigned short);
-void gl_func_0006D0F4(int count, unsigned short x, unsigned char *src, int *out) {
+void gl__MakeMotorData(int count, unsigned short x, unsigned char *src, int *out) {
     unsigned char *cursor;
     Buf buf;
     int i;

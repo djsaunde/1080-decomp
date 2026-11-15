@@ -25,7 +25,7 @@ int gl_osEPiRawWriteIo(char *pihandle, unsigned int devAddr, unsigned int data) 
     return ret;
 }
 
-/* gl_func_00073824: 53-insn 8-word record init + u64-return call +
+/* gl_osSetTimer: 53-insn 8-word record init + u64-return call +
  * conditional u64-arg call (frame 0x20, saves ra).
  * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: the target is plain
  * IDO 7.1 -O1 with a (int*, u64, u64, int, int) signature — the u64 params
@@ -35,7 +35,7 @@ int gl_osEPiRawWriteIo(char *pihandle, unsigned int devAddr, unsigned int data) 
  * replaced by the donor). */
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_func_00073824(char *obj, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
+int gl_osSetTimer(char *obj, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
     long long rr;
     char *head;
     *(int *)(obj + 0x0) = 0;
@@ -67,7 +67,7 @@ int gl_func_00073824(char *obj, int a1, int a2, int a3, int arg5, int arg6, int 
  * to hidden inter-block alignment in the unit; needs an alignment-aware
  * relayout of [0x73904..0x748A4) in one focused pass. See
  * docs/MATCHING_WORKFLOW "drift-region root cause FOUND". */
-/* gl_func_00073904 = _Genld (Plauger libc xldtob.c verbatim) -- the
+/* gl_Genld = _Genld (Plauger libc xldtob.c verbatim) -- the
  * printf float-formatter. LANDED 2026-08-22 via REPLACE_FUNC_BODY donor
  * splice: real C lives in the IDO 5.3 -O3 donor unit
  * game_libs_ido53_73904.c (346/346 raw words spliced; the donor TU also
@@ -79,7 +79,7 @@ int gl_func_00073824(char *obj, int a1, int a2, int a3, int arg5, int arg6, int 
  * IDO -O3 interprocedural regalloc passes its five args in $s0-$s4
  * (px, p, xexp, nsig, code) -- no per-function compile can emit that;
  * the -O3 TU donor does. Body below is a placeholder for the splice. */
-void gl_func_00073904(void *px, char *p, int xexp, int nsig, int code) {
+void gl_Genld(void *px, char *p, int xexp, int nsig, int code) {
     volatile int genld_spliced = 0;
     if (code != 0) {
         genld_spliced = nsig + xexp;
@@ -88,7 +88,7 @@ void gl_func_00073904(void *px, char *p, int xexp, int nsig, int code) {
 
 void game_libs_func_00073E6C(void) {}
 
-/* gl_func_00073E74 = _Ldtob (Plauger libc xldtob.c verbatim) -- the
+/* gl_Ldtob = _Ldtob (Plauger libc xldtob.c verbatim) -- the
  * printf float-converter, sibling of _Genld/73904. LANDED 2026-08-22
  * from the same IDO 5.3 -O3 donor unit game_libs_ido53_73904.c
  * (340/340 raw words): at -O3 the static _Ldunscale is integrated into
@@ -96,18 +96,18 @@ void game_libs_func_00073E6C(void) {}
  * exactly that inlined classifier head), and the final call is the
  * s-reg-linkage jal to _Genld (target bakes jal 0x87F70 = the USO's
  * original-link _Genld address; donor's local .text reloc renamed
- * gl_func_00073E74_text by the splice, pinned 0x87F70). Blank jals:
+ * gl_Ldtob_text by the splice, pinned 0x87F70). Blank jals:
  * memcpy x1 + ldiv (= ldiv identity, "a divmod helper" as
  * the old wrap guessed). .rodata pins: pows[] table @0x2540, "Inf"
  * 0x2588 / "NaN" 0x258C / 1.0e8 @0x2598 (base 0x2540).
  * Body below is a placeholder for the splice. */
-void gl_func_00073E74(void *px, int code) {
+void gl_Ldtob(void *px, int code) {
     volatile int ldtob_spliced = 0;
     if (code != 0) {
         ldtob_spliced = code;
     }
 }
-/* 743C0 pad word merged into gl_func_00073E74.s tail (1-word GLOBAL_ASM
+/* 743C0 pad word merged into gl_Ldtob.s tail (1-word GLOBAL_ASM
  * blocks emit 2 words — asm-processor 8-byte placeholder minimum — which
  * shifted links 743C4..748A0 +4; the trailing 747F4_pad then got clipped
  * by TRUNCATE_TEXT 0x1210). */
@@ -219,14 +219,14 @@ void _Litob(void *args, int type) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00074554_pad.s")
 
-/* gl_func_000747F4 = libultra __osPiRawWriteIo. LANDED 2026-06-21 as a
+/* gl___osSiRawWriteIo_000747F4 = libultra __osPiRawWriteIo. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel __osSiRawWriteIo (kernel_046) -- the
- * write twin of the landed __osPiRawReadIo at gl_func_0006CCD4: PI-busy probe
+ * write twin of the landed __osPiRawReadIo at gl___osSiRawReadIo_0006CCD4: PI-busy probe
  * (no-arg call), then uncached KSEG1 write of data to (devAddr | 0xA0000000).
  * The prior wrap guessed a 2-arg acquire call + a 4-stub bundle; it is a single
  * 19-insn fn. Real C lives in the donor unit game_libs_ido53_747F4.c (IDO 5.3
  * -O1), spliced via REPLACE_FUNC_BODY. Busy probe -> gl_func_00000000. */
-int gl_func_000747F4(int devAddr, int data) {
+int gl___osSiRawWriteIo_000747F4(int devAddr, int data) {
     if (gl_func_00000000() != 0) {
         return -1;
     }
@@ -244,7 +244,7 @@ int gl_func_000747F4(int devAddr, int data) {
  * (sym 2521, three R_MIPS_26 refs) and 0x88EAC (the nop) is not. Every
  * libultra .o in this tail is 16-byte aligned in the module text, so the
  * nop is the inter-object pad after __osPiRawWriteIo (747F4, 0x4C) --
- * restored as an all-zero SUFFIX_BYTES_FORCE on gl_func_000747F4 (a 1-word
+ * restored as an all-zero SUFFIX_BYTES_FORCE on gl___osSiRawWriteIo_000747F4 (a 1-word
  * GLOBAL_ASM sidecar would emit 8 bytes, docs #one-word-pad-legal-shapes).
  * 3/3 words at 7.1 -O2. */
 void gl___osSpSetStatus(unsigned int data) {

@@ -144,7 +144,7 @@ void guMtxIdentF(int m) {
  * fuzzy=100. The 2 trailing stolen-prologue insns for the successor
  * (lui $at,0x3780; mtc1 $at,$f0 — float-constant load) were historically
  * absorbed via SUFFIX_BYTES; mechanism REMOVED 2026-05-23 as match-faking. */
-void gl_func_000709DC(int a0) {
+void gl_guMtxIdent(int a0) {
     char buf[0x40];
     gl_func_00000000(buf);
     gl_func_00000000(buf, a0);

@@ -210,7 +210,7 @@ void osViBlack(unsigned char active) {
     (void)a;
 }
 
-/* gl_func_0006CCD4 = libultra __osPiRawReadIo. LANDED 2026-06-21 as a
+/* gl___osSiRawReadIo_0006CCD4 = libultra __osPiRawReadIo. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel __osSiRawReadIo (kernel_001). The
  * prior "delay-slot-fill cap (80.65%)" was an -O2 artifact: this is an -O1
  * libultra helper. At IDO 5.3 -O1 the beqz delay slot is filled by the
@@ -218,7 +218,7 @@ void osViBlack(unsigned char active) {
  * game_libs_ido53_6CCD4.c (this TU is -O2), spliced in via REPLACE_FUNC_BODY.
  * The PI-busy probe collapses to the address-0 placeholder gl_func_00000000;
  * the uncached cart read is a KSEG1 literal (devAddr | 0xA0000000). */
-int gl_func_0006CCD4(int devAddr, int *data) {
+int gl___osSiRawReadIo_0006CCD4(int devAddr, int *data) {
     if (gl_func_00000000() != 0) {
         return -1;
     }
@@ -227,7 +227,7 @@ int gl_func_0006CCD4(int devAddr, int *data) {
 }
 
 extern int gl_func_00000000();
-int gl_func_0006CD24() {
+int gl_osSpTaskYield() {
     return gl_func_00000000(0x400);
 }
 
@@ -245,7 +245,7 @@ void osViSetMode(void *modep) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006CD44_pad.s")
 
-/* gl_func_0006CDB4 / gl_func_0006CF54: word-identical 104-insn twins —
+/* gl_osMotorStop / gl_osMotorStart: word-identical 104-insn twins —
  * Nintendo-modified __osContRamRead-family mempack transaction verifiers
  * over an OSPfs* (queue +4, channel +8): guard word_table[channel] else
  * PFS_ERR_INVALID(5), __osSiGetAccess, __osContLastCmd=3, OS_WRITE DMA of
@@ -256,7 +256,7 @@ void osViSetMode(void *modep) {
  * IDO 5.3 -O1 donor unit game_libs_ido53_6CDB4.c (104/104 each; one TU
  * defines both twins, 6C740 precedent), spliced over these -O2 stand-ins.
  * Bodies below are placeholders for the splice. */
-int gl_func_0006CDB4(int *pfs) {
+int gl_osMotorStop(int *pfs) {
     volatile int ret = 0;
     if (pfs[2] == 0) {
         ret = 5;
@@ -264,7 +264,7 @@ int gl_func_0006CDB4(int *pfs) {
     return ret;
 }
 
-int gl_func_0006CF54(int *pfs) {
+int gl_osMotorStart(int *pfs) {
     volatile int ret = 0;
     if (pfs[2] == 0) {
         ret = 5;
@@ -272,7 +272,7 @@ int gl_func_0006CF54(int *pfs) {
     return ret;
 }
 
-/* gl_func_0006D0F4: 95-insn 40-byte-record builder (count, u16 x, src,
+/* gl__MakeMotorData: 95-insn 40-byte-record builder (count, u16 x, src,
  * out). Zeroes out[0..14], out[15]=1, builds record {0xFF,35,1,3,
  * h4=fn(x)|x<<5, data[32] from src, b38=0xFF}, zero-fills count bytes at
  * the cursor, struct-copies the record (swl/swr x3 chunk loop, $at
@@ -281,7 +281,7 @@ int gl_func_0006CF54(int *pfs) {
  * the IDO 5.3 -O1 donor unit game_libs_ido53_6D0F4.c (95/95 — FOR-loop
  * shape for both byte loops, see donor header). Body below is a
  * placeholder for the splice (its bytes are replaced by the donor). */
-void gl_func_0006D0F4(int count, unsigned short x, unsigned char *src, int *out) {
+void gl__MakeMotorData(int count, unsigned short x, unsigned char *src, int *out) {
     volatile int i;
     for (i = 0; i < count; i++) {
         out[0] = *src + x;
@@ -576,11 +576,11 @@ int _Printf(char *(*prout)(char *, const char *, unsigned int), char *arg, const
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006E894_pad.s")
 
 extern int gl_func_00000000();
-int gl_func_0006EEE4(int a0, int a1, int a2) {
+int gl_proutSprintf(int a0, int a1, int a2) {
     return gl_func_00000000(a0, a1) + a2;
 }
 
-/* gl_func_0006EF08: vsprintf-style varargs wrapper. MATCHED.
+/* gl_sprintf: vsprintf-style varargs wrapper. MATCHED.
  *   rv = func("string@0x83550", a0, a1, &a2);   // &a2 = va_list start
  *   if (rv >= 0) a0[rv] = 0;
  *   return rv;
@@ -592,7 +592,7 @@ int gl_func_0006EEE4(int a0, int a1, int a2) {
  * the 0x58 target function (21 insns ending `jr ra` + the delay-slot nop). The
  * function .s was previously split at 0x54 with the jr-ra delay nop carved into a
  * _pad.s sidecar — a splat boundary artifact, since a C-compiled `jr ra` always
- * owns its delay slot. Restored the delay nop into gl_func_0006EF08.s (size 0x58)
+ * owns its delay slot. Restored the delay nop into gl_sprintf.s (size 0x58)
  * so the baseline function symbol matches the real -O2 codegen. The _pad.s sidecar
  * The 1-word all-zero alignment pad at 0x6EF60 (so the next fn gl_osEPiStartDma
  * sits at +0x5C) is appended via SUFFIX_BYTES_FORCE (sanctioned all-zero data
@@ -600,7 +600,7 @@ int gl_func_0006EEE4(int a0, int a1, int a2) {
  * (A -g3 unit was tried and rejected: -g3 reschedules the prologue/epilogue.) */
 extern int func_00000000();
 extern int D_00000000;
-int gl_func_0006EF08(char *a0, int a1, int a2, ...) {
+int gl_sprintf(char *a0, int a1, int a2, ...) {
     int rv = func_00000000((char*)&D_00000000 + 0x83550, a0, ((int *)&a2)[-1], &a2);
     if (rv >= 0) {
         a0[rv] = 0;
@@ -678,7 +678,7 @@ int strlen(char *a0) {
     return p - a0;
 }
 
-/* game_libs_func_0006F1D8 + game_libs_func_0006F1FC = libc strchr
+/* gl_strchr + gl_strchr_tail_0006F1FC = libc strchr
  * (Plauger verbatim, IDO 5.3 -O2 donor: game_libs_ido53_6F1D8.c).
  * LANDED 2026-08-22 via REPLACE_FUNC_BODY donor splice (both keys from
  * the one donor, offsets 0x0:0x24 / 0x24:0x1C), 16/16 words exact,
@@ -688,14 +688,14 @@ int strlen(char *a0) {
  * both retired. Plauger string cluster: 6F17C = memcpy, 6F1B0 = strlen
  * (matched in-unit), 6F1D8 = strchr. Bodies below are placeholders for
  * the splice. */
-void game_libs_func_0006F1D8(int m) {
+void gl_strchr(int m) {
     volatile int strchr_head_spliced = 0;
     if (m != 0) {
         strchr_head_spliced = m;
     }
 }
 
-void game_libs_func_0006F1FC(int m) {
+void gl_strchr_tail_0006F1FC(int m) {
     volatile int strchr_tail_spliced = 0;
     if (m != 0) {
         strchr_tail_spliced = m;
@@ -832,7 +832,7 @@ void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
 }
 
 extern int *D_6F614_X;
-int game_libs_func_0006F614(int *a0) {
+int gl_osGetThreadPri(int *a0) {
     if (a0 == 0) a0 = D_6F614_X;
     return a0[1];
 }

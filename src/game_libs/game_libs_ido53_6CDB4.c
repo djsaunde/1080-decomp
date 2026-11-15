@@ -1,5 +1,5 @@
-/* IDO 5.3 -O1 donor for the word-identical twins gl_func_0006CDB4 and
- * gl_func_0006CF54 — 104-insn Nintendo-modified __osContRamRead-family
+/* IDO 5.3 -O1 donor for the word-identical twins gl_osMotorStop and
+ * gl_osMotorStart — 104-insn Nintendo-modified __osContRamRead-family
  * mempack transaction verifiers (cf. references/libreultra/src/io/
  * contramread.c). PROVEN EXACT 104/104 at IDO 5.3 -O1, first probe (7.1
  * -O1 = 81/104; the 40-byte `ramreadformat = *(fmt*)ptr` lwl/lwr $at
@@ -42,7 +42,7 @@ extern s32 gl_func_00000001(s32, void *);
 extern s32 gl_func_00000002(void *, void *, s32);
 extern u8 gl_func_00000003(u8 *);
 extern void gl_func_00000004(void);
-s32 gl_func_0006CDB4(PFS *pfs) {
+s32 gl_osMotorStop(PFS *pfs) {
     int i;
     s32 ret;
     u8 *ptr;
@@ -71,7 +71,7 @@ s32 gl_func_0006CDB4(PFS *pfs) {
     gl_func_00000004();
     return ret;
 }
-s32 gl_func_0006CF54(PFS *pfs) {
+s32 gl_osMotorStart(PFS *pfs) {
     int i;
     s32 ret;
     u8 *ptr;

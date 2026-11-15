@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006B7A0 — 58-insn PI/AI status-poll + 0xA5000510
+/* -O1 donor for gl___osLeoAbnormalResume — 58-insn PI/AI status-poll + 0xA5000510
  * DMA-register writes + hardcoded-jal call (frame 0x20, saves ra).
  * PROVEN EXACT 58/58 at IDO 7.1 -O1 (2026-07-08 standalone probe; 57/58 in
  * isolation with only the jal word blank — gl_ref_0007FEEC resolves it at link
@@ -19,7 +19,7 @@ extern char *D_00000000_a;   /* record base pointer */
 extern int D_00000000_b;     /* source word */
 extern int D_00000000_c;     /* dest word */
 
-void gl_func_0006B7A0(void) {
+void gl___osLeoAbnormalResume(void) {
     int *p;
     volatile int stat;
 

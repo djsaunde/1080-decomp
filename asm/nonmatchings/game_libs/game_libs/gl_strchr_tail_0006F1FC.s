@@ -1,0 +1,11 @@
+nonmatching gl_strchr_tail_0006F1FC, 0x1C
+
+glabel gl_strchr_tail_0006F1FC
+    /* E542D4 0006F1FC 90830001 */  .word 0x90830001
+    /* E542D8 0006F200 24840001 */  .word 0x24840001
+    /* E542DC 0006F204 1443FFF9 */  .word 0x1443FFF9
+    /* E542E0 0006F208 00000000 */  .word 0x00000000
+    /* E542E4 0006F20C 00801025 */  .word 0x00801025
+    /* E542E8 0006F210 03E00008 */  .word 0x03E00008
+    /* E542EC 0006F214 00000000 */  .word 0x00000000
+endlabel gl_strchr_tail_0006F1FC

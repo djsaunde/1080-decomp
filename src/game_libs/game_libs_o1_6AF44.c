@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006AF44 — 65-insn list-unlink + cleanup (frame 0x38,
+/* -O1 donor for gl_osDestroyThread — 65-insn list-unlink + cleanup (frame 0x38,
  * saves s0/s1/s2). PROVEN EXACT 65/65 at IDO 7.1 -O1 (2026-07-08 standalone
  * probe; plain -O1, no -g3). post1b builds -O2, where `target` gets promoted
  * to an $s reg (57 insns) — the old "stack-residency-vs-s-reg-promotion cap"
@@ -15,7 +15,7 @@
 extern int gl_func_00000000();
 extern int *D_00000000;
 
-void gl_func_0006AF44(int *target) {
+void gl_osDestroyThread(int *target) {
     register int prelim;
     register int *curr;
     register int *next;

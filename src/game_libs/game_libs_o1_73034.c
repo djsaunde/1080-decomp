@@ -1,5 +1,5 @@
-/* -O1 donor for gl_func_00073034 — 16-insn call-sandwich wrapper, raw-word
- * IDENTICAL (16/16, 2026-07-17 sibling scan) to gl_func_0006B974:
+/* -O1 donor for gl_osPiWriteIo — 16-insn call-sandwich wrapper, raw-word
+ * IDENTICAL (16/16, 2026-07-17 sibling scan) to gl_osPiReadIo:
  * hook(); r = work(a0, a1); unhook(); return r.
  * Same -O1 island recipe (0x6B7A0..0x73824 batch): plain -O1, NO -g3 (-g3
  * pins the sw s0 out of the first jal delay slot). Levers:
@@ -13,7 +13,7 @@
  * relocs, imported by the splice). */
 extern int gl_func_00000000();
 
-int gl_func_00073034(int a0, int a1) {
+int gl_osPiWriteIo(int a0, int a1) {
     register int r;
     gl_func_00000000();
     r = gl_func_00000000(a0, a1);

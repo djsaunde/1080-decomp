@@ -1,5 +1,5 @@
-/* IDO 5.3 -O2 -mips2 donor for game_libs_func_0006F1D8 +
- * game_libs_func_0006F1FC = libc strchr (Plauger, verbatim). PROVEN
+/* IDO 5.3 -O2 -mips2 donor for gl_strchr +
+ * gl_strchr_tail_0006F1FC = libc strchr (Plauger, verbatim). PROVEN
  * EXACT 2026-08-22: 16/16 words identical at -O2 first compile, ZERO
  * relocs. splat split the ONE function at the loop-bottom label:
  *   0x6F1D8 [0x0,0x24)  = head (lbu/andi/andi + beql match test)

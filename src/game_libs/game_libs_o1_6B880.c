@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006B880 — 59-insn ring-buffer append with notify
+/* -O1 donor for gl___osLeoResume — 59-insn ring-buffer append with notify
  * callback (frame 0x30, saves s0). PROVEN EXACT 59/59 at IDO 7.1 -O1
  * (2026-07-08 standalone probe; plain -O1, no -g3). post1b builds -O2 (the
  * old wrap was 38%: -O2 register-promotes head). Levers:
@@ -14,7 +14,7 @@
 extern int gl_func_00000000();
 extern int D_00000000;
 
-void gl_func_0006B880(void) {
+void gl___osLeoResume(void) {
     int *bufp;
     char *head;
     int slot;

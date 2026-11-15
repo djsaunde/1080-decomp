@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_func_0006CCD4 = libultra __osPiRawReadIo (io/pirawread.c), statically
+/* gl___osSiRawReadIo_0006CCD4 = libultra __osPiRawReadIo (io/pirawread.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of the matched kernel
  * __osSiRawReadIo (kernel_001.c) -- identical 20-insn body after masking the one
  * collapsed callee. Compiled IDO 5.3 -O1, spliced into game_libs_post1b2c.c.o
@@ -9,7 +9,7 @@
  * devAddr) is a direct-mapped KSEG1 literal stored verbatim in the ROM. */
 extern int gl_func_00000000();
 
-int gl_func_0006CCD4(int devAddr, int *data) {
+int gl___osSiRawReadIo_0006CCD4(int devAddr, int *data) {
     if (gl_func_00000000() != 0) {
         return -1;
     }

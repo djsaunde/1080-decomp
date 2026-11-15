@@ -4,7 +4,7 @@
  *                      2 words in; the .s carries the pre-prologue
  *                      active-flag load, which IS the fn's first two
  *                      words = lui/lw of __osViDevMgr.active)
- *   gl_func_0007507C = viMgrMain (donor .text [0x188,0x354) + as1 pad
+ *   gl_viMgrMain = viMgrMain (donor .text [0x188,0x354) + as1 pad
  *                      to 0x360; target size 0x1CC)
  * (libreultra src/io/vimgr.c verbatim.) PROVEN EXACT 2026-08-22:
  * create 98/98 + main 115/115 masked words vs the raw target .s, first
@@ -28,7 +28,7 @@
  *      the right offset for free).
  * viMgrMain's forward-declared-static symbol resolves *UND* in the
  * donor symtab, so the donor rule's POST_COMPILE add-elf-func-symbol.py
- * injects gl_func_0007507C=0x188:0x1cc for REPLACE_FUNC_BODY to key on.
+ * injects gl_viMgrMain=0x188:0x1cc for REPLACE_FUNC_BODY to key on.
  * Reloc story (every masked word fits one of these):
  *   - donor .bss section relocs -> gl_func_*_bss pins = 0x00044080;
  *   - the viMgrMain fn-ptr %hi/%lo against donor .text (addend 0x188)

@@ -178,7 +178,7 @@ void __osDequeueThread(DqThread **queue, DqThread *t) {
  * 0x80003C24 itself is a jal'd pop-8-and-return entry used by 31F0 -- moved
  * there as `alabel func_80003C24`. The 3 trailing nops are all-zero
  * inter-function pad (SUFFIX_BYTES_FORCE in the Makefile).
- * EXACT via twin port (twin-finder.py, 0.977): game_libs' copy gl_func_0006AF44
+ * EXACT via twin port (twin-finder.py, 0.977): game_libs' copy gl_osDestroyThread
  * (game_libs_o1_6AF44.c, exact at -O1). __osDisableInt = 66B0,
  * __osDequeueThread = 3FF0, __osDispatchThread = 3E64 (alabel in 3D40.s),
  * __osRestoreInt = 66D0, __osActiveQueue = D_8000A41C,

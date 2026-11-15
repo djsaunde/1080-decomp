@@ -1,4 +1,4 @@
-/* game_libs ido53 carve: gl_func_00074DB4 -- bigger sibling of the 74D54
+/* game_libs ido53 carve: gl_osViSetXScale -- bigger sibling of the 74D54
  * interrupt-bracket setter, verbatim shape at IDO 5.3 -O1, 74/74 first
  * try (+ one register-declaration-order swap for the s0/s1 assignment:
  * v declared before sr puts v in s0, sr in s1). Shape: sr bracket;
@@ -12,7 +12,7 @@ extern int gl_func_00000000();
 extern char *D_74DB4_p1;
 extern unsigned short *D_74DB4_p2;
 
-void gl_func_00074DB4(float f) {
+void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
     sr = gl_func_00000000();

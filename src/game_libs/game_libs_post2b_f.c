@@ -7,11 +7,11 @@ typedef struct { float x, y, z; } Vec3;
 
 /* The six all-zero words at 0x74EDC..0x74EF4 (Sym oracle: section 0x89548
  * not exported, no baked jal) are the tail pad of the previous object
- * (gl_func_00074DB4, game_libs_ido53_74DB4.c) ahead of the vimgr.c object;
- * they are appended to gl_func_00074DB4 as an all-zero SUFFIX_BYTES_FORCE
+ * (gl_osViSetXScale, game_libs_ido53_74DB4.c) ahead of the vimgr.c object;
+ * they are appended to gl_osViSetXScale as an all-zero SUFFIX_BYTES_FORCE
  * (Makefile, both trees; was the pseudo-function game_libs_func_00074EDC). */
 
-/* osCreateViManager = osCreateViManager + gl_func_0007507C = viMgrMain
+/* osCreateViManager = osCreateViManager + gl_viMgrMain = viMgrMain
  * (libultra vimgr.c verbatim, ONE IDO 5.3 -O1 -mips2 TU donor:
  * game_libs_ido53_74EF4.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice, both first-compile word-exact (98/98 + 115/115 incl.
@@ -37,7 +37,7 @@ void osCreateViManager(int pri) {
     }
 }
 
-void gl_func_0007507C(char *arg0) {
+void gl_viMgrMain(char *arg0) {
     volatile int vimgrmain_spliced = 0;
     if (arg0 != 0) {
         vimgrmain_spliced = 1;
@@ -59,7 +59,7 @@ int game_libs_func_00075254(void) {
  * game_libs_func_00075254 as an all-zero SUFFIX_BYTES_FORCE (Makefile, both
  * trees; was the pseudo-function game_libs_func_00075260). */
 
-/* gl_func_0007526C MATCHED 2026-06-10 as game_libs_func_00075264 (own
+/* gl_func_0007526C MATCHED 2026-06-10 as gl___osSpSetPc (own
  * -O1 carve unit game_libs_ido_75264.c): the "dual-entry" theory was
  * wrong -- 75260's lui/lw was the fn's own first statement (boundary
  * mis-split) and the leading nop is 75254's trailing pad (kept below as

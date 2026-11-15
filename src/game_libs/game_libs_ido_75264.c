@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* game_libs_func_00075264 = the TRUE function behind the 75260/7526C
+/* gl___osSpSetPc = the TRUE function behind the 75260/7526C
  * "dual-entry" pair: an RSP kick -- read SP_STATUS (0xA4040010), and if
  * the halt bit (bit 0) is set, write the new RSP program counter to
  * SP_PC_REG (0xA4080000). The old gl_func_0007526C cap analysis
@@ -11,7 +11,7 @@
  * frame (IDO -O1 allocates unused-local slots; -O2 drops them).
  * 13/13 at IDO 7.1 -O1 (also exact at 5.3 -O1). The leading nop at
  * 0x75260 is 75254's trailing pad, kept in post2b_f as a pad word. */
-int game_libs_func_00075264(unsigned int pc, unsigned int flag) {
+int gl___osSpSetPc(unsigned int pc, unsigned int flag) {
     int unused;
     flag = *(volatile unsigned int *)0xA4040010;
     if (!(flag & 1)) {
@@ -21,6 +21,6 @@ int game_libs_func_00075264(unsigned int pc, unsigned int flag) {
     return 0;
 }
 /* The two zero words after the body (0x75298/0x7529C) are the object's
- * trailing alignment pad, appended to game_libs_func_00075264 as an all-zero
+ * trailing alignment pad, appended to gl___osSpSetPc as an all-zero
  * SUFFIX_BYTES_FORCE (Makefile, both trees; was the pseudo-function
  * game_libs_func_00075264_pad). */

@@ -119,7 +119,7 @@ int __osPfsGetStatus(void *queue, int channel) {
     return ret;
 }
 
-/* gl_func_00071708: 48-insn record-stream emitter, 6-byte template
+/* gl___osPfsRequestOneChannel: 48-insn record-stream emitter, 6-byte template
  * {1,3,0,0xFF,0xFF,0xFF} (swl/swr family; sibling of __osPfsRequestData).
  * Clears the flag byte at &D, sets &D+0x3C=1, zeroes a0 leading bytes via
  * the cursor, writes the template, lays a 0xFE terminator.
@@ -131,7 +131,7 @@ int __osPfsGetStatus(void *queue, int channel) {
  * __osPfsGetOneChannelData symbol itself (= __osPfsGetOneChannelData, true entry
  * 0x717C8). Body is a placeholder for the splice. */
 extern int D_00000000;
-void gl_func_00071708(int a0) {
+void gl___osPfsRequestOneChannel(int a0) {
     unsigned char tmpl[8];
     unsigned char *dst;
     int i;

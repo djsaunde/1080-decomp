@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006BAD4 — 92-insn one-shot shutdown/timer-wait driver
+/* -O1 donor for gl_osContInit — 92-insn one-shot shutdown/timer-wait driver
  * (frame 0x70, no s-regs). PROVEN EXACT 92/92 at IDO 7.1 -O1 (2026-07-08
  * standalone probe; plain -O1, no -g3). Shape: guard on a state flag, flag=1,
  * time = u64_now(); if (time < 0x165A0BC) { osCreateMesgQueue(&q,&msg,1);
@@ -23,7 +23,7 @@ extern char D_00000000_b;
 extern int D_00000000_c;
 extern int D_00000000_d;
 
-int gl_func_0006BAD4(int a0, int a1, int a2) {
+int gl_osContInit(int a0, int a1, int a2) {
     int msg;
     int ret;
     unsigned long long time;

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_00071708 — 48-insn record-stream emitter
+/* IDO 5.3 -O1 donor for gl___osPfsRequestOneChannel — 48-insn record-stream emitter
  * with 6-byte template (frame 0x10, leaf). PROVEN EXACT 48/48 (2026-07-09
  * verify; 7.1 -O1 emits the same shape but colors the template struct-copy
  * scratch $t1/$t0 — only 5.3 uses $at, the target's register). The target
@@ -25,7 +25,7 @@ extern unsigned char D_00000000_a;
 extern Ctl D_00000000_b;
 extern unsigned char D_00000000_c[];
 
-void gl_func_00071708(int count) {
+void gl___osPfsRequestOneChannel(int count) {
     unsigned char *cursor;
     Tmpl tmpl;
     int i;
