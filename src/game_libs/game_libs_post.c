@@ -4214,39 +4214,39 @@ void AudioHeap_DiscardSampleCaches(void) {
  * base;` mutation form gives the offset-first addu (008e1821). Counts reloaded
  * per iteration (char-store alias). */
 extern int D_00000000_345c0;
-#define R_22674 ((u8 *)&D_00000000_345c0)
+#define gAudioCtx_22674 (*(AudioContext *)&D_00000000_345c0)
 void AudioLoad_DecreaseSampleDmaTtls(void) {
     unsigned int i;
     unsigned int cd;
     unsigned char *rec;
 
-    for (i = 0; i < *(unsigned int *)(R_22674 + 0x1E10); i++) {
-        rec = (unsigned char *)(i * 16); rec += *(unsigned int *)(R_22674 + 0x1E08);
+    for (i = 0; i < gAudioCtx_22674.sampleDmaListSize1; i++) {
+        rec = (unsigned char *)(i * 16); rec += (unsigned int)gAudioCtx_22674.sampleDmas;
         cd = rec[14];
         if (cd != 0) {
             rec[14] = cd - 1;
             if (rec[14] == 0) {
-                rec[13] = R_22674[0x201A];
-                R_22674[0x1E18 + R_22674[0x201A]] = i;
-                R_22674[0x201A] += 1;
+                rec[13] = gAudioCtx_22674.sampleDmaReuseQueue1WrPos;
+                gAudioCtx_22674.sampleDmaReuseQueue1[gAudioCtx_22674.sampleDmaReuseQueue1WrPos] = i;
+                gAudioCtx_22674.sampleDmaReuseQueue1WrPos += 1;
             }
         }
     }
-    for (i = *(unsigned int *)(R_22674 + 0x1E10); i < *(unsigned int *)(R_22674 + 0x1E0C); i++) {
-        rec = (unsigned char *)(i * 16); rec += *(unsigned int *)(R_22674 + 0x1E08);
+    for (i = gAudioCtx_22674.sampleDmaListSize1; i < gAudioCtx_22674.sampleDmaCount; i++) {
+        rec = (unsigned char *)(i * 16); rec += (unsigned int)gAudioCtx_22674.sampleDmas;
         cd = rec[14];
         if (cd != 0) {
             rec[14] = cd - 1;
             if (rec[14] == 0) {
-                rec[13] = R_22674[0x201B];
-                R_22674[0x1F18 + R_22674[0x201B]] = i;
-                R_22674[0x201B] += 1;
+                rec[13] = gAudioCtx_22674.sampleDmaReuseQueue2WrPos;
+                gAudioCtx_22674.sampleDmaReuseQueue2[gAudioCtx_22674.sampleDmaReuseQueue2WrPos] = i;
+                gAudioCtx_22674.sampleDmaReuseQueue2WrPos += 1;
             }
         }
     }
-    *(int *)(R_22674 + 0x1E14) = 0;
+    gAudioCtx_22674.unused1E14 = 0;
 }
-#undef R_22674
+#undef gAudioCtx_22674
 
 // AudioLoad_DmaSampleData — STRUCTURAL PASS (0x33C / 207 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
@@ -7377,21 +7377,22 @@ extern int D_00000000_345c0;
  * v1 held across the if-join for the three pre-call reads and re-formed
  * (lui/addiu) for the post-call lbu/sb pair. `volatile` pointee and a typed
  * struct pointer both keep the named-candidate shape (20-21 diff words). */
-#define REG_26CCC ((unsigned char *)&D_00000000_345c0)
+#define gAudioCtx_26CCC (*(AudioContext *)&D_00000000_345c0)
 void AudioThread_ScheduleProcessCmds(void) {
     int cur, committed, n, r;
 
-    cur = REG_26CCC[0x53B8];
-    committed = REG_26CCC[0x53B9];
+    cur = gAudioCtx_26CCC.threadCmdWritePos;
+    committed = gAudioCtx_26CCC.threadCmdReadPos;
     n = (cur - committed + 256) & 0xFF;
     if (*(int *)((char *)&D_00000000 + 0x1B594) < n) {
         *(int *)((char *)&D_00000000 + 0x1B594) = n;
     }
-    r = gl_func_00000000(*(void **)(REG_26CCC + 0x53CC), ((committed & 0xFF) << 8) | (cur & 0xFF), 0);
+    r = gl_func_00000000(gAudioCtx_26CCC.threadCmdProcQueueP, ((committed & 0xFF) << 8) | (cur & 0xFF), 0);
     if (r != -1) {
-        REG_26CCC[0x53B9] = REG_26CCC[0x53B8];
+        gAudioCtx_26CCC.threadCmdReadPos = gAudioCtx_26CCC.threadCmdWritePos;
     }
 }
+#undef gAudioCtx_26CCC
 
 void AudioThread_ResetCmdQueue(void) {
     *(unsigned char *)((char *)&D_00000000 + 0x53B9) = *(unsigned char *)((char *)&D_00000000 + 0x53B8);
@@ -10707,21 +10708,22 @@ int AudioSeq_AudioListPopBack(void *a0) {
  * cursor (the call arg) and the s2 table cursor, and replaces `i < 64` with
  * `s1 != s4` (s4 = &REG + 0x52F0). The old NM wrap (70.65) spelled the cursors
  * as hand-held pointers, which is what made IDO merge/derive the bases. */
-typedef struct { int w0; int w4; int w8; char pad[0x74]; } gl_2A904_Elem;
-#define REG_2A904 ((char *)&D_00000000_345c0)
+/* gAudioCtx through this function's own base (D_00000000_345c0 = the same
+ * Data block, sym1255 addend 0). */
+#define gAudioCtx_2A904 (*(AudioContext *)&D_00000000_345c0)
 void AudioSeq_InitLayerFreelist(void) {
     int i;
-    *(int **)(REG_2A904 + 0x5368) = (int *)(REG_2A904 + 0x5368);
-    *(int **)(REG_2A904 + 0x536C) = (int *)(REG_2A904 + 0x5368);
-    *(int *)(REG_2A904 + 0x5370) = 0;
-    *(int *)(REG_2A904 + 0x5374) = 0;
+    gAudioCtx_2A904.layerFreeList.prev = &gAudioCtx_2A904.layerFreeList;
+    gAudioCtx_2A904.layerFreeList.next = &gAudioCtx_2A904.layerFreeList;
+    gAudioCtx_2A904.layerFreeList.u.count = 0;
+    gAudioCtx_2A904.layerFreeList.pool = NULL;
     for (i = 0; i < 64; i++) {
-        ((gl_2A904_Elem *)(REG_2A904 + 0x32F0))[i].w8 = (int)(REG_2A904 + 0x3280 + i * 0x80);
-        ((gl_2A904_Elem *)(REG_2A904 + 0x32F0))[i].w0 = 0;
-        gl_func_00000000(REG_2A904 + 0x5368, &((gl_2A904_Elem *)(REG_2A904 + 0x32F0))[i]);
+        gAudioCtx_2A904.sequenceLayers[i].listItem.u.value = &gAudioCtx_2A904.sequenceLayers[i];
+        gAudioCtx_2A904.sequenceLayers[i].listItem.prev = NULL;
+        gl_func_00000000(&gAudioCtx_2A904.layerFreeList, &gAudioCtx_2A904.sequenceLayers[i].listItem);
     }
 }
-#undef REG_2A904
+#undef gAudioCtx_2A904
 
 unsigned char AudioSeq_ScriptReadU8(unsigned char **a0) {
     unsigned char v = **a0;
@@ -11484,21 +11486,20 @@ void AudioSeq_SequencePlayerProcessSequence(void *o) {
 extern int D_00000000_345c0;
 extern int gl_func_00000000();
 extern int gl_ref_00040E10();    /* mid-body alt-entry (baked jal 0x0C010384) */
-#define REG_2CF60 ((char *)&D_00000000_345c0)
+#define gAudioCtx_2CF60 (*(AudioContext *)&D_00000000_345c0)
 void AudioSeq_ProcessSequences(int a0) {
     unsigned int i;
-    char *rec;
 
-    *(int *)(REG_2CF60 + 0x5364) = *(int *)(REG_2CF60 + 0x2070) * (*(short *)(REG_2CF60 + 0x2040) - a0 - 1);
-    for (i = 0; i < *(short *)(REG_2CF60 + 0x2048); i++) {
-        rec = REG_2CF60 + 0x2D00 + i * 0x160;
-        if ((*(unsigned int *)rec >> 31) == 1) {
-            gl_ref_00040E10(rec);
-            gl_func_00000000(rec);
+    gAudioCtx_2CF60.noteSubEuOffset = gAudioCtx_2CF60.numNotes * (gAudioCtx_2CF60.ticksPerUpdate - a0 - 1);
+    for (i = 0; i < gAudioCtx_2CF60.numSequencePlayers; i++) {
+        if (gAudioCtx_2CF60.seqPlayers[i].enabled == 1) {
+            gl_ref_00040E10(&gAudioCtx_2CF60.seqPlayers[i]);
+            gl_func_00000000(&gAudioCtx_2CF60.seqPlayers[i]);
         }
     }
     gl_func_00000000();
 }
+#undef gAudioCtx_2CF60
 
 /* AudioSeq_SkipForwardSequence — EXACT (2026-07-03, agent-e): 19/20 raw words in build/non_matching .o;
  * the single word-7 "diff" is the R_MIPS_26 site jal gl_ref_00040E10, which ld bakes to

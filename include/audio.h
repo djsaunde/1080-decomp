@@ -509,7 +509,7 @@ typedef struct AudioContext {
     /* 0x1E08 */ void *sampleDmas;                    /* InitSampleDmaBuffers, DmaSampleData */
     /* 0x1E0C */ u32 sampleDmaCount;
     /* 0x1E10 */ u32 sampleDmaListSize1;
-    /* 0x1E14 */ char unk_1E14[4];
+    /* 0x1E14 */ s32 unused1E14;                     /* OoT unused2628 (DecreaseSampleDmaTtls = 0) */
     /* 0x1E18 */ u8 sampleDmaReuseQueue1[0x100];
     /* 0x1F18 */ u8 sampleDmaReuseQueue2[0x100];
     /* 0x2018 */ u8 sampleDmaReuseQueue1RdPos;
@@ -585,7 +585,10 @@ typedef struct AudioContext {
     /* 0x53BA */ u8 threadCmdQueueFinished;
     /* 0x53BB */ char unk_53BB;
     /* 0x53BC */ u16 threadCmdChannelMask[4];         /* ProcessGlobalCmd */
-} AudioContext; /* size >= 0x53C4 (later fields not yet modelled) */
+    /* 0x53C4 */ void *audioResetQueueP;              /* InitMesgQueuesImpl (game_libs_o2_26214.c view) */
+    /* 0x53C8 */ void *taskStartQueueP;
+    /* 0x53CC */ void *threadCmdProcQueueP;           /* ScheduleProcessCmds */
+} AudioContext; /* size >= 0x53D0 (later fields not yet modelled) */
 
 #define AUDIO_ASSERT_OFFSET(field, off) \
     typedef char audio_ctx_assert_##off[(int)&((AudioContext *)0)->field == (off) ? 1 : -1]
@@ -625,6 +628,7 @@ AUDIO_ASSERT_OFFSET(noteSubEuOffset, 0x5364);
 AUDIO_ASSERT_OFFSET(layerFreeList, 0x5368);
 AUDIO_ASSERT_OFFSET(noteFreeLists, 0x5378);
 AUDIO_ASSERT_OFFSET(threadCmdChannelMask, 0x53BC);
+AUDIO_ASSERT_OFFSET(threadCmdProcQueueP, 0x53CC);
 typedef char audio_pool_size_assert[sizeof(AudioAllocPool) == 0x10 ? 1 : -1];
 typedef char audio_reverb_size_assert[sizeof(SynthesisReverb) == 0x158 ? 1 : -1];
 typedef char audio_seqplayer_size_assert[sizeof(SequencePlayer) == 0x160 ? 1 : -1];
