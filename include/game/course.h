@@ -54,6 +54,11 @@ typedef struct WorldCourse {
     struct WorldCourse *next;   /* 0x44: next course (list order = registration order) */
 } WorldCourse;                  /* 0x48 */
 
+typedef struct WorldPlayer {     /* 8 bytes (game_addPlayer_000020AC) */
+    char *rider;                /* 0x0: the SnowBoarder */
+    s32 arg;                    /* 0x4: game_addPlayer arg 3, passed back by game_forEachPlayer_000020D8 */
+} WorldPlayer;
+
 typedef struct WorldRegistry {
     char node[0x28];            /* 0x00: Node (name at 0xC = "World Registry") */
     s32 vptr;                   /* 0x28 */
@@ -69,10 +74,18 @@ typedef struct WorldRegistry {
     s32 mainGame;               /* 0x8C: Node "MainGame" */
     s32 light0;                 /* 0x90: light passed to the sun / flare entries and the map lighter */
     s32 light1;                 /* 0x94 */
-    char unk98[0x104 - 0x98];
+    char *unk98;                /* 0x98: set by game_init from a call result; every game_setup* passes its
+                                   +0xC4 / +0xCC floats to the rider builds (agent-h run 496) */
+    char pad9C[0xC0 - 0x9C];
+    s32 numPlayers;             /* 0xC0: game_clearPlayers / game_addPlayer / game_forEachPlayer */
+    WorldPlayer players[8];     /* 0xC4: the InputMgr reads players[i].rider->input */
     s32 numWindows;             /* 0x104: game_clearWindows / game_addWindow */
-    char unk108[0x118 - 0x108]; /* 0x108: window entries, players */
+    s32 windows[4];             /* 0x108: camera windows (game_addWindow appends); RaceProcess swaps its
+                                   replayCam / savedCam into windows[0] / [1] */
 } WorldRegistry;
+
+/* Field access through an untyped `char *` registry pointer (the game_* bodies; agent-h run 496) */
+#define WORLDREG(p) ((WorldRegistry *)(p))
 
 /* ---- item templates (bootup Data 0x7B6C: {name, create, flags} until a NULL name) ----
  * hel hem bal ba2 chk gtr gtl cfr snw fog sn2 fo2 sn3 fo3; item_create<Name> builds the ItemType
@@ -199,7 +212,9 @@ COURSE_ASSERT(WorldRegistry, numCourses, 0x78);
 COURSE_ASSERT(WorldRegistry, ogRoot, 0x7C);
 COURSE_ASSERT(WorldRegistry, mainGame, 0x8C);
 COURSE_ASSERT(WorldRegistry, light1, 0x94);
+COURSE_ASSERT(WorldRegistry, players, 0xC4);
 COURSE_ASSERT(WorldRegistry, numWindows, 0x104);
+COURSE_ASSERT(WorldRegistry, windows, 0x108);
 COURSE_ASSERT_SIZE(CourseItemTmpl, 0xC);
 COURSE_ASSERT(RaceGate, z, 0x64);
 COURSE_ASSERT(RaceGate, next, 0x84);

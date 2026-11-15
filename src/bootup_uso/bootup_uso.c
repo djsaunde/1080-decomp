@@ -5,6 +5,7 @@
 #include "game/course.h"
 #include "audio.h"
 #include "game/input.h"
+#include "gdl/node.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -567,10 +568,10 @@ void *func_00000C10(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -809,7 +810,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
-        *(void **)(self + 0x28) = &U64BGWall_vtbl;
+        NODE(self)->vptr = (s32)(&D_00000000);
         *(void **)(self + 0xC) = &D_000066B8;
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
@@ -1163,14 +1164,14 @@ void *WorldRegistry_getCourse_00002014(WorldRegistry *a0, int a1) {
 }
 
 void game_setParams_00002060(char *a0, int a1, int a2, int a3, int a4, int a5) {
-    *(int*)(a0 + 0x80) = a1;
-    *(int*)(a0 + 0x84) = a2;
-    *(int*)(a0 + 0x88) = a4;
-    *(int*)(a0 + 0x7C) = a5;
-    *(int*)(a0 + 0x8C) = a3;
+    WORLDREG(a0)->fgRoot = a1;
+    WORLDREG(a0)->bgRoot = a2;
+    WORLDREG(a0)->egRoot = a4;
+    WORLDREG(a0)->ogRoot = a5;
+    WORLDREG(a0)->mainGame = a3;
 }
 
-void game_clearWindows_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
+void game_clearWindows_00002080(int *a0) { WORLDREG(a0)->numWindows = 0; }
 
 /* append to count+entries list at 0x104 (count) + 0x108 (4-byte entries).
  * MATCHED 2026-06-21: the long-standing `addu`-before-`sw count` cap was an
@@ -1181,11 +1182,11 @@ void game_clearWindows_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
  * addu-before-sw order. Same-line lever (cf. game_createBGBox). Sibling
  * game_addPlayer_000020AC cracked identically. */
 void game_addWindow_00002088(char *a0, int a1) {
-    int idx = *(int *)(a0 + 0x104);
-    *(int *)(a0 + 0x104) = idx + 1; *(int *)(a0 + idx * 4 + 0x108) = a1;
+    int idx = WORLDREG(a0)->numWindows;
+    WORLDREG(a0)->numWindows = idx + 1; *(int *)(a0 + idx * 4 + 0x108) = a1;
 }
 
-void game_clearPlayers_000020A4(int *a0) { *(int*)((char*)a0 + 0xC0) = 0; }
+void game_clearPlayers_000020A4(int *a0) { WORLDREG(a0)->numPlayers = 0; }
 
 /* append-pair to a count+entries list at offset 0xC0 (count) + 0xC4 (pairs
  * of 8). MATCHED 2026-06-21: same as1 SCHEDULER TIE as game_addWindow_00002088 — the
@@ -1195,22 +1196,22 @@ void game_clearPlayers_000020A4(int *a0) { *(int*)((char*)a0 + 0xC0) = 0; }
  * target's addu-before-sw order. */
 void game_addPlayer_000020AC(int *a0, int a1, int a2) {
     int idx;
-    *(int*)((char*)a0 + *(int*)((char*)a0 + 0xC0) * 8 + 0xC8) = a2;
-    idx = *(int*)((char*)a0 + 0xC0);
-    *(int*)((char*)a0 + 0xC0) = idx + 1; *(int*)((char*)a0 + idx * 8 + 0xC4) = a1;
+    *(int*)((char*)a0 + WORLDREG(a0)->numPlayers * 8 + 0xC8) = a2;
+    idx = WORLDREG(a0)->numPlayers;
+    WORLDREG(a0)->numPlayers = idx + 1; *(int*)((char*)a0 + idx * 8 + 0xC4) = a1;
 }
 
 void game_forEachPlayer_000020D8(char *a0, int a1) {
     int i;
     char *p;
-    if (*(int*)(a0 + 0xC0) > 0) {
+    if (WORLDREG(a0)->numPlayers > 0) {
         i = 0;
         p = a0;
         do {
             func_00000000(a1, *(int*)(p + 0xC4), *(int*)(p + 0xC8));
             i++;
             p += 8;
-        } while (i < *(int*)(a0 + 0xC0));
+        } while (i < WORLDREG(a0)->numPlayers);
     }
 }
 
@@ -1622,8 +1623,8 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     g = (char *)func_00000000(0);
     *(int *)&D_00000000 = (int)g;
     func_00000000(s4C + 0x10, g);
-    if (*(int *)(g + 0x14)) *(int *)(g + 0x4) = 1;
-    *(int *)(g + 0x14) = (int)s4C;
+    if (NODE(g)->parent) NODE(g)->unk04 = 1;
+    NODE(g)->parent = (int)s4C;
     func_00000000();
     func_00000000(*(int *)(scene + 0x134), s44, s4C, s3C, s48, s40);
     func_00000000(*(int *)(scene + 0x134));
@@ -1637,7 +1638,7 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     func_00000000(*(int *)(scene + 0x134), func_00000000(*(int *)(scene + 0x134), a1), a2);
     g = (char *)*(int *)(scene + 0x134);
     m = (int)func_00000000(&D_00000000);
-    *(int *)(g + 0x98) = m;
+    WORLDREG(g)->unk98 = (char *)m;
     fd = (f32)(u32)*(int *)((char *)&D_00000000 + 0x20C);
     func_00000000((char *)&D_00000000 + 0x73B4,
                   ((f32)(u32)m - (f32)(u32)sv) / fd);
@@ -1649,18 +1650,18 @@ void *game_init(char *scene, int a1, int a2, int a3) {
                   ((f32)(u32)m - (f32)(u32)sv) / fd);
     p = s48 + 0x10;
     func_00000000(p, s44);
-    if (*(int *)(s44 + 0x14)) *(int *)(s44 + 0x4) = 1;
-    *(int *)(s44 + 0x14) = (int)s48;
+    if (NODE(s44)->parent) NODE(s44)->unk04 = 1;
+    NODE(s44)->parent = (int)s48;
     func_00000000(p, s40);
-    if (*(int *)(s40 + 0x14)) *(int *)(s40 + 0x4) = 1;
-    *(int *)(s40 + 0x14) = (int)s48;
+    if (NODE(s40)->parent) NODE(s40)->unk04 = 1;
+    NODE(s40)->parent = (int)s48;
     p = s3C + 0x10;
     func_00000000(p, s4C);
-    if (*(int *)(s4C + 0x14)) *(int *)(s4C + 0x4) = 1;
-    *(int *)(s4C + 0x14) = (int)s3C;
+    if (NODE(s4C)->parent) NODE(s4C)->unk04 = 1;
+    NODE(s4C)->parent = (int)s3C;
     func_00000000(p, s48);
-    if (*(int *)(s48 + 0x14)) *(int *)(s48 + 0x4) = 1;
-    *(int *)(s48 + 0x14) = (int)s3C;
+    if (NODE(s48)->parent) NODE(s48)->unk04 = 1;
+    NODE(s48)->parent = (int)s3C;
     return s3C;
 }
 #else
@@ -1879,15 +1880,15 @@ void game_createLights(char *s1) {
     p90 = *(char **)(s1 + 0x90);
     o = *(char **)(s1 + 0x84);
     func_00000000_2F90_v(o + 0x10, p90);
-    if (*(int *)(p90 + 0x14) != 0) {
-        *(int *)(p90 + 4) = 1;
+    if (NODE(p90)->parent != 0) {
+        NODE(p90)->unk04 = 1;
     }
-    *(int *)(p90 + 0x14) = (int)o;
+    NODE(p90)->parent = (int)o;
     o = (char *)func_00000000(0x16C);
     if (o != 0) {
         func_00000000_2F90_f(o, &D_00007454, 0.0f, 0.0f, 0.0f);
         k2 = D_0000052C;
-        *(int *)(o + 0x28) = (int)&LightTarget_vtbl_2F90_m28; *(int *)(o + 0x120) = 0xFFFF;
+        NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; *(int *)(o + 0x120) = 0xFFFF;
         *(float *)(o + 0x108) = k2;
         *(float *)(o + 0x10C) = k2;
         *(float *)(o + 0x110) = k2;
@@ -1895,10 +1896,10 @@ void game_createLights(char *s1) {
     }
     n2 = *(int *)(s1 + 0x84);
     func_00000000_2F90_v(n2 + 0x10, o);
-    if (*(int *)(o + 0x14) != 0) {
-        *(int *)(o + 4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
-    *(int *)(o + 0x14) = n2;
+    NODE(o)->parent = n2;
     func_00000000_2F90_v();
 }
 
@@ -2095,8 +2096,8 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
                               0x74, a1[5], 0);
     *(int *)(r + 0x70) = a2;
     func_00000000(&gSnowBoard_0000002C, r);
-    if ((p = *(int *)(a0 + 0x84)) != 0) func_00000000(r, p);
-    if ((p = *(int *)(a0 + 0x80)) != 0) func_00000000(r, p);
+    if ((p = WORLDREG(a0)->bgRoot) != 0) func_00000000(r, p);
+    if ((p = WORLDREG(a0)->fgRoot) != 0) func_00000000(r, p);
     func_00000000(a0, r);
     return r;
 }
@@ -2242,23 +2243,23 @@ void game_setupDemoSolo(char *s1, int a1) {
     }
     func_00000000_3734_v(&D_00000000, s0);
     r1 = func_3734_r1(s1, 2, 1, gInputMgr_3734_v,
-                      s0, *(int*)(s1 + 0x80),
-                      *(float*)(*(char**)(s1 + 0x98) + 0xC4),
-                      *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                      s0, WORLDREG(s1)->fgRoot,
+                      *(float*)(WORLDREG(s1)->unk98 + 0xC4),
+                      *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                       0x58005, 0x1B);
-    r2 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), r1, s0);
-    r3 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r1, s0);
+    r2 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, r1, s0);
+    r3 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r1, s0);
     r4 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, r2);
     s0 = (char*)func_00000000(0x80);   /* merged $s0 web: o -> sub -> r5 */
     if (s0 != 0) {
         func_00000000(s0, 1);
     }
     s0 = (char*)func_00000000(0, s0, r1, r4, r2, r3);
-    p = *(char**)(s1 + 0x84);
+    p = (char *)WORLDREG(s1)->bgRoot;
     func_00000000(p + 0x10, s0);
-    if (*(int*)(s0 + 0x14) != 0) *(int*)(s0 + 0x4) = 1;
-    *(char**)(s0 + 0x14) = p;
-    *(char**)(r1 + 0x8DC) = r4;
+    if (NODE(s0)->parent != 0) NODE(s0)->unk04 = 1;
+    NODE(s0)->parent = (s32)p;
+    SNOWB(r1)->camera = r4;
 }
 
 /* game_setupSolo - verified structural decode (0x118, 70 insns,
@@ -2315,14 +2316,14 @@ void game_setupSolo(char *s1, int a1) {
     func_00000000(&D_00000000, o);          /* reg_a — D_x placeholder */
     func_00000000_38C0_v(&D_00000000, o, 0); /* reg_b — D_y placeholder (void alias) */
     r = func_38c0_r(s1, 0, SOLO_MGR->playerRider, SOLO_MGR->playerBoard,
-                    o, *(int*)(s1 + 0x80),
-                    *(float*)(*(char**)(s1 + 0x98) + 0xC4),
-                    *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                    o, WORLDREG(s1)->fgRoot,
+                    *(float*)(WORLDREG(s1)->unk98 + 0xC4),
+                    *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                     (SOLO_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
-    r2 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o);
+    r2 = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r, o);
     row = (int*)((char*)&D_00000000 + a1 * 0x1C);  /* D_w placeholder */
     res = (char*)func_00000000(s1, row, r2);
-    *(char**)(r + 0x8DC) = res;
+    SNOWB(r)->camera = res;
 }
 
 /* game_setupVsGhost: the player rider from InputMgr playerRider / playerFlags /
@@ -2374,20 +2375,20 @@ void game_setupVsGhost(char *s2, int a1) {
     func_00000000(gInputMgr_39d8_g, o2);
     func_00000000(gInputMgr_39d8_g, o1, o2);
     r1 = func_39d8_r(s2, 0, VG_MGR->playerRider, VG_MGR->playerBoard,
-                     o1, *(int*)(s2 + 0x80),
-                     *(float*)(*(char**)(s2 + 0x98) + 0xC4),
-                     *(float*)(*(char**)(s2 + 0x98) + 0xCC),
+                     o1, WORLDREG(s2)->fgRoot,
+                     *(float*)(WORLDREG(s2)->unk98 + 0xC4),
+                     *(float*)(WORLDREG(s2)->unk98 + 0xCC),
                      (VG_MGR->playerFlags | 1) | 0x10000 | 0x40000, 0x1B);
     r2 = func_39d8_r(s2, 0, VG_MGR->ghostRider, VG_MGR->ghostBoard,
-                     o2, *(int*)(s2 + 0x80),
-                     *(float*)(*(char**)(s2 + 0x98) + 0xC4),
-                     *(float*)(*(char**)(s2 + 0x98) + 0xCC),
+                     o2, WORLDREG(s2)->fgRoot,
+                     *(float*)(WORLDREG(s2)->unk98 + 0xC4),
+                     *(float*)(WORLDREG(s2)->unk98 + 0xCC),
                      (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
-    *(int*)(r2 + 0x38C) = 0;
-    b3 = (char*)func_00000000(s2, 2, *(int*)(s2 + 0x80), r1, o1);
+    SNOWB(r2)->unk38C = 0;
+    b3 = (char*)func_00000000(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
     f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
-    *(char**)(r1 + 0x8DC) = f1;
-    *(char**)(r2 + 0x8DC) = f1;
+    SNOWB(r1)->camera = f1;
+    SNOWB(r2)->camera = f1;
 }
 
 /* game_setupReplay - verified structural decode (0x1C4, 113 insns,
@@ -2457,11 +2458,11 @@ void game_setupReplay(char *s1, int a1) {
     r1 = func_3b78_r(s1, 0,
                      RP_MGR->ghostRider,
                      RP_MGR->ghostBoard,
-                     o, *(int*)(s1 + 0x80),
-                     *(float*)(*(char**)(s1 + 0x98) + 0xC4), *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                     o, WORLDREG(s1)->fgRoot,
+                     *(float*)(WORLDREG(s1)->unk98 + 0xC4), *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                      (RP_MGR->ghostFlags | 1 | 0x8000) | 0x10000 | 0x40000, 0x1B);
-    b2 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), r1, o);
-    b3 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r1, o);
+    b2 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, r1, o);
+    b3 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r1, o);
     f1 = (char*)func_00000000(s1, (char*)&D_00000000 + a1 * 0x1C, b2);
     *(float*)(b2 + 0x14C) = 85.0f;
     o = (char*)func_00000000(0x80);
@@ -2469,13 +2470,13 @@ void game_setupReplay(char *s1, int a1) {
         func_00000000(o, 1);
     }
     o = (char*)func_00000000(0, o, r1, f1, b2, b3);
-    v1_84 = *(int*)(s1 + 0x84);
+    v1_84 = WORLDREG(s1)->bgRoot;
     func_00000000(v1_84 + 0x10, o);
-    if (*(int*)(o + 0x14) != 0) {
-        *(int*)(o + 0x4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
-    *(int*)(o + 0x14) = v1_84;
-    *(char**)(r1 + 0x8DC) = f1;
+    NODE(o)->parent = v1_84;
+    SNOWB(r1)->camera = f1;
 }
 
 /* game_setupVsCpu - verified structural decode (0x1C4, 113 insns,
@@ -2512,19 +2513,19 @@ void game_setupVsCpu(char *s1, int a1) {
     func_00000000(&gInputMgr, o2);
     func_00000000(&gInputMgr, o1, 0);
     r = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
-                             o1, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                             o1, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50) | 1 | 0x10000 | 0x40000, 0x1B);
     o3 = func_00000000_3d3cm(s1, 2, *(unsigned char*)((char*)&D_00000000 + 0x17D),
-                              *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, *(int*)(s1 + 0x80),
-                              *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x8004, 0x1D);
-    *(int*)(o3 + 0xA14) = 0x989680;
-    *(char**)(r + 0x908) = o3;
-    *(char**)(o3 + 0x908) = r;
-    o4 = (char*)func_00000000(s1, bu_3d3c_d7294 + a1 * 0x1C, func_00000000(s1, 2, *(int*)(s1 + 0x80), r, o1));
-    *(char**)(r + 0x8DC) = o4;
+                              *(unsigned char*)((char*)&D_00000000 + 0x17F), o2, WORLDREG(s1)->fgRoot,
+                              *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x8004, 0x1D);
+    SNOWB(o3)->health = 0x989680;
+    SNOWB(r)->rival = SNOWB(o3);
+    SNOWB(o3)->rival = SNOWB(r);
+    o4 = (char*)func_00000000(s1, bu_3d3c_d7294 + a1 * 0x1C, func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r, o1));
+    SNOWB(r)->camera = o4;
     if (1) { }
     if (1) { }
-    *(char**)(o3 + 0x8DC) = o4;
+    SNOWB(o3)->camera = o4;
 }
 
 /* game_setupVs2P - verified structural decode (0x21C, 135 insns,
@@ -2564,24 +2565,24 @@ void game_setupVs2P(char *s1, int a1) {
     func_00000000(&gInputMgr, t);
     func_00000000(&gInputMgr, o[0], t);
     r1 = func_00000000_3d3cm(s1, 0, *(int*)((char*)&D_00000000 + 0x4C), *(int*)((char*)&D_00000000 + 0x54),
-                             o[0], *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                             o[0], WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x50), 0x15);
     r2 = func_00000000_3d3cm(s1, 1, *(int*)((char*)&D_00000000 + 0x58), *(int*)((char*)&D_00000000 + 0x60),
-                             t, *(int*)(s1 + 0x80), *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC),
+                             t, WORLDREG(s1)->fgRoot, *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC),
                              *(int*)((char*)&D_00000000 + 0x5C), 0x15);
     *(char**)(r1 + 0xC) = D_000074E4;
     *(char**)(r2 + 0xC) = D_000074EC;
-    *(char**)(r1 + 0x908) = r2;
-    *(char**)(r2 + 0x908) = r1;
-    x = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r1, o[0]);
-    b4 = (char*)func_00000000(s1, 2, *(int*)(s1 + 0x80), r2, o[1]);
+    SNOWB(r1)->rival = SNOWB(r2);
+    SNOWB(r2)->rival = SNOWB(r1);
+    x = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r1, o[0]);
+    b4 = (char*)func_00000000(s1, 2, WORLDREG(s1)->fgRoot, r2, o[1]);
     *(float*)(x + 0x14C) = 55.0f;
     *(float*)(b4 + 0x14C) = 55.0f;
     row = bu_3f00_d7294 + a1 * 0x1C;
     y = (char*)func_00000000(s1, row, x);
     f2 = (char*)func_00000000(s1, row + 0x1C, b4);
-    *(char**)(r1 + 0x8DC) = y;
-    *(char**)(r2 + 0x8DC) = f2;
+    SNOWB(r1)->camera = y;
+    SNOWB(r2)->camera = f2;
     *(char**)(f2 + 0x1B8) = y;
 }
 
@@ -2659,21 +2660,21 @@ void game_setupDemoRace(char *s1, int a1) {
     func_00000000(&gInputMgr_411c_d00_b, t);
     idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
     idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, *(int*)(s1 + 0x80),
-                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x58005, 0x1B);
-    r[1] = func_00000000_3d3cm(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, *(int*)(s1 + 0x80),
-                             *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x48024, 0x1B);
-    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
-    b3 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), a, o1); }
-    b4 = (char*)func_00000000(s1, 1, *(int*)(s1 + 0x80), r[0], o1);
+    r[0] = func_00000000_3d3cm(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, WORLDREG(s1)->fgRoot,
+                             *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x58005, 0x1B);
+    r[1] = func_00000000_3d3cm(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, WORLDREG(s1)->fgRoot,
+                             *(float*)(WORLDREG(s1)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x48024, 0x1B);
+    { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
+    b3 = (char*)func_00000000(s1, 0, WORLDREG(s1)->fgRoot, a, o1); }
+    b4 = (char*)func_00000000(s1, 1, WORLDREG(s1)->fgRoot, r[0], o1);
     f = (char*)func_00000000(s1, bu_411c_d7294 + a1 * 0x1C, b3);
     t = (char*)func_00000000(0x80);
     if (t != 0) func_00000000(t, 1);
     t = (char*)func_00000000(0, t, r[0], f, b3, b4);
-    p84 = *(char**)(s1 + 0x84);
+    p84 = (char *)WORLDREG(s1)->bgRoot;
     func_00000000(p84 + 0x10, t);
-    if (*(int*)(t + 0x14) != 0) *(int*)(t + 0x4) = 1;
-    *(char**)(t + 0x14) = p84;
+    if (NODE(t)->parent != 0) NODE(t)->unk04 = 1;
+    NODE(t)->parent = (s32)p84;
     *(char**)(r[0] + 0x8DC) = f;
     *(char**)(r[1] + 0x8DC) = f;
 }
@@ -2726,13 +2727,13 @@ void game_setupDemoSplit(char *s0, int a1) {
     func_00000000(&gInputMgr_43d4_d00_b, t);
     idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
     idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),
-                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8004, 0x15);
-    r[1] = func_00000000_3d3cm(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, *(int*)(s0 + 0x80),
-                             *(float*)(*(char**)(s0 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8024, 0x15);
-    { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
-    b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), a, o1); }
-    b4 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), r[1], t);
+    r[0] = func_00000000_3d3cm(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, WORLDREG(s0)->fgRoot,
+                             *(float*)(WORLDREG(s0)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8004, 0x15);
+    r[1] = func_00000000_3d3cm(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, WORLDREG(s0)->fgRoot,
+                             *(float*)(WORLDREG(s0)->unk98 + 0xC4) + 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8024, 0x15);
+    { char *a = r[0], *b = r[1]; SNOWB(a)->rival = SNOWB(b); SNOWB(b)->rival = SNOWB(a);
+    b3 = (char*)func_00000000(s0, 2, WORLDREG(s0)->fgRoot, a, o1); }
+    b4 = (char*)func_00000000(s0, 2, WORLDREG(s0)->fgRoot, r[1], t);
     *(float*)(b3 + 0x14C) = 55.0f;
     *(float*)(b4 + 0x14C) = 55.0f;
     row = bu_43d4_d7294 + a1 * 0x1C;
@@ -2790,10 +2791,10 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -3042,10 +3043,10 @@ void *item_createBal(Box5124 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); *(char **)(o2 + 0x28) = &D_00000000_a; /* same-line: keeps obj reload after the addiu */
+            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; *(char **)(obj + 0x28) = &D_00000000_b; *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -3096,10 +3097,10 @@ void *item_createBa2(Box51D4 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); *(char **)(o2 + 0x28) = &D_00000000_a; /* same-line: keeps obj reload after the addiu */
+            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; *(char **)(obj + 0x28) = &D_00000000_b; *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -3149,10 +3150,10 @@ void *item_createChk(Box5284 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); *(char **)(o2 + 0x28) = &D_00000000_a; /* same-line: keeps obj reload after the addiu */
+            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; *(char **)(obj + 0x28) = &D_00000000_b; *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -3201,10 +3202,10 @@ void *item_createGtr(Box5334 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); *(char **)(o2 + 0x28) = &D_00000000_a; /* same-line: keeps obj reload after the addiu */
+            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; *(char **)(obj + 0x28) = &D_00000000_b; *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
     }
     return obj;
 }
@@ -3255,10 +3256,10 @@ void *item_createGtl(Box53E8 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(o2, b2, 0); *(char **)(o2 + 0x28) = &D_00000000_a; /* same-line: keeps obj reload after the addiu */
+            func_00000000(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); store order b,1,c = temp numbering t0/t1/t2; whole tail on ONE line (multi-line tail perturbs the li/addiu schedule) */
-        { char *t = &D_00000000_c; *(char **)(obj + 0x28) = &D_00000000_b; *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
     }
     return obj;
 }
@@ -3808,7 +3809,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     s = a0;
     if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
         func_00000000(s, &D_00007E74);
-        *(void**)(s + 0x28) = &D_00000000;
+        NODE(s)->vptr = (s32)(&D_00000000);
         {
             int *c = (int*)(s + 0x2C);
             if (c != 0 || (c = (int*)func_00000000(4)) != 0) {
@@ -3822,7 +3823,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         z[0] = 0.0f;
         func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
-    *(void**)(a0 + 0x28) = &D_00000000;
+    NODE(a0)->vptr = (s32)(&D_00000000);
     *(void**)(a0 + 0xC) = &D_00007E7C;
     ((MapProp *)a0)->shape = a1;
     func_00000000(a0, a1);
@@ -4032,7 +4033,7 @@ void *EnvSettings_ctor(char *a0) {
         if (a0 == 0) goto end;
     }
     func_00000000(a0, &D_00007F84);
-    *(void**)(a0 + 0x28) = &EnvSettings_vtbl;
+    NODE(a0)->vptr = (s32)(&D_00000000);
     {
         int *v1 = (int *)(a0 + 0x2C);
         if (v1 == 0) {
@@ -4205,9 +4206,9 @@ void FallingSnow_create(char *a0) {
     if (r != 0) {
         sub = r;
         if (sub != 0 || (sub = (char*)func_00000000(0x48)) != 0) {
-            func_00000000(sub, &D_00007FBC); *(void**)(sub + 0x28) = &D_00000000;
+            func_00000000(sub, &D_00007FBC); NODE(sub)->vptr = (s32)(&D_00000000);
         }
-        *(void**)(r + 0x28) = &D_00000000;
+        NODE(r)->vptr = (s32)(&D_00000000);
     }
     *(char**)(a0 + 0x40) = r;
     head = *(char**)((*(char**)((char*)&gInputMgr_74e8_h + 0x44)) + 0x88);
@@ -4221,8 +4222,8 @@ void FallingSnow_create(char *a0) {
     if (1) { }
     if (1) { char **pa = &a0; }
     func_00000000(head + 0x10, r);
-    if (*(int*)(r + 0x14) != 0) *(int*)(r + 0x4) = 1;
-    *(char**)(r + 0x14) = head;
+    if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
+    NODE(r)->parent = (s32)head;
     v = *(int**)(*(char**)(a0 + 0x40) + 0x28);
     (*(void (**)(char*, int))((char*)v + 0x5C))(
         (char*)((int)*(char**)(a0 + 0x40) + (int)(short)*(short*)((char*)v + 0x58)),
@@ -4512,10 +4513,10 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -4609,7 +4610,7 @@ void *Tv1Tmpl_create(char *a0) {
     ret = (char*)func_00000000(0x88);
     if (ret != 0) {
         func_00000000(ret);
-        *(void**)(ret + 0x28) = &Tv1_vtbl;
+        NODE(ret)->vptr = (s32)(&D_00000000);
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
@@ -4868,7 +4869,7 @@ char *FogTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x90);
     if (o != 0) {
         func_00000000(o);
-        *(char **)(o + 0x28) = &D_00007878;
+        NODE(o)->vptr = (s32)(&D_00007878);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             c = u;
@@ -4905,10 +4906,10 @@ char *FogTmpl_create(char *arg0) {
     o = *(char **)(arg0 + 0x40);
     if (o != 0) {
         func_00000000(v + 0x10, o);
-        if (*(int *)(o + 0x14) != 0) {
-            *(int *)(o + 4) = 1;
+        if (NODE(o)->parent != 0) {
+            NODE(o)->unk04 = 1;
         }
-        *(char **)(o + 0x14) = v;
+        NODE(o)->parent = (s32)v;
     }
     return v;
 }
@@ -5079,7 +5080,7 @@ char *SnowTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x74);
     if (o != 0) {
         func_00000000(o);
-        *(char **)(o + 0x28) = &D_00007968;
+        NODE(o)->vptr = (s32)(&D_00007968);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             s = u;
@@ -5111,10 +5112,10 @@ char *SnowTmpl_create(char *arg0) {
     o = *(char **)(arg0 + 0x40);
     if (o != 0) {
         func_00000000(v + 0x10, o);
-        if (*(int *)(o + 0x14) != 0) {
-            *(int *)(o + 4) = 1;
+        if (NODE(o)->parent != 0) {
+            NODE(o)->unk04 = 1;
         }
-        *(char **)(o + 0x14) = v;
+        NODE(o)->parent = (s32)v;
     }
     return v;
 }
@@ -5151,8 +5152,8 @@ void TreeTmpl_display(char *arg0) {
     if (node != 0) {
         arg0 = node;
         do {
-            if ((*(int*)(arg0 + 0x18) & 4) != 0) {
-                obj = *(char**)(arg0 + 0x28);
+            if ((NODE(arg0)->doFlags & 4) != 0) {
+                obj = (char *)NODE(arg0)->vptr;
                 ((int (*)(char *))*(int*)(obj + 0x1C))(arg0 + *(short*)(obj + 0x18));
             }
             arg0 = *(char**)(arg0 + 0x84);
@@ -5213,7 +5214,7 @@ void *TreeTmpl_create(char *arg0) {
     s1 = (char *)func_00000000(0xC8);
     if (s1 != 0) {
         func_00000000_087A4(s1);
-        *(int *)(s1 + 0x28) = (int)(D_087A4_vtable + 0x10);
+        NODE(s1)->vptr = (int)(D_087A4_vtable + 0x10);
         s0 = s1 + 0x88;
         if (s0 == 0) {
             s0 = (char *)func_00000000(0x40);
@@ -5228,13 +5229,13 @@ skip:
     *(float *)(s1 + 0x70) = 10.0f;
     kind = 0x13;
     s0 = s1;
-    ((void (*)(char *, int *))*(int *)(*(int *)(s1 + 0x28) + 0x2C))(s1 + *(short *)(*(int *)(s1 + 0x28) + 0x28), &kind);
+    ((void (*)(char *, int *))*(int *)(NODE(s1)->vptr + 0x2C))(s1 + *(short *)(NODE(s1)->vptr + 0x28), &kind);
     s1 = (char *)*(int *)(arg0 + 0x40);
     func_00000000_087A4(s0 + 0x10, s1);
-    if (*(int *)(s1 + 0x14) != 0) {
-        *(int *)(s1 + 4) = 1;
+    if (NODE(s1)->parent != 0) {
+        NODE(s1)->unk04 = 1;
     }
-    *(int *)(s1 + 0x14) = (int)s0;
+    NODE(s1)->parent = (int)s0;
     func_00000000_087A4_f(s0 + 0x88, s0, 0x74, 150.0f, D_000005F0);
     *(int *)(s0 + 0x98) |= 1;
     func_00000000_087A4(D_87A4_tail, s0 + 0x88);
@@ -5510,7 +5511,7 @@ char *ShpNode_ctor(char *self) {
         if (self == 0) goto end;
     }
     func_00000000(self, &D_00008708);
-    *(char**)(self + 0x28) = &ShpNode_vtbl_8F18_vtable;
+    NODE(self)->vptr = (s32)(&ShpNode_vtbl_8F18_vtable);
     handle = func_00000000(0, &D_00008710, &D_8F18_call_arg, 0);
     func_00000000(self, handle);
     *(int*)(self + 0x3D4) = 100;
@@ -7720,8 +7721,8 @@ void SnowBoarder_procColl(char *arg0) {
 #endif
 
 void func_0000CACC(char *a0) {
-    *(int*)(a0 + 0xA14) = 0xF4240;
-    *(int*)(a0 + 0xA58) = *(int*)(a0 + 0xA58) ^ 0x100;
+    SNOWB(a0)->health = 0xF4240;
+    SNOWB(a0)->flags = (int)SNOWB(a0)->flags ^ 0x100;
 }
 
 // SnowBoarder_func_0000CAE8 — STRUCTURAL PASS (0x1F8 / 126 insns, no episode).
@@ -7844,7 +7845,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
     func_00000000(st, e1);
     func_00000000(st, e2);
     func_00000000(st, e3);
-    if (*(int *)(st + 0xA58) & 0x200) return;
+    if ((int)SNOWB(st)->flags & 0x200) return;
     g0 = (char *)func_cce0(0, st, 0x00, 0.0f, D_bu_ro_pool[0x96C / 4], 0.0f);
     func_00000000(cont, g0);
     func_00000000(st, g0);
@@ -8108,28 +8109,28 @@ void SnowBoarder_update(char *st) {
                          * REFOLDS. See IDO_CODEGEN div-fold) */
     float four = 4.0f;
     func_00000000(&D_00008AD0);
-    fl = *(int *)(st + 0xA58); if (1) {}
+    fl = (int)SNOWB(st)->flags; if (1) {}
     v0 = fl & 0x100;
     /* volatile on the per-arm 0x18 reads: target loads 0x18(v0) SEPARATELY in
      * each branch arm (one lands in the beql delay); plain derefs get CSE'd
      * into one hoisted load + two andis. */
     if (v0 != 0) {
-        if (*(int *)(*(char **)(st + 0x800) + 0x18) & 0x20) {
-            *(int *)(st + 0xA28) ^= 1;
+        if (*(int *)((char *)SNOWB(st)->input + 0x18) & 0x20) {
+            SNOWB(st)->unkA28 ^= 1;
         }
-        if (*(int *)(st + 0xA28) != 0) {
-            if (*(volatile int *)(*(char **)(st + 0x800) + 0x18) & 0x10) {
+        if (SNOWB(st)->unkA28 != 0) {
+            if (*(volatile int *)((char *)SNOWB(st)->input + 0x18) & 0x10) {
                 /* per-arm v0 recompute (duplicated statement, NOT a shared
                  * merge label): target's andi lands in this path's b delay. */
-                fl = *(int *)(st + 0xA58);
+                fl = (int)SNOWB(st)->flags;
                 v0 = fl & 0x100;
                 goto block_9;
             }
         } else {
-            fl = *(int *)(st + 0xA58);
+            fl = (int)SNOWB(st)->flags;
             t5 = fl ^ 4;
-            if (*(volatile int *)(*(char **)(st + 0x800) + 0x18) & 0x10) {
-                *(int *)(st + 0xA58) = t5;
+            if (*(volatile int *)((char *)SNOWB(st)->input + 0x18) & 0x10) {
+                SNOWB(st)->flags = t5;
                 fl = t5;
             }
             v0 = fl & 0x100;
@@ -8138,96 +8139,96 @@ void SnowBoarder_update(char *st) {
     } else {
     block_9:
         if (v0 != 0) {
-            sub = *(char **)(st + 0x800);
+            sub = (char *)SNOWB(st)->input;
             /* volatile busts the duplicate-load CSE: target lw's 0x10(a0) TWICE
              * (one per bit test), plain int derefs merge to one lw. */
             if ((!!(*(volatile int *)(sub + 0x10) & 0x80)) & (!!(*(volatile int *)(sub + 0x10) & 0x40))) {
                 sp58 = 9;
-                vt = *(char **)(st + 0x28);
+                vt = (char *)NODE(st)->vptr;
                 (*(void (**)(char *, int *))(vt + 0x2C))((char *)(*(short *)(vt + 0x28) + (int)st), &sp58);
-                fl = *(int *)(st + 0xA58);
+                fl = (int)SNOWB(st)->flags;
             }
         }
         if (fl & 4) {
-            *(int *)(*(char **)(st + 0x800) + 0x3C) = 1;
+            *(int *)((char *)SNOWB(st)->input + 0x3C) = 1;
             func_00000000(&D_00008AD8);
-            sub = *(char **)(st + 0x804);
+            sub = (char *)SNOWB(st)->ai;
             vt = *(char **)(sub + 0x28);
             (*(void (**)(char *))(vt + 0x24))((char *)(sub + (short)*(short *)(vt + 0x20)));
             func_00000000(&D_00008AE0);
-            fl = *(int *)(st + 0xA58);
+            fl = (int)SNOWB(st)->flags;
         }
         a0_2 = st + 0x808;
         if (fl & 0x80) {
-            *(float *)(st + 0xA1C) = -*(float *)(st + 0xA1C);
+            SNOWB(st)->bumpSide = -SNOWB(st)->bumpSide;
         }
-        func_00000000(a0_2, *(short *)(st + 0x9A4));
-        m = *(char **)(st + 0x840);
-        *(short *)(st + 0x9A4) = 0;
-        vt = *(char **)(m + 0x28);
+        func_00000000(a0_2, SNOWB(st)->contactSurface);
+        m = (char *)SNOWB(st)->anim;
+        SNOWB(st)->contactSurface = 0;
+        vt = (char *)NODE(m)->vptr;
         (*(void (**)(char *))(vt + 0x24))((char *)(m + (short)*(short *)(vt + 0x20)));
         *(short *)(st + 0xA10) = 0;
-        *(float *)(st + 0xA1C) = 0.0f;
-        *(float *)(st + 0xA20) = 0.0f;
-        *(float *)(st + 0xA24) = 0.0f;
-        if (*(int *)(st + 0xA58) & 0x800) {
+        SNOWB(st)->bumpSide = 0.0f;
+        SNOWB(st)->bumpUp = 0.0f;
+        SNOWB(st)->bumpFwd = 0.0f;
+        if ((int)SNOWB(st)->flags & 0x800) {
             func_00000000(&D_00008AE8);
             func_00000000(st);
             func_00000000(&D_00008AF4);
-            if (*(int *)(st + 0xA58) & 0x40000) {
-                f0 = *(float *)(st + 0x31C);
+            if ((int)SNOWB(st)->flags & 0x40000) {
+                f0 = SNOWB(st)->vel.y;
                 f2 = (f0 < 0.0f) ? -f0 : f0;
                 a84 = (int)((f2 - 100.0f) / four);
-                *(int *)(st + 0xA84) = a84;
+                SNOWB(st)->landImpact = a84;
                 if (a84 < 0) {
-                    *(int *)(st + 0xA84) = 0;
+                    SNOWB(st)->landImpact = 0;
                 }
-                func_00000000(a0_2, *(int *)(st + 0xA84));
-                if (*(int *)(st + 0x8B8) & 1) {
-                    *(int *)(*(char **)(st + 0x81C) + 0x94) = *(int *)(st + 0xA84);
+                func_00000000(a0_2, SNOWB(st)->landImpact);
+                if (SNOWB(st)->unk8B8 & 1) {
+                    *(int *)(SNOWB(st)->unk81C + 0x94) = SNOWB(st)->landImpact;
                 }
-                if (*(int *)(st + 0x8B8) & 4) {
-                    *(int *)(*(char **)(st + 0x818) + 0x94) = *(int *)(st + 0xA84);
+                if (SNOWB(st)->unk8B8 & 4) {
+                    *(int *)(SNOWB(st)->unk818 + 0x94) = SNOWB(st)->landImpact;
                 }
             }
         }
         func_00000000(&D_00008B00);
-        *(float *)(st + 0xA38) = *(float *)(st + 0x3C8) * *(float *)(st + 0x318)
-                               + *(float *)(st + 0x3CC) * *(float *)(st + 0x31C)
-                               + *(float *)(st + 0x3D0) * *(float *)(st + 0x320);
-        func_00000000(*(char **)(st + 0x840));
-        if (*(int *)(st + 0xA5C) != 0) {
+        SNOWB(st)->fwdSpeed = SNOWB(st)->dir.x * SNOWB(st)->vel.x
+                               + SNOWB(st)->dir.y * SNOWB(st)->vel.y
+                               + SNOWB(st)->dir.z * SNOWB(st)->vel.z;
+        func_00000000((char *)SNOWB(st)->anim);
+        if (SNOWB(st)->shake != 0) {
             /* six wobble records, each via ONE mutated pointer temp (r4):
              * lw v0; lwc1 0x64(v0); addiu v0,v0,0x64; add; swc1 0(v0) —
              * the named-base `+= at offset` form instead emits paired
              * lwc1/swc1 0x64(base) with no addiu (wrong shape). */
             char *r4;
             float fv;
-            double rnd = (double)func_d440_frnd((void *)(((((int)*(float *)(st + 0xDC) ^ (int)*(float *)(st + 0xE4)) >> 5) ^ 0x12345678)));
-            float tf2 = (float)((rnd - 0.5) * 30.0 * (double)((float)*(int *)(st + 0xA5C) / 100.0f));
+            double rnd = (double)func_d440_frnd((void *)(((((int)SNOWB(st)->lastPos.x ^ (int)SNOWB(st)->lastPos.z) >> 5) ^ 0x12345678)));
+            float tf2 = (float)((rnd - 0.5) * 30.0 * (double)((float)SNOWB(st)->shake / 100.0f));
             double tf12;
-            r4 = *(char **)(st + 0x824);
+            r4 = SNOWB(st)->bodyNodes[1];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = fv + tf2;
             tf12 = (double)tf2 * 0.5;
-            r4 = *(char **)(st + 0x828);
+            r4 = SNOWB(st)->bodyNodes[2];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = fv + tf2;
-            r4 = *(char **)(st + 0x830);
+            r4 = SNOWB(st)->bodyNodes[4];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = fv + tf2;
-            r4 = *(char **)(st + 0x834);
+            r4 = SNOWB(st)->bodyNodes[5];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = (float)((double)fv + tf12);
-            r4 = *(char **)(st + 0x82C);
+            r4 = SNOWB(st)->bodyNodes[3];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = (float)((double)fv + tf12);
-            r4 = *(char **)(st + 0x838);
+            r4 = SNOWB(st)->bodyNodes[6];
             fv = *(float *)(r4 + 0x64);
             r4 += 0x64;
             *(float *)r4 = (float)((double)fv - tf12);
@@ -8236,15 +8237,15 @@ void SnowBoarder_update(char *st) {
         func_00000000(&D_00008B18);
         func_00000000(st);
         func_00000000(&D_00008B24);
-        func_d440_f0call(*(int *)((char *)&D_F0a + 0x48), (int)st, *(float *)(st + 0x348) / two);
+        func_d440_f0call(*(int *)((char *)&D_F0a + 0x48), (int)st, SNOWB(st)->speed / two);
         func_00000000(*(int *)((char *)&D_F0b + 0x48), (int)st, *(int *)(st + 0xDC), *(int *)(st + 0xE4));
-        func_00000000(*(int *)((char *)&D_F0c + 0x48), (int)st, *(int *)(st + 0xA14));
-        t5 = *(int *)(st + 0x8DC);
+        func_00000000(*(int *)((char *)&D_F0c + 0x48), (int)st, SNOWB(st)->health);
+        t5 = (int)SNOWB(st)->camera;
         if (t5 != 0) {
-            func_d440_final(a0_2, st + 0xDC, *(float *)(st + 0x348),
-                          -*(float *)(st + 0x968), *(float *)(st + 0x970),
-                          *(float *)(st + 0x9D0) + D_00000980,
-                          (int)*(short *)(st + 0x9A2), t5, *(int *)(st + 0xA58));
+            func_d440_final(a0_2, st + 0xDC, SNOWB(st)->speed,
+                          -SNOWB(st)->contactDepth, SNOWB(st)->edge,
+                          SNOWB(st)->groundDist + D_00000980,
+                          (int)SNOWB(st)->surface, t5, (int)SNOWB(st)->flags);
         }
         func_00000000(&D_00008B30);
     }
@@ -8715,9 +8716,9 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
     v[1].x = d * arg3->x - v[1].x;
     v[1].y = d * arg3->y - v[1].y;
     v[1].z = d * arg3->z - v[1].z; if (1) {}
-    v[0].x = *(f32 *)(arg0 + 0x3BC);
-    v[0].y = *(f32 *)(arg0 + 0x3C0);
-    v[0].z = *(f32 *)(arg0 + 0x3C4);
+    v[0].x = SNOWB(arg0)->side.x;
+    v[0].y = SNOWB(arg0)->side.y;
+    v[0].z = SNOWB(arg0)->side.z;
     d = v[0].z * arg3->z + (v[0].y * arg3->y + v[0].x * arg3->x);
     v[0].x = d * arg3->x - v[0].x;
     v[0].y = d * arg3->y - v[0].y;
@@ -8725,8 +8726,8 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
     if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
         dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);
         func_00000000(&v[0]); if (arg3) {}
-        lim = *(f32 *)(arg0 + 0x9FC);
-        dot *= *(f32 *)(arg0 + 0x9F8);
+        lim = SNOWB(arg0)->edgeGrip;
+        dot *= SNOWB(arg0)->edgeFriction;
         if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != lim) {} if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != dot) {}
         if (dot < -lim) {
             dot = -lim;
@@ -8840,10 +8841,10 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }

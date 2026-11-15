@@ -190,7 +190,13 @@ typedef struct SnowBoarder {
     char sound[0xC];        /* 0x808: embedded 0xC-byte sound object, constructed in place with (ctor arg 1,
                              * ctor arg 2); updateOrient calls snd_soundObjSetScaled_00000B2C on it, procColl
                              * switches it with groundFlags & 0x400, update feeds it contactSurface / landImpact */
-    char pad814[0x840 - 0x814];
+    char *unk814;           /* 0x814: ctor: word 0 of the bu_90cc_fz source table */
+    char *unk818;           /* 0x818: ctor: word 2 of that table; update stores landImpact at +0x94 when unk8B8 & 4 */
+    char *unk81C;           /* 0x81C: ctor: word 1; update stores landImpact at +0x94 when unk8B8 & 1 */
+    char *bodyNodes[7];     /* 0x820..0x838: rider model nodes read by the ctor from the shape-file node registry
+                             * (gNodeGlobals slots). SnowBoarder_update jitters the +0x64 float of [1] [2] [4] by
+                             * the shake amount, [5] [3] by half of it and [6] by minus half (agent-h run 496) */
+    char pad83C[0x840 - 0x83C];
     struct RiderAnim *anim; /* 0x840: the RiderAnim (game.uso C48C) built by the ctor; the SnowAI run-out steps and
                              * SnowBoarder_handleMsg's ending ("en1" / "en2") call its state methods */
     char *unk844;           /* 0x844: child object A; its +0x30 float is negated on a mirror flip */
@@ -210,11 +216,16 @@ typedef struct SnowBoarder {
     char pad878[0x890 - 0x878];
     SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
     SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
-    char pad8A8[0x8C0 - 0x8A8];
+    char pad8A8[0x8B8 - 0x8A8];
+    s32 unk8B8;             /* 0x8B8: bit mask set by the ctor; bits 1 / 4 pick which of unk81C / unk818 gets landImpact */
+    char pad8BC[0x8C0 - 0x8BC];
     s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
     u32 character;          /* 0x8C4: rider character 1..8: ctor arg 2 = game_createPlayers' index + 1; SnowAI_update
                              * picks ms1..ms8 by it; 6 and 7 get special ctor handling and DDCC skips them */
-    char pad8C8[0x8E0 - 0x8C8];
+    char pad8C8[0x8DC - 0x8C8];
+    char *camera;           /* 0x8DC: the race camera built from the mode's 0x1C-byte descriptor row; every
+                             * game_setup* stores it (vs-ghost / demo-race share one between both riders).
+                             * SnowBoarder_update passes it to the 0x808 sound update when non-zero */
     f32 tint[4];            /* 0x8E0: r, g, b, a as 0..1 (ctor: colour byte / 255, alpha 255 / 164 / 117 / 70) */
     char pad8F0[0x8F4 - 0x8F0];
     SnowBRec3 *unk8F4[3];   /* 0x8F4: three record slots refilled from the table by DDCC/DF04/E014 */
@@ -305,6 +316,10 @@ typedef struct SnowBoarder {
     char padA88[0xA8C - 0xA88];
 } SnowBoarder;
 
+/* Field access through an untyped `char *` rider pointer whose type is a lever (agent-h run 496).
+ * Lowers to the same base + offset access as the raw `*(T *)(p + K)` form. */
+#define SNOWB(p) ((SnowBoarder *)(p))
+
 #define SNOWB_FLAG_08     0x08  /* SnowBoarder_func_0000E124: selects the notify-call form */
 #define SNOWB_FLAG_20     0x20  /* SnowBoarder_func_0000E124: gates the 180-degree re-orient */
 #define SNOWB_FLAG_MIRROR 0x80  /* left/right stance flip, toggled by SnowBoarder_func_0000E124 */
@@ -327,7 +342,10 @@ SNOWB_ASSERT_OFFSET(parms.nts, 0x6F8);
 SNOWB_ASSERT_OFFSET(parms.max, 0x758);
 SNOWB_ASSERT_OFFSET(input, 0x800);
 SNOWB_ASSERT_OFFSET(ai, 0x804);
+SNOWB_ASSERT_OFFSET(bodyNodes[6], 0x838);
 SNOWB_ASSERT_OFFSET(anim, 0x840);
+SNOWB_ASSERT_OFFSET(unk8B8, 0x8B8);
+SNOWB_ASSERT_OFFSET(camera, 0x8DC);
 SNOWB_ASSERT_OFFSET(sound, 0x808);
 SNOWB_ASSERT_OFFSET(unk844, 0x844);
 SNOWB_ASSERT_OFFSET(controller, 0x848);
