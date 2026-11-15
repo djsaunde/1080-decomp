@@ -1,5 +1,5 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) NON_MATCHING donor for game_uso_func_00008CD8 (709 words),
- * compiled by tools/ncc721.sh and spliced into the non_matching object only. The ROM build keeps INCLUDE_ASM.
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for game_uso_func_00008CD8 (709 words; agent-h run 428),
+ * compiled by tools/ncc721.sh and spliced over a placeholder in both build trees (the B3C recipe).
  *
  * The target lowers the 4-label `switch (s->phase)` as a native 4-entry jump table (sltiu 4), which only
  * EDG 2.29's switch rule produces. History: agent-c run 199 rewrote the cfe NM body into this value-class
@@ -76,6 +76,14 @@
  *   - agent-h run 426: kit DX's lever on that basin (f and h through subr1 / KR5, the dir / perp ctor at 8 blocks;
  *     g goes through operator-'s KR2 already, and there is no wpos view to steer): pool a2, 99.567 -> 99.997. Left:
  *     d2's conversion `v` spill word M-120 (sp+408) where the target has M-112 (sp+416), and the jump-table addend.
+ *   - agent-h run 428 (kit DXIII), on agent-c's run 426 scratch body (lenf a member call on the d2 temporary, the d2 / g
+ *     conversions with two trailing kept pointers: every target spill word, 99.116): f's KR5 chain temp K-372 needs
+ *     its `this`-result word (M-116) to be a live LR in g's statement, so g goes back to the plain conversion (its
+ *     base-ctor `this` is word 4 again) through a 5-block Vec3(float, int, float) base ctor (M-116 7 / 3 -> 7 / 4, under
+ *     the d2 / g pointer's 13 / 7: pointer v1, M-116 a0, s a1); K3 for lenf's K1; the other conversions through a
+ *     block-free Vec3(float, short, float), and 7 blocks in XZ(float, float, int), so the pool slot keeps n = 121
+ *     (21 / 31) above every chain temp (2 / 3, 3 / 5): EXACT (2836 B, frame 528). The table sits at donor .rodata
+ *     +0x100 through game_uso_func_00008CD8_lay.
  * EARLIER LEFT (before run 426): the else-arm XZ(wpos) `this` shares its word with perp's `this` (v1; target a0 / v1); d2's conversion `v`
  * home sp+400 vs the target's sp+416 (in the target d2's and g's `v` are one word: a direct XZ(K1(s)->w->pos) at g
  * does join them, but the conversion-`this` word then outranks e1189 and s falls to s0, 2712 B); f0 / f12 swaps at
@@ -98,6 +106,13 @@ struct Vec3 {
     /* agent-c run 426: a code-free block split here takes the ctor-`this` word M-128 from 28 / 6 to 28 / 7, under
      * e1189 (4.5): e1189 takes v1 again and the ctor-`this` sites a0, as in the target */
     Vec3(float a, float b, float c) { if (1) {} set(a, b, c); }
+    /* agent-h run 428 (kit DXIII): base ctors for the XZ(const Vec3 &) conversions, chosen by the y argument's type
+     * (0 folds to 0.0f, no code). (short): the dummy-pointer / int-dummy conversions without the code-free block,
+     * which takes the pool slot K-156 back to n = 121 (den 31). (int): g's plain conversion, five blocks: its
+     * base-ctor `this` (word 4, M-116) goes 7 / 3 -> 7 / 4 under the shared d2 / g pointer (13 / 7), which then
+     * takes v1 and M-116 a0, with s in a1 */
+    Vec3(float a, short b, float c) { set(a, b, c); }
+    Vec3(float a, int b, float c) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} set(a, b, c); }
     /* agent-h run 425: mvf's product ctor, member stores (no set() call, so set's float parameters take no pool
      * words); the kept int splits float slot 3 in the flag arm (kit DVI section 6); the three kept dead floats
      * grow the float pool by one word in that statement (the target's flag-arm pool word), which puts e .. the
@@ -111,13 +126,20 @@ struct Vec3 {
     Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     Vec3 &operator*=(float s) { x = x * s; y = y * s; z = z * s; return *this; }
     Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
+    /* agent-c run 426: lenf's dot as a member called on the d2 temporary. The receiver is evaluated before the
+     * member's parameters are reserved, so only operator-'s a precedes the conversion (its pointer = word 3, M-112);
+     * the kept pointer keeps 9 pool words after d2's object */
+    float dotp(const Vec3 &v, const Vec3 *p0) const { p0 = p0; return v.x * x + v.z * z; }
 };
 struct XZ : Vec3 {
-    XZ(const Vec3 &v) : Vec3(v.x, 0.0f, v.z) {}
+    XZ(const Vec3 &v) : Vec3(v.x, 0, v.z) {} /* run 428: g only, the 5-block base ctor */
+    /* agent-c run 426: two kept pointers AFTER v take words 4 / 5, so the Vec3 base ctor's `this` (which the d2 /
+     * g pointer word overlaps) moves off word 4 (lenf only since run 428) */
+    XZ(const Vec3 &v, const Vec3 *p0, const Vec3 *p1) : Vec3(v.x, (short)0, v.z) { p0 = p0; p1 = p1; }
     /* leading kept dummy parameters: each takes the next edg pool word (kit CDXC) */
     XZ(int z0, const Vec3 &v) : Vec3(v.x, 0.0f, v.z) { z0 = z0; }
-    XZ(int z0, int z1, const Vec3 &v) : Vec3(v.x, 0.0f, v.z) { z0 = z0; z1 = z1; }
-    XZ(int z0, int z1, int z2, const Vec3 &v) : Vec3(v.x, 0.0f, v.z) { z0 = z0; z1 = z1; z2 = z2; }
+    XZ(int z0, int z1, const Vec3 &v) : Vec3(v.x, (short)0, v.z) { z0 = z0; z1 = z1; }
+    XZ(int z0, int z1, int z2, const Vec3 &v) : Vec3(v.x, (short)0, v.z) { z0 = z0; z1 = z1; z2 = z2; }
     XZ(float a, float c) : Vec3(a, 0.0f, c) {}
     /* run 415: XZ's own copy of Vec3::operator* (only `e * dot` uses it; the dir products are byte-identical
      * either way): the else-arm product's float temps leave the Vec3 operator's words, 97.458 -> 97.472 */
@@ -125,7 +147,7 @@ struct XZ : Vec3 {
     Vec3 mvf(float s) const { return KR2(Vec3(x * s, y * s, z * s, x, x, x, (int)this)); } /* run 425: first flag-arm dir * (...) */
     /* agent-h run 414: code-free block splits inside the plain-return chain temp's ctor (run 426: dir and perp only, 8 blocks:
      * each `this` address LR grows from 7 to 15 blocks, uopt priority 3/3 = 1.0 -> 3/5 = 0.6, under the pool's 0.70) */
-    XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} }
+    XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} } /* run 428: 7 (n = 14, den 5) */
 };
 inline XZ operator-(const Vec3 &a, const Vec3 &b) { return KR2(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ sub1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR2(XZ(a.x - b.x, a.z - b.z)); }
@@ -156,11 +178,29 @@ template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept id
  * d2's object (lenf: 7 -> 9) and after the e * dot product (the inner +=: 2 -> 3, frame 528) */
 inline float dot2p(const Vec3 &u, const Vec3 &v, const Vec3 *p0) { p0 = p0; return u.x * v.x + u.z * v.z; }
 inline float hdotp(const Vec3 &h, const Vec3 &e, const Vec3 *p0) { p0 = p0; return e.x * h.x + e.z * h.z; } /* run 425: e first (load order) */
+/* layout only (agent-h run 428, the B3C recipe): the target's `lw t9,0x100(at)` is an in-place %lo (the game_uso Yay0
+ * block is raw .text, no reloc bake), so the phase table must sit at donor .rodata +0x100. These 64 distinct literals
+ * (none with a zero low half, so none loads by lui) stand in for game_uso RoData +0x0 .. +0x100 (0000's 1/6, 940's
+ * tables, B3C's table and strings, the 3ED4 / 43D8 / 44F4 / 7C1C floats). The splice copies only
+ * game_uso_func_00008CD8; its renamed .rodata reloc (game_uso_func_00008CD8_rodata) is pinned to 0. */
+extern "C" void game_uso_func_00008CD8_lay(volatile float *o) {
+    float v = *o;
+    v = v * 1.10f; v = v * 1.20f; v = v * 1.30f; v = v * 1.40f; v = v * 1.60f; v = v * 1.70f; v = v * 1.80f; v = v * 1.90f;
+    v = v * 2.10f; v = v * 2.20f; v = v * 2.30f; v = v * 2.40f; v = v * 2.60f; v = v * 2.70f; v = v * 2.80f; v = v * 2.90f;
+    v = v * 3.10f; v = v * 3.20f; v = v * 3.30f; v = v * 3.40f; v = v * 3.60f; v = v * 3.70f; v = v * 3.80f; v = v * 3.90f;
+    v = v * 4.10f; v = v * 4.20f; v = v * 4.30f; v = v * 4.40f; v = v * 4.60f; v = v * 4.70f; v = v * 4.80f; v = v * 4.90f;
+    v = v * 5.10f; v = v * 5.20f; v = v * 5.30f; v = v * 5.40f; v = v * 5.60f; v = v * 5.70f; v = v * 5.80f; v = v * 5.90f;
+    v = v * 6.10f; v = v * 6.20f; v = v * 6.30f; v = v * 6.40f; v = v * 6.60f; v = v * 6.70f; v = v * 6.80f; v = v * 6.90f;
+    v = v * 7.10f; v = v * 7.20f; v = v * 7.30f; v = v * 7.40f; v = v * 7.60f; v = v * 7.70f; v = v * 7.80f; v = v * 7.90f;
+    v = v * 8.10f; v = v * 8.20f; v = v * 8.30f; v = v * 8.40f; v = v * 8.60f; v = v * 8.70f; v = v * 8.80f; v = v * 8.90f;
+    *o = v;
+}
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         game_uso_func_071028(&dir);
-        float lenf = dot2p(dir, sub1((int)a, XZ(s->w->pos), K3(a)->pos), &dir); /* run 418: d2 a temporary, lenf M-100 */
+        /* run 418: d2 a temporary, lenf M-100; agent-c run 426: a member call on d2 (conversion `v` = word 3, M-112) */
+        float lenf = (XZ(s->w->pos, &a->pos, &a->pos) - K3(a)->pos).dotp(dir, &a->pos);
         /* run 425: chained (kit CDXCIX); agent-c run 426: no named dot (the target's M-104 is a pool word), the outer
          * assignment through asg5 (its parameter temp at the target's M-244), K1 on the first += receiver */
         s->p84.asg5(s->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);

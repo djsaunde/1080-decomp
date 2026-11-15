@@ -5595,7 +5595,26 @@ int game_uso_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
 }
 #endif
 
-#ifdef NON_MATCHING
+/* game_uso_func_00008CD8: segment-relative position update (709 words). EXACT 2026-11-14 (agent-h run 428)
+ * through the MIPSpro 7.2.1 C++ front end donor src/game_uso/game_uso_mp72_8CD8.cpp (tools/ncc721.sh),
+ * REPLACE_FUNC_BODY-spliced in both trees (the B3C recipe: its 4-label phase switch is a native 4-entry jump
+ * table, which only EDG 2.29 emits). The placeholder below only re-emits the 8 RoData words the INCLUDE_ASM .s
+ * carried as .late_rodata (+0x100..+0x120: the 4-word table, the A7D8 / AB98 floats and two pad words) at its
+ * place in the layout; IDO merges equal literals, so the stand-ins are distinct, and none has a zero low half.
+ * Its text and relocs are dropped by the splice. The cfe NM body is kept under #if 0 for reference. */
+void *game_uso_func_00008CD8(char *arg0) {
+    *(volatile float *)arg0 = 1.1f;
+    *(volatile float *)arg0 = 1.2f;
+    *(volatile float *)arg0 = 1.3f;
+    *(volatile float *)arg0 = 1.4f;
+    *(volatile float *)arg0 = 1.6f;
+    *(volatile float *)arg0 = 1.7f;
+    *(volatile float *)arg0 = 1.8f;
+    *(volatile float *)arg0 = 1.9f;
+    return arg0;
+}
+
+#if 0
 /* game_uso_func_00008CD8: large vector/triangle integrator.
  * Reconstructed from EXPECTED .o (0x8cd8..0x97ec, 0xb14/709w).
  * arg0 = out Vec3* (returned). arg1 = self obj. arg2 = ref obj.
@@ -5939,9 +5958,7 @@ tail:
     *(Tri3i *)arg0 = *(Tri3i *)&sp174;
     return arg0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", game_uso_func_00008CD8);
-#endif
+#endif /* cfe reference body of game_uso_func_00008CD8 */
 
 // game_uso_func_000097EC — STRUCTURAL PASS (0x39C / 231 words,
 // no episode). Raw-.word USO form (single function, game_uso main
