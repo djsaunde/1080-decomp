@@ -13,7 +13,8 @@ baserom.z64 (no emulator), and names both ends from the current build:
 Names come from build/tenshoe.elf + build/tenshoe.map for modules whose Text is
 stored uncompressed (bootup = bootup_uso + game_libs, gui, titproc, arcproc, ...),
 and from the Yay0 block objects in build/assets / build/src for the compressed ones
-(mgrproc, timproc = b1, trkproc = b3, genproc = b5, game, map4_data). So run a
+(mgrproc, timproc = b1, trkproc = b3, genproc = b5, game, map5_data = the misnamed
+map4_data_uso_b2 segment at ROM 0x71C6E4). So run a
 full `make` first. Data / Bss targets are printed as `Data+0xK` / `Bss+0xK`.
 
 Usage (from the project root, e.g. projects/1080-agent-c):
