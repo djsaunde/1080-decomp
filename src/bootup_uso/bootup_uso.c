@@ -510,7 +510,7 @@ int SndHandle_contactEventType(int a0, int a1) {
     return r;
 }
 
-void snd_soundObjSetByte1D_00000B14(int **a0, int a1) {
+void snd_soundObjSetReverb(int **a0, int a1) {
     int *v0 = *a0;
     if (v0 != 0) {
         ((char*)v0)[0x1D] = (char)a1;

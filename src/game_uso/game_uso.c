@@ -18,7 +18,7 @@
  * between two matched C fns -- kept as sidecar, the Makefile recipe
  * drops the asserted-zero placeholder leftover at 0xC0F0), +0x80 at
  * 0xD5BC (func_0000D458.s over-extended into duplicated copies of
- * D5BC/D5DC/D5F8/D634 -- trimmed), an out-of-order snd_soundObjSetByte1D_00000B14
+ * D5BC/D5DC/D5F8/D634 -- trimmed), an out-of-order snd_soundObjSetReverb
  * definition (moved), and +8 derivative tail alignment. Gate it with
  * `make verify-blocks` after any change to this unit. See
  * docs/MATCHING_WORKFLOW.md, asm-processor 1-word-pad defect. */
