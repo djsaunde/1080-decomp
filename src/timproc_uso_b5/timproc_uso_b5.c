@@ -7099,31 +7099,31 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelCharacter_displ
  * materializes its own v via the if(1){} pointer-mutation lever; v
  * then colors $v1 with no move, and the then-arm re-materializes at
  * +0x58. 49/49 words + reloc sites verified vs target. */
-void CharacterItem_updateHighlight_0000B850(char *a0, float target) {
-    char *st;
+void CharacterItem_updateHighlight_0000B850(SelCharacterItem *it, float target) {
+    SelCharModel *st;
     float *v;
-    if (*(float *)(a0 + 0x2A4) == 0.0f) {
+    if (it->base.enabled == 0.0f) {
         target = 0.0f;
     }
-    st = *(char **)(a0 + 0x2B8);
-    if (*(int *)(st + 0x138) != 0) {
+    st = it->model;
+    if (st->focused != 0) {
         target = 1.0f;
     }
-    if (*(float *)(st + 0x130) < target) {
+    if (st->highlight < target) {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x130); }
         *v += 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (target < *(float *)(st + 0x130)) {
-            *(float *)(st + 0x130) = target;
+        st = it->model;
+        if (target < st->highlight) {
+            st->highlight = target;
         }
     } else {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x130); }
         *v -= 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (*(float *)(st + 0x130) < target) {
-            *(float *)(st + 0x130) = target;
+        st = it->model;
+        if (st->highlight < target) {
+            st->highlight = target;
         }
     }
 }
@@ -7208,21 +7208,21 @@ void CharacterItem_clearChosen_0000BB78(SelCharacterItem *it, int unused) {
  * branch use); the empty-if BB boundaries globalize b then a, which color from
  * the pool END: b->f12, a->f14. Byte-identical body to C1B4. */
 void CharacterItem_update_0000BB88(int *a0) {
-  int *p = (int *) a0[0x2B8 / 4];
+  SelCharModel *p = (SelCharModel *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
   float c = *((float *) (((char *) a0) + 0x260));
   float d = *((float *) (((char *) a0) + 0x25C));
-  *((float *) (((char *) p) + 0x118)) = c;
-  *((float *) (((char *) p) + 0x114)) = d;
+  p->view[2] = c;
+  p->view[1] = d;
   if (!d)
   {
   }
-  *((float *) (((char *) p) + 0x110)) = b;
+  p->view[0] = b;
   if (b)
   {
   }
-  *((float *) (((char *) p) + 0x11C)) = a;
+  p->view[3] = a;
   timproc_uso_b5_func_00003F58();
 }
 
@@ -7451,31 +7451,31 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CharacterItem_draw
  * (arg reg freed by the mtc1) -- the B850 form gives each arm its own
  * v web which colors $v1 like the target. Steps are 0.1f literals
  * (RoData +0x360/+0x364). 49/49 words. */
-void BoardItem_updateHighlight_0000C044(char *a0, float target) {
-    char *st;
+void BoardItem_updateHighlight_0000C044(SelBoardItem *it, float target) {
+    SelBoardModel *st;
     float *v;
-    if (*(float *)(a0 + 0x2A4) == 0.0f) {
+    if (it->base.enabled == 0.0f) {
         target = 0.0f;
     }
-    st = *(char **)(a0 + 0x2B8);
-    if (*(int *)(st + 0x12C) != 0) {
+    st = it->model;
+    if (st->focused != 0) {
         target = 1.0f;
     }
-    if (*(float *)(st + 0x124) < target) {
+    if (st->highlight < target) {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v += 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (target < *(float *)(st + 0x124)) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (target < st->highlight) {
+            st->highlight = target;
         }
     } else {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v -= 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (*(float *)(st + 0x124) < target) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (st->highlight < target) {
+            st->highlight = target;
         }
     }
 }
@@ -7545,21 +7545,21 @@ extern int func_df14f(void *, void *, float, float, float);
 extern int func_00000000();
 extern int func_df14f(void *, void *, float, float, float);
 void BoardItem_update_0000C1B4(int *a0) {
-  int *p = (int *) a0[0x2B8 / 4];
+  SelBoardModel *p = (SelBoardModel *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
   float c = *((float *) (((char *) a0) + 0x260));
   float d = *((float *) (((char *) a0) + 0x25C));
-  *((float *) (((char *) p) + 0x118)) = c;
-  *((float *) (((char *) p) + 0x114)) = d;
+  p->view[2] = c;
+  p->view[1] = d;
   if (!d)
   {
   }
-  *((float *) (((char *) p) + 0x110)) = b;
+  p->view[0] = b;
   if (b)
   {
   }
-  *((float *) (((char *) p) + 0x11C)) = a;
+  p->view[3] = a;
   timproc_uso_b5_func_00003F58();
 }
 
@@ -7791,32 +7791,32 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
  * crack (see CD24's comment) -- compare derefs st+0x124 directly, each
  * arm materializes its own v via the if(1){} pointer-mutation lever.
  * 54/54 words + reloc sites verified vs target. */
-void CourseItem_updateHighlight_0000C710(char *a0, float a1u) {
+void CourseItem_updateHighlight_0000C710(SelCourseItem *it, float a1u) {
     float target;
-    char *st;
+    SelCourseModel *st;
     float *v;
-    if (*(float *)(a0 + 0x2A4) == 0.0f) {
+    if (it->base.enabled == 0.0f) {
         target = 0.0f;
     } else {
-        st = *(char **)(a0 + 0x2B8);
-        target = (*(int *)(st + 0x130) != 0) ? 1.0f : 0.3f;
+        st = it->model;
+        target = (st->focused != 0) ? 1.0f : 0.3f;
     }
-    st = *(char **)(a0 + 0x2B8);
-    if (*(float *)(st + 0x124) < target) {
+    st = it->model;
+    if (st->highlight < target) {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v += 0.03f;
-        st = *(char **)(a0 + 0x2B8);
-        if (target < *(float *)(st + 0x124)) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (target < st->highlight) {
+            st->highlight = target;
         }
     } else {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v -= 0.03f;
-        st = *(char **)(a0 + 0x2B8);
-        if (*(float *)(st + 0x124) < target) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (st->highlight < target) {
+            st->highlight = target;
         }
     }
 }
@@ -7946,7 +7946,7 @@ void CourseItem_clearChosen_0000C89C(SelCourseItem *it, int a1) {
 extern int gl_func_00000000();
 extern char D_00000000;
 void CourseItem_update_0000C8AC(int *a0) {
-  int *v1;
+  SelCourseModel *v1;
   float *p128;
   p128 = (float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128);
   if ((*((int *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x134))) != 0)
@@ -7974,15 +7974,15 @@ void CourseItem_update_0000C8AC(int *a0) {
     float b;
     float c;
     float d;
-    v1 = p128;
+    v1 = (SelCourseModel *) p128;
     a = *((float *) (((char *) a0) + 0x25C));
     b = *((float *) (((char *) a0) + 0x260));
     c = *((float *) (((char *) a0) + 0x264));
     d = *((float *) (((char *) a0) + 0x294));
-    *((float *) (((char *) v1) + 0x110)) = a;
-    *((float *) (((char *) v1) + 0x114)) = b;
-    *((float *) (((char *) v1) + 0x10C)) = c;
-    *((float *) (((char *) v1) + 0x118)) = d;
+    v1->view[1] = a;
+    v1->view[2] = b;
+    v1->view[0] = c;
+    v1->view[3] = d;
   }
   timproc_uso_b5_func_00003F58();
 }
@@ -8103,31 +8103,31 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CourseItem_drawLab
  * BYTE-EXACT 2026-07-07 (agent-e): direct sibling transfer of the
  * B850/CD24 crack -- compare derefs st+0x124 directly, per-arm if(1){}
  * pointer materialization. 49/49 words + reloc sites verified. */
-void TesuriItem_updateHighlight_0000CB40(char *a0, float target) {
-    char *st;
+void TesuriItem_updateHighlight_0000CB40(SelTesuriItem *it, float target) {
+    SelTesuriModel *st;
     float *v;
-    if (*(float *)(a0 + 0x2A4) == 0.0f) {
+    if (it->base.enabled == 0.0f) {
         target = 0.0f;
     }
-    st = *(char **)(a0 + 0x2B8);
-    if (*(int *)(st + 0x134) != 0) {
+    st = it->model;
+    if (st->focused != 0) {
         target = 1.0f;
     }
-    if (*(float *)(st + 0x124) < target) {
+    if (st->highlight < target) {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v += 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (target < *(float *)(st + 0x124)) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (target < st->highlight) {
+            st->highlight = target;
         }
     } else {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v -= 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (*(float *)(st + 0x124) < target) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (st->highlight < target) {
+            st->highlight = target;
         }
     }
 }
@@ -8175,21 +8175,21 @@ void TesuriItem_clearChosen_0000CC64(SelTesuriItem *it, int a1) {
  * locals c,d (d bumped by if(!d) branch use) -> f2,f0; b,a globalized across
  * empty-if BB boundaries -> f12,f14 from pool end. */
 void TesuriItem_update_0000CC74(int *a0) {
-  int *p = (int *) a0[0x2B8 / 4];
+  SelTesuriModel *p = (SelTesuriModel *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
   float c = *((float *) (((char *) a0) + 0x260));
   float d = *((float *) (((char *) a0) + 0x25C));
-  *((float *) (((char *) p) + 0x114)) = c;
-  *((float *) (((char *) p) + 0x110)) = d;
+  p->view[2] = c;
+  p->view[1] = d;
   if (!d)
   {
   }
-  *((float *) (((char *) p) + 0x10C)) = b;
+  p->view[0] = b;
   if (b)
   {
   }
-  *((float *) (((char *) p) + 0x118)) = a;
+  p->view[3] = a;
   timproc_uso_b5_func_00003F58();
 }
 
@@ -8245,32 +8245,32 @@ void TesuriItem_drawLabel_0000CCC8(int *a0, int a1, int a2, int a3) {
  * every previous shared-v variant). (2) distinct float externs fold
  * into lwc1 %lo (the &D+offset form materializes la). Reloc sites and
  * split dn HI16(+0x58)/LO16(+0xA8) pair verified against target. */
-void LevelItem_updateHighlight_0000CD24(char *a0, float a1u) {
+void LevelItem_updateHighlight_0000CD24(SelLevelItem *it, float a1u) {
     float target;
-    char *st;
+    SelLevelModel *st;
     float *v;
-    if (*(float *)(a0 + 0x2A4) == 0.0f) {
+    if (it->base.enabled == 0.0f) {
         target = 0.0f;
     } else {
-        st = *(char **)(a0 + 0x2B8);
-        target = (*(int *)(st + 0x130) != 0) ? 1.0f : 0.3f;
+        st = it->model;
+        target = (st->focused != 0) ? 1.0f : 0.3f;
     }
-    st = *(char **)(a0 + 0x2B8);
-    if (*(float *)(st + 0x124) < target) {
+    st = it->model;
+    if (st->highlight < target) {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v += 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (target < *(float *)(st + 0x124)) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (target < st->highlight) {
+            st->highlight = target;
         }
     } else {
         v = (float *)st;
         if (1) { v = (float *)((char *)v + 0x124); }
         *v -= 0.1f;
-        st = *(char **)(a0 + 0x2B8);
-        if (*(float *)(st + 0x124) < target) {
-            *(float *)(st + 0x124) = target;
+        st = it->model;
+        if (st->highlight < target) {
+            st->highlight = target;
         }
     }
 }
@@ -8327,21 +8327,21 @@ void LevelItem_clearChosen_0000CE5C(SelLevelItem *it, int a1) {
  * (extern, jal word 0x0C000000). Replaces the "FP register renumber cap
  * (immune)" verdict — that was FALSE. */
 void LevelItem_update_0000CE6C(int *a0) {
-  int *p = (int *) a0[0x2B8 / 4];
+  SelLevelModel *p = (SelLevelModel *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
   float c = *((float *) (((char *) a0) + 0x260));
   float d = *((float *) (((char *) a0) + 0x25C));
-  *((float *) (((char *) p) + 0x114)) = c;
-  *((float *) (((char *) p) + 0x110)) = d;
+  p->view[2] = c;
+  p->view[1] = d;
   if (!d)
   {
   }
-  *((float *) (((char *) p) + 0x10C)) = b;
+  p->view[0] = b;
   if (b)
   {
   }
-  *((float *) (((char *) p) + 0x118)) = a;
+  p->view[3] = a;
   timproc_uso_b5_func_00003F58();
 }
 
