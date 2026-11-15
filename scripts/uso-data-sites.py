@@ -49,7 +49,8 @@ Subcommands:
                      every *_STR text against the ROM bytes.
   selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
 
-Run from the project root, with the venv python (pyelftools, crunch64):
+Run from the project root. Needs pyelftools + crunch64 (the repo .venv); any other python re-execs
+itself under /home/danjs/code/decomp/.venv/bin/python, so `python3 scripts/uso-data-sites.py` works too:
   /home/danjs/code/decomp/.venv/bin/python scripts/uso-data-sites.py census -n 40
 Needs a built tree (build/tenshoe.map + build/src/game_libs/*.o). A missing or stale one (map older
 than any src/game_libs or src/bootup_uso file) is refreshed with an incremental
@@ -57,6 +58,16 @@ than any src/game_libs or src/bootup_uso file) is refreshed with an incremental
 gate leaves a full build behind, so `check` right after the gate needs no make and no --keep-build.
 """
 import argparse, bisect, collections, glob, os, re, struct, sys
+
+# pyelftools + crunch64 live in the repo .venv: re-exec there when run with another python
+# (the readability gate's build-venv, a bare `python3`).
+_VENV_PY = '/home/danjs/code/decomp/.venv/bin/python'
+try:
+    import crunch64, elftools  # noqa: F401,E401
+except ImportError:
+    if os.path.exists(_VENV_PY) and not os.environ.get('USO_DATA_SITES_REEXEC') and __name__ == '__main__':
+        os.environ['USO_DATA_SITES_REEXEC'] = '1'
+        os.execv(_VENV_PY, [_VENV_PY] + sys.argv)
 
 ROM = 'baserom.z64'
 MAP = 'build/tenshoe.map'
@@ -1077,7 +1088,45 @@ def cmd_check(c, a):
           f'{bad} mismatches, {unused} claimed macros unused')
     print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
           f'{ps_bad} mismatches')
-    return 1 if bad or ps_bad or d_bad or str_bad else 0
+    rb = check_plain_ratchet(c, srcs, a.update_ratchet)
+    return 1 if bad or ps_bad or d_bad or str_bad or rb else 0
+
+
+PLAIN_RATCHET = 'scripts/uso-data-sites.plain-base.txt'
+
+
+def check_plain_ratchet(c, srcs, update=False):
+    """Regression guard for spelled section-base sites (agent-a run 508). Every provable plain
+    `(char *)&D_00000000 + K` site that `spell-base` would respell must be listed in PLAIN_RATCHET
+    (the backlog). A plain site that is NOT listed is new: usually a merge that silently dropped a
+    GL_DATA_STR / GL_DATA spelling back to the raw form (run 504 landing lost four MemTracker /
+    DefMNode strings in post0b this way). Respell it with spell-base, or (for a deliberate new
+    plain site) refresh the list with `check --update-ratchet`. Listed sites that are now spelled
+    are only counted (shrink the list with --update-ratchet)."""
+    cur = set()
+    for p in srcs:
+        src = open(p, errors='replace').read()
+        for e in plan_spell_base(c, src):
+            cur.add(f'{p}\t{e[3]}\t{src[e[0]:e[1]]}\t{e[4]}')
+    if update:
+        with open(PLAIN_RATCHET, 'w') as f:
+            f.write('# provable plain section-base sites not yet spelled (uso-data-sites.py check '
+                    '--update-ratchet)\n# file\tfunction\tsite\tmacro spell-base would use\n')
+            f.write(''.join(x + '\n' for x in sorted(cur)))
+        print(f'check: ratchet {PLAIN_RATCHET} rewritten ({len(cur)} plain sites)')
+        return 0
+    if not os.path.exists(PLAIN_RATCHET):
+        print(f'check: no {PLAIN_RATCHET}; run check --update-ratchet')
+        return 1
+    allowed = {ln.rstrip('\n') for ln in open(PLAIN_RATCHET) if ln.strip() and not ln.startswith('#')}
+    new = sorted(cur - allowed)
+    for x in new:
+        p, f, site, mac = x.split('\t')
+        print(f'MISMATCH plain section-base site in {p} {f}: {site} is provably {mac} but spelled raw '
+              f'(dropped by a merge?): run spell-base {p} --only \'^{f}$\' --write')
+    print(f'check: {len(cur)} provable plain base sites, {len(new)} not in the ratchet, '
+          f'{len(allowed - cur)} ratchet entries now spelled')
+    return len(new)
 
 
 def cmd_selftest(c, a):
@@ -1140,6 +1189,8 @@ def main():
     p.add_argument('--direct', action='store_true')
     p = sub.add_parser('object'); p.add_argument('obj')
     p = sub.add_parser('check'); p.add_argument('-v', '--verbose', action='store_true')
+    p.add_argument('--update-ratchet', action='store_true',
+                   help=f'rewrite {PLAIN_RATCHET} from the current provable plain base sites')
     p = sub.add_parser('convert'); p.add_argument('name'); p.add_argument('files', nargs='+')
     p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
     p.add_argument('--only', help='regex (full match) of the only function names to touch')

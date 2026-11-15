@@ -11,7 +11,10 @@
 #      same function count as REF's report.json, and the same (unit, address,
 #      size) set; every NAME that differs must be an OLD->NEW pair recorded in
 #      renames.tsv (so the only change is the names you meant to change).
-#   5. writes the regenerated report.json into the tree (commit it with the batch).
+#   then writes the regenerated report.json into the tree (commit it with the batch).
+#   5. source checks: name-placeholder-calls.py check (every CALL(X) names a ROM
+#      callee of its function) and uso-data-sites.py check (alias / GL_* claims,
+#      plus the plain-base-site ratchet that catches a merge dropping a GL_DATA_STR).
 #
 # REF defaults to HEAD (the last committed report.json). Scratch: $GATE_TMP
 # (default /tmp/claude-$UID/readability-gate-<worktree dir name>, private per
@@ -45,25 +48,25 @@ git show "$BASE:report.json" > "$TMP/base_report.json" || fail "no report.json a
 
 if [[ $CLEAN == 1 ]]; then rm -rf build tenshoe.z64; fi
 
-echo ">>> [1/4] full build + ROM verify"
+echo ">>> [1/5] full build + ROM verify"
 make RUN_CC_CHECK=0 -j"$JOBS" > "$TMP/make.log" 2>&1 || { tail -20 "$TMP/make.log"; fail "make (see $TMP/make.log)"; }
 grep -q "ROM OK (byte-identical" "$TMP/make.log" || fail "no 'ROM OK' line in make output"
 cmp -s tenshoe.z64 baserom.z64 || fail "tenshoe.z64 != baserom.z64"
 echo "    ROM OK (byte-identical)"
 
-echo ">>> [2/4] verify-blocks"
+echo ">>> [2/5] verify-blocks"
 make verify-blocks > "$TMP/blocks.log" 2>&1 || { tail -10 "$TMP/blocks.log"; fail "verify-blocks"; }
 nok=$(grep -c '^OK ' "$TMP/blocks.log" || true)
 [[ "$nok" == 6 ]] || fail "verify-blocks $nok/6"
 echo "    verify-blocks 6/6"
 
-echo ">>> [3/4] non_matching_objects"
+echo ">>> [3/5] non_matching_objects"
 make RUN_CC_CHECK=0 -j"$JOBS" non_matching_objects > "$TMP/nm.log" 2>&1 || { tail -20 "$TMP/nm.log"; fail "non_matching_objects"; }
 nerr=$(grep -E '(\bError\b|error:|\*\*\*)' "$TMP/nm.log" | grep -vc 'Warning' || true)
 [[ "$nerr" == 0 ]] || { grep -E '(\bError\b|error:|\*\*\*)' "$TMP/nm.log" | head; fail "non_matching_objects: $nerr error lines"; }
 echo "    non_matching_objects: 0 errors"
 
-echo ">>> [4/4] objdiff report"
+echo ">>> [4/5] objdiff report"
 objdiff-cli report generate -p . -o "$TMP/report.new.json" > "$TMP/objdiff.log" 2>&1 || fail "objdiff report generate"
 python3 - "$TMP/base_report.json" "$TMP/report.new.json" renames.tsv <<'PY' || fail "report comparison"
 import json, sys
@@ -119,4 +122,10 @@ if [[ $WRITE == 1 ]]; then
     cp "$TMP/report.new.json" report.json
     echo "    report.json refreshed"
 fi
+echo ">>> [5/5] source checks: named placeholder calls, data-site aliases"
+# both re-exec under the repo .venv (pyelftools, crunch64); ~5 s on the fresh build
+python3 scripts/name-placeholder-calls.py check > "$TMP/calls.log" 2>&1 || { grep -v '^check:' "$TMP/calls.log" | head -20; fail "name-placeholder-calls.py check (see $TMP/calls.log)"; }
+tail -1 "$TMP/calls.log" | sed 's/^/    /'
+python3 scripts/uso-data-sites.py --no-build check > "$TMP/datasites.log" 2>&1 || { grep -E 'MISMATCH|Error|error' "$TMP/datasites.log" | head -20; fail "uso-data-sites.py check (see $TMP/datasites.log)"; }
+echo "    uso-data-sites check: 0 mismatches ($(grep -c '' "$TMP/datasites.log") lines)"
 echo "GATE PASS"
