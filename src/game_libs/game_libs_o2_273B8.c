@@ -17,68 +17,75 @@
  * 1, 2, 3, 4 and 8, one slot each). See docs/IDO_CODEGEN.md
  * #single-bit-bitfield-set-extra-ring-temp-29000. */
 #include "common.h"
+#include "audio.h"
 
-typedef struct { unsigned int b0hi:3, bit4:1, b0lo:4, f80:1, f40:1, f20:1, b1lo:5, rest:16; } BF_273B8;
-void AudioThread_ProcessSeqPlayerCmd(unsigned char *a0, unsigned char *a1) {
-    switch (a1[0]) {
-    case 1:
-        if (*(float *)(a1 + 4) != *(float *)(a0 + 40)) {
-            *(float *)(a0 + 40) = *(float *)(a1 + 4);
-            ((BF_273B8 *)a0)->f40 = 1;
+/* Typed (agent-c run 522): OoT's AudioThread_ProcessChannelCmd on SequenceChannel /
+ * AudioCmd. The changes flags are SequenceChannel's changesFreqScale (0x80) /
+ * changesVolume (0x40) / changesPan (0x20) and byte-0 bit 0x10 is stopSomething2:
+ * the audio.h u32 bitfields, so the load-bearing bitfield inserts are kept.
+ * Compare order: channel field FIRST (`channel->volumeScale != cmd->arg.asFloat`)
+ * gives the target's `c.eq.s $f0,$f4` / `beq v0,t4`; the command-first field
+ * spelling swaps both (the raw form needed the opposite order). */
+void AudioThread_ProcessSeqPlayerCmd(SequenceChannel *channel, AudioCmd *cmd) {
+    switch (cmd->op) {
+    case 1: /* SET_VOL_SCALE */
+        if (channel->volumeScale != cmd->arg.asFloat) {
+            channel->volumeScale = cmd->arg.asFloat;
+            channel->changesVolume = 1;
         }
         return;
-    case 2:
-        if (*(float *)(a1 + 4) != *(float *)(a0 + 44)) {
-            *(float *)(a0 + 44) = *(float *)(a1 + 4);
-            ((BF_273B8 *)a0)->f40 = 1;
+    case 2: /* SET_VOL */
+        if (channel->volume != cmd->arg.asFloat) {
+            channel->volume = cmd->arg.asFloat;
+            channel->changesVolume = 1;
         }
         return;
-    case 3:
-        if (*(signed char *)(a1 + 4) != a0[10]) {
-            a0[10] = *(signed char *)(a1 + 4);
-            ((BF_273B8 *)a0)->f20 = 1;
+    case 3: /* SET_PAN */
+        if (channel->newPan != cmd->arg.asSbyte) {
+            channel->newPan = cmd->arg.asSbyte;
+            channel->changesPan = 1;
         }
         return;
-    case 4:
-        if (*(float *)(a1 + 4) != *(float *)(a0 + 56)) {
-            *(float *)(a0 + 56) = *(float *)(a1 + 4);
-            ((BF_273B8 *)a0)->f80 = 1;
+    case 4: /* SET_FREQ_SCALE */
+        if (channel->freqScale != cmd->arg.asFloat) {
+            channel->freqScale = cmd->arg.asFloat;
+            channel->changesFreqScale = 1;
         }
         return;
-    case 5:
-        if (*(signed char *)(a1 + 4) != a0[4]) {
-            a0[4] = *(signed char *)(a1 + 4);
+    case 5: /* SET_REVERB_VOLUME */
+        if (channel->targetReverbVol != cmd->arg.asSbyte) {
+            channel->targetReverbVol = cmd->arg.asSbyte;
         }
         return;
-    case 6: {
-        int idx = a1[3];
+    case 6: { /* SET_IO */
+        int idx = cmd->arg2;
         if (idx < 8) {
-            a0[idx + 212] = *(signed char *)(a1 + 4);
+            channel->seqScriptIO[idx] = cmd->arg.asSbyte;
         }
         return;
     }
-    case 8:
-        ((BF_273B8 *)a0)->bit4 = *(signed char *)(a1 + 4);
+    case 8: /* SET_MUTE */
+        channel->stopSomething2 = cmd->arg.asSbyte;
         return;
-    case 9:
-        a0[3] = *(signed char *)(a1 + 4);
+    case 9: /* SET_MUTE_BEHAVIOR */
+        channel->muteBehavior = cmd->arg.asSbyte;
         return;
-    case 10:
-        *(short *)(a0 + 22) = a1[4] << 3;
-        *(short *)(a0 + 26) = 1;
+    case 10: /* SET_VIBRATO_DEPTH */
+        channel->vibratoDepthTarget = cmd->arg.asUbyte << 3;
+        channel->vibratoDepthChangeDelay = 1;
         return;
-    case 11:
-        *(short *)(a0 + 20) = a1[4] << 5;
-        *(short *)(a0 + 24) = 1;
+    case 11: /* SET_VIBRATO_RATE */
+        channel->vibratoRateTarget = cmd->arg.asUbyte << 5;
+        channel->vibratoRateChangeDelay = 1;
         return;
-    case 12:
-        a0[15] = a1[4];
+    case 12: /* SET_COMB_FILTER_SIZE */
+        channel->combFilterSize = cmd->arg.asUbyte;
         return;
-    case 13:
-        *(short *)(a0 + 32) = *(unsigned short *)(a1 + 4);
+    case 13: /* SET_COMB_FILTER_GAIN */
+        channel->combFilterGain = cmd->arg.asUShort;
         return;
-    case 14:
-        a0[224] = a1[4];
+    case 14: /* SET_STEREO */
+        channel->stereo.asByte = cmd->arg.asUbyte;
         return;
     }
 }

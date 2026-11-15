@@ -332,6 +332,29 @@ typedef struct AdsrSettings {
     /* 0x4 */ AdsrEnvelope *envelope;
 } AdsrSettings; /* size = 0x8 */
 
+/* The audio command queue entry (gAudioCtx +0x5430, 0x100 x 8; agent-c run 522).
+ * The older layout: every value form starts at +4 (s8 / u8 / u16 read at +4, not
+ * at OoT's +7 / +6). AudioThread_ProcessCmds (26D64: op 0x0, arg0 = player 0x1,
+ * arg1 = channel / volume 0x2, arg2 = IO slot 0x3) and the channel handler
+ * (273B8: asFloat / asSbyte / asUbyte / asUShort at 0x4). */
+typedef union AudioCmdArg {
+    void *data;
+    f32 asFloat;
+    s32 asInt;
+    u32 asUInt;
+    u16 asUShort;
+    s8 asSbyte;
+    u8 asUbyte;
+} AudioCmdArg; /* size = 0x4 */
+
+typedef struct AudioCmd {
+    /* 0x0 */ u8 op;
+    /* 0x1 */ u8 arg0;
+    /* 0x2 */ u8 arg1;
+    /* 0x3 */ u8 arg2;
+    /* 0x4 */ AudioCmdArg arg;
+} AudioCmd; /* size = 0x8 */
+
 /* Matched donor game_libs_o2_2BB7C.c (channel->stereo.asByte = cmd & 0x7F). */
 typedef union Stereo {
     struct {
