@@ -19257,32 +19257,32 @@ s32 BasePolyShape_ctor(void) {
 /* BasePolyShape_reset: struct re-initializer — set flag bit 0x800 at +0x8,
  * zero fields 0x40-0x80 + 0xA0/0xA8/0xAC/0x3C, set 0x98/0xA4 = -1, 0x9C = 1.0f.
  * BYTE-EXACT (reloc-free; stores in source order, 1.0f in the jr delay slot). */
-void BasePolyShape_reset(void *arg0) {
-    *(int *)((char *)arg0 + 0x8) |= 0x800;
-    *(int *)((char *)arg0 + 0x44) = 0;
-    *(int *)((char *)arg0 + 0x40) = 0;
-    *(int *)((char *)arg0 + 0x48) = 0;
-    *(int *)((char *)arg0 + 0x4C) = 0;
-    *(int *)((char *)arg0 + 0x50) = 0;
-    *(int *)((char *)arg0 + 0x54) = 0;
-    *(int *)((char *)arg0 + 0x58) = 0;
-    *(int *)((char *)arg0 + 0x5C) = 0;
-    *(int *)((char *)arg0 + 0x60) = 0;
-    *(int *)((char *)arg0 + 0x64) = 0;
-    *(int *)((char *)arg0 + 0x68) = 0;
-    *(int *)((char *)arg0 + 0x6C) = 0;
-    *(int *)((char *)arg0 + 0x70) = 0;
-    *(int *)((char *)arg0 + 0x74) = 0;
-    *(int *)((char *)arg0 + 0x78) = 0;
-    *(int *)((char *)arg0 + 0x7C) = 0;
-    *(int *)((char *)arg0 + 0x80) = 0;
-    *(int *)((char *)arg0 + 0x98) = -1;
-    *(int *)((char *)arg0 + 0xA0) = 0;
-    *(int *)((char *)arg0 + 0xA4) = -1;
-    *(int *)((char *)arg0 + 0xA8) = 0;
-    *(int *)((char *)arg0 + 0xAC) = 0;
-    *(int *)((char *)arg0 + 0x3C) = 0;
-    *(float *)((char *)arg0 + 0x9C) = 1.0f;
+void BasePolyShape_reset(BasePolyShape *arg0) {
+    arg0->flags |= 0x800;
+    arg0->nTris = 0;
+    arg0->nVerts = 0;
+    arg0->unk48 = 0;
+    arg0->unk4C = 0;
+    arg0->unk50 = 0;
+    arg0->faceNormals = 0;
+    arg0->vtxNormals = 0;
+    arg0->palette = 0;
+    arg0->verts = 0;
+    arg0->unk64 = 0;
+    arg0->tris = 0;
+    arg0->unk6C = 0;
+    arg0->remap = 0;
+    arg0->unk74 = 0;
+    arg0->unk78 = 0;
+    arg0->unk7C = 0;
+    arg0->unk80 = 0;
+    arg0->unk98 = -1;
+    arg0->unkA0 = 0;
+    arg0->unkA4 = -1;
+    arg0->unkA8 = 0;
+    arg0->unkAC = 0;
+    arg0->unk3C = 0;
+    arg0->unk9C = 1.0f;
 }
 
 // gl_func_00052994: command handler dispatching on msg->0 (46 insns).
@@ -19511,18 +19511,20 @@ int game_libs_func_0005318C(int *a0, int a1) {
  * EXACT: unwrapped 2026-10-16 (gl_func_00000000 and D_00000000 are both
  * symbols at 0, so the jal and HI/LO words link to the ROM words). */
 extern int gl_func_00000000();
-int BasePolyShape_getVtxNorm(void *arg0, int arg1) {
+int BasePolyShape_getVtxNorm(BasePolyShape *arg0, int arg1) {
     unsigned short *p;
     int i;
+    /* vtxNormals is read as an int word (`(int)arg0->vtxNormals` re-colours
+     * the *6 chain); same lw either way. */
     gl_func_00000000((char *)&D_00000000 + 0x21010, arg1, arg0);
     i = arg1;
     arg1 = 0;
-    p = *(unsigned short **)((char *)arg0 + 0x70);
+    p = arg0->remap;
     if (p) {}
     if (p != 0) {
-        return *(unsigned short *)((char *)p + i * 6) * 0xC + *(int *)((char *)arg0 + 0x58);
+        return *(unsigned short *)((char *)p + i * 6) * 0xC + *(int *)&arg0->vtxNormals;
     }
-    return i * 0xC + *(int *)((char *)arg0 + 0x58);
+    return i * 0xC + *(int *)&arg0->vtxNormals;
 }
 
 /* RGB888 palette lookup-copy (+ splat's game_libs_func_00053294 merged: the
@@ -19799,26 +19801,26 @@ block_24:
 typedef struct { s16 x, y, z; } V3s_53A2C;
 typedef struct { u16 pad; u16 i[3]; } Tri_53A2C;
 typedef struct { f32 x, y, z; } V3f_53A2C;
-void BasePolyShape_genFaceNormals(char *arg0) {
+void BasePolyShape_genFaceNormals(BasePolyShape *arg0) {
     V3s_53A2C *a, *b, *c;
     u32 i;
     s32 to, no;
     to = 0;
     i = 0;
-    if (*(u32 *)(arg0 + 0x44) != 0) {
+    if (arg0->nTris != 0) {
         no = 0;
         do {
-            a = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)(*(char **)(arg0 + 0x68) + to))->i[0]);
-            b = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)(*(char **)(arg0 + 0x68) + to))->i[1]);
-            c = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)(*(char **)(arg0 + 0x68) + to))->i[2]);
-            ((V3f_53A2C *)(*(char **)(arg0 + 0x54) + no))->x = (b->y - a->y) * (c->z - b->z) - (b->z - a->z) * (c->y - b->y);
-            ((V3f_53A2C *)(*(char **)(arg0 + 0x54) + no))->y = (b->z - a->z) * (c->x - b->x) - (b->x - a->x) * (c->z - b->z);
-            ((V3f_53A2C *)(*(char **)(arg0 + 0x54) + no))->z = (b->x - a->x) * (c->y - b->y) - (b->y - a->y) * (c->x - b->x);
-            gl_func_00000000(*(char **)(arg0 + 0x54) + no);
+            a = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)((char *)arg0->tris + to))->i[0]);
+            b = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)((char *)arg0->tris + to))->i[1]);
+            c = (V3s_53A2C *)gl_func_00000000(arg0, ((Tri_53A2C *)((char *)arg0->tris + to))->i[2]);
+            ((V3f_53A2C *)((char *)arg0->faceNormals + no))->x = (b->y - a->y) * (c->z - b->z) - (b->z - a->z) * (c->y - b->y);
+            ((V3f_53A2C *)((char *)arg0->faceNormals + no))->y = (b->z - a->z) * (c->x - b->x) - (b->x - a->x) * (c->z - b->z);
+            ((V3f_53A2C *)((char *)arg0->faceNormals + no))->z = (b->x - a->x) * (c->y - b->y) - (b->y - a->y) * (c->x - b->x);
+            gl_func_00000000((char *)arg0->faceNormals + no);
             i++;
             to += 8;
             no += 12;
-        } while (i < *(u32 *)(arg0 + 0x44));
+        } while (i < arg0->nTris);
     }
 }
 
@@ -19964,16 +19966,14 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
 }
 
 /* BasePolyShape_triCentroid: centroid of mesh triangle t: average of its three
- * s16 vertices (Mesh: verts @0x60, tris @0x68, Tri = {u16 flags; u16 v[3]}).
+ * s16 vertices (BasePolyShape verts @0x60, tris @0x68, PolyTri = {u16 flags; u16 v[3]}).
  * EXACT 2026-10-17 agent-g (run 104; was 99.80 = 50/51): the last word was
  * the vertex-address addu operand order (target `addu v0,verts,idx*6`, base
  * first). Every flat spelling of &verts[idx] (struct-element IXA, ptr+idx,
  * char/u32 arithmetic, commuted, comma/cast index) emits idx*6 first; typing
- * the vertex array as ROWS, `s16 (*verts)[3]`, and taking the row
+ * the vertex array as ROWS, `s16 (*verts)[3]` (BasePolyShape.verts), and taking the row
  * `v = m->verts[idx]` (array-to-pointer decay of a row IXA) emits base first. */
-typedef struct { u16 flags; u16 v[3]; } Tri_54144;
-typedef struct { char pad[0x60]; s16 (*verts)[3]; s32 pad64; Tri_54144 *tris; } Mesh_54144;
-void BasePolyShape_triCentroid(Mesh_54144 *m, Vec3 *out, s32 t) {
+void BasePolyShape_triCentroid(BasePolyShape *m, Vec3 *out, s32 t) {
     s32 i;
     s16 *v;
     out->x = 0.0f;
