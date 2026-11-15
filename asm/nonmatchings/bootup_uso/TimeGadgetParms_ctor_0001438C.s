@@ -18,8 +18,8 @@ glabel TimeGadgetParms_ctor_0001438C
     /* DE4E2C 000143C0 10400005 */  beqz       $v0, .L000143D8
     /* DE4E30 000143C4 00401825 */   or        $v1, $v0, $zero
   .L000143C8:
-    /* DE4E34 000143C8 3C0E0001 */  lui        $t6, %hi(func_0000CACC + 0xC)
-    /* DE4E38 000143CC 25CECAD8 */  addiu      $t6, $t6, %lo(func_0000CACC + 0xC)
+    /* DE4E34 000143C8 3C0E0001 */  lui        $t6, %hi(sTimeGadgetParmsTags_CACC + 0xC)
+    /* DE4E38 000143CC 25CECAD8 */  addiu      $t6, $t6, %lo(sTimeGadgetParmsTags_CACC + 0xC)
     /* DE4E3C 000143D0 AC6E0000 */  sw         $t6, 0x0($v1)
     /* DE4E40 000143D4 AC600004 */  sw         $zero, 0x4($v1)
   .L000143D8:

@@ -315,7 +315,9 @@ extern char sStr_TimeGadget_Parms_CAAC;
 extern int sTag_xps_CAC0;
 extern int sTag_yps_CAC4;
 extern int sTag_lbx_CAC8;
-extern int func_0000CACC[];  /* data words 0xCACC/0xCAD0/0xCAD4 (table tail) */
+extern int sTimeGadgetParmsTags_CACC[];  /* Data 0xCACC: the "lby" / "l2x" / "l2y" tags (the tail of the
+                                         * table at 0xCAC0); [3] = Data 0xCAD8, the float
+                                         * "TimeGadget::Parms" name (TimeGadgetParms_ctor_0001438C) */
 extern char D_0000C764;
 char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 u1;
@@ -352,19 +354,19 @@ char *TimeGadget_ctor_00013D40(char *self) {
             func_00000000(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
         }
-        u4.v = func_0000CACC[0];
+        u4.v = sTimeGadgetParmsTags_CACC[0];
         t2 = u4;
         if ((m2 = self + 0x50) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
         }
-        u5.v = func_0000CACC[1];
+        u5.v = sTimeGadgetParmsTags_CACC[1];
         t2 = u5;
         if ((m2 = self + 0x68) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
         }
-        u6.v = func_0000CACC[2];
+        u6.v = sTimeGadgetParmsTags_CACC[2];
         t2 = u6;
         if ((m2 = self + 0x80) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);
@@ -570,7 +572,7 @@ void BestGadget_display_00014228(char *s0) {
  *       if (o == 0) { o = alloc(0x38); if (!o) return 0; }
  *       s1 = alloc(8);
  *       if (s1) {
- *           s1->0x0 = &func_0000CACC[0xC];        // fn/descriptor
+ *           s1->0x0 = &sTimeGadgetParmsTags_CACC[3];   // Data 0xCAD8 "TimeGadget::Parms"
  *           s1->0x4 = 0;
  *       }
  *       v = sFloatParmsTags_CAE8[1];             // "xps"
@@ -596,8 +598,8 @@ void BestGadget_display_00014228(char *s0) {
  *       return o;
  *   }
  * Struct-typing reference: o = 0x38-byte object (get-or-create).
- * s1 = 8-byte aux: s1->0x0 (0) fn/descriptor ptr (&func_0000CACC+
- * 0xC), s1->0x4 (4) = 0. child = 0x18-byte sub-object: child->0xC
+ * s1 = 8-byte Parms head: s1->0x0 (0) = the name (&sTimeGadgetParmsTags_CACC[3] =
+ * Data 0xCAD8 "TimeGadget::Parms"), s1->0x4 (4) = 0. child = 0x18-byte sub-object: child->0xC
  * (12) descriptor ptr (&D_0000C83C), child->0x10 (16) f32 = 30.0,
  * child->0x14 (20) = 0; built twice with the parm tags "xps" / "yps"
  * (sFloatParmsTags_CAE8[1] / [2]). The children are GdlParmF (gdl/gadget.h): a
@@ -620,12 +622,12 @@ void BestGadget_display_00014228(char *s0) {
 /* agent-c run 122: NCC (C++) draft, raw 6 words off -- this is the out-of-line ctor Obj::Obj() (rename __ct__3ObjFv in a Makefile rule, 4E584 precedent). Every instruction matches; left: the two Val temporaries sit at 56/60 (target 60/56) and the member this spill at 48 (target 40).
  * extern "C" {
  * void *func_00000000(...);
- * extern int func_0000CACC[];
+ * extern int sTimeGadgetParmsTags_CACC[];
  * extern int sFloatParmsTags_CAE8[];
  * extern char D_0000C83C;
  * }
  * struct Val { int v; Val(int x) { v = x; } };
- * struct B0 { void *vt; int x; B0() { vt = &func_0000CACC[3]; x = 0; } };
+ * struct B0 { void *vt; int x; B0() { vt = &sTimeGadgetParmsTags_CACC[3]; x = 0; } };
  * struct Base { char pad[0xC]; Base(void *owner, Val p, int k); };
  * struct D : Base {
  *     void *vt2; float f; int z;
@@ -658,7 +660,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
     }
     s = o;
     if (s != 0 || (s = (char *)func_00000000(8)) != 0) {
-        *(char **)(s + 0) = (char *)&func_0000CACC[3];
+        *(char **)(s + 0) = (char *)&sTimeGadgetParmsTags_CACC[3];
         *(int *)(s + 4) = 0;
     }
     p.v = sFloatParmsTags_CAE8[1]; A[4] = p.v;
@@ -687,15 +689,15 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadgetParms_ctor_0001438C);
 #endif
 
 void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5) {
-    *(float*)((char*)a0 + 0x44) = (float)a1;
-    *(float*)((char*)a0 + 0x5C) = (float)a2;
-    *(float*)((char*)a0 + 0x88) = a3;
-    *(float*)((char*)a0 + 0x8C) = arg5;
+    POPUP(a0)->parms.xps.value = (float)a1;
+    POPUP(a0)->parms.yps.value = (float)a2;
+    POPUP(a0)->scaleX = a3;
+    POPUP(a0)->scaleY = arg5;
 }
 
 void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
-    *(float*)((char*)a0 + 0x88) = a1;
-    *(float*)((char*)a0 + 0x8C) = a2;
+    POPUP(a0)->scaleX = a1;
+    POPUP(a0)->scaleY = a2;
 }
 
 /* gadget_slideStep_000144F4 - verified structural decode (leaf, 43 insns, FP
@@ -733,18 +735,18 @@ int gadget_slideStep_000144F4(char *a0, int a1) {
     int r = 0;
     float spd;
     float pos;
-    if ((spd = *(float *)(a0 + 0xA8)) < 16.0f) {
-        *(float *)(a0 + 0xA8) = (float)((double)spd + 0.5);
+    if ((spd = POPUP(a0)->velY) < 16.0f) {
+        POPUP(a0)->velY = (float)((double)spd + 0.5);
     }
-    spd = *(float *)(a0 + 0xA8);
-    *(float *)(a0 + 0x5C) = *(float *)(a0 + 0x5C) + spd;
-    pos = *(float *)(a0 + 0x5C);
+    spd = POPUP(a0)->velY;
+    POPUP(a0)->parms.yps.value = POPUP(a0)->parms.yps.value + spd;
+    pos = POPUP(a0)->parms.yps.value;
     if ((float)a1 < pos) {
         if (6.0f < spd) {
             r = 1;
         }
-        *(float *)(a0 + 0x5C) = pos - spd;
-        *(float *)(a0 + 0xA8) = -(spd / (f32)4);
+        POPUP(a0)->parms.yps.value = pos - spd;
+        POPUP(a0)->velY = -(spd / (f32)4);
     }
     return r;
 }

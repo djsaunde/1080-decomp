@@ -12,5 +12,5 @@ SECTIONS {
 D_0000C83C = 0x0;
 bootup_1438C_alloc = 0x0;
 bootup_1438C_init = 0x0;
-func_0000CACC = 0x0;
+sTimeGadgetParmsTags_CACC = 0x0;
 sFloatParmsTags_CAE8 = 0x0;

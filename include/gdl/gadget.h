@@ -134,39 +134,57 @@ typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1
 
 #define COUNTDOWN(p) ((CountDownGadget *)(p))
 
+/* A float "TimeGadget::Parms" (0x38, Data 0xCAD8; ctor TimeGadgetParms_ctor_0001438C): two float
+ * parms xps / yps (tags "xps" / "yps" = sFloatParmsTags_CAE8[1] / [2], default 30). PointsPopup's
+ * screen position (agent-h run 509). */
+typedef struct FloatPosParms {
+    /* 0x00 */ s32 name;            /* "TimeGadget::Parms" */
+    /* 0x04 */ s32 unk04;           /* 0 */
+    /* 0x08 */ GdlParmF xps;
+    /* 0x20 */ GdlParmF yps;
+} FloatPosParms;
+
+typedef char FloatPosParms_size_check[sizeof(FloatPosParms) == 0x38 ? 1 : -1];
+
 /* PointsPopup (0xD4, PointsGadget_ctor_00000ED0, name "PointsGadget"): one score pop-up. The 0x168
  * points list (PointsGadget_ctor_00003138) builds 8 of them at +0x2C; PointsGadget_allocSlot_00003B1C
  * (game_libs.c) takes a free one, the RaceTracker_pop* / onGateCleared /
  * onCheckpoint functions colour it, and PointsGadget_update_00003430 (donor game_libs_o2_3430.c)
  * runs it: state 5.. counts timer down while moving pos by vel, then flies it to (100, 40) or
- * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). */
+ * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). The position is the
+ * float Parms at +0x2C (parms.xps.value = x at 0x44, parms.yps.value = y at 0x5C): the bootup
+ * helpers TimeGadgetParms_setPosF_000144B4 (x, y, scaleX, scaleY), TimeGadget_setPos_000144E0
+ * (scale), gadget_slideStep_000144F4 (y += velY up to a limit) and gadget_decodeStringB4_00014598
+ * (text) work on it (callers: uso-imports.py; agent-h run 509). */
 typedef struct PointsPopup {
     /* 0x00 */ Node node;          /* node.name = "PointsGadget" */
-    /* 0x2C */ char unk2C[0x44 - 0x2C];
-    /* 0x44 */ f32 x;              /* screen x: += velX; popComboBonus adds 70 */
-    /* 0x48 */ char unk48[0x5C - 0x48];
-    /* 0x5C */ f32 y;              /* screen y: += velY (rises past 110 in state 5); the pop functions set 70 */
-    /* 0x60 */ s32 unk60;
+    /* 0x2C */ FloatPosParms parms; /* xps.value: screen x (+= velX; popComboBonus adds 70);
+                                    * yps.value: screen y (+= velY, rises past 110 in state 5; the
+                                    * pop functions set 70) */
     /* 0x64 */ f32 colour[4];      /* r, g, b, a in 0..1 (constants / 255) */
     /* 0x74 */ s32 unk74;          /* 0 (ctor) */
     /* 0x78 */ s32 alpha;          /* 255 (ctor, allocSlot, popTrickPointsCombo) */
     /* 0x7C */ s32 unk7C;
     /* 0x80 */ s32 unk80;
     /* 0x84 */ s32 unk84;          /* -18 (allocSlot) */
-    /* 0x88 */ char unk88[0x94 - 0x88];
+    /* 0x88 */ f32 scaleX;         /* setPosF arg 3; update grows it by 0.1 to 1.0 */
+    /* 0x8C */ f32 scaleY;
+    /* 0x90 */ s32 unk90;
     /* 0x94 */ s32 state;          /* 0 = free; allocSlot sets 5 */
     /* 0x98 */ s32 value;          /* the points shown (allocSlot arg 1, "%d") */
     /* 0x9C */ s32 timer;          /* frames left in the current state (pop functions: 14 / 30 / 230) */
     /* 0xA0 */ s32 font;           /* the digit sprite: one of the list's sprites (+0x108 / 0x120 / 0x138 / 0x150) */
     /* 0xA4 */ f32 velX;
     /* 0xA8 */ f32 velY;
-    /* 0xAC */ f32 unkAC;
+    /* 0xAC */ f32 accelY;         /* update: velY += accelY */
     /* 0xB0 */ s32 arg;            /* ctor arg 1; allocSlot copies the list's +0x54 */
-    /* 0xB4 */ char text[0xD4 - 0xB4]; /* sprintf target (PointsGadget_setValue, allocSlot) */
+    /* 0xB4 */ char text[0xD4 - 0xB4]; /* sprintf target (PointsGadget_setValue, allocSlot);
+                                    * gadget_decodeStringB4_00014598 deciphers it in place */
 } PointsPopup;
 
 typedef char PointsPopup_size_check[sizeof(PointsPopup) == 0xD4 ? 1 : -1];
 typedef char PointsPopup_state_check[(int)&((PointsPopup *)0)->state == 0x94 ? 1 : -1];
+typedef char PointsPopup_y_check[(int)&((PointsPopup *)0)->parms.yps.value == 0x5C ? 1 : -1];
 
 #define POPUP(p) ((PointsPopup *)(p))
 

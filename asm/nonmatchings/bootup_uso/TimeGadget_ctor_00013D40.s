@@ -101,8 +101,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4910 00013EA4 AC88000C */  sw         $t0, 0xC($a0)
     /* DE4914 00013EA8 AC800014 */  sw         $zero, 0x14($a0)
   .L00013EAC:
-    /* DE4918 00013EAC 3C0A0001 */  lui        $t2, %hi(func_0000CACC)
-    /* DE491C 00013EB0 8D4ACACC */  lw         $t2, %lo(func_0000CACC)($t2)
+    /* DE4918 00013EAC 3C0A0001 */  lui        $t2, %hi(sTimeGadgetParmsTags_CACC)
+    /* DE491C 00013EB0 8D4ACACC */  lw         $t2, %lo(sTimeGadgetParmsTags_CACC)($t2)
     /* DE4920 00013EB4 2401FFB0 */  addiu      $at, $zero, -0x50
     /* DE4924 00013EB8 26040050 */  addiu      $a0, $s0, 0x50
     /* DE4928 00013EBC AFAA0040 */  sw         $t2, 0x40($sp)
@@ -127,8 +127,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4970 00013F04 AC8D000C */  sw         $t5, 0xC($a0)
     /* DE4974 00013F08 AC800014 */  sw         $zero, 0x14($a0)
   .L00013F0C:
-    /* DE4978 00013F0C 3C0F0001 */  lui        $t7, %hi(func_0000CACC + 0x4)
-    /* DE497C 00013F10 8DEFCAD0 */  lw         $t7, %lo(func_0000CACC + 0x4)($t7)
+    /* DE4978 00013F0C 3C0F0001 */  lui        $t7, %hi(sTimeGadgetParmsTags_CACC + 0x4)
+    /* DE497C 00013F10 8DEFCAD0 */  lw         $t7, %lo(sTimeGadgetParmsTags_CACC + 0x4)($t7)
     /* DE4980 00013F14 2401FF98 */  addiu      $at, $zero, -0x68
     /* DE4984 00013F18 26040068 */  addiu      $a0, $s0, 0x68
     /* DE4988 00013F1C AFAF003C */  sw         $t7, 0x3C($sp)
@@ -153,8 +153,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE49D0 00013F64 AC88000C */  sw         $t0, 0xC($a0)
     /* DE49D4 00013F68 AC800014 */  sw         $zero, 0x14($a0)
   .L00013F6C:
-    /* DE49D8 00013F6C 3C0A0001 */  lui        $t2, %hi(func_0000CACC + 0x8)
-    /* DE49DC 00013F70 8D4ACAD4 */  lw         $t2, %lo(func_0000CACC + 0x8)($t2)
+    /* DE49D8 00013F6C 3C0A0001 */  lui        $t2, %hi(sTimeGadgetParmsTags_CACC + 0x8)
+    /* DE49DC 00013F70 8D4ACAD4 */  lw         $t2, %lo(sTimeGadgetParmsTags_CACC + 0x8)($t2)
     /* DE49E0 00013F74 2401FF80 */  addiu      $at, $zero, -0x80
     /* DE49E4 00013F78 26040080 */  addiu      $a0, $s0, 0x80
     /* DE49E8 00013F7C AFAA0038 */  sw         $t2, 0x38($sp)

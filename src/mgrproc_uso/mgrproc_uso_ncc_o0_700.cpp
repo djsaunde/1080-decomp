@@ -8,7 +8,11 @@ typedef int s32;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 struct IC { int pad[0x13]; int v; };
 extern struct IC import_800200E4;
-extern struct { char pad[0x154]; unsigned short *v; } import_800201EC;
+/* import_800201EC = GameFlow (bootup Bss 0xF8, game/input.h) +0x154: `options`, the
+ * BackupOptions settings record (gdl/backup.h). Local view of its head: this .cpp builds
+ * without common.h (agent-h run 509). */
+struct GameFlowOptionsHead { unsigned short unlocks; unsigned short seqStep; };
+extern struct { char pad[0x154]; struct GameFlowOptionsHead *options; } import_800201EC;
 extern char import_8005C6E0;
 void mgr_pickRivals_000005D0(char *a0);
 int import_000B574C(...);
@@ -53,9 +57,9 @@ int mgr_initMatchRace_00000700(char *arg0, int arg1) {
         FW(FW(arg0, 0x8), 0x20) = 7;
         mgr_pickRivals_000005D0(arg0);
         FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;
-        if (import_800201EC.v[1] == 3) {
+        if (import_800201EC.options->seqStep == 3) {
             FW(FW(arg0, 0x8), 0x38) = 5;
-        } else if (import_800201EC.v[1] == 4) {
+        } else if (import_800201EC.options->seqStep == 4) {
             FW(FW(arg0, 0x8), 0x38) = 6;
         } else {
             FW(FW(arg0, 0x8), 0x38) = 7;

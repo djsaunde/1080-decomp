@@ -14,7 +14,7 @@ char *TimeGadgetParms_ctor_0001438C(char *arg0) {
         char *s;
         s = arg0;
         if (s != 0 || (s = bootup_1438C_alloc(8)) != 0) {
-            *(char **)(s + 0) = (char *)&func_0000CACC[3];
+            *(char **)(s + 0) = (char *)&sTimeGadgetParmsTags_CACC[3];
             *(int *)(s + 4) = 0;
         }
     }

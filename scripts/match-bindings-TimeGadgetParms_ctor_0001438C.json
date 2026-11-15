@@ -3,7 +3,7 @@
   "raw_sha256": "54d073a9cde2c9c9fd1b40d7ec8e87f98e297c1af9c74efd83fdff8e2c849c6c",
   "renames": {
     "bootup_1438C_alloc": "snw_port_func_0001438C_bootup_1438C_alloc",
-    "func_0000CACC": "snw_port_func_0001438C_func_0000CACC",
+    "sTimeGadgetParmsTags_CACC": "snw_port_func_0001438C_func_0000CACC",
     "sFloatParmsTags_CAE8": "snw_port_func_0001438C_func_0000CAE8",
     "bootup_1438C_init": "snw_port_func_0001438C_bootup_1438C_init",
     "D_0000C83C": "snw_port_func_0001438C_D_0000C83C"

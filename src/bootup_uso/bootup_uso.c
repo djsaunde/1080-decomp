@@ -4616,7 +4616,7 @@ void Snower_readParms(char *a0) {
  * lw-v0/move-s0 elide) + `(char *)func_00007620 + 0x70` emits
  * separate addiu 0x70 (addend does not fold into %lo since the
  * symbol is a real fn in this TU, unlike the extern-array
- * func_0000CACC form in 1438C) + head g = *(char**)&D_00000000
+ * sTimeGadgetParmsTags_CACC form in 1438C) + head g = *(char**)&D_00000000
  * carries HI/LO relocs where target's lui/lw pair is baked
  * reloc-free (baked-USO-symbol cap; bytes identical). Sub-100 ->
  * NM wrap per policy. */

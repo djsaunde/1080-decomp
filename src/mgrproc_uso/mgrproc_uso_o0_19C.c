@@ -216,7 +216,7 @@ void mgr_pickRivals_000005D0(char *a0) {
  * (2026-07-10): real callees wired from expected relocs (all three case
  * calls are mgr_pickRivals_000005D0, NOT func_0000019C as the old body
  * had), import_800200E4.v (D+0x4C, int; old body lbu'd *(char*)0x4C),
- * import_800201EC.v[1] u16 reads (lhu at ptr+2; old body lwl/lwr), and the
+ * GameFlow options->seqStep u16 reads (import_800201EC; lhu at ptr+2; old body lwl/lwr), and the
  * case-1 dead `register char *base = &D_00000000` la (lui/addiu s0 =
  * import_8005C6E0, the func_00000504 v3 idiom).
  *
@@ -263,7 +263,6 @@ void mgr_pickRivals_000005D0(char *a0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern struct { char pad[0x154]; unsigned short *v; } import_800201EC;
 extern char import_8005C6E0;
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp (the NM body that was here, as
