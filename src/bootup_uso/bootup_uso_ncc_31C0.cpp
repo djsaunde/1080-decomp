@@ -40,9 +40,11 @@
  * 0x74A4 / 0x74C4 "LookAtChase", 0x74B0 "rom/lookat_ca.bin". */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
-/* SnowBoarder (include/game/snowboarder.h) fields: */
-#define RIDER_CAM_SOURCE(r) FW(r, 0x874)    /* camSource: the body a mode-3 (fixed) eye parks at */
-#define RIDER_START(r, i) FF(r, 0x3A4 + 4 * (i)) /* startPos */
+/* SnowBoarder fields (include/game/snowboarder.h; its __cplusplus DNode mirror): */
+typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
+#include "../../include/game/snowboarder.h"
+#define RIDER_CAM_SOURCE(r) ((int)((SnowBoarder *)(r))->camSource) /* the head node: a mode-3 (fixed) eye parks at it */
+#define RIDER_START(r, i) (((SnowBoarder *)(r))->dnode.unk3A4[i]) /* startPos: the spawn point */
 /* CamMNode fields: */
 #define MNODE_LOCAL_POS(n, i) FF(n, 0x60 + 4 * (i)) /* local[3]: the body's own translation */
 #define MNODE_LOCAL(n) ((n) + 0x30)         /* local matrix (math_mtxAddTranslation target) */

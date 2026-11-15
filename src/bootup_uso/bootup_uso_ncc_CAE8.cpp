@@ -27,39 +27,42 @@ extern int gInputMgr_cae8_mode;
 extern float bu_cae8_k958;
 extern char sFmt_HANDICAP_ON_8ABC[];
 }
+typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
+#include "../../include/game/snowboarder.h"
+#define RIDER(st) ((SnowBoarder *)(st))
 #define I(o) (*(int *)(st + (o)))
 #define F(o) (*(float *)(st + (o)))
 extern "C" void SnowBoarder_reset(char *st) {
-    func_00000000(st, 1, gPlayerBinPaths_cae8_ta[I(0x8C4)]);
+    func_00000000(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
     func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
-    if (I(0xA58) & 0x80) func_00000000(st);
+    if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) func_00000000(st);
     func_00000000(st + 0x90C, (st + 0x17C) - st);
-    F(0x9D0) = bu_cae8_k958;
-    F(0xA78) = F(0x768);
+    RIDER(st)->groundDist = bu_cae8_k958;
+    RIDER(st)->maxSpeed = RIDER(st)->parms.max.value;
     int mode = gInputMgr_cae8_mode;
     switch (mode) {
-    case 2: I(0xA14) = 0x5A; break;
+    case 2: RIDER(st)->health = 0x5A; break;
     case 3:
-    case 4: I(0xA14) = 0x4B; break;
-    default: I(0xA14) = 0xF4240; break;
+    case 4: RIDER(st)->health = 0x4B; break;
+    default: RIDER(st)->health = 0xF4240; break;
     }
     F(0x9F4) = 0.0f;
     F(0x9F0) = 0.0f;
     F(0x9EC) = 0.0f;
     F(0x9E8) = 0.0f;
     I(0x3DC) = 1;
-    I(0xA54) = 0;
+    RIDER(st)->raceResult = 0;
     gPolyFlags_3EEC4_cae8_x_st = gPolyFlags_3EEC4_cae8_x_ld & ~8;
     F(0xA0C) = 1.0f;
     bu_cae8_y = 0;
     I(0xA58) = I(0x8BC);
     if (I(0x8BC) & 0x20) func_00000000(st);
-    func_00000000(st, st + 0x3A4);
+    func_00000000(st, RIDER(st)->dnode.unk3A4); /* reset to the spawn point (startPos) */
     func_00000000(st);
-    func_00000000(*(char **)(st + 0x840));
-    func_00000000(*(char **)(st + 0x804));
-    if (I(0xA58) & 0x20000) func_00000000(sFmt_HANDICAP_ON_8ABC, I(0xC));
-    V3 *p = (V3 *)(st + 0x890); V3 *q = (V3 *)(st + 0x89C);
-    *p = *(V3 *)(st + 0xB4);
-    *q = *(V3 *)(st + 0x318);
+    func_00000000(RIDER(st)->anim);
+    func_00000000(RIDER(st)->ai);
+    if (RIDER(st)->flags & SNOWB_FLAG_CATCHUP) func_00000000(sFmt_HANDICAP_ON_8ABC, I(0xC));
+    V3 *p = (V3 *)&RIDER(st)->prevPos; V3 *q = (V3 *)&RIDER(st)->prevVel;
+    *p = *(V3 *)RIDER(st)->dnode.vqs.trans; /* prevPos = pos */
+    *q = *(V3 *)RIDER(st)->dnode.vel;       /* prevVel = vel */
 }
