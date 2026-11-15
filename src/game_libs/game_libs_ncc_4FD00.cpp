@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_0004FD00 (0x3EC / 251 words), agent-c run 175 lift,
+/* IDO 7.1 NCC (C++) EXACT donor for Mesh_func_0004FD00 (0x3EC / 251 words), agent-c run 175 lift,
  * agent-h run 383 exact (REPLACE_FUNC_BODY over a placeholder in both build trees; the history below is kept).
  * Real C++ `int Col::side(int f1, int f2)` (renamed with objcopy): the collision record of the 3B6A0 donor (faces at
  * +0x68, s16 vertex triples at +0x60, face normals at +0x54). Sums each face's three vertices in a short vector

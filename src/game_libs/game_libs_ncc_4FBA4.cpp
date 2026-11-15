@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0004FBA4 (0x15C / 87 words), agent-c run 163.
+/* IDO 7.1 NCC (C++) EXACT donor for Mat_clone_0004FBA4 (0x15C / 87 words), agent-c run 163.
  * Factory: o = new Der (edg's new + inline ctors: Base re-tests this == 0 with a 0x60 fallback,
  * stores the Base vptr at +0x5C, builds its M8 / M4 members through the this==0 protocol, calls
  * its out-of-line init; Der then stores its own vptr), copies src's M8 member, and walks the
@@ -19,7 +19,7 @@ struct Base {
     Base() { gl_func_00000000(this); }
 };
 struct Der : Base { char p60[0x90 - 0x60]; void v4(It *); Der() {} };
-extern "C" Der *gl_func_0004FBA4(Der *src, unsigned **pp) {
+extern "C" Der *Mat_clone_0004FBA4(Der *src, unsigned **pp) {
     Der *o = new Der;
     if (0) { gl_func_00000000(&src); }
     o->m = src->m;

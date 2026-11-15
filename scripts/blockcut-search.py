@@ -75,7 +75,7 @@ same-length variant (a non-win: length-changing gains are fake).
 declaration is skipped (C89).  Variants that fail to compile are ignored.
 
 Examples:
-  scripts/blockcut-search.py --unit src/game_libs/game_libs_post0b gl_func_00051ED8 --k 2
+  scripts/blockcut-search.py --unit src/game_libs/game_libs_post0b BaseMat_func_00051ED8 --k 2
   scripts/blockcut-search.py --file src/gui_uso/gui_uso_ncc_16A4.cpp gui_beginFrame_000016A4 \\
       --expected expected/src/gui_uso/gui_uso.c.o --k 2 --swap 'next()=>nextb()'
   scripts/blockcut-search.py --unit src/game_uso/game_uso SnowChaseActorCam_update --varref --k 0

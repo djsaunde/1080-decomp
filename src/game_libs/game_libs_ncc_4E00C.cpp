@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
+/* IDO 7.1 NCC (C++) donor for gfx_initMtxBlock_0004E00C (0x12C / 75 words), EXACT (agent-c run 181): the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 75.69; a second parameter empty test from round 2 gives 86.31).
  * REPLACE_FUNC_BODY-spliced over the empty placeholder in game_libs_post0b.c (both build trees).
  * agent-c run 160: the 0x144 mode word as five plain read-modify-write statements through the non-volatile base
  * (`v[1] = (v[1] & 0xF00) | 0x400; v[1] = v[1] | 2; v[1] = v[1] | 1; v[1] = v[1]; v[1] = v[1] | 0x10;`): uopt forwards each
@@ -30,7 +30,7 @@ extern float q[4];
 }
 struct Blk { int w[6]; void zero(int k) { for (; k < 5; k++) w[k] = 0; } void clear() { zero(0); w[5] = 0; } };
 struct Blk2 { int e[8]; int c; void clear() { for (int k = 0; k < 8; k++) e[k] = 0; c = 0; } };
-extern "C" void gl_func_0004E00C(int *s0) {
+extern "C" void gfx_initMtxBlock_0004E00C(int *s0) {
     int *v;
     int x;
     int *q;

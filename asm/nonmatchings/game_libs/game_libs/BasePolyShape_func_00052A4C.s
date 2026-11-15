@@ -1,0 +1,10 @@
+nonmatching BasePolyShape_func_00052A4C, 0x18
+
+glabel BasePolyShape_func_00052A4C
+    /* E37B24 00052A4C 8C8E0084 */  .word 0x8C8E0084
+    /* E37B28 00052A50 00057880 */  .word 0x00057880
+    /* E37B2C 00052A54 01CFC021 */  .word 0x01CFC021
+    /* E37B30 00052A58 8F190000 */  .word 0x8F190000
+    /* E37B34 00052A5C 03E00008 */  .word 0x03E00008
+    /* E37B38 00052A60 93220032 */  .word 0x93220032
+endlabel BasePolyShape_func_00052A4C

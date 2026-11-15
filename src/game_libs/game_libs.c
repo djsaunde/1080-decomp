@@ -4344,7 +4344,7 @@ int *gl_func_000088B4(int *arg0) {
  * moved to game_libs_post.c (correct file for VRAM past 0x8944 cap of
  * game_libs.c). */
 
-/* game_libs_func_000622C8 split off from gl_func_00062298 bundle on
+/* AnimDataMgr_func_000622C8 split off from AnimDataMgr_wait_00062298 bundle on
  * 2026-05-08; decompiled to C body in game_libs_post.c. */
 
 /* AudioLoad_SetDmaHandler + AudioLoad_SetUnusedHandler split off from
@@ -4362,7 +4362,7 @@ int *gl_func_000088B4(int *arg0) {
 
 /* game_libs_func_000671D4 split off from gl_func_0006719C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
-/* game_libs_func_00060574 split off from gl_func_0006052C bundle on 2026-05-08; decompiled in game_libs_post.c. */
+/* MemTrackerMgr_func_00060574 split off from MemTracker_func_0006052C bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
 /* game_libs_func_0006833{8,40,48} split off from BinFile_init_000682F8 bundle on 2026-05-08; INCLUDE_ASMs in game_libs_post.c. */
 
@@ -4374,7 +4374,7 @@ int *gl_func_000088B4(int *arg0) {
 
 /* snd_InitCueQueues_31580 split off from snd_PreNMI_31560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
-/* Window_updateAspect + game_libs_func_0004EB4C split off from Window_doCommand bundle on 2026-05-08; decompiled in game_libs_post.c. */
+/* Window_updateAspect + Window_stub_0004EB4C split off from Window_doCommand bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
 /* game_libs_func_0003EB90, _0003EB98 split off from gl_func_0003EB3C bundle
  * 2026-05-08; decompiled in game_libs_post.c. */
@@ -4394,8 +4394,8 @@ int *gl_func_000088B4(int *arg0) {
 /* RcpTask_noUcode_NoC bundle split 2026-05-08; children INCLUDE_ASM live in
  * game_libs_post.c next to the parent RcpTask_noUcode_NoC. */
 
-/* gl_func_0004D354 bundle split 2026-05-08; children INCLUDE_ASM live in
- * game_libs_post.c next to the parent gl_func_0004D354. */
+/* RcpMgr_loadTask_0004D354 bundle split 2026-05-08; children INCLUDE_ASM live in
+ * game_libs_post.c next to the parent RcpMgr_loadTask_0004D354. */
 
 /* game_libs_func_00033444 split 2026-05-15; INCLUDE_ASM lives in
  * game_libs_post.c next to parent gl_func_0003341C. */
@@ -4456,9 +4456,9 @@ int *gl_func_000088B4(int *arg0) {
  * so none of its bytes reached the link. The ROM words are the hoisted first
  * insns of the next function, which already emits them from source:
  *   0x3FB64 andi/multu       -> hostio_sendImage (C body in post0b.c)
- *   0x4E57C lui/addiu a1     -> gl_func_0004E584 (game_libs_ncc_4E584.cpp donor
+ *   0x4E57C lui/addiu a1     -> Window_vfn0_0004E584 (game_libs_ncc_4E584.cpp donor
  *                               spliced into post0b.c.o)
- *   0x51654 lui/addiu v1     -> gl_func_0005165C (game_libs_ncc_5165C.cpp donor
+ *   0x51654 lui/addiu v1     -> CMod_vfn0_0005165C (game_libs_ncc_5165C.cpp donor
  *                               spliced into post0b.c.o)
  *   0x6BA74 lui 0xA460/lw    -> gl_osPiRawReadIo_0006BA7C (game_libs_ido53_6BA7C.c donor
  *                               spliced into post1b.c.o)

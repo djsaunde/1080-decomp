@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000558A0 (0x7C / 31 words): command
+/* IDO 7.1 NCC (C++) donor for nodelist_dispatchList_000558A0 (0x7C / 31 words): command
  * stream walker. The by-value parameter s = {pp, w, ...} is homed at sp+32
  * and &s goes to every callee; each command word is stored into s.w.
  * The cursor step is an inline MEMBER `int next() { return *(*pp)++; }`:
@@ -15,7 +15,7 @@ struct St558A0 {
     int y;
     int next() { return *(*pp)++; }
 };
-extern "C" void gl_func_000558A0(St558A0 s) {
+extern "C" void nodelist_dispatchList_000558A0(St558A0 s) {
     int w;
     w = s.next();
     s.w = w;

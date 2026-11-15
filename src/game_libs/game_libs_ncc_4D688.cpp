@@ -7,7 +7,7 @@
  * TRANSLATION UNIT: the loop never returns, so ugen emits `.align 5` before the dead epilogue. In a standalone object
  * that pads 5 nops (run() at offset 0, epilogue at 0x38C); the target has none because run() was NOT first in its
  * file. The guard static is shared with RcpMgr_ctor (it stores the 0x1234567812345678 magic that run() checks),
- * so this file reconstructs the unit from gl_func_0004D354 (the nearest preceding function whose start puts run()'s
+ * so this file reconstructs the unit from RcpMgr_loadTask_0004D354 (the nearest preceding function whose start puts run()'s
  * epilogue on a 32-byte boundary: 0x334 + 0x38C = 0x6C0): 4D354 / 4D39C / 4D3E4 (the post0b C bodies as extern "C"),
  * 4D468 (the exact NCC donor body, see game_libs_ncc_4D468.cpp for its notes), 4D658, then run(). Every compiled
  * size equals the target's (4D3E4 scores 99.70 under NCC; only run() is spliced). The guard's .bss reloc is renamed
@@ -24,7 +24,7 @@ extern char D_4D468_w[];
 extern char D_4D468_a2[];
 }
 static long long sG;
-extern "C" void gl_func_0004D354(int *arg0) {
+extern "C" void RcpMgr_loadTask_0004D354(int *arg0) {
     gl_func_00000000(arg0);
     gl_func_00000000((char*)arg0 + 0x10);
     gl_func_00000000((char*)arg0 + 0x10);

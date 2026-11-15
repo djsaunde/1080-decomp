@@ -1,10 +1,10 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004E584 (0x84 / 33 words): it is the
+/* IDO 7.1 NCC (C++) donor for Window_vfn0_0004E584 (0x84 / 33 words): it is the
  * static-initializer (__sti__) of a global object -- an 8-byte member zeroed by its
  * ctor at +0 and a wrapped 4-byte member at +0x28, each built through the cfront
  * this==0 allocation protocol that edg emits for every constructor. The object
  * declaration's `;` sits on its own line: as1 ties the sti code to that line, which
  * schedules the protocol's `or v1,a1` above `sw ra` like the target. The Makefile
- * renames the __sti__ symbol to gl_func_0004E584 (a symbol name only). Spliced into
+ * renames the __sti__ symbol to Window_vfn0_0004E584 (a symbol name only). Spliced into
  * game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" void *gl_func_00000000(...);
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }

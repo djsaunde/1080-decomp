@@ -11979,7 +11979,7 @@ void snd_SetPlayer0VolumeLevel_2D748(int a0) {
 /* snd_SetPlayer2VolumeLevel_2D784: 14-insn main body + 4-insn trailing alt-entry
  * (`li v0, 8; lui at, 0; sw v0, 0(at); lui at, 0`) — declared size 0x48
  * (18 insns). Same MERGE-BLOCKED post-epilogue alt-entry class as
- * gl_func_00062298 (per existing in-source doc).
+ * AnimDataMgr_wait_00062298 (per existing in-source doc).
  *
  * Main body decodes:
  *   *(int*)&D_a = a0;
@@ -14025,7 +14025,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SetPlayer0ChannelParams_
 //   reloc-pad jal infra. Real-C STRUCTURAL body below per the
 //   analysis. Byte-match deferred. Name pre-checked: no extern reuse.
 /* CRACKED 2026-05-27 (byte-exact): same remove-local-and-recompute-inline
- * lever as gl_func_0004E180. The `int cmd;` local made IDO spill cmd to
+ * lever as gfx_func_0004E180. The `int cmd;` local made IDO spill cmd to
  * sp+0x18 (lowest in-frame slot, pre-jal). Inlining the
  * `0x06000000|((op&0xFF)<<8)` recompute lets IDO CSE it AND schedule the
  * spill into the jal delay slot at sp+0x1C — matches target exactly.

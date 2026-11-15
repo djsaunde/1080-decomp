@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000525F0 (0x84 / 33 words): Self::reg(Tgt *t), a C++ member function.
+/* IDO 7.1 NCC (C++) donor for ShapeNode_func_000525F0 (0x84 / 33 words): Self::reg(Tgt *t), a C++ member function.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (symbols renamed in the Makefile, names only).
  * (agent-c run 180) The "lazy factory call gl_func(0, &D + 0x20FC0, self)" of the cfe decode is cfront's
  * `new Foo(cfg, this)` with an out-of-line constructor (this == 0 -> the ctor allocates), and the second call is

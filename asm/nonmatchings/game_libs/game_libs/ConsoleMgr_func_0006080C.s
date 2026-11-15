@@ -1,0 +1,10 @@
+nonmatching ConsoleMgr_func_0006080C, 0x18
+
+glabel ConsoleMgr_func_0006080C
+    /* E458E4 0006080C 8C820018 */  .word 0x8C820018
+    /* E458E8 00060810 18400002 */  .word 0x18400002
+    /* E458EC 00060814 244EFFFF */  .word 0x244EFFFF
+    /* E458F0 00060818 AC8E0018 */  .word 0xAC8E0018
+    /* E458F4 0006081C 03E00008 */  .word 0x03E00008
+    /* E458F8 00060820 00000000 */  .word 0x00000000
+endlabel ConsoleMgr_func_0006080C

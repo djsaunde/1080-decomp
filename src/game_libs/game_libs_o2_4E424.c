@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_0004E424 -- 3D distance estimate
+/* IDO 7.1 -O2 donor for Window_clampRect_0004E424 -- 3D distance estimate
  * (0xC4 / 49 words; 49/49 word-exact), agent-g run 264.
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
@@ -16,7 +16,7 @@
  *  - the max is its own variable m (zero stays the 0.0f constant only; zero / m
  *    then share f16) and the halved sum goes through x1 (dead by then).
  */
-float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
+float Window_clampRect_0004E424(float x0, float y0, volatile float z0, float x1, float y1, float z1) {
     float dy;
     float dz;
     float zero = 0.0f;

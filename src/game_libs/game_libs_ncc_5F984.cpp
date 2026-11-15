@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0005F984 (rotate-by-drag matrix, 184 words). EXACT (agent-g run 156):
+/* IDO 7.1 NCC (C++) donor for math_func_0005F984 (rotate-by-drag matrix, 184 words). EXACT (agent-g run 156):
  * spliced into both build/src and build/non_matching post0b with REPLACE_FUNC_BODY.
  * History: the cfe NM body recompiled under NCC (85.13 -> 88.01); run 155 param copy `m = arg0` + volatile
  * q0 / q1 around R (92.46). Run 156, the last two residuals:
@@ -27,7 +27,7 @@ extern void gl_func_00000000_5eaa4(f32 (*)[4], s32, f32, s32);
 extern f32 gl_func_00000000_sqrt5F984(f32);
 extern void gl_func_00000000_rot5F984(f32 (*)[4], V3_5F984 *, f32, f32);
 }
-extern "C" void gl_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
+extern "C" void math_func_0005F984(f32 (*arg0)[4], f32 (*rot)[4], f32 x, f32 y, f32 z, s32 flag) {
     volatile f32 q0;
     f32 R[4][4];
     volatile f32 q1;

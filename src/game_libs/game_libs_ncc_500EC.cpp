@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_000500EC (0x2B8 / 174 words), agent-c run 175, spliced over an empty
+/* IDO 7.1 NCC (C++) EXACT donor for Mesh_paint (0x2B8 / 174 words), agent-c run 175, spliced over an empty
  * placeholder in game_libs_post0b.c in both build trees (Makefile renames: paint__4MeshFUi, and the out-of-line
  * adjacency test adj__4MeshFiT1 -> gl_func_00000000 = the target's baked jal 0).
  * `int Mesh::paint(unsigned t)`: the cfe body (91.66: goto layout, two constant-6 carriers, hand-spelt *6) is a

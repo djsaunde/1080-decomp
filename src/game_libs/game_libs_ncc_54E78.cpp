@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00054E78 (0x228 / 138 words), agent-c run 175 lift, agent-g run 304 exact.
+/* IDO 7.1 NCC (C++) EXACT donor for light_func_00054E78 (0x228 / 138 words), agent-c run 175 lift, agent-g run 304 exact.
  * Real C++ `void Obj::reflect(const Plane &p)` (renamed with objcopy; ident() renamed to the dbg_printThreads
  * placeholder): mtx (at this+300) = identity call, then the plane-reflection matrix I - 2 n n^T written row by row
  * through the reference, the translation row from `a.set(p.n * p.d)` (the target's three back-to-back products

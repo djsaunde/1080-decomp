@@ -1,7 +1,7 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0005534C (0x9C / 39 words): command
+/* IDO 7.1 NCC (C++) donor for nodelist_func_0005534C (0x9C / 39 words): command
  * stream walker that calls the first command word as a function, then
  * dispatches the rest (low 16 bits) through the shared handler. Same
- * by-value St / inline member cursor step as gl_func_000558A0
+ * by-value St / inline member cursor step as nodelist_dispatchList_000558A0
  * (`int next() { return *(*pp)++; }`), which gives the target's p = v1 /
  * s.pp reload = v0 colouring under NCC (kit LXIII).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-g run 142). */
@@ -13,7 +13,7 @@ struct St5534C {
     int y;
     int next() { return *(*pp)++; }
 };
-extern "C" void gl_func_0005534C(St5534C s) {
+extern "C" void nodelist_func_0005534C(St5534C s) {
     int w;
     w = s.next();
     s.w = w;

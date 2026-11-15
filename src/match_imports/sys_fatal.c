@@ -111,7 +111,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00061458() {
+int math_singularFatal_00061458() {
     return gl_func_00000000();
 }
 

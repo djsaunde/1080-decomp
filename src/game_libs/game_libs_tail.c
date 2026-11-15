@@ -3569,7 +3569,7 @@ void hud_addPointsGadgetList(Hud *self) {
  *   obj->[0x14] = self;                                // back-link
  *
  * The tail (last 2 stmts) is the back-link-with-conditional-flag idiom
- * also seen in hud_addPointsGadgetList, hud_addCoolGadget, gl_func_000525F0 —
+ * also seen in hud_addPointsGadgetList, hud_addCoolGadget, ShapeNode_func_000525F0 —
  * this is the 4th sibling confirming a SHARED LINKED-SET FINALIZER
  * pattern across 1080's game_libs.
  *
