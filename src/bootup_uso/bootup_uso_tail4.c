@@ -74,10 +74,10 @@ void *Fader_ctor(arg0, arg1) void *arg0; s32 arg1; {
         if (b == 0) goto derived;
     }
     func_00000000(b, &D_12e00_a);
-    *(void **)(b + 0x28) = &D_12e00_b;
+    NODE(b)->vptr = (s32)&D_12e00_b;
 derived:
-    *(void **)(o + 0x28) = &D_12e00_c;
-    *(void **)(o + 0xC) = &D_12e00_d;
+    FADER(o)->node.vptr = (s32)&D_12e00_c;
+    FADER(o)->node.name = (s32)&D_12e00_d;
     FADER(o)->cols = 32;
     FADER(o)->rows = 32;
     FADER(o)->cells = 1024;
@@ -270,8 +270,8 @@ void Fader_buildTexture(char *arg0) {
     o = gGfxLib_13b20_root;
     if (1) { }
     if (1) { }
-    vt = *(char **)(o + 0x28);
-    pal = (*(u16 *(**)(char *, char *))(vt + 0x64))(o + *(s16 *)(vt + 0x60), arg0);
+    vt = (char *)NODE(o)->vptr;
+    pal = ((u16 *(*)(char *, char *))VT_SLOT(vt, 11).fn)(o + VT_SLOT(vt, 11).delta, arg0); /* slot 11: the palette */
     if (FADER(arg0)->mode != 0) {
         for (i = 0; i != 0x400; i++) {
             FADER(arg0)->texture[i] = pal[FADER(arg0)->screenIdx[i]];

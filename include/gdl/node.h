@@ -34,6 +34,17 @@ typedef char Node_name_check[(int)&((Node *)0)->name == 0x0C ? 1 : -1];
 typedef char Node_serial_check[(int)&((Node *)0)->serial == 0x1C ? 1 : -1];
 typedef char Node_vptr_check[(int)&((Node *)0)->vptr == 0x28 ? 1 : -1];
 
+/* Cfront vtable: slot N is {s16 this-delta, pad, fn} at vtbl + 8 + 8*N, called as
+ * vt->slot[N].fn((char *)this + vt->slot[N].delta, ...). VT_SLOT(vt, N) is slot N of a vtable
+ * given as a `char *` / s32 (fn at vt + 0xC + 8*N, delta at vt + 8 + 8*N). */
+typedef struct GdlVtEnt {
+    /* 0x0 */ s16 delta;
+    /* 0x2 */ s16 pad;
+    /* 0x4 */ s32 (*fn)();
+} GdlVtEnt;
+
+#define VT_SLOT(vt, n) (((GdlVtEnt *)((char *)(vt) + 8))[n])
+
 /* Field access through an untyped `char *` / `int` object pointer (agent-h run 492), e.g. the
  * child-attach idiom every ctor inlines: `if (NODE(c)->parent != 0) NODE(c)->unk04 = 1;
  * NODE(c)->parent = (int)this;`. Lowers to the same base + offset access as the raw form. */

@@ -12,13 +12,7 @@
  * follow the matched loads / stores (READABILITY_PLAN 9.1); pointer-valued fields
  * that the bodies treat as int stay s32. */
 
-/* Cfront vtable: slot N is {s16 this-delta, pad, fn} at vtbl + 8 + 8*N, called as
- * vt->slot[N].fn((char *)this + vt->slot[N].delta, ...). */
-typedef struct GdlVtEnt {
-    /* 0x0 */ s16 delta;
-    /* 0x2 */ s16 pad;
-    /* 0x4 */ s32 (*fn)();
-} GdlVtEnt;
+/* GdlVtEnt (the Cfront vtable slot) is in gdl/node.h. */
 
 /* ---- RaceProcess (game_libs 0x6900.., vtable bootup Data+0xCE18, 38 slots) ----
  * Node -> C338 -> Process (C3A0) -> RaceProcess. No out-of-line ctor: each mode's
