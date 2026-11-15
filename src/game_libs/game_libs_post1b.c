@@ -4661,7 +4661,7 @@ void skin_cmdSkinMgr(int *self) {
     self[1] = p[0];
     count1 = self[1];
     if (count1 >= 4) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C4F4, (char *)&D_00000000 + 0x2C508, 221);
+        gl_func_00000000((char *)&D_00000000 + 0x2C4F4, (char *)&D_00000000 + 0x2C508, 221); /* assert "num < MAX_SKIN_MGRS", skin.cpp:221 (count1 = the SkinMgr slot) */
     }
 
     /* block 2: pop again, store, log on zero */
@@ -4671,7 +4671,7 @@ void skin_cmdSkinMgr(int *self) {
     count2 = p[0];
     self[1] = count2;
     if (count2 == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C538, count1);
+        gl_func_00000000((char *)&D_00000000 + 0x2C538, count1); /* "Bad Skin Weights : %d\n" (count2 = the SkinBone table) */
     }
 
     /* sub-init returning the child object */
@@ -4688,7 +4688,7 @@ void skin_cmdSkinMgr(int *self) {
     }
     obj[0x14 / 4] = (int)cf;
 
-    /* D_global[count1] = self->0x18 (obj) */
+    /* D_global[count1] = self->0x18 (obj): the 4-entry SkinMgr table, indexed by slot */
     *(int *)((char *)&D_global_00068C14 + count1 * 4) = self[0x18 / 4];
 }
 #else
@@ -4874,13 +4874,13 @@ sentinel:
     }
     *(int*)inner = 0;
 sub_writes:
-    *(int*)((char*)sub + 0xC)  = (int)((char*)&D_00000000 + 0x2C58C);
-    *(int*)((char*)sub + 0x14) = 0;
+    ((SkinAnim *)sub)->name = (int)((char*)&D_00000000 + 0x2C58C);  /* "skinanim" (the 0x18 base) */
+    ((SkinAnim *)sub)->unk14 = 0;
 obj_writes:
-    *(int*)((char*)obj + 0x20) = arg1;
-    *(int*)((char*)obj + 0x1C) = arg2;
-    *(int*)((char*)obj + 0x18) = arg3;
-    *(int*)((char*)obj + 0xC)  = (int)((char*)&D_00000000 + 0x2C598);
+    ((SkinAnim *)obj)->count = arg1;    /* (agent-b run 489: skin.h names) */
+    ((SkinAnim *)obj)->weights = arg2;
+    ((SkinAnim *)obj)->bone = arg3;
+    ((SkinAnim *)obj)->name = (int)((char*)&D_00000000 + 0x2C598); /* "skinanimator" */
 done:
     return obj;
 }
@@ -4906,7 +4906,9 @@ done:
  * older comparison form. */
 typedef struct { int _w[16]; } Mtx690A8;
 typedef struct { s16 x, y, z; } V3s690A8;
-typedef struct { s16 a, b; } Pr690A8;
+/* (agent-b run 489) arg0 = SkinAnim, arg1 = SkinMgr: skin.h field views */
+#define SA690 ((SkinAnim *)arg0)
+#define SM690 ((SkinMgr *)arg1)
 void SkinAnim_bind(char *arg0, char *arg1, V3s690A8 *arg2) {
     s32 i;
     f32 v[3];
@@ -4914,39 +4916,39 @@ void SkinAnim_bind(char *arg0, char *arg1, V3s690A8 *arg2) {
     f32 x, y, z;
     V3s690A8 *s;
     s16 *p;
-    Pr690A8 *pr;
+    SkinWeight *pr;
 
-    for (i = 0; i < *(s32 *)(arg0 + 0x20); i++) {
-        pr = &(*(Pr690A8 **)(arg0 + 0x1C))[i];
-        p = &(*(s16 **)(arg1 + 0x30))[pr->a];
-        *p -= pr->b;
+    for (i = 0; i < SA690->count; i++) {
+        pr = &((SkinWeight *)SA690->weights)[i];
+        p = &((s16 *)SM690->weights)[pr->vert];
+        *p -= pr->weight;
     }
     i = 0;
-    *(V3s690A8 **)(arg0 + 0x24) = (V3s690A8 *)gl_func_00000000(*(s32 *)(arg0 + 0x20) * sizeof(V3s690A8));
-    *(Mtx690A8 *)(arg0 + 0x68) = *(Mtx690A8 *)(*(char **)(arg0 + 0x18) + 0x70);
-    gl_func_00000000(*(char **)(arg0 + 0x18) + 0x70, arg0 + 0x28);
-    for (i = 0; i < *(s32 *)(arg0 + 0x20); i++) {
-        s = &arg2[(*(Pr690A8 **)(arg0 + 0x1C))[i].a];
+    SA690->bindVerts = (s32)gl_func_00000000(SA690->count * sizeof(V3s690A8));
+    *(Mtx690A8 *)SA690->boneAtBind = *(Mtx690A8 *)((char *)SA690->bone + 0x70);
+    gl_func_00000000((char *)SA690->bone + 0x70, SA690->invBone);
+    for (i = 0; i < SA690->count; i++) {
+        s = &arg2[((SkinWeight *)SA690->weights)[i].vert];
         v[0] = s->x;
         v[1] = s->y;
         v[2] = s->z;
-        m = (f32 *)(*(char **)(arg1 + 0x38) + 0x70);
+        m = (f32 *)((char *)SM690->bone + 0x70);
         x = m[4] * v[1] + m[8] * v[2] + m[12] + v[0] * m[0];
         y = m[9] * v[2] + m[1] * v[0] + m[5] * v[1] + m[13];
         z = v[0] * m[2] + m[10] * v[2] + v[1] * m[6] + m[14];
         v[0] = x;
         v[1] = y;
         v[2] = z;
-        m = (f32 *)(arg0 + 0x28);
+        m = (f32 *)SA690->invBone;
         x = m[4] * v[1] + m[0] * v[0] + v[2] * m[8] + m[12];
         y = m[5] * v[1] + m[1] * v[0] + v[2] * m[9] + m[13];
         z = v[0] * m[2] + m[6] * v[1] + m[10] * v[2] + m[14];
         v[0] = x;
         v[1] = y;
         v[2] = z;
-        (*(V3s690A8 **)(arg0 + 0x24))[i].x = v[0];
-        (*(V3s690A8 **)(arg0 + 0x24))[i].y = v[1];
-        (*(V3s690A8 **)(arg0 + 0x24))[i].z = v[2];
+        ((V3s690A8 *)SA690->bindVerts)[i].x = v[0];
+        ((V3s690A8 *)SA690->bindVerts)[i].y = v[1];
+        ((V3s690A8 *)SA690->bindVerts)[i].z = v[2];
     }
 }
 #else
@@ -4974,6 +4976,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinAnim_bind);
  * order, entry/src inlining, IV step order, v-load same-line joins, if-arm inversion; earlier:
  * Ent/S3 array views, (unsigned char) burn, IDO 5.3; (2) mode==100 arm ends nop + sh + `b; lw t0`
  * where target puts the sh in the b delay; (3) else-arm third lh scheduled early. */
+/* (agent-b run 489) arg0 = SkinAnim, arg1 = SkinMgr, arg2 = SkinMgr.outVerts; MNode +0xA0 = world
+ * position, +0x70 = world matrix; skin.h field views below */
+#define SA693 ((SkinAnim *)arg0)
+#define SM693 ((SkinMgr *)arg1)
 void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
     f32 kscale;
     f32 v[7];
@@ -4996,13 +5002,13 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
     {
         char *pb;
         char *pa;
-        pa = (char*)FW(arg0,0x18); pb = (char*)FW(arg1,0x38);
+        pa = (char*)SA693->bone; pb = (char*)SM693->bone;
         ex = *(f32*)(pa+0xA0) - *(f32*)(pb+0xA0);
         ey = *(f32*)(pa+0xA4) - *(f32*)(pb+0xA4);
         ez = *(f32*)(pa+0xA8) - *(f32*)(pb+0xA8);
     }
     var_a3 = 0;
-    if (FW(arg0, 0x20) > 0) {
+    if (SA693->count > 0) {
         while (0) { mode = 0; }
         while (0) { o0 = ex; }
         while (0) { o1 = ey; }
@@ -5010,15 +5016,15 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
         kscale = *(f32*)((char*)&D_00000000 + 0x2240);
         var_v1 = 0;
         do {
-            entry = FW(arg0, 0x1C) + var_v1;
-            mode = S693(entry, 2);
+            entry = SA693->weights + var_v1;       /* SkinWeight {vert, weight} */
+            mode = S693(entry, 2);                 /* weight (percent) */
             if (mode > 0) {
-                idx = S693(entry, 0);
-                src = FW(arg0, 0x24) + (var_a3 * 6);
+                idx = S693(entry, 0);              /* vert */
+                src = SA693->bindVerts + (var_a3 * 6);
                 v[0] = (f32)S693(src, 0);
                 v[1] = (f32)S693(src, 2);
                 v[2] = (f32)S693(src, 4);
-                mtx = FW(arg0, 0x18) + 0x70;
+                mtx = SA693->bone + 0x70;
                 o0 = M693(0x20)*v[2] + (M693(0x10)*v[1] + v[0]*M693(0));
                 o1 = M693(0x24)*v[2] + (M693(0x14)*v[1] + v[0]*M693(4));
                 o2 = M693(0x28)*v[2] + (M693(0x18)*v[1] + v[0]*M693(8));
@@ -5037,7 +5043,7 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
             }
             var_a3 += 1;
             var_v1 += 4;
-        } while (var_a3 < FW(arg0, 0x20));
+        } while (var_a3 < SA693->count);
     }
 }
 #else
@@ -5206,6 +5212,7 @@ typedef struct { s16 x, y, z; } V3s697C4;
 extern char D_697C4_14[], D_697C4_2C5CC[];
 extern u32 D_697C4_rng;
 #define RNG697C4 D_697C4_rng
+#define SM697C4 ((SkinMgr *)arg0) /* skin.h field view (agent-b run 489) */
 void SkinMgr_update(char *arg0) {
     s32 pad[2];
     f32 v[4];
@@ -5222,20 +5229,20 @@ void SkinMgr_update(char *arg0) {
     s16 *p;
 
     cur = *(s32 *)(D_697C4_14 + 0x14);
-    if (*(s32 *)(arg0 + 0x4C) != cur) {
-        *(s32 *)(arg0 + 0x4C) = cur;
-        if (*(char **)(arg0 + 0x38) == 0) {
+    if (SM697C4->lastFrame != cur) {
+        SM697C4->lastFrame = cur;
+        if (*(char **)&SM697C4->bone == 0) {
             gl_func_00000000(D_697C4_2C5CC + 0x2C5CC);
         }
-        for (i = 0; i < *(u32 *)(*(char **)(arg0 + 0x34) + 0x40); i++) {
-            w = (*(s16 **)(arg0 + 0x30))[i];
+        for (i = 0; i < *(u32 *)((char *)SM697C4->shape + 0x40) /* shape nVerts */; i++) {
+            w = ((s16 *)SM697C4->weights)[i];
             if (w != 0.0f) {
                 w *= 0.01f;
-                o = &(*(V3s697C4 **)(arg0 + 0x3C))[i];
+                o = &((V3s697C4 *)SM697C4->bindVerts)[i];
                 v[0] = o->x;
                 v[1] = o->y;
                 v[2] = o->z;
-                m = (f32 *)(*(char **)(arg0 + 0x38) + 0x70);
+                m = (f32 *)(*(char **)&SM697C4->bone + 0x70);
                 if (1) {
                     x = m[0] * v[0] + m[4] * v[1] + m[8] * v[2];
                     y = m[1] * v[0] + m[5] * v[1] + m[9] * v[2];
@@ -5244,33 +5251,33 @@ void SkinMgr_update(char *arg0) {
                     v[0] = x;
                     v[2] = z;
                 }
-                (*(V3s697C4 **)(arg0 + 0x40))[i].x = v[0] * w;
-                (*(V3s697C4 **)(arg0 + 0x40))[i].y = v[1] * w;
-                (*(V3s697C4 **)(arg0 + 0x40))[i].z = v[2] * w;
+                ((V3s697C4 *)SM697C4->outVerts)[i].x = v[0] * w;
+                ((V3s697C4 *)SM697C4->outVerts)[i].y = v[1] * w;
+                ((V3s697C4 *)SM697C4->outVerts)[i].z = v[2] * w;
             } else {
-                (*(V3s697C4 **)(arg0 + 0x40))[i].z = 0;
-                (*(V3s697C4 **)(arg0 + 0x40))[i].y = 0;
-                (*(V3s697C4 **)(arg0 + 0x40))[i].x = 0;
+                ((V3s697C4 *)SM697C4->outVerts)[i].z = 0;
+                ((V3s697C4 *)SM697C4->outVerts)[i].y = 0;
+                ((V3s697C4 *)SM697C4->outVerts)[i].x = 0;
             }
         }
-        if (*(s32 *)(arg0 + 0x94) != 0) {
-            amp = *(s32 *)(arg0 + 0x94);
-            half = *(s32 *)(arg0 + 0x94) / 2;
-            for (i = 0; i < *(u32 *)(*(char **)(arg0 + 0x34) + 0x40); i++) {
+        if (SM697C4->jitter != 0) {
+            amp = SM697C4->jitter;
+            half = SM697C4->jitter / 2;
+            for (i = 0; i < *(u32 *)((char *)SM697C4->shape + 0x40) /* shape nVerts */; i++) {
                 r = RNG697C4 * 4 + 2; r = (r * (r + 1)) >> 2; RNG697C4 = r;
-                p = &(*(V3s697C4 **)(arg0 + 0x40))[i].x; *p = *p + ((s32)((r & 0xFFFF) * amp) >> 16) - half;
+                p = &((V3s697C4 *)SM697C4->outVerts)[i].x; *p = *p + ((s32)((r & 0xFFFF) * amp) >> 16) - half;
                 r2 = RNG697C4 * 4 + 2; r2 = (r2 * (r2 + 1)) >> 2; RNG697C4 = r2;
-                p = &(*(V3s697C4 **)(arg0 + 0x40))[i].y; *p = *p + ((s32)((r2 & 0xFFFF) * amp) >> 16) - half;
+                p = &((V3s697C4 *)SM697C4->outVerts)[i].y; *p = *p + ((s32)((r2 & 0xFFFF) * amp) >> 16) - half;
                 r3 = RNG697C4 * 4 + 2; r3 = (r3 * (r3 + 1)) >> 2; RNG697C4 = r3;
-                p = &(*(V3s697C4 **)(arg0 + 0x40))[i].z; *p = *p + ((s32)((r3 & 0xFFFF) * amp) >> 16) - half;
+                p = &((V3s697C4 *)SM697C4->outVerts)[i].z; *p = *p + ((s32)((r3 & 0xFFFF) * amp) >> 16) - half;
             }
-            *(s32 *)(arg0 + 0x94) = 0;
+            SM697C4->jitter = 0;
         }
-        it[1] = *(Nd697C4 **)(arg0 + 0x48);
+        it[1] = (Nd697C4 *)SM697C4->anims;
         while ((it[0] = it[1], it[0] != 0 ? (it[1] = it[0]->next, it[0]->data) : 0) != 0) {
-            gl_func_00000000(it[0]->data, arg0, *(s32 *)(arg0 + 0x40));
+            gl_func_00000000(it[0]->data, arg0, SM697C4->outVerts); /* SkinAnim_skinVerts */
         }
-        gl_func_00000000(*(s32 *)(arg0 + 0x34), *(s32 *)(arg0 + 0x40));
+        gl_func_00000000(SM697C4->shape, SM697C4->outVerts);    /* MorphPoly_setVerts */
     }
 }
 #else
@@ -5331,14 +5338,15 @@ void SkinMgr_reset(int *self) {
         bar = &node;
         bar = &next;
     }
-    if (self[0x38 / 4] == 0) {
-        gl_func_00062F64_69b94((int)((char *)&D_00000000 + 0x2C5F0));
+    if (((SkinMgr *)self)->bone == 0) {
+        gl_func_00062F64_69b94((int)((char *)&D_00000000 + 0x2C5F0)); /* "SkinMgr::Reset() not initialized" */
     }
-    next = (int *)self[0x48 / 4];
+    /* walk the anims list {SkinAnim *, next}: SkinAnim_bind(anim, mgr, bindVerts) */
+    next = (int *)((SkinMgr *)self)->anims;
     node = next;
     key = node ? (next = (int *)node[1], node[0]) : 0;
     while (key != 0) {
-        gl_func_00062F64_69b94(node[0], self, self[0x3C / 4]);
+        gl_func_00062F64_69b94(node[0], self, ((SkinMgr *)self)->bindVerts);
         node = next;
         key = node ? (next = (int *)next[1], node[0]) : 0;
     }

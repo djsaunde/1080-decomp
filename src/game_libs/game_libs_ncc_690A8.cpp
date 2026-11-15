@@ -14,7 +14,7 @@ typedef float f32;
 typedef short s16;
 extern "C" void *gl_func_00000000(...);
 struct V3s { s16 x, y, z; };
-struct Pr { s16 a, b; };
+struct Pr { s16 vert, weight; };
 struct V3 { f32 x, y, z; };
 struct M4 {
     f32 m[4][4];
@@ -25,25 +25,29 @@ struct M4 {
         v.x = x; v.y = y; v.z = z;
     }
 };
-struct Body { char pad[0x70]; M4 mtx; };
-struct Tab { char pad[0x30]; s16 *s; char pad34[4]; Body *body; };
-struct Obj { char pad[0x18]; Body *src; Pr *pairs; int count; V3s *out; M4 m28; M4 m68; };
-extern "C" void SkinAnim_bind(Obj *o, Tab *t, V3s *arg2) {
+/* Local views of include/gdl/skin.h with its field names (agent-b run 489): Pr = SkinWeight,
+ * Bone = the MNode (world matrix at +0x70), Mgr = SkinMgr, Obj = SkinAnim. */
+struct Bone { char pad[0x70]; M4 mtx; };
+struct Mgr { char pad[0x30]; s16 *weights; char pad34[4]; Bone *bone; };   /* SkinMgr: main-bone weights, main bone */
+struct Obj { char pad[0x18]; Bone *bone; Pr *weights; int count; V3s *bindVerts; M4 invBone; M4 boneAtBind; };
+/* Take this SkinAnim's vertices away from the main bone (weights -= its share) and store them in
+ * this bone's space: bindVerts[i] = invBone * mainBone * mgrBindVerts[vert] */
+extern "C" void SkinAnim_bind(Obj *o, Mgr *t, V3s *mgrBindVerts) {
     int i;
     V3 v;
     for (i = 0; i < o->count; i++) {
-        t->s[o->pairs[i].a] -= o->pairs[i].b;
+        t->weights[o->weights[i].vert] -= o->weights[i].weight;
     }
-    o->out = (V3s *)gl_func_00000000(o->count * sizeof(V3s));
-    o->m68 = o->src->mtx;
-    gl_func_00000000(&o->src->mtx, &o->m28);
+    o->bindVerts = (V3s *)gl_func_00000000(o->count * sizeof(V3s));
+    o->boneAtBind = o->bone->mtx;
+    gl_func_00000000(&o->bone->mtx, &o->invBone);           /* invert */
     for (i = 0; i < o->count; i++) {
-        V3s *s = &arg2[o->pairs[i].a];
+        V3s *s = &mgrBindVerts[o->weights[i].vert];
         v.x = s->x; v.y = s->y; v.z = s->z;
-        t->body->mtx.xf(v);
-        o->m28.xf(v);
-        o->out[i].x = v.x;
-        o->out[i].y = v.y;
-        o->out[i].z = v.z;
+        t->bone->mtx.xf(v);
+        o->invBone.xf(v);
+        o->bindVerts[i].x = v.x;
+        o->bindVerts[i].y = v.y;
+        o->bindVerts[i].z = v.z;
     }
 }
