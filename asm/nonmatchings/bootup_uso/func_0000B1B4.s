@@ -109,8 +109,8 @@ glabel func_0000B1B4
     /* DDBD9C 0000B330 25AD0000 */  addiu      $t5, $t5, 0x0
     /* DDBDA0 0000B334 ACED005C */  sw         $t5, 0x5C($a3)
   .L0000B338:
-    /* DDBDA4 0000B338 3C0E0001 */  lui        $t6, %hi(func_000083D0 + 0x70)
-    /* DDBDA8 0000B33C 25CE8440 */  addiu      $t6, $t6, %lo(func_000083D0 + 0x70)
+    /* DDBDA4 0000B338 3C0E0001 */  lui        $t6, %hi(Snower_func_000083D0 + 0x70)
+    /* DDBDA8 0000B33C 25CE8440 */  addiu      $t6, $t6, %lo(Snower_func_000083D0 + 0x70)
     /* DDBDAC 0000B340 240F0110 */  addiu      $t7, $zero, 0x110
     /* DDBDB0 0000B344 ACCF0024 */  sw         $t7, 0x24($a2)
     /* DDBDB4 0000B348 ACCE005C */  sw         $t6, 0x5C($a2)

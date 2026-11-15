@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donor for func_0000F81C: the NM C body of
+/* IDO 7.1 NCC (C++) -O0 donor for game_createProcessWindow: the NM C body of
  * bootup_uso_tail1.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead
  * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.
  * Spliced into bootup_uso_tail1.c.o via REPLACE_FUNC_BODY. */
@@ -25,14 +25,14 @@ extern char D_0000C57C;
 extern char D_0000C58C;
 extern char D_0000C594;
 
-/* func_0000F81C: 78-insn (0x138) allocator + init helper — -O0 island
+/* game_createProcessWindow: 78-insn (0x138) allocator + init helper — -O0 island
  * (arg homing above frame, unfilled beqz/jal delays, b-to-epilogue return).
  * flags local, 16-arg constructor call, result relinked + published.
  * NATURAL CEILING: 97%+ — every insn/reg/slot matches EXCEPT the documented
  * -O0 return-value dead double-b toolchain gap (+2 words before epilogue;
  * see IDO_CODEGEN #feedback-ido-o0-return-value-dead-double-b). Framed
  * value-return tail => not truncatable. Do not fight. */
-void *func_0000F81C(int a0, int a1) {
+void *game_createProcessWindow(int a0, int a1) {
     int flags;
     int result;
     register float *p;          /* s0 */
@@ -64,7 +64,7 @@ void *func_0000F81C(int a0, int a1) {
 
 /* func_0000F954 + func_0000F9E8 split out to bootup_uso_o0_F954.c on 2026-06-23
  * (cluster -O0 split; F954 is a byte-exact -O0 match, F9E8 stays NM at 1w off).
- * Moved together so tail1.c keeps only the -O2 func_0000F81C and the linker layout
+ * Moved together so tail1.c keeps only the -O2 game_createProcessWindow and the linker layout
  * stays contiguous. */
 
 /* func_0000FAE8 split out to bootup_uso_o0_FAE8.c on 2026-06-23 — it's an -O0
@@ -72,6 +72,6 @@ void *func_0000F81C(int a0, int a1) {
  * dead-branch); now a byte-exact -O0 C match there (same recipe as 100F0/118E4). */
 
 /* func_000100F0 + func_0001016C split out to bootup_uso_o0_100F0.c on
- * 2026-05-14 for -O0 build (same recipe as func_000118E4 ->
+ * 2026-05-14 for -O0 build (same recipe as game_loadUso ->
  * bootup_uso_o0_118E4.c earlier this date). */
 }

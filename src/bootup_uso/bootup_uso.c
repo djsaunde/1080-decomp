@@ -28,7 +28,7 @@ extern char D_00000000;
  */
 #endif
 /* BOOT_SELF_PTR graduated to unconditional 2026-07-03: promoted exact bodies
- * (func_000082F8/func_000050A0) use it in the default build. */
+ * (Snower_func_000082F8/item_createHem) use it in the default build. */
 #define BOOT_SELF_PTR (*(int**)((char*)&D_00000000 + 0x254))
 
 void func_00000008(int *dst) {
@@ -228,7 +228,7 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
     func_00000000(arg0[0], sel);
 }
 
-/* func_00000610 - corrected full decode (0x24C, 147 insns, FP param
+/* snd_updatePlayer - corrected full decode (0x24C, 147 insns, FP param
  * normalize / clamp / scale + 5 func_00000000 dispatch calls).
  * Signature recovered from arg-home slots: a0=int* (struct-ptr ptr),
  * then 5 f32 (arg1..arg5) + 3 s32 (arg6..arg8). o = arg0[0]; bails if 0.
@@ -267,7 +267,7 @@ extern char D_00006584;
  * div.s (a 4.0f literal folds to * 0.25). Residual: frame 0x38 vs 0x30
  * (sp28/sp24 sit 8 bytes higher; pads only grow it). */
 extern f64 D_bu_ro_d058, D_bu_ro_d060;  /* RoData pool doubles at 0x58 / 0x60 (func_00000044 + 0x14 / 0x1C); one symbol each, the target re-luis per load */
-void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     int o;
     f32 sp28;
     int sp24;
@@ -328,7 +328,7 @@ void func_00000610(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, 
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00000610);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", snd_updatePlayer);
 #endif
 
 void func_0000085C(int *a0) {
@@ -569,9 +569,9 @@ void *func_00000C10(int *arg0) {
     return p2;
 }
 
-/* func_00000CA0 - verified structural decode (0xF4, 61 insns,
+/* BGBox_ctor - verified structural decode (0xF4, 61 insns,
  * get-or-create constructor + box-corner table generator).
- *   void *func_00000CA0(void *a0, int a1, int a2, int a3) {
+ *   void *BGBox_ctor(void *a0, int a1, int a2, int a3) {
  *       o = a0;
  *       if (o == 0) {
  *           o = alloc(0x40);                      // func_00000000
@@ -609,18 +609,18 @@ void *func_00000C10(int *arg0) {
  * scheduling, and the 2 single-int global stores want $at-fused form
  * but IDO holds D_00000000 in $v1 (shared with the 12-entry box table).
  * Stays INCLUDE_ASM (no episode). */
-/* func_00000CA0: EXACT via an IDO 7.1 NCC (C++) donor,
+/* BGBox_ctor: EXACT via an IDO 7.1 NCC (C++) donor,
  * src/bootup_uso/bootup_uso_ncc_CA0.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-g run 150). It is the real constructor D::D(a1, a2, a3):
  * edg's this==0 -> new(0x40) protocol, out-of-line base ctor B(&D_000066A8)
  * (import), D's vptr at +0x28 (the stores now schedule as in the target), and
  * the last vertex corner written one store per source line (as1 reorders only
  * inside a .loc line group; the cfe body colored h/-h v0/a0, 97.2). */
-void func_00000CA0(int a0, int a1, int a2, int a3) {
+void BGBox_ctor(int a0, int a1, int a2, int a3) {
     volatile int r = 0;
 }
 
-/* func_00000D94 - verified structural decode (0xD4, 53 insns,
+/* BGBox_func_00000D94 - verified structural decode (0xD4, 53 insns,
  * FP-threshold-gated state update).
  * Struct-typing reference: g = &D_00000000 global; g->0x2A0 (672) f32
  * value compared (promoted to f64) against the f64 constant at
@@ -642,7 +642,7 @@ extern int D_00007324;
  * the flag word through a pointer, and the 16-byte record is a struct copy. */
 typedef struct { int w[4]; } S16_D94;
 extern char bu_d94_g[], bu_d94_src[];
-void func_00000D94(char *a0) {
+void BGBox_func_00000D94(char *a0) {
     int *p;
     int on;
     if ((double)*(float *)(bu_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
@@ -662,10 +662,10 @@ void func_00000D94(char *a0) {
     }
 }
 
-// func_00000E68 — 0xBDC / 759 insns (exact since agent-h run 406). Procedural tiled quad-mesh + index-buffer builder/constructor
+// U64BGWall_ctor — 0xBDC / 759 insns (exact since agent-h run 406). Procedural tiled quad-mesh + index-buffer builder/constructor
 // (terrain/water-surface grid for the bootup/title scene).
 //
-//   void *func_00000E68(void *self, Cfg *a1, void *owner2, void *owner3,
+//   void *U64BGWall_ctor(void *self, Cfg *a1, void *owner2, void *owner3,
 //                       arg5)  // arg5 @ sp+0x1E8; a1->s0 owner2->s1 owner3->s2
 //     if (!self) { self = func_00000000(0x4C); if (!self) return 0; }  // alloc
 //     func_00000000(self, &D_000066B0);          // register / base-init
@@ -779,7 +779,7 @@ extern int import_8005C108_e68[]; /* agent-h run 406: the same import, pinned at
 #define E68_M10(p) (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) + (int)(p) /* agent-h run 389 (kit CDLXXV): flat, unparenthesised -- each term is one counted use of p */
 #define E68_M80(p) E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p) + E68_M10(p)
 extern void func_00000000_e68v(); /* run 156: discarded bzero-like call (void: frees v0) */
-void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
+void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     u32 timg;
     u32 tlut;
     VtxE68 *buf;
@@ -955,12 +955,12 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     return self;
 }
 
-/* func_00001A44 - verified structural decode (0x1CC, 115 insns,
+/* U64BGWall_func_00001A44 - verified structural decode (0x1CC, 115 insns,
  * FP transform/draw + DL list-append). Same family as
- * func_0000485C / func_000076F4 (global root vector scaled by the
+ * Mountain_func_0000485C / func_000076F4 (global root vector scaled by the
  * Dc->0x128/0x12C/0x130 triple, reloc draw helper, command-list
  * append).
- *   void func_00001A44(Obj *a0) {
+ *   void U64BGWall_func_00001A44(Obj *a0) {
  *       if (*(int*)(func_00000188 + 0x3C) & 0x2) return;  // gate
  *       st  = (*(int*)&D_a)->0x254;
  *       n   = st->0x158;
@@ -988,7 +988,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * entries, first word = 0x01020040 marker. root = *(&D_root),
  * root->0x70 (112) -> transform obj, ->0xA0/0xA4/0xA8 (160/164/
  * 168) f32 Vec3 scaled per-component by Dc->0x128/0x12C/0x130
- * (296/300/304) (the func_0000485C scale triple). a0->0x2C/0x30/
+ * (296/300/304) (the Mountain_func_0000485C scale triple). a0->0x2C/0x30/
  * 0x34 (44/48/52) s32 -> converted to f32 draw params; 1.0f
  * const. Caps <80: FP-heavy cvt.s.w/mul.s + global gate + 2x &D
  * + reloc draw + list-append (count bump + 8-byte stride).
@@ -1001,7 +1001,7 @@ void *func_00000E68(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * undecoded — body is 66/115 insns. Next pass: decode the 8-byte-entry payload
  * stores + any trailing FP from the target asm. */
 extern void func_00000188();  /* used as data-symbol base */
-/* func_00001A44: EXACT via an IDO 7.1 NCC (C++) donor, src/bootup_uso/bootup_uso_ncc_1A44.cpp,
+/* U64BGWall_func_00001A44: EXACT via an IDO 7.1 NCC (C++) donor, src/bootup_uso/bootup_uso_ncc_1A44.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 172). Decode notes kept: */
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
  * words and the bootup.uso reloc table. It is a gSPMatrix + gSPDisplayList
@@ -1012,7 +1012,7 @@ extern void func_00000188();  /* used as data-symbol base */
  * count++. DL appends use the comma-temp reload macro (see E68). The
  * camera pointer must stay inline (a named local costs a frame slot and
  * re-colors the a0 reloads: 81.7 -> 91.4 when inlined). */
-void func_00001A44(char *a0) {
+void U64BGWall_func_00001A44(char *a0) {
     volatile int r = 0;
 }
 
@@ -1172,7 +1172,7 @@ void func_00002080(int *a0) { *(int*)((char*)a0 + 0x104) = 0; }
  * count-store and the entry-store onto a SINGLE source line lets IDO's as1
  * scheduler interleave them by data-readiness (it hoists `addu t8,a0,t7` so
  * t8 is ready for the delay-slot `sw a1,0x108(t8)`), producing the target's
- * addu-before-sw order. Same-line lever (cf. func_00005F34). Sibling
+ * addu-before-sw order. Same-line lever (cf. game_createBGBox). Sibling
  * func_000020AC cracked identically. */
 void func_00002088(char *a0, int a1) {
     int idx = *(int *)(a0 + 0x104);
@@ -1341,7 +1341,7 @@ end:
 
 // func_000024B8(obj): per-frame state/animation tick for a bootup_uso scene object.
 // Sibling of the obj->0x28 vtable-dispatch family (the 0x6C/0x68 jalr idiom appears 3x,
-// same shape as func_0000485C draw-delegate path).
+// same shape as Mountain_func_0000485C draw-delegate path).
 //
 // Pseudocode:
 //   cfg = obj->0x38;  world = obj->0x2C;  cam = world->0x70;
@@ -1534,7 +1534,7 @@ void func_000027C0(char *a0, int *a1) {
     }
 }
 
-// func_000027E8 — RECONSTRUCTED 95.21% fuzzy (0x4AC / 299 insns, no episode).
+// game_init — RECONSTRUCTED 95.21% fuzzy (0x4AC / 299 insns, no episode).
 // 2026-06-22 (agent-b): cracked the +8 frame inflation (now -0x50 = target) by
 // dropping a dead `base` local + reordering the `g->0x14=s4C` store before the
 // trailing call (lands the store in the call's DELAY SLOT, killing a redundant
@@ -1572,10 +1572,10 @@ void func_000027C0(char *a0, int *a1) {
 // renumbers nearly every stack slot. This is the documented coloring/
 // addressing-mode cap class, not a structural/decode bug.
 //
-//   void *func_000027E8(Scene *scene, A a1, B a2, C a3) {  // args spilled
+//   void *game_init(Scene *scene, A a1, B a2, C a3) {  // args spilled
 //                                                          // sp+0x50/54/58/5C
 //     v0 = func_00000000(&D_00000000);  scene->0x3C = a2;  // (sp+0x38)
-//     func_00000000(&func_00007328, 0);                    // register descs:
+//     func_00000000(&EnvSettings_load, 0);                    // register descs:
 //     func_00000000(&D_00007334, scene->0x134);            // 7328/7334/7344/
 //     func_00000000(&D_00007344, 0);                       // .L7350/7360/7374
 //     func_00000000(.L00007350); func_00000000(&D_00007360);
@@ -1615,7 +1615,7 @@ void func_000027C0(char *a0, int *a1) {
 //   scene constructor skeleton. Byte-match deferred. Name pre-checked:
 //   no extern reuse. D_00000000 reuses file-scope extern char.
 #ifdef NON_MATCHING
-void *func_000027E8(char *scene, int a1, int a2, int a3) {
+void *game_init(char *scene, int a1, int a2, int a3) {
     char *s4C, *s48, *s44, *s40, *s3C, *p, *g;
     int sv, m;
     f32 fd;
@@ -1679,7 +1679,7 @@ void *func_000027E8(char *scene, int a1, int a2, int a3) {
     return s3C;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000027E8);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_init);
 #endif
 
 /* func_00002C94 - verified structural decode (0x110, 68 insns,
@@ -1741,7 +1741,7 @@ void func_00002C94(void *a0, void *a1) {
     func_00000000();
 }
 
-/* func_00002DA4: bootup_uso subsystem init + 12-way command dispatch
+/* game_setupMode: bootup_uso subsystem init + 12-way command dispatch
  * (0x1EC / 123 words). init(&D_000073EC, 0); create -> global; attach the
  * new object under arg0->0x84 (+0x10 list, 0x14 back-link, 0x4 linked flag);
  * config word |= 0x82000 | 0x20000; then switch (arg1) 1..12 -> per-mode
@@ -1751,7 +1751,7 @@ void func_00002C94(void *a0, void *a1) {
  * 123/123 words; levers documented there). WIRED via REPLACE_FUNC_BODY donor
  * splice: the in-unit compile's .rodata jumptable is discarded by the link, so
  * the splice swaps in the donor body with its .rodata reloc renamed
- * func_00002DA4_rodata (pinned to the bootup_uso RoData table at +0x4F4).
+ * game_setupMode_rodata (pinned to the bootup_uso RoData table at +0x4F4).
  * The in-unit body keeps the .text size exact: a smaller placeholder shifts
  * the section-relative %lo(.L...) addends of later INCLUDE_ASM functions
  * (replace-function-body.py does not rebase those). */
@@ -1760,7 +1760,7 @@ extern char D_000073EC, D_000073F8, D_00007408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
 extern char D_2DA4_cfg;
 #define FW2DA4(p, o) (*(int *)((char *)(p) + (o)))
-void func_00002DA4(char *arg0, s32 arg1, s32 arg2) {
+void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;
@@ -1799,10 +1799,10 @@ void func_00002DA4(char *arg0, s32 arg1, s32 arg2) {
 }
 #undef FW2DA4
 
-/* func_00002F90 - verified structural decode (0x228, 138 insns,
+/* game_createLights - verified structural decode (0x228, 138 insns,
  * multi-widget builder + per-child init). Builder+register family
- * (cf. func_00001E08 / func_00006734).
- *   void func_00002F90(St *s1) {
+ * (cf. func_00001E08 / MapProp_func_00006734).
+ *   void game_createLights(St *s1) {
  *       func_00000000(&D_0000741C, 0);            // pre-init
  *       c = func_00000000(0, &D_00007424);        // build child 0
  *       s1->0x90 = c;
@@ -1850,7 +1850,7 @@ extern float D_00000524, D_00000528, D_0000052C;
 extern char D_2F90_reg, D_2F90_m28;
 extern void func_00000000_2F90_v();
 extern void func_00000000_2F90_f(char *, char *, float, float, float);
-void func_00002F90(char *s1) {
+void game_createLights(char *s1) {
     volatile int pad0;
     char *p90;
     volatile int pad;
@@ -1920,10 +1920,10 @@ void func_00002F90(char *s1) {
 void func_000031B8(int a0) {
 }
 
-// func_000031C0 — STRUCTURAL PASS (0x328 / 202 insns, no episode).
+// cam_create — STRUCTURAL PASS (0x328 / 202 insns, no episode).
 // 3-mode UI/scene element constructor (bootup/title).
 //
-//   void *func_000031C0(A a0, int mode, P parent3, Q a3) {  // spill 0x90..0x9C
+//   void *cam_create(A a0, int mode, P parent3, Q a3) {  // spill 0x90..0x9C
 //     obj = func_00000000(0xB8);  if (!obj) obj = func_00000000(0xB4);
 //     if (!obj) goto post;        // alloc primary record (fallback size)
 //     func_00000000(obj, &D_00007460);                 // base-init
@@ -1982,7 +1982,7 @@ void func_000031B8(int a0) {
 // placeholder below on both build paths (the old cfe decode is in git history:
 // a cfront-style ctor, mode switch 0/2 vs 1, attach + Vec3-copy tail).
 typedef struct { int w; } SC4_; /* run 131 struct-copy lever (31C0); also used by a later NM body */
-void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
+void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
     volatile int r = 0;
     return 0;
 }
@@ -2013,7 +2013,7 @@ extern void *fn_31c0_B3(int, void *, void *, void *);
 extern void  fn_31c0_tail(void *, void *);
 extern char D_31c0_a, D_31c0_b, D_31c0_c, D_31c0_d, D_31c0_e, D_31c0_f, D_31c0_g, D_31c0_h;
 typedef struct { int w; } SC4_; /* run 131 struct-copy lever (31C0) */
-void *func_000031C0(int a0, int mode, char *parent, char *a3v, int p4) {
+void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
     char *w;
     char *h;
     char *v;
@@ -2108,7 +2108,7 @@ post:
 }
 #endif /* superseded cfe decode (reference only) */
 
-/* func_000034E8 - verified structural decode (0x150, 84 insns,
+/* game_create3DWindow - verified structural decode (0x150, 84 insns,
  * tagged-arg-block object builder + wire). Cross-symbol data refs:
  * func_00000008+0x28 (global Vec3 slot), func_00000008+0x24 (global
  * pointer slot), func_000003F8+0x140 (source Vec3). The C body uses
@@ -2141,7 +2141,7 @@ extern float D_00000030[4];
 extern char D_0000002C;
 extern void func_00000008();  /* used as data-symbol base */
 extern void func_000003F8();  /* used as data-symbol base */
-void *func_000034E8(char *a0, int *a1, int a2) {
+void *game_create3DWindow(char *a0, int *a1, int a2) {
     float *g;
     char *r;
     int p;
@@ -2162,9 +2162,9 @@ void *func_000034E8(char *a0, int *a1, int a2) {
     return r;
 }
 
-/* func_00003638 - verified structural decode (0xFC, 63 insns,
+/* game_createPlayers - verified structural decode (0xFC, 63 insns,
  * object factory + link + notify).
- *   void *func_00003638(void *a0, int a1, int a2, int a3,
+ *   void *game_createPlayers(void *a0, int a1, int a2, int a3,
  *                       int e0, f32 e1, f32 e2, int flags,
  *                       int e4, void *parent) {   // e* = stack args
  *       reloc_init(&D_000074DC);
@@ -2195,7 +2195,7 @@ void *func_000034E8(char *a0, int *a1, int a2) {
  * Full body INCLUDE_ASM-preserved (.s = source of truth).
  * INCLUDE_ASM (no episode; tautology-trap rule). */
 #ifdef NON_MATCHING
-/* func_00003638: 5-call orchestrator. All 10 args home-spilled at entry; calls
+/* game_createPlayers: 5-call orchestrator. All 10 args home-spilled at entry; calls
  * cb(&D_74DC); node = cb(0, arg1, arg2+1, arg3+1, arg4, arg6, arg7, arg8|2, arg9);
  * cb(arg5+0x10, node); if (arg5->0x14) arg5->0x4=1; arg5->0x14 = arg4(0x4C slot);
  * then by (arg8|2)&0xC cb(arg0, node, 0/1); cb(); return node. m2c-assisted.
@@ -2223,7 +2223,7 @@ extern char D_000074DC;
 extern void *func_3638_node(int, void *, int, int, int, float, float, int, int);
 /* void-returning alias for the init call: kills the dead $v0 def so flags colors $v0 (38C0 recipe) */
 extern void func_00000000_3638_v(void *);
-void *func_00003638(int *arg0, void *arg1, int arg2, int arg3, int arg4, char *arg5,
+void *game_createPlayers(int *arg0, void *arg1, int arg2, int arg3, int arg4, char *arg5,
                     float arg6, float arg7, int arg8, int arg9) {
     void *node;
     char *p;
@@ -2245,7 +2245,7 @@ void *func_00003638(int *arg0, void *arg1, int arg2, int arg3, int arg4, char *a
     return node;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00003638);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
 #endif
 
 /* func_00003734 - verified structural decode (0x18C, 99 insns,
@@ -2548,8 +2548,8 @@ void func_00003B78(char *s1, int a1) {
 /* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc: alloc =
  * func_055750, ctor = func_07BA00, list adds = func_011CA4 / func_0128AC on
  * import_000200FC (= &D_00000000, whose +0x4C/0x50/0x54/0x17D/0x17F fields
- * are read through the same held base), spawn = func_00003638 (x2), link =
- * func_000031C0, attach = func_000034E8 with &D_007294 + a1 * 0x1C (zero
+ * are read through the same held base), spawn = game_createPlayers (x2), link =
+ * cam_create, attach = game_create3DWindow with &D_007294 + a1 * 0x1C (zero
  * alias bu_3d3c_d7294). The two new-expression results go through ONE temp t (target
  * s2) with o1 copied out to the frame; the camera reads are inline per arg
  * (a cfg local hoists the load); decl order puts o1 at sp+76 and r at sp+64
@@ -2598,8 +2598,8 @@ void func_00003D3C(char *s1, int a1) {
  */
 /* EXACT (agent-c run 115). Identities from the bootup.uso TextReloc (same
  * chain as func_00003D3C): alloc func_055750, ctor func_07BA00, list adds
- * func_011CA4 x2 + func_0129A0 on import_000200FC, spawn func_00003638 x2,
- * link func_000031C0 x2, attach func_000034E8 x2 on &D_007294 + a1 * 0x1C
+ * func_011CA4 x2 + func_0129A0 on import_000200FC, spawn game_createPlayers x2,
+ * link cam_create x2, attach game_create3DWindow x2 on &D_007294 + a1 * 0x1C
  * (zero alias), r->0xC = D_000074E4 / D_000074EC (baked). No early returns:
  * the two new-expression results share temp t and are copied into an object
  * ARRAY o[2] (slots 104/108, re-read from memory for the link calls); b3/f1
@@ -2758,7 +2758,7 @@ void func_0000411C(char *s1, int a1) {
  * rN->0x8DC=fN. All field stores byte-match; residual ~45% = regalloc. */
 /* EXACT (agent-c run 115). Same reloc-identified chain as func_00003D3C /
  * func_00003F00 (alloc, ctor, list add x2, RNG func_075EE4 x2, spawn
- * func_00003638 x2, link func_000031C0 x2, attach func_000034E8 x2). The
+ * game_createPlayers x2, link cam_create x2, attach game_create3DWindow x2). The
  * RoData scales (pool +0x54C / +0x550) and the descriptor table (0x90) are
  * per-site data aliases pinned to their real offsets, and the second list
  * add gets its own zero alias of import_000200FC, so nothing is held in an
@@ -2854,8 +2854,8 @@ void *func_000046EC(int *arg0) {
     return p2;
 }
 
-/* func_0000477C - verified structural decode (0xE0, 56 insns,
- * slider/parameter registration). SIBLING of func_00006734 (same
+/* Mountain_func_0000477C - verified structural decode (0xE0, 56 insns,
+ * slider/parameter registration). SIBLING of MapProp_func_00006734 (same
  * registration-builder shape, here with float range/step params).
  * (reg = func_00000000; a3 = min/step as f32 bits, 5th/6th args =
  * max + flag on the stack at sp+0x10 / sp+0x14.)
@@ -2872,7 +2872,7 @@ extern char D_000074F4, D_00007500, D_00007508, D_00007510;
 /* MATCHED 2026-06-02: typed-float proto (0x0-alias) makes args 4,5 pass as
  * single floats (a3 reg + swc1 0x10 stack) instead of K&R double-promote. */
 extern void func_477c_reg(void *, void *, void *, float, float, int);
-void func_0000477C(char *a0) {
+void Mountain_func_0000477C(char *a0) {
     func_00000000(&D_00000000, &D_000074F4, 0);
     func_477c_reg(&D_00000000, &D_00007500, a0 + 0x2C, -2000.0f,  2000.0f, 0);
     func_477c_reg(&D_00000000, &D_00007508, a0 + 0x34,    0.01f,    1.0f, 0);
@@ -2881,7 +2881,7 @@ void func_0000477C(char *a0) {
     func_00000000(a0);
 }
 
-/* func_0000485C - verified structural decode (0xB8, 46 insns,
+/* Mountain_func_0000485C - verified structural decode (0xB8, 46 insns,
  * FP transform/draw helper).
  * Struct-typing reference: a0 = object; a0->0x2C/0x30/0x34 (44/48/52)
  * f32 source vector components; global root *(&D_a) ->0x70 (112) ptr
@@ -2896,11 +2896,11 @@ extern void func_00000080();  /* used as data-symbol base */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_485C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): V3 ctor
  * forwarding to set(), b2 in an inner block (allocated after b1's pool slots). */
-void func_0000485C(char *a0) {
+void Mountain_func_0000485C(char *a0) {
     volatile char *r = a0;
 }
 
-void func_00004914(char *a0, int a1, char *a2) {
+void cam_func_00004914(char *a0, int a1, char *a2) {
     *(float*)(a0 + 0x60) = *(float*)(a2 + 0x30);
     *(float*)(a0 + 0x64) = *(float*)(a2 + 0x34);
     *(float*)(a0 + 0x68) = *(float*)(a2 + 0x38);
@@ -2908,13 +2908,13 @@ void func_00004914(char *a0, int a1, char *a2) {
     *(float*)(a0 + 0x64) += 100.0f;
 }
 
-/* func_00004948: camera transition tick keyed by obj->0x158 (snap / distance-table
+/* cam_func_00004948: camera transition tick keyed by obj->0x158 (snap / distance-table
  * blend / view-angle blend). EXACT via an IDO 7.1 NCC (C++) donor:
  * src/bootup_uso/bootup_uso_ncc_4948.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 125); the trailing all-zero pad word is a
  * SUFFIX_BYTES_FORCE word. */
 extern float func_00000000_4948_ff(float); /* also used by a later NM body */
-void func_00004948(char *obj) {
+void cam_func_00004948(char *obj) {
     volatile int r = 0;
 }
 
@@ -2935,11 +2935,11 @@ void func_0000502C(int *dst) {
  * struct-by-value. The target homes a1 to its outgoing slot (`sw a1,4(sp)`,
  * dead) which a single-int STRUCT-BY-VALUE arg (`func(0, *(struct OneI*)&a0)`)
  * reproduces exactly (same lever as the game_uso pair-homing, applied to one
- * int). Sibling func_000054A0 identical. See docs/IDO_CODEGEN.md
+ * int). Sibling item_createCfr identical. See docs/IDO_CODEGEN.md
  * #feedback-ido-struct-by-value-homes-arg-pair. */
 extern char D_00007D94;
 struct OneI { int x; };
-void func_00005068(int a0) {
+void item_createHel(int a0) {
     func_00000000(&D_00007D94);
     func_00000000(0, *(struct OneI*)&a0);
 }
@@ -3003,7 +3003,7 @@ void func_00005068(int a0) {
  * reachable by reordering C (declaration-order + embedded-assign permutations
  * all regress, retested). Stays NM at 99.09%. */
 extern char D_00007DA4;
-/* func_000050A0 — EXACT (33/33 post-link) 2026-07-03 agent-e. CRACKED the
+/* item_createHem — EXACT (33/33 post-link) 2026-07-03 agent-e. CRACKED the
  * documented "spill-slot-coloring cap" (wrap note 2026-06-21, 8 residual diffs).
  *
  * TWO levers, applied on top of the old volatile-saved_a0 body:
@@ -3024,7 +3024,7 @@ extern char D_00007DA4;
  * All jals zero-target K&R func_00000000. No new wiring needed.
  */
 typedef struct { int v; } S50A0;
-int func_000050A0(int a0) {
+int item_createHem(int a0) {
   float buf[5];
   int *p;
   char pad[16];
@@ -3045,7 +3045,7 @@ int func_000050A0(int a0) {
   return (int) p;
 }
 
-/* func_00005124 - verified structural decode (0xB0, 44 insns,
+/* item_createBal - verified structural decode (0xB0, 44 insns,
  * alloc-cascade constructor with defensive-dead-check).
  * Struct-typing reference: object = 0x4C bytes; obj->0x28 (40) and
  * obj->0x48 (72) descriptor/vtable ptrs (&D, runtime-patched); arg
@@ -3065,7 +3065,7 @@ int func_000050A0(int a0) {
  * descriptor stores are base-0 placeholder externs (same bytes), see
  * docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124. */
 extern char D_00007DB4;
-/* func_00005124 - alloc-cascade get-or-create constructor.
+/* item_createBal - alloc-cascade get-or-create constructor.
  * Reconstructed missing logic: the three descriptor stores
  * (obj->0x28 = A; obj->0x28 = B; obj->0x48 = C) target DISTINCT
  * registers (t9/t0/t1) -> three DISTINCT externs to defeat the
@@ -3083,7 +3083,7 @@ extern char D_00000000_c;
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
 typedef struct { int v; } Box5124;
-void *func_00005124(Box5124 arg) {
+void *item_createBal(Box5124 arg) {
     volatile int p0;
     char *obj;
     Box5124 b1;
@@ -3106,19 +3106,19 @@ void *func_00005124(Box5124 arg) {
     return obj;
 }
 
-/* func_000051D4 - verified structural decode (0xB0, 44 insns).
- * BYTE-STRUCTURALLY IDENTICAL SIBLING of func_00005124 (same
+/* item_createBa2 - verified structural decode (0xB0, 44 insns).
+ * BYTE-STRUCTURALLY IDENTICAL SIBLING of item_createBal (same
  * alloc-cascade constructor with defensive-dead-check; the ONLY
  * difference is the init datum D_00007DC4 here vs D_00007DB4 there).
- * Struct-typing reference: identical to func_00005124 - object 0x4C
+ * Struct-typing reference: identical to item_createBal - object 0x4C
  * bytes, obj->0x28 (40) / obj->0x48 (72) descriptor/vtable ptrs (&D
  * runtime-patched). Caps <80: alloc-cascade + defensive-dead-check +
  * 3-4 reloc calls + 3x &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124).
  * NM body captures live behavior only — dead-arm artifacts not
- * recreated (same convention as func_00005124). */
+ * recreated (same convention as item_createBal). */
 extern char D_00007DC4;
-/* func_000051D4 - alloc-cascade get-or-create constructor.
- * Reconstructed missing logic (sibling of func_00005124, init datum
+/* item_createBa2 - alloc-cascade get-or-create constructor.
+ * Reconstructed missing logic (sibling of item_createBal, init datum
  * D_00007DC4): the three descriptor stores (obj->0x28 = A; obj->0x28
  * = B; obj->0x48 = C) target DISTINCT registers (t9/t0/t1) -> three
  * DISTINCT externs to defeat the &D_00000000 address-CSE that
@@ -3129,7 +3129,7 @@ extern char D_00007DC4;
 extern char D_00000000_a;
 extern char D_00000000_b;
 extern char D_00000000_c;
-/* 2026-09-04: struct-by-value shape ported from func_00005124 (see its note). */
+/* 2026-09-04: struct-by-value shape ported from item_createBal (see its note). */
 /* 2026-09-04 (agent-f, pass 2): frame 0x38 slot layout = three `volatile int`
  * pads interleaved in decl order (pad,obj,b1,pad,o2,pad,b2 -> homes
  * 0x30/0x2C/0x24/0x1C); the beqz-on-v0 + delay-slot `sw a1,4(sp)` schedule
@@ -3137,7 +3137,7 @@ extern char D_00000000_c;
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
 typedef struct { int v; } Box51D4;
-void *func_000051D4(Box51D4 arg) {
+void *item_createBa2(Box51D4 arg) {
     volatile int p0;
     char *obj;
     Box51D4 b1;
@@ -3160,11 +3160,11 @@ void *func_000051D4(Box51D4 arg) {
     return obj;
 }
 
-/* func_00005284 - verified structural decode (0xB0, 44 insns).
- * THIRD IDENTICAL SIBLING of the func_00005124 / func_000051D4
+/* item_createChk - verified structural decode (0xB0, 44 insns).
+ * THIRD IDENTICAL SIBLING of the item_createBal / item_createBa2
  * alloc-cascade-ctor family (instruction-for-instruction identical
  * except the init datum D_00007DD4 and local label addresses).
- * Struct-typing reference: identical to func_00005124 — object 0x4C
+ * Struct-typing reference: identical to item_createBal — object 0x4C
  * bytes, obj->0x28 (40) / obj->0x48 (72) descriptor ptrs (&D runtime-
  * patched). D_00007DD4 = named init datum (family: D_00007DB4/DC4/DD4
  * at +0x10 stride). Caps <80: alloc-cascade + defensive-dead-check +
@@ -3172,8 +3172,8 @@ void *func_000051D4(Box51D4 arg) {
  * NM body captures live behavior only — dead-arm artifacts not
  * recreated. */
 extern char D_00007DD4;
-/* func_00005284 - alloc-cascade get-or-create constructor.
- * THIRD IDENTICAL SIBLING of func_00005124 / func_000051D4
+/* item_createChk - alloc-cascade get-or-create constructor.
+ * THIRD IDENTICAL SIBLING of item_createBal / item_createBa2
  * (instruction-for-instruction identical except the init datum
  * D_00007DD4 and local label addresses).
  * Reconstructed missing logic: the three descriptor stores
@@ -3190,7 +3190,7 @@ extern char D_00007DD4;
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
 typedef struct { int v; } Box5284;
-void *func_00005284(Box5284 arg) {
+void *item_createChk(Box5284 arg) {
     volatile int p0;
     char *obj;
     Box5284 b1;
@@ -3213,8 +3213,8 @@ void *func_00005284(Box5284 arg) {
     return obj;
 }
 
-/* func_00005334 - verified structural decode (0xB4, 45 insns).
- * NEAR-SIBLING of the func_00005124/51D4/5284 alloc-cascade-ctor +
+/* item_createGtr - verified structural decode (0xB4, 45 insns).
+ * NEAR-SIBLING of the item_createBal/51D4/5284 alloc-cascade-ctor +
  * defensive-dead-check family. Variant: object size 0x50 (vs 0x4C),
  * init datum D_00007DE8, one extra insn (0xB4 vs 0xB0).
  * Struct-typing reference: object = 0x50 bytes (this variant);
@@ -3223,8 +3223,8 @@ void *func_00005284(Box5284 arg) {
  * reloc + 3x &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124). NM body
  * captures live behavior only — dead-arm artifacts not recreated. */
 extern char D_00007DE8;
-/* func_00005334 - alloc-cascade get-or-create constructor (0x50 variant).
- * Reconstructed to the func_00005124 family shape: object 0x50 bytes,
+/* item_createGtr - alloc-cascade get-or-create constructor (0x50 variant).
+ * Reconstructed to the item_createBal family shape: object 0x50 bytes,
  * init datum D_00007DE8. Four descriptor stores target DISTINCT
  * registers (t9 -> obj->0x28; t0 -> obj->0x28; t1 -> obj->0x4C; zero ->
  * obj->0x48) so the &D_00000000 address-CSE does not collapse them onto
@@ -3242,7 +3242,7 @@ extern char D_00000000_c;
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
 typedef struct { int v; } Box5334;
-void *func_00005334(Box5334 arg) {
+void *item_createGtr(Box5334 arg) {
     volatile int p0;
     char *obj;
     Box5334 b1;
@@ -3265,9 +3265,9 @@ void *func_00005334(Box5334 arg) {
     return obj;
 }
 
-/* func_000053E8 - verified structural decode (0xB8, 46 insns).
- * NEAR-SIBLING of the func_00005124/51D4/5284/5334 alloc-cascade-ctor
- * family. Variant: object 0x50 (like func_00005334), init datum
+/* item_createGtl - verified structural decode (0xB8, 46 insns).
+ * NEAR-SIBLING of the item_createBal/51D4/5284/5334 alloc-cascade-ctor
+ * family. Variant: object 0x50 (like item_createGtr), init datum
  * D_00007DFC, 0xB8 (one extra descriptor store vs 5334's 0xB4; uses
  * t2 reg where 5124 uses t1).
  * Struct-typing reference: object = 0x50 bytes; obj->0x28 (40) /
@@ -3277,7 +3277,7 @@ void *func_00005334(Box5334 arg) {
  * &D-store reloc. MATCHED 2026-09-04 (100, ROM-exact; kit in docs/IDO_CODEGEN.md#alloc-cascade-ctor-family-kit-5124). NM body captures
  * live behavior only — dead-arm artifacts not recreated. */
 extern char D_00007DFC;
-/* func_000053E8 - alloc-cascade get-or-create constructor.
+/* item_createGtl - alloc-cascade get-or-create constructor.
  * Reconstructed missing logic: the three descriptor stores
  * (obj->0x28 = A in the live arm; obj->0x28 = B; obj->0x4C = C in
  * the tail) target DISTINCT registers (t9/t0/t2) -> three DISTINCT
@@ -3296,7 +3296,7 @@ extern char D_00000000_c;
  * (`o2 != 0 || (o2 = alloc(0x48)) != 0`); tail addiu order = temp-first `t = &c`;
  * obj-reload placement = call+store on ONE source line. Standalone -O2 44/44 exact. */
 typedef struct { int v; } Box53E8;
-void *func_000053E8(Box53E8 arg) {
+void *item_createGtl(Box53E8 arg) {
     volatile int p0;
     char *obj;
     Box53E8 b1;
@@ -3319,12 +3319,12 @@ void *func_000053E8(Box53E8 arg) {
     return obj;
 }
 
-/* func_000054A0: 14-insn 2-call wrapper. Sibling of func_00005068 (same
+/* item_createCfr: 14-insn 2-call wrapper. Sibling of item_createHel (same
  * struct-by-value one-int recipe). Passing `*(struct OneI*)&a0` homes the
  * value to the outgoing a1 slot and reproduces the target's dead
  * `sw a1, 0x4(sp)` without instruction patching. */
 extern char D_00007E10;
-void func_000054A0(int a0) {
+void item_createCfr(int a0) {
     func_00000000(&D_00007E10);
     func_00000000(0, *(struct OneI*)&a0);
 }
@@ -3333,14 +3333,14 @@ extern char D_000078D8;
 
 /* 25-insn constructor wrapper: alloc 0x58 bytes, init via runtime-patched
  * callee, set field 0x28 to &D_000078D8.  BYTE-EXACT (2026-06-20).
- * Byte-identical sibling of func_0000553C — same three IDO levers stacked
+ * Byte-identical sibling of item_createSnow — same three IDO levers stacked
  * (struct-by-value PARAM homes a0; struct-by-value ARG homes outgoing a1 in
  * the jal delay slot; volatile int pad grows the frame 0x20 -> 0x28). The
  * only difference from 553C is the field-0x28 data symbol (D_000078D8 here
  * vs D_000079C8 there). D_54D8_init_value/_arg are base-0 externs. */
 extern char D_54D8_init_value;
 extern char D_54D8_init_arg;
-int *func_000054D8(struct OneI arg0) {
+int *item_createFog(struct OneI arg0) {
     volatile int pad;
     int *p;
     int saved_a0 = arg0.x;
@@ -3368,7 +3368,7 @@ end:
 extern char D_000079C8;
 extern char D_553C_init_value;
 extern char D_553C_init_arg;
-int *func_0000553C(struct OneI arg0) {
+int *item_createSnow(struct OneI arg0) {
     volatile int pad;
     int *p;
     int saved_a0 = arg0.x;
@@ -3380,11 +3380,11 @@ end:
     return p;
 }
 
-/* func_000055A0: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_55A0.cpp, REPLACE_FUNC_BODY-spliced
+/* item_registerTemplates: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_55A0.cpp, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-g run 241). The superseded in-unit decode is kept
  * for reference under BOOTUP_55A0_OLD_DECODE (never defined). */
 #ifdef BOOTUP_55A0_OLD_DECODE
-/* func_000055A0 - STRUCTURAL PASS (big-swing 2026-06-02).
+/* item_registerTemplates - STRUCTURAL PASS (big-swing 2026-06-02).
  * bootup_uso scene/HUD constructor, 0x958 (598 insns), ~52 folded jal-0
  * placeholder calls + folded D_00000000 data-pool refs.
  *
@@ -3478,7 +3478,7 @@ extern G2_55A0 D_55A0_G;
 extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
 extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
-void func_000055A0(int arg0, int arg1, int arg2) {
+void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
     S4_55A0 v0, v1, v2, v3;
@@ -3697,7 +3697,7 @@ void func_000055A0(int arg0, int arg1, int arg2) {
     func_00000000(DROOT, obj, 0xFFFF);
 }
 #else
-void func_000055A0(char *b) {
+void item_registerTemplates(char *b) {
     volatile char *r = b;
 }
 #endif
@@ -3708,7 +3708,7 @@ void func_00005EF8(int *dst) {
     *dst = buf[0];
 }
 
-/* func_00005F34 - SIX-element list builder. 7 params (a0 unused + a1,a2,a3
+/* game_createBGBox - SIX-element list builder. 7 params (a0 unused + a1,a2,a3
  * in regs + a4,a5,a6 on the caller stack at sp+80/84/88). s1 = a container
  * object built from D_00007E6C; list = s1+0x10 is its child attach point.
  * Per element: r = func_00000000(0, payload, A2, A3, 0) with an angle constant
@@ -3738,7 +3738,7 @@ void func_00005EF8(int *dst) {
  * words byte-exact (the lone reloc word to D_00007E6C resolves equal).
  * Frame 64 with list at sp+0x28. */
 extern char D_00007E6C;
-char *func_00005F34(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
+char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
   char *s1 = (char *) func_00000000(0, &D_00007E6C, 0, a0);
   char *list;
   char *r;
@@ -3832,7 +3832,7 @@ void func_00006228(char *a0) {
     func_00000000(a0);
 }
 
-/* func_00006254 - verified structural decode (0x160, 88 insns,
+/* MapProp_ctor - verified structural decode (0x160, 88 insns,
  * get-or-create constructor + sub-object + Vec3 init).
  * Struct-typing reference: o = 0xDC-byte object. o->0x28 (40)
  * descriptor ptr (&D), o->0xC (12) type/vtable ptr (&D_00007E7C),
@@ -3855,7 +3855,7 @@ extern char D_00007E74, D_00007E7C, D_00007E84, D_00007E98;
  * itself is the object (no copy local); pads restore the 0x50 frame / home offsets; block-count
  * lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). EXACT: z[1]/z[2] stored in the call's
  * argument (comma expression) puts the s+0x30 setup between the z[0] and z[1] stores as in the target. */
-void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
+void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     char *s;
     volatile int pad[3];
     float z[3];
@@ -3895,7 +3895,7 @@ void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
     return a0;
 }
 
-// func_000063B4 — 0x380 / 224 insns. Minimap marker projection. 23.4 -> 76.0
+// MapProp_func_000063B4 — 0x380 / 224 insns. Minimap marker projection. 23.4 -> 76.0
 // (agent-f 2026-09-04, hand reconstruction from the target .s; old body was
 // a 78-insn stub that dropped the whole 3x3 transform + clamp cascade).
 // Shape recovered: obj homed at 0x90(sp) (no s-regs); K = folded const
@@ -3927,11 +3927,11 @@ void *func_00006254(char *a0, int a1, int a2, int a3, int a4) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 184: an inline M3::xf(V3 &) called
  * through ctx->view->rot, plus set() / addz() members on the two frame vectors). The cfe decode
  * (83.21) is in git history. */
-void func_000063B4(char *obj) {
+void MapProp_func_000063B4(char *obj) {
     volatile char *r = obj;
 }
 
-/* func_00006734 - verified structural decode (0xD4, 53 insns,
+/* MapProp_func_00006734 - verified structural decode (0xD4, 53 insns,
  * 4-entry registration/builder).
  * (reg = func_00000000; the 5th/6th args are passed on the stack at
  * sp+0x10 / sp+0x14, the documented IDO stack-arg slots.)
@@ -3943,7 +3943,7 @@ void func_000063B4(char *obj) {
  * pairs. Caps <80: 6x reloc calls + 4x &D reloc + 5th/6th stack-arg
  * passing (sp+0x10/0x14). INCLUDE_ASM remains build path. */
 extern char D_00007EA4, D_00007EA8, D_00007EAC, D_00007EB0;
-void func_00006734(char *a0) {
+void MapProp_func_00006734(char *a0) {
     func_00000000(&D_00000000, &D_00007EA4, 0);
     func_00000000(&D_00000000, &D_00007EA8, a0 + 0xB8, 0, 0x7F, 1);
     func_00000000(&D_00000000, &D_00007EAC, a0 + 0xC0, 0, 0x7F, 1);
@@ -3952,12 +3952,12 @@ void func_00006734(char *a0) {
     func_00000000(a0);
 }
 
-// func_00006808 — STRUCTURAL PASS (0x948 / 594 insns, no episode).
+// game_createMap — STRUCTURAL PASS (0x948 / 594 insns, no episode).
 // Large scene/screen constructor, bracketed by a global mode-flag
 // set/clear; builds a widget tree from the obj's sub-object table via
 // ~65 func_00000000 dispatcher calls.
 //
-//   void *func_00006808(Scene *obj, Ctx *a1, void *a2) {  // obj->s7
+//   void *game_createMap(Scene *obj, Ctx *a1, void *a2) {  // obj->s7
 //     s1 = a1->0x40;
 //     *(int*)(func_00000000+0x4) |= 0x20000;          // set global mode bit
 //     // stack widget descriptor: {flag=1, h=0x14, w=0x28, 0} @ sp+0xB0..BC
@@ -3985,7 +3985,7 @@ void func_00006734(char *a0) {
 //     func_00000000 + 0x4  = a WRITABLE global mode word (RMW |0x20000);
 //     func_00000188 + 0x3C = a folded table (read 6x);
 //     func_0000057C + 0x38 = a folded f32 const (sibling of the
-//                            func_0000057C+0x34 ref in func_000063B4).
+//                            func_0000057C+0x34 ref in MapProp_func_000063B4).
 // Caps (DEFERRED): 594-insn dispatcher-heavy ctor w/ folded globals
 //   — byte-match blocked by deferred pool symbolization + GOT-base
 //   coloring (arg0->s7, two module globals pinned in s4/s5, the running
@@ -4057,17 +4057,17 @@ void func_00006734(char *a0) {
 //   kept the plain form (258 diff words vs 280).
 // PASS-8 2026-10-29 (agent-g run 223): EXACT. The C now lives in the IDO 7.1 -O2 donor
 //   src/bootup_uso/bootup_uso_o2_6808.c, REPLACE_FUNC_BODY-spliced over the placeholder
-//   below in both trees (jumptable reloc -> func_00006808_rodata = 0x5B4). The 4-byte frame
+//   below in both trees (jumptable reloc -> game_createMap_rodata = 0x5B4). The 4-byte frame
 //   residual was a cfe temporary: the `call() + 0 * x` fold and the struct-valued comma args
 //   each allocate a temp word under the lowest home; with them gone plus one dead named home
 //   (`int gE = 0;` after gD) every offset matches, and `va + 0 * (t70.w = X)` restores the
 //   target's arg-slot-store-before-jal order. The old in-unit NM body is in git history.
-void *func_00006808(char *obj, char *arg1, s32 arg2) {
+void *game_createMap(char *obj, char *arg1, s32 arg2) {
     volatile char *r = obj;
     return 0;
 }
 
-/* func_00007150 - get-or-create constructor (0xB4, 45 insns).
+/* EnvSettings_ctor - get-or-create constructor (0xB4, 45 insns).
  * EXACT 2026-07-15 (84.0% -> 45/45, ROM byte-exact, C is build path).
  * Object = 0x44 bytes: ->0x18 u32 flags (bit 3 cleared), ->0x28
  * descriptor ptr (&D runtime-patched), ->0x2C sub-ptr (inline &o+0x2C,
@@ -4082,7 +4082,7 @@ void *func_00006808(char *obj, char *arg1, s32 arg2) {
  * or v1,v0 copy fills the beqz delay slot (reload lw a2 hoists above
  * the branch). The if(1) braces and shared lines are LOAD-BEARING. */
 extern char D_00007F84;
-void *func_00007150(char *a0) {
+void *EnvSettings_ctor(char *a0) {
     if (a0 == 0) {
         a0 = (char*)func_00000000(0x44);
         if (a0 == 0) goto end;
@@ -4129,7 +4129,7 @@ void func_00007204(int a0, int a1, int a2) {
     volatile int r = 0;
 }
 
-/* func_00007288: 40-insn (0xA0) two-conditional state-init helper.
+/* EnvSettings_func_00007288: 40-insn (0xA0) two-conditional state-init helper.
  *
  * Structure:
  *   self = D[0x254];   // global state pointer at &D_00000000 + 0x254
@@ -4167,7 +4167,7 @@ void func_00007204(int a0, int a1, int a2) {
  * named-web free-pool tie class. NM. */
 typedef struct { int w[4]; } Q7288;
 extern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
-void func_00007288(int *a0) {
+void EnvSettings_func_00007288(int *a0) {
     if (a0[0x38/4] & 2) {
         char *base = (char*)&D_00000000;
         *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)a0[0x30/4];
@@ -4183,7 +4183,7 @@ void func_00007288(int *a0) {
     }
 }
 
-/* func_00007328 - FULL structural decode (0x1C0, 112 insns, node-list
+/* EnvSettings_load - FULL structural decode (0x1C0, 112 insns, node-list
  * search + match-dispatch loop + tail state-set). fuzzy 24 -> 69 (2026-07,
  * agent-f). Logic + all reloc callees are correct; the FP-literal-pool
  * premise does NOT apply here (the single float 1.0f is emitted inline via
@@ -4226,10 +4226,10 @@ extern void func_0000029C();   /* K&R data-symbol base (0x29C) */
 extern void func_00000008();   /* K&R data-symbol base (0x08)  */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_7328.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Handler list walk through the C++ {cur, nxt} iterator; see the .cpp header. */
-void func_00007328(char *s3) {
+void EnvSettings_load(char *s3) {
 }
 
-/* func_000074E8 - verified structural decode (0x138, 78 insns,
+/* FallingSnow_create - verified structural decode (0x138, 78 insns,
  * guarded constructor + list-link + vtable + finalize).
  * Struct-typing reference: global gate *(func_00000008+0x2C) == 8
  * skips construction (already-done / disabled state). r = 0x134-byte
@@ -4250,7 +4250,7 @@ extern void func_000000F0();  /* used as data-symbol base */
  * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
  * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
 extern char D_74e8_g, D_74e8_h;
-void func_000074E8(char *a0) {
+void FallingSnow_create(char *a0) {
     int *v;
     char *r;
     char *sub;
@@ -4330,7 +4330,7 @@ void func_00007620(char *a0, int a1) {
 #undef ST_7620
 
 /* func_000076F4 - verified structural decode (0xDC, 55 insns).
- * Same FP transform/draw family as func_0000485C (shared globals:
+ * Same FP transform/draw family as Mountain_func_0000485C (shared globals:
  * root *(func_0000023C+0x18), scratch vector func_00000080+0x20,
  * scale consts &D+0x128/0x12C/0x130, a global emit counter).
  * Struct-typing reference: s0 = drawable/emitter object. s0->0x5C
@@ -4339,7 +4339,7 @@ void func_00007620(char *a0, int a1) {
  * arg, s0->0x6C (108) f32 y-offset, s0+0x2C = a sub-struct pointer
  * arg. root = *(func_0000023C+0x18) global context; func_00000080+
  * 0x20 = shared f32 scratch vector {0x30,0x34,0x38} scaled per-frame
- * by the &D+0x128/0x12C/0x130 scale triple (same as func_0000485C).
+ * by the &D+0x128/0x12C/0x130 scale triple (same as Mountain_func_0000485C).
  * reloc_emit returns nonzero to proceed with the transform+draw.
  * Caps <80: FP mul.s/add.s chains + 3x reloc + cross-symbol data
  * refs (func_0000023C+0x18, func_00000080+0x20) + f32 stack-arg.
@@ -4770,7 +4770,7 @@ void func_00007E70(char *a0) {
     }
 }
 
-/* func_00007EC8 - verified structural decode (0x1B0, 108 insns,
+/* Fog_func_00007EC8 - verified structural decode (0x1B0, 108 insns,
  * FP 1D collision / threshold-crossing test).
  * Struct-typing reference: s0->0x38 (56) f32 = position, s0->0x54
  * (84) f32 = velocity, s0->0x6C (108) f32 = a derived value,
@@ -4801,7 +4801,7 @@ extern char bu_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
 extern int bu_7ec8_m;
 extern void func_00000000_7ec8_c(char *, char *, float);
 extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
-void func_00007EC8(char *s0) {
+void Fog_func_00007EC8(char *s0) {
     float scale, limit, p, end, frac;
     int hit;
     if (bu_7ec8_m != 8) {
@@ -4833,31 +4833,31 @@ void func_00007EC8(char *s0) {
     }
 }
 
-void func_00008078(char *a0) {
+void Fog_func_00008078(char *a0) {
     func_00000000(a0 + 0x3C, 0);
     func_00000000(a0 + 0x74);
     func_00000000(a0);
 }
 
-void func_000080B4(char *a0) {
+void Fog_func_000080B4(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000((int*)(a0 + 0x74));
     func_00000000(a0);
 }
 
-void func_000080EC(char *a0) {
+void Fog_func_000080EC(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000((int*)(a0 + 0x74));
     func_00000000(a0);
 }
 
-/* func_00008124 - verified structural decode (0x1D4, 117 insns).
- * NEAR-SIBLING of func_0001438C / func_000084A0 (bootup_uso
+/* FogTmpl_create - verified structural decode (0x1D4, 117 insns).
+ * NEAR-SIBLING of TimeGadget_func_0001438C / SnowTmpl_create (bootup_uso
  * get-or-create constructor + child sub-objects family); variant
  * params: object 0x90, init datum D_00007878, child descriptor
  * D_00007FC4, child type D_00007540, child->0x10 = 200.0f
  * (0x43480000), and FP/&D constants from D_00007FCC/0x7FD0.
- *   void *func_00008124(void *a0) {
+ *   void *FogTmpl_create(void *a0) {
  *       o = a0 ? a0 : alloc(0x90); if (!o) return 0;
  *       init(o, &D_00007878);
  *       o->0x28 = &D_desc;
@@ -4876,7 +4876,7 @@ void func_000080EC(char *a0) {
  *       }
  *       ... (further child from D_00007FD0, same family shape)
  *   }
- * Struct-typing reference (same as func_0001438C): o = 0x90-byte
+ * Struct-typing reference (same as TimeGadget_func_0001438C): o = 0x90-byte
  * object, o->0x28 (40) descriptor (&D_00007878). s = 0x38-byte
  * sub; c = 8-byte aux (c->0x0 = &D_00007FC4 descriptor, c->0x4=0);
  * c2 = 0x18-byte child: c2->0xC (12) type ptr (&D_00007540),
@@ -4911,7 +4911,7 @@ extern char D_00007FC4;
 extern int D_00007FCC;
 extern int D_00007FD0;
 extern char D_00007540;
-char *func_00008124(char *arg0) {
+char *FogTmpl_create(char *arg0) {
     char *v;
     char *o;
     char *u;
@@ -4969,10 +4969,10 @@ char *func_00008124(char *arg0) {
     return v;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00008124);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", FogTmpl_create);
 #endif
 
-/* func_000082F8 — EXACT (54/54 post-link) 2026-07-03 agent-e. CRACKED the
+/* Snower_func_000082F8 — EXACT (54/54 post-link) 2026-07-03 agent-e. CRACKED the
  * documented "base $v0-vs-$v1 caller-saved renumber cap" (header note B, 2026-06-20).
  *
  * LEVER (NEW): call-1's callee was the K&R int-returning func_00000000 — its
@@ -4993,7 +4993,7 @@ extern int func_00000000_082F8(int, int, int, int, float, int, float);
 extern void func_00000000_082F8_v(int, int);
 extern char D_00000000_a;
 extern char D_func_00000008_data;
-void func_000082F8(int *a0) {
+void Snower_func_000082F8(int *a0) {
     float f0 = *(float*)((char*)&D_00000000 + 0x130);
     float f2 = *(float*)((char*)*(int**)((char*)BOOT_SELF_PTR + 0x70) + 0xA8) * f0;
     float f12 = *(float*)((char*)a0 + 0x38) * f0;
@@ -5018,7 +5018,7 @@ void func_000082F8(int *a0) {
     }
 }
 
-/* func_000083D0: 30-insn (0x78) 5-call init/dispatch wrapper. Callee
+/* Snower_func_000083D0: 30-insn (0x78) 5-call init/dispatch wrapper. Callee
  * func_00000000 is the K&R cross-USO placeholder.
  *
  * Decoded: single int* arg, makes 5 sequential calls, no return:
@@ -5033,7 +5033,7 @@ void func_000082F8(int *a0) {
  * 2/3/5). All delay slots are filled with addiu/move/lw arg setup. */
 extern char D_00007FD4;
 extern char D_00007FDC;
-void func_000083D0(int *a0) {
+void Snower_func_000083D0(int *a0) {
     func_00000000(&D_00000000, &D_00007FD4, 0);
     func_00000000(&D_00000000, &D_00007FDC, (int)a0 + 0x6C, 1);
     func_00000000((int)a0 + 0x3C, 0);
@@ -5053,21 +5053,21 @@ void func_000083D0(int *a0) {
  * %lo (account for %hi carry), not the flat extern. Reloc word →
  * INSN_PATCH-unsafe. One-word symbol-form cap; rest byte-exact. */
 
-void func_00008448(char *a0) {
+void Snower_func_00008448(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000(a0);
 }
 
-void func_00008474(char *a0) {
+void Snower_func_00008474(char *a0) {
     func_00000000((int*)(a0 + 0x3C));
     func_00000000(a0);
 }
 
-/* func_000084A0 - verified structural decode (0x1C4, 113 insns,
+/* SnowTmpl_create - verified structural decode (0x1C4, 113 insns,
  * guarded singleton constructor). Member of the bootup_uso
  * alloc-cascade-ctor + defensive-dead-check family (cf.
- * func_00005124 / func_0001438C / func_00006254).
- *   void func_000084A0(void *a0) {
+ * item_createBal / TimeGadget_func_0001438C / MapProp_ctor).
+ *   void SnowTmpl_create(void *a0) {
  *       g = *(St**)&D_root;
  *       if (g->0x40 != 0) return;                 // already built
  *       func_00000000(g);                          // pre-init
@@ -5116,7 +5116,7 @@ extern char D_00007FE4;
 extern int D_00007FEC;
 extern int D_00007FF0;
 extern char D_00007540;
-char *func_000084A0(char *arg0) {
+char *SnowTmpl_create(char *arg0) {
     char *o;
     char *v;
     char *u;
@@ -5175,10 +5175,10 @@ char *func_000084A0(char *arg0) {
     return v;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_000084A0);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowTmpl_create);
 #endif
 
-void func_00008664(char *a0, int *a1) {
+void Tree_func_00008664(char *a0, int *a1) {
     func_00000000(a0);
     if (*a1 == 7 || *a1 == 19) {
         *(float*)(a0 + 0xA0) = *(float*)(a0 + 0x5C);
@@ -5187,7 +5187,7 @@ void func_00008664(char *a0, int *a1) {
     }
 }
 
-/* func_000086C0: 33-insn (0x84) two-init + linked-list dispatcher.
+/* TreeTmpl_func_000086C0: 33-insn (0x84) two-init + linked-list dispatcher.
  *
  * Matching notes: reusing arg0 as the list iterator makes IDO keep it in
  * $s0 across the two init calls; the separate `node` null-test produces the
@@ -5196,7 +5196,7 @@ void func_00008664(char *a0, int *a1) {
 extern int func_00000000();
 extern char gl_ref_00000294;
 
-void func_000086C0(char *arg0) {
+void TreeTmpl_func_000086C0(char *arg0) {
     char *node;
     char *obj;
 
@@ -5219,7 +5219,7 @@ void func_000086C0(char *arg0) {
 
 extern char D_func_00008744_arg1;
 extern char D_func_00008744_arg2;
-void func_00008744(char *a0) {
+void TreeTmpl_func_00008744(char *a0) {
     int arg = *(int*)(a0 + 0xC);
     func_00000000(&D_func_00008744_arg1, arg, 0);
     func_00000000(a0 + 0x4C, 0);
@@ -5231,7 +5231,7 @@ void func_00008744(char *a0) {
 extern char D_00007FF4;
 extern float D_000005F0;
 
-/* func_000087A4: allocator/init sibling of func_000086C0. EXACT 2026-10-16
+/* TreeTmpl_create: allocator/init sibling of TreeTmpl_func_000086C0. EXACT 2026-10-16
  * (agent-c). The old caps were all C-reachable:
  *  - the three bare `lui r,0` bases at the top are three DISTINCT base-0
  *    globals (D_87A4_rd read, D_87A4_wr OR-store, D_87A4_cfg +4/+0 stores),
@@ -5254,7 +5254,7 @@ extern char D_87A4_cfg, D_87A4_vt;
 extern char D_087A4_vtable[];
 extern void func_00000000_087A4();
 extern void func_00000000_087A4_f(char *, char *, int, float, float);
-void *func_000087A4(char *arg0) {
+void *TreeTmpl_create(char *arg0) {
     char *s1;
     char *s0;
     int kind; int pad[5];
@@ -5298,7 +5298,7 @@ skip:
 }
 
 extern char *D_00000130;
-int func_00008920(int a0) {
+int game_isUsoLoaded(int a0) {
     char *p = D_00000130;
     while (p != 0) {
         if (func_00000000(*(int*)p, a0) == 0) {
@@ -5309,7 +5309,7 @@ int func_00008920(int a0) {
     return 0;
 }
 
-int func_00008980(int arg0) {
+int game_loadUsoOnce(int arg0) {
     if (func_00000000(arg0) == 0) {
         func_00000000(&D_00000000, arg0);
         return 1;
@@ -5359,7 +5359,7 @@ void func_00008AEC(Quad4 *dst) {
 }
 
 /* func_00008B44: 36-insn (0x90) alloc-or-given init. BYTE-EXACT (0 non-reloc
- * diffs, 36/36 insns). func_0000D900 (still INCLUDE_ASM) takes the address of
+ * diffs, 36/36 insns). SnowBoarder_checkRaceEnd (still INCLUDE_ASM) takes the address of
  * two interior points of this function (8B44+0x28, 8B44+0x2C); its .s now
  * references them as `func_00008B44 + 0x28 / + 0x2C` (identical relocation
  * bytes) instead of the now-removed local labels `.L00008B6C` / `D_00008B70`.
@@ -5645,11 +5645,11 @@ void func_00008FA8(int *self) {
     }
 }
 
-/* func_000090CC: EXACT via the IDO 7.1 cfe donor src/bootup_uso/bootup_uso_90CC.c, REPLACE_FUNC_BODY-spliced
+/* SnowBoarder_ctor: EXACT via the IDO 7.1 cfe donor src/bootup_uso/bootup_uso_90CC.c, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-c run 227). The superseded in-unit decode is kept
  * for reference under BOOTUP_90CC_OLD_DECODE (never defined). */
 #ifdef BOOTUP_90CC_OLD_DECODE
-/* func_000090CC: 2106-insn (0x20E8) alloc-cascade constructor.
+/* SnowBoarder_ctor: 2106-insn (0x20E8) alloc-cascade constructor.
  * Sibling of recently-matched func_00008F18 (alloc + multi-call init,
  * 36 insns) — much larger version with ~10+ alloc-or-use cascades.
  *
@@ -5676,7 +5676,7 @@ void func_00008FA8(int *self) {
  *       if (!sub1) return 0;
  *   }
  *   func(sub1, &D_00008738);
- *   sub1->[0x28] = &func_000080EC + 0x1C; // child vtable
+ *   sub1->[0x28] = &Fog_func_000080EC + 0x1C; // child vtable
  *
  *   // cascade sub2: at sub1+0x2C if sub1 exists, else alloc 0x128
  *   if (sub1 != (int*)0xFFFFFFD4) {
@@ -5760,7 +5760,7 @@ extern char D_0000885C;
 extern char D_00008868;
 extern char D_00008880;
 extern char D_00008888;
-/* func_000090CC alloc-cascade +0x28 child-vtable pointers: USO relocs blanked in the
+/* SnowBoarder_ctor alloc-cascade +0x28 child-vtable pointers: USO relocs blanked in the
  * .s (lui/addiu 0x0). Resolved from bootup.uso TextReloc @0xd9fe28: symIdx 545 =
  * shared 0x174-fallback vtable (imports), 546/547/548 = per-class vtables (imports),
  * symIdx 312 = internal data +0x207DC. All =0 in undefined_syms_auto.txt (bytes match). */
@@ -5818,12 +5818,12 @@ extern void func_00000000_iipif(s32, s32, void *, f32, f32);
  * locals fill the target's gaps (4 above sp144, var_a2 + 2 below sp118, ...).
  * Self is the PARAM (move s2,a0 inside the save sequence, IDO_CODEGEN
  * #prologue-move-param-vs-copy-62368). The four rgb table bases are per-site
- * symbols (target lui/addiu %hi/%lo(func_00008664+0x24..0x30) + lbu 0/1/2).
+ * symbols (target lui/addiu %hi/%lo(Tree_func_00008664+0x24..0x30) + lbu 0/1/2).
  * Every sp-relative word now lands on the target slot. Residual: the arg2
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, func_000008B4+4/8, func_000087A4+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, func_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
@@ -5836,7 +5836,7 @@ extern BuW90 bu_90cc_d44_01, bu_90cc_d44_02, bu_90cc_d44_03, bu_90cc_d44_04, bu_
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
-void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
+void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     s32 sp174;
     Vec3 vpos;
     char *sp164;
@@ -6703,7 +6703,7 @@ sw_end:
     return arg0;
 }
 #else
-void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
+void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     volatile char *r = arg0;
     return 0;
 }
@@ -6725,7 +6725,7 @@ void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5
 //         // optional sub-allocs keyed by sentinel addrs (-0x34/-0x58):
 //         //   alloc 8 -> {0,0} ; alloc 4 -> {0}
 //         func_00000000(s);  s2->0x5C = &D_0;
-//         r->0x24 = 0x110;  r->0x5C = &func_000083D0+0x70;  // folded vtbl
+//         r->0x24 = 0x110;  r->0x5C = &Snower_func_000083D0+0x70;  // folded vtbl
 //         void *buf = func_00000000(0x1000);
 //         r->0x28 = 0x1100;  r->0x22 = (s16)0x20;  r->0x20 = (s16)0x40;
 //         r->0x38 = 0x402C4B;  r->0x1C = buf;  r->0x34 = 0;  r->0x18 = 0;
@@ -6750,7 +6750,7 @@ void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5
 //   cat/idx = category & sub indices (clamped); a2/a3 forwarded to the
 //     final play call. Resource R (0x90): 0x18 state, 0x1C buffer ptr,
 //     0x20/0x22 s16 dims (0x40/0x20), 0x24=0x110 mode, 0x28=0x1100,
-//     0x34 flag, 0x38=0x402C4B id, 0x5C vtable(&func_000083D0+0x70).
+//     0x34 flag, 0x38=0x402C4B id, 0x5C vtable(&Snower_func_000083D0+0x70).
 //   func_00000148 = WRITABLE global resource table: [0]=loaded-root,
 //     [0x14]=entry count, [n] = registered R ptrs. tableA/tableB =
 //     other global index->entry arrays.
@@ -6758,7 +6758,7 @@ void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5
 //   vtables + name data; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
 //     func_00000148 (writable table), func_000089FC+0x2C /
-//     func_00008A40+0x8/+0x14 (name/string data), func_000083D0+0x70
+//     func_00008A40+0x8/+0x14 (name/string data), Snower_func_000083D0+0x70
 //     (vtable).
 // Caps (DEFERRED): 186-insn lazy-init + table-register + multi-dispatch.
 //   2026-05-31 partial completion 55.9->67.1%: added the two sentinel-keyed
@@ -6768,7 +6768,7 @@ void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5
 //   2026-06-23 decode pass (agent-t) 161->177 insns (target 186), sim
 //   35.7->37.5%: (1) CORRECTNESS FIX — replaced all D_00000000+off named-table
 //   refs with the REAL symbols the .s relocs name: func_00000148 (writable
-//   table+flag+count), func_000089FC+0x2C (name data), func_000083D0+0x70
+//   table+flag+count), func_000089FC+0x2C (name data), Snower_func_000083D0+0x70
 //   (vtable), func_00008A40+0x8/+0x14 (string data). Build reloc set now
 //   matches target's named relocs. (2) Reconstructed the nested ||-allocator-
 //   fallback cascade (m2c shape): r=alloc(0x90); r||(r=alloc) ; s=r||(s=alloc
@@ -6845,9 +6845,9 @@ void func_0000B49C(int idx, int j) {
     gl_func_00000000(0, &gl_ref_00008A58, D_00000000_b49c[j], 0);  /* func_00008A40+0x18 */
 }
 
-/* func_0000B520 - verified structural decode (0x23C, 143 insns,
+/* SnowBoarder_func_0000B520 - verified structural decode (0x23C, 143 insns,
  * FP directional-nudge / input-driven position update).
- *   void func_0000B520(St *a1) {
+ *   void SnowBoarder_func_0000B520(St *a1) {
  *       if (!(a1->0xA58 & 0x100)) return;          // enable gate
  *       blk = a1->0x800;
  *       f32 mag = 0.0f;
@@ -6882,21 +6882,21 @@ void func_0000B49C(int idx, int j) {
  * webs, as in the target (s and t both f2). `if (1) {}` before the v50 stores
  * splits the block so the v5C copy base reuses v0 after q. The pool reads are
  * pinned scalars (bu_b520_k48/k44/kc = 0x48/0x44/0xC in
- * undefined_syms_auto.txt; target func_00008124 + K / func_000008B4 + 0xC).
+ * undefined_syms_auto.txt; target FogTmpl_create + K / func_000008B4 + 0xC).
  * PASS-2 2026-10-16 (agent-c, 36.90 -> 99.34): m2c had the Vec3 copies as
  * int structs with (f32)/(s32) casts (4 cvt + 4 trunc too many) and a K&R call
  * carrying stale f12/f14. 143/143 words; 19 differ: the 0.0 constant / s
  * swap f0<->f2, the v5C copy base v1 (target v0), and the four pool addends
- * (k48/k44/kc need pins for an exact). Same shape as func_0000D900: named
+ * (k48/k44/kc need pins for an exact). Same shape as SnowBoarder_checkRaceEnd: named
  * products, v50 -> v5C -> v74 struct copies, decl-order frame (an unused
  * Vec3 between v74 and v5C, pad[3] below v50). Also: q = arg0 + 0x3C8 assigned
  * before the if (target re-forms it on both join edges, addiu v0,a1,968); the
  * second flag test re-reads p->0x10 (volatile read; plain CSEs the lw); the
  * 0x48 limit read inline at both uses; the call is (arg0 + 0x318, arg0). */
-extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target func_00008124 + 0x48 / + 0x44) */
+extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
 extern f64 bu_b520_kc;               /* rodata f64 (target func_000008B4 + 0xC) */
 #define F520(p, o) (*(f32 *)((char *)(p) + (o)))
-void func_0000B520(char *arg0) {
+void SnowBoarder_func_0000B520(char *arg0) {
     Vec3 v74;
     Vec3 vB;
     Vec3 v5C;
@@ -6963,14 +6963,14 @@ void func_0000B520(char *arg0) {
     }
 }
 
-// func_0000B75C — STRUCTURAL PASS (0x830 / 524 insns, no episode).
+// SnowBoarder_func_0000B75C — STRUCTURAL PASS (0x830 / 524 insns, no episode).
 // agent-g run 242: the NM comparison object now uses the NCC port bootup_uso_ncc_B75C_nm.cpp (edg-shaped,
 // 99.97, 524 words, frame 120); the cfe body below is kept as the reference lift.
 // Per-frame camera/transform interpolation update over a large scene-
 // state struct (compute-heavy: f64 lerp/curve math, only 11 dispatcher
 // calls; ~70 accesses to the state struct via a3 = a0).
 //
-//   void func_0000B75C(State *st) {           // st kept in a3
+//   void SnowBoarder_func_0000B75C(State *st) {           // st kept in a3
 //     // local default Vec @ sp+0x6C..0x74 = {0.0, 1.0f, 0.0}
 //     float t = *(float*)st->0x800;            // a normalized phase/time
 //     double k0 = DBL(func_000008B4+0x14), k1 = DBL(func_000008B4+0x1C);
@@ -6980,7 +6980,7 @@ void func_0000B520(char *arg0) {
 //     // main body: many double mul/add/sub chains driven by the
 //     //   func_000008B4 / func_000008D4 / func_000008F4 coefficient
 //     //   table (each symbol = 4 f64 at +0x4/+0xC/+0x14/+0x1C) plus
-//     //   func_00008124+0x4C — interpolates a transform/orientation
+//     //   FogTmpl_create+0x4C — interpolates a transform/orientation
 //     //   from st fields and writes the result Vec to st->0x300.. .
 //     st->0x304 = (float)result_y;             // epilogue writes
 //     st->0x308 = (float)result_z;             //   the eased transform
@@ -6995,13 +6995,13 @@ void func_0000B520(char *arg0) {
 //   function shows the pool is a CONTIGUOUS 0x20-stride double table,
 //   not scattered singletons: func_000008B4 / func_000008D4 /
 //   func_000008F4 each carry 4 f64 at +0x4/+0xC/+0x14/+0x1C, plus
-//   func_00008124+0x4C; see
+//   FogTmpl_create+0x4C; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
 // Caps (DEFERRED): 524-insn f64 interpolation w/ folded coefficient
 //   table — byte-match blocked by deferred pool symbolization.
 //   Real-C STRUCTURAL body below — per-frame camera/transform
 //   interpolation skeleton. Name pre-checked: no extern reuse.
-/* func_0000B75C: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_B75C.cpp, REPLACE_FUNC_BODY-spliced
+/* SnowBoarder_func_0000B75C: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_B75C.cpp, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-c run 258: the 0x990 load read in place at both tests +
  * the dot3 value held in var_f0 = the target's uopt spilltemps slot order). The superseded cfe lift is kept for
  * reference under BOOTUP_B75C_OLD_DECODE (never defined). */
@@ -7013,7 +7013,7 @@ void func_0000B520(char *arg0) {
  * PASS-4 2026-07-30 (agent-g): 67.21->70.32.
  *   (1) Pool symbolization per expected relocs -- DISTINCT base-0 undefined
  *       externs (D_000008C8/D0/D8/E8/F8, D_00000900/908 f64; D_00008170 call
- *       arg = func_00008124+0x4C) so each site emits the target's per-use
+ *       arg = FogTmpl_create+0x4C) so each site emits the target's per-use
  *       lui-at + %lo ldc1 (func_+off spelling CSEs the addiu-base into a
  *       long-lived v0/v1 web: 65.5, WORSE than the old absolute loads).
  *   (2) {0,1,0} default vec respelled as f32 sp6C[3] (array keeps the 3
@@ -7061,7 +7061,7 @@ extern char D_00008170[];
  * that value to sp+0x1C); de-naming it re-colours the FP block (92.47). */
 #define temp_f12_2 (-0.2f)
 #define temp_f12_3 (0.2f)
-void func_0000B75C(char *arg0) {
+void SnowBoarder_func_0000B75C(char *arg0) {
     f32 sp6C[3];
     f32 sp1Ck = 0; /* agent-g run 235: home keeper (sp1C declared last: its home is the target's sp+0x1C) */
     s32 var_v0;
@@ -7255,14 +7255,14 @@ block_67:
 #undef temp_f12_2
 #undef temp_f12_3
 #else
-void func_0000B75C(char *arg0) {
+void SnowBoarder_func_0000B75C(char *arg0) {
     volatile char *r = arg0;
 }
 #endif
 
-/* func_0000BF8C - verified structural decode (0x2A8, 170 insns,
+/* SnowBoarder_updateDyn - verified structural decode (0x2A8, 170 insns,
  * large FP per-frame parameter selector/update).
- *   void func_0000BF8C(St *s0) {
+ *   void SnowBoarder_updateDyn(St *s0) {
  *       in = s0->0x800;
  *       s0->0x990 = ((f64)in->0x4 < 0.0) ? 1 : 0;  // sign flag
  *       int m = (in->0x10 & 0x400) != 0;            // mode flag
@@ -7336,7 +7336,7 @@ void func_0000B75C(char *arg0) {
 extern f32 D_BF8C_pool8F4[]; /* data views of the func_000008F4 const pool (NM only; pins = func_000008F4 / func_000008F4 + 0x24 if promoted) */
 extern f64 D_BF8C_pool8F4_24;
 extern char D_BF8C_8A40[]; /* data view of func_00008A40 (dispatch-target addresses; pin = func_00008A40 if promoted) */
-void func_0000BF8C(char *arg0) {
+void SnowBoarder_updateDyn(char *arg0) {
     f32 temp_f0;
     f32 temp_f0_2;
     f32 var_f12;
@@ -7420,14 +7420,14 @@ Lend:
     func_00000000(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000BF8C);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
 #endif
 
-// func_0000C234 — STRUCTURAL PASS (0x898 / 550 insns, no episode).
+// SnowBoarder_procColl — STRUCTURAL PASS (0x898 / 550 insns, no episode).
 // Per-frame entity physics/state update over a large state struct
 // (st = a0 = s0; ~152 field accesses, 16 dispatcher sub-calls).
 //
-//   void func_0000C234(State *st) {
+//   void SnowBoarder_procColl(State *st) {
 //     if (st->0xA80) st->0xA80--;              // cooldown/timer decrement
 //     Vec3 p = { st->0xB4, st->0xB8, st->0xBC };   // -> sp+0xB4 local
 //     st->0x890 = p.x;  st->0x894 = p.y;       // snapshot prev position
@@ -7458,7 +7458,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000BF8C);
 //   byte-match blocked by deferred pool symbolization. Real-C
 //   STRUCTURAL body below — per-frame entity physics/state update
 //   skeleton. Name pre-checked: no extern reuse.
-/* func_0000C234: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_C234.cpp, REPLACE_FUNC_BODY-spliced
+/* SnowBoarder_procColl: EXACT via the IDO 7.1 NCC donor src/bootup_uso/bootup_uso_ncc_C234.cpp, REPLACE_FUNC_BODY-spliced
  * over the placeholder below on both build paths (agent-g run 236). The superseded in-unit decode is kept
  * for reference under BOOTUP_C234_OLD_DECODE (never defined). */
 #ifdef BOOTUP_C234_OLD_DECODE
@@ -7530,7 +7530,7 @@ typedef struct {
  * 0x62-case + early-store scheduling) is downstream of the same web. */
 extern f64 D_00000930;
 extern s32 D_000081C0[];
-void func_0000C234(char *arg0) {
+void SnowBoarder_procColl(char *arg0) {
     C234Rec spCC;
     f32 temp_f0;
     f32 temp_f0_2;
@@ -7768,7 +7768,7 @@ cend:
     *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
 }
 #else
-void func_0000C234(char *arg0) {
+void SnowBoarder_procColl(char *arg0) {
     volatile char *r = arg0;
 }
 #endif
@@ -7778,11 +7778,11 @@ void func_0000CACC(char *a0) {
     *(int*)(a0 + 0xA58) = *(int*)(a0 + 0xA58) ^ 0x100;
 }
 
-// func_0000CAE8 — STRUCTURAL PASS (0x1F8 / 126 insns, no episode).
+// SnowBoarder_func_0000CAE8 — STRUCTURAL PASS (0x1F8 / 126 insns, no episode).
 // Per-round / per-attempt state reset & re-arm on a large state struct
 // (st = a0 = s0).
 //
-//   void func_0000CAE8(State *st) {
+//   void SnowBoarder_func_0000CAE8(State *st) {
 //     func_00000000(?, 1, tableA[st->0x8C4]);            // indexed trigger
 //     int j = (s16)*(s16*)((char*)st + st->0x904*2 + 0x8C6);
 //     func_00000000(st+0x3EC, 1, tableB[j]);             // 2nd idx trigger
@@ -7816,7 +7816,7 @@ void func_0000CACC(char *a0) {
 //     (bit 0x20); 0xB4/B8/BC + 0x318/31C/320 pos Vec3s snapshotted to
 //     0x890.. / 0x89C..; 0x768/0x9D0/0x840/0x804/0xC sub-objs.
 //   Folded refs (literal-pool/placeholder fold family — func_00000940
-//   +0x18 corroborates the contiguous strided table from func_0000B75C;
+//   +0x18 corroborates the contiguous strided table from SnowBoarder_func_0000B75C;
 //   func_00000008+0x2C a mode global; func_00008A7C+0x40 a folded
 //   struct; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
@@ -7828,15 +7828,15 @@ void func_0000CACC(char *a0) {
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). The
  * Vec3 snapshots are an inline V3::operator=(const V3 &) forwarding to a
  * by-value set(V3); see docs/IDO_CODEGEN.md#ncc-game-libs-vec3-62a2c. */
-void func_0000CAE8(char *st) {
+void SnowBoarder_func_0000CAE8(char *st) {
     volatile char *r = st;
 }
 
-// func_0000CCE0 — STRUCTURAL PASS (0x2C0 / 176 insns, no episode).
+// SnowBoarder_func_0000CCE0 — STRUCTURAL PASS (0x2C0 / 176 insns, no episode).
 // HUD/menu layout builder: creates ~12 positioned widget elements into
 // the state's UI container, gated by a flag, then finalizes them.
 //
-//   void func_0000CCE0(State *st, a1) {       // st -> s0; cont = st+0x39C
+//   void SnowBoarder_func_0000CCE0(State *st, a1) {       // st -> s0; cont = st+0x39C
 //     // repeated unit (x ~12), per element:
 //     //   e = func_00000000(0, st, TYPE, X, P_at_sp10, Y_at_sp14);
 //     //   func_00000000(cont, e);             // attach to st->0x39C
@@ -7876,9 +7876,9 @@ void func_0000CAE8(char *st) {
  * (lui at / lwc1; the splat text shows them as func_00000940 + 0x1C..0x2C), and the first element is created
  * inside the attach call (`f(cont, e0 = cce0(...))`) so its spill store
  * schedules after the a0 copy. */
-// PARTIAL-FORM corrected NM body for func_0000CCE0 (replaces lines 8516..8554)
+// PARTIAL-FORM corrected NM body for SnowBoarder_func_0000CCE0 (replaces lines 8516..8554)
 extern char *func_cce0(int, char *, int, float, float, float);
-void func_0000CCE0(char *st, int a1) {
+void SnowBoarder_func_0000CCE0(char *st, int a1) {
     char *cont = st + 0x39C;
     /* Single decl list, slots assigned descending from frame top:
      * g4=80 g3=76 g2=72 g1=68 pad=64 g0=60 e3=56 e2=52 e1=48 e0=44 —
@@ -7916,7 +7916,7 @@ void func_0000CCE0(char *st, int a1) {
     func_00000000(st, g4);
 }
 
-// func_0000CFA0 — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
+// SnowBoarder_func_0000CFA0 — STRUCTURAL PASS (0x4A0 / 296 insns, 64.76% fuzzy, no episode).
 // Per-frame active-object sync + draw-state / color update on a large
 // state struct (st = a0 = s0).
 //
@@ -7940,7 +7940,7 @@ void func_0000CCE0(char *st, int a1) {
 //   (no intervening barrier) while the target reloads each — no C knob forces
 //   the reload. Net: correct logic, divergent regalloc — permuter/cc territory.
 //
-//   void func_0000CFA0(State *st) {
+//   void SnowBoarder_func_0000CFA0(State *st) {
 //     int *ctx = *(int**)(func_0000023C+0x18);          // global ctx ptr
 //     if ((st->0xA58 & 0x2000) && ctx == st->0x8DC) return;   // unchanged
 //     R *r = func_00000000(ctx, st->0xB4, st->0xB8, st->0xBC,
@@ -8006,16 +8006,16 @@ void func_0000CCE0(char *st, int a1) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_CFA0.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116): real
  * virtual calls, V3 copies, ctx first defined as the call argument. */
-void func_0000CFA0(char *st) {
+void SnowBoarder_func_0000CFA0(char *st) {
     volatile char *r = st;
 }
 
-// func_0000D440 — STRUCTURAL PASS (0x4C0 / 304 insns, no episode).
+// SnowBoarder_update — STRUCTURAL PASS (0x4C0 / 304 insns, no episode).
 // Per-frame UI/scene event-flag processor: walks status bits on the
 // state struct, toggles a latch, fires descriptor-table actions and
 // vtable sub-updates accordingly.
 //
-//   void func_0000D440(State *st) {            // st -> s0
+//   void SnowBoarder_update(State *st) {            // st -> s0
 //     func_00000000(&func_00008A7C+0x54);      // named action (table)
 //     int fl = st->0xA58;
 //     if (fl & 0x100) {
@@ -8078,12 +8078,12 @@ extern char D_00008AF4, D_00008B00, D_00008B0C, D_00008B18, D_00008B24, D_00008B
  * rematerialized per call (target: 3x lui %hi + lw 0x48) not CSE'd to a spill. */
 extern char D_F0a, D_F0b, D_F0c;
 #endif
-// func_0000D440 — STRUCTURAL PASS (0x4C0 / 304 insns, no episode).
+// SnowBoarder_update — STRUCTURAL PASS (0x4C0 / 304 insns, no episode).
 // Per-frame UI/scene event-flag processor: walks status bits on the
 // state struct, toggles a latch, fires descriptor-table actions and
 // vtable sub-updates accordingly.
 //
-//   void func_0000D440(State *st) {            // st -> s0
+//   void SnowBoarder_update(State *st) {            // st -> s0
 //     func_00000000(&func_00008A7C+0x54);      // named action (table)
 //     int fl = st->0xA58;
 //     if (fl & 0x100) {
@@ -8149,7 +8149,7 @@ extern char D_F0a, D_F0b, D_F0c;
  * (f6/f7 vs f16/f17 double halves, div.s placement), frame -0xA0 vs -0x70
  * (named-local homes), int coloring (v0/v1 base swap, t-rotation offsets),
  * final dot-product add.s operand swap — allocator/scheduler class. */
-void func_0000D440(char *st) {
+void SnowBoarder_update(char *st) {
     char *sub, *vt, *m, *a0_2;
     int fl, v0, t5;
     int sp58;
@@ -8304,15 +8304,15 @@ void func_0000D440(char *st) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000D440);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 #endif
 
-// func_0000D900 — STRUCTURAL PASS (0x4C4 / 305 insns, no episode).
+// SnowBoarder_checkRaceEnd — STRUCTURAL PASS (0x4C4 / 305 insns, no episode).
 // Event/message dispatcher: switch on the incoming message opcode and
 // run the matching handler (FP threshold checks + table-driven actions
 // + vtable sub-updates) on the state struct.
 //
-//   void func_0000D900(State *st, Msg *m) {     // st -> a3
+//   void SnowBoarder_checkRaceEnd(State *st, Msg *m) {     // st -> a3
 //     switch (m->0x0) {                          // opcode
 //       case 0x14:                               // .L0000D98C
 //         if (st->0xA80) break;                  // busy
@@ -8389,7 +8389,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000D440);
 extern f64 D_00000988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it func_0000098C + 4) */
 extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of func_00008AEC / func_00008B44 (target lui/addiu %hi/%lo(sym+K)) */
 typedef struct { s32 w; } S4D900;  /* 4-byte struct passed by value (target sw a1,4(sp) arg-area copy) */
-void func_0000D900(char *arg0, char *arg1) {
+void SnowBoarder_checkRaceEnd(char *arg0, char *arg1) {
     S4D900 sp8C;
     s32 temp_v0_3;
     S4D900 *sp84;
@@ -8516,17 +8516,17 @@ cdef:
         func_00000000(arg0);
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0000D900);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_checkRaceEnd);
 #endif
 
 void func_0000DDC4(int a0) {
 }
 
-/* func_0000DDCC - verified structural decode (0x138, 78 insns).
- * NEAR-SIBLING of func_0000DF04 / func_0000E014 (same Vec3
+/* SnowBoarder_func_0000DDCC - verified structural decode (0x138, 78 insns).
+ * NEAR-SIBLING of SnowBoarder_func_0000DF04 / SnowBoarder_func_0000E014 (same Vec3
  * fetch-and-store fan-out + s0 struct); variant: a leading state
  * switch on s0->0x8C4.
- * Struct-typing reference: same layout as func_0000DF04/E014 -
+ * Struct-typing reference: same layout as SnowBoarder_func_0000DF04/E014 -
  * s0->0xA58 (2648) u32 flags bit 7 (0x80) selector; s0->0x8F4
  * (2292) / 0x8F8 (2296) / 0x8FC (2300) Vec3i dest pointers (3x int
  * @ +0/+4/+8). NEW: s0->0x8C4 (2244) s32 state - values 6/7 take
@@ -8541,7 +8541,7 @@ void func_0000DDC4(int a0) {
  * as gl_func_0004E384 etc. — using distinct C locals per `d` does not move IDO off
  * the $v1 reuse (the load is post-call so $v1 is the next free caller-saved reg).
  * INCLUDE_ASM remains build path. */
-void func_0000DDCC(char *s0) {
+void SnowBoarder_func_0000DDCC(char *s0) {
     unsigned int st = *(unsigned int*)(s0 + 0x8C4);
     if (st == 7 || st == 6) {
         func_00000000(s0);
@@ -8557,7 +8557,7 @@ void func_0000DDCC(char *s0) {
     **(Tri3i **)(s0 + 0x8FC) = *(Tri3i *)func_00000000(&D_00000000, 0xC);
 }
 
-/* func_0000DF04 - verified structural decode (0x110, 68 insns,
+/* SnowBoarder_func_0000DF04 - verified structural decode (0x110, 68 insns,
  * Vec3 fetch-and-store fan-out).
  * Struct-typing reference: s0->0xA58 (2648) u32 flags, bit 7 (0x80)
  * selects which source-id pair feeds the two slots; s0->0x8F4
@@ -8568,8 +8568,8 @@ void func_0000DDCC(char *s0) {
  * clear) fill 0x8F4/0x8F8, id 0x16 always fills 0x8FC.
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + per-slot
  * 3-word struct copies. INCLUDE_ASM remains build path. */
-/* func_0000DF04 — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
-void func_0000DF04(char *s0) {
+/* SnowBoarder_func_0000DF04 — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
+void SnowBoarder_func_0000DF04(char *s0) {
     if (*(unsigned int*)(s0 + 0xA58) & 0x80) {
         **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, 0x11);
         **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 0x12);
@@ -8583,11 +8583,11 @@ void func_0000DF04(char *s0) {
    Single lever: Tri3i struct-assign cascade (same form as promoted E014/DDCC siblings).
    First variant hit. Ready to promote (INCLUDE_ASM -> body) + land. */
 
-/* func_0000E014 - verified structural decode (0x110, 68 insns).
- * NEAR-SIBLING of func_0000DF04 (same Vec3 fetch-and-store fan-out,
+/* SnowBoarder_func_0000E014 - verified structural decode (0x110, 68 insns).
+ * NEAR-SIBLING of SnowBoarder_func_0000DF04 (same Vec3 fetch-and-store fan-out,
  * same s0 struct); variant: the first id of each pair comes from a
  * signed-half field on s0 instead of a constant.
- * Struct-typing reference: same layout as func_0000DF04 -
+ * Struct-typing reference: same layout as SnowBoarder_func_0000DF04 -
  * s0->0xA58 (2648) u32 flags bit 7 (0x80) selector; s0->0x8F4
  * (2292) / 0x8F8 (2296) / 0x8FC (2300) Vec3i dest pointers (3x int
  * @ +0/+4/+8). NEW fields here: s0->0x902 (2306) and s0->0x900
@@ -8597,7 +8597,7 @@ void func_0000DF04(char *s0) {
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + lh
  * dynamic-id + per-slot 3-word struct copies. INCLUDE_ASM remains
  * build path. */
-void func_0000E014(char *s0) {
+void SnowBoarder_func_0000E014(char *s0) {
     if (*(unsigned int*)(s0 + 0xA58) & 0x80) {
         **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, *(short*)(s0 + 0x902));
         **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 8);
@@ -8608,7 +8608,7 @@ void func_0000E014(char *s0) {
     **(Tri3i **)(s0 + 0x8FC) = *(Tri3i *)func_00000000(&D_00000000, 6);
 }
 
-/* func_0000E124 - verified structural decode (0x14C, 83 insns,
+/* SnowBoarder_func_0000E124 - verified structural decode (0x14C, 83 insns,
  * left/right mirror-flip toggle).
  * Struct-typing reference: s0->0xA58 (2648) u32 flag word - bit 7
  * (0x80) = facing/mirror state (toggled here), bit 3 (0x8) selects
@@ -8624,13 +8624,13 @@ void func_0000E014(char *s0) {
  * f32 consts + beql branch-likely + flag-bit branches + reloc.
  * INCLUDE_ASM remains build path. */
 /* EXACT (agent-c run 115). Mirror-flip toggle: callees from the TextReloc
- * (func_0000DDCC / func_0000E014, func_072E58 x2, func_072F1C, func_072FB0
+ * (SnowBoarder_func_0000DDCC / SnowBoarder_func_0000E014, func_072E58 x2, func_072F1C, func_072FB0
  * which takes (ptr, ptr, float) so 180.0f goes out in a2); the flag word is
  * a plain ^= RMW re-read per test; the r-call sits inside the null check and
  * one pointer variable p carries the negated component and both call args;
  * up[] sits at the frame top with five unused words above r[]. */
 extern void func_00000000_e124_r(char *, float *, float);
-void func_0000E124(char *s0) {
+void SnowBoarder_func_0000E124(char *s0) {
     float up[3];
     int unused[5];
     float r[3];
@@ -8796,7 +8796,7 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     }
 }
 
-/* func_0000E4DC - verified structural decode (0xAC, 43 insns).
+/* SnowBoarder_func_0000E4DC - verified structural decode (0xAC, 43 insns).
  * Per-frame update/teardown over a composite object a0 (= s2). Uses
  * the documented obj->0x28 vtable-dispatch idiom (PATTERNS.md
  * #feedback-1080-obj-0x28-vtable-dispatch), 0x4C/0x48 offset variant.
@@ -8816,7 +8816,7 @@ void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
  * -0x40 (8 extra bytes of IDO spill-pad between the saved-reg block and
  * the `&n` slot at sp+0x34 vs sp+0x3C). Pure allocator frame-reservation
  * (the `&n` escapes to func_000089C0); not C-reachable. Stays NM. */
-void func_0000E4DC(char *a0) {
+void SnowBoarder_func_0000E4DC(char *a0) {
   int n;
   short *p;
   int i;
@@ -8923,7 +8923,7 @@ void func_0000E740(char *a0, int a1) {
     volatile char *r = a0;
 }
 
-/* func_0000E800 - verified structural decode (0xBC, 47 insns,
+/* SnowBoard_func_0000E800 - verified structural decode (0xBC, 47 insns,
  * config-parse + init routine).
  * Struct-typing reference: D_00008D34 / D_00008D48 / D_00008D5C =
  * three config-key data (string/descriptor) parsed by the reloc
@@ -8937,7 +8937,7 @@ void func_0000E740(char *a0, int a1) {
 extern char D_00008D34, D_00008D48, D_00008D5C;
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E800.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
-void func_0000E800(void) {
+void SnowBoard_func_0000E800(void) {
     volatile int r = 0;
 }
 
@@ -8973,14 +8973,14 @@ void func_0000E9A4(Quad4 *dst) {
     *dst = buf;
 }
 
-/* func_0000E9FC: EXACT via an IDO 7.1 NCC (C++) donor,
+/* SnowBoard_func_0000E9FC: EXACT via an IDO 7.1 NCC (C++) donor,
  * src/bootup_uso/bootup_uso_ncc_E9FC.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 349). It is the edg static initializer (__sti__)
  * for a global object of a class whose inline ctor calls the out-of-line base
  * ctor and then stores the vtable address into the vptr at +0x28 (the ROM
  * word is `sw t6, 0x28(at)` with the object at 0); same end-of-TU line
  * mechanism as func_00006204 (`lui a0` above `sw ra`). */
-void func_0000E9FC(void) {
+void SnowBoard_func_0000E9FC(void) {
     volatile int r = 0;
 }
 
@@ -8990,7 +8990,7 @@ extern char D_00008D8C;
 extern char D_00008D9C;
 extern char D_00000000_a;
 extern char D_00000000_b;
-void func_0000EA2C(char *arg0) {
+void SnowBoard_func_0000EA2C(char *arg0) {
     char pad[4];
     int saved;
 
@@ -9011,7 +9011,7 @@ void func_0000EA2C(char *arg0) {
 }
 
 extern int D_00000190;
-void func_0000EAF8(int a0) {
+void SnowBoard_func_0000EAF8(int a0) {
     func_00000000(D_00000190, 3, 0);
 }
 
@@ -9260,6 +9260,6 @@ void func_0000F1B4(char *a0) {
 /* func_0000F1F0, F23C, F288, F2EC moved to bootup_uso_o0_F1F0.c (-O0 file
  * split, see Makefile + tenshoe.ld). The 4 -O0 accessor templates promote
  * to byte-correct in the new file.
- * func_0000F390, func_0000F3D4, func_0000F404 moved to bootup_uso_o0_F390.c
+ * func_0000F390, SnowBoard_func_0000F3D4, SnowBoard_func_0000F404 moved to bootup_uso_o0_F390.c
  * (-O0 file split, see Makefile + tenshoe.ld).
  * func_0000F434..func_0000F6C4 moved to bootup_uso_F434.c (layout shim). */

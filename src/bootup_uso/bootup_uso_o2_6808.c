@@ -1,10 +1,10 @@
-/* IDO 7.1 -O2 (cfe) donor for func_00006808 -- bootup scene/screen constructor
+/* IDO 7.1 -O2 (cfe) donor for game_createMap -- bootup scene/screen constructor
  * (0x948 / 594 words): record-stream dispatch loop (13-way jumptable), then the
  * widget-tree build / attach tail. EXACT (agent-g run 223, 99.98 -> 100).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the 2DA4 / E270
  * recipe) over an empty placeholder: the switch's donor-local .rodata reloc is
- * renamed func_00006808_rodata and pinned to 0x5B4 (the target's
+ * renamed game_createMap_rodata and pinned to 0x5B4 (the target's
  * func_0000057C+0x38 table ref). Reloc-free target lui 0 / lw 0 globals are
  * base-0 pins; the six flag RMWs on func_00000188+0x3C are base-0x188 pins.
  *
@@ -48,7 +48,7 @@ extern int import_8005EE64_6808_0, import_8005EE64_6808_1, import_8005EE64_6808_
     if (*(int *)(x + 0x14) != 0) *(int *)(x + 0x4) = 1; \
     *(int *)(x + 0x14) = (int)L; }
 
-void *func_00006808(char *obj, char *arg1, s32 arg2) {
+void *game_createMap(char *obj, char *arg1, s32 arg2) {
     int g0, g00;
     S4_55A0 e4, e0;
     int dc;

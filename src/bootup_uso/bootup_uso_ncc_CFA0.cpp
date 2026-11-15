@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_0000CFA0 (0x4A0 / 296 words) -- rider
+/* IDO 7.1 NCC (C++) donor for SnowBoarder_func_0000CFA0 (0x4A0 / 296 words) -- rider
  * ground-contact / lighting refresh: asks the context (func_cfa0) for the
  * surface under the rider, flags a change, re-tints from the surface colour
  * and fires the sub-object hooks.
@@ -34,7 +34,7 @@ void bu_cfa0_v(...);
 struct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };
 struct V3 { float x, y, z; };
 #define DISPATCH_CFA0(off) { (*(VO **)(st + (off)))->f(); }
-extern "C" void func_0000CFA0(char *st) {
+extern "C" void SnowBoarder_func_0000CFA0(char *st) {
     float out;
     volatile int changed;
     char *r;

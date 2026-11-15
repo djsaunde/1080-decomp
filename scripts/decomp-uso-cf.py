@@ -16,7 +16,7 @@ import re, sys, subprocess, glob, os
 from elftools.elf.elffile import ELFFile
 
 FN = sys.argv[1]
-# placeholder = same naming scheme with the hex suffix zeroed (func_000084A0 ->
+# placeholder = same naming scheme with the hex suffix zeroed (SnowTmpl_create ->
 # func_00000000; game_uso_func_X -> game_uso_func_00000000; gl_func_X -> gl_func_00000000)
 PH = re.sub(r'[0-9A-Fa-f]+$', '00000000', FN)
 

@@ -5,7 +5,7 @@
  * The bank object is `new Bank`: a cfront chain Bank : Mid : Base where Base
  * has an out-of-line ctor, two member objects with their own `this == 0`
  * alloc protocol (Pair at +0x34, Word at +0x58) and a vptr at +0x5C. Only
- * Bank's vtable is a real bootup symbol (func_000083D0 + 0x70); Base and
+ * Bank's vtable is a real bootup symbol (Snower_func_000083D0 + 0x70); Base and
  * Mid's are blank USO refs.
  *
  * The four words that kept the cfe/NCC ports off (the counter read into v0,

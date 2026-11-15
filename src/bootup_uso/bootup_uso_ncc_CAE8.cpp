@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_0000CAE8 (0x1F8 / 126 words) -- per-round
+/* IDO 7.1 NCC (C++) donor for SnowBoarder_func_0000CAE8 (0x1F8 / 126 words) -- per-round
  * state reset / re-arm on the rider state object.
  *
  * bootup_uso is C++ too (agent-c run 116). The tell was the two Vec3
@@ -29,7 +29,7 @@ extern char bu_cae8_d8abc[];
 }
 #define I(o) (*(int *)(st + (o)))
 #define F(o) (*(float *)(st + (o)))
-extern "C" void func_0000CAE8(char *st) {
+extern "C" void SnowBoarder_func_0000CAE8(char *st) {
     func_00000000(st, 1, bu_cae8_ta[I(0x8C4)]);
     func_00000000(st + 0x3EC, 1, bu_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
     if (I(0xA58) & 0x80) func_00000000(st);

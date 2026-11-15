@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for func_00002DA4 -- bootup_uso subsystem init + 12-way
+/* IDO 7.1 -O2 donor for game_setupMode -- bootup_uso subsystem init + 12-way
  * command dispatch (0x1EC / 123 words; word-exact standalone apart from the
  * reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the game_libs
  * 7344 / 52CD4 recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-donor-52cd4):
  * the switch's donor-local .rodata jumptable reloc is renamed
- * func_00002DA4_rodata and pinned in undefined_syms_auto.txt to 0x4F4, the
+ * game_setupMode_rodata and pinned in undefined_syms_auto.txt to 0x4F4, the
  * table bootup_uso ships in its RoData (module 0xD9FE28; file offset 0x4F8 =
  * imm + 4, the word at 0x4F4 is the preceding 0.04f literal). Table words
  * (cases 1..12): 2F10 2E98 2ED4 2EAC 2EE8 2EFC 2F74 2F74 2F38 2F4C 2F60 2EC0,
@@ -38,7 +38,7 @@ extern char D_00000000, D_2DA4_cfg;
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 
-void func_00002DA4(char *arg0, s32 arg1, s32 arg2) {
+void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
     int v;

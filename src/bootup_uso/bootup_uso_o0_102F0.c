@@ -5,7 +5,7 @@ extern char D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
 
-/* func_00010260 moved to bootup_uso_o0_1024C.c (-O0 file split, 2026-05-03). */
+/* PauseMenu_func_00010260 moved to bootup_uso_o0_1024C.c (-O0 file split, 2026-05-03). */
 
 /* func_000102A4 moved to bootup_uso_o0_1024C.c 2026-07-10 — it was an -O0
  * island (register params, unfolded div.s by 2.0f, mtc1 load-delay nops);

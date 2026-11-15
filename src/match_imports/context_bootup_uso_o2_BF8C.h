@@ -365,4 +365,4 @@ extern void bootup_BF8C_call4(void *);
 extern void bootup_BF8C_call5(BootupPhysicsState *);
 extern void bootup_BF8C_call6(BootupPhysicsState *);
 extern void bootup_BF8C_call7(BootupPhysicsState *);
-void func_0000BF8C(BootupPhysicsState *arg0);
+void SnowBoarder_updateDyn(BootupPhysicsState *arg0);

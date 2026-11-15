@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_00000CA0 (0xF4 / 61 words): the
+/* IDO 7.1 NCC (C++) donor for BGBox_ctor (0xF4 / 61 words): the
  * constructor D::D(int, int, int) of a 0x40-byte class with a base B whose
  * ctor is out of line (B(&D_000066A8), import) and a vptr at +0x28 (B
  * declares the virtual). edg's ctor protocol supplies the get-or-create head
@@ -10,7 +10,7 @@
  * The last corner is written as three statements on three LINES: as1 only
  * reorders inside one source-line (.loc) group, and with set(h, nh, h) on a
  * single line it issued the nh store (+0x32) before the h store (+0x30).
- * Symbols renamed after compile (names only): __ct__1DFiN21 -> func_00000CA0,
+ * Symbols renamed after compile (names only): __ct__1DFiN21 -> BGBox_ctor,
  * __ct__1BFPc -> func_00000000_ca0_base, __vtbl__1D -> bu_ca0_desc.
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-g run 150). */
 extern "C" {

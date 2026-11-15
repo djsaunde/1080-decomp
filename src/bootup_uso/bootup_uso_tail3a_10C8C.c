@@ -4,14 +4,14 @@
  * moved out of bootup_uso_tail3a.c on 2026-07-10 when func_00010B6C
  * (0x10B6C, -O0) was carved into bootup_uso_o0_10B6C.c. Same OPT_FLAGS as
  * tail3a was -O2 -g3 but both residents are -O0 (flipped 2026-07-10):
- * func_00010C8C is MATCHED (real C in build path); func_00010FEC is an
+ * GameFlow_create is MATCHED (real C in build path); GameFlow_func_00010FEC is an
  * honest 94.5% NM wrap (INCLUDE_ASM in build path). TRUNCATE_TEXT 0xA3C. */
 
 extern int func_00000000();
 extern int D_00000000;
 extern char *func_00010324();
 
-/* func_00010C8C: -O0 object constructor (216 insns). Inits arg0's struct
+/* GameFlow_create: -O0 object constructor (216 insns). Inits arg0's struct
  * fields, builds a temp Vec4-ish stack record (sp6C) passed by value to a
  * registrar call, allocates two 0x80 sub-objects (->0xC0/->0xC4), then a
  * sub-record (->0x154) whose byte/halfword fields drive 4 callbacks + a
@@ -29,7 +29,7 @@ typedef struct {
     float x, y, z, w;
 } Vec4_10C8C;
 
-void func_00010C8C(int *arg0, int arg1) {
+void GameFlow_create(int *arg0, int arg1) {
     int sp84;
     register char *p;   /* s0, home 0x80 */
     register char *q;   /* s1, home 0x7C */
@@ -97,7 +97,7 @@ void func_00010C8C(int *arg0, int arg1) {
     func_00000000(arg0);
 }
 
-/* func_00010FEC: mode-switch dispatcher (439 insns), -O0. Tears down /
+/* GameFlow_func_00010FEC: mode-switch dispatcher (439 insns), -O0. Tears down /
  * re-registers three sub-objects (0x134 / self / 0x150) against the module
  * event list, bumps the global sequence counter, then switch(arg1) builds
  * the mode object (->0x30): per case, alloc(8|0xC) + alloc(8) vtable pair.
@@ -126,7 +126,7 @@ extern char D_0000C604;
 extern char D_0000C60C;
 extern int D_0000C4EC[];
 
-void func_00010FEC(char *arg0, int arg1, int arg2) {
+void GameFlow_func_00010FEC(char *arg0, int arg1, int arg2) {
     int sp3C;
     register char *p;   /* s0 */
     register char *q;   /* s1 */

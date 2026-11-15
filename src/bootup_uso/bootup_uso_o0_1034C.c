@@ -3,7 +3,7 @@
 extern int func_00000000();
 extern char D_00000000;
 
-/* func_0001034C: -O0 island split out of bootup_uso_tail3a.c on 2026-07-10
+/* PauseMenu_func_0001034C: -O0 island split out of bootup_uso_tail3a.c on 2026-07-10
  * and MATCHED at -O0 (125/125 target words; the 3 trailing pad words are
  * clipped by TRUNCATE_TEXT 0x1F4). Same carve recipe as o0_10B6C / o0_116C8.
  *
@@ -28,7 +28,7 @@ extern char D_00000000;
  *    DAG-shared across both derefs of the same expression). */
 typedef struct { int v; char pad[0x24]; } Row34C;
 
-void func_0001034C(char *a0) {
+void PauseMenu_func_0001034C(char *a0) {
     int counter;
     register char *s;
 

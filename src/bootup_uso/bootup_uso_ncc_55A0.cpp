@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_000055A0 (agent-g run 176: mechanical port of the cfe NM body).
+/* IDO 7.1 NCC (C++) donor for item_registerTemplates (agent-g run 176: mechanical port of the cfe NM body).
  * EXACT in agent-g run 241, REPLACE_FUNC_BODY-spliced over the bootup_uso.c placeholder on both build paths.
  * Reloc binding from the target relocations: every blank (reloc-free) lui/addiu pair references a 0-pinned
  * D_55A0_* name (gRoot -> D_55A0_root, the list table -> D_55A0_it0), the others are pinned to their target
@@ -61,7 +61,7 @@ extern char D_55A0_lb0, D_55A0_fmt, D_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&D_55A0_cfg + (o)))
 }
 static inline f32 fi(int v) { return v; }
-extern "C" void func_000055A0(int arg0, int arg1, int arg2) {
+extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
     int var_s0;

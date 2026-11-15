@@ -5,7 +5,7 @@ extern char D_00000000;
 extern struct { int a, b, c; } func_00000188;
 
 /* -O0 cluster split from bootup_uso_tail1.c on 2026-06-23 (F954-F9E8 are -O0;
- * moved together so tail1 keeps only the -O2 func_0000F81C and the linker stays
+ * moved together so tail1 keeps only the -O2 game_createProcessWindow and the linker stays
  * contiguous). func_0000F954 is a byte-exact -O0 C match; func_0000F9E8 is 1 word
  * off (a -O0 self-cache/eval-order residual in the indirect-call arg) so stays NM. */
 

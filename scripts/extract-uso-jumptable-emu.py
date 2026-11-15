@@ -7,7 +7,7 @@ dump RDRAM after the module is loaded+relocated (scripts/emu-symdump/uso-emu-dum
 and read the RELOCATED table directly: each entry is an absolute KSEG text address,
 so target_text_offset = dump_word - ram_base, where ram_base = 0x80000000 | (textbase-4)
 (the -4 skips the Text section's leading marker word). found.json from uso-emu-dump
-gives `textbase` (phys). Validated on bootup func_00010FEC: the 9 entries resolve to
+gives `textbase` (phys). Validated on bootup GameFlow_func_00010FEC: the 9 entries resolve to
 the exact offsets AND the absolute-stored last entry resolves cleanly (0x115b8),
 matching the static path.
 

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donor for func_0000FC28 func_0000FD4C func_0000FEE8: the NM C body of
+/* IDO 7.1 NCC (C++) -O0 donor for QuitProcess_func_0000FC28 QuitProcess_func_0000FD4C PauseMenu_create: the NM C body of
  * bootup_uso_tail1_bot.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead
  * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.
  * Spliced into bootup_uso_tail1_bot.c.o via REPLACE_FUNC_BODY. */
@@ -24,7 +24,7 @@ extern char D_0000C5BC;
 extern char D_0000C5C4;
 extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $at-fused scratch store/reload */
 
-/* func_0000FC28: 73-insn (0x124) constructor + init chain, returns a0.
+/* QuitProcess_func_0000FC28: 73-insn (0x124) constructor + init chain, returns a0.
  *
  * 2026-07-10: 56.23% -> 97.06%. 2026-09-05: -> 73/75 insns byte-exact;
  * the ONLY residual is the documented -O0 return-value dead-double-b
@@ -50,7 +50,7 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
  * `b epilogue` only (value-return -O0 cap, NOT C-fixable; re-probed
  * 2026-09-05: switch/if(1)/for(;;)/goto-end/same-line-brace/ternary tails
  * all keep or worsen it). NM stays. */
-void *func_0000FC28(void *a0) {
+void *QuitProcess_func_0000FC28(void *a0) {
     register void *s0, *s1;
 
     if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
@@ -74,8 +74,8 @@ void *func_0000FC28(void *a0) {
     return a0;
 }
 
-/* func_0000FD4C: 85-insn (0x154) alloc-chain + multi-init helper, returns a0.
- * Larger sibling of func_0000FC28 (+ a1/a2 global stashes, 0x44/0x48 zeroing).
+/* QuitProcess_func_0000FD4C: 85-insn (0x154) alloc-chain + multi-init helper, returns a0.
+ * Larger sibling of QuitProcess_func_0000FC28 (+ a1/a2 global stashes, 0x44/0x48 zeroing).
  *
  * 2026-07-10: 58.18% -> 97.47%. 2026-09-05: -> 85/87 insns byte-exact; the
  * ONLY residual is the documented -O0 return-value dead-double-b toolchain
@@ -105,7 +105,7 @@ void *func_0000FC28(void *a0) {
  * (5) D_bootup_scratch0 = int-typed base-0 alias of D_00000000 (undefined_syms)
  *     $at-fuses the *&D scratch store + reload.
  * RESIDUAL = the dead double-b only. NM stays. */
-void *func_0000FD4C(void *a0, int a1, int a2) {
+void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
     register void *s0, *s1;
 
     if (a0 != 0 || (a0 = (void*)func_00000000(0x50)) != 0) {
@@ -150,10 +150,10 @@ void func_0000FEA0(char *a0) {
     (*(void(**)(...))(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
 }
 
-/* func_0000FEE8 - verified structural decode (0x208, 130 insns,
+/* PauseMenu_create - verified structural decode (0x208, 130 insns,
  * get-or-create constructor + normalized-colour init). bootup_uso
- * constructor family (cf. func_00005124 / func_0001438C).
- *   void *func_0000FEE8(void *a0) {
+ * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ *   void *PauseMenu_create(void *a0) {
  *       o = a0 ? a0 : func_00000000(0x304);
  *       if (!o) return 0;
  *       s = func_00000000(0x2C);
@@ -189,7 +189,7 @@ void func_0000FEA0(char *a0) {
  * an int/float constant quotient at -O0 (li N; mtc1; cvt.s.w; lui 0x437f;
  * div.s, incl. the 255/255 = 1.0 one). All plain casts/pointer casts/
  * sizeof/char literals fold to a .rodata lwc1. */
-void *func_0000FEE8(char *a0) {
+void *PauseMenu_create(char *a0) {
     register char *s;
     register char *d;
     if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {

@@ -460,4 +460,4 @@ extern void bu_d900_gl61478(void *, ...);
 extern double D_00000988;
 extern char bu_d900_desc8aec[], bu_d900_desc8b44[];
 extern void *bu_d900_global;
-void func_0000D900(BootupState *st, BootupD900Message *m);
+void SnowBoarder_checkRaceEnd(BootupState *st, BootupD900Message *m);

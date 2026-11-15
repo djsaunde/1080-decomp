@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_0000485C (0xB8 / 46 words) -- pushes the
+/* IDO 7.1 NCC (C++) donor for Mountain_func_0000485C (0xB8 / 46 words) -- pushes the
  * object's vector and the root transform's scaled vector to a debug/draw
  * sink (func_00000080 + 0x20 is the sink's datum, passed to every call).
  *
@@ -26,7 +26,7 @@ extern char *bu_485c_root;
 }
 #define STR (func_00000080 + 0x20)
 #define F(p,o) (*(float *)((char *)(p) + (o)))
-extern "C" void func_0000485C(char *a0) {
+extern "C" void Mountain_func_0000485C(char *a0) {
     char *v0;
     func_00000000(STR);
     V3 b1(F(a0,0x30), F(a0,0x34), F(a0,0x30));

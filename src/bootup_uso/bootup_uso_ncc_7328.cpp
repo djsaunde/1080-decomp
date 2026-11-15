@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_00007328 (0x1C0 / 112 words): drain the
+/* IDO 7.1 NCC (C++) donor for EnvSettings_load (0x1C0 / 112 words): drain the
  * message queue -- for each message look the id up in the handler list (stack
  * {cur, nxt} iterator, the same class as game_libs 38964 / 3D48C) and fire
  * the handler's virtual slot 8, else report + reply; then the flag tail.
@@ -32,7 +32,7 @@ struct Iter73 {
     Entry73 *next() { return (cur = nxt) ? (nxt = nxt->next, cur->data) : 0; }
     Entry73 *get() { return cur->data; }
 };
-extern "C" void func_00007328(char *self) {
+extern "C" void EnvSettings_load(char *self) {
     Msg73 msg;
     int out;
     Entry73 *found;

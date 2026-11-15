@@ -1,4 +1,4 @@
-/* IDO 7.1 cfe (C) EXACT donor for func_000090CC (agent-c run 226 decode, exact in run 227).
+/* IDO 7.1 cfe (C) EXACT donor for SnowBoarder_ctor (agent-c run 226 decode, exact in run 227).
  * The target is cfe output (cfront-style C), not edg: the draw-call this-adjust is `addu a0, delta, ptr`
  * and the site-2 vptr base is loaded once, which only cfe gives. Mechanical port of the NCC donor
  * bootup_uso_ncc_90CC_nm.cpp (98.10 as plain C), then the edg-only fixes were reverted or redone for cfe
@@ -83,7 +83,7 @@ extern char D_0000885C;
 extern char D_00008868;
 extern char D_00008880;
 extern char D_00008888;
-/* func_000090CC alloc-cascade +0x28 child-vtable pointers: USO relocs blanked in the
+/* SnowBoarder_ctor alloc-cascade +0x28 child-vtable pointers: USO relocs blanked in the
  * .s (lui/addiu 0x0). Resolved from bootup.uso TextReloc @0xd9fe28: symIdx 545 =
  * shared 0x174-fallback vtable (imports), 546/547/548 = per-class vtables (imports),
  * symIdx 312 = internal data +0x207DC. All =0 in undefined_syms_auto.txt (bytes match). */
@@ -142,12 +142,12 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
  * locals fill the target's gaps (4 above sp144, var_a2 + 2 below sp118, ...).
  * Self is the PARAM (move s2,a0 inside the save sequence, IDO_CODEGEN
  * #prologue-move-param-vs-copy-62368). The four rgb table bases are per-site
- * symbols (target lui/addiu %hi/%lo(func_00008664+0x24..0x30) + lbu 0/1/2).
+ * symbols (target lui/addiu %hi/%lo(Tree_func_00008664+0x24..0x30) + lbu 0/1/2).
  * Every sp-relative word now lands on the target slot. Residual: the arg2
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, func_000008B4+4/8, func_000087A4+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, func_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
@@ -163,7 +163,7 @@ extern void bu_90cc_call_p4d(void *, char *, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 
-void *func_000090CC(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
+void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5, f32 arg6, s32 arg7, s32 arg8) {
     s32 sp174;
     Vec3 vpos;
     char *sp164;

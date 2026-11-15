@@ -24,8 +24,8 @@ char *func_00010324(a0) char *a0; {
 }
 
 /* 2026-07-10 -O0 island carve (this file was bootup_uso_tail3a.c until
- * 2026-09-05): func_0001034C moved to bootup_uso_o0_1034C.c
- * and MATCHED there at -O0 (125/125). func_00010540 (INCLUDE_ASM, honest NM;
+ * 2026-09-05): PauseMenu_func_0001034C moved to bootup_uso_o0_1034C.c
+ * and MATCHED there at -O0 (125/125). PauseMenu_func_00010540 (INCLUDE_ASM, honest NM;
  * its own blocker is also -O0 but the 343-insn body has pervasive typed-struct
  * eval-order divergence, see its wrap doc) + func_00010A9C + func_00010AA8
  * moved to bootup_uso_tail3a_10540.c (-O2 -g3). func_00010AB0 moved to
@@ -34,8 +34,8 @@ char *func_00010324(a0) char *a0; {
 
 /* func_00010B6C (0x10B6C..0x10C8B) split to bootup_uso_o0_10B6C.c on
  * 2026-07-10 and MATCHED there at -O0 (72/72). tail3a now ends at 0x10B6C
- * (TRUNCATE_TEXT 0x848); the 0x10C8C..0x116C7 remainder (func_00010C8C +
- * func_00010FEC, both honest-NM INCLUDE_ASM) moved to
+ * (TRUNCATE_TEXT 0x848); the 0x10C8C..0x116C7 remainder (GameFlow_create +
+ * GameFlow_func_00010FEC, both honest-NM INCLUDE_ASM) moved to
  * bootup_uso_tail3a_10C8C.c, still -O2 -g3. */
 
 
@@ -50,8 +50,8 @@ char *func_00010324(a0) char *a0; {
  * the real shape is a fused-|| guard + cfe DAG-share. tail3a TRUNCATE_TEXT
  * reduced 0x1710 -> 0x1628. */
 
-/* func_000118E4 + func_0001195C split out to bootup_uso_o0_118E4.c on
- * 2026-05-14 for -O0 build (func_000118E4 was previously NM-wrapped at
+/* game_loadUso + game_unloadUso split out to bootup_uso_o0_118E4.c on
+ * 2026-05-14 for -O0 build (game_loadUso was previously NM-wrapped at
  * tail3a's -O2 -g3 OPT_FLAGS; the body's sp+0x1C/0x20/0x24 spill-and-
  * reload shape is unmistakable -O0 IDO emit). */
 

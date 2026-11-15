@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_0001304C (fire-grid blur + texture upload
+/* IDO 7.1 NCC (C++) donor for Fader_func_0001304C (fire-grid blur + texture upload
  * display list, 0x8D8 / 566 words). EXACT (agent-c run 126). Recipe:
  * - declaration order x, y, i, j / up, dn / k / lf, rt / count = frame 96, k at 68;
  * - `if (f->timer != 0) f->timer--; if (f->timer == 0)` = the t6 decrement temp;
@@ -44,7 +44,7 @@ extern char D_00000000[];
 extern float D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
 extern char func_0000023C[];
 }
-extern "C" void func_0001304C(Fire *f) {
+extern "C" void Fader_func_0001304C(Fire *f) {
     int x, y, i, j;
     float up, dn;
     float k;

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_0000E9FC (0x30 / 12 words): the static
+/* IDO 7.1 NCC (C++) donor for SnowBoard_func_0000E9FC (0x30 / 12 words): the static
  * initializer (edg `__sti__<stamp>`) NCC generates for a namespace-scope
  * object of a class Dv whose inline default constructor calls the out-of-line
  * base constructor B::B() and then stores Dv's vtable address into the vptr.
@@ -11,7 +11,7 @@
  * definition line, which is why `lui a0` is scheduled above `sw ra`.
  *
  * Symbols renamed after compile (names only, no bytes change):
- * __sti__<timestamp> -> func_0000E9FC, __ct__9BuE9FCBasFv -> func_00000000,
+ * __sti__<timestamp> -> SnowBoard_func_0000E9FC, __ct__9BuE9FCBasFv -> func_00000000,
  * __vtbl__8BuE9FCOb -> D_func_0000E9FC_arg2. The object keeps C linkage under
  * its pinned name D_func_0000E9FC_arg1. */
 struct BuE9FCBas {

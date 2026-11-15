@@ -5,10 +5,10 @@ extern char D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 
 
-/* func_00012E00 - verified structural decode (0x24C, 147 insns,
+/* Fader_ctor - verified structural decode (0x24C, 147 insns,
  * get-or-create constructor + work-buffer allocation). bootup_uso
- * constructor family (cf. func_00005124 / func_0001438C).
- *   void *func_00012E00(void *a0, int a1) {
+ * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ *   void *Fader_ctor(void *a0, int a1) {
  *       o = a0 ? a0 : func_00000000(0x78); if (!o) return 0;
  *       s = func_00000000(0x2C);
  *       func_00000000(s, &D_0000C730);            // init sub
@@ -52,7 +52,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * per-function unroll budget), so the col loop is written 2-per-iteration
  * (59.2 vs 58.4 for the rolled form). */
 extern char D_12e00_a, D_12e00_b, D_12e00_c, D_12e00_d;
-void *func_00012E00(arg0, arg1) void *arg0; s32 arg1; {
+void *Fader_ctor(arg0, arg1) void *arg0; s32 arg1; {
     char *o;
     char *b;
     void *mark;
@@ -121,16 +121,16 @@ end:
     return o;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_00012E00);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", Fader_ctor);
 #endif
 
-/* func_0001304C: fire-grid blur (32x32 four-neighbour diffusion into a texel
+/* Fader_func_0001304C: fire-grid blur (32x32 four-neighbour diffusion into a texel
  * buffer) + texture-upload display list. EXACT via an IDO 7.1 NCC (C++) donor:
  * src/bootup_uso/bootup_uso_ncc_1304C.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 126). */
 extern f32 D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
 extern char func_0000023C[];  /* data-symbol base: ctx ptr @ +0x18 */
-void func_0001304C(char *arg0) {
+void Fader_func_0001304C(char *arg0) {
     volatile int r = 0;
 }
 
@@ -297,7 +297,7 @@ void func_00013CE8(Quad4 *dst) {
     *dst = buf;
 }
 
-/* func_00013D40 - EXACT (run 113 agent-c, twin port of CoolGadgetParms_ctor).
+/* TimeGadget_ctor_00013D40 - EXACT (run 113 agent-c, twin port of CoolGadgetParms_ctor).
  * bootup_uso get-or-create constructor + 6 child sub-objects at o+8/0x20/
  * 0x38/0x50/0x68/0x80, values from the 6-word table at 0xCAC0, kinds
  * 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &D_0000C764. The earlier
@@ -314,7 +314,7 @@ extern int D_0000CAC4;
 extern int D_0000CAC8;
 extern int func_0000CACC[];  /* data words 0xCACC/0xCAD0/0xCAD4 (table tail) */
 extern char D_0000C764;
-char *func_00013D40(char *self) {
+char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 u1;
     Val13D40 u2;
     Val13D40 u3;
@@ -559,9 +559,9 @@ void func_00014228(char *s0) {
     func_00000000(*(int*)(s0 + 0xE0), *(int*)(s0 + 0x44), *(int*)(s0 + 0x5C), s0 + 0xE4);
 }
 
-/* func_0001438C - verified structural decode (0x128, 74 insns,
+/* TimeGadget_func_0001438C - verified structural decode (0x128, 74 insns,
  * get-or-create constructor + 2 child sub-objects).
- *   void *func_0001438C(void *a0) {
+ *   void *TimeGadget_func_0001438C(void *a0) {
  *       o = a0;
  *       if (o == 0) { o = alloc(0x38); if (!o) return 0; }
  *       s1 = alloc(8);
@@ -569,7 +569,7 @@ void func_00014228(char *s0) {
  *           s1->0x0 = &func_0000CACC[0xC];        // fn/descriptor
  *           s1->0x4 = 0;
  *       }
- *       v = *(int*)(func_0000CAE8 + 4);
+ *       v = *(int*)(SnowBoarder_func_0000CAE8 + 4);
  *       if (o != (void*)-8) {                     // defensive guard
  *           c = alloc(0x18);
  *           if (c) {
@@ -579,7 +579,7 @@ void func_00014228(char *s0) {
  *               c->0x10 = 30.0f;                  // 0x41F00000
  *           }
  *       }
- *       v = *(int*)(func_0000CAE8 + 8);
+ *       v = *(int*)(SnowBoarder_func_0000CAE8 + 8);
  *       if (o != (void*)-0x20) {
  *           c = alloc(0x18);
  *           if (c) {
@@ -596,7 +596,7 @@ void func_00014228(char *s0) {
  * 0xC), s1->0x4 (4) = 0. child = 0x18-byte sub-object: child->0xC
  * (12) descriptor ptr (&D_0000C83C), child->0x10 (16) f32 = 30.0,
  * child->0x14 (20) = 0; built twice with values from the global
- * table func_0000CAE8+4 / +8. The `o != -8 / -0x20` tests are the
+ * table SnowBoarder_func_0000CAE8+4 / +8. The `o != -8 / -0x20` tests are the
  * `c = o+8; if (c != 0 || alloc)` get-or-create guard folded by IDO.
  * 2026-07-30 agent-g: 13D40 recipe applied (65.0 -> 87.9, word-exact
  * 50/74, STRUCTURE-EXACT 74/74 mnemonics+offsets+slots): Val13D40 p
@@ -615,7 +615,7 @@ void func_00014228(char *s0) {
  * extern "C" {
  * void *func_00000000(...);
  * extern int func_0000CACC[];
- * extern int func_0000CAE8[];
+ * extern int SnowBoarder_func_0000CAE8[];
  * extern char D_0000C83C;
  * }
  * struct Val { int v; Val(int x) { v = x; } };
@@ -631,11 +631,11 @@ void func_00014228(char *s0) {
  *     D m2;
  *     Obj();
  * };
- * Obj::Obj() : m1(this, Val(func_0000CAE8[1])), m2(this, Val(func_0000CAE8[2])) {}
+ * Obj::Obj() : m1(this, Val(SnowBoarder_func_0000CAE8[1])), m2(this, Val(SnowBoarder_func_0000CAE8[2])) {}
  */
-extern int func_0000CAE8[];  /* data words 0xCAE8/0xCAEC/0xCAF0 (table) */
+extern int SnowBoarder_func_0000CAE8[];  /* data words 0xCAE8/0xCAEC/0xCAF0 (table) */
 extern char D_0000C83C;
-char *func_0001438C(char *arg0) {
+char *TimeGadget_func_0001438C(char *arg0) {
     char *o;
     char *s;
     char *c;
@@ -654,7 +654,7 @@ char *func_0001438C(char *arg0) {
         *(char **)(s + 0) = (char *)&func_0000CACC[3];
         *(int *)(s + 4) = 0;
     }
-    p.v = func_0000CAE8[1]; A[4] = p.v;
+    p.v = SnowBoarder_func_0000CAE8[1]; A[4] = p.v;
     c = o + 8;
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);
@@ -663,7 +663,7 @@ char *func_0001438C(char *arg0) {
         *(int *)(c + 0x14) = 0;
         *(float *)(c + 0x10) = 30.0f;
     }
-    p.v = func_0000CAE8[2]; A[3] = p.v;
+    p.v = SnowBoarder_func_0000CAE8[2]; A[3] = p.v;
     c = o + 0x20;
     if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
         func_00000000(w = c, o, p, 1);
@@ -676,7 +676,7 @@ end:
     return o;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", func_0001438C);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadget_func_0001438C);
 #endif
 
 void func_000144B4(int *a0, int a1, int a2, float a3, float arg5) {

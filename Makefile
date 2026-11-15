@@ -132,19 +132,19 @@ build/src/bootup_uso/bootup_uso_o0_12DA4.c.o build/non_matching/src/bootup_uso/b
 build/src/bootup_uso/bootup_uso.c.o: private TRUNCATE_TEXT := 0xF1F0
 # 2DA4 = subsystem init + 12-way jumptable dispatch, IDO 7.1 -O2 donor:
 # bootup_uso_o2_2DA4.c (123/123 word-exact). Spliced only so the donor-local
-# .rodata jumptable reloc is renamed func_00002DA4_rodata and pinned to the
+# .rodata jumptable reloc is renamed game_setupMode_rodata and pinned to the
 # table at bootup_uso RoData +0x4F4.
 BOOTUP_2DA4_DONOR := build/src/bootup_uso/bootup_uso_o2_2DA4.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00002DA4=$(BOOTUP_2DA4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_setupMode=$(BOOTUP_2DA4_DONOR)
 # CAE8 = per-round state reset. bootup_uso is C++ too: IDO 7.1 NCC donor
 # (V3 operator=(const V3 &) forwarding to a by-value set; named locals pin the
 # frame), 126/126 words. docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116.
 BOOTUP_CAE8_DONOR := build/src/bootup_uso/bootup_uso_ncc_CAE8.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000CAE8=$(BOOTUP_CAE8_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000CAE8=$(BOOTUP_CAE8_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CAE8_DONOR)
 # 485C = vector debug push, NCC donor (V3 ctor forwarding to set, block-scope b2).
 BOOTUP_485C_DONOR := build/src/bootup_uso/bootup_uso_ncc_485C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000485C=$(BOOTUP_485C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += Mountain_func_0000485C=$(BOOTUP_485C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_485C_DONOR)
 # 76F4 = 39E24 twin, NCC donor (camera member of the global block, inline Cam::mul(G &) on a local reference).
 BOOTUP_76F4_DONOR := build/src/bootup_uso/bootup_uso_ncc_76F4.cpp.o
@@ -152,13 +152,13 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_76F4_DONOR)
 # CFA0 = ground-contact / tint refresh, NCC donor (virtual hooks, V3 copies).
 BOOTUP_CFA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CFA0.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000CFA0=$(BOOTUP_CFA0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000CFA0=$(BOOTUP_CFA0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CFA0_DONOR)
 # E740 = tile copy from the root object's buffer, E800 = config + root virtual
 # call; NCC donors.
 BOOTUP_E740_DONOR := build/src/bootup_uso/bootup_uso_ncc_E740.cpp.o
 BOOTUP_E800_DONOR := build/src/bootup_uso/bootup_uso_ncc_E800.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E740=$(BOOTUP_E740_DONOR) func_0000E800=$(BOOTUP_E800_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E740=$(BOOTUP_E740_DONOR) SnowBoard_func_0000E800=$(BOOTUP_E800_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_E740_DONOR) $(BOOTUP_E800_DONOR)
 # B1B4 = sound bank lazy loader + registry add (cfront Bank chain, inline Reg::add); NCC donor.
 BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
@@ -174,7 +174,7 @@ H2H_1360_NM_DONOR := build/src/h2hproc_uso/h2hproc_uso_ncc_1360.cpp.o
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: $(H2H_1360_NM_DONOR)
 # 7328 = message-queue drain with the {cur, nxt} list iterator + by-value Msg match; NCC donor.
 BOOTUP_7328_DONOR := build/src/bootup_uso/bootup_uso_ncc_7328.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00007328=$(BOOTUP_7328_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += EnvSettings_load=$(BOOTUP_7328_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_7328_DONOR)
 # A9C = mode letter -> flag bit: switch assigning one result variable (compare chain, 'n'/'s' result hoisted into v1); NCC donor.
 BOOTUP_A9C_DONOR := build/src/bootup_uso/bootup_uso_ncc_A9C.cpp.o
@@ -191,8 +191,8 @@ BOOTUP_CA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CA0.cpp.o
 $(BOOTUP_CA0_DONOR): src/bootup_uso/bootup_uso_ncc_CA0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__1DFiN21=func_00000CA0 --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=bu_ca0_desc $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000CA0=$(BOOTUP_CA0_DONOR)
+	$(OBJCOPY) --redefine-sym __ct__1DFiN21=BGBox_ctor --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=bu_ca0_desc $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += BGBox_ctor=$(BOOTUP_CA0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CA0_DONOR)
 # 6204 / E9FC = edg static initializers (__sti__) for two global objects: the __sti__ is emitted at the
 # end of the TU (prologue = last line) and the ctor call carries the earlier definition line, hence
@@ -207,13 +207,13 @@ BOOTUP_E9FC_DONOR := build/src/bootup_uso/bootup_uso_ncc_E9FC.cpp.o
 $(BOOTUP_E9FC_DONOR): src/bootup_uso/bootup_uso_ncc_E9FC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=func_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR) func_0000E9FC=$(BOOTUP_E9FC_DONOR)
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_func_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006204=$(BOOTUP_6204_DONOR) SnowBoard_func_0000E9FC=$(BOOTUP_E9FC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR) $(BOOTUP_E9FC_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
 # inline set(), edg case-order compare chains); NCC donor + all-zero pad SUFFIX word.
 BOOTUP_4948_DONOR := build/src/bootup_uso/bootup_uso_ncc_4948.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00004948=$(BOOTUP_4948_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += cam_func_00004948=$(BOOTUP_4948_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_4948_DONOR)
 # D900 = event handler; C++ (edg case-order compare chain, Vec3 operator temps).
 # Still NON_MATCHING (operator temp slots, case-6 zero colour): NM comparison object only.
@@ -223,16 +223,16 @@ build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_D900_NM_DONOR)
 # target literal hoist order; agent-g run 242). EXACT in agent-c run 258 (uopt spilltemps slot order: the 0x990 load read
 # in place at both tests + the dot3 value held), spliced over the placeholder on both paths.
 BOOTUP_B75C_DONOR := build/src/bootup_uso/bootup_uso_ncc_B75C.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000B75C=$(BOOTUP_B75C_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000B75C=$(BOOTUP_B75C_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_B75C_DONOR)
 # 63B4 = minimap marker projection, NCC donor (C++: inline M3::xf(V3 &) through ctx->view->rot; agent-g run 184). EXACT.
 BOOTUP_63B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_63B4.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000063B4=$(BOOTUP_63B4_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += MapProp_func_000063B4=$(BOOTUP_63B4_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_63B4_DONOR)
 # C234 = NM C body lifted under NCC + one parameter empty test (agent-c run 134, cfe 77.39). EXACT in agent-g run 236
 # (named divisor kept by a folded memory read, no BB split before the 0x968 reload), spliced over the placeholder on both paths.
 BOOTUP_C234_DONOR := build/src/bootup_uso/bootup_uso_ncc_C234.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000C234=$(BOOTUP_C234_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_procColl=$(BOOTUP_C234_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_C234_DONOR)
 # 8BD4 = collision impulse; NM C body as C++ (amt in $f20 under NCC, inline V-returning helper; agent-g run 157, cfe 91.85).
 # EXACT in agent-c run 238 (second scaling inline with r declared after its scalars, one |f970| variable, vel += through
@@ -243,31 +243,31 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # 1A44 = gSPMatrix + gSPDisplayList draw as C++ (camera * G operand order, w1 read before the
 # 0x06 packet's slot, `_n = ms->count++`; agent-g run 172, cfe 92.23); NCC donor, exact.
 BOOTUP_1A44_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00001A44=$(BOOTUP_1A44_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += U64BGWall_func_00001A44=$(BOOTUP_1A44_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_1A44_DONOR)
 # 31C0 = mode-switch scene builder written as C++ (new Obj2 / new KB / out-of-line ctor(0, ...) calls; agent-g run 164,
 # cfe 93.61). EXACT NCC donor over a placeholder (agent-c run 271: case 1 through a folded-zero conditional whose dead
 # arm holds a dummy pool temp). Symbols renamed (names only); the donor's .rodata (-1500.0f x2) is renamed by the splice
-# to func_000031C0_rodata (pinned to RoData 0x530); the fn_31c0_* callees are blank USO jal words (pinned 0).
+# to cam_create_rodata (pinned to RoData 0x530); the fn_31c0_* callees are blank USO jal words (pinned 0).
 BOOTUP_31C0_DONOR := build/src/bootup_uso/bootup_uso_ncc_31C0.cpp.o
 $(BOOTUP_31C0_DONOR): src/bootup_uso/bootup_uso_ncc_31C0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 	$(OBJCOPY) --redefine-sym __ct__1BFPv=fn_31c0_init --redefine-sym __ct__2B2FP3ObjfN22=fn_31c0_B2 --redefine-sym __ct__2WAFPcP4Obj2fN23iT1=fn_31c0_A1 --redefine-sym __ct__2WRFPciT1=fn_31c0_A2 --redefine-sym __ct__2W4FPcN21=fn_31c0_A4 --redefine-sym __ct__2WVFPcN21=fn_31c0_B3 --redefine-sym __vtbl__2KB=D_00007120 --redefine-sym __vtbl__3Obj=D_00000000 $@
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000031C0=$(BOOTUP_31C0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += cam_create=$(BOOTUP_31C0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_31C0_DONOR)
 # 90CC = alloc-cascade constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 97.15), then back
 # to cfront-style C for cfe (agent-c run 226, bootup_uso_90CC_nm.c: the target's draw-call addu order and
 # single site-2 base load are cfe-only; the NCC donor .cpp is kept as a reference). EXACT in agent-c run 227
 # (bootup_uso_90CC.c: two as1 source-line order fixes), spliced over the placeholder on both paths.
 BOOTUP_90CC_DONOR := build/src/bootup_uso/bootup_uso_90CC.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000090CC=$(BOOTUP_90CC_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_ctor=$(BOOTUP_90CC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_90CC_DONOR)
 # 55A0 = scene/HUD constructor; cfe NM body ported to C++ under NCC (agent-g run 176, cfe 94.35). EXACT in agent-g
 # run 241 (list iterator as a plain register variable, whole-struct v / p1 copies, a dead nested call-result temp before
 # actor 2 for vec2's home), spliced over the placeholder on both paths.
 BOOTUP_55A0_DONOR := build/src/bootup_uso/bootup_uso_ncc_55A0.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000055A0=$(BOOTUP_55A0_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += item_registerTemplates=$(BOOTUP_55A0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_55A0_DONOR)
 # E270 = ratio wrapper; the constant is the f32 literal pi in bootup.uso RoData
 # +0x998 (func_0000E270_rodata pin). IDO 7.1 -O2 donor bootup_uso_o2_E270.c.
@@ -280,31 +280,31 @@ BOOTUP_E2D0_DONOR := build/src/bootup_uso/bootup_uso_o2_E2D0.c.o
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000E2D0=$(BOOTUP_E2D0_DONOR)
 # 6808 = scene/screen constructor (13-way record dispatch); IDO 7.1 -O2 donor
 # bootup_uso_o2_6808.c over an empty placeholder (agent-g run 223). EXACT.
-# Jumptable reloc renamed func_00006808_rodata, pinned to 0x5B4.
+# Jumptable reloc renamed game_createMap_rodata, pinned to 0x5B4.
 BOOTUP_6808_DONOR := build/src/bootup_uso/bootup_uso_o2_6808.c.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00006808=$(BOOTUP_6808_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_createMap=$(BOOTUP_6808_DONOR)
 build/src/bootup_uso/bootup_uso_o0_F1F0.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/bootup_uso/bootup_uso_o0_F390.c.o: TRUNCATE_TEXT := 0x334
 build/src/bootup_uso/bootup_uso_F434.c.o build/non_matching/src/bootup_uso/bootup_uso_F434.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_F434.c.o: TRUNCATE_TEXT := 0xA8
 build/src/bootup_uso/bootup_uso_o0_F7F4.c.o: TRUNCATE_TEXT := 0xB0
 build/src/bootup_uso/bootup_uso_tail1.c.o: TRUNCATE_TEXT := 0x138
-# 2026-07-10: func_0000F81C is an -O0 island (arg homing above frame, unfilled
+# 2026-07-10: game_createProcessWindow is an -O0 island (arg homing above frame, unfilled
 # beqz/jal delays, b-to-epilogue return) — tail1 holds only it, so build -O0.
 build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: OPT_FLAGS := -O0
-# F81C: -O0 C++ donor(s) for func_0000F81C (edg -O0 has no dead closing-brace branch)
+# F81C: -O0 C++ donor(s) for game_createProcessWindow (edg -O0 has no dead closing-brace branch)
 BOOTUP_F81C_DONOR := build/src/bootup_uso/bootup_uso_ncc_F81C.cpp.o
 $(BOOTUP_F81C_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: private REPLACE_FUNC_BODY += func_0000F81C=$(BOOTUP_F81C_DONOR)
+build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: private REPLACE_FUNC_BODY += game_createProcessWindow=$(BOOTUP_F81C_DONOR)
 build/src/bootup_uso/bootup_uso_tail1.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: $(BOOTUP_F81C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail1.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x138
 build/src/bootup_uso/bootup_uso_o0_FBCC.c.o: TRUNCATE_TEXT := 0x5C
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o: TRUNCATE_TEXT := 0x4C8
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: OPT_FLAGS := -O0
-# FC28: -O0 C++ donor(s) for func_0000FC28 func_0000FD4C func_0000FEE8 (edg -O0 has no dead closing-brace branch)
+# FC28: -O0 C++ donor(s) for QuitProcess_func_0000FC28 QuitProcess_func_0000FD4C PauseMenu_create (edg -O0 has no dead closing-brace branch)
 BOOTUP_FC28_DONOR := build/src/bootup_uso/bootup_uso_ncc_FC28.cpp.o
 $(BOOTUP_FC28_DONOR): OPT_FLAGS := -O0
-build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: private REPLACE_FUNC_BODY += func_0000FC28=$(BOOTUP_FC28_DONOR) func_0000FD4C=$(BOOTUP_FC28_DONOR) func_0000FEE8=$(BOOTUP_FC28_DONOR)
+build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: private REPLACE_FUNC_BODY += QuitProcess_func_0000FC28=$(BOOTUP_FC28_DONOR) QuitProcess_func_0000FD4C=$(BOOTUP_FC28_DONOR) PauseMenu_create=$(BOOTUP_FC28_DONOR)
 build/src/bootup_uso/bootup_uso_tail1_bot.c.o build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: $(BOOTUP_FC28_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail1_bot.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x4C8
 # 2026-07-10: func_000102A4 (-O0 island) carved out of tail2 into o0_1024C.
@@ -341,7 +341,7 @@ build/non_matching/src/bootup_uso/bootup_uso_o0_10324.c.o: NON_MATCHING_TRUNCATE
 build/src/bootup_uso/bootup_uso_o0_1034C.c.o build/non_matching/src/bootup_uso/bootup_uso_o0_1034C.c.o: OPT_FLAGS := -O0
 build/src/bootup_uso/bootup_uso_o0_1034C.c.o: TRUNCATE_TEXT := 0x1F4
 build/non_matching/src/bootup_uso/bootup_uso_o0_1034C.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1F4
-# 2026-09-04 carve: func_00010540 out of tail3a_10540 into o0_10540 (-O0,
+# 2026-09-04 carve: PauseMenu_func_00010540 out of tail3a_10540 into o0_10540 (-O0,
 # MATCHED 343/343, TRUNCATE 0x55C clips the -O0 trailing pad word).
 # 2026-09-05: tail3a_10540 -> o0_10A9C (-O0): the 2-word "func_00010AA8" was
 # 10A9C's dead -O0 `$exit` pair (fall-off fn: our -O0 emits the 0xC body + ONE
@@ -465,7 +465,7 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: SUFFIX_BYTES_FORCE := func_00013B20=0
 # 1304C = fire-grid blur + texture DL; C++ (inline next() appends, uopt block
 # boundaries placed with empty ifs). NCC donor, exact.
 BOOTUP_1304C_DONOR := build/src/bootup_uso/bootup_uso_ncc_1304C.cpp.o
-build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001304C=$(BOOTUP_1304C_DONOR)
+build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_func_0001304C=$(BOOTUP_1304C_DONOR)
 build/src/bootup_uso/bootup_uso_tail4.c.o build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: $(BOOTUP_1304C_DONOR)
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_00013B20=0x00000000,0x00000000,0x00000000
 # game_libs split around the 56 KB RSP microcode blob at 0xEBF8..0x1CA10.
@@ -2891,16 +2891,16 @@ build/assets/timproc_uso_block5_yay0.bin: YAY0_TEXT_SIZE := 0xE620
 # func_0000EBE8 likewise (2026-07-15): byte-exact C body ends `jr ra; nop` at
 # 0xEC74; target has two trailing alignment nops (0xEC78/0xEC7C) so the next fn
 # sits at 0xEC80. All-zero pad words, FORCE for the same skip-path reason.
-# func_000087A4 (2026-10-16): exact C body ends at 0x8914; three all-zero file-end
-# alignment pad words to func_00008920 (0x8914..0x891C). FORCE for the same reason.
-build/src/bootup_uso/bootup_uso.c.o: private SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_00004948=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
+# TreeTmpl_create (2026-10-16): exact C body ends at 0x8914; three all-zero file-end
+# alignment pad words to game_isUsoLoaded (0x8914..0x891C). FORCE for the same reason.
+build/src/bootup_uso/bootup_uso.c.o: private SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 cam_func_00004948=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EE8C=0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
 # Mirror onto the non_matching object so report.json/objdiff score the trailing
 # alignment-nop word (splat-symbol-boundary trailing-delay-nop class).
 # func_0000F1B4 likewise: matching build has SUFFIX_BYTES (3 all-zero pad words to
 # the next-fn boundary at 0xF1F0); mirror it so objdiff sizes the symbol 0x3C not
 # 0x30 (was scoring 80%=12/15w on a byte-identical fn). F1B4 is the LAST fn in the
 # file so the pad just extends .text (no shift / TRUNCATE needed on non_matching).
-build/non_matching/src/bootup_uso/bootup_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_000087A4=0x00000000,0x00000000,0x00000000 func_00004948=0x00000000 func_0000EE8C=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
+build/non_matching/src/bootup_uso/bootup_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 cam_func_00004948=0x00000000 func_0000EE8C=0x00000000 func_0000F1B4=0x00000000,0x00000000,0x00000000 func_0000EBE8=0x00000000,0x00000000 func_0000E740=0x00000000,0x00000000,0x00000000
 
 # Collect source files (kernel/, bootup_uso/, game_libs/, gui_uso/ — exclude o1/ reference)
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6EF64.c src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c src/timproc_uso_b1/timproc_uso_b1_o0_65C.c src/timproc_uso_b1/timproc_uso_b1_o0_B0.c src/timproc_uso_b3/timproc_uso_b3_o0_65C.c src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c src/timproc_uso_b3/timproc_uso_b3_o0_B0.c src/game_libs/game_libs_o1_6C8AC.c src/game_libs/game_libs_o1_6AF0C.c src/game_libs/game_libs_o1_6A304.c src/game_libs/game_libs_o1_6A420.c src/game_libs/game_libs_o1_6AF44.c src/game_libs/game_libs_o1_6B880.c src/game_libs/game_libs_o1_6B974.c src/game_libs/game_libs_o1_6BAD4.c src/game_libs/game_libs_o1_6B7A0.c src/game_libs/game_libs_ido53_6C11C.c src/game_libs/game_libs_o1_6FAD4.c src/game_libs/game_libs_o1_71144.c src/game_libs/game_libs_ido53_71708.c src/game_libs/game_libs_ido53_71624.c src/game_libs/game_libs_ido53_71384.c src/game_libs/game_libs_ido53_717C8.c src/game_libs/game_libs_ido53_73904.c src/game_libs/game_libs_ido53_6E224.c src/game_libs/game_libs_ido53_74554.c src/game_libs/game_libs_o1_73824.c src/game_libs/game_libs_o1_73034.c src/game_libs/game_libs_o1_6BF34.c src/game_libs/game_libs_ido53_6C1B8.c src/game_libs/game_libs_ido53_6C2A4.c src/game_libs/game_libs_ido53_6DC0C.c src/game_libs/game_libs_ido53_6DD14.c src/game_libs/game_libs_ido53_6F8A4.c src/game_libs/game_libs_ido53_6B0FC.c src/game_libs/game_libs_ido53_744C4.c src/game_libs/game_libs_ido53_73074.c src/game_libs/game_libs_ido53_669AC.c src/game_libs/game_libs_ido53_601D4.c src/game_libs/game_libs_ido53_6D0F4.c src/game_libs/game_libs_o1_6DA74.c src/game_libs/game_libs_o1_6D554.c src/game_libs/game_libs_ido53_6D6F4.c src/game_libs/game_libs_ido53_6D7CC.c src/game_libs/game_libs_ido53_6CDB4.c src/game_libs/game_libs_o1_6CAD4.c src/game_libs/game_libs_o1_6CB84.c src/game_libs/game_libs_o1_6CC64.c src/game_libs/game_libs_o1_6D270.c src/game_libs/game_libs_ido53_70040.c src/game_libs/game_libs_ido53_730CC.c src/game_libs/game_libs_ido53_7369C.c src/game_libs/game_libs_ido53_70B04.c src/game_libs/game_libs_ido53_70C44.c src/game_libs/game_libs_ido53_73310.c src/game_libs/game_libs_ido53_6F088.c src/game_libs/game_libs_ido53_6F38C.c src/game_libs/game_libs_ido53_6F3BC.c src/game_libs/game_libs_o2_70FCC.c src/game_libs/game_libs_o2_29CCC.c src/arcproc_uso/arcproc_uso_o0_748.c src/arcproc_uso/arcproc_uso_o0_688.c src/arcproc_uso/arcproc_uso_o0_5C8.c src/kernel/kernel_000_ido53_2530.c src/kernel/kernel_018_f_ido53_7564.c src/kernel/kernel_018_d_ido53_70A0.c src/kernel/kernel_018_b_ido53_698C.c src/kernel/kernel_006_o1_5520.c src/kernel/kernel_008_o1_58C0.c src/kernel/kernel_024_o1_9AB0.c src/game_libs/game_libs_o2_2E290.c src/game_libs/game_libs_o2_343F4.c src/game_libs/game_libs_o2_34548.c src/game_libs/game_libs_o1_6FC70.c src/game_libs/game_libs_ido53_6C484.c src/game_libs/game_libs_o1_6CD44.c src/game_libs/game_libs_ido53_6F834.c src/game_libs/game_libs_o1_6F634.c src/game_libs/game_libs_o1_6CC14.c src/game_libs/game_libs_ido53_6F684.c src/game_libs/game_libs_o1_6D964.c src/game_libs/game_libs_o2_44B78.c src/game_libs/game_libs_o2_68990.c src/game_libs/game_libs_o2_2B94.c src/game_libs/game_libs_o2_7344.c src/game_libs/game_libs_o2_3C0C.c src/game_libs/game_libs_o2_3430.c src/game_libs/game_libs_o2_25A8.c src/game_libs/game_libs_o2_273B8.c src/game_libs/game_libs_o2_31334.c src/game_libs/game_libs_o2_52CD4.c src/game_libs/game_libs_o2_51AD8.c src/game_libs/game_libs_o2_396FC.c src/game_libs/game_libs_o2_3AC5C.c src/game_libs/game_libs_o2_40304.c src/game_libs/game_libs_o2_4E424.c src/game_libs/game_libs_o2_61F8C.c src/game_libs/game_libs_o2_38A28.csrc/game_libs/game_libs_o2_4E96C.c src/game_libs/game_libs_o2_2FB74.c src/game_libs/game_libs_o2_26D64.c src/game_libs/game_libs_o2_240A0.c src/game_libs/game_libs_o2_2119C.c src/game_libs/game_libs_o2_2AD1C.c src/game_libs/game_libs_o2_2B09C.c src/game_libs/game_libs_o2_2B5F4.c src/game_libs/game_libs_o2_2C7A4.c src/game_libs/game_libs_o2_2BB7C.c src/game_libs/game_libs_o2_27804.c src/game_libs/game_libs_o2_2A07C.c src/game_libs/game_libs_o2_26214.c src/game_libs/game_libs_o2_25C54.c src/game_libs/game_libs_o2_25320.c src/game_libs/game_libs_o2_26790.c src/game_libs/game_libs_o2_675A4.c src/bootup_uso/bootup_uso_o2_2DA4.c src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c src/timproc_uso_b5/timproc_uso_b5_4118.c src/timproc_uso_b5/timproc_uso_b5_D884.c src/timproc_uso_b5/timproc_uso_b5_DF14.c src/timproc_uso_b5/timproc_uso_b5_CEB4.c src/titproc_uso/titproc_uso_5DC.c,$(shell find src/kernel src/bootup_uso src/game_libs src/gui_uso src/n64proc_uso src/eddproc_uso src/arcproc_uso src/h2hproc_uso src/titproc_uso src/boarder1_uso src/boarder2_uso src/boarder3_uso src/boarder4_uso src/boarder5_uso src/mgrproc_uso src/game_uso src/timproc_uso_b1 src/timproc_uso_b3 src/timproc_uso_b5 src/map4_data_uso_b2 -name '*.c' -type f 2>/dev/null))
@@ -3708,64 +3708,64 @@ build/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc
 build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o: src/match_imports/arcproc_uso_func_00001F54.c src/match_imports/context_arcproc_uso_tail1.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_00000610.c.o: src/match_imports/func_00000610.c src/match_imports/context_bootup_uso_o2_0610.h
+build/src/match_imports/snd_updatePlayer.c.o: src/match_imports/snd_updatePlayer.c src/match_imports/context_bootup_uso_o2_0610.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_00000610.c.o: src/match_imports/func_00000610.c src/match_imports/context_bootup_uso_o2_0610.h
+build/non_matching/src/match_imports/snd_updatePlayer.c.o: src/match_imports/snd_updatePlayer.c src/match_imports/context_bootup_uso_o2_0610.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_000027E8.c.o: src/match_imports/func_000027E8.c src/match_imports/context_bootup_uso.h
+build/src/match_imports/game_init.c.o: src/match_imports/game_init.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_000027E8.c.o: src/match_imports/func_000027E8.c src/match_imports/context_bootup_uso.h
+build/non_matching/src/match_imports/game_init.c.o: src/match_imports/game_init.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_00003638.c.o: src/match_imports/func_00003638.c src/match_imports/context_bootup_uso.h
+build/src/match_imports/game_createPlayers.c.o: src/match_imports/game_createPlayers.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_00003638.c.o: src/match_imports/func_00003638.c src/match_imports/context_bootup_uso.h
+build/non_matching/src/match_imports/game_createPlayers.c.o: src/match_imports/game_createPlayers.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_00008124.c.o: src/match_imports/func_00008124.c src/match_imports/context_bootup_uso.h
+build/src/match_imports/FogTmpl_create.c.o: src/match_imports/FogTmpl_create.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_00008124.c.o: src/match_imports/func_00008124.c src/match_imports/context_bootup_uso.h
+build/non_matching/src/match_imports/FogTmpl_create.c.o: src/match_imports/FogTmpl_create.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_000084A0.c.o: src/match_imports/func_000084A0.c src/match_imports/context_bootup_uso.h
+build/src/match_imports/SnowTmpl_create.c.o: src/match_imports/SnowTmpl_create.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_000084A0.c.o: src/match_imports/func_000084A0.c src/match_imports/context_bootup_uso.h
+build/non_matching/src/match_imports/SnowTmpl_create.c.o: src/match_imports/SnowTmpl_create.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_0000BF8C.c.o: src/match_imports/func_0000BF8C.c src/match_imports/context_bootup_uso_o2_BF8C.h
+build/src/match_imports/SnowBoarder_updateDyn.c.o: src/match_imports/SnowBoarder_updateDyn.c src/match_imports/context_bootup_uso_o2_BF8C.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_0000BF8C.c.o: src/match_imports/func_0000BF8C.c src/match_imports/context_bootup_uso_o2_BF8C.h
+build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o: src/match_imports/SnowBoarder_updateDyn.c src/match_imports/context_bootup_uso_o2_BF8C.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_0000D440.c.o: src/match_imports/func_0000D440.c src/match_imports/context_bootup_uso.h
+build/src/match_imports/SnowBoarder_update.c.o: src/match_imports/SnowBoarder_update.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_0000D440.c.o: src/match_imports/func_0000D440.c src/match_imports/context_bootup_uso.h
+build/non_matching/src/match_imports/SnowBoarder_update.c.o: src/match_imports/SnowBoarder_update.c src/match_imports/context_bootup_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_0000D900.c.o: src/match_imports/func_0000D900.c src/match_imports/context_bootup_uso_pool_D900.h
+build/src/match_imports/SnowBoarder_checkRaceEnd.c.o: src/match_imports/SnowBoarder_checkRaceEnd.c src/match_imports/context_bootup_uso_pool_D900.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_0000D900.c.o: src/match_imports/func_0000D900.c src/match_imports/context_bootup_uso_pool_D900.h
+build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o: src/match_imports/SnowBoarder_checkRaceEnd.c src/match_imports/context_bootup_uso_pool_D900.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_00012E00.c.o: src/match_imports/func_00012E00.c src/match_imports/context_bootup_uso_tail4.h
+build/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_00012E00.c.o: src/match_imports/func_00012E00.c src/match_imports/context_bootup_uso_tail4.h
+build/non_matching/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/func_0001438C.c.o: src/match_imports/func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadget_func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/func_0001438C.c.o: src/match_imports/func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o: src/match_imports/TimeGadget_func_0001438C.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/game_libs_func_00000B94.c.o: src/match_imports/game_libs_func_00000B94.c src/match_imports/context_game_libs.h
@@ -4282,66 +4282,66 @@ build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/src/matc
 build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o scripts/match-origins-arcproc_uso_func_00001F54-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-arcproc_uso_func_00001F54-nm.ld -e arcproc_uso_func_00001F54 -o $@ $@.stripped.o
-build/src/match_imports/func_00000610.c.o.linked.elf: build/src/match_imports/func_00000610.c.o scripts/match-origins-func_00000610.ld
+build/src/match_imports/snd_updatePlayer.c.o.linked.elf: build/src/match_imports/snd_updatePlayer.c.o scripts/match-origins-snd_updatePlayer.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00000610.ld -e func_00000610 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_00000610.c.o.linked.elf: build/non_matching/src/match_imports/func_00000610.c.o scripts/match-origins-func_00000610-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_updatePlayer.ld -e snd_updatePlayer -o $@ $@.stripped.o
+build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf: build/non_matching/src/match_imports/snd_updatePlayer.c.o scripts/match-origins-snd_updatePlayer-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00000610-nm.ld -e func_00000610 -o $@ $@.stripped.o
-build/src/match_imports/func_000027E8.c.o.linked.elf: build/src/match_imports/func_000027E8.c.o scripts/match-origins-func_000027E8.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_updatePlayer-nm.ld -e snd_updatePlayer -o $@ $@.stripped.o
+build/src/match_imports/game_init.c.o.linked.elf: build/src/match_imports/game_init.c.o scripts/match-origins-game_init.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000027E8.ld -e func_000027E8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf: build/non_matching/src/match_imports/func_000027E8.c.o scripts/match-origins-func_000027E8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_init.ld -e game_init -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_init.c.o.linked.elf: build/non_matching/src/match_imports/game_init.c.o scripts/match-origins-game_init-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000027E8-nm.ld -e func_000027E8 -o $@ $@.stripped.o
-build/src/match_imports/func_00003638.c.o.linked.elf: build/src/match_imports/func_00003638.c.o scripts/match-origins-func_00003638.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_init-nm.ld -e game_init -o $@ $@.stripped.o
+build/src/match_imports/game_createPlayers.c.o.linked.elf: build/src/match_imports/game_createPlayers.c.o scripts/match-origins-game_createPlayers.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00003638.ld -e func_00003638 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_00003638.c.o.linked.elf: build/non_matching/src/match_imports/func_00003638.c.o scripts/match-origins-func_00003638-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_createPlayers.ld -e game_createPlayers -o $@ $@.stripped.o
+build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf: build/non_matching/src/match_imports/game_createPlayers.c.o scripts/match-origins-game_createPlayers-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00003638-nm.ld -e func_00003638 -o $@ $@.stripped.o
-build/src/match_imports/func_00008124.c.o.linked.elf: build/src/match_imports/func_00008124.c.o scripts/match-origins-func_00008124.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_createPlayers-nm.ld -e game_createPlayers -o $@ $@.stripped.o
+build/src/match_imports/FogTmpl_create.c.o.linked.elf: build/src/match_imports/FogTmpl_create.c.o scripts/match-origins-FogTmpl_create.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00008124.ld -e func_00008124 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_00008124.c.o.linked.elf: build/non_matching/src/match_imports/func_00008124.c.o scripts/match-origins-func_00008124-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-FogTmpl_create.ld -e FogTmpl_create -o $@ $@.stripped.o
+build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf: build/non_matching/src/match_imports/FogTmpl_create.c.o scripts/match-origins-FogTmpl_create-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00008124-nm.ld -e func_00008124 -o $@ $@.stripped.o
-build/src/match_imports/func_000084A0.c.o.linked.elf: build/src/match_imports/func_000084A0.c.o scripts/match-origins-func_000084A0.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-FogTmpl_create-nm.ld -e FogTmpl_create -o $@ $@.stripped.o
+build/src/match_imports/SnowTmpl_create.c.o.linked.elf: build/src/match_imports/SnowTmpl_create.c.o scripts/match-origins-SnowTmpl_create.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000084A0.ld -e func_000084A0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf: build/non_matching/src/match_imports/func_000084A0.c.o scripts/match-origins-func_000084A0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowTmpl_create.ld -e SnowTmpl_create -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf: build/non_matching/src/match_imports/SnowTmpl_create.c.o scripts/match-origins-SnowTmpl_create-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_000084A0-nm.ld -e func_000084A0 -o $@ $@.stripped.o
-build/src/match_imports/func_0000BF8C.c.o.linked.elf: build/src/match_imports/func_0000BF8C.c.o scripts/match-origins-func_0000BF8C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowTmpl_create-nm.ld -e SnowTmpl_create -o $@ $@.stripped.o
+build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf: build/src/match_imports/SnowBoarder_updateDyn.c.o scripts/match-origins-SnowBoarder_updateDyn.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000BF8C.ld -e func_0000BF8C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf: build/non_matching/src/match_imports/func_0000BF8C.c.o scripts/match-origins-func_0000BF8C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_updateDyn.ld -e SnowBoarder_updateDyn -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf: build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o scripts/match-origins-SnowBoarder_updateDyn-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000BF8C-nm.ld -e func_0000BF8C -o $@ $@.stripped.o
-build/src/match_imports/func_0000D440.c.o.linked.elf: build/src/match_imports/func_0000D440.c.o scripts/match-origins-func_0000D440.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_updateDyn-nm.ld -e SnowBoarder_updateDyn -o $@ $@.stripped.o
+build/src/match_imports/SnowBoarder_update.c.o.linked.elf: build/src/match_imports/SnowBoarder_update.c.o scripts/match-origins-SnowBoarder_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D440.ld -e func_0000D440 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf: build/non_matching/src/match_imports/func_0000D440.c.o scripts/match-origins-func_0000D440-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_update.ld -e SnowBoarder_update -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf: build/non_matching/src/match_imports/SnowBoarder_update.c.o scripts/match-origins-SnowBoarder_update-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D440-nm.ld -e func_0000D440 -o $@ $@.stripped.o
-build/src/match_imports/func_0000D900.c.o.linked.elf: build/src/match_imports/func_0000D900.c.o scripts/match-origins-func_0000D900.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_update-nm.ld -e SnowBoarder_update -o $@ $@.stripped.o
+build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf: build/src/match_imports/SnowBoarder_checkRaceEnd.c.o scripts/match-origins-SnowBoarder_checkRaceEnd.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D900.ld -e func_0000D900 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf: build/non_matching/src/match_imports/func_0000D900.c.o scripts/match-origins-func_0000D900-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_checkRaceEnd.ld -e SnowBoarder_checkRaceEnd -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf: build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o scripts/match-origins-SnowBoarder_checkRaceEnd-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0000D900-nm.ld -e func_0000D900 -o $@ $@.stripped.o
-build/src/match_imports/func_00012E00.c.o.linked.elf: build/src/match_imports/func_00012E00.c.o scripts/match-origins-func_00012E00.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowBoarder_checkRaceEnd-nm.ld -e SnowBoarder_checkRaceEnd -o $@ $@.stripped.o
+build/src/match_imports/Fader_ctor.c.o.linked.elf: build/src/match_imports/Fader_ctor.c.o scripts/match-origins-Fader_ctor.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00012E00.ld -e func_00012E00 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf: build/non_matching/src/match_imports/func_00012E00.c.o scripts/match-origins-func_00012E00-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Fader_ctor.ld -e Fader_ctor -o $@ $@.stripped.o
+build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf: build/non_matching/src/match_imports/Fader_ctor.c.o scripts/match-origins-Fader_ctor-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_00012E00-nm.ld -e func_00012E00 -o $@ $@.stripped.o
-build/src/match_imports/func_0001438C.c.o.linked.elf: build/src/match_imports/func_0001438C.c.o scripts/match-origins-func_0001438C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Fader_ctor-nm.ld -e Fader_ctor -o $@ $@.stripped.o
+build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/src/match_imports/TimeGadget_func_0001438C.c.o scripts/match-origins-TimeGadget_func_0001438C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0001438C.ld -e func_0001438C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/func_0001438C.c.o scripts/match-origins-func_0001438C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadget_func_0001438C.ld -e TimeGadget_func_0001438C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o scripts/match-origins-TimeGadget_func_0001438C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-func_0001438C-nm.ld -e func_0001438C -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadget_func_0001438C-nm.ld -e TimeGadget_func_0001438C -o $@ $@.stripped.o
 build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf: build/src/match_imports/game_libs_func_00000B94.c.o scripts/match-origins-game_libs_func_00000B94.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_libs_func_00000B94.ld -e game_libs_func_00000B94 -o $@ $@.stripped.o
@@ -4844,46 +4844,46 @@ build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: buil
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54.json $@
 build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-arcproc_uso_func_00001F54-nm.json $@
-build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: build/src/match_imports/func_00000610.c.o.linked.elf scripts/match-bindings-func_00000610.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00000610.json $@
-build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00000610.c.o.linked.elf scripts/match-bindings-func_00000610-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00000610-nm.json $@
-build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: build/src/match_imports/func_000027E8.c.o.linked.elf scripts/match-bindings-func_000027E8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000027E8.json $@
-build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf scripts/match-bindings-func_000027E8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000027E8-nm.json $@
-build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: build/src/match_imports/func_00003638.c.o.linked.elf scripts/match-bindings-func_00003638.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00003638.json $@
-build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00003638.c.o.linked.elf scripts/match-bindings-func_00003638-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00003638-nm.json $@
-build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: build/src/match_imports/func_00008124.c.o.linked.elf scripts/match-bindings-func_00008124.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00008124.json $@
-build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00008124.c.o.linked.elf scripts/match-bindings-func_00008124-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00008124-nm.json $@
-build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: build/src/match_imports/func_000084A0.c.o.linked.elf scripts/match-bindings-func_000084A0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000084A0.json $@
-build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf scripts/match-bindings-func_000084A0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_000084A0-nm.json $@
-build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000BF8C.c.o.linked.elf scripts/match-bindings-func_0000BF8C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000BF8C.json $@
-build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf scripts/match-bindings-func_0000BF8C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000BF8C-nm.json $@
-build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000D440.c.o.linked.elf scripts/match-bindings-func_0000D440.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D440.json $@
-build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf scripts/match-bindings-func_0000D440-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D440-nm.json $@
-build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: build/src/match_imports/func_0000D900.c.o.linked.elf scripts/match-bindings-func_0000D900.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D900.json $@
-build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf scripts/match-bindings-func_0000D900-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0000D900-nm.json $@
-build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: build/src/match_imports/func_00012E00.c.o.linked.elf scripts/match-bindings-func_00012E00.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00012E00.json $@
-build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf scripts/match-bindings-func_00012E00-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_00012E00-nm.json $@
-build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/func_0001438C.c.o.linked.elf scripts/match-bindings-func_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0001438C.json $@
-build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf scripts/match-bindings-func_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-func_0001438C-nm.json $@
+build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: build/src/match_imports/snd_updatePlayer.c.o.linked.elf scripts/match-bindings-snd_updatePlayer.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_updatePlayer.json $@
+build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf scripts/match-bindings-snd_updatePlayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_updatePlayer-nm.json $@
+build/src/match_imports/game_init.c.o.linked.elf.bound.elf: build/src/match_imports/game_init.c.o.linked.elf scripts/match-bindings-game_init.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_init.json $@
+build/non_matching/src/match_imports/game_init.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_init.c.o.linked.elf scripts/match-bindings-game_init-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_init-nm.json $@
+build/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf: build/src/match_imports/game_createPlayers.c.o.linked.elf scripts/match-bindings-game_createPlayers.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_createPlayers.json $@
+build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf scripts/match-bindings-game_createPlayers-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_createPlayers-nm.json $@
+build/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf: build/src/match_imports/FogTmpl_create.c.o.linked.elf scripts/match-bindings-FogTmpl_create.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-FogTmpl_create.json $@
+build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf scripts/match-bindings-FogTmpl_create-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-FogTmpl_create-nm.json $@
+build/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf: build/src/match_imports/SnowTmpl_create.c.o.linked.elf scripts/match-bindings-SnowTmpl_create.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowTmpl_create.json $@
+build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf scripts/match-bindings-SnowTmpl_create-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowTmpl_create-nm.json $@
+build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf: build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf scripts/match-bindings-SnowBoarder_updateDyn.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_updateDyn.json $@
+build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf scripts/match-bindings-SnowBoarder_updateDyn-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_updateDyn-nm.json $@
+build/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf: build/src/match_imports/SnowBoarder_update.c.o.linked.elf scripts/match-bindings-SnowBoarder_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_update.json $@
+build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf scripts/match-bindings-SnowBoarder_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_update-nm.json $@
+build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf: build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf scripts/match-bindings-SnowBoarder_checkRaceEnd.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_checkRaceEnd.json $@
+build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf scripts/match-bindings-SnowBoarder_checkRaceEnd-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowBoarder_checkRaceEnd-nm.json $@
+build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/src/match_imports/Fader_ctor.c.o.linked.elf scripts/match-bindings-Fader_ctor.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor.json $@
+build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor-nm.json $@
+build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadget_func_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C.json $@
+build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadget_func_0001438C-nm.json $@
 build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_libs_func_00000B94.json $@
 build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf scripts/match-bindings-game_libs_func_00000B94-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5222,46 +5222,46 @@ build/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcpro
 build/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: private REPLACE_FUNC_BODY += arcproc_uso_func_00001F54=build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: src/match_imports/arcproc_uso_func_00001F54.c scripts/match-bindings-arcproc_uso_func_00001F54-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000610=build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00000610.c scripts/match-bindings-func_00000610.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00000610=build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00000610.c scripts/match-bindings-func_00000610-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000027E8=build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000027E8.c scripts/match-bindings-func_000027E8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000027E8=build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000027E8.c scripts/match-bindings-func_000027E8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00003638=build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00003638.c scripts/match-bindings-func_00003638.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00003638=build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00003638.c scripts/match-bindings-func_00003638-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008124=build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00008124.c scripts/match-bindings-func_00008124.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_00008124=build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_00008124.c scripts/match-bindings-func_00008124-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000084A0=build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000084A0.c scripts/match-bindings-func_000084A0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_000084A0=build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_000084A0.c scripts/match-bindings-func_000084A0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000BF8C=build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000BF8C.c scripts/match-bindings-func_0000BF8C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000BF8C=build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000BF8C.c scripts/match-bindings-func_0000BF8C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D440=build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D440.c scripts/match-bindings-func_0000D440.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D440=build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D440.c scripts/match-bindings-func_0000D440-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D900=build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D900.c scripts/match-bindings-func_0000D900.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += func_0000D900=build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/func_0000D900.c scripts/match-bindings-func_0000D900-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_00012E00=build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_00012E00.c scripts/match-bindings-func_00012E00.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_00012E00=build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_00012E00.c scripts/match-bindings-func_00012E00-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001438C=build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_0001438C.c scripts/match-bindings-func_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += func_0001438C=build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/func_0001438C.c scripts/match-bindings-func_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += snd_updatePlayer=build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/snd_updatePlayer.c scripts/match-bindings-snd_updatePlayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += snd_updatePlayer=build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/snd_updatePlayer.c scripts/match-bindings-snd_updatePlayer-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_init=build/src/match_imports/game_init.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/game_init.c scripts/match-bindings-game_init.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_init=build/non_matching/src/match_imports/game_init.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/game_init.c scripts/match-bindings-game_init-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_createPlayers=build/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/game_createPlayers.c scripts/match-bindings-game_createPlayers.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += game_createPlayers=build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/game_createPlayers.c scripts/match-bindings-game_createPlayers-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += FogTmpl_create=build/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/FogTmpl_create.c scripts/match-bindings-FogTmpl_create.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += FogTmpl_create=build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/FogTmpl_create.c scripts/match-bindings-FogTmpl_create-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowTmpl_create=build/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowTmpl_create.c scripts/match-bindings-SnowTmpl_create.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowTmpl_create=build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowTmpl_create.c scripts/match-bindings-SnowTmpl_create-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_updateDyn=build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_updateDyn.c scripts/match-bindings-SnowBoarder_updateDyn.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_updateDyn=build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_updateDyn.c scripts/match-bindings-SnowBoarder_updateDyn-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_update=build/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_update.c scripts/match-bindings-SnowBoarder_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_update=build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_update.c scripts/match-bindings-SnowBoarder_update-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_checkRaceEnd=build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_checkRaceEnd.c scripts/match-bindings-SnowBoarder_checkRaceEnd.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_checkRaceEnd=build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso.c.o: src/match_imports/SnowBoarder_checkRaceEnd.c scripts/match-bindings-SnowBoarder_checkRaceEnd-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ctor=build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ctor=build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadget_func_0001438C=build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadget_func_0001438C=build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadget_func_0001438C.c scripts/match-bindings-TimeGadget_func_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs.c.o: src/match_imports/game_libs_func_00000B94.c scripts/match-bindings-game_libs_func_00000B94.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += game_libs_func_00000B94=build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
@@ -5628,46 +5628,46 @@ build/src/arcproc_uso/arcproc_uso_tail1.c.o: build/src/match_imports/arcproc_uso
 build/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/arcproc_uso/arcproc_uso_tail1.c.o: build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/arcproc_uso_func_00001F54.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
-build/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_00000610.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
-build/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_000027E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
-build/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_00003638.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
-build/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_00008124.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
-build/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_000084A0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
-build/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_0000BF8C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
-build/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_0000D440.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
-build/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_0000D900.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
-build/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_00012E00.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
-build/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
+build/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/snd_updatePlayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/game_init.c.o.linked.elf.bound.elf
+build/src/match_imports/game_init.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/game_init.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_init.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf
+build/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/game_createPlayers.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf
+build/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/FogTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf
+build/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SnowTmpl_create.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf
+build/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SnowBoarder_updateDyn.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf
+build/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SnowBoarder_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso.c.o: build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf
+build/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso.c.o: build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SnowBoarder_checkRaceEnd.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
+build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
+build/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/TimeGadget_func_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs.c.o: build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf
 build/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/game_libs_func_00000B94.c.o.linked.elf.bound.elf

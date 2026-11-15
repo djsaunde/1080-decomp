@@ -91,7 +91,7 @@ body=_pf(body)
 # Declare each as s32[3] (mixed pointer/float words), convert fields to indices,
 # strip spurious element casts, remap interior-offset aliases (sp<base+4>->[1],
 # sp<base+8>->[2]), and lift bare-base scalar uses to [0]. Validated on
-# func_000090CC / game_uso_func_00007C1C lifts (2026-06-05).
+# SnowBoarder_ctor / game_uso_func_00007C1C lifts (2026-06-05).
 _v3=set(re.findall(r'\b(\w+)\.unk[048]\b', body))
 for _v in _v3:
     body=re.sub(rf'^(\s*)f32 \*?{re.escape(_v)};', rf'\1s32 {_v}[3];', body, flags=re.M)

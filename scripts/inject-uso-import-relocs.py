@@ -38,7 +38,7 @@ Usage:
   inject-uso-import-relocs.py --module 0xD9FE28 \
       --symnames scripts/emu-symdump/bootup_uso.symnames.json \
       --objs 'expected/src/bootup_uso/*.o' \
-      [--funcs func_000055A0,func_0000C234,...] [--apply]
+      [--funcs item_registerTemplates,SnowBoarder_procColl,...] [--apply]
 """
 import argparse, fnmatch, glob, json, re, struct, sys
 from pathlib import Path

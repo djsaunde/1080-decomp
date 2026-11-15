@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for func_00004948 (camera transition tick, 0x6A4 + an
+/* IDO 7.1 NCC (C++) donor for cam_func_00004948 (camera transition tick, 0x6A4 + an
  * all-zero pad word). EXACT (agent-c run 125).
  * - Vec3 has no user copy ctor (a user copy ctor adds cfront's this==0 new
  *   protocol to every return); operators build `Vec3 r(x, y, z); return r;`
@@ -37,7 +37,7 @@ extern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;
 #define F(p,o) (*(float *)((char *)(p) + (o)))
 #define W(p,o) (*(unsigned *)((char *)(p) + (o)))
 #define SNAP() { Vec3 *sv = (Vec3 *)(*(char **)(obj + 0x154) + 0x318); Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; func_00000000(obj + 0x30, &B); }
-extern "C" void func_00004948(char *obj) {
+extern "C" void cam_func_00004948(char *obj) {
 #define st W(obj, 0x158)
     if (st == 2) {
         Vec3 B;

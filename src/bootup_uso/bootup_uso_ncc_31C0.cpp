@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for func_000031C0 (0x328 / 202 words), REPLACE_FUNC_BODY-spliced over the
+/* IDO 7.1 NCC (C++) EXACT donor for cam_create (0x328 / 202 words), REPLACE_FUNC_BODY-spliced over the
  * placeholder in bootup_uso.c on both build paths (agent-c run 271; was the _nm comparison donor).
  * agent-g run 164 (docs/IDO_CODEGEN.md kit CIV): the cfe body was C++ decoded as C.
  * `obj = new Obj2` (global inline operator new -> edg keeps the new-temp T and copies it
@@ -28,7 +28,7 @@
  * (sp+0x78) where the target reads T (sp+0x74): mk's `o` temp is T's entry, so T is redefined on that path.
  * agent-c run 271: EXACT -- case 1 through a folded-zero conditional whose DEAD arm holds the dummy pool temp (see
  * case 1), and `if (obj) {}` for the tail's `if (1) {}`. The two -1500.0f literals are the donor's .rodata +0 / +4,
- * renamed by the splice to func_000031C0_rodata (pinned to the RoData offset 0x530).
+ * renamed by the splice to cam_create_rodata (pinned to the RoData offset 0x530).
  * Symbols renamed after compile (names only, see Makefile). */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
@@ -58,7 +58,7 @@ struct P { char p[0x10]; char list[4];
     void add(char *n) { fn_31c0_tail(list, n); if (FW(n, 0x14) != 0) FW(n, 0x4) = 1; FW(n, 0x14) = (int)this; } };
 /* agent-c run 271: a dummy whose parameter temp is allocated in the DEAD arm of a folded-zero conditional (case 1) */
 inline char *dm(char *a) { if (0) { a = 0; } return a; }
-extern "C" void *func_000031C0(int a0, int mode, P *parent, char *a3v, int p4) {
+extern "C" void *cam_create(int a0, int mode, P *parent, char *a3v, int p4) {
     char *w;
     char *h;
     char *v;

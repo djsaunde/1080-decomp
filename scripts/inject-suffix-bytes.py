@@ -229,7 +229,7 @@ def inject_suffix(o_path: Path, func_name: str, suffix_words: list[int],
         # bytes now sitting after its st_size are trailing .text zeros that
         # coincidentally == the all-zero payload → injection wrongly skipped,
         # dropping the fn's forced suffix (e.g. bootup func_0000F1B4 went
-        # 100%→80% when func_00000E68 was width-fixed smaller). --allow-natural-
+        # 100%→80% when U64BGWall_ctor was width-fixed smaller). --allow-natural-
         # epilogue (which the NON_MATCHING_SUFFIX_BYTES_FORCE Makefile path
         # already passes = "force") now bypasses skip-path-1 too, so FORCE
         # always injects. Safe: each build recompiles the .o before injecting,

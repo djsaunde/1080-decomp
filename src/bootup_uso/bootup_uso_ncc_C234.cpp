@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for func_0000C234: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39; a second parameter empty test from round 2 gives 79.35).
+/* IDO 7.1 NCC (C++) NM-only comparison donor for SnowBoarder_procColl: the NM C body lifted under NCC + one parameter empty test from a fz sweep (agent-c run 134, cfe 77.39; a second parameter empty test from round 2 gives 79.35).
  * agent-g run 152 (79.55 -> 85.17): arg 2 of the 0x38 lookup call is a 4-byte struct BY VALUE (target `sw a1,140(sp)` + `sw a1,4(sp)` in the jal delay), the
  * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
  * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
@@ -63,7 +63,7 @@ extern f32 bu_c234_k944;
 extern f32 bu_c234_k948;
 extern s32 D_000081C0[];
 }
-extern "C" void func_0000C234(char *arg0) {
+extern "C" void SnowBoarder_procColl(char *arg0) {
     /* agent-g run 232: frame fit (NCC homes every used local in declaration order, top down): 20 used scalars in the
      * target's gaps (1 / spCC / 3 / spB4 / 9 / sp8C / 1 / sp7C / 2 / sp68 / 2 / sp54 / 2 / sp40) give frame 0xf8 and
      * every struct offset of the target; the block products are function-scope ga..ge, temp_a1 / temp_v0 de-named */

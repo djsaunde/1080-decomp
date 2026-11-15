@@ -674,7 +674,7 @@ D_4F9E4_tab = 0x00000000;  /* gl_func_0004F9E4 u16 index-table alias of D_000000
 D_4F9E4_itr = 0x00000000;  /* gl_func_0004F9E4 inner-scan iterator base alias of D_00000000 */
 D_20ED0_a = 0x00000000;  /* AudioHeap_LoadFilter record table A (USO sym1253, load-resolved); distinct base-0 alias defeats &D CSE with table B */
 D_20ED0_b = 0x00000000;  /* AudioHeap_LoadFilter record table B (USO sym1251, load-resolved) */
-D_bootup_scratch0 = 0x00000000;  /* func_0000FD4C: int-typed base-0 scratch word (== *(int*)&D_00000000); direct int lvalue $at-fuses the store/reload (lui/sw) vs the address-of-cast lui/addiu/sw */
+D_bootup_scratch0 = 0x00000000;  /* QuitProcess_func_0000FD4C: int-typed base-0 scratch word (== *(int*)&D_00000000); direct int lvalue $at-fuses the store/reload (lui/sw) vs the address-of-cast lui/addiu/sw */
 D_39094_a1 = 0x00000000;  /* gl_func_00039094: per-call-site arg0 (distinct base-0 syms defeat CSE/s-reg promotion; target re-materializes lui/addiu per use). USO load-resolved. */
 D_39094_a2a = 0x00000000;
 D_39094_a2b = 0x00000000;
@@ -712,7 +712,7 @@ D_gui16a4_c1 = 0x00000000;
 D_8AE4_mode = 0x00000034;
 D_bu_116C8_34 = 0x00000034;
 D_bu_116C8_40 = 0x00000040;
-bu_90cc_vt545 = 0x00000000;  /* func_000090CC alloc-cascade +0x28 vtable ptrs: USO TextReloc symIdx 545 (shared 0x174-fallback vtable import); baked bytes lui/addiu 0 */
+bu_90cc_vt545 = 0x00000000;  /* SnowBoarder_ctor alloc-cascade +0x28 vtable ptrs: USO TextReloc symIdx 545 (shared 0x174-fallback vtable import); baked bytes lui/addiu 0 */
 bu_90cc_vt545_b = 0x00000000;
 bu_90cc_vt545_c = 0x00000000;
 bu_90cc_vt545_d = 0x00000000;
@@ -733,7 +733,7 @@ bu_90cc_gown = 0x00000000;
 bu_90cc_gtbl = 0x00000000;
 bu_90cc_gpair = 0x00000000;
 bu_90cc_gdev = 0x00000000;
-/* func_000090CC exact cfe donor (agent-c run 227): pins at the addresses the target relocs resolve to */
+/* SnowBoarder_ctor exact cfe donor (agent-c run 227): pins at the addresses the target relocs resolve to */
 bu_90cc_d00_b = 0x00000000;
 bu_90cc_d08_01 = 0x00000008;
 bu_90cc_d08_02 = 0x00000008;
@@ -3234,7 +3234,7 @@ func_00000000_38C0_v = 0x00000000;  /* void-typed reg_b alias (kills dead $v0 de
 D_39d8_g = 0x00000000;  /* D_g placeholder alias (array-typed base held in $s0) in func_000039D8 */
 func_00000000_3734_v = 0x00000000;  /* void-typed reg-call alias (kills dead $v0 def; cfg -> v0) in func_00003734 */
 D_3734_v = 0x00000094;  /* value load at func_00000080+0x14 in func_00003734 (lui/lw) */
-func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in func_00003638 */
+func_00000000_3638_v = 0x00000000;  /* void-typed init-call alias (kills dead $v0 def; flags -> v0) in game_createPlayers */
 /* gl_func_00064588 kit-transfer aliases (2026-07-15 agent-h): per-site distinct
  * symbols bust the shared-&D-base-pin CSE; addresses are D_00000000-relative. */
 gl_init_00000000_64588 = 0x00000000;  /* blank (jal 0) prototyped float init for gl_func_00064588 */
@@ -3333,7 +3333,7 @@ gu_c48c_ti13 = 0;
 gu_c48c_ti14 = 0;
 gu_c48c_ti15 = 0;
 
-/* func_00006808 probe: distinct base-0 aliases for the s4/s5-held same-address globals (PASS-4 cap-2 retest w/ per-site-alias lever) */
+/* game_createMap probe: distinct base-0 aliases for the s4/s5-held same-address globals (PASS-4 cap-2 retest w/ per-site-alias lever) */
 bu_e68_dimB = 0;
 bu_e68_mgr = 0x214;
 bu_6808_ga = 0;
@@ -4000,18 +4000,18 @@ D_2DE24_a = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 store target (u8 a0 
 D_2DE24_b = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 store target (sw zero,0xC(at)), distinct so its lui is not CSE'd */
 D_2DE24_c = 0x00000000;  /* snd_PlayPlayer1Seq_2DE24 base-0 final call arg (lui a1; lw a1,0(a1)) */
 import_80263D60_30 = 0x00000030;
-func_00002DA4_rodata = 0x000004F4;  /* func_00002DA4 12-entry jumptable (cases 1..12): bootup_uso ships it in RoData at +0x4F4 (file offset +0x4F8); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_2DA4.c) */
+game_setupMode_rodata = 0x000004F4;  /* game_setupMode 12-entry jumptable (cases 1..12): bootup_uso ships it in RoData at +0x4F4 (file offset +0x4F8); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_2DA4.c) */
 func_0000E270_rodata = 0x00000998;  /* func_0000E270 f32 literal pi in bootup.uso RoData +0x998; donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E270.c) */
 func_00000000_4948_ff = 0x00000000;  /* func_0000E2D0 f32(f32) sqrt-alias import (jal bakes RAW to 0) */
 func_0000E2D0_rodata = 0x000009A0;  /* func_0000E2D0 f64 literal 0.1 in bootup.uso RoData +0x9A0 (target reloc func_0000098C + 0x14); donor-local .rodata reloc renamed by replace-function-body.py (bootup_uso_o2_E2D0.c) */
-func_00000000_2DA4_v = 0x00000000;  /* func_00002DA4 void-typed blank alias (kills dead $v0 defs; config value -> v0) */
-D_000073EC = 0x000073EC;  /* func_00002DA4 init arg (target lui/addiu %hi/%lo .L000073EC, baked 0x73EC) */
-D_2DA4_obj = 0x00000000;  /* func_00002DA4 base-0 created-object global (store + later reads) */
-D_2DA4_obj_rd = 0x00000000;  /* func_00002DA4 base-0 immediate re-read (distinct so the stored v0 is not forwarded) */
-D_2DA4_cfg = 0x00000000;  /* func_00002DA4 base-0 config word load (+4), distinct from the D_00000000+4 store */
-D_00000538 = 0x00000538;  /* func_000034E8 source float 0 (== func_000003F8+0x140; target lui at / lwc1 0x538(at)) */
-D_0000053C = 0x0000053C;  /* func_000034E8 source float 1 (== func_000003F8+0x144), distinct so its lui is not CSE'd */
-D_00000540 = 0x00000540;  /* func_000034E8 source float 2 (== func_000003F8+0x148) */
+func_00000000_2DA4_v = 0x00000000;  /* game_setupMode void-typed blank alias (kills dead $v0 defs; config value -> v0) */
+D_000073EC = 0x000073EC;  /* game_setupMode init arg (target lui/addiu %hi/%lo .L000073EC, baked 0x73EC) */
+D_2DA4_obj = 0x00000000;  /* game_setupMode base-0 created-object global (store + later reads) */
+D_2DA4_obj_rd = 0x00000000;  /* game_setupMode base-0 immediate re-read (distinct so the stored v0 is not forwarded) */
+D_2DA4_cfg = 0x00000000;  /* game_setupMode base-0 config word load (+4), distinct from the D_00000000+4 store */
+D_00000538 = 0x00000538;  /* game_create3DWindow source float 0 (== func_000003F8+0x140; target lui at / lwc1 0x538(at)) */
+D_0000053C = 0x0000053C;  /* game_create3DWindow source float 1 (== func_000003F8+0x144), distinct so its lui is not CSE'd */
+D_00000540 = 0x00000540;  /* game_create3DWindow source float 2 (== func_000003F8+0x148) */
 import_800200DC_b = 0x00000000;
 import_800200DC_c = 0x00000000;
 import_80020100_b = 0x00000000;
@@ -4037,20 +4037,20 @@ D_gl68B04 = 0x00000000;
 /* gl_func_000695F4: blank USO jal alias of the in-unit gl_func_00062F64, and the base-0 vtable store address */
 gl_func_00062F64_695F4 = 0x00000000;
 D_sym_695F4 = 0x00000000;
-D_87A4_rd = 0x00000000;  /* func_000087A4 base-0 config word read (target lui t8 / lw 0(t8)) */
-D_87A4_wr = 0x00000000;  /* func_000087A4 base-0 OR-store (target lui at / sw 0(at)), distinct from the read */
-D_87A4_cfg = 0x00000000;  /* func_000087A4 base-0 +4/+0 store pair (target lui v0 / addiu v0) */
-D_87A4_vt = 0x00000000;  /* func_000087A4 child +0x30 base-0 address (target lui t4 / addiu t4, no reloc) */
-D_87A4_tail = 0x00000000;  /* func_000087A4 final callback arg load (target lui a0 / lw 0(a0)) */
-func_00000000_087A4_f = 0x00000000;  /* func_000087A4 prototyped (char*,char*,int,float,float) blank alias: single-float stack arg via swc1 */
+D_87A4_rd = 0x00000000;  /* TreeTmpl_create base-0 config word read (target lui t8 / lw 0(t8)) */
+D_87A4_wr = 0x00000000;  /* TreeTmpl_create base-0 OR-store (target lui at / sw 0(at)), distinct from the read */
+D_87A4_cfg = 0x00000000;  /* TreeTmpl_create base-0 +4/+0 store pair (target lui v0 / addiu v0) */
+D_87A4_vt = 0x00000000;  /* TreeTmpl_create child +0x30 base-0 address (target lui t4 / addiu t4, no reloc) */
+D_87A4_tail = 0x00000000;  /* TreeTmpl_create final callback arg load (target lui a0 / lw 0(a0)) */
+func_00000000_087A4_f = 0x00000000;  /* TreeTmpl_create prototyped (char*,char*,int,float,float) blank alias: single-float stack arg via swc1 */
 D_24B8_tbl = 0x00000000;  /* func_000024B8 (NM) base-0 poll-table word (target lui a0 / lw a0,0(a0), no reloc) */
-D_00000524 = 0x00000524;  /* func_00002F90 colour literal (== func_000003F8+0x12C; target lui at / lwc1 0x12C(at)), distinct so the pool base is not held */
-D_00000528 = 0x00000528;  /* func_00002F90 vec[1] literal (== func_000003F8+0x130) */
-D_0000052C = 0x0000052C;  /* func_00002F90 alloc-init literal (== func_000003F8+0x134) */
-D_2F90_reg = 0x00000000;  /* func_00002F90 base-0 registration object (target lui s0 / addiu s0, held across three calls) */
-D_2F90_m28 = 0x00000000;  /* func_00002F90 base-0 address stored to m->0x28 (target lui t8 / addiu t8, no reloc) */
-func_00000000_2F90_v = 0x00000000;  /* func_00002F90 void-typed blank alias (unused-result calls; n2 colours v0) */
-func_00000000_2F90_f = 0x00000000;  /* func_00002F90 prototyped (char*,char*,float,float,float) blank alias (mfc1 a2/a3 + swc1 16(sp)) */
+D_00000524 = 0x00000524;  /* game_createLights colour literal (== func_000003F8+0x12C; target lui at / lwc1 0x12C(at)), distinct so the pool base is not held */
+D_00000528 = 0x00000528;  /* game_createLights vec[1] literal (== func_000003F8+0x130) */
+D_0000052C = 0x0000052C;  /* game_createLights alloc-init literal (== func_000003F8+0x134) */
+D_2F90_reg = 0x00000000;  /* game_createLights base-0 registration object (target lui s0 / addiu s0, held across three calls) */
+D_2F90_m28 = 0x00000000;  /* game_createLights base-0 address stored to m->0x28 (target lui t8 / addiu t8, no reloc) */
+func_00000000_2F90_v = 0x00000000;  /* game_createLights void-typed blank alias (unused-result calls; n2 colours v0) */
+func_00000000_2F90_f = 0x00000000;  /* game_createLights prototyped (char*,char*,float,float,float) blank alias (mfc1 a2/a3 + swc1 16(sp)) */
 gl_func_00000000_d9e4b = 0x00000000;
 /* AudioHeap_InitCachePools blank alias for the in-unit reporter gl_func_0001CA10 (ROM word is jal 0) */
 gl_func_0001CA10_1FFAC = 0x00000000;
@@ -4164,8 +4164,8 @@ gl_1f6a8_kE70 = 0x00000E70;
 gl_1f6a8_kE74 = 0x00000E74;
 gl_ref_00000148_51AD8 = 0x00000148;
 gl_ref_00000160_51AD8 = 0x00000160;
-bu_b520_k48 = func_00008124 + 0x48;  /* func_0000B520 rodata pool reads (target relocs func_00008124 + 0x48 / + 0x44, func_000008B4 + 0xC) */
-bu_b520_k44 = func_00008124 + 0x44;
+bu_b520_k48 = FogTmpl_create + 0x48;  /* SnowBoarder_func_0000B520 rodata pool reads (target relocs FogTmpl_create + 0x48 / + 0x44, func_000008B4 + 0xC) */
+bu_b520_k44 = FogTmpl_create + 0x44;
 bu_b520_kc = func_000008B4 + 0xC;
 gl_func_00000000_5ef00q = 0x00000000;  /* (float)->float sqrt-slot blank for gl_func_0005EF00 */
 gl_func_00000000_5ef00s = 0x00000000;  /* (float)->float sin-slot blank for gl_func_0005EF00 */
@@ -4210,7 +4210,7 @@ D_4e760_f4 = 0x0;
 func_00000000_3F8_f = 0x00000000;  /* func_000003F8 sqrtf (float->float) callee, jal 0 */
 func_00000000_139B0_f = 0x00000000;  /* func_000139B0 RNG (void->float) jal-0 callee */
 func_00000000_139B0_v = 0x00000000;  /* func_000139B0 finisher func_00013B20 (jal 0 in ROM) */
-func_00000000_3d3cm = 0x00000000;  /* func_00003D3C spawn callee func_00003638 (jal 0 in ROM), prototyped for swc1 float args */
+func_00000000_3d3cm = 0x00000000;  /* func_00003D3C spawn callee game_createPlayers (jal 0 in ROM), prototyped for swc1 float args */
 bu_3d3c_d7294 = 0x00000000;  /* func_00003D3C attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
 bu_3f00_d7294 = 0x00000000;  /* func_00003F00 attach-table base D_007294 (bootup text-reloc sym 256, baked 0) */
 func_00000000_43d4_f = 0x00000000;  /* func_000043D4 RNG func_075EE4 (void->float) jal-0 callee */
@@ -4225,15 +4225,15 @@ bu_411c_d7294 = 0x00000000;  /* func_0000411C attach-table base D_007294 (baked 
 bu_411c_t90 = 0x00000090;  /* func_0000411C descriptor table at bootup+0x90 (func_00000080 + 0x10) */
 bu_411c_k544 = 0x00000544;  /* func_0000411C RoData pool f32 at +0x544 (func_000003F8 + 0x14C) */
 bu_411c_k548 = 0x00000548;  /* func_0000411C RoData pool f32 at +0x548 (func_000003F8 + 0x150) */
-func_00000000_7ec8_c = 0x00000000;  /* func_00007EC8 callee func_0586D8 (ptr, ptr, float), jal 0 */
-func_00000000_7ec8_t = 0x00000000;  /* func_00007EC8 callee func_063D70 (four ints, float, int, float), jal 0 */
-bu_7ec8_g = 0x00000000;  /* func_00007EC8 globals block import_0005C108 (baked 0) */
-bu_7ec8_h = 0x00000000;  /* func_00007EC8 backup record import_0001FFC8 (baked 0) */
-D_00007F90 = 0x00007F90;  /* func_00007328 data ref into func_00007EC8 body (was the asm label .L00007F90; label vanishes once 7EC8 is C) */
-D_00007F5C = 0x00007F5C;  /* func_00006808 data ref into func_00007EC8 body (was asm label .L00007F5C) */
-bu_7ec8_m = 0x00000034;  /* func_00007EC8 mode word (asm: func_00000008 + 0x2C) */
-bu_7ec8_src = 0x00000294;  /* func_00007EC8 24-byte record (asm: func_0000027C + 0x18) */
-func_00000000_e124_r = 0x00000000;  /* func_0000E124 callee func_072FB0 (ptr, ptr, float), jal 0 */
+func_00000000_7ec8_c = 0x00000000;  /* Fog_func_00007EC8 callee func_0586D8 (ptr, ptr, float), jal 0 */
+func_00000000_7ec8_t = 0x00000000;  /* Fog_func_00007EC8 callee func_063D70 (four ints, float, int, float), jal 0 */
+bu_7ec8_g = 0x00000000;  /* Fog_func_00007EC8 globals block import_0005C108 (baked 0) */
+bu_7ec8_h = 0x00000000;  /* Fog_func_00007EC8 backup record import_0001FFC8 (baked 0) */
+D_00007F90 = 0x00007F90;  /* EnvSettings_load data ref into Fog_func_00007EC8 body (was the asm label .L00007F90; label vanishes once 7EC8 is C) */
+D_00007F5C = 0x00007F5C;  /* game_createMap data ref into Fog_func_00007EC8 body (was asm label .L00007F5C) */
+bu_7ec8_m = 0x00000034;  /* Fog_func_00007EC8 mode word (asm: func_00000008 + 0x2C) */
+bu_7ec8_src = 0x00000294;  /* Fog_func_00007EC8 24-byte record (asm: func_0000027C + 0x18) */
+func_00000000_e124_r = 0x00000000;  /* SnowBoarder_func_0000E124 callee func_072FB0 (ptr, ptr, float), jal 0 */
 bu_2c94_k4f0 = 0x000004F0;  /* func_00002C94 RoData pool f32 (func_000003F8 + 0xF8) */
 bu_2c94_dst = 0x00000128;  /* func_00002C94 dst Vec3 (func_000000F0 + 0x38) */
 bu_2c94_src = 0x000000E8;  /* func_00002C94 src object (func_00000080 + 0x68) */
@@ -4245,45 +4245,45 @@ bu_2c94_y_ld = 0x00000000;  /* func_00002C94 import_0005EE6C load (baked 0, +4 i
 bu_2c94_y_st = 0x00000000;  /* func_00002C94 import_0005EE6C store */
 bu_2c94_tbl = 0x00000000;  /* func_00002C94 D_00719C table (baked 0) */
 bu_2c94_gate = 0x00000000;  /* func_00002C94 D_00719C gate load (separate alias) */
-bu_d94_g = 0x00000000;  /* func_00000D94 import_0005C108 (baked 0) */
-bu_d94_src = 0x00000294;  /* func_00000D94 record (func_0000027C + 0x18) */
+bu_d94_g = 0x00000000;  /* BGBox_func_00000D94 import_0005C108 (baked 0) */
+bu_d94_src = 0x00000294;  /* BGBox_func_00000D94 record (func_0000027C + 0x18) */
 bu_13b20_root = 0x00000240;  /* func_00013B20 game object (func_0000023C + 0x4) */
-bu_cae8_ta = 0x00000000;  /* func_0000CAE8 NCC donor: blank table ref (in-place lui/lw 0) */
-bu_cae8_tb = 0x00000000;  /* func_0000CAE8 second blank table ref */
-bu_cae8_x_ld = 0x00000000;  /* func_0000CAE8 RMW load alias (blank) */
-bu_cae8_x_st = 0x00000000;  /* func_0000CAE8 RMW store alias (blank) */
-bu_cae8_y = 0x00000000;  /* func_0000CAE8 blank global store */
-bu_cae8_mode = 0x00000034;  /* func_0000CAE8 mode word (func_00000008+0x2C) */
-bu_cae8_k958 = 0x00000958;  /* func_0000CAE8 f32 const (func_00000940+0x18) */
-bu_cae8_d8abc = 0x00008ABC;  /* func_0000CAE8 arg (func_00008A7C+0x40) */
-bu_485c_root = 0x00000000;  /* func_0000485C NCC donor: blank root-pointer global (in-place lui/lw 0) */
-bu_485c_g = 0x00000000;  /* func_0000485C blank scale-table base (+0x128..0x130) */
-bu_cfa0_probe = 0x00000000;  /* func_0000CFA0 NCC donor: blank callee (jal 0) */
-bu_cfa0_v = 0x00000000;  /* func_0000CFA0 blank void callee (jal 0) */
-bu_cfa0_a = 0x00000000;  /* func_0000CFA0 per-site blank first args (lui/addiu 0) */
+bu_cae8_ta = 0x00000000;  /* SnowBoarder_func_0000CAE8 NCC donor: blank table ref (in-place lui/lw 0) */
+bu_cae8_tb = 0x00000000;  /* SnowBoarder_func_0000CAE8 second blank table ref */
+bu_cae8_x_ld = 0x00000000;  /* SnowBoarder_func_0000CAE8 RMW load alias (blank) */
+bu_cae8_x_st = 0x00000000;  /* SnowBoarder_func_0000CAE8 RMW store alias (blank) */
+bu_cae8_y = 0x00000000;  /* SnowBoarder_func_0000CAE8 blank global store */
+bu_cae8_mode = 0x00000034;  /* SnowBoarder_func_0000CAE8 mode word (func_00000008+0x2C) */
+bu_cae8_k958 = 0x00000958;  /* SnowBoarder_func_0000CAE8 f32 const (func_00000940+0x18) */
+bu_cae8_d8abc = 0x00008ABC;  /* SnowBoarder_func_0000CAE8 arg (func_00008A7C+0x40) */
+bu_485c_root = 0x00000000;  /* Mountain_func_0000485C NCC donor: blank root-pointer global (in-place lui/lw 0) */
+bu_485c_g = 0x00000000;  /* Mountain_func_0000485C blank scale-table base (+0x128..0x130) */
+bu_cfa0_probe = 0x00000000;  /* SnowBoarder_func_0000CFA0 NCC donor: blank callee (jal 0) */
+bu_cfa0_v = 0x00000000;  /* SnowBoarder_func_0000CFA0 blank void callee (jal 0) */
+bu_cfa0_a = 0x00000000;  /* SnowBoarder_func_0000CFA0 per-site blank first args (lui/addiu 0) */
 bu_cfa0_b = 0x00000000;
 bu_cfa0_c = 0x00000000;
 bu_cfa0_d = 0x00000000;
 bu_cfa0_e = 0x00000000;
 bu_cfa0_f = 0x00000000;
-bu_cfa0_ctx = 0x00000254;  /* func_0000CFA0 context pointer (func_0000023C+0x18) */
-bu_cfa0_flag = 0x000000E4;  /* func_0000CFA0 flag word (func_00000080+0x64) */
-bu_cfa0_k970 = 0x00000970;  /* func_0000CFA0 f32 const (func_00000940+0x30) */
-bu_cfa0_k978 = 0x00000978;  /* func_0000CFA0 f64 const (func_00000940+0x38) */
-bu_e800_g1 = 0x00000000;  /* func_0000E800 NCC donor: per-site blank first args (lui/addiu 0) */
+bu_cfa0_ctx = 0x00000254;  /* SnowBoarder_func_0000CFA0 context pointer (func_0000023C+0x18) */
+bu_cfa0_flag = 0x000000E4;  /* SnowBoarder_func_0000CFA0 flag word (func_00000080+0x64) */
+bu_cfa0_k970 = 0x00000970;  /* SnowBoarder_func_0000CFA0 f32 const (func_00000940+0x30) */
+bu_cfa0_k978 = 0x00000978;  /* SnowBoarder_func_0000CFA0 f64 const (func_00000940+0x38) */
+bu_e800_g1 = 0x00000000;  /* SnowBoard_func_0000E800 NCC donor: per-site blank first args (lui/addiu 0) */
 bu_e800_g2 = 0x00000000;
 bu_e800_g3 = 0x00000000;
 bu_e800_g4 = 0x00000000;
-bu_e800_v = 0x00000000;  /* func_0000E800 blank handler address stored at func_00000008+0x20 */
+bu_e800_v = 0x00000000;  /* SnowBoard_func_0000E800 blank handler address stored at func_00000008+0x20 */
 bu_b1b4_tblA = 0x00000000;  /* func_0000B1B4 NCC donor: blank play-by-idx table (lui/addiu 0) */
 bu_b1b4_tblB = 0x00000000;  /* func_0000B1B4 blank play-by-cat table */
 __vtbl__7Bb4Base = 0x00000000;  /* func_0000B1B4 Base vtable (blank lui/addiu 0) */
 __vtbl__6Bb4Mid = 0x00000000;  /* func_0000B1B4 Mid vtable (blank) */
-__vtbl__7Bb4Bank = 0x00008440;  /* func_0000B1B4 Bank vtable = func_000083D0 + 0x70 */
+__vtbl__7Bb4Bank = 0x00008440;  /* func_0000B1B4 Bank vtable = Snower_func_000083D0 + 0x70 */
 __nw__FUi = 0x00000000;  /* global operator new in NCC donors = blank USO import (jal 0) */
-D_00007350 = 0x00007350;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
-D_00007398 = 0x00007398;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
-D_00007490 = 0x00007490;  /* func_00007328 interior address (was .L label in its asm; 7328 is now an NCC donor) */
+D_00007350 = 0x00007350;  /* EnvSettings_load interior address (was .L label in its asm; 7328 is now an NCC donor) */
+D_00007398 = 0x00007398;  /* EnvSettings_load interior address (was .L label in its asm; 7328 is now an NCC donor) */
+D_00007490 = 0x00007490;  /* EnvSettings_load interior address (was .L label in its asm; 7328 is now an NCC donor) */
 gl_d_0001F970 = 0x0001F970;  /* gl_func_00047F9C NCC donor: baked USO data address (lui 0x2 / addiu -1680) */
 D_41A9C_s1 = 0x00000000;  /* gl_func_00041A9C NCC donor: blank USO data ref (lui/addiu 0) */
 D_41A9C_s2 = 0x00000000;  /* gl_func_00041A9C NCC donor: blank USO data ref (lui/addiu 0) */
@@ -4321,8 +4321,8 @@ gl_ref_00037B00 = 0x00037B00;  /* AudioLoad_DiscardSeqFonts: baked USO jal (0x0C
 gl_ref_0003A0EC = 0x0003A0EC;  /* AudioLoad_GetSamplesForFont: baked USO jal (0x0C00E83B) */
 h2h_void_1204 = 0x00000000;  /* h2hproc_uso_func_00001204 NCC donor: void-returning blank import (jal 0) */
 gl_ref_0003773C = 0x0003773C;  /* AudioLoad_SyncLoadInstrument: baked USO jal (0x0C00DDCF) */
-D_74e8_g = 0x00000008;  /* func_000074E8: = func_00000008 (expected reloc base; read at +0x2C) */
-D_74e8_h = 0x000000F0;  /* func_000074E8: = func_000000F0 (expected reloc base; read at +0x44) */
+D_74e8_g = 0x00000008;  /* FallingSnow_create: = func_00000008 (expected reloc base; read at +0x2C) */
+D_74e8_h = 0x000000F0;  /* FallingSnow_create: = func_000000F0 (expected reloc base; read at +0x44) */
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
 D_43D8_fmin = 0x00000000;  /* game_uso_func_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
@@ -4332,7 +4332,7 @@ game_uso_func_00008CD8_rodata = 0x00000000;  /* game_uso_func_00008CD8 MIPSpro 7
 gl_ref_0001E6B0 = 0x0001E6B0;  /* gl_func_00035B1C blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* gl_func_00039E24 camera block (same blank USO data ref as D_4BAF4_cam: base 0xA0, fields at +0x30) */
 D_34EB4_flags = 0x00000000;  /* gl_func_00034EB4 flags-word test: distinct zero alias so the test does not share base's s3 */
-bu_7288_src = 0x00000294;  /* func_00007288 16-byte record copy source (asm: func_0000027C + 0x18) */
+bu_7288_src = 0x00000294;  /* EnvSettings_func_00007288 16-byte record copy source (asm: func_0000027C + 0x18) */
 gl_ref_000317E8 = 0x000317E8;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_0003186C = 0x0003186C;  /* baked in-unit jal (agent-c run 122) */
 gl_ref_00031D64 = 0x00031D64;  /* baked in-unit jal (agent-c run 122) */
@@ -4355,13 +4355,13 @@ D_27A0_fndef = 0x00000000;
 D_3B80_f0 = 0x00000000;  /* gui_func_00003B80 NCC donor: per-format load-function addresses, mode 0/1/2 */
 D_3B80_f1 = 0x00000000;
 D_3B80_f2 = 0x00000000;
-bu4948_ff = 0x00000000;  /* func_00004948 float import (jal 0), NCC donor */
-bu_4948_t16 = 0x00000000;  /* func_00004948 distance-band table (lui/addiu 0) */
-bu_4948_t8 = 0x00000000;  /* func_00004948 view-angle table (lui/addiu 0) */
-bu_4948_k0 = 0x00000000;  /* func_00004948 snap scale (lwc1 0(at)) */
-bu_4948_k1 = 0x00000000;  /* func_00004948 snap y scale (lwc1 0(at)) */
-bu_4948_klo = 0x00000000;  /* func_00004948 angle clamp low (lwc1 0(at)) */
-bu_4948_khi = 0x00000000;  /* func_00004948 angle clamp high (lwc1 0(at)) */
+bu4948_ff = 0x00000000;  /* cam_func_00004948 float import (jal 0), NCC donor */
+bu_4948_t16 = 0x00000000;  /* cam_func_00004948 distance-band table (lui/addiu 0) */
+bu_4948_t8 = 0x00000000;  /* cam_func_00004948 view-angle table (lui/addiu 0) */
+bu_4948_k0 = 0x00000000;  /* cam_func_00004948 snap scale (lwc1 0(at)) */
+bu_4948_k1 = 0x00000000;  /* cam_func_00004948 snap y scale (lwc1 0(at)) */
+bu_4948_klo = 0x00000000;  /* cam_func_00004948 angle clamp low (lwc1 0(at)) */
+bu_4948_khi = 0x00000000;  /* cam_func_00004948 angle clamp high (lwc1 0(at)) */
 D_7D04_root = 0x0000023C;  /* func_00007D04 root context table = func_0000023C (lui/lw 0x18 -> 0x254) */
 func_7D04_randf = 0x00000000;  /* func_00007D04 float rand helper (jal 0) */
 
@@ -5264,8 +5264,8 @@ gl_func_00034A78_bss = 0x0003B8F6;  /* gl_func_00034A78 NCC donor: static F6/F7 
 gl_func_0005165C_bss = 0x00000000;  /* gl_func_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
 gl_func_00066A50_bss = 0x0003F310;  /* gl_func_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
 gl_3d71c_dA0 = 0x000000A0;  /* gl_func_0003D71C NM: fn-typed blank base of the D+0xA0 copy destination (lui/addiu 160, no USO reloc) */
-bu_90cc_fz = 0x00000000;  /* func_000090CC NM: fn-typed blank base for the 0x814..0x81C copies (lui/addiu 0, no reloc) */
-bu_90cc_fz2 = 0x00000000;  /* func_000090CC NM: fn-typed blank base of the sp174 list-walk head */
+bu_90cc_fz = 0x00000000;  /* SnowBoarder_ctor NM: fn-typed blank base for the 0x814..0x81C copies (lui/addiu 0, no reloc) */
+bu_90cc_fz2 = 0x00000000;  /* SnowBoarder_ctor NM: fn-typed blank base of the sp174 list-walk head */
 gl_221d8_fg = 0x00000000;  /* AudioHeap_DiscardSampleCacheEntry NM: fn-typed blank base of the &D block held in s6 */
 gl_253c4_fd = 0x00000000;  /* AudioLoad_RelocateSample NM: fn-typed blank base of the &D block */
 gl_2119c_fb = 0x00000000;  /* AudioHeap_ResetStep NM: fn-typed blank base of the &D block held in s1 */
@@ -5410,11 +5410,11 @@ gl_22464_gAudioCtxT = 0x00000000;  /* agent-c run 144: AudioHeap_DiscardSampleCa
 gl_dcb4_gAudioCtx = 0x00000000;  /* agent-c run 144: AudioSynth_DoOneAudioUpdate (synthesis update) typed gAudioCtx extern (numSynthesisReverbs 0x1, sampleStates 0x14, synthesisReverbs 0x18, numNotes 0x2070, notes 0x2CFC) */
 gl_221D8_gAudioCtx = 0x00000000;  /* agent-c run 144: AudioHeap_DiscardSampleCacheEntry (DiscardSampleCacheEntry) typed gAudioCtx extern (soundFontTable 0x2020, soundFontList 0x2030) */
 gl_32e18_blank = 0x00000000;  /* agent-c run 144: gl_func_00032E18 blank jal 0 callee alias */
-func_00000000_ca0_base = 0x00000000;  /* agent-g run 150: func_00000CA0 NCC donor base ctor (renamed __ct__1BFPc), blank jal */
-bu_ca0_desc = 0x00000000;  /* agent-g run 150: func_00000CA0 donor vtable (renamed __vtbl__1D), blank lui/addiu */
-bu_ca0_g = 0x00000000;  /* agent-g run 150: func_00000CA0 imported word (blank lui at/sw) */
-bu_ca0_g_b = 0x00000000;  /* agent-g run 150: func_00000CA0 second imported word, [1] = target func_00000000 + 0x4 */
-bu_ca0_box = 0x00000000;  /* agent-g run 150: func_00000CA0 vertex-corner table (blank lui/addiu v1) */
+func_00000000_ca0_base = 0x00000000;  /* agent-g run 150: BGBox_ctor NCC donor base ctor (renamed __ct__1BFPc), blank jal */
+bu_ca0_desc = 0x00000000;  /* agent-g run 150: BGBox_ctor donor vtable (renamed __vtbl__1D), blank lui/addiu */
+bu_ca0_g = 0x00000000;  /* agent-g run 150: BGBox_ctor imported word (blank lui at/sw) */
+bu_ca0_g_b = 0x00000000;  /* agent-g run 150: BGBox_ctor second imported word, [1] = target func_00000000 + 0x4 */
+bu_ca0_box = 0x00000000;  /* agent-g run 150: BGBox_ctor vertex-corner table (blank lui/addiu v1) */
 gl_func_00000000_68dd4v = 0x00000000;
 gl_func_00000000_51448v = 0x00000000;  /* agent-g run 155: void alias, 51448 NM */
 func_00000000_24b8v = 0x00000000;  /* agent-g run 155: void alias, bootup 24B8 NM */
@@ -5532,7 +5532,7 @@ func_00000000_63b4_p = 0x00000000;
 func_8bd4_c = 0x00000000;
 /* func_00008BD4 NCC donor (agent-c run 238): target reloc jal func_00000000 */
 func_8bd4_heavy = 0x00000000;
-/* func_000055A0 NCC donor (agent-g run 241): blank (reloc-free) lui/addiu pairs in the target -> 0 */
+/* item_registerTemplates NCC donor (agent-g run 241): blank (reloc-free) lui/addiu pairs in the target -> 0 */
 D_55A0_G = 0x00000000;
 D_55A0_cfg = 0x00000000;
 D_55A0_g5 = 0x00000000;
@@ -5562,7 +5562,7 @@ D_55A0_s28_5 = 0x00000000;
 D_55A0_tb = 0x00000000;
 D_55A0_w0 = 0x00000000;
 D_55A0_z0 = 0x00000000;
-/* func_000055A0 NCC donor (agent-g run 241): target reloc symbols */
+/* item_registerTemplates NCC donor (agent-g run 241): target reloc symbols */
 D_55A0_fmt = 0x00007E24;
 D_55A0_la = 0x00007E40;
 D_55A0_n2 = 0x00007770;
@@ -5576,7 +5576,7 @@ D_55A0_v0 = 0x00007E34;
 D_55A0_v1 = 0x00007E38;
 D_55A0_v2 = 0x00007E3C;
 D_55A0_v3 = 0x00007E44;
-/* func_000055A0 NCC donor (agent-g run 241): bootup.uso RoData pool scalars (target func_0000057C + 0x1C..0x30) */
+/* item_registerTemplates NCC donor (agent-g run 241): bootup.uso RoData pool scalars (target func_0000057C + 0x1C..0x30) */
 D_55A0_ro598 = 0x00000598;
 D_55A0_ro59C = 0x0000059C;
 D_55A0_ro5A0 = 0x000005A0;
@@ -5602,8 +5602,8 @@ gl_func_00036F0C_rodata = 0x000019E8;
 game_libs_func_0004F2DC_rodata = 0x00001BA8;
 D_4F2DC_b = 0x00000000;
 D_4F2DC_e = 0x00000000;
-/* func_00006808 (bootup_uso_o2_6808.c donor): jumptable at func_0000057C+0x38, reloc-free base-0 globals, func_00000188+0x3C flag RMWs */
-func_00006808_rodata = 0x000005B4;
+/* game_createMap (bootup_uso_o2_6808.c donor): jumptable at func_0000057C+0x38, reloc-free base-0 globals, func_00000188+0x3C flag RMWs */
+game_createMap_rodata = 0x000005B4;
 D_00007EB8 = 0x00007EB8;
 import_8005EE6C_6808r = 0x00000000;
 import_8001FFC0 = 0x00000000;
@@ -5624,7 +5624,7 @@ import_8005EE64_6808_4 = 0x00000000;
 import_8005EE64_6808_5 = 0x00000000;
 import_8005EE64_6808_6 = 0x00000000;
 import_8005EE64_6808_7 = 0x00000000;
-/* func_0000C234 NCC donor (agent-g run 236): values from the target relocs (jal func_00000000, func_00008A7C + addend, func_00000008 + 0x2C, .L00000930, func_00000940 + 0x0 / 0x4 / 0x8) */
+/* SnowBoarder_procColl NCC donor (agent-g run 236): values from the target relocs (jal func_00000000, func_00008A7C + addend, func_00000008 + 0x2C, .L00000930, func_00000940 + 0x0 / 0x4 / 0x8) */
 bu_c234_sv = 0x00000000;
 bu_c234_v5 = 0x00000000;
 bu_c234_k0 = 0x00008A7C;
@@ -5645,11 +5645,11 @@ gl_3df58_k1adc = 0x00000000;
 /* gl_func_0005F5F0 NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
 gl_func_0005F5F0_sqrtf = 0x00000000;
 gl_func_0005F5F0_normalize = 0x00000000;
-/* func_0000B75C NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, func_00008124 + 0x4C, literal pool func_000008B4 + 0x14 = 0x8C8) */
+/* SnowBoarder_func_0000B75C NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, FogTmpl_create + 0x4C, literal pool func_000008B4 + 0x14 = 0x8C8) */
 bu_b75c_mvf = 0x00000000;
-D_00008170 = func_00008124 + 0x4C;
-func_0000B75C_rodata = 0x000008C8;
-/* func_000031C0 EXACT NCC donor (agent-c run 271): blank USO jal words (jal func_00000000) and the two -1500.0f literals (func_000003F8 + 0x138 / + 0x13C = donor .rodata +0 / +4) */
+D_00008170 = FogTmpl_create + 0x4C;
+SnowBoarder_func_0000B75C_rodata = 0x000008C8;
+/* cam_create EXACT NCC donor (agent-c run 271): blank USO jal words (jal func_00000000) and the two -1500.0f literals (func_000003F8 + 0x138 / + 0x13C = donor .rodata +0 / +4) */
 fn_31c0_alloc = 0x00000000;
 fn_31c0_fin = 0x00000000;
 fn_31c0_vec = 0x00000000;
@@ -5661,7 +5661,7 @@ fn_31c0_A1 = 0x00000000;
 fn_31c0_A2 = 0x00000000;
 fn_31c0_A4 = 0x00000000;
 fn_31c0_B3 = 0x00000000;
-func_000031C0_rodata = 0x00000530;
+cam_create_rodata = 0x00000530;
 /* gl_func_00048510 EXACT NCC donor (agent-c run 271): blank USO jal words */
 gl_func_00048510_c34458 = 0x00000000;
 /* AudioLoad_ProcessAsyncLoad EXACT (agent-g run 278): typed gAudioCtx extern (sampleBankTable 0x2024, soundFontList 0x2030) + blank USO jal words */

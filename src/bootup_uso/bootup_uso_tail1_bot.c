@@ -21,13 +21,13 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void *func_0000FC28(void *a0) {
+void *QuitProcess_func_0000FC28(void *a0) {
     return 0;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void *func_0000FD4C(void *a0, int a1, int a2) {
+void *QuitProcess_func_0000FD4C(void *a0, int a1, int a2) {
     return 0;
 }
 
@@ -48,10 +48,10 @@ void func_0000FEA0(char *a0) {
     (*(void(**)())(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
 }
 
-/* func_0000FEE8 - verified structural decode (0x208, 130 insns,
+/* PauseMenu_create - verified structural decode (0x208, 130 insns,
  * get-or-create constructor + normalized-colour init). bootup_uso
- * constructor family (cf. func_00005124 / func_0001438C).
- *   void *func_0000FEE8(void *a0) {
+ * constructor family (cf. item_createBal / TimeGadget_func_0001438C).
+ *   void *PauseMenu_create(void *a0) {
  *       o = a0 ? a0 : func_00000000(0x304);
  *       if (!o) return 0;
  *       s = func_00000000(0x2C);
@@ -79,6 +79,6 @@ void func_0000FEA0(char *a0) {
  * episode; tautology-trap rule). */
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */
-void *func_0000FEE8(char *a0) {
+void *PauseMenu_create(char *a0) {
     return 0;
 }
