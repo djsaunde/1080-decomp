@@ -4033,13 +4033,13 @@ void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
     state = *(char**)((char*)&D_00000000 + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
-    if (*(int**)((char*)*(int**)((char*)arg0->session + 0x8) + 0x8) != 0) {
+    if (arg0->session->ghost->data != 0) {
         char *p2;
         q = *(int**)(state + 0xCC);
         p2 = *(char**)((char*)q + 0x800);
         gl_func_00000000(p2, *(int*)(p2 + 0x34));
-        q = *(int**)((char*)arg0->session + 0x8);
-        gl_func_00000000(p2, *(int*)((char*)q + 0x8), *(int*)((char*)q + 0x4));
+        q = (int *)arg0->session->ghost; /* the shared q temp is load-bearing */
+        gl_func_00000000(p2, ((BackupGhost *)q)->data, ((BackupGhost *)q)->count);
     }
     gl_func_00000000(p, *(int*)(p + 0x34));
     gl_func_00000000(p,
@@ -4067,13 +4067,13 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     state = *(char**)((char*)&D_00000000 + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
-    if (*(int**)((char*)*(int**)((char*)arg0->session + 0x8) + 0x8) != 0) {
+    if (arg0->session->ghost->data != 0) {
         char *p2;
         q = *(int**)(state + 0xCC);
         p2 = *(char**)((char*)q + 0x800);
         gl_func_00000000(p2, *(int*)(p2 + 0x34));
-        q = *(int**)((char*)arg0->session + 0x8);
-        gl_func_00000000(p2, *(int*)((char*)q + 0x8), *(int*)((char*)q + 0x4));
+        q = (int *)arg0->session->ghost; /* the shared q temp is load-bearing */
+        gl_func_00000000(p2, ((BackupGhost *)q)->data, ((BackupGhost *)q)->count);
     }
     gl_func_00000000(p, 0);
     gl_func_00000000(p,

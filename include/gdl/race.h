@@ -1,6 +1,8 @@
 #ifndef GDL_RACE_H
 #define GDL_RACE_H
 
+#include "gdl/backup.h"
+
 /* libgdl race objects shared by every race mode (tim / trk / arc / mgr / h2h / trn
  * and titproc's GameDemoProcess). See docs/1080_SYSTEM_LAYER.md section 10 (the
  * RaceProcess vtable) and docs/1080_MODES.md (agent-c run 469).
@@ -104,8 +106,7 @@ typedef struct RaceProcess {
     /* 0x51C */ s32 replayCam;          /* RaceProcess_createReplayCam */
     /* 0x520 */ s32 savedCam;           /* the world camera replaced by replayCam */
     /* 0x524 */ s32 unk524;
-    /* 0x528 */ s32 session;            /* record session (*_openSession): +0 course record table, 0x30 per course
-                                     * (indexed by the game global +0x64), +0x14 mode bits; = RaceTracker.session */
+    /* 0x528 */ BackupSession *session; /* record session (*_openSession, include/gdl/backup.h); = RaceTracker.session */
     /* 0x52C */ char unk52C[8];
     /* 0x534 */ f32 scaleX;             /* countdown digit scale (1.0 after reset) */
     /* 0x538 */ f32 scaleY;
@@ -205,7 +206,7 @@ typedef struct RaceTracker {
     /* 0x40 */ f32 courseLength;         /* world->0x98 +0xD8 - courseZ */
     /* 0x44 */ RaceEntry *entries;       /* alloc 0x300 = 8 entries */
     /* 0x48 */ s32 numEntries;
-    /* 0x4C */ s32 session;              /* = RaceProcess.session (+0 course record table, 0x30 per course; +0x14 mode bits) */
+    /* 0x4C */ BackupSession *session;   /* = RaceProcess.session (include/gdl/backup.h) */
     /* 0x50 */ s32 unk50;
     /* 0x54 */ s32 pointsListArg;        /* 3rd ctor arg of PointsGadget_ctor_00003138 */
     /* 0x58 */ s32 digitsTall;           /* hud_initSprites_0000E4A8: 16x320 grid, 1x10 cells */

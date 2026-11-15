@@ -55,8 +55,8 @@ typedef struct InputMgr {
                                     * demo ctor stores it */
     char pad13C[0x148 - 0x13C];
     /* 0x148 */ void *backup;      /* the save-data object, arg 2 of Backup_openSession */
-    /* 0x14C */ s32 *session;      /* the open Backup session (<pfx>_openSession / closeSession);
-                                    * session[1] / [2] feed replayLen / replayData */
+    /* 0x14C */ s32 *session;      /* the open BackupSession (include/gdl/backup.h; <pfx>_openSession /
+                                    * closeSession); its ghost's count / data feed replayLen / replayData */
     char pad150[0x154 - 0x150];
     /* 0x154 */ char *unlocks;     /* the unlock / option record: +0 u16 unlock bits (1 << n),
                                     * +4 u16 option bits (8 = the title language menu),

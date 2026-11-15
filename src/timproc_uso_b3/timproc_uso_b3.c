@@ -543,7 +543,7 @@ state1:
  * F1: gate=gl_func(a0->0x528). If non-zero set D[0x40]=0xC,D[0x44]=9.
  *     Else set D[0x40]=9. Tail: if(a0->0x4F8) gl_func(a0,-1,0); else a0->0x504=0. */
 void TrkRace_onEndTimerDone(TimRace *a0) {
-    if (gl_func_00000000((char*)a0->race.session) != 0) {
+    if (gl_func_00000000(a0->race.session) != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
     } else {
@@ -757,7 +757,7 @@ void TrkRace_drawResultExtra(TimRace *a0) {
 
             a0->race.unk508 = a0->race.unk508 + 1;
             armed = 0;
-            if ((*(int*)((char*)a0->race.session + 0x14) & 2) != 0 &&
+            if ((a0->race.session->modes & BACKUP_MODE_TRICK) != 0 &&
                 a0->race.unk4FC != 0 &&
                 *(int*)(*(char**)(*(char**)((char*)&D_b3_1240_ptr138 + 0x138) + 0x44) + 0x3C) < 3) {
                 armed = 1;

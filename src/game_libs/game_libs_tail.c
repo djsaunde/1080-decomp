@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/hud.h"
+#include "gdl/backup.h"
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -150,8 +151,8 @@ int backup_checksumEqual(s32 *a0, s32 *a1) {
     return 1;
 }
 
-void Backup_func_00009978(unsigned char *arg0) {
-    *arg0 &= 0x7F;
+void Backup_func_00009978(BackupTimeEntry *arg0) {
+    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
 }
 
 /* 4-arg string-builder: a0[2..4] = a1[0..2] (3-byte copy); then pack a flag
@@ -207,8 +208,8 @@ void Backup_func_000099DC(char *a0, int a1, int a2, char *a3, int a4, int a5, in
  * as an empty `void f(void){}` stub. Merged it is one function: the `beqz`
  * return-0 path targets that tail. The `if(...)return 1; return 0;` form keeps
  * the early `move v0,zero` default + `li v0,1` in the taken jr-ra delay. */
-int Backup_func_00009A2C(unsigned char *a0) {
-    if (*a0 & 0x80) {
+int Backup_func_00009A2C(BackupTimeEntry *a0) {
+    if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
@@ -231,26 +232,26 @@ int Backup_func_00009A2C(unsigned char *a0) {
  * return 1;` -- IDO hoists `li v0,1` above the `bnez at` and branches to the
  * trailing `jr ra; nop`. `if (a1[2] < a0[7]) return 1; return 0;` puts the
  * `li v0,1` in a taken-branch delay slot instead (3 words differ). */
-int Backup_func_00009A50(unsigned char *a0, unsigned char *a1) {
-    if (a0[5] < a1[0]) return 0;
-    if (a1[0] < a0[5]) return 1;
-    if (a0[6] < a1[1]) return 0;
-    if (a1[1] < a0[6]) return 1;
-    if (a1[2] >= a0[7]) return 0;
+int Backup_func_00009A50(BackupTimeEntry *a0, unsigned char *a1) {
+    if (a0->time[0] < a1[0]) return 0;
+    if (a1[0] < a0->time[0]) return 1;
+    if (a0->time[1] < a1[1]) return 0;
+    if (a1[1] < a0->time[1]) return 1;
+    if (a1[2] >= a0->time[2]) return 0;
     return 1;
 }
 
-void Backup_func_00009AD8(unsigned char *a0, int a1, int a2, int a3, int a4) {
-    a0[5] = a1;
-    a0[6] = a2;
-    a0[7] = a3;
-    a0[1] = a4;
-    a0[0] |= 0x80;
+void Backup_func_00009AD8(BackupTimeEntry *a0, int a1, int a2, int a3, int a4) {
+    a0->time[0] = a1;
+    a0->time[1] = a2;
+    a0->time[2] = a3;
+    a0->extra = a4;
+    a0->flags |= BACKUP_ENTRY_VALID;
 }
 
 /* Clears MSB (sibling of matched _00009978). */
-void Backup_func_00009AFC(unsigned char *arg0) {
-    *arg0 &= 0x7F;
+void Backup_func_00009AFC(BackupScoreEntry *arg0) {
+    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
 }
 
 /* Sibling of 00009988 (copy to a0[1..3] via d[0]; same flag-pack a0[0]).
@@ -295,23 +296,23 @@ void Backup_func_00009B60(char *a0, int a1, char *a2, int a3) {
 
 /* Flag/compare-test accessor family (sibling of 00009A2C): splat split each
  * return-0 tail into the following empty-stub symbol; merged each is one fn. */
-int Backup_func_00009B98(unsigned char *a0) {
-    if (*a0 & 0x80) {
+int Backup_func_00009B98(BackupScoreEntry *a0) {
+    if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
 }
 
-int Backup_func_00009BBC(int *a0, int a1) {
-    if (a0[1] < a1) {
+int Backup_func_00009BBC(BackupScoreEntry *a0, int a1) {
+    if (a0->score < a1) {
         return 1;
     }
     return 0;
 }
 
-void Backup_func_00009BE0(char *a0, int a1) { *(int*)(a0 + 4) = a1; *(unsigned char*)a0 |= 0x80; }
+void Backup_func_00009BE0(BackupScoreEntry *a0, int a1) { a0->score = a1; a0->flags |= BACKUP_ENTRY_VALID; }
 
-void Backup_func_00009BF4(int *a0) { *(int*)((char*)a0 + 0x0) &= 0x7F; }
+void Backup_func_00009BF4(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */ }
 
 /* Word-variant sibling of 00009988: copy to a0[5..7] via d[4]; word flag-pack
  * *(int*)a0 = (*(int*)a0 & ~0x7F) | a2 | (a3<<3) (lw/sw, mask via li -0x80).
@@ -370,15 +371,15 @@ void Backup_func_00009C5C(int *a0, int a1, unsigned char *a2, int *a3) {
     a0[7] = a3[0];
 }
 
-int Backup_func_00009CDC(int *a0) {
-    if (a0[0] & 0x80) {
+int Backup_func_00009CDC(BackupArcadeEntry *a0) {
+    if (a0->flags & BACKUP_ENTRY_VALID) {
         return 1;
     }
     return 0;
 }
 
-int Backup_func_00009D00(int *a0, int a1) {
-    if (a0[7] < a1) {
+int Backup_func_00009D00(BackupArcadeEntry *a0, int a1) {
+    if (a0->score < a1) {
         return 1;
     }
     return 0;
@@ -818,21 +819,21 @@ void Backup_func_0000A7B4(char *obj, int a1, unsigned char c2, unsigned char c3,
  * Each get returns a sub-field; each set replaces it in place. */
 
 /* getter: bits 0..1 → return (*a0 & 3) */
-int Backup_func_0000A878(int *a0) { return *a0 & 3; }
+int Backup_func_0000A878(BackupGhost *a0) { return a0->bits & 3; }
 
 /* setter: bits 0..1 ← a1. Target writes the cleared-value intermediate too. */
-void Backup_func_0000A884(int *a0, int a1) {
-    *a0 = *a0 & ~3;
-    *a0 = *a0 | (a1 & 3);
+void Backup_func_0000A884(BackupGhost *a0, int a1) {
+    a0->bits = a0->bits & ~3;
+    a0->bits = a0->bits | (a1 & 3);
 }
 
-/* getter: bits 2..4 → return (*a0 >> 2) & 7 */
-int Backup_func_0000A8A4(int *a0) { return (*a0 >> 2) & 7; }
+/* getter: bits 2..4 → return (a0->bits >> 2) & 7 */
+int Backup_func_0000A8A4(BackupGhost *a0) { return (a0->bits >> 2) & 7; }
 
 /* setter: bits 2..4 ← a1 */
-void Backup_func_0000A8B4(int *a0, int a1) {
-    *a0 = *a0 & ~0x1C;
-    *a0 = *a0 | ((a1 & 7) << 2);
+void Backup_func_0000A8B4(BackupGhost *a0, int a1) {
+    a0->bits = a0->bits & ~0x1C;
+    a0->bits = a0->bits | ((a1 & 7) << 2);
 }
 
 /* A8D8: int f(int*a0){ if((*a0>>5)&1) return 32; return 0; } — CONFIRMED
@@ -846,46 +847,46 @@ void Backup_func_0000A8B4(int *a0, int a1) {
  * worth it for an 8-byte fn. Keep INCLUDE_ASM (no episode). */
 /* Backup_func_0000A8D8: bit-test accessor; splat split the return-0 tail
  * into the 0000A8F8 empty stub (sibling of the 00009A2C family). Merged. */
-int Backup_func_0000A8D8(int *a0) {
-    if ((a0[0] >> 5) & 1) {
+int Backup_func_0000A8D8(BackupGhost *a0) {
+    if ((a0->bits >> 5) & 1) {
         return 32;
     }
     return 0;
 }
 
 /* setter: bit 5 ← (a1 & 0x20) */
-void Backup_func_0000A900(int *a0, int a1) {
-    *a0 = *a0 & ~0x20;
-    if (a1 & 0x20) *a0 = *a0 | 0x20;
+void Backup_func_0000A900(BackupGhost *a0, int a1) {
+    a0->bits = a0->bits & ~0x20;
+    if (a1 & 0x20) a0->bits = a0->bits | 0x20;
 }
 
-/* getter: bits 6..9 → return (*a0 >> 6) & 0xF */
-int Backup_func_0000A928(int *a0) { return (*a0 >> 6) & 0xF; }
+/* getter: bits 6..9 → return (a0->bits >> 6) & 0xF */
+int Backup_func_0000A928(BackupGhost *a0) { return (a0->bits >> 6) & 0xF; }
 
 /* setter: bits 6..9 ← a1 */
-void Backup_func_0000A938(int *a0, int a1) {
-    *a0 = *a0 & ~0x3C0;
-    *a0 = *a0 | ((a1 & 0xF) << 6);
+void Backup_func_0000A938(BackupGhost *a0, int a1) {
+    a0->bits = a0->bits & ~0x3C0;
+    a0->bits = a0->bits | ((a1 & 0xF) << 6);
 }
 
-/* getter: bits 10..13 → return (*a0 >> 10) & 0xF */
-int Backup_func_0000A95C(int *a0) { return (*a0 >> 10) & 0xF; }
+/* getter: bits 10..13 → return (a0->bits >> 10) & 0xF */
+int Backup_func_0000A95C(BackupGhost *a0) { return (a0->bits >> 10) & 0xF; }
 
 /* setter: bits 10..13 ← a1 */
-void Backup_func_0000A96C(int *a0, int a1) {
-    *a0 = *a0 & ~0x3C00;
-    *a0 = *a0 | ((a1 & 0xF) << 10);
+void Backup_func_0000A96C(BackupGhost *a0, int a1) {
+    a0->bits = a0->bits & ~0x3C00;
+    a0->bits = a0->bits | ((a1 & 0xF) << 10);
 }
 
 /* Backup_resetGhostData_0000A990: 25-insn 5-identical-call + 2-zero-fields wrapper. */
-void Backup_resetGhostData_0000A990(int *a0) {
+void Backup_resetGhostData_0000A990(BackupGhost *a0) {
     func_00000000(a0, 0);
     func_00000000(a0, 0);
     func_00000000(a0, 0);
     func_00000000(a0, 0);
     func_00000000(a0, 0);
-    a0[1] = 0;
-    a0[2] = 0;
+    a0->count = 0;
+    a0->data = 0;
 }
 
 extern int gl_func_00000000();
@@ -919,14 +920,14 @@ fail:
 
 /* 28-insn / 0x70 5-call wrapper followed by 2-field commit. Each call passes
  * the same a0 plus a different arg as a1; result of last call is ignored. */
-void Backup_func_0000AA7C(int *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
+void Backup_func_0000AA7C(BackupGhost *a0, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
     gl_func_00000000(a0, a1);
     gl_func_00000000(a0, a3);
     gl_func_00000000(a0, arg5);
     gl_func_00000000(a0, arg6);
     gl_func_00000000(a0, a2);
-    a0[1] = arg8;
-    a0[2] = arg7;
+    a0->count = arg8;
+    a0->data = arg7;
 }
 
 /* Backup_resetArcadeData_0000AAEC: 33-insn 3-iter fixed-loop 4-arg helper (0x84, frame 0x30).
@@ -1195,51 +1196,55 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
  * the real fn at game_libs VRAM 0, gl_func_00000000_b0a8v pins to 0), so the
  * linked words equal the baked ROM words; cmp stays byte-identical. */
 extern int gl_func_00000000();
-int Backup_openSession(int *arg0, int arg1, int arg2, int arg3) {
+/* Calls: mem_new, Backup_readCourse / readArcade / readGhost, then the ghost is
+ * kept only if its mode (bits 0-1) and course (bits 10-13; arg3 == -1 = any)
+ * match (Backup_func_0000A95C / AA28); otherwise mode is cleared (A884) and the
+ * data freed (mem_delete). */
+int Backup_openSession(BackupSession *arg0, Backup *arg1, int arg2, int arg3) {
     int v1;
     if (arg0 == 0) {
-        arg0 = (int *)gl_func_00000000(0x18);
+        arg0 = (BackupSession *)gl_func_00000000(sizeof(BackupSession));
         if (arg0 == 0) goto end;
     }
-    arg0[0x10 / 4] = arg1;
-    arg0[0x14 / 4] = 0;
-    arg0[0] = gl_func_00000000(arg1);
-    arg0[1] = gl_func_00000000(arg0[0x10 / 4]);
-    arg0[2] = gl_func_00000000(arg0[0x10 / 4]);
+    arg0->backup = arg1;
+    arg0->modes = 0;
+    arg0->course = (BackupCourse *)gl_func_00000000(arg1);
+    arg0->arcade = (BackupArcade *)gl_func_00000000(arg0->backup);
+    arg0->ghost = (BackupGhost *)gl_func_00000000(arg0->backup);
     if (arg3 == -1) {
-        arg3 = gl_func_00000000(arg0[2]);
+        arg3 = gl_func_00000000(arg0->ghost);
     }
     v1 = 0;
-    if (gl_func_00000000(arg0[2], arg2, arg3) != 0) {
+    if (gl_func_00000000(arg0->ghost, arg2, arg3) != 0) {
         v1 = 1;
     }
     if (v1 == 0) {
         {
             extern void gl_func_00000000_b0a8v();
-            gl_func_00000000_b0a8v(arg0[2], 0);
+            gl_func_00000000_b0a8v(arg0->ghost, 0);
         }
-        ((int *)arg0[2])[1] = 0;
-        if (((int *)arg0[2])[2] != 0) {
+        arg0->ghost->count = 0;
+        if (arg0->ghost->data != 0) {
             extern void gl_func_00000000_b0a8v();
-            gl_func_00000000_b0a8v(((int *)arg0[2])[2]);
+            gl_func_00000000_b0a8v(arg0->ghost->data);
         }
-        ((int *)arg0[2])[2] = 0;
+        arg0->ghost->data = 0;
     }
 end:
     return (int)arg0;
 }
 
 extern int gl_func_00000000();
-void Backup_closeSession(int *a0, int a1) {
-    int *inner;
+void Backup_closeSession(BackupSession *a0, int a1) {
+    BackupGhost *inner;
     if (a0 != NULL) {
-        gl_func_00000000(*a0);
-        gl_func_00000000(a0[1]);
-        inner = (int*)a0[2];
-        if (inner[2] != 0) {
-            gl_func_00000000(inner[2]);
+        gl_func_00000000(a0->course);
+        gl_func_00000000(a0->arcade);
+        inner = a0->ghost;
+        if (inner->data != 0) {
+            gl_func_00000000(inner->data);
         }
-        gl_func_00000000(a0[2]);
+        gl_func_00000000(a0->ghost);
         if (a1 & 1) {
             gl_func_00000000(a0);
         }
@@ -1247,29 +1252,29 @@ void Backup_closeSession(int *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-int Backup_func_0000B208(int *a0) {
+int Backup_func_0000B208(BackupSession *a0) {
     int s0;
     int s1 = 0;
     int s2 = 0;
     int sum;
-    for (s0 = 0; s0 != 0x180; s0 += 0x30) {
-        s1 += gl_func_00000000(a0[0] + s0);
-        s2 += gl_func_00000000(a0[0] + s0);
+    for (s0 = 0; s0 != sizeof(BackupCourse); s0 += sizeof(BackupCourseRecord)) {
+        s1 += gl_func_00000000((char *)a0->course + s0);
+        s2 += gl_func_00000000((char *)a0->course + s0);
     }
     sum = s1 + s2;
     {
-        int r = gl_func_00000000(a0[1]);
+        int r = gl_func_00000000(a0->arcade);
         return sum + r;
     }
 }
 
 extern int gl_func_00000000();
-int Backup_func_0000B290(int *a0) {
+int Backup_func_0000B290(BackupSession *a0) {
     int s0;
     int s2 = 0;
-    for (s0 = 0; s0 != 0x180; s0 += 0x30) {
-        if (gl_func_00000000(a0[0] + s0) ||
-            gl_func_00000000(a0[0] + s0)) {
+    for (s0 = 0; s0 != sizeof(BackupCourse); s0 += sizeof(BackupCourseRecord)) {
+        if (gl_func_00000000((char *)a0->course + s0) ||
+            gl_func_00000000((char *)a0->course + s0)) {
             s2++;
         }
     }
@@ -1308,14 +1313,14 @@ extern int gl_func_00000000();
  *     store emits first (40/40). The shared line is LOAD-BEARING.
  */
 extern int gl_func_00000000();
-void Backup_func_0000B310(int *a0, int *a1) {
+void Backup_func_0000B310(BackupSession *a0, int *a1) {
   int count = 0;
   int iter = 0;
   int offset = 0;
   int r;
-  for (; iter != 8; iter++)
+  for (; iter != BACKUP_NUM_COURSES; iter++)
   {
-    if (gl_func_00000000(a0[0] + offset) || gl_func_00000000(a0[0] + offset))
+    if (gl_func_00000000((char *)a0->course + offset) || gl_func_00000000((char *)a0->course + offset))
     {
       r = count; count++; a1[r] = iter;
     }
@@ -1332,43 +1337,43 @@ int Backup_func_0000B3B0() {
 
 extern int func_00000000();
 extern int D_00000000;
-void Backup_writeCourseArcadeOptions_0000B3DC(int *a0) {
-    int v = a0[0x14/4];
-    if ((v & 3) != 0) {
-        func_00000000(a0[0x10/4], a0[0]);
-        v = a0[0x14/4];
+void Backup_writeCourseArcadeOptions_0000B3DC(BackupSession *a0) {
+    int v = a0->modes;
+    if ((v & (BACKUP_MODE_TIME | BACKUP_MODE_TRICK)) != 0) {
+        func_00000000(a0->backup, a0->course);
+        v = a0->modes;
     }
-    if ((v & 4) != 0) {
-        func_00000000(a0[0x10/4], a0[1]);
+    if ((v & BACKUP_MODE_ARCADE) != 0) {
+        func_00000000(a0->backup, a0->arcade);
     }
-    func_00000000(a0[0x10/4], *(int*)((char*)&D_00000000 + 0x154));
+    func_00000000(a0->backup, *(int*)((char*)&D_00000000 + 0x154));
 }
 
-void Backup_func_0000B450(int *a0) {
-    int flags = a0[0x14 / 4];
-    if (flags & 3) {
-        gl_func_00000000(a0[0]);
-        flags = a0[0x14 / 4];
+void Backup_func_0000B450(BackupSession *a0) {
+    int flags = a0->modes;
+    if (flags & (BACKUP_MODE_TIME | BACKUP_MODE_TRICK)) {
+        gl_func_00000000(a0->course);
+        flags = a0->modes;
     }
-    if (flags & 4) {
-        gl_func_00000000(a0[1]);
+    if (flags & BACKUP_MODE_ARCADE) {
+        gl_func_00000000(a0->arcade);
     }
 }
 
 extern int gl_func_00000000();
 extern int D_00000000;
 
-void Backup_func_0000B4A4(int *a0, int a1, char a2, char a3) {
-    if (a0[5] & 1) {
-        gl_func_00000000(a0[0], a1, a2, a3,
+void Backup_func_0000B4A4(BackupSession *a0, int a1, char a2, char a3) {
+    if (a0->modes & BACKUP_MODE_TIME) {
+        gl_func_00000000(a0->course, a1, a2, a3,
             (*(char**)((char*)&D_00000000 + 0x154)) + 0xE);
     }
-    if (a0[5] & 2) {
-        gl_func_00000000(a0[0], a1, a2, a3,
+    if (a0->modes & BACKUP_MODE_TRICK) {
+        gl_func_00000000(a0->course, a1, a2, a3,
             (*(char**)((char*)&D_00000000 + 0x154)) + 0xF);
     }
-    if (a0[5] & 4) {
-        gl_func_00000000(a0[1], a1, a2, a3,
+    if (a0->modes & BACKUP_MODE_ARCADE) {
+        gl_func_00000000(a0->arcade, a1, a2, a3,
             (*(char**)((char*)&D_00000000 + 0x154)) + 0x10);
     }
 }
@@ -1381,9 +1386,9 @@ void Backup_func_0000B4A4(int *a0, int a1, char a2, char a3) {
  * (relayout, 2026-06); they are B5AC's own hoisted head, matched as C
  * 2026-09-09 -- see the successor just below. */
 extern int gl_func_00000000();
-void Backup_writeCourseArcade_0000B560(int *p) {
-    gl_func_00000000(p[4], p[0]);
-    gl_func_00000000(p[4], p[1]);
+void Backup_writeCourseArcade_0000B560(BackupSession *p) {
+    gl_func_00000000(p->backup, p->course);
+    gl_func_00000000(p->backup, p->arcade);
 }
 
 /* Backup_func_0000B5AC: per-slot dispatch pair, BYTE-EXACT 35/35 (2026-09-09, agent-g)
@@ -1408,12 +1413,12 @@ void Backup_writeCourseArcade_0000B560(int *p) {
  * B628 (docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628).
  * Both jals are blank (R_MIPS_26 -> func_00000000). */
 extern int func_00000000();
-void Backup_func_0000B5AC(int *a0, int a1) {
+void Backup_func_0000B5AC(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int k = a1 * 9;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD268); } while (0);
-    func_00000000(*a0 + a1 * 48, n % 5, n % 8, tbl + k);
+    func_00000000((char *)a0->course + a1 * 48, n % 5, n % 8, tbl + k);
     func_00000000(a0);
 }
 
@@ -1441,36 +1446,36 @@ void Backup_func_0000B5AC(int *a0, int a1) {
  * D+0xD388 with the addend in the hi/lo pair (`sll t0,v0,2; addu a3,t0,t1`)
  * -- docs/IDO_CODEGEN.md#bb-boundary-blocks-sym-addend-reassociation-b628. */
 extern int func_00000000();
-void Backup_func_0000B628(int *a0, int a1) {
+void Backup_func_0000B628(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
-    func_00000000(*a0 + a1 * 48, n % 5, n % 8, tbl + n);
+    func_00000000((char *)a0->course + a1 * 48, n % 5, n % 8, tbl + n);
     func_00000000(a0);
 }
 
 extern int gl_func_00000000();
-void Backup_func_0000B6AC(int *a0) {
-    gl_func_00000000(a0[1]);
+void Backup_func_0000B6AC(BackupSession *a0) {
+    gl_func_00000000(a0->arcade);
     gl_func_00000000(a0);
 }
 
 extern int gl_func_00000000();
-void Backup_func_0000B6D8(int *a0) {
-    gl_func_00000000(a0[2]);
-    gl_func_00000000(a0[4], a0[2]);
+void Backup_func_0000B6D8(BackupSession *a0) {
+    gl_func_00000000(a0->ghost);
+    gl_func_00000000(a0->backup, a0->ghost);
 }
 
 extern int gl_func_00000000();
 extern int D_00000000;
-void Backup_resetAll_0000B710(int *a0) {
-    gl_func_00000000(*a0);
-    gl_func_00000000(a0[1]);
+void Backup_resetAll_0000B710(BackupSession *a0) {
+    gl_func_00000000(a0->course);
+    gl_func_00000000(a0->arcade);
     gl_func_00000000(a0);
     gl_func_00000000(a0);
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x154));
     gl_func_00000000(&D_00000000);
-    gl_func_00000000(a0[0x10/4], *(int*)((char*)&D_00000000 + 0x154));
+    gl_func_00000000(a0->backup, *(int*)((char*)&D_00000000 + 0x154));
 }
 
 /* Backup_ctor: 59-insn alloc-if-null constructor (BBxx streaming
@@ -1575,12 +1580,12 @@ int Backup_func_0000B958(int a0, register int *a1, int *a2, int a3) {
 extern int gl_func_00000000();
 int Backup_checkHeader(int a0) {
     char buf[0x28];
-    gl_func_00000000(a0, &buf[0x08], 0x188, 8);
-    gl_func_00000000(a0, &buf[0x10], 0x1F0, 8);
-    gl_func_00000000(a0, &buf[0x18], 0x210, 8);
-    gl_func_00000000(a0, &buf[0x20], 0x228, 8);
-    gl_func_00000000(a0, &buf[0], 0, 8);
-    if (gl_func_00000000(&buf[0], &buf[0x08], 0x20, 0xD1265205) == 0) {
+    gl_func_00000000(a0, &buf[0x08], BACKUP_SRAM_COURSE_SUM, 8);
+    gl_func_00000000(a0, &buf[0x10], BACKUP_SRAM_ARCADE_SUM, 8);
+    gl_func_00000000(a0, &buf[0x18], BACKUP_SRAM_OPTIONS_SUM, 8);
+    gl_func_00000000(a0, &buf[0x20], BACKUP_SRAM_GHOST_SUM, 8);
+    gl_func_00000000(a0, &buf[0], BACKUP_SRAM_HEADER, 8);
+    if (gl_func_00000000(&buf[0], &buf[0x08], 0x20, BACKUP_HEADER_KEY) == 0) {
         return 0;
     }
     return 1;
@@ -1597,18 +1602,18 @@ extern int gl_func_00000000();
 void Backup_writeHeader(int a0) {
     char hash[8];
     char data[0x20];
-    gl_func_00000000(a0, &data[0],  0x188, 8);
-    gl_func_00000000(a0, &data[8],  0x1F0, 8);
-    gl_func_00000000(a0, &data[16], 0x210, 8);
-    gl_func_00000000(a0, &data[24], 0x228, 8);
-    gl_func_00000000(hash, data, 0x20, 0xD1265205);
-    gl_func_00000000(a0, 0, hash, 8);
+    gl_func_00000000(a0, &data[0],  BACKUP_SRAM_COURSE_SUM, 8);
+    gl_func_00000000(a0, &data[8],  BACKUP_SRAM_ARCADE_SUM, 8);
+    gl_func_00000000(a0, &data[16], BACKUP_SRAM_OPTIONS_SUM, 8);
+    gl_func_00000000(a0, &data[24], BACKUP_SRAM_GHOST_SUM, 8);
+    gl_func_00000000(hash, data, 0x20, BACKUP_HEADER_KEY);
+    gl_func_00000000(a0, BACKUP_SRAM_HEADER, hash, 8);
 }
 
 extern int gl_func_00000000();
 int Backup_readOptions(int a0) {
-    int tmp = gl_func_00000000(24);
-    gl_func_00000000(a0, tmp, 504, 24);
+    int tmp = gl_func_00000000(sizeof(BackupOptions));
+    gl_func_00000000(a0, tmp, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
     return tmp;
 }
 
@@ -1623,11 +1628,11 @@ int Backup_readOptions(int a0) {
 extern int gl_func_00000000();
 void Backup_writeOptions(int a0, int a1) {
     char buf[8];
-    gl_func_00000000(a0, 0x1F8, a1, 24);
-    gl_func_00000000(buf, a1, 24, 0xDEADBBAD);
-    gl_func_00000000(a0, 0x210, buf, 8);
-    gl_func_00000000(a0, 0x7FC8, a1, 24);
-    gl_func_00000000(a0, 0x7FE0, buf, 8);
+    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS, a1, sizeof(BackupOptions));
+    gl_func_00000000(buf, a1, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
+    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_SUM, buf, 8);
+    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_MIRROR, a1, sizeof(BackupOptions));
+    gl_func_00000000(a0, BACKUP_SRAM_OPTIONS_MIRROR_SUM, buf, 8);
     gl_func_00000000(a0);
 }
 
@@ -1647,18 +1652,18 @@ int Backup_checkOptions(int *s0) {
     char cmp[8];
     char bufC[24];
     char bufD[8];
-    gl_func_00000000(s0, bufA, 504, 24);
-    gl_func_00000000(s0, bufB, 528, 8);
-    gl_func_00000000(cmp, bufA, 24, 0xDEADBBAD);
+    gl_func_00000000(s0, bufA, BACKUP_SRAM_OPTIONS, sizeof(BackupOptions));
+    gl_func_00000000(s0, bufB, BACKUP_SRAM_OPTIONS_SUM, 8);
+    gl_func_00000000(cmp, bufA, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
     if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, 0x7FC8, 24);
-        gl_func_00000000(s0, bufD, 0x7FE0, 8);
-        gl_func_00000000(cmp, bufC, 24, 0xDEADBBAD);
+        gl_func_00000000(s0, bufC, BACKUP_SRAM_OPTIONS_MIRROR, sizeof(BackupOptions));
+        gl_func_00000000(s0, bufD, BACKUP_SRAM_OPTIONS_MIRROR_SUM, 8);
+        gl_func_00000000(cmp, bufC, sizeof(BackupOptions), BACKUP_CHUNK_KEY);
         if (gl_func_00000000(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, 504, bufC, 24);
-        gl_func_00000000(s0, 528, bufD, 8);
+        gl_func_00000000(s0, BACKUP_SRAM_OPTIONS, bufC, sizeof(BackupOptions));
+        gl_func_00000000(s0, BACKUP_SRAM_OPTIONS_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1673,8 +1678,8 @@ void Backup_resetOptions(int a0) {
 
 extern int gl_func_00000000();
 int Backup_readCourse(int a0) {
-    int tmp = gl_func_00000000(384);
-    gl_func_00000000(a0, tmp, 8, 384);
+    int tmp = gl_func_00000000(sizeof(BackupCourse));
+    gl_func_00000000(a0, tmp, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
     return tmp;
 }
 
@@ -1697,13 +1702,13 @@ int Backup_readCourse(int a0) {
 extern int gl_func_00000000();
 struct B384 { int w[96]; };
 struct B8 { int w[2]; };
-void Backup_writeCourse(int s0, struct B384 *src) { struct B384 buf1 = *src; struct B8 buf2;
+void Backup_writeCourse(int s0, BackupCourse *src) { BackupCourse buf1 = *src; struct B8 buf2;
     gl_func_00000000(&buf1);
-    gl_func_00000000(s0, 8, &buf1, 384);
-    gl_func_00000000(&buf2, &buf1, 384, 0xDEADBBAD);
-    gl_func_00000000(s0, 392, &buf2, 8);
-    gl_func_00000000(s0, 0x7DD8, &buf1, 384);
-    gl_func_00000000(s0, 0x7F58, &buf2, 8);
+    gl_func_00000000(s0, BACKUP_SRAM_COURSE, &buf1, sizeof(BackupCourse));
+    gl_func_00000000(&buf2, &buf1, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
+    gl_func_00000000(s0, BACKUP_SRAM_COURSE_SUM, &buf2, 8);
+    gl_func_00000000(s0, BACKUP_SRAM_COURSE_MIRROR, &buf1, sizeof(BackupCourse));
+    gl_func_00000000(s0, BACKUP_SRAM_COURSE_MIRROR_SUM, &buf2, 8);
     gl_func_00000000(s0);
 }
 
@@ -1718,18 +1723,18 @@ int Backup_checkCourse(int *s0) {
     char cmp[8];
     char bufC[384];
     char bufD[8];
-    gl_func_00000000(s0, bufA, 8, 384);
-    gl_func_00000000(s0, bufB, 392, 8);
-    gl_func_00000000(cmp, bufA, 384, 0xDEADBBAD);
+    gl_func_00000000(s0, bufA, BACKUP_SRAM_COURSE, sizeof(BackupCourse));
+    gl_func_00000000(s0, bufB, BACKUP_SRAM_COURSE_SUM, 8);
+    gl_func_00000000(cmp, bufA, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
     if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, 0x7DD8, 384);
-        gl_func_00000000(s0, bufD, 0x7F58, 8);
-        gl_func_00000000(cmp, bufC, 384, 0xDEADBBAD);
+        gl_func_00000000(s0, bufC, BACKUP_SRAM_COURSE_MIRROR, sizeof(BackupCourse));
+        gl_func_00000000(s0, bufD, BACKUP_SRAM_COURSE_MIRROR_SUM, 8);
+        gl_func_00000000(cmp, bufC, sizeof(BackupCourse), BACKUP_CHUNK_KEY);
         if (gl_func_00000000(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, 8, bufC, 384);
-        gl_func_00000000(s0, 392, bufD, 8);
+        gl_func_00000000(s0, BACKUP_SRAM_COURSE, bufC, sizeof(BackupCourse));
+        gl_func_00000000(s0, BACKUP_SRAM_COURSE_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1744,8 +1749,8 @@ void Backup_resetCourse(int a0) {
 
 extern int gl_func_00000000();
 int Backup_readArcade(int a0) {
-    int tmp = gl_func_00000000(96);
-    gl_func_00000000(a0, tmp, 400, 96);
+    int tmp = gl_func_00000000(sizeof(BackupArcade));
+    gl_func_00000000(a0, tmp, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
     return tmp;
 }
 
@@ -1760,13 +1765,13 @@ int Backup_readArcade(int a0) {
  * line layout is load-bearing, do not reformat. a1..a3 at the first jal are
  * leftovers (a1 survives because the copy reads through t8). */
 typedef struct { int w[24]; } Buf60;
-void Backup_writeArcade(void *arg0, Buf60 *arg1) { Buf60 buf60 = *arg1; char buf08[8];
+void Backup_writeArcade(void *arg0, BackupArcade *arg1) { BackupArcade buf60 = *arg1; char buf08[8];
     func_00000000(&buf60);
-    func_00000000(arg0, 0x190, &buf60, 0x60);
-    func_00000000(buf08, &buf60, 0x60, 0xDEADBBAD);
-    func_00000000(arg0, 0x1F0, buf08, 8);
-    func_00000000(arg0, 0x7F60, &buf60, 0x60);
-    func_00000000(arg0, 0x7FC0, buf08, 8);
+    func_00000000(arg0, BACKUP_SRAM_ARCADE, &buf60, sizeof(BackupArcade));
+    func_00000000(buf08, &buf60, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
+    func_00000000(arg0, BACKUP_SRAM_ARCADE_SUM, buf08, 8);
+    func_00000000(arg0, BACKUP_SRAM_ARCADE_MIRROR, &buf60, sizeof(BackupArcade));
+    func_00000000(arg0, BACKUP_SRAM_ARCADE_MIRROR_SUM, buf08, 8);
     func_00000000(arg0);
 }
 
@@ -1780,18 +1785,18 @@ int Backup_checkArcade(int *s0) {
     char cmp[8];
     char bufC[96];
     char bufD[8];
-    gl_func_00000000(s0, bufA, 400, 96);
-    gl_func_00000000(s0, bufB, 496, 8);
-    gl_func_00000000(cmp, bufA, 96, 0xDEADBBAD);
+    gl_func_00000000(s0, bufA, BACKUP_SRAM_ARCADE, sizeof(BackupArcade));
+    gl_func_00000000(s0, bufB, BACKUP_SRAM_ARCADE_SUM, 8);
+    gl_func_00000000(cmp, bufA, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
     if (gl_func_00000000(cmp, bufB) == 0) {
-        gl_func_00000000(s0, bufC, 0x7F60, 96);
-        gl_func_00000000(s0, bufD, 0x7FC0, 8);
-        gl_func_00000000(cmp, bufC, 96, 0xDEADBBAD);
+        gl_func_00000000(s0, bufC, BACKUP_SRAM_ARCADE_MIRROR, sizeof(BackupArcade));
+        gl_func_00000000(s0, bufD, BACKUP_SRAM_ARCADE_MIRROR_SUM, 8);
+        gl_func_00000000(cmp, bufC, sizeof(BackupArcade), BACKUP_CHUNK_KEY);
         if (gl_func_00000000(cmp, bufD) == 0) {
             return 0;
         }
-        gl_func_00000000(s0, 400, bufC, 96);
-        gl_func_00000000(s0, 496, bufD, 8);
+        gl_func_00000000(s0, BACKUP_SRAM_ARCADE, bufC, sizeof(BackupArcade));
+        gl_func_00000000(s0, BACKUP_SRAM_ARCADE_SUM, bufD, 8);
     }
     return 1;
 }
@@ -1825,12 +1830,12 @@ void Backup_resetArcade(int a0) {
  * substantive decode (per feedback_doc_marker_is_bail.md).
  */
 void* Backup_readGhost(void *arg0) {
-    int *obj = (int*)gl_func_00000000(0x10);
-    gl_func_00000000(arg0, obj, 0x218, 0x10);
+    int *obj = (int*)gl_func_00000000(sizeof(BackupGhost));
+    gl_func_00000000(arg0, obj, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
     if (gl_func_00000000(obj) != 0) {
         int v = gl_func_00000000(obj[1] * 4);
         obj[2] = v;
-        gl_func_00000000(arg0, v, 0x230, obj[1] * 4);
+        gl_func_00000000(arg0, v, BACKUP_SRAM_GHOST_DATA, obj[1] * 4);
     }
     return obj;
 }
@@ -1856,15 +1861,15 @@ void Backup_writeGhost(C28C_Self *arg0, struct gl_func_0000C28C_Four *arg1) {
     buf10.c = 0;
 
     arg0->f4 = arg1->a;
-    gl_func_00000000(arg0, 0x218, &buf10, 0x10);
+    gl_func_00000000(arg0, BACKUP_SRAM_GHOST, &buf10, sizeof(BackupGhost));
     if (gl_func_00000000(arg1) != 0) {
-        gl_func_00000000(arg0, 0x230, arg1->c, arg1->b * 4);
+        gl_func_00000000(arg0, BACKUP_SRAM_GHOST_DATA, arg1->c, arg1->b * 4);
     }
 
-    gl_func_00000000(buf08, &buf10, 0x10, 0xDEADBBAD);
-    gl_func_00000000(arg0, 0x228, buf08, 8);
-    gl_func_00000000(arg0, 0x7FE8, &buf10, 0x10);
-    gl_func_00000000(arg0, 0x7FF8, buf08, 8);
+    gl_func_00000000(buf08, &buf10, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
+    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_SUM, buf08, 8);
+    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_MIRROR, &buf10, sizeof(BackupGhost));
+    gl_func_00000000(arg0, BACKUP_SRAM_GHOST_MIRROR_SUM, buf08, 8);
     gl_func_00000000(arg0);
 }
 
@@ -1875,18 +1880,18 @@ int Backup_checkGhost(void *arg0) {
     int backup16[4];
     int backup8[2];
 
-    gl_func_00000000(arg0, current16, 0x218, 0x10);
-    gl_func_00000000(arg0, current8, 0x228, 8);
-    gl_func_00000000(digest, current16, 0x10, 0xDEADBBAD);
+    gl_func_00000000(arg0, current16, BACKUP_SRAM_GHOST, sizeof(BackupGhost));
+    gl_func_00000000(arg0, current8, BACKUP_SRAM_GHOST_SUM, 8);
+    gl_func_00000000(digest, current16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
     if (gl_func_00000000(digest, current8) == 0) {
-        gl_func_00000000(arg0, backup16, 0x7FE8, 0x10);
-        gl_func_00000000(arg0, backup8, 0x7FF8, 8);
-        gl_func_00000000(digest, backup16, 0x10, 0xDEADBBAD);
+        gl_func_00000000(arg0, backup16, BACKUP_SRAM_GHOST_MIRROR, sizeof(BackupGhost));
+        gl_func_00000000(arg0, backup8, BACKUP_SRAM_GHOST_MIRROR_SUM, 8);
+        gl_func_00000000(digest, backup16, sizeof(BackupGhost), BACKUP_CHUNK_KEY);
         if (gl_func_00000000(digest, backup8) == 0) {
             return 0;
         }
-        gl_func_00000000(arg0, 0x218, backup16, 0x10);
-        gl_func_00000000(arg0, 0x228, backup8, 8);
+        gl_func_00000000(arg0, BACKUP_SRAM_GHOST, backup16, sizeof(BackupGhost));
+        gl_func_00000000(arg0, BACKUP_SRAM_GHOST_SUM, backup8, 8);
     }
     return 1;
 }
@@ -2419,13 +2424,15 @@ int RaceTracker_handleMsg(int *a0, int *a1) {
  *   alias gl_func_00000000_ce38_v (kills the dead $v0 def, docs
  *   IDO_CODEGEN #e5d0-void-alias-frees-v0-spilltemp-cap);
  * - `if (n) {}` (emission-free dead-if) lifts the constant-1 LR over the
- *   two pass-through params: s5 = 1, s6 = a1, s7 = a2 (without it 1 -> s7). */
+ *   two pass-through params: s5 = 1, s6 = a1, s7 = a2 (without it 1 -> s7).
+ * - m->course is read as an int (`FW(m, 0x0)`): `(s32)m->course` renumbers
+ *   the multu / addu temps (run 474). m->arcade and m->modes are plain fields. */
 extern void gl_func_00000000_ce38_v();
 #define CE38_E(i) (&self->entries[i])
 #define CE38_D(o) FW(&D_00000000, o)
 void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
     s32 i;
-    char *m;
+    BackupSession *m;
     s32 fl;
     s32 v;
     s32 n;
@@ -2434,30 +2441,30 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
     if (n) {}
     for (i = 0; i < n; i++) {
         if ((CE38_E(i)->flags & 1) == 1) {
-            m = (char *)self->session;
+            m = self->session;
             if (m != 0) {
-                fl = FW(m, 0x14);
+                fl = m->modes;
                 if (CE38_E(i)->finished != 0) {
-                    if (fl & 1) {
+                    if (fl & BACKUP_MODE_TIME) {
                         CE38_E(i)->rank[0] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
                         gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
                         v = CE38_E(i)->rank[0];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)self->session;
-                        fl = FW(m, 0x14);
+                        m = self->session;
+                        fl = m->modes;
                     }
-                    if (fl & 2) {
+                    if (fl & BACKUP_MODE_TRICK) {
                         CE38_E(i)->rank[1] = gl_func_00000000(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
                         gl_func_00000000_ce38_v(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
                         v = CE38_E(i)->rank[1];
                         if (v < 3) CE38_D(0x7C) = v + 1;
-                        m = (char *)self->session;
-                        fl = FW(m, 0x14);
+                        m = self->session;
+                        fl = m->modes;
                     }
                 }
-                if (fl & 4) {
-                    CE38_E(i)->rank[2] = gl_func_00000000(FW(m, 0x4), CE38_E(i)->time);
-                    gl_func_00000000_ce38_v(FW(self->session, 0x4), CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
+                if (fl & BACKUP_MODE_ARCADE) {
+                    CE38_E(i)->rank[2] = gl_func_00000000(m->arcade, CE38_E(i)->time);
+                    gl_func_00000000_ce38_v(self->session->arcade, CE38_E(i)->rank[2], CE38_E(i)->time, a1, a2);
                     v = CE38_E(i)->rank[2];
                     if (v < 3) CE38_D(0x7C) = v + 1;
                 }

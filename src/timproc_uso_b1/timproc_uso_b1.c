@@ -663,7 +663,7 @@ void TimRace_drawResultExtra(TimRace *a0) {
         }
         a0->race.unk508 = a0->race.unk508 + 1;
         flag = 0;
-        if ((*(int *)((char *)a0->race.session + 0x14) & 1) &&
+        if ((a0->race.session->modes & BACKUP_MODE_TIME) &&
             (a0->race.unk4FC != 0) &&
             (*(int *)(*(char **)(*(char **)((char *)&D_b1_11d8_d + 0x138) + 0x44) + 0x38) < 3)) {
             flag = 1;
