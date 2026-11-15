@@ -30,12 +30,17 @@ Subcommands:
                      in include/ and src/game_libs: resolve the Sym it claims (comment
                      `Sym N`, or GL_DATA/GL_RODATA/GL_BSS(K) = section base) and verify each
                      function that uses it has a site against that Sym. Exit 1 on a mismatch.
-  convert NAME FILE.. [--exclude RE] [--write]
+  convert NAME FILE.. [--exclude RE] [--only RE] [--bare] [--write]
                      respell the plain-D_00000000 sites of one header object alias
                      (`#define gX D_00000000 /* ... Sym N ... */`) where the relocs prove
                      the site is that object (see cmd_convert); adds the gl_data.h include
                      (relative path in NCC .cpp donors, which build without -I include)
-  spell-base FILE.. [--exclude RE] [--write]
+  spell-base FILE.. [--exclude RE] [--only RE] [--write]
+  spell-base --owner-report [OUT] [FILE..]
+                     per owner area (OWNERS table: agent-b/c/h, unassigned), the exact
+                     `spell-base` / `convert NAME` commands, one per file with --only naming that
+                     owner's functions, that respell every provable plain site (dry-run plans of
+                     both subcommands; `convert ... --bare` when bare value uses are included)
                      respell plain section-base sites (`(char *)&D_00000000 + K` whose relocs
                      all name ONE section-base Sym) as GL_DATA_STR(K, "text") /
                      GL_RODATA_STR(K, "text") when K starts a string in that section, else
@@ -633,6 +638,34 @@ def add_gl_data_include(path, src):
     return src[:i] + line + src[i:]
 
 
+def _fn_selected(f, excl, only):
+    return not (excl and excl.search(f)) and not (only and not only.fullmatch(f))
+
+
+def plan_convert(c, n, src, excl=None, only=None, bare=False):
+    """(start, end, func) spans of `D_00000000` tokens in `src` that the relocs prove are Sym n
+    (proof rule in cmd_convert). `bare` adds K = 0 value uses (`D_00000000 |= m`)."""
+    edits = []
+    for f, b0, b1 in func_spans(src):
+        if not _fn_selected(f, excl, only):
+            continue
+        ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+        if not ss or any(x.placeholder is None for x in ss):
+            continue
+        byk = collections.defaultdict(set)
+        for x in ss:
+            if x.placeholder == 'D_00000000':
+                byk[x.k].add(x.sym.idx)
+        for mm in SITE_RE.finditer(src, b0, b1):
+            k = int(mm.group(2), 0) if mm.group(2) else 0
+            if byk.get(k) == {n}:
+                edits.append((mm.start() + 1, mm.start() + 1 + len('D_00000000'), f))
+        if bare and byk.get(0) == {n}:
+            for mm in BARE_RE.finditer(src, b0, b1):
+                edits.append((mm.start(), mm.end(), f))
+    return edits
+
+
 def cmd_convert(c, a):
     """Spell plain-D_00000000 sites of one named object with its object-alias macro.
     A site `&D_00000000` (K = 0) is converted only when EVERY K=0 D_00000000-relocated
@@ -649,27 +682,11 @@ def cmd_convert(c, a):
                  'cannot replace the bare token, convert its sites by hand')
     n = m[0]['claim'][1]
     excl = re.compile(a.exclude) if a.exclude else None
+    only = re.compile(a.only) if a.only else None
     total = 0
     for path in a.files:
         src = open(path, errors='replace').read()
-        edits = []
-        for f, b0, b1 in func_spans(src):
-            if excl and excl.search(f):
-                continue
-            ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
-            if not ss or any(x.placeholder is None for x in ss):
-                continue
-            byk = collections.defaultdict(set)
-            for x in ss:
-                if x.placeholder == 'D_00000000':
-                    byk[x.k].add(x.sym.idx)
-            for mm in SITE_RE.finditer(src, b0, b1):
-                k = int(mm.group(2), 0) if mm.group(2) else 0
-                if byk.get(k) == {n}:
-                    edits.append((mm.start() + 1, mm.start() + 1 + len('D_00000000'), f))
-            if a.bare and byk.get(0) == {n}:
-                for mm in BARE_RE.finditer(src, b0, b1):
-                    edits.append((mm.start(), mm.end(), f))
+        edits = plan_convert(c, n, src, excl, only, a.bare)
         if not edits:
             continue
         fs = sorted({e[2] for e in edits})
@@ -729,51 +746,151 @@ def char_decl_only(src):
     return bool(decls) and all(t.strip() == 'char' and not arr for t, arr in decls)
 
 
+def plan_spell_base(c, src, excl=None, only=None):
+    """(start, end, replacement, func, macro) for the provable plain section-base sites in `src`."""
+    plain_char = char_decl_only(src)
+    edits = []
+    for f, b0, b1 in func_spans(src):
+        if not _fn_selected(f, excl, only):
+            continue
+        ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+        if not ss or any(x.placeholder is None for x in ss):
+            continue
+        byk = collections.defaultdict(set)
+        for x in ss:
+            if x.placeholder == 'D_00000000':
+                byk[x.k].add((x.sym.is_base, x.sym.sect))
+        for mm in BASE_SITE_RE.finditer(src, b0, b1):
+            if not mm.group(1) and not plain_char:
+                continue
+            k = int(mm.group(2), 0)
+            kinds = byk.get(k)
+            if not kinds or len(kinds) != 1:
+                continue
+            isb, sect = next(iter(kinds))
+            if not isb or sect not in (6, 7, 8):
+                continue
+            before = src[max(b0, mm.start() - 12):mm.start()]
+            if _BAD_BEFORE.search(before) or not _GOOD_BEFORE.search(before):
+                continue
+            if _BAD_AFTER.match(src[mm.end():mm.end() + 3]):
+                continue
+            t = rom_string(c, sect, k) if sect in (6, 7) else None
+            if t is not None:
+                name = {6: 'GL_DATA_STR', 7: 'GL_RODATA_STR'}[sect]
+                rep = f'{name}(0x{k:X}, {c_literal(t)})'
+            else:
+                name = {6: 'GL_DATA', 7: 'GL_RODATA', 8: 'GL_BSS'}[sect]
+                rep = f'{name}(0x{k:X})'
+            edits.append((mm.start(), mm.end(), rep, f, name))
+    return edits
+
+
+# Owner areas for `spell-base --owner-report` (readability phase, run 504). First match wins:
+# (owner, description, path regex or None, function regex or None); both must match when given.
+_GFX_FN = (r'(Anim|anim_|Skin|skin_|BaseLight|BaseMat|BasePolyShape|ColourItem|DisplayMgr|FogParms|'
+           r'GfxLib|LightTarget|Mat_|MorphPoly|PolyShape|RcpMgr|RcpTask|ScreenWindow|Shadow|Sprite|'
+           r'Window|ZoneShape|gfx_|shape_|light_|console_|CollShape|absrot).*')
+OWNERS = [
+    ('agent-c', 'audio: Audio* / snd_* / Snd* functions, any file', None, r'(Audio|snd_|Snd|Note_|Seq_).*'),
+    ('agent-b', 'game_libs_post0b.c / game_libs_post1b.c', r'game_libs_post[01]b\.c$', None),
+    ('agent-b', 'gfx / anim / shape / window / light / CollShape functions in other files', None, _GFX_FN),
+    ('agent-h', 'bootup_uso (src/bootup_uso/*)', r'^src/bootup_uso/', None),
+    ('agent-h', 'game_libs.c / game_libs_tail.c', r'game_libs(_tail)?\.c$', None),
+    ('unassigned', 'other game_libs files (coordinator or any free agent)', r'.', None),
+]
+
+
+def owner_of(path, func):
+    for o, desc, pr, fr in OWNERS:
+        if (pr is None or re.search(pr, path)) and (fr is None or re.fullmatch(fr, func)):
+            return o, desc
+    return 'unassigned', OWNERS[-1][1]
+
+
+def _only_re(funcs):
+    return "'^(" + '|'.join(sorted(funcs)) + ")$'"
+
+
+def owner_report(c, a):
+    """Per owner area, the exact `spell-base` / `convert` commands (one per file, restricted with
+    --only to that owner's functions) that respell every provable plain site. Each command is the
+    dry-run-verified set: run it with --write, then `check` and the gate."""
+    srcs = a.files or [p for d in ('bootup_uso', 'game_libs') for e in ('c', 'cpp')
+                       for p in sorted(glob.glob(f'src/{d}/*.{e}'))]
+    objs = [(m['name'], m['claim'][1]) for m in scan_macros()
+            if not m['local'] and m['claim'] and m['claim'][0] == 'sym' and m.get('plain')
+            and not m['params']]
+    # (owner, desc) -> list of (cmd, nsites, funcs)
+    rows = collections.defaultdict(list)
+    for path in srcs:
+        src = open(path, errors='replace').read()
+        groups = collections.defaultdict(lambda: collections.defaultdict(list))
+        bare = set()
+        for e in plan_spell_base(c, src):
+            groups[owner_of(path, e[3])][('spell-base',)].append(e[3])
+        for name, n in objs:
+            plain = {(e[0], e[1]) for e in plan_convert(c, n, src)}
+            for e in plan_convert(c, n, src, bare=True):
+                own = owner_of(path, e[2])
+                groups[own][('convert', name)].append(e[2])
+                if (e[0], e[1]) not in plain:
+                    bare.add((own, name))
+        for own, g in groups.items():
+            for key, fl in sorted(g.items()):
+                fs = sorted(set(fl))
+                if key[0] == 'spell-base':
+                    cmd = f'spell-base {path} --only {_only_re(fs)}'
+                else:
+                    cmd = f'convert {key[1]} {path} --only {_only_re(fs)}' + \
+                        (' --bare' if (own, key[1]) in bare else '')
+                rows[own].append((cmd, len(fl), fs))
+    out = ['PY=/home/danjs/code/decomp/.venv/bin/python   # run from the project root; then `check` and the gate', '']
+    order = []
+    for o, desc, _, _ in OWNERS:
+        if (o, desc) not in order:
+            order.append((o, desc))
+    tot = collections.Counter()
+    for key in order:
+        if key not in rows:
+            continue
+        merged = collections.OrderedDict()
+        for cmd, n, fs in rows[key]:
+            if cmd in merged:
+                merged[cmd] = (merged[cmd][0] + n, sorted(set(merged[cmd][1]) | set(fs)))
+            else:
+                merged[cmd] = (n, fs)
+        nsites = sum(v[0] for v in merged.values())
+        tot[key[0]] += nsites
+        out.append(f'### {key[0]}: {key[1]} ({nsites} sites, {len(merged)} commands)')
+        for cmd, (n, fs) in merged.items():
+            out.append(f'$PY scripts/uso-data-sites.py {cmd} --write   # {n} sites, {len(fs)} functions')
+        out.append('')
+    out.append('totals: ' + ', '.join(f'{o} {n}' for o, n in tot.items()) + f'; all {sum(tot.values())}')
+    text = '\n'.join(out) + '\n'
+    if a.owner_report == '-':
+        sys.stdout.write(text)
+    else:
+        open(a.owner_report, 'w').write(text)
+        print(f'owner report: {a.owner_report} ({sum(tot.values())} sites)')
+
+
 def cmd_spell_base(c, a):
     """Spell plain section-base sites with GL_DATA/GL_RODATA/GL_BSS(K), or with
     GL_DATA_STR/GL_RODATA_STR(K, "text") when K starts a string. Proof rule (as convert):
     every D_00000000-relocated LO16 of the function with that K names the same section-base
     Sym. The expansion is the old expression plus parentheses, so it is byte-safe when no
     neighbouring operator binds tighter than `+` (checked on both sides)."""
+    if a.owner_report:
+        return owner_report(c, a)
+    if not a.files:
+        sys.exit('spell-base: give FILE.. (or --owner-report)')
     excl = re.compile(a.exclude) if a.exclude else None
+    only = re.compile(a.only) if a.only else None
     total = collections.Counter()
     for path in a.files:
         src = open(path, errors='replace').read()
-        plain_char = char_decl_only(src)
-        edits = []
-        for f, b0, b1 in func_spans(src):
-            if excl and excl.search(f):
-                continue
-            ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
-            if not ss or any(x.placeholder is None for x in ss):
-                continue
-            byk = collections.defaultdict(set)
-            for x in ss:
-                if x.placeholder == 'D_00000000':
-                    byk[x.k].add((x.sym.is_base, x.sym.sect))
-            for mm in BASE_SITE_RE.finditer(src, b0, b1):
-                if not mm.group(1) and not plain_char:
-                    continue
-                k = int(mm.group(2), 0)
-                kinds = byk.get(k)
-                if not kinds or len(kinds) != 1:
-                    continue
-                isb, sect = next(iter(kinds))
-                if not isb or sect not in (6, 7, 8):
-                    continue
-                before = src[max(b0, mm.start() - 12):mm.start()]
-                if _BAD_BEFORE.search(before) or not _GOOD_BEFORE.search(before):
-                    continue
-                if _BAD_AFTER.match(src[mm.end():mm.end() + 3]):
-                    continue
-                t = rom_string(c, sect, k) if sect in (6, 7) else None
-                if t is not None:
-                    name = {6: 'GL_DATA_STR', 7: 'GL_RODATA_STR'}[sect]
-                    rep = f'{name}(0x{k:X}, {c_literal(t)})'
-                else:
-                    name = {6: 'GL_DATA', 7: 'GL_RODATA', 8: 'GL_BSS'}[sect]
-                    rep = f'{name}(0x{k:X})'
-                edits.append((mm.start(), mm.end(), rep, f, name))
+        edits = plan_spell_base(c, src, excl, only)
         if not edits:
             continue
         fs = sorted({e[3] for e in edits})
@@ -793,6 +910,19 @@ def cmd_spell_base(c, a):
 
 DIRECT_RE = re.compile(r'\b(GL_DATA|GL_RODATA|GL_BSS|GL_TEXT)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*\)'
                        r'|\b(GL_DATA_STR|GL_RODATA_STR)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*,\s*("(?:[^"\\]|\\.)*")\s*\)')
+
+
+# RoData constant pools (agent-a run 504): a header pool name `kRo_<Func>` (gl_data.h, defined as
+# GL_RODATA(first K), comment `RoData+0xLO..0xHI`) = every non-string RoData-base K that <Func> reads;
+# a per-site alias `kRo_<Func>_<K>` = one constant of it.
+RO_ALIAS_RE = re.compile(r'^kRo_(\w+)_([0-9A-F]{2,6})$')
+RO_POOL_RE = re.compile(r'RoData\+0x([0-9A-Fa-f]+)\.\.0x([0-9A-Fa-f]+)')
+
+
+def ro_pool_ks(c, func):
+    """The non-string RoData-base K values that `func` reads (its constant pool)."""
+    return sorted({s.k for s in c.by_func.get(func, []) if s.rtype == 2 and s.sym.is_base
+                   and s.sym.sect == 7 and rom_string(c, 7, s.k) is None})
 
 
 STR_ALIAS_RE = re.compile(r'^s(Str|Fmt|Tag)_(?:(\w*?)_)?([0-9A-F]{3,6})(?:_\d+)?$')
@@ -906,6 +1036,39 @@ def cmd_check(c, a):
         print(f'MISMATCH string alias {s.placeholder} in {s.func} T+0x{s.off:05X}: the reloc names '
               f'{c.obj_label(s.obj)} K=0x{s.k:X} ({t!r})')
     print(f'check: {str_ok} LO16 sites on sStr_/sFmt_/sTag_ string aliases verified, {str_bad} mismatches')
+    # RoData pools: header `kRo_<Func>` spans exactly <Func>'s RoData constants; per-site
+    # `kRo_<Func>_<K>` aliases are RoData-base sites with that K, inside <Func>.
+    pools = {}
+    for m in macros:
+        if m['local'] or not m['name'].startswith('kRo_') or m['params'] or not m['claim']:
+            continue
+        txt = open(m['path'], errors='replace').read().split('\n')[m['line'] - 1]
+        pm = RO_POOL_RE.search(txt)
+        f = m['name'][4:]
+        ks = ro_pool_ks(c, f)
+        lo_hi = (int(pm.group(1), 16), int(pm.group(2), 16)) if pm else None
+        if not pm or not ks or m['claim'] != ('base', 7, ks[0]) or lo_hi != (ks[0], ks[-1]):
+            str_bad += 1
+            print(f'MISMATCH RoData pool {m["name"]}: comment says {lo_hi}, {f} reads '
+                  f'{[hex(k) for k in ks]}')
+        pools[f] = lo_hi
+    ro_ok = 0
+    for s in c.sites:
+        if s.rtype != 2 or not s.placeholder:
+            continue
+        rm = RO_ALIAS_RE.match(s.placeholder)
+        if not rm:
+            continue
+        f, k = rm.group(1), int(rm.group(2), 16)
+        lo_hi = pools.get(f)
+        if s.sym.is_base and s.sym.sect == 7 and s.k == k and s.func == f and \
+                (lo_hi is None or lo_hi[0] <= k <= lo_hi[1]):
+            ro_ok += 1
+            continue
+        str_bad += 1
+        print(f'MISMATCH RoData alias {s.placeholder} in {s.func} T+0x{s.off:05X}: the reloc names '
+              f'{c.obj_label(s.obj)} K=0x{s.k:X}')
+    print(f'check: {len(pools)} RoData pools (kRo_<Func>), {ro_ok} LO16 sites on kRo_<Func>_<K> aliases verified')
     d_ok, d_bad = check_direct(c, bodies, a.verbose)
     print(f'check: {d_ok} direct GL_DATA/GL_RODATA/GL_BSS(_STR) uses verified, {d_bad} mismatches')
     nvia = sum(1 for m in claimed if m.get('via'))
@@ -979,11 +1142,16 @@ def main():
     p = sub.add_parser('check'); p.add_argument('-v', '--verbose', action='store_true')
     p = sub.add_parser('convert'); p.add_argument('name'); p.add_argument('files', nargs='+')
     p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
+    p.add_argument('--only', help='regex (full match) of the only function names to touch')
     p.add_argument('--bare', action='store_true',
                    help='also respell bare value uses (`D_00000000 = x`) when every K = 0 site names the Sym')
     p.add_argument('--write', action='store_true')
-    p = sub.add_parser('spell-base'); p.add_argument('files', nargs='+')
+    p = sub.add_parser('spell-base'); p.add_argument('files', nargs='*')
     p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
+    p.add_argument('--only', help='regex (full match) of the only function names to touch')
+    p.add_argument('--owner-report', metavar='OUT', nargs='?', const='-',
+                   help='write, per owner area, the exact spell-base / convert commands that respell '
+                        'every provable plain site (OUT, default stdout); FILE.. narrows the files')
     p.add_argument('-v', '--verbose', action='store_true')
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
