@@ -1221,11 +1221,11 @@ gl_func_00000000_5bccc342 = 0x00000000;  /* (float)->float USO text 0x85640 (sym
 gl_func_00000000_d4f8 = 0x00000000;  /* (float)->float sqrt for math_vec4Normalize */
 gl_func_00000000_e84c2 = 0x00000000;  /* (int,float,float) cb for hud_addCourseGadget */
 gl_func_00000000_e84c4 = 0x00000000;  /* (int,float,float,float,float) cb for hud_addCourseGadget */
-gl_func_00000000_54a = 0x00000000;  /* (int,int,int,int,float,int) cb for BaseLight_declParms */
+gl_func_00000000_54a = 0x00000000;  /* (int,int,int,int,float,int) cb for BaseLight_hostioParms */
 gl_func_00000000_5e190s = 0x00000000;  /* (float*)->float scale/det helper for math_mtx4Inverse */
 gl_func_00000000_f228 = 0x00000000;  /* (int,int,float,float,float) factory cb for gl_func_00033228 */
 gl_func_00000000_i3ff = 0x00000000;  /* (int,int,int,float,float) primary init cb for gl_func_00003B1C */
-D_54a_o0 = 0x00000000;  /* per-setting owner globals for BaseLight_declParms (distinct, defeat CSE) */
+D_54a_o0 = 0x00000000;  /* per-setting owner globals for BaseLight_hostioParms (distinct, defeat CSE) */
 D_54a_o1 = 0x00000000;
 D_54a_o2 = 0x00000000;
 D_54a_o3 = 0x00000000;
@@ -4060,7 +4060,7 @@ gl_func_00034458_4EB54 = 0x00000000;
 D_g_0004EB54 = 0x00000000;
 /* gl_func_0004F85C blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_4F85C = 0x00000000;
-/* BaseMat_declParms blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
+/* BaseMat_hostioParms blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_5185C = 0x00000000;
 /* gfx_initRDPState NCC donor: its 4 dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00034458_59E80 = 0x00000000;

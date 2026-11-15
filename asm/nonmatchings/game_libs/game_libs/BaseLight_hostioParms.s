@@ -1,6 +1,6 @@
-nonmatching BaseLight_declParms, 0xD8
+nonmatching BaseLight_hostioParms, 0xD8
 
-glabel BaseLight_declParms
+glabel BaseLight_hostioParms
     /* E39AEC 00054A14 27BDFFD8 */  .word 0x27BDFFD8
     /* E39AF0 00054A18 AFB00020 */  .word 0xAFB00020
     /* E39AF4 00054A1C 00808025 */  .word 0x00808025
@@ -55,4 +55,4 @@ glabel BaseLight_declParms
     /* E39BB8 00054AE0 27BD0028 */  .word 0x27BD0028
     /* E39BBC 00054AE4 03E00008 */  .word 0x03E00008
     /* E39BC0 00054AE8 00000000 */  .word 0x00000000
-endlabel BaseLight_declParms
+endlabel BaseLight_hostioParms

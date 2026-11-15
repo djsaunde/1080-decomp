@@ -1,6 +1,6 @@
-nonmatching BaseMat_declParms, 0x148
+nonmatching BaseMat_hostioParms, 0x148
 
-glabel BaseMat_declParms
+glabel BaseMat_hostioParms
     /* E36934 0005185C 27BDFFD8 */  .word 0x27BDFFD8
     /* E36938 00051860 AFA40028 */  .word 0xAFA40028
     /* E3693C 00051864 AFBF0014 */  .word 0xAFBF0014
@@ -83,4 +83,4 @@ glabel BaseMat_declParms
     /* E36A70 00051998 27BD0028 */  .word 0x27BD0028
     /* E36A74 0005199C 03E00008 */  .word 0x03E00008
     /* E36A78 000519A0 00000000 */  .word 0x00000000
-endlabel BaseMat_declParms
+endlabel BaseMat_hostioParms

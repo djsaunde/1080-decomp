@@ -1,6 +1,6 @@
-nonmatching Window_declParms, 0xF0
+nonmatching Window_hostioParms, 0xF0
 
-glabel Window_declParms
+glabel Window_hostioParms
     /* E31D8C 0004CCB4 27BDFFD8 */  .word 0x27BDFFD8
     /* E31D90 0004CCB8 AFA40028 */  .word 0xAFA40028
     /* E31D94 0004CCBC AFBF0014 */  .word 0xAFBF0014
@@ -61,4 +61,4 @@ glabel Window_declParms
     /* E31E70 0004CD98 27BD0028 */  .word 0x27BD0028
     /* E31E74 0004CD9C 03E00008 */  .word 0x03E00008
     /* E31E78 0004CDA0 00000000 */  .word 0x00000000
-endlabel Window_declParms
+endlabel Window_hostioParms

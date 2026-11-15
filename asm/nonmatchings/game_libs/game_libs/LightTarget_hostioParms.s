@@ -1,6 +1,6 @@
-nonmatching LightTarget_declParms, 0x98
+nonmatching LightTarget_hostioParms, 0x98
 
-glabel LightTarget_declParms
+glabel LightTarget_hostioParms
     /* E39D44 00054C6C 27BDFFE0 */  .word 0x27BDFFE0
     /* E39D48 00054C70 AFA40020 */  .word 0xAFA40020
     /* E39D4C 00054C74 AFBF001C */  .word 0xAFBF001C
@@ -39,4 +39,4 @@ glabel LightTarget_declParms
     /* E39DD0 00054CF8 27BD0020 */  .word 0x27BD0020
     /* E39DD4 00054CFC 03E00008 */  .word 0x03E00008
     /* E39DD8 00054D00 00000000 */  .word 0x00000000
-endlabel LightTarget_declParms
+endlabel LightTarget_hostioParms

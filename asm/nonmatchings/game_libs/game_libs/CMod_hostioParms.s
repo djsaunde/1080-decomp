@@ -1,6 +1,6 @@
-nonmatching gl_func_00054668, 0x54
+nonmatching CMod_hostioParms, 0x54
 
-glabel gl_func_00054668
+glabel CMod_hostioParms
     /* E39740 00054668 27BDFFE8 */  .word 0x27BDFFE8
     /* E39744 0005466C AFBF0014 */  .word 0xAFBF0014
     /* E39748 00054670 AFA40018 */  .word 0xAFA40018
@@ -22,4 +22,4 @@ glabel gl_func_00054668
     /* E39788 000546B0 27BD0018 */  .word 0x27BD0018
     /* E3978C 000546B4 03E00008 */  .word 0x03E00008
     /* E39790 000546B8 00000000 */  .word 0x00000000
-endlabel gl_func_00054668
+endlabel CMod_hostioParms

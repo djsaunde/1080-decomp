@@ -9684,8 +9684,8 @@ void gl_func_00041008(char *a0, char *a1) {
 }
 
 /* gl_func_000410AC: 12-insn 2-call wrapper. Mid-function aliases
- * gl_func_00054648 (= gl_func_000545BC + 0x8C) and gl_func_00054684
- * (= gl_func_00054668 + 0x1C) added to undefined_syms_auto.txt so the
+ * gl_func_00054648 (= CMod_ctor + 0x8C) and gl_func_00054684
+ * (= CMod_hostioParms + 0x1C) added to undefined_syms_auto.txt so the
  * byte-correct build links cleanly. Per memo
  * feedback_mid_function_jal_targets_block_byte_correct_link.md option 2. */
 extern int gl_func_00054648();
@@ -16043,10 +16043,10 @@ void gfx_pickNode(struct A4C928 *arg0, struct Arg4C928 *arg1)
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_pickNode);
 #endif
 
-/* Window_declParms — decoded 2026-05-19. MULTI-FUNCTION BUNDLE
+/* Window_hostioParms — decoded 2026-05-19. MULTI-FUNCTION BUNDLE
  * (declared 0x104 / 65 words). NAMED fn = constructor, insns 1..60
  * (prologue 27BDFFD8 frame 0x28, jr ra at insn 60):
- *   void Window_declParms(int a0) {
+ *   void Window_hostioParms(int a0) {
  *     cb_reg(&D_00000000, "str_0x20198", 0);
  *     o1 = cb_alloc(0xC);   if (!o1) goto end;
  *     o2 = cb_alloc(o1, 8); if (!o2) goto end;
@@ -16085,7 +16085,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_pickNode);
  * target's t8-before-t7 addiu order (as1 reorders within a line, kit LXXVIII). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void Window_declParms(int a0) {
+void Window_hostioParms(int a0) {
     volatile int pad0;
     int *o1;
     int *v1;
@@ -18606,7 +18606,7 @@ void game_libs_func_000517E4(int *a0) {
     *(float *)((char *)a0 + 0x10) = 1.0f;
 }
 
-// BaseMat_declParms — EXACT (unwrapped 2026-10-16; was OBJDIFF-100 since
+// BaseMat_hostioParms — EXACT (unwrapped 2026-10-16; was OBJDIFF-100 since
 // 2026-07-15 agent-f). The ROM's jal words are `jal 0`; dbg_printThreads is
 // defined in this directly linked unit, so the body calls it through the
 // blank alias gl_func_00034458_5185C (= 0 in undefined_syms_auto.txt).
@@ -18625,7 +18625,7 @@ void game_libs_func_000517E4(int *a0) {
 // Raw-.word USO. realjr=1, regjr=0 → ONE clean function. Frame 0x28,
 // saves ra only. 9 jal-0 = USO-relocated callbacks. Constructor /
 // cb-registration + init driver. Shape:
-//   void BaseMat_declParms(void *self) {
+//   void BaseMat_hostioParms(void *self) {
 //     // self spilled to sp+0x28
 //     cb_log(&D_base, "str_0x20EC8", 0);     // register named asset
 //     cb_init(self, 0);
@@ -18660,7 +18660,7 @@ extern int gl_func_00034458_5185C(); /* blank alias (= 0): ROM jal words are jal
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void BaseMat_declParms(char *arg0) {
+void BaseMat_hostioParms(char *arg0) {
     volatile int pad185C;
     s32 *o1;
     s32 *o2;
@@ -20033,13 +20033,13 @@ void gl_func_00054210(char *a0, float *a1, int a2) {
 void gl_func_00054264(char *arg0, f32 *arg1, f32 *arg2, s32 arg3) {
 }
 
-/* gl_func_000545BC: 43-insn alloc-init + conditional sub-alloc + 4-float-copy.
+/* CMod_ctor: 43-insn alloc-init + conditional sub-alloc + 4-float-copy.
  * Matched 2026-05-14 via goto-end unified-epilogue + symbol-ref-for-magic-const
  * (gl_ref_0002107C). The goto-end form lets IDO use the natural v0=a2 epilogue
  * compute (eliminating the explicit `return 0` plumbing), and the symbol ref
  * forces lui+addiu for the 0x2107C constant (literal int → lui+ori). */
 extern int gl_func_00000000();
-void *gl_func_000545BC(void *a0, float a1, float a2, float a3, float a4) {
+void *CMod_ctor(void *a0, float a1, float a2, float a3, float a4) {
     float *v1;
     if (a0 == 0) {
         a0 = (void*)gl_func_00000000(0x3C);
@@ -20061,7 +20061,7 @@ end:
 }
 
 extern int gl_func_00000000();
-void gl_func_00054668(int *a0_arg) {
+void CMod_hostioParms(int *a0_arg) {
     /* Pre-load to force read of a0->[0xC] BEFORE a0 gets lui-clobbered by
      * the first call's &D arg. Without this local, IDO -O2 spills+reloads
      * a0 via stack (+1 insn). */
@@ -20078,7 +20078,7 @@ int gl_func_000546BC(char *a0) {
 }
 
 /* gl_func_000546E8: 203-insn (0x32C) chained-constructor + setup.
- * 0xE0-byte stack frame, sibling of just-landed gl_func_00054668 family.
+ * 0xE0-byte stack frame, sibling of just-landed CMod_hostioParms family.
  * NOT yet NM-wrapped — needs full body decode before compilable C.
  *
  * Decoded entry (insns 1-27):
@@ -20352,8 +20352,8 @@ s32 *gl_func_000546E8(char *self, int arg1) {
     return (s32 *)self;
 }
 
-/* BaseLight_declParms: 54-insn (0xD8) settings-registration sequence,
- * sibling of gl_func_00054668 family. Calls gl_func_00000000 seven
+/* BaseLight_hostioParms: 54-insn (0xD8) settings-registration sequence,
+ * sibling of CMod_hostioParms family. Calls gl_func_00000000 seven
  * times to bind named settings to fields on s0 (= a0).
  *
  * Decoded structure (s0 = arg):
@@ -20402,7 +20402,7 @@ extern int gl_func_00000000();
  * emits `move a3,zero`. The "mode_flag int 0" reading was wrong. */
 extern void gl_func_00000000_54a(int, int, int, float, float, int);
 extern int D_00000000, D_54a_o0, D_54a_o1, D_54a_o2, D_54a_o3, D_54a_o4;
-void BaseLight_declParms(int *s0) {
+void BaseLight_hostioParms(int *s0) {
     gl_func_00000000((int)&D_54a_o0, (int)((char *)&D_00000000 + 0x21090), 0);
     gl_func_00000000_54a((int)&D_54a_o1, (int)((char *)&D_00000000 + 0x2109C), (int)((char *)s0 + 0xC8), 0.0f, 8000.0f, 1);
     gl_func_00000000_54a((int)&D_54a_o2, (int)((char *)&D_00000000 + 0x210A4), (int)((char *)s0 + 0xCC), 0.0f, 1000.0f, 1);
@@ -20476,8 +20476,8 @@ void gl_func_00054C24(char *a0, char *a1) {
     }
 }
 
-/* LightTarget_declParms — 38/38 EXACT MATCH (VERIFIED vs
- * asm/nonmatchings/game_libs/game_libs/LightTarget_declParms.s, 0 diffs).
+/* LightTarget_hostioParms — 38/38 EXACT MATCH (VERIFIED vs
+ * asm/nonmatchings/game_libs/game_libs/LightTarget_hostioParms.s, 0 diffs).
  *
  * CRACKED the last word (was 37/38). The documented residual — func3's a3=0
  * emitting `move a3,zero` (build) vs target `addiu a3,zero,0` (`li a3,0`) —
@@ -20492,7 +20492,7 @@ void gl_func_00054C24(char *a0, char *a1) {
  * because gl_func_00000000f already has an int-4th-arg proto elsewhere in the
  * TU (redeclaration conflict otherwise). Byte-exact on the isolated .o gate;
  * not landable via make verify (placeholder/USO jals), so stays NM. */
-void LightTarget_declParms(int *self) {
+void LightTarget_hostioParms(int *self) {
     extern int D_00000000;
     extern int D_strA, D_strB, D_strC, D_strD;
     extern int gl_func_00000000ff(void *, void *, void *, float, float, int);

@@ -1,6 +1,6 @@
-nonmatching gl_func_000545BC, 0xAC
+nonmatching CMod_ctor, 0xAC
 
-glabel gl_func_000545BC
+glabel CMod_ctor
     /* E39694 000545BC 27BDFFE8 */  .word 0x27BDFFE8
     /* E39698 000545C0 AFA60020 */  .word 0xAFA60020
     /* E3969C 000545C4 00803025 */  .word 0x00803025
@@ -44,4 +44,4 @@ glabel gl_func_000545BC
     /* E39734 0005465C 00C01025 */  .word 0x00C01025
     /* E39738 00054660 03E00008 */  .word 0x03E00008
     /* E3973C 00054664 00000000 */  .word 0x00000000
-endlabel gl_func_000545BC
+endlabel CMod_ctor
