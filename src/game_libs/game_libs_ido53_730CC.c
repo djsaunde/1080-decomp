@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_000730CC = libultra osEPiRawReadIo
+/* IDO 5.3 -O1 donor for gl_osEPiRawReadIo = libultra osEPiRawReadIo
  * (epirawread.c verbatim, EPI_SYNC/UPDATE_REG macros from piint.h).
  * PROVEN EXACT 101/101 standalone at IDO 5.3 -O1. Absorbs the 2-word
  * orphan game_libs_func_000730C4 (lui/lw PI_STATUS_REG = the hoisted
@@ -58,7 +58,7 @@ extern OSPiHandle *D_00000000_pihandles[]; /* __osCurrentHandle */
         D_00000000_pihandles[domain] = pihandle;            \
     }
 
-s32 gl_func_000730CC(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
+s32 gl_osEPiRawReadIo(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
     register u32 stat;
     register u32 domain;
 

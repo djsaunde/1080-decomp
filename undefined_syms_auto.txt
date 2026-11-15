@@ -3127,7 +3127,7 @@ gl_func_00000000_erio = 0x00000000;  /* osEPiRawReadIo (blank jal) */
 gl_func_00000000_rgim = 0x00000000;  /* __rmonWriteWordTo (blank jal) */
 gl_func_00000000_sgim = 0x00000000;  /* __osSetGlobalIntMask (blank jal) */
 gl_func_00000000_yield = 0x00000000;  /* osYieldThread (blank jal) */
-gl_func_0006DD14_rodata = 0x000023B0;  /* switch(hdr.type) jumptable: USO ships it in its data segment at +0x23B0; donor-local .rodata reloc renamed by replace-function-body.py (table content already in ROM data) */
+gl___osDevMgrMain_rodata = 0x000023B0;  /* switch(hdr.type) jumptable: USO ships it in its data segment at +0x23B0; donor-local .rodata reloc renamed by replace-function-body.py (table content already in ROM data) */
 /* gl_func_00037540 NCC donor: its .rodata literals 0.06f / 0.65f / 0.9f (renamed by the splice) -> the USO RoData words at +0x19F8 / +0x19FC / +0x1A00 */
 gl_func_00037540_rodata = 0x000019F8;
 /* 6F8A4 = osEPiRawStartDma donor (2026-07-30), IDO 5.3 -O1. */
@@ -3426,7 +3426,7 @@ gl_exc_enqueuethread = 0x00000000;  /* __osEnqueueThread (game_libs exceptasm.s,
 gl_exc_dispatchthread = 0x00000000;  /* __osDispatchThread (game_libs exceptasm.s, blank j) */
 gl_exc_destroythread = 0x00000000;  /* osDestroyThread (game_libs dispatchthread.s, blank jal) */
 gl_ref_0007FE04 = 0x0007FE04;  /* __osLeoAbnormalResume: baked jal 0x7FE04 (0x0C01FF81), sibling of gl_ref_0007FEEC */
-gl_func_00000000_edma = 0x00000000;  /* osEPiRawStartDma = gl_func_0006F8A4 (blank in-segment jal) */
+gl_func_00000000_edma = 0x00000000;  /* osEPiRawStartDma = gl_osEPiRawStartDma (blank in-segment jal) */
 D_0001B710 = 0x0001B710;
 D_0001B710_w1 = 0x0001B710;
 D_0001B710_w0 = 0x0001B710;

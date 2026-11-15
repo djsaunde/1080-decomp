@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006C2AC = libultra osDriveRomInit
+/* IDO 5.3 -O1 donor for gl_osDriveRomInit = libultra osDriveRomInit
  * (driverominit.c verbatim). PROVEN EXACT 54/54 standalone at IDO 5.3 -O1
  * against the concatenated 0x6C2A4..0x6C37C stream.
  * BOUNDARY FIX: splat's game_libs_func_0006C2A4 (0x8, "lui t6/lw t6, no
@@ -6,7 +6,7 @@
  * baseAddress gate load (lw DriveRomHandle.baseAddress) before the
  * addiu-sp prologue, and splat split the function at the prologue
  * (0x6C2AC). True entry = 0x6C2A4; the spliced symbol covers
- * 0x6C2A4..0x6C37C (0xD8). Same class as gl_func_0006F088 osLeoDiskInit.
+ * 0x6C2A4..0x6C37C (0xD8). Same class as gl_osLeoDiskInit osLeoDiskInit.
  * The old "caller-set $t6 == 0xA6000000 gate cap" reading was wrong: $t6
  * is DriveRomHandle.baseAddress loaded by the stolen prologue
  * (0xA6000000 = PHYS_TO_K1(PI_DOM1_ADDR1), the 64DD drive-ROM base).
@@ -53,7 +53,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
  * as the 6F088 osLeoDiskInit donor. */
 PgsRls D_00000006_drvpgs = {0};
 
-OSPiHandle *gl_func_0006C2AC(void) {
+OSPiHandle *gl_osDriveRomInit(void) {
     u32 saveMask;
 
     if (D_00000000_drvrom.baseAddress == 0xA6000000) { /* PHYS_TO_K1(PI_DOM1_ADDR1) */

@@ -5,7 +5,7 @@
  * jr ra; or v0,t7,zero`) — the exact pair the 2026-06-10 7.1 shape sweep
  * (6 forms x O1/O2/g/g3) proved 7.1 never emits. True entry = 0x73314;
  * the .s's leading word (0x73310) is the previous fn's alignment pad nop
- * -> SUFFIX_BYTES_FORCE on gl_func_000732C4.
+ * -> SUFFIX_BYTES_FORCE on gl_osYieldThread.
  * Spliced into game_libs_post2b_c.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned int u32;
 

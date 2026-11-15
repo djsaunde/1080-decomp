@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006F3E4 = libultra osJamMesg
+/* IDO -O1 donor for gl_osJamMesg = libultra osJamMesg
  * (references/libreultra/src/os/jammesg.c, verbatim: disable ints;
  * while (validCount >= msgCount) either set running thread
  * OS_STATE_WAITING(8) + __osEnqueueAndYield(&mq->fullqueue) when
@@ -44,7 +44,7 @@ extern OSThread *gl_func_00000000_popthr(OSThread **); /* __osPopThread */
 extern void gl_func_00000000_startthr(OSThread *);     /* osStartThread */
 extern OSThread *D_00000000_runthread;                 /* __osRunningThread */
 
-s32 gl_func_0006F3E4(OSMesgQueue *mq, OSMesg msg, s32 flag)
+s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
 {
     register u32 saveMask = gl_func_00000000_disint();
 

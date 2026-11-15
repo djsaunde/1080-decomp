@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006CC14 = libultra osEPiLinkHandle
+/* IDO -O1 donor for gl_osEPiLinkHandle = libultra osEPiLinkHandle
  * (references/libreultra/src/io/epilinkhandle.c, verbatim). PROVEN EXACT
  * 19/19 (incl. the jr-ra delay nop) standalone at BOTH IDO 7.1 -O1 and
  * 5.3 -O1 (identical output; built with 7.1), agent-g 2026-09-09. Section
@@ -10,7 +10,7 @@
  * gl_func_0006CC14_pad.s carried the delay nop + the 16-byte inter-object
  * pad word before osEPiReadIo (6CC64 section 0x812D0); the C body emits
  * its own delay nop, so the pad.s pragma is retired and the single pad
- * word is an all-zero SUFFIX_BYTES_FORCE gl_func_0006CC14=0x00000000.
+ * word is an all-zero SUFFIX_BYTES_FORCE gl_osEPiLinkHandle=0x00000000.
  * Baseline repair 2026-09-09: the .s now includes both original zero
  * words (delay slot and alignment) through 6CC60, size 0x50. The old
  * truncated ASM was rejected by the suffix epilogue check; the recipe
@@ -43,7 +43,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 
-s32 gl_func_0006CC14(OSPiHandle *handle)
+s32 gl_osEPiLinkHandle(OSPiHandle *handle)
 {
     u32 saveMask;
     saveMask = __osDisableInt();

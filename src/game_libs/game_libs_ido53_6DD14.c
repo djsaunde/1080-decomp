@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006DD14 = libultra __osDevMgrMain
+/* IDO 5.3 -O1 donor for gl___osDevMgrMain = libultra __osDevMgrMain
  * (devmgr.c verbatim, 2.0I struct layout). The PI device-manager thread
  * loop: recv on dm->cmdQueue; 64DD LEO block/track transfers get the
  * special path (sectorNum=-1, dramAddr rewind for non-sector mode,
@@ -84,7 +84,7 @@ extern void gl_func_00000000_rgim(u32);                    /* __rmonWriteWordTo 
 extern void gl_func_00000000_sgim(u32);                    /* __osSetGlobalIntMask */
 extern void gl_func_00000000_yield(void);                  /* osYieldThread */
 
-void gl_func_0006DD14(void *args)
+void gl___osDevMgrMain(void *args)
 {
     OSIoMesg *mb;
     OSMesg em;

@@ -7397,7 +7397,7 @@ void AudioThread_QueueCmdU16(int a0, short a1) {
  * Enqueue-commit helper: track the high-water pending count, submit
  * (committed << 8 | cur) with the queue object at +0x53CC, and on success
  * (!= -1) promote cur into committed. Callee = blank jal (sym1333 = text
- * 0x7E470 = gl_func_00069E04). */
+ * 0x7E470 = gl_osSendMesg). */
 extern int gl_func_00000000();
 extern int D_00000000;
 extern int D_00000000_345c0;

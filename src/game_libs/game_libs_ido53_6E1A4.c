@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_func_0006E1A4 = libultra osSetEventMesg (sched/seteventmesg.c) variant,
+/* gl_osSetEventMesg = libultra osSetEventMesg (sched/seteventmesg.c) variant,
  * statically linked into the game_libs USO. Byte-exact masked-twin of matched
  * kernel osSetEventMesg (kernel_003): disable-int, write queue+msg into the
  * event-state table entry, restore-int. IDO 5.3 -O1, spliced into
@@ -12,7 +12,7 @@ extern int gl_func_00000000();
 typedef struct { int queue; int msg; } EventState_0006E1A4;
 extern EventState_0006E1A4 D_00000000[];
 
-void gl_func_0006E1A4(int event, void *queue, int msg) {
+void gl_osSetEventMesg(int event, void *queue, int msg) {
     register int sr = gl_func_00000000();
     EventState_0006E1A4 *es = &D_00000000[event];
     es->queue = (int)queue;

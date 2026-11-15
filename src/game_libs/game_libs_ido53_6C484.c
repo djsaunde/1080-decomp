@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 -mips2 donor for gl_func_0006C484 = libultra osInitialize
+/* IDO 5.3 -O1 -mips2 donor for gl_osInitialize = libultra osInitialize
  * (references/libreultra/src/os/initialize.c, verbatim). PROVEN EXACT
  * 163/163 words at 5.3 -O1 FIRST COMPILE (agent-g 2026-09-09); 7.1 -O1 is
  * 161 words (it schedules the `ori a1,8` into the __osSiRawWriteIo delay
@@ -16,7 +16,7 @@
  * __osFinalrom defined (bss). Everything else is a blank import (pins = 0).
  * Section offset 0x80AF0 = export sym 2445. Spliced over the placeholder in
  * game_libs_post1b2c.c via REPLACE_FUNC_BODY; the zero word at 0x6C710 is
- * this object's inter-object pad (SUFFIX_BYTES_FORCE gl_func_0006C484,
+ * this object's inter-object pad (SUFFIX_BYTES_FORCE gl_osInitialize,
  * already present). */
 
 typedef unsigned int u32;
@@ -84,7 +84,7 @@ extern void gl_func_00000000_bzero(void *, s32);      /* bzero (existing pin) */
 #define VI_PAL_CLOCK 49656530
 #define VI_MPAL_CLOCK 48628316
 
-void gl_func_0006C484(void)
+void gl_osInitialize(void)
 {
    u32 pifdata;
    u32 clock = 0;

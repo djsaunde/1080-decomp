@@ -12,7 +12,7 @@ typedef struct { int a, b; } Pair2;
 typedef struct { float x, y, z; } Vec3;
 
 
-/* gl_func_0006BE14: stores 1 to D_00000000, then gl_func(<sym_b>, &D+0x42800, 1)
+/* gl___osSiCreateAccessQueue: stores 1 to D_00000000, then gl_func(<sym_b>, &D+0x42800, 1)
  * and gl_func(<sym_c>, 0, 0). MATCH: the 0x42800 arg is a SYMBOL reference
  * (&D_00000000 + 0x42800 -> lui 0x4; addiu 0x2800), not a literal (which gives
  * lui; ori). Decode the symbol, don't literal-match
@@ -20,15 +20,15 @@ typedef struct { float x, y, z; } Vec3;
  * 0x50 (the .s's 0x58 over-extends 2 insns into successor 0006BE64). Byte-exact. */
 extern char gl_data_BE14_b;
 extern char gl_data_BE14_c;
-void gl_func_0006BE14(void) {
+void gl___osSiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
     gl_func_00000000(&gl_data_BE14_b, (char*)&D_00000000 + 0x42800, 1);
     gl_func_00000000(&gl_data_BE14_c, 0, 0);
 }
 /* game_libs_func_0006BE64 (2-word splat mis-split: lui t6,0; lw t6,0(t6)) was
- * the stolen prologue of gl_func_0006BE6C — forward-merged into it (orphan-fn
- * removed). gl_func_0006BE6C MATCHED. */
-void gl_func_0006BE6C(void) {
+ * the stolen prologue of gl___osSiGetAccess — forward-merged into it (orphan-fn
+ * removed). gl___osSiGetAccess MATCHED. */
+void gl___osSiGetAccess(void) {
     int local;
     int pad;
     if (*(int*)&D_00000000 == 0) {
@@ -37,7 +37,7 @@ void gl_func_0006BE6C(void) {
     gl_func_00000000(&D_00000000, &local, 1);
 }
 
-void gl_func_0006BEA8(void) {
+void gl___osSiRelAccess(void) {
     gl_func_00000000(&D_00000000, 0, 0);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006BEA8_pad.s")
@@ -119,7 +119,7 @@ void gl_func_0006C1B8(void) {
 
 
 /* game_libs_func_0006C2A4 (0x8 orphan) was the HOISTED HEAD of
- * gl_func_0006C2AC = osDriveRomInit — absorbed into the donor splice
+ * gl_osDriveRomInit = osDriveRomInit — absorbed into the donor splice
  * below (true entry 0x6C2A4, spliced symbol covers 0x6C2A4..0x6C37C). */
 
 #if 0
@@ -127,7 +127,7 @@ void gl_func_0006C1B8(void) {
  * wrong — $t6 is DriveRomHandle.baseAddress loaded by the stolen prologue
  * at 0x6C2A4. Real identity: libultra osDriveRomInit. See the donor unit
  * game_libs_ido53_6C2A4.c. */
-/* gl_func_0006C2AC: 52-insn caller-set-$t6 gate + multi-byte/word global init (0xD0, frame 0x20).
+/* gl_osDriveRomInit: 52-insn caller-set-$t6 gate + multi-byte/word global init (0xD0, frame 0x20).
  *
  * Decoded structure (raw-word disasm):
  *   if (caller_t6 != 0xA6000000) {                   // caller-set-$t6 gate (cap class)
@@ -154,7 +154,7 @@ void gl_func_0006C1B8(void) {
  * The 0xA6000000 constant is unusual — not a standard N64 hardware base
  * (0xA460/0xA480/0xA404 etc.) — may be a custom MMIO or debug region.
  *
- * Sibling of gl_func_0006F088 (PI DOM2 hardware init); both are libultra-
+ * Sibling of gl_osLeoDiskInit (PI DOM2 hardware init); both are libultra-
  * style boot-time hardware register setup.
  *
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
@@ -164,7 +164,7 @@ void gl_func_0006C1B8(void) {
  * return D_result. Else init a D-state block (bytes at +4=1,+5=64,+6=7,+7=2,
  * +8=7,+9=0; words at +0xC=0xA6000000,+0x10=0), call gl(st+0x14, 0x60) + gl(),
  * then a tail (copy a D word, store a D ptr, gl(saved)) and return D_result. */
-int gl_func_0006C2AC(void) {
+int gl_osDriveRomInit(void) {
     extern int t6_caller_state_0006C2AC;
     extern int D_result_sym_0006C2AC;
     extern char D_state_0006C2AC;
@@ -191,7 +191,7 @@ int gl_func_0006C2AC(void) {
 }
 #endif
 
-/* gl_func_0006C2AC = libultra osDriveRomInit (driverominit.c verbatim):
+/* gl_osDriveRomInit = libultra osDriveRomInit (driverominit.c verbatim):
  * gate on DriveRomHandle.baseAddress == PHYS_TO_K1(PI_DOM1_ADDR1)
  * (0xA6000000), else init the 64DD drive-ROM PI handle (type=BULK,
  * latency=64, pulse=7, pageSize=7, relDuration=2, domain=PI_DOMAIN1),
@@ -201,7 +201,7 @@ int gl_func_0006C2AC(void) {
  * donor unit game_libs_ido53_6C2A4.c (54/54 exact incl. the absorbed
  * 0x8 head game_libs_func_0006C2A4). Body below is a placeholder for
  * the REPLACE_FUNC_BODY splice (its bytes are replaced by the donor). */
-void *gl_func_0006C2AC(void) {
+void *gl_osDriveRomInit(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 0;

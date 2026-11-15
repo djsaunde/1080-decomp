@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006F8A4 = libultra osEPiRawStartDma
+/* IDO 5.3 -O1 donor for gl_osEPiRawStartDma = libultra osEPiRawStartDma
  * (io/epirawdma.c verbatim, 2.0I): EPI_SYNC (WAIT_ON_IOBUSY spin on
  * PI_STATUS_REG, then domain-latch — if __osCurrentHandle[domain] !=
  * pihandle, UPDATE_REG the four BSD DOM1/DOM2 latency/pageSize/
@@ -36,7 +36,7 @@ extern u32 gl_func_00000000_vtop(void *);      /* osVirtualToPhysical */
 #define IO_READ(a) (*(volatile u32 *)(a))
 #define IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
-s32 gl_func_0006F8A4(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *dramAddr, u32 size)
+s32 gl_osEPiRawStartDma(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *dramAddr, u32 size)
 {
     u32 stat;
     u32 domain;

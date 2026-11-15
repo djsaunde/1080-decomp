@@ -1,6 +1,6 @@
 /* -O1 donor for osCreatePiManager — 115-insn kernel osCreatePiManager (KMC
  * kernel variant of libultra pimgr.c; sibling of the game_libs crack
- * gl_func_0006DA74, see docs/IDO_CODEGEN "TU-DEFINED global = shared-lui
+ * gl_osCreatePiManager, see docs/IDO_CODEGEN "TU-DEFINED global = shared-lui
  * $at store cluster"). PROVEN EXACT 115/115 (2026-07-10 standalone probe vs
  * asm/nonmatchings/kernel/osCreatePiManager.s; identical at IDO 5.3 AND 7.1
  * -O1 — built here with the default 7.1 at -O1).

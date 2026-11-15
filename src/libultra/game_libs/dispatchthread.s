@@ -2,7 +2,7 @@
 # handwritten assembly (os/exceptasm.s; release libultra form).
 # Reference: references/libreultra/src/os/exceptasm.s; kernel copy at the end
 # of src/libultra/os/exceptasm.s. Follows __osPopThread (popthread.s).
-# The compiled-C __osDequeueThread that follows is gl_func_0006AF0C (C, -O1
+# The compiled-C __osDequeueThread that follows is gl___osDequeueThread (C, -O1
 # donor game_libs_o1_6AF0C.c); its first two instructions used to be counted
 # in this symbol (boundary fixed 2026-10-24, agent-g run 158).
 # USO load-time relocations go through symbols pinned to 0 (see exceptasm.s):

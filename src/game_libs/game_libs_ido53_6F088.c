@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006F088 = libultra osLeoDiskInit
+/* IDO 5.3 -O1 donor for gl_osLeoDiskInit = libultra osLeoDiskInit
  * (leodiskinit.c verbatim). PROVEN EXACT 64/64 standalone at IDO 5.3 -O1
  * against the concatenated 0x6F044..0x6F140 stream.
  * BOUNDARY FIX: splat's game_libs_func_0006F038 (0x50, "descriptor
@@ -8,7 +8,7 @@
  * splat split the function at the prologue (0x6F088). True entry =
  * 0x6F044; the spliced symbol covers 0x6F044..0x6F140. The three leading
  * pad nops 0x6F038/3C/40 are emitted as SUFFIX_BYTES_FORCE on
- * gl_func_0006EF64 (natural jr-ra epilogue -> FORCE).
+ * gl_osEPiStartDma (natural jr-ra epilogue -> FORCE).
  * 5.3 NOTE: IO_WRITE(PI_BSD_DOM2_LAT_REG, latency) constant-folds to
  * li 3 (the latency=3 store is still emitted at +5), while the PWD/PGS/
  * RLS writes reload their bytes (lbu +8/+6/+7) — exactly the target's
@@ -60,7 +60,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
  * words. Same lever as osCartRomInit (kernel_008_o1_58C0). */
 PgsRls D_00000006_leopgs = {0};
 
-OSPiHandle *gl_func_0006F088(void) {
+OSPiHandle *gl_osLeoDiskInit(void) {
     u32 saveMask;
 
     D_00000000_leodisk.type = 2;                 /* DEVICE_TYPE_64DD */

@@ -5389,7 +5389,7 @@ float game_libs_func_00069CC4(float x) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00069CD0_pad.s")
 
-/* gl_func_00069E04 = libultra osSendMesg. LANDED 2026-06-21 as a byte-identical
+/* gl_osSendMesg = libultra osSendMesg. LANDED 2026-06-21 as a byte-identical
  * TWIN-PORT of matched kernel osSendMesg (kernel_009): block while the queue
  * is full (or fail if non-blocking), append msg to the ring buffer, then if a
  * thread waits on mtqueue, wake it. Real C lives in the donor unit
@@ -5399,7 +5399,7 @@ typedef struct {
     void *mtqueue; void *fullqueue; int validCount; int first; int msgCount; int **msg;
 } OSMesgQueue_69E04;
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69E04;
-int gl_func_00069E04(OSMesgQueue_69E04 *mq, int msg, int flags) {
+int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
     register int saveMask = gl_func_00000000();
     register int last;
     while (mq->validCount >= mq->msgCount) {
@@ -5432,19 +5432,19 @@ int gl_func_00069E04(OSMesgQueue_69E04 *mq, int msg, int flags) {
  * the export (sym 1548, two R_MIPS_26 refs); 0x7E5BC (the leading zero)
  * and 0x7E5CC (the trailing zero) are not. Both zeros are 16-byte
  * inter-object pads of the separately compiled libultra .o run: the
- * leading one closes osSendMesg (gl_func_00069E04, 0x14C), the trailing
- * one closes this 0xC object before gl_func_00069F64 at 0x7E5D0. Restored
- * as all-zero SUFFIX_BYTES_FORCE on gl_func_00069E04 and on this symbol
+ * leading one closes osSendMesg (gl_osSendMesg, 0x14C), the trailing
+ * one closes this 0xC object before gl_osRecvMesg at 0x7E5D0. Restored
+ * as all-zero SUFFIX_BYTES_FORCE on gl_osSendMesg and on this symbol
  * (post1b Makefile rule); no GLOBAL_ASM sidecar (a 1-word block emits 8
  * bytes and shifts the unit +4). 3/3 words at 7.1 -O2. */
 unsigned int gl_osViGetCurrentLine(void) {
     return *(volatile unsigned int *)0xA4400010;
 }
 
-/* gl_func_00069F64 = libultra osRecvMesg (os/recvmesg.c verbatim). EXACT
+/* gl_osRecvMesg = libultra osRecvMesg (os/recvmesg.c verbatim). EXACT
  * 2026-10-14 as a 78/78-word IDO 5.3 -O1 donor (game_libs_ido53_69F64.c),
  * spliced via REPLACE_FUNC_BODY exactly like its neighbour osSendMesg
- * (gl_func_00069E04). The old 61.7% NM wrap was an m2c -O2 transcription
+ * (gl_osSendMesg). The old 61.7% NM wrap was an m2c -O2 transcription
  * of the same logic; the 5.3 -O1 frame (args homed, saveMask in s0, every
  * mq field reloaded from 0x28(sp)) is the libultra signature. OS-API
  * callees -> gl_func_00000000; __osRunningThread -> D_00000000. */
@@ -5452,7 +5452,7 @@ typedef struct {
     void *mtqueue; void *fullqueue; int validCount; int first; int msgCount; int **msg;
 } OSMesgQueue_69F64;
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69F64;
-int gl_func_00069F64(OSMesgQueue_69F64 *mq, int **msg, int flags) {
+int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     register int saveMask = gl_func_00000000();
 
     while (mq->validCount == 0) {
@@ -5678,7 +5678,7 @@ GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
  *   These last 3 diffs are IDO -O2 scheduler/encoder cascades from the
  *   bnel optimization; no obvious C lever. Would need INSN_PATCH for
  *   final 5-insn promotion. */
-/* gl_func_0006AF0C = libultra __osDequeueThread (os/thread.c), compiled C at
+/* gl___osDequeueThread = libultra __osDequeueThread (os/thread.c), compiled C at
  * -O1. BOUNDARY FIX 2026-10-24 (agent-g run 158): the function really starts
  * 8 bytes earlier -- its first two instructions (move a2,a0; lw a3,0(a2))
  * were the tail of the handwritten gl___osDispatchThread -- so the old
@@ -5688,7 +5688,7 @@ GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
  * is spliced over this -O2 stand-in body (post1b builds -O2). */
 typedef struct GlDqThread_s { struct GlDqThread_s *next; } GlDqThread;
 
-void gl_func_0006AF0C(GlDqThread **queue, GlDqThread *t) {
+void gl___osDequeueThread(GlDqThread **queue, GlDqThread *t) {
     register GlDqThread *pred;
     register GlDqThread *succ;
 
@@ -5802,7 +5802,7 @@ void gl_func_0006AF44(int *target) {
  *     }
  *
  * TRAILING FRAGMENT (0x6B0F0, was 3 insns): RESOLVED 2026-07-30. The lui/lw
- *   $t6 pair was gl_func_0006B0FC's stolen __osDiskHandle prologue (absorbed
+ *   $t6 pair was gl___osLeoInterrupt's stolen __osDiskHandle prologue (absorbed
  *   into its .s; see __osLeoInterrupt below); the leading alignment nop is
  *   folded into this bzero .s tail (0xA8->0xAC) -- a lone 1-word pad
  *   INCLUDE_ASM emits 2 words (assembler min-size), shifting layout +4.
@@ -5836,7 +5836,7 @@ GLOBAL_ASM("src/libultra/game_libs/bzero.s")
 
 
 
-/* gl_func_0006B0FC = libultra __osLeoInterrupt (io/leointerrupt.c verbatim,
+/* gl___osLeoInterrupt = libultra __osLeoInterrupt (io/leointerrupt.c verbatim,
  * 2.0-era layout): the 64DD LEO cart-interrupt service routine. The prior
  * "caller-set $t6 structural cap" was a stolen-prologue misread (same as
  * 6B7A0): the 2-word orphan at 0x6B0F4 is this function's __osDiskHandle
@@ -5847,13 +5847,13 @@ GLOBAL_ASM("src/libultra/game_libs/bzero.s")
  * LEO_ERROR_22; cmdType1 write-chain / cmdType0 read path with C1 error
  * bookkeeping, C2 transfer (LEO_C2_BUFF, sectorSize*4), track-mode block
  * flip, C2-buffer zero check. jal 0x7FEEC = __osLeoResume, jal 0x7FE04 =
- * __osLeoAbnormalResume, blank jal = osEPiRawStartDma (gl_func_0006F8A4).
+ * __osLeoAbnormalResume, blank jal = osEPiRawStartDma (gl_osEPiRawStartDma).
  * Needs IDO 5.3 -O1 (stack-resident locals incl. volatile pi_stat, ra-only
  * frame 0x40); real C lives in the donor unit game_libs_ido53_6B0FC.c
  * (425/425 words compile-exact incl. the absorbed prologue), spliced via
  * REPLACE_FUNC_BODY. Body below is a placeholder for the splice (its bytes
  * are replaced by the donor). */
-s32 gl_func_0006B0FC(void) {
+s32 gl___osLeoInterrupt(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 1;
@@ -5927,11 +5927,11 @@ int gl_func_0006B974(int a0, int a1) {
     return r;
 }
 
-/* gl_func_0006B9B4: byte-identical twin of matched gl_func_0006BE14 (differs
+/* gl_func_0006B9B4: byte-identical twin of matched gl___osSiCreateAccessQueue (differs
  * only in the arg2 offset, 0x42750 vs 0x42800). Same crack: the 0x42750 arg is
  * a SYMBOL reference (&D_00000000 + 0x42750 -> lui 0x4; addiu 0x2750), not a
  * literal (which gives lui; ori). arg1 bases are distinct externs (gl_data_B9B4
- * _b/_c), mirroring gl_func_0006BE14's gl_data_BE14_b/_c. */
+ * _b/_c), mirroring gl___osSiCreateAccessQueue's gl_data_BE14_b/_c. */
 extern char gl_data_B9B4_b;
 extern char gl_data_B9B4_c;
 void gl_func_0006B9B4(void) {

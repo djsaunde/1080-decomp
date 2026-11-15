@@ -4,7 +4,7 @@ typedef struct { int a, b, c, d; } Quad4;
 typedef struct { float x, y, z; } Vec3;
 
 
-/* gl_func_00074C04 = libultra osStartThread. LANDED 2026-06-21 as a byte-identical
+/* gl_osStartThread = libultra osStartThread. LANDED 2026-06-21 as a byte-identical
  * TWIN-PORT of matched kernel osStartThread (kernel_037): move the thread to
  * RUNNABLE and (re)enqueue it per its current state, then preempt if it now
  * outranks the running thread. The 2026-06-10 cap analysis (44/84, frame/reload
@@ -16,7 +16,7 @@ typedef struct { float x, y, z; } Vec3;
 extern int gl_func_00000000();
 extern int gl_data_00000000;
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_74C04;
-void gl_func_00074C04(Thread_74C04 *t) {
+void gl_osStartThread(Thread_74C04 *t) {
     register int saveMask = gl_func_00000000();
     switch (t->state) {
     case 8:

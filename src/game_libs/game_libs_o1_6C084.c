@@ -7,12 +7,12 @@
  * source order emits every instruction exactly; no byte patch or padding.
  *
  * Verified bootup.uso relocations (all blank operands resolve to zero):
- * sym2569 Text 0x804D0 = __osSiGetAccess (gl_func_0006BE6C);
+ * sym2569 Text 0x804D0 = __osSiGetAccess (gl___osSiGetAccess);
  * sym2556 BSS 0x427B0 = __osContLastCmd;
  * sym2555 BSS 0x42770 = __osContPifRam (both DMA directions);
  * sym2564 Text 0x81140 = __osSiRawStartDma;
  * sym1341 Text 0x7E5D0 = osRecvMesg;
- * sym2570 Text 0x80514 = __osSiRelAccess (gl_func_0006BEA8).
+ * sym2570 Text 0x80514 = __osSiRelAccess (gl___osSiRelAccess).
  * The module-base relocation at +0x28 retains jal 0x80824, the static
  * __osPackReadData at gl_func_0006C1B8. gl_ref_00080824 is already pinned.
  * Whole compiled body is spliced into the -O2 post1b2 host.

@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_func_000732C4 = libultra scheduler yield/dispatch helper, statically linked
+/* gl_osYieldThread = libultra scheduler yield/dispatch helper, statically linked
  * into the game_libs USO. Byte-exact masked-twin of matched kernel osYieldThread
  * (kernel_023): disable-int, set the running-thread state word to 2, dispatch
  * the run-queue head, restore-int. IDO 5.3 -O1, spliced into
@@ -12,7 +12,7 @@ extern int gl_func_00000000();
 extern void *D_00000000;       /* running thread ptr placeholder */
 extern int gl_data_00000000;   /* run-queue head placeholder */
 
-void gl_func_000732C4(void) {
+void gl_osYieldThread(void) {
     register int sr = gl_func_00000000();
     *(short *)((char *)D_00000000 + 0x10) = 2;
     gl_func_00000000(&gl_data_00000000);

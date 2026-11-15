@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006D964 = libultra osPiStartDma
+/* IDO -O1 donor for gl_osPiStartDma = libultra osPiStartDma
  * (references/libreultra/src/io/pidma.c, verbatim). PROVEN EXACT 67/67
  * standalone at BOTH IDO 7.1 -O1 and 5.3 -O1 (identical output; built with
  * 7.1), agent-g 2026-09-09, first compile. Section 0x81FD0 = bootup.uso
@@ -15,7 +15,7 @@
  * tell (the same shape as osEPiStartDma 6EF64). `register s32 ret` is the
  * source's spelling. The trailing zero word of the old 0x110 .s (section
  * 0x820DC, NOT exported; 6DA74 at 0x820E0 is) is this object's own 16-byte
- * alignment pad -> SUFFIX_BYTES_FORCE gl_func_0006D964=0x00000000, and the
+ * alignment pad -> SUFFIX_BYTES_FORCE gl_osPiStartDma=0x00000000, and the
  * tracked .s is trimmed to the 67-word body (0x10C).
  * Blank externs (USO load-time relocs, pins = 0): gl_devmgr_6DA74 =
  * __osPiDevMgr, gl_func_00000000_pigetcmdq = osPiGetCmdQueue,
@@ -68,7 +68,7 @@ extern s32 gl_func_00000000_sendmesg(void *, OSMesg, s32);        /* osSendMesg 
 #define osJamMesg gl_func_00000000_jammesg6d
 #define osSendMesg gl_func_00000000_sendmesg
 
-s32 gl_func_0006D964(OSIoMesg *mb, s32 priority, s32 direction, u32 devAddr, void *dramAddr, u32 size, void *mq)
+s32 gl_osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, u32 devAddr, void *dramAddr, u32 size, void *mq)
 {
     register s32 ret;
     if (!__osPiDevMgr.active)

@@ -3,11 +3,11 @@ extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { float x, y, z; } Vec3;
 
-/* gl_func_0007369C = libultra osEPiRawWriteIo (epirawwrite.c verbatim,
+/* gl_osEPiRawWriteIo = libultra osEPiRawWriteIo (epirawwrite.c verbatim,
  * EPI_SYNC/UPDATE_REG piint.h macros): PI busy-wait, per-domain BSD
  * timing-reg update vs __osCurrentHandle[domain], then
  * IO_WRITE(baseAddress | devAddr, data). Sibling of osEPiRawReadIo =
- * gl_func_000730CC. BOUNDARY FIX: the 2-word orphan
+ * gl_osEPiRawReadIo. BOUNDARY FIX: the 2-word orphan
  * game_libs_func_00073694 (lui/lw PI_STATUS_REG) was this function's
  * hoisted first status read scheduled before the addiu-sp prologue by
  * IDO 5.3; its INCLUDE_ASM was removed and the spliced symbol covers
@@ -17,7 +17,7 @@ typedef struct { float x, y, z; } Vec3;
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_7369C.c (100/100). Body
  * below is a placeholder for the splice. */
-int gl_func_0007369C(char *pihandle, unsigned int devAddr, unsigned int data) {
+int gl_osEPiRawWriteIo(char *pihandle, unsigned int devAddr, unsigned int data) {
     volatile int ret = 0;
     if (pihandle == 0) {
         ret = -1;
@@ -235,7 +235,7 @@ int gl_func_000747F4(int devAddr, int data) {
 }
 
 
-/* game_libs_func_00074844 = libultra __osSpSetStatus (sp/spsetstat.c
+/* gl___osSpSetStatus = libultra __osSpSetStatus (sp/spsetstat.c
  * verbatim): `*(volatile u32*)SP_STATUS_REG = data`. BOUNDARY FIX
  * 2026-09-09 (TWENTY-SIXTH mis-split case): the old "game_libs_func_00074840"
  * symbol carried a LEADING nop that was documented as a non-reproducible
@@ -247,18 +247,18 @@ int gl_func_000747F4(int devAddr, int data) {
  * restored as an all-zero SUFFIX_BYTES_FORCE on gl_func_000747F4 (a 1-word
  * GLOBAL_ASM sidecar would emit 8 bytes, docs #one-word-pad-legal-shapes).
  * 3/3 words at 7.1 -O2. */
-void game_libs_func_00074844(unsigned int data) {
+void gl___osSpSetStatus(unsigned int data) {
     *(volatile unsigned int *)0xA4040010 = data;
 }
 
-/* game_libs_func_00074854 = libultra __osSpGetStatus (sp/spgetstat.c
+/* gl___osSpGetStatus = libultra __osSpGetStatus (sp/spgetstat.c
  * verbatim): `return *(volatile u32*)SP_STATUS_REG`. Same boundary fix as
  * 74844: section 0x88EC0 (= splat 0x74854) is the export (sym 2630, one
  * R_MIPS_26 ref); the nop at 0x74850 is __osSpSetStatus's inter-object
  * pad (SUFFIX_BYTES_FORCE on 74844). The nop at 0x74860 heading the next
  * INCLUDE block is likewise this .o's pad (0x74864 = section 0x88ED0 is the
  * exported osWritebackDCacheAll twin, handwritten). 3/3 words. */
-unsigned int game_libs_func_00074854(void) {
+unsigned int gl___osSpGetStatus(void) {
     return *(volatile unsigned int *)0xA4040010;
 }
 

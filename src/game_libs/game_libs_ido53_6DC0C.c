@@ -1,12 +1,12 @@
-/* IDO 5.3 -O1 donor for gl_func_0006DC0C = libultra osCartRomInit
+/* IDO 5.3 -O1 donor for gl_osCartRomInit = libultra osCartRomInit
  * (cartrominit.c verbatim). BOUNDARY FIX: splat's game_libs_func_0006DBFC
  * (0x10, no jr ra) was 2 alignment nops + this function's HOISTED HEAD —
  * IDO 5.3 schedules the baseAddress gate load (lw CartRomHandle.baseAddress
  * into $t6) before the addiu-sp prologue, and splat split at the prologue
  * (0x6DC0C). True entry = 0x6DC04; the spliced symbol covers
  * 0x6DC04..0x6DCF8 (0xF4); the 2 leading nops stay as a pad sidecar on the
- * preceding gl_func_0006DA74 (osCreatePiManager). Same class as
- * gl_func_0006C2AC osDriveRomInit (game_libs_ido53_6C2A4.c).
+ * preceding gl_osCreatePiManager (osCreatePiManager). Same class as
+ * gl_osDriveRomInit osDriveRomInit (game_libs_ido53_6C2A4.c).
  * The old "caller-set $t6" reading was wrong: $t6 is
  * CartRomHandle.baseAddress loaded by the stolen prologue
  * (0xB0000000 = PHYS_TO_K1(PI_DOM1_ADDR2), the cart-ROM base).
@@ -54,7 +54,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
  * as the 6C2A4 osDriveRomInit / 6F088 osLeoDiskInit donors. */
 PgsRls D_00000006_cartpgs = {0};
 
-OSPiHandle *gl_func_0006DC0C(void) {
+OSPiHandle *gl_osCartRomInit(void) {
     u32 domain;
     u32 saveMask;
 

@@ -7,7 +7,7 @@
  * diverges from the ROM). Standard 1080 USO placeholder-callee convention. */
 extern u32 gl_func_00000000();
 
-/* gl_func_0006C384 = libultra osVirtualToPhysical (os/virtualtophysical.c).
+/* gl_osVirtualToPhysical = libultra osVirtualToPhysical (os/virtualtophysical.c).
  * KSEG0 (0x80000000..0x9FFFFFFF) and KSEG1 (0xA0000000..0xBFFFFFFF) are
  * direct-mapped to physical via `& 0x1FFFFFFF`; otherwise delegate to the
  * TLB-probe runtime helper (collapsed intra-module jal at splat time).
@@ -18,7 +18,7 @@ extern u32 gl_func_00000000();
  * game_libs_post1b2.c (which is -O2) into this dedicated -O1 unit so the
  * function compiles with the matching optimization level. See the .ld for
  * the VRAM ordering (between post1b2 head and post1b2c tail). */
-u32 gl_func_0006C384(u32 a0) {
+u32 gl_osVirtualToPhysical(u32 a0) {
     if (a0 >= 0x80000000U && a0 < 0xA0000000U) {
         return a0 & 0x1FFFFFFF;
     }

@@ -29,7 +29,7 @@ extern OSMesgQueue *FUNC_6EF64_a(void);
 extern s32 FUNC_6EF64_b(OSMesgQueue *, OSMesg, s32);
 extern s32 FUNC_6EF64_d(OSMesgQueue *, OSMesg, s32);
 
-s32 gl_func_0006EF64(OSPiHandle *pihandle, OSIoMesg *mb, s32 direction)
+s32 gl_osEPiStartDma(OSPiHandle *pihandle, OSIoMesg *mb, s32 direction)
 {
     register s32 ret;
     if (!D_6EF64_g)

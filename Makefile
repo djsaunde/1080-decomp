@@ -898,7 +898,7 @@ build/src/game_libs/game_libs_ido53_6DC0C.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6DC0C.c.o build/non_matching/src/game_libs/game_libs_ido53_6DC0C.c.o: OPT_FLAGS := -O1
 # 6DD14 = __osDevMgrMain, IDO 5.3 -O1 donor (devmgr.c verbatim; 291/292
 # compile-exact, the switch(hdr.type) jumptable %lo 0x23B0 resolves via the
-# renamed donor-local .rodata reloc gl_func_0006DD14_rodata at link). See
+# renamed donor-local .rodata reloc gl___osDevMgrMain_rodata at link). See
 # game_libs_ido53_6DD14.c.
 build/src/game_libs/game_libs_ido53_6DD14.c.o build/non_matching/src/game_libs/game_libs_ido53_6DD14.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6DD14.c.o build/non_matching/src/game_libs/game_libs_ido53_6DD14.c.o: OPT_FLAGS := -O1
@@ -1027,8 +1027,8 @@ build/src/game_libs/game_libs_post2b_d.c.o: TRUNCATE_TEXT := 0x1210
 # were the 16-byte inter-object pads after __osPiRawWriteIo (747F4) and
 # __osSpSetStatus (74844); real entries are 74844/74854 (bootup.uso Sym exports).
 # Restored as all-zero suffix words (1-word GLOBAL_ASM sidecars emit 8 bytes).
-build/src/game_libs/game_libs_post2b_d.c.o: SUFFIX_BYTES_FORCE := gl_func_000747F4=0x00000000 game_libs_func_00074844=0x00000000
-build/non_matching/src/game_libs/game_libs_post2b_d.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000747F4=0x00000000 game_libs_func_00074844=0x00000000
+build/src/game_libs/game_libs_post2b_d.c.o: SUFFIX_BYTES_FORCE := gl_func_000747F4=0x00000000 gl___osSpSetStatus=0x00000000
+build/non_matching/src/game_libs/game_libs_post2b_d.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000747F4=0x00000000 gl___osSpSetStatus=0x00000000
 build/src/game_libs/game_libs_ido53_748A4.c.o build/non_matching/src/game_libs/game_libs_ido53_748A4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_748A4.c.o build/non_matching/src/game_libs/game_libs_ido53_748A4.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_ido53_748A4.c.o: SUFFIX_BYTES := __osPackRamReadData=0x00000000,0x00000000
@@ -1330,7 +1330,7 @@ GAMELIBS_6FC70_DONOR := build/src/game_libs/game_libs_o1_6FC70.c.o
 # 163/163 first compile with osClockRate/osViClock DEFINED in-TU (shared-$at
 # u64 stores) and the -mips2 __ll_mul/__ull_div lowering of osClockRate*3/4
 # (in-unit callees, pinned 0). Trailing zero at 0x6C710 = its own pad
-# (SUFFIX_BYTES_FORCE gl_func_0006C484 below). See game_libs_ido53_6C484.c.
+# (SUFFIX_BYTES_FORCE gl_osInitialize below). See game_libs_ido53_6C484.c.
 build/src/game_libs/game_libs_ido53_6C484.c.o build/non_matching/src/game_libs/game_libs_ido53_6C484.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6C484.c.o build/non_matching/src/game_libs/game_libs_ido53_6C484.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_ido53_6C484.c.o build/non_matching/src/game_libs/game_libs_ido53_6C484.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ __ll_mul=gl_func_00000000_llmul6c __ull_div=gl_func_00000000_ulldiv6c
@@ -1501,7 +1501,7 @@ build/src/game_libs/game_libs_ido53_73310.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_73310.c.o build/non_matching/src/game_libs/game_libs_ido53_73310.c.o: OPT_FLAGS := -O1
 # Island stragglers (2026-07-10): 6F088 = osLeoDiskInit, IDO 5.3 -O1
 # (absorbs game_libs_func_0006F038 = the hoisted pre-prologue head; true
-# entry 0x6F044; 3 pad nops 0x6F038/3C/40 via SUFFIX on gl_func_0006EF64).
+# entry 0x6F044; 3 pad nops 0x6F038/3C/40 via SUFFIX on gl_osEPiStartDma).
 GAMELIBS_6F088_DONOR := build/src/game_libs/game_libs_ido53_6F088.c.o
 build/src/game_libs/game_libs_ido53_6F088.c.o build/non_matching/src/game_libs/game_libs_ido53_6F088.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6F088.c.o build/non_matching/src/game_libs/game_libs_ido53_6F088.c.o: OPT_FLAGS := -O1
@@ -1514,23 +1514,23 @@ build/src/game_libs/game_libs_ido53_6F38C.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6F3BC.c.o build/non_matching/src/game_libs/game_libs_ido53_6F3BC.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_mips3_6C740.c.o build/non_matching/src/game_libs/game_libs_mips3_6C740.c.o: MIPSISET := -mips3 -32
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := gl___ull_divremi=$(GAMELIBS_6C8AC_DONOR) gl___ll_mod=$(GAMELIBS_6C8AC_DONOR) gl_func_0006C9F4=$(GAMELIBS_6C9F4_DONOR) gl_func_0006F534=$(GAMELIBS_6F534_DONOR) gl_func_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_func_0006E1A4=$(GAMELIBS_6E1A4_DONOR) gl_func_0006FFE4=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) gl___ull_rem=$(GAMELIBS_6C740_DONOR) gl___ull_div=$(GAMELIBS_6C740_DONOR) gl___ll_lshift=$(GAMELIBS_6C740_DONOR) gl___ll_rem=$(GAMELIBS_6C740_DONOR) gl___ll_div=$(GAMELIBS_6C740_DONOR) gl___ll_mul=$(GAMELIBS_6C740_DONOR) gl___ll_rshift=$(GAMELIBS_6C740_DONOR) gl_func_0006D0F4=$(GAMELIBS_6D0F4_DONOR) gl_func_0006DA74=$(GAMELIBS_6DA74_DONOR) gl_func_0006CDB4=$(GAMELIBS_6CDB4_DONOR) gl_func_0006CF54=$(GAMELIBS_6CDB4_DONOR) gl___ull_rshift=$(GAMELIBS_6C740_DONOR) osPfsIsPlug=$(GAMELIBS_6D554_DONOR) __osPfsRequestData=$(GAMELIBS_6D6F4_DONOR) __osPfsGetInitData=$(GAMELIBS_6D7CC_DONOR) gl_func_0006CAD4=$(GAMELIBS_6CAD4_DONOR) gl_func_0006CB84=$(GAMELIBS_6CB84_DONOR) gl_func_0006CC64=$(GAMELIBS_6CC64_DONOR) osMotorInit=$(GAMELIBS_6D270_DONOR) gl_func_00070040=$(GAMELIBS_70040_DONOR) gl_func_0006F088=$(GAMELIBS_6F088_DONOR) gl_func_0006F38C=$(GAMELIBS_6F38C_DONOR) gl_func_0006F3BC=$(GAMELIBS_6F3BC_DONOR) gl_func_0006DC0C=$(GAMELIBS_6DC0C_DONOR) gl_func_0006DD14=$(GAMELIBS_6DD14_DONOR) gl_func_0006F8A4=$(GAMELIBS_6F8A4_DONOR) gl_func_0006FB54=$(GAMELIBS_6FB54_DONOR) gl_func_0006FE5C=$(GAMELIBS_6FE5C_DONOR) gl_func_0006F3E4=$(GAMELIBS_6F3E4_DONOR) _Putfld=$(GAMELIBS_6E224_DONOR) _Printf=$(GAMELIBS_6E224_DONOR) game_libs_func_0006F1D8=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) gl_osCreateMesgQueue=$(GAMELIBS_6F218_DONOR) game_libs_func_0006FBE4=$(GAMELIBS_6FBE4_DONOR)
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_func_0006C484=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) guPosition=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_func_0006CC14=$(GAMELIBS_6CC14_DONOR) guPositionF=$(GAMELIBS_6F684_DONOR) gl_func_0006D964=$(GAMELIBS_6D964_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: REPLACE_FUNC_BODY := gl___ull_divremi=$(GAMELIBS_6C8AC_DONOR) gl___ll_mod=$(GAMELIBS_6C8AC_DONOR) gl_osPiRawStartDma=$(GAMELIBS_6C9F4_DONOR) gl_osSetThreadPri=$(GAMELIBS_6F534_DONOR) gl_func_0006CCD4=$(GAMELIBS_6CCD4_DONOR) gl_osSetEventMesg=$(GAMELIBS_6E1A4_DONOR) gl___osSetGlobalIntMask=$(GAMELIBS_6FFE4_DONOR) gl_func_0006FAD4=$(GAMELIBS_6FAD4_DONOR) gl___ull_rem=$(GAMELIBS_6C740_DONOR) gl___ull_div=$(GAMELIBS_6C740_DONOR) gl___ll_lshift=$(GAMELIBS_6C740_DONOR) gl___ll_rem=$(GAMELIBS_6C740_DONOR) gl___ll_div=$(GAMELIBS_6C740_DONOR) gl___ll_mul=$(GAMELIBS_6C740_DONOR) gl___ll_rshift=$(GAMELIBS_6C740_DONOR) gl_func_0006D0F4=$(GAMELIBS_6D0F4_DONOR) gl_osCreatePiManager=$(GAMELIBS_6DA74_DONOR) gl_func_0006CDB4=$(GAMELIBS_6CDB4_DONOR) gl_func_0006CF54=$(GAMELIBS_6CDB4_DONOR) gl___ull_rshift=$(GAMELIBS_6C740_DONOR) osPfsIsPlug=$(GAMELIBS_6D554_DONOR) __osPfsRequestData=$(GAMELIBS_6D6F4_DONOR) __osPfsGetInitData=$(GAMELIBS_6D7CC_DONOR) gl___osSiRawStartDma=$(GAMELIBS_6CAD4_DONOR) gl___osSpRawStartDma=$(GAMELIBS_6CB84_DONOR) gl_func_0006CC64=$(GAMELIBS_6CC64_DONOR) osMotorInit=$(GAMELIBS_6D270_DONOR) gl_func_00070040=$(GAMELIBS_70040_DONOR) gl_osLeoDiskInit=$(GAMELIBS_6F088_DONOR) gl___osSpDeviceBusy=$(GAMELIBS_6F38C_DONOR) gl___osSiDeviceBusy=$(GAMELIBS_6F3BC_DONOR) gl_osCartRomInit=$(GAMELIBS_6DC0C_DONOR) gl___osDevMgrMain=$(GAMELIBS_6DD14_DONOR) gl_osEPiRawStartDma=$(GAMELIBS_6F8A4_DONOR) gl_func_0006FB54=$(GAMELIBS_6FB54_DONOR) gl_func_0006FE5C=$(GAMELIBS_6FE5C_DONOR) gl_osJamMesg=$(GAMELIBS_6F3E4_DONOR) _Putfld=$(GAMELIBS_6E224_DONOR) _Printf=$(GAMELIBS_6E224_DONOR) game_libs_func_0006F1D8=$(GAMELIBS_6F1D8_DONOR) game_libs_func_0006F1FC=$(GAMELIBS_6F1D8_DONOR) memcpy=$(GAMELIBS_6F17C_DONOR) gl_osCreateMesgQueue=$(GAMELIBS_6F218_DONOR) game_libs_func_0006FBE4=$(GAMELIBS_6FBE4_DONOR)
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += game_libs_func_0006FC70=$(GAMELIBS_6FC70_DONOR) gl_func_0006FDE8=$(GAMELIBS_6FC70_DONOR) gl_osInitialize=$(GAMELIBS_6C484_DONOR) gl_func_0006CD44=$(GAMELIBS_6CD44_DONOR) guPosition=$(GAMELIBS_6F834_DONOR) gl_func_0006F634=$(GAMELIBS_6F634_DONOR) gl_osEPiLinkHandle=$(GAMELIBS_6CC14_DONOR) guPositionF=$(GAMELIBS_6F684_DONOR) gl_osPiStartDma=$(GAMELIBS_6D964_DONOR)
 # gl_func_0006EF08: -O2 body emits the 0x58 target function (jr-ra + delay nop);
-build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += gl_func_0006EF64=$(GAMELIBS_6EF64_DONOR)
-# append the 1-word all-zero alignment pad at 0x6EF60 so gl_func_0006EF64 sits at
+build/src/game_libs/game_libs_post1b2c.c.o build/non_matching/src/game_libs/game_libs_post1b2c.c.o: private REPLACE_FUNC_BODY += gl_osEPiStartDma=$(GAMELIBS_6EF64_DONOR)
+# append the 1-word all-zero alignment pad at 0x6EF60 so gl_osEPiStartDma sits at
 # +0x5C. FORCE because the function ends in the natural jr-ra;nop epilogue.
-# gl_func_0006C484: the 16-byte inter-object pad at 0x6C710 that the old
+# gl_osInitialize: the 16-byte inter-object pad at 0x6C710 that the old
 # "game_libs_func_0006C710" symbol carried as a leading zero word (Sym export
 # oracle: only 0x6C714 = __ull_rshift is exported). Twenty-sixth mis-split case.
-build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000
 # C emits the 0x4C body; ASM already includes the zero alignment word.
-build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE_UNTIL_SIZE += gl_func_0006CC14=0x50:0x00000000
-build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CC14=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000
-build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_func_0006D964=0x00000000
-build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CC14=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_func_0006D964=0x00000000
-build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CC14=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 gl_osCreateMesgQueue=0x00000000 gl_osInvalDCache=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_func_0006D964=0x00000000 gl_func_0006E1A4=0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_func_0006C484=0x00000000 gl_func_0006CC14=0x00000000 gl_func_0006CAD4=0x00000000 gl_func_0006CB84=0x00000000 gl_func_0006FFE4=0x00000000 gl_func_0006EF64=0x00000000,0x00000000,0x00000000 gl_osCreateMesgQueue=0x00000000 gl_osInvalDCache=0x00000000 gl_func_0006F38C=0x00000000 gl_func_0006F3BC=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_func_0006D964=0x00000000 gl_func_0006E1A4=0x00000000,0x00000000
+build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE_UNTIL_SIZE += gl_osEPiLinkHandle=0x50:0x00000000
+build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl_osEPiLinkHandle=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_osPiStartDma=0x00000000
+build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl_osEPiLinkHandle=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 game_libs_func_0006F35C=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_osPiStartDma=0x00000000
+build/src/game_libs/game_libs_post1b2c.c.o: SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl_osEPiLinkHandle=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 gl_osCreateMesgQueue=0x00000000 gl_osInvalDCache=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_osPiStartDma=0x00000000 gl_osSetEventMesg=0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_0006EF08=0x00000000 gl_osInitialize=0x00000000 gl_osEPiLinkHandle=0x00000000 gl___osSiRawStartDma=0x00000000 gl___osSpRawStartDma=0x00000000 gl___osSetGlobalIntMask=0x00000000 gl_osEPiStartDma=0x00000000,0x00000000,0x00000000 gl_osCreateMesgQueue=0x00000000 gl_osInvalDCache=0x00000000 gl___osSpDeviceBusy=0x00000000 gl___osSiDeviceBusy=0x00000000 gl_func_0006FB54=0x00000000,0x00000000,0x00000000 gl_osPiStartDma=0x00000000 gl_osSetEventMesg=0x00000000,0x00000000
 # batch 6: 70B04 alignment word at 0x70C40 (donor delay nop covers 0x70C3C,
 # _pad.s sidecar deleted); 732C4 pad nop at 0x73310 (osViGetCurrentField true
 # entry = 0x73314 after the 73310 orphan-nop absorption).
@@ -1540,8 +1540,8 @@ build/non_matching/src/game_libs/game_libs_post1b2c.c.o: NON_MATCHING_SUFFIX_BYT
 # mis-split case, docs/MATCHING_WORKFLOW #leading-nop-cap-is-inter-object-pad-sym-oracle-74844.
 build/src/game_libs/game_libs_post1c.c.o: SUFFIX_BYTES_FORCE := gl_func_00070B04=0x00000000 gl_func_00070C44=0x00000000 guOrtho=0x00000000
 build/non_matching/src/game_libs/game_libs_post1c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00070B04=0x00000000 gl_func_00070C44=0x00000000 guOrtho=0x00000000
-build/src/game_libs/game_libs_post2b_c.c.o: SUFFIX_BYTES_FORCE := gl_func_000732C4=0x00000000
-build/non_matching/src/game_libs/game_libs_post2b_c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000732C4=0x00000000
+build/src/game_libs/game_libs_post2b_c.c.o: SUFFIX_BYTES_FORCE := gl_osYieldThread=0x00000000
+build/non_matching/src/game_libs/game_libs_post2b_c.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_osYieldThread=0x00000000
 build/src/game_libs/game_libs_o1_6C8AC.c.o build/non_matching/src/game_libs/game_libs_o1_6C8AC.c.o: OPT_FLAGS := -O1
 build/src/game_libs/game_libs_o1_6C8AC.c.o build/non_matching/src/game_libs/game_libs_o1_6C8AC.c.o: MIPSISET := -mips3 -32
 # More masked-twin libultra helpers (other parent units), IDO 5.3 -O1.
@@ -1562,10 +1562,10 @@ build/src/game_libs/game_libs_ido53_747F4.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_732C4.c.o build/non_matching/src/game_libs/game_libs_ido53_732C4.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_732C4.c.o build/non_matching/src/game_libs/game_libs_ido53_732C4.c.o: OPT_FLAGS := -O1
 GAMELIBS_69E04_DONOR := build/src/game_libs/game_libs_ido53_69E04.c.o
-# gl_func_00069F64 = libultra osRecvMesg, IDO 5.3 -O1 donor (69E04 recipe).
+# gl_osRecvMesg = libultra osRecvMesg, IDO 5.3 -O1 donor (69E04 recipe).
 GAMELIBS_69F64_DONOR := build/src/game_libs/game_libs_ido53_69F64.c.o
 GAMELIBS_74C04_DONOR := build/src/game_libs/game_libs_ido53_74C04.c.o
-# gl_func_0006AF0C = __osDequeueThread (16 insns since the 2026-10-24 boundary
+# gl___osDequeueThread = __osDequeueThread (16 insns since the 2026-10-24 boundary
 # fix); exact at IDO 7.1 -O1 (post1b is -O2). Reloc-free donor spliced in,
 # like 6BA7C/69E04. Built by an explicit direct-CC rule (below "all"); the
 # donor has no GLOBAL_ASM, so asm-processor would be a no-op.
@@ -2504,14 +2504,14 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 GAMELIBS_49B3C_DONOR := build/src/game_libs/game_libs_ncc_49B3C.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00049B3C=$(GAMELIBS_49B3C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_49B3C_DONOR)
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_func_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_func_00069E04=$(GAMELIBS_69E04_DONOR) gl_func_00069F64=$(GAMELIBS_69F64_DONOR) gl_func_0006AF0C=$(GAMELIBS_6AF0C_DONOR) gl_func_0006A304=$(GAMELIBS_6A304_DONOR) gl_func_0006AF44=$(GAMELIBS_6AF44_DONOR) gl_func_0006B880=$(GAMELIBS_6B880_DONOR) gl_func_0006B974=$(GAMELIBS_6B974_DONOR) gl_func_0006BAD4=$(GAMELIBS_6BAD4_DONOR) gl_func_0006B7A0=$(GAMELIBS_6B7A0_DONOR) gl_func_0006B0FC=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) gl_func_0006A420=$(GAMELIBS_6A420_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: REPLACE_FUNC_BODY := gl_func_000669B8=$(GAMELIBS_669AC_DONOR) gl_func_0006BA7C=$(GAMELIBS_6BA7C_DONOR) gl_osSendMesg=$(GAMELIBS_69E04_DONOR) gl_osRecvMesg=$(GAMELIBS_69F64_DONOR) gl___osDequeueThread=$(GAMELIBS_6AF0C_DONOR) gl_func_0006A304=$(GAMELIBS_6A304_DONOR) gl_func_0006AF44=$(GAMELIBS_6AF44_DONOR) gl_func_0006B880=$(GAMELIBS_6B880_DONOR) gl_func_0006B974=$(GAMELIBS_6B974_DONOR) gl_func_0006BAD4=$(GAMELIBS_6BAD4_DONOR) gl_func_0006B7A0=$(GAMELIBS_6B7A0_DONOR) gl___osLeoInterrupt=$(GAMELIBS_6B0FC_DONOR) fsin=$(GAMELIBS_6A144_DONOR) gl_func_00068990=$(GAMELIBS_68990_DONOR) gl_func_0006A420=$(GAMELIBS_6A420_DONOR)
 # 675A4 = input debounce / stick flags, IDO 7.1 -O2 donor: game_libs_o2_675A4.c
 # (262/262 word-exact). Spliced so the donor-local .rodata reloc of the 0.2
 # dead-zone double literal is renamed gl_func_000675A4_rodata and pinned to
 # bootup.uso RoData +0x2200. Uses += (composes with the := line above).
 GAMELIBS_675A4_DONOR := build/src/game_libs/game_libs_o2_675A4.c.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += gl_func_000675A4=$(GAMELIBS_675A4_DONOR)
-build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl_func_0006C11C=$(GAMELIBS_6C11C_DONOR) gl_func_0006BF34=$(GAMELIBS_6BF34_DONOR) gl_func_0006C1B8=$(GAMELIBS_6C1B8_DONOR) gl_func_0006C2AC=$(GAMELIBS_6C2A4_DONOR)
+build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl_func_0006C11C=$(GAMELIBS_6C11C_DONOR) gl_func_0006BF34=$(GAMELIBS_6BF34_DONOR) gl_func_0006C1B8=$(GAMELIBS_6C1B8_DONOR) gl_osDriveRomInit=$(GAMELIBS_6C2A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += osContStartReadData=$(GAMELIBS_6C084_DONOR)
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.
@@ -2719,15 +2719,15 @@ build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_li
 build/src/game_libs/game_libs_post2.c.o build/non_matching/src/game_libs/game_libs_post2.c.o: private REPLACE_FUNC_BODY += gl_func_00071304=$(GAMELIBS_71304_DONOR)
 # gl_func_00067370: -O2 body byte-exact; append the 1-word all-zero inter-fn ROM
 # pad at 0x67390 (folded into the 0x24 .s symbol). FORCE: ends jr-ra;nop.
-# gl_func_00069E04 (osSendMesg, donor-spliced) + gl_osViGetCurrentLine
+# gl_osSendMesg (osSendMesg, donor-spliced) + gl_osViGetCurrentLine
 # (osViGetCurrentLine): the 16-byte inter-object pads at 0x69F50 / 0x69F60 that
 # the old 0x14 "game_libs_func_00069F50" symbol carried as a leading + trailing
 # zero word (Sym export oracle: only 0x69F54 is exported). Twenty-sixth mis-split
 # case, docs/MATCHING_WORKFLOW #leading-nop-cap-is-inter-object-pad-sym-oracle-74844.
-build/src/game_libs/game_libs_post1b.c.o: SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_func_00069E04=0x00000000 gl_osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
-build/non_matching/src/game_libs/game_libs_post1b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_func_00069E04=0x00000000 gl_osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
-build/src/game_libs/game_libs_post2b_e.c.o build/non_matching/src/game_libs/game_libs_post2b_e.c.o: REPLACE_FUNC_BODY := gl_func_00074C04=$(GAMELIBS_74C04_DONOR)
-build/src/game_libs/game_libs_post1c.c.o build/non_matching/src/game_libs/game_libs_post1c.c.o: REPLACE_FUNC_BODY := gl_func_00070634=$(GAMELIBS_70634_DONOR) gl_func_00070B04=$(GAMELIBS_70B04_DONOR) gl_func_00070C44=$(GAMELIBS_70C44_DONOR) gl_func_00070694=$(GAMELIBS_70694_DONOR) guOrtho=$(GAMELIBS_70694_DONOR) guMtxIdentF=$(GAMELIBS_70954_DONOR) guMtxL2F=$(GAMELIBS_70A14_DONOR) guMtxF2L=$(GAMELIBS_70854_DONOR)
+build/src/game_libs/game_libs_post1b.c.o: SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 gl_osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
+build/non_matching/src/game_libs/game_libs_post1b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_00067370=0x00000000 game_libs_func_00067AA0=0x00000000,0x00000000 gl_osSendMesg=0x00000000 gl_osViGetCurrentLine=0x00000000 gl_func_00069C94=0x00000000,0x00000000,0x00000000 game_libs_func_00067FA4=0x00000000,0x00000000,0x00000000
+build/src/game_libs/game_libs_post2b_e.c.o build/non_matching/src/game_libs/game_libs_post2b_e.c.o: REPLACE_FUNC_BODY := gl_osStartThread=$(GAMELIBS_74C04_DONOR)
+build/src/game_libs/game_libs_post1c.c.o build/non_matching/src/game_libs/game_libs_post1c.c.o: REPLACE_FUNC_BODY := gl___osResetGlobalIntMask=$(GAMELIBS_70634_DONOR) gl_func_00070B04=$(GAMELIBS_70B04_DONOR) gl_func_00070C44=$(GAMELIBS_70C44_DONOR) gl_func_00070694=$(GAMELIBS_70694_DONOR) guOrtho=$(GAMELIBS_70694_DONOR) guMtxIdentF=$(GAMELIBS_70954_DONOR) guMtxL2F=$(GAMELIBS_70A14_DONOR) guMtxF2L=$(GAMELIBS_70854_DONOR)
 # 73904/73E74 = Plauger libc _Genld/_Ldtob (xldtob.c verbatim), ONE IDO
 # 5.3 -O3 donor: whole-TU interprocedural regalloc gives static _Genld
 # its $s0-$s4 custom linkage (the old "caller-set s-reg cap") and
@@ -2792,8 +2792,8 @@ build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/game_libs_ido53_70A14.c.o: OPT_FLAGS := -O2
 build/src/game_libs/game_libs_ido53_70A14.c.o build/non_matching/src/game_libs/game_libs_ido53_70A14.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ guMtxL2F=guMtxL2F
 build/src/game_libs/game_libs_post2b_f.c.o build/non_matching/src/game_libs/game_libs_post2b_f.c.o: REPLACE_FUNC_BODY := gl_func_00074EFC=$(GAMELIBS_74EF4_DONOR) gl_func_0007507C=$(GAMELIBS_74EF4_DONOR)
-build/src/game_libs/game_libs_post2b_d.c.o build/non_matching/src/game_libs/game_libs_post2b_d.c.o: REPLACE_FUNC_BODY := gl_func_000747F4=$(GAMELIBS_747F4_DONOR) gl_func_00073824=$(GAMELIBS_73824_DONOR) gl_func_0007369C=$(GAMELIBS_7369C_DONOR) ldiv=$(GAMELIBS_744C4_DONOR) lldiv=$(GAMELIBS_743C4_DONOR) gl_func_00073904=$(GAMELIBS_73904_DONOR) gl_func_00073E74=$(GAMELIBS_73904_DONOR) _Litob=$(GAMELIBS_74554_DONOR)
-build/src/game_libs/game_libs_post2b_c.c.o build/non_matching/src/game_libs/game_libs_post2b_c.c.o: REPLACE_FUNC_BODY := gl_func_000732C4=$(GAMELIBS_732C4_DONOR) gl_func_000730CC=$(GAMELIBS_730CC_DONOR) game_libs_func_00073310=$(GAMELIBS_73310_DONOR) gl_func_0007307C=$(GAMELIBS_73074_DONOR) gl_func_00073034=$(GAMELIBS_73034_DONOR)
+build/src/game_libs/game_libs_post2b_d.c.o build/non_matching/src/game_libs/game_libs_post2b_d.c.o: REPLACE_FUNC_BODY := gl_func_000747F4=$(GAMELIBS_747F4_DONOR) gl_func_00073824=$(GAMELIBS_73824_DONOR) gl_osEPiRawWriteIo=$(GAMELIBS_7369C_DONOR) ldiv=$(GAMELIBS_744C4_DONOR) lldiv=$(GAMELIBS_743C4_DONOR) gl_func_00073904=$(GAMELIBS_73904_DONOR) gl_func_00073E74=$(GAMELIBS_73904_DONOR) _Litob=$(GAMELIBS_74554_DONOR)
+build/src/game_libs/game_libs_post2b_c.c.o build/non_matching/src/game_libs/game_libs_post2b_c.c.o: REPLACE_FUNC_BODY := gl_osYieldThread=$(GAMELIBS_732C4_DONOR) gl_osEPiRawReadIo=$(GAMELIBS_730CC_DONOR) game_libs_func_00073310=$(GAMELIBS_73310_DONOR) gl_func_0007307C=$(GAMELIBS_73074_DONOR) gl_func_00073034=$(GAMELIBS_73034_DONOR)
 # arcproc_uso_func_00000748: byte-identical sibling of mgrproc_uso_func_000009A8.
 # arcproc is non-Yay0 but the donor-splice still applies (relocatable USO: a
 # function's bytes are link-offset-independent, so the size change doesn't break
@@ -3330,7 +3330,7 @@ build/non_matching/src/game_libs/game_libs_ido53_70694.c.o: src/game_libs/game_l
 	$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 	$(POST_COMPILE)
 
-# gl_func_0006AF0C -O1 donor: direct CC, no asm-processor (see donor block).
+# gl___osDequeueThread -O1 donor: direct CC, no asm-processor (see donor block).
 build/src/game_libs/game_libs_o1_6AF0C.c.o: src/game_libs/game_libs_o1_6AF0C.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O1 $(MIPSISET) $(CPPFLAGS) -o $@ $<

@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for gl_func_0006F38C = libultra __osSpDeviceBusy
+/* IDO 5.3 -O1 donor for gl___osSpDeviceBusy = libultra __osSpDeviceBusy
  * (sp.c verbatim). PROVEN EXACT 11/11 standalone at IDO 5.3 -O1 against
- * the concatenated 0x6F384..0x6F3AC stream. Sibling of gl_func_0006F3BC
+ * the concatenated 0x6F384..0x6F3AC stream. Sibling of gl___osSiDeviceBusy
  * = __osSiDeviceBusy (same wiring, see that donor's header): splat's
  * game_libs_func_0006F380 3-word fragment (nop + lui t6,0xA404 + lw
  * a0,0x10) was the HOISTED HEAD (`register` load scheduled before the
@@ -13,7 +13,7 @@
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned int u32;
 
-int gl_func_0006F38C(void) {
+int gl___osSpDeviceBusy(void) {
     register u32 stat = *(volatile u32 *)0xA4040010; /* SP_STATUS_REG */
 
     if (stat & 0x1C) { /* DMA_BUSY | DMA_FULL | IO_FULL */

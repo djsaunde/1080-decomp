@@ -79,7 +79,7 @@ extern OSEventState __osEventStateTab[];
  * relDuration at +6/+7 of the ONE LeoDiskHandle symbol, in-place
  * addends) emits the single shared lui $at natively at 5.3 -O1 -- the
  * cap was an artifact of the separate-extern-u8 spelling. Twin of the
- * game_libs gl_func_0006F088 land (blank-pin USO variant). Body below
+ * game_libs gl_osLeoDiskInit land (blank-pin USO variant). Body below
  * is a placeholder for the splice. */
 void *osLeoDiskInit(void) {
     volatile int leodiskinit_spliced = 0;

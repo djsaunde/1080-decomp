@@ -1,7 +1,7 @@
 #include "common.h"
 
-/* gl_func_00069F64 = libultra osRecvMesg (os/recvmesg.c verbatim), statically
- * linked into the game_libs USO right after osSendMesg (gl_func_00069E04) and
+/* gl_osRecvMesg = libultra osRecvMesg (os/recvmesg.c verbatim), statically
+ * linked into the game_libs USO right after osSendMesg (gl_osSendMesg) and
  * osViGetCurrentLine (gl_osViGetCurrentLine). IDO 5.3 -O1 (the 69E04 recipe),
  * spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. Block while the
  * queue is empty (or fail if non-blocking), pop msg[first], advance first
@@ -22,7 +22,7 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
 extern int gl_func_00000000();
 extern int D_00000000;
 
-int gl_func_00069F64(OSMesgQueue_69F64 *mq, int **msg, int flags) {
+int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     register int saveMask = gl_func_00000000();
 
     while (mq->validCount == 0) {

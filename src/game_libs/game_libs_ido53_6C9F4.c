@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_func_0006C9F4 = libultra __osPiRawStartDma (io/pirawdma.c), statically
+/* gl_osPiRawStartDma = libultra __osPiRawStartDma (io/pirawdma.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of the matched kernel
  * osPiRawStartDma (kernel_042_b.c): identical 56-insn body after masking the
  * one R_MIPS_26 callee + the one HI16/LO16 global pair. Compiled IDO 5.3 -O1
@@ -17,7 +17,7 @@
 extern int gl_func_00000000();   /* collapsed cart-base helper (jal 0) */
 extern int D_00000000;           /* collapsed DMA cfg-base global (lui 0,lw 0) */
 
-int gl_func_0006C9F4(int direction, unsigned int devAddr, int dramAddr, unsigned int size) {
+int gl_osPiRawStartDma(int direction, unsigned int devAddr, int dramAddr, unsigned int size) {
     register unsigned int status;
 
     while ((status = *(volatile unsigned int*)0xA4600010) & 3) ;

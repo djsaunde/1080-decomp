@@ -62,7 +62,7 @@ GLOBAL_ASM("src/libultra/game_libs/setcompare.s")
 GLOBAL_ASM("src/libultra/game_libs/bcopy.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070244_pad.s")
 
-/* gl_func_00070634 = libultra global-int-mask bit-clear. LANDED 2026-06-21 as a
+/* gl___osResetGlobalIntMask = libultra global-int-mask bit-clear. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel func_80006250 (kernel_013) -- NOT
  * the "85.45% 2-global cap" the prior wrap guessed: it is disable-int, AND-NOT
  * the (mask & ~0x401) bits out of ONE global int-mask word, restore-int. The
@@ -70,7 +70,7 @@ GLOBAL_ASM("src/libultra/game_libs/bcopy.s")
  * game_libs_ido53_70634.c (IDO 5.3 -O1), spliced via REPLACE_FUNC_BODY. Callees
  * -> gl_func_00000000; int-mask word -> D_00000000. */
 extern int gl_func_00000000();
-void gl_func_00070634(int mask) {
+void gl___osResetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
     D_00000000 &= ~(mask & ~0x401);
     gl_func_00000000(sr);

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_0006B0FC = libultra __osLeoInterrupt
+/* IDO 5.3 -O1 donor for gl___osLeoInterrupt = libultra __osLeoInterrupt
  * (io/leointerrupt.c verbatim, 2.0-era struct layout): the 64DD LEO
  * cart-interrupt service routine. PI_STATUS DMA-busy => LEO_ERROR_29 +
  * __OSGlobalIntMask &= ~SR_IBIT4 + resume; LEO_STATUS mechanic-interrupt
@@ -14,7 +14,7 @@
  * alignment nop at 0x6B0F0 stays as the 1-word pad INCLUDE_ASM).
  * Blank externs: D_00000000_ldh = __osDiskHandle, D_00000000_gim =
  * __OSGlobalIntMask, gl_func_00000000_edma = osEPiRawStartDma (blank
- * in-segment jal = gl_func_0006F8A4); baked jals gl_ref_0007FEEC =
+ * in-segment jal = gl_osEPiRawStartDma); baked jals gl_ref_0007FEEC =
  * __osLeoResume / gl_ref_0007FE04 = __osLeoAbnormalResume (out-of-
  * segment, hardcoded 0C01FFBB/0C01FF81 like the 6B7A0 donor). LEO regs
  * are absolute 0xA500050x literals (no reloc). Spliced into
@@ -68,7 +68,7 @@ extern s32 gl_func_00000000_edma(OSPiHandle *, s32, u32, void *, u32); /* osEPiR
 #define WAIT_ON_IOBUSY(stat) \
     { stat = IO_READ(0xA4600010); while (stat & 3) stat = IO_READ(0xA4600010); }
 
-s32 gl_func_0006B0FC(void)
+s32 gl___osLeoInterrupt(void)
 {
     u32 stat;
     volatile u32 pi_stat;

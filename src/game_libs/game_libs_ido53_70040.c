@@ -6,7 +6,7 @@
  * game_libs_func_00070030 (lui/lw osViClock + mtc1 a0,$f8 = the hoisted
  * head IDO schedules before the addiu-sp prologue; true entry = 0x70034).
  * The orphan's word 0 (0x70030) is the previous fn's trailing pad nop ->
- * SUFFIX_BYTES_FORCE on gl_func_0006FFE4.
+ * SUFFIX_BYTES_FORCE on gl___osSetGlobalIntMask.
  * Blank extern: D_00000000_viclock = osViClock (USO reloc word, blanked).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
 typedef signed int s32;

@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006DA74 — 98-insn osCreatePiManager (libultra
+/* -O1 donor for gl_osCreatePiManager — 98-insn osCreatePiManager (libultra
  * pimgr.c, identified 2026-07-09 vs references/libreultra/src/io/pimgr.c;
  * decode matches field-for-field). PROVEN EXACT 98/98 at both IDO 7.1 and
  * 5.3 -O1 (standalone probe, relocs baked with the gl_ref values below);
@@ -39,7 +39,7 @@ extern void gl_func_00000007(void *, int, void (*)(void *), void *, void *, OSPr
 extern void gl_func_00000008(void *);
 extern void gl_func_00000009(unsigned int);
 DevMgr gl_devmgr_6DA74 = {0};
-void gl_func_0006DA74(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
+void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
     unsigned int savedMask;
     OSPri oldPri;
     OSPri myPri;

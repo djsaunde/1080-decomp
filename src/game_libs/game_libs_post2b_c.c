@@ -81,7 +81,7 @@ int gl_func_0007307C(void) {
 }
 
 
-/* gl_func_000730CC = libultra osEPiRawReadIo (epirawread.c verbatim,
+/* gl_osEPiRawReadIo = libultra osEPiRawReadIo (epirawread.c verbatim,
  * EPI_SYNC/UPDATE_REG piint.h macros): PI busy-wait, per-domain BSD
  * timing-reg update vs __osCurrentHandle[domain], then
  * *data = IO_READ(baseAddress | devAddr). BOUNDARY FIX: the 2-word
@@ -92,7 +92,7 @@ int gl_func_0007307C(void) {
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_730CC.c (101/101). Body
  * below is a placeholder for the splice. */
-int gl_func_000730CC(char *pihandle, unsigned int devAddr, unsigned int *data) {
+int gl_osEPiRawReadIo(char *pihandle, unsigned int devAddr, unsigned int *data) {
     volatile int ret = 0;
     if (pihandle == 0) {
         ret = -1;
@@ -108,7 +108,7 @@ int gl_func_000730CC(char *pihandle, unsigned int devAddr, unsigned int *data) {
 GLOBAL_ASM("src/libultra/game_libs/maptlbrdb.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000730CC_pad.s")
 
-/* gl_func_000732C4 = libultra scheduler yield/dispatch. LANDED 2026-06-21 as a
+/* gl_osYieldThread = libultra scheduler yield/dispatch. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel osYieldThread (kernel_023):
  * disable-int, set the running-thread state word (running_ptr + 0x10) to 2,
  * dispatch the run-queue head, restore-int. The prior wrap mis-read the running
@@ -118,7 +118,7 @@ GLOBAL_ASM("src/libultra/game_libs/maptlbrdb.s")
  * D_00000000, run-queue head -> gl_data_00000000 (distinct, no CSE). */
 extern int gl_func_00000000();
 extern int gl_data_00000000;
-void gl_func_000732C4(void) {
+void gl_osYieldThread(void) {
     register int sr = gl_func_00000000();
     *(short *)((char *)D_00000000 + 0x10) = 2;
     gl_func_00000000(&gl_data_00000000);
@@ -130,7 +130,7 @@ void gl_func_000732C4(void) {
  * delay unreachable" negative sweep was 7.1-only: IDO 5.3 -O1 emits the
  * exact `andi t7,v0,1; jr ra; or v0,t7,zero` pair. True entry = 0x73314
  * (5 words); the .s's leading 0x73310 pad nop is emitted as
- * SUFFIX_BYTES_FORCE on gl_func_000732C4.
+ * SUFFIX_BYTES_FORCE on gl_osYieldThread.
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_73310.c (5/5). Body below
  * is a placeholder for the splice. */

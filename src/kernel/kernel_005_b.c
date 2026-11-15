@@ -87,7 +87,7 @@ extern s32 func_80004B30(void *);
  * no honest C"). The jal'd 0x80005350/53D0/5400/54C0 addresses are stale
  * mid-body targets that stay as absolute undefined_syms_auto.txt entries
  * (same as __osLeoInterrupt's in kernel_000_b); merged into this unit.
- * EXACT via twin port of game_libs' copy gl_func_0006F8A4
+ * EXACT via twin port of game_libs' copy gl_osEPiRawStartDma
  * (game_libs_ido53_6F8A4.c, 5.3 -O1; 7.1 -O1 emits the same bytes).
  * The old NM's miss was the PI registers: `extern u32 D_A4600010` lets IDO
  * hoist the first PI_STATUS load above the argument homing stores; raw

@@ -50,7 +50,7 @@ extern void func_80005DC0(s32*, s32, s32);
  * 2026-07-10: the old "not -O1-reachable / -O2 store-base CSE" cap FELL —
  * the shared-%hi store cluster is the TU-DEFINED-global codegen (the
  * original pimgr.c DEFINES __osPiDevMgr; `extern` was the 77% floor). Same
- * lever as the game_libs sibling gl_func_0006DA74 (docs/IDO_CODEGEN
+ * lever as the game_libs sibling gl_osCreatePiManager (docs/IDO_CODEGEN
  * "TU-DEFINED global = shared-lui $at store cluster"). EXACT 115/115 via
  * the -O1 donor src/kernel/kernel_006_o1_5520.c (REPLACE_FUNC_BODY splice;
  * this TU keeps `extern D_8000A450` so the C body below compiles ~77% and

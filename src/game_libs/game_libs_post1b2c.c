@@ -10,11 +10,11 @@ typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { int a, b; } Pair2;
 typedef struct { float x, y, z; } Vec3;
-/* osThread subset used by gl_func_0006F534 (osSetThreadPri twin) */
+/* osThread subset used by gl_osSetThreadPri (osSetThreadPri twin) */
 typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_0006F534;
 
 /* game_libs_post1b2 TAIL (post1b2c): functions from 0x6C400 onward, carved
- * after gl_func_0006C384 was moved to its own -O1 unit
+ * after gl_osVirtualToPhysical was moved to its own -O1 unit
  * (game_libs_ido53_6C384.c). Same -O2 settings as the post1b2 head. */
 
 /* gl_osWritebackDCache = libultra osWritebackDCache (os/
@@ -27,7 +27,7 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
  * jal, t3=0x2000 live across the cut) and is retired; this symbol is now
  * 0x78. True entry = 0x6C404 = section 0x80A70 = export sym 1395 (4 jal
  * refs); the leading zero word 0x6C400 is the previous object's
- * (gl_func_0006C384, its own unit TRUNCATE_TEXT 0x7C) inter-object pad,
+ * (gl_osVirtualToPhysical, its own unit TRUNCATE_TEXT 0x7C) inter-object pad,
  * kept in this `.s` because it sits at the unit start (re-homing it means
  * a cross-unit relayout). Not osWritebackDCacheAll (= game_libs_func_
  * 00074864). IDO C cannot emit the cache op; now real assembly source (below). */
@@ -35,7 +35,7 @@ typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state
 GLOBAL_ASM("src/libultra/game_libs/writebackdcache.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C384_pad.s")
 
-/* gl_func_0006C484 = libultra osInitialize (os/initialize.c verbatim),
+/* gl_osInitialize = libultra osInitialize (os/initialize.c verbatim),
  * section 0x80AF0 = export sym 2445. LANDED 2026-09-09 (agent-g) via
  * REPLACE_FUNC_BODY donor splice: real C lives in the IDO 5.3 -O1 donor
  * game_libs_ido53_6C484.c (163/163 first compile). The old 62.9% NM decode
@@ -47,9 +47,9 @@ GLOBAL_ASM("src/libultra/game_libs/writebackdcache.s")
  * relocs). osClockRate / osViClock are DEFINED in the donor TU (shared
  * `lui at` u64 stores); the splice imports them as UND -> pins = 0. The
  * zero word at 0x6C710 is this object's 16-byte inter-object pad
- * (SUFFIX_BYTES_FORCE gl_func_0006C484). Body below is a placeholder for
+ * (SUFFIX_BYTES_FORCE gl_osInitialize). Body below is a placeholder for
  * the splice. */
-void gl_func_0006C484(void) {
+void gl_osInitialize(void) {
 }
 
 /* gl___ull_rshift = __ull_rshift (libgcc-style u64 >> u64, twin of the
@@ -58,7 +58,7 @@ void gl_func_0006C484(void) {
  * the old "game_libs_func_0006C710" symbol (0x30) carried a leading zero word;
  * bootup.uso's Sym export table says section 0x80D80 (= splat 0x6C714, the
  * `sw a0,0(sp)`) is the export (sym 2590) and 0x80D7C (the zero) is not -- it
- * is the 16-byte inter-object pad closing gl_func_0006C484, restored as an
+ * is the 16-byte inter-object pad closing gl_osInitialize, restored as an
  * all-zero SUFFIX_BYTES_FORCE on 6C484. This is the "mod8=4 _pad.s sidecar
  * failure" case of #feedback-leading-nop-symbol-misplaced-on-pad; the suffix
  * shape (no sidecar) sidesteps it. Real C in the -O2 -mips3 donor
@@ -120,7 +120,7 @@ GLOBAL_ASM("src/libultra/game_libs/setsr.s")
 GLOBAL_ASM("src/libultra/game_libs/getsr.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C90C_pad.s")
 
-/* gl_func_0006C9F4 = libultra __osPiRawStartDma. LANDED 2026-06-21 as a
+/* gl_osPiRawStartDma = libultra __osPiRawStartDma. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel osPiRawStartDma (kernel_042_b).
  * Body is IDO 5.3 -O1 (this TU is -O2), so the real C lives in the donor unit
  * game_libs_ido53_6C9F4.c and is spliced in via REPLACE_FUNC_BODY. The PI
@@ -128,7 +128,7 @@ GLOBAL_ASM("src/libultra/game_libs/getsr.s")
  * + DMA cfg-base global collapse to the address-0 USO placeholders
  * gl_func_00000000 / D_00000000. */
 extern int gl_func_00000000();
-int gl_func_0006C9F4(int direction, unsigned int devAddr, int dramAddr, unsigned int size) {
+int gl_osPiRawStartDma(int direction, unsigned int devAddr, int dramAddr, unsigned int size) {
     register unsigned int status;
     while ((status = *(volatile unsigned int*)0xA4600010) & 3) ;
     *(volatile unsigned int*)0xA4600000 = gl_func_00000000(dramAddr);
@@ -141,7 +141,7 @@ int gl_func_0006C9F4(int direction, unsigned int devAddr, int dramAddr, unsigned
     return 0;
 }
 
-/* gl_func_0006CAD4 = libultra __osSiRawStartDma (sirawdma.c verbatim):
+/* gl___osSiRawStartDma = libultra __osSiRawStartDma (sirawdma.c verbatim):
  * SI busy guard, OS_WRITE pre-writeback, SI_DRAM_ADDR_REG =
  * osVirtualToPhysical(dramAddr), dir-selected SI_PIF_ADDR_RD64B/WR64B =
  * 0x1FC007C0 (PIF RAM), OS_READ post-invalidate. Retires the 2026-05-19
@@ -151,9 +151,9 @@ int gl_func_0006C9F4(int direction, unsigned int devAddr, int dramAddr, unsigned
  * WIRED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
  * IDO -O1 donor unit game_libs_o1_6CAD4.c (43/43 at both 7.1 and 5.3 -O1),
  * spliced over this -O2 stand-in. The jr-ra delay nop was merged from the
- * _pad.s sidecar into gl_func_0006CAD4.s (0xa8 -> 0xac; sidecar deleted).
+ * _pad.s sidecar into gl___osSiRawStartDma.s (0xa8 -> 0xac; sidecar deleted).
  * Body below is a placeholder for the splice. */
-int gl_func_0006CAD4(int direction, void *dramAddr) {
+int gl___osSiRawStartDma(int direction, void *dramAddr) {
     volatile int ret = 0;
     if (direction == 0) {
         ret = -1;
@@ -161,15 +161,15 @@ int gl_func_0006CAD4(int direction, void *dramAddr) {
     return ret;
 }
 
-/* gl_func_0006CB84 = libultra __osSpRawStartDma (sprawdma.c verbatim):
+/* gl___osSpRawStartDma = libultra __osSpRawStartDma (sprawdma.c verbatim):
  * SP busy guard, SP_MEM_ADDR_REG = devAddr, SP_DRAM_ADDR_REG =
  * osVirtualToPhysical(dramAddr), dir-selected SP_WR_LEN/RD_LEN = size - 1.
  * WIRED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in the
  * IDO -O1 donor unit game_libs_o1_6CB84.c (35/35 at both 7.1 and 5.3 -O1),
  * spliced over this -O2 stand-in. The jr-ra delay nop was merged from the
- * _pad.s sidecar into gl_func_0006CB84.s (0x88 -> 0x8c; sidecar deleted).
+ * _pad.s sidecar into gl___osSpRawStartDma.s (0x88 -> 0x8c; sidecar deleted).
  * Body below is a placeholder for the splice. */
-int gl_func_0006CB84(int direction, unsigned int devAddr, void *dramAddr, unsigned int size) {
+int gl___osSpRawStartDma(int direction, unsigned int devAddr, void *dramAddr, unsigned int size) {
     volatile int ret = 0;
     if (direction == 0) {
         ret = (int)(size - 1);
@@ -177,7 +177,7 @@ int gl_func_0006CB84(int direction, unsigned int devAddr, void *dramAddr, unsign
     return ret;
 }
 
-/* gl_func_0006CC14 = libultra osEPiLinkHandle (io/epilinkhandle.c verbatim),
+/* gl_osEPiLinkHandle = libultra osEPiLinkHandle (io/epilinkhandle.c verbatim),
  * section 0x81280 = export sym 1583 (one jal ref). LANDED 2026-09-09
  * (agent-g) via REPLACE_FUNC_BODY donor splice: real C lives in the IDO -O1
  * donor game_libs_o1_6CC14.c (19/19 incl. the jr delay nop at both 7.1 and
@@ -188,11 +188,11 @@ int gl_func_0006CB84(int direction, unsigned int devAddr, void *dramAddr, unsign
  * gl_func_0006CC14_pad.s carried the delay nop + the 16-byte inter-object
  * pad word before osEPiReadIo (6CC64); the C body emits its own delay nop,
  * so the pad.s pragma is retired and the single pad word is the all-zero
- * SUFFIX_BYTES_FORCE gl_func_0006CC14=0x00000000 in the Makefile (unit
+ * SUFFIX_BYTES_FORCE gl_osEPiLinkHandle=0x00000000 in the Makefile (unit
  * layout unchanged). The ASM baseline now includes the delay nop and
  * alignment word (0x50 total); a size guard skips redundant padding.
  * Body below is a placeholder for the splice. */
-int gl_func_0006CC14(void *handle) {
+int gl_osEPiLinkHandle(void *handle) {
     return 0;
 }
 
@@ -361,7 +361,7 @@ GLOBAL_ASM("src/libultra/game_libs/probetlb.s")
 GLOBAL_ASM("src/libultra/game_libs/getcount.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006D7CC_pad.s")
 
-/* gl_func_0006D964 = libultra osPiStartDma (io/pidma.c verbatim), section
+/* gl_osPiStartDma = libultra osPiStartDma (io/pidma.c verbatim), section
  * 0x81FD0 = export sym 1530 (two jal refs). LANDED 2026-09-09 (agent-g) via
  * REPLACE_FUNC_BODY donor splice: real C lives in the IDO -O1 donor
  * game_libs_o1_6D964.c (67/67 at both 7.1 and 5.3 -O1, first compile). The
@@ -374,14 +374,14 @@ GLOBAL_ASM("src/libultra/game_libs/getcount.s")
  * reloading every arg from its sp+0x28.. home before each use is the -O1
  * tell. The old .s's trailing zero word (section 0x820DC, not exported) is
  * this object's own 16-byte alignment pad -> SUFFIX_BYTES_FORCE
- * gl_func_0006D964=0x00000000 in the Makefile (unit layout unchanged); the
+ * gl_osPiStartDma=0x00000000 in the Makefile (unit layout unchanged); the
  * .s is trimmed to the 67-word body. Body below is a placeholder for the
  * splice. */
-int gl_func_0006D964(void *mb, int priority, int direction, unsigned int devAddr, void *dramAddr, unsigned int size, void *mq) {
+int gl_osPiStartDma(void *mb, int priority, int direction, unsigned int devAddr, void *dramAddr, unsigned int size, void *mq) {
     return 0;
 }
 
-/* gl_func_0006DA74: 98-insn osCreatePiManager (libultra pimgr.c —
+/* gl_osCreatePiManager: 98-insn osCreatePiManager (libultra pimgr.c —
  * identified 2026-07-09 against references/libreultra/src/io/pimgr.c;
  * field-for-field: creates the cmd queue, the pi event queue
  * (piEventQueue=0x43E90/piEventBuf=0x43EA8), the access queue if needed,
@@ -395,7 +395,7 @@ int gl_func_0006D964(void *mb, int priority, int direction, unsigned int devAddr
  * TU-defined DevMgr produces the shared-lui $at store clusters, see donor
  * header). Body below is a placeholder for the splice (its bytes are
  * replaced by the donor). */
-void gl_func_0006DA74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void gl_osCreatePiManager(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile int keep = arg0 + arg1 + arg2 + arg3;
     while (keep) {
         keep = 0;
@@ -404,7 +404,7 @@ void gl_func_0006DA74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 /* game_libs_func_0006DBFC (0x10 orphan, no jr ra) was 2 alignment nops
  * (osCreatePiManager donor-TU .text pad, kept as the pad sidecar below) +
- * the HOISTED HEAD of gl_func_0006DC0C = osCartRomInit — absorbed into the
+ * the HOISTED HEAD of gl_osCartRomInit = osCartRomInit — absorbed into the
  * donor splice below (true entry 0x6DC04, spliced symbol covers
  * 0x6DC04..0x6DCF8). */
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006DA74_pad.s")
@@ -414,7 +414,7 @@ void gl_func_0006DA74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
  * wrong — $t6 is __CartRomHandle.baseAddress loaded by the stolen prologue
  * at 0x6DC04 (splat orphan game_libs_func_0006DBFC). Real identity:
  * libultra osCartRomInit. See the donor unit game_libs_ido53_6DC0C.c. */
-/* gl_func_0006DC0C: 59-insn save-data / SRAM init helper (size 0xEC, frame 0x20).
+/* gl_osCartRomInit: 59-insn save-data / SRAM init helper (size 0xEC, frame 0x20).
  *
  * Sets up the hardware-mapped 0xB000_0000 region (N64 PI bus DOM2 = cartridge
  * SRAM / EEPROM / save-data mapping) and unpacks a status word from a
@@ -458,7 +458,7 @@ extern int D_00000000;
 // (cb(0,&v)) and unpack it into the byte fields D+5/8/6/7 (date/time stamp),
 // zero D+9/D+0x10, cb(D+0x14, 96), an alloc/create cb, the self-copy +
 // pointer-restore globals, and the finalize cb. Reloc-blind &D + caller-set t6.
-void *gl_func_0006DC0C(void *t6) {
+void *gl_osCartRomInit(void *t6) {
     char *g = (char *)&D_00000000;
     unsigned int v;
     void *saved;
@@ -484,7 +484,7 @@ void *gl_func_0006DC0C(void *t6) {
 }
 #endif
 
-/* gl_func_0006DC0C = libultra osCartRomInit (cartrominit.c verbatim):
+/* gl_osCartRomInit = libultra osCartRomInit (cartrominit.c verbatim):
  * gate on __CartRomHandle.baseAddress == PHYS_TO_K1(PI_DOM1_ADDR2)
  * (0xB0000000), else init the cart-ROM PI handle (type=DEVICE_TYPE_CART,
  * latency/pulse/pageSize/relDuration unpacked from the BSD DOM1 config
@@ -495,14 +495,14 @@ void *gl_func_0006DC0C(void *t6) {
  * game_libs_ido53_6DC0C.c (61/61 exact incl. the absorbed head words of
  * game_libs_func_0006DBFC). Body below is a placeholder for the
  * REPLACE_FUNC_BODY splice (its bytes are replaced by the donor). */
-void *gl_func_0006DC0C(void) {
+void *gl_osCartRomInit(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 0;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006DC0C_pad.s")
 
-/* gl_func_0006DD14 = libultra __osDevMgrMain (io/devmgr.c verbatim, 2.0I
+/* gl___osDevMgrMain = libultra __osDevMgrMain (io/devmgr.c verbatim, 2.0I
  * struct layout): the PI device-manager thread loop. recv on dm->cmdQueue;
  * 64DD LEO block/track transfers (piHandle->type==DEVICE_TYPE_64DD, cmdType
  * 0/1) take the special path (sectorNum=-1, dramAddr rewind unless sector
@@ -513,15 +513,15 @@ void *gl_func_0006DC0C(void) {
  * 10..16. Needs IDO 5.3 -O1 (stack-resident locals, ra-only frame), so the
  * real C lives in the donor unit game_libs_ido53_6DD14.c (292/292 exact; the
  * switch jumptable %lo 0x23B0 resolves via the renamed donor-local .rodata
- * reloc gl_func_0006DD14_rodata -- the USO ships the 7-entry table in its
+ * reloc gl___osDevMgrMain_rodata -- the USO ships the 7-entry table in its
  * data segment). Body below is a placeholder for the REPLACE_FUNC_BODY
  * splice (its bytes are replaced by the donor). */
-void gl_func_0006DD14(void) {
+void gl___osDevMgrMain(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
 }
 
-/* gl_func_0006E1A4 = libultra osSetEventMesg. LANDED 2026-06-21 as a
+/* gl_osSetEventMesg = libultra osSetEventMesg. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel osSetEventMesg (kernel_003) -- NOT
  * the "62% dispatcher cap" the prior wrap guessed: it is disable-int, write
  * queue+msg into the event-state table entry, restore-int. The earlier reading
@@ -530,7 +530,7 @@ void gl_func_0006DD14(void) {
  * REPLACE_FUNC_BODY. OS-API callees -> gl_func_00000000; event-state table base
  * -> D_00000000. */
 typedef struct { int queue; int msg; } EventState_0006E1A4;
-void gl_func_0006E1A4(int event, void *queue, int msg) {
+void gl_osSetEventMesg(int event, void *queue, int msg) {
     register int sr = gl_func_00000000();
     EventState_0006E1A4 *es = &((EventState_0006E1A4 *)&D_00000000)[event];
     es->queue = (int)queue;
@@ -594,7 +594,7 @@ int gl_func_0006EEE4(int a0, int a1, int a2) {
  * _pad.s sidecar — a splat boundary artifact, since a C-compiled `jr ra` always
  * owns its delay slot. Restored the delay nop into gl_func_0006EF08.s (size 0x58)
  * so the baseline function symbol matches the real -O2 codegen. The _pad.s sidecar
- * The 1-word all-zero alignment pad at 0x6EF60 (so the next fn gl_func_0006EF64
+ * The 1-word all-zero alignment pad at 0x6EF60 (so the next fn gl_osEPiStartDma
  * sits at +0x5C) is appended via SUFFIX_BYTES_FORCE (sanctioned all-zero data
  * pad; FORCE because the function ends in the natural jr-ra;nop epilogue).
  * (A -g3 unit was tried and rejected: -g3 reschedules the prologue/epilogue.) */
@@ -608,18 +608,18 @@ int gl_func_0006EF08(char *a0, int a1, int a2, ...) {
     return rv;
 }
 
-/* gl_func_0006EF64 = libultra osEPiStartDma, 0xD4/53 body words.
+/* gl_osEPiStartDma = libultra osEPiStartDma, 0xD4/53 body words.
  * bootup.uso Sym1320 exports Text+0x835D0; calls at 0x49BA0/0x49E40.
  * Real fixed-arity C lives in game_libs_o1_6EF64.c, compiled at -O1.
  * The former varargs/argument-home "cap" was an -O2 misdiagnosis.
  * Both IDO 7.1 and 5.3 emit the original 53 words from the reference C.
  * Retain the three existing all-zero padding words before entry 6F044. */
-int gl_func_0006EF64(void *handle, void *message, int direction) {
+int gl_osEPiStartDma(void *handle, void *message, int direction) {
     return 0; /* Replaced by the complete compiled -O1 donor body. */
 }
 
 
-/* gl_func_0006F088 = libultra osLeoDiskInit (leodiskinit.c verbatim):
+/* gl_osLeoDiskInit = libultra osLeoDiskInit (leodiskinit.c verbatim):
  * LeoDiskHandle = { type DEVICE_TYPE_64DD, base PHYS_TO_K1(PI_DOM2_ADDR1)
  * = 0xA5000000, latency 3, pulse 6, pageSize 6, relDuration 2, domain
  * PI_DOMAIN2 }; writes PI_BSD_DOM2 LAT/PWD/PGS/RLS; speed = 0;
@@ -630,13 +630,13 @@ int gl_func_0006EF64(void *handle, void *message, int direction) {
  * HOISTED HEAD -- IDO 5.3 -O1 schedules the six field stores before the
  * addiu-sp prologue and splat split at the prologue. True entry = 0x6F044;
  * the spliced symbol covers 0x6F044..0x6F140 (the pad nops 0x6F038/3C/40
- * are emitted as SUFFIX_BYTES_FORCE on gl_func_0006EF64).
+ * are emitted as SUFFIX_BYTES_FORCE on gl_osEPiStartDma).
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_6F088.c (64/64; extern-
  * struct spelling for per-store own-lui + TU-defined 2-byte PgsRls pair
  * for the single shared-$at sb pair, osCartRomInit lever). Body below is
  * a placeholder for the splice. */
-void *gl_func_0006F088(void) {
+void *gl_osLeoDiskInit(void) {
     volatile int ready = 0;
     ready = 1;
     return (void *)ready;
@@ -753,7 +753,7 @@ GLOBAL_ASM("src/libultra/game_libs/invalicache.s")
 /* gl_osInvalDCache = osInvalDCache (game_libs libultra copy): real source in src/libultra/game_libs/invaldcache.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/invaldcache.s")
 
-/* gl_func_0006F38C = libultra __osSpDeviceBusy (sp.c verbatim):
+/* gl___osSpDeviceBusy = libultra __osSpDeviceBusy (sp.c verbatim):
  * return (*SP_STATUS_REG & (DMA_BUSY|DMA_FULL|IO_FULL)) ? 1 : 0.
  * BOUNDARY FIX: splat's game_libs_func_0006F380 3-word fragment was this
  * function's HOISTED HEAD (IDO -O1 schedules the `register` MMIO load,
@@ -766,27 +766,27 @@ GLOBAL_ASM("src/libultra/game_libs/invaldcache.s")
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_6F38C.c (11/11). Body
  * below is a placeholder for the splice. */
-int gl_func_0006F38C(void) {
+int gl___osSpDeviceBusy(void) {
     volatile int busy = 0;
     return busy;
 }
 
-/* gl_func_0006F3BC = libultra __osSiDeviceBusy (si.c verbatim):
+/* gl___osSiDeviceBusy = libultra __osSiDeviceBusy (si.c verbatim):
  * return (*SI_STATUS_REG & (DMA_BUSY|RD_BUSY)) ? 1 : 0.
  * BOUNDARY FIX: splat's game_libs_func_0006F3B0 3-word "alt-entry
  * fragment" was this function's HOISTED HEAD (same phenomenon as
- * gl_func_0006F38C = __osSpDeviceBusy above). True entry = 0x6F3B4;
+ * gl___osSpDeviceBusy = __osSpDeviceBusy above). True entry = 0x6F3B4;
  * spliced symbol covers 0x6F3B4..0x6F3DC (pads 0x6F3B0 / 0x6F3E0 via
- * SUFFIX_BYTES_FORCE on gl_func_0006F38C / this symbol).
+ * SUFFIX_BYTES_FORCE on gl___osSpDeviceBusy / this symbol).
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_6F3BC.c (11/11; 7.1 -O1
  * agrees on this shape). Body below is a placeholder for the splice. */
-int gl_func_0006F3BC(void) {
+int gl___osSiDeviceBusy(void) {
     volatile int busy = 0;
     return busy;
 }
 
-/* gl_func_0006F3E4 = libultra osJamMesg (jammesg.c verbatim): disable
+/* gl_osJamMesg = libultra osJamMesg (jammesg.c verbatim): disable
  * ints; while (validCount >= msgCount) either set running thread
  * OS_STATE_WAITING(8) + __osEnqueueAndYield(&mq->fullqueue) when
  * flag==OS_MESG_BLOCK, or restoreInt + return -1; then first = (first +
@@ -799,11 +799,11 @@ int gl_func_0006F3BC(void) {
  * the IDO -O1 donor unit game_libs_o1_6F3E4.c (84/84 word-exact at 7.1
  * -O1, first compile), spliced over this -O2 stand-in. Body below is a
  * placeholder for the splice. */
-s32 gl_func_0006F3E4(char *arg0, s32 arg1, s32 arg2) {
+s32 gl_osJamMesg(char *arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-/* gl_func_0006F534 = libultra osSetThreadPri. LANDED 2026-06-21 as a
+/* gl_osSetThreadPri = libultra osSetThreadPri. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel osSetThreadPri (kernel_011_b) --
  * verbatim osSetThreadPri body including the (Thread*)(void*) double-cast that
  * pins the t-reg allocno pair. Real C lives in the donor unit
@@ -812,7 +812,7 @@ s32 gl_func_0006F3E4(char *arg0, s32 arg1, s32 arg2) {
  * placeholder gl_func_00000000; the two distinct globals (running-thread ptr
  * + run-queue head) map to the two distinct zero-resolving placeholders
  * D_00000000 / gl_data_00000000 (kept separate so IDO does not CSE them). */
-void gl_func_0006F534(Thread_0006F534 *thread, int pri) {
+void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
     register int sr = gl_func_00000000();
     if (thread == 0) {
         thread = (Thread_0006F534 *)D_00000000;
@@ -889,7 +889,7 @@ void guPosition(void *m) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006F834_pad.s")
 
-/* gl_func_0006F8A4 = libultra osEPiRawStartDma (io/epirawdma.c verbatim):
+/* gl_osEPiRawStartDma = libultra osEPiRawStartDma (io/epirawdma.c verbatim):
  * EPI_SYNC (PI_STATUS busy spin + __osCurrentHandle[domain] latch of the
  * four BSD DOM1/DOM2 latency/pageSize/relDuration/pulse registers that
  * differ), PI_DRAM_ADDR = osVirtualToPhysical(dramAddr), PI_CART_ADDR =
@@ -901,7 +901,7 @@ void guPosition(void *m) {
  * real C lives in the donor unit game_libs_ido53_6F8A4.c (137/137 words
  * compile-exact, size-exact 0x224). Body below is a placeholder for the
  * REPLACE_FUNC_BODY splice (its bytes are replaced by the donor). */
-s32 gl_func_0006F8A4(void) {
+s32 gl_osEPiRawStartDma(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 0;
@@ -1059,14 +1059,14 @@ long long gl_func_0006FE5C(void *t) {
     return 0;
 }
 
-/* gl_func_0006FFE4 = libultra __osSetGlobalIntMask. LANDED 2026-06-21 as a
+/* gl___osSetGlobalIntMask = libultra __osSetGlobalIntMask. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel __osSetGlobalIntMask (kernel_011_b) --
  * NOT the "68.9% 2-call wrapper cap" the prior wrap guessed: it is disable-int,
  * OR the arg into the global int-mask word, restore-int. The two calls are
  * osDisableInt/osRestoreInt (both collapse to gl_func_00000000), not a callback.
  * Real C lives in the donor unit game_libs_ido53_6FFE4.c (IDO 5.3 -O1), spliced
  * via REPLACE_FUNC_BODY. Global int-mask word -> D_00000000. */
-void gl_func_0006FFE4(int mask) {
+void gl___osSetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
     D_00000000 |= mask;
     gl_func_00000000(sr);
@@ -1080,7 +1080,7 @@ void gl_func_0006FFE4(int mask) {
  * function's hoisted head scheduled before the addiu-sp prologue by IDO
  * 5.3; its INCLUDE_ASM was removed and the spliced symbol covers
  * 0x70034..0x70194 (the orphan's leading 0x70030 pad nop is emitted as
- * SUFFIX_BYTES_FORCE on gl_func_0006FFE4).
+ * SUFFIX_BYTES_FORCE on gl___osSetGlobalIntMask).
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_70040.c (88/88; 7.1 -O1
  * coalesces the u8 bitRate andi-to-temp+or pair). Body below is a

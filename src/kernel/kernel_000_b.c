@@ -223,7 +223,7 @@ void osDestroyThread(int *target) {
  * handwritten region: the old "handwritten PI-DMA chain" reading and the
  * 2026-08-22 fragment merges glued one C function (sp -0x40, every local
  * sp-resident at -O1) and its static sibling at 0x43E4 (sp -0x20) into one
- * .s. Port of game_libs' copy gl_func_0006B0FC (game_libs_ido53_6B0FC.c,
+ * .s. Port of game_libs' copy gl___osLeoInterrupt (game_libs_ido53_6B0FC.c,
  * twin-finder.py 0.936; the +58 words were __osLeoAbnormalResume).
  *   D_80019644 = __osDiskHandle, D_8000A3E0 = __OSGlobalIntMask,
  *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry

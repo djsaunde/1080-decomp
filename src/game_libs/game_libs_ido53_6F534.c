@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_func_0006F534 = libultra osSetThreadPri (sched/setthreadpri.c / thread
+/* gl_osSetThreadPri = libultra osSetThreadPri (sched/setthreadpri.c / thread
  * priority), statically linked into the game_libs USO. Byte-exact masked-twin
  * of the matched kernel osSetThreadPri (kernel_011_b.c) -- identical 56-insn
  * body after masking the collapsed cross-references. Compiled IDO 5.3 -O1
@@ -25,7 +25,7 @@ typedef struct Thread {
     unsigned short state;
 } Thread;
 
-void gl_func_0006F534(Thread *thread, int pri) {
+void gl_osSetThreadPri(Thread *thread, int pri) {
     register int sr = gl_func_00000000();
     if (thread == 0) {
         thread = (Thread *)D_00000000;
