@@ -2258,14 +2258,18 @@ $(GAMELIBS_46050_DONOR): src/game_libs/game_libs_ncc_46050.cpp
 	$(OBJCOPY) --redefine-sym gl_func_00034458=gl_func_00046050_c34458 $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00046050=$(GAMELIBS_46050_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_46050_DONOR)
-# 48AEC = real C++ `void Obj::draw()` (agent-c run 159, cfe 88.11); symbols renamed (names only). Still NON_MATCHING: NM comparison object only.
-GAMELIBS_48AEC_NM_DONOR := build/src/game_libs/game_libs_ncc_48AEC_nm.cpp.o
-$(GAMELIBS_48AEC_NM_DONOR): src/game_libs/game_libs_ncc_48AEC_nm.cpp
+# 48AEC = real C++ `void Obj::draw()` (agent-c run 159, cfe 88.11); symbols renamed (names only).
+# agent-g run 435: EXACT NCC donor over a placeholder on both build trees (one function-scope variable carries the
+# s0 family; the loops' packets take the context as the last parameter of free inlines, so no pool slot 7 is created
+# before the loops and the else g home is vfp-124 = target). Blank USO refs: the jal words go through gl_func_00000000,
+# the two data bases are pinned D_48AEC_mt / D_48AEC_src = 0 (D_00000000 / _g / _h already pinned 0).
+GAMELIBS_48AEC_DONOR := build/src/game_libs/game_libs_ncc_48AEC.cpp.o
+$(GAMELIBS_48AEC_DONOR): src/game_libs/game_libs_ncc_48AEC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym draw__3ObjFv=gl_func_00048AEC $@
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048AEC=$(GAMELIBS_48AEC_NM_DONOR)
-build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48AEC_NM_DONOR)
+	$(OBJCOPY) --redefine-sym draw__3ObjFv=gl_func_00048AEC --redefine-sym func_00000000=gl_func_00000000 --redefine-sym D_00000000_i=D_48AEC_mt --redefine-sym D_00000000_j=D_48AEC_src $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00048AEC=$(GAMELIBS_48AEC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_48AEC_DONOR)
 # 454C4 = real C++ `void Obj::setLights(Ctx *, f32 *, f32)` (agent-c run 160, cfe 63.85): stock-gbi gSPLight / gSPNumLights macros, by-value list iterator; symbols renamed (names only). EXACT NCC donor over an empty
 # placeholder (agent-c run 240: nested pool hold in the second flags test + post-loop reads of e that lower its priority).
 GAMELIBS_454C4_DONOR := build/src/game_libs/game_libs_ncc_454C4.cpp.o

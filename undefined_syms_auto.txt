@@ -5444,6 +5444,9 @@ D_15FC_c94 = 0x00000C94;
 gl_func_00000000_4b620_base = 0x00000000;
 /* gl_func_0004BAF4 flag word (blank USO data ref, per-site lui 0 / lw 0x1C4) */
 D_4BAF4_flags = 0x00000000;
+/* gl_func_00048AEC blank USO data bases (game_libs_ncc_48AEC.cpp): mt slot (lui 4 / addiu -0x3760 = +0x3C8A0) and the matrix source (+0xA0) */
+D_48AEC_mt = 0x00000000;
+D_48AEC_src = 0x00000000;
 /* gl_func_0003E5E0 EXACT donor (agent-c run 270): vtable words as the target's absolute USO values, blank jal words */
 gl_3e5e0_vk = 0x0001F0D8;
 gl_3e5e0_v1 = 0x0001F1F8;

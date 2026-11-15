@@ -20,7 +20,13 @@
  * by-value c2 instead of the shared `Mtx *&` cmd: the target holds it in s0 across the copy call), 95.67 -> 96.13, frame
  * 0x158 -> 0x160 = target; the Node flag test as an inline `Flags::test(int m)` with an `if (0) { m = 0; }` parameter keep
  * (the target's `addiu a3,a3,0x18` this temp), 96.13 -> 96.57, length 2072 -> 2076 = target.
- * Still NON_MATCHING: build/non_matching/ only. */
+ * agent-g run 435: EXACT. One function-scope variable `A` (declared `Ctx *`, the matrix source through a
+ * `(f32 (*)[4])` view) carries the target's s0 family: the arm-1 slot count, the else matrix slot and the
+ * loops' context. The loops' packets are free inlines dZ1 / dY3 whose context is the LAST parameter, passed as
+ * `A = GS->ctx`, so the context load follows the element reads (ugen temp order = target), behind an unused
+ * leading parameter that keeps the old `this` pool slot. The else count is held in the dead variable `B`.
+ * No pool slot 7 is created before the loops, so the else g lands on vfp-124 (sp+228) = target. Symbols renamed
+ * in the Makefile (names only): func_00000000 -> gl_func_00000000, D_00000000_i / _j -> D_48AEC_mt / D_48AEC_src. */
 typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef unsigned char u8; typedef float f32;
 extern "C" {
 extern char D_00000000[];
@@ -96,6 +102,9 @@ struct Ctx {
 /* agent-g run 352: kept-parameter wrapper (kit CDXXIX I2 form) on the loops' element reads: the two ctx6C tests and the
  * third loop's draw() receiver, 97.821 -> 97.869 */
 template <class T> inline T I2(T v) { if (0) { v = 0; } return v; }
+/* agent-g run 435: the loops' 0x06 packets as free inlines: unused leading z (the old `this` slot), ctx last */
+inline void dZ1(void *z, Ctx *c, int n, Ctx *s) { n = (int)func_00000000(&c->dl->buf[n]); s->p6b(n, s->nextQ()); }
+inline void dY3(void *z, Ctx *c, int n, Ctx *s) { u32 t = (u32)func_00000000(&c->dl->buf[n]); Gfx *g = s->next(); g->w0 = 0x06000000; g->w1 = t; }
 struct GState { char pad[0x158]; Ctx *ctx; };
 #define GS (*(GState **)(D_00000000 + 0x254))
 struct Flags { int v; int test(int m) { return v & m; } }; /* agent-g run 417: plain (the run-209 folded use of v / kept m made v a uopt LR in v0; the target reads it into a ugen temp, t4) */
@@ -136,7 +145,7 @@ void Obj::draw() {
      * agent-c run 307 (full 720-order grid, 150 random): i / j / k and cmd ahead of gctx (mtx still last): cmd's home
      * at sp+348 / gctx sp+352 under the frame top, 97.719 -> 97.726, same length */
     Ctx *gctx;
-    f32 (*A)[4];
+    Ctx *A; /* agent-g run 435: one variable for the s0 family (see the header) */
     f32 (*B)[4];
     f32 mtx[4][4];
 
@@ -148,7 +157,7 @@ void Obj::draw() {
         return;
     }
     B = *(f32 (**)[4])(D_00000000 + 0xE4);
-    A = (f32 (*)[4])((char *)&D_00000000_j + 0xA0);
+    A = (Ctx *)((char *)&D_00000000_j + 0xA0);
     if (B != 0) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}
         /* agent-g run 430: eight code-free blocks at the arm start (and no `0 * (int)B` fold in the else): B's LR
          * (M-12) spans more units, its priority falls under i's (M-80), i takes v0 and B the target's v1, 99.886 -> 99.915 */
@@ -156,20 +165,20 @@ void Obj::draw() {
             for (int j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
                 for (int k = 0; k < 4; k++) {
-                    mtx[i][j] += A[i][k] * B[k][j];
+                    mtx[i][j] += ((f32 (*)[4])A)[i][k] * B[k][j];
                 }
             }
         }
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} g = gctx->lR6(c); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(c); } } /* agent-g run 407: 98.297 -> 98.329 */
+        { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; int d1 = 0, d2 = 0, d3 = 0; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} A = (Ctx *)gctx->dl->count; gctx->dl->count = (int)A + 1; g = &gctx->dl->buf[(int)A]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(c); } } /* agent-g run 407: 98.297 -> 98.329 */
         /* agent-g run 430: the packet slot is held in a block-scoped named `g` (draw's own word, the first holder of
          * lR6()'s return), declared in an inner block entered after a depth-4 me() test made pool words 2 / 3: g's home
          * is vfp-108 = target (lE3's named g was allocated after mtx()'s six words, vfp-120), 99.915 -> 99.919 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx; func_00000000(I2(A), c2 = me(me(gctx))->mtx()); me(me(gctx))->LX(c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        gctx = GS->ctx; func_00000000(I2((f32 (*)[4])((char *)&D_00000000_j + 0xA0)), (Mtx *)(A = (Ctx *)me(me(gctx))->mtx())); if (*(u32 *)&gctx->dl) {} if (1) {} B = (f32 (*)[4])((DLHead *)*(u32 *)&gctx->dl)->count; fG(me(me(me(gctx)))->nF0((int)B), (Mtx *)A); /* agent-g run 435 */ /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
@@ -180,7 +189,7 @@ void Obj::draw() {
                 /* agent-g run 369: the ctx6C test through curM() and n8A back through cur(), and the second loop's test
                  * through curM() (per-site accessor rounds, 200 + 200): 98.037 -> 98.085 -> 98.297, same length */
                 if (me(&it)->cur()->ctx6C != 0) { /* agent-g run 417: plain test (kit CDXCVIII 4.); loop 1's test and loop 2's ctx element through me(&it)->cur() (random accessor round), 99.312 -> 99.389 */
-                    GS->ctx->dcQ(it.cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
+                    dZ1(this, it.cur()->ctx6C, it.cur()->n8A, A = GS->ctx); /* agent-g run 435 */ /* agent-g run 352: ctx6C read through ref() (loop-lever random round), 97.734 -> 97.821; agent-g run 354: back through cur() on the frame-0x160 body (per-read wrapper grid), 98.017 -> 98.037 */
                 }
             }
         }
@@ -203,7 +212,7 @@ void Obj::draw() {
              * base: 99.919 -> 99.996, only the else g home left) */
             AIter *ip = &it;
             if (it.cur()->ctx6C != 0) {
-                GS->ctx->dc3(ip->cur()->ctx6C, me(ip)->curM()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
+                dY3(this, ip->cur()->ctx6C, me(ip)->curM()->n8A, A = GS->ctx); /* agent-g run 435 */ /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {

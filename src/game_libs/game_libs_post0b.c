@@ -14006,7 +14006,12 @@ void gl_func_00048AEC(char *arg0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_00048AEC);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_48AEC.cpp (agent-c run 159 lift, agent-g run 435
+ * exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference) in
+ * both build trees; the blank USO data refs are pinned (D_48AEC_mt / D_48AEC_src = 0), the jal words go through
+ * gl_func_00000000. */
+void gl_func_00048AEC(char *arg0) {
+}
 #endif
 
 /* gl_func_00049308: per-record bounds scan (exported, Sym @section 0x5D974).
