@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_0003E5E0 (0x260 / 152 words), agent-c run 157 (NM lift) / run 270 (exact).
+/* IDO 7.1 NCC (C++) EXACT donor for ItemMgr_hostioParms (0x260 / 152 words), agent-c run 157 (NM lift) / run 270 (exact).
  * The cfe body's nested alloc-or-given blocks are three `new` expressions of member-function callback
  * objects: a 4-byte polymorphic root K (vptr only), CB : K holding {obj, PMF} (no virtuals of its own, so its
  * ctor stores no vptr), and the two leaf classes CB1 / CB2 whose empty ctors store their vptr LAST -- the
@@ -56,7 +56,7 @@ inline void loop(char *it, int d0) {
         } while (it != 0);
     }
 }
-extern "C" void gl_func_0003E5E0(char *arg0) {
+extern "C" void ItemMgr_hostioParms(char *arg0) {
 
     { int x = FW(arg0, 0xC); dbg_printThreads(&D_00000000_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
     reg0(arg0);

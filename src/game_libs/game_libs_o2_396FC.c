@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_000396FC -- message handler, switch on a1[0]
+/* IDO 7.1 -O2 donor for MNode_doCommand -- message handler, switch on a1[0]
  * (109..114, 6-entry jumptable) (0x264 / 153 words; 153/153 word-exact
  * standalone apart from the two .rodata reloc fields).
  *
@@ -6,7 +6,7 @@
  * 29CCC / 52CD4 / 51AD8 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-
  * jumptable-rodata-rename). The donor .rodata holds the jumptable at +0 and
  * the 1/32767 literal at +0x18; the splice renames that reloc to
- * gl_func_000396FC_rodata, pinned to 0x1A64 in undefined_syms_auto.txt
+ * MNode_doCommand_rodata, pinned to 0x1A64 in undefined_syms_auto.txt
  * (the USO ships the table at +0x1A64 and the literal at +0x1A7C).
  *
  * EXACT 2026-11-13 (agent-h run 371): the last word was the bound check's
@@ -28,7 +28,7 @@ typedef struct { int m[16]; } Mtx16_396FC;
 typedef struct { char c[0]; } Z0_396FC;
 typedef struct { f32 v[10]; } Xform_396FC;
 
-void gl_func_000396FC(int *a0, int *a1) {
+void MNode_doCommand(int *a0, int *a1) {
     int b3[3];
     int b2[3];
     int b1[3];

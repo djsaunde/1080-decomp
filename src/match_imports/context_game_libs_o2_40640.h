@@ -306,4 +306,4 @@ extern int gl40640_reset(void *);
 extern void gl40640_translate(void *, Vec3 *);
 extern u32 gl40640_mask(void);
 extern void gl40640_pop(void);
-void gl_func_00040640(GlObjectPrefix *root);
+void QNode_display(GlObjectPrefix *root);

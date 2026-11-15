@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003863C (0xEC / 59 words): lock the owner's
+/* IDO 7.1 NCC (C++) donor for Node_display (0xEC / 59 words): lock the owner's
  * sub-object, then for every child with flag 4 back-link it to the owner and
  * fire virtual slot 2 when its mask overlaps the callee's result. The entry
  * next() goes through an inline first() { return next(); }, which moves the
@@ -19,7 +19,7 @@ struct Iter {
 };
 struct Sub { void lock() { gl_func_00000000(this); } };
 struct Owner { char pad[0xC]; Sub *x0c; Link *head; };
-extern "C" void gl_func_0003863C(Owner *o) {
+extern "C" void Node_display(Owner *o) {
     Iter it(o->head);
     o->x0c->lock();
     for (NodeB *n = it.first(); n; n = it.next()) {

@@ -306,4 +306,4 @@ extern GlMatrixStore D_39094_a1, D_39094_a2a, D_39094_a2b, D_39094_a3, D_39094_a
 extern GlMatrixStore D_39094_a5a, D_39094_a5b, D_39094_a6a, D_39094_a6b, D_39094_a7;
 extern GlMatrixStore D_39094_a8a, D_39094_a8b;
 extern char D_39094_dat[];
-void gl_func_00039094(GlObjectPrefix *root);
+void MNode_display(GlObjectPrefix *root);

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00036F0C (0x3C8 / 242 words): EXACT (agent-g run 219).
+/* IDO 7.1 NCC (C++) donor for CamMan_update (0x3C8 / 242 words): EXACT (agent-g run 219).
  * Real C++ `void FreeCam::update()` (debug free camera: pad buttons 0x40 / 0x80 / 0x400 build a move vector,
  * accelerating while any component exceeds the 0.8 threshold (RoData 0x19E8), rotated by the camera matrix;
  * 0x1000 turns yaw / pitch, pitch clamped to +-89, the boom vector (0, 0, dist) rotated by pitch then yaw, added

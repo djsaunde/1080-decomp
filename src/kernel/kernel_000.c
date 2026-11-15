@@ -151,7 +151,7 @@ extern s32 gUsoMemUsed;
  *   pseudo. Confirms cap is structural, not register-hint-fixable.
  *
  * 2026-05-27 retest #4 — split-jr-ra-via-goto-out lever (the same lever
- *   that landed AudioHeap_AllocZeroed / improved gl_func_00036E74 + 0003D16C):
+ *   that landed AudioHeap_AllocZeroed / improved CamMan_ctor + 0003D16C):
  *   `if (new_top < gUsoHeapEnd) goto succ; return 0; succ: return result;`.
  *   Standalone-cc shows mine still places `or v0, v1, $0` in the bnez
  *   delay slot rather than target's BEFORE-sltu position. The goto-out

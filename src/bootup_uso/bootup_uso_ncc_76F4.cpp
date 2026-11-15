@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for Tv1_func_000076F4 (0xDC / 55 words) -- the bootup twin of gl_func_00039E24
+/* IDO 7.1 NCC (C++) donor for Tv1_func_000076F4 (0xDC / 55 words) -- the bootup twin of SNode_display
  * (docs/IDO_CODEGEN.md kit CXXVIII / CXXIX): query the root (G+0x18) through a 7-arg prototyped call; on
  * success hand the global block and s0+0x2C to a callee, scale the camera vector by the block's scale
  * triple (+0x128) through an inline member Cam::mul(G &) called on a local reference `Cam &c = g.cam`, add

@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_00040304 -- transform-command handler
+/* IDO 7.1 -O2 donor for QNode_doCommand -- transform-command handler
  * (0x33C / 207 words; 207/207 word-exact apart from reloc fields).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
  * 29CCC / 44B78 / 52CD4 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-
  * switch-jumptable-rodata-rename). The C switch over op 0x6D..0x72 puts its
  * 6-entry jumptable at donor .rodata +0 and the 1/32767 literal right behind
- * it at +0x18; the splice renames that reloc to gl_func_00040304_rodata,
+ * it at +0x18; the splice renames that reloc to QNode_doCommand_rodata,
  * pinned to 0x1AE4 in undefined_syms_auto.txt (USO RoData: table +0x1AE4,
  * literal +0x1AFC). The 0.01f scale is a memory load of D_40304_k001 (+0x1AE0).
  *
@@ -40,7 +40,7 @@ extern float D_40304_k001;
 extern int gl_func_00000000();
 extern void gl_func_00040304_quat(float *, float, float, float);
 
-void gl_func_00040304(Obj40304 *self, Cmd40304 *cmd) {
+void QNode_doCommand(Obj40304 *self, Cmd40304 *cmd) {
     Vec3 z;
     Vec3 *sp;
     short **p;

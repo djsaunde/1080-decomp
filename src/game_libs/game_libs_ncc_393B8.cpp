@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000393B8 (0x26C / 155 words): lock the owner,
+/* IDO 7.1 NCC (C++) donor for MNode_update (0x26C / 155 words): lock the owner,
  * then for every child with flag 8: if flag 0x200, not 0x20000 and not x2c&1,
  * pass its matrix pair to a callback (owner flag 2) or multiply it by the
  * owner's 4x4; publish the owner, back-link, fire virtual slot 3. The if/return
@@ -22,7 +22,7 @@ struct Iter393 {
     Node393 *next() { if ((cur = nxt) != 0) { nxt = nxt->next; return cur->obj; } return 0; }
 };
 struct Root393 { char pad[0xC]; Sub393 *sub; Link393 *head; char pad14[0x18]; int x2c; char pad30[0x40]; float m70[16]; };
-extern "C" int gl_func_000393B8(Root393 *r) {
+extern "C" int MNode_update(Root393 *r) {
     Iter393 it(r->head);
     r->sub->lock();
     Node393 *n = it.next();

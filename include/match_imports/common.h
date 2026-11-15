@@ -42,7 +42,7 @@ typedef struct GlInput675A4 {
 } GlInput675A4;
 
 /* Shared display-slot prefix evidenced by game_libs_func_00003298 (reset),
- * gl_func_00003430 (update), gl_func_000038F4 (dispatch), and allocators
+ * PointsGadget_update_00003430 (update), PointsGadget_display_000038F4 (dispatch), and allocators
  * gl_func_00003B1C/00003C0C/00003DB8. func_000144B4 initializes +44/+5C
  * and +88/+8C. This prefix does not establish the full allocation size. */
 typedef struct {

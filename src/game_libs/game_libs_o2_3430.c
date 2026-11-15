@@ -1,11 +1,11 @@
-/* IDO 7.1 -O2 donor for gl_func_00003430 -- 8-slot state-machine updater
+/* IDO 7.1 -O2 donor for PointsGadget_update_00003430 -- 8-slot state-machine updater
  * (0x4C4 bytes, 305 words; 8-way jumptable over s0->0x94 + a 4-entry
  * fade loop). EXACT 305/305 words (agent-c run 218).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs.c.o (the 3C0C /
  * 25A8 recipe): this TU's .rodata holds the 0.1f literal at +0, the 8-entry
  * jumptable at +4 and three more 0.1f literals at +0x24/+0x28/+0x2C; the
- * splice renames that reloc gl_func_00003430_rodata, pinned to bootup.uso
+ * splice renames that reloc PointsGadget_update_00003430_rodata, pinned to bootup.uso
  * RoData +0xCC8 (the target's words at 0xCC8 / 0xCCC / 0xCEC / 0xCF0 / 0xCF4).
  *
  * Load-bearing shapes:
@@ -25,7 +25,7 @@
 extern int D_00000000;
 extern int gl_func_00000000();
 
-void gl_func_00003430(char *arg0) {
+void PointsGadget_update_00003430(char *arg0) {
     f32 temp;
     s32 i;
     s32 j;

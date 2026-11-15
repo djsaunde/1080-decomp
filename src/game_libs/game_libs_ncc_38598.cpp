@@ -1,7 +1,7 @@
 /* IDO 7.1 NCC (C++) donor for gl_func_00038598 (0xA4 / 41 words): walk the
  * owner's child list; for each object with flag 0x200 rebuild its matrix
  * pair (callee(&m30, &m70)), then fire virtual slot 1.
- * The {cur, nxt} list iterator of gl_func_0003D48C (next() advances through
+ * The {cur, nxt} list iterator of ItemType_hostioParms (next() advances through
  * nxt->next); the object is held in s0 across the calls. The vptr at +0x28
  * needs the virtuals declared in a base whose data ends at +0x28 (declared
  * in Node itself, edg puts the vptr after all of Node's data).

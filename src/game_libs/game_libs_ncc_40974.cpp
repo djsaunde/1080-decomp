@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00040974 (0x338 / 206 words): lock the
+/* IDO 7.1 NCC (C++) donor for QNode_update (0x338 / 206 words): lock the
  * owner, blend its 0xDC block from its matrix, then for every child with flag 8:
  * publish the owner, back-link, and either copy/blend the child's record
  * (flag 0x20000, implicit Rec::operator= over by-value V3 copies) or rebuild
@@ -27,7 +27,7 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Root { char pad[0xC]; Sub *sub; Link *head; char pad14[0x18]; int x2c; char pad30[0x40]; float m70[16]; char padb0[0x2C]; char xdc[4]; };
-extern "C" void gl_func_00040974(Root *r) {
+extern "C" void QNode_update(Root *r) {
     Iter it(r->head);
     int y0, y1; y0 = 0; y1 = 0;
     r->sub->lock();

@@ -1,6 +1,6 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00038728 (0x108 / 66 words): lock the
+/* IDO 7.1 NCC (C++) donor for Node_update (0x108 / 66 words): lock the
  * owner's sub-object, walk the child list ({cur, nxt} iterator of
- * gl_func_0003D48C) and, for each object with flag 8, rebuild its matrix
+ * ItemType_hostioParms) and, for each object with flag 8, rebuild its matrix
  * pair when 0x200 is set and neither 0x20000 nor the +0x2C bit is, attach
  * the owner, and fire virtual slot 3; unlock.
  * The first call's `lw a1,12(a0); jal; or a0,a1` is an inline Sub::lock()
@@ -21,7 +21,7 @@ struct Iter387 {
 };
 struct Sub387 { void lock() { gl_func_00000000(this); } };
 struct Owner387 { char pad[0xC]; Sub387 *x0c; Link387 *head; };
-extern "C" void gl_func_00038728(Owner387 *o) {
+extern "C" void Node_update(Owner387 *o) {
     Iter387 it(o->head);
     o->x0c->lock();
     for (Node387 *n = it.next(); n; n = it.next()) {

@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00038964 (0xC4 / 49 words): walk the
+/* IDO 7.1 NCC (C++) donor for Node_broadcastMsg (0xC4 / 49 words): walk the
  * owner's child list with a stack iterator and fire two virtual hooks
  * (slots 4 and 5, vptr at +0x28) on every object with the same context.
  *
- * Same list iterator as gl_func_0003D48C: next() advances through its own
+ * Same list iterator as ItemType_hostioParms: next() advances through its own
  * nxt member, `(cur = nxt) ? (nxt = nxt->next, cur->obj) : 0`; each hook
  * re-reads the current object through get(). The cfe wrap (98.88) needed
  * address-taken locals and dead `if (0)` stores for the same shape.
@@ -20,7 +20,7 @@ struct Iter389 {
     Node389 *get() { return cur->obj; }
 };
 struct Owner389 { char pad[0x10]; Link389 *head; };
-extern "C" void gl_func_00038964(Owner389 *o, void *ctx) {
+extern "C" void Node_broadcastMsg(Owner389 *o, void *ctx) {
     Iter389 it(o->head);
     for (Node389 *n = it.next(); n; n = it.next()) {
         it.get()->f1(ctx);

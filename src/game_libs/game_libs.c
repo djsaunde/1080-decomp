@@ -264,7 +264,7 @@ void game_libs_func_000009A8(int *a0, int a1, int a2) {
 }
 
 extern int gl_func_00000000();
-void gl_func_000009B4(char *arg0) {
+void CountDownGadget_display(char *arg0) {
     char *a2;
     volatile int pad[7];  /* phantom-slot lever: the target's 0x20 unused stack (cf. 628EC) */
 
@@ -616,7 +616,7 @@ void BoardsGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x110);
 }
 
-/* gl_func_000012B4: Quad4(1.0f) colour + (int)(255 * alpha) setup, then a
+/* BoardsGadget_display: Quad4(1.0f) colour + (int)(255 * alpha) setup, then a
  * per-entry loop over self->0x10C (0xB8, 46 words). EXACT in-unit. The
  * "caller-set $f0/$f4/$f6 float convention cap" was a splat boundary error:
  * the six words before the old 0x12B4 symbol (`lui/mtc1` 1.0f -> f0, 255.0f
@@ -630,7 +630,7 @@ void BoardsGadget_release(char *a0) {
  * gives the 0x68 frame (buf at sp+0x58). */
 extern int gl_func_00000000();
 extern float gl_data_00000000_12b4f;
-void gl_func_000012B4(char *self) {
+void BoardsGadget_display(char *self) {
     float buf[4];
     char pad[0x20];
     char *s2;
@@ -856,7 +856,7 @@ void game_libs_func_00001800(int *a0, int a1, int a2, int a3, int a4) {
     a0[0xBC/4] = a4;
 }
 
-/* game_libs_func_00001818: 16-segment meter/gauge tick (0x43C incl. its 2-word
+/* CoolGadget_display: 16-segment meter/gauge tick (0x43C incl. its 2-word
  * hoisted head: lui/mtc1 f0 = 1.0f = the local float v[4] = {1,1,1,1} init
  * scheduled above addiu sp by 7.1 -O2). Orphan-sweep verdict 2026-09-05
  * (docs/MATCHING_WORKFLOW.md #uso-sym-export-oracle-orphan-sweep-arcproc-f48):
@@ -898,7 +898,7 @@ extern int gl_func_00000000();
 extern float gl_ffunc_00001818(float);
 extern float gl_ref_00001818_scale_f;
 typedef struct { float x, y, z, w; } Vec4f_1818;
-void game_libs_func_00001818(char *o) {
+void CoolGadget_display(char *o) {
     Vec4f_1818 w;
     float v[4];
     int m[1];
@@ -1364,14 +1364,14 @@ void gl_func_000029F8(char *arg0) {
     }
 }
 
-/* gl_func_00002B94: HUD gauge draw (0x5A4, 361 words) -- EXACT via the IDO
+/* CourseGadget_display: HUD gauge draw (0x5A4, 361 words) -- EXACT via the IDO
  * 7.1 -O2 donor src/game_libs/game_libs_o2_2B94.c (REPLACE_FUNC_BODY splice,
  * 6F684 / 68990 recipe). The donor's four .rodata colour literals are
- * renamed gl_func_00002B94_rodata and pinned to bootup.uso RoData +0xCB8
+ * renamed CourseGadget_display_rodata and pinned to bootup.uso RoData +0xCB8
  * (an in-unit compile cannot bake those %lo words). Decode history and the
  * load-bearing shapes are in the donor header. Body below is a placeholder
  * for the splice. */
-void gl_func_00002B94(char *self) {
+void CourseGadget_display(char *self) {
     volatile int ret = 0;
     if (self[0x1F0] != 0) {
         ret = 1;
@@ -1494,14 +1494,14 @@ void PointsGadget_release_000033E4(char *a0) {
     gl_func_00000000(a0 + 0x138);
 }
 
-/* gl_func_00003430: 8-slot state-machine updater (0x4C4, 305 words) -- EXACT
+/* PointsGadget_update_00003430: 8-slot state-machine updater (0x4C4, 305 words) -- EXACT
  * via the IDO 7.1 -O2 donor src/game_libs/game_libs_o2_3430.c
  * (REPLACE_FUNC_BODY splice, agent-c run 218). The "step" is the literal
  * 0.1f, not a variable: uopt keeps it in caller-saved f2 and rematerialises
  * it after the calls of cases 6/7/8 (one fresh .rodata literal per load =
  * the four 0.1f words at 0xCC8/0xCEC/0xCF0/0xCF4 around the jumptable at
  * 0xCCC); three trailing `if (1) {}` make a callee-saved f24 too expensive.
- * The donor's .rodata reloc is renamed gl_func_00003430_rodata and pinned
+ * The donor's .rodata reloc is renamed PointsGadget_update_00003430_rodata and pinned
  * to bootup.uso RoData +0xCC8. Body below is a placeholder for the splice.
  * Decode history (field spellings carried into the donor):
  * PASS-2 2026-06-22 (big-swing): full float-typed reconstruction of the 8-way
@@ -1544,11 +1544,11 @@ void PointsGadget_release_000033E4(char *a0) {
  * the step load. Plus the jumptable %lo (step loads 0xCC8/0xCEC/0xCF0/0xCF4,
  * all 0.1f, are base-0 externs + the offset -- literals would merge; run 184
  * decode-scan: the bare externs read address 0, `--raw --pins` 15 -> 12). */
-void gl_func_00003430(char *arg0) {
+void PointsGadget_update_00003430(char *arg0) {
     *(s32 *)(arg0 + 0xEC) = 1;
 }
 
-/* gl_func_000038F4 — EXACT MATCH 138/138 words (2026-07-03, agent-e w5).
+/* PointsGadget_display_000038F4 — EXACT MATCH 138/138 words (2026-07-03, agent-e w5).
  * Was 118/138. Fix stack, in order:
  * 1. RELOC EXTERNS: the two format strings are baked USO data addrs. Target
  *    words lui a1,0x1 / addiu a1,CCEC compose to 0x0000CCEC (NOT 0x1CCEC —
@@ -1584,7 +1584,7 @@ typedef int (*GP_000038F4)();
 #endif
 extern char D_0000CCEC;  /* baked USO data addr 0xCCEC (lui 1/addiu CCEC); defined in undefined_syms_auto.txt */
 extern char D_0000CCF8;  /* baked USO data addr 0xCCF8 */
-void gl_func_000038F4(char *arg0) {
+void PointsGadget_display_000038F4(char *arg0) {
     int temp_s2;
     int temp_s3;
     char *temp_s7;
@@ -4463,7 +4463,7 @@ int *gl_func_000088B4(int *arg0) {
  * emitted at game_libs.c.o offset 0x8778 (= TRUNCATE_TEXT) as a size-0 symbol,
  * so none of its bytes reached the link. The ROM words are the hoisted first
  * insns of the next function, which already emits them from source:
- *   0x3FB64 andi/multu       -> gl_func_0003FB6C (C body in post0b.c)
+ *   0x3FB64 andi/multu       -> hostio_sendImage (C body in post0b.c)
  *   0x4E57C lui/addiu a1     -> gl_func_0004E584 (game_libs_ncc_4E584.cpp donor
  *                               spliced into post0b.c.o)
  *   0x51654 lui/addiu v1     -> gl_func_0005165C (game_libs_ncc_5165C.cpp donor

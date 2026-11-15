@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00002B94 -- HUD gauge draw: positions two
+/* IDO 7.1 -O2 donor for CourseGadget_display -- HUD gauge draw: positions two
  * sprite elements from the bound object's s16 extents, then draws the base
  * quad + up to five overlay sprites (direction arrows, flag icons, colour
  * swatch) at offsets derived from the 1CC..1EC float fields (0x5A4 bytes,
@@ -11,7 +11,7 @@
  * 6F684 / 68990 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-
  * jumptable-rodata-rename): the four colour literals (200/255, 30/255,
  * 93/255, 162/255) land in this TU's .rodata at +0..+0xC in first-use
- * order; the splice renames that section reloc to gl_func_00002B94_rodata,
+ * order; the splice renames that section reloc to CourseGadget_display_rodata,
  * pinned in undefined_syms_auto.txt to bootup.uso RoData +0xCB8 where the
  * USO ships them (words 0x3F48C8C9 0x3DF0F0F1 0x3EBABABB 0x3F22A2A3).
  *
@@ -62,7 +62,7 @@ typedef struct GlObj2B94 {
     char *unk1F0;
 } GlObj2B94;
 
-void gl_func_00002B94(GlObj2B94 *self) {
+void CourseGadget_display(GlObj2B94 *self) {
     f32 spB8[4];
     Quad4 spA8;
     s32 spA4;

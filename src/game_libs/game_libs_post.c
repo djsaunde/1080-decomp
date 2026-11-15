@@ -6043,7 +6043,7 @@ void AudioLoad_Unused2(void) {}
 
 /* AudioLoad_FinishSlowLoad: 29-insn (0x74) lookup-and-copy. Sibling of 2495C, both
  * call func_00039194 (intra-segment helper at fixed offset 0x39194 — alt-
- * entry-jal pattern, jal target lands inside gl_func_00039094 which is
+ * entry-jal pattern, jal target lands inside MNode_display which is
  * size 0x324).
  *
  * Decoded structure:
@@ -6100,8 +6100,8 @@ void AudioLoad_FinishSlowLoad(int *a0) {
  *   - remaining lives in s1 (`or a2,s1` / `or a1,s1` before the calls):
  *     the empty `if (remaining) {}` after the 0x400 chunk's `rec->size -=`
  *     extends its range across the call (reload of rec->size stays).
- * The three callees are baked absolute jals into gl_func_00039094 (0x39200)
- * and gl_func_000393B8 (0x393FC / 0x39480): gl_ref_* in
+ * The three callees are baked absolute jals into MNode_display (0x39200)
+ * and MNode_update (0x393FC / 0x39480): gl_ref_* in
  * undefined_syms_auto.txt. */
 extern int gl_ref_00039200();
 extern int gl_ref_000393FC();

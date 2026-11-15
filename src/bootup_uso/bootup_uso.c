@@ -4588,7 +4588,7 @@ void func_00007BC8(char *a0) {
     func_00000000(a0);
 }
 
-/* func_00007BF4 - EXACT (run 113 agent-c): twin port of gl_func_00035A18
+/* func_00007BF4 - EXACT (run 113 agent-c): twin port of MemberCallback_invoke
  * (same vtable-dispatch thunk). Keys from the twin: plain if/else idx select
  * (no goto / branch-likely), loaded-value-LAST entry add, and the arg load +
  * accumulate joined on one line (hoists the lh above the lw). */

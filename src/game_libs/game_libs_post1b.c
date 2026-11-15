@@ -1982,7 +1982,7 @@ void game_libs_func_00065B40(char *s) {
  * for the descending load/store schedule. The one-shot dispatch block fixes
  * the struct-copy temporary registers; the spare locals preserve frame gaps.
  * Bootup TextReloc +0x7A320 -> Sym1794 (Text 0x54910, gl_func_000402A4),
- * +0x7A35C -> Sym265 (Text 0x4DC90, gl_func_00039624). Both jal fields are
+ * +0x7A35C -> Sym265 (Text 0x4DC90, MNode_handleMsg). Both jal fields are
  * zero in the ROM and are resolved by the original USO loader.
  */
 extern int gl_add_position_65C54(char *, float, float, float);

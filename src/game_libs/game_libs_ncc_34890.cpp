@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00034890 (0x150 / 84 words), agent-c run 164 lift, agent-g run 321 exact
+/* IDO 7.1 NCC (C++) EXACT donor for hostio_sendNodeTree (0x150 / 84 words), agent-c run 164 lift, agent-g run 321 exact
  * (spliced over a placeholder on both build paths; the residual notes below are history).
  * `new X(o)` with inline cfront-protocol constructors: X : Mid : Base (Base = vptr only, 4 bytes; Mid stores the
  * owner at +4 and copies the 8-byte template D+0x1E1B0 to +8; X stores its vptr). Under NCC each inlined
@@ -39,7 +39,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
  * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
  * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */
 inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); dbg_printThreads(D_34890_d, h, a, o->flags & 2); }
-extern "C" void gl_func_00034890(O *o) {
+extern "C" void hostio_sendNodeTree(O *o) {
     make(o->h, o);
     /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in
      * the top test -- h keeps its a1 / M-12 weight through the as1-removed copy, the bottom step is if / else into res.

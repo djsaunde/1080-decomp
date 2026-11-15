@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003D48C (0xAC / 43 words): notify,
+/* IDO 7.1 NCC (C++) donor for ItemType_hostioParms (0xAC / 43 words): notify,
  * then walk the owner's child list with a stack iterator and hand every
  * object to the callee, then two closing calls.
  *
@@ -21,7 +21,7 @@ struct Iter3D4 {
     int get() { return cur->obj; }
 };
 struct Owner3D4 { char pad[0x10]; Link3D4 *head; char pad14[0x18]; int x2c; };
-extern "C" void gl_func_0003D48C(Owner3D4 *o) {
+extern "C" void ItemType_hostioParms(Owner3D4 *o) {
     gl_func_00000000(&D_00000000, &o->x2c, 1);
     Iter3D4 it(o->head);
     while (it.next()) gl_func_00000000(it.get());
