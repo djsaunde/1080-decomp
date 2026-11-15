@@ -1606,7 +1606,7 @@ glabel SelectWin_ctor
     /* 005A20 00005A20 AC8C041C */  .word 0xAC8C041C
     /* 005A24 00005A24 8FAD03B8 */  .word 0x8FAD03B8
     /* 005A28 00005A28 AC8503C8 */  .word 0xAC8503C8
-    jal gen_func_000087A0   /* 005A2C 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 005A2C 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 005A30 00005A30 AC8D03B8 */  .word 0xAC8D03B8
     /* 005A34 00005A34 8FA603A8 */  .word 0x8FA603A8
     /* 005A38 00005A38 3C013F80 */  .word 0x3C013F80

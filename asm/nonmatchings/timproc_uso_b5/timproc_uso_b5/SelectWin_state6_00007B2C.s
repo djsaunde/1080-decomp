@@ -73,7 +73,7 @@ glabel SelectWin_state6_00007B2C
     /* 007C40 00007C40 24050100 */  .word 0x24050100
     /* 007C44 00007C44 1040003A */  .word 0x1040003A
     /* 007C48 00007C48 3C040000 */  .word 0x3C040000
-    jal SelectWin_func_00008A90   /* 007C4C 0C000000 -> SelectWin_func_00008A90 */
+    jal SelectWin_chosenItem_00008A90   /* 007C4C 0C000000 -> SelectWin_chosenItem_00008A90 */
     /* 007C50 00007C50 02002025 */  .word 0x02002025
     /* 007C54 00007C54 8C430028 */  .word 0x8C430028
     /* 007C58 00007C58 00002825 */  .word 0x00002825
@@ -81,9 +81,9 @@ glabel SelectWin_state6_00007B2C
     /* 007C60 00007C60 846C0088 */  .word 0x846C0088
     /* 007C64 00007C64 0320F809 */  .word 0x0320F809
     /* 007C68 00007C68 01822021 */  .word 0x01822021
-    jal SelectWin_func_00008ABC   /* 007C6C 0C000000 -> SelectWin_func_00008ABC */
+    jal SelectWin_chooseCurrent_00008ABC   /* 007C6C 0C000000 -> SelectWin_chooseCurrent_00008ABC */
     /* 007C70 00007C70 02002025 */  .word 0x02002025
-    jal SelectWin_func_00008A90   /* 007C74 0C000000 -> SelectWin_func_00008A90 */
+    jal SelectWin_chosenItem_00008A90   /* 007C74 0C000000 -> SelectWin_chosenItem_00008A90 */
     /* 007C78 00007C78 02002025 */  .word 0x02002025
     /* 007C7C 00007C7C 8C430028 */  .word 0x8C430028
     /* 007C80 00007C80 00002825 */  .word 0x00002825
@@ -101,11 +101,11 @@ glabel SelectWin_state6_00007B2C
     /* 007CB0 00007CB0 8C840000 */  .word 0x8C840000
     jal timproc_uso_b5_func_0002FC   /* 007CB4 0C000000 -> timproc_uso_b5_func_0002FC */
     /* 007CB8 00007CB8 01D82825 */  .word 0x01D82825
-    jal SelectWin_func_0000866C   /* 007CBC 0C000000 -> SelectWin_func_0000866C */
+    jal SelectWin_saveFocus_0000866C   /* 007CBC 0C000000 -> SelectWin_saveFocus_0000866C */
     /* 007CC0 00007CC0 02002025 */  .word 0x02002025
     /* 007CC4 00007CC4 24080007 */  .word 0x24080007
     /* 007CC8 00007CC8 AE0803CC */  .word 0xAE0803CC
-    jal SelectWin_func_00008A38   /* 007CCC 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 007CCC 0C000000 -> SelectWin_curItem_00008A38 */
     /* 007CD0 00007CD0 02002025 */  .word 0x02002025
     /* 007CD4 00007CD4 8E0903C4 */  .word 0x8E0903C4
     /* 007CD8 00007CD8 8C4C02B0 */  .word 0x8C4C02B0
@@ -120,7 +120,7 @@ glabel SelectWin_state6_00007B2C
     /* 007CFC 00007CFC 3C013F80 */  .word 0x3C013F80
     /* 007D00 00007D00 44812000 */  .word 0x44812000
     /* 007D04 00007D04 02002025 */  .word 0x02002025
-    jal SelectWin_func_00008A38   /* 007D08 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 007D08 0C000000 -> SelectWin_curItem_00008A38 */
     /* 007D0C 00007D0C E6040484 */  .word 0xE6040484
     /* 007D10 00007D10 8C430028 */  .word 0x8C430028
     /* 007D14 00007D14 84790070 */  .word 0x84790070
@@ -135,11 +135,11 @@ glabel SelectWin_state6_00007B2C
     /* 007D38 00007D38 24050200 */  .word 0x24050200
     /* 007D3C 00007D3C 1040002F */  .word 0x1040002F
     /* 007D40 00007D40 00000000 */  .word 0x00000000
-    jal SelectWin_func_000088A0   /* 007D44 0C000000 -> SelectWin_func_000088A0 */
+    jal SelectWin_prevStageBit_000088A0   /* 007D44 0C000000 -> SelectWin_prevStageBit_000088A0 */
     /* 007D48 00007D48 02002025 */  .word 0x02002025
     /* 007D4C 00007D4C 54400006 */  .word 0x54400006
     /* 007D50 00007D50 8E0203C4 */  .word 0x8E0203C4
-    jal SelectWin_func_00006C00   /* 007D54 0C000000 -> SelectWin_func_00006C00 */
+    jal SelectWin_commitSelection_00006C00   /* 007D54 0C000000 -> SelectWin_commitSelection_00006C00 */
     /* 007D58 00007D58 02002025 */  .word 0x02002025
     /* 007D5C 00007D5C 10000027 */  .word 0x10000027
     /* 007D60 00007D60 00000000 */  .word 0x00000000
@@ -153,7 +153,7 @@ glabel SelectWin_state6_00007B2C
     /* 007D80 00007D80 8C840000 */  .word 0x8C840000
     jal timproc_uso_b5_func_0002FC   /* 007D84 0C000000 -> timproc_uso_b5_func_0002FC */
     /* 007D88 00007D88 01F82825 */  .word 0x01F82825
-    jal SelectWin_func_00008A38   /* 007D8C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 007D8C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 007D90 00007D90 02002025 */  .word 0x02002025
     /* 007D94 00007D94 8C430028 */  .word 0x8C430028
     /* 007D98 00007D98 8C7900AC */  .word 0x8C7900AC
@@ -167,19 +167,19 @@ glabel SelectWin_state6_00007B2C
     /* 007DB8 00007DB8 00002825 */  .word 0x00002825
     /* 007DBC 00007DBC 44803000 */  .word 0x44803000
     /* 007DC0 00007DC0 02002025 */  .word 0x02002025
-    jal SelectWin_func_0000866C   /* 007DC4 0C000000 -> SelectWin_func_0000866C */
+    jal SelectWin_saveFocus_0000866C   /* 007DC4 0C000000 -> SelectWin_saveFocus_0000866C */
     /* 007DC8 00007DC8 E6060484 */  .word 0xE6060484
     jal SelectWin_func_0000894C   /* 007DCC 0C000000 -> SelectWin_func_0000894C */
     /* 007DD0 00007DD0 02002025 */  .word 0x02002025
     /* 007DD4 00007DD4 AE0203C8 */  .word 0xAE0203C8
     /* 007DD8 00007DD8 02002025 */  .word 0x02002025
-    jal gen_func_000087A0   /* 007DDC 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 007DDC 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 007DE0 00007DE0 00402825 */  .word 0x00402825
     /* 007DE4 00007DE4 AE0203C4 */  .word 0xAE0203C4
-    jal SelectWin_func_00006D30   /* 007DE8 0C000000 -> SelectWin_func_00006D30 */
+    jal SelectWin_skipDisabled_00006D30   /* 007DE8 0C000000 -> SelectWin_skipDisabled_00006D30 */
     /* 007DEC 00007DEC 02002025 */  .word 0x02002025
     /* 007DF0 00007DF0 02002025 */  .word 0x02002025
-    jal SelectWin_func_00008688   /* 007DF4 0C000000 -> SelectWin_func_00008688 */
+    jal SelectWin_beginTransition_00008688   /* 007DF4 0C000000 -> SelectWin_beginTransition_00008688 */
     /* 007DF8 00007DF8 24050001 */  .word 0x24050001
     lui $a0, %hi(import_80020098)   /* 007DFC 3C040000 -> import_80020098 */
     /* 007E00 00007E00 3C050001 */  .word 0x3C050001
@@ -188,7 +188,7 @@ glabel SelectWin_state6_00007B2C
     /* 007E0C 00007E0C 24840000 */  .word 0x24840000
     /* 007E10 00007E10 10400003 */  .word 0x10400003
     /* 007E14 00007E14 02002025 */  .word 0x02002025
-    jal SelectWin_func_00006E08   /* 007E18 0C000000 -> SelectWin_func_00006E08 */
+    jal SelectWin_moveCursorPrev_00006E08   /* 007E18 0C000000 -> SelectWin_moveCursorPrev_00006E08 */
     /* 007E1C 00007E1C 24050001 */  .word 0x24050001
     /* 007E20 00007E20 8FBF001C */  .word 0x8FBF001C
     /* 007E24 00007E24 8FB00018 */  .word 0x8FB00018

@@ -20,7 +20,7 @@ glabel SelectWin_func_00008C44
     /* 008C84 00008C84 00008825 */  .word 0x00008825
     lui $s0, %hi(timproc_uso_b5_D_807FE78C)   /* 008C88 3C100000 -> timproc_uso_b5_D_807FE78C */
     /* 008C8C 00008C8C 26100F1C */  .word 0x26100F1C
-    jal SelectWin_func_00008A38   /* 008C90 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 008C90 0C000000 -> SelectWin_curItem_00008A38 */
     /* 008C94 00008C94 02602025 */  .word 0x02602025
     /* 008C98 00008C98 8C4F02B0 */  .word 0x8C4F02B0
     /* 008C9C 00008C9C 8E0E0000 */  .word 0x8E0E0000
@@ -46,7 +46,7 @@ glabel SelectWin_func_00008C44
     /* 008CEC 00008CEC 24010007 */  .word 0x24010007
     /* 008CF0 00008CF0 5521000A */  .word 0x5521000A
     /* 008CF4 00008CF4 00001025 */  .word 0x00001025
-    jal SelectWin_func_00008A38   /* 008CF8 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 008CF8 0C000000 -> SelectWin_curItem_00008A38 */
     /* 008CFC 00008CFC 02602025 */  .word 0x02602025
     /* 008D00 00008D00 8C4A02B0 */  .word 0x8C4A02B0
     /* 008D04 00008D04 24010004 */  .word 0x24010004

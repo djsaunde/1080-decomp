@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for BoardItem_vfunc25_0000C310 (0x400 / 256 words), EXACT (agent-g run 246),
+/* IDO 7.1 NCC (C++) donor for BoardItem_drawStats_0000C310 (0x400 / 256 words), EXACT (agent-g run 246),
  * spliced over the empty placeholder in timproc_uso_b5.c (both trees) via REPLACE_FUNC_BODY.
  * agent-g run 184 (kit CXXXIII): the colour channels are an inline `Col::set(int r, int g, int b, int a)` that
  * divides each INT parameter by 255.0f -- the int -> float conversion folds after uopt's candidate selection
@@ -22,7 +22,7 @@ struct Col {
 };
 struct Img { char p[0x20]; s16 w; s16 h; };
 struct Spr { char p[0x10]; Img *img; s32 width() { Img *i = img; return i->w + 0 * (int)(i); } /* agent-c run 209: folded counted use of i */ };
-extern "C" void BoardItem_vfunc25_0000C310(char *arg0, char *arg1) {
+extern "C" void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
     /* agent-g run 195 (kit CLIII home rules): i first (frame top word), vals / ptrs / hud / cols top-down = the
      * target's 176 / 156 / 152 / 136 homes; the volatile pair moved to the end (dead / volatile homes go last). */
     int i;

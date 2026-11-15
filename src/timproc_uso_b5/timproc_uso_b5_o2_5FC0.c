@@ -35,9 +35,9 @@ extern void SelectWin_state7_00007E34();
 extern void SelectWin_state8_000080F4();
 extern void SelectWin_state9_00008468();
 extern f32 timproc_uso_b5_func_07E7B0(f32);
-int SelectWin_func_00001CF0(int *a0, int a1);
-int SelectWin_func_00008A38();
-int SelectWin_func_00008AD4(int *a0);
+int SelectionMgr_otherWin_00001CF0(int *a0, int a1);
+int SelectWin_curItem_00008A38();
+int SelectWin_prevFocusItem_00008AD4(int *a0);
 void SelectWin_state2_000073C0(char *scr);
 void SelectWin_state10_000085E0(int *a0);
 void SelectWin_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4);
@@ -52,7 +52,7 @@ void SelectWin_update_00005FC0(char *arg0) {
 
     if (FW(arg0, 0x3BC) == 2) {
         if ((FW(arg0, 0x3C8) == 4) &&
-            (FW(SelectWin_func_00001CF0((int *)FW(arg0, 0x41C), FW(arg0, 0x3B8)), 0x3C8) == 4)) {
+            (FW(SelectionMgr_otherWin_00001CF0((int *)FW(arg0, 0x41C), FW(arg0, 0x3B8)), 0x3C8) == 4)) {
             import_000A7ECC(&import_80020098, -1);
         } else {
             import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
@@ -110,11 +110,11 @@ void SelectWin_update_00005FC0(char *arg0) {
         }
     }
     if (FW(arg0, 0x3F8) != 0) {
-        v0 = (char *)SelectWin_func_00008AD4(arg0);
+        v0 = (char *)SelectWin_prevFocusItem_00008AD4(arg0);
         v1 = (char *)FW(v0, 0x28);
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     }
-    v0 = (char *)SelectWin_func_00008A38(arg0);
+    v0 = (char *)SelectWin_curItem_00008A38(arg0);
     v1 = (char *)FW(v0, 0x28);
     ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     v1 = (char *)FW(FW(arg0, 0x40C), 0x54);
@@ -129,21 +129,21 @@ void SelectWin_update_00005FC0(char *arg0) {
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
     }
     if (FW(arg0, 0x3CC) == 5) {
-        sp2C = (char *)SelectWin_func_00008A38(arg0);
+        sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_func_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
-        sp2C = (char *)SelectWin_func_00008A38(arg0);
+        sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         *(f32 *)(arg0 + 0x498) =
             *(f32 *)(arg0 + 0x49C) +
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C0) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x14C);
     } else {
-        sp2C = (char *)SelectWin_func_00008A38(arg0);
+        sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         SelectWin_func_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
-        sp2C = (char *)SelectWin_func_00008A38(arg0);
+        sp2C = (char *)SelectWin_curItem_00008A38(arg0);
         *(f32 *)(arg0 + 0x498) =
             *(f32 *)(arg0 + 0x49C) +
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *

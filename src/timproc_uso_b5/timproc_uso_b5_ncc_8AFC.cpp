@@ -7,7 +7,7 @@
 typedef short s16;
 typedef float f32;
 extern "C" {
-extern int SelectWin_func_00008A38(...);
+extern int SelectWin_curItem_00008A38(...);
 }
 extern "C" void RoomModifier_func_00008AFC(char *scr) {
     f32 K = 0.9f;
@@ -18,7 +18,7 @@ extern "C" void RoomModifier_func_00008AFC(char *scr) {
 
     for (g = 0; g < 4; g++) {
         for (i = 0; i < *(int *)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + 0x6C); i++) {
-            o = (char *)SelectWin_func_00008A38(scr);
+            o = (char *)SelectWin_curItem_00008A38(scr);
             e = *(char **)(*(char **)(*(char **)(scr + 0x40C) + g * 4 + 0x40) + i * 4 + 0x3C);
             if (o != e) {
                 o = *(char **)(e + 0x28);
@@ -26,7 +26,7 @@ extern "C" void RoomModifier_func_00008AFC(char *scr) {
             }
         }
     }
-    o = (char *)SelectWin_func_00008A38(scr);
+    o = (char *)SelectWin_curItem_00008A38(scr);
     vt = *(char **)(o + 0x28);
     ((void (*)(char *, f32))*(int *)(vt + 0x5C))((char *)(*(s16 *)(vt + 0x58) + (int)o), 1.0f);
 }

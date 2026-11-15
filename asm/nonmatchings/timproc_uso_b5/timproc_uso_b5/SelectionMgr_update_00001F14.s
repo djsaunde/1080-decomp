@@ -54,12 +54,12 @@ glabel SelectionMgr_update_00001F14
     /* 001FDC 00001FDC 8CC40034 */  .word 0x8CC40034
     /* 001FE0 00001FE0 8CC40038 */  .word 0x8CC40038
     /* 001FE4 00001FE4 AFA60020 */  .word 0xAFA60020
-    jal gen_func_000087A0   /* 001FE8 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 001FE8 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 001FEC 00001FEC 24050004 */  .word 0x24050004
     /* 001FF0 00001FF0 8FA60020 */  .word 0x8FA60020
     /* 001FF4 00001FF4 AFA2001C */  .word 0xAFA2001C
     /* 001FF8 00001FF8 24050004 */  .word 0x24050004
-    jal gen_func_000087A0   /* 001FFC 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 001FFC 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 002000 00002000 8CC40034 */  .word 0x8CC40034
     /* 002004 00002004 8FA60020 */  .word 0x8FA60020
     /* 002008 00002008 8FAA001C */  .word 0x8FAA001C
@@ -75,12 +75,12 @@ glabel SelectionMgr_update_00001F14
     /* 002030 00002030 10000015 */  .word 0x10000015
     /* 002034 00002034 AD8803D0 */  .word 0xAD8803D0
     /* 002038 00002038 8CC40034 */  .word 0x8CC40034
-    jal gen_func_000087A0   /* 00203C 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 00203C 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 002040 00002040 AFA60020 */  .word 0xAFA60020
     /* 002044 00002044 8FA60020 */  .word 0x8FA60020
     /* 002048 00002048 AFA2001C */  .word 0xAFA2001C
     /* 00204C 0000204C 24050004 */  .word 0x24050004
-    jal gen_func_000087A0   /* 002050 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 002050 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 002054 00002054 8CC40038 */  .word 0x8CC40038
     /* 002058 00002058 8FA60020 */  .word 0x8FA60020
     /* 00205C 0000205C 8FAA001C */  .word 0x8FAA001C

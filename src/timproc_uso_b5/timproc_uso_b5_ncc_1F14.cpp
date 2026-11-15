@@ -8,7 +8,7 @@ typedef float f32;
 typedef double f64;
 extern "C" {
 extern void SelectionMgr_func_00001DB0(char *);
-extern int gen_func_000087A0(...);
+extern int gen_stageBitToIndex_000087A0(...);
 extern void timproc_uso_b5_func_04CD94(char *);
 }
 extern "C" void SelectionMgr_update_00001F14(char *arg0) {
@@ -45,13 +45,13 @@ extern "C" void SelectionMgr_update_00001F14(char *arg0) {
                     }
                 }
                 if (*(s32 *)(arg0 + 0x48) == 1) {
-                    dst = gen_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0);
+                    dst = gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x38), 4, arg0);
                     *(s32 *)(*(s32 *)(arg0 + 0x38) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x34) + 0x3D0))[gen_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0)];
+                        ((s32 *)(*(s32 *)(arg0 + 0x34) + 0x3D0))[gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x34), 4, arg0)];
                 } else {
-                    dst = gen_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0);
+                    dst = gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x34), 4, arg0);
                     *(s32 *)(*(s32 *)(arg0 + 0x34) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x38) + 0x3D0))[gen_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0)];
+                        ((s32 *)(*(s32 *)(arg0 + 0x38) + 0x3D0))[gen_stageBitToIndex_000087A0(*(char **)(arg0 + 0x38), 4, arg0)];
                 }
                 if (*(s32 *)(arg0 + 0x4C) != 0) {
                     if (*(s32 *)(arg0 + 0x48) == 1) {

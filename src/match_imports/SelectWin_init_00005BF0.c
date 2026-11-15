@@ -18,7 +18,7 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
     screen->field_4A4 = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
     screen->field_3E0[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
     screen->field_4A8 = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
-    screen->field_3E0[1] = SelectWin_func_00008988((char *)screen, 1, *arg4);
+    screen->field_3E0[1] = SelectWin_findItem_00008988((char *)screen, 1, *arg4);
     row = screen->field_40C->field_40[0];
     i = 0;
     if (row->field_6C > 0) {
@@ -46,8 +46,8 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
             row2 = screen->field_40C->field_40[1];
         } while (j < row2->field_6C);
     }
-    screen->field_3E0[2] = SelectWin_func_00008988((char *)screen, 2, *screen->field_4DC[4]);
-    idx = SelectWin_func_00008988((char *)screen, 3, *screen->field_4DC[0]);
+    screen->field_3E0[2] = SelectWin_findItem_00008988((char *)screen, 2, *screen->field_4DC[4]);
+    idx = SelectWin_findItem_00008988((char *)screen, 3, *screen->field_4DC[0]);
     screen->field_3E0[3] = idx;
     screen->field_3D0[3] = idx;
     n = screen->field_3E0[0];
@@ -99,7 +99,7 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
         p414 = screen->field_414;
         SelectWin_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
-    SelectWin_func_00008688((char *)screen, 0);
+    SelectWin_beginTransition_00008688((char *)screen, 0);
     screen->field_488 = screen->field_104;
     screen->field_404 = 0x40;
     screen->field_4BC = 1.0f;

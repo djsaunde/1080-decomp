@@ -42,9 +42,9 @@ glabel SelectWin_state1_000072D0
     /* 007368 00007368 24840000 */  .word 0x24840000
     /* 00736C 0000736C 1040000F */  .word 0x1040000F
     /* 007370 00007370 02002025 */  .word 0x02002025
-    jal SelectWin_func_00006E08   /* 007374 0C000000 -> SelectWin_func_00006E08 */
+    jal SelectWin_moveCursorPrev_00006E08   /* 007374 0C000000 -> SelectWin_moveCursorPrev_00006E08 */
     /* 007378 00007378 24050001 */  .word 0x24050001
-    jal SelectWin_func_00008A38   /* 00737C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 00737C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 007380 00007380 02002025 */  .word 0x02002025
     /* 007384 00007384 8C430028 */  .word 0x8C430028
     /* 007388 00007388 847900A8 */  .word 0x847900A8

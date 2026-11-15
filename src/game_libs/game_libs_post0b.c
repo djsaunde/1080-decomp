@@ -1763,7 +1763,7 @@ void game_libs_func_00035C50(int a0) {}
 
 void game_libs_func_00035C58(int a0) {}
 
-/* Empty 2-arg stub (sibling of matched SelItem_vfunc25_0000AC04). */
+/* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
 void game_libs_func_00035C60(int a0, int a1) {
 }
 
@@ -4128,7 +4128,7 @@ void game_libs_func_00038B6C(int a0) {}
 
 void game_libs_func_00038B74(int a0) {}
 
-/* Empty 2-arg stub (sibling of matched SelItem_vfunc25_0000AC04). */
+/* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
 void game_libs_func_00038B7C(int a0, int a1) {
 }
 
@@ -23820,7 +23820,7 @@ int Mem_largestFree(int *a0) {
     return max;
 }
 
-/* Empty 2-arg stub (sibling of matched SelItem_vfunc25_0000AC04). */
+/* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
 void game_libs_func_0005B680(int a0, int a1) {
 }
 
@@ -27364,7 +27364,7 @@ int game_libs_func_00061B04(int a0) {
     return -1;
 }
 
-/* Empty 2-arg stub (sibling of matched SelItem_vfunc25_0000AC04). */
+/* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
 void game_libs_func_00061B10(int a0, int a1) {
 }
 

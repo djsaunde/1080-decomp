@@ -1,11 +1,11 @@
-/* LevelItem_vfunc25_0000CEB4 (0x1AC / 107 words, real entry 0xCEAC) --
+/* LevelItem_drawStats_0000CEB4 (0x1AC / 107 words, real entry 0xCEAC) --
  * three HUD-emit calls (func_00004068) whose RGBA colour is white when
  * a0->0x2AC selects that slot and a0->0x2A0 > 0.5, else grey 0.3.
  *
  * EXACT under IDO 7.1 cfe -O2 (agent-c run 218). Spliced over the unit's
  * empty placeholder by REPLACE_FUNC_BODY (Makefile TIMB5_CEB4_DONOR) so the
  * donor-local .rodata reloc of the three 0.3f literals (+0 / +4 / +8) is
- * renamed LevelItem_vfunc25_0000CEB4_rodata and pinned to RoData +0x394
+ * renamed LevelItem_drawStats_0000CEB4_rodata and pinned to RoData +0x394
  * (the USO ships 0x3E99999A at 0x394 / 0x398 / 0x39C: one literal per l.s).
  *
  * Load-bearing:
@@ -26,7 +26,7 @@ extern char timproc_uso_b5_D_807FFB20;
 extern char timproc_uso_b5_D_807FFB38;
 void SelItem_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6);
 
-void LevelItem_vfunc25_0000CEB4(char *a0, int a1) {
+void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     f32 v[4];
     s32 pad[6];
     f32 f;

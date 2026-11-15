@@ -25,7 +25,7 @@ glabel SelectWin_state10_000085E0
     /* 008634 00008634 8C8F0104 */  .word 0x8C8F0104
     /* 008638 00008638 E4800480 */  .word 0xE4800480
     /* 00863C 0000863C AC8003CC */  .word 0xAC8003CC
-    jal SelectWin_func_00008A38   /* 008640 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 008640 0C000000 -> SelectWin_curItem_00008A38 */
     /* 008644 00008644 AC8F0488 */  .word 0xAC8F0488
     /* 008648 00008648 8C430028 */  .word 0x8C430028
     /* 00864C 0000864C 8C790064 */  .word 0x8C790064

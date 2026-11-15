@@ -20,7 +20,7 @@ glabel SelectWin_display_00006394
     /* 0063D4 000063D4 8E0503C8 */  .word 0x8E0503C8
     /* 0063D8 000063D8 24020015 */  .word 0x24020015
     /* 0063DC 000063DC 8E0503C8 */  .word 0x8E0503C8
-    jal gen_func_000087A0   /* 0063E0 0C000000 -> gen_func_000087A0 */
+    jal gen_stageBitToIndex_000087A0   /* 0063E0 0C000000 -> gen_stageBitToIndex_000087A0 */
     /* 0063E4 000063E4 AFA20044 */  .word 0xAFA20044
     /* 0063E8 000063E8 0002C880 */  .word 0x0002C880
     lui $t2, %hi(timproc_uso_b5_D_807FE728)   /* 0063EC 3C0A0000 -> timproc_uso_b5_D_807FE728 */
@@ -62,7 +62,7 @@ glabel SelectWin_display_00006394
     /* 00647C 0000647C 30580008 */  .word 0x30580008
     /* 006480 00006480 1300004E */  .word 0x1300004E
     /* 006484 00006484 AE0F048C */  .word 0xAE0F048C
-    jal SelectWin_func_00006900   /* 006488 0C000000 -> SelectWin_func_00006900 */
+    jal SelectWin_canScrollNext_00006900   /* 006488 0C000000 -> SelectWin_canScrollNext_00006900 */
     /* 00648C 0000648C 02002025 */  .word 0x02002025
     /* 006490 00006490 10400023 */  .word 0x10400023
     lui $a0, %hi(import_8024CAF8)   /* 006494 3C040000 -> import_8024CAF8 */
@@ -100,7 +100,7 @@ glabel SelectWin_display_00006394
     /* 006514 00006514 44053000 */  .word 0x44053000
     jal import_0024F34C   /* 006518 0C000000 -> import_0024F34C */
     /* 00651C 0000651C 00000000 */  .word 0x00000000
-    jal SelectWin_func_0000687C   /* 006520 0C000000 -> SelectWin_func_0000687C */
+    jal SelectWin_canScrollPrev_0000687C   /* 006520 0C000000 -> SelectWin_canScrollPrev_0000687C */
     /* 006524 00006524 02002025 */  .word 0x02002025
     /* 006528 00006528 10400024 */  .word 0x10400024
     lui $a0, %hi(import_8024CAF8)   /* 00652C 3C040000 -> import_8024CAF8 */
@@ -172,7 +172,7 @@ glabel SelectWin_display_00006394
     /* 006634 00006634 31EE0008 */  .word 0x31EE0008
     /* 006638 00006638 11C00026 */  .word 0x11C00026
     /* 00663C 0000663C 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A38   /* 006640 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006640 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006644 00006644 02002025 */  .word 0x02002025
     /* 006648 00006648 8C430028 */  .word 0x8C430028
     /* 00664C 0000664C 02002825 */  .word 0x02002825
@@ -187,7 +187,7 @@ glabel SelectWin_display_00006394
     /* 006670 00006670 24010008 */  .word 0x24010008
     /* 006674 00006674 1441000D */  .word 0x1441000D
     /* 006678 00006678 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A38   /* 00667C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 00667C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006680 00006680 02002025 */  .word 0x02002025
     /* 006684 00006684 8C430028 */  .word 0x8C430028
     /* 006688 00006688 02002825 */  .word 0x02002825
@@ -199,7 +199,7 @@ glabel SelectWin_display_00006394
     /* 0066A0 000066A0 01422021 */  .word 0x01422021
     /* 0066A4 000066A4 1000000B */  .word 0x1000000B
     /* 0066A8 000066A8 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A38   /* 0066AC 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 0066AC 0C000000 -> SelectWin_curItem_00008A38 */
     /* 0066B0 000066B0 02002025 */  .word 0x02002025
     /* 0066B4 000066B4 8C430028 */  .word 0x8C430028
     /* 0066B8 000066B8 02002825 */  .word 0x02002825
@@ -218,7 +218,7 @@ glabel SelectWin_display_00006394
     /* 0066EC 000066EC 24010004 */  .word 0x24010004
     /* 0066F0 000066F0 5441000D */  .word 0x5441000D
     /* 0066F4 000066F4 24010005 */  .word 0x24010005
-    jal SelectWin_func_00008A38   /* 0066F8 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 0066F8 0C000000 -> SelectWin_curItem_00008A38 */
     /* 0066FC 000066FC 02002025 */  .word 0x02002025
     /* 006700 00006700 8C430028 */  .word 0x8C430028
     /* 006704 00006704 02002825 */  .word 0x02002825
@@ -232,7 +232,7 @@ glabel SelectWin_display_00006394
     /* 006724 00006724 24010005 */  .word 0x24010005
     /* 006728 00006728 1441000C */  .word 0x1441000C
     /* 00672C 0000672C 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A38   /* 006730 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006730 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006734 00006734 02002025 */  .word 0x02002025
     /* 006738 00006738 8C430028 */  .word 0x8C430028
     /* 00673C 0000673C 02002825 */  .word 0x02002825
@@ -243,7 +243,7 @@ glabel SelectWin_display_00006394
     /* 006750 00006750 01E22021 */  .word 0x01E22021
     /* 006754 00006754 10000014 */  .word 0x10000014
     /* 006758 00006758 8E0A0414 */  .word 0x8E0A0414
-    jal SelectWin_func_00008A38   /* 00675C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 00675C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006760 00006760 02002025 */  .word 0x02002025
     /* 006764 00006764 8C430028 */  .word 0x8C430028
     /* 006768 00006768 02002825 */  .word 0x02002825
@@ -253,7 +253,7 @@ glabel SelectWin_display_00006394
     /* 006778 00006778 01C22021 */  .word 0x01C22021
     /* 00677C 0000677C 1000000A */  .word 0x1000000A
     /* 006780 00006780 8E0A0414 */  .word 0x8E0A0414
-    jal SelectWin_func_00008A38   /* 006784 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006784 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006788 00006788 02002025 */  .word 0x02002025
     /* 00678C 0000678C 8C430028 */  .word 0x8C430028
     /* 006790 00006790 02002825 */  .word 0x02002825
@@ -275,7 +275,7 @@ glabel SelectWin_display_00006394
     /* 0067D0 000067D0 24010007 */  .word 0x24010007
     /* 0067D4 000067D4 1441001A */  .word 0x1441001A
     /* 0067D8 000067D8 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A64   /* 0067DC 0C000000 -> SelectWin_func_00008A64 */
+    jal SelectWin_prevStageItem_00008A64   /* 0067DC 0C000000 -> SelectWin_prevStageItem_00008A64 */
     /* 0067E0 000067E0 02002025 */  .word 0x02002025
     /* 0067E4 000067E4 8E0304A4 */  .word 0x8E0304A4
     /* 0067E8 000067E8 24010001 */  .word 0x24010001
@@ -291,7 +291,7 @@ glabel SelectWin_display_00006394
     /* 006810 00006810 14610002 */  .word 0x14610002
     /* 006814 00006814 00000000 */  .word 0x00000000
     /* 006818 00006818 24060007 */  .word 0x24060007
-    jal SelectWin_func_00008A38   /* 00681C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 00681C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006820 00006820 AFA60024 */  .word 0xAFA60024
     /* 006824 00006824 8C430028 */  .word 0x8C430028
     /* 006828 00006828 8FA60024 */  .word 0x8FA60024

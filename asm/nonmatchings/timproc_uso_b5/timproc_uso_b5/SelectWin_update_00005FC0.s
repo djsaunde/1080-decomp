@@ -14,7 +14,7 @@ glabel SelectWin_update_00005FC0
     /* 005FE8 00005FE8 15E1000D */  .word 0x15E1000D
     /* 005FEC 00005FEC 00000000 */  .word 0x00000000
     /* 005FF0 00005FF0 8C84041C */  .word 0x8C84041C
-    jal SelectWin_func_00001CF0   /* 005FF4 0C000000 -> SelectWin_func_00001CF0 */
+    jal SelectionMgr_otherWin_00001CF0   /* 005FF4 0C000000 -> SelectionMgr_otherWin_00001CF0 */
     /* 005FF8 00005FF8 8E0503B8 */  .word 0x8E0503B8
     /* 005FFC 00005FFC 8C5803C8 */  .word 0x8C5803C8
     /* 006000 00006000 24010004 */  .word 0x24010004
@@ -112,7 +112,7 @@ glabel SelectWin_update_00005FC0
     /* 006170 00006170 8E0B03F8 */  .word 0x8E0B03F8
     /* 006174 00006174 11600009 */  .word 0x11600009
     /* 006178 00006178 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008AD4   /* 00617C 0C000000 -> SelectWin_func_00008AD4 */
+    jal SelectWin_prevFocusItem_00008AD4   /* 00617C 0C000000 -> SelectWin_prevFocusItem_00008AD4 */
     /* 006180 00006180 02002025 */  .word 0x02002025
     /* 006184 00006184 8C430028 */  .word 0x8C430028
     /* 006188 00006188 8E050480 */  .word 0x8E050480
@@ -120,7 +120,7 @@ glabel SelectWin_update_00005FC0
     /* 006190 00006190 846C00B8 */  .word 0x846C00B8
     /* 006194 00006194 0320F809 */  .word 0x0320F809
     /* 006198 00006198 01822021 */  .word 0x01822021
-    jal SelectWin_func_00008A38   /* 00619C 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 00619C 0C000000 -> SelectWin_curItem_00008A38 */
     /* 0061A0 000061A0 02002025 */  .word 0x02002025
     /* 0061A4 000061A4 8C430028 */  .word 0x8C430028
     /* 0061A8 000061A8 8E050480 */  .word 0x8E050480
@@ -161,7 +161,7 @@ glabel SelectWin_update_00005FC0
     /* 006234 00006234 24010005 */  .word 0x24010005
     /* 006238 00006238 15810022 */  .word 0x15810022
     /* 00623C 0000623C 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008A38   /* 006240 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006240 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006244 00006244 02002025 */  .word 0x02002025
     /* 006248 00006248 AFA2002C */  .word 0xAFA2002C
     /* 00624C 0000624C 3C010000 */  .word 0x3C010000
@@ -178,7 +178,7 @@ glabel SelectWin_update_00005FC0
     /* 006278 00006278 260604C4 */  .word 0x260604C4
     jal SelectWin_func_0000396C   /* 00627C 0C000000 -> SelectWin_func_0000396C */
     /* 006280 00006280 E7A40010 */  .word 0xE7A40010
-    jal SelectWin_func_00008A38   /* 006284 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006284 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006288 00006288 02002025 */  .word 0x02002025
     /* 00628C 0000628C AFA2002C */  .word 0xAFA2002C
     /* 006290 00006290 3C010000 */  .word 0x3C010000
@@ -194,7 +194,7 @@ glabel SelectWin_update_00005FC0
     /* 0062B8 000062B8 46128100 */  .word 0x46128100
     /* 0062BC 000062BC 10000021 */  .word 0x10000021
     /* 0062C0 000062C0 E6040498 */  .word 0xE6040498
-    jal SelectWin_func_00008A38   /* 0062C4 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 0062C4 0C000000 -> SelectWin_curItem_00008A38 */
     /* 0062C8 000062C8 02002025 */  .word 0x02002025
     /* 0062CC 000062CC AFA2002C */  .word 0xAFA2002C
     /* 0062D0 000062D0 3C010000 */  .word 0x3C010000
@@ -211,7 +211,7 @@ glabel SelectWin_update_00005FC0
     /* 0062FC 000062FC 260604C4 */  .word 0x260604C4
     jal SelectWin_func_000038B0   /* 006300 0C000000 -> SelectWin_func_000038B0 */
     /* 006304 00006304 E7AA0010 */  .word 0xE7AA0010
-    jal SelectWin_func_00008A38   /* 006308 0C000000 -> SelectWin_func_00008A38 */
+    jal SelectWin_curItem_00008A38   /* 006308 0C000000 -> SelectWin_curItem_00008A38 */
     /* 00630C 0000630C 02002025 */  .word 0x02002025
     /* 006310 00006310 AFA2002C */  .word 0xAFA2002C
     /* 006314 00006314 3C010000 */  .word 0x3C010000

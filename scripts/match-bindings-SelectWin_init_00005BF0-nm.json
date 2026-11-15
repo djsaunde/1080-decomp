@@ -5,13 +5,13 @@
     "timproc_uso_b5_D_807FE6E4": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4",
     "timproc_uso_b5_D_807FE6E4_b": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4_b",
     "timproc_uso_b5_D_807FE6C4": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6C4",
-    "SelectWin_func_00008988": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008988",
+    "SelectWin_findItem_00008988": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008988",
     "import_80020150": "snw_port_timproc_uso_b5_func_00005BF0_import_80020150",
     "import_80074E78": "snw_port_timproc_uso_b5_func_00005BF0_import_80074E78",
     "import_0024CCF4": "snw_port_timproc_uso_b5_func_00005BF0_import_0024CCF4",
     "timproc_uso_b5_func_00008A38_entry": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008A38_entry",
     "SelectWin_func_00003A28": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00003A28",
-    "SelectWin_func_00008688": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008688"
+    "SelectWin_beginTransition_00008688": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008688"
   },
   "original_ROM_minus_curated_addend_bindings": {
     "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_D_807FE6E4": 0,
