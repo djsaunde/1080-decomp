@@ -413,25 +413,25 @@ int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float ar
         a0 = (int *)game_uso_func_055750(0x27C);
         if (a0 == 0) goto out;
     }
-    game_uso_func_047484(a0, arg2, arg3, arg4, arg5);
-    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE770;
-    *(int*)((char*)a0 + 0x1D0) = 0;
-    *(int*)((char*)a0 + 0x24C) = 0;
-    if (arg7 != 0) game_uso_func_04C774(a0, 1, arg7);
-    *(int*)((char*)a0 + 0x150) = arg1;
-    *(int*)((char*)a0 + 0x274) = arg6;
-    *(int*)((char*)a0 + 0x26C) = 0;
-    *(int*)((char*)a0 + 0x270) = 0;
-    *(int*)((char*)a0 + 0x268) = 0;
+    game_uso_func_047484(a0, arg2, arg3, arg4, arg5); /* MCamera ctor (target, x, y, z) */
+    *(int*)((char*)a0 + 0x28) = (int)&game_uso_D_807FE770; /* vptr */
+    ((CourseCam *)a0)->numLists = 0;
+    ((CourseCam *)a0)->numPaths = 0;
+    if (arg7 != 0) game_uso_func_04C774(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
+    ((CourseCam *)a0)->rider = (struct SnowBoarder *)arg1;
+    ((CourseCam *)a0)->pad = arg6;
+    ((CourseCam *)a0)->chaseMode = 0;
+    ((CourseCam *)a0)->savedChaseMode = 0;
+    ((CourseCam *)a0)->freeRot = 0;
 out:
     return a0;
 }
 
 void cam_reset_000008FC(int *a0) {
-    int *v0 = (int*)*(int*)((char*)a0 + 0xF4);
-    gl_func_00000000(*(int*)((char*)v0 + 0xB4), a0);
-    gl_func_00000000(*(int*)((char*)a0 + 0x154), a0);
-    *(int*)((char*)a0 + 0x264) = 0;
+    int *v0 = (int*)((CourseCam *)a0)->cam.target;
+    gl_func_00000000(*(int*)((char*)v0 + 0xB4), a0); /* the look-at node's chase component */
+    gl_func_00000000(((CourseCam *)a0)->eyeChase, a0);
+    ((CourseCam *)a0)->lastResult = 0;
     gl_func_00000000(a0);
 }
 
@@ -545,12 +545,12 @@ void cam_pickResultView_00000940(char *arg0) {
 }
 
 void cam_setView_00000AEC(int *a0, int a1) {
-    if (*(int*)((char*)*(int**)((char*)a0 + 0x158) + 0x24) > 0) {
-        *(int*)((char*)a0 + 0x250) = a1;
+    if (((CourseCam *)a0)->lists[0]->count > 0) {
+        ((CourseCam *)a0)->view = a1;
     }
-    *(int*)((char*)a0 + 0x254) = 0;
-    *(int*)((char*)a0 + 0x25C) = 1;
-    *(int*)((char*)a0 + 0x260) = 0;
+    ((CourseCam *)a0)->listPos = 0;
+    ((CourseCam *)a0)->key = 1;
+    ((CourseCam *)a0)->frame = 0;
 }
 
 /* Moved 2026-06-10 to its address-ordered position (was stranded after

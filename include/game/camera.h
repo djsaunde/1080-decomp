@@ -214,6 +214,68 @@ typedef struct SnowChaseActor {
     SnowChaseActorParms parms; /* 0x50 */
 } SnowChaseActor;
 
+/* ---- the course camera (game.uso cam_ctor_00000858, 0x27C, vtbl Data 0x184; agent-g run 480) ----
+ * What bootup cam_create builds in modes 0 / 2 from "rom/cam_info.bin" (cam_readParms_00001644). It is an
+ * MCamera that plays scripted camera PATHS: a view (0..14, chosen by cam_command / cam_pickResultView) names a
+ * CamList, a list of path indices played in order; each CamPath is a run of CamKeys interpolated by a cubic
+ * B-spline (cam_updateView_00000B3C: keys[k-1..k+2] weighted by the basis at frame / key->frames). A path can
+ * instead hand the eye and / or the look-at point to the chase components (eyeMode / lookMode == 1), which is
+ * the normal race view; the player can then cycle chaseMode 0..2 (pad pressed 0x40) or hold 0x80 for mode 3. */
+typedef struct CamKey {     /* 0x38, read in this order by cam_readParms */
+    CamVec3 look;           /* 0x00: look-at point */
+    CamVec3 eye;            /* 0x0C: eye position */
+    CamVec3 up;             /* 0x18: up vector */
+    f32 fov;                /* 0x24 */
+    s32 frames;             /* 0x28: frames from this key to the next */
+    CamVec3 rot;            /* 0x2C: MCamera pitch / yaw / unk13C */
+} CamKey;
+
+typedef struct CamPath {    /* 0x7C */
+    s32 lookMode;           /* 0x00: 1 = the look-at node is moved by its chase component; else from the keys */
+    s32 lookSpline;         /* 0x04: 0 = key.look of the current key; else spline */
+    char pad08[8];
+    s32 eyeMode;            /* 0x10: 1 = the eye is moved by the chase component (MCamera world[3] is kept) */
+    s32 eyeSpline;          /* 0x14 */
+    char pad18[8];
+    s32 upSpline;           /* 0x20: 0 = key.up, else spline */
+    s32 unk24;
+    s32 fovMode;            /* 0x28: 1 = key.fov, 2 = spline */
+    s32 unk2C;
+    s32 rotMode;            /* 0x30: 1 = key.rot, 2 = spline; also MCamera.rotEnable = (rotMode != 0) */
+    s32 numKeys;            /* 0x34 */
+    CamKey *keys[17];       /* 0x38: key k uses keys[k - 1 .. k + 2] (B3C indexes from 0x34) */
+} CamPath;
+
+typedef struct CamList {
+    s32 unk00;
+    s32 paths[8];           /* 0x04: path indices, played in order */
+    s32 count;              /* 0x24 */
+} CamList;
+
+typedef struct CourseCam {
+    MCamera cam;            /* 0x000: the eye; cam.target (0xF4) = the "snowlookat" node (its +0xB4 = its chase
+                               component, a SnowChaseActorLook) */
+    struct SnowBoarder *rider; /* 0x150: the followed rider (raceResult 0xA54 picks the result view) */
+    SnowChaseActorCam *eyeChase; /* 0x154: the eye's chase component ("rom/cam_ca.bin") */
+    CamList *lists[30];     /* 0x158: per view */
+    s32 numLists;           /* 0x1D0 */
+    CamPath *paths[30];     /* 0x1D4 */
+    s32 numPaths;           /* 0x24C */
+    s32 view;               /* 0x250: current view (cam_setView_00000AEC; ignored when lists[0] is empty) */
+    s32 listPos;            /* 0x254: position in lists[view]->paths */
+    s32 path;               /* 0x258: = lists[view]->paths[listPos] */
+    s32 key;                /* 0x25C: current key (starts at 1) */
+    s32 frame;              /* 0x260: frame within the key */
+    s32 lastResult;         /* 0x264: rider->raceResult seen last; a change re-runs cam_pickResultView */
+    s32 freeRot;            /* 0x268: set = rot is not driven by the path (rotEnable 1, rot 0) */
+    s32 chaseMode;          /* 0x26C: chase-path views only. eye / look component modes: 0 = 1 / 1, 1 = 2 / 1
+                               (eye height ty2), 2 = 3 / 2 (fixed eye, look ahead), 3 = 3 / 3 (look back, while
+                               pad held 0x80); pad pressed 0x40 cycles 0..2. 2 / 3 set rider +0xA58 bit 0x2000 */
+    s32 savedChaseMode;     /* 0x270: chaseMode to restore when the look-back button is released */
+    s32 pad;                /* 0x274: input pad (cam_create p4): +0x10 held (0x80 = look back), +0x18 pressed */
+    s32 unk278;
+} CourseCam;                /* 0x27C */
+
 #ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
 #define CAM_ASSERT(T, f, off) typedef char cam_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 CAM_ASSERT(CamMNode, local, 0x30);
@@ -252,6 +314,19 @@ typedef char cam_assert_follow_size[sizeof(CamFollow) == 0x3C ? 1 : -1];
 typedef char cam_assert_cam_size[sizeof(SnowChaseActorCam) == 0x124 ? 1 : -1];
 typedef char cam_assert_look_size[sizeof(SnowChaseActorLook) == 0x64 ? 1 : -1];
 typedef char cam_assert_actor_size[sizeof(SnowChaseActor) == 0x138 ? 1 : -1];
+CAM_ASSERT(CamKey, frames, 0x28);
+CAM_ASSERT(CamPath, numKeys, 0x34);
+CAM_ASSERT(CamList, count, 0x24);
+CAM_ASSERT(CourseCam, rider, 0x150);
+CAM_ASSERT(CourseCam, lists, 0x158);
+CAM_ASSERT(CourseCam, numLists, 0x1D0);
+CAM_ASSERT(CourseCam, paths, 0x1D4);
+CAM_ASSERT(CourseCam, numPaths, 0x24C);
+CAM_ASSERT(CourseCam, lastResult, 0x264);
+CAM_ASSERT(CourseCam, pad, 0x274);
+typedef char cam_assert_camkey_size[sizeof(CamKey) == 0x38 ? 1 : -1];
+typedef char cam_assert_campath_size[sizeof(CamPath) == 0x7C ? 1 : -1];
+typedef char cam_assert_coursecam_size[sizeof(CourseCam) == 0x27C ? 1 : -1];
 typedef char cam_assert_camparms_size[sizeof(SnowChaseActorCamParms) == 0xD0 ? 1 : -1];
 #endif
 
