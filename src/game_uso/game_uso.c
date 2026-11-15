@@ -3018,7 +3018,7 @@ void SnowAI_timeoutRun(int *a0) {
     (void)pad;
     /* stage-1 sub is DE-NAMED (inline deref -> ring temp t7); the named sub
      * web starts at the stage-2 reload. */
-    base_vec = *(V3_6A30 *)&((SnowAI *)a0)->rider->pos;
+    base_vec = *(V3_6A30 *)&((SnowAI *)a0)->rider->dnode.vqs.trans;
     dispatch_arg = 0;    /* early: move a1,zero schedules into the stage-1 copy */
 
     /* int-typed read: not CSE'd with the char** read above, so the target's
@@ -3027,7 +3027,7 @@ void SnowAI_timeoutRun(int *a0) {
     {
         register float scale;     /* block-scope: $f0, no home */
         scale = ((SnowAI *)a0)->lookAhead;
-        p += 0x318;               /* &rider->vel; bump FIRST, read through it: copyprop
+        p += 0x318;               /* rider->dnode.vel; bump FIRST, read through it: copyprop
                                      folds the reads to 0x318(v0).. but the
                                      bump survives as the dead addiu */
         rx = *(float*)(p + 0) * scale;
@@ -3053,7 +3053,7 @@ void SnowAI_timeoutRun(int *a0) {
     if (((SnowBoarder *)p)->contactCount != 0 && ((SnowBoarder *)p)->raceResult != 0) {
         timer = ((SnowAI *)a0)->finishTimer;
         if (timer < 60) {
-            if (((SnowBoarder *)p)->speed <= 30.0f) {
+            if (((SnowBoarder *)p)->dnode.speed <= 30.0f) {
                 RiderAnim_startTimeout_00011024((int)((SnowBoarder *)p)->anim, dispatch_arg);
                 AI(a0)->finishTimer = 61;
             } else {
@@ -3834,7 +3834,7 @@ int SnowAI_isAboveSegmentFloor(char *a0, char *a1, char *a2) {
     p[2] = fz;
     p[1] = 0.0f;
 skip1:;
-    w = (float*)AI(a0)->rider; if (1) { w = (float*)((char*)w + 0xB4); } /* &rider->pos */
+    w = (float*)AI(a0)->rider; if (1) { w = (float*)((char*)w + 0xB4); } /* rider->dnode.vqs.trans */
     fy = w[0] - q[0]; fx = w[1] - q[1]; fz = w[2] - q[2];
     local_30[0] = fy;
     local_30[1] = fx;
@@ -3860,7 +3860,7 @@ skip2:;
         fx = (float)0;
     }
     fz = ((CourseMarker *)a1)->pos[1];
-    return mag * (AI(a0)->rider->pos.y - (fz - 400.0f)) > (((CourseMarker *)a2)->pos[1] - fz)*fx;
+    return mag * (AI(a0)->rider->dnode.vqs.trans[1] -(fz - 400.0f)) > (((CourseMarker *)a2)->pos[1] - fz)*fx;
 }
 
 /* MATCHED 2026-06-20 (stale-cap catch): the "2 pre-jal a1 spills" cap
@@ -3927,7 +3927,7 @@ void SnowAI_pickFork(SnowAI *a0) {
     }
     v1.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0->targetNode * 4));
     slots[1] = (int *)SnowAI_findNearestMarker_0000A374(a0, v1,
-                (int)&a0->rider->rival->pos);
+                (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[1] == 0) {
         game_uso_func_047B1C((char *)&game_uso_D_807FEDF8 + 0x7EC,
                              (char *)&game_uso_D_807FEDF8 + 0x808, 0x450);
@@ -3938,12 +3938,12 @@ void SnowAI_pickFork(SnowAI *a0) {
     }
     v2.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0->altNode * 4));
     slots[0] = (int *)SnowAI_findNearestMarker_0000A374(a0, v2,
-                (int)&a0->rider->rival->pos);
+                (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[0] == 0) {
         game_uso_func_047B1C((char *)&game_uso_D_807FEE20 + 0x814,
                              (char *)&game_uso_D_807FEE20 + 0x830, 0x45B);
     }
-    ref = (float *)&a0->rider->rival->pos;
+    ref = a0->rider->rival->dnode.vqs.trans;
     if (1) { p = &buf1; }
     if (p == 0) {
         p = (V3_A3C4 *)game_uso_func_055750(12);
@@ -4071,9 +4071,9 @@ void SnowAI_scanNodes(SnowAI *obj) {
     float *q;
     float mx, my, mz;
 
-    tbuf = *(Vec3 *)&obj->rider->pos;
+    tbuf = *(Vec3 *)&obj->rider->dnode.vqs.trans;
     s = obj->lookAhead;
-    q = (float *)&obj->rider->vel;
+    q = obj->rider->dnode.vel;
     mx = q[0] * s;
     my = q[1] * s;
     mz = q[2] * s;
@@ -4160,9 +4160,9 @@ void SnowAI_scanSegments(SnowAI *obj) {
     Vec3 *p;
     int cnt;
 
-    blockA = *(Vec3 *)&obj->rider->pos;
+    blockA = *(Vec3 *)&obj->rider->dnode.vqs.trans;
     f0 = obj->lookAhead;
-    q = (float *)&obj->rider->vel;
+    q = obj->rider->dnode.vel;
     f14 = q[0] * f0;
     f2 = q[1] * f0;
     f12 = q[2] * f0;
@@ -6025,7 +6025,7 @@ void RiderAnim_checkRow_0000E1FC(char *obj) {
     char *sub = (char *)s;
     float raw, m;
     if(1){ sub += 0x740; } /* &s->parms.min */
-    if (!(((SnowBParm *)sub)->value > s->speed)) return;
+    if (!(((SnowBParm *)sub)->value > s->dnode.speed)) return;
     sub = (char *)s->input;
     if (!(((RiderInput *)sub)->pressed & 0x2000)) return;
     if (s->useDParms != 0) goto callA;
@@ -6062,7 +6062,7 @@ char *a0;
             RA(a0)->jumpCharge = (s16)frame + 1;
             if ((s16)frame < RA(a0)->parms.jlt.value.i) {
                 SnowBoarder *parent = RA(a0)->rider;
-                acc = &parent->vel.y;
+                acc = &parent->dnode.vel[1];
                 if ((parent->groundFlags & 1) == 0) {
                     *acc += RA(a0)->parms.jli.value.f;
                 }
@@ -6894,7 +6894,7 @@ void RiderAnim_jumpTakeoff_0000F360(int *a0) {
     if (((SnowBoarder *)p)->surface == 'b') {
         f0 = (float)(0.7 * (double)f0);
     }
-    b31C = (char*)p; if (1) { b31C += 0x31C; } /* &rider->vel.y */
+    b31C = (char*)p; if (1) { b31C += 0x31C; } /* &rider->dnode.vel[1] */
     f0 *= ((SnowBParm *)b510)->value;
     *(float*)(b31C) = *(float*)(b31C) + f0;
     RA(a0)->queuedTrick = 0;
@@ -6912,9 +6912,9 @@ void RiderAnim_stateTrickAir(int *a0) {
     RA(a0)->rider->unkA18 = 0;
     RA(a0)->trickPhase = 1;
     w = (char *)RA(a0)->rider;
-    pa = (float*)(w + 0x170); /* &rider->dparms.gvt */
+    pa = (float*)(w + 0x170); /* &rider->dnode.parms.gvt */
     pb = (float*)(w + 0x698); /* &rider->parms.axr .. */
-    pc = (float*)(w + 0x31C); /* &rider->vel.y */
+    pc = (float*)(w + 0x31C); /* &rider->dnode.vel[1] */
     if ((((SnowBoarder *)w)->groundFlags & 1) == 0) {
         pc[0] += -pa[4] * pb[4];
         RiderAnim_holdJumpLift_0000E2D0((char*)a0, pa, pb);

@@ -54,7 +54,7 @@ void SnowAI_steer(int *a0) {
     int out_w;
     int hit_out;
     Vec3 scratch_xz;
-    char *sub; /* the rider; `*(float*)(sub + 0x348)` is rider->speed, kept raw: the field form moves FP registers
+    char *sub; /* the rider; `*(float*)(sub + 0x348)` is rider->dnode.speed, kept raw: the field form moves FP registers
                 * (agent-g run 512; rival / useDParms convert cleanly) */
     float yaw_metric;
     float accel_metric;
@@ -116,7 +116,7 @@ void SnowAI_steer(int *a0) {
         SnowAI_scanSegments(self);
         return;
     }
-    *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->pos;
+    *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->dnode.vqs.trans;
     {
         axis_src = (float *)self->rider;
         axis_src = (float *)((int)axis_src + 0x318);
@@ -149,7 +149,7 @@ void SnowAI_steer(int *a0) {
         if (metric_a <= self->weaveLead) {
             if (((v0 = state_flag) == 0) && (hit_parent != 0)
                     && (*(int*)(hit_parent + 0x84) == 0)) {
-                if (self->minSpeed <= self->rider->speed) {
+                if (self->minSpeed <= self->rider->dnode.speed) {
                     self->aimMode = 1;
                     t0 = 1;
                 }
@@ -162,7 +162,7 @@ void SnowAI_steer(int *a0) {
         if (!(metric_a <= fsel) || state_flag != 0 || hit_parent == 0
                 || *(int*)(hit_parent + 0x84) != 0
                 || !(self->minSpeed
-                     <= self->rider->speed)) {
+                     <= self->rider->dnode.speed)) {
             self->aimMode = 0;
         }
         break;
@@ -452,7 +452,7 @@ tail_common:
             *child_flags &= ~0x4000;
         }
     }
-    if (self->rider->speed < 30.0f) {
+    if (self->rider->dnode.speed < 30.0f) {
         { int cnt; cnt = self->unk54 + 1;
         self->unk54 = cnt;
         if (child_flags) {}

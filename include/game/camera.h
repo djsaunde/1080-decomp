@@ -73,7 +73,7 @@ typedef struct CamWindow {
 typedef struct RiderCam {
     MCamera cam;            /* 0x000 */
     f32 baseFov;            /* 0x150: the ctor's fov (85); restored in mode 2 and by default */
-    struct SnowBoarder *rider; /* 0x154: the rider; mode 2 moves the eye by rider->vel * k */
+    struct SnowBoarder *rider; /* 0x154: the rider; mode 2 moves the eye by rider->dnode.vel * k */
     s32 mode;               /* 0x158: the course "cam" node kind (CamDirector passes 3..0x26) */
 } RiderCam;
 
@@ -89,7 +89,7 @@ typedef struct CamDirector {
     MCamera *cams[2];       /* 0x30 */
     struct RiderInput *pad; /* 0x38: stick x / y floats at 0 / 4, raw s8 stick 8 / 9, held 0x10, pressed 0x18 */
     s32 activeCam;          /* 0x3C: index into cams (setActiveCam) */
-    struct SnowBoarder *rider; /* 0x40: the nearest-node search is keyed on rider->pos */
+    struct SnowBoarder *rider; /* 0x40: the nearest-node search is keyed on rider->dnode.vqs.trans */
     void *lastCamNode;      /* 0x44: the course "cam" node last acted on */
     s32 pollTimer;          /* 0x48: [10000] search when it reaches 60, then 0 */
     s32 manual;             /* 0x4C: toggled by pad pressed 0x40 */

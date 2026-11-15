@@ -34,7 +34,7 @@ void func_00000000(...);
 #define temp_f12_3 (0.2f)
 void SnowBoarder_updateOrient(SnowBoarder *rider);
 }
-static inline f32 dot3(SnowBoarder *p, f32 *v) { return (p->side.x * v[0]) + (p->side.y * v[1]) + (p->side.z * v[2]); }
+static inline f32 dot3(SnowBoarder *p, f32 *v) { return (p->dnode.axes[1][0] * v[0]) + (p->dnode.axes[1][1] * v[1]) + (p->dnode.axes[1][2] * v[2]); }
 void SnowBoarder_updateOrient(SnowBoarder *rider) {
     f32 sp6C[3];
     f32 temp_f12;
@@ -71,15 +71,15 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
     if (rider->crouch != 0) {
         sp5C = 0;
     } else {
-        sp5C = -((rider->side.x * sp6C[0]) + (rider->side.y * sp6C[1]) + (rider->side.z * sp6C[2]));
+        sp5C = -((rider->dnode.axes[1][0] * sp6C[0]) + (rider->dnode.axes[1][1] * sp6C[1]) + (rider->dnode.axes[1][2] * sp6C[2]));
     }
     var_f0 = rider->edgeSlope;
-    temp_f2_2 = rider->velDir.x;
-    temp_f12 = rider->velDir.y;
-#define temp_f14 (rider->velDir.z)
+    temp_f2_2 = rider->dnode.velDir[0];
+    temp_f12 = rider->dnode.velDir[1];
+#define temp_f14 (rider->dnode.velDir[2])
     rider->edgeSlope = (f32) (var_f0 + (f64) ((f64) (sp5C - var_f0) * 0.4));
-    sp58 = (rider->dir.x * temp_f2_2) + (rider->dir.y * temp_f12) + (rider->dir.z * temp_f14);
-    sp54 = (rider->side.x * temp_f2_2) + (rider->side.y * temp_f12) + (rider->side.z * temp_f14);
+    sp58 = (rider->dnode.axes[2][0] * temp_f2_2) + (rider->dnode.axes[2][1] * temp_f12) + (rider->dnode.axes[2][2] * temp_f14);
+    sp54 = (rider->dnode.axes[1][0] * temp_f2_2) + (rider->dnode.axes[1][1] * temp_f12) + (rider->dnode.axes[1][2] * temp_f14);
     if (rider->crouch != 0) {
         sp60 = (f32) ((f64) sp60 * 0.5);
     }
@@ -98,22 +98,22 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
     }
     rider->edge = var_f2;
     if ((rider->groundFlags & 1) || (rider->groundGentle == 0)) {
-        rider->localUp.x = (f32) rider->dir.y;
-        rider->localUp.y = (f32) -rider->side.y;
-        rider->localUp.z = (f32) rider->up.y;
+        rider->localUp.x = (f32) rider->dnode.axes[2][1];
+        rider->localUp.y = (f32) -rider->dnode.axes[1][1];
+        rider->localUp.z = (f32) rider->dnode.axes[0][1];
     } else {
         var_f0 = rider->groundNormal.x;
         var_f12 = rider->groundNormal.z;
-        rider->localUp.x = (f32) ((rider->dir.x * var_f0) + (rider->dir.y * rider->groundNormal.y) + (rider->dir.z * var_f12));
-        rider->localUp.y = (f32) -((rider->side.x * var_f0) + (rider->side.y * rider->groundNormal.y) + (rider->side.z * var_f12));
-        rider->localUp.z = (f32) ((rider->up.x * var_f0) + (rider->up.y * rider->groundNormal.y) + (rider->up.z * var_f12));
+        rider->localUp.x = (f32) ((rider->dnode.axes[2][0] * var_f0) + (rider->dnode.axes[2][1] * rider->groundNormal.y) + (rider->dnode.axes[2][2] * var_f12));
+        rider->localUp.y = (f32) -((rider->dnode.axes[1][0] * var_f0) + (rider->dnode.axes[1][1] * rider->groundNormal.y) + (rider->dnode.axes[1][2] * var_f12));
+        rider->localUp.z = (f32) ((rider->dnode.axes[0][0] * var_f0) + (rider->dnode.axes[0][1] * rider->groundNormal.y) + (rider->dnode.axes[0][2] * var_f12));
     }
     if (rider->contactCount == 0) {
         rider->shake = 0;
-        rider->angVel.x = 0;
-        rider->angVel.y = 0;
-        rider->angVel.z = 0;
-        rider->angVel.w = 1.0f;
+        rider->dnode.angVel[0] = 0;
+        rider->dnode.angVel[1] = 0;
+        rider->dnode.angVel[2] = 0;
+        rider->dnode.angVel[3] = 1.0f;
         var_a0 = (char *)rider->input;
         if ((((RiderInput *)var_a0)->held & 0x200) && (rider->groundFlags & 1)) {
             temp_v0_2 = rider->spinHold;
@@ -134,26 +134,26 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         } else {
             rider->spinHold = 0;
             if (rider->groundFlags & 1) {
-                temp_a1 = (char *)&rider->up;
-                bu_b75c_mvf((char *)&rider->orient, temp_a1, -rider->input->stickX * rider->parms.ayr.value, rider);
+                temp_a1 = (char *)rider->dnode.axes[0];
+                bu_b75c_mvf((char *)rider->dnode.vqs.quat, temp_a1, -rider->input->stickX * rider->parms.ayr.value, rider);
             } else {
-                var_a0 = (char *)&rider->orient;
-                temp_a1 = (char *)&rider->dir;
+                var_a0 = (char *)rider->dnode.vqs.quat;
+                temp_a1 = (char *)rider->dnode.axes[2];
                 var_f0 = dot3(rider, sp6C);
                 bu_b75c_mvf(var_a0, temp_a1, (f32) ((f64) var_f0 * -0.1), rider);
                 if (rider->unkA18 != 0) {
                     bu_b75c_mvf(var_a0, temp_a1, rider->input->stickX * rider->parms.azr.value, rider);
-                    bu_b75c_mvf(var_a0, (char *)&rider->side, rider->input->stickY * rider->parms.axr.value, rider);
-                    bu_b75c_mvf(var_a0, (char *)&rider->up, -rider->input->stickX * rider->parms.ayr.value, rider);
+                    bu_b75c_mvf(var_a0, (char *)rider->dnode.axes[1], rider->input->stickY * rider->parms.axr.value, rider);
+                    bu_b75c_mvf(var_a0, (char *)rider->dnode.axes[0], -rider->input->stickX * rider->parms.ayr.value, rider);
                 }
             }
         }
         var_v0 = rider->groundFlags & 1;
         if (var_v0 != 0) {
-            if ((f64) rider->up.y < 0.8) {
-                rider->vel.x = 0;
+            if ((f64) rider->dnode.axes[0][1] < 0.8) {
+                rider->dnode.vel[0] = 0;
             }
-            bu_b75c_mvf((char *)&rider->orient, (char *)&rider->up, -rider->airSpin, rider);
+            bu_b75c_mvf((char *)rider->dnode.vqs.quat, (char *)rider->dnode.axes[0], -rider->airSpin, rider);
             var_v0 = rider->groundFlags & 1;
         }
     } else {
@@ -167,19 +167,19 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         }
         rider->shake = (s32) (20.0f + (30.0f * var_f0));
         if (rider->groundFlags & 1) {
-            func_00000000((char *)&rider->sound, *(s32 *)&rider->pos.x);
+            func_00000000((char *)&rider->sound, *(s32 *)&rider->dnode.vqs.trans[0]);
             if (rider->slowdown == 0) {
-                if (rider->dir.x < 0.0f) {
-                    var_f0 = -rider->dir.x;
+                if (rider->dnode.axes[2][0] < 0.0f) {
+                    var_f0 = -rider->dnode.axes[2][0];
                 } else {
-                    var_f0 = rider->dir.x;
+                    var_f0 = rider->dnode.axes[2][0];
                 }
-                rider->vel.x += rider->vel.x * rider->parms.hpf.value * var_f0;
+                rider->dnode.vel[0] += rider->dnode.vel[0] * rider->parms.hpf.value * var_f0;
             }
-            if ((f64) rider->up.y < 0.8) {
+            if ((f64) rider->dnode.axes[0][1] < 0.8) {
                 sp60 *= 2.0f;
             }
-            var_a0 = (char *)&rider->orient;
+            var_a0 = (char *)rider->dnode.vqs.quat;
         } else {
             if ((sp58 < rider->parms.mdr.value) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
                 rider->shake = (s32) (rider->shake + 0x14);
@@ -192,19 +192,19 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
                 var_f0 = rider->localUp.y;
             }
             if (rider->parms.mro.value < var_f0) {
-                bu_b75c_mvf((char *)&rider->orient, (char *)&rider->dir, rider->localUp.y * rider->parms.ure.value, rider);
+                bu_b75c_mvf((char *)rider->dnode.vqs.quat, (char *)rider->dnode.axes[2], rider->localUp.y * rider->parms.ure.value, rider);
             }
-            var_a0 = (char *)&rider->orient;
+            var_a0 = (char *)rider->dnode.vqs.quat;
             if (rider->localUp.x < 0.0f) {
                 var_f0 = -rider->localUp.x;
             } else {
                 var_f0 = rider->localUp.x;
             }
             if (rider->parms.mpi.value < var_f0) {
-                bu_b75c_mvf(var_a0, (char *)&rider->side, rider->localUp.x * rider->parms.ure.value, rider);
+                bu_b75c_mvf(var_a0, (char *)rider->dnode.axes[1], rider->localUp.x * rider->parms.ure.value, rider);
             }
         }
-        bu_b75c_mvf(var_a0, (char *)&rider->up, sp60, rider);
+        bu_b75c_mvf(var_a0, (char *)rider->dnode.axes[0], sp60, rider);
         var_v0 = rider->groundFlags & 1;
     }
     if (var_v0 != 0) {
@@ -212,10 +212,10 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
     } else {
         var_f0 = rider->parms.tch.value;
     }
-    var_f2 = rider->angVel.w;
-    rider->angVel.x = (f32) (rider->angVel.x * var_f0);
-    rider->angVel.y = (f32) (rider->angVel.y * var_f0);
-    rider->angVel.z = (f32) (rider->angVel.z * var_f0);
-    rider->angVel.w = (f32) ((f64) var_f2 + ((f64) (1.0f - var_f2) * (1.0 - (f64) var_f0)));
+    var_f2 = rider->dnode.angVel[3];
+    rider->dnode.angVel[0] = (f32) (rider->dnode.angVel[0] * var_f0);
+    rider->dnode.angVel[1] = (f32) (rider->dnode.angVel[1] * var_f0);
+    rider->dnode.angVel[2] = (f32) (rider->dnode.angVel[2] * var_f0);
+    rider->dnode.angVel[3] = (f32) ((f64) var_f2 + ((f64) (1.0f - var_f2) * (1.0 - (f64) var_f0)));
 }
 #undef temp_f14

@@ -1478,7 +1478,7 @@ void CamDirector_update(CamDirector *self) {
     self->pollTimer = (int)s0 + 1;
     if ((int)s0 >= 0x3C) {
         tb.w = sStr_cam_7324;
-        p = (char *)FCALL(ItemMgr_queryType)(D_24B8_tbl, tb, &self->rider->pos, 0);
+        p = (char *)func_00000000(D_24B8_tbl, tb, self->rider->dnode.vqs.trans, 0);
         if (p != 0 && p != self->lastCamNode) {
             k2 = FW(p, 0x3C);
             if ((u32)k2 >= 3 && (u32)k2 < 0x13) {
@@ -2266,9 +2266,9 @@ void game_setupVsGhost(char *s2, int a1) {
                      *(float*)(WORLDREG(s2)->unk98 + 0xC4),
                      *(float*)(WORLDREG(s2)->unk98 + 0xCC),
                      (VG_MGR->ghostFlags | 0x8) | 0x8000, 0x14);
-    SNOWB(r2)->unk38C = 0;
-    b3 = (char*)FCALL(cam_create)(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
-    f1 = (char*)FCALL(game_create3DWindow)(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
+    SNOWB(r2)->dnode.unk38C = 0;
+    b3 = (char*)func_00000000(s2, 2, WORLDREG(s2)->fgRoot, r1, o1);
+    f1 = (char*)func_00000000(s2, (char*)&D_00000000 + a1 * 0x1C, b3);
     SNOWB(r1)->camera = f1;
     SNOWB(r2)->camera = f1;
 }
@@ -4963,7 +4963,7 @@ char *ShpNode_ctor(char *self) {
     handle = FCALL(PolyShape_ctor)(0, &sStr_shp_8710, &D_8F18_call_arg, 0);
     FCALL(MNode_addChild)(self, handle);
     SHPNODE(self)->life = 100;
-    SHPNODE(self)->unk260 = 50.0f;
+    SHPNODE(self)->dnode.parms.rad.value = 50.0f;
 end:
     return self;
 }
@@ -5008,20 +5008,20 @@ void ShpNode_func_00008FA8(int *self) {
     volatile int pad_hi[2];
     Vec3i_8FA8 scratch;
     volatile int pad_lo[2];
-    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->pos;
-    SHPNODE(self)->lastPos[0] = *(float*)&scratch.a;
-    SHPNODE(self)->lastPos[1] = *(float*)&scratch.b;
-    SHPNODE(self)->lastPos[2] = *(float*)&scratch.c;
-    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->unkC0;
-    SHPNODE(self)->lastUnkC0[0] = *(float*)&scratch.a;
-    SHPNODE(self)->lastUnkC0[1] = *(float*)&scratch.b;
-    SHPNODE(self)->lastUnkC0[2] = *(float*)&scratch.c;
-    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->orient;
-    SHPNODE(self)->lastOrient[0] = *(float*)&scratch.a;
-    SHPNODE(self)->lastOrient[1] = *(float*)&scratch.b;
-    SHPNODE(self)->lastOrient[2] = *(float*)&scratch.c;
-    SHPNODE(self)->lastOrient[3] = SHPNODE(self)->orient[3];
-    FCALL(DNode_update)(self);
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->dnode.vqs.trans;
+    SHPNODE(self)->dnode.cvqs.trans[0] = *(float*)&scratch.a;
+    SHPNODE(self)->dnode.cvqs.trans[1] = *(float*)&scratch.b;
+    SHPNODE(self)->dnode.cvqs.trans[2] = *(float*)&scratch.c;
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->dnode.vqs.scale;
+    SHPNODE(self)->dnode.cvqs.scale[0] = *(float*)&scratch.a;
+    SHPNODE(self)->dnode.cvqs.scale[1] = *(float*)&scratch.b;
+    SHPNODE(self)->dnode.cvqs.scale[2] = *(float*)&scratch.c;
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->dnode.vqs.quat;
+    SHPNODE(self)->dnode.cvqs.quat[0] = *(float*)&scratch.a;
+    SHPNODE(self)->dnode.cvqs.quat[1] = *(float*)&scratch.b;
+    SHPNODE(self)->dnode.cvqs.quat[2] = *(float*)&scratch.c;
+    SHPNODE(self)->dnode.cvqs.quat[3] = SHPNODE(self)->dnode.vqs.quat[3];
+    func_00000000(self);
     {
         int counter = SHPNODE(self)->life;
         SHPNODE(self)->life = counter - 1;
@@ -5249,7 +5249,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     char *p;
     char *q;
 
-    q = (char *)&sb->dir;
+    q = (char *)sb->dnode.axes[2]; /* dir */
     t = 0.0f;
     if (sb->flags & SNOWB_FLAG_NUDGE) {
         p = (char *)sb->input;
@@ -5267,14 +5267,14 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     v50.x = px; v50.y = py; v50.z = pz;
     v5C = v50;
     v74 = v5C;
-    sb->vel.x = sb->vel.x + v74.x;
-    sb->vel.y = sb->vel.y + v74.y;
-    sb->vel.z = sb->vel.z + v74.z;
+    sb->dnode.vel[0] = sb->dnode.vel[0] + v74.x;
+    sb->dnode.vel[1] = sb->dnode.vel[1] + v74.y;
+    sb->dnode.vel[2] = sb->dnode.vel[2] + v74.z;
     if (((s32)sb->flags << 14) < 0) {  /* SNOWB_FLAG_CATCHUP */
         p = (char *)sb->rival;
         t = sb->parms.max.value;
         if (p != NULL) {
-            d = ((SnowBoarder *)p)->pos.z - sb->pos.z;
+            d = ((SnowBoarder *)p)->dnode.vqs.trans[2] - sb->dnode.vqs.trans[2];
             if (bu_b520_k48 < d) {
                 t += bu_b520_k44;
             } else if (d < -bu_b520_k48) {
@@ -5286,17 +5286,17 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     } else {
         sb->maxSpeed = sb->parms.max.value;
     }
-    if (sb->maxSpeed < sb->speed) {
-        FCALL(math_vec3Normalize)(&sb->vel, sb);  /* normalize */
+    if (sb->maxSpeed < sb->dnode.speed) {
+        func_00000000(sb->dnode.vel, sb);  /* normalize */
         k = sb->maxSpeed;
-        sb->vel.x = sb->vel.x * k;
-        sb->vel.y = sb->vel.y * k;
-        sb->vel.z = sb->vel.z * k;
+        sb->dnode.vel[0] = sb->dnode.vel[0] * k;
+        sb->dnode.vel[1] = sb->dnode.vel[1] * k;
+        sb->dnode.vel[2] = sb->dnode.vel[2] * k;
     }
     if (sb->contactCount == 0) {
         k = 1.0f - sb->parms.wfr.value;
-        sb->vel.x = sb->vel.x * k;
-        sb->vel.z = sb->vel.z * k;
+        sb->dnode.vel[0] = sb->dnode.vel[0] * k;
+        sb->dnode.vel[2] = sb->dnode.vel[2] * k;
     }
 }
 
@@ -5439,11 +5439,11 @@ void SnowBoarder_updateDyn(char *arg0) {
     sb->crouch = (f64) (*(f32 *)((char *)temp_v0 + 0x4)) < -0.75; /* input stick y */
     if ((sb->useDParms = (*(s32 *)((char *)temp_v0 + 0x10) & 0x400) != 0, sb->edgeFriction = sb->child.parms.efr.value, sb->useDParms) != 0) {
         sb->edgeGrip = sb->child.parms.del.value;
-        sb->friction = sb->child.parms.dbf.value;
+        sb->dnode.friction = sb->child.parms.dbf.value;
         sb->turnRate = (f32) ((*(volatile f32 *)&sb->child.parms.res.value) * sb->parms.dts.value);
     } else {
         sb->edgeGrip = sb->child.parms.nel.value;
-        sb->friction = sb->child.parms.nbf.value;
+        sb->dnode.friction = sb->child.parms.nbf.value;
         sb->turnRate = (f32) ((*(volatile f32 *)&sb->child.parms.res.value) * sb->parms.nts.value);
     }
     if (sb->crouch != 0) {
@@ -5458,14 +5458,14 @@ void SnowBoarder_updateDyn(char *arg0) {
         } else {
             var_f2 = temp_f0;
         }
-        sb->friction = (f32) (sb->friction + (var_f2 * var_f12));
+        sb->dnode.friction = (f32) (sb->dnode.friction + (var_f2 * var_f12));
     }
     temp_v0_2 = sb->surface;
     if (temp_v0_2 != 0x63) {
         if (temp_v0_2 != 0x61) {
             if (temp_v0_2 != 0x62) {
         /* off the ground (surface 0): extra friction, no edge terms */
-        sb->friction = (f32) (D_BF8C_pool8F4_24 + (f64) sb->friction);
+        sb->dnode.friction = (f32) (D_BF8C_pool8F4_24 + (f64) sb->dnode.friction);
         sb->edgeGrip = 0.0f;
         sb->edgeFriction = 0.0f;
             } else goto L62;
@@ -5473,22 +5473,22 @@ void SnowBoarder_updateDyn(char *arg0) {
     } else goto L63;
     goto Lend;
 L63: /* surface 'c' */
-        sb->friction = (f32) (sb->child.parms.ifr.value * sb->friction);
+        sb->dnode.friction = (f32) (sb->child.parms.ifr.value * sb->dnode.friction);
         sb->edgeGrip = (f32) (sb->child.parms.ied.value * sb->edgeGrip);
     goto Lend;
 L62: /* surface 'b' */
-        sb->friction = (f32) (sb->child.parms.dfr.value * sb->friction);
+        sb->dnode.friction = (f32) (sb->child.parms.dfr.value * sb->dnode.friction);
         sb->edgeGrip = (f32) (sb->child.parms.ded.value * sb->edgeGrip);
 Lend:
     temp_v0_3 = sb->slowdown;
     sb->edgeGrip = (f32) (sb->parms.edf.value * sb->edgeGrip);
-    sb->friction = (f32) (sb->parms.bdf.value * sb->friction);
+    sb->dnode.friction = (f32) (sb->parms.bdf.value * sb->dnode.friction);
     if (temp_v0_3 != 0) {
         sb->edgeGrip = 0.0f;
-        sb->friction = (f32) (sb->friction + ((f32) temp_v0_3 / 100.0f));
+        sb->dnode.friction = (f32) (sb->dnode.friction + ((f32) temp_v0_3 / 100.0f));
         temp_f0_2 = 1.0f - sb->parms.sfr.value;
-        sb->vel.x = (f32) (sb->vel.x * temp_f0_2);
-        sb->vel.z = (f32) (sb->vel.z * temp_f0_2);
+        sb->dnode.vel[0] = (f32) (sb->dnode.vel[0] * temp_f0_2);
+        sb->dnode.vel[2] = (f32) (sb->dnode.vel[2] * temp_f0_2);
     }
     func_00000000(sb);                  /* SnowBoarder_limitSpeed */
     func_00000000(sb);                  /* SnowBoarder_updateOrient */
@@ -5500,9 +5500,9 @@ Lend:
      * is the accepted fuzzy residual. */
     func_00000000(D_BF8C_8A40 + 0x2C);  /* perf section end */
     func_00000000(sb);                  /* DNode_applyAccums_00065448 */
-    if ((sb->slowdown == 0x64) && (sb->speed < 30.0f)) {
-        sb->vel.x = 0.0f;
-        sb->vel.z = 0.0f;
+    if ((sb->slowdown == 0x64) && (sb->dnode.speed < 30.0f)) {
+        sb->dnode.vel[0] = 0.0f;
+        sb->dnode.vel[2] = 0.0f;
     }
     func_00000000(sb);                  /* DNode_integrate_00064DEC */
     func_00000000(sb);                  /* DNode_resetAccums_00065148 */
@@ -6009,7 +6009,7 @@ void SnowBoarder_update(char *st) {
             func_00000000(st);
             func_00000000(&D_00008AF4);
             if ((int)SNOWB(st)->flags & 0x40000) {
-                f0 = SNOWB(st)->vel.y;
+                f0 = SNOWB(st)->dnode.vel[1];
                 f2 = (f0 < 0.0f) ? -f0 : f0;
                 a84 = (int)((f2 - 100.0f) / four);
                 SNOWB(st)->landImpact = a84;
@@ -6026,9 +6026,9 @@ void SnowBoarder_update(char *st) {
             }
         }
         func_00000000(&D_00008B00);
-        SNOWB(st)->fwdSpeed = SNOWB(st)->dir.x * SNOWB(st)->vel.x
-                               + SNOWB(st)->dir.y * SNOWB(st)->vel.y
-                               + SNOWB(st)->dir.z * SNOWB(st)->vel.z;
+        SNOWB(st)->fwdSpeed = SNOWB(st)->dnode.axes[2][0] * SNOWB(st)->dnode.vel[0]
+                               + SNOWB(st)->dnode.axes[2][1] * SNOWB(st)->dnode.vel[1]
+                               + SNOWB(st)->dnode.axes[2][2] * SNOWB(st)->dnode.vel[2];
         func_00000000((char *)SNOWB(st)->anim);
         if (SNOWB(st)->shake != 0) {
             /* six wobble records, each via ONE mutated pointer temp (r4):
@@ -6037,7 +6037,7 @@ void SnowBoarder_update(char *st) {
              * lwc1/swc1 0x64(base) with no addiu (wrong shape). */
             char *r4;
             float fv;
-            double rnd = (double)func_d440_frnd((void *)(((((int)SNOWB(st)->lastPos.x ^ (int)SNOWB(st)->lastPos.z) >> 5) ^ 0x12345678)));
+            double rnd = (double)func_d440_frnd((void *)(((((int)SNOWB(st)->dnode.cvqs.trans[0] ^ (int)SNOWB(st)->dnode.cvqs.trans[2]) >> 5) ^ 0x12345678)));
             float tf2 = (float)((rnd - 0.5) * 30.0 * (double)((float)SNOWB(st)->shake / 100.0f));
             double tf12;
             r4 = SNOWB(st)->bodyNodes[1];
@@ -6070,12 +6070,12 @@ void SnowBoarder_update(char *st) {
         func_00000000(&D_00008B18);
         func_00000000(st);
         func_00000000(&D_00008B24);
-        func_d440_f0call(*(int *)((char *)&D_F0a + 0x48), (int)st, SNOWB(st)->speed / two);
+        func_d440_f0call(*(int *)((char *)&D_F0a + 0x48), (int)st, SNOWB(st)->dnode.speed / two);
         func_00000000(*(int *)((char *)&D_F0b + 0x48), (int)st, *(int *)(st + 0xDC), *(int *)(st + 0xE4));
         func_00000000(*(int *)((char *)&D_F0c + 0x48), (int)st, SNOWB(st)->health);
         t5 = (int)SNOWB(st)->camera;
         if (t5 != 0) {
-            func_d440_final(a0_2, st + 0xDC, SNOWB(st)->speed,
+            func_d440_final(a0_2, st + 0xDC, SNOWB(st)->dnode.speed,
                           -SNOWB(st)->contactDepth, SNOWB(st)->edge,
                           SNOWB(st)->groundDist + D_00000980,
                           (int)SNOWB(st)->surface, t5, (int)SNOWB(st)->flags);
@@ -6549,9 +6549,9 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
     v[1].x = d * arg3->x - v[1].x;
     v[1].y = d * arg3->y - v[1].y;
     v[1].z = d * arg3->z - v[1].z; if (1) {}
-    v[0].x = SNOWB(arg0)->side.x;
-    v[0].y = SNOWB(arg0)->side.y;
-    v[0].z = SNOWB(arg0)->side.z;
+    v[0].x = SNOWB(arg0)->dnode.axes[1][0]; /* side axis */
+    v[0].y = SNOWB(arg0)->dnode.axes[1][1];
+    v[0].z = SNOWB(arg0)->dnode.axes[1][2];
     d = v[0].z * arg3->z + (v[0].y * arg3->y + v[0].x * arg3->x);
     v[0].x = d * arg3->x - v[0].x;
     v[0].y = d * arg3->y - v[0].y;

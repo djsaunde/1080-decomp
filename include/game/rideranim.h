@@ -101,7 +101,7 @@ typedef struct RiderAnim {
     f32 hitScale;           /* 0x11C: selectAnim (D9CC) scales the rider's 0xA1C..0xA24 hit vector by it; the lnc parm
                              * during stateCushionIn, 1.0 from init, after a hit and at stateCushionEnd; one hit
                              * case needs it == 1.0 */
-    s32 endTrickFlag;       /* 0x120: set to 1 by endTrick; RiderAnim_update clears it when rider->pos.z < D+0x1F4
+    s32 endTrickFlag;       /* 0x120: set to 1 by endTrick; RiderAnim_update clears it when rider->dnode.vqs.trans[2] < D+0x1F4
                              * and, while it is set, ORs 3 into the word at (import_80020098+0x138)+0xB4 (else
                              * clears those bits) */
     s16 lastStickDir;       /* 0x124: rider->input->stickDir seen last frame (readStickSpin) */

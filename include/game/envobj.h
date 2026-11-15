@@ -6,6 +6,8 @@
  * collider probes and the ShpNode. Only the fields the bootup bodies touch are named; offsets
  * come from the ctors' stores. Needs gdl/node.h and game/course.h first. */
 
+#include "gdl/dnode.h"
+
 /* ---- U64BGWall (0x4C, vtbl Data 0x6648; U64BGWall_ctor E68) ----
  * The tiled background-wall mesh. The ctor builds the quad grid into a scratch vertex buffer and
  * appends the index list to `mesh`'s +0xC {data, count} handle. */
@@ -108,19 +110,10 @@ typedef struct SnowBCollider {
 #define SNOWBCOL(p) ((SnowBCollider *)(p))
 
 /* ---- ShpNode (0x3D8, `<QNode>` "shp", vtbl Data 0x81E0; ctor 8F18): a game_libs DNode ----
- * ShpNode_func_00008FA8 saves the DNode state (pos / unkC0 / orient -> last*) before the base
- * update, then counts `life` down. */
+ * ShpNode_func_00008FA8 copies dnode.vqs (trans / scale / quat) into dnode.cvqs before the
+ * base update, then counts `life` down. The ctor sets dnode.parms.rad to 50 (DNode default 150). */
 typedef struct ShpNode {
-    char dnode[0xB4];           /* 0x000: DNode base */
-    f32 pos[3];                 /* 0x0B4 */
-    f32 unkC0[3];               /* 0x0C0 */
-    f32 orient[4];              /* 0x0CC: quaternion */
-    f32 lastPos[3];             /* 0x0DC */
-    f32 lastUnkC0[3];           /* 0x0E8 */
-    f32 lastOrient[4];          /* 0x0F4 */
-    char unk104[0x260 - 0x104];
-    f32 unk260;                 /* 0x260: 50.0 (inside DNode::Parms, 0x108) */
-    char unk264[0x3D4 - 0x264];
+    DNode dnode;                /* 0x000: the game_libs DNode base (include/gdl/dnode.h) */
     s32 life;                   /* 0x3D4: 100, decremented by ShpNode_func_00008FA8 */
 } ShpNode;                      /* 0x3D8 */
 

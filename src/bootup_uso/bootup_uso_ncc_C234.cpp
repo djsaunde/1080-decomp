@@ -106,11 +106,11 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     if (temp_v0 != 0) {
         rider->msgCooldown = (s32) (temp_v0 - 1);
     }
-    spB4 = *(V3C234 *)&rider->pos.x;
+    spB4 = *(V3C234 *)&rider->dnode.vqs.trans[0];
     rider->prevPos.x = spB4.x;
     rider->prevPos.y = spB4.y;
     rider->prevPos.z = spB4.z;
-    spB4 = *(V3C234 *)&rider->vel.x;
+    spB4 = *(V3C234 *)&rider->dnode.vel[0];
     rider->prevVel.x = spB4.x;
     rider->prevVel.y = spB4.y;
     rider->prevVel.z = spB4.z;
@@ -123,7 +123,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
      * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = (char *)&rider->lastPos + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
+    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)((char *)&D_00000000 + 0)), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
         rider->groundSurface = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             rider->surface = rider->groundSurface;
@@ -136,7 +136,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
         /* agent-g run 232: the scaled sum alone on the line, `+ 4.0f` in the test (product first in the add, spCC.f0 loads before it): 98.68 -> 99.10 */
         /* agent-g run 233: the scaled sum in temp_f0 (target mul.s into f0) */
-        temp_f0 = (D_bu_ro_pool[0x128 / 4] * (((rider->lastPos.x * spCC.e4) + ((rider->lastPos.y + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (rider->lastPos.z * spCC.ec))));
+        temp_f0 = (D_bu_ro_pool[0x128 / 4] * (((rider->dnode.cvqs.trans[0] * spCC.e4) + ((rider->dnode.cvqs.trans[1] + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (rider->dnode.cvqs.trans[2] * spCC.ec))));
         if ((spCC.f0 < temp_f0 + 4.0f) ||(rider->contactCount != 0)) {
             rider->onGround = 1;
             spB4 = *(V3C234 *)&spCC.e4;
@@ -156,9 +156,9 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
             rider->groundNormal.y = 1.0f;
         }
         if ((rider->groundDist < (f32) 0) && (spCC.e8 > (f32) 0)) {
-            rider->vel.y = 10.0f;
+            rider->dnode.vel[1] = 10.0f;
         }
-        if ((rider->contactCount != 0) && (rider->speed > 10.0f)) {
+        if ((rider->contactCount != 0) && (rider->dnode.speed > 10.0f)) {
 #define temp_v1 (rider->groundSurface) /* run 184: de-named (lever-sweep) */
             var_v0 = 0;
             if (temp_v1 == 0x64) {
@@ -185,9 +185,9 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
         temp_v0_2 = rider->groundSurface;
         if (temp_v0_2 == 0x61) goto c61;
         if (temp_v0_2 == 0x62) goto c62;
-        rider->surfImp = (f32) kRo_SnowBoarder_procColl_938;
-        rider->surfSpd = (f32) kRo_SnowBoarder_procColl_93C;
-        rider->surfVsc = kRo_SnowBoarder_procColl_940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
+        rider->dnode.surfImp = (f32) kRo_SnowBoarder_procColl_938;
+        rider->dnode.surfSpd = (f32) kRo_SnowBoarder_procColl_93C;
+        rider->dnode.surfVsc = kRo_SnowBoarder_procColl_940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
         rider->groundColor[3] = 0;
         rider->groundColor[2] = 0;
         rider->groundColor[1] = 0;
@@ -195,16 +195,16 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
         rider->impactScale = (f32) rider->parms.icf.value;
         goto cend;
 c61:
-        rider->surfImp = (f32) rider->dparms.imp.value;
-        rider->surfSpd = (f32) rider->dparms.spd.value;
-        rider->surfVsc = (f32) rider->dparms.vsc.value;
+        rider->dnode.surfImp = (f32) rider->dnode.parms.imp.value;
+        rider->dnode.surfSpd = (f32) rider->dnode.parms.spd.value;
+        rider->dnode.surfVsc = (f32) rider->dnode.parms.vsc.value;
         rider->impactScale = (f32) rider->parms.snf.value;
         func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
         goto cend;
 c62:
-        rider->surfImp = 0.0f;
-        rider->surfSpd = kRo_SnowBoarder_procColl_944;
-        rider->surfVsc = kRo_SnowBoarder_procColl_948;
+        rider->dnode.surfImp = 0.0f;
+        rider->dnode.surfSpd = kRo_SnowBoarder_procColl_944;
+        rider->dnode.surfVsc = kRo_SnowBoarder_procColl_948;
         rider->impactScale = (f32) rider->parms.dsf.value;
         func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
 cend:
@@ -287,7 +287,7 @@ cend:
         rider->lastContactNormal.x = spB4.x;
         rider->lastContactNormal.y = spB4.y;
         rider->lastContactNormal.z = spB4.z;
-        var_f2_2 = (rider->lastVel.x * rider->contactNormal.x) + (rider->lastVel.y * rider->contactNormal.y) + (rider->lastVel.z * rider->contactNormal.z);
+        var_f2_2 = (rider->dnode.lastVel[0] * rider->contactNormal.x) + (rider->dnode.lastVel[1] * rider->contactNormal.y) + (rider->dnode.lastVel[2] * rider->contactNormal.z);
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
@@ -318,10 +318,10 @@ cend:
     temp_f16 = rider->impactScale;
     /* agent-g run 232: each dot product in temp_f0 (the target's sums are all in f0, which pushes 0x910 out of f0), then `sum * scale` */
     /* agent-g run 234: 0x934 assigned inside its first use (target loads 0x3C4 before 0x934) */
-    temp_f0 = (rider->side.x * temp_f2_3) + (rider->side.y * temp_f12_2) + (rider->side.z * (temp_f14 = rider->impactVel.z));
+    temp_f0 = (rider->dnode.axes[1][0] * temp_f2_3) + (rider->dnode.axes[1][1] * temp_f12_2) + (rider->dnode.axes[1][2] * (temp_f14 = rider->impactVel.z));
     rider->bumpSide = rider->bumpSide + (temp_f0 * temp_f16);
-    temp_f0 = (rider->up.x * temp_f2_3) + (rider->up.y * temp_f12_2) + (rider->up.z * temp_f14);
+    temp_f0 = (rider->dnode.axes[0][0] * temp_f2_3) + (rider->dnode.axes[0][1] * temp_f12_2) + (rider->dnode.axes[0][2] * temp_f14);
     rider->bumpUp = rider->bumpUp + (temp_f0 * temp_f16);
-    temp_f0 = (rider->dir.x * temp_f2_3) + (rider->dir.y * temp_f12_2) + (rider->dir.z * temp_f14);
+    temp_f0 = (rider->dnode.axes[2][0] * temp_f2_3) + (rider->dnode.axes[2][1] * temp_f12_2) + (rider->dnode.axes[2][2] * temp_f14);
     rider->bumpFwd = rider->bumpFwd - temp_f0;
 }

@@ -103,7 +103,7 @@ typedef struct CourseItemTmpl {
  * RaceTracker_passCheckpoints read are named (agent-g run 485).
  * The course coordinate is world z: RaceTracker.courseZ / courseLength are the MapProp start.z (0xCC) and
  * goal.z (0xD8) - start.z, RaceEntry.progress is on the same axis, and findGates orders a fork's two gates
- * by `gate->z - rider->lastPos.z` (the rider +0xE4 it subtracts = lastPos.z). passCheckpoints moves
+ * by `gate->z - rider->dnode.cvqs.trans[2]` (the rider +0xE4 it subtracts; the last-integrate position). passCheckpoints moves
  * entries[0].gate to gate->next once gate->z <= entries[0].progress, then calls a gate test (gate, rider
  * pos, entry); a non-zero result is reported through the tracker's vtable (the +0x60 / +0x64 slot). Note: findGates looks up with
  * entries[0]'s rider and stores the "chk" result in entries[0].gate on every iteration (only the fork

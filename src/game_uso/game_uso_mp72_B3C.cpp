@@ -180,14 +180,14 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
                 s->cam.rotEnable = (seg->rotMode == 0) == 0;
             }
             if (tmp == seg->eyeMode) {
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 1, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 1, (int)s->rider->dnode.vel);
             } else {
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 0, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 0, (int)s->rider->dnode.vel);
             }
             if (seg->lookMode == 1) {
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)&s->rider->vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
             } else {
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 0, (int)&s->rider->vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 0, (int)s->rider->dnode.vel);
             }
             s->savedChaseMode = 0;
             s->chaseMode = 0;
@@ -223,23 +223,23 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
             /* 4 dense labels: the native 4-entry table (RoData +0x50). eye / look component modes */
             switch (s->chaseMode) {
             case 0: /* chase at height toy, look at the aim point */
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 1, (int)&s->rider->vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 1, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 1: /* chase at height ty2 */
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 2, (int)&s->rider->vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 2, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 2: /* fixed eye, looking 1000 ahead */
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)&s->rider->vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 2, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 2, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             case 3: /* fixed eye, looking 1000 behind */
-                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)&s->rider->vel);
-                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 3, (int)&s->rider->vel);
+                SnowChaseActorCam_setMode_00002714((int *)s->eyeChase, 3, (int)s->rider->dnode.vel);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 3, (int)s->rider->dnode.vel);
                 tv = (char *)&s->rider->flags; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             }
@@ -337,7 +337,7 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
     }
     /* the chase aim point (rider position + rotated cof) for relative paths */
     *(Tri3i *)&vC = *(Tri3i *)cam_toTargetLocal_000023D4(&stage, (char *)s->eyeChase);
-    tv = (char *)&s->rider->pos;
+    tv = (char *)s->rider->dnode.vqs.trans;
     { f1 = ((f32 *)tv)[0] + vC.x; fy = ((f32 *)tv)[1] + vC.y; fz = ((f32 *)tv)[2] + vC.z; v30.z = fz; v30.y = fy; v30.x = f1; }
     if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;

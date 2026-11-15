@@ -42,9 +42,9 @@ void SnowBCollider_edgeGrip_0000E2D0(SnowBoarder *rider, s32 point, Vec3 *pointV
     v[1].x = d * normal->x - v[1].x;
     v[1].y = d * normal->y - v[1].y;
     v[1].z = d * normal->z - v[1].z; if (1) {}
-    v[0].x = rider->side.x;
-    v[0].y = rider->side.y;
-    v[0].z = rider->side.z;
+    v[0].x = rider->dnode.axes[1][0]; /* side axis */
+    v[0].y = rider->dnode.axes[1][1];
+    v[0].z = rider->dnode.axes[1][2];
     d = v[0].z * normal->z + (v[0].y * normal->y + v[0].x * normal->x);
     v[0].x = d * normal->x - v[0].x;
     v[0].y = d * normal->y - v[0].y;

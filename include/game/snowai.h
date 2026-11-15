@@ -54,13 +54,13 @@ typedef struct SnowAI {
     SnowBoarder *rider;     /* 0x30: the rider being steered (reads its pos / vel / speed) */
     s32 unk34;              /* 0x34: cleared by SnowAI_reset */
     f32 unk38;              /* 0x38: cleared by SnowAI_reset */
-    f32 unk3C;              /* 0x3C: steering output computed from rider->speed (591C); SnowAI_update zeroes it every frame */
+    f32 unk3C;              /* 0x3C: steering output computed from rider->dnode.speed (591C); SnowAI_update zeroes it every frame */
     s32 targetNode;         /* 0x40: index of the course node steered to (node table = game.uso Data base + 0x548); the scans A604 / A7F8 write it */
     s32 unk44;              /* 0x44: countdown of the 7538 stick-input step (91 / 13 / 60 / 2 / 104) */
     s32 unk48;              /* 0x48: timer, set to 20 when bit 0 of unk6C is cleared */
     s32 unk4C;              /* 0x4C: 7538 step counter */
     s32 unk50;              /* 0x50: 7538 cooldown (8, counts down) */
-    s32 unk54;              /* 0x54: frame counter while rider->speed < 30 */
+    s32 unk54;              /* 0x54: frame counter while rider->dnode.speed < 30 */
     s32 unk58;              /* 0x58: 7538 index into the (x, y) stick table at game.uso Data 0x638 */
     s32 scanIndex;          /* 0x5C: node being tested by the A604 / A7F8 scans (0..9) */
     f32 scanBestDist;       /* 0x60: best distance of the running scan */
@@ -78,16 +78,16 @@ typedef struct SnowAI {
     s32 atFinish;           /* 0x80: SnowAI_isAtFinish's result, stored by SnowAI_onWin / onLose at the race end
                              * (non-zero: targetNode = SnowAI_pickFinishBranch); no reader in game_uso C */
     /* SnowAI_aimWeave (aimMode 1) state: two waypoints laid along the segment and a 4-phase side counter */
-    SnowBVec3 weaveAim;     /* 0x84: current waypoint (XZ, y = 0); the aim is weaveAim - rider->pos */
+    SnowBVec3 weaveAim;     /* 0x84: current waypoint (XZ, y = 0); the aim is weaveAim - rider->dnode.vqs.trans */
     SnowBVec3 weavePrev;    /* 0x90: previous waypoint */
     s32 weavePhase;         /* 0x9C: (phase + 1) & 3 per new waypoint: 0 centre, 1 side * -1, 2 / 3 side * +1 */
     /* tunables, all set by SnowAI_ctor (values in parentheses; [Dxx] = a game.uso RoData float) */
     f32 leadLimit;          /* 0xA0: (1000) SnowAI_aimAlongSegment: sideBlock turns on at rivalLeadZ >= leadLimit, off at <= -leadLimit */
     s32 sideBlock;          /* 0xA4: 0/1 hysteresis flag of SnowAI_aimAlongSegment (offset half a width toward the rival's side) */
-    f32 lookAhead;          /* 0xA8: (0) time scale on rider->vel for the look-ahead point (steer, scanNodes, scanSegments) */
+    f32 lookAhead;          /* 0xA8: (0) time scale on rider->dnode.vel for the look-ahead point (steer, scanNodes, scanSegments) */
     f32 turnGain;           /* 0xAC: [E8] steer: stick = -yaw * (1 + speed / turnSpeedRef) * turnGain / max */
     f32 turnSpeedRef;       /* 0xB0: (500) */
-    f32 minSpeed;           /* 0xB4: (70) weave needs rider->speed >= minSpeed; below it steer may set out flag 4 */
+    f32 minSpeed;           /* 0xB4: (70) weave needs rider->dnode.speed >= minSpeed; below it steer may set out flag 4 */
     /* SnowAI_steer's out flags (its argument to SnowAI_applyStickInput, which turns them into the stick / button
      * word of the rider's input): 1 jump sequence (unk6C bit 0, 91 frames of buttons 0x500), 2 button 0x400 (the
      * rider's d-parms: useDParms), 4 stick up, 8 stick down (crouch), 0x10 finished (stick down), 0x20 / 0x80 the

@@ -1,6 +1,78 @@
 #ifndef GAME_SNOWBOARDER_H
 #define GAME_SNOWBOARDER_H
 
+#ifndef __cplusplus
+#include "gdl/dnode.h"
+#else
+/* The edg (NCC / MIPSpro 7.2.1) donors include this header by relative path, without -I include, and
+ * edg rejects the gdl headers' &((T *)0)->f asserts. They get this mirror of include/gdl/dnode.h's
+ * DNode instead: the same layout and member names for everything the rider code touches, with the
+ * MNode base and the parm heads left opaque. Keep the two in step (C builds check the offsets). */
+typedef struct AnimPose {
+    f32 trans[3];
+    f32 scale[3];
+    f32 quat[4];
+} AnimPose;
+typedef struct GdlParmF {
+    char head[0xC];
+    s32 type;
+    f32 value;
+    s32 unk14;
+} GdlParmF;
+typedef struct GdlParmV3 {
+    char head[0xC];
+    s32 type;
+    f32 value[3];
+    s32 unk1C;
+} GdlParmV3;
+typedef struct DNodeParms {
+    s32 name;
+    s32 head;
+    GdlParmF imp, spd, spl, spw, gvt, suc, vsc, usc, tsc;
+    GdlParmV3 cog;
+    GdlParmF unc, dsc, csc, rad;
+    GdlParmV3 cts;
+} DNodeParms;
+typedef struct DNodeAccum {
+    f32 weight;
+    f32 pointSum[3];
+    f32 force[3];
+    f32 torque[3];
+    f32 origin[3];
+} DNodeAccum;
+typedef struct DNode {
+    char mnode[0xB4];
+    AnimPose vqs;
+    AnimPose cvqs;
+    s32 unk104;
+    DNodeParms parms;
+    f32 surfImp;
+    f32 surfSpd;
+    f32 surfVsc;
+    DNodeAccum impulseAcc;
+    DNodeAccum moveAcc;
+    f32 angVel[4];
+    f32 velDir[3];
+    f32 vel[3];
+    f32 worldCog[3];
+    f32 velDelta[3];
+    f32 lastVel[3];
+    f32 speed;
+    f32 unk34C[3];
+    char pad358[0x360 - 0x358];
+    f32 friction;
+    char pad364[0x38C - 0x364];
+    s32 unk38C;
+    f32 unk390[3];
+    s32 attached;
+    s32 unk3A0;
+    f32 unk3A4[3];
+    f32 axes[3][3];
+} DNode;
+typedef char snowb_dnode_mirror_size[sizeof(DNode) == 0x3D4 ? 1 : -1];
+typedef char snowb_dnode_parms_size[sizeof(DNodeParms) == 0x180 ? 1 : -1];
+#endif
+
 /*
  * SnowBoarder: the rider object of bootup.uso (C++ class, agent-g run 447).
  *
@@ -30,23 +102,6 @@ typedef struct SnowBVec3 {
     f32 x, y, z;
 } SnowBVec3;
 
-/* a quaternion (x, y, z, w) as DNode stores it (identity w = 1) */
-typedef struct SnowBQuat {
-    f32 x, y, z, w;
-} SnowBQuat;
-
-/* the 0x34-byte force accumulator of the game_libs DNode (DNodeAccum_reset_00064170 /
- * DNodeAccum_addForce_000641DC / DNodeAccum_apply_00064388). addForce(point, force) adds |force| to weight,
- * point * |force| to pointSum, force to force and cross(point, force) / |point| to torque; apply turns the
- * target quat about the normalized torque by |torque| / k * scale and adds force to the target vector. */
-typedef struct SnowBAccum {
-    f32 weight;             /* 0x00 */
-    SnowBVec3 pointSum;     /* 0x04: application points weighted by |force| */
-    SnowBVec3 force;        /* 0x10 */
-    SnowBVec3 torque;       /* 0x1C */
-    SnowBVec3 origin;       /* 0x28: reference point (DNode lastPos), set by reset */
-} SnowBAccum;
-
 /* one 0x18-byte float parm (game_libs parm base 0x35B1C + float subclass; same layout as SnowAIParm) */
 typedef struct SnowBParm {
     char pad00[0xC];        /* 0x00: owner list link and the 4-char tag (game_libs Parms_addParm) */
@@ -54,28 +109,6 @@ typedef struct SnowBParm {
     f32 value;              /* 0x10: ctor default, overwritten by the parms file */
     s32 unk14;              /* 0x14 */
 } SnowBParm;
-
-/* one 0x20-byte Vec3 parm of DNode::Parms (vtable bootup Data 0x221F0) */
-typedef struct SnowBVec3Parm {
-    char pad00[0xC];
-    void *vptr;             /* 0x0C */
-    SnowBVec3 value;        /* 0x10 */
-    s32 unk1C;              /* 0x1C */
-} SnowBVec3Parm;
-
-/* "DNode::Parms" (0x180), the game_libs DNode base's parms (DNode_ctor builds it at +0x108; tags at bootup
- * Data 0x223D0). Proven uses: gvt.value is added to vel.y every frame (DNode_integrate_00064DEC, gravity);
- * tsc.value scales both accumulators (DNode_applyAccums_00065448); cog.value is the centre of gravity in
- * body space (DNode_resetAccums_00065148 -> worldCog); imp / spd / vsc are copied to surfImp / surfSpd /
- * surfVsc by DNode_init_00065060 and per surface by SnowBoarder_procColl. */
-typedef struct SnowBDNodeParms {
-    const char *name;       /* 0x00: "DNode::Parms" */
-    s32 unk04;              /* 0x04: parm list head */
-    SnowBParm imp, spd, spl, spw, gvt, suc, vsc, usc, tsc; /* 0x08..0xC8 (rider 0x110..0x1D0; gvt value 0x180, tsc value 0x1E0) */
-    SnowBVec3Parm cog;      /* 0xE0 (rider 0x1E8; value 0x1F8) */
-    SnowBParm unc, dsc, csc, rad; /* 0x100..0x148 */
-    SnowBVec3Parm cts;      /* 0x160 (default (1, 1, 0)) */
-} SnowBDNodeParms;
 
 /* "SnowBoarder::Parms" (0x2C0), embedded at SnowBoarder +0x540. Members are named by their
  * parms-file tag, in SnowBoarder_ctor construction order (bootup 0x9680..). Meanings are only
@@ -148,45 +181,30 @@ typedef struct RiderInput {
 } RiderInput;
 
 typedef struct SnowBoarder {
-    /* 0x000..0x3D4: the game_libs DNode base (DNode_ctor, DNode_update) */
-    char pad000[0x0B4];
-    SnowBVec3 pos;          /* 0x0B4: world position (the node position: the ctor also sets a child node's
-                             * +0xB4 to (0, 100, 0)). SnowBoarder_limitSpeed compares rival->pos.z - pos.z;
-                             * SnowAI (game.uso) seeds its target from rider->pos. DNode_integrate adds vel */
-    char pad0C0[0x0CC - 0x0C0];
-    SnowBQuat orient;       /* 0x0CC: orientation; DNode_integrate does orient = angVel * orient,
-                             * SnowBoarder_updateOrient turns it with math_quatRotateAxisAngle */
-    SnowBVec3 lastPos;      /* 0x0DC: pos at the end of the last DNode_integrate (accumulator origin, the
-                             * ground-query origin in procColl) */
-    char pad0E8[0x0F4 - 0x0E8];
-    SnowBQuat lastOrient;   /* 0x0F4: orient at the end of the last integrate */
-    char pad104[0x108 - 0x104];
-    SnowBDNodeParms dparms; /* 0x108: "DNode::Parms" */
-    f32 surfImp;            /* 0x288: dparms.imp, or the surface value set by procColl */
-    f32 surfSpd;            /* 0x28C: dparms.spd, or the surface value */
-    f32 surfVsc;            /* 0x290: dparms.vsc, or the surface value */
-    SnowBAccum impulseAcc;  /* 0x294: applied to angVel / vel (DNode_addImpulseAt_00065250) */
-    SnowBAccum moveAcc;     /* 0x2C8: applied to orient / pos directly (DNode_addMoveAt_000652D8) */
-    SnowBQuat angVel;       /* 0x2FC: per-frame rotation quat; updateOrient resets it to identity in the air and
-                             * decays it (xyz * k, w eased to 1) every frame */
-    SnowBVec3 velDir;       /* 0x30C: vel / speed (0 when stopped) */
-    SnowBVec3 vel;          /* 0x318: velocity. B520 adds dir * nudge, then rescales it to maxSpeed
-                             * (normalize + scale) when speed > maxSpeed */
-    SnowBVec3 worldCog;     /* 0x324: dparms.cog in world space (DNode_resetAccums) */
-    SnowBVec3 velDelta;     /* 0x330: vel - lastVel of the last integrate */
-    SnowBVec3 lastVel;      /* 0x33C: vel after the last integrate; procColl's impact test dots it with the contact normal */
-    f32 speed;              /* 0x348: |vel|, compared against maxSpeed (B520) and 30 / 10 thresholds */
-    char pad34C[0x360 - 0x34C];
-    f32 friction;           /* 0x360: ground friction, rebuilt each frame by SnowBoarder_updateDyn: nbf / dbf, + |spin.x| * k
-                             * while crouching, * ifr / dfr on surface 'c' / 'b', + k off the ground, * parms.bdf,
-                             * + slowdown / 100 */
-    char pad364[0x38C - 0x364];
-    s32 unk38C;             /* 0x38C: set to 1 by SnowBoarder_ctor */
-    char pad390[0x3A4 - 0x390];
-    SnowBVec3 startPos;     /* 0x3A4: spawn point: ctor args (x, z), y = ground height at (x, z) + a RoData offset */
-    SnowBVec3 up;           /* 0x3B0: body up axis (row of the orientation matrix); up.y < 0.8 = steep */
-    SnowBVec3 side;         /* 0x3BC: body side axis */
-    SnowBVec3 dir;          /* 0x3C8: unit forward direction (B520 nudge axis; dotted with vel in updateDyn) */
+    DNode dnode;            /* 0x000..0x3D4: the game_libs DNode base (DNode_ctor, DNode_update; include/gdl/dnode.h).
+                             * What the rider code does with it (the pre-run-516 snowboarder.h names in brackets):
+                             * - vqs.trans [pos]: world position; DNode_integrate adds vel. limitSpeed compares
+                             *   rival's trans[2] with its own; SnowAI (game.uso) seeds its target from it. The ctor
+                             *   also sets a child node's +0xB4 to (0, 100, 0).
+                             * - vqs.quat [orient]: orientation; integrate does quat = angVel * quat,
+                             *   SnowBoarder_updateOrient turns it with math_quatRotateAxisAngle.
+                             * - cvqs.trans / cvqs.quat [lastPos / lastOrient]: the pose at the end of the last
+                             *   integrate (accumulator origin; the ground-query origin in procColl).
+                             * - parms [dparms] "DNode::Parms"; surfImp / surfSpd / surfVsc: parms.imp / spd / vsc,
+                             *   or the per-surface values set by procColl.
+                             * - angVel: updateOrient resets it to identity in the air and decays it (xyz * k, w eased
+                             *   to 1) every frame. vel: limitSpeed adds axes[2] * nudge, then rescales it to maxSpeed
+                             *   when speed > maxSpeed. lastVel: procColl's impact test dots it with the contact
+                             *   normal. speed: compared against maxSpeed and the 30 / 10 thresholds.
+                             * - friction: rebuilt each frame by SnowBoarder_updateDyn: nbf / dbf, + |spin.x| * k while
+                             *   crouching, * ifr / dfr on surface 'c' / 'b', + k off the ground, * parms.bdf,
+                             *   + slowdown / 100.
+                             * - unk38C: set to 1 by SnowBoarder_ctor (DNode_init sets 0xFFFF).
+                             * - unk3A4 [startPos]: spawn point: ctor args (x, z), y = ground height at (x, z) + a
+                             *   RoData offset.
+                             * - axes[0] / [1] / [2] [up / side / dir]: rows of the orientation matrix. axes[0] is the
+                             *   body up axis (axes[0][1] < 0.8 = steep), axes[2] the unit forward direction (the
+                             *   limitSpeed nudge axis; dotted with vel in updateDyn). */
     char pad3D4[0x3EC - 0x3D4];
     SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
     SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
@@ -353,12 +371,22 @@ typedef struct SnowBoarder {
 /* compile-time offset checks (array size -1 => error) */
 #define SNOWB_ASSERT_OFFSET(field, off) \
     typedef char snowb_assert_##off[(int)&((SnowBoarder *)0)->field == (off) ? 1 : -1]
-SNOWB_ASSERT_OFFSET(pos, 0x0B4);
-SNOWB_ASSERT_OFFSET(vel, 0x318);
-SNOWB_ASSERT_OFFSET(speed, 0x348);
-SNOWB_ASSERT_OFFSET(unk38C, 0x38C);
-SNOWB_ASSERT_OFFSET(startPos, 0x3A4);
-SNOWB_ASSERT_OFFSET(dir, 0x3C8);
+SNOWB_ASSERT_OFFSET(dnode.vqs.trans, 0x0B4);
+SNOWB_ASSERT_OFFSET(dnode.vqs.quat, 0x0CC);
+SNOWB_ASSERT_OFFSET(dnode.cvqs.trans, 0x0DC);
+SNOWB_ASSERT_OFFSET(dnode.cvqs.quat, 0x0F4);
+SNOWB_ASSERT_OFFSET(dnode.parms.gvt, 0x170);
+SNOWB_ASSERT_OFFSET(dnode.surfImp, 0x288);
+SNOWB_ASSERT_OFFSET(dnode.angVel, 0x2FC);
+SNOWB_ASSERT_OFFSET(dnode.vel, 0x318);
+SNOWB_ASSERT_OFFSET(dnode.lastVel, 0x33C);
+SNOWB_ASSERT_OFFSET(dnode.speed, 0x348);
+SNOWB_ASSERT_OFFSET(dnode.friction, 0x360);
+SNOWB_ASSERT_OFFSET(dnode.unk38C, 0x38C);
+SNOWB_ASSERT_OFFSET(dnode.unk3A4, 0x3A4);
+SNOWB_ASSERT_OFFSET(dnode.axes[0], 0x3B0);
+SNOWB_ASSERT_OFFSET(dnode.axes[1], 0x3BC);
+SNOWB_ASSERT_OFFSET(dnode.axes[2], 0x3C8);
 SNOWB_ASSERT_OFFSET(parms, 0x540);
 SNOWB_ASSERT_OFFSET(parms.wfr, 0x6B0);
 SNOWB_ASSERT_OFFSET(parms.nts, 0x6F8);
@@ -384,7 +412,6 @@ SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);
 SNOWB_ASSERT_OFFSET(unk902, 0x902);
 SNOWB_ASSERT_OFFSET(rival, 0x908);
-SNOWB_ASSERT_OFFSET(friction, 0x360);
 SNOWB_ASSERT_OFFSET(child, 0x3EC);
 SNOWB_ASSERT_OFFSET(child.parms.efr, 0x480);
 SNOWB_ASSERT_OFFSET(child.parms.nbf, 0x498);
@@ -413,22 +440,6 @@ SNOWB_ASSERT_OFFSET(raceResult, 0xA54);
 SNOWB_ASSERT_OFFSET(fwdSpeed, 0xA38);
 SNOWB_ASSERT_OFFSET(flags, 0xA58);
 SNOWB_ASSERT_OFFSET(maxSpeed, 0xA78);
-SNOWB_ASSERT_OFFSET(orient, 0x0CC);
-SNOWB_ASSERT_OFFSET(lastPos, 0x0DC);
-SNOWB_ASSERT_OFFSET(lastOrient, 0x0F4);
-SNOWB_ASSERT_OFFSET(dparms, 0x108);
-SNOWB_ASSERT_OFFSET(dparms.gvt, 0x170);
-SNOWB_ASSERT_OFFSET(dparms.tsc, 0x1D0);
-SNOWB_ASSERT_OFFSET(dparms.cog, 0x1E8);
-SNOWB_ASSERT_OFFSET(surfImp, 0x288);
-SNOWB_ASSERT_OFFSET(impulseAcc, 0x294);
-SNOWB_ASSERT_OFFSET(moveAcc, 0x2C8);
-SNOWB_ASSERT_OFFSET(angVel, 0x2FC);
-SNOWB_ASSERT_OFFSET(velDir, 0x30C);
-SNOWB_ASSERT_OFFSET(worldCog, 0x324);
-SNOWB_ASSERT_OFFSET(lastVel, 0x33C);
-SNOWB_ASSERT_OFFSET(up, 0x3B0);
-SNOWB_ASSERT_OFFSET(side, 0x3BC);
 SNOWB_ASSERT_OFFSET(parms.hpf, 0x548);
 SNOWB_ASSERT_OFFSET(parms.trt, 0x710);
 SNOWB_ASSERT_OFFSET(parms.tch, 0x7E8);
@@ -452,8 +463,6 @@ SNOWB_ASSERT_OFFSET(spinHold, 0xA6C);
 SNOWB_ASSERT_OFFSET(airSpin, 0xA70);
 SNOWB_ASSERT_OFFSET(msgCooldown, 0xA80);
 SNOWB_ASSERT_OFFSET(landImpact, 0xA84);
-typedef char snowb_assert_accum_size[sizeof(SnowBAccum) == 0x34 ? 1 : -1];
-typedef char snowb_assert_dparms_size[sizeof(SnowBDNodeParms) == 0x180 ? 1 : -1];
 typedef char snowb_assert_parm_size[sizeof(SnowBParm) == 0x18 ? 1 : -1];
 typedef char snowb_assert_child_size[sizeof(SnowBChild) == 0x154 ? 1 : -1];
 typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
