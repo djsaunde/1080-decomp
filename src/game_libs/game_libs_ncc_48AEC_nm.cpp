@@ -32,6 +32,8 @@ struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
 struct Mtx { int m[16]; };
 struct MtxHead { Mtx *buf; int count; };
+/* agent-g run 427: the else arm's 0x01 packet stores as a free inline with the slot as a parameter (see Ctx::LX) */
+inline void fG(Gfx *g, Mtx *m) { g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
 struct Ctx {
     char pad[0xC];
     DLHead *dl;
@@ -65,6 +67,11 @@ struct Ctx {
     void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); }
     void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
+    Gfx *nextU() { return dl->buf + ((DLHead *)*(u32 *)&dl)->count++; } /* agent-g run 427: single-return slot with the count's head read through a u32 view */
+    /* agent-g run 427: else-arm packet as fG(nextU(), m) (the slot is a parameter, so the else g is a pool word, not
+     * a named word; the dead named dd keeps the frame words), with the kept I2(A) / me(me(gctx))->mtx() else
+     * statement (run 424 lead): else mtx count / mh v0 / v1, else dl a1 and g a2 like the target, 99.829 -> 99.857 */
+    void LX(Mtx *m) { DLHead *dd = dl; if (*(u32 *)&dl) {} if (1) {} fG(nextU(), m); }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
@@ -151,7 +158,7 @@ void Obj::draw() {
         { Mtx *c; if (GS->ctx) {} c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(A, c2 = me(me(me(gctx)))->mtx()); me(me(gctx))->ld2((int)c2, c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(I2(A), c2 = me(me(gctx))->mtx()); me(me(gctx))->LX(c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
