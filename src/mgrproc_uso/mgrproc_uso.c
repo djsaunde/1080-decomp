@@ -2,6 +2,7 @@
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/nameentry.h"
+#include "game/guimenu.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -268,25 +269,25 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         NODE(o1)->parent = (int)obj;
 
         mgrproc_uso_func_01B0F8(obj, a1);
-        RACEPROC(obj)->unk048 = import_000A5D38(0);
-        import_000A5F40(RACEPROC(obj)->unk048, obj);
+        RACEPROC(obj)->menu = (GuiMenu *)import_000A5D38(0);
+        import_000A5F40(RACEPROC(obj)->menu, obj);
 
-        import_000A69BC(RACEPROC(obj)->unk048, (*(int *)&import_8002022C + 3) << 16,
+        import_000A69BC(RACEPROC(obj)->menu, (*(int *)&import_8002022C + 3) << 16,
                         -1, &import_80265570);
-        import_000A69BC(RACEPROC(obj)->unk048,
+        import_000A69BC(RACEPROC(obj)->menu,
                         ((*(int *)&import_8002022C + 3) << 16) | 8, -1,
                         &import_802655B0);
-        import_000A69BC(RACEPROC(obj)->unk048,
+        import_000A69BC(RACEPROC(obj)->menu,
                         ((*(int *)&import_8002022C + 3) << 16) | 9, -1,
                         &import_802655EC);
-        import_000A69BC(RACEPROC(obj)->unk048,
+        import_000A69BC(RACEPROC(obj)->menu,
                         ((*(int *)&import_8002022C + 3) << 16) | 5, -1,
                         &import_802656A4);
 
-        *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
-        import_000A5FBC(RACEPROC(obj)->unk048);
+        RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
+        import_000A5FBC(RACEPROC(obj)->menu);
 
-        o1 = (char *)RACEPROC(obj)->unk048;
+        o1 = (char *)RACEPROC(obj)->menu;
         mgrproc_uso_func_07ACE0(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;

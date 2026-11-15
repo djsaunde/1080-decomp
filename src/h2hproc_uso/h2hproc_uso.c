@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "game/modeproc.h"
+#include "game/guimenu.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -412,13 +413,13 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         NODE(o1)->parent = (int)obj;
 
         CALL(RaceProcess_restart)(obj, a1);
-        RACEPROC(obj)->unk048 = CALL(PauseMenu_create)(0);
-        CALL(gui_initRows_000100F0)(RACEPROC(obj)->unk048, obj);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
-        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
-        *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
-        CALL(gui_centerRows_0001016C)(RACEPROC(obj)->unk048);
-        o1 = (char *)RACEPROC(obj)->unk048;
+        RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
+        CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
+        CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
+        RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
+        CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
+        o1 = (char *)RACEPROC(obj)->menu;
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
@@ -539,7 +540,7 @@ void H2HRaceProcess_onPause(H2HRace *a0) {
     CALL(input_setActivePad_0001207C)(&D_00000000, a0->race.unk514 - 1);
     v = a0->race.unk514 - 1;
     a0->pausePlayer = v;
-    CALL(gui_setY_000102F0)(a0->race.unk048, v * 120 + 60);
+    CALL(gui_setY_000102F0)(a0->race.menu, v * 120 + 60);
 }
 
 /* H2HRaceProcess_onPauseSelect: 34-insn indirect-method dispatch.

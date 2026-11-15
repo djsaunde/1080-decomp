@@ -82,7 +82,8 @@ typedef struct RaceProcess {
     /* 0x02C */ s32 unk02C;
     /* 0x030 */ s32 unk030;             /* Process: drawGui draws nothing of its own while set */
     /* 0x034 */ char unk034[0x14];
-    /* 0x048 */ s32 unk048;             /* child object (tim: its +0x30 gets spriteSet) */
+    /* 0x048 */ struct GuiMenu *menu;   /* the pause menu (PauseMenu_create(0); its unk30 gets spriteSet;
+                                         * include/game/guimenu.h) */
     /* 0x04C */ s32 unk04C;             /* RaceProcess_init arg3 */
     /* 0x050 */ char parms[0x18];       /* RaceProcess_loadData reads into it */
     /* 0x068 */ RaceColour colour[6];   /* 0x68 / 0x8C, 0xB0 / 0xD4, 0xF8 / 0x11C pairs */

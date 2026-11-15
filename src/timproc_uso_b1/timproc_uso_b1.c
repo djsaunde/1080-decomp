@@ -346,17 +346,17 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         CALL(RaceProcess_restart)(obj, a1);
 
         if ((RACEPROC(obj)->flags << 15) < 0) {
-            RACEPROC(obj)->unk048 = CALL(PauseMenu_create)(0);
-            CALL(gui_initRows_000100F0)(RACEPROC(obj)->unk048, obj);
-            *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, (*(int *)&D_b1_097C_r + 3) << 16, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &D_00000000);
-            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &D_00000000);
-            CALL(gui_centerRows_0001016C)(RACEPROC(obj)->unk048);
-            o1 = (char *)RACEPROC(obj)->unk048;
+            RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
+            CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
+            RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&D_b1_097C_r + 3) << 16, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &D_00000000);
+            CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
+            o1 = (char *)RACEPROC(obj)->menu;
             CALL(list_append)(obj + 16, o1);
             if (NODE(o1)->parent != 0) {
                 NODE(o1)->unk04 = 1;
@@ -364,7 +364,7 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             NODE(o1)->parent = (int)obj;
         } else {
             RACEPROC(obj)->timeout = a1 & 0xFFFF;
-            RACEPROC(obj)->unk048 = 0;
+            RACEPROC(obj)->menu = 0;
         }
 
         o1 = *(char **)((char *)&D_00000000 + 0x190);

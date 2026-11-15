@@ -15,7 +15,7 @@ typedef struct MenuProcess {
     /* 0x2C */ s32 unk2C;           /* 0 */
     /* 0x30 */ s32 unk30;           /* 1 */
     /* 0x34 */ char unk34[0x48 - 0x34];
-    /* 0x48 */ s32 menu;            /* the GuiMenu (Process child slot: RaceProcess.unk048) */
+    /* 0x48 */ s32 menu;            /* the GuiMenu (Process child slot: RaceProcess.menu) */
     /* 0x4C */ s32 unk4C;
     /* 0x50 */ s32 state;           /* 0. Tim / Trk: the update / draw switch; handleInput sets 0 */
 } MenuProcess;
