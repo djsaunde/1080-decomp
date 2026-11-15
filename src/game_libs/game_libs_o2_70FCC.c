@@ -32,11 +32,11 @@ typedef union {
 #define ROUND(d) (int)(((d) >= 0.0) ? ((d) + 0.5) : ((d) - 0.5))
 #define ABS(d) ((d) > 0) ? (d) : -(d)
 
-extern const du gl_ref_000024E0[]; /* P[5]: sin poly coeffs on +/- pi/2 */
-extern const du gl_ref_00002508;   /* rpi  = 1/pi */
-extern const du gl_ref_00002510;   /* pihi */
-extern const du gl_ref_00002518;   /* pilo */
-extern const fu gl_ref_00002520;   /* zero */
+extern const du kRo_fcos_24E0[]; /* P[5]: sin poly coeffs on +/- pi/2 */
+extern const du kRo_fcos_2508;   /* rpi  = 1/pi */
+extern const du kRo_fcos_2510;   /* pihi */
+extern const du kRo_fcos_2518;   /* pilo */
+extern const fu kRo_fcos_2520;   /* zero */
 extern float D_00000000_qnanf;     /* __libm_qnan_f */
 
 float fcos(float x) {
@@ -58,17 +58,17 @@ float fcos(float x) {
         absx = ABS(x);
         dx = absx;
 
-        dn = dx * gl_ref_00002508.d + 0.5;
+        dn = dx * kRo_fcos_2508.d + 0.5;
         n = ROUND(dn);
         dn = n;
         dn -= 0.5;
 
-        dx = dx - dn * gl_ref_00002510.d;
-        dx = dx - dn * gl_ref_00002518.d; /* dx = x - (n - 0.5)*pi */
+        dx = dx - dn * kRo_fcos_2510.d;
+        dx = dx - dn * kRo_fcos_2518.d; /* dx = x - (n - 0.5)*pi */
 
         xsq = dx * dx;
-        poly = ((gl_ref_000024E0[4].d * xsq + gl_ref_000024E0[3].d) * xsq + gl_ref_000024E0[2].d) * xsq
-               + gl_ref_000024E0[1].d;
+        poly = ((kRo_fcos_24E0[4].d * xsq + kRo_fcos_24E0[3].d) * xsq + kRo_fcos_24E0[2].d) * xsq
+               + kRo_fcos_24E0[1].d;
         result = dx + (dx * xsq) * poly;
 
         if ((n & 1) == 0)
@@ -84,5 +84,5 @@ float fcos(float x) {
     }
 
     /* just give up and return 0.0 */
-    return (gl_ref_00002520.f);
+    return (kRo_fcos_2520.f);
 }

@@ -12,7 +12,7 @@ int gl_ref_00043824(float, ...);
 extern int D_00000000;
 extern int D_2F720_t1, D_2F720_t2, D_2F720_t3;
 extern int D_2F720_lut, D_2F720_flut;
-extern int D_2F720_p1740, D_2F720_p1744, D_2F720_p1748, D_2F720_p174C;
+extern int kRo_snd_SoundObjSetAngle_1740, kRo_snd_SoundObjSetAngle_1744, kRo_snd_SoundObjSetAngle_1748, kRo_snd_SoundObjSetAngle_174C;
 void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
     float dlt;
     int v;
@@ -38,9 +38,9 @@ void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
     *(unsigned char *)(p + 0xD) = *((unsigned char *)&D_2F720_lut + t);
     t = gl_ref_00043824(in, (char *)&D_2F720_t2, 0x10);
     fl = *(float *)((char *)&D_2F720_flut + t * 4);
-    *(float *)(p + 0) = (*(float *)(p + 0) * *(float *)&D_2F720_p1740) + (fl * *(float *)&D_2F720_p1744);
+    *(float *)(p + 0) = (*(float *)(p + 0) * *(float *)&kRo_snd_SoundObjSetAngle_1740) + (fl * *(float *)&kRo_snd_SoundObjSetAngle_1744);
     t = gl_ref_00043824(in, (char *)&D_2F720_t3, 0x10);
-    lo = *(float *)&D_2F720_p1748;
+    lo = *(float *)&kRo_snd_SoundObjSetAngle_1748;
     *(unsigned char *)(p + 0xF) = t / 2;
     *(unsigned char *)(p + 0xF) <<= 4;
 
@@ -49,8 +49,8 @@ void snd_SoundObjSetAngle(char *o, f32 in, signed char idxb) {
     if (*(float *)(p + 4) < lo) {
         *(float *)(p + 4) = lo;
     }
-    if (*(float *)&D_2F720_p174C < *(float *)(p + 4)) {
-        *(float *)(p + 4) = *(float *)&D_2F720_p174C;
+    if (*(float *)&kRo_snd_SoundObjSetAngle_174C < *(float *)(p + 4)) {
+        *(float *)(p + 4) = *(float *)&kRo_snd_SoundObjSetAngle_174C;
     }
 }
 }

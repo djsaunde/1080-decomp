@@ -21,6 +21,6 @@ glabel SndHandle_triggerEvent3_00000940
   alabel D_00000980
     /* DD13EC 00000980 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD13F0 00000984 03E00008 */  jr         $ra
-  alabel D_00000988
+  alabel kRo_SnowBoarder_handleMsg_988
     /* DD13F4 00000988 00000000 */   nop
 endlabel SndHandle_triggerEvent3_00000940

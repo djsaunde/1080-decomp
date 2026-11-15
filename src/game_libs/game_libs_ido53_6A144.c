@@ -24,11 +24,11 @@ typedef union {
 
 #define ROUND(d) (int)(((d) >= 0.0) ? ((d) + 0.5) : ((d) - 0.5))
 
-extern const du gl_ref_00002310[]; /* P[5]: sin poly coeffs on +/- pi/2 */
-extern const du gl_ref_00002338;   /* rpi  = 1/pi */
-extern const du gl_ref_00002340;   /* pihi */
-extern const du gl_ref_00002348;   /* pilo */
-extern const fu gl_ref_00002350;   /* zero */
+extern const du kRo_fsin_2310[]; /* P[5]: sin poly coeffs on +/- pi/2 */
+extern const du kRo_fsin_2338;   /* rpi  = 1/pi */
+extern const du kRo_fsin_2340;   /* pihi */
+extern const du kRo_fsin_2348;   /* pilo */
+extern const fu kRo_fsin_2350;   /* zero */
 extern float D_00000000_qnanf;     /* __libm_qnan_f */
 
 float fsin(float x) {
@@ -51,8 +51,8 @@ float fsin(float x) {
         if (xpt >= 0xe6) {
             /* |x| >= 2^(-12): standard polynomial approximation */
             xsq = dx * dx;
-            poly = ((gl_ref_00002310[4].d * xsq + gl_ref_00002310[3].d) * xsq + gl_ref_00002310[2].d) * xsq
-                   + gl_ref_00002310[1].d;
+            poly = ((kRo_fsin_2310[4].d * xsq + kRo_fsin_2310[3].d) * xsq + kRo_fsin_2310[2].d) * xsq
+                   + kRo_fsin_2310[1].d;
             result = dx + (dx * xsq) * poly;
             return ((float)result);
         }
@@ -64,17 +64,17 @@ float fsin(float x) {
         /* |x| < 2^28: reduce argument to +/- pi/2 */
         dx = x;
 
-        dn = dx * gl_ref_00002338.d;
+        dn = dx * kRo_fsin_2338.d;
         n = ROUND(dn);
         dn = n;
 
-        dx = dx - dn * gl_ref_00002340.d;
-        dx = dx - dn * gl_ref_00002348.d; /* dx = x - n*pi */
+        dx = dx - dn * kRo_fsin_2340.d;
+        dx = dx - dn * kRo_fsin_2348.d; /* dx = x - n*pi */
 
         /* compute sin(dx) as before, negating result if n is odd */
         xsq = dx * dx;
-        poly = ((gl_ref_00002310[4].d * xsq + gl_ref_00002310[3].d) * xsq + gl_ref_00002310[2].d) * xsq
-               + gl_ref_00002310[1].d;
+        poly = ((kRo_fsin_2310[4].d * xsq + kRo_fsin_2310[3].d) * xsq + kRo_fsin_2310[2].d) * xsq
+               + kRo_fsin_2310[1].d;
         result = dx + (dx * xsq) * poly;
 
         if ((n & 1) == 0)
@@ -89,5 +89,5 @@ float fsin(float x) {
     }
 
     /* just give up and return 0.0 */
-    return (gl_ref_00002350.f);
+    return (kRo_fsin_2350.f);
 }

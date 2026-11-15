@@ -25,7 +25,7 @@ extern char D_00007AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)
 #define DI(o) (*(int *)((char *)&D_00000000 + (o)))
 #define DF(o) (*(float *)((char *)&D_00000000 + (o)))
-extern f32 D_55A0_ro598, D_55A0_ro59C, D_55A0_ro5A0, D_55A0_ro5A4, D_55A0_ro5A8, D_55A0_ro5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
+extern f32 kRo_item_registerTemplates_598, kRo_item_registerTemplates_59C, kRo_item_registerTemplates_5A0, kRo_item_registerTemplates_5A4, kRo_item_registerTemplates_5A8, kRo_item_registerTemplates_5AC;  /* per-address RoData pool scalars (func_0000057C + K): target re-emits lui at per load */
 #define DP(o) ((void *)((char *)&D_00000000 + (o)))
 #define OI(p, o) (*(int *)((char *)(p) + (o)))
 #define OF(p, o) (*(float *)((char *)(p) + (o)))
@@ -99,7 +99,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     M(0xD8) = fi(0); M(0xDC) = fi(0); M(0xE0) = fi(0);
     M(0xC8) = fi(0); M(0xCC) = fi(0); M(0xD0) = fi(0);
     M(0x13C) = 0.5f; M(0x108) = 0.5f; M(0xE4) = 0.5f; M(0xE8) = 0.5f; M(0xD4) = 0.5f;
-    M(0xF8) = D_55A0_ro598;
+    M(0xF8) = kRo_item_registerTemplates_598;
     D_55A0_z0 = 0;
 
     if (arg1 == 1) {
@@ -161,7 +161,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 func_00000000(node);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec0.w = 1.0f; vec0.x = D_55A0_ro59C; vec0.y = D_55A0_ro59C; vec0.z = D_55A0_ro59C;
+            vec0.w = 1.0f; vec0.x = kRo_item_registerTemplates_59C; vec0.y = kRo_item_registerTemplates_59C; vec0.z = kRo_item_registerTemplates_59C;
             func_00000000(obj + 0x5C, &vec0, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_0;
         }
@@ -185,7 +185,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 func_00000000(n2);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
-            vec1.w = 1.0f; vec1.x = D_55A0_ro5A0; vec1.y = D_55A0_ro5A0; vec1.z = D_55A0_ro5A0;
+            vec1.w = 1.0f; vec1.x = kRo_item_registerTemplates_5A0; vec1.y = kRo_item_registerTemplates_5A0; vec1.z = kRo_item_registerTemplates_5A0;
             func_00000000(obj + 0x5C, &vec1, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_1;
         }
@@ -212,7 +212,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 func_00000000(n2);
             }
             OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
-            vec2.x = D_55A0_ro5A4; vec2.y = D_55A0_ro5A8; vec2.z = D_55A0_ro5AC; vec2.w = 1.0f;
+            vec2.x = kRo_item_registerTemplates_5A4; vec2.y = kRo_item_registerTemplates_5A8; vec2.z = kRo_item_registerTemplates_5AC; vec2.w = 1.0f;
             func_00000000(obj + 0x5C, &vec2, 993, 997);
             OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_2;
         }

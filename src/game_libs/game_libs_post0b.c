@@ -2728,7 +2728,7 @@ void cam_placeAttached_000372D4(int *a0, float *a1) {
 //   Levers: (1) `o = FW(arg0,0x14)` escaped via `if (0) f(&o)` = target's
 //   top-slot home 0x6C with reload-after-every-store-through-o (not volatile:
 //   the 3 saved-loads + first store share ONE reload); (2) per-site FP pool
-//   array-extern aliases D_37348_19F0/19F4 = fresh `lui at; lwc1 K(at)` per
+//   array-extern aliases kRo_StickCtrlA_update_00037348_19F0/19F4 = fresh `lui at; lwc1 K(at)` per
 //   site (a shared `&D+K` CSEs the base into a reg); (3) the six input-flag
 //   tests read a VOLATILE struct member (`Flg_37348.flags`, offset folds
 //   into lw 16(v0) — a `*(volatile int*)(p+0x10)` cast does NOT fold the
@@ -17040,7 +17040,7 @@ extern int gl_func_00000000();
 typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
-extern f32 D_4e760_f0[], D_4e760_f1[], sStr_FCP_1B78[], sStr_GCP_1B7C[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
+extern f32 kRo_Window_setDefaults_1B70[], kRo_Window_setDefaults_1B74[], sStr_FCP_1B78[], sStr_GCP_1B7C[], kRo_Window_setDefaults_1B80[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
 /* base = gWindowDefaults (Bss Sym 324, 0x40 bytes): +0x0 the unk100 / clearFlags pair, +0x8 width,
  * +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType,
  * +0x30 clearColour (agent-b run 489: window.h field names; same offsets / widths) */
@@ -17061,12 +17061,12 @@ void Window_setDefaults(char *a0) {
     *(Q1E760 *)&W->flags = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
     *(int *)&W->camera = 0;
     *(Q2E760 *)&W->unk100 = *(Q2E760 *)base;
-    W->unk84[0] = D_4e760_f0[0x1B70 / 4];
-    W->unk84[1] = D_4e760_f1[0x1B74 / 4];
+    W->unk84[0] = kRo_Window_setDefaults_1B70[0x1B70 / 4];
+    W->unk84[1] = kRo_Window_setDefaults_1B74[0x1B74 / 4];
     W->unk84[2] = sStr_FCP_1B78[0x1B78 / 4];
     W->unk84[3] = 19584.0f;
     W->unk84[4] = sStr_GCP_1B7C[0x1B7C / 4];
-    *(float *)&W->unk80 = D_4e760_f4[0x1B80 / 4];
+    *(float *)&W->unk80 = kRo_Window_setDefaults_1B80[0x1B80 / 4];
     (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
     W->displayMask = 1;
     *(int *)&W->bufAlloc = 0;
@@ -23302,13 +23302,13 @@ void math_quatRotateVec3(Quat_5CCF4 *q, Vec3 *v, Vec3 *out) {
  *  - operand order: cfe evaluates a plain float variable leaf LAST in a
  *    commutative op; `(f32)beta * a->x` and `(f32)theta + ...` put the
  *    variable first as in the target (same no-op cast lever as 5EF00).
- *  - pi is a pinned extern (D_5CE68_pi = 0x2040): spelled as a
+ *  - pi is a pinned extern (kRo_math_quatSlerp_2040 = 0x2040): spelled as a
  *    `*(f32 *)(&D_00000000 + 0x2040)` cast-deref it outranks the (f32)spin
  *    conversion and rotates the whole FP temp ring by one. */
 typedef struct { f32 x, y, z, w; } Quat_5CE68;
 extern float gl_func_00000000_5ce68a(float); /* acos-slot USO callee */
 extern float gl_func_00000000_5ce68s(float); /* sin-slot USO callee */
-extern f32 D_5CE68_pi;
+extern f32 kRo_math_quatSlerp_2040;
 void math_quatSlerp(Quat_5CE68 *a, Quat_5CE68 *b, f32 alpha, s32 spin) {
     f32 beta;
     f32 theta;
@@ -23328,7 +23328,7 @@ void math_quatSlerp(Quat_5CE68 *a, Quat_5CE68 *b, f32 alpha, s32 spin) {
         beta = 1.0f - alpha;
     } else {
         theta = gl_func_00000000_5ce68a(cos_t);
-        phi = (f32)theta + (f32)spin * D_5CE68_pi;
+        phi = (f32)theta + (f32)spin * kRo_math_quatSlerp_2040;
         sin_t = gl_func_00000000_5ce68s(theta);
         beta = gl_func_00000000_5ce68s(theta - alpha * phi) / sin_t;
         alpha = gl_func_00000000_5ce68s(alpha * phi) / sin_t;

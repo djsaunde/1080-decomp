@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_00000988 = 0x0;
+kRo_SnowBoarder_handleMsg_988 = 0x0;
 bu_d900_a68 = 0x0;
 bu_d900_cae8 = 0x0;
 bu_d900_desc8aec = 0x0;

@@ -688,7 +688,7 @@ void CamMan_update(char *arg0);
 extern int D_00000000;
 void cam_placeAttached_000372D4(int *a0, float *a1);
 typedef struct { s32 pad[4]; volatile s32 flags; } Flg_37348;
-extern f32 D_37348_19F0[], D_37348_19F4[];
+extern f32 kRo_StickCtrlA_update_00037348_19F0[], kRo_StickCtrlA_update_00037348_19F4[];
 void StickCtrlA_update_00037348(char *arg0);
 typedef struct { f32 x, y, z; } V3_37540;
 typedef struct { V3_37540 v6C; s32 pad78[6]; V3_37540 v90; V3_37540 v9C; V3_37540 saved; V3_37540 vB4; } Big_37540;

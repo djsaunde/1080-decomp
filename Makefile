@@ -866,7 +866,7 @@ build/src/game_libs/game_libs_ido53_6F17C.c.o build/non_matching/src/game_libs/g
 # 6A144 = libultra fsin/__sinf (gu/sinf.c verbatim), IDO 5.3 -O2 donor,
 # 112/112 words exact first compile; six splat fragments (6A144/6A1BC/6A1C4/
 # 6A2C0/6A2DC/6A2F8) merged into one .s. rodata P/rpi/pihi/pilo/zero pinned
-# as gl_ref_00002310..2350; __libm_qnan_f = D_00000000_qnanf (shared w/ fcos).
+# as kRo_fsin_2310..2350; __libm_qnan_f = D_00000000_qnanf (shared w/ fcos).
 build/src/game_libs/game_libs_ido53_6A144.c.o build/non_matching/src/game_libs/game_libs_ido53_6A144.c.o: CC := $(IDO53_DIR)/cc
 build/src/game_libs/game_libs_ido53_6A144.c.o build/non_matching/src/game_libs/game_libs_ido53_6A144.c.o: OPT_FLAGS := -O2
 # 6F218 = libultra osCreateMesgQueue, IDO 5.3 -O1 donor, 11/11 body

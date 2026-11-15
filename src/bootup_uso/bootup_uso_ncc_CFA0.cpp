@@ -25,8 +25,8 @@ char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
 extern char *gGfxLib_cfa0_ctx;
 extern int gGfxLib_cfa0_flag;
-extern float bu_cfa0_k970;
-extern double bu_cfa0_k978;
+extern float kRo_SnowBoarder_display_970;
+extern double kRo_SnowBoarder_display_978;
 int func_00000000(...);
 void bu_cfa0_v(...);
 }
@@ -62,7 +62,7 @@ extern "C" void SnowBoarder_display(char *st) {
         *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;
         bu_cfa0_v(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
-        c[3] = bu_cfa0_k970;
+        c[3] = kRo_SnowBoarder_display_970;
         bu_cfa0_v(&gGfxLib_cfa0_b, c);
         bu_cfa0_v(0x10);
         DISPATCH_CFA0(0x824);
@@ -85,7 +85,7 @@ extern "C" void SnowBoarder_display(char *st) {
           if ((*(int *)(st + 0x8B8) & 0xA) && *(int *)(st + 0xA4C) && !(flg & 0x400)) {
             bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8, dp);
             if ((double)(dp[0] * *(float *)(st + 0x9D8) + dp[1] * *(float *)(st + 0x9DC) +
-                         dp[2] * *(float *)(st + 0x9E0)) < bu_cfa0_k978) {
+                         dp[2] * *(float *)(st + 0x9E0)) < kRo_SnowBoarder_display_978) {
                 float div255 = 255.0f;
                 unsigned char cr = *(unsigned char *)(st + 0xA30) / 2;
                 unsigned char cg = *(unsigned char *)(st + 0xA31) / 2;

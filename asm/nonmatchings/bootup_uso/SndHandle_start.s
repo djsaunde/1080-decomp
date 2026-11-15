@@ -11,8 +11,8 @@ glabel SndHandle_start
     /* DD12E4 00000878 8FBF0014 */  lw         $ra, 0x14($sp)
   .L0000087C:
     /* DD12E8 0000087C 27BD0018 */  addiu      $sp, $sp, 0x18
-  alabel D_00000880
+  alabel kRo_SnowBoarder_ctor_880
     /* DD12EC 00000880 03E00008 */  jr         $ra
-  alabel D_00000884
+  alabel kRo_SnowBoarder_ctor_884
     /* DD12F0 00000884 00000000 */   nop
 endlabel SndHandle_start

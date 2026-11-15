@@ -47,8 +47,8 @@ typedef struct {
     EnvKey *tbl;                                      /* +0x1C */
 } Env;
 
-extern float gl_ref_00001014_f;  /* 32767.0f */
-extern float gl_ref_00001018_f;  /* 1e-5f */
+extern float kRo_Audio_AdsrUpdate_1014;  /* 32767.0f */
+extern float kRo_Audio_AdsrUpdate_1018;  /* 1e-5f */
 extern float gAudioContext_00002058_f;  /* 0.017453292f (pi/180) */
 
 float Audio_AdsrUpdate(Env *p) {
@@ -87,7 +87,7 @@ float Audio_AdsrUpdate(Env *p) {
                 if (p->cnt == 0) {
                     p->cnt = 1;
                 }
-                p->f14 = p->tbl[p->idx].val / gl_ref_00001014_f;
+                p->f14 = p->tbl[p->idx].val / kRo_Audio_AdsrUpdate_1014;
                 p->state = 4;
                 p->idx++;
                 p->f14 = p->f14 * p->f14;
@@ -118,7 +118,7 @@ float Audio_AdsrUpdate(Env *p) {
                 p->state = 8;
             }
         } else {
-            if (p->val < gl_ref_00001018_f) {
+            if (p->val < kRo_Audio_AdsrUpdate_1018) {
                 p->val = 0.0f;
                 p->state = 0;
             }

@@ -2219,16 +2219,16 @@ gl_aud_Acmd *AudioSynth_ApplyHaasEffect(gl_aud_Acmd *cmd, gl_aud_SampleState *sa
  *   480.0 takes f2, as in the target.
  * Boundary: the .s began with three all-zero pad words (real entry 0x1F6B4);
  * they sit on AudioSynth_ApplyHaasEffect as an all-zero SUFFIX_BYTES_FORCE. */
-extern f32 gl_1f6a8_kE70, gl_1f6a8_kE74;  /* data f32 at 0xE70 / 0xE74, pinned */
+extern f32 kRo_AudioHeap_InitAdsrDecayTable_E70, kRo_AudioHeap_InitAdsrDecayTable_E74;  /* data f32 at 0xE70 / 0xE74, pinned */
 #define K1F6A8 (*(f32 *)((char *)&D_00000000 + 0x2054))
 #define T1F6A8 (*(f32 **)((char *)&D_00000000 + 0x2CF8))
 void AudioHeap_InitAdsrDecayTable(void) {
     s32 i;
 
     T1F6A8[0xFF] = (K1F6A8 * (0, 256.0f)) / 0.25f;
-    T1F6A8[0xFE] = (K1F6A8 * (0, 256.0f)) / gl_1f6a8_kE70;
+    T1F6A8[0xFE] = (K1F6A8 * (0, 256.0f)) / kRo_AudioHeap_InitAdsrDecayTable_E70;
     T1F6A8[0xFD] = (K1F6A8 * (0, 256.0f)) / 0.5f;
-    T1F6A8[0xFC] = (K1F6A8 * (0, 256.0f)) / gl_1f6a8_kE74;
+    T1F6A8[0xFC] = (K1F6A8 * (0, 256.0f)) / kRo_AudioHeap_InitAdsrDecayTable_E74;
     T1F6A8[0xFB] = (K1F6A8 * (0, 256.0f)) / 0.75f;
     for (i = 0x80; i < 0xFB; i++) {
         T1F6A8[i] = (K1F6A8 * (0, 256.0f)) / (f32)(0xFB - i);
@@ -8868,7 +8868,7 @@ void Audio_SeqLayerNoteRelease(int a0) {
  * stores a2 and v1 as bytes to a0->0x31/0x32, and a0->0xC0 =
  * D_table[a2] + (v1<<7). Returns v1. 75.08 -> 99.92 (2026-05-31): the 7 FP
  * threshold consts (&D+0xFD4..0xFEC) AND the D_table base now use DISTINCT
- * externs (D_00000FD4.. + D_tbl_288ac in undefined_syms_auto.txt) so each lwc1
+ * externs (kRo_Audio_BuildSyntheticWave_FD4.. + D_tbl_288ac in undefined_syms_auto.txt) so each lwc1
  * re-materializes its own `lui at` instead of CSE'ing the base into one reg —
  * the comment's own "separate per-threshold symbols" hypothesis was right; the
  * distinct-extern lever busts it (+24.6pp). The `f12+1.0f` scale named into a
@@ -8889,7 +8889,7 @@ void Audio_SeqLayerNoteRelease(int a0) {
  * role-swap / rename — pure relabel, IDO allocates by live-range so f0 stays
  * the long-lived reg; (c) `s * f2` operand swap — value-numbering still pulls
  * f0. Live-range-bound FP value-numbering, irreducible from C. */
-extern float D_00000FD4, D_00000FD8, D_00000FDC, D_00000FE0, D_00000FE4, D_00000FE8, D_00000FEC;
+extern float kRo_Audio_BuildSyntheticWave_FD4, kRo_Audio_BuildSyntheticWave_FD8, kRo_Audio_BuildSyntheticWave_FDC, kRo_Audio_BuildSyntheticWave_FE0, kRo_Audio_BuildSyntheticWave_FE4, kRo_Audio_BuildSyntheticWave_FE8, kRo_Audio_BuildSyntheticWave_FEC;
 extern char D_tbl_288ac;
 /* 288AC TRUE GATE (2026-06-10 byte-diff with reloc awareness): the
  * lwc1-displacement "diffs" are unresolved-reloc artifacts (the
@@ -8922,27 +8922,27 @@ int Audio_BuildSyntheticWave(char *a0, char *a1, int a2)
       f2 = f2 * s;
     }
   }
-  if (f2 < D_00000FD4)
+  if (f2 < kRo_Audio_BuildSyntheticWave_FD4)
   {
     v1 = 0;
-    f2 = D_00000FD8;
+    f2 = kRo_Audio_BuildSyntheticWave_FD8;
   }
   else
-    if (f2 < D_00000FDC)
+    if (f2 < kRo_Audio_BuildSyntheticWave_FDC)
   {
     v1 = 1;
-    f2 = D_00000FE0;
+    f2 = kRo_Audio_BuildSyntheticWave_FE0;
   }
   else
-    if (f2 < D_00000FE4)
+    if (f2 < kRo_Audio_BuildSyntheticWave_FE4)
   {
     v1 = 2;
-    f2 = D_00000FE8;
+    f2 = kRo_Audio_BuildSyntheticWave_FE8;
   }
   else
   {
     v1 = 3;
-    f2 = D_00000FEC;
+    f2 = kRo_Audio_BuildSyntheticWave_FEC;
   }
   f4 = f0 * f2;
   *((float *) (a1 + 0x30)) = f4;
@@ -15382,7 +15382,7 @@ void snd_ResetChannel10Mode(void) {
 extern int gl_func_00000000_f(int, float);
 extern int gl_func_00000000_c(int, s8);
 extern int D_31A74_st, D_31A74_g2, D_31A74_g3, D_31A74_accl, D_31A74_accs1, D_31A74_accs2, D_31A74_cur;
-extern f32 D_31A74_1968[], D_31A74_196C[], D_31A74_1970[], D_31A74_1974[];   /* per-site pool aliases (fresh lui at) */
+extern f32 kRo_snd_UpdateChannel10Emitter_1968[], kRo_snd_UpdateChannel10Emitter_196C[], kRo_snd_UpdateChannel10Emitter_1970[], kRo_snd_UpdateChannel10Emitter_1974[];   /* per-site pool aliases (fresh lui at) */
 extern f32 D_31A74_tbl[];   /* base-0 f32 table indexed by mode (lui at; addu at,idx; lwc1 0(at)) */
 #define ACCL_31A74 (*(f32 *)((char *)&D_31A74_accl + 0x1CAC0))
 #define ACCS1_31A74 (*(f32 *)((char *)&D_31A74_accs1 + 0x1CAC0))
@@ -15398,8 +15398,8 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
     if (mode == 1) {
         if (D_31A74_st != 4 && D_31A74_st != 11) {
             acc = ACCL_31A74;
-            if (D_31A74_1968[0x1968 / 4] < acc) {
-                acc *= D_31A74_196C[0x196C / 4];
+            if (kRo_snd_UpdateChannel10Emitter_1968[0x1968 / 4] < acc) {
+                acc *= kRo_snd_UpdateChannel10Emitter_196C[0x196C / 4];
             } else {
                 acc = 0.0f;
             }
@@ -15425,7 +15425,7 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
         gl_func_00000000(0x6000A02, (s8)mode);
         return;
     }
-    v = v - D_31A74_1970[0x1970 / 4];
+    v = v - kRo_snd_UpdateChannel10Emitter_1970[0x1970 / 4];
     lp = &D_31A74_tbl[mode];
     if (v < 0.0f) {
         r = 1.0f;
@@ -15437,7 +15437,7 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
             r = 0.0f;
         }
     }
-    r *= D_31A74_1974[0x1974 / 4];
+    r *= kRo_snd_UpdateChannel10Emitter_1974[0x1974 / 4];
     if (r < 0.0f) {
         r = 0.0f;
     }

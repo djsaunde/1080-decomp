@@ -41,8 +41,8 @@ glabel SnowBoarder_handleMsg
     /* DDE3FC 0000D990 55C00109 */  bnel       $t6, $zero, .L0000DDB8
     /* DDE400 0000D994 8FBF0014 */   lw        $ra, 0x14($sp)
     /* DDE404 0000D998 8CA20004 */  lw         $v0, 0x4($a1)
-    /* DDE408 0000D99C 3C010000 */  lui        $at, %hi(D_00000988)
-    /* DDE40C 0000D9A0 D4260988 */  ldc1       $f6, %lo(D_00000988)($at)
+    /* DDE408 0000D99C 3C010000 */  lui        $at, %hi(kRo_SnowBoarder_handleMsg_988)
+    /* DDE40C 0000D9A0 D4260988 */  ldc1       $f6, %lo(kRo_SnowBoarder_handleMsg_988)($at)
     /* DDE410 0000D9A4 C442000C */  lwc1       $f2, 0xC($v0)
     /* DDE414 0000D9A8 46001121 */  cvt.d.s    $f4, $f2
     /* DDE418 0000D9AC 4626203C */  c.lt.d     $f4, $f6

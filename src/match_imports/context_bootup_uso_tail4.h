@@ -316,7 +316,7 @@ extern char boot12E00_desc_base, boot12E00_desc_self;
 extern char sStr_Node_C730;
 extern char sStr_Fader_C738;
 BootupGrid139B0 *Fader_ctor(BootupGrid139B0 *arg0, s32 arg1);
-extern f32 D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
+extern f32 kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
 extern char func_0000023C[];
 extern void boot1304C_set_enabled(void *, s32);
 extern void boot1304C_update_pixels(BootupGrid139B0 *);

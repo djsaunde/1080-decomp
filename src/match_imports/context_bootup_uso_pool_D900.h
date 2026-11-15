@@ -457,7 +457,7 @@ extern char *bu_d900_gl3eb3c(void *, BootupD900Word, int);
 extern void bu_d900_gl65360(BootupState *, void *);
 extern void bu_d900_gl65c54(BootupState *, BootupD900Message *);
 extern void bu_d900_gl61478(void *, ...);
-extern double D_00000988;
+extern double kRo_SnowBoarder_handleMsg_988;
 extern char bu_d900_desc8aec[], bu_d900_desc8b44[];
 extern void *bu_d900_global;
 void SnowBoarder_handleMsg(BootupState *st, BootupD900Message *m);

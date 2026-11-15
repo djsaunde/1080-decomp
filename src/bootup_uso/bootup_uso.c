@@ -14,7 +14,7 @@
  * `(char *)&SndHandle_triggerEvent3_00000940 + OFF` cast materialized the function address). */
 extern float D_bu_ro_pool[];
 extern double D_bu_ro_dpool[];  /* same base, f64 view (8-aligned pool offsets) */
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
 
 /* func_00000000 is splat's synthetic symbol for unrelocated JAL target 0x0.
  * Raw bytes are `jr $ra; nop`. IDO -O2 emits exactly that for an empty
@@ -1816,7 +1816,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  * sStr_Lights_741C = pre-init datum. EXACT (see the comment on the body). */
 /* EXACT 2026-10-16 (agent-c, 75.4 -> 100). The old "held float-pool base"
  * cap was the shared func_000003F8 base: three scalar f32 globals pinned at
- * the real offsets (D_00000524/528/52C = func_000003F8+0x12C/0x130/0x134)
+ * the real offsets (kRo_game_createLights_524/528/52C = func_000003F8+0x12C/0x130/0x134)
  * each get their own `lui at; lwc1`. Other levers:
  *  - the three registration calls take a base-0 object (gGfxLib_2F90_reg, one
  *    symbol: the target holds it in s0), not a literal 0; m->0x28 is the
@@ -1834,7 +1834,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
  *  - slots: volatile pads pad0 / pad..pad3 put p90's spill at sp+0x58, n2 at
  *    0x48 and vec at 0x3C (frame 0x60). */
 extern char sStr_Lights_741C, sStr_Ambient_Light_7424, sStr_Infinite_Light_7434, sStr_Shadow_Light_7444, sStr_lighttarget_7454;
-extern float D_00000524, D_00000528, D_0000052C;
+extern float kRo_game_createLights_524, kRo_game_createLights_528, kRo_game_createLights_52C;
 extern char gGfxLib_2F90_reg, LightTarget_vtbl_2F90_m28;
 extern void func_00000000_2F90_v();
 extern void func_00000000_2F90_f(char *, char *, float, float, float);
@@ -1852,7 +1852,7 @@ void game_createLights(char *s1) {
     func_00000000_2F90_v(&sStr_Lights_741C, 0);
     c = (char *)func_00000000(0, &sStr_Ambient_Light_7424);
     {
-        float k = D_00000524;
+        float k = kRo_game_createLights_524;
         WORLDREG(s1)->light0 = (s32)c;
         *(float *)(c + 0x12C) = k;
         *(float *)(c + 0x128) = k;
@@ -1873,7 +1873,7 @@ void game_createLights(char *s1) {
     o = (char *)func_00000000(0, &sStr_Shadow_Light_7444);
     vec[0] = 0.0f;
     vec[2] = 0.0f;
-    vec[1] = D_00000528;
+    vec[1] = kRo_game_createLights_528;
     func_00000000_2F90_v(o + 0x70, vec);
     c = o; if (1) { c += 0xC4; } *(int *)c |= 0x40;
     func_00000000_2F90_v(&gGfxLib_2F90_reg, WORLDREG(s1)->light1);
@@ -1889,7 +1889,7 @@ void game_createLights(char *s1) {
     o = (char *)func_00000000(0x16C);
     if (o != 0) {
         func_00000000_2F90_f(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
-        k2 = D_0000052C;
+        k2 = kRo_game_createLights_52C;
         NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
         ((LightTarget *)o)->unk108[0] = k2;
         ((LightTarget *)o)->unk108[1] = k2;
@@ -1957,7 +1957,7 @@ void *cam_create(int a0, int mode, char *parent, char *a3v, int p4) {
  * reads its gate once (`if ((p = a0->0x84) != 0) f(r, p)`), and the r->0x70
  * store precedes the publish call (it lands in that jal's delay slot). */
 extern char sStr_3DWindow_74D0;
-extern f32 D_00000538, D_0000053C, D_00000540;
+extern f32 kRo_game_create3DWindow_538, kRo_game_create3DWindow_53C, kRo_game_create3DWindow_540;
 extern float D_00000030[4];
 extern char gSnowBoard_0000002C;
 extern void func_00000008();  /* used as data-symbol base */
@@ -1967,9 +1967,9 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
     char *r;
     int p;
     g = D_00000030;
-    g[0] = D_00000538;
-    g[1] = D_0000053C;
-    g[2] = D_00000540;
+    g[0] = kRo_game_create3DWindow_538;
+    g[1] = kRo_game_create3DWindow_53C;
+    g[2] = kRo_game_create3DWindow_540;
     g[3] = 0.0f;
     r = (char *)func_00000000(0, 0x64, &sStr_3DWindow_74D0, 0x6D,
                               2, 0x6E, a1[0], a1[1], 0x6F, a1[2], a1[3],
@@ -2523,7 +2523,7 @@ void game_setupVs2P(char *s1, int a1) {
  * s1->0x84 + 0x10 by func_07ACE0. */
 extern char bu_411c_d7294[], gInputMgr_411c_d00_b;
 extern int gInputMgr_411c_t90[];
-extern f32 bu_411c_k544, bu_411c_k548;
+extern f32 kRo_game_setupDemoRace_544, kRo_game_setupDemoRace_548;
 extern f32 func_00000000_411c_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void game_setupDemoRace(char *s1, int a1) {
@@ -2539,8 +2539,8 @@ void game_setupDemoRace(char *s1, int a1) {
     if (t != 0) func_00000000(t, 0);
     func_00000000(&gInputMgr, o1);
     func_00000000(&gInputMgr_411c_d00_b, t);
-    idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
-    idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
+    idx1 = (int)(func_00000000_411c_f() * kRo_game_setupDemoRace_544);
+    idx2 = (int)(func_00000000_411c_f() * kRo_game_setupDemoRace_548 + (float)idx1 + 1.0f) % 3;
     r[0] = func_00000000_3d3cm(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, WORLDREG(s1)->fgRoot,
                              *(float*)(WORLDREG(s1)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s1)->unk98 + 0xCC), 0x58005, 0x1B);
     r[1] = func_00000000_3d3cm(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, WORLDREG(s1)->fgRoot,
@@ -2592,7 +2592,7 @@ void game_setupDemoRace(char *s1, int a1) {
  * link and the first link call go through block temps a/b (a = a3). */
 extern char bu_43d4_d7294[], gInputMgr_43d4_d00_b;
 extern int gInputMgr_43d4_t90[];
-extern f32 bu_43d4_k54c, bu_43d4_k550;
+extern f32 kRo_game_setupDemoSplit_54C, kRo_game_setupDemoSplit_550;
 extern f32 func_00000000_43d4_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
 void game_setupDemoSplit(char *s0, int a1) {
@@ -2606,8 +2606,8 @@ void game_setupDemoSplit(char *s0, int a1) {
     if (t != 0) func_00000000(t, 0);
     func_00000000(&gInputMgr, o1);
     func_00000000(&gInputMgr_43d4_d00_b, t);
-    idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
-    idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
+    idx1 = (int)(func_00000000_43d4_f() * kRo_game_setupDemoSplit_54C);
+    idx2 = (int)(func_00000000_43d4_f() * kRo_game_setupDemoSplit_550 + (float)idx1 + 1.0f) % 3;
     r[0] = func_00000000_3d3cm(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, WORLDREG(s0)->fgRoot,
                              *(float*)(WORLDREG(s0)->unk98 + 0xC4) - 500.0f, *(float*)(WORLDREG(s0)->unk98 + 0xCC), 0x8004, 0x15);
     r[1] = func_00000000_3d3cm(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, WORLDREG(s0)->fgRoot,
@@ -6096,7 +6096,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //       case 0x14:                               // .L0000D98C
 //         if (st->0xA80) break;                  // busy
 //         o = m->0x4;
-//         if ((double)o->0xC < DBL(D_00000988)   // properly-symbolized
+//         if ((double)o->0xC < DBL(kRo_SnowBoarder_handleMsg_988)   // properly-symbolized
 //             && o->0x28->0xC(u16) == 0x74)      //   double constant
 //           func_00000000(st+0x808);
 //         break;
@@ -6118,7 +6118,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //   CORRECTION (2026-07-10, agent-f, CONFIRMED via USO reloc table): the old
 //     "SPURIOUS code symbol SndHandle_triggerEvent1_0000098C swallows the pool" claim here is
 //     WRONG. SndHandle_triggerEvent1_0000098C is a GENUINE function (0x99C carries a live
-//     R_MIPS_26 jal reloc); D_00000988 is just SndHandle_triggerEvent3_00000940's tail nop. The
+//     R_MIPS_26 jal reloc); kRo_SnowBoarder_handleMsg_988 is just SndHandle_triggerEvent3_00000940's tail nop. The
 //     FP loads reference symIdx=1 = the RoData SECTION base (immediate = pool
 //     offset), NOT SndHandle_triggerEvent1_0000098C. The real rodata constants: this fn's
 //     `SndHandle_triggerEvent1_0000098C + 0x4` (@0x988) = f64 0.1, `+ 0xC`-form (@0x990) = f64 0.2
@@ -6130,7 +6130,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //   FP-body reconstruction + FP coloring + the file-split needed to fold the
 //   pool load (SndHandle_triggerEvent1_0000098C is defined in this same .c), NOT by any pool
 //   symbolization. Real-C STRUCTURAL body below. Name pre-checked: no extern
-//   reuse. D_00000988 reuses pre-symbolized double const at file scope.
+//   reuse. kRo_SnowBoarder_handleMsg_988 reuses pre-symbolized double const at file scope.
 #ifdef NON_MATCHING
 /* PASS-2 2026-06-10 (big-swing): FULL m2c graft (305 insns, 9 COP1 +
  * 2 f64 = mild; prior body replaced -- preserved in git). */
@@ -6165,7 +6165,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
  *   join; the target copies at entry (t = f0) and keeps 0.0 in f12. Ternary,
  *   if/else, copy-first, register, if (1) and comma spellings all give the
  *   same colouring. bu_d900_k990 needs a pin at 0x990 for an exact. */
-extern f64 D_00000988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it SndHandle_triggerEvent1_0000098C + 4) */
+extern f64 kRo_SnowBoarder_handleMsg_988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it SndHandle_triggerEvent1_0000098C + 4) */
 extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of func_00008AEC / SnowBCollider_ctor (target lui/addiu %hi/%lo(sym+K)) */
 typedef struct { s32 w; } S4D900;  /* 4-byte struct passed by value (target sw a1,4(sp) arg-area copy) */
 void SnowBoarder_handleMsg(char *arg0, char *arg1) {
@@ -6203,7 +6203,7 @@ c14:
         if (*(s32 *)((char *)(arg0) + 0xA80) == 0) {
             temp_v0_2 = *(s32 *)((char *)(arg1) + 0x4);
             temp_f2 = *(f32 *)((char *)(temp_v0_2) + 0xC);
-            if (((f64) temp_f2 < D_00000988) && (*(u16 *)((char *)(*(s32 *)((char *)(temp_v0_2) + 0x28)) + 0xC) == 0x74)) {
+            if (((f64) temp_f2 < kRo_SnowBoarder_handleMsg_988) && (*(u16 *)((char *)(*(s32 *)((char *)(temp_v0_2) + 0x28)) + 0xC) == 0x74)) {
                 func_00000000(arg0 + 0x808);
                 return;
             }

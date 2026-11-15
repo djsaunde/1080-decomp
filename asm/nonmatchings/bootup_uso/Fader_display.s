@@ -48,34 +48,34 @@ glabel Fader_display
     /* DE3B60 000130F4 00006025 */  or         $t4, $zero, $zero
     /* DE3B64 000130F8 16620004 */  bne        $s3, $v0, .L0001310C
     /* DE3B68 000130FC 00006825 */   or        $t5, $zero, $zero
-    /* DE3B6C 00013100 3C010000 */  lui        $at, %hi(D_00000C50)
-    /* DE3B70 00013104 C4380C50 */  lwc1       $f24, %lo(D_00000C50)($at)
+    /* DE3B6C 00013100 3C010000 */  lui        $at, %hi(kRo_Fader_display_C50)
+    /* DE3B70 00013104 C4380C50 */  lwc1       $f24, %lo(kRo_Fader_display_C50)($at)
     /* DE3B74 00013108 E7B80044 */  swc1       $f24, 0x44($sp)
   .L0001310C:
     /* DE3B78 0001310C 16420009 */  bne        $s2, $v0, .L00013134
     /* DE3B7C 00013110 C7B80044 */   lwc1      $f24, 0x44($sp)
     /* DE3B80 00013114 8E180068 */  lw         $t8, 0x68($s0)
-    /* DE3B84 00013118 3C010000 */  lui        $at, %hi(D_00000C58)
+    /* DE3B84 00013118 3C010000 */  lui        $at, %hi(kRo_Fader_display_C58)
     /* DE3B88 0001311C 13000004 */  beqz       $t8, .L00013130
     /* DE3B8C 00013120 00000000 */   nop
-    /* DE3B90 00013124 3C010000 */  lui        $at, %hi(D_00000C54)
+    /* DE3B90 00013124 3C010000 */  lui        $at, %hi(kRo_Fader_display_C54)
     /* DE3B94 00013128 10000002 */  b          .L00013134
-    /* DE3B98 0001312C C4380C54 */   lwc1      $f24, %lo(D_00000C54)($at)
+    /* DE3B98 0001312C C4380C54 */   lwc1      $f24, %lo(kRo_Fader_display_C54)($at)
   .L00013130:
-    /* DE3B9C 00013130 C4380C58 */  lwc1       $f24, %lo(D_00000C58)($at)
+    /* DE3B9C 00013130 C4380C58 */  lwc1       $f24, %lo(kRo_Fader_display_C58)($at)
   .L00013134:
     /* DE3BA0 00013134 24010001 */  addiu      $at, $zero, 0x1
     /* DE3BA4 00013138 14410009 */  bne        $v0, $at, .L00013160
     /* DE3BA8 0001313C 00005025 */   or        $t2, $zero, $zero
     /* DE3BAC 00013140 8E190068 */  lw         $t9, 0x68($s0)
-    /* DE3BB0 00013144 3C010000 */  lui        $at, %hi(D_00000C60)
+    /* DE3BB0 00013144 3C010000 */  lui        $at, %hi(kRo_Fader_display_C60)
     /* DE3BB4 00013148 13200004 */  beqz       $t9, .L0001315C
     /* DE3BB8 0001314C 00000000 */   nop
-    /* DE3BBC 00013150 3C010000 */  lui        $at, %hi(D_00000C5C)
+    /* DE3BBC 00013150 3C010000 */  lui        $at, %hi(kRo_Fader_display_C5C)
     /* DE3BC0 00013154 10000002 */  b          .L00013160
-    /* DE3BC4 00013158 C4380C5C */   lwc1      $f24, %lo(D_00000C5C)($at)
+    /* DE3BC4 00013158 C4380C5C */   lwc1      $f24, %lo(kRo_Fader_display_C5C)($at)
   .L0001315C:
-    /* DE3BC8 0001315C C4380C60 */  lwc1       $f24, %lo(D_00000C60)($at)
+    /* DE3BC8 0001315C C4380C60 */  lwc1       $f24, %lo(kRo_Fader_display_C60)($at)
   .L00013160:
     /* DE3BCC 00013160 3C01437F */  lui        $at, (0x437F0000 >> 16)
     /* DE3BD0 00013164 4481B000 */  mtc1       $at, $f22

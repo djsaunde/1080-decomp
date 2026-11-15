@@ -628,10 +628,10 @@ typedef struct { f32 unk0, unk4, unk8; } Q_00063F34;
 typedef struct { int a, b, c; } V3i_63F34;
 
 extern f32 gl_func_00000000_s(f32);
-extern struct { char pad[0x20A0]; f64 v; } D_63F34_20A0;
-extern struct { char pad[0x20A8]; f64 v; } D_63F34_20A8;
-extern struct { char pad[0x20B0]; f64 v; } D_63F34_20B0;
-extern struct { char pad[0x20B8]; f32 v; } D_63F34_20B8;
+extern struct { char pad[0x20A0]; f64 v; } kRo_Friction_vfn11_00063F34_20A0;
+extern struct { char pad[0x20A8]; f64 v; } kRo_Friction_vfn11_00063F34_20A8;
+extern struct { char pad[0x20B0]; f64 v; } kRo_Friction_vfn11_00063F34_20B0;
+extern struct { char pad[0x20B8]; f32 v; } kRo_Friction_vfn11_00063F34_20B8;
 
 void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
     Q_00063F34 sp44;
@@ -652,12 +652,12 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
         sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
         sp44.unk8 = (*(f32 *)(arg2 + 0x8) * (0, temp_f0)) - sp44.unk8;
         sp40 = gl_func_00000000_s((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
-        if (D_63F34_20A0.v < (f64) sp40) {
+        if (kRo_Friction_vfn11_00063F34_20A0.v < (f64) sp40) {
             gl_func_00000000(&sp44);
-            var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * (*(f32 *)((char *)FW(arg0, 0x16C) + 0x360))) + (0, arg3)) * D_63F34_20A8.v);
+            var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * (*(f32 *)((char *)FW(arg0, 0x16C) + 0x360))) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
             var_f0 = var_f0 * var_f0;
-            if (D_63F34_20B0.v < (f64) var_f0) {
-                var_f0 = D_63F34_20B8.v;
+            if (kRo_Friction_vfn11_00063F34_20B0.v < (f64) var_f0) {
+                var_f0 = kRo_Friction_vfn11_00063F34_20B8.v;
             }
             if (var_f0 < 0.0f) {
                 var_f0 = 0.0f;
@@ -1038,10 +1038,10 @@ extern char gl_ref_000221D8_64588_12;
 extern char gl_ref_000221D8_64588_13;
 extern char gl_ref_000221F0_64588_c1;
 extern char gl_ref_000221F0_64588_c2;
-extern float gl_ref_000020D4_64588_f;
-extern float gl_ref_000020D8_64588_f;
-extern float gl_ref_000020DC_64588_f;
-extern float gl_ref_000020E0_64588_f;
+extern float kRo_DNode_ctor_20D4;
+extern float kRo_DNode_ctor_20D8;
+extern float kRo_DNode_ctor_20DC;
+extern float kRo_DNode_ctor_20E0;
 
 struct SB64588 { int v; };
 typedef struct { float x, y, z; } V364588;
@@ -1111,7 +1111,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     gl_func_00000000(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_2;
                     FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = gl_ref_000020D4_64588_f;
+                    FF64(m, 0x10) = kRo_DNode_ctor_20D4;
                 }
             }
             u3.v = sTag_spl_223D8;
@@ -1141,7 +1141,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     gl_func_00000000(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_5;
                     FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = gl_ref_000020D8_64588_f;
+                    FF64(m, 0x10) = kRo_DNode_ctor_20D8;
                 }
             }
             u6.v = sTag_suc_223E4;
@@ -1161,7 +1161,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     gl_func_00000000(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_7;
                     FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = gl_ref_000020DC_64588_f;
+                    FF64(m, 0x10) = kRo_DNode_ctor_20DC;
                 }
             }
             u8.v = sTag_usc_223EC;
@@ -1171,7 +1171,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     gl_func_00000000(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_8;
                     FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = gl_ref_000020E0_64588_f;
+                    FF64(m, 0x10) = kRo_DNode_ctor_20E0;
                 }
             }
             u9.v = sTag_tsc_223F0;
@@ -5283,21 +5283,21 @@ void Functor_call_00069C94(int *a0) {
  * D+0x2268/2270/2278/227C/2280 and the string D+0x2250 are sym1-based, the
  * u16 table at +0x2C650 is sym2-based (oracle); callee sym76 = 0x34810 (the
  * varargs debug-print wrapper in post0b) -> gl_func_00000000 placeholder. */
-extern struct { char pad[0x2268]; double v; } D_69CC4_2268;
-extern struct { char pad[0x2270]; double v; } D_69CC4_2270;
-extern struct { char pad[0x2278]; float v; } D_69CC4_2278;
-extern struct { char pad[0x227C]; float v; } D_69CC4_227C;
-extern struct { char pad[0x2280]; double v; } D_69CC4_2280;
+extern struct { char pad[0x2268]; double v; } kRo_math_acosf_2268;
+extern struct { char pad[0x2270]; double v; } kRo_math_acosf_2270;
+extern struct { char pad[0x2278]; float v; } kRo_math_acosf_2278;
+extern struct { char pad[0x227C]; float v; } kRo_math_acosf_227C;
+extern struct { char pad[0x2280]; double v; } kRo_math_acosf_2280;
 extern struct { char pad[0x2C650]; unsigned short t[1]; } D_69CC4_tbl;
 float math_acosf(float x) {
-    if (x > D_69CC4_2268.v || x < D_69CC4_2270.v) {
+    if (x > kRo_math_acosf_2268.v || x < kRo_math_acosf_2270.v) {
         gl_func_00000000(GL_RODATA_STR(0x2250, "acos out of range %f"), x);
         return 0.0f;
     }
     if (x > 0.0f) {
-        return (float)(unsigned int)D_69CC4_tbl.t[(int)(x * 2048.0f)] / D_69CC4_2278.v;
+        return (float)(unsigned int)D_69CC4_tbl.t[(int)(x * 2048.0f)] / kRo_math_acosf_2278.v;
     }
-    return D_69CC4_2280.v - ((float)(unsigned int)D_69CC4_tbl.t[(int)(-(x * 2048.0f))] / D_69CC4_227C.v);
+    return kRo_math_acosf_2280.v - ((float)(unsigned int)D_69CC4_tbl.t[(int)(-(x * 2048.0f))] / kRo_math_acosf_227C.v);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00069CD0_pad.s")
 

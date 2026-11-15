@@ -19,15 +19,15 @@ typedef struct { int mode; int f4; int f8; int fC; f32 f10; f32 f14; f32 f18; f3
 static St308 A308;
 extern "C" int gl_func_00000000(...);
 extern "C" void gl_func_00000000_f(int, f32);
-extern "C" char D_308AC_k0[], D_308AC_k1[], D_308AC_k2[];
+extern "C" char kRo_snd_SetChannel8Mode_1868[], kRo_snd_SetChannel8Mode_186C[], kRo_snd_SetChannel8Mode_1870[];
 extern "C" void snd_SetChannel8Mode(int mode) {
     A308.mode = mode;
     A308.f8 = 0;
     A308.fC = 0;
-    A308.f1C = *(f32 *)(D_308AC_k0 + 0x1868);
+    A308.f1C = *(f32 *)(kRo_snd_SetChannel8Mode_1868 + 0x1868);
     switch (mode) {
     case 0:
-        { f32 &r = A308.f14; r = *(f32 *)(D_308AC_k1 + 0x186C); }
+        { f32 &r = A308.f14; r = *(f32 *)(kRo_snd_SetChannel8Mode_186C + 0x186C); }
         gl_func_00000000_f(0x01000800, 0.0f);
         return;
     case 1:
@@ -37,7 +37,7 @@ extern "C" void snd_SetChannel8Mode(int mode) {
     case 2:
         { int &r = A308.f4; r = 8; }
         { f32 &r = A308.f14; r = 0.5f; }
-        { f32 &r = A308.f1C; r = *(f32 *)(D_308AC_k2 + 0x1870); }
+        { f32 &r = A308.f1C; r = *(f32 *)(kRo_snd_SetChannel8Mode_1870 + 0x1870); }
         break;
     }
     { f32 &r = A308.f10; f32 &q = A308.f14; r = q; }

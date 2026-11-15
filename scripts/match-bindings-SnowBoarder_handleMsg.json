@@ -2,7 +2,7 @@
   "function": "SnowBoarder_handleMsg",
   "raw_sha256": "b893b55199ac23d774c9044fbfca9403ab8e092b35b956813e72a0c9714d07c5",
   "renames": {
-    "D_00000988": "snw_port_func_0000D900_D_00000988",
+    "kRo_SnowBoarder_handleMsg_988": "snw_port_func_0000D900_D_00000988",
     "bu_d900_a68": "snw_port_func_0000D900_bu_d900_a68",
     ".rodata": "snw_port_func_0000D900__rodata",
     "bu_d900_cae8": "snw_port_func_0000D900_bu_d900_cae8",

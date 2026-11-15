@@ -32,7 +32,7 @@ event20:
         if (st->field_A80 != 0) return;
         payload = m->field_04;
         magnitude = payload->field_0C;
-        if ((double)magnitude < D_00000988 && payload->field_28->field_0C == 0x74) {
+        if ((double)magnitude < kRo_SnowBoarder_handleMsg_988 && payload->field_28->field_0C == 0x74) {
             bu_d900_a68((int *)st->field_808);
             return;
         }

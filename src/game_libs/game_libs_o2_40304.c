@@ -7,7 +7,7 @@
  * 6-entry jumptable at donor .rodata +0 and the 1/32767 literal right behind
  * it at +0x18; the splice renames that reloc to QNode_doCommand_rodata,
  * pinned to 0x1AE4 in undefined_syms_auto.txt (USO RoData: table +0x1AE4,
- * literal +0x1AFC). The 0.01f scale is a memory load of D_40304_k001 (+0x1AE0).
+ * literal +0x1AFC). The 0.01f scale is a memory load of kRo_QNode_doCommand_1AE0 (+0x1AE0).
  *
  * Load-bearing (agent-g run 264, kits CCC / CCCII / CCCV):
  *  - case 0x72's sp is a DIFFERENT expression item from case 0x6D's
@@ -36,7 +36,7 @@ typedef struct {
     float q2[4];    /* 0xF4 */
 } Obj40304;
 typedef struct { int op; short **cur; } Cmd40304;
-extern float D_40304_k001;
+extern float kRo_QNode_doCommand_1AE0;
 extern int gl_func_00000000();
 extern void gl_func_00040304_quat(float *, float, float, float);
 
@@ -87,7 +87,7 @@ void QNode_doCommand(Obj40304 *self, Cmd40304 *cmd) {
             self->pos.x = v[0];
             self->pos.y = v[1];
             self->pos.z = v[2];
-            kt = D_40304_k001;
+            kt = kRo_QNode_doCommand_1AE0;
             if (a != kt) {} if (a != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {} if (b != (1.0f / 32767.0f)) {}
             a = v[7] * kt;
             b = v[8] * kt;

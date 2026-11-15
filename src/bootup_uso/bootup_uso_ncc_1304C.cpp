@@ -42,7 +42,7 @@ struct Fire {
 extern "C" {
 void func_00000000(...);
 extern char D_00000000[];
-extern float D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
+extern float kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
 extern char func_0000023C[];
 }
 extern "C" void Fader_display(Fire *f) {
@@ -66,14 +66,14 @@ extern "C" void Fader_display(Fire *f) {
         }
     }
     func_00000000(f);
-    if (f->state == 2) k = D_00000C50;
+    if (f->state == 2) k = kRo_Fader_display_C50;
     if (f->state == 3) {
-        if (f->flag68) k = D_00000C54;
-        else k = D_00000C58;
+        if (f->flag68) k = kRo_Fader_display_C54;
+        else k = kRo_Fader_display_C58;
     }
     if (f->state == 1) {
-        if (f->flag68) k = D_00000C5C;
-        else k = D_00000C60;
+        if (f->flag68) k = kRo_Fader_display_C5C;
+        else k = kRo_Fader_display_C60;
     }
     for (count = 0, y = 0; y != 32; y++) {
         for (x = 0, i = y * 32; x != 32; x++) {

@@ -24,7 +24,7 @@ typedef double f64;
 typedef struct { float x, y, z; } Vec3;
 extern char D_00000000;
 extern char *func_00000000();
-extern f32 D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4;
+extern f32 kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4;
 extern char sStr_SnowB_8730;
 extern char sStr_Node_8738;
 extern char sStr_Parms_8740;
@@ -151,7 +151,7 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
 /* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
-extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
+extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], kRo_SnowBoarder_ctor_8B8[], kRo_SnowBoarder_ctor_8BC[];
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
 extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
 extern u8 gGfxLib_90cc_d148_18[];
@@ -254,7 +254,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000868;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_868;
             }
             sp140.w = *(s32 *)(GL_DATA_STR(0x874C, "ifr"));
             sp108 = var_s1 + 0x20;
@@ -263,7 +263,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s02;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_0000086C;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_86C;
             }
             sp13C.w = *(s32 *)(GL_DATA_STR(0x8750, "ded"));
             sp108 = var_s1 + 0x38;
@@ -281,7 +281,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s04;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000870;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_870;
             }
             sp134.w = *(s32 *)(GL_DATA_STR(0x8758, "efr"));
             sp108 = var_s1 + 0x68;
@@ -290,7 +290,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s05;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000874;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_874;
             }
             sp130.w = *(s32 *)(GL_DATA_STR(0x875C, "nbf"));
             sp108 = var_s1 + 0x80;
@@ -299,7 +299,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s06;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000878;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_878;
             }
             sp12C.w = *(s32 *)(GL_DATA_STR(0x8760, "nel"));
             sp108 = var_s1 + 0x98;
@@ -308,7 +308,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s07;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_0000087C;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_87C;
             }
             sp128.w = *(s32 *)(GL_DATA_STR(0x8764, "dbf"));
             sp108 = var_s1 + 0xB0;
@@ -326,7 +326,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp108, var_s1, sp104, 1);
                 *(s32 *)((char *)(sp108) + 0xC) = (s32) &D_00008018_s09;
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
-                *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000880;
+                *(f32 *)((char *)(sp108) + 0x10) = (f32) kRo_SnowBoarder_ctor_880;
             }
             sp120.w = *(s32 *)(GL_DATA_STR(0x876C, "res"));
             sp108 = var_s1 + 0xE0;
@@ -370,7 +370,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp8C, var_s0, sp104, 1);
                 *(s32 *)((char *)(sp8C) + 0xC) = (s32) &D_00008018_s13;
                 *(s32 *)((char *)(sp8C) + 0x14) = 0;
-                *(f32 *)((char *)(sp8C) + 0x10) = (f32) D_00000884;
+                *(f32 *)((char *)(sp8C) + 0x10) = (f32) kRo_SnowBoarder_ctor_884;
             }
             spFC.w = *(s32 *)(GL_DATA_STR(0x8790, "snf"));
             var_s1 = (char *)&sp7C;
@@ -434,7 +434,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s20;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000888;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_888;
             }
             spE0.w = *(s32 *)(GL_DATA_STR(0x87AC, "mro"));
             sp80 = var_s0 + 0xC8;
@@ -443,7 +443,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s21;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_0000088C;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_88C;
             }
             spDC.w = *(s32 *)(GL_DATA_STR(0x87B0, "mpi"));
             sp80 = var_s0 + 0xE0;
@@ -452,7 +452,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s22;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000890;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_890;
             }
             spD8.w = *(s32 *)(GL_DATA_STR(0x87B4, "mdr"));
             sp80 = var_s0 + 0xF8;
@@ -470,7 +470,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s24;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000894;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_894;
             }
             spD0.w = *(s32 *)(GL_DATA_STR(0x87BC, "ayr"));
             sp80 = var_s0 + 0x128;
@@ -479,7 +479,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s25;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000898;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_898;
             }
             spCC.w = *(s32 *)(GL_DATA_STR(0x87C0, "azr"));
             sp80 = var_s0 + 0x140;
@@ -488,7 +488,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s26;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_0000089C;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_89C;
             }
             spC8.w = *(s32 *)(GL_DATA_STR(0x87C4, "tlt"));
             sp80 = var_s0 + 0x158;
@@ -497,7 +497,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s27;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A0;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_8A0;
             }
             spC4.w = *(s32 *)(GL_DATA_STR(0x87C8, "wfr"));
             sp80 = var_s0 + 0x170;
@@ -524,7 +524,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s30;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A4;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_8A4;
             }
             spB8.w = *(s32 *)(GL_DATA_STR(0x87D4, "nts"));
             sp80 = var_s0 + 0x1B8;
@@ -533,7 +533,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s31;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A8;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_8A8;
             }
             spB4.w = *(s32 *)(GL_DATA_STR(0x87D8, "trt"));
             sp80 = var_s0 + 0x1D0;
@@ -542,7 +542,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 func_00000000(sp80, var_s0, *(W90 *)var_s1, 1);
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008018_s32;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
-                *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008AC;
+                *(f32 *)((char *)(sp80) + 0x10) = (f32) kRo_SnowBoarder_ctor_8AC;
             }
             spB0.w = *(s32 *)(GL_DATA_STR(0x87DC, "twt"));
             sp80 = var_s0 + 0x1E8;
@@ -761,7 +761,7 @@ sw_end:
     bu_90cc_lc: bu_90cc_call_iipif(*(s32 *)((char *)&D_00000000 + 0), 1, &vpos.y, arg5, arg6); goto bu_90cc_le;
     bu_90cc_lz: if (1) {} vpos.z = arg6; goto bu_90cc_lc;
     bu_90cc_le: ;
-        vpos.y += D_000008B0;
+        vpos.y += kRo_SnowBoarder_ctor_8B0;
         wpos = vpos;
         *(f32 *)((char *)(arg0) + 0x3A4) = wpos.x;
         *(f32 *)((char *)(arg0) + 0x3A8) = wpos.y;
@@ -875,7 +875,7 @@ sw_end:
         var_s1 = func_00000000(0x16C);
         if (var_s1 != 0) {
             bu_90cc_call_p4d(var_s1, &sStr_lighttarget_885C, 0.0, 0.0f);
-            temp_f0 = D_000008B4;
+            temp_f0 = kRo_SnowBoarder_ctor_8B4;
             *(s32 *)((char *)(var_s1) + 0x28) = (s32) &LightTarget_vtbl_90cc_d207dc; *(s32 *)((char *)(var_s1) + 0x120) = 0xFFFF;
             *(f32 *)((char *)(var_s1) + 0x108) = temp_f0;
             *(f32 *)((char *)(var_s1) + 0x10C) = temp_f0;
@@ -985,10 +985,10 @@ sw_end:
             var_s0_3 = (s32 *)var_s0;
             var_s0 = *(char **)((char *)(sp164) + 0x28);
             temp_s1 = (char *)((s32)var_s0_3 + 0x70);
-            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_01 + 4), 100.0f);
+            ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp164, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0x10, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8B8 + 4), 100.0f);
             if (*(s32 *)((char *)(arg0) + 0xA58) & 1) {
                 var_s0 = *(char **)((char *)(sp160) + 0x28); 
-                ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp160, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0xC, (s32)temp_s1, *(f32 *)(bu_90cc_d8B4_02 + 8), 100.0f);
+                ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp160, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + 8), 100.0f);
                 func_00000000(sp164);
                 func_00000000(sp164);
             }

@@ -33,11 +33,11 @@ extern "C" int bu_c234_sv(s32, S4C234, char *, int);
 extern "C" {
 extern float D_bu_ro_pool[];
 extern double D_bu_ro_dpool[];
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
-extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
+extern f32 D_00000128, kRo_SnowBoarder_ctor_868, kRo_SnowBoarder_ctor_86C, kRo_SnowBoarder_ctor_870, kRo_SnowBoarder_ctor_874, kRo_SnowBoarder_ctor_878, kRo_SnowBoarder_ctor_87C, kRo_SnowBoarder_ctor_880, kRo_SnowBoarder_ctor_884, kRo_SnowBoarder_ctor_888, kRo_SnowBoarder_ctor_88C, kRo_SnowBoarder_ctor_890, kRo_SnowBoarder_ctor_894, kRo_SnowBoarder_ctor_898, kRo_SnowBoarder_ctor_89C, kRo_SnowBoarder_ctor_8A0, kRo_SnowBoarder_ctor_8A4, kRo_SnowBoarder_ctor_8A8, kRo_SnowBoarder_ctor_8AC, kRo_SnowBoarder_ctor_8B0, kRo_SnowBoarder_ctor_8B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, kRo_SnowBoarder_procColl_938, kRo_SnowBoarder_procColl_93C, D_00000940, D_00000944, D_00000948, D_0000094C;
 extern char D_00000000;
 extern void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
 extern int func_00000000(...);
@@ -60,10 +60,10 @@ extern f32 e4;
 extern f32 e8;
 extern f32 ec;
 extern f32 f0;
-extern f64 bu_c234_k930;
-extern f32 bu_c234_k940;
-extern f32 bu_c234_k944;
-extern f32 bu_c234_k948;
+extern f64 kRo_SnowBoarder_procColl_930;
+extern f32 kRo_SnowBoarder_procColl_940;
+extern f32 kRo_SnowBoarder_procColl_944;
+extern f32 kRo_SnowBoarder_procColl_948;
 extern s32 D_000081C0[];
 }
 extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
@@ -146,7 +146,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
             rider->groundPlaneD = spCC.f0;
             /* agent-g run 233: the compare stored directly -- the 0/1 is a ugen temp (t0), not a uopt-coloured
              * local (v0); this moves the ugen round-robin on by one, as the target's t1/t2 below */
-            rider->groundGentle = (bu_c234_k930 <(f64) rider->groundNormal.y);
+            rider->groundGentle = (kRo_SnowBoarder_procColl_930 <(f64) rider->groundNormal.y);
         } else {
             rider->onGround = 0;
             rider->groundNormal.x = (f32) 0;
@@ -185,9 +185,9 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
         temp_v0_2 = rider->groundSurface;
         if (temp_v0_2 == 0x61) goto c61;
         if (temp_v0_2 == 0x62) goto c62;
-        rider->surfImp = (f32) D_00000938;
-        rider->surfSpd = (f32) D_0000093C;
-        rider->surfVsc = bu_c234_k940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
+        rider->surfImp = (f32) kRo_SnowBoarder_procColl_938;
+        rider->surfSpd = (f32) kRo_SnowBoarder_procColl_93C;
+        rider->surfVsc = kRo_SnowBoarder_procColl_940; /* run 200: 288 / 28C / 290 together in both arms (statement-order grid) */
         rider->groundColor[3] = 0;
         rider->groundColor[2] = 0;
         rider->groundColor[1] = 0;
@@ -203,8 +203,8 @@ c61:
         goto cend;
 c62:
         rider->surfImp = 0.0f;
-        rider->surfSpd = bu_c234_k944;
-        rider->surfVsc = bu_c234_k948;
+        rider->surfSpd = kRo_SnowBoarder_procColl_944;
+        rider->surfVsc = kRo_SnowBoarder_procColl_948;
         rider->impactScale = (f32) rider->parms.dsf.value;
         func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, (char *)&rider->groundColor);
 cend:

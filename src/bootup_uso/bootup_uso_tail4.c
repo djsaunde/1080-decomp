@@ -129,7 +129,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", Fader_ctor);
  * buffer) + texture-upload display list. EXACT via an IDO 7.1 NCC (C++) donor:
  * src/bootup_uso/bootup_uso_ncc_1304C.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 126). */
-extern f32 D_00000C50, D_00000C54, D_00000C58, D_00000C5C, D_00000C60;
+extern f32 kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
 extern char func_0000023C[];  /* data-symbol base: ctx ptr @ +0x18 */
 void Fader_display(char *arg0) {
     volatile int r = 0;

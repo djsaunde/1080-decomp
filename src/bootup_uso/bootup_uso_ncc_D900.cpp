@@ -27,7 +27,7 @@ struct Data { Vec3 pos; float speed; char pad10[0x28 - 0x10]; Ob *o; char pad2c[
 struct Ev { int type; Data *data; };
 extern "C" {
 int func_00000000(...);
-extern double D_00000988;
+extern double kRo_SnowBoarder_handleMsg_988;
 extern double bu_d900_k990;
 extern char bu_d900_aec[], bu_d900_b44[];
 extern int D_00000000;
@@ -47,7 +47,7 @@ extern "C" void SnowBoarder_handleMsg(char *self, Ev *ev) {
     case 20:
         if (W(self, 0xA80) == 0) {
             p = ev->data;
-            if (p->speed < D_00000988 && p->o->id == 0x74) {
+            if (p->speed < kRo_SnowBoarder_handleMsg_988 && p->o->id == 0x74) {
                 func_00000000(self + 0x808);
                 return;
             }

@@ -19,8 +19,8 @@ glabel SndHandle_triggerEvent0_000008F4
   .L00000930:
     /* DD139C 00000930 8FBF0014 */  lw         $ra, 0x14($sp)
     /* DD13A0 00000934 27BD0020 */  addiu      $sp, $sp, 0x20
-  alabel D_00000938
+  alabel kRo_SnowBoarder_procColl_938
     /* DD13A4 00000938 03E00008 */  jr         $ra
-  alabel D_0000093C
+  alabel kRo_SnowBoarder_procColl_93C
     /* DD13A8 0000093C 00000000 */   nop
 endlabel SndHandle_triggerEvent0_000008F4

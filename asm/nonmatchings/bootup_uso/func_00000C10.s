@@ -18,15 +18,15 @@ glabel func_00000C10
   .L00000C48:
     /* DD16B4 00000C48 8FAF0028 */  lw         $t7, 0x28($sp)
     /* DD16B8 00000C4C 00801825 */  or         $v1, $a0, $zero
-  alabel D_00000C50
+  alabel kRo_Fader_display_C50
     /* DD16BC 00000C50 24840010 */  addiu      $a0, $a0, 0x10
-  alabel D_00000C54
+  alabel kRo_Fader_display_C54
     /* DD16C0 00000C54 8DE20040 */  lw         $v0, 0x40($t7)
-  alabel D_00000C58
+  alabel kRo_Fader_display_C58
     /* DD16C4 00000C58 1040000C */  beqz       $v0, .L00000C8C
-  alabel D_00000C5C
+  alabel kRo_Fader_display_C5C
     /* DD16C8 00000C5C 00402825 */   or        $a1, $v0, $zero
-  alabel D_00000C60
+  alabel kRo_Fader_display_C60
     /* DD16CC 00000C60 AFA30024 */  sw         $v1, 0x24($sp)
   alabel D_00000C64
     /* DD16D0 00000C64 0C000000 */  jal        func_00000000

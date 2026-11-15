@@ -234,13 +234,13 @@ glabel SnowBoarder_procColl
     /* DDCFF8 0000C58C 10410020 */  beq        $v0, $at, .L0000C610
     /* DDCFFC 0000C590 3C0E0000 */   lui       $t6, (0x0 >> 16)
   alabel sStr_Quit_Process_C594
-    /* DDD000 0000C594 3C010000 */  lui        $at, %hi(D_00000938)
-    /* DDD004 0000C598 C42A0938 */  lwc1       $f10, %lo(D_00000938)($at)
-    /* DDD008 0000C59C 3C010000 */  lui        $at, %hi(D_0000093C)
+    /* DDD000 0000C594 3C010000 */  lui        $at, %hi(kRo_SnowBoarder_procColl_938)
+    /* DDD004 0000C598 C42A0938 */  lwc1       $f10, %lo(kRo_SnowBoarder_procColl_938)($at)
+    /* DDD008 0000C59C 3C010000 */  lui        $at, %hi(kRo_SnowBoarder_procColl_93C)
     /* DDD00C 0000C5A0 C60405A0 */  lwc1       $f4, 0x5A0($s0)
   alabel sStr_Node_C5A4
     /* DDD010 0000C5A4 E60A0288 */  swc1       $f10, 0x288($s0)
-    /* DDD014 0000C5A8 C426093C */  lwc1       $f6, %lo(D_0000093C)($at)
+    /* DDD014 0000C5A8 C426093C */  lwc1       $f6, %lo(kRo_SnowBoarder_procColl_93C)($at)
   alabel sStr_Quit_Process_C5AC
     /* DDD018 0000C5AC 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940)
     /* DDD01C 0000C5B0 E606028C */  swc1       $f6, 0x28C($s0)
