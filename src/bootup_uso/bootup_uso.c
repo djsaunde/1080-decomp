@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "game/snowboarder.h"
 #include "game/camera.h"
+#include "game/course.h"
 #include "audio.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
@@ -1071,7 +1072,7 @@ void *WorldCourse_ctor_00001DB8(void *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     func_00000000(a0, a1);
-    *(int*)((char*)a0 + 0x40) = a2;
+    ((WorldCourse *)a0)->desc = (s32 *)a2;
 end:
     return a0;
 }
@@ -1106,13 +1107,13 @@ void *WorldRegistry_create_00001E08(char *o) {
         if (o == 0) goto end;
     }
     func_00000000(o, &D_00006E30);
-    *(void**)(o + 0x28) = &D_1E08_d;
-    sub = o + 0x2C;
+    ((WorldRegistry *)o)->vptr = (s32)&D_1E08_d;
+    sub = (char *)&((WorldRegistry *)o)->head;
     func_00000000(sub);
-    *(void**)(o + 0xC) = &D_00006E38;
-    *(int*)(o + 0x70) = 0;
-    *(int*)(o + 0x78) = 0;
-    *(char**)(o + 0x74) = sub;
+    *(void**)(o + 0xC) = &D_00006E38; /* Node name "World Registry" */
+    ((WorldRegistry *)o)->head.next = 0;
+    ((WorldRegistry *)o)->numCourses = 0;
+    ((WorldRegistry *)o)->tail = (WorldCourse *)sub;
     func_00000000(o, &D_00006E48, &D_1E08_a);
     func_00000000(o, &D_00006E54, &D_1E08_b);
     func_00000000(o, &D_00006E60, &D_1E08_c);
@@ -1133,29 +1134,29 @@ end:
 // target uses $a3 — documented-unflippable from C, see
 // docs/IDO_CODEGEN.md#feedback-ido-arg-save-reg-pick (this func is that
 // entry's canonical example). Permuter-only; no episode (tautology-trap rule).
-void WorldRegistry_addCourse_00001F78(void *obj, int d1, int d2) {
-    void *n;
-    n = func_00000000(0, d1, d2, obj);
-    *(void **)((char *)n + 0x44) = *(void **)((char *)(*(void **)((char *)obj + 0x74)) + 0x44);
-    *(void **)((char *)(*(void **)((char *)obj + 0x74)) + 0x44) = n;
-    *(void **)((char *)obj + 0x74) = n;
-    *(int *)((char *)obj + 0x78) += 1;
+void WorldRegistry_addCourse_00001F78(WorldRegistry *obj, int d1, int d2) {
+    WorldCourse *n;
+    n = (WorldCourse *)func_00000000(0, d1, d2, obj); /* WorldCourse_ctor_00001DB8(0, name, desc) */
+    n->next = obj->tail->next;
+    obj->tail->next = n;
+    obj->tail = n;
+    obj->numCourses += 1;
 }
 
-void *game_getNthChild_00001FC8(char *a0, int a1) {
-    void *p = *(void**)(a0 + 0x70);
+void *game_getNthChild_00001FC8(WorldRegistry *a0, int a1) {
+    WorldCourse *p = a0->head.next;
     int i;
     for (i = 0; i < a1; i++) {
-        p = *(void**)((char*)p + 0x44);
+        p = p->next;
     }
     return p;
 }
 
-void *game_getNthChild_00002014(char *a0, int a1) {
-    void *p = *(void**)(a0 + 0x70);
+void *game_getNthChild_00002014(WorldRegistry *a0, int a1) {
+    WorldCourse *p = a0->head.next;
     int i;
     for (i = 0; i < a1; i++) {
-        p = *(void**)((char*)p + 0x44);
+        p = p->next;
     }
     return p;
 }
@@ -2879,9 +2880,9 @@ extern char D_000074F4, D_00007500, D_00007508, D_00007510;
 extern void func_477c_reg(void *, void *, void *, float, float, int);
 void Mountain_hostioParms(char *a0) {
     func_00000000(&D_00000000, &D_000074F4, 0);
-    func_477c_reg(&D_00000000, &D_00007500, a0 + 0x2C, -2000.0f,  2000.0f, 0);
-    func_477c_reg(&D_00000000, &D_00007508, a0 + 0x34,    0.01f,    1.0f, 0);
-    func_477c_reg(&D_00000000, &D_00007510, a0 + 0x30,    0.01f,    1.0f, 0);
+    func_477c_reg(&D_00000000, &D_00007500, &((Mountain *)a0)->posY, -2000.0f,  2000.0f, 0);  /* "Pos.Y" */
+    func_477c_reg(&D_00000000, &D_00007508, &((Mountain *)a0)->scaleY,    0.01f,    1.0f, 0); /* "Scale.Y" */
+    func_477c_reg(&D_00000000, &D_00007510, &((Mountain *)a0)->scaleXZ,    0.01f,    1.0f, 0); /* "Scale.XZ" */
     func_00000000(&D_00000000);
     func_00000000(a0);
 }
@@ -3885,13 +3886,13 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     }
     *(void**)(a0 + 0x28) = &D_00000000;
     *(void**)(a0 + 0xC) = &D_00007E7C;
-    *(int*)(a0 + 0xB4) = a1;
+    ((MapProp *)a0)->shape = a1;
     func_00000000(a0, a1);
-    if (*(int*)(*(char**)(a0 + 0xB4) + 0xA0) == 0)
+    if (*(int*)((char*)((MapProp *)a0)->shape + 0xA0) == 0) /* shp->pGrid != NULL */
         func_00000000(&D_00007E84, &D_00007E98, 0x3E4);
-    *(int*)(a0 + 0xB8) = a3;
-    *(int*)(a0 + 0xBC) = a2;
-    *(int*)(a0 + 0xC0) = a4;
+    ((MapProp *)a0)->end = a3;
+    ((MapProp *)a0)->angle = a2;
+    ((MapProp *)a0)->add = a4;
     }
     if (1) { }
     if (1) { }
@@ -3950,9 +3951,9 @@ void MapProp_display(char *obj) {
 extern char D_00007EA4, D_00007EA8, D_00007EAC, D_00007EB0;
 void MapProp_hostioParms(char *a0) {
     func_00000000(&D_00000000, &D_00007EA4, 0);
-    func_00000000(&D_00000000, &D_00007EA8, a0 + 0xB8, 0, 0x7F, 1);
-    func_00000000(&D_00000000, &D_00007EAC, a0 + 0xC0, 0, 0x7F, 1);
-    func_00000000(&D_00000000, &D_00007EB0, a0 + 0xBC, 0, 0x59, 0);
+    func_00000000(&D_00000000, &D_00007EA8, &((MapProp *)a0)->end, 0, 0x7F, 1);   /* "end" */
+    func_00000000(&D_00000000, &D_00007EAC, &((MapProp *)a0)->add, 0, 0x7F, 1);   /* "add" */
+    func_00000000(&D_00000000, &D_00007EB0, &((MapProp *)a0)->angle, 0, 0x59, 0); /* "angle" */
     func_00000000(&D_00000000);
     func_00000000(a0);
 }

@@ -2,6 +2,7 @@
 #include "game/snowai.h"
 #include "game/rideranim.h"
 #include "game/camera.h"
+#include "game/course.h"
 
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
@@ -4776,12 +4777,12 @@ int SnowAI_isAtFinish(int *a0) {
     r = (int *)SnowAI_findNearestMarker_0000A374((int)a0, v, *(int *)((char *)a0 + 0x30) + 0xB4);
     b = (r != 0);
     if (b) {
-        b = ((*(int *)((char *)r + 0x84) & 0x400) != 0);
+        b = ((((CourseMarker *)r)->parms.flg.value & MARKER_F_FINISH) != 0);
         if (!b) {
-            q = *(int **)((char *)r + 0x2C);
+            q = (int *)((CourseMarker *)r)->link;
             b = (q != 0);
             if (b) {
-                b = ((*(int *)((char *)q + 0x84) & 0x400) != 0);
+                b = ((((CourseMarker *)q)->parms.flg.value & MARKER_F_FINISH) != 0);
             }
         }
     }
@@ -6399,8 +6400,8 @@ void SnowAI_pickFork(SnowAI *a0) {
         game_uso_func_047B1C((char *)&game_uso_D_807FEDF8 + 0x7EC,
                              (char *)&game_uso_D_807FEDF8 + 0x808, 0x450);
     }
-    if (slots[1][0x84 / 4] & 0x10) {
-        w = (int *)slots[1][0x2C / 4];
+    if (((CourseMarker *)slots[1])->parms.flg.value & MARKER_F_REDIRECT) {
+        w = (int *)((CourseMarker *)slots[1])->link;
         slots[1] = w;
     }
     v2.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0->altNode * 4));
@@ -6427,7 +6428,7 @@ skip1:
         p = (V3_A3C4 *)game_uso_func_055750(12);
         if (p == 0) goto skip2;
     }
-    q = (float *)((char *)slots[1] + 0x30);
+    q = ((CourseMarker *)slots[1])->pos;
     fz = q[2];
     fx = q[0];
     p->y = 0.0f;
@@ -6439,7 +6440,7 @@ skip2:
         p = (V3_A3C4 *)game_uso_func_055750(12);
         if (p == 0) goto skip3;
     }
-    q = (float *)((char *)slots[0] + 0x30);
+    q = ((CourseMarker *)slots[0])->pos;
     fz = q[2];
     fx = q[0];
     p->y = 0.0f;
@@ -6669,20 +6670,20 @@ void SnowAI_scanSegments(SnowAI *obj) {
     node.a = **(int **)((char *)&D_00000000 + 0x548 + obj->scanIndex*4);
     r1 = (char *)SnowAI_findNearestMarker_0000A374(obj, node, &blockA);
     if (r1 != 0) {
-        cnt = *(int *)(r1 + 0x2C);
+        cnt = (int)((CourseMarker *)r1)->link;
         slots[0] = (char *)cnt;
         if (cnt != 0) {
             slots[1] = r1;
             if (SnowAI_func_0000A0E8((char *)obj, r1, (char *)cnt) != 0) {
-                f0 = blockA.z - *(float *)(slots[1] + 0x38);
-                if (f0 < 0.0f) f0 += 250.0f * *(float *)(slots[1] + 0x54);
+                f0 = blockA.z - ((CourseMarker *)slots[1])->pos[2];
+                if (f0 < 0.0f) f0 += 250.0f * ((CourseMarker *)slots[1])->parms.wid.value;
                 if (f0 >= 0.0f) {
                     p = (Vec3 *)(unsigned)&b1;
                     if (p == 0) {
                         p = (Vec3 *)game_uso_func_055750(12);
                         if (p == 0) goto skip1;
                     }
-                    q = (float *)(slots[0] + 0x30);
+                    q = ((CourseMarker *)slots[0])->pos;
                     f0 = q[0];
                     f2 = q[2];
                     p->y = 0.0f;
@@ -6694,7 +6695,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                         p = (Vec3 *)game_uso_func_055750(12);
                         if (p == 0) goto skip2;
                     }
-                    q = (float *)(slots[1] + 0x30);
+                    q = ((CourseMarker *)slots[1])->pos;
                     f12 = b1.x - q[0]; f0 = b1.z - q[2];
                     p->y = 0.0f;
                     p->z = f0;
@@ -6718,7 +6719,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                         p = (Vec3 *)game_uso_func_055750(12);
                         if (p == 0) goto skip5;
                     }
-                    q = (float *)(slots[1] + 0x30);
+                    q = ((CourseMarker *)slots[1])->pos;
                     f12 = b4.x - q[0]; f0 = b4.z - q[2];
                     p->y = 0.0f;
                     p->z = f0;
