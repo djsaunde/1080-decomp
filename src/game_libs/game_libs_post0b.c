@@ -11702,17 +11702,19 @@ void GfxLib_hostioParms(char *arg0) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", GfxLib_hostioParms);
 #endif
 
-void gfx_dlMarkBegin_00044460(int *a0, int *a1) { *(int*)a0 = (int)a1; *(int*)((char*)a0 + 4) = *(int*)((char*)(*(int*)((char*)a1 + 0xC)) + 4); }
+void gfx_dlMarkBegin_00044460(DLMark *mark, DLContext *ctx) { mark->ctx = ctx; mark->start = ctx->gfx.cur->count; }
 
-void gfx_dlMarkEnd_00044474(int *a0) { int *p = *(int**)a0; *(int*)((char*)a0 + 8) = *(int*)((char*)(*(int*)((char*)p + 0xC)) + 4); }
+void gfx_dlMarkEnd_00044474(DLMark *mark) { DLContext *ctx = mark->ctx; mark->end = ctx->gfx.cur->count; }
 
-int gfx_dlMarkLength_00044488(int *a0) {
-    return a0[2] - a0[1];
+int gfx_dlMarkLength_00044488(DLMark *mark) {
+    return mark->end - mark->start;
 }
 
-int gfx_dlMarkStart_00044498(char *a0) {
-    int *p = *(int **)a0;
-    return *(int *)(a0 + 4) * 8 + *(int *)(*(int *)((char *)p + 0xC));
+/* Address of the first Gfx in the mark. cur->base is read through an int
+ * cast: the typed ctx->gfx.cur->base load swaps the v/t register colouring. */
+int gfx_dlMarkStart_00044498(DLMark *mark) {
+    DLContext *ctx = mark->ctx;
+    return mark->start * 8 + *(int *)(int)ctx->gfx.cur;
 }
 
 /* 5-call unrolled dispatcher. Last call passes only s0 (no a1=s1 reset
@@ -17348,9 +17350,9 @@ void Window_doCommand(char *a0) {
 /* Split off from Window_doCommand bundle 2026-05-08: 9-insn FPU int-to-float
  * divide. a0->_B4 (float) = (float)a0->_B8 / (float)a0->_BC.
  * Divisor declared first to get $v0 register (matches target's lw v0,0xBC). */
-void Window_updateAspect(int *a0) {
-    int divisor = a0[47];
-    *(float*)((char*)a0 + 0xB4) = (float)a0[46] / (float)divisor;
+void Window_updateAspect(Window *win) {
+    int divisor = win->height;
+    win->aspect = (float)win->width / (float)divisor;
 }
 
 /* Split off from Window_doCommand bundle 2026-05-08: 2-insn save-arg sentinel. */
