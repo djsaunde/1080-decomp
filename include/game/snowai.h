@@ -52,21 +52,28 @@ typedef struct SnowAI {
     void *vptr;             /* 0x28: SnowAI vtable (game_uso Data 0x5D8) */
     s32 level;              /* 0x2C: difficulty 1..3, selects the parm of each triple */
     SnowBoarder *rider;     /* 0x30: the rider being steered (reads its pos / vel / speed) */
-    char pad034[0x3C - 0x34];
-    f32 unk3C;              /* 0x3C: steering output computed from rider->speed (591C) */
-    s32 unk40;
-    char pad044[0x48 - 0x44];
+    s32 unk34;              /* 0x34: cleared by SnowAI_reset */
+    f32 unk38;              /* 0x38: cleared by SnowAI_reset */
+    f32 unk3C;              /* 0x3C: steering output computed from rider->speed (591C); SnowAI_update zeroes it every frame */
+    s32 targetNode;         /* 0x40: index of the course node steered to (node table = game.uso Data base + 0x548); the scans A604 / A7F8 write it */
+    s32 unk44;              /* 0x44: countdown of the 7538 stick-input step (91 / 13 / 60 / 2 / 104) */
     s32 unk48;              /* 0x48: timer, set to 20 when bit 0 of unk6C is cleared */
-    char pad04C[0x54 - 0x4C];
+    s32 unk4C;              /* 0x4C: 7538 step counter */
+    s32 unk50;              /* 0x50: 7538 cooldown (8, counts down) */
     s32 unk54;              /* 0x54: frame counter while rider->speed < 30 */
-    char pad058[0x68 - 0x58];
+    s32 unk58;              /* 0x58: 7538 index into the (x, y) stick table at game.uso Data 0x638 */
+    s32 scanIndex;          /* 0x5C: node being tested by the A604 / A7F8 scans (0..9) */
+    f32 scanBestDist;       /* 0x60: best distance of the running scan */
+    s32 aiState;            /* 0x64: SnowAI_update dispatch: 0 591C (steer), 1 6A30, 2 6CF0, 3 71E0 */
     s32 modeFlags;          /* 0x68: 1 -> SnowAI_func_0000A3C4, 2 -> A604, 4 -> A7F8 run instead of the steering step */
     s32 unk6C;              /* 0x6C: bit flags (bit 0 cleared with unk48 = 20) */
-    char pad070[0x74 - 0x70];
+    s32 unk70;              /* 0x70: cleared by SnowAI_reset; read by 71E0 */
     s32 unk74;              /* 0x74: two-state switch in 591C (0 / 1) */
-    char pad078[0x7C - 0x78];
-    s32 unk7C;
-    char pad080[0xA8 - 0x80];
+    void *unk78;            /* 0x78: last result cached by 7ACC */
+    s32 altNode;            /* 0x7C: the other branch node; A3C4 keeps whichever of targetNode / altNode is nearer */
+    char pad080[0xA0 - 0x80];
+    f32 unkA0;              /* 0xA0: 1000.0 from the ctor; hysteresis limit of 7C1C */
+    s32 unkA4;              /* 0xA4: 0/1 hysteresis flag of 7C1C */
     f32 unkA8;              /* 0xA8: scale applied to rider->vel for the look-ahead point */
     f32 unkAC;
     f32 unkB0;
@@ -81,7 +88,10 @@ typedef struct SnowAI {
     char pad0DC[0xE4 - 0xDC];
     SnowAIParms parms;      /* 0x0E4: embedded "SnowAI::Parms" (0x3E0) */
     s32 unk4C4;             /* 0x4C4: countdown, reloaded from a level parm */
-    char pad4C8[0x4E0 - 0x4C8];
+    char pad4C8[0x4D8 - 0x4C8];
+    s32 initPending;        /* 0x4D8: set by SnowAI_reset; the next SnowAI_update clears it and, for a CPU
+                             * rider racing a human, sets rider +0x758 from ms1..ms8 by the rival's 0x8C4 */
+    s32 unk4DC;             /* 0x4DC: 3 from the ctor; limit term in 7538 */
 } SnowAI;
 
 /* compile-time offset checks (array size -1 => error) */
@@ -93,18 +103,29 @@ SNOWAI_ASSERT_OFFSET(SnowAI, vptr, 0x28);
 SNOWAI_ASSERT_OFFSET(SnowAI, level, 0x2C);
 SNOWAI_ASSERT_OFFSET(SnowAI, rider, 0x30);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk3C, 0x3C);
-SNOWAI_ASSERT_OFFSET(SnowAI, unk40, 0x40);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk48, 0x48);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk54, 0x54);
 SNOWAI_ASSERT_OFFSET(SnowAI, modeFlags, 0x68);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk6C, 0x6C);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk74, 0x74);
-SNOWAI_ASSERT_OFFSET(SnowAI, unk7C, 0x7C);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkA8, 0xA8);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkC8, 0xC8);
 SNOWAI_ASSERT_OFFSET(SnowAI, unkD8, 0xD8);
 SNOWAI_ASSERT_OFFSET(SnowAI, parms, 0xE4);
 SNOWAI_ASSERT_OFFSET(SnowAI, unk4C4, 0x4C4);
+SNOWAI_ASSERT_OFFSET(SnowAI, unk34, 0x34);
+SNOWAI_ASSERT_OFFSET(SnowAI, targetNode, 0x40);
+SNOWAI_ASSERT_OFFSET(SnowAI, unk58, 0x58);
+SNOWAI_ASSERT_OFFSET(SnowAI, scanIndex, 0x5C);
+SNOWAI_ASSERT_OFFSET(SnowAI, scanBestDist, 0x60);
+SNOWAI_ASSERT_OFFSET(SnowAI, aiState, 0x64);
+SNOWAI_ASSERT_OFFSET(SnowAI, unk70, 0x70);
+SNOWAI_ASSERT_OFFSET(SnowAI, unk78, 0x78);
+SNOWAI_ASSERT_OFFSET(SnowAI, altNode, 0x7C);
+SNOWAI_ASSERT_OFFSET(SnowAI, unkA0, 0xA0);
+SNOWAI_ASSERT_OFFSET(SnowAI, unkA4, 0xA4);
+SNOWAI_ASSERT_OFFSET(SnowAI, initPending, 0x4D8);
+SNOWAI_ASSERT_OFFSET(SnowAI, unk4DC, 0x4DC);
 typedef char snowai_assert_parm_size[sizeof(SnowAIParm) == 0x18 ? 1 : -1];
 typedef char snowai_assert_parms_size[sizeof(SnowAIParms) == 0x3E0 ? 1 : -1];
 typedef char snowai_assert_size[sizeof(SnowAI) == 0x4E0 ? 1 : -1];

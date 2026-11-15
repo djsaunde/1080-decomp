@@ -476,11 +476,11 @@ tail_common:
     }
     if (resolved_state & 0x400) {
         SnowAI_func_000071A4(self);
-        self->unk40 = SnowAI_func_00006FA8(self);
+        self->targetNode = SnowAI_func_00006FA8(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
-        self->unk7C = *(int*)(helper_ptr + 0x6C);
+        self->altNode = *(int*)(helper_ptr + 0x6C);
         if (resolved_state & 0x200) {
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BJ + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BJ + 1].value : self->parms.parm[SNOWAI_PARM_BJ].value, scale);
@@ -491,24 +491,24 @@ tail_common:
                 f2v = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)f2v % 5) != 0) goto commit_flags;
             }
-            self->unk40 = self->unk7C;
+            self->targetNode = self->altNode;
         } else if (resolved_state & 0x100) {
             v0 = self->level;
             if (v0 != 0) {
                 fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BT + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BT + 1].value : self->parms.parm[SNOWAI_PARM_BT].value, scale);
                 if (!(metric_a <= fsel)) goto commit_flags;
             }
-            self->unk40 = self->unk7C;
+            self->targetNode = self->altNode;
         } else if (resolved_state & 0x80) {
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BD + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BD + 1].value : self->parms.parm[SNOWAI_PARM_BD].value, scale);
             if (!(metric_a <= fsel)) goto commit_flags;
-            self->unk40 = self->unk7C;
+            self->targetNode = self->altNode;
         } else {
             v0 = self->level;
             fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BU + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BU + 1].value : self->parms.parm[SNOWAI_PARM_BU].value, scale);
             if (fsel <= metric_a) {
-                self->unk40 = self->unk7C;
+                self->targetNode = self->altNode;
             } else if (0.0f < metric_a) {
                 self->modeFlags |= 1;
             } else {
@@ -517,16 +517,16 @@ tail_common:
                 yaw_raw = *(float*)(v0 + 0xBC);
                 fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)fsel % 5) != 0) goto commit_flags;
-                self->unk40 = self->unk7C;
+                self->targetNode = self->altNode;
             }
         }
     } else if (hit_parent != 0 && *(int*)(hit_parent + 0x2C) == 0) {
-        if (self->unk40 != 0) {
-            self->unk40 = *(int*)(hit_parent + 0x6C);
+        if (self->targetNode != 0) {
+            self->targetNode = *(int*)(hit_parent + 0x6C);
         }
     } else if (hit_parent == 0) {
-        if (self->unk40 != 0) {
-            self->unk40 = *(int*)(helper_ptr + 0x6C);
+        if (self->targetNode != 0) {
+            self->targetNode = *(int*)(helper_ptr + 0x6C);
         } else {
             out_flags |= 0x10;
         }
