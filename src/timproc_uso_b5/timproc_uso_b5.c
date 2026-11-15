@@ -1,5 +1,10 @@
 #include "common.h"
 #include "game/select.h"
+
+/* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
+ * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
+ * 495). Spelling them as the gl_data.h aliases (all = D_00000000) changes the code: IDO then CSEs
+ * the one shared address across the ctor (tried: GenCourse_ctor, LevelList_createItem moved). */
 extern char *timproc_uso_b5_alias();
 
 extern int gl_func_00000000();
@@ -81,9 +86,9 @@ int *GenCourse_ctor(int *a0) {
         if (s1 == 0) goto after_node;
     }
     timproc_uso_b5_func_04C678(s1, &timproc_uso_b5_D_807FD908 + 0x98);
-    s1[0x28 / 4] = (int)&import_80073B18;
+    s1[0x28 / 4] = (int)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 after_node:
-    s0[0x28 / 4] = (int)&import_80073B80;
+    s0[0x28 / 4] = (int)&import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
 after_sub:
     a0[0x28 / 4] = (int)&timproc_uso_b5_D_807FD888;
     a0[0x0C / 4] = (int)(&timproc_uso_b5_D_807FD888 + 0xA0);
@@ -312,10 +317,10 @@ int *GenSelectChar_ctor(int *arg0, int arg1, int arg2, int arg3) {
         if (third == 0) goto after_node;
     }
     timproc_uso_b5_func_04C678(third, &timproc_uso_b5_D_807FE84C + 0xFDC);
-    third[0x28 / 4] = (int)&import_80073B18;
+    third[0x28 / 4] = (int)&import_80073B18; /* vptr: bootup Process_vtbl (gl_data.h) */
 
 after_node:
-    node[0x28 / 4] = (int)&import_80073B80;
+    node[0x28 / 4] = (int)&import_80073B80; /* vptr: bootup Process_vtbl_C3A0 (gl_data.h) */
 
 after_sub:
     arg0[0x28 / 4] = (int)&timproc_uso_b5_D_807FD948;
@@ -1607,7 +1612,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         w = (s32 *)timproc_uso_b5_func_055750(0xB4);
         if (w != 0) {
             timproc_uso_b5_func_04C678(w, &timproc_uso_b5_D_807FE990 + 0x1120);
-            FW(w, 0x28) = (int)&import_80086288;
+            FW(w, 0x28) = (int)&import_80086288; /* vptr: bootup MNode_vtbl (gl_data.h) */
             v1t = (s32 *)((char *)w + 0x2C);
             if (((w != (s32 *)-0x2C) || ((v1t = (s32 *)timproc_uso_b5_func_055750(4)) != 0)) && (((q = (char *)v1t), (v1t != 0)) || ((q = (char *)timproc_uso_b5_func_055750(4)) != 0))) {
                 FW(q, 0x0) = 0;
@@ -6203,7 +6208,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                     timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FEC18 + 0x13A8, 0.0f, 0.0f, 0.0f);
                     fv = M2C_FIELD((&import_80807FB8), f32 *, 0x23C);
                     M2C_FIELD(pw0, s32 *, 0x120) = 1;
-                    M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8;
+                    M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                     M2C_FIELD(pw0, f32 *, 0x108) = fv;
                     M2C_FIELD(pw0, f32 *, 0x10C) = fv;
                     M2C_FIELD(pw0, f32 *, 0x110) = fv;
@@ -6421,7 +6426,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FED08 + 0x1498, 0.0f, 0.0f, 0.0f);
                 fv = M2C_FIELD((&import_80807FB8), f32 *, 0x270);
                 M2C_FIELD(pw0, s32 *, 0x120) = 1;
-                M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8;
+                M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                 M2C_FIELD(pw0, f32 *, 0x108) = fv;
                 M2C_FIELD(pw0, f32 *, 0x10C) = fv;
                 M2C_FIELD(pw0, f32 *, 0x110) = fv;
@@ -6529,7 +6534,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             pw0 = timproc_uso_b5_func_055750(0x16C);
             if (pw0 != 0) {
                 timproc_uso_b5_func_0546DC(pw0, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f);
-                M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8;
+                M2C_FIELD(pw0, s8 **, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                 M2C_FIELD(pw0, f32 *, 0x108) = (f32) DF_2B0;
                 M2C_FIELD(pw0, f32 *, 0x10C) = (f32) DF_2B4;
                 M2C_FIELD(pw0, s32 *, 0x120) = 1;
@@ -8541,7 +8546,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
             timproc_uso_b5_func_0546DC(gc, &timproc_uso_b5_D_807FEE54 + 0x15E4,
                                        0.0f, 0.0f, 0.0f);
             cf = *(float *)((char *)&import_80807FB8 + 0x3A0);
-            FW(gc, 0x28) = (int)(&import_80087FB8[0]);
+            FW(gc, 0x28) = (int)(&import_80087FB8[0]); /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             FW(gc, 0x120) = 0xFFFF;
             *(float *)(gc + 0x108) = cf;
             *(float *)(gc + 0x10C) = cf;
@@ -8776,7 +8781,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             g2 = gc; if (1) {}
             cf = *(f32 *)((char *)&import_80807FB8 + 0x3B4);
             FW(g2, 0x120) = 1;
-            FW(g2, 0x28) = (s32) (&import_80087FB8[0]);
+            FW(g2, 0x28) = (s32) (&import_80087FB8[0]); /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             *(f32 *)(g2 + 0x108) = cf;
             *(f32 *)(g2 + 0x10C) = cf;
             *(f32 *)(g2 + 0x110) = cf;

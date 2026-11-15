@@ -773,7 +773,53 @@ typedef char audio_soundobj_size_assert[sizeof(SoundObj) == 0x64 ? 1 : -1];
 typedef struct SndHandle {
     SoundObj *obj;          /* 0x0: NULL -> the wrappers do nothing */
     s32 unk04;              /* 0x4 */
-    s32 eventArg;           /* 0x8: bootup 0xA94 sets it; 0x8F4..0x9D8 pass it to an event query */
+    s32 contactSurface;     /* 0x8: the rider's SnowBoarder.contactSurface (surface code of the last
+                             * obstacle hit), set each frame by SnowBoarder_update via 0xA94; the
+                             * 0x8F4..0x9D8 triggers map it to a SoundObj event type (0xA9C) */
 } SndHandle;
+
+/* The game's music cue state: bootup Bss 0x338, Sym 1448 (gl_data.h gSndCueQueues), 0x160 bytes.
+ * Two kinds of reference reach it (scripts/uso-data-sites.py object 1448):
+ * - relocations against Sym 1448 itself (offset = field): snd_TriggerChannel8Cue,
+ *   snd_TriggerChannel8CueIfIdle, snd_TickChannel8Fade, snd_SetChannel8Mode, snd_HandleSeqEvent_30AF4.
+ *   Use SND_CUEQ(gSndCueQueues) there.
+ * - relocations against the Bss section base (offset = 0x338 + field): snd_RequestCue / Cue2 /
+ *   Cue2Prio, snd_InitCueQueues, snd_SoundObjRequestCue, snd_SetPlayer2ChannelIO_3190C,
+ *   snd_UpdateTimers. Those must keep the base symbol; SND_CUEQ_AT_BASE(D_00000000) is the view.
+ * agent-c run 495. */
+typedef struct SndCueQueue {
+    char pad00[0x40];
+    s32 unk40;              /* 0x40..0x4C, 0x5C: cleared by snd_InitCueQueues */
+    s32 unk44;
+    s32 unk48;
+    s32 unk4C;
+    char pad50[0x5C - 0x50];
+    s32 unk5C;
+    s16 unk60;              /* snd_SetPlayer2ChannelIO_3190C reads +0x60 / +0x63 */
+    s16 cue;                /* 0x62: queue index (snd_InitCueQueues), then the requested cue
+                             * (snd_SoundObjRequestCue); requests go to func 0x45DC0(queue, 1, id, 0x7F) */
+} SndCueQueue;              /* 0x64 */
+
+typedef struct SndCueQueues {
+    /* channel 8 (the music cue channel): */
+    /* 0x00 */ s32 mode;          /* snd_SetChannel8Mode; 4 = cues ignored, 2 = remaps cue ids 0/1/3..5 */
+    /* 0x04 */ s32 cue;           /* current cue: sent as audio cmd 0x06000800 (channel IO), (s8) */
+    /* 0x08 */ s32 fadeInFrames;  /* count down while level ramps up by upStep */
+    /* 0x0C */ s32 holdFrames;    /* then count down */
+    /* 0x10 */ f32 level;         /* sent as audio cmd 0x01000800 (channel volume) every tick */
+    /* 0x14 */ f32 floor;         /* fade-down floor */
+    /* 0x18 */ f32 upStep;        /* (1 - level) / fadeInFrames */
+    /* 0x1C */ f32 downStep;
+    /* 0x20 */ s32 timer[3];      /* snd_UpdateTimers */
+    char pad2C[0x30 - 0x2C];
+    /* 0x30 */ SndCueQueue queue[3]; /* snd_RequestCue(i) = queue[i]; snd_RequestCue2 = queue[2] */
+    char pad15C[0x160 - 0x15C];
+} SndCueQueues;
+AUDIO_ASSERT_MEMBER(SndCueQueue, cue, 0x62);
+AUDIO_ASSERT_MEMBER(SndCueQueues, downStep, 0x1C);
+AUDIO_ASSERT_MEMBER(SndCueQueues, queue, 0x30);
+typedef char audio_sndcuequeues_size_assert[sizeof(SndCueQueues) == 0x160 ? 1 : -1];
+#define SND_CUEQ(sym)          (*(SndCueQueues *)&(sym))
+#define SND_CUEQ_AT_BASE(sym)  (*(SndCueQueues *)((char *)&(sym) + 0x338))
 
 #endif /* AUDIO_H */

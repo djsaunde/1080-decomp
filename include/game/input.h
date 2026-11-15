@@ -72,9 +72,11 @@ typedef struct InputMgr {
     /* 0x6C */ s32 demoIndex;      /* which attract demo n64proc / titproc runs next */
     char pad70[0xE0 - 0x70];
     /* 0xE0 */ InputPad *pads[8];  /* input_addPad_00011C70 appends; numPads counts */
-    /* 0x100 */ void *replayInputs[8]; /* replay_addInput appends; numReplayInputs counts */
+    /* 0x100 */ InputPad *racePads[8]; /* the race's pads (replay_addInput, every game_setup*
+                                    * builder): input_pauseAll / unpauseAll call pad_setPause on each;
+                                    * pads[] above are the controllers (GameFlow_addPads) */
     /* 0x120 */ s32 numPads;
-    /* 0x124 */ s32 numReplayInputs;
+    /* 0x124 */ s32 numRacePads;
     /* 0x128 */ s32 activePad;     /* -1 = any pad; input_setActivePad / input_clearActivePad */
     char pad12C[0x134 - 0x12C];
     /* 0x134 */ char *game;        /* boot Bss 0x22C: the game world object. +0xC4 / +0xCC the
@@ -109,7 +111,7 @@ typedef struct InputMgr {
     /* 0x182 */ unsigned char ghostFlags;     /* states, Backup_ghostGetRider / BoardFlag / Board); */
     /* 0x183 */ unsigned char ghostBoard;     /* game_setupVsGhost builds the ghost rider from them */
     /* 0x184 */ s32 unk184;        /* replay_beginRecord* / replay_saveGhost clear it */
-    char pad188[0x18C - 0x188];
+    /* 0x188 */ s32 racePadsPaused; /* input_pauseAll sets it (returns the old value), unpauseAll clears */
     /* 0x18C */ s32 locked;        /* nonzero: every input_check* returns 0 */
     /* 0x190 */ void *fader;       /* the shared screen Fader (Fader_start / Fader_isDone /
                                     * Fader_checkDone); boot Bss 0x288 */
@@ -137,7 +139,8 @@ typedef char InputMgr_ghost_check[(int)&((InputMgr *)0)->ghostBoard == 0x183 ? 1
 typedef char InputMgr_course_check[(int)&((InputMgr *)0)->course == 0x64 ? 1 : -1];
 typedef char InputMgr_demoIndex_check[(int)&((InputMgr *)0)->demoIndex == 0x6C ? 1 : -1];
 typedef char InputMgr_pads_check[(int)&((InputMgr *)0)->pads == 0xE0 ? 1 : -1];
-typedef char InputMgr_replayInputs_check[(int)&((InputMgr *)0)->replayInputs == 0x100 ? 1 : -1];
+typedef char InputMgr_racePads_check[(int)&((InputMgr *)0)->racePads == 0x100 ? 1 : -1];
+typedef char InputMgr_racePadsPaused_check[(int)&((InputMgr *)0)->racePadsPaused == 0x188 ? 1 : -1];
 typedef char InputMgr_numPads_check[(int)&((InputMgr *)0)->numPads == 0x120 ? 1 : -1];
 typedef char InputMgr_activePad_check[(int)&((InputMgr *)0)->activePad == 0x128 ? 1 : -1];
 typedef char InputMgr_game_check[(int)&((InputMgr *)0)->game == 0x134 ? 1 : -1];

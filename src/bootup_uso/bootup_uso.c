@@ -360,7 +360,7 @@ void SndHandle_setScaleIdx31(SndHandle *h) {
 }
 
 void SndHandle_triggerEvent0_000008F4(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->eventArg);
+    int ret = func_00000000(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 0, a1_orig);
@@ -368,7 +368,7 @@ void SndHandle_triggerEvent0_000008F4(SndHandle *h, int a1_orig) {
 }
 
 void SndHandle_triggerEvent3_00000940(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->eventArg);
+    int ret = func_00000000(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 3, a1_orig);
@@ -376,7 +376,7 @@ void SndHandle_triggerEvent3_00000940(SndHandle *h, int a1_orig) {
 }
 
 void SndHandle_triggerEvent1_0000098C(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->eventArg);
+    int ret = func_00000000(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 1, a1_orig);
@@ -384,7 +384,7 @@ void SndHandle_triggerEvent1_0000098C(SndHandle *h, int a1_orig) {
 }
 
 void SndHandle_triggerEvent2_000009D8(SndHandle *h, int a1_orig) {
-    int ret = func_00000000(h, h->eventArg);
+    int ret = func_00000000(h, h->contactSurface);
     SoundObj *node = h->obj;
     if (node != 0) {
         func_00000000(node, ret, 2, a1_orig);
@@ -413,7 +413,7 @@ void SndHandle_setFlag1A(SndHandle *h) {
 }
 
 void SndHandle_setEventArg(SndHandle *h, int a1) {
-    h->eventArg = a1;
+    h->contactSurface = a1;
 }
 
 /* NATURAL CEILING: 97.83% NM (register-pick cap). IDO emits

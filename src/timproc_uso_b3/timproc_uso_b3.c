@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/race.h"
+#include "gdl/gl_data.h"
 
 /* P0 AUDIT WARNING 2026-06-10: the decompressed block3 build differs
  * from ROM (assets/timproc_uso_block_3.bin) by 963 words in
@@ -1617,6 +1618,16 @@ void TrkMenu_draw_00002A44(char *arg0) {
     }
 }
 
+/* bootup imports of the TrkMenu_handleInput_00002C98 below, read from the module's Sym table
+ * (kind-1 import entries: exporter module 0 = bootup, word3 top half = bootup Sym index;
+ * agent-c run 495). They stay jal 0 / lui 0 placeholders in this unlinked Yay0 block.
+ * This is the post-race save-ghost prompt: the stick (0x10001 / 0x4002) moves the cursor
+ * obj+0x58 between 0 (save) and 1 (skip); confirm (0x40100) on row 0 saves the recorded run
+ * as the SRAM ghost (replay_saveGhost, BACKUP_MODE_TRICK); cancel (0x200) skips. */
+extern int trk_imp_input_checkPressed();
+extern int trk_imp_snd_postEvent();
+extern int trk_imp_replay_saveGhost();
+
 /* 4-stage state dispatcher on obj->0x58: each stage queries gl_func(&D, flag);
  * on hit, conditionally toggles obj->0x58 or fires a virtual method
  * ((*vt->0x5C)((short)vt->0x58 + o48)) on the obj->0x48 sub-object. The empty
@@ -1628,18 +1639,18 @@ void TrkMenu_handleInput_00002C98(char *obj) {
     char *o48;
     char *vt;
 
-    if (gl_func_00000000((char *)&D_00000000, 0x10001) != 0 && *(int *)(obj + 0x58) != 0) {
-        gl_func_00000000(1);
+    if (trk_imp_input_checkPressed(&gInputMgr, 0x10001) != 0 && *(int *)(obj + 0x58) != 0) {
+        trk_imp_snd_postEvent(1);
         *(int *)(obj + 0x58) = 0;
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x4002) != 0 && *(int *)(obj + 0x58) == 0) {
-        gl_func_00000000(1);
+    if (trk_imp_input_checkPressed(&gInputMgr, 0x4002) != 0 && *(int *)(obj + 0x58) == 0) {
+        trk_imp_snd_postEvent(1);
         *(int *)(obj + 0x58) = 1;
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
+    if (trk_imp_input_checkPressed(&gInputMgr, 0x40100) != 0) {
         if (*(int *)(obj + 0x58) == 0) {
-            gl_func_00000000(5);
-            gl_func_00000000((char *)&D_00000000, 2);
+            trk_imp_snd_postEvent(5);
+            trk_imp_replay_saveGhost(&gInputMgr, BACKUP_MODE_TRICK);
             *(int *)((char *)RACEPROC(obj)->unk048 + 0xD8) = 0;
             if (1) {}
             o48 = (char *)RACEPROC(obj)->unk048;
@@ -1647,7 +1658,7 @@ void TrkMenu_handleInput_00002C98(char *obj) {
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         } else {
-            gl_func_00000000(0x802);
+            trk_imp_snd_postEvent(0x802);
             if (1) {}
             o48 = (char *)RACEPROC(obj)->unk048;
             *(int *)(obj + 0x50) = 0;
@@ -1655,8 +1666,8 @@ void TrkMenu_handleInput_00002C98(char *obj) {
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         }
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x200) != 0) {
-        gl_func_00000000(0x802);
+    if (trk_imp_input_checkPressed(&gInputMgr, 0x200) != 0) {
+        trk_imp_snd_postEvent(0x802);
         if (1) {}
         o48 = (char *)RACEPROC(obj)->unk048;
         *(int *)(obj + 0x50) = 0;

@@ -109,7 +109,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         if (gsub != 0) {
             timproc_uso_b5_func_0546DC(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
             t = *(f32 *)(&import_80807FB8 + 1020);
-            FW(gsub, 0x28) = (s32) &import_80087FB8[0]; *(s32 *)(gsub + 0x120) = 1; /* run 216: one line = D884's store order (0x120 first) */
+            FW(gsub, 0x28) = (s32) &import_80087FB8[0]; *(s32 *)(gsub + 0x120) = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
             *(f32 *)(gsub + 0x108) = t;
             *(f32 *)(gsub + 0x10C) = t;
             *(f32 *)(gsub + 0x110) = t;

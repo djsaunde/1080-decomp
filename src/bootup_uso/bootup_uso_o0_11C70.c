@@ -28,12 +28,12 @@ void input_addPad_00011C70(InputMgr *a0, InputPad *a1) {
  * (count) + 0x100 (4-byte entries). Verified byte-exact at -O0 with the
  * same `register s32 idx; register s32 *p = a0;` decl-order recipe
  * (2026-05-07). */
-void replay_addInput(InputMgr *a0, void *a1) {
+void replay_addInput(InputMgr *a0, InputPad *a1) {
     register s32 idx;
     register InputMgr *p = a0;
-    idx = p->numReplayInputs;
-    p->numReplayInputs = idx + 1;
-    a0->replayInputs[idx] = a1;
+    idx = p->numRacePads;
+    p->numRacePads = idx + 1;
+    a0->racePads[idx] = a1;
 }
 
 /* 26-insn -O0 if-else flag-setter. Sets a0->0x188 to 0 if a1 != 0 else 1.

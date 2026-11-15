@@ -14105,8 +14105,8 @@ void snd_SetPlayer0Channel8IO1_30564(void) {
  * arms each emit a `bnezl ...,end` likely-branch that hoists the epilogue's
  * `lw ra` into the delay slot. Byte-exact (16/16 words, reloc-filtered). */
 void snd_TriggerChannel8CueIfIdle(void) {
-    if (*(int *)((char *)&D_00000000 + 8) != 0) goto end;
-    if (*(int *)((char *)&D_00000000 + 0xC) != 0) goto end;
+    if (SND_CUEQ(gSndCueQueues).fadeInFrames != 0) goto end;
+    if (SND_CUEQ(gSndCueQueues).holdFrames != 0) goto end;
     gl_func_00000000();
 end:
     return;
@@ -14192,14 +14192,14 @@ void snd_SetPlayer0Channel8Pan_305CC(int a0) {
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 void snd_TriggerChannel8Cue(s32 arg0, s32 arg1, s32 arg2) {
-    char *g = (char *)&D_00000000;
+    SndCueQueues *g = &SND_CUEQ(gSndCueQueues);
     f32 temp_f8;
     s32 temp_v0;
     s32 var_v1;
 
-    var_v1 = *(s32 *)(g + 8);
-    if (*(s32 *)(g + 0) != 4) {
-        temp_v0 = *(s32 *)(g + 0);
+    var_v1 = g->fadeInFrames;
+    if (g->mode != 4) {
+        temp_v0 = g->mode;
         if (temp_v0 == 2) {
             if (arg2 == 0) {
                 arg2 = 8;
@@ -14218,29 +14218,29 @@ void snd_TriggerChannel8Cue(s32 arg0, s32 arg1, s32 arg2) {
             }
         }
         if ((var_v1 != 0) && (var_v1 < arg0)) {
-            if (arg2 == *(s32 *)(g + 4)) {
-                *(s32 *)(g + 0xC) = arg1;
+            if (arg2 == g->cue) {
+                g->holdFrames = arg1;
             } else {
-                temp_f8 = *(f32 *)(g + 0x10) / 1.5f;
+                temp_f8 = g->level / 1.5f;
                 var_v1 = 0;
-                *(f32 *)(g + 0x10) = temp_f8;
-                *(s32 *)(g + 8) = arg0;
+                g->level = temp_f8;
+                g->fadeInFrames = arg0;
                 if (arg0 != 0) {
                     f32 num = 1.0f - temp_f8;
-                    *(f32 *)(g + 0x18) = num / (f32) *(s32 *)(g + 8);
+                    g->upStep = num / (f32) g->fadeInFrames;
                 }
-                *(s32 *)(g + 0xC) = arg1;
+                g->holdFrames = arg1;
             }
         } else {
-            *(s32 *)(g + 8) = arg0;
+            g->fadeInFrames = arg0;
             if (arg0 != 0) {
-                f32 num = 1.0f - *(f32 *)(g + 0x10);
-                *(f32 *)(g + 0x18) = num / (f32) *(s32 *)(g + 8);
+                f32 num = 1.0f - g->level;
+                g->upStep = num / (f32) g->fadeInFrames;
             }
-            *(s32 *)(g + 0xC) = arg1;
+            g->holdFrames = arg1;
         }
-        if ((temp_v0 != 0) && ((arg2 != *(s32 *)(g + 4)) || (var_v1 == 0)) && (*(s32 *)(g + 8) != 0)) {
-            *(s32 *)(g + 4) = arg2;
+        if ((temp_v0 != 0) && ((arg2 != g->cue) || (var_v1 == 0)) && (g->fadeInFrames != 0)) {
+            g->cue = arg2;
             gl_func_00000000(0x06000800, (s8) arg2, arg2, 4);
         }
     }
@@ -15048,8 +15048,8 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_SoundObjRequestCue);
 extern int gl_ref_00045DC0();
 extern int gl_ref_00045DF0();
 void snd_RequestCue2Prio(int a0) {
-    gl_ref_00045DC0((char *)&D_00000000 + 0x430, 1, a0 + 0x17F, 0x7F);
-    gl_ref_00045DF0((char *)&D_00000000 + 0x430);
+    gl_ref_00045DC0(&SND_CUEQ_AT_BASE(D_00000000).queue[2], 1, a0 + 0x17F, 0x7F);
+    gl_ref_00045DF0(&SND_CUEQ_AT_BASE(D_00000000).queue[2]);
 }
 
 // snd_RequestCue2 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
@@ -15095,8 +15095,8 @@ void snd_RequestCue2Prio(int a0) {
 extern int gl_ref_00045DC0();
 extern int gl_ref_00045DF0();
 void snd_RequestCue2(int arg) {
-    gl_ref_00045DC0((char *)&D_00000000 + 0x430, 0, arg + 0x17F, 0x7F);
-    gl_ref_00045DF0((char *)&D_00000000 + 0x430);
+    gl_ref_00045DC0(&SND_CUEQ_AT_BASE(D_00000000).queue[2], 0, arg + 0x17F, 0x7F);
+    gl_ref_00045DF0(&SND_CUEQ_AT_BASE(D_00000000).queue[2]);
 }
 
 // Read u16 v = D[a2] from the segment-base table, store args to a0->0x54/0x58,
@@ -15327,7 +15327,7 @@ int snd_SetPlayer2ChannelIO_3190C(void) {
                              *(signed char *)((char *)&D_00000000 + 0x42F));
         }
     }
-    if (gl_ref_00045F04((char *)&D_00000000 + 0x430)) {
+    if (gl_ref_00045F04(&SND_CUEQ_AT_BASE(D_00000000).queue[2])) {
         int s = *(unsigned short *)((char *)&D_00000000 + 0x490);
         if (s == 0) {
             gl_func_00000000(0x06020204, -1);

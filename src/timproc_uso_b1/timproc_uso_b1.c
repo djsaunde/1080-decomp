@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/race.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -1499,6 +1500,16 @@ void TimMenu_draw_00002838(char *arg0) {
     }
 }
 
+/* bootup imports of the TimMenu_handleInput_00002A8C below, read from the module's Sym table
+ * (kind-1 import entries: exporter module 0 = bootup, word3 top half = bootup Sym index;
+ * agent-c run 495). They stay jal 0 / lui 0 placeholders in this unlinked Yay0 block.
+ * This is the post-race save-ghost prompt: the stick (0x10001 / 0x4002) moves the cursor
+ * obj+0x58 between 0 (save) and 1 (skip); confirm (0x40100) on row 0 saves the recorded run
+ * as the SRAM ghost (replay_saveGhost, BACKUP_MODE_TIME); cancel (0x200) skips. */
+extern int tim_imp_input_checkPressed();
+extern int tim_imp_snd_postEvent();
+extern int tim_imp_replay_saveGhost();
+
 /* TimMenu_handleInput_00002A8C — sequence of gl_func_00000000(&D, mask)
  * gates toggling s0->0x58, then a recurring vtable-dispatch tail:
  *   obj=(int*)s0->0x48; s0->0x50=0; vt=(int*)obj->0x28;
@@ -1520,18 +1531,18 @@ void TimMenu_handleInput_00002A8C(char *obj) {
     char *o48;
     char *vt;
 
-    if (gl_func_00000000((char *)&D_00000000, 0x10001) != 0 && *(int *)(obj + 0x58) != 0) {
-        gl_func_00000000(1);
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x10001) != 0 && *(int *)(obj + 0x58) != 0) {
+        tim_imp_snd_postEvent(1);
         *(int *)(obj + 0x58) = 0;
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x4002) != 0 && *(int *)(obj + 0x58) == 0) {
-        gl_func_00000000(1);
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x4002) != 0 && *(int *)(obj + 0x58) == 0) {
+        tim_imp_snd_postEvent(1);
         *(int *)(obj + 0x58) = 1;
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x40100) != 0) {
         if (*(int *)(obj + 0x58) == 0) {
-            gl_func_00000000(5);
-            gl_func_00000000((char *)&D_00000000, 1);
+            tim_imp_snd_postEvent(5);
+            tim_imp_replay_saveGhost(&gInputMgr, BACKUP_MODE_TIME);
             *(int *)((char *)RACEPROC(obj)->unk048 + 0xD8) = 0;
             if (1) {}
             o48 = (char *)RACEPROC(obj)->unk048;
@@ -1539,7 +1550,7 @@ void TimMenu_handleInput_00002A8C(char *obj) {
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         } else {
-            gl_func_00000000(0x802);
+            tim_imp_snd_postEvent(0x802);
             if (1) {}
             o48 = (char *)RACEPROC(obj)->unk048;
             *(int *)(obj + 0x50) = 0;
@@ -1547,8 +1558,8 @@ void TimMenu_handleInput_00002A8C(char *obj) {
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         }
     }
-    if (gl_func_00000000((char *)&D_00000000, 0x200) != 0) {
-        gl_func_00000000(0x802);
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x200) != 0) {
+        tim_imp_snd_postEvent(0x802);
         if (1) {}
         o48 = (char *)RACEPROC(obj)->unk048;
         *(int *)(obj + 0x50) = 0;

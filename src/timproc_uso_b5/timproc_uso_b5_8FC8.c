@@ -318,7 +318,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 timproc_uso_b5_func_0546DC(w, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
                 FP(w, 0x28) = timproc_uso_b5_D_807FED9C + 0x4AC; FP(w, 0xC) = timproc_uso_b5_D_807FED9C + 0x152C;
                 { _wp = ALLOC(0x16C);
-                  if (_wp) { timproc_uso_b5_func_0546DC(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); FP(_wp, 0x28) = import_80087FB8;
+                  if (_wp) { timproc_uso_b5_func_0546DC(_wp, timproc_uso_b5_D_807FEDA4 + 0x1534, 0.0f, 0.0f, 0.0f); FP(_wp, 0x28) = import_80087FB8; /* vptr: bootup LightTarget_vtbl (gl_data.h) */
                     FF(_wp, 0x108) = DF_2B0; FF(_wp, 0x10C) = DF_2B4; FF(_wp, 0x110) = FF(timproc_uso_b5_D_807FEE6C, 0x2B8); FW(_wp, 0x120) = 1; FF(_wp, 0x124) = 1.0f; }
                   FP(w, 0x108) = _wp; }
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
