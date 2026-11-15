@@ -210,7 +210,7 @@ typedef struct SnowBoarder {
     char pad83C[0x840 - 0x83C];
     struct RiderAnim *anim; /* 0x840: the RiderAnim (game.uso C48C) built by the ctor; the SnowAI run-out steps and
                              * SnowBoarder_handleMsg's ending ("en1" / "en2") call its state methods */
-    char *unk844;           /* 0x844: registry slot 28, MNode "top" (the model root); its +0x30 float is negated on
+    char *top;              /* 0x844: registry slot 28, MNode "top" (the model root); its +0x30 float is negated on
                              * a mirror flip */
     s32 controller;         /* 0x848: ctor arg 1 (also passed to the 0x808 member). 0 = pad rider, 2 = CPU rider
                              * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
@@ -222,7 +222,7 @@ typedef struct SnowBoarder {
                              * and 8 only; from the boarder USO, mod14..17) */
     char *bodySkin;         /* 0x85C: registry slot 30: the per-character SkinShape (mask bit 1) */
     char *unk860;           /* 0x860: registry slot 33: a bootup-data SkinShape (Data 0xC104, mask bit 2) */
-    char *unk864;           /* 0x864: registry slot 32: the unnamed MNode under "board_a" that holds the board
+    char *boardNode;        /* 0x864: registry slot 32: the unnamed MNode under "board_a" that holds the board
                              * shape (one of the nine board USOs by board index); may be NULL; transform at +0x30 */
     char pad868[0x874 - 0x868];
     char *camSource;        /* 0x874: the rider's HEAD node: slot 22 of the shape-file node registry, the unnamed
@@ -370,10 +370,10 @@ SNOWB_ASSERT_OFFSET(anim, 0x840);
 SNOWB_ASSERT_OFFSET(unk8B8, 0x8B8);
 SNOWB_ASSERT_OFFSET(camera, 0x8DC);
 SNOWB_ASSERT_OFFSET(sound, 0x808);
-SNOWB_ASSERT_OFFSET(unk844, 0x844);
+SNOWB_ASSERT_OFFSET(top, 0x844);
 SNOWB_ASSERT_OFFSET(controller, 0x848);
 SNOWB_ASSERT_OFFSET(light, 0x850);
-SNOWB_ASSERT_OFFSET(unk864, 0x864);
+SNOWB_ASSERT_OFFSET(boardNode, 0x864);
 SNOWB_ASSERT_OFFSET(camSource, 0x874);
 SNOWB_ASSERT_OFFSET(unk854, 0x854);
 SNOWB_ASSERT_OFFSET(unk860, 0x860);

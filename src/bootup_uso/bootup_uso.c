@@ -6427,24 +6427,24 @@ void SnowBoarder_mirrorFlip_0000E124(SnowBoarder *sb) {
     up[1] = 1.0f;
     up[2] = 0.0f;
     if (sb->flags & SNOWB_FLAG_MIRROR) {
-        p = (float *)(sb->unk844 + 0x30);
+        p = (float *)(sb->top + 0x30);
         *p = *p * -1.0f;
-        if (sb->unk864 != 0) {
-            p = (float *)(sb->unk864 + 0x30);
+        if (sb->boardNode != 0) {
+            p = (float *)(sb->boardNode + 0x30);
             func_00000000(p);
-            p = (float *)(sb->unk864 + 0x30);
+            p = (float *)(sb->boardNode + 0x30);
             r[0] = -1.0f;
             r[2] = 1.0f;
             r[1] = 1.0f;
             func_00000000(p, r);
         }
     } else {
-        p = (float *)(sb->unk844 + 0x30);
+        p = (float *)(sb->top + 0x30);
         *p = *p * -1.0f;
-        if (sb->unk864 != 0) { p = (float *)(sb->unk864 + 0x30); func_00000000(p); }
+        if (sb->boardNode != 0) { p = (float *)(sb->boardNode + 0x30); func_00000000(p); }
     }
     if (sb->flags & SNOWB_FLAG_20) {
-        if (sb->unk864 != 0) func_00000000_e124_r(sb->unk864 + 0x30, up, 180.0f);
+        if (sb->boardNode != 0) func_00000000_e124_r(sb->boardNode + 0x30, up, 180.0f);
     }
 }
 
