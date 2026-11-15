@@ -1140,9 +1140,8 @@ void timproc_uso_b1_func_00001FA0(void) {
 
 /* EXACT 2026-05-03. Mirror of timproc_uso_b3_func_000021F4. Same recipe:
  * 3 unique externs (D_b1_1FE4_a/b/c) all mapped to 0x0 + offset cast in C.
- * (Its trailing stolen-prologue orphan at 0x2028 is now the standalone
- * 2-word GLOBAL_ASM block below -- the old SUFFIX_BYTES=8 absorption was
- * removed with the instruction-forcing purge 2026-05-23.)
+ * (The 2-word "orphan" after it at 0x2028 is the next function's own
+ * hoisted first load; it is now part of timproc_uso_b1_func_00002028.)
  * Per feedback_unique_extern_with_offset_cast_breaks_cse.md. */
 extern char D_b1_1FE4_a;
 extern char D_b1_1FE4_b;
@@ -1153,24 +1152,21 @@ void timproc_uso_b1_func_00001FE4(void) {
     gl_func_00000000(*(int*)((char*)&D_b1_1FE4_c + 0x20C), -1, 0);
 }
 
-/* vram 0x2028: 2-word stolen-prologue orphan (lui $a0,%hi; lw $a0,0x148($a0)
- * ahead of func_00002030's prologue). Standalone 2-word GLOBAL_ASM emits
- * exactly; replaces the banned SUFFIX_BYTES absorption (removed 2026-05-23)
- * noted in the comment above. Both neighbors stay matched C. */
-#pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b1/timproc_uso_b1/timproc_uso_b1_orphan_00002028.s")
-
-/* Dual-branch state setter (twin of timproc_uso_b3_func_00002240).
- * MATCHED 2026-06-10 (31/31): the old "register-allocator cap" had two
- * decode errors -- the first call's arg is the PARAMETER + 4 (not a
- * global), and both arms call through the SAME +0x208 target. Load-
+/* Dual-branch state setter (twin of timproc_uso_b3_func_00002238).
+ * Starts at 0x2028 (was split as a 2-word orphan + func_00002030 taking
+ * a0 as a parameter): the lui/lw of D+0x148 is the first call's argument,
+ * and IDO hoists that load above the addiu sp prologue. Passing the load
+ * straight into the call (no named local) keeps it in $a0.
+ * MATCHED 2026-06-10 (31/31) as 2030: the old "register-allocator cap" had
+ * two decode errors -- the first call's arg is the pointer + 4, and both arms call through the SAME +0x208 target. Load-
  * bearing shapes: volatile pointer-fetch global for the per-store
  * reload of cur (+0x20C), and the if(1){} BB-split inside each arm
  * AFTER the jal (the documented v0/v1 lever, 4-for-4) which flips the
  * address temp into $v0 / the li-1 into $v1. */
 extern int D_call_b1_2030_a;
 extern int * volatile D_cur_b1_2030;
-void timproc_uso_b1_func_00002030(char *a0) {
-    if (gl_func_00000000(a0 + 4) != 0) {
+void timproc_uso_b1_func_00002028(void) {
+    if (gl_func_00000000(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
         gl_func_00000000(D_call_b1_2030_a);
         if (1) {}
         D_cur_b1_2030[0x14] = 2;
