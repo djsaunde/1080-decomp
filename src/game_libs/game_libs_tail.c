@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "gdl/hud.h"
+#include "gdl/gadget.h"
 #include "gdl/backup.h"
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
@@ -2652,15 +2653,15 @@ void RaceTracker_onCheckpoint(RaceTracker *a0, int *a1) {
 
     if (a0->hudFlags & 8) {
         obj = (int*)gl_func_00000000(a0->pointsList, a1[0x88 / 4], 0, 1);
-        *(float*)((char*)obj + 0xAC) = 0.0f;
+        POPUP(obj)->unkAC = 0.0f;
         gl_proto_D318(obj, 0xDC, 0x78, 1.0f, 1.0f);
         denom = 255.0f;
-        *(float*)((char*)obj + 0xA8) = 0.0f;
-        *(float*)((char*)obj + 0xA4) = 0.0f;
-        *(float*)((char*)obj + 0x64) = 235.0f / denom;
-        *(float*)((char*)obj + 0x68) = 80.0f / denom;
-        *(float*)((char*)obj + 0x6C) = 80.0f / denom;
-        *(float*)((char*)obj + 0x70) = (float)0 / denom;
+        POPUP(obj)->velY = 0.0f;
+        POPUP(obj)->velX = 0.0f;
+        POPUP(obj)->colour[0] = 235.0f / denom;
+        POPUP(obj)->colour[1] = 80.0f / denom;
+        POPUP(obj)->colour[2] = 80.0f / denom;
+        POPUP(obj)->colour[3] = (float)0 / denom;
         gl_func_00000000(0x17, a0->score / 1000);
         a0->score += a1[0x88 / 4] * 1000;
     }
@@ -2766,23 +2767,23 @@ void RaceTracker_onGateCleared(RaceTracker *o, int a1) {
     r = 100.0f;
     g = 235.0f;
     b = 250.0f;
-    *(float *)((char *)obj + 0x64) = r / 255.0f;
-    *(float *)((char *)obj + 0x68) = g / 255.0f;
-    *(float *)((char *)obj + 0x6C) = b / 255.0f;
+    POPUP(obj)->colour[0] = r / 255.0f;
+    POPUP(obj)->colour[1] = g / 255.0f;
+    POPUP(obj)->colour[2] = b / 255.0f;
     b = 255.0;
-    *(float *)((char *)obj + 0x70) = b / 255.0f;
-    *(int *)((char *)obj + 0xA0) = o->pointsList + 0x150;
-    *(float *)((char *)obj + 0xAC) = 0.0f;
+    POPUP(obj)->colour[3] = b / 255.0f;
+    POPUP(obj)->font = o->pointsList + 0x150;
+    POPUP(obj)->unkAC = 0.0f;
     gl_func_00000000_d548f(obj, 100, 0x86, 1.0f, 1.0f);
-    *(float *)((char *)obj + 0xA8) = 0.0f;
-    *(float *)((char *)obj + 0xA4) = 0.0f;
+    POPUP(obj)->velY = 0.0f;
+    POPUP(obj)->velX = 0.0f;
     obj = (int *)gl_func_00000000(o->pointsList, 2, 0, 1);
     r = 80.0f;
     b = 0.0f;
-    *(float *)((char *)obj + 0x64) = g / 255.0f;
-    *(float *)((char *)obj + 0x68) = r / 255.0f;
-    *(float *)((char *)obj + 0x6C) = r / 255.0f;
-    *(float *)((char *)obj + 0x70) = b / 255.0f;
+    POPUP(obj)->colour[0] = g / 255.0f;
+    POPUP(obj)->colour[1] = r / 255.0f;
+    POPUP(obj)->colour[2] = r / 255.0f;
+    POPUP(obj)->colour[3] = b / 255.0f;
 }
 
 extern int gl_func_00000000();
@@ -2819,17 +2820,17 @@ void RaceTracker_popComboBonus(RaceTracker *o, int a1) {
     g = 219.0f;
     b = 68.0f;
     a = 255.0;
-    *(float *)((char *)obj + 0x44) += 70.0f;
-    *(float *)((char *)obj + 0x5C) = 70.0f;
-    *(float *)((char *)obj + 0xA4) = 0.0f;
-    *(float *)((char *)obj + 0xA8) = 0.0f;
-    *(float *)((char *)obj + 0xAC) = 0.0f;
-    *(float *)((char *)obj + 0x64) = r / 255.0f;
-    *(float *)((char *)obj + 0x68) = g / 255.0f;
-    *(float *)((char *)obj + 0x6C) = b / 255.0f;
-    *(float *)((char *)obj + 0x70) = a / 255.0f;
-    *(int *)((char *)obj + 0xA0) = o->pointsList + 0x138;
-    *(int *)((char *)obj + 0x9C) = 30;
+    POPUP(obj)->x += 70.0f;
+    POPUP(obj)->y = 70.0f;
+    POPUP(obj)->velX = 0.0f;
+    POPUP(obj)->velY = 0.0f;
+    POPUP(obj)->unkAC = 0.0f;
+    POPUP(obj)->colour[0] = r / 255.0f;
+    POPUP(obj)->colour[1] = g / 255.0f;
+    POPUP(obj)->colour[2] = b / 255.0f;
+    POPUP(obj)->colour[3] = a / 255.0f;
+    POPUP(obj)->font = o->pointsList + 0x138;
+    POPUP(obj)->timer = 30;
 }
 
 /* RaceTracker_popTrickPointsCombo: gated initializer. Guarded by arg0->0x6C != 0 && (arg0->0xB4
@@ -2860,18 +2861,18 @@ void RaceTracker_popTrickPointsCombo(RaceTracker *arg0, int arg1, int arg2) {
         gl_func_00000000(0x27, arg1 + arg2);
         v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 1);
         denom = 255.0f;
-        *(float *)(v0 + 0x5C) = 70.0f;
-        *(float *)(v0 + 0xA4) = 0.0f;
-        *(float *)(v0 + 0xA8) = 0.0f;
-        *(float *)(v0 + 0xAC) = 0.0f;
-        *(float *)(v0 + 0x64) = 250.0f / denom;
-        *(float *)(v0 + 0x68) = 235.0f / denom;
-        *(float *)(v0 + 0x6C) = 100.0f / denom;
-        *(float *)(v0 + 0x70) = (float)255 / denom;
-        *(int *)(v0 + 0xA0) = arg0->pointsList + 0x108;
-        *(int *)(v0 + 0x9C) = 14;
+        POPUP(v0)->y = 70.0f;
+        POPUP(v0)->velX = 0.0f;
+        POPUP(v0)->velY = 0.0f;
+        POPUP(v0)->unkAC = 0.0f;
+        POPUP(v0)->colour[0] = 250.0f / denom;
+        POPUP(v0)->colour[1] = 235.0f / denom;
+        POPUP(v0)->colour[2] = 100.0f / denom;
+        POPUP(v0)->colour[3] = (float)255 / denom;
+        POPUP(v0)->font = arg0->pointsList + 0x108;
+        POPUP(v0)->timer = 14;
         gl_proto_d7b8(v0, 1.0f, 1.0f);
-        *(int *)(v0 + 0x78) = 255;
+        POPUP(v0)->alpha = 255;
         a3 = arg0->pointsList;
     }
     if ((a3 != 0) && (arg0->hudFlags & 1)) {
@@ -2900,11 +2901,11 @@ void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
         gl_func_00000000(0x22);
         v0 = (char *)gl_func_00000000(arg0->pointsList, arg1, 0, 0);
         denom = 255.0f;
-        *(float *)(v0 + 0x5C) = 70.0f;
-        *(float *)(v0 + 0x64) = 250.0f / denom;
-        *(float *)(v0 + 0x68) = 235.0f / denom;
-        *(float *)(v0 + 0x6C) = 100.0f / denom;
-        *(float *)(v0 + 0x70) = (float)255 / denom;
+        POPUP(v0)->y = 70.0f;
+        POPUP(v0)->colour[0] = 250.0f / denom;
+        POPUP(v0)->colour[1] = 235.0f / denom;
+        POPUP(v0)->colour[2] = 100.0f / denom;
+        POPUP(v0)->colour[3] = (float)255 / denom;
         a2 = arg0->pointsList;
     }
     if ((a2 != 0) && (arg0->hudFlags & 1)) {
@@ -2942,20 +2943,20 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
     sub = (int *)a0->pointsList;
     if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&D_00000000 + 0x64) != 0)) {
         v0 = (int *)gl_func_00000000(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
-        v0[0x9C / 4] = 230;
-        v0[0x7C / 4] = 0;
-        *(float *)((char *)v0 + 0xAC) = 0.0f;
+        POPUP(v0)->timer = 230;
+        POPUP(v0)->unk7C = 0;
+        POPUP(v0)->unkAC = 0.0f;
         gl_func_00000000_d9e4b(v0, 160, 140, 1.0f, 1.0f);
-        *(float *)((char *)v0 + 0xA8) = 0.0f;
-        *(float *)((char *)v0 + 0xA4) = 0.0f;
+        POPUP(v0)->velY = 0.0f;
+        POPUP(v0)->velX = 0.0f;
         num100 = 100.0f;
         num235 = 235.0f;
         num255 = (float)255;
-        *(float *)((char *)v0 + 0x64) = num100 / 255.0f;
-        *(float *)((char *)v0 + 0x6C) = num100 / 255.0f;
-        *(float *)((char *)v0 + 0x68) = num235 / 255.0f;
-        *(float *)((char *)v0 + 0x70) = num255 / 255.0f;
-        v0[0xA0 / 4] = (int)((char *)a0->pointsList + 0x120);
+        POPUP(v0)->colour[0] = num100 / 255.0f;
+        POPUP(v0)->colour[2] = num100 / 255.0f;
+        POPUP(v0)->colour[1] = num235 / 255.0f;
+        POPUP(v0)->colour[3] = num255 / 255.0f;
+        POPUP(v0)->font = (int)((char *)a0->pointsList + 0x120);
     }
     sub = (int *)a0->pointsList;
     if (sub != 0) {

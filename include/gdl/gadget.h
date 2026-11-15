@@ -68,4 +68,40 @@ typedef struct CountDownGadget {
 
 typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1];
 
+/* PointsPopup (0xD4, PointsGadget_ctor_00000ED0, name "PointsGadget"): one score pop-up. The 0x168
+ * points list (PointsGadget_ctor_00003138) builds 8 of them at +0x2C; PointsGadget_allocSlot_00003B1C
+ * (game_libs.c GlSlot3B1C is the same object) takes a free one, the RaceTracker_pop* / onGateCleared /
+ * onCheckpoint functions colour it, and PointsGadget_update_00003430 (donor game_libs_o2_3430.c)
+ * runs it: state 5.. counts timer down while moving pos by vel, then flies it to (100, 40) or
+ * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). */
+typedef struct PointsPopup {
+    /* 0x00 */ Node node;          /* node.name = "PointsGadget" */
+    /* 0x2C */ char unk2C[0x44 - 0x2C];
+    /* 0x44 */ f32 x;              /* screen x: += velX; popComboBonus adds 70 */
+    /* 0x48 */ char unk48[0x5C - 0x48];
+    /* 0x5C */ f32 y;              /* screen y: += velY (rises past 110 in state 5); the pop functions set 70 */
+    /* 0x60 */ s32 unk60;
+    /* 0x64 */ f32 colour[4];      /* r, g, b, a in 0..1 (constants / 255) */
+    /* 0x74 */ s32 unk74;          /* 0 (ctor) */
+    /* 0x78 */ s32 alpha;          /* 255 (ctor, allocSlot, popTrickPointsCombo) */
+    /* 0x7C */ s32 unk7C;
+    /* 0x80 */ s32 unk80;
+    /* 0x84 */ s32 unk84;          /* -18 (allocSlot) */
+    /* 0x88 */ char unk88[0x94 - 0x88];
+    /* 0x94 */ s32 state;          /* 0 = free; allocSlot sets 5 */
+    /* 0x98 */ s32 value;          /* the points shown (allocSlot arg 1, "%d") */
+    /* 0x9C */ s32 timer;          /* frames left in the current state (pop functions: 14 / 30 / 230) */
+    /* 0xA0 */ s32 font;           /* the digit sprite: one of the list's sprites (+0x108 / 0x120 / 0x138 / 0x150) */
+    /* 0xA4 */ f32 velX;
+    /* 0xA8 */ f32 velY;
+    /* 0xAC */ f32 unkAC;
+    /* 0xB0 */ s32 arg;            /* ctor arg 1; allocSlot copies the list's +0x54 */
+    /* 0xB4 */ char text[0xD4 - 0xB4]; /* sprintf target (PointsGadget_setValue, allocSlot) */
+} PointsPopup;
+
+typedef char PointsPopup_size_check[sizeof(PointsPopup) == 0xD4 ? 1 : -1];
+typedef char PointsPopup_state_check[(int)&((PointsPopup *)0)->state == 0x94 ? 1 : -1];
+
+#define POPUP(p) ((PointsPopup *)(p))
+
 #endif
