@@ -2,7 +2,7 @@
 
 extern s32 func_800077DC(s32);
 extern s32 func_800096B0(s32);
-extern s32 D_8000A41C;
+extern s32 __osActiveQueue;
 
 /* __rmonGetRegisterContents */
 s32 __rmonGetRegisterContents(s32 arg0, s32 arg1, s32 arg2) {

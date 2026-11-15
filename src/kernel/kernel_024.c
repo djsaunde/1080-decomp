@@ -33,7 +33,7 @@ typedef struct OSPiHandle_s {
     u32 baseAddress; /* 0x0C */
 } OSPiHandle;
 
-extern OSPiHandle *D_8000A470[]; /* __osCurrentHandle */
+extern OSPiHandle *__osCurrentHandle[]; /* __osCurrentHandle */
 
 s32 osEPiRawWriteIo(OSPiHandle *pihandle, u32 devAddr, u32 data) {
     register u32 stat;
@@ -45,8 +45,8 @@ s32 osEPiRawWriteIo(OSPiHandle *pihandle, u32 devAddr, u32 data) {
     }
 
     domain = pihandle->domain;
-    if (D_8000A470[domain] != pihandle) {
-        OSPiHandle *cHandle = D_8000A470[domain];
+    if (__osCurrentHandle[domain] != pihandle) {
+        OSPiHandle *cHandle = __osCurrentHandle[domain];
         if (domain == 0) {
             if (cHandle->latency != pihandle->latency) {
                 IO_REG(0xA4600014) = pihandle->latency;
@@ -74,7 +74,7 @@ s32 osEPiRawWriteIo(OSPiHandle *pihandle, u32 devAddr, u32 data) {
                 IO_REG(0xA4600028) = pihandle->pulse;
             }
         }
-        D_8000A470[domain] = pihandle;
+        __osCurrentHandle[domain] = pihandle;
     }
 
     *(volatile u32 *)(0xA0000000 | (pihandle->baseAddress | devAddr)) = data;

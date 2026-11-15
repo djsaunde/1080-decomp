@@ -44,7 +44,7 @@ extern char D_8000A618[];
 extern char D_8000A61C[];
 extern char D_8000A630[];
 
-const KernelUsoEntry D_80009E60[] = {
+const KernelUsoEntry k_gFsDevices[] = {
     { D_8000A590, 0x00D9FDB0, 0x00E984B0, 0x8001FFA0, 0 },
     { D_8000A598, 0x0000B7C0, 0x00D9FDB0, 0, 0 },
     { NULL, 0, 0, 0, 0 },

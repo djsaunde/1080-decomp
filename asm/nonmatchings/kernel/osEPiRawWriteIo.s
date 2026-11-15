@@ -16,8 +16,8 @@ glabel osEPiRawWriteIo
     /* AAD8 80009AD8 00000000 */   nop
   .L80009ADC:
     /* AADC 80009ADC 90880009 */  lbu        $t0, 0x9($a0)
-    /* AAE0 80009AE0 3C0A8001 */  lui        $t2, %hi(D_8000A470)
-    /* AAE4 80009AE4 254AA470 */  addiu      $t2, $t2, %lo(D_8000A470)
+    /* AAE0 80009AE0 3C0A8001 */  lui        $t2, %hi(__osCurrentHandle)
+    /* AAE4 80009AE4 254AA470 */  addiu      $t2, $t2, %lo(__osCurrentHandle)
     /* AAE8 80009AE8 00084880 */  sll        $t1, $t0, 2
     /* AAEC 80009AEC 012A5821 */  addu       $t3, $t1, $t2
     /* AAF0 80009AF0 8D6C0000 */  lw         $t4, 0x0($t3)

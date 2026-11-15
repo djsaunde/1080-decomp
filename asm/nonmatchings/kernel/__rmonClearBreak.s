@@ -21,8 +21,8 @@ glabel __rmonClearBreak
     /* 946C 8000846C 1701001A */  bne        $t8, $at, .L800084D8
     /* 9470 80008470 00000000 */   nop
     /* 9474 80008474 8E190010 */  lw         $t9, 0x10($s0)
-    /* 9478 80008478 3C098002 */  lui        $t1, %hi(rmonbrk_bss_0088)
-    /* 947C 8000847C 2529FEF8 */  addiu      $t1, $t1, %lo(rmonbrk_bss_0088)
+    /* 9478 80008478 3C098002 */  lui        $t1, %hi(rmon_RCPbreakpoints)
+    /* 947C 8000847C 2529FEF8 */  addiu      $t1, $t1, %lo(rmon_RCPbreakpoints)
     /* 9480 80008480 001940C0 */  sll        $t0, $t9, 3
     /* 9484 80008484 01098821 */  addu       $s1, $t0, $t1
     /* 9488 80008488 8E2A0000 */  lw         $t2, 0x0($s1)
@@ -49,8 +49,8 @@ glabel __rmonClearBreak
     /* 94D4 800084D4 00000000 */   nop
   .L800084D8:
     /* 94D8 800084D8 8E0D0010 */  lw         $t5, 0x10($s0)
-    /* 94DC 800084DC 3C0F8002 */  lui        $t7, %hi(rmonbrk_bss_0000)
-    /* 94E0 800084E0 25EFFE70 */  addiu      $t7, $t7, %lo(rmonbrk_bss_0000)
+    /* 94DC 800084DC 3C0F8002 */  lui        $t7, %hi(rmon_breakpoints)
+    /* 94E0 800084E0 25EFFE70 */  addiu      $t7, $t7, %lo(rmon_breakpoints)
     /* 94E4 800084E4 000D70C0 */  sll        $t6, $t5, 3
     /* 94E8 800084E8 01CF8821 */  addu       $s1, $t6, $t7
     /* 94EC 800084EC 8E380000 */  lw         $t8, 0x0($s1)

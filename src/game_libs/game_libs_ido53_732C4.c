@@ -5,8 +5,8 @@
  * (kernel_023): disable-int, set the running-thread state word to 2, dispatch
  * the run-queue head, restore-int. IDO 5.3 -O1, spliced into
  * game_libs_post2b_c.c.o via REPLACE_FUNC_BODY. Three OS-API callees collapse to
- * gl_func_00000000; the two distinct globals (running-thread ptr D_8000A420,
- * run-queue head D_8000A418) map to the two distinct zero-resolving placeholders
+ * gl_func_00000000; the two distinct globals (running-thread ptr __osRunningThread,
+ * run-queue head __osRunQueue) map to the two distinct zero-resolving placeholders
  * D_00000000 / gl_data_00000000 (kept separate so IDO does not CSE them). */
 extern int gl_func_00000000();
 extern void *D_00000000;       /* running thread ptr placeholder */

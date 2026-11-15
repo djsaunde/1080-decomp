@@ -5,32 +5,32 @@ glabel pimgr_ramromMain
     /* 66EC 800056EC 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* 66F0 800056F0 AFA40030 */  sw         $a0, 0x30($sp)
     /* 66F4 800056F4 AFBF001C */  sw         $ra, 0x1C($sp)
-    /* 66F8 800056F8 3C048002 */  lui        $a0, %hi(D_8001B5D0)
-    /* 66FC 800056FC 3C058002 */  lui        $a1, %hi(D_8001B5E8)
+    /* 66F8 800056F8 3C048002 */  lui        $a0, %hi(pimgr_getRamromQ)
+    /* 66FC 800056FC 3C058002 */  lui        $a1, %hi(pimgr_getRamromBuf)
     /* 6700 80005700 AFB00018 */  sw         $s0, 0x18($sp)
-    /* 6704 80005704 24A5B5E8 */  addiu      $a1, $a1, %lo(D_8001B5E8)
-    /* 6708 80005708 2484B5D0 */  addiu      $a0, $a0, %lo(D_8001B5D0)
+    /* 6704 80005704 24A5B5E8 */  addiu      $a1, $a1, %lo(pimgr_getRamromBuf)
+    /* 6708 80005708 2484B5D0 */  addiu      $a0, $a0, %lo(pimgr_getRamromQ)
     /* 670C 8000570C 0C0014F4 */  jal        func_800053D0
     /* 6710 80005710 24060001 */   addiu     $a2, $zero, 0x1
-    /* 6714 80005714 3C048002 */  lui        $a0, %hi(D_8001B5F0)
-    /* 6718 80005718 3C058002 */  lui        $a1, %hi(D_8001B608)
-    /* 671C 8000571C 24A5B608 */  addiu      $a1, $a1, %lo(D_8001B608)
-    /* 6720 80005720 2484B5F0 */  addiu      $a0, $a0, %lo(D_8001B5F0)
+    /* 6714 80005714 3C048002 */  lui        $a0, %hi(pimgr_freeRamromQ)
+    /* 6718 80005718 3C058002 */  lui        $a1, %hi(pimgr_freeRamromBuf)
+    /* 671C 8000571C 24A5B608 */  addiu      $a1, $a1, %lo(pimgr_freeRamromBuf)
+    /* 6720 80005720 2484B5F0 */  addiu      $a0, $a0, %lo(pimgr_freeRamromQ)
     /* 6724 80005724 0C0014F4 */  jal        func_800053D0
     /* 6728 80005728 24060001 */   addiu     $a2, $zero, 0x1
-    /* 672C 8000572C 3C058002 */  lui        $a1, %hi(D_8001B5D0)
-    /* 6730 80005730 24A5B5D0 */  addiu      $a1, $a1, %lo(D_8001B5D0)
+    /* 672C 8000572C 3C058002 */  lui        $a1, %hi(pimgr_getRamromQ)
+    /* 6730 80005730 24A5B5D0 */  addiu      $a1, $a1, %lo(pimgr_getRamromQ)
     /* 6734 80005734 24040012 */  addiu      $a0, $zero, 0x12
     /* 6738 80005738 0C001478 */  jal        func_800051E0
     /* 673C 8000573C 00003025 */   or        $a2, $zero, $zero
-    /* 6740 80005740 3C058002 */  lui        $a1, %hi(D_8001B5F0)
-    /* 6744 80005744 24A5B5F0 */  addiu      $a1, $a1, %lo(D_8001B5F0)
+    /* 6740 80005740 3C058002 */  lui        $a1, %hi(pimgr_freeRamromQ)
+    /* 6744 80005744 24A5B5F0 */  addiu      $a1, $a1, %lo(pimgr_freeRamromQ)
     /* 6748 80005748 24040013 */  addiu      $a0, $zero, 0x13
     /* 674C 8000574C 0C001478 */  jal        func_800051E0
     /* 6750 80005750 00003025 */   or        $a2, $zero, $zero
   .L80005754:
-    /* 6754 80005754 3C048002 */  lui        $a0, %hi(D_8001B5D0)
-    /* 6758 80005758 2484B5D0 */  addiu      $a0, $a0, %lo(D_8001B5D0)
+    /* 6754 80005754 3C048002 */  lui        $a0, %hi(pimgr_getRamromQ)
+    /* 6758 80005758 2484B5D0 */  addiu      $a0, $a0, %lo(pimgr_getRamromQ)
     /* 675C 8000575C 00002825 */  or         $a1, $zero, $zero
     /* 6760 80005760 0C0013F8 */  jal        func_80004FE0
     /* 6764 80005764 24060001 */   addiu     $a2, $zero, 0x1
@@ -49,8 +49,8 @@ glabel pimgr_ramromMain
     /* 6794 80005794 8FB8002C */  lw         $t8, 0x2C($sp)
     /* 6798 80005798 1300FFF6 */  beqz       $t8, .L80005774
     /* 679C 8000579C 00000000 */   nop
-    /* 67A0 800057A0 3C048002 */  lui        $a0, %hi(D_8001B5F0)
-    /* 67A4 800057A4 2484B5F0 */  addiu      $a0, $a0, %lo(D_8001B5F0)
+    /* 67A0 800057A0 3C048002 */  lui        $a0, %hi(pimgr_freeRamromQ)
+    /* 67A4 800057A4 2484B5F0 */  addiu      $a0, $a0, %lo(pimgr_freeRamromQ)
     /* 67A8 800057A8 00002825 */  or         $a1, $zero, $zero
     /* 67AC 800057AC 0C0013F8 */  jal        func_80004FE0
     /* 67B0 800057B0 24060001 */   addiu     $a2, $zero, 0x1

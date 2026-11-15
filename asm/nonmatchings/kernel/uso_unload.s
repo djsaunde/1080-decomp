@@ -3,8 +3,8 @@ nonmatching uso_unload, 0xFC
 
 glabel uso_unload
     /* 18F0 800008F0 27BDFFD8 */  addiu      $sp, $sp, -0x28
-    /* 18F4 800008F4 3C198001 */  lui        $t9, %hi(D_80012C44)
-    /* 18F8 800008F8 8F392C44 */  lw         $t9, %lo(D_80012C44)($t9)
+    /* 18F4 800008F4 3C198001 */  lui        $t9, %hi(gUsoPrintfHook)
+    /* 18F8 800008F8 8F392C44 */  lw         $t9, %lo(gUsoPrintfHook)($t9)
     /* 18FC 800008FC AFB00014 */  sw         $s0, 0x14($sp)
     /* 1900 80000900 00808025 */  or         $s0, $a0, $zero
     /* 1904 80000904 AFBF0024 */  sw         $ra, 0x24($sp)

@@ -5,10 +5,10 @@
 # redispatch, enqueueRunning, panic, send_mesg, handle_CpU,
 # __osEnqueueAndYield, __osEnqueueThread, __osPopThread, __osDispatchThread,
 # __osCleanupThread); the rdb IP6 send path at the top has no public reference.
-# Data symbols keep their splat names: D_80019320 __osThreadSave,
-# D_8000A420 __osRunningThread, D_8000A418 __osRunQueue, D_8000A3E0
-# __OSGlobalIntMask, D_8000A680 __osRcpImTable, D_8000A3F0 __osHwIntTable,
-# D_8000A3DC __osShutdown, D_8000A424 __osFaultedThread.
+# Data symbols keep their splat names: __osThreadSave __osThreadSave,
+# __osRunningThread __osRunningThread, __osRunQueue __osRunQueue, __OSGlobalIntMask
+# __OSGlobalIntMask, __osRcpImTable __osRcpImTable, __osHwIntTable __osHwIntTable,
+# __osShutdown __osShutdown, __osFaultedThread __osFaultedThread.
 # Calls use runtime addresses (the kernel runs 0x400 above its link address):
 # func_80003C24 = send_mesg, func_80003E0C = __osEnqueueThread,
 # func_80003E54 = __osPopThread, func_80003E64 = __osDispatchThread.
@@ -19,16 +19,16 @@ glabel __osException
     addi    $t3, $t3, 0x1
     # (continues the rdb debug-read byte store of exceptasm_rdb.s / _2 / _3)
 .Lrdb_debug_done:
-    lui     $t2, %hi(D_8000A404)
-    lw      $t2, %lo(D_8000A404)($t2)
+    lui     $t2, %hi(__osRdb_DbgRead_Ct)
+    lw      $t2, %lo(__osRdb_DbgRead_Ct)($t2)
     lui     $at, %hi(__osRdb_DbgRead_Buf)
     sw      $t3, %lo(__osRdb_DbgRead_Buf)($at)
     bne     $zero, $t2, .Lrdb_restore_eret
      ld     $t3, 0x70($k0)
     addiu   $t2, $zero, 0xA0
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # IP6 = host ready for the next queued RDB packet (__osRdb_IP6_*)
 .Lrdb_check_ip6:
     andi    $t2, $t1, 0x2000
@@ -42,9 +42,9 @@ glabel __osException
     bnez    $t2, .Lrdb_ip6_send_next
      nop
     addiu   $t2, $zero, 0x1
-    lui     $at, %hi(D_8000A490)
+    lui     $at, %hi(__osRdb_IP6_Empty)
     b       .Lrdb_restore_eret
-     sw     $t2, %lo(D_8000A490)($at)
+     sw     $t2, %lo(__osRdb_IP6_Empty)($at)
 .Lrdb_ip6_send_next:
     lui     $t1, %hi(__osRdb_IP6_CurSend)
     lw      $t1, %lo(__osRdb_IP6_CurSend)($t1)
@@ -88,12 +88,12 @@ alabel D_80003270
     nop                                 # object alignment padding
     nop
     eret
-    # savecontext: copy the scratch saves into __osRunningThread (D_8000A420)
+    # savecontext: copy the scratch saves into __osRunningThread (__osRunningThread)
     # and save the rest of the context (libreultra exceptasm.s savecontext)
 .Lsavecontext:
     or      $t0, $k0, $zero
-    lui     $k0, %hi(D_8000A420)
-    lw      $k0, %lo(D_8000A420)($k0)
+    lui     $k0, %hi(__osRunningThread)
+    lw      $k0, %lo(__osRunningThread)($k0)
     ld      $t1, 0x20($t0)
     sd      $t1, 0x20($k0)
     ld      $t1, 0x118($t0)
@@ -137,8 +137,8 @@ alabel D_80003344
     sd      $ra, 0x100($k0)
     beqz    $t1, .Lsavercp
      sd     $t0, 0x110($k0)
-    lui     $t0, %hi(D_8000A3E0)
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t0, 0x0($t0)
     addiu   $at, $zero, -0x1
     xor     $t2, $t0, $at
@@ -158,8 +158,8 @@ alabel D_80003344
     lw      $t1, %lo(D_A430000C)($t1)
     beqz    $t1, .Lendrcp
      nop
-    lui     $t0, %hi(D_8000A3E0)
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t0, 0x0($t0)
     lw      $t4, 0x128($k0)
     addiu   $at, $zero, -0x1
@@ -199,21 +199,21 @@ alabel D_80003344
     sw      $t0, 0x120($k0)
     addiu   $t1, $zero, 0x2
     sh      $t1, 0x10($k0)
-    lui     $a0, %hi(D_8000A40C)
-    lw      $a0, %lo(D_8000A40C)($a0)
+    lui     $a0, %hi(__os_Kdebug_Pkt)
+    lw      $a0, %lo(__os_Kdebug_Pkt)($a0)
     beqz    $a0, .Lrdb_check_event
-     lui    $at, %hi(D_8000A40C)
+     lui    $at, %hi(__os_Kdebug_Pkt)
     jal     func_80004DB8
-     sw     $zero, %lo(D_8000A40C)($at)
+     sw     $zero, %lo(__os_Kdebug_Pkt)($at)
     b       .LdispatchThread_restore
      nop
 .Lrdb_check_event:
-    lui     $a0, %hi(D_8000A408)
-    lw      $a0, %lo(D_8000A408)($a0)
+    lui     $a0, %hi(__osRdb_Mesg)
+    lw      $a0, %lo(__osRdb_Mesg)($a0)
     beqz    $a0, .Lcheck_exccode
-     lui    $at, %hi(D_8000A408)
+     lui    $at, %hi(__osRdb_Mesg)
     jal     func_80003C24
-     sw     $zero, %lo(D_8000A408)($at)
+     sw     $zero, %lo(__osRdb_Mesg)($at)
     lw      $t0, 0x120($k0)
 .Lcheck_exccode:
     andi    $t1, $t0, 0x7C
@@ -228,7 +228,7 @@ alabel D_80003344
      nop
     and     $s0, $k1, $t0
     # handle_interrupt: dispatch the highest pending IP via __osIntOffTable /
-    # __osIntTable (D_8000A700 / jtbl_8000A720)
+    # __osIntTable (__osIntTable / jtbl_8000A720)
 .Lnext_interrupt:
     andi    $t1, $s0, 0xFF00
     srl     $t2, $t1, 12
@@ -237,9 +237,9 @@ alabel D_80003344
     srl     $t2, $t1, 8
     addi    $t2, $t2, 0x10
 .Linterrupt_dispatch:
-    lui     $at, %hi(D_8000A700)
+    lui     $at, %hi(__osIntTable)
     addu    $at, $at, $t2
-    lbu     $t2, %lo(D_8000A700)($at)
+    lbu     $t2, %lo(__osIntTable)($at)
     lui     $at, %hi(jtbl_8000A720)
     addu    $at, $at, $t2
     lw      $t2, %lo(jtbl_8000A720)($at)
@@ -262,11 +262,11 @@ alabel D_80003344
     addiu   $at, $zero, -0x801
     and     $s0, $s0, $at
     addiu   $t2, $zero, 0x4
-    lui     $at, %hi(D_8000A3F0)
+    lui     $at, %hi(__osHwIntTable)
     addu    $at, $at, $t2
-    lw      $t2, %lo(D_8000A3F0)($at)
-    lui     $sp, %hi(D_80018300)
-    addiu   $sp, $sp, %lo(D_80018300)
+    lw      $t2, %lo(__osHwIntTable)($at)
+    lui     $sp, %hi(leoDiskStack)
+    addiu   $sp, $sp, %lo(leoDiskStack)
     addiu   $a0, $zero, 0x10
     beqz    $t2, .Lcart_send
      addiu  $sp, $sp, 0xFF0
@@ -281,8 +281,8 @@ alabel D_80003344
      nop
     b       .Lnext_interrupt
      nop
-    lui     $t0, %hi(D_8000A3E0)
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t0, 0x0($t0)
     lui     $s1, %hi(D_A4300008)
     lw      $s1, %lo(D_A4300008)($s1)
@@ -370,10 +370,10 @@ alabel D_80003344
      and    $s0, $s0, $at
     lw      $k1, 0x118($k0)
     addiu   $at, $zero, -0x1001
-    lui     $t1, %hi(D_8000A3DC)
+    lui     $t1, %hi(__osShutdown)
     and     $k1, $k1, $at
     sw      $k1, 0x118($k0)
-    addiu   $t1, $t1, %lo(D_8000A3DC)
+    addiu   $t1, $t1, %lo(__osShutdown)
     lw      $t2, 0x0($t1)
     beqz    $t2, .Lfirstnmi
      addiu  $at, $zero, -0x1001
@@ -384,8 +384,8 @@ alabel D_80003344
     sw      $t2, 0x0($t1)
     jal     func_80003C24
      addiu  $a0, $zero, 0x70
-    lui     $t2, %hi(D_8000A418)
-    lw      $t2, %lo(D_8000A418)($t2)
+    lui     $t2, %hi(__osRunQueue)
+    lw      $t2, %lo(__osRunQueue)($t2)
     addiu   $at, $zero, -0x1001
     and     $s0, $s0, $at
     lw      $k1, 0x118($t2)
@@ -416,31 +416,31 @@ alabel D_80003344
     b       .Lredispatch
      nop
     # redispatch: requeue the interrupted thread if a higher priority one is
-    # runnable (__osRunQueue = D_8000A418)
+    # runnable (__osRunQueue = __osRunQueue)
 .Lredispatch:
-    lui     $t2, %hi(D_8000A418)
-    lw      $t2, %lo(D_8000A418)($t2)
+    lui     $t2, %hi(__osRunQueue)
+    lw      $t2, %lo(__osRunQueue)($t2)
     lw      $t1, 0x4($k0)
     lw      $t3, 0x4($t2)
     slt     $at, $t1, $t3
     beqz    $at, .LenqueueRunning
      nop
-    lui     $a0, %hi(D_8000A418)
+    lui     $a0, %hi(__osRunQueue)
     or      $a1, $k0, $zero
     jal     func_80003E0C
-     addiu  $a0, $a0, %lo(D_8000A418)
+     addiu  $a0, $a0, %lo(__osRunQueue)
     j       func_80003E64
      nop
 .LenqueueRunning:
-    lui     $t1, %hi(D_8000A418)
-    addiu   $t1, $t1, %lo(D_8000A418)
+    lui     $t1, %hi(__osRunQueue)
+    addiu   $t1, $t1, %lo(__osRunQueue)
     lw      $t2, 0x0($t1)
     sw      $t2, 0x0($k0)
     j       func_80003E64
      sw     $k0, 0x0($t1)
 .Lpanic:
-    lui     $at, %hi(D_8000A424)
-    sw      $k0, %lo(D_8000A424)($at)
+    lui     $at, %hi(__osFaultedThread)
+    sw      $k0, %lo(__osFaultedThread)($at)
     addiu   $t1, $zero, 0x1
     sh      $t1, 0x10($k0)
     addiu   $t1, $zero, 0x2
@@ -494,10 +494,10 @@ alabel D_80003344
     jal     func_80003E54
      or     $a0, $t1, $zero
     or      $t2, $v0, $zero
-    lui     $a0, %hi(D_8000A418)
+    lui     $a0, %hi(__osRunQueue)
     or      $a1, $t2, $zero
     jal     func_80003E0C
-     addiu  $a0, $a0, %lo(D_8000A418)
+     addiu  $a0, $a0, %lo(__osRunQueue)
 .Lsend_done:
     jr      $s2
      nop
@@ -517,8 +517,8 @@ alabel D_80003344
     b       .LenqueueRunning
      sw     $k1, 0x118($k0)
     # __osEnqueueAndYield(a0 = queue): save the callee context and dispatch
-    lui     $a1, %hi(D_8000A420)
-    lw      $a1, %lo(D_8000A420)($a1)
+    lui     $a1, %hi(__osRunningThread)
+    lw      $a1, %lo(__osRunningThread)($a1)
     mfc0    $t0, $12
     lw      $k1, 0x18($a1)
     ori     $t0, $t0, 0x2
@@ -550,8 +550,8 @@ alabel D_80003344
     andi    $t1, $k1, 0xFF00
     beqz    $t1, .Lyield_savercp
      nop
-    lui     $t0, %hi(D_8000A3E0)
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t0, 0x0($t0)
     addiu   $at, $zero, -0x1
     xor     $t0, $t0, $at
@@ -567,8 +567,8 @@ alabel D_80003344
     lw      $k1, %lo(D_A430000C)($k1)
     beqz    $k1, .Lyield_endrcp
      nop
-    lui     $k0, %hi(D_8000A3E0)
-    addiu   $k0, $k0, %lo(D_8000A3E0)
+    lui     $k0, %hi(__OSGlobalIntMask)
+    addiu   $k0, $k0, %lo(__OSGlobalIntMask)
     lw      $k0, 0x0($k0)
     lw      $t0, 0x128($a1)
     addiu   $at, $zero, -0x1
@@ -612,18 +612,18 @@ alabel D_80003344
     jr      $ra
      sw     $t9, 0x0($a0)
     # __osDispatchThread: pop the run queue and restore its context
-    lui     $a0, %hi(D_8000A418)
+    lui     $a0, %hi(__osRunQueue)
     jal     func_80003E54
-     addiu  $a0, $a0, %lo(D_8000A418)
-    lui     $at, %hi(D_8000A420)
-    sw      $v0, %lo(D_8000A420)($at)
+     addiu  $a0, $a0, %lo(__osRunQueue)
+    lui     $at, %hi(__osRunningThread)
+    sw      $v0, %lo(__osRunningThread)($at)
     addiu   $t0, $zero, 0x4
     sh      $t0, 0x10($v0)
     or      $k0, $v0, $zero
 .LdispatchThread_restore:
-    lui     $t0, %hi(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)
     lw      $k1, 0x118($k0)
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t0, 0x0($t0)
     lui     $at, 0xFFFF
     andi    $t1, $k1, 0xFF00
@@ -691,14 +691,14 @@ alabel D_80003344
     ldc1    $f30, 0x1A8($k0)
 .LdispatchThread_nofpu:
     lw      $k1, 0x128($k0)
-    lui     $k0, %hi(D_8000A3E0)
-    addiu   $k0, $k0, %lo(D_8000A3E0)
+    lui     $k0, %hi(__OSGlobalIntMask)
+    addiu   $k0, $k0, %lo(__OSGlobalIntMask)
     lw      $k0, 0x0($k0)
     srl     $k0, $k0, 16
     and     $k1, $k1, $k0
     sll     $k1, $k1, 1
-    lui     $k0, %hi(D_8000A680)
-    addiu   $k0, $k0, %lo(D_8000A680)
+    lui     $k0, %hi(__osRcpImTable)
+    addiu   $k0, $k0, %lo(__osRcpImTable)
     addu    $k1, $k1, $k0
     lhu     $k1, 0x0($k1)
     lui     $k0, %hi(D_A430000C)

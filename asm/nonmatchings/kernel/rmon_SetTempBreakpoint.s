@@ -8,8 +8,8 @@ glabel rmon_SetTempBreakpoint
     /* 90DC 800080DC AFBF0014 */  sw         $ra, 0x14($sp)
     /* 90E0 800080E0 AFA5001C */  sw         $a1, 0x1C($sp)
     /* 90E4 800080E4 8DCF0000 */  lw         $t7, 0x0($t6)
-    /* 90E8 800080E8 3C188002 */  lui        $t8, %hi(rmonbrk_bss_0000)
-    /* 90EC 800080EC 2718FE70 */  addiu      $t8, $t8, %lo(rmonbrk_bss_0000)
+    /* 90E8 800080E8 3C188002 */  lui        $t8, %hi(rmon_breakpoints)
+    /* 90EC 800080EC 2718FE70 */  addiu      $t8, $t8, %lo(rmon_breakpoints)
     /* 90F0 800080F0 AF0F0004 */  sw         $t7, 0x4($t8)
     /* 90F4 800080F4 8FA80018 */  lw         $t0, 0x18($sp)
     /* 90F8 800080F8 2419040D */  addiu      $t9, $zero, 0x40D
@@ -21,16 +21,16 @@ glabel rmon_SetTempBreakpoint
     /* 9110 80008110 0C0014D4 */  jal        func_80005350
     /* 9114 80008114 24050004 */   addiu     $a1, $zero, 0x4
     /* 9118 80008118 8FA90018 */  lw         $t1, 0x18($sp)
-    /* 911C 8000811C 3C0A8002 */  lui        $t2, %hi(rmonbrk_bss_0000)
-    /* 9120 80008120 254AFE70 */  addiu      $t2, $t2, %lo(rmonbrk_bss_0000)
+    /* 911C 8000811C 3C0A8002 */  lui        $t2, %hi(rmon_breakpoints)
+    /* 9120 80008120 254AFE70 */  addiu      $t2, $t2, %lo(rmon_breakpoints)
     /* 9124 80008124 AD490000 */  sw         $t1, 0x0($t2)
     /* 9128 80008128 8FAB001C */  lw         $t3, 0x1C($sp)
     /* 912C 8000812C 1160000F */  beqz       $t3, .L8000816C
     /* 9130 80008130 00000000 */   nop
     /* 9134 80008134 8D6C0000 */  lw         $t4, 0x0($t3)
-    /* 9138 80008138 3C018002 */  lui        $at, %hi(D_8001FEF4)
+    /* 9138 80008138 3C018002 */  lui        $at, %hi(rmon_altBreak_oldInstruction)
     /* 913C 8000813C 240D040D */  addiu      $t5, $zero, 0x40D
-    /* 9140 80008140 AC2CFEF4 */  sw         $t4, %lo(D_8001FEF4)($at)
+    /* 9140 80008140 AC2CFEF4 */  sw         $t4, %lo(rmon_altBreak_oldInstruction)($at)
     /* 9144 80008144 AD6D0000 */  sw         $t5, 0x0($t3)
     /* 9148 80008148 8FA4001C */  lw         $a0, 0x1C($sp)
     /* 914C 8000814C 0C000C7C */  jal        func_800031F0
@@ -39,8 +39,8 @@ glabel rmon_SetTempBreakpoint
     /* 9158 80008158 0C0014D4 */  jal        func_80005350
     /* 915C 8000815C 24050004 */   addiu     $a1, $zero, 0x4
     /* 9160 80008160 8FAE001C */  lw         $t6, 0x1C($sp)
-    /* 9164 80008164 3C018002 */  lui        $at, %hi(D_8001FEF0)
-    /* 9168 80008168 AC2EFEF0 */  sw         $t6, %lo(D_8001FEF0)($at)
+    /* 9164 80008164 3C018002 */  lui        $at, %hi(rmon_altBreak)
+    /* 9168 80008168 AC2EFEF0 */  sw         $t6, %lo(rmon_altBreak)($at)
   .L8000816C:
     /* 916C 8000816C 8FBF0014 */  lw         $ra, 0x14($sp)
     /* 9170 80008170 27BD0018 */  addiu      $sp, $sp, 0x18

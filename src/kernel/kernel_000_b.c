@@ -2,19 +2,19 @@
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
+extern s32 __osPiAccessQueueEnabled;
 extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
 extern void func_800053D0(s32*, s32*, s32);
-extern s32 D_8000A3E0;
+extern s32 __OSGlobalIntMask;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern int *D_8000A420;
-extern s32 D_8000A418;
-extern s32 siacs_bss_0000;
+extern int *__osRunningThread;
+extern s32 __osRunQueue;
+extern s32 piacs_piAccessBuf;
 extern s32 func_800009D8(void*, s32, s32, void*);
 extern void func_80003FF0();
 extern void* func_80003E54(void*);
@@ -24,17 +24,17 @@ extern void func_8000785C(s32);
 extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
-extern FuncPtr2 D_80012C44;
+extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
 extern s32 gUsoCtx;
-extern s32 D_80012BE4;
+extern s32 gUsoEntryResult;
 extern s32 gUsoEntryIndex;
 extern s32 gUsoEntryModule;
 extern s32 gUsoModules[];
-extern s32 D_80013000;
+extern s32 gFsRomReadStatus;
 extern s32 gFsDeviceTable;
-extern int *D_8000A41C;
+extern int *__osActiveQueue;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
@@ -181,8 +181,8 @@ void __osDequeueThread(DqThread **queue, DqThread *t) {
  * EXACT via twin port (twin-finder.py, 0.977): game_libs' copy gl_osDestroyThread
  * (game_libs_o1_6AF44.c, exact at -O1). __osDisableInt = 66B0,
  * __osDequeueThread = 3FF0, __osDispatchThread = 3E64 (alabel in 3D40.s),
- * __osRestoreInt = 66D0, __osActiveQueue = D_8000A41C,
- * __osRunningThread = D_8000A420. */
+ * __osRestoreInt = 66D0, __osActiveQueue = __osActiveQueue,
+ * __osRunningThread = __osRunningThread. */
 extern void func_80003E64(void);
 
 void osDestroyThread(int *target) {
@@ -192,16 +192,16 @@ void osDestroyThread(int *target) {
 
     prelim = func_800066B0();
     if (target == 0) {
-        target = D_8000A420;
+        target = __osRunningThread;
     } else {
         if (*(unsigned short *)((char *)target + 0x10) != 1) {
             func_80003FF0(target[2], target);
         }
     }
-    if (D_8000A41C == target) {
-        D_8000A41C = (int *)D_8000A41C[3];
+    if (__osActiveQueue == target) {
+        __osActiveQueue = (int *)__osActiveQueue[3];
     } else {
-        curr = D_8000A41C;
+        curr = __osActiveQueue;
         while (curr[1] != -1) {
             next = (int *)curr[3];
             if (next == target) {
@@ -211,7 +211,7 @@ void osDestroyThread(int *target) {
             curr = next;
         }
     }
-    if (target == D_8000A420) {
+    if (target == __osRunningThread) {
         func_80003E64();
     }
     func_800066D0(prelim);
@@ -225,7 +225,7 @@ void osDestroyThread(int *target) {
  * sp-resident at -O1) and its static sibling at 0x43E4 (sp -0x20) into one
  * .s. Port of game_libs' copy gl___osLeoInterrupt (game_libs_ido53_6B0FC.c,
  * twin-finder.py 0.936; the +58 words were __osLeoAbnormalResume).
- *   D_80019644 = __osDiskHandle, D_8000A3E0 = __OSGlobalIntMask,
+ *   D_80019644 = __osDiskHandle, __OSGlobalIntMask = __OSGlobalIntMask,
  *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry
  *   used by this copy, func_800056F0 = osEPiRawStartDma (post-addiu entry).
  * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and D_80003FE0 point
@@ -295,7 +295,7 @@ s32 __osLeoInterrupt(void)
     blockInfo = &info->block[info->blockNum];
     pi_stat = LEO_PI_STATUS;
     if (pi_stat & 1) {
-        D_8000A3E0 = D_8000A3E0 & ~0x800;
+        __OSGlobalIntMask = __OSGlobalIntMask & ~0x800;
         blockInfo->errStatus = 29;
         func_800048CC();
         return 1;
@@ -316,7 +316,7 @@ s32 __osLeoInterrupt(void)
         blockInfo->errStatus = 22;
         func_800048CC();
         LEO_PI_STATUS = 2;
-        D_8000A3E0 |= 0x00100401;
+        __OSGlobalIntMask |= 0x00100401;
         return 1;
     }
     if (info->cmdType == 1) {
@@ -327,7 +327,7 @@ s32 __osLeoInterrupt(void)
                 return 1;
             }
             LEO_PI_STATUS = 2;
-            D_8000A3E0 |= 0x00100401;
+            __OSGlobalIntMask |= 0x00100401;
             blockInfo->errStatus = 0;
             func_800048CC();
             return 1;
@@ -380,7 +380,7 @@ s32 __osLeoInterrupt(void)
                 blockInfo->errStatus = 22;
             } else {
                 LEO_PI_STATUS = 2;
-                D_8000A3E0 |= 0x00100401;
+                __OSGlobalIntMask |= 0x00100401;
                 info->cmdType = 2;
                 blockInfo->errStatus = 0;
             }
@@ -437,7 +437,7 @@ void __osLeoAbnormalResume(void)
     LEO_BM_CTL = info->bmCtlShadow;
     func_800048CC();
     LEO_PI_STATUS = 2;
-    D_8000A3E0 |= 0x00100401;
+    __OSGlobalIntMask |= 0x00100401;
 }
 
 /* __osLeoResume - kernel PI-event message dispatch (inlined send_mesg from
@@ -452,7 +452,7 @@ void __osLeoAbnormalResume(void)
  *   OSMesgQueue fields: 0x0 mtqueue, 0x8 validCount, 0xC first,
  *                       0x10 msgCount, 0x14 msg[] (OSMesg*).
  *   func_80003E54 = __osPopThread, func_80003E0C = __osEnqueueThread,
- *   D_8000A418 = __osRunQueue.
+ *   __osRunQueue = __osRunQueue.
  * The div/mfhi + break 7 (div-by-zero) + break 6 (INT_MIN/-1 overflow) are
  * IDO's signed `%` guards; placement AFTER the store matches the plain C `%`
  * at -O1.
@@ -482,7 +482,7 @@ void __osLeoResume(void) {
         v.mq_->validCount++;
         if (*(void **)v.mq_->mtqueue != 0) {
             t = func_80003E54(v.mq_);
-            func_80003E0C(&D_8000A418, t);
+            func_80003E0C(&__osRunQueue, t);
         }
     }
 }

@@ -45,19 +45,19 @@ glabel uso_splitPath
     /* 12F4 800002F4 906AFFFE */  lbu        $t2, -0x2($v1)
     /* 12F8 800002F8 A04AFFFE */  sb         $t2, -0x2($v0)
     /* 12FC 800002FC 906BFFFF */  lbu        $t3, -0x1($v1)
-  alabel D_80000300
+  alabel osTvType
     /* 1300 80000300 A04BFFFF */  sb         $t3, -0x1($v0)
     /* 1304 80000304 8FAC0044 */  lw         $t4, 0x44($sp)
-  alabel D_80000308
+  alabel osRomBase
     /* 1308 80000308 54CCFFF4 */  bnel       $a2, $t4, .L800002DC
-  alabel D_8000030C
+  alabel osResetType
     /* 130C 8000030C 90790000 */   lbu       $t9, 0x0($v1)
     /* 1310 80000310 01804025 */  or         $t0, $t4, $zero
   .L80000314:
     /* 1314 80000314 27A50048 */  addiu      $a1, $sp, 0x48
-  alabel D_80000318
+  alabel osMemSize
     /* 1318 80000318 00A66821 */  addu       $t5, $a1, $a2
-  alabel D_8000031C
+  alabel osAppNMIBuffer
     /* 131C 8000031C A1A00000 */  sb         $zero, 0x0($t5)
     /* 1320 80000320 25060001 */  addiu      $a2, $t0, 0x1
     /* 1324 80000324 AFA60040 */  sw         $a2, 0x40($sp)

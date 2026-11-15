@@ -9,8 +9,8 @@
  * the TU-relative offset — it only lands pad-free when the function
  * sits at TU offset 0x130, i.e. after the other three. */
 
-extern s32 rmonsio_bss_0000;
-extern s32 rmonsio_bss_0018;
+extern s32 rmon_IOmq;
+extern s32 rmon_IOmsgs;
 extern u8 rmonRdbReadBuf;
 extern void* __osRdb_DbgRead_Buf;
 extern void func_800053D0(s32*, s32*, s32);
@@ -64,11 +64,11 @@ void __rmonIOhandler(void) {
     s32 total;
     s32 buf;
 
-    func_800053D0(&rmonsio_bss_0000, &rmonsio_bss_0018, 1);
-    func_800051E0(0x14, &rmonsio_bss_0000, 0);
+    func_800053D0(&rmon_IOmq, &rmon_IOmsgs, 1);
+    func_800051E0(0x14, &rmon_IOmq, 0);
     __osRdb_DbgRead_Buf = &rmonRdbReadBuf;
 loop:
-    func_80004FE0(&rmonsio_bss_0000, 0, 1);
+    func_80004FE0(&rmon_IOmq, 0, 1);
     func_800069BC(&rmonRdbReadBuf);
     __osRdb_DbgRead_Buf = &rmonRdbReadBuf;
     total = 0;

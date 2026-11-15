@@ -53,9 +53,9 @@ glabel func_80009B60
     /* AC0C 80009C0C AD390028 */  sw         $t9, %lo(D_A4600028)($t1)
   .L80009C10:
     /* AC10 80009C10 00085880 */  sll        $t3, $t0, 2
-    /* AC14 80009C14 3C018001 */  lui        $at, %hi(D_8000A470)
+    /* AC14 80009C14 3C018001 */  lui        $at, %hi(__osCurrentHandle)
     /* AC18 80009C18 002B0821 */  addu       $at, $at, $t3
-    /* AC1C 80009C1C AC24A470 */  sw         $a0, %lo(D_8000A470)($at)
+    /* AC1C 80009C1C AC24A470 */  sw         $a0, %lo(__osCurrentHandle)($at)
   .L80009C20:
     /* AC20 80009C20 8C8C000C */  lw         $t4, 0xC($a0)
     /* AC24 80009C24 3C01A000 */  lui        $at, (0xA0000000 >> 16)

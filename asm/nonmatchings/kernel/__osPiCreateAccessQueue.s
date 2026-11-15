@@ -5,11 +5,11 @@ glabel __osPiCreateAccessQueue
     /* 6800 80005800 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* 6804 80005804 AFBF0014 */  sw         $ra, 0x14($sp)
     /* 6808 80005808 240E0001 */  addiu      $t6, $zero, 0x1
-    /* 680C 8000580C 3C018001 */  lui        $at, %hi(D_8000A480)
+    /* 680C 8000580C 3C018001 */  lui        $at, %hi(__osPiAccessQueueEnabled)
     /* 6810 80005810 3C048002 */  lui        $a0, %hi(__osPiAccessQueue)
-    /* 6814 80005814 3C058002 */  lui        $a1, %hi(siacs_bss_0000)
-    /* 6818 80005818 AC2EA480 */  sw         $t6, %lo(D_8000A480)($at)
-    /* 681C 8000581C 24A5B630 */  addiu      $a1, $a1, %lo(siacs_bss_0000)
+    /* 6814 80005814 3C058002 */  lui        $a1, %hi(piacs_piAccessBuf)
+    /* 6818 80005818 AC2EA480 */  sw         $t6, %lo(__osPiAccessQueueEnabled)($at)
+    /* 681C 8000581C 24A5B630 */  addiu      $a1, $a1, %lo(piacs_piAccessBuf)
     /* 6820 80005820 2484B638 */  addiu      $a0, $a0, %lo(__osPiAccessQueue)
     /* 6824 80005824 0C0014F4 */  jal        func_800053D0
     /* 6828 80005828 24060001 */   addiu     $a2, $zero, 0x1

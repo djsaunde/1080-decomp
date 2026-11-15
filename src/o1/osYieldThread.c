@@ -2,13 +2,13 @@
 #include "common.h"
 
 /* osYieldThread */
-extern void* D_8000A420;
-extern s32 D_8000A418;
+extern void* __osRunningThread;
+extern s32 __osRunQueue;
 extern void func_80003D0C(s32*);
 
 void osYieldThread(void) {
     register s32 sr = func_800066B0();
-    *(s16*)((char*)D_8000A420 + 0x10) = 2;
-    func_80003D0C(&D_8000A418);
+    *(s16*)((char*)__osRunningThread + 0x10) = 2;
+    func_80003D0C(&__osRunQueue);
     func_800066D0(sr);
 }

@@ -17,7 +17,7 @@
  *   s32 osEPiRawReadIo(OSPiHandle *h, u32 cartAddr, u32 *data) {
  *       if (IO_READ(PI_STATUS_REG) & 3)           // 0xA4600010
  *           while (IO_READ(PI_STATUS_REG) & 3) {} // wait idle
- *       cur = __osPiTable[h->domain];             // D_8000A470[]
+ *       cur = __osPiTable[h->domain];             // __osCurrentHandle[]
  *       if (cur != h) {
  *           if (h->domain == 0) {                 // DOM1 regs
  *               if (cur->latency    != h->latency)    PI_BSD_DOM1_LAT = h->latency;   // 0xA4600014
@@ -36,7 +36,7 @@
  * Struct-typing reference: h = OSPiHandle (same as osEPiRawStartDma) -
  * h->0x5 latency, 0x6 pageSize, 0x7 relDuration, 0x8 pulse, 0x9
  * domain (u8; 0 = DOM1 else DOM2), 0xC baseAddress. __osPiTable =
- * D_8000A470 (OSPiHandle*[] indexed by domain). PI BSD config
+ * __osCurrentHandle (OSPiHandle*[] indexed by domain). PI BSD config
  * registers only rewritten when the cached handle for that domain
  * differs and the individual field changed (lazy reprogram). The
  * final read is an uncached (0xA0000000 / KSEG1) load of
@@ -67,7 +67,7 @@ typedef struct OSPiHandle_s {
     u32 baseAddress; /* 0x0C */
 } OSPiHandle;
 
-extern OSPiHandle *D_8000A470[]; /* __osCurrentHandle */
+extern OSPiHandle *__osCurrentHandle[]; /* __osCurrentHandle */
 
 s32 osEPiRawReadIo(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
     register u32 stat;
@@ -79,8 +79,8 @@ s32 osEPiRawReadIo(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
     }
 
     domain = pihandle->domain;
-    if (D_8000A470[domain] != pihandle) {
-        OSPiHandle *cHandle = D_8000A470[domain];
+    if (__osCurrentHandle[domain] != pihandle) {
+        OSPiHandle *cHandle = __osCurrentHandle[domain];
         if (domain == 0) {
             if (cHandle->latency != pihandle->latency) {
                 IO_REG(0xA4600014) = pihandle->latency;
@@ -108,7 +108,7 @@ s32 osEPiRawReadIo(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
                 IO_REG(0xA4600028) = pihandle->pulse;
             }
         }
-        D_8000A470[domain] = pihandle;
+        __osCurrentHandle[domain] = pihandle;
     }
 
     *data = *(volatile u32 *)(0xA0000000 | (pihandle->baseAddress | devAddr));

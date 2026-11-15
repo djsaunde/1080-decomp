@@ -1,24 +1,24 @@
 #include "common.h"
 
-extern s32 rmonbrk_bss_0000;
-extern s32 D_8001FEF4;
-extern s32 D_8001FEF0;
+extern s32 rmon_breakpoints;
+extern s32 rmon_altBreak_oldInstruction;
+extern s32 rmon_altBreak;
 extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
 /* SetTempBreakpoint (rmonbrk.c static) */
 void rmon_SetTempBreakpoint(s32* arg0, s32* arg1) {
-    *((s32*)((char*)&rmonbrk_bss_0000 + 4)) = *arg0;
+    *((s32*)((char*)&rmon_breakpoints + 4)) = *arg0;
     *arg0 = 0x40D;
     func_800031F0(arg0, 4);
     func_80005350(arg0, 4);
-    *(s32*)&rmonbrk_bss_0000 = (s32)arg0;
+    *(s32*)&rmon_breakpoints = (s32)arg0;
     if (arg1 != 0) {
-        D_8001FEF4 = *arg1;
+        rmon_altBreak_oldInstruction = *arg1;
         *arg1 = 0x40D;
         func_800031F0(arg1, 4);
         func_80005350(arg1, 4);
-        D_8001FEF0 = (s32)arg1;
+        rmon_altBreak = (s32)arg1;
     }
 }
 
@@ -29,22 +29,22 @@ void rmon_SetTempBreakpoint(s32* arg0, s32* arg1) {
  * Decoded structure (covers BOTH entries 0x817C + 0x81D0):
  *
  *   void __rmonClearBreak(void) {
- *       s32 *saved_a = (s32*)rmonbrk_bss_0000;
+ *       s32 *saved_a = (s32*)rmon_breakpoints;
  *       if (saved_a != NULL) {
  *           if ((*saved_a & 0xFC00003F) == 0xD) {  // is BREAK opcode?
- *               *saved_a = *((s32*)((char*)&rmonbrk_bss_0000 + 4));  // restore orig
- *               __osException((void*)rmonbrk_bss_0000, 4);  // ICache invalidate
- *               func_80005350((void*)rmonbrk_bss_0000, 4);  // DCache flush
+ *               *saved_a = *((s32*)((char*)&rmon_breakpoints + 4));  // restore orig
+ *               __osException((void*)rmon_breakpoints, 4);  // ICache invalidate
+ *               func_80005350((void*)rmon_breakpoints, 4);  // DCache flush
  *           }
- *           rmonbrk_bss_0000 = 0;
+ *           rmon_breakpoints = 0;
  *       }
- *       if (D_8001FEF0 != 0) {
- *           if ((*(s32*)D_8001FEF0 & 0xFC00003F) == 0xD) {
- *               *(s32*)D_8001FEF0 = D_8001FEF4;
- *               __osException((void*)D_8001FEF0, 4);
- *               func_80005350((void*)D_8001FEF0, 4);
+ *       if (rmon_altBreak != 0) {
+ *           if ((*(s32*)rmon_altBreak & 0xFC00003F) == 0xD) {
+ *               *(s32*)rmon_altBreak = rmon_altBreak_oldInstruction;
+ *               __osException((void*)rmon_altBreak, 4);
+ *               func_80005350((void*)rmon_altBreak, 4);
  *           }
- *           D_8001FEF0 = 0;
+ *           rmon_altBreak = 0;
  *       }
  *   }
  *
@@ -77,23 +77,23 @@ void rmon_SetTempBreakpoint(s32* arg0, s32* arg1) {
 void rmon_ClearTempBreakpoint(void) {
     s32 instr_a;
 
-    if (((s32 *)&rmonbrk_bss_0000)[0] != 0) {
-        instr_a = *(s32 *)((s32 *)&rmonbrk_bss_0000)[0];
+    if (((s32 *)&rmon_breakpoints)[0] != 0) {
+        instr_a = *(s32 *)((s32 *)&rmon_breakpoints)[0];
         if ((instr_a & 0xFC00003F) == 0xD) {
-            *(s32 *)((s32 *)&rmonbrk_bss_0000)[0] = ((s32 *)&rmonbrk_bss_0000)[1];
-            func_800031F0((void *)((s32 *)&rmonbrk_bss_0000)[0], 4);
-            func_80005350((void *)((s32 *)&rmonbrk_bss_0000)[0], 4);
+            *(s32 *)((s32 *)&rmon_breakpoints)[0] = ((s32 *)&rmon_breakpoints)[1];
+            func_800031F0((void *)((s32 *)&rmon_breakpoints)[0], 4);
+            func_80005350((void *)((s32 *)&rmon_breakpoints)[0], 4);
         }
-        ((s32 *)&rmonbrk_bss_0000)[0] = 0;
+        ((s32 *)&rmon_breakpoints)[0] = 0;
     }
 
-    if (D_8001FEF0 != 0) {
-        instr_a = *(s32 *)D_8001FEF0;
+    if (rmon_altBreak != 0) {
+        instr_a = *(s32 *)rmon_altBreak;
         if ((instr_a & 0xFC00003F) == 0xD) {
-            *(s32 *)D_8001FEF0 = D_8001FEF4;
-            func_800031F0((void *)D_8001FEF0, 4);
-            func_80005350((void *)D_8001FEF0, 4);
+            *(s32 *)rmon_altBreak = rmon_altBreak_oldInstruction;
+            func_800031F0((void *)rmon_altBreak, 4);
+            func_80005350((void *)rmon_altBreak, 4);
         }
-        D_8001FEF0 = 0;
+        rmon_altBreak = 0;
     }
 }

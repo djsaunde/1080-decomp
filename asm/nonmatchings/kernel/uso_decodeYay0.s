@@ -55,8 +55,8 @@ glabel uso_decodeYay0
     /* 348C 8000248C 00000000 */  nop
     /* 3490 80002490 400C6000 */  mfc0       $t4, $12 /* handwritten instruction */
     /* 3494 80002494 3182FF01 */  andi       $v0, $t4, 0xFF01
-    /* 3498 80002498 3C088001 */  lui        $t0, %hi(D_8000A3E0)
-    /* 349C 8000249C 2508A3E0 */  addiu      $t0, $t0, %lo(D_8000A3E0)
+    /* 3498 80002498 3C088001 */  lui        $t0, %hi(__OSGlobalIntMask)
+    /* 349C 8000249C 2508A3E0 */  addiu      $t0, $t0, %lo(__OSGlobalIntMask)
     /* 34A0 800024A0 8D0B0000 */  lw         $t3, 0x0($t0)
     /* 34A4 800024A4 2401FFFF */  addiu      $at, $zero, -0x1
     /* 34A8 800024A8 01614026 */  xor        $t0, $t3, $at
@@ -77,9 +77,9 @@ glabel uso_decodeYay0
     /* 34E0 800024E0 00814024 */  and        $t0, $a0, $at
     /* 34E4 800024E4 010B4024 */  and        $t0, $t0, $t3
     /* 34E8 800024E8 000843C2 */  srl        $t0, $t0, 15
-    /* 34EC 800024EC 3C0A8001 */  lui        $t2, %hi(D_8000A680)
+    /* 34EC 800024EC 3C0A8001 */  lui        $t2, %hi(__osRcpImTable)
     /* 34F0 800024F0 01485021 */  addu       $t2, $t2, $t0
-    /* 34F4 800024F4 954AA680 */  lhu        $t2, %lo(D_8000A680)($t2)
+    /* 34F4 800024F4 954AA680 */  lhu        $t2, %lo(__osRcpImTable)($t2)
     /* 34F8 800024F8 3C01A430 */  lui        $at, %hi(D_A430000C)
     /* 34FC 800024FC AC2A000C */  sw         $t2, %lo(D_A430000C)($at)
     /* 3500 80002500 3088FF01 */  andi       $t0, $a0, 0xFF01

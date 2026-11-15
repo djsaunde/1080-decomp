@@ -2,7 +2,7 @@
 #include "libultra/os_thread.h"
 
 extern s32 D_80003FE0;          /* __osCleanupThread (thread return address) */
-extern OSThread *D_8000A41C;    /* __osActiveQueue */
+extern OSThread *__osActiveQueue;    /* __osActiveQueue */
 extern s32 func_800066B0(void); /* __osDisableInt */
 extern void func_800066D0(s32); /* __osRestoreInt */
 
@@ -32,8 +32,8 @@ void osCreateThread(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri 
     t->state = OS_STATE_STOPPED;
     t->flags = 0;
     saveMask = func_800066B0();
-    t->tlnext = D_8000A41C;
-    D_8000A41C = t;
+    t->tlnext = __osActiveQueue;
+    __osActiveQueue = t;
     func_800066D0(saveMask);
 }
 /* osCreateThread (osCreateThread): ALREADY MATCHED -- this C is the

@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern u32 D_80000308;
+extern u32 osRomBase;
 
 #define PI_STATUS (*(volatile u32*)0xA4600010)
 
@@ -11,7 +11,7 @@ s32 osPiRawReadIo(u32 arg0, u32* arg1) {
     if (s & 3) {
         do { s = PI_STATUS; } while (s & 3);
     }
-    *arg1 = *(u32*)((D_80000308 | arg0) | 0xA0000000);
+    *arg1 = *(u32*)((osRomBase | arg0) | 0xA0000000);
     return 0;
 }
 

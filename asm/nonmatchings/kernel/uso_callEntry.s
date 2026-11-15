@@ -41,8 +41,8 @@ glabel uso_callEntry
     /* 1D04 80000D04 24842BC0 */  addiu      $a0, $a0, %lo(gUsoCtx)
     /* 1D08 80000D08 0040F809 */  jalr       $v0
     /* 1D0C 80000D0C 00000000 */   nop
-    /* 1D10 80000D10 3C018001 */  lui        $at, %hi(D_80012BE4)
-    /* 1D14 80000D14 AC222BE4 */  sw         $v0, %lo(D_80012BE4)($at)
+    /* 1D10 80000D10 3C018001 */  lui        $at, %hi(gUsoEntryResult)
+    /* 1D14 80000D14 AC222BE4 */  sw         $v0, %lo(gUsoEntryResult)($at)
     /* 1D18 80000D18 00001025 */  or         $v0, $zero, $zero
   .L80000D1C:
     /* 1D1C 80000D1C 8FBF0014 */  lw         $ra, 0x14($sp)

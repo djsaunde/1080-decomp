@@ -2,19 +2,19 @@
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
+extern s32 __osPiAccessQueueEnabled;
 extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
 extern void func_800053D0(s32*, s32*, s32);
-extern s32 D_8000A3E0;
+extern s32 __OSGlobalIntMask;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern void* D_8000A420;
-extern s32 D_8000A418;
-extern s32 siacs_bss_0000;
+extern void* __osRunningThread;
+extern s32 __osRunQueue;
+extern s32 piacs_piAccessBuf;
 extern s32 func_800009D8(void*, s32, s32, void*);
 extern void func_80003FF0(s32, void*);
 extern void* func_80003E54(void*);
@@ -24,12 +24,12 @@ extern void func_8000785C(s32);
 extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
-extern FuncPtr2 D_80012C44;
+extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
 extern s32 gUsoCtx;
 extern s32 gFsDeviceTable;
-extern s32 D_8000A41C;
+extern s32 __osActiveQueue;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005400(s32, s32);
@@ -74,13 +74,13 @@ s32 __rmonListBreak(s32 arg0) {
  * jal targets sit 0x400 above our symbol numbering) and stay absolute
  * undefined_syms entries. Callees, real names: 6A98 __rmonReadWordAt,
  * 6A50 __rmonWriteWordTo, 31F0 osWritebackDCache, 5350 osInvalICache,
- * 73F8 __rmonSendReply. rmonbrk_bss_0088 = rspBreakpoints,
- * rmonbrk_bss_0000 = breakpoints (16 x {addr, old instruction}). */
+ * 73F8 __rmonSendReply. rmon_RCPbreakpoints = rspBreakpoints,
+ * rmon_breakpoints = breakpoints (16 x {addr, old instruction}). */
 typedef struct { u32 *breakAddress; u32 oldInstruction; } BreakInfo;
 typedef struct { s32 pad0; u8 code; u8 pad5[4]; u8 method; u8 padA[2]; s32 object; s32 bp; } ClrBkptRequest;
 typedef struct { s32 pad0; u8 code; u8 pad5; s16 error; s32 pad8; s32 object; s32 bp; s32 pad14; } BkptReply;
-extern BreakInfo rmonbrk_bss_0088[];
-extern BreakInfo rmonbrk_bss_0000[];
+extern BreakInfo rmon_RCPbreakpoints[];
+extern BreakInfo rmon_breakpoints[];
 extern u32 func_80006A98(u32 *);
 extern void func_80006A50(u32 *, u32);
 extern void func_800031F0(void *, s32);
@@ -97,7 +97,7 @@ s32 __rmonClearBreak(ClrBkptRequest *req) {
         return -2;
     }
     if (req->method == 1) {
-        whichBreak = &rmonbrk_bss_0088[request->bp];
+        whichBreak = &rmon_RCPbreakpoints[request->bp];
         if (!whichBreak->breakAddress) {
             return -2;
         }
@@ -106,7 +106,7 @@ s32 __rmonClearBreak(ClrBkptRequest *req) {
             func_80006A50(whichBreak->breakAddress, whichBreak->oldInstruction);
         }
     } else {
-        whichBreak = &rmonbrk_bss_0000[request->bp];
+        whichBreak = &rmon_breakpoints[request->bp];
         if (!whichBreak->breakAddress) {
             return -2;
         }

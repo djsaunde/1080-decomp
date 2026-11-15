@@ -2,19 +2,19 @@
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
+extern s32 __osPiAccessQueueEnabled;
 extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
 extern void func_800053D0(s32*, s32*, s32);
-extern s32 D_8000A3E0;
+extern s32 __OSGlobalIntMask;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern void* D_8000A420;
-extern s32 D_8000A418;
-extern s32 siacs_bss_0000;
+extern void* __osRunningThread;
+extern s32 __osRunQueue;
+extern s32 piacs_piAccessBuf;
 extern s32 func_800009D8(void*, s32, s32, void*);
 extern void func_80003FF0(s32, void*);
 extern void* func_80003E54(void*);
@@ -24,12 +24,12 @@ extern void func_8000785C(s32);
 extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
-extern FuncPtr2 D_80012C44;
+extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
 extern s32 gUsoCtx;
 extern s32 gFsDeviceTable;
-extern s32 D_8000A41C;
+extern s32 __osActiveQueue;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
@@ -79,7 +79,7 @@ s32 rmon_NotImplemented(s32 arg0) {
  * is steps 2+3 (same-file merge into single C body at -O1).
  * 80006640 cross-function shared-tail entry preserved via
  * undefined_syms_auto.txt. */
-extern s32 (*D_8000A4A0[])(u8 *);
+extern s32 (*rmon_dispatchTable[])(u8 *);
 extern void func_800073F8(void *buf, s32 size, s32 flag);
 typedef struct {
     char pad0[4];
@@ -94,7 +94,7 @@ s32 __rmonExecute(u8 *a0) {
     if (a0[4] >= 0x35) {
         return -1;
     }
-    v0 = D_8000A4A0[a0[4]](a0);
+    v0 = rmon_dispatchTable[a0[4]](a0);
     if (v0 < 0) {
         pkt.idx = a0[4];
         pkt.result = (s16)v0;

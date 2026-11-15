@@ -18,11 +18,11 @@ glabel osStartThread
     /* AD44 80009D44 00000000 */   nop
     /* AD48 80009D48 8FB80028 */  lw         $t8, 0x28($sp)
     /* AD4C 80009D4C 240F0002 */  addiu      $t7, $zero, 0x2
-    /* AD50 80009D50 3C048001 */  lui        $a0, %hi(D_8000A418)
+    /* AD50 80009D50 3C048001 */  lui        $a0, %hi(__osRunQueue)
     /* AD54 80009D54 A70F0010 */  sh         $t7, 0x10($t8)
     /* AD58 80009D58 8FA50028 */  lw         $a1, 0x28($sp)
     /* AD5C 80009D5C 0C000F83 */  jal        func_80003E0C
-    /* AD60 80009D60 2484A418 */   addiu     $a0, $a0, %lo(D_8000A418)
+    /* AD60 80009D60 2484A418 */   addiu     $a0, $a0, %lo(__osRunQueue)
     /* AD64 80009D64 10000021 */  b          .L80009DEC
     /* AD68 80009D68 00000000 */   nop
   .L80009D6C:
@@ -30,18 +30,18 @@ glabel osStartThread
     /* AD70 80009D70 8F280008 */  lw         $t0, 0x8($t9)
     /* AD74 80009D74 11000005 */  beqz       $t0, .L80009D8C
     /* AD78 80009D78 00000000 */   nop
-    /* AD7C 80009D7C 3C098001 */  lui        $t1, %hi(D_8000A418)
-    /* AD80 80009D80 2529A418 */  addiu      $t1, $t1, %lo(D_8000A418)
+    /* AD7C 80009D7C 3C098001 */  lui        $t1, %hi(__osRunQueue)
+    /* AD80 80009D80 2529A418 */  addiu      $t1, $t1, %lo(__osRunQueue)
     /* AD84 80009D84 1509000A */  bne        $t0, $t1, .L80009DB0
     /* AD88 80009D88 00000000 */   nop
   .L80009D8C:
     /* AD8C 80009D8C 8FAB0028 */  lw         $t3, 0x28($sp)
     /* AD90 80009D90 240A0002 */  addiu      $t2, $zero, 0x2
-    /* AD94 80009D94 3C048001 */  lui        $a0, %hi(D_8000A418)
+    /* AD94 80009D94 3C048001 */  lui        $a0, %hi(__osRunQueue)
     /* AD98 80009D98 A56A0010 */  sh         $t2, 0x10($t3)
     /* AD9C 80009D9C 8FA50028 */  lw         $a1, 0x28($sp)
     /* ADA0 80009DA0 0C000F83 */  jal        func_80003E0C
-    /* ADA4 80009DA4 2484A418 */   addiu     $a0, $a0, %lo(D_8000A418)
+    /* ADA4 80009DA4 2484A418 */   addiu     $a0, $a0, %lo(__osRunQueue)
     /* ADA8 80009DA8 10000010 */  b          .L80009DEC
     /* ADAC 80009DAC 00000000 */   nop
   .L80009DB0:
@@ -56,8 +56,8 @@ glabel osStartThread
     /* ADD0 80009DD0 0C000F95 */  jal        func_80003E54
     /* ADD4 80009DD4 8DE40008 */   lw        $a0, 0x8($t7)
     /* ADD8 80009DD8 00408825 */  or         $s1, $v0, $zero
-    /* ADDC 80009DDC 3C048001 */  lui        $a0, %hi(D_8000A418)
-    /* ADE0 80009DE0 2484A418 */  addiu      $a0, $a0, %lo(D_8000A418)
+    /* ADDC 80009DDC 3C048001 */  lui        $a0, %hi(__osRunQueue)
+    /* ADE0 80009DE0 2484A418 */  addiu      $a0, $a0, %lo(__osRunQueue)
     /* ADE4 80009DE4 0C000F83 */  jal        func_80003E0C
     /* ADE8 80009DE8 02202825 */   or        $a1, $s1, $zero
   .L80009DEC:
@@ -70,20 +70,20 @@ glabel osStartThread
     /* AE04 80009E04 1000000F */  b          .L80009E44
     /* AE08 80009E08 00000000 */   nop
   .L80009E0C:
-    /* AE0C 80009E0C 3C198001 */  lui        $t9, %hi(D_8000A420)
-    /* AE10 80009E10 3C098001 */  lui        $t1, %hi(D_8000A418)
-    /* AE14 80009E14 8D29A418 */  lw         $t1, %lo(D_8000A418)($t1)
-    /* AE18 80009E18 8F39A420 */  lw         $t9, %lo(D_8000A420)($t9)
+    /* AE0C 80009E0C 3C198001 */  lui        $t9, %hi(__osRunningThread)
+    /* AE10 80009E10 3C098001 */  lui        $t1, %hi(__osRunQueue)
+    /* AE14 80009E14 8D29A418 */  lw         $t1, %lo(__osRunQueue)($t1)
+    /* AE18 80009E18 8F39A420 */  lw         $t9, %lo(__osRunningThread)($t9)
     /* AE1C 80009E1C 8D2A0004 */  lw         $t2, 0x4($t1)
     /* AE20 80009E20 8F280004 */  lw         $t0, 0x4($t9)
     /* AE24 80009E24 010A082A */  slt        $at, $t0, $t2
     /* AE28 80009E28 10200006 */  beqz       $at, .L80009E44
     /* AE2C 80009E2C 00000000 */   nop
     /* AE30 80009E30 240B0002 */  addiu      $t3, $zero, 0x2
-    /* AE34 80009E34 3C048001 */  lui        $a0, %hi(D_8000A418)
+    /* AE34 80009E34 3C048001 */  lui        $a0, %hi(__osRunQueue)
     /* AE38 80009E38 A72B0010 */  sh         $t3, 0x10($t9)
     /* AE3C 80009E3C 0C000F43 */  jal        func_80003D0C
-    /* AE40 80009E40 2484A418 */   addiu     $a0, $a0, %lo(D_8000A418)
+    /* AE40 80009E40 2484A418 */   addiu     $a0, $a0, %lo(__osRunQueue)
   .L80009E44:
     /* AE44 80009E44 0C0019B4 */  jal        func_800066D0
     /* AE48 80009E48 02002025 */   or        $a0, $s0, $zero

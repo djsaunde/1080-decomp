@@ -3,9 +3,9 @@
 nonmatching kernel_entrypoint, 0x60
 
 glabel kernel_entrypoint
-    /* 1000 80000000 3C088001 */  lui        $t0, %hi(D_8000ABC0)
+    /* 1000 80000000 3C088001 */  lui        $t0, %hi(gKernelBssStart)
     /* 1004 80000004 3C090001 */  lui        $t1, (0x153E0 >> 16)
-    /* 1008 80000008 2508ABC0 */  addiu      $t0, $t0, %lo(D_8000ABC0)
+    /* 1008 80000008 2508ABC0 */  addiu      $t0, $t0, %lo(gKernelBssStart)
     /* 100C 8000000C 352953E0 */  ori        $t1, $t1, (0x153E0 & 0xFFFF)
   .L80000010:
     /* 1010 80000010 2129FFF8 */  addi       $t1, $t1, -0x8 /* handwritten instruction */

@@ -8,14 +8,14 @@
  * at -O2), so only these two are carved out. objdiff compares per-function so the
  * .ld placement (right after kernel_000.c.o) is purely cosmetic. */
 
-extern void* D_8000A420;
+extern void* __osRunningThread;
 
 /* kdebug_send: chunked-write driver. Borrows hardware (init via
- * func_80004C7C if D_8000A490 was clear), processes arg1 bytes from arg0
+ * func_80004C7C if __osRdb_IP6_Empty was clear), processes arg1 bytes from arg0
  * in chunks of <=3 via func_80004C08, re-arming the hardware between chunks,
- * then conditionally re-invokes func_80004C7C if D_8000A490 was already set
+ * then conditionally re-invokes func_80004C7C if __osRdb_IP6_Empty was already set
  * on entry. -O1 file-split (matched 2026-06-23). */
-extern s32 D_8000A490;
+extern s32 __osRdb_IP6_Empty;
 extern void func_80004C7C(void);
 extern void func_80004C08(char *p, s32 n);
 void kdebug_send(char *arg0, s32 arg1) {
@@ -24,7 +24,7 @@ void kdebug_send(char *arg0, s32 arg1) {
     s32 wasInit;
 
     offset = 0;
-    if (D_8000A490 == 0) {
+    if (__osRdb_IP6_Empty == 0) {
         func_80004C7C();
         wasInit = 0;
     } else {
@@ -48,18 +48,18 @@ void kdebug_send(char *arg0, s32 arg1) {
 
 /* kdebugserver: 64-insn rmon/kdebugserver packet parser. Receives 24
  * bits per call (high 3 bytes of arg0); appends them to packet buffer
- * kdebugserver_bss_01B0[] at write-position D_8000A430. After append:
+ * kdebug_buffer[] at write-position kdebug_numChars. After append:
  *   - if buf[0] == 2: send a fixed-size packet (0x190 bytes from
- *     D_8000A420+0x20 via func_80004CE8); reset position
+ *     __osRunningThread+0x20 via func_80004CE8); reset position
  *   - else if pos < 9: return (need more data)
  *   - else if buf[0] == 1: parse two u32s (BE) at buf[1] and buf[5]
  *     via func_80004BB0; pass to func_80004CE8; reset position
  *   - else: return (other tag — discard)
- * -O1 split: byte-exact match (loop reads D_8000A430 + i directly, no
+ * -O1 split: byte-exact match (loop reads kdebug_numChars + i directly, no
  * cached pos; ++i pre-incr in the while test; Y,X decl order = reverse
  * stack-slot numbering at -O1). */
-extern u32 D_8000A430;
-extern u8 kdebugserver_bss_01B0[];
+extern u32 kdebug_numChars;
+extern u8 kdebug_buffer[];
 extern void func_80004CE8(u32 a, u32 b);
 extern u32 func_80004BB0(u8 *p);
 void kdebugserver(u32 arg0) {
@@ -68,19 +68,19 @@ void kdebugserver(u32 arg0) {
 
     i = 0;
     do {
-        kdebugserver_bss_01B0[D_8000A430] = ((u8*)&arg0)[1 + i];
-        D_8000A430 = D_8000A430 + 1;
+        kdebug_buffer[kdebug_numChars] = ((u8*)&arg0)[1 + i];
+        kdebug_numChars = kdebug_numChars + 1;
     } while ((u32)++i < 3);
 
-    if (kdebugserver_bss_01B0[0] == 2) {
-        func_80004CE8((u32)((u8*)D_8000A420 + 0x20), 0x190);
-        D_8000A430 = 0;
-    } else if (D_8000A430 >= 9) {
-        if (kdebugserver_bss_01B0[0] == 1) {
-            X = func_80004BB0(&kdebugserver_bss_01B0[1]);
-            Y = func_80004BB0(&kdebugserver_bss_01B0[5]);
+    if (kdebug_buffer[0] == 2) {
+        func_80004CE8((u32)((u8*)__osRunningThread + 0x20), 0x190);
+        kdebug_numChars = 0;
+    } else if (kdebug_numChars >= 9) {
+        if (kdebug_buffer[0] == 1) {
+            X = func_80004BB0(&kdebug_buffer[1]);
+            Y = func_80004BB0(&kdebug_buffer[5]);
             func_80004CE8(X, Y);
-            D_8000A430 = 0;
+            kdebug_numChars = 0;
         }
     }
 }

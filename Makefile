@@ -1356,7 +1356,7 @@ GAMELIBS_6E224_DONOR := build/src/game_libs/game_libs_ido53_6E224.c.o
 # kernel_000 unit (proven exact 284/284 standalone; see donor header).
 KERNEL000_2530_DONOR := build/src/kernel/kernel_000_ido53_2530.c.o
 # osCreatePiManager = kernel osCreatePiManager (KMC 2-worker variant): TU-defined
-# D_8000A450 shared-$at donor, proven exact 115/115 standalone (see header).
+# __osPiDevMgr shared-$at donor, proven exact 115/115 standalone (see header).
 KERNEL006_5520_DONOR := build/src/kernel/kernel_006_o1_5520.c.o
 # osCartRomInit = libultra osCartRomInit: TU-defined D_8001B656 2-byte-struct
 # shared-$at donor, proven exact 60/60 standalone (see header).

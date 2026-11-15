@@ -15,8 +15,8 @@ glabel osPiRawReadIo
     /* 39D4 800029D4 1720FFFC */  bnez       $t9, .L800029C8
     /* 39D8 800029D8 00000000 */   nop
   .L800029DC:
-    /* 39DC 800029DC 3C088000 */  lui        $t0, %hi(D_80000308)
-    /* 39E0 800029E0 8D080308 */  lw         $t0, %lo(D_80000308)($t0)
+    /* 39DC 800029DC 3C088000 */  lui        $t0, %hi(osRomBase)
+    /* 39E0 800029E0 8D080308 */  lw         $t0, %lo(osRomBase)($t0)
     /* 39E4 800029E4 3C01A000 */  lui        $at, (0xA0000000 >> 16)
     /* 39E8 800029E8 00001025 */  or         $v0, $zero, $zero
     /* 39EC 800029EC 01044825 */  or         $t1, $t0, $a0

@@ -7,7 +7,7 @@ GLOBAL_ASM("src/libultra/os/restoreint.s")
 
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
-extern s32 D_8000A490;
+extern s32 __osRdb_IP6_Empty;
 extern u32 __osRdb_IP6_Ct;
 extern u32 __osRdb_IP6_CurWrite;
 extern s32 __osRdb_IP6_Data;
@@ -19,7 +19,7 @@ typedef struct {
 } rdbPacket;
 /* __osRdbSend(buf, size, type): pack `size` chars (3 per packet) into rdbPackets
  * (header byte = type<<2 | length). With interrupts disabled, optionally emit one
- * packet to the local-write register (0xC0000000) if D_8000A490 is set, then fill
+ * packet to the local-write register (0xC0000000) if __osRdb_IP6_Empty is set, then fill
  * the __osRdb_IP6 ring buffer (slot = CurWrite*4 + Data) until the source is
  * drained or the ring is full. Returns the number of chars queued. */
 u32 __osRdbSend(s32 arg0, u32 arg1, s32 arg2) {
@@ -36,8 +36,8 @@ u32 __osRdbSend(s32 arg0, u32 arg1, s32 arg2) {
     sp20 = 0;
     sp18 = 0;
     sp1C = func_800066B0();
-    if (D_8000A490 != 0) {
-        D_8000A490 = 0;
+    if (__osRdb_IP6_Empty != 0) {
+        __osRdb_IP6_Empty = 0;
         sp30.type = arg2;
         if (arg1 < 3U) {
             sp2C = arg1;

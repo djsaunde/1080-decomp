@@ -4,7 +4,7 @@
 /* osGetThreadPri */
 s32 osGetThreadPri(Thread* thread) {
     if (thread == 0) {
-        thread = (Thread*)D_8000A420;
+        thread = (Thread*)__osRunningThread;
     }
     return thread->pri;
 }

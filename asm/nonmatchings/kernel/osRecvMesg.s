@@ -24,8 +24,8 @@ glabel osRecvMesg
     /* 5C28 80004C28 10000036 */  b          .L80004D04
     /* 5C2C 80004C2C 2402FFFF */   addiu     $v0, $zero, -0x1
   .L80004C30:
-    /* 5C30 80004C30 3C088001 */  lui        $t0, %hi(D_8000A420)
-    /* 5C34 80004C34 8D08A420 */  lw         $t0, %lo(D_8000A420)($t0)
+    /* 5C30 80004C30 3C088001 */  lui        $t0, %hi(__osRunningThread)
+    /* 5C34 80004C34 8D08A420 */  lw         $t0, %lo(__osRunningThread)($t0)
     /* 5C38 80004C38 24190008 */  addiu      $t9, $zero, 0x8
     /* 5C3C 80004C3C A5190010 */  sh         $t9, 0x10($t0)
     /* 5C40 80004C40 0C000F43 */  jal        func_80003D0C

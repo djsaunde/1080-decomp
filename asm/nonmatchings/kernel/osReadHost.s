@@ -3,28 +3,28 @@ nonmatching osReadHost, 0xD0
 
 glabel osReadHost
     /* 5B10 80004B10 27BDFFD0 */  addiu      $sp, $sp, -0x30
-    /* 5B14 80004B14 3C0E8001 */  lui        $t6, %hi(D_8000A440)
-    /* 5B18 80004B18 8DCEA440 */  lw         $t6, %lo(D_8000A440)($t6)
+    /* 5B14 80004B14 3C0E8001 */  lui        $t6, %hi(readHostInitialized)
+    /* 5B18 80004B18 8DCEA440 */  lw         $t6, %lo(readHostInitialized)($t6)
     /* 5B1C 80004B1C AFBF001C */  sw         $ra, 0x1C($sp)
     /* 5B20 80004B20 AFA40030 */  sw         $a0, 0x30($sp)
     /* 5B24 80004B24 AFA50034 */  sw         $a1, 0x34($sp)
     /* 5B28 80004B28 AFB00018 */  sw         $s0, 0x18($sp)
     /* 5B2C 80004B2C 15C0000F */  bnez       $t6, .L80004B6C
     /* 5B30 80004B30 AFA00028 */  sw         $zero, 0x28($sp)
-    /* 5B34 80004B34 3C048002 */  lui        $a0, %hi(readhost_bss_0000)
-    /* 5B38 80004B38 3C058002 */  lui        $a1, %hi(readhost_bss_0018)
-    /* 5B3C 80004B3C 24A594F8 */  addiu      $a1, $a1, %lo(readhost_bss_0018)
-    /* 5B40 80004B40 248494E0 */  addiu      $a0, $a0, %lo(readhost_bss_0000)
+    /* 5B34 80004B34 3C048002 */  lui        $a0, %hi(readHostMesgQueue)
+    /* 5B38 80004B38 3C058002 */  lui        $a1, %hi(readHostMesgBuf)
+    /* 5B3C 80004B3C 24A594F8 */  addiu      $a1, $a1, %lo(readHostMesgBuf)
+    /* 5B40 80004B40 248494E0 */  addiu      $a0, $a0, %lo(readHostMesgQueue)
     /* 5B44 80004B44 0C0014F4 */  jal        func_800053D0
     /* 5B48 80004B48 24060001 */   addiu     $a2, $zero, 0x1
-    /* 5B4C 80004B4C 3C058002 */  lui        $a1, %hi(readhost_bss_0000)
-    /* 5B50 80004B50 24A594E0 */  addiu      $a1, $a1, %lo(readhost_bss_0000)
+    /* 5B4C 80004B4C 3C058002 */  lui        $a1, %hi(readHostMesgQueue)
+    /* 5B50 80004B50 24A594E0 */  addiu      $a1, $a1, %lo(readHostMesgQueue)
     /* 5B54 80004B54 2404000F */  addiu      $a0, $zero, 0xF
     /* 5B58 80004B58 0C001478 */  jal        func_800051E0
     /* 5B5C 80004B5C 00003025 */   or        $a2, $zero, $zero
     /* 5B60 80004B60 240F0001 */  addiu      $t7, $zero, 0x1
-    /* 5B64 80004B64 3C018001 */  lui        $at, %hi(D_8000A440)
-    /* 5B68 80004B68 AC2FA440 */  sw         $t7, %lo(D_8000A440)($at)
+    /* 5B64 80004B64 3C018001 */  lui        $at, %hi(readHostInitialized)
+    /* 5B68 80004B68 AC2FA440 */  sw         $t7, %lo(readHostInitialized)($at)
   .L80004B6C:
     /* 5B6C 80004B6C 8FB80030 */  lw         $t8, 0x30($sp)
     /* 5B70 80004B70 8FA80028 */  lw         $t0, 0x28($sp)
@@ -47,8 +47,8 @@ glabel osReadHost
     /* 5BB0 80004BB0 1160FFF6 */  beqz       $t3, .L80004B8C
     /* 5BB4 80004BB4 00000000 */   nop
   .L80004BB8:
-    /* 5BB8 80004BB8 3C048002 */  lui        $a0, %hi(readhost_bss_0000)
-    /* 5BBC 80004BBC 248494E0 */  addiu      $a0, $a0, %lo(readhost_bss_0000)
+    /* 5BB8 80004BB8 3C048002 */  lui        $a0, %hi(readHostMesgQueue)
+    /* 5BBC 80004BBC 248494E0 */  addiu      $a0, $a0, %lo(readHostMesgQueue)
     /* 5BC0 80004BC0 00002825 */  or         $a1, $zero, $zero
     /* 5BC4 80004BC4 0C0013F8 */  jal        func_80004FE0
     /* 5BC8 80004BC8 24060001 */   addiu     $a2, $zero, 0x1

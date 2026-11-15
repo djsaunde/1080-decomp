@@ -22,7 +22,7 @@ typedef short s16;
 typedef unsigned int u32;
 typedef unsigned short u16;
 typedef void (*FuncPtr2)(...);
-extern "C" FuncPtr2 D_80012C44;
+extern "C" FuncPtr2 gUsoPrintfHook;
 extern "C" char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoRelSym_1ADC;
@@ -77,7 +77,7 @@ extern "C" s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             *p = *p + val;
             break;
         default:
-            D_80012C44(D_8000A36C, (void *)type);
+            gUsoPrintfHook(D_8000A36C, (void *)type);
             return -2;
         }
         rel[i].info = rel[i].info | 8;

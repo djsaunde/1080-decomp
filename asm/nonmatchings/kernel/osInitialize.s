@@ -109,16 +109,16 @@ glabel osInitialize
     /* 36C0 800026C0 0321C024 */  and        $t8, $t9, $at
     /* 36C4 800026C4 13000006 */  beqz       $t8, .L800026E0
     /* 36C8 800026C8 AFB80058 */   sw        $t8, 0x58($sp)
-    /* 36CC 800026CC 3C018001 */  lui        $at, %hi(D_8000A3D0)
+    /* 36CC 800026CC 3C018001 */  lui        $at, %hi(osClockRate)
     /* 36D0 800026D0 03004825 */  or         $t1, $t8, $zero
     /* 36D4 800026D4 24080000 */  addiu      $t0, $zero, 0x0
-    /* 36D8 800026D8 AC28A3D0 */  sw         $t0, %lo(D_8000A3D0)($at)
+    /* 36D8 800026D8 AC28A3D0 */  sw         $t0, %lo(osClockRate)($at)
     /* 36DC 800026DC AC29A3D4 */  sw         $t1, %lo(D_8000A3D4)($at)
   .L800026E0:
-    /* 36E0 800026E0 3C048001 */  lui        $a0, %hi(D_8000A3D0)
+    /* 36E0 800026E0 3C048001 */  lui        $a0, %hi(osClockRate)
     /* 36E4 800026E4 3C058001 */  lui        $a1, %hi(D_8000A3D4)
     /* 36E8 800026E8 8CA5A3D4 */  lw         $a1, %lo(D_8000A3D4)($a1)
-    /* 36EC 800026EC 8C84A3D0 */  lw         $a0, %lo(D_8000A3D0)($a0)
+    /* 36EC 800026EC 8C84A3D0 */  lw         $a0, %lo(osClockRate)($a0)
     /* 36F0 800026F0 24060000 */  addiu      $a2, $zero, 0x0
     /* 36F4 800026F4 0C000BDE */  jal        func_80002F78
     /* 36F8 800026F8 24070003 */   addiu     $a3, $zero, 0x3
@@ -129,19 +129,19 @@ glabel osInitialize
     /* 370C 8000270C 24060000 */  addiu      $a2, $zero, 0x0
     /* 3710 80002710 0C000B9E */  jal        func_80002E78
     /* 3714 80002714 24070004 */   addiu     $a3, $zero, 0x4
-    /* 3718 80002718 3C0A8000 */  lui        $t2, %hi(D_8000030C)
-    /* 371C 8000271C 8D4A030C */  lw         $t2, %lo(D_8000030C)($t2)
-    /* 3720 80002720 3C018001 */  lui        $at, %hi(D_8000A3D0)
-    /* 3724 80002724 AC22A3D0 */  sw         $v0, %lo(D_8000A3D0)($at)
+    /* 3718 80002718 3C0A8000 */  lui        $t2, %hi(osResetType)
+    /* 371C 8000271C 8D4A030C */  lw         $t2, %lo(osResetType)($t2)
+    /* 3720 80002720 3C018001 */  lui        $at, %hi(osClockRate)
+    /* 3724 80002724 AC22A3D0 */  sw         $v0, %lo(osClockRate)($at)
     /* 3728 80002728 15400005 */  bnez       $t2, .L80002740
     /* 372C 8000272C AC23A3D4 */   sw        $v1, %lo(D_8000A3D4)($at)
-    /* 3730 80002730 3C048000 */  lui        $a0, %hi(D_8000031C)
-    /* 3734 80002734 2484031C */  addiu      $a0, $a0, %lo(D_8000031C)
+    /* 3730 80002730 3C048000 */  lui        $a0, %hi(osAppNMIBuffer)
+    /* 3734 80002734 2484031C */  addiu      $a0, $a0, %lo(osAppNMIBuffer)
     /* 3738 80002738 0C000C34 */  jal        func_800030D0
     /* 373C 8000273C 24050040 */   addiu     $a1, $zero, 0x40
   .L80002740:
-    /* 3740 80002740 3C0C8000 */  lui        $t4, %hi(D_80000300)
-    /* 3744 80002744 8D8C0300 */  lw         $t4, %lo(D_80000300)($t4)
+    /* 3740 80002740 3C0C8000 */  lui        $t4, %hi(osTvType)
+    /* 3744 80002744 8D8C0300 */  lw         $t4, %lo(osTvType)($t4)
     /* 3748 80002748 15800006 */  bnez       $t4, .L80002764
     /* 374C 8000274C 00000000 */   nop
     /* 3750 80002750 3C0B02F5 */  lui        $t3, (0x2F5B2D2 >> 16)
@@ -150,21 +150,21 @@ glabel osInitialize
     /* 375C 8000275C 1000000F */  b          .L8000279C
     /* 3760 80002760 AC2BA3D8 */   sw        $t3, -0x5C28($at)
   .L80002764:
-    /* 3764 80002764 3C0E8000 */  lui        $t6, %hi(D_80000300)
-    /* 3768 80002768 8DCE0300 */  lw         $t6, %lo(D_80000300)($t6)
+    /* 3764 80002764 3C0E8000 */  lui        $t6, %hi(osTvType)
+    /* 3768 80002768 8DCE0300 */  lw         $t6, %lo(osTvType)($t6)
     /* 376C 8000276C 24010002 */  addiu      $at, $zero, 0x2
     /* 3770 80002770 15C10006 */  bne        $t6, $at, .L8000278C
     /* 3774 80002774 00000000 */   nop
     /* 3778 80002778 3C0D02E6 */  lui        $t5, (0x2E6025C >> 16)
     /* 377C 8000277C 35AD025C */  ori        $t5, $t5, (0x2E6025C & 0xFFFF)
-    /* 3780 80002780 3C018001 */  lui        $at, %hi(D_8000A3D8)
+    /* 3780 80002780 3C018001 */  lui        $at, %hi(osViClock)
     /* 3784 80002784 10000005 */  b          .L8000279C
-    /* 3788 80002788 AC2DA3D8 */   sw        $t5, %lo(D_8000A3D8)($at)
+    /* 3788 80002788 AC2DA3D8 */   sw        $t5, %lo(osViClock)($at)
   .L8000278C:
     /* 378C 8000278C 3C0F02E6 */  lui        $t7, (0x2E6D354 >> 16)
     /* 3790 80002790 35EFD354 */  ori        $t7, $t7, (0x2E6D354 & 0xFFFF)
-    /* 3794 80002794 3C018001 */  lui        $at, %hi(D_8000A3D8)
-    /* 3798 80002798 AC2FA3D8 */  sw         $t7, %lo(D_8000A3D8)($at)
+    /* 3794 80002794 3C018001 */  lui        $at, %hi(osViClock)
+    /* 3798 80002798 AC2FA3D8 */  sw         $t7, %lo(osViClock)($at)
   .L8000279C:
     /* 379C 8000279C 3C198002 */  lui        $t9, %hi(__kmc_pt_mode)
     /* 37A0 800027A0 8F3982F0 */  lw         $t9, %lo(__kmc_pt_mode)($t9)

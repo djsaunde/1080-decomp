@@ -4,6 +4,6 @@
 /* __osSetGlobalIntMask */
 void __osSetGlobalIntMask(s32 mask) {
     register s32 sr = func_800066B0();
-    D_8000A3E0 |= mask;
+    __OSGlobalIntMask |= mask;
     func_800066D0(sr);
 }

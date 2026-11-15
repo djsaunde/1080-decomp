@@ -7,13 +7,13 @@ glabel __osSetGlobalIntMask
     /* 71F8 800061F8 AFA40028 */  sw         $a0, 0x28($sp)
     /* 71FC 800061FC 0C0019AC */  jal        func_800066B0
     /* 7200 80006200 AFB00018 */   sw        $s0, 0x18($sp)
-    /* 7204 80006204 3C0E8001 */  lui        $t6, %hi(D_8000A3E0)
-    /* 7208 80006208 8DCEA3E0 */  lw         $t6, %lo(D_8000A3E0)($t6)
+    /* 7204 80006204 3C0E8001 */  lui        $t6, %hi(__OSGlobalIntMask)
+    /* 7208 80006208 8DCEA3E0 */  lw         $t6, %lo(__OSGlobalIntMask)($t6)
     /* 720C 8000620C 8FAF0028 */  lw         $t7, 0x28($sp)
     /* 7210 80006210 00408025 */  or         $s0, $v0, $zero
-    /* 7214 80006214 3C018001 */  lui        $at, %hi(D_8000A3E0)
+    /* 7214 80006214 3C018001 */  lui        $at, %hi(__OSGlobalIntMask)
     /* 7218 80006218 01CFC025 */  or         $t8, $t6, $t7
-    /* 721C 8000621C AC38A3E0 */  sw         $t8, %lo(D_8000A3E0)($at)
+    /* 721C 8000621C AC38A3E0 */  sw         $t8, %lo(__OSGlobalIntMask)($at)
     /* 7220 80006220 0C0019B4 */  jal        func_800066D0
     /* 7224 80006224 02002025 */   or        $a0, $s0, $zero
     /* 7228 80006228 8FBF001C */  lw         $ra, 0x1C($sp)

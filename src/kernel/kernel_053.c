@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern s32 D_8000A410;
+extern s32 __osThreadTail;
 
 typedef struct {
     void* field_0;
@@ -11,12 +11,12 @@ typedef struct {
     s32 field_14;
 } Foo;
 
-/* Initialize a 6-field struct: two pointers to D_8000A410, two zeros,
+/* Initialize a 6-field struct: two pointers to __osThreadTail, two zeros,
  * then a2 and a1 at fields 0x10 and 0x14. Absorbs the original
  * func_80004FE0 fragment. */
 void osCreateMesgQueue(Foo* a0, s32 a1, s32 a2) {
-    a0->field_0 = &D_8000A410;
-    a0->field_4 = &D_8000A410;
+    a0->field_0 = &__osThreadTail;
+    a0->field_4 = &__osThreadTail;
     a0->field_8 = 0;
     a0->field_C = 0;
     a0->field_10 = a2;

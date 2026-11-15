@@ -39,8 +39,8 @@ glabel exceptasm_rdbFront
     # nonzero ExcCode: is it one the KMC debugger (partner-N64 ROM monitor) owns?
 .Lexc_kmc_lookup:
     sw      $k1, -0x8($sp)
-    lui     $k1, %hi(D_8000A744)
-    addiu   $k1, $k1, %lo(D_8000A744)
+    lui     $k1, %hi(gKmcExcCodeTable)
+    addiu   $k1, $k1, %lo(gKmcExcCodeTable)
     add     $k1, $k1, $k0
     lbu     $k0, 0x0($k1)
     beqz    $k0, .Lexc_save_scratch
@@ -73,10 +73,10 @@ glabel exceptasm_rdbFront
     eret
     nop
     # __osException proper: save at/t0-t2 and SR in the thread save area
-    # (D_80019320), disable interrupts, then look at Cause
+    # (__osThreadSave), disable interrupts, then look at Cause
 .Lexc_save_scratch:
-    lui     $k0, %hi(D_80019320)
-    addiu   $k0, $k0, %lo(D_80019320)
+    lui     $k0, %hi(__osThreadSave)
+    addiu   $k0, $k0, %lo(__osThreadSave)
     sd      $at, 0x20($k0)
     mfc0    $k1, $12
     sw      $k1, 0x118($k0)
@@ -152,39 +152,39 @@ alabel func_80002F78
     beq     $t1, $t2, .Lrdb_prof_ack
      nop
     addiu   $t2, $zero, 0xA8
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
 .Lrdb_prof_ack:
     addiu   $t2, $zero, 0xB0
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # RDB_TYPE_HtoG_KDEBUG: remember the packet for the kdebug handler
 .Lrdb_kdebug:
-    lui     $at, %hi(D_8000A40C)
+    lui     $at, %hi(__os_Kdebug_Pkt)
     b       .Lsavecontext
-     sw     $t0, %lo(D_8000A40C)($at)
+     sw     $t0, %lo(__os_Kdebug_Pkt)($at)
     # RDB_TYPE_HtoG_DEBUG_CT: byte count for the next debug read
 .Lrdb_debug_ct:
     lui     $t2, 0xFF
     ori     $t2, $t2, 0xFFFF
     and     $t1, $t0, $t2
-    lui     $at, %hi(D_8000A404)
+    lui     $at, %hi(__osRdb_DbgRead_Ct)
     b       .Lrdb_restore_eret
-     sw     $t1, %lo(D_8000A404)($at)
+     sw     $t1, %lo(__osRdb_DbgRead_Ct)($at)
     # RDB_TYPE_HtoG_DATA_DONE: queue OS_EVENT_RDB_DATA_DONE (17 * 8)
 .Lrdb_data_done:
     addiu   $t2, $zero, 0x88
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # RDB_TYPE_HtoG_LOG_DONE: queue OS_EVENT_RDB_LOG_DONE (16 * 8)
 .Lrdb_log_done:
     addiu   $t2, $zero, 0x80
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # RDB_TYPE_HtoG_REQ_RAMROM: queue OS_EVENT_RDB_REQ_RAMROM (18 * 8)
 .Lrdb_req_ramrom:
     addiu   $t2, $zero, 0x90
@@ -195,9 +195,9 @@ alabel func_800030D0
     # RDB_TYPE_HtoG_FREE_RAMROM: queue OS_EVENT_RDB_FREE_RAMROM (19 * 8)
 .Lrdb_free_ramrom:
     addiu   $t2, $zero, 0x98
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # RDB_TYPE_HtoG_DATA: up to 3 payload bytes into __osRdb_Read_Data_Buf
 .Lrdb_data:
     srl     $t1, $t0, 24
@@ -235,20 +235,20 @@ alabel func_800030D0
     bne     $zero, $t2, .Lrdb_restore_eret
      ld     $t3, 0x70($k0)
     addiu   $t2, $zero, 0x78
-    lui     $at, %hi(D_8000A408)
+    lui     $at, %hi(__osRdb_Mesg)
     b       .Lsavecontext
-     sw     $t2, %lo(D_8000A408)($at)
+     sw     $t2, %lo(__osRdb_Mesg)($at)
     # RDB_TYPE_HtoG_DEBUG: up to 3 payload bytes into __osRdb_DbgRead_Buf
 .Lrdb_debug:
     srl     $t1, $t0, 24
     andi    $t1, $t1, 0x3
     beq     $zero, $t1, .Lrdb_restore_eret
      nop
-    lui     $t2, %hi(D_8000A404)
-    lw      $t2, %lo(D_8000A404)($t2)
-    lui     $at, %hi(D_8000A404)
+    lui     $t2, %hi(__osRdb_DbgRead_Ct)
+    lw      $t2, %lo(__osRdb_DbgRead_Ct)($t2)
+    lui     $at, %hi(__osRdb_DbgRead_Ct)
     subu    $t2, $t2, $t1
-    sw      $t2, %lo(D_8000A404)($at)
+    sw      $t2, %lo(__osRdb_DbgRead_Ct)($at)
     sd      $t3, 0x70($k0)
     lui     $t3, %hi(__osRdb_DbgRead_Buf)
     lw      $t3, %lo(__osRdb_DbgRead_Buf)($t3)

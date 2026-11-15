@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern s32 D_80000308;
+extern s32 osRomBase;
 extern s32 D_A4600000;
 extern s32 D_A4600004;
 extern s32 D_A4600008;
@@ -30,7 +30,7 @@ s32 osPiRawStartDma(s32 direction, u32 devAddr, s32 dramAddr, u32 size) {
     while ((status = *(volatile u32*)0xA4600010) & 3) ;
 
     *(volatile u32*)0xA4600000 = func_80004B30(dramAddr);
-    *(volatile u32*)0xA4600004 = (D_80000308 | devAddr) & 0x1FFFFFFF;
+    *(volatile u32*)0xA4600004 = (osRomBase | devAddr) & 0x1FFFFFFF;
 
     switch (direction) {
         case 0:

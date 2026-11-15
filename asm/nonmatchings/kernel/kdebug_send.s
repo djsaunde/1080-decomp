@@ -2,8 +2,8 @@
 nonmatching kdebug_send, 0xD0
 
 glabel kdebug_send
-    /* 58E8 800048E8 3C0E8001 */  lui        $t6, %hi(D_8000A490)
-    /* 58EC 800048EC 8DCEA490 */  lw         $t6, %lo(D_8000A490)($t6)
+    /* 58E8 800048E8 3C0E8001 */  lui        $t6, %hi(__osRdb_IP6_Empty)
+    /* 58EC 800048EC 8DCEA490 */  lw         $t6, %lo(__osRdb_IP6_Empty)($t6)
     /* 58F0 800048F0 27BDFFD8 */  addiu      $sp, $sp, -0x28
     /* 58F4 800048F4 AFBF0014 */  sw         $ra, 0x14($sp)
     /* 58F8 800048F8 AFA40028 */  sw         $a0, 0x28($sp)

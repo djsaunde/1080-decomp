@@ -9,8 +9,8 @@ glabel uso_init
     /* 25A8 800015A8 AFA40020 */   sw        $a0, 0x20($sp)
     /* 25AC 800015AC 3C0E8001 */  lui        $t6, %hi(gUsoModuleSlots)
     /* 25B0 800015B0 25CE30A0 */  addiu      $t6, $t6, %lo(gUsoModuleSlots)
-    /* 25B4 800015B4 3C018001 */  lui        $at, %hi(D_8001309C)
-    /* 25B8 800015B8 AC2E309C */  sw         $t6, %lo(D_8001309C)($at)
+    /* 25B4 800015B4 3C018001 */  lui        $at, %hi(gUsoModuleSlotsPtr)
+    /* 25B8 800015B8 AC2E309C */  sw         $t6, %lo(gUsoModuleSlotsPtr)($at)
     /* 25BC 800015BC 0C00021D */  jal        func_80000874
     /* 25C0 800015C0 8FA40020 */   lw        $a0, 0x20($sp)
     /* 25C4 800015C4 3C078001 */  lui        $a3, %hi(gUsoCtx)
@@ -104,8 +104,8 @@ glabel uso_init
     /* 2718 80001718 A040FFD6 */  sb         $zero, -0x2A($v0)
     /* 271C 8000171C 1420FFFB */  bnez       $at, .L8000170C
     /* 2720 80001720 24630004 */   addiu     $v1, $v1, 0x4
-    /* 2724 80001724 3C088001 */  lui        $t0, %hi(D_80012C70)
-    /* 2728 80001728 25082C70 */  addiu      $t0, $t0, %lo(D_80012C70)
+    /* 2724 80001724 3C088001 */  lui        $t0, %hi(gFsDeviceHeaps)
+    /* 2728 80001728 25082C70 */  addiu      $t0, $t0, %lo(gFsDeviceHeaps)
     /* 272C 8000172C 00002825 */  or         $a1, $zero, $zero
     /* 2730 80001730 8FA30020 */  lw         $v1, 0x20($sp)
     /* 2734 80001734 240B0010 */  addiu      $t3, $zero, 0x10

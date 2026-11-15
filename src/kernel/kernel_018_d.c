@@ -2,19 +2,19 @@
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
+extern s32 __osPiAccessQueueEnabled;
 extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
 extern void func_800053D0(s32*, s32*, s32);
-extern s32 D_8000A3E0;
+extern s32 __OSGlobalIntMask;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern void* D_8000A420;
-extern s32 D_8000A418;
-extern s32 siacs_bss_0000;
+extern void* __osRunningThread;
+extern s32 __osRunQueue;
+extern s32 piacs_piAccessBuf;
 extern s32 func_800009D8(void*, s32, s32, void*);
 extern void func_80003FF0(s32, void*);
 extern void* func_80003E54(void*);
@@ -24,12 +24,12 @@ extern void func_8000785C(s32);
 extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
-extern FuncPtr2 D_80012C44;
+extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
 extern s32 gUsoCtx;
 extern s32 gFsDeviceTable;
-extern s32 D_8000A41C;
+extern s32 __osActiveQueue;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
@@ -156,16 +156,16 @@ extern void func_800082EC(void);
 extern void func_80008E08(void);
 extern void func_80008E38(void);
 extern void func_80008EA0(void);
-extern volatile s32 D_8001B7D0;
-extern s32 D_8000A580;
-extern s8 rmonmain_bss_0468;
-extern s8 rmonmain_bss_0469;
-extern s32 rmonmain_bss_046C;
-extern void *rmonmain_bss_0470;
-extern s32 rmonmain_bss_0008;
+extern volatile s32 rmon_somethingToDo;
+extern s32 __rmonActive;
+extern s8 rmon_cmdinptr;
+extern s8 rmon_cmdoutptr;
+extern s32 rmon_state;
+extern void *rmon_inPointer;
+extern s32 rmon_inbuffer;
 extern s32 __rmonMQ;
 /* rmon main dispatch loop (__rmonIOhandler-class). Init state, then loop
- * forever: recv a flag word from __rmonMQ, OR it into D_8001B7D0, and dispatch
+ * forever: recv a flag word from __rmonMQ, OR it into rmon_somethingToDo, and dispatch
  * each set bit (2 -> func_80008E08, 4 -> func_80008E38, 8 -> func_80008EA0,
  * 0x10 -> just clear), clearing the bit as it goes; bit 0x20 is a one-shot
  * (clear and continue), otherwise re-loop. */
@@ -173,37 +173,37 @@ void rmonMain(void) {
     register s32 phantom;
     s32 sp20;
 
-    D_8001B7D0 = 0;
-    rmonmain_bss_0469 = 0;
-    rmonmain_bss_0468 = 0;
+    rmon_somethingToDo = 0;
+    rmon_cmdoutptr = 0;
+    rmon_cmdinptr = 0;
     func_800082EC();
-    D_8000A580 = 1;
-    rmonmain_bss_046C = 0;
-    rmonmain_bss_0470 = &rmonmain_bss_0008;
+    __rmonActive = 1;
+    rmon_state = 0;
+    rmon_inPointer = &rmon_inbuffer;
     phantom = 0;
 loop_1:
     func_80004FE0(&__rmonMQ, &sp20, 1);
-    D_8001B7D0 |= sp20;
-    if (D_8001B7D0 & 2) {
-        D_8001B7D0 &= ~2;
+    rmon_somethingToDo |= sp20;
+    if (rmon_somethingToDo & 2) {
+        rmon_somethingToDo &= ~2;
         func_80008E08();
     }
-    if (D_8001B7D0 & 4) {
-        D_8001B7D0 &= ~4;
+    if (rmon_somethingToDo & 4) {
+        rmon_somethingToDo &= ~4;
         func_80008E38();
     }
-    if (D_8001B7D0 & 8) {
-        D_8001B7D0 &= ~8;
+    if (rmon_somethingToDo & 8) {
+        rmon_somethingToDo &= ~8;
         func_80008EA0();
     }
-    if (D_8001B7D0 & 0x10) {
-        D_8001B7D0;
-        D_8001B7D0 &= 0xEF;
+    if (rmon_somethingToDo & 0x10) {
+        rmon_somethingToDo;
+        rmon_somethingToDo &= 0xEF;
     }
-    if (!(D_8001B7D0 & 0x20)) {
+    if (!(rmon_somethingToDo & 0x20)) {
         goto loop_1;
     }
-    D_8001B7D0;
-    D_8001B7D0 &= 0xDF;
+    rmon_somethingToDo;
+    rmon_somethingToDo &= 0xDF;
     goto loop_1;
 }

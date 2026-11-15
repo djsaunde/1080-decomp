@@ -4,10 +4,10 @@
  * unit kernel_000.c is IDO 7.1 -O2, which caps at ~53% — the fn is a 5.3 -O1
  * island, same vein as the game_libs contpfs/osCreatePiManager family).
  * Decode corrections vs the old NM body:
- *   - D_8000A3D0 is osClockRate, a u64 (OSTime): `osClockRate = osClockRate
+ *   - osClockRate is osClockRate, a u64 (OSTime): `osClockRate = osClockRate
  *     * 3 / 4` emits the __ll_mul/__ll_div helper calls func_80002F78/
  *     exceptasm_rdbFront with v0/v1 pair returns spilled to sp20/sp24;
- *   - TU-defined D_8000A3D0/D_8000A3D8 (osClockRate/osViClock are defined in
+ *   - TU-defined osClockRate/osViClock (osClockRate/osViClock are defined in
  *     initialize.c) = shared-$at single-lui for the u64 store;
  *   - exception-vector installs are literal-address struct copies
  *     (*(V*)0x80000000 etc; %lo(0x80000000)=0 gives the bare-lui form);
@@ -42,11 +42,11 @@ typedef struct {
 extern __osExceptionVector D_80003270;          /* __osExceptionPreamble */
 extern __osExceptionVector func_80000000;       /* UT_VEC */
 
-OSTime D_8000A3D0 = 62500000;                   /* osClockRate (TU-defined) */
-s32 D_8000A3D8 = 0x02E6D354;                    /* osViClock (TU-defined) */
-extern s32 D_8000030C;                          /* osResetType */
-extern s32 D_80000300;                          /* osTvType */
-extern s32 D_8000031C;                          /* osAppNMIBuffer */
+OSTime osClockRate = 62500000;                   /* osClockRate (TU-defined) */
+s32 osViClock = 0x02E6D354;                    /* osViClock (TU-defined) */
+extern s32 osResetType;                          /* osResetType */
+extern s32 osTvType;                          /* osTvType */
+extern s32 osAppNMIBuffer;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];
 
@@ -83,18 +83,18 @@ void osInitialize(void) {
     func_80002DB0(4, &clock);
     clock &= ~0xF;
     if (clock != 0) {
-        D_8000A3D0 = clock;
+        osClockRate = clock;
     }
-    D_8000A3D0 = D_8000A3D0 * 3 / 4;
-    if (D_8000030C == 0) {
-        func_800030D0(&D_8000031C, 0x40);
+    osClockRate = osClockRate * 3 / 4;
+    if (osResetType == 0) {
+        func_800030D0(&osAppNMIBuffer, 0x40);
     }
-    if (D_80000300 == 0) {
-        D_8000A3D8 = 0x02F5B2D2;
-    } else if (D_80000300 == 2) {
-        D_8000A3D8 = 0x02E6025C;
+    if (osTvType == 0) {
+        osViClock = 0x02F5B2D2;
+    } else if (osTvType == 2) {
+        osViClock = 0x02E6025C;
     } else {
-        D_8000A3D8 = 0x02E6D354;
+        osViClock = 0x02E6D354;
     }
     if (__kmc_pt_mode == 0) {
         sp38 = (s32 *)0xBFF08004;

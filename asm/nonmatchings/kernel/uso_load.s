@@ -3,8 +3,8 @@ nonmatching uso_load, 0x29C
 
 glabel uso_load
     /* 19EC 800009EC 27BDFF80 */  addiu      $sp, $sp, -0x80
-    /* 19F0 800009F0 3C198001 */  lui        $t9, %hi(D_80012C44)
-    /* 19F4 800009F4 8F392C44 */  lw         $t9, %lo(D_80012C44)($t9)
+    /* 19F0 800009F0 3C198001 */  lui        $t9, %hi(gUsoPrintfHook)
+    /* 19F4 800009F4 8F392C44 */  lw         $t9, %lo(gUsoPrintfHook)($t9)
     /* 19F8 800009F8 AFB00018 */  sw         $s0, 0x18($sp)
     /* 19FC 800009FC 2402FFFF */  addiu      $v0, $zero, -0x1
     /* 1A00 80000A00 3C018001 */  lui        $at, %hi(gUsoEntryIndex)

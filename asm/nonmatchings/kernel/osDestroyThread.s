@@ -13,8 +13,8 @@ glabel osDestroyThread
     /* 4C50 80003C50 00408025 */  or         $s0, $v0, $zero
     /* 4C54 80003C54 15C00005 */  bnez       $t6, .L80003C6C
     /* 4C58 80003C58 00000000 */   nop
-    /* 4C5C 80003C5C 3C0F8001 */  lui        $t7, %hi(D_8000A420)
-    /* 4C60 80003C60 8DEFA420 */  lw         $t7, %lo(D_8000A420)($t7)
+    /* 4C5C 80003C5C 3C0F8001 */  lui        $t7, %hi(__osRunningThread)
+    /* 4C60 80003C60 8DEFA420 */  lw         $t7, %lo(__osRunningThread)($t7)
     /* 4C64 80003C64 10000009 */  b          .L80003C8C
     /* 4C68 80003C68 AFAF0038 */   sw        $t7, 0x38($sp)
   .L80003C6C:
@@ -27,18 +27,18 @@ glabel osDestroyThread
     /* 4C84 80003C84 0C000FFC */  jal        func_80003FF0
     /* 4C88 80003C88 03002825 */   or        $a1, $t8, $zero
   .L80003C8C:
-    /* 4C8C 80003C8C 3C088001 */  lui        $t0, %hi(D_8000A41C)
-    /* 4C90 80003C90 8D08A41C */  lw         $t0, %lo(D_8000A41C)($t0)
+    /* 4C8C 80003C8C 3C088001 */  lui        $t0, %hi(__osActiveQueue)
+    /* 4C90 80003C90 8D08A41C */  lw         $t0, %lo(__osActiveQueue)($t0)
     /* 4C94 80003C94 8FA90038 */  lw         $t1, 0x38($sp)
     /* 4C98 80003C98 15090005 */  bne        $t0, $t1, .L80003CB0
     /* 4C9C 80003C9C 00000000 */   nop
     /* 4CA0 80003CA0 8D0A000C */  lw         $t2, 0xC($t0)
-    /* 4CA4 80003CA4 3C018001 */  lui        $at, %hi(D_8000A41C)
+    /* 4CA4 80003CA4 3C018001 */  lui        $at, %hi(__osActiveQueue)
     /* 4CA8 80003CA8 10000013 */  b          .L80003CF8
-    /* 4CAC 80003CAC AC2AA41C */   sw        $t2, %lo(D_8000A41C)($at)
+    /* 4CAC 80003CAC AC2AA41C */   sw        $t2, %lo(__osActiveQueue)($at)
   .L80003CB0:
-    /* 4CB0 80003CB0 3C118001 */  lui        $s1, %hi(D_8000A41C)
-    /* 4CB4 80003CB4 8E31A41C */  lw         $s1, %lo(D_8000A41C)($s1)
+    /* 4CB0 80003CB0 3C118001 */  lui        $s1, %hi(__osActiveQueue)
+    /* 4CB4 80003CB4 8E31A41C */  lw         $s1, %lo(__osActiveQueue)($s1)
     /* 4CB8 80003CB8 2401FFFF */  addiu      $at, $zero, -0x1
     /* 4CBC 80003CBC 8E2B0004 */  lw         $t3, 0x4($s1)
     /* 4CC0 80003CC0 1161000D */  beq        $t3, $at, .L80003CF8
@@ -58,8 +58,8 @@ glabel osDestroyThread
     /* 4CF0 80003CF0 15C1FFF5 */  bne        $t6, $at, .L80003CC8
     /* 4CF4 80003CF4 00000000 */   nop
   .L80003CF8:
-    /* 4CF8 80003CF8 3C198001 */  lui        $t9, %hi(D_8000A420)
-    /* 4CFC 80003CFC 8F39A420 */  lw         $t9, %lo(D_8000A420)($t9)
+    /* 4CF8 80003CF8 3C198001 */  lui        $t9, %hi(__osRunningThread)
+    /* 4CFC 80003CFC 8F39A420 */  lw         $t9, %lo(__osRunningThread)($t9)
     /* 4D00 80003D00 8FAF0038 */  lw         $t7, 0x38($sp)
     /* 4D04 80003D04 15F90003 */  bne        $t7, $t9, .L80003D14
     /* 4D08 80003D08 00000000 */   nop

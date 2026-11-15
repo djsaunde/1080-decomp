@@ -1,8 +1,8 @@
 #include "common.h"
 
-extern s32 rmonbrk_bss_0000;
-extern s32 D_8001FEF4;
-extern s32 D_8001FEF0;
+extern s32 rmon_breakpoints;
+extern s32 rmon_altBreak_oldInstruction;
+extern s32 rmon_altBreak;
 extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
@@ -27,12 +27,12 @@ extern void func_80005350(void*, s32);
 #ifndef FW
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 #endif
-extern s32 rmonbrk_bss_0088;
+extern s32 rmon_RCPbreakpoints;
 extern void func_80006A50(s32, s32);
 extern s32 func_80006A98(s32);
 extern void func_800073F8(void *, s32, s32);
 /* rmon set-breakpoint (__rmonSetBreak-class). Pick the instruction- or
- * data-breakpoint table (rmonbrk_bss_0088 / _0000 by arg0->unk9), scan its
+ * data-breakpoint table (rmon_RCPbreakpoints / _0000 by arg0->unk9), scan its
  * 8-byte slots (offsets 0x8..0x80, addr at +0 / saved-insn at +4) for one holding the target
  * address (arg0->unk10) or a free slot; table full -> -0xA. For a fresh slot,
  * save the original word and patch in a BREAK insn (code = (slot>>3)+0x10) via
@@ -62,13 +62,13 @@ s32 __rmonSetBreak(void *arg0) {
     register char *var_s3;
     struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 idC; s32 idx; s32 saved; } reply;
     if (*(u8 *)((char *)arg0 + 9) == 1) {
-        var_s1 = (char *) &rmonbrk_bss_0088;
-        var_s2 = (char *) &rmonbrk_bss_0088 + 8;
-        var_s3 = (char *) &rmonbrk_bss_0088 + 0x80;
+        var_s1 = (char *) &rmon_RCPbreakpoints;
+        var_s2 = (char *) &rmon_RCPbreakpoints + 8;
+        var_s3 = (char *) &rmon_RCPbreakpoints + 0x80;
     } else {
-        var_s1 = (char *) &rmonbrk_bss_0000;
-        var_s2 = (char *) &rmonbrk_bss_0000 + 8;
-        var_s3 = (char *) &rmonbrk_bss_0000 + 0x80;
+        var_s1 = (char *) &rmon_breakpoints;
+        var_s2 = (char *) &rmon_breakpoints + 8;
+        var_s3 = (char *) &rmon_breakpoints + 0x80;
     }
     while (var_s2 < var_s3) {
         if (*(s32 *)var_s2 == 0) {

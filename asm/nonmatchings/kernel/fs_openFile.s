@@ -2,8 +2,8 @@
 nonmatching fs_openFile, 0x8C
 
 glabel fs_openFile
-    /* 22BC 800012BC 3C198001 */  lui        $t9, %hi(D_80012BF4)
-    /* 22C0 800012C0 8F392BF4 */  lw         $t9, %lo(D_80012BF4)($t9)
+    /* 22BC 800012BC 3C198001 */  lui        $t9, %hi(gUsoAllocHook)
+    /* 22C0 800012C0 8F392BF4 */  lw         $t9, %lo(gUsoAllocHook)($t9)
     /* 22C4 800012C4 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* 22C8 800012C8 AFBF0014 */  sw         $ra, 0x14($sp)
     /* 22CC 800012CC AFA40030 */  sw         $a0, 0x30($sp)

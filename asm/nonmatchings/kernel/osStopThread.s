@@ -30,8 +30,8 @@ glabel osStopThread
     /* 8E2C 80007E2C 10000010 */  b          .L80007E70
     /* 8E30 80007E30 00000000 */   nop
   .L80007E34:
-    /* 8E34 80007E34 3C198001 */  lui        $t9, %hi(D_8000A420)
-    /* 8E38 80007E38 8F39A420 */  lw         $t9, %lo(D_8000A420)($t9)
+    /* 8E34 80007E34 3C198001 */  lui        $t9, %hi(__osRunningThread)
+    /* 8E38 80007E38 8F39A420 */  lw         $t9, %lo(__osRunningThread)($t9)
     /* 8E3C 80007E3C 24180001 */  addiu      $t8, $zero, 0x1
     /* 8E40 80007E40 00002025 */  or         $a0, $zero, $zero
     /* 8E44 80007E44 0C000F43 */  jal        func_80003D0C

@@ -2,8 +2,8 @@
 nonmatching __osPiGetAccess, 0x44
 
 glabel __osPiGetAccess
-    /* 6850 80005850 3C0E8001 */  lui        $t6, %hi(D_8000A480)
-    /* 6854 80005854 8DCEA480 */  lw         $t6, %lo(D_8000A480)($t6)
+    /* 6850 80005850 3C0E8001 */  lui        $t6, %hi(__osPiAccessQueueEnabled)
+    /* 6854 80005854 8DCEA480 */  lw         $t6, %lo(__osPiAccessQueueEnabled)($t6)
     /* 6858 80005858 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* 685C 8000585C AFBF0014 */  sw         $ra, 0x14($sp)
     /* 6860 80005860 15C00003 */  bnez       $t6, .L80005870

@@ -5,7 +5,7 @@
  * of matched kernel osPiRawReadIo (kernel_045): spin while PI_STATUS & 3, then
  * read the KSEG1-uncached cart word ((D | devAddr) | 0xA0000000) into *out.
  * IDO 5.3 -O1, spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. The
- * cart-base global (kernel D_80000308) maps to the zero-resolving D_00000000;
+ * cart-base global (kernel osRomBase) maps to the zero-resolving D_00000000;
  * PI_STATUS is a direct 0xA4600010 literal. */
 #define PI_STATUS (*(volatile unsigned int *)0xA4600010)
 extern int D_00000000;

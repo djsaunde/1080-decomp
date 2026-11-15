@@ -4,7 +4,7 @@
  * Installs the USO loader callback table at gUsoCtx (cb, held in a3 via the
  * int-cast base), clears the 135 0x9C-byte gUsoModuleSlots slots' name byte (+0x72)
  * and the gUsoModules words, then copies up to 16 0x14-byte segment descriptors
- * into D_80012C70 (0xC stride), failing with cb->unk8 = -0x17 when a segment
+ * into gFsDeviceHeaps (0xC stride), failing with cb->unk8 = -0x17 when a segment
  * end passes arg1 + 0x80000000.
  *
  * agent-c run 229: the slot-clear loop is an INDEX loop on i (`for (i = 0;
@@ -21,8 +21,8 @@ typedef struct { s32 unk0; s32 unk4; s32 unk8; } UsoSegEnt;
 extern s32 gUsoCtx;
 extern s32 gUsoModules[];
 extern char gUsoModuleSlots;
-extern char D_80012C70[];
-extern void *D_8001309C;
+extern char gFsDeviceHeaps[];
+extern void *gUsoModuleSlotsPtr;
 extern void func_80001584(void *, u32);
 extern void func_80000874(void *);
 extern void func_800018A8(void);
@@ -41,7 +41,7 @@ void uso_init(UsoSegDesc *arg0, u32 arg1) {
     u32 lim;
 
     func_80001584(arg0, arg1);
-    D_8001309C = &gUsoModuleSlots;
+    gUsoModuleSlotsPtr = &gUsoModuleSlots;
     func_80000874(arg0);
     cb = (s32)&gUsoCtx;
     *(s32 *)(cb + 0x3C) = (s32)func_80001994;
@@ -75,7 +75,7 @@ void uso_init(UsoSegDesc *arg0, u32 arg1) {
     for (i = 0; i < 135; i++) { gUsoModules[i] = 0; (&gUsoModuleSlots)[i * 0x9C + 0x72] = 0; }
     for (i = 0; i < 16; i++) {
         if (arg0[i].unk0 == 0) break;
-        e = (UsoSegEnt *)D_80012C70 + i;
+        e = (UsoSegEnt *)gFsDeviceHeaps + i;
         e->unk0 = arg0[i].unkC; if (1) {}
         if (e->unk0 != 0) {
             e->unk4 = arg0[i].unk10;

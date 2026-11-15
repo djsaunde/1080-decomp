@@ -120,8 +120,8 @@ glabel uso_relocate
     /* 2C90 80001C90 10000009 */  b          .L80001CB8
     /* 2C94 80001C94 8CA40000 */   lw        $a0, 0x0($a1)
   .L80001C98:
-    /* 2C98 80001C98 3C198001 */  lui        $t9, %hi(D_80012C44)
-    /* 2C9C 80001C9C 8F392C44 */  lw         $t9, %lo(D_80012C44)($t9)
+    /* 2C98 80001C98 3C198001 */  lui        $t9, %hi(gUsoPrintfHook)
+    /* 2C9C 80001C9C 8F392C44 */  lw         $t9, %lo(gUsoPrintfHook)($t9)
     /* 2CA0 80001CA0 3C048001 */  lui        $a0, %hi(D_8000A36C)
     /* 2CA4 80001CA4 2484A36C */  addiu      $a0, $a0, %lo(D_8000A36C)
     /* 2CA8 80001CA8 0320F809 */  jalr       $t9

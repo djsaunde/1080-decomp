@@ -12,7 +12,7 @@ void osStopThread(Thread* t) {
     }
     switch (state) {
     case 4:
-        ((Thread*)D_8000A420)->state = 1;
+        ((Thread*)__osRunningThread)->state = 1;
         func_80003D0C(0);
         break;
     case 2:

@@ -18,11 +18,11 @@ s32 __rmonSetFault(RmonMsg* msg) {
 
 /* __rmonInit */
 extern s32 __rmonMQ;
-extern s32 rmonmisc_bss_01C8;
-extern s32 rmonmisc_bss_01E8;
-extern s32 rmonmisc_bss_0018;
-extern s32 rmonmisc_bss_4208;
-extern s32 rmonmisc_bss_41E8;
+extern s32 rmon_rmonMsgs;
+extern s32 rmon_rmonIOStack;
+extern s32 rmon_rmonIOThread;
+extern s32 rmon_rmonPiMQ;
+extern s32 rmon_rmonPiMsgs;
 extern s32 D_800055F0;
 extern void func_800053D0(void*, void*, s32);
 extern void func_800051E0(s32, void*, s32);
@@ -31,15 +31,15 @@ extern void func_80005920(s32, void*, void*, s32);
 extern void func_8000A110(void*);
 
 void __rmonInit(void) {
-    func_800053D0(&__rmonMQ, &rmonmisc_bss_01C8, 8);
+    func_800053D0(&__rmonMQ, &rmon_rmonMsgs, 8);
     func_800051E0(0xA, &__rmonMQ, 2);
     func_800051E0(0xB, &__rmonMQ, 4);
     func_800051E0(0xC, &__rmonMQ, 8);
     func_800051E0(0xD, &__rmonMQ, 0);
-    func_80005F10(&rmonmisc_bss_0018, 0, &D_800055F0, 0,
-                  (char*)&rmonmisc_bss_01E8 + 0x4000, 0xFF);
-    func_80005920(0x96, &rmonmisc_bss_4208, &rmonmisc_bss_41E8, 8);
-    func_8000A110(&rmonmisc_bss_0018);
+    func_80005F10(&rmon_rmonIOThread, 0, &D_800055F0, 0,
+                  (char*)&rmon_rmonIOStack + 0x4000, 0xFF);
+    func_80005920(0x96, &rmon_rmonPiMQ, &rmon_rmonPiMsgs, 8);
+    func_8000A110(&rmon_rmonIOThread);
 }
 
 /* Halt stub. Keep this after its real neighbors: its offset is 0x128 in

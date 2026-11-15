@@ -8,7 +8,7 @@
 
 void __osPiGetAccess(void) {
     s32 msg;
-    if (D_8000A480 == 0) {
+    if (__osPiAccessQueueEnabled == 0) {
         func_80005C00();
     }
     func_80004FE0(&__osPiAccessQueue, &msg, 1);

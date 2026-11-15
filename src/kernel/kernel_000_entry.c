@@ -7,7 +7,7 @@
  * kernel_boot is plain IDO 7.1 -O2 C. Its callees use the +0x400 jal
  * names: func_80001994 = uso_init (USO loader init, given the memory
  * size), func_80000DEC = uso_load (load the first module, here the
- * boot USO named by D_8000A59C), func_80001088 = uso_callEntry (call its
+ * boot USO named by gBootUsoPath), func_80001088 = uso_callEntry (call its
  * entry). IDO pads this unit's .text to 0xB0, which is where kernel_000
  * starts. */
 
@@ -15,16 +15,16 @@
 GLOBAL_ASM("src/handwritten/kernel/entry.s")
 
 typedef struct { s32 pad[4]; u32 unk10; } UsoSegDesc0;
-extern UsoSegDesc0 D_8000A260;
-extern u32 D_80000318;               /* osMemSize */
-extern char D_8000A59C[];
+extern UsoSegDesc0 gFsDevices;
+extern u32 osMemSize;               /* osMemSize */
+extern char gBootUsoPath[];
 extern void func_80001994(UsoSegDesc0 *, u32);
 extern s32 func_80000DEC(char *);
 extern s32 func_80001088(void);
 
 void kernel_boot(void) {
-    D_8000A260.unk10 = D_80000318 + 0x80000000;
-    func_80001994(&D_8000A260, D_80000318);
-    func_80000DEC(D_8000A59C);
+    gFsDevices.unk10 = osMemSize + 0x80000000;
+    func_80001994(&gFsDevices, osMemSize);
+    func_80000DEC(gBootUsoPath);
     func_80001088();
 }

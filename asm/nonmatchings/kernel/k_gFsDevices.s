@@ -1,6 +1,6 @@
 .section .data
 
-dlabel D_80009E60
+dlabel k_gFsDevices
     /* AE60 80009E60 8000A590 */ .word D_8000A590
     /* AE64 80009E64 00D9FDB0 */ .word 0x00D9FDB0
     /* AE68 80009E68 00E984B0 */ .word 0x00E984B0
@@ -16,7 +16,7 @@ dlabel D_80009E60
     /* AE90 80009E90 00000000 */ .word 0x00000000
     /* AE94 80009E94 00000000 */ .word 0x00000000
     /* AE98 80009E98 00000000 */ .word 0x00000000
-enddlabel D_80009E60
+enddlabel k_gFsDevices
 
 dlabel D_80009E9C
     /* AE9C 80009E9C 00000000 */ .word 0x00000000

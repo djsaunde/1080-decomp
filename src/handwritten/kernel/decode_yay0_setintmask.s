@@ -64,13 +64,13 @@ glabel uso_decodeYay0
     nop                                 # object alignment padding
 
 # u32 osSetIntMask(u32 im) -- libultra os/setintmask.s
-#   D_8000A3E0 = __OSGlobalIntMask, D_8000A680 = __osRcpImTable,
+#   __OSGlobalIntMask = __OSGlobalIntMask, __osRcpImTable = __osRcpImTable,
 #   D_A430000C = MI_INTR_MASK_REG (KSEG1)
 .LosSetIntMask:
     mfc0    $t4, $12                    # t4 = C0_SR
     andi    $v0, $t4, 0xFF01            # OS_IM_CPU
-    lui     $t0, %hi(D_8000A3E0)        # &__OSGlobalIntMask
-    addiu   $t0, $t0, %lo(D_8000A3E0)
+    lui     $t0, %hi(__OSGlobalIntMask)        # &__OSGlobalIntMask
+    addiu   $t0, $t0, %lo(__OSGlobalIntMask)
     lw      $t3, 0x0($t0)
     addiu   $at, $zero, -0x1
     xor     $t0, $t3, $at
@@ -91,9 +91,9 @@ glabel uso_decodeYay0
     and     $t0, $a0, $at
     and     $t0, $t0, $t3
     srl     $t0, $t0, 15
-    lui     $t2, %hi(D_8000A680)        # __osRcpImTable[t0]
+    lui     $t2, %hi(__osRcpImTable)        # __osRcpImTable[t0]
     addu    $t2, $t2, $t0
-    lhu     $t2, %lo(D_8000A680)($t2)
+    lhu     $t2, %lo(__osRcpImTable)($t2)
     lui     $at, %hi(D_A430000C)
     sw      $t2, %lo(D_A430000C)($at)   # MI_INTR_MASK_REG = table value
     andi    $t0, $a0, 0xFF01            # OS_IM_CPU

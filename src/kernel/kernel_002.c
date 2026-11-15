@@ -2,33 +2,33 @@
 
 
 /* osReadHost: RDB host-read with lazy message-queue init.
- * Lazy-inits a message queue (D_8000A440 flag-guarded) on first call,
+ * Lazy-inits a message queue (readHostInitialized flag-guarded) on first call,
  * publishes (buf, ct) to __osRdb_Read_Data_Buf/Ct, then loops the recv
  * helper until a non-zero count accumulates, and releases the queue. */
 extern int func_800053D0(void*, void*, int);
 extern int func_800051E0(int, void*, int);
 extern int func_800066F0(void*, int, int);
 extern int func_80004FE0(void*, int, int);
-extern int D_8000A440;
-extern int readhost_bss_0000;
-extern int readhost_bss_0018;
+extern int readHostInitialized;
+extern int readHostMesgQueue;
+extern int readHostMesgBuf;
 extern int __osRdb_Read_Data_Buf;
 extern int __osRdb_Read_Data_Ct;
 
 void osReadHost(void* buf, int ct) {
     int msg;
     int count = 0;
-    if (D_8000A440 == 0) {
-        func_800053D0(&readhost_bss_0000, &readhost_bss_0018, 1);
-        func_800051E0(0xF, &readhost_bss_0000, 0);
-        D_8000A440 = 1;
+    if (readHostInitialized == 0) {
+        func_800053D0(&readHostMesgQueue, &readHostMesgBuf, 1);
+        func_800051E0(0xF, &readHostMesgQueue, 0);
+        readHostInitialized = 1;
     }
     __osRdb_Read_Data_Buf = (int)buf;
     __osRdb_Read_Data_Ct = ct;
     while (count == 0) {
         count += func_800066F0(&msg, 1, 5);
     }
-    func_80004FE0(&readhost_bss_0000, 0, 1);
+    func_80004FE0(&readHostMesgQueue, 0, 1);
 }
 
 
@@ -38,7 +38,7 @@ void osReadHost(void* buf, int ct) {
  * 0x10 msgCount, 0x14 msg[]). func_800066B0/_800066D0 =
  * __osDisableInt/__osRestoreInt; func_80003D0C = __osEnqueueAndYield;
  * func_80003E54 = __osPopThread; func_8000A110 = osStartThread;
- * D_8000A420 = __osRunningThread (->0x10 = state, 8 = OS_STATE_WAITING).
+ * __osRunningThread = __osRunningThread (->0x10 = state, 8 = OS_STATE_WAITING).
  * The `div/mfhi; bnez+break 7` plus `bne at,0x8000/break 6` is
  * the IDO signed `%` div0/INT_MIN-overflow guard pair on the ring
  * index - documented C-unsuppressible (docs/IDO_CODEGEN.md
@@ -49,7 +49,7 @@ extern void func_800066D0(s32 s);
 extern void func_80003D0C(void *q);
 extern void *func_80003E54(void *q);
 extern void func_8000A110(void *t);
-extern void *D_8000A420;
+extern void *__osRunningThread;
 
 typedef struct RecvThread2 { struct RecvThread2 *next; } RecvThread2;
 typedef struct {
@@ -78,7 +78,7 @@ s32 osRecvMesg(RecvMesgQueue *mq, s32 *msg, s32 flag) {
             func_800066D0(saveMask);
             return -1;
         }
-        ((RecvThread*)D_8000A420)->state = 8;
+        ((RecvThread*)__osRunningThread)->state = 8;
         func_80003D0C(&mq->mtqueue);
     }
 

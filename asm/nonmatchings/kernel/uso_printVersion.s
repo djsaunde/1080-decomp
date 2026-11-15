@@ -2,8 +2,8 @@
 nonmatching uso_printVersion, 0x34
 
 glabel uso_printVersion
-    /* 1E58 80000E58 3C198001 */  lui        $t9, %hi(D_80012C44)
-    /* 1E5C 80000E5C 8F392C44 */  lw         $t9, %lo(D_80012C44)($t9)
+    /* 1E58 80000E58 3C198001 */  lui        $t9, %hi(gUsoPrintfHook)
+    /* 1E5C 80000E5C 8F392C44 */  lw         $t9, %lo(gUsoPrintfHook)($t9)
     /* 1E60 80000E60 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* 1E64 80000E64 AFBF0014 */  sw         $ra, 0x14($sp)
     /* 1E68 80000E68 3C048001 */  lui        $a0, %hi(D_8000A32C)

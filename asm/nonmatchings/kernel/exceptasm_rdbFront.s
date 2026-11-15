@@ -27,8 +27,8 @@ glabel exceptasm_rdbFront
     /* 3EC8 80002EC8 00000000 */   nop
   .L80002ECC:
     /* 3ECC 80002ECC AFBBFFF8 */  sw         $k1, -0x8($sp) /* handwritten instruction */
-    /* 3ED0 80002ED0 3C1B8001 */  lui        $k1, %hi(D_8000A744) /* handwritten instruction */
-    /* 3ED4 80002ED4 277BA744 */  addiu      $k1, $k1, %lo(D_8000A744) /* handwritten instruction */
+    /* 3ED0 80002ED0 3C1B8001 */  lui        $k1, %hi(gKmcExcCodeTable) /* handwritten instruction */
+    /* 3ED4 80002ED4 277BA744 */  addiu      $k1, $k1, %lo(gKmcExcCodeTable) /* handwritten instruction */
     /* 3ED8 80002ED8 037AD820 */  add        $k1, $k1, $k0 /* handwritten instruction */
     /* 3EDC 80002EDC 937A0000 */  lbu        $k0, 0x0($k1) /* handwritten instruction */
     /* 3EE0 80002EE0 13400018 */  beqz       $k0, .L80002F44 /* handwritten instruction */
@@ -59,8 +59,8 @@ glabel exceptasm_rdbFront
     /* 3F3C 80002F3C 42000018 */  eret /* handwritten instruction */
     /* 3F40 80002F40 00000000 */  nop
   .L80002F44:
-    /* 3F44 80002F44 3C1A8002 */  lui        $k0, %hi(D_80019320) /* handwritten instruction */
-    /* 3F48 80002F48 275A9320 */  addiu      $k0, $k0, %lo(D_80019320) /* handwritten instruction */
+    /* 3F44 80002F44 3C1A8002 */  lui        $k0, %hi(__osThreadSave) /* handwritten instruction */
+    /* 3F48 80002F48 275A9320 */  addiu      $k0, $k0, %lo(__osThreadSave) /* handwritten instruction */
     /* 3F4C 80002F4C FF410020 */  sd         $at, 0x20($k0) /* handwritten instruction */
     /* 3F50 80002F50 401B6000 */  mfc0       $k1, $12 /* handwritten instruction */
     /* 3F54 80002F54 AF5B0118 */  sw         $k1, 0x118($k0) /* handwritten instruction */
@@ -134,35 +134,35 @@ alabel func_80002F78
     /* 4058 80003058 112A0005 */  beq        $t1, $t2, .L80003070
     /* 405C 8000305C 00000000 */   nop
     /* 4060 80003060 240A00A8 */  addiu      $t2, $zero, 0xA8
-    /* 4064 80003064 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 4064 80003064 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 4068 80003068 1000009F */  b          .L800032E8
-    /* 406C 8000306C AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 406C 8000306C AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L80003070:
     /* 4070 80003070 240A00B0 */  addiu      $t2, $zero, 0xB0
-    /* 4074 80003074 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 4074 80003074 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 4078 80003078 1000009B */  b          .L800032E8
-    /* 407C 8000307C AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 407C 8000307C AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L80003080:
-    /* 4080 80003080 3C018001 */  lui        $at, %hi(D_8000A40C)
+    /* 4080 80003080 3C018001 */  lui        $at, %hi(__os_Kdebug_Pkt)
     /* 4084 80003084 10000098 */  b          .L800032E8
-    /* 4088 80003088 AC28A40C */   sw        $t0, %lo(D_8000A40C)($at)
+    /* 4088 80003088 AC28A40C */   sw        $t0, %lo(__os_Kdebug_Pkt)($at)
   .L8000308C:
     /* 408C 8000308C 3C0A00FF */  lui        $t2, (0xFFFFFF >> 16)
     /* 4090 80003090 354AFFFF */  ori        $t2, $t2, (0xFFFFFF & 0xFFFF)
     /* 4094 80003094 010A4824 */  and        $t1, $t0, $t2
-    /* 4098 80003098 3C018001 */  lui        $at, %hi(D_8000A404)
+    /* 4098 80003098 3C018001 */  lui        $at, %hi(__osRdb_DbgRead_Ct)
     /* 409C 8000309C 10000087 */  b          .L800032BC
-    /* 40A0 800030A0 AC29A404 */   sw        $t1, %lo(D_8000A404)($at)
+    /* 40A0 800030A0 AC29A404 */   sw        $t1, %lo(__osRdb_DbgRead_Ct)($at)
   .L800030A4:
     /* 40A4 800030A4 240A0088 */  addiu      $t2, $zero, 0x88
-    /* 40A8 800030A8 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 40A8 800030A8 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 40AC 800030AC 1000008E */  b          .L800032E8
-    /* 40B0 800030B0 AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 40B0 800030B0 AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L800030B4:
     /* 40B4 800030B4 240A0080 */  addiu      $t2, $zero, 0x80
-    /* 40B8 800030B8 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 40B8 800030B8 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 40BC 800030BC 1000008A */  b          .L800032E8
-    /* 40C0 800030C0 AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 40C0 800030C0 AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L800030C4:
     /* 40C4 800030C4 240A0090 */  addiu      $t2, $zero, 0x90
     /* 40C8 800030C8 3C018001 */  lui        $at, (0x80010000 >> 16)
@@ -171,9 +171,9 @@ alabel func_800030D0
     /* 40D0 800030D0 AC2AA408 */  sw         $t2, -0x5BF8($at)
   .L800030D4:
     /* 40D4 800030D4 240A0098 */  addiu      $t2, $zero, 0x98
-    /* 40D8 800030D8 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 40D8 800030D8 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 40DC 800030DC 10000082 */  b          .L800032E8
-    /* 40E0 800030E0 AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 40E0 800030E0 AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L800030E4:
     /* 40E4 800030E4 00084E02 */  srl        $t1, $t0, 24
     /* 40E8 800030E8 31290003 */  andi       $t1, $t1, 0x3
@@ -210,19 +210,19 @@ alabel func_800030D0
     /* 4160 80003160 140A0056 */  bne        $zero, $t2, .L800032BC
     /* 4164 80003164 DF4B0070 */   ld        $t3, 0x70($k0) /* handwritten instruction */
     /* 4168 80003168 240A0078 */  addiu      $t2, $zero, 0x78
-    /* 416C 8000316C 3C018001 */  lui        $at, %hi(D_8000A408)
+    /* 416C 8000316C 3C018001 */  lui        $at, %hi(__osRdb_Mesg)
     /* 4170 80003170 1000005D */  b          .L800032E8
-    /* 4174 80003174 AC2AA408 */   sw        $t2, %lo(D_8000A408)($at)
+    /* 4174 80003174 AC2AA408 */   sw        $t2, %lo(__osRdb_Mesg)($at)
   .L80003178:
     /* 4178 80003178 00084E02 */  srl        $t1, $t0, 24
     /* 417C 8000317C 31290003 */  andi       $t1, $t1, 0x3
     /* 4180 80003180 1009004E */  beq        $zero, $t1, .L800032BC
     /* 4184 80003184 00000000 */   nop
-    /* 4188 80003188 3C0A8001 */  lui        $t2, %hi(D_8000A404)
-    /* 418C 8000318C 8D4AA404 */  lw         $t2, %lo(D_8000A404)($t2)
-    /* 4190 80003190 3C018001 */  lui        $at, %hi(D_8000A404)
+    /* 4188 80003188 3C0A8001 */  lui        $t2, %hi(__osRdb_DbgRead_Ct)
+    /* 418C 8000318C 8D4AA404 */  lw         $t2, %lo(__osRdb_DbgRead_Ct)($t2)
+    /* 4190 80003190 3C018001 */  lui        $at, %hi(__osRdb_DbgRead_Ct)
     /* 4194 80003194 01495023 */  subu       $t2, $t2, $t1
-    /* 4198 80003198 AC2AA404 */  sw         $t2, %lo(D_8000A404)($at)
+    /* 4198 80003198 AC2AA404 */  sw         $t2, %lo(__osRdb_DbgRead_Ct)($at)
     /* 419C 8000319C FF4B0070 */  sd         $t3, 0x70($k0) /* handwritten instruction */
     /* 41A0 800031A0 3C0B8002 */  lui        $t3, %hi(__osRdb_DbgRead_Buf)
     /* 41A4 800031A4 8D6B966C */  lw         $t3, %lo(__osRdb_DbgRead_Buf)($t3)

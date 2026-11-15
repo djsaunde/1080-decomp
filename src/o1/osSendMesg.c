@@ -7,7 +7,7 @@ s32 osSendMesg(OSMesgQueue* mq, s32 msg, s32 flags) {
     register s32 last;
     while (mq->validCount >= mq->msgCount) {
         if (flags == 1) {
-            ((Thread*)D_8000A420)->state = 8;
+            ((Thread*)__osRunningThread)->state = 8;
             func_80003D0C((s32*)&mq->fullqueue);
         } else {
             func_800066D0(saveMask);

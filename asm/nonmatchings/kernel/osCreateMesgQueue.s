@@ -2,10 +2,10 @@
 nonmatching osCreateMesgQueue, 0x2C
 
 glabel osCreateMesgQueue
-    /* 5FD0 80004FD0 3C0E8001 */  lui        $t6, %hi(D_8000A410)
-    /* 5FD4 80004FD4 3C0F8001 */  lui        $t7, %hi(D_8000A410)
-    /* 5FD8 80004FD8 25CEA410 */  addiu      $t6, $t6, %lo(D_8000A410)
-    /* 5FDC 80004FDC 25EFA410 */  addiu      $t7, $t7, %lo(D_8000A410)
+    /* 5FD0 80004FD0 3C0E8001 */  lui        $t6, %hi(__osThreadTail)
+    /* 5FD4 80004FD4 3C0F8001 */  lui        $t7, %hi(__osThreadTail)
+    /* 5FD8 80004FD8 25CEA410 */  addiu      $t6, $t6, %lo(__osThreadTail)
+    /* 5FDC 80004FDC 25EFA410 */  addiu      $t7, $t7, %lo(__osThreadTail)
     /* 5FE0 80004FE0 AC8E0000 */  sw         $t6, 0x0($a0)
     /* 5FE4 80004FE4 AC8F0004 */  sw         $t7, 0x4($a0)
     /* 5FE8 80004FE8 AC800008 */  sw         $zero, 0x8($a0)

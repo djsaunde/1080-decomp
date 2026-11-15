@@ -1,8 +1,8 @@
 #include "common.h"
 
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
-extern s32 siacs_bss_0000;
+extern s32 __osPiAccessQueueEnabled;
+extern s32 piacs_piAccessBuf;
 extern void func_800053D0(s32*, s32*, s32);
 extern void func_80005DC0(s32*, s32, s32);
 
@@ -15,36 +15,36 @@ extern void func_80005DC0(s32*, s32, s32);
  * __osPiCreateAccessQueue, osCreateThread/osStartThread).
  *   void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ,
  *                      OSMesg *cmdBuf, s32 cmdMsgCnt) {
- *       if (__osPiDevMgr.active) return;          // D_8000A450
+ *       if (__osPiDevMgr.active) return;          // __osPiDevMgr
  *       osCreateMesgQueue(cmdQ, cmdBuf, cmdMsgCnt);   // 800053D0
  *       osCreateMesgQueue(&__osPiAccessQueue,
- *                         &pimgr_bss_17B8, 1);
- *       if (D_8000A480) func_80005584();          // accessQ enable
+ *                         &pimgr_piEventBuf, 1);
+ *       if (__osPiAccessQueueEnabled) func_80005584();          // accessQ enable
  *       else {
  *           func_80005C00();
- *           osCreateThread(8, &pimgr_bss_17A0, ...,
+ *           osCreateThread(8, &pimgr_piEventQueue, ...,
  *                          stack(0x22222222 fill));     // 800051E0
  *           ...
  *           if (osGetThreadPri(NULL) < pri)            // 800064F0
  *               osSetThreadPri(NULL, pri);             // 80006510
  *           s = __osDisableInt();                      // 800066B0
- *           __osPiDevMgr.active     = 1;               // D_8000A450
- *           __osPiDevMgr.cmdQueue   = pimgr_bss_0000;  // D_8000A454
+ *           __osPiDevMgr.active     = 1;               // __osPiDevMgr
+ *           __osPiDevMgr.cmdQueue   = pimgr_piThread;  // D_8000A454
  *           __osPiDevMgr.cmdQueue2  = cmdQ;            // D_8000A458
- *           __osPiDevMgr.thread     = &pimgr_bss_17A0; // D_8000A45C
+ *           __osPiDevMgr.thread     = &pimgr_piEventQueue; // D_8000A45C
  *           ... osStartThread + __osRestoreInt(s) ...
  *       }
  *   }
- * Struct-typing reference: D_8000A450 = __osPiDevMgr.active flag
+ * Struct-typing reference: __osPiDevMgr = __osPiDevMgr.active flag
  * (created-once guard), D_8000A454/0x458/0x45C = devmgr fields
  * (evt/cmd queues, mgr thread); __osPiAccessQueue = the access
- * mesg-queue; pimgr_bss_0000/01B0/17A0/17B8 = PI-manager BSS
- * (thread struct, stack, queue storage); D_8000A480 = an
+ * mesg-queue; pimgr_piThread/01B0/17A0/17B8 = PI-manager BSS
+ * (thread struct, stack, queue storage); __osPiAccessQueueEnabled = an
  * access-queue-enable selector. func_800053D0 = osCreateMesgQueue,
  * func_800051E0 = osCreateThread (stack pre-filled 0x22222222),
  * func_800064F0/_80006510 = osGetThreadPri/osSetThreadPri,
  * func_800066B0 = __osDisableInt. 2026-06-23: devmgr fields now
- * modeled as one PiDevMgr struct at D_8000A450 (offsets +0..+0x18:
+ * modeled as one PiDevMgr struct at __osPiDevMgr (offsets +0..+0x18:
  * active/cmdQueue/evtQueue/thread/acsQueue/dma/edma) — semantically
  * exact, objdiff unchanged at 77.43%.
  * 2026-07-10: the old "not -O1-reachable / -O2 store-base CSE" cap FELL —
@@ -53,10 +53,10 @@ extern void func_80005DC0(s32*, s32, s32);
  * lever as the game_libs sibling gl_osCreatePiManager (docs/IDO_CODEGEN
  * "TU-DEFINED global = shared-lui $at store cluster"). EXACT 115/115 via
  * the -O1 donor src/kernel/kernel_006_o1_5520.c (REPLACE_FUNC_BODY splice;
- * this TU keeps `extern D_8000A450` so the C body below compiles ~77% and
- * the donor bytes replace it in the .o; D_8000A450 resolves via
+ * this TU keeps `extern __osPiDevMgr` so the C body below compiles ~77% and
+ * the donor bytes replace it in the .o; __osPiDevMgr resolves via
  * undefined_syms_auto.txt = 0x8000A450, and the donor's
- * %lo(D_8000A450)+addend relocs resolve byte-identically to the .s's
+ * %lo(__osPiDevMgr)+addend relocs resolve byte-identically to the .s's
  * per-field D_8000A454/8/C/60/64/68 relocs). Second lever: assignment
  * order f8=cmdQ BEFORE fC=&thread fixes the t3/t4 temp numbering. */
 extern void func_800051E0(s32, s32 *, s32);
@@ -77,7 +77,7 @@ typedef struct {
     /* 0x14 */ s32 dma;
     /* 0x18 */ s32 edma;
 } PiDevMgr;
-extern PiDevMgr D_8000A450;
+extern PiDevMgr __osPiDevMgr;
 extern s32 D_80006060, D_80005AEC;
 extern void func_80004A50();
 /* 2026-06-10 kernel-relayout: this is ROM 0x800056EC (addiu included).
@@ -85,12 +85,12 @@ extern void func_80004A50();
  * prologue" idiom); that name is now a link-time absolute in
  * undefined_syms_auto.txt so caller relocs hit ROM truth. */
 extern void func_800056F0(); /* post-addiu alt entry (undefined_syms absolute 0x800056F0) */
-extern s32 pimgr_bss_0000, pimgr_bss_01B0, pimgr_bss_11B0, pimgr_bss_1360, pimgr_bss_17A0, pimgr_bss_17B8;
-/* PI manager init (one-shot, gated on D_8000A450). Register the two DMA message
+extern s32 pimgr_piThread, pimgr_piThreadStack, pimgr_ramromThread, pimgr_ramromThreadStack, pimgr_piEventQueue, pimgr_piEventBuf;
+/* PI manager init (one-shot, gated on __osPiDevMgr). Register the two DMA message
  * queues (func_800053D0), enable access if needed (func_80005C00), create the PI
  * thread (func_800051E0, stack-filled 0x22222222), tune priority
  * (func_800064F0/func_80006510), then populate the manager state block
- * (D_8000A450 flag + the queue/handler pointers at +4..+0x18) and spin up the two
+ * (__osPiDevMgr flag + the queue/handler pointers at +4..+0x18) and spin up the two
  * device workers (func_80005F10 + func_8000A110). func_80005584 is a mid-block
  * alt-entry (the PI word-streamer), reached via undefined_syms. */
 void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
@@ -99,13 +99,13 @@ void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
     s32 sp24;
     s32 temp_v0;
 
-    if (D_8000A450.active == 0) {
+    if (__osPiDevMgr.active == 0) {
         func_800053D0(arg1, arg2, arg3);
-        func_800053D0(&pimgr_bss_17A0, &pimgr_bss_17B8, 1);
-        if (D_8000A480 == 0) {
+        func_800053D0(&pimgr_piEventQueue, &pimgr_piEventBuf, 1);
+        if (__osPiAccessQueueEnabled == 0) {
             func_80005C00();
         }
-        func_800051E0(8, &pimgr_bss_17A0, 0x22222222);
+        func_800051E0(8, &pimgr_piEventQueue, 0x22222222);
         sp28 = -1;
         sp24 = func_800064F0(0);
         if (sp24 < arg0) {
@@ -113,18 +113,18 @@ void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
             func_80006510(0, arg0);
         }
         temp_v0 = func_800066B0();
-        D_8000A450.active = 1;
-        D_8000A450.cmdQueue = (s32) &pimgr_bss_0000;
-        D_8000A450.thread = (s32) &pimgr_bss_17A0;
-        D_8000A450.evtQueue = (s32) arg1;
+        __osPiDevMgr.active = 1;
+        __osPiDevMgr.cmdQueue = (s32) &pimgr_piThread;
+        __osPiDevMgr.thread = (s32) &pimgr_piEventQueue;
+        __osPiDevMgr.evtQueue = (s32) arg1;
         sp2C = temp_v0;
-        D_8000A450.acsQueue = (s32) &__osPiAccessQueue;
-        D_8000A450.dma = (s32) &func_80004A50;
-        D_8000A450.edma = (s32) &func_800056F0; /* ROM stores the post-addiu entry */
-        func_80005F10(&pimgr_bss_0000, 0, &D_80006060, &D_8000A450, (char *) &pimgr_bss_01B0 + 0x1000, arg0);
-        func_8000A110(&pimgr_bss_0000);
-        func_80005F10(&pimgr_bss_11B0, 0, &D_80005AEC, NULL, (char *) &pimgr_bss_1360 + 0x400, arg0 - 1);
-        func_8000A110(&pimgr_bss_11B0);
+        __osPiDevMgr.acsQueue = (s32) &__osPiAccessQueue;
+        __osPiDevMgr.dma = (s32) &func_80004A50;
+        __osPiDevMgr.edma = (s32) &func_800056F0; /* ROM stores the post-addiu entry */
+        func_80005F10(&pimgr_piThread, 0, &D_80006060, &__osPiDevMgr, (char *) &pimgr_piThreadStack + 0x1000, arg0);
+        func_8000A110(&pimgr_piThread);
+        func_80005F10(&pimgr_ramromThread, 0, &D_80005AEC, NULL, (char *) &pimgr_ramromThreadStack + 0x400, arg0 - 1);
+        func_8000A110(&pimgr_ramromThread);
         sp24 = 0; /* dead: sizes this host body to 0x1EC, see below */
         func_800066D0(sp2C);
         if (sp28 != -1) {
@@ -146,9 +146,9 @@ extern void func_80004FE0(s32 *, s32, s32);
 extern void func_80005C50(void);
 extern void func_80005C94(void);
 extern s32 func_800066F0(s32 *, s32, s32);
-extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
+extern s32 pimgr_getRamromQ, pimgr_getRamromBuf, pimgr_freeRamromQ, pimgr_freeRamromBuf;
 /* Kernel event-pump thread loop: registers two message queues
- * (D_8001B5D0/D_8001B5F0) + their event handlers (events 0x12/0x13), then loops
+ * (pimgr_getRamromQ/pimgr_freeRamromQ) + their event handlers (events 0x12/0x13), then loops
  * forever — block on queue A, run handler __osDevMgrMain, poll func_800066F0
  * until it returns non-zero, block on queue B, run handler func_80005C94.
  * 2026-06-04: kernel_006 flipped to -O1 (whole-file, all funcs prefer or are
@@ -173,19 +173,19 @@ void pimgr_ramromMain(s32 arg0) {
     s32 sp28;
     register s32 r;
 
-    func_800053D0(&D_8001B5D0, &D_8001B5E8, 1);
-    func_800053D0(&D_8001B5F0, &D_8001B608, 1);
-    func_800051E0(0x12, &D_8001B5D0, 0);
-    func_800051E0(0x13, &D_8001B5F0, 0);
+    func_800053D0(&pimgr_getRamromQ, &pimgr_getRamromBuf, 1);
+    func_800053D0(&pimgr_freeRamromQ, &pimgr_freeRamromBuf, 1);
+    func_800051E0(0x12, &pimgr_getRamromQ, 0);
+    func_800051E0(0x13, &pimgr_freeRamromQ, 0);
     for (;;) {
-        func_80004FE0(&D_8001B5D0, 0, 1);
+        func_80004FE0(&pimgr_getRamromQ, 0, 1);
         func_80005C50();
         v.sum = 0;
         do {
             r = func_800066F0(&sp28, 1, 9);
             v.sum = v.sum + r;
         } while (v.sum == 0);
-        func_80004FE0(&D_8001B5F0, 0, 1);
+        func_80004FE0(&pimgr_freeRamromQ, 0, 1);
         func_80005C94();
     }
 }

@@ -15,15 +15,15 @@ glabel __rmonSetBreak
     /* 928C 8000828C 01C08025 */  or         $s0, $t6, $zero
     /* 9290 80008290 15E10007 */  bne        $t7, $at, .L800082B0
     /* 9294 80008294 00000000 */   nop
-    /* 9298 80008298 3C188002 */  lui        $t8, %hi(rmonbrk_bss_0088)
-    /* 929C 8000829C 2718FEF8 */  addiu      $t8, $t8, %lo(rmonbrk_bss_0088)
+    /* 9298 80008298 3C188002 */  lui        $t8, %hi(rmon_RCPbreakpoints)
+    /* 929C 8000829C 2718FEF8 */  addiu      $t8, $t8, %lo(rmon_RCPbreakpoints)
     /* 92A0 800082A0 03008825 */  or         $s1, $t8, $zero
     /* 92A4 800082A4 27120008 */  addiu      $s2, $t8, 0x8
     /* 92A8 800082A8 10000006 */  b          .L800082C4
     /* 92AC 800082AC 27130080 */   addiu     $s3, $t8, 0x80
   .L800082B0:
-    /* 92B0 800082B0 3C198002 */  lui        $t9, %hi(rmonbrk_bss_0000)
-    /* 92B4 800082B4 2739FE70 */  addiu      $t9, $t9, %lo(rmonbrk_bss_0000)
+    /* 92B0 800082B0 3C198002 */  lui        $t9, %hi(rmon_breakpoints)
+    /* 92B4 800082B4 2739FE70 */  addiu      $t9, $t9, %lo(rmon_breakpoints)
     /* 92B8 800082B8 03208825 */  or         $s1, $t9, $zero
     /* 92BC 800082BC 27320008 */  addiu      $s2, $t9, 0x8
     /* 92C0 800082C0 27330080 */  addiu      $s3, $t9, 0x80

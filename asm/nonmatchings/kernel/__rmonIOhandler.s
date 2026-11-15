@@ -4,15 +4,15 @@ nonmatching __rmonIOhandler, 0xC4
 glabel __rmonIOhandler
     /* 61F0 800051F0 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* 61F4 800051F4 AFBF001C */  sw         $ra, 0x1C($sp)
-    /* 61F8 800051F8 3C048002 */  lui        $a0, %hi(rmonsio_bss_0000)
-    /* 61FC 800051FC 3C058002 */  lui        $a1, %hi(rmonsio_bss_0018)
+    /* 61F8 800051F8 3C048002 */  lui        $a0, %hi(rmon_IOmq)
+    /* 61FC 800051FC 3C058002 */  lui        $a1, %hi(rmon_IOmsgs)
     /* 6200 80005200 AFB00018 */  sw         $s0, 0x18($sp)
-    /* 6204 80005204 24A59668 */  addiu      $a1, $a1, %lo(rmonsio_bss_0018)
-    /* 6208 80005208 24849650 */  addiu      $a0, $a0, %lo(rmonsio_bss_0000)
+    /* 6204 80005204 24A59668 */  addiu      $a1, $a1, %lo(rmon_IOmsgs)
+    /* 6208 80005208 24849650 */  addiu      $a0, $a0, %lo(rmon_IOmq)
     /* 620C 8000520C 0C0014F4 */  jal        func_800053D0
     /* 6210 80005210 24060001 */   addiu     $a2, $zero, 0x1
-    /* 6214 80005214 3C058002 */  lui        $a1, %hi(rmonsio_bss_0000)
-    /* 6218 80005218 24A59650 */  addiu      $a1, $a1, %lo(rmonsio_bss_0000)
+    /* 6214 80005214 3C058002 */  lui        $a1, %hi(rmon_IOmq)
+    /* 6218 80005218 24A59650 */  addiu      $a1, $a1, %lo(rmon_IOmq)
     /* 621C 8000521C 24040014 */  addiu      $a0, $zero, 0x14
     /* 6220 80005220 0C001478 */  jal        func_800051E0
     /* 6224 80005224 00003025 */   or        $a2, $zero, $zero
@@ -21,8 +21,8 @@ glabel __rmonIOhandler
     /* 6230 80005230 3C018002 */  lui        $at, %hi(__osRdb_DbgRead_Buf)
     /* 6234 80005234 AC2E966C */  sw         $t6, %lo(__osRdb_DbgRead_Buf)($at)
   .L80005238:
-    /* 6238 80005238 3C048002 */  lui        $a0, %hi(rmonsio_bss_0000)
-    /* 623C 8000523C 24849650 */  addiu      $a0, $a0, %lo(rmonsio_bss_0000)
+    /* 6238 80005238 3C048002 */  lui        $a0, %hi(rmon_IOmq)
+    /* 623C 8000523C 24849650 */  addiu      $a0, $a0, %lo(rmon_IOmq)
     /* 6240 80005240 00002825 */  or         $a1, $zero, $zero
     /* 6244 80005244 0C0013F8 */  jal        func_80004FE0
     /* 6248 80005248 24060001 */   addiu     $a2, $zero, 0x1

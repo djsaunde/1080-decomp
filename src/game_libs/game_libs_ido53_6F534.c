@@ -10,7 +10,7 @@
  * Every cross-reference the USO loader fixes up at runtime is stored as a bare
  * placeholder in the ROM (jal 0 / lui 0,lw 0). All five callees collapse to the
  * address-0 placeholder gl_func_00000000; the two distinct globals (the running
- * thread ptr D_8000A420 and the run-queue head D_8000A418) map to the two
+ * thread ptr __osRunningThread and the run-queue head __osRunQueue) map to the two
  * distinct zero-resolving placeholders D_00000000 / gl_data_00000000 -- kept
  * separate so IDO does not CSE them (which would renumber the t-reg pair). */
 extern int gl_func_00000000();

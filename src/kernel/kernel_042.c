@@ -1,6 +1,6 @@
 #include "common.h"
 
-extern s32 D_80000308;
+extern s32 osRomBase;
 extern s32 D_A4600000;
 extern s32 D_A4600004;
 extern s32 D_A4600008;

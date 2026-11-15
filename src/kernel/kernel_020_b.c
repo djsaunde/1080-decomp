@@ -1,8 +1,8 @@
 #include "common.h"
 
-extern s32 rmonbrk_bss_0000;
-extern s32 D_8001FEF4;
-extern s32 D_8001FEF0;
+extern s32 rmon_breakpoints;
+extern s32 rmon_altBreak_oldInstruction;
+extern s32 rmon_altBreak;
 extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 

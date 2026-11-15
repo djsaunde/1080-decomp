@@ -53,14 +53,14 @@ glabel __osLeoAbnormalResume
     /* 5498 80004498 24090002 */  addiu      $t1, $zero, 0x2
     /* 549C 8000449C 3C0AA460 */  lui        $t2, 0xA460
     /* 54A0 800044A0 AD490010 */  sw         $t1, 0x10($t2)
-    /* 54A4 800044A4 3C0B8001 */  lui        $t3, %hi(D_8000A3E0)
-    /* 54A8 800044A8 8D6BA3E0 */  lw         $t3, %lo(D_8000A3E0)($t3)
+    /* 54A4 800044A4 3C0B8001 */  lui        $t3, %hi(__OSGlobalIntMask)
+    /* 54A8 800044A8 8D6BA3E0 */  lw         $t3, %lo(__OSGlobalIntMask)($t3)
     /* 54AC 800044AC 3C010010 */  lui        $at, (0x100401 >> 16)
     /* 54B0 800044B0 8FBF0014 */  lw         $ra, 0x14($sp)
     /* 54B4 800044B4 34210401 */  ori        $at, $at, (0x100401 & 0xFFFF)
     /* 54B8 800044B8 01616025 */  or         $t4, $t3, $at
-    /* 54BC 800044BC 3C018001 */  lui        $at, %hi(D_8000A3E0)
-    /* 54C0 800044C0 AC2CA3E0 */  sw         $t4, %lo(D_8000A3E0)($at)
+    /* 54BC 800044BC 3C018001 */  lui        $at, %hi(__OSGlobalIntMask)
+    /* 54C0 800044C0 AC2CA3E0 */  sw         $t4, %lo(__OSGlobalIntMask)($at)
     /* 54C4 800044C4 03E00008 */  jr         $ra
     /* 54C8 800044C8 27BD0020 */   addiu     $sp, $sp, 0x20
 endlabel __osLeoAbnormalResume

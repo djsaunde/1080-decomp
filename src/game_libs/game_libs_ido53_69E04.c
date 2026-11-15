@@ -6,7 +6,7 @@
  * msg to the ring buffer, then if a thread is waiting on mtqueue wake it. IDO
  * 5.3 -O1, spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. All OS-API
  * callees collapse to the address-0 placeholder gl_func_00000000; the single
- * global (running-thread ptr, kernel D_8000A420) maps to D_00000000. */
+ * global (running-thread ptr, kernel __osRunningThread) maps to D_00000000. */
 #include "libultra/os_message.h"
 
 extern int gl_func_00000000();

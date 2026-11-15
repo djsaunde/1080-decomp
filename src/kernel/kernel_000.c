@@ -3,19 +3,19 @@
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
-extern s32 D_8000A480;
+extern s32 __osPiAccessQueueEnabled;
 extern s32 gUsoErrno;
 extern void func_80005DC0(s32*, s32, s32);
 extern void func_80005C00(void);
 extern void func_80004FE0(s32*, s32*, s32);
 extern void func_800053D0(s32*, s32*, s32);
-extern s32 D_8000A3E0;
+extern s32 __OSGlobalIntMask;
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 extern void func_80003D0C(s32*);
-extern void* D_8000A420;
-extern s32 D_8000A418;
-extern s32 siacs_bss_0000;
+extern void* __osRunningThread;
+extern s32 __osRunQueue;
+extern s32 piacs_piAccessBuf;
 extern s32 func_800009D8(void*, s32, s32, void*);
 extern void func_80003FF0(s32, void*);
 extern void* func_80003E54(void*);
@@ -25,17 +25,17 @@ extern void func_8000785C(s32);
 extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
-extern FuncPtr2 D_80012C44;
+extern FuncPtr2 gUsoPrintfHook;
 extern s32 D_8000A32C;
 extern s32 D_8000A340;
 extern s32 gUsoCtx;
-extern s32 D_80012BE4;
+extern s32 gUsoEntryResult;
 extern s32 gUsoEntryIndex;
 extern s32 gUsoEntryModule;
 extern s32 gUsoModules[];
-extern s32 D_80013000;
+extern s32 gFsRomReadStatus;
 extern s32 gFsDeviceTable;
-extern s32 D_8000A41C;
+extern s32 __osActiveQueue;
 extern s32 func_80002890(s32);
 extern void func_8000A0E0(void);
 extern void func_80005350(s32, s32);
@@ -330,18 +330,18 @@ void fs_romRead(s32 arg0, s32 arg1, s32 arg2) {
     u16 first16;
     u16 loop16;
 
-    D_80013000 = 0;
+    gFsRomReadStatus = 0;
     func_8000A0E0();
     while (func_80006640() & 3) {}
     func_80004A50(0, arg1, arg0, arg2);
     status = func_80006640();
     first16 = status;
-    D_80013000 = status;
+    gFsRomReadStatus = status;
     if (first16 & 3) {
         do {
             status = func_80006640();
             loop16 = status;
-            D_80013000 = status;
+            gFsRomReadStatus = status;
         } while (loop16 & 3);
     }
     savedMask = func_80002890(1);
@@ -385,7 +385,7 @@ void fs_initFile(Struct00480Dst* dst, Struct00480Src* src) {
 /* fs_openDevice: named-handler lookup, IDO 7.1 -O2, EXACT. Walks the
  * 0x14-byte entry table at *gFsDeviceTable until a NULL name; on the first
  * entry whose name matches (func_80000568 == 0) it calls
- * func_80000880(a0, entry) and returns &D_80012C70[i] (0xC stride).
+ * func_80000880(a0, entry) and returns &gFsDeviceHeaps[i] (0xC stride).
  * The old split (this .s without an epilogue + func_80000568.s "shared
  * epilogue stub" that four callers supposedly jal'd) was one function: the
  * kernel's jal targets are 0x400 above our symbol numbering, so `jal
@@ -399,7 +399,7 @@ void fs_initFile(Struct00480Dst* dst, Struct00480Src* src) {
  * homed, as in the target. */
 typedef struct { char *name; s32 pad[4]; } HandlerEntry;   /* 0x14 */
 typedef struct { s32 w[3]; } HandlerSlot;                   /* 0xC */
-extern HandlerSlot D_80012C70[];
+extern HandlerSlot gFsDeviceHeaps[];
 extern void func_80000880();
 extern s32 func_80000568();
 
@@ -412,7 +412,7 @@ HandlerSlot *fs_openDevice(void *a0, char *name, s32 a2) {
     while ((*(HandlerEntry **)&gFsDeviceTable)[i].name != NULL) {
         if (func_80000568((*(HandlerEntry **)&gFsDeviceTable)[i].name, name) == 0) {
             func_80000880(a0, (HandlerEntry *)((char *)*(HandlerEntry **)&gFsDeviceTable + i * 20));
-            return &D_80012C70[i];
+            return &gFsDeviceHeaps[i];
         }
         i++;
     }
@@ -479,7 +479,7 @@ void uso_bcopy(u8 *src, u8 *dst, s32 count) {
 /* fs_read (really starts at 0x5D8: the .s glabel sits on the
  * prologue word) = bounded file read, IDO 7.1 -O2: buf must be 8-aligned
  * (else errno gUsoErrno = -0x1C), size*n clamped to capacity - pos, read
- * via the D_80012C40 hook, pos advanced. The alabels func_8000060C /
+ * via the gUsoReadHook hook, pos advanced. The alabels func_8000060C /
  * func_80000660 inside the .s are not entries: kernel jal targets sit 0x400
  * above our numbering, so `jal func_8000060C` / `jal func_80000660` are
  * calls to 0x20C / uso_splitPath (absolute undefined_syms entries).
@@ -487,7 +487,7 @@ void uso_bcopy(u8 *src, u8 *dst, s32 count) {
  * puts the errno address in v1 and the value in v0. */
 extern s32 gUsoErrno;
 typedef s32 (*ReadFunc)(void *, u32, void *);
-extern ReadFunc D_80012C40;
+extern ReadFunc gUsoReadHook;
 typedef struct {
     s32 pad0;
     s32 pos;     /* +0x4 */
@@ -510,7 +510,7 @@ s32 fs_read(s32 buf, u32 size, u32 n, FileStateRdr *fp) {
         return 0;
     }
     if (total != 0) {
-        D_80012C40((void *)buf, (u32)(fp->buf + fp->pos), (void *)total);
+        gUsoReadHook((void *)buf, (u32)(fp->buf + fp->pos), (void *)total);
     }
     fp->pos += total;
     return total;
@@ -645,7 +645,7 @@ void uso_printSlots(void) {
 
 
 /* uso_unload: unload a USO module by path. Debug-print via the
- * D_80012C44 hook, split the path (func_80000660 = uso_splitPath: dir ->
+ * gUsoPrintfHook hook, split the path (func_80000660 = uso_splitPath: dir ->
  * gUsoPathDir, file -> gUsoPathFile), find the gUsoModules slot whose name (+0x72)
  * equals the file (func_80000568 = uso_strcmp strcmp, 0 = equal), clear it
  * and notify every other live slot (func_800021D0 / func_8000275C, i.e. our
@@ -670,7 +670,7 @@ s32 uso_unload(char *path) {
     s32 j;
     char *e;
 
-    D_80012C44((void *)&D_8000A300, path);
+    gUsoPrintfHook((void *)&D_8000A300, path);
     func_80000660(path, &gUsoPathDir, &gUsoPathFile);
     for (i = 0; i < 0x87; i++) {
         if (gUsoModules[i] != 0 &&
@@ -760,7 +760,7 @@ s32 uso_load(s32 file) {
     err = 0;
     if (1) {
     }
-    D_80012C44(&D_8000A314, (void *)file);
+    gUsoPrintfHook(&D_8000A314, (void *)file);
     ((s32 *)&gUsoCtx)[6] = 0;
     ((s16 *)&gUsoCtx)[0x16] = 0;
     func_80000660(file, &gUsoPathDir, &gUsoPathFile);
@@ -861,7 +861,7 @@ s32 uso_callEntry(void) {
          * non-reloc word diff.) */
         s32 t;
         UsoFunc fn = (UsoFunc)*(s32*)((t = funcTable) + funcIndex * 12 + 4);
-        D_80012BE4 = fn(&gUsoCtx);
+        gUsoEntryResult = fn(&gUsoCtx);
     }
     return 0;
 }
@@ -933,7 +933,7 @@ s32 uso_getModuleName(u8 *out, s32 id) {
 }
 
 void uso_printVersion(void) {
-    D_80012C44(&D_8000A32C, &D_8000A340);
+    gUsoPrintfHook(&D_8000A32C, &D_8000A340);
 }
 
 extern s32 D_8000A344;
@@ -1051,7 +1051,7 @@ s32 uso_getErrno(s32 arg0) {
     return gUsoErrno;
 }
 
-extern void* (*D_80012BF4)(s32, s32);
+extern void* (*gUsoAllocHook)(s32, s32);
 extern s32 func_800015D0(void*, void*);
 
 /* uso_open_file: alloc 0x28-byte file struct, init via func_800015D0, read
@@ -1063,7 +1063,7 @@ void* fs_openFile(void* arg0) {
     char pad[8];  /* frame padding to push header to sp+0x18 */
     s32 header[3];
 
-    file = D_80012BF4(0x28, 8);
+    file = gUsoAllocHook(0x28, 8);
     if (func_800015D0(arg0, file) < 0) {
         return 0;
     }
@@ -1330,7 +1330,7 @@ s32 uso_unrelocate(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
  * flags lack bit 3 (unresolved) is skipped. Types: R_26 (jal target field),
  * HI16 (remember the half and its address), LO16 (fold hi<<16 + lo + value,
  * patch the remembered HI16 with the carry-adjusted upper half), R_32 (add).
- * Bad type: D_80012C44(D_8000A36C, type) and return -2. Case numbers from the
+ * Bad type: gUsoPrintfHook(D_8000A36C, type) and return -2. Case numbers from the
  * jumptable (2026-10-20, agent-g run 112): jtbl_8000A63C IS in the ROM, 0x400
  * lower like every kernel address (our 0xA23C): type 1 = R_26, 2 = LO16,
  * 3 = HI16, 4 = R_32. Open: the target dispatches through that 4-entry jumptable;
@@ -1688,10 +1688,10 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
  * the 16-byte exception preamble D_80003270 at the four vectors
  * 0x80000000/80/100/180 + writeback/inval caches, osMapTLBRdb
  * (func_80009DF0), reads the clock via osPiRawReadIo(4,..)
- * (__osSetSR); D_8000A3D0 = osClockRate is a u64 (OSTime):
+ * (__osSetSR); osClockRate = osClockRate is a u64 (OSTime):
  * `osClockRate = osClockRate * 3 / 4` calls the 64-bit helpers
- * func_80002F78 (__ll_mul) / exceptasm_rdbFront (__ll_div); D_8000A3D8 =
- * osViClock by D_80000300 = osTvType; then the KMC debugger hook: if
+ * func_80002F78 (__ll_mul) / exceptasm_rdbFront (__ll_div); osViClock =
+ * osViClock by osTvType = osTvType; then the KMC debugger hook: if
  * *(u32*)0xBFF00000 == 'KMC\0', copy the 9-word stub at D_80003280 to the
  * general-exception vector, and if the KMC flags word lacks bit 4, copy the
  * 0x800-word KMC ROM image high and tail-call its entry(+8). */
@@ -1699,11 +1699,11 @@ typedef struct {
     u32 inst1, inst2, inst3, inst4;
 } __osExceptionVector;
 extern __osExceptionVector D_80003270;          /* __osExceptionPreamble */
-extern u64 D_8000A3D0;                          /* osClockRate (OSTime) */
-extern s32 D_8000A3D8;                          /* osViClock */
-extern s32 D_8000030C;                          /* osResetType */
-extern s32 D_80000300;                          /* osTvType */
-extern s32 D_8000031C;                          /* osAppNMIBuffer */
+extern u64 osClockRate;                          /* osClockRate (OSTime) */
+extern s32 osViClock;                          /* osViClock */
+extern s32 osResetType;                          /* osResetType */
+extern s32 osTvType;                          /* osTvType */
+extern s32 osAppNMIBuffer;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];                        /* KMC E_VEC stub words */
 
@@ -1750,18 +1750,18 @@ void osInitialize(void) {
     func_80002DB0(4, &clock);
     clock &= ~0xF;
     if (clock != 0) {
-        D_8000A3D0 = clock;
+        osClockRate = clock;
     }
-    D_8000A3D0 = D_8000A3D0 * 3 / 4;
-    if (D_8000030C == 0) {
-        func_800030D0(&D_8000031C, 0x40);
+    osClockRate = osClockRate * 3 / 4;
+    if (osResetType == 0) {
+        func_800030D0(&osAppNMIBuffer, 0x40);
     }
-    if (D_80000300 == 0) {
-        D_8000A3D8 = 0x02F5B2D2;
-    } else if (D_80000300 == 2) {
-        D_8000A3D8 = 0x02E6025C;
+    if (osTvType == 0) {
+        osViClock = 0x02F5B2D2;
+    } else if (osTvType == 2) {
+        osViClock = 0x02E6025C;
     } else {
-        D_8000A3D8 = 0x02E6D354;
+        osViClock = 0x02E6D354;
     }
     if (__kmc_pt_mode == 0) {
         sp38 = (s32 *)0xBFF08004;

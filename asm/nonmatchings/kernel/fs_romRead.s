@@ -4,8 +4,8 @@ nonmatching fs_romRead, 0xCC
 glabel fs_romRead
     /* 13A8 800003A8 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* 13AC 800003AC AFB00018 */  sw         $s0, 0x18($sp)
-    /* 13B0 800003B0 3C108001 */  lui        $s0, %hi(D_80013000)
-    /* 13B4 800003B4 26103000 */  addiu      $s0, $s0, %lo(D_80013000)
+    /* 13B0 800003B0 3C108001 */  lui        $s0, %hi(gFsRomReadStatus)
+    /* 13B4 800003B4 26103000 */  addiu      $s0, $s0, %lo(gFsRomReadStatus)
     /* 13B8 800003B8 AFBF001C */  sw         $ra, 0x1C($sp)
     /* 13BC 800003BC AFA40020 */  sw         $a0, 0x20($sp)
     /* 13C0 800003C0 AFA50024 */  sw         $a1, 0x24($sp)

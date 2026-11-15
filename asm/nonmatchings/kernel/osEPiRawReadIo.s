@@ -16,8 +16,8 @@ glabel osEPiRawReadIo
     /* A878 80009878 00000000 */   nop
   .L8000987C:
     /* A87C 8000987C 90880009 */  lbu        $t0, 0x9($a0)
-    /* A880 80009880 3C0A8001 */  lui        $t2, %hi(D_8000A470)
-    /* A884 80009884 254AA470 */  addiu      $t2, $t2, %lo(D_8000A470)
+    /* A880 80009880 3C0A8001 */  lui        $t2, %hi(__osCurrentHandle)
+    /* A884 80009884 254AA470 */  addiu      $t2, $t2, %lo(__osCurrentHandle)
     /* A888 80009888 00084880 */  sll        $t1, $t0, 2
     /* A88C 8000988C 012A5821 */  addu       $t3, $t1, $t2
     /* A890 80009890 8D6C0000 */  lw         $t4, 0x0($t3)
@@ -101,9 +101,9 @@ glabel osEPiRawReadIo
     /* A9AC 800099AC AD390028 */  sw         $t9, %lo(D_A4600028)($t1)
   .L800099B0:
     /* A9B0 800099B0 00085880 */  sll        $t3, $t0, 2
-    /* A9B4 800099B4 3C018001 */  lui        $at, %hi(D_8000A470)
+    /* A9B4 800099B4 3C018001 */  lui        $at, %hi(__osCurrentHandle)
     /* A9B8 800099B8 002B0821 */  addu       $at, $at, $t3
-    /* A9BC 800099BC AC24A470 */  sw         $a0, %lo(D_8000A470)($at)
+    /* A9BC 800099BC AC24A470 */  sw         $a0, %lo(__osCurrentHandle)($at)
   .L800099C0:
     /* A9C0 800099C0 8C8C000C */  lw         $t4, 0xC($a0)
     /* A9C4 800099C4 3C01A000 */  lui        $at, %hi(D_A0000000)
