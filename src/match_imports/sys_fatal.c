@@ -17,9 +17,9 @@ extern int gl_ref_00034240();
 extern int D_00000000;
 extern int D_6170C_idx;
 extern int D_6170C_arr[];
-/* game_libs_func_000610F4: one C function spans the original 0x610F4 and
+/* console_itoa: one C function spans the original 0x610F4 and
  * 0x6110C asm entries (0x18 + 0xD8 = 0xF0; splat split the a1 != 0 path). */
-char *game_libs_func_000610F4(char *a0, int a1, int a2) {
+char *console_itoa(char *a0, int a1, int a2) {
     char *q;
     int v0;
     if (a1 == 0) {
@@ -54,7 +54,7 @@ char *game_libs_func_000610F4(char *a0, int a1, int a2) {
     return a0;
 }
 
-int game_libs_func_000611E4(int a0, int a1) {
+int console_pow10Scale(int a0, int a1) {
     int i;
     for (i = 1; i < a1; i++) {
         a0 *= 10;
@@ -68,7 +68,7 @@ typedef union FI_0006126C {
     f64 d;
 } FI_0006126C;
 extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
-char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
+char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;
     int A = 6;

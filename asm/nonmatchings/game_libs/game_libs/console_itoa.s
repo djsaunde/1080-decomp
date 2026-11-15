@@ -1,6 +1,6 @@
-nonmatching game_libs_func_000610F4, 0xF0
+nonmatching console_itoa, 0xF0
 
-glabel game_libs_func_000610F4
+glabel console_itoa
     /* E461CC 000610F4 14A00005 */  .word 0x14A00005
     /* E461D0 000610F8 24070030 */  .word 0x24070030
     /* E461D4 000610FC 24820001 */  .word 0x24820001
@@ -61,4 +61,4 @@ glabel game_libs_func_000610F4
     /* E462B0 000611D8 00801025 */  .word 0x00801025
     /* E462B4 000611DC 03E00008 */  .word 0x03E00008
     /* E462B8 000611E0 00000000 */  .word 0x00000000
-endlabel game_libs_func_000610F4
+endlabel console_itoa

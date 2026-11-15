@@ -1,6 +1,6 @@
-nonmatching gl_func_0006126C, 0x1EC
+nonmatching console_formatValue, 0x1EC
 
-glabel gl_func_0006126C
+glabel console_formatValue
     /* E46344 0006126C 27BDFFC0 */  .word 0x27BDFFC0
     /* E46348 00061270 AFB20020 */  .word 0xAFB20020
     /* E4634C 00061274 8FB20050 */  .word 0x8FB20050
@@ -124,4 +124,4 @@ glabel gl_func_0006126C
     /* E46524 0006144C 8FBE0038 */  .word 0x8FBE0038
     /* E46528 00061450 03E00008 */  .word 0x03E00008
     /* E4652C 00061454 27BD0040 */  .word 0x27BD0040
-endlabel gl_func_0006126C
+endlabel console_formatValue

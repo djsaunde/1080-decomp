@@ -2828,12 +2828,12 @@ typedef char *(*GP_00061040)();
 char *console_formatHex8(char *arg0, s32 arg1);
 void _asmpp_func300(void);
 char *game_libs_func_0006110C(char *a0, int a1, int a2);
-int game_libs_func_000611E4(int a0, int a1);
+int console_pow10Scale(int a0, int a1);
 typedef union FI_0006126C {
     f32 f;
     int i;
 } FI_0006126C;
-char *gl_func_0006126C(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt);
+char *console_formatValue(char *arg0, int arg1, FI_0006126C arg2, int arg3, u8 *fmt);
 extern int gl_func_00000000();
 int gl_func_00061458();
 extern void gl_ref_00034810(const char *, ...);

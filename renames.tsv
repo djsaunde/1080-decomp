@@ -1223,3 +1223,6 @@ game_libs_func_00031CB8	snd_RampTick_31CB8
 game_libs_func_00031D70	snd_Init_31D70
 gl_func_00031DA4	snd_AudioUpdate_31DA4
 gl_func_00031DD8	snd_FrameUpdate_31DD8
+game_libs_func_000610F4	console_itoa
+game_libs_func_000611E4	console_pow10Scale
+gl_func_0006126C	console_formatValue

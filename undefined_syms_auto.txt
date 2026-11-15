@@ -5594,7 +5594,7 @@ D_000019E8 = 0x000019E8;
 D_0001EC6C = 0x0001EC6C;
 D_0001EC84 = 0x0001EC84;
 D_0001EC9C = 0x0001EC9C;
-/* gl_func_0006126C blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
+/* console_formatValue blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
 gl_func_00034458_6126C = 0x00000000;
 Node_doCommand_rodata = 0x00001A1C;
 CamMan_update_rodata = 0x000019E8;

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_000611E4, 0x88
+nonmatching console_pow10Scale, 0x88
 
-glabel game_libs_func_000611E4
+glabel console_pow10Scale
     /* E462BC 000611E4 28A10002 */  .word 0x28A10002
     /* E462C0 000611E8 1420001E */  .word 0x1420001E
     /* E462C4 000611EC 24020001 */  .word 0x24020001
@@ -35,4 +35,4 @@ glabel game_libs_func_000611E4
     /* E46338 00061260 00000000 */  .word 0x00000000
     /* E4633C 00061264 03E00008 */  .word 0x03E00008
     /* E46340 00061268 00801025 */  .word 0x00801025
-endlabel game_libs_func_000611E4
+endlabel console_pow10Scale

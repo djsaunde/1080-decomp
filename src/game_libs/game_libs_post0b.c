@@ -26936,7 +26936,7 @@ char *console_formatHex8(char *arg0, s32 arg1) {
  * a2 /= 10): digit = count of subtractions of a2 from a1 (0..9); D[0] is the
  * leading-zero-suppression flag. NUL-terminate, return end ptr. Splat boundary:
  * the a1 != 0 path (ex game_libs_func_0006110C) is this fn's body. */
-char *game_libs_func_000610F4(char *a0, int a1, int a2) {
+char *console_itoa(char *a0, int a1, int a2) {
     char *q;
     int v0;
     if (a1 == 0) {
@@ -26978,7 +26978,7 @@ char *game_libs_func_000610F4(char *a0, int a1, int a2) {
  * unrolled body) which this build (-Wab,-r4300_mul) doesn't emit — a build/
  * hazard-nop gap, not a C-shape issue. Byte-match would need the hazard nops
  * inserted (assembler config), not reachable per-function. */
-int game_libs_func_000611E4(int a0, int a1) {
+int console_pow10Scale(int a0, int a1) {
     int i;
     for (i = 1; i < a1; i++) {
         a0 *= 10;
@@ -27037,7 +27037,7 @@ typedef union FI_0006126C {
     f64 d;
 } FI_0006126C;
 extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee dbg_printThreads (ROM words are jal 0) */
-char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
+char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
     char *out = arg0;
     int B = 6;
     int A = 6;
