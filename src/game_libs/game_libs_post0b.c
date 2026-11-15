@@ -20378,8 +20378,8 @@ void light_setShadowMatrix_00054D04(char *self, int arg1, V3_54D04 *out) {
     char *obj;
     char *q;
     if (1) { V3_54D04 *pp = &p; }
-    if (gl_func_00000000(&D_00000000) != 0) {
-        obj = (char *)gl_func_00000000(&D_00000000);
+    if (gl_func_00000000(&gGfxLib) != 0) {               /* gfx_getShadowLight */
+        obj = (char *)gl_func_00000000(&gGfxLib);
         p.x = *(f32 *)(obj + 0xA0);
         p.y = *(f32 *)(obj + 0xA4);
         p.z = *(f32 *)(obj + 0xA8);
@@ -20400,7 +20400,7 @@ void light_setShadowMatrix_00054D04(char *self, int arg1, V3_54D04 *out) {
         }
         q = self + 300;
         gl_func_00000000(q, &v, arg1);
-        *(char **)((char *)&D_00000000 + 0xE4) = q;
+        *(char **)((char *)&gGfxLib + 0xE4) = q;
     } else {
         gl_func_00000000((char *)&D_00000000 + 0x210EC);
     }
@@ -20468,7 +20468,7 @@ void light_setMirrorMatrix_00054E78(char *arg0, char *arg1) {
     MF54(0x15C) = d * QF54(0);
     MF54(0x160) = d * QF54(4);
     MF54(0x168) = 1.0f;
-    FW(&D_00000000, 0xE4) = (int)(arg0 + 0x12C);
+    FW(&gGfxLib, 0xE4) = (int)(arg0 + 0x12C);
 }
 #if 0
 void gl_func_00054E78_old(char *arg0, char *arg1) {

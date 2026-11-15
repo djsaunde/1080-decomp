@@ -31,6 +31,7 @@ inline V3 V3::operator*(const f32 &s) const { f32 a = x * s - 0 * idv(0); return
     target's product registers and issue order */
 struct Plane { V3 n; f32 d; };
 struct M4 { f32 m[4][4]; void ident(); };
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern "C" char D_00000000[];
 struct Obj { char pad[300]; M4 mtx; void reflect(const Plane &p); };
 void Obj::reflect(const Plane &p) {
@@ -62,5 +63,5 @@ void Obj::reflect(const Plane &p) {
     mtx.m[3][1] = k * p.n.y;
     mtx.m[3][2] = k * p.n.z;
     mtx.m[3][3] = i1(); /* run 203: i1() like the diagonals -- a literal 1.0f here was CSE'd with them into one long-lived f16 */
-    *(M4 **)(D_00000000 + 0xE4) = &mtx;
+    *(M4 **)(gGfxLib + 0xE4) = &mtx;
 }
