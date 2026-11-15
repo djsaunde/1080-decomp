@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/snowboarder.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -8541,20 +8542,20 @@ void func_0000DDC4(int a0) {
  * as gl_func_0004E384 etc. — using distinct C locals per `d` does not move IDO off
  * the $v1 reuse (the load is post-call so $v1 is the next free caller-saved reg).
  * INCLUDE_ASM remains build path. */
-void SnowBoarder_func_0000DDCC(char *s0) {
-    unsigned int st = *(unsigned int*)(s0 + 0x8C4);
+void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
+    unsigned int st = sb->state;
     if (st == 7 || st == 6) {
-        func_00000000(s0);
+        func_00000000(sb);
         return;
     }
-    if (*(unsigned int*)(s0 + 0xA58) & 0x80) {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, 0xE);
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 0xF);
+    if (sb->flags & SNOWB_FLAG_MIRROR) {
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xE);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xF);
     } else {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, 0xA);
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 0xB);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xA);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xB);
     }
-    **(Tri3i **)(s0 + 0x8FC) = *(Tri3i *)func_00000000(&D_00000000, 0xC);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 0xC);
 }
 
 /* SnowBoarder_func_0000DF04 - verified structural decode (0x110, 68 insns,
@@ -8569,15 +8570,15 @@ void SnowBoarder_func_0000DDCC(char *s0) {
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + per-slot
  * 3-word struct copies. INCLUDE_ASM remains build path. */
 /* SnowBoarder_func_0000DF04 — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
-void SnowBoarder_func_0000DF04(char *s0) {
-    if (*(unsigned int*)(s0 + 0xA58) & 0x80) {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, 0x11);
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 0x12);
+void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
+    if (sb->flags & SNOWB_FLAG_MIRROR) {
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x11);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x12);
     } else {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, 0x14);
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 0x15);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x14);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x15);
     }
-    **(Tri3i **)(s0 + 0x8FC) = *(Tri3i *)func_00000000(&D_00000000, 0x16);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 0x16);
 }
 /* VERIFIED in-tree 68/68 EXACT on clean rebuild (was 97.8%).
    Single lever: Tri3i struct-assign cascade (same form as promoted E014/DDCC siblings).
@@ -8597,15 +8598,15 @@ void SnowBoarder_func_0000DF04(char *s0) {
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + lh
  * dynamic-id + per-slot 3-word struct copies. INCLUDE_ASM remains
  * build path. */
-void SnowBoarder_func_0000E014(char *s0) {
-    if (*(unsigned int*)(s0 + 0xA58) & 0x80) {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, *(short*)(s0 + 0x902));
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 8);
+void SnowBoarder_func_0000E014(SnowBoarder *sb) {
+    if (sb->flags & SNOWB_FLAG_MIRROR) {
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, sb->unk902);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 8);
     } else {
-        **(Tri3i **)(s0 + 0x8F4) = *(Tri3i *)func_00000000(&D_00000000, *(short*)(s0 + 0x900));
-        **(Tri3i **)(s0 + 0x8F8) = *(Tri3i *)func_00000000(&D_00000000, 5);
+        *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&D_00000000, sb->unk900);
+        *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&D_00000000, 5);
     }
-    **(Tri3i **)(s0 + 0x8FC) = *(Tri3i *)func_00000000(&D_00000000, 6);
+    *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&D_00000000, 6);
 }
 
 /* SnowBoarder_func_0000E124 - verified structural decode (0x14C, 83 insns,
@@ -8630,42 +8631,42 @@ void SnowBoarder_func_0000E014(char *s0) {
  * one pointer variable p carries the negated component and both call args;
  * up[] sits at the frame top with five unused words above r[]. */
 extern void func_00000000_e124_r(char *, float *, float);
-void SnowBoarder_func_0000E124(char *s0) {
+void SnowBoarder_func_0000E124(SnowBoarder *sb) {
     float up[3];
     int unused[5];
     float r[3];
     float *p;
 
-    *(unsigned int *)(s0 + 0xA58) ^= 0x80;
-    *(float *)(s0 + 0xA38) = 0.0f;
-    if (*(unsigned int *)(s0 + 0xA58) & 0x8) {
+    sb->flags ^= SNOWB_FLAG_MIRROR;
+    sb->unkA38 = 0.0f;
+    if (sb->flags & SNOWB_FLAG_08) {
         func_00000000();
     } else {
-        func_00000000(s0);
+        func_00000000(sb);
     }
-    *(float *)(s0 + 0x978) = -*(float *)(s0 + 0x978);
+    sb->unk978 = -sb->unk978;
     up[0] = 0.0f;
     up[1] = 1.0f;
     up[2] = 0.0f;
-    if (*(unsigned int *)(s0 + 0xA58) & 0x80) {
-        p = (float *)(*(char **)(s0 + 0x844) + 0x30);
+    if (sb->flags & SNOWB_FLAG_MIRROR) {
+        p = (float *)(sb->unk844 + 0x30);
         *p = *p * -1.0f;
-        if (*(char **)(s0 + 0x864) != 0) {
-            p = (float *)(*(char **)(s0 + 0x864) + 0x30);
+        if (sb->unk864 != 0) {
+            p = (float *)(sb->unk864 + 0x30);
             func_00000000(p);
-            p = (float *)(*(char **)(s0 + 0x864) + 0x30);
+            p = (float *)(sb->unk864 + 0x30);
             r[0] = -1.0f;
             r[2] = 1.0f;
             r[1] = 1.0f;
             func_00000000(p, r);
         }
     } else {
-        p = (float *)(*(char **)(s0 + 0x844) + 0x30);
+        p = (float *)(sb->unk844 + 0x30);
         *p = *p * -1.0f;
-        if (*(char **)(s0 + 0x864) != 0) { p = (float *)(*(char **)(s0 + 0x864) + 0x30); func_00000000(p); }
+        if (sb->unk864 != 0) { p = (float *)(sb->unk864 + 0x30); func_00000000(p); }
     }
-    if (*(unsigned int *)(s0 + 0xA58) & 0x20) {
-        if (*(char **)(s0 + 0x864) != 0) func_00000000_e124_r(*(char **)(s0 + 0x864) + 0x30, up, 180.0f);
+    if (sb->flags & SNOWB_FLAG_20) {
+        if (sb->unk864 != 0) func_00000000_e124_r(sb->unk864 + 0x30, up, 180.0f);
     }
 }
 
