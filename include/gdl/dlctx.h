@@ -52,6 +52,12 @@ typedef char DLContext_flags_check[(int)&((DLContext *)0)->flags == 0x78 ? 1 : -
  * `buf = DLCTX(ctx)->gfx.cur; n = DLBUF(buf)->count; DLBUF(buf)->count = n + 1;
  * pkt = (char *)DLCTX(ctx)->gfx.cur->base + n * 8`) */
 #define DLCTX(p) ((DLContext *)(p))
+/* one 8-byte Gfx command at an untyped packet pointer: DLPKT(pkt)->w0 = cmd; ->w1 = arg */
+typedef struct DLGfx {
+    /* 0x0 */ s32 w0;
+    /* 0x4 */ s32 w1;
+} DLGfx;
+#define DLPKT(p) ((DLGfx *)(p))
 #define DLBUF(p) ((DLBuf *)(p))
 
 #endif /* GDL_DLCTX_H */

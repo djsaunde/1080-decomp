@@ -19478,12 +19478,13 @@ void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2) {
             var_s7 = 0;
             var_s2 = 0;
             do {
-                temp_s0 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s2) + 0x2));
-                temp_s1 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s2) + 0x4));
-                temp_v0 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s2) + 0x6));
-                *(f32*)((char*)((int)BASEPOLY(arg0)->faceNormals + var_s7)) = (f32) (((*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2)) * (*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4))) - ((*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2)) * (*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4))));
-                *(f32*)((char*)((int)BASEPOLY(arg0)->faceNormals + var_s7) + 0x4) = (f32) (((*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4)) * (*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0))) - ((*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4)) * (*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0))));
-                *(f32*)((char*)((int)BASEPOLY(arg0)->faceNormals + var_s7) + 0x8) = (f32) (((*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0)) * (*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2))) - ((*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0)) * (*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2))));
+                temp_s0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[0]);
+                temp_s1 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[1]);
+                temp_v0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[2]);
+                /* the cross-product reads stay raw: POLYVERT(v)->x there reorders the lh loads (run 521) */
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->x = (f32) (((*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2)) * (*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4))) - ((*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2)) * (*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4))));
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->y = (f32) (((*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4)) * (*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0))) - ((*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4)) * (*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0))));
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->z = (f32) (((*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0)) * (*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2))) - ((*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0)) * (*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2))));
                 CALL(math_vec3Normalize)((int)BASEPOLY(arg0)->faceNormals + var_s7);
                 var_s8 += 1;
                 var_s7 += 0xC;
@@ -19507,9 +19508,9 @@ void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2) {
                 if (BASEPOLY(arg0)->nTris != 0) {
                     sp4C = var_v1;
                     do {
-                        temp_s0 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s5) + 0x2));
-                        temp_s1 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s5) + 0x4));
-                        temp_v0 = CALL(PolyShape_getVertex)(arg0, (s32) *(u16*)((char*)((int)BASEPOLY(arg0)->tris + var_s5) + 0x6));
+                        temp_s0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s5)->v[0]);
+                        temp_s1 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s5)->v[1]);
+                        temp_v0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s5)->v[2]);
                         if ((POLYVERT(temp_s0)->x == POLYVERT(temp_s2)->x) && (POLYVERT(temp_s0)->y == POLYVERT(temp_s2)->y) && (POLYVERT(temp_s0)->z == POLYVERT(temp_s2)->z)) {
                             var_a0 = var_s3 * 0xC;
                             goto block_24;
@@ -21885,7 +21886,7 @@ void gfx_initRDPState(char *arg0, char *arg1) {
  * sculpting, decl-order permutations of the float locals. */
 extern s32 D_00000000_3c8e0;
 extern void func_00000000_5a2c4v(); /* run 156: discarded call before the colour pack (void: frees v0) */
-void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
+void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 *arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
     s32 spBC;      /* home 0xBC */
     s32 f;         /* flags word (hoisted head load) */
     s32 rgba;
@@ -21930,20 +21931,20 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
         hc = DLBUF(b5)->count; /* agent-c run 288: the run-263 `if (1) {}` here (paired with the sp38 / sp34 test dropped in run 274) is inert next to the hp fold below: removed, byte-identical */
         DLBUF(b5)->count = hc + 1;
         hp = (char *)DLCTX(arg0)->gfx.cur->base + hc * 8;
-        *(s32 *)(hp + 0) = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(hp) + 0 * (int)(b5) + 0 * ((int)(b5) >> 1); /* agent-c run 260: folded counted use of hp (hc a0 / hp v1 = target); agent-g run 306: two DISTINCT folded uses of b5 (one repeated form is CSE'd into a v0 expression LR) raise its priority (3.0 -> 4.5) above hp's 4.0, so b5 colours first: v0 / hp v1 = target */
+        DLPKT(hp)->w0 = 0xED000000 | ((((s32)((f32)arg6 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)arg7 * 4.0f)) & 0xFFF) + 0 * (int)(hp) + 0 * (int)(b5) + 0 * ((int)(b5) >> 1); /* agent-c run 260: folded counted use of hp (hc a0 / hp v1 = target); agent-g run 306: two DISTINCT folded uses of b5 (one repeated form is CSE'd into a v0 expression LR) raise its priority (3.0 -> 4.5) above hp's 4.0, so b5 colours first: v0 / hp v1 = target */
         sp38 = arg6 + arg8;
         sp34 = arg7 + arg9; /* agent-c run 274: the run-263 sp38 / sp34 empty test dropped (mv.py, 98.04 -> 98.06) */
-        *(s32 *)(hp + 4) = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
+        DLPKT(hp)->w1 = ((spBC & 3) << 0x18) | ((((s32)((f32)sp38 * 4.0f)) & 0xFFF) << 0xC) | (((s32)((f32)sp34 * 4.0f)) & 0xFFF);
     }
     if (arg3 != 0) {
         XCALL(func_00000000_5a2c4v, gfx_setColorImage)(arg0, arg1, arg10);
         /* agent-c run 277: r / g / b / a read + convert + read-back order = the target's own order (lwc1 f2 = +0,
          * sb 0xA4 first: the run-274/276 b-first order scored higher but loaded/stored at the wrong offsets);
          * with the code-free base test on the F7 w1 line: 98.89 -> 98.92 */
-        fr = *(f32 *)(arg5 + 0);
-        fg = *(f32 *)(arg5 + 4);
-        fb = *(f32 *)(arg5 + 8);
-        fa = *(f32 *)(arg5 + 0xC);
+        fr = arg5[0];
+        fg = arg5[1];
+        fb = arg5[2];
+        fa = arg5[3];
         colv[0] = (u32)(fr * 255.0f);
         colv[1] = (u32)(fg * 255.0f);
         colv[2] = (u32)(fb * 255.0f);
@@ -21956,9 +21957,9 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
             c1 = DLBUF(b1)->count;
             DLBUF(b1)->count = c1 + 1;
             p1 = (char *)DLCTX(arg0)->gfx.cur->base + c1 * 8; /* agent-g run 306: this packet pointer in p4 (reuse-map search, 99.523 -> 99.557), then b4 (99.623 -> 99.678); agent-g run 307: in p1 (its own bb-local LR: a0 is no longer intrinsically forbidden, zdbug replay -> a0 = target), with the code-free r test below */
-            *(s32 *)(p1 + 0) = 0xF7000000;
+            DLPKT(p1)->w0 = 0xF7000000;
             rgba = ((r << 8) & 0xF800) | ((g << 3) & 0x7C0) | ((b >> 2) & 0x3E) | (arg11 & 1); /* agent-g run 308: `g << 3` (an s32 `g * 8` becomes its own umpy expression LR) */
-            *(s32 *)(p1 + 4) = (rgba << 0x10) | rgba; if (g) {} if (r) {} if (b1 + 0 * (int)(rgba) + 0 * ((int)(rgba) >> 1)) {} /* agent-g run 307 (zdbug:5/6 replay-driven): code-free r test next to g's (r's LR spans g's block: adjsave 2.0 -> 1.5, coloured after b, before g on the LR-id tie) + a second DISTINCT folded rgba use (the rgba expression LR back above r): r t0 / g t1 / b a1 / rgba a2 = target, 99.712 -> 99.723 -> 99.767 */ /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
+            DLPKT(p1)->w1 = (rgba << 0x10) | rgba; if (g) {} if (r) {} if (b1 + 0 * (int)(rgba) + 0 * ((int)(rgba) >> 1)) {} /* agent-g run 307 (zdbug:5/6 replay-driven): code-free r test next to g's (r's LR spans g's block: adjsave 2.0 -> 1.5, coloured after b, before g on the LR-id tie) + a second DISTINCT folded rgba use (the rgba expression LR back above r): r t0 / g t1 / b a1 / rgba a2 = target, 99.712 -> 99.723 -> 99.767 */ /* agent-c run 274: code-free use of g (ins sweep, 98.41 -> 98.45); run 283: folded use of rgba on the base test (zero-use sweep, 99.257 -> 99.290) */
         }
         {
             b2 = (char *)DLCTX(arg0)->gfx.cur;
@@ -21966,7 +21967,7 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
             DLBUF(b2)->count = c5 + 1;
             p2 = (char *)DLCTX(arg0)->gfx.cur->base + c5 * 8;
             /* agent-c run 234: folded counted use (zero-use-sweep, 94.71 -> 94.78); run 235: p+0 first, both on one line (as1 line order) */
-            *(s32 *)(p2 + 0) = 0xBA001402; *(s32 *)(p2 + 4) = 0x300000 + 0 * (int)(c5);
+            DLPKT(p2)->w0 = 0xBA001402; DLPKT(p2)->w1 = 0x300000 + 0 * (int)(c5);
         }
         {
             b3 = (char *)DLCTX(arg0)->gfx.cur;
@@ -21975,24 +21976,24 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
             b1 = (char *)DLCTX(arg0)->gfx.cur->base + c3 * 8; /* agent-g run 308: the F6 packet pointer / E7 count in b1 (the target's a3 users: F7 base, F6 pointer, E7 count, 3rd-E7 pointer = one variable) */
             /* agent-c run 260: the sums spelled out (same tree as the arg4 path's copy-propagated sp30), so the sp30
              * expression item precedes sp2C's and takes the spill temp at 0x30 like the target */
-            *(s32 *)(b1 + 0) = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (c3) {}
-            *(s32 *)(b1 + 4) = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
+            DLPKT(b1)->w0 = 0xF6000000 | (((arg6 + arg8 - 1) & 0x3FF) << 0xE) | (((arg7 + arg9 - 1) & 0x3FF) * 4); if (c3) {}
+            DLPKT(b1)->w1 = ((arg6 & 0x3FF) << 0xE) | ((arg7 & 0x3FF) * 4);
         }
         {
             b4 = (char *)DLCTX(arg0)->gfx.cur;
             b1 = (char *)DLBUF(b4)->count; if (1) {} /* agent-c run 234 (lever-sweep bbsplit, 94.78 -> 94.85); agent-g run 307: the count in the F6 packet pointer's variable (cast both ways): one a3 LR for both like the target (zdbug replay: the target's a3 users are one variable; 99.767 -> 99.800) */
             DLBUF(b4)->count = (s32)b1 + 1;
             p4 = (char *)DLCTX(arg0)->gfx.cur->base + (s32)b1 * 8;
-            *(s32 *)(p4 + 0) = 0xE7000000;
-            *(s32 *)(p4 + 4) = 0;
+            DLPKT(p4)->w0 = 0xE7000000;
+            DLPKT(p4)->w1 = 0;
         }
         {
             b2 = (char *)DLCTX(arg0)->gfx.cur; /* agent-g run 306: this base reuses b2 (reuse-map search, 99.557 -> 99.623) */
             c5 = DLBUF(b2)->count;
             DLBUF(b2)->count = c5 + 1;
             p5 = (char *)DLCTX(arg0)->gfx.cur->base + c5 * 8;
-            *(s32 *)(p5 + 0) = 0xE7000000;
-            *(s32 *)(p5 + 4) = 0;
+            DLPKT(p5)->w0 = 0xE7000000;
+            DLPKT(p5)->w1 = 0;
         }
     }
     if (arg4 != 0) { /* agent-c run 260: the run-212 folded use of arg4 dropped (arg4 a ugen load like the target) */
@@ -22003,7 +22004,7 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
         cnt = DLBUF(base)->count;
         DLBUF(base)->count = cnt + 1;
         p5 = (char *)DLCTX(arg0)->gfx.cur->base + cnt * 8; /* agent-g run 306: the arg4 appends' packet pointers reuse p5 / p / base / b4 / p3 / b1 (and b4 as one base) */
-        *(s32 *)(p5 + 0) = 0xBA001402; *(s32 *)(p5 + 4) = 0x300000; /* agent-c run 235: p+0 first, one line */
+        DLPKT(p5)->w0 = 0xBA001402; DLPKT(p5)->w1 = 0x300000; /* agent-c run 235: p+0 first, one line */
         /* agent-c run 243: the FF10 / F7 appends count in rgba (dead since the colour pack). agent-g run 247: the
          * whole arg4 path on the function-level base / p (the run-243 base2 / p2 pair and the sp30 / 2nd-E7 block
          * trios were 8 extra home words: frame 0xE0 -> 0xC0 = target, colv at 0xA4) + a bbsplit after the 1st E7
@@ -22015,8 +22016,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
         rgba = DLBUF((char *)cnt)->count;
         DLBUF((char *)cnt)->count = rgba + 1;
         p = (char *)DLCTX(arg0)->gfx.cur->base + rgba * 8;
-        *(s32 *)(p + 0) = 0xFF100000 | ((arg10 - 1) & 0xFFF);
-        *(s32 *)(p + 4) = arg2 & 0xFFFFFF;
+        DLPKT(p)->w0 = 0xFF100000 | ((arg10 - 1) & 0xFFF);
+        DLPKT(p)->w1 = arg2 & 0xFFFFFF;
         cnt = (s32)(char *)DLCTX(arg0)->gfx.cur; /* agent-g run 306: the next count in c2 (reuse map, 99.623 -> 99.678) */
         rgba = DLBUF((char *)cnt)->count;
         DLBUF((char *)cnt)->count = rgba + 1;
@@ -22027,14 +22028,14 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
         c2 = DLBUF(p)->count;
         DLBUF(p)->count = c2 + 1;
         base = (char *)DLCTX(arg0)->gfx.cur->base + c2 * 8;
-        *(s32 *)(base + 0) = sp30;
-        *(s32 *)(base + 4) = sp2C;
+        DLPKT(base)->w0 = sp30;
+        DLPKT(base)->w1 = sp2C;
         b4 = (char *)DLCTX(arg0)->gfx.cur; if (1) {} /* agent-g run 308: the bbsplit moved up from the pointer line (the E7 count joins the const 0xE700's block: a3 neighbour -> const t2) */
         c4 = DLBUF(b4)->count; /* agent-g run 307: this count in c4 (99.900 -> 99.933) */
         DLBUF(b4)->count = c4 + 1;
         b4 = (char *)DLCTX(arg0)->gfx.cur->base + c4 * 8;
-        *(s32 *)(b4 + 0) = 0xE7000000;
-        *(s32 *)(b4 + 4) = 0 * (int)(b4); /* agent-g run 308: folded use of b4 (adjsave 3.0 -> 3.33: coloured t0 before g) */
+        DLPKT(b4)->w0 = 0xE7000000;
+        DLPKT(b4)->w1 = 0 * (int)(b4); /* agent-g run 308: folded use of b4 (adjsave 3.0 -> 3.33: coloured t0 before g) */
         base = (char *)DLCTX(arg0)->gfx.cur;
         cnt = DLBUF(base)->count;
         DLBUF(base)->count = cnt + 1;
@@ -22048,8 +22049,8 @@ void gfx_clearScreen(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *a
         cnt = DLBUF(base)->count;
         DLBUF(base)->count = cnt + 1;
         b1 = (char *)DLCTX(arg0)->gfx.cur->base + cnt * 8;
-        *(s32 *)(b1 + 0) = 0xE7000000;
-        *(s32 *)(b1 + 4) = 0 + 0 * (int)(b1); /* agent-g run 308: folded use of b1 (adjsave 3.25 -> 3.5: a3 before b4) */
+        DLPKT(b1)->w0 = 0xE7000000;
+        DLPKT(b1)->w1 = 0 + 0 * (int)(b1); /* agent-g run 308: folded use of b1 (adjsave 3.25 -> 3.5: a3 before b4) */
         FCALL(gfx_setColorImage)(arg0, arg1, arg10);
     }
 }
@@ -24218,27 +24219,27 @@ void math_mtx34Identity(float *a0) {
     a0[11] = 0.0f;
 }
 
-void math_mtxAddTranslation(char *a0, float *a1) {
-    *(float *)(a0 + 0x30) += a1[0];
-    *(float *)(a0 + 0x34) += a1[1];
-    *(float *)(a0 + 0x38) += a1[2];
+void math_mtxAddTranslation(f32 (*m)[4], f32 *t) {
+    m[3][0] += t[0];
+    m[3][1] += t[1];
+    m[3][2] += t[2];
 }
 
 /* math_mtxScaleRows: per-axis matrix scale — multiplies each 3-vec row of
- * arg0 (rows at +0x0,+0x10,+0x20) by arg1's component (+0x0,+0x4,+0x8). BYTE-EXACT
+ * the 4x4 matrix m (rows 0..2) by s's component. BYTE-EXACT
  * (reloc-free). KEY: the compound `*=` form gives the target's FP load order (dst
  * loaded into $f4 FIRST); the expanded `dst = dst * src` swaps the operand loads
- * (arg1 first) -> 18 FP-reg diffs. arg1 component reloaded per multiply. */
-void math_mtxScaleRows(void *arg0, void *arg1) {
-    *(float *)((char *)arg0 + 0x0)  *= *(float *)((char *)arg1 + 0x0);
-    *(float *)((char *)arg0 + 0x4)  *= *(float *)((char *)arg1 + 0x0);
-    *(float *)((char *)arg0 + 0x8)  *= *(float *)((char *)arg1 + 0x0);
-    *(float *)((char *)arg0 + 0x10) *= *(float *)((char *)arg1 + 0x4);
-    *(float *)((char *)arg0 + 0x14) *= *(float *)((char *)arg1 + 0x4);
-    *(float *)((char *)arg0 + 0x18) *= *(float *)((char *)arg1 + 0x4);
-    *(float *)((char *)arg0 + 0x20) *= *(float *)((char *)arg1 + 0x8);
-    *(float *)((char *)arg0 + 0x24) *= *(float *)((char *)arg1 + 0x8);
-    *(float *)((char *)arg0 + 0x28) *= *(float *)((char *)arg1 + 0x8);
+ * (s first) -> 18 FP-reg diffs. The s component is reloaded per multiply. */
+void math_mtxScaleRows(f32 (*m)[4], f32 *s) {
+    m[0][0] *= s[0];
+    m[0][1] *= s[0];
+    m[0][2] *= s[0];
+    m[1][0] *= s[1];
+    m[1][1] *= s[1];
+    m[1][2] *= s[1];
+    m[2][0] *= s[2];
+    m[2][1] *= s[2];
+    m[2][2] *= s[2];
 }
 
 /* math_mtxRotateAxis: rotate a matrix by an angle about one axis

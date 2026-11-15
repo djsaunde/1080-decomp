@@ -68,6 +68,7 @@ typedef struct PolyNormal {
 
 #define POLYVERT(p) ((PolyVert *)(p))
 #define POLYNORMAL(p) ((PolyNormal *)(p))
+#define POLYTRI(p) ((PolyTri *)(p))
 #define BASEPOLY(p) ((BasePolyShape *)(p))
 
 typedef char PolyVert_size_check[sizeof(PolyVert) == 6 ? 1 : -1];
