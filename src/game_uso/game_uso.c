@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/snowai.h"
 
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
@@ -3572,26 +3573,26 @@ epi:
 }
 
 
-void SnowAI_reset(void *a0) {
-    *(s32*)((char*)a0 + 0x34) = 0;
-    *(s32*)((char*)a0 + 0x44) = 0;
-    *(s32*)((char*)a0 + 0x48) = 0;
-    *(s32*)((char*)a0 + 0x4C) = 0;
-    *(s32*)((char*)a0 + 0x50) = 0;
-    *(s32*)((char*)a0 + 0x54) = 0;
-    *(s32*)((char*)a0 + 0x58) = 0;
-    *(s32*)((char*)a0 + 0x40) = 0;
-    *(s32*)((char*)a0 + 0x64) = 0;
-    *(s32*)((char*)a0 + 0x70) = 0;
-    *(s32*)((char*)a0 + 0x68) = 0;
-    *(s32*)((char*)a0 + 0x6C) = 0;
-    *(s32*)((char*)a0 + 0x74) = 0;
-    *(s32*)((char*)a0 + 0x78) = 0;
-    *(s32*)((char*)a0 + 0xA4) = 0;
-    *(s32*)((char*)a0 + 0x4C4) = 0;
-    *(s32*)((char*)a0 + 0x4D8) = 1;
-    *(f32*)((char*)a0 + 0x38) = 0.0f;
-    *(f32*)((char*)a0 + 0x3C) = 0.0f;
+void SnowAI_reset(SnowAI *self) {
+    self->unk34 = 0;
+    self->unk44 = 0;
+    self->unk48 = 0;
+    self->unk4C = 0;
+    self->unk50 = 0;
+    self->unk54 = 0;
+    self->unk58 = 0;
+    self->targetNode = 0;
+    self->aiState = 0;
+    self->unk70 = 0;
+    self->modeFlags = 0;
+    self->unk6C = 0;
+    self->unk74 = 0;
+    self->unk78 = 0;
+    self->unkA4 = 0;
+    self->unk4C4 = 0;
+    self->initPending = 1;
+    self->unk38 = 0.0f;
+    self->unk3C = 0.0f;
 }
 
 void SnowAI_dtor(int *a0, int a1) {
@@ -3951,8 +3952,8 @@ void SnowAI_update(char *a0) {
  * SELF-VERIFY only; not exact — coloring/frame-layout cap dominates. */
 /* forward decls for 591C real callees (defined later in this TU) */
 void SnowAI_func_0000A3C4();
-void SnowAI_func_0000A604(char *);
-void SnowAI_func_0000A7F8(char *);
+void SnowAI_func_0000A604(SnowAI *);
+void SnowAI_func_0000A7F8(SnowAI *);
 int SnowAI_func_00007ACC();
 float SnowAI_func_00007A98(int *);
 int SnowAI_func_00007C1C();
@@ -3962,9 +3963,9 @@ void SnowAI_func_0000751C(char *);
 void SnowAI_func_00007448(char *);
 void SnowAI_func_00007424(void *);
 int SnowAI_func_00009B88();
-void SnowAI_func_0000A7D8(int *);
+void SnowAI_func_0000A7D8(SnowAI *);
 int SnowAI_func_0000A0E8(char *, char *, char *);
-void SnowAI_func_0000AB98(void *);
+void SnowAI_func_0000AB98(SnowAI *);
 void SnowAI_func_000071A4(int *);
 int SnowAI_func_00006FA8(int *);
 void SnowAI_func_00007538();
@@ -6369,7 +6370,7 @@ extern char game_uso_D_807FEDF8;
 extern char game_uso_D_807FEE20;
 typedef struct { float x, y, z; } V3_A3C4;
 typedef struct { int a; } S1_A3C4;
-void SnowAI_func_0000A3C4(int *a0) {
+void SnowAI_func_0000A3C4(SnowAI *a0) {
     V3_A3C4 *p;
     S1_A3C4 v1, v2;
     V3_A3C4 buf2, buf3;
@@ -6381,13 +6382,13 @@ void SnowAI_func_0000A3C4(int *a0) {
     float *q;
     volatile char padA3C4[0x4C];
 
-    a0[0x68 / 4] &= ~1;
-    if (*(int *)((char *)a0[0x30 / 4] + 0x908) == 0) {
+    a0->modeFlags &= ~1;
+    if (a0->rider->rival == 0) {
         return;
     }
-    v1.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0[0x40 / 4] * 4));
+    v1.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0->targetNode * 4));
     slots[1] = (int *)game_uso_func_0000A374(a0, v1,
-                (int)(*(int *)((char *)a0[0x30 / 4] + 0x908) + 0xB4));
+                (int)&a0->rider->rival->pos);
     if (slots[1] == 0) {
         game_uso_func_047B1C((char *)&game_uso_D_807FEDF8 + 0x7EC,
                              (char *)&game_uso_D_807FEDF8 + 0x808, 0x450);
@@ -6396,14 +6397,14 @@ void SnowAI_func_0000A3C4(int *a0) {
         w = (int *)slots[1][0x2C / 4];
         slots[1] = w;
     }
-    v2.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0[0x7C / 4] * 4));
+    v2.a = *(int *)(*(int **)((char *)&game_uso_D_807FEB38 + 0x548 + a0->altNode * 4));
     slots[0] = (int *)game_uso_func_0000A374(a0, v2,
-                (int)(*(int *)((char *)a0[0x30 / 4] + 0x908) + 0xB4));
+                (int)&a0->rider->rival->pos);
     if (slots[0] == 0) {
         game_uso_func_047B1C((char *)&game_uso_D_807FEE20 + 0x814,
                              (char *)&game_uso_D_807FEE20 + 0x830, 0x45B);
     }
-    ref = (float *)(*(int *)((char *)a0[0x30 / 4] + 0x908) + 0xB4);
+    ref = (float *)&a0->rider->rival->pos;
     if (1) { p = &buf1; }
     if (p == 0) {
         p = (V3_A3C4 *)game_uso_func_055750(12);
@@ -6441,7 +6442,7 @@ skip2:
 skip3:
     if ((buf1.x - buf3.x) * (buf1.x - buf3.x) + (buf1.z - buf3.z) * (buf1.z - buf3.z) <
         (buf1.x - buf2.x) * (buf1.x - buf2.x) + (buf1.z - buf2.z) * (buf1.z - buf2.z)) {
-        a0[0x40 / 4] = a0[0x7C / 4];
+        a0->targetNode = a0->altNode;
     }
 }
 
@@ -6537,7 +6538,7 @@ skip3:
  *      prologue (the last 20-diff residual). Plain reassign without if(1)
  *      does NOT work.
  */
-void SnowAI_func_0000A604(char *obj) {
+void SnowAI_func_0000A604(SnowAI *obj) {
     Vec3 copy2;
     One1 a1arg;
     Vec3 tbuf;
@@ -6553,9 +6554,9 @@ void SnowAI_func_0000A604(char *obj) {
     float *q;
     float mx, my, mz;
 
-    tbuf = *(Vec3 *)(*(char **)(obj + 0x30) + 0xB4);
-    s = *(float *)(obj + 0xA8);
-    q = (float *)(*(char **)(obj + 0x30) + 0x318);
+    tbuf = *(Vec3 *)&obj->rider->pos;
+    s = obj->unkA8;
+    q = (float *)&obj->rider->vel;
     mx = q[0] * s;
     my = q[1] * s;
     mz = q[2] * s;
@@ -6571,36 +6572,36 @@ void SnowAI_func_0000A604(char *obj) {
     tbuf.y = tbuf.y + copy2.y;
     tbuf.z = tbuf.z + copy2.z;
 
-    a1arg.a = **(int **)((char *)&D_00000000 + 0x548 + *(int *)(obj + 0x5C) * 4);
+    a1arg.a = **(int **)((char *)&D_00000000 + 0x548 + obj->scanIndex * 4);
     v0var = (char *)game_uso_func_0000A374((int)obj, a1arg, (int)&tbuf);
     if (v0var != 0) {
         t = *(int *)(v0var + 0x2C);
         if (t != 0) {
             if (SnowAI_func_00009B88(obj, v0var, t) != 0) {
-                if (SnowAI_func_0000A0E8(obj, v0var, (char *)t) != 0) {
+                if (SnowAI_func_0000A0E8((char *)obj, v0var, (char *)t) != 0) {
                     f0 = tbuf.z - *(float *)(v0var + 0x38);
                     if (f0 < 0.0f) {
                         f0 += 250.0f * *(float *)(v0var + 0x54);
                     }
-                    if (0.0f <= f0 && f0 < *(float *)(obj + 0x60)) {
-                        *(float *)(obj + 0x60) = f0;
-                        *(int *)(obj + 0x40) = *(int *)(obj + 0x5C);
+                    if (0.0f <= f0 && f0 < obj->scanBestDist) {
+                        obj->scanBestDist = f0;
+                        obj->targetNode = obj->scanIndex;
                     }
                 }
             }
         }
     }
-    t = *(int *)(obj + 0x5C) + 1;
-    *(int *)(obj + 0x5C) = t;
+    t = obj->scanIndex + 1;
+    obj->scanIndex = t;
     if (t >= 0xA) {
-        *(int *)(obj + 0x68) &= ~2;
+        obj->modeFlags &= ~2;
     }
 }
 
-void SnowAI_func_0000A7D8(int *a0) {
-    a0[0x5C / 4] = 0;
-    a0[0x68 / 4] |= 2;
-    *(float *)((char *)a0 + 0x60) = *(float *)((char *)&D_00000000 + 0x110);
+void SnowAI_func_0000A7D8(SnowAI *a0) {
+    a0->scanIndex = 0;
+    a0->modeFlags |= 2;
+    a0->scanBestDist = *(float *)((char *)&D_00000000 + 0x110);
 }
 
 /* SnowAI_func_0000A7F8: nearest projected-segment distance update.
@@ -6623,7 +6624,7 @@ void SnowAI_func_0000A7D8(int *a0) {
  *   equality operands; name b3.z before the squared-length expression.
  * See docs/IDO_CODEGEN.md#projected-distance-exact-a7f8.
  */
-void SnowAI_func_0000A7F8(char *obj) {
+void SnowAI_func_0000A7F8(SnowAI *obj) {
     Vec3 c2;
     One1 node;
     Vec3 blockA;
@@ -6642,9 +6643,9 @@ void SnowAI_func_0000A7F8(char *obj) {
     Vec3 *p;
     int cnt;
 
-    blockA = *(Vec3 *)(*(char **)(obj + 0x30) + 0xB4);
-    f0 = *(float *)(obj + 0xA8);
-    q = (float *)(*(char **)(obj + 0x30) + 0x318);
+    blockA = *(Vec3 *)&obj->rider->pos;
+    f0 = obj->unkA8;
+    q = (float *)&obj->rider->vel;
     f14 = q[0] * f0;
     f2 = q[1] * f0;
     f12 = q[2] * f0;
@@ -6659,14 +6660,14 @@ void SnowAI_func_0000A7F8(char *obj) {
     blockA.x = blockA.x + c2.x;
     blockA.y = blockA.y + c2.y;
     blockA.z = blockA.z + c2.z;
-    node.a = **(int **)((char *)&D_00000000 + 0x548 + *(int *)(obj + 0x5C)*4);
+    node.a = **(int **)((char *)&D_00000000 + 0x548 + obj->scanIndex*4);
     r1 = (char *)game_uso_func_0000A374(obj, node, &blockA);
     if (r1 != 0) {
         cnt = *(int *)(r1 + 0x2C);
         slots[0] = (char *)cnt;
         if (cnt != 0) {
             slots[1] = r1;
-            if (SnowAI_func_0000A0E8(obj, r1, (char *)cnt) != 0) {
+            if (SnowAI_func_0000A0E8((char *)obj, r1, (char *)cnt) != 0) {
                 f0 = blockA.z - *(float *)(slots[1] + 0x38);
                 if (f0 < 0.0f) f0 += 250.0f * *(float *)(slots[1] + 0x54);
                 if (f0 >= 0.0f) {
@@ -6726,23 +6727,23 @@ void SnowAI_func_0000A7F8(char *obj) {
                         f2 = b3.z*b6.x - b3.x*b6.z;
                         f0 = f2*f2 / f12;
                     }
-                    if (f0 < *(float *)(obj + 0x60)) {
-                        *(float *)(obj + 0x60) = f0;
-                        *(int *)(obj + 0x40) = *(int *)(obj + 0x5C);
+                    if (f0 < obj->scanBestDist) {
+                        obj->scanBestDist = f0;
+                        obj->targetNode = obj->scanIndex;
                     }
                 }
             }
         }
     }
-    cnt = *(int *)(obj + 0x5C) + 1;
-    *(int *)(obj + 0x5C) = cnt;
-    if (cnt >= 10) *(int *)(obj + 0x68) &= ~4;
+    cnt = obj->scanIndex + 1;
+    obj->scanIndex = cnt;
+    if (cnt >= 10) obj->modeFlags &= ~4;
 }
 
-void SnowAI_func_0000AB98(void *a0) {
-    *(int*)((char*)a0 + 0x5C) = 0;
-    *(int*)((char*)a0 + 0x68) |= 4;
-    *(float*)((char*)a0 + 0x60) = *(float*)(&D_00000000 + 0x114);
+void SnowAI_func_0000AB98(SnowAI *a0) {
+    a0->scanIndex = 0;
+    a0->modeFlags |= 4;
+    a0->scanBestDist = *(float*)(&D_00000000 + 0x114);
 }
 
 void game_uso_func_0000ABB8(char *dst) {
