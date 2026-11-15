@@ -2,6 +2,7 @@
 #include "gdl/node.h"
 #include "gdl/mem.h"
 #include "gdl/dlctx.h"
+#include "gdl/rcp.h"
 extern int game_libs_func_00062F08();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
