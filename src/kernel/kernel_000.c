@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -602,7 +603,6 @@ typedef struct {
 extern s32 D_8000A2E4;
 extern s32 D_80012F7C;
 
-typedef struct { u8 pad_00[0x72]; char name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlotF;
 /* uso_printModules: for every live module slot (gUsoModules[0..0x86]) call the
  * loader hook gUsoCtx.field_84(&D_8000A2E4, name, base, base + size).
  * IDO 7.1 -O2. EXACT 2026-10-20 (agent-g run 112; was NM 83.0, written as a
@@ -638,7 +638,7 @@ void uso_printSlots(void) {
     s32 i;
 
     for (i = 0; i < 0x87; i++) {
-        ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2F4, i, ((UsoLoadSlotF *)&gUsoModuleSlots)[i].unk94, ((UsoLoadSlotF *)&gUsoModuleSlots)[i].name);
+        ((UsoCallbacks84 *)&gUsoCtx)->field_84(&D_8000A2F4, i, ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset, ((UsoModuleSlot *)&gUsoModuleSlots)[i].name);
     }
 }
 
@@ -881,7 +881,6 @@ extern s32 func_80000B34(void*);
  * See docs/MATCHING_WORKFLOW.md#feedback-alias-extern-via-undefined-syms. */
 extern s32 func_800005DC_d2c(void*, void*);
 #define DSC func_800005DC_d2c
-typedef struct { u8 pad_00[0x72]; u8 name[0x22]; s32 unk94; u8 pad_98[4]; } UsoLoadSlot;
 typedef struct { s32 unk0; s32 idx; s32 unk8; } UsoLoadRec;
 typedef struct { s32 unk0; s32 unk4; s32 pad[8]; } UsoLoadIter;
 typedef struct { s32 head; s32 pad[4]; } UsoLoadReq;
@@ -1034,9 +1033,9 @@ s32 uso_find_file(void *arg0, void *arg1) {
     }
     found = 0;
     for (i = 0; i < 135; i++) {
-        if (func_80000568(((UsoLoadSlotF *)&gUsoModuleSlots)[i].name, &gUsoPathFile) == 0) {
+        if (func_80000568(((UsoModuleSlot *)&gUsoModuleSlots)[i].name, &gUsoPathFile) == 0) {
             found = 1;
-            ((s32 *)arg1)[1] = ((UsoLoadSlotF *)&gUsoModuleSlots)[i].unk94;
+            ((s32 *)arg1)[1] = ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset;
             break;
         }
     }
@@ -1167,15 +1166,15 @@ void uso_scanRom(void) {
     u8 buf[0x24];
     UsoLoadRec rec;
     UsoLoadReq *req;
-    UsoLoadSlot *slot;
+    UsoModuleSlot *slot;
 
     for (req = (UsoLoadReq *)gFsDeviceTable; req->head != 0; req++) {
         func_80000880(&it, req);
         while (func_80000A98(&it, &rec) != 0) {
             if (rec.idx >= 0) {
-                slot = &((UsoLoadSlot *)&gUsoModuleSlots)[rec.idx];
+                slot = &((UsoModuleSlot *)&gUsoModuleSlots)[rec.idx];
                 func_800005DC_d2c(slot->name, buf);
-                slot->unk94 = it.unk4;
+                slot->romOffset = it.unk4;
             }
             func_80000B34(&it);
         }
@@ -1394,27 +1393,29 @@ s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
  * failure test); bail with -0xE/-0xF/-0x10 if the stage fails. The matching
  * body sat in a dead #else/#ifdef branch (never compiled) while the build
  * path was INCLUDE_ASM. ROM byte-identical to baserom. */
-s32 uso_relocateSections(void *arg0) {
+/* Calls are through the +0x400 jal aliases: func_80001EDC = uso_relocate,
+ * func_80000518 = uso_syncCache. */
+s32 uso_relocateSections(UsoModuleSlot *mod) {
     extern s32 func_80001EDC();
     s32 temp_s1;
 
-    if (FW(arg0, 0x54) != 0) {
-        temp_s1 = func_80001EDC(arg0, FW(arg0, 0x54), FW(arg0, 0x48), FW(arg0, 0x10));
-        func_80000518(FW(arg0, 0x54), FW(arg0, 0x1C));
+    if (mod->secData[USO_SEC_RODATA] != 0) {
+        temp_s1 = func_80001EDC(mod, mod->secData[USO_SEC_RODATA], mod->secData[USO_SEC_RODATA_RELOC], mod->secSize[USO_SEC_RODATA_RELOC]);
+        func_80000518(mod->secData[USO_SEC_RODATA], mod->secSize[USO_SEC_RODATA]);
         if (temp_s1 != 0) {
             return -0xE;
         }
     }
-    if (FW(arg0, 0x50) != 0) {
-        temp_s1 = func_80001EDC(arg0, FW(arg0, 0x50), FW(arg0, 0x44), FW(arg0, 0xC));
-        func_80000518(FW(arg0, 0x50), FW(arg0, 0x18));
+    if (mod->secData[USO_SEC_DATA] != 0) {
+        temp_s1 = func_80001EDC(mod, mod->secData[USO_SEC_DATA], mod->secData[USO_SEC_DATA_RELOC], mod->secSize[USO_SEC_DATA_RELOC]);
+        func_80000518(mod->secData[USO_SEC_DATA], mod->secSize[USO_SEC_DATA]);
         if (temp_s1 != 0) {
             return -0xF;
         }
     }
-    if (FW(arg0, 0x4C) != 0) {
-        temp_s1 = func_80001EDC(arg0, FW(arg0, 0x4C), FW(arg0, 0x40), FW(arg0, 0x8));
-        func_80000518(FW(arg0, 0x4C), FW(arg0, 0x14));
+    if (mod->secData[USO_SEC_TEXT] != 0) {
+        temp_s1 = func_80001EDC(mod, mod->secData[USO_SEC_TEXT], mod->secData[USO_SEC_TEXT_RELOC], mod->secSize[USO_SEC_TEXT_RELOC]);
+        func_80000518(mod->secData[USO_SEC_TEXT], mod->secSize[USO_SEC_TEXT]);
         if (temp_s1 != 0) {
             return -0x10;
         }
@@ -1433,27 +1434,28 @@ s32 uso_relocateSections(void *arg0) {
  * is correct with this beql-commit-before-check shape — the old "5-arg
  * regresses" note was measured against the wrong (return-before-commit)
  * structure. ROM byte-identical to baserom. */
-s32 uso_unrelocateSections(void *arg0, s32 arg1) {
+/* func_80001CF0 = uso_unrelocate (+0x400 jal alias). */
+s32 uso_unrelocateSections(UsoModuleSlot *mod, s32 arg1) {
     extern s32 func_80001CF0();
     s32 temp_s1;
 
-    if (FW(arg0, 0x54) != 0) {
-        temp_s1 = func_80001CF0(arg0, FW(arg0, 0x54), FW(arg0, 0x48), FW(arg0, 0x10), arg1);
-        func_80000518(FW(arg0, 0x54), FW(arg0, 0x1C));
+    if (mod->secData[USO_SEC_RODATA] != 0) {
+        temp_s1 = func_80001CF0(mod, mod->secData[USO_SEC_RODATA], mod->secData[USO_SEC_RODATA_RELOC], mod->secSize[USO_SEC_RODATA_RELOC], arg1);
+        func_80000518(mod->secData[USO_SEC_RODATA], mod->secSize[USO_SEC_RODATA]);
         if (temp_s1 != 0) {
             return -0xE;
         }
     }
-    if (FW(arg0, 0x50) != 0) {
-        temp_s1 = func_80001CF0(arg0, FW(arg0, 0x50), FW(arg0, 0x44), FW(arg0, 0xC), arg1);
-        func_80000518(FW(arg0, 0x50), FW(arg0, 0x18));
+    if (mod->secData[USO_SEC_DATA] != 0) {
+        temp_s1 = func_80001CF0(mod, mod->secData[USO_SEC_DATA], mod->secData[USO_SEC_DATA_RELOC], mod->secSize[USO_SEC_DATA_RELOC], arg1);
+        func_80000518(mod->secData[USO_SEC_DATA], mod->secSize[USO_SEC_DATA]);
         if (temp_s1 != 0) {
             return -0xF;
         }
     }
-    if (FW(arg0, 0x4C) != 0) {
-        temp_s1 = func_80001CF0(arg0, FW(arg0, 0x4C), FW(arg0, 0x40), FW(arg0, 0x8), arg1);
-        func_80000518(FW(arg0, 0x4C), FW(arg0, 0x14));
+    if (mod->secData[USO_SEC_TEXT] != 0) {
+        temp_s1 = func_80001CF0(mod, mod->secData[USO_SEC_TEXT], mod->secData[USO_SEC_TEXT_RELOC], mod->secSize[USO_SEC_TEXT_RELOC], arg1);
+        func_80000518(mod->secData[USO_SEC_TEXT], mod->secSize[USO_SEC_TEXT]);
         if (temp_s1 != 0) {
             return -0x10;
         }
