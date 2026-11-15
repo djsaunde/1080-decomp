@@ -13,7 +13,7 @@ glabel mgr_loadSprites_0000119C
     /* 0011C0 000011C0 00A12825 */  .word 0x00A12825
     jal import_0024F228   /* 0011C4 0C000000 -> import_0024F228 */
     /* 0011C8 000011C8 24840000 */  .word 0x24840000
-    lui $a1, %hi(import_800200FC)   /* 0011CC 3C050000 -> import_800200FC */
+    lui $a1, %hi(gInputMgr_800200FC)   /* 0011CC 3C050000 -> gInputMgr_800200FC */
     /* 0011D0 000011D0 8CA50064 */  .word 0x8CA50064
     /* 0011D4 000011D4 3C01000A */  .word 0x3C01000A
     /* 0011D8 000011D8 260406B0 */  .word 0x260406B0

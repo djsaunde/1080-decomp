@@ -12,7 +12,7 @@
  *
  * Symbols renamed after compile (names only, no bytes change):
  * __sti__<timestamp> -> SnowBoard_staticCtor_0000E9FC, __ct__9BuE9FCBasFv -> func_00000000,
- * __vtbl__8BuE9FCOb -> D_func_0000E9FC_arg2. The object keeps C linkage under
+ * __vtbl__8BuE9FCOb -> SnowBoard_vtbl_func_0000E9FC_arg2. The object keeps C linkage under
  * its pinned name gSnowBoard_func_0000E9FC_arg1. */
 struct BuE9FCBas {
     BuE9FCBas();

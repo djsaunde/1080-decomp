@@ -3,7 +3,7 @@ nonmatching Sun_display, 0x1AC
 glabel Sun_display
     /* 00B274 0000B274 27BDFFC0 */  .word 0x27BDFFC0
     /* 00B278 0000B278 AFB10018 */  .word 0xAFB10018
-    lui $s1, %hi(import_8005C108)   /* 00B27C 3C110000 -> import_8005C108 */
+    lui $s1, %hi(gGfxLib_8005C108)   /* 00B27C 3C110000 -> gGfxLib_8005C108 */
     /* 00B280 0000B280 26310000 */  .word 0x26310000
     /* 00B284 0000B284 C62602A0 */  .word 0xC62602A0
     lui $at, %hi(game_uso_D_807FFA40)   /* 00B288 3C010000 -> game_uso_D_807FFA40 */

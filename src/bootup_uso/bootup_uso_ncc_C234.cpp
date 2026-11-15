@@ -44,7 +44,7 @@ extern int func_00000000(...);
 extern void func_00000008(...);
 extern float func_411c_rf(void);
 extern void func_00008A7C(...);
-extern char bu_c234_g8[];
+extern char gInputMgr_c234_g8[];
 extern void bu_c234_v5(char *, char *, f64, f64, f64);
 extern char bu_c234_k0[], bu_c234_k1[], bu_c234_k2[], bu_c234_k3[], bu_c234_k4[];
 extern void func_00000000_p4d(void *, s32, f64, f32);
@@ -245,7 +245,7 @@ cend:
         func_00000000((char *)&rider->sound, 0);
         var_f2 = 1.0f;
     }
-    if (*(s32 *)(bu_c234_g8 + 0x2C) != 2) {
+    if (*(s32 *)(gInputMgr_c234_g8 + 0x2C) != 2) {
         temp_f0 = rider->unk91C;
         rider->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
         func_00000000(rider->light, *(s32 *)&rider->unk91C);

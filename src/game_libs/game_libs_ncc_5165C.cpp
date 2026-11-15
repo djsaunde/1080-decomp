@@ -9,11 +9,11 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-g run 141). */
 extern "C" {
 extern int gl_func_00000000(...);
-extern int D_5165C_arr[];
+extern int gPolyFlags_3EEC4_5165C_arr[];
 }
 static int s5165c[2];
 extern "C" void CMod_vfn0_0005165C(void) {
-    int *p = D_5165C_arr;
+    int *p = gPolyFlags_3EEC4_5165C_arr;
     if ((unsigned)p == 0) {
         p = (int*)gl_func_00000000(4);
         if (p == 0) {

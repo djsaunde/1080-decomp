@@ -16,7 +16,7 @@
  * os/ build flags.
  * Reloc story: every masked word is a blank USO import -> pins = 0
  * (gl___osCurrentTime_fbe4_CurrentTime is this TU's own .bss definition, imported by the
- * splice as an undefined symbol and pinned to 0 like gl_viDevMgr;
+ * splice as an undefined symbol and pinned to 0 like gl___osViDevMgr_site;
  * gl_BaseCounter / gl_viIntrCount / gl___osTimerList_timerlist are the existing
  * pins). Spliced over the placeholder in game_libs_post1b2c.c via
  * REPLACE_FUNC_BODY. The 3 zero words before the entry (0x6FBD8..0x6FBE0)

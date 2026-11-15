@@ -26,7 +26,7 @@ char *SelItemParms_ctor(...);
 char *SelItemInfo_ctor(...);
 char *SelItem_reset_00003890(...);
 extern char timproc_uso_b5_D_807FDB64;
-extern char import_8005EE6C;
+extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_80807FB8;
 extern char import_800201EC;
 char *timproc_uso_b5_func_055750(...);
@@ -194,7 +194,7 @@ struct WA : B2 { WFIELDS
         w->pos.seti(0, 0, 0);
         f124 = 1.0f;
         volatile int sb = FW(f8fc8_ee6c_sb1, 4) & 0x80000;
-        { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; x &= ~1; x &= 0xFFFDFFFF; x |= 0x2000; x &= ~2; FW(import_800664C4, 4) = x; }
+        { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x &= 0xFFF7FFFF; x &= ~1; x &= 0xFFFDFFFF; x |= 0x2000; x &= ~2; FW(import_800664C4, 4) = x; }
         kid[0] = new Kid(import_808064C4 + 0x13C0, import_807664C4, 0);
         kid[1] = new Kid(timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0);
         kid[2] = new Kid(timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0);
@@ -207,7 +207,7 @@ struct WA : B2 { WFIELDS
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
+        if (sb) { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x |= 0x80000; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
@@ -219,13 +219,13 @@ struct WB : B2 { WFIELDS
         w->pos.set(0.0, 0.0, 0.0);
         f124 = 1.0f;
         volatile int sb = FW(f8fc8_ee6c_sb2, 4) & 0x80000;
-        { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
+        { int fl = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0);
         n = 1; if (1) {} /* run 221: keeps the target's `blez` loop guard on the stored 1 (decode fix) */
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
+        if (sb) { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x |= 0x80000; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };
@@ -237,13 +237,13 @@ struct WC : B2 { WFIELDS
         w->pos.seti(0, 0, 0);
         f124 = 1.0f;
         volatile int sb = FW(f8fc8_ee6c_sb3, 4) & 0x80000;
-        { int fl = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
+        { int fl = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { fl |= 2; } FW(import_80063D04, 4) = fl; }
         kid[0] = new Kid(import_80803D04 + 0x1540, f8fc8_e3d04_2, 0);
         n = 1; if (1) {} /* run 221: target `blez` guard */
         i140 = 0;
         attachKids();
         i144 = 0;
-        if (sb) { do { int x = FW(&import_8005EE6C, 4); x |= 0x80000; FW(&import_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&import_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = x; } while (0); }
+        if (sb) { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x |= 0x80000; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); } else { do { int x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = x; } while (0); }
         fDC = -1030.0f; fE0 = 720.0f; fE4 = -220.0f;
         f10C = -1.5457f; f110 = 1.5457f; f114 = -0.0251f; f11C = 0.0f; i134 = 0; f120 = 0.28f; f124 = 1.0f; f12C = 0.764f; f128 = 0.972f;
     } virtual void v(); };

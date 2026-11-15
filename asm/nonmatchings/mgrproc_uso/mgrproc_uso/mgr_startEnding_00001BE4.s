@@ -34,7 +34,7 @@ glabel mgr_startEnding_00001BE4
     /* 001C48 00001C48 00002825 */  .word 0x00002825
     jal mgrproc_uso_func_000188   /* 001C4C 0C000000 -> mgrproc_uso_func_000188 */
     /* 001C50 00001C50 00003025 */  .word 0x00003025
-    lui $a1, %hi(import_800200FC)   /* 001C54 3C050000 -> import_800200FC */
+    lui $a1, %hi(gInputMgr_800200FC)   /* 001C54 3C050000 -> gInputMgr_800200FC */
     /* 001C58 00001C58 8CA50064 */  .word 0x8CA50064
     /* 001C5C 00001C5C 2404000B */  .word 0x2404000B
     /* 001C60 00001C60 00003025 */  .word 0x00003025

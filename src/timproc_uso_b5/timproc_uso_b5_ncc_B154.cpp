@@ -15,7 +15,7 @@
  * History: runs 142-166 (cfe lift 92.29, NM donor 98.90). */
 typedef float f32; typedef int s32; typedef double f64;
 extern "C" {
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 void *timproc_uso_b5_func_071028(...);
 void timproc_uso_b5_func_071AE0(void *quat, void *axis, f32 angle);
 void timproc_uso_b5_func_05B750(void *arg, void *vec4);
@@ -44,7 +44,7 @@ extern "C" void SelTesuri_display_0000B154(Obj *o) {
     { f32 ang = o->f10C; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f114; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
     o->sc.all(o->f118);
     r.set(0.0f, 0.0f, 0.0f, o->f120);
-    timproc_uso_b5_func_05B750(&import_8005C108, &r);
+    timproc_uso_b5_func_05B750(&gGfxLib_8005C108, &r);
     timproc_uso_b5_func_06970C(o->m108, 0.5f);
     timproc_uso_b5_func_06970C(o->m108, o->f128 - (o->f128 - o->f12C) * o->f11C);
     if (!(o->i144++ & 1)) {

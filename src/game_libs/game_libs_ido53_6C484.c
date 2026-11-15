@@ -35,7 +35,7 @@ extern u32 gl_ResetType;                            /* osResetType */
 extern u32 gl_AppNMIBuffer[];                       /* osAppNMIBuffer */
 extern s32 D_00000000_tvtype;                       /* osTvType (existing pin) */
 
-OSTime gl_ClockRate = 62500000;                     /* osClockRate -- MUST be defined in-TU */
+OSTime gl_osClockRate_site = 62500000;                     /* osClockRate -- MUST be defined in-TU */
 s32 gl_osViClock_viclock = 48681812;                  /* osViClock  -- MUST be defined in-TU */
 u32 gl_Finalrom;                                    /* __osFinalrom */
 
@@ -54,7 +54,7 @@ extern void gl_func_00000000_bzero(void *, s32);      /* bzero (existing pin) */
 #define osResetType gl_ResetType
 #define osAppNMIBuffer gl_AppNMIBuffer
 #define osTvType D_00000000_tvtype
-#define osClockRate gl_ClockRate
+#define osClockRate gl_osClockRate_site
 #define osViClock gl_osViClock_viclock
 #define __osFinalrom gl_Finalrom
 #define __osGetSR gl_func_00000000_getsr

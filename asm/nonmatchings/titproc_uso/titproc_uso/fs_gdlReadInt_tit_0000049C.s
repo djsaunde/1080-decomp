@@ -4,8 +4,8 @@ glabel fs_gdlReadInt_tit_0000049C
     /* 59A168 0000049C 27BDFFE0 */  .word 0x27BDFFE0
     /* 59A16C 000004A0 AFA40020 */  .word 0xAFA40020
     /* 59A170 000004A4 AFBF0014 */  .word 0xAFBF0014
-    /* 59A174 000004A8 3C040000 */  lui        $a0, %hi(import_0005C6E0)
-    /* 59A178 000004AC 24840000 */  addiu      $a0, $a0, %lo(import_0005C6E0)
+    /* 59A174 000004A8 3C040000 */  lui        $a0, %hi(gSysLib_0005C6E0)
+    /* 59A178 000004AC 24840000 */  addiu      $a0, $a0, %lo(gSysLib_0005C6E0)
     /* 59A17C 000004B0 27A50018 */  .word 0x27A50018
     /* 59A180 000004B4 0C000000 */  jal        titproc_uso_func_049AAC
     /* 59A184 000004B8 24060004 */  .word 0x24060004

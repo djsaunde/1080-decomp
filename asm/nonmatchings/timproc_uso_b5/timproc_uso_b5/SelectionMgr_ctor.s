@@ -49,8 +49,8 @@ glabel SelectionMgr_ctor
     /* 001968 00001968 24070001 */  .word 0x24070001
     jal SelectWin_ctor   /* 00196C 0C000000 -> SelectWin_ctor */
     /* 001970 00001970 AFA90024 */  .word 0xAFA90024
-    lui $t3, %hi(import_800200FC)   /* 001974 3C0B0000 -> import_800200FC */
-    lui $t4, %hi(import_800200FC)   /* 001978 3C0C0000 -> import_800200FC */
+    lui $t3, %hi(gInputMgr_800200FC)   /* 001974 3C0B0000 -> gInputMgr_800200FC */
+    lui $t4, %hi(gInputMgr_800200FC)   /* 001978 3C0C0000 -> gInputMgr_800200FC */
     /* 00197C 0000197C AE020034 */  .word 0xAE020034
     /* 001980 00001980 258C0064 */  .word 0x258C0064
     /* 001984 00001984 256B0054 */  .word 0x256B0054
@@ -98,8 +98,8 @@ glabel SelectionMgr_ctor
     /* 001A2C 00001A2C 24070002 */  .word 0x24070002
     jal SelectWin_ctor   /* 001A30 0C000000 -> SelectWin_ctor */
     /* 001A34 00001A34 AFAB0024 */  .word 0xAFAB0024
-    lui $t5, %hi(import_800200FC)   /* 001A38 3C0D0000 -> import_800200FC */
-    lui $t6, %hi(import_800200FC)   /* 001A3C 3C0E0000 -> import_800200FC */
+    lui $t5, %hi(gInputMgr_800200FC)   /* 001A38 3C0D0000 -> gInputMgr_800200FC */
+    lui $t6, %hi(gInputMgr_800200FC)   /* 001A3C 3C0E0000 -> gInputMgr_800200FC */
     /* 001A40 00001A40 AE020034 */  .word 0xAE020034
     /* 001A44 00001A44 25CE0064 */  .word 0x25CE0064
     /* 001A48 00001A48 25AD0054 */  .word 0x25AD0054
@@ -148,8 +148,8 @@ glabel SelectionMgr_ctor
     /* 001AF4 00001AF4 8FA60064 */  .word 0x8FA60064
     jal SelectWin_ctor   /* 001AF8 0C000000 -> SelectWin_ctor */
     /* 001AFC 00001AFC AFAE0024 */  .word 0xAFAE0024
-    lui $t0, %hi(import_800200FC)   /* 001B00 3C080000 -> import_800200FC */
-    lui $t9, %hi(import_800200FC)   /* 001B04 3C190000 -> import_800200FC */
+    lui $t0, %hi(gInputMgr_800200FC)   /* 001B00 3C080000 -> gInputMgr_800200FC */
+    lui $t9, %hi(gInputMgr_800200FC)   /* 001B04 3C190000 -> gInputMgr_800200FC */
     /* 001B08 00001B08 AE020038 */  .word 0xAE020038
     /* 001B0C 00001B0C 27390064 */  .word 0x27390064
     /* 001B10 00001B10 25080060 */  .word 0x25080060

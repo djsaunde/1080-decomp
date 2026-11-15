@@ -641,20 +641,20 @@ void BGBox_ctor(int a0, int a1, int a2, int a3) {
 extern void func_00000044();  /* used as data-symbol base */
 extern void func_0000027C();  /* used as data-symbol base */
 extern int D_00007324;
-/* EXACT (agent-c run 115). Globals block import_0005C108 (alias bu_d94_g),
+/* EXACT (agent-c run 115). Globals block import_0005C108 (alias gGfxLib_d94_g),
  * threshold = RoData f64 at +0x70 (func_00000044 + 0x2C), record at 0x294
- * (func_0000027C + 0x18, alias bu_d94_src); callees func_05B750(g, rec) and
+ * (func_0000027C + 0x18, alias gGfxLib_d94_src); callees func_05B750(g, rec) and
  * func_04CCA8(a0). The a0->0x3C test goes through a named int (target v1),
  * the flag word through a pointer, and the 16-byte record is a struct copy. */
 typedef struct { int w[4]; } S16_D94;
-extern char bu_d94_g[], bu_d94_src[];
+extern char gGfxLib_d94_g[], gGfxLib_d94_src[];
 void BGBox_func_00000D94(char *a0) {
     int *p;
     int on;
-    if ((double)*(float *)(bu_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
-        func_00000000(bu_d94_g, bu_d94_src);
+    if ((double)*(float *)(gGfxLib_d94_g + 0x2A0) < D_bu_ro_dpool[0x70 / 8]) {
+        func_00000000(gGfxLib_d94_g, gGfxLib_d94_src);
         func_00000000(a0);
-        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);
+        p = (int *)(*(char **)(gGfxLib_d94_g + 0x254) + 0x78);
         on = *(int *)(a0 + 0x3C);
         if (on != 0) {
             *p |= 4;
@@ -662,9 +662,9 @@ void BGBox_func_00000D94(char *a0) {
             *p &= ~4;
         }
     } else {
-        p = (int *)(*(char **)(bu_d94_g + 0x254) + 0x78);
+        p = (int *)(*(char **)(gGfxLib_d94_g + 0x254) + 0x78);
         *p |= 4;
-        *(S16_D94 *)(*(char **)(bu_d94_g + 0x254) + 0xDC) = *(S16_D94 *)bu_d94_src;
+        *(S16_D94 *)(*(char **)(gGfxLib_d94_g + 0x254) + 0xDC) = *(S16_D94 *)gGfxLib_d94_src;
     }
 }
 
@@ -723,7 +723,7 @@ void BGBox_func_00000D94(char *a0) {
  * (the arr[] index) is homed instead of held in s5, buf is held in s1
  * where the target spills it to 0x1CC, the frame is 0x10 short, and the
  * phase-2 vidx*2 web takes ra/s-regs where the target uses t5. Real
- * identities: dims = import_8001FFA0 {w, h}, mgr = *(import_8005C108 +
+ * identities: dims = import_8001FFA0 {w, h}, mgr = *(gGfxLib_8005C108 +
  * 0x18), vtx quad = bootup data sym163.
  * agent-g run 169 (87.04 -> 88.82): `k = 0` set right before phase 2 (its only
  * user) instead of before phase 1: the shorter k live range outranks buf, which
@@ -736,9 +736,9 @@ typedef struct { char pad[0xC]; DlE68 *dl; } MgrE68;
 typedef struct { s16 x, y, z; u16 flag; s16 s, t; u8 cn[4]; } VtxE68;
 extern s32 import_8001FFA0[];   /* screen/grid dims {w, h}: w reads */
 extern s32 import_8001FFA0_h[]; /* same import, h reads ([1] = +4) */
-extern int import_8005C108[];
-extern int import_8005C108_e68[]; /* agent-h run 406: the same import, pinned at the target's link value (USO reloc func_000001FC: +0x18 = 0x214) */
-#define E68_MGR (*(MgrE68 **)((char *)import_8005C108_e68 + 0x18))
+extern int gGfxLib_8005C108[];
+extern int gGfxLib_8005C108_e68[]; /* agent-h run 406: the same import, pinned at the target's link value (USO reloc func_000001FC: +0x18 = 0x214) */
+#define E68_MGR (*(MgrE68 **)((char *)gGfxLib_8005C108_e68 + 0x18))
 #define E68_NEXT(m) (_n = (m)->dl->count++, &(m)->dl->buf[_n])
 /* agent-g run 172: two slots use the explicit increment (objdiff 88.98 -> 89.21, greedy per-site sweep;
  * which increments feed the shared _n changes its colouring, cf. 1A44). */
@@ -1011,7 +1011,7 @@ extern void func_00000188();  /* used as data-symbol base */
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 172). Decode notes kept: */
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
  * words and the bootup.uso reloc table. It is a gSPMatrix + gSPDisplayList
- * draw: gate = import_8005C108[0x3C] bit 1; gfx ctx = G->0x254->0x158; the
+ * draw: gate = gGfxLib_8005C108[0x3C] bit 1; gfx ctx = G->0x254->0x158; the
  * matrix stack ctx->0x3C = {Mtx *buf, count} (64-byte Mtx). The 7-float
  * builder is a typed-float proto (floats go in a1..a3 + stack slots). w1
  * of the G_MTX word = osVirtualToPhysical of the same &buf[count], then
@@ -1349,7 +1349,7 @@ end:
 // CamDirector_update (vtable update slot): picks the race camera each frame (docs/1080_CAMERA.md section 7).
 //   pad pressed 0x40 toggles manual mode. Entering it makes cams[0] active (command 3) at fov 85; while in it,
 //   held 8 / 4 move fov by +-2 within 45..120 and the stick adds 2x to the active camera's pitch / yaw.
-//   (D_00000064 == 1, a global debug mode, also passes the pad to a hook first.)
+//   (gInputMgr_00000064 == 1, a global debug mode, also passes the pad to a hook first.)
 //   Auto mode: every 60 frames find the course "cam" node nearest rider->pos; on a new node, kind 3..0x12
 //   goes to cams[0] (the game.uso CourseCam), any other kind to cams[1] (RiderCam), via the camera's
 //   command slot (kind, node), after making that camera active.
@@ -1365,7 +1365,7 @@ end:
 //   target 0x50). Permuter 3205->2810 plateau (only 0x14C-hoist nudge, no crack) —
 //   classic coloring/two-saved-reg barrier. Genuine type/value/CSE bugs all fixed.
 // agent-g run 276: exact (the C below compiles to the target bytes).
-/* 2026-10-16 agent-c rewrite: gate read through D_00000064 (pinned 0x64 ==
+/* 2026-10-16 agent-c rewrite: gate read through gInputMgr_00000064 (pinned 0x64 ==
  * func_00000044+0x20, folds into the lw like the target); the two cfg->0x10
  * reads stay separate because the second is read as u32 (one type CSEs them);
  * D_00007324 is passed as a 4-byte struct by value (`tb.w = D; f(.., tb, ..)`
@@ -1384,7 +1384,7 @@ end:
 #ifndef FH
 #define FH(p, o) (*(s16 *)((char *)(p) + (o)))
 #endif
-extern int D_00000064;
+extern int gInputMgr_00000064;
 extern int D_24B8_tbl;
 typedef struct { int w; } W24B8;
 typedef void (*VF_24B8)();
@@ -1420,7 +1420,7 @@ void CamDirector_update(CamDirector *self) {
     int k2;                 /* that node's kind */
 
     k = 0; if (CD_BYTE(0x4C)) {} /* agent-g run 275: with the folded use in the gate block, one zero-code manual candidate across the head takes v1, so the latch colours t0 like the target */
-    if (D_00000064 == 1) {
+    if (gInputMgr_00000064 == 1) {
         v0 = (char *)self->pad + 0 * (int)(CD_BYTE(0x4C));
         r = 0;
         s0 = (char *)((CD_PAD(v0)->held & 0x400) != 0); func_00000000_24b8v((int)s0, (*(u32 *)&CD_PAD(v0)->held & 0x1000) != 0, CD_PAD(v0)->rawX, CD_PAD(v0)->rawY); /* agent-c run 227: one line = the target's a1-then-a0 sltu order (as1 line tie, kit CCXXXIV) */
@@ -1692,9 +1692,9 @@ extern void func_000003F8();  /* used as data-symbol base */
  * its own load), ctx import_0005C108; callees func_072E58, func_072F1C,
  * func_074710(&D_000073E8, 0), func_059354 per entry, func_074840. */
 extern f32 bu_2c94_k4f0;
-extern f32 bu_2c94_dst[];
-extern char bu_2c94_src[], gGfxLib_2c94_ctx[], D_000073E8;
-extern int bu_2c94_mode, bu_2c94_x_ld, bu_2c94_x_st, bu_2c94_y_ld[], bu_2c94_y_st[];
+extern f32 gGfxLib_2c94_dst[];
+extern char gGfxLib_2c94_src[], gGfxLib_2c94_ctx[], D_000073E8;
+extern int bu_2c94_mode, gPolyFlags_3EEC4_2c94_x_ld, gPolyFlags_3EEC4_2c94_x_st, gPolyGeomMode_3EEC8_2c94_y_ld[], gPolyGeomMode_3EEC8_2c94_y_st[];
 extern int bu_2c94_tbl[], bu_2c94_gate;
 void game_initDdm_00002C94(void *a0, void *a1) {
     f32 k;
@@ -1703,18 +1703,18 @@ void game_initDdm_00002C94(void *a0, void *a1) {
     int v;
 
     k = bu_2c94_k4f0;
-    bu_2c94_dst[0] = k;
-    bu_2c94_dst[1] = k;
-    bu_2c94_dst[2] = k;
-    func_00000000(bu_2c94_src);
-    func_00000000(bu_2c94_src, bu_2c94_dst);
+    gGfxLib_2c94_dst[0] = k;
+    gGfxLib_2c94_dst[1] = k;
+    gGfxLib_2c94_dst[2] = k;
+    func_00000000(gGfxLib_2c94_src);
+    func_00000000(gGfxLib_2c94_src, gGfxLib_2c94_dst);
     bu_2c94_mode = 6;
-    bu_2c94_x_st = bu_2c94_x_ld & ~8;
-    v = bu_2c94_y_ld[1];
+    gPolyFlags_3EEC4_2c94_x_st = gPolyFlags_3EEC4_2c94_x_ld & ~8;
+    v = gPolyGeomMode_3EEC8_2c94_y_ld[1];
     v &= ~2;
     v |= 0x2000;
     v |= 0x80000;
-    bu_2c94_y_st[1] = v;
+    gPolyGeomMode_3EEC8_2c94_y_st[1] = v;
     p = bu_2c94_tbl;
     func_00000000(&D_000073E8, 0);
     if (bu_2c94_gate != 0) {
@@ -1743,7 +1743,7 @@ void game_initDdm_00002C94(void *a0, void *a1) {
 extern void func_00000000_2DA4_v();
 extern char D_000073EC, D_000073F8, D_00007408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
-extern char D_2DA4_cfg;
+extern char gPolyGeomMode_3EEC8_2DA4_cfg;
 #define FW2DA4(p, o) (*(int *)((char *)(p) + (o)))
 void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
@@ -1760,7 +1760,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     }
     FW2DA4(a1, 0x14) = (int)v1;
     func_00000000_2DA4_v(D_2DA4_obj);
-    v = *(int *)((char *)&D_2DA4_cfg + 4);
+    v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
     *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {
@@ -2212,7 +2212,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
  * family member cracked. FOUR DECODE ERRORS + two levers:
  *  (1) alloc-fail does NOT return — beqz +4 skips only the init call (x2);
  *  (2) arg4 of the r1 builder is a VALUE load *(func_00000080+0x14)
- *      (target lui/lw), not the address — D_3734_v alias;
+ *      (target lui/lw), not the address — gInputMgr_3734_v alias;
  *  (3)+(4) the r2 AND r3 builder calls have a FIFTH arg s0 (sw s0, 0x10(sp)
  *      before each jal), matching sibling 39D8's b3=builder(...,o1);
  *  (a) de-name cfg/row + merge o/sub/r5 into ONE $s0 web + void-alias the
@@ -2223,12 +2223,12 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", game_createPlayers);
  *      restore them with zero insns. Word-exact vs target .s except the
  *      %lo placeholder addend (reloc).
  * Unwrapped EXACT 2026-10-16 (run 96): the one differing .o word (lw %lo
- * addend 0 vs 0x14) links to the ROM's 0x94 because D_3734_v is pinned to
+ * addend 0 vs 0x14) links to the ROM's 0x94 because gInputMgr_3734_v is pinned to
  * func_00000080+0x14 = 0x94; every other reloc resolves to 0. */
 /* typed-float proto (0x0-alias): args 7,8 are single floats on the stack
  * (target swc1 0x18/0x1C); K&R func_00000000 double-promotes them. */
 extern char *func_3734_r1(void *, int, int, int, void *, int, float, float, int, int);
-extern int D_3734_v;  /* VALUE load at func_00000080+0x14 (target lui/lw, not lui/addiu) */
+extern int gInputMgr_3734_v;  /* VALUE load at func_00000080+0x14 (target lui/lw, not lui/addiu) */
 /* void-returning alias for the reg call: kills the dead $v0 def so cfg colors $v0 (38C0 recipe) */
 extern void func_00000000_3734_v(void *, void *);
 void game_setupDemoSolo(char *s1, int a1) {
@@ -2241,7 +2241,7 @@ void game_setupDemoSolo(char *s1, int a1) {
         func_00000000(s0, 0);   /* alloc-fail SKIPS ONLY THIS (target beqz +4, 38C0 recipe) */
     }
     func_00000000_3734_v(&D_00000000, s0);
-    r1 = func_3734_r1(s1, 2, 1, D_3734_v,
+    r1 = func_3734_r1(s1, 2, 1, gInputMgr_3734_v,
                       s0, *(int*)(s1 + 0x80),
                       *(float*)(*(char**)(s1 + 0x98) + 0xC4),
                       *(float*)(*(char**)(s1 + 0x98) + 0xCC),
@@ -2640,7 +2640,7 @@ void game_setupVs2P(char *s1, int a1) {
  * (ctor flag 1) passed to func_002420(0, t, r[0], f, b3, b4), linked into
  * s1->0x84 + 0x10 by func_07ACE0. */
 extern char bu_411c_d7294[], gInputMgr_411c_d00_b;
-extern int bu_411c_t90[];
+extern int gInputMgr_411c_t90[];
 extern f32 bu_411c_k544, bu_411c_k548;
 extern f32 func_00000000_411c_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
@@ -2659,9 +2659,9 @@ void game_setupDemoRace(char *s1, int a1) {
     func_00000000(&gInputMgr_411c_d00_b, t);
     idx1 = (int)(func_00000000_411c_f() * bu_411c_k544);
     idx2 = (int)(func_00000000_411c_f() * bu_411c_k548 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s1, 0, idx1, bu_411c_t90[idx1], o1, *(int*)(s1 + 0x80),
+    r[0] = func_00000000_3d3cm(s1, 0, idx1, gInputMgr_411c_t90[idx1], o1, *(int*)(s1 + 0x80),
                              *(float*)(*(char**)(s1 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x58005, 0x1B);
-    r[1] = func_00000000_3d3cm(s1, 2, idx2, bu_411c_t90[idx2], t, *(int*)(s1 + 0x80),
+    r[1] = func_00000000_3d3cm(s1, 2, idx2, gInputMgr_411c_t90[idx2], t, *(int*)(s1 + 0x80),
                              *(float*)(*(char**)(s1 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s1 + 0x98) + 0xCC), 0x48024, 0x1B);
     { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
     b3 = (char*)func_00000000(s1, 0, *(int*)(s1 + 0x80), a, o1); }
@@ -2709,7 +2709,7 @@ void game_setupDemoRace(char *s1, int a1) {
  * s-reg. The two spawn results are an ARRAY r[2] (frame 80/84); the cross
  * link and the first link call go through block temps a/b (a = a3). */
 extern char bu_43d4_d7294[], gInputMgr_43d4_d00_b;
-extern int bu_43d4_t90[];
+extern int gInputMgr_43d4_t90[];
 extern f32 bu_43d4_k54c, bu_43d4_k550;
 extern f32 func_00000000_43d4_f(void);
 extern char *func_00000000_3d3cm(char *, int, int, int, char *, int, float, float, int, int);
@@ -2726,9 +2726,9 @@ void game_setupDemoSplit(char *s0, int a1) {
     func_00000000(&gInputMgr_43d4_d00_b, t);
     idx1 = (int)(func_00000000_43d4_f() * bu_43d4_k54c);
     idx2 = (int)(func_00000000_43d4_f() * bu_43d4_k550 + (float)idx1 + 1.0f) % 3;
-    r[0] = func_00000000_3d3cm(s0, 0, idx1, bu_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),
+    r[0] = func_00000000_3d3cm(s0, 0, idx1, gInputMgr_43d4_t90[idx1], o1, *(int*)(s0 + 0x80),
                              *(float*)(*(char**)(s0 + 0x98) + 0xC4) - 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8004, 0x15);
-    r[1] = func_00000000_3d3cm(s0, 1, idx2, bu_43d4_t90[idx2], t, *(int*)(s0 + 0x80),
+    r[1] = func_00000000_3d3cm(s0, 1, idx2, gInputMgr_43d4_t90[idx2], t, *(int*)(s0 + 0x80),
                              *(float*)(*(char**)(s0 + 0x98) + 0xC4) + 500.0f, *(float*)(*(char**)(s0 + 0x98) + 0xCC), 0x8024, 0x15);
     { char *a = r[0], *b = r[1]; *(char**)(a + 0x908) = b; *(char**)(b + 0x908) = a;
     b3 = (char*)func_00000000(s0, 2, *(int*)(s0 + 0x80), a, o1); }
@@ -3418,8 +3418,8 @@ extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s2
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
 typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
-extern G2_55A0 D_55A0_G;
-extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
+extern G2_55A0 gPolyGeomMode_3EEC8_55A0_G;
+extern int gPolyFlags_3EEC4_55A0_w0, gPolyFlags_3EEC4_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
 extern char D_55A0_lb0, D_55A0_fmt, gInputMgr_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 void item_registerTemplates(int arg0, int arg1, int arg2) {
@@ -3438,9 +3438,9 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
     char *n2, *n3, *n4;
 
     if (1) { S4_55A0 *q0 = &v0, *q1 = &v1, *q2 = &v2, *q3 = &v3, *q4 = &t4, *q5 = &t5, *q10 = &t10; }
-    D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
-    D_55A0_G.b = 0xAA002;
-    D_55A0_G.a = 0;
+    gPolyFlags_3EEC4_55A0_w0 = gPolyFlags_3EEC4_55A0_r0 | 8; if (1) {}
+    gPolyGeomMode_3EEC8_55A0_G.b = 0xAA002;
+    gPolyGeomMode_3EEC8_55A0_G.a = 0;
     D_55A0_z0 = 0;
     var_s0 = arg2 | 0x10;
     M(0x154) = 0.0f; M(0x158) = 0.0f; M(0x15C) = 0.0f; M(0x160) = 0.0f;
@@ -3457,8 +3457,8 @@ void item_registerTemplates(int arg0, int arg1, int arg2) {
     M(0xF8) = D_bu_ro_598;
 
     if (arg1 == 1) {
-        D_55A0_G.b = 0x28002;
-        D_55A0_G.a = 0;
+        gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
+        gPolyGeomMode_3EEC8_55A0_G.a = 0;
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
         if (D_55A0_listchk != 0) {
             if (1) { R12_55A0 **q = &it; }
@@ -3977,9 +3977,9 @@ void MapProp_hostioParms(char *a0) {
 // PASS-6 2026-10-20 (agent-c run 114): FRESH HAND DECODE 63.4 -> 91.4.
 //   Real identities from the bootup.uso TextReloc table + emu symnames
 //   (scratch rel.py over uso-reloc-symbolize internals): A = import_
-//   8001FFC0 (root slot, s4 pre-loop), C = import_800200FC (s5), B =
+//   8001FFC0 (root slot, s4 pre-loop), C = gInputMgr_800200FC (s5), B =
 //   D_7770 (current obj), post-loop s4/s5 = D_776C / D_1EBDC, mode word
-//   import_8005EE6C, flags import_8005EE64 / import_8005C108+0x3C. Every
+//   gPolyGeomMode_3EEC8_8005EE6C, flags import_8005EE64 / gGfxLib_8005C108+0x3C. Every
 //   `lui a0; addiu a0,0` string arg is a DISTINCT symbol (no &sym CSE in
 //   target). Levers: two shared object temps o(s0)/t(s2) + one list temp
 //   L(s3) used by an ATTACH macro (no per-site copies; explicit `t = o;`
@@ -4089,7 +4089,7 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
  * The `func_0000027C + 0x18` is the splat-fold-into-nearest-func pattern
  * (per docs/MATCHING_WORKFLOW.md): a real D_<addr> rodata symbol was folded
  * into the preceding function. */
-/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (bu_7288_src = func_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */
+/* EXACT (agent-c run 121): the record is a 16-byte struct copy from a pinned alias (gGfxLib_7288_src = func_0000027C + 0x18), and the flags RMW goes through the advanced pointer q (*q |= 4). */
 /* 2026-07-31 (agent-g newest-lever sweep): 94.6 -> 95.4. Levers landed:
  * de-named self (per-use *(base+0x254) deref -> t-ring reload temps t9/t1
  * exact, kills the old named-self $v0 web) + named per-region base local +
@@ -4110,7 +4110,7 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
  * def-order swap src<->RMW = 95.275; register kw inert. a-reg-vs-t-ring
  * named-web free-pool tie class. NM. */
 typedef struct { int w[4]; } Q7288;
-extern Q7288 bu_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
+extern Q7288 gGfxLib_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void EnvSettings_display(int *a0) {
     if (a0[0x38/4] & 2) {
         char *base = (char*)&gGfxLib;
@@ -4123,7 +4123,7 @@ void EnvSettings_display(int *a0) {
         q = *(int**)(b2 + 0x254);
         q = (int*)((char*)q + 0x78);
         *q |= 4;
-        *(Q7288 *)(*(char **)(b2 + 0x254) + 0xDC) = bu_7288_src;
+        *(Q7288 *)(*(char **)(b2 + 0x254) + 0xDC) = gGfxLib_7288_src;
     }
 }
 
@@ -4193,13 +4193,13 @@ extern void func_000000F0();  /* used as data-symbol base */
 /* run 111 (agent-c): cfront ctor shape (r = new(0x134); if (r) { sub = r; if (sub || (sub = new(0x48))) ... }),
  * no early returns, data symbols for the two %lo-folded globals, a0 escaped so every a0->0x40 is re-read,
  * v reused for the tail stores, block-count lever (IDO_CODEGEN#hold-vs-remat-firstusecost-run111). */
-extern char D_74e8_g, D_74e8_h;
+extern char gInputMgr_74e8_g, gInputMgr_74e8_h;
 void FallingSnow_create(char *a0) {
     int *v;
     char *r;
     char *sub;
     char *head;
-    if (*(int*)((char*)&D_74e8_g + 0x2C) == 8) return;
+    if (*(int*)((char*)&gInputMgr_74e8_g + 0x2C) == 8) return;
     func_00000000(&D_00007FB0, 0);
     r = (char*)func_00000000(0x134);
     if (r != 0) {
@@ -4210,7 +4210,7 @@ void FallingSnow_create(char *a0) {
         *(void**)(r + 0x28) = &D_00000000;
     }
     *(char**)(a0 + 0x40) = r;
-    head = *(char**)((*(char**)((char*)&D_74e8_h + 0x44)) + 0x88);
+    head = *(char**)((*(char**)((char*)&gInputMgr_74e8_h + 0x44)) + 0x88);
     if (1) { }
     if (1) { }
     if (1) { }
@@ -4651,14 +4651,14 @@ void *Tv1Tmpl_create(char *a0) {
  * RUN 126 (agent-c): EXACT. The list pointer is its own variable `l`, not the
  * reused `k` (k = obj stays in v1, the list base goes to v0 as in the target);
  * `+ 1` on the int * gives the dead `addiu v0,v0,4`. */
-extern char *D_7D04_root[];
+extern char *gGfxLib_7D04_root[];
 extern float func_7D04_randf();
 void Tv1Tmpl_func_00007D04(char *s0) {
     int a3 = *(int *)(s0 + 0x5C);
     int k;
     *(int *)(s0 + 0x64) =
-        ((int (*)(char *))*((unsigned int *)((char *)*(int **)(D_7D04_root[6] + 0x28) + 0x64)))(
-            (char *)((int)D_7D04_root[6] + (int)(short)*(short *)((char *)*(int **)(D_7D04_root[6] + 0x28) + 0x60)));
+        ((int (*)(char *))*((unsigned int *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x64)))(
+            (char *)((int)gGfxLib_7D04_root[6] + (int)(short)*(short *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x60)));
     k = *(int *)(s0 + 0x5C);
     if (k != 1) {
         if (k != 0) {
@@ -4734,21 +4734,21 @@ void Tv1Tmpl_display(char *a0) {
  * import_0005C108 (zero alias gGfxLib_7ec8_g: +0x130 scale, +0x254 game object,
  * +0x18 a 24-byte record), the backup record is import_0001FFC8 (bu_7ec8_h);
  * (the asm spells the mode word func_00000008 + 0x2C = 0x34, alias
- * bu_7ec8_m, and the record func_0000027C + 0x18 = 0x294, alias
- * bu_7ec8_src: the baked words carry those offsets); callees func_0586D8 (char *, char *, float: frac goes out by mfc1 a2),
+ * gInputMgr_7ec8_m, and the record func_0000027C + 0x18 = 0x294, alias
+ * gGfxLib_7ec8_src: the baked words carry those offsets); callees func_0586D8 (char *, char *, float: frac goes out by mfc1 a2),
  * func_063D70 (four ints then float/int/float on the stack) and func_051D88.
  * The record copies are 24-byte struct assignments; the scale is re-read
  * inline (a scale local colours f2/f0 the wrong way round) and written
  * scale * field for the target mul.s operand order. */
 typedef struct { int a, b, c, d, e, f; } S24_7EC8;
-extern char gGfxLib_7ec8_g[], bu_7ec8_h[], bu_7ec8_src[];
-extern int bu_7ec8_m;
+extern char gGfxLib_7ec8_g[], bu_7ec8_h[], gGfxLib_7ec8_src[];
+extern int gInputMgr_7ec8_m;
 extern void func_00000000_7ec8_c(char *, char *, float);
 extern int func_00000000_7ec8_t(int, int, int, int, float, int, float);
 void Fog_display(char *s0) {
     float scale, limit, p, end, frac;
     int hit;
-    if (bu_7ec8_m != 8) {
+    if (gInputMgr_7ec8_m != 8) {
         frac = 0.0f;
         limit = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(gGfxLib_7ec8_g + 0x254) + 0x70) + 0xA8);
         hit = 0;
@@ -4762,12 +4762,12 @@ void Fog_display(char *s0) {
             hit = 1;
         }
         if (hit != *(int *)(s0 + 0x8C)) {
-            *(S24_7EC8 *)bu_7ec8_h = *(S24_7EC8 *)(bu_7ec8_src);
+            *(S24_7EC8 *)bu_7ec8_h = *(S24_7EC8 *)(gGfxLib_7ec8_src);
             *(int *)(s0 + 0x8C) = hit;
         }
         if (hit != 0) {
-            *(S24_7EC8 *)(bu_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
-            func_00000000_7ec8_c(bu_7ec8_src, s0 + 0x74, frac);
+            *(S24_7EC8 *)(gGfxLib_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
+            func_00000000_7ec8_c(gGfxLib_7ec8_src, s0 + 0x74, frac);
         }
     } else {
         if (func_00000000_7ec8_t(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
@@ -5138,7 +5138,7 @@ void Tree_handleMsg(char *a0, int *a1) {
  * target's `lw v0` + branch-delay `or s0,v0` loop entry. The direct function
  * pointer call keeps the callback in $t9. */
 extern int func_00000000();
-extern char gl_ref_00000294;
+extern char gGfxLib_00000294;
 
 void TreeTmpl_display(char *arg0) {
     char *node;
@@ -5158,17 +5158,17 @@ void TreeTmpl_display(char *arg0) {
             arg0 = *(char**)(arg0 + 0x84);
         } while (arg0 != 0);
     }
-    func_00000000(&gl_ref_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
+    func_00000000(&gGfxLib_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
 }
 
-extern char D_func_00008744_arg1;
-extern char D_func_00008744_arg2;
+extern char gHostio_func_00008744_arg1;
+extern char gHostio_func_00008744_arg2;
 void TreeTmpl_hostioParms(char *a0) {
     int arg = *(int*)(a0 + 0xC);
-    func_00000000(&D_func_00008744_arg1, arg, 0);
+    func_00000000(&gHostio_func_00008744_arg1, arg, 0);
     func_00000000(a0 + 0x4C, 0);
     func_00000000(a0 + 0x5C);
-    func_00000000(&D_func_00008744_arg2);
+    func_00000000(&gHostio_func_00008744_arg2);
     func_00000000(a0);
 }
 
@@ -5178,7 +5178,7 @@ extern float D_000005F0;
 /* TreeTmpl_create: allocator/init sibling of TreeTmpl_display. EXACT 2026-10-16
  * (agent-c). The old caps were all C-reachable:
  *  - the three bare `lui r,0` bases at the top are three DISTINCT base-0
- *    globals (D_87A4_rd read, D_87A4_wr OR-store, D_87A4_cfg +4/+0 stores),
+ *    globals (gPolyFlags_3EEC4_87A4_rd read, gPolyFlags_3EEC4_87A4_wr OR-store, gPolyGeomMode_3EEC8_87A4_cfg +4/+0 stores),
  *    pinned to 0. An empty `if (1) {}` after the OR-store makes IDO hoist the
  *    rd/wr luis above the bnez and put the cfg lui in its delay slot (without
  *    it the cfg lui/addiu pair is hoisted instead).
@@ -5193,8 +5193,8 @@ extern float D_000005F0;
  *    pointer took a ghost home) plus `int pad[5]` declared after kind.
  *  - the three trailing nops are file-end alignment pad (all-zero
  *    SUFFIX_BYTES_FORCE). */
-extern int D_87A4_rd, D_87A4_wr, D_87A4_tail;
-extern char D_87A4_cfg, D_87A4_vt;
+extern int gPolyFlags_3EEC4_87A4_rd, gPolyFlags_3EEC4_87A4_wr, D_87A4_tail;
+extern char gPolyGeomMode_3EEC8_87A4_cfg, D_87A4_vt;
 extern char D_087A4_vtable[];
 extern void func_00000000_087A4();
 extern void func_00000000_087A4_f(char *, char *, int, float, float);
@@ -5204,10 +5204,10 @@ void *TreeTmpl_create(char *arg0) {
     int kind; int pad[5];
 
     if (*(int *)(arg0 + 0x40) == 0) {
-        D_87A4_wr = D_87A4_rd | 8;
+        gPolyFlags_3EEC4_87A4_wr = gPolyFlags_3EEC4_87A4_rd | 8;
         if (1) {}
-        *(int *)(&D_87A4_cfg + 4) = 0xAA002;
-        *(int *)(&D_87A4_cfg + 0) = 0;
+        *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 4) = 0xAA002;
+        *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 0) = 0;
         *(int *)(arg0 + 0x40) = func_00000000(0, &D_00007FF4, *(int *)(arg0 + 0x48), 0);
     }
     s1 = (char *)func_00000000(0xC8);
@@ -5241,9 +5241,9 @@ skip:
     return s0;
 }
 
-extern char *D_00000130;
+extern char *gInputMgr_00000130;
 int game_isUsoLoaded(int a0) {
-    char *p = D_00000130;
+    char *p = gInputMgr_00000130;
     while (p != 0) {
         if (func_00000000(*(int*)p, a0) == 0) {
             return 1;
@@ -5720,12 +5720,12 @@ extern char bu_90cc_imp30;  /* +0x30 import ptr in the 0x878 cascade (target 0xA
 /* target 0xAC34-0xAD3C per-site blank globals (each site = own symbol; busts base GCSE).
  * Scalar/array form (not cast-arith) so the lo16 folds into the load offset (lui rd; lw rd,4(rd))
  * and stores go through $at -- matches target's direct-global access shape. */
-extern char bu_90cc_g8_ld, bu_90cc_g8_st;      /* load/store alias pair: same address, distinct syms kill the addr CSE (lui rd/lw + lui at/sw shape) */
-extern char bu_90cc_gcfg_ld, bu_90cc_gcfg_st;
-extern char bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
+extern char gPolyFlags_3EEC4_90cc_g8_ld, gPolyFlags_3EEC4_90cc_g8_st;      /* load/store alias pair: same address, distinct syms kill the addr CSE (lui rd/lw + lui at/sw shape) */
+extern char gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st;
+extern char gPolyGeomMode_3EEC8_90cc_gcfg_b_ld, gPolyGeomMode_3EEC8_90cc_gcfg_b_st;
 extern s32 bu_90cc_gown;
 extern char gNodeGlobals_90cc_gtbl;
-extern char bu_90cc_gpair;
+extern char gPolyGeomMode_3EEC8_90cc_gpair;
 extern char gGfxLib_90cc_gdev;
 extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
 /* vtable draw slot (+0x5C): trailing two args are single-precision f32.
@@ -5770,13 +5770,13 @@ extern void func_00000000_iipif(s32, s32, void *, f32, f32);
 /* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
-extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
+extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
-extern u8 bu_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
+extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
 extern char bu_90cc_d00_b;  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
-extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, bu_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
+extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
@@ -6393,7 +6393,7 @@ sw_end:
             var_s0 += 0x18;
             *(s32 *)var_s0 &= ~8;
             var_s1 = *(s32 *)((char *)(arg0) + 0x86C);
-            var_s0 = *(s32 *)(*(char **)(bu_90cc_dF0 + 0x44) + 0x88);
+            var_s0 = *(s32 *)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x88);
             func_00000000(var_s0 + 0x10, var_s1);
             if (*(s32 *)((char *)(var_s1) + 0x14) != 0) {
                 *(s32 *)((char *)(var_s1) + 0x4) = 1;
@@ -6405,7 +6405,7 @@ sw_end:
             if (1) { fq += 6; }
             *fq &= ~8;
             var_s1 = *(s32 *)((char *)(arg0) + 0x868);
-            var_s0 = *(s32 *)(*(char **)(bu_90cc_dF0 + 0x44) + 0x84);
+            var_s0 = *(s32 *)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x84);
             func_00000000(var_s0 + 0x10, var_s1);
             if (*(s32 *)((char *)(var_s1) + 0x14) != 0) {
                 *(s32 *)((char *)(var_s1) + 0x4) = 1;
@@ -6514,9 +6514,9 @@ sw_end:
         /* target 0xAC34-0xAC98: each global access is its own symbol (fresh lui per
          * site, reload between the |= and &= statements) -- per-site blank aliases
          * bust the m2c &D_00000000 base GCSE that had cached one addiu base reg. */
-        *(s32 *)&bu_90cc_g8_st = *(s32 *)&bu_90cc_g8_ld | 8;
-        *(s32 *)((char *)&bu_90cc_gcfg_st + 4) = *(s32 *)((char *)&bu_90cc_gcfg_ld + 4) | 0x20000;
-        *(s32 *)((char *)&bu_90cc_gcfg_b_st + 4) = *(s32 *)((char *)&bu_90cc_gcfg_b_ld + 4) & 0xFFF7FFFF & ~2;
+        *(s32 *)&gPolyFlags_3EEC4_90cc_g8_st = *(s32 *)&gPolyFlags_3EEC4_90cc_g8_ld | 8;
+        *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gcfg_st + 4) = *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gcfg_ld + 4) | 0x20000;
+        *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gcfg_b_st + 4) = *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gcfg_b_ld + 4) & 0xFFF7FFFF & ~2;
         bu_90cc_gown = (s32) arg0;
         while (sp58 != 0x23) {
             var_a2 = sp58;
@@ -6526,8 +6526,8 @@ sw_end:
             *(s32 *)((char *)&gNodeGlobals_90cc_gtbl + var_a2 * 4) = 0;
             sp58 += 1;
         }
-        *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
-        *(s32 *)&bu_90cc_gpair = 0;
+        *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gpair + 4) = 0x2A003;
+        *(s32 *)&gPolyGeomMode_3EEC8_90cc_gpair = 0;
         *(s32 *)((char *)(arg0) + 0x8F4) = func_00000000(&gGfxLib_90cc_gdev, 1, 0);
         *(s32 *)((char *)(arg0) + 0x8F8) = func_00000000(&gGfxLib_90cc_gdev, 2, 0);
         *(s32 *)((char *)(arg0) + 0x8FC) = func_00000000(&gGfxLib_90cc_gdev, 3, 0);
@@ -6538,7 +6538,7 @@ sw_end:
                 do {
                     if (arg2 == var_v1) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
-                        *(s32 *)(bu_90cc_d148_01 + 24 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4) = (s32)(temp_v0_5 + 8);
+                        *(s32 *)(gGfxLib_90cc_d148_01 + 24 + *(s32 *)((char *)temp_v0_5 + 0x4) * 4) = (s32)(temp_v0_5 + 8);
                     }
                     var_v1 = *(s32 *)((char *)(temp_v0_5) + 0x18);
                     temp_v0_5 += 0x18;
@@ -6641,7 +6641,7 @@ sw_end:
         var_s0 = (char *)gNodeGlobals_90cc_d44_09.f14;
         *(s32 *)((char *)(arg0) + 0x874) = (s32)var_s0;
 
-        *(s32 *)((char *)(arg0) + 0x804) = func_00000000(0, arg0, bu_90cc_d44_10.f24);
+        *(s32 *)((char *)(arg0) + 0x804) = func_00000000(0, arg0, gInputMgr_90cc_d44_10.f24);
         func_00000000(arg0);
     }
     return arg0;
@@ -8956,9 +8956,9 @@ void SnowBoard_InitInstance(char *arg0) {
     }
 }
 
-extern int D_00000190;
+extern int gInputMgr_00000190;
 void SnowBoard_vslot14(int a0) {
-    func_00000000(D_00000190, 3, 0);
+    func_00000000(gInputMgr_00000190, 3, 0);
 }
 
 void boot_readFloatParm_0000EB28(char *a0) {

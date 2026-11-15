@@ -17,8 +17,8 @@
  * __osPackReadData at gl___osPackRequestData. gl_ref_00080824 is already pinned.
  * Whole compiled body is spliced into the -O2 post1b2 host.
  */
-extern u8 gl_cont_last_cmd_6C084;
-extern char gl_cont_pif_ram_6C084[];
+extern u8 gl___osContLastCmd_6C084;
+extern char gl___osContPifRam_6C084[];
 extern void gl_si_get_access_6C084(void);
 extern void gl_ref_00080824(void);
 extern int gl_si_raw_start_dma_6C084(int, void *);
@@ -32,13 +32,13 @@ int osContStartReadData(void *mq)
 
     ret = 0;
     gl_si_get_access_6C084();
-    if (gl_cont_last_cmd_6C084 != 1) {
+    if (gl___osContLastCmd_6C084 != 1) {
         gl_ref_00080824();
-        ret = gl_si_raw_start_dma_6C084(1, &gl_cont_pif_ram_6C084);
+        ret = gl_si_raw_start_dma_6C084(1, &gl___osContPifRam_6C084);
         gl_recv_mesg_6C084(mq, 0, 1);
     }
-    ret = gl_si_raw_start_dma_6C084(0, &gl_cont_pif_ram_6C084);
-    gl_cont_last_cmd_6C084 = 1;
+    ret = gl_si_raw_start_dma_6C084(0, &gl___osContPifRam_6C084);
+    gl___osContLastCmd_6C084 = 1;
     gl_si_rel_access_6C084();
     return ret;
 }

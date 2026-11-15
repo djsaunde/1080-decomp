@@ -11,12 +11,12 @@ struct Obj { char pad[0x30]; f32 x, y, z; };
 extern "C" {
 int gl_3D71C_test(int, int, f32, f32, f32, int, f32);
 void gl_func_00000000(...);
-void gl_3d71c_dA0();
+void gGfxLib_3d71c_dA0();
 extern char D_00000000[];
 }
 extern "C" void ColourItem_display(Obj *o) {
     if (gl_3D71C_test(*(int *)(D_00000000 + 0x254), 3, o->x, o->y, o->z, 0, 0.0f) != 0) {
-        Blk *d = (Blk *)gl_3d71c_dA0;
+        Blk *d = (Blk *)gGfxLib_3d71c_dA0;
         if (0) { d = 0; }
         *d = *(Blk *)(D_00000000 + 0xE8);
         *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(D_00000000 + 0x128);

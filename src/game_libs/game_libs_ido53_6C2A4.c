@@ -30,10 +30,10 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 /* TU-DEFINED 2-byte pair (pageSize/relDuration) => the li;li;sb;sb pair
  * batches under ONE lui $at (extern spelling = one lui per store =
  * near-miss). Splice imports the reloc as UNDEF; undefined_syms_auto
- * carries D_00000006_drvpgs = 0x00000006 so %lo(pair)+0/+1 link
+ * carries gl_DriveRomHandle_00000006_drvpgs = 0x00000006 so %lo(pair)+0/+1 link
  * byte-identically to the blanked DriveRomHandle+6/+7 words. Same lever
  * as the 6F088 osLeoDiskInit donor. */
-PgsRls D_00000006_drvpgs = {0};
+PgsRls gl_DriveRomHandle_00000006_drvpgs = {0};
 
 OSPiHandle *gl_osDriveRomInit(void) {
     u32 saveMask;
@@ -45,8 +45,8 @@ OSPiHandle *gl_osDriveRomInit(void) {
     gl_DriveRomHandle_drvrom.baseAddress = 0xA6000000;
     gl_DriveRomHandle_drvrom.latency = 64;
     gl_DriveRomHandle_drvrom.pulse = 7;
-    D_00000006_drvpgs.pageSize = 7;
-    D_00000006_drvpgs.relDuration = 2;
+    gl_DriveRomHandle_00000006_drvpgs.pageSize = 7;
+    gl_DriveRomHandle_00000006_drvpgs.relDuration = 2;
     gl_DriveRomHandle_drvrom.domain = 0;                /* PI_DOMAIN1 */
     gl_DriveRomHandle_drvrom.speed = 0;
 

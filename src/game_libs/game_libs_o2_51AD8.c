@@ -55,8 +55,8 @@ typedef struct {
     struct { s32 v; } w58;           /* 0x58 */
 } State_51AD8;
 
-extern State_51AD8 *gl_ref_00000148_51AD8[];
-extern State_51AD8 *gl_ref_00000160_51AD8[];
+extern State_51AD8 *gGfxLib_00000148_51AD8[];
+extern State_51AD8 *gGfxLib_00000160_51AD8[];
 
 typedef struct {
     s32 op;
@@ -113,7 +113,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         break;
     case 202:
         q = s->cur; s->cur = q + 1; v = *q;
-        pp = &gl_ref_00000160_51AD8[v];
+        pp = &gGfxLib_00000160_51AD8[v];
         if (*pp != 0) {
             s->cur += 4;
             out->q = (*pp)->q;
@@ -135,7 +135,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         break;
     case 211:
         q = s->cur; s->cur = q + 1; v = *q;
-        pp = &gl_ref_00000148_51AD8[v];
+        pp = &gGfxLib_00000148_51AD8[v];
         if (*pp == 0) {
             gl_func_00000000((char *)&D_00000000 + 0x20F14);
         }

@@ -1503,8 +1503,8 @@ extern void gl_3061C_emit(s32, s8);
 void snd_TriggerChannel8Cue(s32 duration, s32 hold, s32 mode);
 extern int D_00000000_1c0a8;
 extern int gl_func_00000000_f(int, float);
-extern S307A8 D_307A8_a, D_307A8_b, D_307A8_c, D_307A8_d, D_307A8_e, D_307A8_f, D_307A8_g,
-              D_307A8_h, D_307A8_i, D_307A8_j, D_307A8_k, D_307A8_l, D_307A8_m, D_307A8_n, D_307A8_o, D_307A8_p;
+extern S307A8 gSndCueQueues_307A8_a, D_307A8_b, D_307A8_c, gSndCueQueues_307A8_d, gSndCueQueues_307A8_e, gSndCueQueues_307A8_f, gSndCueQueues_307A8_g,
+              gSndCueQueues_307A8_h, gSndCueQueues_307A8_i, gSndCueQueues_307A8_j, D_307A8_k, D_307A8_l, gSndCueQueues_307A8_m, gSndCueQueues_307A8_n, gSndCueQueues_307A8_o, gSndCueQueues_307A8_p;
 void snd_TickChannel8Fade(void);
 void _asmpp_func160(void);
 extern char *D_ctx_base_308C8;

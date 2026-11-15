@@ -14301,7 +14301,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_TriggerChannel8Cue);
  * file-local static block for the two pairs (65 words = target, 96.38 -> 99.46).
  * EXACT (agent-g run 202) via the IDO 7.1 NCC (C++) donor
  * src/game_libs/game_libs_ncc_307A8.cpp, spliced over this empty placeholder:
- * (3) goes with the hold-count re-read spelled `(&D_307A8_i.fC)[0] - 1` (uopt
+ * (3) goes with the hold-count re-read spelled `(&gSndCueQueues_307A8_i.fC)[0] - 1` (uopt
  * keeps no candidate; ugen reuses the t8 load from the fall-through test). The
  * cfe C body (96.38) is in git history before this commit. */
 void snd_TickChannel8Fade(void) {
@@ -15763,7 +15763,7 @@ end:
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_33094.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder in both build trees (agent-g run 289). The structural notes above predate the decode: the routine is
  * the camera look-at update (eye = o->pos; target = parent pos or o->pos + o->v104 * 10; both scaled by the
- * module vector D_33094_k at 0x128; emitted with the up vector o->v140). */
+ * module vector gGfxLib_33094_k at 0x128; emitted with the up vector o->v140). */
 int MCamera_updateLookAt(char *o) {
     return 0;
 }

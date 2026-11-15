@@ -49,10 +49,10 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 /* TU-DEFINED 2-byte pair (pageSize/relDuration) => the srl/andi/sb pair
  * batches under ONE lui $at (extern spelling = one lui per store =
  * near-miss). Splice imports the reloc as UNDEF; undefined_syms_auto
- * carries D_00000006_cartpgs = 0x00000006 so %lo(pair)+0/+1 link
+ * carries gl_CartRomHandle_00000006_cartpgs = 0x00000006 so %lo(pair)+0/+1 link
  * byte-identically to the blanked CartRomHandle+6/+7 words. Same lever
  * as the 6C2A4 osDriveRomInit / 6F088 osLeoDiskInit donors. */
-PgsRls D_00000006_cartpgs = {0};
+PgsRls gl_CartRomHandle_00000006_cartpgs = {0};
 
 OSPiHandle *gl_osCartRomInit(void) {
     u32 domain;
@@ -69,8 +69,8 @@ OSPiHandle *gl_osCartRomInit(void) {
 
     gl_CartRomHandle_cartrom.latency = domain & 0xFF;
     gl_CartRomHandle_cartrom.pulse = (domain >> 8) & 0xFF;
-    D_00000006_cartpgs.pageSize = (domain >> 16) & 0xF;
-    D_00000006_cartpgs.relDuration = (domain >> 20) & 0xF;
+    gl_CartRomHandle_00000006_cartpgs.pageSize = (domain >> 16) & 0xF;
+    gl_CartRomHandle_00000006_cartpgs.relDuration = (domain >> 20) & 0xF;
     gl_CartRomHandle_cartrom.domain = 0;               /* PI_DOMAIN1 */
     gl_CartRomHandle_cartrom.speed = 0;
 

@@ -82,7 +82,7 @@ glabel mgr_procMain
     /* 0002D4 000002D4 0018C880 */  .word 0x0018C880
     /* 0002D8 000002D8 01F94021 */  .word 0x01F94021
     /* 0002DC 000002DC 8D09000C */  .word 0x8D09000C
-    lui $at, %hi(import_800200FC)   /* 0002E0 3C010000 -> import_800200FC */
+    lui $at, %hi(gInputMgr_800200FC)   /* 0002E0 3C010000 -> gInputMgr_800200FC */
     /* 0002E4 000002E4 AC290064 */  .word 0xAC290064
     lui $t2, %hi(import_80020118)   /* 0002E8 3C0A0000 -> import_80020118 */
     /* 0002EC 000002EC 8D4A0080 */  .word 0x8D4A0080
@@ -108,14 +108,14 @@ glabel mgr_procMain
     lui $a0, %hi(import_80020098)   /* 00033C 3C040000 -> import_80020098 */
     /* 000340 00000340 24840000 */  .word 0x24840000
     /* 000344 00000344 24050004 */  .word 0x24050004
-    lui $a2, %hi(import_800200FC)   /* 000348 3C060000 -> import_800200FC */
+    lui $a2, %hi(gInputMgr_800200FC)   /* 000348 3C060000 -> gInputMgr_800200FC */
     /* 00034C 0000034C 8CC60064 */  .word 0x8CC60064
     /* 000350 00000350 00003825 */  .word 0x00003825
     jal mgrproc_uso_func_0120A8   /* 000354 0C000000 -> mgrproc_uso_func_0120A8 */
     /* 000358 00000358 00000000 */  .word 0x00000000
     lui $a0, %hi(import_80020098)   /* 00035C 3C040000 -> import_80020098 */
     /* 000360 00000360 24840000 */  .word 0x24840000
-    lui $a1, %hi(import_800200FC)   /* 000364 3C050000 -> import_800200FC */
+    lui $a1, %hi(gInputMgr_800200FC)   /* 000364 3C050000 -> gInputMgr_800200FC */
     /* 000368 00000368 8CA50064 */  .word 0x8CA50064
     jal import_000A8094   /* 00036C 0C000000 -> import_000A8094 */
     /* 000370 00000370 00000000 */  .word 0x00000000

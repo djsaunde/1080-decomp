@@ -349,7 +349,7 @@ extern int import_0024F228();
 extern int import_0024F278();
 extern char import_80263D30;
 extern int import_800200EC;
-extern int import_800200FC;
+extern int gInputMgr_800200FC;
 extern char import_80020100;
 void mgr_loadSprites_0000119C(char *s0);
 void mgr_releaseSprites_000012AC(char *a0);

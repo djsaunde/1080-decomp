@@ -12,13 +12,13 @@
 # USO module code: every address field is a load-time relocation (zero in the
 # ROM), so data and call targets are symbols pinned to 0 in
 # undefined_syms_auto.txt: gl_exc_threadsave (__osThreadSave),
-# gl___osRunningThread_runthread (__osRunningThread), gl_exc_runqueue (__osRunQueue),
+# gl___osRunningThread_runthread (__osRunningThread), gl___osRunQueue_exc (__osRunQueue),
 # gl___OSGlobalIntMask_gim (__OSGlobalIntMask), D_00000000_rcpim (__osRcpImTable),
 # gl_exc_intofftable / gl_exc_inttable (__osIntOffTable / __osIntTable; pinned
 # to their module offsets 0x2360 / 0x2380 -- the ROM bakes the lo16 halves),
 # gl_exc_hwinttable (__osHwIntTable), gl_exc_intstack (interrupt-callback
 # stack), gl_exc_shutdown (__osShutdown), gl_exc_faultedthread
-# (__osFaultedThread), gl_exc_eventstatetab (__osEventStateTab),
+# (__osFaultedThread), gl___osEventStateTab_exc (__osEventStateTab),
 # gl_exc_exception (__osException), gl_exc_send_mesg (send_mesg),
 # gl_exc_enqueuethread / gl_func_00000000_popthr / gl_exc_dispatchthread.
 
@@ -317,8 +317,8 @@ glabel gl___osExceptionPreamble
     sw      $t2, 0($t1)
     jal     gl_exc_send_mesg
      addiu  $a0, $zero, 112
-    lui     $t2, %hi(gl_exc_runqueue)
-    lw      $t2, %lo(gl_exc_runqueue)($t2)
+    lui     $t2, %hi(gl___osRunQueue_exc)
+    lw      $t2, %lo(gl___osRunQueue_exc)($t2)
     addiu   $at, $zero, -4097
     and     $s0, $s0, $at
     lw      $k1, 280($t2)
@@ -349,22 +349,22 @@ glabel gl___osExceptionPreamble
     b       .Lgl_redispatch
      nop
 .Lgl_redispatch:
-    lui     $t2, %hi(gl_exc_runqueue)
-    lw      $t2, %lo(gl_exc_runqueue)($t2)
+    lui     $t2, %hi(gl___osRunQueue_exc)
+    lw      $t2, %lo(gl___osRunQueue_exc)($t2)
     lw      $t1, 4($k0)
     lw      $t3, 4($t2)
     slt     $at, $t1, $t3
     beqz    $at, .Lgl_enqueueRunning
      nop
-    lui     $a0, %hi(gl_exc_runqueue)
+    lui     $a0, %hi(gl___osRunQueue_exc)
     or      $a1, $k0, $zero
     jal     gl_exc_enqueuethread
-     addiu  $a0, $a0, %lo(gl_exc_runqueue)
+     addiu  $a0, $a0, %lo(gl___osRunQueue_exc)
     j       gl_exc_dispatchthread
      nop
 .Lgl_enqueueRunning:
-    lui     $t1, %hi(gl_exc_runqueue)
-    addiu   $t1, $t1, %lo(gl_exc_runqueue)
+    lui     $t1, %hi(gl___osRunQueue_exc)
+    addiu   $t1, $t1, %lo(gl___osRunQueue_exc)
     lw      $t2, 0($t1)
     sw      $t2, 0($k0)
     j       gl_exc_dispatchthread
@@ -382,8 +382,8 @@ glabel gl___osExceptionPreamble
      addiu  $a0, $zero, 96
     j       gl_exc_dispatchthread
      nop
-    lui     $t2, %hi(gl_exc_eventstatetab)
-    addiu   $t2, $t2, %lo(gl_exc_eventstatetab)
+    lui     $t2, %hi(gl___osEventStateTab_exc)
+    addiu   $t2, $t2, %lo(gl___osEventStateTab_exc)
     addu    $t2, $t2, $a0
     lw      $t1, 0($t2)
     or      $s2, $ra, $zero
@@ -423,10 +423,10 @@ glabel gl___osExceptionPreamble
     jal     gl_func_00000000_popthr
      or     $a0, $t1, $zero
     or      $t2, $v0, $zero
-    lui     $a0, %hi(gl_exc_runqueue)
+    lui     $a0, %hi(gl___osRunQueue_exc)
     or      $a1, $t2, $zero
     jal     gl_exc_enqueuethread
-     addiu  $a0, $a0, %lo(gl_exc_runqueue)
+     addiu  $a0, $a0, %lo(gl___osRunQueue_exc)
 .Lgl_send_done:
     jr      $s2
      nop

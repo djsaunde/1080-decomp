@@ -173,7 +173,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 740
 },
 {
@@ -237,7 +237,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 844
 },
 {
@@ -260,7 +260,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 872
 },
 {
@@ -1216,7 +1216,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 4560
 },
 {
@@ -2008,7 +2008,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 7256
 },
 {
@@ -2985,7 +2985,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 12244
 },
 {

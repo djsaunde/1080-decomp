@@ -55,8 +55,8 @@ extern char D_55A0_tb, SNodeItemType_vtbl_55A0_o28_4, SNodeItemType_vtbl_55A0_s2
 extern int D_55A0_g5, D_55A0_g6, D_55A0_g7, D_55A0_g8, D_55A0_g9, D_55A0_g10;
 typedef struct { int a, b; } G2_55A0;
 typedef struct { int w, x, y; } R12_55A0;
-extern G2_55A0 D_55A0_G;
-extern int D_55A0_w0, D_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
+extern G2_55A0 gPolyGeomMode_3EEC8_55A0_G;
+extern int gPolyFlags_3EEC4_55A0_w0, gPolyFlags_3EEC4_55A0_r0, D_55A0_z0, D_55A0_list, D_55A0_listchk, D_55A0_list2;
 extern char D_55A0_lb0, D_55A0_fmt, gInputMgr_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 }
@@ -84,9 +84,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     char *n2, *n3;
 
     if (0 * ((int)&v0 + (int)&v1 + (int)&v2 + (int)&v3 + (int)&t4 + (int)&t5 + (int)&t10 + (int)&p1 + (int)&vecp1 + (int)&vk1 + (int)&vk2)) {}
-    D_55A0_w0 = D_55A0_r0 | 8; if (1) {}
-    D_55A0_G.b = 0xAA002;
-    D_55A0_G.a = 0;
+    gPolyFlags_3EEC4_55A0_w0 = gPolyFlags_3EEC4_55A0_r0 | 8; if (1) {}
+    gPolyGeomMode_3EEC8_55A0_G.b = 0xAA002;
+    gPolyGeomMode_3EEC8_55A0_G.a = 0;
     var_s0 = arg2 | 0x10;
     M(0x154) = fi(0); M(0x158) = fi(0); M(0x15C) = fi(0); M(0x160) = fi(0);
     M(0x144) = fi(0); M(0x148) = fi(0); M(0x150) = fi(0);
@@ -103,8 +103,8 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     D_55A0_z0 = 0;
 
     if (arg1 == 1) {
-        D_55A0_G.b = 0x28002;
-        D_55A0_G.a = 0;
+        gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
+        gPolyGeomMode_3EEC8_55A0_G.a = 0;
         D_55A0_list = func_00000000(0, &D_00007E20, &D_55A0_lb0, 0);
         it = (R12_55A0 *)&D_55A0_it0;
         if (D_55A0_listchk != 0) {
@@ -219,8 +219,8 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         func_00000000(DROOT, obj, 4);
 
         /* list object (0x6C) */
-        D_55A0_G.b = 0x28002;
-        D_55A0_G.a = 0;
+        gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
+        gPolyGeomMode_3EEC8_55A0_G.a = 0;
         nl0 = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
         v3 = D_55A0_v3;
         p1 = v3;

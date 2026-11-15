@@ -5595,7 +5595,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 45576
 },
 {
@@ -5603,7 +5603,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 45608
 },
 {
@@ -5633,7 +5633,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 45696
 },
 {
@@ -5807,7 +5807,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 47172
 },
 {
@@ -6117,7 +6117,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 48200
 },
 {

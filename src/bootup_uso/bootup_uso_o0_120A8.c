@@ -13,7 +13,7 @@
  * trailing align nop dropped by TRUNCATE 0x21C. */
 
 extern int func_00000000();
-extern int D_00000150;
+extern int gInputMgr_00000150;
 
 void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
     *(int*)(a0 + 0x13C) = a1;
@@ -23,7 +23,7 @@ void snd_playSeq_000120A8(char *a0, int a1, int a2, int a3) {
 }
 
 void GameFlow_releaseFiles_00012110(int a0) {
-    func_00000000(D_00000150);
+    func_00000000(gInputMgr_00000150);
     func_00000000(7);
 }
 

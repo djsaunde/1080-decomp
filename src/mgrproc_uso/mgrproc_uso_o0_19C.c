@@ -39,7 +39,7 @@ extern int D_0000014C;
 extern struct { char pad[0x40]; int v; } import_800200D8;   /* state code */
 extern struct { char pad[0x44]; int v; } import_800200DC;
 extern struct { char pad[0x48]; int v; } import_800200E0;
-extern struct { char pad[0x64]; int v; } import_800200FC;
+extern struct { char pad[0x64]; int v; } gInputMgr_800200FC;
 extern struct { char pad[0x68]; int v; } import_80020100;
 extern struct { char pad[0x80]; int v; } import_80020118;
 extern struct { char pad[0x90]; int arr[0x100]; } import_80020128;
@@ -94,15 +94,15 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 break;
             case 4:
                 mgrproc_uso_func_0118E4(import_80020098, import_80073CF0[1]);
-                import_800200FC.v =
+                gInputMgr_800200FC.v =
                     (*(int**)(a0 + 8))[(*(int**)(a0 + 8))[1] + 3];
                 import_80020118.v = import_80020118.v ^ 1;
                 import_80020215.v =
                     (*(int**)(a0 + 8))[(*(int**)(a0 + 8))[1] + 9];
                 import_80020217.v = import_80020128.arr[import_80020215.v];
                 mgrproc_uso_func_0120A8(import_80020098, 4,
-                                        import_800200FC.v, 0);
-                import_000A8094(import_80020098, import_800200FC.v);
+                                        gInputMgr_800200FC.v, 0);
+                import_000A8094(import_80020098, gInputMgr_800200FC.v);
                 v0_save = import_000B34B8(a0, *(int*)a0, 1);
                 node = (int*)MGRRaceProcess_ctor(0, 0x450000, v0_save,
                                                        *(int*)(a0 + 8),

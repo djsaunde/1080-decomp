@@ -27,7 +27,7 @@
  * Spliced over a placeholder on both build paths. */
 typedef float f32; typedef unsigned int u32; typedef int s32;
 extern "C" {
-extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
+extern char gGfxLib_4B2F4_flags, gGfxLib_4B2F4_state, gGfxLib_4B2F4_matrix, D_4B2F4_fixed;
 extern void F_4B2F4_copy(f32 (*)[4], void *);
 extern void F_4B2F4_pack(void *, void *);
 extern u32 F_4B2F4_phys(void *);
@@ -50,10 +50,10 @@ extern "C" void Shadow_display_0004B2F4(char *arg0) {
     u32 *cmd2, *cmd3;
     u32 list;
     s32 *h1;
-    if (W(&D_4B2F4_flags, 0x1C4) & 1) {
-        g = &D_4B2F4_state;
+    if (W(&gGfxLib_4B2F4_flags, 0x1C4) & 1) {
+        g = &gGfxLib_4B2F4_state;
         /* agent-c run 228: b / a / loop on one line (as1 line tie: the b load issues after the a / bound addresses; 98.37 -> 99.36) */
-        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0); for (i = 0; i != 4; i++) {
+        b = *(f32 (**)[4])(g + 0xE4); a = (f32 (*)[4])(&gGfxLib_4B2F4_matrix + 0xA0); for (i = 0; i != 4; i++) {
             for (j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
                 for (k = 0; k < 4; k++) {
@@ -62,7 +62,7 @@ extern "C" void Shadow_display_0004B2F4(char *arg0) {
             }
         }
         F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);
-        g = &D_4B2F4_state;
+        g = &gGfxLib_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         flags = W(g, 0x1F4);
         slot1 = (*(s32 **)(ctx + 0x3C))[1];
@@ -75,7 +75,7 @@ extern "C" void Shadow_display_0004B2F4(char *arg0) {
         cmd1[0] = (((u32)(flags | 2) & 0xFF) << 16) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
-        g = &D_4B2F4_state;
+        g = &gGfxLib_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         h1 = *(s32 **)(ctx + 0xC); slot3 = h1[1]; h1[1] = slot3 + 1;
         cmd2 = (u32 *)(P(P(ctx, 0xC), 0) + slot3 * 8);

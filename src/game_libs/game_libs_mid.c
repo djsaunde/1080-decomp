@@ -107,8 +107,8 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
  * (lw v0,0x34); `register int *obj` keeps it in s1 (no home), and a plain
  * `int *obj` regresses to 85.5% (loses the s1 deref allocation). Plus -O0 temp
  * reg-renumber. Real wrap, correct logic; stays NM. */
-extern int D_00000008, D_0000004C, D_00000050, D_00000064;
-extern unsigned char D_0000017D;
+extern int D_00000008, gInputMgr_0000004C, D_00000050, gInputMgr_00000064;
+extern unsigned char gInputMgr_0000017D;
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled
  * as C++ -- edg emits no closing-brace `b epilogue`, so the "dead-double-b
@@ -125,7 +125,7 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
  * base/obj/scratch held in s0/s1/s2 via `register` locals (the -O0 lever from
  * the 8FFC sibling). &D_00000000+offset addend idiom; builds -O0.
  * 79.85 -> 93.54 (2026-05-31): routed every &D byte/word access through DISTINCT
- * externs (D_00000179/17A/17B/181/182/183 unsigned char + D_0000004C/D_00000064
+ * externs (gInputMgr_00000179/17A/17B/181/182/183 unsigned char + gInputMgr_0000004C/gInputMgr_00000064
  * int, valued at the offset in undefined_syms_auto.txt) so each re-materializes
  * its own lui base — the build was CSE'ing the 3 byte-copies onto one shared base
  * where the target re-materializes per access. The old comment called this the
@@ -133,8 +133,8 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
  * too (same fix as the 8FFC sibling, +13.69pp). RESIDUAL (~6%): only the obj
  * spill-timing/return-from-home -O0 cap remains (target sw v0,0x34 + reload s1 +
  * return-from-home; register int *obj keeps it in s1) — identical to 8FFC. */
-extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
-extern int D_0000004C, D_00000064;
+extern unsigned char gInputMgr_00000179, gInputMgr_0000017A, gInputMgr_0000017B, gInputMgr_00000181, gInputMgr_00000182, gInputMgr_00000183;
+extern int gInputMgr_0000004C, gInputMgr_00000064;
 /* app_createGame_00009100 [-O0 temp-slot CAP, 93.5%]: same class as app_launchNameEnt /
  * app_createGame_00008FFC. obj is correctly `register` (s1) — objdiff reloc-resolves the
  * distinct-extern D_xxx loads so the lbu-0-vs-377 immediates already score matching;
@@ -165,13 +165,13 @@ int app_createGame_000092F4(int a0, int a1) {
 }
 
 /* app_runProcess: -O0 init/dispatch (scalar-only, no struct locals = no
- * frame-offset ceiling). Real direct-global symbols D_w0 (offset 0) / D_w134
+ * frame-offset ceiling). Real direct-global symbols D_w0 (offset 0) / gInputMgr_w134
  * (0x134) give the 2-insn at-macro/fold loads; &D+0x10 base = 3-insn; register
  * vars give the s0/s1/s2 usage. fuzzy=100. */
-extern int D_w0, D_w134;
-/* 2026-05-29: 1-diff cap (lw a0,0 vs lw a0,0x134 on the D_w134 load). D_w134
+extern int D_w0, gInputMgr_w134;
+/* 2026-05-29: 1-diff cap (lw a0,0 vs lw a0,0x134 on the gInputMgr_w134 load). gInputMgr_w134
  * is a direct global at &D+0x134; expected is `lui a0; lw a0,0x134(a0)` (fresh,
- * independent). The placeholder D_w134 (link-resolved) bakes %lo=0 in the .o.
+ * independent). The placeholder gInputMgr_w134 (link-resolved) bakes %lo=0 in the .o.
  * The &D+0x134 ADDEND form (which works for isolated loads, e.g. RaceProcess_finishCourse)
  * REGRESSES here: this function also materializes &D into `base`(s1) for other
  * uses, so IDO CSE-forces a full `lui;addiu;lw 0x134` (extra addiu) instead of the
@@ -193,6 +193,6 @@ void app_runProcess(int a0, int a1, int *a2) {
     *(int *)((char *)obj + 0x14) = (int)p;
     obj = a2;
     gl_func_00000000(D_w0, obj);
-    gl_func_00000000(D_w134);
+    gl_func_00000000(gInputMgr_w134);
     (void)a0;
 }

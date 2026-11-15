@@ -44,7 +44,7 @@ template <class T> inline T *me(T *p) { return p; } /* agent-g run 296: zero-cod
 typedef struct { char pad[0x30]; V4B p; } Cam4B;
 /* the 0x1C4 flag word is a separate blank USO data ref (per-site lui in the target) */
 
-extern "C" Cam4B D_4BAF4_cam;
+extern "C" Cam4B gGfxLib_4BAF4_cam;
 template <class T> inline T idv(T v) { return v; } /* agent-g run 300: zero-code by-value identity inline (one-site wrap sweep) */
 /* agent-c run 402 (kit CDLXXXVI): the B4 x clamp's MAX through a by-value int inline -- its parameter is an edg
  * pool word, so the merge temps move onto the target's v1 / a1 (99.693 -> 99.835) */
@@ -65,12 +65,12 @@ extern "C" void Sprite_display_0004BAF4(char *self) {
      * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681; the else-arm packet as dlS
      * (count = nextP()'s by-value int parameter) and the B4 x MAX through mx4B(): -> 99.894, same length */
 
-    pos.x = F4B(me((Ctx4B *)&D_4BAF4_cam), 0x30, f32);
+    pos.x = F4B(me((Ctx4B *)&gGfxLib_4BAF4_cam), 0x30, f32);
     {
     u32 r;
     char *d;
-    pos.y = D_4BAF4_cam.p.y;
-    pos.z = D_4BAF4_cam.p.z;
+    pos.y = gGfxLib_4BAF4_cam.p.y;
+    pos.z = gGfxLib_4BAF4_cam.p.z;
     if ((d = (char *)gl_func_00000000(GS4B, &pos, 1, out)) == 0) { /* agent-g run 332: live call result in r (kit CDXXII) */
         return;
     }

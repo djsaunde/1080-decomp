@@ -19,7 +19,7 @@
  *    sweep-44de4): the created object is stored through D_2DA4_obj and
  *    re-read at once through D_2DA4_obj_rd (one symbol forwards the stored
  *    v0 instead of the target's `lui a1; lw a1,0(a1)`); the config word is
- *    read through D_2DA4_cfg+4 and stored through D_00000000+4 (one symbol
+ *    read through gPolyGeomMode_3EEC8_2DA4_cfg+4 and stored through D_00000000+4 (one symbol
  *    CSEs the lui).
  *  - calls whose result is unused go through the void alias
  *    func_00000000_2DA4_v: with the int-returning blank, the dead $v0 def
@@ -35,7 +35,7 @@ extern int func_00000000();
 extern void func_00000000_2DA4_v();
 extern char D_000073EC, D_000073F8, D_00007408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
-extern char D_00000000, D_2DA4_cfg;
+extern char D_00000000, gPolyGeomMode_3EEC8_2DA4_cfg;
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 
@@ -54,7 +54,7 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     }
     FW(a1, 0x14) = (int)v1;
     func_00000000_2DA4_v(D_2DA4_obj);
-    v = *(int *)((char *)&D_2DA4_cfg + 4);
+    v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
     v = v | 0x80000 | 0x2000 | 0x20000;
     *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
     switch (arg1) {

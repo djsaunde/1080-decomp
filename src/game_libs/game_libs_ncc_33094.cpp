@@ -1,7 +1,7 @@
 /* IDO 7.1 NCC (C++) donor for MCamera_updateLookAt (0x194 / 101 words): EXACT, REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post.c on both build paths (agent-g run 289; was game_libs_ncc_33094_nm.cpp, NM 94.31).
  * Camera look-at update: eye = o->pos; target = the parent's pos, or o->pos + o->v104 * 10; both scaled by the
- * module vector at USO address 0x128 (D_33094_k), then emitted with the up vector o->v140; two optional calls keyed
+ * module vector at USO address 0x128 (gGfxLib_33094_k), then emitted with the up vector o->v140; two optional calls keyed
  * by o->x130.
  * agent-c run 202: real C++ on the exact 432BC donor's V3 kit (was the run-134 C lift under NCC, 87.65): a = o->pos
  * and b = p->pos through set(f32, f32, f32) (edg evaluates the arguments right to left: the target's z, y, x loads
@@ -28,7 +28,7 @@ struct Obj { char pad[0xA0]; V3 pos; char padAC[0xF4 - 0xAC]; Obj *p; char padF8
 extern "C" {
 extern int gl_func_00000000(...);
 extern void gl_33094_emit(void *, float, float, float, float, float, float, float, float, float);
-extern char D_33094_k[];
+extern char gGfxLib_33094_k[];
 }
 extern "C" int MCamera_updateLookAt(Obj *o) {
     V3 b;
@@ -44,7 +44,7 @@ extern "C" int MCamera_updateLookAt(Obj *o) {
         b += a;
         if (a.y != a.z) {} /* agent-g run 262 (kit CCXCVII priorities): code-free test + the if-arm if (1) colour a = target (x f12 / y f0 / z f2): 93.65 -> 94.20 */
     }
-    V3 *k = (V3 *)D_33094_k;
+    V3 *k = (V3 *)gGfxLib_33094_k;
     a.mul(*k);
     b.mul(*k);
     gl_33094_emit((char *)o + 0xB4, a.x, a.y, a.z, b.x, b.y, b.z, o->v140.x, o->v140.y, o->v140.z);

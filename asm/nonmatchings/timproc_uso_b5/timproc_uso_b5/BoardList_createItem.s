@@ -113,21 +113,21 @@ glabel BoardList_createItem
     /* 00D704 0000D704 8FA50028 */  .word 0x8FA50028
     /* 00D708 0000D708 44800000 */  .word 0x44800000
     /* 00D70C 0000D70C 8E020108 */  .word 0x8E020108
-    lui $t9, %hi(import_8005EE6C)   /* 00D710 3C190000 -> import_8005EE6C */
+    lui $t9, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D710 3C190000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D714 0000D714 3C010008 */  .word 0x3C010008
     /* 00D718 0000D718 E44000BC */  .word 0xE44000BC
     /* 00D71C 0000D71C E44000B8 */  .word 0xE44000B8
     /* 00D720 0000D720 E44000B4 */  .word 0xE44000B4
     /* 00D724 0000D724 8F390004 */  .word 0x8F390004
     /* 00D728 0000D728 244200B4 */  .word 0x244200B4
-    lui $v0, %hi(import_8005EE6C)   /* 00D72C 3C020000 -> import_8005EE6C */
+    lui $v0, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D72C 3C020000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D730 0000D730 8C420004 */  .word 0x8C420004
     /* 00D734 0000D734 03214024 */  .word 0x03214024
     /* 00D738 0000D738 3C01FFF7 */  .word 0x3C01FFF7
     /* 00D73C 0000D73C 3421FFFF */  .word 0x3421FFFF
     /* 00D740 0000D740 00411024 */  .word 0x00411024
     /* 00D744 0000D744 34422000 */  .word 0x34422000
-    lui $at, %hi(import_8005EE6C)   /* 00D748 3C010000 -> import_8005EE6C */
+    lui $at, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D748 3C010000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D74C 0000D74C AC220004 */  .word 0xAC220004
     /* 00D750 0000D750 AFA80030 */  .word 0xAFA80030
     jal import_000A12EC   /* 00D754 0C000000 -> import_000A12EC */
@@ -136,21 +136,21 @@ glabel BoardList_createItem
     jal timproc_uso_b5_func_04DFFC   /* 00D760 0C000000 -> timproc_uso_b5_func_04DFFC */
     /* 00D764 0000D764 00402825 */  .word 0x00402825
     /* 00D768 0000D768 8FA90030 */  .word 0x8FA90030
-    lui $v0, %hi(import_8005EE6C)   /* 00D76C 3C020000 -> import_8005EE6C */
+    lui $v0, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D76C 3C020000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D770 0000D770 11200008 */  .word 0x11200008
     /* 00D774 0000D774 00000000 */  .word 0x00000000
-    lui $v0, %hi(import_8005EE6C)   /* 00D778 3C020000 -> import_8005EE6C */
+    lui $v0, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D778 3C020000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D77C 0000D77C 8C420004 */  .word 0x8C420004
     /* 00D780 0000D780 3C010008 */  .word 0x3C010008
     /* 00D784 0000D784 00411025 */  .word 0x00411025
-    lui $at, %hi(import_8005EE6C)   /* 00D788 3C010000 -> import_8005EE6C */
+    lui $at, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D788 3C010000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D78C 0000D78C 10000007 */  .word 0x10000007
     /* 00D790 0000D790 AC220004 */  .word 0xAC220004
     /* 00D794 0000D794 8C420004 */  .word 0x8C420004
     /* 00D798 0000D798 3C01FFF7 */  .word 0x3C01FFF7
     /* 00D79C 0000D79C 3421FFFF */  .word 0x3421FFFF
     /* 00D7A0 0000D7A0 00411024 */  .word 0x00411024
-    lui $at, %hi(import_8005EE6C)   /* 00D7A4 3C010000 -> import_8005EE6C */
+    lui $at, %hi(gPolyGeomMode_3EEC8_8005EE6C)   /* 00D7A4 3C010000 -> gPolyGeomMode_3EEC8_8005EE6C */
     /* 00D7A8 0000D7A8 AC220004 */  .word 0xAC220004
     /* 00D7AC 0000D7AC C7AA006C */  .word 0xC7AA006C
     /* 00D7B0 0000D7B0 44802000 */  .word 0x44802000

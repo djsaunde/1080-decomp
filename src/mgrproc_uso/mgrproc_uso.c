@@ -318,7 +318,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
  * hoisted `lw a1`. Callees/bases from expected relocs: first 6 calls
  * import_0024F228, last 5 import_0024F278; arg0 of the first call is
  * &import_80263D30; global reads from import_80020100+0x68 (the packed-id low
- * half, cf. D_mgr2940_q.v), import_800200FC+0x64, import_800200EC+0x54.
+ * half, cf. D_mgr2940_q.v), gInputMgr_800200FC+0x64, import_800200EC+0x54.
  * Struct-typing reference: s0 holds registrable sub-objects at 0x6B0, 0x6C8,
  * 0x6E0, 0x6F8, 0x728, 0x740, 0x758, 0x770, 0x788; s0->0x6A8 = a range struct
  * whose [1]=start / [2]=end gate the 0x6E0 id (full range -> 1, else start+2). */
@@ -326,12 +326,12 @@ extern int import_0024F228();
 extern int import_0024F278();
 extern char import_80263D30;
 extern int import_800200EC;
-extern int import_800200FC;
+extern int gInputMgr_800200FC;
 extern char import_80020100;
 void mgr_loadSprites_0000119C(MgrRace *s0) {
     int *q;                  /* the course list: q[1] idx, q[2] count */
     import_0024F228(&import_80263D30, (*(int *)((char *)&import_80020100 + 0x68) - 1) | 0x200000);
-    import_0024F228(&s0->sprites[0], *(int *)((char *)&import_800200FC + 0x64) | 0x000A0000);
+    import_0024F228(&s0->sprites[0], *(int *)((char *)&gInputMgr_800200FC + 0x64) | 0x000A0000);
     import_0024F228(&s0->sprites[1], 0x210000);
     q = (int *)s0->courseList;
     if (q[2] == q[1] + 1) {
@@ -1002,7 +1002,7 @@ void mgr_startEnding_00001BE4(MgrRace *state) {
     mgr_switchToView2_00001A64((int *)state);
     mgrproc_1BE4_call_1B58((int *)state, 0xA0000);
     mgrproc_uso_func_000188(0xB, 0, 0);
-    mgrproc_uso_func_000148(0xB, *(int*)((char*)&import_800200FC + 0x64) - 5, 0);
+    mgrproc_uso_func_000148(0xB, *(int*)((char*)&gInputMgr_800200FC + 0x64) - 5, 0);
     mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 1, 1);
 }
 

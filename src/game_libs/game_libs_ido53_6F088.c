@@ -37,10 +37,10 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 /* TU-DEFINED 2-byte pair (pageSize/relDuration) => the li;li;sb;sb head
  * pair batches under ONE lui $at (extern spelling = one lui per store =
  * 65/64 near-miss). Splice imports the reloc as UNDEF;
- * undefined_syms_auto carries D_00000006_leopgs = 0x00000006 so
+ * undefined_syms_auto carries gl_LeoDiskHandle_00000006_leopgs = 0x00000006 so
  * %lo(pair)+0/+1 link byte-identically to the blanked LeoDiskHandle+6/+7
  * words. Same lever as osCartRomInit (kernel_008_o1_58C0). */
-PgsRls D_00000006_leopgs = {0};
+PgsRls gl_LeoDiskHandle_00000006_leopgs = {0};
 
 OSPiHandle *gl_osLeoDiskInit(void) {
     u32 saveMask;
@@ -49,8 +49,8 @@ OSPiHandle *gl_osLeoDiskInit(void) {
     gl_LeoDiskHandle_leodisk.baseAddress = 0xA5000000; /* PHYS_TO_K1(PI_DOM2_ADDR1) */
     gl_LeoDiskHandle_leodisk.latency = 3;
     gl_LeoDiskHandle_leodisk.pulse = 6;
-    D_00000006_leopgs.pageSize = 6;
-    D_00000006_leopgs.relDuration = 2;
+    gl_LeoDiskHandle_00000006_leopgs.pageSize = 6;
+    gl_LeoDiskHandle_00000006_leopgs.relDuration = 2;
     gl_LeoDiskHandle_leodisk.domain = 1;               /* PI_DOMAIN2 */
     IO_WRITE(0xA4600024, gl_LeoDiskHandle_leodisk.latency);     /* PI_BSD_DOM2_LAT */
     IO_WRITE(0xA4600028, gl_LeoDiskHandle_leodisk.pulse);       /* PI_BSD_DOM2_PWD */

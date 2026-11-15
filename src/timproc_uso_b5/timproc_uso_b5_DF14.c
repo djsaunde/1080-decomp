@@ -57,7 +57,7 @@ extern char timproc_uso_b5_D_807FEFDC[];
 extern char timproc_uso_b5_D_807FEFE8[];
 extern char timproc_uso_b5_D_807FEFF4[];
 extern char import_80087FB8[];
-/* import_8005EE6C aliases (all 0): l1/l2 single reads, s1/s2/s4 store+reload pairs, s7 else-arm store */
+/* gPolyGeomMode_3EEC8_8005EE6C aliases (all 0): l1/l2 single reads, s1/s2/s4 store+reload pairs, s7 else-arm store */
 extern char df14_ee6c_l1, df14_ee6c_l2;
 extern char df14_ee6c_s1, df14_ee6c_s2, df14_ee6c_s4, df14_ee6c_s7;
 #define EE6C_L(s) (*(s32 *)((char *)&s + 4))

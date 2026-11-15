@@ -49,7 +49,7 @@ typedef struct {
 
 extern float gl_ref_00001014_f;  /* 32767.0f */
 extern float gl_ref_00001018_f;  /* 1e-5f */
-extern float gl_ref_00002058_f;  /* 0.017453292f (pi/180) */
+extern float gAudioContext_00002058_f;  /* 0.017453292f (pi/180) */
 
 float Audio_AdsrUpdate(Env *p) {
     unsigned char s = p->state;
@@ -83,7 +83,7 @@ float Audio_AdsrUpdate(Env *p) {
                 p->state = 1;
                 break;
             default:
-                p->cnt = p->cnt * gl_ref_00002058_f;
+                p->cnt = p->cnt * gAudioContext_00002058_f;
                 if (p->cnt == 0) {
                     p->cnt = 1;
                 }

@@ -4,7 +4,7 @@
  * 3B2EC Obj::height and 3B9C0), ported from the run-110..152 cfe body (77.27): the grid lookup through the
  * same inline Obj members toCell(const V3 &, int &, int &) / cellOf() / list() as 3B2EC (the cell-index
  * homes and per-statement self->col reloads come for free), the K triple through its own symbol
- * D_3BE1C_128 (held base, as the target), off computed BEFORE the grp test, the material callback through a
+ * gGfxLib_3BE1C_128 (held base, as the target), off computed BEFORE the grp test, the material callback through a
  * `Col *cc` copy of self->col (off then spills around the call like the target), the 0x100 test as a nested
  * block instead of `continue` (no duplicated loop test), t->a / t->b read before the 0x200 branch, and the
  * edge walk as the cfe do-while with `fv++` inside the condition and the table read `*nx` then `nx++` as
@@ -34,7 +34,7 @@ extern "C" {
 extern char D_00000000[];
 int gl_func_00000000(...);
 extern s16 D_3BE1C_c[];
-extern f32 D_3BE1C_128[];
+extern f32 gGfxLib_3BE1C_128[];
 }
 #define K(o) (*(f32 *)(D_00000000 + (o)))
 struct V3 { f32 x, y, z; };
@@ -99,9 +99,9 @@ int Obj::query(int max, f32 *dist, Tri **out, V3 p) {
     cnt = 0;
     if (cc == 0) return 0;
     if (cc->grid == 0) gl_func_00000000(D_00000000 + 0x1EE9C); /* agent-g run 277: the run-238 folded use of col dropped (inert after the face() change below; kit CCCXXIX prune) */
-    p.x *= D_3BE1C_128[0];
-    p.y *= D_3BE1C_128[1];
-    p.z *= D_3BE1C_128[2];
+    p.x *= gGfxLib_3BE1C_128[0];
+    p.y *= gGfxLib_3BE1C_128[1];
+    p.z *= gGfxLib_3BE1C_128[2];
     cell = cellOf(p, cx, cz);
     if (cell < 0) return 0;
     list = this->list(cell);

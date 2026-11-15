@@ -25,7 +25,7 @@
  *   sym 113 = mem_new, sym 74 = fs_gdlReadFile,
  *   sym 454 = fs_gdlSeekFile (x3), sym 306 = sys_fatal -- all
  *   blank load-time relocs, named through the catch-all gl_func_00000000;
- *   s2 = &import_0005C6E0 (sym 73, pinned 0), s6 = Data +0x2B430 (sym 2).
+ *   s2 = &gSysLib_0005C6E0 (sym 73, pinned 0), s6 = Data +0x2B430 (sym 2).
  *
  * Load-bearing shapes:
  *  - `switch (tag)` with labels -1..4 gives `addiu t7,t6,1; sltiu at,t7,6`;
@@ -46,7 +46,7 @@ typedef struct {
     int unk4;
 } Ctx68990;
 
-extern Ctx68990 import_0005C6E0;
+extern Ctx68990 gSysLib_0005C6E0;
 extern int D_00000000;
 /* the three in-unit readers, called through gl_ref_<section-addr> pins so the
  * link bakes the USO section-relative words 0x0C01F23B / 0x0C01F218 / 0x0C01F24A
@@ -78,15 +78,15 @@ void ImageFile_load_00068990(char *o) {
             break;
         case 4:
             gl_ref_0007C928((int *)(o + 0x2C));
-            if (import_0005C6E0.unk4 == 0) {
+            if (gSysLib_0005C6E0.unk4 == 0) {
                 saved = gl_func_00000000(0);
                 v = gl_func_00000000(*(int *)(o + 0x2C));
                 *(int *)(o + 8) = v;
-                gl_func_00000000(&import_0005C6E0, v, *(int *)(o + 0x2C));
+                gl_func_00000000(&gSysLib_0005C6E0, v, *(int *)(o + 0x2C));
                 gl_func_00000000(saved);
             } else {
-                *(int *)(o + 0x28) = gl_func_00000000(&import_0005C6E0, 1, 0);
-                gl_func_00000000(&import_0005C6E0, 1, *(int *)(o + 0x2C));
+                *(int *)(o + 0x28) = gl_func_00000000(&gSysLib_0005C6E0, 1, 0);
+                gl_func_00000000(&gSysLib_0005C6E0, 1, *(int *)(o + 0x2C));
             }
             break;
         case -1:
@@ -95,7 +95,7 @@ void ImageFile_load_00068990(char *o) {
         case 0:
         case 3:
         default:
-            gl_func_00000000((char *)&D_00000000 + 0x2B430, gl_func_00000000(&import_0005C6E0, 1, 0));
+            gl_func_00000000((char *)&D_00000000 + 0x2B430, gl_func_00000000(&gSysLib_0005C6E0, 1, 0));
             break;
         }
         if (done != 0) break;

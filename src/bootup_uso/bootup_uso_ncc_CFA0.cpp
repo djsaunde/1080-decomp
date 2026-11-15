@@ -23,14 +23,14 @@
 extern "C" {
 char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
-extern char *bu_cfa0_ctx;
-extern int bu_cfa0_flag;
+extern char *gGfxLib_cfa0_ctx;
+extern int gGfxLib_cfa0_flag;
 extern float bu_cfa0_k970;
 extern double bu_cfa0_k978;
 int func_00000000(...);
 void bu_cfa0_v(...);
 }
-#define CTX bu_cfa0_ctx
+#define CTX gGfxLib_cfa0_ctx
 struct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };
 struct V3 { float x, y, z; };
 #define DISPATCH_CFA0(off) { (*(VO **)(st + (off)))->f(); }
@@ -80,7 +80,7 @@ extern "C" void SnowBoarder_display(char *st) {
             bu_cfa0_v(&gGfxLib_cfa0_d, t);
             bu_cfa0_v(st);
             bu_cfa0_v(st);
-            bu_cfa0_flag = 0;
+            gGfxLib_cfa0_flag = 0;
         } else {
           if ((*(int *)(st + 0x8B8) & 0xA) && *(int *)(st + 0xA4C) && !(flg & 0x400)) {
             bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8, dp);
@@ -105,7 +105,7 @@ extern "C" void SnowBoarder_display(char *st) {
                     DISPATCH_CFA0(0x824);
                 }
             }
-            bu_cfa0_flag = 0;
+            gGfxLib_cfa0_flag = 0;
           }
           t = st + 0x8E0;
         }

@@ -6857,7 +6857,7 @@ extern char game_uso_D_807FF340, game_uso_D_807FF24C, game_uso_D_807FEE38,
             game_uso_D_807FF34C, game_uso_D_807FF350, game_uso_D_807FF354,
             game_uso_D_807FF358, game_uso_D_807FEE50, game_uso_D_807FEE68,
             game_uso_D_807FF35C, game_uso_D_807FEE80, game_uso_D_807FF214;
-extern char import_80086288, import_8005EE6C;
+extern char import_80086288, gPolyGeomMode_3EEC8_8005EE6C;
 extern int import_000F5ADC();
 
 void *Sun_ctor(void *arg0) {
@@ -7039,10 +7039,10 @@ node4:;
 tail_init:
     /* Failed sub-object/last-child allocation still reaches this tail. */
     {
-        if (1) { state = (int *)((char *)&import_8005EE6C + 4); } flags = *state;
+        if (1) { state = (int *)((char *)&gPolyGeomMode_3EEC8_8005EE6C + 4); } flags = *state;
         flags &= ~0x00080000;
         flags &= ~2;
-        if (1) { state = (int *)((char *)&import_8005EE6C + 4); } *state = flags;
+        if (1) { state = (int *)((char *)&gPolyGeomMode_3EEC8_8005EE6C + 4); } *state = flags;
     }
     *(float *)((char *)arg0 + 0xC8) = 1.0f;
     game_uso_func_04D3C8(arg0, 2);
@@ -7067,11 +7067,11 @@ end_ret:
  * docs/IDO_CODEGEN.md#easing-gate-and-halfword-b274. */
 #ifdef NON_MATCHING
 /* Sun_display — reconstructed from expected/.o (reloc-aware). s1 base =
- * import_8005C108 cached in a saved register; four double thresholds live in distinct
+ * gGfxLib_8005C108 cached in a saved register; four double thresholds live in distinct
  * rodata symbols game_uso_D_807FFA40/48/50/58 (each at +0x120/0x128/0x130/0x138);
  * destination vec at import_8005C1A8+0xD0..0xD8. Callees: game_uso_func_063734,
  * import_000F8678, game_uso_func_04D700, game_uso_func_05B750. */
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char import_8005C1A8;
 extern char game_uso_D_807FFA40;
 extern char game_uso_D_807FFA48;
@@ -7083,7 +7083,7 @@ extern void game_uso_func_04D700();
 extern void game_uso_func_05B750();
 
 void Sun_display(char *s0) {
-    char *s1 = (char *)(unsigned)&import_8005C108;
+    char *s1 = (char *)(unsigned)&gGfxLib_8005C108;
     char *dst;
     float vec[3];
     float r;
@@ -7238,7 +7238,7 @@ void LensFlareElem_init_0000B710(char *a0) {
  * src->0x00 (+ k * 400 when flag 4; k = the stack float arg, 1.0 unless
  * flag 8); vec at import_8005C1A8+0xD0 = a2 + a3 * f0; obj->0xC0 (short) =
  * src->0x18; if src->0x14 (* k when flag 2) exceeds the double at
- * game_uso_D_807FFA78+0x158: obj->0xB0/0xB4 = it, 05B750(&import_8005C108,
+ * game_uso_D_807FFA78+0x158: obj->0xB0/0xB4 = it, 05B750(&gGfxLib_8005C108,
  * &q) with q = {src->0x04, 0x08, 0x0C, src->0x10 * k}, then obj's third
  * virtual (vptr at +0x28, jalr with this-adjust).
  * EXACT via REPLACE_FUNC_BODY donor splice: the real body is the IDO 7.1 NCC
@@ -7422,7 +7422,7 @@ end_ret:
 //     //   0xA4/0xA8, NOT 0x34/0x38 — the stub's old offsets were wrong).
 //     //   s1 = *import_80087DA8.
 //     // 070F38(&q@sp272, s1->0x70 + 180);          // transform 1
-//     // scale q by 1000.0(0x447A) -> sp192 vec; s0 = *import_8005C108;
+//     // scale q by 1000.0(0x447A) -> sp192 vec; s0 = *gGfxLib_8005C108;
 //     //   071028(...); dot -> f2; neg; if (s3->572 < -dot): lerp
 //     //   t=(-dot - lo)/(1.0 - lo), cvt.d, clamp vs 1.0(D_807FFA88+360),
 //     //   * (s3->544)->200.   SECOND clamp @s3->620 / D_807FFA90.
@@ -7455,7 +7455,7 @@ end_ret:
 //   copies, restoring the integer lw/sw Vec3 copies the target uses. The
 //   reloc set now matches the target EXACTLY (verified objdump -dr: 2x B750
 //   + 070F38/071028/05B750/05B614 R_MIPS_26 + D_807FFA88/90/98 +
-//   import_8005C108/80087DA8 HI16/LO16). Size-gap 252-vs-256 -> 252-vs-244.
+//   gGfxLib_8005C108/80087DA8 HI16/LO16). Size-gap 252-vs-256 -> 252-vs-244.
 //   Residual ~238 non-reloc diffs = genuine IDO FP-regalloc + instruction
 //   scheduling + stack-slot assignment cap (target frame 0x128=296; mine 312
 //   from one extra Vec3 slot the target reuses). Below 80% -> INCLUDE_ASM
@@ -7478,7 +7478,7 @@ end_ret:
 //     //   0xA4/0xA8, NOT 0x34/0x38 — the stub's old offsets were wrong).
 //     //   s1 = *import_80087DA8.
 //     // 070F38(&q@sp272, s1->0x70 + 180);          // transform 1
-//     // scale q by 1000.0(0x447A) -> sp192 vec; s0 = *import_8005C108;
+//     // scale q by 1000.0(0x447A) -> sp192 vec; s0 = *gGfxLib_8005C108;
 //     //   071028(...); dot -> f2; neg; if (s3->572 < -dot): lerp
 //     //   t=(-dot - lo)/(1.0 - lo), cvt.d, clamp vs 1.0(D_807FFA88+360),
 //     //   * (s3->544)->200.   SECOND clamp @s3->620 / D_807FFA90.
@@ -7511,7 +7511,7 @@ end_ret:
 //   copies, restoring the integer lw/sw Vec3 copies the target uses. The
 //   reloc set now matches the target EXACTLY (verified objdump -dr: 2x B750
 //   + 070F38/071028/05B750/05B614 R_MIPS_26 + D_807FFA88/90/98 +
-//   import_8005C108/80087DA8 HI16/LO16). Size-gap 252-vs-256 -> 252-vs-244.
+//   gGfxLib_8005C108/80087DA8 HI16/LO16). Size-gap 252-vs-256 -> 252-vs-244.
 //   Residual ~238 non-reloc diffs = genuine IDO FP-regalloc + instruction
 //   scheduling + stack-slot assignment cap (target frame 0x128=296; mine 312
 //   from one extra Vec3 slot the target reuses). Below 80% -> INCLUDE_ASM
@@ -7537,7 +7537,7 @@ end_ret:
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 extern int import_80087DA8;
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char game_uso_D_807FFA88, game_uso_D_807FFA90, game_uso_D_807FFA98;
 extern void game_uso_func_070F38();
 extern void game_uso_func_05B750();
@@ -7596,9 +7596,9 @@ void game_uso_func_0000BB8C_old_cfe(char *arg0) {
     scaled.y = q[1] * 1000.0f;
     scaled.z = q[2] * 1000.0f;
     tmp = scaled;
-    world.x = tmp.x + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA0)) * (*(f32 *)((char *)&import_8005C108 + 0x128));
-    world.y = tmp.y + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA4)) * (*(f32 *)((char *)&import_8005C108 + 0x12C));
-    world.z = tmp.z + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA8)) * (*(f32 *)((char *)&import_8005C108 + 0x130));
+    world.x = tmp.x + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA0)) * (*(f32 *)((char *)&gGfxLib_8005C108 + 0x128));
+    world.y = tmp.y + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA4)) * (*(f32 *)((char *)&gGfxLib_8005C108 + 0x12C));
+    world.z = tmp.z + (*(f32 *)((char *)FW(temp_v0, 0x70) + 0xA8)) * (*(f32 *)((char *)&gGfxLib_8005C108 + 0x130));
     tmp.x = world.x - q[3];
     temp_f12 = world.z - q[5];
     tmp.y = world.y - q[4];

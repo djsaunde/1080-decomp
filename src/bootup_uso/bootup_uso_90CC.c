@@ -101,12 +101,12 @@ extern char bu_90cc_imp30;  /* +0x30 import ptr in the 0x878 cascade (target 0xA
 /* target 0xAC34-0xAD3C per-site blank globals (each site = own symbol; busts base GCSE).
  * Scalar/array form (not cast-arith) so the lo16 folds into the load offset (lui rd; lw rd,4(rd))
  * and stores go through $at -- matches target's direct-global access shape. */
-extern char bu_90cc_g8_ld, bu_90cc_g8_st;      /* load/store alias pair: same address, distinct syms kill the addr CSE (lui rd/lw + lui at/sw shape) */
+extern char gPolyFlags_3EEC4_90cc_g8_ld, gPolyFlags_3EEC4_90cc_g8_st;      /* load/store alias pair: same address, distinct syms kill the addr CSE (lui rd/lw + lui at/sw shape) */
 
 
 extern s32 bu_90cc_gown;
 extern char gNodeGlobals_90cc_gtbl;
-extern char bu_90cc_gpair;
+extern char gPolyGeomMode_3EEC8_90cc_gpair;
 extern char gGfxLib_90cc_gdev;
 extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
 /* vtable draw slot (+0x5C): trailing two args are single-precision f32.
@@ -151,15 +151,15 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
 /* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
-extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
+extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
-extern u8 bu_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
-extern u8 bu_90cc_d148_18[];
+extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
+extern u8 gGfxLib_90cc_d148_18[];
 extern void bu_90cc_d00_b();  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
-extern BuW90 bu_90cc_gcfg_ld, bu_90cc_gcfg_st, bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
+extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st, gPolyGeomMode_3EEC8_90cc_gcfg_b_ld, gPolyGeomMode_3EEC8_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
-extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, bu_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
+extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void bu_90cc_call_p4d(void *, char *, f64, f32);
 extern void bu_90cc_fz();  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2();  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
@@ -780,7 +780,7 @@ sw_end:
             var_s0 += 0x18;
             *(s32 *)var_s0 &= ~8;
             var_s1 = *(char **)((char *)(arg0) + 0x86C);
-            var_s0 = *(char **)(*(char **)(bu_90cc_dF0 + 0x44) + 0x88);
+            var_s0 = *(char **)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x88);
             func_00000000(var_s0 + 0x10, var_s1);
             if (*(s32 *)((char *)(var_s1) + 0x14) != 0) {
                 *(s32 *)((char *)(var_s1) + 0x4) = 1;
@@ -792,7 +792,7 @@ sw_end:
             if (1) { fq += 6; }
             *fq &= ~8;
             var_s1 = *(char **)((char *)(arg0) + 0x868);
-            var_s0 = *(char **)(*(char **)(bu_90cc_dF0 + 0x44) + 0x84);
+            var_s0 = *(char **)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x84);
             func_00000000(var_s0 + 0x10, var_s1);
             if (*(s32 *)((char *)(var_s1) + 0x14) != 0) {
                 *(s32 *)((char *)(var_s1) + 0x4) = 1;
@@ -900,11 +900,11 @@ sw_end:
         /* target 0xAC34-0xAC98: each global access is its own symbol (fresh lui per
          * site, reload between the |= and &= statements) -- per-site blank aliases
          * bust the m2c &D_00000000 base GCSE that had cached one addiu base reg. */
-        *(s32 *)&bu_90cc_g8_st = *(s32 *)&bu_90cc_g8_ld | 8;
+        *(s32 *)&gPolyFlags_3EEC4_90cc_g8_st = *(s32 *)&gPolyFlags_3EEC4_90cc_g8_ld | 8;
         /* agent-c run 221 (kit CCXXI): the two RMW chains on the dummy-home var_t1 (not the shared var_v1 name)
          * inside do { } while (0) blocks get v0 as the target */
-        do { var_t1 = bu_90cc_gcfg_ld.f04; var_t1 |= 0x20000; bu_90cc_gcfg_st.f04 = var_t1; } while (0);
-        do { var_t1 = bu_90cc_gcfg_b_ld.f04; var_t1 &= 0xFFF7FFFF; var_t1 &= ~2; bu_90cc_gcfg_b_st.f04 = var_t1; } while (0);
+        do { var_t1 = gPolyGeomMode_3EEC8_90cc_gcfg_ld.f04; var_t1 |= 0x20000; gPolyGeomMode_3EEC8_90cc_gcfg_st.f04 = var_t1; } while (0);
+        do { var_t1 = gPolyGeomMode_3EEC8_90cc_gcfg_b_ld.f04; var_t1 &= 0xFFF7FFFF; var_t1 &= ~2; gPolyGeomMode_3EEC8_90cc_gcfg_b_st.f04 = var_t1; } while (0);
         bu_90cc_gown = (s32) arg0;
         for (sp58 = 0; sp58 != 0x23; sp58++) {
             var_a2 = sp58;
@@ -913,15 +913,15 @@ sw_end:
             }
             *(s32 *)((char *)&gNodeGlobals_90cc_gtbl + var_a2 * 4) = 0;
         }
-        *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
-        *(s32 *)&bu_90cc_gpair = 0;
+        *(s32 *)((char *)&gPolyGeomMode_3EEC8_90cc_gpair + 4) = 0x2A003;
+        *(s32 *)&gPolyGeomMode_3EEC8_90cc_gpair = 0;
         *(char **)((char *)(arg0) + 0x8F4) = func_00000000(&gGfxLib_90cc_gdev, 1, 0);
         *(char **)((char *)(arg0) + 0x8F8) = func_00000000(&gGfxLib_90cc_gdev, 2, 0);
         *(char **)((char *)(arg0) + 0x8FC) = func_00000000(&gGfxLib_90cc_gdev, 3, 0);
         if (sp174 != 0) {
             temp_v0_5 = (char *)bu_90cc_fz2; /* target lui v1 / addiu v0,v1,0 (blank) then lw 0(v0): fn-typed base */
             if (*(s32 *)temp_v0_5 != 0) {
-                temp_s1_8 = (char *)(bu_90cc_d148_01 + 24);
+                temp_s1_8 = (char *)(gGfxLib_90cc_d148_01 + 24);
                 cg = *(s32 *)(char *)bu_90cc_d00_b; do { /* run 227: cg's load on the `do` line = as1 issues it after the d148 address */
                     if (arg2 == cg) {
                         /* (temp_v0_5->unk4 * 4)->unk160 store: scaled-index table write */
@@ -933,7 +933,7 @@ sw_end:
                 } while (cg != 0);
             }
         } else {
-            { s32 i; for (i = 0; i < 3; i++) ((s32 *)bu_90cc_d148_18)[i] = 0; }
+            { s32 i; for (i = 0; i < 3; i++) ((s32 *)gGfxLib_90cc_d148_18)[i] = 0; }
         }
         if (*(s32 *)((char *)(arg0) + 0xA58) & 8) {
             func_00000000(arg0);
@@ -1034,7 +1034,7 @@ sw_end:
         var_s0 = (char *)gNodeGlobals_90cc_d44_09.f14;
         *(s32 *)((char *)(arg0) + 0x874) = (s32)var_s0;
 
-        *(char **)((char *)(arg0) + 0x804) = func_00000000(0, arg0, bu_90cc_d44_10.f24);
+        *(char **)((char *)(arg0) + 0x804) = func_00000000(0, arg0, gInputMgr_90cc_d44_10.f24);
         func_00000000(arg0);
     }
     return arg0;

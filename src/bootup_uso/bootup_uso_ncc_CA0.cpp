@@ -11,7 +11,7 @@
  * reorders inside one source-line (.loc) group, and with set(h, nh, h) on a
  * single line it issued the nh store (+0x32) before the h store (+0x30).
  * Symbols renamed after compile (names only): __ct__1DFiN21 -> BGBox_ctor,
- * __ct__1BFPc -> func_00000000_ca0_base, __vtbl__1D -> bu_ca0_desc.
+ * __ct__1BFPc -> func_00000000_ca0_base, __vtbl__1D -> BGBox_vtbl_ca0_desc.
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-g run 150). */
 extern "C" {
 void *func_00000000(...);

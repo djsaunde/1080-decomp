@@ -14,9 +14,9 @@ extern char D_0000C65C;
 extern char D_0000C694;
 /* Two module-external word reads whose baked LO16 fields are 0x34 / 0x40
  * (splat mislabeled them func_00000008+0x2C / +0x38). Bare-symbol reads via
- * undefined_syms_auto.txt entries, same recipe as D_8AE4_mode (= 0x34). */
-extern int D_bu_116C8_34;
-extern int D_bu_116C8_40;
+ * undefined_syms_auto.txt entries, same recipe as gInputMgr_8AE4_mode (= 0x34). */
+extern int gInputMgr_bu_116C8_34;
+extern int gInputMgr_bu_116C8_40;
 
 typedef int (*FN116C8)();
 
@@ -26,7 +26,7 @@ typedef int (*FN116C8)();
  * Key -O0 shapes: (1) `D_00000000 = 0;` as a DIRECT global store emits the
  * $at-fused single-lui form (lui at / sw zero, 0(at)); the `*(int*)&D` cast
  * spelling emits lui/addiu/sw through a temp (+1 word). (2) the 3-arg call's
- * a1/a2 must be DIRECT bare-symbol reads (D_bu_116C8_34/_40) — spelling them
+ * a1/a2 must be DIRECT bare-symbol reads (gInputMgr_bu_116C8_34/_40) — spelling them
  * as *(int*)(&D+0x34) lets cfe DAG-share &D across all three args (move
  * a0,t7 + folded lws), losing the per-arg lui pairs. (3) both vtable
  * dispatches embed the register-var assignment in the CALL ARG
@@ -52,7 +52,7 @@ void GameFlow_restart_000116C8(void) {
     func_00000000(&gSnowBoard);
     func_00000000();
     func_00000000(&D_0000C65C);
-    func_00000000(&gInputMgr, D_bu_116C8_34, D_bu_116C8_40);
+    func_00000000(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
     (*(FN116C8)*(int *)(p + 0x14))(
         *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x10) + (int)&gSnowBoard);
     p = (char *)&local;

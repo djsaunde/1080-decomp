@@ -6,7 +6,7 @@
  * obj->0xC0 (short), and if src->0x14 (* k when flag 2) exceeds the double
  * at game_uso_D_807FFA78 + 0x158, stores it to obj->0xB0/0xB4, builds a
  * 4-float temporary (src->0x04, 0x08, 0x0C, src->0x10 * k), passes it to
- * 05B750(&import_8005C108, &q) and calls obj's third virtual (vptr at +0x28).
+ * 05B750(&gGfxLib_8005C108, &q) and calls obj's third virtual (vptr at +0x28).
  *
  * C++ facts this body depends on (cfe capped at 72.8%):
  *  - k IS the parameter (`arg4 = 1.0f`): the param is re-loaded from its
@@ -28,7 +28,7 @@ struct Q {
     Q(float a, float b, float c, float d) { set(a, b, c, d); }
 };
 extern "C" {
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char import_8005C1A8;
 extern char game_uso_D_807FFA78;
 void game_uso_func_05B750(void *, Q *);
@@ -49,7 +49,7 @@ extern "C" void LensFlareElem_draw_0000B750(char *a0, char *s0, float *a2, float
         AT(float, s0, 0xB0) = v;
         AT(float, s0, 0xB4) = v;
         Q q(AT(float, a0, 0x04), AT(float, a0, 0x08), AT(float, a0, 0x0C), AT(float, a0, 0x10) * arg4);
-        game_uso_func_05B750(&import_8005C108, &q);
+        game_uso_func_05B750(&gGfxLib_8005C108, &q);
         ((V *)s0)->m2();
     }
 }

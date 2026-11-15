@@ -1937,7 +1937,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 5280
 },
 {
@@ -1974,7 +1974,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 5456
 },
 {
@@ -2011,7 +2011,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 5572
 },
 {
@@ -2284,7 +2284,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6528
 },
 {
@@ -2292,7 +2292,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6528
 },
 {
@@ -2353,7 +2353,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6724
 },
 {
@@ -2361,7 +2361,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6724
 },
 {
@@ -2422,7 +2422,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6924
 },
 {
@@ -2430,7 +2430,7 @@
 "kind": "hi16",
 "resolved": 2147614972,
 "class": "import",
-"name": "import_800200FC",
+"name": "gInputMgr_800200FC",
 "lo_off": 6924
 },
 {
@@ -8601,7 +8601,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 37512
 },
 {
@@ -8609,7 +8609,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 37524
 },
 {
@@ -8816,7 +8816,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 37972
 },
 {
@@ -8824,7 +8824,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 37972
 },
 {
@@ -8832,7 +8832,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 37992
 },
 {
@@ -8840,7 +8840,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 38016
 },
 {
@@ -9396,7 +9396,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 39772
 },
 {
@@ -9404,7 +9404,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 39784
 },
 {
@@ -9450,7 +9450,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 39996
 },
 {
@@ -9458,7 +9458,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 39996
 },
 {
@@ -9466,7 +9466,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 40016
 },
 {
@@ -9474,7 +9474,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 40040
 },
 {
@@ -9765,7 +9765,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 40920
 },
 {
@@ -9773,7 +9773,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 40932
 },
 {
@@ -9819,7 +9819,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 41144
 },
 {
@@ -9827,7 +9827,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 41144
 },
 {
@@ -9835,7 +9835,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 41164
 },
 {
@@ -9843,7 +9843,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 41188
 },
 {
@@ -10402,7 +10402,7 @@
 "kind": "hi16",
 "resolved": 2147860744,
 "class": "import",
-"name": "import_8005C108",
+"name": "gGfxLib_8005C108",
 "lo_off": 45708
 },
 {
@@ -11455,7 +11455,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54140
 },
 {
@@ -11463,7 +11463,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54152
 },
 {
@@ -11479,7 +11479,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54204
 },
 {
@@ -11517,7 +11517,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54356
 },
 {
@@ -11525,7 +11525,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54356
 },
 {
@@ -11533,7 +11533,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54376
 },
 {
@@ -11541,7 +11541,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 54400
 },
 {
@@ -11741,7 +11741,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55076
 },
 {
@@ -11749,7 +11749,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55088
 },
 {
@@ -11757,7 +11757,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55116
 },
 {
@@ -11779,7 +11779,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55164
 },
 {
@@ -11787,7 +11787,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55164
 },
 {
@@ -11795,7 +11795,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55184
 },
 {
@@ -11803,7 +11803,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55208
 },
 {
@@ -11989,7 +11989,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55896
 },
 {
@@ -11997,7 +11997,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55908
 },
 {
@@ -12005,7 +12005,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55932
 },
 {
@@ -12013,7 +12013,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55940
 },
 {
@@ -12021,7 +12021,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55960
 },
 {
@@ -12029,7 +12029,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55960
 },
 {
@@ -12037,7 +12037,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55980
 },
 {
@@ -12045,7 +12045,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 55980
 },
 {
@@ -12053,7 +12053,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 56004
 },
 {
@@ -12423,7 +12423,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 56844
 },
 {
@@ -12431,7 +12431,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 56844
 },
 {
@@ -12439,7 +12439,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 56864
 },
 {
@@ -12447,7 +12447,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 56888
 },
 {
@@ -12633,7 +12633,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57584
 },
 {
@@ -12641,7 +12641,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57596
 },
 {
@@ -12649,7 +12649,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57620
 },
 {
@@ -12657,7 +12657,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57628
 },
 {
@@ -12665,7 +12665,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57648
 },
 {
@@ -12673,7 +12673,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57648
 },
 {
@@ -12681,7 +12681,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57668
 },
 {
@@ -12689,7 +12689,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57668
 },
 {
@@ -12697,7 +12697,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 57692
 },
 {
@@ -13067,7 +13067,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 58532
 },
 {
@@ -13075,7 +13075,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 58532
 },
 {
@@ -13083,7 +13083,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 58552
 },
 {
@@ -13091,7 +13091,7 @@
 "kind": "hi16",
 "resolved": 2147872364,
 "class": "import",
-"name": "import_8005EE6C",
+"name": "gPolyGeomMode_3EEC8_8005EE6C",
 "lo_off": 58576
 },
 {

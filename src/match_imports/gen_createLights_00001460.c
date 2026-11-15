@@ -24,7 +24,7 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)(o + 0xD0) = 1;
     o = *(char **)(arg0 + 0x38);
     retA[0] = white;
-    timproc_uso_b5_func_062880(&import_8005C108, o);
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, o);
     o = *(char **)(arg0 + 0x38);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -39,7 +39,7 @@ void gen_createLights_00001460(char *arg0) {
     *(float *)(o + 0x130) = 1.0f;
     o = *(char **)(arg0 + 0x3C);
     *(int *)(o + 0xD0) = 2;
-    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x3C));
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x3C));
     o = *(char **)(arg0 + 0x3C);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -60,7 +60,7 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x40);
     *(int *)(o + 0xD0) = 4;
-    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x40));
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x40));
     o = *(char **)(arg0 + 0x40);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {

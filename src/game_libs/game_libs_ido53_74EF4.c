@@ -35,7 +35,7 @@
  *     -> osCreateViManager_text pin = 0x00089560 (bakes 0x896E8, the
  *     USO's original-link address of viMgrMain, same story as _Ldtob's
  *     jal 0x87F70);
- *   - gl_viDevMgr symbol relocs -> pin = 0 (USO .data offset 0);
+ *   - gl___osViDevMgr_site symbol relocs -> pin = 0 (USO .data offset 0);
  *   - imported kernel data (__osViIntrCount/__osCurrentTime/
  *     __osBaseCounter) and all jals: blank USO relocs -> pins = 0.
  * Spliced into game_libs_post2b_f.c.o via REPLACE_FUNC_BODY. */
@@ -59,10 +59,10 @@ typedef struct {
 
 /* __osViDevMgr: DEFINED in-TU (structural key #2 above); the splice
  * imports the symbol reloc, pinned = 0 in undefined_syms_auto.txt */
-OSDevMgr gl_viDevMgr = {0};
+OSDevMgr gl___osViDevMgr_site = {0};
 /* imported kernel data (blank USO relocs, resolve to 0) */
 extern u32 gl_viIntrCount;           /* __osViIntrCount */
-extern OSTime gl_CurrentTime;        /* __osCurrentTime */
+extern OSTime gl___osCurrentTime_site;        /* __osCurrentTime */
 extern u32 gl_BaseCounter;           /* __osBaseCounter */
 
 /* imported functions (blank USO jals, resolve to 0) */
@@ -97,7 +97,7 @@ void osCreateViManager(OSPri pri)
     u32 savedMask;
     OSPri oldPri;
     OSPri myPri;
-    if (gl_viDevMgr.active == 0)
+    if (gl___osViDevMgr_site.active == 0)
     {
         gl_func_00000000_tsvcinit();
         gl_func_00000000_crmq(&viEventQueue, viEventBuf, 5);
@@ -117,14 +117,14 @@ void osCreateViManager(OSPri pri)
             gl_func_00000000_setpri(NULL, pri);
         }
         savedMask = gl_func_00000000_dint();
-        gl_viDevMgr.active = 1;
-        gl_viDevMgr.thread = &viThread;
-        gl_viDevMgr.cmdQueue = &viEventQueue;
-        gl_viDevMgr.evtQueue = &viEventQueue;
-        gl_viDevMgr.acsQueue = NULL;
-        gl_viDevMgr.dma = NULL;
-        gl_viDevMgr.edma = NULL;
-        gl_func_00000000_crth(&viThread, 0, viMgrMain, &gl_viDevMgr, &viThreadStack[OS_VIM_STACKSIZE], pri);
+        gl___osViDevMgr_site.active = 1;
+        gl___osViDevMgr_site.thread = &viThread;
+        gl___osViDevMgr_site.cmdQueue = &viEventQueue;
+        gl___osViDevMgr_site.evtQueue = &viEventQueue;
+        gl___osViDevMgr_site.acsQueue = NULL;
+        gl___osViDevMgr_site.dma = NULL;
+        gl___osViDevMgr_site.edma = NULL;
+        gl_func_00000000_crth(&viThread, 0, viMgrMain, &gl___osViDevMgr_site, &viThreadStack[OS_VIM_STACKSIZE], pri);
         gl_func_00000000_viinit();
         gl_func_00000000_stth(&viThread);
         gl_func_00000000_rint(savedMask);
@@ -170,13 +170,13 @@ static void viMgrMain(void *arg)
             {
 
                 count = gl_func_00000000_getcount();
-                gl_CurrentTime = count;
+                gl___osCurrentTime_site = count;
                 first = 0;
             }
             count = gl_BaseCounter;
             gl_BaseCounter = gl_func_00000000_getcount();
             count = gl_BaseCounter - count;
-            gl_CurrentTime = gl_CurrentTime + count;
+            gl___osCurrentTime_site = gl___osCurrentTime_site + count;
             break;
         case OS_MESG_TYPE_COUNTER:
             gl_func_00000000_tint();

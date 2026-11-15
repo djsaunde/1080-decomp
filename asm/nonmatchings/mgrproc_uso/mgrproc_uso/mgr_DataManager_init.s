@@ -57,7 +57,7 @@ glabel mgr_DataManager_init
     /* 002FC4 00002FC4 24060026 */  .word 0x24060026
     jal import_000B8F68   /* 002FC8 0C000000 -> import_000B8F68 */
     /* 002FCC 00002FCC 24E70028 */  .word 0x24E70028
-    lui $t3, %hi(import_800200FC)   /* 002FD0 3C0B0000 -> import_800200FC */
+    lui $t3, %hi(gInputMgr_800200FC)   /* 002FD0 3C0B0000 -> gInputMgr_800200FC */
     /* 002FD4 00002FD4 8D6B0064 */  .word 0x8D6B0064
     /* 002FD8 00002FD8 8E09004C */  .word 0x8E09004C
     /* 002FDC 00002FDC 00002825 */  .word 0x00002825

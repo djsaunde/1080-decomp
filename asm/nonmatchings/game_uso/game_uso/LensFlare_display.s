@@ -47,7 +47,7 @@ glabel LensFlare_display
     /* 00BC38 0000BC38 8E220000 */  .word 0x8E220000
     /* 00BC3C 0000BC3C 460E3302 */  .word 0x460E3302
     /* 00BC40 0000BC40 E7A000C0 */  .word 0xE7A000C0
-    lui $s0, %hi(import_8005C108)   /* 00BC44 3C100000 -> import_8005C108 */
+    lui $s0, %hi(gGfxLib_8005C108)   /* 00BC44 3C100000 -> gGfxLib_8005C108 */
     /* 00BC48 0000BC48 26100000 */  .word 0x26100000
     /* 00BC4C 0000BC4C E7A200C4 */  .word 0xE7A200C4
     /* 00BC50 0000BC50 C6060128 */  .word 0xC6060128

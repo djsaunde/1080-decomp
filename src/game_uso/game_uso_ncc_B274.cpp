@@ -24,7 +24,7 @@
  * Spliced into the NON_MATCHING object only; the ROM keeps INCLUDE_ASM.
  * docs/IDO_CODEGEN.md#kit-xxiii-agent-g-run-120. */
 extern "C" {
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char import_8005C1A8;
 extern char D_B274_t0, D_B274_t1, D_B274_t2, D_B274_t3;
 }
@@ -43,7 +43,7 @@ void game_uso_func_05B750(Glob *, void *);
 }
 extern "C" void Sun_display(Self *self) {
     V3 v;
-    int gi = (int)&import_8005C108; Glob *g = (Glob *)gi;
+    int gi = (int)&gGfxLib_8005C108; Glob *g = (Glob *)gi;
     int di = (int)&import_8005C1A8 + 0xA0;
     float r;
     if (DBL(D_B274_t0, 0x120) < g->prog) return;

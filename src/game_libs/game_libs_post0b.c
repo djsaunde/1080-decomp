@@ -5762,7 +5762,7 @@ typedef struct {
     char pad64[4]; FaceBE *faces; char pad6c[0x34]; GridBE *grid;
 } ColBE;
 typedef struct { char pad0[0x2C]; TriBE *tris; char pad30[0x54]; ColBE *col; } ObjBE;
-extern f32 D_3BE1C_128[];
+extern f32 gGfxLib_3BE1C_128[];
 extern char D_3BE1C_1EE9C[];
 #define MAXS(a, b) ((a) > (b) ? (s16)(a) : (s16)(b))
 #define MINS(a, b) ((a) < (b) ? (s16)(a) : (s16)(b))
@@ -5817,9 +5817,9 @@ s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     if (col->grid == 0) {
         gl_func_00000000((char *)&D_00000000 + 0x1EE9C);
     }
-    p.x *= D_3BE1C_128[0];
-    p.y *= D_3BE1C_128[1];
-    p.z *= D_3BE1C_128[2];
+    p.x *= gGfxLib_3BE1C_128[0];
+    p.y *= gGfxLib_3BE1C_128[1];
+    p.z *= gGfxLib_3BE1C_128[2];
     c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
     c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
     if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
@@ -15029,7 +15029,7 @@ int *Shadow_ctor_0004B0A8(int *arg0, char *arg1) {
  * #if 0 below; the function body after it is a placeholder for the splice.
  */
 #if 0
-extern char D_4B2F4_flags, D_4B2F4_state, D_4B2F4_matrix, D_4B2F4_fixed;
+extern char gGfxLib_4B2F4_flags, gGfxLib_4B2F4_state, gGfxLib_4B2F4_matrix, D_4B2F4_fixed;
 extern void F_4B2F4_copy(f32 (*)[4], void *);
 extern void F_4B2F4_pack(void *, void *);
 extern u32 F_4B2F4_phys(void *);
@@ -15052,10 +15052,10 @@ void game_libs_func_0004B2F4_old_cfe(char *arg0) {
     u32 list;
     /* IDO retains arg0's address-taken stack home; no emitted call. */
     if (0) F_4B2F4_list(&arg0);
-    if (W(&D_4B2F4_flags, 0x1C4) & 1) {
-        g = &D_4B2F4_state;
+    if (W(&gGfxLib_4B2F4_flags, 0x1C4) & 1) {
+        g = &gGfxLib_4B2F4_state;
         b = *(f32 (**)[4])(g + 0xE4);
-        a = (f32 (*)[4])(&D_4B2F4_matrix + 0xA0);
+        a = (f32 (*)[4])(&gGfxLib_4B2F4_matrix + 0xA0);
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
@@ -15065,7 +15065,7 @@ void game_libs_func_0004B2F4_old_cfe(char *arg0) {
             }
         }
         F_4B2F4_copy(mtx, &D_4B2F4_fixed + 0x3C8A0);
-        g = &D_4B2F4_state;
+        g = &gGfxLib_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         flags = W(g, 0x1F4);
         slot1 = (*(s32 **)(ctx + 0x3C))[1]++; if (1) {}
@@ -15078,7 +15078,7 @@ void game_libs_func_0004B2F4_old_cfe(char *arg0) {
         cmd1[0] = ((((u32)flags & 0xFF) << 8) << 8) | 0x01000000 | 0x40;
         cmd1[1] = F_4B2F4_phys(fixed);
         if (ctx) {} /* run 144: block split (98.15 -> 98.23, 203 words) */
-        g = &D_4B2F4_state;
+        g = &gGfxLib_4B2F4_state;
         ctx = P(P(g, 0x254), 0x158);
         slot3 = (*(s32 **)(ctx + 0xC))[1];
         (*(s32 **)(ctx + 0xC))[1] = slot3 + 1;
@@ -15351,7 +15351,7 @@ typedef struct { char pad[0x20]; s16 w; s16 h; char pad24[0x40]; char *dl64; } S
 typedef struct { char pad[0x30]; V4B p; } Cam4B;
 /* the 0x1C4 flag word is a separate blank USO data ref (per-site lui in the target) */
 extern int gGfxLib_4BAF4_flags;
-extern Cam4B D_4BAF4_cam; /* pinned at 0xA0 (blank USO data ref, base held in a register) */
+extern Cam4B gGfxLib_4BAF4_cam; /* pinned at 0xA0 (blank USO data ref, base held in a register) */
 void Sprite_display_0004BAF4(char *self) {
     V4B pos;
     f32 out[17];
@@ -15373,7 +15373,7 @@ void Sprite_display_0004BAF4(char *self) {
     u32 r;
 
     {
-        Cam4B *cam = &D_4BAF4_cam;
+        Cam4B *cam = &gGfxLib_4BAF4_cam;
         pos.x = cam->p.x;
         pos.y = cam->p.y;
         pos.z = cam->p.z;
@@ -15460,7 +15460,7 @@ void Sprite_display_0004BAF4(char *self) {
 #else
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4BAF4.cpp (agent-c run 157 lift, agent-c run 405
  * exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above (kept as the C reference) in
- * both build trees; the blank USO data refs stay pinned (D_4BAF4_cam = 0xA0, gGfxLib_4BAF4_flags = 0). */
+ * both build trees; the blank USO data refs stay pinned (gGfxLib_4BAF4_cam = 0xA0, gGfxLib_4BAF4_flags = 0). */
 void Sprite_display_0004BAF4(char *self) {
 }
 #endif
@@ -18997,8 +18997,8 @@ def:
 extern char ShapeNode_vtbl_521F8_reloc;        /* offset 0x28 store target */
 typedef struct { int w; } W1_521F8;
 typedef struct { int a, b; } W2_521F8;
-extern W1_521F8 D_521F8_a;
-extern W2_521F8 D_521F8_b;
+extern W1_521F8 gPolyFlags_3EEC4_521F8_a;
+extern W2_521F8 gPolyGeomMode_3EEC8_521F8_b;
 extern int D_521F8_c;
 char *ShapeNode_ctor_000521F8(char *o, int a1) {
     W1_521F8 *r;
@@ -19022,8 +19022,8 @@ char *ShapeNode_ctor_000521F8(char *o, int a1) {
         ((W2_521F8 *)r)->a = 0;
     }
     *(int *)(o + 8) |= 2;
-    *(W1_521F8 *)(o + 48) = D_521F8_a;
-    *(W2_521F8 *)(o + 52) = D_521F8_b;
+    *(W1_521F8 *)(o + 48) = gPolyFlags_3EEC4_521F8_a;
+    *(W2_521F8 *)(o + 52) = gPolyGeomMode_3EEC8_521F8_b;
     *(int *)(o + 0x3C) = D_521F8_c;
     *(int *)(o + 0x2C) = 0;
 out:
@@ -19215,20 +19215,20 @@ void ShapeNode_func_000525F0(int *self, int *target) {
  * only a single-expression chain folds to `ori 0xA001`. The local then owns
  * v0, pushing the first base (two zero stores) into v1 -- an empty
  * `if (1) {}` after those stores (BB lever, cf 3EDBC) frees v0 for it. */
-extern int D_52674_a[2], D_52674_b[2], D_52674_c, D_52674_d[2], D_52674_e, D_52674_f, D_52674_g;
+extern int gPolyGeomMode_3EEC8_52674_a[2], gPolyGeomMode_3EEC8_52674_b[2], gPolyFlags_3EEC4_52674_c, gPolyGeomMode_3EEC8_52674_d[2], gPolyFlags_3EEC4_52674_e, D_52674_f, D_52674_g;
 void BasePolyShape_func_00052674(void) {
     int v;
-    D_52674_a[1] = 0;
-    D_52674_a[0] = 0;
+    gPolyGeomMode_3EEC8_52674_a[1] = 0;
+    gPolyGeomMode_3EEC8_52674_a[0] = 0;
     if (1) {
     }
-    v = D_52674_b[1];
+    v = gPolyGeomMode_3EEC8_52674_b[1];
     v |= 0x2000;
     v |= 1;
     v |= 0x8000;
     v |= 0x20000;
-    D_52674_d[1] = v;
-    D_52674_e = D_52674_c | 1;
+    gPolyGeomMode_3EEC8_52674_d[1] = v;
+    gPolyFlags_3EEC4_52674_e = gPolyFlags_3EEC4_52674_c | 1;
     D_52674_f = 0;
     D_52674_g = 0;
 }

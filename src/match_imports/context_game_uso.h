@@ -878,10 +878,10 @@ extern char game_uso_D_807FF340, game_uso_D_807FF24C, game_uso_D_807FEE38,
             game_uso_D_807FF34C, game_uso_D_807FF350, game_uso_D_807FF354,
             game_uso_D_807FF358, game_uso_D_807FEE50, game_uso_D_807FEE68,
             game_uso_D_807FF35C, game_uso_D_807FEE80, game_uso_D_807FF214;
-extern char import_80086288, import_8005EE6C;
+extern char import_80086288, gPolyGeomMode_3EEC8_8005EE6C;
 extern int import_000F5ADC();
 void *Sun_ctor(void *arg0);
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern GL470E4Self game_uso_B274_context[];
 extern char import_8005C1A8;
 extern char game_uso_D_807FFA40;
@@ -984,7 +984,7 @@ typedef struct {
     char pad_B8[8];
     short field_C0;
 } GameB750Destination;
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char import_8005C1A8;
 extern char game_uso_D_807FFA78;
 extern void game_uso_color_05B750(char *, const float *);
@@ -1003,7 +1003,7 @@ extern char game_uso_D_807FF2D8;
 extern char D_B8D4_st2, D_B8D4_st3;
 void *LensFlare_create(void *arg0, int arg1, int arg2);
 extern int import_80087DA8;
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char game_uso_D_807FFA88, game_uso_D_807FFA90, game_uso_D_807FFA98;
 extern void game_uso_func_070F38();
 extern void game_uso_func_05B750();

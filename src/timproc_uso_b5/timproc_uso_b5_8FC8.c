@@ -39,7 +39,7 @@ extern char import_80020098; extern char import_800200CC;
 extern char *SelItemParms_ctor(); extern char *SelItemInfo_ctor(); extern char *SelItem_reset_00003890();
 typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 extern char timproc_uso_b5_D_807FDB64;
-extern char import_8005EE6C;
+extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char f8fc8_ee6c_r3; /* site-3 flag-restore store: separate symbol keeps the address un-CSE'd */
 extern char import_80807FB8;
 extern struct DBlk_8D38 import_800201EC;
@@ -197,7 +197,7 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
  * so it is coloured with an already-paid s0 instead of v1 + spill/reload around the call */
 #define ATTACH(P, W, I) { for (I = 0; I < FW(W, 0x13C); I++) { P = FP(W, 0x148 + I * 4); timproc_uso_b5_func_04DFFC(W, P); { P = FP(W, 0x148 + I * 4) + 0x18; *(int *)P &= ~4; } if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}  } }
 #define ATTACH1(P, W) { for (i1 = 0; i1 < FW(W, 0x13C); i1++) { timproc_uso_b5_func_04DFFC(W, FP(W, 0x148 + i1 * 4)); { P = FP(W, 0x148 + i1 * 4) + 0x18; *(int *)P &= ~4; } } }
-#define RESTORE(SB) if (SB) { do {   _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&import_8005EE6C, 4) = _x; } while (0); } else { do {   _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
+#define RESTORE(SB) if (SB) { do {   _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x |= 0x80000; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); } else { do {   _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); }
 #define WTAIL(W, F0, F1, F2, F3, F4, F5, F6) FF(W, 0xDC) = F0; FF(W, 0xE0) = 720.0f; FF(W, 0xE4) = -220.0f; \
     FF(W, 0x10C) = F1; FF(W, 0x110) = F2; FF(W, 0x114) = F3; FF(W, 0x11C) = 0.0f; FW(W, 0x134) = 0; FF(W, 0x120) = F4; FF(W, 0x124) = 1.0f; FF(W, 0x12C) = F5; FF(W, 0x128) = F6;
 typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
@@ -251,7 +251,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
                 SETI(t, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
-                sb1 = FW(f8fc8_ee6c_sb1, 4) & 0x80000; { _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; _x &= ~1; _x &= 0xFFFDFFFF; _x |= 0x2000; _x &= ~2; FW(import_800664C4, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_808064C4 + 0x13C0, import_807664C4, 0), FP(w, 0x14C) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0), FP(w, 0x150) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0), FP(w, 0x154) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FC314 + 0x13E4, import_8076C314, 0), FP(w, 0x158) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FE284 + 0x13F0, import_8076E284, 0), FP(w, 0x15C) = timproc_uso_b5_func_05D0E0(0, import_808001F4 + 0x13FC, import_807701F4, 0), FP(w, 0x160) = timproc_uso_b5_func_05D0E0(0, import_80802164 + 0x1408, import_80772164, 0), FP(w, 0x164) = timproc_uso_b5_func_05D0E0(0, import_808040D4 + 0x1414, import_807740D4, 0); FW(w, 0x13C) = 8; if (1) {}
+                sb1 = FW(f8fc8_ee6c_sb1, 4) & 0x80000; { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; _x &= ~1; _x &= 0xFFFDFFFF; _x |= 0x2000; _x &= ~2; FW(import_800664C4, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_808064C4 + 0x13C0, import_807664C4, 0), FP(w, 0x14C) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0), FP(w, 0x150) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0), FP(w, 0x154) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FC314 + 0x13E4, import_8076C314, 0), FP(w, 0x158) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FE284 + 0x13F0, import_8076E284, 0), FP(w, 0x15C) = timproc_uso_b5_func_05D0E0(0, import_808001F4 + 0x13FC, import_807701F4, 0), FP(w, 0x160) = timproc_uso_b5_func_05D0E0(0, import_80802164 + 0x1408, import_80772164, 0), FP(w, 0x164) = timproc_uso_b5_func_05D0E0(0, import_808040D4 + 0x1414, import_807740D4, 0); FW(w, 0x13C) = 8; if (1) {}
                 FW(w, 0x140) = 0;
                 ATTACH1(t, w)
                 FW(w, 0x144) = 0;
@@ -292,7 +292,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
                 SETI(_at, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
-                sb2 = FW(f8fc8_ee6c_sb2, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); FW(w, 0x13C) = 1; if (1) {}
+                sb2 = FW(f8fc8_ee6c_sb2, 4) & 0x80000; { _x = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
                 ATTACH(_at, w, i2)
                 FW(w, 0x144) = 0;
@@ -324,11 +324,11 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 timproc_uso_b5_func_04DFFC(w, FP(w, 0x108));
                 SETI(_at, FP(w, 0x108))
                 FF(w, 0x124) = 1.0f;
-                sb3 = FW(f8fc8_ee6c_sb3, 4) & 0x80000; { _x = (FW(&import_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); FW(w, 0x13C) = 1; if (1) {}
+                sb3 = FW(f8fc8_ee6c_sb3, 4) & 0x80000; { _x = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } FP(w, 0x148) = timproc_uso_b5_func_05D0E0(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); FW(w, 0x13C) = 1; if (1) {}
                 FW(w, 0x140) = 0;
                 ATTACH(_at, w, i3)
                 FW(w, 0x144) = 0;
-                if (sb3) { do { _x = FW(&import_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&import_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&import_8005EE6C, 4) = _x; } while (0); }
+                if (sb3) { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); }
                 WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
             }
             FP(FP(self, 0x58), 0x2B8) = w;

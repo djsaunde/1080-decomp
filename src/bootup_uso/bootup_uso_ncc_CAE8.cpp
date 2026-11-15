@@ -22,8 +22,8 @@ struct V3 { float x, y, z;
 extern "C" {
 void func_00000000(...);
 extern int gPlayerBinPaths_cae8_ta[], gBoardBinPaths_cae8_tb[];
-extern int bu_cae8_x_ld, bu_cae8_x_st, bu_cae8_y;
-extern int bu_cae8_mode;
+extern int gPolyFlags_3EEC4_cae8_x_ld, gPolyFlags_3EEC4_cae8_x_st, bu_cae8_y;
+extern int gInputMgr_cae8_mode;
 extern float bu_cae8_k958;
 extern char bu_cae8_d8abc[];
 }
@@ -36,7 +36,7 @@ extern "C" void SnowBoarder_func_0000CAE8(char *st) {
     func_00000000(st + 0x90C, (st + 0x17C) - st);
     F(0x9D0) = bu_cae8_k958;
     F(0xA78) = F(0x768);
-    int mode = bu_cae8_mode;
+    int mode = gInputMgr_cae8_mode;
     switch (mode) {
     case 2: I(0xA14) = 0x5A; break;
     case 3:
@@ -49,7 +49,7 @@ extern "C" void SnowBoarder_func_0000CAE8(char *st) {
     F(0x9E8) = 0.0f;
     I(0x3DC) = 1;
     I(0xA54) = 0;
-    bu_cae8_x_st = bu_cae8_x_ld & ~8;
+    gPolyFlags_3EEC4_cae8_x_st = gPolyFlags_3EEC4_cae8_x_ld & ~8;
     F(0xA0C) = 1.0f;
     bu_cae8_y = 0;
     I(0xA58) = I(0x8BC);

@@ -67,7 +67,7 @@ struct P2 { int a, b; };
 inline void zf(float &f, int z) { f = z; }
 extern "C" {
 extern Glob *import_80087DA8;
-extern char import_8005C108[];
+extern char gGfxLib_8005C108[];
 extern double game_uso_D_807FFA88[], game_uso_D_807FFA90[], game_uso_D_807FFA98[];
 void game_uso_func_070F38(Ray *, void *, void *);
 void game_uso_func_071028(V3 *);
@@ -75,7 +75,7 @@ void game_uso_func_05B750(void *, Q *);
 void game_uso_func_05B614(void *, int, int, int, int, P2 *);
 void LensFlareElem_draw_0000B750(void *, int, V3 *, V3 *, float);
 }
-#define SC(i) (*(float *)(import_8005C108 + 0x128 + (i) * 4))
+#define SC(i) (*(float *)(gGfxLib_8005C108 + 0x128 + (i) * 4))
 extern "C" void LensFlare_display(Obj *obj) {
     Ray q;
     V3 world;
@@ -120,9 +120,9 @@ extern "C" void LensFlare_display(Obj *obj) {
                 w.v.z = 0.0f; if (1) {} /* run 190 lever-sweep bbsplit: 98.21 -> 98.25 */
                 w.v.y = 0.0f;
                 w.v.x = 0.0f;
-                game_uso_func_05B750(import_8005C108, &w);
+                game_uso_func_05B750(gGfxLib_8005C108, &w);
                 /* run 264: folded counted use of ->b on the ->c argument: c is a coloured LR (v1), &r the t2 ugen temp = target */
-                game_uso_func_05B614(import_8005C108, import_80087DA8->c + 0 * (int)(import_80087DA8->b), import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
+                game_uso_func_05B614(gGfxLib_8005C108, import_80087DA8->c + 0 * (int)(import_80087DA8->b), import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
             }
         }
         k = game_uso_D_807FFA98[47];

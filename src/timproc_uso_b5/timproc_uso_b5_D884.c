@@ -55,7 +55,7 @@ extern char import_8077A914;
 extern char import_80806674;
 extern char import_80776674;
 extern char import_00000000;
-/* import_8005EE6C aliases (all 0): l1/l2 single reads, s1/s2/s4 store+reload pairs, s7 else-arm store */
+/* gPolyGeomMode_3EEC8_8005EE6C aliases (all 0): l1/l2 single reads, s1/s2/s4 store+reload pairs, s7 else-arm store */
 extern char d884_ee6c_l1, d884_ee6c_l2;
 extern char d884_ee6c_s1, d884_ee6c_s2, d884_ee6c_s4, d884_ee6c_s7;
 extern char d884_db64_gc;

@@ -32,10 +32,10 @@ typedef struct { int w; } S4_55A0;
 typedef struct { f32 x, y, z; } V3_6808;
 
 extern int func_00000000();
-extern int import_8005EE6C[];         /* mode words: [0], [1] */
-extern int import_8005EE6C_6808r[];   /* read alias (same USO import) */
+extern int gPolyGeomMode_3EEC8_8005EE6C[];         /* mode words: [0], [1] */
+extern int gPolyGeomMode_3EEC8_8005EE6C_6808r[];   /* read alias (same USO import) */
 extern char *import_8001FFC0;         /* root object slot */
-extern int import_800200FC[];         /* settings: [0x3C/4], [0x68/4] */
+extern int gInputMgr_800200FC[];         /* settings: [0x3C/4], [0x68/4] */
 extern int import_8001FFF0;
 extern char *D_bu_7770;
 extern char *D_bu_776C[];
@@ -43,10 +43,10 @@ extern int D_bu_1EBDC[];
 extern char D_00007EB8, D_00007EC4, D_00007ECC, D_00007ED8, D_00007EE8, D_00007EEC, D_00007EF0, D_00007EF4,
     D_00007EF8, D_00007EFC, D_00007F08, D_00007F0C, D_00007F18, D_00007F28, D_00007F34, D_00007F3C,
     D_00007F44, D_00007F50, D_00007F58, D_00007F5C, D_00007F64, D_00007F68, D_00007F70, D_00007F78;
-extern int import_8005C108_6808_0[], import_8005C108_6808_1[], import_8005C108_6808_2[],
-    import_8005C108_6808_3[], import_8005C108_6808_4[], import_8005C108_6808_5[];
-extern int import_8005EE64_6808_0, import_8005EE64_6808_1, import_8005EE64_6808_2, import_8005EE64_6808_3,
-    import_8005EE64_6808_4, import_8005EE64_6808_5, import_8005EE64_6808_6, import_8005EE64_6808_7;
+extern int gGfxLib_8005C108_6808_0[], gGfxLib_8005C108_6808_1[], gGfxLib_8005C108_6808_2[],
+    gGfxLib_8005C108_6808_3[], gGfxLib_8005C108_6808_4[], gGfxLib_8005C108_6808_5[];
+extern int gPolyFlags_3EEC4_8005EE64_6808_0, gPolyFlags_3EEC4_8005EE64_6808_1, gPolyFlags_3EEC4_8005EE64_6808_2, gPolyFlags_3EEC4_8005EE64_6808_3,
+    gPolyFlags_3EEC4_8005EE64_6808_4, gPolyFlags_3EEC4_8005EE64_6808_5, gPolyFlags_3EEC4_8005EE64_6808_6, gPolyFlags_3EEC4_8005EE64_6808_7;
 
 #define ATTACH6808(list, x) { \
     L = (list); \
@@ -88,7 +88,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     mapEnd = 20;
     mapAdd = 1;
     startX = 0.0f;
-    import_8005EE6C[1] = import_8005EE6C_6808r[1] | 0x20000;
+    gPolyGeomMode_3EEC8_8005EE6C[1] = gPolyGeomMode_3EEC8_8005EE6C_6808r[1] | 0x20000;
     startY = 0.0f;
     startZ = 0.0f;
     func_00000000(&D_00007EB8, 0);
@@ -129,19 +129,19 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             func_00000000(import_8001FFC0, 1, p[0]);
             break;
         case COURSE_OP_ENV_LT2:
-            if (import_800200FC[0x68 / 4] < 2) {
+            if (gInputMgr_800200FC[0x68 / 4] < 2) {
                 envArg = p[1];
                 func_00000000(import_8001FFC0, 1, p[0]);
             }
             break;
         case COURSE_OP_ENV_EQ2:
-            if (import_800200FC[0x68 / 4] == 2) {
+            if (gInputMgr_800200FC[0x68 / 4] == 2) {
                 func_00000000(import_8001FFC0, 1, p[0]);
                 envArg = p[1];
             }
             break;
         case COURSE_OP_ENV_EQ3:
-            if (import_800200FC[0x68 / 4] == 3) {
+            if (gInputMgr_800200FC[0x68 / 4] == 3) {
                 func_00000000(import_8001FFC0, 1, p[0]);
                 envArg = p[1];
             }
@@ -155,7 +155,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         case COURSE_OP_BG:
             if (arg2 != 6) {
                 func_00000000(&D_00007EF8, 0);
-                func_00000000(import_800200FC, p[0]);
+                func_00000000(gInputMgr_800200FC, p[0]);
                 o = (char *)func_00000000(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
                 t = o;
                 ATTACH6808((char *)obj->bgRoot, t);
@@ -165,7 +165,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             break;
         case COURSE_OP_SHAPE:
             func_00000000(&D_00007EFC, 0);
-            func_00000000(import_800200FC, p[0]);
+            func_00000000(gInputMgr_800200FC, p[0]);
             shapeImport = p[1];
             func_00000000();
             break;
@@ -189,7 +189,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         p += count;
     } while (op != COURSE_OP_END);
     func_00000000(); /* no bbsplit: the dead return blocks v0, the settings word takes v1 */
-    if (import_800200FC[0x3C / 4] == 6 || import_800200FC[0x3C / 4] == 11) {
+    if (gInputMgr_800200FC[0x3C / 4] == 6 || gInputMgr_800200FC[0x3C / 4] == 11) {
         mapEnd = 5;
         mapAdd = 2;
     }
@@ -203,15 +203,15 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     }
     func_00000000(&D_00007F08, 0);
     if (hasMapParms != 0) {
-        import_8005C108_6808_0[0x3C / 4] = import_8005C108_6808_1[0x3C / 4] | 8;
+        gGfxLib_8005C108_6808_0[0x3C / 4] = gGfxLib_8005C108_6808_1[0x3C / 4] | 8;
     } else {
-        import_8005C108_6808_2[0x3C / 4] = import_8005C108_6808_3[0x3C / 4] & ~8;
+        gGfxLib_8005C108_6808_2[0x3C / 4] = gGfxLib_8005C108_6808_3[0x3C / 4] & ~8;
     }
     /* flag RMWs on the dummy-home local g00 inside do { } while (0): each RMW gets its own
      * block, so the block-granular v0 conflict with the preceding call's return and with the
      * final return copy is gone (docs/IDO_CODEGEN.md kit CCXXI) */
-    D_bu_1EBDC[0] = 6; do { g00 = import_8005EE64_6808_1; g00 &= ~8; g00 |= 0x100; import_8005EE64_6808_0 = g00; } while (0); if (1) {} import_8005EE6C[1] = 0xA8002;
-    import_8005EE6C[0] = 0;
+    D_bu_1EBDC[0] = 6; do { g00 = gPolyFlags_3EEC4_8005EE64_6808_1; g00 &= ~8; g00 |= 0x100; gPolyFlags_3EEC4_8005EE64_6808_0 = g00; } while (0); if (1) {} gPolyGeomMode_3EEC8_8005EE6C[1] = 0xA8002;
+    gPolyGeomMode_3EEC8_8005EE6C[0] = 0;
     func_00000000(&D_00007F0C, 0);
     p = (int *)func_00000000(0, &D_00007F18, 0, 0);
     func_00000000();
@@ -224,9 +224,9 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     func_00000000(&D_00007F3C, 0);
     func_00000000(((char *)p));
     func_00000000();
-    do { g00 = import_8005EE64_6808_3; g00 &= ~0x100; import_8005EE64_6808_2 = g00; } while (0);
+    do { g00 = gPolyFlags_3EEC4_8005EE64_6808_3; g00 &= ~0x100; gPolyFlags_3EEC4_8005EE64_6808_2 = g00; } while (0);
     g00 = (int)p; if (1) { g00 += 0x30; } *(int *)g00 |= 0x40;
-    import_8005C108_6808_4[0x3C / 4] = import_8005C108_6808_5[0x3C / 4] & ~8;
+    gGfxLib_8005C108_6808_4[0x3C / 4] = gGfxLib_8005C108_6808_5[0x3C / 4] & ~8;
     func_00000000();
     func_00000000(&D_00007F44, 0);
     {
@@ -279,7 +279,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
     D_bu_1EBDC[0] = 6;
     func_00000000(&D_00007F70, 0);
     *gD = (char *)func_00000000(0, &D_00007F78, -1);
-    do { g00 = import_8005EE64_6808_5; g00 |= 8; import_8005EE64_6808_4 = g00; } while (0);
+    do { g00 = gPolyFlags_3EEC4_8005EE64_6808_5; g00 |= 8; gPolyFlags_3EEC4_8005EE64_6808_4 = g00; } while (0);
     func_00000000(*gD);
     if (markersFile != 0) {
         func_00000000(*gD, 1, markersFile);
@@ -289,6 +289,6 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         ATTACH6808((char *)obj->fgRoot, t);
     }
     func_00000000();
-    do { g00 = import_8005EE64_6808_7; g00 &= ~8; import_8005EE64_6808_6 = g00; } while (0);
+    do { g00 = gPolyFlags_3EEC4_8005EE64_6808_7; g00 &= ~8; gPolyFlags_3EEC4_8005EE64_6808_6 = g00; } while (0);
     return res;
 }

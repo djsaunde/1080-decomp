@@ -191,7 +191,7 @@ BOOTUP_CA0_DONOR := build/src/bootup_uso/bootup_uso_ncc_CA0.cpp.o
 $(BOOTUP_CA0_DONOR): src/bootup_uso/bootup_uso_ncc_CA0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__1DFiN21=BGBox_ctor --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=bu_ca0_desc $@
+	$(OBJCOPY) --redefine-sym __ct__1DFiN21=BGBox_ctor --redefine-sym __ct__1BFPc=func_00000000_ca0_base --redefine-sym __vtbl__1D=BGBox_vtbl_ca0_desc $@
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += BGBox_ctor=$(BOOTUP_CA0_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_CA0_DONOR)
 # 6204 / E9FC = edg static initializers (__sti__) for two global objects: the __sti__ is emitted at the
@@ -207,7 +207,7 @@ BOOTUP_E9FC_DONOR := build/src/bootup_uso/bootup_uso_ncc_E9FC.cpp.o
 $(BOOTUP_E9FC_DONOR): src/bootup_uso/bootup_uso_ncc_E9FC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_staticCtor_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=D_func_0000E9FC_arg2 $@
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '$$3 ~ /^__sti__/ {print $$3}')=SnowBoard_staticCtor_0000E9FC --redefine-sym __ct__9BuE9FCBasFv=func_00000000 --redefine-sym __vtbl__8BuE9FCOb=SnowBoard_vtbl_func_0000E9FC_arg2 $@
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += boot_staticInit_00006204=$(BOOTUP_6204_DONOR) SnowBoard_staticCtor_0000E9FC=$(BOOTUP_E9FC_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_6204_DONOR) $(BOOTUP_E9FC_DONOR)
 # 4948 = camera transition blend; C++ (Vec3 operator temps, ctor forwarding to an
@@ -1920,7 +1920,7 @@ $(GAMELIBS_3B2EC_DONOR): src/game_libs/game_libs_ncc_3B2EC.cpp
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CollShape_height=$(GAMELIBS_3B2EC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B2EC_DONOR)
 # 3BE1C = real C++ `int Obj::query()` (agent-c run 178; cfe 77.27); symbol renamed (name only).
-# agent-g run 325: EXACT NCC donor over the placeholder on both build trees (D_3BE1C_c / D_3BE1C_128 pinned as before).
+# agent-g run 325: EXACT NCC donor over the placeholder on both build trees (D_3BE1C_c / gGfxLib_3BE1C_128 pinned as before).
 GAMELIBS_3BE1C_DONOR := build/src/game_libs/game_libs_ncc_3BE1C.cpp.o
 $(GAMELIBS_3BE1C_DONOR): src/game_libs/game_libs_ncc_3BE1C.cpp
 	@mkdir -p $(dir $@)
@@ -1961,7 +1961,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # 4BAF4 = billboard sprite draw; cfe NM body lifted under NCC with cfront-inline DL appends + volatile clip half-extents (agent-c run 157, cfe 92.03).
 # agent-c run 405: EXACT NCC donor over a placeholder on both build trees (the three 0x06 packets' counts as the 5th
 # by-value parameter of nQ4(): one edg pool word = one live range with the B4 y-MIN merge, coloured a2). The blank USO
-# data refs stay pinned (D_4BAF4_cam = 0xA0, gGfxLib_4BAF4_flags = 0); the jal words go through gl_func_00000000.
+# data refs stay pinned (gGfxLib_4BAF4_cam = 0xA0, gGfxLib_4BAF4_flags = 0); the jal words go through gl_func_00000000.
 GAMELIBS_4BAF4_DONOR := build/src/game_libs/game_libs_ncc_4BAF4.cpp.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Sprite_display_0004BAF4=$(GAMELIBS_4BAF4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4BAF4_DONOR)
@@ -2567,7 +2567,7 @@ GAMELIBS_33094_DONOR := build/src/game_libs/game_libs_ncc_33094.cpp.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += MCamera_updateLookAt=$(GAMELIBS_33094_DONOR)
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: $(GAMELIBS_33094_DONOR)
 # 307A8 = EXACT NCC (C++) donor: fade timer tick with the 308AC file-local static block for the two shared-`lui at` pairs
-# (agent-c run 177: 260 bytes = target) and the hold-count re-read spelled `(&D_307A8_i.fC)[0]` so uopt keeps no
+# (agent-c run 177: 260 bytes = target) and the hold-count re-read spelled `(&gSndCueQueues_307A8_i.fC)[0]` so uopt keeps no
 # candidate and ugen reuses the t8 load (agent-g run 202). Its .bss reloc is renamed snd_TickChannel8Fade_bss (pinned to 0).
 GAMELIBS_307A8_DONOR := build/src/game_libs/game_libs_ncc_307A8.cpp.o
 build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_TickChannel8Fade=$(GAMELIBS_307A8_DONOR)

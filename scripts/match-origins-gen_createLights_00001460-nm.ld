@@ -9,7 +9,7 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-import_8005C108 = 0x0;
+gGfxLib_8005C108 = 0x0;
 timproc_uso_b5_D_807FE8FC = 0x0;
 timproc_uso_b5_D_807FE90C = 0x0;
 timproc_uso_b5_D_807FE918 = 0x0;

@@ -877,7 +877,7 @@ end:
 #ifdef NON_MATCHING
 extern void *timproc_uso_b5_func_068D54(int, char *);
 extern float timproc_uso_b5_func_062880(char *, char *);
-extern char import_8005C108;
+extern char gGfxLib_8005C108;
 extern char timproc_uso_b5_D_807FE8FC;
 extern char timproc_uso_b5_D_807FE90C;
 extern char timproc_uso_b5_D_807FE918;
@@ -907,7 +907,7 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x38);
     *(int *)(o + 0xD0) = 1;
-    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x38));
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x38));
     o = *(char **)(arg0 + 0x38);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -924,7 +924,7 @@ void gen_createLights_00001460(char *arg0) {
     *(float *)(o + 0x130) = 1.0f;
     o = *(char **)(arg0 + 0x3C);
     *(int *)(o + 0xD0) = 2;
-    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x3C));
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x3C));
     o = *(char **)(arg0 + 0x3C);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -947,7 +947,7 @@ void gen_createLights_00001460(char *arg0) {
     *(int *)o |= 0x80;
     o = *(char **)(arg0 + 0x40);
     *(int *)(o + 0xD0) = 4;
-    timproc_uso_b5_func_062880(&import_8005C108, *(char **)(arg0 + 0x40));
+    timproc_uso_b5_func_062880(&gGfxLib_8005C108, *(char **)(arg0 + 0x40));
     o = *(char **)(arg0 + 0x40);
     timproc_uso_b5_func_07ACE0(reg, o);
     if (*(int *)(o + 0x14) != 0) {
@@ -1122,7 +1122,7 @@ void gen_createVRBox_00001658(char *arg0) {
 #endif
 extern char timproc_uso_b5_D_807FE7E0, timproc_uso_b5_D_807FE940, timproc_uso_b5_D_807FE958;
 extern char timproc_uso_b5_D_807FE968, timproc_uso_b5_D_807FE97C;
-extern char import_800200E8, import_800200F4, import_800200FC;
+extern char import_800200E8, import_800200F4, gInputMgr_800200FC;
 extern char *SelectWin_ctor();
 extern void SelectWin_init_00005BF0();
 extern void SelectionMgr_setSplit_00001DB0();
@@ -1143,7 +1143,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
         if (d == 1) {
             w = SelectWin_ctor(0, arg0, arg1, 1, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE958 + 0x10E8, 0);
             FW(arg0, 0x34) = w;
-            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x34);
             timproc_uso_b5_func_07ACE0(arg0 + 0x10, w);
             if (FW(w, 0x14) != 0) {
@@ -1154,7 +1154,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
         } else {
             w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
             FW(arg0, 0x34) = w;
-            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x34);
             sp4C = arg0 + 0x10;
             timproc_uso_b5_func_07ACE0(sp4C, w);
@@ -1165,7 +1165,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             FW(FW(FW(E, 0x0), 0x5C), 0x38) = (char *) FW(arg0, 0x34);
             w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, FW(E, 0x8), &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
             FW(arg0, 0x38) = w;
-            SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &import_800200FC + 0x60, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &gInputMgr_800200FC + 0x60, &gInputMgr_800200FC + 0x64);
             w = FW(arg0, 0x38);
             timproc_uso_b5_func_07ACE0(sp4C, w);
             if (FW(w, 0x14) != 0) {
@@ -5908,13 +5908,13 @@ void CommonInfo_loadData_00008F98(char *a0) {
 #ifdef NON_MATCHING
 /* Full-body m2c redecode 2026-07-23 (agent-g): resolved-jal .s overlay onto
  * expected-.o mnemonics + %hi/%lo pairing of ALL 163 luis (incl. bare FP-pool
- * luis -> &D_00000000+off, dual-lui import_8005EE6C sites, 5-case jtbl fed to
+ * luis -> &D_00000000+off, dual-lui gPolyGeomMode_3EEC8_8005EE6C sites, 5-case jtbl fed to
  * m2c via fabricated jtbl entries [A884,A894,A898,A898,A898] = case1 both-store,
  * case2 s0-store, 3-5 empty). */
 #define M2C_FIELD(ptr, type, off) (*(type)((char *)(ptr) + (off)))
 typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 extern char timproc_uso_b5_D_807FDB64;
-extern char import_8005EE6C;
+extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_80807FB8;
 extern struct DBlk_8D38 import_800201EC;
 extern int timproc_uso_b5_func_055750();
@@ -6222,7 +6222,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 M2C_FIELD(ps0, f32 *, 0xBC) = 0.0;
                 M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
                 spC0 = M2C_FIELD(f8fc8_ee6c_sb1, s32 *, 4) & 0x80000;
-                M2C_FIELD(import_800664C4, s32 *, 4) = (s32) (((M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000) & ~2);
+                M2C_FIELD(import_800664C4, s32 *, 4) = (s32) (((M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000) & ~2);
                 M2C_FIELD(pv0, char **, 0x148) = timproc_uso_b5_func_05D0E0(0, import_808064C4 + 0x13C0, (s32) import_807664C4, 0);
                 M2C_FIELD(pv0, char **, 0x14C) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807F8434 + 0x13CC, (s32) import_80768434, 0);
                 M2C_FIELD(pv0, char **, 0x150) = timproc_uso_b5_func_05D0E0(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, (s32) import_8076A3A4, 0);
@@ -6243,9 +6243,9 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 }
                 M2C_FIELD(pv0, s32 *, 0x144) = 0;
                 if (spC0 != 0) {
-                    M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) | 0x80000;
+                    M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) | 0x80000;
                 } else {
-                    M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
+                    M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
                 }
                 M2C_FIELD(pv0, f32 *, 0xDC) = (f32) DF_244;
                 M2C_FIELD(pv0, f32 *, 0xE0) = 720.0f;
@@ -6441,7 +6441,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
             sp80 = M2C_FIELD(f8fc8_ee6c_sb2, s32 *, 4) & 0x80000;
             {
-                s32 fl = (M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000;
+                s32 fl = (M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000;
                 if (1) { fl |= 2; }
                 M2C_FIELD(import_80063D04, s32 *, 4) = fl;
             }
@@ -6458,9 +6458,9 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             }
             M2C_FIELD(pv0, s32 *, 0x144) = 0;
             if (sp80 != 0) {
-                M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) | 0x80000;
+                M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) | 0x80000;
             } else {
-                M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
+                M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
             }
             M2C_FIELD(pv0, f32 *, 0xDC) = (f32) DF_278;
             M2C_FIELD(pv0, f32 *, 0xE0) = 720.0f;
@@ -6550,7 +6550,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, f32 *, 0x124) = 1.0f;
             sp68 = M2C_FIELD(f8fc8_ee6c_sb3, s32 *, 4) & 0x80000;
             {
-                s32 fl = (M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000;
+                s32 fl = (M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000;
                 if (1) { fl |= 2; }
                 M2C_FIELD(import_80063D04, s32 *, 4) = fl;
     if (arg0) {}
@@ -6568,10 +6568,10 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             }
             M2C_FIELD(pv0, s32 *, 0x144) = 0;
             if (sp68 != 0) {
-                M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) | 0x80000;
+                M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) | 0x80000;
     if (arg0) {}
             } else {
-                M2C_FIELD((&import_8005EE6C), s32 *, 4) = M2C_FIELD((&import_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
+                M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) = M2C_FIELD((&gPolyGeomMode_3EEC8_8005EE6C), s32 *, 4) & 0xFFF7FFFF;
             }
             M2C_FIELD(pv0, f32 *, 0xDC) = (f32) DF_2BC;
             M2C_FIELD(pv0, f32 *, 0xE0) = 720.0f;
@@ -8464,7 +8464,7 @@ extern char import_80807FB8;
 extern char import_80087FB8[];
 extern char import_80800078;
 extern char import_80020078;
-extern char import_8005EE6C;
+extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_8005EE64;
 
 /* PASS-3 2026-09-04 (agent-h): D550 kit port — char*volatile r (+cluster temps),
@@ -8890,7 +8890,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", BoardList_createIt
 // distinct USO symbols (func_055750 alloc / 04C678 base-init / 00002B74 /
 // 000032C8 child-anchors / 00003890 owner-init / 07ACE0 attach / 0546DC FP
 // factory / 05D0E0 key-wire / 04DFFC child-wire) and globals the real
-// descriptor/flag symbols (D_807FEE90.. / import_8005EE6C flag word @+4 /
+// descriptor/flag symbols (D_807FEE90.. / gPolyGeomMode_3EEC8_8005EE6C flag word @+4 /
 // import_800200CC mode @+0x34 / D_807FF3E0 jumptable / D_807FEBB4.. keys).
 // Field offsets/types taken from store mnemonics (swc1=f32, sw=s32).
 // 60.13% -> 67.25% fuzzy (+7.1pp), correct-C.
@@ -8940,7 +8940,7 @@ extern char timproc_uso_b5_D_807FEF18;
 extern char timproc_uso_b5_D_807FEF24;
 extern char timproc_uso_b5_D_807FEF30;
 extern char timproc_uso_b5_D_807FEF3C;
-extern char import_8005EE6C;
+extern char gPolyGeomMode_3EEC8_8005EE6C;
 extern char import_800200CC;
 extern char import_80807FB8;
 extern char import_8077EBB4;

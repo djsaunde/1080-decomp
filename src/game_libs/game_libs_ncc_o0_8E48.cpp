@@ -20,7 +20,7 @@ typedef long long s64; typedef unsigned long long u64;
  *    0x3C/0x38/0x34 top-down; register base/o/tmp reserve 0x30/0x2C/0x28.
  *    (Old wrap had sp3C as register s1 -> `move s1,v0` instead of the target's
  *    sw v0,0x3C / lw s1,0x3C / return-from-home, and sp38/sp34 landed 0x30/0x2C.)
- * 2. Chain direction swapped: `sp34 = sp38 = (char *)D_0000004C;` -> target's
+ * 2. Chain direction swapped: `sp34 = sp38 = (char *)gInputMgr_0000004C;` -> target's
  *    store order sw t6,0x38 THEN sw t6,0x34 (old `sp38 = sp34 = ...` reversed it).
  * 3. First call arg1 via `*(int *)((char *)&gProcUsoPaths_8FFC_base + 8)` (base-0 alias,
  *    shared with 8FFC, in undefined_syms_auto.txt) -> 3-insn lui/addiu/lw-off-8
@@ -37,8 +37,8 @@ typedef long long s64; typedef unsigned long long u64;
 extern int gl_func_00000000(...);  /* USO placeholder callee (jal 0) */
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
-extern int D_0000004C, D_00000064;
-extern unsigned char D_00000181, D_00000182, D_00000183;
+extern int gInputMgr_0000004C, gInputMgr_00000064;
+extern unsigned char gInputMgr_00000181, gInputMgr_00000182, gInputMgr_00000183;
 extern char gProcUsoPaths_8FFC_base;   /* base-0 alias of D_00000000 (see app_createGame_00008FFC note) */
 char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     char *sp3C;            /* plain locals decl'd first: slots 0x3C/0x38/0x34 top-down */
@@ -48,19 +48,19 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     register char *o;      /* s1 */
     register char *tmp;    /* s2 */
 
-    sp34 = sp38 = (char *)D_0000004C;
+    sp34 = sp38 = (char *)gInputMgr_0000004C;
     gl_func_00000000(&gInputMgr, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
-        D_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));
-        sp34 = (char *)(int)D_00000181;
-        D_00000182 = gl_func_00000000(FW((*(int*)arg0), 0x8));
-        D_00000183 = gl_func_00000000(FW((*(int*)arg0), 0x8));
+        gInputMgr_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));
+        sp34 = (char *)(int)gInputMgr_00000181;
+        gInputMgr_00000182 = gl_func_00000000(FW((*(int*)arg0), 0x8));
+        gInputMgr_00000183 = gl_func_00000000(FW((*(int*)arg0), 0x8));
     }
     gl_func_00000000(sp38, sp34);
     if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
-        sp3C = (char *)gl_func_00000000(&gInputMgr, D_00000064, 3, arg2);
+        sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 3, arg2);
     } else {
-        sp3C = (char *)gl_func_00000000(&gInputMgr, D_00000064, 2, arg2);
+        sp3C = (char *)gl_func_00000000(&gInputMgr, gInputMgr_00000064, 2, arg2);
     }
     base = (char *)&gInputMgr;
     o = sp3C;

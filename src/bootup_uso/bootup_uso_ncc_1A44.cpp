@@ -17,8 +17,8 @@ typedef float f32;
 typedef int s32;
 typedef unsigned int u32;
 extern "C" {
-extern int import_8005C108[];
-extern int import_8005C108_g1a44[];   /* gate read alias (same import) */
+extern int gGfxLib_8005C108[];
+extern int gGfxLib_8005C108_g1a44[];   /* gate read alias (same import) */
 extern char *D_bu_205CC;              /* bootup data sym161: camera root */
 extern void func_1a44_emit(void *, float, float, float, float, float, float, float);
 extern int func_1a44_emit2(void *);
@@ -36,10 +36,10 @@ extern "C" void U64BGWall_func_00001A44(char *a0) {
     char *g;
     s32 _n;
 
-    if (import_8005C108_g1a44[0x3C / 4] & 2) {
+    if (gGfxLib_8005C108_g1a44[0x3C / 4] & 2) {
         return;
     }
-    g = (char *)import_8005C108;
+    g = (char *)gGfxLib_8005C108;
     gc = *(char **)(*(char **)(g + 0x254) + 0x158);
     func_1a44_emit(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count],
                    (f32)*(s32 *)(a0 + 0x2C), (f32)*(s32 *)(a0 + 0x30), (f32)*(s32 *)(a0 + 0x34),
