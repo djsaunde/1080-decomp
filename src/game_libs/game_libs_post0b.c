@@ -21443,96 +21443,95 @@ def:
     return 0;
 }
 
-int *gfx_newDLContext(int *param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
-  struct GL56L { int items; int count; int f8; int self; };
-  struct GL56L *puVar1;
+DLContext *gfx_newDLContext(DLContext *param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
+  DLBuf *puVar1;
   int *puVar2;
   int tmp;
 
-  if ((param_1 != 0) || ((param_1 = (int *) gl_func_00000000(0x7C)) != 0)) {
-    puVar1 = (struct GL56L *) param_1;
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+  if ((param_1 != 0) || ((param_1 = (DLContext *) gl_func_00000000(0x7C)) != 0)) {
+    puVar1 = &param_1->gfx;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 4);
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+    puVar1 = &param_1->vtx;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 8);
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+    puVar1 = &param_1->light;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 0xC);
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+    puVar1 = &param_1->mtx;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 0x10);
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+    puVar1 = &param_1->vp;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 0x14);
-    if ((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(0x10)) != 0)) {
-      puVar1->f8 = 0;
+    puVar1 = &param_1->hilite;
+    if ((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(0x10)) != 0)) {
+      puVar1->max = 0;
       puVar1->count = 0;
-      puVar1->self = (int) puVar1;
+      puVar1->cur = puVar1;
     }
-    puVar1 = (struct GL56L *) (param_1 + 0x1E);
-    if (((puVar1 != 0) || ((puVar1 = (struct GL56L *) gl_func_00000000(4)) != 0)) &&
+    puVar1 = (DLBuf *) &param_1->flags;
+    if (((puVar1 != 0) || ((puVar1 = (DLBuf *) gl_func_00000000(4)) != 0)) &&
         (((puVar2 = (int *) puVar1, puVar1 != 0)) || ((puVar2 = (int *) gl_func_00000000(4)) != 0))) {
       *puVar2 = 0;
     }
-    param_1[0x1C] = param_2;
-    param_1[2] = param_3;
+    param_1->name = (char *) param_2;
+    param_1->gfx.max = param_3;
     if (param_3 != 0) {
-      *param_1 = gl_func_00000000(param_3 * 8 + 8);
+      param_1->gfx.base = gl_func_00000000(param_3 * 8 + 8);
     }
-    param_1[1] = 0;
-    param_1[3] = (int) param_1;
-    param_1[6] = param_4;
-    tmp = (int) (param_1 + 4);
+    param_1->gfx.count = 0;
+    param_1->gfx.cur = &param_1->gfx;
+    param_1->vtx.max = param_4;
+    tmp = (int) &param_1->vtx;
     if (param_4 != 0) {
-      ((struct GL56L *) tmp)->items = gl_func_00000000(param_4 * 0x10 + 0x10);
+      ((DLBuf *) tmp)->base = gl_func_00000000(param_4 * 0x10 + 0x10);
     }
-    ((struct GL56L *) tmp)->count = 0;
-    ((struct GL56L *) tmp)->self = tmp;
-    param_1[10] = param_5;
-    tmp = (int) (param_1 + 8);
+    ((DLBuf *) tmp)->count = 0;
+    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    param_1->light.max = param_5;
+    tmp = (int) &param_1->light;
     if (param_5 != 0) {
-      ((struct GL56L *) tmp)->items = gl_func_00000000(param_5 * 0x48 + 0x48);
+      ((DLBuf *) tmp)->base = gl_func_00000000(param_5 * 0x48 + 0x48);
     }
-    ((struct GL56L *) tmp)->count = 0;
-    ((struct GL56L *) tmp)->self = tmp;
-    param_1[0xE] = param_6;
-    tmp = (int) (param_1 + 0xC);
+    ((DLBuf *) tmp)->count = 0;
+    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    param_1->mtx.max = param_6;
+    tmp = (int) &param_1->mtx;
     if (param_6 != 0) {
-      ((struct GL56L *) tmp)->items = gl_func_00000000(param_6 * 0x40 + 0x40);
+      ((DLBuf *) tmp)->base = gl_func_00000000(param_6 * 0x40 + 0x40);
     }
-    ((struct GL56L *) tmp)->count = 0;
-    ((struct GL56L *) tmp)->self = tmp;
-    param_1[0x12] = param_7;
-    tmp = (int) (param_1 + 0x10);
+    ((DLBuf *) tmp)->count = 0;
+    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    param_1->vp.max = param_7;
+    tmp = (int) &param_1->vp;
     if (param_7 != 0) {
-      ((struct GL56L *) tmp)->items = gl_func_00000000(param_7 * 0x10 + 0x10);
+      ((DLBuf *) tmp)->base = gl_func_00000000(param_7 * 0x10 + 0x10);
     }
-    ((struct GL56L *) tmp)->count = 0;
-    ((struct GL56L *) tmp)->self = tmp;
-    param_1[0x16] = 0;
-    tmp = (int) (param_1 + 0x14);
+    ((DLBuf *) tmp)->count = 0;
+    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
+    param_1->hilite.max = 0;
+    tmp = (int) &param_1->hilite;
     if (0) {
-      ((struct GL56L *) tmp)->items = gl_func_00000000(0);
+      ((DLBuf *) tmp)->base = gl_func_00000000(0);
     }
-    ((struct GL56L *) tmp)->count = 0;
-    ((struct GL56L *) tmp)->self = tmp;
+    ((DLBuf *) tmp)->count = 0;
+    ((DLBuf *) tmp)->cur = (DLBuf *) tmp;
     gl_func_00000000(param_1);
   }
   return param_1;
@@ -21555,29 +21554,29 @@ int *gfx_newDLContext(int *param_1, int param_2, int param_3, int param_4, int p
  *    values. Typed-field pointer arith is the only form that flips it.
  * (Pair2 = existing file-scope typedef struct { int a, b; }.) */
 typedef struct { Pair2 *data; int count; } Rec56814;
-void gfx_resetDLContext(int *a0) {
+void gfx_resetDLContext(DLContext *a0) {
     int *q;
     Rec56814 *p;
-    q = (int *)((char *)a0 + 0x78);
+    q = (int *)&a0->flags;
     if (1) {}
     *q &= ~1;
     if (1) {}
-    p = (Rec56814 *)a0[3];
-    a0[1] = 0;
-    a0[5] = 0;
-    a0[9] = 0;
-    a0[13] = 0;
-    a0[17] = 0;
-    a0[21] = 0;
-    a0[24] = (int)(p->data + p->count);
-    a0[25] = p->count;
+    p = (Rec56814 *)a0->gfx.cur;
+    a0->gfx.count = 0;
+    a0->vtx.count = 0;
+    a0->light.count = 0;
+    a0->mtx.count = 0;
+    a0->vp.count = 0;
+    a0->hilite.count = 0;
+    a0->frameStart = (int)(p->data + p->count);
+    a0->frameStartCount = p->count;
 }
 
 extern int gl_func_00000000();
 
-void gfx_checkDLOverflow(char *a0) {
+void gfx_checkDLOverflow(DLContext *a0) {
     gl_func_00000000(a0);
-    gl_func_00000000(((char *)&D_00000000 + 0x00021908), *(int*)(a0 + 0x70));
+    gl_func_00000000(((char *)&D_00000000 + 0x00021908), a0->name);
 }
 
 /* gfx_printDLUsage: 14-arg varargs log/format dispatch. First two args
@@ -21606,18 +21605,17 @@ void gfx_checkDLOverflow(char *a0) {
  * gl_func_00000000 blank (a direct call resolves the jal to 0x34458). */
 extern int gl_func_00000000();
 extern int D_00000000;
-#define SUB_56898(o) (*(int **)((self) + (o)))
-void gfx_printDLUsage(char *self) {
-    int a0_ = SUB_56898(0xC)[1]; volatile int x0; int a1_ = SUB_56898(0xC)[2]; volatile int x1; int b0 = SUB_56898(0x1C)[1]; volatile int x2; int b1 = SUB_56898(0x1C)[2]; volatile int x3;
-    int c0 = SUB_56898(0x2C)[1]; volatile int x4;
-    int c1 = SUB_56898(0x2C)[2]; volatile int x5;
-    int d0 = SUB_56898(0x3C)[1]; volatile int x6;
-    int d1 = SUB_56898(0x3C)[2]; volatile int x7;
-    int e0 = SUB_56898(0x4C)[1]; volatile int x8;
-    int e1 = SUB_56898(0x4C)[2]; volatile int x9;
-    int f0 = SUB_56898(0x5C)[1]; volatile int x10;
-    int f1 = SUB_56898(0x5C)[2]; volatile int x11;
-    gl_func_00000000((char *)&D_00000000 + 0x21934, *(int *)(self + 0x70),
+void gfx_printDLUsage(DLContext *self) {
+    int a0_ = self->gfx.cur->count; volatile int x0; int a1_ = self->gfx.cur->max; volatile int x1; int b0 = self->vtx.cur->count; volatile int x2; int b1 = self->vtx.cur->max; volatile int x3;
+    int c0 = self->light.cur->count; volatile int x4;
+    int c1 = self->light.cur->max; volatile int x5;
+    int d0 = self->mtx.cur->count; volatile int x6;
+    int d1 = self->mtx.cur->max; volatile int x7;
+    int e0 = self->vp.cur->count; volatile int x8;
+    int e1 = self->vp.cur->max; volatile int x9;
+    int f0 = self->hilite.cur->count; volatile int x10;
+    int f1 = self->hilite.cur->max; volatile int x11;
+    gl_func_00000000((char *)&D_00000000 + 0x21934, self->name,
                      a0_, a1_, b0, b1, c0, c1, d0, d1, e0, e1, f0, f1);
 }
 
@@ -21653,10 +21651,10 @@ void gfx_emitCombineMode(int a0, int *a1) {
  * `(v1 << N) < 0` (one sll temp each; the unsigned `<<N >>31` form burns a
  * second temp per test and shifts the whole $t ring), and the second record
  * pointer is its own local (arr2 -> a3). */
-void gfx_emitGeometryMode(int *a0, int *a1) {
+void gfx_emitGeometryMode(DLContext *a0, int *a1) {
     int v0 = 4;
     int v1 = a1[1];
-    int *rec;
+    DLBuf *rec;
     int idx;
     int *arr;
     int *arr2;
@@ -21670,16 +21668,16 @@ void gfx_emitGeometryMode(int *a0, int *a1) {
     if ((v1 << 2) < 0) v0 |= 0x1000;
     if ((v1 << 12) < 0) v0 |= 0x10000;
 
-    rec = (int *)a0[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)a0[3])[0] + (idx * 8));
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + (idx * 8));
     arr[0] = 0xB6000000;
     arr[1] = -1;
-    rec = (int *)a0[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr2 = (int *)(((int *)a0[3])[0] + (idx * 8));
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr2 = (int *)(a0->gfx.cur->base + (idx * 8));
     arr2[0] = 0xB7000000;
     arr2[1] = v0;
 }
@@ -21697,7 +21695,7 @@ void gfx_emitGeometryMode(int *a0, int *a1) {
  * address math AND resolves the t1/t2 vs t2/t3 temp-renumber cascade — the const
  * and OR result then color exactly as the target. Byte-exact. */
 extern int gl_func_00000000();
-void gfx_emitRenderMode(int a0, int a1) {
+void gfx_emitRenderMode(DLContext *a0, int a1) {
     int r = gl_func_00000000(a1);
     int flags = *(int *)((char *)a1 + 4);
     int v = r;
@@ -21705,11 +21703,11 @@ void gfx_emitRenderMode(int a0, int a1) {
         v = gl_func_00000000(a1);
     }
     {
-        int *dl = *(int **)((char *)a0 + 0xC);
-        int count = dl[1];
+        DLBuf *dl = a0->gfx.cur;
+        int count = dl->count;
         int *slot;
-        dl[1] = count + 1;
-        slot = (int *)((*(int **)((char *)a0 + 0xC))[0] + count * 8);
+        dl->count = count + 1;
+        slot = (int *)(a0->gfx.cur->base + count * 8);
         slot[0] = 0xB900031D;
         slot[1] = r | v;
     }
@@ -21725,23 +21723,23 @@ void gfx_emitRenderMode(int a0, int a1) {
  * not in bootup.uso's export list; 57194 (0x6B800) is. Merged (0x50 + 0x38); the
  * else arm's unfilled `jr ra; nop` is the plain -O2 epilogue after the bgezl
  * target. Both arms spelled in full; if/else and if-return forms are identical. */
-void gfx_emitCycleType(int *a0, int *a1) {
-    int *rec;
+void gfx_emitCycleType(DLContext *a0, int *a1) {
+    DLBuf *rec;
     int idx;
     int *arr;
     if ((a1[1] << 12) < 0 || (a1[1] << 8) < 0) {
-        rec = (int *)a0[3];
-        idx = rec[1];
-        rec[1] = idx + 1;
-        arr = (int *)(((int *)a0[3])[0] + idx * 8);
+        rec = a0->gfx.cur;
+        idx = rec->count;
+        rec->count = idx + 1;
+        arr = (int *)(a0->gfx.cur->base + idx * 8);
         arr[0] = 0xBA001402;
         arr[1] = 0x00100000;
         return;
     }
-    rec = (int *)a0[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)a0[3])[0] + idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + idx * 8);
     arr[0] = 0xBA001402;
     arr[1] = 0;
 }
@@ -21770,53 +21768,53 @@ void gfx_emitCycleType(int *a0, int *a1) {
  * boundary in front of the colour block. arr[0] and arr[1] on one line give
  * the target's sw / sll order (as1 schedules per source line). See
  * docs/IDO_CODEGEN.md kit XXXV. */
-void gfx_emitFog(int *a0, s16 min, s16 max, f32 *c) {
-    int *rec;
+void gfx_emitFog(DLContext *a0, s16 min, s16 max, f32 *c) {
+    DLBuf *rec;
     int idx;
     int *arr;
     int *arr2;
     int d;
-    rec = (int *)a0[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)a0[3])[0] + idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + idx * 8);
     d = max - min;
     arr[0] = 0xBC000008; arr[1] = (((u32)(128000 / d) & 0xFFFF) << 16) | ((u32)((500 - min) * 256 / d) & 0xFFFF);
-    rec = (int *)a0[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr2 = (int *)(((int *)a0[3])[0] + idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr2 = (int *)(a0->gfx.cur->base + idx * 8);
     arr2[0] = 0xF8000000;
     arr2[1] = (((u32)(c[1] * 255.0f) & 0xFF) << 16) | (((u32)(c[2] * 255.0f) & 0xFF) << 8) | ((u32)(c[3] * 255.0f) & 0xFF) | (((u32)(c[0] * 255.0f) & 0xFF) << 24);
 }
 
-void game_libs_func_00057574(int *a0) {
-    int *rec;
+void game_libs_func_00057574(DLContext *a0) {
+    DLBuf *rec;
     int idx;
     int *arr;
     int *arr2;
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)((int *)a0)[3])[0] + idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + idx * 8);
     arr[0] = 0xBC00000E;
     arr[1] = *(unsigned short *)((char *)&D_00000000 + 0x208);
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr2 = (int *)(((int *)((int *)a0)[3])[0] + idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr2 = (int *)(a0->gfx.cur->base + idx * 8);
     arr2[0] = 0xC0000000;
     arr2[1] = 0x69;
 }
 
-void gl_func_000575E0(int *a0) {
-    int *rec;
+void gl_func_000575E0(DLContext *a0) {
+    DLBuf *rec;
     int idx;
     int *arr;
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)((int *)a0)[3])[0] + (idx * 8));
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + (idx * 8));
     arr[0] = 0xE9000000;
     arr[1] = 0;
     gl_func_00000000(a0, arr);
@@ -21828,24 +21826,24 @@ void gl_func_000575E0(int *a0) {
  * the pointer-int and the count (with a `new_var` intermediate) to pin IDO's
  * register allocation (straight C diverged 20/29; masking needed the permuter +
  * a longer run). Reloc-free. */
-void gfx_setColorImage(int *a0, int a1, int a2) {
+void gfx_setColorImage(DLContext *a0, int a1, int a2) {
     int new_var;
-    int *rec;
+    DLBuf *rec;
     int *arr;
     int *arr2;
     int idx;
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)((int *)a0)[3])[0] + (idx * 8));
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + (idx * 8));
     arr[0] = 0xE7000000;
     arr[1] = 0;
-    idx = ((int *)a0)[3];
-    rec = (int *)idx;
-    new_var = rec[1];
+    idx = (int)a0->gfx.cur;
+    rec = (DLBuf *)idx;
+    new_var = rec->count;
     idx = new_var;
-    rec[1] = idx + 1;
-    arr2 = (int *)(((int *)((int *)a0)[3])[0] + (idx * 8));
+    rec->count = idx + 1;
+    arr2 = (int *)(a0->gfx.cur->base + (idx * 8));
     arr2[0] = ((a2 - 1) & 0xFFF) | 0xFF100000;
     arr2[1] = a1 & 0xFFFFFF;
 }
@@ -21855,23 +21853,23 @@ void gfx_setColorImage(int *a0, int a1, int a2) {
  * Byte-exact via permuter: the FIRST append's address goes through an int
  * intermediate (new_var) + `unsigned int v`, which pins IDO's register
  * allocation to the target (straight C diverged 20/25). Reloc-free. */
-void gfx_setDepthImage(int *a0, int a1) {
+void gfx_setDepthImage(DLContext *a0, int a1) {
     unsigned int v = a1 & 0xFFFFFF;
     int new_var;
-    int *rec;
+    DLBuf *rec;
     int idx;
     int *arr;
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    new_var = ((int *)((int *)a0)[3])[0] + (idx * 8);
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    new_var = a0->gfx.cur->base + (idx * 8);
     arr = (int *)new_var;
     arr[0] = 0xFE000000;
     arr[1] = v;
-    rec = (int *)((int *)a0)[3];
-    idx = rec[1];
-    rec[1] = idx + 1;
-    arr = (int *)(((int *)((int *)a0)[3])[0] + (idx * 8));
+    rec = a0->gfx.cur;
+    idx = rec->count;
+    rec->count = idx + 1;
+    arr = (int *)(a0->gfx.cur->base + (idx * 8));
     arr[0] = 0xFE000000;
     arr[1] = v;
 }
@@ -21886,43 +21884,43 @@ void gfx_setDepthImage(int *a0, int a1) {
  * flags), and the FIRST check reads a0->0xC INLINE twice (uopt CSEs it into
  * an expression temp coloured a1) instead of loading it into q. Checks 2-6
  * keep the q-carrier pointer. Flush helper = blank jal-0 placeholder. */
-void gfx_endDL(int *a0) {
-    int *rec1;
+void gfx_endDL(DLContext *a0) {
+    DLBuf *rec1;
     int *arr1;
     int idx2;
     int *arr2;
     int q;
 
-    rec1 = (int *)((int *)a0)[3];
-    q = rec1[1];
-    rec1[1] = q + 1;
-    arr1 = (int *)(((int *)((int *)a0)[3])[0] + (q * 8));
+    rec1 = a0->gfx.cur;
+    q = rec1->count;
+    rec1->count = q + 1;
+    arr1 = (int *)(a0->gfx.cur->base + (q * 8));
     arr1[0] = 0xE7000000;
     arr1[1] = 0;
 
-    q = ((int *)a0)[3];
-    idx2 = ((int *)q)[1];
-    ((int *)q)[1] = idx2 + 1;
-    arr2 = (int *)(((int *)((int *)a0)[3])[0] + (idx2 * 8));
+    q = (int)a0->gfx.cur;
+    idx2 = ((DLBuf *)q)->count;
+    ((DLBuf *)q)->count = idx2 + 1;
+    arr2 = (int *)(a0->gfx.cur->base + (idx2 * 8));
     arr2[0] = 0xB8000000;
     arr2[1] = 0;
 
-    q = ((unsigned int)((int *)((int *)a0)[3])[2] < (unsigned int)((int *)((int *)a0)[3])[1]) ? 1 : 0;
+    q = ((unsigned int)a0->gfx.cur->max < (unsigned int)a0->gfx.cur->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
-    q = *(int *)((char *)a0 + 0x1C);
-    q = ((unsigned int)((int *)q)[2] < (unsigned int)((int *)q)[1]) ? 1 : 0;
+    q = (int)a0->vtx.cur;
+    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
-    q = *(int *)((char *)a0 + 0x2C);
-    q = ((unsigned int)((int *)q)[2] < (unsigned int)((int *)q)[1]) ? 1 : 0;
+    q = (int)a0->light.cur;
+    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
-    q = *(int *)((char *)a0 + 0x3C);
-    q = ((unsigned int)((int *)q)[2] < (unsigned int)((int *)q)[1]) ? 1 : 0;
+    q = (int)a0->mtx.cur;
+    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
-    q = *(int *)((char *)a0 + 0x4C);
-    q = ((unsigned int)((int *)q)[2] < (unsigned int)((int *)q)[1]) ? 1 : 0;
+    q = (int)a0->vp.cur;
+    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
-    q = *(int *)((char *)a0 + 0x5C);
-    q = ((unsigned int)((int *)q)[2] < (unsigned int)((int *)q)[1]) ? 1 : 0;
+    q = (int)a0->hilite.cur;
+    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
     if (q != 0) gl_func_00000000(a0);
 }
 
