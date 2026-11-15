@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/anim.h"
 #include "gdl/skin.h"
+#include "gdl/dnode.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -655,7 +656,7 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
         sp40 = XCALL(gl_func_00000000_s, math_vec3Length_0005BBCC)((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
         if (kRo_Friction_vfn11_00063F34_20A0.v < (f64) sp40) {
             CALL(math_vec3Normalize)(&sp44);
-            var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * (*(f32 *)((char *)FW(arg0, 0x16C) + 0x360))) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
+            var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * DNODE(FW(arg0, 0x16C))->friction) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
             var_f0 = var_f0 * var_f0;
             if (kRo_Friction_vfn11_00063F34_20B0.v < (f64) var_f0) {
                 var_f0 = kRo_Friction_vfn11_00063F34_20B8.v;
@@ -670,7 +671,7 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
             sp44.unk0 = tx;
             sp44.unk4 = ty;
             sp44.unk8 = tz;
-            CALL(DNode_addImpulseAt_00065250)(FW(arg0, 0x16C), arg0 + 0x120, &sp44);
+            CALL(DNode_addImpulseAt_00065250)(FW(arg0, 0x16C) /* owner DNode */, arg0 + 0x120, &sp44);
         }
     }
 }
@@ -772,9 +773,9 @@ void DNodeAccum_reset_00064170(float *a0, int *a1) {
 
 /* DNodeAccum_addForce_000641DC: Vec3 force/torque accumulator (107 words, EXACT
  * 2026-10-14 agent-g; was 84.70 NM). The old "IDO won't promote self to
- * s0" residual was the v10 accumulate: through a `Vec3 *pp = &a0->v10`
+ * s0" residual was the force (+0x10) accumulate: through a `Vec3 *pp = &a0->force`
  * pointer local the a2 web loses the s0 contest to a0 (direct
- * `a0->v10.x += a2->x` keeps a2 in s0 and spills a0 to its arg home).
+ * `a0->force.x += a2->x` keeps a2 in s0 and spills a0 to its arg home).
  * Frame 0x80: pp/out/local homed top-down (0x7C/0x70/0x64), a 12-byte
  * function-scope pad below local puts the compiler's |m| spill at 0x54,
  * and a 36-byte BLOCK-scope pad in the then-arm supplies the rest (block
@@ -782,10 +783,11 @@ void DNodeAccum_reset_00064170(float *a0, int *a1) {
  * through the per-site f32(f32) blank alias (single-precision $f12). The
  * threshold double is &D+0x20C0; `thr < (double)m` = c.lt.d thr,m + bc1f. */
 extern f32 gl_func_00000000_sq641DC(f32);
+/* DNodeAccum (gdl/dnode.h) with Vec3 members; origin (+0x28) is not touched here */
 typedef struct S641DC_s {
-    float f00, f04, f08, f0C;
-    Vec3 v10;
-    Vec3 v1C;
+    float weight, pointSumX, pointSumY, pointSumZ;
+    Vec3 force;
+    Vec3 torque;
 } S641DC;
 void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     Vec3 *pp;
@@ -796,11 +798,11 @@ void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     float inv;
 
     m = XCALL(gl_func_00000000_sq641DC, math_vec3Length_0005BBCC)(a2->x * a2->x + a2->y * a2->y + a2->z * a2->z);
-    a0->f00 += m;
-    a0->f04 += a1->x * m;
-    a0->f08 += a1->y * m;
-    a0->f0C += a1->z * m;
-    pp = &a0->v10;
+    a0->weight += m;
+    a0->pointSumX += a1->x * m;
+    a0->pointSumY += a1->y * m;
+    a0->pointSumZ += a1->z * m;
+    pp = &a0->force;
     pp->x += a2->x;
     pp->y += a2->y;
     pp->z += a2->z;
@@ -813,9 +815,9 @@ void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
         out.x *= inv;
         out.y *= inv;
         out.z *= inv;
-        a0->v1C.x += out.x;
-        a0->v1C.y += out.y;
-        a0->v1C.z += out.z;
+        a0->torque.x += out.x;
+        a0->torque.y += out.y;
+        a0->torque.z += out.z;
     }
 }
 
@@ -853,11 +855,11 @@ void DNodeAccum_apply_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
 
     pv = (Vec3 *)(arg0 + 4);
     qv = (Vec3 *)(arg0 + 0x28);
-    len = *(f32*)((char*)arg0 + 0x0);
+    len = ((DNodeAccum *)arg0)->weight;
     if (!((f64)len < *(f64*)((char*)&D_00000000 + 0x20C8))) {
-        *(f32*)((char*)arg0 + 0x4) = *(f32*)((char*)arg0 + 0x4) / len;
-        *(f32*)((char*)arg0 + 0x8) = *(f32*)((char*)arg0 + 0x8) / len;
-        *(f32*)((char*)arg0 + 0xC) = *(f32*)((char*)arg0 + 0xC) / len;
+        ((DNodeAccum *)arg0)->pointSum[0] = ((DNodeAccum *)arg0)->pointSum[0] / len;
+        ((DNodeAccum *)arg0)->pointSum[1] = ((DNodeAccum *)arg0)->pointSum[1] / len;
+        ((DNodeAccum *)arg0)->pointSum[2] = ((DNodeAccum *)arg0)->pointSum[2] / len;
         if (1) {
         bx = pv->x - qv->x;
         by = pv->y - qv->y; if (by) {}
@@ -871,9 +873,9 @@ void DNodeAccum_apply_00064388(char *arg0, char *arg1, Vec3 *arg2, f32 arg3) {
         g[2] = e.z;
         g[1] = e.y;
         g[0] = e.x;
-        c0 = *(f32*)((char*)arg0 + 0x1C);
-        c1 = *(f32*)((char*)arg0 + 0x20);
-        c2 = *(f32*)((char*)arg0 + 0x24);
+        c0 = ((DNodeAccum *)arg0)->torque[0];
+        c1 = ((DNodeAccum *)arg0)->torque[1];
+        c2 = ((DNodeAccum *)arg0)->torque[2];
         spd = (gl_func_00000000_sq64388((c0 * c0) + (c1 * c1) + (c2 * c2)) / *(f32*)((char*)&D_00000000 + 0x20D0)) * arg3;
         gl_func_00000000_n64388(arg0 + 0x1C);
         gl_func_00000000_p64388(arg1, arg0 + 0x1C, spd);
@@ -1088,21 +1090,21 @@ void *DNode_ctor(void *arg0, void *arg1) {
 
     if (arg0 != 0 || (arg0 = (void *)CALL(mem_new)(0x3D4)) != 0) {
         gl_init_00000000_64588(arg0, arg1, 0.0f, 0.0f, 0.0f);
-        FW64(arg0, 0x28) = (int)&gl_ref_00000000_64588;
-        if ((base = (char *)arg0 + 0x108) != 0 ||
+        DNODE(arg0)->mnode.node.vptr = (int)&gl_ref_00000000_64588; /* DNode_vtbl */
+        if ((base = (char *)&DNODE(arg0)->parms) != 0 ||
             (base = (char *)CALL(mem_new)(0x180)) != 0) {
             if ((p = base) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
-                FW64(p, 0) = (int)&sStr_DNode_Parms_223C0;
-                FW64(p, 4) = 0;
+                ((DNodeParms *)p)->name = (int)&sStr_DNode_Parms_223C0;
+                ((DNodeParms *)p)->head = 0;
             }
             u1.v = sTag_imp_223D0;
             {
                 t = u1;
                 if ((m = base + 0x8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_1;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 0.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_1;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =0.0f;
                 }
             }
             u2.v = sTag_spd_223D4;
@@ -1110,9 +1112,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u2;
                 if ((m = base + 0x20) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_2;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = kRo_DNode_ctor_20D4;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_2;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =kRo_DNode_ctor_20D4;
                 }
             }
             u3.v = sTag_spl_223D8;
@@ -1120,9 +1122,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u3;
                 if ((m = base + 0x38) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_3;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 100.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_3;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =100.0f;
                 }
             }
             u4.v = sTag_spw_223DC;
@@ -1130,9 +1132,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u4;
                 if ((m = base + 0x50) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_4;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 0.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_4;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =0.0f;
                 }
             }
             u5.v = sTag_gvt_223E0;
@@ -1140,9 +1142,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u5;
                 if ((m = base + 0x68) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_5;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = kRo_DNode_ctor_20D8;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_5;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =kRo_DNode_ctor_20D8;
                 }
             }
             u6.v = sTag_suc_223E4;
@@ -1150,9 +1152,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u6;
                 if ((m = base + 0x80) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_6;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 0.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_6;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =0.0f;
                 }
             }
             u7.v = sTag_vsc_223E8;
@@ -1160,9 +1162,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u7;
                 if ((m = base + 0x98) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_7;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = kRo_DNode_ctor_20DC;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_7;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =kRo_DNode_ctor_20DC;
                 }
             }
             u8.v = sTag_usc_223EC;
@@ -1170,9 +1172,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u8;
                 if ((m = base + 0xB0) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_8;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = kRo_DNode_ctor_20E0;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_8;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =kRo_DNode_ctor_20E0;
                 }
             }
             u9.v = sTag_tsc_223F0;
@@ -1180,9 +1182,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u9;
                 if ((m = base + 0xC8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_9;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 1.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_9;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =1.0f;
                 }
             }
             {
@@ -1197,12 +1199,12 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = uc1;
                 if ((mb1 = base + 0xE0) != 0 || (mb1 = (char *)CALL(mem_new)(0x20)) != 0) {
                     CALL(Parms_addParm)(mb1, base, t, 1);
-                    FW64(mb1, 0xC) = (int)&gl_ref_000221F0_64588_c1;
-                    FW64(mb1, 0x1C) = 0;
+                    ((GdlParmV3 *)mb1)->type = (int)&gl_ref_000221F0_64588_c1;
+                    ((GdlParmV3 *)mb1)->unk1C = 0;
                     tmp = set[2].v;
-                    FF64(mb1, 0x10) = tmp.x;
-                    FF64(mb1, 0x14) = tmp.y;
-                    FF64(mb1, 0x18) = tmp.z;
+                    ((GdlParmV3 *)mb1)->value[0] = tmp.x;
+                    ((GdlParmV3 *)mb1)->value[1] = tmp.y;
+                    ((GdlParmV3 *)mb1)->value[2] = tmp.z;
                 }
             }
             u10.v = sTag_unc_223F8;
@@ -1210,9 +1212,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u10;
                 if ((m = base + 0x100) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_10;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 0.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_10;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =0.0f;
                 }
             }
             u11.v = sTag_dsc_223FC;
@@ -1220,9 +1222,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u11;
                 if ((m = base + 0x118) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_11;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 1.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_11;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =1.0f;
                 }
             }
             u12.v = sTag_csc_22400;
@@ -1230,9 +1232,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u12;
                 if ((m = base + 0x130) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_12;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 420.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_12;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =420.0f;
                 }
             }
             u13.v = sTag_rad_22404;
@@ -1240,9 +1242,9 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = u13;
                 if ((m = base + 0x148) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                     CALL(Parms_addParm)(m, base, t, 1);
-                    FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_13;
-                    FW64(m, 0x14) = 0;
-                    FF64(m, 0x10) = 150.0f;
+                    PARMF(m)->type =(int)&gl_ref_000221D8_64588_13;
+                    PARMF(m)->unk14 = 0;
+                    PARMF(m)->value =150.0f;
                 }
             }
             {
@@ -1260,20 +1262,20 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = uc2;
                 if ((mb2 = base + 0x160) != 0 || (mb2 = (char *)CALL(mem_new)(0x20)) != 0) {
                     CALL(Parms_addParm)(mb2, base, t, 1);
-                    FW64(mb2, 0xC) = (int)&gl_ref_000221F0_64588_c2;
-                    FW64(mb2, 0x1C) = 0;
+                    ((GdlParmV3 *)mb2)->type = (int)&gl_ref_000221F0_64588_c2;
+                    ((GdlParmV3 *)mb2)->unk1C = 0;
                     tmp = set[2].v;
-                    FF64(mb2, 0x10) = tmp.x;
-                    FF64(mb2, 0x14) = tmp.y;
-                    FF64(mb2, 0x18) = tmp.z;
+                    ((GdlParmV3 *)mb2)->value[0] = tmp.x;
+                    ((GdlParmV3 *)mb2)->value[1] = tmp.y;
+                    ((GdlParmV3 *)mb2)->value[2] = tmp.z;
                 }
             }
         }
-        if ((base = (char *)arg0 + 0x39C) != 0 ||
+        if ((base = (char *)&DNODE(arg0)->attached) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
             FW64(base, 0) = 0;
         }
-        if ((base = (char *)arg0 + 0x3A0) != 0 ||
+        if ((base = (char *)&DNODE(arg0)->unk3A0) != 0 ||
             (base = (char *)CALL(mem_new)(4)) != 0) {
             FW64(base, 0) = 0;
         }
@@ -1321,21 +1323,21 @@ void DNode_integrate_00064DEC(char *arg0) {
     f32 sumsq; /* dead: its ghost home keeps the spill slots at 0x28/0x24 (65060 rule) */
     f32 r;
 
-    CALL(math_vec4Normalize)(arg0 + 0x2FC);
-    CALL(math_quatMul)(arg0 + 0x2FC, arg0 + 0xCC, arg0 + 0xCC);
-    FF(arg0, 0x31C) += FF(arg0, 0x180);
-    FF(arg0, 0xB4) += FF(arg0, 0x318);
+    CALL(math_vec4Normalize)(DNODE(arg0)->angVel);
+    CALL(math_quatMul)(DNODE(arg0)->angVel, DNODE(arg0)->vqs.quat, DNODE(arg0)->vqs.quat);
+    DNODE(arg0)->vel[1] += DNODE(arg0)->parms.gvt.value;
+    DNODE(arg0)->vqs.trans[0] += DNODE(arg0)->vel[0];
     pB = (Vec3 *)arg0;
     if (1) {
-        pB = (Vec3 *)((char *)pB + 0x318);
+        pB = (Vec3 *)((char *)pB + 0x318); /* &vel */
     }
     pC = (Vec3 *)arg0;
     if (1) {
-        pC = (Vec3 *)((char *)pC + 0x33C);
+        pC = (Vec3 *)((char *)pC + 0x33C); /* &lastVel */
     }
     while (0) { dx = pC->x; }
-    FF(arg0, 0xB8) += FF(arg0, 0x31C);
-    FF(arg0, 0xBC) += FF(arg0, 0x320);
+    DNODE(arg0)->vqs.trans[1] += DNODE(arg0)->vel[1];
+    DNODE(arg0)->vqs.trans[2] += DNODE(arg0)->vel[2];
     do {
         dx = pB->x - pC->x, dy = pB->y - pC->y, dz = pB->z - pC->z;
         sp70.x = dx;
@@ -1344,77 +1346,52 @@ void DNode_integrate_00064DEC(char *arg0) {
     } while (0);
     sp7C = sp70;
     sp54 = sp7C;
-    FF(arg0, 0x330) = sp54.x;
-    FF(arg0, 0x334) = sp54.y;
-    FF(arg0, 0x338) = sp54.z;
+    DNODE(arg0)->velDelta[0] = sp54.x;
+    DNODE(arg0)->velDelta[1] = sp54.y;
+    DNODE(arg0)->velDelta[2] = sp54.z;
     sp7C = *pB;
-    FF(arg0, 0x33C) = sp7C.x;
-    FF(arg0, 0x340) = sp7C.y;
-    FF(arg0, 0x344) = sp7C.z;
-    CALL(math_vec4Normalize)(arg0 + 0xCC);
-    sp7C = *(Vec3 *)(arg0 + 0xB4);
-    FF(arg0, 0xDC) = sp7C.x;
-    FF(arg0, 0xE0) = sp7C.y;
-    FF(arg0, 0xE4) = sp7C.z;
-    sp54 = *(Vec3 *)(arg0 + 0xC0);
-    FF(arg0, 0xE8) = sp54.x;
-    FF(arg0, 0xEC) = sp54.y;
-    FF(arg0, 0xF0) = sp54.z;
-    sp34 = *(Vec3 *)(arg0 + 0xCC);
-    FF(arg0, 0xF4) = sp34.x;
-    FF(arg0, 0xF8) = sp34.y;
-    FF(arg0, 0xFC) = sp34.z;
-    FF(arg0, 0x100) = FF(arg0, 0xD8);
-    CALL(DNode_quatToMtx_00065B40)(arg0, arg0 + 0xCC);
-    dy = FF(arg0, 0x318);
-    dz = FF(arg0, 0x320);
-    dx = FF(arg0, 0x31C);
+    DNODE(arg0)->lastVel[0] = sp7C.x;
+    DNODE(arg0)->lastVel[1] = sp7C.y;
+    DNODE(arg0)->lastVel[2] = sp7C.z;
+    CALL(math_vec4Normalize)(DNODE(arg0)->vqs.quat);
+    sp7C = *(Vec3 *)DNODE(arg0)->vqs.trans;
+    DNODE(arg0)->cvqs.trans[0] = sp7C.x;
+    DNODE(arg0)->cvqs.trans[1] = sp7C.y;
+    DNODE(arg0)->cvqs.trans[2] = sp7C.z;
+    sp54 = *(Vec3 *)DNODE(arg0)->vqs.scale;
+    DNODE(arg0)->cvqs.scale[0] = sp54.x;
+    DNODE(arg0)->cvqs.scale[1] = sp54.y;
+    DNODE(arg0)->cvqs.scale[2] = sp54.z;
+    sp34 = *(Vec3 *)DNODE(arg0)->vqs.quat;
+    DNODE(arg0)->cvqs.quat[0] = sp34.x;
+    DNODE(arg0)->cvqs.quat[1] = sp34.y;
+    DNODE(arg0)->cvqs.quat[2] = sp34.z;
+    DNODE(arg0)->cvqs.quat[3] = DNODE(arg0)->vqs.quat[3];
+    CALL(DNode_quatToMtx_00065B40)(arg0, DNODE(arg0)->vqs.quat);
+    dy = DNODE(arg0)->vel[0];
+    dz = DNODE(arg0)->vel[2];
+    dx = DNODE(arg0)->vel[1];
     spA4[0] = dy * dy + dz * dz + dx * dx;
     if (spA4[0] != (0, 0.0f)) {
         r = XCALL(gl_func_00000000_sqf, sqrtf)(spA4[0]);
-        FF(arg0, 0x348) = r;
-        FF(arg0, 0x30C) = FF(arg0, 0x318) / r;
-        FF(arg0, 0x310) = FF(arg0, 0x31C) / r;
-        FF(arg0, 0x314) = FF(arg0, 0x320) / r;
+        DNODE(arg0)->speed = r;
+        DNODE(arg0)->velDir[0] = DNODE(arg0)->vel[0] / r;
+        DNODE(arg0)->velDir[1] = DNODE(arg0)->vel[1] / r;
+        DNODE(arg0)->velDir[2] = DNODE(arg0)->vel[2] / r;
     } else {
-        FF(arg0, 0x348) = 0.0f;
-        FF(arg0, 0x30C) = 0.0f;
-        FF(arg0, 0x310) = 0.0f;
-        FF(arg0, 0x314) = 0.0f;
+        DNODE(arg0)->speed = 0.0f;
+        DNODE(arg0)->velDir[0] = 0.0f;
+        DNODE(arg0)->velDir[1] = 0.0f;
+        DNODE(arg0)->velDir[2] = 0.0f;
     }
 }
 
-/* DNode_init_00065060: 58-insn full transform-reset + 2-dispatch (0xE8, frame 0x38).
- *
- * Decoded structure (raw-word disasm):
- *   // Initialize transform fields on self (a0):
- *   self->[0x38C] = 0xFFFF;                          // sentinel id
- *   *(float*)(self + 0x34C..0x354) = 0.0f;           // 3 floats zero
- *   *(float*)(self + 0x318..0x320) = 0.0f;           // Vec3 zero (translation)
- *   *(float*)(self + 0x2FC..0x304) = 0.0f;           // Vec3 zero (rotation x,y,z)
- *   *(float*)(self + 0x330..0x338) = 0.0f;           // Vec3 zero (scale-related)
- *   *(float*)(self + 0x390..0x398) = 1.0f;           // Vec3 = (1,1,1) (scale identity)
- *   *(float*)(self + 0x308) = 1.0f;                  // quaternion w = 1 (identity)
- *
- *   // Copy 3 ints from self->[0x318..0x320] to lui_sym->[0x10..0x18]:
- *   *(int*)(D_global + 0x10) = self->[0x318];
- *   *(int*)(D_global + 0x14) = self->[0x31C];
- *   *(int*)(D_global + 0x18) = self->[0x320];
- *
- *   // before 1st dispatch — type-pun copy self[0x318..0x320] -> self[0x33C..0x344]
- *   // (int load, float store via stack bounce sp1C):
- *   self->[0x33C..0x344] = self->[0x318..0x320];
- *   AnimPlayer_update(self);            // 1st dispatch
- *   // 2nd dispatch — copies self float fields 0x120/0x138/0x1B0 -> 0x288..0x290:
- *   *(float*)(self + 0x348) = 0.0f;
- *   self->[0x288] = *(float*)(self + 0x120);
- *   self->[0x28C] = *(float*)(self + 0x138);
- *   self->[0x290] = *(float*)(self + 0x1B0);
- *   AnimPlayer_update(self);            // 2nd dispatch
- *
- * Full transform-reset: quat (0,0,0,1), translation/rotation/scale = 0/0/1.
- * Sibling of DNode_handleMsg (op-6 transform-reset) — same identity layout
- * at +0x2FC..+0x308 (quat) and +0x318..+0x320 (translation).
+/* DNode_init_00065060: reset the dynamics state (58 insns, frame 0x38): zero vel, angVel
+ * (identity quat), velDelta, unk34C and speed, unk390 = (1, 1, 1), unk38C = 0xFFFF, set
+ * doFlags 0x10, lastVel = vel, then DNode_resetAccums_00065148 (accumulators + worldCog),
+ * surfImp / surfSpd / surfVsc = the imp / spd / vsc parms, and DNode_quatToMtx_00065B40
+ * (axes from cvqs.quat). The callees come from the bootup TextReloc entries at 0x79774 /
+ * 0x7979C (scripts/uso-imports.py sites bootup); older notes called both AnimPlayer_update.
  *
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
@@ -1457,50 +1434,53 @@ void DNode_integrate_00064DEC(char *arg0) {
  * `int *flags` declared FIRST takes the top slot 0x34, `int pad_a[3]`
  * 0x28..0x33, and tmp lands at the target's sp+0x1C; frame 0x38 unchanged.
  * (pad_a[2] + flags-last was 0x30 / 0x24 / home 0x1C, the 4-word residual.)
- * Both jals are the in-unit AnimPlayer_update, called through the blank import
- * gl_func_00062F64_blank (= 0 in undefined_syms_auto.txt): the USO word is a
- * load-time reloc, a direct in-unit call would bake 0x0C018BD9 (67AC4 rule).
+ * Both jals are in-unit self-relocations (resetAccums, quatToMtx), called through the
+ * blank import gl_func_00062F64_blank (= 0 in undefined_syms_auto.txt): the USO word is
+ * a load-time reloc, a direct in-unit call would bake the jal target (67AC4 rule).
  */
 extern void gl_func_00062F64_blank(char *);
 void DNode_init_00065060(char *arg0) {
-    int *flags = (int *)(arg0 + 0x18);
+    int *flags = &DNODE(arg0)->mnode.node.doFlags;
     int pad_a[3];
     Tri3i tmp;
-    *(s32 *)(arg0 + 0x38C) = 0xFFFF;
-    *(f32 *)(arg0 + 0x34C) = 0.0f;
-    *(f32 *)(arg0 + 0x350) = 0.0f;
-    *(f32 *)(arg0 + 0x354) = 0.0f;
-    *(f32 *)(arg0 + 0x318) = 0.0f;
-    *(f32 *)(arg0 + 0x31C) = 0.0f;
-    *(f32 *)(arg0 + 0x320) = 0.0f;
-    *(f32 *)(arg0 + 0x2FC) = (float)0;
-    *(f32 *)(arg0 + 0x300) = (float)0;
-    *(f32 *)(arg0 + 0x304) = (float)0;
-    *(f32 *)(arg0 + 0x330) = (float)0;
-    *(f32 *)(arg0 + 0x334) = (float)0;
-    *(f32 *)(arg0 + 0x338) = (float)0;
-    *(f32 *)(arg0 + 0x390) = 1.0f;
-    *(f32 *)(arg0 + 0x394) = 1.0f;
-    *(f32 *)(arg0 + 0x398) = 1.0f;
-    *(f32 *)(arg0 + 0x308) = (float)1;
+    DNODE(arg0)->unk38C = 0xFFFF;
+    DNODE(arg0)->unk34C[0] = 0.0f;
+    DNODE(arg0)->unk34C[1] = 0.0f;
+    DNODE(arg0)->unk34C[2] = 0.0f;
+    DNODE(arg0)->vel[0] = 0.0f;
+    DNODE(arg0)->vel[1] = 0.0f;
+    DNODE(arg0)->vel[2] = 0.0f;
+    DNODE(arg0)->angVel[0] = (float)0;
+    DNODE(arg0)->angVel[1] = (float)0;
+    DNODE(arg0)->angVel[2] = (float)0;
+    DNODE(arg0)->velDelta[0] = (float)0;
+    DNODE(arg0)->velDelta[1] = (float)0;
+    DNODE(arg0)->velDelta[2] = (float)0;
+    DNODE(arg0)->unk390[0] = 1.0f;
+    DNODE(arg0)->unk390[1] = 1.0f;
+    DNODE(arg0)->unk390[2] = 1.0f;
+    DNODE(arg0)->angVel[3] = (float)1;
     goto mid;
 mid:
     *flags |= 0x10;
-    tmp = *(Tri3i *)(arg0 + 0x318);
-    *(f32 *)(arg0 + 0x33C) = *(f32 *)&tmp.a;
-    *(f32 *)(arg0 + 0x340) = *(f32 *)&tmp.b;
-    *(f32 *)(arg0 + 0x344) = *(f32 *)&tmp.c;
-    gl_func_00062F64_blank(arg0);
-    *(f32 *)(arg0 + 0x348) = (float)0;
-    *(f32 *)(arg0 + 0x288) = *(f32 *)(arg0 + 0x120);
-    *(f32 *)(arg0 + 0x28C) = *(f32 *)(arg0 + 0x138);
-    *(f32 *)(arg0 + 0x290) = *(f32 *)(arg0 + 0x1B0);
-    gl_func_00062F64_blank(arg0);
+    tmp = *(Tri3i *)DNODE(arg0)->vel;
+    DNODE(arg0)->lastVel[0] = *(f32 *)&tmp.a;
+    DNODE(arg0)->lastVel[1] = *(f32 *)&tmp.b;
+    DNODE(arg0)->lastVel[2] = *(f32 *)&tmp.c;
+    XCALL(gl_func_00062F64_blank, DNode_resetAccums_00065148)(arg0);
+    DNODE(arg0)->speed = (float)0;
+    DNODE(arg0)->surfImp = DNODE(arg0)->parms.imp.value;
+    DNODE(arg0)->surfSpd = DNODE(arg0)->parms.spd.value;
+    DNODE(arg0)->surfVsc = DNODE(arg0)->parms.vsc.value;
+    XCALL(gl_func_00062F64_blank, DNode_quatToMtx_00065B40)(arg0);
 }
 
-/* DNode_resetAccums_00065148: 66-insn 3D affine-transform helper (size 0x108, frame 0x50).
+/* DNode_resetAccums_00065148: clear both force accumulators (origin = cvqs.trans) and
+ * recompute worldCog = parms.cog through the world matrix cmtx (66 insns, frame 0x50).
+ * Run 511: the offsets below are the DNode fields of include/gdl/dnode.h (0x1F8 =
+ * parms.cog.value, 0x70..0xA8 = mnode.cmtx, 0x324 = worldCog).
  *
- * Performs:
+ * Older decode notes:
  *   1. Two leading jal calls (likely matrix-composition / pre-update)
  *      jal func1(obj + 0xDC, obj + 0x294)   — sub-matrix update at +0xDC
  *      jal func2(obj + 0xDC, obj + 0x2C8)   — sub-matrix update at +0x2C8
@@ -1573,48 +1553,32 @@ void DNode_resetAccums_00065148(char *obj) {
     Tri3i tmp;
     float x, y;
     float r0, r1, r2;
-    CALL(DNodeAccum_reset_00064170)(obj + 0x294, obj + 0xDC);
-    CALL(DNodeAccum_reset_00064170)(obj + 0x2C8, obj + 0xDC);
-    tmp = *(Tri3i *)(obj + 0x1F8);
-    *(float *)(obj + 0x324) = *(float *)&tmp.a;
-    *(float *)(obj + 0x328) = *(float *)&tmp.b;
-    *(float *)(obj + 0x32C) = *(float *)&tmp.c;
-    x = *(float *)(obj + 0x324);
-    y = *(float *)(obj + 0x328);
-    r0 = *(float *)(obj + 0xA0) + (*(float *)(obj + 0x90) * *(float *)(obj + 0x32C) + (*(float *)(obj + 0x80) * y + *(float *)(obj + 0x70) * x));
-    r1 = *(float *)(obj + 0xA4) + (*(float *)(obj + 0x94) * *(float *)(obj + 0x32C) + (*(float *)(obj + 0x84) * y + *(float *)(obj + 0x74) * x));
-    r2 = *(float *)(obj + 0xA8) + (*(float *)(obj + 0x98) * *(float *)(obj + 0x32C) + (*(float *)(obj + 0x88) * y + *(float *)(obj + 0x78) * x));
+    CALL(DNodeAccum_reset_00064170)(&DNODE(obj)->impulseAcc, DNODE(obj)->cvqs.trans);
+    CALL(DNodeAccum_reset_00064170)(&DNODE(obj)->moveAcc, DNODE(obj)->cvqs.trans);
+    tmp = *(Tri3i *)DNODE(obj)->parms.cog.value;
+    DNODE(obj)->worldCog[0] = *(float *)&tmp.a;
+    DNODE(obj)->worldCog[1] = *(float *)&tmp.b;
+    DNODE(obj)->worldCog[2] = *(float *)&tmp.c;
+    x = DNODE(obj)->worldCog[0];
+    y = DNODE(obj)->worldCog[1];
+    /* worldCog = cog * cmtx (row-vector convention: rows 0..2 scale x / y / z, row 3 = translation) */
+    r0 = DNODE(obj)->mnode.cmtx[3][0] + (DNODE(obj)->mnode.cmtx[2][0] * DNODE(obj)->worldCog[2] + (DNODE(obj)->mnode.cmtx[1][0] * y + DNODE(obj)->mnode.cmtx[0][0] * x));
+    r1 = DNODE(obj)->mnode.cmtx[3][1] + (DNODE(obj)->mnode.cmtx[2][1] * DNODE(obj)->worldCog[2] + (DNODE(obj)->mnode.cmtx[1][1] * y + DNODE(obj)->mnode.cmtx[0][1] * x));
+    r2 = DNODE(obj)->mnode.cmtx[3][2] + (DNODE(obj)->mnode.cmtx[2][2] * DNODE(obj)->worldCog[2] + (DNODE(obj)->mnode.cmtx[1][2] * y + DNODE(obj)->mnode.cmtx[0][2] * x));
     if (1) {
-        *(float *)(obj + 0x324) = r0;
-        *(float *)(obj + 0x328) = r1;
-        *(float *)(obj + 0x32C) = r2;
+        DNODE(obj)->worldCog[0] = r0;
+        DNODE(obj)->worldCog[1] = r1;
+        DNODE(obj)->worldCog[2] = r2;
     }
 }
 
-/* DNode_addImpulseAt_00065250 — verified structural decode (Vec3-diff + double
- * struct-copy + call, 33 insns; FPU-load-order + struct-copy sp-slot
- * allocation diverges from clean C = documented sub-80 struct-copy class
- * → INCLUDE_ASM build path; struct-typing reference).
- * Struct-typing: a0 has a Vec3 @0x324 (subtrahend) and a target/object
- * @0x294 (passed to the callee); a1 is a Vec3*. Computes a1 - a0->0x324,
- * duplicates it twice on the stack, passes the last copy. Caps <80: the
- * target's specific base-then-a1 lwc1 load interleave + the 3-int struct
- * assignment lw/sw chain with exact sp-slot (52/68/84) allocation is not
- * reproduced by Vec3-local C (19/33 first pass). The documented finicky
- * struct-copy+FP-load-order class — multi-run/permuter, not a clean
- * vein win. INCLUDE_ASM is the build path (no episode). */
 typedef struct Vec3_f { float x, y, z; } Vec3_f;
-/* DNode_addImpulseAt_00065250 — Vec3-diff (a1 - a0->0x324) duplicated twice on the
- * stack, last copy passed to AnimPlayer_update(a0+0x294, &f). 33 insns.
- * Bugs fixed this pass: (1) WRONG-FUNCTION — was calling gl_func_00000000;
- * the target jal is AnimPlayer_update (K&R direct call -> jal). (2) LOAD-ORDER
- * — the target loads all 3 subtrahend floats (a0+0x324 .x/.y/.z), then all 3
- * a1 floats, then does the subs in z,y,x order. Snapshotting the 6 floats
- * into scalars before the subtraction reproduces the grouped-lwc1 +
- * reverse-order sub shape. 66.85% -> 94.38% fuzzy. Residual = struct-copy
- * sp-slot allocation (52/68/84 vs 44/.. ; frame -88 vs -96); documented
- * finicky struct-copy class. INCLUDE_ASM is the build path (no episode). */
-/* DNode_addImpulseAt_00065250 — EXACT 34/34 (2026-07-03). Levers (in order cracked):
+/* DNode_addImpulseAt_00065250(dnode, point, force): add a force at a world point to the
+ * impulse accumulator, as DNodeAccum_addForce_000641DC(&impulseAcc, point - worldCog, force)
+ * (callee from the bootup TextReloc at 0x7992C; older notes called it AnimPlayer_update).
+ * Callers: SnowBCollider_onContact / _edgeGrip_0000E2D0, PhysQNode_vfn11_00063964,
+ * Friction_vfn11_00063F34. The force arrives in $a2 and is passed through untouched.
+ * EXACT 34/34 (2026-07-03). Levers (in order cracked):
  * 1. FP pool-coloring: named float diffs dx,dy,dz (defs x,y,z) -> f0,f2,f12
  *    from pool START; the 6 field loads stay expression temps (f4-f18) by
  *    reading a1->N / sub->N directly in the sub expressions.
@@ -1646,7 +1610,7 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
     float dz, dy, dx;
     Vec3_f *sub;
     volatile int pad_a, pad_b;
-    sub = (Vec3_f *)(a0 + 0x324);
+    sub = (Vec3_f *)DNODE(a0)->worldCog;
     if (sub) {}
     dx = a1->x - sub->x; dy = a1->y - sub->y; dz = a1->z - sub->z;
     d.z = dz;
@@ -1655,7 +1619,9 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
     if (sub) {}
     e = d;
     f = e;
-    gl_func_00062F64_65250(a0 + 0x294, &f);
+    /* DNodeAccum_addForce_000641DC(&impulseAcc, point - worldCog, force): a1 is the world point;
+     * the force argument is the caller's third arg, left in $a2 (K&R pass-through) */
+    XCALL(gl_func_00062F64_65250, DNodeAccum_addForce_000641DC)(&DNODE(a0)->impulseAcc, &f);
 }
 
 /* DNode_addMoveAt_000652D8: 34-insn Vec3-diff + buf-copy chain + dispatch (0x88, frame 0x60).
@@ -1666,14 +1632,14 @@ void DNode_addImpulseAt_00065250(int a0, Vec3_f *a1) {
  * 0x10-stride triple-buf frame (d@0x34/e@0x44/f@0x54, volatile pads),
  * same z/y/x sub order, same partial store-forwarding across the double
  * struct copy (f.y/f.z forwarded from d's temps, f.x reloaded from e),
- * same jal-0 placeholder callee (AnimPlayer_update per 65250's reloc).
+ * same jal-0 placeholder callee (DNodeAccum_addForce_000641DC, TextReloc 0x799B4).
  * Body is a verbatim mirror of 65250's proven-exact C (all 5 levers:
  * named-diff FP pool coloring, decl-order frame, leading/trailing empty
  * `if (sub) {}` BB splits, one-line triple-sub grouping) with only
  * 0x294 -> 0x2C8. 34/34 words vs .s.
- * 2026-10-16 agent-g: UNWRAPPED. The in-unit AnimPlayer_update goes through the
+ * 2026-10-16 agent-g: UNWRAPPED. The in-unit call goes through the
  * blank alias gl_func_00062F64_652D8 (= 0 in undefined_syms_auto.txt): the USO word
- * is a load-time reloc, a direct in-unit call would bake 0x0C018BD9. */
+ * is a load-time reloc, a direct in-unit call would bake the jal target. */
 extern int gl_func_00062F64_652D8();
 void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
     Vec3_f f;
@@ -1684,7 +1650,7 @@ void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
     float dz, dy, dx;
     Vec3_f *sub;
     volatile int pad_a, pad_b;
-    sub = (Vec3_f *)(a0 + 0x324);
+    sub = (Vec3_f *)DNODE(a0)->worldCog;
     if (sub) {}
     dx = a1->x - sub->x; dy = a1->y - sub->y; dz = a1->z - sub->z;
     d.z = dz;
@@ -1693,7 +1659,8 @@ void DNode_addMoveAt_000652D8(int a0, Vec3_f *a1) {
     if (sub) {}
     e = d;
     f = e;
-    gl_func_00062F64_652D8(a0 + 0x2C8, &f);
+    /* DNodeAccum_addForce_000641DC(&moveAcc, point - worldCog, force in $a2) */
+    XCALL(gl_func_00062F64_652D8, DNodeAccum_addForce_000641DC)(&DNODE(a0)->moveAcc, &f);
 }
 
 /* DNode_resetXform_00065360: transform-object reset (58 words, BYTE-EXACT 2026-10-14 agent-g).
@@ -1717,40 +1684,42 @@ void DNode_resetXform_00065360(char *a0, Vec3_f *a1) {
     int v0;
 
     tmp = *a1;
-    *(f32 *)(a0 + 0xDC) = tmp.x;
-    *(f32 *)(a0 + 0xE0) = tmp.y;
-    *(f32 *)(a0 + 0xE4) = tmp.z;
+    DNODE(a0)->cvqs.trans[0] = tmp.x;
+    DNODE(a0)->cvqs.trans[1] = tmp.y;
+    DNODE(a0)->cvqs.trans[2] = tmp.z;
     tmp = *a1;
-    v0 = *(int *)(a0 + 0x28);
-    *(f32 *)(a0 + 0xB4) = tmp.x;
-    *(f32 *)(a0 + 0xB8) = tmp.y;
-    *(f32 *)(a0 + 0xBC) = tmp.z;
-    *(f32 *)(a0 + 0x314) = 0.0;
-    *(f32 *)(a0 + 0x310) = 0.0;
-    *(f32 *)(a0 + 0x30C) = 0.0;
-    *(f32 *)(a0 + 0x320) = 0.0;
-    *(f32 *)(a0 + 0x31C) = 0.0;
-    *(f32 *)(a0 + 0x318) = 0.0;
-    *(f32 *)(a0 + 0x304) = 0.0f;
-    *(f32 *)(a0 + 0x300) = 0.0f;
-    *(f32 *)(a0 + 0x2FC) = 0.0f;
-    *(f32 *)(a0 + 0xFC) = 0.0f;
-    *(f32 *)(a0 + 0xF8) = 0.0f;
-    *(f32 *)(a0 + 0xF4) = 0.0f;
-    *(f32 *)(a0 + 0xD4) = 0.0f;
-    *(f32 *)(a0 + 0xD0) = 0.0f;
-    *(f32 *)(a0 + 0xCC) = 0.0f;
-    *(f32 *)(a0 + 0x308) = 1.0f;
-    *(f32 *)(a0 + 0x100) = 1.0f;
-    *(f32 *)(a0 + 0xD8) = 1.0f;
+    v0 = DNODE(a0)->mnode.node.vptr;
+    DNODE(a0)->vqs.trans[0] = tmp.x;
+    DNODE(a0)->vqs.trans[1] = tmp.y;
+    DNODE(a0)->vqs.trans[2] = tmp.z;
+    DNODE(a0)->velDir[2] = 0.0;
+    DNODE(a0)->velDir[1] = 0.0;
+    DNODE(a0)->velDir[0] = 0.0;
+    DNODE(a0)->vel[2] = 0.0;
+    DNODE(a0)->vel[1] = 0.0;
+    DNODE(a0)->vel[0] = 0.0;
+    DNODE(a0)->angVel[2] = 0.0f;
+    DNODE(a0)->angVel[1] = 0.0f;
+    DNODE(a0)->angVel[0] = 0.0f;
+    DNODE(a0)->cvqs.quat[2] = 0.0f;
+    DNODE(a0)->cvqs.quat[1] = 0.0f;
+    DNODE(a0)->cvqs.quat[0] = 0.0f;
+    DNODE(a0)->vqs.quat[2] = 0.0f;
+    DNODE(a0)->vqs.quat[1] = 0.0f;
+    DNODE(a0)->vqs.quat[0] = 0.0f;
+    DNODE(a0)->angVel[3] = 1.0f;
+    DNODE(a0)->cvqs.quat[3] = 1.0f;
+    DNODE(a0)->vqs.quat[3] = 1.0f;
+    /* virtual call: vtable entry +0x10 (s16 this-delta) / +0x14 (fn) */
     (*(int (**)(char *))(v0 + 0x14))(*(short *)(v0 + 0x10) + a0);
 }
 
 extern int gl_func_00000000();
 
 void DNode_applyAccums_00065448(char *a0) {
-    CALL(DNodeAccum_apply_00064388)(a0 + 0x294, a0 + 0x2FC, a0 + 0x318, *(int*)(a0 + 0x1E0));
-    CALL(DNodeAccum_apply_00064388)(a0 + 0x2C8, a0 + 0xCC, a0 + 0xB4, *(int*)(a0 + 0x1E0));
+    /* tsc.value passed as its raw word (K&R int arg = the float bits in $a3) */
+    CALL(DNodeAccum_apply_00064388)(&DNODE(a0)->impulseAcc, DNODE(a0)->angVel, DNODE(a0)->vel, *(int *)&DNODE(a0)->parms.tsc.value);
+    CALL(DNodeAccum_apply_00064388)(&DNODE(a0)->moveAcc, DNODE(a0)->vqs.quat, DNODE(a0)->vqs.trans, *(int *)&DNODE(a0)->parms.tsc.value);
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_65494.cpp (child-list contact
@@ -1787,7 +1756,7 @@ void DNode_updateAttached(char *self) {
     int reserved_bottom[1];
 
     /* The iterator also supplies the current-position pointer inside the loop. */
-    it[1] = *(Node659D0 **)(self + 0x39C);
+    it[1] = (Node659D0 *)DNODE(self)->attached;
     it[0] = it[1];
     if (it[0]) {
         it[1] = it[0]->next;
@@ -1804,9 +1773,9 @@ void DNode_updateAttached(char *self) {
             VEC_FIELD_659D0(child,0x120) = common[0];
             VEC_FIELD_659D0(child,0x124) = common[1];
             VEC_FIELD_659D0(child,0x128) = common[2];
-            VEC_FIELD_659D0(child,0x120) += VEC_FIELD_659D0(self,0x318);
-            VEC_FIELD_659D0(child,0x124) += VEC_FIELD_659D0(self,0x31C);
-            VEC_FIELD_659D0(child,0x128) += VEC_FIELD_659D0(self,0x320);
+            VEC_FIELD_659D0(child,0x120) += DNODE(self)->vel[0];
+            VEC_FIELD_659D0(child,0x124) += DNODE(self)->vel[1];
+            VEC_FIELD_659D0(child,0x128) += DNODE(self)->vel[2];
             do {
                 x = VEC_FIELD_659D0(value,0) - previous[0]; y = VEC_FIELD_659D0(value,4) - previous[1]; z = VEC_FIELD_659D0(value,8) - previous[2];
                 delta[0] = x; delta[1] = y; delta[2] = z;
@@ -1867,8 +1836,8 @@ void DNode_updateAttached(char *self) {
  *    sp+0x04..0x28 (frame 0x30, 16 diff words). */
 typedef struct { float x, y, z, w; } Quat65B40;
 void DNode_quatToMtx_00065B40(char *s) {
-    Quat65B40 *q = (Quat65B40 *)(s + 0xF4);
-    float *m = (float *)(s + 0x3B0);
+    Quat65B40 *q = (Quat65B40 *)DNODE(s)->cvqs.quat;
+    float *m = (float *)DNODE(s)->axes;
     m[0] = q->x * q->y * 2 - q->w * q->z * 2;
     m[1] = 1.0f - q->x * q->x * 2 - q->z * q->z * 2;
     m[2] = q->y * q->z * 2 + q->w * q->x * 2;
@@ -1905,13 +1874,13 @@ void DNode_handleMsg(char *self, int *event) {
             *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC);
             args[0] = position[0]; args[1] = position[1]; args[2] = position[2];
             gl_add_position_65C54(self, args[0], args[1], args[2]);
-            *(float *)(self + 0x2FC) = 0.0f;
-            *(float *)(self + 0x300) = 0.0f;
-            *(float *)(self + 0x304) = 0.0f;
-            *(float *)(self + 0x318) = (float)0;
-            *(float *)(self + 0x31C) = (float)0;
-            *(float *)(self + 0x320) = (float)0;
-            *(float *)(self + 0x308) = 1.0f;
+            DNODE(self)->angVel[0] = 0.0f;
+            DNODE(self)->angVel[1] = 0.0f;
+            DNODE(self)->angVel[2] = 0.0f;
+            DNODE(self)->vel[0] = (float)0;
+            DNODE(self)->vel[1] = (float)0;
+            DNODE(self)->vel[2] = (float)0;
+            DNODE(self)->angVel[3] = 1.0f;
         } else {
             gl_dispatch_event_65C54(self, event);
         }
@@ -1936,7 +1905,7 @@ void DNode_update(int *a0) {
 void DNode_hostioParms(int *a0) {
     CALL(hostio_beginGroup)(&gHostio, GL_DATA_STR(0x2240C, "DNode"), 0);
     CALL(hostio_addHeading)(&gHostio, GL_DATA_STR(0x22414, "Dynamics"));
-    CALL(Parms_hostio)((char *)a0 + 0x108, 0);
+    CALL(Parms_hostio)(&DNODE(a0)->parms, 0);
     CALL(hostio_endGroup)(&gHostio);
     CALL(hostio_endGroup)(&gHostio);
     CALL(QNode_hostioParms)(a0);
@@ -1963,17 +1932,17 @@ void hostio_readVec3Parm_00065E0C(char *a0) {
 }
 
 float DNode_getF198_00065E3C(char *a0) {
-    return *(float*)(a0 + 0x198);
+    return DNODE(a0)->parms.suc.value;
 }
 
 extern int gl_func_00000000();
 int DNode_saveData(char *a0) {
-    return CALL(Parms_save)(a0 + 0x108);
+    return CALL(Parms_save)(&DNODE(a0)->parms);
 }
 
 extern int gl_func_00000000();
 int DNode_loadData(char *a0) {
-    return CALL(Parms_load_00035C6C)(a0 + 0x108);
+    return CALL(Parms_load_00035C6C)(&DNODE(a0)->parms);
 }
 
 extern int gl_ref_00077DB0();
