@@ -2,6 +2,7 @@
 #include "game/select.h"
 #include "gdl/node.h"
 #include "uso_call.h"
+#include "game/input.h"
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -97,8 +98,8 @@ after_sub:
     a0[0x48 / 4] = import_000A5D38(0);
     import_000A5F40(a0[0x48 / 4], a0);
 
-    n = (int *)(*(int **)(&import_80020098 + 0x134))[0x70 / 4];
-    for (i = 0; i < (*(int **)(&import_80020098 + 0x134))[0x78 / 4]; i++) {
+    n = (int *)(*(int **)&INPUT_MGR(import_80020098).game)[0x70 / 4];
+    for (i = 0; i < (*(int **)&INPUT_MGR(import_80020098).game)[0x78 / 4]; i++) {
         import_000A6900(a0[0x48 / 4], n, -1, &timproc_uso_b5_D_807EF230);
         n = (int *)n[0x44 / 4];
     }
@@ -120,14 +121,14 @@ after_sub:
     }
     s0[0x14 / 4] = (int)a0;
 
-    s0 = *(int **)(&import_80020098 + 0x190);
+    s0 = *(int **)&INPUT_MGR(import_80020098).fader;
     gen_imp_list_append(s1, s0);
     if (s0[0x14 / 4] != 0) {
         s0[0x04 / 4] = 1;
     }
     s0[0x14 / 4] = (int)a0;
 
-    gen_imp_Fader_start(*(int *)(&import_80020098 + 0x190), 1, 0);
+    gen_imp_Fader_start(*(int *)&INPUT_MGR(import_80020098).fader, 1, 0);
     a0[0x30 / 4] = 1;
     a0[0x2C / 4] = 0;
 done:
@@ -388,13 +389,13 @@ after_sub:
     }
 
     GenSelectChar_initLabels_00000778((char *)arg0);
-    node = (int *)*(int *)(&import_80020228 + 0x190);
+    node = (int *)*(int *)&INPUT_MGR(import_80020228).fader;
     gen_imp_list_append(slot, node);
     if (node[0x14 / 4] != 0) {
         node[0x04 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
-    gen_imp_Fader_start(*(int *)(&import_80020228 + 0x190), 1, 0);
+    gen_imp_Fader_start(*(int *)&INPUT_MGR(import_80020228).fader, 1, 0);
     arg0[0x48 / 4] = 0;
     arg0[0x30 / 4] = 0;
     arg0[0x2C / 4] = 0;
@@ -790,9 +791,9 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
         if (self == 0) goto end;
     }
     gen_imp_Node_ctor(self, (char*)&timproc_uso_b5_D_807FE8F4 + 0x1084);
-    ((GenRoom *)self)->world = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x84));
-    ((GenRoom *)self)->unk30 = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x80));
-    ((GenRoom *)self)->unk34 = (char *)(*(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x8C));
+    ((GenRoom *)self)->world = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x84));
+    ((GenRoom *)self)->unk30 = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x80));
+    ((GenRoom *)self)->unk34 = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x8C));
     sub = (char*)RoomModifier_ctor(0);
     entity = ((GenRoom *)self)->world;
     ((GenRoom *)self)->modifier = sub;
@@ -1611,7 +1612,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         zC[2] = -400.0f;
         gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zC);
         if (arg1 == (s32 *)1) {
-            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_800201CC, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
+            w = (s32 *)gen_imp_game_create3DWindow(*(int *)&INPUT_MGR(import_800201CC).game, &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
             FW(arg0, 0xC) = (int)w;
         } else {
             w = (s32 *)gen_imp_game_create3DWindow(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
@@ -3370,7 +3371,7 @@ void SelectWin_display_00006394(char *arg0) {
                 temp_v1_4 = FW(temp_v0_6, 0x28);
                 ((GP_00006394)FW(temp_v1_4, 0xC4))(*(s16*)((char*)temp_v1_4 + 0xC0) + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
             }
-            if (*(s32 *)((char *)&import_800200CC + 0x34) == 2) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode == 2) {
                 temp_v0_7 = SELWIN(arg0)->state;
                 if (temp_v0_7 == 4) {
                     temp_v0_8 = (char *)SelectWin_curItem_00008A38(arg0);
@@ -3729,7 +3730,7 @@ void SelectWin_commitSelection_00006C00(char *scr) {
     if (!SelectionMgr_canCommit_00001D1C((char *)SELWIN(scr)->owner, SELWIN(scr)->player)) return;
     import_000A53B4(scr);
     gen_imp_Process_fadeOut_0000F954(SELWIN(scr)->fadeProc, -1, 0);
-    *(int *)(&import_80020098 + 0x40) = *(int *)(&import_80020098 + 0x48);
+    INPUT_MGR(import_80020098).procState = INPUT_MGR(import_80020098).thenProcState;
 #define E6C00(tb, ix, f) (*(int *)(*(char **)(*(int *)(scr + (ix)) * 4 + *(char **)((char *)SELWIN(scr)->itemsMgr + (tb)) + 0x3C) + (f)))
     *SELWIN(scr)->out[0] = (s32 *)(E6C00(0x4C, 0x3DC, 0x2B0));
     *SELWIN(scr)->out[1] = (s32 *)(E6C00(0x40, 0x3D0, 0x2B0));
@@ -4394,7 +4395,7 @@ void SelectWin_state5_000079A4(char *scr) {
     char *e;
 
     SELWIN(scr)->zoomTimer -= 1;
-    if (*(int *)(&import_80020098 + 0x34) == 2) {
+    if (INPUT_MGR(import_80020098).nextFlowMode == 2) {
         if (SELWIN(scr)->unk4A0 > 0.0f) {
             SELWIN(scr)->unk4A0 -= *(float *)((char *)&D_00000000 + 0x1D0);
             if (SELWIN(scr)->unk4A0 < 0.0f) {
@@ -4418,7 +4419,7 @@ void SelectWin_state5_000079A4(char *scr) {
     }
     SelectWin_saveFocus_0000866C((int *) scr);
     SELWIN(scr)->curItem[1] = SelectWin_findItem_00008988(scr, 1,
-        ((int *)(&import_8002013C + 0xA4))[((int *)(scr + 0x3E0))[SELWIN(scr)->stage]]);
+        ((int *)(&INPUT_MGR(import_8002013C).orderA4[0]))[((int *)(scr + 0x3E0))[SELWIN(scr)->stage]]);
     e = (char *) SelectWin_nextStageBit_000087F4(scr);
     SELWIN(scr)->stageBit = (int) e;
     SELWIN(scr)->stage = gen_stageBitToIndex_000087A0(scr, e);
@@ -5419,7 +5420,7 @@ int SelectWin_listCount_00008C38(SelectWin *w) {
 extern struct DBlk_8D38 import_800201EC;
 extern char timproc_uso_b5_D_807FE78C;
 int SelectWin_charCheatIndex_00008C44(char *r) {
-    char *c = *(char **)((char *)&import_800201EC + 0x154);
+    char *c = INPUT_MGR(import_800201EC).options;
     int n = *(u16 *)(c + 2) - 4;
     int cnt;
     int i;
@@ -5438,7 +5439,7 @@ int SelectWin_charCheatIndex_00008C44(char *r) {
                 p++;
             } while (i != cnt);
         }
-        c = *(char **)((char *)&import_800201EC + 0x154);
+        c = INPUT_MGR(import_800201EC).options;
     }
     if (*(u8 *)(c + 0xE) == 0xFC && *(u8 *)(c + 0xF) == 0xFF && *(u8 *)(c + 0x10) == 7 &&
         *(int *)((char *)SelectWin_curItem_00008A38(r) + 0x2B0) == 4) {
@@ -5574,7 +5575,7 @@ char *gen_createScene_00008DB4(char *self, int a1) {
             goto end;
         }
     }
-    gen_imp_game_initDdm_00002C94(*(char **)((char *)&import_800201CC + 0x134), 2);
+    gen_imp_game_initDdm_00002C94(INPUT_MGR(import_800201CC).game, 2);
     {
         extern char import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
         *(int *)((char *)&import_8005C2CC_w + 0x1C4) =
@@ -5591,7 +5592,7 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     A = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBA4 + 0x1334);
     B = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
     C = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
-    gen_imp_game_setParams_00002060(*(char **)((char *)&import_800201CC + 0x134), C, B, A, 0, 0);
+    gen_imp_game_setParams_00002060(INPUT_MGR(import_800201CC).game, C, B, A, 0, 0);
     gen_imp_list_append(&NODE(A)->children, B);
     if (NODE(B)->parent != 0) {
         NODE(B)->unk04 = 1;

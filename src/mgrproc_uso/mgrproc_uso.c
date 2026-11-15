@@ -80,12 +80,12 @@ void mgr_pauseRetry_00000B5C(void) {
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
-        import_80020098[0x40 / 4] = 5;
-        import_80020098[0x44 / 4] = 3;
+        INPUT_MGR(import_80020098).procState = 5;
+        INPUT_MGR(import_80020098).nextProcState = 3;
         import_80263D60_30[0x7D8 / 4] = 1;
         import_000A5938(import_80263D60_30);
     } else {
-        import_80020098[0x40 / 4] = 3;
+        INPUT_MGR(import_80020098).procState = 3;
         XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 4, *(int *)((char *)(int *)MGRRACE(import_80263D60_30)->courseList + 0xC));
     }
 }
@@ -117,12 +117,12 @@ void mgr_pauseQuit_00000C14(void) {
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
-        import_80020098[0x40 / 4] = 5;
-        import_80020098[0x44 / 4] = 7;
+        INPUT_MGR(import_80020098).procState = 5;
+        INPUT_MGR(import_80020098).nextProcState = 7;
         import_80263D60_30[0x7D8 / 4] = 1;
         import_000A5938(import_80263D60_30);
     } else {
-        import_80020098[0x40 / 4] = 7;
+        INPUT_MGR(import_80020098).procState = 7;
         XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 0, 0);
     }
 }
@@ -256,7 +256,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
             NODE(o2)->vptr = (int)&import_80264800;
         }
         MGRRACE(obj)->dataMgr = (int)o2;
-        *(int *)(&import_800201D0 + 312) = (int)o2;
+        *(int *)&INPUT_MGR(import_800201D0).dataMgr = (int)o2;
 
         mgr_DataManager_init(MGRRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet,
                                   MGRRACE(obj)->courseList, (int)RACEPROC(obj)->session);
@@ -298,16 +298,16 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         }
         NODE(o1)->parent = (int)obj;
 
-        o1 = *(char **)((char *)&import_80020228 + 400);
+        o1 = *(char **)&INPUT_MGR(import_80020228).fader;
         XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
 
-        XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)((char *)&import_80020228 + 400), 1, 0);
+        XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)&INPUT_MGR(import_80020228).fader, 1, 0);
         XCALL(mgrproc_uso_func_074840, memtrack_end)();
-        *(int *)(&import_800200D8 + 0x40) = 4;
+        INPUT_MGR(import_800200D8).procState = 4;
     }
     }
     return obj;
@@ -337,8 +337,8 @@ extern int gInputMgr_800200FC;
 extern char import_80020100;
 void mgr_loadSprites_0000119C(MgrRace *s0) {
     int *q;                  /* the course list: q[1] idx, q[2] count */
-    import_0024F228(&import_80263D30, (*(int *)((char *)&import_80020100 + 0x68) - 1) | 0x200000);
-    import_0024F228(&s0->sprites[0], *(int *)((char *)&gInputMgr_800200FC + 0x64) | 0x000A0000);
+    import_0024F228(&import_80263D30, (INPUT_MGR(import_80020100).level - 1) | 0x200000);
+    import_0024F228(&s0->sprites[0], INPUT_MGR(gInputMgr_800200FC).course | 0x000A0000);
     import_0024F228(&s0->sprites[1], 0x210000);
     q = (int *)s0->courseList;
     if (q[2] == q[1] + 1) {
@@ -346,7 +346,7 @@ void mgr_loadSprites_0000119C(MgrRace *s0) {
     } else {
         import_0024F228(&s0->sprites[2], 0x210000 | (q[1] + 2));
     }
-    import_0024F228(&s0->sprites[3], *(int *)((char *)&import_800200EC + 0x54) | 0x001E0000);
+    import_0024F228(&s0->sprites[3], INPUT_MGR(import_800200EC).playerBoard | 0x001E0000);
     import_0024F278(&s0->sprites[5], 0x210000 | 0x7);
     import_0024F278(&s0->sprites[6], 0x210000 | 0x8);
     import_0024F278(&s0->sprites[7], 0x210000 | 0x9);
@@ -482,7 +482,7 @@ void MGRRaceProcess_onEndTimerDone(int *a0) {
     if (a0[0x4F8 / 4] == 0) {
         if (mgr_isLastCourse_00000140(a0[0x6A8 / 4]) != 0) {
             spill = 1;
-            *(int *)((char *)&import_800200DC + 0x44) = 7;
+            INPUT_MGR(import_800200DC).nextProcState = 7;
             if (*(volatile int *)0xA0000200 == (int)0xAC290000) {
                 import_000A8114(&import_80020100, *(int *)((char *)&import_80020100_b + 0x68) - 1);
             } else {
@@ -494,17 +494,17 @@ void MGRRaceProcess_onEndTimerDone(int *a0) {
     /* a0[0x4F8] != 0 */
     if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto term;
     spill = 1;
-    *(int *)((char *)&import_800200D8 + 0x40) = *(int *)((char *)&import_800200DC_b + 0x44);
+    INPUT_MGR(import_800200D8).procState = *(int *)((char *)&import_800200DC_b + 0x44);
     *(int *)((char *)&import_800200DC_c + 0x44) = 7;
 term:
     if (s0[0x7C8 / 4] != 0) {
         if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto storestate;
     }
     if (XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(((int **)s0)[0x6AC / 4][0x4C / 4]) == 0) {
-        *(int *)((char *)&import_800200D8 + 0x40) = 7;
+        INPUT_MGR(import_800200D8).procState = 7;
         spill = 0;
     } else {
-        *(int *)((char *)&import_800200D8 + 0x40) = 5;
+        INPUT_MGR(import_800200D8).procState = 5;
         s0[0x7D8 / 4] = 1;
     }
 storestate:
@@ -545,7 +545,7 @@ case_2:
     a0->exitStep = 1;
     return;
 case_13:
-    mgr_startReplay_00001AD0((int *)a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
+    mgr_startReplay_00001AD0((int *)a0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
 }
 
 /* MGRRaceProcess_onPauseSelect: 32-insn (0x80) check-then-vtable-call helper.
@@ -676,7 +676,7 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
             XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
             XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(&import_80020098);
             import_000B2888(arg0);
-            mgr_startReplay_00001AD0((int *)arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
+            mgr_startReplay_00001AD0((int *)arg0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
             arg0->race.unk524 = (int)MgrNameEntry_ctor_00002940(0, (char *)arg0, arg0->nameEntryMode);
             import_007FE4E8(arg0->race.unk524, arg0->race.session);
             hdr = (char *)arg0->race.handler;
@@ -881,7 +881,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
         if (r != 0) {
             import_000B2888(s0);
             XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
-            mgr_startReplay_00001AD0(s0, *(int *)(&import_80020208 + 368) + 0x26000F);
+            mgr_startReplay_00001AD0(s0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
             *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1;
@@ -890,7 +890,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
             MGRRACE(s0)->fade7A4 = 0.0f;
             XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)(vt + 0x190), 1, 1);
         } else {
-            *(int *)(&import_800200D8 + 0x40) = 7;
+            INPUT_MGR(import_800200D8).procState = 7;
             XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(s0, 0, 0);
         }
         break;
@@ -1009,7 +1009,7 @@ void mgr_startEnding_00001BE4(MgrRace *state) {
     mgr_switchToView2_00001A64((int *)state);
     mgrproc_1BE4_call_1B58((int *)state, 0xA0000);
     XCALL(mgrproc_uso_func_000188, func_00000188)(0xB, 0, 0);
-    XCALL(mgrproc_uso_func_000148, func_00000148)(0xB, *(int*)((char*)&gInputMgr_800200FC + 0x64) - 5, 0);
+    XCALL(mgrproc_uso_func_000148, func_00000148)(0xB, INPUT_MGR(gInputMgr_800200FC).course - 5, 0);
     XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
 }
 

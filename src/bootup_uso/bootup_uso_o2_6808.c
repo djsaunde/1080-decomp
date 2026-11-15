@@ -28,6 +28,7 @@
 #include "common.h"
 #include "game/course.h"
 #include "uso_call.h"
+#include "game/input.h"
 
 typedef struct { int w; } S4_55A0;
 typedef struct { f32 x, y, z; } V3_6808;
@@ -130,19 +131,19 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
             FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
             break;
         case COURSE_OP_ENV_LT2:
-            if (gInputMgr_800200FC[0x68 / 4] < 2) {
+            if (INPUT_MGR(gInputMgr_800200FC).level < 2) {
                 envArg = p[1];
                 FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
             }
             break;
         case COURSE_OP_ENV_EQ2:
-            if (gInputMgr_800200FC[0x68 / 4] == 2) {
+            if (INPUT_MGR(gInputMgr_800200FC).level == 2) {
                 FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
                 envArg = p[1];
             }
             break;
         case COURSE_OP_ENV_EQ3:
-            if (gInputMgr_800200FC[0x68 / 4] == 3) {
+            if (INPUT_MGR(gInputMgr_800200FC).level == 3) {
                 FCALL(Node_Load)(import_8001FFC0, 1, p[0]);
                 envArg = p[1];
             }
@@ -190,7 +191,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
         p += count;
     } while (op != COURSE_OP_END);
     FCALL(memtrack_end)(); /* no bbsplit: the dead return blocks v0, the settings word takes v1 */
-    if (gInputMgr_800200FC[0x3C / 4] == 6 || gInputMgr_800200FC[0x3C / 4] == 11) {
+    if (INPUT_MGR(gInputMgr_800200FC).gameMode == 6 || INPUT_MGR(gInputMgr_800200FC).gameMode == 11) {
         mapEnd = 5;
         mapAdd = 2;
     }

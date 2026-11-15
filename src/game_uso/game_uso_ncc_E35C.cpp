@@ -15,6 +15,7 @@ typedef int s32;
 typedef unsigned int u32;
 #include "../../include/game/tricktable.h" /* NCC has no -I include */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/game/input.h"  /* NCC donors build without -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -46,10 +47,10 @@ extern "C" int RiderAnim_startQueuedTrick_0000E35C(char *s0) {
         RiderAnim_addTrickPoints_0000EE30(s0, QUEUED_TRICK(s0)->points, 1);
         if (RIDER_FLAGS(s0) & 0x20) {
             int base = (int)game_uso_D_807FFBC0;
-            import_000B8518(I(&import_800201D0, 0x138), RIDER(s0),
+            import_000B8518(*(int *)&INPUT_MGR(import_800201D0).dataMgr, RIDER(s0),
                 ((base + (QUEUED_TRICK(s0)->mirrorIndex << 6)) - base) / 64);
         } else {
-            import_000B8518(I(&import_800201D0, 0x138), RIDER(s0),
+            import_000B8518(*(int *)&INPUT_MGR(import_800201D0).dataMgr, RIDER(s0),
                 ((int)QUEUED_TRICK(s0) - (int)game_uso_D_807FFBC0) / 64);
         }
         COMBO_COUNT(s0) = COMBO_COUNT(s0) + 1;

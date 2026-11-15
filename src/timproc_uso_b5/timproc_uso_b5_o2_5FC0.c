@@ -26,6 +26,7 @@
  * stay raw: as SELITEM members the two mul.s swap their operands (f10,f0 -> f0,f10). */
 #include "common.h"
 #include "game/select.h"
+#include "game/input.h"
 
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 
@@ -131,7 +132,7 @@ void SelectWin_update_00005FC0(char *arg0) {
     v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[1];
     v1 = (char *)FW(v0, 0x28);
     ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    if (*(s32 *)(&import_800200CC + 0x34) != 2) {
+    if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
         v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[2];
         v1 = (char *)FW(v0, 0x28);
         ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));

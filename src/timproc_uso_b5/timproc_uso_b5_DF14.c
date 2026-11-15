@@ -18,6 +18,7 @@
  * rr: the r reload then colours v1 and FW(arg0, 0x38) v0, as the target. */
 #include "common.h"
 #include "game/select.h"
+#include "game/input.h"
 #define LIST ((SelItemList *)arg0)
 #define ITEM(p) ((SelLevelItem *)(p))
 #define MODEL(p) ((SelLevelModel *)(p))
@@ -132,65 +133,65 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         FW(child, 0x140) = 1; FW(child, 0x13C) = 1;
         switch ((s32) sub) {
         case 0:
-            if (*(s32 *)(&import_800200CC + 52) == 3) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FEBB4 + 5900), (&import_8077EBB4 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 1:
-            if (*(s32 *)(&import_800200CC + 52) == 3) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FA914 + 5912), (&import_8077A914 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 2:
-            if (*(s32 *)(&import_800200CC + 52) == 3) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&import_80806674 + 5924), (&import_80776674 + 0), 0));
             }
             FW(child, 0x13C) = 0;
             break;
         case 3:
-            if (*(s32 *)(&import_800200CC + 52) != 2) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFA0[5936], (&D_00000000 + 0), 0));
             }
             break;
         case 4:
-            if (*(s32 *)(&import_800200CC + 52) != 2) {
+            if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFAC[5948], (&D_00000000 + 0), 0));
             }
             break;
         case 5:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFB8[5960], (&D_00000000 + 0), 0));
             }
             break;
         case 6:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFC4[5972], (&D_00000000 + 0), 0));
             }
             break;
         case 7:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFD0[5984], (&D_00000000 + 0), 0));
             }
             break;
         case 8:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFDC[5996], (&D_00000000 + 0), 0));
             }
             break;
         case 9:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFE8[6008], (&D_00000000 + 0), 0));
             }
             break;
         case 10:
-            mode = *(s32 *)(&import_800200CC + 52);
+            mode = INPUT_MGR(import_800200CC).nextFlowMode;
             if ((mode != 3) && (mode != 5)) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, &timproc_uso_b5_D_807FEFF4[6020], (&D_00000000 + 0), 0));
             }

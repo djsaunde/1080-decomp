@@ -35,6 +35,7 @@
  * piece shares its block with the following FP(self, 0x58) temp (v0) and lands in a2 like sites 1/2. */
 #include "common.h"
 #include "game/select.h"
+#include "game/input.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
 extern char *SelItemParms_ctor(); extern char *SelItemInfo_ctor(); extern char *SelItem_reset_00003890();
@@ -247,7 +248,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         { char *p = ALLOC(0x2C); char *q; if (p) { gen_imp_Node_ctor(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
             FP(p, 0x28) = timproc_uso_b5_D_807FEBE8 + 0xCC4; FP(p, 0xC) = timproc_uso_b5_D_807FEBE8 + 0x1378; }
           q = MGR->parent; MGR->dispItems = p;  ADD(q, p); }
-        if (FW(&import_800200CC, 0x34) != 2) {
+        if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
             NEWPANEL(TESURI(2), timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C, timproc_uso_b5_D_807FEBFC + 0x8B4)
             ADD(self, TESURI(2));
             w = ALLOC(0x168);
@@ -363,8 +364,8 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         VSEL(w, b) VCALL(w, b), 1, 6, 400.0f, -150.0f, -1000.0f, 0.0f, DF_318, 0.0f);
         VSEL(w, b) VCALL(w, b), 1, 7, 400.0f, -150.0f, -1000.0f, 0.0f, FF(import_808000CC, 0x31C), 0.0f);
         {
-            tu = **(u16 **)((char *)&import_800201EC + 0x154);
-            if (FW(&import_800200CC, 0x34) != 6) tu &= ~3;
+            tu = **(u16 **)&INPUT_MGR(import_800201EC).options;
+            if (INPUT_MGR(import_800200CC).nextFlowMode != 6) tu &= ~3;
             for (i = 0; i != 8; i++) {
                 char *r;
                 VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320));
@@ -374,8 +375,8 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             VSEL(w, d) VCALL(w, d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
             VSEL(w, d) e2 = VCALL(w, d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
             VSEL(w, d) e3 = VCALL(w, d), 1, 3, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
-            gen_imp_dbg_printf(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
-            switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
+            gen_imp_dbg_printf(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)&INPUT_MGR(import_800201EC).options)[1]);
+            switch ((*(u16 **)&INPUT_MGR(import_800201EC).options)[1]) {
             case 1:
                  ((SelItem *)e2)->enabled = 0.0f; ((SelItem *)e3)->enabled = 0.0f; break;
             case 2:
