@@ -249,4 +249,75 @@
 #define sAnimDataMgrName       GL_DATA(0x220DC) /* "AnimDataMgr" (agent-b area: not converted) */
 #define sImageFileMgrName      GL_DATA(0x2B420) /* "ImageFileMgr" */
 
+/* ---- RoData constant pools (agent-a run 504; READABILITY_PLAN 9.1.9) ----
+ * kRo_<Func> = the RoData-section constants that <Func> reads (non-string RoData-base sites, K =
+ * RoData offset), for every function that reads two or more. Defined as GL_RODATA(first K), so
+ * `kRo_<Func>` is the pool's address; a per-site alias of one constant is the linker symbol
+ * `kRo_<Func>_<K>` (pure renames). Values are decoded by the load at the site: f = lwc1 float,
+ * d = ldc1 double, jtbl = a switch jump table (lw of a Text offset), table = address taken (addiu),
+ * bu = lbu. `uso-data-sites.py check` verifies each range against the relocs and each
+ * kRo_<Func>_<K> site (RoData base, that K, inside <Func>). */
+#define kRo_snd_updatePlayer                       GL_RODATA(0x58) /* RoData+0x58..0x60, 2 K: 58=5000d 60=0.3d */
+#define kRo_game_createLights                      GL_RODATA(0x524) /* RoData+0x524..0x52C, 3 K: 524=0.4f 528=1e+06f 52C=1e+07f */
+#define kRo_cam_create                             GL_RODATA(0x530) /* RoData+0x530..0x534, 2 K: 530=-1500f 534=-1500f */
+#define kRo_game_create3DWindow                    GL_RODATA(0x538) /* RoData+0x538..0x540, 3 K: 538=0.239216f 53C=0.560784f 540=0.701961f */
+#define kRo_game_setupDemoRace                     GL_RODATA(0x544) /* RoData+0x544..0x548, 2 K: 544=2.99f 548=1.99f */
+#define kRo_game_setupDemoSplit                    GL_RODATA(0x54C) /* RoData+0x54C..0x550, 2 K: 54C=2.99f 550=1.99f */
+#define kRo_RiderCam_update_00004948               GL_RODATA(0x554) /* RoData+0x554..0x558, 2 K: 554=3.14159f 558=3.14159f */
+#define kRo_item_registerTemplates                 GL_RODATA(0x598) /* RoData+0x598..0x5AC, 6 K: 598=0.2f 59C=0.17f 5A0=0.17f 5A4=0.17f 5A8=0.17f 5AC=0.17f */
+#define kRo_SnowBoarder_ctor                       GL_RODATA(0x868) /* RoData+0x868..0x8BC, 22 K: 868=0.4f 86C=0.21f 870=1.244f 874=0.212f 878=0.168f 87C=0.972f 880=0.798f 884=0.03f 888=0.16f 88C=0.2f 890=0.2f 894=0.06f ... (10 more) */
+#define kRo_SnowBoarder_updateOrient               GL_RODATA(0x8C8) /* RoData+0x8C8..0x910, 10 K: 8C8=0.15d 8D0=-0.04d 8D8=0.4d 8E0=-0.2f 8E8=0.015d 8F0=0.2f 8F8=-0.1d 900=0.8d 908=0.8d 910=0.724f */
+#define kRo_SnowBoarder_updateDyn                  GL_RODATA(0x914) /* RoData+0x914..0x918, 2 K: 914=0.1f 918=0.1d */
+#define kRo_SnowBoarder_procColl                   GL_RODATA(0x920) /* RoData+0x920..0x950, 11 K: 920=100000f 924=335f 928=-335f 930=0.6d 938=0.08f 93C=0.184f 940=0.024f 944=0.064f 948=0.008f 94C=0.4f 950=0.2d */
+#define kRo_SnowBoarder_createColliders_0000CCE0   GL_RODATA(0x95C) /* RoData+0x95C..0x96C, 5 K: 95C=-335f 960=-335f 964=-335f 968=-335f 96C=-335f */
+#define kRo_SnowBoarder_display                    GL_RODATA(0x970) /* RoData+0x970..0x978, 2 K: 970=0.3f 978=-0.2d */
+#define kRo_SnowBoarder_handleMsg                  GL_RODATA(0x988) /* RoData+0x988..0x990, 2 K: 988=0.1d 990=0.2d */
+#define kRo_gui_centerRows_0001016C                GL_RODATA(0xC10) /* RoData+0xC10..0xC18, 3 K: C10=0.9f C14=0.9f C18=0.9f */
+#define kRo_Fader_display                          GL_RODATA(0xC50) /* RoData+0xC50..0xC60, 5 K: C50=0.02f C54=0.2f C58=0.4f C5C=0.1f C60=0.4f */
+#define kRo_CoolGadget_ctor                        GL_RODATA(0xC7C) /* RoData+0xC7C..0xC94, 7 K: C7C=0.756863f C80=0.482353f C84=0.964706f C88=0.0352941f C8C=0.607843f C90=0.466667f C94=0.18f */
+#define kRo_CourseGadget_display                   GL_RODATA(0xCB8) /* RoData+0xCB8..0xCC4, 4 K: CB8=0.784314f CBC=0.117647f CC0=0.364706f CC4=0.635294f */
+#define kRo_PointsGadget_update_00003430           GL_RODATA(0xCC8) /* RoData+0xCC8..0xCF4, 5 K: CC8=0.1f CCC=jtbl CEC=0.1f CF0=0.1f CF4=0.1f */
+#define kRo_ColourParms_ctor                       GL_RODATA(0xD0C) /* RoData+0xD0C..0xDE4, 53 K: D0C=0.196078f D10=0.313726f D14=0.27451f D18=0.196078f D1C=0.313726f D20=0.27451f D24=0.196078f D28=0.313726f D2C=0.27451f D30=0.196078f D34=0.313726f D38=0.27451f ... (41 more) */
+#define kRo_RaceProcess_handleInput                GL_RODATA(0xE04) /* RoData+0xE04..0xE40, 8 K: E04=jtbl E1C=jtbl E2C=0.1f E30=0.1f E34=0.05f E38=0.01f E3C=0.1f E40=jtbl */
+#define kRo_AudioHeap_InitAdsrDecayTable           GL_RODATA(0xE70) /* RoData+0xE70..0xE74, 2 K: E70=0.33f E74=0.66f */
+#define kRo_AudioLoad_Init                         GL_RODATA(0xEC8) /* RoData+0xEC8..0xED0, 3 K: EC8=20.0304f ECC=16.546f ED0=16.713f */
+#define kRo_AudioThread_ProcessGlobalCmd           GL_RODATA(0xEE0) /* RoData+0xEE0..0xF10, 2 K: EE0=jtbl F10=jtbl */
+#define kRo_Audio_InitSampleState                  GL_RODATA(0xFC0) /* RoData+0xFC0..0xFC4, 2 K: FC0=0.707f FC4=4096f */
+#define kRo_Audio_NoteSetResamplingRate            GL_RODATA(0xFC8) /* RoData+0xFC8..0xFD0, 3 K: FC8=1.99998f FCC=3.99996f FD0=1.99998f */
+#define kRo_Audio_BuildSyntheticWave               GL_RODATA(0xFD4) /* RoData+0xFD4..0xFEC, 7 K: FD4=0.99999f FD8=1.0465f FDC=1.99999f FE0=0.52325f FE4=3.99999f FE8=0.26263f FEC=0.13081f */
+#define kRo_Audio_AdsrUpdate                       GL_RODATA(0xFF0) /* RoData+0xFF0..0x1018, 3 K: FF0=jtbl 1014=32767f 1018=1e-05f */
+#define kRo_AudioSeq_SeqLayerProcessScriptStep2    GL_RODATA(0x1058) /* RoData+0x1058..0x105C, 2 K: 1058=16129f 105C=jtbl */
+#define kRo_AudioSeq_SequenceChannelProcessScript  GL_RODATA(0x10B0) /* RoData+0x10B0..0x125C, 3 K: 10B0=jtbl 11B8=jtbl 125C=jtbl */
+#define kRo_AudioSeq_SequencePlayerProcessSequence GL_RODATA(0x13E0) /* RoData+0x13E0..0x1494, 2 K: 13E0=jtbl 1494=jtbl */
+#define kRo_snd_SoundObjUpdate                     GL_RODATA(0x16E0) /* RoData+0x16E0..0x172C, 6 K: 16E0=0.6f 16E4=jtbl 16F8=jtbl 1724=1.6f 1728=1.6f 172C=0.8f */
+#define kRo_snd_SoundObjUpdateChannel              GL_RODATA(0x1730) /* RoData+0x1730..0x173C, 4 K: 1730=1.3f 1734=0.85f 1738=0.8f 173C=0.7f */
+#define kRo_snd_SoundObjSetAngle                   GL_RODATA(0x1740) /* RoData+0x1740..0x174C, 4 K: 1740=0.6f 1744=0.4f 1748=0.8f 174C=1.2f */
+#define kRo_snd_HandleEvent_2FB74                  GL_RODATA(0x1750) /* RoData+0x1750..0x17A4, 2 K: 1750=jtbl 17A4=jtbl */
+#define kRo_snd_SetChannel8Mode                    GL_RODATA(0x1868) /* RoData+0x1868..0x1870, 3 K: 1868=0.01f 186C=0.1f 1870=0.004f */
+#define kRo_snd_HandleSeqEvent_30AF4               GL_RODATA(0x1874) /* RoData+0x1874..0x18E0, 4 K: 1874=jtbl 18AC=0.1f 18B0=jtbl 18E0=jtbl */
+#define kRo_snd_HandleSeqEnd                       GL_RODATA(0x1900) /* RoData+0x1900..0x193C, 2 K: 1900=jtbl 193C=jtbl */
+#define kRo_snd_UpdateChannel10Emitter             GL_RODATA(0x1968) /* RoData+0x1968..0x1974, 4 K: 1968=0.1f 196C=0.98f 1970=0.1f 1974=0.8f */
+#define kRo_StickCtrlA_update_00037348             GL_RODATA(0x19F0) /* RoData+0x19F0..0x19F4, 2 K: 19F0=0.06f 19F4=0.65f */
+#define kRo_StickCtrlB_update_00037540             GL_RODATA(0x19F8) /* RoData+0x19F8..0x1A00, 3 K: 19F8=0.06f 19FC=0.65f 1A00=0.9f */
+#define kRo_MNode_doCommand                        GL_RODATA(0x1A10) /* RoData+0x1A10..0x1A7C, 3 K: 1A10=0.01f 1A64=jtbl 1A7C=3.05185e-05f */
+#define kRo_CollShape_raycast                      GL_RODATA(0x1AA8) /* RoData+0x1AA8..0x1AB0, 2 K: 1AA8=1e-05d 1AB0=-0.0001d */
+#define kRo_ColourItemType_vslot15_0003DB38        GL_RODATA(0x1AC4) /* RoData+0x1AC4..0x1AC8, 2 K: 1AC4=-1e+07f 1AC8=1e+07f */
+#define kRo_SNodeItemType_vslot15_0003DF58         GL_RODATA(0x1AD0) /* RoData+0x1AD0..0x1ADC, 4 K: 1AD0=1e+07f 1AD4=-1e+07f 1AD8=-1e+07f 1ADC=1e+07f */
+#define kRo_QNode_doCommand                        GL_RODATA(0x1AE0) /* RoData+0x1AE0..0x1AFC, 3 K: 1AE0=0.01f 1AE4=jtbl 1AFC=3.05185e-05f */
+#define kRo_gfx_emitProjection                     GL_RODATA(0x1B60) /* RoData+0x1B60..0x1B68, 3 K: 1B60=-32700f 1B64=32700f 1B68=32700f */
+#define kRo_Window_setDefaults                     GL_RODATA(0x1B70) /* RoData+0x1B70..0x1B80, 3 K: 1B70=2200f 1B74=3000f 1B80=0.484f */
+#define kRo_gfx_screenRaycast                      GL_RODATA(0x1BA8) /* RoData+0x1BA8..0x1BAC, 2 K: 1BA8=-100000f 1BAC=100000f */
+#define kRo_BasePolyShape_parse                    GL_RODATA(0x1BE4) /* RoData+0x1BE4..0x1C78, 2 K: 1BE4=jtbl 1C78=10000f */
+#define kRo_light_setShadowMatrix_00054D04         GL_RODATA(0x1C80) /* RoData+0x1C80..0x1C88, 2 K: 1C80=0.02d 1C88=100000f */
+#define kRo_math_quatSlerp                         GL_RODATA(0x2038) /* RoData+0x2038..0x2040, 2 K: 2038=1e-06d 2040=3.14159f */
+#define kRo_math_lookAtF                           GL_RODATA(0x205C) /* RoData+0x205C..0x2060, 2 K: 205C=10000f 2060=1e-07f */
+#define kRo_Friction_vfn11_00063F34                GL_RODATA(0x20A0) /* RoData+0x20A0..0x20B8, 4 K: 20A0=0.001d 20A8=0.22d 20B0=0.2d 20B8=0.2f */
+#define kRo_DNodeAccum_apply_00064388              GL_RODATA(0x20C8) /* RoData+0x20C8..0x20D0, 2 K: 20C8=1e-05d 20D0=455f */
+#define kRo_DNode_ctor                             GL_RODATA(0x20D4) /* RoData+0x20D4..0x20E0, 4 K: 20D4=0.2f 20D8=-0.72f 20DC=0.216f 20E0=0.2f */
+#define kRo_math_acosf                             GL_RODATA(0x2268) /* RoData+0x2268..0x2280, 5 K: 2268=1.001d 2270=-1.001d 2278=41720f 227C=41720f 2280=3.14159d */
+#define kRo_fsin                                   GL_RODATA(0x2310) /* RoData+0x2310..0x2350, 5 K: 2310=table 2338=0.31831d 2340=3.14159d 2348=3.17865e-08d 2350=0f */
+#define kRo_gl___osExceptionPreamble               GL_RODATA(0x2360) /* RoData+0x2360..0x2380, 2 K: 2360=bu:0x141818 2380=jtbl */
+#define kRo_fcos                                   GL_RODATA(0x24E0) /* RoData+0x24E0..0x2520, 5 K: 24E0=table 2508=0.31831d 2510=3.14159d 2518=3.17865e-08d 2520=0f */
+#define kRo_gl_Ldtob                               GL_RODATA(0x2540) /* RoData+0x2540..0x2598, 3 K: 2540=table 2588=table 2598=1e+08d */
+
 #endif
