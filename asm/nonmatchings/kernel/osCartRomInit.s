@@ -19,7 +19,7 @@ glabel osCartRomInit
     /* 68F4 800058F4 3C0FB000 */  lui        $t7, (0xB0000000 >> 16)
     /* 68F8 800058F8 AC2FB65C */  sw         $t7, %lo(D_8001B65C)($at)
     /* 68FC 800058FC 00002025 */  or         $a0, $zero, $zero
-    /* 6900 80005900 0C000B6C */  jal        __osSetSR
+    /* 6900 80005900 0C000B6C */  jal        func_80002DB0
     /* 6904 80005904 27A5001C */   addiu     $a1, $sp, 0x1C
     /* 6908 80005908 8FB8001C */  lw         $t8, 0x1C($sp)
     /* 690C 8000590C 3C018002 */  lui        $at, %hi(D_8001B655)

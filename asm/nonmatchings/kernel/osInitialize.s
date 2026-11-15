@@ -12,7 +12,7 @@ glabel osInitialize
     /* 354C 8000254C 0C000C74 */  jal        func_800031D0
     /* 3550 80002550 02012025 */   or        $a0, $s0, $at
     /* 3554 80002554 3C040100 */  lui        $a0, (0x1000800 >> 16)
-    /* 3558 80002558 0C002710 */  jal        __osSiRawWriteIo
+    /* 3558 80002558 0C002710 */  jal        func_80009C40
     /* 355C 8000255C 34840800 */   ori       $a0, $a0, (0x1000800 & 0xFFFF)
     /* 3560 80002560 3C041FC0 */  lui        $a0, (0x1FC007FC >> 16)
     /* 3564 80002564 348407FC */  ori        $a0, $a0, (0x1FC007FC & 0xFFFF)
@@ -94,7 +94,7 @@ glabel osInitialize
     /* 3684 80002684 8DA10008 */  lw         $at, 0x8($t5)
     /* 3688 80002688 ADC10008 */  sw         $at, 0x8($t6)
     /* 368C 8000268C 8DAF000C */  lw         $t7, 0xC($t5)
-    /* 3690 80002690 0C000C7C */  jal        __osException
+    /* 3690 80002690 0C000C7C */  jal        func_800031F0
     /* 3694 80002694 ADCF000C */   sw        $t7, 0xC($t6)
     /* 3698 80002698 3C048000 */  lui        $a0, (0x80000000 >> 16)
     /* 369C 8000269C 0C0014D4 */  jal        func_80005350
@@ -102,7 +102,7 @@ glabel osInitialize
     /* 36A4 800026A4 0C00277C */  jal        func_80009DF0
     /* 36A8 800026A8 00000000 */   nop
     /* 36AC 800026AC 24040004 */  addiu      $a0, $zero, 0x4
-    /* 36B0 800026B0 0C000B6C */  jal        __osSetSR
+    /* 36B0 800026B0 0C000B6C */  jal        func_80002DB0
     /* 36B4 800026B4 27A50058 */   addiu     $a1, $sp, 0x58
     /* 36B8 800026B8 8FB90058 */  lw         $t9, 0x58($sp)
     /* 36BC 800026BC 2401FFF0 */  addiu      $at, $zero, -0x10
@@ -242,7 +242,7 @@ glabel osInitialize
     /* 38C0 800028C0 25E80004 */  addiu      $t0, $t7, 0x4
     /* 38C4 800028C4 25CB0004 */  addiu      $t3, $t6, 0x4
     /* 38C8 800028C8 AFAB0044 */  sw         $t3, 0x44($sp)
-    /* 38CC 800028CC 0C000C7C */  jal        __osException
+    /* 38CC 800028CC 0C000C7C */  jal        func_800031F0
     /* 38D0 800028D0 AFA80048 */   sw        $t0, 0x48($sp)
     /* 38D4 800028D4 3C048000 */  lui        $a0, (0x80000180 >> 16)
     /* 38D8 800028D8 34840180 */  ori        $a0, $a0, (0x80000180 & 0xFFFF)

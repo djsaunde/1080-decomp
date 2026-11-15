@@ -35,7 +35,7 @@ extern u8 D_8001B659;               /* domain */
 extern volatile u32 D_8001B65C;     /* baseAddress */
 extern u32 D_8001B660;              /* speed */
 extern void *D_8000A46C;            /* __osPiTable */
-extern s32 __osSetSR(s32, u32 *);   /* osPiRawReadIo */
+extern s32 func_80002DB0(s32, u32 *);   /* osPiRawReadIo */
 extern void func_800030D0(void *, s32); /* bzero */
 extern s32 func_800066B0(void);         /* __osDisableInt */
 extern void func_800066D0(s32);         /* __osRestoreInt */
@@ -53,7 +53,7 @@ void *osCartRomInit(void) {
 
     D_8001B654 = 0;
     D_8001B65C = 0xB0000000;
-    __osSetSR(0, &domain);
+    func_80002DB0(0, &domain);
     D_8001B655 = domain & 0xFF;
     D_8001B658 = (domain >> 8) & 0xFF;
     D_8001B656.pageSize = (domain >> 0x10) & 0xF;

@@ -22,5 +22,5 @@ glabel func_8000817C
     /* 91C0 800081C0 254AFE70 */  addiu      $t2, $t2, %lo(rmonbrk_bss_0000)
     /* 91C4 800081C4 AD280000 */  sw         $t0, 0x0($t1)
     /* 91C8 800081C8 8D440000 */  lw         $a0, 0x0($t2)
-    /* 91CC 800081CC 0C000C7C */  jal        __osException
+    /* 91CC 800081CC 0C000C7C */  jal        func_800031F0
 endlabel func_8000817C

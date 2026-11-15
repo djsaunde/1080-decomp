@@ -551,6 +551,6 @@ extern s32 D_80000300;
 extern s32 D_8000031C;
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];
-void osInitialize(void);
+void func_80002530(void);
 void func_800029A0(void);
 void _asmpp_func23(void);

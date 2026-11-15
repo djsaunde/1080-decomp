@@ -143,7 +143,7 @@ void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
 
 extern void func_800051E0(s32, s32 *, s32);
 extern void func_80004FE0(s32 *, s32, s32);
-extern void __osDevMgrMain(void);
+extern void func_80005C50(void);
 extern void func_80005C94(void);
 extern s32 func_800066F0(s32 *, s32, s32);
 extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
@@ -179,7 +179,7 @@ void func_800056EC(s32 arg0) {
     func_800051E0(0x13, &D_8001B5F0, 0);
     for (;;) {
         func_80004FE0(&D_8001B5D0, 0, 1);
-        __osDevMgrMain();
+        func_80005C50();
         v.sum = 0;
         do {
             r = func_800066F0(&sp28, 1, 9);

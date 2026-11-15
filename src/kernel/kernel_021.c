@@ -83,7 +83,7 @@ extern BreakInfo rmonbrk_bss_0088[];
 extern BreakInfo rmonbrk_bss_0000[];
 extern u32 func_80006A98(u32 *);
 extern void func_80006A50(u32 *, u32);
-extern void __osException(void *, s32);
+extern void func_800031F0(void *, s32);
 extern void func_80005350(void *, s32);
 extern void func_800073F8(void *, s32, s32);
 
@@ -113,7 +113,7 @@ s32 func_80008430(ClrBkptRequest *req) {
         inst = *whichBreak->breakAddress;
         if ((inst & 0xFC00003F) == 0xD) {
             *whichBreak->breakAddress = whichBreak->oldInstruction;
-            __osException(whichBreak->breakAddress, 4);
+            func_800031F0(whichBreak->breakAddress, 4);
             func_80005350(whichBreak->breakAddress, 4);
         }
     }

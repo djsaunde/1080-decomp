@@ -3,20 +3,20 @@
 extern s32 rmonbrk_bss_0000;
 extern s32 D_8001FEF4;
 extern s32 D_8001FEF0;
-extern void __osException(void*, s32);
+extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
 /* __rmonSetBreak */
 void func_800080D0(s32* arg0, s32* arg1) {
     *((s32*)((char*)&rmonbrk_bss_0000 + 4)) = *arg0;
     *arg0 = 0x40D;
-    __osException(arg0, 4);
+    func_800031F0(arg0, 4);
     func_80005350(arg0, 4);
     *(s32*)&rmonbrk_bss_0000 = (s32)arg0;
     if (arg1 != 0) {
         D_8001FEF4 = *arg1;
         *arg1 = 0x40D;
-        __osException(arg1, 4);
+        func_800031F0(arg1, 4);
         func_80005350(arg1, 4);
         D_8001FEF0 = (s32)arg1;
     }
@@ -81,7 +81,7 @@ void func_8000817C(void) {
         instr_a = *(s32 *)((s32 *)&rmonbrk_bss_0000)[0];
         if ((instr_a & 0xFC00003F) == 0xD) {
             *(s32 *)((s32 *)&rmonbrk_bss_0000)[0] = ((s32 *)&rmonbrk_bss_0000)[1];
-            __osException((void *)((s32 *)&rmonbrk_bss_0000)[0], 4);
+            func_800031F0((void *)((s32 *)&rmonbrk_bss_0000)[0], 4);
             func_80005350((void *)((s32 *)&rmonbrk_bss_0000)[0], 4);
         }
         ((s32 *)&rmonbrk_bss_0000)[0] = 0;
@@ -91,7 +91,7 @@ void func_8000817C(void) {
         instr_a = *(s32 *)D_8001FEF0;
         if ((instr_a & 0xFC00003F) == 0xD) {
             *(s32 *)D_8001FEF0 = D_8001FEF4;
-            __osException((void *)D_8001FEF0, 4);
+            func_800031F0((void *)D_8001FEF0, 4);
             func_80005350((void *)D_8001FEF0, 4);
         }
         D_8001FEF0 = 0;

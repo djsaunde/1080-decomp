@@ -1707,13 +1707,13 @@ extern s32 D_80003280[];                        /* KMC E_VEC stub words */
 void osInitialize(void) {
     extern s32 func_800031E0(void);             /* __osGetSR */
     extern void func_800031D0(s32);             /* __osSetSR */
-    extern void __osSiRawWriteIo(s32);             /* __osSetFpcCsr */
+    extern void func_80009C40(s32);             /* __osSetFpcCsr */
     extern s32 func_80004EC0(void *, u32 *);    /* __osSiRawReadIo */
     extern s32 func_8000A040(void *, u32);      /* __osSiRawWriteIo */
-    extern void __osException(void *, s32);     /* osWritebackDCache */
+    extern void func_800031F0(void *, s32);     /* osWritebackDCache */
     /* func_80005350 (osInvalICache) already declared (s32,s32) at file top */
     extern void func_80009DF0(void);            /* osMapTLBRdb */
-    extern void __osSetSR(s32, u32 *);      /* osPiRawReadIo */
+    extern void func_80002DB0(s32, u32 *);      /* osPiRawReadIo */
     extern void func_800030D0(void *, s32);     /* bzero */
     u32 pifdata;
     u32 clock = 0;
@@ -1730,7 +1730,7 @@ void osInitialize(void) {
     s32 sp2C;
 
     func_800031D0(func_800031E0() | 0x20000000);
-    __osSiRawWriteIo(0x01000800);
+    func_80009C40(0x01000800);
     while (func_80004EC0((void *)0x1FC007FC, &pifdata)) {
         ;
     }
@@ -1741,10 +1741,10 @@ void osInitialize(void) {
     *(__osExceptionVector *)0x80000080 = D_80003270;
     *(__osExceptionVector *)0x80000100 = D_80003270;
     *(__osExceptionVector *)0x80000180 = D_80003270;
-    __osException((void *)0x80000000, 0x190);
+    func_800031F0((void *)0x80000000, 0x190);
     func_80005350(0x80000000, 0x190);
     func_80009DF0();
-    __osSetSR(4, &clock);
+    func_80002DB0(4, &clock);
     clock &= ~0xF;
     if (clock != 0) {
         D_8000A3D0 = clock;
@@ -1780,7 +1780,7 @@ void osInitialize(void) {
             dst++; src++;
             *dst = *src;
             dst++; src++;
-            __osException((void *)0x80000180, 0x24);
+            func_800031F0((void *)0x80000180, 0x24);
             func_80005350(0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {

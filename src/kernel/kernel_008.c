@@ -14,7 +14,7 @@ extern u8 D_8001B658;
 extern u8 D_8001B659;
 extern volatile u32 D_8001B65C;
 extern u32 D_8001B660;
-extern s32 __osSetSR(s32, u32*);
+extern s32 func_80002DB0(s32, u32*);
 extern void func_800030D0(void*, s32);
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
@@ -42,7 +42,7 @@ OSPiHandle* osCartRomInit(void) {
 
     D_8001B654 = 0;
     D_8001B65C = 0xB0000000;
-    __osSetSR(0, &domain);
+    func_80002DB0(0, &domain);
     D_8001B655 = domain & 0xFF;
     D_8001B658 = (domain >> 8) & 0xFF;
     D_8001B656 = (domain >> 0x10) & 0xF;

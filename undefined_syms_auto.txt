@@ -5685,3 +5685,8 @@ D_415A4_g3 = 0x00000000;
 D_415A4_g4 = 0x00000000;
 D_415A4_t = 0x00000000;
 D_415A4_tA = 0x00000000;
+func_80005C50 = 0x80005C50;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80005C50 is now __osDevMgrMain */
+func_80009C40 = 0x80009C40;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80009C40 is now __osSiRawWriteIo */
+func_80002530 = 0x80002530;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80002530 is now osInitialize */
+func_80002DB0 = 0x80002DB0;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x80002DB0 is now __osSetSR */
+func_800031F0 = 0x800031F0;  /* kernel call/address alias: jal/%hi targets are runtime addresses (= link + 0x400), so this is the function 0x400 below; the symbol linked at 0x800031F0 is now __osException */

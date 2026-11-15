@@ -3,7 +3,7 @@
 extern s32 rmonbrk_bss_0000;
 extern s32 D_8001FEF4;
 extern s32 D_8001FEF0;
-extern void __osException(void*, s32);
+extern void func_800031F0(void*, s32);
 extern void func_80005350(void*, s32);
 
 
@@ -89,7 +89,7 @@ s32 func_80008264(void *arg0) {
         } else {
             *(s32 *)(var_s2 + 4) = *(s32 *)FW(s0, 0x10);
             *(s32 *)FW(s0, 0x10) = ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD;
-            __osException((void *) FW(s0, 0x10), 4);
+            func_800031F0((void *) FW(s0, 0x10), 4);
             func_80005350((void *) FW(s0, 0x10), 4);
         }
         *(s32 *)var_s2 = FW(s0, 0x10);

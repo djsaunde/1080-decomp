@@ -21,6 +21,11 @@ What it touches (all whole-word, `[A-Za-z0-9_]` boundaries):
     OLD, OLD.NON_MATCHING and derived OLD_<sect> are renamed in place with the
     metadata-only strtab repoint of scripts/rename-elf-symbol.py (NOT objcopy,
     which rewrites the symtab and renames local section symbols);
+  * KERNEL symbols (defined in src/kernel objects) rename only the definition
+    side: the kernel runs at link address + 0x400, so every call / %hi-%lo /
+    UND reference to kernel symbol X really means the function at X - 0x400.
+    Those references keep the OLD spelling (and UND entries in expected/ objects
+    keep OLD), and OLD is pinned as an absolute alias in undefined_syms_auto.txt;
   * appends `OLD<TAB>NEW` to renames.tsv (ledger: docs in the monorepo keep
     using the old placeholder names; grep this file to translate).
 
@@ -229,6 +234,90 @@ def plan_file_renames(old, new):
     return moves
 
 
+_ASM_DEF_LINE = re.compile(r"^\s*(glabel|endlabel|alabel|dlabel|jlabel|nonmatching|\.globl|\.global|\.ent|\.end|\.size|\.type)\b")
+_C_ASM_LINE = re.compile(r"^\s*(INCLUDE_ASM|INCLUDE_RODATA|GLOBAL_ASM|#\s*pragma\s+GLOBAL_ASM)\b")
+
+
+def _comment_spans(path, text):
+    pats = [r"/\*.*?\*/"]
+    if path.endswith((".c", ".h", ".cpp")):
+        pats.append(r"//[^\n]*")
+    if path.endswith((".s", ".inc")):
+        pats.append(r"#[^\n]*")
+    return [m.span() for m in re.finditer("|".join(pats), text, flags=re.S)]
+
+
+def kernel_subn(path, text, tr, new):
+    """Rename a KERNEL symbol without rewriting its call/address references.
+
+    The kernel runs at link address + 0x400 (it is loaded at 0x80000400 but
+    linked/numbered from 0x80000000), so every `jal X` / `%hi(X)` / C call of a
+    kernel symbol X in the source really targets the function at X - 0x400;
+    the bytes match only because the symbol at X encodes the right address.
+    A rename must therefore move only the DEFINITION side (C definition line,
+    INCLUDE_ASM/GLOBAL_ASM argument, glabel/endlabel/nonmatching, Makefile /
+    linker / symbol files, comments, docs) and leave references spelled OLD,
+    which pin_alias() then pins as an absolute (OLD = its address)."""
+    is_s = path.endswith((".s", ".inc"))
+    is_c = path.endswith((".c", ".h", ".cpp"))
+    if not (is_s or is_c):
+        t2, n = tr.subn(lambda m: new + (m.group(1) or ""), text)
+        return t2, n, 0
+    spans = _comment_spans(path, text)
+    out, last, n, kept = [], 0, 0, 0
+    for m in tr.finditer(text):
+        a = m.start()
+        ls = text.rfind("\n", 0, a) + 1
+        le = text.find("\n", a)
+        line = text[ls:le if le >= 0 else len(text)]
+        in_comment = any(s <= a < e for s, e in spans)
+        if m.group(1) or in_comment:
+            ren = True
+        elif is_s:
+            ren = bool(_ASM_DEF_LINE.match(line)) or re.match(r"^\s*" + re.escape(m.group(0)) + r":", line) is not None
+        else:
+            code = line.strip()
+            ren = bool(_C_ASM_LINE.match(line)) or (
+                re.match(r"^(?!extern\b|typedef\b|return\b)[A-Za-z_]", line) is not None
+                and re.search(re.escape(m.group(0)) + r"\s*\(", line) is not None
+                and not code.endswith(";"))
+        out.append(text[last:a])
+        if ren:
+            out.append(new + (m.group(1) or ""))
+            n += 1
+        else:
+            out.append(m.group(0))
+            kept += 1
+        last = m.end()
+    out.append(text[last:])
+    return "".join(out), n, kept
+
+
+def pin_alias(old, new, dry):
+    m = re.match(r"^(?:func|D)_([0-9A-Fa-f]{8})$", old)
+    addr = None
+    if m:
+        addr = int(m.group(1), 16)
+    else:
+        sa = (ROOT / "symbol_addrs.txt").read_text(errors="replace")
+        mm = re.search(r"(?m)^\s*" + re.escape(new) + r"\s*=\s*(0x[0-9A-Fa-f]+)", sa)
+        if mm:
+            addr = int(mm.group(1), 16)
+    if addr is None:
+        sys.exit(f"cannot pin kernel alias {old}: address unknown (fix by hand)")
+    us = ROOT / "undefined_syms_auto.txt"
+    t = read_text("undefined_syms_auto.txt")  # via the cache: later renames in a batch rewrite from it
+    if re.search(r"(?m)^\s*" + re.escape(old) + r"\s*=", t):
+        return
+    line = (f"{old} = 0x{addr:08X};  /* kernel call/address alias: jal/%hi targets are runtime "
+            f"addresses (= link + 0x400), so this is the function 0x400 below; "
+            f"the symbol linked at 0x{addr:08X} is now {new} */\n")
+    t = t + ("" if t.endswith("\n") else "\n") + line
+    _text_cache["undefined_syms_auto.txt"] = t
+    if not dry:
+        us.write_text(t, encoding="utf-8", errors="surrogateescape")
+
+
 def apply(renames, dry):
     idx = Index()
     files = tracked_text_files()
@@ -248,11 +337,17 @@ def apply(renames, dry):
     for old, new, hits in plan:
         tr = token_re(old)
         sub = lambda m: new + (m.group(1) or "")
+        kernel = "kernel" in idx.defining_segments(old)
         nfiles = 0
         nrefs = 0
+        kept = 0
         for p in hits:
             t = read_text(p)
-            t2, n = tr.subn(sub, t)
+            if kernel:
+                t2, n, k = kernel_subn(p, t, tr, new)
+                kept += k
+            else:
+                t2, n = tr.subn(sub, t)
             if n:
                 nfiles += 1
                 nrefs += n
@@ -265,7 +360,9 @@ def apply(renames, dry):
             rel = o.relative_to(ROOT)
             if rel.parts[0] != "expected":
                 continue
-            names = {n for n, _ in syms}
+            # kernel: an UND reference in an object is a jal/address alias (see
+            # kernel_subn) and keeps OLD; only the defining object is renamed.
+            names = {n for n, d in syms if d or not kernel}
             specs = []
             for cand in [old, old + ".NON_MATCHING"] + [f"{old}_{d}" for d in DERIVED]:
                 if cand in names:
@@ -283,8 +380,11 @@ def apply(renames, dry):
             if a in _text_cache:
                 _text_cache[b] = _text_cache.pop(a)
             files = [b if f == a else f for f in files]
+        if kernel and kept:
+            pin_alias(old, new, dry)
         print(f"{'[dry] ' if dry else ''}{old} -> {new}: {nrefs} refs in {nfiles} files, "
-              f"{len(specs_by_obj)} expected objs, {len(moves)} file moves")
+              f"{len(specs_by_obj)} expected objs, {len(moves)} file moves"
+              + (f", {kept} kernel call/address refs kept as the {old} alias" if kept else ""))
         for a, b in moves:
             print(f"    mv {a} -> {b}")
         if not dry:
