@@ -97,7 +97,7 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
         char *p414;
         e = timproc_uso_b5_func_00008A38_entry(screen);
         p414 = screen->field_414;
-        SelectWin_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
+        SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
     SelectWin_beginTransition_00008688((char *)screen, 0);
     screen->field_488 = screen->field_104;

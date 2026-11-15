@@ -10,10 +10,10 @@ void CourseItem_drawLabel_0000C98C(C98CObject *arg0, C98CContext *arg1, volatile
     ones[2] = 1.0f;
     ones[3] = 1.0f;
     a2v = (arg1->link->drawable->field_C4 + arg1->link->drawable->field_BC) - arg0->field_5C;
-    SelItem_func_000040BC((int)arg0, arg0->field_44, a2v, arg2, arg3,
+    SelItem_drawSpriteColorEx_000040BC((int)arg0, arg0->field_44, a2v, arg2, arg3,
         arg0->field_1AC * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
     if (*(int *)&import_8002022C != 0) {
-        SelItem_func_00003FF8((int)arg0, arg0->field_44 + arg0->field_74,
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, arg0->field_44 + arg0->field_74,
             a2v + arg0->field_8C,
             arg0->field_1AC * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
@@ -34,7 +34,7 @@ void CourseItem_drawLabel_0000C98C(C98CObject *arg0, C98CContext *arg1, volatile
         }
     }
     if (sp30 != 0) {
-        SelItem_func_00003FF8((int)arg0, arg0->field_44 + 0x54, a2v - 0x78,
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, arg0->field_44 + 0x54, a2v - 0x78,
             (int)(&timproc_uso_b5_D_807FFB50 + 0x6D0), 0xFF);
     }
 }

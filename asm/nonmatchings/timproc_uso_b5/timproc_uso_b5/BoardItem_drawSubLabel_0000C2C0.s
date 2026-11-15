@@ -15,7 +15,7 @@ glabel BoardItem_drawSubLabel_0000C2C0
     /* 00C2EC 0000C2EC 8C850104 */  .word 0x8C850104
     /* 00C2F0 0000C2F0 241900FF */  .word 0x241900FF
     /* 00C2F4 0000C2F4 AFB90010 */  .word 0xAFB90010
-    jal SelItem_func_00003FF8   /* 00C2F8 0C000000 -> SelItem_func_00003FF8 */
+    jal SelItem_drawSpriteWhite_00003FF8   /* 00C2F8 0C000000 -> SelItem_drawSpriteWhite_00003FF8 */
     /* 00C2FC 0000C2FC 01F83821 */  .word 0x01F83821
     /* 00C300 0000C300 8FBF001C */  .word 0x8FBF001C
     /* 00C304 0000C304 27BD0020 */  .word 0x27BD0020

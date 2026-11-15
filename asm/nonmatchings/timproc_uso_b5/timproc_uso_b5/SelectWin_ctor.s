@@ -1635,7 +1635,7 @@ glabel SelectWin_ctor
     /* 005A94 00005A94 01000008 */  .word 0x01000008
     /* 005A98 00005A98 00000000 */  .word 0x00000000
     /* 005A9C 00005A9C 00C02025 */  .word 0x00C02025
-    jal SelectWin_func_00008D90   /* 005AA0 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 005AA0 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 005AA4 00005AA4 00002825 */  .word 0x00002825
     /* 005AA8 00005AA8 8FA203A8 */  .word 0x8FA203A8
     lui $at, %hi(import_80020150)   /* 005AAC 3C010000 -> import_80020150 */
@@ -1650,7 +1650,7 @@ glabel SelectWin_ctor
     /* 005AD0 00005AD0 10000018 */  .word 0x10000018
     /* 005AD4 00005AD4 AC2900B8 */  .word 0xAC2900B8
     /* 005AD8 00005AD8 00C02025 */  .word 0x00C02025
-    jal SelectWin_func_00008D90   /* 005ADC 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 005ADC 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 005AE0 00005AE0 24050001 */  .word 0x24050001
     /* 005AE4 00005AE4 8FAD03A8 */  .word 0x8FAD03A8
     /* 005AE8 00005AE8 240C0006 */  .word 0x240C0006

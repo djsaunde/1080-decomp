@@ -35,7 +35,7 @@ glabel LevelItem_drawStats_0000CEB4
     /* 00CF28 0000CF28 241800FF */  .word 0x241800FF
     /* 00CF2C 0000CF2C AFB80014 */  .word 0xAFB80014
     /* 00CF30 0000CF30 AFA40050 */  .word 0xAFA40050
-    jal SelItem_func_00004068   /* 00CF34 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00CF34 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00CF38 0000CF38 AFAF0010 */  .word 0xAFAF0010
     /* 00CF3C 0000CF3C 8FA40050 */  .word 0x8FA40050
     /* 00CF40 0000CF40 3C010000 */  .word 0x3C010000
@@ -69,7 +69,7 @@ glabel LevelItem_drawStats_0000CEB4
     /* 00CFB0 0000CFB0 240900FF */  .word 0x240900FF
     /* 00CFB4 0000CFB4 AFA90014 */  .word 0xAFA90014
     /* 00CFB8 0000CFB8 AFA80010 */  .word 0xAFA80010
-    jal SelItem_func_00004068   /* 00CFBC 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00CFBC 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00CFC0 0000CFC0 AFA40050 */  .word 0xAFA40050
     /* 00CFC4 0000CFC4 8FA40050 */  .word 0x8FA40050
     /* 00CFC8 0000CFC8 3C010000 */  .word 0x3C010000
@@ -102,7 +102,7 @@ glabel LevelItem_drawStats_0000CEB4
     /* 00D034 0000D034 8C86011C */  .word 0x8C86011C
     /* 00D038 0000D038 240C00FF */  .word 0x240C00FF
     /* 00D03C 0000D03C AFAC0014 */  .word 0xAFAC0014
-    jal SelItem_func_00004068   /* 00D040 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00D040 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00D044 0000D044 AFAB0010 */  .word 0xAFAB0010
     /* 00D048 0000D048 8FBF001C */  .word 0x8FBF001C
     /* 00D04C 0000D04C 27BD0050 */  .word 0x27BD0050

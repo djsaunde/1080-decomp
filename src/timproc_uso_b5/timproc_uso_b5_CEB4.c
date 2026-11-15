@@ -24,7 +24,7 @@
 extern char timproc_uso_b5_D_807FFB08;
 extern char timproc_uso_b5_D_807FFB20;
 extern char timproc_uso_b5_D_807FFB38;
-void SelItem_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6);
+void SelItem_drawSpriteColor_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6);
 
 void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     f32 v[4];
@@ -38,7 +38,7 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
         f = 0.3f;
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_func_00004068((int)a0, *(s32 *)(a0 + 0x44), *(s32 *)(a0 + 0x5C), v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0x44), *(s32 *)(a0 + 0x5C), v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
     f = 0.3f;
     if (*(s32 *)(a0 + 0x2AC) == 1 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
@@ -46,7 +46,7 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     } else {
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_func_00004068((int)a0, *(s32 *)(a0 + 0xD4), *(s32 *)(a0 + 0xEC), v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0xD4), *(s32 *)(a0 + 0xEC), v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
     f = 0.3f;
     if (*(s32 *)(a0 + 0x2AC) == 2 && 0.5f < *(f32 *)(a0 + 0x2A0)) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
@@ -54,5 +54,5 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     } else {
         v[0] = f; v[1] = f; v[2] = f; v[3] = f;
     }
-    SelItem_func_00004068((int)a0, *(s32 *)(a0 + 0x104), *(s32 *)(a0 + 0x11C), v, (int)(&timproc_uso_b5_D_807FFB38 + 0x6B8), 0xFF);
+    SelItem_drawSpriteColor_00004068((int)a0, *(s32 *)(a0 + 0x104), *(s32 *)(a0 + 0x11C), v, (int)(&timproc_uso_b5_D_807FFB38 + 0x6B8), 0xFF);
 }

@@ -40,8 +40,8 @@ int SelectWin_curItem_00008A38();
 int SelectWin_prevFocusItem_00008AD4(int *a0);
 void SelectWin_state2_000073C0(char *scr);
 void SelectWin_state10_000085E0(int *a0);
-void SelectWin_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4);
-void SelectWin_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4);
+void SelectWin_lerpCamToItem_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4);
+void SelectWin_lerpCamToItemZoom_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4);
 
 typedef void (*FPv)();
 
@@ -130,7 +130,7 @@ void SelectWin_update_00005FC0(char *arg0) {
     }
     if (FW(arg0, 0x3CC) == 5) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_func_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
+        SelectWin_lerpCamToItemZoom_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
@@ -140,7 +140,7 @@ void SelectWin_update_00005FC0(char *arg0) {
             *(f32 *)(sp2C + 0x14C);
     } else {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_func_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
+        SelectWin_lerpCamToItem_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
             timproc_uso_b5_func_07E7B0(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
             *(f32 *)(arg0 + 0x5C));
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);

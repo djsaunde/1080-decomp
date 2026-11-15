@@ -18,7 +18,7 @@ glabel TesuriItem_drawLabel_0000CCC8
     /* 00CD00 0000CD00 8C850044 */  .word 0x8C850044
     /* 00CD04 0000CD04 240800FF */  .word 0x240800FF
     /* 00CD08 0000CD08 AFA80014 */  .word 0xAFA80014
-    jal SelItem_func_00004068   /* 00CD0C 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00CD0C 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00CD10 0000CD10 AFB90010 */  .word 0xAFB90010
     /* 00CD14 0000CD14 8FBF001C */  .word 0x8FBF001C
     /* 00CD18 0000CD18 27BD0020 */  .word 0x27BD0020

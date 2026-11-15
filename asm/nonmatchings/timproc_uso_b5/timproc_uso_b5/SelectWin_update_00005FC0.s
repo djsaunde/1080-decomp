@@ -176,7 +176,7 @@ glabel SelectWin_update_00005FC0
     /* 006270 00006270 8DA50010 */  .word 0x8DA50010
     /* 006274 00006274 8FA4002C */  .word 0x8FA4002C
     /* 006278 00006278 260604C4 */  .word 0x260604C4
-    jal SelectWin_func_0000396C   /* 00627C 0C000000 -> SelectWin_func_0000396C */
+    jal SelectWin_lerpCamToItemZoom_0000396C   /* 00627C 0C000000 -> SelectWin_lerpCamToItemZoom_0000396C */
     /* 006280 00006280 E7A40010 */  .word 0xE7A40010
     jal SelectWin_curItem_00008A38   /* 006284 0C000000 -> SelectWin_curItem_00008A38 */
     /* 006288 00006288 02002025 */  .word 0x02002025
@@ -209,7 +209,7 @@ glabel SelectWin_update_00005FC0
     /* 0062F4 000062F4 8DE50010 */  .word 0x8DE50010
     /* 0062F8 000062F8 8FA4002C */  .word 0x8FA4002C
     /* 0062FC 000062FC 260604C4 */  .word 0x260604C4
-    jal SelectWin_func_000038B0   /* 006300 0C000000 -> SelectWin_func_000038B0 */
+    jal SelectWin_lerpCamToItem_000038B0   /* 006300 0C000000 -> SelectWin_lerpCamToItem_000038B0 */
     /* 006304 00006304 E7AA0010 */  .word 0xE7AA0010
     jal SelectWin_curItem_00008A38   /* 006308 0C000000 -> SelectWin_curItem_00008A38 */
     /* 00630C 0000630C 02002025 */  .word 0x02002025

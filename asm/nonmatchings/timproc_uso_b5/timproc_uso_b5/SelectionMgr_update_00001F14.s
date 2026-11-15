@@ -124,7 +124,7 @@ glabel SelectionMgr_update_00001F14
     /* 0020F4 000020F4 440D5000 */  .word 0x440D5000
     /* 0020F8 000020F8 00000000 */  .word 0x00000000
     /* 0020FC 000020FC ACCD0044 */  .word 0xACCD0044
-    jal SelectionMgr_func_00001DB0   /* 002100 0C000000 -> SelectionMgr_func_00001DB0 */
+    jal SelectionMgr_setSplit_00001DB0   /* 002100 0C000000 -> SelectionMgr_setSplit_00001DB0 */
     /* 002104 00002104 AFA60020 */  .word 0xAFA60020
     /* 002108 00002108 8FA60020 */  .word 0x8FA60020
     /* 00210C 0000210C 24070002 */  .word 0x24070002

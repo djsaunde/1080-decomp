@@ -1,6 +1,6 @@
-nonmatching SelectWin_func_00003A28, 0x24
+nonmatching SelectWin_setCamToItem_00003A28, 0x24
 
-glabel SelectWin_func_00003A28
+glabel SelectWin_setCamToItem_00003A28
     /* 003A28 00003A28 AFA60008 */  .word 0xAFA60008
     /* 003A2C 00003A2C 8C82029C */  .word 0x8C82029C
     /* 003A30 00003A30 C44000DC */  .word 0xC44000DC
@@ -10,4 +10,4 @@ glabel SelectWin_func_00003A28
     /* 003A40 00003A40 E4A20064 */  .word 0xE4A20064
     /* 003A44 00003A44 03E00008 */  .word 0x03E00008
     /* 003A48 00003A48 E4AC0068 */  .word 0xE4AC0068
-endlabel SelectWin_func_00003A28
+endlabel SelectWin_setCamToItem_00003A28

@@ -78,7 +78,7 @@ glabel CharacterItem_drawStats_0000BBDC
     /* 00BD04 0000BD04 AFAE0014 */  .word 0xAFAE0014
     /* 00BD08 0000BD08 00006812 */  .word 0x00006812
     /* 00BD0C 0000BD0C 016D3021 */  .word 0x016D3021
-    jal SelItem_func_00003A4C   /* 00BD10 0C000000 -> SelItem_func_00003A4C */
+    jal SelItem_drawStatBar_00003A4C   /* 00BD10 0C000000 -> SelItem_drawStatBar_00003A4C */
     /* 00BD14 0000BD14 00000000 */  .word 0x00000000
     /* 00BD18 0000BD18 10000011 */  .word 0x10000011
     /* 00BD1C 0000BD1C 26310001 */  .word 0x26310001
@@ -95,7 +95,7 @@ glabel CharacterItem_drawStats_0000BBDC
     /* 00BD48 0000BD48 AFA80014 */  .word 0xAFA80014
     /* 00BD4C 0000BD4C 0000C812 */  .word 0x0000C812
     /* 00BD50 0000BD50 01F93021 */  .word 0x01F93021
-    jal SelItem_func_00003C8C   /* 00BD54 0C000000 -> SelItem_func_00003C8C */
+    jal SelItem_drawStatBarRight_00003C8C   /* 00BD54 0C000000 -> SelItem_drawStatBarRight_00003C8C */
     /* 00BD58 0000BD58 00000000 */  .word 0x00000000
     /* 00BD5C 0000BD5C 26310001 */  .word 0x26310001
     /* 00BD60 0000BD60 26B50004 */  .word 0x26B50004

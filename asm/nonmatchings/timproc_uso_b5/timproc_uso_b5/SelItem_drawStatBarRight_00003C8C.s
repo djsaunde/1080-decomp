@@ -1,6 +1,6 @@
-nonmatching SelItem_func_00003C8C, 0x24C
+nonmatching SelItem_drawStatBarRight_00003C8C, 0x24C
 
-glabel SelItem_func_00003C8C
+glabel SelItem_drawStatBarRight_00003C8C
     /* 003C8C 00003C8C 27BDFF50 */  .word 0x27BDFF50
     lui $t7, %hi(timproc_uso_b5_D_807FEA78)   /* 003C90 3C0F0000 -> timproc_uso_b5_D_807FEA78 */
     /* 003C94 00003C94 AFB20028 */  .word 0xAFB20028
@@ -148,4 +148,4 @@ glabel SelItem_func_00003C8C
     /* 003ECC 00003ECC 8FB20028 */  .word 0x8FB20028
     /* 003ED0 00003ED0 03E00008 */  .word 0x03E00008
     /* 003ED4 00003ED4 27BD00B0 */  .word 0x27BD00B0
-endlabel SelItem_func_00003C8C
+endlabel SelItem_drawStatBarRight_00003C8C

@@ -8,7 +8,7 @@ glabel SelectWin_state3_00007430
     /* 007440 00007440 00808025 */  .word 0x00808025
     /* 007444 00007444 15C0004C */  .word 0x15C0004C
     /* 007448 00007448 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008C44   /* 00744C 0C000000 -> SelectWin_func_00008C44 */
+    jal SelectWin_charCheatIndex_00008C44   /* 00744C 0C000000 -> SelectWin_charCheatIndex_00008C44 */
     /* 007450 00007450 00000000 */  .word 0x00000000
     /* 007454 00007454 2443FFFF */  .word 0x2443FFFF
     /* 007458 00007458 04600044 */  .word 0x04600044
@@ -51,7 +51,7 @@ glabel SelectWin_state3_00007430
     /* 0074EC 000074EC 24480001 */  .word 0x24480001
     /* 0074F0 000074F0 10000021 */  .word 0x10000021
     /* 0074F4 000074F4 AE0804AC */  .word 0xAE0804AC
-    jal SelectWin_func_00008D90   /* 0074F8 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 0074F8 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 0074FC 000074FC 00002825 */  .word 0x00002825
     /* 007500 00007500 8FA90024 */  .word 0x8FA90024
     /* 007504 00007504 24040027 */  .word 0x24040027
@@ -76,12 +76,12 @@ glabel SelectWin_state3_00007430
     /* 007550 00007550 25CFFFFF */  .word 0x25CFFFFF
     /* 007554 00007554 05E10008 */  .word 0x05E10008
     /* 007558 00007558 AE0F04B0 */  .word 0xAE0F04B0
-    jal SelectWin_func_00008D90   /* 00755C 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 00755C 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 007560 00007560 00002825 */  .word 0x00002825
     /* 007564 00007564 10000004 */  .word 0x10000004
     /* 007568 00007568 00000000 */  .word 0x00000000
     /* 00756C 0000756C 02002025 */  .word 0x02002025
-    jal SelectWin_func_00008D90   /* 007570 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 007570 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 007574 00007574 00002825 */  .word 0x00002825
     lui $a0, %hi(import_80020098)   /* 007578 3C040000 -> import_80020098 */
     /* 00757C 0000757C 24840000 */  .word 0x24840000

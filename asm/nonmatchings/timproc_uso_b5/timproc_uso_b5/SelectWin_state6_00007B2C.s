@@ -9,7 +9,7 @@ glabel SelectWin_state6_00007B2C
     /* 007B40 00007B40 00808025 */  .word 0x00808025
     /* 007B44 00007B44 15C1003B */  .word 0x15C1003B
     /* 007B48 00007B48 00000000 */  .word 0x00000000
-    jal SelectWin_func_00008D38   /* 007B4C 0C000000 -> SelectWin_func_00008D38 */
+    jal SelectWin_boardCheatIndex_00008D38   /* 007B4C 0C000000 -> SelectWin_boardCheatIndex_00008D38 */
     /* 007B50 00007B50 00000000 */  .word 0x00000000
     /* 007B54 00007B54 10400037 */  .word 0x10400037
     /* 007B58 00007B58 00027880 */  .word 0x00027880
@@ -40,7 +40,7 @@ glabel SelectWin_state6_00007B2C
     /* 007BBC 00007BBC 244D0001 */  .word 0x244D0001
     /* 007BC0 00007BC0 1000001C */  .word 0x1000001C
     /* 007BC4 00007BC4 AE0D04AC */  .word 0xAE0D04AC
-    jal SelectWin_func_00008D90   /* 007BC8 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 007BC8 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 007BCC 00007BCC 24050001 */  .word 0x24050001
     /* 007BD0 00007BD0 8FAE0024 */  .word 0x8FAE0024
     /* 007BD4 00007BD4 24040027 */  .word 0x24040027
@@ -65,7 +65,7 @@ glabel SelectWin_state6_00007B2C
     /* 007C20 00007C20 252AFFFF */  .word 0x252AFFFF
     /* 007C24 00007C24 05410003 */  .word 0x05410003
     /* 007C28 00007C28 AE0A04B0 */  .word 0xAE0A04B0
-    jal SelectWin_func_00008D90   /* 007C2C 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 007C2C 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 007C30 00007C30 24050001 */  .word 0x24050001
     lui $a0, %hi(import_80020098)   /* 007C34 3C040000 -> import_80020098 */
     /* 007C38 00007C38 24840000 */  .word 0x24840000
@@ -163,13 +163,13 @@ glabel SelectWin_state6_00007B2C
     /* 007DA8 00007DA8 2409000A */  .word 0x2409000A
     /* 007DAC 00007DAC AE0903CC */  .word 0xAE0903CC
     /* 007DB0 00007DB0 02002025 */  .word 0x02002025
-    jal SelectWin_func_00008D90   /* 007DB4 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 007DB4 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 007DB8 00007DB8 00002825 */  .word 0x00002825
     /* 007DBC 00007DBC 44803000 */  .word 0x44803000
     /* 007DC0 00007DC0 02002025 */  .word 0x02002025
     jal SelectWin_saveFocus_0000866C   /* 007DC4 0C000000 -> SelectWin_saveFocus_0000866C */
     /* 007DC8 00007DC8 E6060484 */  .word 0xE6060484
-    jal SelectWin_func_0000894C   /* 007DCC 0C000000 -> SelectWin_func_0000894C */
+    jal SelectWin_callPrevStageBit_0000894C   /* 007DCC 0C000000 -> SelectWin_callPrevStageBit_0000894C */
     /* 007DD0 00007DD0 02002025 */  .word 0x02002025
     /* 007DD4 00007DD4 AE0203C8 */  .word 0xAE0203C8
     /* 007DD8 00007DD8 02002025 */  .word 0x02002025

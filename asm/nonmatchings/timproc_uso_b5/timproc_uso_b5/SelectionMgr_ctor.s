@@ -205,7 +205,7 @@ glabel SelectionMgr_ctor
     /* 001BD8 00001BD8 AE080048 */  .word 0xAE080048
     /* 001BDC 00001BDC AE190044 */  .word 0xAE190044
     /* 001BE0 00001BE0 AE090050 */  .word 0xAE090050
-    jal SelectionMgr_func_00001DB0   /* 001BE4 0C000000 -> SelectionMgr_func_00001DB0 */
+    jal SelectionMgr_setSplit_00001DB0   /* 001BE4 0C000000 -> SelectionMgr_setSplit_00001DB0 */
     /* 001BE8 00001BE8 E6060054 */  .word 0xE6060054
     /* 001BEC 00001BEC 8FBF0044 */  .word 0x8FBF0044
     /* 001BF0 00001BF0 02001025 */  .word 0x02001025

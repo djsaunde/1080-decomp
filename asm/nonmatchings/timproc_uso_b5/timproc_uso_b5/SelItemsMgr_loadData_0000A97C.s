@@ -1,6 +1,6 @@
-nonmatching SelItemsMgr_vfunc8_0000A97C, 0x70
+nonmatching SelItemsMgr_loadData_0000A97C, 0x70
 
-glabel SelItemsMgr_vfunc8_0000A97C
+glabel SelItemsMgr_loadData_0000A97C
     /* 00A97C 0000A97C 27BDFFD8 */  .word 0x27BDFFD8
     /* 00A980 0000A980 AFBF0024 */  .word 0xAFBF0024
     /* 00A984 0000A984 AFB20020 */  .word 0xAFB20020
@@ -29,4 +29,4 @@ glabel SelItemsMgr_vfunc8_0000A97C
     /* 00A9E0 0000A9E0 8FB20020 */  .word 0x8FB20020
     /* 00A9E4 0000A9E4 03E00008 */  .word 0x03E00008
     /* 00A9E8 0000A9E8 27BD0028 */  .word 0x27BD0028
-endlabel SelItemsMgr_vfunc8_0000A97C
+endlabel SelItemsMgr_loadData_0000A97C

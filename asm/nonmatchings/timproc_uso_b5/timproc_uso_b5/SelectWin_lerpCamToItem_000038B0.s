@@ -1,6 +1,6 @@
-nonmatching SelectWin_func_000038B0, 0xBC
+nonmatching SelectWin_lerpCamToItem_000038B0, 0xBC
 
-glabel SelectWin_func_000038B0
+glabel SelectWin_lerpCamToItem_000038B0
     /* 0038B0 000038B0 C49202A0 */  .word 0xC49202A0
     /* 0038B4 000038B4 C4840164 */  .word 0xC4840164
     /* 0038B8 000038B8 8C82029C */  .word 0x8C82029C
@@ -48,4 +48,4 @@ glabel SelectWin_func_000038B0
     /* 003960 00003960 E44E0034 */  .word 0xE44E0034
     /* 003964 00003964 03E00008 */  .word 0x03E00008
     /* 003968 00003968 E4500038 */  .word 0xE4500038
-endlabel SelectWin_func_000038B0
+endlabel SelectWin_lerpCamToItem_000038B0

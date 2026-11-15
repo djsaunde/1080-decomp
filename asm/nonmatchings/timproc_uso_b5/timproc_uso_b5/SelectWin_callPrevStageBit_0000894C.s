@@ -1,6 +1,6 @@
-nonmatching SelectWin_func_0000894C, 0x20
+nonmatching SelectWin_callPrevStageBit_0000894C, 0x20
 
-glabel SelectWin_func_0000894C
+glabel SelectWin_callPrevStageBit_0000894C
     /* 00894C 0000894C 27BDFFE8 */  .word 0x27BDFFE8
     /* 008950 00008950 AFBF0014 */  .word 0xAFBF0014
     jal SelectWin_prevStageBit_000088A0   /* 008954 0C000000 -> SelectWin_prevStageBit_000088A0 */
@@ -9,4 +9,4 @@ glabel SelectWin_func_0000894C
     /* 008960 00008960 27BD0018 */  .word 0x27BD0018
     /* 008964 00008964 03E00008 */  .word 0x03E00008
     /* 008968 00008968 00000000 */  .word 0x00000000
-endlabel SelectWin_func_0000894C
+endlabel SelectWin_callPrevStageBit_0000894C

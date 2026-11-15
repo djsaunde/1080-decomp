@@ -20,7 +20,7 @@ glabel SelectWin_state8_000080F4
     /* 008134 00008134 8E44041C */  .word 0x8E44041C
     /* 008138 00008138 8E4503B8 */  .word 0x8E4503B8
     /* 00813C 0000813C 01F8C825 */  .word 0x01F8C825
-    jal SelectionMgr_func_00001D1C   /* 008140 0C000000 -> SelectionMgr_func_00001D1C */
+    jal SelectionMgr_canCommit_00001D1C   /* 008140 0C000000 -> SelectionMgr_canCommit_00001D1C */
     /* 008144 00008144 03308825 */  .word 0x03308825
     /* 008148 00008148 10000003 */  .word 0x10000003
     /* 00814C 0000814C 00402825 */  .word 0x00402825
@@ -200,11 +200,11 @@ glabel SelectWin_state8_000080F4
     /* 008404 00008404 24090006 */  .word 0x24090006
     /* 008408 00008408 AE4903CC */  .word 0xAE4903CC
     /* 00840C 0000840C 02402025 */  .word 0x02402025
-    jal SelectWin_func_00008D90   /* 008410 0C000000 -> SelectWin_func_00008D90 */
+    jal SelectWin_resetCheat_00008D90   /* 008410 0C000000 -> SelectWin_resetCheat_00008D90 */
     /* 008414 00008414 24050001 */  .word 0x24050001
     jal SelectWin_saveFocus_0000866C   /* 008418 0C000000 -> SelectWin_saveFocus_0000866C */
     /* 00841C 0000841C 02402025 */  .word 0x02402025
-    jal SelectWin_func_0000894C   /* 008420 0C000000 -> SelectWin_func_0000894C */
+    jal SelectWin_callPrevStageBit_0000894C   /* 008420 0C000000 -> SelectWin_callPrevStageBit_0000894C */
     /* 008424 00008424 02402025 */  .word 0x02402025
     /* 008428 00008428 AE4203C8 */  .word 0xAE4203C8
     /* 00842C 0000842C 02402025 */  .word 0x02402025

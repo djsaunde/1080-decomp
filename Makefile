@@ -3548,7 +3548,7 @@ build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc
 # order of commutative FP ops where cfe canonicalizes the constant right.
 # 1DB0 = transition-frame update (89/89 words under NCC; cfe capped at 99.55).
 TIMB5_1DB0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectionMgr_func_00001DB0=$(TIMB5_1DB0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectionMgr_setSplit_00001DB0=$(TIMB5_1DB0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1DB0_DONOR)
 # 1F14 = two-player transition update (551/551 words under NCC): literal FP
 # constants (rodata pinned at +0xC8) and a 3-arg inner 87A0 call (agent-g run 138).
@@ -3576,7 +3576,7 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b
 TIMB5_AC20_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp.o
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelBoard_display_0000AC20=$(TIMB5_AC20_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_AC20_DONOR)
-# 396C: exact via src/match_imports/SelectWin_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
+# 396C: exact via src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c (38B0 sibling; stanzas next to 38B0's).
 # B624 = AC20 / B154 sibling (139/139 words under NCC; first rotation through an inline with a
 # kept float parameter, .bss relocs pinned to 0) (agent-g run 167).
 TIMB5_B624_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp.o
@@ -4214,16 +4214,16 @@ build/src/match_imports/gen_createLights_00001460.c.o: src/match_imports/gen_cre
 build/non_matching/src/match_imports/gen_createLights_00001460.c.o: src/match_imports/gen_createLights_00001460.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/SelectWin_func_000038B0.c.o: src/match_imports/SelectWin_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o: src/match_imports/SelectWin_lerpCamToItem_000038B0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/src/match_imports/SelectWin_func_0000396C.c.o: src/match_imports/SelectWin_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o: src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o: src/match_imports/SelectWin_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o: src/match_imports/SelectWin_lerpCamToItem_000038B0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o: src/match_imports/SelectWin_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o: src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/SelectWin_init_00005BF0.c.o: src/match_imports/SelectWin_init_00005BF0.c src/match_imports/context_timproc_uso_b5.h
@@ -4780,18 +4780,18 @@ build/src/match_imports/gen_createLights_00001460.c.o.linked.elf: build/src/matc
 build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf: build/non_matching/src/match_imports/gen_createLights_00001460.c.o scripts/match-origins-gen_createLights_00001460-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gen_createLights_00001460-nm.ld -e gen_createLights_00001460 -o $@ $@.stripped.o
-build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf: build/src/match_imports/SelectWin_func_000038B0.c.o scripts/match-origins-SelectWin_func_000038B0.ld
+build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf: build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o scripts/match-origins-SelectWin_lerpCamToItem_000038B0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_000038B0.ld -e SelectWin_func_000038B0 -o $@ $@.stripped.o
-build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf: build/src/match_imports/SelectWin_func_0000396C.c.o scripts/match-origins-SelectWin_func_0000396C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_lerpCamToItem_000038B0.ld -e SelectWin_lerpCamToItem_000038B0 -o $@ $@.stripped.o
+build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf: build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o scripts/match-origins-SelectWin_lerpCamToItemZoom_0000396C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_0000396C.ld -e SelectWin_func_0000396C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o scripts/match-origins-SelectWin_func_000038B0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_lerpCamToItemZoom_0000396C.ld -e SelectWin_lerpCamToItemZoom_0000396C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o scripts/match-origins-SelectWin_lerpCamToItem_000038B0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_000038B0-nm.ld -e SelectWin_func_000038B0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o scripts/match-origins-SelectWin_func_0000396C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_lerpCamToItem_000038B0-nm.ld -e SelectWin_lerpCamToItem_000038B0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o scripts/match-origins-SelectWin_lerpCamToItemZoom_0000396C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_0000396C-nm.ld -e SelectWin_func_0000396C -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_lerpCamToItemZoom_0000396C-nm.ld -e SelectWin_lerpCamToItemZoom_0000396C -o $@ $@.stripped.o
 build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf: build/src/match_imports/SelectWin_init_00005BF0.c.o scripts/match-origins-SelectWin_init_00005BF0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_init_00005BF0.ld -e SelectWin_init_00005BF0 -o $@ $@.stripped.o
@@ -5176,14 +5176,14 @@ build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: buil
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gen_createLights_00001460.json $@
 build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf scripts/match-bindings-gen_createLights_00001460-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gen_createLights_00001460-nm.json $@
-build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_func_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_000038B0.json $@
-build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_func_0000396C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_0000396C.json $@
-build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_000038B0-nm.json $@
-build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_0000396C-nm.json $@
+build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_lerpCamToItem_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_lerpCamToItem_000038B0.json $@
+build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C.json $@
+build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_lerpCamToItem_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_lerpCamToItem_000038B0-nm.json $@
+build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C-nm.json $@
 build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf scripts/match-bindings-SelectWin_init_00005BF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_init_00005BF0.json $@
 build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf scripts/match-bindings-SelectWin_init_00005BF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5579,14 +5579,14 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += gen_cr
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/gen_createLights_00001460.c scripts/match-bindings-gen_createLights_00001460.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += gen_createLights_00001460=build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/gen_createLights_00001460.c scripts/match-bindings-gen_createLights_00001460-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_000038B0=build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_0000396C=build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_000038B0.c scripts/match-bindings-SelectWin_func_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_0000396C.c scripts/match-bindings-SelectWin_func_0000396C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_000038B0=build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_0000396C=build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_000038B0.c scripts/match-bindings-SelectWin_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_0000396C.c scripts/match-bindings-SelectWin_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_lerpCamToItem_000038B0=build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_lerpCamToItemZoom_0000396C=build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_lerpCamToItem_000038B0.c scripts/match-bindings-SelectWin_lerpCamToItem_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_lerpCamToItem_000038B0=build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_lerpCamToItemZoom_0000396C=build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_lerpCamToItem_000038B0.c scripts/match-bindings-SelectWin_lerpCamToItem_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c scripts/match-bindings-SelectWin_lerpCamToItemZoom_0000396C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_init_00005BF0=build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_init_00005BF0.c scripts/match-bindings-SelectWin_init_00005BF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_init_00005BF0=build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
@@ -5960,14 +5960,14 @@ build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/gen_createL
 build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
-build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf
+build/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SelectWin_lerpCamToItem_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
 build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf

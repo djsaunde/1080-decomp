@@ -1,6 +1,6 @@
-nonmatching CommonInfo_vfunc8_00008F98, 0x30
+nonmatching CommonInfo_loadData_00008F98, 0x30
 
-glabel CommonInfo_vfunc8_00008F98
+glabel CommonInfo_loadData_00008F98
     /* 008F98 00008F98 27BDFFE8 */  .word 0x27BDFFE8
     /* 008F9C 00008F9C AFBF0014 */  .word 0xAFBF0014
     /* 008FA0 00008FA0 8C83002C */  .word 0x8C83002C
@@ -13,4 +13,4 @@ glabel CommonInfo_vfunc8_00008F98
     /* 008FBC 00008FBC 27BD0018 */  .word 0x27BD0018
     /* 008FC0 00008FC0 03E00008 */  .word 0x03E00008
     /* 008FC4 00008FC4 00000000 */  .word 0x00000000
-endlabel CommonInfo_vfunc8_00008F98
+endlabel CommonInfo_loadData_00008F98

@@ -37,7 +37,7 @@ void CharacterItem_drawStats_0000BBDC(TimB5EntryFields *a0, B5TimingScreen *a1) 
         v1 = (v < *cp) ? v : *cp;
         v = v1;
         if (a1->field_3BC == 1) {
-            SelItem_func_00003A4C(
+            SelItem_drawStatBar_00003A4C(
                 (int)a0,
                 a0->field_A4,
                 i * a1->field_74 + *(int *)((char *)a0 + 0xBC),
@@ -48,7 +48,7 @@ void CharacterItem_drawStats_0000BBDC(TimB5EntryFields *a0, B5TimingScreen *a1) 
                 (char *)a1);
         } else {
             v1 = 0;
-            SelItem_func_00003C8C(
+            SelItem_drawStatBarRight_00003C8C(
                 (int)a0,
                 a0->field_A4,
                 i * a1->field_74 + *(int *)((char *)a0 + 0xBC),

@@ -67,7 +67,7 @@ typedef struct { char *p; } P1;
  * the 0.5f lui like the target); (5) case 0's table store and its `break`
  * on ONE source line: as1 then schedules the a2 reload above the store and
  * the store fills the `b` delay slot (target). */
-void SelectWin_func_00008D90(int *a0, int a1);
+void SelectWin_resetCheat_00008D90(int *a0, int a1);
 char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
@@ -660,13 +660,13 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         FW(arg0, 0x490) = 0;
         switch (FW(arg0, 0x3C8) - 1) {
         case 0:
-            SelectWin_func_00008D90((int *)arg0, 0);
+            SelectWin_resetCheat_00008D90((int *)arg0, 0);
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
             ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
-            SelectWin_func_00008D90((int *)arg0, 1);
+            SelectWin_resetCheat_00008D90((int *)arg0, 1);
             FW(arg0, 0x3CC) = 6;
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;

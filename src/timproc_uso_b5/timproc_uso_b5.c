@@ -226,7 +226,7 @@ static void gen_streamReadVec3_00000400(Vec3 *dst) {
 }
 
 
-void SelectionMgr_vfunc11_00000470(void) {
+void SelectionMgr_onFadeDone_00000470(void) {
 }
 
 
@@ -1120,7 +1120,7 @@ extern char timproc_uso_b5_D_807FE968, timproc_uso_b5_D_807FE97C;
 extern char import_800200E8, import_800200F4, import_800200FC;
 extern char *SelectWin_ctor();
 extern void SelectWin_init_00005BF0();
-extern void SelectionMgr_func_00001DB0();
+extern void SelectionMgr_setSplit_00001DB0();
 char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7) {
     register s32 d;
     register char *E;
@@ -1184,7 +1184,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
                 FW(arg0, 0x44) = 0xF0;
                 FW(arg0, 0x50) = 1;
                 *(f32 *)((char *)arg0 + 0x54) = 1.0f;
-                SelectionMgr_func_00001DB0(arg0);
+                SelectionMgr_setSplit_00001DB0(arg0);
             }
         }
     }
@@ -1292,7 +1292,7 @@ int SelectionMgr_otherWin_00001CF0(SelectionMgr *m, int player) {
     return 0;
 }
 
-/* SelectionMgr_func_00001D1C (0x94 after merging the 1D60 fragment AND
+/* SelectionMgr_canCommit_00001D1C (0x94 after merging the 1D60 fragment AND
  * the 1DA4 "return-1 leaf" -- see below). Pair-state comparator: with
  * a0->i_30 == 2, compares the 0x3C8 counters of the a1-indexed and
  * (a1^1)-indexed pair members (a0 + idx*4 + 0x34), then a 1/2/4 switch on
@@ -1314,7 +1314,7 @@ int SelectionMgr_otherWin_00001CF0(SelectionMgr *m, int player) {
  * SOURCE LINE (as1 debug-line tie-break flips the p2/p1 + c2/c1 load-pair
  * emission order -- docs/IDO_CODEGEN "as1 scheduler tie-break ... SHARE one
  * source line"). The shared line is LOAD-BEARING; do not re-format. */
-int SelectionMgr_func_00001D1C(char *a0, int a1) {
+int SelectionMgr_canCommit_00001D1C(char *a0, int a1) {
     char *p1;
     char *p2;
     int c1;
@@ -1349,7 +1349,7 @@ int SelectionMgr_func_00001D1C(char *a0, int a1) {
  * -O2 -g3 carve-out (timproc_uso_b5_g3_1DA4.c + block5 splice slot) was
  * removed; the bytes now come from the exact 1D1C body above at plain -O2. */
 
-/* SelectionMgr_func_00001DB0 (0x164 after absorbing the 1EB8 fragment):
+/* SelectionMgr_setSplit_00001DB0 (0x164 after absorbing the 1EB8 fragment):
  * the bnezl at +0xF0 branches to 0x1EBC, past the declared end into the
  * old 1EB8 range, and 1EB8 read v0/v1 uninitialized at entry -- the same
  * branch-past-declared-end family as the fade-helpers and 1D1C/1D60.
@@ -1392,7 +1392,7 @@ int SelectionMgr_func_00001D1C(char *a0, int a1) {
  * "commutative FP operand-order canonicalization cap" above is cfe-only:
  * edg (NCC) keeps the source order `C0 + B8 * t` / `41.0f + 5.0f * f`, which
  * is exactly the target's const-first mul/add operand order. */
-void SelectionMgr_func_00001DB0(char *a0) {
+void SelectionMgr_setSplit_00001DB0(char *a0) {
     *(char **)(a0 + 0) = "LookAround";
     *(char **)(a0 + 4) = "ZoomingUp";
     *(char **)(a0 + 8) = "ZoomingUpLevel";
@@ -1453,7 +1453,7 @@ void SelectionMgr_func_00001DB0(char *a0) {
  * FP const pool at &D_00000000 + 0xC8..0x118 (f32 ramp steps + f64 pairs).
  * func_00000000 = USO placeholder dispatcher (=0 in undefined_syms). */
 extern int gen_stageBitToIndex_000087A0();
-extern void SelectionMgr_func_00001DB0(char *);
+extern void SelectionMgr_setSplit_00001DB0(char *);
 extern void timproc_uso_b5_func_04CD94(char *);
 /* EXACT 2026-10-23 (agent-g run 138) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp, REPLACE_FUNC_BODY-spliced
@@ -2018,7 +2018,7 @@ void SelItem_reset_00003890(int *a0) {
     *p = 0;
 }
 
-/* SelectWin_func_000038B0: one 47-insn (0xBC) FP transform. BOUNDARY MERGED
+/* SelectWin_lerpCamToItem_000038B0: one 47-insn (0xBC) FP transform. BOUNDARY MERGED
  * 2026-06-02: splat had split this into 038B0 (entry, 8 insns, no prologue) +
  * 038D0 (continuation w/ the `addiu sp,-32` prologue 8 insns in). IDO hoisted
  * the entry's a0-field FP loads above the frame setup, so the prologue landed
@@ -2048,7 +2048,7 @@ void SelItem_reset_00003890(int *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000038B0)();
-void SelectWin_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
+void SelectWin_lerpCamToItem_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
     volatile f32 pad0;
     volatile f32 y;
     volatile f32 pad1;
@@ -2086,10 +2086,10 @@ void SelectWin_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_000038B0);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_lerpCamToItem_000038B0);
 #endif
 
-/* SelectWin_func_0000396C: one 47-insn (0xBC) FP transform — the sibling of
+/* SelectWin_lerpCamToItemZoom_0000396C: one 47-insn (0xBC) FP transform — the sibling of
  * 038B0 (template-identical except field offsets 0x184/0x188 vs 0x164/0x168).
  * BOUNDARY MERGED 2026-06-02: splat had split it into 396C (entry, 8 a0-field FP
  * loads, no prologue, jal'd from 5FC0) + 398C (the `addiu sp,-32` prologue +
@@ -2103,7 +2103,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_000
  * comment): h snapshot, volatile t/y carrier slots (pad ladder t@0/y@24),
  * if(1){} store-base wrap, x,y,z order. Same FP-ring/scheduling residual. */
 /* EXACT 2026-10-24 (agent-g run 154): spliced from the plain cfe -O2 port
- * src/match_imports/SelectWin_func_0000396C.c (REPLACE_FUNC_BODY, both
+ * src/match_imports/SelectWin_lerpCamToItemZoom_0000396C.c (REPLACE_FUNC_BODY, both
  * trees) -- 38B0's match_imports source with the 0x184/0x188/0x18C fields;
  * the opcode sequences of 38B0 and 396C are identical. The volatile-ladder
  * body below is the old NM reference only (the NCC NM donor is retired). */
@@ -2112,7 +2112,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_000
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0000396C)();
-void SelectWin_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
+void SelectWin_lerpCamToItemZoom_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
     volatile f32 pad0;
     volatile f32 y;
     volatile f32 pad1;
@@ -2150,10 +2150,10 @@ void SelectWin_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_0000396C);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_lerpCamToItemZoom_0000396C);
 #endif
 
-void SelectWin_func_00003A28(int *a0, int *a1, int a2) {
+void SelectWin_setCamToItem_00003A28(int *a0, int *a1, int a2) {
     float *src = (float *)a0[0x29C / 4];
     float x = *(float *)((char *)src + 0xDC);
     float y = *(float *)((char *)src + 0xE0);
@@ -2163,7 +2163,7 @@ void SelectWin_func_00003A28(int *a0, int *a1, int a2) {
     *(float *)((char *)a1 + 0x68) = z;
 }
 
-/* SelItem_func_00003A4C: 144-insn (0x240) heavy data-init function.
+/* SelItem_drawStatBar_00003A4C: 144-insn (0x240) heavy data-init function.
  * Frame -0xB0, saves s0/s1/s2/ra. Sibling of recently-matched
  * SelItem_update_00003F5C in the same "FPU-heavy data-driven init"
  * family. Initial structural decode:
@@ -2193,7 +2193,7 @@ extern char timproc_uso_b5_D_807FEA4C;
 extern char timproc_uso_b5_D_807FF490;
 extern char timproc_uso_b5_D_807FF4A8;
 struct B5Tbl3A4C { int w[11]; };
-/* SelItem_func_00003A4C: two-sprite HUD draw with table-indexed offsets.
+/* SelItem_drawStatBar_00003A4C: two-sprite HUD draw with table-indexed offsets.
  * Copies two 0x2C-byte tables from D_807FEA20/D_807FEA4C onto the stack
  * (sp84/sp58 — IDO unrolls each as a 3x12-byte loop + 2-word tail). If arg4!=0:
  * draw sprite obj &D_807FF490+0x10 twice at arg1+arg7->0x338 / +sp58[arg4],
@@ -2208,7 +2208,7 @@ struct B5Tbl3A4C { int w[11]; };
  * shared dp/dw deref locals (v0/v1 coloring + the +0x10 frame to -0xB0),
  * tail role-swap with sz=*pB inside the block, assignment-expr addu operand
  * pins ((dp=arg1)/(dw=arg2)/(sz=arg1)/(pB=arg2)). See 3C8C notes below. */
-void SelItem_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_drawStatBar_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA20;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA4C;
     int *pA;
@@ -2249,14 +2249,14 @@ void SelItem_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int
     }
 }
 
-// SelItem_func_00003C8C — STRUCTURAL PASS (0x24C / 147 words,
+// SelItem_drawStatBarRight_00003C8C — STRUCTURAL PASS (0x24C / 147 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Template-instantiation routine: copies two fixed structure templates
 // from USO static data into stack scratch, then builds/configures from
 // them plus the call args.
 //
-//   void SelItem_func_00003C8C(a0, a1, a2, a3) {  // a1->s1 a2->s2
+//   void SelItem_drawStatBarRight_00003C8C(a0, a1, a2, a3) {  // a1->s1 a2->s2
 //     // copy template T1 = &D_00001208[0 .. 0x24)  (3 x 0xC-byte
 //     //   records, stride 0xC) into local buf @ sp+0x84;
 //     // copy template T2 = &D_00001234[...]         (0xC-stride
@@ -2300,7 +2300,7 @@ void SelItem_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int
 //       fixes the *pA-last association/load order.
 extern char timproc_uso_b5_D_807FEA78;
 extern char timproc_uso_b5_D_807FEAA4;
-void SelItem_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_drawStatBarRight_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA78;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEAA4;
     int *pA;
@@ -2344,7 +2344,7 @@ void SelItem_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, i
     }
 }
 
-void SelItem_vfunc8_00003ED8(char *a0) {
+void SelItem_loadData_00003ED8(char *a0) {
     char *v;
 
     gl_func_00000000(a0 + 0x2C);
@@ -2352,7 +2352,7 @@ void SelItem_vfunc8_00003ED8(char *a0) {
     (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
 }
 
-/* Sibling of SelItem_vfunc8_00003ED8 — same vtable-call wrapper. MATCHED.
+/* Sibling of SelItem_loadData_00003ED8 — same vtable-call wrapper. MATCHED.
  * Was 94.12% NM with a trailing orphan `lw t8, 0x23C(a0)` that splat
  * mis-attributed to this function's range (it is the dead boundary word
  * between this fn's epilogue and successor func_00003F5C, which does not use
@@ -2360,7 +2360,7 @@ void SelItem_vfunc8_00003ED8(char *a0) {
  * boundary correction: shrank this .s to 16 insns (0x40) and moved the orphan
  * word into func_00003F5C.s as its leading word. ROM byte sequence preserved
  * (16+18 = 34 words); 00003F18 now C-emits exactly its 16 real insns. */
-void SelItem_vfunc27_00003F18(char *a0) {
+void SelItem_loadInfo_00003F18(char *a0) {
     char *v;
     gl_func_00000000(a0 + 0x194);
     v = *(char**)(a0 + 0x28);
@@ -2404,14 +2404,14 @@ void SelItem_update_00003F5C(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body */
 void SelItem_display_00003FA0(int a0) {}
 
-void SelItem_func_00003FA8(int a0, int a1, int a2, int a3) {
+void SelItem_drawSpritePlain_00003FA8(int a0, int a1, int a2, int a3) {
     (void)a0;
     gl_func_00000000(&D_00000000);
     gl_func_00000000(a3);
     gl_func_00000000(a3, a1, a2, 0);
 }
 
-void SelItem_func_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
+void SelItem_drawSpriteWhite_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
     float buf[4];
     char pad[20];
     buf[0] = 1.0f;
@@ -2423,14 +2423,14 @@ void SelItem_func_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
     gl_func_00000000(arg4, arg2, arg3, 3);
 }
 
-void SelItem_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
+void SelItem_drawSpriteColor_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
     (void)a0;
     gl_func_00000000(&D_00000000, arg6, a3);
     gl_func_00000000(arg5);
     gl_func_00000000(arg5, a1, a2, 3);
 }
 
-void SelItem_func_000040BC(int a0, int a1, int a2, int a3, int arg5, int arg6, int arg7) {
+void SelItem_drawSpriteColorEx_000040BC(int a0, int a1, int a2, int a3, int arg5, int arg6, int arg7) {
     (void)a0;
     gl_func_00000000(&D_00000000, arg7, a3, arg5);
     gl_func_00000000(arg6);
@@ -2540,7 +2540,7 @@ typedef struct { char *p; } P1;
  * the 0.5f lui like the target); (5) case 0's table store and its `break`
  * on ONE source line: as1 then schedules the a2 reload above the store and
  * the store fills the `b` delay slot (target). */
-void SelectWin_func_00008D90();
+void SelectWin_resetCheat_00008D90();
 char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
@@ -3133,13 +3133,13 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         FW(arg0, 0x490) = 0;
         switch (FW(arg0, 0x3C8) - 1) {
         case 0:
-            SelectWin_func_00008D90((int *)arg0, 0);
+            SelectWin_resetCheat_00008D90((int *)arg0, 0);
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
             ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
-            SelectWin_func_00008D90((int *)arg0, 1);
+            SelectWin_resetCheat_00008D90((int *)arg0, 1);
             FW(arg0, 0x3CC) = 6;
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;
@@ -3341,7 +3341,7 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
         char *p414;
         e = (char *)SelectWin_curItem_00008A38(arg0);
         p414 = *(char **)(arg0 + 0x414);
-        SelectWin_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
+        SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
     SelectWin_beginTransition_00008688(arg0, 0);
     *(int *)(arg0 + 0x404) = 0x40;
@@ -3635,7 +3635,7 @@ void SelectWin_display_00006394(char *arg0) {
     timproc_uso_b5_func_04CCA8(arg0);
 }
 
-void SelectWin_vfunc8_0000685C(char *a0) {
+void SelectWin_loadData_0000685C(char *a0) {
     gl_func_00000000(a0 + 0x2C);
 }
 
@@ -3948,7 +3948,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_startGam
 extern int import_000A53B4();
 extern void timproc_uso_b5_func_00F954();
 void SelectWin_commitSelection_00006C00(char *scr) {
-    if (!SelectionMgr_func_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
+    if (!SelectionMgr_canCommit_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
     import_000A53B4(scr);
     timproc_uso_b5_func_00F954(*(int *)(scr + 0x418), -1, 0);
     *(int *)(&import_80020098 + 0x40) = *(int *)(&import_80020098 + 0x48);
@@ -5019,8 +5019,8 @@ void SelectWin_beginTransition_00008688();
 void SelectWin_moveCursorPrev_00006E08(char *arg0, s32 arg1);
 int SelectWin_prevStageBit_000088A0(char *a0);
 void SelectWin_commitSelection_00006C00(char *scr);
-void SelectWin_func_00008D90();
-int SelectWin_func_0000894C();
+void SelectWin_resetCheat_00008D90();
+int SelectWin_callPrevStageBit_0000894C();
 void SelectWin_state8_000080F4(char *arg0) {
     s32 sp28;
     register s32 busy;
@@ -5034,7 +5034,7 @@ void SelectWin_state8_000080F4(char *arg0) {
         busy = FW(FW(arg0, 0x41C), 0x4C);
         e = (char *) SelectionMgr_otherWin_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
         flags = (FW(arg0, 0x4B4) | FW(e, 0x4B4)) | busy;
-        q = (char *) SelectionMgr_func_00001D1C((char *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+        q = (char *) SelectionMgr_canCommit_00001D1C((char *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
     } else {
         busy = 0;
         flags = FW(arg0, 0x4B4);
@@ -5098,9 +5098,9 @@ void SelectWin_state8_000080F4(char *arg0) {
             ((GP_000080F4)FW(FW(e, 0x28), 0x6C))(*(s16*)((char *)FW(e, 0x28) + 0x68) + e);
         }
         FW(arg0, 0x3CC) = 6;
-        SelectWin_func_00008D90((int *) arg0, 1);
+        SelectWin_resetCheat_00008D90((int *) arg0, 1);
         SelectWin_saveFocus_0000866C((int *) arg0);
-        e = (char *) SelectWin_func_0000894C(arg0);
+        e = (char *) SelectWin_callPrevStageBit_0000894C(arg0);
         FW(arg0, 0x3C8) = (int) e;
         FW(arg0, 0x3C4) = gen_stageBitToIndex_000087A0(arg0, e);
         SelectWin_skipDisabled_00006D30((int *) arg0);
@@ -5435,7 +5435,7 @@ z:
 
 /* int-return K&R form (2026-07-10, 80F4): caller stores the callee's v0
  * passthrough and passes arg0. Codegen identical (v0 untouched here). */
-int SelectWin_func_0000894C() {
+int SelectWin_callPrevStageBit_0000894C() {
     func_00000000();
 }
 
@@ -5622,7 +5622,7 @@ int SelectWin_listCount_00008C38(SelectWin *w) {
     return w->itemsMgr->count;
 }
 
-/* SelectWin_func_00008C44: timing-screen slot classification query.
+/* SelectWin_charCheatIndex_00008C44: timing-screen slot classification query.
  * 2026-10-17 agent-g (run 106) 22.9 -> 98.4 (old structural body had the
  * logic inverted). Decode: c = *(import_800201EC + 0x154); n = (u16)c->2 - 4;
  * for n in [0,2) scan the (n+1)-entry int table D_807FE78C+0xF1C and return
@@ -5639,7 +5639,7 @@ int SelectWin_listCount_00008C38(SelectWin *w) {
  * found by scripts/blockcut-search.py (k = 2, 231 variants). */
 extern struct DBlk_8D38 import_800201EC;
 extern char timproc_uso_b5_D_807FE78C;
-int SelectWin_func_00008C44(char *r) {
+int SelectWin_charCheatIndex_00008C44(char *r) {
     char *c = *(char **)((char *)&import_800201EC + 0x154);
     int n = *(u16 *)(c + 2) - 4;
     int cnt;
@@ -5668,7 +5668,7 @@ int SelectWin_func_00008C44(char *r) {
     return 0;
 }
 
-/* SelectWin_func_00008D38: 21-insn frameless bit-scan leaf
+/* SelectWin_boardCheatIndex_00008D38: 21-insn frameless bit-scan leaf
  * (boundary-merged 2026-06-02 from the 8D78 tail).
  * DECODE RE-CORRECTED 2026-06-20: the prior "DECODE CORRECTED 2026-06-10"
  * was WRONG -- it claimed the bitmap base is the ARG (a0->0x154). The .s
@@ -5694,7 +5694,7 @@ int SelectWin_func_00008C44(char *r) {
  * everything by one (21 diffs) -- the 2-local goto form is the floor. for/
  * do-while regress to 12. Genuine 2-axis regalloc+IV-collapse cap; do NOT
  * re-run the -O matrix. */
-/* SelectWin_func_00008D38 — EXACT 22/22 words (in-tree, fresh make RUN_CC_CHECK=0 build).
+/* SelectWin_boardCheatIndex_00008D38 — EXACT 22/22 words (in-tree, fresh make RUN_CC_CHECK=0 build).
  * Default -O2. Bit-scan leaf: reads a global byte table pointer at
  * import_800201EC+0x154 (struct-cast-fold: reloc to base, 0x154 folds into lw),
  * scans bits 0..23 of table[(i>>3)+6]; first CLEAR bit -> return 0, all set -> return 3.
@@ -5710,7 +5710,7 @@ int SelectWin_func_00008C44(char *r) {
  */
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern struct DBlk_8D38 import_800201EC;
-s32 SelectWin_func_00008D38(char *a0) {
+s32 SelectWin_boardCheatIndex_00008D38(char *a0) {
     s32 i;
     unsigned char *p;
     s32 k;
@@ -5725,7 +5725,7 @@ s32 SelectWin_func_00008D38(char *a0) {
     return 3;
 }
 
-void SelectWin_func_00008D90(SelectWin *w, int a1) {
+void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
     if (a1 == 0) {
         w->unk4A4 = 0;
     } else {
@@ -5847,7 +5847,7 @@ end:
  * load and assigns $v1 to p1 + $v0 to p2 (target's reg layout). Writing
  * p1 first (the natural order) gives the swap. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
-void CommonInfo_vfunc8_00008F98(char *a0) {
+void CommonInfo_loadData_00008F98(char *a0) {
     int *p2 = *(int**)((char*)*(int*)(a0 + 0x2C) + 0x28);
     int p1 = *(int*)(a0 + 0x2C);
     (*(int(**)())((char*)p2 + 0x5C))(*(short*)((char*)p2 + 0x58) + p1);
@@ -6738,13 +6738,13 @@ int CommonInfo_add_0000A95C(int *a0, int a1) {
     return a1;
 }
 
-/* SelItemsMgr_vfunc8_0000A97C: 23-insn loop calling slot->0x28->0x4C(short@0x48)
+/* SelItemsMgr_loadData_0000A97C: 23-insn loop calling slot->0x28->0x4C(short@0x48)
  * per element via the incrementing cursor `p`. MATCHED 2026-06-04 via
  * decomp-permuter (base 35 -> 0): wrapping the inner block in `if (1) { }` adds
  * a basic-block boundary that flips the v0/v1 caller-save allocation to the
  * target's (the cursor-read lands in v1, not v0). The prior "register-renumber
  * cap / branch-likely not reachable from C" comment was a misdiagnosis. */
-void SelItemsMgr_vfunc8_0000A97C(char *a0) {
+void SelItemsMgr_loadData_0000A97C(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -6764,11 +6764,11 @@ void SelItemsMgr_vfunc8_0000A97C(char *a0) {
     } while (i < *(int*)(a0 + 0x3C));
 }
 
-/* SelItemsMgr_vfunc10_0000A9EC: sibling of A97C, offsets 0x64/0x60 instead of
+/* SelItemsMgr_loadInfo_0000A9EC: sibling of A97C, offsets 0x64/0x60 instead of
  * 0x4C/0x48. MATCHED 2026-06-04 via the same `if (1) { }` block-boundary lever
  * (flips the v0/v1 allocation). The "structural cap — branch-likely not
  * reachable from std do-while C" comment was a misdiagnosis. */
-void SelItemsMgr_vfunc10_0000A9EC(char *a0) {
+void SelItemsMgr_loadInfo_0000A9EC(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -7300,7 +7300,7 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
         v1 = (v < *cp) ? v : *cp;
         v = v1;
         if (*(int *)((char *)a1 + 0x3BC) == 1) {
-            SelItem_func_00003A4C(
+            SelItem_drawStatBar_00003A4C(
                 (int)a0,
                 *(int *)((char *)a0 + 0xA4),
                 i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
@@ -7311,7 +7311,7 @@ void CharacterItem_drawStats_0000BBDC(int *a0, int *a1) {
                 (char *)a1);
         } else {
             v1 = 0;
-            SelItem_func_00003C8C(
+            SelItem_drawStatBarRight_00003C8C(
                 (int)a0,
                 *(int *)((char *)a0 + 0xA4),
                 i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
@@ -7682,9 +7682,9 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
         }
         mv2 = mv;
         if (*(s32 *)(arg1 + 0x3BC) - 1 == 0) {
-            SelItem_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            SelItem_drawStatBar_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
-            SelItem_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            SelItem_drawStatBarRight_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         }
         i++;
         pv++;
@@ -7703,7 +7703,7 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[2] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA78 + 0x5F8;
             } else {
                 fnum = 105.0f;
@@ -7714,11 +7714,11 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[1] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
+                SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA90 + 0x610;
             }
             sp60 = sp60;
-            SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)hud, 0xFF);
+            SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)hud, 0xFF);
             if ((++*(s32 *)(arg0 + 0x2C4)) & 8) {
                 f32 fzero;
                 char *pa, *pb;
@@ -7732,9 +7732,9 @@ void BoardItem_drawStats_0000C310(char *arg0, char *arg1) {
                 pa = &timproc_uso_b5_D_807FFAA8 + 0x628;
                 pb = &timproc_uso_b5_D_807FFAA8_b + 0x640;
                 if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
-                    SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, *(s32 *)(arg0 + 0xEC), cols, (int)pa, 0xFF);
+                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, *(s32 *)(arg0 + 0xEC), cols, (int)pa, 0xFF);
                 } else {
-                    SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, *(s32 *)(arg0 + 0xEC), cols, (int)pb, 0xFF);
+                    SelItem_drawSpriteColor_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, *(s32 *)(arg0 + 0xEC), cols, (int)pb, 0xFF);
                 }
             }
         }
@@ -8040,10 +8040,10 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
     ones[3] = 1.0f;
     a2v = (*(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4) +
            *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xBC)) - *(int *)(arg0 + 0x5C);
-    SelItem_func_000040BC((int)arg0, *(int *)(arg0 + 0x44), a2v, arg2, arg3,
+    SelItem_drawSpriteColorEx_000040BC((int)arg0, *(int *)(arg0 + 0x44), a2v, arg2, arg3,
         *(int *)(arg0 + 0x1AC) * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
     if (*(int *)&import_8002022C != 0) {
-        SelItem_func_00003FF8((int)arg0, *(int *)(arg0 + 0x74) + *(int *)(arg0 + 0x44),
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, *(int *)(arg0 + 0x74) + *(int *)(arg0 + 0x44),
             a2v + *(int *)(arg0 + 0x8C),
             *(int *)(arg0 + 0x1AC) * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
@@ -8064,7 +8064,7 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
         }
     }
     if (sp30 != 0) {
-        SelItem_func_00003FF8((int)arg0, *(int *)(arg0 + 0x44) + 0x54, a2v - 0x78,
+        SelItem_drawSpriteWhite_00003FF8((int)arg0, *(int *)(arg0 + 0x44) + 0x54, a2v - 0x78,
             (int)(&timproc_uso_b5_D_807FFB50 + 0x6D0), 0xFF);
     }
 }
@@ -8384,7 +8384,7 @@ void LevelItem_setAlpha_0000D058(SelLevelItem *it, float a1) {
  * docs/IDO_CODEGEN.md#if-1-around-an-inner-block...). Outer offsets (this
  * variant): count a0->0x6C, slot ptr a0->0x3C; inner fn ptr slot->0x28->0x4C,
  * short arg slot->0x28->0x48. */
-void SelItemList_vfunc8_0000D06C(char *a0) {
+void SelItemList_loadData_0000D06C(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -8408,7 +8408,7 @@ void SelItemList_vfunc8_0000D06C(char *a0) {
  * by the `if (1) {}` BB-boundary lever (was "72.21% branch-likely-preload cap").
  * Outer offsets same as D06C (count=a0->0x6C, slot=a0->0x3C); inner fn ptr
  * slot->0x28->0xE4, short arg slot->0x28->0xE0 (vs D06C's 0x4C/0x48). */
-void SelItemList_vfunc11_0000D0DC(char *a0) {
+void SelItemList_loadInfo_0000D0DC(char *a0) {
     int i;
     char *p;
     int *v1;

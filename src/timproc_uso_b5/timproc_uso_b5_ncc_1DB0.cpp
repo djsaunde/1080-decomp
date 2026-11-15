@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for SelectionMgr_func_00001DB0 (0x164 / 89 words).
+/* IDO 7.1 NCC (C++) donor for SelectionMgr_setSplit_00001DB0 (0x164 / 89 words).
  * timproc_b5 is C++: edg keeps the SOURCE operand order of commutative FP ops
  * (cfe canonicalizes the constant to the right), so `C0 + B8 * t` and
  * `41.0f + 5.0f * f` emit the target's const-first mul/add operands.
@@ -8,7 +8,7 @@ extern char timproc_uso_b5_D_807FF0D8, timproc_uso_b5_D_807FF0E0;
 #define D_dbl_1DB0_B8 (*(double *)(&timproc_uso_b5_D_807FF0D8 + 0xB8))
 #define D_dbl_1DB0_C0 (*(double *)(&timproc_uso_b5_D_807FF0E0 + 0xC0))
 typedef int s32; typedef float f32; typedef double f64;
-void SelectionMgr_func_00001DB0(char *a0) {
+void SelectionMgr_setSplit_00001DB0(char *a0) {
     char *t;
     char *u;
 

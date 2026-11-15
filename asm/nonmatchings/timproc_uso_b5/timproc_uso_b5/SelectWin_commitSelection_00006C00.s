@@ -6,7 +6,7 @@ glabel SelectWin_commitSelection_00006C00
     /* 006C08 00006C08 AFB00018 */  .word 0xAFB00018
     /* 006C0C 00006C0C 00808025 */  .word 0x00808025
     /* 006C10 00006C10 8E0503B8 */  .word 0x8E0503B8
-    jal SelectionMgr_func_00001D1C   /* 006C14 0C000000 -> SelectionMgr_func_00001D1C */
+    jal SelectionMgr_canCommit_00001D1C   /* 006C14 0C000000 -> SelectionMgr_canCommit_00001D1C */
     /* 006C18 00006C18 8C84041C */  .word 0x8C84041C
     /* 006C1C 00006C1C 50400040 */  .word 0x50400040
     /* 006C20 00006C20 8FBF001C */  .word 0x8FBF001C

@@ -1,6 +1,6 @@
-nonmatching SelectionMgr_func_00001DB0, 0x164
+nonmatching SelectionMgr_setSplit_00001DB0, 0x164
 
-glabel SelectionMgr_func_00001DB0
+glabel SelectionMgr_setSplit_00001DB0
     /* 001DB0 00001DB0 8C8E0044 */  .word 0x8C8E0044
     /* 001DB4 00001DB4 8C8F0034 */  .word 0x8C8F0034
     /* 001DB8 00001DB8 ADEE04D8 */  .word 0xADEE04D8
@@ -90,7 +90,7 @@ glabel SelectionMgr_func_00001DB0
     /* 001F08 00001F08 AD2E00CC */  .word 0xAD2E00CC
     /* 001F0C 00001F0C 03E00008 */  .word 0x03E00008
     /* 001F10 00001F10 00000000 */  .word 0x00000000
-endlabel SelectionMgr_func_00001DB0
+endlabel SelectionMgr_setSplit_00001DB0
 
 /* timproc_uso_b5 RoData words (offsets past the USO RoData marker word). */
 /* Emitted here so every C fn literal/jumptable lands at its ROM %lo; */

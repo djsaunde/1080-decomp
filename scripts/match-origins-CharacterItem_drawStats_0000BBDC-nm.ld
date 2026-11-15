@@ -10,5 +10,5 @@ SECTIONS {
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
 timproc_uso_b5_D_807FF4C0 = 0x0;
-SelItem_func_00003A4C = 0x0;
-SelItem_func_00003C8C = 0x0;
+SelItem_drawStatBar_00003A4C = 0x0;
+SelItem_drawStatBarRight_00003C8C = 0x0;

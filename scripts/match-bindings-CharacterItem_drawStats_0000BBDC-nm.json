@@ -3,8 +3,8 @@
   "raw_sha256": "fc715c54fb8e15ea351db27a24402349a38c6c2458b74daafb63c9e140d84417",
   "renames": {
     "timproc_uso_b5_D_807FF4C0": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_D_807FF4C0",
-    "SelItem_func_00003A4C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003A4C",
-    "SelItem_func_00003C8C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003C8C"
+    "SelItem_drawStatBar_00003A4C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003A4C",
+    "SelItem_drawStatBarRight_00003C8C": "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_func_00003C8C"
   },
   "original_ROM_minus_curated_addend_bindings": {
     "snw_port_timproc_uso_b5_func_0000BBDC_timproc_uso_b5_D_807FF4C0": 0,

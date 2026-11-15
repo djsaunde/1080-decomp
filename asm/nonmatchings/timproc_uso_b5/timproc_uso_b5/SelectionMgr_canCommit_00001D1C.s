@@ -1,6 +1,6 @@
-nonmatching SelectionMgr_func_00001D1C, 0x94
+nonmatching SelectionMgr_canCommit_00001D1C, 0x94
 
-glabel SelectionMgr_func_00001D1C
+glabel SelectionMgr_canCommit_00001D1C
     /* 001D1C 00001D1C 8C8E0030 */  .word 0x8C8E0030
     /* 001D20 00001D20 24070002 */  .word 0x24070002
     /* 001D24 00001D24 00057880 */  .word 0x00057880
@@ -38,4 +38,4 @@ glabel SelectionMgr_func_00001D1C
     /* 001DA4 00001DA4 24020001 */  .word 0x24020001
     /* 001DA8 00001DA8 03E00008 */  .word 0x03E00008
     /* 001DAC 00001DAC 00000000 */  .word 0x00000000
-endlabel SelectionMgr_func_00001D1C
+endlabel SelectionMgr_canCommit_00001D1C

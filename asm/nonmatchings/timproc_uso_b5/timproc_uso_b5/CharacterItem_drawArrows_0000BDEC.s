@@ -24,7 +24,7 @@ glabel CharacterItem_drawArrows_0000BDEC
     /* 00BE3C 0000BE3C 4600320D */  .word 0x4600320D
     /* 00BE40 0000BE40 02583021 */  .word 0x02583021
     /* 00BE44 0000BE44 44084000 */  .word 0x44084000
-    jal SelItem_func_00003FF8   /* 00BE48 0C000000 -> SelItem_func_00003FF8 */
+    jal SelItem_drawSpriteWhite_00003FF8   /* 00BE48 0C000000 -> SelItem_drawSpriteWhite_00003FF8 */
     /* 00BE4C 0000BE4C AFA80010 */  .word 0xAFA80010
     /* 00BE50 0000BE50 8E2902B4 */  .word 0x8E2902B4
     /* 00BE54 0000BE54 3C014280 */  .word 0x3C014280
@@ -59,7 +59,7 @@ glabel CharacterItem_drawArrows_0000BDEC
     /* 00BEC8 0000BEC8 24A5FFE2 */  .word 0x24A5FFE2
     /* 00BECC 0000BECC 4600218D */  .word 0x4600218D
     /* 00BED0 0000BED0 44183000 */  .word 0x44183000
-    jal SelItem_func_00004068   /* 00BED4 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00BED4 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00BED8 0000BED8 AFB80014 */  .word 0xAFB80014
     /* 00BEDC 0000BEDC 1000001C */  .word 0x1000001C
     /* 00BEE0 0000BEE0 C7A20040 */  .word 0xC7A20040
@@ -87,7 +87,7 @@ glabel CharacterItem_drawArrows_0000BDEC
     /* 00BF38 0000BF38 24A5FFE2 */  .word 0x24A5FFE2
     /* 00BF3C 0000BF3C 4600910D */  .word 0x4600910D
     /* 00BF40 0000BF40 440A2000 */  .word 0x440A2000
-    jal SelItem_func_00004068   /* 00BF44 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00BF44 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00BF48 0000BF48 AFAA0014 */  .word 0xAFAA0014
     /* 00BF4C 0000BF4C C7A20040 */  .word 0xC7A20040
     /* 00BF50 0000BF50 E7A20060 */  .word 0xE7A20060
@@ -119,7 +119,7 @@ glabel CharacterItem_drawArrows_0000BDEC
     /* 00BFB8 0000BFB8 24A5001E */  .word 0x24A5001E
     /* 00BFBC 0000BFBC 4600540D */  .word 0x4600540D
     /* 00BFC0 0000BFC0 44088000 */  .word 0x44088000
-    jal SelItem_func_00004068   /* 00BFC4 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00BFC4 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00BFC8 0000BFC8 AFA80014 */  .word 0xAFA80014
     /* 00BFCC 0000BFCC 10000017 */  .word 0x10000017
     /* 00BFD0 0000BFD0 8FBF0034 */  .word 0x8FBF0034
@@ -142,7 +142,7 @@ glabel CharacterItem_drawArrows_0000BDEC
     /* 00C014 0000C014 24A5001E */  .word 0x24A5001E
     /* 00C018 0000C018 4600320D */  .word 0x4600320D
     /* 00C01C 0000C01C 440C4000 */  .word 0x440C4000
-    jal SelItem_func_00004068   /* 00C020 0C000000 -> SelItem_func_00004068 */
+    jal SelItem_drawSpriteColor_00004068   /* 00C020 0C000000 -> SelItem_drawSpriteColor_00004068 */
     /* 00C024 0000C024 AFAC0014 */  .word 0xAFAC0014
     /* 00C028 0000C028 8FBF0034 */  .word 0x8FBF0034
     /* 00C02C 0000C02C D7B40020 */  .word 0xD7B40020

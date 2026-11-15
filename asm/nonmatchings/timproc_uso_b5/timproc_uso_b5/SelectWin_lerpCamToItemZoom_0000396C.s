@@ -1,6 +1,6 @@
-nonmatching SelectWin_func_0000396C, 0xBC
+nonmatching SelectWin_lerpCamToItemZoom_0000396C, 0xBC
 
-glabel SelectWin_func_0000396C
+glabel SelectWin_lerpCamToItemZoom_0000396C
     /* 00396C 0000396C C49202A0 */  .word 0xC49202A0
     /* 003970 00003970 C4840184 */  .word 0xC4840184
     /* 003974 00003974 8C82029C */  .word 0x8C82029C
@@ -48,4 +48,4 @@ glabel SelectWin_func_0000396C
     /* 003A1C 00003A1C E44E0034 */  .word 0xE44E0034
     /* 003A20 00003A20 03E00008 */  .word 0x03E00008
     /* 003A24 00003A24 E4500038 */  .word 0xE4500038
-endlabel SelectWin_func_0000396C
+endlabel SelectWin_lerpCamToItemZoom_0000396C

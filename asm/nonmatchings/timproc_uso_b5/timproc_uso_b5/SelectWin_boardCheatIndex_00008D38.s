@@ -1,6 +1,6 @@
-nonmatching SelectWin_func_00008D38, 0x58
+nonmatching SelectWin_boardCheatIndex_00008D38, 0x58
 
-glabel SelectWin_func_00008D38
+glabel SelectWin_boardCheatIndex_00008D38
     /* 008D38 00008D38 AFA40000 */  .word 0xAFA40000
     lui $a0, %hi(import_800201EC)   /* 008D3C 3C040000 -> import_800201EC */
     /* 008D40 00008D40 24020018 */  .word 0x24020018
@@ -23,4 +23,4 @@ glabel SelectWin_func_00008D38
     /* 008D84 00008D84 24020003 */  .word 0x24020003
     /* 008D88 00008D88 03E00008 */  .word 0x03E00008
     /* 008D8C 00008D8C 00000000 */  .word 0x00000000
-endlabel SelectWin_func_00008D38
+endlabel SelectWin_boardCheatIndex_00008D38

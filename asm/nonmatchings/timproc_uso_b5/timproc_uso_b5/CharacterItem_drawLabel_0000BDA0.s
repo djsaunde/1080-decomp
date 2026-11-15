@@ -14,7 +14,7 @@ glabel CharacterItem_drawLabel_0000BDA0
     /* 00BDC8 0000BDC8 000F78C0 */  .word 0x000F78C0
     /* 00BDCC 0000BDCC 01F83821 */  .word 0x01F83821
     /* 00BDD0 0000BDD0 8C86005C */  .word 0x8C86005C
-    jal SelItem_func_00003FA8   /* 00BDD4 0C000000 -> SelItem_func_00003FA8 */
+    jal SelItem_drawSpritePlain_00003FA8   /* 00BDD4 0C000000 -> SelItem_drawSpritePlain_00003FA8 */
     /* 00BDD8 0000BDD8 8C850044 */  .word 0x8C850044
     /* 00BDDC 0000BDDC 8FBF0014 */  .word 0x8FBF0014
     /* 00BDE0 0000BDE0 27BD0018 */  .word 0x27BD0018

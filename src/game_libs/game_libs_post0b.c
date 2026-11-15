@@ -16946,7 +16946,7 @@ void gfx_func_0004E138(int a0) {
 /* Vtable-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
  * declare p2 FIRST with p1's load inlined; IDO CSE's the duplicated
  * `a0->0x134` load and assigns $v1 to p1, $v0 to p2 (target's regalloc).
- * Same pattern as CommonInfo_vfunc8_00008F98. Replaces prior INSN_PATCH
+ * Same pattern as CommonInfo_loadData_00008F98. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
 void gfx_vcall_0004E150(char *a0) {
     char *p2 = *(char**)(*(char**)(a0 + 0x134) + 0x14);
@@ -17485,7 +17485,7 @@ void Window_forEach_0004ED0C(int *self)
 
 
 /* gfx_forEach_0004ED7C: byte-identical twin of matched
- * SelItemsMgr_vfunc8_0000A97C (indirect-dispatch iterator). Same shape,
+ * SelItemsMgr_loadData_0000A97C (indirect-dispatch iterator). Same shape,
  * different struct offsets: count a0+0x11C (vs 0x3C), cursor p+0x124 (vs 0x40),
  * v1->v0 at +0x0 (vs 0x28), fn at v0+0xC (vs 0x4C), short off at v0+0x8 (vs
  * 0x48). Ported the donor's exact match-form incl. the `if (1) {}` block-

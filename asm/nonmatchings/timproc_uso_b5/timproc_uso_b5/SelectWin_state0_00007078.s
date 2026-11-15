@@ -119,7 +119,7 @@ glabel SelectWin_state0_00007078
     /* 007244 00007244 8E0803F8 */  .word 0x8E0803F8
     jal SelectWin_saveFocus_0000866C   /* 007248 0C000000 -> SelectWin_saveFocus_0000866C */
     /* 00724C 0000724C 02002025 */  .word 0x02002025
-    jal SelectWin_func_0000894C   /* 007250 0C000000 -> SelectWin_func_0000894C */
+    jal SelectWin_callPrevStageBit_0000894C   /* 007250 0C000000 -> SelectWin_callPrevStageBit_0000894C */
     /* 007254 00007254 02002025 */  .word 0x02002025
     /* 007258 00007258 AE0203C8 */  .word 0xAE0203C8
     /* 00725C 0000725C 02002025 */  .word 0x02002025

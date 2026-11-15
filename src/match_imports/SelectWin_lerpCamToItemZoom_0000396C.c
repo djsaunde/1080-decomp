@@ -1,13 +1,13 @@
-/* Sibling of SelectWin_func_000038B0 (identical opcode sequence; fields
+/* Sibling of SelectWin_lerpCamToItem_000038B0 (identical opcode sequence; fields
  * 0x184/0x188/0x18C instead of 0x164/0x168/0x16C). Plain cfe -O2 C with the
  * same frozen context as 38B0. The shared context still declares this
  * function with the old (char *, s32, char *, f32, f32) placeholder
  * prototype; it is renamed out of the way so the typed definition below is
  * the only declaration. */
-#define SelectWin_func_0000396C timproc_uso_b5_func_0000396C_ctx_placeholder
+#define SelectWin_lerpCamToItemZoom_0000396C timproc_uso_b5_func_0000396C_ctx_placeholder
 #include "context_timproc_uso_b5.h"
-#undef SelectWin_func_0000396C
-void SelectWin_func_0000396C(TimprocCoordinateOwner *owner, char *destination,
+#undef SelectWin_lerpCamToItemZoom_0000396C
+void SelectWin_lerpCamToItemZoom_0000396C(TimprocCoordinateOwner *owner, char *destination,
                                 Vec3 *source, f32 blend_arg, f32 height) {
     f32 x, y, z;
     f32 result_x, result_y, result_z;

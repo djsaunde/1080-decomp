@@ -1,6 +1,6 @@
-nonmatching SelItem_func_00003FF8, 0x70
+nonmatching SelItem_drawSpriteWhite_00003FF8, 0x70
 
-glabel SelItem_func_00003FF8
+glabel SelItem_drawSpriteWhite_00003FF8
     /* 003FF8 00003FF8 27BDFFC0 */  .word 0x27BDFFC0
     /* 003FFC 00003FFC 3C013F80 */  .word 0x3C013F80
     /* 004000 00004000 44810000 */  .word 0x44810000
@@ -29,4 +29,4 @@ glabel SelItem_func_00003FF8
     /* 00405C 0000405C 27BD0040 */  .word 0x27BD0040
     /* 004060 00004060 03E00008 */  .word 0x03E00008
     /* 004064 00004064 00000000 */  .word 0x00000000
-endlabel SelItem_func_00003FF8
+endlabel SelItem_drawSpriteWhite_00003FF8

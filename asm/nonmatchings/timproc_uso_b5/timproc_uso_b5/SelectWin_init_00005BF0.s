@@ -228,7 +228,7 @@ glabel SelectWin_init_00005BF0
     /* 005F70 00005F70 8E030414 */  .word 0x8E030414
     /* 005F74 00005F74 00402025 */  .word 0x00402025
     /* 005F78 00005F78 8C650010 */  .word 0x8C650010
-    jal SelectWin_func_00003A28   /* 005F7C 0C000000 -> SelectWin_func_00003A28 */
+    jal SelectWin_setCamToItem_00003A28   /* 005F7C 0C000000 -> SelectWin_setCamToItem_00003A28 */
     /* 005F80 00005F80 8C660014 */  .word 0x8C660014
     /* 005F84 00005F84 02002025 */  .word 0x02002025
     jal SelectWin_beginTransition_00008688   /* 005F88 0C000000 -> SelectWin_beginTransition_00008688 */

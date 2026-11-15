@@ -35,7 +35,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CA08 0000CA08 AFA60034 */  .word 0xAFA60034
     /* 00CA0C 0000CA0C AFAF0018 */  .word 0xAFAF0018
     /* 00CA10 0000CA10 AFAE0014 */  .word 0xAFAE0014
-    jal SelItem_func_000040BC   /* 00CA14 0C000000 -> SelItem_func_000040BC */
+    jal SelItem_drawSpriteColorEx_000040BC   /* 00CA14 0C000000 -> SelItem_drawSpriteColorEx_000040BC */
     /* 00CA18 0000CA18 8FA70050 */  .word 0x8FA70050
     lui $t8, %hi(import_8002022C)   /* 00CA1C 3C180000 -> import_8002022C */
     /* 00CA20 0000CA20 8F180000 */  .word 0x8F180000
@@ -55,7 +55,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CA58 0000CA58 AFAE0010 */  .word 0xAFAE0010
     /* 00CA5C 0000CA5C 018D3821 */  .word 0x018D3821
     /* 00CA60 0000CA60 03282821 */  .word 0x03282821
-    jal SelItem_func_00003FF8   /* 00CA64 0C000000 -> SelItem_func_00003FF8 */
+    jal SelItem_drawSpriteWhite_00003FF8   /* 00CA64 0C000000 -> SelItem_drawSpriteWhite_00003FF8 */
     /* 00CA68 0000CA68 012A3021 */  .word 0x012A3021
     lui $a1, %hi(import_80020098)   /* 00CA6C 3C050000 -> import_80020098 */
     /* 00CA70 0000CA70 24A50000 */  .word 0x24A50000
@@ -103,7 +103,7 @@ glabel CourseItem_drawLabel_0000C98C
     /* 00CB18 0000CB18 240A00FF */  .word 0x240A00FF
     /* 00CB1C 0000CB1C AFAA0010 */  .word 0xAFAA0010
     /* 00CB20 0000CB20 24E706D0 */  .word 0x24E706D0
-    jal SelItem_func_00003FF8   /* 00CB24 0C000000 -> SelItem_func_00003FF8 */
+    jal SelItem_drawSpriteWhite_00003FF8   /* 00CB24 0C000000 -> SelItem_drawSpriteWhite_00003FF8 */
     /* 00CB28 0000CB28 24A50054 */  .word 0x24A50054
     /* 00CB2C 0000CB2C 8FBF002C */  .word 0x8FBF002C
     /* 00CB30 0000CB30 8FB00028 */  .word 0x8FB00028

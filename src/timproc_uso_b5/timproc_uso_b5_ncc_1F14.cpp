@@ -7,7 +7,7 @@ typedef int s32;
 typedef float f32;
 typedef double f64;
 extern "C" {
-extern void SelectionMgr_func_00001DB0(char *);
+extern void SelectionMgr_setSplit_00001DB0(char *);
 extern int gen_stageBitToIndex_000087A0(...);
 extern void timproc_uso_b5_func_04CD94(char *);
 }
@@ -61,7 +61,7 @@ extern "C" void SelectionMgr_update_00001F14(char *arg0) {
                             *(s32 *)(arg0 + 0x4C) = 0;
                         }
                         *(s32 *)(arg0 + 0x44) = (s32) (120.0f + (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        SelectionMgr_func_00001DB0(arg0);
+                        SelectionMgr_setSplit_00001DB0(arg0);
                     }
                     if (*(s32 *)(arg0 + 0x48) == 2) {
                         *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;

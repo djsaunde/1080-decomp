@@ -10,7 +10,7 @@
     "import_80074E78": "snw_port_timproc_uso_b5_func_00005BF0_import_80074E78",
     "import_0024CCF4": "snw_port_timproc_uso_b5_func_00005BF0_import_0024CCF4",
     "timproc_uso_b5_func_00008A38_entry": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008A38_entry",
-    "SelectWin_func_00003A28": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00003A28",
+    "SelectWin_setCamToItem_00003A28": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00003A28",
     "SelectWin_beginTransition_00008688": "snw_port_timproc_uso_b5_func_00005BF0_timproc_uso_b5_func_00008688"
   },
   "original_ROM_minus_curated_addend_bindings": {
