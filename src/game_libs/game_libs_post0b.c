@@ -5896,7 +5896,7 @@ s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
             } while (ok && (fv++, nx < (s16 *)((char *)&D_00000000 + 6))); /* run 152: fv++ inside the condition = bne delay slot after the ok exit (76.69 -> 77.31) */
         }
         if (ok) {
-            dist[cnt] = d / *(f32 *)((char *)&D_00000000 + 0x12C);
+            dist[cnt] = d / *(f32 *)((char *)&gGfxLib + 0x12C);
             out[cnt] = &self->tris[i];
             cnt++;
             if (cnt >= max) {
@@ -6944,7 +6944,7 @@ int ColourItemType_buildItems(D914Obj *a0) {
 }
 
 void ColourItemType_display(int *arg0) {
-    gl_func_00000000(&D_00000000, (char*)arg0 + 0x48);
+    gl_func_00000000(&gGfxLib, (char*)arg0 + 0x48);
     gl_func_00000000(arg0);
 }
 
@@ -10444,7 +10444,7 @@ typedef unsigned short GridRow_42374[320];
 void dbg_fillFbRect(int a0) {
     GridRow_42374 *g;
     int x, y;
-    g = ((GridRow_42374 **)(*(int **)(*(int *)((char *)&D_00000000 + 0x240) + 0x148)))[a0 + 0x3D];
+    g = ((GridRow_42374 **)(*(int **)(*(int *)((char *)&gGfxLib + 0x240) + 0x148)))[a0 + 0x3D];
     for (x = 50; x < 150; x++) {
         for (y = 50; y < 150; y++) g[y][x] = 0xFFFF;
     }
@@ -10504,8 +10504,8 @@ unsigned short app_pack3_00042428(int a0, int a1) {
 extern char gHostio_data_42440_arg;   /* = &D (undefined_syms); the call's a0 */
 void GfxLib_hostioSendFbA_00042438(void)
 {
-  int *p = *(int **)((char *)&D_00000000 + 0x240);  /* was placeholder D_state_0042440 */
-  int **new_var = (int **)((char *)&D_00000000 + 0x240);
+  int *p = *(int **)((char *)&gGfxLib + 0x240);  /* was placeholder D_state_0042440 */
+  int **new_var = (int **)((char *)&gGfxLib + 0x240);
   int new_var2 = p[0xBC / 4];
   gl_func_00000000(&gHostio_data_42440_arg, 0x110, ((int *) (*new_var)[0x148 / 4])[0xF0 / 4], (*new_var)[0xB8 / 4], new_var2);
 }
@@ -10558,7 +10558,7 @@ void GfxLib_hostioSendFbA_00042438(void)
 /* EXACT (agent-c run 122, permuter-found and re-verified with rdiff --raw --pins): the global is re-read at each use, and the 5th argument is a named int read before the call (two more t-ring slots: t1 like the target). */
 void GfxLib_hostioSendFbB_0004247C(void)
 {
-#define G4247C (*(int **)((char *)&D_00000000 + 0x240))
+#define G4247C (*(int **)((char *)&gGfxLib + 0x240))
     int bc;
     int *g;
     int *p = (int *)G4247C[0x28 / 4];
@@ -10576,9 +10576,9 @@ int GfxLib_hostioForceError() {
 
 extern int gl_func_00000000();
 void GfxLib_hostioPrintDLUsage(void) {
-    gl_func_00000000(*(int *)((char *)&D_00000000 + 0x214));
-    gl_func_00000000(*(int *)(*(int *)((char *)&D_00000000 + 0x240) + 0x180));
-    gl_func_00000000(*(int *)(*(int *)((char *)&D_00000000 + 0x240) + 0x184));
+    gl_func_00000000(*(int *)((char *)&gGfxLib + 0x214));
+    gl_func_00000000(*(int *)(*(int *)((char *)&gGfxLib + 0x240) + 0x180));
+    gl_func_00000000(*(int *)(*(int *)((char *)&gGfxLib + 0x240) + 0x184));
 }
 
 extern int gl_func_00000000();
@@ -11004,7 +11004,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     char *base = **(char ***)(self + 0x2C);
     int idx = 0;
     char *slot;
-    p->next = *(Link_430D8 **)((char *)&D_00000000 + 0x18C); if (1) {}
+    p->next = *(Link_430D8 **)((char *)&gGfxLib + 0x18C); if (1) {}
     if (flag) {
         obj = ITER_FIRST_430D8(p);
         while (obj != 0) {
@@ -11141,7 +11141,7 @@ void PolyShape_func_00043584(int *a0) {
     a0[0x6C/4] = 0;
     a0[0x70/4] = 0;
     a0[0x74/4] = 0;
-    if ((*(int*)((char*)&D_00000000 + 0x1C4) & 8) != 0) {
+    if ((*(int*)((char*)&gGfxLib + 0x1C4) & 8) != 0) {
         a0[0x7C/4] = func_00000000(0x100);
     } else {
         a0[0x7C/4] = 0;
@@ -11493,7 +11493,7 @@ void FogParms_set_00043EF0(struct game_libs_func_00043EF0_Four *a0, struct game_
 extern int gl_func_00000000();
 
 void FogParms_emit_00043F1C(short *a0) {
-    gl_func_00000000((*(int **)((char *)&D_00000000 + 0x254))[0x56], a0[9], a0[0xB], a0);
+    gl_func_00000000((*(int **)((char *)&gGfxLib + 0x254))[0x56], a0[9], a0[0xB], a0);
 }
 
 void FogParms_hostioParms(int *a0) {
@@ -12707,7 +12707,7 @@ void gfx_submitFrameTask_000469A8(char *arg0, s32 arg1) {
      * read, with folded `0 * (int)&D` uses (kit CCCLXXII form): the loaded value is a ugen temp (t6) and &D the
      * coloured v1 like the target; with the in-call pDC above (one ugen ring slot) the second vcall keeps its
      * jalr delay fill, and the a10 fold drops to one p100 use: 98.786 -> 99.175, same length */
-    FW(*(char **)((int)&D_00000000 + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&D_00000000, 0x158) = (int)temp_s1 + 0 * (int)&D_00000000;
+    FW(*(char **)((int)&D_00000000 + 0x254) = (char *)FW(arg0, 0x240) + 0 * (int)&gGfxLib, 0x158) = (int)temp_s1 + 0 * (int)&gGfxLib;
     if (temp_s0) {} /* agent-c run 318: code-free test of the vcall result after the store (random test search): temp_v0_2 takes v0 like the target, 99.369 -> 99.515 */
     temp_v0_2 = (char *)FW(arg0, 0x290);
     temp_s0 = (char *)FW(temp_v0_2, 0x28);
@@ -13937,7 +13937,7 @@ void PolyShape_display(char *arg0) {
             }
         }
     } else if ((*(s32 *)((char *)(*(int **)(arg0 + 0x14)) + 0x18) & 0x80) &&
-               *(s32 *)&D_00000000 != 0) {
+               *(s32 *)&gGfxLib != 0) {
         gbi[0] = *(s32 *)(arg0 + 0x34);
         gbi[1] = *(s32 *)(arg0 + 0x38);
         gbi[1] = (gbi[1] & ~0xF00) | 0x400;
@@ -14460,7 +14460,7 @@ void MorphPoly_init(MorphPoly *self) {
     gl_func_00000000();
     gl_func_00000000(self);
     {
-        DLContext *g = *(DLContext **)((char *)&D_00000000 + 0x214); /* gfx MainStaticDL */
+        DLContext *g = *(DLContext **)((char *)&gGfxLib + 0x214); /* gfx MainStaticDL */
         self->vtxEnd = g->vtx.cur->count;
     }
     dst = (short *)gl_func_00000000((self->vtxEnd - self->vtxStart) * 2);
@@ -14716,7 +14716,7 @@ void MorphPoly_func_0004ACD4(int *self) {
         ((short *)self[0xD0 / 4])[i] = -1;
     }
     {
-        int *g = *(int **)((char *)&D_00000000 + 0x214);
+        int *g = *(int **)((char *)&gGfxLib + 0x214);
         *(short *)((char *)self + 0xD4) =
             *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4);
     }
@@ -15545,7 +15545,7 @@ void ScreenWindow_updateAspect(int *self, int a1) {
         gl_func_00000000(p[0x14C / 4], self);
         p = (int*)((char*)p + 4);
     }
-    self[0x144 / 4] = *(int*)((char*)&D_00000000 + 0x204);
+    self[0x144 / 4] = *(int*)((char*)&gGfxLib + 0x204);
 }
 
 // ScreenWindow_allocBuffers — FAITHFUL RECONSTRUCTION (0x2E4 / 185 words, no episode).
@@ -16152,7 +16152,7 @@ int gfx_stub_0004CDA4(int a0) {
 extern int gGfxLib_4CDB0_a;
 void gfx_submitFrame_0004CDB0(char *self, int flag)
 {
-    char *obj = *(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&D_00000000 + 0x204) * 4 + 0x280);
+    char *obj = *(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&gGfxLib + 0x204) * 4 + 0x280);
     char *g; unsigned int *p; int i; int r; char *q;
     int k; /* packet-3 index: the dead while (0) store gives it an itab bit before the obj->0xC load */
     while (0) { k = 0; }
@@ -16205,14 +16205,14 @@ char *gfx_queueGfxTask_0004CEFC(char *self, int flag)
     char *rec;
     int r;
     int q;
-    gl_func_00000000(*(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&D_00000000 + 0x204) * 4 + 0x280));
+    gl_func_00000000(*(char **)((char *)&gGfxLib_4CDB0_a + *(int *)((char *)&gGfxLib + 0x204) * 4 + 0x280));
     p = self + 0x174;
     gl_func_00000000(p);
-    rec = (char *)gl_func_00000000(*(int *)((char *)&D_00000000 + 0x218), 1);
+    rec = (char *)gl_func_00000000(*(int *)((char *)&gGfxLib + 0x218), 1);
     r = gl_func_00000000(p);
     q = gl_func_00000000(p);
-    gl_func_00000000(*(int *)((char *)&D_00000000 + 0x218), rec, 0, r, q, flag);
-    gl_func_00000000(*(int *)((char *)&D_00000000 + 0x218), rec);
+    gl_func_00000000(*(int *)((char *)&gGfxLib + 0x218), rec, 0, r, q, flag);
+    gl_func_00000000(*(int *)((char *)&gGfxLib + 0x218), rec);
     *(char **)(rec + 0x74) = self;
     return rec;
 }
@@ -16618,10 +16618,10 @@ int RcpMgr_startTask(RcpMgr *self) {
         }
         c = self->active;
         if (c->unk70 != 0) {
-            g = *(int *)((char *)&D_00000000 + 0x254);
-            *(int *)((char *)&D_00000000 + 0x254) = c->unk74;
+            g = *(int *)((char *)&gGfxLib + 0x254);
+            *(int *)((char *)&gGfxLib + 0x254) = c->unk74;
             gl_func_00000000(self->active->unk70);
-            *(int *)((char *)&D_00000000 + 0x254) = g;
+            *(int *)((char *)&gGfxLib + 0x254) = g;
         }
         c = self->active;
         self->rspTaskName = (char *)&D_00000000 + 0x20308;
@@ -16851,7 +16851,7 @@ void DisplayMgr_display(int *a0) {
   int i;
   int off;
   char *new_var;
- do { if ((*((int *) (((char *) a0) + 0x38))) > 0) { i = 0; new_var = (char *) a0; off = 0; do { gl_func_00000000(&D_00000000, (*((int *) ((*((int *) (((char *) a0) + 0x30))) + off))) + 112); { int *v = *((int **) ((*((int *) (new_var + 0x2C))) + off)); int *vt = (int *) (*((int *) (((char *) (*((int **) ((*((int *) (new_var + 0x2C))) + off)))) + 0x28))); ((void (*)(int)) (*((int *) (((char *) vt) + 0x1C))))((*((short *) (((char *) vt) + 0x18))) + ((int) v)); } i++; off += 4; } while (i < (*((int *) (((char *) a0) + 0x38)))); } } while (0);
+ do { if ((*((int *) (((char *) a0) + 0x38))) > 0) { i = 0; new_var = (char *) a0; off = 0; do { gl_func_00000000(&gGfxLib, (*((int *) ((*((int *) (((char *) a0) + 0x30))) + off))) + 112); { int *v = *((int **) ((*((int *) (new_var + 0x2C))) + off)); int *vt = (int *) (*((int *) (((char *) (*((int **) ((*((int *) (new_var + 0x2C))) + off)))) + 0x28))); ((void (*)(int)) (*((int *) (((char *) vt) + 0x1C))))((*((short *) (((char *) vt) + 0x18))) + ((int) v)); } i++; off += 4; } while (i < (*((int *) (((char *) a0) + 0x38)))); } } while (0);
 }
 
 
@@ -17404,7 +17404,7 @@ void Window_display(char *arg0) {
     }
     gl_func_00034458_4EB54(FW(arg0, 0x108));
     D_g_0004EB54 = arg0;
-    gl_func_00034458_4EB54((char*)&D_00000000);
+    gl_func_00034458_4EB54((char*)&gGfxLib);
     temp_v1 = (char*)FW(arg0, 0x70);
     if (temp_v1 != 0) {
         temp_v0 = (char*)FW(temp_v1, 0x28);
@@ -17414,14 +17414,14 @@ void Window_display(char *arg0) {
             *(f32*)(arg0 + 0x98 + i * 4) = *(f32*)(arg0 + 0x84 + i * 4) * temp_f0;
         }
     }
-    gl_func_00034458_4EB54((char*)&D_00000000, 0);
-    gl_func_00034458_4EB54((char*)&D_00000000);
+    gl_func_00034458_4EB54((char*)&gGfxLib, 0);
+    gl_func_00034458_4EB54((char*)&gGfxLib);
     gl_func_00034458_4EB54(arg0);
-    gl_func_00034458_4EB54((char*)&D_00000000, arg0 + 0x30);
-    gl_func_00034458_4EB54((char*)&D_00000000, 1);
-    gl_func_00034458_4EB54((char*)&D_00000000);
-    gl_func_00034458_4EB54((char*)&D_00000000);
-    gl_func_00034458_4EB54((char*)&D_00000000);
+    gl_func_00034458_4EB54((char*)&gGfxLib, arg0 + 0x30);
+    gl_func_00034458_4EB54((char*)&gGfxLib, 1);
+    gl_func_00034458_4EB54((char*)&gGfxLib);
+    gl_func_00034458_4EB54((char*)&gGfxLib);
+    gl_func_00034458_4EB54((char*)&gGfxLib);
     temp_v0_3 = (char*)FW(arg0, 0x28);
     ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
     if (FW(arg0, 0x78) & 0x20) {
@@ -18439,7 +18439,7 @@ void shape_cmdShape_00051520(char *a0) {
     *(int **)v = p + 1;
     x = *p;
     *(int *)(a0 + 4) = x;
-    v = (char *)gl_func_00000000(&D_00000000, (char *)&D_00000000 + 0x20E74, x);
+    v = (char *)gl_func_00000000(&gGfxLib, (char *)&D_00000000 + 0x20E74, x);
     *(char **)(a0 + 0x28) = v;
     *(char **)(a0 + 0x10) = v;
     *(int *)(a0 + 0xC) = 0;
@@ -20696,7 +20696,7 @@ void LightTarget_display(char *self) {
     p->x = v.x;
     p->y = v.y;
     p->z = v.z;
-    func_00000000(&D_00000000, p, *(s32 *)(self + 0x120), *(s32 *)(self + 0x124),
+    func_00000000(&gGfxLib, p, *(s32 *)(self + 0x120), *(s32 *)(self + 0x124),
                      *(s32 *)(self + 0x128));
     v = *p;
     *(f32 *)(self + 0x108) = v.x;
@@ -21788,7 +21788,7 @@ void gfx_emitPerspNorm_00057574(DLContext *a0) {
     rec->count = idx + 1;
     arr = (int *)(a0->gfx.cur->base + idx * 8);
     arr[0] = 0xBC00000E;
-    arr[1] = *(unsigned short *)((char *)&D_00000000 + 0x208);
+    arr[1] = *(unsigned short *)((char *)&gGfxLib + 0x208);
     rec = a0->gfx.cur;
     idx = rec->count;
     rec->count = idx + 1;
@@ -27428,7 +27428,7 @@ int console_drawTextN_00061BC8(int a0, char *src, int n) {
         buf[i] = src[i];
     }
     buf[i] = 0;
-    gl_func_00000000(&D_00000000, buf, 0x140);
+    gl_func_00000000(&gGfxLib, buf, 0x140);
     return 1;
 }
 

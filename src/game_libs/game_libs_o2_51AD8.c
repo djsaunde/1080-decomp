@@ -22,6 +22,7 @@
  *    frame and the 0x1C / 0x28 / 0x2C slots.
  */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int gl_func_00000000();
 extern int D_00000000;
@@ -95,7 +96,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         break;
     case 208:
         p = s->cur; s->cur = p + 1; q = (s32 *)*p;
-        r = (s32 *)gl_func_00000000(&D_00000000, q);
+        r = (s32 *)gl_func_00000000(&gGfxLib, q);
         out->w48 = r;
         out->m = *(Pair_51AD8 *)(r + 1);
         break;

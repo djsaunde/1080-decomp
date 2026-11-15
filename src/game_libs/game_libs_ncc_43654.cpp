@@ -1,3 +1,4 @@
+#include "../../include/gdl/gl_data.h" /* NCC has no -I include: relative path */
 /* IDO 7.1 NCC (C++) donor for PolyShape_func_00043654 (0x16C / 91 words): the cfe NM body
  * compiled as C++, plus a dead `if (!sp34) {}` between the two stores of the
  * else-branch display-list append (permuter find, agent-c run 120): it moves the
@@ -19,7 +20,7 @@ void PolyShape_func_00043654(char *arg0, char *arg1) {
     s32 idx;
     s32 idx2;
 
-    FW(arg0, 0x64) = (int) *(char **)((char *)&D_00000000 + 0x214);
+    FW(arg0, 0x64) = (int) *(char **)((char *)&gGfxLib + 0x214);
     var_a3 = (char *) FW(arg0, 0x64);
     *(s16 *)(arg0 + 0x88) = FW((char *)FW((char *)FW(arg0, 0x64), 0xC), 0x4);
     if (FW(arg0, 0x48) == 0) {
@@ -30,7 +31,7 @@ void PolyShape_func_00043654(char *arg0, char *arg1) {
         var_a3 = (char *) FW(arg0, 0x64);
     }
     if (FW(arg0, 0x38) & 0x400000) {
-        gl_func_00000000((char *)&D_00000000, var_a3, arg0);
+        gl_func_00000000((char *)&gGfxLib, var_a3, arg0);
         if (FW(arg0, 0x38) & 0x100000) {
             FW(arg0, 0x68) = gl_func_00000000(0, (char *)&D_00000000 + 0x1FD1C, 0xA, 0, 5, 0, 0);
             gl_func_00000000(FW(arg0, 0x68)); if (1) {}

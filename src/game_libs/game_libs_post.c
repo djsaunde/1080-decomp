@@ -16843,7 +16843,7 @@ void sys_fatalSwapBuffer_00034180(void) {
     gl_func_00000000();
     while ((u32)gl_func_00000000() < 0x1E0) {}
     vt = *(char **)(*(char **)((char *)&D_00000000 + 0x240) + 0x28);
-    gl_func_00000000((*(int (**)())(vt + 0x64))(*(char **)((char *)&D_00000000 + 0x240) + *(short *)(vt + 0x60), &D_00000000));
+    gl_func_00000000((*(int (**)())(vt + 0x64))(*(char **)((char *)&D_00000000 + 0x240) + *(short *)(vt + 0x60), &gGfxLib));
     *(int *)(*(char **)((char *)&D_00000000 + 0x240) + 0x144) = (*(int *)((char *)&D_00000000 + 0x204) ^= 1);
     if (1) {}
     for (i = 0; i < 2000000; i++) {}
