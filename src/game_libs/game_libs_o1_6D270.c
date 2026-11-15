@@ -45,7 +45,7 @@ s32 osMotorInit(void *mq, OSPfs *pfs, int channel) {
     if (ret != 0)
         return ret;
 
-    ret = gl_func_00000001(mq, channel, 1024, temp);
+    ret = XCALL(gl_func_00000001, __osContRamRead)(mq, channel, 1024, temp);
     if (ret == 2)
         ret = 4;
     if (ret != 0)
@@ -62,7 +62,7 @@ s32 osMotorInit(void *mq, OSPfs *pfs, int channel) {
     if (ret != 0)
         return ret;
 
-    ret = gl_func_00000001(mq, channel, 1024, temp);
+    ret = XCALL(gl_func_00000001, __osContRamRead)(mq, channel, 1024, temp);
     if (ret == 2)
         ret = 4;
     if (ret != 0)

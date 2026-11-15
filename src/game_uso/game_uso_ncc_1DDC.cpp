@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for SnowChaseActorCam_update (0x5F8 / 382 words), spliced over a placeholder in
  * both build trees (agent-c run 240).
  *
@@ -75,14 +76,14 @@ extern "C" void SnowChaseActorCam_update(Self *a0) {
         self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */
         float speed = a0->txz;
         V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);
-        float mag = game_uso_func_070238(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
-        game_uso_func_071028(&diff);
+        float mag = XCALL(game_uso_func_070238, math_vec3Length_0005BBCC)(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+        XCALL(game_uso_func_071028, math_vec3Normalize)(&diff);
         if (mag < a0->mxz) {
             acc.put(diff * (mag - a0->mxz));
         } else {
             acc.put(diff * (mag - speed) * a0->cxz);
         }
-        game_uso_func_072EE8(c.getOut()->local, &acc);
+        XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(c.getOut()->local, &acc);
         a0->eyeOffset.put(diff * speed);
         float sel = (a0->mode == 2) ? a0->ty2 : a0->toy;
         diff.set(0.0f, 1.0f, 0.0f);
@@ -92,7 +93,7 @@ extern "C" void SnowChaseActorCam_update(Self *a0) {
         } else {
             acc.put(diff * (sel - mag) * a0->chy);
         }
-        game_uso_func_072EE8(c.getOut()->local, &acc);
+        XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(c.getOut()->local, &acc);
         e = diff * sel;
         a0->eyeOffset -= e;
     }

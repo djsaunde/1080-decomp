@@ -235,7 +235,7 @@ int tit_randomUnlocked_00000418(void) {
     } while (index != 8);
 
     selected -= 2;
-    return (int)((titproc_uso_func_075EE4() * (float)selected) + 2.0f);
+    return (int)((XCALL(titproc_uso_func_075EE4, sys_randf)() * (float)selected) + 2.0f);
 }
 
 void fs_gdlReadInt_tit_0000049C(int *dst) {
@@ -449,28 +449,28 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     void *sub;
     int pad;              /* home 44: the spilled root+0x10 temp lands at 44 below it */
 
-    if (root != 0 || (root = titproc_uso_func_055750(0x78)) != 0) {
+    if (root != 0 || (root = XCALL(titproc_uso_func_055750, mem_new)(0x78)) != 0) {
     sub = root;
-    if (sub != 0 || (sub = titproc_uso_func_055750(0x50)) != 0) {
+    if (sub != 0 || (sub = XCALL(titproc_uso_func_055750, mem_new)(0x50)) != 0) {
         o2 = sub;
-        if (o2 != 0 || (o2 = titproc_uso_func_055750(0x2C)) != 0) { titproc_uso_func_04C678(o2, (char *)&titproc_uso_D_00048C + 0x4A8); NODE(o2)->vptr = (int)&import_00073B18; }
+        if (o2 != 0 || (o2 = XCALL(titproc_uso_func_055750, mem_new)(0x2C)) != 0) { XCALL(titproc_uso_func_04C678, Node_ctor)(o2, (char *)&titproc_uso_D_00048C + 0x4A8); NODE(o2)->vptr = (int)&import_00073B18; }
         NODE(sub)->vptr = (int)&import_00073B80;
     }
     NODE(root)->vptr = (int)&titproc_uso_D_000114;
     NODE(root)->name = (int)((char *)&titproc_uso_D_00048C + 0x4B0);
-    titproc_uso_func_000000();
-    titproc_uso_func_000098();
+    XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
+    XCALL(titproc_uso_func_000098, tit_loadLogoSprite_00000098)();
     TITLEDEMO(root)->dataMgr = (s32)((void *)import_000B6C40(0));
     INPUT_MGR(import_00020098).dataMgr = (void *)TITLEDEMO(root)->dataMgr;
     import_000B88CC(TITLEDEMO(root)->dataMgr);
 
     sub = (void *)TITLEDEMO(root)->dataMgr;
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
-    TITLEDEMO(root)->keyMessage = (s32)(titproc_uso_func_0015F4(0));
+    TITLEDEMO(root)->keyMessage = (s32)(XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
     if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
@@ -479,42 +479,42 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
         ((void (*)(int))((void **)sub)[0x5C / 4])(
             *(short *)((char *)sub + 0x58) + (int)child);
     }
-    TITLEDEMO(root)->mainLogo = (s32)(titproc_uso_func_001840(0));
+    TITLEDEMO(root)->mainLogo = (s32)(XCALL(titproc_uso_func_001840, MainLogo_ctor)(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->mainLogo);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->mainLogo);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
-    TITLEDEMO(root)->langMenu = (s32)(titproc_uso_func_001B10(0));
+    TITLEDEMO(root)->langMenu = (s32)(XCALL(titproc_uso_func_001B10, LangMenu_ctor)(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->langMenu);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->langMenu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
-    TITLEDEMO(root)->whiteFader = (s32)(titproc_uso_func_001D7C(0));
+    TITLEDEMO(root)->whiteFader = (s32)(XCALL(titproc_uso_func_001D7C, tit_WhiteFader_ctor)(0));
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->whiteFader);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->whiteFader);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
     TITLEDEMO(root)->menu = (s32)(import_000A5D38(0));
 
     import_000A5F40((void *)TITLEDEMO(root)->menu, root);
-    titproc_uso_func_00101C(root);
+    XCALL(titproc_uso_func_00101C, TitleDemoProcess_buildMenu)(root);
     *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x30) =
         import_0024CCF4(0, &titproc_uso_D_00052C, 0x48, 0xDD, 3, 0xD);
     *(float *)((char *)(void *)TITLEDEMO(root)->menu + 0x74) = 17.0f;
     import_000A5FBC(TITLEDEMO(root)->menu);
-    titproc_uso_func_00F4CC(TITLEDEMO(root)->menu);
+    XCALL(titproc_uso_func_00F4CC, Process_stop)(TITLEDEMO(root)->menu);
     *(int *)((char *)(void *)TITLEDEMO(root)->menu + 0x7C) =
         *(int *)((char *)&import_00020098 + 0x84);
 
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->menu);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->menu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
 
     sub = INPUT_MGR(import_00020098).fader;
-    titproc_uso_func_07ACE0((char *)root + 0x10, sub);
+    XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
     NODE(sub)->parent = (int)root;
-    titproc_uso_func_0139B0(INPUT_MGR(import_00020098).fader, 1, 0);
+    XCALL(titproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_00020098).fader, 1, 0);
 
     TITLEDEMO(root)->unk6C = 5;
     TITLEDEMO(root)->unk70 = 0x48;
@@ -828,15 +828,15 @@ extern char titproc_uso_D_0001FC;
 void *MainLogo_ctor(void *self) {
     void *sub;
     if (self == 0) {
-        self = (void*)titproc_uso_func_055750(0x74);
+        self = (void*)XCALL(titproc_uso_func_055750, mem_new)(0x74);
         if (self == 0) goto end;
     }
     sub = self;
     if (self == 0) {
-        sub = (void*)titproc_uso_func_055750(0x2C);
+        sub = (void*)XCALL(titproc_uso_func_055750, mem_new)(0x2C);
         if (sub == 0) goto skip;
     }
-    titproc_uso_func_04C678(sub, (char*)&titproc_uso_D_00048C + 0x4D8);
+    XCALL(titproc_uso_func_04C678, Node_ctor)(sub, (char*)&titproc_uso_D_00048C + 0x4D8);
     *(int*)((char*)sub + 0x28) = (int)&import_00073B18;
 skip:
     NODE(self)->vptr = (int)&titproc_uso_D_0001FC;
@@ -857,8 +857,8 @@ skip:
     MAINLOGO(self)->colour[1] = 1.0f;
     MAINLOGO(self)->colour[2] = 1.0f;
     MAINLOGO(self)->colour[3] = 0.0f;
-    titproc_uso_func_001AF8(self);
-    titproc_uso_func_00F4CC(self);
+    XCALL(titproc_uso_func_001AF8, MainLogo_reset)(self);
+    XCALL(titproc_uso_func_00F4CC, Process_stop)(self);
 end:
     return self;
 }
@@ -991,7 +991,7 @@ void *LangMenu_ctor(void *self) {
   char *base = &titproc_uso_D_00048C;
   if (self == 0)
   {
-    self = (void *) titproc_uso_func_055750(0x40);
+    self = (void *) XCALL(titproc_uso_func_055750, mem_new)(0x40);
     if (self == 0)
     {
       goto end;
@@ -1000,17 +1000,17 @@ void *LangMenu_ctor(void *self) {
   sub = self;
   if (self == 0)
   {
-    sub = (void *) titproc_uso_func_055750(0x2C);
+    sub = (void *) XCALL(titproc_uso_func_055750, mem_new)(0x2C);
     if (sub == 0)
     {
       goto common;
     }
   }
-  titproc_uso_func_04C678(sub, base + 0x4EC); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18);
+  XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x4EC); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18);
   common:
   *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_000264);
   *((int *) (((char *) self) + 0x0C)) = (int) (base + 0x4F4);
-  titproc_uso_func_00F4CC(self);
+  XCALL(titproc_uso_func_00F4CC, Process_stop)(self);
   *((int *) (((char *) self) + 0x3C)) = 0;
   end:
   return self;
@@ -1151,7 +1151,7 @@ void *tit_WhiteFader_ctor(void *self) {
   char *base = &titproc_uso_D_00048C;
   if (self == 0)
   {
-    self = (void *) titproc_uso_func_055750(0x40);
+    self = (void *) XCALL(titproc_uso_func_055750, mem_new)(0x40);
     if (self == 0)
     {
       goto end;
@@ -1160,12 +1160,12 @@ void *tit_WhiteFader_ctor(void *self) {
   sub = self;
   if (self == 0)
   {
-    sub = (void *) titproc_uso_func_055750(0x2C);
+    sub = (void *) XCALL(titproc_uso_func_055750, mem_new)(0x2C);
     if (sub == 0)
     {
       goto common;
     }
- } titproc_uso_func_04C678(sub, base + 0x500); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18); common: *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_0002CC);
+ } XCALL(titproc_uso_func_04C678, Node_ctor)(sub, base + 0x500); *((int *) (((char *) sub) + 0x28)) = (int) (&import_00073B18); common: *((int *) (((char *) self) + 0x28)) = (int) (&titproc_uso_D_0002CC);
   *((int *) (((char *) self) + 0x0C)) = (int) (base + 0x508);
   WFADER(self)->alpha = 0;
   WFADER(self)->colour[0] = 1.0f;
@@ -1238,25 +1238,25 @@ extern char titproc_uso_D_000334;
     int * volatile slot;  /* home 44(sp): def folded into first call arg, reload per use */
 
     if (arg0 == 0) {
-        arg0 = (int *)titproc_uso_func_055750(0x6C8);
+        arg0 = (int *)XCALL(titproc_uso_func_055750, mem_new)(0x6C8);
         if (arg0 == 0) goto done;
     }
     node = arg0;
     if (node == 0) {
-        node = (int *)titproc_uso_func_055750(0x6A8);
+        node = (int *)XCALL(titproc_uso_func_055750, mem_new)(0x6A8);
         if (node == 0) goto after_node;
     }
     third = node;
     if (third == 0) {
-        third = (int *)titproc_uso_func_055750(0x50);
+        third = (int *)XCALL(titproc_uso_func_055750, mem_new)(0x50);
         if (third == 0) goto after_third;
     }
     fourth = third;
     if (fourth == 0) {
-        fourth = (int *)titproc_uso_func_055750(0x2C);
+        fourth = (int *)XCALL(titproc_uso_func_055750, mem_new)(0x2C);
         if (fourth == 0) goto after_fourth;
     }
-    titproc_uso_func_04C678(fourth, (char *)&titproc_uso_D_00048C + 0x514); fourth[0x28 / 4] = (int)&import_00073B18;
+    XCALL(titproc_uso_func_04C678, Node_ctor)(fourth, (char *)&titproc_uso_D_00048C + 0x514); fourth[0x28 / 4] = (int)&import_00073B18;
 after_fourth:
     third[0x28 / 4] = (int)&import_00073B80;
 after_third:
@@ -1267,33 +1267,33 @@ after_node:
     arg0[0x568 / 4] = 0;
     import_000B0DBC(arg0, arg1, (char *)&titproc_uso_D_00048C + 0x51C, arg2);
     arg0[0x528 / 4] = arg3;
-    titproc_uso_func_000000();
-    titproc_uso_func_074710((char *)&titproc_uso_D_00048C + 0x530, 0);
+    XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
+    XCALL(titproc_uso_func_074710, memtrack_begin)((char *)&titproc_uso_D_00048C + 0x530, 0);
     import_000A7ECC(&import_00020098, 0);
     *(int *)((char *)&import_00020098 + 0x138) = arg0[0x6AC / 4] = (int)import_000B6C40(0);
     import_000B88CC(arg0[0x6AC / 4]);
     node = (int *)arg0[0x6AC / 4];
-    titproc_uso_func_07ACE0(slot = (int *)((char *)arg0 + 0x10), node);
+    XCALL(titproc_uso_func_07ACE0, list_append)(slot = (int *)((char *)arg0 + 0x10), node);
     if (node[0x14 / 4] != 0) {
         node[0x4 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
-    titproc_uso_func_01B0F8(arg0, arg1);
+    XCALL(titproc_uso_func_01B0F8, RaceProcess_restart)(arg0, arg1);
     arg0[0x4F4 / 4] = arg1 & 0xFFFF;
     arg0[0x48 / 4] = 0;
 
     if ((arg1 << 6) >= 0) {
-        rtemp = (int *)titproc_uso_func_0015F4(0);
+        rtemp = (int *)XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0);
         arg0[0x6B0 / 4] = (int)rtemp;
         node = (int *)rtemp[0x28 / 4];
         ((void (*)(int))node[0x5C / 4])(*(short *)((char *)node + 0x58) + (int)rtemp);
         node = (int *)arg0[0x6B0 / 4];
-        titproc_uso_func_07ACE0(slot, node);
+        XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
             node[0x4 / 4] = 1;
         }
         node[0x14 / 4] = (int)arg0;
-        rtemp = (int *)titproc_uso_func_001840(0);
+        rtemp = (int *)XCALL(titproc_uso_func_001840, MainLogo_ctor)(0);
         arg0[0x6B4 / 4] = (int)rtemp;
         rtemp[0x38 / 4] = 1;
         ((int *)arg0[0x6B4 / 4])[0x2C / 4] = 0;
@@ -1301,7 +1301,7 @@ after_node:
         node = (int *)rtemp[0x28 / 4];
         ((void (*)(int))node[0x5C / 4])(*(short *)((char *)node + 0x58) + (int)rtemp);
         node = (int *)arg0[0x6B4 / 4];
-        titproc_uso_func_07ACE0(slot, node);
+        XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
             node[0x4 / 4] = 1;
         }
@@ -1310,18 +1310,18 @@ after_node:
         arg0[0x6B4 / 4] = 0;
     }
 
-    rtemp = (int *)titproc_uso_func_001D7C(0);
+    rtemp = (int *)XCALL(titproc_uso_func_001D7C, tit_WhiteFader_ctor)(0);
     arg0[0x6BC / 4] = (int)rtemp;
-    titproc_uso_func_07ACE0(slot, node = rtemp);
+    XCALL(titproc_uso_func_07ACE0, list_append)(slot, node = rtemp);
     if (node[0x14 / 4] != 0) {
         node[0x4 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
 
     if ((arg1 << 8) < 0) {
-        rtemp = (int *)titproc_uso_func_001B10(0);
+        rtemp = (int *)XCALL(titproc_uso_func_001B10, LangMenu_ctor)(0);
         arg0[0x6B8 / 4] = (int)rtemp;
-        titproc_uso_func_07ACE0(slot, node = rtemp);
+        XCALL(titproc_uso_func_07ACE0, list_append)(slot, node = rtemp);
         if (node[0x14 / 4] != 0) {
             node[0x4 / 4] = 1;
         }
@@ -1329,14 +1329,14 @@ after_node:
         rtemp = (int *)import_000A5D38(0);
         arg0[0x6C0 / 4] = (int)rtemp;
         import_000A5F40(rtemp, arg0);
-        titproc_uso_func_0022BC(arg0);
+        XCALL(titproc_uso_func_0022BC, GameDemoProcess_buildMenu)(arg0);
         ((int *)arg0[0x6C0 / 4])[0x30 / 4] = (int)import_0024CCF4(0, &titproc_uso_D_00052C, 0x48, 0xDD, 3, 13);
         *(float *)((char *)arg0[0x6C0 / 4] + 0x74) = 17.0f;
         import_000A5FBC(arg0[0x6C0 / 4]);
-        titproc_uso_func_00F4CC(arg0[0x6C0 / 4]);
+        XCALL(titproc_uso_func_00F4CC, Process_stop)(arg0[0x6C0 / 4]);
         *(int *)((char *)arg0[0x6C0 / 4] + 0x7C) = *(int *)((char *)&import_00020098 + 0x84);
         node = (int *)arg0[0x6C0 / 4];
-        titproc_uso_func_07ACE0(slot, node);
+        XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
         if (node[0x14 / 4] != 0) {
             node[0x4 / 4] = 1;
         }
@@ -1347,13 +1347,13 @@ after_node:
 
     arg0[0x6C4 / 4] = 0;
     node = (int *)INPUT_MGR(import_00020098).fader;
-    titproc_uso_func_07ACE0(slot, node);
+    XCALL(titproc_uso_func_07ACE0, list_append)(slot, node);
     if (node[0x14 / 4] != 0) {
         node[0x4 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
-    titproc_uso_func_0139B0(INPUT_MGR(import_00020098).fader, 1, 0);
-    titproc_uso_func_074840();
+    XCALL(titproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_00020098).fader, 1, 0);
+    XCALL(titproc_uso_func_074840, memtrack_end)();
     import_000A7ECC(&import_00020098, 0);
 done:
     return arg0;
@@ -1435,10 +1435,10 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
         case 0:
             y = (char *)s0->mainLogo;
             if (y != 0) {
-                titproc_uso_func_00F4CC(y);
+                XCALL(titproc_uso_func_00F4CC, Process_stop)(y);
             }
             if (SETTINGS(INPUT_MGR(import_00020098).options)->flags & 0x8) {
-                titproc_uso_func_0002DC(144);
+                XCALL(titproc_uso_func_0002DC, snd_postEvent)(144);
                 if (1) {
                     vtA = (char *)NODE(s0->langMenu)->vptr;
                     objA = (char *)s0->langMenu;
@@ -1446,7 +1446,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                         (char *)((int)VT_SLOT(vtA, 10).delta + (int)objA));
                 }
                 if (s0->keyMessage != 0) {
-                    titproc_uso_func_00F4CC(s0->keyMessage);
+                    XCALL(titproc_uso_func_00F4CC, Process_stop)(s0->keyMessage);
                 }
                 s0->menuState = 2;
             } else {
@@ -1457,17 +1457,17 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                         (char *)((int)VT_SLOT(vt, 10).delta + (int)obj));
                 }
                 if (s0->keyMessage != 0) {
-                    titproc_uso_func_00F4CC(s0->keyMessage);
+                    XCALL(titproc_uso_func_00F4CC, Process_stop)(s0->keyMessage);
                 }
-                titproc_uso_func_0002DC(144);
+                XCALL(titproc_uso_func_0002DC, snd_postEvent)(144);
                 s0->menuState = 1;
             }
             break;
         case 1:
             if (WFADER(s0->whiteFader)->alpha == 0 &&
-                titproc_uso_func_011E00((char *)&import_00020098, 0x200) != 0) {
-                titproc_uso_func_0002DC(0x802);
-                titproc_uso_func_00F4CC(s0->menu);
+                XCALL(titproc_uso_func_011E00, input_checkPressed_00011E00)((char *)&import_00020098, 0x200) != 0) {
+                XCALL(titproc_uso_func_0002DC, snd_postEvent)(0x802);
+                XCALL(titproc_uso_func_00F4CC, Process_stop)(s0->menu);
                 y = (char *)s0->mainLogo;
                 if (y != 0) {
                     vt1 = (char *)NODE(y)->vptr;
@@ -1475,12 +1475,12 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                         (char *)((int)VT_SLOT(vt1, 10).delta + (int)y));
                 }
                 if (s0->keyMessage != 0) {
-                    titproc_uso_func_00F4CC(s0->keyMessage);
+                    XCALL(titproc_uso_func_00F4CC, Process_stop)(s0->keyMessage);
                 }
                 s0->menuState = 0;
             } else {
                 import_000A53B4(s0->menu);
-                titproc_uso_func_0002DC(5);
+                XCALL(titproc_uso_func_0002DC, snd_postEvent)(5);
                 obj = (char *)s0->menu;
                 if (GUIMENU(obj)->rows[GUIMENU(obj)->cursor].arg == 0) {
                     return;
@@ -1489,7 +1489,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
                 INPUT_MGR(import_00020098).unk84 = GUIMENU(s0->menu)->cursor;
                 if ((s0->race.flags << 4) < 0) {
                     if (s0->race.session != 0) {
-                        titproc_uso_func_01F7FC(s0->race.session, 3);
+                        XCALL(titproc_uso_func_01F7FC, Backup_closeSession)(s0->race.session, 3);
                     }
                     s0->race.session = 0;
                     INPUT_MGR(import_00020098).session = 0;
@@ -1499,13 +1499,13 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
             }
             return;
         case 2:
-            titproc_uso_func_0002DC(5);
+            XCALL(titproc_uso_func_0002DC, snd_postEvent)(5);
             if (1) {
                 z = (char *)&SETTINGS(INPUT_MGR(import_00020098).options)->flags; /* clear the language-menu bit */
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
-            titproc_uso_func_012150((char *)&import_00020098);
-            titproc_uso_func_00F4CC(s0->langMenu);
+            XCALL(titproc_uso_func_012150, settings_save_00012150)((char *)&import_00020098);
+            XCALL(titproc_uso_func_00F4CC, Process_stop)(s0->langMenu);
             if (1) {
                 vt2 = (char *)NODE(s0->menu)->vptr;
                 obj2 = (char *)s0->menu;
@@ -1520,7 +1520,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
     } else {
     if ((s0->race.flags << 4) < 0) {
         if (s0->race.session != 0) {
-            titproc_uso_func_01F7FC(s0->race.session, 3);
+            XCALL(titproc_uso_func_01F7FC, Backup_closeSession)(s0->race.session, 3);
         }
         s0->race.session = 0;
         INPUT_MGR(import_00020098).session = 0;
@@ -1528,7 +1528,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
     if (1) {
         INPUT_MGR(import_00020098).procState = INPUT_MGR(import_00020098).nextProcState;
     }
-    titproc_uso_func_00F954(s0, 0, 0);
+    XCALL(titproc_uso_func_00F954, Process_fadeOut_0000F954)(s0, 0, 0);
     }
 }
 
@@ -1596,7 +1596,7 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     int a1;
 
     if (s0->menu != 0 && s0->menuState == 2) {
-        p3c = (int*)titproc_uso_func_001BB8(s0->langMenu);
+        p3c = (int*)XCALL(titproc_uso_func_001BB8, tit_langMenuInput_00001BB8)(s0->langMenu);
     }
     if (s0->menuState == 0) goto tail;
 
@@ -1616,14 +1616,14 @@ void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     }
     a1 = s0->race.flags;
     if ((a1 << 14) < 0) {
-        titproc_uso_func_01B0F8(s0);
+        XCALL(titproc_uso_func_01B0F8, RaceProcess_restart)(s0);
         p3c = *(int**)(INPUT_MGR(import_00020098).game + 0xC4);
         arg = *(int*)((char*)p3c + 0x800);
-        titproc_uso_func_07BA68(arg, 0);
+        XCALL(titproc_uso_func_07BA68, pad_reset_000673FC)(arg, 0);
         a1 = s0->race.session->ghost->data;
-        titproc_uso_func_07C07C(arg, a1,
+        XCALL(titproc_uso_func_07C07C, pad_startPlay_00067A10)(arg, a1,
                          s0->race.session->ghost->count);
-        titproc_uso_func_01CCD4(s0);
+        XCALL(titproc_uso_func_01CCD4, RaceProcess_callGlobalSlot11_00008674)(s0);
         s0->race.timeout = s0->race.flags & 0xFFFF;
         goto ret;
     }
@@ -1651,7 +1651,7 @@ tail:
     if (s0->menu != 0) {
         import_000A53B4(s0->menu);
     }
-    titproc_uso_func_00F954(s0, -1, 0);
+    XCALL(titproc_uso_func_00F954, Process_fadeOut_0000F954)(s0, -1, 0);
 
 final:
     import_000B1BAC(s0);
@@ -1730,9 +1730,9 @@ void *tit_ItemType_create_00002980(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)titproc_uso_func_055750(0x40);
+    p1 = (int*)XCALL(titproc_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
-        titproc_uso_func_051C28(p1);
+        XCALL(titproc_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&import_0006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -1740,7 +1740,7 @@ void *tit_ItemType_create_00002980(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        titproc_uso_func_07ACE0((char*)p2 + 0x10, head);
+        XCALL(titproc_uso_func_07ACE0, list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }

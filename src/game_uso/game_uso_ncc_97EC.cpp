@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for SnowAI_isRivalInPath_000097EC (0x39C / 231 words), spliced over the empty
  * placeholder in game_uso.c on both build paths.
  *
@@ -56,7 +57,7 @@ extern "C" int SnowAI_isRivalInPath_000097EC(Self *s) {
             Vec3 pf;
             XZ e(pe = (a - b) * s->k);
             XZ f(pf = s->w->other->pos - s->w->pos);
-            float mag = game_uso_func_082880(dot(e, e));
+            float mag = XCALL(game_uso_func_082880, sqrtf)(dot(e, e));
             if (0.0f < mag) {
                 float cr, t, *pm;
                 float m2 = e.x * e.x + e.z * e.z; pm = &m2;

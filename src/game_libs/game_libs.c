@@ -926,9 +926,9 @@ void CoolGadget_display(char *o) {
     COOLG(o)->seg = n;
     m[0] = n * 4 + 2;
     if (n >= 12) {
-        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; a = gl_ffunc_00001818(t);
-        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; b = gl_ffunc_00001818(t);
-        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; c = gl_ffunc_00001818(t);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; a = XCALL(gl_ffunc_00001818, fsin)(t);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; b = XCALL(gl_ffunc_00001818, fsin)(t);
+        t = COOLG(o)->phase + COOLG(o)->step; COOLG(o)->phase = t; c = XCALL(gl_ffunc_00001818, fsin)(t);
         x = COOLG(o)->pulseLo.r + (COOLG(o)->pulseHi.r - COOLG(o)->pulseLo.r) * (a + 1) / 2;
         y = COOLG(o)->pulseLo.g + (COOLG(o)->pulseHi.g - COOLG(o)->pulseLo.g) * (b + 1) / 2;
         z = COOLG(o)->pulseLo.b + (COOLG(o)->pulseHi.b - COOLG(o)->pulseLo.b) * (c + 1) / 2;

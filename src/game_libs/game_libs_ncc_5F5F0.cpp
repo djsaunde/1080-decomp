@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for math_lookAtF (look-at matrix, 229 words): EXACT (agent-g run 247), spliced
  * over the empty placeholder in game_libs_post0b.c on both build paths.
  * Custom guLookAtF with an eye-to-at distance clamp: if dist2 > far2 (D+0x205C = 10000.0f) or dist2 < 10.0f the
@@ -39,21 +40,21 @@ extern "C" void math_lookAtF(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt
             v[0] = xLook;
             v[1] = yLook;
             v[2] = zLook;
-            gl_func_0005F5F0_normalize(v);
+            XCALL(gl_func_0005F5F0_normalize, math_vec3Normalize)(v);
         }
         v[0] *= 10.0f; xLook = v[0];
         v[1] *= 10.0f; yLook = v[1];
         v[2] *= 10.0f; zLook = v[2];
         d2 = 100.0f;
     }
-    len = -1.0f / gl_func_0005F5F0_sqrtf(d2);
+    len = -1.0f / XCALL(gl_func_0005F5F0_sqrtf, math_vec3Length_0005BBCC)(d2);
     xLook *= len;
     yLook *= len;
     zLook *= len;
     xRight = (yUp * zLook) - (zUp * yLook);
     yRight = (zUp * xLook) - (xUp * zLook);
     zRight = (xUp * yLook) - (yUp * xLook);
-    slen = gl_func_0005F5F0_sqrtf((xRight * xRight) + (yRight * yRight) + (zRight * zRight));
+    slen = XCALL(gl_func_0005F5F0_sqrtf, math_vec3Length_0005BBCC)((xRight * xRight) + (yRight * yRight) + (zRight * zRight));
     if (slen < *(f32 *)((char *)&D_00000000 + 0x2060)) {
         yRight = 0.0f;
         xRight = 1.0f;
@@ -67,7 +68,7 @@ extern "C" void math_lookAtF(f32 (*mf)[4], f32 xEye, f32 yEye, f32 zEye, f32 xAt
     xUp = (yLook * zRight) - (zLook * yRight);
     yUp = (zLook * xRight) - (xLook * zRight);
     zUp = (xLook * yRight) - (yLook * xRight);
-    ulen = 1.0f / gl_func_0005F5F0_sqrtf((xUp * xUp) + (yUp * yUp) + (zUp * zUp));
+    ulen = 1.0f / XCALL(gl_func_0005F5F0_sqrtf, sqrtf)((xUp * xUp) + (yUp * yUp) + (zUp * zUp));
     xUp *= ulen;
     yUp *= ulen;
     zUp *= ulen;

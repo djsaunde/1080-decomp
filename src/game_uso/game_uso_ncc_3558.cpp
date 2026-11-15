@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for SnowChaseActor_update (0x3F0 / 252 words): EXACT
  * (agent-c run 340, 1008 / 1008 bytes), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_uso.c on both paths (MATCHING_WORKFLOW
@@ -111,20 +112,20 @@ extern "C" void SnowChaseActor_update(S *s0) {
     if (1) {} /* agent-c run 340: with the operator- split, uopt promotes vb.x / y / z over the block (kit CDXXX 5) */
     e = vb - *me(&va); /* agent-c run 340: me() on va (one pool word: the op- temporaries at the target's 104..112) */
     s0->toGoal = e;
-    mag = game_uso_func_070238(e.len2x());
+    mag = XCALL(game_uso_func_070238, math_vec3Length_0005BBCC)(e.len2x());
     {
         Vec3 side;
         k = e.y * s0->chy;
-        side.x = zero; side.y = k; side.z = zero; game_uso_func_072EE8(c.getOut()->local, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
+        side.x = zero; side.y = k; side.z = zero; XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(c.getOut()->local, &side); /* agent-g run 228: one line with the call (kit CCXXXIV): 89.21 -> 89.98 */
     }
-    game_uso_func_071028(&e);
+    XCALL(game_uso_func_071028, math_vec3Normalize)(&e);
     me(s0)->lookBody->world.getPos(w); /* agent-c run 253: accessor sweep (kit CCLXXXIV): 93.49 -> 93.61 */
     w.x = w.x - va.x;
     w.z = w.z - va.z;
     w.y = zero;
     l = w.len2(); /* agent-g run 259 (kit CCXCIV): len2's named r was an inline-expansion home at the frame bottom (every low object 8 above the target); as a function-scope l declared after t its home sits in the decl region instead -- the sp-offset set now equals the target's (93.61 -> 93.68 standalone) */
-    t = game_uso_func_070238(l);
-    game_uso_func_071028(&w);
+    t = XCALL(game_uso_func_070238, math_vec3Length_0005BBCC)(l);
+    XCALL(game_uso_func_071028, math_vec3Normalize)(&w);
     if (s0->xxz < t) {
         w *= t - s0->xxz;
     } else if (t < s0->mxz) {
@@ -135,5 +136,5 @@ extern "C" void SnowChaseActor_update(S *s0) {
     k2 = (mag - s0->txz) * s0->cxz; /* agent-c run 288: operands swapped (target mul.s f0,f10,f4) */
     e *= k2;
     e += w;
-    game_uso_func_072EE8(c.getOut()->local, &e);
+    XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(c.getOut()->local, &e);
 }

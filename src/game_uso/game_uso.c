@@ -374,14 +374,14 @@ extern void game_uso_func_04C774(int *dst, int flag, int arg7);
 
 int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float arg5, int arg6, int arg7) {
     if (a0 == 0) {
-        a0 = (int *)game_uso_func_055750(0x27C);
+        a0 = (int *)XCALL(game_uso_func_055750, mem_new)(0x27C);
         if (a0 == 0) goto out;
     }
-    game_uso_func_047484(a0, arg2, arg3, arg4, arg5); /* MCamera ctor (target, x, y, z) */
+    XCALL(game_uso_func_047484, MCamera_ctor)(a0, arg2, arg3, arg4, arg5); /* MCamera ctor (target, x, y, z) */
     NODE(a0)->vptr = (int)&game_uso_D_807FE770;
     ((CourseCam *)a0)->numLists = 0;
     ((CourseCam *)a0)->numPaths = 0;
-    if (arg7 != 0) game_uso_func_04C774(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
+    if (arg7 != 0) XCALL(game_uso_func_04C774, Node_Load)(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
     ((CourseCam *)a0)->rider = (struct SnowBoarder *)arg1;
     ((CourseCam *)a0)->pad = (struct RiderInput *)arg6;
     ((CourseCam *)a0)->chaseMode = 0;
@@ -1451,14 +1451,14 @@ extern void *SnowChaseActorParms_ctor();
 
 SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody, int parmsFile) {
     if (a0 == 0) {
-        a0 = (SnowChaseActor *)game_uso_func_055750(0x138);
+        a0 = (SnowChaseActor *)XCALL(game_uso_func_055750, mem_new)(0x138);
         if (a0 == 0) goto out;
     }
-    game_uso_func_04C678((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
+    XCALL(game_uso_func_04C678, Node_ctor)((int *)a0, (char *)&game_uso_D_807FE990 + 0x3A0); /* Node init, name "SnowChaseActor" */
     NODE(a0)->vptr = (int)&game_uso_D_807FE8A8;
     SnowChaseActorParms_ctor(&a0->parms);
     /* load the parms file */
-    if (parmsFile != 0) game_uso_func_04C774((int *)a0, 1, parmsFile);
+    if (parmsFile != 0) XCALL(game_uso_func_04C774, Node_Load)((int *)a0, 1, parmsFile);
     a0->target = (CamMNode *)target;
     a0->lookBody = (CamMNode *)lookBody;
     a0->unk2C = 0;
@@ -1635,10 +1635,10 @@ float math_signedAngleXZ_00003ED4(Vec3 *a0, Vec3 *a1, int *a2) {
   (void) unused;
   (void) pad;
   vb = *a1;
-  game_uso_func_071028(&vb);
+  XCALL(game_uso_func_071028, math_vec3Normalize)(&vb);
   va = *a0;
-  game_uso_func_071028(&va);
-  r = game_uso_func_07E330_ff((va.x * vb.x) + (va.z * vb.z));
+  XCALL(game_uso_func_071028, math_vec3Normalize)(&va);
+  r = XCALL(game_uso_func_07E330_ff, math_acosf)((va.x * vb.x) + (va.z * vb.z));
   r = r / (*((float *) new_var));
   ret = r;
   if ((va.z * vb.x) < (va.x * vb.z))
@@ -1696,7 +1696,7 @@ void math_rotateXZPair_00003FAC(float *a0, float *a1, float *a2, float a3, float
     float orig_scale = arg4 / a3;
     float ns, os, nsd, neg;
     float ratio = orig_scale * orig_scale;
-    float new_scale = game_uso_func_082880(1.0f - ratio);
+    float new_scale = XCALL(game_uso_func_082880, sqrtf)(1.0f - ratio);
     (void)ratio;
     a0[0] = (orig_scale * a2[2]) + (a2[0] * (ns = new_scale));
     a0[1] = 0.0f;
@@ -3073,7 +3073,7 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
     *a1 = 0;
     v = a0[0x40 / 4];
     if (v < 0 || v >= 12) {
-        game_uso_func_047B1C((char*)&D_00000000 + 0x78C,
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char*)&D_00000000 + 0x78C,
                          (char*)&D_00000000 + 0x7B0, 0x609);
     }
     av.a = *(int*)(*(int*)((char*)&D_00000000 + 0x548 + a0[0x40 / 4] * 4));
@@ -3100,7 +3100,7 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
         inner = (int*)AI(a0)->rider->markerLink;
         AI(a0)->rider->linkDir.z =
             AI(a0)->rider->dnode.vqs.trans[2] - ((CourseMarker *)inner)->pos[2];
-        game_uso_func_071028((Vec3 *)&AI(a0)->rider->linkDir);
+        XCALL(game_uso_func_071028, math_vec3Normalize)((Vec3 *)&AI(a0)->rider->linkDir);
     }
 
     return (int)r;
@@ -3420,7 +3420,7 @@ int SnowAI_isAboveSegmentFloor(char *a0, char *a1, char *a2) {
     float fx, fy, fz;
     float *q;
     if (a2 == 0) {
-        game_uso_func_047B1C(&game_uso_D_807FEDD0 + 0x7D4,
+        XCALL(game_uso_func_047B1C, sys_assertFail)(&game_uso_D_807FEDD0 + 0x7D4,
                            &game_uso_D_807FEDD0 + 0x7E0, 1586);
     }
     w = 0; if (1) { w = (float*)(a2 + 0x30); }
@@ -3433,7 +3433,7 @@ int SnowAI_isAboveSegmentFloor(char *a0, char *a1, char *a2) {
     *(Tri3i*)local_BC = *(Tri3i*)local_6C;
     p = (float*)(unsigned)local_A0;
     if (p == 0) {
-        p = (float*)game_uso_func_055750(12);
+        p = (float*)XCALL(game_uso_func_055750, mem_new)(12);
         if (p == 0) goto skip1;
     }
     fy = *(float*)&local_BC[0];
@@ -3451,7 +3451,7 @@ skip1:;
     *(Tri3i*)local_B0 = *(Tri3i*)local_6C;
     p = (float*)(unsigned)local_94;
     if (p == 0) {
-        p = (float*)game_uso_func_055750(12);
+        p = (float*)XCALL(game_uso_func_055750, mem_new)(12);
         if (p == 0) goto skip2;
     }
     fy = *(float*)&local_B0[0];
@@ -3460,10 +3460,10 @@ skip1:;
     p[2] = fz;
     p[1] = 0.0f;
 skip2:;
-    mag = game_uso_func_082880(fy = local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0]);
-    if (0.0f < game_uso_func_082880(local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0])) {
+    mag = XCALL(game_uso_func_082880, sqrtf)(fy = local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0]);
+    if (0.0f < XCALL(game_uso_func_082880, sqrtf)(local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0])) {
         fx = (local_A0[0]*local_94[0] + local_A0[2]*local_94[2]) /
-                game_uso_func_082880(local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0]);
+                XCALL(game_uso_func_082880, sqrtf)(local_A0[2]*local_A0[2] + local_A0[0]*local_A0[0]);
     } else {
         fx = (float)0;
     }
@@ -3537,7 +3537,7 @@ void SnowAI_pickFork(SnowAI *a0) {
     slots[1] = (int *)SnowAI_findNearestMarker_0000A374(a0, v1,
                 (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[1] == 0) {
-        game_uso_func_047B1C((char *)&game_uso_D_807FEDF8 + 0x7EC,
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEDF8 + 0x7EC,
                              (char *)&game_uso_D_807FEDF8 + 0x808, 0x450);
     }
     if (((CourseMarker *)slots[1])->parms.flg.value & MARKER_F_REDIRECT) {
@@ -3548,13 +3548,13 @@ void SnowAI_pickFork(SnowAI *a0) {
     slots[0] = (int *)SnowAI_findNearestMarker_0000A374(a0, v2,
                 (int)a0->rider->rival->dnode.vqs.trans);
     if (slots[0] == 0) {
-        game_uso_func_047B1C((char *)&game_uso_D_807FEE20 + 0x814,
+        XCALL(game_uso_func_047B1C, sys_assertFail)((char *)&game_uso_D_807FEE20 + 0x814,
                              (char *)&game_uso_D_807FEE20 + 0x830, 0x45B);
     }
     ref = a0->rider->rival->dnode.vqs.trans;
     if (1) { p = &buf1; }
     if (p == 0) {
-        p = (V3_A3C4 *)game_uso_func_055750(12);
+        p = (V3_A3C4 *)XCALL(game_uso_func_055750, mem_new)(12);
         if (p == 0) goto skip1;
     }
     fx = ref[0];
@@ -3565,7 +3565,7 @@ void SnowAI_pickFork(SnowAI *a0) {
 skip1:
     if (1) { p = &buf2; }
     if (p == 0) {
-        p = (V3_A3C4 *)game_uso_func_055750(12);
+        p = (V3_A3C4 *)XCALL(game_uso_func_055750, mem_new)(12);
         if (p == 0) goto skip2;
     }
     q = ((CourseMarker *)slots[1])->pos;
@@ -3577,7 +3577,7 @@ skip1:
 skip2:
     if (1) { p = &buf3; }
     if (p == 0) {
-        p = (V3_A3C4 *)game_uso_func_055750(12);
+        p = (V3_A3C4 *)XCALL(game_uso_func_055750, mem_new)(12);
         if (p == 0) goto skip3;
     }
     q = ((CourseMarker *)slots[0])->pos;
@@ -3798,7 +3798,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                 if (f0 >= 0.0f) {
                     p = (Vec3 *)(unsigned)&b1;
                     if (p == 0) {
-                        p = (Vec3 *)game_uso_func_055750(12);
+                        p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
                         if (p == 0) goto skip1;
                     }
                     q = ((CourseMarker *)slots[0])->pos;
@@ -3810,7 +3810,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                 skip1:;
                     do { out = &b2; } while (0); p = out;
                     if (p == 0) {
-                        p = (Vec3 *)game_uso_func_055750(12);
+                        p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
                         if (p == 0) goto skip2;
                     }
                     q = ((CourseMarker *)slots[1])->pos;
@@ -3823,7 +3823,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                     *(Tri3i *)&b3 = *(Tri3i *)&c1;
                     p = (Vec3 *)(unsigned)&b4;
                     if (p == 0) {
-                        p = (Vec3 *)game_uso_func_055750(12);
+                        p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
                         if (p == 0) goto skip4;
                     }
                     f0 = blockA.x;
@@ -3834,7 +3834,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
                 skip4:;
                     do { out = &b5; } while (0); p = out;
                     if (p == 0) {
-                        p = (Vec3 *)game_uso_func_055750(12);
+                        p = (Vec3 *)XCALL(game_uso_func_055750, mem_new)(12);
                         if (p == 0) goto skip5;
                     }
                     q = ((CourseMarker *)slots[1])->pos;
@@ -4000,52 +4000,52 @@ void *Sun_ctor(void *arg0) {
 
     /* Primary object; all exits reload its argument home. */
     if (arg0 == NULL) {
-        arg0 = (void *)game_uso_func_055750(0x178);
+        arg0 = (void *)XCALL(game_uso_func_055750, mem_new)(0x178);
         if (arg0 == NULL) goto end_ret;
     }
 
     s0 = arg0;
     if (s0 == NULL) {
-        s0 = (void *)game_uso_func_055750(0xB4);
+        s0 = (void *)XCALL(game_uso_func_055750, mem_new)(0xB4);
         if (s0 == NULL) goto skip_sub;
     }
-    game_uso_func_04C678(s0, (char *)&game_uso_D_807FF340 + 0xD50);
+    XCALL(game_uso_func_04C678, Node_ctor)(s0, (char *)&game_uso_D_807FF340 + 0xD50);
     NODE(s0)->vptr = (int)&import_80086288;
 
     p = (char *)s0 + 0x2C;
     if (s0 == (void *)-0x2C) {
-        p = (void *)game_uso_func_055750(4);
+        p = (void *)XCALL(game_uso_func_055750, mem_new)(4);
         if (p == NULL) goto after_node;
     }
     q = p;
     if (p == NULL) {
-        q = (void *)game_uso_func_055750(4);
+        q = (void *)XCALL(game_uso_func_055750, mem_new)(4);
         if (q == NULL) goto after_node;
     }
     *(int *)q = 0;
 after_node:
-    game_uso_func_04D3D0(s0);
+    XCALL(game_uso_func_04D3D0, MNode_initMatrices)(s0);
     z = (float)0; v3[0] = z; v3[1] = z; v3[2] = z;
-    game_uso_func_072EE8((char *)s0 + 0x30, (Vec3 *)v3);
+    XCALL(game_uso_func_072EE8, math_mtxAddTranslation)((char *)s0 + 0x30, (Vec3 *)v3);
 skip_sub:
 
     NODE(arg0)->vptr = (int)&game_uso_D_807FF24C;
 
     s0 = (char *)arg0 + 0xDC;
     if (arg0 == (void *)-0xDC) {
-        s0 = (char *)game_uso_func_055750(0x10);
+        s0 = (char *)XCALL(game_uso_func_055750, mem_new)(0x10);
         if (s0 == NULL) goto after_o16;
     }
     {
         r = s0;
         if (s0 == NULL) {
-            r = (char *)game_uso_func_055750(0x10);
+            r = (char *)XCALL(game_uso_func_055750, mem_new)(0x10);
             if (r == NULL) goto o16_set;
         }
         {
             p = r;
             if (r == NULL) {
-                p = (char *)game_uso_func_055750(4);
+                p = (char *)XCALL(game_uso_func_055750, mem_new)(4);
                 if (p == NULL) goto o16_fill;
             }
             *(int *)p = (int)((char *)&game_uso_D_807FEE38 + 0x848);
@@ -4061,11 +4061,11 @@ after_o16:
     /* The five children belong to this 140-byte sub-object, not arg0. */
     s0 = (char *)arg0 + 0xEC;
     if ((arg0 != (void *)-0xEC) ||
-        (s0 = (char *)game_uso_func_055750(140), s0 != NULL)) {
+        (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(140), s0 != NULL)) {
     {
         r = s0;
         if (s0 == NULL) {
-            r = (char *)game_uso_func_055750(8);
+            r = (char *)XCALL(game_uso_func_055750, mem_new)(8);
             if (r == NULL) goto after_o140hdr;
         }
         *(int *)r = (int)((char *)&game_uso_D_807FF344 + 0xD54);
@@ -4078,10 +4078,10 @@ after_o140hdr:
         idx_arg = idx0;
         nfirst = s0 + 8;
         if (s0 == (char *)-8) {
-            nfirst = (char *)game_uso_func_055750(24);
+            nfirst = (char *)XCALL(game_uso_func_055750, mem_new)(24);
             if (nfirst == NULL) goto node1;
         }
-        game_uso_func_04A188(nfirst, s0, idx_arg, 1);
+        XCALL(game_uso_func_04A188, Parms_addParm)(nfirst, s0, idx_arg, 1);
         ((SunParm *)nfirst)->vptr = (char *)&game_uso_D_807FEE50 + 0x860;
         ((SunParm *)nfirst)->unk14 = 0;
         ((SunParm *)nfirst)->value.f = 0.0f;
@@ -4092,10 +4092,10 @@ node1:
         idx_arg = idx1;
         n = s0 + 32;
         if (s0 == (char *)-32) {
-            n = (char *)game_uso_func_055750(24);
+            n = (char *)XCALL(game_uso_func_055750, mem_new)(24);
             if (n == NULL) goto node2;
         }
-        game_uso_func_04A188(n, s0, idx_arg, 1);
+        XCALL(game_uso_func_04A188, Parms_addParm)(n, s0, idx_arg, 1);
         { if (1) { tbl1 = (char *)&game_uso_D_807FEE50 + 0x860; } ((SunParm *)n)->vptr = tbl1; }
         ((SunParm *)n)->unk14 = 0;
         ((SunParm *)n)->value.f = 0.0f;
@@ -4106,10 +4106,10 @@ node2:
         idx_arg = idx2;
         n = s0 + 56;
         if (s0 == (char *)-56) {
-            n = (char *)game_uso_func_055750(24);
+            n = (char *)XCALL(game_uso_func_055750, mem_new)(24);
             if (n == NULL) goto node3;
         }
-        game_uso_func_04A188(n, s0, idx_arg, 1);
+        XCALL(game_uso_func_04A188, Parms_addParm)(n, s0, idx_arg, 1);
         { if (1) { tbl2 = (char *)&game_uso_D_807FEE50 + 0x860; } ((SunParm *)n)->vptr = tbl2; }
         ((SunParm *)n)->unk14 = 0;
         ((SunParm *)n)->value.f = 2.0f;
@@ -4120,10 +4120,10 @@ node3:
         idx_arg = idx3;
         n = s0 + 80;
         if (s0 == (char *)-80) {
-            n = (char *)game_uso_func_055750(24);
+            n = (char *)XCALL(game_uso_func_055750, mem_new)(24);
             if (n == NULL) goto node4;
         }
-        game_uso_func_04A188(n, s0, idx_arg, 0);
+        XCALL(game_uso_func_04A188, Parms_addParm)(n, s0, idx_arg, 0);
         ((SunParm *)n)->vptr = (char *)&game_uso_D_807FEE68 + 0x878;
         ((SunParm *)n)->unk14 = 0;
         ((SunParm *)n)->value.i = 0;
@@ -4140,9 +4140,9 @@ node4:;
         idx_arg = idx4;
         if (1) { o36 = s0 + 0x68; }
         if ((s0 != (char *)-0x68) ||
-            (o36 = (char *)game_uso_func_055750(36), o36 != NULL)) {
+            (o36 = (char *)XCALL(game_uso_func_055750, mem_new)(36), o36 != NULL)) {
 
-        game_uso_func_04A188(o36, s0, idx_arg, 0);
+        XCALL(game_uso_func_04A188, Parms_addParm)(o36, s0, idx_arg, 0);
         ((SunColorParm *)o36)->vptr = (char *)&game_uso_D_807FEE80 + 0x890;
         ((SunColorParm *)o36)->unk20 = 0;
         *(Quad4 *)((SunColorParm *)o36)->value = v4_copy;
@@ -4159,7 +4159,7 @@ tail_init:
         if (1) { state = (int *)((char *)&gPolyGeomMode_3EEC8_8005EE6C + 4); } *state = flags;
     }
     ((Sun *)arg0)->fade = 1.0f;
-    game_uso_func_04D3C8(arg0, 2);
+    XCALL(game_uso_func_04D3C8, Node_setUnk24)(arg0, 2);
     ((Sun *)arg0)->sprite = (Sprite *)import_000F5ADC(0, &game_uso_D_807FF214);
     ((Sun *)arg0)->visibility = 0.0f;
 end_ret:
@@ -4260,12 +4260,12 @@ void Sun_update(int *a0) {
     buf[3] = 0.0f;
     buf[4] = *(float*)((char*)&D_00000000 + 0x140);      /* sp+0x2C = D[0x140] */
     /* float-first arg (-> $f12); a0 is saved across the calls, not passed */
-    game_uso_func_070338(((Sun *)a0)->parms.ele.value.f, &buf[3], &buf[4]);
-    game_uso_func_070338(((Sun *)a0)->parms.rot.value.f, &buf[2], &buf[4]);
+    XCALL(game_uso_func_070338, math_rotate2D)(((Sun *)a0)->parms.ele.value.f, &buf[3], &buf[4]);
+    XCALL(game_uso_func_070338, math_rotate2D)(((Sun *)a0)->parms.rot.value.f, &buf[2], &buf[4]);
     ((Sun *)a0)->mnode.local[3][0] = buf[2];
     ((Sun *)a0)->mnode.local[3][1] = buf[3];
     ((Sun *)a0)->mnode.local[3][2] = buf[4];
-    game_uso_func_04DA24(a0);
+    XCALL(game_uso_func_04DA24, MNode_update)(a0);
 }
 void Sun_readParms(char *a0) {
     GCALL(Parms_load_00035C6C)(&((Sun *)a0)->parms);
@@ -4425,47 +4425,47 @@ void *LensFlare_create(void *arg0, int arg1, int arg2) {
 
     a2v = arg2;
     if (arg0 == NULL) {
-        arg0 = (void *)game_uso_func_055750(0x278);
+        arg0 = (void *)XCALL(game_uso_func_055750, mem_new)(0x278);
         if (arg0 == NULL) goto end_ret;
     }
 
     sp1 = arg0;
     if (sp1 == NULL) {
-        sp1 = (char *)game_uso_func_055750(0xB4);
+        sp1 = (char *)XCALL(game_uso_func_055750, mem_new)(0xB4);
         if (sp1 == NULL) goto skip_sub;
     }
-    game_uso_func_04C678((int *)sp1, (char *)&game_uso_D_807FF360 + 0xD70);
+    XCALL(game_uso_func_04C678, Node_ctor)((int *)sp1, (char *)&game_uso_D_807FF360 + 0xD70);
     NODE(sp1)->vptr = (int)&import_80086288;
 
     p = sp1 + 0x2C;
     if (sp1 == (char *)-0x2C) {
-        p = (void *)game_uso_func_055750(4);
+        p = (void *)XCALL(game_uso_func_055750, mem_new)(4);
         if (p == NULL) goto after_node;
     }
     q = p;
     if (p == NULL) {
-        q = (void *)game_uso_func_055750(4);
+        q = (void *)XCALL(game_uso_func_055750, mem_new)(4);
         if (q == NULL) goto after_node;
     }
     *(int *)q = 0;
 after_node:
-    game_uso_func_04D3D0(sp1);
+    XCALL(game_uso_func_04D3D0, MNode_initMatrices)(sp1);
     v3.x = 0.0f;
     v3.y = 0.0f;
     v3.z = 0.0f;
-    game_uso_func_072EE8(sp1 + 0x30, &v3);
+    XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(sp1 + 0x30, &v3);
 skip_sub:
 
     NODE(arg0)->vptr = (int)&game_uso_D_807FF2D8;
     ((LensFlare *)arg0)->sun = (Sun *)a2v;
     sp1 = (char *)arg0 + 0x224;
     if (arg0 == (void *)-0x224) {
-        sp1 = (char *)game_uso_func_055750(0x50);
+        sp1 = (char *)XCALL(game_uso_func_055750, mem_new)(0x50);
         if (sp1 == NULL) goto finalize;
     }
     hdr = sp1;
     if (sp1 == NULL) {
-        hdr = (char *)game_uso_func_055750(8);
+        hdr = (char *)XCALL(game_uso_func_055750, mem_new)(8);
         if (hdr == NULL) goto stage_a;
     }
     *(int *)hdr = (int)((char *)&game_uso_D_807FF368 + 0xD78);
@@ -4475,10 +4475,10 @@ stage_a:
     marsh = slot_a;
     n = sp1 + 8;
     if (sp1 == (char *)-8) {
-        n = (char *)game_uso_func_055750(0x18);
+        n = (char *)XCALL(game_uso_func_055750, mem_new)(0x18);
         if (n == NULL) goto stage_b;
     }
-    game_uso_func_04A188(n, sp1, marsh, 1);
+    XCALL(game_uso_func_04A188, Parms_addParm)(n, sp1, marsh, 1);
     ((SunParm *)n)->vptr = (char *)&game_uso_D_807FEE50 + 0x860;
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF380 + 0x160);
@@ -4487,10 +4487,10 @@ stage_b:
     marsh = slot_b;
     n = sp1 + 0x20;
     if (sp1 == (char *)-0x20) {
-        n = (char *)game_uso_func_055750(0x18);
+        n = (char *)XCALL(game_uso_func_055750, mem_new)(0x18);
         if (n == NULL) goto stage_c;
     }
-    game_uso_func_04A188(n, sp1, marsh, 1);
+    XCALL(game_uso_func_04A188, Parms_addParm)(n, sp1, marsh, 1);
     ((SunParm *)n)->vptr = (char *)&D_B8D4_st2 + 0x860;
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = *(float *)((char *)&game_uso_D_807FF384 + 0x164);
@@ -4499,10 +4499,10 @@ stage_c:
     marsh = slot_c;
     n = sp1 + 0x38;
     if (sp1 == (char *)-0x38) {
-        n = (char *)game_uso_func_055750(0x18);
+        n = (char *)XCALL(game_uso_func_055750, mem_new)(0x18);
         if (n == NULL) goto finalize;
     }
-    game_uso_func_04A188(n, sp1, marsh, 1);
+    XCALL(game_uso_func_04A188, Parms_addParm)(n, sp1, marsh, 1);
     ((SunParm *)n)->vptr = (char *)&D_B8D4_st3 + 0x860;
     ((SunParm *)n)->unk14 = 0;
     ((SunParm *)n)->value.f = 0.0f;
@@ -4517,7 +4517,7 @@ finalize:
         n += 0x24;
         i++;
     } while (i < ((LensFlare *)arg0)->numElems);
-    game_uso_func_04C774((int *)arg0, 1, arg1);
+    XCALL(game_uso_func_04C774, Node_Load)((int *)arg0, 1, arg1);
 end_ret:
     return arg0;
 }
@@ -4872,13 +4872,13 @@ void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     int *obj;
     volatile int pd[3];
     struct C48CArg t;
-    if (p == 0) { p = (char *)game_uso_func_055750(0x444); if (p == 0) goto end; }
+    if (p == 0) { p = (char *)XCALL(game_uso_func_055750, mem_new)(0x444); if (p == 0) goto end; }
     import_0010D33C(p, a1);
     NODE(p)->vptr = (int)&game_uso_D_807FF74C;
     s1 = (int *)(p + 0x13C);
-    if (p == (char *)-0x13C) { s1 = (int *)game_uso_func_055750(0x308); if (s1 == 0) goto tail; }
+    if (p == (char *)-0x13C) { s1 = (int *)XCALL(game_uso_func_055750, mem_new)(0x308); if (s1 == 0) goto tail; }
     v1 = s1;
-    if (s1 == 0) { v1 = (int *)game_uso_func_055750(8); if (v1 == 0) goto stage0; }
+    if (s1 == 0) { v1 = (int *)XCALL(game_uso_func_055750, mem_new)(8); if (v1 == 0) goto stage0; }
     v1[0] = (int)((char *)&game_uso_D_807FF814 + 0x1224);
     v1[1] = 0;
 stage0:;
@@ -4886,8 +4886,8 @@ stage0:;
         u1.v = *(int *)((char *)&game_uso_D_807FF81C + 0x122c);
         t = u1;
         obj = (int *)((char *)s1 + 0x8);
-        if (s1 != (int *)-0x8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf0 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =0.7f;
@@ -4897,8 +4897,8 @@ stage0:;
         u2.v = *(int *)((char *)&game_uso_D_807FF820 + 0x1230);
         t = u2;
         obj = (int *)((char *)s1 + 0x20);
-        if (s1 != (int *)-0x20 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x20 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti0 + 0xfc0); RAP(obj)->value.i =20;
         RAP(obj)->unk14 = 0;
         }
@@ -4907,8 +4907,8 @@ stage0:;
         u3.v = *(int *)((char *)&game_uso_D_807FF824 + 0x1234);
         t = u3;
         obj = (int *)((char *)s1 + 0x38);
-        if (s1 != (int *)-0x38 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x38 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti1 + 0xfc0); RAP(obj)->value.i =60;
         RAP(obj)->unk14 = 0;
         }
@@ -4917,8 +4917,8 @@ stage0:;
         u4.v = *(int *)((char *)&game_uso_D_807FF828 + 0x1238);
         t = u4;
         obj = (int *)((char *)s1 + 0x50);
-        if (s1 != (int *)-0x50 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x50 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti2 + 0xfc0); RAP(obj)->value.i =5;
         RAP(obj)->unk14 = 0;
         }
@@ -4927,8 +4927,8 @@ stage0:;
         u5.v = *(int *)((char *)&game_uso_D_807FF82C + 0x123c);
         t = u5;
         obj = (int *)((char *)s1 + 0x68);
-        if (s1 != (int *)-0x68 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x68 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf1 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =1.72f;
@@ -4938,8 +4938,8 @@ stage0:;
         u6.v = *(int *)((char *)&game_uso_D_807FF830 + 0x1240);
         t = u6;
         obj = (int *)((char *)s1 + 0x80);
-        if (s1 != (int *)-0x80 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x80 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti3 + 0xfc0); RAP(obj)->value.i =20;
         RAP(obj)->unk14 = 0;
         }
@@ -4948,8 +4948,8 @@ stage0:;
         u7.v = *(int *)((char *)&game_uso_D_807FF834 + 0x1244);
         t = u7;
         obj = (int *)((char *)s1 + 0x98);
-        if (s1 != (int *)-0x98 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x98 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf2 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =3.0f;
@@ -4959,8 +4959,8 @@ stage0:;
         u8.v = *(int *)((char *)&game_uso_D_807FF838 + 0x1248);
         t = u8;
         obj = (int *)((char *)s1 + 0xb0);
-        if (s1 != (int *)-0xb0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0xb0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf3 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =7.0f;
@@ -4970,8 +4970,8 @@ stage0:;
         u9.v = *(int *)((char *)&game_uso_D_807FF83C + 0x124c);
         t = u9;
         obj = (int *)((char *)s1 + 0xc8);
-        if (s1 != (int *)-0xc8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0xc8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti4 + 0xfc0); RAP(obj)->value.i =3;
         RAP(obj)->unk14 = 0;
         }
@@ -4980,8 +4980,8 @@ stage0:;
         u10.v = *(int *)((char *)&game_uso_D_807FF840 + 0x1250);
         t = u10;
         obj = (int *)((char *)s1 + 0xe0);
-        if (s1 != (int *)-0xe0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0xe0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf4 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =0.0f;
@@ -4991,8 +4991,8 @@ stage0:;
         u11.v = *(int *)((char *)&game_uso_D_807FF844 + 0x1254);
         t = u11;
         obj = (int *)((char *)s1 + 0xf8);
-        if (s1 != (int *)-0xf8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0xf8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf5 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =4.0f;
@@ -5002,8 +5002,8 @@ stage0:;
         u12.v = *(int *)((char *)&game_uso_D_807FF848 + 0x1258);
         t = u12;
         obj = (int *)((char *)s1 + 0x110);
-        if (s1 != (int *)-0x110 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x110 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf6 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =50.0f;
@@ -5013,8 +5013,8 @@ stage0:;
         u13.v = *(int *)((char *)&game_uso_D_807FF84C + 0x125c);
         t = u13;
         obj = (int *)((char *)s1 + 0x128);
-        if (s1 != (int *)-0x128 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x128 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf7 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =25.0f;
@@ -5024,8 +5024,8 @@ stage0:;
         u14.v = *(int *)((char *)&game_uso_D_807FF850 + 0x1260);
         t = u14;
         obj = (int *)((char *)s1 + 0x140);
-        if (s1 != (int *)-0x140 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x140 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf8 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =40.0f;
@@ -5035,8 +5035,8 @@ stage0:;
         u15.v = *(int *)((char *)&game_uso_D_807FF854 + 0x1264);
         t = u15;
         obj = (int *)((char *)s1 + 0x158);
-        if (s1 != (int *)-0x158 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x158 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf9 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =100.0f;
@@ -5046,8 +5046,8 @@ stage0:;
         u16.v = *(int *)((char *)&game_uso_D_807FF858 + 0x1268);
         t = u16;
         obj = (int *)((char *)s1 + 0x170);
-        if (s1 != (int *)-0x170 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x170 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf10 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =120.0f;
@@ -5057,8 +5057,8 @@ stage0:;
         u17.v = *(int *)((char *)&game_uso_D_807FF85C + 0x126c);
         t = u17;
         obj = (int *)((char *)s1 + 0x188);
-        if (s1 != (int *)-0x188 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x188 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf11 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =80.0f;
@@ -5068,8 +5068,8 @@ stage0:;
         u18.v = *(int *)((char *)&game_uso_D_807FF860 + 0x1270);
         t = u18;
         obj = (int *)((char *)s1 + 0x1a0);
-        if (s1 != (int *)-0x1a0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x1a0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf12 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =100.0f;
@@ -5079,8 +5079,8 @@ stage0:;
         u19.v = *(int *)((char *)&game_uso_D_807FF864 + 0x1274);
         t = u19;
         obj = (int *)((char *)s1 + 0x1b8);
-        if (s1 != (int *)-0x1b8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x1b8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf13 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =150.0f;
@@ -5090,8 +5090,8 @@ stage0:;
         u20.v = *(int *)((char *)&game_uso_D_807FF868 + 0x1278);
         t = u20;
         obj = (int *)((char *)s1 + 0x1d0);
-        if (s1 != (int *)-0x1d0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x1d0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf14 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =100.0f;
@@ -5101,8 +5101,8 @@ stage0:;
         u21.v = *(int *)((char *)&game_uso_D_807FF86C + 0x127c);
         t = u21;
         obj = (int *)((char *)s1 + 0x1e8);
-        if (s1 != (int *)-0x1e8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x1e8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_tf15 + 0xf78);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.f =150.0f;
@@ -5112,8 +5112,8 @@ stage0:;
         u22.v = *(int *)((char *)&game_uso_D_807FF870 + 0x1280);
         t = u22;
         obj = (int *)((char *)s1 + 0x200);
-        if (s1 != (int *)-0x200 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x200 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti5 + 0xfc0);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.i =0;
@@ -5123,8 +5123,8 @@ stage0:;
         u23.v = *(int *)((char *)&game_uso_D_807FF874 + 0x1284);
         t = u23;
         obj = (int *)((char *)s1 + 0x218);
-        if (s1 != (int *)-0x218 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x218 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti6 + 0xfc0);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.i =0;
@@ -5134,8 +5134,8 @@ stage0:;
         u24.v = *(int *)((char *)&game_uso_D_807FF878 + 0x1288);
         t = u24;
         obj = (int *)((char *)s1 + 0x230);
-        if (s1 != (int *)-0x230 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x230 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti7 + 0xfc0);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.i =0;
@@ -5145,8 +5145,8 @@ stage0:;
         u25.v = *(int *)((char *)&game_uso_D_807FF87C + 0x128c);
         t = u25;
         obj = (int *)((char *)s1 + 0x248);
-        if (s1 != (int *)-0x248 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x248 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti8 + 0xfc0);
         RAP(obj)->unk14 = 0;
         RAP(obj)->value.i =0;
@@ -5156,8 +5156,8 @@ stage0:;
         u26.v = *(int *)((char *)&game_uso_D_807FF880 + 0x1290);
         t = u26;
         obj = (int *)((char *)s1 + 0x260);
-        if (s1 != (int *)-0x260 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x260 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti9 + 0xfc0); RAP(obj)->value.i =1;
         RAP(obj)->unk14 = 0;
         }
@@ -5166,8 +5166,8 @@ stage0:;
         u27.v = *(int *)((char *)&game_uso_D_807FF884 + 0x1294);
         t = u27;
         obj = (int *)((char *)s1 + 0x278);
-        if (s1 != (int *)-0x278 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x278 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti10 + 0xfc0); RAP(obj)->value.i =1;
         RAP(obj)->unk14 = 0;
         }
@@ -5176,8 +5176,8 @@ stage0:;
         u28.v = *(int *)((char *)&game_uso_D_807FF888 + 0x1298);
         t = u28;
         obj = (int *)((char *)s1 + 0x290);
-        if (s1 != (int *)-0x290 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x290 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti11 + 0xfc0); RAP(obj)->value.i =1;
         RAP(obj)->unk14 = 0;
         }
@@ -5186,8 +5186,8 @@ stage0:;
         u29.v = *(int *)((char *)&game_uso_D_807FF88C + 0x129c);
         t = u29;
         obj = (int *)((char *)s1 + 0x2a8);
-        if (s1 != (int *)-0x2a8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x2a8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti12 + 0xfc0); RAP(obj)->value.i =1;
         RAP(obj)->unk14 = 0;
         }
@@ -5196,8 +5196,8 @@ stage0:;
         u30.v = *(int *)((char *)&game_uso_D_807FF890 + 0x12a0);
         t = u30;
         obj = (int *)((char *)s1 + 0x2c0);
-        if (s1 != (int *)-0x2c0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x2c0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti13 + 0xfc0); RAP(obj)->value.i =1;
         RAP(obj)->unk14 = 0;
         }
@@ -5206,8 +5206,8 @@ stage0:;
         u31.v = *(int *)((char *)&game_uso_D_807FF894 + 0x12a4);
         t = u31;
         obj = (int *)((char *)s1 + 0x2d8);
-        if (s1 != (int *)-0x2d8 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x2d8 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti14 + 0xfc0); RAP(obj)->value.i =30;
         RAP(obj)->unk14 = 0;
         }
@@ -5216,8 +5216,8 @@ stage0:;
         u32.v = *(int *)((char *)&game_uso_D_807FF898 + 0x12a8);
         t = u32;
         obj = (int *)((char *)s1 + 0x2f0);
-        if (s1 != (int *)-0x2f0 || (obj = (int *)game_uso_func_055750(0x18)) != 0) {
-        game_uso_func_04A188(obj, s1, t, 1);
+        if (s1 != (int *)-0x2f0 || (obj = (int *)XCALL(game_uso_func_055750, mem_new)(0x18)) != 0) {
+        XCALL(game_uso_func_04A188, Parms_addParm)(obj, s1, t, 1);
         RAP(obj)->vptr = (void *)((char *)&gu_c48c_ti15 + 0xfc0); RAP(obj)->value.i =100;
         RAP(obj)->unk14 = 0;
         }
@@ -5311,16 +5311,16 @@ void RiderAnim_init_0000D458(s32 arg0) {
     RA(arg0)->loadedAnim = -1;
     RA(arg0)->hitKind = 0;
     RA(arg0)->hitScale = 1.0f;
-    game_uso_func_077574(arg0);
-    game_uso_func_077C44(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
+    XCALL(game_uso_func_077574, AnimPlayer_reset)(arg0);
+    XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
     } else {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
     }
-    game_uso_func_049280();
-    game_uso_func_048020((s32) &sp30, 0xF10, 0x10);
+    XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
+    XCALL(game_uso_func_048020, dma_read)((s32) &sp30, 0xF10, 0x10);
     if (sp30[0] != 0x04080040) {
         var_v0 = 0;
     } else if (sp30[1] != 0x02081040) {
@@ -5428,7 +5428,7 @@ void RiderAnim_endTrick_0000D63C(char *a0, int a1) {
     }
     RA(a0)->lastTrick = 0;
     RA(a0)->comboCount = 0;
-    game_uso_func_022784((int)INPUT_MGR(import_800201D0).dataMgr,
+    XCALL(game_uso_func_022784, RaceTracker_endTrick)((int)INPUT_MGR(import_800201D0).dataMgr,
                          (int)RA(a0)->rider, a1, value);
     RA(a0)->endTrickFlag = 1;
 }
@@ -5446,7 +5446,7 @@ extern int game_uso_func_00E124();
 void RiderAnim_flipStance_0000D6E4(char *a0) {
     int *p = (int *)&RA(a0)->rider->flags;
     *p ^= 0x40;
-    game_uso_func_00E124(RA(a0)->rider, a0);
+    XCALL(game_uso_func_00E124, SnowBoarder_mirrorFlip_0000E124)(RA(a0)->rider, a0);
     if ((*(int *)&RA(a0)->rider->flags & 0x40) != 0) {
         RA(a0)->animSet = 0x00050000;
     } else {
@@ -6307,7 +6307,7 @@ void RiderAnim_stateSwitchStance(int *a0) {
     } else {
         a1 = RA(a0)->animSet | RANIM_SWITCH_STANCE;
     }
-    game_uso_func_077C44(a0, a1, 0, 1, 1, 1);
+    XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, a1, 0, 1, 1, 1);
     RiderAnim_setState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
     RiderAnim_clearNextState_0000D5DC((char *)a0);
 }
@@ -6789,7 +6789,7 @@ void RiderAnim_startOllie_0000FC34(int *a0) {
                 * 0.8
                 + (double)*field_31C);
         } while (0);
-        game_uso_func_0000D5BC_a3((char*)a0,
+        XCALL(game_uso_func_0000D5BC_a3, RiderAnim_setNextState_0000D5BC)((char*)a0,
             *(Pair2*)((char*)&game_uso_D_807FF400 + 0xE10), field_770);
     }
     import_0010DB28(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 2, ANIM_BLENDIN, 0xA);
@@ -7556,7 +7556,7 @@ extern int func_00000000();
 extern char game_uso_D_807FF508;
 void RiderAnim_startEndingCpu_00011258(int *a0) {
     int *p;
-    game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
+    XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
@@ -7570,7 +7570,7 @@ void RiderAnim_startEndingCpu_00011258(int *a0) {
 extern char game_uso_D_807FF508;
 void RiderAnim_startEnding_000112E0(int *a0) {
     int *p;
-    game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
+    XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
@@ -7743,10 +7743,10 @@ void RiderAnim_checkBackwardSwitch_00011750(char *obj) {
         if (cnt < 3) return;                      /* not yet armed */
         RA(obj)->backHits = 0;
         if (RA(obj)->rider->useDParms != 0) {
-            game_uso_func_077C44(obj, RA(obj)->animSet | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
+            XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         } else {
-            game_uso_func_077C44(obj, RA(obj)->animSet | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
+            XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         }
         RiderAnim_clearNextState_0000D5DC(obj);

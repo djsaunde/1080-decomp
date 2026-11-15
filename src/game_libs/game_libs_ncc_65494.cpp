@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for DNode_solveContacts (0x538 / 334 words), spliced over the
  * empty placeholder in game_libs_post1b.c (both trees): the per-frame contact solve over the
  * self->0x39C child list. The four calls are blank USO jals (0-pinned aliases of the in-unit
@@ -117,10 +118,10 @@ extern "C" void DNode_solveContacts(Self *self) {
         n.x = (float)iz(); n.y = 1.0f; n.z = (float)iz();
         node->v120 = node->pos;
         d = node->pos - self->pos;
-        gl_func_00062F64_65494(self->f2FC, &d, &node->v114);
+        XCALL(gl_func_00062F64_65494, math_quatRotateVec3)(self->f2FC, &d, &node->v114);
         node->v114 -= d;
         node->v114 += self->v318;
-        if (gl_func_00062F64_b(D_00000000[0], &node->v120, 0x43C80000, &hit) != 0) {
+        if (XCALL(gl_func_00062F64_b, CollShape_nearestHit)(D_00000000[0], &node->v120, 0x43C80000, &hit) != 0) {
             node->idx = hit.idx;
             n = *(Vec3 *)&hit.v;
             h = hit.d;
@@ -148,14 +149,14 @@ extern "C" void DNode_solveContacts(Self *self) {
             if (1) {} /* run 214: BB split before the impulse: k colours f14 ahead of w (f16) */
             Vec3 imp = n.sc(k = -h * self->f290 + self->f28C * -dt); /* run 214: named impulse = the target's sp+0x9C home */
             const Vec3 &ri = imp; /* its pointer home is the target's sp+0x98 */
-            gl_func_00062F64_d(self, &node->v120, ri);
+            XCALL(gl_func_00062F64_d, DNode_addImpulseAt_00065250)(self, &node->v120, ri);
         }
     }
     if (count != 0) {
         nsum /= (float)count; /* run 214: operator/= gives the target's y / x / z division schedule */
         psum /= wsum;
         nsum *= -minv * self->f288;
-        gl_func_00062F64_e(self, &psum, &nsum);
+        XCALL(gl_func_00062F64_e, DNode_addMoveAt_000652D8)(self, &psum, &nsum);
     }
     if (1) {} if (1) {} if (1) {} if (1) {} /* agent-c run 213: four empty blocks raise the BB count so the
                                                 * self + 0x2FC address stays uncoloured (spill home 0x6C, no s8),

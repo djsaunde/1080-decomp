@@ -200,7 +200,7 @@ void mgr_pickRivals_000005D0(char *a0) {
     do {
         result = -1;
         while (result == -1) {
-            candidate = ((int)(mgrproc_uso_func_075EE4() * import_802600E4.v)
+            candidate = ((int)(XCALL(mgrproc_uso_func_075EE4, sys_randf)() * import_802600E4.v)
                          + import_800200E4.v + 1) % 5;
             for (idx = 0; idx < count; idx++) {
                 if (*(int*)((char*)*(int**)(a0 + 8) + idx * 4 + 0x24) == (0, candidate)) break;

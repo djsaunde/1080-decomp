@@ -53,10 +53,10 @@ s32 gl_osMotorStop(PFS *pfs) {
         return 5;
     CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_lastcmd = 3;
-    gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
-    gl_func_00000002(pfs->queue, 0, 1);
-    ret = gl_func_00000001(0, gl___osPfsPifRam_pifram2);
-    gl_func_00000002(pfs->queue, 0, 1);
+    XCALL(gl_func_00000001, gl___osSiRawStartDma)(1, &D_00000000_bank[pfs->channel * 64]);
+    XCALL(gl_func_00000002, gl_osRecvMesg)(pfs->queue, 0, 1);
+    ret = XCALL(gl_func_00000001, gl___osSiRawStartDma)(0, gl___osPfsPifRam_pifram2);
+    XCALL(gl_func_00000002, gl_osRecvMesg)(pfs->queue, 0, 1);
     ptr = gl___osPfsPifRam_base;
     if (pfs->channel != 0) {
         for (i = 0; i < pfs->channel; i++) {
@@ -66,10 +66,10 @@ s32 gl_osMotorStop(PFS *pfs) {
     ramreadformat = *(RamReadFormat *)ptr;
     ret = (ramreadformat.rxsize & 0xc0) >> 4;
     if (ret == 0) {
-        if (gl_func_00000003(D_00000000_crcbuf) != ramreadformat.datacrc)
+        if (XCALL(gl_func_00000003, __osContDataCrc)(D_00000000_crcbuf) != ramreadformat.datacrc)
             ret = 4;
     }
-    gl_func_00000004();
+    XCALL(gl_func_00000004, gl___osSiRelAccess)();
     return ret;
 }
 s32 gl_osMotorStart(PFS *pfs) {
@@ -82,10 +82,10 @@ s32 gl_osMotorStart(PFS *pfs) {
         return 5;
     CALL(gl___osSiGetAccess)();
     gl___osContLastCmd_lastcmd = 3;
-    gl_func_00000001(1, &D_00000000_bank[pfs->channel * 64]);
-    gl_func_00000002(pfs->queue, 0, 1);
-    ret = gl_func_00000001(0, gl___osPfsPifRam_pifram2);
-    gl_func_00000002(pfs->queue, 0, 1);
+    XCALL(gl_func_00000001, gl___osSiRawStartDma)(1, &D_00000000_bank[pfs->channel * 64]);
+    XCALL(gl_func_00000002, gl_osRecvMesg)(pfs->queue, 0, 1);
+    ret = XCALL(gl_func_00000001, gl___osSiRawStartDma)(0, gl___osPfsPifRam_pifram2);
+    XCALL(gl_func_00000002, gl_osRecvMesg)(pfs->queue, 0, 1);
     ptr = gl___osPfsPifRam_base;
     if (pfs->channel != 0) {
         for (i = 0; i < pfs->channel; i++) {
@@ -95,9 +95,9 @@ s32 gl_osMotorStart(PFS *pfs) {
     ramreadformat = *(RamReadFormat *)ptr;
     ret = (ramreadformat.rxsize & 0xc0) >> 4;
     if (ret == 0) {
-        if (gl_func_00000003(D_00000000_crcbuf) != ramreadformat.datacrc)
+        if (XCALL(gl_func_00000003, __osContDataCrc)(D_00000000_crcbuf) != ramreadformat.datacrc)
             ret = 4;
     }
-    gl_func_00000004();
+    XCALL(gl_func_00000004, gl___osSiRelAccess)();
     return ret;
 }

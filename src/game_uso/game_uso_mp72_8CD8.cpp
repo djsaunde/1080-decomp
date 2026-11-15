@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for SnowAI_aimWeave (709 words; agent-h run 428),
  * compiled by tools/ncc721.sh and spliced over a placeholder in both build trees (the B3C recipe).
  *
@@ -198,7 +199,7 @@ extern "C" void game_uso_func_00008CD8_lay(volatile float *o) {
 extern "C" XZ SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
-        game_uso_func_071028(&dir);
+        XCALL(game_uso_func_071028, math_vec3Normalize)(&dir);
         /* run 418: d2 a temporary, lenf M-100; agent-c run 426: a member call on d2 (conversion `v` = word 3, M-112) */
         float lenf = (XZ(s->w->pos, &a->pos, &a->pos) - K3(a)->pos).dotp(dir, &a->pos);
         /* run 425: chained (kit CDXCIX); agent-c run 426: no named dot (the target's M-104 is a pool word), the outer
@@ -217,7 +218,7 @@ extern "C" XZ SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
         if (e.x * f.x + e.z * f.z) {} /* run 422: code-free test, the e.f sum becomes a uopt CSE (target f0, no ring pop) */
         if ((e.x * f.x + e.z * f.z) * 0.5f < e.x * g.x + e.z * g.z) {
             s->p90 = s->p84;
-            game_uso_func_071028(&e);
+            XCALL(game_uso_func_071028, math_vec3Normalize)(&e);
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
             /* run 425: h is a temporary of the += statement (the target's += operand temp M-408 sits above h's

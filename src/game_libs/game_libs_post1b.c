@@ -254,7 +254,7 @@ void AnimPlayer_applyPose(int *self) {
     while (val != 0) {
         int *obj = (int *) cur[0];
         int off = ((Animator *)obj)->nodeIndex * 14;
-        gl_func_00062F64f((int) obj, AP(self)->pose0 + off, AP(self)->pose1 + off,
+        XCALL(gl_func_00062F64f, anim_blendPose)((int) obj, AP(self)->pose0 + off, AP(self)->pose1 + off,
                           *(int *)&AP(self)->frac, AP(self)->blendLeft,
                           AP(self)->blendWeight);
         cur = next;
@@ -2019,9 +2019,9 @@ extern void gl_func_000662E8_65EE4(Save65EE4 *, int, int);
 extern int gl_func_00066210_65EE4(Save65EE4 *, int);
 extern void gl_func_0006612C_65EE4(Save65EE4 *);
 void fs_piXfer_00065EE4(void) {
-    { Save65EE4 *s = &gFsStream0_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FF0000 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
-    { Save65EE4 *s = &gFsStream1_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; gl_func_000662E8_65EE4(s, 0xB1FF2710 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
-    { Save65EE4 *s = &gFsStream2_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; gl_func_000662E8_65EE4(s, 0xB1FFC350 + 4, s->data); { int b = s->base; gl_func_000662E8_65EE4(s, b, s->data); } { int b = s->base; s->f8 = gl_func_00066210_65EE4(s, b); } s->fC = gl_func_00066210_65EE4(s, s->base + 4); s->f34 = 0; gl_func_0006612C_65EE4(s); }
+    { Save65EE4 *s = &gFsStream0_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF0000 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
+    { Save65EE4 *s = &gFsStream1_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF2710 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
+    { Save65EE4 *s = &gFsStream2_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FFC350 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
 }
 
 /* fs_piXfer_0006612C: magic-value spin-handshake helper (0xAC, frame 0x20,
@@ -2039,13 +2039,13 @@ extern int gl_func_00062F64_6612c();  /* blank USO jal alias (= 0): in-unit dire
 void fs_piXfer_0006612C(int *a0) {
     int *self = a0;
     int r;
-    r = gl_func_00062F64_6612c(a0, (char *)a0[10] + 8);
+    r = XCALL(gl_func_00062F64_6612c, fs_piReadWord_00066210)(a0, (char *)a0[10] + 8);
     a0 = 0;
     while (r != 0x12340004) {
-        r = gl_func_00062F64_6612c(self, (char *)self[10] + 8);
+        r = XCALL(gl_func_00062F64_6612c, fs_piReadWord_00066210)(self, (char *)self[10] + 8);
     }
-    gl_func_00062F64_6612c(self, (char *)self[10] + 8, 0x12340002);
-    while (gl_func_00062F64_6612c(self, (char *)self[10] + 8) != 0x12340003) {
+    XCALL(gl_func_00062F64_6612c, fs_piWriteWord_000662E8)(self, (char *)self[10] + 8, 0x12340002);
+    while (XCALL(gl_func_00062F64_6612c, fs_piReadWord_00066210)(self, (char *)self[10] + 8) != 0x12340003) {
     }
 }
 
@@ -2553,30 +2553,30 @@ void boot_main_00066850(s32 arg0) {
     u32 temp_a1;
     u32 temp_a1_2;
 
-    gl_func_00062F64_66850(0xFE);
-    gl_func_00062F64_66850(0x96, GL_BSS(0x41688), GL_BSS(0x415C0), 0x32);
-    gl_func_00062F64_66850();
-    gl_func_00062F64_66850((char*)&gl_osViModeTable + 0xA0);
-    gl_func_00062F64_66850(0x42);
-    gl_func_00062F64_66850(1);
+    XCALL(gl_func_00062F64_66850, osCreateViManager)(0xFE);
+    XCALL(gl_func_00062F64_66850, gl_osCreatePiManager)(0x96, GL_BSS(0x41688), GL_BSS(0x415C0), 0x32);
+    XCALL(gl_func_00062F64_66850, dma_init)();
+    XCALL(gl_func_00062F64_66850, osViSetMode)((char*)&gl_osViModeTable + 0xA0);
+    XCALL(gl_func_00062F64_66850, osViSetSpecialFeatures)(0x42);
+    XCALL(gl_func_00062F64_66850, osViBlack)(1);
     temp_a1 = FW(*(int**)&gSysApi, 0xC);
     if (temp_a1 != 0) {
-        gl_func_00062F64_66850(GL_RODATA_STR(0x2114, "USO warning num %d, data=%x, %x\n"), temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
+        XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2114, "USO warning num %d, data=%x, %x\n"), temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
     }
     temp_a1_2 = FW(*(int**)&gSysApi, 0x8);
     if (temp_a1_2 != 0) {
-        gl_func_00062F64_66850(GL_RODATA_STR(0x2138, "USO error num %d, data=%x\n"), temp_a1_2, FW(*(int**)&gSysApi, 0x10));
+        XCALL(gl_func_00062F64_66850, sys_fatal)(GL_RODATA_STR(0x2138, "USO error num %d, data=%x\n"), temp_a1_2, FW(*(int**)&gSysApi, 0x10));
     }
-    gl_func_00062F64_66850(FW(*(int**)&gSysApi, 0x0), FW(*(int**)&gSysApi, 0x4));
-    gl_func_00062F64_66850(GL_RODATA_STR(0x2154, "Bootup Code size %dk\n"), (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
+    XCALL(gl_func_00062F64_66850, sys_setRegion_0003487C)(FW(*(int**)&gSysApi, 0x0), FW(*(int**)&gSysApi, 0x4));
+    XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2154, "Bootup Code size %dk\n"), (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
     FW(*(int**)&gSysApi, 0x80) = (int)&D_gl66850_h0;
     FW(*(int**)&gSysApi, 0x34) = (int)&D_gl66850_h1;
     FW(*(int**)&gSysApi, 0x84) = (int)&D_gl66850_h2;
     FW(*(int**)&gSysApi, 0x98) = (int)&D_gl66850_h3;
     FW(*(int**)&gSysApi, 0x9C) = (int)&D_gl66850_h4;
     FW(*(int**)&gSysApi, 0x94) = (int)&D_gl66850_h5;
-    gl_func_00062F64_66850(GL_RODATA_STR(0x216C, "running main\n"));
-    gl_func_00062F64_66850();
+    XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x216C, "running main\n"));
+    XCALL(gl_func_00062F64_66850, SnowBoard_ctor)();
 }
 
 /* game_libs_func_000669AC (0xC orphan, no jr ra: lui $v1,%hi(D); addiu
@@ -3442,7 +3442,7 @@ void pad_clearButtons(int *a0) {
 extern int game_libs_func_00067AC4_inner(float, float);
 
 void math_atan2sZero_00067AC4(void) {
-    game_libs_func_00067AC4_inner(0.0f, 0.0f);
+    XCALL(game_libs_func_00067AC4_inner, math_atan2s_00068044)(0.0f, 0.0f);
 }
 
 /* Varargs empty stub (sibling of matched gl_osSyncPrintf). */
@@ -4969,14 +4969,14 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
     extern int SkinMgr_vtbl_sym_695F4;
     int *v1;
     if (a0 == 0) {
-        a0 = (int*)gl_func_00062F64_695F4(0x98);
+        a0 = (int*)XCALL(gl_func_00062F64_695F4, mem_new)(0x98);
         if (a0 == 0) goto end;
     }
-    gl_func_00062F64_695F4(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
+    XCALL(gl_func_00062F64_695F4, Node_ctor)(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
     a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
     v1 = &((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
-    v1 = (int*)gl_func_00062F64_695F4(4);
+    v1 = (int*)XCALL(gl_func_00062F64_695F4, mem_new)(4);
     if (v1 == 0) goto after_store;
 store:
     *v1 = 0;
@@ -5206,14 +5206,14 @@ void SkinMgr_reset(int *self) {
         bar = &next;
     }
     if (((SkinMgr *)self)->bone == 0) {
-        gl_func_00062F64_69b94((int)(GL_DATA_STR(0x2C5F0, "SkinMgr::Reset() not initialized"))); /* "SkinMgr::Reset() not initialized" */
+        XCALL(gl_func_00062F64_69b94, sys_fatal)((int)(GL_DATA_STR(0x2C5F0, "SkinMgr::Reset() not initialized"))); /* "SkinMgr::Reset() not initialized" */
     }
     /* walk the anims list {SkinAnim *, next}: SkinAnim_bind(anim, mgr, bindVerts) */
     next = (int *)((SkinMgr *)self)->anims;
     node = next;
     key = node ? (next = (int *)node[1], node[0]) : 0;
     while (key != 0) {
-        gl_func_00062F64_69b94(node[0], self, ((SkinMgr *)self)->bindVerts);
+        XCALL(gl_func_00062F64_69b94, SkinAnim_bind)(node[0], self, ((SkinMgr *)self)->bindVerts);
         node = next;
         key = node ? (next = (int *)next[1], node[0]) : 0;
     }

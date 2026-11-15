@@ -62,7 +62,7 @@ void QNode_doCommand(Obj40304 *self, Cmd40304 *cmd) {
             break;
         case 0x6E:
             CALL(cmd_readFixedVec3)(cmd, &z);
-            gl_func_00040304_quat(self->q, z.x, z.y, z.z);
+            XCALL(gl_func_00040304_quat, math_eulerToQuat)(self->q, z.x, z.y, z.z);
             x = *(Vec3 *)self->q;
             self->q2[0] = x.x; self->q2[1] = x.y; self->q2[2] = x.z; self->q2[3] = self->q[3];
             break;

@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for LensFlare_display (0x3F0 / 252 words) -- EXACT agent-g run 264
  * (252/252 words), spliced over the game_uso.c placeholder on both build paths. The run 264 steps
  * are commented in place: sb reassigned to its matrix address + passed as the transform call's third
@@ -92,14 +93,14 @@ extern "C" void LensFlare_display(Obj *obj) {
     sb = (Sub *)&sb->mtx;
     ((M4 *)sb)->getPos(q.pos);
     zf(q.dir.x, 0); zf(q.dir.y, 0); q.dir.z = -1.0f;
-    game_uso_func_070F38(&q, (char *)import_80087DA8->body + 0xB4, sb);
+    XCALL(game_uso_func_070F38, math_mtx4MulVec3)(&q, (char *)import_80087DA8->body + 0xB4, sb);
     world = ((V3 &)q.dir) * 1000.0f;
     world.x += import_80087DA8->body->mtx.m[3][0] * SC(0);
     world.y += import_80087DA8->body->mtx.m[3][1] * SC(1);
     world.z += import_80087DA8->body->mtx.m[3][2] * SC(2);
     { P2 dzz; dzz.a = 0; } /* agent-g run 259 (kit CCXCIV): an 8-byte block home (dead store, no code) ahead of norm's temporaries + the named-result operators: norm's operator= parameter temp 156 -> 164 = target, frame 296 kept (98.52 -> 98.55 standalone) */
     norm = world - (V3 &)q.pos;
-    game_uso_func_071028(&norm);
+    XCALL(game_uso_func_071028, math_vec3Normalize)(&norm);
     d = -((V3 &)q.dir).dot(norm);
     if (obj->lo < d) {
         P2 r;
@@ -120,9 +121,9 @@ extern "C" void LensFlare_display(Obj *obj) {
                 w.v.z = 0.0f; if (1) {} /* run 190 lever-sweep bbsplit: 98.21 -> 98.25 */
                 w.v.y = 0.0f;
                 w.v.x = 0.0f;
-                game_uso_func_05B750(gGfxLib_8005C108, &w);
+                XCALL(game_uso_func_05B750, gfx_setPrimColour)(gGfxLib_8005C108, &w);
                 /* run 264: folded counted use of ->b on the ->c argument: c is a coloured LR (v1), &r the t2 ugen temp = target */
-                game_uso_func_05B614(gGfxLib_8005C108, import_80087DA8->c + 0 * (int)(import_80087DA8->b), import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
+                XCALL(game_uso_func_05B614, gfx_fillRect)(gGfxLib_8005C108, import_80087DA8->c + 0 * (int)(import_80087DA8->b), import_80087DA8->d, import_80087DA8->a, import_80087DA8->b, &r);
             }
         }
         k = game_uso_D_807FFA98[47];

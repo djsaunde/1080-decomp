@@ -45,12 +45,12 @@ s32 osPfsIsPlug(void *queue, u8 *pattern) {
     crc_error_cnt = 3;
     CALL(gl___osSiGetAccess)();
     while (1) {
-        gl_func_00000001(0);
-        ret = gl_func_00000002(1, gl___osPfsPifRam_pifram);
-        gl_func_00000003(queue, &dummy, 1);
-        ret = gl_func_00000002(0, gl___osPfsPifRam_pifram);
-        gl_func_00000003(queue, &dummy, 1);
-        gl_func_00000004(&bitpattern, data);
+        XCALL(gl_func_00000001, __osPfsRequestData)(0);
+        ret = XCALL(gl_func_00000002, gl___osSiRawStartDma)(1, gl___osPfsPifRam_pifram);
+        XCALL(gl_func_00000003, gl_osRecvMesg)(queue, &dummy, 1);
+        ret = XCALL(gl_func_00000002, gl___osSiRawStartDma)(0, gl___osPfsPifRam_pifram);
+        XCALL(gl_func_00000003, gl_osRecvMesg)(queue, &dummy, 1);
+        XCALL(gl_func_00000004, __osPfsGetInitData)(&bitpattern, data);
         for (channel = 0; channel < gl___osMaxControllers_max; channel++) {
             if ((data[channel].status & 4) == 0) {
                 crc_error_cnt--;
@@ -64,7 +64,7 @@ s32 osPfsIsPlug(void *queue, u8 *pattern) {
                 if (data[channel].errnum == 0 && (data[channel].status & 1) != 0)
                     bits |= 1 << channel;
             }
-            gl_func_00000005();
+            XCALL(gl_func_00000005, gl___osSiRelAccess)();
             *pattern = bits;
             return ret;
         }

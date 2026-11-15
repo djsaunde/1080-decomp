@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for BasePolyShape_parseMats: token-stream interpreter; the switch is edg's case-order compare chain (100, 101, 0), which cfe could not lay out (95.4 cap).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
@@ -28,12 +29,12 @@ extern "C" void BasePolyShape_parseMats(char *arg0, int *arg1) {
             prev = node;
             vec = (int *)(arg0 + 0x84);
             if (idx >= *(int *)(arg0 + 0x8C)) {
-                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F38, cmd);
+                XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F38, cmd);
             }
-            node = (char *)gl_func_00034458_51F5C(arg0, &arg1);
+            node = (char *)XCALL(gl_func_00034458_51F5C, Mat_clone_0004FBA4)(arg0, &arg1);
             n = node;
             if (*(int *)(arg0 + 0x90) >= *(int *)(arg0 + 0x8C)) {
-                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F4C);
+                XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F4C);
             }
             k = vec[3];
             vec[3] = k + 1;
@@ -43,7 +44,7 @@ extern "C" void BasePolyShape_parseMats(char *arg0, int *arg1) {
             break;
         case 101:
             if (prev == 0) {
-                gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F68, cmd);
+                XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F68, cmd);
             }
             *(char **)(prev + 0x40) = node;
             break;
@@ -51,7 +52,7 @@ extern "C" void BasePolyShape_parseMats(char *arg0, int *arg1) {
             done = 1;
             break;
         default:
-            gl_func_00034458_51F5C((char *)&D_00000000 + 0x20F78, cmd);
+            XCALL(gl_func_00034458_51F5C, sys_fatal)((char *)&D_00000000 + 0x20F78, cmd);
             break;
         }
     } while (done == 0);

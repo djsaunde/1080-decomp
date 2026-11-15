@@ -2662,10 +2662,10 @@ void AudioHeap_InitCachePools(AudioCachePoolSplit *split) {
     AudioContext *ctx = (AudioContext *)&gAudioContext;
     int v;
     ctx->cachePool.curRamAddr = ctx->cachePool.startRamAddr;
-    v = gl_func_0001CA10_1FFAC(&ctx->cachePool, split->persistentCommonPoolSize);
-    v = gl_func_0001CA10_1FFAC(&ctx->persistentCommonPool, v, split->persistentCommonPoolSize);
-    v = gl_func_0001CA10_1FFAC(&ctx->cachePool, split->temporaryCommonPoolSize);
-    gl_func_0001CA10_1FFAC(&ctx->temporaryCommonPool, v, split->temporaryCommonPoolSize);
+    v = XCALL(gl_func_0001CA10_1FFAC, AudioHeap_Alloc)(&ctx->cachePool, split->persistentCommonPoolSize);
+    v = XCALL(gl_func_0001CA10_1FFAC, AudioHeap_InitPool)(&ctx->persistentCommonPool, v, split->persistentCommonPoolSize);
+    v = XCALL(gl_func_0001CA10_1FFAC, AudioHeap_Alloc)(&ctx->cachePool, split->temporaryCommonPoolSize);
+    XCALL(gl_func_0001CA10_1FFAC, AudioHeap_InitPool)(&ctx->temporaryCommonPool, v, split->temporaryCommonPoolSize);
 }
 
 

@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO 5.3 -O1 donor for __osViInit = libultra __osViInit
  * (vi.c verbatim). PROVEN EXACT 78/78 standalone at IDO 5.3 -O1 (donor
  * symbol 0x13C = 79 words incl. the jr-ra delay nop; the last 0x70C40
@@ -82,5 +83,5 @@ void __osViInit(void) {
     while (IO_READ(0xA4400010) > 10) /* VI_CURRENT_REG */
         ;
     IO_WRITE(0xA4400000, 0); /* VI_CONTROL_REG */
-    gl_func_00000001();      /* __osViSwapContext */
+    XCALL(gl_func_00000001, __osViSwapContext)();      /* __osViSwapContext */
 }

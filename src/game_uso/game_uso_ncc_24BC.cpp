@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for SnowChaseActorCam_applyMode_000024BC (0x258 / 150 words).
  *
  * Camera-homing update, sibling of 28C0 / 2CC8 / 1DDC (same V3 class kit):
@@ -69,7 +70,7 @@ extern "C" void SnowChaseActorCam_applyMode_000024BC(Self *a0, V3 *in) {
         q += r;
         if (1) {}
         n.set(in->x, 0.0f, in->z);
-        game_uso_func_071028(&n);
+        XCALL(game_uso_func_071028, math_vec3Normalize)(&n);
         n *= a0->txz;
         q -= n;
         q.y += a0->mode == 2 ? a0->ty2 : a0->toy;

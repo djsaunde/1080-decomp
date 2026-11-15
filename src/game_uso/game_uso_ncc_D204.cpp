@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for RiderAnim_update_0000D204 (0x214 / 133 words).
  *
  * game_uso was written in C++ and compiled by IDO 7.1's own C++ driver NCC
@@ -53,15 +54,15 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
     {
         int v0 = I(a3, 0xB4);
         if (I(v0, 0x938) == 0 && F(v0, 0x9D0) < 700.0f && F(v0, 0x31C) < -100.0f) {
-            game_uso_func_07C0C0(I(v0, 0x800), &game_uso_D_807FF68C + 4252, 1);
+            XCALL(game_uso_func_07C0C0, pad_startRumble)(I(v0, 0x800), &game_uso_D_807FF68C + 4252, 1);
         }
     }
     if (I(a3, 0x114) != 0) RiderAnim_selectAnim_0000D9CC(a3);
     if (a3->pm != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*(a3->pm))();
-    game_uso_func_0000ECE8(a3);
+    XCALL(game_uso_func_0000ECE8, RiderAnim_updateSlowdown_0000ECEC)(a3);
     if (I(a3, 0x74) != 0) {
-        game_uso_func_076E78(I(a3, 0x58), I(a3, 0x74)); /* AnimDataMgr_lookup(player.mgr, player.anim) */
+        XCALL(game_uso_func_076E78, AnimDataMgr_lookup)(I(a3, 0x58), I(a3, 0x74)); /* AnimDataMgr_lookup(player.mgr, player.anim) */
         if (I(a3, 0x104) != I(a3, 0x74)) I(a3, 0x104) = I(a3, 0x74);
     }
-    game_uso_func_0775F8(a3);
+    XCALL(game_uso_func_0775F8, AnimPlayer_advance)(a3);
 }

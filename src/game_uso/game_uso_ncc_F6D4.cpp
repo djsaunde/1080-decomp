@@ -22,6 +22,7 @@
 typedef int s32;
 typedef unsigned int u32;
 #include "../../include/game/tricktable.h" /* NCC has no -I include */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -75,10 +76,10 @@ extern "C" void RiderAnim_stateTrickStart(char *s0) {
     }
     f4 = CUR_TRICK(s0);
     if (f4->flags & TRICK_FLAG_GRAB) {
-        game_uso_func_077C44(s0, f4->anim, 4, 2, 1, 1);
+        XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 4, 2, 1, 1);
         RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, 0xEC0), 2);
     } else {
-        game_uso_func_077C44(s0, f4->anim, 4, 3, 1, 1);
+        XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 4, 3, 1, 1);
         RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, 0xEC8), 3);
     }
     RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, 0xED0));

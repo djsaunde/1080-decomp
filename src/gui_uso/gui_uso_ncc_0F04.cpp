@@ -103,7 +103,7 @@ extern "C" void gui_drawStringScaled_00000F04(Font *f, s32 x0, s32 y0, f32 sx, f
             u = f->glyphs[idx].u;
             v = f->glyphs[idx].v;
             w = f->glyphs[idx].w;
-            gui_func_00000F04_load(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
+            XCALL(gui_func_00000F04_load, gui_loadTileIA8)(f->ctx, f->tex, f->tw, f->th, u, v, w, h, 0);
             fw = w * sx;
             /* agent-g run 293: joint accessor-depth x append-method grid over the three rect packets (depth 0-3,
              * next / nextp / nextc; 200 random of 1728, then a local search): the TEXRECT packet through

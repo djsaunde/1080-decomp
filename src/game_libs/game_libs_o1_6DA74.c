@@ -46,16 +46,16 @@ void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
     OSPri myPri;
     if (!gl___osPiDevMgr_devmgr_6DA74.f0) {
         CALL(gl_osCreateMesgQueue)(cmdQ, cmdBuf, cmdMsgCnt);
-        gl_func_00000001(gl_ref_00043E90, gl_ref_00043EA8, 1);
+        XCALL(gl_func_00000001, gl_osCreateMesgQueue)(gl_ref_00043E90, gl_ref_00043EA8, 1);
         if (!D_00000000_b) {
-            gl_func_00000002();
+            XCALL(gl_func_00000002, gl___osPiCreateAccessQueue)();
         }
-        gl_func_00000003(8, gl_ref_00043E90, (void *)0x22222222);
+        XCALL(gl_func_00000003, gl_osSetEventMesg)(8, gl_ref_00043E90, (void *)0x22222222);
         oldPri = -1;
-        myPri = gl_func_00000004(0);
+        myPri = XCALL(gl_func_00000004, gl_osGetThreadPri)(0);
         if (myPri < pri) {
             oldPri = myPri;
-            gl_func_00000005(0, pri);
+            XCALL(gl_func_00000005, gl_osSetThreadPri)(0, pri);
         }
         savedMask = gl_func_00000006();
         gl___osPiDevMgr_devmgr_6DA74.f0 = 1;
@@ -65,11 +65,11 @@ void gl_osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, int cmdMsgCnt) {
         gl___osPiDevMgr_devmgr_6DA74.f16 = &D_00000000_f;
         gl___osPiDevMgr_devmgr_6DA74.f20 = &D_00000000_g;
         gl___osPiDevMgr_devmgr_6DA74.f24 = &D_00000000_h;
-        gl_func_00000007(gl_ref_00042CE0, 0, D_00000000_main, &gl___osPiDevMgr_devmgr_6DA74, gl_ref_00042E90 + 0x1000, pri);
-        gl_func_00000008(gl_ref_00042CE0);
-        gl_func_00000009(savedMask);
+        XCALL(gl_func_00000007, gl_osCreateThread)(gl_ref_00042CE0, 0, D_00000000_main, &gl___osPiDevMgr_devmgr_6DA74, gl_ref_00042E90 + 0x1000, pri);
+        XCALL(gl_func_00000008, gl_osStartThread)(gl_ref_00042CE0);
+        XCALL(gl_func_00000009, gl___osRestoreInt)(savedMask);
         if (oldPri != -1) {
-            gl_func_00000005(0, oldPri);
+            XCALL(gl_func_00000005, gl_osSetThreadPri)(0, oldPri);
         }
     }
 }

@@ -72,7 +72,7 @@ extern int *import_80263D60_30;
 void mgr_pauseRetry_00000B5C(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
-    v0 = mgrproc_uso_func_01FA1C(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
+    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
@@ -82,7 +82,7 @@ void mgr_pauseRetry_00000B5C(void) {
         import_000A5938(import_80263D60_30);
     } else {
         import_80020098[0x40 / 4] = 3;
-        mgrproc_uso_func_00F954(import_80263D60_30, 4, *(int *)((char *)(int *)MGRRACE(import_80263D60_30)->courseList + 0xC));
+        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 4, *(int *)((char *)(int *)MGRRACE(import_80263D60_30)->courseList + 0xC));
     }
 }
 
@@ -109,7 +109,7 @@ extern int *import_80263D60_30;
 void mgr_pauseQuit_00000C14(void) {
     int v0;
     import_000A5A1C(import_80263D60_30);
-    v0 = mgrproc_uso_func_01FA1C(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
+    v0 = XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(*(int *)((char *)((int **)import_80263D60_30)[0x6AC / 4] + 0x4C));
     if (v0 != 0) {
         import_80263D60_30[0x504 / 4] = 0;
         import_80263D60_30[0x4E0 / 4] = 7;
@@ -119,7 +119,7 @@ void mgr_pauseQuit_00000C14(void) {
         import_000A5938(import_80263D60_30);
     } else {
         import_80020098[0x40 / 4] = 7;
-        mgrproc_uso_func_00F954(import_80263D60_30, 0, 0);
+        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 0, 0);
     }
 }
 
@@ -215,13 +215,13 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
     char *o3;
     char *w;
 
-    if (obj != 0 || (obj = (char *)mgrproc_uso_func_055750(2032)) != 0) {
+    if (obj != 0 || (obj = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(2032)) != 0) {
     o1 = obj;
-    if (o1 != 0 || (o1 = (char *)mgrproc_uso_func_055750(1704)) != 0) {
+    if (o1 != 0 || (o1 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(1704)) != 0) {
         o2 = o1;
-        if (o2 != 0 || (o2 = (char *)mgrproc_uso_func_055750(80)) != 0) {
+        if (o2 != 0 || (o2 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(80)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)mgrproc_uso_func_055750(44)) != 0) { mgrproc_uso_func_04C678(o3, &import_802649D8 + 1544); NODE(o3)->vptr = (int)&import_80073B18; }
+            if (o3 != 0 || (o3 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(44)) != 0) { XCALL(mgrproc_uso_func_04C678, Node_ctor)(o3, &import_802649D8 + 1544); NODE(o3)->vptr = (int)&import_80073B18; }
             NODE(o2)->vptr = (int)&import_80073B80;
         }
         NODE(o1)->vptr = (int)&import_800745F8;
@@ -242,11 +242,11 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
     MGRRACE(obj)->retriesX = 160.0f - (float)(MGRRACE(obj)->retries * 2 - 2);
     MGRRACE(obj)->nameEntryMode = 1;
     MGRRACE(obj)->retriesY = 210.0f;
-    mgrproc_uso_func_074710(&import_802649F0 + 1568, 0);
+    XCALL(mgrproc_uso_func_074710, memtrack_begin)(&import_802649F0 + 1568, 0);
     import_000A7ECC(&import_80020098, 0);
 
     {
-        o2 = (char *)mgrproc_uso_func_055750(224);
+        o2 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(224);
         if (o2 != 0) {
             import_000B6C40(o2);
             NODE(o2)->vptr = (int)&import_80264800;
@@ -262,13 +262,13 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
         o1 = (char *)MGRRACE(obj)->dataMgr;
-        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
 
-        mgrproc_uso_func_01B0F8(obj, a1);
+        XCALL(mgrproc_uso_func_01B0F8, RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)import_000A5D38(0);
         import_000A5F40(RACEPROC(obj)->menu, obj);
 
@@ -288,21 +288,21 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         import_000A5FBC(RACEPROC(obj)->menu);
 
         o1 = (char *)RACEPROC(obj)->menu;
-        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
 
         o1 = *(char **)((char *)&import_80020228 + 400);
-        mgrproc_uso_func_07ACE0(obj + 16, o1);
+        XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
 
-        mgrproc_uso_func_0139B0(*(int *)((char *)&import_80020228 + 400), 1, 0);
-        mgrproc_uso_func_074840();
+        XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)((char *)&import_80020228 + 400), 1, 0);
+        XCALL(mgrproc_uso_func_074840, memtrack_end)();
         *(int *)(&import_800200D8 + 0x40) = 4;
     }
     }
@@ -401,7 +401,7 @@ int MGRRaceProcess_endTimerEnabled(MgrRace *arg0) {
             mgr_useRetry_000000F8(arg0->courseList);
         }
         if (mgr_noRetriesLeft_00000170(arg0->courseList) != 0 &&
-            mgrproc_uso_func_01FA1C(((MgrDataManager *)arg0->dataMgr)->base.session) != 0) {
+            XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(((MgrDataManager *)arg0->dataMgr)->base.session) != 0) {
             arg0->race.unk4EC = -0x258;
         }
         arg0->lastResult = arg0->race.result;
@@ -496,7 +496,7 @@ term:
     if (s0[0x7C8 / 4] != 0) {
         if (mgr_noRetriesLeft_00000170(s0[0x6A8 / 4]) == 0) goto storestate;
     }
-    if (mgrproc_uso_func_01FA1C(((int **)s0)[0x6AC / 4][0x4C / 4]) == 0) {
+    if (XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(((int **)s0)[0x6AC / 4][0x4C / 4]) == 0) {
         *(int *)((char *)&import_800200D8 + 0x40) = 7;
         spill = 0;
     } else {
@@ -528,7 +528,7 @@ extern void mgr_startReplay_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
 void MGRRaceProcess_onTimeout(MgrRace *a0) {
     int v;
-    mgrproc_uso_func_048E7C((char*)&import_802649F8 + 0x628, a0->race.subState);
+    XCALL(mgrproc_uso_func_048E7C, dbg_printf)((char*)&import_802649F8 + 0x628, a0->race.subState);
     v = a0->race.subState;
     if (v == 2) goto case_2;
     if (v == 1) goto case_13;
@@ -537,7 +537,7 @@ void MGRRaceProcess_onTimeout(MgrRace *a0) {
 end:
     return;
 case_2:
-    mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 3, 1, a0);
+    XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 3, 1, a0);
     a0->exitStep = 1;
     return;
 case_13:
@@ -601,7 +601,7 @@ extern int mgrproc_uso_func_013980();
  *   extern int import_80263D60;
  */
 void MGRRaceProcess_onPauseSelect(int *a0) {
-    if (mgrproc_uso_func_013980(INPUT_MGR(import_80020228).fader, a0) == 0) return;
+    if (XCALL(mgrproc_uso_func_013980, Fader_isDone_00013980)(INPUT_MGR(import_80020228).fader, a0) == 0) return;
     if (*(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90) == 0) return;
     *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
     ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
@@ -662,35 +662,35 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
 
     switch (state) {
     case 0:
-        mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 3, 1);
+        XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 3, 1);
         arg0->race.unk504 = 1;
-        mgrproc_uso_func_000188(7, 0, 0);
+        XCALL(mgrproc_uso_func_000188, func_00000188)(7, 0, 0);
         break;
     case 1:
-        if (mgrproc_uso_func_013924(INPUT_MGR(import_80020228).fader, state) != 0) {
+        if (XCALL(mgrproc_uso_func_013924, Fader_checkDone_00013924)(INPUT_MGR(import_80020228).fader, state) != 0) {
             arg0->race.subState = 1;
-            mgrproc_uso_func_000148(7, 0, 0);
-            mgrproc_uso_func_012110(&import_80020098);
+            XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
+            XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(&import_80020098);
             import_000B2888(arg0);
             mgr_startReplay_00001AD0((int *)arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
             arg0->race.unk524 = (int)MgrNameEntry_ctor_00002940(0, (char *)arg0, arg0->nameEntryMode);
             import_007FE4E8(arg0->race.unk524, arg0->race.session);
             hdr = (char *)arg0->race.handler;
             node = (void *)arg0->race.unk524;
-            mgrproc_uso_func_07ACE0(hdr + 0x10, node);
+            XCALL(mgrproc_uso_func_07ACE0, list_append)(hdr + 0x10, node);
             if (NODE(node)->parent != 0) {
                 NODE(node)->unk04 = 1;
             }
             NODE(node)->parent = (int) hdr;
             if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
                 *(int *)((char *)arg0->race.unk524 + 0x60) = 2;
-                mgrproc_uso_func_00001BD4(arg0);
+                XCALL(mgrproc_uso_func_00001BD4, mgr_startEnding_00001BE4)(arg0);
             }
-            mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 1, 1);
+            XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
         }
         break;
     case 4:
-        mgrproc_uso_func_00F954(arg0, 4, ((int *)arg0->courseList)[((int *)arg0->courseList)[1] + 4]);
+        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(arg0, 4, ((int *)arg0->courseList)[((int *)arg0->courseList)[1] + 4]);
         break;
     }
 }
@@ -836,7 +836,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
             if (--MGRRACE(s0)->endingTimer == 0) {
                 MGRRACE(s0)->endingPhase = 1;
                 MGRRACE(s0)->endingTimer = 1050;
-                mgrproc_uso_func_0002DC(512);
+                XCALL(mgrproc_uso_func_0002DC, snd_postEvent)(512);
             }
             break;
         case 1:
@@ -848,15 +848,15 @@ void MGRRaceProcess_updateSub2(char *s0) {
             if (--MGRRACE(s0)->endingTimer == 0) {
                 MGRRACE(s0)->endingPhase = 3;
                 MGRRACE(s0)->endingTimer = 1650;
-                mgrproc_uso_func_000188(13, 0, 0);
-                mgrproc_uso_func_000148(13, 0, 0);
+                XCALL(mgrproc_uso_func_000188, func_00000188)(13, 0, 0);
+                XCALL(mgrproc_uso_func_000148, func_00000148)(13, 0, 0);
             }
             break;
         case 3: {
             if (--MGRRACE(s0)->endingTimer == 0) {
                 MGRRACE(s0)->endingTimer = 300;
                 MGRRACE(s0)->endingPhase = 4;
-                mgrproc_uso_func_0002DC(512);
+                XCALL(mgrproc_uso_func_0002DC, snd_postEvent)(512);
             }
             MGRRACE(s0)->creditScroll = MGRRACE(s0)->creditScroll + 1;
             if (MGRRACE(s0)->creditScroll >= 16) {
@@ -873,10 +873,10 @@ void MGRRaceProcess_updateSub2(char *s0) {
         }
         break;
     case 1:
-        r = (char *)mgrproc_uso_func_01FA1C((int)RACEPROC(s0)->session);
+        r = (char *)XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)((int)RACEPROC(s0)->session);
         if (r != 0) {
             import_000B2888(s0);
-            mgrproc_uso_func_000148(7, 0, 0);
+            XCALL(mgrproc_uso_func_000148, func_00000148)(7, 0, 0);
             mgr_startReplay_00001AD0(s0, *(int *)(&import_80020208 + 368) + 0x26000F);
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
@@ -884,10 +884,10 @@ void MGRRaceProcess_updateSub2(char *s0) {
             *(int *)(vt + 0x40) = 5;
             *(int *)(vt + 0x44) = 7;
             MGRRACE(s0)->fade7A4 = 0.0f;
-            mgrproc_uso_func_0139B0(*(int *)(vt + 0x190), 1, 1);
+            XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)(vt + 0x190), 1, 1);
         } else {
             *(int *)(&import_800200D8 + 0x40) = 7;
-            mgrproc_uso_func_00F954(s0, 0, 0);
+            XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(s0, 0, 0);
         }
         break;
     }
@@ -963,14 +963,14 @@ void mgr_restartForEnding_00001B58(int *a0) {
   int *t6;
   int *c4;
   int *t7;
-  mgrproc_uso_func_01B0F8(a0);
+  XCALL(mgrproc_uso_func_01B0F8, RaceProcess_restart)(a0);
   p = *((int **) (((char *) (&D_00000000)) + 0x134));
   c4 = (int *) p[0xC4 / 4];
   t6 = (int *) c4[0x800 / 4];
   t7 = (int *) ((int *) p[0xCC / 4])[0x800 / 4];
-  mgrproc_uso_func_01CCD4(a0, p[0xCC / 4]);
-  mgrproc_uso_func_07BA68(t6, 0);
-  mgrproc_uso_func_07BA68(t7, 0);
+  XCALL(mgrproc_uso_func_01CCD4, RaceProcess_callGlobalSlot11_00008674)(a0, p[0xCC / 4]);
+  XCALL(mgrproc_uso_func_07BA68, pad_reset_000673FC)(t6, 0);
+  XCALL(mgrproc_uso_func_07BA68, pad_reset_000673FC)(t7, 0);
   import_000B7FF0(*((int *) (((char *) (&D_00000000)) + 0x138)), 0, 0);
 
   a0[0x4F4 / 4] = 0;
@@ -1001,12 +1001,12 @@ void mgr_startEnding_00001BE4(MgrRace *state) {
     state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0);
     state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC);
     state->endingFrame = 0;
-    mgrproc_uso_func_012110(base);
+    XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(base);
     mgr_switchToView2_00001A64((int *)state);
     mgrproc_1BE4_call_1B58((int *)state, 0xA0000);
-    mgrproc_uso_func_000188(0xB, 0, 0);
-    mgrproc_uso_func_000148(0xB, *(int*)((char*)&gInputMgr_800200FC + 0x64) - 5, 0);
-    mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 1, 1);
+    XCALL(mgrproc_uso_func_000188, func_00000188)(0xB, 0, 0);
+    XCALL(mgrproc_uso_func_000148, func_00000148)(0xB, *(int*)((char*)&gInputMgr_800200FC + 0x64) - 5, 0);
+    XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
 }
 
 /* 2026-07-15 (agent-g) 30->21 real diffs (word-diff; 4 more are D_flt LO16
@@ -1281,7 +1281,7 @@ void MGRRaceProcess_onMessageBounce(char *a0) {
     MGRRACE(a0)->retriesY = y - 4.0f;
     MGRRACE(a0)->lostX = x;
     MGRRACE(a0)->lostY = y;
-    mgrproc_uso_func_0002DC(50);
+    XCALL(mgrproc_uso_func_0002DC, snd_postEvent)(50);
     if (MGRRACE(a0)->retries != 0) return;
     RACEPROC(a0)->msgFloor = 200.0f;
     RACEPROC(a0)->dropX = 160.0f;
@@ -1623,7 +1623,7 @@ void MgrNameEntry_drawBlinkBanner_00002E3C(char *a0) {
   rgba[2] = 1.0f;
   rgba[3] = 1.0f;
   *((int *) (a0 + 0x68)) = (*((int *) (a0 + 0x68))) + 1;
-  state = mgrproc_uso_func_01F874(*((int *) (a0 + 0x50)));
+  state = XCALL(mgrproc_uso_func_01F874, Backup_sessionCountNew)(*((int *) (a0 + 0x50)));
   if (state == 0)
   {
     return;
@@ -1769,7 +1769,7 @@ void mgr_DataManager_update(char *arg0) {
         }
         p = (char *)DATAMGR(arg0)->cool;
         if ((p != 0) && (*(int *)(p + 0xC4) >= 0xC) && (MGRDATAMGR(arg0)->beepTimer == 0)) {
-            mgrproc_uso_func_0002FC(0x135, 0);
+            XCALL(mgrproc_uso_func_0002FC, snd_sendEvent)(0x135, 0);
         }
         p = (char *)DATAMGR(arg0)->cool;
         if (*(int *)(p + 0xC8) <= 0) {
@@ -1785,12 +1785,12 @@ void mgr_DataManager_update(char *arg0) {
             DATAMGR(arg0)->active = 0;
         }
         p = (char *)DATAMGR(arg0)->entries;
-        mgrproc_uso_func_016BB8(DATAMGR(arg0)->course, *(int *)(p + 0x30), *(int *)(p + 0x90));
+        XCALL(mgrproc_uso_func_016BB8, CourseGadget_setFloat2_0000254C)(DATAMGR(arg0)->course, *(int *)(p + 0x30), *(int *)(p + 0x90));
         p = (char *)DATAMGR(arg0)->entries;
-        mgrproc_uso_func_016BEC(DATAMGR(arg0)->course, *(int *)(p + 8), *(int *)(p + 0xC),
+        XCALL(mgrproc_uso_func_016BEC, CourseGadget_setVec4_00002580)(DATAMGR(arg0)->course, *(int *)(p + 8), *(int *)(p + 0xC),
                          *(int *)(p + 0x68), *(float *)(p + 0x6C));
     }
-    mgrproc_uso_func_04CD94(arg0);
+    XCALL(mgrproc_uso_func_04CD94, Node_update)(arg0);
 }
 
 /* mgr_DataManager_display: state-gated 3-call dispatch. Reads
@@ -1861,9 +1861,9 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)mgrproc_uso_func_055750(0x40);
+    p1 = (int*)XCALL(mgrproc_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
-        mgrproc_uso_func_051C28(p1);
+        XCALL(mgrproc_uso_func_051C28, ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -1871,7 +1871,7 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        mgrproc_uso_func_07ACE0((char*)p2 + 0x10, head);
+        XCALL(mgrproc_uso_func_07ACE0, list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }

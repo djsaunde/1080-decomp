@@ -6412,7 +6412,7 @@ void CharacterItem_update_0000BB88(int *a0) {
   {
   }
   p->view[3] = a;
-  timproc_uso_b5_func_00003F58();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
 }
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
@@ -6749,7 +6749,7 @@ void BoardItem_update_0000C1B4(int *a0) {
   {
   }
   p->view[3] = a;
-  timproc_uso_b5_func_00003F58();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
 }
 
 /* BoardItem_setAlpha_0000C1F4: 5-insn float-store, RECOVERED 2026-05-28
@@ -7068,7 +7068,7 @@ void CourseItem_update_0000C8AC(int *a0) {
     v1->view[0] = c;
     v1->view[3] = d;
   }
-  timproc_uso_b5_func_00003F58();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
 }
 
 
@@ -7274,7 +7274,7 @@ void TesuriItem_update_0000CC74(int *a0) {
   {
   }
   p->view[3] = a;
-  timproc_uso_b5_func_00003F58();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
 }
 
 /* TesuriItem_setAlpha_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
@@ -7426,7 +7426,7 @@ void LevelItem_update_0000CE6C(int *a0) {
   {
   }
   p->view[3] = a;
-  timproc_uso_b5_func_00003F58();
+  XCALL(timproc_uso_b5_func_00003F58, SelItem_update_00003F5C)();
 }
 
 /* LevelItem_drawStats_0000CEB4: EXACT via the IDO 7.1 cfe -O2 donor

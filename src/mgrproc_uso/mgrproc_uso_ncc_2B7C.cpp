@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for MgrNameEntry_drawCongrats_00002B7C (0x2B8 / 174 words), EXACT (agent-c run 244, see the
  * end of this comment). History: agent-c run 243 (NM donor).
  * The in-tree cfe body (mgrproc_uso.c, 98.24) compiled verbatim under NCC scores 98.17; the four volatile 1.0f
@@ -71,11 +72,11 @@ void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
         import_0024E608(&import_8024CAF8, 0xFF, p + 0x10);
         /* Uninitialised-local exception: the target reads sub's never-written home (`lw s3,0xA0(sp)` at 0x2CA4). */
         if (sub) {}
-        mgrproc_uso_func_083574(&sp60, (n1 = &import_80264A28 + 0x658));
+        XCALL(mgrproc_uso_func_083574, gl_sprintf)(&sp60, (n1 = &import_80264A28 + 0x658));
         import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
                         import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
                         0x46, &sp60);
-        mgrproc_uso_func_083574(&sp60, (n2 = &import_80264A3C + 0x66C));
+        XCALL(mgrproc_uso_func_083574, gl_sprintf)(&sp60, (n2 = &import_80264A3C + 0x66C));
         import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
                         import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
                         0x64, &sp60);

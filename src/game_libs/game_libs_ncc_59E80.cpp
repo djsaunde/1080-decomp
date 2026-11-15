@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for gfx_initRDPState (0x444 / 273 words): lift agent-c run 164, exact agent-c run 296.
  * Fixed render-state display list (kit CX family): gSPSegment(0, 0), two gSPDisplayList(sub-DL builder results),
  * SetOtherMode_H texture LOD / alpha dither / colour dither / bilerp / perspective, SetCombine, clear + set
@@ -34,9 +35,9 @@ extern "C" void gfx_initRDPState(Ctx *c, Obj *o) {
     Gfx *gs;
     Gfx *gv;
     PKT(c, 0xBC000006, 0);
-    r1 = gl_func_00034458_59E80(D_00000000);
+    r1 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(D_00000000);
     dlist(c, r1);
-    r2 = gl_func_00034458_59E80(D_00000000);
+    r2 = XCALL(gl_func_00034458_59E80, gl_osVirtualToPhysical)(D_00000000);
     dlist(c, r2);
     PKT(c, 0xBA001001, 0);
     PKT(c, 0xBA000402, 0);
@@ -59,8 +60,8 @@ extern "C" void gfx_initRDPState(Ctx *c, Obj *o) {
      * block (the target's a3) and leaves v0 to the o reload */
     { gs = c->nextC() + 0 * o->f104; gs->w0 = 0xBC001C04; gs->w1 = 0xFFFD; }
     if (o->f104 & 2) {
-        gl_func_00034458_59E80(c, o->s148->fF0); if (1) {}
+        XCALL(gl_func_00034458_59E80, gfx_setDepthImage)(c, o->s148->fF0); if (1) {}
         { gv = c->next(); gv->w0 = 0xB7000000; gv->w1 = 1; }
     }
-    gl_func_00034458_59E80(c);
+    XCALL(gl_func_00034458_59E80, gfx_endDL)(c);
 }

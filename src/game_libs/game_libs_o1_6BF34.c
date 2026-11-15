@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* -O1 donor for gl_osCreateThread — 81-insn struct-init constructor
  * (frame 0x28, saves ra+s0). PROVEN EXACT 81/81 at both IDO 7.1 and 5.3
  * -O1 (2026-07-09 standalone probe); built here with 7.1 (plain -O1).
@@ -61,5 +62,5 @@ void gl_osCreateThread(S *self, int a1, int a2, int a3, int a4, int a5) {
     tmp = gl_func_00000000();
     self->f12 = D_00000000_f;
     D_00000000_g = self;
-    gl_func_00000001(tmp);
+    XCALL(gl_func_00000001, gl___osRestoreInt)(tmp);
 }

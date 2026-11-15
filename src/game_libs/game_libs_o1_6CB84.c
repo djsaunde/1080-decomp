@@ -18,7 +18,7 @@ s32 gl___osSpRawStartDma(s32 direction, u32 devAddr, void *dramAddr, u32 size) {
     if (CALL(gl___osSpDeviceBusy)())
         return -1;
     *(volatile u32 *)0xA4040000 = devAddr;
-    *(volatile u32 *)0xA4040004 = gl_func_00000001(dramAddr);
+    *(volatile u32 *)0xA4040004 = XCALL(gl_func_00000001, gl_osVirtualToPhysical)(dramAddr);
     if (direction == 0)
         *(volatile u32 *)0xA404000C = size - 1;
     else

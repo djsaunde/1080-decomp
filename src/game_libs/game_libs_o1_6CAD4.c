@@ -25,7 +25,7 @@ s32 gl___osSiRawStartDma(s32 direction, void *dramAddr) {
     if (direction == 1)
         gl_func_00000001(dramAddr, 64);
 
-    *(volatile u32 *)0xA4800000 = gl_func_00000002(dramAddr);
+    *(volatile u32 *)0xA4800000 = XCALL(gl_func_00000002, gl_osVirtualToPhysical)(dramAddr);
 
     if (direction == 0)
         *(volatile u32 *)0xA4800004 = 0x1FC007C0;
@@ -33,7 +33,7 @@ s32 gl___osSiRawStartDma(s32 direction, void *dramAddr) {
         *(volatile u32 *)0xA4800010 = 0x1FC007C0;
 
     if (direction == 0)
-        gl_func_00000003(dramAddr, 64);
+        XCALL(gl_func_00000003, gl_osInvalDCache)(dramAddr, 64);
 
     return 0;
 }

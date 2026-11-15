@@ -17,6 +17,7 @@
 #include "game/snowai.h"
 #include "game/course.h"
 #include "game/input.h"
+#include "uso_call.h"
 extern char import_80020110;
 extern int import_8006EF48;
 typedef struct { float x, y, z; } Vec3;
@@ -189,7 +190,7 @@ void SnowAI_steer(int *a0) {
     {
         scratch_dst = p;
         src = (float *)((int)(char *)self->rider + 968);
-        if (scratch_dst != 0 || (scratch_dst = (Vec3*)game_uso_func_055750(0xC + 0 * (int)src)) != 0) {
+        if (scratch_dst != 0 || (scratch_dst = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC + 0 * (int)src)) != 0) {
             fsel = src[0 * ((int)src | 1)];
             z = *(float *)((int)src + 8 + 0 * (int)src);
             do { } while (0);
@@ -232,7 +233,7 @@ void SnowAI_steer(int *a0) {
         p = 0;
         if (1) { p = &pos_a; }
         src = ((CourseMarker *)helper_ptr)->pos;
-        if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+        if (p != 0 || (p = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
             fsel = *src;
             z = src[2];
             p->y = 0.0f;
@@ -244,7 +245,7 @@ void SnowAI_steer(int *a0) {
         hsrc = ((CourseMarker *)hit_parent)->pos;
         {
             delta_a_dst = p;
-            if (delta_a_dst != 0 || (delta_a_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+            if (delta_a_dst != 0 || (delta_a_dst = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
                 x = pos_a.x - *hsrc;
                 z = pos_a.z - hsrc[2];
                 delta_a_dst->y = 0.0f;
@@ -257,7 +258,7 @@ void SnowAI_steer(int *a0) {
         p = 0;
         if (1) { p = &pos_c; }
         child_flags = (int *)self->rider->dnode.vqs.trans;
-        if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+        if (p != 0 || (p = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
             fsel = *(float *)child_flags;
             z = ((float *)child_flags)[2];
             p->y = 0.0f;
@@ -269,7 +270,7 @@ void SnowAI_steer(int *a0) {
         accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
         {
             child_flags = (int *)p;
-            if (child_flags != 0 || (child_flags = (int *)game_uso_func_055750(0xC)) != 0) {
+            if (child_flags != 0 || (child_flags = (int *)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
                 x = pos_c.x - *accel_params;
                 z = pos_c.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
                 ((Vec3 *)child_flags)->y = 0.0f;
@@ -304,7 +305,7 @@ void SnowAI_steer(int *a0) {
     p = 0;
     if (1) { p = &pos_e; }
     src = ((CourseMarker *)helper_ptr)->pos;
-    if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+    if (p != 0 || (p = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
         fsel = *src;
         z = src[2];
         p->y = 0.0f;
@@ -316,7 +317,7 @@ void SnowAI_steer(int *a0) {
     hsrc = ((CourseMarker *)hit_parent)->pos;
     {
         delta_e_dst = p;
-        if (delta_e_dst != 0 || (delta_e_dst = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+        if (delta_e_dst != 0 || (delta_e_dst = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
             x = pos_e.x - *hsrc;
             z = pos_e.z - hsrc[2];
             delta_e_dst->y = 0.0f;
@@ -329,7 +330,7 @@ void SnowAI_steer(int *a0) {
     p = 0;
     if (1) { p = &pos_g; }
     child_flags = (int *)self->rider->dnode.vqs.trans;
-    if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
+    if (p != 0 || (p = (Vec3*)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
         fsel = *(float *)child_flags;
         z = ((float *)child_flags)[2];
         p->y = 0.0f;
@@ -341,7 +342,7 @@ void SnowAI_steer(int *a0) {
     accel_params = (float *)((int)hit_parent + 48 + 0 * (int)child_flags);
     {
         child_flags = (int *)p;
-        if (child_flags != 0 || (child_flags = (int *)game_uso_func_055750(0xC)) != 0) {
+        if (child_flags != 0 || (child_flags = (int *)XCALL(game_uso_func_055750, mem_new)(0xC)) != 0) {
             x = pos_g.x - *accel_params;
             z = pos_g.z - *(float *)((int)accel_params + 8 + 0 * (int)accel_params);
             ((Vec3 *)child_flags)->y = 0.0f;

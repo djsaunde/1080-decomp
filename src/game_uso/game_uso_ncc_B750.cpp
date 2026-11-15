@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for LensFlareElem_draw_0000B750 (0x134 / 77 words).
  *
  * Camera/basis update: f0 = src->0x00 (+ k * 400 when flag 4), where k is
@@ -49,7 +50,7 @@ extern "C" void LensFlareElem_draw_0000B750(char *a0, char *s0, float *a2, float
         AT(float, s0, 0xB0) = v;
         AT(float, s0, 0xB4) = v;
         Q q(AT(float, a0, 0x04), AT(float, a0, 0x08), AT(float, a0, 0x0C), AT(float, a0, 0x10) * arg4);
-        game_uso_func_05B750(&gGfxLib_8005C108, &q);
+        XCALL(game_uso_func_05B750, gfx_setPrimColour)(&gGfxLib_8005C108, &q);
         ((V *)s0)->m2();
     }
 }

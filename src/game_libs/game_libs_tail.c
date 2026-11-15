@@ -3143,7 +3143,7 @@ void RaceTracker_sendEntryLoseResult(int **a0, int a1) {
 int gl_func_0000DF20_inner(int a0, int a1);
 
 void RaceTracker_setEntrySpeed(int a0, int a1, float a2) {
-    int rv = gl_func_0000DF20_inner(a0, a1);
+    int rv = XCALL(gl_func_0000DF20_inner, RaceTracker_findEntry)(a0, a1);
     if (rv != 0) {
         ((RaceEntry *)rv)->speed = a2;
     }

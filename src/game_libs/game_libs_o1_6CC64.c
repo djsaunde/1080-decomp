@@ -1,3 +1,4 @@
+#include "uso_call.h"
 /* IDO -O1 donor for osViBlack = libultra osViBlack
  * (references/libreultra/src/io/viblack.c, verbatim: saveMask =
  * __osDisableInt(); __osViNext->state |= / &= ~VI_STATE_BLACK(0x20);
@@ -21,5 +22,5 @@ void osViBlack(u8 active) {
         gl___osViNext_vinext->state |= 0x20;
     else
         gl___osViNext_vinext->state &= ~0x20;
-    gl_func_00000001(saveMask);
+    XCALL(gl_func_00000001, gl___osRestoreInt)(saveMask);
 }

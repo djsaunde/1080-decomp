@@ -922,7 +922,7 @@ long long gl_func_00035164_inner(int a0);
  * boot_startThread_00066BD4. */
 int sys_getTime(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x18(sp) */
-    long long r = gl_func_00035164_inner(*p);
+    long long r = XCALL(gl_func_00035164_inner, osGetTime)(*p);
     return (int)r;
 }
 
@@ -15414,7 +15414,7 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
     self->unk1A8 = -1;
     self->unk1AC = -1;
     self->fbIndex = 0;
-    gl_func_00034458_4C300(GL_DATA_STR(0x20128, "FrameBuffers"), 0); /* "FrameBuffers" */
+    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20128, "FrameBuffers"), 0); /* "FrameBuffers" */
     bc = self->win.height;
     sz = self->win.width * bc;
     v1 = 0;
@@ -15428,7 +15428,7 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
         v1 += sz;
     }
     if (v1 != 0) {
-        sp54 = gl_func_00034458_4C300(v1 * 2, 0x40); /* RGBA5551 / 16-bit Z, 64-byte aligned */
+        sp54 = XCALL(gl_func_00034458_4C300, mem_newAligned)(v1 * 2, 0x40); /* RGBA5551 / 16-bit Z, 64-byte aligned */
         self->win.bufAlloc = (u16 *)sp54;
     }
     if (self->win.flags & 0x800) {
@@ -15448,27 +15448,27 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
         self->win.zBuffer = (u16 *)sp54;
     } else {
         if (G240_4C300 == 0) {
-            gl_func_00034458_4C300v(GL_DATA_STR(0x20138, "no ScreenWindow for zbuffer")); /* "no ScreenWindow for zbuffer" */
+            XCALL(gl_func_00034458_4C300v, sys_fatal)(GL_DATA_STR(0x20138, "no ScreenWindow for zbuffer")); /* "no ScreenWindow for zbuffer" */
         }
         self->win.zBuffer = ((ScreenWindow *)G240_4C300)->win.zBuffer;
     }
-    gl_func_00034458_4C300();
-    gl_func_00034458_4C300(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
+    XCALL(gl_func_00034458_4C300, memtrack_end)();
+    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
     /* p walks the two per-frame-buffer slots of startDL / setupDL / bgDL
      * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b). */
     for (i = 0, p = (char *)self; i != 8; i += 4, p += 4) {
-        FW(p, 0x14C) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
+        FW(p, 0x14C) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
         if (self->win.flags & 0x1000) {
-            FW(p, 0x198) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
+            FW(p, 0x198) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
                                             D_4C300_g2, D_4C300_g3, D_4C300_g4);
-            FW(p, 0x180) = gl_func_00034458_4C300(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
+            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
                                             D_4C300_g7, D_4C300_g8, D_4C300_g9);
         } else {
-            FW(p, 0x180) = gl_func_00034458_4C300(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
+            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLChild_0005AB84)(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
             FW(p, 0x198) = FW(G240_4C300 + i, 0x198);
         }
     }
-    gl_func_00034458_4C300();
+    XCALL(gl_func_00034458_4C300, memtrack_end)();
     {
         char *cb = (char *)self->win.node.vptr; /* Cfront vtable entry {s16 delta; s16 idx; fn} at +0x58 */
         ((GP_0004C300)FW(cb, 0x5C))(*(s16 *)(cb + 0x58) + (char *)self, cb);
@@ -17177,12 +17177,12 @@ void Window_display(char *arg0) {
     FW(arg0, 0x11C) = 0;
     FW(arg0, 0x120) = 0;
     if (FW(arg0, 0x78) & 0x20) {
-        gl_func_00034458_4EB54((GL_DATA_STR(0x205D0, "CPU")));
-        gl_func_00034458_4EB54((GL_DATA_STR(0x205D4, "Display()")));
+        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D0, "CPU")));
+        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D4, "Display()")));
     }
-    gl_func_00034458_4EB54(FW(arg0, 0x108));
+    XCALL(gl_func_00034458_4EB54, Node_setDisplayMask)(FW(arg0, 0x108));
     D_g_0004EB54 = arg0;
-    gl_func_00034458_4EB54((char*)&gGfxLib);
+    XCALL(gl_func_00034458_4EB54, gfx_beginView_00046BC4)((char*)&gGfxLib);
     temp_v1 = (char*)FW(arg0, 0x70);
     if (temp_v1 != 0) {
         temp_v0 = (char*)FW(temp_v1, 0x28);
@@ -17192,19 +17192,19 @@ void Window_display(char *arg0) {
             *(f32*)(arg0 + 0x98 + i * 4) = *(f32*)(arg0 + 0x84 + i * 4) * temp_f0;
         }
     }
-    gl_func_00034458_4EB54((char*)&gGfxLib, 0);
-    gl_func_00034458_4EB54((char*)&gGfxLib);
-    gl_func_00034458_4EB54(arg0);
-    gl_func_00034458_4EB54((char*)&gGfxLib, arg0 + 0x30);
-    gl_func_00034458_4EB54((char*)&gGfxLib, 1);
-    gl_func_00034458_4EB54((char*)&gGfxLib);
-    gl_func_00034458_4EB54((char*)&gGfxLib);
-    gl_func_00034458_4EB54((char*)&gGfxLib);
+    XCALL(gl_func_00034458_4EB54, gfx_setViewStage_00047F68)((char*)&gGfxLib, 0);
+    XCALL(gl_func_00034458_4EB54, gfx_matrixModeProjection_000478D8)((char*)&gGfxLib);
+    XCALL(gl_func_00034458_4EB54, Window_setupView)(arg0);
+    XCALL(gl_func_00034458_4EB54, gfx_loadMatrix_00047DD8)((char*)&gGfxLib, arg0 + 0x30);
+    XCALL(gl_func_00034458_4EB54, gfx_setViewStage_00047F68)((char*)&gGfxLib, 1);
+    XCALL(gl_func_00034458_4EB54, gfx_matrixModeModelView_000478EC)((char*)&gGfxLib);
+    XCALL(gl_func_00034458_4EB54, gfx_loadIdentity_00047F48)((char*)&gGfxLib);
+    XCALL(gl_func_00034458_4EB54, gfx_emitProjection)((char*)&gGfxLib);
     temp_v0_3 = (char*)FW(arg0, 0x28);
     ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
     if (FW(arg0, 0x78) & 0x20) {
-        gl_func_00034458_4EB54((GL_DATA_STR(0x205E0, "CPU")));
-        gl_func_00034458_4EB54((GL_DATA_STR(0x205E4, "Display()")));
+        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E0, "CPU")));
+        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E4, "Display()")));
     }
 }
 
@@ -17600,18 +17600,18 @@ char *Mat_fromFrameBuffer_0004F85C(char *self, char *spec) {
     char *s2;
     char *m;
 
-    if (self != 0 || (self = (char *)gl_func_00034458_4F85C(0x90)) != 0) {
-        if ((s = self) != 0 || (s = (char *)gl_func_00034458_4F85C(0x90)) != 0) {
-            if ((s2 = s) != 0 || (s2 = (char *)gl_func_00034458_4F85C(0x60)) != 0) {
+    if (self != 0 || (self = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
+        if ((s = self) != 0 || (s = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
+            if ((s2 = s) != 0 || (s2 = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x60)) != 0) {
                 *(char **)(s2 + 0x5C) = (char *)&BaseMat_vtbl_4F85C_a;
-                if ((m = s2 + 0x34) != 0 || (m = (char *)gl_func_00034458_4F85C(8)) != 0) {
+                if ((m = s2 + 0x34) != 0 || (m = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(8)) != 0) {
                     *(int *)(m + 4) = 0;
                     *(int *)(m + 0) = 0;
                 }
-                if ((m = s2 + 0x58) != 0 || (m = (char *)gl_func_00034458_4F85C(4)) != 0) {
+                if ((m = s2 + 0x58) != 0 || (m = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(4)) != 0) {
                     *(int *)(m + 0) = 0;
                 }
-                gl_func_00034458_4F85C(s2);
+                XCALL(gl_func_00034458_4F85C, BaseMat_init_000517E4)(s2);
             }
             *(char **)(s + 0x5C) = (char *)&Mat_vtbl_4F85C_b;
         }
@@ -18425,15 +18425,15 @@ void BaseMat_hostioParms(char *arg0) {
     s32 *o2;
     s32 *o3;
 
-    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
-    gl_func_00034458_5185C(arg0, 0);
+    XCALL(gl_func_00034458_5185C, hostio_beginGroup)((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
+    XCALL(gl_func_00034458_5185C, gfx_declColourParm)(arg0, 0);
     if (FW(arg0, 0x38) & 0x400000) {
-        o1 = (s32 *)gl_func_00034458_5185C(0x10);
+        o1 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(0x10);
         if (o1 != 0) {
             o2 = o1;
-            if (o2 != 0 || (o2 = (s32 *)gl_func_00034458_5185C(0x10)) != 0) {
+            if (o2 != 0 || (o2 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(0x10)) != 0) {
                 o3 = o2;
-                if (o3 != 0 || (o3 = (s32 *)gl_func_00034458_5185C(4)) != 0) {
+                if (o3 != 0 || (o3 = (s32 *)XCALL(gl_func_00034458_5185C, mem_new)(4)) != 0) {
                     *o3 = (s32)((char *)&D_00000000_a[0] + 0x20740);
                 }
                 *(Pair2 *)((o2[1] = (s32)arg0, o2) + 2) =
@@ -18441,11 +18441,11 @@ void BaseMat_hostioParms(char *arg0) {
             }
             *o1 = (s32)((char *)&D_00000000_d + 0x20D88);
         }
-        gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
+        XCALL(gl_func_00034458_5185C, hostio_addButton)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
     }
-    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
-    gl_func_00034458_5185C((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
-    gl_func_00034458_5185C((char *)&gHostio);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
+    XCALL(gl_func_00034458_5185C, hostio_endGroup)((char *)&gHostio);
 }
 
 /* Mat_print — W5 2026-07-03: IMPROVED 63/77 -> 71/77 words (in-tree
@@ -20753,32 +20753,32 @@ extern int game_libs_func_00062F08_55C34();
 void fault_printThread(char *arg0) {
     char *temp_s0;
 
-    gl_func_00034458_55C34((GL_DATA_STR(0x215EC, "\nFault in thread %d:\n\n")), FW(arg0, 0x14));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x215EC, "\nFault in thread %d:\n\n")), FW(arg0, 0x14));
     temp_s0 = 0; /* multi-def anti-fold guard: keeps call 2 reading 252(s0) instead of folding to [arg0+0x11C] + extra home reload */
     if (1) { temp_s0 = arg0 + 0x20; }
-    gl_func_00034458_55C34((GL_DATA_STR(0x21604, "epc\t\t0x%08x\n")), FW(temp_s0, 0xFC));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21604, "epc\t\t0x%08x\n")), FW(temp_s0, 0xFC));
     game_libs_func_00062F08_55C34(FW(temp_s0, 0x100), (GL_DATA_STR(0x21614, "cause")), (GL_DATA(0x211E0)));
     game_libs_func_00062F08_55C34(FW(temp_s0, 0xF8), (GL_DATA(0x2161C)), (GL_DATA(0x21330)));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21620, "badvaddr\t0x%08x\n\n")), FW(temp_s0, 0x104));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21634, "at 0x%016llx v0 0x%016llx v1 0x%016llx\n")), FLL_55C34(temp_s0, 0x0), FLL_55C34(temp_s0, 0x8), FLL_55C34(temp_s0, 0x10));
-    gl_func_00034458_55C34((GL_DATA_STR(0x2165C, "a0 0x%016llx a1 0x%016llx a2 0x%016llx\n")), FLL_55C34(temp_s0, 0x18), FLL_55C34(temp_s0, 0x20), FLL_55C34(temp_s0, 0x28));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21684, "a3 0x%016llx t0 0x%016llx t1 0x%016llx\n")), FLL_55C34(temp_s0, 0x30), FLL_55C34(temp_s0, 0x38), FLL_55C34(temp_s0, 0x40));
-    gl_func_00034458_55C34((GL_DATA_STR(0x216AC, "t2 0x%016llx t3 0x%016llx t4 0x%016llx\n")), FLL_55C34(temp_s0, 0x48), FLL_55C34(temp_s0, 0x50), FLL_55C34(temp_s0, 0x58));
-    gl_func_00034458_55C34((GL_DATA_STR(0x216D4, "t5 0x%016llx t6 0x%016llx t7 0x%016llx\n")), FLL_55C34(temp_s0, 0x60), FLL_55C34(temp_s0, 0x68), FLL_55C34(temp_s0, 0x70));
-    gl_func_00034458_55C34((GL_DATA_STR(0x216FC, "s0 0x%016llx s1 0x%016llx s2 0x%016llx\n")), FLL_55C34(temp_s0, 0x78), FLL_55C34(temp_s0, 0x80), FLL_55C34(temp_s0, 0x88));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21724, "s3 0x%016llx s4 0x%016llx s5 0x%016llx\n")), FLL_55C34(temp_s0, 0x90), FLL_55C34(temp_s0, 0x98), FLL_55C34(temp_s0, 0xA0));
-    gl_func_00034458_55C34((GL_DATA_STR(0x2174C, "s6 0x%016llx s7 0x%016llx t8 0x%016llx\n")), FLL_55C34(temp_s0, 0xA8), FLL_55C34(temp_s0, 0xB0), FLL_55C34(temp_s0, 0xB8));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21774, "t9 0x%016llx gp 0x%016llx sp 0x%016llx\n")), FLL_55C34(temp_s0, 0xC0), FLL_55C34(temp_s0, 0xC8), FLL_55C34(temp_s0, 0xD0));
-    gl_func_00034458_55C34((GL_DATA_STR(0x2179C, "s8 0x%016llx ra 0x%016llx\n\n")), FLL_55C34(temp_s0, 0xD8), FLL_55C34(temp_s0, 0xE0));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21620, "badvaddr\t0x%08x\n\n")), FW(temp_s0, 0x104));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21634, "at 0x%016llx v0 0x%016llx v1 0x%016llx\n")), FLL_55C34(temp_s0, 0x0), FLL_55C34(temp_s0, 0x8), FLL_55C34(temp_s0, 0x10));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2165C, "a0 0x%016llx a1 0x%016llx a2 0x%016llx\n")), FLL_55C34(temp_s0, 0x18), FLL_55C34(temp_s0, 0x20), FLL_55C34(temp_s0, 0x28));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21684, "a3 0x%016llx t0 0x%016llx t1 0x%016llx\n")), FLL_55C34(temp_s0, 0x30), FLL_55C34(temp_s0, 0x38), FLL_55C34(temp_s0, 0x40));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216AC, "t2 0x%016llx t3 0x%016llx t4 0x%016llx\n")), FLL_55C34(temp_s0, 0x48), FLL_55C34(temp_s0, 0x50), FLL_55C34(temp_s0, 0x58));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216D4, "t5 0x%016llx t6 0x%016llx t7 0x%016llx\n")), FLL_55C34(temp_s0, 0x60), FLL_55C34(temp_s0, 0x68), FLL_55C34(temp_s0, 0x70));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216FC, "s0 0x%016llx s1 0x%016llx s2 0x%016llx\n")), FLL_55C34(temp_s0, 0x78), FLL_55C34(temp_s0, 0x80), FLL_55C34(temp_s0, 0x88));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21724, "s3 0x%016llx s4 0x%016llx s5 0x%016llx\n")), FLL_55C34(temp_s0, 0x90), FLL_55C34(temp_s0, 0x98), FLL_55C34(temp_s0, 0xA0));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2174C, "s6 0x%016llx s7 0x%016llx t8 0x%016llx\n")), FLL_55C34(temp_s0, 0xA8), FLL_55C34(temp_s0, 0xB0), FLL_55C34(temp_s0, 0xB8));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21774, "t9 0x%016llx gp 0x%016llx sp 0x%016llx\n")), FLL_55C34(temp_s0, 0xC0), FLL_55C34(temp_s0, 0xC8), FLL_55C34(temp_s0, 0xD0));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2179C, "s8 0x%016llx ra 0x%016llx\n\n")), FLL_55C34(temp_s0, 0xD8), FLL_55C34(temp_s0, 0xE0));
     game_libs_func_00062F08_55C34(FW(temp_s0, 0x10C), (GL_DATA_STR(0x217B8, "fpcsr")), (GL_DATA(0x214A4)));
-    gl_func_00034458_55C34((GL_DATA_STR(0x217C0, "d0  %.15e\td2  %.15e\n")), FLL_55C34(temp_s0, 0x110), FD_55C34(temp_s0, 0x118));
-    gl_func_00034458_55C34((GL_DATA_STR(0x217D8, "d4  %.15e\td6  %.15e\n")), FLL_55C34(temp_s0, 0x120), FD_55C34(temp_s0, 0x128));
-    gl_func_00034458_55C34((GL_DATA_STR(0x217F0, "d8  %.15e\td10 %.15e\n")), FLL_55C34(temp_s0, 0x130), FD_55C34(temp_s0, 0x138));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21808, "d12 %.15e\td14 %.15e\n")), FLL_55C34(temp_s0, 0x140), FD_55C34(temp_s0, 0x148));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21820, "d16 %.15e\td18 %.15e\n")), FLL_55C34(temp_s0, 0x150), FD_55C34(temp_s0, 0x158));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21838, "d20 %.15e\td22 %.15e\n")), FLL_55C34(temp_s0, 0x160), FD_55C34(temp_s0, 0x168));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21850, "d24 %.15e\td26 %.15e\n")), FLL_55C34(temp_s0, 0x170), FD_55C34(temp_s0, 0x178));
-    gl_func_00034458_55C34((GL_DATA_STR(0x21868, "d28 %.15e\td30 %.15e\n")), FLL_55C34(temp_s0, 0x180), FD_55C34(temp_s0, 0x188));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217C0, "d0  %.15e\td2  %.15e\n")), FLL_55C34(temp_s0, 0x110), FD_55C34(temp_s0, 0x118));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217D8, "d4  %.15e\td6  %.15e\n")), FLL_55C34(temp_s0, 0x120), FD_55C34(temp_s0, 0x128));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217F0, "d8  %.15e\td10 %.15e\n")), FLL_55C34(temp_s0, 0x130), FD_55C34(temp_s0, 0x138));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21808, "d12 %.15e\td14 %.15e\n")), FLL_55C34(temp_s0, 0x140), FD_55C34(temp_s0, 0x148));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21820, "d16 %.15e\td18 %.15e\n")), FLL_55C34(temp_s0, 0x150), FD_55C34(temp_s0, 0x158));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21838, "d20 %.15e\td22 %.15e\n")), FLL_55C34(temp_s0, 0x160), FD_55C34(temp_s0, 0x168));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21850, "d24 %.15e\td26 %.15e\n")), FLL_55C34(temp_s0, 0x170), FD_55C34(temp_s0, 0x178));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21868, "d28 %.15e\td30 %.15e\n")), FLL_55C34(temp_s0, 0x180), FD_55C34(temp_s0, 0x188));
 }
 
 /* fault_printFlags: print a flag word by name: header (a1, val), then
@@ -22200,32 +22200,32 @@ int *gfx_newDLChild_0005AD54(int *arg0, s32 arg1, s32 arg2, int *arg3) {
     int *q;
     int *r;
 
-    if (arg0 != 0 || (arg0 = (int *)gl_func_00034458_5AD54(0x7C)) != 0) {
+    if (arg0 != 0 || (arg0 = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x7C)) != 0) {
         base = arg0;
-        if (base != 0 || (base = (int *)gl_func_00034458_5AD54(0x7C)) != 0) {
+        if (base != 0 || (base = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x7C)) != 0) {
             q = base;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 4;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 8;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 12;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 16;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 20;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(0x10)) != 0) { q[2] = 0; q[1] = 0; q[3] = (int)q; }
             q = base + 30;
-            if (q != 0 || (q = (int *)gl_func_00034458_5AD54(4)) != 0) {
+            if (q != 0 || (q = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(4)) != 0) {
                 r = q;
-                if (r != 0 || (r = (int *)gl_func_00034458_5AD54(4)) != 0) *r = 0;
+                if (r != 0 || (r = (int *)XCALL(gl_func_00034458_5AD54, mem_new)(4)) != 0) *r = 0;
             }
         }
-        arg0[0x1C] = gl_func_00034458_5AD54(arg1, arg3[0x1C]);
-        gl_func_00034458_5AD54(arg0, arg3);
+        arg0[0x1C] = XCALL(gl_func_00034458_5AD54, gfx_childName_00056084)(arg1, arg3[0x1C]);
+        XCALL(gl_func_00034458_5AD54, gfx_initDLChild_0005AF64)(arg0, arg3);
         arg0[2] = arg2;
         if (arg2 == 0) goto skip;
-        arg0[0] = gl_func_00034458_5AD54(arg2 * 8 + 8);
+        arg0[0] = XCALL(gl_func_00034458_5AD54, mem_new)(arg2 * 8 + 8);
 skip:
         arg0[1] = 0;
         arg0[3] = (int)arg0;
@@ -23240,7 +23240,7 @@ void math_planeFrom3Points(Plane_5CB68 *pl, Vec3_5CB68 *a, Vec3_5CB68 *b, Vec3_5
     pl->n.x = t2.x;
     pl->n.y = t2.y;
     pl->n.z = t2.z;
-    gl_func_00034458_5CB68(pl);
+    XCALL(gl_func_00034458_5CB68, math_vec3Normalize)(pl);
     pl->d = pl->n.x * a->x + pl->n.y * a->y + pl->n.z * a->z;
 }
 
@@ -25730,22 +25730,22 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
         c = *q + 0 * *q;
             if (*q == 'd') {
                 D_00000000 = 0;
-                out = gl_func_00034458_6126C(out, arg2.i, 0x3B9ACA00);
+                out = XCALL(gl_func_00034458_6126C, console_itoa)(out, arg2.i, 0x3B9ACA00);
             } else if (c == 'x') {
                 D_00000000 = 1;
-                out = gl_func_00034458_6126C(out, arg2.i);
+                out = XCALL(gl_func_00034458_6126C, console_formatHex8)(out, arg2.i);
             } else if (c == 'f') {
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
 
-                frac = (f32) gl_func_00034458_6126C(0xA, B) * (arg2.f - (f32) ip);
+                frac = (f32) XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, B) * (arg2.f - (f32) ip);
                 D_00000000 = 0;
-                dot = gl_func_00034458_6126C(out, ip, gl_func_00034458_6126C(0xA, A));
+                dot = XCALL(gl_func_00034458_6126C, console_itoa)(out, ip, XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, A));
                 *dot = '.';
                 out = dot + 1;
                 D_00000000 = 1;
-                out = gl_func_00034458_6126C(out, frac, gl_func_00034458_6126C(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
+                out = XCALL(gl_func_00034458_6126C, console_itoa)(out, frac, XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
             } else if ((ch = c, c >= '0') && (c < ':')) {
                 ch -= '0';
                 A = (u8)ch;
@@ -25753,7 +25753,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
-                gl_func_00034458_6126C(out, GL_DATA(0x21E08));
+                XCALL(gl_func_00034458_6126C, str_copyEnd)(out, GL_DATA(0x21E08));
                 out += 0xA;
             }
     }
@@ -26681,7 +26681,7 @@ void gl_func_0006270C_inner(int a0);
 void AnimDataMgr_handleMsg(int a0, int *a1) {
     int val = *a1;
     if (val != 9) return;
-    gl_func_0006270C_inner(a0);
+    XCALL(gl_func_0006270C_inner, AnimDataMgr_releaseFrames)(a0);
 }
 
 extern int gl_func_00000000();
