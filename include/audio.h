@@ -34,6 +34,76 @@ typedef struct AudioAllocPool {
 /* Opaque until its fields are verified; the stride is verified. */
 typedef struct AudioAsyncLoad { u8 data[0x54]; } AudioAsyncLoad;   /* AudioLoad_ProcessAsyncLoads: 16 x 0x54 */
 
+/* The heap caches (agent-c run 518): OoT's layouts, offsets checked against the
+ * 1080 users. AudioHeap_InitPersistentPoolsAndCaches pools seqCache at +0x21F8
+ * (+4 = persistent.pool, +0xD4 = temporary, +0xD8 = temporary.pool) and
+ * AudioHeap_AllocPermanent's entries are 0xC apart from +0x2538 (ramAddr 0x0,
+ * size 0x4, tableType 0x8, id 0xA, all read as s16). */
+typedef struct AudioCacheEntry {
+    /* 0x0 */ u8 *ramAddr;
+    /* 0x4 */ u32 size;
+    /* 0x8 */ s16 tableType;
+    /* 0xA */ s16 id;
+} AudioCacheEntry; /* size = 0xC */
+
+/* aud_AllocSampleCacheTemporary / Persistent write sampleBankId 0x2, sampleAddr
+ * 0xC, origMedium 0x1 and return allocatedAddr 0x8. sampleBankId is u8 (the
+ * matched AllocTemporarySampleCacheEntry view; OoT has s8). */
+typedef struct SampleCacheEntry {
+    /* 0x00 */ s8 inUse;
+    /* 0x01 */ s8 origMedium;
+    /* 0x02 */ u8 sampleBankId;
+    /* 0x03 */ u8 unk_03[5];
+    /* 0x08 */ u8 *allocatedAddr;
+    /* 0x0C */ void *sampleAddr;
+    /* 0x10 */ u32 size;
+} SampleCacheEntry; /* size = 0x14 */
+
+/* AudioHeap_InitSampleCaches: pool +0x0, numEntries +0x290 (0x26B8 / 0x2948). */
+typedef struct AudioSampleCache {
+    /* 0x000 */ AudioAllocPool pool;
+    /* 0x010 */ SampleCacheEntry entries[32];
+    /* 0x290 */ s32 numEntries;
+} AudioSampleCache; /* size = 0x294 */
+
+typedef struct AudioPersistentCache {
+    /* 0x00 */ u32 numEntries;
+    /* 0x04 */ AudioAllocPool pool;
+    /* 0x14 */ AudioCacheEntry entries[16];
+} AudioPersistentCache; /* size = 0xD4 */
+
+/* AudioHeap_InitTemporaryCache: pool +0x4, entries[0/1] +0x14 / +0x20; the two
+ * -1 stores are entries[0].id (+0x1E) and entries[1].id (+0x2A). */
+typedef struct AudioTemporaryCache {
+    /* 0x00 */ u32 nextSide;
+    /* 0x04 */ AudioAllocPool pool;
+    /* 0x14 */ AudioCacheEntry entries[2];
+} AudioTemporaryCache; /* size = 0x2C */
+
+typedef struct AudioCache {
+    /* 0x000 */ AudioPersistentCache persistent;
+    /* 0x0D4 */ AudioTemporaryCache temporary;
+    /* 0x100 */ u8 unk_100[0x10];
+} AudioCache; /* size = 0x110 */
+
+/* AudioHeap_InitSessionPools reads miscPoolSize [0] and cachePoolSize [3]. */
+typedef struct AudioSessionPoolSplit {
+    /* 0x0 */ u32 miscPoolSize;
+    /* 0x4 */ u32 unkSizes[2];
+    /* 0xC */ u32 cachePoolSize;
+} AudioSessionPoolSplit; /* size = 0x10 */
+
+typedef struct AudioCachePoolSplit {
+    /* 0x0 */ u32 persistentCommonPoolSize;
+    /* 0x4 */ u32 temporaryCommonPoolSize;
+} AudioCachePoolSplit; /* size = 0x8 */
+
+typedef struct AudioCommonPoolSplit {
+    /* 0x0 */ u32 seqCacheSize;
+    /* 0x4 */ u32 fontCacheSize;
+    /* 0x8 */ u32 sampleBankCacheSize;
+} AudioCommonPoolSplit; /* size = 0xC */
+
 /* AudioSynth_ProcessNote's views (game_libs_post.c gl_e134_*): the OoT sample
  * header with the u32 codec/medium/size bitfield word, the flat ADPCM loop
  * (no separate header struct) and the codebook. */
@@ -61,6 +131,16 @@ typedef struct Sample {
     /* 0x8 */ AdpcmLoop *loop;
     /* 0xC */ AdpcmBook *book;
 } Sample; /* size = 0x10 */
+
+/* AudioContext.preloadSampleStack (0x80 x 0x14 = 0x630..0x1030; OoT layout):
+ * AudioHeap_AllocTemporarySampleCacheEntry and game_libs_o2_25C54.c's view. */
+typedef struct AudioPreloadReq {
+    /* 0x00 */ u32 endAndMediumKey;
+    /* 0x04 */ Sample *sample;
+    /* 0x08 */ u8 *ramAddr;
+    /* 0x0C */ u32 encodedInfo;
+    /* 0x10 */ s32 isFree;
+} AudioPreloadReq; /* size = 0x14 */
 
 typedef struct TunedSample {
     /* 0x0 */ Sample *sample;
@@ -488,7 +568,7 @@ typedef struct AudioContext {
     /* 0x0018 */ SynthesisReverb synthesisReverbs[3]; /* at most 3 fit below usedSamples */
     /* 0x0420 */ char unk_0420[0x0430 - 0x0420];
     /* 0x0430 */ void *usedSamples[0x80];             /* RelocateFontAndPreloadSamples, PreloadSamplesForFont */
-    /* 0x0630 */ u8 preloadSampleStack[0x1030 - 0x0630]; /* 0x80 preload requests (ProcessSamplePreloads) */
+    /* 0x0630 */ AudioPreloadReq preloadSampleStack[0x80]; /* ProcessSamplePreloads, AllocTemporarySampleCacheEntry */
     /* 0x1030 */ s32 numUsedSamples;
     /* 0x1034 */ s32 preloadSampleStackTop;
     /* 0x1038 */ AudioAsyncLoad asyncLoads[16];
@@ -564,7 +644,21 @@ typedef struct AudioContext {
     /* 0x2178 */ AudioAllocPool externalPool;         /* AllocAttemptExternal, InitExternalPool */
     /* 0x2188 */ AudioAllocPool initPool;             /* InitMainPools */
     /* 0x2198 */ AudioAllocPool miscPool;             /* InitSampleDmaBuffers */
-    /* 0x21A8 */ char unk_21A8[0x2C10 - 0x21A8];      /* cache pools, seq/font/sample caches, permanent + sample caches */
+    /* 0x21A8 */ char unk_21A8[0x21C8 - 0x21A8];      /* OoT: probably two unused pools */
+    /* 0x21C8 */ AudioAllocPool cachePool;            /* InitSessionPools, InitCachePools */
+    /* 0x21D8 */ AudioAllocPool persistentCommonPool; /* InitCachePools, InitPersistentPoolsAndCaches */
+    /* 0x21E8 */ AudioAllocPool temporaryCommonPool;  /* InitCachePools, InitTemporaryPoolsAndCaches */
+    /* 0x21F8 */ AudioCache seqCache;                 /* InitPersistent / TemporaryPoolsAndCaches */
+    /* 0x2308 */ AudioCache fontCache;
+    /* 0x2418 */ AudioCache sampleBankCache;
+    /* 0x2528 */ AudioAllocPool permanentPool;        /* AllocPermanent */
+    /* 0x2538 */ AudioCacheEntry permanentCache[32];  /* AllocPermanent, SearchPermanentCache */
+    /* 0x26B8 */ AudioSampleCache persistentSampleCache; /* InitSampleCaches, AllocPersistentSampleCacheEntry */
+    /* 0x294C */ AudioSampleCache temporarySampleCache;  /* InitSampleCaches, AllocTemporarySampleCacheEntry */
+    /* 0x2BE0 */ AudioSessionPoolSplit sessionPoolSplit;
+    /* 0x2BF0 */ AudioCachePoolSplit cachePoolSplit;
+    /* 0x2BF8 */ AudioCommonPoolSplit persistentCommonPoolSplit;
+    /* 0x2C04 */ AudioCommonPoolSplit temporaryCommonPoolSplit;
     /* 0x2C10 */ u8 sampleFontLoadStatus[0x30];       /* ResetLoadStatus, AsyncLoadInner */
     /* 0x2C40 */ u8 fontLoadStatus[0x30];
     /* 0x2C70 */ u8 seqLoadStatus[0x80];
@@ -618,7 +712,20 @@ AUDIO_ASSERT_OFFSET(audioRandom, 0x2154);
 AUDIO_ASSERT_OFFSET(resetTimer, 0x215C);
 AUDIO_ASSERT_OFFSET(externalPool, 0x2178);
 AUDIO_ASSERT_OFFSET(miscPool, 0x2198);
+AUDIO_ASSERT_OFFSET(cachePool, 0x21C8);
+AUDIO_ASSERT_OFFSET(seqCache, 0x21F8);
+AUDIO_ASSERT_OFFSET(fontCache, 0x2308);
+AUDIO_ASSERT_OFFSET(sampleBankCache, 0x2418);
+AUDIO_ASSERT_OFFSET(permanentPool, 0x2528);
+AUDIO_ASSERT_OFFSET(permanentCache, 0x2538);
+AUDIO_ASSERT_OFFSET(persistentSampleCache, 0x26B8);
+AUDIO_ASSERT_OFFSET(temporarySampleCache, 0x294C);
+AUDIO_ASSERT_OFFSET(sessionPoolSplit, 0x2BE0);
+AUDIO_ASSERT_OFFSET(temporaryCommonPoolSplit, 0x2C04);
 AUDIO_ASSERT_OFFSET(sampleFontLoadStatus, 0x2C10);
+typedef char audio_cache_size_assert[sizeof(AudioCache) == 0x110 ? 1 : -1];
+typedef char audio_samplecache_size_assert[sizeof(AudioSampleCache) == 0x294 ? 1 : -1];
+typedef char audio_cacheentry_size_assert[sizeof(AudioCacheEntry) == 0xC ? 1 : -1];
 AUDIO_ASSERT_OFFSET(resetStatus, 0x2CF0);
 AUDIO_ASSERT_OFFSET(notes, 0x2CFC);
 AUDIO_ASSERT_OFFSET(seqPlayers, 0x2D00);

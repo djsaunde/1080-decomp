@@ -2356,10 +2356,14 @@ void AudioHeap_WritebackDCache(void) {
 /* AudioHeap_AllocZeroedAttemptExternal: MATCHED 2026-05-31 — byte-identical to AudioHeap_AllocAttemptExternal; applied
  * its body (init v1=0; if(D[0x2178]) v1=cb(&D+0x2178); if(!v1) v1=cb(a0,a1); return v1). */
 /* 2026-05-31: BYTE-IDENTICAL to the now-100% AudioHeap_AllocAttemptExternal — applied its body. */
+/* gAudioCtx for the AudioHeap pool / cache functions below (agent-c run 518): the
+ * same symbol (D_00000000 via gAudioContext) and offsets as the raw spellings it
+ * replaced; #undef after AudioHeap_DiscardSampleCaches. */
+#define gAudioCtx (*(AudioContext *)&gAudioContext)
 int AudioHeap_AllocZeroedAttemptExternal(int a0, int a1) {
     int v1 = 0;
-    if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
-        v1 = CALL(AudioHeap_AllocZeroed)((char*)&gAudioContext + 0x2178);
+    if (gAudioCtx.externalPool.startRamAddr != 0) {
+        v1 = CALL(AudioHeap_AllocZeroed)(&gAudioCtx.externalPool);
     }
     if (v1 == 0) {
         v1 = CALL(AudioHeap_AllocZeroed)(a0, a1);
@@ -2377,8 +2381,8 @@ extern int gl_func_00000000();
  * merge is byte-exact. */
 int AudioHeap_AllocAttemptExternal(int a0, int a1) {
     int v1 = 0;
-    if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
-        v1 = CALL(AudioHeap_Alloc)((char*)&gAudioContext + 0x2178);
+    if (gAudioCtx.externalPool.startRamAddr != 0) {
+        v1 = CALL(AudioHeap_Alloc)(&gAudioCtx.externalPool);
     }
     if (v1 == 0) {
         v1 = CALL(AudioHeap_Alloc)(a0, a1);
@@ -2441,11 +2445,11 @@ int AudioHeap_AllocDmaMemoryZeroed(int a0, int a1) {
  * #feedback-ido-goto-epilogue-shared-saves-redundant-set) saves 2 insns
  * vs the if/return form. */
 extern int gl_func_00000000();
-void *AudioHeap_AllocZeroed(int *a0) {
-    char *p = (char *)CALL(AudioHeap_Alloc)(a0);
+void *AudioHeap_AllocZeroed(AudioAllocPool *pool) {
+    char *p = (char *)CALL(AudioHeap_Alloc)(pool);
     char *c;
     if (p == 0) goto out;
-    for (c = p; c < (char *)a0[1]; c++) {
+    for (c = p; c < (char *)pool->curRamAddr; c++) {
         *c = 0;
     }
 out:
@@ -2490,14 +2494,14 @@ out:
  * sum operands in source order (a0[0] then a0[2]) reproduces `lw t6,0(a0); lw
  * t7,8(a0)`. The dead `goto success; if (!cur) {}` tail preserves the inverted
  * branch shape (bne + b success + separate fail jr-ra). */
-void *AudioHeap_Alloc(int *a0, unsigned int n) {
+void *AudioHeap_Alloc(AudioAllocPool *pool, unsigned int n) {
   unsigned int aligned = (n + 15) & (~15);
   void *new_var;
-  unsigned int cur = a0[1];
+  unsigned int cur = (unsigned int)pool->curRamAddr;
   new_var = (void *) cur;
-  if ((unsigned int)(a0[0] + a0[2]) >= (unsigned int)(a0[1] + aligned))
+  if ((unsigned int)(pool->startRamAddr + pool->size) >= (unsigned int)(pool->curRamAddr + aligned))
   {
-    a0[1] = cur + aligned;
+    pool->curRamAddr = (u8 *)(cur + aligned);
     goto success;
     if (!cur)
     {
@@ -2505,7 +2509,7 @@ void *AudioHeap_Alloc(int *a0, unsigned int n) {
   }
   return 0;
   success:
-  a0[3] += 1;
+  pool->numEntries += 1;
   return new_var;
 }
 
@@ -2515,15 +2519,19 @@ void *AudioHeap_Alloc(int *a0, unsigned int n) {
  * INSN_PATCH was REMOVED 2026-05-23 as match-faking and the function still
  * matches; the scheduling difference apparently resolved via incremental
  * codegen changes upstream. */
-void AudioHeap_InitPool(int *a0, int a1, int a2) {
+void AudioHeap_InitPool(AudioAllocPool *pool, int a1, int a2) {
     int up = (a1 + 0xF) & ~0xF;
-    a0[0] = up;
-    a0[1] = up;
-    a0[2] = a2 - (a1 & 0xF);
-    a0[3] = 0;
+    pool->startRamAddr = (u8 *)up;
+    pool->curRamAddr = (u8 *)up;
+    pool->size = a2 - (a1 & 0xF);
+    pool->numEntries = 0;
 }
 
-void AudioHeap_InitPersistentCache(int *a0) { *(int*)((char*)(a0) + 0x10) = 0; *(int*)((char*)(a0) + 0x0) = 0; *(int*)((char*)(a0) + 0x8) = *(int*)((char*)(a0) + 0x4); }
+void AudioHeap_InitPersistentCache(AudioPersistentCache *cache) {
+    cache->pool.numEntries = 0;
+    cache->numEntries = 0;
+    cache->pool.curRamAddr = cache->pool.startRamAddr;
+}
 
 /* 97.08% NM. 12-insn 8-store struct init with 2-reg-rename diff (-1 const
  * lands in $a1 vs target's $v1; sum lands in $v1 vs target's $t7).
@@ -2548,19 +2556,22 @@ void AudioHeap_InitPersistentCache(int *a0) { *(int*)((char*)(a0) + 0x10) = 0; *
  *     (`*(a0+0x20)=v; *(a0+0x20)+= *(a0+0xC);`) holds $v0 as the accumulator
  *     base so CSE re-uses the just-stored $v0 as $rs -> `addu $t7,$v0,$t6`,
  *     WHILE keeping the transient-temp ($t7) + $v1-const allocation. */
-void AudioHeap_InitTemporaryCache(short *a0) {
-    int v = *(int *)((char *)a0 + 4);
-    *(int *)((char *)a0 + 0x10) = 0;
-    *(int *)a0 = 0;
-    *(int *)((char *)a0 + 0x20) = v;
-    *(int *)((char *)a0 + 0x20) += *(int *)((char *)a0 + 0xC);
-    a0[0xF] = -1;
-    a0[0x15] = -1;
-    *(int *)((char *)a0 + 8) = v;
-    *(int *)((char *)a0 + 0x14) = v;
+void AudioHeap_InitTemporaryCache(AudioTemporaryCache *cache) {
+    u8 *v = cache->pool.startRamAddr;
+    cache->pool.numEntries = 0;
+    cache->nextSide = 0;
+    cache->entries[1].ramAddr = v;
+    cache->entries[1].ramAddr += cache->pool.size;
+    cache->entries[0].id = -1;
+    cache->entries[1].id = -1;
+    cache->pool.curRamAddr = v;
+    cache->entries[0].ramAddr = v;
 }
 
-void AudioHeap_ResetPool(int *a0) { *(int*)((char*)a0 + 4) = *(int*)a0; *(int*)((char*)a0 + 0xC) = 0; }
+void AudioHeap_ResetPool(AudioAllocPool *pool) {
+    pool->curRamAddr = pool->startRamAddr;
+    pool->numEntries = 0;
+}
 
 // AudioHeap_InitMainPools — STRUCTURAL PASS (0x6C / 27 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
@@ -2600,12 +2611,12 @@ void AudioHeap_InitMainPools(int arg) {
      *      InitPool(&miscPool, audioHeap + initPoolSize, heapSize - initPoolSize);
      *      unusedPool.start = NULL. Three objects: gAudioContext (Sym 1255),
      *      gAudioHeap (Sym 1283), gAudioHeapInitSizes (Sym 1284, +4 = heapSize). */
-    char *ctx = (char *)&gAudioContext;
+    AudioContext *ctx = (AudioContext *)&gAudioContext;
     char *heap = (char *)&gAudioHeap;
     char *sizes = (char *)&gAudioHeapInitSizes;
-    CALL(AudioHeap_InitPool)(ctx + 0x2188, heap, arg);
-    CALL(AudioHeap_InitPool)(ctx + 0x2168, heap + arg, *(int *)(sizes + 4) - arg);
-    *(int *)(ctx + 0x2178) = 0;
+    CALL(AudioHeap_InitPool)(&ctx->initPool, heap, arg);
+    CALL(AudioHeap_InitPool)(&ctx->sessionPool, heap + arg, *(int *)(sizes + 4) - arg);
+    ctx->externalPool.startRamAddr = 0;
 }
 
 // AudioHeap_InitSessionPools -- report/dump-state helper (sibling of
@@ -2620,14 +2631,14 @@ extern int D_00000000;
 /* Post-merge body (2026-07-23): the head store's source is the merged-in
  * hoisted load *(D+0x2168) (was extern D_00000001 pre-merge). Same
  * formulation as sibling 1FFB8. */
-void AudioHeap_InitSessionPools(int *arg) {
-    char *D = (char *)&gAudioContext;
+void AudioHeap_InitSessionPools(AudioSessionPoolSplit *split) {
+    AudioContext *ctx = (AudioContext *)&gAudioContext;
     int r;
-    *(int *)(D + 0x216C) = *(int *)(D + 0x2168);
-    r = CALL(AudioHeap_Alloc)(D + 0x2168, arg[0]);
-    r = CALL(AudioHeap_InitPool)(D + 0x2198, r, arg[0]);
-    r = CALL(AudioHeap_Alloc)(D + 0x2168, arg[3]);
-    CALL(AudioHeap_InitPool)(D + 0x21C8, r, arg[3]);
+    ctx->sessionPool.curRamAddr = ctx->sessionPool.startRamAddr;
+    r = CALL(AudioHeap_Alloc)(&ctx->sessionPool, split->miscPoolSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->miscPool, r, split->miscPoolSize);
+    r = CALL(AudioHeap_Alloc)(&ctx->sessionPool, split->cachePoolSize);
+    CALL(AudioHeap_InitPool)(&ctx->cachePool, r, split->cachePoolSize);
 }
 
 
@@ -2640,14 +2651,14 @@ void AudioHeap_InitSessionPools(int *arg) {
 // is `jal 0`; calling gl_func_0001CA10 directly would link its real in-unit
 // address (0x1CA10) into the jal and break cmp.
 extern int gl_func_0001CA10_1FFAC();
-void AudioHeap_InitCachePools(int *arg) {
-    char *D = (char *)&gAudioContext;
+void AudioHeap_InitCachePools(AudioCachePoolSplit *split) {
+    AudioContext *ctx = (AudioContext *)&gAudioContext;
     int v;
-    *(int *)(D + 0x21CC) = *(int *)(D + 0x21C8);
-    v = gl_func_0001CA10_1FFAC(D + 0x21C8, arg[0]);
-    v = gl_func_0001CA10_1FFAC(D + 0x21D8, v, arg[0]);
-    v = gl_func_0001CA10_1FFAC(D + 0x21C8, arg[1]);
-    gl_func_0001CA10_1FFAC(D + 0x21E8, v, arg[1]);
+    ctx->cachePool.curRamAddr = ctx->cachePool.startRamAddr;
+    v = gl_func_0001CA10_1FFAC(&ctx->cachePool, split->persistentCommonPoolSize);
+    v = gl_func_0001CA10_1FFAC(&ctx->persistentCommonPool, v, split->persistentCommonPoolSize);
+    v = gl_func_0001CA10_1FFAC(&ctx->cachePool, split->temporaryCommonPoolSize);
+    gl_func_0001CA10_1FFAC(&ctx->temporaryCommonPool, v, split->temporaryCommonPoolSize);
 }
 
 
@@ -2665,19 +2676,19 @@ extern int D_00000000;
  * load *(D+0x21D8) (was `(int)obj`); label/value call pairs chain the
  * reporter's return value as arg1 of each value line (target's
  * `move a1,v0` + delay-slot lw a2), exactly the 1FF28/1FFAC shape. */
-void AudioHeap_InitPersistentPoolsAndCaches(int *obj) {
-    char *D = (char *)&gAudioContext;
+void AudioHeap_InitPersistentPoolsAndCaches(AudioCommonPoolSplit *split) {
+    AudioContext *ctx = (AudioContext *)&gAudioContext;
     int r;
-    *(int *)(D + 0x21DC) = *(int *)(D + 0x21D8);
-    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[0]);
-    r = CALL(AudioHeap_InitPool)(D + 0x21FC, r, obj[0]);
-    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[1]);
-    r = CALL(AudioHeap_InitPool)(D + 0x230C, r, obj[1]);
-    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[2]);
-    r = CALL(AudioHeap_InitPool)(D + 0x241C, r, obj[2]);
-    CALL(AudioHeap_InitPersistentCache)(D + 0x21F8);
-    CALL(AudioHeap_InitPersistentCache)(D + 0x2308);
-    CALL(AudioHeap_InitPersistentCache)(D + 0x2418);
+    ctx->persistentCommonPool.curRamAddr = ctx->persistentCommonPool.startRamAddr;
+    r = CALL(AudioHeap_Alloc)(&ctx->persistentCommonPool, split->seqCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->seqCache.persistent.pool, r, split->seqCacheSize);
+    r = CALL(AudioHeap_Alloc)(&ctx->persistentCommonPool, split->fontCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->fontCache.persistent.pool, r, split->fontCacheSize);
+    r = CALL(AudioHeap_Alloc)(&ctx->persistentCommonPool, split->sampleBankCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->sampleBankCache.persistent.pool, r, split->sampleBankCacheSize);
+    CALL(AudioHeap_InitPersistentCache)(&ctx->seqCache.persistent);
+    CALL(AudioHeap_InitPersistentCache)(&ctx->fontCache.persistent);
+    CALL(AudioHeap_InitPersistentCache)(&ctx->sampleBankCache.persistent);
 }
 
 
@@ -2691,19 +2702,19 @@ extern int gl_func_00000000();
 extern int D_00000000;
 /* Post-merge body (2026-07-23): head store sources the merged-in hoisted
  * load *(D+0x21E8); chained r-return label/value pairs, twin of 20030. */
-void AudioHeap_InitTemporaryPoolsAndCaches(int *obj) {
-    char *D = (char *)&gAudioContext;
+void AudioHeap_InitTemporaryPoolsAndCaches(AudioCommonPoolSplit *split) {
+    AudioContext *ctx = (AudioContext *)&gAudioContext;
     int r;
-    *(int *)(D + 0x21EC) = *(int *)(D + 0x21E8);
-    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[0]);
-    r = CALL(AudioHeap_InitPool)(D + 0x22D0, r, obj[0]);
-    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[1]);
-    r = CALL(AudioHeap_InitPool)(D + 0x23E0, r, obj[1]);
-    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[2]);
-    r = CALL(AudioHeap_InitPool)(D + 0x24F0, r, obj[2]);
-    CALL(AudioHeap_InitTemporaryCache)(D + 0x22CC);
-    CALL(AudioHeap_InitTemporaryCache)(D + 0x23DC);
-    CALL(AudioHeap_InitTemporaryCache)(D + 0x24EC);
+    ctx->temporaryCommonPool.curRamAddr = ctx->temporaryCommonPool.startRamAddr;
+    r = CALL(AudioHeap_Alloc)(&ctx->temporaryCommonPool, split->seqCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->seqCache.temporary.pool, r, split->seqCacheSize);
+    r = CALL(AudioHeap_Alloc)(&ctx->temporaryCommonPool, split->fontCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->fontCache.temporary.pool, r, split->fontCacheSize);
+    r = CALL(AudioHeap_Alloc)(&ctx->temporaryCommonPool, split->sampleBankCacheSize);
+    r = CALL(AudioHeap_InitPool)(&ctx->sampleBankCache.temporary.pool, r, split->sampleBankCacheSize);
+    CALL(AudioHeap_InitTemporaryCache)(&ctx->seqCache.temporary);
+    CALL(AudioHeap_InitTemporaryCache)(&ctx->fontCache.temporary);
+    CALL(AudioHeap_InitTemporaryCache)(&ctx->sampleBankCache.temporary);
 }
 
 // AudioHeap_AllocCached -- double-buffered pool allocator (0x704, 449 insns), EXACT (agent-c run 181, below).
@@ -3701,16 +3712,16 @@ extern int func_00000000();
  * statement after the stores (v0 still holds the call result, as in the target); the
  * slot address recomputed per store (CSE'd) and base declared before count. */
 int AudioHeap_AllocPermanent(int a0, int a1, int a2) {
-    char *base = (char*)&gAudioContext;
-    int count = *(int*)((char*)&gAudioContext + 0x2534);
-    int v0 = FCALL(AudioHeap_Alloc)(base + 0x2528, a2);
-    *(int*)(base + count * 12 + 0x2538) = v0;
+    AudioContext *base = (AudioContext *)&gAudioContext;
+    int count = gAudioCtx.permanentPool.numEntries;
+    int v0 = FCALL(AudioHeap_Alloc)(&base->permanentPool, a2);
+    base->permanentCache[count].ramAddr = (u8 *)v0;
     if (v0 == 0) {
         return 0;
     }
-    *(short*)(base + count * 12 + 0x2540) = (short)a0;
-    *(short*)(base + count * 12 + 0x2542) = (short)a1;
-    *(int*)(base + count * 12 + 0x253C) = a2;
+    base->permanentCache[count].tableType = (short)a0;
+    base->permanentCache[count].id = (short)a1;
+    base->permanentCache[count].size = a2;
 }
 
 /* aud_AllocSampleCacheTemporary: 20-insn alloc-via-jal-alt-entry + 3-field-set wrapper.
@@ -3762,22 +3773,22 @@ end_zero:
  * cap-causing structural error. */
 extern int func_00000000();
 void AudioHeap_InitSampleCaches(int a0, int a1) {
-    int r0 = FCALL(AudioHeap_AllocAttemptExternal)((char*)&gAudioContext + 0x2198, a0);
+    int r0 = FCALL(AudioHeap_AllocAttemptExternal)(&gAudioCtx.miscPool, a0);
     if (r0 == 0) {
-        *(int*)((char*)&gAudioContext + 0x26C0) = 0;
+        gAudioCtx.persistentSampleCache.pool.size = 0;
     } else {
-        FCALL(AudioHeap_InitPool)((char*)&gAudioContext + 0x26B8, r0, a0);
+        FCALL(AudioHeap_InitPool)(&gAudioCtx.persistentSampleCache.pool, r0, a0);
     }
     {
-        int r1 = FCALL(AudioHeap_AllocAttemptExternal)((char*)&gAudioContext + 0x2198, a1);
+        int r1 = FCALL(AudioHeap_AllocAttemptExternal)(&gAudioCtx.miscPool, a1);
         if (r1 == 0) {
-            *(int*)((char*)&D_00000000 + 0x2954) = 0;
+            gAudioCtx.temporarySampleCache.pool.size = 0;
         } else {
-            FCALL(AudioHeap_InitPool)((char*)&gAudioContext + 0x294C, r1, a1);
+            FCALL(AudioHeap_InitPool)(&gAudioCtx.temporarySampleCache.pool, r1, a1);
         }
     }
-    *(int*)((char*)&D_00000000 + 0x2948) = 0;
-    *(int*)((char*)&D_00000000 + 0x2BDC) = 0;
+    gAudioCtx.persistentSampleCache.numEntries = 0;
+    gAudioCtx.temporarySampleCache.numEntries = 0;
 }
 
 // AudioHeap_AllocTemporarySampleCacheEntry — STRUCTURAL PASS (0x298 / 166 words, no episode).
@@ -3840,30 +3851,23 @@ extern int D_00000000;
  * Left: the target holds &gAudioCtx in s6 for the first curRamAddr read and the
  * preloadSampleStackTop guard (fn-typed base for all / some sites, direct member
  * reads: worse or no change), so every later temp is one t-register higher. */
-typedef struct { u8 *startRamAddr; u8 *curRamAddr; s32 size; s32 numEntries; } gl_heap_Pool;
-typedef struct { s8 inUse; s8 origMedium; u8 sampleBankId; u8 unk_03[5]; u8 *allocatedAddr; void *sampleAddr; u32 size; } gl_heap_CacheEntry;
-typedef struct { gl_heap_Pool pool; gl_heap_CacheEntry entries[32]; s32 numEntries; } gl_heap_SampleCache;
-typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; } gl_heap_Sample;
-typedef struct { u32 endAndMediumKey; gl_heap_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_heap_PreloadReq;
-typedef struct {
-    char pad0[0x630]; gl_heap_PreloadReq preloadSampleStack[1]; char pad644[0x1034 - 0x644]; s32 preloadSampleStackTop;
-    char pad1038[0x294C - 0x1038]; gl_heap_SampleCache temporarySampleCache;
-} gl_heap_Ctx;
-extern gl_heap_Ctx gAudioContext_21F40;
+/* run 518: the gl_heap_* views are now include/audio.h's AudioContext /
+ * AudioSampleCache / SampleCacheEntry / AudioPreloadReq (same layout). */
+extern AudioContext gAudioContext_21F40;
 #define gl_heap_gAudioCtx gAudioContext_21F40
 extern int gl_func_00036844();
 #define AudioHeap_Alloc (void *)gl_func_00000000
 #define AudioHeap_DiscardSampleCacheEntry gl_func_00036844
 
-gl_heap_CacheEntry *AudioHeap_AllocTemporarySampleCacheEntry(u32 size) {
+SampleCacheEntry *AudioHeap_AllocTemporarySampleCacheEntry(u32 size) {
     u8 *allocAfter;
     u8 *allocBefore;
     void *ramAddr;
     s32 index;
     s32 i;
-    gl_heap_CacheEntry *entry;
-    gl_heap_PreloadReq *preload;
-    gl_heap_SampleCache *cache;
+    SampleCacheEntry *entry;
+    AudioPreloadReq *preload;
+    AudioSampleCache *cache;
     u8 *startRamAddr;
     u8 *endRamAddr;
 
@@ -4097,18 +4101,18 @@ void AudioHeap_UnapplySampleCache(char *a0, char *a1) {
 //   gl_func_00000000 = canonical never-defined USO placeholder.
 extern int gl_func_00000000();
 void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
-    char *D = (char *)&gAudioContext; /* all 5 sites: Sym 1255 (+0x26B8 cache, +0x2948 count) */
-    char *base = D + 0x26B8;
-    int r = CALL(AudioHeap_Alloc)(base, arg);
+    AudioContext *D = (AudioContext *)&gAudioContext; /* all 5 sites: Sym 1255 */
+    AudioSampleCache *cache = &D->persistentSampleCache;
+    int r = CALL(AudioHeap_Alloc)(&cache->pool, arg);
     if (r == 0) {
         return 0;
     }
     {
-        char *e = base + *(int *)(D + 0x2948) * 0x14 + 0x10;
-        *(char *)(e + 0) = 1;
-        *(int *)(e + 8) = r;
-        *(int *)(e + 0x10) = arg;
-        *(int *)(D + 0x2948) = *(int *)(D + 0x2948) + 1;
+        SampleCacheEntry *e = &cache->entries[D->persistentSampleCache.numEntries];
+        e->inUse = 1;
+        e->allocatedAddr = (u8 *)r;
+        e->size = arg;
+        D->persistentSampleCache.numEntries = D->persistentSampleCache.numEntries + 1;
         return e;
     }
 }
@@ -4193,6 +4197,7 @@ void AudioHeap_DiscardSampleCaches(void) {
     }
 }
 #undef gl_22464_gAudioCtx
+#undef gAudioCtx /* the AudioHeap pool / cache block (run 518) */
 #undef GL22464_UNAPPLY
 #undef AudioHeap_SearchCaches
 #undef AudioLoad_IsFontLoadComplete
