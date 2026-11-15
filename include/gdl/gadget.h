@@ -179,7 +179,8 @@ typedef struct PointsPopup {
     /* 0xAC */ f32 accelY;         /* update: velY += accelY */
     /* 0xB0 */ s32 arg;            /* ctor arg 1; allocSlot copies the list's +0x54 */
     /* 0xB4 */ char text[0xD4 - 0xB4]; /* sprintf target (PointsGadget_setValue, allocSlot);
-                                    * PointsPopup_flipDigits_00014598 deciphers it in place */
+                                    * PointsPopup_flipDigits_00014598 nine's-complements its digits
+                                    * in place ('0' <-> '9', ...; 'a', 'b', ' ' kept; no static caller) */
 } PointsPopup;
 
 typedef char PointsPopup_size_check[sizeof(PointsPopup) == 0xD4 ? 1 : -1];

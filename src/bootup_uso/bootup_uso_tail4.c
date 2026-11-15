@@ -425,6 +425,8 @@ void TimeGadgetParms_set104_00014004(char *a0, int a1, int a2) {
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
+/* Gadget.text (0xE4): every byte except 'a', 'b', ' ' becomes 0x69 - c, i.e. '0'..'9' -> '9'..'0' (the nine's
+ * complement of the sprintf'd number; agent-h run 519). No static caller in any module. */
 void Gadget_flipDigits_00014010(char *a0) {
     unsigned int i;
     unsigned char c;
@@ -778,6 +780,8 @@ int PointsPopup_slideStep(char *a0, int a1) {
  * for condition; the byte is addressed (a0 + i)[off] (target walks a0 + i
  * with the field offset in the lbu/sb) and read inline at every use (a named
  * char lands in v1, the inline reads CSE into v0). */
+/* PointsPopup.text (0xB4): every byte except 'a', 'b', ' ' becomes 0x69 - c, i.e. '0'..'9' -> '9'..'0' (the nine's
+ * complement of the sprintf'd number; agent-h run 519). No static caller in any module. */
 void PointsPopup_flipDigits_00014598(char *a0) {
     unsigned int i;
     unsigned char c;
