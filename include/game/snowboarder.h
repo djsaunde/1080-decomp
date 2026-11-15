@@ -30,28 +30,41 @@ typedef struct SnowBVec3 {
 
 typedef struct SnowBoarder {
     char pad000[0x0B4];
-    SnowBVec3 pos;          /* 0x0B4: world position. SnowBoarder_func_0000B520 compares rival->pos.z - pos.z;
+    SnowBVec3 pos;          /* 0x0B4: world position (the node position: the ctor also sets a child node's
+                             * +0xB4 to (0, 100, 0)). SnowBoarder_func_0000B520 compares rival->pos.z - pos.z;
                              * SnowAI (game.uso) seeds its target from rider->pos */
     char pad0C0[0x318 - 0x0C0];
     SnowBVec3 vel;          /* 0x318: velocity. B520 adds dir * nudge, then rescales it to maxSpeed
                              * (normalize + scale) when speed > maxSpeed */
     char pad324[0x348 - 0x324];
     f32 speed;              /* 0x348: |vel|, compared against maxSpeed (B520) and 30 / 10 thresholds */
-    char pad34C[0x3C8 - 0x34C];
+    char pad34C[0x38C - 0x34C];
+    s32 unk38C;             /* 0x38C: set to 1 by SnowBoarder_ctor */
+    char pad390[0x3A4 - 0x390];
+    SnowBVec3 startPos;     /* 0x3A4: spawn point: ctor args (x, z), y = ground height at (x, z) + a RoData offset */
+    char pad3B0[0x3C8 - 0x3B0];
     SnowBVec3 dir;          /* 0x3C8: unit forward direction (B520 nudge axis; dotted with vel in updateDyn) */
     char pad3D4[0x6C0 - 0x3D4];
     f32 dragXZ;             /* 0x6C0: B520 scales vel.x / vel.z by (1 - dragXZ) while unk938 == 0 */
     char pad6C4[0x768 - 0x6C4];
     f32 baseMaxSpeed;       /* 0x768: the value maxSpeed eases toward (B520) */
     char pad76C[0x800 - 0x76C];
-    char *input;            /* 0x800: control block; its +0x10 word carries the direction bits 4 / 8 (B520) */
-    char pad804[0x844 - 0x804];
+    char *input;            /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
+                             * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
+    char *unk804;           /* 0x804: child created last in the ctor from (0, this, ...) */
+    char sub808[0xC];       /* 0x808: embedded 0xC-byte member, constructed in place and initialised
+                             * with (ctor arg 1, ctor arg 2) */
+    char pad814[0x844 - 0x814];
     char *unk844;           /* 0x844: child object A; its +0x30 float is negated on a mirror flip */
-    char pad848[0x864 - 0x848];
+    s32 unk848;             /* 0x848: ctor arg 1 (also passed to the 0x808 member) */
+    char pad84C[0x864 - 0x84C];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
-    char pad868[0x8C4 - 0x868];
-    u32 state;              /* 0x8C4: SnowBoarder_func_0000DDCC skips its update for states 6 and 7 */
-    char pad8C8[0x8F4 - 0x8C8];
+    char pad868[0x8C0 - 0x868];
+    s32 unk8C0;             /* 0x8C0: 1 << state (a one-hot mask of 0x8C4, set by the ctor) */
+    u32 state;              /* 0x8C4: ctor arg 2; SnowBoarder_func_0000DDCC skips its update for 6 and 7 */
+    char pad8C8[0x8E0 - 0x8C8];
+    f32 tint[4];            /* 0x8E0: r, g, b, a as 0..1 (ctor: colour byte / 255, alpha 255 / 164 / 117 / 70) */
+    char pad8F0[0x8F4 - 0x8F0];
     SnowBRec3 *unk8F4[3];   /* 0x8F4: three record slots refilled from the table by DDCC/DF04/E014 */
     s16 unk900;             /* 0x900: table index used when (flags & SNOWB_FLAG_MIRROR) == 0 */
     s16 unk902;             /* 0x902: table index used when mirrored */
@@ -83,13 +96,20 @@ typedef struct SnowBoarder {
 SNOWB_ASSERT_OFFSET(pos, 0x0B4);
 SNOWB_ASSERT_OFFSET(vel, 0x318);
 SNOWB_ASSERT_OFFSET(speed, 0x348);
+SNOWB_ASSERT_OFFSET(unk38C, 0x38C);
+SNOWB_ASSERT_OFFSET(startPos, 0x3A4);
 SNOWB_ASSERT_OFFSET(dir, 0x3C8);
 SNOWB_ASSERT_OFFSET(dragXZ, 0x6C0);
 SNOWB_ASSERT_OFFSET(baseMaxSpeed, 0x768);
 SNOWB_ASSERT_OFFSET(input, 0x800);
+SNOWB_ASSERT_OFFSET(unk804, 0x804);
+SNOWB_ASSERT_OFFSET(sub808, 0x808);
 SNOWB_ASSERT_OFFSET(unk844, 0x844);
+SNOWB_ASSERT_OFFSET(unk848, 0x848);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
+SNOWB_ASSERT_OFFSET(unk8C0, 0x8C0);
 SNOWB_ASSERT_OFFSET(state, 0x8C4);
+SNOWB_ASSERT_OFFSET(tint, 0x8E0);
 SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);
 SNOWB_ASSERT_OFFSET(unk902, 0x902);
