@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "game/modeproc.h"
+#include "game/nameentry.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -1476,23 +1477,23 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
             NODE(a2)->vptr = (int)D_mgr2940_y;
         }
         NODE(arg0)->vptr = (int)D_mgr2940_z;
-        *(int *)(arg0 + 0x60) = arg2;
-        *(int *)(arg0 + 0xD4) = arg1;
-        *(int *)(arg0 + 0xE0) = 0xA0;
-        *(int *)(arg0 + 0xE4) = 0x1D;
-        *(int *)(arg0 + 0xD8) = 0xA0;
-        *(int *)(arg0 + 0xDC) = 0x82;
-        *(int *)(arg0 + 0xE8) = 0xA0;
-        *(int *)(arg0 + 0xEC) = 0x69;
-        *(int *)(arg0 + 0x16C) = 0;
-        *(float *)(arg0 + 0x168) = 1.0f;
+        MGRNAMEENT(arg0)->base.phase = arg2;
+        MGRNAMEENT(arg0)->race = arg1;
+        MGRNAMEENT(arg0)->pos[1][0] = 0xA0;
+        MGRNAMEENT(arg0)->pos[1][1] = 0x1D;
+        MGRNAMEENT(arg0)->pos[0][0] = 0xA0;
+        MGRNAMEENT(arg0)->pos[0][1] = 0x82;
+        MGRNAMEENT(arg0)->pos[2][0] = 0xA0;
+        MGRNAMEENT(arg0)->pos[2][1] = 0x69;
+        MGRNAMEENT(arg0)->unk16C = 0;
+        MGRNAMEENT(arg0)->alpha = 1.0f;
         gl_func_00000000(D_mgr2940_t + 0x18, 7);
-        *(int *)(arg0 + 0x170) = 0xFA;
-        gl_func_00000000(arg0 + 0xF0, 0x230004);
-        gl_func_00000000(arg0 + 0x108, 0x230003);
-        gl_func_00000000(arg0 + 0x120, 0x230005);
-        gl_func_00000000(arg0 + 0x138, 0x230006);
-        gl_func_00000000(arg0 + 0x150,
+        MGRNAMEENT(arg0)->panelY = 0xFA;
+        gl_func_00000000(MGRNAMEENT(arg0)->sprite0, 0x230004);
+        gl_func_00000000(MGRNAMEENT(arg0)->sprite1, 0x230003);
+        gl_func_00000000(MGRNAMEENT(arg0)->banner1, 0x230005);
+        gl_func_00000000(MGRNAMEENT(arg0)->banner2, 0x230006);
+        gl_func_00000000(MGRNAMEENT(arg0)->sprite4,
             ((D_mgr2940_id + 0x23) << 16) | (D_mgr2940_q.v - 1));
     }
     return arg0;
@@ -1509,15 +1510,15 @@ extern char D_00000000;
 void MgrNameEntry_drawExitOverlay(int *a0) {
     float v;
     gl_func_00000000(a0);
-    v = *(float*)((char*)a0 + 0x168);
+    v = MGRNAMEENT(a0)->alpha;
     if (0.0f < v) {
-        *(float*)((char*)a0 + 0x168) = v - *(float*)((char*)&D_00000000 + 0x614);
-        v = *(float*)((char*)a0 + 0x168);
+        MGRNAMEENT(a0)->alpha = v - *(float*)((char*)&D_00000000 + 0x614);
+        v = MGRNAMEENT(a0)->alpha;
         if (v < 0.0f) {
-            *(float*)((char*)a0 + 0x168) = 0.0f;
+            MGRNAMEENT(a0)->alpha = 0.0f;
         }
     }
-    v = *(float*)((char*)a0 + 0x168);
+    v = MGRNAMEENT(a0)->alpha;
     if (v <= 0.0f) {
         gl_func_00000000();
     }
@@ -1627,11 +1628,11 @@ void MgrNameEntry_drawBlinkBanner_00002E3C(char *a0) {
   }
   if (state == 1)
   {
-    target = a0 + 0x120;
+    target = MGRNAMEENT(a0)->banner1;
   }
   else
   {
-    target = a0 + 0x138;
+    target = MGRNAMEENT(a0)->banner2;
   }
   import_0024F2C8(target);
   import_0024E388(target, (int) (*((float *) (a0 + 0x168)) * (scale = 255.0f)), rgba, 255);

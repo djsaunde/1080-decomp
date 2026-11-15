@@ -1,6 +1,9 @@
 #include "common.h"
 #include "game/input.h"
 #include "game/modeproc.h"
+#include "game/nameentry.h"
+#include "game/modemenu.h"
+#include "game/guimenu.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -1101,17 +1104,17 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
             NODE(a2)->vptr = (int)D_arc199C_y;
         }
         NODE(arg0)->vptr = (int)D_arc199C_z;
-        *(int *)(arg0 + 0x60) = arg2;
-        *(char **)(arg0 + 0xD4) = arg1;
-        *(int *)(arg0 + 0xE0) = 0xA0;
-        *(int *)(arg0 + 0xE4) = 0x1D;
-        *(int *)(arg0 + 0xD8) = 0xA0;
-        *(int *)(arg0 + 0xDC) = 0x82;
-        *(int *)(arg0 + 0xE8) = 0xA0;
-        *(int *)(arg0 + 0xEC) = 0x69;
-        *(float *)(arg0 + 0x108) = 1.0f;
+        MODENAMEENT(arg0)->base.phase = arg2;
+        MODENAMEENT(arg0)->race = (s32)arg1;
+        MODENAMEENT(arg0)->pos[1][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[1][1] = 0x1D;
+        MODENAMEENT(arg0)->pos[0][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[0][1] = 0x82;
+        MODENAMEENT(arg0)->pos[2][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[2][1] = 0x69;
+        MODENAMEENT(arg0)->alpha = 1.0f;
         ARCRACE(arg1)->resultFade = 1.0f;
-        gl_func_00000000(arg0 + 0xF0,
+        gl_func_00000000(MODENAMEENT(arg0)->banner,
             ((D_arc199C_id + 0x23) << 16) | (((Arc199C_A *)arg0)->b->v + 7));
     }
     return arg0;
@@ -1140,9 +1143,9 @@ void ArcNameEntry_update_00001B04(int *arg) {
     int v0;
     v0 = gl_func_00000000(&D_arc1B04_a, 0x40100);
     if (v0 == 0) return;
-    v0 = gl_func_00000000(*(int**)((char*)arg + 0x50));
+    v0 = gl_func_00000000((int *)MODENAMEENT(arg)->base.entry);
     if (v0 != 0) {
-        *(int*)((char*)arg + 0x60) = 1;
+        MODENAMEENT(arg)->base.phase = 1;
         D_arc1B04_state[16] = 8;
         D_arc1B04_state[17] = 6;
     } else {
@@ -1160,7 +1163,7 @@ INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", ArcNameEntry_update_0000
 ArcNameEntry_drawEntryOverlay(a0) int * a0; {
     int *t;
     arcproc_uso_func_00000000(a0);
-    t = *(int**)((char*)a0 + 0xD4);
+    t = (int *)MODENAMEENT(a0)->race;
     arcproc_uso_func_00000000(t, 0x8C, ARCRACE(t)->finalTime);
 }
 
@@ -1177,18 +1180,18 @@ void ArcNameEntry_drawExitOverlay(int *self) {
     float val;
 
     gl_func_00000000(self);
-    sub = (int *)self[0xD4 / 4];
+    sub = (int *)MODENAMEENT(self)->race;
     fp = (float *)((char *)sub + 0x77C);
     val = *fp;
     if (val > 0.0f) {
         *fp -= *(float *)(base + 0x44);
-        sub = (int *)self[0xD4 / 4];
+        sub = (int *)MODENAMEENT(self)->race;
         if (ARCRACE(sub)->resultFade < 0.0f) {
             ARCRACE(sub)->resultFade = 0.0f;
-            sub = (int *)self[0xD4 / 4];
+            sub = (int *)MODENAMEENT(self)->race;
         }
         gl_func_00000000(sub, 140, ARCRACE(sub)->finalTime);
-        val = *(float *)((char *)(int *)self[0xD4 / 4] + 0x77C);
+        val = ARCRACE(MODENAMEENT(self)->race)->resultFade;
     }
     if (val <= 0.0f) {
         gl_func_00000000(self);
@@ -1213,13 +1216,13 @@ void ArcNameEntry_drawBlinkBanner_00001C74(int *a0) {
     buf[1] = 1.0f;
     buf[2] = 1.0f;
     buf[3] = 1.0f;
-    *(int *)((char *)a0 + 0x68) += 1;
-    if (gl_func_00000000(*(int *)((char *)a0 + 0x50)) != 0) {
+    MODENAMEENT(a0)->base.frame += 1;
+    if (gl_func_00000000(MODENAMEENT(a0)->base.entry) != 0) {
         gl_func_00000000(&D_00000000,
-            (int)(*(float *)((char *)a0 + 0x108) * (scale = 255.0f)), buf);
-        tgt = (char *)a0 + 0xF0;
+            (int)(MODENAMEENT(a0)->alpha * (scale = 255.0f)), buf);
+        tgt = MODENAMEENT(a0)->banner;
         gl_func_00000000(tgt);
-        if ((*(int *)((char *)a0 + 0x68) & 8) != 0) {
+        if ((MODENAMEENT(a0)->base.frame & 8) != 0) {
             gl_func_00000000(tgt, 0xA0, 0x7C, 3);
         }
     }
@@ -1628,20 +1631,20 @@ char *ARCMenuProcess_ctor(char *arg0) {
         gl_func_00000000(D_arc251C_reg + 40, 0x280001);
         gl_func_00000000(D_arc251C_reg + 64, 0x280002);
         gl_func_00000000(D_arc251C_reg + 88, 0x280003);
-        *(int *)(arg0 + 72) = gl_func_00000000(0);
-        gl_func_00000000(*(int *)(arg0 + 72), arg0);
-        gl_func_00000000(*(int *)(arg0 + 72), ((D_arc251C_id + 3) << 16) | 1, -1, D_arc251C_f);
-        gl_func_00000000(*(int *)(arg0 + 72), ((D_arc251C_id + 3) << 16) | 3, -1, D_arc251C_f);
-        gl_func_00000000(*(int *)(arg0 + 72), ((D_arc251C_id + 3) << 16) | 2, -1, D_arc251C_f);
-        gl_func_00000000(*(int *)(arg0 + 72), ((D_arc251C_id + 3) << 16) | 5, -1, D_arc251C_f);
-        *(int *)(*(int *)(arg0 + 72) + 48) = gl_func_00000000(0, D_arc251C_g, 72, 221, 3, 13);
-        gl_func_00000000(*(int *)(arg0 + 72));
-        gl_func_00000000(*(int *)(arg0 + 72), 120);
+        MENUPROC(arg0)->menu = gl_func_00000000(0);
+        gl_func_00000000(MENUPROC(arg0)->menu, arg0);
+        gl_func_00000000(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 1, -1, D_arc251C_f);
+        gl_func_00000000(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 3, -1, D_arc251C_f);
+        gl_func_00000000(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 2, -1, D_arc251C_f);
+        gl_func_00000000(MENUPROC(arg0)->menu, ((D_arc251C_id + 3) << 16) | 5, -1, D_arc251C_f);
+        GUIMENU(MENUPROC(arg0)->menu)->unk30 = gl_func_00000000(0, D_arc251C_g, 72, 221, 3, 13);
+        gl_func_00000000(MENUPROC(arg0)->menu);
+        gl_func_00000000(MENUPROC(arg0)->menu, 120);
         if (1) {}
-        v0 = *(char **)(arg0 + 72);
+        v0 = (char *)MENUPROC(arg0)->menu;
         a3 = *(char **)(v0 + 40);
         ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
-        a3 = *(char **)(arg0 + 72);
+        a3 = (char *)MENUPROC(arg0)->menu;
         gl_func_00000000(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
@@ -1654,9 +1657,9 @@ char *ARCMenuProcess_ctor(char *arg0) {
         }
         NODE(a3)->parent = (int)arg0;
         gl_func_00000000(*(int *)(D_arc251C_h + 400), 1, 0);
-        *(int *)(arg0 + 80) = 0;
-        *(int *)(arg0 + 48) = 1;
-        *(int *)(arg0 + 44) = 0;
+        MENUPROC(arg0)->state = 0;
+        MENUPROC(arg0)->unk30 = 1;
+        MENUPROC(arg0)->unk2C = 0;
     }
     return arg0;
 }

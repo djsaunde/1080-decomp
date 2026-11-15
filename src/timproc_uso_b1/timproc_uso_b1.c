@@ -1,6 +1,9 @@
 #include "common.h"
 #include "gdl/race.h"
 #include "gdl/gl_data.h"
+#include "game/nameentry.h"
+#include "game/modemenu.h"
+#include "game/guimenu.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -769,17 +772,17 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
             NODE(a2)->vptr = (int)D_tim16F8_y;
         }
         NODE(arg0)->vptr = (int)D_tim16F8_z;
-        *(int *)(arg0 + 0x60) = arg2;
-        *(char **)(arg0 + 0xD4) = arg1;
-        *(int *)(arg0 + 0xE0) = 0xA0;
-        *(int *)(arg0 + 0xE4) = 0x1D;
-        *(int *)(arg0 + 0xD8) = 0xA0;
-        *(int *)(arg0 + 0xDC) = 0x82;
-        *(int *)(arg0 + 0xE8) = 0xA0;
-        *(int *)(arg0 + 0xEC) = 0x69;
-        *(float *)(arg0 + 0x108) = 1.0f;
+        MODENAMEENT(arg0)->base.phase = arg2;
+        MODENAMEENT(arg0)->race = (s32)arg1;
+        MODENAMEENT(arg0)->pos[1][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[1][1] = 0x1D;
+        MODENAMEENT(arg0)->pos[0][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[0][1] = 0x82;
+        MODENAMEENT(arg0)->pos[2][0] = 0xA0;
+        MODENAMEENT(arg0)->pos[2][1] = 0x69;
+        MODENAMEENT(arg0)->alpha = 1.0f;
         TIMRACE(arg1)->recordFade = 1.0f;
-        gl_func_00000000(arg0 + 0xF0,
+        gl_func_00000000(MODENAMEENT(arg0)->banner,
             ((D_tim16F8_id + 0x23) << 16) | (((Tim16F8_A *)arg0)->b->v + 7));
     }
     return arg0;
@@ -788,8 +791,8 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
 void TimNameEntry_update_00001860(int *a0) {
     if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) == 0) return;
     if (gl_func_00000000(&D_00000000, 0x40100) == 0) return;
-    if (gl_func_00000000(a0[0x50/4]) != 0) {
-        a0[0x60/4] = 1;
+    if (gl_func_00000000(MODENAMEENT(a0)->base.entry) != 0) {
+        MODENAMEENT(a0)->base.phase = 1;
     } else {
         gl_func_00000000(a0, -1, 0);
     }
@@ -798,7 +801,7 @@ void TimNameEntry_update_00001860(int *a0) {
 void TimNameEntry_drawEntryOverlay(char *a0) {
     char *p;
     gl_func_00000000(a0);
-    p = *(char**)(a0 + 0xD4);
+    p = (char *)MODENAMEENT(a0)->race;
     gl_func_00000000(p, 0x8C, TIMRACE(p)->finalTime);
 }
 
@@ -817,18 +820,18 @@ void TimNameEntry_drawExitOverlay(int *self) {
     float val;
 
     gl_func_00000000(self);
-    sub = (int *)self[0xD4 / 4];
+    sub = (int *)MODENAMEENT(self)->race;
     fp = (float *)((char *)sub + 0x72C);
     val = *fp;
     if (val > 0.0f) {
         *fp -= *(float *)(base + 0x48);
-        sub = (int *)self[0xD4 / 4];
+        sub = (int *)MODENAMEENT(self)->race;
         if (TIMRACE(sub)->recordFade < 0.0f) {
             TIMRACE(sub)->recordFade = 0.0f;
-            sub = (int *)self[0xD4 / 4];
+            sub = (int *)MODENAMEENT(self)->race;
         }
         gl_func_00000000(sub, 140, TIMRACE(sub)->finalTime);
-        val = TIMRACE(self[0xD4 / 4])->recordFade;
+        val = TIMRACE(MODENAMEENT(self)->race)->recordFade;
     }
     if (val <= 0.0f) {
         gl_func_00000000(self);
@@ -856,13 +859,13 @@ void TimNameEntry_drawTitle_000019C0(int *a0) {
     buf[1] = 1.0f;
     buf[2] = 1.0f;
     buf[3] = 1.0f;
-    *(int *)((char *)a0 + 0x68) += 1;
-    if (gl_func_00000000(*(int *)((char *)a0 + 0x50)) != 0) {
+    MODENAMEENT(a0)->base.frame += 1;
+    if (gl_func_00000000(MODENAMEENT(a0)->base.entry) != 0) {
         gl_func_00000000(&D_00000000,
-            (int)(*(float *)((char *)a0 + 0x108) * (scale = 255.0f)), buf);
-        tgt = (char *)a0 + 0xF0;
+            (int)(MODENAMEENT(a0)->alpha * (scale = 255.0f)), buf);
+        tgt = MODENAMEENT(a0)->banner;
         gl_func_00000000(tgt);
-        if ((*(int *)((char *)a0 + 0x68) & 8) != 0) {
+        if ((MODENAMEENT(a0)->base.frame & 8) != 0) {
             gl_func_00000000(tgt, 0xA0, 0x7C, 3);
         }
     }
@@ -1243,33 +1246,33 @@ char *TimMenu_ctor(char *arg0) {
             }
             *(char **)(a3 + 0x28) = &D_00000000;
         }
-        *(char **)(arg0 + 0x28) = &D_00000000;
-        *(char **)(arg0 + 0xC) = (char *)&D_00000000 + 0x4C0;
+        TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
+        TIMMENU(arg0)->base.node.name = (s32)((char *)&D_00000000 + 0x4C0);
         gl_func_00000000(arg0);
-        *(int *)(arg0 + 0x60) = 120;
-        *(int *)(arg0 + 0x64) = 161;
-        *(int *)(arg0 + 0x68) = 191;
-        *(int *)(arg0 + 72) = gl_func_00000000(0);
-        gl_func_00000000(*(int *)(arg0 + 72), arg0);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d2 + 3) << 16) | 1, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d3 + 3) << 16) | 6, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d4 + 3) << 16) | 7, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d5 + 3) << 16) | 4, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d6 + 3) << 16) | 3, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d7 + 3) << 16) | 2, -1, &D_b1_21D4_d1);
-        gl_func_00000000(*(int *)(arg0 + 72), ((*(int *)&D_b1_21D4_d8 + 3) << 16) | 5, -1, &D_b1_21D4_d1);
-        *(int *)(*(int *)(arg0 + 72) + 48) = gl_func_00000000(0, &D_00000000, 72, 221, 3, 13);
-        gl_func_00000000(*(int *)(arg0 + 72));
-        gl_func_00000000(*(int *)(arg0 + 72), 140);
+        TIMMENU(arg0)->unk60 = 120;
+        TIMMENU(arg0)->unk64 = 161;
+        TIMMENU(arg0)->promptY = 191;
+        TIMMENU(arg0)->base.menu = gl_func_00000000(0);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, arg0);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d2 + 3) << 16) | 1, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d3 + 3) << 16) | 6, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d4 + 3) << 16) | 7, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d5 + 3) << 16) | 4, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d6 + 3) << 16) | 3, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d7 + 3) << 16) | 2, -1, &D_b1_21D4_d1);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d8 + 3) << 16) | 5, -1, &D_b1_21D4_d1);
+        GUIMENU(TIMMENU(arg0)->base.menu)->unk30 = gl_func_00000000(0, &D_00000000, 72, 221, 3, 13);
+        gl_func_00000000(TIMMENU(arg0)->base.menu);
+        gl_func_00000000(TIMMENU(arg0)->base.menu, 140);
         if (1) {}
-        v0 = *(char **)(arg0 + 72);
+        v0 = (char *)TIMMENU(arg0)->base.menu;
         a3 = (char *)NODE(v0)->vptr;
         ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
-        a3 = *(char **)(arg0 + 72);
+        a3 = (char *)TIMMENU(arg0)->base.menu;
         gl_func_00000000(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
         if (*(int *)((char *)&D_b1_21D4_base + 388) == 0 ||
             (*(int *)0xA0000200 == 0xAC290000) == 0) {
-            *(int *)(*(int *)(arg0 + 72) + 0xD8) = 0;
+            GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
         }
         a3 = *(char **)((char *)&D_b1_21D4_base + 400);
         gl_func_00000000(arg0 + 16, a3);
@@ -1278,10 +1281,10 @@ char *TimMenu_ctor(char *arg0) {
         }
         NODE(a3)->parent = (int)arg0;
         gl_func_00000000(*(int *)((char *)&D_b1_21D4_base + 400), 1, 0);
-        *(int *)(arg0 + 0x54) = 0;
-        *(int *)(arg0 + 80) = 0;
-        *(int *)(arg0 + 48) = 1;
-        *(int *)(arg0 + 44) = 0;
+        TIMMENU(arg0)->unk54 = 0;
+        TIMMENU(arg0)->base.state = 0;
+        TIMMENU(arg0)->base.unk30 = 1;
+        TIMMENU(arg0)->base.unk2C = 0;
     }
     return arg0;
 }
@@ -1448,8 +1451,8 @@ void TimMenu_draw_00002838(char *arg0) {
     int x;
 
     glv_2838(obj);
-    *(int *)(obj + 0x5C) = *(int *)(obj + 0x5C) - 0x10;
-    switch (*(int *)(obj + 0x50)) {
+    TIMMENU(obj)->blink = TIMMENU(obj)->blink - 0x10;
+    switch (TIMMENU(obj)->base.state) {
     case 1:
         glv_2838((char *)&D_00000000);
         glv_2838((char *)&D_00000000 + 0x1F0);
@@ -1460,7 +1463,7 @@ void TimMenu_draw_00002838(char *arg0) {
         glv_2838((char *)&D_00000000 + 0x1C0);
         glv_2838((char *)&D_00000000 + 0x1C0, 0xA0, 0x69, 3);
         f = *(int *)&D_00000000;
-        v0 = *(int *)(obj + 0x68);
+        v0 = TIMMENU(obj)->promptY;
         if (f != 0) {
             if (1) { v0 += 0xA; }
         }
@@ -1486,7 +1489,7 @@ void TimMenu_draw_00002838(char *arg0) {
         glv_2838((char *)&D_00000000 + 0x160);
         glv_2838((char *)&D_00000000 + 0x160);
         glv_2838((char *)&D_00000000 + 0x160, 0xA0, 0x8E, 3);
-        w = *(int *)(obj + 0x68);
+        w = TIMMENU(obj)->promptY;
         if (*(int *)&D_00000000 != 0) {
             w -= 8;
         }
@@ -1531,29 +1534,29 @@ void TimMenu_handleInput_00002A8C(char *obj) {
     char *o48;
     char *vt;
 
-    if (tim_imp_input_checkPressed(&gInputMgr, 0x10001) != 0 && *(int *)(obj + 0x58) != 0) {
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x10001) != 0 && TIMMENU(obj)->choice != 0) {
         tim_imp_snd_postEvent(1);
-        *(int *)(obj + 0x58) = 0;
+        TIMMENU(obj)->choice = 0;
     }
-    if (tim_imp_input_checkPressed(&gInputMgr, 0x4002) != 0 && *(int *)(obj + 0x58) == 0) {
+    if (tim_imp_input_checkPressed(&gInputMgr, 0x4002) != 0 && TIMMENU(obj)->choice == 0) {
         tim_imp_snd_postEvent(1);
-        *(int *)(obj + 0x58) = 1;
+        TIMMENU(obj)->choice = 1;
     }
     if (tim_imp_input_checkPressed(&gInputMgr, 0x40100) != 0) {
-        if (*(int *)(obj + 0x58) == 0) {
+        if (TIMMENU(obj)->choice == 0) {
             tim_imp_snd_postEvent(5);
             tim_imp_replay_saveGhost(&gInputMgr, BACKUP_MODE_TIME);
-            *(int *)((char *)RACEPROC(obj)->unk048 + 0xD8) = 0;
+            GUIMENU(TIMMENU(obj)->base.menu)->rows[2].enabled = 0;
             if (1) {}
-            o48 = (char *)RACEPROC(obj)->unk048;
-            *(int *)(obj + 0x50) = 0;
+            o48 = (char *)TIMMENU(obj)->base.menu;
+            TIMMENU(obj)->base.state = 0;
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         } else {
             tim_imp_snd_postEvent(0x802);
             if (1) {}
-            o48 = (char *)RACEPROC(obj)->unk048;
-            *(int *)(obj + 0x50) = 0;
+            o48 = (char *)TIMMENU(obj)->base.menu;
+            TIMMENU(obj)->base.state = 0;
             vt = *(char **)(o48 + 0x28);
             ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
         }
@@ -1561,8 +1564,8 @@ void TimMenu_handleInput_00002A8C(char *obj) {
     if (tim_imp_input_checkPressed(&gInputMgr, 0x200) != 0) {
         tim_imp_snd_postEvent(0x802);
         if (1) {}
-        o48 = (char *)RACEPROC(obj)->unk048;
-        *(int *)(obj + 0x50) = 0;
+        o48 = (char *)TIMMENU(obj)->base.menu;
+        TIMMENU(obj)->base.state = 0;
         vt = *(char **)(o48 + 0x28);
         ((void (*)(int))(*(int *)(vt + 0x5C)))(*(short *)(vt + 0x58) + (int)o48);
     }
@@ -1649,16 +1652,16 @@ void TimMenu_drawPair_00002D48(int *a0, int a1) {
     quad4[2] = 1.0f;
     quad4[3] = 1.0f;
     gl_func_00000000((char*)&D_00000000 + 0x190);
-    if (a0[0x58 / 4] == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x190, a0[0x5C / 4], quad4, 0xFF);
+    if (TIMMENU(a0)->choice == 0) {
+        gl_func_00000000((char*)&D_00000000 + 0x190, TIMMENU(a0)->blink, quad4, 0xFF);
     } else {
         gl_func_00000000((char*)&D_00000000 + 0x190, 0x40, quad4, 0xFF);
     }
     gl_func_00000000((char*)&D_00000000 + 0x190, 0x78, a1, 3);
 
     gl_func_00000000((char*)&D_00000000 + 0x1A8);
-    if (a0[0x58 / 4] != 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x1A8, a0[0x5C / 4], quad4, 0xFF);
+    if (TIMMENU(a0)->choice != 0) {
+        gl_func_00000000((char*)&D_00000000 + 0x1A8, TIMMENU(a0)->blink, quad4, 0xFF);
     } else {
         gl_func_00000000((char*)&D_00000000 + 0x1A8, 0x40, quad4, 0xFF);
     }
