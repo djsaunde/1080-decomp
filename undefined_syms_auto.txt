@@ -3495,13 +3495,13 @@ __osDevMgrMain_rodata = 0x8000A770;  /* __osDevMgrMain switch jumptable (kernel 
 LeoDiskHandle = 0x800195D0;   /* osLeoDiskInit donor (kernel_ido53_4E50.c); lui 0x8002 via signed-lo wrap */
 __osPiTable = 0x8000A46C;     /* alias of D_8000A46C for the leodiskinit donor */
 __osDiskHandle = 0x80019644;  /* osLeoDiskInit donor */
-gl_d_4c5e4_sh = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- 0x208 handle-short store */
-gl_d_4c5e4_flag = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- 0x1C4 config-flag word */
-gl_d_4c5e4_word = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- flag-2 call arg1 word */
-gl_d_4c5e4_reg = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- +0x294 registration arg */
-gl_d_4c5e4_arg = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- tail-call base arg */
-gl_d_4c5e4_clr = 0x00000000;  /* gl_func_0004C5E4: base-0 alias -- final 0x254 clear */
-gl_func_0004C5E4_c34458 = 0x00000000;  /* gl_func_0004C5E4 NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
+gl_d_4c5e4_sh = 0x00000000;  /* ScreenWindow_display: base-0 alias -- 0x208 handle-short store */
+gl_d_4c5e4_flag = 0x00000000;  /* ScreenWindow_display: base-0 alias -- 0x1C4 config-flag word */
+gl_d_4c5e4_word = 0x00000000;  /* ScreenWindow_display: base-0 alias -- flag-2 call arg1 word */
+gl_d_4c5e4_reg = 0x00000000;  /* ScreenWindow_display: base-0 alias -- +0x294 registration arg */
+gl_d_4c5e4_arg = 0x00000000;  /* ScreenWindow_display: base-0 alias -- tail-call base arg */
+gl_d_4c5e4_clr = 0x00000000;  /* ScreenWindow_display: base-0 alias -- final 0x254 clear */
+gl_func_0004C5E4_c34458 = 0x00000000;  /* ScreenWindow_display NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00041D40_c34458 = 0x00000000;  /* App_Update NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_func_00046050_c34458 = 0x00000000;  /* gfx_drawText NCC donor: its dbg_printThreads calls are blank USO jal words (0x0C000000) in the target */
 gl_d_4b0a8_tbl = 0x00000000;  /* Shadow_ctor_0004B0A8: base-0 alias -- handler-table bind self->0x28 */
@@ -3708,9 +3708,9 @@ gl_d_34180_dev = 0x00000000;  /* game_libs_func_00034180: base-0 alias of D_0000
 snd_SoundObjEventIndex_2E290_rodata = 0x00001660;  /* switch(sel) 32-entry jumptable (cases 1..32): USO ships it in game_libs rodata at +0x1660; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_2E290.c) */
 game_libs_func_000343F4_rodata = 0x000019B8;  /* switch(a0) 8-entry jumptable (cases 1..8): USO ships it in game_libs rodata at +0x19B8; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_343F4.c) */
 gl_func_00068990_rodata = 0x00002220;  /* switch(tag) 6-entry jumptable (tags -1..4): bootup.uso ships it in RoData at +0x2220; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_68990.c) */
-gl_ref_0007C8EC = 0x0007C8EC;  /* gl_func_00068990 baked USO jal (0x0C01F23B) = gl_func_00068280 int reader (splat + 0x1466C) */
-gl_ref_0007C860 = 0x0007C860;  /* gl_func_00068990 baked USO jal (0x0C01F218) = gl_func_000681F4 int reader */
-gl_ref_0007C928 = 0x0007C928;  /* gl_func_00068990 baked USO jal (0x0C01F24A) = gl_func_000682BC int reader */
+gl_ref_0007C8EC = 0x0007C8EC;  /* gl_func_00068990 baked USO jal (0x0C01F23B) = fs_gdlReadInt_00068280 int reader (splat + 0x1466C) */
+gl_ref_0007C860 = 0x0007C860;  /* gl_func_00068990 baked USO jal (0x0C01F218) = fs_gdlReadInt_000681F4 int reader */
+gl_ref_0007C928 = 0x0007C928;  /* gl_func_00068990 baked USO jal (0x0C01F24A) = fs_gdlReadInt_000682BC int reader */
 gl_func_00062F64_blank = 0x00000000;  /* gl_func_00062F64 called from the in-unit gl_func_00065060: blank USO jal (a direct in-unit call would bake the address) */
 D_33444_a = 0x00000000;  /* game_libs_func_00033444 per-site alias of D_00000000 (defeats &D CSE: counter load must stay folded `lui t6; lw t6,0x20C(t6)` while the call arg holds `lui a0; addiu a0`) */
 D_349E0_a = 0x00000000;  /* hostio_start per-site alias of D_00000000 (defeats &D CSE: the `|= 4` / `&= ~4` load and store must each fold under their own lui; adjacent same-symbol accesses hold a base) */
@@ -3912,7 +3912,7 @@ gl_ref_0001EE24_3AC5C = 0x0001EE24;  /* CollShape_ctor baked lui/addiu message a
 gl_ref_0001EE3C_3AC5C = 0x0001EE3C;  /* CollShape_ctor baked lui/addiu message address (case 3, s3) */
 gl_ref_0001EE48_3AC5C = 0x0001EE48;  /* CollShape_ctor baked lui/addiu message address (default cb, s4) */
 AnimData_load_rodata = 0x00002080;  /* AnimData_load 5-entry jumptable (cases 1..5) in bootup.uso RoData at +0x2080; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_61F8C.c) */
-gl_func_0004E96C_rodata = 0x00001B84;  /* gl_func_0004E96C 9-entry jumptable (cases 109..117) in bootup.uso RoData at +0x1B84; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_4E96C.c) */
+Window_doCommand_rodata = 0x00001B84;  /* Window_doCommand 9-entry jumptable (cases 109..117) in bootup.uso RoData at +0x1B84; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_4E96C.c) */
 gl_ref_0007644C = 0x0007644C;  /* AnimData_load nonzero baked jal 0x0C01D913 (stream int reader) */
 gl_ref_00076400 = 0x00076400;  /* AnimData_load nonzero baked jal 0x0C01D900 (debug print) */
 gl_ref_0002205C_61F8C = 0x0002205C;  /* AnimData_load baked lui/addiu message address (case 1) */
@@ -4124,7 +4124,7 @@ D_b3_23E4_d9 = 0x00000000;
 gl_func_00034458_55C34 = 0x00000000;
 game_libs_func_00062F08_55C34 = 0x0006A620;
 game_libs_func_00062F08_578B4 = 0x0006A750;  /* the two baked jal words at gfx_loadTexture +0x1C/+0x28 */
-/* gl_func_000546E8 per-site D-base aliases (the ROM words hold only the in-code offsets) */
+/* BaseLight_ctor per-site D-base aliases (the ROM words hold only the in-code offsets) */
 gl_ref_546E8_a = 0x00000000;
 gl_ref_546E8_b = 0x00000000;
 gl_ref_546E8_c = 0x00000000;
@@ -4180,7 +4180,7 @@ gl_func_00000000_5d474 = 0x00000000;  /* (quat *, quat *, quat *) void quat-mult
 D_5F0B8_dtor = 0x00002054;  /* math_rotateF pi/180 literal in RoData (+0x2054), pinned extern */
 D_62D70_scale = 0x00002094;  /* anim_unpackKey s16->float scale literal in RoData (+0x2094), pinned extern */
 D_sym_6264C = 0x00000000;  /* AnimDataMgr_ctor vtable/descriptor store (blank lui/addiu pair, distinct from the &D+0x220DC arg) */
-D_sym_6275C = 0x00000000;  /* gl_func_0006275C descriptor arg (blank lui/addiu pair) */
+D_sym_6275C = 0x00000000;  /* AnimDataMgr_vfn8_0006275C descriptor arg (blank lui/addiu pair) */
 D_61B30_h0 = 0x00000000;  /* gl_func_00061B30 blank lh source (+0x21C value) */
 D_61B30_h1 = 0x00000000;  /* gl_func_00061B30 blank lh source (+0x220 value) */
 D_61B30_out = 0x00000000;  /* gl_func_00061B30 blank vprintf target arg (distinct from the held base) */

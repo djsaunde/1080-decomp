@@ -4620,7 +4620,7 @@ out:
 }
 
 /* gl_func_00039A9C: 28-insn helper. MATCHED 2026-05-28.
- *   func_0004C2DC(&buf);              alt-entry into gl_func_0004C288
+ *   func_0004C2DC(&buf);              alt-entry into ScreenWindow_updateAspect
  *   a0->[0x5C..0x64] = buf[0..2]       Vec3 copy
  *   func_0004C34C(a0 + 0x6C);          alt-entry into ScreenWindow_allocBuffers
  *   vt = a0->[0x28];
@@ -12271,7 +12271,7 @@ void game_libs_func_00045394(int a0, int a1, int a2, int a3) {
  * (mtc1 a1,$f12 raw bit-move, no cvt), NOT (void*,float): a0 is never
  * reloaded before jal2, so it can't be an argument. Body is a plain
  * two-call float trampoline; `(void)a0` after the calls forces the a0
- * home-store `sw a0,0x18(sp)` (same lever as sibling gl_func_0004D05C).
+ * home-store `sw a0,0x18(sp)` (same lever as sibling vFP1_call).
  * Callee proto via blank-extern alias gl_func_00000000_f
  * (undefined_syms_auto = 0, same mechanism as _42338/_c43c).
  * EXACT (unwrapped run 95): the alias is pinned to 0, ROM words are jal 0. */
@@ -15514,7 +15514,7 @@ void game_libs_func_0004C20C(int *a0, int a1) {
 }
 
 extern int func_00000000();
-void gl_func_0004C214(int *a0) {
+void ScreenWindow_vfn12_0004C214(int *a0) {
     int *p;
     func_00000000(a0[0x158/4]);
     func_00000000((char*)a0 + 0x168);
@@ -15527,7 +15527,7 @@ void gl_func_0004C214(int *a0) {
     p[0x68/4] = ((int*)p[0xC/4])[1] - p[0x64/4];
 }
 
-/* gl_func_0004C288: 30-insn init-call + 2-iter loop + final-set (0x78, frame 0x28).
+/* ScreenWindow_updateAspect: 30-insn init-call + 2-iter loop + final-set (0x78, frame 0x28).
  * MATCHED 2026-05-24: s0<->s1 swap fixed by assigning loop counter `i` before
  * pointer `p` (first-encountered pseudo wins the lower $s register).
  *
@@ -15548,7 +15548,7 @@ void gl_func_0004C214(int *a0) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-void gl_func_0004C288(int *self, int a1) {
+void ScreenWindow_updateAspect(int *self, int a1) {
     int i;
     int *p;
     gl_func_00000000(self, a1);
@@ -15715,13 +15715,13 @@ void ScreenWindow_allocBuffers(char *self) {
     }
 }
 
-// gl_func_0004C5E4 — object draw/registration step (0x344).
+// ScreenWindow_display — object draw/registration step (0x344).
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4C5E4.cpp
  * (`void Obj::run()`), REPLACE_FUNC_BODY-spliced over this placeholder on both
  * build paths (agent-c run 261). Its dbg_printThreads calls are renamed to the
  * blank gl_func_0004C5E4_c34458 = 0 (the target's jal words are blank USO
  * calls); the base-0 aliases gl_d_4c5e4_* keep their existing zero pins. */
-void gl_func_0004C5E4(char *arg0) {
+void ScreenWindow_display(char *arg0) {
 }
 
 // gfx_pickNode — STRUCTURAL PASS (0x388 / 227 words, no episode). Raw-.word
@@ -16234,13 +16234,13 @@ char *game_libs_func_0004CEFC(char *self, int flag)
 void game_libs_func_0004CFB8(int a0, int a1) {
 }
 
-void game_libs_func_0004CFC4(int a0, int a1, int a2) {
+void BasePolyShape_vfn10_0004CFC4(int a0, int a1, int a2) {
 }
 
-/* gl_func_0004CFD4: 16-insn dual-indexed-lookup wrapper. Was a 22-insn
+/* PolyShape_vfn10_0004CFD4: 16-insn dual-indexed-lookup wrapper. Was a 22-insn
  * 2-function bundle until split-fragments.py 2026-05-08:
- *   parent gl_func_0004CFD4 (16 insns / 0x40)
- *   game_libs_func_0004D014 (6 insns / 0x18, indexed read leaf)
+ *   parent PolyShape_vfn10_0004CFD4 (16 insns / 0x40)
+ *   ScreenWindow_getCurBuffer_0004D014 (6 insns / 0x18, indexed read leaf)
  *
  * Matched via two compiler-side levers:
  *  - `volatile T *p = &argN;` for both a0 and a1 forces caller-slot
@@ -16264,7 +16264,7 @@ void game_libs_func_0004CFC4(int a0, int a1, int a2) {
  * EXACT: unwrapped 2026-10-16 (gl_func_00000000 is a real symbol at 0, so
  * the placeholder jal links to the ROM word). */
 extern int gl_func_00000000();
-void gl_func_0004CFD4(int *a0, int a1, int a2, int *pa) {
+void PolyShape_vfn10_0004CFD4(int *a0, int a1, int a2, int *pa) {
     volatile int **vparg0 = (volatile int **)&a0;
     volatile int *vparg1 = (volatile int *)&a1;
     int *pb;
@@ -16285,7 +16285,7 @@ void gl_func_0004CFD4(int *a0, int a1, int a2, int *pa) {
  * first (longer dep chain) = the target's inverted t7/t6 pair. The
  * flat-sum form pins idx-first creation; named locals take a/v regs.
  * LAND BLOCKED mid-file (post0b drift); relayout queue (11 bodies). */
-int game_libs_func_0004D014(char *a0) {
+int ScreenWindow_getCurBuffer_0004D014(char *a0) {
     return ((int *)(*(int *)(a0 + 0x148) + 0xF4))[*(int *)(a0 + 0x144)];
 }
 
@@ -16297,31 +16297,31 @@ int gl_func_0004D02C(char *a0) {
     return gl_ref_00056C5C(a0 + 0x10);
 }
 
-/* gl_func_0004D05C: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
+/* vFP1_call: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
  * Target prologue is `addiu sp; sw a0,0x18(sp); lui a0; sw ra` (lui BEFORE
  * sw ra). The unused a0 is homed by `(void)a0;`; the lui/sw-ra order is the
  * IDO 7.1 -O2 source-line tie-break (sw ra belongs to the entry line, lui
  * to the call line) -- the call must share the `{` line.
  * See docs/IDO_CODEGEN.md#same-line-brace-call-wrapper-lui-a0-sw-ra. */
 extern int gl_func_00000000();
-void gl_func_0004D05C(int a0) { gl_func_00000000((char *)&D_00000000 + 0x201B0); (void)a0; }
+void vFP1_call(int a0) { gl_func_00000000((char *)&D_00000000 + 0x201B0); (void)a0; }
 
-void gl_func_0004D084(int *a0) {
+void vFP1_invokeFn_0004D084(int *a0) {
     (*(int(**)())((char*)a0 + 0x4))(*(int*)((char*)a0 + 0x8), a0);
 }
-/* gl_func_0004D0B4 (history) + its 1-word leading pad: the pad sat between two
+/* RcpTask_ctor (history) + its 1-word leading pad: the pad sat between two
  * matched C fns (no emission host; a standalone 1-word block emits +4),
  * so the fn was converted to an INCLUDE of one combined [pad+fn] block
  * (route b, 2026-06-10). The proven matching C is preserved below. */
-/* EXACT (agent-c run 122): plain C again; the leading zero word is gl_func_0004D084's all-zero SUFFIX pad (Makefile). */
-int gl_func_0004D0B4(int a0) {
+/* EXACT (agent-c run 122): plain C again; the leading zero word is vFP1_invokeFn_0004D084's all-zero SUFFIX pad (Makefile). */
+int RcpTask_ctor(int a0) {
     if (a0 == 0) {
         a0 = gl_func_00000000(0x78, 0x10);
     }
     return a0;
 }
 
-/* game_libs_func_0004D0E4: 27-insn struct initializer (3-arg, leaf).
+/* RcpTask_init: 27-insn struct initializer (3-arg, leaf).
  * 2026-05-13 fix: previous C had only 2 args + wrote 1 at 0x58. Target asm
  * actually stores $a2 (third arg) at 0x58. Signature is (a0, a1, a2):
  *   a0 = struct base
@@ -16360,7 +16360,7 @@ int gl_func_0004D0B4(int a0) {
  * different type are not CSE'd (kit LXXVII), so the second gets its own
  * `addiu t3,zero,1` like the target. On the RcpTask fields: task.type is u32
  * (libultra), so unk64 is s32 and takes 1U (a u32 unk64 CSEs the two). */
-void game_libs_func_0004D0E4(RcpTask *a0, int a1, int a2) {
+void RcpTask_init(RcpTask *a0, int a1, int a2) {
     a0->unk58 = a2;
     a0->unk6C = a1;
     a0->unk5C = 0;
@@ -16379,7 +16379,7 @@ void game_libs_func_0004D0E4(RcpTask *a0, int a1, int a2) {
     a0->unk64 = 1U;
 }
 
-void game_libs_func_0004D150(RcpTask *a0, int a1, int a2, int a3) {
+void RcpTask_setData(RcpTask *a0, int a1, int a2, int a3) {
     a0->task.data_ptr = (u64 *)a1;
     a0->task.data_size = a2 << 3;
     a0->task.dram_stack = (u64 *)a3;
@@ -16388,19 +16388,19 @@ void game_libs_func_0004D150(RcpTask *a0, int a1, int a2, int a3) {
 
 extern int D_4D16C_a;
 extern int D_4D16C_b;
-void game_libs_func_0004D16C(RcpTask *a0) {
+void RcpTask_setUcodeSgi20H_0004D16C(RcpTask *a0) {
     a0->task.ucode = (u64 *)&D_4D16C_a;
     a0->task.ucode_data = (u64 *)&D_4D16C_b;
 }
 
 extern int D_4D188_a;
 extern int D_4D188_b;
-void game_libs_func_0004D188(RcpTask *a0) {
+void RcpTask_setUcodeSgi20H_0004D188(RcpTask *a0) {
     a0->task.ucode = (u64 *)&D_4D188_a;
     a0->task.ucode_data = (u64 *)&D_4D188_b;
 }
 
-void game_libs_func_0004D1A4(RcpTask *a0, int a1, int a2) {
+void RcpTask_setOutputFifo_0004D1A4(RcpTask *a0, int a1, int a2) {
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
     a0->task.data_size = 0;
@@ -16409,7 +16409,7 @@ void game_libs_func_0004D1A4(RcpTask *a0, int a1, int a2) {
 
 extern int D_00000000_a[];
 extern int D_00000000_b[];
-void game_libs_func_0004D1C0(RcpTask *a0, int a1, int a2) {
+void RcpTask_setUcodeSgi20HFifo_0004D1C0(RcpTask *a0, int a1, int a2) {
     a0->task.ucode = (u64 *)D_00000000_a;
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
@@ -16420,7 +16420,7 @@ void game_libs_func_0004D1C0(RcpTask *a0, int a1, int a2) {
 
 extern int D_4D1F4_a;
 extern int D_4D1F4_b;
-void game_libs_func_0004D1F4(RcpTask *a0, int a1) {
+void RcpTask_setUcodeSgi20HOut_0004D1F4(RcpTask *a0, int a1) {
     a0->task.ucode = (u64 *)&D_4D1F4_a;
     a0->task.ucode_data = (u64 *)&D_4D1F4_b;
     a0->task.output_buff = (u64 *)a1;
@@ -16429,14 +16429,14 @@ void game_libs_func_0004D1F4(RcpTask *a0, int a1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0004D224(int a, int b, int c) {
+void RcpTask_noUcode_fastQ(int a, int b, int c) {
     gl_func_00000000((char*)&D_00000000 + 0x201D8);
     (void)a; (void)b; (void)c;
 }
 
 extern int D_00000000_a[];
 extern int D_00000000_b[];
-void game_libs_func_0004D254(RcpTask *a0, int a1, int a2) {
+void RcpTask_setUcodeF3DEX(RcpTask *a0, int a1, int a2) {
     a0->task.ucode = (u64 *)D_00000000_a;
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
@@ -16444,19 +16444,19 @@ void game_libs_func_0004D254(RcpTask *a0, int a1, int a2) {
     a0->unk68 = 2;
 }
 
-void game_libs_func_0004D284(RcpTask *a0, int a1, int a2) {
+void RcpTask_setOutputFifo_0004D284(RcpTask *a0, int a1, int a2) {
     a0->task.output_buff = (u64 *)a1;
     a0->task.output_buff_size = (u64 *)(a1 + a2);
     a0->task.data_size = 0;
     a0->unk68 = 2;
 }
 
-void gl_func_0004D2A0(int a, int b, int c) {
+void RcpTask_noUcode_NoC(int a, int b, int c) {
     gl_func_00000000((char*)&D_00000000 + 0x201E0);
     (void)a; (void)b; (void)c;
 }
 
-void game_libs_func_0004D2D0(RcpTask *a0, int a1, int a2) {
+void RcpTask_setUcodeF3DLP_Rej(RcpTask *a0, int a1, int a2) {
     a0->task.ucode = (u64 *)D_00000000_a;
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
@@ -16465,7 +16465,7 @@ void game_libs_func_0004D2D0(RcpTask *a0, int a1, int a2) {
     a0->unk68 = 2;
 }
 
-void game_libs_func_0004D304(RcpTask *a0, int a1, int a2) {
+void RcpTask_setUcodeF3DLX_Rej(RcpTask *a0, int a1, int a2) {
     a0->task.ucode = (u64 *)D_00000000_a;
     a0->task.ucode_data = (u64 *)D_00000000_b;
     a0->task.output_buff = (u64 *)a1;
@@ -16474,7 +16474,7 @@ void game_libs_func_0004D304(RcpTask *a0, int a1, int a2) {
     a0->unk68 = 2;
 }
 
-void game_libs_func_0004D338(RcpTask *a0) {
+void RcpTask_setUcodeF3DEX_NoN(RcpTask *a0) {
     a0->task.ucode = (u64 *)D_00000000_a;
     a0->task.ucode_data = (u64 *)D_00000000_b;
 }
@@ -16797,14 +16797,14 @@ void game_libs_func_0004DD54(int a0) {}
 void game_libs_func_0004DD5C(void) {}
 
 extern int gl_func_00000000();
-void gl_func_0004DD64(int *dst) {
+void fs_gdlReadInt_0004DD64(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_0004DDA0(Quad4 *dst) {
+void fs_gdlReadQuad_0004DDA0(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
@@ -16855,12 +16855,12 @@ void DisplayMgr_add(int *a0, int a1, int a2) {
     }
 }
 
-/* gl_func_0004DEF0: 40-insn for-loop over a0->[0x38] elements.
+/* DisplayMgr_display: 40-insn for-loop over a0->[0x38] elements.
  * Logic correct; 14-insn INSN_PATCH closes pure register-name swaps
  * (target s2=a0-alias / s1=i, built reversed; v0↔v1 pair throughout). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_0004DEF0(int *a0) {
+void DisplayMgr_display(int *a0) {
   int i;
   int off;
   char *new_var;
@@ -17076,7 +17076,7 @@ float gl_func_0004E424(float x0, float y0, volatile float z0, float x1, float y1
 }
 
 extern int gl_func_00000000();
-void gl_func_0004E4E8(int *dst) {
+void fs_gdlReadInt_0004E4E8(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -17087,7 +17087,7 @@ void gl_func_0004E4E8(int *dst) {
  * follow at 0x4E57C (lui a1; addiu a1,a1,%lo) are NOT this function's tail:
  * they are gl_func_0004E584's own hoisted first statement (its .s starts at
  * 0x4E57C, 0x84) -- see the note on that function. */
-void gl_func_0004E524(Quad4 *dst) {
+void fs_gdlReadQuad_0004E524(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -17208,7 +17208,7 @@ end:
 
 extern int gl_func_00000000();
 
-void gl_func_0004E728(char *a0, int a1) {
+void Window_dtor(char *a0, int a1) {
     if (a0 == (char*)0) return;
     *(char**)(a0 + 0x28) = (char*)gl_func_00000000;
     if (a1 & 1) {
@@ -17329,19 +17329,19 @@ void gl_func_0004E920(int *a0, int *a1) {
     a1[5] = (int)a0;
 }
 
-/* gl_func_0004E96C: 9-way parameter-stream decoder (0x1B8 / 110 words).
+/* Window_doCommand: 9-way parameter-stream decoder (0x1B8 / 110 words).
  * switch (a1->op) cases 109..117 pull operand words from the a1->args cursor
  * into the object's 0x78/0x7C/0xAC/0xB0/0xB8..0xD4/0x100..0x108 slots (some
  * through (int)(float) or int->float); case 114 / out of range call the
  * placeholder. WIRED via REPLACE_FUNC_BODY donor splice: the real C lives in
  * the IDO 7.1 -O2 donor unit game_libs_o2_4E96C.c; the splice renames the
- * donor-local jumptable reloc to gl_func_0004E96C_rodata, pinned to the USO
+ * donor-local jumptable reloc to Window_doCommand_rodata, pinned to the USO
  * RoData at +0x1B84. Body below is a placeholder for the splice. */
-void gl_func_0004E96C(char *a0) {
+void Window_doCommand(char *a0) {
     *(volatile int *)(a0 + 0x78) = 0;
 }
 
-/* Split off from gl_func_0004E96C bundle 2026-05-08: 9-insn FPU int-to-float
+/* Split off from Window_doCommand bundle 2026-05-08: 9-insn FPU int-to-float
  * divide. a0->_B4 (float) = (float)a0->_B8 / (float)a0->_BC.
  * Divisor declared first to get $v0 register (matches target's lw v0,0xBC). */
 void Window_updateAspect(int *a0) {
@@ -17349,7 +17349,7 @@ void Window_updateAspect(int *a0) {
     *(float*)((char*)a0 + 0xB4) = (float)a0[46] / (float)divisor;
 }
 
-/* Split off from gl_func_0004E96C bundle 2026-05-08: 2-insn save-arg sentinel. */
+/* Split off from Window_doCommand bundle 2026-05-08: 2-insn save-arg sentinel. */
 void game_libs_func_0004EB4C(int a0) {}
 
 // Window_display — EXACT (unwrapped 2026-10-16; 0x190 / 100 words).
@@ -18467,7 +18467,7 @@ void gl_func_00051520(char *a0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_000515C0(int *dst) {
+void fs_gdlReadInt_000515C0(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -18478,7 +18478,7 @@ void gl_func_000515C0(int *dst) {
  * (lui v0; addiu v1,v0,%lo) are NOT this function's tail: they are
  * gl_func_0005165C's own hoisted first statement (its .s starts at 0x51654,
  * 0x40) -- see the note on that function. */
-void gl_func_000515FC(Quad4 *dst) {
+void fs_gdlReadQuad_000515FC(Quad4 *dst) {
     volatile Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = *(Quad4*)&buf;
@@ -19158,7 +19158,7 @@ done:
     return cur;
 }
 
-/* gl_func_0005256C: 33-insn op-code dispatch (set/clear bits) (0x84, frame 0x18).
+/* BasePolyShape_doCommand: 33-insn op-code dispatch (set/clear bits) (0x84, frame 0x18).
  *
  * Decoded structure (raw-word disasm):
  *   op = *(int*)a1;                                  // a1 = va_list*; *a1 = op code
@@ -19190,7 +19190,7 @@ done:
  * target), which pushes p to $v1 and un-shifts the whole t6-t9 ring
  * (or->t8, nor->t1/and->t2 chain). EXACT: unwrapped 2026-10-16 (the
  * jal-0 placeholder links to gl_func_00000000 = 0). */
-void gl_func_0005256C(int *a0, int **a1) {
+void BasePolyShape_doCommand(int *a0, int **a1) {
     int op = *(int*)a1;
     int *p;
     switch (op) {
@@ -19285,7 +19285,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
     arg0->unk9C = 1.0f;
 }
 
-// gl_func_00052994: command handler dispatching on msg->0 (46 insns).
+// BasePolyShape_handleMsg: command handler dispatching on msg->0 (46 insns).
 // case 12: flag op gated by self->0x30&0x40 (self->0xA4 = obj->4, or set/clear
 // bit 0x80 of *(self+0x18) by obj->4); case 1: if (obj->0x4C != 8) callback;
 // default: callback.
@@ -19297,7 +19297,7 @@ void BasePolyShape_reset(BasePolyShape *arg0) {
 // (2) the addiu+0(reg) RMW base via `if (1) { q = (int *)((char *)q + 0x18); }`
 // in each arm; (3) the dispatch variable v0 reused for both loaded values so
 // they colour v0. See docs/IDO_CODEGEN.md#unsorted-dispatch-if-goto-plus-switch-54aec.
-void gl_func_00052994(int *a0, int *a1) {
+void BasePolyShape_handleMsg(int *a0, int *a1) {
     int *v1;
     int v0 = a1[0];
     if (v0 == 12) goto C;
@@ -20073,16 +20073,16 @@ void CMod_hostioParms(int *a0_arg) {
 }
 
 extern int gl_func_00000000();
-int gl_func_000546BC(char *a0) {
+int CMod_display(char *a0) {
     return gl_func_00000000(gl_func_00000000, a0 + 0x2C, a0);
 }
 
-/* gl_func_000546E8: 203-insn (0x32C) chained-constructor + setup.
+/* BaseLight_ctor: 203-insn (0x32C) chained-constructor + setup.
  * 0xE0-byte stack frame, sibling of just-landed CMod_hostioParms family.
  * NOT yet NM-wrapped — needs full body decode before compilable C.
  *
  * Decoded entry (insns 1-27):
- *   void *gl_func_000546E8(void *a0, void *a1) {
+ *   void *BaseLight_ctor(void *a0, void *a1) {
  *     void *s0 = a0;
  *     void *s1;
  *     if (a0 == NULL) {
@@ -20262,7 +20262,7 @@ struct V4_546E8 { f32 x, y, z, w; };
 struct V3_546E8 { f32 x, y, z; };
 struct P546E8 { char *p; };
 struct IP546E8 { int *p; };
-s32 *gl_func_000546E8(char *self, int arg1) {
+s32 *BaseLight_ctor(char *self, int arg1) {
     volatile int padT[4];        /* 0xD0-0xDC */
     struct V3_546E8 zv;          /* 0xC4-0xCC */
     volatile int padM[4];        /* 0xB4-0xC0 */
@@ -20413,7 +20413,7 @@ void BaseLight_hostioParms(int *s0) {
 }
 
 
-/* gl_func_00054AEC: command-token decoder ('r' two int->float reads, 'h'
+/* BaseLight_doCommand: command-token decoder ('r' two int->float reads, 'h'
  * sub-decoder on self+0x124, 'i' bounded table lookup, default passthrough).
  * EXACT 2026-10-16 (agent-g, 89.8 -> 100): the target tests 0x72 FIRST and
  * then 0x68/0x69 as a beq chain with `b default` after -- an IDO switch
@@ -20424,7 +20424,7 @@ void BaseLight_hostioParms(int *s0) {
  * takes t2). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gl_func_00054AEC(int *self, int *strm) {
+void BaseLight_doCommand(int *self, int *strm) {
     int *p;
     int idx;
     int v = *strm;
@@ -20454,18 +20454,18 @@ D:
 }
 
 extern int gl_func_00000000();
-int gl_func_00054BE4(char *a0) {
+int BaseLight_vfn7_00054BE4(char *a0) {
     return gl_func_00000000(a0 + 0x10C);
 }
 
 extern int gl_func_00000000();
-int gl_func_00054C04(char *a0) {
+int BaseLight_vfn8_00054C04(char *a0) {
     return gl_func_00000000(a0 + 0x10C);
 }
 
 extern int gl_func_00000000();
 
-void gl_func_00054C24(char *a0, char *a1) {
+void LightTarget_doCommand(char *a0, char *a1) {
     int val = *(int*)a1;
     if (val == 0x72) {
         int *p = *(int**)(a1 + 4);
@@ -20684,7 +20684,7 @@ void game_libs_func_000550A0(int *a0, float a1) {
     }
 }
 
-/* gl_func_000550CC: if (f(self) == 2) return; copy self's position (+0xDC,
+/* LightTarget_display: if (f(self) == 2) return; copy self's position (+0xDC,
  * int-word struct copy) into a float vec at self+0x114 field by field, call
  * f(&D, &self->114, self->120, self->124, self->128) (the three tail args are
  * raw words: lw, no lwc1), then struct-copy +0x114 back out and write its
@@ -20696,7 +20696,7 @@ void game_libs_func_000550A0(int *a0, float a1) {
 typedef struct { f32 x, y, z; } V3_550CC;
 extern int func_00000000();
 extern int D_00000000;
-void gl_func_000550CC(char *self) {
+void LightTarget_display(char *self) {
     s32 pad[2];
     V3_550CC v;
     s32 padA;
@@ -21089,14 +21089,14 @@ Gl5591CArg *a3;
 }
 
 extern int gl_func_00000000();
-void gl_func_00055A7C(int *dst) {
+void fs_gdlReadInt_00055A7C(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00055AB8(Quad4 *dst) {
+void fs_gdlReadQuad_00055AB8(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
@@ -26398,7 +26398,7 @@ out:
     return o;
 }
 
-/* gl_func_00060468: 3-call record update on rec = a0->0x44:
+/* MemTrackerMgr_hostioParms: 3-call record update on rec = a0->0x44:
  *   rec->b = f1(); rec->c += rec->b - rec->a; f2(a0->0x44, &rec->c);
  *   a0->0x44->a = f3();
  * f1 takes no args (a0 is only homed for the later reloads). The `addiu a1,v1,8`
@@ -26410,7 +26410,7 @@ typedef struct R_00060468 {
     int b;
     int c;
 } R_00060468;
-void gl_func_00060468(int *a0) {
+void MemTrackerMgr_hostioParms(int *a0) {
     R_00060468 *p;
     int *q;
     int v;
@@ -26768,10 +26768,10 @@ end:
     return s0;
 }
 
-void game_libs_func_00060DBC(int a0) {
+void ConsoleMgr_update(int a0) {
 }
 
-/* gl_func_00060DC4: 67-insn flag-bit cascade dispatcher (0x10C, frame 0x20).
+/* ConsoleMgr_display: 67-insn flag-bit cascade dispatcher (0x10C, frame 0x20).
  * s0 = self->0x2C (null-checked, also a call arg); v0 = self->0x34 (the FLAG
  * object):
  *   if (v0->0x10 & 0x800) { if(v0->0x18&1) func(), reload v0; if(v0->0x18&2) func(self); }
@@ -26782,7 +26782,7 @@ void game_libs_func_00060DBC(int a0) {
  * "fresh-$t reload vs $v1 collapse" residual), and the beql preloads fall out
  * of it. The first 0x800-arm call passes NO argument: the target's `jal; nop`
  * leaves a0 = self from entry (an explicit `self` arg emits `or a0,s1`). */
-void gl_func_00060DC4(int *self) {
+void ConsoleMgr_display(int *self) {
     int *s0 = (int*)self[0x2C / 4];
     volatile int *v0;
     if (s0 == 0) return;
@@ -27531,14 +27531,14 @@ int game_libs_func_00061DB0(int sum, unsigned char *buf, unsigned int len) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00061DE0(int *dst) {
+void fs_gdlReadInt_00061DE0(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00061E1C(int *dst) {
+void fs_gdlReadInt_00061E1C(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -27579,7 +27579,7 @@ void anim_createAnimator(int *arg0) {
 
 /* Quad4 reader template — 4th in this loop's mass-match pass after
  * 0003A9E8/0000975C/00037E40. Standard 22-insn body. */
-void gl_func_00061F18(Quad4 *dst) {
+void fs_gdlReadQuad_00061F18(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 0x10);
     *dst = buf;
@@ -28010,18 +28010,18 @@ int gl_func_000626EC(char *a0) {
 
 void gl_func_0006270C_inner(int a0);
 
-void gl_func_0006270C(int a0, int *a1) {
+void AnimDataMgr_handleMsg(int a0, int *a1) {
     int val = *a1;
     if (val != 9) return;
     gl_func_0006270C_inner(a0);
 }
 
 extern int gl_func_00000000();
-int gl_func_0006273C(char *a0) {
+int AnimDataMgr_update(char *a0) {
     return gl_func_00000000(a0 + 0x40);
 }
 
-/* gl_func_0006275C: 44-insn factory + 2 direct-jal + 12×-stride alloc + N-init loop (0xB0, frame 0x28).
+/* AnimDataMgr_vfn8_0006275C: 44-insn factory + 2 direct-jal + 12×-stride alloc + N-init loop (0xB0, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   self->[0x3C] = func_a(&D_sym);                     // factory
@@ -28045,7 +28045,7 @@ int gl_func_0006273C(char *a0) {
  * locals), and only the first per-entry call takes self as a 2nd arg.
  */
 extern int gl_ref_00076488();
-void gl_func_0006275C(char *self) {
+void AnimDataMgr_vfn8_0006275C(char *self) {
     extern int D_sym_6275C;
     int i;
     *(int *)(self + 0x3C) = gl_func_00000000(&D_sym_6275C);

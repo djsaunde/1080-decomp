@@ -415,14 +415,14 @@ void gl_func_0006370C(char *a0) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006370C_pad.s")
 
 extern int gl_func_00000000();
-void gl_func_00063744(int *dst) {
+void fs_gdlReadInt_00063744(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00063780(float *dst) {
+void fs_gdlReadFloat_00063780(float *dst) {
     int pad;
     float scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
@@ -443,7 +443,7 @@ void gl_func_000637BC(Vec3 *dst) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0006382C(Quad4 *dst) {
+void fs_gdlReadQuad_0006382C(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;
@@ -2291,7 +2291,7 @@ int gl_func_000663AC() {
 }
 
 extern int gl_func_00000000();
-void gl_func_000663D0(int *a0) {
+void fs_gdlWriteInt_000663D0(int *a0) {
     int pad, scratch;
     scratch = *a0;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
@@ -4081,7 +4081,7 @@ f32 gl_func_00068044(f32 arg0, f32 arg1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_000681F4(int *dst) {
+void fs_gdlReadInt_000681F4(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -4091,7 +4091,7 @@ void gl_func_000681F4(int *dst) {
  * reader but with size 12 / 3 lw-sw pairs. Requires `int pad` before buf
  * to push buf to sp+0x18 (matches target's stack layout vs IDO's natural
  * sp+0x1C). */
-void gl_func_00068230(Tri3i *dst) {
+void fs_gdlReadVec3_00068230(Tri3i *dst) {
     int pad;
     Tri3i buf;
     gl_func_00000000(&D_00000000, &buf, 0xC);
@@ -4100,14 +4100,14 @@ void gl_func_00068230(Tri3i *dst) {
 }
 
 extern int gl_func_00000000();
-void gl_func_00068280(int *dst) {
+void fs_gdlReadInt_00068280(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_000682BC(int *dst) {
+void fs_gdlReadInt_000682BC(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
@@ -4800,14 +4800,14 @@ mid:
 }
 
 extern int gl_func_00000000();
-void gl_func_00068F28(int *dst) {
+void fs_gdlReadInt_00068F28(int *dst) {
     int pad, scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
-void gl_func_00068F64(Quad4 *dst) {
+void fs_gdlReadQuad_00068F64(Quad4 *dst) {
     Quad4 scratch;
     gl_func_00000000(gl_func_00000000, &scratch, 16);
     *dst = scratch;

@@ -1,10 +1,10 @@
-/* IDO 7.1 -O2 donor for gl_func_0004E96C -- 9-way parameter-stream decoder
+/* IDO 7.1 -O2 donor for Window_doCommand -- 9-way parameter-stream decoder
  * (0x1B8 / 110 words; word-exact apart from the jumptable reloc field).
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs_post0b.c.o (the
  * 52CD4 / 3AC5C / 61F8C recipe, docs/MATCHING_WORKFLOW.md#post0b-jumptable-donor-52cd4).
  * switch (op) cases 109..117: the 9-entry table sits at donor .rodata +0,
- * renamed gl_func_0004E96C_rodata and pinned to bootup.uso RoData +0x1B84
+ * renamed Window_doCommand_rodata and pinned to bootup.uso RoData +0x1B84
  * (the extractor dump at roff 0x1B88 lists all nine arms in case order,
  * arm = target - shim - vaddr with no -8; case 114 = the default arm).
  *
@@ -20,7 +20,7 @@ extern int gl_func_00000000();
 typedef struct { int op; int *args; } C4E96C;
 #define A4E96C(c) (p = (c)->args, (c)->args = p + 1, *p)
 
-void gl_func_0004E96C(char *a0, C4E96C *a1) {
+void Window_doCommand(char *a0, C4E96C *a1) {
     int *p;
     int v;
     switch (a1->op) {

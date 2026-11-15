@@ -4368,13 +4368,13 @@ int *gl_func_000088B4(int *arg0) {
 
 /* game_libs_func_000683C4 split off from gl_func_00068350 bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
-/* game_libs_func_0004D014 split off from gl_func_0004CFD4 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
+/* ScreenWindow_getCurBuffer_0004D014 split off from PolyShape_vfn10_0004CFD4 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
 /* BasePolyShape_triCentroid split off from BasePolyShape_genNormalsFast bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
 /* snd_InitCueQueues_31580 split off from snd_PreNMI_31560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
-/* Window_updateAspect + game_libs_func_0004EB4C split off from gl_func_0004E96C bundle on 2026-05-08; decompiled in game_libs_post.c. */
+/* Window_updateAspect + game_libs_func_0004EB4C split off from Window_doCommand bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
 /* game_libs_func_0003EB90, _0003EB98 split off from gl_func_0003EB3C bundle
  * 2026-05-08; decompiled in game_libs_post.c. */
@@ -4385,14 +4385,14 @@ int *gl_func_000088B4(int *arg0) {
 /* game_libs_func_00046048 split off from gfx_waitRetrace bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
-/* gl_func_0004D0B4 bundle split 2026-05-08; children INCLUDE_ASM live in
- * game_libs_post.c next to the parent gl_func_0004D0B4. */
+/* RcpTask_ctor bundle split 2026-05-08; children INCLUDE_ASM live in
+ * game_libs_post.c next to the parent RcpTask_ctor. */
 
-/* gl_func_0004D224 bundle split 2026-05-08; children INCLUDE_ASM live in
- * game_libs_post.c next to the parent gl_func_0004D224. */
+/* RcpTask_noUcode_fastQ bundle split 2026-05-08; children INCLUDE_ASM live in
+ * game_libs_post.c next to the parent RcpTask_noUcode_fastQ. */
 
-/* gl_func_0004D2A0 bundle split 2026-05-08; children INCLUDE_ASM live in
- * game_libs_post.c next to the parent gl_func_0004D2A0. */
+/* RcpTask_noUcode_NoC bundle split 2026-05-08; children INCLUDE_ASM live in
+ * game_libs_post.c next to the parent RcpTask_noUcode_NoC. */
 
 /* gl_func_0004D354 bundle split 2026-05-08; children INCLUDE_ASM live in
  * game_libs_post.c next to the parent gl_func_0004D354. */

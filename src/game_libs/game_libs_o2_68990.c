@@ -18,7 +18,7 @@
  *
  * Reloc identities (bootup.uso TextReloc, kind 1 = blank jal):
  *   baked jals 7C8EC / 7C860 / 7C928 = the in-unit int readers
- *     gl_func_00068280 / gl_func_000681F4 / gl_func_000682BC (section-
+ *     fs_gdlReadInt_00068280 / fs_gdlReadInt_000681F4 / fs_gdlReadInt_000682BC (section-
  *     relative relocs: called via gl_ref_0007C8EC / _7C860 / _7C928 pins,
  *     the host symbols themselves link at splat addresses, 0x1466C low);
  *   sym 627 = gl_func_00042090 (x2: save/restore a current-context handle),
@@ -50,10 +50,10 @@ extern Ctx68990 import_0005C6E0;
 extern int D_00000000;
 /* the three in-unit readers, called through gl_ref_<section-addr> pins so the
  * link bakes the USO section-relative words 0x0C01F23B / 0x0C01F218 / 0x0C01F24A
- * (the host symbol gl_func_00068280 links at its splat address 0x68280) */
-extern void gl_ref_0007C8EC(int *); /* gl_func_00068280 */
-extern void gl_ref_0007C860(int *); /* gl_func_000681F4 */
-extern void gl_ref_0007C928(int *); /* gl_func_000682BC */
+ * (the host symbol fs_gdlReadInt_00068280 links at its splat address 0x68280) */
+extern void gl_ref_0007C8EC(int *); /* fs_gdlReadInt_00068280 */
+extern void gl_ref_0007C860(int *); /* fs_gdlReadInt_000681F4 */
+extern void gl_ref_0007C928(int *); /* fs_gdlReadInt_000682BC */
 extern int gl_func_00000000();
 
 void gl_func_00068990(char *o) {

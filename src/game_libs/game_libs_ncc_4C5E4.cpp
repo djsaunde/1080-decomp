@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0004C5E4 (0x344 / 209 words) -- EXACT (agent-c run 261), spliced over the
+/* IDO 7.1 NCC (C++) donor for ScreenWindow_display (0x344 / 209 words) -- EXACT (agent-c run 261), spliced over the
  * post0b placeholder on both build paths via REPLACE_FUNC_BODY (dbg_printThreads calls renamed to the blank
  * gl_func_0004C5E4_c34458 = 0: the target's jal words are blank USO calls). First NM donor: agent-g run 191.
  * The cfe NM body (79.69, 212 words) ported to C++: `void Obj::run()` (renamed with objcopy). Registers this

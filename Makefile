@@ -502,10 +502,10 @@ build/src/game_libs/game_libs_post0b.c.o: private TRUNCATE_TEXT := 0x2eb00
 # 0x10->0x24, 61040 value +0x14, size 0xb4->0xa0 (2026-10-15).
 build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
 build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := gl_func_000551E0=0x00000000 fault_printFlags=0x00000000 math_printBounds=0x00000000 game_libs_func_00060574=0x00000000 gl_func_00055B10=0x00000000 gl_func_0005AF64=0x00000000 gl_func_0004DCD4=0x00000000,0x00000000 game_libs_func_00061030=0x00000000,0x00000000,0x00000000,0x00000000,0x00000000
-# gl_func_0004D0B4's leading zero word (0x4D0B0) is gl_func_0004D084's all-zero tail pad (agent-c run 122):
+# RcpTask_ctor's leading zero word (0x4D0B0) is vFP1_invokeFn_0004D084's all-zero tail pad (agent-c run 122):
 # 4D0B4 is plain C again; the NM symbol of 4D084 is resized back to 0x2c in the clip line below.
-build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += gl_func_0004D084=0x00000000
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += gl_func_0004D084=0x00000000
+build/src/game_libs/game_libs_post0b.c.o: private SUFFIX_BYTES_FORCE += vFP1_invokeFn_0004D084=0x00000000
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE += vFP1_invokeFn_0004D084=0x00000000
 # game_libs_func_00035E5C (2 words) / game_libs_func_0004230C (10 words): all-zero inter-function pads
 # folded into their exact predecessors as zero SUFFIX words (agent-c run 150; expected/ symbols deleted
 # with scripts/elf-symtab-delete.py, predecessors grown; .text + relocs unchanged).
@@ -648,7 +648,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # Re-probed 2026-10-17 agent-c (App_main NM decode, 112 vs 113 words): 0x2e494 -> 0x2e474.
 # Re-probed 2026-10-17 agent-c run 104 (gl_func_0003B01C / PolyShape_hostioParms stubs -> real decodes): 0x2e494 -> 0x2e654;
 # gl_func_00046790 re-decode: 0x2e654 -> 0x2e694; agent-g run 103 math decodes: -> 0x2e674 -> 0x2e668 (54144 NM).
-# Re-probed 2026-10-17 agent-c run 105 (gl_func_0004E96C NM body -> donor splice): 0x2e668 -> 0x2e65c.
+# Re-probed 2026-10-17 agent-c run 105 (Window_doCommand NM body -> donor splice): 0x2e668 -> 0x2e65c.
 # run 105 stub re-decodes (4E424 / 4E244): 0x2e65c -> 0x2e75c.
 # gl_func_00045178 tail re-decode: 0x2e75c -> 0x2e77c.
 # agent-g run 104: 550CC + 54144 EXACT (real bodies vs old NM bodies): 0x2e77c -> 0x2e79c.
@@ -821,7 +821,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # agent-c run 260: 4C5E4 NM donor viewport conversions as named locals (832 -> 836 bytes = target): 0x2eaf0 -> 0x2eaf4 (62F08 NM offset 0x2eaa4).
 # agent-c run 266: 3B9C0 NM donor qa / qb loads in one basic block (1104 -> 1108 bytes, target 1116): 0x2eaf4 -> 0x2eaf8 (62F08 NM offset 0x2eaa8).
 # agent-c run 284: 3B9C0 NM donor tris[i] reads + off split like the target (1108 -> 1116 bytes = target): 0x2eaf8 -> 0x2eb00 (62F08 NM offset 0x2eab0).
-build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eb00 gl_func_000551E0=0x7c gl_func_00055B10=0x2c gl_func_0004D084=0x2c SeekNode_update=0x158
+build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_TEXT_CLIP_KEEP_ALIGN := 0x2eb00 gl_func_000551E0=0x7c gl_func_00055B10=0x2c vFP1_invokeFn_0004D084=0x2c SeekNode_update=0x158
 build/src/game_libs/game_libs_g3_62F58.c.o build/non_matching/src/game_libs/game_libs_g3_62F58.c.o: OPT_FLAGS := -O2 -g3
 build/src/game_libs/game_libs_g3_62F58.c.o: TRUNCATE_TEXT := 0xC
 build/src/game_libs/game_libs_post1b.c.o: TRUNCATE_TEXT := 0x8ce0
@@ -1817,10 +1817,10 @@ GAMELIBS_38A28_DONOR := build/src/game_libs/game_libs_o2_38A28.c.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Node_doCommand=$(GAMELIBS_38A28_DONOR)
 # 4E96C = 9-way parameter-stream decoder (9-entry jumptable switch, cases
 # 109..117), IDO 7.1 -O2 donor: game_libs_o2_4E96C.c. Spliced only so the
-# donor-local .rodata jumptable reloc is renamed gl_func_0004E96C_rodata and
+# donor-local .rodata jumptable reloc is renamed Window_doCommand_rodata and
 # pinned to the USO RoData at +0x1B84 (the 29CCC recipe). Uses += (composes).
 GAMELIBS_4E96C_DONOR := build/src/game_libs/game_libs_o2_4E96C.c.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004E96C=$(GAMELIBS_4E96C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Window_doCommand=$(GAMELIBS_4E96C_DONOR)
 # 62A2C = camera/transform blend step. game_libs_post0b holds C++ too: the
 # real source is an IDO 7.1 NCC donor (Vec3 class with a by-value operator=,
 # inline flerp, implicit record assignment), 209/209 words byte-exact.
@@ -2007,8 +2007,8 @@ GAMELIBS_4C5E4_DONOR := build/src/game_libs/game_libs_ncc_4C5E4.cpp.o
 $(GAMELIBS_4C5E4_DONOR): src/game_libs/game_libs_ncc_4C5E4.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym run__3ObjFv=gl_func_0004C5E4 --redefine-sym dbg_printThreads=gl_func_0004C5E4_c34458 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0004C5E4=$(GAMELIBS_4C5E4_DONOR)
+	$(OBJCOPY) --redefine-sym run__3ObjFv=ScreenWindow_display --redefine-sym dbg_printThreads=gl_func_0004C5E4_c34458 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ScreenWindow_display=$(GAMELIBS_4C5E4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4C5E4_DONOR)
 # 4F2DC = screen-point raycast picker as C++ (agent-g run 194: V3 by-value operator= / operator* / operator+ temporaries; cfe 90.36, length = target).
 # agent-c run 307: EXACT NCC donor over a placeholder on both build paths (named operator* result, operator+ / block pads). Its .rodata reloc
