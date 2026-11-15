@@ -1773,7 +1773,7 @@ void mgr_DataManager_update(char *arg0) {
         }
         p = (char *)DATAMGR(arg0)->cool;
         if ((p != 0) && (COOLG(p)->seg >= 0xC) && (MGRDATAMGR(arg0)->beepTimer == 0)) {
-            mgrproc_uso_func_0002FC(0x135, 0);
+            XCALL(mgrproc_uso_func_0002FC, snd_sendEvent)(0x135, 0);
         }
         p = (char *)DATAMGR(arg0)->cool;
         if (COOLG(p)->cur <= 0) {
@@ -1789,9 +1789,9 @@ void mgr_DataManager_update(char *arg0) {
             DATAMGR(arg0)->active = 0;
         }
         p = (char *)DATAMGR(arg0)->entries;
-        mgrproc_uso_func_016BB8(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].pct, *(int *)&((RaceEntry *)p)[1].pct);
+        XCALL(mgrproc_uso_func_016BB8, CourseGadget_setFloat2_0000254C)(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].pct, *(int *)&((RaceEntry *)p)[1].pct);
         p = (char *)DATAMGR(arg0)->entries;
-        mgrproc_uso_func_016BEC(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].posX, *(int *)&((RaceEntry *)p)[0].progress,
+        XCALL(mgrproc_uso_func_016BEC, CourseGadget_setVec4_00002580)(DATAMGR(arg0)->course, *(int *)&((RaceEntry *)p)[0].posX, *(int *)&((RaceEntry *)p)[0].progress,
                          *(int *)&((RaceEntry *)p)[1].posX, ((RaceEntry *)p)[1].progress);
     }
     XCALL(mgrproc_uso_func_04CD94, Node_update)(arg0);
