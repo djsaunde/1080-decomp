@@ -531,7 +531,7 @@ void h2hproc_uso_func_00000944(char *a0, int a1) {
     }
 }
 
-void H2HRaceProcess_onPause_0000099C(int *a0) {
+void H2HRaceProcess_onPause(int *a0) {
     int v;
     gl_func_00000000(&D_00000000, *(int*)((char*)a0 + 0x514) - 1);
     v = *(int*)((char*)a0 + 0x514) - 1;
@@ -539,7 +539,7 @@ void H2HRaceProcess_onPause_0000099C(int *a0) {
     gl_func_00000000(*(int*)((char*)a0 + 0x48), v * 120 + 60);
 }
 
-/* H2HRaceProcess_runPauseRow_000009F8: 34-insn indirect-method dispatch.
+/* H2HRaceProcess_onPauseSelect: 34-insn indirect-method dispatch.
  * Reads a subsystem pointer at a0->0x48, looks up an entry in its
  * 0x28-stride table indexed by a0->0x7C, calls the +0x90 method
  * pointer with arg 0x28 if non-NULL. Stashes a0 in D_00000000 first.
@@ -548,7 +548,7 @@ void H2HRaceProcess_onPause_0000099C(int *a0) {
  * reads `v = a0->0x48` (struct field). 2026-05-04: fixed the C, then
  * applied INSN_PATCH for register-allocation diff (a2/v1/a1 vs v1/v0/a0).
  * 83.00→100% via 15-word patch. */
-/* H2HRaceProcess_runPauseRow_000009F8 — EXACT MATCH 34/34 words (2026-07-03, agent-e).
+/* H2HRaceProcess_onPauseSelect — EXACT MATCH 34/34 words (2026-07-03, agent-e).
  * VERIFIED: clean rebuild of build/non_matching .o, word-diff vs own .s = 0 diffs.
  * Baseline was 19/34 (95.1% fuzzy readout).
  *
@@ -575,7 +575,7 @@ void H2HRaceProcess_onPause_0000099C(int *a0) {
  *    temps so textual order controls rs/rt.
  * NOTE: zero-target jals (gl_func_00000000 placeholders) — promotion to the
  * matching path still gated by USO reloc wiring; this is the NM-wrap body. */
-void H2HRaceProcess_runPauseRow_000009F8(int *a0) {
+void H2HRaceProcess_onPauseSelect(int *a0) {
     extern char D_00000000;
     int k;
     if (gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190)) != 0) {
@@ -592,11 +592,11 @@ void H2HRaceProcess_runPauseRow_000009F8(int *a0) {
 
 /* func_00000A80: 2-insn leaf bundled into 9F8's nonmatching SIZE by splat.
  * Simple `a0->[0x504] = 0` setter. */
-void H2HRaceProcess_onFinish_00000A80(int *a0) {
+void H2HRaceProcess_onEndTimerDone(int *a0) {
     *(int*)((char*)a0 + 0x504) = 0;
 }
 
-/* H2HRaceProcess_raceOver_00000A88: 0x124 state-machine dispatcher on a0->0x504.
+/* H2HRaceProcess_onRaceOver: 0x124 state-machine dispatcher on a0->0x504.
  *   case 0: setter(D[0x190], 3, 1); a0->0x504 = 1; gl(7, 0, 0)
  *   case 1: if (!query(D[0x190])) return; gl(7, 0, 0); local C18(a0);
  *           min(pair[0x170], pair[0x174]) + 0x26000F -> gl(a0, ., pair);
@@ -612,7 +612,7 @@ void H2HRaceProcess_onFinish_00000A80(int *a0) {
  * the lui+addiu,0 paired base, decl order tmp/s0/a3/base. */
 extern unsigned A88_diffpair[];
 extern void h2hproc_call_00000C18(int *);
-void H2HRaceProcess_raceOver_00000A88(int *a0) {
+void H2HRaceProcess_onRaceOver(int *a0) {
     int tmp = *(int*)((char*)a0 + 0x504);
     int *s0 = a0;
     int a3;
@@ -646,7 +646,7 @@ void H2HRaceProcess_raceOver_00000A88(int *a0) {
     }
 }
 
-void H2HRaceProcess_vfunc23_00000BAC(int *a0) {
+void H2HRaceProcess_onTimeout(int *a0) {
     int v0, v1;
 
     if (*(int*)((char*)*(int**)((char*)*(int**)((char*)a0 + 0x6AC) + 0x34) + 0x3C) < 0xFF) {

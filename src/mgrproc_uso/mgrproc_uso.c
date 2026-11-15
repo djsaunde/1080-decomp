@@ -355,11 +355,11 @@ void mgr_releaseSprites_000012AC(char *a0) {
 
 void mgrproc_uso_func_00000000();  /* K&R-style: matches the K&R def above */
 
-void MGRRaceProcess_release_00001304(void) {
+void MGRRaceProcess_onCountdownStart(void) {
     mgrproc_uso_func_00000000();
 }
 
-/* MGRRaceProcess_onResult_00001324: 41-insn lazy-init guard. Idempotent
+/* MGRRaceProcess_endTimerEnabled: 41-insn lazy-init guard. Idempotent
  * "ensure-initialized" check on arg0->[0x4FC] flag. If unset, runs init
  * cascade. Sets arg0[0x4FC]=1 (guard) + arg0[0x7D0]=arg0[0x4F8] (cached
  * state). Returns 1.
@@ -384,7 +384,7 @@ extern int mgr_nextCourse_000000B0();
 extern int mgr_useRetry_000000F8();
 extern int mgr_noRetriesLeft_00000170();
 extern int mgrproc_uso_func_01FA1C();
-int MGRRaceProcess_onResult_00001324(char *arg0) {
+int MGRRaceProcess_endTimerEnabled(char *arg0) {
     int v;
     if (*(int*)(arg0 + 0x4FC) == 0) {
         import_000B72F4(*(int*)(arg0 + 0x6AC), 0, 1);
@@ -405,7 +405,7 @@ int MGRRaceProcess_onResult_00001324(char *arg0) {
     return 1;
 }
 
-/* MGRRaceProcess_onFinish_000013C8: 75-insn (0x12C) post-init state dispatcher.
+/* MGRRaceProcess_onEndTimerDone: 75-insn (0x12C) post-init state dispatcher.
  * BYTE-EXACT 75/75, objdiff 100.0 (2026-07-15 agent-g, 82.4 -> 100). The
  * 2026-06-20 "LO16/address-remat + branch-likely tie" cap note was WRONG on
  * all three counts; fixes were:
@@ -466,7 +466,7 @@ extern char import_800200DC_c;
 extern char import_800200D8;
 extern char import_80020100;
 extern char import_80020100_b;
-void MGRRaceProcess_onFinish_000013C8(int *a0) {
+void MGRRaceProcess_onEndTimerDone(int *a0) {
     int spill;          /* stack 0x24(sp) */
     int *s0 = a0;
     spill = 0;
@@ -503,7 +503,7 @@ storestate:
     return;
 }
 
-/* MGRRaceProcess_newReplay_000014F4: 40-insn 3-way switch on a0->[0x4D8] (v):
+/* MGRRaceProcess_onTimeout: 40-insn 3-way switch on a0->[0x4D8] (v):
  *   v == 2: func_0139B0(D[0x190], 3, 1, a0); a0->[0x7D4] = 1;
  *   v == 1 || v == 3: func_00001AD0(a0, D[0x170] + 0x26000F);
  *   else: skip
@@ -521,7 +521,7 @@ extern char import_80020208;
 extern void mgrproc_uso_func_048E7C(void *, int);
 extern void mgrproc_uso_func_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
-void MGRRaceProcess_newReplay_000014F4(int *a0) {
+void MGRRaceProcess_onTimeout(int *a0) {
     int v;
     mgrproc_uso_func_048E7C((char*)&import_802649F8 + 0x628, *(int*)((char*)a0 + 0x4D8));
     v = *(int*)((char*)a0 + 0x4D8);
@@ -539,7 +539,7 @@ case_13:
     mgrproc_uso_func_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
 }
 
-/* MGRRaceProcess_runPauseRow_00001594: 32-insn (0x80) check-then-vtable-call helper.
+/* MGRRaceProcess_onPauseSelect: 32-insn (0x80) check-then-vtable-call helper.
  * Decoded:
  *   if (gl_func_0(D[0x190], a0) == 0) return;
  *   int *p = a0[0x48/4]; int idx = p[0x7C/4];
@@ -574,7 +574,7 @@ extern int D_mgr_1594_a, D_mgr_1594_c;
 extern int import_80020228;
 extern int import_80263D60;
 extern int mgrproc_uso_func_013980();
-/* MGRRaceProcess_runPauseRow_00001594 — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
+/* MGRRaceProcess_onPauseSelect — EXACT 32/32 body (verified clean-rebuild 2026-07-02, agent-e).
  *
  * Replaces the former NM body (which was a documented "register-renumber cap").
  * CAP CRACKED — two levers, in order:
@@ -595,14 +595,14 @@ extern int mgrproc_uso_func_013980();
  *   extern int import_80020228;
  *   extern int import_80263D60;
  */
-void MGRRaceProcess_runPauseRow_00001594(int *a0) {
+void MGRRaceProcess_onPauseSelect(int *a0) {
     if (mgrproc_uso_func_013980(*(int*)((char*)&import_80020228 + 0x190), a0) == 0) return;
     if (*(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90) == 0) return;
     *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
     ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
 }
 
-/* MGRRaceProcess_raceOver_00001614: state-machine step (switch arg0->0x504, cases 0/1/4
+/* MGRRaceProcess_onRaceOver: state-machine step (switch arg0->0x504, cases 0/1/4
  * as an if-else chain). Case 0: cb(&D+0x190,3,1), set state=1, cb(7,0,0). Case 1:
  * if cb(&D+0x190,1,1): set 0x4D8=1, several inits, alloc a node into arg0->0x524,
  * link it into the 0x56C list (header+0x10), conditional flag, register via
@@ -650,7 +650,7 @@ extern void import_007FE4E8();
 extern int mgrproc_uso_func_00F954();
 extern int mgrproc_uso_func_00001BD4();
 extern void *MgrNameEntry_ctor_00002940(char *, int, int);
-void MGRRaceProcess_raceOver_00001614(char *arg0) {
+void MGRRaceProcess_onRaceOver(char *arg0) {
     void *node;
     char *hdr;
     int state = *(int *)(arg0 + 0x504);
@@ -690,8 +690,8 @@ void MGRRaceProcess_raceOver_00001614(char *arg0) {
     }
 }
 
-/* MGRRaceProcess_vfunc26_0000179C: 30-insn (0x78) gated state-set.
- * Adjacent 2-insn alt-entry stubs (MGRRaceProcess_vfunc33_00001814 / 0000181C,
+/* MGRRaceProcess_onQuitButton: 30-insn (0x78) gated state-set.
+ * Adjacent 2-insn alt-entry stubs (MGRRaceProcess_updateSub0 / 0000181C,
  * each `jr ra; sw a0, 0(sp)`) used to be bundled into the symbol via a
  * 16-byte SUFFIX_BYTES recipe; that recipe was REMOVED 2026-05-23 as
  * instruction-byte-appending match-faking (per
@@ -705,7 +705,7 @@ void MGRRaceProcess_raceOver_00001614(char *arg0) {
  *   if (gl_func(&D, 0x40100, a0) == 0) return;
  *   if (gl_func(*(int*)(&D + 0x190)) == 0) return;
  *   a0->[0x7D4] = 1; */
-void MGRRaceProcess_vfunc26_0000179C(int *a0) {
+void MGRRaceProcess_onQuitButton(int *a0) {
     if (*(int*)((char*)a0 + 0x7E4) != 1) return;
     if (*(int*)((char*)a0 + 0x7E8) >= 0x2EE) return;
     if (gl_func_00000000(&D_00000000, 0x40100, a0) == 0) return;
@@ -713,13 +713,13 @@ void MGRRaceProcess_vfunc26_0000179C(int *a0) {
     *(int*)((char*)a0 + 0x7D4) = 1;
 }
 
-/* MGRRaceProcess_vfunc33_00001814/0000181C: 2 save-arg-sentinel stubs RECOVERED
+/* MGRRaceProcess_updateSub0/0000181C: 2 save-arg-sentinel stubs RECOVERED
  * 2026-05-28 (the alt-entry stubs the 0000179C comment references — they had
  * NO .s and were missing from the build, not "tracked" as it claimed).
  * `void f(int a0){}` -> `jr ra; sw a0, 0(sp)` at -O2, byte-exact. First
  * recovered functions in a Yay0 segment (bytes from the decompressed block). */
-void MGRRaceProcess_vfunc33_00001814(int a0) {}
-void MGRRaceProcess_vfunc34_0000181C(int a0) {}
+void MGRRaceProcess_updateSub0(int a0) {}
+void MGRRaceProcess_updateSub1(int a0) {}
 
 /* Full structural decode 2026-06-01. Per-frame state machine: sub-state
  * gate on s0->0x7D4, a 5-case timer-countdown dispatch on s0->0x7E4 (each
@@ -801,7 +801,7 @@ typedef struct { char c[0]; } Z0_1824; /* zero-byte copy type (kit CDLVI) */
  * block boundary. Each guard costs two ugen temps (ring of 10). */
 #define MGR1824_EMPTY_BB(k) \
     if (sel == (k)) *(Z0_1824 *)(char *)(sel + 0x10) = *(Z0_1824 *)(char *)(sel + 0x20)
-void MGRRaceProcess_vfunc35_00001824(char *s0) {
+void MGRRaceProcess_updateSub2(char *s0) {
     char *v0;
     char *r;
     char *vt;
@@ -891,7 +891,7 @@ void MGRRaceProcess_vfunc35_00001824(char *s0) {
     if (s0) {}
 }
 
-void MGRRaceProcess_vfunc36_00001A5C(int a0) {
+void MGRRaceProcess_updateSub3(int a0) {
 }
 
 extern char import_800201CC;
@@ -1021,7 +1021,7 @@ void mgr_startEnding_00001BE4(int *state) {
 #ifdef NON_MATCHING
 extern int gl_func_00000000();
 extern float D_flt_5CC, D_flt_5D0, D_flt_5D4, D_flt_5D8;
-void MGRRaceProcess_drawOverlay_00001C90(char *arg0) {
+void MGRRaceProcess_drawIntro(char *arg0) {
     volatile int pt_a, pt_b, pt_c, pt_d;
     float sp50[4];
     volatile int pmid;
@@ -1085,10 +1085,10 @@ void MGRRaceProcess_drawOverlay_00001C90(char *arg0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawOverlay_00001C90);
+INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawIntro);
 #endif
 
-/* MGRRaceProcess_vfunc28_00001F30: physics/bounce animation step (gated on arg0->0x4F0
+/* MGRRaceProcess_drawHud: physics/bounce animation step (gated on arg0->0x4F0
  * bit-16). By state arg0->0x4E0: state 1 integrates 0x7A8 with dbl-precision vel
  * 0x7B8 (+&D+0x5E0), bounce off 36.0 floor; state 3 (sub-state 0x4F8) integrates
  * up to a 160-(2*w-2) ceiling (+&D+0x5E8) or decays 0x7A4. Draws cb(arg0, x, y, w).
@@ -1121,7 +1121,7 @@ INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", MGRRaceProcess_drawOverl
 extern int gl_func_00000000();
 extern char import_8024CAF8;
 extern double D_dbl_5E0, D_dbl_5E8, D_dbl_5F8, D_dbl_600;
-void MGRRaceProcess_vfunc28_00001F30(char *arg0) {
+void MGRRaceProcess_drawHud(char *arg0) {
     float f0;
     float f2;
     float four;
@@ -1194,7 +1194,7 @@ void MGRRaceProcess_vfunc28_00001F30(char *arg0) {
     }
 }
 
-/* MGRRaceProcess_vfunc30_00002294: 36-insn (0x90) FPU-gated state-update. MATCHED
+/* MGRRaceProcess_drawResultExtra: 36-insn (0x90) FPU-gated state-update. MATCHED
  * 2026-05-31 (78.2 -> 100%). Three fixes over the prior cap-wrap: (1) the &D FP
  * consts (&D+0/0x608/0x60C/0x610) use DISTINCT externs (D_b0_2294/D_00000608/
  * D_0000060C/D_00000610, valued at the offset in undefined_syms_auto.txt) so each
@@ -1206,7 +1206,7 @@ void MGRRaceProcess_vfunc28_00001F30(char *arg0) {
  * branch-likely calls gl_func when `D[0x610] < a0->0x7A0` (target), NOT `>=` as
  * the old pseudocode said. */
 extern float D_b0_2294, D_00000608, D_0000060C, D_00000610;
-void MGRRaceProcess_vfunc30_00002294(int *a0) {
+void MGRRaceProcess_drawResultExtra(int *a0) {
     if (a0[0x500/4] == 0) return;
     if (D_b0_2294 <= 0.0f) {
         if (*(float*)((char*)a0 + 0x7A0) < D_00000608) {
@@ -1218,9 +1218,9 @@ void MGRRaceProcess_vfunc30_00002294(int *a0) {
     }
 }
 
-/* MGRRaceProcess_vfunc37_00002324 - verified structural decode (0xD8,
+/* MGRRaceProcess_onMessageBounce - verified structural decode (0xD8,
  * 54 insns, one-shot FP state-advance / transition trigger).
- *   void MGRRaceProcess_vfunc37_00002324(void *a0) {
+ *   void MGRRaceProcess_onMessageBounce(void *a0) {
  *       if (a0->0x7C4 != 0) return;               // already triggered
  *       f32 x = a0->0x7A8, y = a0->0x7AC;
  *       a0->0x7B0 = x;  a0->0x7B4 = y;            // snapshot prev
@@ -1261,7 +1261,7 @@ void MGRRaceProcess_vfunc30_00002294(int *a0) {
  *       the cross-USO placeholder gl_func_00000000); both disk-encode jal as
  *       0C000000 under the USO R_MIPS_26 runtime reloc, so the ROM is identical
  *       and the swap only makes objdiff count the call. */
-void MGRRaceProcess_vfunc37_00002324(char *a0) {
+void MGRRaceProcess_onMessageBounce(char *a0) {
     float x, y;
     float two = 2.0f;
     float one = 1.0f;
@@ -1367,7 +1367,7 @@ void mgrproc_uso_func_000023FC(char *arg0) {
  * a3-1 (a1 forward base, a2 mirrored: &a2[-i]). Bundled tail sets
  * s0->0x54C (1356) f32 = 116.0 and s0->0x554 (1364) f32 = 170.0
  * (same field group as the mgrproc final-pose constants seen in
- * MGRRaceProcess_vfunc37_00002324).
+ * MGRRaceProcess_onMessageBounce).
  *
  * SYMBOLS RE-DERIVED 2026-06-20: the prior body used gl_func_00000000 /
  * &D_00000000 placeholders (relocs WRONG). The three calls are DISTINCT
@@ -1431,7 +1431,7 @@ void mgrproc_uso_func_00002850(char *s0, int *a1, int *a2, int a3) {
 INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgrproc_uso_func_00002850);
 #endif
 
-void MGRRaceProcess_vfunc15_00002924(int *a0) {
+void MGRRaceProcess_onEndRaceAlt(int *a0) {
     *(float *)((char *)a0 + 0x54C) = 116.0f;
     *(float *)((char *)a0 + 0x554) = 170.0f;
 }
@@ -1886,7 +1886,7 @@ void mgr_readVec3Parm_000033E8(char *dst) {
 
 /* Historical SUFFIX_BYTES-absorbed orphans (per
  * docs/MATCHING_WORKFLOW.md#feedback-splat-orphan-duplicate-symbol-pruning):
- *   MGRRaceProcess_vfunc33_00001814 ← MGRRaceProcess_vfunc26_0000179C SUFFIX_BYTES
+ *   MGRRaceProcess_updateSub0 ← MGRRaceProcess_onQuitButton SUFFIX_BYTES
  *                                (4 words 0x03E00008,0xAFA40000,0x03E00008,0xAFA40000)
  * The INCLUDE_ASMs lived at the .o tail (offsets 0x3420/0x3430) with no
  * effect on the linked binary — the bytes at vram 0x1814/0x1BD4 come from

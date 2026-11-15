@@ -320,12 +320,12 @@ extern char D_arc_D70_base;
 void arc_loadSprites_00000D70(char *a0);
 void arc_releaseSprites_00000E58(char *a0);
 extern int gl_func_00000000();
-void ARCRaceProcess_release_00000EBC(int *a0);
-int ARCRaceProcess_vfunc18_00000EEC(int *a0);
-void ARCRaceProcess_onFinish_00000F1C(int *a0);
-void ARCRaceProcess_vfunc24_00000F40(int *a0);
-void ARCRaceProcess_vfunc23_00000F48(int a0);
-int ARCRaceProcess_vfunc19_00000F78(int *a0);
+void ARCRaceProcess_onCountdownStart(int *a0);
+int ARCRaceProcess_endTimerEnabled(int *a0);
+void ARCRaceProcess_onEndTimerDone(int *a0);
+void ARCRaceProcess_onAltEndTimerDone(int *a0);
+void ARCRaceProcess_onTimeout(int a0);
+int ARCRaceProcess_altEndTimerEnabled(int *a0);
 typedef struct ArcprocObjectPartial {
     char pad_000[0x4D8];
     int field_4d8;
@@ -346,7 +346,7 @@ typedef struct ArcprocObjectPartial {
 extern char *gl_func_00000000_arcproc_FA8_1014(int, int);
 extern void gl_func_00000000_arcproc_FA8_10E8(char *, char *);
 extern void gl_func_00000000_arcproc_FA8_1100(char *, char *);
-void ARCRaceProcess_raceOver_00000FA8(ArcprocObjectPartial *a0);
+void ARCRaceProcess_onRaceOver(ArcprocObjectPartial *a0);
 typedef struct ArcprocDispatchEntryPartial {
     char pad_00[0x10];
     void (*field_10)(void);
@@ -358,14 +358,14 @@ typedef struct ArcprocDispatchTablePartial {
     ArcprocDispatchEntryPartial field_80[1];
 } ArcprocDispatchTablePartial;
 extern int arcproc_1170_gate(void *, ArcprocObjectPartial *);
-void ARCRaceProcess_runPauseRow_00001170(ArcprocObjectPartial *self);
-void ARCRaceProcess_onPause_000011F0(int *a0);
+void ARCRaceProcess_onPauseSelect(ArcprocObjectPartial *self);
+void ARCRaceProcess_onPause(int *a0);
 void arc_resumePlayers_00001228(int *a0);
 extern float D_arc125C_30, D_arc125C_34, D_arc125C_38;
-void ARCRaceProcess_drawOverlay_0000125C(char *a0);
+void ARCRaceProcess_drawIntro(char *a0);
 int arcproc_uso_func_00000000();
-void ARCRaceProcess_vfunc30_00001488(void);
-void ARCRaceProcess_vfunc31_000014A8(void);
+void ARCRaceProcess_drawResultExtra(void);
+void ARCRaceProcess_drawTimeUpExtra(void);
 typedef struct ArcProcRecord {
     char unknown000[0x14];
     s32 field014;
@@ -397,7 +397,7 @@ extern int arc14C8_call15B0(void *, int, int, int);
 extern int arc14C8_call15C8(void *, int, int);
 extern int arc14C8_call15E8(void *, int, int);
 void arcproc_uso_func_000014C8(ArcProcState *arg0);
-void ARCRaceProcess_onResult_00001604(int *s0);
+void ARCRaceProcess_onLeave(int *s0);
 typedef char *(*GP_000016F4)();
 void arc_drawNumber_000016F4(char *arg0, s32 arg1, f32 *arg2);
 extern int gl_func_00000000();

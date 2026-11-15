@@ -4190,10 +4190,10 @@ build/src/match_imports/uso_bindLocalSyms.c.o: src/match_imports/uso_bindLocalSy
 build/non_matching/src/match_imports/uso_bindLocalSyms.c.o: src/match_imports/uso_bindLocalSyms.c src/match_imports/context_kernel_000.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c src/match_imports/context_mgrproc_uso.h
+build/src/match_imports/MGRRaceProcess_drawIntro.c.o: src/match_imports/MGRRaceProcess_drawIntro.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c src/match_imports/context_mgrproc_uso.h
+build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o: src/match_imports/MGRRaceProcess_drawIntro.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
@@ -4756,12 +4756,12 @@ build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf: build/src/match_import
 build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o scripts/match-origins-uso_bindLocalSyms-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-uso_bindLocalSyms-nm.ld -e uso_bindLocalSyms -o $@ $@.stripped.o
-build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld
+build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf: build/src/match_imports/MGRRaceProcess_drawIntro.c.o scripts/match-origins-MGRRaceProcess_drawIntro.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90.ld -e MGRRaceProcess_drawOverlay_00001C90 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawIntro.ld -e MGRRaceProcess_drawIntro -o $@ $@.stripped.o
+build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o scripts/match-origins-MGRRaceProcess_drawIntro-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawOverlay_00001C90-nm.ld -e MGRRaceProcess_drawOverlay_00001C90 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-MGRRaceProcess_drawIntro-nm.ld -e MGRRaceProcess_drawIntro -o $@ $@.stripped.o
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
@@ -5160,10 +5160,10 @@ build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: build/src/ma
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_bindLocalSyms.json $@
 build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf scripts/match-bindings-uso_bindLocalSyms-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-uso_bindLocalSyms-nm.json $@
-build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json $@
-build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json $@
+build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawIntro.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawIntro.json $@
+build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json $@
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850.json $@
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5563,10 +5563,10 @@ build/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_bindLocalSyms=
 build/src/kernel/kernel_000.c.o: src/match_imports/uso_bindLocalSyms.c scripts/match-bindings-uso_bindLocalSyms.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += uso_bindLocalSyms=build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
 build/non_matching/src/kernel/kernel_000.c.o: src/match_imports/uso_bindLocalSyms.c scripts/match-bindings-uso_bindLocalSyms-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
-build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawOverlay_00001C90=build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c scripts/match-bindings-MGRRaceProcess_drawOverlay_00001C90-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawIntro=build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
+build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawIntro.c scripts/match-bindings-MGRRaceProcess_drawIntro.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += MGRRaceProcess_drawIntro=build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/MGRRaceProcess_drawIntro.c scripts/match-bindings-MGRRaceProcess_drawIntro-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
@@ -5944,10 +5944,10 @@ build/src/kernel/kernel_000.c.o: build/src/match_imports/uso_bindLocalSyms.c.o.l
 build/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/kernel/kernel_000.c.o: build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/uso_bindLocalSyms.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
-build/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/MGRRaceProcess_drawOverlay_00001C90.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
+build/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/MGRRaceProcess_drawIntro.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf

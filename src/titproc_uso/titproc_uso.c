@@ -1687,7 +1687,7 @@ void GameDemoProcess_buildMenu(int *a0) {
     }
 }
 
-/* titproc_uso_func_0000240C - EXACT MATCH (177/177 words + relocs, 2026-07-07).
+/* GameDemoProcess_onQuitButton - EXACT MATCH (177/177 words + relocs, 2026-07-07).
  * SIBLING of GameDemoProcess_handleInput (the titproc state-machine family).
  * Cracked the former "coloring/scheduling ceiling" via five coupled levers:
  *   1. vt-FIRST def in each vtable block (`vt = *(*(s0+K)+0x28); obj = *(s0+K);`
@@ -1715,7 +1715,7 @@ extern int titproc_uso_func_01F7FC();
 extern int titproc_uso_func_012150();
 extern int titproc_uso_func_00F954();
 extern int import_000A53B4();
-void titproc_uso_func_0000240C(char *s0) {
+void GameDemoProcess_onQuitButton(char *s0) {
     char *vt;
     char *obj;
     char *y;
@@ -1833,7 +1833,7 @@ void titproc_uso_func_0000240C(char *s0) {
 
 void titproc_uso_func_00000000();
 
-void titproc_uso_func_000026D0(int *a0) {
+void GameDemoProcess_onTimeoutExit(int *a0) {
     int *p = *(int**)((char*)a0 + 0x6C0);
     if (p == 0) return;
     titproc_uso_func_00000000(p);

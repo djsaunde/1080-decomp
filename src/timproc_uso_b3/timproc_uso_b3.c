@@ -426,13 +426,13 @@ void TrkRace_freeLabels_00000DE4(char *a0) {
     func_00000000(a0 + 0x6E4);
 }
 
-/* TrkRace_isHudBusy_00000E30: triple-deref non-null check RECOVERED +
+/* TrkRace_endTimerEnabled: triple-deref non-null check RECOVERED +
  * MATCHED 2026-05-28 from the Yay0 block_3 gap. Returns 1 iff a0->0x6A8->
  * 0x6C is non-null and its 0xEC field is non-zero. KEY: `goto ret0` to a
  * shared `return 0` produces the beql branch-likely idiom (v0=0 in the
  * delay slot) — the plain `if(...)return 0` form emits bnel and grows to
- * 14 insns (the cap that NM'd sibling ARCRaceProcess_vfunc18_00000EEC). */
-int TrkRace_isHudBusy_00000E30(int *a0) {
+ * 14 insns (the cap that NM'd sibling ARCRaceProcess_endTimerEnabled). */
+int TrkRace_endTimerEnabled(int *a0) {
     int *p = (int*)((int*)a0[0x6A8 / 4])[0x6C / 4];
     if (p == 0) {
         goto ret0;
@@ -445,8 +445,8 @@ ret0:
     return 0;
 }
 
-/* TrkRace_checkRecord_00000E60: state-machine dispatcher, sibling of
- * TimRace_checkRecord_00000EE8 and ARCRaceProcess_raceOver_00000FA8.
+/* TrkRace_onRaceOver: state-machine dispatcher, sibling of
+ * TimRace_onRaceOver and ARCRaceProcess_onRaceOver.
  *
  * Decoded state 0 and state 1 bodies from the target asm. State 0 walks a
  * 0x30-stride table selected by D[0x64], searching for an entry whose
@@ -476,7 +476,7 @@ ret0:
  * local, which took v0). The break now exits to the base re-assignment, giving
  * the target's bne + nop instead of bnel.
  */
-void TrkRace_checkRecord_00000E60(char *a0) {
+void TrkRace_onRaceOver(char *a0) {
     volatile int *base = (int*)&D_00000000;
     char *saved = a0;
     int state = *(int*)(a0 + 0x504);
@@ -530,18 +530,18 @@ state1:
         gl_func_00000000(base[0x190 / 4], 1, 1);
 }
 
-/* TrkRace_onFinish_00000FF4: F1 (32-insn 0x80) gate-then-update wrapper
+/* TrkRace_onEndTimerDone: F1 (32-insn 0x80) gate-then-update wrapper
  * only. The 2026-05-07 SUFFIX_BYTES recipe (absorbing 7 words / 0x1C bytes
  * for the trailing D[0x40]=9 stub at 0x1074 and the 2-word splat-pulled
  * fragment at 0x1088) was REMOVED 2026-05-23 as instruction-byte
  * match-faking. Symbol is now 0x80 / 32 insns (F1 only); the absorbed
  * pieces are tracked as separate symbols. Function lands at fuzzy=100
  * naturally — same pattern as TrkRace_freeLabels_00000DE4 /
- * ARCRaceProcess_release_00000EBC.
+ * ARCRaceProcess_onCountdownStart.
  *
  * F1: gate=gl_func(a0->0x528). If non-zero set D[0x40]=0xC,D[0x44]=9.
  *     Else set D[0x40]=9. Tail: if(a0->0x4F8) gl_func(a0,-1,0); else a0->0x504=0. */
-void TrkRace_onFinish_00000FF4(char *a0) {
+void TrkRace_onEndTimerDone(char *a0) {
     if (gl_func_00000000(*(char**)(a0 + 0x528)) != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
@@ -559,11 +559,11 @@ void TrkRace_onFinish_00000FF4(char *a0) {
  * from build). MATCHED -- D[0x40]=9 setter with unused-arg save; the
  * global-store-in-delay-slot vs arg-save order matches in-tree (standalone
  * diverged, see MATCHING_WORKFLOW.md#feedback-standalone-false-convergence-verify-in-tree). */
-void TrkRace_setMenuState_00001074(int a0) {
+void TrkRace_onTimeoutExit(int a0) {
     *(int*)((char*)&D_00000000 + 0x40) = 9;
 }
 
-/* TrkRace_showMessage_00001088 (0x2C, 11 insns): hoisted-head merge of 1088 +
+/* TrkRace_onTimeout (0x2C, 11 insns): hoisted-head merge of 1088 +
  * 1090 (2026-09-05 agent-c, TWENTY-FIFTH mis-split class, see
  * docs/MATCHING_WORKFLOW.md #hoisted-head-119c-11a4-mgrproc). The 8-byte
  * "alt-entry" `lui a1; lw a1,0x170(a1)` is this function's own first statement
@@ -572,10 +572,10 @@ void TrkRace_setMenuState_00001074(int a0) {
  * wrapper ROM 0x5B3DBA, inner header 0x5B3DE2): Sym[89] EXPORTS text offset
  * 0x1088 and DataReloc @0x33C stores its address in a function-pointer table;
  * 0x1090 has no export and no R_MIPS_26. Old 1090 "exact" = fake `char *a1`
- * parameter (episode retired). Twin: TimRace_showMessage_000010D4. */
+ * parameter (episode retired). Twin: TimRace_onTimeout. */
 void timproc_uso_b3_func_00000000();
 
-void TrkRace_showMessage_00001088(int a0) {
+void TrkRace_onTimeout(int a0) {
     timproc_uso_b3_func_00000000(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
@@ -583,12 +583,12 @@ extern int gl_ref_00000040;
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void TrkRace_quit_000010B4(int a0) {
+void TrkRace_onQuitButton(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
     gl_func_00000000(a0, -1, 0);
 }
 
-/* Vtable-entry dispatcher (twin of TimRace_runPauseRow_00001130). Pass 2 2026-06-10:
+/* Vtable-entry dispatcher (twin of TimRace_onPauseSelect). Pass 2 2026-06-10:
  * re-decode fixed the OLD body's structure -- the *40 is a real multu
  * with the stride in a register (variable stride; old body's shift
  * decomposition was wrong), the gl(5) arg loads EARLY into a0 before
@@ -602,7 +602,7 @@ void TrkRace_quit_000010B4(int a0) {
  * value (a0 freed after the jal consumed the 5); none of the three
  * pseudo-order levers (BB-split / web-inversion / early-pseudo)
  * address arg-reg targeting. Remaining lever: uoptlist dump. */
-/* EXACT (2026-06-21, ported from byte-identical twin TimRace_runPauseRow_00001130).
+/* EXACT (2026-06-21, ported from byte-identical twin TimRace_onPauseSelect).
  * The single residual addu operand-order diff (target `addu rd,base,prod` vs the
  * inline-web's `addu rd,prod,base`) is resolved by two scheduler/coloring nudges:
  *   - `self[(0x48 / 4) ^ 0]` (identity XOR) re-orders the index web so the final
@@ -612,7 +612,7 @@ void TrkRace_quit_000010B4(int a0) {
  * Both are semantic no-ops; verified in-tree (0 non-reloc word diffs). */
 extern int D_arg_b3_10E4[];
 extern int D_cur_b3_10E4;
-void TrkRace_runPauseRow_000010E4(int *self) {
+void TrkRace_onPauseSelect(int *self) {
   int *v0;
   int new_var;
   int v1;
@@ -639,11 +639,11 @@ void TrkRace_runPauseRow_000010E4(int *self) {
   }
 }
 
-/* TrkRace_startHud_00001184: 20-insn (func1 of the split bundle).
+/* TrkRace_onLeave: 20-insn (func1 of the split bundle).
  *   if (a0->0x4FC == 0) { X(a0->0x6A8,0,1); X(a0->0x6A8); a0->0x4FC=1; }
  * orig a0 saved @sp+0x18, reloaded across the 2 calls. USO: call ->
  * func_00000000. */
-void TrkRace_startHud_00001184(int *a0) {
+void TrkRace_onLeave(int *a0) {
     if (a0[0x4FC / 4] == 0) {
         func_00000000((int *)a0[0x6A8 / 4], 0, 1);
         func_00000000((int *)a0[0x6A8 / 4]);
@@ -651,7 +651,7 @@ void TrkRace_startHud_00001184(int *a0) {
     }
 }
 
-void TrkRace_showHud_000011D4(int *a0) {
+void TrkRace_onPause(int *a0) {
     int *p;
 
     p = (int*)*(int*)((char*)a0[0x6A8 / 4] + 0x6C);
@@ -673,7 +673,7 @@ void TrkRace_hideHud_0000120C(int *a0) {
     *p |= 4;
 }
 
-/* TrkRace_drawHud_00001240: 94-insn FP accumulator/dispatch helper.
+/* TrkRace_drawResultExtra: 94-insn FP accumulator/dispatch helper.
  * b3 variant of timproc_uso_b1_func_000011D8. Boundary-checked: one jr ra.
  *
  * Structure:
@@ -706,7 +706,7 @@ extern float D_b3_1240_f0;
 extern float D_b3_1240_f40;
 extern float D_b3_1240_f44;
 extern char *D_b3_1240_ptr138;
-/* TrkRace_drawHud_00001240 — IMPROVED 2026-07-03: 81/94 -> 92/94 raw words.
+/* TrkRace_drawResultExtra — IMPROVED 2026-07-03: 81/94 -> 92/94 raw words.
  *
  * REQUIRES undefined_syms_auto.txt edits (distinct base-alias, value 0x0):
  *   D_b3_1240_f40    = 0x00000000;   (was 0x00000040)
@@ -735,7 +735,7 @@ extern char *D_b3_1240_ptr138;
  * with the frame unchanged. The undefined_syms values above are not needed
  * for the bytes (the .text is taken from the unlinked object).
  */
-void TrkRace_drawHud_00001240(char *a0) {
+void TrkRace_drawResultExtra(char *a0) {
     float color[4];
     char pad[28];
     char *saved;
@@ -1053,15 +1053,15 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
     }
 }
 
-/* TrkDataManager_vfunc8_00001C20: orphan-merge of a stolen-prologue. The orphan
- * TrkDataManager_vfunc8_00001C20 (lui t6; lw t6,0x64(t6) = TIMB3_D_64) was the
+/* TrkDataManager_loadData: orphan-merge of a stolen-prologue. The orphan
+ * TrkDataManager_loadData (lui t6; lw t6,0x64(t6) = TIMB3_D_64) was the
  * stolen prologue of func_00001C28 — it loads the global compared to 1 at the
  * top. Merged FORWARD (one 0x48 symbol; successor .s deleted, no jal targets).
  * Reading TIMB3_D_64 inline at the `== 1` test hoists the lui;lw above the
  * prologue (same recipe as AudioThread_InitMesgQueuesImpl). Also fixed the old decode:
  * a0->0xD8 = 1 (the SAME literal 1 IDO materializes for the `== 1` test, in v0,
  * stored in the jal delay slot — NOT the call return). MATCHED 2026-05-30. */
-void TrkDataManager_vfunc8_00001C20(char *a0) {
+void TrkDataManager_loadData(char *a0) {
     if (*(int*)((char*)&D_00000000 + 0x64) == 1) {
         *(int*)(a0 + 0xA0) = 50000;
     } else {
@@ -1622,7 +1622,7 @@ void TrkMenu_draw_00002A44(char *arg0) {
  * `if (1) {}` before each o48 load is load-bearing: it forces an IDO
  * basic-block boundary that colors o48 into the dead $v0 (vt into $v1),
  * matching the target (was a 98.26% v0/v1 near-miss). Same lever as
- * MGRRaceProcess_onResult_00001324 / the timproc_uso_b5 dispatch family. */
+ * MGRRaceProcess_endTimerEnabled / the timproc_uso_b5 dispatch family. */
 void TrkMenu_handleInput_00002C98(char *obj) {
     char *o48;
     char *vt;
@@ -1855,7 +1855,7 @@ void TrkMenu_drawLabel130_00003050(int *a0, int a1) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3/timproc_uso_b3_func_00003050_pad.s")
 
-/* TrkRace_isHudBusy_00000E30 + 00000E54: SUFFIX_BYTES-absorbed orphans ←
+/* TrkRace_endTimerEnabled + 00000E54: SUFFIX_BYTES-absorbed orphans ←
  * TrkRace_freeLabels_00000DE4 (12 words exact:
  *   0x8C8E06A8,0x8DC2006C,0x50400007,0x00001025,0x8C4F00EC,0x51E00004,
  *   0x00001025,0x03E00008,0x24020001,0x00001025,0x03E00008,0x00000000).
@@ -1868,8 +1868,8 @@ void TrkMenu_drawLabel130_00003050(int *a0, int a1) {
 
 /* SUFFIX_BYTES-absorbed orphan (per
  * docs/MATCHING_WORKFLOW.md#feedback-splat-orphan-duplicate-symbol-pruning,
- * no-truncate variant): TrkRace_setMenuState_00001074 (7 words) ←
- * TrkRace_onFinish_00000FF4 SUFFIX_BYTES (exact 7-word match
+ * no-truncate variant): TrkRace_onTimeoutExit (7 words) ←
+ * TrkRace_onEndTimerDone SUFFIX_BYTES (exact 7-word match
  * 0x240E0009,0x3C010000,0xAFA40000,0x03E00008,0xAC2E0040,0x3C050000,0x8CA50170).
  * Pre-prune the orphan symbol was at .o offset 0x3114 (tail). */
 

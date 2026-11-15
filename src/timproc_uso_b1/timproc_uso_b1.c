@@ -400,7 +400,7 @@ void TimRace_freeLabels_00000DA0(char *a0) {
  * lever was `int *a0` array-index form (a0[off/4]) instead of `char *a0`
  * pointer arith — array indexing keeps the post-call self web memory-
  * resident, forcing fresh reload temps that match the target. Byte-exact. */
-int TimRace_startHud_00000DEC(int *a0) {
+int TimRace_endTimerEnabled(int *a0) {
     if (a0[0x4FC / 4] == 0) {
         gl_func_00000000((int *)a0[0x6A8 / 4], 0, 1);
         gl_func_00000000((int *)a0[0x6A8 / 4]);
@@ -412,7 +412,7 @@ int TimRace_startHud_00000DEC(int *a0) {
 /* 32-insn dispatcher: lookup-call gates state set on D[0x40]/D[0x44]
  * then ALWAYS runs the t9 check (a0->[0x4F8] -> store-or-call).
  * v0!=0: D[0x40]=12, D[0x44]=9; v0==0: D[0x40]=9 (no D[0x44] write). */
-void TimRace_onFinish_00000E40(int *a0) {
+void TimRace_onEndTimerDone(int *a0) {
     int v0 = gl_func_00000000(*(int*)((char*)a0 + 0x528));
     if (v0 != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
@@ -427,13 +427,13 @@ void TimRace_onFinish_00000E40(int *a0) {
     }
 }
 
-void TimRace_unreachable_00000EC0(int a0) {
+void TimRace_onAltEndTimerDone(int a0) {
     gl_func_00000000(&D_00000000 + 0x3D8);
     (void)a0;
 }
 
-/* TimRace_checkRecord_00000EE8: 118-insn state-machine dispatcher, twin of
- * TrkRace_checkRecord_00000E60 (same skeleton; b1 state-0 adds the 3-byte
+/* TimRace_onRaceOver: 118-insn state-machine dispatcher, twin of
+ * TrkRace_onRaceOver (same skeleton; b1 state-0 adds the 3-byte
  * [5]/[6]/[7] compare ladder and reads work->[0x30] not [0x44]->[0x14]).
  * Old "2-FUNCTION BUNDLE" note obsolete — splat boundary now splits 10C0.
  *
@@ -458,7 +458,7 @@ void TimRace_unreachable_00000EC0(int a0) {
  * slot (whole downstream ring shifts -1 = worse).
  * Unwrapped EXACT 2026-10-16 (run 96): the block is cut from the unlinked
  * .o, so the placeholder callees/data stay 0 like the ROM. */
-void TimRace_checkRecord_00000EE8(char *a0arg) {
+void TimRace_onRaceOver(char *a0arg) {
     volatile int *base;
     char *s2 = a0arg;
     int state = *(int *)(a0arg + 0x504);
@@ -515,11 +515,11 @@ state1:
     gl_func_00000000(base[0x190 / 4], 1, 1);
 }
 
-void TimRace_setMenuState_000010C0(int a0) {
+void TimRace_onTimeoutExit(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
 }
 
-/* TimRace_showMessage_000010D4 (0x2C, 11 insns): hoisted-head merge of 10D4 +
+/* TimRace_onTimeout (0x2C, 11 insns): hoisted-head merge of 10D4 +
  * 10DC (2026-09-05 agent-c, TWENTY-FIFTH mis-split class, see
  * docs/MATCHING_WORKFLOW.md #hoisted-head-119c-11a4-mgrproc). The 8-byte
  * "pre-load fragment" `lui a1; lw a1,0x170(a1)` is this function's own first
@@ -528,10 +528,10 @@ void TimRace_setMenuState_000010C0(int a0) {
  * EXPORTS text offset 0x10D4 and DataReloc @0x33C stores its address in a
  * function-pointer table; 0x10DC has no export and no R_MIPS_26. The old 10DC
  * "exact" existed only via a fake `char *a1` parameter (episode retired).
- * Twin: TrkRace_showMessage_00001088 (trkproc.uso). */
+ * Twin: TrkRace_onTimeout (trkproc.uso). */
 void timproc_uso_b1_func_00000000();
 
-void TimRace_showMessage_000010D4(int a0) {
+void TimRace_onTimeout(int a0) {
     timproc_uso_b1_func_00000000(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
@@ -539,12 +539,12 @@ extern int gl_ref_00000040;
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
-void TimRace_quit_00001100(int a0) {
+void TimRace_onQuitButton(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
     gl_func_00000000(a0, -1, 0);
 }
 
-/* Vtable-entry dispatcher (twin of TrkRace_runPauseRow_000010E4): gate on
+/* Vtable-entry dispatcher (twin of TrkRace_onPauseSelect): gate on
  * gl_func(D[0x190]), reload the sub-object/count after the refresh call, then
  * indirect-call the fn-ptr at entry+0x90. */
 extern int D_arg_b1_1130[];
@@ -558,7 +558,7 @@ extern int D_cur_b1_1130;
  *     fixes the temp-numbering of the call register.
  * Both are semantic no-ops; verified in-tree (0 non-reloc word diffs, 40/40
  * words, reloc records at the 6 target offsets). */
-void TimRace_runPauseRow_00001130(int *self) {
+void TimRace_onPauseSelect(int *self) {
     int *v0;
     int new_var;
     int v1;
@@ -585,7 +585,7 @@ void TimRace_runPauseRow_00001130(int *self) {
     }
 }
 
-/* TimRace_drawHud_000011D0 (0x170, 92 insns): hoisted-head merge of 11D0 +
+/* TimRace_drawResultExtra (0x170, 92 insns): hoisted-head merge of 11D0 +
  * 11D8 (2026-09-05 agent-c, TWENTY-FIFTH mis-split class, see
  * docs/MATCHING_WORKFLOW.md #hoisted-head-119c-11a4-mgrproc). The 8-byte
  * "float-constant preload" `lui at,0x3F80; mtc1 at,$f0` is this function's own
@@ -642,7 +642,7 @@ extern char D_b1_11d8_a, D_b1_11d8_b, D_b1_11d8_c, D_b1_11d8_d;
  * constant the later ring reg ($f18, field $f4). The new float local ft costs
  * one stack word, so ONE volatile pad is dropped (7 -> 6) to keep the call-arg
  * spill home at sp+0x24. */
-void TimRace_drawHud_000011D0(char *a0) {
+void TimRace_drawResultExtra(char *a0) {
     float buf[4];            /* dead color buffer, sp+0x50..0x5C (frame top) */
     volatile int pad0, pad1, pad2, pad3, pad4, pad5;
     char *saved;             /* call-arg spill home sp+0x24 */

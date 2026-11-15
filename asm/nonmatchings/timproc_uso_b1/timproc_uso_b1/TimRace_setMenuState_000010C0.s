@@ -1,9 +1,0 @@
-nonmatching TimRace_setMenuState_000010C0, 0x14
-
-glabel TimRace_setMenuState_000010C0
-    /* 0010C0 000010C0 240E0009 */  .word 0x240E0009
-    /* 0010C4 000010C4 3C010000 */  .word 0x3C010000
-    /* 0010C8 000010C8 AFA40000 */  .word 0xAFA40000
-    /* 0010CC 000010CC 03E00008 */  .word 0x03E00008
-    /* 0010D0 000010D0 AC2E0040 */  .word 0xAC2E0040
-endlabel TimRace_setMenuState_000010C0
