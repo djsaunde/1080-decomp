@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-void func_80009A50(void) {
+void osYieldThread(void) {
     register s32 sr = func_800066B0();
     *(s16*)((char*)D_8000A420 + 0x10) = 2;
     func_80003D0C(&D_8000A418);

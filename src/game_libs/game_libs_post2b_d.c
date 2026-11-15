@@ -220,7 +220,7 @@ void gl_func_00074554(void *args, int type) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00074554_pad.s")
 
 /* gl_func_000747F4 = libultra __osPiRawWriteIo. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80009C40 (kernel_046) -- the
+ * byte-identical TWIN-PORT of matched kernel __osSiRawWriteIo (kernel_046) -- the
  * write twin of the landed __osPiRawReadIo at gl_func_0006CCD4: PI-busy probe
  * (no-arg call), then uncached KSEG1 write of data to (devAddr | 0xA0000000).
  * The prior wrap guessed a 2-arg acquire call + a 4-stub bundle; it is a single

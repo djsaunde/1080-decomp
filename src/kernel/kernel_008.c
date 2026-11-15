@@ -14,12 +14,12 @@ extern u8 D_8001B658;
 extern u8 D_8001B659;
 extern volatile u32 D_8001B65C;
 extern u32 D_8001B660;
-extern s32 func_80002DB0(s32, u32*);
+extern s32 __osSetSR(s32, u32*);
 extern void func_800030D0(void*, s32);
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);
 
-/* func_800058C0 = libultra osCartRomInit (cartrominit.c).
+/* osCartRomInit = libultra osCartRomInit (cartrominit.c).
  * 2026-07-10 CRACKED EXACT 60/60: the documented "one extra lui" cap (the
  * pageSize/relDuration sb pair sharing one $at lui) falls to the TU-DEFINED
  * shared-$at lever — the -O1 donor kernel_008_o1_58C0.c defines a 2-byte
@@ -31,7 +31,7 @@ extern void func_800066D0(s32);
  * semantic reference.
  * (Historical: 2026-06-10 relayout retracted an earlier FALSE match that
  * emitted 0xE0 vs ROM's 0xF4.) */
-OSPiHandle* func_800058C0(void) {
+OSPiHandle* osCartRomInit(void) {
     u32 domain;
     u32 saveMask;
 
@@ -42,7 +42,7 @@ OSPiHandle* func_800058C0(void) {
 
     D_8001B654 = 0;
     D_8001B65C = 0xB0000000;
-    func_80002DB0(0, &domain);
+    __osSetSR(0, &domain);
     D_8001B655 = domain & 0xFF;
     D_8001B658 = (domain >> 8) & 0xFF;
     D_8001B656 = (domain >> 0x10) & 0xF;

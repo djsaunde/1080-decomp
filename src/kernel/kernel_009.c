@@ -64,7 +64,7 @@ extern OSEventState __osEventStateTab[];
 
 
 /* osSendMesg */
-s32 func_800059C0(OSMesgQueue* mq, s32 msg, s32 flags) {
+s32 osSendMesg(OSMesgQueue* mq, s32 msg, s32 flags) {
     register s32 saveMask = func_800066B0();
     register s32 last;
     while (mq->validCount >= mq->msgCount) {

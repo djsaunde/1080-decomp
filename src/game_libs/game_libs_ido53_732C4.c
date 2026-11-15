@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* gl_func_000732C4 = libultra scheduler yield/dispatch helper, statically linked
- * into the game_libs USO. Byte-exact masked-twin of matched kernel func_80009A50
+ * into the game_libs USO. Byte-exact masked-twin of matched kernel osYieldThread
  * (kernel_023): disable-int, set the running-thread state word to 2, dispatch
  * the run-queue head, restore-int. IDO 5.3 -O1, spliced into
  * game_libs_post2b_c.c.o via REPLACE_FUNC_BODY. Three OS-API callees collapse to

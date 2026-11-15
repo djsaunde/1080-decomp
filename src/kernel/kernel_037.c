@@ -18,7 +18,7 @@ extern void func_80003E64(void);
 extern void func_80003D0C(void*);
 
 /* osStartThread */
-void func_80009D10(Thread* t) {
+void osStartThread(Thread* t) {
     register s32 saveMask = func_800066B0();
     switch (t->state) {
     case 8: /* OS_STATE_WAITING */

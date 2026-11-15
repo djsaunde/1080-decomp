@@ -8,6 +8,6 @@ extern s32 D_8000A41C;
 
 
 /* __osGetActiveQueue */
-s32 func_80009830(void) {
+s32 __osGetActiveQueue(void) {
     return D_8000A41C;
 }

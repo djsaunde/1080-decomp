@@ -197,6 +197,8 @@ def check(old, new, idx, files, pending_new):
             for line in t.splitlines():
                 if re.search(r"\.ascii", line) and wr.search(line):
                     errs.append(f"{p}: {old} inside .ascii data: {line.strip()[:120]}")
+        if p.endswith(".md"):
+            continue  # prose/tables (DECOMPILED_FUNCTIONS.md "| func_X | osName |" rows): no code context
         code = strip_comments(p, t)
         # NEW=OLD is a post-compile rename spec (donor compiled under its real
         # name, renamed to the placeholder); it becomes a harmless NEW=NEW.

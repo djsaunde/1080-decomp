@@ -64,7 +64,7 @@ extern OSEventState __osEventStateTab[];
 
 
 /* osStopThread */
-void func_80007DD0(Thread* t) {
+void osStopThread(Thread* t) {
     register s32 saveMask = func_800066B0();
     register u16 state;
     if (t == 0) {

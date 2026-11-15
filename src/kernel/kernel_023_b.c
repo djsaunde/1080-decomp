@@ -67,5 +67,5 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_80009AA0 = __osGetCause (handwritten mfc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osGetCause = __osGetCause (handwritten mfc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/getcause.s")

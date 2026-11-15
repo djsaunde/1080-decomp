@@ -1,8 +1,8 @@
-/* -O1 donor for func_80005520 — 115-insn kernel osCreatePiManager (KMC
+/* -O1 donor for osCreatePiManager — 115-insn kernel osCreatePiManager (KMC
  * kernel variant of libultra pimgr.c; sibling of the game_libs crack
  * gl_func_0006DA74, see docs/IDO_CODEGEN "TU-DEFINED global = shared-lui
  * $at store cluster"). PROVEN EXACT 115/115 (2026-07-10 standalone probe vs
- * asm/nonmatchings/kernel/func_80005520.s; identical at IDO 5.3 AND 7.1
+ * asm/nonmatchings/kernel/osCreatePiManager.s; identical at IDO 5.3 AND 7.1
  * -O1 — built here with the default 7.1 at -O1).
  * KEY LEVERS:
  *   - TU-DEFINED PiDevMgr: `PiDevMgr D_8000A450 = {0};` (a definition, NOT
@@ -42,7 +42,7 @@ extern unsigned char pimgr_bss_0000[], pimgr_bss_01B0[], pimgr_bss_11B0[], pimgr
 
 PiDevMgr D_8000A450 = {0};
 
-void func_80005520(OSPri pri, void *cmdQ, void *cmdBuf, s32 cmdMsgCnt) {
+void osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, s32 cmdMsgCnt) {
     unsigned int savedMask;
     OSPri oldPri;
     OSPri myPri;

@@ -2,11 +2,11 @@
 # Reference: references/oot/src/libultra/os/writebackdcache.s,
 #            references/libreultra/src/os/writebackdcache.s
 # void osWritebackDCache(void *vaddr, s32 nbytes)
-# splat symbol: func_80002DF0.
+# splat symbol: osWritebackDCache.
 #   cache 0x19 = CACH_PD | C_HWB (Hit-Writeback), 0x01 = CACH_PD | C_IWBINV
 #   DCACHE_SIZE 0x2000, DCACHE_LINESIZE 0x10
 
-glabel func_80002DF0
+glabel osWritebackDCache
     blez    $a1, .LwbDCache_ret         # nbytes <= 0: nothing to do
      nop
     addiu   $t3, $zero, 0x2000          # DCACHE_SIZE
@@ -40,7 +40,7 @@ glabel func_80002DF0
      addiu  $t0, $t0, 0x10
     jr      $ra
      nop
-endlabel func_80002DF0
+endlabel osWritebackDCache
     nop                                 # object alignment padding
     nop
     nop

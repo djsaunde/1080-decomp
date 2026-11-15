@@ -64,7 +64,7 @@ extern OSEventState __osEventStateTab[];
 
 
 /* __osSiDeviceBusy */
-s32 func_800052C0(void) {
+s32 __osSiDeviceBusy(void) {
     register u32 status = *(volatile u32*)0xA4800018;
     if (status & 3) {
         return 1;
@@ -72,5 +72,5 @@ s32 func_800052C0(void) {
     return 0;
 }
 
-/* func_800052F0 split to kernel_005_b.c - 2026-06-10 kernel ROM-order relayout
+/* osEPiRawStartDma split to kernel_005_b.c - 2026-06-10 kernel ROM-order relayout
  * (ROM has a 4-byte zero pad at 0x52EC; separate .o gives the natural 16-align pad). */

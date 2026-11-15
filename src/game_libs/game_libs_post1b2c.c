@@ -121,7 +121,7 @@ GLOBAL_ASM("src/libultra/game_libs/getsr.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006C90C_pad.s")
 
 /* gl_func_0006C9F4 = libultra __osPiRawStartDma. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80004650 (kernel_042_b).
+ * byte-identical TWIN-PORT of matched kernel osPiRawStartDma (kernel_042_b).
  * Body is IDO 5.3 -O1 (this TU is -O2), so the real C lives in the donor unit
  * game_libs_ido53_6C9F4.c and is spliced in via REPLACE_FUNC_BODY. The PI
  * register block is direct-mapped (literal lui 0xA460); the cart-base helper
@@ -211,7 +211,7 @@ void gl_func_0006CC64(unsigned char active) {
 }
 
 /* gl_func_0006CCD4 = libultra __osPiRawReadIo. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80004AC0 (kernel_001). The
+ * byte-identical TWIN-PORT of matched kernel __osSiRawReadIo (kernel_001). The
  * prior "delay-slot-fill cap (80.65%)" was an -O2 artifact: this is an -O1
  * libultra helper. At IDO 5.3 -O1 the beqz delay slot is filled by the
  * success-path lw exactly as the ROM does. Real C lives in the donor unit
@@ -522,7 +522,7 @@ void gl_func_0006DD14(void) {
 }
 
 /* gl_func_0006E1A4 = libultra osSetEventMesg. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80004DE0 (kernel_003) -- NOT
+ * byte-identical TWIN-PORT of matched kernel osSetEventMesg (kernel_003) -- NOT
  * the "62% dispatcher cap" the prior wrap guessed: it is disable-int, write
  * queue+msg into the event-state table entry, restore-int. The earlier reading
  * had the call before the table write and the wrong arg shape. Real C lives in
@@ -804,7 +804,7 @@ s32 gl_func_0006F3E4(char *arg0, s32 arg1, s32 arg2) {
 }
 
 /* gl_func_0006F534 = libultra osSetThreadPri. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80006110 (kernel_011_b) --
+ * byte-identical TWIN-PORT of matched kernel osSetThreadPri (kernel_011_b) --
  * verbatim osSetThreadPri body including the (Thread*)(void*) double-cast that
  * pins the t-reg allocno pair. Real C lives in the donor unit
  * game_libs_ido53_6F534.c (IDO 5.3 -O1; this TU is -O2), spliced in via
@@ -1060,7 +1060,7 @@ long long gl_func_0006FE5C(void *t) {
 }
 
 /* gl_func_0006FFE4 = libultra __osSetGlobalIntMask. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_800061F0 (kernel_011_b) --
+ * byte-identical TWIN-PORT of matched kernel __osSetGlobalIntMask (kernel_011_b) --
  * NOT the "68.9% 2-call wrapper cap" the prior wrap guessed: it is disable-int,
  * OR the arg into the global int-mask word, restore-int. The two calls are
  * osDisableInt/osRestoreInt (both collapse to gl_func_00000000), not a callback.

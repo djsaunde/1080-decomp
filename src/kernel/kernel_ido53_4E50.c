@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 -mips2 donor for func_80004E50 = libultra osLeoDiskInit
+/* IDO 5.3 -O1 -mips2 donor for osLeoDiskInit = libultra osLeoDiskInit
  * (io/leodiskinit.c verbatim; cfe -E expansion of the 2.0I header
  * chain, comment-swallowed macros re-spelled by sed). PROVEN
  * 2026-08-22: 64/64 words -- every non-reloc word identical; all 38
@@ -14,7 +14,7 @@
  *   LeoDiskHandle = 0x800195D0 (lui 0x8002/lo 0x95Dx wrap)
  *   __osPiTable   = 0x8000A46C (lui 0x8001/lo 0xA46C wrap)
  *   __osDiskHandle= 0x80019644 (lui 0x8002/lo 0x9644 wrap)
- * POST_COMPILE renames osLeoDiskInit -> func_80004E50 and the jal
+ * POST_COMPILE renames osLeoDiskInit -> osLeoDiskInit and the jal
  * callees bzero=func_800030D0, __osDisableInt=func_800066B0,
  * __osRestoreInt=func_800066D0. Spliced into kernel_003_b.c.o via
  * REPLACE_FUNC_BODY (same-size splice, no boundary fix needed). */

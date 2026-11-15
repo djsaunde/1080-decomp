@@ -5,7 +5,7 @@ typedef struct { float x, y, z; } Vec3;
 
 
 /* gl_func_00074C04 = libultra osStartThread. LANDED 2026-06-21 as a byte-identical
- * TWIN-PORT of matched kernel func_80009D10 (kernel_037): move the thread to
+ * TWIN-PORT of matched kernel osStartThread (kernel_037): move the thread to
  * RUNNABLE and (re)enqueue it per its current state, then preempt if it now
  * outranks the running thread. The 2026-06-10 cap analysis (44/84, frame/reload
  * residuals) was an in-context approximation; the verbatim kernel twin is exact.

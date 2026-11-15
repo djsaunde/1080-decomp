@@ -80,7 +80,7 @@ typedef struct {
 extern OSPiHandle *D_8000A470[];
 extern s32 func_80004B30(void *);
 
-/* func_800052F0 = osEPiRawStartDma (libultra io/epirawdma.c), IDO 7.1 -O1.
+/* osEPiRawStartDma = osEPiRawStartDma (libultra io/epirawdma.c), IDO 7.1 -O1.
  * One function [0x52F0,0x5514); IDO pads .text to 16 with the 3 zero words.
  * It used to be split across two units: a 0x60 "entry block" here and the
  * rest as func_80005350 at the head of kernel_006 ("alt-entry shared body,
@@ -96,7 +96,7 @@ extern s32 func_80004B30(void *);
 #define EPI_IO_READ(a) (*(volatile u32 *)(a))
 #define EPI_IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
-s32 func_800052F0(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *dramAddr, u32 size)
+s32 osEPiRawStartDma(OSPiHandle *pihandle, s32 direction, u32 devAddr, void *dramAddr, u32 size)
 {
     u32 stat;
     u32 domain;

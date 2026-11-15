@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* gl_func_00069E04 = libultra osSendMesg (sched/sendmesg.c), statically linked
- * into the game_libs USO. Byte-exact masked-twin of matched kernel func_800059C0
+ * into the game_libs USO. Byte-exact masked-twin of matched kernel osSendMesg
  * (kernel_009): block while the queue is full (or fail if non-blocking), append
  * msg to the ring buffer, then if a thread is waiting on mtqueue wake it. IDO
  * 5.3 -O1, spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. All OS-API

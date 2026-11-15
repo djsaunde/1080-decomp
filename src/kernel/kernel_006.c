@@ -7,13 +7,13 @@ extern void func_800053D0(s32*, s32*, s32);
 extern void func_80005DC0(s32*, s32, s32);
 
 /* func_80005350 (old head of this unit) was the tail of osEPiRawStartDma;
- * merged into func_800052F0 in kernel_005_b.c (C, exact). */
+ * merged into osEPiRawStartDma in kernel_005_b.c (C, exact). */
 
-/* func_80005520 - verified structural decode (kernel, 0x1CC, 115
+/* osCreatePiManager - verified structural decode (kernel, 0x1CC, 115
  * insns) = libultra osCreatePiManager. Reference: libreultra
  * src/io/pimgr.c (__osPiDevMgr, __osPiAccessQueue,
  * __osPiCreateAccessQueue, osCreateThread/osStartThread).
- *   void func_80005520(OSPri pri, OSMesgQueue *cmdQ,
+ *   void osCreatePiManager(OSPri pri, OSMesgQueue *cmdQ,
  *                      OSMesg *cmdBuf, s32 cmdMsgCnt) {
  *       if (__osPiDevMgr.active) return;          // D_8000A450
  *       osCreateMesgQueue(cmdQ, cmdBuf, cmdMsgCnt);   // 800053D0
@@ -93,7 +93,7 @@ extern s32 pimgr_bss_0000, pimgr_bss_01B0, pimgr_bss_11B0, pimgr_bss_1360, pimgr
  * (D_8000A450 flag + the queue/handler pointers at +4..+0x18) and spin up the two
  * device workers (func_80005F10 + func_8000A110). func_80005584 is a mid-block
  * alt-entry (the PI word-streamer), reached via undefined_syms. */
-void func_80005520(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
+void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
     s32 sp2C;
     s32 sp28;
     s32 sp24;
@@ -143,17 +143,17 @@ void func_80005520(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
 
 extern void func_800051E0(s32, s32 *, s32);
 extern void func_80004FE0(s32 *, s32, s32);
-extern void func_80005C50(void);
+extern void __osDevMgrMain(void);
 extern void func_80005C94(void);
 extern s32 func_800066F0(s32 *, s32, s32);
 extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
 /* Kernel event-pump thread loop: registers two message queues
  * (D_8001B5D0/D_8001B5F0) + their event handlers (events 0x12/0x13), then loops
- * forever — block on queue A, run handler func_80005C50, poll func_800066F0
+ * forever — block on queue A, run handler __osDevMgrMain, poll func_800066F0
  * until it returns non-zero, block on queue B, run handler func_80005C94.
  * 2026-06-04: kernel_006 flipped to -O1 (whole-file, all funcs prefer or are
- * opt-indifferent to -O1): func_800056EC 47->91.3%, func_80005520 68->77%,
- * func_80005800 stays 100%.
+ * opt-indifferent to -O1): func_800056EC 47->91.3%, osCreatePiManager 68->77%,
+ * __osPiCreateAccessQueue stays 100%.
  * 2026-07-10 (44CC lever kit): the "loop-accumulator spill" residual FELL —
  * the accumulator is a LOCAL-STRUCT member (`v.sum`, sp-resident at -O1,
  * reloaded per statement incl. the post-store while-test reload lw t8,0x2C)
@@ -166,7 +166,7 @@ extern s32 D_8001B5D0, D_8001B5E8, D_8001B5F0, D_8001B608;
  * epilogue-align): they appear once this function is compiled at a TU offset
  * that is 0xC mod 32. Two layout facts make that true: the 5520 host body is
  * sized 0x1EC so the donor splice shifts this function by exactly 0x20, and
- * func_80005800 starts a new TU (kernel_006_b.c) at 0x80005800 -- the three
+ * __osPiCreateAccessQueue starts a new TU (kernel_006_b.c) at 0x80005800 -- the three
  * zero words after this function's jr are kernel_006's own 16-byte .text pad. */
 void func_800056EC(s32 arg0) {
     struct { s32 sum; } v;
@@ -179,7 +179,7 @@ void func_800056EC(s32 arg0) {
     func_800051E0(0x13, &D_8001B5F0, 0);
     for (;;) {
         func_80004FE0(&D_8001B5D0, 0, 1);
-        func_80005C50();
+        __osDevMgrMain();
         v.sum = 0;
         do {
             r = func_800066F0(&sp28, 1, 9);

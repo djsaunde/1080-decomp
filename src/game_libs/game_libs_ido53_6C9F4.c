@@ -2,7 +2,7 @@
 
 /* gl_func_0006C9F4 = libultra __osPiRawStartDma (io/pirawdma.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of the matched kernel
- * func_80004650 (kernel_042_b.c): identical 56-insn body after masking the
+ * osPiRawStartDma (kernel_042_b.c): identical 56-insn body after masking the
  * one R_MIPS_26 callee + the one HI16/LO16 global pair. Compiled IDO 5.3 -O1
  * (same per-file carve recipe as the other game_libs_ido53_* libultra units).
  *

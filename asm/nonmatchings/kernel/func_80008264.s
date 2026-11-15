@@ -91,7 +91,7 @@ glabel func_80008264
     /* 93A4 800083A4 35CF000D */  ori        $t7, $t6, 0xD
     /* 93A8 800083A8 AF0F0000 */  sw         $t7, 0x0($t8)
     /* 93AC 800083AC 8E040010 */  lw         $a0, 0x10($s0)
-    /* 93B0 800083B0 0C000C7C */  jal        func_800031F0
+    /* 93B0 800083B0 0C000C7C */  jal        __osException
     /* 93B4 800083B4 24050004 */   addiu     $a1, $zero, 0x4
     /* 93B8 800083B8 8E040010 */  lw         $a0, 0x10($s0)
     /* 93BC 800083BC 0C0014D4 */  jal        func_80005350

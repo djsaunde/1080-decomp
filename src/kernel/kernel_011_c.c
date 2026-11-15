@@ -67,6 +67,6 @@ extern OSEventState __osEventStateTab[];
 
 
 /* __osPiReadStatus */
-s32 func_80006240(void) {
+s32 osPiGetStatus(void) {
     return *(volatile s32*)0xA4600010;
 }

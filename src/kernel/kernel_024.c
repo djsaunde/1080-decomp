@@ -1,7 +1,7 @@
 #include "common.h"
 
-/* func_80009AB0 = libultra osEPiRawWriteIo (epirawwrite.c).
- * 2026-07-10 CRACKED EXACT 100/100: the former func_80009AB0 +
+/* osEPiRawWriteIo = libultra osEPiRawWriteIo (epirawwrite.c).
+ * 2026-07-10 CRACKED EXACT 100/100: the former osEPiRawWriteIo +
  * func_80009B60 INCLUDE_ASM fragments were ONE function (the 9B60 label
  * was a splat fragment boundary; the symbol stays exported via
  * undefined_syms_auto.txt).
@@ -35,7 +35,7 @@ typedef struct OSPiHandle_s {
 
 extern OSPiHandle *D_8000A470[]; /* __osCurrentHandle */
 
-s32 func_80009AB0(OSPiHandle *pihandle, u32 devAddr, u32 data) {
+s32 osEPiRawWriteIo(OSPiHandle *pihandle, u32 devAddr, u32 data) {
     register u32 stat;
     register u32 domain;
 
@@ -82,4 +82,4 @@ s32 func_80009AB0(OSPiHandle *pihandle, u32 devAddr, u32 data) {
 }
 /* (donor bytes replace the body above in the .o; see Makefile) */
 
-/* func_80009C40 split out to kernel_046.c (-O1) */
+/* __osSiRawWriteIo split out to kernel_046.c (-O1) */

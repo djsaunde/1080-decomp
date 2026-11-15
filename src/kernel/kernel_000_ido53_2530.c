@@ -1,6 +1,6 @@
-/* IDO 5.3 -O1 donor for func_80002530 — libultra osInitialize (KMC kernel
+/* IDO 5.3 -O1 donor for osInitialize — libultra osInitialize (KMC kernel
  * variant, 284 insns, frame 0x60). PROVEN EXACT 284/284 (2026-07-09
- * standalone probe vs asm/nonmatchings/kernel/func_80002530.s; the parent
+ * standalone probe vs asm/nonmatchings/kernel/osInitialize.s; the parent
  * unit kernel_000.c is IDO 7.1 -O2, which caps at ~53% — the fn is a 5.3 -O1
  * island, same vein as the game_libs contpfs/osCreatePiManager family).
  * Decode corrections vs the old NM body:
@@ -27,13 +27,13 @@ typedef u64 OSTime;
 
 extern s32 func_800031E0(void);                 /* __osGetSR */
 extern void func_800031D0(s32);                 /* __osSetSR */
-extern void func_80009C40(s32);                 /* __osSetFpcCsr */
+extern void __osSiRawWriteIo(s32);                 /* __osSetFpcCsr */
 extern s32 func_80004EC0(void *, u32 *);        /* __osSiRawReadIo */
 extern s32 func_8000A040(void *, u32);          /* __osSiRawWriteIo */
-extern void func_800031F0(void *, s32);         /* osWritebackDCache */
+extern void __osException(void *, s32);         /* osWritebackDCache */
 extern void func_80005350(void *, s32);         /* osInvalICache */
 extern void func_80009DF0(void);                /* osMapTLBRdb */
-extern void func_80002DB0(s32, u32 *);          /* osPiRawReadIo */
+extern void __osSetSR(s32, u32 *);          /* osPiRawReadIo */
 extern void func_800030D0(void *, s32);         /* bzero */
 
 typedef struct {
@@ -50,7 +50,7 @@ extern s32 D_8000031C;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];
 
-void func_80002530(void) {
+void osInitialize(void) {
     u32 pifdata;
     u32 clock = 0;
     void (*entry)();
@@ -66,7 +66,7 @@ void func_80002530(void) {
     s32 sp2C;
 
     func_800031D0(func_800031E0() | 0x20000000);
-    func_80009C40(0x01000800);
+    __osSiRawWriteIo(0x01000800);
     while (func_80004EC0((void *)0x1FC007FC, &pifdata)) {
         ;
     }
@@ -77,10 +77,10 @@ void func_80002530(void) {
     *(__osExceptionVector *)0x80000080 = D_80003270;
     *(__osExceptionVector *)0x80000100 = D_80003270;
     *(__osExceptionVector *)0x80000180 = D_80003270;
-    func_800031F0((void *)0x80000000, 0x190);
+    __osException((void *)0x80000000, 0x190);
     func_80005350((void *)0x80000000, 0x190);
     func_80009DF0();
-    func_80002DB0(4, &clock);
+    __osSetSR(4, &clock);
     clock &= ~0xF;
     if (clock != 0) {
         D_8000A3D0 = clock;
@@ -116,7 +116,7 @@ void func_80002530(void) {
             dst++; src++;
             *dst = *src;
             dst++; src++;
-            func_800031F0((void *)0x80000180, 0x24);
+            __osException((void *)0x80000180, 0x24);
             func_80005350((void *)0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {

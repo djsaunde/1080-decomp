@@ -2,7 +2,7 @@
 
 /* gl_func_0006E1A4 = libultra osSetEventMesg (sched/seteventmesg.c) variant,
  * statically linked into the game_libs USO. Byte-exact masked-twin of matched
- * kernel func_80004DE0 (kernel_003): disable-int, write queue+msg into the
+ * kernel osSetEventMesg (kernel_003): disable-int, write queue+msg into the
  * event-state table entry, restore-int. IDO 5.3 -O1, spliced into
  * game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. The two OS-API callees collapse
  * to the address-0 placeholder gl_func_00000000; the event-state table base

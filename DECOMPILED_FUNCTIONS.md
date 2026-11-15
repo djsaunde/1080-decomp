@@ -24,34 +24,34 @@ regress during the O1/O2 file split, restore from the sources listed.
 | 0x8000149C | func_8000149C | uso_ret_zero | kernel.c |
 | 0x800017B4 | func_800017B4 | empty | kernel.c |
 | 0x800018A8 | func_800018A8 | empty | kernel.c |
-| 0x80005800 | func_80005800 | __osSiCreateAccessQueue | kernel.c |
-| 0x80005894 | func_80005894 | __osPiRelAccess | kernel.c |
-| 0x80006240 | func_80006240 | __osPiReadStatus | kernel.c |
+| 0x80005800 | __osPiCreateAccessQueue | __osSiCreateAccessQueue | kernel.c |
+| 0x80005894 | __osPiRelAccess | __osPiRelAccess | kernel.c |
+| 0x80006240 | osPiGetStatus | __osPiReadStatus | kernel.c |
 | 0x80006C58 | func_80006C58 | rmon stub (-1) | kernel.c |
 | 0x80008A08 | func_80008A08 | __rmonInit | kernel.c |
 | 0x80008AA0 | func_80008AA0 | __rmonSetFault | kernel.c |
 | 0x800092B0 | func_800092B0 | rmon execute | kernel.c |
-| 0x80009830 | func_80009830 | __osGetActiveQueue | kernel.c |
+| 0x80009830 | __osGetActiveQueue | __osGetActiveQueue | kernel.c |
 
 ## O1 Functions (15) — compiled at -O1, source in src/o1/
 
 | VRAM | Name | Description | Source |
 |------|------|-------------|--------|
-| 0x80004AC0 | func_80004AC0 | osPiRawReadIo | src/o1/func_80004AC0.c |
-| 0x80004DE0 | func_80004DE0 | osSetEventMesg | src/o1/func_80004DE0.c |
-| 0x800052C0 | func_800052C0 | __osSiDeviceBusy | src/o1/func_800052C0.c |
-| 0x80005850 | func_80005850 | __osPiGetAccess | src/o1/func_80005850.c |
-| 0x800059C0 | func_800059C0 | osSendMesg | src/o1/func_800059C0.c |
-| 0x800060F0 | func_800060F0 | osGetThreadPri | src/o1/func_800060F0.c |
-| 0x80006110 | func_80006110 | osSetThreadPri | src/o1/func_80006110.c |
-| 0x800061F0 | func_800061F0 | __osSetGlobalIntMask | src/o1/func_800061F0.c |
+| 0x80004AC0 | __osSiRawReadIo | osPiRawReadIo | src/o1/__osSiRawReadIo.c |
+| 0x80004DE0 | osSetEventMesg | osSetEventMesg | src/o1/osSetEventMesg.c |
+| 0x800052C0 | __osSiDeviceBusy | __osSiDeviceBusy | src/o1/__osSiDeviceBusy.c |
+| 0x80005850 | __osPiGetAccess | __osPiGetAccess | src/o1/__osPiGetAccess.c |
+| 0x800059C0 | osSendMesg | osSendMesg | src/o1/osSendMesg.c |
+| 0x800060F0 | osGetThreadPri | osGetThreadPri | src/o1/osGetThreadPri.c |
+| 0x80006110 | osSetThreadPri | osSetThreadPri | src/o1/osSetThreadPri.c |
+| 0x800061F0 | __osSetGlobalIntMask | __osSetGlobalIntMask | src/o1/__osSetGlobalIntMask.c |
 | 0x80006250 | func_80006250 | __osResetGlobalIntMask (bitwise) | src/o1/func_80006250.c |
 | 0x80006650 | __osResetGlobalIntMask | __osResetGlobalIntMask (loop) | src/o1/__osResetGlobalIntMask.c |
 | 0x800065B0 | func_800065B0 | rmon stub (-1) | src/o1/func_800065B0.c |
-| 0x80007DD0 | func_80007DD0 | osStopThread | src/o1/func_80007DD0.c |
+| 0x80007DD0 | osStopThread | osStopThread | src/o1/osStopThread.c |
 | 0x80008424 | func_80008424 | rmon stub (-1) | src/o1/func_80008424.c |
-| 0x80009A50 | func_80009A50 | osYieldThread | src/o1/func_80009A50.c |
-| 0x80009C90 | func_80009C90 | osPiRawWriteIo | src/o1/func_80009C90.c |
+| 0x80009A50 | osYieldThread | osYieldThread | src/o1/osYieldThread.c |
+| 0x80009C90 | __osSpRawWriteIo | osPiRawWriteIo | src/o1/__osSpRawWriteIo.c |
 
 ## Fragment Merges Performed
 
@@ -132,20 +132,20 @@ splat, ensure these are NOT treated as separate function boundaries.
 
 | Fragment | Merged Into | Reason |
 |----------|-------------|--------|
-| func_80009DF0 | func_80009D10 | osStartThread tail |
-| func_80005C00 | func_80005B10 | osCreateThread tail |
+| func_80009DF0 | osStartThread | osStartThread tail |
+| func_80005C00 | osCreateThread | osCreateThread tail |
 | func_80003D0C | func_80003C24 | osDestroyThread tail |
 | func_800005D8 | func_800005DC | 4-byte prologue fragment |
 | func_8000060C | func_800005DC | mid-function continuation; shares `func_800005DC` stack frame and branches to `.L80000678` |
 | func_80000660 | func_800005DC | tail continuation; restores `func_800005DC` locals from stack and returns through the shared epilogue |
 | func_80001CF0 | func_80001CF4 | 4-byte prologue fragment |
 | func_800056EC | func_800056F0 | 4-byte prologue fragment |
-| func_80008BB0 | func_80008BB4 | 4-byte prologue fragment |
+| __osSpRawReadIo | func_80008BB4 | 4-byte prologue fragment |
 | func_80008D48 | func_80008D4C | 4-byte prologue fragment |
 | func_80009144 | func_80009148 | 4-byte prologue fragment |
 | func_800066D0 | func_800066B0 | tail/epilogue continuation; same .c file (kernel_018.c). |
 | func_800066B0 | func_80006698 | full 3-way .s merge: 0x80006698 (0x18) + 0x800066B0 (0x3C) → 0x54 (21 insns). Byte-merge already produced by func_80006698 C body in kernel_017.c (episodes/func_80006698.json, 100% exact). undefined_syms_auto.txt keeps func_800066B0/func_800066D0 as labels for callers that jal into the merged body. |
-| func_800053D0 + func_80005400 + func_800054C0 | func_80005350 | same-.c partial merge of the `func_800052F0` tail chain; full merge is cross-file-blocked because the prologue parent lives in kernel_005.c. Combined kernel_006 subset is 0x1D0 bytes and preserves entry labels via undefined_syms_auto.txt. |
+| func_800053D0 + func_80005400 + func_800054C0 | func_80005350 | same-.c partial merge of the `osEPiRawStartDma` tail chain; full merge is cross-file-blocked because the prologue parent lives in kernel_005.c. Combined kernel_006 subset is 0x1D0 bytes and preserves entry labels via undefined_syms_auto.txt. |
 | func_800021D0 | func_800021A4 | body continuation; same .c file (kernel_000.c). Combined 0xAC = 43 insns. Fragment had no prologue, used `$t1`/`$t2`/`$a1` set by parent's prologue at 0x800021A4. |
 | timproc_uso_b5_func_0000C7B4 | timproc_uso_b5_func_0000C710 | tail continuation; bc1f at C710+0x94 branches PAST own declared 0xA4 size into C7B4's body; C7B4 has no prologue + uses caller-set $v1/$at. Combined 0xD8 = 54 insns. |
 | timproc_uso_b5_func_00006890 + _000068A8 + _000068EC | timproc_uso_b5_func_0000687C | 4-way merge: bgez at 68EC+0 branches BACKWARDS (-10*4 bytes) into 68A8's body, forming a table-search loop with multi-exit. Splat split at the 4 internal jr-ras. Combined 0x84 = 33 insns. |

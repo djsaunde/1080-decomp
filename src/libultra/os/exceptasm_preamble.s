@@ -4,8 +4,8 @@
 # (exceptasm_rdb.s). D_80003344 is the handler's runtime address
 # (.Lexc_save_scratch; the kernel image runs 0x400 above its link address).
 
-glabel func_80002E70
+glabel __osExceptionPreamble
     lui     $k0, %hi(D_80003344)
     addiu   $k0, $k0, %lo(D_80003344)
-endlabel func_80002E70
+endlabel __osExceptionPreamble
 

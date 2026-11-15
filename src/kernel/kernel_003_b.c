@@ -67,7 +67,7 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_80004E50 = libultra osLeoDiskInit (io/leodiskinit.c verbatim,
+/* osLeoDiskInit = libultra osLeoDiskInit (io/leodiskinit.c verbatim,
  * IDO 5.3 -O1 donor: kernel_ido53_4E50.c). LANDED 2026-08-22 via
  * REPLACE_FUNC_BODY donor splice: 64/64 non-reloc words identical; the
  * reloc fields resolve via sign-extended-lo pins LeoDiskHandle=
@@ -81,7 +81,7 @@ extern OSEventState __osEventStateTab[];
  * cap was an artifact of the separate-extern-u8 spelling. Twin of the
  * game_libs gl_func_0006F088 land (blank-pin USO variant). Body below
  * is a placeholder for the splice. */
-void *func_80004E50(void) {
+void *osLeoDiskInit(void) {
     volatile int leodiskinit_spliced = 0;
     leodiskinit_spliced = 1;
     return (void *)leodiskinit_spliced;

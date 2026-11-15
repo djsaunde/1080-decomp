@@ -213,7 +213,7 @@ def main():
         # scoring ground truth, and a parallel (-j4) baseline build RACES —
         # it intermittently fails (exit 2) OR, worse, silently produces a
         # wrong expected/ that flips a few functions' fuzzy score (observed
-        # 2026-05-24: func_800052F0 + 2 timproc_uso_b1 funcs falsely 100 from
+        # 2026-05-24: osEPiRawStartDma + 2 timproc_uso_b1 funcs falsely 100 from
         # a raced -j4 baseline). Determinism > speed here.
         print("refresh-baseline: make clean")
         subprocess.check_call(["make", "clean"], stdout=subprocess.DEVNULL)

@@ -67,5 +67,5 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_800062B0 = __osDisableInt (handwritten mfc0/mtc0 SR). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osDisableInt = __osDisableInt (handwritten mfc0/mtc0 SR). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/disableint.s")

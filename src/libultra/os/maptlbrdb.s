@@ -2,11 +2,11 @@
 # Reference: references/oot/src/libultra/os/maptlbrdb.s,
 #            references/libreultra/src/os/maptlbrdb.s
 # void osMapTLBRdb(void): maps the RDB port (0xC0000000) in the last TLB entry.
-# splat symbol: func_800099F0.
+# splat symbol: osMapTLBRdb.
 #   CP0: $0 = C0_INX, $2 = C0_ENTRYLO0, $3 = C0_ENTRYLO1, $5 = C0_PAGEMASK,
 #        $10 = C0_ENTRYHI
 
-glabel func_800099F0
+glabel osMapTLBRdb
     mfc0    $t0, $10                    # save C0_ENTRYHI
     addiu   $t1, $zero, 0x1F            # NTLBENTRIES
     mtc0    $t1, $0                     # C0_INX
@@ -30,6 +30,6 @@ glabel func_800099F0
     mtc0    $t0, $10                    # restore C0_ENTRYHI
     jr      $ra
      nop
-endlabel func_800099F0
+endlabel osMapTLBRdb
     nop                                 # object alignment padding
     nop

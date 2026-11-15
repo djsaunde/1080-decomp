@@ -66,7 +66,7 @@ extern OSEventState __osEventStateTab[];
 /* split from kernel_011.c - 2026-06-10 kernel ROM-order relayout */
 
 
-void func_80006110(Thread* thread, s32 pri) {
+void osSetThreadPri(Thread* thread, s32 pri) {
     register s32 sr = func_800066B0();
     if (thread == 0) {
         thread = (Thread*)D_8000A420;
@@ -89,7 +89,7 @@ void func_80006110(Thread* thread, s32 pri) {
 }
 
 /* __osSetGlobalIntMask */
-void func_800061F0(s32 mask) {
+void __osSetGlobalIntMask(s32 mask) {
     register s32 sr = func_800066B0();
     D_8000A3E0 |= mask;
     func_800066D0(sr);

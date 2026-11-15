@@ -5390,7 +5390,7 @@ float game_libs_func_00069CC4(float x) {
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00069CD0_pad.s")
 
 /* gl_func_00069E04 = libultra osSendMesg. LANDED 2026-06-21 as a byte-identical
- * TWIN-PORT of matched kernel func_800059C0 (kernel_009): block while the queue
+ * TWIN-PORT of matched kernel osSendMesg (kernel_009): block while the queue
  * is full (or fail if non-blocking), append msg to the ring buffer, then if a
  * thread waits on mtqueue, wake it. Real C lives in the donor unit
  * game_libs_ido53_69E04.c (IDO 5.3 -O1), spliced via REPLACE_FUNC_BODY. OS-API
@@ -5684,7 +5684,7 @@ GLOBAL_ASM("src/libultra/game_libs/dispatchthread.s")
  * were the tail of the handwritten game_libs_func_0006AD78 -- so the old
  * 14-insn fragment (fake a2/a3 parameters, -O1 -g3 levers) is now the whole
  * 16-insn function, matched by the plain libultra C at -O1 (the kernel copy
- * func_80003BF0 matches the same way). The -O1 donor game_libs_o1_6AF0C.c
+ * __osDequeueThread matches the same way). The -O1 donor game_libs_o1_6AF0C.c
  * is spliced over this -O2 stand-in body (post1b builds -O2). */
 typedef struct GlDqThread_s { struct GlDqThread_s *next; } GlDqThread;
 
@@ -5830,7 +5830,7 @@ void gl_func_0006AF44(int *target) {
  * RESOLVED 2026-10-24 (agent-g run 158): it is libultra's HANDWRITTEN
  * libc/bzero.s (the lone swl head and the tight unrolled loops are the
  * reference source verbatim; byte-identical to the kernel copy
- * func_80002CD0), so it is assembled from real assembly source below. */
+ * bzero), so it is assembled from real assembly source below. */
 /* game_libs_func_0006B048 = bzero (game_libs libultra copy): real source in src/libultra/game_libs/bzero.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/game_libs/bzero.s")
 

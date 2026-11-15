@@ -111,19 +111,19 @@ extern UsoSlotGroup D_800182E4;
 
 /* func_80002CA4 split out to kernel_056.c (-O2 -mips3) */
 
-/* func_80002CD0 = bzero (libultra handwritten libc/bzero.s). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* bzero = bzero (libultra handwritten libc/bzero.s). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/libc/bzero.s")
 
-/* func_80002DB0 = __osSetSR (+8 leading pad words; handwritten mtc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osSetSR = __osSetSR (+8 leading pad words; handwritten mtc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/setsr.s")
 
-/* func_80002DE0 = __osGetSR (handwritten mfc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osGetSR = __osGetSR (handwritten mfc0). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/getsr.s")
 
-/* func_80002DF0 = osWritebackDCache (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* osWritebackDCache = osWritebackDCache (handwritten cache ops). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/writebackdcache.s")
 
-/* func_80002E70 = __osExceptionPreamble (first half), real source in src/libultra/os/exceptasm_preamble.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osExceptionPreamble = __osExceptionPreamble (first half), real source in src/libultra/os/exceptasm_preamble.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_preamble.s")
 
 /* func_80002E78 = exception vector stubs + rdb/KMC front end of __osException, real source in src/libultra/os/exceptasm_rdb.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
@@ -133,8 +133,8 @@ GLOBAL_ASM("src/libultra/os/exceptasm_rdb.s")
  * alternative entries (2026-08-22): one contiguous handwritten exception/rdb
  * handler stream -- 2E78 falls through into 2F78 (mfc0 tail, no jr ra), 2F78
  * ends with a branch whose DELAY SLOT is 30D0's first insn, and both branch
- * forward into func_800031F0's labels. jal callers (func_80002530,
- * func_80004E50, func_800058C0) resolve via the global alabel symbols. */
+ * forward into __osException's labels. jal callers (osInitialize,
+ * osLeoDiskInit, osCartRomInit) resolve via the global alabel symbols. */
 
 /* func_800031D0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_2.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb_2.s")
@@ -142,20 +142,20 @@ GLOBAL_ASM("src/libultra/os/exceptasm_rdb_2.s")
 /* func_800031E0: rdb debug-read fragment, real source in src/libultra/os/exceptasm_rdb_3.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm_rdb_3.s")
 
-/* func_800031F0 = __osException core (savecontext, interrupt dispatch,
+/* __osException = __osException core (savecontext, interrupt dispatch,
  * send_mesg, __osEnqueueAndYield, __osEnqueueThread, __osPopThread,
  * __osDispatchThread, __osCleanupThread): handwritten, real source in
  * src/libultra/os/exceptasm.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/exceptasm.s")
 
-/* func_80003BF0 = __osDequeueThread (libultra thread.c), compiled C: this
+/* __osDequeueThread = __osDequeueThread (libultra thread.c), compiled C: this
  * unit's -O1 gives the target (prologue scheduled after the two loads, the
  * `register` locals' empty 8-byte frame). Split out of the handwritten
- * func_800031F0 2026-10-24 (agent-g run 158). Its runtime address is
+ * __osException 2026-10-24 (agent-g run 158). Its runtime address is
  * 0x80003FF0 (func_80003FF0, called by osDestroyThread below). */
 typedef struct DqThread_s { struct DqThread_s *next; } DqThread;
 
-void func_80003BF0(DqThread **queue, DqThread *t) {
+void __osDequeueThread(DqThread **queue, DqThread *t) {
     register DqThread *pred;
     register DqThread *succ;
 
@@ -171,10 +171,10 @@ void func_80003BF0(DqThread **queue, DqThread *t) {
     }
 }
 
-/* func_80003C30 = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
+/* osDestroyThread = osDestroyThread (libultra destroythread.c), IDO 7.1 -O1.
  * BOUNDARY FIX 2026-10-20: the old func_80003C24.s was [nop; jr ra; addiu sp,8]
  * + this fn + 3 pad nops. Those 3 head words are the tail of handwritten
- * func_800031F0 (its last bnez delay slot + its .L80003C28 exit), and
+ * __osException (its last bnez delay slot + its .L80003C28 exit), and
  * 0x80003C24 itself is a jal'd pop-8-and-return entry used by 31F0 -- moved
  * there as `alabel func_80003C24`. The 3 trailing nops are all-zero
  * inter-function pad (SUFFIX_BYTES_FORCE in the Makefile).
@@ -185,7 +185,7 @@ void func_80003BF0(DqThread **queue, DqThread *t) {
  * __osRunningThread = D_8000A420. */
 extern void func_80003E64(void);
 
-void func_80003C30(int *target) {
+void osDestroyThread(int *target) {
     register int prelim;
     register int *curr;
     register int *next;
@@ -218,7 +218,7 @@ void func_80003C30(int *target) {
 }
 
 
-/* func_80003D40 = __osLeoInterrupt, func_800043E4 = __osLeoAbnormalResume
+/* __osLeoInterrupt = __osLeoInterrupt, __osLeoAbnormalResume = __osLeoAbnormalResume
  * (libultra io/leointerrupt.c, IDO 7.1 -O1, the unit's flags). NOT a
  * handwritten region: the old "handwritten PI-DMA chain" reading and the
  * 2026-08-22 fragment merges glued one C function (sp -0x40, every local
@@ -282,7 +282,7 @@ extern s32 func_800056F0(LeoPiHandle *, s32, u32, void *, u32); /* osEPiRawStart
 #define LEO_WAIT_ON_IOBUSY(stat) \
     { stat = LEO_PI_STATUS; while (stat & 3) stat = LEO_PI_STATUS; }
 
-s32 func_80003D40(void)
+s32 __osLeoInterrupt(void)
 {
     volatile u32 stat;
     volatile u32 pi_stat;
@@ -425,7 +425,7 @@ s32 func_80003D40(void)
     return 1;
 }
 
-void func_800043E4(void)
+void __osLeoAbnormalResume(void)
 {
     __OSTranxInfo *info;
     volatile u32 pi_stat;

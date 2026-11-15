@@ -3,11 +3,11 @@
 #            references/libreultra/src/os/setsr.s
 # void __osSetSR(u32 value): writes the CP0 Status register.
 #
-# splat symbol func_80002DB0 begins with 8 zero words of padding that precede
+# splat symbol __osSetSR begins with 8 zero words of padding that precede
 # __osSetSR (at 0x80002DD0, 16-byte aligned); they are written as nops inside
 # the label to keep the symbol unchanged.
 
-glabel func_80002DB0
+glabel __osSetSR
     nop                         # alignment padding (8 words)
     nop
     nop
@@ -21,4 +21,4 @@ glabel func_80002DB0
     nop                         # CP0 hazard
     jr      $ra
      nop
-endlabel func_80002DB0
+endlabel __osSetSR

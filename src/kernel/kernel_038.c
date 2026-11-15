@@ -10,7 +10,7 @@ extern void func_800066D0(s32); /* __osRestoreInt */
  * `*(T*)((char*)t + 0xNN)` stores became OSThread field stores in the SAME
  * statement order with the SAME access widths -- byte-identical (see
  * docs/READABILITY_PLAN.md "struct path"). */
-void func_80005B10(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri p) {
+void osCreateThread(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri p) {
     register s32 saveMask;
     /* u32: ROM emits srl (not sra) for (mask & 0x3F0000) >> 16 — the old
      * s32 decl was ONE WORD off ROM (sra), caught in the 2026-06-10 kernel
@@ -36,7 +36,7 @@ void func_80005B10(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri p
     D_8000A41C = t;
     func_800066D0(saveMask);
 }
-/* func_80005B10 (osCreateThread): ALREADY MATCHED -- this C is the
+/* osCreateThread (osCreateThread): ALREADY MATCHED -- this C is the
  * real build path (no wrap) and the kernel ROM is byte-exact with it.
  * The report's 98.75 was an ARTIFACT: the NM-path .o goes through
  * asm-processor, which 16-aligns .text (0x150) and attributes a pad

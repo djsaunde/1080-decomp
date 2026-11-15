@@ -3,10 +3,10 @@
 
 
 
-/* func_80005C50 GRAFT-BLOCKED 2026-06-10 (boundary puzzle): its
+/* __osDevMgrMain GRAFT-BLOCKED 2026-06-10 (boundary puzzle): its
  * jumptable jtbl_8000A770 (ROM-true entries read from the byte-exact
  * ROM) targets [0x6354..0x647C] -- INSIDE func_800062F0's span, three
- * symbols away. func_800060F0 starts with bnez (no prologue = a
+ * symbols away. osGetThreadPri starts with bnez (no prologue = a
  * fragment of this fn), but 6110/62F0 have real prologues. The region
  * [0x5C50..0x65B0) needs a boundary-merge analysis (which "fns" are
  * case blocks vs real entries) before any C decode. The kernel
@@ -51,14 +51,14 @@
  * kernel text (a USO overlay reading kernel globals, or dead debugger
  * data). The handler fns at [0x89FC..0x8B10] remain decodable on
  * their own merits regardless. */
-/* func_80005C50 = libultra __osDevMgrMain (io/devmgr.c verbatim, IDO 5.3
+/* __osDevMgrMain = libultra __osDevMgrMain (io/devmgr.c verbatim, IDO 5.3
  * -O1 donor: kernel_ido53_5C50.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice: 292/292 words -- every non-reloc word identical at first
  * compile; 22 jal fields resolve to osRecvMesg=4FE0 / osSendMesg=5DC0 /
  * __osResetGlobalIntMask=6650 / __osSetGlobalIntMask=65F0 /
  * osEPiRawWriteIo=9EB0 / osEPiRawReadIo=9C50 / osYieldThread=9E50, and
  * the one %hi/%lo pair is the switch jumptable pinned at 0x8000A770
- * (func_80005C50_rodata; lui 0x8001/lw 0xa770 signed-lo wrap). This
+ * (__osDevMgrMain_rodata; lui 0x8001/lw 0xa770 signed-lo wrap). This
  * RETRACTS the 2026-06-10 "handwritten-class debugger dispatcher /
  * permanent INCLUDE_ASM" verdict above: the jr-t1 dispatch is IDO's own
  * switch on mb->hdr.type (OS_MESG_TYPE_BASE cases 10..16), jtbl_8000A770
@@ -68,7 +68,7 @@
  * body 0x490. Body below is a placeholder for the splice. */
 #pragma GLOBAL_ASM("asm/nonmatchings/kernel/func_80005C50_pad.s")
 
-void func_80005C50(void *a0) {
+void __osDevMgrMain(void *a0) {
     volatile int devmgr_spliced = 0;
     if (a0 != (void *)0) {
         devmgr_spliced = 1;

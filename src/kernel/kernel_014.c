@@ -2,7 +2,7 @@
 
 
 
-/* func_800062D0 = __osRestoreInt (handwritten mfc0/mtc0 SR). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* __osRestoreInt = __osRestoreInt (handwritten mfc0/mtc0 SR). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/restoreint.s")
 
 extern s32 func_800066B0(void);

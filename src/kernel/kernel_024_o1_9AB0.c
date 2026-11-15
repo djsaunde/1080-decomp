@@ -1,6 +1,6 @@
-/* -O1 donor for func_80009AB0 = libultra osEPiRawWriteIo (epirawwrite.c;
+/* -O1 donor for osEPiRawWriteIo = libultra osEPiRawWriteIo (epirawwrite.c;
  * PROVEN EXACT 100/100 standalone 2026-07-10 vs the combined
- * asm/nonmatchings/kernel/func_80009AB0.s + func_80009B60.s splat
+ * asm/nonmatchings/kernel/osEPiRawWriteIo.s + func_80009B60.s splat
  * fragments, IDO 7.1 -O1 -mips2 — the two INCLUDE_ASMs were one function).
  * KEY LEVERS:
  *   - PI registers accessed as BAKED-CONSTANT derefs (IO_REG macro, the
@@ -33,7 +33,7 @@ typedef struct OSPiHandle_s {
 #define IO_REG(a) (*(volatile u32 *)(a))
 extern OSPiHandle *D_8000A470[]; /* __osCurrentHandle */
 
-s32 func_80009AB0(OSPiHandle *pihandle, u32 devAddr, u32 data) {
+s32 osEPiRawWriteIo(OSPiHandle *pihandle, u32 devAddr, u32 data) {
     register u32 stat;
     register u32 domain;
 

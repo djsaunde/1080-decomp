@@ -2,7 +2,7 @@
 
 /* gl_func_0006F534 = libultra osSetThreadPri (sched/setthreadpri.c / thread
  * priority), statically linked into the game_libs USO. Byte-exact masked-twin
- * of the matched kernel func_80006110 (kernel_011_b.c) -- identical 56-insn
+ * of the matched kernel osSetThreadPri (kernel_011_b.c) -- identical 56-insn
  * body after masking the collapsed cross-references. Compiled IDO 5.3 -O1
  * (same per-file carve recipe as the other game_libs_ido53_* libultra units),
  * spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY.

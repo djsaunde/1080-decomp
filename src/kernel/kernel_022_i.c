@@ -68,5 +68,5 @@ extern OSEventState __osEventStateTab[];
 
 
 
-/* func_800099F0 = osMapTLBRdb (handwritten tlbwi). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
+/* osMapTLBRdb = osMapTLBRdb (handwritten tlbwi). Real source; see docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */
 GLOBAL_ASM("src/libultra/os/maptlbrdb.s")

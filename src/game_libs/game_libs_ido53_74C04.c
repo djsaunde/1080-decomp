@@ -2,7 +2,7 @@
 
 /* gl_func_00074C04 = libultra osStartThread (sched/startthread.c), statically
  * linked into the game_libs USO. Byte-exact masked-twin of matched kernel
- * func_80009D10 (kernel_037): move the thread to RUNNABLE and (re)enqueue it on
+ * osStartThread (kernel_037): move the thread to RUNNABLE and (re)enqueue it on
  * the run queue per its current state, then if it now outranks the running
  * thread, preempt. IDO 5.3 -O1, spliced into game_libs_post2b_e.c.o via
  * REPLACE_FUNC_BODY. All OS-API callees collapse to the address-0 placeholder

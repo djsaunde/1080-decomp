@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-void func_80004DE0(s32 event, void* queue, s32 msg) {
+void osSetEventMesg(s32 event, void* queue, s32 msg) {
     register s32 sr = func_800066B0();
     OSEventState* es = &__osEventStateTab[event];
     es->queue = (s32)queue;

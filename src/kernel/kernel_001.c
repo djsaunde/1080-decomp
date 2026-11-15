@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-s32 func_80004AC0(s32 devAddr, s32* data) {
+s32 __osSiRawReadIo(s32 devAddr, s32* data) {
     if (func_800056C0() != 0) {
         return -1;
     }

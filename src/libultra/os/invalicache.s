@@ -2,11 +2,11 @@
 # Reference: references/oot/src/libultra/os/invalicache.s,
 #            references/libreultra/src/os/invalicache.s
 # void osInvalICache(void *vaddr, s32 nbytes)
-# splat symbol: func_80004F50.
+# splat symbol: osInvalICache.
 #   cache 0x10 = CACH_PI | C_HINV (Hit-Invalidate), 0x00 = CACH_PI | C_IINV
 #   ICACHE_SIZE 0x4000, ICACHE_LINESIZE 0x20
 
-glabel func_80004F50
+glabel osInvalICache
     blez    $a1, .LinvICache_ret        # nbytes <= 0: nothing to do
      nop
     addiu   $t3, $zero, 0x4000          # ICACHE_SIZE
@@ -40,7 +40,7 @@ glabel func_80004F50
      addiu  $t0, $t0, 0x20
     jr      $ra
      nop
-endlabel func_80004F50
+endlabel osInvalICache
     nop                                 # object alignment padding
     nop
     nop

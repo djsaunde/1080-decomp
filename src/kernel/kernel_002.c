@@ -32,7 +32,7 @@ void func_80004B10(void* buf, int ct) {
 }
 
 
-/* func_80004BE0 = libultra osRecvMesg (kernel_002, -O1, byte-exact).
+/* osRecvMesg = libultra osRecvMesg (kernel_002, -O1, byte-exact).
  * Reference: libreultra src/os/recvmesg.c. mq = OSMesgQueue (0x4
  * fullqueue blocked-sender list, 0x8 validCount, 0xC first,
  * 0x10 msgCount, 0x14 msg[]). func_800066B0/_800066D0 =
@@ -70,7 +70,7 @@ typedef struct RecvThread {
 } RecvThread;
 
 /* osRecvMesg (libultra). Reference: libreultra src/os/recvmesg.c. */
-s32 func_80004BE0(RecvMesgQueue *mq, s32 *msg, s32 flag) {
+s32 osRecvMesg(RecvMesgQueue *mq, s32 *msg, s32 flag) {
     register s32 saveMask = func_800066B0();
 
     while (mq->validCount == 0) {

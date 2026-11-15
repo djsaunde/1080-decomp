@@ -3,18 +3,18 @@
 /* kernel_022_o1: -O1 carve-out of the kernel_022 functions that are genuinely
  * -O1 (spill-every-local). The file is otherwise -O2 (the bitfield packers
  * func_80008C30/CB4 and the exact-match func_800092B0 REGRESS at -O1). Carved
- * here: func_80009850 (PI raw read, 45->85%) and func_800087B4 (MIPS insn
+ * here: osEPiRawReadIo (PI raw read, 45->85%) and func_800087B4 (MIPS insn
  * classifier, 44->52%). objdiff is per-function so .ld placement is cosmetic.
  * Verified 2026-06-04 via the mixed-opt diagnostic. */
 
 /* split from kernel_022_o1.c - 2026-06-10 kernel ROM-order relayout */
 
 
-/* func_80009850 - verified structural decode (kernel, 0x194, 104
+/* osEPiRawReadIo - verified structural decode (kernel, 0x194, 104
  * insns) = libultra __osEPiRawReadIo. Reference: libreultra
  * src/io/epirawread.c / piint.c; same OSPiHandle layout as the
- * documented func_800052F0 (__osEPiRawStartDma).
- *   s32 func_80009850(OSPiHandle *h, u32 cartAddr, u32 *data) {
+ * documented osEPiRawStartDma (__osEPiRawStartDma).
+ *   s32 osEPiRawReadIo(OSPiHandle *h, u32 cartAddr, u32 *data) {
  *       if (IO_READ(PI_STATUS_REG) & 3)           // 0xA4600010
  *           while (IO_READ(PI_STATUS_REG) & 3) {} // wait idle
  *       cur = __osPiTable[h->domain];             // D_8000A470[]
@@ -33,7 +33,7 @@
  *       *data = *(vu32*)(h->baseAddress | cartAddr | 0xA0000000);
  *       return 0;
  *   }
- * Struct-typing reference: h = OSPiHandle (same as func_800052F0) -
+ * Struct-typing reference: h = OSPiHandle (same as osEPiRawStartDma) -
  * h->0x5 latency, 0x6 pageSize, 0x7 relDuration, 0x8 pulse, 0x9
  * domain (u8; 0 = DOM1 else DOM2), 0xC baseAddress. __osPiTable =
  * D_8000A470 (OSPiHandle*[] indexed by domain). PI BSD config
@@ -52,7 +52,7 @@
  * (extern D_A46000xx scalars emit $at-fused stores = the old floor), with
  * register stat/domain + plain cHandle homed at sp+4 (statement-granular
  * reloads). Host file already -O1: plain body, no donor. Sibling
- * func_80009AB0 (osEPiRawWriteIo, kernel_024) matched the same tick. */
+ * osEPiRawWriteIo (osEPiRawWriteIo, kernel_024) matched the same tick. */
 #define IO_REG(a) (*(volatile u32 *)(a))
 
 typedef struct OSPiHandle_s {
@@ -69,7 +69,7 @@ typedef struct OSPiHandle_s {
 
 extern OSPiHandle *D_8000A470[]; /* __osCurrentHandle */
 
-s32 func_80009850(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
+s32 osEPiRawReadIo(OSPiHandle *pihandle, u32 devAddr, u32 *data) {
     register u32 stat;
     register u32 domain;
 

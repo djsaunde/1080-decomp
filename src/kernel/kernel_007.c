@@ -63,7 +63,7 @@ typedef struct { s32 queue; s32 msg; } OSEventState;
 extern OSEventState __osEventStateTab[];
 
 
-void func_80005850(void) {
+void __osPiGetAccess(void) {
     s32 msg;
     if (D_8000A480 == 0) {
         func_80005C00();
@@ -73,6 +73,6 @@ void func_80005850(void) {
 
 
 /* __osPiRelAccess */
-void func_80005894(void) {
+void __osPiRelAccess(void) {
     func_80005DC0(&__osPiAccessQueue, 0, 0);
 }

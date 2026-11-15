@@ -2,12 +2,12 @@
 # Reference: references/oot/src/libultra/libc/bzero.s,
 #            references/libreultra/src/libc/bzero.s
 # void bzero(void *dst, int len)
-# splat symbol: func_80002CD0.
+# splat symbol: bzero.
 #
 # Same algorithm as the reference: align the start with one unaligned swl,
 # clear 32-byte blocks, then words, then trailing bytes.
 
-glabel func_80002CD0
+glabel bzero
     slti    $at, $a1, 0xC               # short (< 12 bytes): bytes only
     bnez    $at, .Lbzero_bytes
      negu   $v1, $a0
@@ -54,5 +54,5 @@ glabel func_80002CD0
 .Lbzero_done:
     jr      $ra
      nop
-endlabel func_80002CD0
+endlabel bzero
     .space  0x44                        # object alignment padding (17 words)

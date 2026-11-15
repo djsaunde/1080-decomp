@@ -3,7 +3,7 @@
 extern s32 rmonbrk_bss_0000;
 extern s32 D_8001FEF4;
 extern s32 D_8001FEF0;
-extern void func_800031F0(void*, s32);
+extern void __osException(void*, s32);
 extern void func_80005350(void*, s32);
 
 
@@ -37,7 +37,7 @@ extern void func_800073F8(void *, s32, s32);
  * address (arg0->unk10) or a free slot; table full -> -0xA. For a fresh slot,
  * save the original word and patch in a BREAK insn (code = (slot>>3)+0x10) via
  * MMIO (func_80006A50/A98) or direct store + cache flush
- * (func_800031F0/func_80005350), then record the address. Finally send a 0x18
+ * (__osException/func_80005350), then record the address. Finally send a 0x18
  * reply (func_800073F8).
  *
  * STATUS 2026-07-10: EXACT (112/112) at IDO 5.3 -O1 — whole unit flipped to
@@ -89,7 +89,7 @@ s32 func_80008264(void *arg0) {
         } else {
             *(s32 *)(var_s2 + 4) = *(s32 *)FW(s0, 0x10);
             *(s32 *)FW(s0, 0x10) = ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD;
-            func_800031F0((void *) FW(s0, 0x10), 4);
+            __osException((void *) FW(s0, 0x10), 4);
             func_80005350((void *) FW(s0, 0x10), 4);
         }
         *(s32 *)var_s2 = FW(s0, 0x10);

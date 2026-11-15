@@ -1121,15 +1121,15 @@ build/src/kernel/kernel_018_o2.c.o build/non_matching/src/kernel/kernel_018_o2.c
 build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_006_b.c.o build/non_matching/src/kernel/kernel_006_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000_o1.c.o build/non_matching/src/kernel/kernel_000_o1.c.o: OPT_FLAGS := -O1
-# kernel_000_b: C fns func_80003C30 (osDestroyThread), func_80003D40/43E4
+# kernel_000_b: C fns osDestroyThread (osDestroyThread), __osLeoInterrupt/43E4
 # (__osLeoInterrupt/__osLeoAbnormalResume) and func_800044CC (send_mesg), which
 # is -O1-shaped (no branch-likely, stack-spilled mq/es). All other fns in this
 # unit are INCLUDE_ASM (raw bytes, opt-independent), so -O1 is safe here.
 build/src/kernel/kernel_000_b.c.o build/non_matching/src/kernel/kernel_000_b.c.o: OPT_FLAGS := -O1
-# func_80003C30 (osDestroyThread, C since 2026-10-20 agent-g): its 3 trailing
-# inter-function pad nops before func_80003D40 are all-zero SUFFIX words.
-build/src/kernel/kernel_000_b.c.o: SUFFIX_BYTES_FORCE := func_80003C30=0x00000000,0x00000000,0x00000000
-build/non_matching/src/kernel/kernel_000_b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := func_80003C30=0x00000000,0x00000000,0x00000000
+# osDestroyThread (osDestroyThread, C since 2026-10-20 agent-g): its 3 trailing
+# inter-function pad nops before __osLeoInterrupt are all-zero SUFFIX words.
+build/src/kernel/kernel_000_b.c.o: SUFFIX_BYTES_FORCE := osDestroyThread=0x00000000,0x00000000,0x00000000
+build/non_matching/src/kernel/kernel_000_b.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := osDestroyThread=0x00000000,0x00000000,0x00000000
 # 2026-06-10 kernel ROM-order relayout: split-piece opt flags (inherit parent unit -O1)
 build/src/kernel/kernel_042_b.c.o build/non_matching/src/kernel/kernel_042_b.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_027_b.c.o build/non_matching/src/kernel/kernel_027_b.c.o: OPT_FLAGS := -O1
@@ -1352,16 +1352,16 @@ build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: OPT_FLAGS := -O3
 build/src/game_libs/game_libs_ido53_6E224.c.o build/non_matching/src/game_libs/game_libs_ido53_6E224.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ _Printf=gl_func_0006E894 && python3 scripts/add-elf-func-symbol.py $@ gl_func_0006E224=0x0:0x670
 GAMELIBS_6E224_DONOR := build/src/game_libs/game_libs_ido53_6E224.c.o
-# func_80002530 = osInitialize: IDO 5.3 -O1 island inside the 7.1 -O2
+# osInitialize = osInitialize: IDO 5.3 -O1 island inside the 7.1 -O2
 # kernel_000 unit (proven exact 284/284 standalone; see donor header).
 KERNEL000_2530_DONOR := build/src/kernel/kernel_000_ido53_2530.c.o
-# func_80005520 = kernel osCreatePiManager (KMC 2-worker variant): TU-defined
+# osCreatePiManager = kernel osCreatePiManager (KMC 2-worker variant): TU-defined
 # D_8000A450 shared-$at donor, proven exact 115/115 standalone (see header).
 KERNEL006_5520_DONOR := build/src/kernel/kernel_006_o1_5520.c.o
-# func_800058C0 = libultra osCartRomInit: TU-defined D_8001B656 2-byte-struct
+# osCartRomInit = libultra osCartRomInit: TU-defined D_8001B656 2-byte-struct
 # shared-$at donor, proven exact 60/60 standalone (see header).
 KERNEL008_58C0_DONOR := build/src/kernel/kernel_008_o1_58C0.c.o
-# func_80009AB0 = libultra osEPiRawWriteIo (spans former 9AB0+9B60 fragments):
+# osEPiRawWriteIo = libultra osEPiRawWriteIo (spans former 9AB0+9B60 fragments):
 # baked-constant IO_REG donor, proven exact 100/100 standalone (see header).
 KERNEL024_9AB0_DONOR := build/src/kernel/kernel_024_o1_9AB0.c.o
 # func_80007564 = rmon thread-list handler: IDO 5.3 -O1 island inside the
@@ -1620,7 +1620,7 @@ build/src/game_libs/game_libs_ido53_6C1B8.c.o build/non_matching/src/game_libs/g
 build/src/game_libs/game_libs_ido53_6C1B8.c.o build/non_matching/src/game_libs/game_libs_ido53_6C1B8.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_000_ido53_2530.c.o build/non_matching/src/kernel/kernel_000_ido53_2530.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: REPLACE_FUNC_BODY := func_80002530=$(KERNEL000_2530_DONOR)
+build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: REPLACE_FUNC_BODY := osInitialize=$(KERNEL000_2530_DONOR)
 # 1184 = zero D_80012D5C + an 11-word module-local static table (shared `lui at`); NCC donor.
 # Its .bss reloc is renamed func_80001184_bss by the splice (pinned to 0x80012D30 in undefined_syms_auto.txt).
 KERNEL000_1184_DONOR := build/src/kernel/kernel_ncc_1184.cpp.o
@@ -1651,24 +1651,24 @@ build/src/kernel/kernel_mp72_%.cpp.o: src/kernel/kernel_mp72_%.cpp $(TOOLS)/ncc7
 KERNEL000_1ADC_DONOR := build/src/kernel/kernel_mp72_1ADC.cpp.o
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: private REPLACE_FUNC_BODY += func_80001ADC=$(KERNEL000_1ADC_DONOR)
 build/src/kernel/kernel_000.c.o build/non_matching/src/kernel/kernel_000.c.o: $(KERNEL000_1ADC_DONOR)
-# func_80005C50 = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
+# __osDevMgrMain = __osDevMgrMain (devmgr.c verbatim, IDO 5.3 -O1): 292/292
 # non-reloc-identical; renames map the callees to kernel addresses; the
-# switch-jumptable .rodata section reloc is renamed to func_80005C50_rodata
+# switch-jumptable .rodata section reloc is renamed to __osDevMgrMain_rodata
 # by replace-function-body and pinned 0x8000A770 in undefined_syms_auto.txt.
 # 4 lead zero words re-homed to _pad_pre GLOBAL_ASM in kernel_010.c.
 KERNEL010_5C50_DONOR := build/src/kernel/kernel_ido53_5C50.c.o
 build/src/kernel/kernel_ido53_5C50.c.o build/non_matching/src/kernel/kernel_ido53_5C50.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_ido53_5C50.c.o build/non_matching/src/kernel/kernel_ido53_5C50.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_ido53_5C50.c.o build/non_matching/src/kernel/kernel_ido53_5C50.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ __osDevMgrMain=func_80005C50 osRecvMesg=func_80004FE0 osSendMesg=func_80005DC0 __osSetGlobalIntMask=func_800065F0 osEPiRawWriteIo=func_80009EB0 osEPiRawReadIo=func_80009C50 osYieldThread=func_80009E50
-build/src/kernel/kernel_010.c.o build/non_matching/src/kernel/kernel_010.c.o: REPLACE_FUNC_BODY := func_80005C50=$(KERNEL010_5C50_DONOR)
-# func_80004E50 = osLeoDiskInit (leodiskinit.c verbatim, IDO 5.3 -O1):
+build/src/kernel/kernel_ido53_5C50.c.o build/non_matching/src/kernel/kernel_ido53_5C50.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ __osDevMgrMain=__osDevMgrMain osRecvMesg=func_80004FE0 osSendMesg=func_80005DC0 __osSetGlobalIntMask=func_800065F0 osEPiRawWriteIo=func_80009EB0 osEPiRawReadIo=func_80009C50 osYieldThread=func_80009E50
+build/src/kernel/kernel_010.c.o build/non_matching/src/kernel/kernel_010.c.o: REPLACE_FUNC_BODY := __osDevMgrMain=$(KERNEL010_5C50_DONOR)
+# osLeoDiskInit = osLeoDiskInit (leodiskinit.c verbatim, IDO 5.3 -O1):
 # 64/64 non-reloc identical; struct-spelling emits the D6/D7 shared-$at
 # pair natively (old cap retracted). Same-size splice, no boundary fix.
 KERNEL003B_4E50_DONOR := build/src/kernel/kernel_ido53_4E50.c.o
 build/src/kernel/kernel_ido53_4E50.c.o build/non_matching/src/kernel/kernel_ido53_4E50.c.o: CC := $(IDO53_DIR)/cc
 build/src/kernel/kernel_ido53_4E50.c.o build/non_matching/src/kernel/kernel_ido53_4E50.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_ido53_4E50.c.o build/non_matching/src/kernel/kernel_ido53_4E50.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ osLeoDiskInit=func_80004E50 bzero=func_800030D0 __osDisableInt=func_800066B0 __osRestoreInt=func_800066D0
-build/src/kernel/kernel_003_b.c.o build/non_matching/src/kernel/kernel_003_b.c.o: REPLACE_FUNC_BODY := func_80004E50=$(KERNEL003B_4E50_DONOR)
+build/src/kernel/kernel_ido53_4E50.c.o build/non_matching/src/kernel/kernel_ido53_4E50.c.o: POST_COMPILE = python3 scripts/rename-elf-symbol.py $@ osLeoDiskInit=osLeoDiskInit bzero=func_800030D0 __osDisableInt=func_800066B0 __osRestoreInt=func_800066D0
+build/src/kernel/kernel_003_b.c.o build/non_matching/src/kernel/kernel_003_b.c.o: REPLACE_FUNC_BODY := osLeoDiskInit=$(KERNEL003B_4E50_DONOR)
 build/src/kernel/kernel_003_b.c.o: TRUNCATE_TEXT := 0x100
 build/non_matching/src/kernel/kernel_003_b.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x100
 # clip the splice-grown trailing alignment nop: unit = 0x10 pad + 0x490 body
@@ -1684,15 +1684,15 @@ build/src/kernel/kernel_018_b_ido53_698C.c.o build/non_matching/src/kernel/kerne
 build/src/kernel/kernel_018_b_ido53_698C.c.o build/non_matching/src/kernel/kernel_018_b_ido53_698C.c.o: OPT_FLAGS := -O1
 build/src/kernel/kernel_018_b.c.o build/non_matching/src/kernel/kernel_018_b.c.o: REPLACE_FUNC_BODY := func_8000698C=$(KERNEL018B_698C_DONOR)
 build/src/kernel/kernel_006_o1_5520.c.o build/non_matching/src/kernel/kernel_006_o1_5520.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: REPLACE_FUNC_BODY := func_80005520=$(KERNEL006_5520_DONOR)
+build/src/kernel/kernel_006.c.o build/non_matching/src/kernel/kernel_006.c.o: REPLACE_FUNC_BODY := osCreatePiManager=$(KERNEL006_5520_DONOR)
 # kernel_006: the 5520 host C body is sized to 0x1EC (slot 0x1CC + 0x20) so
 # the splice shifts func_800056EC by exactly 0x20 and keeps as1's 32-byte
 # alignment of its dead epilogue. .text is 0x2E0 after the splice (ROM-true:
-# func_80005800 now starts kernel_006_b at 0x80005800), no truncation needed.
+# __osPiCreateAccessQueue now starts kernel_006_b at 0x80005800), no truncation needed.
 build/src/kernel/kernel_008_o1_58C0.c.o build/non_matching/src/kernel/kernel_008_o1_58C0.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_008.c.o build/non_matching/src/kernel/kernel_008.c.o: REPLACE_FUNC_BODY := func_800058C0=$(KERNEL008_58C0_DONOR)
+build/src/kernel/kernel_008.c.o build/non_matching/src/kernel/kernel_008.c.o: REPLACE_FUNC_BODY := osCartRomInit=$(KERNEL008_58C0_DONOR)
 build/src/kernel/kernel_024_o1_9AB0.c.o build/non_matching/src/kernel/kernel_024_o1_9AB0.c.o: OPT_FLAGS := -O1
-build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: REPLACE_FUNC_BODY := func_80009AB0=$(KERNEL024_9AB0_DONOR)
+build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: REPLACE_FUNC_BODY := osEPiRawWriteIo=$(KERNEL024_9AB0_DONOR)
 # kernel_024: the -O2 host body + splice leaves a 4-byte align-pad tail
 # residue (.text 0x194 vs ROM-true 0x190) - trim it.
 build/src/kernel/kernel_024.c.o build/non_matching/src/kernel/kernel_024.c.o: TRUNCATE_TEXT := 0x190

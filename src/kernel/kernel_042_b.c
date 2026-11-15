@@ -24,7 +24,7 @@ extern s32 __osRdb_IP6_CurSend;
  * shifted baseline). ROM truth is the libreultra WAIT_ON_IOBUSY
  * assign-in-condition form (homes all four args, status in $s0) -
  * byte-exact at -O1. */
-s32 func_80004650(s32 direction, u32 devAddr, s32 dramAddr, u32 size) {
+s32 osPiRawStartDma(s32 direction, u32 devAddr, s32 dramAddr, u32 size) {
     register u32 status;
 
     while ((status = *(volatile u32*)0xA4600010) & 3) ;

@@ -8,7 +8,7 @@
 # rdb/KMC front end has no public reference, so it is written from the
 # ROM. Handwritten: k0/k1, eret, mfc0/mtc0, sd/ld (gp=64) and addi -- none of
 # which IDO emits for C.
-# Labels defined in func_800031F0 (still INCLUDE_ASM: its tail is the compiled
+# Labels defined in __osException (still INCLUDE_ASM: its tail is the compiled
 # C __osDequeueThread, so it needs a boundary split first) keep their
 # address names (.Lrdb_debug_done, .Lrdb_check_ip6, .Lrdb_send_wait, .Lrdb_restore_eret = restore
 # scratch + eret, .Lsavecontext = savecontext).

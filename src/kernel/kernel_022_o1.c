@@ -3,7 +3,7 @@
 /* kernel_022_o1: -O1 carve-out of the kernel_022 functions that are genuinely
  * -O1 (spill-every-local). The file is otherwise -O2 (the bitfield packers
  * func_80008C30/CB4 and the exact-match func_800092B0 REGRESS at -O1). Carved
- * here: func_80009850 (PI raw read, 45->85%) and func_800087B4 (MIPS insn
+ * here: osEPiRawReadIo (PI raw read, 45->85%) and func_800087B4 (MIPS insn
  * classifier, 44->52%). objdiff is per-function so .ld placement is cosmetic.
  * Verified 2026-06-04 via the mixed-opt diagnostic. */
 

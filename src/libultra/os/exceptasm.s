@@ -12,10 +12,10 @@
 # Calls use runtime addresses (the kernel runs 0x400 above its link address):
 # func_80003C24 = send_mesg, func_80003E0C = __osEnqueueThread,
 # func_80003E54 = __osPopThread, func_80003E64 = __osDispatchThread.
-# The compiled-C __osDequeueThread that follows (func_80003BF0) is C in
+# The compiled-C __osDequeueThread that follows (__osDequeueThread) is C in
 # src/kernel/kernel_000_b.c.
 
-glabel func_800031F0
+glabel __osException
     addi    $t3, $t3, 0x1
     # (continues the rdb debug-read byte store of exceptasm_rdb.s / _2 / _3)
 .Lrdb_debug_done:
@@ -712,6 +712,6 @@ alabel D_80003344
     # __osCleanupThread: osDestroyThread(NULL)
     jal     func_80004030
      or     $a0, $zero, $zero
-endlabel func_800031F0
+endlabel __osException
     nop                                 # object alignment padding
     nop

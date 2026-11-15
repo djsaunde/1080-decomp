@@ -109,7 +109,7 @@ GLOBAL_ASM("src/libultra/game_libs/maptlbrdb.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_000730CC_pad.s")
 
 /* gl_func_000732C4 = libultra scheduler yield/dispatch. LANDED 2026-06-21 as a
- * byte-identical TWIN-PORT of matched kernel func_80009A50 (kernel_023):
+ * byte-identical TWIN-PORT of matched kernel osYieldThread (kernel_023):
  * disable-int, set the running-thread state word (running_ptr + 0x10) to 2,
  * dispatch the run-queue head, restore-int. The prior wrap mis-read the running
  * ptr as a direct value and missed the &run-queue dispatch arg. Real C lives in

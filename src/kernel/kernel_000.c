@@ -1469,7 +1469,7 @@ s32 func_80001DD0(void *arg0, s32 arg1) {
  * size to the 0x80012D30 table and dispatch on the type through the 12-entry
  * jump table the ROM already carries at jtbl_8000A64C (runtime addresses,
  * +0x400). The old "runtime jump table" blocker is solved like
- * func_80005C50's: the donor's .rodata reloc is renamed func_80001EC8_rodata
+ * __osDevMgrMain's: the donor's .rodata reloc is renamed func_80001EC8_rodata
  * and pinned to 0x8000A64C. */
 s32 func_80001EC8(s32* arg0, void* file) {
     return 0;
@@ -1675,7 +1675,7 @@ int func_8000235C(Obj8000235C *o, int id) {
 /* func_800023E0 = Yay0 decoder + osSetIntMask (two handwritten routines in one splat symbol), real source in src/handwritten/kernel/decode_yay0_setintmask.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). */
 GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
 
-/* func_80002530 = libultra osInitialize (KMC kernel variant). EXACT via
+/* osInitialize = libultra osInitialize (KMC kernel variant). EXACT via
  * IDO 5.3 -O1 donor splice (REPLACE_FUNC_BODY, see
  * src/kernel/kernel_000_ido53_2530.c — proven 284/284 standalone; this unit
  * is 7.1 -O2 which caps at ~53%, so the body below compiles at the wrong
@@ -1685,7 +1685,7 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
  * the 16-byte exception preamble D_80003270 at the four vectors
  * 0x80000000/80/100/180 + writeback/inval caches, osMapTLBRdb
  * (func_80009DF0), reads the clock via osPiRawReadIo(4,..)
- * (func_80002DB0); D_8000A3D0 = osClockRate is a u64 (OSTime):
+ * (__osSetSR); D_8000A3D0 = osClockRate is a u64 (OSTime):
  * `osClockRate = osClockRate * 3 / 4` calls the 64-bit helpers
  * func_80002F78 (__ll_mul) / func_80002E78 (__ll_div); D_8000A3D8 =
  * osViClock by D_80000300 = osTvType; then the KMC debugger hook: if
@@ -1704,16 +1704,16 @@ extern s32 D_8000031C;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
 extern s32 D_80003280[];                        /* KMC E_VEC stub words */
 
-void func_80002530(void) {
+void osInitialize(void) {
     extern s32 func_800031E0(void);             /* __osGetSR */
     extern void func_800031D0(s32);             /* __osSetSR */
-    extern void func_80009C40(s32);             /* __osSetFpcCsr */
+    extern void __osSiRawWriteIo(s32);             /* __osSetFpcCsr */
     extern s32 func_80004EC0(void *, u32 *);    /* __osSiRawReadIo */
     extern s32 func_8000A040(void *, u32);      /* __osSiRawWriteIo */
-    extern void func_800031F0(void *, s32);     /* osWritebackDCache */
+    extern void __osException(void *, s32);     /* osWritebackDCache */
     /* func_80005350 (osInvalICache) already declared (s32,s32) at file top */
     extern void func_80009DF0(void);            /* osMapTLBRdb */
-    extern void func_80002DB0(s32, u32 *);      /* osPiRawReadIo */
+    extern void __osSetSR(s32, u32 *);      /* osPiRawReadIo */
     extern void func_800030D0(void *, s32);     /* bzero */
     u32 pifdata;
     u32 clock = 0;
@@ -1730,7 +1730,7 @@ void func_80002530(void) {
     s32 sp2C;
 
     func_800031D0(func_800031E0() | 0x20000000);
-    func_80009C40(0x01000800);
+    __osSiRawWriteIo(0x01000800);
     while (func_80004EC0((void *)0x1FC007FC, &pifdata)) {
         ;
     }
@@ -1741,10 +1741,10 @@ void func_80002530(void) {
     *(__osExceptionVector *)0x80000080 = D_80003270;
     *(__osExceptionVector *)0x80000100 = D_80003270;
     *(__osExceptionVector *)0x80000180 = D_80003270;
-    func_800031F0((void *)0x80000000, 0x190);
+    __osException((void *)0x80000000, 0x190);
     func_80005350(0x80000000, 0x190);
     func_80009DF0();
-    func_80002DB0(4, &clock);
+    __osSetSR(4, &clock);
     clock &= ~0xF;
     if (clock != 0) {
         D_8000A3D0 = clock;
@@ -1780,7 +1780,7 @@ void func_80002530(void) {
             dst++; src++;
             *dst = *src;
             dst++; src++;
-            func_800031F0((void *)0x80000180, 0x24);
+            __osException((void *)0x80000180, 0x24);
             func_80005350(0x80000180, 0x24);
             __kmc_pt_mode = 1;
             if (!(*sp38 & 0x10)) {

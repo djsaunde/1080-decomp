@@ -2,13 +2,13 @@
 # Reference: references/oot/src/libultra/os/invaldcache.s,
 #            references/libreultra/src/os/invaldcache.s
 # void osInvalDCache(void *vaddr, s32 nbytes)
-# splat symbol: func_80005000.
+# splat symbol: osInvalDCache.
 #   cache 0x15 = CACH_PD | C_HWBINV (Hit-Writeback-Invalidate),
 #         0x11 = CACH_PD | C_HINV (Hit-Invalidate),
 #         0x01 = CACH_PD | C_IWBINV (Index-Writeback-Invalidate)
 #   DCACHE_SIZE 0x2000, DCACHE_LINESIZE 0x10
 
-glabel func_80005000
+glabel osInvalDCache
     blez    $a1, .LinvDCache_ret        # nbytes <= 0: nothing to do
      nop
     addiu   $t3, $zero, 0x2000          # DCACHE_SIZE
@@ -57,7 +57,7 @@ glabel func_80005000
      addiu  $t0, $t0, 0x10
     jr      $ra
      nop
-endlabel func_80005000
+endlabel osInvalDCache
     nop                                 # object alignment padding
     nop
     nop
