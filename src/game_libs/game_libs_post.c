@@ -3122,7 +3122,7 @@ void AudioHeap_CalcFilterCoefs(float x, float y, u16 *out) {
     float v[16];
     int i;
 
-    k = *(float *)((char *)&D_00000000 + 0xE78);
+    k = *(float *)(GL_RODATA(0xE78));
     v[0] = y * k;
     v[8] = x * k;
     v[1] = y * x * k;
@@ -5611,7 +5611,7 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
 
     for (i = 2; i <= 2 + numInstruments - 1; i++) {
         if (fontData[i] != 0) {
-            CALL(gl_rmonPrintf)((char *)&D_00000000 + 0x1ACA4, i, fontData[i], fontDataStartAddr);
+            CALL(gl_rmonPrintf)(GL_DATA_STR(0x1ACA4, "instmap[%d]=%x,insttop= %x\n"), i, fontData[i], fontDataStartAddr);
             fontData[i] = GL23BDC_RELOC(fontData[i]);
             inst = (Instrument *)fontData[i];
             if (!inst->isRelocated) {
@@ -6177,7 +6177,7 @@ void AudioLoad_DmaSlowCopy(char *obj, int a1) {
     CALL(gl_osCreateMesgQueue)(obj + 0x30, obj + 0x48, 1);
     gl_func_00038604(obj + 0x4C, 0, 0, *(int *)(obj + 0x8),
                      *(int *)(obj + 0xC), a1, obj + 0x30,
-                     *(unsigned char *)obj, (char *)&D_00000000 + 0x1AFCC);
+                     *(unsigned char *)obj, GL_DATA_STR(0x1AFCC, "SLOWCOPY"));
 }
 
 void AudioLoad_DmaSlowCopyUnkMedium(int a0, int a1, int a2, int a3) {
@@ -7334,8 +7334,8 @@ void AudioThread_ScheduleProcessCmds(void) {
     cur = gAudioCtx_26CCC.threadCmdWritePos;
     committed = gAudioCtx_26CCC.threadCmdReadPos;
     n = (cur - committed + 256) & 0xFF;
-    if (*(int *)((char *)&D_00000000 + 0x1B594) < n) {
-        *(int *)((char *)&D_00000000 + 0x1B594) = n;
+    if (*(int *)(GL_DATA(0x1B594)) < n) {
+        *(int *)(GL_DATA(0x1B594)) = n;
     }
     r = CALL(gl_osSendMesg)(gAudioCtx_26CCC.threadCmdProcQueueP, ((committed & 0xFF) << 8) | (cur & 0xFF), 0);
     if (r != -1) {
@@ -12389,7 +12389,7 @@ void snd_SetPlayer3FreqScaleFromStick(int a0, int a1) {
      * `lui at; lwc1 %lo(D+0x1C1Dx)(at)`; a named `extern float D_0001C1D8[]`
      * gives the same 33 words but leaves lui/addiu blank (HI16/LO16 relocs)
      * in the .o, which the reloc-blind expected/ compare rejects. */
-    volatile float *tbl = (volatile float *)((char *)&D_00000000 + 0x1C1D8);
+    volatile float *tbl = (volatile float *)(GL_DATA(0x1C1D8));
     float f;
     if (D_00000000_1c0ac == 15) {
         f = 1.0f;
@@ -15260,37 +15260,37 @@ int snd_CueQueueUpdate(int *a0) {
 /* EXACT (agent-c run 122): the query callee is a baked in-unit jal (gl_ref_00045F04); each else arm's second command is 0x0602x000 (the NM had x004); s as int reuses v0; the function is int with no return, so v0 is live at the exit and the last guard's beqzl takes lw ra instead of the lui. */
 extern int gl_ref_00045F04();
 int snd_SetPlayer2ChannelIO_3190C(void) {
-    if (gl_ref_00045F04((char *)&D_00000000 + 0x368)) {
-        int s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);
+    if (gl_ref_00045F04(GL_BSS(0x368))) {
+        int s = *(unsigned short *)(GL_BSS(0x3C8));
         if (s == 0) {
             CALL(AudioThread_QueueCmdS8)(0x06020004, -1);
             CALL(AudioThread_QueueCmdS8)(0x06020000, 0);
         } else {
             CALL(AudioThread_QueueCmdS8)(0x06020004, (signed char)s);
             CALL(AudioThread_QueueCmdS8)(0x06020000,
-                             *(signed char *)((char *)&D_00000000 + 0x3CB));
+                             *(signed char *)(GL_BSS(0x3CB)));
         }
     }
-    if (gl_ref_00045F04((char *)&D_00000000 + 0x3CC)) {
-        int s = *(unsigned short *)((char *)&D_00000000 + 0x42C);
+    if (gl_ref_00045F04(GL_BSS(0x3CC))) {
+        int s = *(unsigned short *)(GL_BSS(0x42C));
         if (s == 0) {
             CALL(AudioThread_QueueCmdS8)(0x06020104, -1);
             CALL(AudioThread_QueueCmdS8)(0x06020100, 0);
         } else {
             CALL(AudioThread_QueueCmdS8)(0x06020104, (signed char)s);
             CALL(AudioThread_QueueCmdS8)(0x06020100,
-                             *(signed char *)((char *)&D_00000000 + 0x42F));
+                             *(signed char *)(GL_BSS(0x42F)));
         }
     }
     if (gl_ref_00045F04(&SND_CUEQ_AT_BASE(D_00000000).queue[2])) {
-        int s = *(unsigned short *)((char *)&D_00000000 + 0x490);
+        int s = *(unsigned short *)(GL_BSS(0x490));
         if (s == 0) {
             CALL(AudioThread_QueueCmdS8)(0x06020204, -1);
             CALL(AudioThread_QueueCmdS8)(0x06020200, 0);
         } else {
             CALL(AudioThread_QueueCmdS8)(0x06020204, (signed char)s);
             CALL(AudioThread_QueueCmdS8)(0x06020200,
-                             *(signed char *)((char *)&D_00000000 + 0x493));
+                             *(signed char *)(GL_BSS(0x493)));
         }
     }
 }
@@ -15298,7 +15298,7 @@ int snd_SetPlayer2ChannelIO_3190C(void) {
 /* Split off from snd_SetPlayer2ChannelIO_3190C bundle 2026-05-08: 4-insn setter.
  * Clears the global at &D_00000000 + 0x1CAA8 to -1. */
 void snd_ResetChannel10Mode(void) {
-    *(int*)((char*)&D_00000000 + 0x1CAA8) = -1;
+    *(int*)(GL_DATA(0x1CAA8)) = -1;
 }
 
 // snd_UpdateChannel10Emitter — full hand re-derivation from ground truth (2026-09-04

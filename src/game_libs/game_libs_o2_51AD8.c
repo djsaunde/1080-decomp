@@ -138,7 +138,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         q = s->cur; s->cur = q + 1; v = *q;
         pp = &gGfxLib_00000148_51AD8[v];
         if (*pp == 0) {
-            CALL(sys_fatal)((char *)&D_00000000 + 0x20F14);
+            CALL(sys_fatal)(GL_DATA_STR(0x20F14, "No glbMat"));
         }
         src = *pp;
         out->q = src->q;
@@ -165,7 +165,7 @@ void gfx_decodeMatCmd(State_51AD8 *out, Strm_51AD8 *s) {
         out->w58 = src->w58;
         break;
     default:
-        CALL(sys_fatal)((char *)&D_00000000 + 0x20F20, op = s->op);
+        CALL(sys_fatal)(GL_DATA_STR(0x20F20, "unknown GDL_MC cmd %d"), op = s->op);
         break;
     }
 }

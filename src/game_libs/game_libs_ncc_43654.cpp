@@ -33,7 +33,7 @@ void PolyShape_buildStateDL_00043654(char *arg0, char *arg1) {
     if (FW(arg0, 0x38) & 0x400000) {
         gl_func_00000000((char *)&gGfxLib, var_a3, arg0);
         if (FW(arg0, 0x38) & 0x100000) {
-            FW(arg0, 0x68) = gl_func_00000000(0, (char *)&D_00000000 + 0x1FD1C, 0xA, 0, 5, 0, 0);
+            FW(arg0, 0x68) = gl_func_00000000(0, GL_DATA(0x1FD1C), 0xA, 0, 5, 0, 0);
             gl_func_00000000(FW(arg0, 0x68)); if (1) {}
             temp_v0 = (char *) FW(arg0, 0x68);
             sp34 = (char *) FW(arg0, 0x64);

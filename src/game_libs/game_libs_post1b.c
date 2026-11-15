@@ -291,7 +291,7 @@ int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
     AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
-        FCALL(sys_fatal)((char*)&D_00000000 + 0x22180, a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
+        FCALL(sys_fatal)(GL_DATA_STR(0x22180, "BadKeyFrame %d - %s"), a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
     }
     return ((AnimKey *)v0->keys)[a2].frame;
 }
@@ -303,7 +303,7 @@ float AnimPlayer_getKeyTime(AnimPlayer *a0, int a1, int a2) {
     AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
         int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
-        FCALL(sys_fatal)((char*)&D_00000000 + 0x22194, a2, v); /* sys_fatal("BadKeyTime %d - %s") */
+        FCALL(sys_fatal)(GL_DATA_STR(0x22194, "BadKeyTime %d - %s"), a2, v); /* sys_fatal("BadKeyTime %d - %s") */
     }
     return ((AnimKey *)v0->keys)[a2].rate;
 }
@@ -326,7 +326,7 @@ extern void gl_func_00000000_635d8_v();
 /* (self, anim, startKey, endKey, flags, blendFrames); sys_imin("StartAnim") ... sys_imout */
 void AnimPlayer_start(AnimPlayer *self, int a1, int a2, int a3, int a4, int a5) {
     int r;
-    XCALL(gl_func_00000000_635d8_v, sys_imin)((char*)&D_00000000 + 0x221A8);
+    XCALL(gl_func_00000000_635d8_v, sys_imin)(GL_DATA_STR(0x221A8, "StartAnim"));
     self->reqEndKey = a3;
     self->endKey = a3;
     self->anim = a1;
@@ -4582,9 +4582,9 @@ void skin_cmdSkinAnim(int *self) {
     *bufp = p + 1;
     a1 = p[0];
     self[1] = a1;
-    saved = (int *)((int *)&D_00000000)[a1];
+    saved = (int *)((int *)&gProcNodeList_41700)[a1];
     if (saved == 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x2c550);
+        CALL(sys_fatal)(GL_DATA_STR(0x2C550, "No skinmgr for skinanim"));
     }
 
     bufp = (int **)self[0];
@@ -4652,15 +4652,15 @@ void skin_cmdSkinShape(char *arg0) {
     *(int **)A = q + 1;
     B = *q;
     FW(arg0, 4) = B;
-    sp30 = (&D_00000000)[B];
+    sp30 = (&gProcNodeList_41700)[B];
     B = *(int *)arg0;
     A = *(int *)B;
     *(int *)B = A + 4;
     v = *(int *)A;
     FW(arg0, 4) = v;
-    sp2C = (char *)CALL(BasePolyShape_ctor)(0, (char *)&D_00000000 + 0x2C568, v, 0);
+    sp2C = (char *)CALL(BasePolyShape_ctor)(0, GL_DATA_STR(0x2C568, "SkinShape"), v, 0);
     CALL(mem_new)(FW(sp2C, 0x44) * 8);
-    o = (char *)CALL(MorphPoly_ctor)(0, (char *)&D_00000000 + 0x2C574, 0, sp2C);
+    o = (char *)CALL(MorphPoly_ctor)(0, GL_DATA_STR(0x2C574, "SkinShape"), 0, sp2C);
     FW(arg0, 0x28) = (int)o;
     FW(arg0, 0x10) = (int)o;
     p = (int *)(o + 0x30);
@@ -4670,7 +4670,7 @@ mid:
     x = (char *)FW(arg0, 0x28) + 0x30;
     *(int *)x &= ~0x800;
     if (sp30 == 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x2C580);
+        CALL(sys_fatal)(GL_DATA_STR(0x2C580, "no skinmgr"));
     }
     b = (char *)FW(FW(FW(arg0, 0x3C), 0x3C), 0xC);
     x = (char *)FW(b, 0x28);
@@ -4740,13 +4740,13 @@ sentinel:
     }
     *(int*)inner = 0;
 sub_writes:
-    ((SkinAnim *)sub)->name = (int)((char*)&D_00000000 + 0x2C58C);  /* "skinanim" (the 0x18 base) */
+    ((SkinAnim *)sub)->name = (int)(GL_DATA_STR(0x2C58C, "skinanim"));  /* "skinanim" (the 0x18 base) */
     ((SkinAnim *)sub)->unk14 = 0;
 obj_writes:
     ((SkinAnim *)obj)->count = arg1;    /* (agent-b run 489: skin.h names) */
     ((SkinAnim *)obj)->weights = arg2;
     ((SkinAnim *)obj)->bone = arg3;
-    ((SkinAnim *)obj)->name = (int)((char*)&D_00000000 + 0x2C598); /* "skinanimator" */
+    ((SkinAnim *)obj)->name = (int)(GL_DATA_STR(0x2C598, "skinanimator")); /* "skinanimator" */
 done:
     return obj;
 }
@@ -4972,7 +4972,7 @@ int* SkinMgr_ctor(int *a0, int a1, int a2) {
         a0 = (int*)gl_func_00062F64_695F4(0x98);
         if (a0 == 0) goto end;
     }
-    gl_func_00062F64_695F4(a0, (char*)&D_00000000 + 0x2C5A8);
+    XCALL(gl_func_00062F64_695F4, Node_ctor)(a0, GL_DATA_STR(0x2C5A8, "skinmgr"));
     a0[0x28 / 4] = (int)&SkinMgr_vtbl_sym_695F4;
     v1 = &((SkinMgr *)a0)->anims;
     if (a0 != (int*)-72) goto store;
@@ -5018,7 +5018,7 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
 
     /* self = SkinMgr, arg1 = main bone (MNode), arg2 = shape (MorphPoly; nVerts +0x40, verts +0x60) */
     if (((SkinMgr *)self)->bone != 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x2C5B0); /* "SkinMgr already initialized" */
+        CALL(sys_fatal)(GL_DATA_STR(0x2C5B0, "SkinMgr already initialized")); /* "SkinMgr already initialized" */
     }
     ((SkinMgr *)self)->bone = (int)arg1;
     ((SkinMgr *)self)->bindVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
@@ -5206,7 +5206,7 @@ void SkinMgr_reset(int *self) {
         bar = &next;
     }
     if (((SkinMgr *)self)->bone == 0) {
-        gl_func_00062F64_69b94((int)((char *)&D_00000000 + 0x2C5F0)); /* "SkinMgr::Reset() not initialized" */
+        XCALL(gl_func_00062F64_69b94, sys_fatal)((int)(GL_DATA_STR(0x2C5F0, "SkinMgr::Reset() not initialized"))); /* "SkinMgr::Reset() not initialized" */
     }
     /* walk the anims list {SkinAnim *, next}: SkinAnim_bind(anim, mgr, bindVerts) */
     next = (int *)((SkinMgr *)self)->anims;

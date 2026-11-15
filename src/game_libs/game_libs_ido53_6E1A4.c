@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "uso_call.h"
 
 /* gl_osSetEventMesg = libultra osSetEventMesg (sched/seteventmesg.c) variant,
@@ -15,7 +16,7 @@ extern EventState_0006E1A4 D_00000000[];
 
 void gl_osSetEventMesg(int event, void *queue, int msg) {
     register int sr = gl_func_00000000();
-    EventState_0006E1A4 *es = &D_00000000[event];
+    EventState_0006E1A4 *es = &gl___osEventStateTab[event];
     es->queue = (int)queue;
     es->msg = msg;
     CALL(gl___osRestoreInt)(sr);

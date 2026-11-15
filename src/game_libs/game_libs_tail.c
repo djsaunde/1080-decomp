@@ -770,8 +770,8 @@ void Backup_resetCourseData_0000A670(BackupCourse *crs) {
     for (k = 0; k < BACKUP_NUM_COURSES; k++) {
         p = &crs->course[k];
         i = k * 3;
-        CALL(Backup_courseRecordResetTimes)(p, i % 5, i % 8, (char *)&D_00000000 + 0xD268 + k * 0x24);
-        CALL(Backup_courseRecordResetScores)(p, i % 5, i % 8, (char *)&D_00000000 + 0xD388 + k * 0xC);
+        CALL(Backup_courseRecordResetTimes)(p, i % 5, i % 8, GL_DATA(0xD268) + k * 0x24);
+        CALL(Backup_courseRecordResetScores)(p, i % 5, i % 8, GL_DATA(0xD388) + k * 0xC);
     }
 }
 
@@ -1152,7 +1152,7 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);
         sp3C = 0x15;
-        ((GP_0000AFC4)FW(temp_v0, 0x34))(*(s16 *)(temp_v0 + 0x30) + (int)&D_00000000, &sp3C);
+        ((GP_0000AFC4)FW(temp_v0, 0x34))(*(s16 *)(temp_v0 + 0x30) + (int)&gSnowBoard, &sp3C);
     } while (0);
 }
 
@@ -1413,7 +1413,7 @@ void Backup_sessionResetCourseTimes(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int k = a1 * 9;
     int *tbl;
-    do { tbl = (int *)((char *)&D_00000000 + 0xD268); } while (0);
+    do { tbl = (int *)(GL_DATA(0xD268)); } while (0);
     FCALL(Backup_courseRecordResetTimes)(&a0->course->course[a1], n % 5, n % 8, tbl + k);
     FCALL(Backup_writeCourseArcade_0000B560)(a0);
 }
@@ -1445,7 +1445,7 @@ extern int func_00000000();
 void Backup_sessionResetCourseScores(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
-    do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
+    do { tbl = (int *)(GL_DATA(0xD388)); } while (0);
     FCALL(Backup_courseRecordResetScores)(&a0->course->course[a1], n % 5, n % 8, tbl + n);
     FCALL(Backup_writeCourseArcade_0000B560)(a0);
 }
@@ -1489,26 +1489,26 @@ void* Backup_ctor(void *a0) {
         }
     }
     *(int*)a0 = 6400;
-    CALL(dbg_printf)((char*)&D_00000000 + 0xD43C);
+    CALL(dbg_printf)(GL_DATA_STR(0xD43C, "BACKUP: checking individual chunks\n"));
     if (CALL(Backup_checkOptions)(a0) == 0) {
-        CALL(dbg_printf)((char*)&D_00000000 + 0xD460);
+        CALL(dbg_printf)(GL_DATA_STR(0xD460, "resetting options data\n"));
         CALL(Backup_resetOptions)(a0);
     }
     if (CALL(Backup_checkCourse)(a0) == 0) {
-        CALL(dbg_printf)((char*)&D_00000000 + 0xD478);
+        CALL(dbg_printf)(GL_DATA_STR(0xD478, "resetting course data\n"));
         CALL(Backup_resetCourse)(a0);
     }
     if (CALL(Backup_checkArcade)(a0) == 0) {
-        CALL(dbg_printf)((char*)&D_00000000 + 0xD490);
+        CALL(dbg_printf)(GL_DATA_STR(0xD490, "resetting arcade data\n"));
         CALL(Backup_resetArcade)(a0);
     }
     if (CALL(Backup_checkGhost)(a0) == 0) {
-        CALL(dbg_printf)((char*)&D_00000000 + 0xD4A8);
+        CALL(dbg_printf)(GL_DATA_STR(0xD4A8, "resetting ghost data\n"));
         CALL(Backup_resetGhost)(a0);
     }
     CALL(Backup_writeHeader)(a0);
     CALL(Backup_cacheGhostBits)(a0);
-    CALL(dbg_printf)((char*)&D_00000000 + 0xD4C0, 0x8004);
+    CALL(dbg_printf)(GL_DATA_STR(0xD4C0, "BACKUP: sizeof ROM %d bytes\n"), 0x8004);
 end:
     return a0;
 }
@@ -1519,7 +1519,7 @@ extern int D_00000000;
 
 void Backup_read(int a0, int a1, int a2, int a3) {
     CALL(sys_setWord4_00061D80)(&gSysLib_data_B884_arg, 2);
-    CALL(fs_gdlOpenFile)(&gSysLib_data_B89C_arg, 0, (char*)&D_00000000 + 0xD4E0);
+    CALL(fs_gdlOpenFile)(&gSysLib_data_B89C_arg, 0, GL_DATA(0xD4E0));
     CALL(fs_gdlSeekFile)(&gSysLib_data_B8AC_arg, 0, a2);
     CALL(fs_gdlReadFile)(&gSysLib_data_B8C0_arg, a1, a3);
 }
@@ -1530,7 +1530,7 @@ extern int D_00000000;
 
 void Backup_write(int a0, int a1, int a2, int a3) {
     CALL(sys_setWord4_00061D80)(&gSysLib_data_B8FC_arg, 2);
-    CALL(fs_gdlOpenFile)(&gSysLib_data_B914_arg, 0, (char*)&D_00000000 + 0xD4E4);
+    CALL(fs_gdlOpenFile)(&gSysLib_data_B914_arg, 0, GL_DATA(0xD4E4));
     CALL(fs_gdlSeekFile)(&gSysLib_data_B924_arg, 0, a1);
     CALL(fs_gdlWriteFile)(&gSysLib_data_B938_arg, a2, a3);
 }
@@ -2063,7 +2063,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
     int v1;
 
     if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0xB8), (arg0 != 0))) {
-        CALL(Node_ctor)(arg0, (char *)&D_00000000 + 0xD678);
+        CALL(Node_ctor)(arg0, GL_DATA_STR(0xD678, "<Node>"));
         arg0->vptr = (int)&RaceTracker_vtbl;
         arg0->session = 0;
         arg0->hudFlags = 0;
@@ -2094,7 +2094,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
             *(int *)((char *)arg0->entries + v1 + 0x124) = 0;
         }
         CALL(RaceTracker_reset)(arg0);
-        CALL(game_forEachPlayer_000020D8)(*(int *)((char *)&D_00000000 + 0x134), arg0);
+        CALL(game_forEachPlayer_000020D8)(*(int *)((char *)&gInputMgr + 0x134), arg0);
         CALL(Node_pauseUpdate_0000E464)(arg0);
     }
     return arg0;
@@ -2137,9 +2137,9 @@ void RaceTracker_reset(RaceTracker *self) {
     self->elapsed = 0;
     self->timeLimit = 0x927C0;
     self->ghostFlag = 1;
-    self->courseStart = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xC4);
-    self->courseZ = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xCC);
-    self->courseLength = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xD8) - self->courseZ;
+    self->courseStart = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xC4);
+    self->courseZ = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xCC);
+    self->courseLength = *(f32 *)(FW(FW(&gInputMgr, 0x134), 0x98) + 0xD8) - self->courseZ;
     CALL(RaceTracker_findGates)(self);
     if (self->pointsList != 0) {
         CALL(TrickPointsGadget_reset_00003298)(self->pointsList, self);
@@ -2943,7 +2943,7 @@ void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
     f32 num255;
 
     sub = (int *)a0->pointsList;
-    if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&D_00000000 + 0x64) != 0)) {
+    if ((sub != 0) && (a0->hudFlags & 2) && (*(int **)((char *)&gInputMgr + 0x64) != 0)) {
         v0 = (int *)CALL(PointsGadget_allocSlot_00003C0C)(sub, (int)((float)a1 / 1000.0f * 100.0f), 0, 1);
         POPUP(v0)->timer = 230;
         POPUP(v0)->unk7C = 0;
@@ -2974,7 +2974,7 @@ void RaceTracker_sendEndingMsg(int a0, int a1, int a2) {
     int local = 0x3ED;
     char pad2[12];
     ((void(*)(int, int*))*(int*)((char*)v0 + 0x34))(
-        *(short*)((char*)v0 + 0x30) + (int)&D_00000000, &local);
+        *(short*)((char*)v0 + 0x30) + (int)&gSnowBoard, &local);
 }
 
 /* RaceTracker_sendWinResult: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
@@ -3000,7 +3000,7 @@ void RaceTracker_sendWinResult(RaceTracker *self, int idx) {
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l0);
     if (self->numEntries == 2) {
         int pad_m;
-        if (*(int *)((char *)&D_00000000 + 0x34) == 3 || *(int *)((char *)&D_00000000 + 0x34) == 2) {
+        if (*(int *)((char *)&gInputMgr + 0x34) == 3 || *(int *)((char *)&gInputMgr + 0x34) == 2) {
             int l1 = 1001; int pad_c[2];
             v1 = (char *)self->entries[idx ^ 1].rider;
             v0 = *(char **)(v1 + 0x28);
@@ -3355,7 +3355,7 @@ void RaceTracker_toggleGhost(int a0) {
     if (((RaceTracker *)a0)->numEntries != 2) {
         return;
     }
-    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x20, a0) == 0) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr, 0x20, a0) == 0) {
         return;
     }
     if (((RaceTracker *)a0)->ghostFlag != 0) {

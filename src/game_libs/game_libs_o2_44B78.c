@@ -34,6 +34,7 @@
  * as `(char *)&gl_osViModeTable_44B78_modes + K` call args; `f = 2; if (mode & 0x200) f =
  * 0x42; if (mode & 0x400) f &= ~2;` for the tail. */
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "uso_call.h"
 
 extern int D_00000000;
@@ -61,7 +62,7 @@ void gfx_setVideoMode(int mode) {
             }
             break;
         case 0: CALL(osViSetMode)(VIMODE_44B78(0x0)); break;
-        default: CALL(sys_fatal)((char *)&D_00000000 + 0x1FE78); break;
+        default: CALL(sys_fatal)(GL_DATA_STR(0x1FE78, "video mode not supported")); break;
     }
     f = 2;
     if (mode & 0x200) {

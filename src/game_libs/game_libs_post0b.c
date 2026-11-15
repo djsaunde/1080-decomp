@@ -2606,7 +2606,7 @@ char *CamMan_ctor(char *o, int a1, int a2) {
         if (o == 0) goto out;
     }
     CALL(Node_ctor)(o, GL_DATA_STR(0x1EA10, "cam man"));
-    ((Node *)o)->vptr = (s32)&D_00000000;
+    ((Node *)o)->vptr = (s32)&CamMan_vtbl;
     ((FreeCam *)o)->ctl = (void *)a2;
     ((FreeCam *)o)->dist = 1000.0f;
     ((FreeCam *)o)->pitch = -90.0f;
@@ -5642,7 +5642,7 @@ s32 CollShape_raycast(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 *
         qb = (&p.x)[ib];
         sg = ((CollTri *)((char *)self->tris + off))->sign;
         vt = col->verts;
-        nx = (s16 *)&D_00000000;
+        nx = (s16 *)&gTriEdgeNext;
         fv = (u16 *)f;
         do {
             v0 = vt[fv[1]];
@@ -5804,8 +5804,8 @@ s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) 
     if (col == 0) {
         return 0;
     }
-    if (POLY_COLLGRID(col) == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x1EE9C);
+    if (col->grid == 0) {
+        gl_func_00000000(GL_DATA_STR(0x1EE9C, "no pGrid data"));
     }
     p.x *= gGfxLib_3BE1C_128[0];
     p.y *= gGfxLib_3BE1C_128[1];
@@ -6662,7 +6662,7 @@ int ItemType_getItem(int *arg0, int arg1) {
  *     (lui+addiu emit, not lui+ori). */
 int *ColourItem_ctor(int *a0) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0x3C)) != 0) {
-        FCALL(Node_ctor)(a0, (char*)&D_00000000 + 0x1F2DC);
+        FCALL(Node_ctor)(a0, GL_DATA_STR(0x1F2DC, "<Node>"));
         a0[0x28/4] = (int)&ColourItem_vtbl;
         a0[0x2C/4] = 0;
         *(float*)((char*)a0 + 0x30) = 0.0f;
@@ -10503,7 +10503,7 @@ void GfxLib_hostioSendFbB_0004247C(void)
 
 extern int gl_func_00000000();
 int GfxLib_hostioForceError() {
-    return CALL(sys_fatal)(((char *)&D_00000000 + 0x0001FCB4));
+    return CALL(sys_fatal)((GL_DATA_STR(0x1FCB4, "Error")));
 }
 
 extern int gl_func_00000000();
@@ -10968,7 +10968,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
 extern int gl_func_00000000();
 void gfx_assertTexAligned(int *a0, int a1) {
     if ((*a0 & 7) != 0) {
-        CALL(sys_fatal)(((char *)&D_00000000 + 0x0001FD00));
+        CALL(sys_fatal)((GL_DATA_STR(0x1FD00, "Texture not aligned")));
     }
 }
 
@@ -11082,7 +11082,7 @@ void PolyShape_func_00043584(int *a0) {
 
 /* PolyShape_allocLightDL_000435FC: 22-insn 7-arg + 1-arg call chain. */
 int PolyShape_allocLightDL_000435FC(int *a0, int a1) {
-    int v = CALL(gfx_newDLContext)(0, (char*)&D_00000000 + 0x1FD14, 10, 0, 1, 0, 0);
+    int v = CALL(gfx_newDLContext)(0, GL_DATA_STR(0x1FD14, "light"), 10, 0, 1, 0, 0);
     a0[0x60/4] = v;
     return CALL(gfx_endDL)(v);
 }
@@ -11429,11 +11429,11 @@ void FogParms_emit_00043F1C(short *a0) {
 }
 
 void FogParms_hostioParms(int *a0) {
-    CALL(hostio_beginGroup)(&D_00000000, (int)((char*)&D_00000000 + 0x1FD20), 0);
+    CALL(hostio_beginGroup)(&gHostio, (int)(GL_DATA_STR(0x1FD20, "FogParms")), 0);
     CALL(gfx_declColourParm)(a0, 0);
-    CALL(hostio_addInt)(&D_00000000, (int)((char*)&D_00000000 + 0x1FD2C), (int)a0 + 16, 500, 1000, 1);
-    CALL(hostio_addInt)(&D_00000000, (int)((char*)&D_00000000 + 0x1FD30), (int)a0 + 20, 500, 1000, 1);
-    CALL(hostio_endGroup)(&D_00000000);
+    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD2C, "Min")), (int)a0 + 16, 500, 1000, 1);
+    CALL(hostio_addInt)(&gHostio, (int)(GL_DATA_STR(0x1FD30, "Max")), (int)a0 + 20, 500, 1000, 1);
+    CALL(hostio_endGroup)(&gHostio);
 }
 
 extern int gl_ref_00056BDC();
@@ -12004,7 +12004,7 @@ void gfx_start(char *arg0) {
     char *vt;
     char *q;
 
-    gGfxPhase_44DE4 = (int)((char *)&D_00000000 + 0x1FEB4);
+    gGfxPhase_44DE4 = (int)(GL_DATA_STR(0x1FEB4, "Start"));
     D_44DE4_val = FW(FW(arg0, 0x218), 0x24);
     *(volatile int *)(arg0 + 0x244) = 0;
     FW(arg0, 0x248) = 0;
@@ -12013,8 +12013,8 @@ void gfx_start(char *arg0) {
     CALL(gfx_resetDLContext)(((int *)(FW(arg0, 0x240) + 0x180))[FW(arg0, 0x204)]);
     q = (char *)FW(arg0, 0x22C);
     FW(q, 0xC) = 0;
-    CALL(prof_timerReset_0004DD4C)((char *)&D_00000000 + 0x1FEBC);
-    CALL(prof_timerReset_0004DD4C)((char *)&D_00000000 + 0x1FEC4);
+    CALL(prof_timerReset_0004DD4C)(GL_DATA_STR(0x1FEBC, "MHupd"));
+    CALL(prof_timerReset_0004DD4C)(GL_DATA_STR(0x1FEC4, "Anm"));
     FW(arg0, 0x1C0) = 0;
     for (i = 0; i < FW(arg0, 0x15C); i++) {
         e = ((char **)(arg0 + 0x148))[i];
@@ -12093,7 +12093,7 @@ void gfx_end(char *arg0) {
     char *w;
     char *e;
 
-    *(char **)&gGfxPhase_44EDC_b = (char *)&D_00000000 + 0x1FEC8;
+    *(char **)&gGfxPhase_44EDC_b = GL_DATA_STR(0x1FEC8, "End");
     CALL(gfx_resetDLContext)(((s32 *) arg0)[*(s32 *)(&gGfxLib_44EDC_a + 0x204) + 0xA0]);
     n = FW(arg0, 0x258);
     k = 0;
@@ -12104,23 +12104,23 @@ void gfx_end(char *arg0) {
             k++;
         } while ((u32) k < (u32) n);
     }
-    CALL(prof_beginSection)((char *)&D_00000000 + 0x1FECC);
+    CALL(prof_beginSection)(GL_DATA_STR(0x1FECC, "CPU"));
     obj = *(char **)(&gGfxLib_44EDC_c + 0x218);
     while (FW(obj, 4) != 0 || FW(obj, 0xC) != 0) {
         CALL(gl_osYieldThread)();
     }
-    CALL(prof_timerStart)((char *)&D_00000000 + 0x1FED0);
+    CALL(prof_timerStart)(GL_DATA_STR(0x1FED0, "MorphUpd"));
     r = (char *) FW(arg0, 0x22C);
     obj = *(char **)(r + 0x14);
     ((VT_44EDC) FW(obj, 0xC))(*(s16 *)(obj + 8) + r);
-    CALL(prof_timerStop)((char *)&D_00000000 + 0x1FEDC);
+    CALL(prof_timerStop)(GL_DATA_STR(0x1FEDC, "MorphUpd"));
     obj = *(char **)(&gGfxLib_44EDC_d + 0x218);
     cond = (FW(obj, 0x1C) != 0 || FW(obj, 4) != 0 || FW(obj, 0xC) != 0);
     while (cond) {
         CALL(gl_osYieldThread)();
         cond = (FW(obj, 0x1C) != 0 || FW(obj, 4) != 0 || FW(obj, 0xC) != 0);
     }
-    CALL(prof_timerStart)((char *)&D_00000000 + 0x1FEE8);
+    CALL(prof_timerStart)(GL_DATA_STR(0x1FEE8, "ADrawUpd"));
     k2 = 0;
     FW(arg0, 0x254) = FW(arg0, 0x240);
     if (FW(arg0, 0x1C0) > 0) {
@@ -12131,17 +12131,17 @@ void gfx_end(char *arg0) {
             k2++;
         } while (k2 < FW(arg0, 0x1C0));
     }
-    CALL(prof_timerStop)((char *)&D_00000000 + 0x1FEF4);
-    CALL(prof_timerStop)((char *)&D_00000000 + 0x1FF00);
-    *(float *)&D_44EDC_e = XCALL(gl_func_00000000_fret, prof_timerRead_0004DD2C)((char *)&D_00000000 + 0x1FF08);
-    *(char **)&gGfxPhase_44EDC_f = (char *)&D_00000000 + 0x1FF10;
+    CALL(prof_timerStop)(GL_DATA_STR(0x1FEF4, "ADrawUpd"));
+    CALL(prof_timerStop)(GL_DATA_STR(0x1FF00, "1GFrame"));
+    *(float *)&D_44EDC_e = XCALL(gl_func_00000000_fret, prof_timerRead_0004DD2C)(GL_DATA_STR(0x1FF08, "1GFrame"));
+    *(char **)&gGfxPhase_44EDC_f = GL_DATA_STR(0x1FF10, "Swap");
     while (FW(FW(arg0, 0x218), 0x24) == D_44EDC_g[0]) {
         CALL(gl_osYieldThread)();
     }
     CALL(gfx_swapBuffer)(arg0);
-    CALL(prof_endSection)((char *)&D_00000000 + 0x1FF18);
-    *(char **)&gGfxPhase_44EDC_h = (char *)&D_00000000 + 0x1FF1C;
-    CALL(prof_timerStart)((char *)&D_00000000 + 0x1FF28);
+    CALL(prof_endSection)(GL_DATA_STR(0x1FF18, "CPU"));
+    *(char **)&gGfxPhase_44EDC_h = GL_DATA_STR(0x1FF1C, "DoneSwap");
+    CALL(prof_timerStart)(GL_DATA_STR(0x1FF28, "1GFrame"));
     obj = *(char **)(&gSysLib_44EDC_i + 0x1C);
     CALL(gl_osSendMesg)(obj, 0x68, 1);
     CALL(gfx_setEvery4thFrameFlag)(arg0);
@@ -13362,7 +13362,7 @@ void gfx_drawFbSplash_00048184(char *a0) {
 void gfx_addWindow(char *a0, int a1) {
     int idx = (*(int*)(a0 + 0x258))++; ((int*)(a0 + 0x25C))[idx] = a1;
     if ((unsigned int)*(int*)(a0 + 0x258) >= 8) {
-        CALL(sys_fatal)((char*)&D_00000000 + 0x1FF30);
+        CALL(sys_fatal)(GL_DATA_STR(0x1FF30, "too many windows"));
     }
 }
 
@@ -14580,7 +14580,7 @@ void MorphPoly_checkVtx(int *self, int val, int idx) {
     short base;
     base = *(short*)((char*)self + 0xD4);
     if ((unsigned int)(idx - base) >= (unsigned int)(self[0x40 / 4] * 10)) {
-        CALL(sys_assertFail)((char*)&D_00000000 + 0x200BC,
+        CALL(sys_assertFail)(GL_DATA_STR(0x200BC, "(dvtx-FirstVtx) < (NumPnts * 10)"),
                           (char*)&D_00000000 + 0x200E0,
                           0xAAF,
                           self);
@@ -14782,12 +14782,12 @@ int *Shadow_ctor_0004B0A8(int *arg0, char *arg1) {
 
     self = arg0;
     if ((arg0 != 0) || (res = (int *)dbg_printThreads(0x44), self = res, (res != 0))) {
-        dbg_printThreads(self, (char *)&D_00000000 + 0x200EC);
+        dbg_printThreads(self, GL_DATA_STR(0x200EC, "copy"));
         FW(self, 0x28) = (int)&gl_d_4b0a8_tbl;
         ps = spA0;
         *(P2_0004B0A8 *)ps = *(P2_0004B0A8 *)((char *)&gGfxLib_4b0a8_vt + 0x140);
         self[0] = 2;
-        res = (int *)dbg_printThreads(0, (char *)&D_00000000 + 0x200F4, *(s32 *)((char *)&gGfxLib_4b0a8_w214 + 0x214));
+        res = (int *)dbg_printThreads(0, GL_DATA_STR(0x200F4, "shadow"), *(s32 *)((char *)&gGfxLib_4b0a8_w214 + 0x214));
         FW(self, 0x40) = (int)res;
         dbg_printThreads(res, ps);
         dbg_printThreads(FW(self, 0x40), ps);
@@ -14971,7 +14971,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
     if ((arg0 != 0) || ((self = (Sprite *) gl_func_00000000(0xD8)) != 0)) {
         Sprite *sub = self;
         if ((self != 0) || ((sub = (Sprite *) gl_func_00000000(0xCC)) != 0)) {
-            gl_func_00000000(sub, (char *)&D_00000000 + 0x200FC, arg1, 0); /* base ctor, "sprite" */
+            gl_func_00000000(sub, GL_DATA_STR(0x200FC, "sprite"), arg1, 0); /* base ctor, "sprite" */
             sub->unkC0 = 0;
             sub->unkC4 = 0;
             sub->unkB8 = 0.0f;
@@ -14983,7 +14983,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
         self->node.vptr = (s32) ((char *)&Sprite_vtbl + 0);
         self->endDL = 0;
         self->unkD4 = 0;
-        self->startDL = (DLContext *) gl_func_00000000(0, (char *)&D_00000000 + 0x20104, 0x14, 0, 0, 0, 0); /* "SS StartDL" */
+        self->startDL = (DLContext *) gl_func_00000000(0, GL_DATA_STR(0x20104, "SS StartDL"), 0x14, 0, 0, 0, 0); /* "SS StartDL" */
         DL_APPEND(self->startDL, 0xE7000000, 0);          /* G_RDPPIPESYNC */
         DL_APPEND(self->startDL, 0xBA001402, 0);          /* G_SETOTHERMODE_H cycle type: 1-cycle */
         DL_APPEND(self->startDL, 0xB9000201, 4);          /* G_SETOTHERMODE_L z source: G_ZS_PRIM */
@@ -15011,7 +15011,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
         if (cur != 0) {
             do {
                 node = (s32 *) (*it3.ptr)[it3.idx];
-                node[0x64 / 4] = (s32) gl_func_00000000(0, (char *)&D_00000000 + 0x20110, 0x14, 0, 0, 0, 0);
+                node[0x64 / 4] = (s32) gl_func_00000000(0, GL_DATA_STR(0x20110, "sprblock"), 0x14, 0, 0, 0, 0);
                 gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)*(s32 *)((char *)*it3.ptr + it3.idx * 4) + 0x34);
                 gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], (char *)*(s32 *)((char *)*it3.ptr + it3.idx * 4) + 0x34);
                 gl_func_00000000(((s32 *)(*it3.ptr)[it3.idx])[0x64 / 4], *(s32 *)((char *)*it3.ptr + it3.idx * 4), 0);
@@ -15025,7 +15025,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
             } while (cur != 0);
         }
 
-        self->endDL = (DLContext *) gl_func_00000000(0, (char *)&D_00000000 + 0x2011C, 0xA, 0, 0, 0, 0); /* "SS EndDL" */
+        self->endDL = (DLContext *) gl_func_00000000(0, GL_DATA_STR(0x2011C, "SS EndDL"), 0xA, 0, 0, 0, 0); /* "SS EndDL" */
         DL_APPEND(self->endDL, 0xBA001301, 0x80000);    /* texture persp: G_TP_PERSP */
         DL_APPEND(self->endDL, 0xB9000201, 0);          /* z source: G_ZS_PIXEL */
         DL_APPEND(self->endDL, 0xBB000000, 0x80008000); /* G_TEXTURE off */
@@ -15414,7 +15414,7 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
     self->unk1A8 = -1;
     self->unk1AC = -1;
     self->fbIndex = 0;
-    gl_func_00034458_4C300((char *)&D_00000000 + 0x20128, 0); /* "FrameBuffers" */
+    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20128, "FrameBuffers"), 0); /* "FrameBuffers" */
     bc = self->win.height;
     sz = self->win.width * bc;
     v1 = 0;
@@ -15448,23 +15448,23 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
         self->win.zBuffer = (u16 *)sp54;
     } else {
         if (G240_4C300 == 0) {
-            gl_func_00034458_4C300v((char *)&D_00000000 + 0x20138); /* "no ScreenWindow for zbuffer" */
+            XCALL(gl_func_00034458_4C300v, sys_fatal)(GL_DATA_STR(0x20138, "no ScreenWindow for zbuffer")); /* "no ScreenWindow for zbuffer" */
         }
         self->win.zBuffer = ((ScreenWindow *)G240_4C300)->win.zBuffer;
     }
-    gl_func_00034458_4C300();
-    gl_func_00034458_4C300((char *)&D_00000000 + 0x20154, 0); /* "DLs" */
+    XCALL(gl_func_00034458_4C300, memtrack_end)();
+    XCALL(gl_func_00034458_4C300, memtrack_begin)(GL_DATA_STR(0x20154, "DLs"), 0); /* "DLs" */
     /* p walks the two per-frame-buffer slots of startDL / setupDL / bgDL
      * ("startdraw", "setupDyn", "bgDyn", "bg") as a byte pointer (rule 4b). */
     for (i = 0, p = (char *)self; i != 8; i += 4, p += 4) {
-        FW(p, 0x14C) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20158, 0x28, 0, 0, 0, 1);
+        FW(p, 0x14C) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20158, "startdraw"), 0x28, 0, 0, 0, 1);
         if (self->win.flags & 0x1000) {
-            FW(p, 0x198) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20164, D_4C300_g0, D_4C300_g1,
+            FW(p, 0x198) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20164, "setupDyn"), D_4C300_g0, D_4C300_g1,
                                             D_4C300_g2, D_4C300_g3, D_4C300_g4);
-            FW(p, 0x180) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20170, D_4C300_g5, D_4C300_g6,
+            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLContext)(0, GL_DATA_STR(0x20170, "bgDyn"), D_4C300_g5, D_4C300_g6,
                                             D_4C300_g7, D_4C300_g8, D_4C300_g9);
         } else {
-            FW(p, 0x180) = gl_func_00034458_4C300(0, (char *)&D_00000000 + 0x20178, FW(G240_4C300 + i, 0x180));
+            FW(p, 0x180) = XCALL(gl_func_00034458_4C300, gfx_newDLChild_0005AB84)(0, GL_DATA(0x20178), FW(G240_4C300 + i, 0x180));
             FW(p, 0x198) = FW(G240_4C300 + i, 0x198);
         }
     }
@@ -15852,21 +15852,21 @@ void Window_hostioParms(int a0) {
     int *r;
     int *p;
     int *q;
-    CALL(hostio_beginGroup)(&D_00000000, (char *)&D_00000000 + 0x20198, 0);
+    CALL(hostio_beginGroup)(&D_00000000, GL_DATA_STR(0x20198, "Window"), 0);
     o1 = (int *)CALL(mem_new)(0xC);
     if (o1 != 0) {
         v1 = o1;
         if (o1 != 0 || (p = (int *)CALL(mem_new)(8), v1 = p, p != 0)) {
             r = v1;
             if (v1 != 0 || (q = (int *)CALL(mem_new)(4), r = q, q != 0)) {
-                *r = (int)((char *)&D_00000000 + 0x1F730);
+                *r = (int)(GL_DATA(0x1F730));
             }
-            v1[0] = (int)((char *)&D_00000000 + 0x1FC24); v1[1] = (int)&D_00000000;
+            v1[0] = (int)(GL_DATA(0x1FC24)); v1[1] = (int)&D_00000000;
         }
-        o1[0] = (int)((char *)&D_00000000 + 0x1FC3C);
+        o1[0] = (int)(GL_DATA(0x1FC3C));
         o1[2] = a0;
     }
-    CALL(hostio_addButton)(&D_00000000, (char *)&D_00000000 + 0x201A0, o1, 1);
+    CALL(hostio_addButton)(&D_00000000, GL_DATA_STR(0x201A0, "Show DL Usage"), o1, 1);
     CALL(hostio_endGroup)(&D_00000000);
     CALL(Node_hostioParms)(a0);
 }
@@ -16128,7 +16128,7 @@ void RcpTask_init(RcpTask *a0, int a1, int a2) {
     a0->window = 0;
     a0->task.type = 1;
     a0->task.flags = 0;
-    a0->task.ucode_boot = (u64 *)((char *)&D_00000000 + 0x0003EB00);
+    a0->task.ucode_boot = (u64 *)(GL_BSS(0x3EB00));
     a0->task.ucode_boot_size = 0x100;
     a0->task.ucode_size = 0x1000;
     a0->task.ucode_data_size = 0x800;
@@ -16190,7 +16190,7 @@ void RcpTask_setUcodeSgi20HOut_0004D1F4(RcpTask *a0, int a1) {
 
 extern int gl_func_00000000();
 void RcpTask_noUcode_fastQ(int a, int b, int c) {
-    CALL(sys_fatal)((char*)&D_00000000 + 0x201D8);
+    CALL(sys_fatal)(GL_DATA_STR(0x201D8, "fastQ"));
     (void)a; (void)b; (void)c;
 }
 
@@ -16212,7 +16212,7 @@ void RcpTask_setOutputFifo_0004D284(RcpTask *a0, int a1, int a2) {
 }
 
 void RcpTask_noUcode_NoC(int a, int b, int c) {
-    CALL(sys_fatal)((char*)&D_00000000 + 0x201E0);
+    CALL(sys_fatal)(GL_DATA_STR(0x201E0, "NoC"));
     (void)a; (void)b; (void)c;
 }
 
@@ -16289,7 +16289,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 void RcpMgr_removeTask(RcpTask *node, RcpTask **head) {
     if (*head == 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x201E4, head, node);
+        CALL(sys_fatal)(GL_DATA_STR(0x201E4, "RcpTask remove"), head, node);
     }
     if (node->prev == node->next && node == node->prev) {
         *head = 0;
@@ -16351,7 +16351,7 @@ u32 RcpMgr_ctor(u32 arg0) {
 
 extern int gl_func_00000000();
 void RcpMgr_update(int a0) {
-    CALL(dbg_printf)(((char *)&D_00000000 + 0x000201FC));
+    CALL(dbg_printf)((GL_DATA_STR(0x201FC, "Entering RcpMgr::Update()...\n")));
     CALL(RcpMgr_service)(a0);
 }
 
@@ -16381,7 +16381,7 @@ int RcpMgr_startTask(RcpMgr *self) {
     RcpTask *c;
     int g;
     if (self->active != 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x202F0);
+        CALL(sys_fatal)(GL_DATA_STR(0x202F0, "RcpTask already active"));
     }
     if ((self->active = self->queue) != 0) {
         CALL(RcpMgr_removeTask)(self->active, &self->queue);
@@ -16397,12 +16397,12 @@ int RcpMgr_startTask(RcpMgr *self) {
             *(int *)((char *)&gGfxLib + 0x254) = g;
         }
         c = self->active;
-        self->rspTaskName = (char *)&D_00000000 + 0x20308;
+        self->rspTaskName = GL_DATA_STR(0x20308, "Gfx");
         self->rspBusy = 1;
         CALL(RcpMgr_loadTask_0004D354)(c);
         self->rdpBusy = 1;
-        self->rdpTaskName = (char *)&D_00000000 + 0x2030C;
-        CALL(prof_timerStart)((char *)&D_00000000 + 0x20310);
+        self->rdpTaskName = GL_DATA_STR(0x2030C, "gfx");
+        CALL(prof_timerStart)(GL_DATA_STR(0x20310, "RSP"));
         return 1;
     }
     return 0;
@@ -16580,7 +16580,7 @@ int *DisplayMgr_ctor(int *s0, int a1) {
         s0 = (int *)CALL(mem_new)(0x3C);
         if (s0 == 0) goto out;
     }
-    CALL(Node_ctor)(s0, (char *)&D_00000000 + 0x204A8);
+    CALL(Node_ctor)(s0, GL_DATA_STR(0x204A8, "dispmgr"));
     s0[0x28/4] = (int)&DisplayMgr_vtbl;
     s0[0x2C/4] = CALL(mem_new)(a1 * 4);
     s0[0x30/4] = CALL(mem_new)(a1 * 4);
@@ -16611,7 +16611,7 @@ void DisplayMgr_add(int *a0, int a1, int a2) {
         a0[0x38/4] = count + 1;
         *(int*)(a0[0x30/4] + count * 4) = a1;
     } else {
-        CALL(sys_fatal)((char*)&D_00000000 + 0x204B0);
+        CALL(sys_fatal)(GL_DATA_STR(0x204B0, "DisplayMgr::Add() too many objects"));
     }
 }
 
@@ -16694,7 +16694,7 @@ void gfx_initMtxBlock_0004E00C(int *s0) {
 }
 
 void gfx_setEvery4thFrameFlag(int a0) {
-    *(int *)a0 = (*(int *)((char *)&D_00000000 + 0x14) & 3) == 0;
+    *(int *)a0 = (*(int *)((char *)&gSysLib + 0x14) & 3) == 0;
 }
 
 /* Vtable-call wrapper. Promoted 97.5%->100% via IDO load-CSE trick:
@@ -16936,7 +16936,7 @@ int *Window_ctor(int *a0) {
         a0 = (int *)CALL(mem_new)(0x144);
         if (a0 == 0) goto end;
     }
-    CALL(Node_ctor)(a0, (char *)&D_00000000 + 0x205CC);
+    CALL(Node_ctor)(a0, GL_DATA_STR(0x205CC, "win"));
     *(int *)((char *)a0 + 0x28) = (int)&Window_vtbl;
     m = (int *)((char *)a0 + 0x78);
     if (m == 0) { m = (int *)CALL(mem_new)(4); if (m == 0) goto s2; }
@@ -17177,8 +17177,8 @@ void Window_display(char *arg0) {
     FW(arg0, 0x11C) = 0;
     FW(arg0, 0x120) = 0;
     if (FW(arg0, 0x78) & 0x20) {
-        gl_func_00034458_4EB54(((char*)&D_00000000 + 0x205D0));
-        gl_func_00034458_4EB54(((char*)&D_00000000 + 0x205D4));
+        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D0, "CPU")));
+        XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D4, "Display()")));
     }
     gl_func_00034458_4EB54(FW(arg0, 0x108));
     D_g_0004EB54 = arg0;
@@ -17203,14 +17203,14 @@ void Window_display(char *arg0) {
     temp_v0_3 = (char*)FW(arg0, 0x28);
     ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
     if (FW(arg0, 0x78) & 0x20) {
-        gl_func_00034458_4EB54(((char*)&D_00000000 + 0x205E0));
-        gl_func_00034458_4EB54(((char*)&D_00000000 + 0x205E4));
+        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E0, "CPU")));
+        XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E4, "Display()")));
     }
 }
 
 extern int gl_func_00000000();
 void Window_update(int a0) {
-    CALL(sys_fatal)(((char *)&D_00000000 + 0x000205F0));
+    CALL(sys_fatal)((GL_DATA_STR(0x205F0, "Window can't Update")));
 }
 
 /* Window_runHooks_0004ED0C: 28-insn array-iter + vtable-dispatch loop.
@@ -17312,7 +17312,7 @@ void Window_setupView(Window *o) {
         float result[16];
         int c, k;
         if (o->camera == 0) {
-            CALL(sys_fatal)((char *)&D_00000000 + 0x20604, o->node.name); /* "no camera in Perspective Window '%s'\n" */
+            CALL(sys_fatal)(GL_DATA_STR(0x20604, "no camera in Perspective Window '%s'\n"), o->node.name); /* "no camera in Perspective Window '%s'\n" */
         }
         /* agent-c run 183: the 0x14C word goes through src (dead-web reuse): its a1 call-arg web
          * steers the post-call *(o+0x70) reload into a1 like the target (a new named local would
@@ -17967,7 +17967,7 @@ int BasePolyShape_addTri(int *self, int cap, int b, int c, int d, int e) {
         int n = self[0x44 / 4] + 1;
         self[0x44 / 4] = n;
         if (!((unsigned int)n < (unsigned int)cap)) {
-            CALL(sys_fatal)((char *)&D_00000000 + 0x20E2C);
+            CALL(sys_fatal)(GL_DATA_STR(0x20E2C, "too many tris"));
         }
     }
     return self[0x44 / 4] - 1;
@@ -18107,7 +18107,7 @@ void light_addDefault_000513CC(int* a0) {
     int* a3;
     int* r2;
     CALL(nodelist_checkPrevNode)(a0);
-    r2 = (int*)CALL(BaseLight_ctor)(0, (char *)&D_00000000 + 0x20E5C);
+    r2 = (int*)CALL(BaseLight_ctor)(0, GL_DATA_STR(0x20E5C, "DefLight"));
     a0[11] = (int)r2;
     a0[3] = (int)r2;
     a0[4] = (int)r2;
@@ -18169,8 +18169,8 @@ void shape_cmdLightTarget(char *a0) {
     CALL(nodelist_checkPrevNode)(a0);
     o = (LightTarget *)CALL(mem_new)(0x16C);
     if (o != 0) {
-        XCALL(gl_func_00000000f3, QNode_ctor)(o, (char *)&D_00000000 + 0x20E68, 0.0f, 0.0f, 0.0f); /* "lighttarget" */
-        k = *(f32 *)((char *)&D_00000000 + 0x1BB0);
+        XCALL(gl_func_00000000f3, QNode_ctor)(o, GL_DATA_STR(0x20E68, "lighttarget"), 0.0f, 0.0f, 0.0f); /* "lighttarget" */
+        k = *(f32 *)(GL_RODATA(0x1BB0));
         o->mask = (o->node.vptr = (s32)&LightTarget_vtbl_51448_vt, 0xFFFF);
         o->unk108[0] = k;
         o->unk108[1] = k;
@@ -18211,7 +18211,7 @@ void shape_cmdShape_00051520(char *a0) {
     *(int **)v = p + 1;
     x = *p;
     *(int *)(a0 + 4) = x;
-    v = (char *)CALL(gfx_newPolyShape_00046F80)(&gGfxLib, (char *)&D_00000000 + 0x20E74, x);
+    v = (char *)CALL(gfx_newPolyShape_00046F80)(&gGfxLib, GL_DATA_STR(0x20E74, "<Shape>"), x);
     *(char **)(a0 + 0x28) = v;
     *(char **)(a0 + 0x10) = v;
     *(int *)(a0 + 0xC) = 0;
@@ -18300,11 +18300,11 @@ extern int D_00000000;
 void gfx_declColourParm(char *a0, char *a1) {
     extern int gl_func_00000000ff(void *, void *, void *, float, float, int);
     if (a1 != 0) {
-        CALL(hostio_addColour)(&D_00000000, a1, a0);
+        CALL(hostio_addColour)(&gHostio, a1, a0);
     } else {
-        CALL(hostio_addColour)(&D_00000000, (char *)&D_00000000 + 0x20E7C, a0);
+        CALL(hostio_addColour)(&gHostio, GL_DATA_STR(0x20E7C, "Colour"), a0);
     }
-    XCALL(gl_func_00000000ff, hostio_addFloat)(&D_00000000, (char *)&D_00000000 + 0x20E84, a0 + 0xC, 0.0f, 1.0f, 0);
+    XCALL(gl_func_00000000ff, hostio_addFloat)(&gHostio, GL_DATA_STR(0x20E84, "Alpha"), a0 + 0xC, 0.0f, 1.0f, 0);
 }
 
 /* gfx_printColourF: EXACT (0x60 / 24 words). Prints a Vec4 through the
@@ -18319,7 +18319,7 @@ void gfx_declColourParm(char *a0, char *a1) {
 extern int gl_func_00000000();
 void gfx_printColourF(float *a0) {
     float **pp = &a0;
-    CALL(dbg_printf)((char *)&D_00000000 + 0x20E8C,
+    CALL(dbg_printf)(GL_DATA_STR(0x20E8C, "%s: %f, %f, %f, %f\n"),
                      (double)(*pp)[0],
                      (double)(*pp)[1],
                      (double)(*pp)[2],
@@ -18329,11 +18329,11 @@ void gfx_printColourF(float *a0) {
 extern int gl_func_00000000();
 
 void gfx_printColourRGBA(unsigned char *a0, int a1) {
-    CALL(dbg_printf)(((char *)&D_00000000 + 0x00020EA0), a1, a0[0], a0[1], a0[2], a0[3]);
+    CALL(dbg_printf)((GL_DATA_STR(0x20EA0, "%s: %d, %d, %d, %d\n")), a1, a0[0], a0[1], a0[2], a0[3]);
 }
 
 void Mat_printHex_000517B8(int *a0, int a1) {
-    CALL(dbg_printf)((char*)&D_00000000 + 0x20EB4, a1, a0[1], a0);
+    CALL(dbg_printf)(GL_DATA_STR(0x20EB4, "%s%x\n"), a1, a0[1], a0);
 }
 
 /* BaseMat_init_000517E4: struct-init/zero. a0->0x44 = &D + 0x20EBC (a SYMBOL
@@ -18355,7 +18355,7 @@ void BaseMat_init_000517E4(BaseMat *a0) {
     a0->unk34 = 0;
     a0->tile = 0;
     a0->next = 0;
-    a0->name = (char *)&D_00000000 + 0x20EBC; /* "<no name>" */
+    a0->name = GL_DATA_STR(0x20EBC, "<no name>"); /* "<no name>" */
     a0->unk32 = 0;
     a0->unk30 = 0;
     a0->colour[3] = 0.0f;
@@ -18425,8 +18425,8 @@ void BaseMat_hostioParms(char *arg0) {
     s32 *o2;
     s32 *o3;
 
-    gl_func_00034458_5185C((char *)&D_00000000, (char *)&D_00000000_c + 0x20EC8, 0);
-    gl_func_00034458_5185C(arg0, 0);
+    XCALL(gl_func_00034458_5185C, hostio_beginGroup)((char *)&gHostio, (char *)&D_00000000_c + 0x20EC8, 0);
+    XCALL(gl_func_00034458_5185C, gfx_declColourParm)(arg0, 0);
     if (FW(arg0, 0x38) & 0x400000) {
         o1 = (s32 *)gl_func_00034458_5185C(0x10);
         if (o1 != 0) {
@@ -18441,11 +18441,11 @@ void BaseMat_hostioParms(char *arg0) {
             }
             *o1 = (s32)((char *)&D_00000000_d + 0x20D88);
         }
-        gl_func_00034458_5185C((char *)&D_00000000, (char *)&D_00000000_c + 0x20ED0, o1, 1);
+        XCALL(gl_func_00034458_5185C, hostio_addButton)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED0, o1, 1);
     }
-    gl_func_00034458_5185C((char *)&D_00000000, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
-    gl_func_00034458_5185C((char *)&D_00000000, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
-    gl_func_00034458_5185C((char *)&D_00000000);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20ED8, arg0 + 0x50, 0);
+    XCALL(gl_func_00034458_5185C, hostio_addIntVar)((char *)&gHostio, (char *)&D_00000000_c + 0x20EE0, arg0 + 0x54, 0);
+    XCALL(gl_func_00034458_5185C, hostio_endGroup)((char *)&gHostio);
 }
 
 /* Mat_print — W5 2026-07-03: IMPROVED 63/77 -> 71/77 words (in-tree
@@ -18485,12 +18485,12 @@ void Mat_print(char *self) {
     int *v1;
     int *o;
 
-    fmtSel = (*(int *)(self + 0x38) & 0x400000) ? (int)((char *)&D_00000000 + 0x20EE8) : (int)((char *)&D_00000000 + 0x20EEC);
+    fmtSel = (*(int *)(self + 0x38) & 0x400000) ? (int)(GL_DATA_STR(0x20EE8, "Tex")) : (int)(GL_DATA_STR(0x20EEC, "RGB"));
     if (*(int *)(self + 0x14) != 0) {
         if (*(int *)(self + 0x4C) != 0) {
-            CALL(gl_sprintf)(name, (char *)&D_00000000 + 0x20EF0, *(int *)(self + 0x18), self + 0x58, fmtSel);
+            CALL(gl_sprintf)(name, GL_DATA_STR(0x20EF0, "MAT %d(%s)* (%s)"), *(int *)(self + 0x18), self + 0x58, fmtSel);
         } else {
-            CALL(gl_sprintf)(name, (char *)&D_00000000 + 0x20F04, *(int *)(self + 0x18), self + 0x58, fmtSel);
+            CALL(gl_sprintf)(name, GL_DATA_STR(0x20F04, "MAT %d(%s) (%s)"), *(int *)(self + 0x18), self + 0x58, fmtSel);
         }
         o = (int *)CALL(mem_new)(0x10);
         a2 = o;
@@ -18499,14 +18499,14 @@ void Mat_print(char *self) {
             if ((o != 0) || (a2 = o, v1 = (int *)CALL(mem_new)(0x10), (v1 != 0))) {
                 a0p = v1;
                 if ((v1 != 0) || (a0p = (int *)CALL(mem_new)(4), (a0p != 0))) {
-                    *a0p = (int)((char *)&D_00000000 + 0x20740);
+                    *a0p = (int)(GL_DATA(0x20740));
                 }
                 *(Pair519A4 *)((v1[1] = (int)self, v1) + 2) =
-                    *(Pair519A4 *)((char *)&D_00000000 + 0x20630);
+                    *(Pair519A4 *)(GL_DATA(0x20630));
             }
-            *a2 = (int)((char *)&D_00000000 + 0x20D88);
+            *a2 = (int)(GL_DATA(0x20D88));
         }
-        CALL(hostio_addLink)(&D_00000000, name, a2);
+        CALL(hostio_addLink)(&gHostio, name, a2);
     }
 }
 
@@ -18912,7 +18912,7 @@ c24:
     BASEPOLY(arg0)->unk0C[11] |= *p;
     if (1) goto done;
 dflt:
-    CALL(sys_fatal)((char *)&D_00000000 + 0x20FA8, arg1, cur, arg0);
+    CALL(sys_fatal)(GL_DATA_STR(0x20FA8, "Invalid Shape cmd %d"), arg1, cur, arg0);
 done:
     return cur;
 }
@@ -19149,7 +19149,7 @@ extern int D_00000000;
  * and the final call takes no argument. */
 void ZoneShape_build(char *self) {
     u32 i;
-    CALL(sys_imin)((char *)&D_00000000 + 0x20FC8);
+    CALL(sys_imin)(GL_DATA_STR(0x20FC8, "ZoneShape()"));
     if (*(char **)(self + 0x78) == 0) {
         *(char **)(self + 0x78) = (char *)CALL(mem_new)(*(u32 *)(self + 0x44));
         for (i = 0; i < *(u32 *)(self + 0x44); i++) {
@@ -19275,7 +19275,7 @@ int BasePolyShape_getVtxNorm(BasePolyShape *arg0, int arg1) {
     int i;
     /* vtxNormals is read as an int word (`(int)arg0->vtxNormals` re-colours
      * the *6 chain); same lw either way. */
-    CALL(sys_fatal)((char *)&D_00000000 + 0x21010, arg1, arg0);
+    CALL(sys_fatal)(GL_DATA_STR(0x21010, "getvtxnorm called"), arg1, arg0);
     i = arg1;
     arg1 = 0;
     p = arg0->remap;
@@ -19397,7 +19397,7 @@ void BasePolyShape_avgTriColour(char *arg0, int arg1, unsigned char *arg2) {
 
     colorTab = *(unsigned char **)(arg0 + 0x50);
     if (colorTab == 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x21024, arg1);
+        CALL(sys_fatal)(GL_DATA_STR(0x21024, "PolyAvgCol: no colours"), arg1);
         colorTab = *(unsigned char **)(arg0 + 0x50);
     }
     idxTab = *(short **)(arg0 + 0x4C);
@@ -19472,7 +19472,7 @@ void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2) {
             } while (var_s8 < (u32) BASEPOLY(arg0)->nVerts);
         }
     } else if (arg2 == 0) {
-        CALL(dbg_printf)((char *)&D_00000000 + 0x2103C);
+        CALL(dbg_printf)(GL_DATA_STR(0x2103C, "slow norm gen\n"));
         var_s8 = 0;
         if (BASEPOLY(arg0)->nTris != 0) {
             var_s7 = 0;
@@ -19629,7 +19629,7 @@ void BasePolyShape_genNormalsFast(char *arg0, s32 arg1) {
     u16 *m;
 
     if ((FW(arg0, 0x58) == 0) || (FW(arg0, 0x54) == 0)) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x2104C);
+        CALL(sys_fatal)(GL_DATA_STR(0x2104C, "BasePolyShape::GenNormalsFast() missing ptrs"));
     }
     CALL(BasePolyShape_genPointNormals)(arg0);
     i = 0;
@@ -19810,7 +19810,7 @@ void *CMod_ctor(void *a0, float a1, float a2, float a3, float a4) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, (sCModName));
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+    *(int*)((char*)a0 + 0x28) = (int)&CMod_vtbl;
     v1 = (float*)((char*)a0 + 0x2C);
     if ((char*)a0 + 0x2C == 0) {
         v1 = (float*)CALL(mem_new)(0x10);
@@ -19830,9 +19830,9 @@ void CMod_hostioParms(int *a0_arg) {
      * the first call's &D arg. Without this local, IDO -O2 spills+reloads
      * a0 via stack (+1 insn). */
     int val = a0_arg[3];
-    CALL(hostio_beginGroup)(&D_00000000, val, 0);
+    CALL(hostio_beginGroup)(&gHostio, val, 0);
     CALL(gfx_declColourParm)((char*)a0_arg + 0x2C, 0);
-    CALL(hostio_endGroup)(&D_00000000);
+    CALL(hostio_endGroup)(&gHostio);
     CALL(Node_hostioParms)(a0_arg);
 }
 
@@ -20031,10 +20031,10 @@ extern int gl_func_00000000();
 extern void gl_func_00000000_54a(int, int, int, float, float, int);
 extern int D_00000000, gHostio_54a_o0, gHostio_54a_o1, gHostio_54a_o2, gHostio_54a_o3, gHostio_54a_o4;
 void BaseLight_hostioParms(int *s0) {
-    CALL(hostio_beginGroup)((int)&gHostio_54a_o0, (int)((char *)&D_00000000 + 0x21090), 0);
-    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o1, (int)((char *)&D_00000000 + 0x2109C), (int)((char *)s0 + 0xC8), 0.0f, 8000.0f, 1);
-    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o2, (int)((char *)&D_00000000 + 0x210A4), (int)((char *)s0 + 0xCC), 0.0f, 1000.0f, 1);
-    CALL(hostio_addHexVar)((int)&gHostio_54a_o3, (int)((char *)&D_00000000 + 0x210AC), (int)((char *)s0 + 0xD0), 0);
+    CALL(hostio_beginGroup)((int)&gHostio_54a_o0, (int)(GL_DATA_STR(0x21090, "BaseLight")), 0);
+    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o1, (int)(GL_DATA_STR(0x2109C, "Atten")), (int)((char *)s0 + 0xC8), 0.0f, 8000.0f, 1);
+    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o2, (int)(GL_DATA_STR(0x210A4, "FallOff")), (int)((char *)s0 + 0xCC), 0.0f, 1000.0f, 1);
+    CALL(hostio_addHexVar)((int)&gHostio_54a_o3, (int)(GL_DATA_STR(0x210AC, "MaskID")), (int)((char *)s0 + 0xD0), 0);
     CALL(Parms_hostio)((int)((char *)s0 + 0x10C), 0);
     CALL(hostio_endGroup)((int)&gHostio_54a_o4);
     CALL(MNode_hostioParms)(s0);
@@ -20072,9 +20072,9 @@ I:
     p = (int *)strm[1]; strm[1] += 4;
     idx = *p;
     if (!((unsigned int)idx < 0x28)) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x210B4);
+        CALL(sys_fatal)(GL_DATA_STR(0x210B4, "Global out of range %d"));
     }
-    v = *(int *)((char *)&D_00000000 + idx * 4);
+    v = *(int *)((char *)&gNodeGlobals + idx * 4);
     *(int *)((char *)self + 0xD4) = v;
     return;
 D:
@@ -20124,9 +20124,9 @@ void LightTarget_hostioParms(int *self) {
     extern int D_00000000;
     extern int gHostio_strA, gHostio_strB, gHostio_strC, gHostio_strD;
     extern int gl_func_00000000ff(void *, void *, void *, float, float, int);
-    CALL(hostio_beginGroup)(&gHostio_strA, (char*)&D_00000000 + 0x210CC, 0);
-    CALL(hostio_addHexVar)(&gHostio_strB, (char*)&D_00000000 + 0x210D8, (char*)self + 0x120, 0);
-    XCALL(gl_func_00000000ff, hostio_addFloat)(&gHostio_strC, (char*)&D_00000000 + 0x210E4, (char*)self + 0x124, 0.0f,
+    CALL(hostio_beginGroup)(&gHostio_strA, GL_DATA_STR(0x210CC, "LightTarget"), 0);
+    CALL(hostio_addHexVar)(&gHostio_strB, GL_DATA_STR(0x210D8, "LightMask"), (char*)self + 0x120, 0);
+    XCALL(gl_func_00000000ff, hostio_addFloat)(&gHostio_strC, GL_DATA_STR(0x210E4, "Fade"), (char*)self + 0x124, 0.0f,
                       1.0f, 0);
     CALL(hostio_endGroup)(&gHostio_strD);
     CALL(QNode_hostioParms)(self);
@@ -20816,9 +20816,9 @@ extern int gl_func_00000000();
 void gfx_childName_00056084(int a0, int a1) {
     char buf[0x40];
     CALL(str_copyEnd)(buf, a0);
-    CALL(str_catEnd)(buf, (char *)&D_00000000 + 0x218C0);
+    CALL(str_catEnd)(buf, GL_DATA(0x218C0));
     CALL(str_catEnd)(buf, a1);
-    CALL(str_catEnd)(buf, (char *)&D_00000000 + 0x218CC);
+    CALL(str_catEnd)(buf, GL_DATA(0x218CC));
     CALL(str_dup)(buf);
 }
 
@@ -20981,7 +20981,7 @@ c8:
 c9:
     return 0x4041C8;
 dflt:
-    CALL(sys_fatal)((char *)&D_00000000 + 0x218D0, m);
+    CALL(sys_fatal)(GL_DATA_STR(0x218D0, "unsupported RM mode: %x\n"), m);
     return 0;
 }
 
@@ -21028,7 +21028,7 @@ c4: return 0x03027008;
 c8: return 0x104240;
 c9: return 0x1041C8;
 def:
-    CALL(sys_fatal)((char *)&D_00000000 + 0x218EC, temp_a1);
+    CALL(sys_fatal)(GL_DATA_STR(0x218EC, "unsupported RM2 mode: %x\n"), temp_a1);
     return 0;
 }
 
@@ -21165,7 +21165,7 @@ extern int gl_func_00000000();
 
 void gfx_checkDLOverflow(DLContext *a0) {
     CALL(gfx_printDLUsage)(a0);
-    CALL(sys_fatal)(((char *)&D_00000000 + 0x00021908), a0->name);
+    CALL(sys_fatal)((GL_DATA_STR(0x21908, "something in '%s' DisplayList overflowed")), a0->name);
 }
 
 /* gfx_printDLUsage: 14-arg varargs log/format dispatch. First two args
@@ -21204,7 +21204,7 @@ void gfx_printDLUsage(DLContext *self) {
     int e1 = self->vp.cur->max; volatile int x9;
     int f0 = self->hilite.cur->count; volatile int x10;
     int f1 = self->hilite.cur->max; volatile int x11;
-    CALL(dbg_printf)((char *)&D_00000000 + 0x21934, self->name,
+    CALL(dbg_printf)(GL_DATA_STR(0x21934, "%s : Gfx %d/%d, Vtx %d/%d, Light %d/%d, Mtx %d/%d, Vp %d/%d, Hilite %d/%d\n"), self->name,
                      a0_, a1_, b0, b1, c0, c1, d0, d1, e0, e1, f0, f1);
 }
 
@@ -24320,7 +24320,7 @@ void absrot_matrix4(f32 (*arg0)[4], s32 axis, f32 angle, s32 flag) {
         v.z = 1.0f;
         break;
     default:
-        CALL(sys_fatal)((char *)&D_00000000 + 0x21B4C);
+        CALL(sys_fatal)(GL_DATA_STR(0x21B4C, "absrot_matrix4(): Bad axis num"));
         break;
     }
     XCALL(gl_func_00000000_5eb4c, math_mtxRotateAngle_0005DB00)(M, &v, angle / 2);
@@ -25194,7 +25194,7 @@ void *TextWin_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, int arg5,
     TEXTWIN(arg0)->x = 0x14;
     TEXTWIN(arg0)->y = 0x28;
     TEXTWIN(arg0)->muted = 0;
-    CALL(ConsoleMgr_linkWin)(D_00000000, arg0);
+    CALL(ConsoleMgr_linkWin)(gConsoleNode_3EF04, arg0);
 end:
     return arg0;
 }
@@ -25753,7 +25753,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
-                gl_func_00034458_6126C(out, (char *)&D_00000000 + 0x21E08);
+                XCALL(gl_func_00034458_6126C, str_copyEnd)(out, GL_DATA(0x21E08));
                 out += 0xA;
             }
     }
@@ -25979,7 +25979,7 @@ void console_createSystemWin(int *self) {
     vec[2] = 0.0f;
     vec[1] = 0.0f;
     vec[0] = 0.0f;
-    vec[3] = *(float*)((char*)&D_00000000 + 0x2078);
+    vec[3] = *(float*)(GL_RODATA(0x2078));
     v0 = (int)CALL(TextWin_ctor)(0,
                                 (char*)&D_00000000 + 0x21F0C,
                                 0x46,
@@ -26227,9 +26227,9 @@ void fs_gdlReadInt_00061E1C(int *dst) {
 
 /* anim_formatId: 17-insn (0x44) "split arg into halfwords + tail-call". */
 int anim_formatId(int arg0) {
-    CALL(gl_sprintf)((char *)&D_00000000 + 0x3F020, (char *)&D_00000000 + 0x22038,
+    CALL(gl_sprintf)(GL_BSS(0x3F020), GL_DATA_STR(0x22038, " %d:%d"),
                      (arg0 >> 16) & 0xFFFF, arg0 & 0xFFFF);
-    return (int)((char *)&D_00000000 + 0x3F020);
+    return (int)(GL_BSS(0x3F020));
 }
 
 /* anim_createAnimator: 31-insn lookup + assert + 5-arg dispatch (0x7C, frame 0x28).
@@ -26246,7 +26246,7 @@ void anim_createAnimator(int *arg0) {
     int result;
     CALL(nodelist_checkPrevNode)(arg0);
     if (self[0x14 / 4] == 0) {
-        CALL(sys_fatal)((char *)&D_00000000 + 0x22040);
+        CALL(sys_fatal)(GL_DATA_STR(0x22040, "Null AnimatorMgr specified"));
     }
     ptrptr = (int**)self[0];
     p = *ptrptr;
@@ -26521,7 +26521,7 @@ loop:
     self += sizeof(AnimFrameSlot) / 4;
     if (i < count) goto loop;
 fail:
-    CALL(sys_fatal)((char *)&D_00000000 + 0x220C4);
+    CALL(sys_fatal)(GL_DATA_STR(0x220C4, "out of AnimData slots"));
     return -1;
 }
 
@@ -26660,7 +26660,7 @@ int* AnimDataMgr_ctor(int *obj, int a1, int a2, int a3) {
     extern int D_00000000;
     extern int AnimDataMgr_vtbl_sym_6264C;
     if (obj != 0 || (obj = (int*)CALL(mem_new)(0x48)) != 0) {
-        CALL(Node_ctor)(obj, (char*)&D_00000000 + 0x220DC);    /* Node_ctor(this, "AnimDataMgr") */
+        CALL(Node_ctor)(obj, GL_DATA_STR(0x220DC, "AnimDataMgr"));    /* Node_ctor(this, "AnimDataMgr") */
         ((AnimDataMgr *)obj)->node.vptr = (int)&AnimDataMgr_vtbl_sym_6264C;
         CALL(AnimDataMgr_initSlots)(&((AnimDataMgr *)obj)->cache, a3, a2 * 14); /* AnimDataMgr_initSlots: a3 slots of a2 * 14 bytes */
         ((AnimDataMgr *)obj)->numNodes = a2;
@@ -26740,15 +26740,15 @@ int AnimDataMgr_lookup(AnimDataMgr *self, int a1) {
     char *rec;
     hi = (a1 >> 16) & 0xFFFF;
     if (hi >= self->numGroups) {
-        CALL(sys_fatal)((char*)&D_00000000 + 0x220E8, hi);
+        CALL(sys_fatal)(GL_DATA_STR(0x220E8, "Missing AnimGroup %d"), hi);
     }
     lo = a1 & 0xFFFF;
     if (lo >= ((AnimGroup *)self->groups)[hi].count) {
-        CALL(sys_fatal)((char*)&D_00000000 + 0x22100, hi, lo);
+        CALL(sys_fatal)(GL_DATA_STR(0x22100, "Missing Anim %d:%d"), hi, lo);
     }
     rec = (char *)((AnimGroup *)self->groups)[hi].anims + lo * 32;
     if (((AnimData *)rec)->numFrames == 0) {
-        CALL(sys_fatal)((char*)&D_00000000 + 0x22114, hi, lo);
+        CALL(sys_fatal)(GL_DATA_STR(0x22114, "Empty Anim %d:%d"), hi, lo);
     }
     return (int)rec;
 }
@@ -26795,7 +26795,7 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
     int *a0p;
 
     if ((self != 0) || (self = (char *)CALL(mem_new)(0x130), (self != 0))) {
-        CALL(Node_ctor)(self, (char *)&D_00000000 + 0x22128);
+        CALL(Node_ctor)(self, GL_DATA_STR(0x22128, "anim"));
         a1p = (int *)(self + 0x110);
         v1p = a1p;
         if (((self != (char *)-0x110) || (v1p = (int *)CALL(mem_new)(4, a1p), (v1p != 0))) &&
@@ -26878,7 +26878,7 @@ void AnimCmd_setTableEntry(int *a0, int a1, int a2) {
     int tag;
     tag = ((int *)a0[0x48/4])[0];
     tag = tag & 0xFFFF;
-    if (!(tag == 0x17)) CALL(sys_assertFail)((char*)&D_00000000 + 0x22130, (char*)&D_00000000 + 0x22144, 0x2A1);
+    if (!(tag == 0x17)) CALL(sys_assertFail)(GL_DATA_STR(0x22130, "c == AnimCmd_Table"), GL_DATA_STR(0x22144, "/usr/people/giles/src/gdl/lib/system/animate.cpp"), 0x2A1);
     ((int *)a0[0x48/4])[a1 + 3] = a2;
 }
 
@@ -26905,7 +26905,7 @@ void *AnimPlayer_ctor(void *s0, int a1) {
         s0 = (void *)FCALL(mem_new)(0xB0);
         if (s0 == 0) goto end;
     }
-    FCALL(Node_ctor)(s0, (char *)&D_00000000 + 0x22178); /* Node_ctor(this, "<Node>") */
+    FCALL(Node_ctor)(s0, GL_DATA_STR(0x22178, "<Node>")); /* Node_ctor(this, "<Node>") */
     *(void **)&((AnimPlayer *)s0)->node.vptr = (char *)&AnimPlayer_vtbl + 0; /* vtable Data 0x21F58 */
     {
         int *v1 = &((AnimPlayer *)s0)->animators;

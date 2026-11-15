@@ -460,7 +460,7 @@ void gl___osDevMgrMain(void) {
 typedef struct { int queue; int msg; } EventState_0006E1A4;
 void gl_osSetEventMesg(int event, void *queue, int msg) {
     register int sr = gl_func_00000000();
-    EventState_0006E1A4 *es = &((EventState_0006E1A4 *)&D_00000000)[event];
+    EventState_0006E1A4 *es = &((EventState_0006E1A4 *)&gl___osEventStateTab)[event];
     es->queue = (int)queue;
     es->msg = msg;
     gl_func_00000000(sr);

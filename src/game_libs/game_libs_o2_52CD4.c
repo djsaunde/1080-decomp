@@ -43,6 +43,7 @@
  *  - the three message addresses 0x20FD4/0x20FDC/0x20FF4 are pinned data
  *    refs (gl_ref_000xxxxx_52CD4) so the lui 2 / addiu pairs bake. */
 #include "common.h"
+#include "gdl/gl_data.h"
 #include "gdl/polyshape.h"
 #include "uso_call.h"
 
@@ -205,7 +206,7 @@ s32 *BasePolyShape_parse(char *arg0, s32 *arg1) {
     if (rflag != 0) {
         CALL(ZoneShape_build)(arg0);
     }
-    if (!(D_00000000 & 0x100)) {
+    if (!(gPolyFlags_3EEC4 & 0x100)) {
         if ((int)BASEPOLY(arg0)->faceNormals != 0) {
             CALL(mem_delete)((int)BASEPOLY(arg0)->faceNormals);
             BASEPOLY(arg0)->faceNormals = (f32 *)0;

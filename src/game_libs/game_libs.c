@@ -1678,7 +1678,7 @@ PointsPopup *PointsGadget_allocSlot_00003B1C(TrickPointsGadget *arg0, s32 arg1, 
             slot->unk80 = 0;
             slot->unk84 = -18;
             slot->velY = 0.0f;
-            CALL(gl_sprintf)(slot->text, (char *)&D_00000000 + 0xCD00, arg1);
+            CALL(gl_sprintf)(slot->text, GL_DATA(0xCD00), arg1);
             return slot;
         }
     }
