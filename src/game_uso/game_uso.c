@@ -5981,7 +5981,7 @@ tail:
 }
 #endif /* cfe reference body of SnowAI_func_00008CD8 */
 
-// SnowAI_func_000097EC — STRUCTURAL PASS (0x39C / 231 words,
+// SnowAI_getRider_000097EC — STRUCTURAL PASS (0x39C / 231 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic segment). FP-heavy (33 FP ops, ~6 calls).
 //
@@ -5989,7 +5989,7 @@ tail:
 // points on an object, raycast/sample the terrain and store the
 // flattened contact position (snowboard ground-contact sampling).
 //
-//   void SnowAI_func_000097EC(Obj *obj, A a1) {
+//   void SnowAI_getRider_000097EC(Obj *obj, A a1) {
 //     World *w = obj->0x30;
 //     if (!w->0x908) return;                              // no terrain
 //     // repeated unit (~4-5x), once per reference point:
@@ -6015,7 +6015,7 @@ tail:
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_uso/game_uso_ncc_97EC.cpp,
  * REPLACE_FUNC_BODY-spliced over the placeholder below in both build trees
  * (agent-g run 237). */
-int SnowAI_func_000097EC(char *a0) {
+int SnowAI_getRider_000097EC(char *a0) {
     return (int)AI(a0)->rider;
 }
 

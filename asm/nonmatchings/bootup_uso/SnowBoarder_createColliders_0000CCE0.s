@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000CCE0, 0x2C0
+nonmatching SnowBoarder_createColliders_0000CCE0, 0x2C0
 
-glabel SnowBoarder_func_0000CCE0
+glabel SnowBoarder_createColliders_0000CCE0
     /* DDD74C 0000CCE0 27BDFFA8 */  addiu      $sp, $sp, -0x58
     /* DDD750 0000CCE4 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x1C)
     /* DDD754 0000CCE8 C424095C */  lwc1       $f4, %lo(SndHandle_triggerEvent3_00000940 + 0x1C)($at)
@@ -178,4 +178,4 @@ glabel SnowBoarder_func_0000CCE0
     /* DDDA00 0000CF94 8FB10020 */  lw         $s1, 0x20($sp)
     /* DDDA04 0000CF98 03E00008 */  jr         $ra
     /* DDDA08 0000CF9C 27BD0058 */   addiu     $sp, $sp, 0x58
-endlabel SnowBoarder_func_0000CCE0
+endlabel SnowBoarder_createColliders_0000CCE0

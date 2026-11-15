@@ -1,6 +1,6 @@
-nonmatching cam_func_00004948, 0x6A4
+nonmatching RiderCam_update_00004948, 0x6A4
 
-glabel cam_func_00004948
+glabel RiderCam_update_00004948
     /* DD53B4 00004948 27BDFEE0 */  addiu      $sp, $sp, -0x120
     /* DD53B8 0000494C AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD53BC 00004950 8C820158 */  lw         $v0, 0x158($a0)
@@ -455,5 +455,5 @@ glabel cam_func_00004948
     /* DD5A4C 00004FE0 27BD0120 */  addiu      $sp, $sp, 0x120
     /* DD5A50 00004FE4 03E00008 */  jr         $ra
     /* DD5A54 00004FE8 00000000 */   nop
-endlabel cam_func_00004948
+endlabel RiderCam_update_00004948
     /* DD5A58 00004FEC 00000000 */  nop

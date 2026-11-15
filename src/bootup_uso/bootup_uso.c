@@ -1406,7 +1406,7 @@ extern void func_00000000_24b8v();
 #define CD_BYTE(o) (((char *)self)[o])
 #define CD_CAM(p) ((MCamera *)(p))
 #define CD_PAD(p) ((RiderInput *)(p))
-/* a Node's command slot (vtable slot 12: s16 this-delta at 0x68, fn at 0x6C); RiderCam's is cam_func_00004914 */
+/* a Node's command slot (vtable slot 12: s16 this-delta at 0x68, fn at 0x6C); RiderCam's is RiderCam_command_00004914 */
 #define CD_VPTR(o) FW(o, 0x28) /* Node vptr (include/gdl/node.h) */
 #define CD_SLOT_DELTA(vt) FH(vt, 0x68)
 #define CD_SLOT_FN(vt) ((VF_24B8)FW(vt, 0x6C))
@@ -2846,7 +2846,7 @@ void Mountain_display(char *a0) {
     volatile char *r = a0;
 }
 
-void cam_func_00004914(char *a0, int a1, char *a2) {
+void RiderCam_command_00004914(char *a0, int a1, char *a2) {
     ((RiderCam *)a0)->cam.mnode.local[3][0] = *(float*)(a2 + 0x30);
     ((RiderCam *)a0)->cam.mnode.local[3][1] = *(float*)(a2 + 0x34);
     ((RiderCam *)a0)->cam.mnode.local[3][2] = *(float*)(a2 + 0x38);
@@ -2854,13 +2854,13 @@ void cam_func_00004914(char *a0, int a1, char *a2) {
     ((RiderCam *)a0)->cam.mnode.local[3][1] += 100.0f;
 }
 
-/* cam_func_00004948: camera transition tick keyed by obj->0x158 (snap / distance-table
+/* RiderCam_update_00004948: camera transition tick keyed by obj->0x158 (snap / distance-table
  * blend / view-angle blend). EXACT via an IDO 7.1 NCC (C++) donor:
  * src/bootup_uso/bootup_uso_ncc_4948.cpp, REPLACE_FUNC_BODY-spliced over this
  * placeholder (agent-c run 125); the trailing all-zero pad word is a
  * SUFFIX_BYTES_FORCE word. */
 extern float func_00000000_4948_ff(float); /* also used by a later NM body */
-void cam_func_00004948(char *obj) {
+void RiderCam_update_00004948(char *obj) {
     volatile int r = 0;
 }
 
@@ -7780,11 +7780,11 @@ void SnowBoarder_func_0000CAE8(char *st) {
     volatile char *r = st;
 }
 
-// SnowBoarder_func_0000CCE0 — STRUCTURAL PASS (0x2C0 / 176 insns, no episode).
+// SnowBoarder_createColliders_0000CCE0 — STRUCTURAL PASS (0x2C0 / 176 insns, no episode).
 // HUD/menu layout builder: creates ~12 positioned widget elements into
 // the state's UI container, gated by a flag, then finalizes them.
 //
-//   void SnowBoarder_func_0000CCE0(State *st, a1) {       // st -> s0; cont = st+0x39C
+//   void SnowBoarder_createColliders_0000CCE0(State *st, a1) {       // st -> s0; cont = st+0x39C
 //     // repeated unit (x ~12), per element:
 //     //   e = func_00000000(0, st, TYPE, X, P_at_sp10, Y_at_sp14);
 //     //   func_00000000(cont, e);             // attach to st->0x39C
@@ -7824,9 +7824,9 @@ void SnowBoarder_func_0000CAE8(char *st) {
  * (lui at / lwc1; the splat text shows them as SndHandle_triggerEvent3_00000940 + 0x1C..0x2C), and the first element is created
  * inside the attach call (`f(cont, e0 = cce0(...))`) so its spill store
  * schedules after the a0 copy. */
-// PARTIAL-FORM corrected NM body for SnowBoarder_func_0000CCE0 (replaces lines 8516..8554)
+// PARTIAL-FORM corrected NM body for SnowBoarder_createColliders_0000CCE0 (replaces lines 8516..8554)
 extern char *func_cce0(int, char *, int, float, float, float);
-void SnowBoarder_func_0000CCE0(char *st, int a1) {
+void SnowBoarder_createColliders_0000CCE0(char *st, int a1) {
     char *cont = st + 0x39C;
     /* Single decl list, slots assigned descending from frame top:
      * g4=80 g3=76 g2=72 g1=68 pad=64 g0=60 e3=56 e2=52 e1=48 e0=44 —
@@ -8556,7 +8556,7 @@ void SnowBoarder_func_0000E014(SnowBoarder *sb) {
     *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 6);
 }
 
-/* SnowBoarder_func_0000E124 - verified structural decode (0x14C, 83 insns,
+/* SnowBoarder_mirrorFlip_0000E124 - verified structural decode (0x14C, 83 insns,
  * left/right mirror-flip toggle).
  * Struct-typing reference: s0->0xA58 (2648) u32 flag word - bit 7
  * (0x80) = facing/mirror state (toggled here), bit 3 (0x8) selects
@@ -8578,7 +8578,7 @@ void SnowBoarder_func_0000E014(SnowBoarder *sb) {
  * one pointer variable p carries the negated component and both call args;
  * up[] sits at the frame top with five unused words above r[]. */
 extern void func_00000000_e124_r(char *, float *, float);
-void SnowBoarder_func_0000E124(SnowBoarder *sb) {
+void SnowBoarder_mirrorFlip_0000E124(SnowBoarder *sb) {
     float up[3];
     int unused[5];
     float r[3];

@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000E124, 0x14C
+nonmatching SnowBoarder_mirrorFlip_0000E124, 0x14C
 
-glabel SnowBoarder_func_0000E124
+glabel SnowBoarder_mirrorFlip_0000E124
     /* DDEB90 0000E124 27BDFFA8 */  addiu      $sp, $sp, -0x58
     /* DDEB94 0000E128 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DDEB98 0000E12C AFB00018 */  sw         $s0, 0x18($sp)
@@ -90,4 +90,4 @@ glabel SnowBoarder_func_0000E124
     /* DDECD0 0000E264 27BD0058 */  addiu      $sp, $sp, 0x58
     /* DDECD4 0000E268 03E00008 */  jr         $ra
     /* DDECD8 0000E26C 00000000 */   nop
-endlabel SnowBoarder_func_0000E124
+endlabel SnowBoarder_mirrorFlip_0000E124

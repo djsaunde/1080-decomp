@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for SnowAI_func_000097EC (0x39C / 231 words), spliced over the empty
+/* IDO 7.1 NCC (C++) EXACT donor for SnowAI_getRider_000097EC (0x39C / 231 words), spliced over the empty
  * placeholder in game_uso.c on both build paths.
  *
  * agent-g run 237 (EXACT): the two XZ ctor arguments are named Vec3 locals assigned in the ctor argument
@@ -45,7 +45,7 @@ inline float dot(const Vec3 &u, const Vec3 &v) { return u.x * v.x + u.z * v.z; }
 #define ABS(x) ((x) < 0.0f ? -(x) : (x))
 struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x318 - 0xC0]; Vec3 vel; char pad324[0x908 - 0x324]; W *other; };
 struct Self { char pad0[0x30]; W *w; char pad34[0xD0 - 0x34]; float k; float lim; };
-extern "C" int SnowAI_func_000097EC(Self *s) {
+extern "C" int SnowAI_getRider_000097EC(Self *s) {
     int ret = 0;
     if (s->w->other != 0) {
         XZ a(s->w->vel);

@@ -1,6 +1,6 @@
-nonmatching cam_func_00004914, 0x34
+nonmatching RiderCam_command_00004914, 0x34
 
-glabel cam_func_00004914
+glabel RiderCam_command_00004914
     /* DD5380 00004914 C4C40030 */  lwc1       $f4, 0x30($a2)
     /* DD5384 00004918 3C0142C8 */  lui        $at, (0x42C80000 >> 16)
     /* DD5388 0000491C 44818000 */  mtc1       $at, $f16
@@ -14,4 +14,4 @@ glabel cam_func_00004914
     /* DD53A8 0000493C E4880068 */  swc1       $f8, 0x68($a0)
     /* DD53AC 00004940 03E00008 */  jr         $ra
     /* DD53B0 00004944 E4920064 */   swc1      $f18, 0x64($a0)
-endlabel cam_func_00004914
+endlabel RiderCam_command_00004914

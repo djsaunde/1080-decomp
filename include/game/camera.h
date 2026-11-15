@@ -68,8 +68,8 @@ typedef struct CamWindow {
 } CamWindow;
 
 /* RiderCam (bootup, 0x15C, vtbl bootup Data 0x7120): the camera bootup cam_create builds in mode 1 (MCamera_ctor(lookat,
- * 0, 500, -1500)). Slot 3 cam_func_00004948 = per-frame tick (fov by distance / angle tables, mode 2 drift with the
- * rider's velocity), slot 12 cam_func_00004914 = command (mode = arg, eye = the course "cam" node position + 100 up). */
+ * 0, 500, -1500)). Slot 3 RiderCam_update_00004948 = per-frame tick (fov by distance / angle tables, mode 2 drift with the
+ * rider's velocity), slot 12 RiderCam_command_00004914 = command (mode = arg, eye = the course "cam" node position + 100 up). */
 typedef struct RiderCam {
     MCamera cam;            /* 0x000 */
     f32 baseFov;            /* 0x150: the ctor's fov (85); restored in mode 2 and by default */

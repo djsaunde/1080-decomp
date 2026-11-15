@@ -325,9 +325,9 @@ typedef struct SnowBoarder {
  * Lowers to the same base + offset access as the raw `*(T *)(p + K)` form. */
 #define SNOWB(p) ((SnowBoarder *)(p))
 
-#define SNOWB_FLAG_08     0x08  /* SnowBoarder_func_0000E124: selects the notify-call form */
-#define SNOWB_FLAG_20     0x20  /* SnowBoarder_func_0000E124: gates the 180-degree re-orient */
-#define SNOWB_FLAG_MIRROR 0x80  /* left/right stance flip, toggled by SnowBoarder_func_0000E124 */
+#define SNOWB_FLAG_08     0x08  /* SnowBoarder_mirrorFlip_0000E124: selects the notify-call form */
+#define SNOWB_FLAG_20     0x20  /* SnowBoarder_mirrorFlip_0000E124: gates the 180-degree re-orient */
+#define SNOWB_FLAG_MIRROR 0x80  /* left/right stance flip, toggled by SnowBoarder_mirrorFlip_0000E124 */
 #define SNOWB_FLAG_NUDGE  0x100 /* SnowBoarder_limitSpeed: input bits 4 / 8 push the rider along dir */
 #define SNOWB_FLAG_CATCHUP 0x20000 /* SnowBoarder_limitSpeed: maxSpeed gets +-k when the rival is > k' ahead / behind in z */
 
