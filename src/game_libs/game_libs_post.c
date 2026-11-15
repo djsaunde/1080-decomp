@@ -7273,16 +7273,14 @@ void AudioThread_SetFadeOutTimer(int a0, int a1) {
 }
 
 void AudioThread_SetFadeInTimer(int a0, int a1) {
-    char *p;
     if (a1 == 0) {
         return;
     }
-    p = (char *)&D_00000000 + a0 * 352;
-    *(char *)(p + 0x2D01) = 1;
-    *(short *)(p + 0x2D14) = a1;
-    *(short *)(p + 0x2D12) = a1;
-    *(float *)(p + 0x2D1C) = 0.0f;
-    *(float *)(p + 0x2D20) = 0.0f;
+    gAudioCtx.seqPlayers[a0].state = 1;
+    gAudioCtx.seqPlayers[a0].fadeTimerUnkEu = a1;
+    gAudioCtx.seqPlayers[a0].fadeTimer = a1;
+    gAudioCtx.seqPlayers[a0].fadeVolume = 0.0f;
+    gAudioCtx.seqPlayers[a0].fadeVelocity = 0.0f;
 }
 
 // AudioThread_InitMesgQueuesImpl — global-table init (was the stolen-$v0-base
