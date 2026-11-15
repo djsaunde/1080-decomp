@@ -8393,8 +8393,8 @@ void RiderAnim_readParms_0000D418(char *a0) {
  * (was INSN_PATCH'd, banned 2026-05-23). Struct-copy vs separate-field-copy is the
  * lever for adjacent-field $t-renumber. Byte-exact. */
 void RiderAnim_reset_0000D438(char *a0) {
-    RA(a0)->stateArg = -1000;
-    RA(a0)->unk68 = -1000;
+    RA(a0)->player.eventKey = ANIM_NO_KEY;
+    RA(a0)->player.blendEvent = ANIM_NO_KEY;
     RA(a0)->nextState = RA(a0)->state;
 }
 
@@ -8438,13 +8438,13 @@ void RiderAnim_init_0000D458(s32 arg0) {
 
     game_uso_func_07F6C0((char *)arg0 + 0xBC, (char *)arg0 + 0x138 - ((char *)arg0 + 0xBC));
     FW(arg0, 0x114) = 2;
-    FW(arg0, 0xFC) = 0x10000;
+    FW(arg0, 0xFC) = RANIM_GROUP_REGULAR;
     FW(arg0, 0xDC) = 1;
     FW(arg0, 0x104) = -1;
     FW(arg0, 0x10C) = 0;
     *(float *)((char *)arg0 + 0x11C) = 1.0f;
     game_uso_func_077574(arg0);
-    game_uso_func_077C44(arg0, FW(arg0, 0xFC) | 8, 0, 0, 1, 1);
+    game_uso_func_077C44(arg0, FW(arg0, 0xFC) | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (*(int *)((char *)&import_800200CC + 0x34) == 3) {
         RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
@@ -8499,9 +8499,9 @@ void RiderAnim_clearNextState_0000D5DC(char *a0) {
  * 15/15 words byte-exact, 0 diffs. */
 void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3) {
     if (a3 == -1) {
-        RA(a0)->unk68 = a3;
+        RA(a0)->player.blendEvent = a3;
     } else {
-        RA(a0)->stateArg = *(int*)&a3;
+        RA(a0)->player.eventKey = *(int*)&a3;
     }
     RA(a0)->state = pair;
 }
@@ -8601,7 +8601,7 @@ int RiderAnim_func_0000D74C(char *a0) {
     if (*(int*)(*(char**)(a0 + 0xB4) + 0x938)) {
         gl_func_00000000(a0, 1);
         gl_func_00000000(a0, 2, 0);
-        arg = *(int*)(a0 + 0xFC) | 0xA;
+        arg = *(int*)(a0 + 0xFC) | RANIM_CRASH_SLIDE;
         if (*(int*)(*(char**)(a0 + 0xB4) + 0xA14) <= 0) {
             arg = 0x0006000A;
             *(int*)(*(char**)(a0 + 0xB4) + 0x960) = 0x64;
@@ -8628,7 +8628,7 @@ void RiderAnim_func_0000D7F4(char *a0) {
     if (*(float*)((char*)data + 0xA38) < -20.0f) {
         if (*(int*)((char*)data + 0x938) != 0) {
             gl_func_00000000(a0, 1, 2);
-            gl_func_00000000(a0, *(int*)(a0 + 0xFC) | 0x16, 0, 1, 1, 1);
+            gl_func_00000000(a0, *(int*)(a0 + 0xFC) | RANIM_BUMP_R_BREAK, 0, 1, 1, 1);
             gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE90), 1);
             gl_func_00000000(a0);
             *(int*)(a0 + 0x114) = 0;
@@ -9138,22 +9138,22 @@ void RiderAnim_func_0000E91C(char *a0) {
         if (cond != 3) goto done_switch;
         goto L3;
     L2:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | 0x1B;
+        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_360F;
         homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
         import_00096724(*(char **)(a0 + 0xB4) + 0x808);
         goto done_switch;
     L1:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | 0x18;
+        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_180F;
         homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
         import_00096704(*(char **)(a0 + 0xB4) + 0x808);
         goto done_switch;
     L4:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | 0x1C;
+        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_360B;
         homed = *(Pair2 *)(&game_uso_D_807FF430 + 0xE40);
         import_00096724(*(char **)(a0 + 0xB4) + 0x808);
         goto done_switch;
     L3:
-        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | 0x1A;
+        *(int *)(a0 + 0xB0) = *(int *)(a0 + 0xFC) | RANIM_TO_FAKIE_180B;
         homed = *(Pair2 *)(&game_uso_D_807FF4E0 + 0xEF0);
         import_00096704(*(char **)(a0 + 0xB4) + 0x808);
     done_switch:;
@@ -9450,9 +9450,9 @@ void RiderAnim_stateSwitchStance(int *a0) {
     *(float *)((char *)(int *)a0[0xB4 / 4] + 0xA74) = 0.0f;
     *(float *)((char *)(int *)a0[0xB4 / 4] + 0xA70) = 0.0f;
     if (*(int *)((char *)(int *)a0[0xB4 / 4] + 0x9CC) != 0) {
-        a1 = a0[0xFC / 4] | 0x24;
+        a1 = a0[0xFC / 4] | RANIM_DEEP_SWITCH;
     } else {
-        a1 = a0[0xFC / 4] | 0x1D;
+        a1 = a0[0xFC / 4] | RANIM_SWITCH_STANCE;
     }
     game_uso_func_077C44(a0, a1, 0, 1, 1, 1);
     RiderAnim_setState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
@@ -9574,10 +9574,10 @@ void RiderAnim_statePreJumpCancel(int *a0) {
     int m;
     gl_func_00000000((char *)a0[0xB4 / 4] + 0x808);
     if (*(int *)((char *)a0[0xB4 / 4] + 0x9CC) != 0) {
-        m = 0x20008;
+        m = (RANIM_GROUP_DEEP | RANIM_UP_DOWN);
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE60), -1);
     } else {
-        m = a0[0xFC / 4] | 8;
+        m = a0[0xFC / 4] | RANIM_UP_DOWN;
         gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), -1);
     }
     a0[0x118 / 4] = 1;
@@ -9910,7 +9910,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
  * feedback_no_instruction_forcing_matches_policy). Default build is
  * INCLUDE_ASM. */
 void RiderAnim_func_0000FB7C(int *a0) {
-    int v = a0[0xFC/4] | 0xA;
+    int v = a0[0xFC/4] | RANIM_CRASH_SLIDE;
     a0[0x108/4] = v;
     gl_func_00000000(a0, v, 0, 2, 1, 1);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE88), 2);
@@ -9984,7 +9984,7 @@ void RiderAnim_func_0000FC34(int *a0) {
         game_uso_func_0000D5BC_a3((char*)a0,
             *(Pair2*)((char*)&game_uso_D_807FF400 + 0xE10), field_770);
     }
-    import_0010DB28(a0, 0x30001, 2, 2, 0x100, 0xA);
+    import_0010DB28(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 2, ANIM_BLENDIN, 0xA);
     RiderAnim_setState_0000D5F8((char*)a0,
         *(Pair2*)((char*)&game_uso_D_807FF410 + 0xE20), -1);
 }
@@ -10015,7 +10015,7 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
         float *base_788;
         float *base_31C;
         float *base_2FC;
-        import_0010DB28(s0, 0x30001, 2, 3, 1, 1);
+        import_0010DB28(s0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 3, 1, 1);
         RiderAnim_setState_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF408 + 0xE18), 3);
         RiderAnim_clearNextState_0000D5DC((char*)s0);
@@ -10049,11 +10049,11 @@ void RiderAnim_stateOllieRise(int *a0) {
     int *base = *(int**)((char*)a0 + 0xB4);
     if (*(float*)((char*)base + 0x31C) < -1.0f) {
         if (*(float*)((char*)base + 0x9D0) < 1000.0f) {
-            gl_func_00000000(a0, 0x30001, 6, 6, 0x100, 0x14);
+            gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 6, ANIM_BLENDIN, 0x14);
             gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), -1);
             gl_func_00000000(a0);
         } else {
-            gl_func_00000000(a0, 0x30001, 3, 4, 1, 1);
+            gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 3, 4, 1, 1);
             gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE30), 4);
         }
     }
@@ -10062,7 +10062,7 @@ void RiderAnim_stateOllieRise(int *a0) {
 /* MATCHED 2026-05-28 via struct-by-value (E38/E3C pair homes a1,a2). See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieHang(char *a0) {
-    gl_func_00000000(a0, 0x30001, 4, 5, 2, 1);
+    gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 4, 5, 2, 1);
     if (*(float*)(*(char**)(a0 + 0xB4) + 0x9D0) < 1000.0f) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE38));
     }
@@ -10075,7 +10075,7 @@ void RiderAnim_stateOllieHang(char *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieLand(char *a0) {
     if (*(int*)(*(int**)(a0 + 0xB4) + 0x938 / 4) != 0) {
-        gl_func_00000000(a0, 0x30001, 6, 1, 1, 1);
+        gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 1, 1, 1);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
     }
 }
@@ -10084,7 +10084,7 @@ void RiderAnim_stateOllieLand(char *a0) {
  * call homes the E28/E2C pair to a1/a2 by passing *(Pair2*)(&D+0xE28). See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieDrop(int *a0) {
-    gl_func_00000000(a0, 0x30001, 5, 6, 1, 1);
+    gl_func_00000000(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 5, 6, 1, 1);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), 6);
 }
 
@@ -10166,7 +10166,7 @@ extern char D_00000000;
 void RiderAnim_stateHopStart(int *a0) {
     /* Call 1: 6-arg w/ 2 stack args */
     gl_func_00000000(a0,
-                     *(int*)((char*)a0 + 0xFC) | 0x19,
+                     *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
                      0, 2,
                      0x100, 10);
     /* Call 2: 4-arg with D[0xDD8/0xDDC] */
@@ -10304,16 +10304,16 @@ void RiderAnim_stateHopRise(int *a0) {
         inner = (int*)a0[0xF4 / 4];
         if ((inner != 0) && (inner[0x38 / 4] & 1)) {
             import_0010DB28(a0,
-                             *(int*)((char*)a0 + 0xFC) | 0x19,
+                             *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
                              5, 5, 1, 1);
         } else {
             import_0010DB28(a0,
-                             *(int*)((char*)a0 + 0xFC) | 0x19,
+                             *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
                              5, 5, 0x100, 10);
         }
     } else {
         import_0010DB28(a0,
-                         *(int*)((char*)a0 + 0xFC) | 0x19,
+                         *(int*)((char*)a0 + 0xFC) | RANIM_HOP,
                          2, 3, 1, 1);
         RiderAnim_setState_0000D5F8((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3E0 + 0xDF0),
@@ -10375,7 +10375,7 @@ void RiderAnim_stateHopAir(int *a0) {
   int *v0;
   int new_var;
   RiderAnim_func_0000E2D0((char *)a0);
-  import_0010DB28_void(s0, s0[0xFC / 4] | 0x19, 3, 4, 2, 1);
+  import_0010DB28_void(s0, s0[0xFC / 4] | RANIM_HOP, 3, 4, 2, 1);
   v0 = (int *) s0[0xB4 / 4];
   if (((*((float *) (((char *) v0) + 0x31C))) < 0.0f) && ((*((float *) (((char *) v0) + 0x9D0))) < 1000.0f))
   {
@@ -10406,7 +10406,7 @@ void RiderAnim_stateHopAir(int *a0) {
  * int args); (2) inline the single-use spB4 deref (no named local) so it takes
  * a $t-reg instead of $v0. Same Pair2-by-value idiom as RiderAnim_stateCushionEnd. */
 void RiderAnim_stateHopDrop(int *arg0) {
-    gl_func_00000000(arg0, *(int*)((char*)arg0 + 0xFC) | 0x19, 4, 5, 1, 1);
+    gl_func_00000000(arg0, *(int*)((char*)arg0 + 0xFC) | RANIM_HOP, 4, 5, 1, 1);
     gl_func_00000000(arg0, 0);
     if (gl_func_00000000(arg0) == 0) {
         if ((*(int**)((char*)arg0 + 0xB4))[0x938 / 4] != 0) {
@@ -10429,7 +10429,7 @@ void RiderAnim_stateHopLand(char *a0) {
         if ((*(int **)(a0 + 0xB4))[0x24E] != 0) {
             gl_func_00000000(a0, 1);
             gl_func_00000000(a0);
-            gl_func_00000000(a0, *(int *)(a0 + 0xFC) | 0x19, 5, 1, 1, 1);
+            gl_func_00000000(a0, *(int *)(a0 + 0xFC) | RANIM_HOP, 5, 1, 1, 1);
             gl_func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xE10), 1);
             gl_func_00000000(a0);
         }
@@ -10440,7 +10440,7 @@ void RiderAnim_stateHopLand(char *a0) {
  * passed as `*(Pair2*)(&D+0xE08)` homes a1,a2 to sp+4/sp+8. Has a final float
  * copy tail. (The "precall-arg-spill family / INSN_PATCH ineligible" cap was wrong.) */
 void RiderAnim_stateCushionIn(char *a0) {
-    gl_func_00000000(a0, 0x10025, 0, 0, 0x100, 5);
+    gl_func_00000000(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 0, ANIM_BLENDIN, 5);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
     *(float*)(a0 + 0x11C) = *(float*)(a0 + 0x154);
 }
@@ -10451,7 +10451,7 @@ void RiderAnim_stateCushionIn(char *a0) {
  * "trailing alt-entry stub" worry was a separate symbol, not this one).
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateCushion(int *a0) {
-    game_uso_func_00000000(a0, 0x10025, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE00), 1);
     game_uso_func_00000000(a0);
 }
@@ -10520,7 +10520,7 @@ extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF460;
 void RiderAnim_stateBrake(int *a0) {
     int *p;
-    import_0010DB78(a0, a0[0xFC / 4] | 4, a0[0xFC / 4] | 5, ((int *)a0[0xB4 / 4])[0x970 / 4], 0, 1);
+    import_0010DB78(a0, a0[0xFC / 4] | RANIM_BRAKE_B, a0[0xFC / 4] | RANIM_BRAKE_F, ((int *)a0[0xB4 / 4])[0x970 / 4], 0, 1);
     p = (int *)a0[0xB4 / 4];
     if (p[0x990 / 4] == 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
@@ -10566,7 +10566,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRideDeepBlendIn(int *a0) {
     gl_func_00000000(a0);
-    gl_func_00000000(a0, 0x20002, 0x20003, ((int*)a0[0xB4/4])[0x970/4], 0x100, 5);
+    gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_TURN_B), (RANIM_GROUP_DEEP | RANIM_TURN_F), ((int*)a0[0xB4/4])[0x970/4], ANIM_BLENDIN, 5);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE60), -1);
 }
 
@@ -10593,7 +10593,7 @@ void RiderAnim_func_00010BAC(char *a0) {
  * landed 10BAC but missed this sibling, leaving it needlessly NM-wrapped.
  * .text identical to expected/.o. See docs/IDO_CODEGEN.md STALE-CAP CATCH. */
 void RiderAnim_func_00010C4C(char *a0) {
-    gl_func_00000000(a0, 0x20007, 0x20006,
+    gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_WEIGHT_B), (RANIM_GROUP_DEEP | RANIM_WEIGHT_F),
                      *(int*)(*(char**)(a0 + 0xB4) + 0xA04), 0, 1);
 
     if (*(int*)(a0 + 0xD8) == 0) {
@@ -10610,7 +10610,7 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
 
     sub = *(char**)(a0 + 0xB4);
     if (*(int*)(sub + 0x9CC) != 0) {
-        gl_func_00000000(a0, 0x20004, 0x20005, *(int*)(sub + 0x970), 0x100, 10);
+        gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_BRAKE_B), (RANIM_GROUP_DEEP | RANIM_BRAKE_F), *(int*)(sub + 0x970), ANIM_BLENDIN, 10);
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE78), -1);
     } else {
         int state;
@@ -10626,7 +10626,7 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
  * RiderAnim_func_00010E2C/000114FC. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_func_00010DC8(int a0) {
-    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0xFC) | 0x9, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, *(int*)((char*)a0 + 0xFC) | RANIM_LANDING, 0, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
 }
 
@@ -10640,23 +10640,23 @@ void RiderAnim_func_00010E2C(int a0) {
 }
 
 void RiderAnim_stateGoalNormal(int a0) {
-    game_uso_func_00000000(a0, 0x70005, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_GOAL_NORMAL), 0, 1, 1, 1);
 }
 
 void RiderAnim_stateGoalWinOM(int a0) {
-    game_uso_func_00000000(a0, 0x7000F, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_GOAL_WIN_OM), 0, 1, 1, 1);
 }
 
 void RiderAnim_stateGoalWin(int a0) {
-    game_uso_func_00000000(a0, 0x70003, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_GOAL_WIN), 0, 1, 1, 1);
 }
 
 void RiderAnim_stateGoalLose(int a0) {
-    game_uso_func_00000000(a0, 0x70004, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_GOAL_LOSE), 0, 1, 1, 1);
 }
 
 void RiderAnim_stateTimeUpLose(int a0) {
-    game_uso_func_00000000(a0, 0x70004, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_GOAL_LOSE), 0, 1, 1, 1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (F58/F5C pair). 27-insn 2-call
@@ -10664,7 +10664,7 @@ void RiderAnim_stateTimeUpLose(int a0) {
  * spills" cap was the un-homed pair — *(Pair2*) by value reproduces both.
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStand(int *a0) {
-    game_uso_func_00000000(a0, 0x70000, 0, 1, 1, 1);
+    game_uso_func_00000000(a0, (RANIM_GROUP_EVENT | RANIM_STAND), 0, 1, 1, 1);
     *(int*)((char*)a0 + 0x114) = 0;
     *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x960) = 100;
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xF58));
@@ -10858,7 +10858,7 @@ extern int func_00000000();
 extern char game_uso_D_807FF508;
 void RiderAnim_startEndingCpu_00011258(int *a0) {
     int *p;
-    game_uso_func_077C44(a0, 0x70009, 0, 2, 1, 1);
+    game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
     p = *(int**)((char*)a0 + 0xB4);
@@ -10873,7 +10873,7 @@ void RiderAnim_startEndingCpu_00011258(int *a0) {
 extern char game_uso_D_807FF508;
 void RiderAnim_startEnding_000112E0(int *a0) {
     int *p;
-    game_uso_func_077C44(a0, 0x70008, 0, 2, 1, 1);
+    game_uso_func_077C44(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
     RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
     RiderAnim_clearNextState_0000D5DC((char*)a0);
     p = *(int**)((char*)a0 + 0xB4);
@@ -10908,7 +10908,7 @@ void RiderAnim_stateEnding3(int *a0) {
  * INSN_PATCH promotion was REMOVED 2026-05-23 as match-faking. */
 void RiderAnim_stateStartIntro(int *a0) {
     int v = (int)((unsigned int)((int *)a0[0xB4 / 4])[0x8C4 / 4] % 5U);
-    int a1 = (v + 10) | 0x70000;
+    int a1 = (v + RANIM_START_INTRO) | RANIM_GROUP_EVENT;
     func_00000000(a0, a1, 0, 2, 1, 1);
     func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xEF8), 2);
     func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xF00));
@@ -10936,7 +10936,7 @@ void RiderAnim_stateStartWait(int *a0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
     } else {
         ((int*)a0[0xB4/4])[0x960/4] = val;
-        gl_func_00000000(a0, a0[0xFC/4] | 8, 0, 1, 6, 1);
+        gl_func_00000000(a0, a0[0xFC/4] | RANIM_UP_DOWN, 0, 1, 6, 1);
     }
 }
 
@@ -11050,10 +11050,10 @@ void RiderAnim_func_00011750(char *obj) {
         if (cnt < 3) return;                      /* not yet armed */
         *(short *)(obj + 0x130) = 0;
         if (*(int *)(*(char **)(obj + 0xB4) + 0x9CC) != 0) {
-            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | 0x24, 0, 0, 0x100, 5);
+            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         } else {
-            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | 0x1D, 0, 0, 0x100, 5);
+            game_uso_func_077C44(obj, *(int *)(obj + 0xFC) | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
             RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         }
         RiderAnim_clearNextState_0000D5DC(obj);

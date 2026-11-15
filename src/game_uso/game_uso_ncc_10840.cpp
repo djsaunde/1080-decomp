@@ -14,6 +14,7 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
+#include "../../include/game/rideranim_anims.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -36,9 +37,9 @@ extern "C" void RiderAnim_stateRideDeep(int *a0) {
     RiderAnim_func_0000D8EC(a0);
     f0 = AT(float, I(a0, 0xB4), 0x970);
     if ((double)(f0 < 0.0f ? -f0 : f0) > AT(double, &game_uso_D_807FFB78, 0x258)) {
-        import_0010DB78(a0, 0x20002, 0x20003, f0, 0, 1);
+        import_0010DB78(a0, RANIM_ID(2, RANIM_TURN_B), RANIM_ID(2, RANIM_TURN_F), f0, 0, 1);
     } else {
-        import_0010DB28(a0, 0x20008, 0, 1, 6, 1);
+        import_0010DB28(a0, RANIM_ID(2, RANIM_UP_DOWN), 0, 1, 6, 1);
     }
     RiderAnim_func_0000E1FC(a0);
     if (I(I(a0, 0xB4), 0x9CC) == 0) {

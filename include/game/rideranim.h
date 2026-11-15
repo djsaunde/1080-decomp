@@ -2,13 +2,19 @@
 #define GAME_RIDERANIM_H
 
 #include "game/snowboarder.h"
+#include "gdl/anim.h"
+#include "game/rideranim_anims.h"
 
 /*
  * RiderAnim: the rider animation state machine of game.uso (C++ class at 0xC48C, vtable Data 0x115C,
  * 0x444 bytes; agent-g runs 456 / 461). SnowBoarder_ctor creates it (rider->anim, +0x840).
  *
- * Its base (game_libs 0x62E80, vtable Data 0x21F58) is the keyframe animation player; the base
- * part (0x00..0xB3) is not typed here.
+ * Its base (game_libs 0x62E80, vtable Data 0x21F58) is the libgdl AnimPlayer (include/gdl/anim.h).
+ * The state machine runs on the player's onKey hook (vtable slot 10): setState(pmf, key) stores the
+ * key in player.eventKey, so the state changes when playback passes that key; key -1 goes to
+ * player.blendEvent instead (the change happens when the ANIM_BLENDIN cross-fade ends).
+ * Anim ids: include/game/rideranim_anims.h. The state table (anims, keys, next states):
+ * docs/1080_GAME_CLASSES.md section 17.
  *
  * States are Cfront pointers to member functions. Every record of the game.uso Data table
  * 0xDB0..0xF60 is {0x0000FFFF, method}: delta 0, index -1 (non-virtual), then the
@@ -47,10 +53,10 @@ typedef struct RiderAnimParms {
 } RiderAnimParms;
 
 typedef struct RiderAnim {
-    char pad000[0x64];      /* 0x00: game_libs anim player base (Node, vptr at 0x28) */
-    s32 stateArg;           /* 0x64: setState's third argument when it is not -1; reset sets -1000 */
-    s32 unk68;              /* 0x68: set to -1 by setState(.., -1); reset sets -1000 */
-    char pad06C[0xB4 - 0x6C];
+    AnimPlayer player;      /* 0x00: base. player.eventKey (0x64) = setState's key when it is not -1,
+                             * player.blendEvent (0x68) = -1 for setState(.., -1); reset sets both to
+                             * ANIM_NO_KEY */
+    s32 unkB0;              /* 0xB0 */
     SnowBoarder *rider;     /* 0xB4 */
     char pad0B8[0xC0 - 0xB8];
     Pair2 state;            /* 0xC0: current state PMF */
@@ -70,8 +76,8 @@ typedef struct RiderAnim {
 
 #define RIDERANIM_ASSERT_OFFSET(field, off) \
     typedef char rideranim_assert_##off[(int)&((RiderAnim *)0)->field == (off) ? 1 : -1]
-RIDERANIM_ASSERT_OFFSET(stateArg, 0x64);
-RIDERANIM_ASSERT_OFFSET(unk68, 0x68);
+RIDERANIM_ASSERT_OFFSET(player.eventKey, 0x64);
+RIDERANIM_ASSERT_OFFSET(player.blendEvent, 0x68);
 RIDERANIM_ASSERT_OFFSET(rider, 0xB4);
 RIDERANIM_ASSERT_OFFSET(state, 0xC0);
 RIDERANIM_ASSERT_OFFSET(nextState, 0xC8);
