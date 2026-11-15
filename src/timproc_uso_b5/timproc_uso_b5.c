@@ -5727,12 +5727,12 @@ s32 SelectWin_boardCheatIndex_00008D38(char *a0) {
 
 void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
     if (a1 == 0) {
-        w->unk4A4 = 0;
+        w->cheatChar = 0;
     } else {
-        w->unk4A8 = 0;
+        w->cheatBoard = 0;
     }
-    w->unk4AC = 0;
-    w->unk4B0 = *(int *)((char *)&D_00000000 + 0xF18);
+    w->cheatStep = 0;
+    w->cheatTimer = *(int *)((char *)&D_00000000 + 0xF18);
 }
 
 // gen_createScene_00008DB4 — STRUCTURAL PASS w/ REAL SYMBOLS

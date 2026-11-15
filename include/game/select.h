@@ -173,10 +173,12 @@ typedef struct SelectWin {
     s32 frame;              /* 0x490 */
     f32 unk494[3];          /* 0x494 */
     f32 unk4A0;             /* 0x4A0 */
-    s32 unk4A4;             /* 0x4A4 */
-    s32 unk4A8;             /* 0x4A8 */
-    s32 unk4AC;             /* 0x4AC */
-    s32 unk4B0;             /* 0x4B0 */
+    /* Cheat input (pad sequences typed on the character / board stage; state3 /
+     * state6 match them, SelectWin_resetCheat clears them). */
+    s32 cheatChar;          /* 0x4A4: matched character-stage sequence + 1 (charCheatIndex) */
+    s32 cheatBoard;         /* 0x4A8: matched board-stage sequence + 1 (boardCheatIndex) */
+    s32 cheatStep;          /* 0x4AC: position in the sequence being typed */
+    s32 cheatTimer;         /* 0x4B0: input timeout, reloaded from Data 0xF18 per key */
     s32 busy;               /* 0x4B4: set by beginTransition */
     s32 unk4B8;             /* 0x4B8 */
     f32 unk4BC;             /* 0x4BC */
