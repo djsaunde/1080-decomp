@@ -8,6 +8,7 @@
  * the unit's NM body verbatim; see the run-161 note there for the last
  * five source fixes. */
 #include "common.h"
+#include "game/select.h"
 extern char *timproc_uso_b5_alias();
 
 extern int gl_func_00000000();
@@ -167,7 +168,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             timproc_uso_b5_alias(var_s0, ((char *)&D_00000000 + 0x1260));
             FW(var_s0, 0x28) = (s32)&D_00000000;
         }
-        FW(arg0, 0x28) = (s32)&D_00000000;
+        SELWIN(arg0)->vptr = (void *)&D_00000000;
         var_s0 = arg0 + 0x2C;
         if ((arg0 != (char *)-0x2C) || (temp_v0_3 = timproc_uso_b5_alias((char *)0x38C), var_s0 = temp_v0_3, (temp_v0_3 != NULL))) {
             var_v1 = var_s0;
@@ -640,46 +641,46 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         }
         FW(arg0, 0xC) = (s32)((char *)&D_00000000 + 0x12F8);
         FW(arg0, 0x4D4) = arg11;
-        FW(arg0, 0x418) = arg2;
-        FW(arg0, 0x40C) = arg7;
-        FW(arg0, 0x410) = arg8;
-        FW(arg0, 0x3BC) = arg3;
-        FW(arg0, 0x41C) = arg1;
-        FW(arg0, 0x3B8) = arg4;
-        FW(arg0, 0x3C8) = arg6;
+        SELWIN(arg0)->fadeProc = (char *)arg2;
+        SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;
+        SELWIN(arg0)->unk410 = arg8;
+        SELWIN(arg0)->numPlayers = arg3;
+        SELWIN(arg0)->owner = (SelectionMgr *)arg1;
+        SELWIN(arg0)->player = arg4;
+        SELWIN(arg0)->stageBit = arg6;
         temp_v0_36 = timproc_uso_b5_alias(arg0, arg6);
-        FW(arg0, 0x3C4) = temp_v0_36;
-        FW(arg0, 0x3F0) = temp_v0_36;
-        FW(arg0, 0x3F4) = 0;
-        if (FW(arg0, 0x3BC) == 2) {
-            FW(arg0, 0x4D8) = 0x78;
+        SELWIN(arg0)->stage = temp_v0_36;
+        SELWIN(arg0)->prevStage = temp_v0_36;
+        SELWIN(arg0)->prevItem = 0;
+        if (SELWIN(arg0)->numPlayers == 2) {
+            SELWIN(arg0)->centerX = 0x78;
         } else {
-            FW(arg0, 0x4D8) = 0xF0;
+            SELWIN(arg0)->centerX = 0xF0;
         }
-        FW(arg0, 0x48C) = 0;
-        FW(arg0, 0x490) = 0;
-        switch (FW(arg0, 0x3C8) - 1) {
+        SELWIN(arg0)->blink = 0;
+        SELWIN(arg0)->frame = 0;
+        switch (SELWIN(arg0)->stageBit - 1) {
         case 0:
             SelectWin_resetCheat_00008D90((int *)arg0, 0);
-            FW(arg0, 0x3CC) = 0;
-            *(f32 *)((char *)arg0 + 0x480) = 0.0f;
-            *(f32 *)((char *)arg0 + 0x484) = 0.0f;
-            ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1; break; /* one line: as1 hoists the a2 reload above the store */
+            SELWIN(arg0)->state = 0;
+            SELWIN(arg0)->fade = 0.0f;
+            SELWIN(arg0)->fadeTarget = 0.0f;
+            ((int *)((char *)&D_00000000 + 0xB8))[SELWIN(arg0)->player] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
             SelectWin_resetCheat_00008D90((int *)arg0, 1);
-            FW(arg0, 0x3CC) = 6;
-            *(f32 *)((char *)arg0 + 0x480) = 1.0f;
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+            SELWIN(arg0)->state = 6;
+            SELWIN(arg0)->fade = 1.0f;
+            SELWIN(arg0)->fadeTarget = 1.0f;
             break;
         case 3:
-            FW(arg0, 0x3CC) = 8;
-            *(f32 *)((char *)arg0 + 0x480) = 1.0f;
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+            SELWIN(arg0)->state = 8;
+            SELWIN(arg0)->fade = 1.0f;
+            SELWIN(arg0)->fadeTarget = 1.0f;
             break;
         case 7:
-            FW(arg0, 0x3CC) = 9;
-            *(f32 *)((char *)arg0 + 0x480) = 1.0f;
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+            SELWIN(arg0)->state = 9;
+            SELWIN(arg0)->fade = 1.0f;
+            SELWIN(arg0)->fadeTarget = 1.0f;
             break;
         case 2:
         case 4:
@@ -687,14 +688,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         case 6:
             break;
         }
-        FW(arg0, 0x3C0) = arg5;
-        FW(arg0, 0x414) = arg9;
+        SELWIN(arg0)->stageMask = arg5;
+        SELWIN(arg0)->scene = (char *)arg9;
         temp_f0 = *(f32 *)((char *)FW(FW(arg9, 0xC), 0x70) + 0x14C);
-        FW(arg0, 0x4B8) = 0;
-        FW(arg0, 0x4B4) = 0;
-        *(f32 *)((char *)arg0 + 0x494) = temp_f0;
-        *(f32 *)((char *)arg0 + 0x498) = temp_f0;
-        *(f32 *)((char *)arg0 + 0x49C) = temp_f0;
+        SELWIN(arg0)->stageLock = 0;
+        SELWIN(arg0)->busy = 0;
+        SELWIN(arg0)->fovInit = temp_f0;
+        SELWIN(arg0)->fovTarget = temp_f0;
+        SELWIN(arg0)->fovBase = temp_f0;
         timproc_uso_b5_alias_pf3(FW(FW(FW(FW(arg0, 0x40C), 0x54), 0x2B8), 0x108), 0.5f);
         timproc_uso_b5_alias_pf1(FW(FW(FW(FW(arg0, 0x40C), 0x58), 0x2B8), 0x108), 0.5f);
         if (*(s32 *)((char *)&D_00000000 + 0x34) != 2) {

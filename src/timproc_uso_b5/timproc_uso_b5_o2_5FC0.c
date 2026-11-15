@@ -105,13 +105,13 @@ void SelectWin_update_00005FC0(char *arg0) {
         if (SELWIN(arg0)->transition >= 1.0f) {
             SELWIN(arg0)->transition = 1.0f;
             SELWIN(arg0)->busy = 0;
-            SELWIN(arg0)->unk4B8 = 0;
+            SELWIN(arg0)->stageLock = 0;
         }
     }
-    if (SELWIN(arg0)->unk3FC != 0) {
-        SELWIN(arg0)->unk3FC = SELWIN(arg0)->unk3FC - 4;
-        if (SELWIN(arg0)->unk3FC <= 0) {
-            SELWIN(arg0)->unk3FC = 0;
+    if (SELWIN(arg0)->transCountdown != 0) {
+        SELWIN(arg0)->transCountdown = SELWIN(arg0)->transCountdown - 4;
+        if (SELWIN(arg0)->transCountdown <= 0) {
+            SELWIN(arg0)->transCountdown = 0;
         }
     }
     if (SELWIN(arg0)->prevItemActive != 0) {

@@ -157,24 +157,30 @@ typedef struct SelectWin {
     s32 prevItem;           /* 0x3F4 */
     s32 prevItemActive;     /* 0x3F8: 1 from beginTransition; SelectWin_update keeps updating the
                              * previous focus item while set; cleared once fade reaches 0 */
-    s32 unk3FC;             /* 0x3FC: = unk404 at beginTransition, SelectWin_update counts it
-                             * down by 4 to 0 */
-    s32 unk400;             /* 0x400 */
-    s32 unk404;             /* 0x404: 0x40 (SelectWin_init) */
+    s32 transCountdown;     /* 0x3FC: reloaded from transCountdownInit by every beginTransition,
+                             * SelectWin_update counts it down by 4 to 0 (16 frames); no reader
+                             * found in genproc */
+    s32 zoomTimer;          /* 0x400: state-5 (item zoom) frames left: 0x37 from state3 / state4,
+                             * (s32)(idleTimer reload * 0.75) from beginTransition; state5
+                             * decrements it and at 0 accepts the item without input */
+    s32 transCountdownInit; /* 0x404: 0x40 (SelectWin_init) */
     char pad408[0x40C - 0x408];
     SelItemsMgr *itemsMgr;  /* 0x40C */
     s32 unk410;             /* 0x410 */
     char *scene;            /* 0x414 */
-    s32 unk418;             /* 0x418 */
+    char *fadeProc;         /* 0x418: ctor arg 2 (SelectionMgr_ctor's arg 1); commitSelection
+                             * fades it out with Process_fadeOut(fadeProc, -1, 0) */
     SelectionMgr *owner;    /* 0x41C */
     char pad420[0x480 - 0x420];
     f32 fade;               /* 0x480 */
-    f32 unk484;             /* 0x484 */
+    f32 fadeTarget;         /* 0x484: state1 ramps fade toward it; 1 when a state shows its items,
+                             * 0 at beginTransition / when leaving */
     s32 idleTimer;          /* 0x488: Parms +0x104 frames; counted down in the stage state, at < 0
                              * the focused item is chosen automatically (state 1) */
     s32 blink;              /* 0x48C: frame counter, arrows blink on bit 3 */
     s32 frame;              /* 0x490 */
-    f32 unk494;             /* 0x494: camera fov at SelectWin_init */
+    f32 fovInit;            /* 0x494: the camera fov at SelectWin_init (scene->0xC->0x70 +0x14C,
+                             * also stored to fovTarget / fovBase) */
     f32 fovTarget;          /* 0x498: SelectWin_update: fovBase + f(fade) * item zoom fov */
     f32 fovBase;            /* 0x49C */
     f32 unk4A0;             /* 0x4A0 */
@@ -185,7 +191,9 @@ typedef struct SelectWin {
     s32 cheatStep;          /* 0x4AC: position in the sequence being typed */
     s32 cheatTimer;         /* 0x4B0: input timeout, reloaded from Data 0xF18 per key */
     s32 busy;               /* 0x4B4: set by beginTransition */
-    s32 unk4B8;             /* 0x4B8 */
+    s32 stageLock;          /* 0x4B8: 1 when the board stage is accepted (state7 -> state 8),
+                             * 0 when the transition ends; in 2 players the other window's
+                             * state7 ORs it into its busy test */
     f32 transition;         /* 0x4BC: 0 -> 1 at Parms +0xBC per frame while busy (SelectWin_update);
                              * drives the camera lerps and the fov blend */
     f32 fovFrom;            /* 0x4C0: the camera fov (scene->0xC->0x70 +0x14C, degrees) at
@@ -203,6 +211,8 @@ typedef struct SelectWin {
  * every state function. As an `|` operand, the struct-member form takes its temp
  * register later and renumbers t6..t8 (checked in state0/3/4/6/7/8/9, agent-c run 484). */
 #define SELWIN(p) ((SelectWin *)(p))
+/* View a raw item pointer (the item virtuals take char * / int *) as SelItem. */
+#define SELITEM(p) ((SelItem *)(p))
 
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(item_alpha, (int)&((SelItem *)0)->alpha == 0x2A0);
