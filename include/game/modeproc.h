@@ -197,4 +197,47 @@ typedef char TitleDemoProcess_state_check[(int)&((TitleDemoProcess *)0)->state =
 #define TITLEDEMO(p)  ((TitleDemoProcess *)(p))
 #define GAMEDEMO(p)   ((GameDemoProcess *)(p))
 
+/* ---- titproc overlays (agent-h run 509) ----
+ * KeyMessage (0x3C, KeyMessage_ctor): the pulsing "press start" sprite. KeyMessage_update
+ * moves alpha by 6 between 65 and 250, flipping `fading` at each bound; KeyMessage_display
+ * draws the sprite (the shared sprite table import +0x0, or +0x18 tinted when Sym import
+ * +0x18C is set) at (x, y). */
+typedef struct KeyMessage {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 alpha;            /* 0 at ctor; 65..250 */
+    /* 0x30 */ s32 fading;           /* 0: alpha rising, 1: falling */
+    /* 0x34 */ f32 x;                /* 160 */
+    /* 0x38 */ f32 y;                /* 210 */
+} KeyMessage;
+
+typedef char KeyMessage_size_check[sizeof(KeyMessage) == 0x3C ? 1 : -1];
+
+/* MainLogo (0x74, MainLogo_ctor): the title logos. Phase 0 shows the two logo halves
+ * (sprites +0x60 / +0x78 at pos + part1 / pos + part2) for `hold` frames, then fades
+ * alpha out by 4 per frame; at 0 it switches to phase 1, which fades the main logo (sprite
+ * +0x90 at mainPos) in to 255. MainLogo_reset: phase 0, hold 150, alpha 255. */
+typedef struct MainLogo {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 alpha;            /* 255 */
+    /* 0x30 */ s32 unk30;            /* 255 */
+    /* 0x34 */ s32 hold;             /* frames before the phase-0 fade (reset: 150) */
+    /* 0x38 */ s32 phase;            /* 0 logo halves, 1 main logo */
+    /* 0x3C */ f32 colour[4];        /* 1, 1, 1, 0 */
+    /* 0x4C */ s32 posX;             /* 163 */
+    /* 0x50 */ s32 posY;             /* 154 */
+    /* 0x54 */ s32 part1X;           /* 1: offset of the first half from pos */
+    /* 0x58 */ s32 part1Y;           /* -57 */
+    /* 0x5C */ s32 unk5C;            /* 28 (not read here) */
+    /* 0x60 */ s32 unk60;            /* 17 */
+    /* 0x64 */ s32 part2X;           /* -3 */
+    /* 0x68 */ s32 part2Y;           /* 33 */
+    /* 0x6C */ s32 mainX;            /* 67 */
+    /* 0x70 */ s32 mainY;            /* 44 */
+} MainLogo;
+
+typedef char MainLogo_size_check[sizeof(MainLogo) == 0x74 ? 1 : -1];
+
+#define KEYMSG(p)   ((KeyMessage *)(p))
+#define MAINLOGO(p) ((MainLogo *)(p))
+
 #endif

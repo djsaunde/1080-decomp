@@ -635,10 +635,10 @@ int *a0;
   *((int *) (((char *) a0) + 0x28)) = (int) (&titproc_uso_D_000194);
 
   *((int **) (((char *) a0) + 0xC)) = (int *) (((char *) (&titproc_uso_D_00048C)) + 0x4CC);
-  *((int *) (((char *) a0) + 0x2C)) = 0;
-  *((int *) (((char *) a0) + 0x30)) = 0;
-  *((float *) (((char *) a0) + 0x34)) = 160.0f;
-  *((float *) (((char *) a0) + 0x38)) = 210.0f;
+  KEYMSG(a0)->alpha = 0;
+  KEYMSG(a0)->fading = 0;
+  KEYMSG(a0)->x = 160.0f;
+  KEYMSG(a0)->y = 210.0f;
   gl_func_00000000(a0);
   end:
   return a0;
@@ -670,15 +670,15 @@ int *a0;
  * matches: the named-temp form CSEs the field read into $v0/$v1; reading the
  * field fresh per access makes IDO use $t2/$t7/$t8 like the target. */
 void KeyMessage_update(int *a0) {
-    if (a0[0x30 / 4] == 0) {
-        a0[0x2C / 4] += 6;
-        if (a0[0x2C / 4] >= 250) {
-            a0[0x30 / 4] ^= 1;
+    if (KEYMSG(a0)->fading == 0) {
+        KEYMSG(a0)->alpha += 6;
+        if (KEYMSG(a0)->alpha >= 250) {
+            KEYMSG(a0)->fading ^= 1;
         }
     } else {
-        a0[0x2C / 4] -= 6;
-        if (a0[0x2C / 4] < 65) {
-            a0[0x30 / 4] ^= 1;
+        KEYMSG(a0)->alpha -= 6;
+        if (KEYMSG(a0)->alpha < 65) {
+            KEYMSG(a0)->fading ^= 1;
         }
     }
 }
@@ -759,19 +759,19 @@ void KeyMessage_display(char *s0) {
     if (*(int *)((char *)&import_00020098 + 0x18C) != 0) {
         t = *(float *)((char *)&import_00263E00 + 0x40);
         vec[1] = one; vec[4] = one; vec[2] = t; vec[3] = t;
-        t = (float)*(int *)(s0 + 0x2C) / 255.0f;
+        t = (float)KEYMSG(s0)->alpha / 255.0f;
         vec[0] = one;
         out[0] = (vec[1] - src[0]) * t + src[0];
         out[1] = (vec[2] - src[1]) * t + src[1];
         out[2] = (vec[3] - src[2]) * t + src[2];
-        import_0024E608(&import_0024CAF8, *(int *)(s0 + 0x2C), out);
+        import_0024E608(&import_0024CAF8, KEYMSG(s0)->alpha, out);
         tgt = (char *)&import_00263D30 + 0x18;
     } else {
-        import_0024E608(&import_0024CAF8, *(int *)(s0 + 0x2C), ones);
+        import_0024E608(&import_0024CAF8, KEYMSG(s0)->alpha, ones);
         tgt = (char *)&import_00263D30;
     }
     import_0024F2C8(tgt);
-    import_0024F34C(tgt, (int)*(float *)(s0 + 0x34), (int)*(float *)(s0 + 0x38), 3);
+    import_0024F34C(tgt, (int)KEYMSG(s0)->x, (int)KEYMSG(s0)->y, 3);
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", KeyMessage_display);
@@ -839,22 +839,22 @@ void *MainLogo_ctor(void *self) {
 skip:
     NODE(self)->vptr = (int)&titproc_uso_D_0001FC;
     NODE(self)->name = (int)((char*)&titproc_uso_D_00048C + 0x4E0);
-    *(int*)((char*)self + 0x4C) = 163;
-    *(int*)((char*)self + 0x50) = 154;
-    *(int*)((char*)self + 0x6C) = 67;
-    *(int*)((char*)self + 0x70) = 44;
-    *(int*)((char*)self + 0x54) = 1;
-    *(int*)((char*)self + 0x58) = -57;
-    *(int*)((char*)self + 0x5C) = 28;
-    *(int*)((char*)self + 0x60) = 17;
-    *(int*)((char*)self + 0x64) = -3;
-    *(int*)((char*)self + 0x68) = 33;
-    *(int*)((char*)self + 0x2C) = 255;
-    *(int*)((char*)self + 0x30) = 255;
-    *(float*)((char*)self + 0x3C) = 1.0f;
-    *(float*)((char*)self + 0x40) = 1.0f;
-    *(float*)((char*)self + 0x44) = 1.0f;
-    *(float*)((char*)self + 0x48) = 0.0f;
+    MAINLOGO(self)->posX = 163;
+    MAINLOGO(self)->posY = 154;
+    MAINLOGO(self)->mainX = 67;
+    MAINLOGO(self)->mainY = 44;
+    MAINLOGO(self)->part1X = 1;
+    MAINLOGO(self)->part1Y = -57;
+    MAINLOGO(self)->unk5C = 28;
+    MAINLOGO(self)->unk60 = 17;
+    MAINLOGO(self)->part2X = -3;
+    MAINLOGO(self)->part2Y = 33;
+    MAINLOGO(self)->alpha = 255;
+    MAINLOGO(self)->unk30 = 255;
+    MAINLOGO(self)->colour[0] = 1.0f;
+    MAINLOGO(self)->colour[1] = 1.0f;
+    MAINLOGO(self)->colour[2] = 1.0f;
+    MAINLOGO(self)->colour[3] = 0.0f;
     titproc_uso_func_001AF8(self);
     titproc_uso_func_00F4CC(self);
 end:
@@ -880,24 +880,26 @@ extern void import_0024E388();
  * buf_b@sp+0x28, frame -0x60). Callees import_0024F2C8 (begin),
  * import_0024E388 (alpha+rgba), import_0024F34C (coords); base
  * import_00263D30 +0x60/+0x78/+0x90. Twin family KeyMessage_display /
- * MgrNameEntry_drawBlinkBanner_00002E3C. */
+ * MgrNameEntry_drawBlinkBanner_00002E3C. Field form (agent-h run 509): the sums are written
+ * `posX + part1X`; with members IDO loads a commutative pair in the opposite order from the
+ * raw `s0[0x54 / 4] + s0[0x4C / 4]`. */
 void MainLogo_display(int *s0) {
     volatile int vpad;
     float buf_a[4];
     char pad[20];
     float buf_b[4];
 
-    if (s0[0x38 / 4] == 0) {
-        if (s0[0x34 / 4] != 0) {
-            s0[0x34 / 4]--;
-        } else if (s0[0x2C / 4] != 0) {
-            s0[0x2C / 4] -= 4;
-            if (s0[0x2C / 4] < 0) {
-                s0[0x2C / 4] = 0;
-                s0[0x38 / 4] = 1;
+    if (MAINLOGO(s0)->phase == 0) {
+        if (MAINLOGO(s0)->hold != 0) {
+            MAINLOGO(s0)->hold--;
+        } else if (MAINLOGO(s0)->alpha != 0) {
+            MAINLOGO(s0)->alpha -= 4;
+            if (MAINLOGO(s0)->alpha < 0) {
+                MAINLOGO(s0)->alpha = 0;
+                MAINLOGO(s0)->phase = 1;
             }
         }
-        if (s0[0x2C / 4] == 0) {
+        if (MAINLOGO(s0)->alpha == 0) {
             return;
         }
         buf_a[0] = 1.0f;
@@ -905,20 +907,20 @@ void MainLogo_display(int *s0) {
         buf_a[2] = 1.0f;
         buf_a[3] = 1.0f;
         import_0024F2C8((char *)&import_00263D30 + 0x60);
-        import_0024E388((char *)&import_00263D30 + 0x60, s0[0x2C / 4], buf_a, 0xFF);
+        import_0024E388((char *)&import_00263D30 + 0x60, MAINLOGO(s0)->alpha, buf_a, 0xFF);
         import_0024F34C((char *)&import_00263D30 + 0x60,
-                        s0[0x54 / 4] + s0[0x4C / 4],
-                        s0[0x58 / 4] + s0[0x50 / 4], 3);
+                        MAINLOGO(s0)->posX + MAINLOGO(s0)->part1X,
+                        MAINLOGO(s0)->posY + MAINLOGO(s0)->part1Y, 3);
         import_0024F2C8((char *)&import_00263D30 + 0x78);
-        import_0024E388((char *)&import_00263D30 + 0x78, s0[0x2C / 4], buf_a, 0xFF);
+        import_0024E388((char *)&import_00263D30 + 0x78, MAINLOGO(s0)->alpha, buf_a, 0xFF);
         import_0024F34C((char *)&import_00263D30 + 0x78,
-                        s0[0x64 / 4] + s0[0x4C / 4],
-                        s0[0x68 / 4] + s0[0x50 / 4], 3);
+                        MAINLOGO(s0)->posX + MAINLOGO(s0)->part2X,
+                        MAINLOGO(s0)->posY + MAINLOGO(s0)->part2Y, 3);
     } else {
-        if (s0[0x2C / 4] < 0xFF) {
-            s0[0x2C / 4] += 4;
-            if (s0[0x2C / 4] >= 0xFF) {
-                s0[0x2C / 4] = 0xFF;
+        if (MAINLOGO(s0)->alpha < 0xFF) {
+            MAINLOGO(s0)->alpha += 4;
+            if (MAINLOGO(s0)->alpha >= 0xFF) {
+                MAINLOGO(s0)->alpha = 0xFF;
             }
         }
         buf_b[0] = 1.0f;
@@ -926,17 +928,17 @@ void MainLogo_display(int *s0) {
         buf_b[2] = 1.0f;
         buf_b[3] = 1.0f;
         import_0024F2C8((char *)&import_00263D30 + 0x90);
-        import_0024E388((char *)&import_00263D30 + 0x90, s0[0x2C / 4], buf_b, 0xFF);
+        import_0024E388((char *)&import_00263D30 + 0x90, MAINLOGO(s0)->alpha, buf_b, 0xFF);
         import_0024F34C((char *)&import_00263D30 + 0x90,
-                        s0[0x6C / 4], s0[0x70 / 4], 3);
+                        MAINLOGO(s0)->mainX, MAINLOGO(s0)->mainY, 3);
     }
     (void)pad;
 }
 
 void MainLogo_reset(int *a0) {
-    a0[0x38 / 4] = 0;
-    a0[0x34 / 4] = 150;
-    a0[0x2C / 4] = 255;
+    MAINLOGO(a0)->phase = 0;
+    MAINLOGO(a0)->hold = 150;
+    MAINLOGO(a0)->alpha = 255;
 }
 
 /* LangMenu_ctor: 42-insn (0xA8) 3-stage chained alloc-cascade.
