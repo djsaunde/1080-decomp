@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/select.h"
+#include "uso_call.h"
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -27,7 +28,7 @@ extern char D_b5_0_b;
 extern char D_b5_0_c;
 void timproc_uso_b5_func_00000000(void) {
     *(int*)((char*)&D_b5_0_b + 0x64) = (*(int**)&D_b5_0_a)[0x1F];
-    gl_func_00000000(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0);
 }
 
 void gen_nop_00000040(void) {
@@ -196,21 +197,21 @@ void GenCourse_draw_000002F4(a0) int a0; {}
  * ships (docs/MATCHING_WORKFLOW.md#timproc-block-bake-data-pins-static-callee-jal). */
 static void gen_streamReadS32_00000330(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 
 static void gen_streamReadF32_0000036C(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 
 static void gen_streamReadQuad_000003A8(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -223,7 +224,7 @@ static void gen_streamReadVec3_00000400(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -586,10 +587,10 @@ void GenSelectChar_initLabels_00000778(char *arg0) {
 
 int RoomModifier_ctor(int a0) {
     if (a0 != 0) goto init;
-    a0 = gl_func_00000000(0x40);
+    a0 = CALL(mem_new)(0x40);
     if (a0 == 0) goto end;
 init:
-    gl_func_00000000(a0, (char*)&D_00000000 + 0x106C);
+    CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x106C);
     *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
     *(int*)((char*)a0 + 0x0C) = (int)((char*)&D_00000000 + 0x1074);
     *(int*)((char*)a0 + 0x38) = 0;
@@ -604,7 +605,7 @@ void timproc_uso_b5_func_00000000();
 
 void RoomModifier_update_0000115C(int *a0) {
     *(int*)((char*)a0 + 0x34) = 0;
-    gl_func_00000000(a0);
+    CALL(Node_update)(a0);
 }
 
 
@@ -1453,15 +1454,15 @@ void SelectionMgr_display_000027B0(int *self) {
     int v;
     char pad[16];
     (void)pad;
-    gl_func_00000000(self);
+    CALL(Node_display)(self);
     if (self[0x30/4] != 2) return;
     buf[0] = 0.0f;
     buf[1] = 0.0f;
     buf[2] = 0.0f;
     buf[3] = 0.0f;
-    gl_func_00000000(base, 0xFF, buf);
+    CALL(gui_setFillColor_00001CA8)(base, 0xFF, buf);
     v = self[0x44/4];
-    gl_func_00000000(base, 0, v - 1, 319, v, 0x10001);
+    CALL(gui_fillRect)(base, 0, v - 1, 319, v, 0x10001);
 }
 
 // gen_createCamera_0000283C — EXACT (0x338 / 206 words,
@@ -2123,7 +2124,7 @@ void SelItem_drawStatBarRight_00003C8C(int arg0, int arg1, int arg2, char *arg3,
 void SelItem_loadData_00003ED8(char *a0) {
     char *v;
 
-    gl_func_00000000(a0 + 0x2C);
+    CALL(Parms_load_00035C6C)(a0 + 0x2C);
     v = (char *)SELITEM(a0)->vptr;
     (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
 }
@@ -2138,7 +2139,7 @@ void SelItem_loadData_00003ED8(char *a0) {
  * (16+18 = 34 words); 00003F18 now C-emits exactly its 16 real insns. */
 void SelItem_loadInfo_00003F18(char *a0) {
     char *v;
-    gl_func_00000000(a0 + 0x194);
+    CALL(Parms_load_00035C6C)(a0 + 0x194);
     v = (char *)SELITEM(a0)->vptr;
     (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
 }
@@ -2182,9 +2183,9 @@ void SelItem_display_00003FA0(int a0) {}
 
 void SelItem_drawSpritePlain_00003FA8(int a0, int a1, int a2, int a3) {
     (void)a0;
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(a3);
-    gl_func_00000000(a3, a1, a2, 0);
+    CALL(gui_setCombine_00001794)(&D_00000000);
+    CALL(gui_spriteRefresh)(a3);
+    CALL(gui_drawSprite)(a3, a1, a2, 0);
 }
 
 void SelItem_drawSpriteWhite_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
@@ -2194,23 +2195,23 @@ void SelItem_drawSpriteWhite_00003FF8(int arg1, int arg2, int arg3, int arg4, in
     buf[1] = 1.0f;
     buf[2] = 1.0f;
     buf[3] = 1.0f;
-    gl_func_00000000(&D_00000000, arg5, buf, arg4);
-    gl_func_00000000(arg4);
-    gl_func_00000000(arg4, arg2, arg3, 3);
+    CALL(gui_setColor_00001A5C)(&D_00000000, arg5, buf, arg4);
+    CALL(gui_spriteRefresh)(arg4);
+    CALL(gui_drawSprite)(arg4, arg2, arg3, 3);
 }
 
 void SelItem_drawSpriteColor_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
     (void)a0;
-    gl_func_00000000(&D_00000000, arg6, a3);
-    gl_func_00000000(arg5);
-    gl_func_00000000(arg5, a1, a2, 3);
+    CALL(gui_setColor_00001A5C)(&D_00000000, arg6, a3);
+    CALL(gui_spriteRefresh)(arg5);
+    CALL(gui_drawSprite)(arg5, a1, a2, 3);
 }
 
 void SelItem_drawSpriteColorEx_000040BC(int a0, int a1, int a2, int a3, int arg5, int arg6, int arg7) {
     (void)a0;
-    gl_func_00000000(&D_00000000, arg7, a3, arg5);
-    gl_func_00000000(arg6);
-    gl_func_00000000(arg6, a1, a2, 3);
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, arg7, a3, arg5);
+    CALL(gui_spriteRefresh)(arg6);
+    CALL(gui_drawSprite)(arg6, a1, a2, 3);
 }
 
 // SelectWin_ctor — FULL m2c DECODE via compressed-module
@@ -3412,7 +3413,7 @@ void SelectWin_display_00006394(char *arg0) {
 }
 
 void SelectWin_loadData_0000685C(char *a0) {
-    gl_func_00000000(a0 + 0x2C);
+    CALL(Parms_load_00035C6C)(a0 + 0x2C);
 }
 
 /* func_0000687C absorbs _00006890+_000068A8+_000068EC: 33-insn (0x84)
@@ -3755,10 +3756,10 @@ void SelectWin_skipDisabled_00006D30(int *self) {
   int new_var4;
   int *new_var3;
   new_var4--;
-  if ((*((float *) (((char *) gl_func_00000000(self)) + 0x2A4))) == 0.0f)
+  if ((*((float *) (((char *) CALL(SelectWin_curItem_00008A38)(self)) + 0x2A4))) == 0.0f)
   {
     new_var4 = i;
-    cnt = gl_func_00000000(self);
+    cnt = CALL(SelectWin_itemCount_00008C1C)(self);
     new_var2 = 0x3D0;
     if (cnt > 0)
     {
@@ -3768,13 +3769,13 @@ void SelectWin_skipDisabled_00006D30(int *self) {
         int r;
         int *v;
         *p = (*p) + 1;
-        r = gl_func_00000000(self);
+        r = CALL(SelectWin_itemCount_00008C1C)(self);
         new_var3 = self;
         if (((Row1_6D30 *) self)[self[0x3C4 / 4]][0xF4] >= r)
         {
           ((Row1_6D30 *) self)[self[0x3C4 / 4]][0xF4] = 0;
         }
-        new_var5 = gl_func_00000000(new_var3);
+        new_var5 = CALL(SelectWin_curItem_00008A38)(new_var3);
         v = (int *) new_var5;
         new_var = ((char *) v) + 0x2A4;
         i++;
@@ -3783,7 +3784,7 @@ void SelectWin_skipDisabled_00006D30(int *self) {
           break;
         }
         new_var4++;
-        cnt = gl_func_00000000(self);
+        cnt = CALL(SelectWin_itemCount_00008C1C)(self);
       }
       while (new_var4 < cnt);
     }
@@ -4145,65 +4146,65 @@ void SelectWin_state3_00007430(char *scr) {
     char *cam_root;
 
     if (SELWIN(scr)->stage == 0) {
-        step = func_00000000() - 1;
+        step = FCALL(SelectWin_charCheatIndex_00008C44)() - 1;
         if (step >= 0) {
             if ((SELWIN(scr)->cheatTimer & 0xF) == 0) {
-                func_00000000((char *)&D_00000000 + 0x00001320,
+                FCALL(dbg_printf)((char *)&D_00000000 + 0x00001320,
                               ((int *)((char *)&D_00000000 + 0x00000F34))[step]);
             }
 
             seq_table = ((int **)((char *)&D_00000000 + 0x00000F60))[step];
-            if (func_00000000(&D_00000000_a, seq_table[SELWIN(scr)->cheatStep])) {
+            if (FCALL(input_checkPressed_00011E00)(&D_00000000_a, seq_table[SELWIN(scr)->cheatStep])) {
                 SELWIN(scr)->cheatTimer = *(int *)((char *)&D_00000000 + 0x00000F18);
                 if (seq_table[SELWIN(scr)->cheatStep] != 0x100) {
                     SELWIN(scr)->cheatStep += 1;
                 } else {
-                    func_00000000(scr, 0);
+                    FCALL(SelectWin_resetCheat_00008D90)(scr, 0);
                     SELWIN(scr)->cheatChar = step + 1;
-                    func_00000000(0x27, 0x3E8);
+                    FCALL(snd_sendEvent)(0x27, 0x3E8);
                 }
             } else {
-                if (func_00000000(&D_00000000, ~seq_table[SELWIN(scr)->cheatStep])) {
+                if (FCALL(input_checkPressed_00011E00)(&D_00000000, ~seq_table[SELWIN(scr)->cheatStep])) {
                     SELWIN(scr)->cheatTimer = 0;
                 }
                 SELWIN(scr)->cheatTimer -= 1;
                 if (SELWIN(scr)->cheatTimer < 0) {
-                    func_00000000(scr, 0);
+                    FCALL(SelectWin_resetCheat_00008D90)(scr, 0);
                 }
             }
         } else {
-            func_00000000(scr, 0);
+            FCALL(SelectWin_resetCheat_00008D90)(scr, 0);
         }
     }
 
-    if (func_00000000(&D_00000000, 0x100) || SELWIN(scr)->forceAccept != 0) {
+    if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x100) || SELWIN(scr)->forceAccept != 0) {
         SELWIN(scr)->forceAccept = 0;
         if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
-            func_00000000(5);
+            FCALL(snd_postEvent)(5);
             SELWIN(scr)->state = 4;
             SELWIN(scr)->unk4A0 = 1.0f;
             return;
         }
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_chosenItem_00008A90)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int, int))(node + 0x8C))(*(short *)(node + 0x88) + (int)obj, 0);
 
-        func_00000000(scr);
+        FCALL(SelectWin_chooseCurrent_00008ABC)(scr);
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_chosenItem_00008A90)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int, int))(node + 0x84))(*(short *)(node + 0x80) + (int)obj, 0);
 
-        obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
+        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
         SELWIN(scr)->state = 5;
         SELWIN(scr)->zoomTimer = 0x37;
         SELWIN(scr)->fadeTarget = 1.0f;
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
 
@@ -4214,30 +4215,30 @@ void SelectWin_state3_00007430(char *scr) {
         SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
-    } else if (func_00000000(&D_00000000, 0x14203)) {
-        if (func_00000000(&D_00000000, 0x200)) {
-            obj = (char *)func_00000000(scr);
-            func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
+    } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x14203)) {
+        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+            obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
+            FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
                           (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
         }
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0xAC))(*(short *)(node + 0xA8) + (int)obj);
 
-        func_00000000(scr, 1);
+        FCALL(SelectWin_moveCursorPrev_00006E08)(scr, 1);
 
-        if (func_00000000(&D_00000000, 0x200)) {
+        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
             SELWIN(scr)->state = 0xA;
             SELWIN(scr)->fadeTarget = 0.0f;
             return;
         }
 
-        obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
+        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0xA4))(*(short *)(node + 0xA0) + (int)obj);
     }
@@ -4290,16 +4291,16 @@ void SelectWin_state4_000077D8(char *scr) {
     char *cam_root;
     char *d;
 
-    if (func_00000000(&D_00000000, 0x100)) {
-        obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
+    if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) {
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
+        FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
         SELWIN(scr)->state = 5;
         SELWIN(scr)->zoomTimer = 0x37;
         SELWIN(scr)->fadeTarget = 1.0f;
 
-        obj = (char *)func_00000000(scr);
+        obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
 
@@ -4310,24 +4311,24 @@ void SelectWin_state4_000077D8(char *scr) {
         SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
-    } else if (func_00000000(&D_00000000, 0x200)) {
-        func_00000000(0x802);
+    } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
+        FCALL(snd_postEvent)(0x802);
         SELWIN(scr)->state = 3;
     } else {
-        if (func_00000000(&D_00000000, 0x4002)) {
-            obj = (char *)func_00000000(scr);
+        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x4002)) {
+            obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
             if ((*(int *)(obj + 0x2B4) << 14) < 0) {
-                func_00000000(0x101, 0);
-                obj = (char *)func_00000000(scr);
+                FCALL(snd_sendEvent)(0x101, 0);
+                obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
                 d = *(char **)(obj + 0x28);
                 (*(void (**)(int))(d + 0x94))(*(short *)(d + 0x90) + (int)obj);
             }
         }
-        if (func_00000000(&D_00000000, 0x10001)) {
-            obj = (char *)func_00000000(scr);
+        if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x10001)) {
+            obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
             if ((*(int *)(obj + 0x2B4) << 14) >= 0) {
-                func_00000000(0x101, 0);
-                obj = (char *)func_00000000(scr);
+                FCALL(snd_sendEvent)(0x101, 0);
+                obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
                 d = *(char **)(obj + 0x28);
                 (*(void (**)(int))(d + 0x94))(*(short *)(d + 0x90) + (int)obj);
             }
@@ -5211,7 +5212,7 @@ z:
 /* int-return K&R form (2026-07-10, 80F4): caller stores the callee's v0
  * passthrough and passes arg0. Codegen identical (v0 untouched here). */
 int SelectWin_callPrevStageBit_0000894C() {
-    func_00000000();
+    FCALL(SelectWin_prevStageBit_000088A0)();
 }
 
 extern float D_b5_896C_2A0;
@@ -6320,21 +6321,21 @@ void CharacterItem_toggleVariant_0000B914(SelCharacterItem *it) {
 
 void CharacterItem_playPickAnim_0000B928(SelCharacterItem *it) {
     SelCharModel *p = it->model;
-    gl_func_00000000(p->anim, p->animSet, 3, 1, 1, 1);
+    CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 1, 1, 1);
     *(int*)((char*)it->model->anim + 0xB0) = 0;
     *(int*)((char*)it->model->anim + 0x64) = -1000;
 }
 
 void CharacterItem_playAcceptAnim_0000B98C(SelCharacterItem *it) {
     SelCharModel *p = it->model;
-    gl_func_00000000(p->anim, p->animSet, 2, 3, 1, 1);
+    CALL(AnimPlayer_start)(p->anim, p->animSet, 2, 3, 1, 1);
     *(int*)((char*)it->model->anim + 0xB0) = 0;
     *(int*)((char*)it->model->anim + 0x64) = -1000;
 }
 
 void CharacterItem_confirm_0000B9F0(SelCharacterItem *it) {
     SelCharModel *p = it->model;
-    gl_func_00000000(p->anim, p->animSet, 3, 2, 1, 1);
+    CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 2, 1, 1);
     *(int*)((char*)it->model->anim + 0x64) = 2;
     *(int*)((char*)it->model->anim + 0xB0) = 0;
     it->model->animMode = 0x10;
@@ -6342,7 +6343,7 @@ void CharacterItem_confirm_0000B9F0(SelCharacterItem *it) {
 
 void CharacterItem_focus_0000BA60(SelCharacterItem *it) {
     SelCharModel *p = it->model;
-    gl_func_00000000(p->anim, p->animSet, 0, 2, 2, 1);
+    CALL(AnimPlayer_start)(p->anim, p->animSet, 0, 2, 2, 1);
     *(int*)((char*)it->model->anim + 0xB0) = 0;
     *(int*)((char*)it->model->anim + 0x64) = -1000;
     it->model->focused = 1;
@@ -6353,7 +6354,7 @@ void CharacterItem_focus_0000BA60(SelCharacterItem *it) {
 
 void CharacterItem_unfocus_0000BAE8(SelCharacterItem *it) {
     SelCharModel *p = it->model;
-    gl_func_00000000(p->anim, p->animSet, 3, 2, 1, 1);
+    CALL(AnimPlayer_start)(p->anim, p->animSet, 3, 2, 1, 1);
     it->model->focused = 0;
     it->model->animMode = 0x20;
 }
@@ -6519,7 +6520,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CharacterItem_draw
 extern char D_b5_BDA0_table;
 void CharacterItem_drawLabel_0000BDA0(int *a0, int a1, int a2, int a3) {
     (void)a1; (void)a2; (void)a3;
-    gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], (char*)&D_b5_BDA0_table + a0[0x1AC/4] * 24);
+    CALL(SelItem_drawSpritePlain_00003FA8)(a0, a0[0x44/4], a0[0x5C/4], (char*)&D_b5_BDA0_table + a0[0x1AC/4] * 24);
 }
 
 #ifdef NON_MATCHING
@@ -6762,10 +6763,10 @@ extern char D_b5_C208_table0;
 extern char D_b5_C208_table1;
 void BoardItem_drawLabel_0000C208(int *a0, int a1, int a2, int a3) {
     (void)a1;
-    gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], a2, a3,
+    CALL(SelItem_drawSpriteColorEx_000040BC)(a0, a0[0x44/4], a0[0x5C/4], a2, a3,
                      (char*)&D_b5_C208_table0 + a0[0x1AC/4] * 24, 0xFF);
     if (*(int*)&D_00000000 != 0) {
-        gl_func_00000000(a0, a0[0x74/4] + a0[0x44/4], a0[0x8C/4] + a0[0x5C/4],
+        CALL(SelItem_drawSpriteWhite_00003FF8)(a0, a0[0x74/4] + a0[0x44/4], a0[0x8C/4] + a0[0x5C/4],
                          (char*)&D_b5_C208_table1 + a0[0x1AC/4] * 24, 0xFF);
     }
 }
@@ -6773,7 +6774,7 @@ void BoardItem_drawLabel_0000C208(int *a0, int a1, int a2, int a3) {
 extern char D_b5_C2C0_table;
 void BoardItem_drawSubLabel_0000C2C0(int *a0, int a1, int a2) {
     (void)a1;
-    gl_func_00000000(a0, a0[0x104/4], a0[0x11C/4], (char*)&D_b5_C2C0_table + a2 * 24, 0xFF);
+    CALL(SelItem_drawSpriteWhite_00003FF8)(a0, a0[0x104/4], a0[0x11C/4], (char*)&D_b5_C2C0_table + a2 * 24, 0xFF);
 }
 
 // BoardItem_drawStats_0000C310 — STRUCTURAL PASS (0x400 / 256 words,
@@ -7306,7 +7307,7 @@ extern int gl_func_00000000();
 extern char D_timb5_1C0;
 
 void TesuriItem_drawLabel_0000CCC8(int *a0, int a1, int a2, int a3) {
-    gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], a2, &D_timb5_1C0 + a0[0x1AC/4] * 24, 0xFF);
+    CALL(SelItem_drawSpriteColor_00004068)(a0, a0[0x44/4], a0[0x5C/4], a2, &D_timb5_1C0 + a0[0x1AC/4] * 24, 0xFF);
 }
 
 /* LevelItem_updateHighlight_0000CD24 (0xD8, 54 insns) - BYTE-EXACT 2026-07-07
@@ -8144,7 +8145,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
 
 void DispItems_update_0000E5AC(int a0) {
     *(int*)&D_00000000 = 0;
-    gl_func_00000000(a0);
+    CALL(Node_update)(a0);
 }
 
 /* DispItems_display_0000E5D8: the `lui v0; lw v0,0(v0)` load of *(&D) (a state
@@ -8163,7 +8164,7 @@ void DispItems_display_0000E5D8(int a0) {
     *(float*)((char*)&D_00000000 + 0) = *(float*)((char*)base[0x70/4] + 0xBC);
     *(float*)((char*)&D_00000000 + 4) = *(float*)((char*)base[0x70/4] + 0xCC);
     *(float*)((char*)&D_00000000 + 8) = *(float*)((char*)base[0x70/4] + 0xDC);
-    gl_func_00000000(a0);
+    CALL(Node_display)(a0);
 }
 
 /* C-emit-absorbed orphans (per docs/MATCHING_WORKFLOW.md):

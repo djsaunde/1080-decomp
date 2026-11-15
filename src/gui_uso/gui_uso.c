@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern char D_00000000;
 
@@ -157,14 +158,14 @@ void gui_drawString(int *a0, int a1, int a2, unsigned char *a3) {
     int g0, g1, w;
 
     stride = 0x14;
-    for (i = 0; i < (unsigned int)gl_func_00000000(a3); p++, i++) {
+    for (i = 0; i < (unsigned int)CALL(str_len)(a3); p++, i++) {
         if (*p != ' ') {
             idx = gl_func_00000000(*p);
             gi = idx;
             g = (int *)(a0[0x20 / 4] + idx * stride);
             g0 = g[0]; g1 = g[1]; w = g[2];
-            gl_func_00000000(a0[0x24 / 4], a0[4 / 4], a0[0x18 / 4], a0[0x1C / 4], g0, g1, w, h, 0);
-            gl_func_00000000(a0[0x24 / 4], a1, a2, w, h, (w << 10) / w, (h << 10) / h);
+            CALL(gui_loadTileIA8)(a0[0x24 / 4], a0[4 / 4], a0[0x18 / 4], a0[0x1C / 4], g0, g1, w, h, 0);
+            CALL(gui_texRect_00004568)(a0[0x24 / 4], a1, a2, w, h, (w << 10) / w, (h << 10) / h);
             a1 += *(int *)(a0[0x20 / 4] + gi * stride + 8);
         } else {
             a1 += a0[8 / 4];
@@ -259,7 +260,7 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
     cmd_list[1] = idx + 1;
     slot = (int *)((char *)((int *)cmd_state[0xC / 4])[0] + idx * 8);
     slot[0] = 0xBB000001; slot[1] = 0x80008000;
-    if ((unsigned int)(i = 0) < (unsigned int)gl_func_00000000(a3)) {
+    if ((unsigned int)(i = 0) < (unsigned int)CALL(str_len)(a3)) {
         do {
             if (*p != ' ') {
                 int g = gl_func_00000000(*p);
@@ -271,12 +272,12 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
                 int gu = glyph[0];
                 int gv = glyph[1];
                 int gw = glyph[2];
-                gl_func_00000000(a0[0x24 / 4], a0[0x4 / 4], a0[0x18 / 4], a0[0x1C / 4],
+                CALL(gui_loadTileIA8)(a0[0x24 / 4], a0[0x4 / 4], a0[0x18 / 4], a0[0x1C / 4],
                                  gu, gv, gw, scale, 0);
                 goff = gi * 0x14;
                 px = x;
                 px += *(int *)((char *)a0[0x20 / 4] + goff + 16);
-                gl_func_00000000(a0[0x24 / 4], px,
+                CALL(gui_texRect_00004568)(a0[0x24 / 4], px,
                                  a2, gw, scale, (gw * 1024) / gw, sd);
                 x += *(int *)((char *)a0[0x20 / 4] + goff + 12);
             } else {
@@ -284,7 +285,7 @@ void gui_drawString_00000D04(int *a0, int *a1, int a2, char *a3) {
             }
             p++;
             i++;
-        } while ((unsigned int)i < (unsigned int)gl_func_00000000(a3));
+        } while ((unsigned int)i < (unsigned int)CALL(str_len)(a3));
     }
 }
 
@@ -412,7 +413,7 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
     unsigned char c;
     int key;
 
-    if (gl_func_00000000(a1) != 0) {
+    if (CALL(str_len)(a1) != 0) {
         do {
             c = *p;
             if (c != 0x20) {
@@ -423,7 +424,7 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
             }
             p++;
             i++;
-        } while (i < gl_func_00000000(a1));
+        } while (i < CALL(str_len)(a1));
     }
     return total;
 }
@@ -431,13 +432,13 @@ int gui_stringWidth(char *a0, unsigned char *a1) {
 extern int gui_func_00000000();
 
 int gui_centerStringX(int a0, int a1, int a2) {
-    return a1 - (gui_func_00000000(a0, a2) / 2);
+    return a1 - (XCALL(gui_func_00000000, gui_stringWidth)(a0, a2) / 2);
 }
 
 extern int gl_func_00000000();
 
 int gui_rightAlignStringX(int a0, int a1, int a2) {
-    return a1 - gl_func_00000000(a0, a2);
+    return a1 - CALL(gui_stringWidth)(a0, a2);
 }
 
 extern int gl_func_00000000();
@@ -446,7 +447,7 @@ int gui_stringWidth_00001514(int *a0, unsigned char *a1) {
     unsigned char *p = a1;
     unsigned int i = 0;
 
-    if (gl_func_00000000(a1) != 0) {
+    if (CALL(str_len)(a1) != 0) {
         do {
             if (*p != 0x20) {
                 total += a0[3];
@@ -455,7 +456,7 @@ int gui_stringWidth_00001514(int *a0, unsigned char *a1) {
             }
             p++;
             i++;
-        } while (i < (unsigned int)gl_func_00000000(a1));
+        } while (i < (unsigned int)CALL(str_len)(a1));
     }
     return total;
 }
@@ -463,11 +464,11 @@ int gui_stringWidth_00001514(int *a0, unsigned char *a1) {
 extern int gui_func_00000000();
 
 int gui_centerStringX_000015BC(int a0, int a1, int a2) {
-    return a1 - (gui_func_00000000(a0, a2) / 2);
+    return a1 - (XCALL(gui_func_00000000, gui_stringWidth_00001514)(a0, a2) / 2);
 }
 
 int gui_rightAlignStringX_000015F4(int a0, int a1, int a2) {
-    return a1 - gl_func_00000000(a0, a2);
+    return a1 - CALL(gui_stringWidth_00001514)(a0, a2);
 }
 
 /* gui_fontAdjustAdvance: shift-all-table-entries-by-delta (advance/kerning
@@ -625,9 +626,9 @@ extern char D_00000000;
 void gui_spriteLoad(char *a0, int a1) {
     int saved;
     *(int*)(a0 + 0x14) = a1;
-    saved = gl_func_00000000(7);
-    *(int*)(a0 + 0x10) = gl_func_00000000((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
-    gl_func_00000000(saved);
+    saved = CALL(app_setHeapMode)(7);
+    *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
+    CALL(app_setHeapMode)(saved);
 }
 
 void gui_spriteInit(int *a0, int a1) {
@@ -640,7 +641,7 @@ extern char D_00000000;
 
 void gui_spriteRelease(char *a0) {
     if (*(int*)(a0 + 0x10) != 0) {
-        gui_func_00000000((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0);
+        XCALL(gui_func_00000000, BinFileMgr_getRelease)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0);
     }
     *(int*)(a0 + 0x10) = 0;
 }
@@ -653,13 +654,13 @@ void gui_spriteRefresh(char *a0) {
     if (*(int*)(a0 + 0x14) == -1) {
         *(int*)(a0 + 0x14) = 0;
     }
-    saved = gl_func_00000000(7);
-    v0 = gl_func_00000000((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
+    saved = CALL(app_setHeapMode)(7);
+    v0 = CALL(BinFileMgr_get_00068730)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
     v1 = *(int*)(a0 + 0x10);
     if (v1 == 0 || v0 != v1) {
-        *(int*)(a0 + 0x10) = gl_func_00000000((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
+        *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14));
     }
-    gl_func_00000000(saved);
+    CALL(app_setHeapMode)(saved);
 }
 
 /* gui_drawSprite: tiled sprite blitter. EXACT 2026-10-22 (agent-g run 125)

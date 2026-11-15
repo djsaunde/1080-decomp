@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -28,13 +29,13 @@ void eddproc_uso_func_00000000(int *dst) {
 
 void fs_gdlReadFloat_edd_00000040(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_edd_0000007C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -44,7 +45,7 @@ void fs_gdlReadVec3_edd_000000D4(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -65,27 +66,27 @@ extern int D_00000004;
 
 void edd_DataManager_init(char *a0) {
     *(char**)(a0 + 0xC) = &D_00000000 + 0x220;
-    gl_func_00000000(a0);
-    gl_func_00000000(a0, 0xD6, 0x13, *(char**)(a0 + 0x44) + 0x10);
-    gl_func_00000000(a0, 0x6C, 0x11, (char*)a0 + 0xA0);
+    CALL(hud_addPointsGadgetList)(a0);
+    CALL(hud_addSpeedGadget)(a0, 0xD6, 0x13, *(char**)(a0 + 0x44) + 0x10);
+    CALL(hud_addCountDownGadget)(a0, 0x6C, 0x11, (char*)a0 + 0xA0);
     *(int*)(a0 + 0xA0) = 0x2328;
     *(int*)(a0 + 0xA4) = 0;
-    *(int*)&D_00000000 = gl_func_00000000(0x3E80);
+    *(int*)&D_00000000 = CALL(mem_new)(0x3E80);
     D_00000004 = 0;
-    gl_func_00000000(a0);
+    CALL(Node_resumeUpdate_0000E450)(a0);
 }
 
 void edd_DataManager_update(char *a0) {
     if (*(int*)(&D_00000000 + 0x74) == 0) {
-        gl_func_00000000();
-        gl_func_00000000(a0);
+        CALL(RaceTracker_passCheckpoints)();
+        CALL(RaceTracker_passGates)(a0);
         if ((*(int*)(a0 + 0xA0) -= 0xA) < 0) {
             *(int*)(a0 + 0xA0) = 0;
         }
     }
-    gl_func_00000000(a0);
-    gl_func_00000000(*(int*)(a0 + 0x84), *(int*)(a0 + 0xA0), 1);
-    gl_func_00000000(a0);
+    CALL(RaceTracker_update)(a0);
+    CALL(CountDownGadget_setTime)(*(int*)(a0 + 0x84), *(int*)(a0 + 0xA0), 1);
+    CALL(Node_update)(a0);
 }
 
 /* Multi-stage allocator/initializer (50 insns, 0xC8). Pattern:
@@ -176,19 +177,19 @@ void *edd_EditorsProcess_ctor_0000025C(int *a0, int *a1) {
      * CSE so the `&D` vtable materializes 3× (t6/t7/t8) per store instead of a
      * single hoisted reg — recipe per TrkMenu_rowGhost_000021F4 (EXACT). */
     if (a0 != 0) goto have0;
-    a0 = (int*)gl_func_00000000(0x54);
+    a0 = (int*)CALL(mem_new)(0x54);
     if (a0 == 0) goto Ret;
 have0:
     v1 = a0;
     if (a0 != 0) goto have1;
-    v1 = (int*)gl_func_00000000(0x50);
+    v1 = (int*)CALL(mem_new)(0x50);
     if (v1 == 0) goto Sa2;
 have1:
     obj2 = v1;
     if (v1 != 0) goto have2;
-    obj2 = (int*)gl_func_00000000(0x2C);
+    obj2 = (int*)CALL(mem_new)(0x2C);
     if (obj2 == 0) goto Sv1;
-have2: gl_func_00000000(obj2, (char*)&D_00000000 + 0x22C); *(int*)((char*)obj2 + 0x28) = (int)&D_edd_vt0;
+have2: CALL(Node_ctor)(obj2, (char*)&D_00000000 + 0x22C); *(int*)((char*)obj2 + 0x28) = (int)&D_edd_vt0;
 Sv1:
     *(int*)((char*)v1 + 0x28) = (int)&D_edd_vt1;
 Sa2:
@@ -236,9 +237,9 @@ void *edd_ItemType_create_000003BC(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)gl_func_00000000(0x40);
+    p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
-        gl_func_00000000(p1);
+        CALL(ColourItem_ctor)(p1);
         *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -246,7 +247,7 @@ void *edd_ItemType_create_000003BC(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        gl_func_00000000((char*)p2 + 0x10, head);
+        CALL(list_append)((char*)p2 + 0x10, head);
         if (*(int*)((char*)head + 0x14) != 0) {
             *(int*)((char*)head + 0x4) = 1;
         }

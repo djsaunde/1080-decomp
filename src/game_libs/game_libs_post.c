@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/dma.h"
 #include "audio.h" /* AudioContext / SequencePlayer / Note layouts (docs/1080_AUDIO.md) */
+#include "uso_call.h"
 
 extern int D_00000000;
 typedef struct { int w; } SC4_; /* run 131 struct-copy lever: 4-byte word copy type */
@@ -50,7 +51,7 @@ void AudioSynth_InitNextRingBuf(int n, int j, int k) {
     s = &r->sub;
     if (s->f4 >= 3 && s->f2 == 0) {
         e = &s->e[s->f3][j];
-        gl_func_00000000(e->p4, 0x340);
+        CALL(Audio_InvalDCache)(e->p4, 0x340);
         idx = 0;
         for (i = 0; i < e->n10 / 2; i++) {
             s->p20[e->offC + i] = e->p4[idx];
@@ -201,7 +202,7 @@ gl_1CD64_Gfx *AudioSynth_Update(gl_1CD64_Gfx *gfx, int *outLen, int *src, int bu
     gAudioContext_345c0_1CC98.elems = buf;
     p = gfx;
     for (n = gAudioContext_345c0_1CC98.n2040; n > 0; n--) {
-        gl_func_00000000(n - 1);
+        CALL(AudioSeq_ProcessSequences)(n - 1);
         gl_ref_00031304(gAudioContext_345c0_1CC98.n2040 - n);
     }
     cur = src;
@@ -2306,9 +2307,9 @@ void AudioHeap_DiscardFont(int a0) {
                 r->elem->flag = 0;
                 r->elem->live = 1;
             }
-            gl_func_00000000(r);
-            gl_func_00000000(r);
-            gl_func_00000000(gAudioContext_345c0_1CC98.tbl5378, r);
+            CALL(Audio_NoteDisable)(r);
+            CALL(Audio_AudioListRemove)(r);
+            CALL(AudioSeq_AudioListPushBack)(gAudioContext_345c0_1CC98.tbl5378, r);
         }
     }
 }
@@ -2340,7 +2341,7 @@ void AudioHeap_DiscardSequence(int key) {
         do {
             if (*(unsigned int *)(p + 0x2D00) >> 31) {
                 if (*(unsigned char *)(p + 0x2D04) == key) {
-                    gl_func_00000000(p + 0x2D00);
+                    CALL(AudioSeq_SequencePlayerDisable)(p + 0x2D00);
                 }
             }
             i++;
@@ -2350,7 +2351,7 @@ void AudioHeap_DiscardSequence(int key) {
 }
 
 void AudioHeap_WritebackDCache(void) {
-    gl_func_00000000();
+    CALL(Audio_WritebackDCache)();
 }
 /* AudioHeap_AllocZeroedAttemptExternal: MATCHED 2026-05-31 — byte-identical to AudioHeap_AllocAttemptExternal; applied
  * its body (init v1=0; if(D[0x2178]) v1=cb(&D+0x2178); if(!v1) v1=cb(a0,a1); return v1). */
@@ -2358,10 +2359,10 @@ void AudioHeap_WritebackDCache(void) {
 int AudioHeap_AllocZeroedAttemptExternal(int a0, int a1) {
     int v1 = 0;
     if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
-        v1 = gl_func_00000000((char*)&gAudioContext + 0x2178);
+        v1 = CALL(AudioHeap_AllocZeroed)((char*)&gAudioContext + 0x2178);
     }
     if (v1 == 0) {
-        v1 = gl_func_00000000(a0, a1);
+        v1 = CALL(AudioHeap_AllocZeroed)(a0, a1);
     }
     return v1;
 }
@@ -2377,26 +2378,26 @@ extern int gl_func_00000000();
 int AudioHeap_AllocAttemptExternal(int a0, int a1) {
     int v1 = 0;
     if (*(int*)((char*)&gAudioContext + 0x2178) != 0) {
-        v1 = gl_func_00000000((char*)&gAudioContext + 0x2178);
+        v1 = CALL(AudioHeap_Alloc)((char*)&gAudioContext + 0x2178);
     }
     if (v1 == 0) {
-        v1 = gl_func_00000000(a0, a1);
+        v1 = CALL(AudioHeap_Alloc)(a0, a1);
     }
     return v1;
 }
 
 int AudioHeap_AllocDmaMemory(int a0, int a1) {
-    int v = gl_func_00000000(a0);
+    int v = CALL(AudioHeap_Alloc)(a0);
     if (v != 0) {
-        gl_func_00000000(v, a1);
+        CALL(AudioHeap_WritebackDCache)(v, a1);
     }
     return v;
 }
 
 int AudioHeap_AllocDmaMemoryZeroed(int a0, int a1) {
-    int v = gl_func_00000000(a0);
+    int v = CALL(AudioHeap_AllocZeroed)(a0);
     if (v != 0) {
-        gl_func_00000000(v, a1);
+        CALL(AudioHeap_WritebackDCache)(v, a1);
     }
     return v;
 }
@@ -2441,7 +2442,7 @@ int AudioHeap_AllocDmaMemoryZeroed(int a0, int a1) {
  * vs the if/return form. */
 extern int gl_func_00000000();
 void *AudioHeap_AllocZeroed(int *a0) {
-    char *p = (char *)gl_func_00000000(a0);
+    char *p = (char *)CALL(AudioHeap_Alloc)(a0);
     char *c;
     if (p == 0) goto out;
     for (c = p; c < (char *)a0[1]; c++) {
@@ -2602,8 +2603,8 @@ void AudioHeap_InitMainPools(int arg) {
     char *ctx = (char *)&gAudioContext;
     char *heap = (char *)&gAudioHeap;
     char *sizes = (char *)&gAudioHeapInitSizes;
-    gl_func_00000000(ctx + 0x2188, heap, arg);
-    gl_func_00000000(ctx + 0x2168, heap + arg, *(int *)(sizes + 4) - arg);
+    CALL(AudioHeap_InitPool)(ctx + 0x2188, heap, arg);
+    CALL(AudioHeap_InitPool)(ctx + 0x2168, heap + arg, *(int *)(sizes + 4) - arg);
     *(int *)(ctx + 0x2178) = 0;
 }
 
@@ -2623,10 +2624,10 @@ void AudioHeap_InitSessionPools(int *arg) {
     char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x216C) = *(int *)(D + 0x2168);
-    r = gl_func_00000000(D + 0x2168, arg[0]);
-    r = gl_func_00000000(D + 0x2198, r, arg[0]);
-    r = gl_func_00000000(D + 0x2168, arg[3]);
-    gl_func_00000000(D + 0x21C8, r, arg[3]);
+    r = CALL(AudioHeap_Alloc)(D + 0x2168, arg[0]);
+    r = CALL(AudioHeap_InitPool)(D + 0x2198, r, arg[0]);
+    r = CALL(AudioHeap_Alloc)(D + 0x2168, arg[3]);
+    CALL(AudioHeap_InitPool)(D + 0x21C8, r, arg[3]);
 }
 
 
@@ -2668,15 +2669,15 @@ void AudioHeap_InitPersistentPoolsAndCaches(int *obj) {
     char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x21DC) = *(int *)(D + 0x21D8);
-    r = gl_func_00000000(D + 0x21D8, obj[0]);
-    r = gl_func_00000000(D + 0x21FC, r, obj[0]);
-    r = gl_func_00000000(D + 0x21D8, obj[1]);
-    r = gl_func_00000000(D + 0x230C, r, obj[1]);
-    r = gl_func_00000000(D + 0x21D8, obj[2]);
-    r = gl_func_00000000(D + 0x241C, r, obj[2]);
-    gl_func_00000000(D + 0x21F8);
-    gl_func_00000000(D + 0x2308);
-    gl_func_00000000(D + 0x2418);
+    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[0]);
+    r = CALL(AudioHeap_InitPool)(D + 0x21FC, r, obj[0]);
+    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[1]);
+    r = CALL(AudioHeap_InitPool)(D + 0x230C, r, obj[1]);
+    r = CALL(AudioHeap_Alloc)(D + 0x21D8, obj[2]);
+    r = CALL(AudioHeap_InitPool)(D + 0x241C, r, obj[2]);
+    CALL(AudioHeap_InitPersistentCache)(D + 0x21F8);
+    CALL(AudioHeap_InitPersistentCache)(D + 0x2308);
+    CALL(AudioHeap_InitPersistentCache)(D + 0x2418);
 }
 
 
@@ -2694,15 +2695,15 @@ void AudioHeap_InitTemporaryPoolsAndCaches(int *obj) {
     char *D = (char *)&gAudioContext;
     int r;
     *(int *)(D + 0x21EC) = *(int *)(D + 0x21E8);
-    r = gl_func_00000000(D + 0x21E8, obj[0]);
-    r = gl_func_00000000(D + 0x22D0, r, obj[0]);
-    r = gl_func_00000000(D + 0x21E8, obj[1]);
-    r = gl_func_00000000(D + 0x23E0, r, obj[1]);
-    r = gl_func_00000000(D + 0x21E8, obj[2]);
-    r = gl_func_00000000(D + 0x24F0, r, obj[2]);
-    gl_func_00000000(D + 0x22CC);
-    gl_func_00000000(D + 0x23DC);
-    gl_func_00000000(D + 0x24EC);
+    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[0]);
+    r = CALL(AudioHeap_InitPool)(D + 0x22D0, r, obj[0]);
+    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[1]);
+    r = CALL(AudioHeap_InitPool)(D + 0x23E0, r, obj[1]);
+    r = CALL(AudioHeap_Alloc)(D + 0x21E8, obj[2]);
+    r = CALL(AudioHeap_InitPool)(D + 0x24F0, r, obj[2]);
+    CALL(AudioHeap_InitTemporaryCache)(D + 0x22CC);
+    CALL(AudioHeap_InitTemporaryCache)(D + 0x23DC);
+    CALL(AudioHeap_InitTemporaryCache)(D + 0x24EC);
 }
 
 // AudioHeap_AllocCached -- double-buffered pool allocator (0x704, 449 insns), EXACT (agent-c run 181, below).
@@ -2814,7 +2815,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
                     }
                 }
                 if (i == G.count) {
-                    gl_func_00000000(temporaryCache->entries[0].id, 3);
+                    CALL(AudioLoad_SetFontLoadStatus)(temporaryCache->entries[0].id, 3);
                     loadStatusEntry0 = 3;
                 }
             }
@@ -2825,7 +2826,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
                     }
                 }
                 if (i == G.count) {
-                    gl_func_00000000(temporaryCache->entries[1].id, 3);
+                    CALL(AudioLoad_SetFontLoadStatus)(temporaryCache->entries[1].id, 3);
                     loadStatusEntry1 = 3;
                 }
             }
@@ -2914,7 +2915,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
         if (temporaryCache->entries[temporaryCache->nextSide].id != -1) {
             loadStatus[temporaryCache->entries[temporaryCache->nextSide].id] = 0;
             if (tableType == 1) {
-                gl_func_00000000(temporaryCache->entries[temporaryCache->nextSide].id);
+                CALL(AudioHeap_DiscardFont)(temporaryCache->entries[temporaryCache->nextSide].id);
             }
         }
         switch (temporaryCache->nextSide) {
@@ -2932,7 +2933,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
                             gl_ref_00034238((s32)temporaryCache->entries[1].id);
                             break;
                         case 1:
-                            gl_func_00000000_201B8v((s32)temporaryCache->entries[1].id);
+                            XCALL(gl_func_00000000_201B8v, AudioHeap_DiscardFont)((s32)temporaryCache->entries[1].id);
                             break;
                     }
                     temporaryCache->entries[1].id = -1;
@@ -2954,7 +2955,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
                             gl_ref_00034238(temporaryCache->entries[0].id);
                             break;
                         case 1:
-                            gl_func_00000000_201B8v(temporaryCache->entries[0].id);
+                            XCALL(gl_func_00000000_201B8v, AudioHeap_DiscardFont)(temporaryCache->entries[0].id);
                             break;
                     }
                     temporaryCache->entries[0].id = -1;
@@ -2971,7 +2972,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
         return (int)temporaryRamAddr;
     }
 
-    persistentRamAddr = (void *)gl_func_00000000(&loadedCache->persistent.pool, size);
+    persistentRamAddr = (void *)CALL(AudioHeap_Alloc)(&loadedCache->persistent.pool, size);
     loadedCache->persistent.entries[loadedCache->persistent.numEntries].ramAddr = persistentRamAddr;
 
     if (persistentRamAddr == NULL) {
@@ -3000,7 +3001,7 @@ int AudioHeap_AllocCached(s32 tableType, s32 size, s32 cache, s32 id) {
 extern int gl_func_00000000();
 extern int gl_func_00034F80();
 int AudioHeap_SearchCaches(int a0, int a1, int a2) {
-    int r = gl_func_00000000(a0, a2);
+    int r = CALL(AudioHeap_SearchPermanentCache)(a0, a2);
     if (r != 0) {
         return r;
     }
@@ -3063,7 +3064,7 @@ int AudioHeap_SearchRegularCaches(int mode, int flag, int key) {
         } while ((unsigned)i < (unsigned)t->count);
     }
     if (flag == 2) {
-        return gl_func_00000000(mode, 0, key);   /* blank load-time jal; callee = AudioHeap_SearchCaches */
+        return CALL(AudioHeap_SearchCaches)(mode, 0, key);   /* blank load-time jal; callee = AudioHeap_SearchCaches */
     }
     return 0;
 }
@@ -3484,7 +3485,7 @@ void AudioHeap_Init(void) {
     rec = &D_1cc10_21498[G.b2CF1];
     G.w1E0C = 0;
     G.h2036 = rec->w0;
-    ret = gl_func_00000000(G.h2036);
+    ret = CALL(osAiSetFrequency)(G.h2036);
     G.h2038 = ret;
     v1 = G.h2036;
     t1 = G.w213C;
@@ -3527,29 +3528,29 @@ void AudioHeap_Init(void) {
     sum = sum0 + sum1;
     G.g2BE0[0] = ret = G.w2170 - sum - 256;
     G.g2BE0[3] = sum;
-    gl_func_00000000_21498v(G.g2BE0);
+    XCALL(gl_func_00000000_21498v, AudioHeap_InitSessionPools)(G.g2BE0);
     G.g2BF0[0] = sum0;
     G.g2BF0[1] = sum1;
-    gl_func_00000000_21498v(G.g2BF0);
+    XCALL(gl_func_00000000_21498v, AudioHeap_InitCachePools)(G.g2BF0);
     G.g2BF8[0] = rec->w18;
     G.g2BF8[1] = rec->w1C;
     G.g2BF8[2] = rec->w20;
-    gl_func_00000000_21498v(G.g2BF8);
+    XCALL(gl_func_00000000_21498v, AudioHeap_InitPersistentPoolsAndCaches)(G.g2BF8);
     G.g2C04[0] = rec->w24;
     G.g2C04[1] = rec->w28;
     G.g2C04[2] = rec->w2C;
-    gl_func_00000000_21498v(G.g2C04);
+    XCALL(gl_func_00000000_21498v, AudioHeap_InitTemporaryPoolsAndCaches)(G.g2C04);
     if (G.w2178 != 0) {
         G.w217C = G.w2178;
     }
     gl_ref_0003408C();
-    G.w2CFC = gl_func_00000000(G.tbl2198, G.count * 208u);
-    gl_func_00000000_21498v();
-    gl_func_00000000_21498v();
+    G.w2CFC = CALL(AudioHeap_AllocZeroed)(G.tbl2198, G.count * 208u);
+    XCALL(gl_func_00000000_21498v, Audio_NoteInitAll)();
+    XCALL(gl_func_00000000_21498v, Audio_InitNoteFreeList)();
     for (i = 0; i != 2; i++) {
-        G.a2088[i] = gl_func_00000000(G.tbl2198, G.w206C * 8);
+        G.a2088[i] = CALL(AudioHeap_AllocDmaMemoryZeroed)(G.tbl2198, G.w206C * 8);
     }
-    G.w2CF8 = gl_func_00000000(G.tbl2198, 1024);
+    G.w2CF8 = CALL(AudioHeap_Alloc)(G.tbl2198, 1024);
     gl_ref_00033D20();
     for (i = 0; i < 3; i++) {
         G.slots[i].b1 = 0;
@@ -3568,8 +3569,8 @@ void AudioHeap_Init(void) {
         G.slots[i].b5 = src->bA;
         G.slots[i].h8 = src->hC;
         G.slots[i].b1 = 8;
-        r->w20 = gl_func_00000000(G.tbl2198, G.slots[i].h6 * 2);
-        r->w24 = gl_func_00000000(G.tbl2198, r->h6 * 2);
+        r->w20 = CALL(AudioHeap_AllocDmaMemoryZeroed)(G.tbl2198, G.slots[i].h6 * 2);
+        r->w24 = CALL(AudioHeap_AllocDmaMemoryZeroed)(G.tbl2198, r->h6 * 2);
         na = r->h6;
         r->w14 = 0;
         r->w18 = 0;
@@ -3589,45 +3590,45 @@ void AudioHeap_Init(void) {
         r->w130 = 1;
         if (r->b4 != 1) {
             r->hE = 0x8000 / r->b4;
-            r->w28 = gl_func_00000000(G.tbl2198, 32);
-            r->w2C = gl_func_00000000(G.tbl2198, 32);
-            r->w30 = gl_func_00000000(G.tbl2198, 32);
-            r->w34 = gl_func_00000000(G.tbl2198, 32);
+            r->w28 = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 32);
+            r->w2C = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 32);
+            r->w30 = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 32);
+            r->w34 = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 32);
             for (j = 0; j < G.n2040; j++) {
-                v = gl_func_00000000(G.tbl2198, 832);
+                v = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 832);
                 r->sub[j].a = v;
                 r->sub[j].b = v + 416;
-                v = gl_func_00000000(G.tbl2198, 832);
+                v = CALL(AudioHeap_AllocZeroed)(G.tbl2198, 832);
                 r->sub2[j].a = v;
                 r->sub2[j].b = v + 416;
             }
         }
         if (src->hE != 0) {
-            r->w108 = gl_func_00000000(G.tbl2198, 32);
-            r->w100 = v = gl_func_00000000(G.tbl2198, 16);
-            gl_func_00000000_21498v(v, src->hE);
+            r->w108 = CALL(AudioHeap_AllocDmaMemory)(G.tbl2198, 32);
+            r->w100 = v = CALL(AudioHeap_AllocDmaMemory)(G.tbl2198, 16);
+            XCALL(gl_func_00000000_21498v, AudioHeap_LoadLowPassFilter)(v, src->hE);
         } else {
             r->w100 = 0;
         }
         if (src->h10 != 0) {
-            r->w10C = gl_func_00000000(G.tbl2198, 32);
-            r->w104 = v = gl_func_00000000(G.tbl2198, 16);
-            gl_func_00000000_21498v(v, src->h10);
+            r->w10C = CALL(AudioHeap_AllocDmaMemory)(G.tbl2198, 32);
+            r->w104 = v = CALL(AudioHeap_AllocDmaMemory)(G.tbl2198, 16);
+            XCALL(gl_func_00000000_21498v, AudioHeap_LoadLowPassFilter)(v, src->h10);
         } else {
             r->w104 = 0;
         }
     }
-    gl_func_00000000_21498v();
+    XCALL(gl_func_00000000_21498v, AudioSeq_InitSequencePlayers)();
     for (j = 0; j < G.n2048; j++) {
-        gl_func_00000000_21498v(j);
-        gl_func_00000000_21498v(G.recs2D00[j]);
+        XCALL(gl_func_00000000_21498v, AudioSeq_InitSequencePlayerChannels)(j);
+        XCALL(gl_func_00000000_21498v, AudioSeq_ResetSequencePlayer)(G.recs2D00[j]);
     }
-    gl_func_00000000_21498v(rec->w30, rec->w34);
-    gl_func_00000000_21498v(G.count);
+    XCALL(gl_func_00000000_21498v, AudioHeap_InitSampleCaches)(rec->w30, rec->w34);
+    XCALL(gl_func_00000000_21498v, AudioLoad_InitSampleDmaBuffers)(G.count);
     G.w1034 = 0;
-    gl_func_00000000_21498v();
+    XCALL(gl_func_00000000_21498v, AudioLoad_InitSlowLoads)();
     G.h4 = 0x1000;
-    gl_func_00000000_21498v();
+    XCALL(gl_func_00000000_21498v, AudioLoad_LoadPermanentSamples)();
     v = gl_func_00000000(1);
     gl_func_00000000_21498v();
     gl_func_00000000_21498v(v);
@@ -3702,7 +3703,7 @@ extern int func_00000000();
 int AudioHeap_AllocPermanent(int a0, int a1, int a2) {
     char *base = (char*)&gAudioContext;
     int count = *(int*)((char*)&gAudioContext + 0x2534);
-    int v0 = func_00000000(base + 0x2528, a2);
+    int v0 = FCALL(AudioHeap_Alloc)(base + 0x2528, a2);
     *(int*)(base + count * 12 + 0x2538) = v0;
     if (v0 == 0) {
         return 0;
@@ -3761,18 +3762,18 @@ end_zero:
  * cap-causing structural error. */
 extern int func_00000000();
 void AudioHeap_InitSampleCaches(int a0, int a1) {
-    int r0 = func_00000000((char*)&gAudioContext + 0x2198, a0);
+    int r0 = FCALL(AudioHeap_AllocAttemptExternal)((char*)&gAudioContext + 0x2198, a0);
     if (r0 == 0) {
         *(int*)((char*)&gAudioContext + 0x26C0) = 0;
     } else {
-        func_00000000((char*)&gAudioContext + 0x26B8, r0, a0);
+        FCALL(AudioHeap_InitPool)((char*)&gAudioContext + 0x26B8, r0, a0);
     }
     {
-        int r1 = func_00000000((char*)&gAudioContext + 0x2198, a1);
+        int r1 = FCALL(AudioHeap_AllocAttemptExternal)((char*)&gAudioContext + 0x2198, a1);
         if (r1 == 0) {
             *(int*)((char*)&D_00000000 + 0x2954) = 0;
         } else {
-            func_00000000((char*)&gAudioContext + 0x294C, r1, a1);
+            FCALL(AudioHeap_InitPool)((char*)&gAudioContext + 0x294C, r1, a1);
         }
     }
     *(int*)((char*)&D_00000000 + 0x2948) = 0;
@@ -4008,15 +4009,15 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
             continue;
         }
         {
-            if (gl_func_00000000(1, 2, fontId) != 0) {
-                if (gl_func_00000000(fontId) != 0) {
+            if (CALL(AudioHeap_SearchCaches)(1, 2, fontId) != 0) {
+                if (CALL(AudioLoad_IsFontLoadComplete)(fontId) != 0) {
                     gl_221D8_Drum *drum;
                     gl_221D8_Instrument *inst;
                     s32 instId;
                     s32 drumId;
 
                     for (instId = 0; instId < gAudioContext_221D8.soundFontList[fontId].numInstruments; instId++) {
-                        inst = (gl_221D8_Instrument *)gl_func_00000000(fontId, instId);
+                        inst = (gl_221D8_Instrument *)CALL(Audio_GetInstrumentInner)(fontId, instId);
                         if (inst != NULL) {
                             if (inst->normalRangeLo != 0) {
                                 gl_func_00036A04(entry, inst->lowPitchTunedSample.sample);
@@ -4029,7 +4030,7 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
                     }
 
                     for (drumId = 0; drumId < gAudioContext_221D8.soundFontList[fontId].numDrums; drumId++) {
-                        drum = (gl_221D8_Drum *)gl_func_00000000(fontId, drumId);
+                        drum = (gl_221D8_Drum *)CALL(Audio_GetDrum)(fontId, drumId);
                         if (drum != NULL) {
                             gl_func_00036A04(entry, drum->tunedSample.sample);
                         }
@@ -4098,7 +4099,7 @@ extern int gl_func_00000000();
 void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
     char *D = (char *)&gAudioContext; /* all 5 sites: Sym 1255 (+0x26B8 cache, +0x2948 count) */
     char *base = D + 0x26B8;
-    int r = gl_func_00000000(base, arg);
+    int r = CALL(AudioHeap_Alloc)(base, arg);
     if (r == 0) {
         return 0;
     }
@@ -4768,7 +4769,7 @@ void AudioLoad_SyncLoadSeqParts(int a0, int a1) {
     int local[2];
     if (a0 < (int)*(unsigned short *)((char *)&gAudioContext + 0x202C)) {
         if (a1 & 2) {
-            gl_func_00000000(a0, local);
+            CALL(AudioLoad_SyncLoadSeqFonts)(a0, local);
         }
         if (a1 & 1) {
             gl_func_00037D98(a0);
@@ -4873,7 +4874,7 @@ extern int gl_ref_0003773C();
 int AudioLoad_SyncLoadInstrument(int handle, int depth, int a2) {
     int *n;
     if (depth < 0x7F) {
-        n = (int *)gl_func_00000000(handle);
+        n = (int *)CALL(Audio_GetInstrumentInner)(handle);
         if (n == 0) {
             return -1;
         }
@@ -4885,7 +4886,7 @@ int AudioLoad_SyncLoadInstrument(int handle, int depth, int a2) {
             gl_ref_0003773C(n[0x18 / 4], handle);
         }
     } else if (depth == 0x7F) {
-        n = (int *)gl_func_00000000(handle, a2);
+        n = (int *)CALL(Audio_GetDrum)(handle, a2);
         if (n == 0) {
             return -1;
         }
@@ -4912,7 +4913,7 @@ void AudioLoad_AsyncLoadSampleBank(int a0, int a1, int a2, int a3) {
     v = gl_ref_00038174(2, a0);
     v = gl_ref_0003870C(2, v, a1, a2, a3);
     if (v == 0) {
-        gl_func_00000000(a3, 0, 0);
+        CALL(gl_osSendMesg)(a3, 0, 0);
     }
 }
 
@@ -5006,9 +5007,9 @@ void AudioLoad_DiscardSeqFonts(int idx) {
     while (cnt > 0) {
         cnt--;
         p = gl_ref_00038174(1, GS_233E4.buf[cur++]);
-        if (gl_func_00000000(1, p) == 0) {
+        if (CALL(AudioHeap_SearchPermanentCache)(1, p) == 0) {
             gl_ref_00037B00(p);
-            gl_func_00000000(p, 0);
+            CALL(AudioLoad_SetFontLoadStatus)(p, 0);
         }
     }
 }
@@ -5071,7 +5072,7 @@ void AudioLoad_DiscardFont(int id)
             *(short *)(base + i * 0xC + 0x1E) = neg;
         }
     }
-    gl_func_00000000(id);
+    CALL(AudioHeap_DiscardFont)(id);
 }
 
 
@@ -5168,7 +5169,7 @@ int AudioLoad_SyncInitSeqPlayerInternal(int recIdx, int bufIdx, int arg) {
         return 0;
     }
     rec = &GS_235E4.recs[recIdx];
-    gl_func_00000000(rec);
+    CALL(AudioSeq_SequencePlayerDisable)(rec);
     if (1) {
     }
     last = 0xFF;
@@ -5184,7 +5185,7 @@ int AudioLoad_SyncInitSeqPlayerInternal(int recIdx, int bufIdx, int arg) {
     if (p == 0) {
         return 0;
     }
-    gl_func_00000000(rec);
+    CALL(AudioSeq_ResetSequencePlayer)(rec);
     rec->b4 = bufIdx;
     rec->b5 = last;
     rec->w18 = p;
@@ -5193,7 +5194,7 @@ int AudioLoad_SyncInitSeqPlayerInternal(int recIdx, int bufIdx, int arg) {
     rec->b90 = 0;
     rec->h10 = 0;
     rec->f6 = 0;
-    gl_func_00000000(rec);
+    CALL(AudioSeq_SkipForwardSequence)(rec);
     if (1) {
     }
     for (i = 0; i < 16; i++) {
@@ -5264,7 +5265,7 @@ int AudioLoad_GetSampleBank(int x, int *out) {
     ok = gl_ref_000381B0(2, x);
     nv = ok;
     if (ok != 0) {
-        gl_func_00000000(x, 2);              /* acquire(j, 2) - jal 0, result dropped */
+        CALL(AudioLoad_SetSampleFontLoadStatus)(x, 2);              /* acquire(j, 2) - jal 0, result dropped */
         *out = 0;
         return nv;
     }
@@ -5437,11 +5438,11 @@ int AudioLoad_GetRealTableIndex(int a0, int a1) {
  * arm, matching the target. MATCHED byte-exact (21 words, reloc-filtered). */
 extern int gl_func_00000000();
 int AudioLoad_SearchCaches(int a0, int a1) {
-    int r = gl_func_00000000(a0, a1);
+    int r = CALL(AudioHeap_SearchPermanentCache)(a0, a1);
     if (r != 0) {
         return r;
     }
-    r = gl_func_00000000(a0, 2, a1);
+    r = CALL(AudioHeap_SearchCaches)(a0, 2, a1);
     if (r != 0) {
         return r;
     }
@@ -5609,7 +5610,7 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
 
     for (i = 2; i <= 2 + numInstruments - 1; i++) {
         if (fontData[i] != 0) {
-            gl_func_00000000((char *)&D_00000000 + 0x1ACA4, i, fontData[i], fontDataStartAddr);
+            CALL(gl_rmonPrintf)((char *)&D_00000000 + 0x1ACA4, i, fontData[i], fontDataStartAddr);
             fontData[i] = GL23BDC_RELOC(fontData[i]);
             inst = (gl_23BDC_Inst *)fontData[i];
             if (!inst->isRelocated) {
@@ -5652,14 +5653,14 @@ void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
     gl_23E60_IoMesg *ioMesg = &((gl_23E60_Ctx *)&D_00000000)->syncDmaIoMesg;
     size = ((size) + 0xF) & ~0xF;
 
-    gl_func_00000000(ramAddr, size);
+    CALL(Audio_InvalDCache)(ramAddr, size);
 
     while (1) {
         if (size < 0x400) {
             break;
         }
         gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, 0x400, msgQueue, medium, sStr_FastCopy_1ACC0);
-        gl_func_00000000(msgQueue, NULL, 1);
+        CALL(gl_osRecvMesg)(msgQueue, NULL, 1);
         size -= 0x400;
         devAddr += 0x400;
         ramAddr += 0x400;
@@ -5667,7 +5668,7 @@ void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
 
     if (size != 0) {
         gl_func_00038604(ioMesg, 1, 0, devAddr, ramAddr, size, msgQueue, medium, sStr_FastCopy_1ACCC);
-        gl_func_00000000(msgQueue, NULL, 1);
+        CALL(gl_osRecvMesg)(msgQueue, NULL, 1);
     }
 }
 
@@ -5759,9 +5760,9 @@ int AudioLoad_AsyncLoadInner(int cls, int idx, int a2, int a3, void *a4) {
  * (each 3 insns / 0xC, no-frame setter to D_*). */
 extern int gl_func_00000000();
 void AudioLoad_ProcessLoads(int a0) {
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
+    CALL(AudioLoad_ProcessSlowLoads)(a0);
+    CALL(AudioLoad_ProcessSamplePreloads)(a0);
+    CALL(AudioLoad_ProcessAsyncLoads)(a0);
 }
 
 extern int D_24360_a;
@@ -5866,19 +5867,19 @@ void AudioLoad_Init(void) {
     gl_24378_gAudioCtx.curTask = NULL;
     gl_24378_gAudioCtx.dataSize0 = 0;
     gl_24378_gAudioCtx.dataSize1 = 0;
-    gl_func_00000000(&gl_24378_gAudioCtx.syncDmaQueue, &gl_24378_gAudioCtx.syncDmaMesg, 1);
-    gl_func_00000000(&gl_24378_gAudioCtx.curAudioFrameDmaQueue, gl_24378_gAudioCtx.curAudioFrameDmaMsgBuf, 0x40);
-    gl_func_00000000(&gl_24378_gAudioCtx.externalLoadQueue, gl_24378_gAudioCtx.externalLoadMsgBuf, 8);
-    gl_func_00000000(&gl_24378_gAudioCtx.preloadSampleQueue, gl_24378_gAudioCtx.preloadSampleMsgBuf, 8);
+    CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.syncDmaQueue, &gl_24378_gAudioCtx.syncDmaMesg, 1);
+    CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.curAudioFrameDmaQueue, gl_24378_gAudioCtx.curAudioFrameDmaMsgBuf, 0x40);
+    CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.externalLoadQueue, gl_24378_gAudioCtx.externalLoadMsgBuf, 8);
+    CALL(gl_osCreateMesgQueue)(&gl_24378_gAudioCtx.preloadSampleQueue, gl_24378_gAudioCtx.preloadSampleMsgBuf, 8);
     gl_24378_gAudioCtx.curAudioFrameDmaCount = 0;
     gl_24378_gAudioCtx.sampleDmaCount = 0;
-    *(void **)((char *)&gl_24378_gAudioCtx + 0x1644) = (void *)gl_func_00000000();
-    *(void **)((char *)&gl_24378_gAudioCtx + 0x1648) = (void *)gl_func_00000000();
+    *(void **)((char *)&gl_24378_gAudioCtx + 0x1644) = (void *)CALL(gl_osCartRomInit)();
+    *(void **)((char *)&gl_24378_gAudioCtx + 0x1648) = (void *)CALL(gl_osDriveRomInit)();
 
-    gl_func_00000000(gAudioHeapInitSizes_24378.initPoolSize);
+    CALL(AudioHeap_InitMainPools)(gAudioHeapInitSizes_24378.initPoolSize);
 
     for (i = 0; i < 3; i++) {
-        gl_24378_gAudioCtx.aiBuffers[i] = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, 0xB00);
+        gl_24378_gAudioCtx.aiBuffers[i] = (void *)CALL(AudioHeap_AllocZeroed)(&gl_24378_gAudioCtx.initPool, 0xB00);
     }
 
     gl_24378_gAudioCtx.sequenceTable = &gl_24378_gSequenceTable;
@@ -5889,13 +5890,13 @@ void AudioLoad_Init(void) {
     gl_24378_gAudioCtx.specId = 0;
     gl_24378_gAudioCtx.resetStatus = 1;
 
-    gl_func_00000000();
+    CALL(AudioHeap_ResetStep)();
 
     gl_ref_000375CC(gl_24378_gAudioCtx.sequenceTable, gl_24378_seqRom, 0);
     gl_ref_000375CC(gl_24378_gAudioCtx.soundFontTable, gl_24378_fontRom, 0);
     gl_ref_000375CC(gl_24378_gAudioCtx.sampleBankTable, gl_24378_sampleRom, 0);
     numFonts = gl_24378_gAudioCtx.soundFontTable->numEntries;
-    gl_24378_gAudioCtx.soundFontList = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, numFonts * sizeof(gl_24378_SoundFont));
+    gl_24378_gAudioCtx.soundFontList = (void *)CALL(AudioHeap_Alloc)(&gl_24378_gAudioCtx.initPool, numFonts * sizeof(gl_24378_SoundFont));
 
     for (i = 0; i < numFonts; i++) {
         gl_24378_gAudioCtx.soundFontList[i].sampleBankId1 = (gl_24378_gAudioCtx.soundFontTable->entries[i].shortData1 >> 8) & 0xFF;
@@ -5905,13 +5906,13 @@ void AudioLoad_Init(void) {
         gl_24378_gAudioCtx.soundFontList[i].numSfx = gl_24378_gAudioCtx.soundFontTable->entries[i].shortData3;
     }
 
-    ramAddr = (void *)gl_func_00000000(&gl_24378_gAudioCtx.initPool, gAudioHeapInitSizes_24378.permanentPoolSize);
+    ramAddr = (void *)CALL(AudioHeap_Alloc)(&gl_24378_gAudioCtx.initPool, gAudioHeapInitSizes_24378.permanentPoolSize);
     if (ramAddr == NULL) {
         gAudioHeapInitSizes_24378.permanentPoolSize = 0;
     }
 
-    gl_func_00000000(&gl_24378_gAudioCtx.permanentPool, ramAddr, gAudioHeapInitSizes_24378.permanentPoolSize);
-    gl_func_00000000(gl_24378_gAudioCtx.taskStartQueueP, gl_24378_gAudioCtx.totalTaskCount, 0);
+    CALL(AudioHeap_InitPool)(&gl_24378_gAudioCtx.permanentPool, ramAddr, gAudioHeapInitSizes_24378.permanentPoolSize);
+    CALL(gl_osSendMesg)(gl_24378_gAudioCtx.taskStartQueueP, gl_24378_gAudioCtx.totalTaskCount, 0);
 }
 #undef gl_24378_gAudioCtx
 
@@ -5963,7 +5964,7 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
     }
     rec->hdr = *obj;
     rec->out = s0;
-    r = gl_func_00000000(obj->w0 & 0xFFFFFF, a0, obj->w1, (signed char)((obj->w0 << 4) >> 30));
+    r = CALL(aud_AllocSampleCacheTemporary)(obj->w0 & 0xFFFFFF, a0, obj->w1, (signed char)((obj->w0 << 4) >> 30));
     rec->xC = r;
     if (r == 0) {
         if (((obj->w0 << 4) >> 30) == 1 || (obj->w0 >> 28) == 2) {
@@ -5993,13 +5994,13 @@ int AudioLoad_GetFontSample(int a0, int a1) {
     int a2 = a1;
 
     if (a1 < 0x80) {
-        v0 = gl_func_00000000(a0, a1);
+        v0 = CALL(Audio_GetInstrumentInner)(a0, a1);
         if (v0 == 0) {
             return 0;
         }
         v1 = *(int *)(v0 + 0x10);
     } else {
-        v0 = gl_func_00000000(a0, a2 - 0x80);
+        v0 = CALL(Audio_GetDrum)(a0, a2 - 0x80);
         if (v0 == 0) {
             return 0;
         }
@@ -6093,7 +6094,7 @@ void AudioLoad_ProcessSlowLoads(int arg0) {
                 continue;
             }
             if (rec->tag != 1) {
-                gl_func_00000000(rec->pad, 0, 1);
+                CALL(gl_osRecvMesg)(rec->pad, 0, 1);
             }
             if (arg0 != 0) {
                 rec->state = 3;
@@ -6173,8 +6174,8 @@ extern int gl_func_00000000();
 extern int gl_func_00038604();
 extern int D_00000000;
 void AudioLoad_DmaSlowCopy(char *obj, int a1) {
-    gl_func_00000000(*(int *)(obj + 0xC));
-    gl_func_00000000(obj + 0x30, obj + 0x48, 1);
+    CALL(Audio_InvalDCache)(*(int *)(obj + 0xC));
+    CALL(gl_osCreateMesgQueue)(obj + 0x30, obj + 0x48, 1);
     gl_func_00038604(obj + 0x4C, 0, 0, *(int *)(obj + 0x8),
                      *(int *)(obj + 0xC), a1, obj + 0x30,
                      *(unsigned char *)obj, (char *)&D_00000000 + 0x1AFCC);
@@ -6297,7 +6298,7 @@ gl_24F30_Slot *AudioLoad_StartAsyncLoad(int a0, int a1, int a2, int a3, int arg4
     s->b1 = 3;
     s->b2 = a3;
     s->w18 = arg6;
-    gl_func_00000000(s->x20, s->x38, 1);
+    CALL(gl_osCreateMesgQueue)(s->x20, s->x38, 1);
     return s;
 }
 #undef GS_24F30
@@ -7056,13 +7057,13 @@ int AudioLoad_GetSamplesForFont(int idx, int a1) {
     char *r;
     for (i = 0; i < n2; i++) {
         char *q;
-        r = (char *)gl_func_00000000(idx, i); q = r; if (1) {}
+        r = (char *)CALL(Audio_GetDrum)(idx, i); q = r; if (1) {}
         if (q != 0) {
             acc = gl_ref_0003A0EC(*(void **)(q + 4), acc, a1);
         }
     }
     for (i = 0; i < n1; i++) {
-        r = (char *)gl_func_00000000(idx, i);
+        r = (char *)CALL(Audio_GetInstrumentInner)(idx, i);
         if (r != 0) {
             if (*(unsigned char *)(r + 1) != 0) {
                 acc = gl_ref_0003A0EC(*(void **)(r + 8), acc, a1);
@@ -7296,9 +7297,9 @@ void AudioThread_InitMesgQueuesImpl(void) {
   *((char **) (((char *) (&gAudioContext)) + 0x53C8)) = ((char *) (&gAudioContext)) + 0x53D0;
   *((char **) (((char *) (&gAudioContext)) + 0x53CC)) = ((char *) (&gAudioContext)) + 0x53E8;
   *((char **) (((char *) (&gAudioContext)) + 0x53C4)) = ((char *) (&gAudioContext)) + 0x5400;
-  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53C8)), ((char *) (&gAudioContext)) + 0x5418, 1);
-  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53CC)), ((char *) (&gAudioContext)) + 0x5420, 4);
-  gl_func_00000000(*((char **) (((char *) (&gAudioContext)) + 0x53C4)), ((char *) (&gAudioContext)) + 0x541C, 1);
+  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53C8)), ((char *) (&gAudioContext)) + 0x5418, 1);
+  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53CC)), ((char *) (&gAudioContext)) + 0x5420, 4);
+  CALL(gl_osCreateMesgQueue)(*((char **) (((char *) (&gAudioContext)) + 0x53C4)), ((char *) (&gAudioContext)) + 0x541C, 1);
 }
 
 /* AudioThread_QueueCmd: ring-buffer push. head=u8 D[0x53B8],
@@ -7394,7 +7395,7 @@ void AudioThread_ScheduleProcessCmds(void) {
     if (*(int *)((char *)&D_00000000 + 0x1B594) < n) {
         *(int *)((char *)&D_00000000 + 0x1B594) = n;
     }
-    r = gl_func_00000000(gAudioCtx_26CCC.threadCmdProcQueueP, ((committed & 0xFF) << 8) | (cur & 0xFF), 0);
+    r = CALL(gl_osSendMesg)(gAudioCtx_26CCC.threadCmdProcQueueP, ((committed & 0xFF) << 8) | (cur & 0xFF), 0);
     if (r != -1) {
         gAudioCtx_26CCC.threadCmdReadPos = gAudioCtx_26CCC.threadCmdWritePos;
     }
@@ -7498,7 +7499,7 @@ void AudioThread_ProcessCmds(u32 arg0) {
  * else *a0 = local & 0xFFFFFF; return (unsigned)local >> 24. */
 int AudioThread_GetAsyncLoadStatus(int *a0) {
     int local;
-    int rv = func_00000000((char*)&gAudioContext + 0x164C, &local, 0);
+    int rv = FCALL(gl_osRecvMesg)((char*)&gAudioContext + 0x164C, &local, 0);
     if (rv == -1) {
         *a0 = 0;
         return 0;
@@ -7509,7 +7510,7 @@ int AudioThread_GetAsyncLoadStatus(int *a0) {
 
 extern int gl_func_00000000();
 int AudioThread_GetFontsForSequence() {
-    return gl_func_00000000();
+    return CALL(AudioLoad_GetFontsForSequence)();
 }
 
 /* AudioThread_CheckSpecChange: 22-insn predicate. Loads via gl_func(&D_0+0x53C4,
@@ -7517,7 +7518,7 @@ int AudioThread_GetFontsForSequence() {
 int AudioThread_CheckSpecChange(void) {
     int v;
     int local;
-    v = gl_func_00000000(*(int*)((char*)&gAudioContext + 0x53C4), &local, 0);
+    v = CALL(gl_osRecvMesg)(*(int*)((char*)&gAudioContext + 0x53C4), &local, 0);
     if (v == -1) return 0;
     if (local != *(unsigned char*)((char*)&gAudioContext + 0x2CF1)) {
         return 0;
@@ -7538,7 +7539,7 @@ void AudioThread_ClearSpecChangeQueue(void) {
     int scratch;
     do {
         sentinel = -1;
-    } while (gl_func_00000000(*(int*)((char*)&D_00000000 + 0x53C4), &scratch, 0) != sentinel);
+    } while (CALL(gl_osRecvMesg)(*(int*)((char*)&D_00000000 + 0x53C4), &scratch, 0) != sentinel);
 }
 
 // AudioThread_ResetAudioHeap — STRUCTURAL PASS (0x98 / 38 words, no episode).
@@ -7590,18 +7591,18 @@ int AudioThread_ResetAudioHeap(int a0) {
     state = *((unsigned char *)&D_00000000 + 0x2CF0);
     if (state != 0) {
         int local;
-        gl_func_00000000_void();
+        XCALL(gl_func_00000000_void, AudioThread_ResetCmdQueue)();
         if (a0 == *((unsigned char *)&D_00000000 + 0x2CF1)) {
             return 0;
         }
         if (state >= 3) {
             return 0;
         }
-        gl_func_00000000(*(void **)((char *)&D_00000000 + 0x53C4), &local, 1);
+        CALL(gl_osRecvMesg)(*(void **)((char *)&D_00000000 + 0x53C4), &local, 1);
     }
     gl_ref_0003B844();
-    gl_func_00000000(0xF9000000, a0);
-    return gl_func_00000000();
+    CALL(AudioThread_QueueCmdS32)(0xF9000000, a0);
+    return CALL(AudioThread_ScheduleProcessCmds)();
 }
 
 // AudioThread_PreNMIInternal — STRUCTURAL PASS (0xB8 / 46 words, no episode).
@@ -7650,7 +7651,7 @@ void AudioThread_PreNMIInternal(void) {
     int g = (int)gAudioContext_23f98;
     int h = (int)gAudioContext_272c4;
     *(int *)(g + 0x215C) = 1;
-    gl_func_00000000(0);
+    CALL(AudioThread_ResetAudioHeap)(0);
     *(unsigned char *)(h + 0x2CF0) = 0;
 }
 
@@ -7716,7 +7717,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 void AudioThread_InitExternalPool(int a0, int a1) {
     char *g = (char *)&D_00000000;
-    gl_func_00000000(g + 0x2178, a0, a1);
+    CALL(AudioHeap_InitPool)(g + 0x2178, a0, a1);
 }
 
 void AudioThread_ResetExternalPool(void) {
@@ -7882,11 +7883,11 @@ extern int gl_func_00000000();
 
 void AudioThread_Noop1Cmd(int a0, int a1, int a2) {
     int packed = 0xFA000000 | ((a0 & 0xFF) << 16) | ((a1 & 0xFF) << 8) | (a2 & 0xFF);
-    gl_func_00000000(packed, 1);
+    CALL(AudioThread_QueueCmdS32)(packed, 1);
 }
 
 void AudioThread_Noop1CmdZeroed(void) {
-    gl_func_00000000(0xFA000000, 0);
+    CALL(AudioThread_QueueCmdS32)(0xFA000000, 0);
 }
 
 extern int D_gl275B0;
@@ -7926,7 +7927,7 @@ void AudioThread_ClearExtWord_000275BC(void) { D_gl275BC = 0; }
 extern int gl_func_00000000();
 void AudioThread_WaitForAudioTask(void) {
     char *g = (char *)&D_00000000;
-    gl_func_00000000(*(void **)(g + 0x53C8), 0, 1);
+    CALL(gl_osRecvMesg)(*(void **)(g + 0x53C8), 0, 1);
 }
 
 /* AudioThread_GetLayerSamplesLeft: EXACT MATCH (60/60 words, 2026-07-08 agent-e)
@@ -8022,7 +8023,7 @@ int AudioThread_InitMesgQueues() {
 extern int gl_func_00000000();
 void Audio_InvalDCache(int a0, int a1) {
     int r = gl_func_00000000(1);
-    gl_func_00000000(a0, a1);
+    CALL(gl_osInvalDCache)(a0, a1);
     gl_func_00000000(r);
 }
 
@@ -8205,11 +8206,11 @@ void Audio_NoteInit(int *obj) {
     int *tmpl;
     unsigned char f60;
     if (*(unsigned char *)((char *)p + 0x18) == 0) {
-        gl_func_00000000((char *)obj + 0x60,
+        CALL(Audio_AdsrInit)((char *)obj + 0x60,
                          *(int *)(*(char **)((char *)p + 0x50) + 0x90),
                          (char *)obj + 0x36);
     } else {
-        gl_func_00000000((char *)obj + 0x60, *(int *)((char *)p + 0x1C),
+        CALL(Audio_AdsrInit)((char *)obj + 0x60, *(int *)((char *)p + 0x1C),
                          (char *)obj + 0x36);
     }
     f60 = *(unsigned char *)((char *)obj + 0x60);
@@ -8355,7 +8356,7 @@ void Audio_ProcessNotes(void) {
             } else if (!playbackState->parentLayer->enabled && playbackState->unk_04 == 0 &&
                        playbackState->priority >= 1) {
             } else if (playbackState->parentLayer->channel->seqPlayer == NULL) {
-                gl_func_00000000(playbackState->parentLayer->channel);
+                CALL(AudioSeq_SequenceChannelDisable)(playbackState->parentLayer->channel);
                 playbackState->priority = 1;
                 playbackState->unk_04 = 1;
                 continue;
@@ -8365,8 +8366,8 @@ void Audio_ProcessNotes(void) {
                 goto out;
             }
 
-            gl_func_00000000(playbackState->parentLayer);
-            gl_func_00000000(&note->listItem);
+            CALL(Audio_SeqLayerNoteRelease)(playbackState->parentLayer);
+            CALL(Audio_AudioListRemove)(&note->listItem);
             gl_ref_0003D414(note->listItem.pool + 0x10, &note->listItem);
             playbackState->priority = 1;
             playbackState->unk_04 = 2;
@@ -8381,18 +8382,18 @@ void Audio_ProcessNotes(void) {
             if (playbackState->unk_04 >= 1 || sampleState->u.bitField0.finished) {
                 if (playbackState->adsr.action.s.state == 0 || sampleState->u.bitField0.finished) {
                     if (playbackState->wantedParentLayer != gl_27E24_NO_LAYER) {
-                        gl_func_00000000(note);
+                        CALL(Audio_NoteDisable)(note);
                         if (playbackState->wantedParentLayer->channel != NULL) {
-                            gl_func_00000000(note, playbackState->wantedParentLayer);
-                            gl_func_00000000(note);
-                            gl_func_00000000(note);
-                            gl_func_00000000(&note->listItem);
-                            gl_func_00000000(note->listItem.pool + 0x30, &note->listItem);
+                            CALL(Audio_NoteInitForLayer)(note, playbackState->wantedParentLayer);
+                            CALL(Audio_NoteVibratoInit)(note);
+                            CALL(Audio_NotePortamentoInit)(note);
+                            CALL(Audio_AudioListRemove)(&note->listItem);
+                            CALL(AudioSeq_AudioListPushBack)(note->listItem.pool + 0x30, &note->listItem);
                             playbackState->wantedParentLayer = gl_27E24_NO_LAYER;
                         } else {
-                            gl_func_00000000(note);
-                            gl_func_00000000(&note->listItem);
-                            gl_func_00000000(note->listItem.pool, &note->listItem);
+                            CALL(Audio_NoteDisable)(note);
+                            CALL(Audio_AudioListRemove)(&note->listItem);
+                            CALL(AudioSeq_AudioListPushBack)(note->listItem.pool, &note->listItem);
                             playbackState->wantedParentLayer = gl_27E24_NO_LAYER;
                             goto skip;
                         }
@@ -8400,9 +8401,9 @@ void Audio_ProcessNotes(void) {
                         if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
                             playbackState->parentLayer->bit1 = 1;
                         }
-                        gl_func_00000000(note);
-                        gl_func_00000000(&note->listItem);
-                        gl_func_00000000(note->listItem.pool, &note->listItem);
+                        CALL(Audio_NoteDisable)(note);
+                        CALL(Audio_AudioListRemove)(&note->listItem);
+                        CALL(AudioSeq_AudioListPushBack)(note->listItem.pool, &note->listItem);
                         goto skip;
                     }
                 }
@@ -8410,14 +8411,14 @@ void Audio_ProcessNotes(void) {
                 if (playbackState->parentLayer != gl_27E24_NO_LAYER) {
                     playbackState->parentLayer->bit1 = 1;
                 }
-                gl_func_00000000(note);
-                gl_func_00000000(&note->listItem);
-                gl_func_00000000(note->listItem.pool, &note->listItem);
+                CALL(Audio_NoteDisable)(note);
+                CALL(Audio_AudioListRemove)(&note->listItem);
+                CALL(AudioSeq_AudioListPushBack)(note->listItem.pool, &note->listItem);
                 goto skip;
             }
 
-            scale = gl_func_00000000_27E24f(&playbackState->adsr);
-            gl_func_00000000(note);
+            scale = XCALL(gl_func_00000000_27E24f, Audio_AdsrUpdate)(&playbackState->adsr);
+            CALL(Audio_NoteVibratoUpdate)(note);
             attrs = &playbackState->attributes;
             if (playbackState->unk_04 == 1 || playbackState->unk_04 == 2) {
                 sampleStateAttrs.frequency = attrs->freqScale;
@@ -8523,7 +8524,7 @@ int Audio_GetInstrumentInner(int a0, int a1) {
     if (a0 == 0xFF) {
         return 0;
     }
-    r = gl_func_00000000(a0, a1);
+    r = CALL(AudioLoad_IsFontLoadComplete)(a0, a1);
     if (r == 0) {
         *(int *)((char *)&D_00000000 + 0x2158) = a0 + 0x10000000;
         return 0;
@@ -8568,7 +8569,7 @@ int Audio_GetDrum(int a0, int a1) {
     if (a0 == 0xFF) {
         return 0;
     }
-    r = gl_func_00000000(a0);
+    r = CALL(AudioLoad_IsFontLoadComplete)(a0);
     if (r == 0) {
         *(int *)((char *)&D_00000000 + 0x2158) = a0 + 0x10000000;
         return 0;
@@ -8622,7 +8623,7 @@ int Audio_GetSoundEffect(int a0, int a1) {
     if (a0 == 0xFF) {
         return 0;
     }
-    r = gl_func_00000000(a0);
+    r = CALL(AudioLoad_IsFontLoadComplete)(a0);
     if (r == 0) {
         *(int *)((char *)&D_00000000 + 0x2158) = a0 + 0x10000000;
         return 0;
@@ -8818,7 +8819,7 @@ void Audio_SeqLayerDecayRelease(gl_28604_Layer *layer, s32 target) {
     }
 
     if (target == 6) {
-        gl_func_00000000(note);
+        CALL(Audio_AudioListRemove)(note);
         gl_func_0003D414(note->pool + 0x10, note);
     }
 }
@@ -9116,8 +9117,8 @@ void Audio_NotePoolClear(gl_28B0C_NotePool *pool) {
             if (cur == source || cur == NULL) {
                 break;
             }
-            gl_func_00000000(cur);
-            gl_func_00000000(dest, cur);
+            CALL(Audio_AudioListRemove)(cur);
+            CALL(AudioSeq_AudioListPushBack)(dest, cur);
         }
     }
 }
@@ -9137,7 +9138,7 @@ void Audio_NotePoolFill(int a0, int n) {
     char *s1, *s2;
     int s0;
 
-    gl_func_00000000(a0);
+    CALL(Audio_NotePoolClear)(a0);
     s4 = 0;
     s0 = 0;
     while (s0 < n) {
@@ -9149,9 +9150,9 @@ void Audio_NotePoolFill(int a0, int n) {
         case 3: s1 = g + 21416; s2 = s5 + 48; break;
         }
         while (s0 < n) {
-            int v = gl_func_00000000(s1);
+            int v = CALL(AudioSeq_AudioListPopBack)(s1);
             if (v == 0) break;
-            gl_func_00000000(s2, v);
+            CALL(AudioSeq_AudioListPushBack)(s2, v);
             s0++;
         }
         s4++;
@@ -9316,7 +9317,7 @@ void Audio_NoteInitForLayer(char *obj, char *d) {
 void Audio_NoteInterTrack(int *a0, int a1) {
     volatile int **vp0 = (volatile int **)&a0;
     volatile int *vp1 = (volatile int *)&a1;
-    gl_func_00000000(a0[0x44/4]);
+    CALL(Audio_SeqLayerNoteRelease)(a0[0x44/4]);
     a0[0x48/4] = a1;
     (void)vp0;
     (void)vp1;
@@ -9352,9 +9353,9 @@ void Audio_NoteReleaseAndTakeOwnership(Gl29000Obj *a0, Gl29000Obj *a1) {
 }
 
 int Audio_AllocNoteFromDisabled(char *a0, int a1) {
-    int r = gl_func_00000000(a0, a1);
+    int r = CALL(AudioSeq_AudioListPopBack)(a0, a1);
     if (r == 0) goto end;
-    gl_func_00000000(r, a1);
+    CALL(Audio_NoteInitForLayer)(r, a1);
     gl_ref_0003D414(a0 + 0x30, r);
 end:
     return r;
@@ -9366,10 +9367,10 @@ end:
  * Returns the first call's result (or 0). */
 extern int gl_func_0003D66C();
 int Audio_AllocNoteFromDecaying(int a0, int a1) {
-    int v0 = gl_func_00000000(a0 + 0x10, a1);
+    int v0 = CALL(AudioSeq_AudioListPopBack)(a0 + 0x10, a1);
     if (v0 == 0) goto end;
     gl_func_0003D66C(v0, a1);  /* a1 reloaded in jal's delay slot */
-    gl_func_00000000(a0 + 0x20, v0);
+    CALL(AudioSeq_AudioListPushBack)(a0 + 0x20, v0);
 end:
     return v0;
 }
@@ -9411,9 +9412,9 @@ int Audio_AllocNoteFromActive(char *a0, char *a1) {
         return 0;
     }
     if (t2 < t3) {
-        gl_func_00000000(a0);
+        CALL(Audio_AudioListRemove)(a0);
         gl_ref_0003D638(a0, a1);
-        gl_func_00000000(p20, a0);
+        CALL(AudioSeq_AudioListPushBack)(p20, a0);
         *(unsigned char *)(a0 + 0x30) = *(unsigned char *)(*(char **)(a1 + 0x50) + 5);
         return (int)a0;
     }
@@ -9745,7 +9746,7 @@ void Audio_SequencePlayerProcessSound(char *obj) {
         }
         *(unsigned short *)(obj + 0x12) = *(unsigned short *)(obj + 0x12) - 1;
         if (*(unsigned short *)(obj + 0x12) == 0 && *(unsigned char *)(obj + 1) == 2) {
-            gl_func_00000000(obj);
+            CALL(AudioSeq_SequencePlayerDisable)(obj);
             return;
         }
     }
@@ -10227,7 +10228,7 @@ void AudioSeq_InitSequenceChannel(char *obj) {
         *(signed char *)(obj + 0xD4 + i) = -1;
     }
     *(unsigned char *)obj = *(unsigned char *)obj & ~1;
-    gl_func_00000000(obj + 0x94);
+    CALL(Audio_InitNoteLists)(obj + 0x94);
 }
 
 // AudioSeq_SeqChannelSetLayer — STRUCTURAL PASS (0x124 / 73 words, no episode).
@@ -10342,7 +10343,7 @@ void AudioSeq_SeqLayerDisable(unsigned char *a0) {
   {
     return;
   }
-  gl_func_00000000((void *) a0);
+  CALL(Audio_SeqLayerNoteDecay)((void *) a0);
   *a0 = (unsigned short)(*a0 & 0xFF7F);
   *a0 |= 0x40;
 }
@@ -10357,8 +10358,8 @@ void AudioSeq_SeqLayerDisable(unsigned char *a0) {
 void AudioSeq_SeqLayerFree(int **a0, int a1) {
     int *obj = a0[a1 + 0x14];
     if (obj != 0) {
-        gl_func_00000000((char *)&gAudioCtx.layerFreeList, (char*)obj + 0x70);
-        gl_func_00000000(obj);
+        CALL(AudioSeq_AudioListPushBack)((char *)&gAudioCtx.layerFreeList, (char*)obj + 0x70);
+        CALL(AudioSeq_SeqLayerDisable)(obj);
         a0[a1 + 0x14] = 0;
     }
 }
@@ -10416,7 +10417,7 @@ void AudioSeq_SequenceChannelDisable(unsigned char *obj) {
     for (i = 0; i != 8; i++) {
         gl_ref_0003EB78(obj, i);
     }
-    gl_func_00000000(obj + 0x94);  /* real callee: jal-0 USO placeholder (sub-block init) */
+    CALL(Audio_NotePoolClear)(obj + 0x94);  /* real callee: jal-0 USO placeholder (sub-block init) */
     obj[0] = (obj[0] & 0xFF7F) & 0xFFFF;
     obj[0] = obj[0] | 0x40;
 }
@@ -10514,7 +10515,7 @@ void AudioSeq_SequencePlayerDisableChannels(char *arg0, s32 arg1) {
     for (var_s0 = 0, var_s1 = arg0; var_s0 != 0x40; var_s0 += 4, var_s1 += 4) {
         s32 temp_a0 = *(s32 *)(var_s1 + 0x38);
         if ((temp_a0 != dflt) == 1) {
-            gl_func_00000000(temp_a0);
+            CALL(AudioSeq_SequenceChannelDisable)(temp_a0);
         }
     }
 }
@@ -10656,15 +10657,15 @@ typedef struct { unsigned char b7 : 1; unsigned char b6 : 1; unsigned char rest 
 void AudioSeq_SequencePlayerDisable(char *o) {
     int r;
     gl_func_0003ED2C(o, 0xFFFF);
-    gl_func_00000000(o + 0x9C);
+    CALL(Audio_NotePoolClear)(o + 0x9C);
     ((BF2A7D8 *)o)->b6 = 1;
     ((BF2A7D8 *)o)->b7 = 0;
-    r = gl_func_00000000(*(unsigned char *)(o + 4));
+    r = CALL(AudioLoad_IsSeqLoadComplete)(*(unsigned char *)(o + 4));
     if (r != 0) {
-        gl_func_00000000(*(unsigned char *)(o + 4), 3);
+        CALL(AudioLoad_SetSeqLoadStatus)(*(unsigned char *)(o + 4), 3);
     }
-    if (gl_func_00000000(*(unsigned char *)(o + 5)) != 0) {
-        gl_func_00000000(*(unsigned char *)(o + 5), 4);
+    if (CALL(AudioLoad_IsFontLoadComplete)(*(unsigned char *)(o + 5)) != 0) {
+        CALL(AudioLoad_SetFontLoadStatus)(*(unsigned char *)(o + 5), 4);
     }
     if (*(unsigned char *)(o + 5) == *(short *)((char *)&D_00000000 + 0x23FA)) {
         *(int *)((char *)&D_00000000 + 0x23DC) = 1;
@@ -10727,7 +10728,7 @@ void AudioSeq_InitLayerFreelist(void) {
     for (i = 0; i < 64; i++) {
         gAudioCtx_2A904.sequenceLayers[i].listItem.u.value = &gAudioCtx_2A904.sequenceLayers[i];
         gAudioCtx_2A904.sequenceLayers[i].listItem.prev = NULL;
-        gl_func_00000000(&gAudioCtx_2A904.layerFreeList, &gAudioCtx_2A904.sequenceLayers[i].listItem);
+        CALL(AudioSeq_AudioListPushBack)(&gAudioCtx_2A904.layerFreeList, &gAudioCtx_2A904.sequenceLayers[i].listItem);
     }
 }
 #undef gAudioCtx_2A904
@@ -10852,7 +10853,7 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
         o->h8--;
         if (o->b29) return;
         if (o->hA < o->h8) return;
-        gl_func_00000000();
+        CALL(Audio_SeqLayerNoteDecay)();
         o->b29 = 1;
         return;
     }
@@ -10868,7 +10869,7 @@ void AudioSeq_SeqLayerProcessScript(AA30 *o) {
     }
     if (o->b29 != 1) return;
     if (o->w2C != 0 || o->b28) {
-        gl_func_00000000(o);
+        CALL(Audio_SeqLayerNoteDecay)(o);
     }
 }
 
@@ -10962,11 +10963,11 @@ extern int gl_func_00000000();
 void AudioSeq_SeqLayerProcessScriptStep1(char *o) {
     int st;
     if (!((ObjFlags2AB34 *)o)->b3) {
-        gl_func_00000000();
+        CALL(Audio_SeqLayerNoteDecay)();
     } else {
         char *p = (char *)*(int *)(o + 0x2C);
         if ((p != 0) && ((char *)*(int *)(p + 0x48) == o)) {
-            gl_func_00000000();
+            CALL(Audio_SeqLayerNoteDecay)();
         }
     }
     st = *(unsigned char *)(o + 0x20) & ~0x80;
@@ -11338,7 +11339,7 @@ extern int gl_func_00000000();
 int AudioSeq_GetInstrument(char *a0, unsigned char a1, int **a2, char *a3)
 {
   char *rv;
-  rv = (char *) gl_func_00000000(*((unsigned char *) (a0 + 7)), a1);
+  rv = (char *) CALL(Audio_GetInstrumentInner)(*((unsigned char *) (a0 + 7)), a1);
   if (rv == 0) {
     *a2 = 0;
     return 0;
@@ -11501,10 +11502,10 @@ void AudioSeq_ProcessSequences(int a0) {
     for (i = 0; i < gAudioCtx_2CF60.numSequencePlayers; i++) {
         if (gAudioCtx_2CF60.seqPlayers[i].enabled == 1) {
             gl_ref_00040E10(&gAudioCtx_2CF60.seqPlayers[i]);
-            gl_func_00000000(&gAudioCtx_2CF60.seqPlayers[i]);
+            CALL(Audio_SequencePlayerProcessSound)(&gAudioCtx_2CF60.seqPlayers[i]);
         }
     }
-    gl_func_00000000();
+    CALL(Audio_ProcessNotes)();
 }
 #undef gAudioCtx_2CF60
 
@@ -11530,7 +11531,7 @@ void AudioSeq_SkipForwardSequence(int *a0) {
     if (*(int*)((char*)s0 + 0xDC) > 0) {
         do {
             gl_ref_00040E10(s0);
-            gl_func_00000000(s0);   /* real callee: jal-0 USO placeholder */
+            CALL(Audio_SequencePlayerProcessSound)(s0);   /* real callee: jal-0 USO placeholder */
             *(int*)((char*)s0 + 0xDC) = *(int*)((char*)s0 + 0xDC) - 1;
         } while (*(int*)((char*)s0 + 0xDC) > 0);
     }
@@ -11547,7 +11548,7 @@ extern int gl_ref_0003E8C4();
 void AudioSeq_ResetSequencePlayer(char *a0) {
     char *p;
     int i;
-    gl_func_00000000();
+    CALL(AudioSeq_SequencePlayerDisable)();
     i = 0;
     *(char*)(a0 + 0) = *(char*)(a0 + 0) & ~2;
     *(short*)(a0 + 16) = 0;
@@ -11776,7 +11777,7 @@ void snd_UpdateTimers(void) {
     f32 d;
 
     if (D_2D37C_mode == 1) {
-        if (gl_func_00000000()) {
+        if (CALL(AudioThread_CheckSpecChange)()) {
             D_2D37C_flag = 0;
         }
         return;
@@ -11792,12 +11793,12 @@ void snd_UpdateTimers(void) {
                 gl_ref_00042490((u8)st, D_2D37C_arg);
                 gl_ref_00041ED4();
                 if (D_2D37C_g5 == 5 && D_2D37C_g13 == 13 && D_2D37C_gz == 0) {
-                    gl_func_00000000(51);
+                    CALL(snd_PostEvent)(51);
                 }
                 if (D_2D37C_g1 == 1) {
                     v = D_2D37C_g4;
                     if (v == 4 || v == 10) {
-                        gl_func_00000000_f(0x1010300, 0.0f);
+                        XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x1010300, 0.0f);
                     }
                 }
             }
@@ -11814,7 +11815,7 @@ void snd_UpdateTimers(void) {
     }
     if (TW_2D37C(0x18) != 0) {
         TW_2D37C(0x18)--;
-        gl_func_00000000_f(0x1010300, (f32)(127 - TW_2D37C(0x18)) / 127.0f);
+        XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x1010300, (f32)(127 - TW_2D37C(0x18)) / 127.0f);
     }
     c = TW_2D37C(0xC);
     if (c != 0) {
@@ -11836,16 +11837,16 @@ void snd_UpdateTimers(void) {
         SND_CUEQ_AT_BASE(D_2D37C_f35Cw).rampValue = d;
         i = (int)d;
         if (0) { gl_func_00000000(&i); } /* agent-g run 226/227: i homed at its decl slot (frame 0x28, i at 0x1c = target) */
-        gl_func_00000000(0x4E010000, i);
+        CALL(AudioThread_QueueCmdS32)(0x4E010000, i);
         fr = SND_CUEQ_AT_BASE(D_2D37C_f358l).rampBase; /* agent-g run 228: the post-call 0x358 reload is fr (target f2, not a fresh f0 temp) */
-        gl_func_00000000_f(0x4D010000, ((f32)i + fr) / fr);
+        XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x4D010000, ((f32)i + fr) / fr);
         if (i) {} /* agent-g run 227: a post-call read of i splits its web -- the reload goes uncoloured (t2, rec[2] t3 = target) instead of a3 */
     }
     if (D_2D37C_rec[2] != 0) {
         gl_ref_00046324(D_2D37C_rec);
     }
     gl_ref_00044E14();
-    gl_func_00000000();
+    CALL(AudioThread_ScheduleProcessCmds)();
 }
 #undef raw
 
@@ -11856,10 +11857,10 @@ void snd_UpdateTimers(void) {
  * (0x50 -> 0x58); NM-wrap C already built build[2:]==expected -> byte-exact. */
 void snd_MuteAll(void) {
     if (*(int*)&D_00000000 == 1) {
-        gl_func_00000000();
+        CALL(snd_UnmuteAll)();
     } else {
-        gl_func_00000000(0x95);
-        gl_func_00000000(0xF1000000, 0);
+        CALL(snd_PostEvent)(0x95);
+        CALL(AudioThread_QueueCmdS32)(0xF1000000, 0);
         *(int*)&D_00000000 = 1;
     }
 }
@@ -11867,15 +11868,15 @@ void snd_MuteAll(void) {
 extern int gl_func_00000000();
 extern int D_00000000;
 void snd_UnmuteAll() {
-    gl_func_00000000((void*)0xF2000000, 0);
-    gl_func_00000000(0x91);
+    CALL(AudioThread_QueueCmdS32)((void*)0xF2000000, 0);
+    CALL(snd_PostEvent)(0x91);
     D_00000000 = 0;
 }
 
 extern int gl_func_00000000();
 extern int D_00000000;
 void snd_Unmute() {
-    gl_func_00000000((void*)0xF2000000, 0);
+    CALL(AudioThread_QueueCmdS32)((void*)0xF2000000, 0);
     D_00000000 = 0;
 }
 
@@ -11890,11 +11891,11 @@ void snd_Unmute() {
  * 17 insns (0x44) and moved the orphan word into snd_SetPlayer1VolumeLevel.s as its
  * leading insn. ROM byte sequence preserved. */
 void snd_SetSoundOutputMode(int a0) {
-    gl_func_00000000(0xF0000000, a0);
+    CALL(AudioThread_QueueCmdS32)(0xF0000000, a0);
     if (a0 >= 2) {
         a0 = 3;
     }
-    gl_func_00000000(0xF0000000, a0);
+    CALL(AudioThread_QueueCmdS32)(0xF0000000, a0);
 }
 
 /* 14-insn main body + 1-insn SUFFIX (`or $a2, $a0, $zero` = stolen
@@ -11950,7 +11951,7 @@ extern int D_2D710_store;
 extern int D_2D710_load;
 void snd_SetPlayer1VolumeLevel(int a0) {
     D_2D710_store = a0;
-    gl_func_00000000(0x41010000, ((int*)&D_2D710_load)[a0], a0);
+    CALL(AudioThread_QueueCmdF32)(0x41010000, ((int*)&D_2D710_load)[a0], a0);
 }
 
 /* snd_SetPlayer0VolumeLevel: byte-for-byte SIBLING of snd_SetPlayer1VolumeLevel (above)
@@ -11980,7 +11981,7 @@ extern int D_2D74C_store;
 extern int D_2D74C_load;
 void snd_SetPlayer0VolumeLevel(int a0) {
     D_2D74C_store = a0;
-    gl_func_00000000(0x41000000, ((int*)&D_2D74C_load)[a0], a0);
+    CALL(AudioThread_QueueCmdF32)(0x41000000, ((int*)&D_2D74C_load)[a0], a0);
 }
 
 /* snd_SetPlayer2VolumeLevel: 14-insn main body + 4-insn trailing alt-entry
@@ -12036,7 +12037,7 @@ extern int D_2D788_b;
  * (unwrapped run 95): D_2D788_a/_b pinned to 0 (ROM words lui 0). */
 void snd_SetPlayer2VolumeLevel(int a0) {
     D_2D788_a = a0;
-    gl_func_00000000(0x41020000, (&D_2D788_b)[a0], a0);
+    CALL(AudioThread_QueueCmdF32)(0x41020000, (&D_2D788_b)[a0], a0);
 }
 
 /* snd_ResetVolumeLevels: 24-insn 4-call wrapper that does a leading store to
@@ -12155,10 +12156,10 @@ void snd_ResetVolumeLevels(void) {
     D_2D7D0_a = 8;
     D_2D7D0_b = 8;
     D_2D7D0_c = 8;
-    gl_func_00000000(0x41010000, ((int*)&D_2D7D0_arr)[8]);
-    gl_func_00000000(0x41000000, ((int*)&D_2D7D0_arr)[8]);
-    gl_func_00000000(0x41020000, ((int*)&D_2D7D0_arr)[8]);
-    gl_func_00000000(0xF0000000, 0);
+    CALL(AudioThread_QueueCmdF32)(0x41010000, ((int*)&D_2D7D0_arr)[8]);
+    CALL(AudioThread_QueueCmdF32)(0x41000000, ((int*)&D_2D7D0_arr)[8]);
+    CALL(AudioThread_QueueCmdF32)(0x41020000, ((int*)&D_2D7D0_arr)[8]);
+    CALL(AudioThread_QueueCmdS32)(0xF0000000, 0);
 }
 
 /* gl_func_0002D838: 12-insn prologue-stolen-successor (sibling of 0002D8A8,
@@ -12174,7 +12175,7 @@ void snd_ResetVolumeLevels(void) {
 extern int D_2D838_X;
 extern int D_2D838_Y[];
 void snd_ApplyPlayer3VolumeLevel(void) {
-    gl_func_00000000(0x41030000, D_2D838_Y[D_2D838_X]);
+    CALL(AudioThread_QueueCmdF32)(0x41030000, D_2D838_Y[D_2D838_X]);
 }
 
 /* gl_func_0002D870: 12-insn prologue-stolen-successor (sibling of 0002D838,
@@ -12188,7 +12189,7 @@ void snd_ApplyPlayer3VolumeLevel(void) {
 extern int D_2D870_X;
 extern int D_2D870_Y[];
 void snd_ApplyPlayer1VolumeLevel(void) {
-    gl_func_00000000(0x41010000, D_2D870_Y[D_2D870_X]);
+    CALL(AudioThread_QueueCmdF32)(0x41010000, D_2D870_Y[D_2D870_X]);
 }
 
 /* snd_ApplyPlayer0VolumeLevel: table-dispatch, third sibling of 0002D830/0002D868
@@ -12198,7 +12199,7 @@ void snd_ApplyPlayer1VolumeLevel(void) {
  * the shared D_2D870_X / D_2D870_Y (all the X/Y unique externs resolve to &D+0;
  * the names just force separate lui materializations, not CSE). MATCHED 2026-05-30. */
 void snd_ApplyPlayer0VolumeLevel(void) {
-    gl_func_00000000(0x41000000, D_2D870_Y[D_2D870_X]);
+    CALL(AudioThread_QueueCmdF32)(0x41000000, D_2D870_Y[D_2D870_X]);
 }
 
 /* snd_ApplyPlayer2VolumeLevel: 14-insn sibling of 0002D838/0002D870/0002D8A8.
@@ -12210,7 +12211,7 @@ void snd_ApplyPlayer0VolumeLevel(void) {
 extern int *D_2D8D8_X;
 extern int D_2D8D8_Y[];
 void snd_ApplyPlayer2VolumeLevel(void) {
-    gl_func_00000000(0x41020000, D_2D8D8_Y[(int)D_2D8D8_X]);
+    CALL(AudioThread_QueueCmdF32)(0x41020000, D_2D8D8_Y[(int)D_2D8D8_X]);
 }
 
 #ifdef NON_MATCHING
@@ -12448,16 +12449,16 @@ void snd_SetPlayer3FreqScaleFromStick(int a0, int a1) {
         if (a1 >= 17) f = tbl[1];
         if (a0 < -16) f = tbl[2];
         if (a1 < -16) f = tbl[3];
-        gl_func_00000000_f(0x04030F00, f);
+        XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x04030F00, f);
     }
 }
 
 /* snd_StopAudioCmds: 14-insn 2-call setup. func(); D_a=1; func(0xF8000000, 0). */
 extern int D_2DCF8_flag;
 void snd_StopAudioCmds(void) {
-    gl_func_00000000();
+    CALL(AudioThread_ResetAudioHeap)();
     D_2DCF8_flag = 1;
-    gl_func_00000000(0xF8000000, 0);
+    CALL(AudioThread_QueueCmdS32)(0xF8000000, 0);
 }
 
 /* snd_Stub_2DD30: 2-insn empty stub (jr ra; nop). */
@@ -12487,7 +12488,7 @@ void snd_ScheduleSeqDefault(unsigned char a0) {
  * sll above `sw ra`; in-tree it schedules like the ROM. */
 extern int gl_func_00000000();
 void snd_PlayPlayer3Seq(char a0) {
-    gl_func_00000000(0x82030000 | ((a0 & 0xFF) << 8), 1000);
+    CALL(AudioThread_QueueCmdS32)(0x82030000 | ((a0 & 0xFF) << 8), 1000);
 }
 
 /* snd_ScheduleSeqAfter: 1-call wrapper. gl_func_00042428((u8)a0, a1, 0, 0x3F800000
@@ -12559,10 +12560,10 @@ void snd_PlayPlayer1Seq(unsigned char a0, int a1) {
     unsigned char *p = &a0;
     D_2DE24_a = a0;
     *(int *)((char *)&D_2DE24_b + 0xC) = 0;
-    gl_func_00000000(0x4D010000, 0x3F800000);
-    gl_func_00000000((a0 << 8) | 0x82010000, a1);
-    gl_func_00000000(0x90010000, 0xFFFF);
-    gl_func_00000000(0x0101FF00, D_2DE24_c);
+    CALL(AudioThread_QueueCmdF32)(0x4D010000, 0x3F800000);
+    CALL(AudioThread_QueueCmdS32)((a0 << 8) | 0x82010000, a1);
+    CALL(AudioThread_QueueCmdU16)(0x90010000, 0xFFFF);
+    CALL(AudioThread_QueueCmdF32)(0x0101FF00, D_2DE24_c);
     (void)p;
 }
 
@@ -12578,7 +12579,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 void snd_StopPlayer1Seq(void) {
     if (gAudioCtx.seqPlayers[1].enabled) {
-        gl_func_00000000(0x83010000, 0);
+        CALL(AudioThread_QueueCmdS32)(0x83010000, 0);
     }
 }
 
@@ -12589,7 +12590,7 @@ void snd_StopPlayer1Seq(void) {
  * Mechanism REMOVED 2026-05-23 as match-faking; alt-entry now belongs to
  * separate symbols. */
 void snd_PlayPlayer0Seq0(void) {
-    gl_func_00000000((void*)0x82000000, 0);
+    CALL(AudioThread_QueueCmdS32)((void*)0x82000000, 0);
 }
 
 /* snd_PlayPlayer2Seq (0x3C, 15 insns): bit-pack single-call wrapper,
@@ -12603,7 +12604,7 @@ void snd_PlayPlayer0Seq0(void) {
  * 2026-09-05. Ledger: docs/MATCHING_WORKFLOW.md
  * #orphan-sweep-agent-c-25th-h2hproc-timproc */
 void snd_PlayPlayer2Seq(int a0, int a1) {
-    gl_func_00000000(0x82020000 | (((a0 * 8 + a1 + 0x1A) & 0xFF) << 8), 0);
+    CALL(AudioThread_QueueCmdS32)(0x82020000 | (((a0 * 8 + a1 + 0x1A) & 0xFF) << 8), 0);
 }
 
 /* gl_func_0002DF38: 11-insn (0x30) signed-test guard wrapper. Mid-chain in
@@ -12623,7 +12624,7 @@ void snd_PlayPlayer2Seq(int a0, int a1) {
  * DF38's symbol) was split off as game_libs_func_0002DF64 (1 word). */
 void snd_StopPlayer0Seq(void) {
     if (gAudioCtx.seqPlayers[0].enabled) {
-        gl_func_00000000(0x83000000, 0);
+        CALL(AudioThread_QueueCmdS32)(0x83000000, 0);
     }
 }
 
@@ -12636,7 +12637,7 @@ void snd_StopPlayer0Seq(void) {
  * gl_func_00000000_f prototyped (int,float). 13/13 words exact. */
 extern int gl_func_00000000_f(int, float);
 void snd_SetPlayer0ChannelFreqScale(int a0, float a2) {
-    gl_func_00000000_f(0x04000000 | ((a0 & 0xFF) << 8), a2);
+    XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x04000000 | ((a0 & 0xFF) << 8), a2);
 }
 
 /* snd_SoundObjInit: 53-insn struct-init constructor. MATCHED 2026-07-11
@@ -12697,7 +12698,7 @@ void snd_SoundObjInit(SoundObj *o, int a1) {
     o->unk58 = 1.0f;
     o->unk5C = (float)1;
     if (*(int*)&D_00000000 != 0) {
-        gl_func_00000000(a1 & 0xFF);
+        CALL(snd_Player0ChannelIOPreset_2F8A0)(a1 & 0xFF);
     }
 }
 
@@ -12734,7 +12735,7 @@ void snd_SoundObjReset(SoundObj *o) {
     o->unk23 = 0;
     o->speed = 0.0f;
     o->unk04 = 0.0f;
-    gl_func_00000000(o->kind);
+    CALL(snd_Player0ChannelIOPreset_2F934)(o->kind);
 }
 
 void snd_SoundObjSetScaleIdx15(SoundObj *o) {
@@ -12856,7 +12857,7 @@ void snd_SoundObjStop(SoundObj *o) {
     nf = f & ~0x20;
     o->flags = nf;
     if (o->kind == 2) return;
-    gl_func_00000000(o, 0x3D);
+    CALL(snd_SoundObjRequestCue)(o, 0x3D);
 }
 
 
@@ -13798,7 +13799,7 @@ void snd_SoundObjPlay(SoundObj *o, int a1, int a2, f32 v, unsigned char b) {
     if (iv < 0) {
         iv = 0;
     }
-    gl_func_00000000(o->kind, a1, a2, iv, b);
+    CALL(snd_SetPlayer0ChannelPanIO_2F638)(o->kind, a1, a2, iv, b);
 }
 
 void snd_Stub_2F630(void) {
@@ -13846,13 +13847,13 @@ extern int gl_func_00000000();
  * gl(cmd6,(s8)(sel+arg3)). */
 void snd_SetPlayer0ChannelPanIO_2F638(int a0, int sel, int arg3, int arg4, int stk_43) {
     int v1 = (((a0 == 0) ? 2 : 6) & 0xFF) << 8;
-    gl_func_00000000(0x03000000 | v1, (signed char)stk_43);
+    CALL(AudioThread_QueueCmdS8)(0x03000000 | v1, (signed char)stk_43);
     if (sel == 0 || sel == 8 || sel == 12) {
-        gl_func_00000000((0x06000000 | v1) | 6, (signed char)arg4);
-        gl_func_00000000((0x06000000 | v1) | 1, (signed char)(sel + arg3));
+        CALL(AudioThread_QueueCmdS8)((0x06000000 | v1) | 6, (signed char)arg4);
+        CALL(AudioThread_QueueCmdS8)((0x06000000 | v1) | 1, (signed char)(sel + arg3));
     } else {
-        gl_func_00000000((0x06000000 | v1) | 5, (signed char)arg4);
-        gl_func_00000000((0x06000000 | v1), (signed char)(sel + arg3));
+        CALL(AudioThread_QueueCmdS8)((0x06000000 | v1) | 5, (signed char)arg4);
+        CALL(AudioThread_QueueCmdS8)((0x06000000 | v1), (signed char)(sel + arg3));
     }
 }
 
@@ -13901,15 +13902,15 @@ extern int gl_func_00000000();
 void snd_Player0ChannelIOPreset_2F8A0(int mode) {
     switch (mode) {
         case 0:
-            gl_func_00000000(0x06000100, 1);
-            gl_func_00000000(0x06000300, 1);
+            CALL(AudioThread_QueueCmdS8)(0x06000100, 1);
+            CALL(AudioThread_QueueCmdS8)(0x06000300, 1);
             break;
         case 1:
-            gl_func_00000000(0x06000500, 1);
-            gl_func_00000000(0x06000700, 1);
+            CALL(AudioThread_QueueCmdS8)(0x06000500, 1);
+            CALL(AudioThread_QueueCmdS8)(0x06000700, 1);
             break;
         case 2:
-            gl_func_00000000(0x06000500, 1);
+            CALL(AudioThread_QueueCmdS8)(0x06000500, 1);
             break;
         default:
             break;
@@ -13928,15 +13929,15 @@ extern int gl_func_00000000();
 void snd_Player0ChannelIOPreset_2F934(int mode) {
     switch (mode) {
         case 0:
-            gl_func_00000000(0x06000100, -1);
-            gl_func_00000000(0x06000101, -1);
-            gl_func_00000000(0x06000300, 0);
+            CALL(AudioThread_QueueCmdS8)(0x06000100, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06000101, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06000300, 0);
             break;
         case 1:
         case 2:
-            gl_func_00000000(0x06000700, 0);
-            gl_func_00000000(0x06000500, -1);
-            gl_func_00000000(0x06000501, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06000700, 0);
+            CALL(AudioThread_QueueCmdS8)(0x06000500, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06000501, -1);
             break;
     }
 }
@@ -14046,8 +14047,8 @@ void snd_SetPlayer0ChannelIO12_2FA90(int a0, int arg1, int arg2) {
     int op = (a0 == 0) ? 1 : 5;
     int idx = arg2 + 0x40;
     if (idx >= 0x80) idx = 0x7F;
-    gl_func_00000000((0x06000000 | ((op & 0xFF) << 8)) | 2, (signed char)idx);
-    gl_func_00000000((0x06000000 | ((op & 0xFF) << 8)) | 1, (signed char)(arg1 + 8));
+    CALL(AudioThread_QueueCmdS8)((0x06000000 | ((op & 0xFF) << 8)) | 2, (signed char)idx);
+    CALL(AudioThread_QueueCmdS8)((0x06000000 | ((op & 0xFF) << 8)) | 1, (signed char)(arg1 + 8));
 }
 
 extern int gl_func_00000000();
@@ -14056,12 +14057,12 @@ void snd_ResetPlayer0ChannelIO1_2FB10(int a0) {
     int x = (v & 0xFF) << 8;
     x |= 0x06000000;
     x |= 1;
-    gl_func_00000000(x, -1);
+    CALL(AudioThread_QueueCmdS8)(x, -1);
 }
 
 extern int gl_func_00000000();
 int snd_PostEvent(int a0) {
-    return gl_func_00000000(a0, 0);
+    return CALL(snd_HandleEvent_2FB74)(a0, 0);
 }
 
 /* snd_HandleEvent_2FB74: event -> sound command dispatcher (0x990 / 612 words).
@@ -14090,9 +14091,9 @@ void snd_SetPlayer0Channel0IO_30504(int a0) {
         a0 = a0 & 0xFF;
     }
     if (a0 >= 0x80) {
-        gl_func_00000000(0x06000001, (signed char)(a0 - 0x80));
+        CALL(AudioThread_QueueCmdS8)(0x06000001, (signed char)(a0 - 0x80));
     } else {
-        gl_func_00000000(0x06000000, (signed char)a0);
+        CALL(AudioThread_QueueCmdS8)(0x06000000, (signed char)a0);
     }
 }
 
@@ -14102,7 +14103,7 @@ void snd_SetPlayer0Channel0IO_30504(int a0) {
  * Those bytes belong to separate symbols now. (Previously-documented 0x34
  * size is stale.) */
 void snd_SetPlayer0Channel8IO1_30564(void) {
-    gl_func_00000000(0x06000801, 1);
+    CALL(AudioThread_QueueCmdS8)(0x06000801, 1);
 }
 
 /* snd_TriggerChannel8CueIfIdle: gate — calls gl_func_00000000 only if both D[2] and
@@ -14113,7 +14114,7 @@ void snd_SetPlayer0Channel8IO1_30564(void) {
 void snd_TriggerChannel8CueIfIdle(void) {
     if (SND_CUEQ(gSndCueQueues).fadeInFrames != 0) goto end;
     if (SND_CUEQ(gSndCueQueues).holdFrames != 0) goto end;
-    gl_func_00000000();
+    CALL(snd_TriggerChannel8Cue)();
 end:
     return;
 }
@@ -14144,7 +14145,7 @@ extern int gl_func_00000000();
 void snd_SetPlayer0Channel8Pan_305CC(int a0) {
     if (a0 < 0) a0 = 0;
     if (a0 >= 0x80) a0 = 0x7F;
-    gl_func_00000000(0x03000800, (s8)a0);
+    CALL(AudioThread_QueueCmdS8)(0x03000800, (s8)a0);
 }
 
 // snd_TriggerChannel8Cue — STRUCTURAL PASS (0x194 / 101 words, no episode).
@@ -14952,12 +14953,12 @@ void snd_HandleSeqEnd(int a, int b, int c) {
 
 extern int gl_func_00000000();
 int snd_AddSoundHeap() {
-    return gl_func_00000000();
+    return CALL(AudioThread_InitExternalPool)();
 }
 
 extern int gl_func_00000000();
 int snd_RemoveSoundHeap() {
-    return gl_func_00000000();
+    return CALL(AudioThread_ResetExternalPool)();
 }
 
 /* snd_PreNMI: 8-insn (0x20) bare wrapper — calls gl_func_0() with
@@ -14965,7 +14966,7 @@ int snd_RemoveSoundHeap() {
  * 2 jr-ras + R-type stolen-prologue tail; split-fragments separated
  * snd_InitCueQueues (0x44 array-init loop, NM-wrapped below). */
 void snd_PreNMI(void) {
-    gl_func_00000000();
+    CALL(AudioThread_PreNMIInternal)();
 }
 
 /* snd_InitCueQueues: 15-insn (0x3C) array-init loop. Sets per-record
@@ -15314,33 +15315,33 @@ int snd_SetPlayer2ChannelIO_3190C(void) {
     if (gl_ref_00045F04((char *)&D_00000000 + 0x368)) {
         int s = *(unsigned short *)((char *)&D_00000000 + 0x3C8);
         if (s == 0) {
-            gl_func_00000000(0x06020004, -1);
-            gl_func_00000000(0x06020000, 0);
+            CALL(AudioThread_QueueCmdS8)(0x06020004, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06020000, 0);
         } else {
-            gl_func_00000000(0x06020004, (signed char)s);
-            gl_func_00000000(0x06020000,
+            CALL(AudioThread_QueueCmdS8)(0x06020004, (signed char)s);
+            CALL(AudioThread_QueueCmdS8)(0x06020000,
                              *(signed char *)((char *)&D_00000000 + 0x3CB));
         }
     }
     if (gl_ref_00045F04((char *)&D_00000000 + 0x3CC)) {
         int s = *(unsigned short *)((char *)&D_00000000 + 0x42C);
         if (s == 0) {
-            gl_func_00000000(0x06020104, -1);
-            gl_func_00000000(0x06020100, 0);
+            CALL(AudioThread_QueueCmdS8)(0x06020104, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06020100, 0);
         } else {
-            gl_func_00000000(0x06020104, (signed char)s);
-            gl_func_00000000(0x06020100,
+            CALL(AudioThread_QueueCmdS8)(0x06020104, (signed char)s);
+            CALL(AudioThread_QueueCmdS8)(0x06020100,
                              *(signed char *)((char *)&D_00000000 + 0x42F));
         }
     }
     if (gl_ref_00045F04(&SND_CUEQ_AT_BASE(D_00000000).queue[2])) {
         int s = *(unsigned short *)((char *)&D_00000000 + 0x490);
         if (s == 0) {
-            gl_func_00000000(0x06020204, -1);
-            gl_func_00000000(0x06020200, 0);
+            CALL(AudioThread_QueueCmdS8)(0x06020204, -1);
+            CALL(AudioThread_QueueCmdS8)(0x06020200, 0);
         } else {
-            gl_func_00000000(0x06020204, (signed char)s);
-            gl_func_00000000(0x06020200,
+            CALL(AudioThread_QueueCmdS8)(0x06020204, (signed char)s);
+            CALL(AudioThread_QueueCmdS8)(0x06020200,
                              *(signed char *)((char *)&D_00000000 + 0x493));
         }
     }
@@ -15403,7 +15404,7 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
             } else {
                 acc = 0.0f;
             }
-            for (mode = 1; mode; gl_func_00000000_f(0x1000A00, acc), mode = 0) {
+            for (mode = 1; mode; XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x1000A00, acc), mode = 0) {
             ACCS1_31A74 = acc;
             }
             return;
@@ -15419,10 +15420,10 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
     }
     if (mode != CUR_31A74) {
         CUR_31A74 = mode;
-        gl_func_00000000(0x6000A00, (s8)mode);
+        CALL(AudioThread_QueueCmdS8)(0x6000A00, (s8)mode);
     }
     if (mode == 255) {
-        gl_func_00000000(0x6000A02, (s8)mode);
+        CALL(AudioThread_QueueCmdS8)(0x6000A02, (s8)mode);
         return;
     }
     v = v - kRo_snd_UpdateChannel10Emitter_1970[0x1970 / 4];
@@ -15460,7 +15461,7 @@ void snd_UpdateChannel10Emitter(int mode, f32 v, s8 sel) {
      * Only ONE such if(1)-split goto block merges per function, so mode 1's has no split. */
     goto z31t;
 c31t:
-    gl_func_00000000_f(0x1000A00, r), gl_func_00000000_c(0x3000A00, sel);
+    XCALL(gl_func_00000000_f, AudioThread_QueueCmdF32)(0x1000A00, r), XCALL(gl_func_00000000_c, AudioThread_QueueCmdS8)(0x3000A00, sel);
     return;
 z31t:
     if (1) {} ACCS2_31A74 = r; goto c31t;
@@ -15515,11 +15516,11 @@ void snd_Init(int a0, int a1, int a2) {
     D_00000000 = a0;
     gl_data_00000000 = a1;
     D_00000000_c = a2;
-    gl_func_00000000();
+    CALL(AudioLoad_Init)();
 }
 
 int snd_AudioUpdate(void) {
-    int v = gl_func_00000000();
+    int v = CALL(AudioThread_Update)();
     if (v == 0) return 0;
     return v;
 }
@@ -15558,7 +15559,7 @@ int snd_AudioUpdate(void) {
 //   needs spimdisasm-USO migration). Name pre-checked: no extern
 //   reuse.
 void snd_FrameUpdate(void) {
-    gl_func_00000000();
+    CALL(snd_UpdateTimers)();
 }
 
 /* [0x31DF8..0x32D74) = RSP MICROCODE, not CPU code (reclassified
@@ -15577,14 +15578,14 @@ void snd_FrameUpdate(void) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00032D84(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00032DC0(Quad4 *dst) {
     Quad4 scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
@@ -15859,13 +15860,13 @@ void cam_createDefault_00033228(char *o) {
     char pad[16];
     char *n;
     char *lst;
-    gl_func_00000000(o);
-    n = (char *)gl_func_00000000_f228(0, 0, 0.0f, 0.0f, 0.0f);
+    CALL(nodelist_checkPrevNode)(o);
+    n = (char *)XCALL(gl_func_00000000_f228, MCamera_ctor)(0, 0, 0.0f, 0.0f, 0.0f);
     *(int *)(o + 0x28) = (int)n;
     *(int *)(o + 0x0C) = (int)n;
     *(int *)(o + 0x10) = (int)n;
     lst = *(char **)(*(char **)(o + 0x3C) + 0x10);
-    gl_func_00000000(lst + 0x10, n);
+    CALL(list_append)(lst + 0x10, n);
     if (*(int *)(n + 0x14) != 0) {
         *(int *)(n + 0x04) = 1;
     }
@@ -15915,13 +15916,13 @@ void MCamera_doCommand(char *o, char *c) {
         idx = *sp;
         if (c) { }
         if ((u32)idx >= 0x28) {
-            gl_func_00000000(GL_DATA_STR(0x1E194, "Global out of range %d"), idx);
+            CALL(sys_fatal)(GL_DATA_STR(0x1E194, "Global out of range %d"), idx);
         }
         val = *(int *)((char *)&gNodeGlobals + idx * 4);
         *(int *)(o + 0xF4) = val;
         return;
     }
-    gl_func_00000000(o);
+    CALL(Node_doCommand)(o);
 }
 
 /* MCamera_hostioParms: 27-insn 3-call wrapper. The float-promote "cap" was
@@ -15933,10 +15934,10 @@ void MCamera_doCommand(char *o, char *c) {
 extern int gl_func_00000000_33338(int, int, int, float, float, int);
 void MCamera_hostioParms(int *a0) {
     int arg1 = *(int*)((char*)a0 + 0xC);
-    gl_func_00000000(&gHostio, arg1, 0);
-    gl_func_00000000_33338((int)&gHostio, (int)(GL_DATA_STR(0x1E1AC, "FOV")),
+    CALL(hostio_beginGroup)(&gHostio, arg1, 0);
+    XCALL(gl_func_00000000_33338, hostio_addFloat)((int)&gHostio, (int)(GL_DATA_STR(0x1E1AC, "FOV")),
                            (int)((char*)a0 + 0x14C), 0.0f, 180.0f, 0);
-    gl_func_00000000(&gHostio);
+    CALL(hostio_endGroup)(&gHostio);
 }
 
 void MCamera_vfn12_000333A4(int a0, int a1, int a2) {
@@ -15958,14 +15959,14 @@ void hostio_readQuadParm_000333B4(char *a0) {
  * own line the entry-line store stays first (the old "unflippable scheduler
  * cap"); with the call on the SAME line as the `{` the lui schedules first.
  * See docs/IDO_CODEGEN.md#same-line-brace-return-sinks-arg-home-c3e8. */
-int heap_tempAllocDefault_000333F4(int a0) { return gl_func_00000000(&gSysLib, a0); }
+int heap_tempAllocDefault_000333F4(int a0) { return CALL(heap_tempAlloc)(&gSysLib, a0); }
 
 /* heap_tempFreeDefault_0003341C: ONE-LINE DEFINITION IS LOAD-BEARING -- do not re-wrap.
  * Same shape and same source-line tie-break as heap_tempAllocDefault_000333F4 above
  * (target prologue `addiu sp; or a1,a0; lui a0; sw ra`); the call must
  * share the `{` line so `lui a0` schedules ahead of `sw ra,0x14(sp)`.
  * See docs/IDO_CODEGEN.md#same-line-brace-call-wrapper-lui-a0-sw-ra. */
-void heap_tempFreeDefault_0003341C(int a0) { gl_func_00000000(&gSysLib, a0); }
+void heap_tempFreeDefault_0003341C(int a0) { CALL(heap_tempFree)(&gSysLib, a0); }
 
 /* sys_timeInFrames_00033444 -- ratio of a callback's u32 result to the u32
  * counter at &D+0x20C (0x6C / 27 words, EXACT).
@@ -15993,12 +15994,12 @@ void heap_tempFreeDefault_0003341C(int a0) { gl_func_00000000(&gSysLib, a0); }
 extern int gGfxLib_33444_a;
 float sys_timeInFrames_00033444(void) {
     float a = (float)*(unsigned int *)((char *)&gGfxLib_33444_a + 0x20C);
-    return (float)(unsigned int)gl_func_00000000(&gSysLib) / a;
+    return (float)(unsigned int)CALL(sys_getTime)(&gSysLib) / a;
 }
 
 extern int gl_func_00000000();
 void sys_assertFail(int a0, int a1, int a2) {
-    gl_func_00000000(GL_DATA_STR(0x1E250, "Assertion failed: '%s' in file '%s' line %d\n"), a0, a1, a2);
+    CALL(sys_fatal)(GL_DATA_STR(0x1E250, "Assertion failed: '%s' in file '%s' line %d\n"), a0, a1, a2);
 }
 
 // fs_bufWrite_334E8 — STRUCTURAL PASS (0x2C4 / 177 words, no episode).
@@ -16092,8 +16093,8 @@ void fs_bufWrite_334E8(void) {
     u8 *p;
 
     p = buf;
-    gl_func_00000000(p, &sStr_arse_1E280);
-    src = (s32)p; rem = 8; gl_func_00000000(base);
+    CALL(str_copyEnd)(p, &sStr_arse_1E280);
+    src = (s32)p; rem = 8; CALL(fs_stub_00066200)(base);
     do {
         chunk = rem;
         avail = *(s32 *)(g + 0x2C) - *(s32 *)(g + 8);
@@ -16119,40 +16120,40 @@ void fs_bufWrite_334E8(void) {
                         cpdst += 1;
                     } while (cnt < chunk);
                 }
-                gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
+                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), base, chunk);
             } else {
-                gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
+                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), src, chunk);
             }
             *(s32 *)(g + 8) += chunk;
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, *(s32 *)(g + 8));
+            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p, *(s32 *)(g + 8));
         }
         if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
             cur = *(s32 *)(g + 8);
             *(s32 *)(g + 0x14) = cur;
-            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
+            CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                gl_func_00000000(base, &sStr_Write_not_at_end_1E29C);
+                CALL(fs_fatal_000661D8)(base, &sStr_Write_not_at_end_1E29C);
             }
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340001);   /* kick DMA */
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == 0x12340002) {
+            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340001);   /* kick DMA */
+            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
                 goto spun1;
             }
         spin1:
-            gl_func_00000000(base);
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != 0x12340002) {
+            CALL(fs_yield_00066364)(base);
+            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
                 goto spin1;
             }
         spun1:
             cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
             *(s32 *)(g + 8) = cur;
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p, cur);
-            p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340003);   /* kick second DMA */
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == 0x12340002) {
+            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p, cur);
+            p = *(u8 **)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, p + 8, 0x12340003);   /* kick second DMA */
+            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) == 0x12340002) {
                 goto spun2;
             }
         spin2:
-            gl_func_00000000(base);
-            if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) != 0x12340002) {
+            CALL(fs_yield_00066364)(base);
+            if (p = *(u8 **)(g + 0x28), CALL(fs_piReadWord_00066210)(base, p + 8) != 0x12340002) {
                 goto spin2;
             }
         spun2:;
@@ -16160,13 +16161,13 @@ void fs_bufWrite_334E8(void) {
         rem -= chunk;
         src += chunk;
         if (rem < 0) {
-            gl_func_00000000(base, &sStr_Write_ve_len_1E2B0);   /* underflow diag */
+            CALL(fs_fatal_000661D8)(base, &sStr_Write_ve_len_1E2B0);   /* underflow diag */
         }
         if (rem != 0) {
-            gl_func_00000000(base);
+            CALL(fs_yield_00066364)(base);
         }
     } while (rem != 0);
-    gl_func_00000000(base);
+    CALL(fs_stub_00066208)(base);
 }
 #undef base
 
@@ -16221,15 +16222,15 @@ void fs_bufWrite_334E8(void) {
 void dma_startRead(int id, unsigned dram, int devAddr, int len) {
     DmaSlot *rec;
     if (dram & 7) {
-        gl_func_00000000(sDmaReadNotAligned, id, dram);
+        CALL(sys_fatal)(sDmaReadNotAligned, id, dram);
     }
     if (len & 1) {
-        gl_func_00000000(sDmaBadReadLen, len);
+        CALL(sys_fatal)(sDmaBadReadLen, len);
     }
     rec = &gDmaSlots[id];
     rec->busy = 1;
-    gl_func_00000000(dram, len);
-    gl_func_00000000(rec, 0, 0, devAddr, dram, len, rec->mq);
+    CALL(dma_writebackCache)(dram, len);
+    CALL(gl_osPiStartDma)(rec, 0, 0, devAddr, dram, len, rec->mq);
     rec->dram = dram;
     rec->len = len;
     rec->invalidate = 1;
@@ -16283,15 +16284,15 @@ void dma_startRead(int id, unsigned dram, int devAddr, int len) {
 void dma_startWrite(int id, int devAddr, unsigned dram, int len) {
     DmaSlot *rec;
     if (dram & 7) {
-        gl_func_00000000(sDmaWriteNotAligned, len);
+        CALL(sys_fatal)(sDmaWriteNotAligned, len);
     }
     if (len & 1) {
-        gl_func_00000000(sDmaBadWriteLen, len);
+        CALL(sys_fatal)(sDmaBadWriteLen, len);
     }
     rec = &gDmaSlots[id];
     rec->busy = 1;
-    gl_func_00000000(dram, len);
-    gl_func_00000000(rec, 0, 1, devAddr, dram, len, rec->mq);
+    CALL(dma_writebackCache)(dram, len);
+    CALL(gl_osPiStartDma)(rec, 0, 1, devAddr, dram, len, rec->mq);
     rec->invalidate = 0;
 }
 
@@ -16316,9 +16317,9 @@ void dma_wait(int idx) {
     DmaSlot *rec;
     rec = &gDmaSlots[idx];
     if (rec->busy != 0) {
-        gl_func_00000000(rec->mq, &local, 1);
+        CALL(gl_osRecvMesg)(rec->mq, &local, 1);
         if (rec->invalidate != 0) {
-            gl_func_00000000(rec->dram, rec->len);
+            CALL(dma_invalCache)(rec->dram, rec->len);
         }
         rec->busy = 0;
     }
@@ -16327,19 +16328,19 @@ void dma_wait(int idx) {
 /* dma_read: 27-insn busy-wait + 2-call. */
 void dma_read(int a0, int a1, int a2) {
     while (gDmaSlots[0].busy != 0) {
-        func_00000000();
+        FCALL(gl_osYieldThread)();
     }
-    func_00000000(0, a0, a1, a2);
-    func_00000000(0);
+    FCALL(dma_startRead)(0, a0, a1, a2);
+    FCALL(dma_wait)(0);
 }
 
 /* dma_write: 27-insn busy-wait + 2-call wrapper. */
 void dma_write(int a0, int a1, int a2) {
     while (gDmaSlots[0].busy != 0) {
-        func_00000000();
+        FCALL(gl_osYieldThread)();
     }
-    func_00000000(0, a0, a1, a2);
-    func_00000000(0);
+    FCALL(dma_startWrite)(0, a0, a1, a2);
+    FCALL(dma_wait)(0);
 }
 
 /* dma_allocSlot: 22-insn table-scan helper. Walks 9 records at
@@ -16352,21 +16353,21 @@ int dma_allocSlot(void) {
         if (p->busy == 0) return i;
         p++;
     }
-    gl_func_00000000(sDmaOutOfSlots);
+    CALL(sys_fatal)(sDmaOutOfSlots);
     return 0;
 }
 
 extern int gl_func_00000000();
 int dma_readAsync(int a0, int a1, int a2) {{
-    int r = gl_func_00000000(a0, a1, a2);
-    gl_func_00000000(r, a0, a1, a2);
+    int r = CALL(dma_allocSlot)(a0, a1, a2);
+    CALL(dma_startRead)(r, a0, a1, a2);
     return r;
 }}
 
 extern int gl_func_00000000();
 int dma_writeAsync(int a0, int a1, int a2) {{
-    int r = gl_func_00000000(a0, a1, a2);
-    gl_func_00000000(r, a0, a1, a2);
+    int r = CALL(dma_allocSlot)(a0, a1, a2);
+    CALL(dma_startWrite)(r, a0, a1, a2);
     return r;
 }}
 
@@ -16431,7 +16432,7 @@ void dma_init(void) {
 
     for (k = 0; k < 10; k++) {
         *(int *)((char *)gDmaSlots + k * 0x44 + 0x3C) = 0;
-        gl_func_00000000((char *)gDmaSlots + 0x18 + k * 0x44, (char *)gDmaSlots + 0x30 + k * 0x44, 1);
+        CALL(gl_osCreateMesgQueue)((char *)gDmaSlots + 0x18 + k * 0x44, (char *)gDmaSlots + 0x30 + k * 0x44, 1);
     }
 }
 
@@ -16554,10 +16555,10 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     u8 *g = &gFsStream1_33be4_dst;
 
     rem = flags; src = src0;
-    if (flags & 1) { base = (u8 *)&gFsStream1; gl_func_00000000(base, &sStr_Write_bad_length_1E330);
+    if (flags & 1) { base = (u8 *)&gFsStream1; CALL(fs_fatal_000661D8)(base, &sStr_Write_bad_length_1E330);
     }
     base = (u8 *)&gFsStream1;
-    gl_func_00000000(base);
+    CALL(fs_stub_00066200)(base);
     if (flags != 0) {
         sent = 0x12340002;
         do {
@@ -16585,40 +16586,40 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
                         cpdst += 1;
                     } while (cnt < chunk);
                 }
-                gl_func_00000000(base, *(s32 *)(g + 8), base, chunk);
+                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), base, chunk);
             } else {
-                gl_func_00000000(base, *(s32 *)(g + 8), src, chunk);
+                CALL(fs_writeBytes_00066330)(base, *(s32 *)(g + 8), src, chunk);
             }
             *(s32 *)(g + 8) += chunk;
-            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, *(s32 *)(g + 8));
+            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags, *(s32 *)(g + 8));
         }
         if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 8)) {    /* hit segment end */
             cur = *(s32 *)(g + 8);
             *(s32 *)(g + 0x14) = cur;
-            gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
+            CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                gl_func_00000000(base, &sStr_Write_not_at_end_1E344);
+                CALL(fs_fatal_000661D8)(base, &sStr_Write_not_at_end_1E344);
             }
-            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340001);   /* kick DMA */
-            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
+            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340001);   /* kick DMA */
+            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
                 goto spun1;
             }
         spin1:
-            gl_func_00000000(base);
-            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) != sent) {
+            CALL(fs_yield_00066364)(base);
+            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
                 goto spin1;
             }
         spun1:
             cur = *(s32 *)(g + 0x24);                 /* rebase to saved start */
             *(s32 *)(g + 8) = cur;
-            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags, cur);
-            flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340003);   /* kick second DMA */
-            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
+            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags, cur);
+            flags = *(s32 *)(g + 0x28), CALL(fs_piWriteWord_000662E8)(base, flags + 8, 0x12340003);   /* kick second DMA */
+            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) == sent) {
                 goto spun2;
             }
         spin2:
-            gl_func_00000000(base);
-            if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) != sent) {
+            CALL(fs_yield_00066364)(base);
+            if (flags = *(s32 *)(g + 0x28), CALL(fs_piReadWord_00066210)(base, flags + 8) != sent) {
                 goto spin2;
             }
         spun2:;
@@ -16626,14 +16627,14 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
         rem -= chunk;
         src += chunk;
         if (rem < 0) {
-            gl_func_00000000(base, &sStr_Write_ve_len_1E358);   /* underflow diag */
+            CALL(fs_fatal_000661D8)(base, &sStr_Write_ve_len_1E358);   /* underflow diag */
         }
         if (rem != 0) {
-            gl_func_00000000(base);
+            CALL(fs_yield_00066364)(base);
         }
         } while (rem != 0);
     }
-    gl_func_00000000(base);
+    CALL(fs_stub_00066208)(base);
 }
 
 // fs_bufRead_33EB8 — STRUCTURAL PASS (0x2D0 / 180 words, no episode).
@@ -16737,37 +16738,37 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     u8 *g = &gFsStream2_33eb8_src;
 
     rem = flags; dst = dst0;
-    if (flags & 1) { base = (u8 *)&gFsStream2; gl_func_00000000(base, &sStr_Read_bad_length_1E368);
+    if (flags & 1) { base = (u8 *)&gFsStream2; CALL(fs_fatal_000661D8)(base, &sStr_Read_bad_length_1E368);
     }
     base = (u8 *)&gFsStream2;
-    gl_func_00000000(base);
+    CALL(fs_stub_00066200)(base);
     if (flags != 0) {
         do {
-            *(s32 *)(g + 8) = gl_func_00000000(base, *(s32 *)(g + 0x28));
+            *(s32 *)(g + 8) = CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28));
             if (*(s32 *)(g + 0x2C) == *(s32 *)(g + 0xC)) {
-                tmp = gl_func_00000000(base, *(s32 *)(g + 0x28) + 8);
+                tmp = CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8);
                 *(s32 *)(g + 0x10) = tmp;
                 if (tmp == 0x12340001) {
                     if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 0xC)) {
-                        gl_func_00000000(base, &sStr_Read_read_not_at_end_1E37C);
+                        CALL(fs_fatal_000661D8)(base, &sStr_Read_read_not_at_end_1E37C);
                     }
                     if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                        gl_func_00000000(base, &sStr_Read_write_not_at_end_1E394);
+                        CALL(fs_fatal_000661D8)(base, &sStr_Read_write_not_at_end_1E394);
                     }
-                    gl_func_00000000(base, *(s32 *)(g + 0x28) + 8, 0x12340002); if (1) {}
+                    CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 8, 0x12340002); if (1) {}
                     tmp = *(s32 *)(g + 0x24);
                     *(s32 *)(g + 0xC) = tmp;
                     *(s32 *)(g + 8) = tmp;
-                    if (gl_func_00000000(base, *(s32 *)(g + 0x28) + 8) == 0x12340003) {
+                    if (CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8) == 0x12340003) {
                         goto flushed;
                     }
                 flush:
-                    gl_func_00000000(base);
-                    if (gl_func_00000000(base, *(s32 *)(g + 0x28) + 8) != 0x12340003) {
+                    CALL(fs_yield_00066364)(base);
+                    if (CALL(fs_piReadWord_00066210)(base, *(s32 *)(g + 0x28) + 8) != 0x12340003) {
                         goto flush;
                     }
                 flushed:
-                    gl_func_00000000(base, *(s32 *)(g + 0x28) + 8, 0x12340002);
+                    CALL(fs_piWriteWord_000662E8)(base, *(s32 *)(g + 0x28) + 8, 0x12340002);
                 }
             }
             flags = *(s32 *)(g + 8) - *(s32 *)(g + 0xC);
@@ -16780,7 +16781,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                         flags = 8 - (dst & 7); if (flags) {}
                     }
                     cnt = 0;
-                    gl_func_00000000(base, *(s32 *)(g + 0xC), base, flags);
+                    CALL(fs_readBytes_00066264)(base, *(s32 *)(g + 0xC), base, flags);
                     if (flags != 0) {
                         src = (cpdst = dst, &gFsStream2_33eb8_src);
                         do {
@@ -16791,21 +16792,21 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                         } while (cnt < flags);
                     }
                 } else {
-                    gl_func_00000000(base, *(s32 *)(g + 0xC), dst, flags);
+                    CALL(fs_readBytes_00066264)(base, *(s32 *)(g + 0xC), dst, flags);
                 }
                 *(s32 *)(g + 0xC) = *(s32 *)(g + 0xC) + flags;
             }
             rem -= flags;
             dst += flags;
             if (rem < 0) {
-                gl_func_00000000(base, &sStr_Read_ve_len_1E3AC);
+                CALL(fs_fatal_000661D8)(base, &sStr_Read_ve_len_1E3AC);
             }
             if (rem != 0) {
-                gl_func_00000000(base);
+                CALL(fs_yield_00066364)(base);
             }
         } while (rem != 0);
     }
-    gl_func_00000000(base);
+    CALL(fs_stub_00066208)(base);
 }
 
 
@@ -16846,10 +16847,10 @@ void sys_fatalSwapBuffer_00034180(void) {
 
     vt = *(char **)(gConsoleNode_3EF04_34180_dev + 0x28);
     (*(int (**)())(vt + 0x1C))(gConsoleNode_3EF04_34180_dev + *(short *)(vt + 0x18));
-    gl_func_00000000();
-    while ((u32)gl_func_00000000() < 0x1E0) {}
+    CALL(sys_writebackDCacheAll)();
+    while ((u32)CALL(osViGetCurrentLine)() < 0x1E0) {}
     vt = *(char **)(*(char **)((char *)&D_00000000 + 0x240) + 0x28);
-    gl_func_00000000((*(int (**)())(vt + 0x64))(*(char **)((char *)&D_00000000 + 0x240) + *(short *)(vt + 0x60), &gGfxLib));
+    CALL(osViSwapBuffer)((*(int (**)())(vt + 0x64))(*(char **)((char *)&D_00000000 + 0x240) + *(short *)(vt + 0x60), &gGfxLib));
     *(int *)(*(char **)((char *)&D_00000000 + 0x240) + 0x144) = (*(int *)((char *)&D_00000000 + 0x204) ^= 1);
     if (1) {}
     for (i = 0; i < 2000000; i++) {}
@@ -16925,16 +16926,16 @@ void sys_fatalHaltLoop(void) {
 
     *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 1;
     if (gConsoleNode_3EF04_34240_G) {}
-    gl_func_00000000(dp = d, -1);
+    CALL(pad_open)(dp = d, -1);
     saved34 = *(int *)(gConsoleNode_3EF04_34240_G + 0x34);
-    gl_func_00000000(&gGfxLib_34240_X, 1);
+    CALL(gfx_viBlack)(&gGfxLib_34240_X, 1);
 
     cfg = &D_0001E21C;
     s0 = cfg;
     if (*(int *)s0 != 0) {
         do {
-            gl_func_00000000(&gSysDevBlock_3A4E8_34240_P);
-            gl_func_00000000(dp);
+            CALL(pad_sync_0006719C)(&gSysDevBlock_3A4E8_34240_P);
+            CALL(pad_update)(dp);
             if (*(int *)(dp + 0x18) != 0) {
                 if (*(int *)(dp + 0x18) == *(int *)s0) {
                     s0 += 4;
@@ -16945,29 +16946,29 @@ void sys_fatalHaltLoop(void) {
         } while (*(int *)s0 != 0);
     }
 
-    gl_func_00000000(0);
-    gl_func_00000000(&gGfxLib_34240_Y, 0);
+    CALL(gfx_setVideoMode)(0);
+    CALL(gfx_viBlack)(&gGfxLib_34240_Y, 0);
 
     (*(void (**)(char *))(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x1C))(gConsoleNode_3EF04_34240_G + *(short *)(*(char **)(gConsoleNode_3EF04_34240_G + 0x28) + 0x18));
-    gl_func_00000000();
-    gl_func_00000000();
+    CALL(sys_fatalSwapBuffer_00034180)();
+    CALL(sys_fatalSwapBuffer_00034180)();
 
     for (;;) {
         *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = (int)dp;
         if (*(int *)(dp + 0x10) != 0) {
-            gl_func_00000000();
+            CALL(sys_fatalSwapBuffer_00034180)();
         }
         if (*(int *)(dp + 0x1C) & 0x40000) {
             break;
         }
         if (*(int *)(dp + 0x18) & 0x100) {
-            gl_func_00000000();
-            gl_func_00000000();
+            CALL(heap_printStats)();
+            CALL(dbg_printThreads)();
         }
-        gl_func_00000000(&gSysDevBlock_3A4E8_34240_P);
-        gl_func_00000000(dp);
+        CALL(pad_sync_0006719C)(&gSysDevBlock_3A4E8_34240_P);
+        CALL(pad_update)(dp);
     }
-    gl_func_00000000(0x202);
+    CALL(gfx_setVideoMode)(0x202);
     *(int *)(gConsoleNode_3EF04_34240_G + 0x38) = 0;
     *(int *)(gConsoleNode_3EF04_34240_G + 0x34) = saved34;
 }

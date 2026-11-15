@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int AnimPlayer_update();
@@ -23,8 +24,8 @@ extern char gl_data_BE14_b;
 extern char gl_data_BE14_c;
 void gl___osSiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
-    gl_func_00000000(&gl_data_BE14_b, GL_BSS(0x42800), 1);
-    gl_func_00000000(&gl_data_BE14_c, 0, 0);
+    CALL(gl_osCreateMesgQueue)(&gl_data_BE14_b, GL_BSS(0x42800), 1);
+    CALL(gl_osSendMesg)(&gl_data_BE14_c, 0, 0);
 }
 /* game_libs_func_0006BE64 (2-word splat mis-split: lui t6,0; lw t6,0(t6)) was
  * the stolen prologue of gl___osSiGetAccess — forward-merged into it (orphan-fn
@@ -33,13 +34,13 @@ void gl___osSiGetAccess(void) {
     int local;
     int pad;
     if (*(int*)&D_00000000 == 0) {
-        gl_func_00000000();
+        CALL(gl___osSiCreateAccessQueue)();
     }
-    gl_func_00000000(&D_00000000, &local, 1);
+    CALL(gl_osRecvMesg)(&D_00000000, &local, 1);
 }
 
 void gl___osSiRelAccess(void) {
-    gl_func_00000000(&D_00000000, 0, 0);
+    CALL(gl_osSendMesg)(&D_00000000, 0, 0);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006BEA8_pad.s")
 

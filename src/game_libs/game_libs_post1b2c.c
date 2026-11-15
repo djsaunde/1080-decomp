@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int AnimPlayer_update();
@@ -229,7 +230,7 @@ int gl___osSiRawReadIo_0006CCD4(int devAddr, int *data) {
 
 extern int gl_func_00000000();
 int gl_osSpTaskYield() {
-    return gl_func_00000000(0x400);
+    return CALL(gl___osSpSetStatus)(0x400);
 }
 
 /* osViSetMode = libultra osViSetMode (io/visetmode.c verbatim),
@@ -504,7 +505,7 @@ int _Printf(char *(*prout)(char *, const char *, unsigned int), char *arg, const
 
 extern int gl_func_00000000();
 int gl_proutSprintf(int a0, int a1, int a2) {
-    return gl_func_00000000(a0, a1) + a2;
+    return CALL(memcpy)(a0, a1) + a2;
 }
 
 /* gl_sprintf: vsprintf-style varargs wrapper. MATCHED.

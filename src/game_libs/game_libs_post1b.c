@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/anim.h"
 #include "gdl/skin.h"
+#include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int gl_data_67470_addr;
@@ -70,24 +71,24 @@ void AnimPlayer_advance(char *arg0) {
                 /* time = frame(key 0) + |weight| * (frame(key 1) - frame(key 0)) */
                 if (AP(arg0)->weight < 0.0f) {
                     AP(arg0)->anim = AP(arg0)->weightAnimNeg;
-                    sp34 = gl_func_00000000(arg0, AP(arg0)->weightAnimNeg, 0);
+                    sp34 = CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->weightAnimNeg, 0);
                     if (sp34) {}
-                    AP(arg0)->time = (-AP(arg0)->weight * ((f32) gl_func_00000000(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
+                    AP(arg0)->time = (-AP(arg0)->weight * ((f32) CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
                 } else {
                     AP(arg0)->anim = AP(arg0)->weightAnimPos;
-                    sp34 = gl_func_00000000(arg0, AP(arg0)->weightAnimPos, 0);
+                    sp34 = CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->weightAnimPos, 0);
                     if (sp34) {}
-                    AP(arg0)->time = (AP(arg0)->weight * ((f32) gl_func_00000000(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
+                    AP(arg0)->time = (AP(arg0)->weight * ((f32) CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, 1) - (f32) sp34)) + (f32) sp34;
                 }
             } else {
                 /* sp24 = end frame, t2 = start frame, d = the end key's rate; sp20 = backwards */
-                sp24 = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->endKey);
-                t2 = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->startKey);
+                sp24 = (f32) CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, AP(arg0)->endKey);
+                t2 = (f32) CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, AP(arg0)->startKey);
                 sp20 = 0;
                 if (sp24 < t2) {
                     sp20 = 1;
                 }
-                d = gl_func_00000000_f(arg0, AP(arg0)->anim, AP(arg0)->endKey);
+                d = XCALL(gl_func_00000000_f, AnimPlayer_getKeyTime)(arg0, AP(arg0)->anim, AP(arg0)->endKey);
                 if (sp20 != 0) {
                     t = AP(arg0)->time - d;
                     AP(arg0)->time = t;
@@ -99,7 +100,7 @@ void AnimPlayer_advance(char *arg0) {
                 }
                 if (AP(arg0)->eventKey != ANIM_NO_KEY) {
                     if (sp20 != 0) {
-                        sp34 = gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
+                        sp34 = CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
                         if (AP(arg0)->time <= (f32) sp34) {
                             {
                                 p2 = (int *) AP(arg0)->node.vptr;
@@ -108,7 +109,7 @@ void AnimPlayer_advance(char *arg0) {
                             }
                         }
                     } else {
-                        sp34 = gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
+                        sp34 = CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, AP(arg0)->eventKey);
                         if ((f32) sp34 <= AP(arg0)->time) {
                             {
                                 p2 = (int *) AP(arg0)->node.vptr;
@@ -126,12 +127,12 @@ void AnimPlayer_advance(char *arg0) {
                             int t7C = AP(arg0)->startKey;
                             AP(arg0)->startKey = AP(arg0)->endKey; AP(arg0)->endKey = t7C;
                         } else {
-                            AP(arg0)->time = (f32) gl_func_00000000(arg0, AP(arg0)->anim, AP(arg0)->startKey);
+                            AP(arg0)->time = (f32) CALL(AnimPlayer_getKeyFrame)(arg0, AP(arg0)->anim, AP(arg0)->startKey);
                         }
                     }
                 }
             }
-            sp3C = gl_func_00000000(AP(arg0)->mgr, AP(arg0)->anim);
+            sp3C = CALL(AnimDataMgr_lookup)(AP(arg0)->mgr, AP(arg0)->anim);
             {
                 s16 cnt = ((AnimData *)sp3C)->numFrames;
                 int vi = (s32) AP(arg0)->time;
@@ -174,8 +175,8 @@ void AnimPlayer_advance(char *arg0) {
                 if (dec <= 0) {
                     /* the frame cache (AnimDataMgr +0x40): fetch frame0 / frame1 of this anim */
                     sp38 = (char *) (AP(arg0)->mgr + 0x40);
-                    AP(arg0)->slot0 = gl_func_00000000(sp38, (char *) sp3C, AP(arg0)->frame0);
-                    AP(arg0)->slot1 = gl_func_00000000(sp38, (char *) sp3C, AP(arg0)->frame1);
+                    AP(arg0)->slot0 = CALL(AnimDataMgr_getSlot)(sp38, (char *) sp3C, AP(arg0)->frame0);
+                    AP(arg0)->slot1 = CALL(AnimDataMgr_getSlot)(sp38, (char *) sp3C, AP(arg0)->frame1);
                 }
             }
         }
@@ -239,8 +240,8 @@ void AnimPlayer_applyPose(int *self) {
     }
     {
         int base = AP(self)->mgr + 0x40;
-        AP(self)->pose0 = gl_func_00000000(base, AP(self)->slot0);
-        AP(self)->pose1 = gl_func_00000000(base, AP(self)->slot1);
+        AP(self)->pose0 = CALL(AnimFrameCache_getPose)(base, AP(self)->slot0);
+        AP(self)->pose1 = CALL(AnimFrameCache_getPose)(base, AP(self)->slot1);
     }
     next = (int *) AP(self)->animators;
     cur = next;
@@ -269,7 +270,7 @@ void AnimPlayer_setUpdateInterval(AnimPlayer *a0, int a1) {
  * K&R caller-slot spill. */
 extern int func_00000000();
 void AnimPlayer_setKey(AnimPlayer *a0, int a1, int a2, int a3, float f) {
-    AnimData *r = (AnimData *)func_00000000(a0->mgr, a1); /* AnimDataMgr_lookup */
+    AnimData *r = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr, a1); /* AnimDataMgr_lookup */
     *(int*)((char*)r->keys + a2*8) = a3;
     *(int*)((char*)r->keys + a2*8) = (int)f; /* keys[a2].frame, written twice */
 }
@@ -282,10 +283,10 @@ void AnimPlayer_setKey(AnimPlayer *a0, int a1, int a2, int a3, float f) {
  *   }
  *   return v0->[0x10][a2*8/4]; */
 int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)func_00000000(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
-        int v = func_00000000(a1);                      /* anim_formatId */
-        func_00000000((char*)&D_00000000 + 0x22180, a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
+        int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
+        FCALL(sys_fatal)((char*)&D_00000000 + 0x22180, a2, v); /* sys_fatal("BadKeyFrame %d - %s") */
     }
     return ((AnimKey *)v0->keys)[a2].frame;
 }
@@ -294,10 +295,10 @@ int AnimPlayer_getKeyFrame(AnimPlayer *a0, int a1, int a2) {
  *   Same bounds-check + array-deref pattern, but returns float from
  *   offset +4 in the 8-byte entry. */
 float AnimPlayer_getKeyTime(AnimPlayer *a0, int a1, int a2) {
-    AnimData *v0 = (AnimData *)func_00000000(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
+    AnimData *v0 = (AnimData *)FCALL(AnimDataMgr_lookup)(a0->mgr); /* AnimDataMgr_lookup(mgr, a1) */
     if (a2 >= v0->numKeys) {
-        int v = func_00000000(a1);                      /* anim_formatId */
-        func_00000000((char*)&D_00000000 + 0x22194, a2, v); /* sys_fatal("BadKeyTime %d - %s") */
+        int v = FCALL(anim_formatId)(a1);                      /* anim_formatId */
+        FCALL(sys_fatal)((char*)&D_00000000 + 0x22194, a2, v); /* sys_fatal("BadKeyTime %d - %s") */
     }
     return ((AnimKey *)v0->keys)[a2].rate;
 }
@@ -320,20 +321,20 @@ extern void gl_func_00000000_635d8_v();
 /* (self, anim, startKey, endKey, flags, blendFrames); sys_imin("StartAnim") ... sys_imout */
 void AnimPlayer_start(AnimPlayer *self, int a1, int a2, int a3, int a4, int a5) {
     int r;
-    gl_func_00000000_635d8_v((char*)&D_00000000 + 0x221A8);
+    XCALL(gl_func_00000000_635d8_v, sys_imin)((char*)&D_00000000 + 0x221A8);
     self->reqEndKey = a3;
     self->endKey = a3;
     self->anim = a1;
     self->startKey = a2;
     self->reqStartKey = a2;
-    r = gl_func_00000000(self, a1, a2); /* AnimPlayer_getKeyFrame */
+    r = CALL(AnimPlayer_getKeyFrame)(self, a1, a2); /* AnimPlayer_getKeyFrame */
     self->time = (float)r;
     self->blendFrames = a5;
     self->eventKey = ANIM_NO_KEY;
     self->blendEvent = ANIM_NO_KEY;
     self->blendCount = 0;
     self->flags = a4;
-    gl_func_00000000();
+    CALL(sys_imout)();
 }
 
 /* AnimPlayer_startIfChanged: too-big-N-function-bundle (declared size 0xA0, 40 words).
@@ -392,7 +393,7 @@ void AnimPlayer_startIfChanged(int a0, int a1, int a2, int a3, int a4, int a5) {
         a3 == AP(a0)->reqEndKey) {
         return;
     }
-    gl_func_00000000(a0, a1, a2, a3, a4, a5);
+    CALL(AnimPlayer_start)(a0, a1, a2, a3, a4, a5);
 }
 
 /* AnimPlayer_setBlend: 18-insn struct-setter. Stores a1/a2/float-a3/a5
@@ -432,7 +433,7 @@ void hostio_readQuadParm_0006370C(char *a0) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00063744(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -440,7 +441,7 @@ extern int gl_func_00000000();
 void fs_gdlReadFloat_00063780(float *dst) {
     int pad;
     float scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -450,7 +451,7 @@ void fs_gdlReadVec3_000637BC(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&gSysLib, &raw, 12);
+    CALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -460,7 +461,7 @@ void fs_gdlReadVec3_000637BC(Vec3 *dst) {
 extern int gl_func_00000000();
 void fs_gdlReadQuad_0006382C(Quad4 *dst) {
     Quad4 scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
@@ -496,7 +497,7 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
     Tri3i tmp;
     int pad_b[2];
     if (a0 == 0) {
-        a0 = (void*)gl_func_00000000(292);
+        a0 = (void*)CALL(mem_new)(292);
         if (a0 == 0) goto end;
     }
     gl_init_00000000_63884(a0, GL_DATA_STR(0x22388, "<QNode>"), 0.0f, 0.0f, 0.0f);
@@ -555,12 +556,12 @@ extern int aD63DC4_5(void*, void*, float, float, float);
 extern int aD63DC4_4(void*, float, float, float);
 extern float aD63DC4_1(float);
 void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
-    if (s0 != 0 || (s0 = (void*)gl_func_00000000(368)) != 0) {
+    if (s0 != 0 || (s0 = (void*)CALL(mem_new)(368)) != 0) {
         aD63DC4_5(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
         *(int*)((char*)s0 + 0x28) = (int)&Friction_vtbl;
         *(int*)((char*)s0 + 0x16C) = a1;
         aD63DC4_4(s0, a2, a3, a4);
-        gl_func_00000000(s0);
+        CALL(Friction_reset_00064124)(s0);
         *(float*)((char*)s0 + 0x164) =
             aD63DC4_1(a2 * a2 + a3 * a3 + a4 * a4);
     }
@@ -599,13 +600,13 @@ extern int gl_func_00000000();
 extern int gl_func_00000000f(void *, void *, void *, float, float, int);
 extern int D_00000000;
 void Friction_hostioParms_00063E84(char *a0) {
-    gl_func_00000000(&gHostio, GL_DATA_STR(0x22398, "Friction"), 0);
-    gl_func_00000000f(&gHostio, GL_DATA_STR(0x223A4, "Friction"),
+    CALL(hostio_beginGroup)(&gHostio, GL_DATA_STR(0x22398, "Friction"), 0);
+    XCALL(gl_func_00000000f, hostio_addFloat)(&gHostio, GL_DATA_STR(0x223A4, "Friction"),
                       a0 + 0x150, 0.0f, 2.0f, 1);
-    gl_func_00000000f(&gHostio, GL_DATA_STR(0x223B0, "Friction Limit"),
+    XCALL(gl_func_00000000f, hostio_addFloat)(&gHostio, GL_DATA_STR(0x223B0, "Friction Limit"),
                       a0 + 0x154, 0.0f, 10.0f, 1);
-    gl_func_00000000(&gHostio);
-    gl_func_00000000(a0);
+    CALL(hostio_endGroup)(&gHostio);
+    CALL(QNode_hostioParms)(a0);
 }
 
 
@@ -651,9 +652,9 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
         sp44.unk0 = (*(f32 *)(arg2 + 0x0) * (0, temp_f0)) - sp44.unk0;
         sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
         sp44.unk8 = (*(f32 *)(arg2 + 0x8) * (0, temp_f0)) - sp44.unk8;
-        sp40 = gl_func_00000000_s((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
+        sp40 = XCALL(gl_func_00000000_s, math_vec3Length_0005BBCC)((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
         if (kRo_Friction_vfn11_00063F34_20A0.v < (f64) sp40) {
-            gl_func_00000000(&sp44);
+            CALL(math_vec3Normalize)(&sp44);
             var_f0 = (f32) ((f64) (((*(f32 *)((char *)arg0 + 0x150)) * (*(f32 *)((char *)FW(arg0, 0x16C) + 0x360))) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
             var_f0 = var_f0 * var_f0;
             if (kRo_Friction_vfn11_00063F34_20B0.v < (f64) var_f0) {
@@ -669,7 +670,7 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
             sp44.unk0 = tx;
             sp44.unk4 = ty;
             sp44.unk8 = tz;
-            gl_func_00000000(FW(arg0, 0x16C), arg0 + 0x120, &sp44);
+            CALL(DNode_addImpulseAt_00065250)(FW(arg0, 0x16C), arg0 + 0x120, &sp44);
         }
     }
 }
@@ -681,9 +682,9 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
 void Friction_handleMsg_000640E4(int a0, int *a1) {
     int v = *a1;
     if (v == 9) {
-        gl_func_00000000(a0);
+        CALL(Friction_reset_00064124)(a0);
     } else {
-        gl_func_00000000(a0);
+        CALL(QNode_handleMsg)(a0);
     }
 }
 
@@ -794,7 +795,7 @@ void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     float m;
     float inv;
 
-    m = gl_func_00000000_sq641DC(a2->x * a2->x + a2->y * a2->y + a2->z * a2->z);
+    m = XCALL(gl_func_00000000_sq641DC, math_vec3Length_0005BBCC)(a2->x * a2->x + a2->y * a2->y + a2->z * a2->z);
     a0->f00 += m;
     a0->f04 += a1->x * m;
     a0->f08 += a1->y * m;
@@ -804,10 +805,10 @@ void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     pp->y += a2->y;
     pp->z += a2->z;
     local = *a1;
-    m = gl_func_00000000_sq641DC(local.x * local.x + local.y * local.y + local.z * local.z);
+    m = XCALL(gl_func_00000000_sq641DC, math_vec3Length_0005BBCC)(local.x * local.x + local.y * local.y + local.z * local.z);
     if (*(double *)(GL_RODATA(0x20C0)) < m) {
         Vec3 padB[3];
-        gl_func_00000000(&local, a2, &out);
+        CALL(math_vec3Cross)(&local, a2, &out);
         inv = 1.0f / m;
         out.x *= inv;
         out.y *= inv;
@@ -1085,20 +1086,20 @@ void *DNode_ctor(void *arg0, void *arg1) {
     char *mb2;
     int g18, g19, g20, g21;
 
-    if (arg0 != 0 || (arg0 = (void *)gl_func_00000000(0x3D4)) != 0) {
+    if (arg0 != 0 || (arg0 = (void *)CALL(mem_new)(0x3D4)) != 0) {
         gl_init_00000000_64588(arg0, arg1, 0.0f, 0.0f, 0.0f);
         FW64(arg0, 0x28) = (int)&gl_ref_00000000_64588;
         if ((base = (char *)arg0 + 0x108) != 0 ||
-            (base = (char *)gl_func_00000000(0x180)) != 0) {
-            if ((p = base) != 0 || (p = (char *)gl_func_00000000(8)) != 0) {
+            (base = (char *)CALL(mem_new)(0x180)) != 0) {
+            if ((p = base) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
                 FW64(p, 0) = (int)&sStr_DNode_Parms_223C0;
                 FW64(p, 4) = 0;
             }
             u1.v = sTag_imp_223D0;
             {
                 t = u1;
-                if ((m = base + 0x8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_1;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 0.0f;
@@ -1107,8 +1108,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u2.v = sTag_spd_223D4;
             {
                 t = u2;
-                if ((m = base + 0x20) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x20) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_2;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = kRo_DNode_ctor_20D4;
@@ -1117,8 +1118,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u3.v = sTag_spl_223D8;
             {
                 t = u3;
-                if ((m = base + 0x38) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x38) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_3;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 100.0f;
@@ -1127,8 +1128,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u4.v = sTag_spw_223DC;
             {
                 t = u4;
-                if ((m = base + 0x50) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x50) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_4;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 0.0f;
@@ -1137,8 +1138,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u5.v = sTag_gvt_223E0;
             {
                 t = u5;
-                if ((m = base + 0x68) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x68) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_5;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = kRo_DNode_ctor_20D8;
@@ -1147,8 +1148,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u6.v = sTag_suc_223E4;
             {
                 t = u6;
-                if ((m = base + 0x80) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x80) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_6;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 0.0f;
@@ -1157,8 +1158,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u7.v = sTag_vsc_223E8;
             {
                 t = u7;
-                if ((m = base + 0x98) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x98) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_7;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = kRo_DNode_ctor_20DC;
@@ -1167,8 +1168,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u8.v = sTag_usc_223EC;
             {
                 t = u8;
-                if ((m = base + 0xB0) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0xB0) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_8;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = kRo_DNode_ctor_20E0;
@@ -1177,8 +1178,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u9.v = sTag_tsc_223F0;
             {
                 t = u9;
-                if ((m = base + 0xC8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0xC8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_9;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 1.0f;
@@ -1194,8 +1195,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 set[1].v = b1min;
                 set[0].v = b1max;
                 t = uc1;
-                if ((mb1 = base + 0xE0) != 0 || (mb1 = (char *)gl_func_00000000(0x20)) != 0) {
-                    gl_func_00000000(mb1, base, t, 1);
+                if ((mb1 = base + 0xE0) != 0 || (mb1 = (char *)CALL(mem_new)(0x20)) != 0) {
+                    CALL(Parms_addParm)(mb1, base, t, 1);
                     FW64(mb1, 0xC) = (int)&gl_ref_000221F0_64588_c1;
                     FW64(mb1, 0x1C) = 0;
                     tmp = set[2].v;
@@ -1207,8 +1208,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u10.v = sTag_unc_223F8;
             {
                 t = u10;
-                if ((m = base + 0x100) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x100) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_10;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 0.0f;
@@ -1217,8 +1218,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u11.v = sTag_dsc_223FC;
             {
                 t = u11;
-                if ((m = base + 0x118) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x118) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_11;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 1.0f;
@@ -1227,8 +1228,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u12.v = sTag_csc_22400;
             {
                 t = u12;
-                if ((m = base + 0x130) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x130) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_12;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 420.0f;
@@ -1237,8 +1238,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
             u13.v = sTag_rad_22404;
             {
                 t = u13;
-                if ((m = base + 0x148) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
-                    gl_func_00000000(m, base, t, 1);
+                if ((m = base + 0x148) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
+                    CALL(Parms_addParm)(m, base, t, 1);
                     FW64(m, 0xC) = (int)&gl_ref_000221D8_64588_13;
                     FW64(m, 0x14) = 0;
                     FF64(m, 0x10) = 150.0f;
@@ -1257,8 +1258,8 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 set[1].v = b2min;
                 set[0].v = b2max;
                 t = uc2;
-                if ((mb2 = base + 0x160) != 0 || (mb2 = (char *)gl_func_00000000(0x20)) != 0) {
-                    gl_func_00000000(mb2, base, t, 1);
+                if ((mb2 = base + 0x160) != 0 || (mb2 = (char *)CALL(mem_new)(0x20)) != 0) {
+                    CALL(Parms_addParm)(mb2, base, t, 1);
                     FW64(mb2, 0xC) = (int)&gl_ref_000221F0_64588_c2;
                     FW64(mb2, 0x1C) = 0;
                     tmp = set[2].v;
@@ -1269,14 +1270,14 @@ void *DNode_ctor(void *arg0, void *arg1) {
             }
         }
         if ((base = (char *)arg0 + 0x39C) != 0 ||
-            (base = (char *)gl_func_00000000(4)) != 0) {
+            (base = (char *)CALL(mem_new)(4)) != 0) {
             FW64(base, 0) = 0;
         }
         if ((base = (char *)arg0 + 0x3A0) != 0 ||
-            (base = (char *)gl_func_00000000(4)) != 0) {
+            (base = (char *)CALL(mem_new)(4)) != 0) {
             FW64(base, 0) = 0;
         }
-        gl_func_00000000(arg0);
+        CALL(DNode_init_00065060)(arg0);
     }
     return arg0;
 }
@@ -1320,8 +1321,8 @@ void DNode_integrate_00064DEC(char *arg0) {
     f32 sumsq; /* dead: its ghost home keeps the spill slots at 0x28/0x24 (65060 rule) */
     f32 r;
 
-    gl_func_00000000(arg0 + 0x2FC);
-    gl_func_00000000(arg0 + 0x2FC, arg0 + 0xCC, arg0 + 0xCC);
+    CALL(math_vec4Normalize)(arg0 + 0x2FC);
+    CALL(math_quatMul)(arg0 + 0x2FC, arg0 + 0xCC, arg0 + 0xCC);
     FF(arg0, 0x31C) += FF(arg0, 0x180);
     FF(arg0, 0xB4) += FF(arg0, 0x318);
     pB = (Vec3 *)arg0;
@@ -1350,7 +1351,7 @@ void DNode_integrate_00064DEC(char *arg0) {
     FF(arg0, 0x33C) = sp7C.x;
     FF(arg0, 0x340) = sp7C.y;
     FF(arg0, 0x344) = sp7C.z;
-    gl_func_00000000(arg0 + 0xCC);
+    CALL(math_vec4Normalize)(arg0 + 0xCC);
     sp7C = *(Vec3 *)(arg0 + 0xB4);
     FF(arg0, 0xDC) = sp7C.x;
     FF(arg0, 0xE0) = sp7C.y;
@@ -1364,13 +1365,13 @@ void DNode_integrate_00064DEC(char *arg0) {
     FF(arg0, 0xF8) = sp34.y;
     FF(arg0, 0xFC) = sp34.z;
     FF(arg0, 0x100) = FF(arg0, 0xD8);
-    gl_func_00000000(arg0, arg0 + 0xCC);
+    CALL(DNode_quatToMtx_00065B40)(arg0, arg0 + 0xCC);
     dy = FF(arg0, 0x318);
     dz = FF(arg0, 0x320);
     dx = FF(arg0, 0x31C);
     spA4[0] = dy * dy + dz * dz + dx * dx;
     if (spA4[0] != (0, 0.0f)) {
-        r = gl_func_00000000_sqf(spA4[0]);
+        r = XCALL(gl_func_00000000_sqf, sqrtf)(spA4[0]);
         FF(arg0, 0x348) = r;
         FF(arg0, 0x30C) = FF(arg0, 0x318) / r;
         FF(arg0, 0x310) = FF(arg0, 0x31C) / r;
@@ -1572,8 +1573,8 @@ void DNode_resetAccums_00065148(char *obj) {
     Tri3i tmp;
     float x, y;
     float r0, r1, r2;
-    gl_func_00000000(obj + 0x294, obj + 0xDC);
-    gl_func_00000000(obj + 0x2C8, obj + 0xDC);
+    CALL(DNodeAccum_reset_00064170)(obj + 0x294, obj + 0xDC);
+    CALL(DNodeAccum_reset_00064170)(obj + 0x2C8, obj + 0xDC);
     tmp = *(Tri3i *)(obj + 0x1F8);
     *(float *)(obj + 0x324) = *(float *)&tmp.a;
     *(float *)(obj + 0x328) = *(float *)&tmp.b;
@@ -1748,8 +1749,8 @@ void DNode_resetXform_00065360(char *a0, Vec3_f *a1) {
 extern int gl_func_00000000();
 
 void DNode_applyAccums_00065448(char *a0) {
-    gl_func_00000000(a0 + 0x294, a0 + 0x2FC, a0 + 0x318, *(int*)(a0 + 0x1E0));
-    gl_func_00000000(a0 + 0x2C8, a0 + 0xCC, a0 + 0xB4, *(int*)(a0 + 0x1E0));
+    CALL(DNodeAccum_apply_00064388)(a0 + 0x294, a0 + 0x2FC, a0 + 0x318, *(int*)(a0 + 0x1E0));
+    CALL(DNodeAccum_apply_00064388)(a0 + 0x2C8, a0 + 0xCC, a0 + 0xB4, *(int*)(a0 + 0x1E0));
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_65494.cpp (child-list contact
@@ -1920,25 +1921,25 @@ void DNode_handleMsg(char *self, int *event) {
 /* DNode_update: 23-insn 7-call cascade. First call passes a0->[0xC];
  * subsequent 6 calls pass a0 itself. */
 void DNode_update(int *a0) {
-    gl_func_00000000(a0[0xC/4]);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000(a0);
-    gl_func_00000000();
+    CALL(sys_imin)(a0[0xC/4]);
+    CALL(QNode_update)(a0);
+    CALL(DNode_solveContacts)(a0);
+    CALL(DNode_applyAccums_00065448)(a0);
+    CALL(DNode_integrate_00064DEC)(a0);
+    CALL(DNode_resetAccums_00065148)(a0);
+    CALL(sys_imout)();
 }
 
 /* DNode_hostioParms: 6-call sequence. The two args 0x2240C / 0x22414 are SYMBOL
  * refs (&D + offset -> lui; addiu), not literals (lui; ori). Decode the symbol
  * (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
 void DNode_hostioParms(int *a0) {
-    gl_func_00000000(&gHostio, GL_DATA_STR(0x2240C, "DNode"), 0);
-    gl_func_00000000(&gHostio, GL_DATA_STR(0x22414, "Dynamics"));
-    gl_func_00000000((char *)a0 + 0x108, 0);
-    gl_func_00000000(&gHostio);
-    gl_func_00000000(&gHostio);
-    gl_func_00000000(a0);
+    CALL(hostio_beginGroup)(&gHostio, GL_DATA_STR(0x2240C, "DNode"), 0);
+    CALL(hostio_addHeading)(&gHostio, GL_DATA_STR(0x22414, "Dynamics"));
+    CALL(Parms_hostio)((char *)a0 + 0x108, 0);
+    CALL(hostio_endGroup)(&gHostio);
+    CALL(hostio_endGroup)(&gHostio);
+    CALL(QNode_hostioParms)(a0);
 }
 
 extern int gl_ref_00077DB0();
@@ -1967,12 +1968,12 @@ float DNode_getF198_00065E3C(char *a0) {
 
 extern int gl_func_00000000();
 int DNode_saveData(char *a0) {
-    return gl_func_00000000(a0 + 0x108);
+    return CALL(Parms_save)(a0 + 0x108);
 }
 
 extern int gl_func_00000000();
 int DNode_loadData(char *a0) {
-    return gl_func_00000000(a0 + 0x108);
+    return CALL(Parms_load_00035C6C)(a0 + 0x108);
 }
 
 extern int gl_ref_00077DB0();
@@ -2081,7 +2082,7 @@ void fs_piXfer_0006612C(int *a0) {
  * (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
 extern int gl_func_00000000();
 void fs_fatal_000661D8(int a0_unused) {
-    gl_func_00000000(GL_DATA_STR(0x2246C, "GAME: %s\n"));
+    CALL(sys_fatal)(GL_DATA_STR(0x2246C, "GAME: %s\n"));
 }
 
 /* fs_stub_00066200/00066208: 2 save-arg-sentinel stubs RECOVERED 2026-05-28
@@ -2103,8 +2104,8 @@ int fs_piReadWord_00066210(int a0, int a1) {
     int saved;
     saved = gl_func_00000000(1);
     gl_func_00000000();
-    gl_func_00000000(&buf, 4);
-    gl_func_00000000(a1, &buf);
+    CALL(gl_osInvalDCache)(&buf, 4);
+    CALL(gl_osPiReadIo)(a1, &buf);
     gl_func_00000000(saved);
     return buf;
 }
@@ -2170,34 +2171,34 @@ void fs_piWriteWord_000662E8(int a0, int a1, int a2) {
     int r = gl_func_00000000(1);
     gl_func_00000000();
     gl_func_00000000(r);
-    gl_func_00000000(a1, a2);
+    CALL(gl_osPiWriteIo)(a1, a2);
 }
 
 extern int gl_func_00000000();
 void fs_writeBytes_00066330(int a0, int a1, int a2, int a3) {
-    gl_func_00000000(a1, a2, a3);
+    CALL(dma_writeChunked_00066794)(a1, a2, a3);
 }
 
 extern int gl_func_00000000();
 void fs_yield_00066364(int a0) {
-    gl_func_00000000();
+    CALL(gl_osYieldThread)();
 }
 
 extern int gl_func_00000000();
 int sys_badObjPtr_00066384(int a0) {
-    return gl_func_00000000(GL_DATA_STR(0x22498, "unexpected objptr %s"), a0);
+    return CALL(sys_fatal)(GL_DATA_STR(0x22498, "unexpected objptr %s"), a0);
 }
 
 extern int gl_func_00000000();
 int sys_staticArrayOverflow() {
-    return gl_func_00000000(GL_DATA_STR(0x224B0, "StaticArray overflow"));
+    return CALL(sys_fatal)(GL_DATA_STR(0x224B0, "StaticArray overflow"));
 }
 
 extern int gl_func_00000000();
 void fs_gdlWriteInt_000663D0(int *a0) {
     int pad, scratch;
     scratch = *a0;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlWriteFile)(gl_func_00000000, &scratch, 4);
 }
 
 /* Standard int-reader accessor template (15 insns / 0x3C). Split out of
@@ -2209,7 +2210,7 @@ void fs_gdlWriteInt_000663D0(int *a0) {
 extern int gl_func_00000000();
 void fs_read_00066404(int *dst) {
     int buf[2];
-    gl_func_00000000(&gSysLib, buf, 4);
+    CALL(fs_gdlReadFile)(&gSysLib, buf, 4);
     *dst = buf[0];
 }
 
@@ -2269,7 +2270,7 @@ unlink:
  * BEFORE a0[1] = a1 (as1 then pulls the a1[0] load into the slot). */
 void dlist_insertBefore_00066484(int *a0, int *a1) {
     if (a0[1] != a0[0]) {
-        gl_func_00000000();
+        CALL(dlist_splice_000664F0)();
     } else {
         a0[0] = a1[0];
         a0[1] = (int)a1;
@@ -2301,12 +2302,12 @@ void dlist_splice_000664F0(int *a0, int *a1) {
  * See docs/IDO_CODEGEN.md#feedback-ido-drop-working-reg-param-spill-follows-source-pseudo. */
 int DynArr_ctor_00066514(int a0, int a1) {
     if (a0 == 0) {
-        a0 = gl_func_00000000(0xC);
+        a0 = CALL(mem_new)(0xC);
         if (a0 == 0) goto ret;
     }
     *(int *)(a0 + 4) = 0;
     *(int *)(a0 + 8) = a1;
-    *(int *)a0 = gl_func_00000000(a1 << 3);
+    *(int *)a0 = CALL(mem_new)(a1 << 3);
 ret:
     return a0;
 }
@@ -2387,10 +2388,10 @@ int list_allocNode_000665B4(int a0) {
     do {
         v1 = *(int *)(a0 + 4);
         if (v1 == 0) {
-            v1 = *(int *)(a0 + 4) = gl_func_00000000(0, *(int *)a0);
+            v1 = *(int *)(a0 + 4) = CALL(DynArr_ctor_00066514)(0, *(int *)a0);
             *(int *)(a0 + 8) += 1;
         }
-        v0 = gl_func_00000000(v1);
+        v0 = CALL(DynArr_push_0006656C)(v1);
         if (v0 == 0) {
             *(int *)(a0 + 4) = 0;
         }
@@ -2455,7 +2456,7 @@ void list_removeKey_00066620(List66620 *list, int key) {
  * pad[2]` declared after cur (the documented +8-frame lever). The
  * factory argument is a global int passed by value (blank &D, offset 0). */
 void list_append(int **head, int data) {
-    int *node = (int*)gl_func_00000000(gBootBss);
+    int *node = (int*)CALL(list_allocNode_000665B4)(gBootBss);
     int *cur;
     volatile int pad[2];
     int *last;
@@ -2522,7 +2523,7 @@ void dma_readChunked_00066720(char *src, char *dst, unsigned int len) {
         if (len < chunk) {
             chunk = len;
         }
-        gl_func_00000000(src, dst, chunk);
+        CALL(dma_read)(src, dst, chunk);
         len -= chunk;
         src += chunk;
         dst += chunk;
@@ -2545,7 +2546,7 @@ void dma_writeChunked_00066794(char *dst, char *src, unsigned int count) {
         if (count < chunk) {
             chunk = count;
         }
-        gl_func_00000000(dst, src, chunk);
+        CALL(dma_write)(dst, src, chunk);
         count -= chunk;
         src += chunk;
         dst += chunk;
@@ -2556,7 +2557,7 @@ void dma_writeChunked_00066794(char *dst, char *src, unsigned int count) {
 void boot_usoLoadFatal_00066810(int a0) {
     int v0 = (*(int(**)())((char*)*(void**)&D_00000000 + 0x40))();
     if (v0 < 0) {
-        gl_func_00000000(GL_RODATA_STR(0x20F0, "usoLoad() error loading file %s: %d"), a0, v0);
+        CALL(sys_fatal)(GL_RODATA_STR(0x20F0, "usoLoad() error loading file %s: %d"), a0, v0);
     }
 }
 
@@ -2837,10 +2838,10 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", boot_startThread_00066B64);
 /* boot_startThread_00066BD4: 23-insn 3-call chain with mixed-arg middle call. */
 void boot_startThread_00066BD4(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x20(sp) */
-    gl_func_00000000(*p);
-    gl_func_00000000(GL_BSS(0x41310), 1, &D_00000000, 0,
+    CALL(gl_osInitialize)(*p);
+    CALL(gl_osCreateThread)(GL_BSS(0x41310), 1, &D_00000000, 0,
                      (char*)&D_00000000 + 0x415C0, 1);
-    gl_func_00000000(GL_BSS(0x41310));
+    CALL(gl_osStartThread)(GL_BSS(0x41310));
 }
 
 /* 8-insn: stores arg to D_00000000, calls gl_func_00000000(0).
@@ -2849,7 +2850,7 @@ void boot_startThread_00066BD4(int a0) {
 extern int D_00000000;
 void boot_entry_00066C30(int a0) {
     gSysApi = a0;
-    gl_func_00000000(0);
+    CALL(boot_startThread_00066B64)(0);
 }
 
 void boot_stub_00066C58(void) {}
@@ -2873,8 +2874,8 @@ void boot_stub_00066C60(void) {}
 void pad_init_00066C74(char *self) {
     *(int*)(GL_BSS(0x416B0)) = 2;
     *(volatile int*)(self + 0x13E8) = 0;
-    gl_func_00000000(self + 0x11B0, self + 0x11C8, 4);
-    gl_func_00000000(5, self + 0x11B0, GL_BSS(0x416B0));
+    CALL(gl_osCreateMesgQueue)(self + 0x11B0, self + 0x11C8, 4);
+    CALL(gl_osSetEventMesg)(5, self + 0x11B0, GL_BSS(0x416B0));
     *(int*)(self + 0x13F0) = 0;
     {
         int i;
@@ -2887,9 +2888,9 @@ void pad_init_00066C74(char *self) {
             i++;
         } while (i < 4);
     }
-    gl_func_00000000(self);
-    gl_func_00000000(self + 0x1000, 6, (char*)&D_00000000, self, self + 0x1000, 14);
-    gl_func_00000000(self + 0x1000);
+    CALL(pad_probePaks_00066D54)(self);
+    CALL(gl_osCreateThread)(self + 0x1000, 6, (char*)&D_00000000, self, self + 0x1000, 14);
+    CALL(gl_osStartThread)(self + 0x1000);
 }
 
 /* pad_probePaks_00066D54: per-slot (4) controller/message poll loop (102 words,
@@ -2914,32 +2915,32 @@ void pad_probePaks_00066D54(char *arg0) {
     u8 sp53;
     s32 r;
 
-    gl_func_00000000(arg0 + 0x11B0, (int)arg0 + 0x13EC, (int)arg0 + 0x1218);
+    CALL(gl_osContInit)(arg0 + 0x11B0, (int)arg0 + 0x13EC, (int)arg0 + 0x1218);
     for (var_s1 = 0; var_s1 != 4; var_s1++) {
         if (*(u8*)((char*)arg0 + 0x13EC) & (1 << var_s1)) {
             if (!(*(u8*)((char*)((char *)&((int *)arg0)[var_s1]) + 0x121B) & 8)) {
-                gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")), var_s1);
+                CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")), var_s1);
                 sp53 = 0;
-                gl_func_00000000((arg0 + 0x11B0), &sp53);
+                CALL(osPfsIsPlug)((arg0 + 0x11B0), &sp53);
                 if (sp53 & (1 << var_s1)) {
-                    r = gl_func_00000000((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1);
+                    r = CALL(osPfsInitPak)((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1);
                     if (r == 10) {
-                        if (gl_func_00000000((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1) != 0) {
-                            gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x14);
+                        if (CALL(osMotorInit)((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1) != 0) {
+                            CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x14);
                             FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 0;
                         } else {
-                            gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x1C);
+                            CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x1C);
                             FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 2;
                             *(u8*)((char*)arg0 + var_s1 + 0x13DC) = 1;
                         }
                     } else if (r == 0) {
-                        gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x24);
+                        CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x24);
                         FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 1;
                     }
                 } else {
-                    gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x28);
+                    CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x28);
                 }
-                gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x30);
+                CALL(dbg_printf)((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x30);
             }
         }
     }
@@ -3075,11 +3076,11 @@ void pad_updateMotor_00067084(char *a0, int a1, int a2) {
     if (v1[0x13DC] == 0) return;
     if ((unsigned char)v1[0x13D8] == a2) return;
     if (a2 != 0) {
-        if (gl_func_00000000((a0 + 0x1228) + 104 * a1) == 0) {
+        if (CALL(gl_osMotorStart)((a0 + 0x1228) + 104 * a1) == 0) {
             v1[0x13D8] = 3;
         }
     } else {
-        if (gl_func_00000000((a0 + 0x1228) + 104 * a1) != 0) {
+        if (CALL(gl_osMotorStop)((a0 + 0x1228) + 104 * a1) != 0) {
             if (v1[0x13D8] > 0) {
                 v1[0x13D8]--;
             }
@@ -3092,7 +3093,7 @@ extern int gl_ref_000416C0;
 
 void pad_sendMsg_00067134(char *a0) {
     gl_ref_000416C0 = 6;
-    gl_func_00000000(a0 + 0x11B0, &gl_ref_000416C0, 1);
+    CALL(gl_osSendMesg)(a0 + 0x11B0, &gl_ref_000416C0, 1);
 }
 
 extern int gl_func_00000000();
@@ -3100,7 +3101,7 @@ extern int gl_ref_000416D0;
 
 void pad_sendMsg_00067168(char *a0) {
     gl_ref_000416D0 = 5;
-    gl_func_00000000(a0 + 0x11B0, &gl_ref_000416D0, 1);
+    CALL(gl_osSendMesg)(a0 + 0x11B0, &gl_ref_000416D0, 1);
 }
 
 /* pad_sync_0006719C was 18-insn 2-function bundle. Split via
@@ -3110,9 +3111,9 @@ void pad_sendMsg_00067168(char *a0) {
 extern int gl_func_00000000();
 void pad_sync_0006719C(int *a0) {
     if (*(int*)((char*)a0 + 0x13E8) == 0) {
-        gl_func_00000000(a0);
+        CALL(pad_waitIdle_00067220)(a0);
     }
-    gl_func_00000000(a0);
+    CALL(pad_request_000671E4)(a0);
 }
 
 void pad_setSlotValue_000671D4(short *a0, int a1, int a2) {
@@ -3148,7 +3149,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", pad_request_000671E4);
  * #volatile-poll-read-pins-param-sreg-67220). */
 void pad_waitIdle_00067220(char *a0) {
     while (*(volatile int *)(a0 + 0x13E8) == 0) {
-        gl_func_00000000();
+        CALL(gl_osYieldThread)();
     }
 }
 
@@ -3175,12 +3176,12 @@ void pad_initMotors_00067264(char *self) {
         return;
     }
     slot_mask = 0;
-    gl_func_00000000(self + 0x11B0, &slot_mask);
+    CALL(osPfsIsPlug)(self + 0x11B0, &slot_mask);
     for (i = 0; i != 4; i++) {
         if (slot_mask & (1 << i)) {
             char *entry = (char *)&((GlRow104 *)self)[i] + 0x1228;
-            if ((int)gl_func_00000000(self + 0x11B0, entry, i) == 0) {
-                gl_func_00000000(entry);
+            if ((int)CALL(osMotorInit)(self + 0x11B0, entry, i) == 0) {
+                CALL(gl_osMotorStop)(entry);
                 (self + 0x13DC)[i] = 1;
             }
         } else {
@@ -3213,14 +3214,14 @@ void pad_threadEntry_00067370(void) {
  *   if (a1 > 0) a1 = -a1; else func(&D, a0);
  *   func(a0, a1); return 1; */
 int pad_open(int *a0, int a1) {
-    int rv = func_00000000(a0, a1);
+    int rv = FCALL(app_getHeapMode)(a0, a1);
     a0[0x64/4] = rv;
     if (a1 >= 0) {
-        func_00000000(&gSysLib, a0);
+        FCALL(sys_listSplice_00061C88)(&gSysLib, a0);
     } else {
         a1 = -a1;
     }
-    func_00000000(a0, a1);
+    FCALL(pad_reset_000673FC)(a0, a1);
     return 1;
 }
 
@@ -3233,7 +3234,7 @@ void pad_reset_000673FC(int *a0, int a1) {
     a0[0x4C / 4] = 0;
     a0[0x34 / 4] = a1;
     a0[0x30 / 4] = 0;
-    gl_func_00000000(a0);
+    CALL(pad_clear_00067AA0)(a0);
     a0[0x28 / 4] = 0;
     a0[0x2C / 4] = 0;
     a0[0x38 / 4] = 0;
@@ -3251,9 +3252,9 @@ void pad_reset_000673FC(int *a0, int a1) {
  * jal-0 placeholders = the correct ROM bytes). No episode — placeholder relocs.
  * First call's arg uses absolute address 0x225D8 (lui $a0,0x2; addiu $a0,0x25D8). */
 void pad_setPause_00067470(int* a0, int a1) {
-    gl_func_00000000(GL_DATA_STR(0x225D8, "Ctl %d: pause %d\n"), a0[13], a1);
+    CALL(dbg_printf)(GL_DATA_STR(0x225D8, "Ctl %d: pause %d\n"), a0[13], a1);
     if (a0[30] != 0) {
-        gl_func_00000000(&gl_data_00000000, a0[13] - 1, 0);
+        CALL(pad_setSlotValueGlobal)(&gl_data_00000000, a0[13] - 1, 0);
     }
     a0[26] = a1;
 }
@@ -3262,14 +3263,14 @@ extern int gl_func_00000000();
 void pad_clearSlot(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
-        gl_func_00000000(gl_func_00000000, v - 1, 0);
+        CALL(pad_setSlotValueGlobal)(gl_func_00000000, v - 1, 0);
     }
 }
 
 int pad_isSlotState2(int *a0) {
     int v = a0[0xD];
     if (v != 0) {
-        return gl_func_00000000(&gSysLib, v - 1);
+        return CALL(pad_isSlotState2Global)(&gSysLib, v - 1);
     }
     return 0;
 }
@@ -3286,7 +3287,7 @@ int pad_isSlotState2(int *a0) {
 int pad_testButton_00067550(int *a0) {
     int v0 = 0;
     if (a0[0x34 / 4] != 0) {
-        v0 = gl_func_00000000(&gSysLib, a0);
+        v0 = CALL(pad_getFlagGlobal)(&gSysLib, a0);
         return (1 << (a0[0x34 / 4] + 31)) & ((0, v0));
     }
     return v0;
@@ -3362,7 +3363,7 @@ void pad_startRecord_000679BC(int *a0, int a1, int a2, int *a3) {
     a0[0x58/4] = (int)a3;
     *a3 = 0;
     a0[0x4C/4] = 2;
-    gl_func_00000000(GL_DATA_STR(0x225EC, "Ctl %d: start record\n"), a0[0x34/4]);
+    CALL(dbg_printf)(GL_DATA_STR(0x225EC, "Ctl %d: start record\n"), a0[0x34/4]);
 }
 
 extern int gl_func_00000000();
@@ -3372,7 +3373,7 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
     *(int*)(a0 + 0x50) = 0;
     *(int*)(a0 + 0x54) = a2;
     *(int*)(a0 + 0x4C) = 1;
-    gl_func_00000000(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), *(int*)(a0 + 0x34));
+    CALL(dbg_printf)(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), *(int*)(a0 + 0x34));
 }
 
 /* pad_setIfNewer_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
@@ -3428,7 +3429,7 @@ void pad_setIfNewer_00067A54(int a0, int a1, int a2) {
     if (a2 < *(short *)(a0 + 0x76)) {
         return;
     }
-    gl_func_00000000(a0, a1, a2);
+    CALL(pad_set_00067A90)(a0, a1, a2);
 }
 
 void pad_set_00067A90(char *a0, int a1, int a2) {
@@ -3805,7 +3806,7 @@ extern int func_00000000();
 double str_toDouble_00067EFC(int a0, int a1) {
     volatile int *p = &a1;
     (void)p;
-    return (double)func_00000000(a0, a1);
+    return (double)FCALL(str_toInt)(a0, a1);
 }
 
 /* 14-insn strupr-like (split off from str_toDouble_00067EFC bundle 2026-
@@ -3852,11 +3853,11 @@ int str_upper(unsigned char *a0) {
 int str_dup(int a0) {
     extern int D_00000000;
     int v0;
-    v0 = (int)gl_func_00000000(gl_func_00000000(a0) + 1);
+    v0 = (int)CALL(mem_new)(CALL(str_len)(a0) + 1);
     if (v0 == 0) {
-        gl_func_00000000(GL_DATA_STR(0x2AA40, "strdup(): out of memory"));
+        CALL(sys_fatal)(GL_DATA_STR(0x2AA40, "strdup(): out of memory"));
     }
-    gl_func_00000000(v0, a0);
+    CALL(str_copyEnd)(v0, a0);
     return v0;
 }
 
@@ -3986,7 +3987,7 @@ f32 math_atan2s_00068044(f32 arg0, f32 arg1) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_000681F4(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -3997,7 +3998,7 @@ void fs_gdlReadInt_000681F4(int *dst) {
 void fs_gdlReadVec3_00068230(Tri3i *dst) {
     int pad;
     Tri3i buf;
-    gl_func_00000000(&gSysLib, &buf, 0xC);
+    CALL(fs_gdlReadFile)(&gSysLib, &buf, 0xC);
     *dst = buf;
     (void)pad;
 }
@@ -4005,14 +4006,14 @@ void fs_gdlReadVec3_00068230(Tri3i *dst) {
 extern int gl_func_00000000();
 void fs_gdlReadInt_00068280(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_000682BC(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
@@ -4022,7 +4023,7 @@ void fs_gdlReadInt_000682BC(int *dst) {
  * split-fragments separated as game_libs_func_0006833{8,40,48} —
  * those remain INCLUDE_ASM in this file (sandwich-ordered). */
 void BinFile_init_000682F8(int *self) {
-    gl_func_00000000(self + 5, GL_DATA_STR(0x2B3B8, "<empty>"), self);
+    CALL(str_copyEnd)(self + 5, GL_DATA_STR(0x2B3B8, "<empty>"), self);
     self[4] = 0;
     self[0] = 0;
     self[2] = 0;
@@ -4069,7 +4070,7 @@ void BinFile_load_00068350(int *self) {
     if (*(int *)((char *)&D_00000000 + 4) == 0) {
         self[0] |= 1;
     } else {
-        self[1] = gl_func_00000000(&gSysLib, 1, 0);
+        self[1] = CALL(fs_gdlSeekFile)(&gSysLib, 1, 0);
     }
 }
 
@@ -4124,14 +4125,14 @@ void BinFileMgr_loadFile_000683D4(int *self) {
     int *e;
 
     func_7C860(self + 2);                             /* self + 8 */
-    self[1] = gl_func_00000000(self[2] * 4);          /* alloc */
+    self[1] = CALL(mem_new)(self[2] * 4);          /* alloc */
 
     for (i = 0; i < (unsigned int)self[2]; i++) {
         parent = (int *)((int *)self[3])[10];          /* self->[0xC]->[0x28] */
         ((int **)self[1])[i] = (int *)((int (*)(int *))parent[23])(
             (int *)((char *)self[3] + ((short *)parent)[44]));
         ((int **)self[1])[i][3] = self[3];             /* back-link owner */
-        gl_func_00000000(((int **)self[1])[i]);        /* post-init hook */
+        CALL(BinFile_load_00068350)(((int **)self[1])[i]);        /* post-init hook */
         e = ((int **)self[1])[i];
         do { vt = (int *)e[7]; } while (0);            /* BB split: vt off the dead-v0 BB */
         ((int (*)(int *))vt[11])(
@@ -4147,15 +4148,15 @@ void BinFileMgr_loadFile_000683D4(int *self) {
  * `move v0, a0`, exploiting the a0=v0=0 chain post-failed-alloc). */
 int *BinFileMgr_ctor_000684AC(int *a0, int a1, int a2) {
     if (a0 == 0) {
-        a0 = (int *)gl_func_00000000(0x38);
+        a0 = (int *)CALL(mem_new)(0x38);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, a1);
+    CALL(Node_ctor)(a0, a1);
     a0[0xA] = (int)&BinFileMgr_vtbl;
     a0[0xD] = 0;
     a0[0xC] = 0;
     if (a2 != 0) {
-        gl_func_00000000(a0, 1, a2);
+        CALL(Node_Load)(a0, 1, a2);
     }
 end:
     return a0;
@@ -4172,15 +4173,15 @@ extern int gl_func_00000000();
 extern int func_7C860();
 void BinFileMgr_vfn8_00068524(int *a0, int a1) {
     int s1, s0;
-    a0[0x2C/4] = (int)gl_func_00000000(&gSysLib, a1);
+    a0[0x2C/4] = (int)CALL(fs_getHandle)(&gSysLib, a1);
     func_7C860((int)&a0[0x34/4]);
-    a0[0x30/4] = (int)gl_func_00000000(a0[0x34/4] << 4);
+    a0[0x30/4] = (int)CALL(mem_new)(a0[0x34/4] << 4);
     if (a0[0x34/4] != 0) {
         s1 = 0;
         s0 = 0;
         do {
             gl_func_00000000(a0[0x30/4] + s0, a0);
-            gl_func_00000000(a0[0x30/4] + s0);
+            CALL(BinFileMgr_loadFile_000683D4)(a0[0x30/4] + s0);
             s1++;
             s0 += 16;
         } while ((unsigned int)s1 < (unsigned int)a0[0x34/4]);
@@ -4227,20 +4228,20 @@ void BinFileMgr_check_000685C0(int *a0, unsigned int a1) {
     unsigned int key_l = a1 & 0xFFFF;
 
     if (!(key_h < (unsigned int)a0[0x34/4])) {
-        gl_func_00000000(GL_DATA_STR(0x2B3C0, "BinFile Group out of range %d:%d"), key_h, key_l);
+        CALL(sys_fatal)(GL_DATA_STR(0x2B3C0, "BinFile Group out of range %d:%d"), key_h, key_l);
     }
     if (!(key_l < (unsigned int)((int*)((char*)a0[0x30/4] + key_h * 16))[2])) {
-        gl_func_00000000(GL_DATA_STR(0x2B3E4, "BinFile File out of range %d:%d"), key_h, key_l);
+        CALL(sys_fatal)(GL_DATA_STR(0x2B3E4, "BinFile File out of range %d:%d"), key_h, key_l);
     }
     if (((int*)((int*)((char*)((int*)((char*)a0[0x30/4] + key_h * 16))[1] + key_l * 4))[0])[0x10/4] == 0) {
-        gl_func_00000000(GL_DATA_STR(0x2B404, "BinFile File empty %d:%d"), key_h);
+        CALL(sys_fatal)(GL_DATA_STR(0x2B404, "BinFile File empty %d:%d"), key_h);
     }
 }
 
 extern int gl_func_00000000();
 
 int BinFileMgr_getAcquire(void) {
-    int r = gl_func_00000000();
+    int r = CALL(BinFileMgr_get_00068730)();
     char *p = *(char**)(r + 0x1C);
     (*(int(**)(int))(p + 0x14))(*(short*)(p + 0x10) + r);
     return r;
@@ -4249,19 +4250,19 @@ int BinFileMgr_getAcquire(void) {
 extern int gl_func_00000000();
 
 void BinFileMgr_getRelease(void) {
-    char *r = (char*)gl_func_00000000();
+    char *r = (char*)CALL(BinFileMgr_get_00068730)();
     char *p = *(char**)(r + 0x1C);
     (*(int(**)(char*))(p + 0x1C))(r + *(short*)(p + 0x18));
 }
 
 extern int gl_func_00000000();
 int BinFileMgr_checkVoid() {
-    gl_func_00000000();
+    CALL(BinFileMgr_check_000685C0)();
     return 0;
 }
 
 int BinFileMgr_get_00068730(int *a0, int a1) {
-    gl_func_00000000(a0, a1);
+    CALL(BinFileMgr_check_000685C0)(a0, a1);
     {
         int *row = (int*)((char*)a0[0x30/4] + (((unsigned int)a1 >> 16) << 4));
         return ((int*)row[1])[a1 & 0xFFFF];
@@ -4271,7 +4272,7 @@ int BinFileMgr_get_00068730(int *a0, int a1) {
 extern int gl_func_00000000();
 
 int BinFileMgr_newFile_0006877C(int a0) {
-    int *r = (int*)gl_func_00000000(0x20);
+    int *r = (int*)CALL(mem_new)(0x20);
     if (r != 0) {
         r[7] = (int)gl_func_00000000;
     }
@@ -4343,13 +4344,13 @@ void BinFileMgr_forEach_000687B8(int *a0)
  * orig a1 is forwarded to the second optional init call as its a2 arg. */
 int *ImageFileMgr_ctor(int *a0, int a1) {
     if (a0 == 0) {
-        a0 = (int *)gl_func_00000000(0x38);
+        a0 = (int *)CALL(mem_new)(0x38);
         if (a0 == 0) goto end;
     }
-    gl_func_00000000(a0, sImageFileMgrName, 0);
+    CALL(BinFileMgr_ctor_000684AC)(a0, sImageFileMgrName, 0);
     a0[0xA] = (int)&ImageFileMgr_vtbl;
     if (a1 != 0) {
-        gl_func_00000000(a0, 1, a1);
+        CALL(Node_Load)(a0, 1, a1);
     }
 end:
     return a0;
@@ -4371,11 +4372,11 @@ extern int ImageFile_vtbl_688f8;
 int *ImageFileMgr_newFile_000688F8(int a0) {
     int *b;
     int *p;
-    p = (int *)gl_func_00000000(0x30);
+    p = (int *)CALL(mem_new)(0x30);
     if (p == 0) goto end;
     b = p;
     if (b != 0) goto store;
-    b = (int *)gl_func_00000000(0x20);
+    b = (int *)CALL(mem_new)(0x20);
     if (b == 0) goto skip;
 store:
     b[7] = (int)&BinFile_vtbl;
@@ -4392,7 +4393,7 @@ void ImageFile_init_00068960(char *a0) {
     *(int*)(a0 + 0x24) = 0;
     *(int*)(a0 + 0x8) = 0;
     *(int*)(a0 + 0x2C) = 0;
-    gl_func_00000000();
+    CALL(BinFile_init_000682F8)();
 }
 
 /* ImageFile_load_00068990: record-stream reader (93 words, 0x174, exported sym 2482).
@@ -4440,20 +4441,20 @@ void ImageFile_vfn1_00068B04(int *self) {
     int saved_dx1;
     if (*self & 1) return;
     if (self[0x8 / 4] != 0) return;
-    self[0x8 / 4] = (int)gl_func_00000000(self[0x2C / 4]);
+    self[0x8 / 4] = (int)CALL(mem_new)(self[0x2C / 4]);
     saved_dx1 = gSysLib_gl68B04[1];
-    gl_func_00000000(gSysLib_gl68B04, 1);
-    gl_func_00000000(gSysLib_gl68B04, ((int*)self[0xC / 4])[0x2C / 4]);
-    gl_func_00000000(gSysLib_gl68B04, 0, self[0x28 / 4]);
-    gl_func_00000000(gSysLib_gl68B04, self[0x8 / 4], self[0x2C / 4]);
-    gl_func_00000000(gSysLib_gl68B04, saved_dx1);
+    CALL(sys_setWord4_00061D80)(gSysLib_gl68B04, 1);
+    CALL(fs_setHandle)(gSysLib_gl68B04, ((int*)self[0xC / 4])[0x2C / 4]);
+    CALL(fs_gdlSeekFile)(gSysLib_gl68B04, 0, self[0x28 / 4]);
+    CALL(fs_gdlReadFile)(gSysLib_gl68B04, self[0x8 / 4], self[0x2C / 4]);
+    CALL(sys_setWord4_00061D80)(gSysLib_gl68B04, saved_dx1);
 }
 
 void ImageFile_free_00068BAC(int *a0) {
     if ((*a0 & 1) == 0) {
         int *p = (int*)a0[2];
         if (p != 0) {
-            gl_func_00000000(p);
+            CALL(mem_delete)(p);
         }
         a0[2] = 0;
     }
@@ -4606,7 +4607,7 @@ void skin_cmdSkinAnim(int *self) {
     self[1] = a1;
     saved = (int *)((int *)&D_00000000)[a1];
     if (saved == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2c550);
+        CALL(sys_fatal)((char *)&D_00000000 + 0x2c550);
     }
 
     bufp = (int **)self[0];
@@ -4618,7 +4619,7 @@ void skin_cmdSkinAnim(int *self) {
     entry = (short *)(saved[0x90 / 4] + a1 * 8);
     h = entry[0];
     if (*(int *)(entry + 2) != 0) {
-        gl_func_00000000(saved, gl_func_00000000(0, h, *(int *)(entry + 2), *(int *)(self[15] + 0xC)));
+        CALL(SkinMgr_addAnim)(saved, CALL(SkinAnim_ctor)(0, h, *(int *)(entry + 2), *(int *)(self[15] + 0xC)));
     }
 }
 
@@ -4666,7 +4667,7 @@ void skin_cmdSkinShape(char *arg0) {
     int A;
     int B;
 
-    gl_func_00000000_68dd4v();
+    XCALL(gl_func_00000000_68dd4v, nodelist_checkPrevMNode)();
     x = (char *)FW(FW(arg0, 0x3C), 0xC);
     FW(x, 0xB0) = 8;
     A = *(int *)arg0;
@@ -4680,9 +4681,9 @@ void skin_cmdSkinShape(char *arg0) {
     *(int *)B = A + 4;
     v = *(int *)A;
     FW(arg0, 4) = v;
-    sp2C = (char *)gl_func_00000000(0, (char *)&D_00000000 + 0x2C568, v, 0);
-    gl_func_00000000(FW(sp2C, 0x44) * 8);
-    o = (char *)gl_func_00000000(0, (char *)&D_00000000 + 0x2C574, 0, sp2C);
+    sp2C = (char *)CALL(BasePolyShape_ctor)(0, (char *)&D_00000000 + 0x2C568, v, 0);
+    CALL(mem_new)(FW(sp2C, 0x44) * 8);
+    o = (char *)CALL(MorphPoly_ctor)(0, (char *)&D_00000000 + 0x2C574, 0, sp2C);
     FW(arg0, 0x28) = (int)o;
     FW(arg0, 0x10) = (int)o;
     p = (int *)(o + 0x30);
@@ -4692,27 +4693,27 @@ mid:
     x = (char *)FW(arg0, 0x28) + 0x30;
     *(int *)x &= ~0x800;
     if (sp30 == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C580);
+        CALL(sys_fatal)((char *)&D_00000000 + 0x2C580);
     }
     b = (char *)FW(FW(FW(arg0, 0x3C), 0x3C), 0xC);
     x = (char *)FW(b, 0x28);
     ((GP_00068DD4)FW(x, 0x14))(*(s16 *)(x + 0x10) + b);
-    sp24 = (char *)gl_func_00000000(sp30, FW(FW(arg0, 0x3C), 0xC), FW(arg0, 0x28));
-    gl_func_00000000(FW(FW(arg0, 0x3C), 0xC), sp24);
-    gl_func_00000000(sp24);
+    sp24 = (char *)CALL(SkinMgr_init)(sp30, FW(FW(arg0, 0x3C), 0xC), FW(arg0, 0x28));
+    CALL(MNode_addChild)(FW(FW(arg0, 0x3C), 0xC), sp24);
+    CALL(MorphPoly_init)(sp24);
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadInt_00068F28(int *dst) {
     int pad, scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 4);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 4);
     *dst = scratch;
 }
 
 extern int gl_func_00000000();
 void fs_gdlReadQuad_00068F64(Quad4 *dst) {
     Quad4 scratch;
-    gl_func_00000000(gl_func_00000000, &scratch, 16);
+    CALL(fs_gdlReadFile)(gl_func_00000000, &scratch, 16);
     *dst = scratch;
 }
 
@@ -5039,12 +5040,12 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
 
     /* self = SkinMgr, arg1 = main bone (MNode), arg2 = shape (MorphPoly; nVerts +0x40, verts +0x60) */
     if (((SkinMgr *)self)->bone != 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C5B0); /* "SkinMgr already initialized" */
+        CALL(sys_fatal)((char *)&D_00000000 + 0x2C5B0); /* "SkinMgr already initialized" */
     }
     ((SkinMgr *)self)->bone = (int)arg1;
-    ((SkinMgr *)self)->bindVerts = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
-    ((SkinMgr *)self)->outVerts = gl_func_00000000(*(int *)(arg2 + 0x40) * 6);
-    ((SkinMgr *)self)->weights = gl_func_00000000(*(int *)(arg2 + 0x40) * 2);
+    ((SkinMgr *)self)->bindVerts = CALL(mem_new)(*(int *)(arg2 + 0x40) * 6);
+    ((SkinMgr *)self)->outVerts = CALL(mem_new)(*(int *)(arg2 + 0x40) * 6);
+    ((SkinMgr *)self)->weights = CALL(mem_new)(*(int *)(arg2 + 0x40) * 2);
     ((SkinMgr *)self)->jitter = 0;
     i = 0;
     if (*(int *)(arg2 + 0x40) != 0) {
@@ -5059,9 +5060,9 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
         } while (i < (unsigned int)*(int *)(arg2 + 0x40));
     }
     ((SkinMgr *)self)->shape = (int)arg2;
-    gl_func_00000000(self);                                    /* SkinMgr_reset */
+    CALL(SkinMgr_reset)(self);                                    /* SkinMgr_reset */
     p = arg1 + 0x70;                                           /* the bone's world matrix */
-    gl_func_00000000(p, ((SkinMgr *)self)->invBone);           /* math_mtx4Inverse */
+    CALL(math_mtx4Inverse)(p, ((SkinMgr *)self)->invBone);           /* math_mtx4Inverse */
     *(char **)((char *)((SkinMgr *)self)->shape + 0xA8) = (char *)((SkinMgr *)self)->invBone;
     *(char **)((char *)((SkinMgr *)self)->shape + 0xAC) = p;
     return (char *)((SkinMgr *)self)->shape;
@@ -5242,7 +5243,7 @@ void SkinMgr_reset(int *self) {
 
 extern int gl_func_00000000();
 int SkinMgr_addAnim(char *a0) {
-    return gl_func_00000000(a0 + 0x48);
+    return CALL(list_append)(a0 + 0x48);
 }
 
 extern int gl_ref_0007D594();
@@ -5291,7 +5292,7 @@ extern struct { char pad[0x2280]; double v; } kRo_math_acosf_2280;
 extern struct { char pad[0x2C650]; unsigned short t[1]; } D_69CC4_tbl;
 float math_acosf(float x) {
     if (x > kRo_math_acosf_2268.v || x < kRo_math_acosf_2270.v) {
-        gl_func_00000000(GL_RODATA_STR(0x2250, "acos out of range %f"), x);
+        CALL(dbg_printf)(GL_RODATA_STR(0x2250, "acos out of range %f"), x);
         return 0.0f;
     }
     if (x > 0.0f) {
@@ -5516,11 +5517,11 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
 extern int gl_func_00000000();
 void gl_osSpTaskStartGo(int a0) {
     int *p = &a0;
-    if (gl_func_00000000(*p) != 0) {
+    if (CALL(gl___osSpDeviceBusy)(*p) != 0) {
         do {
-        } while (gl_func_00000000() != 0);
+        } while (CALL(gl___osSpDeviceBusy)() != 0);
     }
-    gl_func_00000000(293);
+    CALL(gl___osSpSetStatus)(293);
 }
 
 /* gl___osExceptionPreamble CLASSIFIED 2026-06-10: HANDWRITTEN exception-
@@ -5848,8 +5849,8 @@ extern char gl_data_B9B4_b;
 extern char gl_data_B9B4_c;
 void gl___osPiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
-    gl_func_00000000(&gl_data_B9B4_b, GL_BSS(0x42750), 1);
-    gl_func_00000000(&gl_data_B9B4_c, 0, 0);
+    CALL(gl_osCreateMesgQueue)(&gl_data_B9B4_b, GL_BSS(0x42750), 1);
+    CALL(gl_osSendMesg)(&gl_data_B9B4_c, 0, 0);
 }
 /* game_libs_func_0006BA04 (2-word splat mis-split: lui t6,0; lw t6,0(t6))
  * was the stolen prologue of gl___osPiGetAccess — forward-merged into it
@@ -5862,9 +5863,9 @@ void gl___osPiGetAccess(void) {
     int local;
     int pad;
     if (*(int*)&D_00000000 == 0) {
-        gl_func_00000000();
+        CALL(gl___osPiCreateAccessQueue)();
     }
-    gl_func_00000000(&D_00000000, &local, 1);
+    CALL(gl_osRecvMesg)(&D_00000000, &local, 1);
 }
 
 /* 11-insn passthrough wrapper (0x2C). LANDED fuzzy=100. The 2 trailing
@@ -5873,7 +5874,7 @@ void gl___osPiGetAccess(void) {
  * mechanism REMOVED 2026-05-23 as match-faking. Those insns belong to
  * separate symbols now. (Previously-documented 0x34 size is stale.) */
 void gl___osPiRelAccess(void) {
-    gl_func_00000000(&D_00000000, 0, 0);
+    CALL(gl_osSendMesg)(&D_00000000, 0, 0);
 }
 
 /* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
