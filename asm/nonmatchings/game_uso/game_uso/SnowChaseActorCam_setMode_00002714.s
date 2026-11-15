@@ -1,0 +1,16 @@
+nonmatching SnowChaseActorCam_setMode_00002714, 0x30
+
+glabel SnowChaseActorCam_setMode_00002714
+    /* 002714 00002714 27BDFFE8 */  .word 0x27BDFFE8
+    /* 002718 00002718 AFBF0014 */  .word 0xAFBF0014
+    /* 00271C 0000271C 8C8E0040 */  .word 0x8C8E0040
+    /* 002720 00002720 50AE0005 */  .word 0x50AE0005
+    /* 002724 00002724 8FBF0014 */  .word 0x8FBF0014
+    /* 002728 00002728 AC850040 */  .word 0xAC850040
+    jal SnowChaseActorCam_applyMode_000024BC   /* 00272C 0C000000 -> SnowChaseActorCam_applyMode_000024BC */
+    /* 002730 00002730 00C02825 */  .word 0x00C02825
+    /* 002734 00002734 8FBF0014 */  .word 0x8FBF0014
+    /* 002738 00002738 27BD0018 */  .word 0x27BD0018
+    /* 00273C 0000273C 03E00008 */  .word 0x03E00008
+    /* 002740 00002740 00000000 */  .word 0x00000000
+endlabel SnowChaseActorCam_setMode_00002714

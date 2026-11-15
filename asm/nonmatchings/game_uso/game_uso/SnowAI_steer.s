@@ -250,7 +250,7 @@ glabel SnowAI_steer
     /* 005CF4 00005CF4 E4AA0004 */  .word 0xE4AA0004
     /* 005CF8 00005CF8 00E02025 */  .word 0x00E02025
     /* 005CFC 00005CFC 27A50190 */  .word 0x27A50190
-    jal game_uso_func_00003ED4   /* 005D00 0C000000 -> game_uso_func_00003ED4 */
+    jal math_signedAngleXZ_00003ED4   /* 005D00 0C000000 -> math_signedAngleXZ_00003ED4 */
     /* 005D04 00005D04 27A60184 */  .word 0x27A60184
     /* 005D08 00005D08 44808000 */  .word 0x44808000
     /* 005D0C 00005D0C 00000000 */  .word 0x00000000

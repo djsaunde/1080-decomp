@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000B750 (0x134 / 77 words).
+/* IDO 7.1 NCC (C++) donor for LensFlareElem_draw_0000B750 (0x134 / 77 words).
  *
  * Camera/basis update: f0 = src->0x00 (+ k * 400 when flag 4), where k is
  * the stack float argument, replaced by 1.0 unless flag 8. Writes
@@ -34,7 +34,7 @@ extern char game_uso_D_807FFA78;
 void game_uso_func_05B750(void *, Q *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-extern "C" void game_uso_func_0000B750(char *a0, char *s0, float *a2, float *a3, float arg4) {
+extern "C" void LensFlareElem_draw_0000B750(char *a0, char *s0, float *a2, float *a3, float arg4) {
     float f0 = AT(float, a0, 0x00);
     float v;
     if (AT(int, a0, 0x1C) & 4) f0 += arg4 * 400.0f;

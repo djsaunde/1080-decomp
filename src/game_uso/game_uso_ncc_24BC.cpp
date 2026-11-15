@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_000024BC (0x258 / 150 words).
+/* IDO 7.1 NCC (C++) donor for SnowChaseActorCam_applyMode_000024BC (0x258 / 150 words).
  *
  * Camera-homing update, sibling of 28C0 / 2CC8 / 1DDC (same V3 class kit):
  * key 3 snaps out->goal and out->pos to the source body's matrix
@@ -43,12 +43,12 @@ struct Self { char pad[0x14]; Out *out; char pad18[0x38 - 0x18]; Body *obj; Body
               char padb0[0xDC - 0xB0]; float hA; char pade0[0xF4 - 0xE0]; float hB;
               char padf8[0x10C - 0xF8]; float sy; };
 extern "C" {
-V3 game_uso_func_000023D4(Self *a1);
+V3 cam_toTargetLocal_000023D4(Self *a1);
 void game_uso_func_071028(V3 *);
 }
 struct Ctx { Out *out; Ctx(Self *s) { out = s->out; }
     Out *getOut() const { return out; } };
-extern "C" void game_uso_func_000024BC(Self *a0, V3 *in) {
+extern "C" void SnowChaseActorCam_applyMode_000024BC(Self *a0, V3 *in) {
     Ctx c(a0);
     if (a0->key == 0) return;
     if (a0->key == 3) {
@@ -63,7 +63,7 @@ extern "C" void game_uso_func_000024BC(Self *a0, V3 *in) {
         V3 n;
         V3 s;
         a0->obj->mtx.getPos(q);
-        r = game_uso_func_000023D4(a0);
+        r = cam_toTargetLocal_000023D4(a0);
         q += r;
         if (1) {}
         n.set(in->x, 0.0f, in->z);

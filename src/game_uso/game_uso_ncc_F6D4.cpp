@@ -28,9 +28,9 @@ extern char game_uso_D_807FF4B0;
 extern char game_uso_D_807FF4B8;
 extern char game_uso_D_807FF4C0;
 void RiderAnim_flipStance_0000D6E4(void *);
-void game_uso_func_0000EE30(void *, int, int);
+void RiderAnim_func_0000EE30(void *, int, int);
 void import_000B8518(int, void *, int);
-void game_uso_func_0000E564(void *);
+void RiderAnim_func_0000E564(void *);
 void game_uso_func_077C44(void *, int, int, int, int, int);
 void RiderAnim_setState_0000D5F8(void *, PM, int);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
@@ -43,7 +43,7 @@ extern "C" void RiderAnim_state_0000F6D4(char *s0) {
     if (I(P(s0, 0xF4), 0x38) & 1) {
         RiderAnim_flipStance_0000D6E4(s0);
     }
-    game_uso_func_0000EE30(s0, I(P(s0, 0xF0), 0x30), 1);
+    RiderAnim_func_0000EE30(s0, I(P(s0, 0xF0), 0x30), 1);
     if (I(P(s0, 0xB4), 0xA58) & 0x20) {
         int base = (int)game_uso_D_807FFBC0;
         import_000B8518(I(&import_800201D0, 0x138), P(s0, 0xB4),
@@ -57,7 +57,7 @@ extern "C" void RiderAnim_state_0000F6D4(char *s0) {
     P(s0, 0xF0) = 0;
     if (P(s0, 0xF8) == P(s0, 0xF4)) { I(s0, 0x100) = 0; }
     P(s0, 0xF8) = P(s0, 0xF4);
-    game_uso_func_0000E564(s0);
+    RiderAnim_func_0000E564(s0);
     if ((I(P(s0, 0xB4), 0xA58) & 0x40) && I(P(s0, 0xF4), 0x28) != 0) {
         I(P(s0, 0xF4), 0x20) = I(P(s0, 0xF4), 0x28);
     } else {

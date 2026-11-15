@@ -49,8 +49,8 @@ struct Self;
 extern "C" {
 int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
 Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
-float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
-void game_uso_func_000110A4(int);
+float math_signedAngleXZ_00003ED4(Vec3 *, Vec3 *, int);
+void RiderAnim_startFinish_000110A4(int);
 void SnowAI_applyStickInput(Self *, int);
 void SnowAI_scanSegments(Self *);
 }
@@ -89,7 +89,7 @@ extern "C" void SnowAI_recoverStuck(Self *s0) {
         if (r1 == 0) return;
         Vec3 rv = SnowAI_func_00007C1C(s0, r1, v94, &va, 0);
         XZ pt(s0->w->at);
-        float yaw = game_uso_func_00003ED4(&pt, &rv, 0);
+        float yaw = math_signedAngleXZ_00003ED4(&pt, &rv, 0);
         {
             float k = 6.0f;
             float fr = -yaw * k;

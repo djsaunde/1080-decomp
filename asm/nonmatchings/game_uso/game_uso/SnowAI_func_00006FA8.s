@@ -19,7 +19,7 @@ glabel SnowAI_func_00006FA8
     /* 006FE4 00006FE4 AFA500B8 */  .word 0xAFA500B8
     /* 006FE8 00006FE8 AFA50004 */  .word 0xAFA50004
     /* 006FEC 00006FEC 8E060030 */  .word 0x8E060030
-    jal game_uso_func_0000A374   /* 006FF0 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 006FF0 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 006FF4 00006FF4 24C600B4 */  .word 0x24C600B4
     lui $t9, %hi(game_uso_D_807FEB64)   /* 006FF8 3C190000 -> game_uso_D_807FEB64 */
     /* 006FFC 00006FFC 8F390574 */  .word 0x8F390574
@@ -29,7 +29,7 @@ glabel SnowAI_func_00006FA8
     /* 00700C 0000700C AFA50004 */  .word 0xAFA50004
     /* 007010 00007010 8E060030 */  .word 0x8E060030
     /* 007014 00007014 AFA200B0 */  .word 0xAFA200B0
-    jal game_uso_func_0000A374   /* 007018 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 007018 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 00701C 0000701C 24C600B4 */  .word 0x24C600B4
     /* 007020 00007020 8FA700B0 */  .word 0x8FA700B0
     /* 007024 00007024 50E0005B */  .word 0x50E0005B

@@ -355,4 +355,4 @@ typedef struct {
     u8 pad_150[0x14];
     float field_164[4];
 } GameUsoB274Object;
-void game_uso_func_0000B274(GameUsoB274Object *s0);
+void Sun_display(GameUsoB274Object *s0);

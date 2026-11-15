@@ -43,7 +43,7 @@ struct Self { char pad[0x14]; Out *out; char pad18[0x2C - 0x18]; V3 vel; Body *o
               char padb0[0xC4 - 0xB0]; float vlim; char padc8[0xDC - 0xC8]; float hA; char pade0[0xF4 - 0xE0]; float hB;
               char padf8[0x10C - 0xF8]; float sy; };
 extern "C" {
-V3 game_uso_func_000023D4(Self *a1);
+V3 cam_toTargetLocal_000023D4(Self *a1);
 float game_uso_func_070238(float);
 void game_uso_func_071028(V3 *);
 void game_uso_func_072EE8(void *, V3 *);
@@ -66,10 +66,10 @@ extern "C" void SnowChaseActorCam_update(Self *a0) {
         Ctx c(a0);
         V3 acc;
         ref.set(c.getOut()->pos);
-        if (0) { r = game_uso_func_000023D4(a0); }
+        if (0) { r = cam_toTargetLocal_000023D4(a0); }
         { int p1 = 0, p2 = 0; }
         a0->obj->mtx.me()->getPos(self);
-        r = game_uso_func_000023D4(a0);
+        r = cam_toTargetLocal_000023D4(a0);
         self.x += r.x; self.y += r.y; self.z += r.z; /* run 179: spelled out (grid) */
         float speed = a0->spd;
         V3 diff(self.x - ref.x, 0.0f, self.z - ref.z);

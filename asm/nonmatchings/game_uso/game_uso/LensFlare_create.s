@@ -155,7 +155,7 @@ glabel LensFlare_create
     /* 00BB30 0000BB30 00001825 */  .word 0x00001825
     /* 00BB34 0000BB34 265000B8 */  .word 0x265000B8
     /* 00BB38 0000BB38 02002025 */  .word 0x02002025
-    jal game_uso_func_0000B710   /* 00BB3C 0C000000 -> game_uso_func_0000B710 */
+    jal LensFlareElem_init_0000B710   /* 00BB3C 0C000000 -> LensFlareElem_init_0000B710 */
     /* 00BB40 0000BB40 AFA3007C */  .word 0xAFA3007C
     /* 00BB44 0000BB44 8FA3007C */  .word 0x8FA3007C
     /* 00BB48 0000BB48 8E4B0274 */  .word 0x8E4B0274

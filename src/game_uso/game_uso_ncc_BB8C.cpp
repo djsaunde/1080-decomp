@@ -1,9 +1,9 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000BB8C (0x3F0 / 252 words) -- EXACT agent-g run 264
+/* IDO 7.1 NCC (C++) donor for LensFlare_display (0x3F0 / 252 words) -- EXACT agent-g run 264
  * (252/252 words), spliced over the game_uso.c placeholder on both build paths. The run 264 steps
  * are commented in place: sb reassigned to its matrix address + passed as the transform call's third
  * argument (a2), the folded obj->sub use dropped, the named w.s product, a folded ->b use on the ->c
  * argument, and the child pointer indexed from i. Its own three doubles (+0x168..0x180) and the
- * following strings are emitted as .late_rodata from game_uso_func_0000B4B8.s.
+ * following strings are emitted as .late_rodata from Sun_measureVisibility.s.
  *
  * Contact-response sweep (sibling of the 1DDC / 28C0 camera family): probe
  * ray q = {dir (0, 0, -1), pos = sub matrix translation}, rotated by
@@ -73,10 +73,10 @@ void game_uso_func_070F38(Ray *, void *, void *);
 void game_uso_func_071028(V3 *);
 void game_uso_func_05B750(void *, Q *);
 void game_uso_func_05B614(void *, int, int, int, int, P2 *);
-void game_uso_func_0000B750(void *, int, V3 *, V3 *, float);
+void LensFlareElem_draw_0000B750(void *, int, V3 *, V3 *, float);
 }
 #define SC(i) (*(float *)(import_8005C108 + 0x128 + (i) * 4))
-extern "C" void game_uso_func_0000BB8C(Obj *obj) {
+extern "C" void LensFlare_display(Obj *obj) {
     Ray q;
     V3 world;
     V3 norm;
@@ -132,9 +132,9 @@ extern "C" void game_uso_func_0000BB8C(Obj *obj) {
             if (c->lim < d) {
                 if (f24 != f20) {} /* agent-g run 262 (kit CCXCVII priorities): code-free test in the loop raises f20's priority above k's: f20 / f22 callee-saved colours = target (98.55 -> 98.83) */
                 if (c->flags & 1) {
-                    if (k < f20) game_uso_func_0000B750(c->rec, obj->b4, &world, &norm, f20);
+                    if (k < f20) LensFlareElem_draw_0000B750(c->rec, obj->b4, &world, &norm, f20);
                 } else {
-                    game_uso_func_0000B750(c->rec, obj->b4, &world, &norm, f24);
+                    LensFlareElem_draw_0000B750(c->rec, obj->b4, &world, &norm, f24);
                 }
             }
         }

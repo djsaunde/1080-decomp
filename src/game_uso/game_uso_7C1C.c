@@ -22,7 +22,7 @@ typedef struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float sp
 typedef struct Self { char pad0[0x30]; W *w; char pad34[0xA0 - 0x34]; float lim; int active; char padA8[0xCC - 0xA8]; float range; } Self;
 extern char SnowAI_func_00007C1C_rodata; /* = 0: game_uso RoData base (+0xFC = 3000.0f, re-emitted by the host placeholder) */
 extern void *game_uso_func_055750(unsigned);
-extern void game_uso_func_00003FAC(float *, float *, float *, float, float);
+extern void math_rotateXZPair_00003FAC(float *, float *, float *, float, float);
 extern float game_uso_func_082880(float);
 extern void game_uso_func_071028(Vec3 *v);
 extern float SnowAI_func_00007A98(Self *);
@@ -195,7 +195,7 @@ Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
         THRV = b->width * 250.0f;
         hit = 0;
         if (THRV < METV) {
-            game_uso_func_00003FAC(&hitA.x, &hitB.x, &rd.x, METV, THRV);
+            math_rotateXZPair_00003FAC(&hitA.x, &hitB.x, &rd.x, METV, THRV);
             hit = 1;
         }
         n = b->next;
@@ -236,7 +236,7 @@ Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                  (hitC.z * hitB.x <= hitC.x * hitB.z))) {
                 M2V = game_uso_func_082880(lrd.x * lrd.x + lrd.z * lrd.z);
                 if (n->width * 250.0f < M2V) {
-                    game_uso_func_00003FAC(&fA.x, &fB.x, &lrd.x, M2V, n->width * 250.0f);
+                    math_rotateXZPair_00003FAC(&fA.x, &fB.x, &lrd.x, M2V, n->width * 250.0f);
                     if (hit != 0) {
                         if (hitA.z * fA.x < hitA.x * fA.z) {
                             R = fA; hitA.x = R.x; hitA.y = R.y; hitA.z = R.z;

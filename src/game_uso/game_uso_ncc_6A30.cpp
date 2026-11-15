@@ -57,8 +57,8 @@ struct Self;
 extern "C" {
 int SnowAI_func_00007ACC(Self *, int *, Vec3 *, int);
 Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
-float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
-void game_uso_func_000110A4(int);
+float math_signedAngleXZ_00003ED4(Vec3 *, Vec3 *, int);
+void RiderAnim_startFinish_000110A4(int);
 void SnowAI_applyStickInput(Self *, int);
 }
 struct Self {
@@ -79,7 +79,7 @@ extern "C" void SnowAI_finishRun(Self *s0) {
         if (r1 == 0) return;
         Vec3 rv = SnowAI_func_00007C1C(s0, r1, v94, &va, 0);
         XZ pt(s0->w->at);
-        float yaw = game_uso_func_00003ED4(&pt, &rv, 0);
+        float yaw = math_signedAngleXZ_00003ED4(&pt, &rv, 0);
         s0->f3C = -yaw * (1.0f + s0->w->speed / s0->fB0) * s0->fAC / s0->w->lim.getMax();
         if (s0->f6C == 0) {
             if (v94 == 0) flag = 16;
@@ -93,14 +93,14 @@ extern "C" void SnowAI_finishRun(Self *s0) {
         if (c < 60) {
             W *w = s0->w;
             if (w->speed <= 30.0f) {
-                game_uso_func_000110A4(w->snd);
+                RiderAnim_startFinish_000110A4(w->snd);
                 s0->f70 = 61;
             } else {
                 s0->f70 = c + 1;
             }
         } else if (c == 60) {
             W *w = s0->w;
-            game_uso_func_000110A4(w->snd);
+            RiderAnim_startFinish_000110A4(w->snd);
             s0->f70 = 61;
         }
     }

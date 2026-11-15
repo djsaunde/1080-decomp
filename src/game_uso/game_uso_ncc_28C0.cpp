@@ -43,7 +43,7 @@ struct Src;
 struct Self { char pad[0x14]; Node *out; char pad18[0x38 - 0x18]; Node *obj; Src *src; int key; char pad44[0x5C - 0x44]; float k; };
 struct Src { char pad[0x38]; Node *body; };
 extern "C" {
-V3 game_uso_func_000023D4(Src *a1);
+V3 cam_toTargetLocal_000023D4(Src *a1);
 float game_uso_func_070238(float);
 void game_uso_func_071028(V3 *);
 void game_uso_func_072EE8(void *, V3 *);
@@ -60,7 +60,7 @@ extern "C" void SnowChaseActorLook_update(Self *a0) {
     if (key == 1) {
         p.x = c.getOut()->mtx.m[3][0]; p.y = c.getOut()->mtx.m[3][1]; p.z = c.getOut()->mtx.m[3][2];
         q.x = c.getTgt()->mtx.m[3][0]; q.y = c.getTgt()->mtx.m[3][1]; q.z = c.getTgt()->mtx.m[3][2];
-        r = game_uso_func_000023D4(a0->src);
+        r = cam_toTargetLocal_000023D4(a0->src);
         q += r;
         d = q - p;
         len = game_uso_func_070238(d.x * d.x + d.y * d.y + d.z * d.z);

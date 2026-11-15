@@ -35,7 +35,7 @@ extern "C" {
 extern char game_uso_D_807FEB60;
 extern char game_uso_D_807FEB64;
 float SnowAI_func_00007A98(Self *);
-Obj *game_uso_func_0000A374(Self *, Handle, Vec3 *);
+Obj *SnowAI_findNearestMarker_0000A374(Self *, Handle, Vec3 *);
 }
 extern "C" int SnowAI_func_00006FA8(Self *s0) {
     int result = 0;
@@ -45,9 +45,9 @@ extern "C" int SnowAI_func_00006FA8(Self *s0) {
         Obj *a;
         Obj *b;
         h1.id = (*(Handle **)(&game_uso_D_807FEB60 + 0x570))->id;
-        a = game_uso_func_0000A374(s0, h1, &s0->w->pos);
+        a = SnowAI_findNearestMarker_0000A374(s0, h1, &s0->w->pos);
         h2.id = (*(Handle **)(&game_uso_D_807FEB64 + 0x574))->id;
-        b = game_uso_func_0000A374(s0, h2, &s0->w->pos);
+        b = SnowAI_findNearestMarker_0000A374(s0, h2, &s0->w->pos);
         if (a != 0 && b != 0) {
             Vec3 &w = s0->w->pos;
             Vec3 d, e;

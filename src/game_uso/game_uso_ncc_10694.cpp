@@ -18,13 +18,13 @@ extern "C" {
 extern char game_uso_D_807FFB70;
 extern char game_uso_D_807FF438;
 extern char game_uso_D_807FF3B8;
-void game_uso_func_0000E1FC(void *);
-void game_uso_func_0000D8A8(void *);
-void game_uso_func_0000D8EC(void *);
+void RiderAnim_func_0000E1FC(void *);
+void RiderAnim_func_0000D8A8(void *);
+void RiderAnim_func_0000D8EC(void *);
 void import_0010DB78(void *, int, int, float, int, int);
 void import_0010DB28(void *, int, int, int, int, int);
-void game_uso_func_0000E91C(void *);
-void game_uso_func_00011750(void *);
+void RiderAnim_func_0000E91C(void *);
+void RiderAnim_func_00011750(void *);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
 }
 #define I(b,o) (*(int *)((char *)(b) + (o)))
@@ -38,10 +38,10 @@ extern "C" void RiderAnim_state_00010694(A *a0) {
     I(I(a0, 0xB4), 0x3DC) = 1;
     F(a0, 0x11C) = 1.0f;
     r = F(I(a0, 0xB4), 0x970);
-    game_uso_func_0000E1FC(a0);
+    RiderAnim_func_0000E1FC(a0);
     I(I(a0, 0xB4), 0x960) = 0;
-    game_uso_func_0000D8A8(a0);
-    game_uso_func_0000D8EC(a0);
+    RiderAnim_func_0000D8A8(a0);
+    RiderAnim_func_0000D8EC(a0);
     ar = (r < 0.0f) ? -r : r;
     if ((double)ar > *(double *)(&game_uso_D_807FFB70 + 0x250)) {
         int v = I(a0, 0xFC);
@@ -52,8 +52,8 @@ extern "C" void RiderAnim_state_00010694(A *a0) {
     if (I(I(a0, 0xB4), 0x9CC) != 0) {
         RiderAnim_setNextState_0000D5BC(a0, P(&game_uso_D_807FF438, 0xE48));
     }
-    game_uso_func_0000E91C(a0);
-    game_uso_func_00011750(a0);
+    RiderAnim_func_0000E91C(a0);
+    RiderAnim_func_00011750(a0);
     I(a0, 0xDC) = I(I(a0, 0xB4), 0x938);
     if (P(a0, 0xD0) != P(&game_uso_D_807FF3B8, 0xDC8)) {
         RiderAnim_setNextState_0000D5BC(a0, P(a0, 0xD0));

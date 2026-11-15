@@ -20,7 +20,7 @@ extern int import_8006EF48;
 typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
 extern int game_uso_func_055750();
-float game_uso_func_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
+float math_signedAngleXZ_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
 void SnowAI_pickFork();
 void SnowAI_scanNodes(SnowAI *);
 void SnowAI_scanSegments(SnowAI *);
@@ -196,7 +196,7 @@ void SnowAI_steer(int *a0) {
             scratch_dst->y = 0.0f;
         }
     }
-    yaw_raw = game_uso_func_00003ED4(p, &transform_out, &hit_out);
+    yaw_raw = math_signedAngleXZ_00003ED4(p, &transform_out, &hit_out);
     fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
     yaw_metric = fsel;
     neg = -yaw_raw;

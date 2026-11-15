@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for game_uso_func_0000B274 (0x1AC / 107 words).
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for Sun_display (0x1AC / 107 words).
  *
  * Easing update: gate on the global's progress, project the position
  * (063734), store the screen coords, ease the scale down past a threshold,
@@ -41,7 +41,7 @@ void import_000F8678(Glob *, void *);
 void game_uso_func_04D700(Self *);
 void game_uso_func_05B750(Glob *, void *);
 }
-extern "C" void game_uso_func_0000B274(Self *self) {
+extern "C" void Sun_display(Self *self) {
     V3 v;
     int gi = (int)&import_8005C108; Glob *g = (Glob *)gi;
     int di = (int)&import_8005C1A8 + 0xA0;

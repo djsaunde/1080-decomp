@@ -91,15 +91,15 @@ glabel RiderAnim_state_00010128
     jal RiderAnim_clearNextState_0000D5DC   /* 010284 0C000000 -> RiderAnim_clearNextState_0000D5DC */
     /* 010288 00010288 02002025 */  .word 0x02002025
     /* 01028C 0001028C 02002025 */  .word 0x02002025
-    jal game_uso_func_0000E5C8   /* 010290 0C000000 -> game_uso_func_0000E5C8 */
+    jal RiderAnim_func_0000E5C8   /* 010290 0C000000 -> RiderAnim_func_0000E5C8 */
     /* 010294 00010294 00002825 */  .word 0x00002825
-    jal game_uso_func_0000E35C   /* 010298 0C000000 -> game_uso_func_0000E35C */
+    jal RiderAnim_func_0000E35C   /* 010298 0C000000 -> RiderAnim_func_0000E35C */
     /* 01029C 0001029C 02002025 */  .word 0x02002025
     /* 0102A0 000102A0 54400006 */  .word 0x54400006
     /* 0102A4 000102A4 8FBF0024 */  .word 0x8FBF0024
-    jal game_uso_func_0000E2D0   /* 0102A8 0C000000 -> game_uso_func_0000E2D0 */
+    jal RiderAnim_func_0000E2D0   /* 0102A8 0C000000 -> RiderAnim_func_0000E2D0 */
     /* 0102AC 000102AC 02002025 */  .word 0x02002025
-    jal game_uso_func_00011750   /* 0102B0 0C000000 -> game_uso_func_00011750 */
+    jal RiderAnim_func_00011750   /* 0102B0 0C000000 -> RiderAnim_func_00011750 */
     /* 0102B4 000102B4 02002025 */  .word 0x02002025
     /* 0102B8 000102B8 8FBF0024 */  .word 0x8FBF0024
     /* 0102BC 000102BC 8FB00020 */  .word 0x8FB00020

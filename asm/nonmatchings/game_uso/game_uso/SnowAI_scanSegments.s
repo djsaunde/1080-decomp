@@ -59,7 +59,7 @@ glabel SnowAI_scanSegments
     /* 00A8D4 0000A8D4 8DE50000 */  .word 0x8DE50000
     /* 00A8D8 0000A8D8 AFA40100 */  .word 0xAFA40100
     /* 00A8DC 0000A8DC AFA500F0 */  .word 0xAFA500F0
-    jal game_uso_func_0000A374   /* 00A8E0 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 00A8E0 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 00A8E4 0000A8E4 AFA50004 */  .word 0xAFA50004
     /* 00A8E8 0000A8E8 8FA70100 */  .word 0x8FA70100
     /* 00A8EC 0000A8EC 1040009D */  .word 0x1040009D

@@ -3,7 +3,7 @@ nonmatching RiderAnim_state_00010AC8, 0x70
 glabel RiderAnim_state_00010AC8
     /* 010AC8 00010AC8 27BDFFE0 */  .word 0x27BDFFE0
     /* 010ACC 00010ACC AFBF001C */  .word 0xAFBF001C
-    jal game_uso_func_0000D8EC   /* 010AD0 0C000000 -> game_uso_func_0000D8EC */
+    jal RiderAnim_func_0000D8EC   /* 010AD0 0C000000 -> RiderAnim_func_0000D8EC */
     /* 010AD4 00010AD4 AFA40020 */  .word 0xAFA40020
     /* 010AD8 00010AD8 8FA40020 */  .word 0x8FA40020
     /* 010ADC 00010ADC 240F0100 */  .word 0x240F0100

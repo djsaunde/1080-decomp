@@ -4305,7 +4305,7 @@ check_target:
 // (the freshly-loaded step as fs) instead of the target's `add.s fd, cur, step`.
 // A plain operand swap (`step + cur`) is INERT (IDO canonicalizes). The
 // assignment-expr lever forces cur as fs: `step + (curf = cur)` — same lever
-// that cracked game_uso_func_00003FAC's mul.s operand caps. (Old "add.s
+// that cracked math_rotateXZPair_00003FAC's mul.s operand caps. (Old "add.s
 // operand-order stays NM / FPU-scheduler cap" comment was wrong.)
 void SelectWin_state2_000073C0(char *scr) {
     float cur = *(float *)(scr + 0x480);

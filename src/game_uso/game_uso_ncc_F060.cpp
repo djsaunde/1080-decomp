@@ -20,8 +20,8 @@ extern "C" {
 extern char game_uso_D_807FF4A0;
 void import_0010DB28(void *, int, int, int, int, int);
 void import_000966AC(void *);
-void game_uso_func_0000F360(void *);
-void game_uso_func_00011888(void *);
+void RiderAnim_func_0000F360(void *);
+void RiderAnim_func_00011888(void *);
 void RiderAnim_setState_0000D5F8(void *, PM, int);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
@@ -30,10 +30,10 @@ struct V { int *child() { return AT(int *, this, 0x800); } };
 extern "C" void RiderAnim_state_0000F060(int *a0) {
     int *s0 = a0;
     a0[0xF4 / 4] = 0;
-    game_uso_func_00011888(a0);
+    RiderAnim_func_00011888(a0);
     a0 = AT(V *, s0, 0xB4)->child();
     if ((((a0[0x10 / 4] & 0x100) != 0) == 0 || (((unsigned int *)a0)[0x10 / 4] & 0x200)) && I(AT(V *, s0, 0xB4), 0x938) != 0) {
-        game_uso_func_0000F360(s0);
+        RiderAnim_func_0000F360(s0);
         return;
     }
     import_0010DB28(s0, 0x10011, 0, 0, 0x100, s0[0x16C / 4]);

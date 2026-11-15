@@ -39,9 +39,9 @@ glabel RiderAnim_state_00010A0C
     /* 010A98 00010A98 8D660004 */  .word 0x8D660004
     jal RiderAnim_setNextState_0000D5BC   /* 010A9C 0C000000 -> RiderAnim_setNextState_0000D5BC */
     /* 010AA0 00010AA0 AFA60008 */  .word 0xAFA60008
-    jal game_uso_func_0000D8EC   /* 010AA4 0C000000 -> game_uso_func_0000D8EC */
+    jal RiderAnim_func_0000D8EC   /* 010AA4 0C000000 -> RiderAnim_func_0000D8EC */
     /* 010AA8 00010AA8 02002025 */  .word 0x02002025
-    jal game_uso_func_0000D7F4   /* 010AAC 0C000000 -> game_uso_func_0000D7F4 */
+    jal RiderAnim_func_0000D7F4   /* 010AAC 0C000000 -> RiderAnim_func_0000D7F4 */
     /* 010AB0 00010AB0 02002025 */  .word 0x02002025
     /* 010AB4 00010AB4 8FBF0024 */  .word 0x8FBF0024
     /* 010AB8 00010AB8 8FB00020 */  .word 0x8FB00020

@@ -1,4 +1,4 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29, Mar 13 1998) EXACT donor for game_uso_func_00000B3C
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29, Mar 13 1998) EXACT donor for cam_updateView_00000B3C
  * (0xB3C..0x1644, 706 words), compiled by tools/ncc721.sh (edgcpfe -> IDO 7.1 uopt / ugen / as1, the NCC
  * flags) and spliced over a placeholder in both build trees (agent-h run 355).
  *
@@ -14,8 +14,8 @@
  * RoData layout: the target's `lw t,0x50(at)` is an in-place %lo (the game_uso Yay0 block is raw .text,
  * no reloc bake), so the table must sit at donor .rodata+0x50. The two layout-only functions below
  * re-create what precedes it in the unit's RoData: game_uso_func_00000000's 1/6 literal (+0x0) and
- * game_uso_func_00000940's three tables (+0x4 / +0x20 / +0x38). The splice copies only
- * game_uso_func_00000B3C; its renamed .rodata reloc (game_uso_func_00000B3C_rodata) is pinned to 0 in
+ * cam_pickResultView_00000940's three tables (+0x4 / +0x20 / +0x38). The splice copies only
+ * cam_updateView_00000B3C; its renamed .rodata reloc (cam_updateView_00000B3C_rodata) is pinned to 0 in
  * undefined_syms_auto.txt, so lui 0 / lw 0x50 both come out of the in-place addends. */
 extern "C" {
 typedef unsigned int u32;
@@ -25,25 +25,25 @@ typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { int w[16]; } B3CBlk40;
 
-float game_uso_func_000000A0(float *a, float *b);
-void game_uso_func_000000E0(Vec3 *out, Vec3 **ctrl, float *weights);
-void game_uso_func_0000052C(int unused, Vec3 *a1, Vec3 *a2, int *a3, Vec3 *p4);
-int game_uso_func_00000674(int *a0);
+float math_dot4_000000A0(float *a, float *b);
+void math_blendVec3x4_000000E0(Vec3 *out, Vec3 **ctrl, float *weights);
+void cam_applyRelative_0000052C(int unused, Vec3 *a1, Vec3 *a2, int *a3, Vec3 *p4);
+int camPath_isRelative_00000674(int *a0);
 extern char import_80020098;
-void game_uso_func_00000AEC(int *a0, int a1);
-void game_uso_func_00000940(char *arg0);
-Vec3 *game_uso_func_000023D4(Vec3 *out, char *a1);
+void cam_setView_00000AEC(int *a0, int a1);
+void cam_pickResultView_00000940(char *arg0);
+Vec3 *cam_toTargetLocal_000023D4(Vec3 *out, char *a1);
 /* 2714's second parameter is unsigned (agent-g run 239, kit CCLVII): the literal-1 arguments are then
  * materialised by `addiu a1,zero,1`, not copied from the `tmp = 1` LR. */
-void game_uso_func_00002714(int *a0, unsigned int a1, int a2);
-void game_uso_func_00002FC8(int *a0, int a1, int a2);
+void SnowChaseActorCam_setMode_00002714(int *a0, unsigned int a1, int a2);
+void SnowChaseActorLook_setMode_00002FC8(int *a0, int a1, int a2);
 /* basis evaluator; prototyped so the float t travels in $a1 (blank jal 0 = the unit's func_00000000) */
 void game_uso_func_00000000(f32 *out, f32 t);
 
 /* layout only: game_uso RoData +0x0 (the 1/6 literal) */
 void game_uso_func_00000000_lay(float *out, float t) { out[0] = 0.16666667f; }
 
-/* layout only: the cfe-exact game_uso_func_00000940 body (identical under this front end); its three
+/* layout only: the cfe-exact cam_pickResultView_00000940 body (identical under this front end); its three
  * tables are RoData +0x4 / +0x20 / +0x38 */
 void game_uso_func_00000940_lay(char *arg0) {
     s32 temp_v0;
@@ -97,12 +97,12 @@ void game_uso_func_00000940_lay(char *arg0) {
         break;
     }
     if (var_a1 != -1) {
-        game_uso_func_00000AEC((int *)arg0, var_a1);
+        cam_setView_00000AEC((int *)arg0, var_a1);
     }
 }
 
 /* Spline path-follow update. */
-void game_uso_func_00000B3C(char *arg0) {
+void cam_updateView_00000B3C(char *arg0) {
     Vec3 vD;          /* 0x144 */
     Vec3 vC;          /* 0x138 */
     char *ob[1];      /* 0x134: obj, a one-word stack object (memory-resident) */
@@ -143,7 +143,7 @@ void game_uso_func_00000B3C(char *arg0) {
     tmp = *(s32 *)(*(char **)(s + 0x150) + 0xA54);
     if (tmp != *(s32 *)(s + 0x264)) {
         *(s32 *)(s + 0x264) = tmp;
-        game_uso_func_00000940(s);
+        cam_pickResultView_00000940(s);
     }
     tmp = 1; /* tmp also holds the constant 1 (target `bne t0,v0` operand order) */
     tbl = ((int **)(s + 0x158))[*(s32 *)(s + 0x250)];
@@ -168,14 +168,14 @@ void game_uso_func_00000B3C(char *arg0) {
                 *(s32 *)(s + 0x130) = (*(s32 *)(seg + 0x30) == 0) == 0;
             }
             if (tmp == *(s32 *)(seg + 0x10)) {
-                game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
             } else {
-                game_uso_func_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 0, *(s32 *)(s + 0x150) + 0x318);
             }
             if (*(s32 *)(seg + 0x0) == 1) {
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
             } else {
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 0, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 0, *(s32 *)(s + 0x150) + 0x318);
             }
             *(s32 *)(s + 0x270) = 0;
             *(s32 *)(s + 0x26C) = 0;
@@ -210,26 +210,26 @@ void game_uso_func_00000B3C(char *arg0) {
             /* 4 dense labels: the native 4-entry table (RoData +0x50) */
             switch (*(s32 *)(s + 0x26C)) {
             case 0:
-                game_uso_func_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 1, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
                 tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 1:
-                game_uso_func_00002714(*(int **)(s + 0x154), 2, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 2, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 1, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
                 tv += 0xA58; *(s32 *)tv = *(s32 *)tv & ~0x2000;
                 break;
             case 2:
-                game_uso_func_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 2, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 2, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
                 tv += 0xA58; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
             case 3:
-                game_uso_func_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
-                game_uso_func_00002FC8(*(int **)(ob[0] + 0xB4), 3, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorCam_setMode_00002714(*(int **)(s + 0x154), 3, *(s32 *)(s + 0x150) + 0x318);
+                SnowChaseActorLook_setMode_00002FC8(*(int **)(ob[0] + 0xB4), 3, *(s32 *)(s + 0x150) + 0x318);
                 tv = *(char **)(s + 0x150);
                 tv += 0xA58; *(s32 *)tv = *(s32 *)tv | 0x2000;
                 break;
@@ -256,7 +256,7 @@ void game_uso_func_00000B3C(char *arg0) {
             c1[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0xC);
             c1[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0xC);
             c1[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0xC);
-            game_uso_func_000000E0(&pos1, c1, state);
+            math_blendVec3x4_000000E0(&pos1, c1, state);
         }
         break;
     }
@@ -279,7 +279,7 @@ void game_uso_func_00000B3C(char *arg0) {
             c2[1] = (Vec3 *)((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)];
             c2[2] = (Vec3 *)((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)];
             c2[3] = (Vec3 *)((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)];
-            game_uso_func_000000E0(&pos2, c2, state);
+            math_blendVec3x4_000000E0(&pos2, c2, state);
         }
         break;
     }
@@ -295,7 +295,7 @@ void game_uso_func_00000B3C(char *arg0) {
         c3[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x18);
         c3[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x18);
         c3[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x18);
-        game_uso_func_000000E0(&up, c3, state);
+        math_blendVec3x4_000000E0(&up, c3, state);
     }
     selv = *(s32 *)(seg + 0x28);
     if (selv == 1) {
@@ -305,7 +305,7 @@ void game_uso_func_00000B3C(char *arg0) {
         w[1] = *(f32 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x24);
         w[2] = *(f32 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x24);
         w[3] = *(f32 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x24);
-        *(f32 *)(s + 0x14C) = game_uso_func_000000A0(w, state);
+        *(f32 *)(s + 0x14C) = math_dot4_000000A0(w, state);
     }
     if (*(s32 *)(s + 0x268) == 0) {
         selv = *(s32 *)(seg + 0x30);
@@ -319,16 +319,16 @@ void game_uso_func_00000B3C(char *arg0) {
             c4[1] = (Vec3 *)(((s32 *)(seg + 0x38))[*(s32 *)(s + 0x25C)] + 0x2C);
             c4[2] = (Vec3 *)(((s32 *)(seg + 0x3C))[*(s32 *)(s + 0x25C)] + 0x2C);
             c4[3] = (Vec3 *)(((s32 *)(seg + 0x40))[*(s32 *)(s + 0x25C)] + 0x2C);
-            game_uso_func_000000E0((Vec3 *)(s + 0x134), c4, state);
+            math_blendVec3x4_000000E0((Vec3 *)(s + 0x134), c4, state);
         }
     }
-    *(Tri3i *)&vC = *(Tri3i *)game_uso_func_000023D4(&stage, *(char **)(s + 0x154));
+    *(Tri3i *)&vC = *(Tri3i *)cam_toTargetLocal_000023D4(&stage, *(char **)(s + 0x154));
     tv = *(char **)(s + 0x150); tv += 0xB4;
     { f1 = ((f32 *)tv)[0] + vC.x; fy = ((f32 *)tv)[1] + vC.y; fz = ((f32 *)tv)[2] + vC.z; v30.z = fz; v30.y = fy; v30.x = f1; }
     if (arg0) {}
     *(Tri3i *)&v3C = *(Tri3i *)&v30;
     *(Tri3i *)&vD = *(Tri3i *)&v3C;
-    game_uso_func_0000052C((int)kf, &pos2, &pos1, (int *)seg, &vD);
+    cam_applyRelative_0000052C((int)kf, &pos2, &pos1, (int *)seg, &vD);
     if (*(s32 *)(seg + 0x0) != 1) {
         tv = *(char **)(s + 0xF4);
         *(f32 *)(tv + 0x60) = pos2.x;
@@ -355,7 +355,7 @@ void game_uso_func_00000B3C(char *arg0) {
         tmp = *(s32 *)(seg + 0x34);
         ncur += 1;
         nsub = 0;
-        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (game_uso_func_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
+        if (tmp < ncur) goto adv; else if (ncur == tmp) { if (camPath_isRelative_00000674((int *)seg)) { adv: ncur = 1; nseg += 1; } }
     }
     if (nseg < tbl[9]) {
         *(s32 *)(s + 0x260) = nsub;

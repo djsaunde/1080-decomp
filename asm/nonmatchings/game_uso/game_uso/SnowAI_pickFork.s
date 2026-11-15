@@ -23,7 +23,7 @@ glabel SnowAI_pickFork
     /* 00A410 0000A410 8CED0030 */  .word 0x8CED0030
     /* 00A414 0000A414 8DA60908 */  .word 0x8DA60908
     /* 00A418 0000A418 AFA700B0 */  .word 0xAFA700B0
-    jal game_uso_func_0000A374   /* 00A41C 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 00A41C 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 00A420 0000A420 24C600B4 */  .word 0x24C600B4
     /* 00A424 0000A424 8FA700B0 */  .word 0x8FA700B0
     /* 00A428 0000A428 14400009 */  .word 0x14400009
@@ -55,7 +55,7 @@ glabel SnowAI_pickFork
     /* 00A490 0000A490 8CEC0030 */  .word 0x8CEC0030
     /* 00A494 0000A494 8D860908 */  .word 0x8D860908
     /* 00A498 0000A498 AFA700B0 */  .word 0xAFA700B0
-    jal game_uso_func_0000A374   /* 00A49C 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 00A49C 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 00A4A0 0000A4A0 24C600B4 */  .word 0x24C600B4
     /* 00A4A4 0000A4A4 8FA700B0 */  .word 0x8FA700B0
     /* 00A4A8 0000A4A8 14400009 */  .word 0x14400009

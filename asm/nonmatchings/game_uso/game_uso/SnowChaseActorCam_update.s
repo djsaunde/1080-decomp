@@ -52,7 +52,7 @@ glabel SnowChaseActorCam_update
     /* 001E9C 00001E9C E7A60134 */  .word 0xE7A60134
     /* 001EA0 00001EA0 C4680038 */  .word 0xC4680038
     /* 001EA4 00001EA4 AFA60180 */  .word 0xAFA60180
-    jal game_uso_func_000023D4   /* 001EA8 0C000000 -> game_uso_func_000023D4 */
+    jal cam_toTargetLocal_000023D4   /* 001EA8 0C000000 -> cam_toTargetLocal_000023D4 */
     /* 001EAC 00001EAC E7A80138 */  .word 0xE7A80138
     /* 001EB0 00001EB0 8C480000 */  .word 0x8C480000
     /* 001EB4 00001EB4 8FA60180 */  .word 0x8FA60180

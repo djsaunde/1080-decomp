@@ -23,7 +23,7 @@ glabel RiderAnim_state_0000F664
     jal RiderAnim_setState_0000D5F8   /* 00F6B0 0C000000 -> RiderAnim_setState_0000D5F8 */
     /* 00F6B4 0000F6B4 AFA60008 */  .word 0xAFA60008
     /* 00F6B8 0000F6B8 8FA40020 */  .word 0x8FA40020
-    jal game_uso_func_0000E5C8   /* 00F6BC 0C000000 -> game_uso_func_0000E5C8 */
+    jal RiderAnim_func_0000E5C8   /* 00F6BC 0C000000 -> RiderAnim_func_0000E5C8 */
     /* 00F6C0 0000F6C0 00002825 */  .word 0x00002825
     /* 00F6C4 0000F6C4 8FBF001C */  .word 0x8FBF001C
     /* 00F6C8 0000F6C8 27BD0020 */  .word 0x27BD0020

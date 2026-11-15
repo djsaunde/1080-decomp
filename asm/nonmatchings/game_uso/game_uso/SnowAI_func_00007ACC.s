@@ -30,7 +30,7 @@ glabel SnowAI_func_00007ACC
     /* 007B34 00007B34 8F050000 */  .word 0x8F050000
     /* 007B38 00007B38 AFA70044 */  .word 0xAFA70044
     /* 007B3C 00007B3C AFA50034 */  .word 0xAFA50034
-    jal game_uso_func_0000A374   /* 007B40 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 007B40 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 007B44 00007B44 AFA50004 */  .word 0xAFA50004
     /* 007B48 00007B48 8FA70044 */  .word 0x8FA70044
     /* 007B4C 00007B4C 14400003 */  .word 0x14400003

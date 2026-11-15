@@ -268,7 +268,7 @@ endlabel CourseMarker_registerTemplates
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
 /* jumptable lands at its ROM %lo offset; layout order = text order. */
 .late_rodata
-/* +0x090..+0x094: float of C fn game_uso_func_00003ED4 (lwc1 %lo 0x90 at 0x3F50) */
+/* +0x090..+0x094: float of C fn math_signedAngleXZ_00003ED4 (lwc1 %lo 0x90 at 0x3F50) */
 .word 0x40490FDB
 
 .text

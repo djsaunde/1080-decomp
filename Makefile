@@ -3032,7 +3032,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # and the 4-float temp is a class whose ctor forwards to an inline set()
 # (77/77 words; cfe capped at 72.8%).
 GAMEUSO_B750_DONOR := build/src/game_uso/game_uso_ncc_B750.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B750=$(GAMEUSO_B750_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += LensFlareElem_draw_0000B750=$(GAMEUSO_B750_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B750_DONOR)
 # 10A0C = 1094C twin with PMFs passed by value (47/47 words; cfe 93.4%).
 GAMEUSO_10A0C_DONOR := build/src/game_uso/game_uso_ncc_10A0C.cpp.o
@@ -3049,7 +3049,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F6D4_DONOR)
 # E35C = F6D4 sibling, same recipe (130/130 words; cfe capped at 95.3%).
 GAMEUSO_E35C_DONOR := build/src/game_uso/game_uso_ncc_E35C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E35C=$(GAMEUSO_E35C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E35C=$(GAMEUSO_E35C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_E35C_DONOR)
 # 57D8 = mode-value pick (8-way switch = edg case-order chain; cfe jumptables it) + mode dispatch; 81/81 under NCC, cfe capped at 82.5%.
 GAMEUSO_57D8_DONOR := build/src/game_uso/game_uso_ncc_57D8.cpp.o
@@ -3069,11 +3069,11 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_6FA8_DONOR)
 # 2CC8: camera position snap (28C0 / BB8C sibling); Ctx read through inline accessors (v0 reloads), POD P3 return, by-value operator=; cfe capped at 190 raw.
 GAMEUSO_2CC8_DONOR := build/src/game_uso/game_uso_ncc_2CC8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00002CC8=$(GAMEUSO_2CC8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorLook_applyMode_00002CC8=$(GAMEUSO_2CC8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_2CC8_DONOR)
 # 24BC: camera homing (2CC8 / 28C0 sibling); out via inline Ctx accessor, setG / setP in a nested block, one empty if after q += r; cfe capped at 72%.
 GAMEUSO_24BC_DONOR := build/src/game_uso/game_uso_ncc_24BC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000024BC=$(GAMEUSO_24BC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowChaseActorCam_applyMode_000024BC=$(GAMEUSO_24BC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_24BC_DONOR)
 # 3AC0: twelve `new Item(name)`; the inline ctor's by-value param is the shared
 # sp+36 pool slot, four dead named locals give frame 112 (cfe capped at 253/261).
@@ -3098,7 +3098,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # Host placeholder re-emits the two .rodata floats (+/-FLT_MAX) the donor
 # reads through D_43D8_fmin/fmax + 0x94/0x98.
 GAMEUSO_43D8_DONOR := build/src/game_uso/game_uso_ncc_43D8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000043D8=$(GAMEUSO_43D8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += CourseMarker_findNearestZ_000043D8=$(GAMEUSO_43D8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_43D8_DONOR)
 # D9CC: landing/turn-state classifier (524/524 words). The first gate is two
 # nested ifs and the early goto leaves both, so two branches hit an empty
@@ -3202,7 +3202,7 @@ build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B274_NM_DONOR)
 # 97EC: EXACT NCC donor over an empty placeholder (XZ derived-ctor protocol x5; agent-g run 237: named
 # Vec3 ctor arguments, pe in the if block and pf / e / f in a nested block = the target's temp homes).
 GAMEUSO_97EC_DONOR := build/src/game_uso/game_uso_ncc_97EC.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_000097EC=$(GAMEUSO_97EC_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_000097EC=$(GAMEUSO_97EC_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_97EC_DONOR)
 # 1DDC: EXACT NCC donor over a placeholder (24BC sibling: Ctx accessor, M4::getPos, V3 copy chains; agent-c run 240:
 # getPos through an inline `mtx.me()` gives both matrix pointers their own LR (v1); named V3 e, dead early f23D4 call
@@ -3215,7 +3215,7 @@ GAMEUSO_28C0_NM_DONOR := build/src/game_uso/game_uso_ncc_28C0.cpp.o
 build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_28C0_NM_DONOR)
 # BB8C = contact sweep, V3 operator temporaries (NCC donor, 252/252 words; agent-g run 128, exact run 264).
 GAMEUSO_BB8C_DONOR := build/src/game_uso/game_uso_ncc_BB8C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000BB8C=$(GAMEUSO_BB8C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += LensFlare_display=$(GAMEUSO_BB8C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_BB8C_DONOR)
 
 # MIPSpro 7.2.1 C++ donors (src/<seg>/<seg>_mp72_<OFF>.cpp): the period MIPSpro 7.2.1 o32 edgcpfe (EDG 2.29,
@@ -3229,9 +3229,9 @@ build/src/game_uso/game_uso_mp72_%.cpp.o: src/game_uso/game_uso_mp72_%.cpp $(NCC
 	$(NCC721) $< $@ $(OPT_FLAGS)
 # B3C: spline path-follow update (706/706; agent-h run 355): its 4-label `switch (s->0x26C)` is a native
 # 4-entry table under EDG 2.29. Table at RoData +0x50 = in-place %lo (layout-only 0000 / 940 copies in the
-# donor); game_uso_func_00000B3C_rodata pinned to 0. Host body = a placeholder re-emitting the 16 RoData words.
+# donor); cam_updateView_00000B3C_rodata pinned to 0. Host body = a placeholder re-emitting the 16 RoData words.
 GAMEUSO_B3C_DONOR := build/src/game_uso/game_uso_mp72_B3C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_00000B3C=$(GAMEUSO_B3C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += cam_updateView_00000B3C=$(GAMEUSO_B3C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B3C_DONOR)
 build/src/titproc_uso/titproc_uso_mp72_%.cpp.o: src/titproc_uso/titproc_uso_mp72_%.cpp $(NCC721)
 	@mkdir -p $(dir $@)
@@ -4136,22 +4136,22 @@ build/src/match_imports/SnowAI_applyStickInput.c.o: src/match_imports/SnowAI_app
 build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o: src/match_imports/SnowAI_applyStickInput.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_uso_func_0000B274.c.o: src/match_imports/game_uso_func_0000B274.c src/match_imports/context_game_uso_pool_B274.h
+build/src/match_imports/Sun_display.c.o: src/match_imports/Sun_display.c src/match_imports/context_game_uso_pool_B274.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_uso_func_0000B274.c.o: src/match_imports/game_uso_func_0000B274.c src/match_imports/context_game_uso_pool_B274.h
+build/non_matching/src/match_imports/Sun_display.c.o: src/match_imports/Sun_display.c src/match_imports/context_game_uso_pool_B274.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_uso_func_0000B4B8.c.o: src/match_imports/game_uso_func_0000B4B8.c src/match_imports/context_game_uso.h
+build/src/match_imports/Sun_measureVisibility.c.o: src/match_imports/Sun_measureVisibility.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o: src/match_imports/game_uso_func_0000B4B8.c src/match_imports/context_game_uso.h
+build/non_matching/src/match_imports/Sun_measureVisibility.c.o: src/match_imports/Sun_measureVisibility.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_func_0000E5C8.c src/match_imports/context_game_uso.h
+build/src/match_imports/RiderAnim_func_0000E5C8.c.o: src/match_imports/RiderAnim_func_0000E5C8.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o: src/match_imports/game_uso_func_0000E5C8.c src/match_imports/context_game_uso.h
+build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o: src/match_imports/RiderAnim_func_0000E5C8.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c src/match_imports/context_gui_uso.h
@@ -4702,24 +4702,24 @@ build/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf: build/src/match_i
 build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf: build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o scripts/match-origins-SnowAI_applyStickInput-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SnowAI_applyStickInput-nm.ld -e SnowAI_applyStickInput -o $@ $@.stripped.o
-build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf: build/src/match_imports/game_uso_func_0000B274.c.o scripts/match-origins-game_uso_func_0000B274.ld
+build/src/match_imports/Sun_display.c.o.linked.elf: build/src/match_imports/Sun_display.c.o scripts/match-origins-Sun_display.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B274.ld -e game_uso_func_0000B274 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o scripts/match-origins-game_uso_func_0000B274-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Sun_display.ld -e Sun_display -o $@ $@.stripped.o
+build/non_matching/src/match_imports/Sun_display.c.o.linked.elf: build/non_matching/src/match_imports/Sun_display.c.o scripts/match-origins-Sun_display-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B274-nm.ld -e game_uso_func_0000B274 -o $@ $@.stripped.o
-build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf: build/src/match_imports/game_uso_func_0000B4B8.c.o scripts/match-origins-game_uso_func_0000B4B8.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Sun_display-nm.ld -e Sun_display -o $@ $@.stripped.o
+build/src/match_imports/Sun_measureVisibility.c.o.linked.elf: build/src/match_imports/Sun_measureVisibility.c.o scripts/match-origins-Sun_measureVisibility.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B4B8.ld -e game_uso_func_0000B4B8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o scripts/match-origins-game_uso_func_0000B4B8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Sun_measureVisibility.ld -e Sun_measureVisibility -o $@ $@.stripped.o
+build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf: build/non_matching/src/match_imports/Sun_measureVisibility.c.o scripts/match-origins-Sun_measureVisibility-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000B4B8-nm.ld -e game_uso_func_0000B4B8 -o $@ $@.stripped.o
-build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/src/match_imports/game_uso_func_0000E5C8.c.o scripts/match-origins-game_uso_func_0000E5C8.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Sun_measureVisibility-nm.ld -e Sun_measureVisibility -o $@ $@.stripped.o
+build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf: build/src/match_imports/RiderAnim_func_0000E5C8.c.o scripts/match-origins-RiderAnim_func_0000E5C8.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000E5C8.ld -e game_uso_func_0000E5C8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o scripts/match-origins-game_uso_func_0000E5C8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_func_0000E5C8.ld -e RiderAnim_func_0000E5C8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o scripts/match-origins-RiderAnim_func_0000E5C8-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-game_uso_func_0000E5C8-nm.ld -e game_uso_func_0000E5C8 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_func_0000E5C8-nm.ld -e RiderAnim_func_0000E5C8 -o $@ $@.stripped.o
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld -e gui_drawSpriteIA8Clip_00002BB0 -o $@ $@.stripped.o
@@ -5124,18 +5124,18 @@ build/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf: build/s
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowAI_applyStickInput.json $@
 build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf scripts/match-bindings-SnowAI_applyStickInput-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SnowAI_applyStickInput-nm.json $@
-build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B274.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B274.json $@
-build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B274-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B274-nm.json $@
-build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B4B8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B4B8.json $@
-build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000B4B8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000B4B8-nm.json $@
-build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8.json $@
-build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-game_uso_func_0000E5C8-nm.json $@
+build/src/match_imports/Sun_display.c.o.linked.elf.bound.elf: build/src/match_imports/Sun_display.c.o.linked.elf scripts/match-bindings-Sun_display.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_display.json $@
+build/non_matching/src/match_imports/Sun_display.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Sun_display.c.o.linked.elf scripts/match-bindings-Sun_display-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_display-nm.json $@
+build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: build/src/match_imports/Sun_measureVisibility.c.o.linked.elf scripts/match-bindings-Sun_measureVisibility.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_measureVisibility.json $@
+build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf scripts/match-bindings-Sun_measureVisibility-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_measureVisibility-nm.json $@
+build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_func_0000E5C8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_func_0000E5C8.json $@
+build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json $@
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json $@
 build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5502,18 +5502,18 @@ build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_applyStickI
 build/src/game_uso/game_uso.c.o: src/match_imports/SnowAI_applyStickInput.c scripts/match-bindings-SnowAI_applyStickInput.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_applyStickInput=build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf
 build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/SnowAI_applyStickInput.c scripts/match-bindings-SnowAI_applyStickInput-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B274=build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B274.c scripts/match-bindings-game_uso_func_0000B274.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B274=build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B274.c scripts/match-bindings-game_uso_func_0000B274-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B4B8=build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B4B8.c scripts/match-bindings-game_uso_func_0000B4B8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000B4B8=build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000B4B8.c scripts/match-bindings-game_uso_func_0000B4B8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += game_uso_func_0000E5C8=build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/game_uso_func_0000E5C8.c scripts/match-bindings-game_uso_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_display=build/src/match_imports/Sun_display.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/Sun_display.c scripts/match-bindings-Sun_display.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_display=build/non_matching/src/match_imports/Sun_display.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/Sun_display.c scripts/match-bindings-Sun_display-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_measureVisibility=build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/Sun_measureVisibility.c scripts/match-bindings-Sun_measureVisibility.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_measureVisibility=build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/Sun_measureVisibility.c scripts/match-bindings-Sun_measureVisibility-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E5C8=build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_func_0000E5C8.c scripts/match-bindings-RiderAnim_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E5C8=build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_func_0000E5C8.c scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 # 3558: EXACT (agent-c run 340, kit CDXXXII) via the NCC (C++) donor game_uso_ncc_3558.cpp (was the NM-only
 # comparison donor _nm.cpp, agent-g run 160 value-class rewrite), spliced over the placeholder on both paths.
 GAMEUSO_3558_DONOR := build/src/game_uso/game_uso_ncc_3558.cpp.o
@@ -5908,18 +5908,18 @@ build/src/game_uso/game_uso.c.o: build/src/match_imports/SnowAI_applyStickInput.
 build/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/SnowAI_applyStickInput.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
-build/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_uso_func_0000B274.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
-build/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_uso_func_0000B4B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
-build/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/game_uso_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/Sun_display.c.o.linked.elf.bound.elf
+build/src/match_imports/Sun_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/Sun_display.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/Sun_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
+build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
+build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf

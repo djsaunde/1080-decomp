@@ -96,7 +96,7 @@ glabel SnowAI_finishRun
     /* 006BA0 00006BA0 E4640004 */  .word 0xE4640004
     /* 006BA4 00006BA4 00E02025 */  .word 0x00E02025
     /* 006BA8 00006BA8 27A50088 */  .word 0x27A50088
-    jal game_uso_func_00003ED4   /* 006BAC 0C000000 -> game_uso_func_00003ED4 */
+    jal math_signedAngleXZ_00003ED4   /* 006BAC 0C000000 -> math_signedAngleXZ_00003ED4 */
     /* 006BB0 00006BB0 00003025 */  .word 0x00003025
     /* 006BB4 00006BB4 8E030030 */  .word 0x8E030030
     /* 006BB8 00006BB8 C60800B0 */  .word 0xC60800B0
@@ -155,7 +155,7 @@ glabel SnowAI_finishRun
     /* 006C8C 00006C8C 00000000 */  .word 0x00000000
     /* 006C90 00006C90 45000006 */  .word 0x45000006
     /* 006C94 00006C94 00000000 */  .word 0x00000000
-    jal game_uso_func_000110A4   /* 006C98 0C000000 -> game_uso_func_000110A4 */
+    jal RiderAnim_startFinish_000110A4   /* 006C98 0C000000 -> RiderAnim_startFinish_000110A4 */
     /* 006C9C 00006C9C 8C640840 */  .word 0x8C640840
     /* 006CA0 00006CA0 2418003D */  .word 0x2418003D
     /* 006CA4 00006CA4 1000000A */  .word 0x1000000A
@@ -165,7 +165,7 @@ glabel SnowAI_finishRun
     /* 006CB4 00006CB4 2401003C */  .word 0x2401003C
     /* 006CB8 00006CB8 54410006 */  .word 0x54410006
     /* 006CBC 00006CBC 02002025 */  .word 0x02002025
-    jal game_uso_func_000110A4   /* 006CC0 0C000000 -> game_uso_func_000110A4 */
+    jal RiderAnim_startFinish_000110A4   /* 006CC0 0C000000 -> RiderAnim_startFinish_000110A4 */
     /* 006CC4 00006CC4 8C640840 */  .word 0x8C640840
     /* 006CC8 00006CC8 2408003D */  .word 0x2408003D
     /* 006CCC 00006CCC AE080070 */  .word 0xAE080070

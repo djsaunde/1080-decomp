@@ -9,7 +9,7 @@ glabel SnowAI_isAtFinish
     /* 006F4C 00006F4C AFA5003C */  .word 0xAFA5003C
     /* 006F50 00006F50 AFA50004 */  .word 0xAFA50004
     /* 006F54 00006F54 8C860030 */  .word 0x8C860030
-    jal game_uso_func_0000A374   /* 006F58 0C000000 -> game_uso_func_0000A374 */
+    jal SnowAI_findNearestMarker_0000A374   /* 006F58 0C000000 -> SnowAI_findNearestMarker_0000A374 */
     /* 006F5C 00006F5C 24C600B4 */  .word 0x24C600B4
     /* 006F60 00006F60 0002182B */  .word 0x0002182B
     /* 006F64 00006F64 1060000D */  .word 0x1060000D

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_00002CC8 (0x300 / 192 words).
+/* IDO 7.1 NCC (C++) donor for SnowChaseActorLook_applyMode_00002CC8 (0x300 / 192 words).
  *
  * Camera position snap (sibling of 1DDC / 24BC / 28C0 / BB8C): key 0 does
  * nothing; key 1 puts the output position at the target body's matrix
@@ -54,7 +54,7 @@ struct Src;
 struct Self { char pad[0x14]; Out *out; char pad18[0x38 - 0x18]; Body *obj; Src *src; int key; char pad44[0x5C - 0x44]; float k; };
 struct Src { char pad[0x38]; Body *body; };
 extern "C" {
-P3 game_uso_func_000023D4(Src *a1);
+P3 cam_toTargetLocal_000023D4(Src *a1);
 }
 struct Ctx {
     Body *tgt; Out *out;
@@ -62,7 +62,7 @@ struct Ctx {
     Out *getOut() const { return out; }
     Body *getTgt() const { return tgt; }
 };
-extern "C" void game_uso_func_00002CC8(Self *a0, V3 *vel) {
+extern "C" void SnowChaseActorLook_applyMode_00002CC8(Self *a0, V3 *vel) {
     Ctx c(a0);
     int key;
     P3 r;
@@ -74,7 +74,7 @@ extern "C" void game_uso_func_00002CC8(Self *a0, V3 *vel) {
         int yy; yy = 0;
         {
         q.x = c.getTgt()->mtx.m[3][0]; q.y = c.getTgt()->mtx.m[3][1]; q.z = c.getTgt()->mtx.m[3][2];
-        r = game_uso_func_000023D4(a0->src);
+        r = cam_toTargetLocal_000023D4(a0->src);
         q += r;
         d = *vel / a0->k;
         q -= d;

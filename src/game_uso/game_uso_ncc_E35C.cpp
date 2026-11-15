@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for game_uso_func_0000E35C (0x208 / 130 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_func_0000E35C (0x208 / 130 words).
  *
  * Slot/queue advance, sibling of F6D4 (same body inside `if (self->0xF0)`,
  * no D6E4 pre-flush, 077C44 third arg 0, returns 1 / 0). Built with the
@@ -19,9 +19,9 @@ extern char import_800201D0;
 extern char game_uso_D_807FF4B0;
 extern char game_uso_D_807FF4B8;
 extern char game_uso_D_807FF4C0;
-void game_uso_func_0000EE30(void *, int, int);
+void RiderAnim_func_0000EE30(void *, int, int);
 void import_000B8518(int, void *, int);
-void game_uso_func_0000E564(void *);
+void RiderAnim_func_0000E564(void *);
 void game_uso_func_077C44(void *, int, int, int, int, int);
 void RiderAnim_setState_0000D5F8(void *, PM, int);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
@@ -29,10 +29,10 @@ void RiderAnim_setNextState_0000D5BC(void *, PM);
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 #define P(b,o) AT(char *,b,o)
-extern "C" int game_uso_func_0000E35C(char *s0) {
+extern "C" int RiderAnim_func_0000E35C(char *s0) {
     char *f4;
     if (P(s0, 0xF0) != 0) {
-        game_uso_func_0000EE30(s0, I(P(s0, 0xF0), 0x30), 1);
+        RiderAnim_func_0000EE30(s0, I(P(s0, 0xF0), 0x30), 1);
         if (I(P(s0, 0xB4), 0xA58) & 0x20) {
             int base = (int)game_uso_D_807FFBC0;
             import_000B8518(I(&import_800201D0, 0x138), P(s0, 0xB4),
@@ -46,7 +46,7 @@ extern "C" int game_uso_func_0000E35C(char *s0) {
         P(s0, 0xF0) = 0;
         if (P(s0, 0xF8) == P(s0, 0xF4)) { I(s0, 0x100) = 0; }
         P(s0, 0xF8) = P(s0, 0xF4);
-        game_uso_func_0000E564(s0);
+        RiderAnim_func_0000E564(s0);
         if ((I(P(s0, 0xB4), 0xA58) & 0x40) && I(P(s0, 0xF4), 0x28) != 0) {
             I(P(s0, 0xF4), 0x20) = I(P(s0, 0xF4), 0x28);
         } else {

@@ -77,7 +77,7 @@ glabel SnowAI_timeoutRun
     /* 006E14 00006E14 00000000 */  .word 0x00000000
     /* 006E18 00006E18 8C440840 */  .word 0x8C440840
     /* 006E1C 00006E1C AFA60088 */  .word 0xAFA60088
-    jal game_uso_func_00011024   /* 006E20 0C000000 -> game_uso_func_00011024 */
+    jal RiderAnim_startTimeout_00011024   /* 006E20 0C000000 -> RiderAnim_startTimeout_00011024 */
     /* 006E24 00006E24 AFA5006C */  .word 0xAFA5006C
     /* 006E28 00006E28 8FA60088 */  .word 0x8FA60088
     /* 006E2C 00006E2C 8FA5006C */  .word 0x8FA5006C
@@ -91,7 +91,7 @@ glabel SnowAI_timeoutRun
     /* 006E4C 00006E4C 00000000 */  .word 0x00000000
     /* 006E50 00006E50 8C440840 */  .word 0x8C440840
     /* 006E54 00006E54 AFA60088 */  .word 0xAFA60088
-    jal game_uso_func_00011024   /* 006E58 0C000000 -> game_uso_func_00011024 */
+    jal RiderAnim_startTimeout_00011024   /* 006E58 0C000000 -> RiderAnim_startTimeout_00011024 */
     /* 006E5C 00006E5C AFA5006C */  .word 0xAFA5006C
     /* 006E60 00006E60 8FA60088 */  .word 0x8FA60088
     /* 006E64 00006E64 8FA5006C */  .word 0x8FA5006C

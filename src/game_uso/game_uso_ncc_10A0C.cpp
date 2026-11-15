@@ -19,8 +19,8 @@ extern char game_uso_D_807FF438;
 extern char game_uso_D_807FF460;
 void import_0010DB78(void *, int, int, int, int, int);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
-void game_uso_func_0000D8EC(void *);
-void game_uso_func_0000D7F4(void *);
+void RiderAnim_func_0000D8EC(void *);
+void RiderAnim_func_0000D7F4(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
@@ -35,6 +35,6 @@ extern "C" void RiderAnim_state_00010A0C(int *a0) {
     if (p[0x9CC / 4] == 0) {
         RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
     }
-    game_uso_func_0000D8EC(a0);
-    game_uso_func_0000D7F4(a0);
+    RiderAnim_func_0000D8EC(a0);
+    RiderAnim_func_0000D7F4(a0);
 }

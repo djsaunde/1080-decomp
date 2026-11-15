@@ -29,7 +29,7 @@ glabel SnowChaseActorLook_update
     /* 002924 00002924 C71200A8 */  .word 0xC71200A8
     /* 002928 00002928 E7B200C0 */  .word 0xE7B200C0
     /* 00292C 0000292C 8CC5003C */  .word 0x8CC5003C
-    jal game_uso_func_000023D4   /* 002930 0C000000 -> game_uso_func_000023D4 */
+    jal cam_toTargetLocal_000023D4   /* 002930 0C000000 -> cam_toTargetLocal_000023D4 */
     /* 002934 00002934 AFA600E8 */  .word 0xAFA600E8
     /* 002938 00002938 8C490000 */  .word 0x8C490000
     /* 00293C 0000293C 8FA600E8 */  .word 0x8FA600E8

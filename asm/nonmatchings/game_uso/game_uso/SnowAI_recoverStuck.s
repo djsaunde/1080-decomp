@@ -123,7 +123,7 @@ glabel SnowAI_recoverStuck
     /* 0073BC 000073BC E4680004 */  .word 0xE4680004
     /* 0073C0 000073C0 00E02025 */  .word 0x00E02025
     /* 0073C4 000073C4 27A50078 */  .word 0x27A50078
-    jal game_uso_func_00003ED4   /* 0073C8 0C000000 -> game_uso_func_00003ED4 */
+    jal math_signedAngleXZ_00003ED4   /* 0073C8 0C000000 -> math_signedAngleXZ_00003ED4 */
     /* 0073CC 000073CC 00003025 */  .word 0x00003025
     /* 0073D0 000073D0 3C0140C0 */  .word 0x3C0140C0
     /* 0073D4 000073D4 44818000 */  .word 0x44818000

@@ -25319,7 +25319,7 @@ void math_mtx4Transpose(float src[4][4]) {
    homes per the FRAME-SLOT HOME ASSIGNMENT RULE and grows the frame to
    0x28 with the a1 home landing at 0x2C — byte-exact. All 5 frame-layout
    words (prologue 0x27BDFFD8, a1 sw/lw 0x2C, v0 lw 0x2C, epilogue 0x28)
-   now match. (This is the game_uso_func_00003ED4 lesson: a "coloring cap"
+   now match. (This is the math_signedAngleXZ_00003ED4 lesson: a "coloring cap"
    that is really a FRAME-LAYOUT diff. Confirmed: 5 of the 8 residual words
    were offset-only frame, fully C-reachable.)
    2026-06-21 BYTE-EXACT — the final 3-imm IV-stride residual CRACKED. The
