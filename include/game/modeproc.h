@@ -15,7 +15,9 @@
 /* ---- the course list (InputMgr.session +8; RaceProcess ctor arg 3) ----
  * arc_initCourses fills it with {2, 0, 3, 1, 4}; mgr_initMatchRace with 4..6
  * course ids and one rider per course. *_loadSprites show "course idx+1 of count"
- * (idx + 1 == count picks the "final" label). */
+ * (idx + 1 == count picks the "final" label). Typed as a pointer in ArcRace /
+ * ArcDataManager; mgr keeps s32 (its list has riders at +0x24 instead of times, and
+ * mgr onRaceOver's `list[list[1] + 4]` int-array form is load-bearing). */
 typedef struct ArcCourseList {
     /* 0x00 */ s32 retries;
     /* 0x04 */ s32 idx;              /* current course */
@@ -30,7 +32,7 @@ typedef char ArcCourseList_size_check[sizeof(ArcCourseList) == 0x38 ? 1 : -1];
 /* ---- ArcDataManager (arcproc, alloc 0xD8; arc_DataManager_init) ---- */
 typedef struct ArcDataManager {
     /* 0x00 */ DataManager base;
-    /* 0xB8 */ s32 courseList;       /* ArcCourseList * (init arg 3) */
+    /* 0xB8 */ ArcCourseList *courseList; /* init arg 3 */
     /* 0xBC */ s32 race;             /* the owning ArcRace (init arg 1) */
     /* 0xC0 */ f32 colour[4];        /* 192/255, 1, 192/255, 0 */
     /* 0xD0 */ s32 alpha;            /* 0xFF */
@@ -42,7 +44,7 @@ typedef char ArcDataManager_size_check[sizeof(ArcDataManager) == 0xD8 ? 1 : -1];
 /* ---- ArcRace (ARCRaceProcess, "ARCRace Process", alloc 0x780) ---- */
 typedef struct ArcRace {
     /* 0x000 */ RaceProcess race;
-    /* 0x6A8 */ s32 courseList;      /* ArcCourseList * (ctor arg 3) */
+    /* 0x6A8 */ ArcCourseList *courseList; /* ctor arg 3 */
     /* 0x6AC */ s32 dataMgr;         /* ArcDataManager * (also InputMgr.dataMgr) */
     /* 0x6B0 */ s32 finalTime;       /* onRaceOver: dataMgr->entries[0].time */
     /* 0x6B4 */ s32 recordRank;      /* onRaceOver: entries[0] +0x40, then the tie scan */

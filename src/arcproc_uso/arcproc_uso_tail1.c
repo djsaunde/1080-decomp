@@ -980,10 +980,10 @@ void ARCRaceProcess_onLeave(ArcRace *s0) {
     }
     if (v1 != 0) {
         if (v1 == 1) {
-            ArcCourseList *p = (ArcCourseList *)s0->courseList;
+            ArcCourseList *p = s0->courseList;
             gl_func_00000000(s0->dataMgr, p->times, p->count);
         } else {
-            ArcCourseList *p = (ArcCourseList *)s0->courseList;
+            ArcCourseList *p = s0->courseList;
             gl_func_00000000(s0->dataMgr, p->times, p->idx + 1);
         }
     }
@@ -1246,7 +1246,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
     *(int *)((char *)arg0 + 0xC) = (int)((char *)&D_00000000 + 0x3E4);
     arg0->race = (s32)arg1;
     arg0->base.session = (BackupSession *)arg4;
-    arg0->courseList = (s32)arg3;
+    arg0->courseList = (ArcCourseList *)arg3;
     arg0->base.pointsListArg = arg2;
     arg0->alpha = 0xFF;
     arg0->unkD4 = 0;
@@ -1261,7 +1261,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
         gl_func_00000000(arg0, 0x69, 0x11, &arg0->base.score);
         gl_func_00000000(arg0, 0x123, 0xE1, 1);
         gl_func_00000000(arg0, 0x21, 0x13, arg0->base.unkA8);
-        gl_func_00000000(arg0->base.points, ((ArcCourseList *)arg0->courseList)->total);
+        gl_func_00000000(arg0->base.points, arg0->courseList->total);
         arg0->base.points94 = gl_func_00000000(0, arg0->base.digitsTall);
         gl_func_00000000((char *)arg0->base.points94, 0);
         gl_proto_1d18((char *)arg0->base.points94, 0xA0, 0x46, 1.0f, 1.0f);
@@ -1300,7 +1300,7 @@ void arc_DataManager_reset_00001F0C(ArcDataManager *a0) {
     } else {
         a0->base.score = 0x7530;
     }
-    *(int *)a0->base.unkA8 = ((ArcCourseList *)a0->courseList)->total;
+    *(int *)a0->base.unkA8 = a0->courseList->total;
     a0->base.bonus = 0;
     gl_func_00000000(a0);
 }
