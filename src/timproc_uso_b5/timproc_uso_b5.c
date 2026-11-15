@@ -7028,30 +7028,31 @@ void CourseItem_clearChosen_0000C89C(SelCourseItem *it, int a1) {
  *      created first. */
 extern int gl_func_00000000();
 extern char D_00000000;
+#define CMODEL(it) (((SelCourseItem *)(it))->model)
 void CourseItem_update_0000C8AC(int *a0) {
   SelCourseModel *v1;
   float *p128;
-  p128 = (float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128);
-  if ((*((int *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x134))) != 0)
+  p128 = &CMODEL(a0)->mapFade;
+  if (CMODEL(a0)->lit != 0)
   {
-    /* int-cast address form: distinct expr tree from the (char*)+0x128 head
+    /* int-cast address form of &mapFade: distinct expr tree from the head
      * def -> defeats uopt expr-CSE, remats the arm-local addiu (cast-literal
      * CSE-break family, docs/IDO_CODEGEN DF98) */
-    p128 = (float *) (((int) ((int *) a0[0x2B8 / 4])) + 0x128); *p128 += *((float *) (((char *) (&D_00000000)) + 0x374));
-    if ((*((float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128))) > 1.0f)
+    p128 = (float *) ((int) CMODEL(a0) + 0x128); *p128 += *((float *) (((char *) (&D_00000000)) + 0x374));
+    if (CMODEL(a0)->mapFade > 1.0f)
     {
-      *((float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128)) = 1.0f;
+      CMODEL(a0)->mapFade = 1.0f;
     }
   }
   else
   {
     *p128 -= *((float *) (((char *) (&D_00000000)) + 0x378));
-    if ((*((float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128))) < 0.0f)
+    if (CMODEL(a0)->mapFade < 0.0f)
     {
-      *((float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128)) = 0.0f;
+      CMODEL(a0)->mapFade = 0.0f;
     }
   }
-  p128 = (int *) a0[0x2B8 / 4];
+  p128 = (float *) CMODEL(a0);
   {
     float a;
     float b;
