@@ -822,7 +822,7 @@ def main():
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
-    c = Census('.')
+    c = Census('.', a.no_build)
     sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert}[a.cmd](c, a) or 0)
 
