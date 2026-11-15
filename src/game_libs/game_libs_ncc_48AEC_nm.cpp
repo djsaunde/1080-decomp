@@ -57,7 +57,12 @@ struct Ctx {
     /* agent-g run 424: dcQ's slot count read through a u32 view of dl (kit CDLXXXIX) so loop 1's dl is no longer the
      * same uopt expression as loop 2's (that cross-loop dl LR held v1 over n), and dc3 without its code-free `if (c) {}`:
      * loop-1 / loop-2 n v1 and the loop-3 bottom copy like the target, 99.713 -> 99.742 */
-    void dcQ(Ctx *c, int n) { n = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); Gfx *g = dl->buf + ((DLHead *)*(u32 *)&dl)->count++; g->w0 = 0x06000000; g->w1 = n; }
+    /* agent-g run 427: dcQ's result in its own `u32 t` (the target's loop-1 packet: n is dead after the call) and the
+     * packet stores in an inline p6b(t, g) whose Gfx * is a PARAMETER: g's home is then a pool word, not a named frame
+     * word, so the frame stays 0x160 with the new t word; slot back through nextQ() and `[n]` without its folded use:
+     * 99.742 -> 99.829 */
+    void p6b(u32 t, Gfx *g) { g->w0 = 0x06000000; g->w1 = t; }
+    void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); }
     void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
