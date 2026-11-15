@@ -16,6 +16,7 @@ extern "C" {
 extern int func_00000000(...);
 extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } func_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
 extern char D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern char D_0000C58C;
 extern char D_0000C594;
 extern char D_0000C5A4;
@@ -59,11 +60,11 @@ void *QuitProcess_ctor0(void *a0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &D_0000C58C);
-                *(int*)((char*)s1 + 0x28) = (int)&D_00000000;
+                *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
             }
-            *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
+            *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
         }
-        *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&D_0000C594;
         *(int*)((char*)s0 + 0x0C) = (int)s1;
@@ -114,11 +115,11 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &D_0000C5A4);
-                *(int*)((char*)s1 + 0x28) = (int)&D_00000000;
+                *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
             }
-            *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
+            *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
         }
-        *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&D_0000C5AC;
         *(int*)((char*)s0 + 0x0C) = (int)s1;
@@ -195,9 +196,9 @@ void *PauseMenu_create(char *a0) {
     if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
         if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
             func_00000000(s, &D_0000C5BC);
-            *(char **)(s + 0x28) = &D_00000000;
+            *(char **)(s + 0x28) = &Process_vtbl;
         }
-        *(char **)(a0 + 0x28) = &D_00000000;
+        *(char **)(a0 + 0x28) = &PauseMenu_vtbl;
         s = a0;
         d = &D_0000C5C4;
         *(char **)(s + 0xC) = d;

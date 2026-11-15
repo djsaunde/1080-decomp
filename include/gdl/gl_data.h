@@ -53,4 +53,89 @@
 #define gHostio       D_00000000 /* Bss+0x3C768 Sym 338, 8 bytes: the HostIO connection, first argument of every hostio_beginGroup/add/endGroup call in the 47 <Class>_hostioParms functions */
 #define gInputMgr     D_00000000 /* Bss+0xF8 Sym 272, 0x194 bytes: the InputMgr (include/game/input.h; 79 functions) */
 
+
+/* ---- vtables (agent-a run 482) ----
+ * Data objects whose span holds Text pointers in the Cfront layout (8-byte
+ * entries, first function at +0xC, slot +0x1C = display, +0x24 = update,
+ * +0x2C = handleMsg for Node classes). Named from the constructor that stores
+ * its address (K = 0) into the vptr (this+0x28 for Node classes) LAST: a ctor
+ * that stores two or three is the derived class running its inlined base
+ * ctors first (BestScoreGadget_ctor stores TimeGadget_vtbl then BestGadget_vtbl;
+ * QuitProcess_func_0000FC28 stores Process_vtbl, Process_vtbl_C3A0, QuitProcess_vtbl). A Data-offset suffix marks a
+ * vtable whose class name is not certain. `scripts/uso-data-sites.py object
+ * <Sym>` lists the slots; "Text ptrs in span" counts to the next named Data
+ * object, so it can include a following unnamed table. */
+#define TimeGadget_vtbl        D_00000000 /* Data+0xC77C Sym 861: vtable (10 Text ptrs in span, slot +0x1C TimeGadget_display_000140C4); vptr store by TimeGadget_ctor, BestTimeGadget_ctor, BestScoreGadget_ctor, PointsGadget_ctor, SpeedGadget_ctor, ... */
+#define CountDownGadget_vtbl   D_00000000 /* Data+0xC7DC Sym 862: vtable (11 Text ptrs in span, slot +0x1C CountDownGadget_display); vptr store by CountDownGadget_ctor */
+#define PointsGadget_vtbl_C854 D_00000000 /* Data+0xC854 Sym 863: vtable (10 Text ptrs in span, slot +0x1C PointsGadget_display_FFFFFFE0); vptr store by PointsGadget_ctor_00000ED0 */
+#define BestGadget_vtbl        D_00000000 /* Data+0xC8B4 Sym 864: vtable (10 Text ptrs in span, slot +0x1C BestGadget_display_00014228); vptr store by BestTimeGadget_ctor, BestScoreGadget_ctor */
+#define BoardsGadget_vtbl      D_00000000 /* Data+0xC914 Sym 865: vtable (10 Text ptrs in span, slot +0x1C BoardsGadget_display); vptr store by BoardsGadget_ctor */
+#define CoolGadget_vtbl        D_00000000 /* Data+0xC974 Sym 866: vtable (10 Text ptrs in span, slot +0x1C CoolGadget_display); vptr store by CoolGadget_ctor */
+#define CourseGadget_vtbl      D_00000000 /* Data+0xC9D4 Sym 867: vtable (11 Text ptrs in span, slot +0x1C CourseGadget_display); vptr store by CourseGadget_ctor */
+#define PointsGadget_vtbl_CA4C D_00000000 /* Data+0xCA4C Sym 868: vtable (31 Text ptrs in span, slot +0x1C PointsGadget_display_000038F4); vptr store by PointsGadget_ctor_00003138 */
+#define Process_vtbl           D_00000000 /* Data+0xC338 Sym 850: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by QuitProcess_func_0000FC28, QuitProcess_func_0000FD4C, PauseMenu_create, Fader_ctor, app_launchNameEnt */
+#define QuitProcess_vtbl       D_00000000 /* Data+0xC2B8 Sym 849: vtable (14 Text ptrs in span, slot +0x1C Process_func_0000F76C); vptr store by QuitProcess_func_0000FC28, QuitProcess_func_0000FD4C */
+#define Process_vtbl_C3A0      D_00000000 /* Data+0xC3A0 Sym 851: vtable (16 Text ptrs in span, slot +0x1C Process_func_0000F76C); vptr store by QuitProcess_func_0000FC28, QuitProcess_func_0000FD4C, app_launchNameEnt */
+#define Fader_vtbl             D_00000000 /* Data+0xC6C8 Sym 853: vtable (12 Text ptrs in span, slot +0x1C Fader_func_0001304C); vptr store by Fader_ctor */
+#define PauseMenu_vtbl         D_00000000 /* Data+0xC47C Sym 726: vtable (21 Text ptrs in span, slot +0x1C PauseMenu_func_00010540); vptr store by PauseMenu_create */
+#define ColourItem_vtbl_75A0   D_00000000 /* Data+0x75A0 Sym 143: vtable (27 Text ptrs in span, slot +0x1C ColourItem_display); vptr store by func_00000C10, boot_ItemType_create_00002244, boot_ItemType_create_000046EC, boot_ItemType_create_00007B08, boot_ItemType_create_0000E690, ... */
+#define SNodeItemType_vtbl     D_00000000 /* Data+0x1EFC0 Sym 414: vtable (16 Text ptrs in span, slot +0x1C Node_display); vptr store by item_registerTemplates, item_createBal, item_createBa2, item_createChk, item_createGtr, ... */
+#define MNode_vtbl             D_00000000 /* Data+0x1EAA8 Sym 315: vtable (15 Text ptrs in span, slot +0x1C MNode_display); vptr store by cam_create, MapProp_ctor, MCamera_ctor, MNode_def, MNode_ctor, ... */
+#define SnowBCollider_vtbl     D_00000000 /* Data+0x8698 Sym 493: vtable (13 Text ptrs in span, slot +0x1C QNode_display); vptr store by SnowBCollider_ctor */
+#define BaseMat_vtbl           D_00000000 /* Data+0x20640 Sym 560: vtable (4 Text ptrs in span, slot +0x1C Mat_print); vptr store by SnowBoarder_loadBoardModel_0000B1B4, BaseMat_vslot4_000437C0, Mat_fromFrameBuffer_0004F85C, Mat_clone_0004FBA4 */
+#define Mat_vtbl               D_00000000 /* Data+0x1FBEC Sym 562: vtable (8 Text ptrs in span, slot +0x1C Mat_print); vptr store by SnowBoarder_loadBoardModel_0000B1B4, BaseMat_vslot4_000437C0, Mat_fromFrameBuffer_0004F85C, Mat_clone_0004FBA4 */
+#define LightTarget_vtbl       D_00000000 /* Data+0x207D8 Sym 312: vtable (11 Text ptrs in span, slot +0x1C LightTarget_display); vptr store by game_createLights, SnowBoarder_ctor, LightTarget_ctor */
+#define SnowBoard_vtbl         D_00000000 /* Data+0x8BA8 Sym 609: vtable (slot +0x1C App_Display, +0x5C App_main: an App subclass); used by SnowBoard_func_0000E800, SnowBoard_func_0000E9FC */
+#define Window_vtbl            D_00000000 /* Data+0x20508 Sym 2129: vtable (14 Text ptrs in span, slot +0x1C Window_display); vptr store by Window_ctor, Window_dtor */
+#define BinFile_vtbl           D_00000000 /* Data+0x2B2B0 Sym 2475: vtable (5 Text ptrs in span, slot +0x1C BinFile_vfn2_00068340); vptr store by BinFileMgr_newFile_0006877C, ImageFileMgr_newFile_000688F8 */
+#define ImageFile_vtbl         D_00000000 /* Data+0x2B278 Sym 2474: vtable (5 Text ptrs in span, slot +0x1C ImageFile_free_00068BAC); vptr store by ImageFileMgr_newFile_000688F8 */
+#define BGBox_vtbl             D_00000000 /* Data+0x65E8 Sym 164: vtable (10 Text ptrs in span, slot +0x1C BGBox_func_00000D94); vptr store by BGBox_ctor */
+#define U64BGWall_vtbl         D_00000000 /* Data+0x6648 Sym 165: vtable (32 Text ptrs in span, slot +0x1C U64BGWall_func_00001A44); vptr store by U64BGWall_ctor */
+#define WorldRegistry_vtbl     D_00000000 /* Data+0x6DD0 Sym 176: vtable (31 Text ptrs in span, slot +0x1C Node_display); vptr store by WorldRegistry_create_00001E08 */
+#define CamDirector_vtbl       D_00000000 /* Data+0x6FD8 Sym 247: vtable (20 Text ptrs in span, slot +0x1C Node_display); vptr store by CamDirector_ctor */
+#define EnvSettings_vtbl       D_00000000 /* Data+0x76A8 Sym 348: vtable (20 Text ptrs in span, slot +0x1C EnvSettings_display); vptr store by EnvSettings_ctor */
+#define Tv1_vtbl               D_00000000 /* Data+0x7818 Sym 350: vtable (slot +0x1C Tv1_display); vptr store by Tv1Tmpl_create */
+#define MapProp_vtbl           D_00000000 /* Data+0x7C20 Sym 354: vtable (12 Text ptrs in span, slot +0x1C MapProp_display); vptr store by MapProp_ctor */
+#define ShpNode_vtbl           D_00000000 /* Data+0x81E0 Sym 479: vtable (12 Text ptrs in span, slot +0x1C QNode_display); vptr store by ShpNode_ctor */
+#define SnowBoarder_vtbl       D_00000000 /* Data+0x83D0 Sym 490: vtable (17 Text ptrs in span, slot +0x1C SnowBoarder_display); vptr store by SnowBoarder_ctor */
+#define RaceTracker_vtbl       D_00000000 /* Data+0xD508 Sym 1125: vtable (34 Text ptrs in span, slot +0x1C RaceTracker_display); vptr store by RaceTracker_ctor */
+#define MCamera_vtbl           D_00000000 /* Data+0x1E0E8 Sym 1496: vtable (14 Text ptrs in span, slot +0x1C MNode_display); vptr store by MCamera_ctor */
+#define HostioDev_vtbl_1E1B8   D_00000000 /* Data+0x1E1B8 Sym 1502: vtable (5 Text ptrs in span, slot +0x1C hostio_devSlot2_000359B8); vptr store by app_func_000412E8 */
+#define ConsoleDev_vtbl        D_00000000 /* Data+0x21DA0 Sym 1814: vtable (5 Text ptrs in span, slot +0x1C ConsoleDev_vfn2_00061B04); vptr store by app_func_000412E8 */
+#define CamFollow_vtbl         D_00000000 /* Data+0x1E878 Sym 1636: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by CamFollow_ctor */
+#define CamMan_vtbl            D_00000000 /* Data+0x1E8D8 Sym 1637: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by CamMan_ctor */
+#define SeekNode_vtbl          D_00000000 /* Data+0x1E938 Sym 1638: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by SeekNode_ctor */
+#define Node_vtbl              D_00000000 /* Data+0x1EA48 Sym 1667: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by Node_ctor */
+#define SNode_vtbl             D_00000000 /* Data+0x1EB70 Sym 1668: vtable (10 Text ptrs in span, slot +0x1C SNode_display); vptr store by SNode_ctor */
+#define CollBox_vtbl           D_00000000 /* Data+0x1ED58 Sym 1707: vtable (3 Text ptrs); vptr store by coll_boxCtor_0003CAA0 */
+#define CollObjMgr_vtbl        D_00000000 /* Data+0x1ED98 Sym 1709: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by CollObjMgr_ctor */
+#define ItemType_vtbl          D_00000000 /* Data+0x1EED8 Sym 1728: vtable (15 Text ptrs in span, slot +0x1C Node_display); vptr store by ItemType_ctor */
+#define ColourItem_vtbl        D_00000000 /* Data+0x1EF60 Sym 1729: vtable (10 Text ptrs in span, slot +0x1C ColourItem_display); vptr store by ColourItem_ctor */
+#define ItemMgr_vtbl           D_00000000 /* Data+0x1F198 Sym 1734: vtable (12 Text ptrs in span, slot +0x1C Node_display); vptr store by ItemMgr_ctor */
+#define ColourItemType_vtbl    D_00000000 /* Data+0x1F228 Sym 1735: vtable (17 Text ptrs in span, slot +0x1C ColourItemType_display); vptr store by ColourItemType_ctor */
+#define QNode_vtbl             D_00000000 /* Data+0x1F3F0 Sym 1790: vtable (14 Text ptrs in span, slot +0x1C QNode_display); vptr store by QNode_ctor */
+#define App_vtbl               D_00000000 /* Data+0x1F4CC Sym 1801: vtable (18 Text ptrs in span, slot +0x1C App_Display); vptr store by App_ctor */
+#define Node_vtbl_1F748        D_00000000 /* Data+0x1F748 Sym 1827: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by App_func_00041820 */
+#define PolyShape_vtbl         D_00000000 /* Data+0x1F7D8 Sym 1845: vtable (13 Text ptrs in span, slot +0x1C PolyShape_display); vptr store by PolyShape_ctor */
+#define MorphPoly_vtbl         D_00000000 /* Data+0x1F850 Sym 1846: vtable (13 Text ptrs in span, slot +0x1C MorphPoly_display); vptr store by MorphPoly_ctor */
+#define ScreenWindow_vtbl      D_00000000 /* Data+0x1F8E0 Sym 1848: vtable (14 Text ptrs in span, slot +0x1C ScreenWindow_display); vptr store by ScreenWindow_ctor */
+#define Sprite_vtbl            D_00000000 /* Data+0x1FB1C Sym 1871: vtable (11 Text ptrs in span, slot +0x1C Sprite_display_0004BAF4); vptr store by Sprite_ctor_0004B620 */
+#define Shadow_vtbl            D_00000000 /* Data+0x1FB84 Sym 1872: vtable (11 Text ptrs in span, slot +0x1C Shadow_display_0004B2F4); vptr store by Shadow_ctor_0004B0A8 */
+#define GfxObj_vtbl            D_00000000 /* Data+0x20400 Sym 2119: vtable (3 Text ptrs); vptr store by GfxObj_ctor_0004DF90 */
+#define DisplayMgr_vtbl        D_00000000 /* Data+0x20448 Sym 2120: vtable (11 Text ptrs in span, slot +0x1C DisplayMgr_display); vptr store by DisplayMgr_ctor */
+#define ShapeNode_vtbl         D_00000000 /* Data+0x20670 Sym 2148: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by ShapeNode_ctor_000521F8 */
+#define BasePolyShape_vtbl     D_00000000 /* Data+0x206D8 Sym 2149: vtable (13 Text ptrs in span, slot +0x1C Node_display); vptr store by BasePolyShape_ctor */
+#define BaseLight_vtbl         D_00000000 /* Data+0x20770 Sym 2150: vtable (11 Text ptrs in span, slot +0x1C MNode_display); vptr store by BaseLight_ctor */
+#define CMod_vtbl              D_00000000 /* Data+0x20DA0 Sym 2178: vtable (13 Text ptrs in span, slot +0x1C CMod_display); vptr store by CMod_ctor */
+#define MemTrackerMgr_vtbl     D_00000000 /* Data+0x21BD8 Sym 2307: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by MemTrackerMgr_ctor */
+#define ConsoleMgr_vtbl        D_00000000 /* Data+0x21D28 Sym 2325: vtable (10 Text ptrs in span, slot +0x1C ConsoleMgr_display); vptr store by ConsoleMgr_ctor */
+#define AnimPlayer_vtbl        D_00000000 /* Data+0x21F58 Sym 2364: vtable (12 Text ptrs in span, slot +0x1C Node_display); vptr store by AnimPlayer_ctor */
+#define AnimDataMgr_vtbl       D_00000000 /* Data+0x21FD8 Sym 2365: vtable (13 Text ptrs in span, slot +0x1C Node_display); vptr store by AnimDataMgr_ctor */
+#define DNode_vtbl             D_00000000 /* Data+0x22208 Sym 2402: vtable (14 Text ptrs in span, slot +0x1C QNode_display); vptr store by DNode_ctor */
+#define PhysQNode_vtbl         D_00000000 /* Data+0x222A8 Sym 2403: vtable (12 Text ptrs in span, slot +0x1C QNode_display); vptr store by PhysQNode_ctor_00063884 */
+#define Friction_vtbl          D_00000000 /* Data+0x22318 Sym 2404: vtable (12 Text ptrs in span, slot +0x1C QNode_display); vptr store by Friction_ctor_00063DC4 */
+#define BinFileMgr_vtbl        D_00000000 /* Data+0x2B2E8 Sym 2476: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by BinFileMgr_ctor_000684AC */
+#define ImageFileMgr_vtbl      D_00000000 /* Data+0x2B350 Sym 2477: vtable (11 Text ptrs in span, slot +0x1C Node_display); vptr store by ImageFileMgr_ctor */
+#define SkinMgr_vtbl           D_00000000 /* Data+0x2C490 Sym 2501: vtable (11 Text ptrs in span, slot +0x1C SkinMgr_update); vptr store by SkinMgr_ctor */
+
 #endif

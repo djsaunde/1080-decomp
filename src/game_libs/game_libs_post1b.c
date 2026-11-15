@@ -486,7 +486,7 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
         if (a0 == 0) goto end;
     }
     gl_init_00000000_63884(a0, (char*)&D_00000000 + 0x22388, 0.0f, 0.0f, 0.0f);
-    *(int*)((char*)a0 + 0x28) = (int)&D_00000000;
+    *(int*)((char*)a0 + 0x28) = (int)&PhysQNode_vtbl;
     tmp = *(Tri3i*)a2;
     *(float*)((char*)a0 + 0x10C) = *(float*)&tmp.a;
     *(float*)((char*)a0 + 0x110) = *(float*)&tmp.b;
@@ -655,7 +655,7 @@ extern float aD63DC4_1(float);
 void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
     if (s0 != 0 || (s0 = (void*)gl_func_00000000(368)) != 0) {
         aD63DC4_5(s0, (char*)&D_00000000 + 0x22390, 0.0f, 0.0f, 0.0f);
-        *(int*)((char*)s0 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)s0 + 0x28) = (int)&Friction_vtbl;
         *(int*)((char*)s0 + 0x16C) = a1;
         aD63DC4_4(s0, a2, a3, a4);
         gl_func_00000000(s0);
@@ -4249,7 +4249,7 @@ int *BinFileMgr_ctor_000684AC(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, a1);
-    a0[0xA] = (int)&D_00000000;
+    a0[0xA] = (int)&BinFileMgr_vtbl;
     a0[0xD] = 0;
     a0[0xC] = 0;
     if (a2 != 0) {
@@ -4445,7 +4445,7 @@ int *ImageFileMgr_ctor(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char *)&D_00000000 + 0x2B420, 0);
-    a0[0xA] = (int)&D_00000000;
+    a0[0xA] = (int)&ImageFileMgr_vtbl;
     if (a1 != 0) {
         gl_func_00000000(a0, 1, a1);
     }
@@ -4476,7 +4476,7 @@ int *ImageFileMgr_newFile_000688F8(int a0) {
     b = (int *)gl_func_00000000(0x20);
     if (b == 0) goto skip;
 store:
-    b[7] = (int)&D_00000000;
+    b[7] = (int)&BinFile_vtbl;
 skip:
     p[7] = (int)&D_00000000_688f8;
 end:

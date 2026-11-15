@@ -4,6 +4,7 @@
 extern "C" {
 int gl_func_00000000(...);
 extern int D_00000000;
+#include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 int *ColourItem_create_0000959C(int *a0) {
     int *ret;
     register int *s0;
@@ -13,7 +14,7 @@ int *ColourItem_create_0000959C(int *a0) {
     s1 = 0;
     if (s1 != 0 || (s1 = (int *)gl_func_00000000(0x40)) != 0) {
         gl_func_00000000(s1);
-        s1[0x28 / 4] = (int)&D_00000000;
+        s1[0x28 / 4] = (int)&ColourItem_vtbl_75A0;
         s1[0x3C / 4] = 0;
     }
     ret = s0 = s1;

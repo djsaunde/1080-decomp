@@ -1988,7 +1988,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -2061,7 +2061,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
 
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xB8), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xD678);
-        arg0->vptr = (int)&D_00000000;
+        arg0->vptr = (int)&RaceTracker_vtbl;
         arg0->session = 0;
         arg0->hudFlags = 0;
         arg0->digitsWide = 0;

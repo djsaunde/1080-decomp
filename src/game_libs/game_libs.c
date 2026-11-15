@@ -25,7 +25,7 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCAF4);
-            ((Node *)sub)->vptr = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCAFC);
@@ -86,10 +86,10 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
                 gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB18);
-                ((Node *)sub2)->vptr = (s32)&D_00000000;
+                ((Node *)sub2)->vptr = (s32)&TimeGadget_vtbl;
                 gl_func_00000000(sub2 + 0x2C);
             }
-            ((Node *)sub)->vptr = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB20);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001B);
@@ -139,10 +139,10 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
                 gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB40);
-                ((Node *)sub2)->vptr = (s32)&D_00000000;
+                ((Node *)sub2)->vptr = (s32)&TimeGadget_vtbl;
                 gl_func_00000000(sub2 + 0x2C);
             }
-            ((Node *)sub)->vptr = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&BestGadget_vtbl;
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCB48);
         gl_func_00000000(((Gadget *)arg0)->sprite0, 0x5001E);
@@ -302,7 +302,7 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0xC4), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCB84);
-            ((Node *)sub)->vptr = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&CountDownGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
         ((CountDownGadget *)arg0)->colour[0] = 235.0f / d255;
@@ -434,7 +434,7 @@ void *PointsGadget_ctor(char *s0, int a1) {
         if (sub == 0) goto skip_init;
     }
     gl_func_00000000(sub, (char*)&D_00000000 + 0xCBC0);
-    ((Node *)sub)->vptr = (s32)&D_00000000;
+    ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
     gl_func_00000000(sub + 0x2C);
 skip_init:
     ((Gadget *)s0)->node.name = (s32)((char*)&D_00000000 + 0xCBC8);
@@ -490,7 +490,7 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
         }
     }
     gl_func_00000000(node, (char*)&D_00000000 + 0xCBE0);
-    ((Node *)node)->vptr = (s32)&D_00000000;
+    ((Node *)node)->vptr = (s32)&PointsGadget_vtbl_C854;
     gl_func_00000000(node + 0x2C);
 initfields:
     v = *(float*)((char*)&D_00000000 + 0xC74);
@@ -531,7 +531,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             gl_func_00000000(sub, (char *)&D_00000000 + 0xCBFC);
-            ((Node *)sub)->vptr = (s32)&D_00000000;
+            ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
         ((Gadget *)arg0)->node.name = (s32)((char *)&D_00000000 + 0xCC04);
@@ -587,7 +587,7 @@ int* BoardsGadget_ctor(int *self) {
     if (self != 0 || (self = (int*)gl_func_00000000(0x140)) != 0) {
         if ((sub = self) != 0 || (sub = (int*)gl_func_00000000(0x10C)) != 0) {
             gl_func_00000000(sub, (char*)&gl_data_00000000 + 0xCC20);
-            ((Node *)sub)->vptr = (int)&D_00000000;
+            ((Node *)sub)->vptr = (int)&TimeGadget_vtbl;
             gl_func_00000000((char*)sub + 0x2C);
         }
         ((BoardsGadget *)self)->node.vptr = (int)&gl_data_00000000;
@@ -1206,7 +1206,7 @@ char *CourseGadgetParms_ctor(char *self) {
 char *CourseGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x2FC), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCB4);
-        *(s32 *)(arg0 + 0x28) = (s32)&D_00000000;
+        *(s32 *)(arg0 + 0x28) = (s32)&CourseGadget_vtbl;
         gl_func_00000000(arg0 + 0x2C);
         *(s32 *)(arg0 + 0xC) = (s32)((char *)&D_00000000 + 0xCCBC);
         *(s32 *)(arg0 + 0x1C0) = arg1;
@@ -1392,7 +1392,7 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x168), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCD0);
-        *(int *)(arg0 + 0x28) = (int)&D_00000000;
+        *(int *)(arg0 + 0x28) = (int)&PointsGadget_vtbl_CA4C;
         FW(arg0, 0xC) = (int)((char *)&D_00000000 + 0xCCD8);
         FW(arg0, 0x50) = arg3;
         FW(arg0, 0x54) = arg1;
@@ -4315,7 +4315,7 @@ int *ColourItem_create_000088B4(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

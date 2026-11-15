@@ -2903,7 +2903,7 @@ void Spinner_hostioParms(void *a0) {
 int *SeekNode_ctor(int *a0, int a1, float a2) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0x34)) != 0) {
         func_00000000(a0, (char*)&D_00000000 + 0x1EA20);
-        ((Node *)a0)->vptr = (s32)&D_00000000;
+        ((Node *)a0)->vptr = (s32)&SeekNode_vtbl;
         *(float*)((char*)a0 + 0x30) = a2;
         a0[0x2C/4] = a1;
     }
@@ -3078,7 +3078,7 @@ void MNode_def(int a0) {
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
         gl_func_00000000(o, (char *)&D_00000000 + 0x0001EBE4);
-        *(char **)(o + 0x28) = (char *)&D_00000000;
+        *(char **)(o + 0x28) = (char *)&MNode_vtbl;
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)gl_func_00000000(0x04);
@@ -4609,7 +4609,7 @@ int *SNode_ctor(int *self) {
         if (self == NULL) goto out;
     }
     gl_func_00000000(self, (char *)&D_00000000 + 0x1ECF4);
-    ((Node *)self)->vptr = (s32)&D_00000000;
+    ((Node *)self)->vptr = (s32)&SNode_vtbl;
     self[0x84/4] = 0;
     *(float *)((char *)self + 0x74) = 0.0f;
     *(float *)((char *)self + 0x78) = 0.0f;
@@ -5990,7 +5990,7 @@ int CollObjMgr_ctor(int *a0) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char*)&D_00000000 + 0x1EEAC);
-    ((Node *)a0)->vptr = (s32)&D_00000000;
+    ((Node *)a0)->vptr = (s32)&CollObjMgr_vtbl;
     a0[0x2C/4] = 0;
     a0[0x30/4] = 0;
 end:
@@ -6135,7 +6135,7 @@ int* coll_boxCtor_0003CAA0(int *a0) {
         a0 = (int*)gl_func_00000000(0x34);
         if (a0 == 0) goto end;
     }
-    a0[0x30/4] = (int)&D_00000000;
+    a0[0x30/4] = (int)&CollBox_vtbl;
     a0[1] = 0;
     a0[0] = 0;
     *(float*)((char*)a0 + 0x18) = 0.0f;
@@ -6448,7 +6448,7 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
         if (o == 0) goto out;
     }
     gl_func_00000000(o, (char *)&D_00000000 + 0x0001F2B8);
-    ((Node *)o)->vptr = (s32)&D_00000000;
+    ((Node *)o)->vptr = (s32)&ItemType_vtbl;
     p = (S3D16C *)(o + 0x2C);
     if (p != 0 || (p = (S3D16C *)gl_func_00000000(4)) != 0) {
         p->w = 0;
@@ -6675,7 +6675,7 @@ int ItemType_getItem(int *arg0, int arg1) {
 int *ColourItem_ctor(int *a0) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0x3C)) != 0) {
         func_00000000(a0, (char*)&D_00000000 + 0x1F2DC);
-        a0[0x28/4] = (int)&D_00000000;
+        a0[0x28/4] = (int)&ColourItem_vtbl;
         a0[0x2C/4] = 0;
         *(float*)((char*)a0 + 0x30) = 0.0f;
         *(float*)((char*)a0 + 0x34) = 0.0f;
@@ -7467,7 +7467,7 @@ void *MNode_ctor(char *arg0) {
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
         gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);
-        ((Node *)o)->vptr = (s32)&D_00000000;
+        ((Node *)o)->vptr = (s32)&MNode_vtbl;
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)gl_func_00000000(0x04);
@@ -7541,7 +7541,7 @@ void *ItemMgr_ctor(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, a1);
-    ((Node *)a0)->vptr = (s32)&D_00000000;
+    ((Node *)a0)->vptr = (s32)&ItemMgr_vtbl;
     a0[13] = a2;                  /* [0x34] */
     a0[12] = 0;                   /* [0x30] */
     a0[11] = 0;                   /* [0x2C] */
@@ -9871,7 +9871,7 @@ int App_ctor(int a0) {
         }
     }
     gl_func_00000000(a0, (char *)&D_00000000 + 0x1F5C8);
-    *(int *)(a0 + 0x28) = (int)&D_00000000;
+    *(int *)(a0 + 0x28) = (int)&App_vtbl;
     v1 = (int *)(a0 + 0x2C);
     if (v1 == 0) {
         v1 = (int *)gl_func_00000000(4);
@@ -26743,7 +26743,7 @@ int* ConsoleMgr_ctor(int *s0) {
         if (s0 == 0) goto end;
     }
     gl_func_00000000(s0, (char*)&D_00000000 + 0x21D88);
-    s0[0x28/4] = (int)&D_00000000;
+    s0[0x28/4] = (int)&ConsoleMgr_vtbl;
     s0[0x34/4] = 0;
     s0[0x30/4] = 0;
     s0[0x2C/4] = 0;
@@ -28225,7 +28225,7 @@ void *AnimPlayer_ctor(void *s0, int a1) {
         if (s0 == 0) goto end;
     }
     func_00000000(s0, (char *)&D_00000000 + 0x22178);
-    *(void **)((char *)s0 + 0x28) = (char *)&D_00000000 + 0;
+    *(void **)((char *)s0 + 0x28) = (char *)&AnimPlayer_vtbl + 0;
     {
         int *v1 = (int *)((char *)s0 + 0x30);
         if (s0 == (void *)-48) {

@@ -558,7 +558,7 @@ void *func_00000C10(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1263,7 +1263,7 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
     int *p;
     if ((p = (int*)func_00000000(0x40)) != 0) {
         func_00000000(p);
-        p[0x28/4] = (int)&D_00000000;
+        p[0x28/4] = (int)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
     ret = p;
@@ -2776,7 +2776,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -4498,7 +4498,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -5315,7 +5315,7 @@ char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) 
         if (a0 == 0) goto end;
     }
     func_8b44_init(a0, a1, a3, a4, f_arg);
-    *(int*)(a0 + 0x28) = (int)&D_00000000;
+    *(int*)(a0 + 0x28) = (int)&SnowBCollider_vtbl;
     *(int*)(a0 + 0x170) = a1;
     *(unsigned short*)(a0 + 0x174) = ((unsigned short*)&a2)[1];
     *(float*)(a0 + 0x150) = 1.0f;
@@ -8826,7 +8826,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -9001,7 +9001,7 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
     int *p;
     if ((p = (int*)func_00000000(0x40)) != 0) {
         func_00000000(p);
-        p[0x28/4] = (int)&D_00000000;
+        p[0x28/4] = (int)&ColourItem_vtbl_75A0;
         p[0x3C/4] = 0;
     }
     ret = p;
@@ -9094,7 +9094,7 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
   if (p != 0)
   {
     func_00000000(p);
-    *((int *) (((char *) p) + 0x28)) = (int) (&D_00000000);
+    *((int *) (((char *) p) + 0x28)) = (int) (&ColourItem_vtbl_75A0);
     *((int *) (((char *) p) + 0x3C)) = 0;
   }
   ret = p;
