@@ -20865,23 +20865,25 @@ void nodelist_dispatchList_000558A0(char *arg0) {
  * Two 0x4C-byte struct block-copies (IDO 3-word-unrolled copy loops):
  * (1) the guarded `if (a3) s = *a3` into the local at sp+0x60, (2) the struct
  * passed BY VALUE (copy into arg-build area sp+0, lw a0-a3 + jal).
- * s.unk00 = &a0 forces the a0-a3 home saves. Guard: v0=0; if (!a0) v0=1;
+ * s.cursor = &a0 forces the a0-a3 home saves. Guard: v0=0; if (!a0) v0=1;
  * else if (*a0 != 0x3E8) v0=1; if (v0) call(D+0x211C8). `p5591C` dead decl
  * supplies the 8 frame bytes below s (frame 0xB0, s at 0x60).
  * The old 1-insn residual (`or t2,v0,zero`: the a3 home reload copied into a
  * fresh copy-loop base) closed by reading a3 THROUGH the home slot,
  * `((Gl5591CArg **)&a0)[3]` (a varargs-style read): the reload then is an
  * expression temp that uopt uses destructively as the induction base (lw t9).
- * The t5/t6 swap closed by storing s.unk38 = 1 AFTER s.unk14 = a2. See
+ * The t5/t6 swap closed by storing s.opt1016 = 1 AFTER s.unk14 = a2. See
  * docs/IDO_CODEGEN.md#param-read-via-home-slot-coalesces-copy-base-5591c. */
 extern int gl_data_00000000;
-typedef struct Gl5591CArg {
-    int *unk00;   /* 0x00: &first-arg (address of a0 home slot) */
-    int unk04;
+typedef struct Gl5591CArg {      /* the ProcNodeList interpreter state (agent-b run 500: the field
+                                  * meanings are the nodelist_dispatch donor's Strm, game_libs_ncc_55470.cpp,
+                                  * and docs/1080_GAME_CLASSES.md section 20) */
+    int *cursor;  /* 0x00: points at the list-pointer home (&a0); commands are read as *(*cursor)++ */
+    int cmd;      /* 0x04: current command word, (nargs << 16) | op */
     int unk08;
-    int unk0C;    /* = a1 */
-    int unk10;    /* = a1 */
-    int unk14;    /* = a2 */
+    int mnode;    /* 0x0C: = a1; nodelist_checkMNode; zeroed for a 1003 node-def sub-call */
+    int node;     /* 0x10: = a1; the current node (its virtual slot 7 gets the non-interpreter ops) */
+    int unk14;    /* 0x14: = a2 */
     int unk18;    /* = 0 */
     int unk1C;
     int unk20;
@@ -20889,12 +20891,12 @@ typedef struct Gl5591CArg {
     int unk28;    /* = 0 */
     int unk2C;
     int unk30;
-    int unk34;    /* = 0 */
-    int unk38;    /* = 1 */
-    int unk3C;    /* = 0 */
-    int unk40;
-    int unk44;
-    int unk48;
+    int op113;    /* 0x34: = 0; node op 113 sets it */
+    int opt1016;  /* 0x38: = 1; op 1016 sets it */
+    int parent;   /* 0x3C: = 0; the calling state of a 1003 sub-call (nodelist_checkPrevNode / PrevMNode) */
+    int character;/* 0x40: op 1010 runs its block only when the argument equals it */
+    int boardIdx; /* 0x44: op 1011 likewise */
+    int mask;     /* 0x48: op 1012 runs its block only when (mask & argument) */
 } Gl5591CArg;   /* 0x4C */
 int ProcNodeList(a0, a1, a2, a3)
 int *a0;
@@ -20928,15 +20930,15 @@ Gl5591CArg *a3;
         gl_func_00000000((char*)&gl_data_00000000 + 0x211C8);
     }
     if (((Gl5591CArg **)&a0)[3] != 0) s = *((Gl5591CArg **)&a0)[3];
-    s.unk00 = (int *)&a0;
+    s.cursor = (int *)&a0;
     s.unk28 = 0;
     s.unk18 = 0;
-    s.unk34 = 0;
-    s.unk3C = 0;
-    s.unk0C = a1;
-    s.unk10 = a1;
+    s.op113 = 0;
+    s.parent = 0;
+    s.mnode = a1;
+    s.node = a1;
     s.unk14 = a2;
-    s.unk38 = 1;
+    s.opt1016 = 1;
     gl_func_00000000(s);
     gl_func_00000000();
     return 1;
