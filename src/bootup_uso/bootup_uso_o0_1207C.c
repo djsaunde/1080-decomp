@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 /* 0x1207C..0x120A8: the last two frameless -O0 FALL-OFF fns of the tail3a_bot
  * run, carved out of bootup_uso_tail3a_bot_11DF8.c (-O2 -g3) 2026-09-05.
@@ -11,10 +12,10 @@
  * word-for-word these -O0 bodies (the -g3 only bought the unfilled jr delay).
  * See docs/MATCHING_WORKFLOW.md twenty-first beql case. */
 
-void input_setActivePad_0001207C(int *a0, int a1) {
-    *(int*)((char*)a0 + 0x128) = a1;
+void input_setActivePad_0001207C(InputMgr *a0, int a1) {
+    a0->activePad = a1;
 }
 
-void input_clearActivePad_00012090(int *a0) {
-    *(int*)((char*)a0 + 0x128) = -1;
+void input_clearActivePad_00012090(InputMgr *a0) {
+    a0->activePad = -1; /* -1 = any pad (input_check*) */
 }

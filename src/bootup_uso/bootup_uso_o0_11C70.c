@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int func_00000000();
 
@@ -14,25 +15,25 @@ extern int func_00000000();
  * is at a0->0xE0 (4-byte entries). Decl order matters — `idx` declared
  * BEFORE `p` so that the local pointer copy lands in $a3 (higher arg slot)
  * via IDO -O0's first-allocated-reg-local pick. Body byte-exact at -O0
- * (verified 2026-05-02 and re-verified 2026-05-07). */
-void input_addPad_00011C70(s32 *a0, s32 a1) {
+ * (verified 2026-05-02 and re-verified 2026-05-07). Field form over game/input.h: agent-g run 470. */
+void input_addPad_00011C70(InputMgr *a0, InputPad *a1) {
     register s32 idx;
-    register s32 *p = a0;
-    idx = *(s32*)((char*)p + 0x120);
-    *(s32*)((char*)p + 0x120) = idx + 1;
-    *(s32*)((char*)a0 + idx*4 + 0xE0) = a1;
+    register InputMgr *p = a0;
+    idx = p->numPads;
+    p->numPads = idx + 1;
+    a0->pads[idx] = a1;
 }
 
 /* Sibling of input_addPad_00011C70: same append-to-array shape with offsets 0x124
  * (count) + 0x100 (4-byte entries). Verified byte-exact at -O0 with the
  * same `register s32 idx; register s32 *p = a0;` decl-order recipe
  * (2026-05-07). */
-void replay_addInput(s32 *a0, s32 a1) {
+void replay_addInput(InputMgr *a0, void *a1) {
     register s32 idx;
-    register s32 *p = a0;
-    idx = *(s32*)((char*)p + 0x124);
-    *(s32*)((char*)p + 0x124) = idx + 1;
-    *(s32*)((char*)a0 + idx*4 + 0x100) = a1;
+    register InputMgr *p = a0;
+    idx = p->numReplayInputs;
+    p->numReplayInputs = idx + 1;
+    a0->replayInputs[idx] = a1;
 }
 
 /* 26-insn -O0 if-else flag-setter. Sets a0->0x188 to 0 if a1 != 0 else 1.

@@ -5,59 +5,62 @@
  * `b epi; nop` pair before the epilogue (the closing-brace marker of the
  * return-value dead-double-b gap); edg's -O0 ucode has no such marker, so the
  * same body compiles to the shipped 53 words.
- * Spliced into bootup_uso_o0_11E00.c.o via REPLACE_FUNC_BODY. */
-extern "C" int input_checkPressed_00011E00(register int *a0, register int a1) {
+ * Spliced into bootup_uso_o0_11E00.c.o via REPLACE_FUNC_BODY.
+ * agent-g run 470: field form over include/game/input.h (InputMgr / InputPad); same bytes. */
+typedef int s32;
+#include "../../include/game/input.h"
+extern "C" int input_checkPressed_00011E00(register InputMgr *a0, register int a1) {
     int i;
-    register int *p;
-    if (a0[0x18C/4] == 0) {
-        if (a0[0x128/4] == -1) {
+    register InputPad *p;
+    if (a0->locked == 0) {
+        if (a0->activePad == -1) {
             i = 0;
-            if (a0[0x120/4] > 0) do {
-                p = (int*)a0[0xE0/4 + i];
-                if (p[0x18/4] & a1) return 1 << i;
-            } while (++i < a0[0x120/4]);
+            if (a0->numPads > 0) do {
+                p = a0->pads[i];
+                if (p->pressed & a1) return 1 << i;
+            } while (++i < a0->numPads);
             goto ret0;
         }
-        p = (int*)a0[0xE0/4 + a0[0x128/4]];
-        if (p[0x18/4] & a1) return 1 << a0[0x128/4];
+        p = a0->pads[a0->activePad];
+        if (p->pressed & a1) return 1 << a0->activePad;
     }
 ret0:
     return 0;
 }
 
-extern "C" int input_checkHeld_00011ED4(register int *a0, register int a1) {
+extern "C" int input_checkHeld_00011ED4(register InputMgr *a0, register int a1) {
     int i;
-    register int *p;
-    if (a0[0x18C/4] == 0) {
-        if (a0[0x128/4] == -1) {
+    register InputPad *p;
+    if (a0->locked == 0) {
+        if (a0->activePad == -1) {
             i = 0;
-            if (a0[0x120/4] > 0) do {
-                p = (int*)a0[0xE0/4 + i];
-                if (p[0x10/4] & a1) return 1 << i;
-            } while (++i < a0[0x120/4]);
+            if (a0->numPads > 0) do {
+                p = a0->pads[i];
+                if (p->held & a1) return 1 << i;
+            } while (++i < a0->numPads);
             goto ret0;
         }
-        p = (int*)a0[0xE0/4 + a0[0x128/4]];
-        if (p[0x10/4] & a1) return 1 << a0[0x128/4];
+        p = a0->pads[a0->activePad];
+        if (p->held & a1) return 1 << a0->activePad;
     }
 ret0:
     return 0;
 }
 
-extern "C" int input_checkReleased_00011FA8(register int *a0, register int a1) {
+extern "C" int input_checkReleased_00011FA8(register InputMgr *a0, register int a1) {
     int i;
-    register int *p;
-    if (a0[0x18C/4] == 0) {
-        if (a0[0x128/4] == -1) {
+    register InputPad *p;
+    if (a0->locked == 0) {
+        if (a0->activePad == -1) {
             i = 0;
-            if (a0[0x120/4] > 0) do {
-                p = (int*)a0[0xE0/4 + i];
-                if (p[0x1C/4] & a1) return 1 << i;
-            } while (++i < a0[0x120/4]);
+            if (a0->numPads > 0) do {
+                p = a0->pads[i];
+                if (p->released & a1) return 1 << i;
+            } while (++i < a0->numPads);
             goto ret0;
         }
-        p = (int*)a0[0xE0/4 + a0[0x128/4]];
-        if (p[0x1C/4] & a1) return 1 << a0[0x128/4];
+        p = a0->pads[a0->activePad];
+        if (p->released & a1) return 1 << a0->activePad;
     }
 ret0:
     return 0;

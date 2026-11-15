@@ -68,6 +68,7 @@ typedef struct InputMgr {
  * symbol and the offset stay the same, so the relocations do not change. */
 #define INPUT_MGR(sym) (*(InputMgr *)&(sym))
 
+#ifndef __cplusplus /* edg (NCC donors) rejects the &((T *)0)->f constant form */
 typedef char InputPad_held_check[(int)&((InputPad *)0)->held == 0x10 ? 1 : -1];
 typedef char InputPad_pressed_check[(int)&((InputPad *)0)->pressed == 0x18 ? 1 : -1];
 typedef char InputPad_released_check[(int)&((InputPad *)0)->released == 0x1C ? 1 : -1];
@@ -87,5 +88,6 @@ typedef char InputMgr_replayData_check[(int)&((InputMgr *)0)->replayData == 0x16
 typedef char InputMgr_replayLen_check[(int)&((InputMgr *)0)->replayLen == 0x170 ? 1 : -1];
 typedef char InputMgr_fader_check[(int)&((InputMgr *)0)->fader == 0x190 ? 1 : -1];
 typedef char InputMgr_locked_check[(int)&((InputMgr *)0)->locked == 0x18C ? 1 : -1];
+#endif
 
 #endif
