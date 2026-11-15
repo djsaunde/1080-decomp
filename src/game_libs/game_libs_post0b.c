@@ -3739,12 +3739,12 @@ void Node_hostioParms(char *arg0) {
     gl_func_00000000(&D_00000000);
 }
 
-// gl_func_00038598 — STRUCTURAL PASS (0xA4 / 41 words, no episode).
+// Node_updateChildren — STRUCTURAL PASS (0xA4 / 41 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-traversal + per-node flag-gated vtable dispatch
 // — sibling of gl_func_00035C6C / dbg_printThreads.
 //
-//   void gl_func_00038598(O *o) {
+//   void Node_updateChildren(O *o) {
 //     N *n = o->p_10;
 //     while (n != 0) {
 //       if (n->w_8 & 0x200) {                    // flag gate (beql)
@@ -3780,13 +3780,13 @@ void Node_hostioParms(char *arg0) {
 // Full body INCLUDE_ASM-preserved (.s = source of truth). INCLUDE_ASM (no episode; tautology-trap rule).
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_38598.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). Same C++ list iterator as ItemType_hostioParms. */
-void gl_func_00038598(char *a0) {
+void Node_updateChildren(char *a0) {
 }
 
 // Node_display — STRUCTURAL PASS (0xEC / 59 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-traversal + flag-gated relink / vtable dispatch
-// — sibling of gl_func_00038598 / gl_func_00035C6C.
+// — sibling of Node_updateChildren / gl_func_00035C6C.
 //
 //   void Node_display(O *o) {
 //     callback(o->p_0C);                        // jal 0 (USO cb1)
@@ -3815,7 +3815,7 @@ void gl_func_00038598(char *a0) {
 //   runs a process callback, and — under a further mask test on
 //   node->0x20 — dispatches a VTABLE method at node->0x28+0x1C
 //   (the per-node handler reached via node->0x28). Same collection-
-//   processor shape as gl_func_00038598 (flag bit 0x200, slot
+//   processor shape as Node_updateChildren (flag bit 0x200, slot
 //   0x14) / gl_func_00035C6C / dbg_printThreads but with flag bit
 //   4 and handler-vtable slot 0x1C — extending the device-object
 //   handler-vtable slot map (0x14 / 0x1C / 0x4C / 0x50 / 0x54 /
@@ -3835,7 +3835,7 @@ void Node_display(char *arg0) {
 // Node_update — STRUCTURAL PASS (0x108 / 66 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-traversal + multi-flag-gated per-node process —
-// sibling of gl_func_00038598 / Node_display.
+// sibling of Node_updateChildren / Node_display.
 //
 //   void Node_update(O *o) {
 //     callback(o->p_0C);                        // jal 0 (USO cb1)
@@ -3854,7 +3854,7 @@ void Node_display(char *arg0) {
 //
 // Struct-typing reference: a SELECTIVE per-element process pass over
 //   an intrusive list — the most restrictive member of the
-//   collection-processor family (gl_func_00038598 = flag 0x200 /
+//   collection-processor family (Node_updateChildren = flag 0x200 /
 //   slot 0x14; Node_display = flag bit 4 / slot 0x1C; this one
 //   = a CONJUNCTION). It runs a USO-relocated callback (jal 0 →
 //   resolved at load) on o->0x0C, then walks the list rooted at
@@ -3993,7 +3993,7 @@ L2:
 // Node_broadcastMsg — STRUCTURAL PASS (0xC4 / 49 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-traversal + DOUBLE per-node vtable dispatch —
-// sibling of gl_func_00038598 / Node_display / Node_update.
+// sibling of Node_updateChildren / Node_display / Node_update.
 //
 //   void Node_broadcastMsg(O *o, void *ctx) {
 //     N *n = o->p_10;
@@ -4010,7 +4010,7 @@ L2:
 //
 // Struct-typing reference: a TWO-PHASE per-element process pass over
 //   an intrusive list (collection-processor family with
-//   gl_func_00038598 / 0003863C / 00038728). It walks the list
+//   Node_updateChildren / 0003863C / 00038728). It walks the list
 //   rooted at o->0x10 (next at +0x04) and, for every node, calls
 //   TWO distinct vtable function pointers in sequence —
 //   node->0x2C then node->0x34 — each receiving the context arg
@@ -4124,9 +4124,9 @@ void Node_doCommand(char *o, char *c) {
     *(volatile int *)(o + 4) = 7;
 }
 
-void game_libs_func_00038B6C(int a0) {}
+void Node_saveData(int a0) {}
 
-void game_libs_func_00038B74(int a0) {}
+void Node_loadData(int a0) {}
 
 /* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
 void game_libs_func_00038B7C(int a0, int a1) {
@@ -6022,7 +6022,7 @@ end:
 //
 // Struct-typing reference: a per-element process pass over a
 //   CIRCULAR intrusive list (collection-processor family with
-//   gl_func_00038598 / 0003863C / 00038964 / 00038728). It bails
+//   Node_updateChildren / 0003863C / 00038964 / 00038728). It bails
 //   if the list anchor o->0x30 is null, then iterates from
 //   head->0x04 until the cursor returns to the head (the circular-
 //   list termination idiom `n == head`), calling a VTABLE function
@@ -6032,7 +6032,7 @@ end:
 //   enable/category mask). Uses the constant -1.0f in the FP
 //   callee-save f20. A per-frame "process eligible nodes of a
 //   circular list" traversal of the game_libs object subsystem —
-//   the circular-list variant of the gl_func_00038598 / 00038964
+//   the circular-list variant of the Node_updateChildren / 00038964
 //   collection processors (the o->0x30 anchor + ->0xC handler slot
 //   tie it to the device-object vtable family).
 // (Caps note RETIRED 2026-07-17: body below now compiles byte-exact; the
@@ -6483,12 +6483,12 @@ void gl_func_0003D288(char *a0, int a1) {
     (*(int(**)(char*))(vt + 0x64))(a0 + *(short*)(vt + 0x60));
 }
 
-// gl_func_0003D2C8 — STRUCTURAL PASS (0xFC / 63 words, no episode).
+// ItemType_saveData — STRUCTURAL PASS (0xFC / 63 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue). A list-count + fixed-helper-call + second-list-walk
 // routine.
 //
-//   void gl_func_0003D2C8(O *o) {
+//   void ItemType_saveData(O *o) {
 //     int n = 0;
 //     for (N *p = o->p_10; p != 0; p = p->next_4) n++;  // count
 //     R *r = fixed_helper_01459B(n);              // jal 0x01459B
@@ -6509,7 +6509,7 @@ void gl_func_0003D288(char *a0, int a1) {
 //   "size the work, get a buffer, process" pattern. A collection-
 //   aggregate node of the game_libs object subsystem (same
 //   intrusive-list convention — head at +0x10, next at +0x04 — as
-//   the gl_func_00038598 / 0003C86C processor family; pairs with
+//   the Node_updateChildren / 0003C86C processor family; pairs with
 //   the iterator API helpers gl_func_00035C6C / gl_func_00035DAC).
 // Caps (DEFERRED): raw-word USO + intrusive-list count + fixed
 //   intra-USO call (0x01459B) + second-list walk; list structs
@@ -6517,7 +6517,7 @@ void gl_func_0003D288(char *a0, int a1) {
 //   Name pre-checked: no extern reuse.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3D2C8.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 118). */
-void gl_func_0003D2C8(char *o) {
+void ItemType_saveData(char *o) {
 }
 
 // ItemType_load — STRUCTURAL PASS (0xBC / 47 words, no episode).

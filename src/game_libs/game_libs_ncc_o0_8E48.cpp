@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donor for gl_func_00008E48 (0x1B4 / 109 words): the
+/* IDO 7.1 NCC (C++) -O0 donor for app_createGame_00008E48 (0x1B4 / 109 words): the
  * cfe NM body unchanged; under edg -O0 there is no closing-brace b-epilogue
  * marker (cfe built 111 words). Spliced into game_libs_mid.c.o. */
 extern "C" {
@@ -8,7 +8,7 @@ typedef long long s64; typedef unsigned long long u64;
 #define NULL 0
 
 
-/* gl_func_00008E48 — VERIFIED 101/111 reloc-resolved (was 10/109 raw baseline).
+/* app_createGame_00008E48 — VERIFIED 101/111 reloc-resolved (was 10/109 raw baseline).
  * ALL 109 target words reproduced in order except the live `b epilogue` offset
  * (10000003 vs 10000001) + a DEAD `b epilogue; nop` pair (build 111 vs target 109):
  * the documented -O0 RETURN-VALUE dead-double-b TOOLCHAIN-BINARY GAP
@@ -38,8 +38,8 @@ extern int gl_func_00000000(...);  /* USO placeholder callee (jal 0) */
 extern char D_00000000;
 extern int D_0000004C, D_00000064;
 extern unsigned char D_00000181, D_00000182, D_00000183;
-extern char D_8FFC_base;   /* base-0 alias of D_00000000 (see gl_func_00008FFC note) */
-char *gl_func_00008E48(char **arg0, int arg1, s32 arg2) {
+extern char D_8FFC_base;   /* base-0 alias of D_00000000 (see app_createGame_00008FFC note) */
+char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     char *sp3C;            /* plain locals decl'd first: slots 0x3C/0x38/0x34 top-down */
     char *sp38;
     char *sp34;

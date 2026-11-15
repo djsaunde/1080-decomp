@@ -1,4 +1,4 @@
-/* IDO 7.1 -O2 donor for gl_func_00007344 -- per-panel HUD-element updater
+/* IDO 7.1 -O2 donor for RaceProcess_drawResult -- per-panel HUD-element updater
  * (0x384 bytes, 225 words). PROVEN EXACT 225/225 words standalone; the
  * link-resolved words are the blank jals, the &D_00000000 HI/LO pairs and
  * the jumptable %lo.
@@ -6,7 +6,7 @@
  * WIRED via REPLACE_FUNC_BODY donor splice into game_libs.c.o (the 2E290 /
  * 68990 recipe, docs/MATCHING_WORKFLOW.md#donor-splice-switch-jumptable-
  * rodata-rename): the switch's donor-local .rodata jumptable reloc is renamed
- * gl_func_00007344_rodata, pinned in undefined_syms_auto.txt to the table the
+ * RaceProcess_drawResult_rodata, pinned in undefined_syms_auto.txt to the table the
  * USO ships in bootup.uso RoData at +0xDE8 (file offset +0xDEC). Shipped
  * words 0x1B9EC 0x1BCB8 0x1BAD8 0x1BB5C 0x1BC50 0x1B9EC 0x1BBCC; minus the
  * 0x1466C shim:
@@ -74,7 +74,7 @@ typedef struct GlHudVt {
     void (*unk104)(void *);         /* 0x104 handler */
 } GlHudVt;
 
-void gl_func_00007344(GlHudObj *arg0, u32 arg1, void *arg2) {
+void RaceProcess_drawResult(GlHudObj *arg0, u32 arg1, void *arg2) {
     void *target;
     Quad4 spA;
     Quad4 spB;

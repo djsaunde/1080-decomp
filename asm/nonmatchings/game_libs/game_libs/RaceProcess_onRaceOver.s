@@ -1,0 +1,13 @@
+nonmatching RaceProcess_onRaceOver, 0x24
+
+glabel RaceProcess_onRaceOver
+    /* DEC178 000070A0 27BDFFE8 */  .word 0x27BDFFE8
+    /* DEC17C 000070A4 AFBF0014 */  .word 0xAFBF0014
+    /* DEC180 000070A8 2405FFFF */  .word 0x2405FFFF
+    /* DEC184 000070AC 0C000000 */  .word 0x0C000000
+    /* DEC188 000070B0 00003025 */  .word 0x00003025
+    /* DEC18C 000070B4 8FBF0014 */  .word 0x8FBF0014
+    /* DEC190 000070B8 27BD0018 */  .word 0x27BD0018
+    /* DEC194 000070BC 03E00008 */  .word 0x03E00008
+    /* DEC198 000070C0 00000000 */  .word 0x00000000
+endlabel RaceProcess_onRaceOver

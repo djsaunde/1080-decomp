@@ -6159,7 +6159,7 @@ void AudioLoad_ProcessSlowLoads(int arg0) {
 //   (0x38 vs target 0x3c): dropping the `g = &D` local and inlining
 //   `(char*)&D+0x1AFCC` as the 9th arg freed the 0x38 slot the target leaves
 //   empty, shifting the spill to 0x3c. The 3rd call is a concrete `jal 0x38604`
-//   (a mid-function alt-entry inside gl_func_00038598, gl_func_00038604 =
+//   (a mid-function alt-entry inside Node_updateChildren, gl_func_00038604 =
 //   0x38604 in undefined_syms) — objdiff resolves that R_MIPS_26 reloc, so it
 //   credits 100%. Byte-exact (no-alias verified).
 extern int gl_func_00000000();
@@ -14535,7 +14535,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", snd_StartPlayer2Seq_30A20);
  * neither delete the emitted .rodata section nor turn a local-table reference
  * into an external base-0 read. => the three jr-table words can never match the
  * target's external-data form. Permanent INCLUDE_ASM cap (same class as the
- * sibling gl_func_000076F0 switch2/switch4 note).
+ * sibling RaceProcess_handleInput switch2/switch4 note).
  *
  * (Note: the OLD "base-pin" / "fixed intra-USO jal" caps cited in prior passes
  * are NOT the blocker — distinct `D_xxx = 0` externs defeat IDO's base CSE, and

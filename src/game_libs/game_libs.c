@@ -3011,7 +3011,7 @@ void *ColourParms_ctor(char *arg0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void raceObj_init_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void RaceProcess_init(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile int pad;
     char *sp28;
     char *temp_v0;
@@ -3052,17 +3052,17 @@ void raceObj_init_00006900(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00006A8C(char *a0, int a1) {
+int RaceProcess_restart(char *a0, int a1) {
     *(int*)(a0 + 0x4F0) = a1;
     return gl_func_00000000(a0);
 }
 
-/* gl_func_00006AAC - verified structural decode (0xD4, 53 insns,
- * object reset/init). SIBLING of gl_func_00006B80 (same large object
+/* RaceProcess_reset - verified structural decode (0xD4, 53 insns,
+ * object reset/init). SIBLING of RaceProcess_endRace (same large object
  * + same global G = *(&D)); this is the clear/reset entry.
- * Struct-typing reference (extends the gl_func_00006B80 object map):
+ * Struct-typing reference (extends the RaceProcess_endRace object map):
  * 0x2C (44) / 0x30 (48) s32 = 0; 0x4DC (1244) / 0x4E0 (1248) s32 = 0
- * (the "2/3" pair gl_func_00006B80 sets - here zeroed); 0x4E4 (1252)
+ * (the "2/3" pair RaceProcess_endRace sets - here zeroed); 0x4E4 (1252)
  * s32 timer = 120 or 0 by bit 18 of 0x4F0; 0x4E8 (1256) s32 = 20;
  * 0x4F0 (1264) s32 mode/flags (bit 18 gate, also copied to G->0x8C);
  * 0x4F4 (1268) s32 = 0x1FFFF mask; 0x4FC (1276) / 0x500 (1280) /
@@ -3078,7 +3078,7 @@ int gl_func_00006A8C(char *a0, int a1) {
  * jr-delay fill; swap the 0x510/0x508 zero-stores; gl_d_x/y/z = 3 distinct
  * base-0 aliases reproduce target's 3 separate lui $at,0 (no CSE). cmp clean. */
 extern float gl_d_x, gl_d_y, gl_d_z;  /* 3 global floats zeroed by this fn */
-void gl_func_00006AAC(int *a0) {
+void RaceProcess_reset(int *a0) {
     int *G = (int*)&D_00000000;
     int *H;
     *(int*)((char*)a0 + 0x30) = 0;
@@ -3105,7 +3105,7 @@ void gl_func_00006AAC(int *a0) {
     H[0x7C / 4] = 0;
 }
 
-/* gl_func_00006B80 - object initializer (0xB8, 46 insns). MATCHED 2026-06-20.
+/* RaceProcess_endRace - object initializer (0xB8, 46 insns). MATCHED 2026-06-20.
  * Two landing levers: (1) assign a0->0x4E4 = a1 BEFORE the two zero-stores so
  * IDO's as1 scheduler hoists the a1 reload + the &D mode-load lui to cover
  * load latency (matches target schedule exactly); (2) call the vtable fn
@@ -3114,7 +3114,7 @@ void gl_func_00006AAC(int *a0) {
  * 0x4E4=a1, 0x4EC=0, 0x4F8=a2, 0x518=0, 0x544=255, 0x54C f32 duration (120,
  * or 60 when global mode *(&D)->0x34==2), 0x550=0.0, 0x554=150.0; a0->0x28
  * vtable ptr, fn @0x7C, s16 base-adjust @0x78 (obj-0x28 dispatch idiom). */
-void gl_func_00006B80(char *a0, int a1, int a2) {
+void RaceProcess_endRace(char *a0, int a1, int a2) {
     char *v;
     *(int *)(a0 + 0x4F8) = a2;
     *(int *)(a0 + 0x4E0) = 3;
@@ -3134,14 +3134,14 @@ void gl_func_00006B80(char *a0, int a1, int a2) {
     (*(void (**)(char *))(v + 0x7C))((char *)((int)(short)*(short *)(v + 0x78) + (int)a0));
 }
 
-/* gl_func_00006C38: 41-insn struct-init. Sets a0->{0x4F8,0x4E0,0x4DC} from
+/* RaceProcess_endRaceQuiet: 41-insn struct-init. Sets a0->{0x4F8,0x4E0,0x4DC} from
  * args; calls gl_func_0(&D, 0, a2, orig_a0) (4 args, a3 = saved orig_a0);
  * post-call: writes a0->{0x4E4=a1, 0x4EC=0, 0x518=0, 0x54C=120.0f, 0x550=0.0f,
  * 0x544=0xFF, 0x554=150.0f}; if (D[0x34]==2) overwrite 0x54C with 60.0f.
  * Match key: the 0x4E4=a1 store is the FIRST post-call statement so IDO hoists
  * the a1 reload ahead of the FP setup and fills the load-delay slots with the
  * zero stores. (Prior "INSN_PATCH scheduling cap" diagnosis was wrong.) */
-void gl_func_00006C38(int *a0, int a1, int a2) {
+void RaceProcess_endRaceQuiet(int *a0, int a1, int a2) {
     a0[0x4F8/4] = a2;
     a0[0x4E0/4] = 3;
     a0[0x4DC/4] = 2;
@@ -3158,13 +3158,13 @@ void gl_func_00006C38(int *a0, int a1, int a2) {
     *(float*)((char*)a0 + 0x554) = 150.0f;
 }
 
-/* gl_func_00006CDC - large-object initializer, near-sibling of the matched
- * gl_func_00006B80. Variant differences from 6B80: 0x518 (1304) s32 = 60
+/* RaceProcess_endRaceAlt - large-object initializer, near-sibling of the matched
+ * RaceProcess_endRace. Variant differences from 6B80: 0x518 (1304) s32 = 60
  * (0 in 6B80); extra global-mode==3 branch calls gl_func_00000000(48); vtable
  * dispatch via obj->0x28 -> {fn@0x84, s16@0x80}. Struct map: 0x4DC=2, 0x4E0=3,
  * 0x4E4=a1, 0x4EC=0, 0x4F8=a2, 0x544=255, 0x54C f32=120/60 by mode, 0x550=0.0,
  * 0x554=150.0. */
-void gl_func_00006CDC(char *a0, int a1, int a2) {
+void RaceProcess_endRaceAlt(char *a0, int a1, int a2) {
   char *v;
   v = a0 + 0x4DC;
   *((int *) (a0 + 0x4F8)) = a2;
@@ -3193,23 +3193,23 @@ void gl_func_00006CDC(char *a0, int a1, int a2) {
   (*((void (**)(char *)) (v + 0x84)))((char *) (((int) ((short) (*((short *) (v + 0x80))))) + ((int) a0)));
 }
 
-void game_libs_func_00006DB8(int a0) {}
+void RaceProcess_onEndRace(int a0) {}
 
-void game_libs_func_00006DC0(int a0) {}
+void RaceProcess_onEndRaceAlt(int a0) {}
 
 extern int gl_func_00000000();
 extern int *gl_ref_00000138;
 
-void gl_func_00006DC8(int a0) {
+void RaceProcess_finishCourse(int a0) {
     int *p;
     gl_func_00000000(a0, 0x1E0, 0);
     p = *(int **)((char *)&D_00000000 + 0x138);
     p[45] = 0;
 }
 
-/* Sibling of gl_func_00006EE0 (matched 2026-05-08): identical 32-insn
+/* Sibling of RaceProcess_endResult4_00006EE0 (matched 2026-05-08): identical 32-insn
  * template, only 4 constants differ (0xF0/4/6/6 → 0x168/3/5/5). */
-void gl_func_00006DF8(int *a0) {
+void RaceProcess_endResult3_00006DF8(int *a0) {
     int *p;
     gl_func_00000000(a0, 0x168, 3);
     *(int*)((char*)a0 + 0x544) = 0;
@@ -3221,7 +3221,7 @@ void gl_func_00006DF8(int *a0) {
     gl_func_00000000(&D_00000000, 5, 0, 0);
 }
 
-void gl_func_00006E78(int a0_passthrough) {
+void RaceProcess_endResult2_00006E78(int a0_passthrough) {
     int *p;
     gl_func_00000000(a0_passthrough, 0x140, 2);
     p = *(int**)((char*)&D_00000000 + 0x138);
@@ -3234,7 +3234,7 @@ void gl_func_00006E78(int a0_passthrough) {
 /* Init function: zero-initialize a0 fields, store 120.0f at +0x554, clear
  * a child obj field, then 3 calls. Composite of int-reader-shape prologue
  * + custom init logic. */
-void gl_func_00006EE0(int *a0) {
+void RaceProcess_endResult4_00006EE0(int *a0) {
     int *p;
     gl_func_00000000(a0, 0xF0, 4);
     *(int*)((char*)a0 + 0x544) = 0;
@@ -3246,16 +3246,16 @@ void gl_func_00006EE0(int *a0) {
     gl_func_00000000(&D_00000000, 6, 0, 0);
 }
 
-void gl_func_00006F60(int a0) {
+void RaceProcess_endResult5_00006F60(int a0) {
     int *p;
     gl_func_00000000(a0, 0x1E0, 5);
     p = *(int **)((char *)&D_00000000 + 0x138);
     p[45] = 0;
 }
 
-/* Sibling of gl_func_00006EE0 (just-landed): same 32-insn 4-call init
+/* Sibling of RaceProcess_endResult4_00006EE0 (just-landed): same 32-insn 4-call init
  * shape but with different field offsets and 1-arg jal at end. */
-void gl_func_00006F90(int *a0) {
+void RaceProcess_endResult4_00006F90(int *a0) {
     int *p;
     gl_func_00000000(a0, 0xF0, 4);
     *(int*)((char*)a0 + 0x544) = 0;
@@ -3267,11 +3267,11 @@ void gl_func_00006F90(int *a0) {
     gl_func_00000000(&D_00000000, 6, 0, 0);
 }
 
-/* Sibling of gl_func_00006E78 (matched 2026-05-08): same 26-insn 4-call
+/* Sibling of RaceProcess_endResult2_00006E78 (matched 2026-05-08): same 26-insn 4-call
  * dispatch shape with different constants (0xF0/6/6/1 vs 0x140/2/5/3).
  * Same named-local+inline-second-deref recipe from
  * docs/IDO_CODEGEN.md#feedback-ido-v1-base-materialization-via-second-inline-deref. */
-void gl_func_00007010(int a0_passthrough) {
+void RaceProcess_timeUp(int a0_passthrough) {
     int *p;
     gl_func_00000000(a0_passthrough, 0xF0, 6);
     p = *(int**)((char*)&D_00000000 + 0x138);
@@ -3283,37 +3283,37 @@ void gl_func_00007010(int a0_passthrough) {
 
 /* 4-function bundle 0x7078..0x709F split via split-fragments.py 2026-05-08:
  * 2x save-arg sentinels + 2x return-1 stubs. */
-void game_libs_func_00007078(int a0) {}
-void game_libs_func_00007080(int a0) {}
-int  game_libs_func_00007088(int a0) { return 1; }
-int  game_libs_func_00007094(int a0) { return 1; }
+void RaceProcess_onPause(int a0) {}
+void RaceProcess_onCountdownStart(int a0) {}
+int  RaceProcess_endTimerEnabled(int a0) { return 1; }
+int  RaceProcess_altEndTimerEnabled(int a0) { return 1; }
 
-/* gl_func_000070A0: 9-insn 1-call wrapper.
+/* RaceProcess_onRaceOver: 9-insn 1-call wrapper.
  *
  * F1 @ 0x70A0-0x70C0: gl_func_00000000(a0, -1, 0). The following
  * 0x70C4..0x70F8 empty stubs are standalone split symbols. */
 extern int gl_func_00000000();
-void gl_func_000070A0(int a0) {
+void RaceProcess_onRaceOver(int a0) {
     gl_func_00000000(a0, -1, 0);
 }
 
-void game_libs_func_000070C4(int a0) {}
+void RaceProcess_onEndTimerDone(int a0) {}
 
-void game_libs_func_000070CC(int a0) {}
+void RaceProcess_onTimeoutExit(int a0) {}
 
-void game_libs_func_000070D4(int a0) {}
+void RaceProcess_onTimeout(int a0) {}
 
-void game_libs_func_000070DC(int a0) {}
+void RaceProcess_onAltEndTimerDone(int a0) {}
 
-void game_libs_func_000070E4(int a0) {}
+void RaceProcess_onPauseSelect(int a0) {}
 
 /* Empty K&R one-arg function: IDO keeps the unused a0 save in the
  * jr-ra delay slot (`sw a0, 0(sp)`). */
-void game_libs_func_000070EC(a0) int a0; {}
+void RaceProcess_onQuitButton(a0) int a0; {}
 
-void game_libs_func_000070F4(int a0) {}
+void RaceProcess_onLeave(int a0) {}
 
-/* gl_func_000070FC: one-shot mode-transition dispatcher (138 insns + 4
+/* RaceProcess_leave: one-shot mode-transition dispatcher (138 insns + 4
  * trailing alt-entry stub symbols). EXACT in-unit. Old "hard cap" note was
  * wrong: blank-jal/abs-0 relocs bake the same words. Levers:
  *  - every lui/addiu &G (bootup import sym 272) is re-materialized per block;
@@ -3335,7 +3335,7 @@ extern int gl_data_00000000_70fc_1;
 #define G3 ((char*)&D_00000000)
 #define G4 ((char*)&gl_data_00000000_70fc)
 #define G5 ((char*)&gl_data_00000000_70fc)
-void gl_func_000070FC(int *a0) {
+void RaceProcess_leave(int *a0) {
     int *next;
     int *obj;
     if (*(int*)((char*)a0 + 0x510) == 0) {
@@ -3390,23 +3390,23 @@ void gl_func_000070FC(int *a0) {
 #undef G5
 }
 
-void game_libs_func_00007324(int a0) {}
+void RaceProcess_drawHud(int a0) {}
 
-void game_libs_func_0000732C(int a0) {}
+void RaceProcess_drawIntro(int a0) {}
 
-void game_libs_func_00007334(int a0) {
+void RaceProcess_drawResultExtra(int a0) {
 }
 
-void game_libs_func_0000733C(int a0) {}
+void RaceProcess_drawTimeUpExtra(int a0) {}
 
-/* gl_func_00007344: per-panel HUD-element updater (0x384, 225 words) --
+/* RaceProcess_drawResult: per-panel HUD-element updater (0x384, 225 words) --
  * EXACT via the IDO 7.1 -O2 donor src/game_libs/game_libs_o2_7344.c
  * (REPLACE_FUNC_BODY splice, 2E290 / 68990 recipe). The switch's donor-local
- * .rodata jumptable reloc is renamed gl_func_00007344_rodata and pinned to
+ * .rodata jumptable reloc is renamed RaceProcess_drawResult_rodata and pinned to
  * bootup.uso RoData +0xDE8 (an in-unit compile cannot bake the %lo). The
  * ROM case->arm map and the load-bearing shapes are in the donor header.
  * Body below is a placeholder for the splice. */
-void gl_func_00007344(char *arg0) {
+void RaceProcess_drawResult(char *arg0) {
     volatile int ret = 0;
     if (arg0[0x544] != 0) {
         ret = 1;
@@ -3415,28 +3415,28 @@ void gl_func_00007344(char *arg0) {
 }
 
 /* Empty one-arg stub; IDO keeps the caller-slot spill in the return delay. */
-void game_libs_func_000076C8(int a0) {
+void RaceProcess_updateSub0(int a0) {
 }
 
-void game_libs_func_000076D0(int a0) {}
+void RaceProcess_updateSub1(int a0) {}
 
-void game_libs_func_000076D8(int a0) {}
+void RaceProcess_updateSub2(int a0) {}
 
 /* Empty one-arg stub; IDO keeps the caller-slot spill in the return delay. */
-void game_libs_func_000076E0(int a0) {
+void RaceProcess_updateSub3(int a0) {
 }
 
-/* Empty one-arg stub; sibling of game_libs_func_000076E0. */
-void game_libs_func_000076E8(int a0) {
+/* Empty one-arg stub; sibling of RaceProcess_updateSub3. */
+void RaceProcess_onMessageBounce(int a0) {
 }
 
-/* gl_func_000076F0: per-frame state machine (577 words). EXACT 2026-11-13 (agent-h run 368, kit CDLIV)
+/* RaceProcess_handleInput: per-frame state machine (577 words). EXACT 2026-11-13 (agent-h run 368, kit CDLIV)
  * through the MIPSpro 7.2.1 C++ front end donor src/game_libs/game_libs_mp72_76F0.cpp (tools/ncc721.sh),
  * REPLACE_FUNC_BODY-spliced in both trees: its 4-label switches are native 4-entry jump tables only under
- * EDG 2.29. The donor .rodata reloc is renamed gl_func_000076F0_rodata by the splice and pinned to the
+ * EDG 2.29. The donor .rodata reloc is renamed RaceProcess_handleInput_rodata by the splice and pinned to the
  * game_libs RoData at +0xE04 (tables + float literals in the target's order). This placeholder's text and
  * relocs are dropped by the splice (the INCLUDE_ASM .s carried no RoData). The cfe body stays under #if 0. */
-void gl_func_000076F0(char *self) {
+void RaceProcess_handleInput(char *self) {
     *(volatile int *)self = 0;
 }
 
@@ -3565,7 +3565,7 @@ extern f32 D_76F0_fadeC;
 /* agent-h run 355: the NON_MATCHING object takes this body through the MIPSpro 7.2.1 C++ front end
  * (src/game_libs/game_libs_mp72_76F0.cpp, NM-only REPLACE_FUNC_BODY): the target's two 4-entry tables are
  * native there, so the phantom `case 4:` labels go (99.0 -> 99.0035). This cfe body stays as the reference. */
-void gl_func_000076F0(GlObj76F0 *self) {
+void RaceProcess_handleInput(GlObj76F0 *self) {
     s32 sp24;
     s32 sp20;
     s32 var_v0;
@@ -3817,7 +3817,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
 }
 #endif
 
-// gl_func_00007FF4 — FULL DECODE, 99.98% (220/222 words byte-exact).
+// RaceProcess_drawGui — FULL DECODE, 99.98% (220/222 words byte-exact).
 // Logic verified exact: new_var-CSE for case-3 (&D base shared by the 0x34 flag
 // + ((int*)&D)[idx] array load), s16 vtable offsets (0xE8/0x108/0xF0), float-trunc
 // call args ((s32)*(f32*)…0x548/0x54C), frame -0x90 via the volatile pad layout
@@ -3825,7 +3825,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
 // temp_lo spill lands at sp+0x48 vs target sp+0x3C — an IDO stack-spill-allocator
 // slot diff (4 lw/sw words). Resists pad relayout (pads move spill+arg-spills
 // together) AND the permuter (floored at score 130 — regalloc-renumber class).
-/* gl_func_00007FF4 — EXACT MATCH 222/222 words (2026-07-03, agent-e w5).
+/* RaceProcess_drawGui — EXACT MATCH 222/222 words (2026-07-03, agent-e w5).
  * Was 218/222: temp_lo jal-delay spill homed at sp+0x48 vs target sp+0x3C.
  * LEVER (new, cracked the documented "regalloc-renumber" cap): NAMED-SCALAR
  * DECL-ORDER SLOT MAP — non-addressed named scalars still reserve decl-order
@@ -3839,7 +3839,7 @@ void gl_func_000076F0(GlObj76F0 *self) {
 #endif
 typedef int (*GP_00007FF4)();
 extern int gl_func_00000000();
-void gl_func_00007FF4(char *arg0) {
+void RaceProcess_drawGui(char *arg0) {
     int *sp8C;
     volatile int pu0, pu1, pu2, pu3, pu4, pu5, pu6, pu7, pu8;
     f32 sp58[4];
@@ -3924,7 +3924,7 @@ void gl_func_00007FF4(char *arg0) {
 }
 
 extern int gl_func_00000000();
-void gl_func_0000836C(int a0, int *a1) {
+void RaceProcess_handleMsg(int a0, int *a1) {
     int v = *a1;
     if (v == 9) {
         gl_func_00000000(a0, a1);
@@ -3933,11 +3933,11 @@ void gl_func_0000836C(int a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_000083AC(char *a0) {
+int RaceProcess_loadData(char *a0) {
     return gl_func_00000000(a0 + 0x50);
 }
 
-/* gl_func_000083CC: 79-insn 5-call state swap (0x13C). EXACT in-unit.
+/* RaceProcess_createReplayCam: 79-insn 5-call state swap (0x13C). EXACT in-unit.
  * ROM text relocs (bootup.uso TextReloc, shim +0x1466C): the 0x134 state
  * holder is import sym 272 at every site, but call2's a1 = `lui/addiu +0x70`
  * is a DIFFERENT symbol (sym 256 = D_007294) -- distinct abs-0 alias
@@ -3951,7 +3951,7 @@ int gl_func_000083AC(char *a0) {
  * the dead-if lever, IDO_CODEGEN #ce38-dead-if-lifts-constant-lr-over-passthrough-params. */
 extern int gl_func_00000000();
 extern int gl_data_00000000_83cc;
-void gl_func_000083CC(int *a0) {
+void RaceProcess_createReplayCam(int *a0) {
 #define STATE (*(int**)((char*)&D_00000000 + 0x134))
     int *c4;
     int x800;
@@ -3988,7 +3988,7 @@ void gl_func_000083CC(int *a0) {
 }
 
 
-/* gl_func_00008510: 42-insn dispatcher. ORPHAN-MERGED 2026-05-30: the 8-byte
+/* RaceProcess_restartCameras_00008510: 42-insn dispatcher. ORPHAN-MERGED 2026-05-30: the 8-byte
  * stolen prologue (`lui v1,0; lw v1,0x134(v1)` = load `state = D[0x134]`),
  * formerly the separate orphan symbol game_libs_func_00008508 at 0x8508, is now
  * the first 2 words of this function's .s (entry moved 0x8510 -> 0x8508, size
@@ -4020,11 +4020,11 @@ void gl_func_000083CC(int *a0) {
  * History: once promoted via PROLOGUE_STEALS=8 (banned 2026-05-23 as match-
  * faking), rolled back to NM, now orphan-MERGED (the correct boundary fix).
  * 2026-10-20 agent-g: EXACT via twin port (twin-finder.py) of the exact
- * sibling gl_func_000085B0: ONE function-scope `int *q` reused for the three
+ * sibling RaceProcess_restartWithTimeout: ONE function-scope `int *q` reused for the three
  * reloaded pointers (state->0xC4, state->0xCC, arg0->0x528->8) outranks
  * `state` (q = v0, state = v1) and its slot moves p2's home to 0x18. The
  * "regalloc-dump-only" residual note above is historical. */
-void gl_func_00008510(int *arg0) {
+void RaceProcess_restartCameras_00008510(int *arg0) {
     char *state;
     char *p;
     int *q;
@@ -4048,7 +4048,7 @@ void gl_func_00008510(int *arg0) {
     gl_func_00000000(arg0);
 }
 
-/* gl_func_000085B0 — EXACT MATCH 46/46 words (2026-07-03, agent-e w5).
+/* RaceProcess_restartWithTimeout — EXACT MATCH 46/46 words (2026-07-03, agent-e w5).
  * Was 28/46: whole-body temp-reg cascade (+1/+2) plus p2 spill 0x24 vs 0x20.
  * ROOT: target reuses ONE named temp (v0) for the three reloaded pointers
  * (*(state+0xC4), *(state+0xCC), *(*(arg0+0x528)+8)) and homes `state` in v1.
@@ -4057,7 +4057,7 @@ void gl_func_00008510(int *arg0) {
  * coloring -> q=v0, state=v1, t6.. cascade snaps. q's decl between `p` and
  * the block-scoped `p2` also shifts p2's named home 0x24->0x20 (q's dead
  * colored slot absorbs 0x24), fixing the spill slot. First-variant match. */
-void gl_func_000085B0(int *arg0, int arg1) {
+void RaceProcess_restartWithTimeout(int *arg0, int arg1) {
     char *state;
     char *p;
     int *q;
@@ -4096,7 +4096,7 @@ int gl_func_00008674(int unused) {
     return ((int (*)(int))obj[0x64/4])((int)((char*)&D_00000000 + *(s16*)((char*)obj + 0x60)));
 }
 
-/* game_libs_func_000086A0: 31-insn FPU-only updater on two adjacent floats
+/* RaceProcess_raiseMessage: 31-insn FPU-only updater on two adjacent floats
  * at a0+0x550 (f550) and a0+0x54C (f54C).
  *
  * Pseudocode:
@@ -4120,7 +4120,7 @@ int gl_func_00008674(int unused) {
  * (verified: operand swap is no-op, explicit-var ordering cascades 26 diffs).
  * Which f-reg holds load vs convert is IDO's FP allocator choice, not
  * C-reachable. Was INSN_PATCH'd (2 words, removed 2026-05-23). */
-void game_libs_func_000086A0(char *a0) {
+void RaceProcess_raiseMessage(char *a0) {
     float four = 4.0f;
     float f550 = *(float*)(a0 + 0x550);
 
@@ -4137,7 +4137,7 @@ void game_libs_func_000086A0(char *a0) {
     }
 }
 
-/* gl_func_0000871C: 54-insn (0xD8) FPU updater + conditional indirect-call.
+/* RaceProcess_dropMessage: 54-insn (0xD8) FPU updater + conditional indirect-call.
  *   if (a0->f550 < 4.0f) a0->f550 = (float)((double)a0->f550 + D[0xE60]);
  *   a0->f54C += a0->f550;
  *   if (a0->f554 < a0->f54C) {
@@ -4152,7 +4152,7 @@ void game_libs_func_000086A0(char *a0) {
  * order swap) flipped by inlining the f550 load into the comparison
  * condition `(f550 = *...) < four`, forcing `four` materialization first.
  * Byte-exact; only reloc residue is benign &D_00000000+0xE60. */
-void gl_func_0000871C(int *a0) {
+void RaceProcess_dropMessage(int *a0) {
     float four = 4.0f;
     float f550;
     if ((f550 = *(float*)((char*)a0 + 0x550)) < four) {
@@ -4439,8 +4439,8 @@ int *gl_func_000088B4(int *arg0) {
  * snd_PlayPlayer0Seq0_2DED0 SUFFIX_BYTES (3 words 0x000470C0,0x01C52021,0x2484001A).
  * All four predecessor recipes live on game_libs_post.c.o. */
 
-/* game_libs_func_00008668: SUFFIX_BYTES-absorbed orphan ← gl_func_000085B0
- * (3 words 0x3C030000,0x24630000,0x8C620028 exact match). gl_func_000085B0
+/* game_libs_func_00008668: SUFFIX_BYTES-absorbed orphan ← RaceProcess_restartWithTimeout
+ * (3 words 0x3C030000,0x24630000,0x8C620028 exact match). RaceProcess_restartWithTimeout
  * is in this same file with size 0xC4 covering the orphan's vram. The
  * orphan symbol pre-prune sat at .o offset 0x8944 (= TRUNCATE_TEXT cap)
  * with size 0 — its bytes never reached the link. */

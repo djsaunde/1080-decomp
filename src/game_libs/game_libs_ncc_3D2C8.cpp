@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003D2C8 (0xFC / 63 words): count the
+/* IDO 7.1 NCC (C++) donor for ItemType_saveData (0xFC / 63 words): count the
  * owner's children with one iterator, pass &count to gl_ref_0005166C (baked
  * USO jal), then fire virtual slot 7 on every child with a second iterator.
  * The counting loop's entry call goes through an inline
@@ -17,7 +17,7 @@ struct Iter {
     NodeB *get() { return cur->obj; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" void gl_func_0003D2C8(Owner *o) {
+extern "C" void ItemType_saveData(Owner *o) {
     Iter a(o->head);
     int n = 0;
     if (a.first()) do n++; while (a.next());

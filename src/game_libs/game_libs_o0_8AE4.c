@@ -8,7 +8,7 @@ extern int D_8AE4_mode;  /* = 0x34 in undefined_syms_auto.txt; bare-symbol read
  * %lo=0x34 into the lw at link; objdiff resolves it. (objdump -d on the .o shows
  * `lw 0` because it doesn't apply the LO16 reloc -- that is NOT a real diff.) */
 
-void gl_func_00008AE4(int a0, int a1, int a2, int a3) {
+void app_launchGenProc(int a0, int a1, int a2, int a3) {
     register int rv;
 
     gl_func_00000000(&D_00000000, *(int*)((char*)&D_00000000_a + 0x0));

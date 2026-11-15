@@ -929,15 +929,15 @@ build/src/game_libs/game_libs_mid.c.o: TRUNCATE_TEXT := 0x860
 # one NCC -O0 donor TU (65/65 words each; cfe 67 words).
 GAMELIBS_O0_8FFC_DONOR := build/src/game_libs/game_libs_ncc_o0_8FFC.cpp.o
 $(GAMELIBS_O0_8FFC_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00008FFC=$(GAMELIBS_O0_8FFC_DONOR) gl_func_00009100=$(GAMELIBS_O0_8FFC_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += app_createGame_00008FFC=$(GAMELIBS_O0_8FFC_DONOR) app_createGame_00009100=$(GAMELIBS_O0_8FFC_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_8FFC_DONOR)
 GAMELIBS_O0_8E48_DONOR := build/src/game_libs/game_libs_ncc_o0_8E48.cpp.o
 $(GAMELIBS_O0_8E48_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00008E48=$(GAMELIBS_O0_8E48_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += app_createGame_00008E48=$(GAMELIBS_O0_8E48_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_8E48_DONOR)
 GAMELIBS_O0_9204_DONOR := build/src/game_libs/game_libs_ncc_o0_9204.cpp.o
 $(GAMELIBS_O0_9204_DONOR): OPT_FLAGS := -O0
-build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += gl_func_00009204=$(GAMELIBS_O0_9204_DONOR) gl_func_000092F4=$(GAMELIBS_O0_9204_DONOR)
+build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: private REPLACE_FUNC_BODY += app_createGame_00009204=$(GAMELIBS_O0_9204_DONOR) app_createGame_000092F4=$(GAMELIBS_O0_9204_DONOR)
 build/src/game_libs/game_libs_mid.c.o build/non_matching/src/game_libs/game_libs_mid.c.o: $(GAMELIBS_O0_9204_DONOR)
 build/src/game_libs/game_libs_o0_949C.c.o build/non_matching/src/game_libs/game_libs_o0_949C.c.o: OPT_FLAGS := -O0
 # 0x100 -> 0x1D8 (2026-10-15 agent-g): the -O0 gl_func_0000959C (0xD8) moved in from game_libs_tail.c.
@@ -1728,10 +1728,10 @@ build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_15FC_DONOR)
 # 7344 = per-panel HUD-element updater (7-entry jumptable switch), IDO 7.1
 # -O2 donor: game_libs_o2_7344.c (225/225 word-exact). Spliced only so the
-# donor-local .rodata jumptable reloc is renamed gl_func_00007344_rodata and
+# donor-local .rodata jumptable reloc is renamed RaceProcess_drawResult_rodata and
 # pinned to the table at bootup.uso RoData +0xDE8.
 GAMELIBS_7344_DONOR := build/src/game_libs/game_libs_o2_7344.c.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_00007344=$(GAMELIBS_7344_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += RaceProcess_drawResult=$(GAMELIBS_7344_DONOR)
 # 3C0C = free-slot allocator (3B1C/3DB8 family), IDO 7.1 -O2 donor:
 # game_libs_o2_3C0C.c (107/107 word-exact). Spliced only so the donor-local
 # .rodata reloc of its 0.1f literal is renamed gl_func_00003C0C_rodata and
@@ -2381,7 +2381,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38728_DONOR)
 # 38598 = child-list walk: matrix rebuild on flag 0x200 + virtual slot 1 ({cur, nxt} iterator); NCC donor.
 GAMELIBS_38598_DONOR := build/src/game_libs/game_libs_ncc_38598.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_00038598=$(GAMELIBS_38598_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Node_updateChildren=$(GAMELIBS_38598_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_38598_DONOR)
 # 38964 = child-list walk firing virtual slots 4/5 (same {cur, nxt} iterator as 3D48C); NCC donor.
 GAMELIBS_38964_DONOR := build/src/game_libs/game_libs_ncc_38964.cpp.o
@@ -2425,7 +2425,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_41EDC_DONOR)
 # 3D2C8 = count the owner's children, register the count, then reset each child (two {cur, nxt} iterators, first() wrapper); NCC donor.
 GAMELIBS_3D2C8_DONOR := build/src/game_libs/game_libs_ncc_3D2C8.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gl_func_0003D2C8=$(GAMELIBS_3D2C8_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ItemType_saveData=$(GAMELIBS_3D2C8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3D2C8_DONOR)
 # 47F9C = child-list refresh: dirty flag on position change, copy the cached record ({cur, nxt} iterator, V3 class); NCC donor.
 GAMELIBS_47F9C_DONOR := build/src/game_libs/game_libs_ncc_47F9C.cpp.o
@@ -3247,9 +3247,9 @@ build/src/game_libs/game_libs_mp72_%.cpp.o: src/game_libs/game_libs_mp72_%.cpp $
 	$(NCC721) $< $@ $(OPT_FLAGS)
 # game_libs 76F0: EXACT MIPSpro 7.2.1 donor (two native 4-entry tables; agent-h run 368, kit CDLIV), spliced over
 # a placeholder in both trees. Donor .rodata = target RoData layout from +0xE04 (table 1, table 2, 5 floats,
-# table 3); gl_func_000076F0_rodata pinned to 0xE04 and D_76F0_fadeA/B/C to 0 in undefined_syms_auto.txt.
+# table 3); RaceProcess_handleInput_rodata pinned to 0xE04 and D_76F0_fadeA/B/C to 0 in undefined_syms_auto.txt.
 GAMELIBS_76F0_DONOR := build/src/game_libs/game_libs_mp72_76F0.cpp.o
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000076F0=$(GAMELIBS_76F0_DONOR)
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += RaceProcess_handleInput=$(GAMELIBS_76F0_DONOR)
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_76F0_DONOR)
 
 # xldtob.c -O3 donor (73904/73E74): direct CC, no asm-processor

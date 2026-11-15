@@ -620,7 +620,7 @@ void ARCRaceProcess_raceOver_00000FA8(char *a0) {
  * EXACT 2026-10-16 (was a "natural ceiling" 97.03% NM). The 2026-05-07 SUFFIX_BYTES recipe (28 words
  * / 0x70 bytes absorbing F2 + F3) was REMOVED 2026-05-23 as match-faking.
  * Symbol is now 0x80 / 32 insns (F1 only); F2 and F3 are separate symbols.
- * Sibling family of ARCRaceProcess_release_00000EBC, gl_func_000070A0,
+ * Sibling family of ARCRaceProcess_release_00000EBC, RaceProcess_onRaceOver,
  * TrkRace_freeLabels_00000DE4 (all same recipe-cleanup pattern).
  *
  * F1 @ 0x1170-0x11EC: gate + indirect callback via vtable.

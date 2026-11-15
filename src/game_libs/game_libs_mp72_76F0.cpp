@@ -1,4 +1,4 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) donor for gl_func_000076F0 (577 words), compiled by
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) donor for RaceProcess_handleInput (577 words), compiled by
  * tools/ncc721.sh and REPLACE_FUNC_BODY-spliced in both trees over a placeholder. EXACT (agent-h run 368,
  * kit CDLIV): the bit-16 test is one signed shift (ugen gives it t9, off the t-ring, as in the target), the
  * case-1 end test reads unk4E4 first (`a < 1 - b`: ugen order t6 = 4E4, t7 = 4E8, t8 = -4E8) instead of the old
@@ -7,7 +7,7 @@
  * jump-table `jr` as reading every register), and as1 xbb then moves the table-index `sll` into the bound-check
  * delay slot instead of the old `beqzl` + default-head copy (2312 -> 2308 B).
  * The donor .rodata (table 1, table 2, 5 floats, table 3) is the target's layout from game_libs RoData +0xE04:
- * gl_func_000076F0_rodata is pinned to 0xE04.
+ * RaceProcess_handleInput_rodata is pinned to 0xE04.
  *
  * History:
  * The target lowers `switch (sp20)` (0..3) and `switch (self->unk4D8)` (0..3) as 4-entry jump tables, which only
@@ -91,7 +91,7 @@ extern f32 D_76F0_fadeA;
 extern f32 D_76F0_fadeB;
 extern f32 D_76F0_fadeC;
 
-void gl_func_000076F0(GlObj76F0 *self) {
+void RaceProcess_handleInput(GlObj76F0 *self) {
     s32 sp24;
     s32 sp20;
     s32 var_v0;

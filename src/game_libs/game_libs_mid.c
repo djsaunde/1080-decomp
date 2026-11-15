@@ -9,7 +9,7 @@ extern char D_8C3C_root_desc;
 
 /* Mid section of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_8944.c (the 3-fn -O0 cluster at 0x8944..0x8A40).
- * Covers gl_func_00008AE4..gl_func_000093DC (offset 0x8AE4..0x949C).
+ * Covers app_launchGenProc..app_runProcess (offset 0x8AE4..0x949C).
  * Built at -O2 (default). */
 
 /* app_launchNameEnt — VERIFIED 92/92 reloc-resolved EXACT (2026-07-03, agent-e W5).
@@ -82,11 +82,11 @@ void app_launchViewRec(int a0, int a1, int a2, int a3) {
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_8E48.cpp (the NM body that was here, as C++;
  * no cfe closing-brace b-epilogue). Placeholder spliced over. */
-char *gl_func_00008E48(char **arg0, int arg1, s32 arg2) {
+char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     return 0;
 }
 
-/* gl_func_00008FFC: -O0 init sequence (fresh decode 2026-05-28, mnemonic disasm).
+/* app_createGame_00008FFC: -O0 init sequence (fresh decode 2026-05-28, mnemonic disasm).
  * Five callee calls bracketing a global-state mask + a constructor: configures
  * two globals, masks D[0x50] to bit 0x20, builds an object via call3 (returns
  * obj, a3=incoming a2), registers it (call4), links obj into D's list (obj->0x14),
@@ -112,12 +112,12 @@ extern unsigned char D_0000017D;
  * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled
  * as C++ -- edg emits no closing-brace `b epilogue`, so the "dead-double-b
  * toolchain gap" above is a cfe-only artifact). Placeholder spliced over. */
-int gl_func_00008FFC(int a0, int a1, int a2) {
+int app_createGame_00008FFC(int a0, int a1, int a2) {
     return 0;
 }
 
-/* gl_func_00009100: -O0 init sequence (fresh decode 2026-05-28). Near-twin of
- * gl_func_00008FFC: 3 byte-field copies (D[0x179..0x17B] → D[0x181..0x183]), a
+/* app_createGame_00009100: -O0 init sequence (fresh decode 2026-05-28). Near-twin of
+ * app_createGame_00008FFC: 3 byte-field copies (D[0x179..0x17B] → D[0x181..0x183]), a
  * call with a duplicated arg (D[0x4C]), a constructor call (a2=4, a3=incoming
  * a2), then the identical obj-register/link tail (call(obj base), set obj->0x4=1
  * if obj->0x14!=0, link obj->0x14=&D, final call(&D,0)); returns obj.
@@ -134,8 +134,8 @@ int gl_func_00008FFC(int a0, int a1, int a2) {
  * return-from-home; register int *obj keeps it in s1) — identical to 8FFC. */
 extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
 extern int D_0000004C, D_00000064;
-/* gl_func_00009100 [-O0 temp-slot CAP, 93.5%]: same class as app_launchNameEnt /
- * gl_func_00008FFC. obj is correctly `register` (s1) — objdiff reloc-resolves the
+/* app_createGame_00009100 [-O0 temp-slot CAP, 93.5%]: same class as app_launchNameEnt /
+ * app_createGame_00008FFC. obj is correctly `register` (s1) — objdiff reloc-resolves the
  * distinct-extern D_xxx loads so the lbu-0-vs-377 immediates already score matching;
  * the residual is the obj home-spill (target sw v0,52(sp) / reload, returns from the
  * home slot). TESTED-NEGATIVE 2026-06-23: making obj a plain (spilled) local -> 85.4%
@@ -145,25 +145,25 @@ extern int D_0000004C, D_00000064;
  * src/game_libs/game_libs_ncc_o0_8FFC.cpp (the NM body that was here, compiled
  * as C++ -- edg emits no closing-brace `b epilogue`, so the "dead-double-b
  * toolchain gap" above is a cfe-only artifact). Placeholder spliced over. */
-int gl_func_00009100(int a0, int a1, int a2) {
+int app_createGame_00009100(int a0, int a1, int a2) {
     return 0;
 }
 
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_9204.cpp (8FFC-shape re-decode as C++).
  * Placeholder spliced over. */
-int gl_func_00009204(int a0, int a1, int a2) {
+int app_createGame_00009204(int a0, int a1, int a2) {
     return 0;
 }
 
 /* EXACT 2026-10-22 (agent-g run 118) via an IDO 7.1 NCC -O0 donor:
  * src/game_libs/game_libs_ncc_o0_9204.cpp (8FFC-shape re-decode as C++).
  * Placeholder spliced over. */
-int gl_func_000092F4(int a0, int a1) {
+int app_createGame_000092F4(int a0, int a1) {
     return 0;
 }
 
-/* gl_func_000093DC: -O0 init/dispatch (scalar-only, no struct locals = no
+/* app_runProcess: -O0 init/dispatch (scalar-only, no struct locals = no
  * frame-offset ceiling). Real direct-global symbols D_w0 (offset 0) / D_w134
  * (0x134) give the 2-insn at-macro/fold loads; &D+0x10 base = 3-insn; register
  * vars give the s0/s1/s2 usage. fuzzy=100. */
@@ -171,12 +171,12 @@ extern int D_w0, D_w134;
 /* 2026-05-29: 1-diff cap (lw a0,0 vs lw a0,0x134 on the D_w134 load). D_w134
  * is a direct global at &D+0x134; expected is `lui a0; lw a0,0x134(a0)` (fresh,
  * independent). The placeholder D_w134 (link-resolved) bakes %lo=0 in the .o.
- * The &D+0x134 ADDEND form (which works for isolated loads, e.g. gl_func_00006DC8)
+ * The &D+0x134 ADDEND form (which works for isolated loads, e.g. RaceProcess_finishCourse)
  * REGRESSES here: this function also materializes &D into `base`(s1) for other
  * uses, so IDO CSE-forces a full `lui;addiu;lw 0x134` (extra addiu) instead of the
  * fresh `lui;lw 0x134`. Array-index form same. Tooling-blocked (.o-unverifiable);
  * link-correct. See docs/MATCHING_WORKFLOW.md addend-vs-symbol caveat. */
-void gl_func_000093DC(int a0, int a1, int *a2) {
+void app_runProcess(int a0, int a1, int *a2) {
     register int *obj;    /* s0 = a2 */
     register char *base;  /* s1 = &D */
     register char *p;     /* s2 */

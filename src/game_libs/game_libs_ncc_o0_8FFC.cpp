@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) -O0 donors for gl_func_00008FFC and gl_func_00009100
+/* IDO 7.1 NCC (C++) -O0 donors for app_createGame_00008FFC and app_createGame_00009100
  * (0x104 / 65 words each). game_libs is C++: compiled by edg the -O0 bodies
  * end without cfe's closing-brace `b epilogue; nop` marker, so the
  * "-O0 return-value dead-double-b" gap of the cfe build (67 words) is gone.
@@ -13,7 +13,7 @@ extern unsigned char D_0000017D;
 extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
 extern char D_8FFC_base;
 
-int gl_func_00008FFC(int a0, int a1, int a2) {
+int app_createGame_00008FFC(int a0, int a1, int a2) {
     int obj;
     register char *base;
     register int *o;
@@ -38,7 +38,7 @@ int gl_func_00008FFC(int a0, int a1, int a2) {
     return obj;
 }
 
-int gl_func_00009100(int a0, int a1, int a2) {
+int app_createGame_00009100(int a0, int a1, int a2) {
     int obj;
     register char *base;
     register int *o;
