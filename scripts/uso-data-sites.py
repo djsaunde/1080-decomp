@@ -795,6 +795,9 @@ DIRECT_RE = re.compile(r'\b(GL_DATA|GL_RODATA|GL_BSS|GL_TEXT)\s*\(\s*(0x[0-9A-Fa
                        r'|\b(GL_DATA_STR|GL_RODATA_STR)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*,\s*("(?:[^"\\]|\\.)*")\s*\)')
 
 
+STR_ALIAS_RE = re.compile(r'^s(Str|Fmt|Tag)_(?:(\w*?)_)?([0-9A-F]{3,6})(?:_\d+)?$')
+
+
 def check_direct(c, bodies, verbose=False):
     """Direct GL_*(K) / GL_*_STR(K, "text") uses inside function bodies."""
     ok = bad = 0
@@ -883,6 +886,26 @@ def cmd_check(c, a):
         ps_bad += 1
         print(f'MISMATCH per-site alias {s.placeholder} (named after {hit[0]} = sym{n}) in {s.func} '
               f'T+0x{s.off:05X}: the reloc names {c.obj_label(s.obj)}')
+    # per-site aliases named after a section-base STRING (`sStr_rom_gui_uso_C5E4`, `sTag_xps_CC74`,
+    # `sFmt_Dup_parm_1E6B0`, agent-a run 498): every LO16 site must be a Data/RoData base site with K =
+    # the hex suffix, and an sTag_ name must spell the ROM string exactly.
+    str_ok = str_bad = 0
+    for s in c.sites:
+        if s.rtype != 2 or not s.placeholder:
+            continue
+        sm = STR_ALIAS_RE.match(s.placeholder)
+        if not sm:
+            continue
+        k = int(sm.group(3), 16)
+        t = rom_string(c, s.sym.sect, s.k) if s.sym.is_base else None
+        if s.sym.is_base and s.sym.sect in (6, 7) and s.k == k and t is not None and \
+                (sm.group(1) != 'Tag' or sm.group(2) == t):
+            str_ok += 1
+            continue
+        str_bad += 1
+        print(f'MISMATCH string alias {s.placeholder} in {s.func} T+0x{s.off:05X}: the reloc names '
+              f'{c.obj_label(s.obj)} K=0x{s.k:X} ({t!r})')
+    print(f'check: {str_ok} LO16 sites on sStr_/sFmt_/sTag_ string aliases verified, {str_bad} mismatches')
     d_ok, d_bad = check_direct(c, bodies, a.verbose)
     print(f'check: {d_ok} direct GL_DATA/GL_RODATA/GL_BSS(_STR) uses verified, {d_bad} mismatches')
     nvia = sum(1 for m in claimed if m.get('via'))
@@ -891,7 +914,7 @@ def cmd_check(c, a):
           f'{bad} mismatches, {unused} claimed macros unused')
     print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
           f'{ps_bad} mismatches')
-    return 1 if bad or ps_bad or d_bad else 0
+    return 1 if bad or ps_bad or d_bad or str_bad else 0
 
 
 def cmd_selftest(c, a):
