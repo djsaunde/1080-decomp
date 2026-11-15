@@ -51,7 +51,6 @@ src/game_libs/game_libs_post0b.c	GfxLib_hostioForceError	(char *)&D_00000000 + 0
 src/game_libs/game_libs_post0b.c	LightTarget_hostioParms	(char*)&D_00000000 + 0x210CC	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	LightTarget_hostioParms	(char*)&D_00000000 + 0x210D8	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	LightTarget_hostioParms	(char*)&D_00000000 + 0x210E4	GL_DATA_STR
-src/game_libs/game_libs_post0b.c	MNode_def	(char *)&D_00000000 + 0x0001EBE4	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20630	GL_DATA
 src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20740	GL_DATA
 src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20D88	GL_DATA
@@ -60,9 +59,6 @@ src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20EEC	GL_DATA
 src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20EF0	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	Mat_print	(char *)&D_00000000 + 0x20F04	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	Mat_printHex_000517B8	(char*)&D_00000000 + 0x20EB4	GL_DATA_STR
-src/game_libs/game_libs_post0b.c	MemTracker_ctor	(char*)&D_00000000 + 0x21C50	GL_DATA_STR
-src/game_libs/game_libs_post0b.c	MemTracker_printEntry	(char *)&D_00000000 + 0x21CD8	GL_DATA_STR
-src/game_libs/game_libs_post0b.c	MemTracker_printTree	(char *)&D_00000000 + 0x21C7C	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	MorphPoly_checkVtx	(char*)&D_00000000 + 0x200BC	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	PolyShape_allocLightDL_000435FC	(char*)&D_00000000 + 0x1FD14	GL_DATA_STR
 src/game_libs/game_libs_post0b.c	RcpMgr_removeTask	(char *)&D_00000000 + 0x201E4	GL_DATA_STR
