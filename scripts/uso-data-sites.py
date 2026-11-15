@@ -27,6 +27,10 @@ Subcommands:
                      in include/ and src/game_libs: resolve the Sym it claims (comment
                      `Sym N`, or GL_DATA/GL_RODATA/GL_BSS(K) = section base) and verify each
                      function that uses it has a site against that Sym. Exit 1 on a mismatch.
+  convert NAME FILE.. [--exclude RE] [--write]
+                     respell the plain-D_00000000 sites of one header object alias
+                     (`#define gX D_00000000 /* ... Sym N ... */`) where the relocs prove
+                     the site is that object (see cmd_convert)
   selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
 
 Run from the project root, with the venv python (pyelftools, crunch64):
@@ -360,7 +364,8 @@ def scan_macros():
     """Accessor macros over the zero placeholder, in include/ and src/game_libs."""
     out = []
     files = sorted(glob.glob('include/**/*.h', recursive=True)) + \
-        sorted(glob.glob('src/game_libs/*.c')) + sorted(glob.glob('src/game_libs/*.cpp'))
+        [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
+         for p in sorted(glob.glob(f'src/{d}/*.{e}'))]
     for path in files:
         lines = open(path, errors='replace').read().split('\n')
         i = 0
@@ -392,7 +397,8 @@ def scan_macros():
                 comment += ' ' + ' '.join(reversed(blk))
             body_nc = re.sub(r'/\*.*?(\*/|$)', '', body)
             bm = re.search(r'\b(GL_DATA|GL_RODATA|GL_BSS|GL_TEXT)\s*\(\s*(0x[0-9A-Fa-f]+|\d+)\s*\)', body_nc)
-            uses_ph = re.search(r'&\s*\(?\s*(D_00000000\w*|gl_data_00000000\w*)\b', body_nc)
+            uses_ph = re.search(r'&\s*\(?\s*(D_00000000\w*|gl_data_00000000\w*)\b', body_nc) or \
+                re.fullmatch(r'\(?\s*(D_00000000\w*|gl_data_00000000\w*)\s*\)?', body_nc.strip())
             if not bm and not uses_ph:
                 continue
             claim = None
@@ -409,19 +415,113 @@ def scan_macros():
 FUNC_RE = re.compile(r'^(?!\s)(?:[\w\*]+[\s\*]+)+?\**(\w+)\s*\(([^;{]*?)\)\s*\{', re.M | re.S)
 
 
-def func_bodies(path):
-    """name -> body text for top-level C function definitions (column-0 heuristic)."""
-    src = open(path, errors='replace').read()
-    out = {}
+def _skip_brace_body(src, i):
+    """src[i-1] == '{'; return the index of the matching '}' (skips comments, strings, chars)."""
+    depth, n = 1, len(src)
+    while i < n:
+        ch = src[i]
+        if src.startswith('/*', i):
+            i = src.find('*/', i + 2)
+            if i < 0:
+                return -1
+            i += 2
+            continue
+        if src.startswith('//', i):
+            i = src.find('\n', i)
+            if i < 0:
+                return -1
+            continue
+        if ch in '"\'':
+            j = i + 1
+            while j < n and src[j] != ch:
+                j += 2 if src[j] == '\\' else 1
+            i = j + 1
+            continue
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    return -1
+
+
+def func_spans(src):
+    """[(name, body_start, body_end)] for top-level C function definitions (column-0
+    heuristic for the header, brace matching for the body; preprocessor-conditional
+    braces are assumed balanced per branch)."""
+    out = []
+    pos = 0
     for m in FUNC_RE.finditer(src):
         name = m.group(1)
-        if name in ('if', 'while', 'for', 'switch', 'return', 'sizeof'):
+        if m.start() < pos or name in ('if', 'while', 'for', 'switch', 'return', 'sizeof'):
             continue
-        end = src.find('\n}', m.end())
+        end = _skip_brace_body(src, m.end())
         if end < 0:
             continue
-        out.setdefault(name, src[m.end():end])
+        out.append((name, m.end(), end))
+        pos = end
     return out
+
+
+def func_bodies(path):
+    """name -> body text for top-level C function definitions."""
+    src = open(path, errors='replace').read()
+    out = {}
+    for name, a, b in func_spans(src):
+        out.setdefault(name, src[a:b])
+    return out
+
+
+SITE_RE = re.compile(r'&D_00000000\b(?:(\s*\+\s*)(0x[0-9A-Fa-f]+|\d+)\b)?')
+
+
+def cmd_convert(c, a):
+    """Spell plain-D_00000000 sites of one named object with its object-alias macro.
+    A site `&D_00000000` (K = 0) is converted only when EVERY K=0 D_00000000-relocated
+    instruction of the function names the macro's Sym; `&D_00000000 + K` only when every
+    D_00000000 instruction with that K names it. Functions whose .o carries no relocs
+    (donor splices) are skipped. The rewrite is a pure token substitution
+    (D_00000000 -> NAME, NAME defined as D_00000000), so it is byte-safe by construction;
+    the census only decides which spelling is TRUE."""
+    m = [x for x in scan_macros() if x['name'] == a.name and not x['local']]
+    if not m or not m[0]['claim'] or m[0]['claim'][0] != 'sym':
+        sys.exit(f'{a.name}: no header object alias with a `Sym N` claim')
+    n = m[0]['claim'][1]
+    excl = re.compile(a.exclude) if a.exclude else None
+    total = 0
+    for path in a.files:
+        src = open(path, errors='replace').read()
+        edits = []
+        for f, b0, b1 in func_spans(src):
+            if excl and excl.search(f):
+                continue
+            ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+            if not ss or any(x.placeholder is None for x in ss):
+                continue
+            byk = collections.defaultdict(set)
+            for x in ss:
+                if x.placeholder == 'D_00000000':
+                    byk[x.k].add(x.sym.idx)
+            for mm in SITE_RE.finditer(src, b0, b1):
+                k = int(mm.group(2), 0) if mm.group(2) else 0
+                if byk.get(k) == {n}:
+                    edits.append((mm.start() + 1, mm.start() + 1 + len('D_00000000'), f))
+        if not edits:
+            continue
+        fs = sorted({e[2] for e in edits})
+        print(f'{path}: {len(edits)} sites in {len(fs)} functions: {", ".join(fs)}')
+        total += len(edits)
+        if a.write:
+            for s0, s1, _ in sorted(edits, reverse=True):
+                src = src[:s0] + a.name + src[s1:]
+            if '"gdl/gl_data.h"' not in src:
+                i = src.find('#include "common.h"')
+                i = src.find('\n', i) + 1 if i >= 0 else 0
+                src = src[:i] + '#include "gdl/gl_data.h"\n' + src[i:]
+            open(path, 'w').write(src)
+    print(f'{a.name} (Sym {n}): {total} sites' + ('' if a.write else ' (dry run; --write to apply)'))
 
 
 def claim_hits(c, func, cl):
@@ -437,7 +537,8 @@ def claim_hits(c, func, cl):
 def cmd_check(c, a):
     macros = scan_macros()
     claimed = [m for m in macros if m['claim']]
-    srcs = sorted(glob.glob('src/game_libs/*.c')) + sorted(glob.glob('src/game_libs/*.cpp'))
+    srcs = [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
+            for p in sorted(glob.glob(f'src/{d}/*.{e}'))]
     bodies = {p: func_bodies(p) for p in srcs}
     bad = ok = unused = 0
     for m in claimed:
@@ -494,6 +595,11 @@ def cmd_selftest(c, a):
     assert not claim_hits(c, 'dma_startRead', ('base', 8, 0x1E2C0)), 'Bss-base K accepted for a Data string'
     assert not claim_hits(c, 'dma_startRead', ('sym', 1255)), 'audio heap accepted for the DMA table'
     assert not claim_hits(c, 'dma_startRead', ('base', 6, 0x1E2C4))
+    assert claim_hits(c, 'heap_tempAllocDefault_000333F4', ('sym', 73))
+    assert not claim_hits(c, 'heap_tempAllocDefault_000333F4', ('sym', 338))
+    # brace-matched spans: a one-line function must not swallow its successor
+    sp = func_spans('int a(int x) { return f(&D_00000000, x); }\nvoid b(void) {\n    if (1) { g("}"); }\n}\n')
+    assert [n for n, _, _ in sp] == ['a', 'b'], sp
     # per-site resolution: every Bss-object site in dma_startRead names sym 1504 with K < 0x44*10
     for s_ in c.by_func['dma_startRead']:
         if s_.rtype == 2 and s_.sym.kind == 2:
@@ -509,11 +615,14 @@ def main():
     p.add_argument('--direct', action='store_true')
     p = sub.add_parser('object'); p.add_argument('obj')
     p = sub.add_parser('check'); p.add_argument('-v', '--verbose', action='store_true')
+    p = sub.add_parser('convert'); p.add_argument('name'); p.add_argument('files', nargs='+')
+    p.add_argument('--exclude', help='regex of function names to leave alone (owned by another area)')
+    p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
     c = Census('.')
     sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
-              'check': cmd_check, 'selftest': cmd_selftest}[a.cmd](c, a) or 0)
+              'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert}[a.cmd](c, a) or 0)
 
 
 if __name__ == '__main__':
