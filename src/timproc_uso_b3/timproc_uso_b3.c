@@ -255,7 +255,7 @@ static void timproc_uso_b3_func_000008CC(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-void timproc_uso_b3_func_00000924(Vec3 *dst) {
+static void timproc_uso_b3_func_00000924(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -1268,22 +1268,16 @@ void *timproc_uso_b3_func_000020EC(int *arg0) {
     return p2;
 }
 
-/* timproc_uso_b3_func_0000217C: 2-call wrapper. UN-MATCHED 2026-06-10
- * to FIX BLOCK3 (the 1-word-pad placeholder mechanism, solved in
- * MATCHING_WORKFLOW): a 1-word pad sidecar cannot emit correctly (the
- * minimum C placeholder is 8 bytes, +4 shifting the whole block since
- * April). The fn+pad now emit as ONE 13-word GLOBAL_ASM (exact); the
- * proven matching C is preserved below for the day a tools-side
- * placeholder-shrink patch lands. */
-#ifdef NON_MATCHING
+/* timproc_uso_b3_func_0000217C: 2-call wrapper (twin of eddproc_uso_func_0000044C).
+ * The ROM symbol is 13 words: the 12-word body plus the zero alignment word
+ * before 21B0. A 1-word GLOBAL_ASM pad sidecar emits 8 bytes (+4 shift), so
+ * the zero word comes from an all-zero SUFFIX_BYTES_FORCE in both builds
+ * (Makefile, next to the NON_MATCHING_SUFFIX_BYTES_FORCE line). */
 void timproc_uso_b3_func_0000217C(char *dst) {
     int tmp;
     timproc_uso_b3_func_00000854(&tmp);
     timproc_uso_b3_func_00000924((Vec3*)(dst + 0x10));
 }
-#else
-#pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3/timproc_uso_b3_func_0000217C.s")
-#endif
 
 void timproc_uso_b3_func_000021B0(void) {
     gl_func_00000000(gl_ref_00000208);

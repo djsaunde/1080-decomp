@@ -1261,6 +1261,8 @@ build/src/timproc_uso_b3/timproc_uso_b3.c.o build/non_matching/src/timproc_uso_b
 # trailing alignment nop (target 0x34/13w vs build 0x30/12w). Grow the non_matching
 # symbol with one all-zero word so objdiff scores 13w. ROM-neutral (non_matching .o).
 build/non_matching/src/timproc_uso_b3/timproc_uso_b3.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := timproc_uso_b3_func_0000217C=0x00000000
+# Default build: the same zero word, now that 217C is plain C (was a 13-word GLOBAL_ASM).
+build/src/timproc_uso_b3/timproc_uso_b3.c.o: private SUFFIX_BYTES_FORCE += timproc_uso_b3_func_0000217C=0x00000000
 build/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_65C.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c.o: OPT_FLAGS := -O0
 build/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o build/non_matching/src/timproc_uso_b3/timproc_uso_b3_o0_B0.c.o: OPT_FLAGS := -O0
