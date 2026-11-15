@@ -785,7 +785,8 @@ typedef struct SndHandle {
  *   Use SND_CUEQ(gSndCueQueues) there.
  * - relocations against the Bss section base (offset = 0x338 + field): snd_RequestCue / Cue2 /
  *   Cue2Prio, snd_InitCueQueues, snd_SoundObjRequestCue, snd_SetPlayer2ChannelIO_3190C,
- *   snd_UpdateTimers. Those must keep the base symbol; SND_CUEQ_AT_BASE(D_00000000) is the view.
+ *   snd_UpdateTimers (the ramp floats, through its per-site base-0 aliases D_2D37C_f358s ...).
+ *   Those must keep the base symbol; SND_CUEQ_AT_BASE(D_00000000) is the view.
  * agent-c run 495. */
 typedef struct SndCueQueue {
     s32 ring[16];           /* 0x00: queued requests (snd_CueQueueSet_31754 = func 0x45DC0 pushes) */
@@ -812,7 +813,10 @@ typedef struct SndCueQueues {
     /* 0x14 */ f32 floor;         /* fade-down floor */
     /* 0x18 */ f32 upStep;        /* (1 - level) / fadeInFrames */
     /* 0x1C */ f32 downStep;
-    /* 0x20 */ s32 timer[3];      /* snd_UpdateTimers */
+    /* 0x20 */ f32 rampBase;      /* snd_UpdateTimers' 256-frame ramp: (f32) of the u16 snapshot at its start */
+    /* 0x24 */ f32 rampValue;     /* 0 at the start, minus rampStep per frame; (s32) goes out as audio cmd
+                                   * 0x4E010000, (value + base) / base as 0x4D010000 */
+    /* 0x28 */ f32 rampStep;      /* (snapshot >> 1) / 256 */
     char pad2C[0x30 - 0x2C];
     /* 0x30 */ SndCueQueue queue[3]; /* snd_RequestCue(i) = queue[i]; snd_RequestCue2 = queue[2] */
     char pad15C[0x160 - 0x15C];

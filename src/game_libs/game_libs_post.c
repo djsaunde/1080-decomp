@@ -11818,20 +11818,20 @@ void snd_UpdateTimers(void) {
             fr = (f32)raw;
             half = (int)raw >> 1;
             if (z) {}
-            D_2D37C_f360s[0x360 / 4] = (f32)half * (1.0f / 256.0f);
-            D_2D37C_f35Cs[0x35C / 4] = z;
+            SND_CUEQ_AT_BASE(D_2D37C_f360s).rampStep = (f32)half * (1.0f / 256.0f);
+            SND_CUEQ_AT_BASE(D_2D37C_f35Cs).rampValue = z;
             if (fr) {} /* agent-g run 228: with the reload below also written into fr, a use here lifts this fr web's priority so it colours first (f2) and the reload web takes the same register */
-            D_2D37C_f358s[0x358 / 4] = fr;
+            SND_CUEQ_AT_BASE(D_2D37C_f358s).rampBase = fr;
             if (z) {} /* agent-g run 227: a second counted use of the 0 constant in the store block lifts its LR's adjsave to fr's: constant f0 / fr f2 = target */
         }
-        d = D_2D37C_f35Cl[0x35C / 4];
+        d = SND_CUEQ_AT_BASE(D_2D37C_f35Cl).rampValue;
         TW_2D37C(0xC) = c - 1;
-        d -= D_2D37C_f360l[0x360 / 4];
-        D_2D37C_f35Cw[0x35C / 4] = d;
+        d -= SND_CUEQ_AT_BASE(D_2D37C_f360l).rampStep;
+        SND_CUEQ_AT_BASE(D_2D37C_f35Cw).rampValue = d;
         i = (int)d;
         if (0) { gl_func_00000000(&i); } /* agent-g run 226/227: i homed at its decl slot (frame 0x28, i at 0x1c = target) */
         gl_func_00000000(0x4E010000, i);
-        fr = D_2D37C_f358l[0x358 / 4]; /* agent-g run 228: the post-call 0x358 reload is fr (target f2, not a fresh f0 temp) */
+        fr = SND_CUEQ_AT_BASE(D_2D37C_f358l).rampBase; /* agent-g run 228: the post-call 0x358 reload is fr (target f2, not a fresh f0 temp) */
         gl_func_00000000_f(0x4D010000, ((f32)i + fr) / fr);
         if (i) {} /* agent-g run 227: a post-call read of i splits its web -- the reload goes uncoloured (t2, rec[2] t3 = target) instead of a3 */
     }
@@ -14971,15 +14971,15 @@ void snd_PreNMI(void) {
  * the previously-documented 0x44). */
 void snd_InitCueQueues(void) {
     int i;
-    char *base = (char *)&D_00000000 + 0x368;
+    SndCueQueue *base = SND_CUEQ_AT_BASE(D_00000000).queue;
     for (i = 0; i != 2; i++) {
-        char *rec = base + i * 0x64;
-        *(short *)(rec + 0x62) = i;
-        *(int *)(rec + 0x40) = 0;
-        *(int *)(rec + 0x44) = 0;
-        *(int *)(rec + 0x48) = 0;
-        *(int *)(rec + 0x4C) = 0;
-        *(int *)(rec + 0x5C) = 0;
+        SndCueQueue *q = &base[i];
+        q->cue = i;
+        q->wr = 0;
+        q->rd = 0;
+        q->timer = 0;
+        q->unk4C = 0;
+        q->pending = 0;
     }
 }
 
@@ -14995,7 +14995,7 @@ extern char gl_ref_00000368;
  * hoisted above the prologue. Hand-expanded shift chains (`t<<=2; t-=a0; ...`) break
  * to fresh $t8/$t9 pseudos (96.8%). See docs/IDO_CODEGEN.md#strength-reduce-multiply. */
 void snd_RequestCue(int a0, int a1) {
-    gl_ref_00045DC0(&gl_ref_00000368 + a0 * 100, 1, a1, 0x7F);
+    gl_ref_00045DC0((SndCueQueue *)&gl_ref_00000368 + a0, 1, a1, 0x7F); /* queue[a0] */
 }
 
 /* snd_SoundObjRequestCue: full decode 2026-05-31 (was 33.8% stub). Gated on D[0]==4,
