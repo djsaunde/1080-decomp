@@ -1,11 +1,13 @@
 /* Original compiler context for gl_func_00061478 (same IDO 7.1 -O2 recipe).
  * bootup Text uses the documented game_libs +0x1466C shim. The contiguous
- * 610F4..61478 range starts at Text 0x75760, a 32-byte boundary. Its five
- * genuine preceding assembly functions occupy 0x384 bytes, so the C entry
- * has the original residue 4 mod 32. IDO itself emits .align 5 before the
- * unreachable epilogue: preserving that context reproduces its two NOPs.
- * These preceding functions are context only; they are NOT new C matches
- * and this auxiliary object is never linked or counted as another unit.
+ * 610F4..61478 range starts at Text 0x75760, a 32-byte boundary. Its
+ * preceding functions (five asm entries, four C functions -- copied verbatim
+ * from their exact host definitions in src/game_libs/game_libs_post0b.c)
+ * occupy 0x384 bytes, so the C entry has the original residue 4 mod 32.
+ * IDO itself emits .align 5 before the unreachable epilogue: preserving that
+ * context reproduces its two NOPs. The preceding functions are context only;
+ * they are not counted again and this auxiliary object is never linked or
+ * counted as another unit. Keep them identical to their host definitions.
  * Only the unmodified compiler output for gl_func_00061478 is spliced.
  * The host retains this same C definition; keep both definitions identical.
  */
@@ -15,11 +17,103 @@ extern int gl_ref_00034240();
 extern int D_00000000;
 extern int D_6170C_idx;
 extern int D_6170C_arr[];
-INCLUDE_ASM("src/match_imports/original_context", game_libs_func_000610F4);
-INCLUDE_ASM("src/match_imports/original_context", game_libs_func_0006110C);
-INCLUDE_ASM("src/match_imports/original_context", game_libs_func_000611E4);
-INCLUDE_ASM("src/match_imports/original_context", gl_func_0006126C);
-INCLUDE_ASM("src/match_imports/original_context", gl_func_00061458);
+/* game_libs_func_000610F4: one C function spans the original 0x610F4 and
+ * 0x6110C asm entries (0x18 + 0xD8 = 0xF0; splat split the a1 != 0 path). */
+char *game_libs_func_000610F4(char *a0, int a1, int a2) {
+    char *q;
+    int v0;
+    if (a1 == 0) {
+        q = a0; a0++; *q = '0';
+        *a0 = 0;
+        return a0;
+    }
+    if (a1 < 0) {
+        a1 = -a1;
+        q = a0;
+        a0++; if (1) { *q = '-'; }
+    }
+    while (a2 > 0) {
+        if (a1 >= a2) {
+            *(int *)&D_00000000 = 1;
+            v0 = 0;
+            do {
+                a1 -= a2;
+                if (a1 < 0) {
+                    a1 += a2;
+                    break;
+                }
+                v0++;
+            } while (v0 != 9);
+            q = a0; a0++; if (1) { *q = v0 + '0'; }
+        } else if (*(int *)&D_00000000 != 0) {
+            q = a0; a0++; if (1) { *q = '0'; }
+        }
+        a2 /= 10;
+    }
+    *a0 = 0;
+    return a0;
+}
+
+int game_libs_func_000611E4(int a0, int a1) {
+    int i;
+    for (i = 1; i < a1; i++) {
+        a0 *= 10;
+    }
+    return a0;
+}
+
+typedef union FI_0006126C {
+    f32 f;
+    int i;
+    f64 d;
+} FI_0006126C;
+extern int gl_func_00034458_6126C(); /* blank alias for the in-unit callee gl_func_00034458 (ROM words are jal 0) */
+char *gl_func_0006126C(char *arg0, FI_0006126C arg2, u8 *fmt) {
+    char *out = arg0;
+    int B = 6;
+    int A = 6;
+    u8 *q;
+    int c;
+    int ch;
+
+    while ((q = fmt, fmt = q + 1, *q) != 0) {
+        c = *q + 0 * *q;
+            if (*q == 'd') {
+                D_00000000 = 0;
+                out = gl_func_00034458_6126C(out, arg2.i, 0x3B9ACA00);
+            } else if (c == 'x') {
+                D_00000000 = 1;
+                out = gl_func_00034458_6126C(out, arg2.i);
+            } else if (c == 'f') {
+                int ip = (int) arg2.f;
+                int frac;
+                char *dot;
+
+                frac = (f32) gl_func_00034458_6126C(0xA, B) * (arg2.f - (f32) ip);
+                D_00000000 = 0;
+                dot = gl_func_00034458_6126C(out, ip, gl_func_00034458_6126C(0xA, A));
+                *dot = '.';
+                out = dot + 1;
+                D_00000000 = 1;
+                out = gl_func_00034458_6126C(out, frac, gl_func_00034458_6126C(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
+            } else if ((ch = c, c >= '0') && (c < ':')) {
+                ch -= '0';
+                A = (u8)ch;
+                if ((q = fmt, fmt = q + 1, *q) != 0) {
+                    B = (q = fmt, fmt = q + 1, *q) - '0';
+                }
+            } else {
+                gl_func_00034458_6126C(out, (char *)&D_00000000 + 0x21E08);
+                out += 0xA;
+            }
+    }
+    return out;
+}
+
+extern int gl_func_00000000();
+int gl_func_00061458() {
+    return gl_func_00000000();
+}
 
 void gl_func_00061478(u8 *fmt, ...) {
     char *args;

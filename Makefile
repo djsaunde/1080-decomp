@@ -5812,8 +5812,6 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gl_func_000614
 build/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/match_imports/gl_func_00061478.c.o: src/match_imports/original_context/game_libs_func_000610F4.s src/match_imports/original_context/game_libs_func_0006110C.s src/match_imports/original_context/game_libs_func_000611E4.s src/match_imports/original_context/gl_func_0006126C.s src/match_imports/original_context/gl_func_00061458.s
-build/non_matching/src/match_imports/gl_func_00061478.c.o: src/match_imports/original_context/game_libs_func_000610F4.s src/match_imports/original_context/game_libs_func_0006110C.s src/match_imports/original_context/game_libs_func_000611E4.s src/match_imports/original_context/gl_func_0006126C.s src/match_imports/original_context/gl_func_00061458.s
 build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf
 build/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/gl_func_00066264.c.o.linked.elf.bound.elf

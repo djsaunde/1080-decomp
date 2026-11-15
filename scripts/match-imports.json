@@ -8857,8 +8857,8 @@
       "size": 660,
       "native_normal": "build/src/match_imports/gl_func_00061478.c.o",
       "native_nm": "build/non_matching/src/match_imports/gl_func_00061478.c.o",
-      "kind": "original five-function ASM context and unchanged C target",
-      "source_sha256": "cee2fb622d9f3033e8ef67d76cffc5a063d2128c3e49a9b3896695edfd00cbd9",
+      "kind": "original-context C (host-identical preceding functions) and unchanged C target",
+      "source_sha256": "d36e312712226e4878d89fa7cc3552a9278426e281a87301e32caa5c350cf164",
       "local_episode_sha256": "7864cfd08c282a901b8aa7349498b5e7de37bcca4da24dcf8af6a19808a3a237",
       "linked_normal": "build/src/match_imports/gl_func_00061478.c.o.linked.elf",
       "linked_nm": "build/non_matching/src/match_imports/gl_func_00061478.c.o.linked.elf",
@@ -17117,13 +17117,7 @@
     "objdiff.json": "168c361a4e994d1103b42f55d89f9e3da901f851d70facc10f11ecf78e24a5bb",
     "tenshoe.ld": "e4d4999d289f2d890e851e186d3dc8e0c3740a573e6c8b1236a5dcf8d314ec42"
   },
-  "additional_original_compiler_context": {
-    "src/match_imports/original_context/game_libs_func_000610F4.s": "d0e50e6226967d85282561628fdbecac85d68aa5ddb5d2305fe4f6aff4d79c0d",
-    "src/match_imports/original_context/game_libs_func_0006110C.s": "8bf334b73a9facb1926325b1734553d4eb2dfc1b5f5e7b0e54ae80f93cd9086e",
-    "src/match_imports/original_context/game_libs_func_000611E4.s": "21b13c3be85cf21412c15e27bb7667fa5e04fced3104c623c8f675c28aa4804e",
-    "src/match_imports/original_context/gl_func_0006126C.s": "b476146f60b0a2f0deb34ad64bf12b5b0b94feb0780a5bcc66b17a08b7e5c87e",
-    "src/match_imports/original_context/gl_func_00061458.s": "181294fb0b1142df5fbddddb1e1bb8814b226f0c2d311eeed40287ad35ae183a"
-  },
+  "additional_original_compiler_context": {},
   "source_generated_data_proof": [
     {
       "function": "func_0000D900",

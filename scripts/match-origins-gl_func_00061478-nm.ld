@@ -14,3 +14,6 @@ D_6170C_arr = 0x0;
 D_6170C_idx = 0x0;
 gl_ref_00034240 = 0x0;
 gl_ref_00034810 = 0x0;
+/* callees of the C context functions (never linked into the ROM) */
+gl_func_00000000 = 0x0;
+gl_func_00034458_6126C = 0x0;

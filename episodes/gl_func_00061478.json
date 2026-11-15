@@ -490,7 +490,7 @@
     "source_path": "src/game_libs/game_libs_post0b.c",
     "source_sha256": "5cf925571db499cde57504d2c4773f9da448b35f8e0796ac786e63fa3eb68241",
     "implementation_path": "src/match_imports/gl_func_00061478.c",
-    "implementation_sha256": "cee2fb622d9f3033e8ef67d76cffc5a063d2128c3e49a9b3896695edfd00cbd9",
+    "implementation_sha256": "d36e312712226e4878d89fa7cc3552a9278426e281a87301e32caa5c350cf164",
     "native_call_proof": {
       "calls": [
         {
