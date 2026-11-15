@@ -2158,7 +2158,7 @@ void RaceTracker_reset(RaceTracker *self) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void RaceTracker_func_0000CA30(RaceTracker *arg0, s32 arg1, s32 arg2) {
+void RaceTracker_addEntry(RaceTracker *arg0, s32 arg1, s32 arg2) {
     arg0->entries[arg0->numEntries].rider = arg1;
     arg0->entries[arg0->numEntries].flags = arg2;
     arg0->entries[arg0->numEntries].unk10 = 0.0f;
@@ -2181,7 +2181,7 @@ void RaceTracker_func_0000CA30(RaceTracker *arg0, s32 arg1, s32 arg2) {
  * dup-in-delay shape; decl-order i-before-count colors i=v0/count=v1; the dead
  * empty if (a1) {} is an emission-free priority boost that lets the key keep
  * its a1 home so the cursor colors a2 (no move a2,a1). */
-void *RaceTracker_func_0000CB58(RaceTracker *a0, int a1) {
+void *RaceTracker_findEntry(RaceTracker *a0, int a1) {
     int i = 0;
     int count = a0->numEntries;
     int *p;
@@ -2476,7 +2476,7 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
 #undef CE38_E
 #undef CE38_D
 
-void RaceTracker_func_0000D090(RaceTracker *a0) {
+void RaceTracker_flagReplayEnd_0000D090(RaceTracker *a0) {
     if (a0->entries->finished != 0) {
         if ((unsigned int)*(int *)((char *)&D_00000000 + 0x170) < (unsigned int)*(int *)((char *)&D_00000000 + 0x164) - 1) {
             *(int *)((char *)&D_00000000 + 0x184) = 1;
@@ -2552,7 +2552,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_findGates);
 #endif
 
 #ifdef NON_MATCHING
-/* RaceTracker_func_0000D288: 36-insn unlink-and-dispatch (0x90, frame 0x20).
+/* RaceTracker_passCheckpoints: 36-insn unlink-and-dispatch (0x90, frame 0x20).
  *   child = self->[0x44]->[0x4C]; if (!child) return;
  *   if (!(child->f64 <= self->[0x44]->fC)) return;      c.le.s f6,f4 + bc1fl
  *   self->[0x44]->[0x4C] = child->[0x84];                unlink
@@ -2581,7 +2581,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_findGates);
  * (`c2 = child` before/after the call), while(0) dead appearances (move
  * next to v0 but child stays a2), `&child` (child memory-resident: wrong).
  */
-void RaceTracker_func_0000D288(int *self) {
+void RaceTracker_passCheckpoints(int *self) {
     int *child;
     int *next;
     int *o;
@@ -2604,10 +2604,10 @@ void RaceTracker_func_0000D288(int *self) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_func_0000D288);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_passCheckpoints);
 #endif
 
-/* RaceTracker_vslot11_0000D318: 64-insn (0x100) conditional sub-object builder + color init.
+/* RaceTracker_onCheckpoint: 64-insn (0x100) conditional sub-object builder + color init.
  * Fresh hand-decode 2026-05-28 (raw-.word USO, m2c can't parse).
  *
  * Structure (asm 0xD318-0xD414):
@@ -2653,7 +2653,7 @@ extern int gl_func_00000000();
  * DIRECT `jal` -- avoids both K&R float->double promotion AND the fn-ptr-cast
  * `jalr $t9`. Per docs/IDO_CODEGEN.md#feedback-ido-knr-float-call verified workaround. */
 extern int gl_proto_D318(void*, int, int, float, float);
-void RaceTracker_vslot11_0000D318(RaceTracker *a0, int *a1) {
+void RaceTracker_onCheckpoint(RaceTracker *a0, int *a1) {
     int *obj;
     float denom;
 
@@ -2674,7 +2674,7 @@ void RaceTracker_vslot11_0000D318(RaceTracker *a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-void RaceTracker_func_0000D418(int *arg0) {
+void RaceTracker_passGates(int *arg0) {
     int *e;
     int *mgr = (int *)arg0[0x44 / 4];
     int *cur = (int *)mgr[0x54 / 4];
@@ -2742,7 +2742,7 @@ void RaceTracker_func_0000D418(int *arg0) {
  *    leaves e's last use at the a0-slot -> a2 forbidden -> e lands a3 (+4 words).
  * Callees left as the standard gl_func_00000000 placeholder (jal 0). */
 
-/* RaceTracker_func_0000D548: sub-object spawn pair (sibling of D6E8 / D9E4). EXACT 86/86
+/* RaceTracker_onGateCleared: sub-object spawn pair (sibling of D6E8 / D9E4). EXACT 86/86
  * (2026-10-14 agent-g). Levers:
  * - The a4 bump is written on the FIELD with the call arg re-read from it:
  *   `if (o->a4 < 500) o->a4 += 100; g(o->6c, o->a4, 0, 1)`. uopt forwards the
@@ -2760,7 +2760,7 @@ void RaceTracker_func_0000D418(int *arg0) {
  * - The h() call needs a prototyped (int*, int, int, float, float) blank
  *   alias: a3 = mfc1 1.0f, 5th arg swc1 at 0x10(sp). */
 extern void gl_func_00000000_d548f(int *, int, int, float, float);
-void RaceTracker_func_0000D548(RaceTracker *o, int a1) {
+void RaceTracker_onGateCleared(RaceTracker *o, int a1) {
     int *obj;
     float r, g, b;
     if (o->pointsList == 0 || (o->hudFlags & 4) == 0) return;
@@ -2794,14 +2794,14 @@ void RaceTracker_func_0000D548(RaceTracker *o, int a1) {
 
 extern int gl_func_00000000();
 
-void RaceTracker_func_0000D6A0(RaceTracker *a0, int a1) {
+void RaceTracker_onGateMissed(RaceTracker *a0, int a1) {
     if ((a0->hudFlags & 4) != 0) {
         gl_func_00000000(0x2F, a0);
         a0->bonus = 0;
     }
 }
 
-/* RaceTracker_func_0000D6E8: build+init a sub-object (cb(node, a1, 0, 1) -> obj,
+/* RaceTracker_popComboBonus: build+init a sub-object (cb(node, a1, 0, 1) -> obj,
  * then obj->f44 += 70, f5C = 70, fA4/A8/AC = 0, colour f64..f70 =
  * {250,219,68,255}/255, i9C = 30, iA0 = o->6C + 0x138). EXACT 52/52
  * (2026-10-14 agent-g; was NM 78.5).
@@ -2816,7 +2816,7 @@ void RaceTracker_func_0000D6A0(RaceTracker *a0, int a1) {
  * 0x9C = 30 store so the constant takes ring t3 after the o->6C reload.
  * docs/IDO_CODEGEN.md#double-literal-defeats-fp-const-cse-d6e8 */
 extern int gl_func_00000000();
-void RaceTracker_func_0000D6E8(RaceTracker *o, int a1) {
+void RaceTracker_popComboBonus(RaceTracker *o, int a1) {
     float r, g, b, a;
     int node = o->pointsList;
     int *obj;
@@ -2839,7 +2839,7 @@ void RaceTracker_func_0000D6E8(RaceTracker *o, int a1) {
     *(int *)((char *)obj + 0x9C) = 30;
 }
 
-/* RaceTracker_func_0000D7B8: gated initializer. Guarded by arg0->0x6C != 0 && (arg0->0xB4
+/* RaceTracker_popTrickPointsCombo: gated initializer. Guarded by arg0->0x6C != 0 && (arg0->0xB4
  * & 2): calls cb(0x27, arg1+arg2), then cb2(arg0->0x6C, arg1, 0, 1) -> v0; writes
  * float fields (70.0f, three 0.0f, and the 250/235/100/255-over-255 ratios via
  * runtime div.s, variable divisor `float denom = 255.0f`), arg0->0x6C+0x108 then
@@ -2857,7 +2857,7 @@ void RaceTracker_func_0000D6E8(RaceTracker *o, int a1) {
  * store (source order = ring order; the scheduler then hoists the `addiu t1,14`). */
 extern int gl_func_00000000();
 extern int gl_proto_d7b8(void *, float, float);
-void RaceTracker_func_0000D7B8(RaceTracker *arg0, int arg1, int arg2) {
+void RaceTracker_popTrickPointsCombo(RaceTracker *arg0, int arg1, int arg2) {
     char *v0;
     int a3;
     float denom;
@@ -2886,7 +2886,7 @@ void RaceTracker_func_0000D7B8(RaceTracker *arg0, int arg1, int arg2) {
     }
 }
 
-/* RaceTracker_func_0000D8E0: simpler 2-arg sibling of RaceTracker_func_0000D7B8. Gated by arg0->0x6C
+/* RaceTracker_popTrickPoints: simpler 2-arg sibling of RaceTracker_popTrickPointsCombo. Gated by arg0->0x6C
  * != 0 && (arg0->0xB4 & 2): cb(0x22), cb2(arg0->0x6C, arg1, 0, 0) -> v0; writes
  * 70.0f + the four x/255 color ratios (250/235/100/255-over-255) via runtime div.s
  * (variable divisor `float denom=255.0f`). Trailing gate arg0->0x6C != 0 &&
@@ -2897,7 +2897,7 @@ void RaceTracker_func_0000D7B8(RaceTracker *arg0, int arg1, int arg2) {
  * the numerator spelled as the CAST class `(float)255` is a distinct pseudo from
  * the `255.0f` literal denom, so it gets its own lui/mtc1 (ring $f6). */
 extern int gl_func_00000000();
-void RaceTracker_func_0000D8E0(RaceTracker *arg0, int arg1) {
+void RaceTracker_popTrickPoints(RaceTracker *arg0, int arg1) {
     int a2;
     char *v0;
     float denom;
@@ -2919,27 +2919,27 @@ void RaceTracker_func_0000D8E0(RaceTracker *arg0, int arg1) {
     }
 }
 
-/* RaceTracker_func_0000D9B8: CRACKED 2026-06-11 (wave 2, 100.0; was "no C-reachable
+/* RaceTracker_showTrickName: CRACKED 2026-06-11 (wave 2, 100.0; was "no C-reachable
  * fix" 98.64 a1-vs-a3 rename cap). The $a3 temp means $a1/$a2 are LIVE at
  * the load: the original is a 3-arg fn passing a1/a2 THROUGH to the callee
  * (`gl(p, a1, a2)`). Pass-through args occupy a1/a2 (no unused-arg spills,
  * unlike unused named params) -> p colors a3. Recognition: a mid-arg-reg
  * temp ($a3) in a tiny wrapper = hidden pass-through arity. */
 extern int gl_func_00000000();
-void RaceTracker_func_0000D9B8(int *a0, int a1, int a2) {
+void RaceTracker_showTrickName(int *a0, int a1, int a2) {
     int *p = (int*)a0[0x1B];
     if (p != 0) gl_func_00000000(p, a1, a2);
 }
 
 
-/* RaceTracker_func_0000D9E4: 0x150 (84 insns), 0x30-byte frame. Sub-object spawn
+/* RaceTracker_popFinalScore: 0x150 (84 insns), 0x30-byte frame. Sub-object spawn
  * (sibling of D548 / D6E8): when a0->0x6C is set, flag bit 2 is on and the
  * global at D+0x64 is non-null, create a child via the USO placeholder and
  * initialise its colour/scale fields; then fire the bit-1 callback.
  * Unwrapped 2026-10-16 (agent-g): the NM body was word-identical to the target;
  * the second call goes through the blank alias gl_func_00000000_d9e4b (pinned 0). */
 extern void gl_func_00000000_d9e4b(int *, int, int, float, float);
-void RaceTracker_func_0000D9E4(RaceTracker *a0, int a1) {
+void RaceTracker_popFinalScore(RaceTracker *a0, int a1) {
     int *v0;
     int *sub;
     f32 num100;
@@ -2972,7 +2972,7 @@ void RaceTracker_func_0000D9E4(RaceTracker *a0, int a1) {
     }
 }
 
-void RaceTracker_func_0000DB34(int a0, int a1, int a2) {
+void RaceTracker_sendEndingMsg(int a0, int a1, int a2) {
     char pad1[4];
     int *v0 = *(int**)((char*)&D_00000000 + 0x28);
     int local = 0x3ED;
@@ -2981,7 +2981,7 @@ void RaceTracker_func_0000DB34(int a0, int a1, int a2) {
         *(short*)((char*)v0 + 0x30) + (int)&D_00000000, &local);
 }
 
-/* RaceTracker_func_0000DB80: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
+/* RaceTracker_sendWinResult: paired vtable dispatch with a mode gate, BYTE-EXACT 68/68
  * (2026-10-14 agent-g). Same entry/method shape as the matched twins DC90 /
  * DD44 below: entry = self->0x44[idx*0x60]; q = entry->0x28; method q->0x2C
  * called with ((short)q->0x28 + entry, &msgcode). First the own entry with
@@ -2996,7 +2996,7 @@ void RaceTracker_func_0000DB34(int a0, int a1, int a2) {
  *  - the empty `if (v0) {}` after the FIRST arm's q load flips the
  *    entry/q colouring of all three dispatches to v1/v0 (DC90/DD44 nudge; on
  *    the else arm or on the first dispatch it is inert or worse). */
-void RaceTracker_func_0000DB80(RaceTracker *self, int idx) {
+void RaceTracker_sendWinResult(RaceTracker *self, int idx) {
     int pad_a[2]; int l0 = 1000; int pad_b[2];
     char *v1, *v0;
     v1 = (char *)self->entries[idx].rider;
@@ -3019,12 +3019,12 @@ void RaceTracker_func_0000DB80(RaceTracker *self, int idx) {
     }
 }
 
-/* RaceTracker_func_0000DC90: vtable-dispatch on indexed 96-byte entry + pair-toggle (0xB4, frame 0x40).
+/* RaceTracker_sendLoseResult: vtable-dispatch on indexed 96-byte entry + pair-toggle (0xB4, frame 0x40).
  * MATCHED (2026-07-14, decomp-permuter --stack-diffs): decl order pins the two
  * by-ref locals in the -0x40 frame. sp34 (msgcode 1001) is declared early to
  * seat at 0x34; sp1C (msgcode 1000) sits between the v0/v1 pointer decls so IDO
  * packs it at 0x1C. pad_a/pad_b/pad_c and the empty `if (v0){}` regalloc nudge
- * were carried over from the twin RaceTracker_func_0000DD44; the sp1C decl-slot move was
+ * were carried over from the twin RaceTracker_sendDrawResult; the sp1C decl-slot move was
  * the last-2-word residual the permuter's decl-reorder pass cracked.
  *
  * self->unk44 = base of idx*0x60 entry array; entry[0] -> obj; obj->unk28 ->
@@ -3032,7 +3032,7 @@ void RaceTracker_func_0000DB80(RaceTracker *self, int idx) {
  * method((char*)obj + adj, &msgcode, self) with msgcode 1001, then if
  * self->unk48 == 2 the partner entry (idx^1) with msgcode 1000.
  */
-void RaceTracker_func_0000DC90(RaceTracker *self, int idx) {
+void RaceTracker_sendLoseResult(RaceTracker *self, int idx) {
     int pad_a[2]; int sp34 = 1001; int pad_b[3]; int pad_c[1];
     char *v0; int sp1C; char *v1;
     v1 = (char *)self->entries[idx].rider;
@@ -3047,7 +3047,7 @@ void RaceTracker_func_0000DC90(RaceTracker *self, int idx) {
     }
 }
 
-/* Doubled DE30-family vtable dispatcher (sibling of RaceTracker_func_0000DDE0/DE30/DE80/
+/* Doubled DE30-family vtable dispatcher (sibling of RaceTracker_sendRetireResult/DE30/DE80/
  * DED0): runs the same {entry = a0->0x44[idx*0x60]; q = entry->0x28;
  * (*(fn)q->0x2C)((short)q->0x28 + entry, &scratch);} dispatch twice, for idx=a1
  * then idx=a1^1 (a pair/toggle), each with a stack scratch int preloaded to 1001.
@@ -3055,7 +3055,7 @@ void RaceTracker_func_0000DC90(RaceTracker *self, int idx) {
  * frame; deferring l2's assignment defers its li+sw past the first call; the empty
  * if(v0){} on the 2nd dispatch is the regalloc nudge (permuter-found) that gives
  * entry->v1 / q->v0 like the target. */
-void RaceTracker_func_0000DD44(RaceTracker *a0, int a1) {
+void RaceTracker_sendDrawResult(RaceTracker *a0, int a1) {
     int pad_top[2]; int l1 = 1001; int between[2]; int l2; int pad_bot[2];
     char *v0, *v1;
     v1 = (char *)a0->entries[a1].rider;
@@ -3068,13 +3068,13 @@ void RaceTracker_func_0000DD44(RaceTracker *a0, int a1) {
     (*(void (**)(char *, int *))(v0 + 0x2C))((char *)((int)*(short *)(v0 + 0x28) + (int)v1), &l2);
 }
 
-/* 20-insn indirect dispatcher (sibling of RaceTracker_func_0000DE30/DE80/DED0/0003CB2C).
+/* 20-insn indirect dispatcher (sibling of RaceTracker_sendTimeUpResult/DE80/DED0/0003CB2C).
  * Same shape as DE30 form (inlined dispatch + pad_top[2]/pad_bot[4] frame
  * sizing), local = 0x3EA. INSN_PATCH on the same 4 reg-rename insns at
  * 0x24/0x2C/0x34/0x3C makes build/.o byte-equal to expected/.o post-cc. */
-/* 20-insn indirect dispatcher (sibling of DE30/DE80/DED0). See RaceTracker_func_0000DE30
+/* 20-insn indirect dispatcher (sibling of DE30/DE80/DED0). See RaceTracker_sendTimeUpResult
  * for the fptr-from-q[0x2C] data flow + the alloc-nudge (empty if + hoist). */
-void RaceTracker_func_0000DDE0(int **a0, int a1) {
+void RaceTracker_sendRetireResult(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EA;
     int pad_bot[2];
@@ -3086,7 +3086,7 @@ void RaceTracker_func_0000DDE0(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* 20-insn indirect dispatcher (sibling of RaceTracker_func_0000DDE0/0003CB2C).
+/* 20-insn indirect dispatcher (sibling of RaceTracker_sendRetireResult/0003CB2C).
  * 16/20 insns match from C emit; remaining 4-insn diff is a register-shift
  * (v0/t0/t1 ↔ v1/v0/t0) that no C-level lever inside this function
  * reproduces. INSN_PATCH on the 4 reg-shift insns @0x24/0x2C/0x34/0x3C
@@ -3095,7 +3095,7 @@ void RaceTracker_func_0000DDE0(int **a0, int a1) {
  * fptr = q[0x2C]; fptr((short)(q+0x28) + p, &local). The empty `if (q)`
  * + hoisted short-address are register-allocation nudges (permuter-found)
  * that put p in $v1 / q in $v0 to match; both are semantically transparent. */
-void RaceTracker_func_0000DE30(int **a0, int a1) {
+void RaceTracker_sendTimeUpResult(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EB;
     int pad_bot[2];
@@ -3107,14 +3107,14 @@ void RaceTracker_func_0000DE30(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* Sibling of RaceTracker_func_0000DDE0/0000DE30/0003CB2C (20-insn indirect dispatcher).
+/* Sibling of RaceTracker_sendRetireResult/0000DE30/0003CB2C (20-insn indirect dispatcher).
  * local = 0x3EC; otherwise byte-identical to DE30. Same INSN_PATCH recipe:
  * the 4 reg-rename diffs at offsets 0x24/0x2C/0x34/0x3C are post-cc patched
  * to match expected. (The 0x30 word coincidentally byte-matches due to
  * register-rename + same instruction word; runtime semantics flip when the
  * patched 0x2C insn redefines $v0 = p[0x28] before 0x30 reads it.) */
-/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DED0). See RaceTracker_func_0000DE30. */
-void RaceTracker_func_0000DE80(int **a0, int a1) {
+/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DED0). See RaceTracker_sendTimeUpResult. */
+void RaceTracker_sendResult5_0000DE80(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3EC;
     int pad_bot[2];
@@ -3126,13 +3126,13 @@ void RaceTracker_func_0000DE80(int **a0, int a1) {
     ((void(*)(int, int*))q[0x2C/4])(*(short*)off28 + (int)p, &local);
 }
 
-/* Sibling of RaceTracker_func_0000DDE0/DE30/DE80/0003CB2C (20-insn indirect dispatcher).
+/* Sibling of RaceTracker_sendRetireResult/DE30/DE80/0003CB2C (20-insn indirect dispatcher).
  * local = 0x3E9; otherwise byte-identical to DE30/DE80. Same INSN_PATCH recipe:
  * 4 reg-rename diffs at offsets 0x24/0x2C/0x34/0x3C are post-cc patched to
  * match expected. (See DE80 for the byte-identical-bytes-different-semantics
  * mechanism at offset 0x30.) */
-/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DE80). See RaceTracker_func_0000DE30. */
-void RaceTracker_func_0000DED0(int **a0, int a1) {
+/* 20-insn indirect dispatcher (sibling of DDE0/DE30/DE80). See RaceTracker_sendTimeUpResult. */
+void RaceTracker_sendEntryLoseResult(int **a0, int a1) {
     int pad_top[2];
     int local = 0x3E9;
     int pad_bot[2];
@@ -3146,7 +3146,7 @@ void RaceTracker_func_0000DED0(int **a0, int a1) {
 
 int gl_func_0000DF20_inner(int a0, int a1);
 
-void RaceTracker_func_0000DF20(int a0, int a1, float a2) {
+void RaceTracker_setEntrySpeed(int a0, int a1, float a2) {
     int rv = gl_func_0000DF20_inner(a0, a1);
     if (rv != 0) {
         *(float*)(rv + 0x10) = a2;
@@ -3155,7 +3155,7 @@ void RaceTracker_func_0000DF20(int a0, int a1, float a2) {
 
 extern int gl_func_00000000();
 
-void RaceTracker_func_0000DF4C(int a0, int a1, int a2) {
+void RaceTracker_setEntryHealth(int a0, int a1, int a2) {
     int *r = (int*)gl_func_00000000(a0, a1, a2);
     if (r == 0) return;
     if ((r[1] & 1) == 0) return;
@@ -3164,7 +3164,7 @@ void RaceTracker_func_0000DF4C(int a0, int a1, int a2) {
 
 extern int gl_func_00000000();
 
-void RaceTracker_func_0000DF8C(int a0, int a1, float a2, float a3) {
+void RaceTracker_setEntryXZ(int a0, int a1, float a2, float a3) {
     float *r = (float*)gl_func_00000000(a0, a1);
     if (r != 0) {
         r[2] = a2;
@@ -3172,7 +3172,7 @@ void RaceTracker_func_0000DF8C(int a0, int a1, float a2, float a3) {
     }
 }
 
-/* RaceTracker_func_0000DFC4: 32-insn 3-arg lookup+gate+accumulate (0x80, frame 0x18).
+/* RaceTracker_addTrickPoints: 32-insn 3-arg lookup+gate+accumulate (0x80, frame 0x18).
  * MATCH: the v0[0x1C]==0 guard (was decoded != 0) emits bnel, matching the asm
  * (store v0[0x20]=0 when v0[0x1C]==0). Byte-exact.
  *
@@ -3193,7 +3193,7 @@ void RaceTracker_func_0000DF8C(int a0, int a1, float a2, float a3) {
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
  * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path.
  */
-void RaceTracker_func_0000DFC4(RaceTracker *a0, int a1, int a2) {
+void RaceTracker_addTrickPoints(RaceTracker *a0, int a1, int a2) {
     int *v0 = (int*)gl_func_00000000(a0, a1, a2);
     if (v0 == 0) return;
     if ((v0[0x4 / 4] & 1) == 0) return;
@@ -3210,10 +3210,10 @@ void RaceTracker_func_0000DFC4(RaceTracker *a0, int a1, int a2) {
 /* 3-insn save-arg sentinel: sw a0,0(sp); jr ra; sw a1,4(sp).
  * Empty-body 2-arg function — args spilled to caller's arg-save slots.
  * Per docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body. */
-void RaceTracker_vslot12_0000E044(int a0, int a1) { (void)a0; (void)a1; }
-void RaceTracker_vslot13_0000E050(int a0, int a1) { (void)a0; (void)a1; }
+void RaceTracker_onTrickStart(int a0, int a1) { (void)a0; (void)a1; }
+void RaceTracker_onTrickEnd(int a0, int a1) { (void)a0; (void)a1; }
 
-/* RaceTracker_func_0000E05C: 47-insn 2-gate + flag-driven dispatch + vtable tail (0xBC, frame 0x28).
+/* RaceTracker_startTrick: 47-insn 2-gate + flag-driven dispatch + vtable tail (0xBC, frame 0x28).
  *
  *   v0 = func1(self); if (v0 == NULL) return; if ((v0->[0x4] & 1) == 0) return;
  *   a2_var = -1;
@@ -3234,7 +3234,7 @@ void RaceTracker_vslot13_0000E050(int a0, int a1) { (void)a0; (void)a1; }
  *  3. Vtable tail in the CDDC form (named `new_a0` pointer local, fn-ptr deref
  *     inline) gives the ring t9/t0 + `addu a0,t0,s0`; named fn/off locals colour
  *     a2/a3 and flip the addu. */
-void RaceTracker_func_0000E05C(RaceTracker *self, int a1, int a2) {
+void RaceTracker_startTrick(RaceTracker *self, int a1, int a2) {
     int *v0;
     int a2_var;
     int *vt;
@@ -3257,7 +3257,7 @@ void RaceTracker_func_0000E05C(RaceTracker *self, int a1, int a2) {
     (*(int(**)(int*, int))((char*)vt + 0x6C))(new_a0, a2);
 }
 
-/* RaceTracker_func_0000E118 — 49/49 EXACT (2026-07-03, agent-e w4).
+/* RaceTracker_endTrick — 49/49 EXACT (2026-07-03, agent-e w4).
  * Was documented "cap: IDO spuriously homes the UNUSED a1 placeholder param
  * (sw a1,0x2C); can't be suppressed". CRACKED with two levers:
  *  1. UNREFERENCED-param homing rule: IDO homes a param that has NO
@@ -3273,7 +3273,7 @@ void RaceTracker_func_0000E05C(RaceTracker *self, int a1, int a2) {
  *     into each arm.
  */
 extern int gl_func_00000000();
-void RaceTracker_func_0000E118(int a0, int a1, int a2, int a3) {
+void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
     int v0;
     if (a1) {}
     v0 = gl_func_00000000();
@@ -3295,7 +3295,7 @@ void RaceTracker_func_0000E118(int a0, int a1, int a2, int a3) {
     }
 }
 
-void RaceTracker_func_0000E1DC(RaceTracker *a0, int a1, int a2) {
+void RaceTracker_showComboBonus(RaceTracker *a0, int a1, int a2) {
     int *v = (int*)gl_func_00000000(a0, a1, a2);
     if (v == 0) return;
     if (!(v[1] & 1)) return;
@@ -3303,7 +3303,7 @@ void RaceTracker_func_0000E1DC(RaceTracker *a0, int a1, int a2) {
     gl_func_00000000(a0, a2);
 }
 
-/* RaceTracker_func_0000E230: BYTE-EXACT (2026-05-30). 29-insn count-loop calling func
+/* RaceTracker_endAllTricks: BYTE-EXACT (2026-05-30). 29-insn count-loop calling func
  * per element: for each i (0..a0->0x48), call func(a0, *(a0->0x44 + i*0x60), 1, 0).
  * Was a documented 98.45% s1/s2 reg-swap cap (a0 vs offset swapped). CRACKED via
  * the UCODE-encounter-order lever: the target's `blez` guard reads a0->0x48 and
@@ -3313,7 +3313,7 @@ void RaceTracker_func_0000E1DC(RaceTracker *a0, int a1, int a2) {
  * (guard references a0 first) flips the coloring to match. See
  * docs/IDO_CODEGEN.md "Promoted loop-invariants ... UCODE-encounter order". */
 extern int func_00000000();
-void RaceTracker_func_0000E230(RaceTracker *a0) {
+void RaceTracker_endAllTricks(RaceTracker *a0) {
     int i = 0;
     if (a0->numEntries > 0) {
         int offset = 0;
@@ -3342,7 +3342,7 @@ void hud_releaseGadgets(Hud *o) {
     if (o->cool) gl_func_00000000(o->cool);
 }
 
-/* RaceTracker_func_0000E368: 42-insn gated flag toggle. Returns early unless bit 16 of
+/* RaceTracker_toggleGhost: 42-insn gated flag toggle. Returns early unless bit 16 of
  * (a0->0x50)->0x4F0 is set, a0->0x48 == 2, and the callback succeeds; then
  * toggles a0->0xB0 between 0/1 and clears/sets bit 2 of a0->0x44->0x60->0x18.
  * EXACT 42/42 (2026-10-14, agent-g). The old 98.45 wrap's "v1 vs t2 read temp
@@ -3352,7 +3352,7 @@ void hud_releaseGadgets(Hud *o) {
  * of the named `t` candidate (v1). The old "reassign the base" spelling
  * (int t = v[6]; v += 6; *v = t | 4) only reproduced the advance shape.
  * docs/IDO_CODEGEN.md#e368-field-pointer-compound-rmw-ring-temp */
-void RaceTracker_func_0000E368(int a0) {
+void RaceTracker_toggleGhost(int a0) {
     if ((*(int *)(*(int *)((char *)a0 + 0x50) + 0x4F0) & 0x10000) == 0) {
         return;
     }

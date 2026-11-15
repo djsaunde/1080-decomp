@@ -157,14 +157,14 @@ typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 :
  * HUD gadgets (hud_add<X>Gadget, include/gdl/hud.h: Hud is this type). Each mode
  * derives a DataManager from it (TimDataManager etc., 0xE0). */
 typedef struct RaceEntry {
-    /* 0x00 */ s32 rider;               /* the rider Node (key of RaceTracker_func_0000CB58) */
+    /* 0x00 */ s32 rider;               /* the rider Node (key of RaceTracker_findEntry) */
     /* 0x04 */ s32 flags;               /* bit 0: active */
     /* 0x08 */ f32 unk08;
     /* 0x0C */ f32 progress;            /* course coordinate; -6553600 before the first gate */
     /* 0x10 */ f32 unk10;
     /* 0x14 */ s32 time;
     /* 0x18 */ s32 unk18;
-    /* 0x1C */ s32 pendingPoints;       /* accumulated, flushed by RaceTracker_func_0000E118 */
+    /* 0x1C */ s32 pendingPoints;       /* accumulated, flushed by RaceTracker_endTrick */
     /* 0x20 */ s32 unk20;
     /* 0x24 */ s32 pending;             /* 1 while pendingPoints is unflushed */
     /* 0x28 */ s32 unk28;               /* 50 on add */

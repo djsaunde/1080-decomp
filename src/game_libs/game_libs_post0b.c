@@ -6161,7 +6161,7 @@ void coll_func_0003CB00(int *a0, int a1, int a2, short a3) {
     a0[4] = 0;
 }
 
-/* 16-insn indirect dispatcher. Sibling of RaceTracker_func_0000DE30/DE80/DED0
+/* 16-insn indirect dispatcher. Sibling of RaceTracker_sendTimeUpResult/DE80/DED0
  * (same `*p->[0x2C](*p->[0x28]+0x28+(int)p, &local)` shape; this variant
  * reads `lw v1, 0(a0)` directly instead of vtable+96*idx). NATURAL CEILING:
  * frame -0x40 (target) vs IDO -O2's natural -0x28 + reg-rename ($v1=p,
@@ -9217,7 +9217,7 @@ s32 *QNode_ctor(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3, s32 arg4) {
  * swc1 cluster: build emits B4->B8->BC; target uses B8->B4-via-addiu->BC
  * (pure load/store order swap + matching fpu-reg renames). Was previously
  * documented as INSN_PATCH-promotable (same recipe family as
- * Window_forEach_0004ED0C / RaceTracker_func_0000E230); INSN_PATCH REMOVED 2026-05-23
+ * Window_forEach_0004ED0C / RaceTracker_endAllTricks); INSN_PATCH REMOVED 2026-05-23
  * as match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int gl_func_00000000();

@@ -969,13 +969,13 @@ build/non_matching/src/game_libs/game_libs_tail.c.o: NON_MATCHING_SUFFIX_BYTES_F
 # the nop as baserom alignment (_pad.s).
 # tail clip 0x5568 -> 0x5570 (2026-10-14 agent-g): Backup_func_0000ABBC real def is 64w vs its
 # old 62w NM body; EBC8 NM offset 0x5538 -> 0x5540, clip = offset + 0x30.
-# tail clip 0x555c -> 0x5568 (2026-10-14 agent-g): RaceTracker_func_0000DB80 real def is 68w vs its
+# tail clip 0x555c -> 0x5568 (2026-10-14 agent-g): RaceTracker_sendWinResult real def is 68w vs its
 # old 65w NM body; EBC8 NM offset 0x552c -> 0x5538, clip = offset + 0x30.
 # tail clip 0x5564 -> 0x555c (2026-10-14 agent-g): Backup_func_0000C49C real def is 21w vs its
 # old 23w NM body; EBC8 NM offset 0x5534 -> 0x552c, clip = offset + 0x30.
-# tail clip 0x5570 -> 0x557c (2026-10-14 agent-g): RaceTracker_func_0000D6E8 real def is 52w vs its
+# tail clip 0x5570 -> 0x557c (2026-10-14 agent-g): RaceTracker_popComboBonus real def is 52w vs its
 # old NM body (3 words shorter in-tree); EBC8 NM offset 0x5540 -> 0x554c, clip = offset + 0x30.
-# tail clip 0x557c -> 0x5578 (2026-10-14 agent-g): RaceTracker_func_0000D548 real def is 86w vs its
+# tail clip 0x557c -> 0x5578 (2026-10-14 agent-g): RaceTracker_onGateCleared real def is 86w vs its
 # old NM body (1 word longer in-tree); EBC8 NM offset 0x554c -> 0x5548, clip = offset + 0x30.
 # tail clip 0x5570 -> 0x5628 (2026-10-15 agent-g): Backup_func_0000B958 NM body is now the 69w
 # unrolled form (was a 24w plain loop); EBC8 NM offset 0x5540 -> 0x55f8, clip = offset + 0x30.
@@ -3834,10 +3834,10 @@ build/src/match_imports/RaceTracker_findGates.c.o: src/match_imports/RaceTracker
 build/non_matching/src/match_imports/RaceTracker_findGates.c.o: src/match_imports/RaceTracker_findGates.c src/match_imports/context_game_libs_tail.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/RaceTracker_func_0000D288.c.o: src/match_imports/RaceTracker_func_0000D288.c src/match_imports/context_game_libs_tail.h
+build/src/match_imports/RaceTracker_passCheckpoints.c.o: src/match_imports/RaceTracker_passCheckpoints.c src/match_imports/context_game_libs_tail.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o: src/match_imports/RaceTracker_func_0000D288.c src/match_imports/context_game_libs_tail.h
+build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o: src/match_imports/RaceTracker_passCheckpoints.c src/match_imports/context_game_libs_tail.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c src/match_imports/context_game_libs_post.h
@@ -4408,12 +4408,12 @@ build/src/match_imports/RaceTracker_findGates.c.o.linked.elf: build/src/match_im
 build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf: build/non_matching/src/match_imports/RaceTracker_findGates.c.o scripts/match-origins-RaceTracker_findGates-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_findGates-nm.ld -e RaceTracker_findGates -o $@ $@.stripped.o
-build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf: build/src/match_imports/RaceTracker_func_0000D288.c.o scripts/match-origins-RaceTracker_func_0000D288.ld
+build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf: build/src/match_imports/RaceTracker_passCheckpoints.c.o scripts/match-origins-RaceTracker_passCheckpoints.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_func_0000D288.ld -e RaceTracker_func_0000D288 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf: build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o scripts/match-origins-RaceTracker_func_0000D288-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_passCheckpoints.ld -e RaceTracker_passCheckpoints -o $@ $@.stripped.o
+build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf: build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o scripts/match-origins-RaceTracker_passCheckpoints-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_func_0000D288-nm.ld -e RaceTracker_func_0000D288 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RaceTracker_passCheckpoints-nm.ld -e RaceTracker_passCheckpoints -o $@ $@.stripped.o
 build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o scripts/match-origins-AudioSeq_SeqChannelSetLayer.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-AudioSeq_SeqChannelSetLayer.ld -e AudioSeq_SeqChannelSetLayer -o $@ $@.stripped.o
@@ -4928,10 +4928,10 @@ build/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf: build/sr
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_findGates.json $@
 build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf scripts/match-bindings-RaceTracker_findGates-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_findGates-nm.json $@
-build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf: build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf scripts/match-bindings-RaceTracker_func_0000D288.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_func_0000D288.json $@
-build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf scripts/match-bindings-RaceTracker_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_func_0000D288-nm.json $@
+build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf: build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf scripts/match-bindings-RaceTracker_passCheckpoints.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_passCheckpoints.json $@
+build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf scripts/match-bindings-RaceTracker_passCheckpoints-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RaceTracker_passCheckpoints-nm.json $@
 build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json $@
 build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf scripts/match-bindings-AudioSeq_SeqChannelSetLayer-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5306,10 +5306,10 @@ build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker
 build/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_findGates.c scripts/match-bindings-RaceTracker_findGates.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_findGates=build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_findGates.c scripts/match-bindings-RaceTracker_findGates-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_func_0000D288=build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_func_0000D288.c scripts/match-bindings-RaceTracker_func_0000D288.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_func_0000D288=build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_func_0000D288.c scripts/match-bindings-RaceTracker_func_0000D288-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_passCheckpoints=build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_passCheckpoints.c scripts/match-bindings-RaceTracker_passCheckpoints.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: private REPLACE_FUNC_BODY += RaceTracker_passCheckpoints=build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_tail.c.o: src/match_imports/RaceTracker_passCheckpoints.c scripts/match-bindings-RaceTracker_passCheckpoints-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqChannelSetLayer=build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/AudioSeq_SeqChannelSetLayer.c scripts/match-bindings-AudioSeq_SeqChannelSetLayer.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += AudioSeq_SeqChannelSetLayer=build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
@@ -5712,10 +5712,10 @@ build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/RaceTracker_find
 build/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/RaceTracker_findGates.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf
-build/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/RaceTracker_func_0000D288.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_tail.c.o: build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf
+build/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_tail.c.o: build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/RaceTracker_passCheckpoints.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
 build/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/AudioSeq_SeqChannelSetLayer.c.o.linked.elf.bound.elf
