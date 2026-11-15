@@ -1191,9 +1191,9 @@ D_000000A8 = 0x000000A8;
 gl_func_00000000_init601 = 0x00000000;  /* blank init call for the memtrack_end donor (game_libs_ido53_601D4.c) */
 gl_func_00000000_get601 = 0x00000000;  /* blank int-returning sampler for the memtrack_end donor */
 gl_func_00000000_print669 = 0x00000000;  /* blank print sink for the gl_func_000669B8 donor (game_libs_ido53_669AC.c) */
-gl_func_00000000_62a2c_get = 0x00000000;  /* blank getter import for the gl_func_00062A2C NCC donor (game_libs_ncc_62A2C.cpp) */
+gl_func_00000000_62a2c_get = 0x00000000;  /* blank getter import for the anim_blendPose NCC donor (game_libs_ncc_62A2C.cpp) */
 gl_func_00000000_i = 0x00000000;  /* blank int-returning import for NCC donors (gl_func_000393B8): a non-void declaration keeps v0 live after the call */
-gl_func_00000000_62a2c_lerp = 0x00000000;  /* blank lerp import for the gl_func_00062A2C NCC donor */
+gl_func_00000000_62a2c_lerp = 0x00000000;  /* blank lerp import for the anim_blendPose NCC donor */
 gl_func_00000000_ll = 0x00000000;  /* u64-returning (v0/v1) blank extern for gl_func_0006BAD4's time source */
 D_00041710 = 0x00041710;  /* gl_func_0006A304 fixup-object base: real USO-local symbol so the -O1 donor keeps the base in a reg/stack home (HI16/LO16 bake to lui 4/addiu 0x1710) */
 gl_func_00000000_va = 0x00000000;
@@ -4178,7 +4178,7 @@ D_5F534_deg2rad = 0x00002058;  /* math_perspectiveF pi/180 literal in RoData (+0
 gl_func_00000000_5eaa4 = 0x00000000;  /* (mtx, int axis, float angle, int flag) void blank for math_mtxRotateEuler */
 gl_func_00000000_5d474 = 0x00000000;  /* (quat *, quat *, quat *) void quat-multiply blank for math_quatRotateAxisAngle */
 D_5F0B8_dtor = 0x00002054;  /* math_rotateF pi/180 literal in RoData (+0x2054), pinned extern */
-D_62D70_scale = 0x00002094;  /* game_libs_func_00062D70 s16->float scale literal in RoData (+0x2094), pinned extern */
+D_62D70_scale = 0x00002094;  /* anim_unpackKey s16->float scale literal in RoData (+0x2094), pinned extern */
 D_sym_6264C = 0x00000000;  /* AnimDataMgr_ctor vtable/descriptor store (blank lui/addiu pair, distinct from the &D+0x220DC arg) */
 D_sym_6275C = 0x00000000;  /* gl_func_0006275C descriptor arg (blank lui/addiu pair) */
 D_61B30_h0 = 0x00000000;  /* gl_func_00061B30 blank lh source (+0x21C value) */
@@ -5598,8 +5598,8 @@ D_0001EC9C = 0x0001EC9C;
 gl_func_00034458_6126C = 0x00000000;
 gl_func_00038A28_rodata = 0x00001A1C;
 gl_func_00036F0C_rodata = 0x000019E8;
-/* game_libs_func_0004F2DC (agent-c run 307 exact NCC donor): -1e5 / 1e5 literals at USO RoData 0x1BA8 / 0x1BAC; blank-USO data refs with in-place addends */
-game_libs_func_0004F2DC_rodata = 0x00001BA8;
+/* gfx_screenRaycast (agent-c run 307 exact NCC donor): -1e5 / 1e5 literals at USO RoData 0x1BA8 / 0x1BAC; blank-USO data refs with in-place addends */
+gfx_screenRaycast_rodata = 0x00001BA8;
 D_4F2DC_b = 0x00000000;
 D_4F2DC_e = 0x00000000;
 /* game_createMap (bootup_uso_o2_6808.c donor): jumptable at func_0000057C+0x38, reloc-free base-0 globals, func_00000188+0x3C flag RMWs */

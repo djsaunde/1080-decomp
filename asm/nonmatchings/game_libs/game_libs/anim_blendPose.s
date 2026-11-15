@@ -1,6 +1,6 @@
-nonmatching gl_func_00062A2C, 0x344
+nonmatching anim_blendPose, 0x344
 
-glabel gl_func_00062A2C
+glabel anim_blendPose
     /* E47B04 00062A2C 27BDFF28 */  .word 0x27BDFF28
     /* E47B08 00062A30 AFBF001C */  .word 0xAFBF001C
     /* E47B0C 00062A34 AFB00018 */  .word 0xAFB00018
@@ -210,4 +210,4 @@ glabel gl_func_00062A2C
     /* E47E3C 00062D64 27BD00D8 */  .word 0x27BD00D8
     /* E47E40 00062D68 03E00008 */  .word 0x03E00008
     /* E47E44 00062D6C 00000000 */  .word 0x00000000
-endlabel gl_func_00062A2C
+endlabel anim_blendPose

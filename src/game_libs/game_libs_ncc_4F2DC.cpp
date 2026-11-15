@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for game_libs_func_0004F2DC (0x428 / 266 words), agent-g run 194.
+/* IDO 7.1 NCC (C++) NM-only comparison donor for gfx_screenRaycast (0x428 / 266 words), agent-g run 194.
  * Screen-point -> world raycast picker as C++ (kit CXLVI lead: the target re-reads the ray direction from memory
  * for the K* products = by-reference inline operators). The ray direction is built member by member, rotated
  * and normalised in place by two callees, then `d = dir` through a by-value operator= (the target's word copy
@@ -9,7 +9,7 @@
  * agent-c run 307: EXACT (named operator* result via set(), pads in operator+ and before p, no code-free test before
  * the getPos call). Spliced over a placeholder on both build paths. Blank-USO data refs carry in-place addends:
  * D_4F2DC_b / D_4F2DC_e = 0, D_00000000F = 0x128 (kvec), the donor .rodata (-1e5 / 1e5) renamed
- * game_libs_func_0004F2DC_rodata by the splice and pinned to the USO RoData at 0x1BA8. */
+ * gfx_screenRaycast_rodata by the splice and pinned to the USO RoData at 0x1BA8. */
 typedef float f32;
 extern "C" {
 int gl_func_00000000(...);
@@ -43,7 +43,7 @@ struct V3 { f32 x, y, z;
  * reads off the folded cam-relative addresses */
 struct M4 { f32 m[4][4]; void getPos(V3 &v) const { v.x = m[3][0]; if (1) {} v.y = m[3][1]; v.z = m[3][2]; } };
 struct Cam { char p[0x70]; M4 m; char pac[0xB4 - 0xB0]; char mtx[1]; };
-extern "C" int game_libs_func_0004F2DC(char *arg0, int x, int y, V3 *out) {
+extern "C" int gfx_screenRaycast(char *arg0, int x, int y, V3 *out) {
     /* agent-c run 280 (declaration-order grid, 120): count and padt FIRST -- dists / surfs / hits then sit at the
      * target's 376 / 344 / 248 (were 392 / 360 / 264); `count = 0;` must stay right after count's declaration (after
      * the V3 padt ctor it costs 4.7 points), 95.692 -> 95.714 */

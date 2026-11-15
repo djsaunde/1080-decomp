@@ -2209,7 +2209,7 @@ extern int D_00000000C;
 extern int D_00000000D;
 extern int D_00000000E;
 extern float D_00000000F[3];
-int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out);
+int gfx_screenRaycast(char *arg0, int x, int y, float *out);
 extern float gl_f704_magnitude_5bbcc(float);
 extern float gl_f704_sqrt_082880(float);
 int gl_func_0004F704(GL470E4Context *a0, int a1, register float px, float py, float pz, float *out, float margin);
@@ -2582,7 +2582,7 @@ extern float gl_func_00000000_5bccc342(float);
 void math_rotate2D(float angle, float *a1, float *a2);
 extern float gl_5BD80_length_root(float);
 float math_vec3Length(float *a0);
-void game_libs_func_0005BDC0(float *src, float *dst);
+void math_mtx4Recip(float *src, float *dst);
 extern float gl_func_00000000_5be20(float, float, float, float, float, float, float, float, float);
 void math_mtx4Adjugate(float *M, float *O);
 float math_mtx4Determinant(const float *M);
@@ -2627,8 +2627,8 @@ void math_quatMul(float *a0, float *a1, float *a2);
 typedef char *(*GP_0005D134)();
 void game_libs_func_0005D134(f32 *arg0, f32 arg1, f32 arg2, s32 arg3);
 typedef struct { float x, y, z, w; } Quat5D1F0;
-void game_libs_func_0005D1F0(Quat5D1F0 *q, float *m);
-void game_libs_func_0005D304(float *out, float ax, float ay, float az);
+void math_quatToMtx3(Quat5D1F0 *q, float *m);
+void math_eulerToQuat(float *out, float ax, float ay, float az);
 extern void gl_5D414_rotate(float,float *,float *);
 typedef struct {float x,y,z;} Vector5D414;
 void gl_func_0005D414(Vector5D414 *a0,float bx,float by,float bz);
@@ -2997,9 +2997,9 @@ struct Gl62A2CObject {
 extern void gl_62A2C_decode(Gl62A2CObject *, short *, Gl62A2CRecord *);
 extern void gl_62A2C_slerp(float *, float *, float, int);
 typedef union { float value; volatile float memory; unsigned int bits; } Gl62A2CFloatWord;
-void gl_func_00062A2C(Gl62A2CObject *self, short *record0, short *record1,
+void anim_blendPose(Gl62A2CObject *self, short *record0, short *record1,
                       float weight, int count, Gl62A2CFloatWord blend);
-void game_libs_func_00062D70(Gl62A2CObject *a0, short *a1, Gl62A2CRecord *a2);
+void anim_unpackKey(Gl62A2CObject *a0, short *a1, Gl62A2CRecord *a2);
 typedef struct Payload62E10 {
  s32 tag;
  u8 unknown04[8];

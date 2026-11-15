@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0005BDC0, 0x60
+nonmatching math_mtx4Recip, 0x60
 
-glabel game_libs_func_0005BDC0
+glabel math_mtx4Recip
     /* E40E98 0005BDC0 3C013F80 */  .word 0x3C013F80
     /* E40E9C 0005BDC4 00803025 */  .word 0x00803025
     /* E40EA0 0005BDC8 44810000 */  .word 0x44810000
@@ -25,4 +25,4 @@ glabel game_libs_func_0005BDC0
     /* E40EEC 0005BE14 E466FFFC */  .word 0xE466FFFC
     /* E40EF0 0005BE18 03E00008 */  .word 0x03E00008
     /* E40EF4 0005BE1C 00000000 */  .word 0x00000000
-endlabel game_libs_func_0005BDC0
+endlabel math_mtx4Recip

@@ -1,6 +1,6 @@
-nonmatching game_libs_func_00062D70, 0xA0
+nonmatching anim_unpackKey, 0xA0
 
-glabel game_libs_func_00062D70
+glabel anim_unpackKey
     /* E47E48 00062D70 AFA40000 */  .word 0xAFA40000
     /* E47E4C 00062D74 84AE0006 */  .word 0x84AE0006
     /* E47E50 00062D78 84AF0008 */  .word 0x84AF0008
@@ -41,4 +41,4 @@ glabel game_libs_func_00062D70
     /* E47EDC 00062E04 468042A0 */  .word 0x468042A0
     /* E47EE0 00062E08 03E00008 */  .word 0x03E00008
     /* E47EE4 00062E0C E4CA0008 */  .word 0xE4CA0008
-endlabel game_libs_func_00062D70
+endlabel anim_unpackKey

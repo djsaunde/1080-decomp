@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0005D304, 0x110
+nonmatching math_eulerToQuat, 0x110
 
-glabel game_libs_func_0005D304
+glabel math_eulerToQuat
     /* E423DC 0005D304 3C010000 */  .word 0x3C010000
     /* E423E0 0005D308 C4202044 */  .word 0xC4202044
     /* E423E4 0005D30C 27BDFF70 */  .word 0x27BDFF70
@@ -69,4 +69,4 @@ glabel game_libs_func_0005D304
     /* E424E0 0005D408 8FB00028 */  .word 0x8FB00028
     /* E424E4 0005D40C 03E00008 */  .word 0x03E00008
     /* E424E8 0005D410 27BD0090 */  .word 0x27BD0090
-endlabel game_libs_func_0005D304
+endlabel math_eulerToQuat

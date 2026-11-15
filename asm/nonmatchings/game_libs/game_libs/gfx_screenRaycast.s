@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0004F2DC, 0x428
+nonmatching gfx_screenRaycast, 0x428
 
-glabel game_libs_func_0004F2DC
+glabel gfx_screenRaycast
     /* E343B4 0004F2DC 00A07025 */  .word 0x00A07025
     /* E343B8 0004F2E0 448E2000 */  .word 0x448E2000
     /* E343BC 0004F2E4 3C014320 */  .word 0x3C014320
@@ -267,4 +267,4 @@ glabel game_libs_func_0004F2DC
     /* E347D0 0004F6F8 27BD01A8 */  .word 0x27BD01A8
     /* E347D4 0004F6FC 03E00008 */  .word 0x03E00008
     /* E347D8 0004F700 00000000 */  .word 0x00000000
-endlabel game_libs_func_0004F2DC
+endlabel gfx_screenRaycast

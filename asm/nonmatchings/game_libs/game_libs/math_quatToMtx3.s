@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0005D1F0, 0x114
+nonmatching math_quatToMtx3, 0x114
 
-glabel game_libs_func_0005D1F0
+glabel math_quatToMtx3
     /* E422C8 0005D1F0 3C014000 */  .word 0x3C014000
     /* E422CC 0005D1F4 44818000 */  .word 0x44818000
     /* E422D0 0005D1F8 C4800004 */  .word 0xC4800004
@@ -70,4 +70,4 @@ glabel game_libs_func_0005D1F0
     /* E423D0 0005D2F8 46047201 */  .word 0x46047201
     /* E423D4 0005D2FC 03E00008 */  .word 0x03E00008
     /* E423D8 0005D300 E4A80028 */  .word 0xE4A80028
-endlabel game_libs_func_0005D1F0
+endlabel math_quatToMtx3

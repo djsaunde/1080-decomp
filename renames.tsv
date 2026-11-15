@@ -925,3 +925,9 @@ game_libs_func_0005F534	math_perspectiveF
 gl_func_0005F5F0	math_lookAtF
 game_libs_func_0005FC64	math_mtx4Read
 gl_func_0005FD20	math_printBounds
+game_libs_func_0005D1F0	math_quatToMtx3
+game_libs_func_0005D304	math_eulerToQuat
+game_libs_func_0005BDC0	math_mtx4Recip
+game_libs_func_0004F2DC	gfx_screenRaycast
+gl_func_00062A2C	anim_blendPose
+game_libs_func_00062D70	anim_unpackKey

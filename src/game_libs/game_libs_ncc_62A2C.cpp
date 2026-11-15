@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00062A2C (0x344 / 209 words).
+/* IDO 7.1 NCC (C++) donor for anim_blendPose (0x344 / 209 words).
  *
  * game_libs_post0b holds C++ code too: this camera/transform blend step is
  * the first game_libs function matched under edg (agent-g run 113). The tells
@@ -73,7 +73,7 @@ void gl_func_00000000_62a2c_get(void *, int, void *);
 void gl_func_00000000_62a2c_lerp(void *, void *, float, int);
 }
 
-extern "C" void gl_func_00062A2C(Blend *o, int from, int to, float t, int mode, float t2) {
+extern "C" void anim_blendPose(Blend *o, int from, int to, float t, int mode, float t2) {
     Pose x;
     float q[4];
     Pair p;

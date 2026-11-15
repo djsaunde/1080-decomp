@@ -17632,8 +17632,8 @@ int game_libs_func_0004F0C8(Cam4F0C8 *cam, Vec3_4F0C8 *v, int flag, float *outw)
 }
 
 
-// game_libs_func_0004F2DC — MERGED 2026-08-22 (forward-merge, 26B40 precedent):
-// old game_libs_func_0004F2DC (0x18) was the stolen pre-prologue of
+// gfx_screenRaycast — MERGED 2026-08-22 (forward-merge, 26B40 precedent):
+// old gfx_screenRaycast (0x18) was the stolen pre-prologue of
 // gl_func_0004F2F4 (0x410): move t6,a1 / mtc1 / lui at,0x4320(160.f) / mtc1 /
 // cvt.s.w f6=(f32)a1 / lui at,0x42F0(120.f) — all consumed by 4F2F4's first
 // words (sub.s f10,f6,f8 / mtc1 at,f10 read them live-in). Unified symbol at
@@ -17651,7 +17651,7 @@ extern int D_00000000C;
 extern int D_00000000D;
 extern int D_00000000E;
 extern float D_00000000F[3];
-int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
+int gfx_screenRaycast(char *arg0, int x, int y, float *out) {
     float vec19C[3];
     int count;
     float dists[8];
@@ -17742,7 +17742,7 @@ int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_4F2DC.cpp (agent-g run 194 lift,
  * agent-c run 307 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees. */
-int game_libs_func_0004F2DC(char *arg0, int x, int y, float *out) {
+int gfx_screenRaycast(char *arg0, int x, int y, float *out) {
     return 0;
 }
 #endif
@@ -24112,11 +24112,11 @@ float math_vec3Length(float *a0) {
     return gl_func_00000000_5bd80(x * x + y * y + z * z);
 }
 
-/* game_libs_func_0005BDC0: 24-insn 4x4 reciprocal copier. BYTE-EXACT 2026-05-30.
+/* math_mtx4Recip: 24-insn 4x4 reciprocal copier. BYTE-EXACT 2026-05-30.
  * Long documented as a "genuine loop-IV cap" (by-4 element vs by-1 trip counter,
  * 4 forms + permuter). Cracked: nested-4x4 (inner unrolls, outer trip-counts) +
  * the comma-`for` prologue-schedule lever. No such thing as a cap. */
-void game_libs_func_0005BDC0(float *src, float *dst) {
+void math_mtx4Recip(float *src, float *dst) {
     int i, j;
     float *d, *s;
     /* NESTED 4x4 + comma-`for` = BYTE-EXACT. Inner 4-loop unrolls (pointer
@@ -24657,7 +24657,7 @@ void math_quatMul(float *a0, float *a1, float *a2) {
 void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
 }
 
-/* game_libs_func_0005D1F0 (0x114, 69 words): the 7-word game_libs_func_0005D1F0
+/* math_quatToMtx3 (0x114, 69 words): the 7-word math_quatToMtx3
  * orphan + gl_func_0005D20C are ONE function -- bootup.uso Sym exports text
  * 0x7185C (= splat 0x5D1F0); 0x5D20C is not exported/referenced. The old
  * "caller-set $f4/$f6 entry cap" verdict was this hoisted head (`lui/mtc1` of
@@ -24675,7 +24675,7 @@ void game_libs_func_0005D134(f32 *q, f32 c, f32 s, s32 i) {
  * products are unnamed CSE temps spilled top-down in first-store order
  * (sp+0x1C..0x04). */
 typedef struct { float x, y, z, w; } Quat5D1F0;
-void game_libs_func_0005D1F0(Quat5D1F0 *q, float *m) {
+void math_quatToMtx3(Quat5D1F0 *q, float *m) {
     float x = q->x, y = q->y, z = q->z, w = q->w;
     m[0] = 1.0f - 2 * y * y - 2 * z * z;
     m[4] = 2 * x * y - 2 * w * z;
@@ -24689,8 +24689,8 @@ void game_libs_func_0005D1F0(Quat5D1F0 *q, float *m) {
 }
 
 
-/* game_libs_func_0005D304 (0x110, 68 words) = the old 2-word orphan
- * game_libs_func_0005D304 + gl_func_0005D30C, merged 2026-09-09 (agent-c).
+/* math_eulerToQuat (0x110, 68 words) = the old 2-word orphan
+ * math_eulerToQuat + gl_func_0005D30C, merged 2026-09-09 (agent-c).
  * bootup.uso Sym table exports section offset 0x71970 = splat 0x5D304 (ROM
  * 0xE423DC - 0xDD0A6C), jal'd from TextReloc @0x54A18; 0x71978 = 0x5D30C is
  * NOT exported. The `lui at; lwc1 $f0,0x2044(at)` orphan is the hoisted load
@@ -24722,7 +24722,7 @@ void game_libs_func_0005D1F0(Quat5D1F0 *q, float *m) {
  * BYTE-EXACT 68/68 standalone. gl_func_0005D30C wrap (NM, 9 unresolved
  * relocs) + .s retired. */
 #define GL_5D304_DIV (*(float *)((char *)&D_00000000 + 0x2044))
-void game_libs_func_0005D304(float *out, float ax, float ay, float az)
+void math_eulerToQuat(float *out, float ax, float ay, float az)
 {
     float q[4];
     float scratch[16];
@@ -28163,7 +28163,7 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
     return self;
 }
 
-/* gl_func_00062A2C: camera/transform blend step (0x344 / 209 words).
+/* anim_blendPose: camera/transform blend step (0x344 / 209 words).
  * o->50 = 22, o->4C = 7; get(o, from, &x) fills a {Vec3 a, b, c; f32 d}
  * pose, get(o, to, &p) a target, lerp(&x.c, q, t, 0) and x.a lerped toward
  * p by t. mode != 0: dst = cur, lerp(&dst.c, &x.c, t2, 0), dst.a lerped
@@ -28174,18 +28174,18 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
  * by-value operator=, inline flerp, implicit record assignment) and is
  * spliced over this placeholder via REPLACE_FUNC_BODY. The old cfe NM wrap
  * (210 vs 209 words, FP colouring residual) is gone. */
-void gl_func_00062A2C(char *o) {
+void anim_blendPose(char *o) {
     *(volatile int *)(o + 0x50) = 22;
 }
 
-/* game_libs_func_00062D70: unpack a packed s16 record into floats: q =
+/* anim_unpackKey: unpack a packed s16 record into floats: q =
  * a1[3..6] * scale -> a2[6..9] (named x, y, z, w computed before the four
  * stores), then a1[0..2] -> a2[0..2] unscaled. The "FP-pipeline cap" was a
  * colouring order: the scale (pinned RoData D_62D70_scale, +0x2094) must
  * colour after x..w ($f16); a dead `while (0)` assigning x..w first gives
  * them the earlier candidates. The leading int param reproduces the a0 home. */
 extern f32 D_62D70_scale;
-void game_libs_func_00062D70(s32 a0, s16 *a1, f32 *a2) {
+void anim_unpackKey(s32 a0, s16 *a1, f32 *a2) {
     f32 x, y, z, w, s;
     while (0) { x = 0; y = 0; z = 0; w = 0; }
     s = D_62D70_scale;
