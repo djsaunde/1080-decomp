@@ -16355,75 +16355,76 @@ int gl_func_0004D0B4(int a0) {
  * opcode similarity 0.77, the same leaf store-run shape): (1) the D_00000000
  * read is stored BEFORE the 0xC00 / 1 stores in source (the scheduler sinks
  * the 0x48 store into the jr delay, and the later constants land after the
- * lw); (2) the second `1` is an UNSIGNED constant stored through a u32 lvalue
- * -- equal constants of different type are not CSE'd (kit LXXVII), so it gets
- * its own `addiu t3,zero,1` like the target. */
-void game_libs_func_0004D0E4(int *a0, int a1, int a2) {
-    a0[0x58/4] = a2;
-    a0[0x6C/4] = a1;
-    a0[0x5C/4] = 0;
-    a0[0x70/4] = 0;
-    a0[0x74/4] = 0;
-    a0[0x10/4] = 1;
-    a0[0x14/4] = 0;
-    a0[0x18/4] = (int)((char *)&D_00000000 + 0x0003EB00);
-    a0[0x1C/4] = 0x100;
-    a0[0x24/4] = 0x1000;
-    a0[0x2C/4] = 0x800;
-    a0[0x38/4] = 0;
-    a0[0x3C/4] = 0;
-    a0[0x48/4] = D_00000000;
-    a0[0x4C/4] = 0xC00;
-    *(u32 *)&a0[0x64/4] = 1U;
+ * lw); (2) the two `1` stores must differ in type -- equal constants of
+ * different type are not CSE'd (kit LXXVII), so the second gets its own
+ * `addiu t3,zero,1` like the target. On the RcpTask fields: task.type is u32
+ * (libultra), so unk64 is s32 and takes 1U (a u32 unk64 CSEs the two). */
+void game_libs_func_0004D0E4(RcpTask *a0, int a1, int a2) {
+    a0->unk58 = a2;
+    a0->unk6C = a1;
+    a0->unk5C = 0;
+    a0->unk70 = 0;
+    a0->unk74 = 0;
+    a0->task.type = 1;
+    a0->task.flags = 0;
+    a0->task.ucode_boot = (u64 *)((char *)&D_00000000 + 0x0003EB00);
+    a0->task.ucode_boot_size = 0x100;
+    a0->task.ucode_size = 0x1000;
+    a0->task.ucode_data_size = 0x800;
+    a0->task.output_buff = 0;
+    a0->task.output_buff_size = 0;
+    a0->task.yield_data_ptr = (u64 *)D_00000000;
+    a0->task.yield_data_size = 0xC00;
+    a0->unk64 = 1U;
 }
 
-void game_libs_func_0004D150(int *a0, int a1, int a2, int a3) {
-    a0[0x40/4] = a1;
-    a0[0x44/4] = a2 << 3;
-    a0[0x30/4] = a3;
-    a0[0x34/4] = 0x400;
+void game_libs_func_0004D150(RcpTask *a0, int a1, int a2, int a3) {
+    a0->task.data_ptr = (u64 *)a1;
+    a0->task.data_size = a2 << 3;
+    a0->task.dram_stack = (u64 *)a3;
+    a0->task.dram_stack_size = 0x400;
 }
 
 extern int D_4D16C_a;
 extern int D_4D16C_b;
-void game_libs_func_0004D16C(int *a0) {
-    a0[0x20/4] = (int)&D_4D16C_a;
-    a0[0x28/4] = (int)&D_4D16C_b;
+void game_libs_func_0004D16C(RcpTask *a0) {
+    a0->task.ucode = (u64 *)&D_4D16C_a;
+    a0->task.ucode_data = (u64 *)&D_4D16C_b;
 }
 
 extern int D_4D188_a;
 extern int D_4D188_b;
-void game_libs_func_0004D188(int *a0) {
-    a0[0x20/4] = (int)&D_4D188_a;
-    a0[0x28/4] = (int)&D_4D188_b;
+void game_libs_func_0004D188(RcpTask *a0) {
+    a0->task.ucode = (u64 *)&D_4D188_a;
+    a0->task.ucode_data = (u64 *)&D_4D188_b;
 }
 
-void game_libs_func_0004D1A4(int *a0, int a1, int a2) {
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x44/4] = 0;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D1A4(RcpTask *a0, int a1, int a2) {
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->task.data_size = 0;
+    a0->unk68 = 2;
 }
 
 extern int D_00000000_a[];
 extern int D_00000000_b[];
-void game_libs_func_0004D1C0(int *a0, int a1, int a2) {
-    a0[0x20/4] = (int)D_00000000_a;
-    a0[0x28/4] = (int)D_00000000_b;
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x44/4] = 0;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D1C0(RcpTask *a0, int a1, int a2) {
+    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode_data = (u64 *)D_00000000_b;
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->task.data_size = 0;
+    a0->unk68 = 2;
 }
 
 extern int D_4D1F4_a;
 extern int D_4D1F4_b;
-void game_libs_func_0004D1F4(int *a0, int a1) {
-    a0[0x20/4] = (int)&D_4D1F4_a;
-    a0[0x28/4] = (int)&D_4D1F4_b;
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = (int)((char*)a0 + 8);
-    a0[0x68/4] = 1;
+void game_libs_func_0004D1F4(RcpTask *a0, int a1) {
+    a0->task.ucode = (u64 *)&D_4D1F4_a;
+    a0->task.ucode_data = (u64 *)&D_4D1F4_b;
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)((char*)a0 + 8);
+    a0->unk68 = 1;
 }
 
 extern int gl_func_00000000();
@@ -16434,19 +16435,19 @@ void gl_func_0004D224(int a, int b, int c) {
 
 extern int D_00000000_a[];
 extern int D_00000000_b[];
-void game_libs_func_0004D254(int *a0, int a1, int a2) {
-    a0[0x20/4] = (int)D_00000000_a;
-    a0[0x28/4] = (int)D_00000000_b;
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D254(RcpTask *a0, int a1, int a2) {
+    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode_data = (u64 *)D_00000000_b;
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->unk68 = 2;
 }
 
-void game_libs_func_0004D284(int *a0, int a1, int a2) {
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x44/4] = 0;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D284(RcpTask *a0, int a1, int a2) {
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->task.data_size = 0;
+    a0->unk68 = 2;
 }
 
 void gl_func_0004D2A0(int a, int b, int c) {
@@ -16454,35 +16455,35 @@ void gl_func_0004D2A0(int a, int b, int c) {
     (void)a; (void)b; (void)c;
 }
 
-void game_libs_func_0004D2D0(int *a0, int a1, int a2) {
-    a0[0x20/4] = (int)D_00000000_a;
-    a0[0x28/4] = (int)D_00000000_b;
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x44/4] = 0;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D2D0(RcpTask *a0, int a1, int a2) {
+    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode_data = (u64 *)D_00000000_b;
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->task.data_size = 0;
+    a0->unk68 = 2;
 }
 
-void game_libs_func_0004D304(int *a0, int a1, int a2) {
-    a0[0x20/4] = (int)D_00000000_a;
-    a0[0x28/4] = (int)D_00000000_b;
-    a0[0x38/4] = a1;
-    a0[0x3C/4] = a1 + a2;
-    a0[0x44/4] = 0;
-    a0[0x68/4] = 2;
+void game_libs_func_0004D304(RcpTask *a0, int a1, int a2) {
+    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode_data = (u64 *)D_00000000_b;
+    a0->task.output_buff = (u64 *)a1;
+    a0->task.output_buff_size = (u64 *)(a1 + a2);
+    a0->task.data_size = 0;
+    a0->unk68 = 2;
 }
 
-void game_libs_func_0004D338(int *a0) {
-    a0[0x20/4] = (int)D_00000000_a;
-    a0[0x28/4] = (int)D_00000000_b;
+void game_libs_func_0004D338(RcpTask *a0) {
+    a0->task.ucode = (u64 *)D_00000000_a;
+    a0->task.ucode_data = (u64 *)D_00000000_b;
 }
 
-void gl_func_0004D354(int *arg0) {
+void gl_func_0004D354(RcpTask *arg0) {
     gl_func_00000000(arg0);
-    gl_func_00000000((char*)arg0 + 0x10);
-    gl_func_00000000((char*)arg0 + 0x10);
-    arg0[0x60/4] = 1;
-    arg0[0x64/4] = 0;
+    gl_func_00000000((char*)&arg0->task);
+    gl_func_00000000((char*)&arg0->task);
+    arg0->unk60 = 1;
+    arg0->unk64 = 0;
 }
 
 /* RcpMgr_insertTask: doubly-linked-list insert-after-head.
@@ -16501,15 +16502,15 @@ void gl_func_0004D354(int *arg0) {
  * insns), dropping the 5-insn else-body at 0x4D3D0 (uncovered gap). The C
  * was already 18/18 exact; restoring the .s to the true 0x48 made it a
  * byte-exact match. */
-void RcpMgr_insertTask(int *a0, int **a1) {
+void RcpMgr_insertTask(RcpTask *a0, RcpTask **a1) {
     if (*a1 != 0) {
-        *(int*)((char*)a0 + 0x50) = (int)*a1;
-        *(int*)((char*)a0 + 0x54) = *(int*)((char*)*a1 + 0x54);
-        *(int*)((char*)*(int**)((char*)*a1 + 0x54) + 0x50) = (int)a0;
-        *(int*)((char*)*a1 + 0x54) = (int)a0;
+        a0->next = *a1;
+        a0->prev = (*a1)->prev;
+        (*a1)->prev->next = a0;
+        (*a1)->prev = a0;
     } else {
-        *(int*)((char*)a0 + 0x50) = (int)a0;
-        *(int*)((char*)a0 + 0x54) = (int)a0;
+        a0->next = a0;
+        a0->prev = a0;
         *a1 = a0;
     }
 }
@@ -16525,17 +16526,17 @@ void RcpMgr_insertTask(int *a0, int **a1) {
  * bnel operands (bnel v0,t7 vs the target's bnel t7,v0). */
 extern int gl_func_00000000();
 extern int D_00000000;
-void RcpMgr_removeTask(int node, int *head) {
+void RcpMgr_removeTask(RcpTask *node, RcpTask **head) {
     if (*head == 0) {
         gl_func_00000000((char *)&D_00000000 + 0x201E4, head, node);
     }
-    if (*(int *)(node + 0x50) == *(int *)(node + 0x54) && node == *(int *)(node + 0x54)) {
+    if (node->prev == node->next && node == node->prev) {
         *head = 0;
         return;
     }
-    *head = *(int *)(*head + 0x50);
-    *(int *)(*(int *)(node + 0x54) + 0x50) = *(int *)(node + 0x50);
-    *(int *)(*(int *)(node + 0x50) + 0x54) = *(int *)(node + 0x54);
+    *head = (*head)->next;
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
 }
 
 // RcpMgr_ctor — STRUCTURAL PASS (0x1EC / 124 words, no episode). Raw-.word
@@ -16615,31 +16616,31 @@ void RcpMgr_service(char *arg0) {
  * exit (shared `or v0,zero,zero` block after the `b` over it). */
 extern int gl_func_00000000();
 extern int D_00000000;
-int RcpMgr_startTask(int *self) {
-    int c;
+int RcpMgr_startTask(RcpMgr *self) {
+    RcpTask *c;
     int g;
-    if (self[0xC / 4] != 0) {
+    if (self->active != 0) {
         gl_func_00000000((char *)&D_00000000 + 0x202F0);
     }
-    if ((self[0xC / 4] = self[4 / 4]) != 0) {
-        gl_func_00000000(self[0xC / 4], &self[1]);
-        c = self[0xC / 4];
-        if (*(int *)(c + 0x74) != 0) {
-            gl_func_00000000(*(int *)(c + 0x74));
+    if ((self->active = self->queue) != 0) {
+        gl_func_00000000(self->active, &self->queue);
+        c = self->active;
+        if (c->unk74 != 0) {
+            gl_func_00000000(c->unk74);
         }
-        c = self[0xC / 4];
-        if (*(int *)(c + 0x70) != 0) {
+        c = self->active;
+        if (c->unk70 != 0) {
             g = *(int *)((char *)&D_00000000 + 0x254);
-            *(int *)((char *)&D_00000000 + 0x254) = *(int *)(c + 0x74);
-            gl_func_00000000(*(int *)(self[0xC / 4] + 0x70));
+            *(int *)((char *)&D_00000000 + 0x254) = c->unk74;
+            gl_func_00000000(self->active->unk70);
             *(int *)((char *)&D_00000000 + 0x254) = g;
         }
-        c = self[0xC / 4];
-        *(int *)((char *)self + 0x3C) = (int)((char *)&D_00000000 + 0x20308);
-        *(int *)((char *)self + 0x1C) = 1;
+        c = self->active;
+        self->rspTaskName = (char *)&D_00000000 + 0x20308;
+        self->rspBusy = 1;
         gl_func_00000000(c);
-        *(int *)((char *)self + 0x20) = 1;
-        *(int *)((char *)self + 0x40) = (int)((char *)&D_00000000 + 0x2030C);
+        self->rdpBusy = 1;
+        self->rdpTaskName = (char *)&D_00000000 + 0x2030C;
         gl_func_00000000((char *)&D_00000000 + 0x20310);
         return 1;
     }
@@ -16709,10 +16710,10 @@ dflt:
 }
 
 extern int gl_func_00000000();
-void gl_func_0004DC08(char *a0, int *a1) {
+void gl_func_0004DC08(char *a0, RcpTask *a1) {
     gl_func_00000000(a1, a0 + 8);
-    a1[0x19] = 0;
-    a1[0x18] = 0;
+    a1->unk64 = 0;
+    a1->unk60 = 0;
 }
 
 #ifdef NON_MATCHING
