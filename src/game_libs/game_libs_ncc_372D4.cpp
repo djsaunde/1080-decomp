@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for cam_func_000372D4 (0x74 / 29 words): copy a
+/* IDO 7.1 NCC (C++) donor for cam_placeAttached_000372D4 (0x74 / 29 words): copy a
  * Vec3 into the attached object's sub-node position, reset this->rot to
  * (-90, 180, 0) and fire virtual slot 3.
  *
@@ -25,7 +25,7 @@ struct Self372 : Base372 {
     int pad2c;
     V3 rot;
 };
-extern "C" void cam_func_000372D4(Self372 *s, const V3 &v) {
+extern "C" void cam_placeAttached_000372D4(Self372 *s, const V3 &v) {
     Ptr372 o; o.o = s->att;
     o->node->sub.setPos(v);
     s->rot.set(-90.0f, 180.0f, 0.0f);

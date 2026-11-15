@@ -1,6 +1,6 @@
-nonmatching cam_func_000372D4, 0x74
+nonmatching cam_placeAttached_000372D4, 0x74
 
-glabel cam_func_000372D4
+glabel cam_placeAttached_000372D4
     /* E1C3AC 000372D4 27BDFFE0 */  .word 0x27BDFFE0
     /* E1C3B0 000372D8 AFBF0014 */  .word 0xAFBF0014
     /* E1C3B4 000372DC 8C8E0014 */  .word 0x8C8E0014
@@ -30,4 +30,4 @@ glabel cam_func_000372D4
     /* E1C414 0003733C 27BD0020 */  .word 0x27BD0020
     /* E1C418 00037340 03E00008 */  .word 0x03E00008
     /* E1C41C 00037344 00000000 */  .word 0x00000000
-endlabel cam_func_000372D4
+endlabel cam_placeAttached_000372D4

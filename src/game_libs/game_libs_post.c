@@ -3733,7 +3733,7 @@ end_zero:
     return 0;
 }
 
-/* 20-insn helper: alloc-via-callee cam_func_00036A48 + 3-field-set + return
+/* 20-insn helper: alloc-via-callee math_bestAlignedIndex_00036A48 + 3-field-set + return
  * v0[8]. */
 extern int gl_ref_00036A48();
 int *aud_AllocSampleCachePersistent(int a0, int a1, int a2, signed char a3) {

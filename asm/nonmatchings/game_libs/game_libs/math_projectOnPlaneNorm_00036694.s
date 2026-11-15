@@ -1,6 +1,6 @@
-nonmatching cam_func_00036694, 0x2C8
+nonmatching math_projectOnPlaneNorm_00036694, 0x2C8
 
-glabel cam_func_00036694
+glabel math_projectOnPlaneNorm_00036694
     /* E1B76C 00036694 27BDFF10 */  .word 0x27BDFF10
     /* E1B770 00036698 AFA600F8 */  .word 0xAFA600F8
     /* E1B774 0003669C C7A400F8 */  .word 0xC7A400F8
@@ -179,4 +179,4 @@ glabel cam_func_00036694
     /* E1BA28 00036950 27BD00F0 */  .word 0x27BD00F0
     /* E1BA2C 00036954 03E00008 */  .word 0x03E00008
     /* E1BA30 00036958 00000000 */  .word 0x00000000
-endlabel cam_func_00036694
+endlabel math_projectOnPlaneNorm_00036694

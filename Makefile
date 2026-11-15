@@ -2170,7 +2170,7 @@ GAMELIBS_36A48_DONOR := build/src/game_libs/game_libs_ncc_36A48.cpp.o
 $(GAMELIBS_36A48_DONOR): src/game_libs/game_libs_ncc_36A48.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += cam_func_00036A48=$(GAMELIBS_36A48_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_bestAlignedIndex_00036A48=$(GAMELIBS_36A48_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36A48_DONOR)
 # 412E8 = static initializer (__sti__) of four global objects (cfront this==0 protocol members, base-class W4, vec_new array member) EXACT NCC donor over an empty placeholder (agent-c run 163).
 GAMELIBS_412E8_DONOR := build/src/game_libs/game_libs_ncc_412E8.cpp.o
@@ -2313,8 +2313,8 @@ GAMELIBS_36694_DONOR := build/src/game_libs/game_libs_ncc_36694.cpp.o
 $(GAMELIBS_36694_DONOR): src/game_libs/game_libs_ncc_36694.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym perp__3ObjF2V3T1=cam_func_00036694 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += cam_func_00036694=$(GAMELIBS_36694_DONOR)
+	$(OBJCOPY) --redefine-sym perp__3ObjF2V3T1=math_projectOnPlaneNorm_00036694 $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += math_projectOnPlaneNorm_00036694=$(GAMELIBS_36694_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_36694_DONOR)
 # 37540 = C++ sibling of the exact 37348 donor (agent-c run 200; kept Node * inline parameters, ctor-built vB4, by-value copies).
 # agent-c run 298: EXACT NCC donor over a placeholder (v9C as a P3 / volatile-view union: unforwarded re-reads);
@@ -2405,7 +2405,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_35DAC_DONOR)
 # 372D4 = sub-node position copy + rot reset + virtual slot 3 (smart-pointer handle local); NCC donor.
 GAMELIBS_372D4_DONOR := build/src/game_libs/game_libs_ncc_372D4.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += cam_func_000372D4=$(GAMELIBS_372D4_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += cam_placeAttached_000372D4=$(GAMELIBS_372D4_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_372D4_DONOR)
 # 3DBEC = find a child in the owner list and copy its position out ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_3DBEC_DONOR := build/src/game_libs/game_libs_ncc_3DBEC.cpp.o

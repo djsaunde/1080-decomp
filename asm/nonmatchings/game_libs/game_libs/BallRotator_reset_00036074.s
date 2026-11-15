@@ -1,6 +1,6 @@
-nonmatching cam_func_00036074, 0x1B0
+nonmatching BallRotator_reset_00036074, 0x1B0
 
-glabel cam_func_00036074
+glabel BallRotator_reset_00036074
     /* E1B14C 00036074 44800000 */  .word 0x44800000
     /* E1B150 00036078 3C020000 */  .word 0x3C020000
     /* E1B154 0003607C 24420000 */  .word 0x24420000
@@ -109,4 +109,4 @@ glabel cam_func_00036074
     /* E1B2F0 00036218 27BD0088 */  .word 0x27BD0088
     /* E1B2F4 0003621C 03E00008 */  .word 0x03E00008
     /* E1B2F8 00036220 00000000 */  .word 0x00000000
-endlabel cam_func_00036074
+endlabel BallRotator_reset_00036074

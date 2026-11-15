@@ -65,7 +65,7 @@ extern int gl_func_0003579C();
 extern int gl_func_00035B04();
 extern int gl_func_00036844();
 extern int gl_func_00036A04();
-extern int cam_func_00036A48();
+extern int math_bestAlignedIndex_00036A48();
 extern int gl_func_00036AD0();
 extern int gl_func_0003773C();
 extern int gl_func_00037C50();
@@ -2060,7 +2060,7 @@ void BallRotator_update_0003604C(int *a0) {
 }
 
 
-// cam_func_00036074 -- object-state constructor (0x1B0 / 108 words,
+// BallRotator_reset_00036074 -- object-state constructor (0x1B0 / 108 words,
 // BYTE-EXACT 2026-09-11 agent-c; the 5-word orphan `mtc1 zero,$f0; lui v0;
 // addiu v0; lui at,0x3f80; mtc1 at,$f4` was the hoisted 0.0f / 1.0f /
 // &D_00000000 head of gl_func_00036088, retired and merged). Writes the
@@ -2075,7 +2075,7 @@ void BallRotator_update_0003604C(int *a0) {
 // after `a0 = o + 0xDC` (the first call's hoisted argument) to negative
 // offsets. The 19 `pad` words are named-scalar homes (frame 0x88: a at
 // +0x64, b at +0x4C, c at +0x24) -- see docs/IDO_CODEGEN.md#vec3-array-keeps-intermediate-stores-4fd00.
-void cam_func_00036074(char *o) {
+void BallRotator_reset_00036074(char *o) {
     s32 pad0, pad1, pad2, pad3, pad4, pad5;
     Vec3 a;
     s32 pad6, pad7, pad8;
@@ -2257,7 +2257,7 @@ void BallRotator_func_00036224(char *o, char *arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BallRotator_func_00036224);
 #endif
 
-// cam_func_00036694 — full hand re-derivation 15.6 -> 83.2 (2026-09-04 agent-g,
+// math_projectOnPlaneNorm_00036694 — full hand re-derivation 15.6 -> 83.2 (2026-09-04 agent-g,
 // 704/712 sized; frame 0xC0 vs target 0xF0 = the residual).
 //   V3 *f(V3 *out, int unused, V3 p, V3 n)   -- p, n passed BY VALUE (a2/a3 +
 //   stack, homed with sw and re-read as floats = the "int->float round-trip").
@@ -2282,7 +2282,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BallRotator_func_00036224);
 typedef struct { f32 x, y, z; } V3_36694;
 extern f32 gl_sqrtf_36694(f32);            /* USO callback (jal reloc-masked): sqrtf */
 extern void gl_normalize_36694(V3_36694 *); /* USO callback: normalize in place */
-V3_36694 *cam_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_36694 n) {
+V3_36694 *math_projectOnPlaneNorm_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_36694 n) {
     V3_36694 vE4;
     V3_36694 vD8;
     f32 len2;
@@ -2361,7 +2361,7 @@ V3_36694 *cam_func_00036694(V3_36694 *out, s32 unused, V3_36694 p, V3_36694 n) {
  * agent-g run 401 exact), REPLACE_FUNC_BODY-spliced over this placeholder and over the cfe body above
  * (kept as the C reference) in both build trees; the two blank USO jal words are pinned as
  * gl_sqrtf_36694 / gl_normalize_36694 = 0. */
-void *cam_func_00036694(void *out) {
+void *math_projectOnPlaneNorm_00036694(void *out) {
     return out;
 }
 #endif
@@ -2394,7 +2394,7 @@ void *cam_func_00036694(void *out) {
 //   length (with the 1.0f reciprocal idiom) to emit a unit
 //   direction vector into stack output slots. A geometry-math leaf
 //   of the game_libs object subsystem — the normalize/heading
-//   primitive complementing the cam_func_00036694 matrix-concat and
+//   primitive complementing the math_projectOnPlaneNorm_00036694 matrix-concat and
 //   BallRotator_func_00036224 viewport builder (pure FP except the one
 //   degenerate-case callback).
 // Caps (DEFERRED): raw-word USO + FP normalize (sqrt.s + 1/len) +
@@ -2427,7 +2427,7 @@ Vec3 math_arcballPoint(int a1, float x0, float y0, float u1,
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_36A48.cpp, REPLACE_FUNC_BODY-spliced over
  * this placeholder in both build trees (agent-c run 163). The old cfe NM body is retired. */
-int cam_func_00036A48(void *o, Vec3 dir, Vec3 *arr, int n) {
+int math_bestAlignedIndex_00036A48(void *o, Vec3 dir, Vec3 *arr, int n) {
 }
 
 /* CamFollow_ctor: 27-insn alloc-or-given + init constructor (sibling
@@ -2669,7 +2669,7 @@ out:
 void CamMan_update(char *arg0) {
 }
 
-/* cam_func_000372D4 - verified structural decode (29-insn br=0 deterministic;
+/* cam_placeAttached_000372D4 - verified structural decode (29-insn br=0 deterministic;
  * t6-spill + p+48 sub-struct base-reuse = struct-base divergence class ->
  * INCLUDE_ASM build path; struct-typing reference).
  *
@@ -2681,7 +2681,7 @@ void CamMan_update(char *arg0) {
  *   below. Byte-match deferred. Name pre-checked: no extern reuse. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_372D4.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 117). The dead handle store is a one-pointer smart-pointer aggregate. */
-void cam_func_000372D4(int *a0, float *a1) {
+void cam_placeAttached_000372D4(int *a0, float *a1) {
 }
 
 // StickCtrlA_update_00037348 — STRUCTURAL PASS (0x1F8 / 126 words, no episode).
@@ -2945,7 +2945,7 @@ int *SeekNode_ctor(int *a0, int a1, float a2) {
 //   with `add.s` / `sub.s` into stack scratch matrices
 //   (sp+0xB0..0xC4, sp+0x78..0x80), and copies the resulting
 //   transform block out via a word-copy. A companion of the
-//   cam_func_00036694 matrix-concat, BallRotator_func_00036224 viewport
+//   math_projectOnPlaneNorm_00036694 matrix-concat, BallRotator_func_00036224 viewport
 //   builder, CamFollow_update anchor-offset and CamMan_update
 //   flag-transform — the matrix-combine stage of the game_libs
 //   object subsystem's geometry pipeline (no &D_0 / no callbacks
@@ -5368,7 +5368,7 @@ end:
 //   word-copy. The o->0x30 flag drives a "recompute only when
 //   dirty/active" pattern. A geometry-update node of the game_libs
 //   object subsystem (companion of the SeekNode_update transform-
-//   compose and cam_func_00036694 matrix-concat leaves; the o->0x30
+//   compose and math_projectOnPlaneNorm_00036694 matrix-concat leaves; the o->0x30
 //   bit-6 mask is the same dirty/active flag-word convention seen
 //   in the CamFollow_update / 00036F0C geometry family).
 // Caps (DEFERRED): raw-word USO + flag-gated FP delta/transform +
@@ -5477,7 +5477,7 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
 //   extensive multiply/add FP pipeline over object fields with
 //   stack scratch (sp+0xA4..). A geometry/animation node of the
 //   game_libs object subsystem (consumes the matrices/vectors the
-//   gl_func_0003B1AC matrix-apply / cam_func_00036694 concat /
+//   gl_func_0003B1AC matrix-apply / math_projectOnPlaneNorm_00036694 concat /
 //   BallRotator_func_00036224 viewport leaves produce).
 // Caps (DEFERRED): REGALLOC + CSE divergence cap. PASS-3 reconstruction
 //   (2026-06-22) rebuilt the true structure from target disasm:
@@ -5735,7 +5735,7 @@ s32 CollShape_raycast(char *self) {
 //   the full object transform from the sub-results the
 //   CollShape_raycast distance solver, the CollShape_below 6-part
 //   transform, the gl_func_0003B1AC matrix-apply and the
-//   cam_func_00036694 matrix-concat leaves produce, and feeds the
+//   math_projectOnPlaneNorm_00036694 matrix-concat leaves produce, and feeds the
 //   dbg_printThreads render traversal.
 // Caps (DEFERRED): 0x620 raw-word USO + flag-gated USO-relocated
 //   jal-0 callback + FP-literal-pool coefficient table

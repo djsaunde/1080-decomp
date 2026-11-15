@@ -1,6 +1,6 @@
-nonmatching cam_func_00036A48, 0x154
+nonmatching math_bestAlignedIndex_00036A48, 0x154
 
-glabel cam_func_00036A48
+glabel math_bestAlignedIndex_00036A48
     /* E1BB20 00036A48 27BDFF50 */  .word 0x27BDFF50
     /* E1BB24 00036A4C 8FAE00C4 */  .word 0x8FAE00C4
     /* E1BB28 00036A50 F7B40028 */  .word 0xF7B40028
@@ -86,4 +86,4 @@ glabel cam_func_00036A48
     /* E1BC68 00036B90 8FB60048 */  .word 0x8FB60048
     /* E1BC6C 00036B94 03E00008 */  .word 0x03E00008
     /* E1BC70 00036B98 27BD00B0 */  .word 0x27BD00B0
-endlabel cam_func_00036A48
+endlabel math_bestAlignedIndex_00036A48

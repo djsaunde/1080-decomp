@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) donor for cam_func_00036694 (0x2C8 / 178 words), EXACT (agent-g run 401, kit CDLXXXIV).
- * `V3 Obj::perp(V3 p, V3 n)` (renamed to cam_func_00036694 with objcopy; a0 = hidden return, a1 = unused this):
+/* IDO 7.1 NCC (C++) donor for math_projectOnPlaneNorm_00036694 (0x2C8 / 178 words), EXACT (agent-g run 401, kit CDLXXXIV).
+ * `V3 Obj::perp(V3 p, V3 n)` (renamed to math_projectOnPlaneNorm_00036694 with objcopy; a0 = hidden return, a1 = unused this):
  * r = p - n * dot(n, p) through by-value V3 operators; if |r|^2 > 0, r flipped to z >= 0 and divided by sqrt(|r|^2),
  * else the fallback axis (1, 0, 0) or the normalised (-n.y, n.x, 0).
  * History (agent-c runs 134-312, agent-g run 313): the 64388 V3 kit (P3 base, free operators on const V3 &),
