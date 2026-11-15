@@ -2595,10 +2595,16 @@ extern int D_00000000;
  * (vs a named `int g` local) allocates it to $t7 (not $v0) to match. The
  * gl_func_00000000 calls are jal-0 placeholders = correct ROM bytes; no episode. */
 void AudioHeap_InitMainPools(int arg) {
-    char *D = (char *)&D_00000000;
-    gl_func_00000000(D + 0x2188, D, arg);
-    gl_func_00000000(D + 0x2168, D + arg, *(int *)(D + 4) - arg);
-    *(int *)(D + 0x2178) = 0;
+    /* OoT: InitPool(&initPool, audioHeap, initPoolSize);
+     *      InitPool(&miscPool, audioHeap + initPoolSize, heapSize - initPoolSize);
+     *      unusedPool.start = NULL. Three objects: gAudioContext (Sym 1255),
+     *      gAudioHeap (Sym 1283), gAudioHeapInitSizes (Sym 1284, +4 = heapSize). */
+    char *ctx = (char *)&gAudioContext;
+    char *heap = (char *)&gAudioHeap;
+    char *sizes = (char *)&gAudioHeapInitSizes;
+    gl_func_00000000(ctx + 0x2188, heap, arg);
+    gl_func_00000000(ctx + 0x2168, heap + arg, *(int *)(sizes + 4) - arg);
+    *(int *)(ctx + 0x2178) = 0;
 }
 
 // AudioHeap_InitSessionPools -- report/dump-state helper (sibling of
@@ -4090,7 +4096,7 @@ void AudioHeap_UnapplySampleCache(char *a0, char *a1) {
 //   gl_func_00000000 = canonical never-defined USO placeholder.
 extern int gl_func_00000000();
 void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
-    char *D = (char *)&D_00000000;
+    char *D = (char *)&gAudioContext; /* all 5 sites: Sym 1255 (+0x26B8 cache, +0x2948 count) */
     char *base = D + 0x26B8;
     int r = gl_func_00000000(base, arg);
     if (r == 0) {
@@ -6260,7 +6266,7 @@ typedef struct {
     char x20[0x18]; char x38[0x1C];
 } gl_24F30_Slot;
 typedef struct { char p0[0x1038]; gl_24F30_Slot slots[16]; } gl_24F30_GS;
-#define GS_24F30 (*(gl_24F30_GS *)&D_00000000)
+#define GS_24F30 (*(gl_24F30_GS *)&gAudioContext) /* Sym 1255 (sites K=0, 0x540) */
 gl_24F30_Slot *AudioLoad_StartAsyncLoad(int a0, int a1, int a2, int a3, int arg4, int arg5, int arg6) {
     gl_24F30_Slot *s;
     int i;

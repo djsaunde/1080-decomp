@@ -53,6 +53,8 @@
 #define gHostio       D_00000000 /* Bss+0x3C768 Sym 338, 8 bytes: the HostIO connection, first argument of every hostio_beginGroup/add/endGroup call in the 47 <Class>_hostioParms functions */
 #define gWindowDefaults D_00000000 /* Bss+0x3EC20 Sym 324, 0x40 bytes: the values Window_setDefaults copies into every new Window (+0x8 width, +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType, +0x30 clearColour; window.h) */
 #define gInputMgr     D_00000000 /* Bss+0xF8 Sym 272, 0x194 bytes: the InputMgr (include/game/input.h; 79 functions) */
+#define gAudioHeap    D_00000000 /* Bss+0x4B0 Sym 1283, 0x34100 bytes: the audio heap arena (OoT gAudioHeap): AudioLoad_Init zeroes it, AudioHeap_InitMainPools carves initPool / miscPool from it (agent-a run 498) */
+#define gAudioHeapInitSizes D_00000000 /* Data+0x1CDD0 Sym 1284, 16 bytes: OoT gAudioHeapInitSizes {+4 heapSize, +8 initPoolSize, +0xC permanentPoolSize}; AudioLoad_Init / AudioHeap_InitMainPools / AudioHeap_Init (agent-a run 498) */
 
 
 
