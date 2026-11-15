@@ -52,11 +52,11 @@ struct Obj {                                         /* ScreenWindow (window.h) 
     char pad7c[0xAC - 0x7C];
     int nearWord, farWord; /* AC B0 f32 near / far as raw words (gfx_calcPerspNorm args) */
     int aspectWord;      /* B4 */
-    int width, height, unkC0, unkC4; /* B8 BC C0 C4 */
+    int width, height, originX, originY; /* B8 BC C0 C4 */
     int vpW, vpH, vpX, vpY; /* C8 CC D0 D4 */
     char padd8[0xDC - 0xD8];
-    char unkDC[0x104 - 0xDC];
-    int unk104;
+    char clearColour[0x104 - 0xDC];
+    int clearFlags;
     char pad108[0x144 - 0x108];
     int fbIndex;         /* 144 */
     Sub *fbOwner;        /* 148 */
@@ -65,7 +65,7 @@ struct Obj {                                         /* ScreenWindow (window.h) 
     char mark15C[0x168 - 0x15C];
     char mark168[0x180 - 0x168];
     int bgDL[0x1B0 / 4 - 0x180 / 4]; /* 180 bgDL[2] (indexed by fbIndex) */
-    int unk1B0;
+    int clearAlpha;
     int unk1B4;
     char pad1b8[0x1C0 - 0x1B8];
     int curBg;           /* 1C0 */
@@ -83,25 +83,25 @@ void Obj::run() {
     dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
     char *s1;
     if (*(int *)(gGfxLib_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */
-        int f = ((unk104 & 2) != 0) + 0 * (int)(unkC0); /* agent-c run 210: folded counted use of the member unkC0 (zero code) */
+        int f = ((clearFlags & 2) != 0) + 0 * (int)(originX); /* agent-c run 210: folded counted use of the member originX (zero code) */
         s1 = (char *)fbOwner->zBuffer;
         if (f) f = (flags & 2) != 0;
         float buf[4]; int one = 1; /* agent-c run 232: home-keeping argument locals -> frame 208 / buf 180 = target (88.69 -> 88.72); run 260: e3 dropped (the inline appends' homes take its word); run 261: za / e1 / e2 dropped for the named hh / nn / vh / vn homes */
         buf[0] = 0.0f; buf[1] = 0.0f; buf[2] = 0.0f; buf[3] = 0.0f;
-        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, unk1B0);
+        dbg_printThreads(dl, *(int *)gl_d_4c5e4_word, s1, one, f, buf, 0, 0, 8, 8, 8, clearAlpha);
     } else {
         s1 = (char *)vt->fn((void *)(vt->off + (int)this)); /* offset first: the target's `addu a0,t7,s0` */
         Sub *sb = fbOwner;
         void *pf = sb->zBuffer;
-        int m4 = flags & 4; /* run 205: flags read at both uses (no named m); run 246: the folded 0 * unkC0 dropped (c0 loads in the arm, v0, as the target) */
-        int f = (unk104 & 2) != 0;
+        int m4 = flags & 4; /* run 205: flags read at both uses (no named m); run 246: the folded 0 * originX dropped (c0 loads in the arm, v0, as the target) */
+        int f = (clearFlags & 2) != 0;
         if (f) f = (flags & 2) != 0;
-        int c0 = unkC0, c4 = unkC4, b8 = width, bc = height, sb8 = sb->width + 0 * (int)(fbOwner); /* run 246: folded counted use of fbOwner: sb = t5 (target) and the ring phase */
+        int c0 = originX, c4 = originY, b8 = width, bc = height, sb8 = sb->width + 0 * (int)(fbOwner); /* run 246: folded counted use of fbOwner: sb = t5 (target) and the ring phase */
         /* agent-c run 261 (kit CCXCIX): folded counted uses lift f (3 uses) and c0 / c4 / b8 / bc (2 each) to priority
          * 3.0 and the codeless sub-load item to 2.0, so that item is coloured after bc and takes t3 -- sb8 then gets
          * the target's t4 (99.95 -> 100). `0 * (signed char)f` / `0 * (unsigned)(sub)` keep the folds distinct
          * expressions (a repeated `0 * f` is one CSE item that gets a colour of its own). */
-        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, unkDC, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(fbOwner), unk1B0);
+        dbg_printThreads(dl, s1, pf, m4, f + 0 * f, clearColour, c0 + 0 * c0 + 0 * (signed char)f, c4 + 0 * c4, b8 + 0 * b8, bc + 0 * bc, sb8 + 0 * (unsigned)(fbOwner), clearAlpha);
     }
     dbg_printThreads(dl);
     dbg_printThreads(mark15C);

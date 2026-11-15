@@ -21,6 +21,8 @@
  * task out of the list.
  *
  * Window.flags (+0x78) bits seen in the bodies:
+ *   0x2    allow the Z-buffer clear (with clearFlags bit 2)
+ *   0x4    clear the colour buffer to clearColour (gfx_clearScreen)
  *   0x20   wrap Display() in two extra debug calls
  *   0x200  own Z buffer (else share the main ScreenWindow's)
  *   0x400  double-buffered colour (two buffers at +0xF4 / +0xF8)
@@ -49,25 +51,29 @@ typedef struct Window {
     /* 0x0B4 */ f32 aspect;          /* width / height, Window_updateAspect */
     /* 0x0B8 */ s32 width;           /* frame-buffer size in pixels */
     /* 0x0BC */ s32 height;
-    /* 0x0C0 */ s32 unkC0;
-    /* 0x0C4 */ s32 unkC4;
+    /* 0x0C0 */ s32 originX;         /* window origin on the frame buffer: set with vpX / vpY by
+                                   * Window_doCommand 110; the clear rectangle's corner */
+    /* 0x0C4 */ s32 originY;
     /* 0x0C8 */ s32 vpW;             /* viewport size and origin, pixels */
     /* 0x0CC */ s32 vpH;
     /* 0x0D0 */ s32 vpX;
     /* 0x0D4 */ s32 vpY;
     /* 0x0D8 */ s32 unkD8;
-    /* 0x0DC */ s32 unkDC[5];        /* ScreenWindow_display passes &unkDC to the clear/draw call */
+    /* 0x0DC */ f32 clearColour[4];  /* RGBA 0..1, gfx_clearScreen's fill colour (flag 0x4) */
+    /* 0x0EC */ s32 unkEC;
     /* 0x0F0 */ u16 *zBuffer;        /* own (flag 0x200) or the main ScreenWindow's */
     /* 0x0F4 */ u16 *colorBuf[2];    /* RGBA5551; [1] == [0] unless flag 0x400 */
     /* 0x0FC */ u16 *bufAlloc;       /* one allocation holding all of the above */
-    /* 0x100 */ s32 unk100[2];
-    /* 0x108 */ s32 unk108;          /* first Display() call argument */
-    /* 0x10C */ s32 unk10C[2];
+    /* 0x100 */ s32 unk100;          /* Window_doCommand 109 zeroes it */
+    /* 0x104 */ s32 clearFlags;      /* bit 2: clear the Z buffer (with flag 0x2); Window_doCommand 109 */
+    /* 0x108 */ s32 displayMask;     /* Window_display: Node_setDisplayMask(displayMask); doCommand 117; 1 by default */
+    /* 0x10C */ s32 unk10C[2];       /* MapProp_display stores two values clamped to 0..127 here */
     /* 0x114 */ s32 unk114;
     /* 0x118 */ s32 unk118;
-    /* 0x11C */ s32 unk11C;          /* zeroed at the start of Window_display */
-    /* 0x120 */ s32 unk120;          /* zeroed at the start of Window_display */
-    /* 0x124 */ s32 unk124[8];
+    /* 0x11C */ s32 nTaskHooks;      /* zeroed at the start of Window_display */
+    /* 0x120 */ s32 nHooks;          /* zeroed at the start of Window_display */
+    /* 0x124 */ void *taskHooks[4];  /* Window_addTaskHook; Window_runTaskHooks (RcpMgr_startTask) calls vtable +0xC of each */
+    /* 0x134 */ void *hooks[4];      /* Window_addHook_0004EDEC / Window_runHooks_0004ED0C */
 } Window;
 
 typedef struct ScreenWindow {
@@ -86,8 +92,8 @@ typedef struct ScreenWindow {
     /* 0x1A4 */ s32 unk1A4;
     /* 0x1A8 */ s32 unk1A8;           /* -1 after allocBuffers */
     /* 0x1AC */ s32 unk1AC;           /* -1 after allocBuffers */
-    /* 0x1B0 */ s32 unk1B0;           /* 1 after allocBuffers; last draw-call argument */
-    /* 0x1B4 */ s32 unk1B4;
+    /* 0x1B0 */ s32 clearAlpha;       /* 1 after allocBuffers: the RGBA5551 alpha bit of the clear fill */
+    /* 0x1B4 */ s32 unk1B4;           /* zeroed by ScreenWindow_display */
     /* 0x1B8 */ s32 unk1B8;
     /* 0x1BC */ s32 unk1BC;
     /* 0x1C0 */ struct DLContext *curBg; /* bgDL[fbIndex] for this frame */
@@ -101,7 +107,10 @@ typedef char Window_flags_check[(int)&((Window *)0)->flags == 0x78 ? 1 : -1];
 typedef char Window_aspect_check[(int)&((Window *)0)->aspect == 0xB4 ? 1 : -1];
 typedef char Window_vpW_check[(int)&((Window *)0)->vpW == 0xC8 ? 1 : -1];
 typedef char Window_zBuffer_check[(int)&((Window *)0)->zBuffer == 0xF0 ? 1 : -1];
-typedef char Window_unk11C_check[(int)&((Window *)0)->unk11C == 0x11C ? 1 : -1];
+typedef char Window_nTaskHooks_check[(int)&((Window *)0)->nTaskHooks == 0x11C ? 1 : -1];
+typedef char Window_clearColour_check[(int)&((Window *)0)->clearColour == 0xDC ? 1 : -1];
+typedef char Window_displayMask_check[(int)&((Window *)0)->displayMask == 0x108 ? 1 : -1];
+typedef char Window_hooks_check[(int)&((Window *)0)->hooks == 0x134 ? 1 : -1];
 typedef char ScreenWindow_size_check[sizeof(ScreenWindow) == 0x1CC ? 1 : -1];
 typedef char ScreenWindow_dl_check[(int)&((ScreenWindow *)0)->dl == 0x158 ? 1 : -1];
 typedef char ScreenWindow_bgDL_check[(int)&((ScreenWindow *)0)->bgDL == 0x180 ? 1 : -1];

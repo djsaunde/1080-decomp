@@ -15636,7 +15636,7 @@ void ScreenWindow_allocBuffers(ScreenWindow *self) {
     s32 i;
 
     self->unk1B8 = 0;
-    self->unk1B0 = 1;
+    self->clearAlpha = 1;
     self->unk1A4 = 0;
     self->unk1A8 = -1;
     self->unk1AC = -1;
@@ -17250,32 +17250,37 @@ typedef struct { int w[4]; } Q4E760;
 typedef struct { int w; } Q1E760;
 typedef struct { int w[2]; } Q2E760;
 extern f32 D_4e760_f0[], D_4e760_f1[], D_4e760_f2[], D_4e760_f3[], D_4e760_f4[];  /* bootup.uso RoData base (sym1, 0): {0, 2200, 3000, 12500, 50000} at +0x1B70 */
+/* base = gWindowDefaults (Bss Sym 324, 0x40 bytes): +0x0 the unk100 / clearFlags pair, +0x8 width,
+ * +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType,
+ * +0x30 clearColour (agent-b run 489: window.h field names; same offsets / widths) */
+#define W ((Window *)a0)
 void Window_setDefaults(char *a0) {
     char *base = (char *)&gWindowDefaults;
     char *vt;
-    *(int *)(a0 + 0x8) |= 0x80;
-    vt = *(char **)(a0 + 0x28);
-    *(Q4E760 *)(a0 + 0xDC) = *(Q4E760 *)((char *)&gWindowDefaults + 0x30);
-    *(int *)(a0 + 0xC0) = *(int *)(base + 0x10);
-    *(int *)(a0 + 0xC4) = *(int *)(base + 0x14);
-    *(int *)(a0 + 0xB8) = *(int *)(base + 0x8);
-    *(int *)(a0 + 0xBC) = *(int *)(base + 0xC);
-    *(int *)(a0 + 0x7C) = *(int *)(base + 0x2C);
-    *(float *)(a0 + 0xAC) = *(float *)(base + 0x18);
-    *(float *)(a0 + 0xB0) = *(float *)(base + 0x1C);
-    *(Q1E760 *)(a0 + 0x78) = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
-    *(int *)(a0 + 0x70) = 0;
-    *(Q2E760 *)(a0 + 0x100) = *(Q2E760 *)base;
-    *(float *)(a0 + 0x84) = D_4e760_f0[0x1B70 / 4];
-    *(float *)(a0 + 0x88) = D_4e760_f1[0x1B74 / 4];
-    *(float *)(a0 + 0x8C) = D_4e760_f2[0x1B78 / 4];
-    *(float *)(a0 + 0x90) = 19584.0f;
-    *(float *)(a0 + 0x94) = D_4e760_f3[0x1B7C / 4];
-    *(float *)(a0 + 0x80) = D_4e760_f4[0x1B80 / 4];
+    W->node.flags |= 0x80;
+    vt = *(char **)&W->node.vptr;
+    *(Q4E760 *)W->clearColour = *(Q4E760 *)((char *)&gWindowDefaults + 0x30);
+    W->originX = *(int *)(base + 0x10);
+    W->originY = *(int *)(base + 0x14);
+    W->width = *(int *)(base + 0x8);
+    W->height = *(int *)(base + 0xC);
+    W->projType = *(int *)(base + 0x2C);
+    W->near = *(float *)(base + 0x18);
+    W->far = *(float *)(base + 0x1C);
+    *(Q1E760 *)&W->flags = *(Q1E760 *)((char *)&gWindowDefaults + 0x28);
+    *(int *)&W->camera = 0;
+    *(Q2E760 *)&W->unk100 = *(Q2E760 *)base;
+    W->unk84[0] = D_4e760_f0[0x1B70 / 4];
+    W->unk84[1] = D_4e760_f1[0x1B74 / 4];
+    W->unk84[2] = D_4e760_f2[0x1B78 / 4];
+    W->unk84[3] = 19584.0f;
+    W->unk84[4] = D_4e760_f3[0x1B7C / 4];
+    *(float *)&W->unk80 = D_4e760_f4[0x1B80 / 4];
     (*(void (**)())(vt + 0x5C))(a0 + *(short *)(vt + 0x58));
-    *(int *)(a0 + 0x108) = 1;
-    *(int *)(a0 + 0xFC) = 0;
+    W->displayMask = 1;
+    *(int *)&W->bufAlloc = 0;
 }
+#undef W
 
 /* node_linkBack_0004E888: 19-insn / 0x4C link-back-pointer.
  * Byte-identical sibling of node_linkBack_0004E8D4/node_linkBack_0004E920 (same body,
@@ -20064,154 +20069,16 @@ int CMod_display(char *a0) {
     return gl_func_00000000(gl_func_00000000, a0 + 0x2C, a0);
 }
 
-/* BaseLight_ctor: 203-insn (0x32C) chained-constructor + setup.
- * 0xE0-byte stack frame, sibling of just-landed CMod_hostioParms family.
- * NOT yet NM-wrapped — needs full body decode before compilable C.
- *
- * Decoded entry (insns 1-27):
- *   void *BaseLight_ctor(void *a0, void *a1) {
- *     void *s0 = a0;
- *     void *s1;
- *     if (a0 == NULL) {
- *       s0 = gl_func_00000000(0x138);   // alloc 0x138-byte primary
- *       if (s0 == NULL) goto epilogue;  // returns NULL
- *     }
- *     s1 = s0;
- *     if (s0 == NULL) {
- *       s1 = gl_func_00000000(0xB4);    // alloc 0xB4-byte secondary
- *       if (s1 == NULL) goto epilogue;
- *     }
- *     gl_func_00000000(s1, a1);          // initialize secondary via callee
- *     s0->[0x28] = &D_00000000;          // store data placeholder
- *     if (s1 != -0x2C) {                 // odd: signed-pointer compare?
- *       gl_func_00000000(s1 + 0x2C, ...);
- *     }
- *     // ... ~176 more insns of field setup + more callee chains
- *   }
- *
- * The `bne s1, $at` where at=-0x2C is unusual — possibly a tag check
- * (s1+0x2C != 0?) decoded incorrectly. Needs second-pass refinement.
- *
- * Insns 28-54 (+27 insns) — chained 4-byte allocs + Vec3-zero call:
- *     v1 = gl_func_00000000(4);
- *     if (v1 != NULL) *v1 = 0;
- *     // Second 4-byte alloc paired similarly
- *     a4 = gl_func_00000000(4);
- *     if (a4 != NULL) *a4 = 0;
- *     gl_func_00000000(s1);             // init secondary again
- *     // Zero Vec3 on stack at sp+0xC4
- *     sp[0xC4] = 0.0f; sp[0xC8] = 0.0f; sp[0xCC] = 0.0f;
- *     gl_func_00000000(s1 + 0x30, &sp[0xC4]); // pass zero Vec3
- *     s0->[0x28] = &D_00000000;          // re-store data placeholder
- *     s1 += 0xC4;                        // advance pointer for next block
- *
- * Cumulative 54/203 insns characterized.
- *
- * Insns 55-84 (+30 insns) — repeated alloc-and-init pattern at
- * different struct offsets:
- *     // pattern repeats: at = -<offset>; if (s0 != at) sw spill;
- *     v1 = gl_func_00000000(4); if (v1) *v1 = 0;  // 4-byte alloc at 2nd slot
- *     v1 = gl_func_00000000(4); if (v1) *v1 = 0;  // 4-byte alloc at 3rd slot
- *     s1 = s0 + 0x10C;                             // advance to 3rd-field base
- *     gl_func_00000000(0x2C);                      // 44-byte alloc (larger)
- *     // beq +0x5A skips ~90 insns if alloc=0 (fail-tail)
- *     // Then nested 8-byte alloc inside the success branch
- *
- * The `bne s0, $at` (at = -0xC4, -0x10C, ...) pattern is curious —
- * appears to be the compiler emitting always-taken pointer-vs-constant
- * compares as part of pseudo-bounds-checks. May be a `__assume` / debug-
- * assertion compiled in via macros. Decode interpretation uncertain.
- *
- * Cumulative 84/203 insns characterized, ~119 remaining.
- *
- * Insns 85-114 (+30 insns) — stack-resident transform-state setup:
- *     // Continuing from 8-byte alloc at v1:
- *     v1[0] = &D_00000000 + 0x21084;     // vtable/typeinfo ptr
- *     v1[1] = 0;
- *     f0 = 1.0f;                          // (lui 0x3F80)
- *     t0 = *(int*)((char*)&D_00000000 + 0x2108C);  // load global counter/flags
- *     // Zero Vec4 at sp+0x94..0xA0 (4 floats = 0.0f)
- *     sp[0x94] = sp[0x98] = sp[0x9C] = sp[0xA0] = 0.0f;
- *     // Identity scale Vec4 at sp+0xA4..0xB0 (4 floats = 1.0f)
- *     sp[0xA4] = sp[0xA8] = sp[0xAC] = sp[0xB0] = 1.0f;
- *     // Another unit Vec4 at sp+0x84..0x90
- *     sp[0x84] = sp[0x88] = sp[0x8C] = sp[0x90] = 1.0f;
- *     sp[0x80] = (int)t0;                // store global counter
- *     // Begin copy of Vec4 from sp+0xA4 → sp+0x48 (manual lw/sw pairs)
- *     // and from sp+0x84 → another area
- *
- * Pattern: building a complete transform/matrix on the stack with
- * 16+ float fields, prepping for a memcpy or sub-call. The
- * `&D_00000000 + 0x21084` looks like a relocatable vtable pointer for
- * the v1 8-byte alloc.
- *
- * Cumulative 114/203 insns characterized, ~89 remaining.
- *
- * Insns 115-144 (+30 insns) — three Vec4 stack memcpys + 0x24-alloc:
- *     // Copy 3 Vec4s from initialized scratch area to packed layout:
- *     memcpy(sp+0x48, sp+0xA4, 16);  // 4× 1.0f scale  → sp[0x48..0x54]
- *     memcpy(sp+0x38, sp+0x94, 16);  // 4× 0.0f offset → sp[0x38..0x44]
- *     memcpy(sp+0x28, sp+0x84, 16);  // 4× 1.0f       → sp[0x28..0x34]
- *     // Manual 4× lw/sw lowering (matches asm's per-word copy):
- *     sp[0x24] = sp[0x80];                  // global counter copy
- *     // 36-byte alloc for next sub-object:
- *     v0 = gl_func_00000000(0x24);
- *     // (followed by null-check + init)
- *
- * Pattern: building a packed transform record at sp[0x28..0x54]
- * (3× Vec4 = 0x30 bytes) which will be passed to the eventual final
- * submit call (likely as &sp[0x28]).
- *
- * Cumulative 144/203 insns characterized, ~59 remaining.
- *
- * Insns 145-174 (+30 insns) — finalize 0x24-byte alloc with vtable:
- *     a0 = alloc_result_36;            // from previous block
- *     if (a0 != NULL) {
- *         gl_func_00000000(a0, s1, sp[0x24]=counter, 1); // init call
- *         a0->vtable_at_0C = &D_00000000 + 0x20758;
- *         a0->field_20 = 0;
- *         // Copy 1.0f-Vec4 from sp[0x48..0x54] → a0->[0x10..0x1C]
- *         memcpy(&a0->field_10, &sp[0x48], 16);
- *         // Set bit 5 of s0->state_flags
- *         t9 = s0->field_8;
- *         s0->field_8 = t9 | 0x20;
- *         f0 = 1.0f;                    // (lui 0x3F80) — for later use
- *         s0->field_B8 = 0.0f;
- *         s0->field_BC = 0.0f;
- *     }
- *
- * Pattern: finalizing the 0x24-byte sub-object as a transform handle
- * (vtable @ 0xC, identity scale @ 0x10, zero counter @ 0x20). Setting
- * state bit 5 marks "transform configured."
- *
- * Cumulative 174/203 insns characterized, ~29 remaining.
- *
- * Insns 175-206 (+32 insns) — final s0 field-init + epilogue:
- *     // Float field init on primary s0 object:
- *     s0->float_B4 = 1.0f;             // (f0)
- *     s0->float_C0 = 0.0f;             // (f2)
- *     // Set bit 1 then bit 3 on sub-object at sp[0x20] (alloc'd earlier):
- *     t1 = sp[0x20];   *t1 |= 0x2;
- *     t4 = sp[0x20];   *t4 |= 0x8;
- *     s0->float_C8 = 0.0f;
- *     s0->float_CC = 0.0f;
- *     s0->int_D0  = 0xFFFF;            // 16-bit-mask sentinel
- *     s0->int_D4  = 0; s0->int_D8 = 0; s0->int_DC = 0;
- *     s0->float_FC = 1.0f;
- *     s0->float_100 = 0.0f; s0->float_104 = 0.0f; s0->float_108 = 0.0f;
- *     s0->float_E4 = 0.0f; s0->float_E8 = f4_const; s0->float_EC = 0.0f;
- *     return s0;
- *
- * The `f4_const` at s0->float_E8 comes from the very-early `lui $at, ?`
- * that mtc1's $f4 — value not fully traced (likely 1.0f or related).
- *
- * Cumulative 206/203 = FULL function decoded (entry alloc-chain +
- * field init + Vec3 deltas + transform setup + state flags + epilogue).
- *
- * NEXT PASS: build compilable C body from the structured decode and
- * wrap NM. ~30 cross-USO calls + 3 alloc allocations + matrix-style
- * transform record — function is a "spawn-death-trail-effect" or
- * similar constructor. Currently kept as INCLUDE_ASM. */
+/* BaseLight_ctor (0x546E8, 203 words): the Cfront constructor of BaseLight (light.h, 0x138).
+ *   1. MNode base part (0xB4): Node_ctor(this, name), MNode vtable (Sym 315), the 4-byte
+ *      member at +0x2C zeroed, the position sub-object at +0x30 set to (0, 0, 0);
+ *   2. BaseLight vtable (Sym 2150), the 4-byte flags member at +0xC4 (later |= 2 | 8);
+ *   3. the colour parm group at +0x10C (an 8-byte head {Data 0x21084, 0}, then a 0x24-byte
+ *      Quad parm initialised to {1, 1, 1, 1}, vtable Data 0x20758);
+ *   4. node flags |= 0x20, intensity 1, atten / falloff 0, mask 0xFFFF, dir (0, 1, 0),
+ *      unkFC 1.
+ * Each member is built with the Cfront `(m = this + OFF) != 0 || (m = alloc(N)) != 0` test
+ * (agent-b run 489: this comment replaces a stale partial decode). */
 /* 2026-10-22 (agent-g run 122) EXACT (203/203): the last word was the as1 order of the
  * rematerialized `mtc1 zero,$f2` vs the 0x28 vtable store; writing the s1+0x30 call, the
  * closing brace and the store on ONE source line puts the store first (found by the
@@ -20249,6 +20116,7 @@ struct V4_546E8 { f32 x, y, z, w; };
 struct V3_546E8 { f32 x, y, z; };
 struct P546E8 { char *p; };
 struct IP546E8 { int *p; };
+#define BL_546E8 ((BaseLight *)self) /* field view; self stays char * (the member tests add byte offsets) */
 s32 *BaseLight_ctor(char *self, int arg1) {
     volatile int padT[4];        /* 0xD0-0xDC */
     struct V3_546E8 zv;          /* 0xC4-0xCC */
@@ -20269,8 +20137,8 @@ s32 *BaseLight_ctor(char *self, int arg1) {
 
     if (self != 0 || (self = (char *)gl_func_00000000(0x138)) != 0) {
         if ((s1 = self) != 0 || (s1 = (char *)gl_func_00000000(0xB4)) != 0) {
-            gl_func_00000000(s1, arg1);
-            FW(s1, 0x28) = (int)&MNode_vtbl_546E8_a;
+            gl_func_00000000(s1, arg1); /* Node_ctor(this, name) */
+            ((Node *)s1)->vptr = (int)&MNode_vtbl_546E8_a;
             if (((v1 = s1 + 0x2C) != 0 || (v1 = (char *)gl_func_00000000(4)) != 0) &&
                 ((m = v1) != 0 || (m = (char *)gl_func_00000000(4)) != 0)) {
                 FW(m, 0) = 0;
@@ -20279,7 +20147,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             zv.x = 0.0f;
             zv.y = 0.0f;
             zv.z = 0.0f;
-            gl_func_00000000(s1 + 0x30, &zv); } FW(self, 0x28) = (int)&BaseLight_vtbl_546E8_b;
+            gl_func_00000000(s1 + 0x30, &zv); } BL_546E8->node.vptr = (int)&BaseLight_vtbl_546E8_b;
         s1 = self + 0xC4;
         sp20 = (int *)s1;
         if ((s1 != 0 || (s1 = (char *)gl_func_00000000(4)) != 0) &&
@@ -20315,29 +20183,30 @@ s32 *BaseLight_ctor(char *self, int arg1) {
                 *(struct V4_546E8 *)(m + 0x10) = sp48;
             }
         }
-        FW(self, 8) |= 0x20;
-        *(f32 *)(self + 0xB8) = 0.0f;
-        *(f32 *)(self + 0xBC) = 0.0f;
-        *(f32 *)(self + 0xC0) = 0.0f;
-        *(f32 *)(self + 0xB4) = 1.0f;
-        *sp20 |= 2;
+        BL_546E8->node.flags |= 0x20;
+        BL_546E8->unkB8[0] = 0.0f;
+        BL_546E8->unkB8[1] = 0.0f;
+        BL_546E8->unkB8[2] = 0.0f;
+        BL_546E8->intensity = 1.0f;
+        *sp20 |= 2;                  /* sp20 = &flags (+0xC4) */
         *sp20 |= 8;
-        *(f32 *)(self + 0xC8) = 0.0f;
-        *(f32 *)(self + 0xCC) = 0.0f;
-        FW(self, 0xD0) = 0xFFFF;
-        FW(self, 0xD4) = 0;
-        FW(self, 0xD8) = 0;
-        FW(self, 0xDC) = 0;
-        *(f32 *)(self + 0x108) = 0.0f;
-        *(f32 *)(self + 0x104) = 0.0f;
-        *(f32 *)(self + 0x100) = 0.0f;
-        *(f32 *)(self + 0xEC) = (float)0.0;
-        *(f32 *)(self + 0xE4) = (float)0.0;
-        *(f32 *)(self + 0xFC) = 1.0f;
-        *(f32 *)(self + 0xE8) = (float)1.0;
+        BL_546E8->atten = 0.0f;
+        BL_546E8->falloff = 0.0f;
+        BL_546E8->mask = 0xFFFF;
+        BL_546E8->unkD4[0] = 0;
+        BL_546E8->unkD4[1] = 0;
+        BL_546E8->unkD4[2] = 0;
+        BL_546E8->unk100[2] = 0.0f;
+        BL_546E8->unk100[1] = 0.0f;
+        BL_546E8->unk100[0] = 0.0f;
+        BL_546E8->dir[2] = (float)0.0;
+        BL_546E8->dir[0] = (float)0.0;
+        BL_546E8->unkFC = 1.0f;
+        BL_546E8->dir[1] = (float)1.0;
     }
     return (s32 *)self;
 }
+#undef BL_546E8
 
 /* BaseLight_hostioParms: 54-insn (0xD8) settings-registration sequence,
  * sibling of CMod_hostioParms family. Calls gl_func_00000000 seven

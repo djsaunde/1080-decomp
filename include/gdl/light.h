@@ -27,12 +27,12 @@ typedef struct BaseLight {
     /* 0x0B4 */ f32 intensity;        /* 1.0 */
     /* 0x0B8 */ f32 unkB8[3];         /* 0 */
     /* 0x0C4 */ s32 flags;            /* 0x80 skip; ctor sets 2 | 8 */
-    /* 0x0C8 */ f32 unkC8;
-    /* 0x0CC */ f32 unkCC;
-    /* 0x0D0 */ s32 mask;             /* 0xFFFF */
+    /* 0x0C8 */ f32 atten;            /* HostIO "Atten" slider 0..8000 (BaseLight_hostioParms); 0 */
+    /* 0x0CC */ f32 falloff;          /* HostIO "FallOff" slider 0..1000; 0 */
+    /* 0x0D0 */ s32 mask;             /* HostIO "MaskID"; 0xFFFF */
     /* 0x0D4 */ s32 unkD4[3];
     /* 0x0E0 */ s32 dirty;            /* gfx_updateLights: 1 when the position moved */
-    /* 0x0E4 */ f32 dir[3];           /* world direction */
+    /* 0x0E4 */ f32 dir[3];           /* world direction; (0, 1, 0) from the ctor */
     /* 0x0F0 */ f32 xdir[3];          /* transformed direction */
     /* 0x0FC */ f32 unkFC;            /* 1.0 */
     /* 0x100 */ f32 unk100[3];        /* 0 */

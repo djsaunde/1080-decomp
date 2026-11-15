@@ -51,6 +51,7 @@
 #define gGfxLib       D_00000000 /* Bss+0x3C168 Sym 154, 0x5D8 bytes: the GfxLib global (docs/1080_GRAPHICS.md section 2: +0xA0 modelview, +0x1C4 flags, +0x254 current ScreenWindow) */
 #define gSysLib       D_00000000 /* Bss+0x3C740 Sym 73, 0x28 bytes: the system-services object passed as `this` to heap_tempAlloc*, the fs_gdlRead* parm readers, pad_testButton, sys_timeInFrames (169 functions); App_main queries its memory range first. Role inferred from callers */
 #define gHostio       D_00000000 /* Bss+0x3C768 Sym 338, 8 bytes: the HostIO connection, first argument of every hostio_beginGroup/add/endGroup call in the 47 <Class>_hostioParms functions */
+#define gWindowDefaults D_00000000 /* Bss+0x3EC20 Sym 324, 0x40 bytes: the values Window_setDefaults copies into every new Window (+0x8 width, +0xC height, +0x10 / +0x14 origin, +0x18 near, +0x1C far, +0x28 flags, +0x2C projType, +0x30 clearColour; window.h) */
 #define gInputMgr     D_00000000 /* Bss+0xF8 Sym 272, 0x194 bytes: the InputMgr (include/game/input.h; 79 functions) */
 
 
