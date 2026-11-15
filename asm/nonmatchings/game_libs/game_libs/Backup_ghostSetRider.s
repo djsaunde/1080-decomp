@@ -1,6 +1,6 @@
-nonmatching Backup_ghostSetBits2, 0x24
+nonmatching Backup_ghostSetRider, 0x24
 
-glabel Backup_ghostSetBits2
+glabel Backup_ghostSetRider
     /* DEF98C 0000A8B4 8C8E0000 */  .word 0x8C8E0000
     /* DEF990 0000A8B8 2401FFE3 */  .word 0x2401FFE3
     /* DEF994 0000A8BC 30B90007 */  .word 0x30B90007
@@ -10,4 +10,4 @@ glabel Backup_ghostSetBits2
     /* DEF9A4 0000A8CC 01E84825 */  .word 0x01E84825
     /* DEF9A8 0000A8D0 03E00008 */  .word 0x03E00008
     /* DEF9AC 0000A8D4 AC890000 */  .word 0xAC890000
-endlabel Backup_ghostSetBits2
+endlabel Backup_ghostSetRider

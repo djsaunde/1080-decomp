@@ -1,6 +1,6 @@
-nonmatching Backup_ghostGetFlag5, 0x28
+nonmatching Backup_ghostGetBoardFlag, 0x28
 
-glabel Backup_ghostGetFlag5
+glabel Backup_ghostGetBoardFlag
     /* DEF9B0 0000A8D8 8C8E0000 */  .word 0x8C8E0000
     /* DEF9B4 0000A8DC 00001025 */  .word 0x00001025
     /* DEF9B8 0000A8E0 000E7943 */  .word 0x000E7943
@@ -11,5 +11,5 @@ glabel Backup_ghostGetFlag5
     /* DEF9CC 0000A8F4 24020020 */  .word 0x24020020
     /* DEF9D0 0000A8F8 03E00008 */  .word 0x03E00008
     /* DEF9D4 0000A8FC 00000000 */  .word 0x00000000
-endlabel Backup_ghostGetFlag5
+endlabel Backup_ghostGetBoardFlag
 

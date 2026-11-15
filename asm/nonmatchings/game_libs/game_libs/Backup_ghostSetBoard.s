@@ -1,6 +1,6 @@
-nonmatching Backup_ghostSetBits6, 0x24
+nonmatching Backup_ghostSetBoard, 0x24
 
-glabel Backup_ghostSetBits6
+glabel Backup_ghostSetBoard
     /* DEFA10 0000A938 8C8E0000 */  .word 0x8C8E0000
     /* DEFA14 0000A93C 2401FC3F */  .word 0x2401FC3F
     /* DEFA18 0000A940 30B9000F */  .word 0x30B9000F
@@ -10,4 +10,4 @@ glabel Backup_ghostSetBits6
     /* DEFA28 0000A950 01E84825 */  .word 0x01E84825
     /* DEFA2C 0000A954 03E00008 */  .word 0x03E00008
     /* DEFA30 0000A958 AC890000 */  .word 0xAC890000
-endlabel Backup_ghostSetBits6
+endlabel Backup_ghostSetBoard

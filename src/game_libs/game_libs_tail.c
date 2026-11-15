@@ -825,10 +825,10 @@ void Backup_ghostSetMode(BackupGhost *a0, int a1) {
 }
 
 /* getter: bits 2..4 → return (a0->bits >> 2) & 7 */
-int Backup_ghostGetBits2(BackupGhost *a0) { return (a0->bits >> 2) & 7; }
+int Backup_ghostGetRider(BackupGhost *a0) { return (a0->bits >> 2) & 7; }
 
 /* setter: bits 2..4 ← a1 */
-void Backup_ghostSetBits2(BackupGhost *a0, int a1) {
+void Backup_ghostSetRider(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x1C;
     a0->bits = a0->bits | ((a1 & 7) << 2);
 }
@@ -842,9 +842,9 @@ void Backup_ghostSetBits2(BackupGhost *a0, int a1) {
  * function (shared-tail space optimization). Plain C cannot suppress the
  * trailing epilogue; would need a TRUNCATE_TEXT=8 post-cc strip, not
  * worth it for an 8-byte fn. Keep INCLUDE_ASM (no episode). */
-/* Backup_ghostGetFlag5: bit-test accessor; splat split the return-0 tail
+/* Backup_ghostGetBoardFlag: bit-test accessor; splat split the return-0 tail
  * into the 0000A8F8 empty stub (sibling of the 00009A2C family). Merged. */
-int Backup_ghostGetFlag5(BackupGhost *a0) {
+int Backup_ghostGetBoardFlag(BackupGhost *a0) {
     if ((a0->bits >> 5) & 1) {
         return 32;
     }
@@ -852,16 +852,16 @@ int Backup_ghostGetFlag5(BackupGhost *a0) {
 }
 
 /* setter: bit 5 ← (a1 & 0x20) */
-void Backup_ghostSetFlag5(BackupGhost *a0, int a1) {
+void Backup_ghostSetBoardFlag(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x20;
     if (a1 & 0x20) a0->bits = a0->bits | 0x20;
 }
 
 /* getter: bits 6..9 → return (a0->bits >> 6) & 0xF */
-int Backup_ghostGetBits6(BackupGhost *a0) { return (a0->bits >> 6) & 0xF; }
+int Backup_ghostGetBoard(BackupGhost *a0) { return (a0->bits >> 6) & 0xF; }
 
 /* setter: bits 6..9 ← a1 */
-void Backup_ghostSetBits6(BackupGhost *a0, int a1) {
+void Backup_ghostSetBoard(BackupGhost *a0, int a1) {
     a0->bits = a0->bits & ~0x3C0;
     a0->bits = a0->bits | ((a1 & 0xF) << 6);
 }

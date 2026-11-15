@@ -1,6 +1,6 @@
-nonmatching Backup_ghostSetFlag5, 0x28
+nonmatching Backup_ghostSetBoardFlag, 0x28
 
-glabel Backup_ghostSetFlag5
+glabel Backup_ghostSetBoardFlag
     /* DEF9D8 0000A900 8C8E0000 */  .word 0x8C8E0000
     /* DEF9DC 0000A904 2401FFDF */  .word 0x2401FFDF
     /* DEF9E0 0000A908 30B80020 */  .word 0x30B80020
@@ -11,4 +11,4 @@ glabel Backup_ghostSetFlag5
     /* DEF9F4 0000A91C AC880000 */  .word 0xAC880000
     /* DEF9F8 0000A920 03E00008 */  .word 0x03E00008
     /* DEF9FC 0000A924 00000000 */  .word 0x00000000
-endlabel Backup_ghostSetFlag5
+endlabel Backup_ghostSetBoardFlag
