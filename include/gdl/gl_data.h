@@ -28,6 +28,16 @@
 
 /* a site relocated against the Data section base Sym (tag 0x640000, sym 2) */
 #define GL_DATA(off) ((char *)&D_00000000 + (off))
+/* ... against the RoData / Bss section base Syms (tag 0x740000 sym 1, 0x840000 sym 4) */
+#define GL_RODATA(off) ((char *)&D_00000000 + (off))
+#define GL_BSS(off) ((char *)&D_00000000 + (off))
+/* a section-base site whose K starts a string: the literal is documentation only (the
+ * argument is dropped by the preprocessor, so the expansion is GL_DATA(off) exactly).
+ * `uso-data-sites.py check` compares every literal with the ROM bytes at that offset, and
+ * `spell-base` writes these (agent-a run 498). Parm tags are 3-char strings read as a word:
+ * `*(s32 *)GL_DATA_STR(0x8748, "ied")`. */
+#define GL_DATA_STR(off, text) GL_DATA(off)
+#define GL_RODATA_STR(off, text) GL_RODATA(off)
 
 /* ---- named bootup.uso objects (agent-a run 479; READABILITY_PLAN 9.1) ----
  *

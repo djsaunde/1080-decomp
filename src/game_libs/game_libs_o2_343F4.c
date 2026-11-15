@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* IDO 7.1 -O2 donor for dbg_threadStateName -- selector -> address of
  * a 0xC-stride table entry (game_libs data +0x1E3BC..+0x1E3EC). PROVEN
  * EXACT 25/25 words standalone (st_size = 0x64).
@@ -42,15 +43,15 @@ extern char D_00000000;
 int dbg_threadStateName(int a0) {
     switch (a0) {
     case 2:
-        return (int)(&D_00000000 + 0x1E3BC);
+        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
     case 3:
-        return (int)(&D_00000000 + 0x1E3C8);
+        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
     case 5:
-        return (int)(&D_00000000 + 0x1E3D4);
+        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
     case 1:
-        return (int)(&D_00000000 + 0x1E3E0);
+        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
     case 8:
     default:
-        return (int)(&D_00000000 + 0x1E3EC);
+        return (int)(GL_DATA_STR(0x1E3EC, "Unknown"));
     }
 }

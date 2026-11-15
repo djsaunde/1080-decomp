@@ -499,7 +499,7 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
         a0 = (void*)gl_func_00000000(292);
         if (a0 == 0) goto end;
     }
-    gl_init_00000000_63884(a0, (char*)&D_00000000 + 0x22388, 0.0f, 0.0f, 0.0f);
+    gl_init_00000000_63884(a0, GL_DATA_STR(0x22388, "<QNode>"), 0.0f, 0.0f, 0.0f);
     *(int*)((char*)a0 + 0x28) = (int)&PhysQNode_vtbl;
     tmp = *(Tri3i*)a2;
     *(float*)((char*)a0 + 0x10C) = *(float*)&tmp.a;
@@ -668,7 +668,7 @@ extern int aD63DC4_4(void*, float, float, float);
 extern float aD63DC4_1(float);
 void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
     if (s0 != 0 || (s0 = (void*)gl_func_00000000(368)) != 0) {
-        aD63DC4_5(s0, (char*)&D_00000000 + 0x22390, 0.0f, 0.0f, 0.0f);
+        aD63DC4_5(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
         *(int*)((char*)s0 + 0x28) = (int)&Friction_vtbl;
         *(int*)((char*)s0 + 0x16C) = a1;
         aD63DC4_4(s0, a2, a3, a4);
@@ -711,10 +711,10 @@ extern int gl_func_00000000();
 extern int gl_func_00000000f(void *, void *, void *, float, float, int);
 extern int D_00000000;
 void Friction_hostioParms_00063E84(char *a0) {
-    gl_func_00000000(&gHostio, (char*)&D_00000000 + 0x22398, 0);
-    gl_func_00000000f(&gHostio, (char*)&D_00000000 + 0x223A4,
+    gl_func_00000000(&gHostio, GL_DATA_STR(0x22398, "Friction"), 0);
+    gl_func_00000000f(&gHostio, GL_DATA_STR(0x223A4, "Friction"),
                       a0 + 0x150, 0.0f, 2.0f, 1);
-    gl_func_00000000f(&gHostio, (char*)&D_00000000 + 0x223B0,
+    gl_func_00000000f(&gHostio, GL_DATA_STR(0x223B0, "Friction Limit"),
                       a0 + 0x154, 0.0f, 10.0f, 1);
     gl_func_00000000(&gHostio);
     gl_func_00000000(a0);
@@ -917,7 +917,7 @@ void DNodeAccum_addForce_000641DC(S641DC *a0, Vec3 *a1, Vec3 *a2) {
     pp->z += a2->z;
     local = *a1;
     m = gl_func_00000000_sq641DC(local.x * local.x + local.y * local.y + local.z * local.z);
-    if (*(double *)((char *)&D_00000000 + 0x20C0) < m) {
+    if (*(double *)(GL_RODATA(0x20C0)) < m) {
         Vec3 padB[3];
         gl_func_00000000(&local, a2, &out);
         inv = 1.0f / m;
@@ -2045,8 +2045,8 @@ void DNode_update(int *a0) {
  * refs (&D + offset -> lui; addiu), not literals (lui; ori). Decode the symbol
  * (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
 void DNode_hostioParms(int *a0) {
-    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x2240C, 0);
-    gl_func_00000000(&gHostio, (char *)&D_00000000 + 0x22414);
+    gl_func_00000000(&gHostio, GL_DATA_STR(0x2240C, "DNode"), 0);
+    gl_func_00000000(&gHostio, GL_DATA_STR(0x22414, "Dynamics"));
     gl_func_00000000((char *)a0 + 0x108, 0);
     gl_func_00000000(&gHostio);
     gl_func_00000000(&gHostio);
@@ -2193,7 +2193,7 @@ void fs_piXfer_0006612C(int *a0) {
  * (docs/IDO_CODEGEN.md#feedback-return-const-lui-addiu-vs-lui-ori). Byte-exact. */
 extern int gl_func_00000000();
 void fs_fatal_000661D8(int a0_unused) {
-    gl_func_00000000((char*)&D_00000000 + 0x2246C);
+    gl_func_00000000(GL_DATA_STR(0x2246C, "GAME: %s\n"));
 }
 
 /* fs_stub_00066200/00066208: 2 save-arg-sentinel stubs RECOVERED 2026-05-28
@@ -2297,12 +2297,12 @@ void fs_yield_00066364(int a0) {
 
 extern int gl_func_00000000();
 int sys_badObjPtr_00066384(int a0) {
-    return gl_func_00000000((char *)&D_00000000 + 0x22498, a0);
+    return gl_func_00000000(GL_DATA_STR(0x22498, "unexpected objptr %s"), a0);
 }
 
 extern int gl_func_00000000();
 int sys_staticArrayOverflow() {
-    return gl_func_00000000((char *)&D_00000000 + 0x224B0);
+    return gl_func_00000000(GL_DATA_STR(0x224B0, "StaticArray overflow"));
 }
 
 extern int gl_func_00000000();
@@ -2668,7 +2668,7 @@ void dma_writeChunked_00066794(char *dst, char *src, unsigned int count) {
 void boot_usoLoadFatal_00066810(int a0) {
     int v0 = (*(int(**)())((char*)*(void**)&D_00000000 + 0x40))();
     if (v0 < 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x20F0, a0, v0);
+        gl_func_00000000(GL_RODATA_STR(0x20F0, "usoLoad() error loading file %s: %d"), a0, v0);
     }
 }
 
@@ -2691,28 +2691,28 @@ void boot_main_00066850(s32 arg0) {
     u32 temp_a1_2;
 
     gl_func_00062F64_66850(0xFE);
-    gl_func_00062F64_66850(0x96, (char*)&D_00000000 + 0x41688, (char*)&D_00000000 + 0x415C0, 0x32);
+    gl_func_00062F64_66850(0x96, GL_BSS(0x41688), GL_BSS(0x415C0), 0x32);
     gl_func_00062F64_66850();
     gl_func_00062F64_66850((char*)&gl_osViModeTable + 0xA0);
     gl_func_00062F64_66850(0x42);
     gl_func_00062F64_66850(1);
     temp_a1 = FW(*(int**)&gSysApi, 0xC);
     if (temp_a1 != 0) {
-        gl_func_00062F64_66850((char*)&D_00000000 + 0x2114, temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
+        gl_func_00062F64_66850(GL_RODATA_STR(0x2114, "USO warning num %d, data=%x, %x\n"), temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
     }
     temp_a1_2 = FW(*(int**)&gSysApi, 0x8);
     if (temp_a1_2 != 0) {
-        gl_func_00062F64_66850((char*)&D_00000000 + 0x2138, temp_a1_2, FW(*(int**)&gSysApi, 0x10));
+        gl_func_00062F64_66850(GL_RODATA_STR(0x2138, "USO error num %d, data=%x\n"), temp_a1_2, FW(*(int**)&gSysApi, 0x10));
     }
     gl_func_00062F64_66850(FW(*(int**)&gSysApi, 0x0), FW(*(int**)&gSysApi, 0x4));
-    gl_func_00062F64_66850((char*)&D_00000000 + 0x2154, (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
+    gl_func_00062F64_66850(GL_RODATA_STR(0x2154, "Bootup Code size %dk\n"), (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
     FW(*(int**)&gSysApi, 0x80) = (int)&D_gl66850_h0;
     FW(*(int**)&gSysApi, 0x34) = (int)&D_gl66850_h1;
     FW(*(int**)&gSysApi, 0x84) = (int)&D_gl66850_h2;
     FW(*(int**)&gSysApi, 0x98) = (int)&D_gl66850_h3;
     FW(*(int**)&gSysApi, 0x9C) = (int)&D_gl66850_h4;
     FW(*(int**)&gSysApi, 0x94) = (int)&D_gl66850_h5;
-    gl_func_00062F64_66850((char*)&D_00000000 + 0x216C);
+    gl_func_00062F64_66850(GL_RODATA_STR(0x216C, "running main\n"));
     gl_func_00062F64_66850();
 }
 
@@ -2950,9 +2950,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", boot_startThread_00066B64);
 void boot_startThread_00066BD4(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x20(sp) */
     gl_func_00000000(*p);
-    gl_func_00000000((char*)&D_00000000 + 0x41310, 1, &D_00000000, 0,
+    gl_func_00000000(GL_BSS(0x41310), 1, &D_00000000, 0,
                      (char*)&D_00000000 + 0x415C0, 1);
-    gl_func_00000000((char*)&D_00000000 + 0x41310);
+    gl_func_00000000(GL_BSS(0x41310));
 }
 
 /* 8-insn: stores arg to D_00000000, calls gl_func_00000000(0).
@@ -2983,10 +2983,10 @@ void boot_stub_00066C60(void) {}
  * `or s0,a0,zero` below the flag store (docs/IDO_CODEGEN.md
  * #volatile-first-store-pins-param-sreg-copy-66c74). */
 void pad_init_00066C74(char *self) {
-    *(int*)((char*)&D_00000000 + 0x416B0) = 2;
+    *(int*)(GL_BSS(0x416B0)) = 2;
     *(volatile int*)(self + 0x13E8) = 0;
     gl_func_00000000(self + 0x11B0, self + 0x11C8, 4);
-    gl_func_00000000(5, self + 0x11B0, (char*)&D_00000000 + 0x416B0);
+    gl_func_00000000(5, self + 0x11B0, GL_BSS(0x416B0));
     *(int*)(self + 0x13F0) = 0;
     {
         int i;
@@ -3030,28 +3030,28 @@ void pad_probePaks_00066D54(char *arg0) {
     for (var_s1 = 0; var_s1 != 4; var_s1++) {
         if (*(u8*)((char*)arg0 + 0x13EC) & (1 << var_s1)) {
             if (!(*(u8*)((char*)((char *)&((int *)arg0)[var_s1]) + 0x121B) & 8)) {
-                gl_func_00000000(((char *)&D_00000000 + 0x22570), var_s1);
+                gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")), var_s1);
                 sp53 = 0;
                 gl_func_00000000((arg0 + 0x11B0), &sp53);
                 if (sp53 & (1 << var_s1)) {
                     r = gl_func_00000000((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1);
                     if (r == 10) {
                         if (gl_func_00000000((arg0 + 0x11B0), (int)arg0 + (var_s1 * 0x68) + 0x1228, var_s1) != 0) {
-                            gl_func_00000000(((char *)&D_00000000 + 0x22570) + 0x14);
+                            gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x14);
                             FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 0;
                         } else {
-                            gl_func_00000000(((char *)&D_00000000 + 0x22570) + 0x1C);
+                            gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x1C);
                             FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 2;
                             *(u8*)((char*)arg0 + var_s1 + 0x13DC) = 1;
                         }
                     } else if (r == 0) {
-                        gl_func_00000000(((char *)&D_00000000 + 0x22570) + 0x24);
+                        gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x24);
                         FW(((char *)&((int *)arg0)[var_s1]), 0x13C8) = 1;
                     }
                 } else {
-                    gl_func_00000000(((char *)&D_00000000 + 0x22570) + 0x28);
+                    gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x28);
                 }
-                gl_func_00000000(((char *)&D_00000000 + 0x22570) + 0x30);
+                gl_func_00000000((GL_DATA_STR(0x22570, "Controller %d Pak: ")) + 0x30);
             }
         }
     }
@@ -3363,7 +3363,7 @@ void pad_reset_000673FC(int *a0, int a1) {
  * jal-0 placeholders = the correct ROM bytes). No episode — placeholder relocs.
  * First call's arg uses absolute address 0x225D8 (lui $a0,0x2; addiu $a0,0x25D8). */
 void pad_setPause_00067470(int* a0, int a1) {
-    gl_func_00000000((char *)&D_00000000 + 0x225D8, a0[13], a1);
+    gl_func_00000000(GL_DATA_STR(0x225D8, "Ctl %d: pause %d\n"), a0[13], a1);
     if (a0[30] != 0) {
         gl_func_00000000(&gl_data_00000000, a0[13] - 1, 0);
     }
@@ -3474,7 +3474,7 @@ void pad_startRecord_000679BC(int *a0, int a1, int a2, int *a3) {
     a0[0x58/4] = (int)a3;
     *a3 = 0;
     a0[0x4C/4] = 2;
-    gl_func_00000000((char*)&D_00000000 + 0x225EC, a0[0x34/4]);
+    gl_func_00000000(GL_DATA_STR(0x225EC, "Ctl %d: start record\n"), a0[0x34/4]);
 }
 
 extern int gl_func_00000000();
@@ -3484,7 +3484,7 @@ void pad_startPlay_00067A10(char *a0, int a1, int a2) {
     *(int*)(a0 + 0x50) = 0;
     *(int*)(a0 + 0x54) = a2;
     *(int*)(a0 + 0x4C) = 1;
-    gl_func_00000000((char *)&D_00000000 + 0x22604, *(int*)(a0 + 0x34));
+    gl_func_00000000(GL_DATA_STR(0x22604, "Ctl %d: start play\n"), *(int*)(a0 + 0x34));
 }
 
 /* pad_setIfNewer_00067A54: too-big-N-function-bundle (declared size 0x74, 29 words).
@@ -3966,7 +3966,7 @@ int str_dup(int a0) {
     int v0;
     v0 = (int)gl_func_00000000(gl_func_00000000(a0) + 1);
     if (v0 == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x2AA40);
+        gl_func_00000000(GL_DATA_STR(0x2AA40, "strdup(): out of memory"));
     }
     gl_func_00000000(v0, a0);
     return v0;
@@ -4010,9 +4010,9 @@ int math_atanLookup_00067FE4(float a0, float a1) {
     unsigned short r;
 
     if (a1 == 0.0f) {
-        r = *(unsigned short *)((char *)&D_00000000 + 0x2AA60);
+        r = *(unsigned short *)(GL_DATA(0x2AA60));
     } else {
-        r = *(unsigned short *)((char *)&D_00000000 + 0x2AA60 + (int)(a0 / a1 * 1024.0f + 0.5f) * 2);
+        r = *(unsigned short *)(GL_DATA(0x2AA60) + (int)(a0 / a1 * 1024.0f + 0.5f) * 2);
     }
     return r;
 }
@@ -4134,7 +4134,7 @@ void fs_gdlReadInt_000682BC(int *dst) {
  * split-fragments separated as game_libs_func_0006833{8,40,48} —
  * those remain INCLUDE_ASM in this file (sandwich-ordered). */
 void BinFile_init_000682F8(int *self) {
-    gl_func_00000000(self + 5, (char *)&D_00000000 + 0x2B3B8, self);
+    gl_func_00000000(self + 5, GL_DATA_STR(0x2B3B8, "<empty>"), self);
     self[4] = 0;
     self[0] = 0;
     self[2] = 0;
@@ -4339,13 +4339,13 @@ void BinFileMgr_check_000685C0(int *a0, unsigned int a1) {
     unsigned int key_l = a1 & 0xFFFF;
 
     if (!(key_h < (unsigned int)a0[0x34/4])) {
-        gl_func_00000000((char*)&D_00000000 + 0x2B3C0, key_h, key_l);
+        gl_func_00000000(GL_DATA_STR(0x2B3C0, "BinFile Group out of range %d:%d"), key_h, key_l);
     }
     if (!(key_l < (unsigned int)((int*)((char*)a0[0x30/4] + key_h * 16))[2])) {
-        gl_func_00000000((char*)&D_00000000 + 0x2B3E4, key_h, key_l);
+        gl_func_00000000(GL_DATA_STR(0x2B3E4, "BinFile File out of range %d:%d"), key_h, key_l);
     }
     if (((int*)((int*)((char*)((int*)((char*)a0[0x30/4] + key_h * 16))[1] + key_l * 4))[0])[0x10/4] == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x2B404, key_h);
+        gl_func_00000000(GL_DATA_STR(0x2B404, "BinFile File empty %d:%d"), key_h);
     }
 }
 
@@ -5403,7 +5403,7 @@ extern struct { char pad[0x2280]; double v; } D_69CC4_2280;
 extern struct { char pad[0x2C650]; unsigned short t[1]; } D_69CC4_tbl;
 float math_acosf(float x) {
     if (x > D_69CC4_2268.v || x < D_69CC4_2270.v) {
-        gl_func_00000000((char *)&D_00000000 + 0x2250, x);
+        gl_func_00000000(GL_RODATA_STR(0x2250, "acos out of range %f"), x);
         return 0.0f;
     }
     if (x > 0.0f) {
@@ -5960,7 +5960,7 @@ extern char gl_data_B9B4_b;
 extern char gl_data_B9B4_c;
 void gl___osPiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
-    gl_func_00000000(&gl_data_B9B4_b, (char*)&D_00000000 + 0x42750, 1);
+    gl_func_00000000(&gl_data_B9B4_b, GL_BSS(0x42750), 1);
     gl_func_00000000(&gl_data_B9B4_c, 0, 0);
 }
 /* game_libs_func_0006BA04 (2-word splat mis-split: lui t6,0; lw t6,0(t6))

@@ -1,3 +1,4 @@
+#include "gdl/gl_data.h"
 /* IDO 7.1 -O2 donor for dbg_faultThread (0x13C / 79 words, the
  * subsystem poll loop) and sys_hang (0x20, the hang stub).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY; only those two
@@ -27,16 +28,16 @@ extern int gl_func_00000000();
 int dbg_threadStateName(int a0) {
     switch (a0) {
     case 2:
-        return (int)(&D_00000000 + 0x1E3BC);
+        return (int)(GL_DATA_STR(0x1E3BC, "Stopped "));
     case 3:
-        return (int)(&D_00000000 + 0x1E3C8);
+        return (int)(GL_DATA_STR(0x1E3C8, "Runnable"));
     case 5:
-        return (int)(&D_00000000 + 0x1E3D4);
+        return (int)(GL_DATA_STR(0x1E3D4, "Running "));
     case 1:
-        return (int)(&D_00000000 + 0x1E3E0);
+        return (int)(GL_DATA_STR(0x1E3E0, "Waiting "));
     case 8:
     default:
-        return (int)(&D_00000000 + 0x1E3EC);
+        return (int)(GL_DATA_STR(0x1E3EC, "Unknown"));
     }
 }
 
@@ -48,12 +49,12 @@ int dbg_printThreads() {
     int outB, outA;
     int s1;
     int vB;
-    gl_func_00000000((char *)&D_00000000 + 0x1E3F4);
+    gl_func_00000000(GL_DATA_STR(0x1E3F4, "Threads: \n"));
     while (*(int *)(n + 4) != -1) {
         (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
         s1 = gl_func_00000000(*(int *)(n + 0x14));
         vB = gl_func_00000000(*(unsigned short *)(n + 0x10));
-        gl_func_00000000((char *)&D_00000000 + 0x1E400, s1, *(int *)(n + 0x14), vB,
+        gl_func_00000000(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
                          outA, outB, *(int *)(n + 0x11C));
         n = *(char **)(n + 0xC);
     }
@@ -66,29 +67,29 @@ void dbg_faultThread(void *a0) {
     char *s0;
     int sp54, sp50;
     int r5;
-    gl_func_00000000(0xC, (char *)&D_00000000 + 0x3BB18, 0x10);
-    *(int *)((char *)&D_00000000 + 0x3BB38) = 0;
+    gl_func_00000000(0xC, GL_BSS(0x3BB18), 0x10);
+    *(int *)(GL_BSS(0x3BB38)) = 0;
     for (;;) {
-        gl_func_00000000((char *)&D_00000000 + 0x3BB18, &sp5C, 1);
+        gl_func_00000000(GL_BSS(0x3BB18), &sp5C, 1);
         if ((D_34548_slot = (char *)gl_func_00000000()) == 0) {
             continue;
         }
         s0 = D_34548_slot + 0x20;
         (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
-        gl_func_00000000((char *)&D_00000000 + 0x1E424);
+        gl_func_00000000(GL_DATA_STR(0x1E424, "****************\n"));
         gl_func_00000000(D_34548_slot);
         r5 = gl_func_00000000(*(int *)(D_34548_slot + 0x14));
-        gl_func_00000000((char *)&D_00000000 + 0x1E438, sp50, sp54, *(int *)(s0 + 0xFC), r5,
+        gl_func_00000000(GL_DATA_STR(0x1E438, "Fault (%s,0x%x) 0x%x in Thread %s (%d)\n"), sp50, sp54, *(int *)(s0 + 0xFC), r5,
                          *(int *)(D_34548_slot + 0x14));
     }
 }
 
 extern int func_00000000();
 void dbg_startFaultThread(void) {
-    func_00000000((char*)&D_00000000 + 0x3BB18, (char*)&D_00000000 + 0x3BB30, 1);
-    func_00000000((char*)&D_00000000 + 0x3B968, 5, &D_00000000, 0,
+    func_00000000(GL_BSS(0x3BB18), GL_BSS(0x3BB30), 1);
+    func_00000000(GL_BSS(0x3B968), 5, &D_00000000, 0,
                    (char*)&D_00000000 + 0x3C040, 12);
-    func_00000000((char*)&D_00000000 + 0x3B968);
+    func_00000000(GL_BSS(0x3B968));
 }
 
 int dbg_printfSink(int a0, char *src, int n) {

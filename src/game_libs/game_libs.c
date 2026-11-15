@@ -24,7 +24,7 @@ char *TimeGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x13C), (arg0 != 0))) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
-            gl_func_00000000(sub, (char *)&D_00000000 + 0xCAF4);
+            gl_func_00000000(sub, GL_DATA_STR(0xCAF4, "<Node>"));
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
@@ -62,7 +62,7 @@ void TimeGadget_setTime(char *a0, int a1) {
     int rem = a1 - mins * 60000;
     int secs = rem / 1000;
     int ms_part = (rem - secs * 1000) / 10;
-    gl_func_00000000(((Gadget *)a0)->text, (char*)&D_00000000 + 0xCB08, mins, secs, ms_part);
+    gl_func_00000000(((Gadget *)a0)->text, GL_DATA_STR(0xCB08, "%db%02da%02d"), mins, secs, ms_part);
 }
 
 /* BestTimeGadget_ctor: three-level get-or-create constructor (0x13C object ->
@@ -85,7 +85,7 @@ char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
-                gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB18);
+                gl_func_00000000(sub2, GL_DATA_STR(0xCB18, "<Node>"));
                 ((Node *)sub2)->vptr = (s32)&TimeGadget_vtbl;
                 gl_func_00000000(sub2 + 0x2C);
             }
@@ -138,7 +138,7 @@ char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
             sub2 = sub;
             if ((sub != 0) || (sub2 = (char *)gl_func_00000000(0x10C), (sub2 != 0))) {
-                gl_func_00000000(sub2, (char *)&D_00000000 + 0xCB40);
+                gl_func_00000000(sub2, GL_DATA_STR(0xCB40, "<Node>"));
                 ((Node *)sub2)->vptr = (s32)&TimeGadget_vtbl;
                 gl_func_00000000(sub2 + 0x2C);
             }
@@ -301,7 +301,7 @@ char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xD4), (arg0 != 0))) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0xC4), (sub != 0))) {
-            gl_func_00000000(sub, (char *)&D_00000000 + 0xCB84);
+            gl_func_00000000(sub, GL_DATA_STR(0xCB84, "<Node>"));
             ((Node *)sub)->vptr = (s32)&CountDownGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
@@ -433,7 +433,7 @@ void *PointsGadget_ctor(char *s0, int a1) {
         sub = (char*)gl_func_00000000(268);
         if (sub == 0) goto skip_init;
     }
-    gl_func_00000000(sub, (char*)&D_00000000 + 0xCBC0);
+    gl_func_00000000(sub, GL_DATA_STR(0xCBC0, "<Node>"));
     ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
     gl_func_00000000(sub + 0x2C);
 skip_init:
@@ -441,7 +441,7 @@ skip_init:
     gl_func_00000000(((Gadget *)s0)->sprite0, 0x050001);
     gl_func_00000000(((Gadget *)s0)->sprite1, 0x050007);
     gl_func_00000000(s0, ((Gadget *)s0)->sprite1, ((Gadget *)s0)->sprite0);
-    k = *(float*)((char*)&D_00000000 + 0xC70);
+    k = *(float*)(GL_RODATA(0xC70));
     ((Gadget *)s0)->unkD4 = 0;
     ((Gadget *)s0)->unkD8 = 255;
     ((Gadget *)s0)->unkDC = 130;
@@ -489,11 +489,11 @@ int PointsGadget_ctor_00000ED0(int a0, int a1) {
             goto initfields;
         }
     }
-    gl_func_00000000(node, (char*)&D_00000000 + 0xCBE0);
+    gl_func_00000000(node, GL_DATA_STR(0xCBE0, "<Node>"));
     ((Node *)node)->vptr = (s32)&PointsGadget_vtbl_C854;
     gl_func_00000000(node + 0x2C);
 initfields:
-    v = *(float*)((char*)&D_00000000 + 0xC74);
+    v = *(float*)(GL_RODATA(0xC74));
     *(int*)(a0 + 0xC) = (int)(sPointsGadgetName_CBE8);
     *(int*)(a0 + 0x74) = 0;
     *(int*)(a0 + 0x78) = 255;
@@ -530,7 +530,7 @@ char *SpeedGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x13C), (arg0 != 0))) {
         sub = arg0;
         if ((arg0 != 0) || (sub = (char *)gl_func_00000000(0x10C), (sub != 0))) {
-            gl_func_00000000(sub, (char *)&D_00000000 + 0xCBFC);
+            gl_func_00000000(sub, GL_DATA_STR(0xCBFC, "<Node>"));
             ((Node *)sub)->vptr = (s32)&TimeGadget_vtbl;
             gl_func_00000000(sub + 0x2C);
         }
@@ -594,7 +594,7 @@ int* BoardsGadget_ctor(int *self) {
         ((BoardsGadget *)self)->node.name = (s32)((char*)&gl_data_00000000 + 0xCC28);
         gl_func_00000000(((BoardsGadget *)self)->sprite,
             *(int*)((char*)&gl_data_00000000_11a4 + 0x54) | 0x001E0000);
-        f = *(float*)((char*)&D_00000000 + 0xC78);
+        f = *(float*)(GL_RODATA(0xC78));
         ((BoardsGadget *)self)->unkD4 = 0;
         ((BoardsGadget *)self)->unkD8 = 0xFF;
         ((BoardsGadget *)self)->count = 0;
@@ -1205,7 +1205,7 @@ char *CourseGadgetParms_ctor(char *self) {
  * arg1 reload / lui a1 schedule below the swc1 run). */
 char *CourseGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x2FC), (arg0 != 0))) {
-        gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCB4);
+        gl_func_00000000(arg0, GL_DATA_STR(0xCCB4, "<Node>"));
         *(s32 *)(arg0 + 0x28) = (s32)&CourseGadget_vtbl;
         gl_func_00000000(arg0 + 0x2C);
         *(s32 *)(arg0 + 0xC) = (s32)(sCourseGadgetName);
@@ -1335,7 +1335,7 @@ void hud_findMarkers_000029F8(char *arg0) {
     s32 y;
 
     scale = (f32)*(s32 *)(arg0 + 0xEC) - (f32)*(s32 *)(arg0 + 0x8C);
-    key.v = *(s32 *)((char *)&D_00000000 + 0xCCCC);
+    key.v = *(s32 *)(GL_DATA_STR(0xCCCC, "mrk"));
     list = (char *)gl_func_00000000(gl_data_00000000, key);
     if (list != 0) {
         it[1] = *(GlNode29F8 **)(list + 0x10);
@@ -1391,7 +1391,7 @@ char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     char *var_s1;
 
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x168), (arg0 != 0))) {
-        gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCD0);
+        gl_func_00000000(arg0, GL_DATA_STR(0xCCD0, "<Node>"));
         *(int *)(arg0 + 0x28) = (int)&PointsGadget_vtbl_CA4C;
         FW(arg0, 0xC) = (int)(sPointsGadgetName_CCD8);
         FW(arg0, 0x50) = arg3;
@@ -1692,7 +1692,7 @@ GlSlot3B1C *PointsGadget_allocSlot_00003B1C(GlOwn3B1C *arg0, s32 arg1, s32 arg2,
             slot->unk80 = 0;
             slot->unk84 = -18;
             slot->unkA8 = 0.0f;
-            gl_func_00000000(slot->unkB4, (char *)&D_00000000 + 0xCD00, arg1);
+            gl_func_00000000(slot->unkB4, GL_DATA(0xCD00), arg1);
             return slot;
         }
     }
@@ -1780,7 +1780,7 @@ GlSlot3DB8 *PointsGadget_allocSlot_00003DB8(GlOwn3DB8 *arg0, s32 arg1, int arg2,
             }
             arg0->slots[i]->unk84 = 8;
             arg0->slots[i]->unkB0 = arg0->unk58;
-            gl_func_00000000(arg0->slots[i]->unkB4, (char *)&D_00000000 + 0xCD08, arg1);
+            gl_func_00000000(arg0->slots[i]->unkB4, GL_DATA(0xCD08), arg1);
             return arg0->slots[i];
         }
     }
@@ -3042,8 +3042,8 @@ void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
         (char*)func_00000000((int)&arg0->sprites[8], (char *)0x6000B);
     }
     arg0->subState = 0;
-    (char*)func_00000000(arg0, (char *)1, (char *)&D_00000000 + 0xD010);
-    temp_v0_2 = (char*)func_00000000(0, (char *)&D_00000000 + 0xD020);
+    (char*)func_00000000(arg0, (char *)1, GL_DATA_STR(0xD010, "rom/racecol.bin"));
+    temp_v0_2 = (char*)func_00000000(0, GL_DATA_STR(0xD020, "Extensions"));
     arg0->handler = temp_v0_2;
     sp28 = temp_v0_2;
     (char*)func_00000000((int)arg0->children, temp_v0_2);
@@ -3876,7 +3876,7 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
             if ((arg0->flags & RACEF_SPRITES) && (arg0->flags & RACEF_COUNTDOWN_FADE)) {
                 temp_lo = (s32)arg0->timer / (s32)arg0->countStep;
                 if (temp_lo < 4) {
-                    temp_f0 = *(f32 *)((char *)&D_00000000 + 0xE50);
+                    temp_f0 = *(f32 *)(GL_RODATA(0xE50));
                     arg0->countAlpha = arg0->countAlpha - 4;
                     arg0->scaleX = arg0->scaleX + temp_f0;
                     arg0->scaleY = arg0->scaleY + temp_f0;
@@ -4128,7 +4128,7 @@ void RaceProcess_raiseMessage(RaceProcess *a0) {
 
     if (f550 < four) {
         double t;
-        a0->msgVel = (float)(*(double*)((char*)&D_00000000 + 0xE58) + (t = (double)f550));
+        a0->msgVel = (float)(*(double*)(GL_RODATA(0xE58)) + (t = (double)f550));
         f550 = a0->msgVel;
     }
 
@@ -4160,7 +4160,7 @@ void RaceProcess_dropMessage(RaceProcess *a0) {
     if ((f550 = a0->msgVel) < four) {
         double t;
         a0->msgVel =
-            (float)(*(double*)((char*)&D_00000000 + 0xE60) + (t = (double)f550));
+            (float)(*(double*)(GL_RODATA(0xE60)) + (t = (double)f550));
         f550 = a0->msgVel;
     }
     a0->msgY = a0->msgY + f550;

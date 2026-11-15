@@ -136,7 +136,7 @@ void PointsGadget_update_00003430(char *arg0) {
                 FW(s0, 0x98) = 0;
                 FW(s0, 0x94) = 8;
             }
-            gl_func_00000000(s0 + 0xB4, (char *)&D_00000000 + 0xCCE8, FW(s0, 0x98));
+            gl_func_00000000(s0 + 0xB4, GL_DATA(0xCCE8), FW(s0, 0x98));
             FW(s0, 0x74) += 0x10;
             if (FW(s0, 0x74) >= 0x100) {
                 FW(s0, 0x74) = 0xFF;

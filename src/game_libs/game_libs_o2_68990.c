@@ -40,6 +40,7 @@
  *  - The taken-arm `or a0,s2; li a1,1` hoisted above `bnez t0` is uopt's
  *    own scheduling of the else-arm call args; no C needed. */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 typedef struct {
     int unk0;
@@ -95,7 +96,7 @@ void ImageFile_load_00068990(char *o) {
         case 0:
         case 3:
         default:
-            gl_func_00000000((char *)&D_00000000 + 0x2B430, gl_func_00000000(&gSysLib_0005C6E0, 1, 0));
+            gl_func_00000000(GL_DATA_STR(0x2B430, "Bad Img cmd at : %x"), gl_func_00000000(&gSysLib_0005C6E0, 1, 0));
             break;
         }
         if (done != 0) break;

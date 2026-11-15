@@ -1,4 +1,5 @@
 #include "common.h"
+#include "gdl/gl_data.h"
 extern int D_00000000;
 extern int gl_data_00000000;
 extern int AnimPlayer_update();
@@ -22,7 +23,7 @@ extern char gl_data_BE14_b;
 extern char gl_data_BE14_c;
 void gl___osSiCreateAccessQueue(void) {
     *(int*)&D_00000000 = 1;
-    gl_func_00000000(&gl_data_BE14_b, (char*)&D_00000000 + 0x42800, 1);
+    gl_func_00000000(&gl_data_BE14_b, GL_BSS(0x42800), 1);
     gl_func_00000000(&gl_data_BE14_c, 0, 0);
 }
 /* game_libs_func_0006BE64 (2-word splat mis-split: lui t6,0; lw t6,0(t6)) was

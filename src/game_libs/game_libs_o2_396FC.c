@@ -20,6 +20,7 @@
  * dead `la` / `addu` address temps). Everything else is agent-c's 2026-10-15 decode
  * (docs/IDO_CODEGEN.md#param-split-spill-home-396fc). */
 #include "common.h"
+#include "gdl/gl_data.h"
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -84,9 +85,9 @@ void MNode_doCommand(int *a0, int *a1) {
         xf.v[0] = s2[0];
         xf.v[1] = s2[1];
         xf.v[2] = s2[2];
-        x = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[7];
-        y = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[8];
-        z = *(f32 *)((char *)&D_00000000 + 0x1A10) * s2[9];
+        x = *(f32 *)(GL_RODATA(0x1A10)) * s2[7];
+        y = *(f32 *)(GL_RODATA(0x1A10)) * s2[8];
+        z = *(f32 *)(GL_RODATA(0x1A10)) * s2[9];
         xf.v[3] = x;
         xf.v[4] = y;
         xf.v[5] = z;

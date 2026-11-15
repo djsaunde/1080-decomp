@@ -247,7 +247,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(var_a2) + 0x0) = (s32) &D_00008740;
                 *(s32 *)((char *)(var_a2) + 0x4) = 0;
             }
-            sp144.w = *(s32 *)((char *)&D_00000000 + 0x8748);
+            sp144.w = *(s32 *)(GL_DATA_STR(0x8748, "ied"));
             sp108 = var_s1 + 8;
             sp104 = sp144;
             if ((var_s1 != (void *)-8) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -256,7 +256,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000868;
             }
-            sp140.w = *(s32 *)((char *)&D_00000000 + 0x874C);
+            sp140.w = *(s32 *)(GL_DATA_STR(0x874C, "ifr"));
             sp108 = var_s1 + 0x20;
             sp104 = sp140;
             if ((var_s1 != (void *)-0x20) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -265,7 +265,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_0000086C;
             }
-            sp13C.w = *(s32 *)((char *)&D_00000000 + 0x8750);
+            sp13C.w = *(s32 *)(GL_DATA_STR(0x8750, "ded"));
             sp108 = var_s1 + 0x38;
             sp104 = sp13C;
             if ((var_s1 != (void *)-0x38) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -274,7 +274,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = 2.0f;
             }
-            sp138.w = *(s32 *)((char *)&D_00000000 + 0x8754);
+            sp138.w = *(s32 *)(GL_DATA_STR(0x8754, "dfr"));
             sp108 = var_s1 + 0x50;
             sp104 = sp138;
             if ((var_s1 != (void *)-0x50) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -283,7 +283,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000870;
             }
-            sp134.w = *(s32 *)((char *)&D_00000000 + 0x8758);
+            sp134.w = *(s32 *)(GL_DATA_STR(0x8758, "efr"));
             sp108 = var_s1 + 0x68;
             sp104 = sp134;
             if ((var_s1 != (void *)-0x68) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -292,7 +292,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000874;
             }
-            sp130.w = *(s32 *)((char *)&D_00000000 + 0x875C);
+            sp130.w = *(s32 *)(GL_DATA_STR(0x875C, "nbf"));
             sp108 = var_s1 + 0x80;
             sp104 = sp130;
             if ((var_s1 != (void *)-0x80) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -301,7 +301,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000878;
             }
-            sp12C.w = *(s32 *)((char *)&D_00000000 + 0x8760);
+            sp12C.w = *(s32 *)(GL_DATA_STR(0x8760, "nel"));
             sp108 = var_s1 + 0x98;
             sp104 = sp12C;
             if ((var_s1 != (void *)-0x98) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -310,7 +310,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_0000087C;
             }
-            sp128.w = *(s32 *)((char *)&D_00000000 + 0x8764);
+            sp128.w = *(s32 *)(GL_DATA_STR(0x8764, "dbf"));
             sp108 = var_s1 + 0xB0;
             sp104 = sp128;
             if ((var_s1 != (void *)-0xB0) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -319,7 +319,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = 0.0f;
             }
-            sp124.w = *(s32 *)((char *)&D_00000000 + 0x8768);
+            sp124.w = *(s32 *)(GL_DATA_STR(0x8768, "del"));
             sp108 = var_s1 + 0xC8;
             sp104 = sp124;
             if ((var_s1 != (void *)-0xC8) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -328,7 +328,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = (f32) D_00000880;
             }
-            sp120.w = *(s32 *)((char *)&D_00000000 + 0x876C);
+            sp120.w = *(s32 *)(GL_DATA_STR(0x876C, "res"));
             sp108 = var_s1 + 0xE0;
             sp104 = sp120;
             if ((var_s1 != (void *)-0xE0) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -337,7 +337,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = 1.0f;
             }
-            sp11C.w = *(s32 *)((char *)&D_00000000 + 0x8770);
+            sp11C.w = *(s32 *)(GL_DATA_STR(0x8770, "flx"));
             sp108 = var_s1 + 0xF8;
             sp104 = sp11C;
             if ((var_s1 != (void *)-0xF8) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -346,7 +346,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp108) + 0x14) = 0;
                 *(f32 *)((char *)(sp108) + 0x10) = 1.0f;
             }
-            sp118.w = *(s32 *)((char *)&D_00000000 + 0x8774);
+            sp118.w = *(s32 *)(GL_DATA_STR(0x8774, "sta"));
             sp108 = var_s1 + 0x110;
             sp104 = sp118;
             if ((var_s1 != (void *)-0x110) || (temp_v0_5 = func_00000000(0x18), sp108 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -363,7 +363,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(var_s1) + 0x0) = (s32) &D_00008778;
                 *(s32 *)((char *)(var_s1) + 0x4) = 0;
             }
-            sp100.w = *(s32 *)((char *)&D_00000000 + 0x878C);
+            sp100.w = *(s32 *)(GL_DATA_STR(0x878C, "hpf"));
             sp8C = var_s0 + 8;
             sp104 = sp100;
             if ((var_s0 != (void *)-8) || (temp_v0_5 = func_00000000(0x18), sp8C = temp_v0_5, (temp_v0_5 != 0))) {
@@ -372,7 +372,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp8C) + 0x14) = 0;
                 *(f32 *)((char *)(sp8C) + 0x10) = (f32) D_00000884;
             }
-            spFC.w = *(s32 *)((char *)&D_00000000 + 0x8790);
+            spFC.w = *(s32 *)(GL_DATA_STR(0x8790, "snf"));
             var_s1 = (char *)&sp7C;
             sp80 = var_s0 + 0x20;
             *(W90 *)var_s1 = spFC;
@@ -382,7 +382,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spF8.w = *(s32 *)((char *)&D_00000000 + 0x8794);
+            spF8.w = *(s32 *)(GL_DATA_STR(0x8794, "dsf"));
             sp80 = var_s0 + 0x38;
             *(W90 *)var_s1 = spF8;
             if ((var_s0 != (void *)-0x38) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -391,7 +391,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spF4.w = *(s32 *)((char *)&D_00000000 + 0x8798);
+            spF4.w = *(s32 *)(GL_DATA_STR(0x8798, "icf"));
             sp80 = var_s0 + 0x50;
             *(W90 *)var_s1 = spF4;
             if ((var_s0 != (void *)-0x50) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -400,7 +400,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spF0.w = *(s32 *)((char *)&D_00000000 + 0x879C);
+            spF0.w = *(s32 *)(GL_DATA_STR(0x879C, "tfc"));
             sp80 = var_s0 + 0x68;
             *(W90 *)var_s1 = spF0;
             if ((var_s0 != (void *)-0x68) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -409,7 +409,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spEC.w = *(s32 *)((char *)&D_00000000 + 0x87A0);
+            spEC.w = *(s32 *)(GL_DATA_STR(0x87A0, "edf"));
             sp80 = var_s0 + 0x80;
             *(W90 *)var_s1 = spEC;
             if ((var_s0 != (void *)-0x80) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -418,7 +418,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spE8.w = *(s32 *)((char *)&D_00000000 + 0x87A4);
+            spE8.w = *(s32 *)(GL_DATA_STR(0x87A4, "bdf"));
             sp80 = var_s0 + 0x98;
             *(W90 *)var_s1 = spE8;
             if ((var_s0 != (void *)-0x98) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -427,7 +427,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spE4.w = *(s32 *)((char *)&D_00000000 + 0x87A8);
+            spE4.w = *(s32 *)(GL_DATA_STR(0x87A8, "ure"));
             sp80 = var_s0 + 0xB0;
             *(W90 *)var_s1 = spE4;
             if ((var_s0 != (void *)-0xB0) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -436,7 +436,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000888;
             }
-            spE0.w = *(s32 *)((char *)&D_00000000 + 0x87AC);
+            spE0.w = *(s32 *)(GL_DATA_STR(0x87AC, "mro"));
             sp80 = var_s0 + 0xC8;
             *(W90 *)var_s1 = spE0;
             if ((var_s0 != (void *)-0xC8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -445,7 +445,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_0000088C;
             }
-            spDC.w = *(s32 *)((char *)&D_00000000 + 0x87B0);
+            spDC.w = *(s32 *)(GL_DATA_STR(0x87B0, "mpi"));
             sp80 = var_s0 + 0xE0;
             *(W90 *)var_s1 = spDC;
             if ((var_s0 != (void *)-0xE0) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -454,7 +454,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000890;
             }
-            spD8.w = *(s32 *)((char *)&D_00000000 + 0x87B4);
+            spD8.w = *(s32 *)(GL_DATA_STR(0x87B4, "mdr"));
             sp80 = var_s0 + 0xF8;
             *(W90 *)var_s1 = spD8;
             if ((var_s0 != (void *)-0xF8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -463,7 +463,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 1.0f;
             }
-            spD4.w = *(s32 *)((char *)&D_00000000 + 0x87B8);
+            spD4.w = *(s32 *)(GL_DATA_STR(0x87B8, "axr"));
             sp80 = var_s0 + 0x110;
             *(W90 *)var_s1 = spD4;
             if ((var_s0 != (void *)-0x110) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -472,7 +472,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000894;
             }
-            spD0.w = *(s32 *)((char *)&D_00000000 + 0x87BC);
+            spD0.w = *(s32 *)(GL_DATA_STR(0x87BC, "ayr"));
             sp80 = var_s0 + 0x128;
             *(W90 *)var_s1 = spD0;
             if ((var_s0 != (void *)-0x128) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -481,7 +481,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_00000898;
             }
-            spCC.w = *(s32 *)((char *)&D_00000000 + 0x87C0);
+            spCC.w = *(s32 *)(GL_DATA_STR(0x87C0, "azr"));
             sp80 = var_s0 + 0x140;
             *(W90 *)var_s1 = spCC;
             if ((var_s0 != (void *)-0x140) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -490,7 +490,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_0000089C;
             }
-            spC8.w = *(s32 *)((char *)&D_00000000 + 0x87C4);
+            spC8.w = *(s32 *)(GL_DATA_STR(0x87C4, "tlt"));
             sp80 = var_s0 + 0x158;
             *(W90 *)var_s1 = spC8;
             if ((var_s0 != (void *)-0x158) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -499,7 +499,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A0;
             }
-            spC4.w = *(s32 *)((char *)&D_00000000 + 0x87C8);
+            spC4.w = *(s32 *)(GL_DATA_STR(0x87C8, "wfr"));
             sp80 = var_s0 + 0x170;
             *(W90 *)var_s1 = spC4;
             if ((var_s0 != (void *)-0x170) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -508,7 +508,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 0.0f;
             }
-            spC0.w = *(s32 *)((char *)&D_00000000 + 0x87CC);
+            spC0.w = *(s32 *)(GL_DATA_STR(0x87CC, "sfr"));
             sp80 = var_s0 + 0x188;
             *(W90 *)var_s1 = spC0;
             if ((var_s0 != (void *)-0x188) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -517,7 +517,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 0.0f;
             }
-            spBC.w = *(s32 *)((char *)&D_00000000 + 0x87D0);
+            spBC.w = *(s32 *)(GL_DATA_STR(0x87D0, "dts"));
             sp80 = var_s0 + 0x1A0;
             *(W90 *)var_s1 = spBC;
             if ((var_s0 != (void *)-0x1A0) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -526,7 +526,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A4;
             }
-            spB8.w = *(s32 *)((char *)&D_00000000 + 0x87D4);
+            spB8.w = *(s32 *)(GL_DATA_STR(0x87D4, "nts"));
             sp80 = var_s0 + 0x1B8;
             *(W90 *)var_s1 = spB8;
             if ((var_s0 != (void *)-0x1B8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -535,7 +535,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008A8;
             }
-            spB4.w = *(s32 *)((char *)&D_00000000 + 0x87D8);
+            spB4.w = *(s32 *)(GL_DATA_STR(0x87D8, "trt"));
             sp80 = var_s0 + 0x1D0;
             *(W90 *)var_s1 = spB4;
             if ((var_s0 != (void *)-0x1D0) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -544,7 +544,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = (f32) D_000008AC;
             }
-            spB0.w = *(s32 *)((char *)&D_00000000 + 0x87DC);
+            spB0.w = *(s32 *)(GL_DATA_STR(0x87DC, "twt"));
             sp80 = var_s0 + 0x1E8;
             *(W90 *)var_s1 = spB0;
             if ((var_s0 != (void *)-0x1E8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -552,7 +552,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008060; *(s32 *)((char *)(sp80) + 0x10) = 0x19;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
             }
-            spAC.w = *(s32 *)((char *)&D_00000000 + 0x87E0);
+            spAC.w = *(s32 *)(GL_DATA_STR(0x87E0, "min"));
             sp80 = var_s0 + 0x200;
             *(W90 *)var_s1 = spAC;
             if ((var_s0 != (void *)-0x200) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -561,7 +561,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 50.0f;
             }
-            spA8.w = *(s32 *)((char *)&D_00000000 + 0x87E4);
+            spA8.w = *(s32 *)(GL_DATA_STR(0x87E4, "max"));
             sp80 = var_s0 + 0x218;
             *(W90 *)var_s1 = spA8;
             if ((var_s0 != (void *)-0x218) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -570,7 +570,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 150.0f;
             }
-            spA4.w = *(s32 *)((char *)&D_00000000 + 0x87E8);
+            spA4.w = *(s32 *)(GL_DATA_STR(0x87E8, "jmp"));
             sp80 = var_s0 + 0x230;
             *(W90 *)var_s1 = spA4;
             if ((var_s0 != (void *)-0x230) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -579,7 +579,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 100.0f;
             }
-            spA0.w = *(s32 *)((char *)&D_00000000 + 0x87EC);
+            spA0.w = *(s32 *)(GL_DATA_STR(0x87EC, "djp"));
             sp80 = var_s0 + 0x248;
             *(W90 *)var_s1 = spA0;
             if ((var_s0 != (void *)-0x248) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -588,7 +588,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 100.0f;
             }
-            sp9C.w = *(s32 *)((char *)&D_00000000 + 0x87F0);
+            sp9C.w = *(s32 *)(GL_DATA_STR(0x87F0, "ufs"));
             sp80 = var_s0 + 0x260;
             *(W90 *)var_s1 = sp9C;
             if ((var_s0 != (void *)-0x260) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -597,7 +597,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
                 *(f32 *)((char *)(sp80) + 0x10) = 0.0f;
             }
-            sp98.w = *(s32 *)((char *)&D_00000000 + 0x87F4);
+            sp98.w = *(s32 *)(GL_DATA_STR(0x87F4, "bdm"));
             sp80 = var_s0 + 0x278;
             *(W90 *)var_s1 = sp98;
             if ((var_s0 != (void *)-0x278) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -605,7 +605,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008060_s2; *(s32 *)((char *)(sp80) + 0x10) = 0xA;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
             }
-            sp94.w = *(s32 *)((char *)&D_00000000 + 0x87F8);
+            sp94.w = *(s32 *)(GL_DATA_STR(0x87F8, "cdm"));
             sp80 = var_s0 + 0x290;
             *(W90 *)var_s1 = sp94;
             if ((var_s0 != (void *)-0x290) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {
@@ -613,7 +613,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
                 *(s32 *)((char *)(sp80) + 0xC) = (s32) &D_00008060_s3; *(s32 *)((char *)(sp80) + 0x10) = 0xF;
                 *(s32 *)((char *)(sp80) + 0x14) = 0;
             }
-            sp90.w = *(s32 *)((char *)&D_00000000 + 0x87FC);
+            sp90.w = *(s32 *)(GL_DATA_STR(0x87FC, "tch"));
             sp80 = var_s0 + 0x2A8;
             *(W90 *)var_s1 = sp90;
             if ((var_s0 != (void *)-0x2A8) || (temp_v0_5 = func_00000000(0x18), sp80 = temp_v0_5, (temp_v0_5 != 0))) {

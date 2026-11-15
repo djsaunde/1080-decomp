@@ -15660,7 +15660,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     }
     o = self;
     if (o != 0 || (o = (char *)gl_func_0001CA10(0xB4)) != 0) {
-        gl_func_0001CA10(o, (char *)&D_00000000 + 0x1E178);
+        gl_func_0001CA10(o, GL_DATA_STR(0x1E178, "<MNode>"));
         *(int **)(o + 0x28) = &MNode_vtbl; /* the inlined MNode base ctor */
         r = (int *)(o + 0x2C);
         if (r != 0 || (r = (int *)gl_func_0001CA10(4)) != 0) {
@@ -15691,7 +15691,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
             if (q != 0 || (q = (int *)gl_func_0001CA10(4)) != 0) {
                 *q = 0;
             }
-            *(char **)(b + 0xC) = (char *)&D_00000000 + 0x1E180;
+            *(char **)(b + 0xC) = GL_DATA_STR(0x1E180, "<Unknown>");
             *(int *)(b + 0x14) = 0;
         }
         q = (int *)(o + 0x18);
@@ -15704,7 +15704,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     v.y = y;
     v.z = z;
     gl_func_0001CA10(self + 0x30, &v);
-    *(char **)(self + 0xC) = (char *)&D_00000000 + 0x1E18C;
+    *(char **)(self + 0xC) = GL_DATA_STR(0x1E18C, "camera");
     *(int *)(self + 0x8) |= 0x40;
     *(int *)(self + 0xF4) = arg1; if (1) {}
     *(f32 *)(self + 0x104) = 0.0f;
@@ -15915,7 +15915,7 @@ void MCamera_doCommand(char *o, char *c) {
         idx = *sp;
         if (c) { }
         if ((u32)idx >= 0x28) {
-            gl_func_00000000((char *)&D_00000000 + 0x1E194, idx);
+            gl_func_00000000(GL_DATA_STR(0x1E194, "Global out of range %d"), idx);
         }
         val = *(int *)((char *)&gNodeGlobals + idx * 4);
         *(int *)(o + 0xF4) = val;
@@ -15934,7 +15934,7 @@ extern int gl_func_00000000_33338(int, int, int, float, float, int);
 void MCamera_hostioParms(int *a0) {
     int arg1 = *(int*)((char*)a0 + 0xC);
     gl_func_00000000(&gHostio, arg1, 0);
-    gl_func_00000000_33338((int)&gHostio, (int)((char*)&D_00000000 + 0x1E1AC),
+    gl_func_00000000_33338((int)&gHostio, (int)(GL_DATA_STR(0x1E1AC, "FOV")),
                            (int)((char*)a0 + 0x14C), 0.0f, 180.0f, 0);
     gl_func_00000000(&gHostio);
 }
@@ -15998,7 +15998,7 @@ float sys_timeInFrames_00033444(void) {
 
 extern int gl_func_00000000();
 void sys_assertFail(int a0, int a1, int a2) {
-    gl_func_00000000((char *)&D_00000000 + 0x1E250, a0, a1, a2);
+    gl_func_00000000(GL_DATA_STR(0x1E250, "Assertion failed: '%s' in file '%s' line %d\n"), a0, a1, a2);
 }
 
 // fs_bufWrite_334E8 — STRUCTURAL PASS (0x2C4 / 177 words, no episode).

@@ -86,7 +86,7 @@ GlSlot3C0C *PointsGadget_allocSlot_00003C0C(char *arg0, s32 arg1, s32 arg2, s32 
             p->slot->unk84 = -18;
             p->slot->unkB0 = *(s32 *)(arg0 + 0x54);
             slot = p->slot;
-            gl_func_00000000(slot->unkB4, (char *)&D_00000000 + 0xCD04, slot->unk98);
+            gl_func_00000000(slot->unkB4, GL_DATA(0xCD04), slot->unk98);
             return p->slot;
         }
         p = (GlEnt3C0C *)((char *)p + 4);
