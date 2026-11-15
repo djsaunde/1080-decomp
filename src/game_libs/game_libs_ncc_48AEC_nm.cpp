@@ -67,11 +67,13 @@ struct Ctx {
     void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); }
     void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
-    Gfx *nextU() { return dl->buf + ((DLHead *)*(u32 *)&dl)->count++; } /* agent-g run 427: single-return slot with the count's head read through a u32 view */
-    /* agent-g run 427: else-arm packet as fG(nextU(), m) (the slot is a parameter, so the else g is a pool word, not
+    /* agent-g run 427: else-arm packet as fG(slot, m) (the slot is a parameter, so the else g is a pool word, not
      * a named word; the dead named dd keeps the frame words), with the kept I2(A) / me(me(gctx))->mtx() else
-     * statement (run 424 lead): else mtx count / mh v0 / v1, else dl a1 and g a2 like the target, 99.829 -> 99.857 */
-    void LX(Mtx *m) { DLHead *dd = dl; if (*(u32 *)&dl) {} if (1) {} fG(nextU(), m); }
+     * statement (run 424 lead): else mtx count / mh v0 / v1, dl a1, g a2 like the target, 99.829 -> 99.857 (slot
+     * `dl->buf + ((DLHead *)*(u32 *)&dl)->count++`); then the slot through nF0() with the count as a by-value parameter
+     * read and written through a u32 view of dl: else ld count v1 = target, every else register exact, 99.857 -> 99.886 */
+    Gfx *nF0(int n) { ((DLHead *)*(u32 *)&dl)->count = n + 1; return &dl->buf[n]; }
+    void LX(Mtx *m) { DLHead *dd = dl; if (*(u32 *)&dl) {} if (1) {} fG(nF0(((DLHead *)*(u32 *)&dl)->count), m); }
     /* agent-g run 354: the run-352 frame-0x160 body (h5_17: arm-1 copy through cp() / ld() with a kept parameter, else-arm
      * ld2(), no i / j / k / cmd at function scope) with the committed gains ported, plus loop 1's ctx6C through cur():
      * 98.033 (frame 0x170) -> 98.037 (frame 0x160 = target) */
