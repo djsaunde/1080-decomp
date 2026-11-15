@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "game/modeproc.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -1674,17 +1675,17 @@ extern int titproc_uso_D_arg0_22BC, titproc_uso_D_arg1_22BC, titproc_uso_D_arg2_
  * only struct offset 0x5C->0x6C0 differs). Reading the count global directly
  * (no `register`) is what makes IDO pin %hi/%lo in $s1 across the 7 calls —
  * the residual the prior register-based NM attempt couldn't crack. */
-void GameDemoProcess_buildMenu(int *a0) {
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0));
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 1, 0, &titproc_uso_D_arg0_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 2, 1, &titproc_uso_D_arg1_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 3, 2, &titproc_uso_D_arg2_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 6, 3, &titproc_uso_D_arg3_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
-    gl_func_00000000(*(int*)((char*)a0 + 0x6C0), ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
+void GameDemoProcess_buildMenu(GameDemoProcess *a0) {
+    gl_func_00000000(a0->menu);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 1, 0, &titproc_uso_D_arg0_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 2, 1, &titproc_uso_D_arg1_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 3, 2, &titproc_uso_D_arg2_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 6, 3, &titproc_uso_D_arg3_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
+    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
     if (gl_func_00000000(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
-        *(int*)((char*)*(int**)((char*)a0 + 0x6C0) + 0x128) = 0;
+        *(int*)((char*)a0->menu + 0x128) = 0;
     }
 }
 
@@ -1716,7 +1717,7 @@ extern int titproc_uso_func_01F7FC();
 extern int titproc_uso_func_012150();
 extern int titproc_uso_func_00F954();
 extern int import_000A53B4();
-void GameDemoProcess_onQuitButton(char *s0) {
+void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
     char *vt;
     char *obj;
     char *y;
@@ -1727,100 +1728,100 @@ void GameDemoProcess_onQuitButton(char *s0) {
     char *vt2;
     char *obj2;
 
-    if (*(int *)(s0 + 0x6C0) != 0) {
-    switch (*(int *)(s0 + 0x6C4)) {
+    if (s0->menu != 0) {
+    switch (s0->menuState) {
         case 0:
-            y = *(char **)(s0 + 0x6B4);
+            y = (char *)s0->mainLogo;
             if (y != 0) {
                 titproc_uso_func_00F4CC(y);
             }
-            if (*(unsigned short *)(*(int *)((char *)&import_00020098 + 0x154) + 4) & 0x8) {
+            if (*(unsigned short *)(INPUT_MGR(import_00020098).unlocks + 4) & 0x8) {
                 titproc_uso_func_0002DC(144);
                 if (1) {
-                    vtA = *(char **)(*(char **)(s0 + 0x6B8) + 0x28);
-                    objA = *(char **)(s0 + 0x6B8);
+                    vtA = *(char **)((char *)s0->langMenu + 0x28);
+                    objA = (char *)s0->langMenu;
                     (*(void (**)(char *))(vtA + 0x5C))(
                         (char *)((int)*(short *)(vtA + 0x58) + (int)objA));
                 }
-                if (*(int *)(s0 + 0x6B0) != 0) {
-                    titproc_uso_func_00F4CC(*(int *)(s0 + 0x6B0));
+                if (s0->keyMessage != 0) {
+                    titproc_uso_func_00F4CC(s0->keyMessage);
                 }
-                *(int *)(s0 + 0x6C4) = 2;
+                s0->menuState = 2;
             } else {
                 {
-                    vt = *(char **)(*(char **)(s0 + 0x6C0) + 0x28);
-                    obj = *(char **)(s0 + 0x6C0);
+                    vt = *(char **)((char *)s0->menu + 0x28);
+                    obj = (char *)s0->menu;
                     (*(void (**)(char *))(vt + 0x5C))(
                         (char *)((int)*(short *)(vt + 0x58) + (int)obj));
                 }
-                if (*(int *)(s0 + 0x6B0) != 0) {
-                    titproc_uso_func_00F4CC(*(int *)(s0 + 0x6B0));
+                if (s0->keyMessage != 0) {
+                    titproc_uso_func_00F4CC(s0->keyMessage);
                 }
                 titproc_uso_func_0002DC(144);
-                *(int *)(s0 + 0x6C4) = 1;
+                s0->menuState = 1;
             }
             break;
         case 1:
-            if (*(int *)(*(char **)(s0 + 0x6BC) + 0x3C) == 0 &&
+            if (*(int *)((char *)s0->whiteFader + 0x3C) == 0 &&
                 titproc_uso_func_011E00((char *)&import_00020098, 0x200) != 0) {
                 titproc_uso_func_0002DC(0x802);
-                titproc_uso_func_00F4CC(*(int *)(s0 + 0x6C0));
-                y = *(char **)(s0 + 0x6B4);
+                titproc_uso_func_00F4CC(s0->menu);
+                y = (char *)s0->mainLogo;
                 if (y != 0) {
                     vt1 = *(char **)(y + 0x28);
                     (*(void (**)(char *))(vt1 + 0x5C))(
                         (char *)((int)*(short *)(vt1 + 0x58) + (int)y));
                 }
-                if (*(int *)(s0 + 0x6B0) != 0) {
-                    titproc_uso_func_00F4CC(*(int *)(s0 + 0x6B0));
+                if (s0->keyMessage != 0) {
+                    titproc_uso_func_00F4CC(s0->keyMessage);
                 }
-                *(int *)(s0 + 0x6C4) = 0;
+                s0->menuState = 0;
             } else {
-                import_000A53B4(*(int *)(s0 + 0x6C0));
+                import_000A53B4(s0->menu);
                 titproc_uso_func_0002DC(5);
-                obj = *(char **)(s0 + 0x6C0);
+                obj = (char *)s0->menu;
                 if (((int (*)[10])(obj + 0x90))[*(int *)(obj + 0x7C)][0] == 0) {
                     return;
                 }
                 *(int *)((char *)&import_00263D30 + 0xA8) = (int)s0;
                 *(int *)((char *)&import_00020098 + 0x84) =
-                    *(int *)(*(char **)(s0 + 0x6C0) + 0x7C);
-                if ((*(int *)(s0 + 0x4F0) << 4) < 0) {
-                    if (*(int *)(s0 + 0x528) != 0) {
-                        titproc_uso_func_01F7FC(*(int *)(s0 + 0x528), 3);
+                    *(int *)((char *)s0->menu + 0x7C);
+                if ((s0->race.flags << 4) < 0) {
+                    if (s0->race.session != 0) {
+                        titproc_uso_func_01F7FC(s0->race.session, 3);
                     }
-                    *(int *)(s0 + 0x528) = 0;
+                    s0->race.session = 0;
                     INPUT_MGR(import_00020098).session = 0;
                 }
-                obj = *(char **)(s0 + 0x6C0);
+                obj = (char *)s0->menu;
                 (*(void (*)(void))(((int (*)[10])(obj + 0x90))[*(int *)(obj + 0x7C)][0]))();
             }
             return;
         case 2:
             titproc_uso_func_0002DC(5);
             if (1) {
-                z = *(char **)((char *)&import_00020098 + 0x154) + 4;
+                z = INPUT_MGR(import_00020098).unlocks + 4;
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
             titproc_uso_func_012150((char *)&import_00020098);
-            titproc_uso_func_00F4CC(*(int *)(s0 + 0x6B8));
+            titproc_uso_func_00F4CC(s0->langMenu);
             if (1) {
-                vt2 = *(char **)(*(char **)(s0 + 0x6C0) + 0x28);
-                obj2 = *(char **)(s0 + 0x6C0);
+                vt2 = *(char **)((char *)s0->menu + 0x28);
+                obj2 = (char *)s0->menu;
                 (*(void (**)(char *))(vt2 + 0x5C))(
                     (char *)((int)*(short *)(vt2 + 0x58) + (int)obj2));
             }
-            *(int *)(s0 + 0x6C4) = 1;
+            s0->menuState = 1;
             break;
         default:
             return;
     }
     } else {
-    if ((*(int *)(s0 + 0x4F0) << 4) < 0) {
-        if (*(int *)(s0 + 0x528) != 0) {
-            titproc_uso_func_01F7FC(*(int *)(s0 + 0x528), 3);
+    if ((s0->race.flags << 4) < 0) {
+        if (s0->race.session != 0) {
+            titproc_uso_func_01F7FC(s0->race.session, 3);
         }
-        *(int *)(s0 + 0x528) = 0;
+        s0->race.session = 0;
         INPUT_MGR(import_00020098).session = 0;
     }
     if (1) {
@@ -1834,8 +1835,8 @@ void GameDemoProcess_onQuitButton(char *s0) {
 
 void titproc_uso_func_00000000();
 
-void GameDemoProcess_onTimeoutExit(int *a0) {
-    int *p = *(int**)((char*)a0 + 0x6C0);
+void GameDemoProcess_onTimeoutExit(GameDemoProcess *a0) {
+    int *p = (int *)a0->menu;
     if (p == 0) return;
     titproc_uso_func_00000000(p);
 }
@@ -1888,42 +1889,42 @@ extern int titproc_uso_func_01CCD4();
 extern int import_000B1BAC();
 extern char import_0001FFF8;
 
-void GameDemoProcess_handleInput(char *s0) {
+void GameDemoProcess_handleInput(GameDemoProcess *s0) {
     int *p3c;
     char *v1;
     int arg;
     int a1;
 
-    if (*(int*)(s0 + 0x6C0) != 0 && *(int*)(s0 + 0x6C4) == 2) {
-        p3c = (int*)titproc_uso_func_001BB8(*(int*)(s0 + 0x6B8));
+    if (s0->menu != 0 && s0->menuState == 2) {
+        p3c = (int*)titproc_uso_func_001BB8(s0->langMenu);
     }
-    if (*(int*)(s0 + 0x6C4) == 0) goto tail;
+    if (s0->menuState == 0) goto tail;
 
-    if (*(int*)((char*)*(int**)((char*)*(int**)(s0 + 0x6AC) + 0x44) + 0x34) == 0) {
-        if (*(int*)(s0 + 0x4F4) > 0) goto dec_path;
+    if (((DataManager *)s0->dataMgr)->entries[0].finished == 0) {
+        if (s0->race.timeout > 0) goto dec_path;
     }
-    v1 = *(char**)(s0 + 0x6BC);
+    v1 = (char *)s0->whiteFader;
     {
         p3c = (int*)(v1 + 0x3C);
         if (*p3c < 255) {
             *p3c += 16;
-            v1 = *(char**)(s0 + 0x6BC);
+            v1 = (char *)s0->whiteFader;
             if (*(int*)(v1 + 0x3C) < 256) goto final;
             *(int*)(v1 + 0x3C) = 720;
             goto final;
         }
     }
-    a1 = *(int*)(s0 + 0x4F0);
+    a1 = s0->race.flags;
     if ((a1 << 14) < 0) {
         titproc_uso_func_01B0F8(s0);
-        p3c = *(int**)(*(char**)((char*)&import_00020098 + 0x134) + 0xC4);
+        p3c = *(int**)(INPUT_MGR(import_00020098).game + 0xC4);
         arg = *(int*)((char*)p3c + 0x800);
         titproc_uso_func_07BA68(arg, 0);
-        a1 = *(int*)(*(char**)(*(char**)(s0 + 0x528) + 8) + 8);
+        a1 = *(int*)(*(char**)((char *)s0->race.session + 8) + 8);
         titproc_uso_func_07C07C(arg, a1,
-                         *(int*)(*(char**)(*(char**)(s0 + 0x528) + 8) + 4));
+                         *(int*)(*(char**)((char *)s0->race.session + 8) + 4));
         titproc_uso_func_01CCD4(s0);
-        *(int*)(s0 + 0x4F4) = *(int*)(s0 + 0x4F0) & 0xFFFF;
+        s0->race.timeout = s0->race.flags & 0xFFFF;
         goto ret;
     }
     (*(void (**)(char*))((char*)*(int**)((char*)&import_0001FFF8 + 0x28) + 0x64))(
@@ -1931,24 +1932,24 @@ void GameDemoProcess_handleInput(char *s0) {
     goto final;
 
 dec_path:
-    v1 = *(char**)(s0 + 0x6BC);
+    v1 = (char *)s0->whiteFader;
     {
         p3c = (int*)(v1 + 0x3C);
         if (*p3c > 0) {
             *p3c -= 16;
-            v1 = *(char**)(s0 + 0x6BC);
+            v1 = (char *)s0->whiteFader;
             if (*(int*)(v1 + 0x3C) < 0) *(int*)(v1 + 0x3C) = 0;
         }
     }
     goto final;
 
 tail:
-    if (*(int*)((char*)*(int**)((char*)*(int**)(s0 + 0x6AC) + 0x44) + 0x34) == 0 &&
-        *(int*)(s0 + 0x4F4) > 0) {
+    if (((DataManager *)s0->dataMgr)->entries[0].finished == 0 &&
+        s0->race.timeout > 0) {
         goto final;
     }
-    if (*(int*)(s0 + 0x6C0) != 0) {
-        import_000A53B4(*(int*)(s0 + 0x6C0));
+    if (s0->menu != 0) {
+        import_000A53B4(s0->menu);
     }
     titproc_uso_func_00F954(s0, -1, 0);
 
