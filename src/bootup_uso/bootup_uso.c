@@ -7,6 +7,7 @@
 #include "game/input.h"
 #include "gdl/node.h"
 #include "gdl/light.h"
+#include "game/envobj.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
@@ -812,16 +813,16 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if ((self != 0) || (self = (char *)func_00000000(0x4C)) != 0) {
         func_00000000(self, &D_000066B0);
         NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
-        *(void **)(self + 0xC) = &D_000066B8;
+        NODE(self)->name = (s32)(&D_000066B8);
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
-        *(s32 *)(self + 0x2C) = arg2;
-        *(s32 *)(self + 0x30) = arg3;
-        *(s32 *)(self + 0x34) = arg4;
-        *(f32 *)(self + 0x48) = 1.0f;
-        *(f32 *)(self + 0x44) = 1.0f;
-        *(f32 *)(self + 0x40) = 1.0f;
-        *(f32 *)(self + 0x3C) = 1.0f;
+        ((U64BGWall *)self)->mesh = arg2;
+        ((U64BGWall *)self)->arg30 = arg3;
+        ((U64BGWall *)self)->arg34 = arg4;
+        ((U64BGWall *)self)->scale[3] = 1.0f;
+        ((U64BGWall *)self)->scale[2] = 1.0f;
+        ((U64BGWall *)self)->scale[1] = 1.0f;
+        ((U64BGWall *)self)->scale[0] = 1.0f;
         buf = (VtxE68 *)func_00000000(0x800, 16);
         if (arg2 != 0x123456) {}
         func_00000000_e68v(buf, 0x800, 0);
@@ -958,7 +959,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
             if (1) {} /* run 182 (lever-sweep bbsplit) */
         }
         E68_END(E68_NEXTB(m2));
-        *(GwE68 **)(self + 0x38) = head;
+        ((U64BGWall *)self)->unk38 = (s32)head;
     }
     return self;
 }
@@ -1607,10 +1608,10 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     int sv, m;
     f32 fd;
     sv = (int)func_00000000(&D_00000000);
-    *(int *)(scene + 0x3C) = a2;
+    ((InputMgr *)scene)->gameMode = a2;
     func_00000000((char *)&D_00000000 + 0x7328, 0);
     func_00000000(&D_00000000, (char *)&D_00000000 + 0x7334);
-    func_00000000(*(int *)(scene + 0x134), a2);
+    func_00000000((int)((InputMgr *)scene)->game, a2);
     func_00000000((char *)&D_00000000 + 0x7344, 0);
     func_00000000(&D_00000000, (char *)&D_00000000 + 0x7350);
     func_00000000(&D_00000000, (char *)&D_00000000 + 0x7360);
@@ -1627,24 +1628,24 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     if (NODE(g)->parent) NODE(g)->unk04 = 1;
     NODE(g)->parent = (int)s4C;
     func_00000000();
-    func_00000000(*(int *)(scene + 0x134), s44, s4C, s3C, s48, s40);
-    func_00000000(*(int *)(scene + 0x134));
-    func_00000000(*(int *)(scene + 0x134));
-    func_00000000(*(int *)(scene + 0x134));
+    func_00000000((int)((InputMgr *)scene)->game, s44, s4C, s3C, s48, s40);
+    func_00000000((int)((InputMgr *)scene)->game);
+    func_00000000((int)((InputMgr *)scene)->game);
+    func_00000000((int)((InputMgr *)scene)->game);
     m = (int)func_00000000(&D_00000000);
     fd = (f32)(u32)*(int *)((char *)&D_00000000 + 0x20C);
     func_00000000((char *)&D_00000000 + 0x739C,
                   ((f32)(u32)m - (f32)(u32)sv) / fd);
     sv = (int)func_00000000(&D_00000000);
-    func_00000000(*(int *)(scene + 0x134), func_00000000(*(int *)(scene + 0x134), a1), a2);
-    g = (char *)*(int *)(scene + 0x134);
+    func_00000000((int)((InputMgr *)scene)->game, func_00000000((int)((InputMgr *)scene)->game, a1), a2);
+    g = ((InputMgr *)scene)->game;
     m = (int)func_00000000(&D_00000000);
     WORLDREG(g)->unk98 = (char *)m;
     fd = (f32)(u32)*(int *)((char *)&D_00000000 + 0x20C);
     func_00000000((char *)&D_00000000 + 0x73B4,
                   ((f32)(u32)m - (f32)(u32)sv) / fd);
     sv = (int)func_00000000(&D_00000000);
-    func_00000000(*(int *)(scene + 0x134), a2, a3);
+    func_00000000((int)((InputMgr *)scene)->game, a2, a3);
     m = (int)func_00000000(&D_00000000);
     fd = (f32)(u32)*(int *)((char *)&D_00000000 + 0x20C);
     func_00000000((char *)&D_00000000 + 0x73CC,
@@ -2784,7 +2785,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -3810,7 +3811,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     s = a0;
     if (s != 0 || (s = (char*)func_00000000(0xB4)) != 0) {
         func_00000000(s, &D_00007E74);
-        NODE(s)->vptr = (s32)(&D_00000000);
+        NODE(s)->vptr = (s32)(&MNode_vtbl);
         {
             int *c = (int*)(s + 0x2C);
             if (c != 0 || (c = (int*)func_00000000(4)) != 0) {
@@ -3824,7 +3825,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         z[0] = 0.0f;
         func_00000000(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
-    NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
+    NODE(a0)->vptr = (s32)(&MapProp_vtbl);
     *(void**)(a0 + 0xC) = &D_00007E7C;
     ((MapProp *)a0)->shape = a1;
     func_00000000(a0, a1);
@@ -4034,7 +4035,7 @@ void *EnvSettings_ctor(char *a0) {
         if (a0 == 0) goto end;
     }
     func_00000000(a0, &D_00007F84);
-    NODE(a0)->vptr = (s32)(&D_00000000);
+    NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
     {
         int *v1 = (int *)(a0 + 0x2C);
         if (v1 == 0) {
@@ -4049,11 +4050,11 @@ void *EnvSettings_ctor(char *a0) {
         if (1) { q += 0x18; }
         *(int *)q &= ~8;
     }
-    *(int*)(a0 + 0x40) = 0;
-    *(int*)(a0 + 0x3C) = 0;
-    *(int*)(a0 + 0x30) = 4;
-    *(int*)(a0 + 0x34) = 0xB00;
-    *(int*)(a0 + 0x38) = 1;
+    ENVSET(a0)->unk40 = 0;
+    ENVSET(a0)->mode = 0;
+    ENVSET(a0)->clipNear = 4;
+    ENVSET(a0)->clipFar = 0xB00;
+    ENVSET(a0)->flags = 1;
 end:
     return a0;
 }
@@ -4114,12 +4115,12 @@ void map_addEntry_00007204(int a0, int a1, int a2) {
 typedef struct { int w[4]; } Q7288;
 extern Q7288 gGfxLib_7288_src; /* = func_0000027C + 0x18 (asm %lo addend), pinned at 0x294 */
 void EnvSettings_display(int *a0) {
-    if (a0[0x38/4] & 2) {
+    if (ENVSET(a0)->flags & 2) {
         char *base = (char*)&gGfxLib;
-        *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)a0[0x30/4];
-        *(float*)(*(char**)(base + 0x254) + 0xB0) = (float)(int)a0[0x34/4];
+        *(float*)(*(char**)(base + 0x254) + 0xAC) = (float)(int)ENVSET(a0)->clipNear;
+        *(float*)(*(char**)(base + 0x254) + 0xB0) = (float)(int)ENVSET(a0)->clipFar;
     }
-    if (a0[0x3C/4] == 0) {
+    if (ENVSET(a0)->mode == 0) {
         char *b2 = (char*)&gGfxLib;
         int *q;
         q = *(int**)(b2 + 0x254);
@@ -4229,8 +4230,8 @@ void FallingSnow_create(char *a0) {
     (*(void (**)(char*, int))((char*)v + 0x5C))(
         (char*)((int)*(char**)(a0 + 0x40) + (int)(short)*(short*)((char*)v + 0x58)),
         0x96);
-    v = *(int**)(a0 + 0x40); *(int*)((char*)v + 0x48) = 1;
-    v = *(int**)(a0 + 0x40); *(float*)((char*)v + 0x4C) = 0.0f;
+    v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->enabled = 1;
+    v = *(int**)(a0 + 0x40); ((FallingSnow *)v)->unk4C = 0.0f;
     *(int*)(*(char**)(a0 + 0x40) + 0x48) = 0;
     func_00000000();
 }
@@ -4261,17 +4262,17 @@ void func_00007620(char *a0, int a1) {
     if (ST_7620 == 0) return;
     func_00000000(a1);
     if (a1 == 0) {
-        if (*(int*)(ST_7620 + 0xBC) == 0) {
+        if (((FallingSnow *)ST_7620)->unkBC == 0) {
             f = (int*)(ST_7620 + 0x18); *f &= ~0x8;
             f = (int*)(ST_7620 + 0x18); *f &= ~0x4;
         }
-        *(float*)(ST_7620 + 0x4C) = 0.0f;
+        ((FallingSnow *)ST_7620)->unk4C = 0.0f;
     } else {
         f = (int*)(ST_7620 + 0x18); *f |= 0x8;
         f = (int*)(ST_7620 + 0x18); *f |= 0x4;
-        f = (int*)ST_7620; *(float*)((char*)f + 0x4C) = D_000005E8;
+        f = (int*)ST_7620; ((FallingSnow *)f)->unk4C = D_000005E8;
     }
-    *(int*)(ST_7620 + 0x48) = a1;
+    ((FallingSnow *)ST_7620)->enabled = a1;
 }
 #undef ST_7620
 
@@ -4506,7 +4507,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -4615,7 +4616,7 @@ void *Tv1Tmpl_create(char *a0) {
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
-    link = *(int**)(a0 + 0x40);
+    link = (int *)((Tv1Tmpl *)a0)->model;
     func_00000000(ret + 0x10, link);
     if (link[5] != 0) {
         link[1] = 1;
@@ -4656,12 +4657,12 @@ void *Tv1Tmpl_create(char *a0) {
 extern char *gGfxLib_7D04_root[];
 extern float func_7D04_randf();
 void Tv1Tmpl_func_00007D04(char *s0) {
-    int a3 = *(int *)(s0 + 0x5C);
+    int a3 = ((Tv1Tmpl *)s0)->state;
     int k;
-    *(int *)(s0 + 0x64) =
+    ((Tv1Tmpl *)s0)->unk64 =
         ((int (*)(char *))*((unsigned int *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x64)))(
             (char *)((int)gGfxLib_7D04_root[6] + (int)(short)*(short *)((char *)*(int **)(gGfxLib_7D04_root[6] + 0x28) + 0x60)));
-    k = *(int *)(s0 + 0x5C);
+    k = ((Tv1Tmpl *)s0)->state;
     if (k != 1) {
         if (k != 0) {
             if (k != 2) {
@@ -4670,35 +4671,35 @@ void Tv1Tmpl_func_00007D04(char *s0) {
     } else goto c1;
     goto end;
 c1:
-    k = *(int *)(s0 + 0x60);
-    *(int *)(s0 + 0x60) = k + 1;
+    k = ((Tv1Tmpl *)s0)->timer;
+    ((Tv1Tmpl *)s0)->timer = k + 1;
     if (k >= 0x1F) a3 = 2;
     goto end;
 c0:
-    k = *(int *)(s0 + 0x60);
-    *(int *)(s0 + 0x60) = k + 1;
+    k = ((Tv1Tmpl *)s0)->timer;
+    ((Tv1Tmpl *)s0)->timer = k + 1;
     if (k >= 0x3D) a3 = 2;
-    *(int *)(s0 + 0x58) -= 0xA;
+    ((Tv1Tmpl *)s0)->scroll -= 0xA;
     goto end;
 c2:
-    k = *(int *)(s0 + 0x60);
-    *(int *)(s0 + 0x60) = k + 1;
+    k = ((Tv1Tmpl *)s0)->timer;
+    ((Tv1Tmpl *)s0)->timer = k + 1;
     if (k >= 0x5B) {
         a3 = (int)(func_7D04_randf() * 3.0f);
-        *(int *)(s0 + 0x60) = 0;
+        ((Tv1Tmpl *)s0)->timer = 0;
     }
-    *(int *)(s0 + 0x58) = 0x18;
+    ((Tv1Tmpl *)s0)->scroll = 0x18;
 end:
     { int *l;
-    k = *(int *)(s0 + 0x40); l = *(int **)(k + 0x84);
+    k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84);
     func_00000000(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {}
-    k = *(int *)(s0 + 0x40); l = *(int **)(k + 0x84) + 1;
+    k = ((Tv1Tmpl *)s0)->model; l = *(int **)(k + 0x84) + 1;
     func_00000000(s0, *(int *)(*l + 0x1C), 1, a3); }
-    *(int *)(s0 + 0x5C) = a3;
+    ((Tv1Tmpl *)s0)->state = a3;
 }
 
 void Tv1Tmpl_update(int *a0) {
-    *(int*)((char*)a0 + 0x68) = 0;
+    ((Tv1Tmpl *)a0)->displayCount = 0;
     func_00000000(a0);
 }
 
@@ -4708,8 +4709,8 @@ void Tv1Tmpl_display(char *a0) {
     D_func_00007E70_a = 0;
     func_00000000(a0);
     if (D_func_00007E70_b != 0) {
-        int counter = *(int*)(a0 + 0x68) + 1;
-        *(int*)(a0 + 0x68) = counter;
+        int counter = ((Tv1Tmpl *)a0)->displayCount + 1;
+        ((Tv1Tmpl *)a0)->displayCount = counter;
         if (counter == 1) {
             func_00000000();
         }
@@ -4754,18 +4755,18 @@ void Fog_display(char *s0) {
         frac = 0.0f;
         limit = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(*(char **)(*(char **)(gGfxLib_7ec8_g + 0x254) + 0x70) + 0xA8);
         hit = 0;
-        p = *(float *)(gGfxLib_7ec8_g + 0x130) * *(float *)(s0 + 0x38);
-        end = *(float *)(s0 + 0x54) + p;
+        p = *(float *)(gGfxLib_7ec8_g + 0x130) * FOGITEM(s0)->pos[2];
+        end = FOGITEM(s0)->fin.value + p;
         if (p < limit && limit < end) {
             hit = 1;
-            frac = (limit - p) / *(float *)(s0 + 0x54);
-        } else if (end < limit && limit < *(float *)(s0 + 0x6C) + p) {
+            frac = (limit - p) / FOGITEM(s0)->fin.value;
+        } else if (end < limit && limit < FOGITEM(s0)->rng.value + p) {
             frac = 1.0f;
             hit = 1;
         }
-        if (hit != *(int *)(s0 + 0x8C)) {
+        if (hit != FOGITEM(s0)->inside) {
             *(S24_7EC8 *)bu_7ec8_h = *(S24_7EC8 *)(gGfxLib_7ec8_src);
-            *(int *)(s0 + 0x8C) = hit;
+            FOGITEM(s0)->inside = hit;
         }
         if (hit != 0) {
             *(S24_7EC8 *)(gGfxLib_7ec8_src) = *(S24_7EC8 *)bu_7ec8_h;
@@ -4773,7 +4774,7 @@ void Fog_display(char *s0) {
         }
     } else {
         if (func_00000000_7ec8_t(*(int *)(gGfxLib_7ec8_g + 0x254), 3, *(int *)(s0 + 0x30),
-                          *(int *)(s0 + 0x34), *(float *)(s0 + 0x38), 0, 0.0f) != 0) {
+                          *(int *)(s0 + 0x34), FOGITEM(s0)->pos[2], 0, 0.0f) != 0) {
             func_00000000(s0);
         }
     }
@@ -5094,18 +5095,18 @@ char *SnowTmpl_create(char *arg0) {
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 1);
                 c = w;
-                *(char **)(c + 0xC) = &D_00007540;
-                *(int *)(c + 0x14) = 0;
-                *(float *)(c + 0x10) = 300.0f;
+                ((CourseFParm *)c)->vptr = (s32)(&D_00007540);
+                ((CourseFParm *)c)->value2 = 0;
+                ((CourseFParm *)c)->value = 300.0f;
             }
             p.v = D_00007FF0; A[3] = p.v;
             c = u + 0x20;
             if (c != 0 || (c = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(w = c, u, p, 0);
                 c = w;
-                *(int *)(c + 0x10) = 1;
-                *(char **)(c + 0xC) = (char *)func_00007620 + 0x70;
-                *(int *)(c + 0x14) = 0;
+                ((CourseParm *)c)->value = 1;
+                ((CourseParm *)c)->vptr = (s32)((char *)func_00007620 + 0x70);
+                ((CourseParm *)c)->value2 = 0;
             }
         }
     }
@@ -5323,11 +5324,11 @@ char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) 
         if (a0 == 0) goto end;
     }
     func_8b44_init(a0, a1, a3, a4, f_arg);
-    *(int*)(a0 + 0x28) = (int)&SnowBCollider_vtbl;
-    *(int*)(a0 + 0x170) = a1;
-    *(unsigned short*)(a0 + 0x174) = ((unsigned short*)&a2)[1];
-    *(float*)(a0 + 0x150) = 1.0f;
-    *(float*)(a0 + 0x154) = 10.0f;
+    NODE(a0)->vptr = (int)&SnowBCollider_vtbl;
+    SNOWBCOL(a0)->rider = (struct SnowBoarder *)a1;
+    SNOWBCOL(a0)->contactFlags = ((unsigned short*)&a2)[1];
+    SNOWBCOL(a0)->unk150 = 1.0f;
+    SNOWBCOL(a0)->unk154 = 10.0f;
 end:
     return a0;
 }
@@ -5515,8 +5516,8 @@ char *ShpNode_ctor(char *self) {
     NODE(self)->vptr = (s32)(&ShpNode_vtbl_8F18_vtable);
     handle = func_00000000(0, &D_00008710, &D_8F18_call_arg, 0);
     func_00000000(self, handle);
-    *(int*)(self + 0x3D4) = 100;
-    *(float*)(self + 0x260) = 50.0f;
+    SHPNODE(self)->life = 100;
+    SHPNODE(self)->unk260 = 50.0f;
 end:
     return self;
 }
@@ -5561,23 +5562,23 @@ void ShpNode_func_00008FA8(int *self) {
     volatile int pad_hi[2];
     Vec3i_8FA8 scratch;
     volatile int pad_lo[2];
-    scratch = *(Vec3i_8FA8*)((char*)self + 0xB4);
-    *(float*)((char*)self + 0xDC) = *(float*)&scratch.a;
-    *(float*)((char*)self + 0xE0) = *(float*)&scratch.b;
-    *(float*)((char*)self + 0xE4) = *(float*)&scratch.c;
-    scratch = *(Vec3i_8FA8*)((char*)self + 0xC0);
-    *(float*)((char*)self + 0xE8) = *(float*)&scratch.a;
-    *(float*)((char*)self + 0xEC) = *(float*)&scratch.b;
-    *(float*)((char*)self + 0xF0) = *(float*)&scratch.c;
-    scratch = *(Vec3i_8FA8*)((char*)self + 0xCC);
-    *(float*)((char*)self + 0xF4) = *(float*)&scratch.a;
-    *(float*)((char*)self + 0xF8) = *(float*)&scratch.b;
-    *(float*)((char*)self + 0xFC) = *(float*)&scratch.c;
-    *(float*)((char*)self + 0x100) = *(float*)((char*)self + 0xD8);
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->pos;
+    SHPNODE(self)->lastPos[0] = *(float*)&scratch.a;
+    SHPNODE(self)->lastPos[1] = *(float*)&scratch.b;
+    SHPNODE(self)->lastPos[2] = *(float*)&scratch.c;
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->unkC0;
+    SHPNODE(self)->lastUnkC0[0] = *(float*)&scratch.a;
+    SHPNODE(self)->lastUnkC0[1] = *(float*)&scratch.b;
+    SHPNODE(self)->lastUnkC0[2] = *(float*)&scratch.c;
+    scratch = *(Vec3i_8FA8 *)SHPNODE(self)->orient;
+    SHPNODE(self)->lastOrient[0] = *(float*)&scratch.a;
+    SHPNODE(self)->lastOrient[1] = *(float*)&scratch.b;
+    SHPNODE(self)->lastOrient[2] = *(float*)&scratch.c;
+    SHPNODE(self)->lastOrient[3] = SHPNODE(self)->orient[3];
     func_00000000(self);
     {
-        int counter = self[0x3D4/4];
-        self[0x3D4/4] = counter - 1;
+        int counter = SHPNODE(self)->life;
+        SHPNODE(self)->life = counter - 1;
         if (counter <= 0) {
             int count;
             tbl = *(int**)&D_00000000;
@@ -8834,7 +8835,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     p1 = (int*)func_00000000(0x40);
     if (p1 != 0) {
         func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

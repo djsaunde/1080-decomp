@@ -55,8 +55,11 @@ typedef struct InputMgr {
     char pad00[0x34];
     /* 0x34 */ s32 nextFlowMode;   /* index into bootup Data 0xC450 (0 N64DEMO .. 8 EDITORS);
                                     * written by the title menu rows */
-    char pad38[0x40 - 0x38];
-    /* 0x40 */ s32 procState;      /* state of the running mode's <pfx>_procMain loop */
+    char pad38[0x3C - 0x38];
+    /* 0x3C */ s32 gameMode;       /* the running race's game mode (gGameModeNames index): game_init stores
+                                    * its arg 2 here; game_createMap and EnvSettings_load test 6 / 11
+                                    * (agent-h run 501) */
+    /* 0x40 */ s32 procState;     /* state of the running mode's <pfx>_procMain loop */
     /* 0x44 */ s32 nextProcState;  /* state to enter after the current step (select screen, fade) */
     /* 0x48 */ s32 thenProcState;  /* the state after that (arc: 10 / 9, h2h: 6) */
     /* 0x4C */ s32 playerRider;    /* player 1's rider; mgr_pickRivals never picks it */
