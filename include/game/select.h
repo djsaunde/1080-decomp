@@ -190,6 +190,13 @@ typedef struct SelectWin {
     s32 *out[5];            /* 0x4DC: commitSelection output pointers */
 } SelectWin;                /* 0x4F0 (SelectWin_ctor allocates 0x4F0) */
 
+/* View a raw `char *` window pointer as SelectWin (the state functions keep their
+ * char * parameter: their `arg0 + stage * 4` cluster offsets are matching levers).
+ * Exception: `eventFlags` stays a raw `FW(w, 0x4D4)` / `*(int *)(w + 0x4D4)` read in
+ * every state function. As an `|` operand, the struct-member form takes its temp
+ * register later and renumbers t6..t8 (checked in state0/3/4/6/7/8/9, agent-c run 484). */
+#define SELWIN(p) ((SelectWin *)(p))
+
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(item_alpha, (int)&((SelItem *)0)->alpha == 0x2A0);
 SELECT_ASSERT(item_id, (int)&((SelItem *)0)->id == 0x2B0);

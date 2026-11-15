@@ -3252,17 +3252,17 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     *(int **)(arg0 + 0x4E0) = arg2;
     *(int **)(arg0 + 0x4E8) = arg4;
     *(int **)(arg0 + 0x4EC) = arg5;
-    *(int *)(arg0 + 0x4A4) = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
+    SELWIN(arg0)->cheatChar = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
     *(int *)(arg0 + 0x3E0) = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
-    *(int *)(arg0 + 0x4A8) = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
+    SELWIN(arg0)->cheatBoard = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
     *(int *)(arg0 + 0x3E4) = SelectWin_findItem_00008988(arg0, 1, *arg4);
     row = *(char **)(*(char **)(arg0 + 0x40C) + 0x40);
     if (*(int *)(row + 0x6C) > 0) {
         tbl = (int *)(&import_80020150 + 0xB8);
         i = 0;
         do {
-            if (*(int *)(arg0 + 0x3BC) == 2) {
-                if (tbl[*(int *)(arg0 + 0x3B8)] != 0) {
+            if (SELWIN(arg0)->numPlayers == 2) {
+                if (tbl[SELWIN(arg0)->player] != 0) {
                     *(int *)(*(int *)(row + i * 4 + 0x3C) + 0x2B4) = 0x20000;
                 } else {
                     *(int *)(*(int *)(row + i * 4 + 0x3C) + 0x2B4) = 0;
@@ -3340,13 +3340,13 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     {
         char *p414;
         e = (char *)SelectWin_curItem_00008A38(arg0);
-        p414 = *(char **)(arg0 + 0x414);
+        p414 = SELWIN(arg0)->scene;
         SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
     SelectWin_beginTransition_00008688(arg0, 0);
-    *(int *)(arg0 + 0x404) = 0x40;
-    *(int *)(arg0 + 0x488) = *(int *)(arg0 + 0x104);
-    *(float *)(arg0 + 0x4BC) = 1.0f;
+    SELWIN(arg0)->unk404 = 0x40;
+    SELWIN(arg0)->unk488 = *(int *)(arg0 + 0x104);
+    SELWIN(arg0)->unk4BC = 1.0f;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_init_00005BF0);
@@ -3539,15 +3539,15 @@ void SelectWin_display_00006394(char *arg0) {
             sp44 = 0x15;
         }
         sp40 = (char *)&timproc_uso_b5_D_807FF5E0 + 0x160;
-        sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + gen_stageBitToIndex_000087A0(arg0, FW(arg0, 0x3C8)) * 4) * 0x18;
+        sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + gen_stageBitToIndex_000087A0(arg0, SELWIN(arg0)->stageBit) * 4) * 0x18;
         import_0024E608(&import_8024CAF8, FW(arg0, 0x398), (int)arg0 + 0x1E8);
         import_0024F2C8(sp40);
         import_0024F34C(sp40, 0xA0, sp44, 3);
-        if (FW(arg0, 0x4B4) != 1) {
-            temp_v0 = FW(arg0, 0x3CC);
+        if (SELWIN(arg0)->busy != 1) {
+            temp_v0 = SELWIN(arg0)->state;
             if ((temp_v0 != 7) && (temp_v0 != 5) && (temp_v0 != 4)) {
-                temp_v0_2 = FW(arg0, 0x48C);
-                FW(arg0, 0x48C) = (s32) (temp_v0_2 + 1);
+                temp_v0_2 = SELWIN(arg0)->blink;
+                SELWIN(arg0)->blink = (s32) (temp_v0_2 + 1);
                 if (temp_v0_2 & 8) {
                     if (SelectWin_canScrollNext_00006900(arg0) != 0) {
                         import_0024E608(&import_8024CAF8, 0xFF, (int)arg0 + 0x20C);
@@ -3572,13 +3572,13 @@ void SelectWin_display_00006394(char *arg0) {
         }
         var_v0 = FW(arg0, 0x414);
     }
-    FW(arg0, 0x490) = (s32) (FW(arg0, 0x490) + 1);
+    SELWIN(arg0)->frame = (s32) (SELWIN(arg0)->frame + 1);
     var_v1 = FW(FW(var_v0, 0xC), 0xBC);
     if (var_v1 >= 0x78) {
-        temp_v0_3 = FW(arg0, 0x3CC);
-        if ((temp_v0_3 != 1) && (temp_v0_3 != 0xA) && (*(float *)((char *)arg0 + 0x480) == 1.0f) && (FW(arg0, 0x4B4) != 1)) {
+        temp_v0_3 = SELWIN(arg0)->state;
+        if ((temp_v0_3 != 1) && (temp_v0_3 != 0xA) && (SELWIN(arg0)->fade == 1.0f) && (SELWIN(arg0)->busy != 1)) {
             if ((temp_v0_3 == 5) || (temp_v0_3 == 7)) {
-                if (FW(arg0, 0x490) & 8) {
+                if (SELWIN(arg0)->frame & 8) {
                     temp_v0_4 = (char *)SelectWin_curItem_00008A38(arg0);
                     temp_v1_2 = FW(temp_v0_4, 0x28);
                     ((GP_00006394)FW(temp_v1_2, 0xC4))(*(s16*)((char*)temp_v1_2 + 0xC0) + temp_v0_4, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
@@ -3593,11 +3593,11 @@ void SelectWin_display_00006394(char *arg0) {
                 ((GP_00006394)FW(temp_v1_4, 0xC4))(*(s16*)((char*)temp_v1_4 + 0xC0) + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
             }
             if (*(s32 *)((char *)&import_800200CC + 0x34) == 2) {
-                temp_v0_7 = FW(arg0, 0x3CC);
+                temp_v0_7 = SELWIN(arg0)->state;
                 if (temp_v0_7 == 4) {
                     temp_v0_8 = (char *)SelectWin_curItem_00008A38(arg0);
                     temp_v1_5 = FW(temp_v0_8, 0x28);
-                    ((GP_00006394)FW(temp_v1_5, 0xDC))(*(s16*)((char*)temp_v1_5 + 0xD8) + temp_v0_8, arg0, FW(arg0, 0x490));
+                    ((GP_00006394)FW(temp_v1_5, 0xDC))(*(s16*)((char*)temp_v1_5 + 0xD8) + temp_v0_8, arg0, SELWIN(arg0)->frame);
                 } else if (temp_v0_7 == 5) {
                     temp_v0_9 = (char *)SelectWin_curItem_00008A38(arg0);
                     temp_v1_6 = FW(temp_v0_9, 0x28);
@@ -3615,10 +3615,10 @@ void SelectWin_display_00006394(char *arg0) {
             var_v1 = FW(FW(FW(arg0, 0x414), 0xC), 0xBC);
         }
     }
-    temp_v0_12 = FW(arg0, 0x3CC);
-    if (((var_v1 >= 0x78) && (FW(arg0, 0x4B4) != 1) && (temp_v0_12 == 6)) || (temp_v0_12 == 7)) {
+    temp_v0_12 = SELWIN(arg0)->state;
+    if (((var_v1 >= 0x78) && (SELWIN(arg0)->busy != 1) && (temp_v0_12 == 6)) || (temp_v0_12 == 7)) {
         var_a2 = FW((SelectWin_prevStageItem_00008A64((int *)arg0)), 0x2B0);
-        temp_v1_9 = FW(arg0, 0x4A4);
+        temp_v1_9 = SELWIN(arg0)->cheatChar;
         if (temp_v1_9 == 1) {
             var_a2 = 5;
         }
@@ -3676,7 +3676,7 @@ extern int gl_func_00000000();
  * cap. Restored the .s + inlined the `item` deref (shifts $v0->$t0 to match
  * the float-load base register). 33/33 byte-exact. */
 int SelectWin_canScrollPrev_0000687C(int *a0) {
-    int group = *(int*)((char*)a0 + 0x3C4);
+    int group = SELWIN(a0)->stage;
     int group_off = group * 4;
     int count;
     int idx;
@@ -3763,16 +3763,16 @@ extern int SelectWin_itemCount_00008C1C();
 int SelectWin_canScrollNext_00006900(char *s) {
     int i;
     int n0;
-    if (*(int *)(s + 0x3C4) == 0) {
+    if (SELWIN(s)->stage == 0) {
         return 1;
     }
     n0 = SelectWin_itemCount_00008C1C((int *)s);
-    if (n0 == ((int *)(s + 0x3D0))[*(int *)(s + 0x3C4)]) {
+    if (n0 == ((int *)(s + 0x3D0))[SELWIN(s)->stage]) {
         return 0;
     }
-    i = ((int *)(s + 0x3D0))[*(int *)(s + 0x3C4)] + 1;
+    i = ((int *)(s + 0x3D0))[SELWIN(s)->stage] + 1;
     for (; i < SelectWin_itemCount_00008C1C((int *)s); i++) {
-        if (*(float *)(*(int *)(*(int *)(*(int *)(s + 0x3C4) * 4 + *(int *)(s + 0x40C) + 0x40) + i * 4 + 0x3C) + 0x2A4) != 0.0f) {
+        if (*(float *)(*(int *)(*(int *)(SELWIN(s)->stage * 4 + *(int *)(s + 0x40C) + 0x40) + i * 4 + 0x3C) + 0x2A4) != 0.0f) {
             return 1;
         }
     }
@@ -3858,12 +3858,12 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
     *(int *)(g + 0x40) = *(int *)(g + 0x44);
     *(int *)*(char **)(scr + 0x4E0) =
         *(int *)(*(char **)(*(char **)(*(char **)(scr + 0x40C) + 0x40) + *(int *)(scr + 0x3D0) * 4 + 0x3C) + 0x2B0);
-    a4 = *(int *)(scr + 0x4A4);
+    a4 = SELWIN(scr)->cheatChar;
     if (a4) {}
     if (a4 != 0 && a4 < 4) {
         func_00000000(&D_69E8_1304);
         g = (char *)&D_00000000;
-        *(int *)*(char **)(scr + 0x4E0) = (&D_69E8_F24)[*(int *)(scr + 0x4A4)] - 1;
+        *(int *)*(char **)(scr + 0x4E0) = (&D_69E8_F24)[SELWIN(scr)->cheatChar] - 1;
     }
     if (D_69E8_G0 == 0x17D7) {
         *(int *)*(char **)(scr + 0x4DC) =
@@ -3873,7 +3873,7 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
     }
     *(int *)*(char **)(scr + 0x4E8) =
         *(int *)(*(char **)(*(char **)(*(char **)(scr + 0x40C) + 0x44) + *(int *)(scr + 0x3D4) * 4 + 0x3C) + 0x2B0);
-    if (*(int *)(scr + 0x4A8) == 4) {
+    if (SELWIN(scr)->cheatBoard == 4) {
         *(int *)*(char **)(scr + 0x4E8) = 8;
     }
     C = *(char **)(scr + 0x40C);
@@ -3891,7 +3891,7 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
         D_69E8_A4[*(int *)(scr + 0x3D0)] = *(int *)*(char **)(scr + 0x4E8);
     } else {
         char *e40b = *(char **)(*(char **)(scr + 0x40C) + 0x40) + *(int *)(scr + 0x3D0) * 4;
-        D_69E8_B8[*(int *)(scr + 0x3B8)] =
+        D_69E8_B8[SELWIN(scr)->player] =
             (*(int *)(*(char **)(e40b + 0x3C) + 0x2B4) & 0x20000) != 0;
     }
     return 1;
@@ -3948,9 +3948,9 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_startGam
 extern int import_000A53B4();
 extern void timproc_uso_b5_func_00F954();
 void SelectWin_commitSelection_00006C00(char *scr) {
-    if (!SelectionMgr_canCommit_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
+    if (!SelectionMgr_canCommit_00001D1C(*(char **)(scr + 0x41C), SELWIN(scr)->player)) return;
     import_000A53B4(scr);
-    timproc_uso_b5_func_00F954(*(int *)(scr + 0x418), -1, 0);
+    timproc_uso_b5_func_00F954(SELWIN(scr)->unk418, -1, 0);
     *(int *)(&import_80020098 + 0x40) = *(int *)(&import_80020098 + 0x48);
 #define E6C00(tb, ix, f) (*(int *)(*(char **)(*(int *)(scr + (ix)) * 4 + *(char **)(*(char **)(scr + 0x40C) + (tb)) + 0x3C) + (f)))
     **(int **)(scr + 0x4DC) = E6C00(0x4C, 0x3DC, 0x2B0);
@@ -4078,45 +4078,45 @@ void SelectWin_moveCursorPrev_00006E08(char *arg0, s32 arg1) {
     s32 old2;
 
     if (((int)timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
-        old1 = SLOT(FW(arg0, 0x3C4)); if (1) {}
+        old1 = SLOT(SELWIN(arg0)->stage); if (1) {}
         (int)timproc_uso_b5_alias(arg0);
         i = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_4:
-            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p -= 1; }
-            if (SLOT(FW(arg0, 0x3C4)) < 0) {
-                SLOT(FW(arg0, 0x3C4)) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
+            { s32 *p = (s32 *)(arg0 + 0x3D0); p += SELWIN(arg0)->stage; *p -= 1; }
+            if (SLOT(SELWIN(arg0)->stage) < 0) {
+                SLOT(SELWIN(arg0)->stage) = (s32) ((int)timproc_uso_b5_alias(arg0) - 1);
             }
             if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (i += 1, 0x2A4)) == 0.0f) && (i < (int)timproc_uso_b5_alias(arg0))) {
                 goto loop_4;
             }
         }
-        cur = SLOT(FW(arg0, 0x3C4));
+        cur = SLOT(SELWIN(arg0)->stage);
         if (old1 != cur) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);
+            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], FW(arg0, 0x4D4) | cur);
             (int)timproc_uso_b5_alias(arg0, arg1);
         }
     }
     if (((int)timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && ((int)timproc_uso_b5_alias(arg0) != 0)) {
         {
         s32 j;
-        old2 = SLOT(FW(arg0, 0x3C4));
+        old2 = SLOT(SELWIN(arg0)->stage);
         (int)timproc_uso_b5_alias(arg0);
         j = 0;
         if ((int)timproc_uso_b5_alias(arg0) > 0) {
 loop_13:
-            { s32 *p = (s32 *)(arg0 + 0x3D0); p += FW(arg0, 0x3C4); *p += 1; }
-            if (SLOT(FW(arg0, 0x3C4)) >= (int)timproc_uso_b5_alias(arg0)) {
-                SLOT(FW(arg0, 0x3C4)) = 0;
+            { s32 *p = (s32 *)(arg0 + 0x3D0); p += SELWIN(arg0)->stage; *p += 1; }
+            if (SLOT(SELWIN(arg0)->stage) >= (int)timproc_uso_b5_alias(arg0)) {
+                SLOT(SELWIN(arg0)->stage) = 0;
             }
             if ((*(f32 *)((char *)timproc_uso_b5_alias(arg0) + (j += 1, 0x2A4)) == 0.0f) && (j < (int)timproc_uso_b5_alias(arg0))) {
                 goto loop_13;
             }
         }
         }
-        cur = SLOT(FW(arg0, 0x3C4));
+        cur = SLOT(SELWIN(arg0)->stage);
         if (old2 != cur) {
-            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[FW(arg0, 0x3C4)], FW(arg0, 0x4D4) | cur);
+            (int)timproc_uso_b5_alias((&timproc_uso_b5_D_807FE738)[SELWIN(arg0)->stage], FW(arg0, 0x4D4) | cur);
             (int)timproc_uso_b5_alias(arg0, arg1);
         }
     }
@@ -4199,11 +4199,11 @@ void SelectWin_state0_00007078(char *arg0) {
         *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x134));
         *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x138));
     } else {
-        FW(arg0, 0x488) = FW(arg0, 0x488) - 1;
-        if (FW(arg0, 0x488) < 0) {
-            timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[FW(arg0, 0x3C4)], (FW(timproc_uso_b5_alias(arg0), 0x2B0) + 1) | FW(arg0, 0x4D4));
-            FW(arg0, 0x3CC) = 1;
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+        SELWIN(arg0)->unk488 = SELWIN(arg0)->unk488 - 1;
+        if (SELWIN(arg0)->unk488 < 0) {
+            timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (FW(timproc_uso_b5_alias(arg0), 0x2B0) + 1) | FW(arg0, 0x4D4));
+            SELWIN(arg0)->state = 1;
+            SELWIN(arg0)->unk484 = 1.0f;
             temp_v0 = timproc_uso_b5_alias(arg0);
             temp_v1_3 = FW(temp_v0, 0x28);
             ((GP_00007078)FW(temp_v1_3, 0xA4))(*(s16 *)((char *)temp_v1_3 + 0xA0) + (char *)temp_v0);
@@ -4211,31 +4211,31 @@ void SelectWin_state0_00007078(char *arg0) {
         timproc_uso_b5_alias(arg0, 2);
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
-        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[FW(arg0, 0x3C4)], (FW(timproc_uso_b5_alias(arg0), 0x2B0) + 1) | FW(arg0, 0x4D4));
-        FW(arg0, 0x3CC) = 1;
-        FW(arg0, 0x400) = 0;
-        *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (FW(timproc_uso_b5_alias(arg0), 0x2B0) + 1) | FW(arg0, 0x4D4));
+        SELWIN(arg0)->state = 1;
+        SELWIN(arg0)->unk400 = 0;
+        SELWIN(arg0)->unk484 = 1.0f;
         temp_v0_2 = timproc_uso_b5_alias(arg0);
         temp_v1_4 = FW(temp_v0_2, 0x28);
         ((GP_00007078)FW(temp_v1_4, 0xA4))(*(s16 *)((char *)temp_v1_4 + 0xA0) + (char *)temp_v0_2);
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
-        FW(arg0, 0x3CC) = 0;
+        SELWIN(arg0)->state = 0;
         timproc_uso_b5_alias((char *)0x802);
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias(arg0);
         } else {
             timproc_uso_b5_alias(arg0);
             temp_v0_3 = timproc_uso_b5_alias(arg0);
-            FW(arg0, 0x3C8) = temp_v0_3;
-            FW(arg0, 0x3C4) = timproc_uso_b5_alias(arg0, (s32) temp_v0_3);
-            FW(arg0, 0x3CC) = 2;
+            SELWIN(arg0)->stageBit = temp_v0_3;
+            SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, (s32) temp_v0_3);
+            SELWIN(arg0)->state = 2;
             timproc_uso_b5_alias(arg0, 0);
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+            SELWIN(arg0)->unk484 = 1.0f;
         }
     }
-    if ((FW(arg0, 0x3F8) != 0) && (*(f32 *)((char *)arg0 + 0x480) == 0.0f)) {
-        FW(arg0, 0x3F8) = 0;
+    if ((SELWIN(arg0)->unk3F8 != 0) && (SELWIN(arg0)->fade == 0.0f)) {
+        SELWIN(arg0)->unk3F8 = 0;
     }
     FW(arg0, 0x408) = 0;
 }
@@ -4272,7 +4272,7 @@ void SelectWin_state1_000072D0(char *scr) {
     char *e, *vt;
 
     cur = *(float *)(scr + 0x480); if (*(float *)(scr + 0x484) > cur) {
-        state = *(int *)(scr + 0x3CC);
+        state = SELWIN(scr)->state;
         if (state == 1) goto fast_step;
         *(float *)(scr + 0x480) = *(float *)(scr + 0xEC) + (curf = cur);
         goto check_target;
@@ -4281,10 +4281,10 @@ fast_step:
 check_target:
         if (*(float *)(scr + 0x484) < *(float *)(scr + 0x480)) {
             *(float *)(scr + 0x480) = *(float *)(scr + 0x484);
-            if (*(int *)(scr + 0x3C8) == 1) {
-                *(int *)(scr + 0x3CC) = 3;
+            if (SELWIN(scr)->stageBit == 1) {
+                SELWIN(scr)->state = 3;
             } else {
-                *(int *)(scr + 0x3CC) = 9;
+                SELWIN(scr)->state = 9;
             }
         }
     }
@@ -4293,7 +4293,7 @@ check_target:
         e = (char *)SelectWin_curItem_00008A38(scr);
         vt = *(char **)(e + 0x28);
         (*(void (**)())(vt + 0xAC))(*(short *)(vt + 0xA8) + (int)e);
-        *(int *)(scr + 0x3CC) = 10;
+        SELWIN(scr)->state = 10;
         *(float *)(scr + 0x484) = 0.0f;
     }
 }
@@ -4314,7 +4314,7 @@ void SelectWin_state2_000073C0(char *scr) {
     int done_state;
 
     if (cur < *(float *)(scr + 0x484)) {
-        state = *(int *)(scr + 0x3CC);
+        state = SELWIN(scr)->state;
         done_state = 9;
         if (state == 1) goto fast_step;
         *(float *)(scr + 0x480) = *(float *)(scr + 0xEC) + (curf = cur);
@@ -4324,7 +4324,7 @@ fast_step:
 check_target:
         if (*(float *)(scr + 0x484) < *(float *)(scr + 0x480)) {
             *(float *)(scr + 0x480) = *(float *)(scr + 0x484);
-            *(int *)(scr + 0x3CC) = done_state;
+            SELWIN(scr)->state = done_state;
         }
     }
 }
@@ -4369,30 +4369,30 @@ void SelectWin_state3_00007430(char *scr) {
     char *node;
     char *cam_root;
 
-    if (*(int *)(scr + 0x3C4) == 0) {
+    if (SELWIN(scr)->stage == 0) {
         step = func_00000000() - 1;
         if (step >= 0) {
-            if ((*(int *)(scr + 0x4B0) & 0xF) == 0) {
+            if ((SELWIN(scr)->cheatTimer & 0xF) == 0) {
                 func_00000000((char *)&D_00000000 + 0x00001320,
                               ((int *)((char *)&D_00000000 + 0x00000F34))[step]);
             }
 
             seq_table = ((int **)((char *)&D_00000000 + 0x00000F60))[step];
-            if (func_00000000(&D_00000000_a, seq_table[*(int *)(scr + 0x4AC)])) {
-                *(int *)(scr + 0x4B0) = *(int *)((char *)&D_00000000 + 0x00000F18);
-                if (seq_table[*(int *)(scr + 0x4AC)] != 0x100) {
-                    *(int *)(scr + 0x4AC) += 1;
+            if (func_00000000(&D_00000000_a, seq_table[SELWIN(scr)->cheatStep])) {
+                SELWIN(scr)->cheatTimer = *(int *)((char *)&D_00000000 + 0x00000F18);
+                if (seq_table[SELWIN(scr)->cheatStep] != 0x100) {
+                    SELWIN(scr)->cheatStep += 1;
                 } else {
                     func_00000000(scr, 0);
-                    *(int *)(scr + 0x4A4) = step + 1;
+                    SELWIN(scr)->cheatChar = step + 1;
                     func_00000000(0x27, 0x3E8);
                 }
             } else {
-                if (func_00000000(&D_00000000, ~seq_table[*(int *)(scr + 0x4AC)])) {
-                    *(int *)(scr + 0x4B0) = 0;
+                if (func_00000000(&D_00000000, ~seq_table[SELWIN(scr)->cheatStep])) {
+                    SELWIN(scr)->cheatTimer = 0;
                 }
-                *(int *)(scr + 0x4B0) -= 1;
-                if (*(int *)(scr + 0x4B0) < 0) {
+                SELWIN(scr)->cheatTimer -= 1;
+                if (SELWIN(scr)->cheatTimer < 0) {
                     func_00000000(scr, 0);
                 }
             }
@@ -4405,8 +4405,8 @@ void SelectWin_state3_00007430(char *scr) {
         *(int *)(scr + 0x408) = 0;
         if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
             func_00000000(5);
-            *(int *)(scr + 0x3CC) = 4;
-            *(float *)(scr + 0x4A0) = 1.0f;
+            SELWIN(scr)->state = 4;
+            SELWIN(scr)->unk4A0 = 1.0f;
             return;
         }
 
@@ -4421,28 +4421,28 @@ void SelectWin_state3_00007430(char *scr) {
         (*(void (**)(int, int))(node + 0x84))(*(short *)(node + 0x80) + (int)obj, 0);
 
         obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[*(int *)(scr + 0x3C4)],
+        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
-        *(int *)(scr + 0x3CC) = 5;
-        *(int *)(scr + 0x400) = 0x37;
-        *(float *)(scr + 0x484) = 1.0f;
+        SELWIN(scr)->state = 5;
+        SELWIN(scr)->unk400 = 0x37;
+        SELWIN(scr)->unk484 = 1.0f;
 
         obj = (char *)func_00000000(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
 
-        cam_root = *(char **)(scr + 0x414);
-        *(float *)(scr + 0x4C4) = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
-        *(float *)(scr + 0x4C8) = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
-        *(float *)(scr + 0x4CC) = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        *(float *)(scr + 0x4C0) = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
-        *(int *)(scr + 0x4B4) = 2;
-        *(float *)(scr + 0x4BC) = 0.0f;
+        cam_root = SELWIN(scr)->scene;
+        SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
+        SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
+        SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
+        SELWIN(scr)->unk4C0 = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->busy = 2;
+        SELWIN(scr)->unk4BC = 0.0f;
     } else if (func_00000000(&D_00000000, 0x14203)) {
         if (func_00000000(&D_00000000, 0x200)) {
             obj = (char *)func_00000000(scr);
-            func_00000000(((int **)&D_00000000)[*(int *)(scr + 0x3C4)],
+            func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
                           (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
         }
 
@@ -4453,13 +4453,13 @@ void SelectWin_state3_00007430(char *scr) {
         func_00000000(scr, 1);
 
         if (func_00000000(&D_00000000, 0x200)) {
-            *(int *)(scr + 0x3CC) = 0xA;
-            *(float *)(scr + 0x484) = 0.0f;
+            SELWIN(scr)->state = 0xA;
+            SELWIN(scr)->unk484 = 0.0f;
             return;
         }
 
         obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[*(int *)(scr + 0x3C4)],
+        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
         obj = (char *)func_00000000(scr);
@@ -4517,27 +4517,27 @@ void SelectWin_state4_000077D8(char *scr) {
 
     if (func_00000000(&D_00000000, 0x100)) {
         obj = (char *)func_00000000(scr);
-        func_00000000(((int **)&D_00000000)[*(int *)(scr + 0x3C4)],
+        func_00000000(((int **)&D_00000000)[SELWIN(scr)->stage],
                       (*(int *)(obj + 0x2B0) + 1) | *(int *)(scr + 0x4D4));
 
-        *(int *)(scr + 0x3CC) = 5;
-        *(int *)(scr + 0x400) = 0x37;
-        *(float *)(scr + 0x484) = 1.0f;
+        SELWIN(scr)->state = 5;
+        SELWIN(scr)->unk400 = 0x37;
+        SELWIN(scr)->unk484 = 1.0f;
 
         obj = (char *)func_00000000(scr);
         node = *(char **)(obj + 0x28);
         (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
 
-        cam_root = *(char **)(scr + 0x414);
-        *(float *)(scr + 0x4C4) = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
-        *(float *)(scr + 0x4C8) = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
-        *(float *)(scr + 0x4CC) = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        *(float *)(scr + 0x4C0) = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
-        *(int *)(scr + 0x4B4) = 2;
-        *(float *)(scr + 0x4BC) = 0.0f;
+        cam_root = SELWIN(scr)->scene;
+        SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
+        SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
+        SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
+        SELWIN(scr)->unk4C0 = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->busy = 2;
+        SELWIN(scr)->unk4BC = 0.0f;
     } else if (func_00000000(&D_00000000, 0x200)) {
         func_00000000(0x802);
-        *(int *)(scr + 0x3CC) = 3;
+        SELWIN(scr)->state = 3;
     } else {
         if (func_00000000(&D_00000000, 0x4002)) {
             obj = (char *)func_00000000(scr);
@@ -4616,16 +4616,16 @@ typedef char *(*GP_79A4)();
 void SelectWin_state5_000079A4(char *scr) {
     char *e;
 
-    *(int *)(scr + 0x400) -= 1;
+    SELWIN(scr)->unk400 -= 1;
     if (*(int *)(&import_80020098 + 0x34) == 2) {
-        if (*(float *)(scr + 0x4A0) > 0.0f) {
-            *(float *)(scr + 0x4A0) -= *(float *)((char *)&D_00000000 + 0x1D0);
-            if (*(float *)(scr + 0x4A0) < 0.0f) {
-                *(float *)(scr + 0x4A0) = 0.0f;
+        if (SELWIN(scr)->unk4A0 > 0.0f) {
+            SELWIN(scr)->unk4A0 -= *(float *)((char *)&D_00000000 + 0x1D0);
+            if (SELWIN(scr)->unk4A0 < 0.0f) {
+                SELWIN(scr)->unk4A0 = 0.0f;
             }
         }
     }
-    if (*(int *)(scr + 0x400) != 0) {
+    if (SELWIN(scr)->unk400 != 0) {
         if (timproc_uso_b5_func_011E00(&import_80020098, 0x100) == 0) {
             return;
         }
@@ -4641,13 +4641,13 @@ void SelectWin_state5_000079A4(char *scr) {
     }
     SelectWin_saveFocus_0000866C((int *) scr);
     FW(scr, 0x3D4) = SelectWin_findItem_00008988(scr, 1,
-        ((int *)(&import_8002013C + 0xA4))[((int *)(scr + 0x3E0))[FW(scr, 0x3C4)]]);
+        ((int *)(&import_8002013C + 0xA4))[((int *)(scr + 0x3E0))[SELWIN(scr)->stage]]);
     e = (char *) SelectWin_nextStageBit_000087F4(scr);
-    FW(scr, 0x3C8) = (int) e;
-    FW(scr, 0x3C4) = gen_stageBitToIndex_000087A0(scr, e);
-    FW(scr, 0x3CC) = 6;
+    SELWIN(scr)->stageBit = (int) e;
+    SELWIN(scr)->stage = gen_stageBitToIndex_000087A0(scr, e);
+    SELWIN(scr)->state = 6;
     SelectWin_skipDisabled_00006D30((int *) scr);
-    *(f32 *)(scr + 0x484) = 1.0f;
+    SELWIN(scr)->unk484 = 1.0f;
     SelectWin_beginTransition_00008688(scr, 0);
 }
 
@@ -4726,25 +4726,25 @@ void SelectWin_state6_00007B2C(char *arg0) {
     char *tv0_4;
     char *tv0_5;
 
-    if (FW(arg0, 0x3C4) == 1) {
+    if (SELWIN(arg0)->stage == 1) {
         temp_v0 = timproc_uso_b5_alias();
         if (temp_v0 != 0) {
             temp_v1 = *(s32 **)((char *)&D_00000000 + 0xF60 + (temp_v0 * 4));
-            if (timproc_uso_b5_alias(&import_80020098, temp_v1[FW(arg0, 0x4AC)]) != 0) {
-                FW(arg0, 0x4B0) = (s32) *(s32 *)((char *)&D_00000000 + 0xF18);
-                if (temp_v1[FW(arg0, 0x4AC)] != 0x100) {
-                    FW(arg0, 0x4AC) = (s32) (FW(arg0, 0x4AC) + 1);
+            if (timproc_uso_b5_alias(&import_80020098, temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
+                SELWIN(arg0)->cheatTimer = (s32) *(s32 *)((char *)&D_00000000 + 0xF18);
+                if (temp_v1[SELWIN(arg0)->cheatStep] != 0x100) {
+                    SELWIN(arg0)->cheatStep = (s32) (SELWIN(arg0)->cheatStep + 1);
                 } else {
                     timproc_uso_b5_alias(arg0, 1);
-                    FW(arg0, 0x4A8) = (s32) (temp_v0 + 1);
+                    SELWIN(arg0)->cheatBoard = (s32) (temp_v0 + 1);
                     timproc_uso_b5_alias((char *)0x27, 0x3E8);
                 }
             } else {
-                if (timproc_uso_b5_alias(&import_80020098, ~temp_v1[FW(arg0, 0x4AC)]) != 0) {
-                    FW(arg0, 0x4B0) = 0;
+                if (timproc_uso_b5_alias(&import_80020098, ~temp_v1[SELWIN(arg0)->cheatStep]) != 0) {
+                    SELWIN(arg0)->cheatTimer = 0;
                 }
-                FW(arg0, 0x4B0) = FW(arg0, 0x4B0) - 1;
-                if (FW(arg0, 0x4B0) < 0) {
+                SELWIN(arg0)->cheatTimer = SELWIN(arg0)->cheatTimer - 1;
+                if (SELWIN(arg0)->cheatTimer < 0) {
                     timproc_uso_b5_alias(arg0, 1);
                 }
             }
@@ -4757,12 +4757,12 @@ void SelectWin_state6_00007B2C(char *arg0) {
         tv0_2 = timproc_uso_b5_alias(arg0);
         ((GP_00007B2C)FW(FW(tv0_2, 0x28), 0x84))(*(s16*)((char*)FW(tv0_2, 0x28) + 0x80) + tv0_2, 0);
         if (1) {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (FW(arg0, 0x3C4) * 4)), FW((arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0) | FW(arg0, 0x4D4));
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
         }
         timproc_uso_b5_alias(arg0);
-        FW(arg0, 0x3CC) = 7;
-        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[FW(arg0, 0x3C4)], (FW((timproc_uso_b5_alias(arg0)), 0x2B0) + 1) | FW(arg0, 0x4D4));
-        *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+        SELWIN(arg0)->state = 7;
+        timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (FW((timproc_uso_b5_alias(arg0)), 0x2B0) + 1) | FW(arg0, 0x4D4));
+        SELWIN(arg0)->unk484 = 1.0f;
         tv0_3 = timproc_uso_b5_alias(arg0);
         ((GP_00007B2C)FW(FW(tv0_3, 0x28), 0x74))(*(s16*)((char*)FW(tv0_3, 0x28) + 0x70) + tv0_3);
         return;
@@ -4771,16 +4771,16 @@ void SelectWin_state6_00007B2C(char *arg0) {
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias(arg0);
         } else {
-            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (FW(arg0, 0x3C4) * 4)), FW((arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0) | FW(arg0, 0x4D4));
+            timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
             tv0_4 = timproc_uso_b5_alias(arg0);
             ((GP_00007B2C)FW(FW(tv0_4, 0x28), 0xAC))(*(s16*)((char*)FW(tv0_4, 0x28) + 0xA8) + tv0_4);
-            FW(arg0, 0x3CC) = 0xA;
+            SELWIN(arg0)->state = 0xA;
             timproc_uso_b5_alias(arg0, 0);
-            *(f32 *)((char *)arg0 + 0x484) = 0.0f;
+            SELWIN(arg0)->unk484 = 0.0f;
             timproc_uso_b5_alias(arg0);
             tv0_5 = timproc_uso_b5_alias(arg0);
-            FW(arg0, 0x3C8) = (s32) tv0_5;
-            FW(arg0, 0x3C4) = timproc_uso_b5_alias(arg0, tv0_5);
+            SELWIN(arg0)->stageBit = (s32) tv0_5;
+            SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, tv0_5);
             timproc_uso_b5_alias(arg0);
             timproc_uso_b5_alias(arg0, 1);
         }
@@ -4881,10 +4881,10 @@ void SelectWin_state7_00007E34(char *arg0) {
     char *temp_v1_5;
     char *temp_v1_6;
 
-    if (FW(arg0, 0x3BC) == 2) {
-        var_v1 = FW(arg0, 0x4B4) | FW(timproc_uso_b5_alias(FW(arg0, 0x41C), FW(arg0, 0x3B8)), 0x4B8);
+    if (SELWIN(arg0)->numPlayers == 2) {
+        var_v1 = SELWIN(arg0)->busy | FW(timproc_uso_b5_alias(FW(arg0, 0x41C), SELWIN(arg0)->player), 0x4B8);
     } else {
-        var_v1 = FW(arg0, 0x4B4);
+        var_v1 = SELWIN(arg0)->busy;
     }
     if ((var_v1 == 0) && (timproc_uso_b5_alias(&import_80020098, 0x100) != 0)) {
         temp_v0 = timproc_uso_b5_alias(arg0);
@@ -4895,7 +4895,7 @@ void SelectWin_state7_00007E34(char *arg0) {
         temp_v1_2 = FW(temp_v0_2, 0x28);
         ((GP_00007E34)FW(temp_v1_2, 0x84))(*(s16*)((char*)temp_v1_2 + 0x80) + temp_v0_2, 0);
         if (1) {
-            temp_v0_3 = FW(arg0, 0x3C4) * 4;
+            temp_v0_3 = SELWIN(arg0)->stage * 4;
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), FW((arg0 + temp_v0_3), 0x3D0) | FW(arg0, 0x4D4));
         }
         if (timproc_uso_b5_alias(arg0) == 0) {
@@ -4904,29 +4904,29 @@ void SelectWin_state7_00007E34(char *arg0) {
         }
         timproc_uso_b5_alias(arg0);
         temp_v0_4 = timproc_uso_b5_alias(arg0);
-        FW(arg0, 0x3C8) = temp_v0_4;
-        FW(arg0, 0x3C4) = timproc_uso_b5_alias(arg0, (s32) temp_v0_4);
-        FW(arg0, 0x3CC) = 8;
+        SELWIN(arg0)->stageBit = temp_v0_4;
+        SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, (s32) temp_v0_4);
+        SELWIN(arg0)->state = 8;
         timproc_uso_b5_alias(arg0);
-        *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+        SELWIN(arg0)->unk484 = 1.0f;
         timproc_uso_b5_alias(arg0, 0);
-        FW(arg0, 0x4B8) = 1;
+        SELWIN(arg0)->unk4B8 = 1;
         return;
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias(arg0);
         } else {
-            temp_v0_5 = FW(arg0, 0x3C4) * 4;
+            temp_v0_5 = SELWIN(arg0)->stage * 4;
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), FW((arg0 + temp_v0_5), 0x3D0) | FW(arg0, 0x4D4));
             temp_v0_6 = timproc_uso_b5_alias(arg0);
             temp_v1_3 = FW(temp_v0_6, 0x28);
             ((GP_00007E34)FW(temp_v1_3, 0xAC))(*(s16*)((char*)temp_v1_3 + 0xA8) + temp_v0_6);
-            FW(arg0, 0x3CC) = 6;
+            SELWIN(arg0)->state = 6;
             temp_v0_7 = timproc_uso_b5_alias(arg0);
             temp_v1_4 = FW(temp_v0_7, 0x28);
             ((GP_00007E34)FW(temp_v1_4, 0x7C))(*(s16*)((char*)temp_v1_4 + 0x78) + temp_v0_7);
-            *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+            SELWIN(arg0)->unk484 = 1.0f;
         }
     }
     if ((timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && (FW(timproc_uso_b5_alias(arg0), 0x2B4) & 0x20)) {
@@ -5030,17 +5030,17 @@ void SelectWin_state8_000080F4(char *arg0) {
     char *r2;
     char *a1v;
 
-    if (FW(arg0, 0x3BC) == 2) {
+    if (SELWIN(arg0)->numPlayers == 2) {
         busy = FW(FW(arg0, 0x41C), 0x4C);
-        e = (char *) SelectionMgr_otherWin_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
-        flags = (FW(arg0, 0x4B4) | FW(e, 0x4B4)) | busy;
-        q = (char *) SelectionMgr_canCommit_00001D1C((char *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+        e = (char *) SelectionMgr_otherWin_00001CF0((int *) FW(arg0, 0x41C), SELWIN(arg0)->player);
+        flags = (SELWIN(arg0)->busy | FW(e, 0x4B4)) | busy;
+        q = (char *) SelectionMgr_canCommit_00001D1C((char *) FW(arg0, 0x41C), SELWIN(arg0)->player);
     } else {
         busy = 0;
-        flags = FW(arg0, 0x4B4);
+        flags = SELWIN(arg0)->busy;
         q = (char *) 1;
     }
-    if (*(f32 *)((char *)arg0 + 0x44) < *(f32 *)((char *)arg0 + 0x4BC)) {
+    if (*(f32 *)((char *)arg0 + 0x44) < SELWIN(arg0)->unk4BC) {
         e = (char *) SelectWin_curItem_00008A38(arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x7C))(*(s16*)((char *)FW(e, 0x28) + 0x78) + e);
     }
@@ -5057,30 +5057,30 @@ void SelectWin_state8_000080F4(char *arg0) {
         }
         SelectWin_saveFocus_0000866C((int *) arg0);
         e = (char *) SelectWin_nextStageBit_000087F4(arg0);
-        FW(arg0, 0x3C8) = (int) e;
-        FW(arg0, 0x3C4) = gen_stageBitToIndex_000087A0(arg0, e);
-        FW(arg0, 0x3CC) = 8;
+        SELWIN(arg0)->stageBit = (int) e;
+        SELWIN(arg0)->stage = gen_stageBitToIndex_000087A0(arg0, e);
+        SELWIN(arg0)->state = 8;
         SelectWin_skipDisabled_00006D30((int *) arg0);
-        *(f32 *)((char *)arg0 + 0x484) = 1.0f;
+        SELWIN(arg0)->unk484 = 1.0f;
         SelectWin_beginTransition_00008688(arg0, 0);
         return;
     }
     if ((busy == 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x14003) != 0)) {
         SelectWin_moveCursorPrev_00006E08(arg0, 1);
     }
-    import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
+    import_000A7ECC(&import_80020098, SELWIN(arg0)->player);
     if ((sp28 != 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x200) != 0)) {
         if (SelectWin_prevStageBit_000088A0(arg0) == 0) {
             SelectWin_commitSelection_00006C00(arg0);
             return;
         }
-        timproc_uso_b5_func_0002FC(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (FW(arg0, 0x3C4) * 4)), FW((arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0) | FW(arg0, 0x4D4));
-        if ((FW(arg0, 0x3BC) == 2) && ((FW(arg0, 0x3B8) + 1) == FW(FW(arg0, 0x41C), 0x48))) {
+        timproc_uso_b5_func_0002FC(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
+        if ((SELWIN(arg0)->numPlayers == 2) && ((SELWIN(arg0)->player + 1) == FW(FW(arg0, 0x41C), 0x48))) {
             flags = 0;
             busy = 0;
             if (FW(FW(FW(arg0, 0x40C), 0x48), 0x6C) > 0) {
                 do {
-                    r2 = (char *) SelectionMgr_otherWin_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+                    r2 = (char *) SelectionMgr_otherWin_00001CF0((int *) FW(arg0, 0x41C), SELWIN(arg0)->player);
                     a1v = (char *) FW(FW(FW(r2, 0x40C), 0x48) + busy, 0x3C);
                     e = (char *) FW(FW(FW(arg0, 0x40C), 0x48) + busy, 0x3C);
                     if (1) {
@@ -5097,12 +5097,12 @@ void SelectWin_state8_000080F4(char *arg0) {
             e = (char *) SelectWin_curItem_00008A38(arg0);
             ((GP_000080F4)FW(FW(e, 0x28), 0x6C))(*(s16*)((char *)FW(e, 0x28) + 0x68) + e);
         }
-        FW(arg0, 0x3CC) = 6;
+        SELWIN(arg0)->state = 6;
         SelectWin_resetCheat_00008D90((int *) arg0, 1);
         SelectWin_saveFocus_0000866C((int *) arg0);
         e = (char *) SelectWin_callPrevStageBit_0000894C(arg0);
-        FW(arg0, 0x3C8) = (int) e;
-        FW(arg0, 0x3C4) = gen_stageBitToIndex_000087A0(arg0, e);
+        SELWIN(arg0)->stageBit = (int) e;
+        SELWIN(arg0)->stage = gen_stageBitToIndex_000087A0(arg0, e);
         SelectWin_skipDisabled_00006D30((int *) arg0);
         SelectWin_beginTransition_00008688(arg0, 0);
     }
@@ -5171,30 +5171,30 @@ void SelectWin_state9_00008468(char *arg0) {
         temp_v0 = timproc_uso_b5_alias(arg0);
         temp_v1 = FW(temp_v0, 0x28);
         ((GPv_8468)FW(temp_v1, 0x84))(*(s16*)((char*)temp_v1 + 0x80) + temp_v0, 0);
-        timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (FW(arg0, 0x3C4) * 4)),
-                             FW(arg0 + (FW(arg0, 0x3C4) * 4), 0x3D0) | FW(arg0, 0x4D4));
+        timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)),
+                             FW(arg0 + (SELWIN(arg0)->stage * 4), 0x3D0) | FW(arg0, 0x4D4));
         if (timproc_uso_b5_alias(arg0) == 0) {
             timproc_uso_b5_alias(FW(arg0, 0x41C));
             return;
         }
         timproc_uso_b5_alias(arg0);
         temp_v0_2 = timproc_uso_b5_alias(arg0);
-        FW(arg0, 0x3C8) = temp_v0_2;
-        FW(arg0, 0x3C4) = timproc_uso_b5_alias(arg0, temp_v0_2);
-        FW(arg0, 0x3CC) = 0xA;
+        SELWIN(arg0)->stageBit = temp_v0_2;
+        SELWIN(arg0)->stage = timproc_uso_b5_alias(arg0, temp_v0_2);
+        SELWIN(arg0)->state = 0xA;
         timproc_uso_b5_alias(arg0);
-        *(f32 *)((char *)arg0 + 0x484) = 0.0f;
+        SELWIN(arg0)->unk484 = 0.0f;
         timproc_uso_b5_alias(arg0, 0);
         return;
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
         timproc_uso_b5_alias(arg0);
     }
-    if (FW(arg0, 0x4B4) == 0) {
+    if (SELWIN(arg0)->busy == 0) {
         if (timproc_uso_b5_alias(&import_80020098, 0x14003) != 0) {
             timproc_uso_b5_alias(arg0, 1);
-            if (FW(arg0, 0x3CC) == 9) {
-                FW(arg0, 0x4B4) = 0;
+            if (SELWIN(arg0)->state == 9) {
+                SELWIN(arg0)->busy = 0;
             }
         }
     }
@@ -5214,19 +5214,19 @@ void SelectWin_state10_000085E0(int *a0) {
     float o, b;
     int *v0, *v1;
 
-    o = *(float *)((char *)a0 + 0x480);
-    b = *(float *)((char *)a0 + 0x484);
+    o = SELWIN(a0)->fade;
+    b = SELWIN(a0)->unk484;
     if (b < o) {
-        *(float *)((char *)a0 + 0x480) = o - *(float *)((char *)a0 + 0xEC);
+        SELWIN(a0)->fade = o - *(float *)((char *)a0 + 0xEC);
         if (*(volatile float *)((char *)a0 + 0x480) < b) {
-            *(float *)((char *)a0 + 0x480) = b;
-            *(int *)((char *)a0 + 0x3CC) = 0;
-            *(int *)((char *)a0 + 0x488) = *(int *)((char *)a0 + 0x104);
+            SELWIN(a0)->fade = b;
+            SELWIN(a0)->state = 0;
+            SELWIN(a0)->unk488 = *(int *)((char *)a0 + 0x104);
         }
     } else {
-        *(float *)((char *)a0 + 0x480) = b;
-        *(int *)((char *)a0 + 0x3CC) = 0;
-        *(int *)((char *)a0 + 0x488) = *(int *)((char *)a0 + 0x104);
+        SELWIN(a0)->fade = b;
+        SELWIN(a0)->state = 0;
+        SELWIN(a0)->unk488 = *(int *)((char *)a0 + 0x104);
         v0 = (int *)SelectWin_curItem_00008A38(a0);
         v1 = (int *)v0[0x28 / 4];
         ((void (*)(int))v1[0x64 / 4])(*(short *)((char *)v1 + 0x60) + (int)v0);
@@ -5363,20 +5363,20 @@ int gen_stageBitToIndex_000087A0(char *a0, int a1) {
  * +0x1F4 maps 8->881C, 1->8854, 2->887C (labels fixed 2026-10-16). */
 int SelectWin_nextStageBit_000087F4(char *a0) {
     int v0;
-    switch (*(int *)(a0 + 0x3C8)) {
+    switch (SELWIN(a0)->stageBit) {
     case 8:
-        v0 = *(int *)(a0 + 0x3C0);
+        v0 = SELWIN(a0)->stageMask;
         if (v0 & 1) return 1;
         if (v0 & 2) return 2;
         if (v0 & 4) return 4;
         goto z;
     case 1:
-        v0 = *(int *)(a0 + 0x3C0);
+        v0 = SELWIN(a0)->stageMask;
         if (v0 & 2) return 2;
         if (v0 & 4) return 4;
         goto z;
     case 2:
-        if (*(int *)(a0 + 0x3C0) & 4) return 4;
+        if (SELWIN(a0)->stageMask & 4) return 4;
         goto z;
     case 3:
     case 4:
@@ -5407,17 +5407,17 @@ z:
  * case 3/4 labels fixed from the ROM table 2026-10-16). */
 int SelectWin_prevStageBit_000088A0(char *a0) {
     int v0;
-    switch (*(int *)(a0 + 0x3C8)) {
+    switch (SELWIN(a0)->stageBit) {
     case 1:
-        if (*(int *)(a0 + 0x3C0) & 8) return 8;
+        if (SELWIN(a0)->stageMask & 8) return 8;
         goto z;
     case 2:
-        v0 = *(int *)(a0 + 0x3C0);
+        v0 = SELWIN(a0)->stageMask;
         if (v0 & 1) return 1;
         if (v0 & 8) return 8;
         goto z;
     case 4:
-        v0 = *(int *)(a0 + 0x3C0);
+        v0 = SELWIN(a0)->stageMask;
         if (v0 & 2) return 2;
         if (v0 & 1) return 1;
         if (v0 & 8) return 8;
