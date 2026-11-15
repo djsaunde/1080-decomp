@@ -4,6 +4,10 @@
 #include "gdl/race.h"
 #include "game/input.h"
 #include "gdl/item.h"
+#include "gdl/pad.h"
+#include "game/course.h"
+#include "game/snowboarder.h"
+#include "gdl/window.h"
 #include "uso_call.h"
 
 extern int D_00000000;
@@ -225,32 +229,32 @@ char *TimeGadgetParms_ctor(char *self) {
     struct SB7BC t;
     if (self != 0 || (self = (char *)CALL(mem_new)(0x68)) != 0) {
         if ((p = self) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
-            FW(p, 0) = (int)&sStr_TimeGadget_Parms_CB60;
-            FW(p, 4) = 0;
+            PARMS(p)->name = (int)&sStr_TimeGadget_Parms_CB60;
+            PARMS(p)->unk04 = 0;
         }
         u1.v = sTag_xps_CB74;
         t = u1;
         if ((m = self + 8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m, self, t, 1);
-            FW(m, 0xC) = (int)&gl_ref_0000C764_1; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
+            PARM(m)->type = (int)&gl_ref_0000C764_1; PARM(m)->value = 0x1E; PARM(m)->unk14 = 0;
         }
         u2.v = sTag_yps_CB78;
         t = u2;
         if ((m = self + 0x20) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m, self, t, 1);
-            FW(m, 0xC) = (int)&gl_ref_0000C764_2; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
+            PARM(m)->type = (int)&gl_ref_0000C764_2; PARM(m)->value = 0x1E; PARM(m)->unk14 = 0;
         }
         u3.v = sTag_shx_CB7C;
         t = u3;
         if ((m = self + 0x38) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m, self, t, 1);
-            FW(m, 0xC) = (int)&gl_ref_0000C764_3; FW(m, 0x10) = 4; FW(m, 0x14) = 0;
+            PARM(m)->type = (int)&gl_ref_0000C764_3; PARM(m)->value = 4; PARM(m)->unk14 = 0;
         }
         u4.v = sTag_shy_CB80;
         t = u4;
         if ((m = self + 0x50) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m, self, t, 1);
-            FW(m, 0xC) = (int)&gl_ref_0000C764_4; FW(m, 0x10) = -2; FW(m, 0x14) = 0;
+            PARM(m)->type = (int)&gl_ref_0000C764_4; PARM(m)->value = -2; PARM(m)->unk14 = 0;
         }
     }
     return self;
@@ -689,44 +693,44 @@ char *CoolGadgetParms_ctor(char *self) {
     struct SB135C t2;
     if (self != 0 || (self = (char *)CALL(mem_new)(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)CALL(mem_new)(8)) != 0) {
-            FW(p2, 0) = (int)&sStr_Parms_CC38;
-            FW(p2, 4) = 0;
+            PARMS(p2)->name = (int)&sStr_Parms_CC38;
+            PARMS(p2)->unk04 = 0;
         }
         u1.v = sTag_xps_CC40;
         t2 = u1;
         if ((m2 = self + 8) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_1; FW(m2, 0x10) = 0x1E; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_1; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u2.v = sTag_yps_CC44;
         t2 = u2;
         if ((m2 = self + 0x20) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_2; FW(m2, 0x10) = 0x1E; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_2; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u3.v = sTag_lbx_CC48;
         t2 = u3;
         if ((m2 = self + 0x38) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_3; FW(m2, 0x10) = 2; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_3; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u4.v = sTag_lby_CC4C;
         t2 = u4;
         if ((m2 = self + 0x50) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_4; FW(m2, 0x10) = -0xC; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_4; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
         u5.v = sTag_l2x_CC50;
         t2 = u5;
         if ((m2 = self + 0x68) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_5; FW(m2, 0x10) = 2; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_5; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u6.v = sTag_l2y_CC54;
         t2 = u6;
         if ((m2 = self + 0x80) != 0 || (m2 = (char *)CALL(mem_new)(0x18)) != 0) {
             CALL(Parms_addParm)(m2, self, t2, 1);
-            FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_6; FW(m2, 0x10) = -0xC; FW(m2, 0x14) = 0;
+            PARM(m2)->type = (int)&gl_ref_0000C764_135C_6; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
     }
     return self;
@@ -1052,15 +1056,15 @@ char *CourseGadgetParms_ctor(char *self) {
     struct SB1C54 t;
     if (self != 0 || (self = (char *)CALL(mem_new)(0x194)) != 0) {
         if ((p = self) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
-            FW(p, 0) = (int)&sStr_Parms_CC6C;
-            FW(p, 4) = 0;
+            PARMS(p)->name = (int)&sStr_Parms_CC6C;
+            PARMS(p)->unk04 = 0;
         }
         u1.v = sTag_xps_CC74;
         {
             t = u1;
             if ((m = self + 0x8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_1; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_1; PARM(m)->value = 0x1E; PARM(m)->unk14 = 0;
             }
         }
         u2.v = sTag_yps_CC78;
@@ -1068,7 +1072,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u2;
             if ((m = self + 0x20) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_2; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_2; PARM(m)->value = 0x1E; PARM(m)->unk14 = 0;
             }
         }
         u3.v = sTag_mx0_CC7C;
@@ -1076,7 +1080,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u3;
             if ((m = self + 0x38) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_3; FW(m, 0x10) = 0xA; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_3; PARM(m)->value = 0xA; PARM(m)->unk14 = 0;
             }
         }
         u4.v = sTag_my0_CC80;
@@ -1084,7 +1088,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u4;
             if ((m = self + 0x50) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_4; FW(m, 0x10) = 0x73; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_4; PARM(m)->value = 0x73; PARM(m)->unk14 = 0;
             }
         }
         u5.v = sTag_sx0_CC84;
@@ -1092,7 +1096,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u5;
             if ((m = self + 0x68) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_5; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_5; PARM(m)->unk14 = 0; PARM(m)->value = 0;
             }
         }
         u6.v = sTag_sy0_CC88;
@@ -1100,7 +1104,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u6;
             if ((m = self + 0x80) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_6; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_6; PARM(m)->unk14 = 0; PARM(m)->value = 0;
             }
         }
         u7.v = sTag_mx1_CC8C;
@@ -1108,7 +1112,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u7;
             if ((m = self + 0x98) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_7; FW(m, 0x10) = 0xB; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_7; PARM(m)->value = 0xB; PARM(m)->unk14 = 0;
             }
         }
         u8.v = sTag_my1_CC90;
@@ -1116,7 +1120,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u8;
             if ((m = self + 0xB0) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_8; FW(m, 0x10) = 0xD; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_8; PARM(m)->value = 0xD; PARM(m)->unk14 = 0;
             }
         }
         u9.v = sTag_gx0_CC94;
@@ -1124,7 +1128,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u9;
             if ((m = self + 0xC8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_9; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_9; PARM(m)->unk14 = 0; PARM(m)->value = 0;
             }
         }
         u10.v = sTag_gy0_CC98;
@@ -1132,7 +1136,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u10;
             if ((m = self + 0xE0) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_10; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_10; PARM(m)->unk14 = 0; PARM(m)->value = 0;
             }
         }
         u11.v = sTag_pxp_CC9C;
@@ -1140,7 +1144,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u11;
             if ((m = self + 0xF8) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_11; FW(m, 0x10) = 0x10C; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_11; PARM(m)->value = 0x10C; PARM(m)->unk14 = 0;
             }
         }
         u12.v = sTag_pyp_CCA0;
@@ -1148,7 +1152,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u12;
             if ((m = self + 0x110) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_12; FW(m, 0x10) = 0x50; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_12; PARM(m)->value = 0x50; PARM(m)->unk14 = 0;
             }
         }
         u13.v = sTag_bxp_CCA4;
@@ -1156,7 +1160,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u13;
             if ((m = self + 0x128) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_13; FW(m, 0x10) = 0xA0; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_13; PARM(m)->value = 0xA0; PARM(m)->unk14 = 0;
             }
         }
         u14.v = sTag_byp_CCA8;
@@ -1164,7 +1168,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u14;
             if ((m = self + 0x140) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_14; FW(m, 0x10) = 0xDC; FW(m, 0x14) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_14; PARM(m)->value = 0xDC; PARM(m)->unk14 = 0;
             }
         }
         {
@@ -1186,9 +1190,9 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u15;
             if ((mf = self + 0x158) != 0 || (mf = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(mf, self, t, 1);
-                FW(mf, 0xC) = (int)&gl_ref_0000CA34_1C54;
-                FW(mf, 0x20) = 0;
-                *(Quad4 *)(mf + 0x10) = dst40;
+                PARMRGBA(mf)->type = (int)&gl_ref_0000CA34_1C54;
+                PARMRGBA(mf)->unk20 = 0;
+                *(Quad4 *)PARMRGBA(mf)->value = dst40;
             }
         }
         u16.v = sTag_adz_CCB0;
@@ -1196,7 +1200,7 @@ char *CourseGadgetParms_ctor(char *self) {
             t = u16;
             if ((m = self + 0x17C) != 0 || (m = (char *)CALL(mem_new)(0x18)) != 0) {
                 CALL(Parms_addParm)(m, self, t, 1); if (1) {}
-                FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_15; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
+                PARM(m)->type = (int)&gl_ref_0000C764_1C54_15; PARM(m)->unk14 = 0; PARM(m)->value = 0;
             }
         }
     }
@@ -1220,7 +1224,7 @@ char *CourseGadget_ctor(char *arg0, s32 arg1) {
         COURSEG(arg0)->marker[0][0] = 0.0f;
         COURSEG(arg0)->marker[1][1] = 0.0f;
         COURSEG(arg0)->marker[0][1] = 0.0f;
-        CALL(CourseGadget_setCourse)(arg0, *(s32 *)((char *)&gInputMgr + 0x64));
+        CALL(CourseGadget_setCourse)(arg0, GAMEFLOW(&gInputMgr)->course);
         CALL(gui_spriteInit)(COURSEG(arg0)->sprites[0], 0x50019);
         CALL(gui_spriteInit)(COURSEG(arg0)->sprites[1], 0x5001A);
         CALL(gui_spriteInit)(COURSEG(arg0)->sprites[2], 0x50010);
@@ -1604,8 +1608,8 @@ void PointsGadget_display_000038F4(char *arg0) {
     do {
         temp_v1 = (char *)TPOINTS(var_s2)->slots[0];
         if (POPUP(temp_v1)->state != 0) {
-            tv0 = FW(temp_v1, 0x28);
-            ((GP_000038F4)FW(tv0, 0x1C))(*(s16*)((char *)tv0 + 0x18) + temp_v1);
+            tv0 = NODE(temp_v1)->vptr;
+            ((GP_000038F4)VT_SLOT(tv0, 2).fn)(VT_SLOT(tv0, 2).delta + temp_v1);
         }
         s0v += 4;
         var_s2 += 4;
@@ -2242,12 +2246,12 @@ void *ColourParms_ctor(char *arg0) {
     if ((arg0 != 0) || (temp_v0 = FCALL(mem_new)(0x488), arg0 = temp_v0, (temp_v0 != 0))) {
         var_v1 = arg0;
         if ((arg0 != 0) || (temp_v0_2 = FCALL(mem_new)(8), var_v1 = temp_v0_2, (temp_v0_2 != 0))) {
-            *(s32 *)((char *)(var_v1) + 0x0) = (s32)((char *)&sStr_Colour_Parms_CF80 + 0xCF80);
-        *(s32 *)((char *)(var_v1) + 0x4) = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = *(s32 *)((char *)&sTag_rdP_CF90 + 0xCF90); sp78 = u1_a; var_a0 = arg0 + 8; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
+            PARMS(var_v1)->name = (s32)((char *)&sStr_Colour_Parms_CF80 + 0xCF80);
+        PARMS(var_v1)->unk04 = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = *(s32 *)((char *)&sTag_rdP_CF90 + 0xCF90); sp78 = u1_a; var_a0 = arg0 + 8; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0) + 0xC) = (s32)((char *)&D_00000000_cd58_u1 + 0xCD58);
-            *(s32 *)((char *)(var_a0) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0) + 0x10) = sp78;
+            PARMRGBA(var_a0)->type = (s32)((char *)&D_00000000_cd58_u1 + 0xCD58);
+            PARMRGBA(var_a0)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0)->value = sp78;
         }
         u2_a.x = 1.0f;
         u2_a.y = 1.0f;
@@ -2269,9 +2273,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u2_f;
         if ((arg0 != (void *)-0x2C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u2 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u2 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u3_a.x = 1.0f;
         u3_a.y = 1.0f;
@@ -2293,9 +2297,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u3_f;
         if ((arg0 != (void *)-0x50) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u3 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u3 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u4_a.x = 1.0f;
         u4_a.y = 1.0f;
@@ -2317,9 +2321,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u4_f;
         if ((arg0 != (void *)-0x74) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u4 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u4 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u5_a.x = 1.0f;
         u5_a.w = 0.0f;
@@ -2340,9 +2344,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u5_f;
         if ((arg0 != (void *)-0x98) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u5 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u5 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u6_a.x = 1.0f;
         u6_a.y = 1.0f;
@@ -2363,9 +2367,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u6_f;
         if ((arg0 != (void *)-0xBC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u6 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u6 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u7_a.x = 1.0f;
         u7_a.w = 0.0f;
@@ -2386,9 +2390,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u7_f;
         if ((arg0 != (void *)-0xE0) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u7 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u7 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u8_a.x = 1.0f;
         u8_a.y = 1.0f;
@@ -2409,9 +2413,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u8_f;
         if ((arg0 != (void *)-0x104) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u8 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u8 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u9_a.x = 1.0f;
         u9_a.w = 0.0f;
@@ -2432,9 +2436,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u9_f;
         if ((arg0 != (void *)-0x128) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u9 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u9 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u10_a.x = 1.0f;
         u10_a.y = 1.0f;
@@ -2455,9 +2459,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u10_f;
         if ((arg0 != (void *)-0x14C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u10 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u10 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u11_a.x = 1.0f;
         u11_a.w = 0.0f;
@@ -2478,9 +2482,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u11_f;
         if ((arg0 != (void *)-0x170) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u11 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u11 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u12_a.x = 1.0f;
         u12_a.y = 1.0f;
@@ -2501,9 +2505,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u12_f;
         if ((arg0 != (void *)-0x194) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u12 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u12 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u13_a.x = 1.0f;
         u13_a.w = 0.0f;
@@ -2524,9 +2528,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u13_f;
         if ((arg0 != (void *)-0x1B8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u13 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u13 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u14_a.x = 1.0f;
         u14_a.y = 1.0f;
@@ -2547,9 +2551,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u14_f;
         if ((arg0 != (void *)-0x1DC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u14 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u14 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u15_a.x = 1.0f;
         u15_a.w = 0.0f;
@@ -2570,9 +2574,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u15_f;
         if ((arg0 != (void *)-0x200) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u15 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u15 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u16_a.z = 0.0f;
         u16_a.w = 0.0f;
@@ -2593,9 +2597,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u16_f;
         if ((arg0 != (void *)-0x224) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u16 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u16 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u17_a.w = 0.0f;
         u17_b.x = 0.0f;
@@ -2616,9 +2620,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u17_f;
         if ((arg0 != (void *)-0x248) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u17 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u17 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u18_a.x = 0.0f;
         u18_a.y = 0.0f;
@@ -2639,9 +2643,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u18_f;
         if ((arg0 != (void *)-0x26C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u18 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u18 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u19_a.y = 1.0f;
         u19_a.z = 0.0f;
@@ -2662,9 +2666,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u19_f;
         if ((arg0 != (void *)-0x290) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u19 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u19 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u20_a.z = 0.0f;
         u20_a.w = 0.0f;
@@ -2685,9 +2689,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u20_f;
         if ((arg0 != (void *)-0x2B4) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u20 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u20 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u21_a.w = 0.0f;
         u21_b.x = 0.0f;
@@ -2708,9 +2712,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u21_f;
         if ((arg0 != (void *)-0x2D8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u21 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u21 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u22_a.w = 0.0f;
         u22_b.x = 0.0f;
@@ -2731,9 +2735,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u22_f;
         if ((arg0 != (void *)-0x2FC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u22 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u22 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u23_a.x = 1.0f;
         u23_a.w = 0.0f;
@@ -2754,9 +2758,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u23_f;
         if ((arg0 != (void *)-0x320) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u23 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u23 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         temp_f0 = *(f32 *)((char *)&kRo_ColourParms_ctor_D94 + 0xD94);
         u24_a.w = 0.0f;
@@ -2779,9 +2783,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u24_f;
         if ((arg0 != (void *)-0x344) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u24 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u24 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u25_a.w = 0.0f;
         u25_b.x = 0.0f;
@@ -2802,9 +2806,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u25_f;
         if ((arg0 != (void *)-0x368) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u25 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u25 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u26_a.w = 0.0f;
         u26_b.x = 0.0f;
@@ -2825,9 +2829,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u26_f;
         if ((arg0 != (void *)-0x38C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u26 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u26 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u27_a.w = 0.0f;
         u27_b.x = 0.0f;
@@ -2848,9 +2852,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u27_f;
         if ((arg0 != (void *)-0x3B0) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u27 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u27 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u28_a.w = 0.0f;
         u28_b.x = 0.0f;
@@ -2871,9 +2875,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u28_f;
         if ((arg0 != (void *)-0x3D4) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u28 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u28 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u29_a.x = 1.0f;
         u29_a.w = 0.0f;
@@ -2894,9 +2898,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u29_f;
         if ((arg0 != (void *)-0x3F8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u29 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u29 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         temp_f0_2 = *(f32 *)((char *)&kRo_ColourParms_ctor_DD4 + 0xDD4);
         u30_a.w = 0.0f;
@@ -2919,9 +2923,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u30_f;
         if ((arg0 != (void *)-0x41C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u30 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u30 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u31_a.w = 0.0f;
         u31_b.x = 0.0f;
@@ -2942,9 +2946,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u31_f;
         if ((arg0 != (void *)-0x440) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u31 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u31 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
         u32_a.x = 1.0f;
         u32_a.y = 1.0f;
@@ -2966,9 +2970,9 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u32_f;
         if ((arg0 != (void *)-0x464) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            *(s32 *)((char *)(var_a0_2) + 0xC) = (s32)((char *)&D_00000000_cd58_u32 + 0xCD58);
-            *(s32 *)((char *)(var_a0_2) + 0x20) = 0;
-            *(GlV4_4244 *)((char *)(var_a0_2) + 0x10) = sp78;
+            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u32 + 0xCD58);
+            PARMRGBA(var_a0_2)->unk20 = 0;
+            *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
     }
     return arg0;
@@ -3011,10 +3015,10 @@ void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
     arg0->handler = temp_v0_2;
     sp28 = temp_v0_2;
     (char*)FCALL(list_append)((int)arg0->children, temp_v0_2);
-    if (FW(sp28, 0x14) != 0) {
-        FW(sp28, 0x4) = 1;
+    if (NODE(sp28)->parent != 0) {
+        NODE(sp28)->unk04 = 1;
     }
-    FW(sp28, 0x14) = (int)arg0;
+    NODE(sp28)->parent = (int)arg0;
 }
 
 extern int gl_func_00000000();
@@ -3090,7 +3094,7 @@ void RaceProcess_endRace(RaceProcess *a0, int a1, int a2) {
     a0->unk4EC = 0;
     a0->endCounter = 0;
     a0->msgY = 120.0f;
-    if (*(int *)((char *)&gInputMgr + 0x34) == 2) {
+    if (GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
         a0->msgY = 60.0f;
     }
     a0->msgVel = 0.0f;
@@ -3116,7 +3120,7 @@ void RaceProcess_endRaceQuiet(RaceProcess *a0, int a1, int a2) {
     a0->unk4EC = 0;
     a0->endCounter = 0;
     a0->msgY = 120.0f;
-    if (*(int*)((char*)&gInputMgr + 0x34) == 2) {
+    if (GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
         a0->msgY = 60.0f;
     }
     a0->msgVel = 0.0f;
@@ -3167,32 +3171,32 @@ extern int gl_func_00000000();
 extern int *gl_ref_00000138;
 
 void RaceProcess_finishCourse(int a0) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRace)(a0, 0x1E0, 0);
-    p = *(int **)((char *)&gInputMgr + 0x138);
-    p[45] = 0;
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
 }
 
 /* Sibling of RaceProcess_endResult4_00006EE0 (matched 2026-05-08): identical 32-insn
  * template, only 4 constants differ (0xF0/4/6/6 → 0x168/3/5/5). */
 void RaceProcess_endResult3_00006DF8(RaceProcess *a0) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRaceAlt)(a0, 0x168, 3);
     a0->msgAlpha = 0;
     a0->msgFloor = 120.0f;
-    p = *(int**)((char*)&D_00000000 + 0x138);
-    *(int*)((char*)p + 0xB4) = 0;
-    CALL(RaceTracker_sendLoseResult)(*(int*)((char*)&D_00000000 + 0x138), 0);
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
+    CALL(RaceTracker_sendLoseResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
     CALL(func_00000188)(5, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 5, 0, 0);
 }
 
 void RaceProcess_endResult2_00006E78(int a0_passthrough) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRaceQuiet)(a0_passthrough, 0x140, 2);
-    p = *(int**)((char*)&D_00000000 + 0x138);
-    p[0xB4/4] = 0;
-    CALL(RaceTracker_sendDrawResult)(*(int*)((char*)&D_00000000 + 0x138), 0);
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
+    CALL(RaceTracker_sendDrawResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
     CALL(func_00000188)(5, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 5, 3, 0);
 }
@@ -3201,34 +3205,34 @@ void RaceProcess_endResult2_00006E78(int a0_passthrough) {
  * a child obj field, then 3 calls. Composite of int-reader-shape prologue
  * + custom init logic. */
 void RaceProcess_endResult4_00006EE0(RaceProcess *a0) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRaceAlt)(a0, 0xF0, 4);
     a0->msgAlpha = 0;
     a0->msgFloor = 120.0f;
-    p = *(int**)((char*)&D_00000000 + 0x138);
-    *(int*)((char*)p + 0xB4) = 0;
-    CALL(RaceTracker_sendResult5_0000DE80)(*(int*)((char*)&D_00000000 + 0x138), 0);
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
+    CALL(RaceTracker_sendResult5_0000DE80)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
     CALL(func_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 0, 0);
 }
 
 void RaceProcess_endResult5_00006F60(int a0) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRace)(a0, 0x1E0, 5);
-    p = *(int **)((char *)&gInputMgr + 0x138);
-    p[45] = 0;
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
 }
 
 /* Sibling of RaceProcess_endResult4_00006EE0 (just-landed): same 32-insn 4-call init
  * shape but with different field offsets and 1-arg jal at end. */
 void RaceProcess_endResult4_00006F90(RaceProcess *a0) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRaceAlt)(a0, 0xF0, 4);
     a0->msgAlpha = 0;
     a0->msgFloor = 120.0f;
-    p = *(int**)((char*)&D_00000000 + 0x138);
-    *(int*)((char*)p + 0xB4) = 0;
-    CALL(RaceTracker_sendRetireResult)(*(int*)((char*)&D_00000000 + 0x138), 0);
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
+    CALL(RaceTracker_sendRetireResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
     CALL(func_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 0, 0);
 }
@@ -3238,11 +3242,11 @@ void RaceProcess_endResult4_00006F90(RaceProcess *a0) {
  * Same named-local+inline-second-deref recipe from
  * docs/IDO_CODEGEN.md#feedback-ido-v1-base-materialization-via-second-inline-deref. */
 void RaceProcess_timeUp(int a0_passthrough) {
-    int *p;
+    RaceTracker *p;
     CALL(RaceProcess_endRaceAlt)(a0_passthrough, 0xF0, 6);
-    p = *(int**)((char*)&D_00000000 + 0x138);
-    p[0xB4/4] = 0;
-    CALL(RaceTracker_sendTimeUpResult)(*(int*)((char*)&D_00000000 + 0x138), 0);
+    p = GAMEFLOW(&gInputMgr)->dataMgr;
+    p->hudFlags = 0;
+    CALL(RaceTracker_sendTimeUpResult)(GAMEFLOW(&gInputMgr)->dataMgr, 0);
     CALL(func_00000188)(6, 0, 0);
     CALL(snd_playSeq_000120A8)(&gInputMgr, 6, 1, 0);
 }
@@ -3480,7 +3484,7 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
                         temp_a3 = (int *)&arg0->colour[5];
                         CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                         CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)arg0->msgY, 3);
-                        if (*(s32 *)((char *)&gInputMgr + 0x34) == 2) {
+                        if (GAMEFLOW(&gInputMgr)->nextFlowMode == 2) {
                             CALL(gui_setEnvPrimColor_00001EF4)(sp8C, arg0->countAlpha, temp_a2, temp_a3);
                             CALL(gui_drawSprite)(sp8C, (s32)arg0->msgX, (s32)(arg0->msgY + 120.0f), 3);
                         }
@@ -3542,7 +3546,7 @@ int RaceProcess_loadData(RaceProcess *a0) {
 extern int gl_func_00000000();
 extern int gl_data_00000000_83cc;
 void RaceProcess_createReplayCam(RaceProcess *a0) {
-#define STATE (*(int**)((char*)&gInputMgr + 0x134))
+#define STATE ((WorldRegistry *)GAMEFLOW(&gInputMgr)->game)
     int *c4;
     int x800;
     int v70;
@@ -3552,27 +3556,27 @@ void RaceProcess_createReplayCam(RaceProcess *a0) {
     int r3;
     int *q;
     int *side;
-    c4 = *(int**)((char*)STATE + 0xC4);
-    x800 = *(int*)((char*)c4 + 0x800);
-    v70 = *(int*)((char*)*(int**)((char*)STATE + 0x108) + 0x70);
-    r1 = CALL(cam_create)(STATE, 1, *(int*)((char*)STATE + 0x80), c4, x800);
-    a0->savedCam = *(int*)((char*)STATE + 0x108);
-    q = (int*)((char*)a0->savedCam + 0x18);
-    *q &= ~8;
-    q = (int*)((char*)a0->savedCam + 0x18);
-    *q &= ~4;
+    c4 = (int *)STATE->players[0].rider;
+    x800 = (int)SNOWB(c4)->input;
+    v70 = (int)((Window *)STATE->windows[0])->camera;
+    r1 = CALL(cam_create)(STATE, 1, STATE->fgRoot, c4, x800);
+    a0->savedCam = STATE->windows[0];
+    q = &NODE(a0->savedCam)->doFlags;
+    *q &= ~8;   /* DoUpdate */
+    q = &NODE(a0->savedCam)->doFlags;
+    *q &= ~4;   /* DoDisplay */
     r2 = CALL(game_create3DWindow)(STATE, (char*)&gl_data_00000000_83cc + 0x70, v70);
     a0->replayCam = r2;
-    *(int*)((char*)STATE + 0x108) = r2;
+    STATE->windows[0] = r2;
     r3 = CALL(mem_new)(0x80);
     if (r3 != 0) {
         CALL(pad_open)(r3, 1);
     }
     obj = (int*)CALL(CamDirector_ctor)(0, r3, c4, a0->replayCam, v70, r1);
-    side = *(int**)((char*)STATE + 0x84);
-    CALL(list_append)((char*)side + 0x10, obj);
-    if (*(int*)((char*)obj + 0x14) != 0) *(int*)((char*)obj + 4) = 1;
-    *(int*)((char*)obj + 0x14) = (int)side;
+    side = (int *)STATE->bgRoot;
+    CALL(list_append)(&NODE(side)->children, obj);
+    if (NODE(obj)->parent != 0) NODE(obj)->unk04 = 1;
+    NODE(obj)->parent = (int)side;
     if (a0) {}
 #undef STATE
 }
@@ -3615,26 +3619,26 @@ void RaceProcess_createReplayCam(RaceProcess *a0) {
  * `state` (q = v0, state = v1) and its slot moves p2's home to 0x18. The
  * "regalloc-dump-only" residual note above is historical. */
 void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
-    char *state;
-    char *p;
+    WorldRegistry *state;
+    PadCtl *p;
     int *q;
 
-    state = *(char**)((char*)&gInputMgr + 0x134);
-    q = *(int**)(state + 0xC4);
-    p = *(char**)((char*)q + 0x800);
+    state = (WorldRegistry *)GAMEFLOW(&gInputMgr)->game;
+    q = (int *)state->players[0].rider;
+    p = (PadCtl *)SNOWB(q)->input;
     if (arg0->session->ghost->data != 0) {
-        char *p2;
-        q = *(int**)(state + 0xCC);
-        p2 = *(char**)((char*)q + 0x800);
-        CALL(pad_reset_000673FC)(p2, *(int*)(p2 + 0x34));
+        PadCtl *p2;
+        q = (int *)state->players[1].rider;
+        p2 = (PadCtl *)SNOWB(q)->input;
+        CALL(pad_reset_000673FC)(p2, p2->port);
         q = (int *)arg0->session->ghost; /* the shared q temp is load-bearing */
         CALL(pad_startPlay_00067A10)(p2, ((BackupGhost *)q)->data, ((BackupGhost *)q)->count);
     }
-    CALL(pad_reset_000673FC)(p, *(int*)(p + 0x34));
+    CALL(pad_reset_000673FC)(p, p->port);
     CALL(pad_startRecord_000679BC)(p,
-        *(int*)((char*)&gInputMgr + 0x168),
-        *(int*)((char*)&gInputMgr + 0x164),
-        (char*)&gInputMgr + 0x170);
+        GAMEFLOW(&gInputMgr)->replayData[0],
+        GAMEFLOW(&gInputMgr)->recordCap,
+        &GAMEFLOW(&gInputMgr)->replayLen[0]);
     CALL(RaceProcess_callGlobalSlot11_00008674)(arg0);
 }
 
@@ -3648,26 +3652,26 @@ void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
  * the block-scoped `p2` also shifts p2's named home 0x24->0x20 (q's dead
  * colored slot absorbs 0x24), fixing the spill slot. First-variant match. */
 void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
-    char *state;
-    char *p;
+    WorldRegistry *state;
+    PadCtl *p;
     int *q;
 
     CALL(RaceProcess_restart)(arg0);
-    state = *(char**)((char*)&gInputMgr + 0x134);
-    q = *(int**)(state + 0xC4);
-    p = *(char**)((char*)q + 0x800);
+    state = (WorldRegistry *)GAMEFLOW(&gInputMgr)->game;
+    q = (int *)state->players[0].rider;
+    p = (PadCtl *)SNOWB(q)->input;
     if (arg0->session->ghost->data != 0) {
-        char *p2;
-        q = *(int**)(state + 0xCC);
-        p2 = *(char**)((char*)q + 0x800);
-        CALL(pad_reset_000673FC)(p2, *(int*)(p2 + 0x34));
+        PadCtl *p2;
+        q = (int *)state->players[1].rider;
+        p2 = (PadCtl *)SNOWB(q)->input;
+        CALL(pad_reset_000673FC)(p2, p2->port);
         q = (int *)arg0->session->ghost; /* the shared q temp is load-bearing */
         CALL(pad_startPlay_00067A10)(p2, ((BackupGhost *)q)->data, ((BackupGhost *)q)->count);
     }
     CALL(pad_reset_000673FC)(p, 0);
     CALL(pad_startPlay_00067A10)(p,
-        *(int*)((char*)&gInputMgr + 0x168),
-        *(int*)((char*)&gInputMgr + 0x170));
+        GAMEFLOW(&gInputMgr)->replayData[0],
+        GAMEFLOW(&gInputMgr)->replayLen[0]);
     CALL(RaceProcess_callGlobalSlot11_00008674)(arg0);
     arg0->timeout = arg1 & 0xFFFF;
 }
@@ -3680,10 +3684,10 @@ void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
  * the live base register v1). The incoming $a0 is homed to 0x18(sp) via
  * &unused. This is a global-table indirect dispatch, coaxable in C. */
 int RaceProcess_callGlobalSlot11_00008674(int unused) {
-    int *obj = *(int**)((char*)&D_00000000 + 0x28);
+    int *obj = (int *)NODE(&gSnowBoard)->vptr;
     volatile int *spill = &unused;
     (void)spill;
-    return ((int (*)(int))obj[0x64/4])((int)((char*)&gSnowBoard + *(s16*)((char*)obj + 0x60)));
+    return ((int (*)(int))VT_SLOT(obj, 11).fn)((int)((char*)&gSnowBoard + VT_SLOT(obj, 11).delta));
 }
 
 /* RaceProcess_raiseMessage: 31-insn FPU-only updater on two adjacent floats
@@ -3903,18 +3907,18 @@ int *ColourItem_create_000088B4(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        CALL(list_append)((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        CALL(list_append)(&NODE(p2)->children, head);
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }

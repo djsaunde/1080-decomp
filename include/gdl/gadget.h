@@ -25,6 +25,14 @@ typedef struct GdlParmF {
 
 typedef char GdlParm_size_check[sizeof(GdlParm) == 0x18 ? 1 : -1];
 
+/* The 8-byte head of every "<Class>::Parms" object: the class-name string, then 0. Each Parms ctor
+ * writes it first (on self, or on a fresh mem_new(8) when self is NULL), then builds its parms
+ * after it (agent-h run 524). */
+typedef struct GdlParms {
+    /* 0x00 */ s32 name;            /* "<Class>::Parms" string */
+    /* 0x04 */ s32 unk04;           /* 0 */
+} GdlParms;
+
 /* "TimeGadget::Parms" (0x98, Data 0xCAAC; ctor TimeGadget_ctor_00013D40, the base ctor's
  * call on +0x2C): the screen position (xps, yps) and the offsets of the two label sprites
  * from it (lbx / lby, l2x / l2y). Defaults 30, 30, 2, -12, 2, -12; each gadget ctor then
@@ -91,6 +99,7 @@ typedef char Gadget_sprite1_check[(int)&((Gadget *)0)->sprite1 == 0x124 ? 1 : -1
 #define TGPARMS(p) ((TimeGadgetParms *)(p))
 #define PARM(p)    ((GdlParm *)(p))
 #define PARMF(p)   ((GdlParmF *)(p))
+#define PARMS(p)   ((GdlParms *)(p))
 
 /* BoardsGadget (0x140, BoardsGadget_ctor 0x11A4): the same 0x10C head as
  * Gadget (colour normalised from one constant, +0xD4/+0xD8 ints), then a
@@ -286,6 +295,8 @@ typedef struct GdlParmRGBA {
     /* 0x10 */ f32 value[4];
     /* 0x20 */ s32 unk20;           /* 0 */
 } GdlParmRGBA;
+
+#define PARMRGBA(p) ((GdlParmRGBA *)(p))
 
 /* "CourseGadget::Parms" (0x194, name Data 0xCC6C; CourseGadgetParms_ctor): sixteen tags
  * (Data 0xCC74..0xCCB0). Defaults: xps 30, yps 30, mx0 10, my0 115, sx0 0, sy0 0, mx1 11,

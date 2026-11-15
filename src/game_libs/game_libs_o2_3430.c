@@ -16,13 +16,15 @@
  *    callee-saved register (f24) costs more than the post-call reloads
  *    (globalcolor firstUseCost); with 0-2 the literal is held in f24.
  *  - see the comment above the game_libs.c placeholder for the field-level
- *    spellings (PASS-3/4). */
+ *    spellings (PASS-3/4). Fields: TrickPointsGadget / PointsPopup (gdl/gadget.h;
+ *    agent-h run 524, same bytes as the old FW / FF offset forms). */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/gadget.h"
+#include "gdl/race.h"
+#include "game/input.h"
 #include "uso_call.h"
 
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -34,157 +36,157 @@ void PointsGadget_update_00003430(char *arg0) {
     char *s0;
     s32 *p;
 
-    FW(arg0, 0xEC) = 1;
+    TPOINTS(arg0)->allIdle = 1;
     for (i = 0; i != 8; i++) {
-        s0 = ((char **)(arg0 + 0x2C))[i];
-        switch (FW(s0, 0x94)) {
+        s0 = (char *)TPOINTS(arg0)->slots[i];
+        switch (POPUP(s0)->state) {
         case 3:
-            FF(s0, 0xA8) = FF(s0, 0xAC) + FF(s0, 0xA8);
-            temp = FF(s0, 0xA8);
-            FW(s0, 0x74) = 0;
-            FW(s0, 0x9C) = FW(s0, 0x9C) - 1;
-            FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-            FF(s0, 0x5C) = temp + FF(s0, 0x5C);
-            if (110.0f < FF(s0, 0x5C)) {
-                FF(s0, 0xA8) = -temp;
+            POPUP(s0)->velY = POPUP(s0)->velY + POPUP(s0)->accelY;
+            temp = POPUP(s0)->velY;
+            POPUP(s0)->unk74 = 0;
+            POPUP(s0)->timer = POPUP(s0)->timer - 1;
+            POPUP(s0)->parms.xps.value = POPUP(s0)->parms.xps.value + POPUP(s0)->velX;
+            POPUP(s0)->parms.yps.value = temp + POPUP(s0)->parms.yps.value;
+            if (110.0f < POPUP(s0)->parms.yps.value) {
+                POPUP(s0)->velY = -temp;
             }
-            if (FW(s0, 0x78) < 0xFF) {
-                FW(s0, 0x78) += 0x20;
-                if (FW(s0, 0x78) >= 0x100) {
-                    FW(s0, 0x78) = 0xFF;
+            if (POPUP(s0)->alpha < 0xFF) {
+                POPUP(s0)->alpha += 0x20;
+                if (POPUP(s0)->alpha >= 0x100) {
+                    POPUP(s0)->alpha = 0xFF;
                 }
             }
-            if (FF(s0, 0x88) < 1.0f) {
-                FF(s0, 0x88) = 0.1f + FF(s0, 0x88);
-                FF(s0, 0x8C) = 0.1f + FF(s0, 0x8C);
+            if (POPUP(s0)->scaleX < 1.0f) {
+                POPUP(s0)->scaleX = 0.1f + POPUP(s0)->scaleX;
+                POPUP(s0)->scaleY = 0.1f + POPUP(s0)->scaleY;
             } else {
-                FF(s0, 0x88) = 1.0f;
-                FF(s0, 0x8C) = 1.0f;
+                POPUP(s0)->scaleX = 1.0f;
+                POPUP(s0)->scaleY = 1.0f;
             }
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 4;
-                FF(s0, 0xA4) = (100.0f - FF(s0, 0x44)) / 10.625f;
-                FF(s0, 0xA8) = (40.0f - FF(s0, 0x5C)) / 10.625f;
+            if (POPUP(s0)->timer < 0) {
+                POPUP(s0)->state = 4;
+                POPUP(s0)->velX = (100.0f - POPUP(s0)->parms.xps.value) / 10.625f;
+                POPUP(s0)->velY = (40.0f - POPUP(s0)->parms.yps.value) / 10.625f;
             }
-            if (FW(s0, 0x7C) != 0) {
-                FW(arg0, 0xEC) = 0;
+            if (POPUP(s0)->unk7C != 0) {
+                TPOINTS(arg0)->allIdle = 0;
             }
             break;
         case 4:
-            if (FW(s0, 0x78) != 0) {
-                FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-                FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-                FW(s0, 0x78) -= 0x20;
-                if (FW(s0, 0x78) < 0) {
-                    FW(s0, 0x78) = 0;
-                    FW(s0, 0x94) = 0;
-                    p = (s32 *)(FW(*(char **)((char *)&gInputMgr + 0x138), 0x44) + 0x18);
-                    *p = FW(s0, 0x98) + *p;
+            if (POPUP(s0)->alpha != 0) {
+                POPUP(s0)->parms.xps.value = POPUP(s0)->parms.xps.value + POPUP(s0)->velX;
+                POPUP(s0)->parms.yps.value = POPUP(s0)->parms.yps.value + POPUP(s0)->velY;
+                POPUP(s0)->alpha -= 0x20;
+                if (POPUP(s0)->alpha < 0) {
+                    POPUP(s0)->alpha = 0;
+                    POPUP(s0)->state = 0;
+                    p = &GAMEFLOW(&gInputMgr)->dataMgr->entries->unk18; /* the player's score */
+                    *p = POPUP(s0)->value + *p;
                 }
             }
-            if (FW(s0, 0x7C) != 0) {
-                FW(arg0, 0xEC) = 0;
+            if (POPUP(s0)->unk7C != 0) {
+                TPOINTS(arg0)->allIdle = 0;
             }
             break;
         case 1:
-            FF(s0, 0xA8) = FF(s0, 0xAC) + FF(s0, 0xA8);
-            FW(s0, 0x74) = 0;
-            FW(s0, 0x9C) = FW(s0, 0x9C) - 1;
-            FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-            FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-            if (FW(s0, 0x78) < 0xFF) {
-                FW(s0, 0x78) += 0x20;
-                if (FW(s0, 0x78) >= 0x100) {
-                    FW(s0, 0x78) = 0xFF;
+            POPUP(s0)->velY = POPUP(s0)->velY + POPUP(s0)->accelY;
+            POPUP(s0)->unk74 = 0;
+            POPUP(s0)->timer = POPUP(s0)->timer - 1;
+            POPUP(s0)->parms.xps.value = POPUP(s0)->parms.xps.value + POPUP(s0)->velX;
+            POPUP(s0)->parms.yps.value = POPUP(s0)->parms.yps.value + POPUP(s0)->velY;
+            if (POPUP(s0)->alpha < 0xFF) {
+                POPUP(s0)->alpha += 0x20;
+                if (POPUP(s0)->alpha >= 0x100) {
+                    POPUP(s0)->alpha = 0xFF;
                 }
             }
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 2;
-                FF(s0, 0xA4) = (200.0f - FF(s0, 0x44)) / 10.625f;
-                FF(s0, 0xA8) = (20.0f - FF(s0, 0x5C)) / 10.625f;
+            if (POPUP(s0)->timer < 0) {
+                POPUP(s0)->state = 2;
+                POPUP(s0)->velX = (200.0f - POPUP(s0)->parms.xps.value) / 10.625f;
+                POPUP(s0)->velY = (20.0f - POPUP(s0)->parms.yps.value) / 10.625f;
             }
-            FW(arg0, 0xEC) = 0;
+            TPOINTS(arg0)->allIdle = 0;
             break;
         case 2:
-            if (FW(s0, 0x78) != 0) {
-                FF(s0, 0x44) = FF(s0, 0xA4) + FF(s0, 0x44);
-                FF(s0, 0x5C) = FF(s0, 0xA8) + FF(s0, 0x5C);
-                FW(s0, 0x78) -= 0x18;
-                if (FW(s0, 0x78) < 0) {
-                    FW(s0, 0x78) = 0;
-                    FW(s0, 0x94) = 0;
+            if (POPUP(s0)->alpha != 0) {
+                POPUP(s0)->parms.xps.value = POPUP(s0)->parms.xps.value + POPUP(s0)->velX;
+                POPUP(s0)->parms.yps.value = POPUP(s0)->parms.yps.value + POPUP(s0)->velY;
+                POPUP(s0)->alpha -= 0x18;
+                if (POPUP(s0)->alpha < 0) {
+                    POPUP(s0)->alpha = 0;
+                    POPUP(s0)->state = 0;
                 }
             }
-            FW(arg0, 0xEC) = 0;
+            TPOINTS(arg0)->allIdle = 0;
             break;
         case 5:
-            FW(s0, 0x9C) -= 1;
-            if (FW(s0, 0x9C) < 0) {
-                FW(s0, 0x94) = 6;
-                FW(s0, 0x74) = 0;
+            POPUP(s0)->timer -= 1;
+            if (POPUP(s0)->timer < 0) {
+                POPUP(s0)->state = 6;
+                POPUP(s0)->unk74 = 0;
             }
             break;
         case 6:
             if (CALL(PointsPopup_slideStep)(s0, 0xB4) != 0) {
-                FW(s0, 0x94) = 7;
+                POPUP(s0)->state = 7;
             }
             break;
         case 7:
-            if (FW(s0, 0x98) != 0) {
-                FW(s0, 0x98) -= 0x32;
+            if (POPUP(s0)->value != 0) {
+                POPUP(s0)->value -= 0x32;
             }
-            if (FW(s0, 0x98) <= 0) {
-                FW(s0, 0x98) = 0;
-                FW(s0, 0x94) = 8;
+            if (POPUP(s0)->value <= 0) {
+                POPUP(s0)->value = 0;
+                POPUP(s0)->state = 8;
             }
-            CALL(gl_sprintf)(s0 + 0xB4, GL_DATA(0xCCE8), FW(s0, 0x98));
-            FW(s0, 0x74) += 0x10;
-            if (FW(s0, 0x74) >= 0x100) {
-                FW(s0, 0x74) = 0xFF;
+            CALL(gl_sprintf)(POPUP(s0)->text, GL_DATA(0xCCE8), POPUP(s0)->value);
+            POPUP(s0)->unk74 += 0x10;
+            if (POPUP(s0)->unk74 >= 0x100) {
+                POPUP(s0)->unk74 = 0xFF;
             }
             CALL(PointsPopup_slideStep)(s0, 0x104);
             break;
         case 8:
-            FW(s0, 0x74) += 0x10;
-            if (FW(s0, 0x74) >= 0x100) {
-                FW(s0, 0x74) = 0xFF;
+            POPUP(s0)->unk74 += 0x10;
+            if (POPUP(s0)->unk74 >= 0x100) {
+                POPUP(s0)->unk74 = 0xFF;
             }
-            FW(s0, 0x78) -= 8;
-            if (FW(s0, 0x78) < 0) {
-                FW(s0, 0x78) = 0;
+            POPUP(s0)->alpha -= 8;
+            if (POPUP(s0)->alpha < 0) {
+                POPUP(s0)->alpha = 0;
             }
             if (CALL(PointsPopup_slideStep)(s0, 0x104) != 0) {
-                FW(s0, 0x94) = 0;
+                POPUP(s0)->state = 0;
             }
             break;
         }
     }
     for (j = 0; j != 4; j++) {
-        if (((s32 *)(arg0 + 0x8C))[j] < 0x80) {
-            ((s32 *)(arg0 + 0x8C))[j] += 1;
-            if (((s32 *)(arg0 + 0x8C))[j] < 0x70) {
-                if (((s32 *)(arg0 + 0x9C))[j] < 0xFF) {
-                    ((s32 *)(arg0 + 0x9C))[j] += 0x10;
-                    if (((s32 *)(arg0 + 0x9C))[j] >= 0x100) {
-                        ((s32 *)(arg0 + 0x9C))[j] = 0xFF;
+        if (TPOINTS(arg0)->age[j] < 0x80) {
+            TPOINTS(arg0)->age[j] += 1;
+            if (TPOINTS(arg0)->age[j] < 0x70) {
+                if (TPOINTS(arg0)->alpha[j] < 0xFF) {
+                    TPOINTS(arg0)->alpha[j] += 0x10;
+                    if (TPOINTS(arg0)->alpha[j] >= 0x100) {
+                        TPOINTS(arg0)->alpha[j] = 0xFF;
                     }
                 }
             } else {
-                if (((s32 *)(arg0 + 0x9C))[j] > 0) {
-                    ((s32 *)(arg0 + 0x9C))[j] -= 0x10;
-                    if (((s32 *)(arg0 + 0x9C))[j] < 0) {
-                        ((s32 *)(arg0 + 0x9C))[j] = 0;
-                        ((s32 *)(arg0 + 0xBC))[j] = 0x64;
+                if (TPOINTS(arg0)->alpha[j] > 0) {
+                    TPOINTS(arg0)->alpha[j] -= 0x10;
+                    if (TPOINTS(arg0)->alpha[j] < 0) {
+                        TPOINTS(arg0)->alpha[j] = 0;
+                        TPOINTS(arg0)->y[j] = 0x64;
                     }
                 }
             }
         }
-        if (FW(arg0, 0x88) != 0) {
-            ((s32 *)(arg0 + 0xBC))[j] = ((s32 *)(arg0 + 0xBC))[j] - 2;
+        if (TPOINTS(arg0)->scroll != 0) {
+            TPOINTS(arg0)->y[j] = TPOINTS(arg0)->y[j] - 2;
         }
     }
-    if (FW(arg0, 0x88) > 0) {
-        FW(arg0, 0x88) -= 2;
+    if (TPOINTS(arg0)->scroll > 0) {
+        TPOINTS(arg0)->scroll -= 2;
     }
     if (1) {}
     if (1) {}
