@@ -6,7 +6,7 @@
  * and the state pointer is read through a0->0x30 too, so the const 2 colours v0.
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
-void SnowAI_func_0000591C(char *);
+void SnowAI_steer(char *);
 void game_uso_func_00006A30(char *);
 void game_uso_func_00006CF0(char *);
 void game_uso_func_000071E0(char *);
@@ -34,7 +34,7 @@ extern "C" void SnowAI_update(char *a0) {
     }
     AT(float, a0, 0x3C) = 0.0f;
     switch (AT(int, a0, 0x64)) {
-    case 0: SnowAI_func_0000591C(a0); break;
+    case 0: SnowAI_steer(a0); break;
     case 1: game_uso_func_00006A30(a0); break;
     case 2: game_uso_func_00006CF0(a0); break;
     case 3: game_uso_func_000071E0(a0); break;

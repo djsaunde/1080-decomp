@@ -52,7 +52,7 @@ Vec3 SnowAI_func_00007C1C(Self *, int, int, Vec3 *, int);
 float game_uso_func_00003ED4(Vec3 *, Vec3 *, int);
 void game_uso_func_000110A4(int);
 void SnowAI_func_00007538(Self *, int);
-void SnowAI_func_0000A7F8(Self *);
+void SnowAI_scanSegments(Self *);
 }
 struct Self {
     char pad0[0x30]; W *w;   /* 0x30 */
@@ -70,7 +70,7 @@ struct Self {
 };
 extern "C" void game_uso_func_000071E0(Self *s0) {
     if (s0->f68 & 4) {
-        SnowAI_func_0000A7F8(s0);
+        SnowAI_scanSegments(s0);
         return;
     }
     if (30.0f <= s0->w->speed) {

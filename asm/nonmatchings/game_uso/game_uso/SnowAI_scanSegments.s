@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_0000A7F8, 0x3A0
+nonmatching SnowAI_scanSegments, 0x3A0
 
-glabel SnowAI_func_0000A7F8
+glabel SnowAI_scanSegments
     /* 00A7F8 0000A7F8 27BDFF00 */  .word 0x27BDFF00
     /* 00A7FC 0000A7FC AFBF0014 */  .word 0xAFBF0014
     /* 00A800 0000A800 8C8E0030 */  .word 0x8C8E0030
@@ -233,4 +233,4 @@ glabel SnowAI_func_0000A7F8
     /* 00AB8C 0000AB8C 27BD0100 */  .word 0x27BD0100
     /* 00AB90 0000AB90 03E00008 */  .word 0x03E00008
     /* 00AB94 0000AB94 00000000 */  .word 0x00000000
-endlabel SnowAI_func_0000A7F8
+endlabel SnowAI_scanSegments

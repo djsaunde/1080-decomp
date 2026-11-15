@@ -64,7 +64,7 @@ glabel SnowAI_update
     /* 0058C8 000058C8 00000000 */  .word 0x00000000
     /* 0058CC 000058CC 10000010 */  .word 0x10000010
     /* 0058D0 000058D0 8FBF0014 */  .word 0x8FBF0014
-    jal SnowAI_func_0000591C   /* 0058D4 0C000000 -> SnowAI_func_0000591C */
+    jal SnowAI_steer   /* 0058D4 0C000000 -> SnowAI_steer */
     /* 0058D8 000058D8 00000000 */  .word 0x00000000
     /* 0058DC 000058DC 1000000C */  .word 0x1000000C
     /* 0058E0 000058E0 8FBF0014 */  .word 0x8FBF0014

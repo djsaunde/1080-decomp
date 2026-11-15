@@ -13,7 +13,7 @@
  * (the `this + 0xE4 == 0 -> new(0x3E0)` member-ctor idiom). The parms block is named
  * "SnowAI::Parms" (Data 0x6D8) and holds 41 float parms, each built by the game_libs
  * parm ctor 0x35B1C(parm, owner, tag, 1) from a 4-char tag (Data 0x6E8..0x788).
- * SnowAI_func_0000591C (the per-frame steering step) reads the parms through
+ * SnowAI_steer (the per-frame steering step) reads the parms through
  * `level`: level 3 -> tag "xx2", level 2 -> "xx1", otherwise "xx0".
  */
 
@@ -65,7 +65,7 @@ typedef struct SnowAI {
     s32 scanIndex;          /* 0x5C: node being tested by the A604 / A7F8 scans (0..9) */
     f32 scanBestDist;       /* 0x60: best distance of the running scan */
     s32 aiState;            /* 0x64: SnowAI_update dispatch: 0 591C (steer), 1 6A30, 2 6CF0, 3 71E0 */
-    s32 modeFlags;          /* 0x68: 1 -> SnowAI_func_0000A3C4, 2 -> A604, 4 -> A7F8 run instead of the steering step */
+    s32 modeFlags;          /* 0x68: 1 -> SnowAI_pickFork, 2 -> A604, 4 -> A7F8 run instead of the steering step */
     s32 unk6C;              /* 0x6C: bit flags (bit 0 cleared with unk48 = 20) */
     s32 unk70;              /* 0x70: cleared by SnowAI_reset; read by 71E0 */
     s32 unk74;              /* 0x74: two-state switch in 591C (0 / 1) */

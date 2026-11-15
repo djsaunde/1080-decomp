@@ -44,7 +44,7 @@ endlabel SnowAI_func_00007448
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */
 /* jumptable lands at its ROM %lo offset; layout order = text order. */
 /* (moved here from SnowAI_update.s when 57D8 became an NCC donor, then from */
-/* SnowAI_func_0000591C.s when 591C became a cfe donor; the C fns between 591C and */
+/* SnowAI_steer.s when 591C became a cfe donor; the C fns between 591C and */
 /* 7448 emit no rodata) */
 .late_rodata
 /* +0x09C..+0x0FC: 24 floats of C fn SnowAI_ctor (lwc1 %lo 0x9C..0xF8) */

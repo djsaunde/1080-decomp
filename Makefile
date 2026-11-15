@@ -5530,7 +5530,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # `v0 * 1` const-first compare and the selector inner joins through `scale`), filtered out of C_FILES
 # and spliced over the placeholder on both paths. No rodata / late_rodata.
 GAMEUSO_591C_DONOR := build/src/game_uso/game_uso_591C.c.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_0000591C=$(GAMEUSO_591C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_steer=$(GAMEUSO_591C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_591C_DONOR)
 # 8CD8: EXACT MIPSpro 7.2.1 donor (709/709; agent-h run 428 on agent-c run 426's frame body): native 4-entry phase
 # table at RoData +0x100 = in-place %lo (layout-only game_uso_func_00008CD8_lay in the donor);

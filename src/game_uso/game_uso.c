@@ -3612,11 +3612,11 @@ void SnowAI_func_000057B8(char *a0) {
  * cfe NM capped at 82.5: cfe turns the 8-way selector switch into a jumptable, edg
  * into the target's case-order compare chain (agent-g run 123). Placeholder body; the
  * 24 .late_rodata words the 57D8 .s carried (44F4's float pool, RoData +0x9C) moved to
- * the end of SnowAI_func_0000591C.s, the next INCLUDE_ASM block in text order. */
+ * the end of SnowAI_steer.s, the next INCLUDE_ASM block in text order. */
 void SnowAI_update(char *a0) {
 }
 
-/* SnowAI_func_0000591C: 0x1114 (1102 insns, 4.3 KB) — strategy-memo spine
+/* SnowAI_steer: 0x1114 (1102 insns, 4.3 KB) — strategy-memo spine
  * candidate #2 (~29 cross-USO calls).  0x1D0-byte stack frame.
  *
  * Boundary-fixed 2026-04-20: splat originally put the glabel at 0x5924,
@@ -3937,7 +3937,7 @@ void SnowAI_update(char *a0) {
  *   - pervasive register/FP coloring + per-slot stack layout.
  * No episode: not exact. */
 #ifdef NON_MATCHING
-/* SnowAI_func_0000591C (spine, 1093w) — three-scalar separation pass.
+/* SnowAI_steer (spine, 1093w) — three-scalar separation pass.
  *
  * 2026-06-24 agent-e: prior C conflated THREE distinct stack floats into one
  * `metric`, discarding the float return of SnowAI_func_00007A98(self):
@@ -3951,9 +3951,9 @@ void SnowAI_update(char *a0) {
  * `if (self->0x74 != 0) goto commit` early-skip after the metric block.
  * SELF-VERIFY only; not exact — coloring/frame-layout cap dominates. */
 /* forward decls for 591C real callees (defined later in this TU) */
-void SnowAI_func_0000A3C4();
-void SnowAI_func_0000A604(SnowAI *);
-void SnowAI_func_0000A7F8(SnowAI *);
+void SnowAI_pickFork();
+void SnowAI_scanNodes(SnowAI *);
+void SnowAI_scanSegments(SnowAI *);
 int SnowAI_func_00007ACC();
 float SnowAI_func_00007A98(int *);
 int SnowAI_func_00007C1C();
@@ -3963,19 +3963,19 @@ void SnowAI_func_0000751C(char *);
 void SnowAI_func_00007448(char *);
 void SnowAI_func_00007424(void *);
 int SnowAI_func_00009B88();
-void SnowAI_func_0000A7D8(SnowAI *);
+void SnowAI_startNodeScan(SnowAI *);
 int SnowAI_func_0000A0E8(char *, char *, char *);
-void SnowAI_func_0000AB98(SnowAI *);
+void SnowAI_startSegmentScan(SnowAI *);
 void SnowAI_func_000071A4(int *);
 int SnowAI_func_00006FA8(int *);
 void SnowAI_func_00007538();
 #endif
-/* SnowAI_func_0000591C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
+/* SnowAI_steer: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c
  * run 237). The superseded in-unit body is kept for its decode history under
  * GAMEUSO_591C_OLD_DECODE (never defined). */
 #ifdef GAMEUSO_591C_OLD_DECODE
-void SnowAI_func_0000591C(int *a0) {
+void SnowAI_steer(int *a0) {
     /* 2026-09-09: 76.42 -> 81.96 -> 88.18 -> 91.19 -> 92.85 -> 93.99 -> 94.09% NM.
      * Word-typed staging copies preserve
      * the sub-pointer reload; both state dispatches are switches; the five
@@ -4083,15 +4083,15 @@ void SnowAI_func_0000591C(int *a0) {
 
     v0 = *(int*)((char*)self + 0x68);
     if (v0 & 1) {
-        SnowAI_func_0000A3C4();
+        SnowAI_pickFork();
         return;
     }
     if (v0 & 2) {
-        SnowAI_func_0000A604(self);
+        SnowAI_scanNodes(self);
         return;
     }
     if (v0 & 4) {
-        SnowAI_func_0000A7F8(self);
+        SnowAI_scanSegments(self);
         return;
     }
 
@@ -4536,13 +4536,13 @@ tail_common:
 
     if (state_flag & 0x20) {
         if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
-            SnowAI_func_0000A7D8(self);
+            SnowAI_startNodeScan(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
         if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
-            SnowAI_func_0000AB98(self);
+            SnowAI_startSegmentScan(self);
             goto commit_flags;
         }
     }
@@ -4620,7 +4620,7 @@ commit_flags:
     SnowAI_func_00007538(self, out_flags);
 }
 #else
-void SnowAI_func_0000591C(int *a0) {
+void SnowAI_steer(int *a0) {
     volatile int *ret = a0;
 }
 #endif
@@ -6342,7 +6342,7 @@ int a0, a1, a2;
     return (int)game_uso_func_000043D8((int **)r, (int *)a2, 0);
 }
 
-/* SnowAI_func_0000A3C4 - MATCHED 2026-07-08 (144/144 words + ROM byte-exact;
+/* SnowAI_pickFork - MATCHED 2026-07-08 (144/144 words + ROM byte-exact;
  * prior "sub-80 table-dispatch ceiling" note was FALSE). Picks the nearer of the
  * two table entries (a0->0x40 vs a0->0x7C) to the ref point ctx->0x908+0xB4 by
  * squared XZ distance and re-targets a0->0x40. Levers that cracked it:
@@ -6370,7 +6370,7 @@ extern char game_uso_D_807FEDF8;
 extern char game_uso_D_807FEE20;
 typedef struct { float x, y, z; } V3_A3C4;
 typedef struct { int a; } S1_A3C4;
-void SnowAI_func_0000A3C4(SnowAI *a0) {
+void SnowAI_pickFork(SnowAI *a0) {
     V3_A3C4 *p;
     S1_A3C4 v1, v2;
     V3_A3C4 buf2, buf3;
@@ -6446,14 +6446,14 @@ skip3:
     }
 }
 
-// SnowAI_func_0000A604 — STRUCTURAL PASS (0x1D4 / 117 words,
+// SnowAI_scanNodes — STRUCTURAL PASS (0x1D4 / 117 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic; boundary already split by commit 66d6c531 — named fn
 // itself was still undecoded). Hand-decoded.
 //
 // Per-object physics/state advance step.
 //
-//   void SnowAI_func_0000A604(Obj *obj) {              // obj -> s0
+//   void SnowAI_scanNodes(Obj *obj) {              // obj -> s0
 //     World *w = obj->0x30;
 //     // copy obj->0xB4/0xB8/0xBC transform into sp scratch;
 //     // scale a Vec3 (w->0x318/0x31C/0x320) by w->0xA8, matrix*
@@ -6501,9 +6501,9 @@ skip3:
 //   commutative) -> genuine slot-allocation cap. .text-only ROM gate
 //   would land IF the frame matched; it does not. Left NM at 89.54%.
 //   Name pre-checked: no extern reuse.
-/* SnowAI_func_0000A604 — EXACT 117/117 words (self-verified clean rebuild of
+/* SnowAI_scanNodes — EXACT 117/117 words (self-verified clean rebuild of
  * build/non_matching/src/game_uso/game_uso.c.o, 0 diffs vs
- * asm/nonmatchings/game_uso/game_uso/SnowAI_func_0000A604.s; jal words
+ * asm/nonmatchings/game_uso/game_uso/SnowAI_scanNodes.s; jal words
  * 0x0C000000 both sides). Was the "frame-spread coloring cap" NM at 90.01%.
  *
  * PREREQUISITE (outside this body): the game_uso_func_0000A374 DEFINITION
@@ -6538,7 +6538,7 @@ skip3:
  *      prologue (the last 20-diff residual). Plain reassign without if(1)
  *      does NOT work.
  */
-void SnowAI_func_0000A604(SnowAI *obj) {
+void SnowAI_scanNodes(SnowAI *obj) {
     Vec3 copy2;
     One1 a1arg;
     Vec3 tbuf;
@@ -6598,13 +6598,13 @@ void SnowAI_func_0000A604(SnowAI *obj) {
     }
 }
 
-void SnowAI_func_0000A7D8(SnowAI *a0) {
+void SnowAI_startNodeScan(SnowAI *a0) {
     a0->scanIndex = 0;
     a0->modeFlags |= 2;
     a0->scanBestDist = *(float *)((char *)&D_00000000 + 0x110);
 }
 
-/* SnowAI_func_0000A7F8: nearest projected-segment distance update.
+/* SnowAI_scanSegments: nearest projected-segment distance update.
  * MATCHED: 232/232 target words. Predict the child position from
  * obj's scale and child direction, query the indexed segment, test its
  * projected height, then minimize squared XZ distance to the segment line.
@@ -6624,7 +6624,7 @@ void SnowAI_func_0000A7D8(SnowAI *a0) {
  *   equality operands; name b3.z before the squared-length expression.
  * See docs/IDO_CODEGEN.md#projected-distance-exact-a7f8.
  */
-void SnowAI_func_0000A7F8(SnowAI *obj) {
+void SnowAI_scanSegments(SnowAI *obj) {
     Vec3 c2;
     One1 node;
     Vec3 blockA;
@@ -6740,7 +6740,7 @@ void SnowAI_func_0000A7F8(SnowAI *obj) {
     if (cnt >= 10) obj->modeFlags &= ~4;
 }
 
-void SnowAI_func_0000AB98(SnowAI *a0) {
+void SnowAI_startSegmentScan(SnowAI *a0) {
     a0->scanIndex = 0;
     a0->modeFlags |= 4;
     a0->scanBestDist = *(float*)(&D_00000000 + 0x114);

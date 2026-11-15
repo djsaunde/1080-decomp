@@ -1,4 +1,4 @@
-/* SnowAI_func_0000591C: EXACT donor, IDO 7.1 cfe -O2 C (agent-c run 237, from the
+/* SnowAI_steer: EXACT donor, IDO 7.1 cfe -O2 C (agent-c run 237, from the
  * in-unit NM body: agent-e / agent-g / agent-c runs 182-236, 99.977 -> 100),
  * REPLACE_FUNC_BODY-spliced over the placeholder in src/game_uso/game_uso.c on both
  * build paths (GAMEUSO_591C_DONOR). The superseded in-unit body (with its decode
@@ -21,9 +21,9 @@ typedef struct { float x, y, z; } Vec3;
 typedef struct { int a, b, c; } Tri3i;
 extern int game_uso_func_055750();
 float game_uso_func_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
-void SnowAI_func_0000A3C4();
-void SnowAI_func_0000A604(SnowAI *);
-void SnowAI_func_0000A7F8(SnowAI *);
+void SnowAI_pickFork();
+void SnowAI_scanNodes(SnowAI *);
+void SnowAI_scanSegments(SnowAI *);
 int SnowAI_func_00007ACC();
 float SnowAI_func_00007A98(SnowAI *);
 int SnowAI_func_00007C1C();
@@ -33,13 +33,13 @@ void SnowAI_func_0000751C(SnowAI *);
 void SnowAI_func_00007448(SnowAI *);
 void SnowAI_func_00007424(void *);
 int SnowAI_func_00009B88();
-void SnowAI_func_0000A7D8(SnowAI *);
+void SnowAI_startNodeScan(SnowAI *);
 int SnowAI_func_0000A0E8(SnowAI *, char *, char *);
-void SnowAI_func_0000AB98(void *);
+void SnowAI_startSegmentScan(void *);
 void SnowAI_func_000071A4(SnowAI *);
 int SnowAI_func_00006FA8(SnowAI *);
 void SnowAI_func_00007538();
-void SnowAI_func_0000591C(int *a0) {
+void SnowAI_steer(int *a0) {
     Vec3 copy2;
     Vec3 staged_axis;
     int out_flags;
@@ -104,15 +104,15 @@ void SnowAI_func_0000591C(int *a0) {
     if (import_8006EF48 == 0) return;
     v0 = self->modeFlags;
     if (v0 & 1) {
-        SnowAI_func_0000A3C4();
+        SnowAI_pickFork();
         return;
     }
     if (v0 & 2) {
-        SnowAI_func_0000A604(self);
+        SnowAI_scanNodes(self);
         return;
     }
     if (v0 & 4) {
-        SnowAI_func_0000A7F8(self);
+        SnowAI_scanSegments(self);
         return;
     }
     *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->pos;
@@ -464,13 +464,13 @@ tail_common:
     }
     if (state_flag & 0x20) {
         if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
-            SnowAI_func_0000A7D8(self);
+            SnowAI_startNodeScan(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
         if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
-            SnowAI_func_0000AB98(self);
+            SnowAI_startSegmentScan(self);
             goto commit_flags;
         }
     }

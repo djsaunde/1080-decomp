@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_0000A7D8, 0x20
+nonmatching SnowAI_startNodeScan, 0x20
 
-glabel SnowAI_func_0000A7D8
+glabel SnowAI_startNodeScan
     /* 00A7D8 0000A7D8 8C8E0068 */  .word 0x8C8E0068
     /* 00A7DC 0000A7DC AC80005C */  .word 0xAC80005C
     /* 00A7E0 0000A7E0 3C010000 */  .word 0x3C010000
@@ -9,4 +9,4 @@ glabel SnowAI_func_0000A7D8
     /* 00A7EC 0000A7EC C4240110 */  .word 0xC4240110
     /* 00A7F0 0000A7F0 03E00008 */  .word 0x03E00008
     /* 00A7F4 0000A7F4 E4840060 */  .word 0xE4840060
-endlabel SnowAI_func_0000A7D8
+endlabel SnowAI_startNodeScan
