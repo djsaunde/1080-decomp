@@ -15,20 +15,7 @@
  * for the REPLACE_FUNC_BODY splice key. Spliced into
  * game_libs_post1b2c.c.o. */
 
-typedef struct OSThread_s {
-    struct OSThread_s *next;
-} OSThread;
-
-typedef void *OSMesg;
-
-typedef struct OSMesgQueue_s {
-    OSThread *mtqueue;
-    OSThread *fullqueue;
-    int validCount;
-    int first;
-    int msgCount;
-    OSMesg *msg;
-} OSMesgQueue;
+#include "libultra/os_message.h" /* OSThread, OSMesg, OSMesgQueue (were private copies) */
 
 extern OSThread D_00000000_crmq_mt;
 extern OSThread D_00000000_crmq_full;
