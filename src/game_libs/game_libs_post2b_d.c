@@ -135,56 +135,6 @@ void lldiv(int m) {
  * HEAD of ldiv = ldiv — absorbed into the donor splice below
  * (true entry 0x744C4, spliced symbol covers 0x744C4..0x74548). */
 
-#if 0
-/* SUPERSEDED DECODE (2026-07-18): the "caller-set $v0 quotient guess"
- * reading below was wrong — $v0 is the quotient computed by the stolen
- * pre-prologue `div $zero,$a1,$a2; mflo $v0` head (splat orphan
- * game_libs_func_000744C4). Real identity: libc ldiv (o32 struct return,
- * $a0 = sret ptr). See the donor unit game_libs_ido53_744C4.c. */
-/* ldiv: 31-insn divide-correction helper w/ IDO trap prologue (0x7C, frame 0x08).
- *
- * Decoded structure (raw-word disasm) — division codegen idioms:
- *
- *   if (a2 == 0)                          break 0x1C0;   // div-by-zero
- *   if (a2 == -1 && a1 == 0x80000000)     break 0x180;   // overflow (INT_MIN/-1)
- *
- *   // Refinement body — assumes $v0 holds a caller-pre-computed quotient guess:
- *   prod_lo = (a2 * v0).lo;            // multu $a2, $v0; mflo
- *   rem = a1 - prod_lo;
- *   if (rem < 0) { v0++; rem -= a2; }  // sign-correction step
- *   a0[0] = v0;                        // write quotient
- *   a0[1] = rem;                       // write remainder
- *   return a0;                         // ($v0 = a0 at epilogue)
- *
- * The break codes 0x180/0x1C0 are IDO's standard div-trap signatures —
- * this is IDO `div` codegen output, not a hand-rolled libgcc helper.
- * The CURIOSITY is `multu $a2, $v0` with $v0 caller-set: $v0 is not a
- * standard arg register, so this is either (a) a custom intra-USO
- * calling convention (a la float-in-$f4/$f6/$f0), or (b) the result of
- * a fall-through from another function that set v0.
- *
- * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-18 per
- * feedback_doc_marker_is_bail.md. INCLUDE_ASM remains build path (the
- * `multu $a2, $v0` w/ caller-set v0 is unreproducible from standard C).
- */
-void ldiv(int *a0_out, int a1_dividend_lo, int a2_divisor) {
-    /* Custom-convention divide-correction helper. Real C below shows shape;
-     * cannot byte-match due to caller-set $v0_guess. */
-    extern int v0_caller_guess;
-    int v0 = v0_caller_guess;
-    int prod_lo, rem;
-    if (a2_divisor == 0) __builtin_trap();
-    if (a2_divisor == -1 && a1_dividend_lo == (int)0x80000000) __builtin_trap();
-    prod_lo = (int)((unsigned)a2_divisor * (unsigned)v0);
-    rem = a1_dividend_lo - prod_lo;
-    if (rem < 0) {
-        v0++;
-        rem -= a2_divisor;
-    }
-    a0_out[0] = v0;
-    a0_out[1] = rem;
-}
-#endif
 
 /* ldiv = libc ldiv (xldiv.c verbatim): quot = numer/denom
  * (the div/mflo hoisted above the prologue = the absorbed 0x8 orphan),

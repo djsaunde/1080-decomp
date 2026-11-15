@@ -34,39 +34,6 @@ int gl_osPiWriteIo(int a0, int a1) {
  * into the donor splice below (true entry 0x73074, spliced symbol covers
  * 0x73074..0x730C4). */
 
-#if 0
-/* SUPERSEDED DECODE (2026-07-18): the "caller-set $a2" implication below
- * was wrong — $a2 is the first PI_STATUS read, hoisted above the prologue
- * by IDO 5.3 -O1 (splat orphan game_libs_func_00073074). Real identity:
- * libultra osPiRawWriteIo variant, write-side twin of gl_osPiRawReadIo_0006BA7C
- * __osPiRawReadIo. See the donor unit game_libs_ido53_73074.c. */
-/* gl_osPiRawWriteIo_0007307C: 18-insn PI DMA-write helper. If (a2 & 3), spin-wait
- * for PI not busy. Then write a1 to (D_0 | a0) via KSEG1 uncached.
- * Returns 0.
- *
- * Symbol size 0x50 includes 2 trailing literal `.word` (lui+lw of
- * PI_STATUS_REG) — splat-absorbed boundary, solo SUFFIX_BYTES can
- * append (no relocs).
- *
- * 2026-05-14 C-only attempts:
- *   - Plain `while (D_A4600010 & 3) {}` — 68 bytes, no prologue+epilogue
- *     (IDO -O2 elides frame because no locals); 12 bytes short of target
- *   - `volatile u32 status` local — 96 bytes (too many stack roundtrips)
- *
- * Target has small 8-byte frame (`addiu sp,-8` / `addiu sp,+8`) even
- * without spillable locals — likely forced by the body's mid-function
- * `addiu sp,+8` BEFORE the trailing stores. INSN_PATCH+SUFFIX_BYTES
- * promotion path: ~17 entry INSN_PATCH + 2-word SUFFIX_BYTES for the
- * literal trailing. Deferred for now. */
-int gl_osPiRawWriteIo_0007307C(int a0, int a1, int a2) {
-    extern s32 D_A4600010;
-    if (a2 & 3) {
-        while (D_A4600010 & 3) {}
-    }
-    *(int*)((D_00000000 | a0) | 0xA0000000) = a1;
-    return 0;
-}
-#endif
 
 /* gl_osPiRawWriteIo_0007307C = libultra osPiRawWriteIo variant: spin while
  * PI_STATUS & 3 (the first read hoisted above the prologue = the absorbed
