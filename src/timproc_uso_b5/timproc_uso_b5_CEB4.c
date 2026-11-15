@@ -1,6 +1,6 @@
 /* LevelItem_drawStats_0000CEB4 (0x1AC / 107 words, real entry 0xCEAC) --
  * three HUD-emit calls (func_00004068) whose RGBA colour is white when
- * a0->0x2AC selects that slot and a0->0x2A0 > 0.5, else grey 0.3.
+ * listIndex (0x2AC) selects that slot and alpha (0x2A0) > 0.5, else grey 0.3.
  *
  * EXACT under IDO 7.1 cfe -O2 (agent-c run 218). Spliced over the unit's
  * empty placeholder by REPLACE_FUNC_BODY (Makefile TIMB5_CEB4_DONOR) so the
@@ -10,7 +10,7 @@
  *
  * Load-bearing:
  *  - the grey is the LITERAL 0.3f, not a RoData extern: a memory load stays
- *    in program order after the 0x2AC load, the literal is a constant uopt
+ *    in program order after the listIndex load, the literal is a constant uopt
  *    hoists with 1.0f into the test block (target: 0.3 -> f0, 1.0 -> f2).
  *  - `if (1) {}` closing each white arm: the extra block puts the 0.3f
  *    constant ahead of 1.0f (colour and emission order), and in block 1 it
@@ -32,7 +32,7 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     s32 pad[6];
     f32 f;
     v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
-    if (*(s32 *)(a0 + 0x2AC) == 0 && 0.5f < SELITEM(a0)->alpha) {
+    if (SELITEM(a0)->listIndex == 0 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {
@@ -41,7 +41,7 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     }
     SelItem_drawSpriteColor_00004068((int)a0, SELITEM(a0)->parms.xpn.value, SELITEM(a0)->parms.ypn.value, v, (int)(&timproc_uso_b5_D_807FFB08 + 0x688), 0xFF);
     f = 0.3f;
-    if (*(s32 *)(a0 + 0x2AC) == 1 && 0.5f < SELITEM(a0)->alpha) {
+    if (SELITEM(a0)->listIndex == 1 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {
@@ -49,7 +49,7 @@ void LevelItem_drawStats_0000CEB4(char *a0, int a1) {
     }
     SelItem_drawSpriteColor_00004068((int)a0, SELITEM(a0)->parms.xfp.value, SELITEM(a0)->parms.yfp.value, v, (int)(&timproc_uso_b5_D_807FFB20 + 0x6A0), 0xFF);
     f = 0.3f;
-    if (*(s32 *)(a0 + 0x2AC) == 2 && 0.5f < SELITEM(a0)->alpha) {
+    if (SELITEM(a0)->listIndex == 2 && 0.5f < SELITEM(a0)->alpha) {
         v[0] = 1.0f; v[1] = 1.0f; v[2] = 1.0f; v[3] = 1.0f;
         if (1) {}
     } else {

@@ -19,6 +19,10 @@
  * uncolored (direct symbol form everywhere). Stores are u32 and loads s32:
  * with matching types uopt forwards the stored value into the next load. */
 #include "common.h"
+#include "game/select.h"
+#define LIST ((SelItemList *)arg0)
+#define ITEM(p) ((SelCourseItem *)(p))
+#define MODEL(p) ((SelCourseModel *)(p))
 
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -94,8 +98,8 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
     {
         char *rr = r;
         FW(child, 0x14) = (s32) arg0;
-        *(f32 *)(rr + 0x2A4) = (f32) arg1;
-        FW(rr, 0x2B0) = arg2;
+        ITEM(rr)->base.enabled = (f32) arg1;
+        ITEM(rr)->base.id = arg2;
     }
     child = gen_imp_mem_new((char *)0x144);
     if (child != 0) {
@@ -192,31 +196,31 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             *(f32 *)(child + 0xDC) = arg3;
             *(f32 *)(child + 0xE0) = arg4;
             *(f32 *)(child + 0xE4) = arg5;
-            *(f32 *)(child + 0x10C) = arg6;
-            *(f32 *)(child + 0x110) = arg7;
-            *(f32 *)(child + 0x114) = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
-            FW(child, 0x134) = 0;
-            FW(child, 0x130) = 0;
-            *(f32 *)(child + 0x128) = 0.0f;
-            *(f32 *)(child + 0x11C) = 0.0f;
+            MODEL(child)->view[0] = arg6;
+            MODEL(child)->view[1] = arg7;
+            MODEL(child)->view[2] = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
+            MODEL(child)->lit = 0;
+            MODEL(child)->focused = 0;
+            MODEL(child)->mapFade = 0.0f;
+            MODEL(child)->alpha = 0.0f;
             *(f32 *)(child + 0x120) = *(f32 *)((char *)&import_80807FB8 + 0x3F8);
-            *(f32 *)(child + 0x124) = 0.0f;
+            MODEL(child)->highlight = 0.0f;
         }
     }
     {
         char *rr = r;
-        FW(rr, 0x2B8) = (s32) child;
-        FW(rr, 0x29C) = (s32) child;
-        *(f32 *)(rr + 0x134) = -32.0f;
+        ITEM(rr)->model = MODEL(child);
+        ITEM(rr)->base.node = child;
+        ITEM(rr)->base.parms.cfv.value = -32.0f;
     }
-    obj = (char *)FW(arg0, 0x38);
+    obj = LIST->dispItems;
     gen_imp_list_append(obj + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
     FW(child, 0x14) = (s32) obj;
-    child = (char *)FW(arg0, 0x6C);
-    FW(arg0, 0x6C) = (s32) child + 1;
+    child = (char *)LIST->count;
+    LIST->count = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;
     return r;
 }

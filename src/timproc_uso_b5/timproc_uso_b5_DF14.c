@@ -17,6 +17,10 @@
  * target order); (4) the tail block writes through gsub instead of a block-local
  * rr: the r reload then colours v1 and FW(arg0, 0x38) v0, as the target. */
 #include "common.h"
+#include "game/select.h"
+#define LIST ((SelItemList *)arg0)
+#define ITEM(p) ((SelLevelItem *)(p))
+#define MODEL(p) ((SelLevelModel *)(p))
 
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -88,7 +92,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         SelItem_reset_00003890(child);
     }
     r = child;
-    FW(child, 0x2AC) = FW(arg0, 0x6C);
+    ITEM(child)->base.listIndex = LIST->count;
     gen_imp_list_append(arg0 + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
@@ -97,8 +101,8 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         char *rr = r;
         if (1) {} /* run 217: the r reload issues before the arg2 reload (target) */
         FW(child, 0x14) = (s32) arg0;
-        *(f32 *)(rr + 0x2A4) = (f32) arg1; /* run 216: cvt store before the 0x2B0 store */
-        FW(rr, 0x2B0) = arg2;
+        ITEM(rr)->base.enabled = (f32) arg1; /* run 216: cvt store before the id store */
+        ITEM(rr)->base.id = arg2;
         sub = (char *)(arg2 + 10);
     }
     child = (char *) gen_imp_mem_new((char *)0x144);
@@ -201,30 +205,30 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         *(f32 *)(child + 0xDC) = arg3;
         *(f32 *)(child + 0xE0) = arg4;
         *(f32 *)(child + 0xE4) = arg5;
-        *(f32 *)(child + 0x10C) = arg6;
-        *(f32 *)(child + 0x110) = arg7;
-        *(f32 *)(child + 0x114) = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
+        MODEL(child)->view[0] = arg6;
+        MODEL(child)->view[1] = arg7;
+        MODEL(child)->view[2] = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
         FW(child, 0x134) = 0;
-        FW(child, 0x130) = 0;
+        MODEL(child)->focused = 0;
         *(f32 *)(child + 0x128) = 0.0f;
-        *(f32 *)(child + 0x11C) = 0.0f;
+        MODEL(child)->alpha = 0.0f;
         *(f32 *)(child + 0x120) = *(f32 *)&import_80087FB8[1080];
-        *(f32 *)(child + 0x124) = 0.0f;
+        MODEL(child)->highlight = 0.0f;
     }
     {
         gsub = r; /* run 217: through gsub (a block-local rr took v0 from FW(arg0, 0x38)) */
-        FW(gsub, 0x2B8) = (s32) child;
-        FW(gsub, 0x29C) = (s32) child;
-        *(f32 *)(gsub + 0x134) = -32.0f; if (1) {}
+        ITEM(gsub)->model = MODEL(child);
+        ITEM(gsub)->base.node = child;
+        ITEM(gsub)->base.parms.cfv.value = -32.0f; if (1) {}
     }
-    sub = (char *) FW(arg0, 0x38);
+    sub = LIST->dispItems;
     gen_imp_list_append(sub + 0x10, child);
     if (FW(child, 0x14) != 0) {
         FW(child, 0x4) = 1;
     }
     FW(child, 0x14) = (s32) sub;
-    child = (char *)FW(arg0, 0x6C);
-    FW(arg0, 0x6C) = (s32) child + 1;
+    child = (char *)LIST->count;
+    LIST->count = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;
     return r;
 }

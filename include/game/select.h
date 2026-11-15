@@ -84,7 +84,9 @@ typedef struct SelItem {
     char *node;             /* 0x29C: display node (+0xDC position) */
     f32 alpha;              /* 0x2A0: setAlpha */
     f32 enabled;            /* 0x2A4: 0 = not selectable (locked) */
-    char pad2A8[0x2B0 - 0x2A8];
+    char pad2A8[0x2AC - 0x2A8];
+    s32 listIndex;          /* 0x2AC: LevelList_createItem stores the list's count (the item's own
+                             * index); LevelItem_drawStats lights the slot (0..2) equal to it */
     s32 id;                 /* 0x2B0: the value written out by SelectWin_commitSelection */
     s32 flags;              /* 0x2B4: written out with the board id; Character bit 17 / Board bit 5 = slot 17 toggle */
 } SelItem;                  /* 0x2B8; the subclasses add the model pointer at 0x2B8 */
@@ -177,16 +179,32 @@ SEL_ITEM_CLASS(SelTesuriItem, SelTesuriModel);
 SEL_ITEM_CLASS(SelLevelItem, SelLevelModel);
 
 typedef struct SelItemList {
-    char pad00[0x3C];
+    char pad00[0x28];
+    void *vptr;             /* 0x28 */
+    s32 cfg2C;              /* 0x2C..0x34: the SelItemsMgr's three CommonInfo words, copied by the ctor */
+    char *parent;           /* 0x30 */
+    s32 cfg34;              /* 0x34 */
+    char *dispItems;        /* 0x38: the SelItemsMgr's DispItems node; createItem adds each model under it */
     SelItem *items[12];     /* 0x3C */
     s32 count;              /* 0x6C */
 } SelItemList;
 
+/* "SelItemsMgr" (SelItemsMgr_ctor, alloc 0x60; node names from the Data strings it passes). */
 typedef struct SelItemsMgr {
-    char pad00[0x3C];
+    char pad00[0x28];
+    void *vptr;             /* 0x28 */
+    s32 cfg2C;              /* 0x2C: CommonInfo_init: (D+0x134)->0x84 (the S70 lists copy the same three) */
+    char *parent;           /* 0x30: (D+0x134)->0x80; the ctor adds dispItems under it */
+    s32 cfg34;              /* 0x34: (D+0x134)->0x8C */
+    char *dispItems;        /* 0x38: "DispItems" node (0x2C, vtbl Data 0xCC4); the lists and the item
+                             * models are added under it */
     s32 count;              /* 0x3C */
     SelItemList *lists[4];  /* 0x40: character, board, course, level (the stage index) */
-} SelItemsMgr;
+    char *commonInfo;       /* 0x50: "Common Info" (0x30; +0x2C = this); Node_Load'ed with ctor arg 2 */
+    struct SelTesuriItem *tesuri[3]; /* 0x54: the three "Tesuri Item"s (TesuriItem vtbl Data 0x8B4,
+                             * "Tesuri" QNode model); [2] is built first and only when the game
+                             * mode (import 800200CC +0x34) is not 2 */
+} SelItemsMgr;              /* 0x60 */
 
 /* SelectWin::Parms (SelectWin_ctor, at SelectWin +0x2C). Defaults in the comments. */
 typedef struct SelectWinParms {
@@ -345,7 +363,13 @@ SELECT_ASSERT(tesurimodel_chosen, (int)&((SelTesuriModel *)0)->chosen == 0x138);
 SELECT_ASSERT(levelmodel_chosen, (int)&((SelLevelModel *)0)->chosen == 0x138);
 SELECT_ASSERT(charitem_size, sizeof(SelCharacterItem) == 0x2C4);
 SELECT_ASSERT(list_count, (int)&((SelItemList *)0)->count == 0x6C);
+SELECT_ASSERT(list_disp, (int)&((SelItemList *)0)->dispItems == 0x38);
+SELECT_ASSERT(item_cfv, (int)&((SelItem *)0)->parms.cfv.value == 0x134);
+SELECT_ASSERT(item_pos, (int)&((SelItem *)0)->info.pos == 0x22C);
 SELECT_ASSERT(mgr_lists, (int)&((SelItemsMgr *)0)->lists == 0x40);
+SELECT_ASSERT(mgr_disp, (int)&((SelItemsMgr *)0)->dispItems == 0x38);
+SELECT_ASSERT(mgr_tesuri, (int)&((SelItemsMgr *)0)->tesuri == 0x54);
+SELECT_ASSERT(mgr_size, sizeof(SelItemsMgr) == 0x60);
 SELECT_ASSERT(selmgr_scene, (int)&((SelectionMgr *)0)->sceneSet == 0x2C);
 SELECT_ASSERT(selmgr_busy, (int)&((SelectionMgr *)0)->busy == 0x4C);
 SELECT_ASSERT(win_player, (int)&((SelectWin *)0)->player == 0x3B8);

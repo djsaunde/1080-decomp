@@ -34,6 +34,7 @@
  * 99.96 -> EXACT: no empty block inside site 3's +0x284 store, so the site-3 &t1 copy pointer's split
  * piece shares its block with the following FP(self, 0x58) temp (v0) and lands in a2 like sites 1/2. */
 #include "common.h"
+#include "game/select.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
 extern char *SelItemParms_ctor(); extern char *SelItemInfo_ctor(); extern char *SelItem_reset_00003890();
@@ -166,12 +167,12 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define FP(p, o) (*(char **)((char *)(p) + (o)))
 #define ALLOC(n) ((char *)gen_imp_mem_new(n))
 /* inline B::add(B *n): list insert + parent link */
-#define ADDV(V, T, N) { V = (T); w = (N); gen_imp_list_append(V + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = V; }
+#define ADDV(V, T, N) { V = (T); w = (char *)(N); gen_imp_list_append(V + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = V; }
 #define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(V + 0x10, W); if (1) {} if (FP(W, 0x14)) FW(W, 4) = 1; FP(W, 0x14) = V; }
-#define ADD(T, N) { _at = (T); w = (N); gen_imp_list_append(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
+#define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
 #define CFGS(S) FP(&S, 0x134)
 /* S70 row: cfront ctor(this) with nested base-ctor allocation check */
-#define NEWS70(P, D, VT, VT2, NM, S) { n = FP(self, 0x38); t = ALLOC(0x70); \
+#define NEWS70(P, D, VT, VT2, NM, S) { n = MGR->dispItems; t = ALLOC(0x70); \
     if (t) { w = t; if (w || (w = ALLOC(0x70))) { \
         gen_imp_Node_ctor(w, D); FP(w, 0x28) = (VT); } \
       FP(t, 0x28) = (VT2); FP(t, 0xC) = NM; FW(t, 0x2C) = FW(CFGS(S), 0x84); FW(t, 0x30) = FW(CFGS(S), 0x80); \
@@ -182,7 +183,7 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
         gen_imp_Node_ctor(_wp, D); FP(_wp, 0x28) = &timproc_uso_b5_D_807FDB64; \
         SelItemParms_ctor(_wp + 0x2C); SelItemInfo_ctor(_wp + 0x194); } \
       FP(w, 0x28) = (VT); FP(w, 0xC) = NM; SelItem_reset_00003890(w); } \
-    P = w; }
+    P = (void *)w; }
 #define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
     if (_wp) { gen_imp_QNode_ctor(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FP(_wp, 0x28) = import_80087FB8; FW(_wp, 0x120) = 1; \
       FF(_wp, 0x108) = fv; FF(_wp, 0x10C) = fv; FF(_wp, 0x110) = fv; FF(_wp, 0x124) = 1.0f; } \
@@ -207,6 +208,8 @@ typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
 #define VSEL(V, R) V = FP(R, 0x28);
 #define VCALL(V, R) (*(AddFn *)(V + 0x5C))(*(s16 *)(V + 0x58) + (R)
 #define self ((char *)arg0)
+#define MGR ((SelItemsMgr *)arg0)
+#define TESURI(k) (MGR->tesuri[k])
 void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     VecH v2a, v2b, v3a, v3b;
     char *a, *b, *c, *d;
@@ -232,17 +235,17 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     volatile int sb3;
     if (arg0 || (arg0 = (void **)ALLOC(0x60))) {
         gen_imp_Node_ctor(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
-        FP(self, 0x28) = timproc_uso_b5_D_807FE5F4;
+        MGR->vptr = timproc_uso_b5_D_807FE5F4;
         FP(self, 0xC) = timproc_uso_b5_D_807FE5F4 + 0x1350;
-        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); FP(w, 0x28) = timproc_uso_b5_D_807FEBD4; FP(w, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(w, 0x2C) = self; } FP(self, 0x50) = w; }
-        ADD(self, FP(self, 0x50));
+        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); FP(w, 0x28) = timproc_uso_b5_D_807FEBD4; FP(w, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(w, 0x2C) = self; } MGR->commonInfo = w; }
+        ADD(self, MGR->commonInfo);
         CommonInfo_init_0000A928(self);
         { char *p = ALLOC(0x2C); char *q; if (p) { gen_imp_Node_ctor(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
             FP(p, 0x28) = timproc_uso_b5_D_807FEBE8 + 0xCC4; FP(p, 0xC) = timproc_uso_b5_D_807FEBE8 + 0x1378; }
-          q = FP(self, 0x30); FP(self, 0x38) = p;  ADD(q, p); }
+          q = MGR->parent; MGR->dispItems = p;  ADD(q, p); }
         if (FW(&import_800200CC, 0x34) != 2) {
-            NEWPANEL(FP(self, 0x5C), timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C, timproc_uso_b5_D_807FEBFC + 0x8B4)
-            ADD(self, FP(self, 0x5C));
+            NEWPANEL(TESURI(2), timproc_uso_b5_D_807FEBF4 + 0x1384, timproc_uso_b5_D_807FEBFC + 0x138C, timproc_uso_b5_D_807FEBFC + 0x8B4)
+            ADD(self, TESURI(2));
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FEC08 + 0x1398, 0.0f, 0.0f, 0.0f);
@@ -258,16 +261,16 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 RESTORE(sb1)
                 WTAIL(w, DF_244, DF_248, DF_24C, DF_250, DF_254, DF_258, DF_25C)
             }
-            FP(FP(self, 0x5C), 0x2B8) = w;
+            TESURI(2)->model = (void *)w;
             v1a.f0 = 110.0f; v1a.f4 = -96.0f; v1a.f8 = -510.0f;
-            { n = FP(self, 0x5C) + 0x22C; *(VecH *)&t1 = v1a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { n = (char *)&TESURI(2)->base.info.pos; *(VecH *)&t1 = v1a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v1b.f0 = *(f32 *)&DS_260; v1b.f4 = 0.0f; v1b.f8 = 0.0f;
-            { n = FP(self, 0x5C) + 0x24C; *(VecH *)&t1 = v1b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { w = FP(self, 0x5C) + 0x284; if (1) {} FF(w, 0x10) = DF_264; }
-            { w = FP(FP(self, 0x5C), 0x2B8); FP(FP(self, 0x5C), 0x29C) = w; }
-            FF(FP(FP(self, 0x5C), 0x2B8), 0x12C) = DF_268;
-            FF(FP(FP(self, 0x5C), 0x2B8), 0x128) = DF_26C;
-            ADDV(t, FP(self, 0x38), FP(FP(self, 0x5C), 0x2B8));
+            { n = (char *)&TESURI(2)->base.info.rot; *(VecH *)&t1 = v1b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { w = (char *)&TESURI(2)->base.info.scl; if (1) {} FF(w, 0x10) = DF_264; }
+            { w = (char *)TESURI(2)->model; TESURI(2)->base.node = w; }
+            FF(TESURI(2)->model, 0x12C) = DF_268;
+            FF(TESURI(2)->model, 0x128) = DF_26C;
+            ADDV(t, MGR->dispItems, TESURI(2)->model);
         }
         NEWS70(a, timproc_uso_b5_D_807FEC90 + 0x1420, f8fc8_e304_1 + 0xA94, timproc_uso_b5_D_807FEC98 + 0xB04, timproc_uso_b5_D_807FEC98 + 0x1428, import_80020098_a)
         CommonInfo_add_0000A95C(self, a);
@@ -282,8 +285,8 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         CommonInfo_add_0000A95C(self, d);
         ADDW(_at, t, self, d);
         {
-            NEWPANEL(FP(self, 0x54), timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C, timproc_uso_b5_D_807FECEC + 0x8B4)
-            ADD(self, FP(self, 0x54));
+            NEWPANEL(TESURI(0), timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C, timproc_uso_b5_D_807FECEC + 0x8B4)
+            ADD(self, TESURI(0));
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FECF8 + 0x1488, 0.0f, 0.0f, 0.0f);
@@ -299,20 +302,20 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 RESTORE(sb2)
                 WTAIL(w, DF_278, DF_27C, DF_280, DF_284, DF_288, DF_28C, DF_290)
             }
-            FP(FP(self, 0x54), 0x2B8) = w;
+            TESURI(0)->model = (void *)w;
             v2a.f0 = *(f32 *)&DS_294; v2a.f4 = 528.0f; v2a.f8 = 180.0f;
-            { n = FP(self, 0x54) + 0x22C; *(VecH *)&t1 = v2a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { n = (char *)&TESURI(0)->base.info.pos; *(VecH *)&t1 = v2a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v2b.f0 = *(f32 *)&DS_298; v2b.f4 = DF_29C; v2b.f8 = DF_2A0;
-            { n = FP(self, 0x54) + 0x24C; *(VecH *)&t1 = v2b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { w = FP(self, 0x54) + 0x284; if (1) {} FF(w, 0x10) = DF_2A4; }
-            { w = FP(FP(self, 0x54), 0x2B8); FP(FP(self, 0x54), 0x29C) = w; }
-            FF(FP(FP(self, 0x54), 0x2B8), 0x12C) = DF_2A8;
-            FF(FP(FP(self, 0x54), 0x2B8), 0x128) = DF_2AC;
-            ADDV(t, FP(self, 0x38), FP(FP(self, 0x54), 0x2B8));
+            { n = (char *)&TESURI(0)->base.info.rot; *(VecH *)&t1 = v2b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { w = (char *)&TESURI(0)->base.info.scl; if (1) {} FF(w, 0x10) = DF_2A4; }
+            { w = (char *)TESURI(0)->model; TESURI(0)->base.node = w; }
+            FF(TESURI(0)->model, 0x12C) = DF_2A8;
+            FF(TESURI(0)->model, 0x128) = DF_2AC;
+            ADDV(t, MGR->dispItems, TESURI(0)->model);
         }
         {
-            NEWPANEL(FP(self, 0x58), timproc_uso_b5_D_807FED80 + 0x1510, timproc_uso_b5_D_807FED88 + 0x1518, timproc_uso_b5_D_807FED88 + 0x8B4)
-            ADD(self, FP(self, 0x58));
+            NEWPANEL(TESURI(1), timproc_uso_b5_D_807FED80 + 0x1510, timproc_uso_b5_D_807FED88 + 0x1518, timproc_uso_b5_D_807FED88 + 0x8B4)
+            ADD(self, TESURI(1));
             w = ALLOC(0x168);
             if (w) {
                 gen_imp_QNode_ctor(w, timproc_uso_b5_D_807FED94 + 0x1524, 0.0f, 0.0f, 0.0f);
@@ -331,16 +334,16 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 if (sb3) { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); }
                 WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
             }
-            FP(FP(self, 0x58), 0x2B8) = w;
+            TESURI(1)->model = (void *)w;
             v3a.f0 = *(f32 *)&DS_2D8; v3a.f4 = 528.0f; v3a.f8 = -480.0f;
-            { n = FP(self, 0x58) + 0x22C; *(VecH *)&t1 = v3a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { n = (char *)&TESURI(1)->base.info.pos; *(VecH *)&t1 = v3a; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
             v3b.f0 = *(f32 *)&DS_2DC; v3b.f4 = DF_2E0; v3b.f8 = DF_2E4;
-            { n = FP(self, 0x58) + 0x24C; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
-            { w = FP(self, 0x58) + 0x284; FF(w, 0x10) = DF_2E8; }
-            { w = FP(FP(self, 0x58), 0x2B8); FP(FP(self, 0x58), 0x29C) = w; }
-            FF(FP(FP(self, 0x58), 0x2B8), 0x12C) = DF_2EC;
-            FF(FP(FP(self, 0x58), 0x2B8), 0x128) = 1.0f;
-            ADDV(t, FP(self, 0x38), FP(FP(self, 0x58), 0x2B8));
+            { n = (char *)&TESURI(1)->base.info.rot; *(VecH *)&t1 = v3b; *(VecH *)&t2 = *(VecH *)&t1; FF(n, 0x10) = ((VecH *)&t2)->f0; FF(n, 0x14) = ((VecH *)&t2)->f4; FF(n, 0x18) = ((VecH *)&t2)->f8; }
+            { w = (char *)&TESURI(1)->base.info.scl; FF(w, 0x10) = DF_2E8; }
+            { w = (char *)TESURI(1)->model; TESURI(1)->base.node = w; }
+            FF(TESURI(1)->model, 0x12C) = DF_2EC;
+            FF(TESURI(1)->model, 0x128) = 1.0f;
+            ADDV(t, MGR->dispItems, TESURI(1)->model);
         }
         VSEL(w, a) VCALL(w, a), 1, 5, 0.0f, -150.0f, -1000.0f, 0.0f, 0.0f, 0.0f);
         VSEL(w, a) VCALL(w, a), 1, 3, 750.0f, -150.0f, DF_2F0, 0.0f, 0.0f, 0.0f);
@@ -362,7 +365,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 char *r;
                 VSEL(w, c) r = VCALL(w, c), 1, i, 400.0f, 210.0f, -280.0f, 0.0f, 0.0f, FF(import_808000CC, 0x320));
                 items[i] = r;
-                if (!(tu & (1U << i))) FF(items[i], 0x2A4) = 0.0f;
+                if (!(tu & (1U << i))) ((SelItem *)items[i])->enabled = 0.0f; /* locked: bit i of the BackupOptions unlocks word */
             }
             VSEL(w, d) VCALL(w, d), 1, 1, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
             VSEL(w, d) e2 = VCALL(w, d), 1, 2, -220.0f, 200.0f, -400.0f, 0.0f, 0.0f, 0.0f);
@@ -370,18 +373,18 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
             gen_imp_dbg_printf(timproc_uso_b5_D_807FEE1C + 0x15AC, (*(u16 **)((char *)&import_800201EC + 0x154))[1]);
             switch ((*(u16 **)((char *)&import_800201EC + 0x154))[1]) {
             case 1:
-                 FF(e2, 0x2A4) = 0.0f; FF(e3, 0x2A4) = 0.0f; break;
+                 ((SelItem *)e2)->enabled = 0.0f; ((SelItem *)e3)->enabled = 0.0f; break;
             case 2:
-                FF(e3, 0x2A4) = 0.0f;
+                ((SelItem *)e3)->enabled = 0.0f;
                 break;
             case 3: case 4: case 5:
                 break;
             }
         }
         gen_imp_Node_Load(self, 1, arg1);
-        gen_imp_Node_Load(FP(self, 0x50), 1, arg2);
-        w = FP(self, 0x28); (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + self);
-        { char *m = FP(self, 0x38); w = FP(m, 0x28); (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + m); }
+        gen_imp_Node_Load(MGR->commonInfo, 1, arg2);
+        w = MGR->vptr; (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + self);
+        { char *m = MGR->dispItems; w = FP(m, 0x28); (*(void (**)(void *))(w + 0x24))(*(s16 *)(w + 0x20) + m); }
     }
     return arg0;
 }
