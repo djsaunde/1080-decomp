@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "game/modeproc.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -327,31 +328,31 @@ extern char import_80263D30;
 extern int import_800200EC;
 extern int import_800200FC;
 extern char import_80020100;
-void mgr_loadSprites_0000119C(char *s0) {
-    int *q;
+void mgr_loadSprites_0000119C(MgrRace *s0) {
+    int *q;                  /* the course list: q[1] idx, q[2] count */
     import_0024F228(&import_80263D30, (*(int *)((char *)&import_80020100 + 0x68) - 1) | 0x200000);
-    import_0024F228(s0 + 0x6B0, *(int *)((char *)&import_800200FC + 0x64) | 0x000A0000);
-    import_0024F228(s0 + 0x6C8, 0x210000);
-    q = *(int **)(s0 + 0x6A8);
+    import_0024F228(&s0->sprites[0], *(int *)((char *)&import_800200FC + 0x64) | 0x000A0000);
+    import_0024F228(&s0->sprites[1], 0x210000);
+    q = (int *)s0->courseList;
     if (q[2] == q[1] + 1) {
-        import_0024F228(s0 + 0x6E0, 0x210000 | 1);
+        import_0024F228(&s0->sprites[2], 0x210000 | 1);
     } else {
-        import_0024F228(s0 + 0x6E0, 0x210000 | (q[1] + 2));
+        import_0024F228(&s0->sprites[2], 0x210000 | (q[1] + 2));
     }
-    import_0024F228(s0 + 0x6F8, *(int *)((char *)&import_800200EC + 0x54) | 0x001E0000);
-    import_0024F278(s0 + 0x728, 0x210000 | 0x7);
-    import_0024F278(s0 + 0x740, 0x210000 | 0x8);
-    import_0024F278(s0 + 0x758, 0x210000 | 0x9);
-    import_0024F278(s0 + 0x770, 0x210000 | 0xA);
-    import_0024F278(s0 + 0x788, 0x210000 | 0xD);
+    import_0024F228(&s0->sprites[3], *(int *)((char *)&import_800200EC + 0x54) | 0x001E0000);
+    import_0024F278(&s0->sprites[5], 0x210000 | 0x7);
+    import_0024F278(&s0->sprites[6], 0x210000 | 0x8);
+    import_0024F278(&s0->sprites[7], 0x210000 | 0x9);
+    import_0024F278(&s0->sprites[8], 0x210000 | 0xA);
+    import_0024F278(&s0->sprites[9], 0x210000 | 0xD);
 }
 
-void mgr_releaseSprites_000012AC(char *a0) {
+void mgr_releaseSprites_000012AC(MgrRace *a0) {
     gl_func_00000000(&D_00000000);
-    gl_func_00000000(a0 + 0x6B0);
-    gl_func_00000000(a0 + 0x6C8);
-    gl_func_00000000(a0 + 0x6E0);
-    gl_func_00000000(a0 + 0x6F8);
+    gl_func_00000000(&a0->sprites[0]);
+    gl_func_00000000(&a0->sprites[1]);
+    gl_func_00000000(&a0->sprites[2]);
+    gl_func_00000000(&a0->sprites[3]);
 }
 
 void mgrproc_uso_func_00000000();  /* K&R-style: matches the K&R def above */
@@ -385,23 +386,23 @@ extern int mgr_nextCourse_000000B0();
 extern int mgr_useRetry_000000F8();
 extern int mgr_noRetriesLeft_00000170();
 extern int mgrproc_uso_func_01FA1C();
-int MGRRaceProcess_endTimerEnabled(char *arg0) {
+int MGRRaceProcess_endTimerEnabled(MgrRace *arg0) {
     int v;
-    if (*(int*)(arg0 + 0x4FC) == 0) {
-        import_000B72F4(*(int*)(arg0 + 0x6AC), 0, 1);
+    if (arg0->race.unk4FC == 0) {
+        import_000B72F4(arg0->dataMgr, 0, 1);
         if (1) {}
-        v = *(int*)(arg0 + 0x4F8);
+        v = arg0->race.result;
         if (v == 0) {
-            mgr_nextCourse_000000B0(*(int*)(arg0 + 0x6A8));
+            mgr_nextCourse_000000B0(arg0->courseList);
         } else if (v != 2) {
-            mgr_useRetry_000000F8(*(int*)(arg0 + 0x6A8));
+            mgr_useRetry_000000F8(arg0->courseList);
         }
-        if (mgr_noRetriesLeft_00000170(*(int*)(arg0 + 0x6A8)) != 0 &&
-            mgrproc_uso_func_01FA1C(*(int*)(*(int*)(arg0 + 0x6AC) + 0x4C)) != 0) {
-            *(int*)(arg0 + 0x4EC) = -0x258;
+        if (mgr_noRetriesLeft_00000170(arg0->courseList) != 0 &&
+            mgrproc_uso_func_01FA1C(((MgrDataManager *)arg0->dataMgr)->base.session) != 0) {
+            arg0->race.unk4EC = -0x258;
         }
-        *(int*)(arg0 + 0x7D0) = *(int*)(arg0 + 0x4F8);
-        *(int*)(arg0 + 0x4FC) = 1;
+        arg0->lastResult = arg0->race.result;
+        arg0->race.unk4FC = 1;
     }
     return 1;
 }
@@ -522,10 +523,10 @@ extern char import_80020208;
 extern void mgrproc_uso_func_048E7C(void *, int);
 extern void mgr_startReplay_00001AD0(int *, int);
 extern int mgrproc_uso_func_0139B0();
-void MGRRaceProcess_onTimeout(int *a0) {
+void MGRRaceProcess_onTimeout(MgrRace *a0) {
     int v;
-    mgrproc_uso_func_048E7C((char*)&import_802649F8 + 0x628, *(int*)((char*)a0 + 0x4D8));
-    v = *(int*)((char*)a0 + 0x4D8);
+    mgrproc_uso_func_048E7C((char*)&import_802649F8 + 0x628, a0->race.subState);
+    v = a0->race.subState;
     if (v == 2) goto case_2;
     if (v == 1) goto case_13;
     if (v != 3) goto end;
@@ -534,10 +535,10 @@ end:
     return;
 case_2:
     mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 3, 1, a0);
-    *(int*)((char*)a0 + 0x7D4) = 1;
+    a0->exitStep = 1;
     return;
 case_13:
-    mgr_startReplay_00001AD0(a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
+    mgr_startReplay_00001AD0((int *)a0, *(int *)(&import_80020208 + 0x170) + 0x26000F);
 }
 
 /* MGRRaceProcess_onPauseSelect: 32-insn (0x80) check-then-vtable-call helper.
@@ -651,42 +652,42 @@ extern void import_007FE4E8();
 extern int mgrproc_uso_func_00F954();
 extern int mgrproc_uso_func_00001BD4();
 extern void *MgrNameEntry_ctor_00002940(char *, int, int);
-void MGRRaceProcess_onRaceOver(char *arg0) {
+void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
     void *node;
     char *hdr;
-    int state = *(int *)(arg0 + 0x504);
+    int state = arg0->race.unk504;
 
     switch (state) {
     case 0:
         mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 3, 1);
-        *(int *)(arg0 + 0x504) = 1;
+        arg0->race.unk504 = 1;
         mgrproc_uso_func_000188(7, 0, 0);
         break;
     case 1:
         if (mgrproc_uso_func_013924(INPUT_MGR(import_80020228).fader, state) != 0) {
-            *(int *)(arg0 + 0x4D8) = 1;
+            arg0->race.subState = 1;
             mgrproc_uso_func_000148(7, 0, 0);
             mgrproc_uso_func_012110(&import_80020098);
             import_000B2888(arg0);
-            mgr_startReplay_00001AD0(arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
-            *(void **)(arg0 + 0x524) = (void *)MgrNameEntry_ctor_00002940(0, arg0, *(int *)(arg0 + 0x7D8));
-            import_007FE4E8(*(void **)(arg0 + 0x524), *(int *)(arg0 + 0x528));
-            hdr = *(char **)(arg0 + 0x56C);
-            node = *(void **)(arg0 + 0x524);
+            mgr_startReplay_00001AD0((int *)arg0, *(int *)((char *)&import_80020208 + 0x170) + 0x26000F);
+            arg0->race.unk524 = (int)MgrNameEntry_ctor_00002940(0, (char *)arg0, arg0->nameEntryMode);
+            import_007FE4E8(arg0->race.unk524, arg0->race.session);
+            hdr = (char *)arg0->race.handler;
+            node = (void *)arg0->race.unk524;
             mgrproc_uso_func_07ACE0(hdr + 0x10, node);
             if (*(int *)((char *)node + 0x14) != 0) {
                 *(int *)((char *)node + 4) = 1;
             }
             *(int *)((char *)node + 0x14) = (int) hdr;
-            if (mgr_isLastCourse_00000140(*(int *)(arg0 + 0x6A8), node) != 0) {
-                *(int *)((char *)*(void **)(arg0 + 0x524) + 0x60) = 2;
+            if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
+                *(int *)((char *)arg0->race.unk524 + 0x60) = 2;
                 mgrproc_uso_func_00001BD4(arg0);
             }
             mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 1, 1);
         }
         break;
     case 4:
-        mgrproc_uso_func_00F954(arg0, 4, *(int *)((*(int *)(*(char **)(arg0 + 0x6A8) + 4) * 4) + *(char **)(arg0 + 0x6A8) + 0x10));
+        mgrproc_uso_func_00F954(arg0, 4, ((int *)arg0->courseList)[((int *)arg0->courseList)[1] + 4]);
         break;
     }
 }
@@ -706,12 +707,12 @@ void MGRRaceProcess_onRaceOver(char *arg0) {
  *   if (gl_func(&D, 0x40100, a0) == 0) return;
  *   if (gl_func(*(int*)(&D + 0x190)) == 0) return;
  *   a0->[0x7D4] = 1; */
-void MGRRaceProcess_onQuitButton(int *a0) {
-    if (*(int*)((char*)a0 + 0x7E4) != 1) return;
-    if (*(int*)((char*)a0 + 0x7E8) >= 0x2EE) return;
+void MGRRaceProcess_onQuitButton(MgrRace *a0) {
+    if (a0->endingPhase != 1) return;
+    if (a0->endingTimer >= 0x2EE) return;
     if (gl_func_00000000(&D_00000000, 0x40100, a0) == 0) return;
     if (gl_func_00000000(INPUT_MGR(D_00000000).fader) == 0) return;
-    *(int*)((char*)a0 + 0x7D4) = 1;
+    a0->exitStep = 1;
 }
 
 /* MGRRaceProcess_updateSub0/0000181C: 2 save-arg-sentinel stubs RECOVERED
@@ -925,7 +926,7 @@ void mgr_startReplay_00001AD0(int *a0, int a1) {
     int n1;
     int *p1;
     gl_func_00000000(a0, a1);
-    v0 = *(int**)((char*)&D_00000000 + 0x134);
+    v0 = (int *)INPUT_MGR(D_00000000).game;
     p0 = (int*)v0[0xC4 / 4];
     p1 = (int*)v0[0xCC / 4];
     n0 = *(int*)((char*)p0 + 0x800);
@@ -934,7 +935,7 @@ void mgr_startReplay_00001AD0(int *a0, int a1) {
     gl_func_00000000(n0, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
     gl_func_00000000(n1, *(int*)((char*)n1 + 0x34));
     gl_func_00000000(a0);
-    *(int*)((char*)a0 + 0x4F4) = a1 & 0xFFFF;
+    ((MgrRace *)a0)->race.timeout = a1 & 0xFFFF;
 }
 
 /* mgr_restartForEnding_00001B58: 0x7C, 31-insn leaf orchestrator. BYTE-EXACT.
@@ -987,19 +988,19 @@ extern void mgrproc_1BE4_call_1B58(int *, int);
  * is the one-argument helper 1B58, but this caller also sets a1=0xA0000;
  * use a zero-pinned call alias to retain that unused argument without
  * changing the already-matched callee's signature. */
-void mgr_startEnding_00001BE4(int *state) {
+void mgr_startEnding_00001BE4(MgrRace *state) {
     int idx;
     char *base = &D_00000000;
     idx = *(int*)(base + 0x64) - 5;
-    *(int*)((char*)state + 0x4D8) = 2;
-    *(int*)((char*)state + 0x7DC) = 0;
-    *(int*)((char*)state + 0x7E0) = 0;
-    *(int*)((char*)state + 0x7E4) = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0);
-    *(int*)((char*)state + 0x7E8) = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC);
-    *(int*)((char*)state + 0x7EC) = 0;
+    state->race.subState = 2;
+    state->creditLine = 0;
+    state->creditScroll = 0;
+    state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0);
+    state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC);
+    state->endingFrame = 0;
     mgrproc_uso_func_012110(base);
-    mgr_switchToView2_00001A64(state);
-    mgrproc_1BE4_call_1B58(state, 0xA0000);
+    mgr_switchToView2_00001A64((int *)state);
+    mgrproc_1BE4_call_1B58((int *)state, 0xA0000);
     mgrproc_uso_func_000188(0xB, 0, 0);
     mgrproc_uso_func_000148(0xB, *(int*)((char*)&import_800200FC + 0x64) - 5, 0);
     mgrproc_uso_func_0139B0(INPUT_MGR(import_80020228).fader, 1, 1);
