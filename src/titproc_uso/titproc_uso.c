@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -339,14 +340,14 @@ void tit_openSession_00000B6C(int **a0, int a1) {
     int *r1;
     int *r2;
     r1 = gl_func_00000000(2);
-    r2 = gl_func_00000000(0, *(int*)((char*)&D_00000000 + 0x148), a1, -1);
+    r2 = gl_func_00000000(0, INPUT_MGR(D_00000000).backup, a1, -1);
     *a0 = r2;
-    *(int**)((char*)&D_00000000 + 0x14C) = r2;
+    INPUT_MGR(D_00000000).session = r2;
     gl_func_00000000(r1);
     (*a0)[5] = 0;
     if (a1 != -1) {
-        *(int*)((char*)&D_00000000 + 0x168) = ((int*)((*a0)[2]))[2];
-        *(int*)((char*)&D_00000000 + 0x170) = ((int*)((*a0)[2]))[1];
+        INPUT_MGR(D_00000000).replayData[0] = ((int*)((*a0)[2]))[2];
+        INPUT_MGR(D_00000000).replayLen[0] = ((int*)((*a0)[2]))[1];
     }
 }
 
@@ -355,9 +356,9 @@ void tit_closeSession_00000C0C(int *a0) {
     if (v != 0) {
         gl_func_00000000(v, 3);
         *a0 = 0;
-        *(int*)((char*)&D_00000000 + 0x14C) = 0;
+        INPUT_MGR(D_00000000).session = 0;
     }
-    *(int*)((char*)&D_00000000 + 0x168) = 0;
+    INPUT_MGR(D_00000000).replayData[0] = 0;
 }
 
 /* TitleDemoProcess_ctor: 223-insn (0x37C) title-screen constructor /
@@ -457,7 +458,7 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     titproc_uso_func_000000();
     titproc_uso_func_000098();
     *(void **)((char *)root + 0x50) = (void *)import_000B6C40(0);
-    *(void **)((char *)&import_00020098 + 0x138) = *(void **)((char *)root + 0x50);
+    INPUT_MGR(import_00020098).dataMgr = *(void **)((char *)root + 0x50);
     import_000B88CC(*(int *)((char *)root + 0x50));
 
     sub = *(void **)((char *)root + 0x50);
@@ -506,11 +507,11 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
 
-    sub = *(void **)((char *)&import_00020098 + 0x190);
+    sub = INPUT_MGR(import_00020098).fader;
     titproc_uso_func_07ACE0((char *)root + 0x10, sub);
     if (*(int *)((char *)sub + 0x14) != 0) *(int *)((char *)sub + 0x4) = 1;
     *(int *)((char *)sub + 0x14) = (int)root;
-    titproc_uso_func_0139B0(*(int *)((char *)&import_00020098 + 0x190), 1, 0);
+    titproc_uso_func_0139B0(INPUT_MGR(import_00020098).fader, 1, 0);
 
     *(int *)((char *)root + 0x6C) = 5;
     *(int *)((char *)root + 0x70) = 0x48;
@@ -1642,13 +1643,13 @@ after_node:
     }
 
     arg0[0x6C4 / 4] = 0;
-    node = (int *)*(int *)((char *)&import_00020098 + 0x190);
+    node = (int *)INPUT_MGR(import_00020098).fader;
     titproc_uso_func_07ACE0(slot, node);
     if (node[0x14 / 4] != 0) {
         node[0x4 / 4] = 1;
     }
     node[0x14 / 4] = (int)arg0;
-    titproc_uso_func_0139B0(*(int *)((char *)&import_00020098 + 0x190), 1, 0);
+    titproc_uso_func_0139B0(INPUT_MGR(import_00020098).fader, 1, 0);
     titproc_uso_func_074840();
     import_000A7ECC(&import_00020098, 0);
 done:
@@ -1789,7 +1790,7 @@ void GameDemoProcess_onQuitButton(char *s0) {
                         titproc_uso_func_01F7FC(*(int *)(s0 + 0x528), 3);
                     }
                     *(int *)(s0 + 0x528) = 0;
-                    *(int *)((char *)&import_00020098 + 0x14C) = 0;
+                    INPUT_MGR(import_00020098).session = 0;
                 }
                 obj = *(char **)(s0 + 0x6C0);
                 (*(void (*)(void))(((int (*)[10])(obj + 0x90))[*(int *)(obj + 0x7C)][0]))();
@@ -1820,7 +1821,7 @@ void GameDemoProcess_onQuitButton(char *s0) {
             titproc_uso_func_01F7FC(*(int *)(s0 + 0x528), 3);
         }
         *(int *)(s0 + 0x528) = 0;
-        *(int *)((char *)&import_00020098 + 0x14C) = 0;
+        INPUT_MGR(import_00020098).session = 0;
     }
     if (1) {
         *(int *)((char *)&import_00020098 + 0x40) =

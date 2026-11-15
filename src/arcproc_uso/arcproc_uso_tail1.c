@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -85,7 +86,7 @@ void arc_closeSession_00000748(int *a0) {
     a0[2] = 0;
     gl_func_00000000((int*)a0[0], 3);
     a0[0] = 0;
-    *(int*)((char*)&D_00000000 + 0x14C) = 0;
+    INPUT_MGR(D_00000000).session = 0;
 }
 
 void arc_pauseContinue_000007B4(void) {
@@ -268,7 +269,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
             *(int *)(o2 + 0x28) = (int)&D_arc_A3C_v4;
         }
         *(int *)(obj + 0x6AC) = (int)o2;
-        *(char **)((char *)&D_00000000 + 0x138) = o2;
+        INPUT_MGR(D_00000000).dataMgr = o2;
         o1 = *(char **)(obj + 0x6AC);
         *(int *)(o1 + 0xB4) = 7;
 
@@ -303,13 +304,13 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         }
         *(int *)(o1 + 0x14) = (int)obj;
 
-        o1 = *(char **)((char *)&D_00000000 + 0x190);
+        o1 = INPUT_MGR(D_00000000).fader;
         gl_func_00000000(obj + 16, o1);
         if (*(int *)(o1 + 0x14) != 0) {
             *(int *)(o1 + 0x4) = 1;
         }
         *(int *)(o1 + 0x14) = (int)obj;
-        gl_func_00000000(*(int *)((char *)&D_00000000 + 0x190), 1, 0);
+        gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 0);
         gl_func_00000000();
         *(int *)((char *)&D_00000000 + 0x40) = 5;
     }
@@ -454,7 +455,7 @@ void ARCRaceProcess_onAltEndTimerDone(int *a0) {
  * (The lui/lw pair is relocated against Sym idx 10 = the D_00000000 import
  * base, same as the .f44/.f48 stores in arcproc_uso_o0_240.c.) */
 void ARCRaceProcess_onTimeout(int a0) {
-    gl_func_00000000(a0, *(int*)((char*)&D_00000000 + 0x170) + 0x26000F);
+    gl_func_00000000(a0, INPUT_MGR(D_00000000).replayLen[0] + 0x26000F);
 }
 
 /* ARCRaceProcess_altEndTimerEnabled: 12-insn 2-level NULL-check.
@@ -588,16 +589,16 @@ void ARCRaceProcess_onRaceOver(char *a0) {
         }
         *(int*)(s1 + 0x4D8) = 1;
         gl_func_00000000(7, 0, 0);
-        gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190), 3, 1);
+        gl_func_00000000(INPUT_MGR(D_00000000).fader, 3, 1);
         *(int*)(s1 + 0x504) = 1;
         break;
     case 1:
-        if (gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190)) == 0) return;
+        if (gl_func_00000000(INPUT_MGR(D_00000000).fader) == 0) return;
         gl_func_00000000(s1);
         gl_func_00000000(&D_00000000);
         gl_func_00000000(s1);
         gl_func_00000000(7, 0, 0);
-        gl_func_00000000(s1, *(int*)((char*)&D_00000000 + 0x170) + 0x26000F);
+        gl_func_00000000(s1, INPUT_MGR(D_00000000).replayLen[0] + 0x26000F);
         *(int*)(s1 + 0x524) = gl_func_00000000(0, s1, 0);
         gl_func_00000000_FA8v(*(int*)(s1 + 0x524), *(int*)(s1 + 0x528));
         node = *(char**)(s1 + 0x524);
@@ -607,7 +608,7 @@ void ARCRaceProcess_onRaceOver(char *a0) {
             *(int*)(node + 0x4) = 1;
         }
         *(int*)(node + 0x14) = (int)buf;
-        gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190), 1, 1);
+        gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 1);
         break;
     case 4:
         v0 = *(int**)(s1 + 0x6A8);
@@ -665,7 +666,7 @@ extern int gl_func_00000000();
 extern char D_00000000;
 typedef struct { void (*fn)(void); char pad[0x24]; } Ent1170;
 void ARCRaceProcess_onPauseSelect(int *a0) {
-    int *table_root = *(int**)((char*)&D_00000000 + 0x190);
+    int *table_root = INPUT_MGR(D_00000000).fader;
     int *p;
 
     if (gl_func_00000000(table_root, a0) == 0) return;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "game/input.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -134,7 +135,7 @@ void h2h_openSession_0000020C(int *a0) {
     a0[2] = gl_func_00000000(8);
     gl_func_00000000(saved);
     *a0 = 0;
-    *(int*)((char*)&D_00000000 + 0x14C) = 0;
+    INPUT_MGR(D_00000000).session = 0;
     *(int*)a0[2] = 0;
     *(int*)(a0[2] + 4) = 0;
     *(int*)((char*)&D_00000000 + 0x68) = 0;
@@ -393,7 +394,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
             *(int *)(o2 + 0x28) = (int)&D_00000000;
         }
         *(int *)(obj + 0x6B0) = (int)o2;
-        *(char **)((char *)&D_00000000 + 0x138) = o2;
+        INPUT_MGR(D_00000000).dataMgr = o2;
 
         gl_func_00000000_620v(*(int *)(obj + 0x6B0), obj, *(int *)(obj + 0x568));
 
@@ -422,13 +423,13 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         }
         *(int *)(o1 + 0x14) = (int)obj;
 
-        o1 = *(char **)((char *)&D_00000000 + 0x190);
+        o1 = INPUT_MGR(D_00000000).fader;
         gl_func_00000000(obj + 16, o1);
         if (*(int *)(o1 + 0x14) != 0) {
             *(int *)(o1 + 0x4) = 1;
         }
         *(int *)(o1 + 0x14) = (int)obj;
-        gl_func_00000000(*(int *)((char *)&D_00000000 + 0x190), 1, 0);
+        gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 0);
         gl_func_00000000();
     }
     }
@@ -578,7 +579,7 @@ void H2HRaceProcess_onPause(int *a0) {
 void H2HRaceProcess_onPauseSelect(int *a0) {
     extern char D_00000000;
     int k;
-    if (gl_func_00000000(*(int*)((char*)&D_00000000 + 0x190)) != 0) {
+    if (gl_func_00000000(INPUT_MGR(D_00000000).fader) != 0) {
         k = 5;
         gl_func_00000000(k);
         k = 0x28;
@@ -653,8 +654,8 @@ void H2HRaceProcess_onTimeout(int *a0) {
         *(int*)((char*)a0 + 0x4F4) = 1;
         return;
     }
-    v0 = *(int*)((char*)&D_00000000 + 0x170);
-    v1 = *(int*)((char*)&D_00000000 + 0x174);
+    v0 = INPUT_MGR(D_00000000).replayLen[0];
+    v1 = INPUT_MGR(D_00000000).replayLen[1];
     if ((unsigned)v1 < (unsigned)v0) v0 = v1;
     gl_func_00000000(a0, v0 + 0x26000F);
 }
@@ -926,7 +927,7 @@ void h2h_startReplay_00000E04(int *a0, unsigned int a1) {
         *(int*)((char*)slotC4 + 0x8DC) = *(int*)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0x108);
         r1 = *(int**)((char*)slotC4 + 0x800);
         gl_func_00000000(r1, 0);
-        gl_func_00000000(r1, *(int*)((char*)&D_00000000 + 0x168), *(int*)((char*)&D_00000000 + 0x170));
+        gl_func_00000000(r1, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
     }
 
     {
@@ -934,7 +935,7 @@ void h2h_startReplay_00000E04(int *a0, unsigned int a1) {
         *(int*)((char*)slotCC + 0x8DC) = *(int*)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0x108);
         r2 = *(int**)((char*)slotCC + 0x800);
         gl_func_00000000(r2, 0);
-        gl_func_00000000(r2, *(int*)((char*)&D_00000000 + 0x16C), *(int*)((char*)&D_00000000 + 0x174));
+        gl_func_00000000(r2, INPUT_MGR(D_00000000).replayData[1], INPUT_MGR(D_00000000).replayLen[1]);
     }
 
     gl_func_00000000(a0);

@@ -12,7 +12,7 @@
  * those fields through the same import (relocations against bootup Bss 0xF8 + offset).
  *
  * Only the fields with evidence are named; the rest is padding. The size is not known
- * (the object reaches at least +0x194, the Fader pointer).
+ * (the object reaches at least +0x194, past the Fader pointer).
  *
  * Mode modules model the import as `extern InputMgr D_00000000;` (or cast the import
  * address), which keeps the relocated symbol and offset unchanged (READABILITY_PLAN 9, rule 4e).
@@ -46,9 +46,27 @@ typedef struct InputMgr {
     /* 0x120 */ s32 numPads;
     /* 0x124 */ s32 numReplayInputs;
     /* 0x128 */ s32 activePad;     /* -1 = any pad; input_setActivePad / input_clearActivePad */
-    char pad12C[0x18C - 0x12C];
+    char pad12C[0x138 - 0x12C];
+    /* 0x138 */ void *dataMgr;     /* the running race's DataManager (a RaceTracker subclass,
+                                    * node "DataManager"); every race / demo ctor stores it */
+    char pad13C[0x148 - 0x13C];
+    /* 0x148 */ void *backup;      /* the save-data object, arg 2 of Backup_openSession */
+    /* 0x14C */ s32 *session;      /* the open Backup session (<pfx>_openSession / closeSession);
+                                    * session[1] / [2] feed replayLen / replayData */
+    char pad150[0x168 - 0x150];
+    /* 0x168 */ s32 replayData[2]; /* per player: recorded input, pad_startPlay arg 2 */
+    /* 0x170 */ s32 replayLen[2];  /* per player: pad_startPlay arg 3; the replay timeouts
+                                    * (h2h / mgr / arc onTimeout) are built from it */
+    char pad178[0x18C - 0x178];
     /* 0x18C */ s32 locked;        /* nonzero: every input_check* returns 0 */
+    /* 0x190 */ void *fader;       /* the shared screen Fader (Fader_start / Fader_isDone /
+                                    * Fader_checkDone); boot Bss 0x288 */
 } InputMgr;
+
+/* View a generic USO import placeholder (extern char / int D_00000000, import_XXXXXXXX) as
+ * the input manager. Only for references whose relocation resolves to bootup Bss 0xF8: the
+ * symbol and the offset stay the same, so the relocations do not change. */
+#define INPUT_MGR(sym) (*(InputMgr *)&(sym))
 
 typedef char InputPad_held_check[(int)&((InputPad *)0)->held == 0x10 ? 1 : -1];
 typedef char InputPad_pressed_check[(int)&((InputPad *)0)->pressed == 0x18 ? 1 : -1];
@@ -62,6 +80,12 @@ typedef char InputMgr_pads_check[(int)&((InputMgr *)0)->pads == 0xE0 ? 1 : -1];
 typedef char InputMgr_replayInputs_check[(int)&((InputMgr *)0)->replayInputs == 0x100 ? 1 : -1];
 typedef char InputMgr_numPads_check[(int)&((InputMgr *)0)->numPads == 0x120 ? 1 : -1];
 typedef char InputMgr_activePad_check[(int)&((InputMgr *)0)->activePad == 0x128 ? 1 : -1];
+typedef char InputMgr_dataMgr_check[(int)&((InputMgr *)0)->dataMgr == 0x138 ? 1 : -1];
+typedef char InputMgr_backup_check[(int)&((InputMgr *)0)->backup == 0x148 ? 1 : -1];
+typedef char InputMgr_session_check[(int)&((InputMgr *)0)->session == 0x14C ? 1 : -1];
+typedef char InputMgr_replayData_check[(int)&((InputMgr *)0)->replayData == 0x168 ? 1 : -1];
+typedef char InputMgr_replayLen_check[(int)&((InputMgr *)0)->replayLen == 0x170 ? 1 : -1];
+typedef char InputMgr_fader_check[(int)&((InputMgr *)0)->fader == 0x190 ? 1 : -1];
 typedef char InputMgr_locked_check[(int)&((InputMgr *)0)->locked == 0x18C ? 1 : -1];
 
 #endif
