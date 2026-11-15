@@ -4,6 +4,7 @@
 #include "game/nameentry.h"
 #include "game/modemenu.h"
 #include "game/guimenu.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -168,18 +169,18 @@ extern int D_b1_06B0_a;
 extern char *D_b1_06B0_b;
 extern int D_b1_06B0_c;
 void TimRace_pauseContinue_000006B0(void) {
-    gl_func_00000000(D_b1_06B0_a);
-    gl_func_00000000(TIMRACE(D_b1_06B0_b)->dataManager);
-    gl_func_00000000(&D_b1_06B0_c);
+    CALL(Process_resume_0000FAE8)(D_b1_06B0_a);
+    CALL(Node_resumeUpdate_0000E450)(TIMRACE(D_b1_06B0_b)->dataManager);
+    CALL(input_clearActivePad_00012090)(&D_b1_06B0_c);
 }
 
 extern int D_b1_06F0_a;
 extern int D_b1_06F0_b;
 extern int D_b1_06F0_c;
 void TimRace_pauseRow1_000006F0(void) {
-    gl_func_00000000(D_b1_06F0_a);
-    gl_func_00000000(&D_b1_06F0_b);
-    gl_func_00000000(D_b1_06F0_c);
+    CALL(Process_resume_0000FAE8)(D_b1_06F0_a);
+    CALL(input_clearActivePad_00012090)(&D_b1_06F0_b);
+    CALL(RaceProcess_restartCameras_00008510)(D_b1_06F0_c);
 }
 /* Chain sibling of 0x778, 0x7BC, 0x800. MATCHED via boundary correction
  * (replacing the banned PROLOGUE_STEALS): the leading `lui v0,0; addiu v0,0`
@@ -191,7 +192,7 @@ extern int D_state_b1_734;
 void TimRace_pauseChangeCharacter(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 1;
-    gl_func_00000000(D_state_b1_734, -1, 0);
+    CALL(Process_fadeOut_0000F954)(D_state_b1_734, -1, 0);
 }
 /* Chain sibling: t7=2. MATCHED via pad-sidecar boundary correction (orphan
  * lui v0,0; addiu v0,0 moved from func_00000734's pad into this fn's .s;
@@ -200,7 +201,7 @@ extern int D_state_b1_778;
 void TimRace_pauseChangeBoard(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
-    gl_func_00000000(D_state_b1_778, -1, 0);
+    CALL(Process_fadeOut_0000F954)(D_state_b1_778, -1, 0);
 }
 /* Chain sibling: t7=3. MATCHED via pad-sidecar boundary correction (orphan
  * moved from func_00000778's pad into this fn's .s; 0x3C->0x44, starts 0x7B4). */
@@ -208,7 +209,7 @@ extern int D_state_b1_7BC;
 void TimRace_pauseChangeCourse(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 3;
-    gl_func_00000000(D_state_b1_7BC, -1, 0);
+    CALL(Process_fadeOut_0000F954)(D_state_b1_7BC, -1, 0);
 }
 /* Byte-identical sibling of TrkRace_pauseQuit_00000818. MATCHED via
  * pad-sidecar boundary correction (orphan lui v0,0; addiu v0,0 moved from
@@ -218,24 +219,24 @@ extern int D_state_b1_800;
 void TimRace_pauseQuit_00000800(void) {
     *(int*)((char*)&D_00000000 + 0x40) = 8;
     *(int*)((char*)&D_00000000 + 0x44) = 0xD;
-    gl_func_00000000(D_state_b1_800, -1, 0);
+    CALL(Process_fadeOut_0000F954)(D_state_b1_800, -1, 0);
 }
 
 void tim_streamReadS32_0000083C(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void tim_streamReadF32_00000878(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void tim_streamReadQuad_000008B4(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -247,7 +248,7 @@ void tim_streamReadVec3_0000090C(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -299,64 +300,64 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
     char *o3;
     char *w;
 
-    if (obj != 0 || (obj = (char *)gl_func_00000000(0x730)) != 0) {
+    if (obj != 0 || (obj = (char *)CALL(mem_new)(0x730)) != 0) {
     o1 = obj;
-    if (o1 != 0 || (o1 = (char *)gl_func_00000000(0x6A8)) != 0) {
+    if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x6A8)) != 0) {
         o2 = o1;
-        if (o1 != 0 || (o2 = (char *)gl_func_00000000(0x50)) != 0) {
+        if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_b1_097C_v0; }
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_b1_097C_v0; }
             NODE(o2)->vptr = (int)&D_b1_097C_v1;
         }
         NODE(o1)->vptr = (int)&D_b1_097C_v2;
-        gl_func_00000000(o1 + 0x50);
+        CALL(ColourParms_ctor)(o1 + 0x50);
     }
     NODE(obj)->vptr = (int)&D_b1_097C_v3;
     RACEPROC(obj)->spriteSet = 0;
-    gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
+    CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a3;
-    gl_func_00000000(obj);
+    CALL(TimRace_initLabels_00000D1C)(obj);
     TIMRACE(obj)->recordFade = 0.0f;
-    gl_func_00000000((char *)&D_00000000 + 0x3D0, 0);
-    gl_func_00000000(&D_00000000, 0);
+    CALL(memtrack_begin)((char *)&D_00000000 + 0x3D0, 0);
+    CALL(input_setActivePad_0001207C)(&D_00000000, 0);
 
     {
-        o2 = (char *)gl_func_00000000(0xE0);
+        o2 = (char *)CALL(mem_new)(0xE0);
         if (o2 != 0) {
-            gl_func_00000000(o2);
+            CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (int)&D_b1_097C_v4;
         }
         TIMRACE(obj)->dataManager = (int)o2;
         *(char **)((char *)&D_b1_097C_g + 0x138) = o2;
 
-        gl_func_00000000_994v(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
+        XCALL(gl_func_00000000_994v, TimDataManager_init_00001A64)(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
 
         w = (char *)TIMRACE(obj)->dataManager;
         o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
         o1 = (char *)TIMRACE(obj)->dataManager;
-        gl_func_00000000(obj + 16, o1);
+        CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
 
-        gl_func_00000000(obj, a1);
+        CALL(RaceProcess_restart)(obj, a1);
 
         if ((RACEPROC(obj)->flags << 15) < 0) {
-            RACEPROC(obj)->unk048 = gl_func_00000000(0);
-            gl_func_00000000(RACEPROC(obj)->unk048, obj);
+            RACEPROC(obj)->unk048 = CALL(PauseMenu_create)(0);
+            CALL(gui_initRows_000100F0)(RACEPROC(obj)->unk048, obj);
             *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
-            gl_func_00000000(RACEPROC(obj)->unk048, (*(int *)&D_b1_097C_r + 3) << 16, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &D_00000000);
-            gl_func_00000000(RACEPROC(obj)->unk048);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, (*(int *)&D_b1_097C_r + 3) << 16, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 1, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 4, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 3, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 2, -1, &D_00000000);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->unk048, ((*(int *)&D_b1_097C_r + 3) << 16) | 5, -1, &D_00000000);
+            CALL(gui_centerRows_0001016C)(RACEPROC(obj)->unk048);
             o1 = (char *)RACEPROC(obj)->unk048;
-            gl_func_00000000(obj + 16, o1);
+            CALL(list_append)(obj + 16, o1);
             if (NODE(o1)->parent != 0) {
                 NODE(o1)->unk04 = 1;
             }
@@ -367,13 +368,13 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         }
 
         o1 = *(char **)((char *)&D_00000000 + 0x190);
-        gl_func_00000000(obj + 16, o1);
+        CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
         NODE(o1)->parent = (int)obj;
-        gl_func_00000000(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
-        gl_func_00000000();
+        CALL(Fader_start)(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
+        CALL(memtrack_end)();
     }
     }
     return (int)obj;
@@ -385,19 +386,19 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
  * (0x0021000A / 0x0021000D / 0x00210009). */
 extern int gl_func_00000000();
 void TimRace_initLabels_00000D1C(TimRace *a0) {
-    gl_func_00000000((char *)&a0->labels[0], *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
-    gl_func_00000000((char *)&a0->labels[1], *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
-    gl_func_00000000((char *)&a0->labels[3], 0x0021000A);
-    gl_func_00000000((char *)&a0->labels[4], 0x0021000D);
-    gl_func_00000000((char *)&a0->labels[2], 0x00210009);
+    CALL(gui_spriteInit)((char *)&a0->labels[0], *(int*)((char*)&D_00000000 + 0x4C) | 0x001D0000);
+    CALL(gui_spriteInit)((char *)&a0->labels[1], *(int*)((char*)&D_00000000 + 0x54) | 0x001E0000);
+    CALL(gui_spriteInit)((char *)&a0->labels[3], 0x0021000A);
+    CALL(gui_spriteInit)((char *)&a0->labels[4], 0x0021000D);
+    CALL(gui_spriteInit)((char *)&a0->labels[2], 0x00210009);
 }
 
 void TimRace_freeLabels_00000DA0(TimRace *a0) {
-    gl_func_00000000((char *)&a0->labels[0]);
-    gl_func_00000000((char *)&a0->labels[1]);
-    gl_func_00000000((char *)&a0->labels[3]);
-    gl_func_00000000((char *)&a0->labels[4]);
-    gl_func_00000000((char *)&a0->labels[2]);
+    CALL(gui_spriteRelease)((char *)&a0->labels[0]);
+    CALL(gui_spriteRelease)((char *)&a0->labels[1]);
+    CALL(gui_spriteRelease)((char *)&a0->labels[3]);
+    CALL(gui_spriteRelease)((char *)&a0->labels[4]);
+    CALL(gui_spriteRelease)((char *)&a0->labels[2]);
 }
 
 /* TWIN-LEVER 2026-06-21: cracked via b3_func_00001184 twin shape. The old
@@ -407,8 +408,8 @@ void TimRace_freeLabels_00000DA0(TimRace *a0) {
  * resident, forcing fresh reload temps that match the target. Byte-exact. */
 int TimRace_endTimerEnabled(TimRace *a0) {
     if (a0->race.unk4FC == 0) {
-        gl_func_00000000((int *)a0->dataManager, 0, 1);
-        gl_func_00000000((int *)a0->dataManager);
+        CALL(hud_loadRecords_0000CE38)((int *)a0->dataManager, 0, 1);
+        CALL(RaceTracker_flagReplayEnd_0000D090)((int *)a0->dataManager);
         a0->race.unk4FC = 1;
     }
     return 1;
@@ -418,7 +419,7 @@ int TimRace_endTimerEnabled(TimRace *a0) {
  * then ALWAYS runs the t9 check (a0->[0x4F8] -> store-or-call).
  * v0!=0: D[0x40]=12, D[0x44]=9; v0==0: D[0x40]=9 (no D[0x44] write). */
 void TimRace_onEndTimerDone(TimRace *a0) {
-    int v0 = gl_func_00000000(a0->race.session);
+    int v0 = CALL(Backup_sessionHasNew)(a0->race.session);
     if (v0 != 0) {
         *(int*)((char*)&D_00000000 + 0x40) = 0xC;
         *(int*)((char*)&D_00000000 + 0x44) = 9;
@@ -428,12 +429,12 @@ void TimRace_onEndTimerDone(TimRace *a0) {
     if (a0->race.result == 0) {
         a0->race.unk504 = 0;
     } else {
-        gl_func_00000000(a0, -1, 0);
+        CALL(Process_fadeOut_0000F954)(a0, -1, 0);
     }
 }
 
 void TimRace_onAltEndTimerDone(int a0) {
-    gl_func_00000000(&D_00000000 + 0x3D8);
+    CALL(sys_fatal)(&D_00000000 + 0x3D8);
     (void)a0;
 }
 
@@ -486,38 +487,38 @@ state0:
     base = (volatile int *)&D_00000000;
     s2->finalTime = DATAMGR(work)->elapsed;
     s2->recordRank = DATAMGR(work)->entries->rank[0];
-    s1 = (char *)gl_func_00000000(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank);
+    s1 = (char *)CALL(Backup_courseRecordGetTime)(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank);
     for (state = s2->recordRank - 1; state >= 0; state--) {
-        r = (char *)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
+        r = (char *)CALL(Backup_courseRecordGetTime)(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
         if (*(unsigned char *)(s1 + 5) != *(unsigned char *)(r + 5)) break;
         if (*(unsigned char *)(s1 + 6) != *(unsigned char *)(r + 6)) break;
         if (*(unsigned char *)(s1 + 7) != *(unsigned char *)(r + 7)) break;
         s2->recordRank = s2->recordRank - 1;
     }
     s2->race.subState = 1;
-    gl_func_00000000(base[0x190 / 4], 3, 1);
+    CALL(Fader_start)(base[0x190 / 4], 3, 1);
     s2->race.unk504 = 1;
     return;
 
 state1:
     base = (volatile int *)&D_00000000;
-    if (gl_func_00000000(base[0x190 / 4]) == 0) {
+    if (CALL(Fader_checkDone_00013924)(base[0x190 / 4]) == 0) {
         return;
     }
-    gl_func_00000000(s2);
-    gl_func_00000000(base);
-    gl_func_00000000(s2);
-    gl_func_00000000(s2, base[0x170 / 4] + 0x00220000);
-    s2->race.unk524 = gl_func_00000000(0, s2, 0);
+    CALL(TimRace_freeLabels_00000DA0)(s2);
+    CALL(GameFlow_releaseFiles_00012110)(base);
+    CALL(RaceProcess_createReplayCam)(s2);
+    CALL(RaceProcess_restartWithTimeout)(s2, base[0x170 / 4] + 0x00220000);
+    s2->race.unk524 = CALL(TimNameEntry_ctor_000016F8)(0, s2, 0);
     gl_func_00000000(s2->race.unk524, s2->race.session);
     created = (int *)s2->race.unk524;
     link = (char *)s2->race.handler;
-    gl_func_00000000(link + 0x10, created);
+    CALL(list_append)(link + 0x10, created);
     if (created[0x14 / 4] != 0) {
         created[1] = 1;
     }
     created[0x14 / 4] = (int)link;
-    gl_func_00000000(base[0x190 / 4], 1, 1);
+    CALL(Fader_start)(base[0x190 / 4], 1, 1);
 }
 
 void TimRace_onTimeoutExit(int a0) {
@@ -537,7 +538,7 @@ void TimRace_onTimeoutExit(int a0) {
 void timproc_uso_b1_func_00000000();
 
 void TimRace_onTimeout(int a0) {
-    timproc_uso_b1_func_00000000(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
+    XCALL(timproc_uso_b1_func_00000000, RaceProcess_restartWithTimeout)(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
 extern int gl_ref_00000040;
@@ -546,7 +547,7 @@ extern int gl_ref_0000020C;
 
 void TimRace_onQuitButton(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
-    gl_func_00000000(a0, -1, 0);
+    CALL(Process_fadeOut_0000F954)(a0, -1, 0);
 }
 
 /* Vtable-entry dispatcher (twin of TrkRace_onPauseSelect): gate on
@@ -568,13 +569,13 @@ void TimRace_onPauseSelect(int *self) {
     int new_var;
     int v1;
     int stride;
-    if (gl_func_00000000(D_arg_b1_1130[0x190 / 4]) == 0) {
+    if (CALL(Fader_isDone_00013980)(D_arg_b1_1130[0x190 / 4]) == 0) {
         return;
     }
     v0 = (int *) self[0x48 / 4];
     v1 = v0[0x7C / 4];
     if (v1 != 0) {
-        gl_func_00000000(5);
+        CALL(snd_postEvent)(5);
         if (1) {
         }
         v0 = (int *) self[0x48 / 4];
@@ -674,15 +675,15 @@ void TimRace_drawResultExtra(TimRace *a0) {
         }
         if (flag != 0) {
             saved = (char *)&a0->labels[2];
-            gl_func_00000000(saved);
-            gl_func_00000000(saved, (int)(a0->recordFade * (fv = 255.0f)),
+            CALL(gui_spriteRefresh)(saved);
+            CALL(gui_setEnvPrimColor_00001EF4)(saved, (int)(a0->recordFade * (fv = 255.0f)),
                              (char *)a0 + 0x2F0, (char *)a0 + 0x314);
             if (a0->race.unk508 & 8) {
-                gl_func_00000000(saved, 160, 160, 3);
-                gl_func_00000000(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
+                CALL(gui_drawSprite)(saved, 160, 160, 3);
+                CALL(tim_drawTime_00001340)(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
             }
         } else {
-            gl_func_00000000(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
+            CALL(tim_drawTime_00001340)(a0, 140, *(int *)((char *)a0->dataManager + 0x30));
         }
     }
 }
@@ -758,14 +759,14 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
     char *v1;   /* level-3 (0x50), home 0x28(sp) */
     char *a0;   /* level-4 (0x2C), home 0x24(sp) */
 
-    if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x10C), (arg0 != 0))) {
+    if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0x10C), (arg0 != 0))) {
         a2 = arg0;
-        if ((arg0 != 0) || (a2 = (char *)gl_func_00000000(0xD4), (a2 != 0))) {
+        if ((arg0 != 0) || (a2 = (char *)CALL(mem_new)(0xD4), (a2 != 0))) {
             v1 = a2;
-            if ((a2 != 0) || (v1 = (char *)gl_func_00000000(0x50), (v1 != 0))) {
+            if ((a2 != 0) || (v1 = (char *)CALL(mem_new)(0x50), (v1 != 0))) {
                 a0 = v1;
-                if ((v1 != 0) || (a0 = (char *)gl_func_00000000(0x2C), (a0 != 0))) {
-                    gl_func_00000000(a0, D_tim16F8_v + 0x404); NODE(a0)->vptr = (int)D_tim16F8_w;
+                if ((v1 != 0) || (a0 = (char *)CALL(mem_new)(0x2C), (a0 != 0))) {
+                    CALL(Node_ctor)(a0, D_tim16F8_v + 0x404); NODE(a0)->vptr = (int)D_tim16F8_w;
                 }
                 NODE(v1)->vptr = (int)D_tim16F8_x;
             }
@@ -782,27 +783,27 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
         MODENAMEENT(arg0)->pos[2][1] = 0x69;
         MODENAMEENT(arg0)->alpha = 1.0f;
         TIMRACE(arg1)->recordFade = 1.0f;
-        gl_func_00000000(MODENAMEENT(arg0)->banner,
+        CALL(gui_spriteInit)(MODENAMEENT(arg0)->banner,
             ((D_tim16F8_id + 0x23) << 16) | (((Tim16F8_A *)arg0)->b->v + 7));
     }
     return arg0;
 }
 
 void TimNameEntry_update_00001860(int *a0) {
-    if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) == 0) return;
-    if (gl_func_00000000(&D_00000000, 0x40100) == 0) return;
-    if (gl_func_00000000(MODENAMEENT(a0)->base.entry) != 0) {
+    if (CALL(Fader_isDone_00013980)(*(int*)(&D_00000000 + 0x190)) == 0) return;
+    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) == 0) return;
+    if (CALL(Backup_sessionHasNew)(MODENAMEENT(a0)->base.entry) != 0) {
         MODENAMEENT(a0)->base.phase = 1;
     } else {
-        gl_func_00000000(a0, -1, 0);
+        CALL(Process_fadeOut_0000F954)(a0, -1, 0);
     }
 }
 
 void TimNameEntry_drawEntryOverlay(char *a0) {
     char *p;
-    gl_func_00000000(a0);
+    CALL(TimNameEntry_drawTitle_000019C0)(a0);
     p = (char *)MODENAMEENT(a0)->race;
-    gl_func_00000000(p, 0x8C, TIMRACE(p)->finalTime);
+    CALL(tim_drawTime_00001340)(p, 0x8C, TIMRACE(p)->finalTime);
 }
 
 /* Decay-tick handler: decrement sub->f_72C by the global rate (D+0x48),
@@ -819,7 +820,7 @@ void TimNameEntry_drawExitOverlay(int *self) {
     float *fp;
     float val;
 
-    gl_func_00000000(self);
+    CALL(TimNameEntry_drawTitle_000019C0)(self);
     sub = (int *)MODENAMEENT(self)->race;
     fp = (float *)((char *)sub + 0x72C);
     val = *fp;
@@ -830,7 +831,7 @@ void TimNameEntry_drawExitOverlay(int *self) {
             TIMRACE(sub)->recordFade = 0.0f;
             sub = (int *)MODENAMEENT(self)->race;
         }
-        gl_func_00000000(sub, 140, TIMRACE(sub)->finalTime);
+        CALL(tim_drawTime_00001340)(sub, 140, TIMRACE(sub)->finalTime);
         val = TIMRACE(MODENAMEENT(self)->race)->recordFade;
     }
     if (val <= 0.0f) {
@@ -860,13 +861,13 @@ void TimNameEntry_drawTitle_000019C0(int *a0) {
     buf[2] = 1.0f;
     buf[3] = 1.0f;
     MODENAMEENT(a0)->base.frame += 1;
-    if (gl_func_00000000(MODENAMEENT(a0)->base.entry) != 0) {
-        gl_func_00000000(&D_00000000,
+    if (CALL(Backup_sessionCountNew)(MODENAMEENT(a0)->base.entry) != 0) {
+        CALL(gui_setColor_00001A5C)(&D_00000000,
             (int)(MODENAMEENT(a0)->alpha * (scale = 255.0f)), buf);
         tgt = MODENAMEENT(a0)->banner;
-        gl_func_00000000(tgt);
+        CALL(gui_spriteRefresh)(tgt);
         if ((MODENAMEENT(a0)->base.frame & 8) != 0) {
-            gl_func_00000000(tgt, 0xA0, 0x7C, 3);
+            CALL(gui_drawSprite)(tgt, 0xA0, 0x7C, 3);
         }
     }
 }
@@ -960,16 +961,16 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
   {
     return;
   }
-  gl_func_00000000(a0, 0xE8, 0x13, (int)DATAMGR(a0)->entries + 0x10);
-  gl_func_00000000(a0, 0x123, 0xE1, 1);
-  gl_func_00000000(a0, 0x47, 0x13, ((int) a0) + 0x30);
-  gl_func_00000000(a0, 0x44, 0x22, (int)DATAMGR(a0)->entries + 0x28);
-  r5 = gl_func_00000000(((*((int *) (((char *) (&D_00000000)) + 0x64))) * 0x30) + (*((int *) DATAMGR(a0)->session)), 0);
-  r6 = gl_func_00000000(0, DATAMGR(a0)->sprites60);
+  CALL(hud_addSpeedGadget)(a0, 0xE8, 0x13, (int)DATAMGR(a0)->entries + 0x10);
+  CALL(hud_addCourseGadget)(a0, 0x123, 0xE1, 1);
+  CALL(hud_addTimeGadget)(a0, 0x47, 0x13, ((int) a0) + 0x30);
+  CALL(hud_addCoolGadget)(a0, 0x44, 0x22, (int)DATAMGR(a0)->entries + 0x28);
+  r5 = CALL(Backup_courseRecordGetTime)(((*((int *) (((char *) (&D_00000000)) + 0x64))) * 0x30) + (*((int *) DATAMGR(a0)->session)), 0);
+  r6 = CALL(BestTimeGadget_ctor)(0, DATAMGR(a0)->sprites60);
   TIMDATAMGR(a0)->rankLabel = r6;
-  gl_func_00000000(r6, *((unsigned char *) (r5 + 5)), *((unsigned char *) (r5 + 6)), *((unsigned char *) (r5 + 7)));
-  gl_func_00000000(TIMDATAMGR(a0)->rankLabel, 0x4B, 0xD6);
-  gl_func_00000000(((int) a0) + 0x10, (int) (a1x = (int *) TIMDATAMGR(a0)->rankLabel));
+  CALL(BestTimeGadget_setTime)(r6, *((unsigned char *) (r5 + 5)), *((unsigned char *) (r5 + 6)), *((unsigned char *) (r5 + 7)));
+  CALL(TimeGadgetParms_setPos_00013FE0)(TIMDATAMGR(a0)->rankLabel, 0x4B, 0xD6);
+  CALL(list_append)(((int) a0) + 0x10, (int) (a1x = (int *) TIMDATAMGR(a0)->rankLabel));
   if (NODE(a1x)->parent != 0)
   {
     NODE(a1x)->unk04 = 1;
@@ -996,14 +997,14 @@ void TimDataManager_update_00001BCC(char *arg0) {
     char *pe;
     char *pf;
 
-    gl_func_00000000();
+    CALL(RaceTracker_toggleGhost)();
     if (1) {
         pa = (char *)TIMDATAMGR(arg0)->race;
         if ((RACEPROC(pa)->flags & 0x10000) && (RACEPROC(pa)->raceState == 1)) {
             DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
         }
     }
-    gl_func_00000000(arg0);
+    CALL(RaceTracker_update)(arg0);
     if (1) {
         pb = (char *)TIMDATAMGR(arg0)->race;
         v1 = RACEPROC(pb)->flags & 0x10000;
@@ -1012,15 +1013,15 @@ void TimDataManager_update_00001BCC(char *arg0) {
         if (DATAMGR(arg0)->numEntries == 2) {
             if ((TIMDATAMGR(arg0)->unkDC == 1) &&
                 (*(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C) == 0)) {
-                gl_func_00000000(arg0, 1);
+                CALL(RaceTracker_sendEntryLoseResult)(arg0, 1);
             }
             TIMDATAMGR(arg0)->unkDC = *(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C);
         }
         if (DATAMGR(arg0)->entries->finished != 0) {
-            gl_func_00000000(TIMDATAMGR(arg0)->race);
+            CALL(RaceProcess_finishCourse)(TIMDATAMGR(arg0)->race);
         }
         if (*(int *)((char *)DATAMGR(arg0)->cool + 0xC8) <= 0) {
-            gl_func_00000000(TIMDATAMGR(arg0)->race);
+            CALL(RaceProcess_endResult4_00006EE0)(TIMDATAMGR(arg0)->race);
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgFloor = 192.0f;
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
         }
@@ -1030,14 +1031,14 @@ void TimDataManager_update_00001BCC(char *arg0) {
         }
         pc = (char *)DATAMGR(arg0)->cool;
         if ((pc != 0) && (*(int *)(pc + 0xC4) >= 0xC) && (TIMDATAMGR(arg0)->beepTimer == 0)) {
-            gl_func_00000000(0x135, 0);
+            CALL(snd_sendEvent)(0x135, 0);
         }
         pb = (char *)TIMDATAMGR(arg0)->race;
         v1 = RACEPROC(pb)->flags & 0x10000;
     }
     if (v1 != 0) {
-        if ((RACEPROC(pb)->raceState == 1) && (gl_func_00000000(arg0) != 0)) {
-            gl_func_00000000(TIMDATAMGR(arg0)->race);
+        if ((RACEPROC(pb)->raceState == 1) && (CALL(RaceTracker_checkTimeLimit)(arg0) != 0)) {
+            CALL(RaceProcess_timeUp)(TIMDATAMGR(arg0)->race);
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgFloor = 192.0f;
             RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
             DATAMGR(arg0)->active = 0;
@@ -1061,7 +1062,7 @@ void TimDataManager_update_00001BCC(char *arg0) {
             }
         }
     }
-    gl_func_00000000(arg0);
+    CALL(Node_update)(arg0);
 }
 
 /* In-unit jal aliases (agent-c 2026-10-16): the ROM ships these four callers'
@@ -1105,9 +1106,9 @@ void *TimItemType_create_00001ED4(int *arg0) {
     int *p2;
     int *head;
     int *p1;
-    p1 = (int*)gl_func_00000000(0x40);
+    p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
-        gl_func_00000000(p1);
+        CALL(ColourItem_ctor)(p1);
         NODE(p1)->vptr = (int)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
@@ -1115,7 +1116,7 @@ void *TimItemType_create_00001ED4(int *arg0) {
     p1 = arg0;
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
-        gl_func_00000000((char*)p2 + 0x10, head);
+        CALL(list_append)((char*)p2 + 0x10, head);
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
@@ -1138,9 +1139,9 @@ void ParmVec3_read_00001F64(char *dst) {
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b1/timproc_uso_b1/timproc_uso_b1_func_00001F64_pad.s")
 
 void TimMenu_rowRetry_00001FA0(void) {
-    gl_func_00000000(gl_ref_00000208);
+    CALL(Process_stop)(gl_ref_00000208);
     gl_ref_00000040 = 4;
-    gl_func_00000000(gl_ref_0000020C, -1, 0);
+    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
 }
 
 /* EXACT 2026-05-03. Mirror of TrkMenu_rowGhost_000021F4. Same recipe:
@@ -1152,9 +1153,9 @@ extern char D_b1_1FE4_a;
 extern char D_b1_1FE4_b;
 extern char D_b1_1FE4_c;
 void TimMenu_rowGhost_00001FE4(void) {
-    gl_func_00000000(*(int*)((char*)&D_b1_1FE4_a + 0x208));
+    CALL(Process_stop)(*(int*)((char*)&D_b1_1FE4_a + 0x208));
     *(int*)((char*)&D_b1_1FE4_b + 0x40) = 6;
-    gl_func_00000000(*(int*)((char*)&D_b1_1FE4_c + 0x20C), -1, 0);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b1_1FE4_c + 0x20C), -1, 0);
 }
 
 /* Dual-branch state setter (twin of TrkMenu_rowToggle_00002238).
@@ -1171,13 +1172,13 @@ void TimMenu_rowGhost_00001FE4(void) {
 extern int D_call_b1_2030_a;
 extern int * volatile D_cur_b1_2030;
 void TimMenu_rowToggle_00002028(void) {
-    if (gl_func_00000000(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
-        gl_func_00000000(D_call_b1_2030_a);
+    if (CALL(Backup_ghostGetMode)(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
+        CALL(Process_stop)(D_call_b1_2030_a);
         if (1) {}
         D_cur_b1_2030[0x14] = 2;
         D_cur_b1_2030[0x16] = 1;
     } else {
-        gl_func_00000000(D_call_b1_2030_a);
+        CALL(Process_stop)(D_call_b1_2030_a);
         if (1) {}
         D_cur_b1_2030[0x14] = 1;
         D_cur_b1_2030[0x16] = 1;
@@ -1185,30 +1186,30 @@ void TimMenu_rowToggle_00002028(void) {
 }
 
 void TimMenu_rowChangeCharacter(void) {
-    gl_func_00000000(gl_ref_00000208);
+    CALL(Process_stop)(gl_ref_00000208);
     gl_ref_00000040 = 1;
-    gl_func_00000000(gl_ref_0000020C, -1, 0);
+    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
 }
 
 void TimMenu_rowChangeBoard(void) {
-    gl_func_00000000(gl_ref_00000208);
+    CALL(Process_stop)(gl_ref_00000208);
     gl_ref_00000040 = 2;
-    gl_func_00000000(gl_ref_0000020C, -1, 0);
+    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
 }
 
 extern int gl_ref_00000208;
 extern int gl_ref_0000020C;
 
 void TimMenu_rowChangeCourse(void) {
-    gl_func_00000000(gl_ref_00000208);
+    CALL(Process_stop)(gl_ref_00000208);
     gl_ref_00000040 = 3;
-    gl_func_00000000(gl_ref_0000020C, -1, 0);
+    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
 }
 
 void TimMenu_rowQuit_00002178(void) {
-    gl_func_00000000(gl_ref_00000208);
+    CALL(Process_stop)(gl_ref_00000208);
     gl_ref_00000040 = 0xD;
-    gl_func_00000000(gl_ref_0000020C, -1, 0);
+    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
 }
 
 /* 000021BC/21C4/21CC: 3 empty stubs RECOVERED 2026-05-28 from the Yay0 gap
@@ -1237,50 +1238,50 @@ char *TimMenu_ctor(char *arg0) {
     char *v0;
     volatile int pad;
 
-    if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(108), (arg0 != 0))) {
+    if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(108), (arg0 != 0))) {
         a3 = arg0;
-        if ((arg0 != 0) || (a3 = (char *)gl_func_00000000(80), (a3 != 0))) {
+        if ((arg0 != 0) || (a3 = (char *)CALL(mem_new)(80), (a3 != 0))) {
             a0 = a3;
-            if ((a3 != 0) || (a0 = (char *)gl_func_00000000(44), (a0 != 0))) {
-                gl_func_00000000(a0, (char *)&D_00000000 + 0x4B8); *(char **)(a0 + 0x28) = &D_00000000;
+            if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
+                CALL(Node_ctor)(a0, (char *)&D_00000000 + 0x4B8); *(char **)(a0 + 0x28) = &D_00000000;
             }
             *(char **)(a3 + 0x28) = &D_00000000;
         }
         TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
         TIMMENU(arg0)->base.node.name = (s32)((char *)&D_00000000 + 0x4C0);
-        gl_func_00000000(arg0);
+        CALL(TimMenu_initLabels_000024F4)(arg0);
         TIMMENU(arg0)->unk60 = 120;
         TIMMENU(arg0)->unk64 = 161;
         TIMMENU(arg0)->promptY = 191;
-        TIMMENU(arg0)->base.menu = gl_func_00000000(0);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, arg0);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d2 + 3) << 16) | 1, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d3 + 3) << 16) | 6, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d4 + 3) << 16) | 7, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d5 + 3) << 16) | 4, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d6 + 3) << 16) | 3, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d7 + 3) << 16) | 2, -1, &D_b1_21D4_d1);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d8 + 3) << 16) | 5, -1, &D_b1_21D4_d1);
-        GUIMENU(TIMMENU(arg0)->base.menu)->unk30 = gl_func_00000000(0, &D_00000000, 72, 221, 3, 13);
-        gl_func_00000000(TIMMENU(arg0)->base.menu);
-        gl_func_00000000(TIMMENU(arg0)->base.menu, 140);
+        TIMMENU(arg0)->base.menu = CALL(PauseMenu_create)(0);
+        CALL(gui_initRows_000100F0)(TIMMENU(arg0)->base.menu, arg0);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d2 + 3) << 16) | 1, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d3 + 3) << 16) | 6, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d4 + 3) << 16) | 7, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d5 + 3) << 16) | 4, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d6 + 3) << 16) | 3, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d7 + 3) << 16) | 2, -1, &D_b1_21D4_d1);
+        CALL(gui_addRowSub_00010B6C)(TIMMENU(arg0)->base.menu, ((*(int *)&D_b1_21D4_d8 + 3) << 16) | 5, -1, &D_b1_21D4_d1);
+        GUIMENU(TIMMENU(arg0)->base.menu)->unk30 = CALL(gui_fontCreate)(0, &D_00000000, 72, 221, 3, 13);
+        CALL(gui_centerRows_0001016C)(TIMMENU(arg0)->base.menu);
+        CALL(gui_centerAt_000102A4)(TIMMENU(arg0)->base.menu, 140);
         if (1) {}
         v0 = (char *)TIMMENU(arg0)->base.menu;
         a3 = (char *)NODE(v0)->vptr;
         ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
         a3 = (char *)TIMMENU(arg0)->base.menu;
-        gl_func_00000000(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
+        CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
         if (*(int *)((char *)&D_b1_21D4_base + 388) == 0 ||
             (*(int *)0xA0000200 == 0xAC290000) == 0) {
             GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
         }
         a3 = *(char **)((char *)&D_b1_21D4_base + 400);
-        gl_func_00000000(arg0 + 16, a3);
+        CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
         NODE(a3)->parent = (int)arg0;
-        gl_func_00000000(*(int *)((char *)&D_b1_21D4_base + 400), 1, 0);
+        CALL(Fader_start)(*(int *)((char *)&D_b1_21D4_base + 400), 1, 0);
         TIMMENU(arg0)->unk54 = 0;
         TIMMENU(arg0)->base.state = 0;
         TIMMENU(arg0)->base.unk30 = 1;
@@ -1298,43 +1299,43 @@ char *TimMenu_ctor(char *arg0) {
  * docs/IDO_CODEGEN.md#feedback-ido-commutative-op-operand-order. */
 void TimMenu_initLabels_000024F4(int a0) {
     int t;
-    gl_func_00000000((char *)&D_00000000 + 112,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 112,
                      (*(int *)&D_00000000 << 3) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 136,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 136,
                      ((*(int *)&D_00000000 << 3) + 1) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 160,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 160,
                      ((*(int *)&D_00000000 << 3) + 2) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 184,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 184,
                      ((*(int *)&D_00000000 << 3) + 3) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 208,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 208,
                      ((*(int *)&D_00000000 << 3) + 4) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 232,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 232,
                      ((*(int *)&D_00000000 << 3) + 5) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 256,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 256,
                      ((*(int *)&D_00000000 << 3) + 6) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 280,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 280,
                      ((*(int *)&D_00000000 << 3) + 7) | (t = 0x260000));
-    gl_func_00000000((char *)&D_00000000 + 16, 0x280000);
-    gl_func_00000000((char *)&D_00000000 + 40, 0x280000 | 1);
-    gl_func_00000000((char *)&D_00000000 + 64, 0x280000 | 2);
-    gl_func_00000000((char *)&D_00000000 + 88, 0x280000 | 3);
-    gl_func_00000000((char *)&D_00000000 + 304,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 16, 0x280000);
+    CALL(gui_spriteInit)((char *)&D_00000000 + 40, 0x280000 | 1);
+    CALL(gui_spriteInit)((char *)&D_00000000 + 64, 0x280000 | 2);
+    CALL(gui_spriteInit)((char *)&D_00000000 + 88, 0x280000 | 3);
+    CALL(gui_spriteInit)((char *)&D_00000000 + 304,
                      (*(int *)&D_00000000 + 52) << 16);
-    gl_func_00000000((char *)&D_00000000 + 328,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 328,
                      ((*(int *)&D_00000000 + 52) << 16) | 3);
-    gl_func_00000000((char *)&D_00000000 + 352,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 352,
                      ((*(int *)&D_00000000 + 52) << 16) | 4);
-    gl_func_00000000((char *)&D_00000000 + 448,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 448,
                      ((*(int *)&D_00000000 + 52) << 16) | 1);
-    gl_func_00000000((char *)&D_00000000 + 472,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 472,
                      ((*(int *)&D_00000000 + 52) << 16) | 2);
-    gl_func_00000000((char *)&D_00000000 + 376,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 376,
                      ((*(int *)&D_00000000 + 45) << 16) | 4);
-    gl_func_00000000((char *)&D_00000000 + 400,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 400,
                      ((*(int *)&D_00000000 + 45) << 16) | 5);
-    gl_func_00000000((char *)&D_00000000 + 424,
+    CALL(gui_spriteInit)((char *)&D_00000000 + 424,
                      ((*(int *)&D_00000000 + 45) << 16) | 6);
-    gl_func_00000000((char *)&D_00000000 + 496, 0x2F0012);
+    CALL(gui_spriteInit)((char *)&D_00000000 + 496, 0x2F0012);
     (void)a0;
 }
 
@@ -1384,7 +1385,7 @@ void TimMenu_update_00002740(int *a0)
   switch (a0[0x50 / 4])
   {
     case 0:
-      if (gl_func_00000000(&D_00000000, 0x40100) != 0)
+      if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) != 0)
     {
       typedef int Row2740[10];
       Row2740 *base = (Row2740 *) a0[0x48 / 4];
@@ -1395,7 +1396,7 @@ void TimMenu_update_00002740(int *a0)
         {
           int *base2;
           int *slot2;
-          gl_func_00000000(5);
+          CALL(snd_postEvent)(5);
           if (1)
           {
           }
@@ -1408,7 +1409,7 @@ void TimMenu_update_00002740(int *a0)
         }
         else
         {
-          gl_func_00000000(165);
+          CALL(snd_postEvent)(165);
         }
       }
     }
@@ -1417,7 +1418,7 @@ void TimMenu_update_00002740(int *a0)
     case 1:
 
     case 2:
-      gl_func_00000000(a0);
+      CALL(TimMenu_handleInput_00002A8C)(a0);
       break;
 
   }
@@ -1601,7 +1602,7 @@ void TimMenu_drawHeader_00002BE4(int *a0) {
     (void)a0;
 
     *(B1Vec5_2BE4 *)vec4 = *(B1Vec5_2BE4 *)((char *)&D_00000000 + 0x4D0);
-    gl_func_00000000(&D_00000000);
+    CALL(gui_setCombine_00001794)(&D_00000000);
 
     s4 = (B1S18_2BE4 *)&D_00000000;
     if (1) { s4 = (B1S18_2BE4 *)((char *)s4 + 0x10); }
@@ -1610,8 +1611,8 @@ void TimMenu_drawHeader_00002BE4(int *a0) {
         for (i = 0; i != 5; i++) {
             s2 = (char *)s4;
             s2 += vec4[i] * 0x18;
-            gl_func_00000000(s2);
-            gl_func_00000000(s2, i * 0x40, s3, 0);
+            CALL(gui_spriteRefresh)(s2);
+            CALL(gui_drawSprite)(s2, i * 0x40, s3, 0);
         }
         s3 += 0x20;
     } while (s3 != 0xF0);
@@ -1629,11 +1630,11 @@ void TimMenu_drawLabel_00002CE0(int a0, int a1, int a2) {
     char *entry, *spillee;
     (void)a0;
     (void)spillee;
-    gl_func_00000000(&D_00000000);
+    CALL(gui_setCombine_00001794)(&D_00000000);
     entry = (char*)&D_b1_2CE0_table + a1 * 24;
     spillee = entry;
-    gl_func_00000000(entry);
-    gl_func_00000000(entry, 0xA0, a2, 3);
+    CALL(gui_spriteRefresh)(entry);
+    CALL(gui_drawSprite)(entry, 0xA0, a2, 3);
 }
 
 /* TimMenu_drawPair_00002D48: 0x108 (66 insns). Two-batch UI/render
@@ -1651,21 +1652,21 @@ void TimMenu_drawPair_00002D48(int *a0, int a1) {
     quad4[1] = 1.0f;
     quad4[2] = 1.0f;
     quad4[3] = 1.0f;
-    gl_func_00000000((char*)&D_00000000 + 0x190);
+    CALL(gui_spriteRefresh)((char*)&D_00000000 + 0x190);
     if (TIMMENU(a0)->choice == 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x190, TIMMENU(a0)->blink, quad4, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)((char*)&D_00000000 + 0x190, TIMMENU(a0)->blink, quad4, 0xFF);
     } else {
-        gl_func_00000000((char*)&D_00000000 + 0x190, 0x40, quad4, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)((char*)&D_00000000 + 0x190, 0x40, quad4, 0xFF);
     }
-    gl_func_00000000((char*)&D_00000000 + 0x190, 0x78, a1, 3);
+    CALL(gui_drawSprite)((char*)&D_00000000 + 0x190, 0x78, a1, 3);
 
-    gl_func_00000000((char*)&D_00000000 + 0x1A8);
+    CALL(gui_spriteRefresh)((char*)&D_00000000 + 0x1A8);
     if (TIMMENU(a0)->choice != 0) {
-        gl_func_00000000((char*)&D_00000000 + 0x1A8, TIMMENU(a0)->blink, quad4, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)((char*)&D_00000000 + 0x1A8, TIMMENU(a0)->blink, quad4, 0xFF);
     } else {
-        gl_func_00000000((char*)&D_00000000 + 0x1A8, 0x40, quad4, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)((char*)&D_00000000 + 0x1A8, 0x40, quad4, 0xFF);
     }
-    gl_func_00000000((char*)&D_00000000 + 0x1A8, 0xC8, a1, 3);
+    CALL(gui_drawSprite)((char*)&D_00000000 + 0x1A8, 0xC8, a1, 3);
 }
 
 /* 34-insn 3-jal UI/render dispatcher, sibling of 00002D48. Two Quad4 args:
@@ -1687,9 +1688,9 @@ void TimMenu_drawLabel130_00002E50(int *a0, int a1) {
     quad_b[1] = 0.0f;
     quad_b[2] = 1.0f;
     quad_b[3] = 1.0f;
-    gl_func_00000000(&D_00000000, 0xFF, quad_a, quad_b);
-    gl_func_00000000((char*)&D_00000000 + 0x130);
-    gl_func_00000000((char*)&D_00000000 + 0x130, 0xA0, a1, 3);
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 0xFF, quad_a, quad_b);
+    CALL(gui_spriteRefresh)((char*)&D_00000000 + 0x130);
+    CALL(gui_drawSprite)((char*)&D_00000000 + 0x130, 0xA0, a1, 3);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b1/timproc_uso_b1/timproc_uso_b1_func_00002E50_pad.s")
 

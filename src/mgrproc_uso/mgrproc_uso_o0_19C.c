@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* Contiguous -O0 run [0x19C, 0xAE0) of the mgrproc_uso Yay0 block, carved into
  * a dedicated -O0 sub-unit (region 2) and concatenated with the -O2 objects
@@ -149,12 +150,12 @@ mgr_procMain(a0, a1) char * a0; int a1; {
 void mgr_openSession_00000504(int *a0) {
     int v1;
     register int v3;
-    v1 = gl_func_00000000(2);
-    a0[2] = gl_func_00000000(0x3C);
-    v3 = gl_func_00000000(0, D_00000148, -1, -1);
+    v1 = CALL(app_setHeapMode)(2);
+    a0[2] = CALL(mem_new)(0x3C);
+    v3 = CALL(Backup_openSession)(0, D_00000148, -1, -1);
     a0[0] = v3;
     D_0000014C = v3;
-    gl_func_00000000(v1);
+    CALL(app_setHeapMode)(v1);
     v3 = (int)&D_00000000;
     if (D_00000000 == 0x17D7) {
         *(int*)((char*)a0[0] + 0x14) = 1;
@@ -277,9 +278,9 @@ int mgr_initMatchRace_00000700(char *arg0, int arg1) {
  * %lo (0x14c) is baked into the blob by scripts/bake-data-relocs.py. */
 void mgr_closeSession_000009A8(int *a0) {
     register int z;
-    gl_func_00000000(a0[2]);
+    CALL(mem_delete)(a0[2]);
     a0[2] = 0;
-    gl_func_00000000(a0[0], 3);
+    CALL(Backup_closeSession)(a0[0], 3);
     z = 0;
     a0[0] = z;
     D_0000014C = z;

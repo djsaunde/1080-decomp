@@ -3,6 +3,7 @@
 extern int gl_func_00000000();
 extern int D_arc240_A, D_arc240_B, D_arc240_C;
 #include "game/input.h"
+#include "uso_call.h"
 extern InputMgr D_00000000; /* the bootup input manager (Bss 0xF8) import */
 
 /* -O0 donor for arc_procMain (226-insn / 0x388 11-way state-machine
@@ -48,65 +49,65 @@ void arc_procMain(int a0, int a1) {
     do {
         switch (a1) {
         case 0:
-            gl_func_00000000(a0, 1, 3, 1);
+            CALL(app_launchGenProc)(a0, 1, 3, 1);
             D_00000000.nextProcState = 3;
             D_00000000.thenProcState = 10;
             done = 1;
             break;
         case 1:
-            gl_func_00000000(a0, 1, 3, 1);
+            CALL(app_launchGenProc)(a0, 1, 3, 1);
             D_00000000.nextProcState = 4;
             D_00000000.thenProcState = 9;
             done = 1;
             break;
         case 2:
-            gl_func_00000000(a0, 1, 3, 2);
+            CALL(app_launchGenProc)(a0, 1, 3, 2);
             D_00000000.nextProcState = 4;
             D_00000000.thenProcState = 9;
             done = 1;
             break;
         case 3:
-            gl_func_00000000(a0);
+            CALL(arc_openSession_000005C8)(a0);
             D_00000000.procState = 4;
             break;
         case 4:
-            gl_func_00000000(a0);
+            CALL(arc_initCourses_00000688)(a0);
             D_00000000.procState = 5;
             break;
         case 5: {
-            gl_func_00000000(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4));
+            CALL(game_loadUso)(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4));
             D_00000000.course = ((int **)a0)[2][((int **)a0)[2][1] + 3];
-            gl_func_00000000(&D_arc240_C, 4, D_00000000.course, 3);
-            v = gl_func_00000000(a0, ((int *)a0)[0], 1);
-            r = gl_func_00000000(0, 0x450000, v, ((int *)a0)[2], ((int *)a0)[0]);
-            gl_func_00000000(a0, 0, r);
+            CALL(snd_playSeq_000120A8)(&D_arc240_C, 4, D_00000000.course, 3);
+            v = CALL(app_createGame_00008E48)(a0, ((int *)a0)[0], 1);
+            r = CALL(ARCRaceProcess_ctor)(0, 0x450000, v, ((int *)a0)[2], ((int *)a0)[0]);
+            CALL(app_runProcess)(a0, 0, r);
             done = 1;
             break;
         }
         case 6:
-            gl_func_00000000(a0, *(int *)a0);
+            CALL(app_launchNameEnt)(a0, *(int *)a0);
             done = 1;
             break;
         case 7:
-            r = gl_func_00000000(D_00000000.course);
-            gl_func_00000000(a0, (D_00000000.course | 0x8000) | r, 0x8000, ((int *)a0)[0]);
+            r = CALL(app_flowModeBit)(D_00000000.course);
+            CALL(app_launchViewRec)(a0, (D_00000000.course | 0x8000) | r, 0x8000, ((int *)a0)[0]);
             done = 1;
             break;
         case 8:
-            gl_func_00000000(&D_00000000, 7, 0, 0);
-            r = gl_func_00000000(0);
-            gl_func_00000000(a0, 1, r);
+            CALL(snd_playSeq_000120A8)(&D_00000000, 7, 0, 0);
+            r = CALL(ARCMenuProcess_ctor)(0);
+            CALL(app_runProcess)(a0, 1, r);
             done = 1;
             break;
         case 9:
-            gl_func_00000000(a0);
+            CALL(arc_closeSession_00000748)(a0);
             D_00000000.procState = 10;
             break;
         case 10:
-            r = gl_func_00000000(0, 1, 0);
+            r = CALL(QuitProcess_ctor)(0, 1, 0);
             b1 = (int *)&D_00000000;
             b2 = b1 + 4;
-            gl_func_00000000(b2, r);
+            CALL(list_append)(b2, r);
             if (((int *)r)[0x14 / 4] != 0) {
                 ((int *)r)[0x4 / 4] = 1;
             }

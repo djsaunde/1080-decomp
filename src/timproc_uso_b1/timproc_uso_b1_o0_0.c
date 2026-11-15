@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -13,13 +14,13 @@ typedef struct { int a, b, c, d; } Quad4;
 /* int-reader (0x4C / 19 insns) */
 void timproc_uso_b1_func_00000000(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 /* Quad4-reader (0x64 / 25 insns) */
 void tim_streamReadQuad_0000004C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }

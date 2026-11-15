@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000148;
@@ -13,11 +14,11 @@ extern int D_00000068;
  * instruction-forcing); the splice imports the donor HI16/LO16/26 relocs.
  * See timproc_uso_b1_o0_5A4.c + feedback_splice_import_donor_relocs_recipe. */
 void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
-    int handle = gl_func_00000000(2);
-    register int new_obj = gl_func_00000000(0, D_00000148, 2, arg2);
+    int handle = CALL(app_setHeapMode)(2);
+    register int new_obj = CALL(Backup_openSession)(0, D_00000148, 2, arg2);
     *arg0 = (int*)new_obj;
     D_0000014C = new_obj;
-    gl_func_00000000(handle);
+    CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
         *(int*)((char*)*arg0 + 0x14) = 2;
     } else {

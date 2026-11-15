@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -14,14 +15,14 @@ typedef struct { int a, b, c, d; } Quad4;
 /* int-reader (0x4C / 19 insns) */
 void mgrproc_uso_func_00000000(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 /* Quad4-reader (0x64 / 25 insns) */
 void fs_gdlReadQuad_mgr_0000004C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -30,7 +31,7 @@ void fs_gdlReadQuad_mgr_0000004C(Quad4 *dst) {
 void mgr_nextCourse_000000B0(int *a0) {
     register int *p = a0;
     p[1]++;
-    gl_func_00000000(a0);
+    CALL(mgr_isLastCourse_00000140)(a0);
 }
 
 /* refcount-decrement wrapper (0x48 / 18 insns), exact sibling of _000000B0
@@ -40,7 +41,7 @@ void mgr_nextCourse_000000B0(int *a0) {
 void mgr_useRetry_000000F8(int *a0) {
     register int *p = a0;
     p[0]--;
-    gl_func_00000000(a0);
+    CALL(mgr_noRetriesLeft_00000170)(a0);
 }
 
 /* [0x140, 0x170): frameless -O0 predicate, 12 words = guard + `li v0,1; jr ra;

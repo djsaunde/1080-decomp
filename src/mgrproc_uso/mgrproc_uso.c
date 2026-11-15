@@ -2,6 +2,7 @@
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/nameentry.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -38,17 +39,17 @@ typedef struct { int a, b, c, d; } Quad4;
  * own return-0 arms + dead trailing jr-ra pairs (merged 2026-09-05). */
 
 mgr_pauseContinue_00000AE0() {
-    gl_func_00000000(*(int*)(&D_00000000 + 0x30));
-    gl_func_00000000(*(int*)((char*)*(int**)(&D_00000000 + 0x30) + 0x6AC));
-    gl_func_00000000(&D_00000000);
+    CALL(Process_resume_0000FAE8)(*(int*)(&D_00000000 + 0x30));
+    CALL(Node_resumeUpdate_0000E450)(*(int*)((char*)*(int**)(&D_00000000 + 0x30) + 0x6AC));
+    CALL(input_clearActivePad_00012090)(&D_00000000);
 }
 
 extern char D_mgr_B20_1;
 extern char D_mgr_B20_2;
 void mgr_pauseRetire_00000B20(void) {
-    gl_func_00000000(*(int*)(&D_00000000 + 0x30));
-    gl_func_00000000(*(int*)(&D_mgr_B20_1 + 0x30));
-    gl_func_00000000(&D_mgr_B20_2);
+    CALL(RaceProcess_endResult4_00006F90)(*(int*)(&D_00000000 + 0x30));
+    CALL(Process_resume_0000FAE8)(*(int*)(&D_mgr_B20_1 + 0x30));
+    CALL(input_clearActivePad_00012090)(&D_mgr_B20_2);
 }
 
 extern int import_80263D60;
@@ -123,19 +124,19 @@ void mgr_pauseQuit_00000C14(void) {
 
 static void fs_gdlReadInt_mgr_00000CC4(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 static void fs_gdlReadFloat_mgr_00000D00(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 static void fs_gdlReadQuad_mgr_00000D3C(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -147,7 +148,7 @@ static void fs_gdlReadVec3_mgr_00000D94(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -349,17 +350,17 @@ void mgr_loadSprites_0000119C(MgrRace *s0) {
 }
 
 void mgr_releaseSprites_000012AC(MgrRace *a0) {
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(&a0->sprites[0]);
-    gl_func_00000000(&a0->sprites[1]);
-    gl_func_00000000(&a0->sprites[2]);
-    gl_func_00000000(&a0->sprites[3]);
+    CALL(gui_spriteRelease)(&D_00000000);
+    CALL(gui_spriteRelease)(&a0->sprites[0]);
+    CALL(gui_spriteRelease)(&a0->sprites[1]);
+    CALL(gui_spriteRelease)(&a0->sprites[2]);
+    CALL(gui_spriteRelease)(&a0->sprites[3]);
 }
 
 void mgrproc_uso_func_00000000();  /* K&R-style: matches the K&R def above */
 
 void MGRRaceProcess_onCountdownStart(void) {
-    mgrproc_uso_func_00000000();
+    XCALL(mgrproc_uso_func_00000000, mgr_releaseSprites_000012AC)();
 }
 
 /* MGRRaceProcess_endTimerEnabled: 41-insn lazy-init guard. Idempotent
@@ -711,8 +712,8 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
 void MGRRaceProcess_onQuitButton(MgrRace *a0) {
     if (a0->endingPhase != 1) return;
     if (a0->endingTimer >= 0x2EE) return;
-    if (gl_func_00000000(&D_00000000, 0x40100, a0) == 0) return;
-    if (gl_func_00000000(INPUT_MGR(D_00000000).fader) == 0) return;
+    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100, a0) == 0) return;
+    if (CALL(Fader_checkDone_00013924)(INPUT_MGR(D_00000000).fader) == 0) return;
     a0->exitStep = 1;
 }
 
@@ -926,16 +927,16 @@ void mgr_startReplay_00001AD0(int *a0, int a1) {
     int *p0;
     int n1;
     int *p1;
-    gl_func_00000000(a0, a1);
+    CALL(RaceProcess_restart)(a0, a1);
     v0 = (int *)INPUT_MGR(D_00000000).game;
     p0 = (int*)v0[0xC4 / 4];
     p1 = (int*)v0[0xCC / 4];
     n0 = *(int*)((char*)p0 + 0x800);
     n1 = *(int*)((char*)p1 + 0x800);
-    gl_func_00000000(n0, 0);
-    gl_func_00000000(n0, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
-    gl_func_00000000(n1, *(int*)((char*)n1 + 0x34));
-    gl_func_00000000(a0);
+    CALL(pad_reset_000673FC)(n0, 0);
+    CALL(pad_startPlay_00067A10)(n0, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
+    CALL(pad_reset_000673FC)(n1, *(int*)((char*)n1 + 0x34));
+    CALL(RaceProcess_callGlobalSlot11_00008674)(a0);
     ((MgrRace *)a0)->race.timeout = a1 & 0xFFFF;
 }
 
@@ -1166,7 +1167,7 @@ void MGRRaceProcess_drawHud(char *arg0) {
                 }
             }
         }
-        gl_func_00000000(arg0, (int)MGRRACE(arg0)->retriesX, (int)MGRRACE(arg0)->retriesY, MGRRACE(arg0)->retries);
+        CALL(mgr_drawSpriteStack_00002850)(arg0, (int)MGRRACE(arg0)->retriesX, (int)MGRRACE(arg0)->retriesY, MGRRACE(arg0)->retries);
         if (MGRRACE(arg0)->lostFalling != 0) {
             MGRRACE(arg0)->lostX = MGRRACE(arg0)->lostX + MGRRACE(arg0)->lostVelX;
             MGRRACE(arg0)->lostVelY = (float)((double)MGRRACE(arg0)->lostVelY + D_dbl_5F8);
@@ -1175,7 +1176,7 @@ void MGRRaceProcess_drawHud(char *arg0) {
                 MGRRACE(arg0)->lostY = 256.0f;
                 MGRRACE(arg0)->lostVelY = 0.0f;
             }
-            gl_func_00000000(arg0, (int)MGRRACE(arg0)->lostX, (int)MGRRACE(arg0)->lostY, 1);
+            CALL(mgr_drawSpriteStack_00002850)(arg0, (int)MGRRACE(arg0)->lostX, (int)MGRRACE(arg0)->lostY, 1);
             if (MGRRACE(arg0)->retries == 0) {
                 if (RACEPROC(arg0)->dropVel < 8.0f) {
                     RACEPROC(arg0)->dropVel = (float)((double)RACEPROC(arg0)->dropVel + D_dbl_600);
@@ -1183,15 +1184,15 @@ void MGRRaceProcess_drawHud(char *arg0) {
                 RACEPROC(arg0)->dropY = RACEPROC(arg0)->dropY + RACEPROC(arg0)->dropVel;
                 if (RACEPROC(arg0)->dropFloor < RACEPROC(arg0)->dropY) {
                     if (RACEPROC(arg0)->dropVel > 6.0f) {
-                        gl_func_00000000(0x31);
+                        CALL(snd_postEvent)(0x31);
                         RACEPROC(arg0)->msgFloor = 300.0f;
                     }
                     RACEPROC(arg0)->dropY = RACEPROC(arg0)->dropY - RACEPROC(arg0)->dropVel;
                     RACEPROC(arg0)->dropVel = -(RACEPROC(arg0)->dropVel / four);
                 }
-                gl_func_00000000(&import_8024CAF8, 0xFF, arg0 + 0x3C8, arg0 + 0x3EC);
-                gl_func_00000000(arg0 + 0x690);
-                gl_func_00000000(arg0 + 0x690, (int)RACEPROC(arg0)->dropX, (int)RACEPROC(arg0)->dropY, 3);
+                CALL(gui_setEnvPrimColor_00001EF4)(&import_8024CAF8, 0xFF, arg0 + 0x3C8, arg0 + 0x3EC);
+                CALL(gui_spriteRefresh)(arg0 + 0x690);
+                CALL(gui_drawSprite)(arg0 + 0x690, (int)RACEPROC(arg0)->dropX, (int)RACEPROC(arg0)->dropY, 3);
             }
         }
     }
@@ -1216,7 +1217,7 @@ void MGRRaceProcess_drawResultExtra(int *a0) {
             MGRRACE(a0)->overlayAlpha += D_0000060C;
         }
         if (D_00000610 < MGRRACE(a0)->overlayAlpha) {
-            gl_func_00000000();
+            CALL(mgr_drawResults_000023FC)();
         }
     }
 }
@@ -1463,14 +1464,14 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
     char *v1;   /* level-3 (0x50), home 0x28(sp) */
     char *a0;   /* level-4 (0x2C), home 0x24(sp) */
 
-    if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x174), (arg0 != 0))) {
+    if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0x174), (arg0 != 0))) {
         a2 = arg0;
-        if ((arg0 != 0) || (a2 = (char *)gl_func_00000000(0xD4), (a2 != 0))) {
+        if ((arg0 != 0) || (a2 = (char *)CALL(mem_new)(0xD4), (a2 != 0))) {
             v1 = a2;
-            if ((a2 != 0) || (v1 = (char *)gl_func_00000000(0x50), (v1 != 0))) {
+            if ((a2 != 0) || (v1 = (char *)CALL(mem_new)(0x50), (v1 != 0))) {
                 a0 = v1;
-                if ((v1 != 0) || (a0 = (char *)gl_func_00000000(0x2C), (a0 != 0))) {
-                    gl_func_00000000(a0, D_mgr2940_v + 0x650); NODE(a0)->vptr = (int)D_mgr2940_w;
+                if ((v1 != 0) || (a0 = (char *)CALL(mem_new)(0x2C), (a0 != 0))) {
+                    CALL(Node_ctor)(a0, D_mgr2940_v + 0x650); NODE(a0)->vptr = (int)D_mgr2940_w;
                 }
                 NODE(v1)->vptr = (int)D_mgr2940_x;
             }
@@ -1487,13 +1488,13 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
         MGRNAMEENT(arg0)->pos[2][1] = 0x69;
         MGRNAMEENT(arg0)->unk16C = 0;
         MGRNAMEENT(arg0)->alpha = 1.0f;
-        gl_func_00000000(D_mgr2940_t + 0x18, 7);
+        CALL(gui_spriteInit)(D_mgr2940_t + 0x18, 7);
         MGRNAMEENT(arg0)->panelY = 0xFA;
-        gl_func_00000000(MGRNAMEENT(arg0)->sprite0, 0x230004);
-        gl_func_00000000(MGRNAMEENT(arg0)->sprite1, 0x230003);
-        gl_func_00000000(MGRNAMEENT(arg0)->banner1, 0x230005);
-        gl_func_00000000(MGRNAMEENT(arg0)->banner2, 0x230006);
-        gl_func_00000000(MGRNAMEENT(arg0)->sprite4,
+        CALL(gui_spriteInit)(MGRNAMEENT(arg0)->sprite0, 0x230004);
+        CALL(gui_spriteInit)(MGRNAMEENT(arg0)->sprite1, 0x230003);
+        CALL(gui_spriteInit)(MGRNAMEENT(arg0)->banner1, 0x230005);
+        CALL(gui_spriteInit)(MGRNAMEENT(arg0)->banner2, 0x230006);
+        CALL(gui_spriteInit)(MGRNAMEENT(arg0)->sprite4,
             ((D_mgr2940_id + 0x23) << 16) | (D_mgr2940_q.v - 1));
     }
     return arg0;
@@ -1509,7 +1510,7 @@ extern int gl_func_00000000();
 extern char D_00000000;
 void MgrNameEntry_drawExitOverlay(int *a0) {
     float v;
-    gl_func_00000000(a0);
+    CALL(MgrNameEntry_drawBlinkBanner_00002E3C)(a0);
     v = MGRNAMEENT(a0)->alpha;
     if (0.0f < v) {
         MGRNAMEENT(a0)->alpha = v - *(float*)((char*)&D_00000000 + 0x614);
@@ -1805,10 +1806,10 @@ void mgr_DataManager_display(MgrDataManager *a0) {
     if (v0 == 2) goto end;
     if (!(*(float*)&D_mgr3240_a <= 0.0f)) goto end;
     if (!(*(float*)&D_mgr3240_b <= 0.0f)) goto end;
-    gl_func_00000000();
-    gl_func_00000000(a0);
+    CALL(hud_releaseGadgets)();
+    CALL(Node_hideDisplay_0000E490)(a0);
 end:
-    gl_func_00000000(a0);
+    CALL(RaceTracker_display)(a0);
 }
 
 /* 4-sibling family (32C8, 32F8, 3328, 33E8): "skip-int + read-typed at +0x10"

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_0000014C;
@@ -12,7 +13,7 @@ extern int D_0000014C;
  * rationale and docs/MATCHING_WORKFLOW.md#feedback-replace-func-body-o0-donor. */
 void trk_closeSession_0000065C(int *a0) {
     register int zero;
-    gl_func_00000000((int*)a0[0], 3);
+    CALL(Backup_closeSession)((int*)a0[0], 3);
     zero = 0;
     a0[0] = zero;
     D_0000014C = zero;

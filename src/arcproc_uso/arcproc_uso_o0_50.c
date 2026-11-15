@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* -O0 run at 0x50: Quad4 reader accessor template. See
  * feedback_uso_accessor_o0_variant.md. */
@@ -9,7 +10,7 @@ typedef struct { int a, b, c, d; } Quad4;
 
 void fs_gdlReadQuad_arc_00000050(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 

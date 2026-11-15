@@ -1,6 +1,7 @@
 #include "common.h"
 #include "game/input.h"
 #include "game/modeproc.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -13,16 +14,16 @@ typedef struct { int a, b, c, d; } Quad4;
  * K&R `()` decl + K&R def = no sig conflict. */
 void titproc_uso_func_00000000()
 {
-    gl_func_00000000(&D_00000000, 4);
-    gl_func_00000000(&D_00000000 + 0x18, 5);
-    gl_func_00000000(&D_00000000 + 0x78, 2);
-    gl_func_00000000(&D_00000000 + 0x90, 0);
-    gl_func_00000000(&D_00000000 + 0x30, ((*(int*)&D_00000000 + 0x31) << 16) | 9);
-    gl_func_00000000(&D_00000000 + 0x48, ((*(int*)&D_00000000 + 0x31) << 16) | 0xA);
+    CALL(gui_spriteInit)(&D_00000000, 4);
+    CALL(gui_spriteInit)(&D_00000000 + 0x18, 5);
+    CALL(gui_spriteInit)(&D_00000000 + 0x78, 2);
+    CALL(gui_spriteInit)(&D_00000000 + 0x90, 0);
+    CALL(gui_spriteInit)(&D_00000000 + 0x30, ((*(int*)&D_00000000 + 0x31) << 16) | 9);
+    CALL(gui_spriteInit)(&D_00000000 + 0x48, ((*(int*)&D_00000000 + 0x31) << 16) | 0xA);
 }
 
 void tit_loadLogoSprite_00000098(void) {
-    gl_func_00000000(&D_00000000 + 0x60, 1);
+    CALL(gui_spriteLoad)(&D_00000000 + 0x60, 1);
 }
 
 extern char import_00020098;       /* a1 base (D[0x6C], D[0x148], D[0x40], D[0x44]) */
@@ -108,8 +109,8 @@ void tit_menuMultiRace(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 3;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(0xC, 0);
-    gl_func_00000000(*(int*)((char*)&D_00000194_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(0xC, 0);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000194_A + 0xA8), -1, 0);
 }
 
 extern char D_000001E4_A;
@@ -121,8 +122,8 @@ void tit_menuTimeAttack(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 4;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(12, 1);
-    gl_func_00000000(*(int*)((char*)&D_000001E4_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(12, 1);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000001E4_A + 0xA8), -1, 0);
 }
 
 extern char D_00000230_A;
@@ -131,8 +132,8 @@ void tit_menuTrick(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 6;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(12, 2);
-    gl_func_00000000(*(int*)((char*)&D_00000230_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(12, 2);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000230_A + 0xA8), -1, 0);
 }
 
 extern char D_0000028C_A;
@@ -146,8 +147,8 @@ void tit_menuArcade(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 5;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(12, 3);
-    gl_func_00000000(*(int*)((char*)&D_0000028C_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(12, 3);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000028C_A + 0xA8), -1, 0);
 }
 
 extern char D_000002D8_A;
@@ -159,8 +160,8 @@ void tit_menuHead2Head(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 2;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(12, 4);
-    gl_func_00000000(*(int*)((char*)&D_000002D8_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(12, 4);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000002D8_A + 0xA8), -1, 0);
 }
 
 extern char D_0000032C_A;
@@ -172,8 +173,8 @@ void tit_menuTraining(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 7;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x13C) = 3;
-    gl_func_00000000(12, 5);
-    gl_func_00000000(*(int*)((char*)&D_0000032C_A + 0xA8), -1, 0);
+    CALL(snd_sendEvent)(12, 5);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_0000032C_A + 0xA8), -1, 0);
 }
 
 extern char D_00000380_A;
@@ -186,8 +187,8 @@ void tit_startTitleDemo_00000380(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 1;
     *(int*)((char*)&D_00000000 + 0x40) = 1;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
-    gl_func_00000000(9);
-    gl_func_00000000(*(int*)((char*)&D_00000380_A + 0xA8), -1, 0);
+    CALL(snd_postEvent)(9);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_00000380_A + 0xA8), -1, 0);
 }
 
 extern char D_000003D0_A;
@@ -196,7 +197,7 @@ void tit_menuEditors(void) {
     *(int*)((char*)&D_00000000 + 0x34) = 8;
     *(int*)((char*)&D_00000000 + 0x40) = 0;
     *(int*)((char*)&D_00000000 + 0x44) = 2;
-    gl_func_00000000(*(int*)((char*)&D_000003D0_A + 0xA8), -1, 0);
+    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_000003D0_A + 0xA8), -1, 0);
 }
 
 /* tit_randomUnlocked_00000418: 33-insn FP selector + scaled return.
@@ -238,19 +239,19 @@ int tit_randomUnlocked_00000418(void) {
 
 void fs_gdlReadInt_tit_0000049C(int *dst) {
     int buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_tit_000004D8(float *dst) {
     float buf[2];
-    gl_func_00000000(&D_00000000, buf, 4);
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_tit_00000514(Quad4 *dst) {
     Quad4 buf;
-    gl_func_00000000(&D_00000000, &buf, 16);
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
@@ -262,7 +263,7 @@ void fs_gdlReadVec3_tit_0000056C(Vec3 *dst) {
     int pad_mid[2];
     Tri3i tmp;
     int pad_bot[2];
-    gl_func_00000000(&D_00000000, &raw, 12);
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -340,11 +341,11 @@ INCLUDE_ASM("asm/nonmatchings/titproc_uso/titproc_uso", tit_procMain);
 void tit_openSession_00000B6C(int **a0, int a1) {
     int *r1;
     int *r2;
-    r1 = gl_func_00000000(2);
-    r2 = gl_func_00000000(0, INPUT_MGR(D_00000000).backup, a1, -1);
+    r1 = CALL(app_setHeapMode)(2);
+    r2 = CALL(Backup_openSession)(0, INPUT_MGR(D_00000000).backup, a1, -1);
     *a0 = r2;
     INPUT_MGR(D_00000000).session = (struct BackupSession *)r2;
-    gl_func_00000000(r1);
+    CALL(app_setHeapMode)(r1);
     (*a0)[5] = 0;
     if (a1 != -1) {
         INPUT_MGR(D_00000000).replayData[0] = ((int*)((*a0)[2]))[2];
@@ -355,7 +356,7 @@ void tit_openSession_00000B6C(int **a0, int a1) {
 void tit_closeSession_00000C0C(int *a0) {
     int v = *a0;
     if (v != 0) {
-        gl_func_00000000(v, 3);
+        CALL(Backup_closeSession)(v, 3);
         *a0 = 0;
         INPUT_MGR(D_00000000).session = 0;
     }
@@ -545,25 +546,25 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
 void TitleDemoProcess_handleMsg(int *a0, int *a1) {
     int v = *a1;
     if (v == 0x15) {
-        gl_func_00000000(a0);
-        gl_func_00000000(a0);
+        CALL(titproc_uso_func_00000000)(a0);
+        CALL(TitleDemoProcess_buildMenu)(a0);
     }
-    gl_func_00000000(a0, a1);
+    CALL(Node_handleMsg)(a0, a1);
 }
 
 extern int D_t_count_101C;
 extern int D_t_target_101C;
 extern int D_t_arg0_101C, D_t_arg1_101C, D_t_arg2_101C, D_t_arg3_101C, D_t_arg4_101C, D_t_arg5_101C, D_t_arg6_101C;
 void TitleDemoProcess_buildMenu(int *a0) {
-    gl_func_00000000(TITLEDEMO(a0)->menu);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 1, 0, &D_t_arg0_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 2, 1, &D_t_arg1_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 3, 2, &D_t_arg2_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 6, 3, &D_t_arg3_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
-    gl_func_00000000(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
-    if (gl_func_00000000(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
+    CALL(gui_clearRows_00010A9C)(TITLEDEMO(a0)->menu);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 1, 0, &D_t_arg0_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 2, 1, &D_t_arg1_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 3, 2, &D_t_arg2_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 6, 3, &D_t_arg3_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 4, 4, &D_t_arg4_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 7, 5, &D_t_arg5_101C);
+    CALL(gui_addRowSub_00010B6C)(TITLEDEMO(a0)->menu, ((D_t_count_101C + 1) << 16) | 5, 6, &D_t_arg6_101C);
+    if (CALL(pad_testButton_00067550)(*(int*)((char*)&D_t_target_101C + 0xC4)) == 0) {
         *(int*)((char*)(int *)TITLEDEMO(a0)->menu + 0x128) = 0;
     }
 }
@@ -1035,16 +1036,16 @@ extern int gl_func_00000000();
 extern char D_titproc_BB8_a, D_titproc_BB8_b, D_titproc_BB8_c, D_titproc_BB8_d;
 extern char D_titproc_BB8_e, D_titproc_BB8_f, D_titproc_BB8_g, D_titproc_BB8_h;
 void tit_langMenuInput_00001BB8(int a0) {
-    if (gl_func_00000000(&D_titproc_BB8_a, 0x10001) != 0) {
+    if (CALL(input_checkPressed_00011E00)(&D_titproc_BB8_a, 0x10001) != 0) {
         if (*(int*)&D_titproc_BB8_b != 0) {
-            gl_func_00000000(1);
-            gl_func_00000000(&D_titproc_BB8_d, *(int*)&D_titproc_BB8_c ^ 1);
+            CALL(snd_postEvent)(1);
+            CALL(settings_setFlag4_000126EC)(&D_titproc_BB8_d, *(int*)&D_titproc_BB8_c ^ 1);
         }
     }
-    if (gl_func_00000000(&D_titproc_BB8_e, 0x4002) != 0) {
+    if (CALL(input_checkPressed_00011E00)(&D_titproc_BB8_e, 0x4002) != 0) {
         if (*(int*)&D_titproc_BB8_f == 0) {
-            gl_func_00000000(1);
-            gl_func_00000000(&D_titproc_BB8_h, *(int*)&D_titproc_BB8_g ^ 1);
+            CALL(snd_postEvent)(1);
+            CALL(settings_setFlag4_000126EC)(&D_titproc_BB8_h, *(int*)&D_titproc_BB8_g ^ 1);
         }
     }
 }
@@ -1080,20 +1081,20 @@ void LangMenu_display(int *a0) {
     buf[2] = 1.0f;
     buf[3] = 1.0f;
     a0[0x3C / 4] -= 0x10;
-    gl_func_00000000(&D_titproc_C68_A1 + 0x30);
+    CALL(gui_spriteRefresh)(&D_titproc_C68_A1 + 0x30);
     if (D_titproc_C68_B == 0) {
-        gl_func_00000000(&D_titproc_C68_A3 + 0x30, a0[0x3C / 4], &buf, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)(&D_titproc_C68_A3 + 0x30, a0[0x3C / 4], &buf, 0xFF);
     } else {
-        gl_func_00000000(&D_titproc_C68_A2 + 0x30, 0x80, &buf, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)(&D_titproc_C68_A2 + 0x30, 0x80, &buf, 0xFF);
     }
-    gl_func_00000000(&D_titproc_C68_A4 + 0x30, 0x5A, 0x7E, 3);
-    gl_func_00000000(&D_titproc_C68_C1 + 0x48);
+    CALL(gui_drawSprite)(&D_titproc_C68_A4 + 0x30, 0x5A, 0x7E, 3);
+    CALL(gui_spriteRefresh)(&D_titproc_C68_C1 + 0x48);
     if (D_titproc_C68_D != 0) {
-        gl_func_00000000(&D_titproc_C68_C3 + 0x48, a0[0x3C / 4], &buf, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)(&D_titproc_C68_C3 + 0x48, a0[0x3C / 4], &buf, 0xFF);
     } else {
-        gl_func_00000000(&D_titproc_C68_C2 + 0x48, 0x80, &buf, 0xFF);
+        CALL(gui_setColorEnvPrim_000017DC)(&D_titproc_C68_C2 + 0x48, 0x80, &buf, 0xFF);
     }
-    gl_func_00000000(&D_titproc_C68_C4 + 0x48, 0xDC, 0x7E, 3);
+    CALL(gui_drawSprite)(&D_titproc_C68_C4 + 0x48, 0xDC, 0x7E, 3);
     (void)pad;
 }
 
@@ -1188,8 +1189,8 @@ void tit_WhiteFader_display(char *a0) {
     int v = *(int*)(a0 + 0x3C);
     if (v >= 0x100) v = 0xFF;
     if (v == 0) return;
-    gl_func_00000000(&D_00000000, v, a0 + 0x2C);
-    gl_func_00000000(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
+    CALL(gui_setFillColor_00001CA8)(&D_00000000, v, a0 + 0x2C);
+    CALL(gui_fillRect)(&D_00000000, 0, 0, 0x13F, 0xEF, 0x10001);
 }
 
 /* 2026-07-10: 81.3% -> 243/245 words (99.2%), frame + ALL slots + both s-regs
@@ -1360,10 +1361,10 @@ done:
 void GameDemoProcess_handleMsg(int a0, int *a1) {
     int v = *a1;
     if (v == 0x15) {
-        gl_func_00000000(a0);
-        gl_func_00000000(a0);
+        CALL(titproc_uso_func_00000000)(a0);
+        CALL(GameDemoProcess_buildMenu)(a0);
     }
-    gl_func_00000000(a0, a1);
+    CALL(RaceProcess_handleMsg)(a0, a1);
 }
 
 extern int titproc_uso_D_count_22BC;
@@ -1376,15 +1377,15 @@ extern int titproc_uso_D_arg0_22BC, titproc_uso_D_arg1_22BC, titproc_uso_D_arg2_
  * (no `register`) is what makes IDO pin %hi/%lo in $s1 across the 7 calls —
  * the residual the prior register-based NM attempt couldn't crack. */
 void GameDemoProcess_buildMenu(GameDemoProcess *a0) {
-    gl_func_00000000(a0->menu);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 1, 0, &titproc_uso_D_arg0_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 2, 1, &titproc_uso_D_arg1_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 3, 2, &titproc_uso_D_arg2_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 6, 3, &titproc_uso_D_arg3_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
-    gl_func_00000000(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
-    if (gl_func_00000000(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
+    CALL(gui_clearRows_00010A9C)(a0->menu);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 1, 0, &titproc_uso_D_arg0_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 2, 1, &titproc_uso_D_arg1_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 3, 2, &titproc_uso_D_arg2_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 6, 3, &titproc_uso_D_arg3_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 4, 4, &titproc_uso_D_arg4_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 7, 5, &titproc_uso_D_arg5_22BC);
+    CALL(gui_addRowSub_00010B6C)(a0->menu, ((titproc_uso_D_count_22BC + 1) << 16) | 5, 6, &titproc_uso_D_arg6_22BC);
+    if (CALL(pad_testButton_00067550)(*(int*)((char*)&titproc_uso_D_target_22BC + 0xC4)) == 0) {
         *(int*)((char*)a0->menu + 0x128) = 0;
     }
 }
@@ -1538,7 +1539,7 @@ void titproc_uso_func_00000000();
 void GameDemoProcess_onTimeoutExit(GameDemoProcess *a0) {
     int *p = (int *)a0->menu;
     if (p == 0) return;
-    titproc_uso_func_00000000(p);
+    XCALL(titproc_uso_func_00000000, Node_clearFlag8_0000F564)(p);
 }
 
 /* GameDemoProcess_handleInput — verified structural decode (113-insn scroll/

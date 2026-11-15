@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 extern int gl_func_00000000();
 extern int D_00000148, D_0000014C, D_00000068;
@@ -18,14 +19,14 @@ extern int D_00000148, D_0000014C, D_00000068;
 void arc_openSession_000005C8(int *a0) {
     int saved;
     register int s0;
-    saved = gl_func_00000000(2);
-    a0[2] = gl_func_00000000(0x38);
-    gl_func_00000000(saved);
-    saved = gl_func_00000000(2);
-    s0 = gl_func_00000000(0, D_00000148, -1, -1);
+    saved = CALL(app_setHeapMode)(2);
+    a0[2] = CALL(mem_new)(0x38);
+    CALL(app_setHeapMode)(saved);
+    saved = CALL(app_setHeapMode)(2);
+    s0 = CALL(Backup_openSession)(0, D_00000148, -1, -1);
     a0[0] = s0;
     D_0000014C = s0;
-    gl_func_00000000(saved);
+    CALL(app_setHeapMode)(saved);
     *(int *)((char *)a0[0] + 0x14) = 4;
     D_00000068 = 0;
 }

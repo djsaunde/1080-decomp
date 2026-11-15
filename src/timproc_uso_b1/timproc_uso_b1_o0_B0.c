@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 
 /* tim_main — -O0 donor (REPLACE_FUNC_BODY into
  * timproc_uso_b1.c.o). 14-case state-machine dispatcher on arg1; loop
@@ -44,90 +45,90 @@ void tim_main(int *arg0, int arg1) {
     do {
         switch (arg1) {
         case 0:
-            gl_func_00000000(arg0, 1, 7, 1);
+            CALL(app_launchGenProc)(arg0, 1, 7, 1);
             D_00000000.f44 = 4;
             D_00000000.f48 = 13;
             done = 1;
             break;
         case 1:
-            gl_func_00000000(arg0, 1, 7, 1);
+            CALL(app_launchGenProc)(arg0, 1, 7, 1);
             D_00000000.f44 = 4;
             D_00000000.f48 = 13;
             done = 1;
             break;
         case 2:
-            gl_func_00000000(arg0, 1, 7, 2);
+            CALL(app_launchGenProc)(arg0, 1, 7, 2);
             D_00000000.f44 = 4;
             D_00000000.f48 = 13;
             done = 1;
             break;
         case 3:
-            gl_func_00000000(arg0, 1, 7, 4);
+            CALL(app_launchGenProc)(arg0, 1, 7, 4);
             D_00000000.f44 = 4;
             D_00000000.f48 = 13;
             done = 1;
             break;
         case 4:
-            gl_func_00000000(arg0, 1, D_00000000.f64);
+            CALL(tim_openSession_000005A4)(arg0, 1, D_00000000.f64);
             D_00000000.f40 = 5;
             break;
         case 5:
-            gl_func_00000000(&D_00000000, *(int *)(D_00000000_raw + 4));
-            gl_func_00000000(&D_00000000, 4, D_00000000.f64, 1);
-            v = gl_func_00000000(arg0, *arg0, 1);
-            s0v = gl_func_00000000(0, 0x410000, v, *arg0);
-            gl_func_00000000(arg0, 0, s0v);
+            CALL(game_loadUso)(&D_00000000, *(int *)(D_00000000_raw + 4));
+            CALL(snd_playSeq_000120A8)(&D_00000000, 4, D_00000000.f64, 1);
+            v = CALL(app_createGame_00008E48)(arg0, *arg0, 1);
+            s0v = CALL(TimRace_ctor)(0, 0x410000, v, *arg0);
+            CALL(app_runProcess)(arg0, 0, s0v);
             done = 1;
             break;
         case 6:
-            gl_func_00000000(arg0, 0, D_00000000.f178);
+            CALL(tim_openSession_000005A4)(arg0, 0, D_00000000.f178);
             D_00000000.f40 = 7;
             break;
         case 7:
-            gl_func_00000000(&D_00000000, 10, D_00000000.f64, 1);
-            v = gl_func_00000000(arg0, *arg0, 1);
-            s0v = gl_func_00000000(0, D_00000000.f170 + 0x1A000F, v, *arg0);
-            gl_func_00000000(arg0, 0, s0v);
+            CALL(snd_playSeq_000120A8)(&D_00000000, 10, D_00000000.f64, 1);
+            v = CALL(app_createGame_00009100)(arg0, *arg0, 1);
+            s0v = CALL(TimRace_ctor)(0, D_00000000.f170 + 0x1A000F, v, *arg0);
+            CALL(app_runProcess)(arg0, 0, s0v);
             done = 1;
             break;
         case 8:
-            gl_func_00000000(arg0);
+            CALL(tim_closeSession_0000065C)(arg0);
             D_00000000.f40 = D_00000000.f44;
             break;
         case 9:
-            gl_func_00000000(arg0);
+            CALL(tim_closeSession_0000065C)(arg0);
             D_00000000.f40 = 10;
             break;
         case 10:
-            gl_func_00000000(&D_00000000, 7, 0, 0);
-            s0v = gl_func_00000000(0);
-            gl_func_00000000(arg0, 1, s0v);
+            CALL(snd_playSeq_000120A8)(&D_00000000, 7, 0, 0);
+            s0v = CALL(TimMenu_ctor)(0);
+            CALL(app_runProcess)(arg0, 1, s0v);
             done = 1;
             break;
         case 11:
-            v = gl_func_00000000(arg0, *arg0, 4);
-            s0v = gl_func_00000000(0, D_00000000.f170 + 0x20000, v, *arg0);
+            v = CALL(app_createGame_00009100)(arg0, *arg0, 4);
+            s0v = CALL(TimRace_ctor)(0, D_00000000.f170 + 0x20000, v, *arg0);
             base = (char *)&D_00000000;
             p2 = base + 0x10;
-            gl_func_00000000(p2, s0v);
+            CALL(list_append)(p2, s0v);
             if (*(int *)((char *)s0v + 0x14) != 0) {
                 *(int *)((char *)s0v + 4) = 1;
             }
             p2 = base;
             *(int *)((char *)s0v + 0x14) = (int)p2;
-            gl_func_00000000(arg0, *arg0);
+            CALL(app_launchNameEnt)(arg0, *arg0);
             done = 1;
             break;
         case 12:
-            s0v = gl_func_00000000(D_00000000.f64);
-            gl_func_00000000(arg0, (D_00000000.f64 | 0x2000) | s0v, 0x2000, *arg0);
+            s0v = CALL(app_flowModeBit)(D_00000000.f64);
+            CALL(app_launchViewRec)(arg0, (D_00000000.f64 | 0x2000) | s0v, 0x2000, *arg0);
             done = 1;
             break;
         case 13:
-            s0v = gl_func_00000000(0, 1, 0);
+            s0v = CALL(QuitProcess_ctor)(0, 1, 0);
             base = (char *)&D_00000000;
             p2 = base + 0x10;
-            gl_func_00000000(p2, s0v);
+            CALL(list_append)(p2, s0v);
             if (*(int *)((char *)s0v + 0x14) != 0) {
                 *(int *)((char *)s0v + 4) = 1;
             }
