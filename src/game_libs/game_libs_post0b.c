@@ -8989,7 +8989,8 @@ void gl_func_0003FB38(int a0) {
  * 0x3FB64 -- it is this function's first product `(a1 & 0xFF) * a3` hoisted
  * above `addiu sp` by the -O2 scheduler (docs/MATCHING_WORKFLOW.md
  * #uso-sym-export-oracle-orphan-sweep-arcproc-f48; the game_libs.c orphan
- * game_libs_func_0003FB64 is a zero-size dead emit at the clip).
+ * game_libs_func_0003FB64 was a zero-size dead emit at the clip, removed in
+ * agent-g run 438).
  *
  * The old wrap lost the 0xA0-byte stack record at sp+0x20: +0 = 0x25 tag,
  * +8 = a3, +0xC = a4 (5th arg, read from the caller frame at sp+0xD0),
@@ -17093,8 +17094,8 @@ void gl_func_0004E524(Quad4 *dst) {
  * nothing jal's 0x4E57C or 0x4E584 -- it is this function's first statement
  * (`base = D_arr`) hoisted above `addiu sp` by the -O2 scheduler
  * (docs/MATCHING_WORKFLOW.md #uso-sym-export-oracle-orphan-sweep-arcproc-f48;
- * the game_libs.c orphan game_libs_func_0004E57C is a zero-size dead emit at
- * the clip). There is no -0x28 "sentinel": `li at,-0x28; bne a1,at` is IDO's
+ * the game_libs.c orphan game_libs_func_0004E57C was a zero-size dead emit at
+ * the clip, removed in agent-g run 438). There is no -0x28 "sentinel": `li at,-0x28; bne a1,at` is IDO's
  * canonicalisation of `(base + 10) == 0` -> `base == -40`, and `base` stays a
  * live register (a1, re-materialised after the first alloc) only because it is
  * ASSIGNED TWICE (`base = D_arr` again right after the alloc, exactly where the
@@ -18484,7 +18485,8 @@ void gl_func_000515FC(Quad4 *dst) {
  * this function's first statement (`p = D_arr`, array-extern held base)
  * hoisted above `addiu sp` by the -O2 scheduler (docs/MATCHING_WORKFLOW.md
  * #hoisted-head-orphan-callers-jal-post-hoist-word-66ec; the game_libs.c
- * orphan symbol game_libs_func_00051654 is a zero-size dead emit at the clip).
+ * orphan symbol game_libs_func_00051654 was a zero-size dead emit at the clip,
+ * removed in agent-g run 438).
  *
  * HEAD CRACKED: IDO 7.1/5.3 -O2 fold `p == 0` on `&sym` to false and delete
  * the whole alloc arm (no jal at all); `(unsigned)p == 0` keeps the test, and

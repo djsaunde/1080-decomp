@@ -4458,14 +4458,19 @@ int *gl_func_000088B4(int *arg0) {
  * position (build 0x8938); the words are now prepended to 70A14's .s
  * in post1c where ROM has them. (Relayout ledger event.) */
 
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0006BA74);
-
-
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00051654);
-
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0004E57C);
-
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0003FB64);
+/* game_libs_func_0003FB64 / _0004E57C / _00051654 / _0006BA74: dead 2-word
+ * orphan INCLUDE_ASMs, REMOVED agent-g run 438 with their .s files. Each one
+ * emitted at game_libs.c.o offset 0x8778 (= TRUNCATE_TEXT) as a size-0 symbol,
+ * so none of its bytes reached the link. The ROM words are the hoisted first
+ * insns of the next function, which already emits them from source:
+ *   0x3FB64 andi/multu       -> gl_func_0003FB6C (C body in post0b.c)
+ *   0x4E57C lui/addiu a1     -> gl_func_0004E584 (game_libs_ncc_4E584.cpp donor
+ *                               spliced into post0b.c.o)
+ *   0x51654 lui/addiu v1     -> gl_func_0005165C (game_libs_ncc_5165C.cpp donor
+ *                               spliced into post0b.c.o)
+ *   0x6BA74 lui 0xA460/lw    -> gl_func_0006BA7C (game_libs_ido53_6BA7C.c donor
+ *                               spliced into post1b.c.o)
+ * Each of those symbols starts at the orphan's address in the linked ROM. */
 
 /* game_libs_func_0002DF64 (ONE word, mtc1 a1,$f12 -- the stolen leading
  * insn of gl_func_0002DF68): re-homed during the relayout session as the
