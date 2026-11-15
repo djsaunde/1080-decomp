@@ -77,7 +77,7 @@ void gl___osResetGlobalIntMask(int mask) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070634_pad.s")
 
-/* gl_func_00070694 = guOrthoF + guOrtho = guOrtho (libultra
+/* guOrthoF + guOrtho (libultra
  * gu/ortho.c verbatim, ONE IDO 5.3 -O3 -mips2 whole-TU donor:
  * game_libs_ido53_70694.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice, first-compile 111/111 FULL-word identical (the three
@@ -88,7 +88,7 @@ void gl___osResetGlobalIntMask(int mask) {
  * re-marshal, Matrix mf at sp+40, guOrthoF then guMtxF2L), and 70694's
  * scale loop is -O3's software-pipelined 4x4 *= scale. Bodies below are
  * placeholders for the splice. */
-void gl_func_00070694(int mf) {
+void guOrthoF(int mf) {
     volatile int orthof_spliced = 0;
     if (mf != 0) {
         orthof_spliced = mf;

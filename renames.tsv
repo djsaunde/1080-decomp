@@ -445,3 +445,5 @@ gl_func_0006FDE8	__osSetTimerIntr
 gl_func_0006FE5C	__osInsertTimer
 gl_func_00070040	osAiSetFrequency
 gl_func_0006A420	osSpTaskLoad
+gl_func_00070694	guOrthoF
+game_libs_func_0006FC70	__osTimerInterrupt

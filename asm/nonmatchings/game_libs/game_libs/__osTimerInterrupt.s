@@ -1,6 +1,6 @@
-nonmatching game_libs_func_0006FC70, 0x178
+nonmatching __osTimerInterrupt, 0x178
 
-glabel game_libs_func_0006FC70
+glabel __osTimerInterrupt
     /* E54D48 0006FC70 3C0E0000 */  .word 0x3C0E0000
     /* E54D4C 0006FC74 8DCE0000 */  .word 0x8DCE0000
     /* E54D50 0006FC78 27BDFFD8 */  .word 0x27BDFFD8
@@ -95,4 +95,4 @@ glabel game_libs_func_0006FC70
     /* E54EB4 0006FDDC 27BD0028 */  .word 0x27BD0028
     /* E54EB8 0006FDE0 03E00008 */  .word 0x03E00008
     /* E54EBC 0006FDE4 00000000 */  .word 0x00000000
-endlabel game_libs_func_0006FC70
+endlabel __osTimerInterrupt

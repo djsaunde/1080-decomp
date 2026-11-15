@@ -20,7 +20,7 @@ extern unsigned int gl_getcount_6FC70(void);
 extern void gl_settimerintr_6FC70(Time6FC70);
 extern int gl_sendmesg_6FC70(Queue6FC70 *, Mesg6FC70, int);
 extern Time6FC70 gl_inserttimer_6FC70(Timer6FC70 *);
-void game_libs_func_0006FC70(void)
+void __osTimerInterrupt(void)
 {
 	Timer6FC70 *t;
 	unsigned int count;

@@ -1,6 +1,6 @@
-nonmatching gl_func_00070694, 0x154
+nonmatching guOrthoF, 0x154
 
-glabel gl_func_00070694
+glabel guOrthoF
     /* E5576C 00070694 27BDFFE8 */  .word 0x27BDFFE8
     /* E55770 00070698 AFBF0014 */  .word 0xAFBF0014
     /* E55774 0007069C AFA5001C */  .word 0xAFA5001C
@@ -86,4 +86,4 @@ glabel gl_func_00070694
     /* E558B4 000707DC 27BD0018 */  .word 0x27BD0018
     /* E558B8 000707E0 03E00008 */  .word 0x03E00008
     /* E558BC 000707E4 00000000 */  .word 0x00000000
-endlabel gl_func_00070694
+endlabel guOrthoF

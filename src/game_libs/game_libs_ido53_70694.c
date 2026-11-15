@@ -1,6 +1,6 @@
 /* IDO 5.3 -O3 -mips2 whole-TU donor for the libultra gu ortho pair:
- *   gl_func_00070694 = guOrthoF (donor .text [0x000,0x154))
- *   guOrtho = guOrtho  (donor .text [0x154,0x1BC))
+ *   guOrthoF (donor .text [0x000,0x154))
+ *   guOrtho  (donor .text [0x154,0x1BC))
  * (libreultra src/gu/ortho.c verbatim.) PROVEN EXACT 2026-08-22:
  * first -O3 whole-TU compile is 111/111 FULL-word identical to the raw
  * target .s (not just masked -- the three R_MIPS_26 jal fields are
@@ -22,8 +22,8 @@
  *     gl_func_00000000_{identf706,orthof706,f2l706} pins = 0, so the
  *     imported relocs bake the target's 0x0C000000 verbatim.
  * Renaming guOrthoF away (its internal-call reloc must stay blank)
- * removes the splice key, so POST_COMPILE re-injects a duplicate
- * gl_func_00070694=0x0:0x154 symbol (metadata only, bytes untouched);
+ * removes the splice key, so POST_COMPILE re-injects a fresh
+ * guOrthoF=0x0:0x154 FUNC symbol (metadata only, bytes untouched);
  * guOrtho carries no relocs against it and is renamed to
  * guOrtho directly. Spliced into game_libs_post1c.c.o via
  * REPLACE_FUNC_BODY. */

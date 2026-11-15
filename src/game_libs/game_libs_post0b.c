@@ -25808,7 +25808,7 @@ void game_libs_func_0005F27C(f32 *d, f32 *b, f32 *c) {
 
 /* guOrthoF (libreultra gu/ortho.c shape), BYTE-EXACT 85/85 2026-08-22
  * (52.49 -> 97.6 via K&R-lever sweep, -> 100 via while-outer flip).
- * Twin gl_func_00070694 (post1c) matches the verbatim for-outer ortho.c
+ * Twin guOrthoF (post1c, 0x70694) matches the verbatim for-outer ortho.c
  * (IDO 5.3 -O3 donor); THIS copy's target differs from that one in
  * exactly 2 words — the pipeline-drain swc1 f12/addiu v0,16 order
  * (here: swc1 f12,0(v0) THEN addiu). The verbatim `for (i...)` outer
