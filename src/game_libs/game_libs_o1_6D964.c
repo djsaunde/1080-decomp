@@ -21,43 +21,7 @@
  * __osPiDevMgr, gl_func_00000000_pigetcmdq = osPiGetCmdQueue,
  * gl_func_00000000_jammesg6d = osJamMesg, gl_func_00000000_sendmesg =
  * osSendMesg. Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned int u32;
-typedef signed int s32;
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef void *OSMesg;
-
-typedef struct {
-    /* 0x00 */ u32 active;
-    /* 0x04 */ void *thread;
-    /* 0x08 */ void *cmdQueue;
-    /* 0x0C */ void *evtQueue;
-    /* 0x10 */ void *acsQueue;
-    /* 0x14 */ s32 (*dma)();
-    /* 0x18 */ s32 (*edma)();
-} OSDevMgr;
-
-typedef struct {
-    /* 0x00 */ u16 type;
-    /* 0x02 */ u8 pri;
-    /* 0x03 */ u8 status;
-    /* 0x04 */ void *retQueue;
-} OSIoMesgHdr;
-
-typedef struct {
-    /* 0x00 */ OSIoMesgHdr hdr;
-    /* 0x08 */ void *dramAddr;
-    /* 0x0C */ u32 devAddr;
-    /* 0x10 */ u32 size;
-    /* 0x14 */ void *piHandle;
-} OSIoMesg;
-
-#define OS_READ 0
-#define OS_MESG_TYPE_DMAREAD 11
-#define OS_MESG_TYPE_DMAWRITE 12
-#define OS_MESG_PRI_HIGH 1
-#define OS_MESG_NOBLOCK 0
-#define NULL 0
+#include "libultra/os_pi.h" /* OSDevMgr, OSIoMesgHdr, OSIoMesg, OS_* constants (was a private copy) */
 
 extern OSDevMgr gl_devmgr_6DA74;                                  /* __osPiDevMgr */
 extern void *gl_func_00000000_pigetcmdq(void);                    /* osPiGetCmdQueue */
