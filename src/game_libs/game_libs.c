@@ -1213,67 +1213,67 @@ char *CourseGadget_ctor(char *arg0, s32 arg1) {
         *(s32 *)(arg0 + 0x28) = (s32)&CourseGadget_vtbl;
         CALL(CourseGadgetParms_ctor)(arg0 + 0x2C);
         *(s32 *)(arg0 + 0xC) = (s32)(sCourseGadgetName);
-        *(s32 *)(arg0 + 0x1C0) = arg1;
-        *(f32 *)(arg0 + 0x1DC) = 0.0f;
-        *(f32 *)(arg0 + 0x1D4) = 0.0f;
-        *(f32 *)(arg0 + 0x1E0) = 0.0f;
-        *(f32 *)(arg0 + 0x1D8) = 0.0f;
+        COURSEG(arg0)->arg1 = arg1;
+        COURSEG(arg0)->marker[1][0] = 0.0f;
+        COURSEG(arg0)->marker[0][0] = 0.0f;
+        COURSEG(arg0)->marker[1][1] = 0.0f;
+        COURSEG(arg0)->marker[0][1] = 0.0f;
         CALL(CourseGadget_setCourse)(arg0, *(s32 *)((char *)&gInputMgr + 0x64));
-        CALL(gui_spriteInit)(arg0 + 0x1F4, 0x50019);
-        CALL(gui_spriteInit)(arg0 + 0x20C, 0x5001A);
-        CALL(gui_spriteInit)(arg0 + 0x224, 0x50010);
-        CALL(gui_spriteInit)(arg0 + 0x23C, 0x50011);
-        CALL(gui_spriteInit)(arg0 + 0x254, 0x50012);
-        CALL(gui_spriteInit)(arg0 + 0x26C, 0x50013);
-        CALL(gui_spriteInit)(arg0 + 0x284, 0x50014);
-        CALL(gui_spriteInit)(arg0 + 0x29C, 0x50015);
-        CALL(gui_spriteInit)(arg0 + 0x2B4, 0x50016);
-        CALL(gui_spriteInit)(arg0 + 0x2CC, 0x50017);
-        CALL(gui_spriteInit)(arg0 + 0x2E4, 0x50018);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[0], 0x50019);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[1], 0x5001A);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[2], 0x50010);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[3], 0x50011);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[4], 0x50012);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[5], 0x50013);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[6], 0x50014);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[7], 0x50015);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[8], 0x50016);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[9], 0x50017);
+        CALL(gui_spriteInit)(COURSEG(arg0)->sprites[10], 0x50018);
     }
     return arg0;
 }
 
 extern int gl_func_00000000();
 void CourseGadget_release(char *a0) {
-    CALL(gui_spriteRelease)(a0 + 0x1F4);
-    CALL(gui_spriteRelease)(a0 + 0x20C);
-    CALL(gui_spriteRelease)(a0 + 0x224);
-    CALL(gui_spriteRelease)(a0 + 0x23C);
-    CALL(gui_spriteRelease)(a0 + 0x254);
-    CALL(gui_spriteRelease)(a0 + 0x26C);
-    CALL(gui_spriteRelease)(a0 + 0x284);
-    CALL(gui_spriteRelease)(a0 + 0x29C);
-    CALL(gui_spriteRelease)(a0 + 0x2B4);
-    CALL(gui_spriteRelease)(a0 + 0x2CC);
-    CALL(gui_spriteRelease)(a0 + 0x2E4);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[0]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[1]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[2]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[3]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[4]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[5]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[6]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[7]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[8]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[9]);
+    CALL(gui_spriteRelease)(COURSEG(a0)->sprites[10]);
 }
 
-/* 3-insn 2-int setter: a0[0x1C4]=a1, a0[0x1C8]=a2. */
+/* 3-insn 2-int setter: the screen position. */
 void CourseGadget_setPos(int *a0, int a1, int a2) {
-    a0[0x1C4/4] = a1;
-    a0[0x1C8/4] = a2;
+    COURSEG(a0)->x = a1;
+    COURSEG(a0)->y = a2;
 }
 
 /* 5-insn 2-float setter (mtc1 in body — caller passes int in $a1/$a2). */
 void CourseGadget_setFloat2_0000254C(int *a0, float a1, float a2) {
-    *(float*)((char*)a0 + 0x1CC) = a1;
-    *(float*)((char*)a0 + 0x1D0) = a2;
+    COURSEG(a0)->pct[0] = a1;
+    COURSEG(a0)->pct[1] = a2;
 }
 
 /* 8-insn 3-float setter (3rd float via stack round-trip per K&R ABI). */
 void CourseGadget_setVec3_00002560(int *a0, float a1, float a2, float a3) {
-    *(float*)((char*)a0 + 0x1E4) = a1;
-    *(float*)((char*)a0 + 0x1E8) = a2;
-    *(float*)((char*)a0 + 0x1EC) = a3;
+    COURSEG(a0)->originX = a1;
+    COURSEG(a0)->originZ = a2;
+    COURSEG(a0)->extent = a3;
 }
 
 /* 10-insn 4-float setter (3rd+4th via stack round-trip; 4th from caller sp+0x10). */
 void CourseGadget_setVec4_00002580(int *a0, float a1, float a2, float a3, float a4) {
-    *(float*)((char*)a0 + 0x1D4) = a1;
-    *(float*)((char*)a0 + 0x1D8) = a2;
-    *(float*)((char*)a0 + 0x1DC) = a3;
-    *(float*)((char*)a0 + 0x1E0) = a4;
+    COURSEG(a0)->marker[0][0] = a1;
+    COURSEG(a0)->marker[0][1] = a2;
+    COURSEG(a0)->marker[1][0] = a3;
+    COURSEG(a0)->marker[1][1] = a4;
 }
 
 /* CourseGadget_setCourse: mode -> slot-value setter (0x298, 166 words) -- EXACT
@@ -1286,7 +1286,7 @@ void CourseGadget_setVec4_00002580(int *a0, float a1, float a2, float a3, float 
  * in-unit compile cannot bake the %lo). Body below is a placeholder for the
  * splice. */
 void CourseGadget_setCourse(char *arg0, s32 arg1) {
-    *(s32 *)(arg0 + 0x1F0) = arg1;
+    COURSEG(arg0)->course = arg1;
 }
 
 /* CourseGadget_drawMarker: EXACT via the IDO 7.1 NCC donor src/game_libs/game_libs_ncc_2840.cpp
@@ -1298,10 +1298,12 @@ void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3, s32 arg4)
 }
 
 /* hud_findMarkers_000029F8: list walk -> per-item marker draw (0x19C, 103 words).
- * scale = (f32)obj[0xEC] - (f32)obj[0x8C]; a by-value 4-byte key read from
- * D+0xCCCC (lui 1 / lw -0x3334) selects a list via the blank callee; each
- * item's (+0x30, +0x38) position is mapped through obj+0x1E4/0x1E8 origin
- * and obj+0x1EC extent into screen x/y and drawn as a 0xF801F801 box.
+ * scale = parms my1 - my0 (CourseGadget, gdl/gadget.h); a by-value 4-byte key
+ * read from D+0xCCCC ("mrk") selects the marker item list; each item's (+0x30,
+ * +0x38) world x / z is mapped through originX / originZ and extent into the
+ * map box at (xps + mx0, yps + my0) and drawn as a 0xF801F801 box. The two
+ * member sums are written `xps + mx0` / `yps + my0`: the other order swaps
+ * the two loads.
  * Match levers: the iterator is a two-pointer ARRAY {cur, next} (a struct
  * or pointer-walked struct is promoted to registers; the array stays in the
  * frame at +0xAC/+0xB0), and its advance tests the NEXT slot after the copy
@@ -1338,25 +1340,25 @@ void hud_findMarkers_000029F8(char *arg0) {
     s32 x;
     s32 y;
 
-    scale = (f32)*(s32 *)(arg0 + 0xEC) - (f32)*(s32 *)(arg0 + 0x8C);
+    scale = (f32)COURSEG(arg0)->parms.my1.value - (f32)COURSEG(arg0)->parms.my0.value;
     key.v = *(s32 *)(GL_DATA_STR(0xCCCC, "mrk"));
     list = (char *)CALL(ItemMgr_findType_0003EA98)(gl_data_00000000, key);
     if (list != 0) {
         it[1] = *(GlNode29F8 **)(list + 0x10);
         while (GL29F8_ITER_NEXT(it) != 0) {
             item = it[0]->data;
-            x = (s32)(((*(f32 *)(item + 0x30) - *(f32 *)(arg0 + 0x1E4)) / *(f32 *)(arg0 + 0x1EC)) * (t = scale));
-            y = (s32)(((*(f32 *)(item + 0x38) - *(f32 *)(arg0 + 0x1E8)) / *(f32 *)(arg0 + 0x1EC)) * (t = scale));
+            x = (s32)(((*(f32 *)(item + 0x30) - COURSEG(arg0)->originX) / COURSEG(arg0)->extent) * (t = scale));
+            y = (s32)(((*(f32 *)(item + 0x38) - COURSEG(arg0)->originZ) / COURSEG(arg0)->extent) * (t = scale));
             vec[3] = 0.0f;
             vec[2] = 0.0f;
             vec[1] = 0.0f;
             vec[0] = 0.0f;
             CALL(gui_setFillColor_00001CA8)(&D_00000000, 255, vec);
             CALL(gui_fillRect)(&D_00000000,
-                             *(s32 *)(arg0 + 0x74) + *(s32 *)(arg0 + 0x44) + x,
-                             *(s32 *)(arg0 + 0x8C) + *(s32 *)(arg0 + 0x5C) + y,
-                             *(s32 *)(arg0 + 0x74) + *(s32 *)(arg0 + 0x44) + x,
-                             *(s32 *)(arg0 + 0x8C) + *(s32 *)(arg0 + 0x5C) + y,
+                             COURSEG(arg0)->parms.xps.value + COURSEG(arg0)->parms.mx0.value + x,
+                             COURSEG(arg0)->parms.yps.value + COURSEG(arg0)->parms.my0.value + y,
+                             COURSEG(arg0)->parms.xps.value + COURSEG(arg0)->parms.mx0.value + x,
+                             COURSEG(arg0)->parms.yps.value + COURSEG(arg0)->parms.my0.value + y,
                              0xF801F801);
         }
     }

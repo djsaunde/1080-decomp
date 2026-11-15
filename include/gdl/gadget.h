@@ -237,4 +237,68 @@ typedef char CoolGadget_sprite_check[(int)&((CoolGadget *)0)->label2Sprite == 0x
 
 #define COOLG(p) ((CoolGadget *)(p))
 
+/* A colour parm (0x24, type Data 0xCA34): an RGBA value instead of one word. */
+typedef struct GdlParmRGBA {
+    /* 0x00 */ char head[0xC];
+    /* 0x0C */ s32 type;            /* the colour parm type (Data 0xCA34) */
+    /* 0x10 */ f32 value[4];
+    /* 0x20 */ s32 unk20;           /* 0 */
+} GdlParmRGBA;
+
+/* "CourseGadget::Parms" (0x194, name Data 0xCC6C; CourseGadgetParms_ctor): sixteen tags
+ * (Data 0xCC74..0xCCB0). Defaults: xps 30, yps 30, mx0 10, my0 115, sx0 0, sy0 0, mx1 11,
+ * my1 13, gx0 0, gy0 0, pxp 268, pyp 80, bxp 160, byp 220, col, adz 0. CourseGadget_setCourse
+ * (one case per course id) rewrites the eight mx0 .. gy0 values. hud_findMarkers maps world
+ * x / z into the map box at (xps + mx0, yps + my0) with the scale my1 - my0. */
+typedef struct CourseGadgetParms {
+    /* 0x000 */ s32 name;           /* "CourseGadget::Parms" */
+    /* 0x004 */ s32 unk04;
+    /* 0x008 */ GdlParm xps;        /* screen x of the gadget */
+    /* 0x020 */ GdlParm yps;
+    /* 0x038 */ GdlParm mx0;        /* map box: x0 (from xps) */
+    /* 0x050 */ GdlParm my0;        /*   y0 (from yps) */
+    /* 0x068 */ GdlParm sx0;
+    /* 0x080 */ GdlParm sy0;
+    /* 0x098 */ GdlParm mx1;
+    /* 0x0B0 */ GdlParm my1;        /*   my1 - my0 = the marker scale */
+    /* 0x0C8 */ GdlParm gx0;
+    /* 0x0E0 */ GdlParm gy0;
+    /* 0x0F8 */ GdlParm pxp;
+    /* 0x110 */ GdlParm pyp;
+    /* 0x128 */ GdlParm bxp;
+    /* 0x140 */ GdlParm byp;
+    /* 0x158 */ GdlParmRGBA col;
+    /* 0x17C */ GdlParm adz;
+} CourseGadgetParms;
+
+typedef char CourseGadgetParms_size_check[sizeof(CourseGadgetParms) == 0x194 ? 1 : -1];
+
+/* CourseGadget (0x2FC, CourseGadget_ctor, name Data 0xCCBC; RaceTracker.course): the
+ * course map with the riders' markers. Fed by the race HUD: hud_addCourseGadget (game_libs_tail.c)
+ * and h2h's DataManager ctor / update pass the RaceEntry values of riders 0 and 1 (setPcts:
+ * entries[0 / 1].pct; setMarkers: entries[0 / 1].posX / progress) and the RaceTracker course
+ * frame (setCourseFrame: courseStart, courseZ, courseLength); setPos places it (h2h: 285, 179).
+ * hud_findMarkers draws one box per "mrk" item at ((item x - originX) / extent * scale,
+ * (item z - originZ) / extent * scale) inside the map box. */
+typedef struct CourseGadget {
+    /* 0x000 */ Node node;
+    /* 0x02C */ CourseGadgetParms parms;
+    /* 0x1C0 */ s32 arg1;           /* ctor arg 1 (h2h 35; hud_addCourseGadget's a3) */
+    /* 0x1C4 */ s32 x;              /* CourseGadget_setPos */
+    /* 0x1C8 */ s32 y;
+    /* 0x1CC */ f32 pct[2];         /* setFloat2: riders 0 / 1 course progress, 0..100 */
+    /* 0x1D4 */ f32 marker[2][2];   /* setVec4: riders 0 / 1 (posX, progress); 0 in the ctor */
+    /* 0x1E4 */ f32 originX;        /* setVec3: RaceTracker courseStart */
+    /* 0x1E8 */ f32 originZ;        /*          courseZ */
+    /* 0x1EC */ f32 extent;         /*          courseLength */
+    /* 0x1F0 */ s32 course;         /* setCourse: the alloc(0x18) per-course object (0 = none) */
+    /* 0x1F4 */ char sprites[11][0x18]; /* ids 0x50019, 0x5001A, 0x50010 .. 0x50018 */
+} CourseGadget;
+
+typedef char CourseGadget_size_check[sizeof(CourseGadget) == 0x2FC ? 1 : -1];
+typedef char CourseGadget_course_check[(int)&((CourseGadget *)0)->course == 0x1F0 ? 1 : -1];
+typedef char CourseGadget_my1_check[(int)&((CourseGadget *)0)->parms.my1.value == 0xEC ? 1 : -1];
+
+#define COURSEG(p) ((CourseGadget *)(p))
+
 #endif
