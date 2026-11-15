@@ -8,21 +8,7 @@
  * Blank extern: D_00000000_pihandles = __osCurrentHandle[] (USO reloc
  * words, blanked). Spliced into game_libs_post2b_c.c.o via
  * REPLACE_FUNC_BODY. */
-typedef signed int s32;
-typedef unsigned int u32;
-typedef unsigned char u8;
-
-typedef struct OSPiHandle_s {
-    struct OSPiHandle_s *next; /* 0x00 */
-    u8 type;                   /* 0x04 */
-    u8 latency;                /* 0x05 */
-    u8 pageSize;               /* 0x06 */
-    u8 relDuration;            /* 0x07 */
-    u8 pulse;                  /* 0x08 */
-    u8 domain;                 /* 0x09 */
-    u32 baseAddress;           /* 0x0C */
-    u32 speed;                 /* 0x10 */
-} OSPiHandle;
+#include "libultra/os_pi.h" /* OSPiHandle, __OSTranxInfo (was a private copy) */
 
 extern OSPiHandle *D_00000000_pihandles[]; /* __osCurrentHandle */
 
