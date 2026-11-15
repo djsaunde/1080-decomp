@@ -10,11 +10,11 @@ glabel SnowBoarder_updateOrient
     /* DDC1E0 0000B774 E7A00074 */  swc1       $f0, 0x74($sp)
     /* DDC1E4 0000B778 E7A40070 */  swc1       $f4, 0x70($sp)
     /* DDC1E8 0000B77C 8C8E0800 */  lw         $t6, 0x800($a0)
-    /* DDC1EC 0000B780 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15_000008B4 + 0x14)
-    /* DDC1F0 0000B784 D42808C8 */  ldc1       $f8, %lo(SndHandle_setScaleIdx15_000008B4 + 0x14)($at)
+    /* DDC1EC 0000B780 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15 + 0x14)
+    /* DDC1F0 0000B784 D42808C8 */  ldc1       $f8, %lo(SndHandle_setScaleIdx15 + 0x14)($at)
     /* DDC1F4 0000B788 C5C60000 */  lwc1       $f6, 0x0($t6)
-    /* DDC1F8 0000B78C 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15_000008B4 + 0x1C)
-    /* DDC1FC 0000B790 D42408D0 */  ldc1       $f4, %lo(SndHandle_setScaleIdx15_000008B4 + 0x1C)($at)
+    /* DDC1F8 0000B78C 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15 + 0x1C)
+    /* DDC1FC 0000B790 D42408D0 */  ldc1       $f4, %lo(SndHandle_setScaleIdx15 + 0x1C)($at)
     /* DDC200 0000B794 46003021 */  cvt.d.s    $f0, $f6
     /* DDC204 0000B798 24010064 */  addiu      $at, $zero, 0x64
     /* DDC208 0000B79C 46280282 */  mul.d      $f10, $f0, $f8
@@ -68,8 +68,8 @@ glabel SnowBoarder_updateOrient
   .L0000B854:
     /* DDC2C0 0000B854 C4E00978 */  lwc1       $f0, 0x978($a3)
     /* DDC2C4 0000B858 C7AA005C */  lwc1       $f10, 0x5C($sp)
-    /* DDC2C8 0000B85C 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31_000008D4 + 0x4)
-    /* DDC2CC 0000B860 D42608D8 */  ldc1       $f6, %lo(SndHandle_setScaleIdx31_000008D4 + 0x4)($at)
+    /* DDC2C8 0000B85C 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31 + 0x4)
+    /* DDC2CC 0000B860 D42608D8 */  ldc1       $f6, %lo(SndHandle_setScaleIdx31 + 0x4)($at)
     /* DDC2D0 0000B864 46005101 */  sub.s      $f4, $f10, $f0
     /* DDC2D4 0000B868 C4E2030C */  lwc1       $f2, 0x30C($a3)
     /* DDC2D8 0000B86C C4EC0310 */  lwc1       $f12, 0x310($a3)
@@ -218,15 +218,15 @@ glabel SnowBoarder_updateOrient
     /* DDC4F4 0000BA88 1420006F */  bnez       $at, .L0000BC48
     /* DDC4F8 0000BA8C A4F80A6C */   sh        $t8, 0xA6C($a3)
     /* DDC4FC 0000BA90 8CF90800 */  lw         $t9, 0x800($a3)
-    /* DDC500 0000BA94 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31_000008D4 + 0xC)
-    /* DDC504 0000BA98 C42C08E0 */  lwc1       $f12, %lo(SndHandle_setScaleIdx31_000008D4 + 0xC)($at)
+    /* DDC500 0000BA94 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31 + 0xC)
+    /* DDC504 0000BA98 C42C08E0 */  lwc1       $f12, %lo(SndHandle_setScaleIdx31 + 0xC)($at)
     /* DDC508 0000BA9C C72A0000 */  lwc1       $f10, 0x0($t9)
-    /* DDC50C 0000BAA0 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31_000008D4 + 0x14)
-    /* DDC510 0000BAA4 D42608E8 */  ldc1       $f6, %lo(SndHandle_setScaleIdx31_000008D4 + 0x14)($at)
+    /* DDC50C 0000BAA0 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31 + 0x14)
+    /* DDC510 0000BAA4 D42608E8 */  ldc1       $f6, %lo(SndHandle_setScaleIdx31 + 0x14)($at)
     /* DDC514 0000BAA8 46005121 */  cvt.d.s    $f4, $f10
     /* DDC518 0000BAAC C4EA0A70 */  lwc1       $f10, 0xA70($a3)
     /* DDC51C 0000BAB0 46262202 */  mul.d      $f8, $f4, $f6
-    /* DDC520 0000BAB4 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31_000008D4 + 0x1C)
+    /* DDC520 0000BAB4 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx31 + 0x1C)
     /* DDC524 0000BAB8 46005121 */  cvt.d.s    $f4, $f10
     /* DDC528 0000BABC 46282180 */  add.d      $f6, $f4, $f8
     /* DDC52C 0000BAC0 46203020 */  cvt.s.d    $f0, $f6
@@ -237,7 +237,7 @@ glabel SnowBoarder_updateOrient
     /* DDC540 0000BAD4 10000009 */  b          .L0000BAFC
     /* DDC544 0000BAD8 46006086 */   mov.s     $f2, $f12
   .L0000BADC:
-    /* DDC548 0000BADC C42C08F0 */  lwc1       $f12, %lo(SndHandle_setScaleIdx31_000008D4 + 0x1C)($at)
+    /* DDC548 0000BADC C42C08F0 */  lwc1       $f12, %lo(SndHandle_setScaleIdx31 + 0x1C)($at)
     /* DDC54C 0000BAE0 4600603C */  c.lt.s     $f12, $f0
     /* DDC550 0000BAE4 00000000 */  nop
     /* DDC554 0000BAE8 45020004 */  bc1fl      .L0000BAFC

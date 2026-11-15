@@ -10474,7 +10474,7 @@ unsigned short app_func_00042428(int a0, int a1) {
  * orphan hostio_func_00042438 (lui v0; lw v0,0x240 = p) was merged into this
  * body .s; INCLUDE_ASM removed. The old note's $v1/$t6 cap on `sub` is CRACKED:
  * INLINE the (p->0x148)->0xF0 deref (don't name `sub`) so it lands in the throwaway
- * $t6, not the named-local $v1 — the inline-deref-throwaway lever (cf snd_SoundObjStop_2E24C).
+ * $t6, not the named-local $v1 — the inline-deref-throwaway lever (cf snd_SoundObjStop).
  * (old) gl_func_00042440: 17-insn (0x44) single-call wrapper with PROLOGUE-STEALS-PREDECESSOR
  * pattern. Predecessor app_func_000423D8's tail sets `$v0 = *(D + 0x240)` via
  * `lui v0, 0; lw v0, 0x240(v0)` — those 2 insns logically belong to this

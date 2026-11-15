@@ -99,8 +99,8 @@ glabel SnowBoarder_limitSpeed
   .L0000B68C:
     /* DDC0F8 0000B68C C4A00A78 */  lwc1       $f0, 0xA78($a1)
   .L0000B690:
-    /* DDC0FC 0000B690 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15_000008B4 + 0xC)
-    /* DDC100 0000B694 D42A08C0 */  ldc1       $f10, %lo(SndHandle_setScaleIdx15_000008B4 + 0xC)($at)
+    /* DDC0FC 0000B690 3C010000 */  lui        $at, %hi(SndHandle_setScaleIdx15 + 0xC)
+    /* DDC100 0000B694 D42A08C0 */  ldc1       $f10, %lo(SndHandle_setScaleIdx15 + 0xC)($at)
     /* DDC104 0000B698 46001181 */  sub.s      $f6, $f2, $f0
     /* DDC108 0000B69C 460004A1 */  cvt.d.s    $f18, $f0
     /* DDC10C 0000B6A0 46003221 */  cvt.d.s    $f8, $f6

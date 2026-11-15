@@ -80,7 +80,7 @@ void func_00000188(int a0, int a1, int a2) {
     func_00000000(a0, a1, a2);
 }
 
-void snd_setLevelRampTarget_000001C8(int a0) {
+void snd_setLevelRampTarget(int a0) {
     if (a0 != 0) {
         func_00000000(2);
     } else {
@@ -92,7 +92,7 @@ void func_000001FC(void) {
     func_00000000();
 }
 
-void snd_setPlayer1VolumeLevel_0000021C(void) {
+void snd_setPlayer1VolumeLevel(void) {
     func_00000000();
 }
 
@@ -100,7 +100,7 @@ void func_0000023C(void) {
     func_00000000();
 }
 
-void snd_setPlayer2VolumeLevel_0000025C(void) {
+void snd_setPlayer2VolumeLevel(void) {
     func_00000000();
 }
 
@@ -112,41 +112,41 @@ void func_0000029C(void) {
     func_00000000();
 }
 
-void snd_unmuteAll_000002BC(void) {
+void snd_unmuteAll(void) {
     func_00000000();
 }
 
-void snd_postEvent_000002DC(void) {
+void snd_postEvent(void) {
     func_00000000();
 }
 
-void snd_sendEvent_000002FC(void) {
+void snd_sendEvent(void) {
     func_00000000();
 }
 
-void snd_updateChannel10Emitter_0000031C(int a0, int a1, int a2) {
+void snd_updateChannel10Emitter(int a0, int a1, int a2) {
     int local1, local2;
     func_00000000(a1, &local1, &local2, a2);
     func_00000000(a0, local1, (signed char)local2);
 }
 
 extern char D_00006550;
-void snd_addSoundHeap_00000360(void) {
+void snd_addSoundHeap(void) {
     func_00000000();
     func_00000000(&D_00006550);
 }
 
 extern char D_00006568;
-void snd_removeSoundHeap_0000038C(void) {
+void snd_removeSoundHeap(void) {
     func_00000000();
     func_00000000(&D_00006568);
 }
 
-void snd_setPlayer1Channel15IO_000003B8(void) {
+void snd_setPlayer1Channel15IO(void) {
     func_00000000();
 }
 
-void snd_setPlayer3FreqScaleFromStick_000003D8(void) {
+void snd_setPlayer3FreqScaleFromStick(void) {
     func_00000000();
 }
 
@@ -334,25 +334,25 @@ void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", snd_updatePlayer);
 #endif
 
-void SndHandle_start_0000085C(SndHandle *h) {
+void SndHandle_start(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void SndHandle_stop_00000888(SndHandle *h) {
+void SndHandle_stop(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void SndHandle_setScaleIdx15_000008B4(SndHandle *h) {
+void SndHandle_setScaleIdx15(SndHandle *h) {
     func_00000000(h->obj);
 }
 
-void SndHandle_setScaleIdx31_000008D4(SndHandle *h) {
+void SndHandle_setScaleIdx31(SndHandle *h) {
     func_00000000(h->obj);
 }
 
@@ -388,7 +388,7 @@ void SndHandle_triggerEvent2_000009D8(SndHandle *h, int a1_orig) {
     }
 }
 
-void SndHandle_disable_00000A24(SndHandle *h) {
+void SndHandle_disable(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
@@ -402,14 +402,14 @@ void SndHandle_setUnk1F_00000A50(SndHandle *h, int a1) {
     }
 }
 
-void SndHandle_setFlag1A_00000A68(SndHandle *h) {
+void SndHandle_setFlag1A(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void SndHandle_setEventArg_00000A94(SndHandle *h, int a1) {
+void SndHandle_setEventArg(SndHandle *h, int a1) {
     h->eventArg = a1;
 }
 
@@ -5827,7 +5827,7 @@ extern void func_00000000_iipif(s32, s32, void *, f32, f32);
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_handleMsg+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
@@ -6886,7 +6886,7 @@ void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
  * webs, as in the target (s and t both f2). `if (1) {}` before the v50 stores
  * splits the block so the v5C copy base reuses v0 after q. The pool reads are
  * pinned scalars (bu_b520_k48/k44/kc = 0x48/0x44/0xC in
- * undefined_syms_auto.txt; target FogTmpl_create + K / SndHandle_setScaleIdx15_000008B4 + 0xC).
+ * undefined_syms_auto.txt; target FogTmpl_create + K / SndHandle_setScaleIdx15 + 0xC).
  * PASS-2 2026-10-16 (agent-c, 36.90 -> 99.34): m2c had the Vec3 copies as
  * int structs with (f32)/(s32) casts (4 cvt + 4 trunc too many) and a K&R call
  * carrying stale f12/f14. 143/143 words; 19 differ: the 0.0 constant / s
@@ -6898,7 +6898,7 @@ void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
  * second flag test re-reads p->0x10 (volatile read; plain CSEs the lw); the
  * 0x48 limit read inline at both uses; the call is (arg0 + 0x318, arg0). */
 extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
-extern f64 bu_b520_kc;               /* rodata f64 (target SndHandle_setScaleIdx15_000008B4 + 0xC) */
+extern f64 bu_b520_kc;               /* rodata f64 (target SndHandle_setScaleIdx15 + 0xC) */
 #define F520(p, o) (*(f32 *)((char *)(p) + (o)))
 void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     Vec3 v74;
@@ -6977,12 +6977,12 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
 //   void SnowBoarder_updateOrient(State *st) {           // st kept in a3
 //     // local default Vec @ sp+0x6C..0x74 = {0.0, 1.0f, 0.0}
 //     float t = *(float*)st->0x800;            // a normalized phase/time
-//     double k0 = DBL(SndHandle_setScaleIdx15_000008B4+0x14), k1 = DBL(SndHandle_setScaleIdx15_000008B4+0x1C);
+//     double k0 = DBL(SndHandle_setScaleIdx15+0x14), k1 = DBL(SndHandle_setScaleIdx15+0x1C);
 //     // curve eval: scale t (as double) by the folded f64 coefficient
 //     //   bank, producing eased blend factors;
 //     if (st->0x960 != 0x64) { ... uses st->0x974 ... }   // state guard
 //     // main body: many double mul/add/sub chains driven by the
-//     //   SndHandle_setScaleIdx15_000008B4 / SndHandle_setScaleIdx31_000008D4 / SndHandle_triggerEvent0_000008F4 coefficient
+//     //   SndHandle_setScaleIdx15 / SndHandle_setScaleIdx31 / SndHandle_triggerEvent0_000008F4 coefficient
 //     //   table (each symbol = 4 f64 at +0x4/+0xC/+0x14/+0x1C) plus
 //     //   FogTmpl_create+0x4C — interpolates a transform/orientation
 //     //   from st fields and writes the result Vec to st->0x300.. .
@@ -6997,7 +6997,7 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
 //     many other 0x300+ fields read as f32 sources.
 //   Folded f64 coefficient bank (literal-pool fold family — and this
 //   function shows the pool is a CONTIGUOUS 0x20-stride double table,
-//   not scattered singletons: SndHandle_setScaleIdx15_000008B4 / SndHandle_setScaleIdx31_000008D4 /
+//   not scattered singletons: SndHandle_setScaleIdx15 / SndHandle_setScaleIdx31 /
 //   SndHandle_triggerEvent0_000008F4 each carry 4 f64 at +0x4/+0xC/+0x14/+0x1C, plus
 //   FogTmpl_create+0x4C; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).

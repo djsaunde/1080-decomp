@@ -3516,14 +3516,14 @@ D_arc251C_id = 0x00000000;
 D_arc251C_f = 0x00000000;
 D_arc251C_g = 0x00000000;
 D_arc251C_h = 0x00000000;
-gl_ref_000423C4 = 0x000423C4;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
-gl_ref_00041E9C = 0x00041E9C;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
-gl_ref_00042490 = 0x00042490;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
-gl_ref_00041ED4 = 0x00041ED4;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
+gl_ref_000423C4 = 0x000423C4;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
+gl_ref_00041E9C = 0x00041E9C;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
+gl_ref_00042490 = 0x00042490;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
+gl_ref_00041ED4 = 0x00041ED4;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
 gl_ref_00046314 = 0x00046314;  /* snd_SetLevelRampTarget_309AC baked USO jal (text-base sym3 + 0x46314 = splat 0x31CA8 = snd_RampInit_31CA8) */
-gl_ref_00046324 = 0x00046324;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
-gl_ref_00044E14 = 0x00044E14;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) baked USO jal */
-D_2D37C_mode = 0x00000000;  /* snd_UpdateTimers_2D374 (ex gl_func_0002D37C) per-site base-0 aliases (distinct syms = fresh lui per read, no base CSE) */
+gl_ref_00046324 = 0x00046324;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
+gl_ref_00044E14 = 0x00044E14;  /* snd_UpdateTimers (ex gl_func_0002D37C) baked USO jal */
+D_2D37C_mode = 0x00000000;  /* snd_UpdateTimers (ex gl_func_0002D37C) per-site base-0 aliases (distinct syms = fresh lui per read, no base CSE) */
 D_2D37C_flag = 0x00000000;
 D_2D37C_st = 0x00000000;
 D_2D37C_arg = 0x00000000;
@@ -3867,17 +3867,17 @@ gl_ref_0005166C = 0x0005166C;  /* ItemMgr_saveData baked USO jal (0x0C01459B) */
 gl_ref_000516D4 = 0x000516D4;  /* ItemMgr_saveData baked USO jal (0x0C0145B5) */
 gl_ref_0003D480 = 0x0003D480;  /* Audio_AllocNoteFromActive baked in-unit jal (0x0C00F520) */
 gl_ref_0003D638 = 0x0003D638;  /* Audio_AllocNoteFromActive baked in-unit jal (0x0C00F58E) */
-snd_HandleSeqEnd_31334_rodata = 0x00001900;  /* snd_HandleSeqEnd_31334 two jumptables (15 entries at +0x1900, 11 at +0x193C) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_31334.c) */
+snd_HandleSeqEnd_rodata = 0x00001900;  /* snd_HandleSeqEnd two jumptables (15 entries at +0x1900, 11 at +0x193C) in game_libs rodata; donor-local .rodata reloc renamed by replace-function-body.py (game_libs_o2_31334.c) */
 RaceProcess_handleInput_rodata = 0x00000E04;  /* RaceProcess_handleInput MIPSpro 7.2.1 donor: tables at +0xE04 / +0xE1C / +0xE40 and float literals +0xE2C..+0xE3C in game_libs RoData; donor .rodata reloc renamed by the splice */
 D_76F0_fadeA = 0x00000000;  /* RaceProcess_handleInput fade globals: in-place 0 (USO runtime relocs) */
 D_76F0_fadeB = 0x00000000;
 D_76F0_fadeC = 0x00000000;
-gl_ref_00044F18 = 0x00044F18;  /* snd_HandleSeqEnd_31334 baked in-unit jal (0x0C0113C6) */
-gl_func_00000000_fi = 0x00000000;  /* (int, float, int) prototyped blank for snd_HandleSeqEnd_31334's (0xFF, 0.0f, 0) calls (li a1,0) */
-D_31334_st = 0x00000000;  /* snd_HandleSeqEnd_31334 step word (USO load-resolved) */
-D_31334_x = 0x00000000;  /* snd_HandleSeqEnd_31334 gate word, step 4 a==5 arm */
-D_31334_y = 0x00000000;  /* snd_HandleSeqEnd_31334 secondary gate word */
-D_31334_z = 0x00000000;  /* snd_HandleSeqEnd_31334 mode word, step 5 arm */
+gl_ref_00044F18 = 0x00044F18;  /* snd_HandleSeqEnd baked in-unit jal (0x0C0113C6) */
+gl_func_00000000_fi = 0x00000000;  /* (int, float, int) prototyped blank for snd_HandleSeqEnd's (0xFF, 0.0f, 0) calls (li a1,0) */
+D_31334_st = 0x00000000;  /* snd_HandleSeqEnd step word (USO load-resolved) */
+D_31334_x = 0x00000000;  /* snd_HandleSeqEnd gate word, step 4 a==5 arm */
+D_31334_y = 0x00000000;  /* snd_HandleSeqEnd secondary gate word */
+D_31334_z = 0x00000000;  /* snd_HandleSeqEnd mode word, step 5 arm */
 gl_ref_0003F010 = 0x0003F010;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC04) */
 gl_ref_0003F024 = 0x0003F024;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC09) */
 game_uso_func_0000D5BC_a3 = 0x00000000;  /* (char *, Pair2, char *) alias of RiderAnim_setNextState_0000D5BC: RiderAnim_func_0000FC34 passes a3 = base+0x770 */
@@ -4163,9 +4163,9 @@ gl_1f6a8_kE70 = 0x00000E70;
 gl_1f6a8_kE74 = 0x00000E74;
 gl_ref_00000148_51AD8 = 0x00000148;
 gl_ref_00000160_51AD8 = 0x00000160;
-bu_b520_k48 = FogTmpl_create + 0x48;  /* SnowBoarder_limitSpeed rodata pool reads (target relocs FogTmpl_create + 0x48 / + 0x44, SndHandle_setScaleIdx15_000008B4 + 0xC) */
+bu_b520_k48 = FogTmpl_create + 0x48;  /* SnowBoarder_limitSpeed rodata pool reads (target relocs FogTmpl_create + 0x48 / + 0x44, SndHandle_setScaleIdx15 + 0xC) */
 bu_b520_k44 = FogTmpl_create + 0x44;
-bu_b520_kc = SndHandle_setScaleIdx15_000008B4 + 0xC;
+bu_b520_kc = SndHandle_setScaleIdx15 + 0xC;
 gl_func_00000000_5ef00q = 0x00000000;  /* (float)->float sqrt-slot blank for math_mtxAlignAxis */
 gl_func_00000000_5ef00s = 0x00000000;  /* (float)->float sin-slot blank for math_mtxAlignAxis */
 gl_func_00000000_5ef00c = 0x00000000;  /* (float)->float cos-slot blank for math_mtxAlignAxis */
@@ -5644,7 +5644,7 @@ gl_3df58_k1adc = 0x00000000;
 /* math_lookAtF NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
 gl_func_0005F5F0_sqrtf = 0x00000000;
 gl_func_0005F5F0_normalize = 0x00000000;
-/* SnowBoarder_updateOrient NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, FogTmpl_create + 0x4C, literal pool SndHandle_setScaleIdx15_000008B4 + 0x14 = 0x8C8) */
+/* SnowBoarder_updateOrient NCC donor (agent-c run 258): values from the target relocs (jal func_00000000, FogTmpl_create + 0x4C, literal pool SndHandle_setScaleIdx15 + 0x14 = 0x8C8) */
 bu_b75c_mvf = 0x00000000;
 D_00008170 = FogTmpl_create + 0x4C;
 SnowBoarder_updateOrient_rodata = 0x000008C8;

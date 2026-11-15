@@ -2590,10 +2590,10 @@ build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_lib
 # 31334 = stepped cue driver with two jumptable switches (15 + 11 entries),
 # IDO 7.1 -O2 donor: game_libs_o2_31334.c (123/123 word-exact). Spliced only
 # so the donor-local .rodata reloc (both tables, +0 and +0x3C) is renamed
-# snd_HandleSeqEnd_31334_rodata and pinned to the USO tables at +0x1900 (the 29CCC
+# snd_HandleSeqEnd_rodata and pinned to the USO tables at +0x1900 (the 29CCC
 # recipe). Uses += (composes).
 GAMELIBS_31334_DONOR := build/src/game_libs/game_libs_o2_31334.c.o
-build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEnd_31334=$(GAMELIBS_31334_DONOR)
+build/src/game_libs/game_libs_post.c.o build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEnd=$(GAMELIBS_31334_DONOR)
 # 2FB74 = event -> sound command dispatcher with two jumptable switches (21 +
 # 49 entries), IDO 7.1 -O2 donor: game_libs_o2_2FB74.c (612/612 words).
 # Spliced only so the donor-local .rodata reloc (both tables, +0 and +0x54) is
@@ -3889,11 +3889,11 @@ build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o: src/match
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 # 2E354 = EXACT (agent-g run 284): the post NM body as its own TU, linked with the callees / tables at their own
-# addresses (scripts/match-origins-snd_SoundObjUpdate_2E354.ld) and spliced on both build paths.
-build/src/match_imports/snd_SoundObjUpdate_2E354.c.o: src/match_imports/snd_SoundObjUpdate_2E354.c src/match_imports/context_game_libs_post.h
+# addresses (scripts/match-origins-snd_SoundObjUpdate.ld) and spliced on both build paths.
+build/src/match_imports/snd_SoundObjUpdate.c.o: src/match_imports/snd_SoundObjUpdate.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o: src/match_imports/snd_SoundObjUpdate_2E354.c src/match_imports/context_game_libs_post.h
+build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o: src/match_imports/snd_SoundObjUpdate.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 # 30AF4 = EXACT (agent-g run 288): the post NM body as its own TU, linked with the callees / arena addresses at their
@@ -4462,12 +4462,12 @@ build/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf: build/src/m
 build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf: build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o scripts/match-origins-snd_SoundObjRequestCue_31608-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SoundObjRequestCue_31608-nm.ld -e snd_SoundObjRequestCue_31608 -o $@ $@.stripped.o
-build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf: build/src/match_imports/snd_SoundObjUpdate_2E354.c.o scripts/match-origins-snd_SoundObjUpdate_2E354.ld
+build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf: build/src/match_imports/snd_SoundObjUpdate.c.o scripts/match-origins-snd_SoundObjUpdate.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SoundObjUpdate_2E354.ld -e snd_SoundObjUpdate_2E354 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf: build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o scripts/match-origins-snd_SoundObjUpdate_2E354-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SoundObjUpdate.ld -e snd_SoundObjUpdate -o $@ $@.stripped.o
+build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf: build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o scripts/match-origins-snd_SoundObjUpdate-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SoundObjUpdate_2E354-nm.ld -e snd_SoundObjUpdate_2E354 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_SoundObjUpdate-nm.ld -e snd_SoundObjUpdate -o $@ $@.stripped.o
 build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o scripts/match-origins-snd_HandleSeqEvent_30AF4.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_HandleSeqEvent_30AF4.ld -e snd_HandleSeqEvent_30AF4 -o $@ $@.stripped.o
@@ -4964,10 +4964,10 @@ build/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf: b
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjRequestCue_31608.json $@
 build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf scripts/match-bindings-snd_SoundObjRequestCue_31608-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjRequestCue_31608-nm.json $@
-build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf: build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf scripts/match-bindings-snd_SoundObjUpdate_2E354.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjUpdate_2E354.json $@
-build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf scripts/match-bindings-snd_SoundObjUpdate_2E354-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjUpdate_2E354-nm.json $@
+build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf: build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf scripts/match-bindings-snd_SoundObjUpdate.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjUpdate.json $@
+build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf scripts/match-bindings-snd_SoundObjUpdate-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_SoundObjUpdate-nm.json $@
 build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf scripts/match-bindings-snd_HandleSeqEvent_30AF4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_HandleSeqEvent_30AF4.json $@
 build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5342,10 +5342,10 @@ build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundOb
 build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjRequestCue_31608.c scripts/match-bindings-snd_SoundObjRequestCue_31608.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjRequestCue_31608=build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjRequestCue_31608.c scripts/match-bindings-snd_SoundObjRequestCue_31608-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjUpdate_2E354=build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjUpdate_2E354.c scripts/match-bindings-snd_SoundObjUpdate_2E354.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjUpdate_2E354=build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjUpdate_2E354.c scripts/match-bindings-snd_SoundObjUpdate_2E354-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjUpdate=build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjUpdate.c scripts/match-bindings-snd_SoundObjUpdate.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_SoundObjUpdate=build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_SoundObjUpdate.c scripts/match-bindings-snd_SoundObjUpdate-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEvent_30AF4=build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c scripts/match-bindings-snd_HandleSeqEvent_30AF4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEvent_30AF4=build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
@@ -5748,10 +5748,10 @@ build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_SoundObjRequ
 build/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/snd_SoundObjRequestCue_31608.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf
-build/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/snd_SoundObjUpdate_2E354.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf
+build/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/snd_SoundObjUpdate.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
 build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf

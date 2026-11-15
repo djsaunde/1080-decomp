@@ -707,8 +707,8 @@ AUDIO_ASSERT_MEMBER(Note, sampleState, 0xB0);
 /*
  * SoundObj: the game-side 0x64-byte sound object of the glue layer (game_libs 0x2DF98..0x31608,
  * agent-c runs 455 / 464). bootup 0x57C allocates it (mem_new(0x64)) and calls
- * snd_SoundObjInit_2DF98(o, kind); bootup snd_updatePlayer drives it each frame through
- * snd_SoundObjSetAngle_2F720 and snd_SoundObjUpdate_2E354. bootup keeps it in a SndHandle
+ * snd_SoundObjInit(o, kind); bootup snd_updatePlayer drives it each frame through
+ * snd_SoundObjSetAngle_2F720 and snd_SoundObjUpdate. bootup keeps it in a SndHandle
  * (obj at +0, the event argument at +8) and the one-call wrappers 0x85C..0xA94 forward to the
  * snd_SoundObj* functions. Unnamed fields are named by offset.
  */

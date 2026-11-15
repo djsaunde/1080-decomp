@@ -4372,7 +4372,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 
 /* BasePolyShape_triCentroid split off from BasePolyShape_genNormalsFast bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
-/* snd_InitCueQueues_31580 split off from snd_PreNMI_31560 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
+/* snd_InitCueQueues_31580 split off from snd_PreNMI bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
 /* Window_updateAspect + Window_stub_0004EB4C split off from Window_doCommand bundle on 2026-05-08; decompiled in game_libs_post.c. */
 
