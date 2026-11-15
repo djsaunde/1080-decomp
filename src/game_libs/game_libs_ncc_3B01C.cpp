@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for coll_func_0003B01C (0x17C / 95 words), agent-c run 162.
+/* IDO 7.1 NCC (C++) EXACT donor for coll_contactPushOut (0x17C / 95 words), agent-c run 162.
  * Contact / push-out test: guarded by o->flags bits 1|2; sets bit 2, n = other->pos - o->pos through
  * V3 operator- (ctor temp -> return slot -> by-value operator= parameter -> float copies, the target's
  * three word/float copy hops); r = probe(o); if r < 0: n = o->nrm, normalise(&n), n *= -r, set bit 1.
@@ -22,7 +22,7 @@ extern "C" {
 void gl_func_00000000(...);
 f32 gl_3B01C_f(...);
 }
-extern "C" int coll_func_0003B01C(Obj *o, Obj *other) {
+extern "C" int coll_contactPushOut(Obj *o, Obj *other) {
     volatile int p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11;
     V3 n;
     V3 *b;

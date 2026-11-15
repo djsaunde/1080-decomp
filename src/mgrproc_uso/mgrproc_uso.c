@@ -1498,7 +1498,7 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
     return arg0;
 }
 
-/* MgrNameEntry_vfunc18_00002AFC: 32-insn (0x80) FP step-decrement-and-notify
+/* MgrNameEntry_drawExitOverlay: 32-insn (0x80) FP step-decrement-and-notify
  * helper on a0->0x168 (float). If positive, decrement by D[0x614] and
  * clamp to 0 if it went negative (overshoot prevention). Then call
  * notify if the resulting value is <= 0 (signaling "expired"). The
@@ -1506,7 +1506,7 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
  * pattern. */
 extern int gl_func_00000000();
 extern char D_00000000;
-void MgrNameEntry_vfunc18_00002AFC(int *a0) {
+void MgrNameEntry_drawExitOverlay(int *a0) {
     float v;
     gl_func_00000000(a0);
     v = *(float*)((char*)a0 + 0x168);

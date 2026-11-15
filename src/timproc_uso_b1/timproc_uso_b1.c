@@ -794,7 +794,7 @@ void TimNameEntry_update_00001860(int *a0) {
     }
 }
 
-void TimNameEntry_vfunc17_000018D4(char *a0) {
+void TimNameEntry_drawEntryOverlay(char *a0) {
     char *p;
     gl_func_00000000(a0);
     p = *(char**)(a0 + 0xD4);
@@ -809,7 +809,7 @@ void TimNameEntry_vfunc17_000018D4(char *a0) {
  * through the inlined full chain (fresh temp t6) rather than the sub
  * variable (whose web would color a0). bc1fl delay structure falls out
  * naturally from the val-carried if/if shape. */
-void TimNameEntry_vfunc18_00001908(int *self) {
+void TimNameEntry_drawExitOverlay(int *self) {
     char *base = &D_00000000;
     int *sub;
     float *fp;

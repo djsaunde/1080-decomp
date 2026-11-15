@@ -646,7 +646,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # math_func_0005F984 NM stub -> real decode, -0xA0):
 # 62F08 NM offset 0x2e27c + 0x50.
 # Re-probed 2026-10-17 agent-c (App_main NM decode, 112 vs 113 words): 0x2e494 -> 0x2e474.
-# Re-probed 2026-10-17 agent-c run 104 (coll_func_0003B01C / PolyShape_hostioParms stubs -> real decodes): 0x2e494 -> 0x2e654;
+# Re-probed 2026-10-17 agent-c run 104 (coll_contactPushOut / PolyShape_hostioParms stubs -> real decodes): 0x2e494 -> 0x2e654;
 # gfx_drawFbChar_00046790 re-decode: 0x2e654 -> 0x2e694; agent-g run 103 math decodes: -> 0x2e674 -> 0x2e668 (54144 NM).
 # Re-probed 2026-10-17 agent-c run 105 (Window_doCommand NM body -> donor splice): 0x2e668 -> 0x2e65c.
 # run 105 stub re-decodes (4E424 / 4E244): 0x2e65c -> 0x2e75c.
@@ -2086,7 +2086,7 @@ GAMELIBS_3B01C_DONOR := build/src/game_libs/game_libs_ncc_3B01C.cpp.o
 $(GAMELIBS_3B01C_DONOR): src/game_libs/game_libs_ncc_3B01C.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_func_0003B01C=$(GAMELIBS_3B01C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_contactPushOut=$(GAMELIBS_3B01C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3B01C_DONOR)
 # 3D71C = guarded camera-matrix reset as NCC C++ (kept destination pointer orders the base addius; written product operand order). EXACT NCC donor over an empty placeholder (agent-c run 162).
 GAMELIBS_3D71C_DONOR := build/src/game_libs/game_libs_ncc_3D71C.cpp.o
@@ -2206,7 +2206,7 @@ build/non_matching/src/game_libs/game_libs_post0b.c.o: NON_MATCHING_SUFFIX_BYTES
 # 3485C (hang stub, same unit, epilogue alignment too) comes from the same donor.
 GAMELIBS_34548_DONOR := build/src/game_libs/game_libs_o2_34548.c.o
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += dbg_faultThread=$(GAMELIBS_34548_DONOR)
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_func_0003485C=$(GAMELIBS_34548_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_hang=$(GAMELIBS_34548_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34548_DONOR)
 # 488A0 = line-list emitter (gSPVertex + G_LINE3D packets); NCC donor, EXACT (agent-c run 155: early-bit DL cursor d / n, c2 before the BB split).
 GAMELIBS_488A0_DONOR := build/src/game_libs/game_libs_ncc_488A0.cpp.o
@@ -3798,10 +3798,10 @@ build/src/match_imports/snd_FindNearestF32_2F1B8.c.o: src/match_imports/snd_Find
 build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o: src/match_imports/snd_FindNearestF32_2F1B8.c src/match_imports/context_game_libs_post.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/coll_func_00035E64.c.o: src/match_imports/coll_func_00035E64.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/coll_pushClear_00035E64.c.o: src/match_imports/coll_pushClear_00035E64.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/coll_func_00035E64.c.o: src/match_imports/coll_func_00035E64.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o: src/match_imports/coll_pushClear_00035E64.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gfx_setPrimColour.c.o: src/match_imports/gfx_setPrimColour.c src/match_imports/context_game_libs_post0b.h
@@ -3904,10 +3904,10 @@ build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o: src/match_imports/snd_Hand
 build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/sys_func_000346F0.c.o: src/match_imports/sys_func_000346F0.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/dbg_printfSink.c.o: src/match_imports/dbg_printfSink.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/sys_func_000346F0.c.o: src/match_imports/sys_func_000346F0.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/dbg_printfSink.c.o: src/match_imports/dbg_printfSink.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/heap_tempAlloc.c.o: src/match_imports/heap_tempAlloc.c src/match_imports/context_game_libs_post0b.h
@@ -4372,12 +4372,12 @@ build/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf: build/src/match
 build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf: build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o scripts/match-origins-snd_FindNearestF32_2F1B8-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_FindNearestF32_2F1B8-nm.ld -e snd_FindNearestF32_2F1B8 -o $@ $@.stripped.o
-build/src/match_imports/coll_func_00035E64.c.o.linked.elf: build/src/match_imports/coll_func_00035E64.c.o scripts/match-origins-coll_func_00035E64.ld
+build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf: build/src/match_imports/coll_pushClear_00035E64.c.o scripts/match-origins-coll_pushClear_00035E64.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_func_00035E64.ld -e coll_func_00035E64 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf: build/non_matching/src/match_imports/coll_func_00035E64.c.o scripts/match-origins-coll_func_00035E64-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_pushClear_00035E64.ld -e coll_pushClear_00035E64 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf: build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o scripts/match-origins-coll_pushClear_00035E64-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_func_00035E64-nm.ld -e coll_func_00035E64 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-coll_pushClear_00035E64-nm.ld -e coll_pushClear_00035E64 -o $@ $@.stripped.o
 build/src/match_imports/gfx_setPrimColour.c.o.linked.elf: build/src/match_imports/gfx_setPrimColour.c.o scripts/match-origins-gfx_setPrimColour.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_setPrimColour.ld -e gfx_setPrimColour -o $@ $@.stripped.o
@@ -4474,12 +4474,12 @@ build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf: build/src/match
 build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o scripts/match-origins-snd_HandleSeqEvent_30AF4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-snd_HandleSeqEvent_30AF4-nm.ld -e snd_HandleSeqEvent_30AF4 -o $@ $@.stripped.o
-build/src/match_imports/sys_func_000346F0.c.o.linked.elf: build/src/match_imports/sys_func_000346F0.c.o scripts/match-origins-sys_func_000346F0.ld
+build/src/match_imports/dbg_printfSink.c.o.linked.elf: build/src/match_imports/dbg_printfSink.c.o scripts/match-origins-dbg_printfSink.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-sys_func_000346F0.ld -e sys_func_000346F0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf: build/non_matching/src/match_imports/sys_func_000346F0.c.o scripts/match-origins-sys_func_000346F0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-dbg_printfSink.ld -e dbg_printfSink -o $@ $@.stripped.o
+build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf: build/non_matching/src/match_imports/dbg_printfSink.c.o scripts/match-origins-dbg_printfSink-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-sys_func_000346F0-nm.ld -e sys_func_000346F0 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-dbg_printfSink-nm.ld -e dbg_printfSink -o $@ $@.stripped.o
 build/src/match_imports/heap_tempAlloc.c.o.linked.elf: build/src/match_imports/heap_tempAlloc.c.o scripts/match-origins-heap_tempAlloc.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-heap_tempAlloc.ld -e heap_tempAlloc -o $@ $@.stripped.o
@@ -4904,10 +4904,10 @@ build/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf: build
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_FindNearestF32_2F1B8.json $@
 build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf scripts/match-bindings-snd_FindNearestF32_2F1B8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_FindNearestF32_2F1B8-nm.json $@
-build/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf: build/src/match_imports/coll_func_00035E64.c.o.linked.elf scripts/match-bindings-coll_func_00035E64.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_func_00035E64.json $@
-build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf scripts/match-bindings-coll_func_00035E64-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_func_00035E64-nm.json $@
+build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf: build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf scripts/match-bindings-coll_pushClear_00035E64.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_pushClear_00035E64.json $@
+build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf scripts/match-bindings-coll_pushClear_00035E64-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-coll_pushClear_00035E64-nm.json $@
 build/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf: build/src/match_imports/gfx_setPrimColour.c.o.linked.elf scripts/match-bindings-gfx_setPrimColour.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_setPrimColour.json $@
 build/non_matching/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_setPrimColour.c.o.linked.elf scripts/match-bindings-gfx_setPrimColour-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -4972,10 +4972,10 @@ build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_HandleSeqEvent_30AF4.json $@
 build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json $@
-build/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf: build/src/match_imports/sys_func_000346F0.c.o.linked.elf scripts/match-bindings-sys_func_000346F0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-sys_func_000346F0.json $@
-build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf scripts/match-bindings-sys_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-sys_func_000346F0-nm.json $@
+build/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf: build/src/match_imports/dbg_printfSink.c.o.linked.elf scripts/match-bindings-dbg_printfSink.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-dbg_printfSink.json $@
+build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf scripts/match-bindings-dbg_printfSink-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-dbg_printfSink-nm.json $@
 build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: build/src/match_imports/heap_tempAlloc.c.o.linked.elf scripts/match-bindings-heap_tempAlloc.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-heap_tempAlloc.json $@
 build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf scripts/match-bindings-heap_tempAlloc-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5282,10 +5282,10 @@ build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_FindNea
 build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_FindNearestF32_2F1B8.c scripts/match-bindings-snd_FindNearestF32_2F1B8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_FindNearestF32_2F1B8=build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_FindNearestF32_2F1B8.c scripts/match-bindings-snd_FindNearestF32_2F1B8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_func_00035E64=build/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_func_00035E64.c scripts/match-bindings-coll_func_00035E64.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_func_00035E64=build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_func_00035E64.c scripts/match-bindings-coll_func_00035E64-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_pushClear_00035E64=build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_pushClear_00035E64.c scripts/match-bindings-coll_pushClear_00035E64.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += coll_pushClear_00035E64=build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/coll_pushClear_00035E64.c scripts/match-bindings-coll_pushClear_00035E64-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_setPrimColour=build/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_setPrimColour.c scripts/match-bindings-gfx_setPrimColour.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_setPrimColour=build/non_matching/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf
@@ -5350,10 +5350,10 @@ build/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleS
 build/src/game_libs/game_libs_post.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c scripts/match-bindings-snd_HandleSeqEvent_30AF4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post.c.o: private REPLACE_FUNC_BODY += snd_HandleSeqEvent_30AF4=build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post.c.o: src/match_imports/snd_HandleSeqEvent_30AF4.c scripts/match-bindings-snd_HandleSeqEvent_30AF4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_func_000346F0=build/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/sys_func_000346F0.c scripts/match-bindings-sys_func_000346F0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += sys_func_000346F0=build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/sys_func_000346F0.c scripts/match-bindings-sys_func_000346F0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += dbg_printfSink=build/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/dbg_printfSink.c scripts/match-bindings-dbg_printfSink.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += dbg_printfSink=build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/dbg_printfSink.c scripts/match-bindings-dbg_printfSink-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += heap_tempAlloc=build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/heap_tempAlloc.c scripts/match-bindings-heap_tempAlloc.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += heap_tempAlloc=build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
@@ -5688,10 +5688,10 @@ build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_FindNearestF
 build/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/snd_FindNearestF32_2F1B8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf
-build/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/coll_func_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf
+build/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/coll_pushClear_00035E64.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf
 build/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_setPrimColour.c.o.linked.elf.bound.elf
@@ -5756,10 +5756,10 @@ build/src/game_libs/game_libs_post.c.o: build/src/match_imports/snd_HandleSeqEve
 build/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post.c.o: build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/snd_HandleSeqEvent_30AF4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf
-build/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/sys_func_000346F0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf
+build/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/dbg_printfSink.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf
 build/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/heap_tempAlloc.c.o.linked.elf.bound.elf

@@ -493,7 +493,7 @@ extern struct Mgr2940Q { char pad[0x68]; int v; } D_mgr2940_q;
 void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2);
 extern int gl_func_00000000();
 extern char D_00000000;
-void MgrNameEntry_vfunc18_00002AFC(int *a0);
+void MgrNameEntry_drawExitOverlay(int *a0);
 extern char import_8025CAF8;
 extern char import_80264A28;
 extern char import_80264A3C;

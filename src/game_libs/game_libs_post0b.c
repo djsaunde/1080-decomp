@@ -258,11 +258,11 @@ void dbg_startFaultThread(void) {
     func_00000000((char*)&D_00000000 + 0x3B968);
 }
 
-// sys_func_000346F0 — STRUCTURAL PASS (0x120 / 72 words, no episode).
+// dbg_printfSink — STRUCTURAL PASS (0x120 / 72 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, one
 // prologue — very large 0x140 frame: a string buffer on the stack).
 //
-//   void sys_func_000346F0(int a0, char *fmt, void *args) {
+//   void dbg_printfSink(int a0, char *fmt, void *args) {
 //     char *gbuf = *(char**)(&D_0 + 8);        // global fmt buffer
 //     if (gbuf != 0) {
 //       int len = vsprintf(gbuf, fmt, args);    // jal 0 (USO cb)
@@ -300,7 +300,7 @@ void dbg_startFaultThread(void) {
  * copy src[0..n) into a 256-byte stack buffer through a separate write index; write
  * two NULs; return 1. Residual: the target ends the unrolled copy on the src pointer
  * (LFTR, `bne v1,a3` with a3 = src + n); IDO here keeps the counter. */
-int sys_func_000346F0(int a0, char *src, int n) {
+int dbg_printfSink(int a0, char *src, int n) {
     int i;
     int k2;
     char buf[256];
@@ -320,7 +320,7 @@ int sys_func_000346F0(int a0, char *src, int n) {
     return 1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", sys_func_000346F0);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", dbg_printfSink);
 #endif
 
 // dbg_printf — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
@@ -370,23 +370,23 @@ void dbg_printf(int a0, ...) {
     gl_func_00000000((char *)&D_00000000 + 0x48D5C, 0, a0, aligned);
 }
 
-/* sys_func_0003485C: hang stub. EXACT via the game_libs_o2_34548.c
+/* sys_hang: hang stub. EXACT via the game_libs_o2_34548.c
  * donor (REPLACE_FUNC_BODY, agent-c run 147): this C is the same body, but
  * compiled here its post-loop epilogue lands on post0b's 32-byte boundary
  * (0x28 bytes); in the original unit (starts at 343F4) it is 0x20. */
-void sys_func_0003485C(int a0) {
+void sys_hang(int a0) {
     int *p = &a0;
     for (;;) {
     }
 }
 
-/* sys_func_0003487C: stores two args to two segment-base globals
+/* sys_setRegion_0003487C: stores two args to two segment-base globals
  * (lui at; sw a0,0(at); lui at; jr; sw a1,0(at) — two distinct symbol refs,
  * filled delay). Two distinct externs force the two separate luis (a single
  * symbol would reuse one lui). Reloc-blind segment-base convention
  * (D_3487C_X/Y = 0x0 in undefined_syms). No episode (reloc-blind base). */
 extern int D_3487C_X, D_3487C_Y;
-void sys_func_0003487C(int a0, int a1) {
+void sys_setRegion_0003487C(int a0, int a1) {
     D_3487C_X = a0;
     D_3487C_Y = a1;
 }
@@ -639,13 +639,13 @@ void app_initSystem(int a0) {
 }
 
 extern int gl_func_00000000();
-void sys_func_00034B64(int a0) {
+void sys_pollDevices_00034B64(int a0) {
     gl_func_00000000(a0);
     gl_func_00000000(a0);
     gl_func_00000000(gl_func_00000000);
 }
 
-// sys_func_00034B98 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// dma_waitAll — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x7C / 31 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
@@ -661,8 +661,8 @@ void sys_func_00034B64(int a0) {
 //       frame) — `v0 = *&D_0; jr ra; v0 = v0 + 0x80000000`
 //       (KSEG0/segment fix-up of a &D_0 pointer).
 //
-// Leading fn sys_func_00034B98 (slot-init loop):
-//   void sys_func_00034B98(void *a0) {
+// Leading fn dma_waitAll (slot-init loop):
+//   void dma_waitAll(void *a0) {
 //     for (int i = 1; i != 0xA; i++)           // i = 1 .. 9
 //       callback(i);                            // jal 0 (USO cb)
 //   }
@@ -690,7 +690,7 @@ void sys_func_00034B64(int a0) {
 //   Real-C STRUCTURAL body below for the NAMED leading 1..9
 //   slot-init loop only. Byte-match deferred. Name pre-checked: no
 //   extern reuse.
-void sys_func_00034B98(void *a0) {
+void dma_waitAll(void *a0) {
     int i;
     (void)a0;
     for (i = 1; i != 0xA; i++) {
@@ -699,18 +699,18 @@ void sys_func_00034B98(void *a0) {
 }
 
 extern int D_34BDC_A, D_34BDC_B;
-void sys_func_00034BDC(int a0, int *a1, int *a2) {
+void sys_getRegion_00034BDC(int a0, int *a1, int *a2) {
     int *p = &a0;
     *a1 = D_34BDC_A;
     *a2 = D_34BDC_B;
 }
 
-int sys_func_00034BFC(int a0) {
+int sys_getRegionKseg0_00034BFC(int a0) {
     return *(int *)&D_00000000 + 0x80000000;
 }
 
 extern int gl_func_00000000();
-void sys_func_00034C14() {
+void sys_writebackDCacheAll() {
     int r = gl_func_00000000(1);
     gl_func_00000000();
     gl_func_00000000(r);
@@ -787,7 +787,7 @@ int dma_invalCache(void *a0, void *a1) {
  * `if (flags & 4) v1 |= 0x80; store; return 1;`. EXACT: unwrapped
  * 2026-10-16 -- the table base &D_00000000+0x11FA links to the ROM words
  * because D_00000000 is an absolute symbol at 0. */
-int sys_func_00034CC8(int a0, char *a1) {
+int pad_decodeButtonMap_00034CC8(int a0, char *a1) {
     signed char *t = (signed char *)((char *)&D_00000000 + 0x11FA + *(int *)(a1 + 0x34) * 6);
     int v1 = 0;
     int v0;
@@ -814,33 +814,33 @@ int sys_func_00034CC8(int a0, char *a1) {
 }
 
 extern int gl_func_00000000();
-int sys_func_00034DBC(int a0) {
+int pad_initGlobal(int a0) {
     gl_func_00000000(gl_func_00000000);
     return 1;
 }
 
 extern int gl_func_00000000();
-void sys_func_00034DE8(int a0) {
+void pad_setSlotValueGlobal(int a0) {
     gl_func_00000000(gl_func_00000000);
 }
 
 extern int gl_func_00000000();
-int sys_func_00034E10(int a0) {
+int pad_isSlotState2Global(int a0) {
     return gl_func_00000000(gl_func_00000000) == 2;
 }
 
 extern int gl_func_00000000();
-void sys_func_00034E3C(int a0) {
+void pad_requestGlobal(int a0) {
     gl_func_00000000(gl_func_00000000);
 }
 
 extern int gl_func_00000000();
-void sys_func_00034E64(int a0) {
+void pad_waitIdleGlobal(int a0) {
     gl_func_00000000(gl_func_00000000);
 }
 
 extern int gl_func_00000000();
-void sys_func_00034E8C(int a0) {
+void pad_getFlagGlobal(int a0) {
     gl_func_00000000(gl_func_00000000);
 }
 
@@ -905,13 +905,13 @@ void app_run(char *arg0, char *arg1) {
 
 long long gl_func_00035164_inner(int a0);
 
-/* sys_func_00035164: thin (int) wrapper over the long-long inner. LANDED
+/* sys_getTime: thin (int) wrapper over the long-long inner. LANDED
  * fuzzy=100 via the `int *p = &a0;` lever — &param forces the dead arg-home
  * sw a0,0x18(sp) into the jal delay slot (vs the default empty nop). The
  * historical INSN_PATCH bridge (overwriting the nop byte to spill a0) was
  * REMOVED 2026-05-23 as match-faking; the &a0 C lever replaces it. Twin of
  * boot_startThread_00066BD4. */
-int sys_func_00035164(int a0) {
+int sys_getTime(int a0) {
     int *p = &a0;  /* &param forces the dead arg-home sw a0,0x18(sp) */
     long long r = gl_func_00035164_inner(*p);
     return (int)r;
@@ -956,7 +956,7 @@ void app_unloadUso(int a0, int a1) {
 
 
 extern int gl_func_00000000();
-void sys_func_0003523C(int a0, int a1, int a2) {
+void sys_initHeap(int a0, int a1, int a2) {
     gl_func_00000000(gl_func_00000000, a1, a1 + a2);
 }
 
@@ -1019,7 +1019,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", heap_tempAlloc);
 #endif
 
 /* heap_tempFree: 10-insn 1-call wrapper. Split off 4-insn
- * sys_func_00035360 (`return *D_X` with arg-shadow). */
+ * sys_getResetType (`return *D_X` with arg-shadow). */
 extern char D_35338_X;
 void heap_tempFree(int a0) {
     gl_func_00000000(&D_35338_X);
@@ -1027,7 +1027,7 @@ void heap_tempFree(int a0) {
 }
 
 extern int D_35360_X;
-int sys_func_00035360(int a0) {
+int sys_getResetType(int a0) {
     return D_35360_X;
 }
 
@@ -1433,7 +1433,7 @@ end:
     return 0;
 }
 
-void sys_func_0003582C(int *a0, int a1) {
+void fs_setHandle(int *a0, int a1) {
     a0[8] = a1;
 }
 
@@ -1590,7 +1590,7 @@ int fs_func_0003593C(char *o) {
     return 0;
 }
 
-int sys_func_00035988(int *a0) {
+int fs_getHandle(int *a0) {
     return a0[8];
 }
 
@@ -1903,14 +1903,14 @@ void Parms_func_00035DAC(void) {
 
 /* game_libs_func_00035E5C: 2-word all-zero inter-function ROM pad (0x35E5C/0x35E60).
  * The `lui t6; lw t6,0(t6)` that used to follow it is the hoisted first
- * statement (the context-pointer read) of coll_func_00035E64 below
+ * statement (the context-pointer read) of coll_pushClear_00035E64 below
  * (merged 2026-09-06; the 2D36C precedent: the predecessor Parms_func_00035DAC is
  * an NM wrap, so the pad stays a 2-word INCLUDE_ASM rather than a SUFFIX). */
 /* game_libs_func_00035E5C (folded 2026-10-24 agent-c run 150): 2 all-zero pad words, now an
  * all-zero SUFFIX_BYTES_FORCE on Parms_func_00035DAC; expected/ symbol deleted, Parms_func_00035DAC grown by 8. */
 
 #ifdef NON_MATCHING
-/* coll_func_00035E64 (ex gl_func_0002E6C + the 2-word head; 0x168, 90 words).
+/* coll_pushClear_00035E64 (ex gl_func_0002E6C + the 2-word head; 0x168, 90 words).
  * bootup.uso Sym exports section offset 0x4A4D0 = splat 0x35E64 (ROM 0xE1AF3C -
  * 0xDD0A6C; jal'd from TextReloc @0x4FCC); 0x35E5C/0x35E60 are the pad and
  * 0x35E6C is NOT exported. The head `lui t6; lw t6,0(t6)` is the read of the
@@ -1968,7 +1968,7 @@ void Parms_func_00035DAC(void) {
 extern int gl_func_00000000_35e6c(char *, float *, float, float *);
 extern char *D_00000000_50;
 typedef struct { int x, y, z; } IVec3_35E64;
-void coll_func_00035E64(char *o) {
+void coll_pushClear_00035E64(char *o) {
     float pad2[2];
     float w;
     Vec3 point;
@@ -2013,10 +2013,10 @@ void coll_func_00035E64(char *o) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", coll_func_00035E64);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", coll_pushClear_00035E64);
 #endif
 
-void coll_func_00035FCC(void) {}
+void coll_nop_00035FCC(void) {}
 
 /* 2026-05-31 71.3%->91.2%: fixed call args — addresses are address-style
  * (&D+0x1E9F4 / &D+0x1EA00 -> lui+addiu, were literals 0x1E9B4/0x1E9C0 ->
@@ -4894,7 +4894,7 @@ int MemberCallback_invoke_0003A044(char *a0) {
     return fnptr(arg);
 }
 
-// coll_func_0003A0C4 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
+// MemberCallback_invoke_0003A0C4 — STRUCTURAL PASS + BUNDLE BOUNDARY NOTE
 // (0x4C8 / 306 words, no episode). Raw-.word USO form (game_libs).
 //
 // MULTI-FUNCTION USO BUNDLE (no-frame-leaf shape — see
@@ -4910,9 +4910,9 @@ int MemberCallback_invoke_0003A044(char *a0) {
 // bundle notes; not fixable with mnemonic split/merge — needs the
 // spimdisasm-USO migration).
 //
-// Leading fn coll_func_0003A0C4 (0x3A0C4..0x3A150) — a table-driven
+// Leading fn MemberCallback_invoke_0003A0C4 (0x3A0C4..0x3A150) — a table-driven
 // indirect dispatcher, a CLONE of MemberCallback_invoke:
-//   ? coll_func_0003A0C4(Rec *r) {
+//   ? MemberCallback_invoke_0003A0C4(Rec *r) {
 //     short i = r->h_0A;                         // index / id
 //     short j = r->h_08;                         // secondary index
 //     T *base = r->p_04;
@@ -4967,7 +4967,7 @@ int MemberCallback_invoke_0003A044(char *a0) {
  * (MATCHING_WORKFLOW). Flipping it disturbs temp rotation (combined base expr
  * -> 23/37; named j var -> 24/37; v1-routed end args -> 1/37). Allocation-order
  * tie-break, not C-steerable here. */
-int coll_func_0003A0C4(char *r) {
+int MemberCallback_invoke_0003A0C4(char *r) {
     char *base;
     char *v1;
     char *e;
@@ -4998,7 +4998,7 @@ int coll_func_0003A0C4(char *r) {
  * INSIDE the next fragment (branch-past-end discriminator), $f2/$f16 flow across
  * the printed boundaries, and the fragment head words are the classic annulled
  * delay-slot dups. The 3 nops at 3A158 are inter-function padding after
- * coll_func_0003A0C4 (pad sidecar above); real entry is 3A164. */
+ * MemberCallback_invoke_0003A0C4 (pad sidecar above); real entry is 3A164. */
 int coll_boxOverlap_0003A164(float *a0, float *a1) {
     if (a1[0] <= a0[0] && a0[0] <= a1[3] && a1[2] <= a0[2] && a0[2] <= a1[5] && a1[1] <= a0[1] && a0[1] <= a1[4]) {
         return 1;
@@ -5333,13 +5333,13 @@ end:
     return (int)a0;
 }
 
-// coll_func_0003B01C — STRUCTURAL PASS (0x190 / 100 words, no episode).
+// coll_contactPushOut — STRUCTURAL PASS (0x190 / 100 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION — exactly
 // ONE 27BDFF40 prologue; the two jr's are the EARLY-OUT return and
 // the main return (a `b` to the shared epilogue precedes the first
 // jr — not a multi-fn bundle). A flag-gated FP geometry-update.
 //
-//   void coll_func_0003B01C(O *o) {
+//   void coll_contactPushOut(O *o) {
 //     int fl = o->w_30;
 //     if (!(fl & 6)) {                            // dirty/active gate
 //       o->w_30 = fl | 2;                          // mark + early-out
@@ -5375,7 +5375,7 @@ end:
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_3B01C.cpp (V3 operator- / by-value operator=,
  * kept position pointers, itab-order anchor, volatile frame homes), REPLACE_FUNC_BODY-spliced over this placeholder in
  * both build trees (agent-c run 162). The old cfe body (98.63) is retired. */
-int coll_func_0003B01C(char *o, char *other) {
+int coll_contactPushOut(char *o, char *other) {
     return 0;
 }
 
@@ -5384,7 +5384,7 @@ int coll_func_0003B01C(char *o, char *other) {
  * splat .s was 0x14 (5 insns); the trailing `lw v1, 0x8C(a0)` was an
  * alt-entry prologue for the successor (gl_func_0003B1AC enters with $v1
  * uninitialised, so callers route through the +0x10 alt-entry that sets
- * v1 from arg-struct field 0x8C). Split into coll_func_0003B1A8 via
+ * v1 from arg-struct field 0x8C). Split into coll_offsetPointsByMtx via
  * scripts/split-fragments.py. */
 float coll_return0f_0003B198(int a0, int a1) {
     (void)a0;
@@ -5392,7 +5392,7 @@ float coll_return0f_0003B198(int a0, int a1) {
     return 0.0f;
 }
 
-/* coll_func_0003B1A8 (0x144, 81 words) -- EXACT (agent-c run 135). The
+/* coll_offsetPointsByMtx (0x144, 81 words) -- EXACT (agent-c run 135). The
  * 1-word "alt-entry prologue" orphan (`lw v1,0x8C(a0)`) and gl_func_0003B1AC
  * are ONE function: bootup.uso Sym 1722 exports text 0x4F814 (= splat
  * 0x3B1A8); 0x4F818 (= 0x3B1AC) is not exported (scripts/uso-sym-oracle.py).
@@ -5413,7 +5413,7 @@ float coll_return0f_0003B198(int a0, int a1) {
 typedef struct { f32 x, y, z; } V3_3B1A8;
 typedef struct { s32 pad0; V3_3B1A8 v; char pad10[0x18]; } E3B1A8;
 typedef struct { char pad[0x2C]; u32 n; E3B1A8 *buf; } L3B1A8;
-void coll_func_0003B1A8(char *a0, f32 *m) {
+void coll_offsetPointsByMtx(char *a0, f32 *m) {
     s32 pad0;
     V3_3B1A8 p;
     V3_3B1A8 *q;
@@ -6124,9 +6124,9 @@ void CollObjMgr_update(char *arg0) {
     }
 }
 
-void coll_func_0003CA80(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x2C); *(int*)((char*)a0 + 0x2C) = (int)a1; }
+void CollObjMgr_addStatic(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x2C); *(int*)((char*)a0 + 0x2C) = (int)a1; }
 
-void coll_func_0003CA90(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x30); *(int*)((char*)a0 + 0x30) = (int)a1; }
+void CollObjMgr_addDynamic(int *a0, int *a1) { *(int*)((char*)a1 + 4) = *(int*)((char*)a0 + 0x30); *(int*)((char*)a0 + 0x30) = (int)a1; }
 
 /* coll_boxCtor_0003CAA0: 24-insn alloc-or-given Vec6-zero constructor. */
 int* coll_boxCtor_0003CAA0(int *a0) {
@@ -6147,11 +6147,11 @@ end:
     return a0;
 }
 
-/* coll_func_0003CB00: 11-insn no-frame leaf setter. EXACT — key:
+/* CollObj_init: 11-insn no-frame leaf setter. EXACT — key:
  * shared `int v=0xFFFF` forces `ori v0,zero,0xffff` (a plain literal
  * sign-extends to `addiu -1`), and the two 0xFFFF short stores must be
  * emitted 0x16-before-0x14. */
-void coll_func_0003CB00(int *a0, int a1, int a2, short a3) {
+void CollObj_init(int *a0, int a1, int a2, short a3) {
     int v = 0xFFFF;
     a0[0] = a1;
     a0[2] = a2;
@@ -6186,7 +6186,7 @@ void coll_func_0003CB00(int *a0, int a1, int a2, short a3) {
  *   (28 bytes) -> frame 0x40, arr base 0x24, arr[4] @ 0x34, arr[5]
  *   @ 0x38 == target. arr[2]+volatile pads can never reach 0x34 (that
  *   path always lands the pair 8-aligned: 0x28/0x30/0x38/0x40). */
-void coll_func_0003CB2C(int **a0, int a1) {
+void CollObj_sendBump(int **a0, int a1) {
     int arr[7];
     int *p;
     int *q;
@@ -6201,7 +6201,7 @@ void coll_func_0003CB2C(int **a0, int a1) {
 
 extern int gl_func_00000000();
 
-void coll_func_0003CB6C(char *a0, int a1, int a2, float a3, float a4) {
+void CollObj_initCylinder(char *a0, int a1, int a2, float a3, float a4) {
     gl_func_00000000(a0, a1, 1, (short)a2);
     *(float*)(a0 + 0x3C) = a3;
     *(float*)(a0 + 0x34) = a3;
@@ -17759,12 +17759,12 @@ int gfx_screenRaycast(char *arg0, int x, int y, float *out) {
 }
 #endif
 
-// coll_func_0004F704 — STRUCTURAL PASS (0x154 / 86 words, no episode). Raw-.word
+// cam_isSphereInView — STRUCTURAL PASS (0x154 / 86 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x28
 // (saves ra). FP distance/proximity computation (cb = jal 0 USO-relocated;
 // sqrt/normalize helper).
 //
-//   <ret> coll_func_0004F704(void *a0, float px, ... ) {
+//   <ret> cam_isSphereInView(void *a0, float px, ... ) {
 //     void *o = a0->p70;
 //     // per-component deltas vs the object's Vec3 at o->0xA0/0xA4/0xA8:
 //     float dx = px        - o->pA0;                   // sub.s, sp+0x34 in
@@ -17795,7 +17795,7 @@ extern float gl_func_00000000_f704(float);
  * The second call takes the first call's result (f12 = dist). Both 3-term
  * sums are written last-term-first with the inner pair reversed (running sum
  * = add.s fs); the threshold is indexed as a float array off a0+0x98. */
-int coll_func_0004F704(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {
+int cam_isSphereInView(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {
     float dist;
     f32 d[3];
     char *o;
@@ -27162,7 +27162,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", sys_fatal);
 
 extern int D_6170C_idx;
 extern int D_6170C_arr[];
-int sys_func_0006170C(void) {
+int sys_stackPeek_0006170C(void) {
     return D_6170C_arr[D_6170C_idx - 1];
 }
 
@@ -27232,23 +27232,23 @@ void sys_imout(void) {
     }
 }
 
-/* sys_func_00061824: FP formula. n = 4*a0; x = ((n+2)*(n+3) >> 2) & 0xFFFF
+/* sys_randFromSeed: FP formula. n = 4*a0; x = ((n+2)*(n+3) >> 2) & 0xFFFF
  * (unsigned mult -> multu, low word kept); returns (float)(unsigned)x / D[0x2070].
  * The bgez + (add 0x4f800000=2^32) around cvt.s.w is IDO's (float)(unsigned int)
  * idiom — emitted even though x<0x10000 never sets the MSB. Single reloc: the
  * float divisor at D+0x2070. */
-float sys_func_00061824(int a0) {
+float sys_randFromSeed(int a0) {
     unsigned int n = a0 * 4;
     unsigned int x = ((n + 2) * (n + 3) >> 2) & 0xFFFF;
     return (float)x / *(float *)((char *)&D_00000000 + 0x2070);
 }
 
 // Store arg to global at segment offset 0x21E04 (lui+sw, offset baked in bytes).
-void sys_func_0006186C(int a0) {
+void sys_srand(int a0) {
     *(int *)((char *)&D_00000000 + 0x21E04) = a0;
 }
 
-/* sys_func_00061878: sibling of 00061824 — same ((n+2)(n+3))>>2 formula,
+/* sys_randf: sibling of 00061824 — same ((n+2)(n+3))>>2 formula,
  * but n = (counter@D+0x21E04)*4, writes the >>2 result back to the counter, and
  * returns (float)(unsigned)(v & 0xFFFF) / D[0x2074]. Stateful (advances the
  * 0x21E04 seed each call). Same (float)(unsigned int) bgez+add-2^32 idiom.
@@ -27264,7 +27264,7 @@ void sys_func_0006186C(int a0) {
  * barrier instead perturbs the FP-constant scheduling (2 -> 11 diffs).
  * The two fold classes are distinct mechanisms; cap confirmed. */
 extern int gl_ref_00021E04;
-float sys_func_00061878(void) {
+float sys_randf(void) {
     int *p = &gl_ref_00021E04;
     unsigned int v = (unsigned int)*p * 4 + 2;
     unsigned int w = v + 1;
@@ -27513,18 +27513,18 @@ void sys_listRemove_00061D1C(int *a0, int matchval) {
     }
 }
 
-void sys_func_00061D80(int *a0, int a1) {
+void sys_setWord4_00061D80(int *a0, int a1) {
     a0[1] = a1;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00061D1C_pad.s")
 
-/* sys_func_00061D94 was 19-insn 2-function bundle. Split via
+/* dbg_printfNop was 19-insn 2-function bundle. Split via
  * split-fragments.py 2026-05-08:
- *   parent sys_func_00061D94 (7 insns / 0x1C, variadic empty stub)
- *   sys_func_00061DB0 (12 insns / 0x2C, sum-of-bytes loop) */
-void sys_func_00061D94(int a0, ...) {}
+ *   parent dbg_printfNop (7 insns / 0x1C, variadic empty stub)
+ *   sys_sumBytes (12 insns / 0x2C, sum-of-bytes loop) */
+void dbg_printfNop(int a0, ...) {}
 
-int sys_func_00061DB0(int sum, unsigned char *buf, unsigned int len) {
+int sys_sumBytes(int sum, unsigned char *buf, unsigned int len) {
     int result = sum;
     unsigned int i = 0;
     if (len != 0) {

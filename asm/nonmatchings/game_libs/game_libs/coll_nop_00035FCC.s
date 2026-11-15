@@ -1,0 +1,6 @@
+nonmatching coll_nop_00035FCC, 0x8
+
+glabel coll_nop_00035FCC
+    /* E1B0A4 00035FCC 03E00008 */  .word 0x03E00008
+    /* E1B0A8 00035FD0 00000000 */  .word 0x00000000
+endlabel coll_nop_00035FCC

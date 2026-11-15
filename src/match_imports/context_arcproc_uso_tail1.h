@@ -421,9 +421,9 @@ extern int arcproc_uso_import_116_1B04(void *);
 extern int arcproc_uso_import_117_1B04(void *, int, int);
 extern char D_arc1B04_a;
 void ArcNameEntry_update_00001B04(Arc1B04Object *arg);
-int ArcNameEntry_vfunc17_00001B88();
+int ArcNameEntry_drawEntryOverlay();
 extern int gl_func_00000000();
-void ArcNameEntry_vfunc18_00001BBC(char *arg0);
+void ArcNameEntry_drawExitOverlay(char *arg0);
 void ArcNameEntry_drawBlinkBanner_00001C74(int *a0);
 typedef struct {
     char pad00[0xC];

@@ -12,7 +12,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * Original single-file body split into arcproc_uso.c (0x0..0x50 func_00000000),
  * arcproc_uso_o0_50.c (-O0), and this tail. */
 
-/* ArcNameEntry_vfunc17_00001B88 moved to its in-offset-order slot (before
+/* ArcNameEntry_drawEntryOverlay moved to its in-offset-order slot (before
  * func_00001BBC). It was defined at the top of the file, which made IDO emit
  * it FIRST in .text — an extra 0x34-byte copy at segment offset 0x240 and a
  * 0x34-byte hole at 0x1B88, i.e. +0x34/-0x34 layout drift inside the segment
@@ -1155,20 +1155,20 @@ INCLUDE_ASM("asm/nonmatchings/arcproc_uso/arcproc_uso", ArcNameEntry_update_0000
 /* K&R variadic-style helper at 0x1B88 (named directly as placeholder callee in
  * several NM bodies below). MATCHED. Must sit here in file order: IDO emits
  * .text in definition order. */
-ArcNameEntry_vfunc17_00001B88(a0) int * a0; {
+ArcNameEntry_drawEntryOverlay(a0) int * a0; {
     int *t;
     arcproc_uso_func_00000000(a0);
     t = *(int**)((char*)a0 + 0xD4);
     arcproc_uso_func_00000000(t, 0x8C, *(int*)((char*)t + 0x6B0));
 }
 
-/* ArcNameEntry_vfunc18_00001BBC: decay-tick handler (sub = self->0xD4;
+/* ArcNameEntry_drawExitOverlay: decay-tick handler (sub = self->0xD4;
  * sub->f_77C -= rate D+0x44, clamp at 0, 140-event mid-call with sub->0x6B0,
  * threshold call once <= 0). EXACT 2026-10-20 via twin port (twin-finder.py):
- * masked-identical to TimNameEntry_vfunc18_00001908 after the boundary fix
+ * masked-identical to TimNameEntry_drawExitOverlay after the boundary fix
  * (its 2 trailing words were 1C74's hoisted 1.0f head) -- only the field
  * offsets differ (0x72C->0x77C, 0x6AC->0x6B0, rate 0x48->0x44). */
-void ArcNameEntry_vfunc18_00001BBC(int *self) {
+void ArcNameEntry_drawExitOverlay(int *self) {
     char *base = &D_00000000;
     int *sub;
     float *fp;

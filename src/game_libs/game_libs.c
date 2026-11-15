@@ -4403,7 +4403,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 /* MNode_vslot10_00039988 split 2026-05-15; INCLUDE_ASM/body lives in
  * game_libs_post.c next to parent MNode_vslot9_00039960. */
 
-/* sys_func_00035360 split 2026-05-15; INCLUDE_ASM lives in
+/* sys_getResetType split 2026-05-15; INCLUDE_ASM lives in
  * game_libs_post.c next to parent heap_tempFree. */
 
 /* boot_stub_00066C58 / _00066C60 split 2026-05-15 from boot_entry_00066C30;
