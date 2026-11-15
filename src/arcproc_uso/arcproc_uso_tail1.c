@@ -104,7 +104,7 @@ extern int   D_arc800_d;       /* store target +0x40 / +0x44 */
 void arc_pauseRetry_00000800(void) {
     int v;
     gl_func_00000000(D_arc800_a);
-    v = gl_func_00000000(*(int*)((char*)*(int**)((char*)D_arc800_b + 0x6AC) + 0x4C));
+    v = gl_func_00000000((int)DATAMGR(ARCRACE(D_arc800_b)->dataMgr)->session);
     if (v != 0) {
         *(int*)((char*)&D_arc800_d + 0x40) = 7;
         *(int*)((char*)&D_arc800_d + 0x44) = 4;
@@ -112,7 +112,7 @@ void arc_pauseRetry_00000800(void) {
         *(int*)((char*)&D_arc800_d + 0x40) = 4;
     }
     gl_func_00000000(D_arc800_a, 4,
-        *(int*)((char*)*(int**)((char*)D_arc800_a + 0x6A8) + 0xC));
+        ARCRACE(D_arc800_a)->courseList->courses[0]);
 }
 
 /* arc_pauseQuit_00000880: 31-insn (0x7C) state-conditional update.
@@ -127,7 +127,7 @@ extern char D_arc880_Z[];
 void arc_pauseQuit_00000880(void) {
     int v0;
     gl_func_00000000(D_arc880_X);
-    v0 = gl_func_00000000(*(int*)((char*)*(int**)((char*)D_arc880_Y + 0x6AC) + 0x4C));
+    v0 = gl_func_00000000((int)DATAMGR(ARCRACE(D_arc880_Y)->dataMgr)->session);
     if (v0 != 0) {
         *(int*)(D_arc880_Z + 0x40) = 7;
         *(int*)(D_arc880_Z + 0x44) = 9;
@@ -246,20 +246,20 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)gl_func_00000000(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3B8); *(int *)(o3 + 0x28) = (int)&D_arc_A3C_v0; }
-            *(int *)(o2 + 0x28) = (int)&D_arc_A3C_v1;
+            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_arc_A3C_v0; }
+            NODE(o2)->vptr = (int)&D_arc_A3C_v1;
         }
-        *(int *)(o1 + 0x28) = (int)&D_arc_A3C_v2;
+        NODE(o1)->vptr = (int)&D_arc_A3C_v2;
         gl_func_00000000(o1 + 0x50);
     }
-    *(int *)(obj + 0x28) = (int)&D_arc_A3C_v3;
-    *(int *)(obj + 0x568) = 0;
+    NODE(obj)->vptr = (int)&D_arc_A3C_v3;
+    RACEPROC(obj)->spriteSet = 0;
     gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
-    *(int *)(obj + 0x528) = a4;
-    *(int *)(obj + 0x6A8) = a3;
-    *(int *)(obj + 0x6B8) = 0;
+    RACEPROC(obj)->session = (BackupSession *)a4;
+    ARCRACE(obj)->courseList = (ArcCourseList *)a3;
+    ARCRACE(obj)->retry = 0;
     gl_func_00000000(obj);
-    *(float *)(obj + 0x77C) = 0.0f;
+    ARCRACE(obj)->resultFade = 0.0f;
     gl_func_00000000((char *)&D_00000000 + 0x3D0, 0);
     gl_func_00000000(&D_00000000, 0);
 
@@ -267,50 +267,50 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o2 = (char *)gl_func_00000000(0xD8);
         if (o2 != 0) {
             gl_func_00000000(o2);
-            *(int *)(o2 + 0x28) = (int)&D_arc_A3C_v4;
+            NODE(o2)->vptr = (int)&D_arc_A3C_v4;
         }
-        *(int *)(obj + 0x6AC) = (int)o2;
+        ARCRACE(obj)->dataMgr = (int)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
-        o1 = *(char **)(obj + 0x6AC);
-        *(int *)(o1 + 0xB4) = 7;
+        o1 = (char *)ARCRACE(obj)->dataMgr;
+        DATAMGR(o1)->hudFlags = 7;
 
-        gl_func_00000000_A3Cv(*(int *)(obj + 0x6AC), obj, *(int *)(obj + 0x568), *(int *)(obj + 0x6A8), *(int *)(obj + 0x528));
+        gl_func_00000000_A3Cv(ARCRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet, (int)ARCRACE(obj)->courseList, (int)RACEPROC(obj)->session);
 
-        w = *(char **)(obj + 0x6AC);
-        o1 = *(char **)(w + 0x28);
+        w = (char *)ARCRACE(obj)->dataMgr;
+        o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        *(int *)(*(char **)(*(char **)(obj + 0x6AC) + 0x44) + 0x18) = *(int *)(*(char **)(obj + 0x6A8) + 0x34);
-        *(int *)(*(char **)(*(char **)(obj + 0x6AC) + 0x44) + 0x14) = *(int *)(*(char **)(obj + 0x6A8) + 0x34);
+        DATAMGR(ARCRACE(obj)->dataMgr)->entries->unk18 = ARCRACE(obj)->courseList->total;
+        DATAMGR(ARCRACE(obj)->dataMgr)->entries->time = ARCRACE(obj)->courseList->total;
 
-        o1 = *(char **)(obj + 0x6AC);
+        o1 = (char *)ARCRACE(obj)->dataMgr;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         gl_func_00000000(obj, a1);
-        *(int *)(obj + 0x48) = gl_func_00000000(0);
-        gl_func_00000000(*(int *)(obj + 0x48), obj);
-        gl_func_00000000(*(int *)(obj + 0x48), (*(int *)&D_arc_A3C_r + 3) << 16, -1, &D_00000000);
-        gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_arc_A3C_r + 3) << 16) | 9, -1, &D_00000000);
-        gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_arc_A3C_r + 3) << 16) | 5, -1, &D_00000000);
-        *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
-        gl_func_00000000(*(int *)(obj + 0x48));
-        o1 = *(char **)(obj + 0x48);
+        RACEPROC(obj)->unk048 = gl_func_00000000(0);
+        gl_func_00000000(RACEPROC(obj)->unk048, obj);
+        gl_func_00000000(RACEPROC(obj)->unk048, (*(int *)&D_arc_A3C_r + 3) << 16, -1, &D_00000000);
+        gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_arc_A3C_r + 3) << 16) | 9, -1, &D_00000000);
+        gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_arc_A3C_r + 3) << 16) | 5, -1, &D_00000000);
+        *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
+        gl_func_00000000(RACEPROC(obj)->unk048);
+        o1 = (char *)RACEPROC(obj)->unk048;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         o1 = INPUT_MGR(D_00000000).fader;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
         gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 0);
         gl_func_00000000();
         *(int *)((char *)&D_00000000 + 0x40) = 5;
@@ -581,10 +581,10 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
     switch (i) {
     case 0:
         list = (int *)s1->dataMgr;
-        s1->finalTime = *(int*)(*(char**)((char*)list + 0x44) + 0x14);
-        s1->recordRank = *(int*)(*(char**)((char*)list + 0x44) + 0x40);
+        s1->finalTime = DATAMGR(list)->entries->time;
+        s1->recordRank = DATAMGR(list)->entries->rank[2];
         for (i = s1->recordRank - 1; i >= 0; i--) {
-            r = (char *)gl_func_00000000(*(int*)((char *)s1->race.session + 0x4), i);
+            r = (char *)gl_func_00000000((int)s1->race.session->arcade, i);
             if (s1->finalTime != *(int*)(r + 0x1C)) break;
             s1->recordRank = s1->recordRank - 1;
         }
@@ -605,10 +605,10 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
         node = (char *)s1->race.unk524;
         buf = (char *)s1->race.handler;
         gl_func_00000000_FA8v(buf + 16, node);
-        if (*(int*)(node + 0x14) != 0) {
-            *(int*)(node + 0x4) = 1;
+        if (NODE(node)->parent != 0) {
+            NODE(node)->unk04 = 1;
         }
-        *(int*)(node + 0x14) = (int)buf;
+        NODE(node)->parent = (int)buf;
         gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 1);
         break;
     case 4:
@@ -804,21 +804,21 @@ void ARCRaceProcess_drawIntro(char *arg0) {
     int w;
     char *q;
     volatile int pad_a, pad_b, pad_c, pad_d;
-    if (*(int *)(arg0 + 0x4F0) & 0x10000) {
+    if (RACEPROC(arg0)->flags & 0x10000) {
         sp50[0] = 1.0f;
         sp50[1] = 1.0f;
         sp50[2] = 1.0f;
         sp50[3] = 1.0f;
-        if (*(int *)(arg0 + 0x4E4) >= 0xB) {
-            if (*(float *)(arg0 + 0x77C) < D_arc125C_30) {
-                *(float *)(arg0 + 0x77C) = *(float *)(arg0 + 0x77C) + D_arc125C_34;
+        if (RACEPROC(arg0)->timer >= 0xB) {
+            if (ARCRACE(arg0)->resultFade < D_arc125C_30) {
+                ARCRACE(arg0)->resultFade = ARCRACE(arg0)->resultFade + D_arc125C_34;
             }
         } else {
-            if (*(float *)(arg0 + 0x77C) > 0.0f) {
-                *(float *)(arg0 + 0x77C) = *(float *)(arg0 + 0x77C) - D_arc125C_38;
+            if (ARCRACE(arg0)->resultFade > 0.0f) {
+                ARCRACE(arg0)->resultFade = ARCRACE(arg0)->resultFade - D_arc125C_38;
             }
         }
-        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x77C) * (0, (float)255)), arg0 + 0x380, arg0 + 0x3A4);
+        gl_func_00000000(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x380, arg0 + 0x3A4);
         gl_func_00000000(arg0 + 0x6BC);
         gl_func_00000000(arg0 + 0x6BC, 0xA0, 0xB6, 3);
         while (0) { w = *(short *)(arg0 + 0x20); }
@@ -826,8 +826,10 @@ void ARCRaceProcess_drawIntro(char *arg0) {
         w = *(short *)(q + 0x20);
         p6d8 = *(char **)(arg0 + 0x6E4);
         sp48 = 0xA0 - ((*(short *)(p6d8 + 0x20) + w + 4) / 2);
-        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x77C) * (0, (float)255)), arg0 + 0x260, arg0 + 0x284);
-        p6a8 = *(char **)(arg0 + 0x6A8);
+        gl_func_00000000(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x260, arg0 + 0x284);
+        p6a8 = (char *)ARCRACE(arg0)->courseList;
+        /* count == idx + 1 (the final course). Kept raw: the ArcCourseList member form
+         * swaps the two loads' registers (agent-h run 492). */
         if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
             gl_func_00000000(arg0 + 0x6EC);
             gl_func_00000000(arg0 + 0x6EC, sp48, 0x8E, 2);
@@ -892,26 +894,26 @@ void arc_drawResultScore_000014C8(char *a0) {
     (void)color;
     (void)pad;
 
-    if (*(int*)(a0 + 0x500) != 0) {
+    if (RACEPROC(a0)->leave != 0) {
         if (D_flt_arc0 <= 0.0f) {
-            if (*(float*)(a0 + 0x77C) < D_0000003C) {
-                *(float*)(a0 + 0x77C) += D_00000040;
+            if (ARCRACE(a0)->resultFade < D_0000003C) {
+                ARCRACE(a0)->resultFade += D_00000040;
             }
 
-            *(int*)(a0 + 0x508) = *(int*)(a0 + 0x508) + 1;
-            if (gl_func_00000000(*(int*)(a0 + 0x528)) != 0) {
+            RACEPROC(a0)->unk508 = RACEPROC(a0)->unk508 + 1;
+            if (gl_func_00000000((int)RACEPROC(a0)->session) != 0) {
                 gl_func_00000000(&D_00000000,
-                                 (int)(*(float*)(a0 + 0x77C) * (0, 255.0f)),
+                                 (int)(ARCRACE(a0)->resultFade * (0, 255.0f)),
                                  a0 + 0x2F0,
                                  a0 + 0x314);
                 saved = a0 + 0x764;
                 gl_func_00000000(saved);
-                if ((*(int*)(a0 + 0x508) & 8) != 0) {
+                if ((RACEPROC(a0)->unk508 & 8) != 0) {
                     gl_func_00000000(saved, 0xA0, 0xB4, 3);
-                    gl_func_00000000(a0, 0xA0, *(int*)(*(char**)(*(char**)(a0 + 0x6AC) + 0x44) + 0x14));
+                    gl_func_00000000(a0, 0xA0, DATAMGR(ARCRACE(a0)->dataMgr)->entries->time);
                 }
             } else {
-                gl_func_00000000(a0, 0xA0, *(int*)(*(char**)(*(char**)(a0 + 0x6AC) + 0x44) + 0x14));
+                gl_func_00000000(a0, 0xA0, DATAMGR(ARCRACE(a0)->dataMgr)->entries->time);
             }
         }
     }
@@ -1092,13 +1094,13 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)gl_func_00000000(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)gl_func_00000000(0x2C), (a0 != 0))) {
-                    gl_func_00000000(a0, D_arc199C_v + 0x3DC); *(char **)(a0 + 0x28) = D_arc199C_w;
+                    gl_func_00000000(a0, D_arc199C_v + 0x3DC); NODE(a0)->vptr = (int)D_arc199C_w;
                 }
-                *(char **)(v1 + 0x28) = D_arc199C_x;
+                NODE(v1)->vptr = (int)D_arc199C_x;
             }
-            *(char **)(a2 + 0x28) = D_arc199C_y;
+            NODE(a2)->vptr = (int)D_arc199C_y;
         }
-        *(char **)(arg0 + 0x28) = D_arc199C_z;
+        NODE(arg0)->vptr = (int)D_arc199C_z;
         *(int *)(arg0 + 0x60) = arg2;
         *(char **)(arg0 + 0xD4) = arg1;
         *(int *)(arg0 + 0xE0) = 0xA0;
@@ -1108,7 +1110,7 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
         *(int *)(arg0 + 0xE8) = 0xA0;
         *(int *)(arg0 + 0xEC) = 0x69;
         *(float *)(arg0 + 0x108) = 1.0f;
-        *(float *)(arg1 + 0x77C) = 1.0f;
+        ARCRACE(arg1)->resultFade = 1.0f;
         gl_func_00000000(arg0 + 0xF0,
             ((D_arc199C_id + 0x23) << 16) | (((Arc199C_A *)arg0)->b->v + 7));
     }
@@ -1159,7 +1161,7 @@ ArcNameEntry_drawEntryOverlay(a0) int * a0; {
     int *t;
     arcproc_uso_func_00000000(a0);
     t = *(int**)((char*)a0 + 0xD4);
-    arcproc_uso_func_00000000(t, 0x8C, *(int*)((char*)t + 0x6B0));
+    arcproc_uso_func_00000000(t, 0x8C, ARCRACE(t)->finalTime);
 }
 
 /* ArcNameEntry_drawExitOverlay: decay-tick handler (sub = self->0xD4;
@@ -1181,11 +1183,11 @@ void ArcNameEntry_drawExitOverlay(int *self) {
     if (val > 0.0f) {
         *fp -= *(float *)(base + 0x44);
         sub = (int *)self[0xD4 / 4];
-        if (*(float *)((char *)sub + 0x77C) < 0.0f) {
-            *(float *)((char *)sub + 0x77C) = 0.0f;
+        if (ARCRACE(sub)->resultFade < 0.0f) {
+            ARCRACE(sub)->resultFade = 0.0f;
             sub = (int *)self[0xD4 / 4];
         }
-        gl_func_00000000(sub, 140, *(int *)((char *)sub + 0x6B0));
+        gl_func_00000000(sub, 140, ARCRACE(sub)->finalTime);
         val = *(float *)((char *)(int *)self[0xD4 / 4] + 0x77C);
     }
     if (val <= 0.0f) {
@@ -1260,7 +1262,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
         gl_func_00000000(arg0, 0xE8, 0x13, (int)arg0->base.entries + 0x10);
         gl_func_00000000(arg0, 0x69, 0x11, &arg0->base.score);
         gl_func_00000000(arg0, 0x123, 0xE1, 1);
-        gl_func_00000000(arg0, 0x21, 0x13, arg0->base.unkA8);
+        gl_func_00000000(arg0, 0x21, 0x13, &arg0->base.shownScore);
         gl_func_00000000(arg0->base.points, arg0->courseList->total);
         arg0->base.points94 = gl_func_00000000(0, arg0->base.digitsTall);
         gl_func_00000000((char *)arg0->base.points94, 0);
@@ -1281,8 +1283,8 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
         *(int *)((char *)arg0->base.points94 + 0x84) = -0x12;
         sub = (char *)arg0->base.points94;
         gl_func_00000000(arg0->base.children, sub);
-        if (*(int *)(sub + 0x14) != 0) {
-            *(int *)(sub + 4) = 1;
+        if (NODE(sub)->parent != 0) {
+            NODE(sub)->unk04 = 1;
         }
         *(ArcDataManager **)(sub + 0x14) = arg0;
     }
@@ -1300,7 +1302,7 @@ void arc_DataManager_reset_00001F0C(ArcDataManager *a0) {
     } else {
         a0->base.score = 0x7530;
     }
-    *(int *)a0->base.unkA8 = a0->courseList->total;
+    a0->base.shownScore = a0->courseList->total;
     a0->base.bonus = 0;
     gl_func_00000000(a0);
 }
@@ -1353,90 +1355,90 @@ void arc_DataManager_update(char *arg0) {
     int a;
     int r;
 
-    bc = *(char **)(arg0 + 0xBC);
-    if ((*(int *)(bc + 0x4F0) & 0x10000) && (*(int *)(bc + 0x4DC) == 1)) {
-        *(int *)(arg0 + 0x30) = *(int *)(arg0 + 0x30) + 0x21;
+    bc = (char *)ARCDATAMGR(arg0)->race;
+    if ((RACEPROC(bc)->flags & 0x10000) && (RACEPROC(bc)->raceState == 1)) {
+        DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
         gl_func_00000000(arg0);
         gl_func_00000000(arg0);
-        t2 = *(int *)(arg0 + 0xA0) - 0x21;
-        *(int *)(arg0 + 0xA0) = t2;
+        t2 = DATAMGR(arg0)->score - 0x21;
+        DATAMGR(arg0)->score = t2;
         if (t2 < 0) {
-            *(int *)(arg0 + 0xA0) = 0;
-            gl_func_00000000(*(int *)(arg0 + 0x84), 0, 0);
-            gl_func_00000000(*(int *)(arg0 + 0xBC));
-            *(int *)(arg0 + 0x2C) = 0;
+            DATAMGR(arg0)->score = 0;
+            gl_func_00000000(DATAMGR(arg0)->countDown, 0, 0);
+            gl_func_00000000(ARCDATAMGR(arg0)->race);
+            DATAMGR(arg0)->active = 0;
         }
     }
     gl_func_00000000(arg0);
-    bc = *(char **)(arg0 + 0xBC);
-    if (*(int *)(bc + 0x4F0) & 0x10000) {
-        if ((*(int *)(bc + 0x4DC) == 1) && (*(int *)(*(char **)(arg0 + 0x44) + 0x34) != 0)) {
+    bc = (char *)ARCDATAMGR(arg0)->race;
+    if (RACEPROC(bc)->flags & 0x10000) {
+        if ((RACEPROC(bc)->raceState == 1) && (DATAMGR(arg0)->entries->finished != 0)) {
             gl_func_00000000(arg0);
-            gl_func_00000000(arg0, *(int *)(arg0 + 0xA0));
-            gl_func_00000000(*(int *)(arg0 + 0x84), *(int *)(arg0 + 0xA0), 0);
-            gl_func_00000000(*(int *)(arg0 + 0xBC));
+            gl_func_00000000(arg0, DATAMGR(arg0)->score);
+            gl_func_00000000(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 0);
+            gl_func_00000000(ARCDATAMGR(arg0)->race);
         }
-        a1 = *(int *)(arg0 + 0xA8);
+        a1 = DATAMGR(arg0)->shownScore;
         t2 = a1 + 0xFA;
-        rem = *(int *)(*(char **)(arg0 + 0x44) + 0x18) - a1;
+        rem = DATAMGR(arg0)->entries->unk18 - a1;
         if (rem >= 0xFA) {
-            *(int *)(arg0 + 0xA8) = t2;
+            DATAMGR(arg0)->shownScore = t2;
             a1 = t2;
         } else if (rem >= 0x32) {
-            *(int *)(arg0 + 0xA8) = a1 + 0x32;
+            DATAMGR(arg0)->shownScore = a1 + 0x32;
             a1 = a1 + 0x32;
         } else if (rem >= 0x19) {
-            *(int *)(arg0 + 0xA8) = a1 + 0x19;
+            DATAMGR(arg0)->shownScore = a1 + 0x19;
             a1 = a1 + 0x19;
         } else if (rem > 0) {
-            *(int *)(arg0 + 0xA8) = a1 + 1;
+            DATAMGR(arg0)->shownScore = a1 + 1;
             a1 = a1 + 1;
         }
-        gl_func_00000000(*(int *)(arg0 + 0x8C), a1);
-        v0 = *(int *)(*(char **)(arg0 + 0xBC) + 0x4DC);
+        gl_func_00000000(DATAMGR(arg0)->points, a1);
+        v0 = RACEPROC(ARCDATAMGR(arg0)->race)->raceState;
         if ((v0 == 1) || (v0 == 0)) {
-            gl_func_00000000(*(int *)(arg0 + 0x84), *(int *)(arg0 + 0xA0), 1);
-            gl_proto_1c94(*(int *)(arg0 + 0x80), *(int *)(*(char **)(arg0 + 0x44) + 0x30), 0.0f);
-            p44 = *(char **)(arg0 + 0x44);
-            gl_proto_1f54(*(int *)(arg0 + 0x80), *(int *)(p44 + 8), *(int *)(p44 + 0xC), 0.0f, 0.0f);
+            gl_func_00000000(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 1);
+            gl_proto_1c94(DATAMGR(arg0)->course, *(int *)((char *)DATAMGR(arg0)->entries + 0x30), 0.0f);
+            p44 = (char *)DATAMGR(arg0)->entries;
+            gl_proto_1f54(DATAMGR(arg0)->course, *(int *)(p44 + 8), *(int *)(p44 + 0xC), 0.0f, 0.0f);
         }
-        if (*(int *)(*(char **)(arg0 + 0x44) + 0x1C) != 0) {
-            gl_proto_1f54(*(int *)(arg0 + 0x94), 0xA0, 0x46, 1.0f, 1.0f);
-            *(int *)(*(char **)(arg0 + 0x94) + 0x78) = 0xFF;
-            q = (int *)(*(char **)(arg0 + 0x94) + 0x18);
+        if (DATAMGR(arg0)->entries->pendingPoints != 0) {
+            gl_proto_1f54(DATAMGR(arg0)->points94, 0xA0, 0x46, 1.0f, 1.0f);
+            *(int *)((char *)DATAMGR(arg0)->points94 + 0x78) = 0xFF;
+            q = (int *)((char *)DATAMGR(arg0)->points94 + 0x18);
             *q = *q | 4;
-            p44 = *(char **)(arg0 + 0x44);
-            a = *(int *)(p44 + 0x20);
-            r = *(int *)(p44 + 0x1C) - a;
+            p44 = (char *)DATAMGR(arg0)->entries;
+            a = ((RaceEntry *)p44)->unk20;
+            r = ((RaceEntry *)p44)->pendingPoints - a;
             if (r >= 0x32) {
                 q = (int *)p44; if (1) { q += 8; }
                 *q = *q + 0x32;
                 gl_func_00000000(0x20, 0x32);
-                a = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
+                a = DATAMGR(arg0)->entries->unk20;
             } else if (r >= 5) {
                 q = (int *)p44; if (1) { q += 8; }
                 *q = *q + 5;
                 gl_func_00000000(0x20, 5);
-                a = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
+                a = DATAMGR(arg0)->entries->unk20;
             } else if (r > 0) {
-                *(int *)(p44 + 0x20) = *(int *)(p44 + 0x20) + 1;
+                ((RaceEntry *)p44)->unk20 = ((RaceEntry *)p44)->unk20 + 1;
                 gl_func_00000000(0x20, 1);
-                a = *(int *)(*(char **)(arg0 + 0x44) + 0x20);
+                a = DATAMGR(arg0)->entries->unk20;
             }
-            gl_func_00000000(*(int *)(arg0 + 0x94), a);
+            gl_func_00000000(DATAMGR(arg0)->points94, a);
         } else {
-            p94 = *(char **)(arg0 + 0x94);
+            p94 = (char *)DATAMGR(arg0)->points94;
             *(int *)(p94 + 0x18) = *(int *)(p94 + 0x18) & ~4;
         }
-        bc = *(char **)(arg0 + 0xBC);
-        if ((*(int *)(bc + 0x4DC) == 2) && (*(int *)(bc + 0x4F8) == 0)) {
-            t8 = *(int *)(arg0 + 0xAC) + 1;
-            *(int *)(arg0 + 0xAC) = t8;
+        bc = (char *)ARCDATAMGR(arg0)->race;
+        if ((RACEPROC(bc)->raceState == 2) && (RACEPROC(bc)->result == 0)) {
+            t8 = DATAMGR(arg0)->blinkTimer + 1;
+            DATAMGR(arg0)->blinkTimer = t8;
             if (t8 & 8) {
-                q = (int *)(*(char **)(arg0 + 0x8C) + 0x18);
+                q = (int *)((char *)DATAMGR(arg0)->points + 0x18);
                 *q = *q & ~4;
             } else {
-                q = (int *)(*(char **)(arg0 + 0x8C) + 0x18);
+                q = (int *)((char *)DATAMGR(arg0)->points + 0x18);
                 *q = *q | 4;
             }
         }
@@ -1501,7 +1503,7 @@ void *arc_ItemType_create_00002334(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        NODE(p1)->vptr = (int)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1509,10 +1511,10 @@ void *arc_ItemType_create_00002334(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         gl_func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -1616,12 +1618,12 @@ char *ARCMenuProcess_ctor(char *arg0) {
         if ((arg0 != 0) || (a3 = (char *)gl_func_00000000(80), (a3 != 0))) {
             a0 = a3;
             if ((a3 != 0) || (a0 = (char *)gl_func_00000000(44), (a0 != 0))) {
-                gl_func_00000000(a0, D_arc251C_a + 0x488); *(char **)(a0 + 0x28) = D_arc251C_b;
+                gl_func_00000000(a0, D_arc251C_a + 0x488); NODE(a0)->vptr = (int)D_arc251C_b;
             }
-            *(char **)(a3 + 0x28) = D_arc251C_c;
+            NODE(a3)->vptr = (int)D_arc251C_c;
         }
-        *(char **)(arg0 + 0x28) = D_arc251C_d;
-        *(char **)(arg0 + 0xC) = D_arc251C_e + 0x490;
+        NODE(arg0)->vptr = (int)D_arc251C_d;
+        NODE(arg0)->name = (int)(D_arc251C_e + 0x490);
         gl_func_00000000(D_arc251C_reg + 16, 0x280000);
         gl_func_00000000(D_arc251C_reg + 40, 0x280001);
         gl_func_00000000(D_arc251C_reg + 64, 0x280002);
@@ -1641,16 +1643,16 @@ char *ARCMenuProcess_ctor(char *arg0) {
         ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
         a3 = *(char **)(arg0 + 72);
         gl_func_00000000(arg0 + 16, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        if (NODE(a3)->parent != 0) {
+            NODE(a3)->unk04 = 1;
         }
-        *(int *)(a3 + 0x14) = (int)arg0;
+        NODE(a3)->parent = (int)arg0;
         a3 = *(char **)(D_arc251C_h + 400);
         gl_func_00000000(arg0 + 16, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        if (NODE(a3)->parent != 0) {
+            NODE(a3)->unk04 = 1;
         }
-        *(int *)(a3 + 0x14) = (int)arg0;
+        NODE(a3)->parent = (int)arg0;
         gl_func_00000000(*(int *)(D_arc251C_h + 400), 1, 0);
         *(int *)(arg0 + 80) = 0;
         *(int *)(arg0 + 48) = 1;

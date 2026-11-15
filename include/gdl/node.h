@@ -34,6 +34,11 @@ typedef char Node_name_check[(int)&((Node *)0)->name == 0x0C ? 1 : -1];
 typedef char Node_serial_check[(int)&((Node *)0)->serial == 0x1C ? 1 : -1];
 typedef char Node_vptr_check[(int)&((Node *)0)->vptr == 0x28 ? 1 : -1];
 
+/* Field access through an untyped `char *` / `int` object pointer (agent-h run 492), e.g. the
+ * child-attach idiom every ctor inlines: `if (NODE(c)->parent != 0) NODE(c)->unk04 = 1;
+ * NODE(c)->parent = (int)this;`. Lowers to the same base + offset access as the raw form. */
+#define NODE(p) ((Node *)(p))
+
 /* The libgdl application object (App_main, 0x415A4, sets its name to "App").
  * Only the fields the App_* bodies touch are known. */
 typedef struct App {

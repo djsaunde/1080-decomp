@@ -2,6 +2,7 @@
 #define GDL_RACE_H
 
 #include "gdl/backup.h"
+#include "gdl/node.h"
 
 /* libgdl race objects shared by every race mode (tim / trk / arc / mgr / h2h / trn
  * and titproc's GameDemoProcess). See docs/1080_SYSTEM_LAYER.md section 10 (the
@@ -117,7 +118,11 @@ typedef struct RaceProcess {
     /* 0x54C */ f32 msgY;
     /* 0x550 */ f32 msgVel;
     /* 0x554 */ f32 msgFloor;           /* dropMessage bounces at this y (150) */
-    /* 0x558 */ char unk558[0x10];
+    /* 0x558 */ f32 dropX;              /* a second bouncing sprite (mgr: sprites[11] drops in when the
+                                       * retries run out; onMessageBounce sets 160, -64, 0, 120) */
+    /* 0x55C */ f32 dropY;
+    /* 0x560 */ f32 dropVel;            /* +gravity per frame up to 8; -v / 4 at the bounce */
+    /* 0x564 */ f32 dropFloor;
     /* 0x568 */ s32 spriteSet;          /* sprite bank built by init when RACEF_SPRITES */
     /* 0x56C */ s32 handler;            /* child process created by init (parent = this) */
     /* 0x570 */ char unk570[0x18];
@@ -215,7 +220,8 @@ typedef struct RaceTracker {
     /* 0x44 */ RaceEntry *entries;       /* alloc 0x300 = 8 entries */
     /* 0x48 */ s32 numEntries;
     /* 0x4C */ BackupSession *session;   /* = RaceProcess.session (include/gdl/backup.h) */
-    /* 0x50 */ s32 unk50;
+    /* 0x50 */ s32 owner;                /* the race process (tim / trk init store it; toggleGhost reads
+                                       * its RaceProcess.flags) */
     /* 0x54 */ s32 pointsListArg;        /* 3rd ctor arg of PointsGadget_ctor_00003138 */
     /* 0x58 */ s32 digitsTall;           /* hud_initSprites_0000E4A8: 16x320 grid, 1x10 cells */
     /* 0x5C */ s32 digitsWide;           /* hud_initSprites_0000E4A8: 160x16 grid, 10x1 cells */
@@ -237,8 +243,12 @@ typedef struct RaceTracker {
     /* 0x9C */ s32 coolValue;            /* s32 * the cool value is read from */
     /* 0xA0 */ s32 score;                /* += 2000 per bonus; shown / 1000 */
     /* 0xA4 */ s32 bonus;                /* +100 per bonus, capped at 500 */
-    /* 0xA8 */ char unkA8[8];
-    /* 0xB0 */ s32 unkB0;                /* 1 after reset */
+    /* 0xA8 */ s32 shownScore;           /* trk / arc DataManager_update: ramps toward entries[0].unk18
+                                       * by 250 / 50 / 25 / 1 per frame */
+    /* 0xAC */ s32 blinkTimer;           /* tim / trk / arc update: +1 per frame in the finished state,
+                                       * bit 3 toggles a gadget's flag-4 (blink) */
+    /* 0xB0 */ s32 ghostFlag;            /* 1 after reset; toggleGhost flips it together with bit 2 of
+                                       * entries[1].rider's doFlags (+0x18) */
     /* 0xB4 */ s32 hudFlags;             /* RTF_* */
 } RaceTracker;
 
@@ -259,5 +269,30 @@ typedef char RaceTracker_hudFlags_check[(int)&((RaceTracker *)0)->hudFlags == 0x
  * 0xB8 (arc / mgr: 0xB8 course list, 0xBC owner race; tim / h2h: 0xB8 owner race), so
  * the base is the RaceTracker layout. */
 typedef RaceTracker DataManager;
+
+/* Field access through an untyped pointer (agent-h run 492; as RACEPROC above). */
+#define DATAMGR(p) ((DataManager *)(p))
+
+/* ---- TimDataManager (timproc, alloc 0xE0; TimDataManager_init / _update) ----
+ * trkproc's TrkDataManager_init builds the same 0xB8..0xD7 tail (owner race, rank label,
+ * colour, alpha) but uses 0xD8 as a once-flag (loadData sets it 1) and 0xA0 as its
+ * countdown, so only timproc's bodies are typed with it. */
+typedef struct TimDataManager {
+    /* 0x00 */ DataManager base;
+    /* 0xB8 */ s32 race;             /* the owning TimRace (init arg 1; also base.owner) */
+    /* 0xBC */ s32 rankLabel;        /* gadget built from the session record's bytes 5-7 (as mgr) */
+    /* 0xC0 */ f32 colour[4];        /* 1, 1, 1, 1 */
+    /* 0xD0 */ s32 alpha;            /* 0xFF */
+    /* 0xD4 */ s32 unkD4;
+    /* 0xD8 */ s32 beepTimer;        /* update: 0..0x32; sound 0x135 when it wraps while the
+                                      * cool gadget's +0xC4 >= 12 */
+    /* 0xDC */ s32 unkDC;            /* 1 after init; with 2 entries it mirrors
+                                      * entries[1].rider->0x800->0x4C and a 1 -> 0 edge calls (this, 1) */
+} TimDataManager;
+
+typedef char TimDataManager_size_check[sizeof(TimDataManager) == 0xE0 ? 1 : -1];
+typedef char TimDataManager_beepTimer_check[(int)&((TimDataManager *)0)->beepTimer == 0xD8 ? 1 : -1];
+
+#define TIMDATAMGR(p) ((TimDataManager *)(p))
 
 #endif

@@ -79,7 +79,7 @@ void mgr_pauseRetry_00000B5C(void) {
         import_000A5938(import_80263D60_30);
     } else {
         import_80020098[0x40 / 4] = 3;
-        mgrproc_uso_func_00F954(import_80263D60_30, 4, *(int *)((char *)*(int **)((char *)import_80263D60_30 + 0x6A8) + 0xC));
+        mgrproc_uso_func_00F954(import_80263D60_30, 4, *(int *)((char *)(int *)MGRRACE(import_80263D60_30)->courseList + 0xC));
     }
 }
 
@@ -218,27 +218,27 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)mgrproc_uso_func_055750(80)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)mgrproc_uso_func_055750(44)) != 0) { mgrproc_uso_func_04C678(o3, &import_802649D8 + 1544); *(int *)(o3 + 0x28) = (int)&import_80073B18; }
-            *(int *)(o2 + 0x28) = (int)&import_80073B80;
+            if (o3 != 0 || (o3 = (char *)mgrproc_uso_func_055750(44)) != 0) { mgrproc_uso_func_04C678(o3, &import_802649D8 + 1544); NODE(o3)->vptr = (int)&import_80073B18; }
+            NODE(o2)->vptr = (int)&import_80073B80;
         }
-        *(int *)(o1 + 0x28) = (int)&import_800745F8;
+        NODE(o1)->vptr = (int)&import_800745F8;
         import_000AE700(o1 + 80);
     }
-    *(int *)(obj + 0x28) = (int)&import_80264880;
-    *(int *)(obj + 0x568) = 0;
+    NODE(obj)->vptr = (int)&import_80264880;
+    RACEPROC(obj)->spriteSet = 0;
     import_000B0DBC(obj, a1, &import_802649E0 + 1552, a2);
-    *(int *)(obj + 0x528) = arg5;
-    *(int *)(obj + 0x6A8) = a3;
-    *(int *)(obj + 0x7D4) = 0;
+    RACEPROC(obj)->session = (BackupSession *)arg5;
+    MGRRACE(obj)->courseList = a3;
+    MGRRACE(obj)->exitStep = 0;
     mgr_loadSprites_0000119C(obj);
-    *(int *)(obj + 0x7C4) = 0;
-    *(float *)(obj + 0x7A0) = 0.0f;
-    *(float *)(obj + 0x7A4) = 0.0f;
-    *(float *)(obj + 0x7B8) = 0.0f;
-    *(int *)(obj + 0x7C8) = **(int **)(obj + 0x6A8);
-    *(float *)(obj + 0x7A8) = 160.0f - (float)(*(int *)(obj + 0x7C8) * 2 - 2);
-    *(int *)(obj + 0x7D8) = 1;
-    *(float *)(obj + 0x7AC) = 210.0f;
+    MGRRACE(obj)->lostFalling = 0;
+    MGRRACE(obj)->overlayAlpha = 0.0f;
+    MGRRACE(obj)->fade7A4 = 0.0f;
+    MGRRACE(obj)->retriesVel = 0.0f;
+    MGRRACE(obj)->retries = *(int *)MGRRACE(obj)->courseList;
+    MGRRACE(obj)->retriesX = 160.0f - (float)(MGRRACE(obj)->retries * 2 - 2);
+    MGRRACE(obj)->nameEntryMode = 1;
+    MGRRACE(obj)->retriesY = 210.0f;
     mgrproc_uso_func_074710(&import_802649F0 + 1568, 0);
     import_000A7ECC(&import_80020098, 0);
 
@@ -246,57 +246,57 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         o2 = (char *)mgrproc_uso_func_055750(224);
         if (o2 != 0) {
             import_000B6C40(o2);
-            *(int *)(o2 + 0x28) = (int)&import_80264800;
+            NODE(o2)->vptr = (int)&import_80264800;
         }
-        *(int *)(obj + 0x6AC) = (int)o2;
+        MGRRACE(obj)->dataMgr = (int)o2;
         *(int *)(&import_800201D0 + 312) = (int)o2;
 
-        mgr_DataManager_init(*(int *)(obj + 0x6AC), obj, *(int *)(obj + 0x568),
-                                  *(int *)(obj + 0x6A8), *(int *)(obj + 0x528));
+        mgr_DataManager_init(MGRRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet,
+                                  MGRRACE(obj)->courseList, (int)RACEPROC(obj)->session);
 
-        w = *(char **)(obj + 0x6AC);
-        o1 = *(char **)(w + 0x28);
+        w = (char *)MGRRACE(obj)->dataMgr;
+        o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        o1 = *(char **)(obj + 0x6AC);
+        o1 = (char *)MGRRACE(obj)->dataMgr;
         mgrproc_uso_func_07ACE0(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         mgrproc_uso_func_01B0F8(obj, a1);
-        *(int *)(obj + 0x48) = import_000A5D38(0);
-        import_000A5F40(*(int *)(obj + 0x48), obj);
+        RACEPROC(obj)->unk048 = import_000A5D38(0);
+        import_000A5F40(RACEPROC(obj)->unk048, obj);
 
-        import_000A69BC(*(int *)(obj + 0x48), (*(int *)&import_8002022C + 3) << 16,
+        import_000A69BC(RACEPROC(obj)->unk048, (*(int *)&import_8002022C + 3) << 16,
                         -1, &import_80265570);
-        import_000A69BC(*(int *)(obj + 0x48),
+        import_000A69BC(RACEPROC(obj)->unk048,
                         ((*(int *)&import_8002022C + 3) << 16) | 8, -1,
                         &import_802655B0);
-        import_000A69BC(*(int *)(obj + 0x48),
+        import_000A69BC(RACEPROC(obj)->unk048,
                         ((*(int *)&import_8002022C + 3) << 16) | 9, -1,
                         &import_802655EC);
-        import_000A69BC(*(int *)(obj + 0x48),
+        import_000A69BC(RACEPROC(obj)->unk048,
                         ((*(int *)&import_8002022C + 3) << 16) | 5, -1,
                         &import_802656A4);
 
-        *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
-        import_000A5FBC(*(int *)(obj + 0x48));
+        *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
+        import_000A5FBC(RACEPROC(obj)->unk048);
 
-        o1 = *(char **)(obj + 0x48);
+        o1 = (char *)RACEPROC(obj)->unk048;
         mgrproc_uso_func_07ACE0(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         o1 = *(char **)((char *)&import_80020228 + 400);
         mgrproc_uso_func_07ACE0(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         mgrproc_uso_func_0139B0(*(int *)((char *)&import_80020228 + 400), 1, 0);
         mgrproc_uso_func_074840();
@@ -675,10 +675,10 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
             hdr = (char *)arg0->race.handler;
             node = (void *)arg0->race.unk524;
             mgrproc_uso_func_07ACE0(hdr + 0x10, node);
-            if (*(int *)((char *)node + 0x14) != 0) {
-                *(int *)((char *)node + 4) = 1;
+            if (NODE(node)->parent != 0) {
+                NODE(node)->unk04 = 1;
             }
-            *(int *)((char *)node + 0x14) = (int) hdr;
+            NODE(node)->parent = (int) hdr;
             if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
                 *(int *)((char *)arg0->race.unk524 + 0x60) = 2;
                 mgrproc_uso_func_00001BD4(arg0);
@@ -811,8 +811,8 @@ void MGRRaceProcess_updateSub2(char *s0) {
 
     v0 = (char *)import_000A7B90(&import_80020098, 1);
     import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9));
-    *(int *)(s0 + 0x7EC) = *(int *)(s0 + 0x7EC) + 1;
-    sel = *(int *)(s0 + 0x7D4);
+    MGRRACE(s0)->endingFrame = MGRRACE(s0)->endingFrame + 1;
+    sel = MGRRACE(s0)->exitStep;
     switch (sel) {
     case 0:
         /* Ten empty as1 blocks at case 0's head: bb5's xbb candidate scan
@@ -828,59 +828,59 @@ void MGRRaceProcess_updateSub2(char *s0) {
         MGR1824_EMPTY_BB(14);
         MGR1824_EMPTY_BB(15);
         MGR1824_EMPTY_BB(16);
-        switch (*(int *)(s0 + 0x7E4)) {
+        switch (MGRRACE(s0)->endingPhase) {
         case 0:
-            if (--*(int *)(s0 + 0x7E8) == 0) {
-                *(int *)(s0 + 0x7E4) = 1;
-                *(int *)(s0 + 0x7E8) = 1050;
+            if (--MGRRACE(s0)->endingTimer == 0) {
+                MGRRACE(s0)->endingPhase = 1;
+                MGRRACE(s0)->endingTimer = 1050;
                 mgrproc_uso_func_0002DC(512);
             }
             break;
         case 1:
-            if (--*(int *)(s0 + 0x7E8) == 0) {
-                *(int *)(s0 + 0x7D4) = 1;
+            if (--MGRRACE(s0)->endingTimer == 0) {
+                MGRRACE(s0)->exitStep = 1;
             }
             break;
         case 2:
-            if (--*(int *)(s0 + 0x7E8) == 0) {
-                *(int *)(s0 + 0x7E4) = 3;
-                *(int *)(s0 + 0x7E8) = 1650;
+            if (--MGRRACE(s0)->endingTimer == 0) {
+                MGRRACE(s0)->endingPhase = 3;
+                MGRRACE(s0)->endingTimer = 1650;
                 mgrproc_uso_func_000188(13, 0, 0);
                 mgrproc_uso_func_000148(13, 0, 0);
             }
             break;
         case 3: {
-            if (--*(int *)(s0 + 0x7E8) == 0) {
-                *(int *)(s0 + 0x7E8) = 300;
-                *(int *)(s0 + 0x7E4) = 4;
+            if (--MGRRACE(s0)->endingTimer == 0) {
+                MGRRACE(s0)->endingTimer = 300;
+                MGRRACE(s0)->endingPhase = 4;
                 mgrproc_uso_func_0002DC(512);
             }
-            *(int *)(s0 + 0x7E0) = *(int *)(s0 + 0x7E0) + 1;
-            if (*(int *)(s0 + 0x7E0) >= 16) {
-                *(int *)(s0 + 0x7E0) = *(int *)(s0 + 0x7E0) - 16;
-                *(int *)(s0 + 0x7DC) = *(int *)(s0 + 0x7DC) + 1;
+            MGRRACE(s0)->creditScroll = MGRRACE(s0)->creditScroll + 1;
+            if (MGRRACE(s0)->creditScroll >= 16) {
+                MGRRACE(s0)->creditScroll = MGRRACE(s0)->creditScroll - 16;
+                MGRRACE(s0)->creditLine = MGRRACE(s0)->creditLine + 1;
             }
             break;
         }
         case 4:
-            if (--*(int *)(s0 + 0x7E8) == 0) {
-                *(int *)(s0 + 0x7D4) = 1;
+            if (--MGRRACE(s0)->endingTimer == 0) {
+                MGRRACE(s0)->exitStep = 1;
             }
             break;
         }
         break;
     case 1:
-        r = (char *)mgrproc_uso_func_01FA1C(*(int *)(s0 + 0x528));
+        r = (char *)mgrproc_uso_func_01FA1C((int)RACEPROC(s0)->session);
         if (r != 0) {
             import_000B2888(s0);
             mgrproc_uso_func_000148(7, 0, 0);
             mgr_startReplay_00001AD0(s0, *(int *)(&import_80020208 + 368) + 0x26000F);
             vt = (char *)&import_80020098;
-            *(int *)(s0 + 0x4D8) = 3;
-            *(int *)(*(char **)(s0 + 0x524) + 0x60) = 1;
+            RACEPROC(s0)->subState = 3;
+            *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1;
             *(int *)(vt + 0x40) = 5;
             *(int *)(vt + 0x44) = 7;
-            *(float *)(s0 + 0x7A4) = 0.0f;
+            MGRRACE(s0)->fade7A4 = 0.0f;
             mgrproc_uso_func_0139B0(*(int *)(vt + 0x190), 1, 1);
         } else {
             *(int *)(&import_800200D8 + 0x40) = 7;
@@ -1037,36 +1037,36 @@ void MGRRaceProcess_drawIntro(char *arg0) {
     int w3;
     volatile int pad_a;
 
-    if (*(int *)(arg0 + 0x4F0) & 0x10000) {
+    if (RACEPROC(arg0)->flags & 0x10000) {
         sp50[0] = 1.0f;
         sp50[1] = 1.0f;
         sp50[2] = 1.0f;
         sp50[3] = 1.0f;
-        if (*(int *)(arg0 + 0x4E4) >= 0xB) {
+        if (RACEPROC(arg0)->timer >= 0xB) {
             float max = D_flt_5CC;
-            if (*(float *)(arg0 + 0x7A0) < max) {
-                *(float *)(arg0 + 0x7A0) = *(float *)(arg0 + 0x7A0) + D_flt_5D0;
+            if (MGRRACE(arg0)->overlayAlpha < max) {
+                MGRRACE(arg0)->overlayAlpha = MGRRACE(arg0)->overlayAlpha + D_flt_5D0;
             }
-            if (*(float *)(arg0 + 0x7A4) < max) {
-                *(float *)(arg0 + 0x7A4) = *(float *)(arg0 + 0x7A4) + D_flt_5D4;
+            if (MGRRACE(arg0)->fade7A4 < max) {
+                MGRRACE(arg0)->fade7A4 = MGRRACE(arg0)->fade7A4 + D_flt_5D4;
             }
         } else {
-            if (*(float *)(arg0 + 0x7A0) > 0.0f) {
-                *(float *)(arg0 + 0x7A0) = *(float *)(arg0 + 0x7A0) - D_flt_5D8;
+            if (MGRRACE(arg0)->overlayAlpha > 0.0f) {
+                MGRRACE(arg0)->overlayAlpha = MGRRACE(arg0)->overlayAlpha - D_flt_5D8;
             }
         }
-        gl_func_00000000(&D_00000000, (int)(255.0f * *(float *)(arg0 + 0x7A0)), sp50);
+        gl_func_00000000(&D_00000000, (int)(255.0f * MGRRACE(arg0)->overlayAlpha), sp50);
         gl_func_00000000(&D_00000000);
         gl_func_00000000(&D_00000000, 0xA0, 0x9C, 3);
-        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x380, arg0 + 0x3A4);
+        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x380, arg0 + 0x3A4);
         gl_func_00000000(arg0 + 0x6B0);
         gl_func_00000000(arg0 + 0x6B0, 0xA0, 0xB0, 3);
         q = *(char **)(arg0 + 0x6F0);
         if (1) {}
         w = *(short *)(q + 0x20);
         sp48 = 0xA0 - ((*(short *)(*(char **)(arg0 + 0x6D8) + 0x20) + w + 4) / 2);
-        gl_func_00000000(&D_00000000, (int)(*(float *)(arg0 + 0x7A0) * 255.0f), arg0 + 0x260, arg0 + 0x284);
-        p6a8 = *(char **)(arg0 + 0x6A8);
+        gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x260, arg0 + 0x284);
+        p6a8 = (char *)MGRRACE(arg0)->courseList;
         if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
             gl_func_00000000(arg0 + 0x6E0);
             gl_func_00000000(arg0 + 0x6E0, sp48, 0x88, 2);
@@ -1130,67 +1130,67 @@ void MGRRaceProcess_drawHud(char *arg0) {
     int v0;
     int t;
 
-    if (*(int *)(arg0 + 0x4F0) & 0x10000) {
+    if (RACEPROC(arg0)->flags & 0x10000) {
         four = 4.0f;
-        v0 = *(int *)(arg0 + 0x4E0);
+        v0 = RACEPROC(arg0)->phase;
         if (v0 == 1) {
-            *(float *)(arg0 + 0x7B8) = (float)((double)*(float *)(arg0 + 0x7B8) + D_dbl_5E0);
-            f0 = *(float *)(arg0 + 0x7B8);
-            *(float *)(arg0 + 0x7A8) = *(float *)(arg0 + 0x7A8) - f0;
-            f2 = *(float *)(arg0 + 0x7A8);
+            MGRRACE(arg0)->retriesVel = (float)((double)MGRRACE(arg0)->retriesVel + D_dbl_5E0);
+            f0 = MGRRACE(arg0)->retriesVel;
+            MGRRACE(arg0)->retriesX = MGRRACE(arg0)->retriesX - f0;
+            f2 = MGRRACE(arg0)->retriesX;
             if (f2 < 36.0f) {
-                *(float *)(arg0 + 0x7A8) = f2 + f0;
-                *(float *)(arg0 + 0x7B8) = -(f0 / four);
+                MGRRACE(arg0)->retriesX = f2 + f0;
+                MGRRACE(arg0)->retriesVel = -(f0 / four);
             }
-            v0 = *(int *)(arg0 + 0x4E0);
+            v0 = RACEPROC(arg0)->phase;
         }
         if (v0 == 3) {
-            t = *(int *)(arg0 + 0x4F8);
+            t = RACEPROC(arg0)->result;
             if ((t != 0) && (t != 2)) {
-                *(float *)(arg0 + 0x7B8) = (float)((double)*(float *)(arg0 + 0x7B8) + D_dbl_5E8);
-                f0 = *(float *)(arg0 + 0x7B8);
-                *(float *)(arg0 + 0x7A8) = *(float *)(arg0 + 0x7A8) + f0;
-                f2 = *(float *)(arg0 + 0x7A8);
-                if ((160.0f - (float)((*(int *)(arg0 + 0x7C8) * 2) - 2)) < f2) {
-                    *(float *)(arg0 + 0x7A8) = f2 - f0;
-                    *(float *)(arg0 + 0x7B8) = -(f0 / four);
+                MGRRACE(arg0)->retriesVel = (float)((double)MGRRACE(arg0)->retriesVel + D_dbl_5E8);
+                f0 = MGRRACE(arg0)->retriesVel;
+                MGRRACE(arg0)->retriesX = MGRRACE(arg0)->retriesX + f0;
+                f2 = MGRRACE(arg0)->retriesX;
+                if ((160.0f - (float)((MGRRACE(arg0)->retries * 2) - 2)) < f2) {
+                    MGRRACE(arg0)->retriesX = f2 - f0;
+                    MGRRACE(arg0)->retriesVel = -(f0 / four);
                 }
             } else {
-                f0 = *(float *)(arg0 + 0x7A4);
+                f0 = MGRRACE(arg0)->fade7A4;
                 if (f0 > (float)0) {
-                    *(float *)(arg0 + 0x7A4) = f0 - *(float *)((char *)&D_00000000 + 0x5F0);
-                    if (*(float *)(arg0 + 0x7A4) < 0.0f) {
-                        *(float *)(arg0 + 0x7A4) = 0.0f;
+                    MGRRACE(arg0)->fade7A4 = f0 - *(float *)((char *)&D_00000000 + 0x5F0);
+                    if (MGRRACE(arg0)->fade7A4 < 0.0f) {
+                        MGRRACE(arg0)->fade7A4 = 0.0f;
                     }
                 }
             }
         }
-        gl_func_00000000(arg0, (int)*(float *)(arg0 + 0x7A8), (int)*(float *)(arg0 + 0x7AC), *(int *)(arg0 + 0x7C8));
-        if (*(int *)(arg0 + 0x7C4) != 0) {
-            *(float *)(arg0 + 0x7B0) = *(float *)(arg0 + 0x7BC) + *(float *)(arg0 + 0x7B0);
-            *(float *)(arg0 + 0x7C0) = (float)((double)*(float *)(arg0 + 0x7C0) + D_dbl_5F8);
-            *(float *)(arg0 + 0x7B4) = *(float *)(arg0 + 0x7C0) + *(float *)(arg0 + 0x7B4);
-            if (*(float *)(arg0 + 0x7B4) > 256.0f) {
-                *(float *)(arg0 + 0x7B4) = 256.0f;
-                *(float *)(arg0 + 0x7C0) = 0.0f;
+        gl_func_00000000(arg0, (int)MGRRACE(arg0)->retriesX, (int)MGRRACE(arg0)->retriesY, MGRRACE(arg0)->retries);
+        if (MGRRACE(arg0)->lostFalling != 0) {
+            MGRRACE(arg0)->lostX = MGRRACE(arg0)->lostX + MGRRACE(arg0)->lostVelX;
+            MGRRACE(arg0)->lostVelY = (float)((double)MGRRACE(arg0)->lostVelY + D_dbl_5F8);
+            MGRRACE(arg0)->lostY = MGRRACE(arg0)->lostY + MGRRACE(arg0)->lostVelY;
+            if (MGRRACE(arg0)->lostY > 256.0f) {
+                MGRRACE(arg0)->lostY = 256.0f;
+                MGRRACE(arg0)->lostVelY = 0.0f;
             }
-            gl_func_00000000(arg0, (int)*(float *)(arg0 + 0x7B0), (int)*(float *)(arg0 + 0x7B4), 1);
-            if (*(int *)(arg0 + 0x7C8) == 0) {
-                if (*(float *)(arg0 + 0x560) < 8.0f) {
-                    *(float *)(arg0 + 0x560) = (float)((double)*(float *)(arg0 + 0x560) + D_dbl_600);
+            gl_func_00000000(arg0, (int)MGRRACE(arg0)->lostX, (int)MGRRACE(arg0)->lostY, 1);
+            if (MGRRACE(arg0)->retries == 0) {
+                if (RACEPROC(arg0)->dropVel < 8.0f) {
+                    RACEPROC(arg0)->dropVel = (float)((double)RACEPROC(arg0)->dropVel + D_dbl_600);
                 }
-                *(float *)(arg0 + 0x55C) = *(float *)(arg0 + 0x560) + *(float *)(arg0 + 0x55C);
-                if (*(float *)(arg0 + 0x564) < *(float *)(arg0 + 0x55C)) {
-                    if (*(float *)(arg0 + 0x560) > 6.0f) {
+                RACEPROC(arg0)->dropY = RACEPROC(arg0)->dropY + RACEPROC(arg0)->dropVel;
+                if (RACEPROC(arg0)->dropFloor < RACEPROC(arg0)->dropY) {
+                    if (RACEPROC(arg0)->dropVel > 6.0f) {
                         gl_func_00000000(0x31);
-                        *(float *)(arg0 + 0x554) = 300.0f;
+                        RACEPROC(arg0)->msgFloor = 300.0f;
                     }
-                    *(float *)(arg0 + 0x55C) = *(float *)(arg0 + 0x55C) - *(float *)(arg0 + 0x560);
-                    *(float *)(arg0 + 0x560) = -(*(float *)(arg0 + 0x560) / four);
+                    RACEPROC(arg0)->dropY = RACEPROC(arg0)->dropY - RACEPROC(arg0)->dropVel;
+                    RACEPROC(arg0)->dropVel = -(RACEPROC(arg0)->dropVel / four);
                 }
                 gl_func_00000000(&import_8024CAF8, 0xFF, arg0 + 0x3C8, arg0 + 0x3EC);
                 gl_func_00000000(arg0 + 0x690);
-                gl_func_00000000(arg0 + 0x690, (int)*(float *)(arg0 + 0x558), (int)*(float *)(arg0 + 0x55C), 3);
+                gl_func_00000000(arg0 + 0x690, (int)RACEPROC(arg0)->dropX, (int)RACEPROC(arg0)->dropY, 3);
             }
         }
     }
@@ -1211,10 +1211,10 @@ extern float D_b0_2294, D_00000608, D_0000060C, D_00000610;
 void MGRRaceProcess_drawResultExtra(int *a0) {
     if (a0[0x500/4] == 0) return;
     if (D_b0_2294 <= 0.0f) {
-        if (*(float*)((char*)a0 + 0x7A0) < D_00000608) {
-            *(float*)((char*)a0 + 0x7A0) += D_0000060C;
+        if (MGRRACE(a0)->overlayAlpha < D_00000608) {
+            MGRRACE(a0)->overlayAlpha += D_0000060C;
         }
-        if (D_00000610 < *(float*)((char*)a0 + 0x7A0)) {
+        if (D_00000610 < MGRRACE(a0)->overlayAlpha) {
             gl_func_00000000();
         }
     }
@@ -1267,24 +1267,24 @@ void MGRRaceProcess_onMessageBounce(char *a0) {
     float x, y;
     float two = 2.0f;
     float one = 1.0f;
-    if (*(int *)(a0 + 0x7C4) != 0) return;
-    x = *(float *)(a0 + 0x7A8);
-    y = *(float *)(a0 + 0x7AC);
-    *(float *)(a0 + 0x7BC) = *(float *)(a0 + 0x7B8) / two;
-    *(int *)(a0 + 0x7C4) = 1;
-    *(int *)(a0 + 0x7C8) -= 1;
-    *(float *)(a0 + 0x7C0) = one;
-    *(float *)(a0 + 0x7A8) = x + 4.0f;
-    *(float *)(a0 + 0x7AC) = y - 4.0f;
-    *(float *)(a0 + 0x7B0) = x;
-    *(float *)(a0 + 0x7B4) = y;
+    if (MGRRACE(a0)->lostFalling != 0) return;
+    x = MGRRACE(a0)->retriesX;
+    y = MGRRACE(a0)->retriesY;
+    MGRRACE(a0)->lostVelX = MGRRACE(a0)->retriesVel / two;
+    MGRRACE(a0)->lostFalling = 1;
+    MGRRACE(a0)->retries -= 1;
+    MGRRACE(a0)->lostVelY = one;
+    MGRRACE(a0)->retriesX = x + 4.0f;
+    MGRRACE(a0)->retriesY = y - 4.0f;
+    MGRRACE(a0)->lostX = x;
+    MGRRACE(a0)->lostY = y;
     mgrproc_uso_func_0002DC(50);
-    if (*(int *)(a0 + 0x7C8) != 0) return;
-    *(float *)(a0 + 0x554) = 200.0f;
-    *(float *)(a0 + 0x558) = 160.0f;
-    *(float *)(a0 + 0x55C) = -64.0f;
-    *(float *)(a0 + 0x560) = 0.0f;
-    *(float *)(a0 + 0x564) = 120.0f;
+    if (MGRRACE(a0)->retries != 0) return;
+    RACEPROC(a0)->msgFloor = 200.0f;
+    RACEPROC(a0)->dropX = 160.0f;
+    RACEPROC(a0)->dropY = -64.0f;
+    RACEPROC(a0)->dropVel = 0.0f;
+    RACEPROC(a0)->dropFloor = 120.0f;
 }
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp,
@@ -1412,7 +1412,7 @@ void mgr_drawSpriteStack_00002850(char *s0, int *a1, int *a2, int a3) {
     int *p1;
     int *p2;
     buf[0] = 1.0f; buf[1] = 1.0f; buf[2] = 1.0f; buf[3] = 1.0f;
-    n = (int)(255.0f * *(float *)(s0 + 0x7A4));
+    n = (int)(255.0f * MGRRACE(s0)->fade7A4);
     import_0024E608(&import_8024CAF8, n, buf);
     tgt = s0 + 0x6F8;
     import_0024F2C8(tgt);
@@ -1434,8 +1434,8 @@ INCLUDE_ASM("asm/nonmatchings/mgrproc_uso/mgrproc_uso", mgr_drawSpriteStack_0000
 #endif
 
 void MGRRaceProcess_onEndRaceAlt(int *a0) {
-    *(float *)((char *)a0 + 0x54C) = 116.0f;
-    *(float *)((char *)a0 + 0x554) = 170.0f;
+    RACEPROC(a0)->msgY = 116.0f;
+    RACEPROC(a0)->msgFloor = 170.0f;
 }
 
 /* MgrNameEntry_ctor_00002940 — family variant of ArcNameEntry_ctor_0000199C
@@ -1469,13 +1469,13 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)gl_func_00000000(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)gl_func_00000000(0x2C), (a0 != 0))) {
-                    gl_func_00000000(a0, D_mgr2940_v + 0x650); *(char **)(a0 + 0x28) = D_mgr2940_w;
+                    gl_func_00000000(a0, D_mgr2940_v + 0x650); NODE(a0)->vptr = (int)D_mgr2940_w;
                 }
-                *(char **)(v1 + 0x28) = D_mgr2940_x;
+                NODE(v1)->vptr = (int)D_mgr2940_x;
             }
-            *(char **)(a2 + 0x28) = D_mgr2940_y;
+            NODE(a2)->vptr = (int)D_mgr2940_y;
         }
-        *(char **)(arg0 + 0x28) = D_mgr2940_z;
+        NODE(arg0)->vptr = (int)D_mgr2940_z;
         *(int *)(arg0 + 0x60) = arg2;
         *(int *)(arg0 + 0xD4) = arg1;
         *(int *)(arg0 + 0xE0) = 0xA0;
@@ -1666,7 +1666,7 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
     unsigned char *v1;
     float div255 = 255.0f;
     float c = 192.0f / div255;   /* the merged FP prologue: div.s f4(192)/f2(255) */
-    *(int*)((char*)self + 0xC)  = (int)((char*)&D_00000000 + 0x688);
+    NODE(self)->name  = (int)((char*)&D_00000000 + 0x688);
     self->race = a1;
     self->base.session = (BackupSession *)arg5;
     self->courseList = a3;
@@ -1693,10 +1693,10 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
         gl_func_00000000(self->rankLabel, 0x4B, 0xD6);
         node = (int *)self->rankLabel;
         gl_func_00000000((int)self->base.children, (int)node);
-        if (*(int*)((char*)node + 0x14) != 0) {
-            *(int*)((char*)node + 4) = 1;
+        if (NODE(node)->parent != 0) {
+            NODE(node)->unk04 = 1;
         }
-        *(int*)((char*)node + 0x14) = (int)self;
+        NODE(node)->parent = (int)self;
     }
 }
 
@@ -1739,16 +1739,16 @@ void mgr_DataManager_update(char *arg0) {
     char *p;
     int v1;
 
-    a1 = *(char **)(arg0 + 0xBC);
-    if ((*(int *)(a1 + 0x4F0) & 0x10000) && (*(int *)(a1 + 0x4DC) == 1)) {
-        *(int *)(arg0 + 0x30) = *(int *)(arg0 + 0x30) + 0x21;
+    a1 = (char *)MGRDATAMGR(arg0)->race;
+    if ((RACEPROC(a1)->flags & 0x10000) && (RACEPROC(a1)->raceState == 1)) {
+        DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
     }
     import_000B70AC(arg0, a1);
-    a1 = *(char **)(arg0 + 0xBC);
-    v0 = *(int *)(a1 + 0x4F0) & 0x10000;
-    if ((v0 != 0) && (*(int *)(a1 + 0x4DC) == 1)) {
-        p = *(char **)(arg0 + 0x44);
-        if (*(int *)(p + 0x34) != 0) {
+    a1 = (char *)MGRDATAMGR(arg0)->race;
+    v0 = RACEPROC(a1)->flags & 0x10000;
+    if ((v0 != 0) && (RACEPROC(a1)->raceState == 1)) {
+        p = (char *)DATAMGR(arg0)->entries;
+        if (((RaceEntry *)p)->finished != 0) {
             v1 = *(int *)(p + 0x94);
             if (v1 == 0) {
                 import_000B1284(a1);
@@ -1760,31 +1760,31 @@ void mgr_DataManager_update(char *arg0) {
                 }
             }
         }
-        *(int *)(arg0 + 0xDC) += 1;
-        if (*(int *)(arg0 + 0xDC) >= 0x33) {
-            *(int *)(arg0 + 0xDC) = 0;
+        MGRDATAMGR(arg0)->beepTimer += 1;
+        if (MGRDATAMGR(arg0)->beepTimer >= 0x33) {
+            MGRDATAMGR(arg0)->beepTimer = 0;
         }
-        p = *(char **)(arg0 + 0x98);
-        if ((p != 0) && (*(int *)(p + 0xC4) >= 0xC) && (*(int *)(arg0 + 0xDC) == 0)) {
+        p = (char *)DATAMGR(arg0)->cool;
+        if ((p != 0) && (*(int *)(p + 0xC4) >= 0xC) && (MGRDATAMGR(arg0)->beepTimer == 0)) {
             mgrproc_uso_func_0002FC(0x135, 0);
         }
-        p = *(char **)(arg0 + 0x98);
+        p = (char *)DATAMGR(arg0)->cool;
         if (*(int *)(p + 0xC8) <= 0) {
-            import_000B139C(*(int *)(arg0 + 0xBC));
+            import_000B139C(MGRDATAMGR(arg0)->race);
         }
-        a1 = *(char **)(arg0 + 0xBC);
-        v0 = *(int *)(a1 + 0x4F0) & 0x10000;
+        a1 = (char *)MGRDATAMGR(arg0)->race;
+        v0 = RACEPROC(a1)->flags & 0x10000;
     }
     if (v0 != 0) {
-        if ((*(int *)(a1 + 0x4DC) == 1) && (import_000B7058(arg0) != 0)) {
-            import_000B14CC(*(int *)(arg0 + 0xBC));
-            *(float *)(*(char **)(arg0 + 0xBC) + 0x554) = 200.0f;
-            *(int *)(arg0 + 0x2C) = 0;
+        if ((RACEPROC(a1)->raceState == 1) && (import_000B7058(arg0) != 0)) {
+            import_000B14CC(MGRDATAMGR(arg0)->race);
+            RACEPROC(MGRDATAMGR(arg0)->race)->msgFloor = 200.0f;
+            DATAMGR(arg0)->active = 0;
         }
-        p = *(char **)(arg0 + 0x44);
-        mgrproc_uso_func_016BB8(*(int *)(arg0 + 0x80), *(int *)(p + 0x30), *(int *)(p + 0x90));
-        p = *(char **)(arg0 + 0x44);
-        mgrproc_uso_func_016BEC(*(int *)(arg0 + 0x80), *(int *)(p + 8), *(int *)(p + 0xC),
+        p = (char *)DATAMGR(arg0)->entries;
+        mgrproc_uso_func_016BB8(DATAMGR(arg0)->course, *(int *)(p + 0x30), *(int *)(p + 0x90));
+        p = (char *)DATAMGR(arg0)->entries;
+        mgrproc_uso_func_016BEC(DATAMGR(arg0)->course, *(int *)(p + 8), *(int *)(p + 0xC),
                          *(int *)(p + 0x68), *(float *)(p + 0x6C));
     }
     mgrproc_uso_func_04CD94(arg0);
@@ -1861,7 +1861,7 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     p1 = (int*)mgrproc_uso_func_055750(0x40);
     if (p1 != 0) {
         mgrproc_uso_func_051C28(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&import_8006ED80;
+        NODE(p1)->vptr = (int)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1869,10 +1869,10 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         mgrproc_uso_func_07ACE0((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }

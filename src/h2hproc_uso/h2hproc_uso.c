@@ -116,11 +116,11 @@ void h2h_procMain(int *a0, int a1) {
                 flag = 1;
                 s0 = (int *)gl_func_00000000(0, 1, 0);
                 gl_func_00000000(&D_00000000 + 0x10, s0);
-                if (*(int*)((char*)s0 + 0x14) == 0) {
-                    *(int*)((char*)s0 + 0x14) = (int)&D_00000000;
+                if (NODE(s0)->parent == 0) {
+                    NODE(s0)->parent = (int)&D_00000000;
                 } else {
-                    *(int*)((char*)s0 + 0x4) = 1;
-                    *(int*)((char*)s0 + 0x14) = (int)&D_00000000;
+                    NODE(s0)->unk04 = 1;
+                    NODE(s0)->parent = (int)&D_00000000;
                 }
                 break;
         }
@@ -374,17 +374,17 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)gl_func_00000000(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3C0); *(int *)(o3 + 0x28) = (int)&D_h2h_620_d0; }
-            *(int *)(o2 + 0x28) = (int)&D_h2h_620_d1;
+            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3C0); NODE(o3)->vptr = (int)&D_h2h_620_d0; }
+            NODE(o2)->vptr = (int)&D_h2h_620_d1;
         }
-        *(int *)(o1 + 0x28) = (int)&D_h2h_620_d2;
+        NODE(o1)->vptr = (int)&D_h2h_620_d2;
         gl_func_00000000(o1 + 0x50);
     }
-    *(int *)(obj + 0x28) = (int)&D_h2h_620_d3;
-    *(int *)(obj + 0x568) = 0;
+    NODE(obj)->vptr = (int)&D_h2h_620_d3;
+    RACEPROC(obj)->spriteSet = 0;
     gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C8, a2);
-    *(int *)(obj + 0x6A8) = a3;
-    *(int *)(obj + 0x528) = 0;
+    H2HRACE(obj)->wins = a3;
+    RACEPROC(obj)->session = (BackupSession *)0;
     gl_func_00000000(obj);
     gl_func_00000000((char *)&D_00000000 + 0x3D8, 0);
 
@@ -392,44 +392,44 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         o2 = (char *)gl_func_00000000(0xF0);
         if (o2 != 0) {
             gl_func_00000000(o2);
-            *(int *)(o2 + 0x28) = (int)&D_00000000;
+            NODE(o2)->vptr = (int)&D_00000000;
         }
-        *(int *)(obj + 0x6B0) = (int)o2;
+        H2HRACE(obj)->dataMgr = (int)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
 
-        gl_func_00000000_620v(*(int *)(obj + 0x6B0), obj, *(int *)(obj + 0x568));
+        gl_func_00000000_620v(H2HRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet);
 
-        w = *(char **)(obj + 0x6B0);
-        o1 = *(char **)(w + 0x28);
+        w = (char *)H2HRACE(obj)->dataMgr;
+        o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
-        o1 = *(char **)(obj + 0x6B0);
+        o1 = (char *)H2HRACE(obj)->dataMgr;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         gl_func_00000000(obj, a1);
-        *(int *)(obj + 0x48) = gl_func_00000000(0);
-        gl_func_00000000(*(int *)(obj + 0x48), obj);
-        gl_func_00000000(*(int *)(obj + 0x48), (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
-        gl_func_00000000(*(int *)(obj + 0x48), ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
-        *(int *)(*(int *)(obj + 0x48) + 0x30) = *(int *)(obj + 0x568);
-        gl_func_00000000(*(int *)(obj + 0x48));
-        o1 = *(char **)(obj + 0x48);
+        RACEPROC(obj)->unk048 = gl_func_00000000(0);
+        gl_func_00000000(RACEPROC(obj)->unk048, obj);
+        gl_func_00000000(RACEPROC(obj)->unk048, (*(int *)&D_h2h_620_r + 3) << 16, -1, &D_00000000);
+        gl_func_00000000(RACEPROC(obj)->unk048, ((*(int *)&D_h2h_620_r + 3) << 16) | 8, -1, &D_00000000);
+        *(int *)(RACEPROC(obj)->unk048 + 0x30) = RACEPROC(obj)->spriteSet;
+        gl_func_00000000(RACEPROC(obj)->unk048);
+        o1 = (char *)RACEPROC(obj)->unk048;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         o1 = INPUT_MGR(D_00000000).fader;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
         gl_func_00000000(INPUT_MGR(D_00000000).fader, 1, 0);
         gl_func_00000000();
     }
@@ -638,10 +638,10 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
         a3 = s0->race.handler;
         s0->postMenu = tmp;
         gl_func_00000000(a3 + 0x10, tmp);
-        if (*(int*)(tmp + 0x14) != 0) {
-            *(int*)(tmp + 0x4) = 1;
+        if (NODE(tmp)->parent != 0) {
+            NODE(tmp)->unk04 = 1;
         }
-        *(int*)(tmp + 0x14) = a3;
+        NODE(tmp)->parent = a3;
         gl_func_00000000(*(int*)(base + 0x190), 1, 1);
         break;
     }
@@ -769,7 +769,7 @@ void h2h_setupCameras_00000C18(int *a0) {
  * matching the target's repeated `lw rX, 0x134(s0)`). */
 #define RT (*(int**)((char*)&D_00000000 + 0x134))
 
-    idx = *(int*)((char*)a0 + 0x6B8);
+    idx = H2HRACE(a0)->winner;
     if (idx == -1) {
         slot = *(int**)((char*)RT + 0xC4);
     } else {
@@ -801,10 +801,10 @@ void h2h_setupCameras_00000C18(int *a0) {
      * a0->0x520 and clear bit2 (asymmetric: offset-load first, then reassign). */
     {
         int *p = *(int**)((char*)RT + 0x108);
-        *(int*)((char*)a0 + 0x520) = (int)p;
+        RACEPROC(a0)->savedCam = (int)p;
         p = (int*)((char*)p + 0x18);     /* MUTATE base: addiu v1,p,24 (symmetric) */
         *p = *p & ~0x8;                  /* lw 0(v1); and; sw 0(v1) */
-        p = *(int**)((char*)a0 + 0x520); /* reload p from a0->0x520 */
+        p = (int *)RACEPROC(a0)->savedCam; /* reload p from a0->0x520 */
         v = *(int*)((char*)p + 0x18);    /* lw t0,24(v1) offset-load FIRST */
         p = (int*)((char*)p + 0x18);     /* addiu v1,v1,24 (asymmetric) */
         *p = v & ~0x4;                   /* sw 0(v1) */
@@ -820,25 +820,25 @@ void h2h_setupCameras_00000C18(int *a0) {
     }
 
     retbind = (int*)gl_func_00000000(RT, &D_00000000 + 0x1C, s518_ret);
-    *(int*)((char*)a0 + 0x51C) = (int)retbind;
+    RACEPROC(a0)->replayCam = (int)retbind;
     *(int*)((char*)RT + 0x108) = (int)retbind;   /* jal-delay sw v0,264(t7): the PRE-call v0 = retbind, not alloc2 */
     alloc2 = (int*)gl_func_00000000(0x80);
     if (alloc2 != 0) {
         gl_func_00000000(alloc2, 1);
     }
     /* The 6-arg call + finalizer run UNCONDITIONALLY (only func1 is gated). */
-    r2 = (int*)gl_func_00000000(0, alloc2, slot, *(int**)((char*)a0 + 0x51C), s518_ret, bound);
+    r2 = (int*)gl_func_00000000(0, alloc2, slot, (int *)RACEPROC(a0)->replayCam, s518_ret, bound);
     b84 = *(int*)((char*)RT + 0x84);
     gl_func_00000000(b84 + 0x10, r2);
     /* linked-set finalizer on r2. */
-    if (*(int*)((char*)r2 + 0x14) != 0) {
-        *(int*)((char*)r2 + 0x4) = 1;
+    if (NODE(r2)->parent != 0) {
+        NODE(r2)->unk04 = 1;
     }
-    *(int*)((char*)r2 + 0x14) = b84;
-    gl_func_00000000(*(int*)((char*)a0 + 0x51C), a0);
+    NODE(r2)->parent = b84;
+    gl_func_00000000(RACEPROC(a0)->replayCam, a0);
 
     /* Final flag clear. */
-    *(int*)((char*)a0 + 0x4F0) = *(int*)((char*)a0 + 0x4F0) & 0xFEFFFFFF;
+    RACEPROC(a0)->flags = RACEPROC(a0)->flags & 0xFEFFFFFF;
 #undef RT
 }
 #else
@@ -1339,7 +1339,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     char *self_p10;
     self->base.name = (int)(base + 0x41C);
     self->race = (int)a1;
-    self->unkD4 = 0;
+    self->beepTimer = 0;
     self->base.pointsListArg = a2;
     self->alpha = 0xFF;
     self->unkD0 = 0;
@@ -1355,8 +1355,8 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     gl_func_00000000(self->gadgetE8, 68, 21);
     sub1 = (int*)self->gadgetE8;
     gl_func_00000000(self_p10, sub1);
-    if (*(int*)((char*)sub1 + 0x14) != 0) *(int*)((char*)sub1 + 0x4) = 1;
-    *(int*)((char*)sub1 + 0x14) = (int)self;
+    if (NODE(sub1)->parent != 0) NODE(sub1)->unk04 = 1;
+    NODE(sub1)->parent = (int)self;
 
     sub2 = (int*)gl_func_00000000(0, 90);
     self->unkEC = (int)sub2;
@@ -1364,8 +1364,8 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     gl_func_00000000(self->unkEC, 68, 130);
     sub2 = (int*)self->unkEC;
     gl_func_00000000(self_p10, sub2);
-    if (*(int*)((char*)sub2 + 0x14) != 0) *(int*)((char*)sub2 + 0x4) = 1;
-    *(int*)((char*)sub2 + 0x14) = (int)self;
+    if (NODE(sub2)->parent != 0) NODE(sub2)->unk04 = 1;
+    NODE(sub2)->parent = (int)self;
 
     sub3 = (int*)gl_func_00000000(0, 35);
     src = (int*)self->base.entries;
@@ -1382,8 +1382,8 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     gl_func_00000000(sub3, 285, 179);
     sub3 = (int*)self->base.course;
     gl_func_00000000(self_p10, sub3);
-    if (*(int*)((char*)sub3 + 0x14) != 0) *(int*)((char*)sub3 + 0x4) = 1;
-    *(int*)((char*)sub3 + 0x14) = (int)self;
+    if (NODE(sub3)->parent != 0) NODE(sub3)->unk04 = 1;
+    NODE(sub3)->parent = (int)self;
 }
 
 /* h2h_DataManager_update: 143-insn (0x23C) per-frame state-machine.
@@ -1495,7 +1495,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
  *   (target holds it in ring temp t4, a named p148 coloured v1). */
 extern void gl_func_00000000_17A0v();
 void h2h_DataManager_update(int *self) {
-    int *parent = (int*)*(int*)((char*)self + 0xB8);
+    int *parent = (int*)H2HDATAMGR(self)->race;
     int *v;
     int x;
     int p148;
@@ -1503,48 +1503,48 @@ void h2h_DataManager_update(int *self) {
     int *q;
 
     if ((parent[0x4F0/4] << 15) < 0 && parent[0x4DC/4] == 1) {
-        *(int*)((char*)self + 0x30) += 0x21;
+        DATAMGR(self)->elapsed += 0x21;
     }
     gl_func_00000000_17A0v(self);
-    parent = (int*)*(int*)((char*)self + 0xB8);
+    parent = (int*)H2HDATAMGR(self)->race;
     gate = parent[0x4F0/4] & 0x10000;
     if (gate != 0) {
         if (parent[0x4DC/4] == 1) {
-            v = (int*)*(int*)((char*)self + 0x44);
+            v = (int*)(int)DATAMGR(self)->entries;
             x = v[0x34/4];
             if (x != 0) {
                 if (v[0x94/4] == 0) gl_func_00000000_17A0v(parent, 0);
                 else if (v[0x94/4] != 0) {
                     gl_func_00000000_17A0v(parent);
-                    *(int*)((char*)*(int*)((char*)self + 0xB8) + 0x6B8) = -1;
+                    H2HRACE(H2HDATAMGR(self)->race)->winner = -1;
                 }
             } else {
                 if (v[0x94/4] != 0 && x == 0) gl_func_00000000_17A0v(parent, 1);
             }
 
-            *(int*)((char*)self + 0xD4) += 1;
-            if (*(int*)((char*)self + 0xD4) >= 51) *(int*)((char*)self + 0xD4) = 0;
+            H2HDATAMGR(self)->beepTimer += 1;
+            if (H2HDATAMGR(self)->beepTimer >= 51) H2HDATAMGR(self)->beepTimer = 0;
 
-            q = (int*)*(int*)((char*)self + 0xE8);
-            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000_17A0v(309, 0);
-            q = (int*)*(int*)((char*)self + 0xEC);
-            if (q != 0 && q[0xC4/4] >= 12 && *(int*)((char*)self + 0xD4) == 0) gl_func_00000000_17A0v(309, 1);
-            if (*(int*)((char*)*(int*)((char*)self + 0xE8) + 0xC8) <= 0) gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8), 1);
-            if (*(int*)((char*)*(int*)((char*)self + 0xEC) + 0xC8) <= 0) gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8), 0);
-            gate = *(int*)((char*)*(int*)((char*)self + 0xB8) + 0x4F0) & 0x10000;
+            q = (int*)H2HDATAMGR(self)->gadgetE8;
+            if (q != 0 && q[0xC4/4] >= 12 && H2HDATAMGR(self)->beepTimer == 0) gl_func_00000000_17A0v(309, 0);
+            q = (int*)H2HDATAMGR(self)->unkEC;
+            if (q != 0 && q[0xC4/4] >= 12 && H2HDATAMGR(self)->beepTimer == 0) gl_func_00000000_17A0v(309, 1);
+            if (*(int*)((char*)H2HDATAMGR(self)->gadgetE8 + 0xC8) <= 0) gl_func_00000000_17A0v(H2HDATAMGR(self)->race, 1);
+            if (*(int*)((char*)H2HDATAMGR(self)->unkEC + 0xC8) <= 0) gl_func_00000000_17A0v(H2HDATAMGR(self)->race, 0);
+            gate = RACEPROC(H2HDATAMGR(self)->race)->flags & 0x10000;
         }
     }
     if (gate != 0) {
         if (gl_func_00000000(self) != 0) {
-            gl_func_00000000_17A0v(*(int*)((char*)self + 0xB8));
+            gl_func_00000000_17A0v(H2HDATAMGR(self)->race);
             gl_func_00000000_17A0v(self);
         }
-        gl_func_00000000_17A0v(*(int*)((char*)self + 0xE8), (*(int**)((char*)self + 0x44))[0x28/4]);
-        gl_func_00000000_17A0v(*(int*)((char*)self + 0xEC), (*(int**)((char*)self + 0x44))[0x88/4]);
-        v = (int*)*(int*)((char*)self + 0x44);
-        gl_func_00000000_17A0v(*(int*)((char*)self + 0x80), v[0x30/4], v[0x90/4]);
-        v = (int*)*(int*)((char*)self + 0x44);
-        gl_func_15f0((void*)*(int*)((char*)self + 0x80), v[0x8/4], v[0xC/4],
+        gl_func_00000000_17A0v(H2HDATAMGR(self)->gadgetE8, ((int *)DATAMGR(self)->entries)[0x28/4]);
+        gl_func_00000000_17A0v(H2HDATAMGR(self)->unkEC, ((int *)DATAMGR(self)->entries)[0x88/4]);
+        v = (int*)(int)DATAMGR(self)->entries;
+        gl_func_00000000_17A0v(DATAMGR(self)->course, v[0x30/4], v[0x90/4]);
+        v = (int*)(int)DATAMGR(self)->entries;
+        gl_func_15f0((void*)DATAMGR(self)->course, v[0x8/4], v[0xC/4],
                      v[0x68/4], *(float*)((char*)v + 0x6C));
     }
     gl_func_00000000_17A0v(self);
@@ -1627,7 +1627,7 @@ void *h2h_ItemType_create_00001A6C(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        NODE(p1)->vptr = (int)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1635,10 +1635,10 @@ void *h2h_ItemType_create_00001A6C(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         gl_func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }

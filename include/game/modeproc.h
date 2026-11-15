@@ -10,6 +10,7 @@
  * Only offsets that a matched body touches are named. Pointer-valued fields that the
  * bodies use as ints stay s32 (READABILITY_PLAN 9.1). */
 
+#include "gdl/node.h"
 #include "gdl/race.h"
 
 /* ---- the course list (InputMgr.session +8; RaceProcess ctor arg 3) ----
@@ -87,10 +88,13 @@ typedef struct MgrRace {
                                       * it in phase 3 when the result is 0 / 2; startEnding zeroes it */
     /* 0x7A8 */ f32 retriesX;        /* 160 - (retries * 2 - 2) */
     /* 0x7AC */ f32 retriesY;        /* 210 */
-    /* 0x7B0 */ char unk7B0[8];
+    /* 0x7B0 */ f32 lostX;            /* the retry icon that falls away when a retry is used:
+                                      * onMessageBounce snapshots retriesX / Y here */
+    /* 0x7B4 */ f32 lostY;            /* drawHud: += lostVelY, stops at 256 */
     /* 0x7B8 */ f32 retriesVel;       /* drawHud: velocity of retriesX (bounces at 36, -v / 4) */
-    /* 0x7BC */ char unk7BC[8];
-    /* 0x7C4 */ s32 unk7C4;
+    /* 0x7BC */ f32 lostVelX;         /* retriesVel / 2 */
+    /* 0x7C0 */ f32 lostVelY;         /* 1.0, + gravity per frame */
+    /* 0x7C4 */ s32 lostFalling;      /* onMessageBounce latch: set once, drawHud draws the icon */
     /* 0x7C8 */ s32 retries;         /* courseList->retries at ctor; 0 = cart check failed */
     /* 0x7CC */ s32 unk7CC;
     /* 0x7D0 */ s32 lastResult;      /* endTimerEnabled: race.result */
@@ -131,7 +135,8 @@ typedef struct H2HDataManager {
     /* 0xBC */ f32 colour[4];        /* 1, 1, 1, 1 */
     /* 0xCC */ s32 alpha;            /* 0xFF */
     /* 0xD0 */ s32 unkD0;
-    /* 0xD4 */ s32 unkD4;
+    /* 0xD4 */ s32 beepTimer;        /* update: 0..50; sound 309 (0x135) when it wraps while a
+                                      * player's cool gadget +0xC4 >= 12 (as tim / mgr) */
     /* 0xD8 */ char unkD8[0x10];
     /* 0xE8 */ s32 gadgetE8;         /* the first of the gadgets init builds (gl ctor (0, 90)) */
     /* 0xEC */ s32 unkEC;
@@ -173,5 +178,16 @@ typedef struct TitleDemoProcess {
 } TitleDemoProcess;
 
 typedef char TitleDemoProcess_size_check[sizeof(TitleDemoProcess) == 0x78 ? 1 : -1];
+
+/* Field access through an untyped pointer (agent-h run 492), as RACEPROC / TIMRACE in
+ * gdl/race.h: the race ctors, DataManager methods and name-entry overlays keep their
+ * `char *` / `int` parameters and locals (matching levers), and `ARCRACE(p)->dataMgr`
+ * lowers to the same base + 0x6AC access as `*(int *)(p + 0x6AC)`. */
+#define ARCRACE(p)    ((ArcRace *)(p))
+#define MGRRACE(p)    ((MgrRace *)(p))
+#define H2HRACE(p)    ((H2HRace *)(p))
+#define ARCDATAMGR(p) ((ArcDataManager *)(p))
+#define MGRDATAMGR(p) ((MgrDataManager *)(p))
+#define H2HDATAMGR(p) ((H2HDataManager *)(p))
 
 #endif

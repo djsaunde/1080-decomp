@@ -165,7 +165,7 @@ extern char *D_b1_06B0_b;
 extern int D_b1_06B0_c;
 void TimRace_pauseContinue_000006B0(void) {
     gl_func_00000000(D_b1_06B0_a);
-    gl_func_00000000(*(int*)(D_b1_06B0_b + 0x6A8));
+    gl_func_00000000(TIMRACE(D_b1_06B0_b)->dataManager);
     gl_func_00000000(&D_b1_06B0_c);
 }
 
@@ -301,13 +301,13 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o1 != 0 || (o2 = (char *)gl_func_00000000(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3B8); *(int *)(o3 + 0x28) = (int)&D_b1_097C_v0; }
-            *(int *)(o2 + 0x28) = (int)&D_b1_097C_v1;
+            if (o3 != 0 || (o3 = (char *)gl_func_00000000(0x2C)) != 0) { gl_func_00000000(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_b1_097C_v0; }
+            NODE(o2)->vptr = (int)&D_b1_097C_v1;
         }
-        *(int *)(o1 + 0x28) = (int)&D_b1_097C_v2;
+        NODE(o1)->vptr = (int)&D_b1_097C_v2;
         gl_func_00000000(o1 + 0x50);
     }
-    *(int *)(obj + 0x28) = (int)&D_b1_097C_v3;
+    NODE(obj)->vptr = (int)&D_b1_097C_v3;
     RACEPROC(obj)->spriteSet = 0;
     gl_func_00000000(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a3;
@@ -320,7 +320,7 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         o2 = (char *)gl_func_00000000(0xE0);
         if (o2 != 0) {
             gl_func_00000000(o2);
-            *(int *)(o2 + 0x28) = (int)&D_b1_097C_v4;
+            NODE(o2)->vptr = (int)&D_b1_097C_v4;
         }
         TIMRACE(obj)->dataManager = (int)o2;
         *(char **)((char *)&D_b1_097C_g + 0x138) = o2;
@@ -328,15 +328,15 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         gl_func_00000000_994v(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
 
         w = (char *)TIMRACE(obj)->dataManager;
-        o1 = *(char **)(w + 0x28);
+        o1 = (char *)NODE(w)->vptr;
         ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
 
         o1 = (char *)TIMRACE(obj)->dataManager;
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
 
         gl_func_00000000(obj, a1);
 
@@ -353,21 +353,21 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             gl_func_00000000(RACEPROC(obj)->unk048);
             o1 = (char *)RACEPROC(obj)->unk048;
             gl_func_00000000(obj + 16, o1);
-            if (*(int *)(o1 + 0x14) != 0) {
-                *(int *)(o1 + 0x4) = 1;
+            if (NODE(o1)->parent != 0) {
+                NODE(o1)->unk04 = 1;
             }
-            *(int *)(o1 + 0x14) = (int)obj;
+            NODE(o1)->parent = (int)obj;
         } else {
-            *(int *)(obj + 0x4F4) = a1 & 0xFFFF;
+            RACEPROC(obj)->timeout = a1 & 0xFFFF;
             RACEPROC(obj)->unk048 = 0;
         }
 
         o1 = *(char **)((char *)&D_00000000 + 0x190);
         gl_func_00000000(obj + 16, o1);
-        if (*(int *)(o1 + 0x14) != 0) {
-            *(int *)(o1 + 0x4) = 1;
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
         }
-        *(int *)(o1 + 0x14) = (int)obj;
+        NODE(o1)->parent = (int)obj;
         gl_func_00000000(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
         gl_func_00000000();
     }
@@ -462,7 +462,7 @@ void TimRace_onAltEndTimerDone(int a0) {
 void TimRace_onRaceOver(char *a0arg) {
     volatile int *base;
     TimRace *s2 = (TimRace *)a0arg;
-    int state = *(int *)(a0arg + 0x504);
+    int state = RACEPROC(a0arg)->unk504;
     char *work;
     char *s1;
     char *r;
@@ -480,8 +480,8 @@ void TimRace_onRaceOver(char *a0arg) {
 state0:
     work = (char *)s2->dataManager;
     base = (volatile int *)&D_00000000;
-    s2->finalTime = *(int *)(work + 0x30);
-    s2->recordRank = *(int *)(*(char **)(work + 0x44) + 0x38);
+    s2->finalTime = DATAMGR(work)->elapsed;
+    s2->recordRank = DATAMGR(work)->entries->rank[0];
     s1 = (char *)gl_func_00000000(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank);
     for (state = s2->recordRank - 1; state >= 0; state--) {
         r = (char *)gl_func_00000000(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
@@ -761,13 +761,13 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)gl_func_00000000(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)gl_func_00000000(0x2C), (a0 != 0))) {
-                    gl_func_00000000(a0, D_tim16F8_v + 0x404); *(char **)(a0 + 0x28) = D_tim16F8_w;
+                    gl_func_00000000(a0, D_tim16F8_v + 0x404); NODE(a0)->vptr = (int)D_tim16F8_w;
                 }
-                *(char **)(v1 + 0x28) = D_tim16F8_x;
+                NODE(v1)->vptr = (int)D_tim16F8_x;
             }
-            *(char **)(a2 + 0x28) = D_tim16F8_y;
+            NODE(a2)->vptr = (int)D_tim16F8_y;
         }
-        *(char **)(arg0 + 0x28) = D_tim16F8_z;
+        NODE(arg0)->vptr = (int)D_tim16F8_z;
         *(int *)(arg0 + 0x60) = arg2;
         *(char **)(arg0 + 0xD4) = arg1;
         *(int *)(arg0 + 0xE0) = 0xA0;
@@ -938,39 +938,39 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
   volatile int p4;
   int r5;
   int r6;
-  a0[0xC / 4] = (int) (((char *) (&D_00000000)) + 0x40C);
-  a0[0xB8 / 4] = a1;
-  a0[0x50 / 4] = a1;
-  a0[0x4C / 4] = a3;
-  a0[0xAC / 4] = 0;
-  a0[0xD8 / 4] = 0;
-  a0[0x54 / 4] = a2;
-  a0[0xD0 / 4] = 0xFF;
-  a0[0xD4 / 4] = 0;
-  a0[0xDC / 4] = 1;
-  *((float *) (((char *) a0) + 0xCC)) = 1.0f;
-  *((float *) (((char *) a0) + 0xC8)) = 1.0f;
-  *((float *) (((char *) a0) + 0xC4)) = 1.0f;
-  *((float *) (((char *) a0) - (-0xC0))) = 1.0f;
-  if (((*((int *) (((char *) a1) + 0x4F0))) << 15) >= 0)
+  NODE(a0)->name = (int) (((char *) (&D_00000000)) + 0x40C);
+  TIMDATAMGR(a0)->race = a1;
+  DATAMGR(a0)->owner = a1;
+  DATAMGR(a0)->session = (BackupSession *)a3;
+  DATAMGR(a0)->blinkTimer = 0;
+  TIMDATAMGR(a0)->beepTimer = 0;
+  DATAMGR(a0)->pointsListArg = a2;
+  TIMDATAMGR(a0)->alpha = 0xFF;
+  TIMDATAMGR(a0)->unkD4 = 0;
+  TIMDATAMGR(a0)->unkDC = 1;
+  TIMDATAMGR(a0)->colour[3] = 1.0f;
+  TIMDATAMGR(a0)->colour[2] = 1.0f;
+  TIMDATAMGR(a0)->colour[1] = 1.0f;
+  TIMDATAMGR(a0)->colour[0] = 1.0f;
+  if ((RACEPROC(a1)->flags << 15) >= 0)
   {
     return;
   }
-  gl_func_00000000(a0, 0xE8, 0x13, a0[0x44 / 4] + 0x10);
+  gl_func_00000000(a0, 0xE8, 0x13, (int)DATAMGR(a0)->entries + 0x10);
   gl_func_00000000(a0, 0x123, 0xE1, 1);
   gl_func_00000000(a0, 0x47, 0x13, ((int) a0) + 0x30);
-  gl_func_00000000(a0, 0x44, 0x22, a0[0x44 / 4] + 0x28);
-  r5 = gl_func_00000000(((*((int *) (((char *) (&D_00000000)) + 0x64))) * 0x30) + (*((int *) a0[0x4C / 4])), 0);
-  r6 = gl_func_00000000(0, a0[0x60 / 4]);
-  a0[0xBC / 4] = r6;
+  gl_func_00000000(a0, 0x44, 0x22, (int)DATAMGR(a0)->entries + 0x28);
+  r5 = gl_func_00000000(((*((int *) (((char *) (&D_00000000)) + 0x64))) * 0x30) + (*((int *) DATAMGR(a0)->session)), 0);
+  r6 = gl_func_00000000(0, DATAMGR(a0)->sprites60);
+  TIMDATAMGR(a0)->rankLabel = r6;
   gl_func_00000000(r6, *((unsigned char *) (r5 + 5)), *((unsigned char *) (r5 + 6)), *((unsigned char *) (r5 + 7)));
-  gl_func_00000000(a0[0xBC / 4], 0x4B, 0xD6);
-  gl_func_00000000(((int) a0) + 0x10, (int) (a1x = (int *) a0[0xBC / 4]));
-  if (a1x[0x14 / 4] != 0)
+  gl_func_00000000(TIMDATAMGR(a0)->rankLabel, 0x4B, 0xD6);
+  gl_func_00000000(((int) a0) + 0x10, (int) (a1x = (int *) TIMDATAMGR(a0)->rankLabel));
+  if (NODE(a1x)->parent != 0)
   {
-    a1x[4 / 4] = 1;
+    NODE(a1x)->unk04 = 1;
   }
-  a1x[0x14 / 4] = (int) a0;
+  NODE(a1x)->parent = (int) a0;
 }
 
 /* TimDataManager_update_00001BCC - per-frame update state machine, EXACT 158/158
@@ -994,65 +994,65 @@ void TimDataManager_update_00001BCC(char *arg0) {
 
     gl_func_00000000();
     if (1) {
-        pa = *(char **)(arg0 + 0xB8);
+        pa = (char *)TIMDATAMGR(arg0)->race;
         if ((RACEPROC(pa)->flags & 0x10000) && (RACEPROC(pa)->raceState == 1)) {
-            *(int *)(arg0 + 0x30) = *(int *)(arg0 + 0x30) + 0x21;
+            DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
         }
     }
     gl_func_00000000(arg0);
     if (1) {
-        pb = *(char **)(arg0 + 0xB8);
+        pb = (char *)TIMDATAMGR(arg0)->race;
         v1 = RACEPROC(pb)->flags & 0x10000;
     }
     if ((v1 != 0) && (RACEPROC(pb)->raceState == 1)) {
-        if (*(int *)(arg0 + 0x48) == 2) {
-            if ((*(int *)(arg0 + 0xDC) == 1) &&
-                (*(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C) == 0)) {
+        if (DATAMGR(arg0)->numEntries == 2) {
+            if ((TIMDATAMGR(arg0)->unkDC == 1) &&
+                (*(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C) == 0)) {
                 gl_func_00000000(arg0, 1);
             }
-            *(int *)(arg0 + 0xDC) = *(int *)(*(char **)(*(char **)(*(char **)(arg0 + 0x44) + 0x60) + 0x800) + 0x4C);
+            TIMDATAMGR(arg0)->unkDC = *(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C);
         }
-        if (*(int *)(*(char **)(arg0 + 0x44) + 0x34) != 0) {
-            gl_func_00000000(*(int *)(arg0 + 0xB8));
+        if (DATAMGR(arg0)->entries->finished != 0) {
+            gl_func_00000000(TIMDATAMGR(arg0)->race);
         }
-        if (*(int *)(*(char **)(arg0 + 0x98) + 0xC8) <= 0) {
-            gl_func_00000000(*(int *)(arg0 + 0xB8));
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgFloor = 192.0f;
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgAlpha = 0xFF;
+        if (*(int *)((char *)DATAMGR(arg0)->cool + 0xC8) <= 0) {
+            gl_func_00000000(TIMDATAMGR(arg0)->race);
+            RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgFloor = 192.0f;
+            RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
         }
-        *(int *)(arg0 + 0xD8) += 1;
-        if (*(int *)(arg0 + 0xD8) >= 0x33) {
-            *(int *)(arg0 + 0xD8) = 0;
+        TIMDATAMGR(arg0)->beepTimer += 1;
+        if (TIMDATAMGR(arg0)->beepTimer >= 0x33) {
+            TIMDATAMGR(arg0)->beepTimer = 0;
         }
-        pc = *(char **)(arg0 + 0x98);
-        if ((pc != 0) && (*(int *)(pc + 0xC4) >= 0xC) && (*(int *)(arg0 + 0xD8) == 0)) {
+        pc = (char *)DATAMGR(arg0)->cool;
+        if ((pc != 0) && (*(int *)(pc + 0xC4) >= 0xC) && (TIMDATAMGR(arg0)->beepTimer == 0)) {
             gl_func_00000000(0x135, 0);
         }
-        pb = *(char **)(arg0 + 0xB8);
+        pb = (char *)TIMDATAMGR(arg0)->race;
         v1 = RACEPROC(pb)->flags & 0x10000;
     }
     if (v1 != 0) {
         if ((RACEPROC(pb)->raceState == 1) && (gl_func_00000000(arg0) != 0)) {
-            gl_func_00000000(*(int *)(arg0 + 0xB8));
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgFloor = 192.0f;
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgAlpha = 0xFF;
-            *(int *)(arg0 + 0x2C) = 0;
+            gl_func_00000000(TIMDATAMGR(arg0)->race);
+            RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgFloor = 192.0f;
+            RACEPROC((char *)TIMDATAMGR(arg0)->race)->msgAlpha = 0xFF;
+            DATAMGR(arg0)->active = 0;
         }
-        gl_proto_1c94(*(int *)(arg0 + 0x80), *(int *)(*(char **)(arg0 + 0x44) + 0x30), 0.0f);
+        gl_proto_1c94(DATAMGR(arg0)->course, *(int *)((char *)DATAMGR(arg0)->entries + 0x30), 0.0f);
         if (1) {
-            pd = *(char **)(arg0 + 0x44);
-            gl_proto_1c68(*(int *)(arg0 + 0x80), *(int *)(pd + 8), *(int *)(pd + 0xC), 0.0f, 0.0f);
+            pd = (char *)DATAMGR(arg0)->entries;
+            gl_proto_1c68(DATAMGR(arg0)->course, *(int *)(pd + 8), *(int *)(pd + 0xC), 0.0f, 0.0f);
         }
         if (1) {
-            pe = *(char **)(arg0 + 0xB8);
+            pe = (char *)TIMDATAMGR(arg0)->race;
         }
         if ((RACEPROC(pe)->raceState == 2) && (RACEPROC(pe)->result == 0)) {
-            *(int *)(arg0 + 0xAC) += 1;
-            if (*(int *)(arg0 + 0xAC) & 8) {
-                pf = *(char **)(arg0 + 0x78) + 0x18;
+            DATAMGR(arg0)->blinkTimer += 1;
+            if (DATAMGR(arg0)->blinkTimer & 8) {
+                pf = (char *)DATAMGR(arg0)->time + 0x18;
                 *(int *)pf = *(int *)pf & ~4;
             } else {
-                pf = *(char **)(arg0 + 0x78) + 0x18;
+                pf = (char *)DATAMGR(arg0)->time + 0x18;
                 *(int *)pf = *(int *)pf | 4;
             }
         }
@@ -1104,7 +1104,7 @@ void *TimItemType_create_00001ED4(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&D_00000000;
+        NODE(p1)->vptr = (int)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1112,10 +1112,10 @@ void *TimItemType_create_00001ED4(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         gl_func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -1262,20 +1262,20 @@ char *TimMenu_ctor(char *arg0) {
         gl_func_00000000(*(int *)(arg0 + 72), 140);
         if (1) {}
         v0 = *(char **)(arg0 + 72);
-        a3 = *(char **)(v0 + 40);
+        a3 = (char *)NODE(v0)->vptr;
         ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
         a3 = *(char **)(arg0 + 72);
-        gl_func_00000000(arg0 + 16, a3); if (*(int *)(a3 + 0x14) != 0) { *(int *)(a3 + 0x4) = 1; } *(int *)(a3 + 0x14) = (int)arg0;
+        gl_func_00000000(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
         if (*(int *)((char *)&D_b1_21D4_base + 388) == 0 ||
             (*(int *)0xA0000200 == 0xAC290000) == 0) {
             *(int *)(*(int *)(arg0 + 72) + 0xD8) = 0;
         }
         a3 = *(char **)((char *)&D_b1_21D4_base + 400);
         gl_func_00000000(arg0 + 16, a3);
-        if (*(int *)(a3 + 0x14) != 0) {
-            *(int *)(a3 + 0x4) = 1;
+        if (NODE(a3)->parent != 0) {
+            NODE(a3)->unk04 = 1;
         }
-        *(int *)(a3 + 0x14) = (int)arg0;
+        NODE(a3)->parent = (int)arg0;
         gl_func_00000000(*(int *)((char *)&D_b1_21D4_base + 400), 1, 0);
         *(int *)(arg0 + 0x54) = 0;
         *(int *)(arg0 + 80) = 0;

@@ -1988,7 +1988,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        *(int*)((char*)p1 + 0x28) = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1996,10 +1996,10 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         gl_func_00000000((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -2133,7 +2133,7 @@ void RaceTracker_reset(RaceTracker *self) {
     }
     self->elapsed = 0;
     self->timeLimit = 0x927C0;
-    self->unkB0 = 1;
+    self->ghostFlag = 1;
     self->courseStart = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xC4);
     self->courseZ = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xCC);
     self->courseLength = *(f32 *)(FW(FW(&D_00000000, 0x134), 0x98) + 0xD8) - self->courseZ;
@@ -3142,7 +3142,7 @@ int gl_func_0000DF20_inner(int a0, int a1);
 void RaceTracker_setEntrySpeed(int a0, int a1, float a2) {
     int rv = gl_func_0000DF20_inner(a0, a1);
     if (rv != 0) {
-        *(float*)(rv + 0x10) = a2;
+        ((RaceEntry *)rv)->speed = a2;
     }
 }
 
@@ -3270,19 +3270,19 @@ void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
     int v0;
     if (a1) {}
     v0 = gl_func_00000000();
-    if (v0 != 0 && (*(int *)(v0 + 4) & 1)) {
-        if ((*(int *)(a0 + 0xB4) & 2) && *(int *)(v0 + 0x24) == 1) {
+    if (v0 != 0 && (((RaceEntry *)v0)->flags & 1)) {
+        if ((((RaceTracker *)a0)->hudFlags & 2) && ((RaceEntry *)v0)->pending == 1) {
             if (a2 != 0) {
-                gl_func_00000000(a0, *(int *)(v0 + 0x1C), a3);
-                *(int *)(v0 + 0x24) = 0;
+                gl_func_00000000(a0, ((RaceEntry *)v0)->pendingPoints, a3);
+                ((RaceEntry *)v0)->pending = 0;
             } else {
-                gl_func_00000000(a0, *(int *)(v0 + 0x1C));
-                *(int *)(v0 + 0x24) = 0;
+                gl_func_00000000(a0, ((RaceEntry *)v0)->pendingPoints);
+                ((RaceEntry *)v0)->pending = 0;
             }
-            *(int *)(v0 + 0x1C) = 0;
+            ((RaceEntry *)v0)->pendingPoints = 0;
         }
         {
-            int t = *(int *)(a0 + 0x28);
+            int t = ((RaceTracker *)a0)->vptr;
             (*(void (**)(int, int))(t + 0x74))(*(short *)(t + 0x70) + a0, a2);
         }
     }
@@ -3346,23 +3346,23 @@ void hud_releaseGadgets(Hud *o) {
  * (int t = v[6]; v += 6; *v = t | 4) only reproduced the advance shape.
  * docs/IDO_CODEGEN.md#e368-field-pointer-compound-rmw-ring-temp */
 void RaceTracker_toggleGhost(int a0) {
-    if ((*(int *)(*(int *)((char *)a0 + 0x50) + 0x4F0) & 0x10000) == 0) {
+    if ((RACEPROC(((RaceTracker *)a0)->owner)->flags & 0x10000) == 0) {
         return;
     }
-    if (*(int *)((char *)a0 + 0x48) != 2) {
+    if (((RaceTracker *)a0)->numEntries != 2) {
         return;
     }
     if (gl_func_00000000(&D_00000000, 0x20, a0) == 0) {
         return;
     }
-    if (*(int *)((char *)a0 + 0xB0) != 0) {
-        int *v = (int *)(*(int *)(*(int *)((char *)a0 + 0x44) + 0x60) + 0x18);
+    if (((RaceTracker *)a0)->ghostFlag != 0) {
+        int *v = (int *)(*(int *)((int)((RaceTracker *)a0)->entries + 0x60) + 0x18);
         *v &= ~4;
-        *(int *)((char *)a0 + 0xB0) = 0;
+        ((RaceTracker *)a0)->ghostFlag = 0;
     } else {
-        int *v = (int *)(*(int *)(*(int *)((char *)a0 + 0x44) + 0x60) + 0x18);
+        int *v = (int *)(*(int *)((int)((RaceTracker *)a0)->entries + 0x60) + 0x18);
         *v |= 4;
-        *(int *)((char *)a0 + 0xB0) = 1;
+        ((RaceTracker *)a0)->ghostFlag = 1;
     }
 }
 
