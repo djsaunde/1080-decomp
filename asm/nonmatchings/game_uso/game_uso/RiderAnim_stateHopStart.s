@@ -37,12 +37,12 @@ glabel RiderAnim_stateHopStart
     /* 0100EC 000100EC 8D860004 */  .word 0x8D860004
     jal RiderAnim_setNextState_0000D5BC   /* 0100F0 0C000000 -> RiderAnim_setNextState_0000D5BC */
     /* 0100F4 000100F4 AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_func_0000E2D0   /* 0100F8 0C000000 -> RiderAnim_func_0000E2D0 */
+    jal RiderAnim_holdJumpLift_0000E2D0   /* 0100F8 0C000000 -> RiderAnim_holdJumpLift_0000E2D0 */
     /* 0100FC 000100FC 02002025 */  .word 0x02002025
     /* 010100 00010100 02002025 */  .word 0x02002025
-    jal RiderAnim_func_0000E5C8   /* 010104 0C000000 -> RiderAnim_func_0000E5C8 */
+    jal RiderAnim_readTrickInput_0000E5C8   /* 010104 0C000000 -> RiderAnim_readTrickInput_0000E5C8 */
     /* 010108 00010108 00002825 */  .word 0x00002825
-    jal RiderAnim_func_0000E35C   /* 01010C 0C000000 -> RiderAnim_func_0000E35C */
+    jal RiderAnim_startQueuedTrick_0000E35C   /* 01010C 0C000000 -> RiderAnim_startQueuedTrick_0000E35C */
     /* 010110 00010110 02002025 */  .word 0x02002025
     /* 010114 00010114 8FBF0024 */  .word 0x8FBF0024
     /* 010118 00010118 8FB00020 */  .word 0x8FB00020

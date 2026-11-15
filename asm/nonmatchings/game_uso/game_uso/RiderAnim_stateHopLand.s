@@ -10,9 +10,9 @@ glabel RiderAnim_stateHopLand
     /* 0104BC 000104BC 240E0001 */  .word 0x240E0001
     /* 0104C0 000104C0 02002025 */  .word 0x02002025
     /* 0104C4 000104C4 00002825 */  .word 0x00002825
-    jal RiderAnim_func_0000E5C8   /* 0104C8 0C000000 -> RiderAnim_func_0000E5C8 */
+    jal RiderAnim_readTrickInput_0000E5C8   /* 0104C8 0C000000 -> RiderAnim_readTrickInput_0000E5C8 */
     /* 0104CC 000104CC ADEE0A18 */  .word 0xADEE0A18
-    jal RiderAnim_func_0000E35C   /* 0104D0 0C000000 -> RiderAnim_func_0000E35C */
+    jal RiderAnim_startQueuedTrick_0000E35C   /* 0104D0 0C000000 -> RiderAnim_startQueuedTrick_0000E35C */
     /* 0104D4 000104D4 02002025 */  .word 0x02002025
     /* 0104D8 000104D8 54400020 */  .word 0x54400020
     /* 0104DC 000104DC 8FBF0024 */  .word 0x8FBF0024

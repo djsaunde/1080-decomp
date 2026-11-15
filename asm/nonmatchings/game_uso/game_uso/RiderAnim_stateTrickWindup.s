@@ -25,13 +25,13 @@ glabel RiderAnim_stateTrickWindup
     /* 00F568 0000F568 AFA60008 */  .word 0xAFA60008
     /* 00F56C 0000F56C 10000007 */  .word 0x10000007
     /* 00F570 0000F570 00000000 */  .word 0x00000000
-    jal RiderAnim_func_00011888   /* 00F574 0C000000 -> RiderAnim_func_00011888 */
+    jal RiderAnim_clearTricks_00011888   /* 00F574 0C000000 -> RiderAnim_clearTricks_00011888 */
     /* 00F578 0000F578 02002025 */  .word 0x02002025
     /* 00F57C 0000F57C 02002025 */  .word 0x02002025
     /* 00F580 0000F580 24050001 */  .word 0x24050001
-    jal RiderAnim_func_0000EE30   /* 00F584 0C000000 -> RiderAnim_func_0000EE30 */
+    jal RiderAnim_addTrickPoints_0000EE30   /* 00F584 0C000000 -> RiderAnim_addTrickPoints_0000EE30 */
     /* 00F588 0000F588 24060001 */  .word 0x24060001
-    jal RiderAnim_func_0000D74C   /* 00F58C 0C000000 -> RiderAnim_func_0000D74C */
+    jal RiderAnim_trickCrash_0000D74C   /* 00F58C 0C000000 -> RiderAnim_trickCrash_0000D74C */
     /* 00F590 0000F590 02002025 */  .word 0x02002025
     /* 00F594 0000F594 8FBF001C */  .word 0x8FBF001C
     /* 00F598 0000F598 8FB00018 */  .word 0x8FB00018

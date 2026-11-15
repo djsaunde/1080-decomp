@@ -151,7 +151,7 @@ void tim_openSession_000005A4(int **arg0, int arg1, int arg2) {
  * offset literal in .text (the offset lives in the reloc-filled %lo; `D_0000014C`
  * gives field=0, `&D+0x14C` gives 3 insns at -O0). Real fix = spimdisasm USO-reloc
  * migration (expected/ becomes reloc-aware), per the donor comment + the
- * project's USO-reloc-migration TODO. Distinct from RiderAnim_func_0000D7F4, which
+ * project's USO-reloc-migration TODO. Distinct from RiderAnim_checkReverseBrake_0000D7F4, which
  * landed only because its 0xE90 baked into an ADDIU (struct-by-value base-
  * materialization), not a load/store %lo. Default build = donor splice. */
 void tim_closeSession_0000065C(int *a0) {

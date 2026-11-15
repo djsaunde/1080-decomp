@@ -418,7 +418,7 @@ glabel RiderAnim_selectAnim_0000D9CC
     /* 00E044 0000E044 00E02825 */  .word 0x00E02825
     /* 00E048 0000E048 51600047 */  .word 0x51600047
     /* 00E04C 0000E04C 8E0E00B4 */  .word 0x8E0E00B4
-    jal RiderAnim_func_0001189C   /* 00E050 0C000000 -> RiderAnim_func_0001189C */
+    jal RiderAnim_hitFeedback_0001189C   /* 00E050 0C000000 -> RiderAnim_hitFeedback_0001189C */
     /* 00E054 0000E054 8FA6002C */  .word 0x8FA6002C
     /* 00E058 0000E058 3C013F80 */  .word 0x3C013F80
     /* 00E05C 0000E05C 44819000 */  .word 0x44819000
@@ -533,7 +533,7 @@ endlabel RiderAnim_selectAnim_0000D9CC
 .late_rodata
 /* +0x1F8..+0x208: own 2 doubles (ldc1 %lo 0x1F8/0x200) */
 .word 0x3FE99999, 0x9999999A, 0xBFD99999, 0x9999999A
-/* +0x208..+0x210: double of C fn RiderAnim_func_0000E1FC (ldc1 %lo 0x208) */
+/* +0x208..+0x210: double of C fn RiderAnim_checkRow_0000E1FC (ldc1 %lo 0x208) */
 .word 0x3FB99999, 0x9999999A
 
 .text

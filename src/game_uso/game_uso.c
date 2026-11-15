@@ -7876,7 +7876,7 @@ int *TrickTable_getEntry10_0000C35C(int a0, int a1) {
     return (int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x10);
 }
 
-int TrickTable_getField2C_0000C378(int a0, int a1) {
+int TrickTable_getInputMask_0000C378(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x2C);
 }
 
@@ -7884,11 +7884,11 @@ int TrickTable_getField34_0000C394(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x34);
 }
 
-int TrickTable_getField38_0000C3B0(int a0, int a1) {
+int TrickTable_getFlags_0000C3B0(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x38);
 }
 
-int TrickTable_getField30_0000C3CC(int a0, int a1) {
+int TrickTable_getPoints_0000C3CC(int a0, int a1) {
     return *(int*)((char*)(*(int**)&D_00000000) + (a1 << 6) + 0x30);
 }
 
@@ -8596,7 +8596,7 @@ void RiderAnim_flipStance_0000D6E4(char *a0) {
  * a `b end; li v0,1` tail with $v0 throughout, matching the target exactly.
  * Dropping the `result` local also keeps `arg`'s spill at 0x24 (the extra
  * local had pushed it to 0x20). */
-int RiderAnim_func_0000D74C(char *a0) {
+int RiderAnim_trickCrash_0000D74C(char *a0) {
     int arg;
     if (*(int*)(*(char**)(a0 + 0xB4) + 0x938)) {
         gl_func_00000000(a0, 1);
@@ -8619,11 +8619,11 @@ int RiderAnim_func_0000D74C(char *a0) {
  * (NOT a separate `&D_00000E90` symbol) emits `lui %hi; addiu base,0xE90; lw 0; lw 4`
  * with the 0xE90 baked into the addiu as a literal addend (matching the target's
  * HI16-only reloc) AND homes a1/a2 to sp+4/sp+8 via the struct-by-value spill —
- * same proven form as the byte-exact neighbor RiderAnim_func_0000D8A8 (uses +0xE70).
+ * same proven form as the byte-exact neighbor RiderAnim_checkBrake_0000D8A8 (uses +0xE70).
  * The old `&D_00000E90` form emitted a HI16+LO16 pair → addiu imm=0 (1-diff residual
  * after the banned INSN_PATCH that previously faked it was removed 2026-05-23).
  * See docs/MATCHING_WORKFLOW.md addend form. */
-void RiderAnim_func_0000D7F4(char *a0) {
+void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
     int *data = *(int**)(a0 + 0xB4);
     if (*(float*)((char*)data + 0xA38) < -20.0f) {
         if (*(int*)((char*)data + 0x938) != 0) {
@@ -8640,13 +8640,13 @@ void RiderAnim_func_0000D7F4(char *a0) {
  * The named t6 local landed the B4-child in $v0; inlining the deref into
  * the condition shifts it to $t6 (target's contiguous t6/t7/t8 numbering).
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
-void RiderAnim_func_0000D8A8(char *a0) {
+void RiderAnim_checkBrake_0000D8A8(char *a0) {
     if (*(int*)((char*)*(int**)(a0 + 0xB4) + 0x990) != 0) {
         gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE70));
     }
 }
 
-/* RiderAnim_func_0000D8EC: 56-insn dispatch + 3-call wrapper.
+/* RiderAnim_checkJump_0000D8EC: 56-insn dispatch + 3-call wrapper.
  * NATURAL CEILING via C-shape (branch layout + post-call reload). The
  * remaining caller-slot spill + D-base scheduling family cap (same as
  * D7F4/D8A8) was previously promoted via Makefile SUFFIX_BYTES_FORCE/
@@ -8672,7 +8672,7 @@ void RiderAnim_func_0000D8A8(char *a0) {
  *       }
  *   }
  *   L_BC: t6 = v1->[0x9D4]; if (t6 >= 11) gl_func(a0); */
-void RiderAnim_func_0000D8EC(int *a0) {
+void RiderAnim_checkJump_0000D8EC(int *a0) {
     int *v0;
     int a1;
 
@@ -8714,7 +8714,7 @@ L_BC:
  * negatives) is in git log for this file and docs/IDO_CODEGEN.md kit XXV.
  * This placeholder re-emits the three .rodata doubles the INCLUDE_ASM .s
  * carried at +0x1F8..+0x210 (0.8 and -0.4 for this function, 0.1 for
- * RiderAnim_func_0000E1FC); the donor reads them through data symbols whose
+ * RiderAnim_checkRow_0000E1FC); the donor reads them through data symbols whose
  * addends hold the offsets (the game_uso block is extracted unlinked). */
 void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     *(volatile double *)arg0 = 0.8;
@@ -8722,14 +8722,14 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     *(volatile double *)arg0 = 0.1;
 }
 
-// RiderAnim_func_0000E1FC — STRUCTURAL PASS (0xD4 / 53 words,
+// RiderAnim_checkRow_0000E1FC — STRUCTURAL PASS (0xD4 / 53 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic; boundary already split by commit 085ef620 — named fn
 // still undecoded). Hand-decoded.
 //
 // Threshold-gated event / effect trigger.
 //
-//   void RiderAnim_func_0000E1FC(Obj *obj, A a1, A a2) {
+//   void RiderAnim_checkRow_0000E1FC(Obj *obj, A a1, A a2) {
 //     Sub *s = obj->0xB4;
 //     if (!(s->0x348 < s->0x10)) return;                  // timer/state
 //     if (!(obj->0x800->0x18 & 0x2000)) return;            // flag gate
@@ -8755,7 +8755,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
 //   mnemonic disasm limitation prevents byte-match. Real-C STRUCTURAL
 //   body below — threshold-gated event/effect trigger skeleton.
 //   Byte-match deferred. Name pre-checked: no extern reuse.
-/* RiderAnim_func_0000E1FC: threshold-gated event trigger. EXACT 2026-07-15
+/* RiderAnim_checkRow_0000E1FC: threshold-gated event trigger. EXACT 2026-07-15
  * (was 99.62 "folded f64 / USO raw-word" deferred cap). Final lever: DE-NAME
  * the double threshold — inline `*(double*)((char*)&D + 0x208)` directly in
  * the compare instead of a named `double thr` local. Nameless expression =
@@ -8766,7 +8766,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
 extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FF458;
 extern char game_uso_D_807FF440;
-void RiderAnim_func_0000E1FC(char *obj) {
+void RiderAnim_checkRow_0000E1FC(char *obj) {
     char *s = *(char **)(obj + 0xB4);
     char *sub = s;
     float raw, m;
@@ -8785,7 +8785,7 @@ void RiderAnim_func_0000E1FC(char *obj) {
     }
 }
 
-/* RiderAnim_func_0000E2D0 - per-frame advance of a timed sub-object on game
+/* RiderAnim_holdJumpLift_0000E2D0 - per-frame advance of a timed sub-object on game
  * object a0. Global gate at &D+0; if active (a0->0xE4 frame counter >= 0) and
  * the sub-block (a0->0xB4->0x800->0x10) has flag bits 0x300, advance the
  * counter and accumulate a0->0x1E4 into parent->0x31C when not frozen
@@ -8795,7 +8795,7 @@ void RiderAnim_func_0000E1FC(char *obj) {
  * extended temp into v1; if/else (not early-return) emits the beql + dead
  * store-tail. Exact. */
 extern char game_uso_D_807FF684;
-void RiderAnim_func_0000E2D0(a0)
+void RiderAnim_holdJumpLift_0000E2D0(a0)
 char *a0;
 {
     int frame;
@@ -8819,7 +8819,7 @@ char *a0;
     }
 }
 
-/* RiderAnim_func_0000E35C (0x208 / 130 words): slot/queue advance. If
+/* RiderAnim_startQueuedTrick_0000E35C (0x208 / 130 words): slot/queue advance. If
  * self->0xF0 (current) != NULL: EE30(self, cur->0x30, 1); import_000B8518
  * index call (ceil-div-by-64 node offset, two forms on obj->0xA58 & 0x20);
  * counter (0x100)++, F4 = F0, F0 = 0, counter reset when F8 == F4, F8 = F4;
@@ -8837,15 +8837,15 @@ extern int *game_uso_D_807FFBC0;
 extern char game_uso_D_807FF4B0;
 extern char game_uso_D_807FF4B8;
 extern char game_uso_D_807FF4C0;
-extern void RiderAnim_func_0000EE30(char *, int, int);
-extern void RiderAnim_func_0000E564(int *);
+extern void RiderAnim_addTrickPoints_0000EE30(char *, int, int);
+extern void RiderAnim_playSpinSound_0000E564(int *);
 extern int import_000B8518();
 extern char import_800201D0;
-int RiderAnim_func_0000E35C(char *arg0) {
+int RiderAnim_startQueuedTrick_0000E35C(char *arg0) {
     volatile char *ret = arg0;
 }
 
-void RiderAnim_func_0000E564(int *a0) {
+void RiderAnim_playSpinSound_0000E564(int *a0) {
     int v0 = ((int*)a0[0xF4/4])[0x2C/4];
     if (v0 & 0xC000) {
         gl_func_00000000((char*)a0[0xB4/4] + 0x808);
@@ -8856,14 +8856,14 @@ void RiderAnim_func_0000E564(int *a0) {
     }
 }
 
-// RiderAnim_func_0000E5C8 — STRUCTURAL PASS (0x354 / 213 words,
+// RiderAnim_readTrickInput_0000E5C8 — STRUCTURAL PASS (0x354 / 213 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic). Pure bitfield work (1 call, no FP). ~85.6% (insn-mnemonic).
 //
-// 2026-06-23 (agent-i): callee CONFIRMED = RiderAnim_func_0000EAF4 (was the
+// 2026-06-23 (agent-i): callee CONFIRMED = RiderAnim_readStickSpin_0000EAF4 (was the
 //   generic `func_00000000` placeholder → wrong reloc symbol). Now calls
-//   RiderAnim_func_0000EAF4 directly so the NM-build emits the correct
-//   `jal RiderAnim_func_0000EAF4` R_MIPS_26 (matches target reloc). No score
+//   RiderAnim_readStickSpin_0000EAF4 directly so the NM-build emits the correct
+//   `jal RiderAnim_readStickSpin_0000EAF4` R_MIPS_26 (matches target reloc). No score
 //   change but a genuine correctness/reloc fix.
 //   CAP CONFIRMED — function will NOT land in either dispatch form:
 //   (a) SWITCH-LOWERING: cases 1-6 are contiguous so IDO emits this `switch`
@@ -8901,7 +8901,7 @@ void RiderAnim_func_0000E564(int *a0) {
 // State-flag remapper: tests bits in a source flag word and
 // bit-permutes them into the object's internal flag field obj->0xE8.
 //
-//   void RiderAnim_func_0000E5C8(Obj *obj, A a1) {
+//   void RiderAnim_readTrickInput_0000E5C8(Obj *obj, A a1) {
 //     src = obj->0xB4 ? obj->0xB4->0x800->0x10 : obj->0x18;
 //     // long unrolled chain, one test per source bit:
 //     //   if (src & 0x200)  obj->0xE8 |= 0x02;
@@ -8933,11 +8933,11 @@ void RiderAnim_func_0000E564(int *a0) {
 //   materialization + the count-global no-reloc lui0 codegen. Full structure +
 //   offsets: memory project_1080_e5c8_full_decode_211insn.
 #ifdef NON_MATCHING
-// RiderAnim_func_0000E5C8 — reconstruction pass (agent-e, 2026-06-24).
+// RiderAnim_readTrickInput_0000E5C8 — reconstruction pass (agent-e, 2026-06-24).
 // State-flag remapper: reads a source flag word (a0->0xF4 picks
 // a0->0xB4->0x800->0x18 vs ->0x10), bit-permutes it into a3->0xE8,
 // folds a3->0xB4->0xA58 bits via an ALWAYS-MADE call to
-// RiderAnim_func_0000EAF4 (args materialized via sltu(0,bit)), runs the
+// RiderAnim_readStickSpin_0000EAF4 (args materialized via sltu(0,bit)), runs the
 // 0x12C-gated dispatch on 0xE8, the 0xE8&4 bit-clear block (a3->0xF4->0x2C
 // flags), the 0xEC counter, and the stride-64 search over the table at
 // game_uso_D_807FFBC0 (count = *(int*)&D_00000000), tail 0xE8 &= 0x6.
@@ -8961,7 +8961,7 @@ void RiderAnim_func_0000E564(int *a0) {
 // RESIDUAL: the table-base lui is hoisted to the entry here, 0xF4->0x2C
 // re-reads after each 0xE8 store are CSE'd (target reloads 0xF4), and the
 // found-store addu takes the shifted index first.
-void RiderAnim_func_0000E5C8(char *a0, int a1) {
+void RiderAnim_readTrickInput_0000E5C8(char *a0, int a1) {
     char *a3 = a0;
     unsigned int src;
     char *sub;
@@ -8985,7 +8985,7 @@ void RiderAnim_func_0000E5C8(char *a0, int a1) {
     v0 = *(unsigned int *)(*(char **)(a3 + 0xB4) + 0xA58);
     {
         unsigned int g = v0 & 0x20;
-        RiderAnim_func_0000EAF4(a3, g && (v0 & 0x40), g);
+        RiderAnim_readStickSpin_0000EAF4(a3, g && (v0 & 0x40), g);
     }
 
     {
@@ -9078,14 +9078,14 @@ cdone:  ;
     (void)a1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", RiderAnim_func_0000E5C8);
+INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", RiderAnim_readTrickInput_0000E5C8);
 #endif
 
-/* RiderAnim_func_0000E91C — EE84-family branchy orchestrator, 118 insns.
+/* RiderAnim_checkGroundSpin_0000E91C — EE84-family branchy orchestrator, 118 insns.
  * EXACT (was NM 98.98%, 90.31% before that).
  *
  * Reads o=a0->0xB4, v0=o->0xA58, clears a0->0xB0, then
- * RiderAnim_func_0000EAF4(a0, cond, v0&0x20) where cond=((v0&0x20)!=0) then
+ * RiderAnim_readStickSpin_0000EAF4(a0, cond, v0&0x20) where cond=((v0&0x20)!=0) then
  * (if set) =(v0&0x40)!=0 — an if-without-else, NOT a ternary-with-:0 (the
  * :0 adds a spurious `move ai,zero`+`b`). When (*(a0->0xB4)->0x800)->0x10 &
  * 0x1000, dispatches on a0->0x12C. The dispatch is TESTS-FIRST in source
@@ -9116,7 +9116,7 @@ extern int import_0010DB28();
 extern char game_uso_D_807FF430;
 extern char game_uso_D_807FF4E0;
 
-void RiderAnim_func_0000E91C(char *a0) {
+void RiderAnim_checkGroundSpin_0000E91C(char *a0) {
     int pad;
     int cond;
     Pair2 homed;
@@ -9127,7 +9127,7 @@ void RiderAnim_func_0000E91C(char *a0) {
     if (cond) {
         cond = ((*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x40) != 0);
     }
-    RiderAnim_func_0000EAF4(a0, cond, (unsigned)(*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x20));
+    RiderAnim_readStickSpin_0000EAF4(a0, cond, (unsigned)(*(int *)(*(char **)(a0 + 0xB4) + 0xA58) & 0x20));
 
     cond = *(int *)(*(char **)(a0 + 0xB4) + 0x800);
     if (*(unsigned int *)(cond + 0x10) & 0x1000) {
@@ -9167,7 +9167,7 @@ void RiderAnim_func_0000E91C(char *a0) {
     }
 }
 
-// RiderAnim_func_0000EAF4 — STRUCTURAL PASS (0x1F8 / 126 words,
+// RiderAnim_readStickSpin_0000EAF4 — STRUCTURAL PASS (0x1F8 / 126 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic). Pure integer/bitfield (no FP, no calls). Leaf-ish:
 // no sp frame — spills args a1/a2 to the caller's shadow slots
@@ -9176,7 +9176,7 @@ void RiderAnim_func_0000E91C(char *a0) {
 //
 // Steering/lean input integrator with rate-clamping.
 //
-//   void RiderAnim_func_0000EAF4(Obj *obj, int tgt, int a2) {
+//   void RiderAnim_readStickSpin_0000EAF4(Obj *obj, int tgt, int a2) {
 //     Sub *s = obj->0xB4;
 //     if (s->0x800->0x7C(s16) == 0) { ... }
 //     int cur = (s16)obj->0x124;
@@ -9216,7 +9216,7 @@ void RiderAnim_func_0000E91C(char *a0) {
 //   (lw 0x18(a2) / lw 8(sp)) annulled into each branch delay slot — an IDO
 //   -O2 reorg-annul scheduling choice not steerable from C (per-test re-read
 //   yields plain beq here, not beql). Same reorg-annul class as func_0000174C.
-int RiderAnim_func_0000EAF4(char *obj, int a1, int a2) {
+int RiderAnim_readStickSpin_0000EAF4(char *obj, int a1, int a2) {
     int flag;
     int result;
     int d;
@@ -9292,14 +9292,14 @@ int RiderAnim_func_0000EAF4(char *obj, int a1, int a2) {
     return result;
 }
 
-/* RiderAnim_func_0000EAF4 — 125/125 EXACT (verified clean rebuild of
+/* RiderAnim_readStickSpin_0000EAF4 — 125/125 EXACT (verified clean rebuild of
  * build/non_matching/src/game_uso/game_uso.c.o word-by-word vs target .s;
  * leaf, no relocs). The .s's 126th word (0x1F4: lw v0,0x10C(a0)) is NOT part
  * of this function — it is the mis-split FIRST INSTRUCTION of
- * RiderAnim_func_0000ECEC (it loads the v0 that ECEC's first beqz tests;
+ * RiderAnim_updateSlowdown_0000ECEC (it loads the v0 that ECEC's first beqz tests;
  * EAF4 ends at jr ra + delay = 0x1F0). Landing needs the splat boundary fix:
- * move that word from RiderAnim_func_0000EAF4.s to the head of
- * RiderAnim_func_0000ECEC.s (byte-neutral for the ROM).
+ * move that word from RiderAnim_readStickSpin_0000EAF4.s to the head of
+ * RiderAnim_updateSlowdown_0000ECEC.s (byte-neutral for the ROM).
  *
  * 2026-07-03 (agent-e). From 73.1%. Decisive levers:
  *  (1) LOGIC FIX: the 0x126 counter increments EVERY call when nonzero
@@ -9325,7 +9325,7 @@ int RiderAnim_func_0000EAF4(char *obj, int a1, int a2) {
  *      the tgt chain (emission: move v1 then move v0).
  */
 
-// RiderAnim_func_0000ECEC — EXACT 57/57 (2026-07-08 agent-e; 0xE4 incl.
+// RiderAnim_updateSlowdown_0000ECEC — EXACT 57/57 (2026-07-08 agent-e; 0xE4 incl.
 // the boundary-fix head word lw v0,0x10C(a0) from commit 4d76f242).
 // All 55 non-reloc words byte-equal; the 2 reloc words (lui $at %hi +
 // lw t6 %lo jump-table) carry R_MIPS_HI16/LO16 .rodata — resolved at
@@ -9349,7 +9349,7 @@ int RiderAnim_func_0000EAF4(char *obj, int a1, int a2) {
 /* Case decode: case 3 b-source = 0x3F4; case 4 b-source = 0x40C. Common
  * tail: v = a0->0xB4; if (a < v->0x960 && v->0x938) { a0->0x10C = 0;
  * a0->0x110 = 1; } else { v->0x960 += b; a0->0x110 = 0; } */
-void RiderAnim_func_0000ECEC(char *obj) {
+void RiderAnim_updateSlowdown_0000ECEC(char *obj) {
     int ab[2];
     int *v;
     int *base;
@@ -9421,7 +9421,7 @@ void RiderAnim_applyDamage_0000EDD4(int *a0, unsigned int a1, int a2) {
     *p = *p - v0;
 }
 
-void RiderAnim_func_0000EE30(char *a0, int a1, int a2) {
+void RiderAnim_addTrickPoints_0000EE30(char *a0, int a1, int a2) {
     int *dptr = (int*)((char*)&D_00000000 + 0x138);
     gl_func_00000000(*dptr, *(int*)(a0 + 0xB4), a1 * a2);
 }
@@ -9529,8 +9529,8 @@ void RiderAnim_stateSwitchStanceEnd(int *a0) {
  * Body below is a placeholder for the splice. */
 extern int import_0010DB28();
 extern int import_000966AC();
-void RiderAnim_func_0000F360(int *a0);
-void RiderAnim_func_00011888(int *a0);
+void RiderAnim_jumpTakeoff_0000F360(int *a0);
+void RiderAnim_clearTricks_00011888(int *a0);
 extern char game_uso_D_807FF4A0;
 void RiderAnim_statePreJump(int *a0) {
     volatile int *ret = a0;
@@ -9552,7 +9552,7 @@ void RiderAnim_statePreJump(int *a0) {
  * docs/IDO_CODEGEN.md#ncc-inline-member-child-v1-f060 and
  * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe.
  * Body below is a placeholder for the splice. */
-extern void RiderAnim_func_0001001C(int *);
+extern void RiderAnim_startHop_0001001C(int *);
 extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FFB58;
 extern char game_uso_D_807FF498;
@@ -9585,7 +9585,7 @@ void RiderAnim_statePreJumpCancel(int *a0) {
     gl_func_00000000(a0, m, 0, 0, 0x100, a0[0x19C / 4]);
 }
 
-/* RiderAnim_func_0000F360: 49-insn float-compare-gated state-mux update. EXACT.
+/* RiderAnim_jumpTakeoff_0000F360: 49-insn float-compare-gated state-mux update. EXACT.
  *
  * 2026-07-03 (game_uso W4, agent-e, 89.67% -> 47/49 = 95.9%): applied the W4
  * lever trio in-tree. Now byte-exact EVERYWHERE except 2 words (see RESIDUAL).
@@ -9626,8 +9626,8 @@ void RiderAnim_statePreJumpCancel(int *a0) {
  * keeps the textual operand rank (ldc1 before cvt.d.s), so the extern struct
  * is no longer needed. docs/MATCHING_WORKFLOW.md#game-uso-rodata-relayout-late-rodata. */
 extern void import_00096874(int);
-extern void RiderAnim_func_0001001C(int *);
-void RiderAnim_func_0000F360(int *a0) {
+extern void RiderAnim_startHop_0001001C(int *);
+void RiderAnim_jumpTakeoff_0000F360(int *a0) {
     int v0 = *(short*)((char*)a0 + 0xE4);
     int *p;
     char *b770, *b510, *b788, *b31C;
@@ -9654,10 +9654,10 @@ void RiderAnim_func_0000F360(int *a0) {
     *(float*)(b31C) = *(float*)(b31C) + f0;
     *(int*)((char*)a0 + 0xF0) = 0;
     import_00096874((int)(*(char**)((char*)a0 + 0xB4) + 0x808));
-    RiderAnim_func_0001001C(a0);
+    RiderAnim_startHop_0001001C(a0);
 }
 
-extern void RiderAnim_func_0000E5C8(char *, int);
+extern void RiderAnim_readTrickInput_0000E5C8(char *, int);
 void RiderAnim_stateTrickAir(int *a0) {
     char *w;
     float *pa;
@@ -9672,15 +9672,15 @@ void RiderAnim_stateTrickAir(int *a0) {
     pc = (float*)(w + 0x31C);
     if ((*(int*)(w + 0x9A8) & 1) == 0) {
         pc[0] += -pa[4] * pb[4];
-        RiderAnim_func_0000E2D0((char*)a0, pa, pb);
+        RiderAnim_holdJumpLift_0000E2D0((char*)a0, pa, pb);
     }
-    RiderAnim_func_0000E5C8((char*)a0, 0);
+    RiderAnim_readTrickInput_0000E5C8((char*)a0, 0);
 }
 
-/* PREREQUISITE (outside this body): RiderAnim_func_0000E2D0's definition
+/* PREREQUISITE (outside this body): RiderAnim_holdJumpLift_0000E2D0's definition
  * converted ANSI->K&R (`(a0) char *a0; {`) — verified byte-IDENTICAL vs
  * expected/src/game_uso/game_uso.c.o — and its ANSI extern prototype
- * (`extern void RiderAnim_func_0000E2D0(char *);` near func_00010128) REMOVED,
+ * (`extern void RiderAnim_holdJumpLift_0000E2D0(char *);` near func_00010128) REMOVED,
  * so the 3-arg call above is legal (extras unchecked, materialize a1/a2). */
 
 /* RiderAnim_stateTrickEnd: 30-insn state-init.
@@ -9737,13 +9737,13 @@ extern int gl_func_00000000();
 typedef struct { int a, b; } F5A8Pair;
 extern char game_uso_D_807FF4D0;
 extern char game_uso_D_807FF4D8;
-int RiderAnim_func_0000D74C(char *a0);
+int RiderAnim_trickCrash_0000D74C(char *a0);
 void RiderAnim_stateTrickStart(char *a0);
 /* RiderAnim_stateTrickRelease: 47-insn EE84-family two-path state orchestrator.
  * MATCHED 2026-06-21 (call-graph DFS + just-in-time family typing). The prior
  * NM body called the cross-USO placeholder gl_func_00000000 for every call and
  * carried a phantom `int a1` param. The resolved .s relocs name the real in-TU
- * callees: RiderAnim_func_0000D74C (predicate), RiderAnim_setNextState_0000D5BC /
+ * callees: RiderAnim_trickCrash_0000D74C (predicate), RiderAnim_setNextState_0000D5BC /
  * _0000D5F8 (pair-sinks), RiderAnim_clearNextState_0000D5DC (pair-copy),
  * import_0010DB28 (state logger), RiderAnim_stateTrickStart (sibling). The last
  * residual (the D5BC call not homing a1/a2 to sp+4/sp+8) was cracked by
@@ -9754,7 +9754,7 @@ void RiderAnim_stateTrickStart(char *a0);
 void RiderAnim_stateTrickRelease(int *a0) {
     int *s0 = a0;
     if (s0[0xF0 / 4] != 0) {
-        if (RiderAnim_func_0000D74C((char*)a0) == 0) {
+        if (RiderAnim_trickCrash_0000D74C((char*)a0) == 0) {
             char *p = (char *)&game_uso_D_807FF4D0 + 0xEE0;
             RiderAnim_setNextState_0000D5BC((char*)s0, *(Pair2*)p);
             RiderAnim_stateTrickStart((char*)s0);
@@ -9778,7 +9778,7 @@ void RiderAnim_stateTrickHold(char *a0) {
 }
 
 /* RiderAnim_stateTrickStart (0x210 / 132 words): node-process / queue-advance
- * handler, sibling of RiderAnim_func_0000E35C. Optional D6E4 pre-flush
+ * handler, sibling of RiderAnim_startQueuedTrick_0000E35C. Optional D6E4 pre-flush
  * (cur->0x38 & 1); EE30(self, active->0x30, 1); import_000B8518 index call
  * with a ceil-div-by-64 node offset (two forms on obj->0xA58 & 0x20);
  * counter (0x100)++, F4 = F0, F0 = 0, counter reset when F8 == F4, F8 = F4;
@@ -9900,7 +9900,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
     }
 }
 
-/* RiderAnim_func_0000FB7C: 31-insn 3-call dispatcher.
+/* RiderAnim_startCrashSlide_0000FB7C: 31-insn 3-call dispatcher.
  * NATURAL CEILING: 79.97% NM. Same family-cap shape as 10E2C/10B38/F49C/
  * FB04: the 2nd-call D-base + tail needs cross-USO varargs spills
  * (sw a1@4(sp), sw a2@8(sp)) and the s0-restore delay-slot trick
@@ -9909,7 +9909,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
  * SUFFIX_BYTES_FORCE — both REMOVED 2026-05-23 as match-faking (per
  * feedback_no_instruction_forcing_matches_policy). Default build is
  * INCLUDE_ASM. */
-void RiderAnim_func_0000FB7C(int *a0) {
+void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
     int v = a0[0xFC/4] | RANIM_CRASH_SLIDE;
     a0[0x108/4] = v;
     gl_func_00000000(a0, v, 0, 2, 1, 1);
@@ -9918,13 +9918,13 @@ void RiderAnim_func_0000FB7C(int *a0) {
     a0[0x114/4] = 0;
 }
 
-void RiderAnim_func_0000FBF8(int *a0) {
+void RiderAnim_blendTurn_0000FBF8(int *a0) {
     int v = *(int*)((char*)a0 + 0xFC);
     game_uso_func_00000000(a0, v | 2, v | 3,
         *(int*)((char*)*(int**)((char*)a0 + 0xB4) + 0x970), 0, 1);
 }
 
-/* RiderAnim_func_0000FC34: 52-insn (0xD0) FPU-heavy 3-jal orchestrator. 96.6% NM.
+/* RiderAnim_startOllie_0000FC34: 52-insn (0xD0) FPU-heavy 3-jal orchestrator. 96.6% NM.
  * BREAKTHROUGH 2026-05-30: the two pair-arg calls (D+0xE10, D+0xE20) are now
  * `*(Pair2*)(&D+off)` BY VALUE — the by-value struct both clusters the base AND
  * homes a1/a2 to sp+4/sp+8, cracking BOTH the cluster-form AND the precall-spill
@@ -9935,7 +9935,7 @@ void RiderAnim_func_0000FBF8(int *a0) {
  * — ugen FP-scheduling, not coloring. */
 extern int gl_func_00000000();
 extern char D_00000000;
-/* RiderAnim_func_0000FC34: EE84-family state setter (52 insns, 0xD0). ~89% NM.
+/* RiderAnim_startOllie_0000FC34: EE84-family state setter (52 insns, 0xD0). ~89% NM.
  * 2026-06-21 (call-graph DFS): callees corrected from the cross-USO placeholder
  * gl_func_00000000 (+ pairs from &D_00000000) to the resolved in-TU symbols
  * RiderAnim_setNextState_0000D5BC (pair-copy, now homing via the Pair2-by-value
@@ -9967,7 +9967,7 @@ void RiderAnim_setNextState_0000D5BC(char *, Pair2);
 void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
 void game_uso_func_0000D5BC_a3(char *, Pair2, char *);  /* alias of D5BC (pinned 0) with the a3 word the target passes */
 extern int import_0010DB28();
-void RiderAnim_func_0000FC34(int *a0) {
+void RiderAnim_startOllie_0000FC34(int *a0) {
     char *base = (char*)*(int**)((char*)a0 + 0xB4);
     int *flag_loc = *(int**)(base + 0x800);
     char *field_770;
@@ -9991,7 +9991,7 @@ void RiderAnim_func_0000FC34(int *a0) {
 
 extern char game_uso_D_807FF408;
 void RiderAnim_clearNextState_0000D5DC(char *a0);
-/* RiderAnim_stateOllieTakeoff: 50-insn sibling of RiderAnim_func_0000FC34. When
+/* RiderAnim_stateOllieTakeoff: 50-insn sibling of RiderAnim_startOllie_0000FC34. When
  * bit 0x100 of (a0->0xB4)->0x800->0x10 is clear: log via import_0010DB28,
  * push the pair at game_uso_D_807FF408 + 0xE18 through
  * RiderAnim_setState_0000D5F8 (trailing 3), RiderAnim_clearNextState_0000D5DC, then
@@ -10092,7 +10092,7 @@ void RiderAnim_stateOllieDrop(int *a0) {
  * 2-int load was the precall-arg-spill "cap" — passing the pair as
  * *(Pair2*) by value homes a1,a2 to sp+4/sp+8 exactly. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
-void RiderAnim_func_0001001C(int *a0) {
+void RiderAnim_startHop_0001001C(int *a0) {
     *(int*)((char*)a0 + 0xF4) = 0;
     gl_func_00000000(a0);
     gl_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xDD0));
@@ -10282,10 +10282,10 @@ extern char game_uso_D_807FF3D8;
 extern char game_uso_D_807FF3E0;
 extern void RiderAnim_setState_0000D5F8(char *, Pair2, int);
 extern void RiderAnim_clearNextState_0000D5DC(char *);
-extern void RiderAnim_func_0000E5C8(char *, int);
-extern int RiderAnim_func_0000E35C(char *);
-extern void RiderAnim_func_0000E2D0();
-extern void RiderAnim_func_00011750(char *);
+extern void RiderAnim_readTrickInput_0000E5C8(char *, int);
+extern int RiderAnim_startQueuedTrick_0000E35C(char *);
+extern void RiderAnim_holdJumpLift_0000E2D0();
+extern void RiderAnim_checkBackwardSwitch_00011750(char *);
 void RiderAnim_stateHopRise(int *a0) {
     int *inner;
     int *mid;
@@ -10320,10 +10320,10 @@ void RiderAnim_stateHopRise(int *a0) {
                          3);
         RiderAnim_clearNextState_0000D5DC((char*)a0);
     }
-    RiderAnim_func_0000E5C8((char*)a0, 0);
-    if (RiderAnim_func_0000E35C((char*)a0) == 0) {
-        RiderAnim_func_0000E2D0((char*)a0);
-        RiderAnim_func_00011750((char*)a0);
+    RiderAnim_readTrickInput_0000E5C8((char*)a0, 0);
+    if (RiderAnim_startQueuedTrick_0000E35C((char*)a0) == 0) {
+        RiderAnim_holdJumpLift_0000E2D0((char*)a0);
+        RiderAnim_checkBackwardSwitch_00011750((char*)a0);
     }
 }
 
@@ -10368,13 +10368,13 @@ extern char game_uso_D_807FF3D8;
 extern char game_uso_D_807FF3D0;
 extern char game_uso_D_807FF3E8;
 void RiderAnim_stateHopLand(char *a0);
-void RiderAnim_func_00011750(char *obj);
+void RiderAnim_checkBackwardSwitch_00011750(char *obj);
 extern void import_0010DB28_void();
 void RiderAnim_stateHopAir(int *a0) {
   int *s0 = a0;
   int *v0;
   int new_var;
-  RiderAnim_func_0000E2D0((char *)a0);
+  RiderAnim_holdJumpLift_0000E2D0((char *)a0);
   import_0010DB28_void(s0, s0[0xFC / 4] | RANIM_HOP, 3, 4, 2, 1);
   v0 = (int *) s0[0xB4 / 4];
   if (((*((float *) (((char *) v0) + 0x31C))) < 0.0f) && ((*((float *) (((char *) v0) + 0x9D0))) < 1000.0f))
@@ -10386,8 +10386,8 @@ void RiderAnim_stateHopAir(int *a0) {
   {
     RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
   }
-  RiderAnim_func_0000E5C8((char *)s0, 0);
-  if (RiderAnim_func_0000E35C((char *)s0) == 0)
+  RiderAnim_readTrickInput_0000E5C8((char *)s0, 0);
+  if (RiderAnim_startQueuedTrick_0000E35C((char *)s0) == 0)
   {
     ;
     if (((int *) s0[0xB4 / 4])[0x938 / 4] != 0)
@@ -10395,7 +10395,7 @@ void RiderAnim_stateHopAir(int *a0) {
       RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
       RiderAnim_stateHopLand((char *)s0);
     }
-    RiderAnim_func_00011750((char *)s0);
+    RiderAnim_checkBackwardSwitch_00011750((char *)s0);
   }
 }
 
@@ -10513,9 +10513,9 @@ void RiderAnim_stateRideDeep(int *a0) {
  *     (the last 47/48 residual). Param used directly, no explicit s0 local. */
 extern int import_0010DB78();
 extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
-extern void RiderAnim_func_0000E91C(char *);
-extern void RiderAnim_func_0000D8EC(int *);
-extern void RiderAnim_func_0000D7F4(char *);
+extern void RiderAnim_checkGroundSpin_0000E91C(char *);
+extern void RiderAnim_checkJump_0000D8EC(int *);
+extern void RiderAnim_checkReverseBrake_0000D7F4(char *);
 extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF460;
 void RiderAnim_stateBrake(int *a0) {
@@ -10529,9 +10529,9 @@ void RiderAnim_stateBrake(int *a0) {
     if (p[0x9CC / 4] != 0) {
         RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
     }
-    RiderAnim_func_0000E91C((char *)a0);
-    RiderAnim_func_0000D8EC(a0);
-    RiderAnim_func_0000D7F4((char *)a0);
+    RiderAnim_checkGroundSpin_0000E91C((char *)a0);
+    RiderAnim_checkJump_0000D8EC(a0);
+    RiderAnim_checkReverseBrake_0000D7F4((char *)a0);
 }
 
 /* RiderAnim_stateBrakeDeep (0xBC / 47 words): EE84-family, near-twin of
@@ -10574,7 +10574,7 @@ void RiderAnim_stateRideDeepBlendIn(int *a0) {
  * pairs (homes a1,a2), PLUS inlining the `sub = a0->0xB4` deref (named local
  * put it in $v1; inline keeps it in $t6 like target). See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
-void RiderAnim_func_00010BAC(char *a0) {
+void RiderAnim_blendWeight_00010BAC(char *a0) {
     int state = *(int*)(a0 + 0xFC);
     gl_func_00000000(a0, state | 7, state | 6, *(int*)(*(char**)(a0 + 0xB4) + 0xA04), 0, 1);
 
@@ -10587,12 +10587,12 @@ void RiderAnim_func_00010BAC(char *a0) {
     }
 }
 
-/* BYTE-EXACT 2026-05-31 (stale-cap catch). Sibling of RiderAnim_func_00010BAC;
+/* BYTE-EXACT 2026-05-31 (stale-cap catch). Sibling of RiderAnim_blendWeight_00010BAC;
  * the struct-by-value arg-pass (*(Pair2*)(&D+0xE48/0xE10)) homes the pairs to
  * the outgoing arg slots, byte-exact — the 2026-05-28 struct-by-value sweep
  * landed 10BAC but missed this sibling, leaving it needlessly NM-wrapped.
  * .text identical to expected/.o. See docs/IDO_CODEGEN.md STALE-CAP CATCH. */
-void RiderAnim_func_00010C4C(char *a0) {
+void RiderAnim_blendWeightDeep_00010C4C(char *a0) {
     gl_func_00000000(a0, (RANIM_GROUP_DEEP | RANIM_WEIGHT_B), (RANIM_GROUP_DEEP | RANIM_WEIGHT_F),
                      *(int*)(*(char**)(a0 + 0xB4) + 0xA04), 0, 1);
 
@@ -10623,9 +10623,9 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E10/E14 pair). Family sibling of
- * RiderAnim_func_00010E2C/000114FC. See
+ * RiderAnim_restartRide_00010E2C/000114FC. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
-void RiderAnim_func_00010DC8(int a0) {
+void RiderAnim_startLanding_00010DC8(int a0) {
     game_uso_func_00000000(a0, *(int*)((char*)a0 + 0xFC) | RANIM_LANDING, 0, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
 }
@@ -10634,7 +10634,7 @@ void RiderAnim_func_00010DC8(int a0) {
  * address-load-fold" cap framing was wrong — the 4-insn base+ofs load form is
  * the struct-by-value home-store, not a jumptable. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
-void RiderAnim_func_00010E2C(int a0) {
+void RiderAnim_restartRide_00010E2C(int a0) {
     game_uso_func_00000000(a0, 0, 0, 1, 1, 1);
     game_uso_func_00000000(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
 }
@@ -10882,7 +10882,7 @@ void RiderAnim_startEnding_000112E0(int *a0) {
 }
 
 /* MATCHED 2026-05-28: struct-by-value (F08/F0C pair). Family sibling #5 of
- * RiderAnim_func_00010E2C. See
+ * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding1(int *a0) {
     game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 2, 3, 1, 1);
@@ -10890,7 +10890,7 @@ void RiderAnim_stateEnding1(int *a0) {
 }
 
 /* MATCHED 2026-05-28: struct-by-value (F10/F14 pair). Family sibling #6 of
- * RiderAnim_func_00010E2C. See
+ * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding2(int *a0) {
     game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 3, 4, 1, 1);
@@ -10914,7 +10914,7 @@ void RiderAnim_stateStartIntro(int *a0) {
     func_00000000(a0, *(Pair2 *)((char *)&D_00000000 + 0xF00));
 }
 /* MATCHED 2026-05-28: struct-by-value (DB8/DBC pair). Family sibling of
- * RiderAnim_func_00010E2C. See
+ * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStartIntroEnd(int *a0) {
     game_uso_func_00000000(a0, *(int*)((char*)a0 + 0x74), 2, 1, 1, 1);
@@ -10944,7 +10944,7 @@ void RiderAnim_stateIdle(void *a0) {
     *(s32*)((char*)*(s32**)((char*)a0 + 0xB4) + 0x960) = 100;
 }
 
-void RiderAnim_func_000115EC(int *a0, int a1) {
+void RiderAnim_playHitAnim_000115EC(int *a0, int a1) {
     *(int*)((char*)a0 + 0x108) = a1;
     game_uso_func_00000000(a0);
     game_uso_func_00000000(a0);
@@ -10952,7 +10952,7 @@ void RiderAnim_func_000115EC(int *a0, int a1) {
     game_uso_func_00000000(a0);
 }
 
-/* RiderAnim_func_00011624: 44-insn (EE84-family). MATCHED 2026-05-31
+/* RiderAnim_startHitAnim_00011624: 44-insn (EE84-family). MATCHED 2026-05-31
  * (70.6% -> 100%). Two levers: (1) the D-pair passes BY VALUE as *(Pair2*)
  * (homes a1,a2); (2) the call must be DUPLICATED inside each if-arm (loading
  * the pair directly from D in each branch) — selecting a pointer/value then
@@ -10960,7 +10960,7 @@ void RiderAnim_func_000115EC(int *a0, int a1) {
  * (3) arms SWAPPED to `<= 0` first so IDO emits `bgtzl` (>0 case as branch
  * target, its D-pair load in the delay slot) matching the target polarity +
  * t0/t3 base-pointer order. docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair */
-void RiderAnim_func_00011624(int *a0) {
+void RiderAnim_startHitAnim_00011624(int *a0) {
     gl_func_00000000(a0);
     gl_func_00000000(a0, a0[0x108 / 4], 0, 1, 1, 1);
     if (((int *)a0[0xB4 / 4])[0xA14 / 4] <= 0) {
@@ -10971,14 +10971,14 @@ void RiderAnim_func_00011624(int *a0) {
     a0[0x114 / 4] = 0;
 }
 
-/* RiderAnim_func_000116D4: 31-insn (0x7C) flag-gated double-call wrapper.
+/* RiderAnim_crashRecover_000116D4: 31-insn (0x7C) flag-gated double-call wrapper.
  * MATCHED 2026-05-31 (79.97% -> 100%): the "cross-USO varargs spills
  * (sw a1@4(sp), sw a2@8(sp))" that the old INSN_PATCH faked are exactly the
  * struct-by-value home stores — the D[0xE40]/E44 pair passes BY VALUE as
  * *(Pair2*), reproducing them HONESTLY. The "79.97% natural ceiling" was the
  * un-homed pair (same lever as EF70/F284).
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair */
-void RiderAnim_func_000116D4(void *a0) {
+void RiderAnim_crashRecover_000116D4(void *a0) {
     void *s0 = a0;
     gl_func_00000000(s0);
     if (*(int *)((char *)s0 + 0x110) != 0) {
@@ -10988,14 +10988,14 @@ void RiderAnim_func_000116D4(void *a0) {
     *(int *)((char *)s0 + 0x114) = 0;
 }
 
-// RiderAnim_func_00011750 — STRUCTURAL PASS (0x118 / 70 words,
+// RiderAnim_checkBackwardSwitch_00011750 — STRUCTURAL PASS (0x118 / 70 words,
 // no episode). Raw-.word USO form (single function, game_uso main
 // game-logic; boundary already split by commit d3e4ee03 — named fn
 // still undecoded). Hand-decoded. LAST bare candidate in game_uso.c.
 //
 // Fall / wipeout detection + effect trigger.
 //
-//   void RiderAnim_func_00011750(Obj *obj) {              // obj -> s0
+//   void RiderAnim_checkBackwardSwitch_00011750(Obj *obj) {              // obj -> s0
 //     Sub *s = obj->0xB4;
 //     if (s->0xA38 < -30.0f) {                            // 0xC1F00000
 //       obj->0x130 = 0;                                    // reset count
@@ -11024,7 +11024,7 @@ void RiderAnim_func_000116D4(void *a0) {
 //   detection + effect trigger skeleton. Byte-match deferred. Name
 //   pre-checked: no extern reuse. D_00000000 reuses file-scope
 //   extern char (no redeclaration).
-/* RiderAnim_func_00011750: hard-landing/wipeout detector + FX trigger
+/* RiderAnim_checkBackwardSwitch_00011750: hard-landing/wipeout detector + FX trigger
  * (EE84 state-orchestrator family). MATCHED 2026-06-21 (call-graph DFS +
  * just-in-time family typing). The prior NM body called placeholder
  * gl_func_00000000 + loaded &D_00000000; the resolved .s relocs name the real
@@ -11042,7 +11042,7 @@ void RiderAnim_func_000116D4(void *a0) {
  * form lets IDO float the base into $t8 exactly like the target (19->0).
  * Byte-exact (0 non-reloc word diffs, reloc symbols agree). */
 extern char game_uso_D_807FF490;
-void RiderAnim_func_00011750(char *obj) {
+void RiderAnim_checkBackwardSwitch_00011750(char *obj) {
     short cnt;
     if (*(float *)(*(char **)(obj + 0xB4) + 0xA38) < -30.0f) {   /* hard hit */
         cnt = *(short *)(obj + 0x130);
@@ -11068,14 +11068,14 @@ void RiderAnim_clearRiderEdge_00011868(int *a0) {
     RA(a0)->rider->edgeSlope = 0.0f;
 }
 
-void RiderAnim_func_00011888(int *a0) {
+void RiderAnim_clearTricks_00011888(int *a0) {
     a0[0xE8 / 4] = 0;
     a0[0xEC / 4] = 0;
     a0[0xF0 / 4] = 0;
     a0[0x12C / 4] = 0;
 }
 
-/* RiderAnim_func_0001189C — verified decode, 77/78 (99%), single-insn blocker.
+/* RiderAnim_hitFeedback_0001189C — verified decode, 77/78 (99%), single-insn blocker.
  * Dense switch(a1) 1..5; each case: func_00000000((s0->0xB4)->0x800,
  * &D+off_k, 10); func_00000000((s0->0xB4)+0x808, s1). off_k =
  * {0x109C,0x10AC,0x10A4,0x10C0,0x10DC}. The C switch is byte-exact EXCEPT
@@ -11087,7 +11087,7 @@ void RiderAnim_func_00011888(int *a0) {
  * goto-chain recipe doesn't apply (target is a genuine jr-jumptable, not a
  * beq chain). NM wrap; INCLUDE_ASM build path (no episode; the .rodata
  * jtbl C neither links nor byte-matches — tautology-trap rule). */
-void RiderAnim_func_0001189C(int *a0, int a1, int a2) {
+void RiderAnim_hitFeedback_0001189C(int *a0, int a1, int a2) {
     int *s0 = a0;
     int s1 = a2;
     switch (a1) {

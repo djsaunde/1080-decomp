@@ -15,9 +15,9 @@ glabel RiderAnim_stateHopDrop
     jal import_0010DB28   /* 010434 0C000000 -> import_0010DB28 */
     /* 010438 00010438 34A50019 */  .word 0x34A50019
     /* 01043C 0001043C 02002025 */  .word 0x02002025
-    jal RiderAnim_func_0000E5C8   /* 010440 0C000000 -> RiderAnim_func_0000E5C8 */
+    jal RiderAnim_readTrickInput_0000E5C8   /* 010440 0C000000 -> RiderAnim_readTrickInput_0000E5C8 */
     /* 010444 00010444 00002825 */  .word 0x00002825
-    jal RiderAnim_func_0000E35C   /* 010448 0C000000 -> RiderAnim_func_0000E35C */
+    jal RiderAnim_startQueuedTrick_0000E35C   /* 010448 0C000000 -> RiderAnim_startQueuedTrick_0000E35C */
     /* 01044C 0001044C 02002025 */  .word 0x02002025
     /* 010450 00010450 54400010 */  .word 0x54400010
     /* 010454 00010454 8FBF0024 */  .word 0x8FBF0024

@@ -20,8 +20,8 @@ extern char game_uso_D_807FFB58;
 extern char game_uso_D_807FF498;
 void import_0010DB28(void *, int, int, int, int, int);
 void import_0010DB78(void *, int, int, float, int, int);
-void RiderAnim_func_0000F360(void *);
-void RiderAnim_func_0001001C(void *);
+void RiderAnim_jumpTakeoff_0000F360(void *);
+void RiderAnim_startHop_0001001C(void *);
 void RiderAnim_setNextState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
@@ -31,7 +31,7 @@ extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
     int *s0 = a0;
     a1 = AT(V *, s0, 0xB4)->child();
     if ((((a1[0x10 / 4] & 0x100) != 0) == 0 || (((unsigned int *)a1)[0x10 / 4] & 0x200)) && I(AT(V *, s0, 0xB4), 0x938) != 0) {
-        RiderAnim_func_0000F360(s0);
+        RiderAnim_jumpTakeoff_0000F360(s0);
     } else {
         float f0 = AT(float, AT(V *, s0, 0xB4), 0x970);
         float abs_f0 = (f0 < 0.0f) ? -f0 : f0;
@@ -41,7 +41,7 @@ extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
             import_0010DB28(s0, RANIM_ID(1, RANIM_PRE_JUMP), 0, 1, 6, 1);
         }
         if (I(AT(V *, s0, 0xB4), 0x938) == 0) {
-            RiderAnim_func_0001001C(s0);
+            RiderAnim_startHop_0001001C(s0);
         }
     }
     {

@@ -3049,7 +3049,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F6D4_DONOR)
 # E35C = F6D4 sibling, same recipe (130/130 words; cfe capped at 95.3%).
 GAMEUSO_E35C_DONOR := build/src/game_uso/game_uso_ncc_E35C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E35C=$(GAMEUSO_E35C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_startQueuedTrick_0000E35C=$(GAMEUSO_E35C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_E35C_DONOR)
 # 57D8 = mode-value pick (8-way switch = edg case-order chain; cfe jumptables it) + mode dispatch; 81/81 under NCC, cfe capped at 82.5%.
 GAMEUSO_57D8_DONOR := build/src/game_uso/game_uso_ncc_57D8.cpp.o
@@ -4148,10 +4148,10 @@ build/src/match_imports/Sun_measureVisibility.c.o: src/match_imports/Sun_measure
 build/non_matching/src/match_imports/Sun_measureVisibility.c.o: src/match_imports/Sun_measureVisibility.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/RiderAnim_func_0000E5C8.c.o: src/match_imports/RiderAnim_func_0000E5C8.c src/match_imports/context_game_uso.h
+build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o: src/match_imports/RiderAnim_readTrickInput_0000E5C8.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o: src/match_imports/RiderAnim_func_0000E5C8.c src/match_imports/context_game_uso.h
+build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o: src/match_imports/RiderAnim_readTrickInput_0000E5C8.c src/match_imports/context_game_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c src/match_imports/context_gui_uso.h
@@ -4714,12 +4714,12 @@ build/src/match_imports/Sun_measureVisibility.c.o.linked.elf: build/src/match_im
 build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf: build/non_matching/src/match_imports/Sun_measureVisibility.c.o scripts/match-origins-Sun_measureVisibility-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Sun_measureVisibility-nm.ld -e Sun_measureVisibility -o $@ $@.stripped.o
-build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf: build/src/match_imports/RiderAnim_func_0000E5C8.c.o scripts/match-origins-RiderAnim_func_0000E5C8.ld
+build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf: build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o scripts/match-origins-RiderAnim_readTrickInput_0000E5C8.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_func_0000E5C8.ld -e RiderAnim_func_0000E5C8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o scripts/match-origins-RiderAnim_func_0000E5C8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_readTrickInput_0000E5C8.ld -e RiderAnim_readTrickInput_0000E5C8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf: build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o scripts/match-origins-RiderAnim_readTrickInput_0000E5C8-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_func_0000E5C8-nm.ld -e RiderAnim_func_0000E5C8 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RiderAnim_readTrickInput_0000E5C8-nm.ld -e RiderAnim_readTrickInput_0000E5C8 -o $@ $@.stripped.o
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gui_drawSpriteIA8Clip_00002BB0.ld -e gui_drawSpriteIA8Clip_00002BB0 -o $@ $@.stripped.o
@@ -5132,10 +5132,10 @@ build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: build/sr
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_measureVisibility.json $@
 build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf scripts/match-bindings-Sun_measureVisibility-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Sun_measureVisibility-nm.json $@
-build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_func_0000E5C8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_func_0000E5C8.json $@
-build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json $@
+build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf: build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8.json $@
+build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8-nm.json $@
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json $@
 build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5510,10 +5510,10 @@ build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_measureVisibil
 build/src/game_uso/game_uso.c.o: src/match_imports/Sun_measureVisibility.c scripts/match-bindings-Sun_measureVisibility.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += Sun_measureVisibility=build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
 build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/Sun_measureVisibility.c scripts/match-bindings-Sun_measureVisibility-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E5C8=build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
-build/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_func_0000E5C8.c scripts/match-bindings-RiderAnim_func_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_func_0000E5C8=build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
-build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_func_0000E5C8.c scripts/match-bindings-RiderAnim_func_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_readTrickInput_0000E5C8=build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf
+build/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_readTrickInput_0000E5C8.c scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_readTrickInput_0000E5C8=build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/game_uso/game_uso.c.o: src/match_imports/RiderAnim_readTrickInput_0000E5C8.c scripts/match-bindings-RiderAnim_readTrickInput_0000E5C8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 # 3558: EXACT (agent-c run 340, kit CDXXXII) via the NCC (C++) donor game_uso_ncc_3558.cpp (was the NM-only
 # comparison donor _nm.cpp, agent-g run 160 value-class rewrite), spliced over the placeholder on both paths.
 GAMEUSO_3558_DONOR := build/src/game_uso/game_uso_ncc_3558.cpp.o
@@ -5916,10 +5916,10 @@ build/src/game_uso/game_uso.c.o: build/src/match_imports/Sun_measureVisibility.c
 build/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/Sun_measureVisibility.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_uso/game_uso.c.o: build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
-build/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/RiderAnim_func_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_uso/game_uso.c.o: build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf
+build/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_uso/game_uso.c.o: build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/RiderAnim_readTrickInput_0000E5C8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/gui_uso/gui_uso.c.o: build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
 build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/gui_uso/gui_uso.c.o: build/non_matching/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf

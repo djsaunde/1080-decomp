@@ -9,7 +9,7 @@ glabel RiderAnim_stateTrickRelease
     /* 00F5BC 0000F5BC 24060003 */  .word 0x24060003
     /* 00F5C0 0000F5C0 11C00010 */  .word 0x11C00010
     /* 00F5C4 0000F5C4 24070001 */  .word 0x24070001
-    jal RiderAnim_func_0000D74C   /* 00F5C8 0C000000 -> RiderAnim_func_0000D74C */
+    jal RiderAnim_trickCrash_0000D74C   /* 00F5C8 0C000000 -> RiderAnim_trickCrash_0000D74C */
     /* 00F5CC 0000F5CC 00000000 */  .word 0x00000000
     /* 00F5D0 0000F5D0 1440001F */  .word 0x1440001F
     lui $t7, %hi(game_uso_D_807FF4D0)   /* 00F5D4 3C0F0000 -> game_uso_D_807FF4D0 */

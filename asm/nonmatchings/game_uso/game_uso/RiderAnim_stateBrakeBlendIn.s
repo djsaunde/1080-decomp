@@ -48,7 +48,7 @@ glabel RiderAnim_stateBrakeBlendIn
     /* 010DA0 00010DA0 8D860004 */  .word 0x8D860004
     jal RiderAnim_setState_0000D5F8   /* 010DA4 0C000000 -> RiderAnim_setState_0000D5F8 */
     /* 010DA8 00010DA8 AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_func_0000E91C   /* 010DAC 0C000000 -> RiderAnim_func_0000E91C */
+    jal RiderAnim_checkGroundSpin_0000E91C   /* 010DAC 0C000000 -> RiderAnim_checkGroundSpin_0000E91C */
     /* 010DB0 00010DB0 02002025 */  .word 0x02002025
     /* 010DB4 00010DB4 8FBF0024 */  .word 0x8FBF0024
     /* 010DB8 00010DB8 8FB00020 */  .word 0x8FB00020
