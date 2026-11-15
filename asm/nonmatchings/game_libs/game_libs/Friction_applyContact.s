@@ -1,6 +1,6 @@
-nonmatching Friction_vfn11_00063F34, 0x1B0
+nonmatching Friction_applyContact, 0x1B0
 
-glabel Friction_vfn11_00063F34
+glabel Friction_applyContact
     /* E4900C 00063F34 3C014120 */  .word 0x3C014120
     /* E49010 00063F38 44856000 */  .word 0x44856000
     /* E49014 00063F3C 44812000 */  .word 0x44812000
@@ -109,4 +109,4 @@ glabel Friction_vfn11_00063F34
     /* E491B0 000640D8 27BD0050 */  .word 0x27BD0050
     /* E491B4 000640DC 03E00008 */  .word 0x03E00008
     /* E491B8 000640E0 00000000 */  .word 0x00000000
-endlabel Friction_vfn11_00063F34
+endlabel Friction_applyContact

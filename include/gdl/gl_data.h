@@ -311,7 +311,7 @@
 #define kRo_light_setShadowMatrix_00054D04         GL_RODATA(0x1C80) /* RoData+0x1C80..0x1C88, 2 K: 1C80=0.02d 1C88=100000f */
 #define kRo_math_quatSlerp                         GL_RODATA(0x2038) /* RoData+0x2038..0x2040, 2 K: 2038=1e-06d 2040=3.14159f */
 #define kRo_math_lookAtF                           GL_RODATA(0x205C) /* RoData+0x205C..0x2060, 2 K: 205C=10000f 2060=1e-07f */
-#define kRo_Friction_vfn11_00063F34                GL_RODATA(0x20A0) /* RoData+0x20A0..0x20B8, 4 K: 20A0=0.001d 20A8=0.22d 20B0=0.2d 20B8=0.2f */
+#define kRo_Friction_applyContact                GL_RODATA(0x20A0) /* RoData+0x20A0..0x20B8, 4 K: 20A0=0.001d 20A8=0.22d 20B0=0.2d 20B8=0.2f */
 #define kRo_DNodeAccum_apply_00064388              GL_RODATA(0x20C8) /* RoData+0x20C8..0x20D0, 2 K: 20C8=1e-05d 20D0=455f */
 #define kRo_DNode_ctor                             GL_RODATA(0x20D4) /* RoData+0x20D4..0x20E0, 4 K: 20D4=0.2f 20D8=-0.72f 20DC=0.216f 20E0=0.2f */
 #define kRo_math_acosf                             GL_RODATA(0x2268) /* RoData+0x2268..0x2280, 5 K: 2268=1.001d 2270=-1.001d 2278=41720f 227C=41720f 2280=3.14159d */

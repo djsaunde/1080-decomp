@@ -615,7 +615,7 @@ void Friction_hostioParms_00063E84(char *a0) {
 }
 
 
-/* Friction_vfn11_00063F34: 108-insn reflect-and-push (boundary merged 2026-06-02:
+/* Friction_applyContact: 108-insn reflect-and-push (boundary merged 2026-06-02:
  * the 3-word `lui 0x4120; mtc1 a1,f12; mtc1 at,f4` FP-const head is the real entry).
  * if (speed < 10): s = a reflected about unit n (s = (s.n) n - s), len = sqrtf(|s|^2);
  * if len > K0, normalise s via the callee, scale by clamp(((arg3 + f150 * obj->f360) * K1)^2)
@@ -634,12 +634,12 @@ typedef struct { f32 unk0, unk4, unk8; } Q_00063F34;
 typedef struct { int a, b, c; } V3i_63F34;
 
 extern f32 gl_func_00000000_s(f32);
-extern struct { char pad[0x20A0]; f64 v; } kRo_Friction_vfn11_00063F34_20A0;
-extern struct { char pad[0x20A8]; f64 v; } kRo_Friction_vfn11_00063F34_20A8;
-extern struct { char pad[0x20B0]; f64 v; } kRo_Friction_vfn11_00063F34_20B0;
-extern struct { char pad[0x20B8]; f32 v; } kRo_Friction_vfn11_00063F34_20B8;
+extern struct { char pad[0x20A0]; f64 v; } kRo_Friction_applyContact_20A0;
+extern struct { char pad[0x20A8]; f64 v; } kRo_Friction_applyContact_20A8;
+extern struct { char pad[0x20B0]; f64 v; } kRo_Friction_applyContact_20B0;
+extern struct { char pad[0x20B8]; f32 v; } kRo_Friction_applyContact_20B8;
 
-void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
+void Friction_applyContact(char *arg0, f32 arg1, char *arg2, f32 arg3) {
     Q_00063F34 sp44;
     f32 sp40;
     volatile s32 pad38;
@@ -659,12 +659,12 @@ void Friction_vfn11_00063F34(char *arg0, f32 arg1, char *arg2, f32 arg3) {
         sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
         sp44.unk8 = (*(f32 *)(arg2 + 0x8) * (0, temp_f0)) - sp44.unk8;
         sp40 = XCALL(gl_func_00000000_s, math_vec3Length_0005BBCC)((sp44.unk0 * sp44.unk0) + (sp44.unk4 * sp44.unk4) + (sp44.unk8 * sp44.unk8));
-        if (kRo_Friction_vfn11_00063F34_20A0.v < (f64) sp40) {
+        if (kRo_Friction_applyContact_20A0.v < (f64) sp40) {
             CALL(math_vec3Normalize)(&sp44);
-            var_f0 = (f32) ((f64) ((FRICTION(arg0)->coef * DNODE(FRICTION(arg0)->owner)->friction) + (0, arg3)) * kRo_Friction_vfn11_00063F34_20A8.v);
+            var_f0 = (f32) ((f64) ((FRICTION(arg0)->coef * DNODE(FRICTION(arg0)->owner)->friction) + (0, arg3)) * kRo_Friction_applyContact_20A8.v);
             var_f0 = var_f0 * var_f0;
-            if (kRo_Friction_vfn11_00063F34_20B0.v < (f64) var_f0) {
-                var_f0 = kRo_Friction_vfn11_00063F34_20B8.v;
+            if (kRo_Friction_applyContact_20B0.v < (f64) var_f0) {
+                var_f0 = kRo_Friction_applyContact_20B8.v;
             }
             if (var_f0 < 0.0f) {
                 var_f0 = 0.0f;
@@ -1582,7 +1582,7 @@ typedef struct Vec3_f { float x, y, z; } Vec3_f;
  * impulse accumulator, as DNodeAccum_addForce_000641DC(&impulseAcc, point - worldCog, force)
  * (callee from the bootup TextReloc at 0x7992C; older notes called it AnimPlayer_update).
  * Callers: SnowBCollider_onContact / _edgeGrip_0000E2D0, PhysQNode_pushProbes_00063964,
- * Friction_vfn11_00063F34. The force arrives in $a2 and is passed through untouched.
+ * Friction_applyContact. The force arrives in $a2 and is passed through untouched.
  * EXACT 34/34 (2026-07-03). Levers (in order cracked):
  * 1. FP pool-coloring: named float diffs dx,dy,dz (defs x,y,z) -> f0,f2,f12
  *    from pool START; the 6 field loads stay expression temps (f4-f18) by

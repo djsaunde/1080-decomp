@@ -87,7 +87,7 @@ typedef struct DNode {
     /* 0x348 */ f32 speed;          /* |vel| */
     /* 0x34C */ f32 unk34C[3];      /* zeroed by DNode_init */
     /* 0x358 */ char pad358[0x360 - 0x358];
-    /* 0x360 */ f32 friction;       /* Friction_vfn11_00063F34 scales its impulse by it */
+    /* 0x360 */ f32 friction;       /* Friction_applyContact scales its impulse by it */
     /* 0x364 */ char pad364[0x38C - 0x364];
     /* 0x38C */ s32 unk38C;         /* DNode_init 0xFFFF; SnowBoarder_ctor 1 */
     /* 0x390 */ f32 unk390[3];      /* DNode_init (1, 1, 1) */
@@ -133,7 +133,7 @@ typedef struct PhysQNode {
 
 /* Friction (0x170, "<QNode>", vtable Friction_vtbl; Friction_ctor_00063DC4(this, owner, x,
  * y, z): QNode_translate by (x, y, z), offsetLen = |(x, y, z)|). HostIO parms "Friction"
- * (coef, 0..2) and "Friction Limit" (limit, 0..10). Friction_vfn11_00063F34(this, t,
+ * (coef, 0..2) and "Friction Limit" (limit, 0..10). Friction_applyContact(this, t,
  * normal, k): while t < 10 it reflects unk114 about the unit normal and, when that is
  * longer than a RoData epsilon, pushes the owner at contactPoint with it scaled by
  * clamp(((coef * owner->friction + k) * K)^2). SnowBCollider_ctor builds one and
