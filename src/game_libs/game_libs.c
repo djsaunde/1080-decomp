@@ -3012,49 +3012,49 @@ void *ColourParms_ctor(char *arg0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-void RaceProcess_init(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
     volatile int pad;
     char *sp28;
     char *temp_v0;
     char *temp_v0_2;
 
-    FW(arg0, 0xC) = arg2;
-    FW(arg0, 0x4C) = arg3;
-    FW(arg0, 0x4F0) = arg1;
-    if (arg1 & 0x10000) {
-        if (FW(arg0, 0x568) == 0) {
+    arg0->name = arg2;
+    arg0->unk04C = arg3;
+    arg0->flags = arg1;
+    if (arg1 & RACEF_SPRITES) {
+        if (arg0->spriteSet == 0) {
             temp_v0 = (char*)func_00000000(0, &D_00000000, 0x48, 0xEE, 3, 0xE);
-            FW(arg0, 0x568) = temp_v0;
+            arg0->spriteSet = temp_v0;
             (char*)func_00000000(temp_v0, (char *)-8);
         }
-        (char*)func_00000000((int)arg0 + 0x588, (char *)0x60000);
-        (char*)func_00000000((int)arg0 + 0x5A0, (char *)0x60003);
-        (char*)func_00000000((int)arg0 + 0x5B8, (char *)0x60004);
-        (char*)func_00000000((int)arg0 + 0x5D0, (char *)0x60005);
-        (char*)func_00000000((int)arg0 + 0x5E8, (char *)0x60001);
-        (char*)func_00000000((int)arg0 + 0x600, (char *)0x60002);
-        (char*)func_00000000((int)arg0 + 0x618, (char *)0x60006);
-        (char*)func_00000000((int)arg0 + 0x630, (char *)0x60007);
-        (char*)func_00000000((int)arg0 + 0x660, (char *)0x60008);
-        (char*)func_00000000((int)arg0 + 0x678, (char *)0x60009);
-        (char*)func_00000000((int)arg0 + 0x690, (char *)0x6000A);
-        (char*)func_00000000((int)arg0 + 0x648, (char *)0x6000B);
+        (char*)func_00000000((int)&arg0->sprites[0], (char *)0x60000);
+        (char*)func_00000000((int)&arg0->sprites[1], (char *)0x60003);
+        (char*)func_00000000((int)&arg0->sprites[2], (char *)0x60004);
+        (char*)func_00000000((int)&arg0->sprites[3], (char *)0x60005);
+        (char*)func_00000000((int)&arg0->sprites[4], (char *)0x60001);
+        (char*)func_00000000((int)&arg0->sprites[5], (char *)0x60002);
+        (char*)func_00000000((int)&arg0->sprites[6], (char *)0x60006);
+        (char*)func_00000000((int)&arg0->sprites[7], (char *)0x60007);
+        (char*)func_00000000((int)&arg0->sprites[9], (char *)0x60008);
+        (char*)func_00000000((int)&arg0->sprites[10], (char *)0x60009);
+        (char*)func_00000000((int)&arg0->sprites[11], (char *)0x6000A);
+        (char*)func_00000000((int)&arg0->sprites[8], (char *)0x6000B);
     }
-    FW(arg0, 0x4D8) = 0;
+    arg0->subState = 0;
     (char*)func_00000000(arg0, (char *)1, (char *)&D_00000000 + 0xD010);
     temp_v0_2 = (char*)func_00000000(0, (char *)&D_00000000 + 0xD020);
-    FW(arg0, 0x56C) = temp_v0_2;
+    arg0->handler = temp_v0_2;
     sp28 = temp_v0_2;
-    (char*)func_00000000((int)arg0 + 0x10, temp_v0_2);
+    (char*)func_00000000((int)arg0->children, temp_v0_2);
     if (FW(sp28, 0x14) != 0) {
         FW(sp28, 0x4) = 1;
     }
-    FW(sp28, 0x14) = arg0;
+    FW(sp28, 0x14) = (int)arg0;
 }
 
 extern int gl_func_00000000();
-int RaceProcess_restart(char *a0, int a1) {
-    *(int*)(a0 + 0x4F0) = a1;
+int RaceProcess_restart(RaceProcess *a0, int a1) {
+    a0->flags = a1;
     return gl_func_00000000(a0);
 }
 
@@ -3079,30 +3079,30 @@ int RaceProcess_restart(char *a0, int a1) {
  * jr-delay fill; swap the 0x510/0x508 zero-stores; gl_d_x/y/z = 3 distinct
  * base-0 aliases reproduce target's 3 separate lui $at,0 (no CSE). cmp clean. */
 extern float gl_d_x, gl_d_y, gl_d_z;  /* 3 global floats zeroed by this fn */
-void RaceProcess_reset(int *a0) {
+void RaceProcess_reset(RaceProcess *a0) {
     int *G = (int*)&D_00000000;
     int *H;
-    *(int*)((char*)a0 + 0x30) = 0;
-    *(int*)((char*)a0 + 0x2C) = 0;
-    *(int*)((char*)a0 + 0x4E0) = 0;
-    *(int*)((char*)a0 + 0x4DC) = 0;
-    *(int*)((char*)a0 + 0x4FC) = 0;
-    *(int*)((char*)a0 + 0x4F4) = 0x1FFFF;
+    a0->unk030 = 0;
+    a0->unk02C = 0;
+    a0->phase = 0;
+    a0->raceState = 0;
+    a0->unk4FC = 0;
+    a0->timeout = 0x1FFFF;
     G[0x78 / 4] = 1;
     gl_func_00000000(&D_00000000, 0);
-    *(int*)((char*)a0 + 0x4E8) = 20;
-    *(int*)((char*)a0 + 0x4E4) = (*(int*)((char*)a0 + 0x4F0) & (1 << 18)) ? 120 : 0;
+    a0->countStep = 20;
+    a0->timer = (a0->flags & RACEF_INTRO_DELAY) ? 120 : 0;
     H = (int*)&D_00000000;
-    H[0x8C / 4] = *(int*)((char*)a0 + 0x4F0);
-    *(int*)((char*)a0 + 0x540) = 255;
-    *(float*)((char*)a0 + 0x534) = 1.0f;
-    *(float*)((char*)a0 + 0x538) = 1.0f;
+    H[0x8C / 4] = a0->flags;
+    a0->countAlpha = 255;
+    a0->scaleX = 1.0f;
+    a0->scaleY = 1.0f;
     gl_d_x = 0.0f;
     gl_d_y = 0.0f;
     gl_d_z = 0.0f;
-    *(int*)((char*)a0 + 0x500) = 0;
-    *(int*)((char*)a0 + 0x510) = 0;
-    *(int*)((char*)a0 + 0x508) = 0;
+    a0->leave = 0;
+    a0->leftOnce = 0;
+    a0->unk508 = 0;
     H[0x7C / 4] = 0;
 }
 
@@ -3115,24 +3115,24 @@ void RaceProcess_reset(int *a0) {
  * 0x4E4=a1, 0x4EC=0, 0x4F8=a2, 0x518=0, 0x544=255, 0x54C f32 duration (120,
  * or 60 when global mode *(&D)->0x34==2), 0x550=0.0, 0x554=150.0; a0->0x28
  * vtable ptr, fn @0x7C, s16 base-adjust @0x78 (obj-0x28 dispatch idiom). */
-void RaceProcess_endRace(char *a0, int a1, int a2) {
-    char *v;
-    *(int *)(a0 + 0x4F8) = a2;
-    *(int *)(a0 + 0x4E0) = 3;
-    *(int *)(a0 + 0x4DC) = 2;
+void RaceProcess_endRace(RaceProcess *a0, int a1, int a2) {
+    RaceProcessVt *vt;
+    a0->result = a2;
+    a0->phase = RACE_PHASE_END;
+    a0->raceState = RACE_STATE_ENDED;
     gl_func_00000000(&D_00000000, 0);
-    *(int *)(a0 + 0x4E4) = a1;
-    *(int *)(a0 + 0x4EC) = 0;
-    *(int *)(a0 + 0x518) = 0;
-    *(float *)(a0 + 0x54C) = 120.0f;
+    a0->timer = a1;
+    a0->unk4EC = 0;
+    a0->endCounter = 0;
+    a0->msgY = 120.0f;
     if (*(int *)((char *)&D_00000000 + 0x34) == 2) {
-        *(float *)(a0 + 0x54C) = 60.0f;
+        a0->msgY = 60.0f;
     }
-    *(float *)(a0 + 0x550) = 0.0f;
-    *(int *)(a0 + 0x544) = 255;
-    *(float *)(a0 + 0x554) = 150.0f;
-    v = *(char **)(a0 + 0x28);
-    (*(void (**)(char *))(v + 0x7C))((char *)((int)(short)*(short *)(v + 0x78) + (int)a0));
+    a0->msgVel = 0.0f;
+    a0->msgAlpha = 255;
+    a0->msgFloor = 150.0f;
+    vt = a0->vt;
+    vt->slot[RACEVT_ON_END_RACE].fn((char *)a0 + vt->slot[RACEVT_ON_END_RACE].delta);
 }
 
 /* RaceProcess_endRaceQuiet: 41-insn struct-init. Sets a0->{0x4F8,0x4E0,0x4DC} from
@@ -3142,21 +3142,21 @@ void RaceProcess_endRace(char *a0, int a1, int a2) {
  * Match key: the 0x4E4=a1 store is the FIRST post-call statement so IDO hoists
  * the a1 reload ahead of the FP setup and fills the load-delay slots with the
  * zero stores. (Prior "INSN_PATCH scheduling cap" diagnosis was wrong.) */
-void RaceProcess_endRaceQuiet(int *a0, int a1, int a2) {
-    a0[0x4F8/4] = a2;
-    a0[0x4E0/4] = 3;
-    a0[0x4DC/4] = 2;
+void RaceProcess_endRaceQuiet(RaceProcess *a0, int a1, int a2) {
+    a0->result = a2;
+    a0->phase = RACE_PHASE_END;
+    a0->raceState = RACE_STATE_ENDED;
     gl_func_00000000(&D_00000000, 0, a2, a0);
-    a0[0x4E4/4] = a1;
-    a0[0x4EC/4] = 0;
-    a0[0x518/4] = 0;
-    *(float*)((char*)a0 + 0x54C) = 120.0f;
+    a0->timer = a1;
+    a0->unk4EC = 0;
+    a0->endCounter = 0;
+    a0->msgY = 120.0f;
     if (*(int*)((char*)&D_00000000 + 0x34) == 2) {
-        *(float*)((char*)a0 + 0x54C) = 60.0f;
+        a0->msgY = 60.0f;
     }
-    *(float*)((char*)a0 + 0x550) = 0.0f;
-    a0[0x544/4] = 0xFF;
-    *(float*)((char*)a0 + 0x554) = 150.0f;
+    a0->msgVel = 0.0f;
+    a0->msgAlpha = 0xFF;
+    a0->msgFloor = 150.0f;
 }
 
 /* RaceProcess_endRaceAlt - large-object initializer, near-sibling of the matched
@@ -3165,33 +3165,33 @@ void RaceProcess_endRaceQuiet(int *a0, int a1, int a2) {
  * dispatch via obj->0x28 -> {fn@0x84, s16@0x80}. Struct map: 0x4DC=2, 0x4E0=3,
  * 0x4E4=a1, 0x4EC=0, 0x4F8=a2, 0x544=255, 0x54C f32=120/60 by mode, 0x550=0.0,
  * 0x554=150.0. */
-void RaceProcess_endRaceAlt(char *a0, int a1, int a2) {
+void RaceProcess_endRaceAlt(RaceProcess *a0, int a1, int a2) {
   char *v;
-  v = a0 + 0x4DC;
-  *((int *) (a0 + 0x4F8)) = a2;
-  *((int *) (a0 + 0x4E0)) = 3;
-  *((int *) v) = 2;
+  v = (char *)&a0->raceState;
+  a0->result = a2;
+  a0->phase = RACE_PHASE_END;
+  *((int *) v) = RACE_STATE_ENDED;
   gl_func_00000000(&D_00000000, 0);
-  *((int *) (a0 + 0x4E4)) = a1;
-  *((int *) (a0 + 0x4EC)) = 0;
-  *((int *) (a0 + 0x518)) = 60;
+  a0->timer = a1;
+  a0->unk4EC = 0;
+  a0->endCounter = 60;
  if (1) { }
   a1++;
   a1--;
-  *((float *) (a0 + 0x54C)) = 120.0f;
+  a0->msgY = 120.0f;
   if ((*((int *) (((char *) (&D_00000000)) + 0x34))) == 2)
   {
-    *((float *) (a0 + 0x54C)) = 60.0f;
+    a0->msgY = 60.0f;
   }
   if ((*((int *) (((char *) (&D_00000000)) + 0x34))) == 3)
   {
     gl_func_00000000(48);
   }
-  *((int *) (a0 + 0x544)) = 255;
-  *((float *) (a0 + 0x550)) = 0.0f;
-  *((float *) (a0 + 0x554)) = 150.0f;
-  v = *((char **) (a0 + 0x28));
-  (*((void (**)(char *)) (v + 0x84)))((char *) (((int) ((short) (*((short *) (v + 0x80))))) + ((int) a0)));
+  a0->msgAlpha = 255;
+  a0->msgVel = 0.0f;
+  a0->msgFloor = 150.0f;
+  v = (char *)a0->vt;
+  ((RaceProcessVt *)v)->slot[RACEVT_ON_END_RACE_ALT].fn((char *)a0 + ((RaceProcessVt *)v)->slot[RACEVT_ON_END_RACE_ALT].delta);
 }
 
 void RaceProcess_onEndRace(int a0) {}
@@ -3210,11 +3210,11 @@ void RaceProcess_finishCourse(int a0) {
 
 /* Sibling of RaceProcess_endResult4_00006EE0 (matched 2026-05-08): identical 32-insn
  * template, only 4 constants differ (0xF0/4/6/6 → 0x168/3/5/5). */
-void RaceProcess_endResult3_00006DF8(int *a0) {
+void RaceProcess_endResult3_00006DF8(RaceProcess *a0) {
     int *p;
     gl_func_00000000(a0, 0x168, 3);
-    *(int*)((char*)a0 + 0x544) = 0;
-    *(float*)((char*)a0 + 0x554) = 120.0f;
+    a0->msgAlpha = 0;
+    a0->msgFloor = 120.0f;
     p = *(int**)((char*)&D_00000000 + 0x138);
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
@@ -3235,11 +3235,11 @@ void RaceProcess_endResult2_00006E78(int a0_passthrough) {
 /* Init function: zero-initialize a0 fields, store 120.0f at +0x554, clear
  * a child obj field, then 3 calls. Composite of int-reader-shape prologue
  * + custom init logic. */
-void RaceProcess_endResult4_00006EE0(int *a0) {
+void RaceProcess_endResult4_00006EE0(RaceProcess *a0) {
     int *p;
     gl_func_00000000(a0, 0xF0, 4);
-    *(int*)((char*)a0 + 0x544) = 0;
-    *(float*)((char*)a0 + 0x554) = 120.0f;
+    a0->msgAlpha = 0;
+    a0->msgFloor = 120.0f;
     p = *(int**)((char*)&D_00000000 + 0x138);
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
@@ -3256,11 +3256,11 @@ void RaceProcess_endResult5_00006F60(int a0) {
 
 /* Sibling of RaceProcess_endResult4_00006EE0 (just-landed): same 32-insn 4-call init
  * shape but with different field offsets and 1-arg jal at end. */
-void RaceProcess_endResult4_00006F90(int *a0) {
+void RaceProcess_endResult4_00006F90(RaceProcess *a0) {
     int *p;
     gl_func_00000000(a0, 0xF0, 4);
-    *(int*)((char*)a0 + 0x544) = 0;
-    *(float*)((char*)a0 + 0x554) = 120.0f;
+    a0->msgAlpha = 0;
+    a0->msgFloor = 120.0f;
     p = *(int**)((char*)&D_00000000 + 0x138);
     *(int*)((char*)p + 0xB4) = 0;
     gl_func_00000000(*(int*)((char*)&D_00000000 + 0x138), 0);
@@ -3336,11 +3336,11 @@ extern int gl_data_00000000_70fc_1;
 #define G3 ((char*)&D_00000000)
 #define G4 ((char*)&gl_data_00000000_70fc)
 #define G5 ((char*)&gl_data_00000000_70fc)
-void RaceProcess_leave(int *a0) {
+void RaceProcess_leave(RaceProcess *a0) {
     int *next;
     int *obj;
-    if (*(int*)((char*)a0 + 0x510) == 0) {
-        next = *(int**)((char*)a0 + 0x528);
+    if (a0->leftOnce == 0) {
+        next = (int*)a0->session;
         if (next != 0 && gl_func_00000000(next) != 0) {
             gl_func_00000000(*(int*)(G1 + 0x138), 0);
             gl_func_00000000_70fcv(5, 0, 0);
@@ -3364,7 +3364,7 @@ void RaceProcess_leave(int *a0) {
             } else {
                 gl_func_00000000(*(int*)(G3 + 0x138), 0);
             }
-            if (*(int*)((char*)a0 + 0x4F8) == 5) {
+            if (a0->result == 5) {
                 gl_func_00000000_70fcv(6, 0, 0);
                 gl_func_00000000(G4, 6, 0, 0);
             } else {
@@ -3382,7 +3382,7 @@ void RaceProcess_leave(int *a0) {
                 }
             }
         }
-        *(int*)((char*)a0 + 0x510) = 1;
+        a0->leftOnce = 1;
     }
 #undef G1
 #undef G2
@@ -3840,20 +3840,20 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
 #endif
 typedef int (*GP_00007FF4)();
 extern int gl_func_00000000();
-void RaceProcess_drawGui(char *arg0) {
+void RaceProcess_drawGui(RaceProcess *arg0) {
     int *sp8C;
     volatile int pu0, pu1, pu2, pu3, pu4, pu5, pu6, pu7, pu8;
     f32 sp58[4];
     volatile int pl0;
     s32 sp3C;
-    int *temp_v0;
+    RaceProcessVt *vt;
     int *temp_a2;
     int *temp_a3;
     int *new_var;
     int temp_lo;
     f32 temp_f0;
 
-    if (FW(arg0, 0x4F0) & 0x01000000) {
+    if (arg0->flags & RACEF_CLEAR_SCREEN) {
         sp58[0] = 0.0f;
         sp58[1] = 0.0f;
         sp58[2] = 0.0f;
@@ -3861,67 +3861,67 @@ void RaceProcess_drawGui(char *arg0) {
         gl_func_00000000(&D_00000000, 0xFF, sp58);
         gl_func_00000000(&D_00000000, 0, 0x77, 0x13F, 0x78, 0x10001);
     }
-    if (FW(arg0, 0x30) == 0) {
-        if (FW(arg0, 0x4F0) & 0x10000) {
-            gl_func_00000000(FW(arg0, 0x568));
-            gl_func_00000000(FW(arg0, 0x568));
+    if (arg0->unk030 == 0) {
+        if (arg0->flags & RACEF_SPRITES) {
+            gl_func_00000000(arg0->spriteSet);
+            gl_func_00000000(arg0->spriteSet);
         }
-        switch (FW(arg0, 0x4E0)) {                   /* irregular */
+        switch (arg0->phase) {                   /* irregular */
         case 0:
-            temp_v0 = (int *)FW(arg0, 0x28);
-            ((GP_00007FF4)FW(temp_v0, 0xF4))(*(s16 *)((char *)temp_v0 + 0xF0) + (int)arg0);
+            vt = arg0->vt;
+            vt->slot[RACEVT_DRAW_INTRO].fn((char *)arg0 + vt->slot[RACEVT_DRAW_INTRO].delta);
             break;
         case 1:
-            if ((FW(arg0, 0x4F0) & 0x10000) && (FW(arg0, 0x4F0) & 0x400000)) {
-                temp_lo = (s32)FW(arg0, 0x4E4) / (s32)FW(arg0, 0x4E8);
+            if ((arg0->flags & RACEF_SPRITES) && (arg0->flags & RACEF_COUNTDOWN_FADE)) {
+                temp_lo = (s32)arg0->timer / (s32)arg0->countStep;
                 if (temp_lo < 4) {
                     temp_f0 = *(f32 *)((char *)&D_00000000 + 0xE50);
-                    FW(arg0, 0x540) = FW(arg0, 0x540) - 4;
-                    *(f32 *)((char *)arg0 + 0x534) = *(f32 *)((char *)arg0 + 0x534) + temp_f0;
-                    *(f32 *)((char *)arg0 + 0x538) = *(f32 *)((char *)arg0 + 0x538) + temp_f0;
+                    arg0->countAlpha = arg0->countAlpha - 4;
+                    arg0->scaleX = arg0->scaleX + temp_f0;
+                    arg0->scaleY = arg0->scaleY + temp_f0;
                     if (temp_lo != -1) {
-                        sp8C = (int *)((int)arg0 + temp_lo * 0x18 + 0x588);
+                        sp8C = (int *)((int)arg0 + temp_lo * (int)sizeof(RaceSprite) + 0x588);
                     } else {
-                        sp8C = (int *)((int)arg0 + 0x588);
+                        sp8C = (int *)&arg0->sprites[0];
                     }
                     sp3C = temp_lo;
                     gl_func_00000000(sp8C);
                     if ((temp_lo == 0) || (temp_lo == -1)) {
-                        temp_a2 = (int *)((int)arg0 + 0xF8);
-                        temp_a3 = (int *)((int)arg0 + 0x11C);
-                        gl_func_00000000(sp8C, FW(arg0, 0x540), temp_a2, temp_a3);
-                        gl_func_00000000(sp8C, (s32)*(f32 *)((char *)arg0 + 0x548), (s32)*(f32 *)((char *)arg0 + 0x54C), 3);
+                        temp_a2 = (int *)&arg0->colour[4];
+                        temp_a3 = (int *)&arg0->colour[5];
+                        gl_func_00000000(sp8C, arg0->countAlpha, temp_a2, temp_a3);
+                        gl_func_00000000(sp8C, (s32)arg0->msgX, (s32)arg0->msgY, 3);
                         if (*(s32 *)((char *)&D_00000000 + 0x34) == 2) {
-                            gl_func_00000000(sp8C, FW(arg0, 0x540), temp_a2, temp_a3);
-                            gl_func_00000000(sp8C, (s32)*(f32 *)((char *)arg0 + 0x548), (s32)(*(f32 *)((char *)arg0 + 0x54C) + 120.0f), 3);
+                            gl_func_00000000(sp8C, arg0->countAlpha, temp_a2, temp_a3);
+                            gl_func_00000000(sp8C, (s32)arg0->msgX, (s32)(arg0->msgY + 120.0f), 3);
                         }
                     } else {
-                        gl_func_00000000(sp8C, FW(arg0, 0x540), (int)arg0 + 0xB0, (int)arg0 + 0xD4);
+                        gl_func_00000000(sp8C, arg0->countAlpha, (int)&arg0->colour[2], (int)&arg0->colour[3]);
                         gl_func_00000000(sp8C, 0xA0, 0xA0, 3);
                     }
                     if (sp3C != 0) {
-                        gl_func_00000000((int)arg0 + 0x5E8);
-                        gl_func_00000000((int)arg0 + 0x5E8, 0xFF, (int)arg0 + 0x68, (int)arg0 + 0x8C);
-                        gl_func_00000000((int)arg0 + 0x5E8, 0xA8, 0x50, 3);
+                        gl_func_00000000((int)&arg0->sprites[4]);
+                        gl_func_00000000((int)&arg0->sprites[4], 0xFF, (int)&arg0->colour[0], (int)&arg0->colour[1]);
+                        gl_func_00000000((int)&arg0->sprites[4], 0xA8, 0x50, 3);
                     }
                 }
             }
             break;
         case 3:
             new_var = &D_00000000;
-            if (!(FW(arg0, 0x4F0) & 0x04000000)) {
-                temp_v0 = (int *)FW(arg0, 0x28);
-                ((GP_00007FF4)FW(temp_v0, 0x10C))(*(s16 *)((char *)temp_v0 + 0x108) + (int)arg0, FW(arg0, 0x4F8), (s32)*(f32 *)((char *)arg0 + 0x54C));
+            if (!(arg0->flags & RACEF_NO_RESULT_MSG)) {
+                vt = arg0->vt;
+                vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, arg0->result, (s32)arg0->msgY);
                 if (*(s32 *)((char *)new_var + 0x34) == 2) {
-                    temp_v0 = (int *)FW(arg0, 0x28);
-                    ((GP_00007FF4)FW(temp_v0, 0x10C))(*(s16 *)((char *)temp_v0 + 0x108) + (int)arg0, ((int *)new_var)[FW(arg0, 0x4F8)], (s32)(*(f32 *)((char *)arg0 + 0x54C) + 120.0f));
+                    vt = arg0->vt;
+                    vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, ((int *)new_var)[arg0->result], (s32)(arg0->msgY + 120.0f));
                 }
             }
             break;
         }
     }
-    temp_v0 = (int *)FW(arg0, 0x28);
-    ((GP_00007FF4)FW(temp_v0, 0xEC))(*(s16 *)((char *)temp_v0 + 0xE8) + (int)arg0);
+    vt = arg0->vt;
+    vt->slot[RACEVT_DRAW_HUD].fn((char *)arg0 + vt->slot[RACEVT_DRAW_HUD].delta);
 }
 
 extern int gl_func_00000000();
@@ -3934,8 +3934,8 @@ void RaceProcess_handleMsg(int a0, int *a1) {
 }
 
 extern int gl_func_00000000();
-int RaceProcess_loadData(char *a0) {
-    return gl_func_00000000(a0 + 0x50);
+int RaceProcess_loadData(RaceProcess *a0) {
+    return gl_func_00000000(a0->parms);
 }
 
 /* RaceProcess_createReplayCam: 79-insn 5-call state swap (0x13C). EXACT in-unit.
@@ -3952,7 +3952,7 @@ int RaceProcess_loadData(char *a0) {
  * the dead-if lever, IDO_CODEGEN #ce38-dead-if-lifts-constant-lr-over-passthrough-params. */
 extern int gl_func_00000000();
 extern int gl_data_00000000_83cc;
-void RaceProcess_createReplayCam(int *a0) {
+void RaceProcess_createReplayCam(RaceProcess *a0) {
 #define STATE (*(int**)((char*)&D_00000000 + 0x134))
     int *c4;
     int x800;
@@ -3967,19 +3967,19 @@ void RaceProcess_createReplayCam(int *a0) {
     x800 = *(int*)((char*)c4 + 0x800);
     v70 = *(int*)((char*)*(int**)((char*)STATE + 0x108) + 0x70);
     r1 = gl_func_00000000(STATE, 1, *(int*)((char*)STATE + 0x80), c4, x800);
-    *(int**)((char*)a0 + 0x520) = *(int**)((char*)STATE + 0x108);
-    q = (int*)((char*)*(int**)((char*)a0 + 0x520) + 0x18);
+    a0->savedCam = *(int*)((char*)STATE + 0x108);
+    q = (int*)((char*)a0->savedCam + 0x18);
     *q &= ~8;
-    q = (int*)((char*)*(int**)((char*)a0 + 0x520) + 0x18);
+    q = (int*)((char*)a0->savedCam + 0x18);
     *q &= ~4;
     r2 = gl_func_00000000(STATE, (char*)&gl_data_00000000_83cc + 0x70, v70);
-    *(int*)((char*)a0 + 0x51C) = r2;
+    a0->replayCam = r2;
     *(int*)((char*)STATE + 0x108) = r2;
     r3 = gl_func_00000000(0x80);
     if (r3 != 0) {
         gl_func_00000000(r3, 1);
     }
-    obj = (int*)gl_func_00000000(0, r3, c4, *(int*)((char*)a0 + 0x51C), v70, r1);
+    obj = (int*)gl_func_00000000(0, r3, c4, a0->replayCam, v70, r1);
     side = *(int**)((char*)STATE + 0x84);
     gl_func_00000000((char*)side + 0x10, obj);
     if (*(int*)((char*)obj + 0x14) != 0) *(int*)((char*)obj + 4) = 1;
@@ -4025,7 +4025,7 @@ void RaceProcess_createReplayCam(int *a0) {
  * reloaded pointers (state->0xC4, state->0xCC, arg0->0x528->8) outranks
  * `state` (q = v0, state = v1) and its slot moves p2's home to 0x18. The
  * "regalloc-dump-only" residual note above is historical. */
-void RaceProcess_restartCameras_00008510(int *arg0) {
+void RaceProcess_restartCameras_00008510(RaceProcess *arg0) {
     char *state;
     char *p;
     int *q;
@@ -4033,12 +4033,12 @@ void RaceProcess_restartCameras_00008510(int *arg0) {
     state = *(char**)((char*)&D_00000000 + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
-    if (*(int**)((char*)*(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8) + 0x8) != 0) {
+    if (*(int**)((char*)*(int**)((char*)arg0->session + 0x8) + 0x8) != 0) {
         char *p2;
         q = *(int**)(state + 0xCC);
         p2 = *(char**)((char*)q + 0x800);
         gl_func_00000000(p2, *(int*)(p2 + 0x34));
-        q = *(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8);
+        q = *(int**)((char*)arg0->session + 0x8);
         gl_func_00000000(p2, *(int*)((char*)q + 0x8), *(int*)((char*)q + 0x4));
     }
     gl_func_00000000(p, *(int*)(p + 0x34));
@@ -4058,7 +4058,7 @@ void RaceProcess_restartCameras_00008510(int *arg0) {
  * coloring -> q=v0, state=v1, t6.. cascade snaps. q's decl between `p` and
  * the block-scoped `p2` also shifts p2's named home 0x24->0x20 (q's dead
  * colored slot absorbs 0x24), fixing the spill slot. First-variant match. */
-void RaceProcess_restartWithTimeout(int *arg0, int arg1) {
+void RaceProcess_restartWithTimeout(RaceProcess *arg0, int arg1) {
     char *state;
     char *p;
     int *q;
@@ -4067,12 +4067,12 @@ void RaceProcess_restartWithTimeout(int *arg0, int arg1) {
     state = *(char**)((char*)&D_00000000 + 0x134);
     q = *(int**)(state + 0xC4);
     p = *(char**)((char*)q + 0x800);
-    if (*(int**)((char*)*(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8) + 0x8) != 0) {
+    if (*(int**)((char*)*(int**)((char*)arg0->session + 0x8) + 0x8) != 0) {
         char *p2;
         q = *(int**)(state + 0xCC);
         p2 = *(char**)((char*)q + 0x800);
         gl_func_00000000(p2, *(int*)(p2 + 0x34));
-        q = *(int**)((char*)*(int**)((char*)arg0 + 0x528) + 0x8);
+        q = *(int**)((char*)arg0->session + 0x8);
         gl_func_00000000(p2, *(int*)((char*)q + 0x8), *(int*)((char*)q + 0x4));
     }
     gl_func_00000000(p, 0);
@@ -4080,7 +4080,7 @@ void RaceProcess_restartWithTimeout(int *arg0, int arg1) {
         *(int*)((char*)&D_00000000 + 0x168),
         *(int*)((char*)&D_00000000 + 0x170));
     gl_func_00000000(arg0);
-    *(int*)((char*)arg0 + 0x4F4) = arg1 & 0xFFFF;
+    arg0->timeout = arg1 & 0xFFFF;
 }
 
 /* gl_func_00008674: RECONSTRUCTED 2026-07-11. NOT caller-set — the prior
@@ -4121,20 +4121,20 @@ int gl_func_00008674(int unused) {
  * (verified: operand swap is no-op, explicit-var ordering cascades 26 diffs).
  * Which f-reg holds load vs convert is IDO's FP allocator choice, not
  * C-reachable. Was INSN_PATCH'd (2 words, removed 2026-05-23). */
-void RaceProcess_raiseMessage(char *a0) {
+void RaceProcess_raiseMessage(RaceProcess *a0) {
     float four = 4.0f;
-    float f550 = *(float*)(a0 + 0x550);
+    float f550 = a0->msgVel;
 
     if (f550 < four) {
         double t;
-        *(float*)(a0 + 0x550) = (float)(*(double*)((char*)&D_00000000 + 0xE58) + (t = (double)f550));
-        f550 = *(float*)(a0 + 0x550);
+        a0->msgVel = (float)(*(double*)((char*)&D_00000000 + 0xE58) + (t = (double)f550));
+        f550 = a0->msgVel;
     }
 
-    *(float*)(a0 + 0x54C) = *(float*)(a0 + 0x54C) - f550;
-    if (*(float*)(a0 + 0x54C) < 58.0f) {
-        *(float*)(a0 + 0x54C) = *(float*)(a0 + 0x54C) + f550;
-        *(float*)(a0 + 0x550) = -(f550 / four);
+    a0->msgY = a0->msgY - f550;
+    if (a0->msgY < 58.0f) {
+        a0->msgY = a0->msgY + f550;
+        a0->msgVel = -(f550 / four);
     }
 }
 
@@ -4153,26 +4153,25 @@ void RaceProcess_raiseMessage(char *a0) {
  * order swap) flipped by inlining the f550 load into the comparison
  * condition `(f550 = *...) < four`, forcing `four` materialization first.
  * Byte-exact; only reloc residue is benign &D_00000000+0xE60. */
-void RaceProcess_dropMessage(int *a0) {
+void RaceProcess_dropMessage(RaceProcess *a0) {
     float four = 4.0f;
     float f550;
-    if ((f550 = *(float*)((char*)a0 + 0x550)) < four) {
+    if ((f550 = a0->msgVel) < four) {
         double t;
-        *(float*)((char*)a0 + 0x550) =
+        a0->msgVel =
             (float)(*(double*)((char*)&D_00000000 + 0xE60) + (t = (double)f550));
-        f550 = *(float*)((char*)a0 + 0x550);
+        f550 = a0->msgVel;
     }
-    *(float*)((char*)a0 + 0x54C) = *(float*)((char*)a0 + 0x54C) + f550;
-    if (*(float*)((char*)a0 + 0x554) < *(float*)((char*)a0 + 0x54C)) {
+    a0->msgY = a0->msgY + f550;
+    if (a0->msgFloor < a0->msgY) {
         if (2.0f < f550) {
-            int *v = (int*)a0[0x28/4];
-            ((void(*)(int))v[0x134/4])(
-                *(short*)((char*)v + 0x130) + (int)a0);
-            f550 = *(float*)((char*)a0 + 0x550);
+            RaceProcessVt *vt = a0->vt;
+            vt->slot[RACEVT_ON_MESSAGE_BOUNCE].fn((char *)a0 + vt->slot[RACEVT_ON_MESSAGE_BOUNCE].delta);
+            f550 = a0->msgVel;
         }
-        *(float*)((char*)a0 + 0x54C) =
-            *(float*)((char*)a0 + 0x54C) - f550;
-        *(float*)((char*)a0 + 0x550) = -(f550 / four);
+        a0->msgY =
+            a0->msgY - f550;
+        a0->msgVel = -(f550 / four);
     }
 }
 
