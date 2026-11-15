@@ -3,6 +3,7 @@
 #include "gdl/hud.h"
 #include "gdl/gadget.h"
 #include "gdl/backup.h"
+#include "game/input.h"
 
 /* Tail half of game_libs.c, split off on 2026-05-07 along with
  * game_libs_o0_949C.c (the 4-fn -O0 cluster at 0x949C..0x959C).
@@ -1340,7 +1341,7 @@ void Backup_writeCourseArcadeOptions_0000B3DC(BackupSession *a0) {
     if ((v & BACKUP_MODE_ARCADE) != 0) {
         func_00000000(a0->backup, a0->arcade);
     }
-    func_00000000(a0->backup, *(int*)((char*)&D_00000000 + 0x154));
+    func_00000000(a0->backup, (int)INPUT_MGR(gInputMgr).options);
 }
 
 void Backup_sessionClearNew(BackupSession *a0) {
@@ -1360,15 +1361,15 @@ extern int D_00000000;
 void Backup_sessionSetNewNames(BackupSession *a0, int a1, char a2, char a3) {
     if (a0->modes & BACKUP_MODE_TIME) {
         gl_func_00000000(a0->course, a1, a2, a3,
-            (*(char**)((char*)&D_00000000 + 0x154)) + 0xE);
+            &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[0]);
     }
     if (a0->modes & BACKUP_MODE_TRICK) {
         gl_func_00000000(a0->course, a1, a2, a3,
-            (*(char**)((char*)&D_00000000 + 0x154)) + 0xF);
+            &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[1]);
     }
     if (a0->modes & BACKUP_MODE_ARCADE) {
         gl_func_00000000(a0->arcade, a1, a2, a3,
-            (*(char**)((char*)&D_00000000 + 0x154)) + 0x10);
+            &SETTINGS(INPUT_MGR(gInputMgr).options)->newMark[2]);
     }
 }
 
@@ -1467,9 +1468,9 @@ void Backup_resetAll_0000B710(BackupSession *a0) {
     gl_func_00000000(a0->arcade);
     gl_func_00000000(a0);
     gl_func_00000000(a0);
-    gl_func_00000000(*(int*)((char*)&D_00000000 + 0x154));
-    gl_func_00000000(&D_00000000);
-    gl_func_00000000(a0->backup, *(int*)((char*)&D_00000000 + 0x154));
+    gl_func_00000000((int)INPUT_MGR(gInputMgr).options);
+    gl_func_00000000(&gInputMgr);
+    gl_func_00000000(a0->backup, (int)INPUT_MGR(gInputMgr).options);
 }
 
 /* Backup_ctor: 59-insn alloc-if-null constructor (BBxx streaming

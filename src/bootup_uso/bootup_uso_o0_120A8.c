@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "gdl/backup.h"
 
 /* Run 8 of bootup_uso's -O0 region (0x120A8..0x122C3). 5 functions.
  * See project_1080_bootup_uso_o0_runs.md + feedback_ido_o0_empty_stub.md.
@@ -29,7 +30,7 @@ void GameFlow_releaseFiles_00012110(int a0) {
 }
 
 void settings_save_00012150(char *a0) {
-    func_00000000(GAMEFLOW(a0)->backup, GAMEFLOW(a0)->unlocks);
+    func_00000000(GAMEFLOW(a0)->backup, GAMEFLOW(a0)->options);
 }
 
 void input_initDefaults_00012188(char *a0) {
@@ -54,8 +55,8 @@ void input_initDefaults_00012188(char *a0) {
 }
 
 void settings_setBit_00012244(int *a0, int a1) {
-    if ((*(unsigned short *)GAMEFLOW(a0)->unlocks & (1 << a1)) == 0) {
-        register unsigned short *q = (unsigned short *)GAMEFLOW(a0)->unlocks;
+    if ((SETTINGS(GAMEFLOW(a0)->options)->unlocks & (1 << a1)) == 0) {
+        register unsigned short *q = &SETTINGS(GAMEFLOW(a0)->options)->unlocks;
         *q = *q | (1 << a1);
         func_00000000(a0);
     }

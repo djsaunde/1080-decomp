@@ -132,9 +132,10 @@ typedef struct InputMgr {
                                     * user has no u8 / s8); the open record session (<pfx>_openSession /
                                     * closeSession); its ghost's count / data feed replayLen / replayData */
     /* 0x150 */ void *flowImgs;    /* rom/flowimgs.bin, opened by GameFlow_create */
-    /* 0x154 */ char *unlocks;     /* the unlock / option record: +0 u16 unlock bits (1 << n),
-                                    * +4 u16 option bits (8 = the title language menu),
-                                    * +0x12..0x14 u8 settings */
+    /* 0x154 */ char *options;     /* the settings record = the Backup options chunk:
+                                    * SETTINGS(options)->unlocks / seqStep / flags / levels[3]
+                                    * (gdl/backup.h BackupOptions). Kept `char *`: the NCC .cpp
+                                    * users of this header cannot include backup.h */
     /* 0x158 */ char initials[3];  /* input_initDefaults_00012188 fills '*' x 3 (name-entry default) */
     char pad15B[0x15C - 0x15B];
     /* 0x15C */ s32 unk15C;        /* input_initDefaults_00012188: 0 */
@@ -191,7 +192,7 @@ typedef char InputMgr_racePadsPaused_check[(int)&((InputMgr *)0)->racePadsPaused
 typedef char InputMgr_numPads_check[(int)&((InputMgr *)0)->numPads == 0x120 ? 1 : -1];
 typedef char InputMgr_activePad_check[(int)&((InputMgr *)0)->activePad == 0x128 ? 1 : -1];
 typedef char InputMgr_game_check[(int)&((InputMgr *)0)->game == 0x134 ? 1 : -1];
-typedef char InputMgr_unlocks_check[(int)&((InputMgr *)0)->unlocks == 0x154 ? 1 : -1];
+typedef char InputMgr_options_check[(int)&((InputMgr *)0)->options == 0x154 ? 1 : -1];
 typedef char InputMgr_dataMgr_check[(int)&((InputMgr *)0)->dataMgr == 0x138 ? 1 : -1];
 typedef char InputMgr_backup_check[(int)&((InputMgr *)0)->backup == 0x148 ? 1 : -1];
 typedef char InputMgr_session_check[(int)&((InputMgr *)0)->session == 0x14C ? 1 : -1];

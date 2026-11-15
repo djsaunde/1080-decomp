@@ -101,16 +101,29 @@ typedef struct BackupArcade {
     /* 0x00 */ BackupArcadeEntry entry[3];
 } BackupArcade;
 
-/* Options chunk (0x18), defaults from Backup_resetOptionsData_0000AFC4. */
+/* Options chunk (0x18), defaults from Backup_resetOptionsData_0000AFC4. In RAM this is the
+ * settings record GameFlow.options (game/input.h +0x154) points at: GameFlow_create fetches
+ * it from the Backup and applies flags & 3, bit 2 and the three levels; the bootup settings_*
+ * functions edit it and settings_save writes it back (agent-h run 507; u16 widths from their
+ * lhu / sh, the defaults were stored with sh). */
 typedef struct BackupOptions {
-    /* 0x00 */ s16 unk0;        /* default 0x1F */
-    /* 0x02 */ s16 unk2;        /* default 1 */
-    /* 0x04 */ u16 flags;       /* & 3 -> bootup 0x1FC; bit 2 -> gl_flag_AFC4_bit2 */
-    /* 0x06 */ u8 unk6[8];
-    /* 0x0E */ u8 unkE[4];
-    /* 0x12 */ u8 levels[3];    /* default 8 each; passed to bootup 0x21C / 0x23C / 0x25C */
+    /* 0x00 */ u16 unlocks;     /* default 0x1F: unlock bits, settings_setBit sets 1 << n */
+    /* 0x02 */ u16 seqStep;     /* default 1: settings_stepSequence advances it (0..5) */
+    /* 0x04 */ u16 flags;       /* & 3 sound mode (settings_applySoundMode -> bootup 0x1FC);
+                                 * bit 2 settings_setFlag4 (-> gl_flag_AFC4_bit2); bit 3 shows
+                                 * the title language menu (titproc) */
+    /* 0x06 */ u8 unk6[8];      /* settings_get8 copies these 8 bytes out */
+    /* 0x0E */ u8 newMark[3];   /* time / trick / arcade: Backup_sessionSetNewNames passes
+                                 * &newMark[i] to the record-name setter of that chunk */
+    /* 0x11 */ u8 unk11;
+    /* 0x12 */ u8 levels[3];    /* default 8 each, 0..10; settings_vol1 / vol0 / vol2 Up / Down
+                                 * step them; passed to bootup 0x21C / 0x23C / 0x25C */
     /* 0x15 */ u8 pad15[3];
 } BackupOptions;
+
+/* The settings record through GameFlow's `char *options` (GameFlow.options is untyped:
+ * titproc / mgr / arc index it). Same base + offset access as the raw form. */
+#define SETTINGS(p) ((BackupOptions *)(p))
 
 /* Ghost (replay) chunk header (0x10). The data (count words) follows in SRAM at
  * BACKUP_SRAM_GHOST_DATA; in RAM `data` points at it (Backup_readGhost). */

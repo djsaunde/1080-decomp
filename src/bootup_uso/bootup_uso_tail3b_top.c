@@ -1,5 +1,6 @@
 #include "common.h"
 #include "game/input.h"
+#include "gdl/backup.h"
 
 extern int func_00000000();
 extern char D_00000000;
@@ -41,19 +42,19 @@ void settings_stepSequence_000122C4(char *a0, int a1) {
     Tbl3 tbl;
     register char *st;
     tbl = D_0000C69C;
-    if (*(unsigned short*)(GAMEFLOW(a0)->unlocks + 2) < 4) {
+    if (SETTINGS(GAMEFLOW(a0)->options)->seqStep < 4) {
         if (a1 + 1 == ((Obj22C4*)a0)->seq->step) {
-            st = GAMEFLOW(a0)->unlocks;
-            *(unsigned short*)(st + 2) += 1;
+            st = GAMEFLOW(a0)->options;
+            SETTINGS(st)->seqStep += 1;
             func_00000000(a0);
         }
     } else {
         if (a1 == 2) {
-            if (*(unsigned short*)(GAMEFLOW(a0)->unlocks + 2) >= 4 &&
-                *(unsigned short*)(GAMEFLOW(a0)->unlocks + 2) < 5) {
+            if (SETTINGS(GAMEFLOW(a0)->options)->seqStep >= 4 &&
+                SETTINGS(GAMEFLOW(a0)->options)->seqStep < 5) {
                 if (((TblView22C4*)((char*)&tbl - 0x10))->v[((Obj22C4*)a0)->seq->step] == (0, ((Obj22C4*)a0)->score + 1)) {
-                    st = GAMEFLOW(a0)->unlocks;
-                    *(unsigned short*)(st + 2) += 1;
+                    st = GAMEFLOW(a0)->options;
+                    SETTINGS(st)->seqStep += 1;
                     func_00000000(a0);
                 }
             }

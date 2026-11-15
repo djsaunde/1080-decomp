@@ -226,7 +226,7 @@ int tit_randomUnlocked_00000418(void) {
     if (!selected) {
     }
     do {
-        if ((**(unsigned short**)((char*)&import_00020098 + 0x154) & (1 << index)) != 0) {
+        if ((SETTINGS(INPUT_MGR(import_00020098).options)->unlocks & (1 << index)) != 0) {
             selected = index + 1;
         }
         index++;
@@ -1433,7 +1433,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
             if (y != 0) {
                 titproc_uso_func_00F4CC(y);
             }
-            if (*(unsigned short *)(INPUT_MGR(import_00020098).unlocks + 4) & 0x8) {
+            if (SETTINGS(INPUT_MGR(import_00020098).options)->flags & 0x8) {
                 titproc_uso_func_0002DC(144);
                 if (1) {
                     vtA = *(char **)((char *)s0->langMenu + 0x28);
@@ -1498,7 +1498,7 @@ void GameDemoProcess_onQuitButton(GameDemoProcess *s0) {
         case 2:
             titproc_uso_func_0002DC(5);
             if (1) {
-                z = INPUT_MGR(import_00020098).unlocks + 4;
+                z = (char *)&SETTINGS(INPUT_MGR(import_00020098).options)->flags; /* clear the language-menu bit */
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
             titproc_uso_func_012150((char *)&import_00020098);

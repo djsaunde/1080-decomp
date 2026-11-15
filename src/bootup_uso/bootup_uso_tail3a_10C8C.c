@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/node.h"
 #include "game/input.h"
+#include "gdl/backup.h"
 
 /* bootup_uso 0x10C8C..0x116C7 remainder of the former tail3a mid-section,
  * moved out of bootup_uso_tail3a.c on 2026-07-10 when gui_addRowSub_00010B6C
@@ -87,12 +88,12 @@ void GameFlow_create(int *arg0, int arg1) {
     GAMEFLOW(arg0)->game = (char *)func_00000000(0);
     GAMEFLOW(arg0)->fader = (void *)func_00000000(0, 0);
     GAMEFLOW(arg0)->backup = (void *)func_00000000(0);
-    GAMEFLOW(arg0)->unlocks = (char *)func_00000000(GAMEFLOW(arg0)->backup);
-    func_00000000(*(unsigned char *)(GAMEFLOW(arg0)->unlocks + 0x12));
-    func_00000000(*(unsigned char *)(GAMEFLOW(arg0)->unlocks + 0x13));
-    func_00000000(*(unsigned char *)(GAMEFLOW(arg0)->unlocks + 0x14));
-    func_00000000(*(unsigned short *)(GAMEFLOW(arg0)->unlocks + 4) & 3);
-    D_00000000 = (*(unsigned short *)(GAMEFLOW(arg0)->unlocks + 4) & 4) == 4;
+    GAMEFLOW(arg0)->options = (char *)func_00000000(GAMEFLOW(arg0)->backup);
+    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[0]);
+    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[1]);
+    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->levels[2]);
+    func_00000000(SETTINGS(GAMEFLOW(arg0)->options)->flags & 3);
+    D_00000000 = (SETTINGS(GAMEFLOW(arg0)->options)->flags & 4) == 4;
     GAMEFLOW(arg0)->recordCap = *(int *)GAMEFLOW(arg0)->backup;
     GAMEFLOW(arg0)->recordBuf = func_00000000(GAMEFLOW(arg0)->recordCap << 2);
     GAMEFLOW(arg0)->flowImgs = (void *)func_00000000(0, &sStr_rom_flowimgs_bin_C5F0);
