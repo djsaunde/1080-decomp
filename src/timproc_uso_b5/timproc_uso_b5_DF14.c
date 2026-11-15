@@ -1,11 +1,11 @@
-/* timproc_uso_b5_func_0000DF14 (0x698 / 422 words) -- D884's sibling panel
+/* LevelList_createItem (0x698 / 422 words) -- D884's sibling panel
  * constructor (the 0x2AC slot index, a 14-case switch on arg2 + 10 wiring the
  * 05D0E0 children, the saved 0x80000 bit restore, the arg3..arg8 placement).
  *
  * EXACT under IDO 7.1 cfe -O2 (agent-c run 217). Spliced over the unit's empty
  * placeholder by REPLACE_FUNC_BODY (Makefile TIMB5_DF14_DONOR) so the switch's
  * donor-local .rodata jumptable reloc is renamed
- * timproc_uso_b5_func_0000DF14_rodata and pinned to the table the USO ships at
+ * LevelList_createItem_rodata and pinned to the table the USO ships at
  * RoData +0x400 (the target reads it through D_807FF420 + 0x400), right after
  * D884's table at +0x3C0.
  *
@@ -25,9 +25,9 @@ extern int timproc_uso_b5_func_055750();
 extern int timproc_uso_b5_func_04C678();
 extern int timproc_uso_b5_func_07ACE0();
 extern char D_00000000;
-char *timproc_uso_b5_func_00002B74(char *arg0);
-char *timproc_uso_b5_func_000032C8(char *arg0);
-extern int timproc_uso_b5_func_00003890();
+char *SelItemParms_ctor(char *arg0);
+char *SelItemInfo_ctor(char *arg0);
+extern int SelItem_reset_00003890();
 /* Prototyped 5-arg decl: real signature passes f32 singles (mfc1 a2/a3 +
  * swc1 16(sp) 5th arg in the jal delay). */
 extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
@@ -63,7 +63,7 @@ extern char df14_ee6c_s1, df14_ee6c_s2, df14_ee6c_s4, df14_ee6c_s7;
 #define EE6C_L(s) (*(s32 *)((char *)&s + 4))
 #define EE6C_S(s) (*(u32 *)((char *)&s + 4))
 
-char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     char *volatile r;
     volatile int pad0;
     char *sub;
@@ -81,11 +81,11 @@ char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         if ((sub != 0) || ((sub = (char *) timproc_uso_b5_func_055750((char *)0x2B8)) != 0)) {
             timproc_uso_b5_func_04C678(sub, &timproc_uso_b5_D_807FEF48[5848]);
             FW(sub, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
-            timproc_uso_b5_func_00002B74(sub + 0x2C);
-            timproc_uso_b5_func_000032C8(sub + 0x194);
+            SelItemParms_ctor(sub + 0x2C);
+            SelItemInfo_ctor(sub + 0x194);
         }
         FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
-        timproc_uso_b5_func_00003890(child);
+        SelItem_reset_00003890(child);
     }
     r = child;
     FW(child, 0x2AC) = FW(arg0, 0x6C);

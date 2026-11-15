@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B154 (0x214 / 133 words): AC20 / B368's
+/* IDO 7.1 NCC (C++) donor for SelTesuri_display_0000B154 (0x214 / 133 words): AC20 / B368's
  * sibling (reference-point offset, quaternion rebuilt from three axis-angle rotations, sE8..sF0 =
  * f118, 05B750 with {0, 0, 0, f120}, two 06970C calls, the circular 0x140 index and the element
  * flag toggle around 054CAC). Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY;
- * its .bss relocs are renamed timproc_uso_b5_func_0000B154_bss by the splice and pinned to 0 (the
+ * its .bss relocs are renamed SelTesuri_display_0000B154_bss by the splice and pinned to 0 (the
  * USO bakes 0 / 4 / 8). agent-g run 167 (docs/IDO_CODEGEN.md kit CIX), on top of run 166's NM donor:
  * - the sE8..sF0 triple is a V3 member set by an inline `all(f32 v)` whose body copies v into a
  *   named local (`f32 s = v;`): the named local is the home the target has between the third axis
@@ -35,7 +35,7 @@ struct Obj {
     char pad0[0xDC]; V3 pos; V3 sc; Quat q; char pad104[0x108 - 0x104]; void *m108;
     f32 f10C, f110, f114, f118, f11C, f120, f124, f128, f12C; char p130[0x13C - 0x130]; s32 i13C, i140, i144; Elem *list[1];
 };
-extern "C" void timproc_uso_b5_func_0000B154(Obj *o) {
+extern "C" void SelTesuri_display_0000B154(Obj *o) {
     V4 r;
     V3 d = rel(o->pos, &sXY[0], &sZ);
     timproc_uso_b5_func_071028(&d);

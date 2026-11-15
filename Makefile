@@ -3503,39 +3503,39 @@ build/assets/timproc_uso_block3_yay0.bin: build/src/timproc_uso_b3/timproc_uso_b
 # 5FC0 = timing-screen per-frame update (11-state jumptable switch), IDO 7.1
 # -O2 donor timproc_uso_b5_o2_5FC0.c (245/245 words). Spliced only so the C
 # switch's donor-local .rodata jumptable reloc is renamed
-# timproc_uso_b5_func_00005FC0_rodata and pinned to the table the USO ships at
+# SelectWin_update_00005FC0_rodata and pinned to the table the USO ships at
 # RoData +0x190 (the 29CCC recipe). Uses += (composes).
 # private: the donor is also a prerequisite of timproc_uso_b5.c.o, and a
 # plain target-specific REPLACE_FUNC_BODY is inherited by prerequisites, so a
 # clean build (CI) would run every splice on the donor itself and fail.
 TIMB5_5FC0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005FC0=$(TIMB5_5FC0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_update_00005FC0=$(TIMB5_5FC0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_5FC0_DONOR)
 # 4118 = timing-screen constructor (1718/1718 words, IDO 7.1 cfe -O2 donor
 # timproc_uso_b5_4118.c, agent-g run 161). Spliced so its .rodata reloc
 # (float literals + 8-entry jumptable) is renamed
-# timproc_uso_b5_func_00004118_rodata and pinned to USO RoData +0x14C.
+# SelectWin_ctor_rodata and pinned to USO RoData +0x14C.
 TIMB5_4118_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_4118.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00004118=$(TIMB5_4118_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_ctor=$(TIMB5_4118_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_4118_DONOR)
 # D884 = timing-screen panel constructor (420/420 words, IDO 7.1 cfe -O2 donor
 # timproc_uso_b5_D884.c, agent-c run 217: per-pair EE6C aliases for the flag chain).
 # Spliced over the unit's empty placeholder so its 14-entry jumptable .rodata reloc
-# is renamed timproc_uso_b5_func_0000D884_rodata and pinned to USO RoData +0x3C0.
+# is renamed CourseList_createItem_rodata and pinned to USO RoData +0x3C0.
 TIMB5_D884_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_D884.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D884=$(TIMB5_D884_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CourseList_createItem=$(TIMB5_D884_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_D884_DONOR)
 # DF14 = D884's sibling constructor (422/422 words, IDO 7.1 cfe -O2 donor
 # timproc_uso_b5_DF14.c, agent-c run 217). Same splice; jumptable pinned to RoData +0x400.
 TIMB5_DF14_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_DF14.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000DF14=$(TIMB5_DF14_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += LevelList_createItem=$(TIMB5_DF14_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_DF14_DONOR)
 # CEB4 = three-slot HUD colour emitter (107/107 words, IDO 7.1 cfe -O2 donor
 # timproc_uso_b5_CEB4.c, agent-c run 218: the grey is the literal 0.3f). Its four
 # 0.3f literals (+0..+0xC, first unused like the ROM's) are renamed
-# timproc_uso_b5_func_0000CEB4_rodata and pinned to USO RoData +0x390.
+# LevelItem_vfunc25_0000CEB4_rodata and pinned to USO RoData +0x390.
 TIMB5_CEB4_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_CEB4.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000CEB4=$(TIMB5_CEB4_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += LevelItem_vfunc25_0000CEB4=$(TIMB5_CEB4_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_CEB4_DONOR)
 # titproc 5DC = 12-case state machine (356/356 words, IDO 7.1 cfe -O2 donor
 # titproc_uso_5DC.c, agent-g run 178). Spliced over the unit's INCLUDE_ASM so
@@ -3548,54 +3548,54 @@ build/src/titproc_uso/titproc_uso.c.o build/non_matching/src/titproc_uso/titproc
 # order of commutative FP ops where cfe canonicalizes the constant right.
 # 1DB0 = transition-frame update (89/89 words under NCC; cfe capped at 99.55).
 TIMB5_1DB0_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001DB0=$(TIMB5_1DB0_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectionMgr_func_00001DB0=$(TIMB5_1DB0_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1DB0_DONOR)
 # 1F14 = two-player transition update (551/551 words under NCC): literal FP
 # constants (rodata pinned at +0xC8) and a 3-arg inner 87A0 call (agent-g run 138).
 TIMB5_1F14_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001F14=$(TIMB5_1F14_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectionMgr_update_00001F14=$(TIMB5_1F14_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_1F14_DONOR)
 # 8AFC = per-group element refresh (72/72 words under NCC; K = 0.9f literal,
 # rodata pinned at +0x238) (agent-g run 138).
 TIMB5_8AFC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8AFC.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008AFC=$(TIMB5_8AFC_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_func_00008AFC=$(TIMB5_8AFC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8AFC_DONOR)
 # 2B74 = composite panel constructor (469/469 words under NCC; vec3 constants
 # as source literals, rodata pinned at +0x11C) (agent-g run 140).
 TIMB5_2B74_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_2B74.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00002B74=$(TIMB5_2B74_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelItemParms_ctor=$(TIMB5_2B74_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_2B74_DONOR)
 # 32C8 = 2B74's sibling panel constructor (370/370 words under NCC, ported from
 # the 2B74 donor; vec3 constants as source literals, rodata pinned at +0x134) (agent-g run 202).
 TIMB5_32C8_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_32C8.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000032C8=$(TIMB5_32C8_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelItemInfo_ctor=$(TIMB5_32C8_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_32C8_DONOR)
 # AC20 = camera marker update (333/333 words under NCC; reference point as a
 # file-local x / y pair + z whose .bss relocs are pinned to 0, pooled o->q.rot()
 # this temp in memory) (agent-g run 166).
 TIMB5_AC20_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000AC20=$(TIMB5_AC20_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelBoard_display_0000AC20=$(TIMB5_AC20_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_AC20_DONOR)
-# 396C: exact via src/match_imports/timproc_uso_b5_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
+# 396C: exact via src/match_imports/SelectWin_func_0000396C.c (38B0 sibling; stanzas next to 38B0's).
 # B624 = AC20 / B154 sibling (139/139 words under NCC; first rotation through an inline with a
 # kept float parameter, .bss relocs pinned to 0) (agent-g run 167).
 TIMB5_B624_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B624=$(TIMB5_B624_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelCharacter_display_0000B624=$(TIMB5_B624_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B624_DONOR)
 # BDEC: two-arrow UI draw as C++ (150/150 words under NCC; written operand order, inline
 # int numerator) (agent-g run 167).
 TIMB5_BDEC_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_BDEC.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BDEC=$(TIMB5_BDEC_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CharacterItem_vfunc26_0000BDEC=$(TIMB5_BDEC_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_BDEC_DONOR)
 # B154 = AC20 / B368 sibling (133/133 words under NCC; sE8 triple through an inline with a
 # named local, .bss relocs pinned to 0) (agent-g run 167).
 TIMB5_B154_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B154=$(TIMB5_B154_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelTesuri_display_0000B154=$(TIMB5_B154_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B154_DONOR)
 # B368 = AC20's sibling (173/173 words under NCC; implicit V3 copies in one
 # expression for the second return temp, .bss relocs pinned to 0) (agent-g run 166).
 TIMB5_B368_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000B368=$(TIMB5_B368_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelCourseMap_display_0000B368=$(TIMB5_B368_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_B368_DONOR)
 # 8FC8 = timing-screen master ctor as C++ (agent-g run 169, cfe 86.64): the NCC reference donor (93.39; the
 # target's tail switch is a cfe jumptable, NCC lowers it to compares); ctor symbol renamed (names only).
@@ -3603,18 +3603,18 @@ TIMB5_8FC8_NCC_REF := build/src/timproc_uso_b5/timproc_uso_b5_ncc_8FC8_nm.cpp.o
 $(TIMB5_8FC8_NCC_REF): src/timproc_uso_b5/timproc_uso_b5_ncc_8FC8_nm.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__6ScreenFPiT1=timproc_uso_b5_func_00008FC8 $@
+	$(OBJCOPY) --redefine-sym __ct__6ScreenFPiT1=SelItemsMgr_ctor $@
 # 8FC8 EXACT (agent-c run 225, 1624/1624 words): the cfront-style cfe C donor timproc_uso_b5_8FC8.c
 # (agent-c runs 222-225), spliced over the unit's empty placeholder in both trees; its 5-entry jumptable
-# .rodata reloc is renamed timproc_uso_b5_func_00008FC8_rodata and pinned to USO RoData +0x324.
+# .rodata reloc is renamed SelItemsMgr_ctor_rodata and pinned to USO RoData +0x324.
 TIMB5_8FC8_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_8FC8.c.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00008FC8=$(TIMB5_8FC8_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelItemsMgr_ctor=$(TIMB5_8FC8_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_8FC8_DONOR)
 # C310 = HUD ring update + colour panel draw as C++ (Col::set(int, int, int, int), Spr::width(); agent-g run 184,
 # cfe 94.88). EXACT (agent-g run 246, 256/256 words under NCC; loop pointers as uopt IVs, the per-iteration
 # m read in place, q = arg1 + 0x230 assigned inside the loop), spliced over the unit's empty placeholder in both trees.
 TIMB5_C310_DONOR := build/src/timproc_uso_b5/timproc_uso_b5_ncc_C310.cpp.o
-build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C310=$(TIMB5_C310_DONOR)
+build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += BoardItem_vfunc25_0000C310=$(TIMB5_C310_DONOR)
 build/src/timproc_uso_b5/timproc_uso_b5.c.o build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: $(TIMB5_C310_DONOR)
 
 # block5: a single TU. The former -O2 -g3 "unfilled-jr-delay" carve-outs
@@ -4202,64 +4202,64 @@ build/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o: src/match_imports/mgrproc_uso_func_00002850.c src/match_imports/context_mgrproc_uso.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000117C.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/RoomModifier_display_0000117C.c.o: src/match_imports/RoomModifier_display_0000117C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o: src/match_imports/RoomModifier_display_0000117C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_00001460.c.o: src/match_imports/timproc_uso_b5_func_00001460.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/gen_createLights_00001460.c.o: src/match_imports/gen_createLights_00001460.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o: src/match_imports/timproc_uso_b5_func_00001460.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/gen_createLights_00001460.c.o: src/match_imports/gen_createLights_00001460.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_func_000038B0.c.o: src/match_imports/SelectWin_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000396C.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_func_0000396C.c.o: src/match_imports/SelectWin_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o: src/match_imports/SelectWin_func_000038B0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o: src/match_imports/SelectWin_func_0000396C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_init_00005BF0.c.o: src/match_imports/SelectWin_init_00005BF0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o: src/match_imports/SelectWin_init_00005BF0.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_000069E8.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/SelectWin_startGame_000069E8.c.o: src/match_imports/SelectWin_startGame_000069E8.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o: src/match_imports/SelectWin_startGame_000069E8.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o: src/match_imports/CharacterItem_vfunc25_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o: src/match_imports/CharacterItem_vfunc25_0000BBDC.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o: src/match_imports/CourseItem_vfunc23_0000C98C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o: src/match_imports/CourseItem_vfunc23_0000C98C.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/CharacterList_createItem.c.o: src/match_imports/CharacterList_createItem.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/CharacterList_createItem.c.o: src/match_imports/CharacterList_createItem.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c src/match_imports/context_timproc_uso_b5.h
+build/src/match_imports/BoardList_createItem.c.o: src/match_imports/BoardList_createItem.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c src/match_imports/context_timproc_uso_b5.h
+build/non_matching/src/match_imports/BoardList_createItem.c.o: src/match_imports/BoardList_createItem.c src/match_imports/context_timproc_uso_b5.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/KeyMessage_display.c.o: src/match_imports/KeyMessage_display.c src/match_imports/context_titproc_uso.h
@@ -4768,66 +4768,66 @@ build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/src/matc
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o scripts/match-origins-mgrproc_uso_func_00002850-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-mgrproc_uso_func_00002850-nm.ld -e mgrproc_uso_func_00002850 -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o scripts/match-origins-timproc_uso_b5_func_0000117C.ld
+build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf: build/src/match_imports/RoomModifier_display_0000117C.c.o scripts/match-origins-RoomModifier_display_0000117C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000117C.ld -e timproc_uso_b5_func_0000117C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o scripts/match-origins-timproc_uso_b5_func_0000117C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RoomModifier_display_0000117C.ld -e RoomModifier_display_0000117C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf: build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o scripts/match-origins-RoomModifier_display_0000117C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000117C-nm.ld -e timproc_uso_b5_func_0000117C -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_00001460.c.o scripts/match-origins-timproc_uso_b5_func_00001460.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-RoomModifier_display_0000117C-nm.ld -e RoomModifier_display_0000117C -o $@ $@.stripped.o
+build/src/match_imports/gen_createLights_00001460.c.o.linked.elf: build/src/match_imports/gen_createLights_00001460.c.o scripts/match-origins-gen_createLights_00001460.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00001460.ld -e timproc_uso_b5_func_00001460 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o scripts/match-origins-timproc_uso_b5_func_00001460-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gen_createLights_00001460.ld -e gen_createLights_00001460 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf: build/non_matching/src/match_imports/gen_createLights_00001460.c.o scripts/match-origins-gen_createLights_00001460-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00001460-nm.ld -e timproc_uso_b5_func_00001460 -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gen_createLights_00001460-nm.ld -e gen_createLights_00001460 -o $@ $@.stripped.o
+build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf: build/src/match_imports/SelectWin_func_000038B0.c.o scripts/match-origins-SelectWin_func_000038B0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o scripts/match-origins-timproc_uso_b5_func_0000396C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_000038B0.ld -e SelectWin_func_000038B0 -o $@ $@.stripped.o
+build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf: build/src/match_imports/SelectWin_func_0000396C.c.o scripts/match-origins-SelectWin_func_0000396C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000396C.ld -e timproc_uso_b5_func_0000396C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_0000396C.ld -e SelectWin_func_0000396C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o scripts/match-origins-SelectWin_func_000038B0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000038B0-nm.ld -e timproc_uso_b5_func_000038B0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o scripts/match-origins-timproc_uso_b5_func_0000396C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_000038B0-nm.ld -e SelectWin_func_000038B0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o scripts/match-origins-SelectWin_func_0000396C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000396C-nm.ld -e timproc_uso_b5_func_0000396C -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o scripts/match-origins-timproc_uso_b5_func_00005BF0.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_func_0000396C-nm.ld -e SelectWin_func_0000396C -o $@ $@.stripped.o
+build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf: build/src/match_imports/SelectWin_init_00005BF0.c.o scripts/match-origins-SelectWin_init_00005BF0.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00005BF0.ld -e timproc_uso_b5_func_00005BF0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o scripts/match-origins-timproc_uso_b5_func_00005BF0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_init_00005BF0.ld -e SelectWin_init_00005BF0 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o scripts/match-origins-SelectWin_init_00005BF0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_00005BF0-nm.ld -e timproc_uso_b5_func_00005BF0 -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o scripts/match-origins-timproc_uso_b5_func_000069E8.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_init_00005BF0-nm.ld -e SelectWin_init_00005BF0 -o $@ $@.stripped.o
+build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf: build/src/match_imports/SelectWin_startGame_000069E8.c.o scripts/match-origins-SelectWin_startGame_000069E8.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000069E8.ld -e timproc_uso_b5_func_000069E8 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o scripts/match-origins-timproc_uso_b5_func_000069E8-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_startGame_000069E8.ld -e SelectWin_startGame_000069E8 -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf: build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o scripts/match-origins-SelectWin_startGame_000069E8-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_000069E8-nm.ld -e timproc_uso_b5_func_000069E8 -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o scripts/match-origins-timproc_uso_b5_func_0000BBDC.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SelectWin_startGame_000069E8-nm.ld -e SelectWin_startGame_000069E8 -o $@ $@.stripped.o
+build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf: build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o scripts/match-origins-CharacterItem_vfunc25_0000BBDC.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000BBDC.ld -e timproc_uso_b5_func_0000BBDC -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o scripts/match-origins-timproc_uso_b5_func_0000BBDC-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CharacterItem_vfunc25_0000BBDC.ld -e CharacterItem_vfunc25_0000BBDC -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf: build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o scripts/match-origins-CharacterItem_vfunc25_0000BBDC-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000BBDC-nm.ld -e timproc_uso_b5_func_0000BBDC -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o scripts/match-origins-timproc_uso_b5_func_0000C98C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CharacterItem_vfunc25_0000BBDC-nm.ld -e CharacterItem_vfunc25_0000BBDC -o $@ $@.stripped.o
+build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf: build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o scripts/match-origins-CourseItem_vfunc23_0000C98C.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000C98C.ld -e timproc_uso_b5_func_0000C98C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o scripts/match-origins-timproc_uso_b5_func_0000C98C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CourseItem_vfunc23_0000C98C.ld -e CourseItem_vfunc23_0000C98C -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf: build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o scripts/match-origins-CourseItem_vfunc23_0000C98C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000C98C-nm.ld -e timproc_uso_b5_func_0000C98C -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o scripts/match-origins-timproc_uso_b5_func_0000D14C.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CourseItem_vfunc23_0000C98C-nm.ld -e CourseItem_vfunc23_0000C98C -o $@ $@.stripped.o
+build/src/match_imports/CharacterList_createItem.c.o.linked.elf: build/src/match_imports/CharacterList_createItem.c.o scripts/match-origins-CharacterList_createItem.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D14C.ld -e timproc_uso_b5_func_0000D14C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o scripts/match-origins-timproc_uso_b5_func_0000D14C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CharacterList_createItem.ld -e CharacterList_createItem -o $@ $@.stripped.o
+build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf: build/non_matching/src/match_imports/CharacterList_createItem.c.o scripts/match-origins-CharacterList_createItem-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D14C-nm.ld -e timproc_uso_b5_func_0000D14C -o $@ $@.stripped.o
-build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o scripts/match-origins-timproc_uso_b5_func_0000D550.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CharacterList_createItem-nm.ld -e CharacterList_createItem -o $@ $@.stripped.o
+build/src/match_imports/BoardList_createItem.c.o.linked.elf: build/src/match_imports/BoardList_createItem.c.o scripts/match-origins-BoardList_createItem.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D550.ld -e timproc_uso_b5_func_0000D550 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BoardList_createItem.ld -e BoardList_createItem -o $@ $@.stripped.o
+build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf: build/non_matching/src/match_imports/BoardList_createItem.c.o scripts/match-origins-BoardList_createItem-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-timproc_uso_b5_func_0000D550-nm.ld -e timproc_uso_b5_func_0000D550 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BoardList_createItem-nm.ld -e BoardList_createItem -o $@ $@.stripped.o
 build/src/match_imports/KeyMessage_display.c.o.linked.elf: build/src/match_imports/KeyMessage_display.c.o scripts/match-origins-KeyMessage_display.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-KeyMessage_display.ld -e KeyMessage_display -o $@ $@.stripped.o
@@ -5168,46 +5168,46 @@ build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: buil
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850.json $@
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-mgrproc_uso_func_00002850-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000117C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000117C.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00001460.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00001460.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0.json $@
-build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000396C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000396C.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00005BF0.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000069E8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000069E8.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000C98C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000C98C.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D14C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D14C.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json $@
-build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D550.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550.json $@
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json $@
+build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf scripts/match-bindings-RoomModifier_display_0000117C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RoomModifier_display_0000117C.json $@
+build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf scripts/match-bindings-RoomModifier_display_0000117C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-RoomModifier_display_0000117C-nm.json $@
+build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: build/src/match_imports/gen_createLights_00001460.c.o.linked.elf scripts/match-bindings-gen_createLights_00001460.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gen_createLights_00001460.json $@
+build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf scripts/match-bindings-gen_createLights_00001460-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gen_createLights_00001460-nm.json $@
+build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_func_000038B0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_000038B0.json $@
+build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_func_0000396C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_0000396C.json $@
+build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf scripts/match-bindings-SelectWin_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_000038B0-nm.json $@
+build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf scripts/match-bindings-SelectWin_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_func_0000396C-nm.json $@
+build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf scripts/match-bindings-SelectWin_init_00005BF0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_init_00005BF0.json $@
+build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf scripts/match-bindings-SelectWin_init_00005BF0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_init_00005BF0-nm.json $@
+build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf: build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf scripts/match-bindings-SelectWin_startGame_000069E8.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_startGame_000069E8.json $@
+build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf scripts/match-bindings-SelectWin_startGame_000069E8-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SelectWin_startGame_000069E8-nm.json $@
+build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf: build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf scripts/match-bindings-CharacterItem_vfunc25_0000BBDC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CharacterItem_vfunc25_0000BBDC.json $@
+build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf scripts/match-bindings-CharacterItem_vfunc25_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CharacterItem_vfunc25_0000BBDC-nm.json $@
+build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf: build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf scripts/match-bindings-CourseItem_vfunc23_0000C98C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CourseItem_vfunc23_0000C98C.json $@
+build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf scripts/match-bindings-CourseItem_vfunc23_0000C98C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CourseItem_vfunc23_0000C98C-nm.json $@
+build/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf: build/src/match_imports/CharacterList_createItem.c.o.linked.elf scripts/match-bindings-CharacterList_createItem.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CharacterList_createItem.json $@
+build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf scripts/match-bindings-CharacterList_createItem-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CharacterList_createItem-nm.json $@
+build/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf: build/src/match_imports/BoardList_createItem.c.o.linked.elf scripts/match-bindings-BoardList_createItem.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BoardList_createItem.json $@
+build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf scripts/match-bindings-BoardList_createItem-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BoardList_createItem-nm.json $@
 build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: build/src/match_imports/KeyMessage_display.c.o.linked.elf scripts/match-bindings-KeyMessage_display.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-KeyMessage_display.json $@
 build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf scripts/match-bindings-KeyMessage_display-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5571,46 +5571,46 @@ build/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_
 build/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: private REPLACE_FUNC_BODY += mgrproc_uso_func_00002850=build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: src/match_imports/mgrproc_uso_func_00002850.c scripts/match-bindings-mgrproc_uso_func_00002850-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000117C=build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c scripts/match-bindings-timproc_uso_b5_func_0000117C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000117C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000117C.c scripts/match-bindings-timproc_uso_b5_func_0000117C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001460=build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00001460.c scripts/match-bindings-timproc_uso_b5_func_00001460.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00001460=build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00001460.c scripts/match-bindings-timproc_uso_b5_func_00001460-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c scripts/match-bindings-timproc_uso_b5_func_0000396C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000038B0=build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000396C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000038B0.c scripts/match-bindings-timproc_uso_b5_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000396C.c scripts/match-bindings-timproc_uso_b5_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c scripts/match-bindings-timproc_uso_b5_func_00005BF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_00005BF0=build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_00005BF0.c scripts/match-bindings-timproc_uso_b5_func_00005BF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000069E8=build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c scripts/match-bindings-timproc_uso_b5_func_000069E8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_000069E8=build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_000069E8.c scripts/match-bindings-timproc_uso_b5_func_000069E8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BBDC=build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c scripts/match-bindings-timproc_uso_b5_func_0000BBDC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000BBDC=build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000BBDC.c scripts/match-bindings-timproc_uso_b5_func_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C98C=build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c scripts/match-bindings-timproc_uso_b5_func_0000C98C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000C98C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000C98C.c scripts/match-bindings-timproc_uso_b5_func_0000C98C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D14C=build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c scripts/match-bindings-timproc_uso_b5_func_0000D14C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D14C=build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D14C.c scripts/match-bindings-timproc_uso_b5_func_0000D14C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D550=build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += timproc_uso_b5_func_0000D550=build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/timproc_uso_b5_func_0000D550.c scripts/match-bindings-timproc_uso_b5_func_0000D550-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_display_0000117C=build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/RoomModifier_display_0000117C.c scripts/match-bindings-RoomModifier_display_0000117C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += RoomModifier_display_0000117C=build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/RoomModifier_display_0000117C.c scripts/match-bindings-RoomModifier_display_0000117C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += gen_createLights_00001460=build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/gen_createLights_00001460.c scripts/match-bindings-gen_createLights_00001460.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += gen_createLights_00001460=build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/gen_createLights_00001460.c scripts/match-bindings-gen_createLights_00001460-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_000038B0=build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_0000396C=build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_000038B0.c scripts/match-bindings-SelectWin_func_000038B0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_0000396C.c scripts/match-bindings-SelectWin_func_0000396C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_000038B0=build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_func_0000396C=build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_000038B0.c scripts/match-bindings-SelectWin_func_000038B0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_func_0000396C.c scripts/match-bindings-SelectWin_func_0000396C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_init_00005BF0=build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_init_00005BF0.c scripts/match-bindings-SelectWin_init_00005BF0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_init_00005BF0=build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_init_00005BF0.c scripts/match-bindings-SelectWin_init_00005BF0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_startGame_000069E8=build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_startGame_000069E8.c scripts/match-bindings-SelectWin_startGame_000069E8.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += SelectWin_startGame_000069E8=build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/SelectWin_startGame_000069E8.c scripts/match-bindings-SelectWin_startGame_000069E8-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CharacterItem_vfunc25_0000BBDC=build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CharacterItem_vfunc25_0000BBDC.c scripts/match-bindings-CharacterItem_vfunc25_0000BBDC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CharacterItem_vfunc25_0000BBDC=build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CharacterItem_vfunc25_0000BBDC.c scripts/match-bindings-CharacterItem_vfunc25_0000BBDC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CourseItem_vfunc23_0000C98C=build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CourseItem_vfunc23_0000C98C.c scripts/match-bindings-CourseItem_vfunc23_0000C98C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CourseItem_vfunc23_0000C98C=build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CourseItem_vfunc23_0000C98C.c scripts/match-bindings-CourseItem_vfunc23_0000C98C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CharacterList_createItem=build/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CharacterList_createItem.c scripts/match-bindings-CharacterList_createItem.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += CharacterList_createItem=build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/CharacterList_createItem.c scripts/match-bindings-CharacterList_createItem-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += BoardList_createItem=build/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/BoardList_createItem.c scripts/match-bindings-BoardList_createItem.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: private REPLACE_FUNC_BODY += BoardList_createItem=build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: src/match_imports/BoardList_createItem.c scripts/match-bindings-BoardList_createItem-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += KeyMessage_display=build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
 build/src/titproc_uso/titproc_uso.c.o: src/match_imports/KeyMessage_display.c scripts/match-bindings-KeyMessage_display.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/titproc_uso/titproc_uso.c.o: private REPLACE_FUNC_BODY += KeyMessage_display=build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
@@ -5952,46 +5952,46 @@ build/src/mgrproc_uso/mgrproc_uso.c.o: build/src/match_imports/mgrproc_uso_func_
 build/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/mgrproc_uso/mgrproc_uso.c.o: build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/mgrproc_uso_func_00002850.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D14C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
-build/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/timproc_uso_b5_func_0000D550.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
+build/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/RoomModifier_display_0000117C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
+build/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/gen_createLights_00001460.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
+build/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SelectWin_func_000038B0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/match_imports/SelectWin_func_0000396C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
+build/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SelectWin_init_00005BF0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf
+build/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SelectWin_startGame_000069E8.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf
+build/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CharacterItem_vfunc25_0000BBDC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf
+build/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CourseItem_vfunc23_0000C98C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf
+build/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/CharacterList_createItem.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/timproc_uso_b5/timproc_uso_b5.c.o: build/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf
+build/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o: build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/BoardList_createItem.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/titproc_uso/titproc_uso.c.o: build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
 build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/titproc_uso/titproc_uso.c.o: build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf

@@ -1,11 +1,11 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_000032C8 (0x5C8 / 370 words, composite panel
+/* IDO 7.1 NCC (C++) donor for SelItemInfo_ctor (0x5C8 / 370 words, composite panel
  * constructor: 6 text-row children, two vec3 children, two value children). Spliced into
  * timproc_uso_b5.c.o via REPLACE_FUNC_BODY (agent-g run 202). Ported from the EXACT sibling 2B74
  * donor (timproc_uso_b5_ncc_2B74.cpp): the same TimB5Nm name-struct copies, braced child blocks and
  * the `(cA = alloc(0x20)), (h = ...), (cA != 0)` fallback that re-assigns the zero vector value h
  * on both paths (the target's two `mtc1 zero,$f0` after the calls). The vec3 constants are source
  * literals (RoData +0x134..+0x148: -2500, -1500, 2500, 1500, -pi, pi); the donor's .rodata relocs
- * are renamed timproc_uso_b5_func_000032C8_rodata and pinned to +0x134. Levers over the plain port:
+ * are renamed SelItemInfo_ctor_rodata and pinned to +0x134. Levers over the plain port:
  * h = (f32)iz() (a distinct uopt value, not a folded constant: h keeps $f0 across the first vec
  * child), the decl list of the cfe body (cB above padF0 / padF1, no padF2: cB / t homes 0x50 / 0x3C),
  * and the first vec block as ONE source line with `if (1) {}` after the name load and after vA
@@ -29,7 +29,7 @@ extern char D_timb5_32C8_vv0, D_timb5_32C8_vv1;
 extern char D_timb5_32C8_vw0, D_timb5_32C8_vw1;
 }
 inline int iz() { return 0; }
-extern "C" char *timproc_uso_b5_func_000032C8(char *arg0) {
+extern "C" char *SelItemInfo_ctor(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
     struct TimB5Nm u2;

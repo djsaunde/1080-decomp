@@ -659,7 +659,7 @@ void ARCRaceProcess_setupRace_00000FA8(char *a0) {
  * +0x90 base, `((Ent1170 *)((char *)p + 0x90))[p->0x7C].fn` with
  * `struct { void (*fn)(void); char pad[0x24]; }` -- base-first addu with the
  * 0x28 multiplier CSE'd into v1 (no named stride needed). Same lever as
- * timproc_uso_b5_func_0000024C (docs/IDO_CODEGEN.md
+ * GenCourse_update_0000024C (docs/IDO_CODEGEN.md
  * #assign-in-call-arg-spill-before-copy-0478, 024C paragraph). */
 extern int gl_func_00000000();
 extern char D_00000000;

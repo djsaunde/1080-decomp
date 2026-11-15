@@ -1,9 +1,9 @@
-/* timproc_uso_b5_func_00004118 (0x1AD8 / 1718 words) -- the timing-screen
+/* SelectWin_ctor (0x1AD8 / 1718 words) -- the timing-screen
  * constructor (cfront-lowered alloc-or-use cascades + an 8-way mode switch).
  * EXACT under IDO 7.1 cfe -O2 (agent-g run 161). Spliced over the unit's
  * INCLUDE_ASM by REPLACE_FUNC_BODY (Makefile TIMB5_4118_DONOR) so the
  * switch jumptable / float literal .rodata reloc can be renamed
- * timproc_uso_b5_func_00004118_rodata and pinned to the USO RoData at +0x14C
+ * SelectWin_ctor_rodata and pinned to the USO RoData at +0x14C
  * (0.45f, 0.036f x3, 0.1f x5, then the 8-entry table at +0x170). The body is
  * the unit's NM body verbatim; see the run-161 note there for the last
  * five source fixes. */
@@ -18,7 +18,7 @@ typedef struct { int a, b, c, d; } Quad4;
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* per-site vtable-address aliases of D_00000000 for timproc_uso_b5_func_00004118 (defeat cross-record &D GCSE+spill) */
+/* per-site vtable-address aliases of D_00000000 for SelectWin_ctor (defeat cross-record &D GCSE+spill) */
 extern void timproc_uso_b5_alias_pf1(int, float);
 extern void timproc_uso_b5_alias_pf2(int, float);
 extern void timproc_uso_b5_alias_pf3(int, float);
@@ -67,8 +67,8 @@ typedef struct { char *p; } P1;
  * the 0.5f lui like the target); (5) case 0's table store and its `break`
  * on ONE source line: as1 then schedules the a2 reload above the store and
  * the store fills the `b` delay slot (target). */
-void timproc_uso_b5_func_00008D90(int *a0, int a1);
-char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
+void SelectWin_func_00008D90(int *a0, int a1);
+char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
     P1 sp39C;
@@ -660,13 +660,13 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
         FW(arg0, 0x490) = 0;
         switch (FW(arg0, 0x3C8) - 1) {
         case 0:
-            timproc_uso_b5_func_00008D90((int *)arg0, 0);
+            SelectWin_func_00008D90((int *)arg0, 0);
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
             ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
-            timproc_uso_b5_func_00008D90((int *)arg0, 1);
+            SelectWin_func_00008D90((int *)arg0, 1);
             FW(arg0, 0x3CC) = 6;
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;

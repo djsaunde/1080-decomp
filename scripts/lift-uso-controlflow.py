@@ -13,7 +13,7 @@ LIMITATION) or register-carrying switches (grep m2c for "Read from unset registe
 
 Usage: lift-uso-controlflow.py <FN> <PLACEHOLDER_FN> <m2c_in.c> <body_out.c>
 Then splice body_out between the function's #ifdef NON_MATCHING and #else.
-Validated: timproc_uso_b5_func_00000778 (4.5->68.9%), func_00007E34 (11->64.8%).
+Validated: GenSelectChar_initLabels_00000778 (4.5->68.9%), func_00007E34 (11->64.8%).
 """
 import re, sys
 # usage: liftcf.py <FN> <PH> <in.c> <out.c>

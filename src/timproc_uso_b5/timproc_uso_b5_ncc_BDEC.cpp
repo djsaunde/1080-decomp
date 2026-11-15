@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000BDEC (0x258 / 150 words): the two-arrow
+/* IDO 7.1 NCC (C++) donor for CharacterItem_vfunc26_0000BDEC (0x258 / 150 words): the two-arrow
  * UI draw (centre icon at &D+0x6E8, left arrow x-30 at &D+0x700, right arrow x+30 at &D+0x718,
  * colour {c, c, c, a} with c = 192/255 or 64/255 by the 0x20000 dim flag, a = 255/255, the
  * arrows gated on arg2 & 8 when undimmed). Spliced into timproc_uso_b5.c.o (both trees) via
@@ -18,7 +18,7 @@ extern char D_00000000;
 int gl_func_00000000(...);
 }
 inline int full() { return 255; } /* the alpha numerator: an int that uopt folds after CSE */
-extern "C" void timproc_uso_b5_func_0000BDEC(char *arg0, char *arg1, int arg2) {
+extern "C" void CharacterItem_vfunc26_0000BDEC(char *arg0, char *arg1, int arg2) {
     float col[5]; int s2; float c; float denom = 255.0f; float a;
     s2 = *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4);
     gl_func_00000000(arg0, *(int *)(arg1 + 0x8C), s2 + *(int *)(arg1 + 0xA4), (char *)&D_00000000 + 0x6E8,

@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B368 (0x2B4 / 173 words): AC20's sibling
+/* IDO 7.1 NCC (C++) donor for SelCourseMap_display_0000B368 (0x2B4 / 173 words): AC20's sibling
  * (reference-point offset normalised, quaternion rebuilt from three axis-angle rotations, optional
  * 0727A4 / 0714D4 orientation, sE8..sF0 = f118, then pos += (pool * gscale) * f128).
  * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY; its .bss relocs are renamed
- * timproc_uso_b5_func_0000B368_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8), the
+ * SelCourseMap_display_0000B368_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8), the
  * gscale base timb5_B368_gscale pinned to 0. agent-g run 166 (docs/IDO_CODEGEN.md kit CVII):
  * - the AC20 recipe: file-local x / y pair + z read through rel()'s pointer parameter with an
  *   `if (0)` keeper, o->q.rot() via edg's pooled `this` temp, nested angle blocks;
@@ -41,7 +41,7 @@ struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
     f32 f10C, f110, f114, f118; char p11C[0x124 - 0x11C]; s32 i124; f32 f128; s32 i12C;
 };
-extern "C" void timproc_uso_b5_func_0000B368(Obj *o) {
+extern "C" void SelCourseMap_display_0000B368(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     timproc_uso_b5_func_071028(&d);
     if (FW(o, 0x140) != 0) {

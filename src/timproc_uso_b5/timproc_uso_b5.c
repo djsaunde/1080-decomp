@@ -24,15 +24,15 @@ void timproc_uso_b5_func_00000000(void) {
     gl_func_00000000(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0);
 }
 
-void timproc_uso_b5_func_00000040(void) {
+void gen_nop_00000040(void) {
 }
 
 
-void timproc_uso_b5_func_00000048(void) {
+void gen_nop_00000048(void) {
 }
 
 
-void timproc_uso_b5_func_00000050(void) {
+void gen_nop_00000050(void) {
 }
 
 
@@ -61,7 +61,7 @@ extern char import_80020098;
  * barrier isolates tmp's web from the v0-poisoned call BB (colors v0);
  * import_000A5F40 declared VOID (an int-returning call preceding the
  * loop preheader poisons $v0 for the cfg-base candidate -> lw v1). */
-int *timproc_uso_b5_func_00000058(int *a0) {
+int *GenCourse_ctor(int *a0) {
     int *s0, *s1, *n;
     int i, tmp;
 
@@ -127,7 +127,7 @@ done:
 }
 
 
-/* timproc_uso_b5_func_0000024C: 42-insn dispatch wrapper. Sibling of
+/* GenCourse_update_0000024C: 42-insn dispatch wrapper. Sibling of
  * the recently-decoded func_000002F4 split-off (this is the parent
  * function — bundled together prior to split).
  *
@@ -162,7 +162,7 @@ typedef struct { void (*fn)(void); char pad[0x24]; } B5Ent24C;
 extern int timproc_uso_b5_func_011E00();
 extern void timproc_uso_b5_func_048E7C();
 extern char timproc_uso_b5_D_807FD924, timproc_uso_b5_D_807FF480, timproc_uso_b5_D_807FF484;
-void timproc_uso_b5_func_0000024C(int *a0) {
+void GenCourse_update_0000024C(int *a0) {
     int *p;
 
     if (timproc_uso_b5_func_011E00(&import_80020098, 0x300) == 0) {
@@ -181,28 +181,28 @@ void timproc_uso_b5_func_0000024C(int *a0) {
 
 /* Empty body, K&R-style 1-arg signature emits `jr ra; sw a0, 0(sp)` —
  * IDO -O2 keeps the K&R arg-save in the jr delay slot even when unused.
- * Split off from timproc_uso_b5_func_0000024C bundle (2026-05-05). */
-void timproc_uso_b5_func_000002F4(a0) int a0; {}
+ * Split off from GenCourse_update_0000024C bundle (2026-05-05). */
+void GenCourse_draw_000002F4(a0) int a0; {}
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_0000024C_pad.s")
 
 /* 0330/036C/03A8/0400 are static: their in-unit callers (AA5C..AAF4) then get
  * R_MIPS_26 .text + in-place offset, the module-relative jal field the ROM block
  * ships (docs/MATCHING_WORKFLOW.md#timproc-block-bake-data-pins-static-callee-jal). */
-static void timproc_uso_b5_func_00000330(int *dst) {
+static void gen_streamReadS32_00000330(int *dst) {
     int buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 
-static void timproc_uso_b5_func_0000036C(float *dst) {
+static void gen_streamReadF32_0000036C(float *dst) {
     float buf[2];
     gl_func_00000000(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
 
-static void timproc_uso_b5_func_000003A8(Quad4 *dst) {
+static void gen_streamReadQuad_000003A8(Quad4 *dst) {
     Quad4 buf;
     gl_func_00000000(&D_00000000, &buf, 16);
     *dst = buf;
@@ -211,7 +211,7 @@ static void timproc_uso_b5_func_000003A8(Quad4 *dst) {
 
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
-static void timproc_uso_b5_func_00000400(Vec3 *dst) {
+static void gen_streamReadVec3_00000400(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -225,13 +225,13 @@ static void timproc_uso_b5_func_00000400(Vec3 *dst) {
 }
 
 
-void timproc_uso_b5_func_00000470(void) {
+void SelectionMgr_vfunc11_00000470(void) {
 }
 
 
-/* timproc_uso_b5_func_00000478: 190-insn constructor/initializer.
+/* GenSelectChar_ctor: 190-insn constructor/initializer.
  * Boundary fix: split-fragments separated the trailing 2-insn
- * timproc_uso_b5_func_00000770 leaf; this body is now a single function
+ * GenSelectChar_update_00000770 leaf; this body is now a single function
  * (grep -c 03E00008 = 1).
  *
  * 2026-07-10: 81.87 -> 97.52 (190/190 insns, frame + ALL stack slots +
@@ -264,11 +264,11 @@ void timproc_uso_b5_func_00000470(void) {
 extern int timproc_uso_b5_func_055750();
 extern int timproc_uso_b5_func_04C678();
 extern int timproc_uso_b5_func_074710();
-extern char *timproc_uso_b5_func_00008DB4(char *self, int a1);
-extern void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2);
+extern char *gen_createScene_00008DB4(char *self, int a1);
+extern void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2);
 extern int timproc_uso_b5_func_07ACE0();
-extern char *timproc_uso_b5_func_000018B4(char *arg0, int arg1, int arg2, int arg3, int arg4, char *arg5, int arg6, int arg7);
-extern void timproc_uso_b5_func_00000778(char *arg0);
+extern char *SelectionMgr_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, char *arg5, int arg6, int arg7);
+extern void GenSelectChar_initLabels_00000778(char *arg0);
 extern int timproc_uso_b5_func_0139B0();
 extern int timproc_uso_b5_func_011CD8();
 extern int timproc_uso_b5_func_074840();
@@ -285,7 +285,7 @@ extern char import_80800228;
 extern char import_80020228;
 extern char import_80020098;
 
-int *timproc_uso_b5_func_00000478(int *arg0, int arg1, int arg2, int arg3) {
+int *GenSelectChar_ctor(int *arg0, int arg1, int arg2, int arg3) {
     int result0;
     register int *node;   /* s0: reused sub-cascade + every registration node */
     int *third;
@@ -321,12 +321,12 @@ after_sub:
     arg0[0x0C / 4] = (int)(&timproc_uso_b5_D_807FD948 + 0xFE4);
 
     timproc_uso_b5_func_074710(&timproc_uso_b5_D_807FE870 + 0x1000, 0);
-    result0 = (int)timproc_uso_b5_func_00008DB4(0, arg1);
+    result0 = (int)gen_createScene_00008DB4(0, arg1);
     arg0[0x54 / 4] = 0;
 
     if (arg1 == 1) {
         arg0[0x50 / 4] = 0;
-        result1 = (int)timproc_uso_b5_func_00008FC8(0,
+        result1 = (int)SelItemsMgr_ctor(0,
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x100C),
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x101C));
         slot = (int *)((char *)arg0 + 0x10);
@@ -336,7 +336,7 @@ after_sub:
         }
         node[0x14 / 4] = (int)arg0;
 
-        node = (int *)timproc_uso_b5_func_000018B4(0, (char *)arg0, arg1, arg2, arg3,
+        node = (int *)SelectionMgr_ctor(0, (char *)arg0, arg1, arg2, arg3,
                       (char *)result0, result1, 0);
         timproc_uso_b5_func_07ACE0(slot, (int)node);
         if (node[0x14 / 4] != 0) {
@@ -349,7 +349,7 @@ after_sub:
         int result2;
         volatile int padd;
         arg0[0x50 / 4] = 1;
-        result1 = (int)timproc_uso_b5_func_00008FC8(0,
+        result1 = (int)SelItemsMgr_ctor(0,
                       (int *)(&timproc_uso_b5_D_807FE88C + 0x102C),
                       (int *)(&timproc_uso_b5_D_807FE8AC + 0x103C));
         slot = (int *)((char *)arg0 + 0x10);
@@ -359,7 +359,7 @@ after_sub:
         }
         node[0x14 / 4] = (int)arg0;
 
-        result2 = (int)timproc_uso_b5_func_00008FC8(0,
+        result2 = (int)SelItemsMgr_ctor(0,
                       (int *)(&timproc_uso_b5_D_807FE8BC + 0x104C),
                       (int *)(&timproc_uso_b5_D_807FE8CC + 0x105C));
         node = (int *)result2;
@@ -369,7 +369,7 @@ after_sub:
         }
         node[0x14 / 4] = (int)arg0;
 
-        node = (int *)timproc_uso_b5_func_000018B4(0, (char *)arg0, arg1, arg2, arg3,
+        node = (int *)SelectionMgr_ctor(0, (char *)arg0, arg1, arg2, arg3,
                       (char *)result0, result1, result2);
         timproc_uso_b5_func_07ACE0(slot, (int)node);
         if (node[0x14 / 4] != 0) {
@@ -379,7 +379,7 @@ after_sub:
         *(float *)&import_80800228 = 374.0f;
     }
 
-    timproc_uso_b5_func_00000778((char *)arg0);
+    GenSelectChar_initLabels_00000778((char *)arg0);
     node = (int *)*(int *)(&import_80020228 + 0x190);
     timproc_uso_b5_func_07ACE0(slot, node);
     if (node[0x14 / 4] != 0) {
@@ -397,12 +397,12 @@ done:
     return arg0;
 }
 
-/* timproc_uso_b5_func_00000770: 2-insn save-arg sentinel.
+/* GenSelectChar_update_00000770: 2-insn save-arg sentinel.
  * Body is `jr ra; sw $a0, 0($sp)` — arg spilled to caller's arg-save slot
  * in delay slot. Same recipe as game_libs_func_0000E044/E050. */
-void timproc_uso_b5_func_00000770(int a0) { (void)a0; }
+void GenSelectChar_update_00000770(int a0) { (void)a0; }
 
-/* timproc_uso_b5_func_00000778 -- flat bulk-registration: 76 back-to-back
+/* GenSelectChar_initLabels_00000778 -- flat bulk-registration: 76 back-to-back
  * import_0024F228 / import_0024F278 calls binding the b5 registration
  * table (timproc_uso_b5_D_807FF4xx..Bxx) to packed ids derived from
  * arg0->0x50 (n) and *(int*)&import_8002022C (g). Two `if (g != 0)`
@@ -493,7 +493,7 @@ extern char timproc_uso_b5_D_807FFB50;
 extern char timproc_uso_b5_D_807FFB68;
 extern char timproc_uso_b5_D_807FFB80;
 extern char timproc_uso_b5_D_807FFB98;
-void timproc_uso_b5_func_00000778(char *arg0) {
+void GenSelectChar_initLabels_00000778(char *arg0) {
     int k;
     import_0024F228((char *)&timproc_uso_b5_D_807FF490 + 0x10, ((*(int *)((char *)arg0 + 0x50))*9) | 0x70000);
     import_0024F228((char *)&timproc_uso_b5_D_807FF4A8 + 0x28, ((*(int *)((char *)arg0 + 0x50))*9 + 1) | (k = 0x70000));
@@ -578,7 +578,7 @@ void timproc_uso_b5_func_00000778(char *arg0) {
 
 }
 
-int timproc_uso_b5_func_000010EC(int a0) {
+int RoomModifier_ctor(int a0) {
     if (a0 != 0) goto init;
     a0 = gl_func_00000000(0x40);
     if (a0 == 0) goto end;
@@ -596,14 +596,14 @@ end:
 
 void timproc_uso_b5_func_00000000();
 
-void timproc_uso_b5_func_0000115C(int *a0) {
+void RoomModifier_update_0000115C(int *a0) {
     *(int*)((char*)a0 + 0x34) = 0;
     gl_func_00000000(a0);
 }
 
 
 #ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000117C — 104 words. NM-RISE 2026-07-09 (71.1% -> 101/104
+/* RoomModifier_display_0000117C — 104 words. NM-RISE 2026-07-09 (71.1% -> 101/104
  * words, body arms instruction-aligned; was 99 insns w/ wrong RMW form).
  * Decode (reloc-verified): call 896C(a0->slots[a0->0x34]); call 8AFC(same);
  * slot = slots[count]; if (slot->0x41C->0x50 & (1<<count)) { if (a0->0x2C)
@@ -624,16 +624,16 @@ void timproc_uso_b5_func_0000115C(int *a0) {
  * strategy divergence, no C knob for register-early/spill-around-calls-only).
  * Cascade: -5 const a1 (vs a0), self reads via s0 (vs a1), beqz+nop (vs
  * beqzl w/ move-a0 delay). */
-void timproc_uso_b5_func_0000896C();
-void timproc_uso_b5_func_00008AFC();
+void RoomModifier_func_0000896C();
+void RoomModifier_func_00008AFC();
 extern void timproc_uso_b5_func_04CCA8();
-void timproc_uso_b5_func_0000117C(int *a0) {
+void RoomModifier_display_0000117C(int *a0) {
     int *slot, *flags, *b;
     typedef int R1[1];
 
     b = a0;
-    timproc_uso_b5_func_0000896C((int *)((R1 *)a0)[*(int *)((char *)a0 + 0x34)][14]);
-    timproc_uso_b5_func_00008AFC((int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14]);
+    RoomModifier_func_0000896C((int *)((R1 *)a0)[*(int *)((char *)a0 + 0x34)][14]);
+    RoomModifier_func_00008AFC((int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14]);
     slot = (int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14];
     if (*(int *)(*(int *)((char *)slot + 0x41C) + 0x50) & (1 << *(int *)((char *)b + 0x34))) {
         if (*(int *)((char *)b + 0x2C) != 0) {
@@ -666,10 +666,10 @@ void timproc_uso_b5_func_0000117C(int *a0) {
     *(int *)((char *)b + 0x34) = *(int *)((char *)b + 0x34) + 1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000117C);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", RoomModifier_display_0000117C);
 #endif
 
-/* timproc_uso_b5_func_0000131C: 81-word (0x144) optional-alloc + multi-link
+/* gen_buildRoom_0000131C: 81-word (0x144) optional-alloc + multi-link
  * constructor. RECONSTRUCTED 2026-07-03 with the REAL resolved symbols
  * (func_055750/04C678/000010EC/07ACE0 x3/00001460/00001658/076D58 +
  * import_80020098/80020078/8001FFF0 + timproc_uso_b5_D_807FE8F4). objdiff
@@ -767,14 +767,14 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * struct (e.g., a render-state config table at &D + 0x134 with sub-ptr
  * to glyph/texture pool fields). */
 extern char D_00000000;
-extern int timproc_uso_b5_func_000010EC();
+extern int RoomModifier_ctor();
 extern int timproc_uso_b5_func_076D58();
-extern void timproc_uso_b5_func_00001460();
-extern void timproc_uso_b5_func_00001658();
+extern void gen_createLights_00001460();
+extern void gen_createVRBox_00001658();
 extern char timproc_uso_b5_D_807FE8F4;
 extern char import_80020078;
 extern char import_8001FFF0;
-void *timproc_uso_b5_func_0000131C(char *self, int a1) {
+void *gen_buildRoom_0000131C(char *self, int a1) {
     char *sub;
     char *entity;
     if (self == 0) {
@@ -785,7 +785,7 @@ void *timproc_uso_b5_func_0000131C(char *self, int a1) {
     *(int*)(self + 0x2C) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x84);
     *(int*)(self + 0x30) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x80);
     *(int*)(self + 0x34) = *(int*)(*(volatile char**)(&import_80020098 + 0x134) + 0x8C);
-    sub = (char*)timproc_uso_b5_func_000010EC(0);
+    sub = (char*)RoomModifier_ctor(0);
     entity = *(char**)(self + 0x2C);
     *(int*)(self + 0x5C) = (int)sub;
     timproc_uso_b5_func_07ACE0(entity + 0x10, sub);
@@ -795,8 +795,8 @@ void *timproc_uso_b5_func_0000131C(char *self, int a1) {
     timproc_uso_b5_func_07ACE0(entity + 0x10, self);
     if (*(int*)(self + 0x14) != 0) *(int*)(self + 0x4) = 1;
     *(int*)(self + 0x14) = (int)entity;
-    timproc_uso_b5_func_00001460(self);
-    timproc_uso_b5_func_00001658(self);
+    gen_createLights_00001460(self);
+    gen_createVRBox_00001658(self);
     {
         extern char import_80020078_w; /* same-value alias: distinct extern write-site busts the read/write base CSE -> twin form-a luis */
         *(int*)&import_80020078_w = 0;
@@ -812,12 +812,12 @@ end:
     return self;
 }
 
-// timproc_uso_b5_func_00001460 — STRUCTURAL PASS (0x1F8 / 126 words,
+// gen_createLights_00001460 — STRUCTURAL PASS (0x1F8 / 126 words,
 // no episode). Raw-.word USO form (genuine code; splat can't
 // mnemonic-disasm relocatable USO). Hand-decoded from word encodings.
 //
 // Two-widget HUD/replay-element constructor for timproc_uso_b5:
-//   void timproc_uso_b5_func_00001460(Owner *o) {     // o -> s1 (arg0)
+//   void gen_createLights_00001460(Owner *o) {     // o -> s1 (arg0)
 //     // widget A:
 //     A = func_00000000(0, &D_0000108C);              // named factory
 //     o->0x38 = A;
@@ -875,7 +875,7 @@ extern char import_8005C108;
 extern char timproc_uso_b5_D_807FE8FC;
 extern char timproc_uso_b5_D_807FE90C;
 extern char timproc_uso_b5_D_807FE918;
-void timproc_uso_b5_func_00001460(char *arg0) {
+void gen_createLights_00001460(char *arg0) {
     volatile int pad[2];
     char *o;
     char *reg;
@@ -951,16 +951,16 @@ void timproc_uso_b5_func_00001460(char *arg0) {
     if (1) {} if (1) {} if (1) {} if (1) {}
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00001460);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", gen_createLights_00001460);
 #endif
 
-// timproc_uso_b5_func_00001658 — STRUCTURAL PASS (0x25C / 151 words,
+// gen_createVRBox_00001658 — STRUCTURAL PASS (0x25C / 151 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Radial-dial HUD panel constructor (timproc_uso_b5): builds a parent
 // container plus a set of child marks at cardinal angle parameters.
 //
-//   void timproc_uso_b5_func_00001658(Owner *o) {     // o -> s1 (arg0)
+//   void gen_createVRBox_00001658(Owner *o) {     // o -> s1 (arg0)
 //     func_00000000(&D_000010B8, 0);                   // named setup x2
 //     func_00000000(&D_000010C0, 0);
 //     P = func_00000000(0, &D_000010C8, 1, 0x100);     // parent container
@@ -1009,7 +1009,7 @@ extern char import_807D3A40;
 extern char import_807B3600;
 extern char import_807A33E0;
 extern char import_807931C0;
-void timproc_uso_b5_func_00001658(char *arg0) {
+void gen_createVRBox_00001658(char *arg0) {
     char * volatile P;
     volatile int pad[4];
     char * volatile ap;
@@ -1069,13 +1069,13 @@ void timproc_uso_b5_func_00001658(char *arg0) {
     timproc_uso_b5_func_074840();
 }
 
-// timproc_uso_b5_func_000018B4 — STRUCTURAL PASS (0x354 / 213 words,
+// SelectionMgr_ctor — STRUCTURAL PASS (0x354 / 213 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // 3-child labeled-widget panel constructor (alloc-or-reuse) for
 // timproc_uso_b5; returns the constructed object.
 //
-//   void *timproc_uso_b5_func_000018B4(Obj *self, a1, Owner *owner) {
+//   void *SelectionMgr_ctor(Obj *self, a1, Owner *owner) {
 //     if (!self) { self = func_00000000(0x58); if (!self) return 0; }
 //     func_00000000(self, &D_000010D0);                // base-init
 //     self->0x28 = &D_0;                                // vtable
@@ -1107,7 +1107,7 @@ void timproc_uso_b5_func_00001658(char *arg0) {
 //   disasm limitation prevents byte-match. Real-C STRUCTURAL body
 //   below — alloc-or-reuse 3-child labeled-widget panel. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-// timproc_uso_b5_func_000018B4 — EXACT (2026-10-16). Self pointer is the
+// SelectionMgr_ctor — EXACT (2026-10-16). Self pointer is the
 // param itself (entry or s0,a0 before the bnez; sw a3 in its delay slot),
 // no named copy and no pad (sp4C then lands at 0x4C), and real reloc names
 // for every callee/global (docs/IDO_CODEGEN.md#placeholder-symbol-cse-cap-79a4).
@@ -1117,10 +1117,10 @@ void timproc_uso_b5_func_00001658(char *arg0) {
 extern char timproc_uso_b5_D_807FE7E0, timproc_uso_b5_D_807FE940, timproc_uso_b5_D_807FE958;
 extern char timproc_uso_b5_D_807FE968, timproc_uso_b5_D_807FE97C;
 extern char import_800200E8, import_800200F4, import_800200FC;
-extern char *timproc_uso_b5_func_00004118();
-extern void timproc_uso_b5_func_00005BF0();
-extern void timproc_uso_b5_func_00001DB0();
-char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7) {
+extern char *SelectWin_ctor();
+extern void SelectWin_init_00005BF0();
+extern void SelectionMgr_func_00001DB0();
+char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7) {
     register s32 d;
     register char *E;
     char *w;
@@ -1135,9 +1135,9 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
         FW(arg0, 0x30) = d;
         FW(arg0, 0x2C) = (int)E;
         if (d == 1) {
-            w = timproc_uso_b5_func_00004118(0, arg0, arg1, 1, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE958 + 0x10E8, 0);
+            w = SelectWin_ctor(0, arg0, arg1, 1, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE958 + 0x10E8, 0);
             FW(arg0, 0x34) = w;
-            timproc_uso_b5_func_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
             w = FW(arg0, 0x34);
             timproc_uso_b5_func_07ACE0(arg0 + 0x10, w);
             if (FW(w, 0x14) != 0) {
@@ -1146,9 +1146,9 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
             FW(w, 0x14) = arg0;
             FW(FW(FW(E, 0x0), 0x5C), 0x38) = (char *) FW(arg0, 0x34);
         } else {
-            w = timproc_uso_b5_func_00004118(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
+            w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, FW(E, 0x4), &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
             FW(arg0, 0x34) = w;
-            timproc_uso_b5_func_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &import_800200FC + 0x54, &import_800200FC + 0x64);
             w = FW(arg0, 0x34);
             sp4C = arg0 + 0x10;
             timproc_uso_b5_func_07ACE0(sp4C, w);
@@ -1157,9 +1157,9 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
             }
             FW(w, 0x14) = arg0;
             FW(FW(FW(E, 0x0), 0x5C), 0x38) = (char *) FW(arg0, 0x34);
-            w = timproc_uso_b5_func_00004118(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, FW(E, 0x8), &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
+            w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, FW(E, 0x8), &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
             FW(arg0, 0x38) = w;
-            timproc_uso_b5_func_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &import_800200FC + 0x60, &import_800200FC + 0x64);
+            SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &import_800200FC + 0x60, &import_800200FC + 0x64);
             w = FW(arg0, 0x38);
             timproc_uso_b5_func_07ACE0(sp4C, w);
             if (FW(w, 0x14) != 0) {
@@ -1183,14 +1183,14 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
                 FW(arg0, 0x44) = 0xF0;
                 FW(arg0, 0x50) = 1;
                 *(f32 *)((char *)arg0 + 0x54) = 1.0f;
-                timproc_uso_b5_func_00001DB0(arg0);
+                SelectionMgr_func_00001DB0(arg0);
             }
         }
     }
     return arg0;
 }
 
-// timproc_uso_b5_func_00001C08 — STRUCTURAL PASS (no episode).
+// SelectWin_finish_00001C08 — STRUCTURAL PASS (no episode).
 // Raw-.word USO form. BOUNDARY NOTE: this .s is an UNSPLIT USO
 // multi-function bundle — 8 jr-ra terminators (the named function ends
 // at 0x1CE8; separate functions follow at ~0x1CF0/0x1D1C/0x1D60/
@@ -1200,7 +1200,7 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
 // NAMED leading function (0x1C08..0x1CEC, ~58 words) is decoded here.
 //
 // Named function = per-mode notify/reset-all dispatcher:
-//   void timproc_uso_b5_func_00001C08(State *st) {     // st -> s3
+//   void SelectWin_finish_00001C08(State *st) {     // st -> s3
 //     int i = 0;
 //     if (st->0x30 == 2) i = (st->0x48 == 1) ? 1 : 0;  // pick slot
 //     R *r = *(R**)((char*)st + i*4 + 0x34);
@@ -1223,8 +1223,8 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
 //   trailing functions (0x1CF0/0x1D1C/0x1D60/0x1DB0) remain
 //   INCLUDE_ASM under their own symbols. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
-/* timproc_uso_b5_func_00001C08 — VERIFIED EXACT 58/58 (2026-07-03, agent-e)
- * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00001C08.s
+/* SelectWin_finish_00001C08 — VERIFIED EXACT 58/58 (2026-07-03, agent-e)
+ * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/SelectWin_finish_00001C08.s
  * (in-tree word-by-word on build/non_matching .o, clean rebuild, -O2;
  * jal words 0x0C000000 via extern callees).
  *
@@ -1238,15 +1238,15 @@ char *timproc_uso_b5_func_000018B4(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
  *    delay slot. This restructure also flipped the s2/s3 coloring to the
  *    target's (i->s2, st->s3).
  * 3. Real callees per .s jal relocs: timproc_uso_b5_func_0002FC (dispatch,
- *    a0=7) and timproc_uso_b5_func_000069E8 (per-slot notify). Loop is a
+ *    a0=7) and SelectWin_startGame_000069E8 (per-slot notify). Loop is a
  *    TWO-CALL if/else (two jal sites), not a ternary second arg.
  * 4. Chain arithmetic: fold c/d locals into one expression, 8C1C-style
  *    scaled-first text -> pure t0-t5 temps + addu rs=base. Site-1 (reg base)
  *    needs base-first text `(int)st + i*4 + 0x34` for addu t9,s3,t8.
  */
 extern int timproc_uso_b5_func_0002FC();
-extern int timproc_uso_b5_func_000069E8(char *scr, int a1);
-void timproc_uso_b5_func_00001C08(char *st) {
+extern int SelectWin_startGame_000069E8(char *scr, int a1);
+void SelectWin_finish_00001C08(char *st) {
     int i;
     char *r;
     int s0;
@@ -1264,14 +1264,14 @@ void timproc_uso_b5_func_00001C08(char *st) {
         *(char **)(*(int *)(*(int *)(r + 0x3D8) * 4 + *(int *)(*(char **)(r + 0x40C) + 0x48) + 0x3C) + 0x2B0));
     for (s0 = 0; s0 < *(int *)(st + 0x30); s0++) {
         if (s0 == i) {
-            timproc_uso_b5_func_000069E8(*(char **)(st + s0 * 4 + 0x34), 1);
+            SelectWin_startGame_000069E8(*(char **)(st + s0 * 4 + 0x34), 1);
         } else {
-            timproc_uso_b5_func_000069E8(*(char **)(st + s0 * 4 + 0x34), 0);
+            SelectWin_startGame_000069E8(*(char **)(st + s0 * 4 + 0x34), 0);
         }
     }
 }
 
-/* timproc_uso_b5_func_00001CF0 (0x2C after absorbing the former
+/* SelectWin_func_00001CF0 (0x2C after absorbing the former
  * timproc_uso_b5_func_00001D14 "empty function" at 0x1D14): with
  * a0->i_30 == 2, returns the (a1^1)-indexed pair member at a0+0x34; else 0.
  * 2026-09-05 (agent-g): BYTE-EXACT (11/11). The old "leaf-branch-past-end
@@ -1284,14 +1284,14 @@ void timproc_uso_b5_func_00001C08(char *st) {
  * return-0 block is the branch target; `if (!=2) return 0;` inverts the
  * layout (beq + return-0 fallthrough). See docs/MATCHING_WORKFLOW.md
  * #feedback-beql-next-symbol-plus-4-is-mis-split-branch-likely-block. */
-int timproc_uso_b5_func_00001CF0(int *a0, int a1) {
+int SelectWin_func_00001CF0(int *a0, int a1) {
     if (*(int*)((char*)a0 + 0x30) == 2) {
         return *(int*)((char*)a0 + 0x34 + 4 * (a1 ^ 1));
     }
     return 0;
 }
 
-/* timproc_uso_b5_func_00001D1C (0x94 after merging the 1D60 fragment AND
+/* SelectWin_func_00001D1C (0x94 after merging the 1D60 fragment AND
  * the 1DA4 "return-1 leaf" -- see below). Pair-state comparator: with
  * a0->i_30 == 2, compares the 0x3C8 counters of the a1-indexed and
  * (a1^1)-indexed pair members (a0 + idx*4 + 0x34), then a 1/2/4 switch on
@@ -1313,7 +1313,7 @@ int timproc_uso_b5_func_00001CF0(int *a0, int a1) {
  * SOURCE LINE (as1 debug-line tie-break flips the p2/p1 + c2/c1 load-pair
  * emission order -- docs/IDO_CODEGEN "as1 scheduler tie-break ... SHARE one
  * source line"). The shared line is LOAD-BEARING; do not re-format. */
-int timproc_uso_b5_func_00001D1C(char *a0, int a1) {
+int SelectWin_func_00001D1C(char *a0, int a1) {
     char *p1;
     char *p2;
     int c1;
@@ -1348,7 +1348,7 @@ int timproc_uso_b5_func_00001D1C(char *a0, int a1) {
  * -O2 -g3 carve-out (timproc_uso_b5_g3_1DA4.c + block5 splice slot) was
  * removed; the bytes now come from the exact 1D1C body above at plain -O2. */
 
-/* timproc_uso_b5_func_00001DB0 (0x164 after absorbing the 1EB8 fragment):
+/* SelectionMgr_func_00001DB0 (0x164 after absorbing the 1EB8 fragment):
  * the bnezl at +0xF0 branches to 0x1EBC, past the declared end into the
  * old 1EB8 range, and 1EB8 read v0/v1 uninitialized at entry -- the same
  * branch-past-declared-end family as the fade-helpers and 1D1C/1D60.
@@ -1391,7 +1391,7 @@ int timproc_uso_b5_func_00001D1C(char *a0, int a1) {
  * "commutative FP operand-order canonicalization cap" above is cfe-only:
  * edg (NCC) keeps the source order `C0 + B8 * t` / `41.0f + 5.0f * f`, which
  * is exactly the target's const-first mul/add operand order. */
-void timproc_uso_b5_func_00001DB0(char *a0) {
+void SelectionMgr_func_00001DB0(char *a0) {
     *(char **)(a0 + 0) = "LookAround";
     *(char **)(a0 + 4) = "ZoomingUp";
     *(char **)(a0 + 8) = "ZoomingUpLevel";
@@ -1412,12 +1412,12 @@ void timproc_uso_b5_func_00001DB0(char *a0) {
 
 /* timproc_uso_b5_func_00001EB8 MERGED into 1DB0 2026-06-10 (bnezl tail fragment). */
 
-// timproc_uso_b5_func_00001F14 — STRUCTURAL PASS (0x89C / 551 words,
+// SelectionMgr_update_00001F14 — STRUCTURAL PASS (0x89C / 551 words,
 // no episode). Raw-.word USO form (genuine code, single function).
 // Large per-frame state/transition processor; partial decode (entry
 // gate + shape + tail) — multi-run target.
 //
-//   void timproc_uso_b5_func_00001F14(State *st) {     // st -> a2 (arg0)
+//   void SelectionMgr_update_00001F14(State *st) {     // st -> a2 (arg0)
 //     if (st->0x30 != 2) { st->0x3C = 0; return; }      // only "mode 2"
 //     // mode-2 body (~0x21B words): walk sub-records via st->0x34/
 //     //   0x38/0x44 pointer chains, branch on the discriminator at
@@ -1451,8 +1451,8 @@ void timproc_uso_b5_func_00001DB0(char *a0) {
  *   ints, +0xB4/+0x49C floats) and the +0x4D8 frame slot.
  * FP const pool at &D_00000000 + 0xC8..0x118 (f32 ramp steps + f64 pairs).
  * func_00000000 = USO placeholder dispatcher (=0 in undefined_syms). */
-extern int timproc_uso_b5_func_000087A0();
-extern void timproc_uso_b5_func_00001DB0(char *);
+extern int gen_func_000087A0();
+extern void SelectionMgr_func_00001DB0(char *);
 extern void timproc_uso_b5_func_04CD94(char *);
 /* EXACT 2026-10-23 (agent-g run 138) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp, REPLACE_FUNC_BODY-spliced
@@ -1460,13 +1460,13 @@ extern void timproc_uso_b5_func_04CD94(char *);
  * was a decode error plus the wrong front end: the second 87A0 call of each
  * copy pair passes only THREE args (a3 still holds the constant 2), and the
  * FP constants are source literals (0.05f, 1.333f + 1.3333 * t), whose
- * donor-local .rodata relocs are renamed timproc_uso_b5_func_00001F14_rodata
+ * donor-local .rodata relocs are renamed SelectionMgr_update_00001F14_rodata
  * and pinned to RoData +0xC8 (undefined_syms_auto.txt).
  * The placeholder only re-emits the layout of RoData +0xC8..+0x11C that the
  * INCLUDE_ASM .s carried as .late_rodata (f32, f32, f64, f64, f32, pad,
  * six f64, f32); IDO merges equal literals in one fn, so distinct values
  * stand in for the repeated ones. The splice drops its text and relocs. */
-void timproc_uso_b5_func_00001F14(char *arg0) {
+void SelectionMgr_update_00001F14(char *arg0) {
     *(volatile float *)(arg0 + 0) = 0.05f;
     *(volatile float *)(arg0 + 0) = 0.0501f;
     *(volatile double *)(arg0 + 8) = 1.3329999446868896;
@@ -1492,7 +1492,7 @@ void timproc_uso_b5_func_00001F14(char *arg0) {
  * Generalizes: when a stack-buffer near-miss has "frame size matches
  * but buf at lower offset than target", reorder the decl so buf is the
  * FIRST local. */
-void timproc_uso_b5_func_000027B0(int *self) {
+void SelectionMgr_display_000027B0(int *self) {
     float buf[4];
     char *base = &D_00000000;
     int v;
@@ -1509,14 +1509,14 @@ void timproc_uso_b5_func_000027B0(int *self) {
     gl_func_00000000(base, 0, v - 1, 319, v, 0x10001);
 }
 
-// timproc_uso_b5_func_0000283C — EXACT (0x338 / 206 words,
+// gen_createCamera_0000283C — EXACT (0x338 / 206 words,
 // 2026-10-16). Raw-.word USO form (genuine code, single function).
 // Hand-decoded.
 //
 // 2-child composite widget/object constructor (alloc-or-reuse);
 // returns the constructed object.
 //
-//   void *timproc_uso_b5_func_0000283C(Obj *self, a1, a2, a3) {
+//   void *gen_createCamera_0000283C(Obj *self, a1, a2, a3) {
 //     if (!self) { self = func_00000000(0x20); if (!self) return 0; }
 //     G *g = *(G**)D_0;                                 // global root
 //     self->0x00 = a3;
@@ -1566,7 +1566,7 @@ void timproc_uso_b5_func_000027B0(int *self) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-s32 *timproc_uso_b5_func_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
+s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     extern char import_80020098, import_80086288, import_8001EA70, import_8006EA70, import_800201CC;
     extern char timproc_uso_b5_D_807FE990, timproc_uso_b5_D_807FE998;
     extern int timproc_uso_b5_func_055750();
@@ -1674,14 +1674,14 @@ s32 *timproc_uso_b5_func_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-// timproc_uso_b5_func_00002B74 — STRUCTURAL PASS (0x754 / 469 words,
+// SelItemParms_ctor — STRUCTURAL PASS (0x754 / 469 words,
 // no episode). Raw-.word USO form (genuine code, single function).
 // Partial decode (entry + sub-record fan-out + shape) — multi-run.
 //
 // Large composite object constructor (alloc-or-reuse 0x168); builds a
 // fixed set of fixed-size sub-records, returns the object.
 //
-//   void *timproc_uso_b5_func_00002B74(Obj *self, ...) {
+//   void *SelItemParms_ctor(Obj *self, ...) {
 //     if (!self) { self = func_00000000(0x168); if (!self) return 0; }
 //     func_00000000(0x8); ...                           // aux alloc
 //     self->0x00 = &D_00001130;                          // vtable
@@ -1708,7 +1708,7 @@ s32 *timproc_uso_b5_func_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
 //   disasm limitation prevents byte-match. Real-C STRUCTURAL body
 //   below — large composite constructor + 12-record init loop
 //   skeleton. Byte-match deferred. Name pre-checked: no extern reuse.
-// timproc_uso_b5_func_00002B74 — CALL-GRAPH-DFS RECONSTRUCTION.
+// SelItemParms_ctor — CALL-GRAPH-DFS RECONSTRUCTION.
 // Composite "track/timer panel" constructor. Allocates (or reuses) a 0x168
 // parent object, then builds a fixed set of fixed-size child sub-records,
 // each attached via func_04A188 to the parent. Names/labels are pulled from
@@ -1756,12 +1756,12 @@ extern int timproc_uso_b5_func_04A188();
  * $f0/$f12" cap was the wrong front end plus data-load spellings of the vec3
  * constants: under NCC with SOURCE LITERALS (-1500.0f for vA / vD, 1500.0f for
  * vB / vE; the -1500 line first) the colours are the target's. The donor's
- * .rodata relocs are renamed timproc_uso_b5_func_00002B74_rodata and pinned
+ * .rodata relocs are renamed SelItemParms_ctor_rodata and pinned
  * to RoData +0x11C (undefined_syms_auto.txt). The placeholder only re-emits
  * the six-f32 layout of RoData +0x11C..+0x134 that the INCLUDE_ASM .s carried
  * as .late_rodata; IDO merges equal literals in one fn, so distinct values
  * stand in for the repeated ones. The splice drops its text and relocs. */
-char *timproc_uso_b5_func_00002B74(char *arg0) {
+char *SelItemParms_ctor(char *arg0) {
     *(volatile float *)(arg0 + 0) = -1500.0f;
     *(volatile float *)(arg0 + 0) = 1500.0f;
     *(volatile float *)(arg0 + 0) = -1501.0f;
@@ -1787,7 +1787,7 @@ struct TimB5Nm { char *v; };
 #define B5_NAME(sym, lo) (*(char **)((char *)&sym + (lo)))
 #endif
 
-// timproc_uso_b5_func_000032C8 — m2c DECODE + real-callee fix (48.76% NM, no
+// SelItemInfo_ctor — m2c DECODE + real-callee fix (48.76% NM, no
 // episode). Composite "panel" constructor (sibling of func_00002B74): alloc-or-
 // reuse a 0x108 parent, then 6 text-row children (0x18, class D_807FDA10+0x1A0;
 // first field 0x10=0, rest =2), 2 vec3 children (0x20, class D_807FD9E0+0x170 with
@@ -1846,7 +1846,7 @@ extern char D_timb5_32C8_vf0, D_timb5_32C8_vf1;
  * agent-g run 170: the uE8 name load written in the vEC statement line (before
  * vEC.x) puts the lui at / lui t6 pair and the 0x11A0 load in target order
  * (5 -> 3 words); l134 still $f0 (zdbug:6: candidate uilod 0x134 coloured f0). */
-char *timproc_uso_b5_func_000032C8(char *arg0) {
+char *SelItemInfo_ctor(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
     struct TimB5Nm u2;
@@ -1989,7 +1989,7 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
 /* Placeholder for the 32C8 NCC donor splice (text and relocs dropped by the
  * splice): it only re-emits RoData +0x134..+0x14C (-2500, -1500, 2500, 1500,
  * -pi, pi, in this order) that the INCLUDE_ASM .s carried as .late_rodata. */
-char *timproc_uso_b5_func_000032C8(char *arg0) {
+char *SelItemInfo_ctor(char *arg0) {
     *(volatile float *)(arg0 + 0) = -2500.0f;
     *(volatile float *)(arg0 + 0) = -1500.0f;
     *(volatile float *)(arg0 + 0) = 2500.0f;
@@ -2007,7 +2007,7 @@ char *timproc_uso_b5_func_000032C8(char *arg0) {
  * INT 0 through a separate `float*` variable for the last store defeats the
  * CSE and forces the 2nd `mtc1 zero,$f4`. (permuter-found; the old "0.0f CSE
  * not C-controllable" note was wrong.) */
-void timproc_uso_b5_func_00003890(int *a0) {
+void SelItem_reset_00003890(int *a0) {
     float *p;
     *(int *)((char *)a0 + 0x2B4) = 0;
     *(float *)((char *)a0 + 0x164) = 0.0f;
@@ -2017,12 +2017,12 @@ void timproc_uso_b5_func_00003890(int *a0) {
     *p = 0;
 }
 
-/* timproc_uso_b5_func_000038B0: one 47-insn (0xBC) FP transform. BOUNDARY MERGED
+/* SelectWin_func_000038B0: one 47-insn (0xBC) FP transform. BOUNDARY MERGED
  * 2026-06-02: splat had split this into 038B0 (entry, 8 insns, no prologue) +
  * 038D0 (continuation w/ the `addiu sp,-32` prologue 8 insns in). IDO hoisted
  * the entry's a0-field FP loads above the frame setup, so the prologue landed
  * mid-function and splat cut there. 038B0 is the real entry (jal'd from
- * timproc_uso_b5_func_00005FC0); 038D0 had zero callers. Absorbed 038D0's 39
+ * SelectWin_update_00005FC0); 038D0 had zero callers. Absorbed 038D0's 39
  * words into 038B0 (0x20 -> 0xBC) and dropped the 038D0 symbol.
  *
  * This RETRACTS the old "NON-O32 float-in-$f6/$f8 callee cap": the $f6/$f8/$f4/v0
@@ -2047,7 +2047,7 @@ void timproc_uso_b5_func_00003890(int *a0) {
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_000038B0)();
-void timproc_uso_b5_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
+void SelectWin_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
     volatile f32 pad0;
     volatile f32 y;
     volatile f32 pad1;
@@ -2085,10 +2085,10 @@ void timproc_uso_b5_func_000038B0(char *arg0, s32 arg1, char *arg2, f32 arg3, f3
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_000038B0);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_000038B0);
 #endif
 
-/* timproc_uso_b5_func_0000396C: one 47-insn (0xBC) FP transform — the sibling of
+/* SelectWin_func_0000396C: one 47-insn (0xBC) FP transform — the sibling of
  * 038B0 (template-identical except field offsets 0x184/0x188 vs 0x164/0x168).
  * BOUNDARY MERGED 2026-06-02: splat had split it into 396C (entry, 8 a0-field FP
  * loads, no prologue, jal'd from 5FC0) + 398C (the `addiu sp,-32` prologue +
@@ -2102,7 +2102,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * comment): h snapshot, volatile t/y carrier slots (pad ladder t@0/y@24),
  * if(1){} store-base wrap, x,y,z order. Same FP-ring/scheduling residual. */
 /* EXACT 2026-10-24 (agent-g run 154): spliced from the plain cfe -O2 port
- * src/match_imports/timproc_uso_b5_func_0000396C.c (REPLACE_FUNC_BODY, both
+ * src/match_imports/SelectWin_func_0000396C.c (REPLACE_FUNC_BODY, both
  * trees) -- 38B0's match_imports source with the 0x184/0x188/0x18C fields;
  * the opcode sequences of 38B0 and 396C are identical. The volatile-ladder
  * body below is the old NM reference only (the NCC NM donor is retired). */
@@ -2111,7 +2111,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_0000396C)();
-void timproc_uso_b5_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
+void SelectWin_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f32 arg4) {
     volatile f32 pad0;
     volatile f32 y;
     volatile f32 pad1;
@@ -2149,10 +2149,10 @@ void timproc_uso_b5_func_0000396C(char *arg0, s32 arg1, char *arg2, f32 arg3, f3
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000396C);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_func_0000396C);
 #endif
 
-void timproc_uso_b5_func_00003A28(int *a0, int *a1, int a2) {
+void SelectWin_func_00003A28(int *a0, int *a1, int a2) {
     float *src = (float *)a0[0x29C / 4];
     float x = *(float *)((char *)src + 0xDC);
     float y = *(float *)((char *)src + 0xE0);
@@ -2162,9 +2162,9 @@ void timproc_uso_b5_func_00003A28(int *a0, int *a1, int a2) {
     *(float *)((char *)a1 + 0x68) = z;
 }
 
-/* timproc_uso_b5_func_00003A4C: 144-insn (0x240) heavy data-init function.
+/* SelItem_func_00003A4C: 144-insn (0x240) heavy data-init function.
  * Frame -0xB0, saves s0/s1/s2/ra. Sibling of recently-matched
- * timproc_uso_b5_func_00003F5C in the same "FPU-heavy data-driven init"
+ * SelItem_update_00003F5C in the same "FPU-heavy data-driven init"
  * family. Initial structural decode:
  *
  * Stage 1 @ 0x3A50-0x3AAC (~24 insns): unrolled-by-3 12-byte copy loop.
@@ -2192,7 +2192,7 @@ extern char timproc_uso_b5_D_807FEA4C;
 extern char timproc_uso_b5_D_807FF490;
 extern char timproc_uso_b5_D_807FF4A8;
 struct B5Tbl3A4C { int w[11]; };
-/* timproc_uso_b5_func_00003A4C: two-sprite HUD draw with table-indexed offsets.
+/* SelItem_func_00003A4C: two-sprite HUD draw with table-indexed offsets.
  * Copies two 0x2C-byte tables from D_807FEA20/D_807FEA4C onto the stack
  * (sp84/sp58 — IDO unrolls each as a 3x12-byte loop + 2-word tail). If arg4!=0:
  * draw sprite obj &D_807FF490+0x10 twice at arg1+arg7->0x338 / +sp58[arg4],
@@ -2207,7 +2207,7 @@ struct B5Tbl3A4C { int w[11]; };
  * shared dp/dw deref locals (v0/v1 coloring + the +0x10 frame to -0xB0),
  * tail role-swap with sz=*pB inside the block, assignment-expr addu operand
  * pins ((dp=arg1)/(dw=arg2)/(sz=arg1)/(pB=arg2)). See 3C8C notes below. */
-void timproc_uso_b5_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA20;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA4C;
     int *pA;
@@ -2248,14 +2248,14 @@ void timproc_uso_b5_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int ar
     }
 }
 
-// timproc_uso_b5_func_00003C8C — STRUCTURAL PASS (0x24C / 147 words,
+// SelItem_func_00003C8C — STRUCTURAL PASS (0x24C / 147 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Template-instantiation routine: copies two fixed structure templates
 // from USO static data into stack scratch, then builds/configures from
 // them plus the call args.
 //
-//   void timproc_uso_b5_func_00003C8C(a0, a1, a2, a3) {  // a1->s1 a2->s2
+//   void SelItem_func_00003C8C(a0, a1, a2, a3) {  // a1->s1 a2->s2
 //     // copy template T1 = &D_00001208[0 .. 0x24)  (3 x 0xC-byte
 //     //   records, stride 0xC) into local buf @ sp+0x84;
 //     // copy template T2 = &D_00001234[...]         (0xC-stride
@@ -2299,7 +2299,7 @@ void timproc_uso_b5_func_00003A4C(int arg0, int arg1, int arg2, int arg3, int ar
 //       fixes the *pA-last association/load order.
 extern char timproc_uso_b5_D_807FEA78;
 extern char timproc_uso_b5_D_807FEAA4;
-void timproc_uso_b5_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7) {
+void SelItem_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, char *arg7) {
     struct B5Tbl3A4C sp84 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEA78;
     struct B5Tbl3A4C sp58 = *(struct B5Tbl3A4C *)&timproc_uso_b5_D_807FEAA4;
     int *pA;
@@ -2343,7 +2343,7 @@ void timproc_uso_b5_func_00003C8C(int arg0, int arg1, int arg2, char *arg3, int 
     }
 }
 
-void timproc_uso_b5_func_00003ED8(char *a0) {
+void SelItem_vfunc8_00003ED8(char *a0) {
     char *v;
 
     gl_func_00000000(a0 + 0x2C);
@@ -2351,7 +2351,7 @@ void timproc_uso_b5_func_00003ED8(char *a0) {
     (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
 }
 
-/* Sibling of timproc_uso_b5_func_00003ED8 — same vtable-call wrapper. MATCHED.
+/* Sibling of SelItem_vfunc8_00003ED8 — same vtable-call wrapper. MATCHED.
  * Was 94.12% NM with a trailing orphan `lw t8, 0x23C(a0)` that splat
  * mis-attributed to this function's range (it is the dead boundary word
  * between this fn's epilogue and successor func_00003F5C, which does not use
@@ -2359,15 +2359,15 @@ void timproc_uso_b5_func_00003ED8(char *a0) {
  * boundary correction: shrank this .s to 16 insns (0x40) and moved the orphan
  * word into func_00003F5C.s as its leading word. ROM byte sequence preserved
  * (16+18 = 34 words); 00003F18 now C-emits exactly its 16 real insns. */
-void timproc_uso_b5_func_00003F18(char *a0) {
+void SelItem_vfunc27_00003F18(char *a0) {
     char *v;
     gl_func_00000000(a0 + 0x194);
     v = *(char**)(a0 + 0x28);
     (*(void(**)(char*))(v + 0x24))(a0 + *(short*)(v + 0x20));
 }
 
-/* timproc_uso_b5_func_00003F5C — VERIFIED EXACT 18/18 (2026-07-03, agent-e)
- * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00003F5C.s
+/* SelItem_update_00003F5C — VERIFIED EXACT 18/18 (2026-07-03, agent-e)
+ * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/SelItem_update_00003F5C.s
  * (in-tree word-by-word on build/non_matching/src/timproc_uso_b5/timproc_uso_b5.c.o,
  * clean rebuild, -O2).
  *
@@ -2386,7 +2386,7 @@ void timproc_uso_b5_func_00003F18(char *a0) {
  */
 typedef struct { int a, b, c; } Tri3i_F5C; /* kept for context; unused now */
 typedef struct { float x, y, z; } Vec3_F5C;
-void timproc_uso_b5_func_00003F5C(int *a0) {
+void SelItem_update_00003F5C(int *a0) {
     char pad1[16];
     Vec3_F5C raw;
     char pad2[4];
@@ -2401,16 +2401,16 @@ void timproc_uso_b5_func_00003F5C(int *a0) {
 
 /* Save-arg sentinel: void f(int a0){} → jr ra; sw a0, 0(sp).
  * docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body */
-void timproc_uso_b5_func_00003FA0(int a0) {}
+void SelItem_display_00003FA0(int a0) {}
 
-void timproc_uso_b5_func_00003FA8(int a0, int a1, int a2, int a3) {
+void SelItem_func_00003FA8(int a0, int a1, int a2, int a3) {
     (void)a0;
     gl_func_00000000(&D_00000000);
     gl_func_00000000(a3);
     gl_func_00000000(a3, a1, a2, 0);
 }
 
-void timproc_uso_b5_func_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
+void SelItem_func_00003FF8(int arg1, int arg2, int arg3, int arg4, int arg5) {
     float buf[4];
     char pad[20];
     buf[0] = 1.0f;
@@ -2422,21 +2422,21 @@ void timproc_uso_b5_func_00003FF8(int arg1, int arg2, int arg3, int arg4, int ar
     gl_func_00000000(arg4, arg2, arg3, 3);
 }
 
-void timproc_uso_b5_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
+void SelItem_func_00004068(int a0, int a1, int a2, f32 *a3, int arg5, int arg6) {
     (void)a0;
     gl_func_00000000(&D_00000000, arg6, a3);
     gl_func_00000000(arg5);
     gl_func_00000000(arg5, a1, a2, 3);
 }
 
-void timproc_uso_b5_func_000040BC(int a0, int a1, int a2, int a3, int arg5, int arg6, int arg7) {
+void SelItem_func_000040BC(int a0, int a1, int a2, int a3, int arg5, int arg6, int arg7) {
     (void)a0;
     gl_func_00000000(&D_00000000, arg7, a3, arg5);
     gl_func_00000000(arg6);
     gl_func_00000000(arg6, a1, a2, 3);
 }
 
-// timproc_uso_b5_func_00004118 — FULL m2c DECODE via compressed-module
+// SelectWin_ctor — FULL m2c DECODE via compressed-module
 // jumptable path (33.66% NM, no episode). LARGEST function in this segment.
 // The 8-case switch (idx = self->[968]-1, dispatch jr $t0 @ 0x5A94) was
 // extracted from the Yay0-COMPRESSED USO via the emulator: race-dump
@@ -2450,7 +2450,7 @@ void timproc_uso_b5_func_000040BC(int a0, int a1, int a2, int a3, int arg5, int 
 // Massive composite-screen constructor (the timing/replay HUD screen:
 // lap table + splits + controls):
 //
-//   void *timproc_uso_b5_func_00004118(Obj *self, a1, a2, a3) {
+//   void *SelectWin_ctor(Obj *self, a1, a2, a3) {
 //     // frame 0x3A8; args spilled to sp+0x3A8..0x3B4.
 //     if (!self) { self = func_00000000(0x4F0); if (!self) return 0; }
 //     func_00000000(0x2C);                               // aux alloc
@@ -2490,7 +2490,7 @@ void timproc_uso_b5_func_000040BC(int a0, int a1, int a2, int a3, int arg5, int 
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* per-site vtable-address aliases of D_00000000 for timproc_uso_b5_func_00004118 (defeat cross-record &D GCSE+spill) */
+/* per-site vtable-address aliases of D_00000000 for SelectWin_ctor (defeat cross-record &D GCSE+spill) */
 extern void timproc_uso_b5_alias_pf1(int, float);
 extern void timproc_uso_b5_alias_pf2(int, float);
 extern void timproc_uso_b5_alias_pf3(int, float);
@@ -2539,8 +2539,8 @@ typedef struct { char *p; } P1;
  * the 0.5f lui like the target); (5) case 0's table store and its `break`
  * on ONE source line: as1 then schedules the a2 reload above the store and
  * the store fills the `b` delay slot (target). */
-void timproc_uso_b5_func_00008D90(int *a0, int a1);
-char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
+void SelectWin_func_00008D90(int *a0, int a1);
+char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11) {
     volatile int pad0;
     P1 sp3A0;
     P1 sp39C;
@@ -3132,13 +3132,13 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
         FW(arg0, 0x490) = 0;
         switch (FW(arg0, 0x3C8) - 1) {
         case 0:
-            timproc_uso_b5_func_00008D90((int *)arg0, 0);
+            SelectWin_func_00008D90((int *)arg0, 0);
             FW(arg0, 0x3CC) = 0;
             *(f32 *)((char *)arg0 + 0x480) = 0.0f;
             *(f32 *)((char *)arg0 + 0x484) = 0.0f;
             ((int *)((char *)&D_00000000 + 0xB8))[FW(arg0, 0x3B8)] = 1; break; /* one line: as1 hoists the a2 reload above the store */
         case 1:
-            timproc_uso_b5_func_00008D90((int *)arg0, 1);
+            SelectWin_func_00008D90((int *)arg0, 1);
             FW(arg0, 0x3CC) = 6;
             *(f32 *)((char *)arg0 + 0x480) = 1.0f;
             *(f32 *)((char *)arg0 + 0x484) = 1.0f;
@@ -3177,16 +3177,16 @@ char *timproc_uso_b5_func_00004118(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32
     return arg0;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00004118);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_ctor);
 #endif
 
-// timproc_uso_b5_func_00005BF0 — STRUCTURAL PASS (0x3D0 / 244 words,
+// SelectWin_init_00005BF0 — STRUCTURAL PASS (0x3D0 / 244 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Per-frame HUD panel build/refresh for the timing/replay screen
 // (operates on the 0x4F0 object built by func_00004118).
 //
-//   void timproc_uso_b5_func_00005BF0(Scr *scr, a1, a2, a3) {  // scr->s0
+//   void SelectWin_init_00005BF0(Scr *scr, a1, a2, a3) {  // scr->s0
 //     scr->0x4DC = a1;  scr->0x4E0 = a3;  scr->0x4E4 = a3;
 //     scr->0x4E8 = 1;   scr->0x4EC = ...;                // stash params
 //     // index static layout tables by id: D_00000E74 -> scr->0x4A4,
@@ -3222,9 +3222,9 @@ extern char timproc_uso_b5_D_807FE6E4;
 extern char timproc_uso_b5_D_807FE6E4_b;  /* same target sym; split name kills %hi CSE (reloc-masked) */
 extern char timproc_uso_b5_D_807FE6C4;
 extern char import_80020150;
-s32 timproc_uso_b5_func_00008988(char *arg0, s32 arg1, s32 arg2);
-int timproc_uso_b5_func_00008A38();
-void timproc_uso_b5_func_00008688(char *scr, int mode);
+s32 SelectWin_func_00008988(char *arg0, s32 arg1, s32 arg2);
+int SelectWin_func_00008A38();
+void SelectWin_func_00008688(char *scr, int mode);
 /* 2026-09-04 (agent-h) 88.67 (244/244, difflines 80) FP-block study: the
  * target holds the 255.0f DIVISOR as a multi-use candidate in $f2 and the
  * numerators as distinct temps materialized 255,90,255(num),145,58,13,161,91,
@@ -3240,7 +3240,7 @@ void timproc_uso_b5_func_00008688(char *scr, int mode);
  * not the expression spelling. Other residuals: loop-2 counter/row v0<->v1
  * swap (target `move v1,zero` after `lw v0,68(a0)`), n(0x3E0)->a2 vs e->a3
  * in the 3 vtable dispatches. Body unchanged. */
-void timproc_uso_b5_func_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5) {
+void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5) {
     char *row, *e, *vt;
     int *tbl;
     int i, idx, n, j;
@@ -3254,7 +3254,7 @@ void timproc_uso_b5_func_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, i
     *(int *)(arg0 + 0x4A4) = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
     *(int *)(arg0 + 0x3E0) = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
     *(int *)(arg0 + 0x4A8) = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
-    *(int *)(arg0 + 0x3E4) = timproc_uso_b5_func_00008988(arg0, 1, *arg4);
+    *(int *)(arg0 + 0x3E4) = SelectWin_func_00008988(arg0, 1, *arg4);
     row = *(char **)(*(char **)(arg0 + 0x40C) + 0x40);
     if (*(int *)(row + 0x6C) > 0) {
         tbl = (int *)(&import_80020150 + 0xB8);
@@ -3282,8 +3282,8 @@ void timproc_uso_b5_func_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, i
             row = *(char **)(*(char **)(arg0 + 0x40C) + 0x44);
         } while (j < *(int *)(row + 0x6C));
     }
-    *(int *)(arg0 + 0x3E8) = timproc_uso_b5_func_00008988(arg0, 2, **(int **)(arg0 + 0x4EC));
-    idx = timproc_uso_b5_func_00008988(arg0, 3, **(int **)(arg0 + 0x4DC)); if (1) {}
+    *(int *)(arg0 + 0x3E8) = SelectWin_func_00008988(arg0, 2, **(int **)(arg0 + 0x4EC));
+    idx = SelectWin_func_00008988(arg0, 3, **(int **)(arg0 + 0x4DC)); if (1) {}
     *(int *)(arg0 + 0x3EC) = idx;
     *(int *)(arg0 + 0x3DC) = idx;
     n = *(int *)(arg0 + 0x3E0);
@@ -3333,25 +3333,25 @@ void timproc_uso_b5_func_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, i
     fnum = 35.0f;
     *(float *)(arg0 + 0x468) = fnum / 255.0f;
     *(int *)(arg0 + 0x4D0) = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
-    e = (char *)timproc_uso_b5_func_00008A38(arg0);
+    e = (char *)SelectWin_func_00008A38(arg0);
     vt = *(char **)(e + 0x28);
     (*(void (**)())(vt + 0x64))(*(short *)(vt + 0x60) + (int)e);
     {
         char *p414;
-        e = (char *)timproc_uso_b5_func_00008A38(arg0);
+        e = (char *)SelectWin_func_00008A38(arg0);
         p414 = *(char **)(arg0 + 0x414);
-        timproc_uso_b5_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
+        SelectWin_func_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
-    timproc_uso_b5_func_00008688(arg0, 0);
+    SelectWin_func_00008688(arg0, 0);
     *(int *)(arg0 + 0x404) = 0x40;
     *(int *)(arg0 + 0x488) = *(int *)(arg0 + 0x104);
     *(float *)(arg0 + 0x4BC) = 1.0f;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_00005BF0);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_init_00005BF0);
 #endif
 
-// timproc_uso_b5_func_00005FC0 — FULL structural DECODE via compressed-
+// SelectWin_update_00005FC0 — FULL structural DECODE via compressed-
 // module jumptable path (75.30% reloc-masked NM, no episode — decode-only
 // cap: raw-word USO + m2c-vs-IDO jumptable .rodata-vs-D_807FF1B0 symbol +
 // FP regalloc/spill-slot ordering. 2026-06-22 rewrite: replaced the
@@ -3369,7 +3369,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 // Per-frame timing/replay-screen tick (counterpart to func_00005BF0's
 // build; operates on the same Scr object).
 //
-//   void timproc_uso_b5_func_00005FC0(Scr *scr) {        // scr -> s0
+//   void SelectWin_update_00005FC0(Scr *scr) {        // scr -> s0
 //     if (scr->0x3BC != 2) return;                        // inactive
 //     if (scr->0x3C8 == 4) func_00000000(&D_0, -1);
 //     else                  func_00000000(&D_0, scr->0x3B8);
@@ -3416,28 +3416,28 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 extern char import_80020098;
 extern char import_800200CC;
 extern void import_000A7ECC();
-extern void timproc_uso_b5_func_00007078();
-extern void timproc_uso_b5_func_000072D0();
-extern void timproc_uso_b5_func_00007430();
-extern void timproc_uso_b5_func_000077D8();
-extern void timproc_uso_b5_func_000079A4();
-extern void timproc_uso_b5_func_00007B2C();
-extern void timproc_uso_b5_func_00007E34();
-extern void timproc_uso_b5_func_000080F4();
-extern void timproc_uso_b5_func_00008468();
+extern void SelectWin_state0_00007078();
+extern void SelectWin_state1_000072D0();
+extern void SelectWin_state3_00007430();
+extern void SelectWin_state4_000077D8();
+extern void SelectWin_state5_000079A4();
+extern void SelectWin_state6_00007B2C();
+extern void SelectWin_state7_00007E34();
+extern void SelectWin_state8_000080F4();
+extern void SelectWin_state9_00008468();
 extern f32 timproc_uso_b5_func_07E7B0(f32);
 /* 00001CF0, 000038B0, 0000396C, 000073C0, 000085E0, 00008A38, 00008AD4
  * are defined elsewhere in this TU with real prototypes. */
-int timproc_uso_b5_func_00001CF0(int *a0, int a1);
-int timproc_uso_b5_func_00008A38();
-int timproc_uso_b5_func_00008AD4(int *a0);
-void timproc_uso_b5_func_000073C0(char *scr);
-void timproc_uso_b5_func_000085E0(int *a0);
+int SelectWin_func_00001CF0(int *a0, int a1);
+int SelectWin_func_00008A38();
+int SelectWin_func_00008AD4(int *a0);
+void SelectWin_state2_000073C0(char *scr);
+void SelectWin_state10_000085E0(int *a0);
 
 typedef void (*FPv)();
 
 #endif /* NON_MATCHING */
-/* timproc_uso_b5_func_00005FC0: EXACT (agent-g run 114). The real C is the
+/* SelectWin_update_00005FC0: EXACT (agent-g run 114). The real C is the
  * IDO 7.1 -O2 donor src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c, spliced over
  * this placeholder by REPLACE_FUNC_BODY so its switch jumptable reloc can be
  * pinned to the USO RoData table at +0x190 (Makefile TIMB5_5FC0_DONOR). */
@@ -3447,7 +3447,7 @@ typedef void (*FPv)();
  * table position), five pi/2 literals of this fn, and 79A4's 0.1f
  * (spelled &D_00000000 + 0x1D0 there). Only the layout matters; the splice
  * drops this body's text and relocs. */
-void timproc_uso_b5_func_00005FC0(char *arg0) {
+void SelectWin_update_00005FC0(char *arg0) {
     switch (*(int *)arg0) {
     case 0: arg0[4] = 0; break;
     case 1: arg0[4] = 1; break;
@@ -3471,7 +3471,7 @@ void timproc_uso_b5_func_00005FC0(char *arg0) {
     *(volatile float *)(arg0 + 8) = 0.1f;
 }
 
-/* timproc_uso_b5_func_00006394 (0x4C8 / 306 words): timing-screen row draw.
+/* SelectWin_display_00006394 (0x4C8 / 306 words): timing-screen row draw.
  * Gate on scr->0x414->0xC->0xBC >= 0x78; clamp the row y (C4 + 0x3B0) to
  * >= 21; pick the layout entry (&D_807FF5E0 + 0x160)[D_807FE728[87A0(..)]]
  * (0x18-byte entries) and draw it; on a blinking (0x48C & 8) frame draw the
@@ -3496,7 +3496,7 @@ typedef char *(*GP_00006394)();
 extern int timproc_uso_b5_D_807FE728[];
 extern char import_8024CAF8;
 extern char import_800200CC;
-void timproc_uso_b5_func_00006394(char *arg0) {
+void SelectWin_display_00006394(char *arg0) {
     s32 sp44;
     char *sp40;
     s32 temp_v0;
@@ -3538,7 +3538,7 @@ void timproc_uso_b5_func_00006394(char *arg0) {
             sp44 = 0x15;
         }
         sp40 = (char *)&timproc_uso_b5_D_807FF5E0 + 0x160;
-        sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + timproc_uso_b5_func_000087A0(arg0, FW(arg0, 0x3C8)) * 4) * 0x18;
+        sp40 = sp40 + *(int *)((char *)timproc_uso_b5_D_807FE728 + gen_func_000087A0(arg0, FW(arg0, 0x3C8)) * 4) * 0x18;
         import_0024E608(&import_8024CAF8, FW(arg0, 0x398), (int)arg0 + 0x1E8);
         import_0024F2C8(sp40);
         import_0024F34C(sp40, 0xA0, sp44, 3);
@@ -3548,7 +3548,7 @@ void timproc_uso_b5_func_00006394(char *arg0) {
                 temp_v0_2 = FW(arg0, 0x48C);
                 FW(arg0, 0x48C) = (s32) (temp_v0_2 + 1);
                 if (temp_v0_2 & 8) {
-                    if (timproc_uso_b5_func_00006900(arg0) != 0) {
+                    if (SelectWin_func_00006900(arg0) != 0) {
                         import_0024E608(&import_8024CAF8, 0xFF, (int)arg0 + 0x20C);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5B0 + 0x130);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5B0;
@@ -3557,7 +3557,7 @@ void timproc_uso_b5_func_00006394(char *arg0) {
                         tmpl_row = (char *)FW(temp_v1, 0x10); tmpl_w = *(s16 *)(tmpl_row + 0x20);
                         import_0024F34C(temp_v1, (s32) (((temp_v0 / 2) + 0xA0) - (tmpl_w * 0.25f)), sp44, 2);
                     }
-                    if (timproc_uso_b5_func_0000687C((int *)arg0) != 0) {
+                    if (SelectWin_func_0000687C((int *)arg0) != 0) {
                         import_0024E608(&import_8024CAF8, 0xFF, (int)arg0 + 0x20C);
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5C8 + 0x148);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5C8;
@@ -3578,36 +3578,36 @@ void timproc_uso_b5_func_00006394(char *arg0) {
         if ((temp_v0_3 != 1) && (temp_v0_3 != 0xA) && (*(float *)((char *)arg0 + 0x480) == 1.0f) && (FW(arg0, 0x4B4) != 1)) {
             if ((temp_v0_3 == 5) || (temp_v0_3 == 7)) {
                 if (FW(arg0, 0x490) & 8) {
-                    temp_v0_4 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                    temp_v0_4 = (char *)SelectWin_func_00008A38(arg0);
                     temp_v1_2 = FW(temp_v0_4, 0x28);
                     ((GP_00006394)FW(temp_v1_2, 0xC4))(*(s16*)((char*)temp_v1_2 + 0xC0) + temp_v0_4, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
                 }
             } else if (temp_v0_3 == 8) {
-                temp_v0_5 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                temp_v0_5 = (char *)SelectWin_func_00008A38(arg0);
                 temp_v1_3 = FW(temp_v0_5, 0x28);
                 ((GP_00006394)FW(temp_v1_3, 0xC4))(*(s16*)((char*)temp_v1_3 + 0xC0) + temp_v0_5, arg0, (int)arg0 + 0x29C, (int)arg0 + 0x2C0);
             } else {
-                temp_v0_6 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                temp_v0_6 = (char *)SelectWin_func_00008A38(arg0);
                 temp_v1_4 = FW(temp_v0_6, 0x28);
                 ((GP_00006394)FW(temp_v1_4, 0xC4))(*(s16*)((char*)temp_v1_4 + 0xC0) + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
             }
             if (*(s32 *)((char *)&import_800200CC + 0x34) == 2) {
                 temp_v0_7 = FW(arg0, 0x3CC);
                 if (temp_v0_7 == 4) {
-                    temp_v0_8 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                    temp_v0_8 = (char *)SelectWin_func_00008A38(arg0);
                     temp_v1_5 = FW(temp_v0_8, 0x28);
                     ((GP_00006394)FW(temp_v1_5, 0xDC))(*(s16*)((char*)temp_v1_5 + 0xD8) + temp_v0_8, arg0, FW(arg0, 0x490));
                 } else if (temp_v0_7 == 5) {
-                    temp_v0_9 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                    temp_v0_9 = (char *)SelectWin_func_00008A38(arg0);
                     temp_v1_6 = FW(temp_v0_9, 0x28);
                     ((GP_00006394)FW(temp_v1_6, 0xDC))(*(s16*)((char*)temp_v1_6 + 0xD8) + temp_v0_9, arg0, 8);
                 } else {
-                    temp_v0_10 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                    temp_v0_10 = (char *)SelectWin_func_00008A38(arg0);
                     temp_v1_7 = FW(temp_v0_10, 0x28);
                     ((GP_00006394)FW(temp_v1_7, 0xD4))(*(s16*)((char*)temp_v1_7 + 0xD0) + temp_v0_10, arg0);
                 }
             } else {
-                temp_v0_11 = (char *)timproc_uso_b5_func_00008A38(arg0);
+                temp_v0_11 = (char *)SelectWin_func_00008A38(arg0);
                 temp_v1_8 = FW(temp_v0_11, 0x28);
                 ((GP_00006394)FW(temp_v1_8, 0xD4))(*(s16*)((char*)temp_v1_8 + 0xD0) + temp_v0_11, arg0);
             }
@@ -3616,7 +3616,7 @@ void timproc_uso_b5_func_00006394(char *arg0) {
     }
     temp_v0_12 = FW(arg0, 0x3CC);
     if (((var_v1 >= 0x78) && (FW(arg0, 0x4B4) != 1) && (temp_v0_12 == 6)) || (temp_v0_12 == 7)) {
-        var_a2 = FW((timproc_uso_b5_func_00008A64((int *)arg0)), 0x2B0);
+        var_a2 = FW((SelectWin_func_00008A64((int *)arg0)), 0x2B0);
         temp_v1_9 = FW(arg0, 0x4A4);
         if (temp_v1_9 == 1) {
             var_a2 = 5;
@@ -3627,14 +3627,14 @@ void timproc_uso_b5_func_00006394(char *arg0) {
         if (temp_v1_9 == 3) {
             var_a2 = 7;
         }
-        temp_v0_13 = (char *)timproc_uso_b5_func_00008A38(arg0);
+        temp_v0_13 = (char *)SelectWin_func_00008A38(arg0);
         temp_v1_10 = FW(temp_v0_13, 0x28);
         ((GP_00006394)FW(temp_v1_10, 0xCC))(*(s16*)((char*)temp_v1_10 + 0xC8) + temp_v0_13, arg0, var_a2);
     }
     timproc_uso_b5_func_04CCA8(arg0);
 }
 
-void timproc_uso_b5_func_0000685C(char *a0) {
+void SelectWin_vfunc8_0000685C(char *a0) {
     gl_func_00000000(a0 + 0x2C);
 }
 
@@ -3674,7 +3674,7 @@ extern int gl_func_00000000();
  * branched into its own dropped body (Yay0 block_5 gap), NOT a cross-fn
  * cap. Restored the .s + inlined the `item` deref (shifts $v0->$t0 to match
  * the float-load base register). 33/33 byte-exact. */
-int timproc_uso_b5_func_0000687C(int *a0) {
+int SelectWin_func_0000687C(int *a0) {
     int group = *(int*)((char*)a0 + 0x3C4);
     int group_off = group * 4;
     int count;
@@ -3699,9 +3699,9 @@ int timproc_uso_b5_func_0000687C(int *a0) {
 ret0:
     return 0;
 }
-/* timproc_uso_b5_func_00006900 - verified structural decode (0xE8,
+/* SelectWin_func_00006900 - verified structural decode (0xE8,
  * 58 insns, "any-entry-active" scan predicate). Returns s32 0/1.
- *   s32 timproc_uso_b5_func_00006900(St *s) {
+ *   s32 SelectWin_func_00006900(St *s) {
  *       if (s->0x3C4 == 0) return 1;              // no group -> 1
  *       n0 = count(s);                            // func_00000000(s)
  *       start = s->0x3D0[s->0x3C4];               // lw 976(s+idx*4)
@@ -3728,15 +3728,15 @@ ret0:
  * branch-likely + repeated func_00000000 reloc count call + f20
  * sdc1/ldc1 double-save. Full body INCLUDE_ASM-preserved (.s =
  * source of truth). INCLUDE_ASM (no episode; tautology-trap rule). */
-/* timproc_uso_b5_func_00006900 — VERIFIED EXACT 58/58 (2026-07-03, agent-e)
- * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/timproc_uso_b5_func_00006900.s
+/* SelectWin_func_00006900 — VERIFIED EXACT 58/58 (2026-07-03, agent-e)
+ * vs asm/nonmatchings/timproc_uso_b5/timproc_uso_b5/SelectWin_func_00006900.s
  * (in-tree word-by-word on build/non_matching .o, clean rebuild, -O2;
  * jal words 0x0C000000 via extern callee). objdiff 100.0.
  *
  * LOGIC BUG fixed vs old NM body (79.3%): the group table pointer is
  * *(s+0x40C) dereferenced FIRST and THEN indexed at idx*4+0x40 —
  * exactly the landed 8C1C accessor chain — not indexed at 0x40C+idx*4
- * as the old body had it. count() = timproc_uso_b5_func_00008C1C
+ * as the old body had it. count() = SelectWin_func_00008C1C
  * (real intra-file callee per .s jal reloc, replaces func_00000000).
  *
  * Shape recipe:
@@ -3758,19 +3758,19 @@ ret0:
  *    addu rs=base at both levels; idx and the table base reload each
  *    iteration (no locals). f20=0.0 hoist/sdc1 pair is automatic.
  */
-extern int timproc_uso_b5_func_00008C1C(int *a0);
-int timproc_uso_b5_func_00006900(char *s) {
+extern int SelectWin_func_00008C1C(int *a0);
+int SelectWin_func_00006900(char *s) {
     int i;
     int n0;
     if (*(int *)(s + 0x3C4) == 0) {
         return 1;
     }
-    n0 = timproc_uso_b5_func_00008C1C((int *)s);
+    n0 = SelectWin_func_00008C1C((int *)s);
     if (n0 == ((int *)(s + 0x3D0))[*(int *)(s + 0x3C4)]) {
         return 0;
     }
     i = ((int *)(s + 0x3D0))[*(int *)(s + 0x3C4)] + 1;
-    for (; i < timproc_uso_b5_func_00008C1C((int *)s); i++) {
+    for (; i < SelectWin_func_00008C1C((int *)s); i++) {
         if (*(float *)(*(int *)(*(int *)(*(int *)(s + 0x3C4) * 4 + *(int *)(s + 0x40C) + 0x40) + i * 4 + 0x3C) + 0x2A4) != 0.0f) {
             return 1;
         }
@@ -3778,12 +3778,12 @@ int timproc_uso_b5_func_00006900(char *s) {
     return 0;
 }
 
-// timproc_uso_b5_func_000069E8 — STRUCTURAL PASS (0x218 / 134 words,
+// SelectWin_startGame_000069E8 — STRUCTURAL PASS (0x218 / 134 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing/replay-screen input/navigation handler (operates on Scr).
 //
-//   int timproc_uso_b5_func_000069E8(Scr *scr, a1) {     // scr -> s0
+//   int SelectWin_startGame_000069E8(Scr *scr, a1) {     // scr -> s0
 //     func_00000000(., a1);
 //     func_00000000(scr->0x418, -1, 0);                   // reset/clear
 //     switch (scr->0x4A4) {                               // cursor state
@@ -3847,7 +3847,7 @@ extern char D_69E8_G1;
 extern char D_69E8_1304;
 extern int D_69E8_A4[];
 extern int D_69E8_B8[];
-int timproc_uso_b5_func_000069E8(char *scr, int a1) {
+int SelectWin_startGame_000069E8(char *scr, int a1) {
     char *g;
     char *C;
     int a4;
@@ -3896,15 +3896,15 @@ int timproc_uso_b5_func_000069E8(char *scr, int a1) {
     return 1;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_000069E8);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_startGame_000069E8);
 #endif
 
-// timproc_uso_b5_func_00006C00 — STRUCTURAL PASS (0x130 / 76 words,
+// SelectWin_func_00006C00 — STRUCTURAL PASS (0x130 / 76 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen element command-snapshot / refresh (operates on Scr).
 //
-//   void timproc_uso_b5_func_00006C00(Scr *scr) {        // scr -> s0
+//   void SelectWin_func_00006C00(Scr *scr) {        // scr -> s0
 //     if (!func_00000000(scr->0x3B8, scr->0x41C)) return; // gate
 //     func_00000000(scr);
 //     func_00000000(scr->0x418, -1, 0);                   // reset
@@ -3946,8 +3946,8 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * picks the t-reg ring position of the loads. */
 extern int import_000A53B4();
 extern void timproc_uso_b5_func_00F954();
-void timproc_uso_b5_func_00006C00(char *scr) {
-    if (!timproc_uso_b5_func_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
+void SelectWin_func_00006C00(char *scr) {
+    if (!SelectWin_func_00001D1C(*(char **)(scr + 0x41C), *(int *)(scr + 0x3B8))) return;
     import_000A53B4(scr);
     timproc_uso_b5_func_00F954(*(int *)(scr + 0x418), -1, 0);
     *(int *)(&import_80020098 + 0x40) = *(int *)(&import_80020098 + 0x48);
@@ -3962,7 +3962,7 @@ void timproc_uso_b5_func_00006C00(char *scr) {
 #undef E6C00
 }
 
-/* timproc_uso_b5_func_00006D30: 54-insn poll-loop over a record table.
+/* SelectWin_func_00006D30: 54-insn poll-loop over a record table.
  * X = timproc_uso_b5_func_00000000 (cross-USO placeholder, all 5 jals).
  * 2026-05-28 CORRECTION: this is an ORDINARY -O2 function (NOT the prior
  * "-O0-in-Yay0, can't match at -O2" claim — that was wrong). At default -O2
@@ -3970,7 +3970,7 @@ void timproc_uso_b5_func_00006C00(char *scr) {
  * register promotion matching; residuals are prologue save/jal scheduling +
  * index-temp register-rename. NM wrap, no donor splice. */
 typedef int Row1_6D30[1];
-void timproc_uso_b5_func_00006D30(int *self) {
+void SelectWin_func_00006D30(int *self) {
   int i = 0;
   int new_var5;
   char *new_var;
@@ -4014,13 +4014,13 @@ void timproc_uso_b5_func_00006D30(int *self) {
   }
 }
 
-// timproc_uso_b5_func_00006E08 — STRUCTURAL PASS (0x270 / 156 words,
+// SelectWin_func_00006E08 — STRUCTURAL PASS (0x270 / 156 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen expired-entry purge / list compaction (operates on
 // Scr; two element lists).
 //
-//   void timproc_uso_b5_func_00006E08(Scr *scr, a1) {     // scr -> s0
+//   void SelectWin_func_00006E08(Scr *scr, a1) {     // scr -> s0
 //     if (!func_00000000(&D_0, 0x10001)) return;          // global gate
 //     if (!func_00000000(scr)) ...;
 //     float now = (float)func_00000000(scr);              // -> f20 ref
@@ -4070,7 +4070,7 @@ extern int timproc_uso_b5_D_807FE738;
  * counter as its own block-scoped variable (keeps j = 0 after the call). */
 #define SLOT(i) (((s32 *)(arg0 + 0x3D0))[i])
 #define SLOTP(i) ((char *)&((s32 *)(arg0 + 0x3D0))[i])
-void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1) {
+void SelectWin_func_00006E08(char *arg0, s32 arg1) {
     s32 old1;
     s32 i;
     s32 cur;
@@ -4123,12 +4123,12 @@ loop_13:
 #undef SLOT
 #undef SLOTP
 
-// timproc_uso_b5_func_00007078 — STRUCTURAL PASS (0x258 / 150 words,
+// SelectWin_state0_00007078 — STRUCTURAL PASS (0x258 / 150 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen scroll/animation tick (operates on Scr).
 //
-//   void timproc_uso_b5_func_00007078(Scr *scr) {        // scr -> s0
+//   void SelectWin_state0_00007078(Scr *scr) {        // scr -> s0
 //     if (scr->0x414->0x18->0x130 != 0) {                // active gate
 //       v = func_00000000(1);
 //       // animate two FP scroll fields by += value * 2.0f:
@@ -4182,7 +4182,7 @@ loop_13:
 typedef char *(*GP_00007078)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE768;
-void timproc_uso_b5_func_00007078(char *arg0) {
+void SelectWin_state0_00007078(char *arg0) {
     f32 *temp_v0;
     f32 *temp_v0_2;
     f32 *temp_v0_3;
@@ -4240,7 +4240,7 @@ void timproc_uso_b5_func_00007078(char *arg0) {
 }
 
 
-// timproc_uso_b5_func_000072D0 — STRUCTURAL PASS (no episode).
+// SelectWin_state1_000072D0 — STRUCTURAL PASS (no episode).
 // Raw-.word USO. BOUNDARY NOTE: this .s is a 2-function USO bundle
 // (2 jr-ra; named fn 0x72D0..0x73BC ~63 words, a SECOND fn — its
 // ramp-DOWN twin — follows at 0x73C0..0x742C). USO bundles aren't
@@ -4263,8 +4263,8 @@ void timproc_uso_b5_func_00007078(char *arg0) {
 // stale: 73C0 is its own symbol). docs/MATCHING_WORKFLOW.md
 // #yay0-block-unlinked-in-unit-jal-f360.
 extern int timproc_uso_b5_func_011E00();
-void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1);
-void timproc_uso_b5_func_000072D0(char *scr) {
+void SelectWin_func_00006E08(char *arg0, s32 arg1);
+void SelectWin_state1_000072D0(char *scr) {
     float cur;
     float curf;
     int state;
@@ -4288,8 +4288,8 @@ check_target:
         }
     }
     if (timproc_uso_b5_func_011E00(&import_80020098, 0x14203) != 0) {
-        timproc_uso_b5_func_00006E08(scr, 1);
-        e = (char *)timproc_uso_b5_func_00008A38(scr);
+        SelectWin_func_00006E08(scr, 1);
+        e = (char *)SelectWin_func_00008A38(scr);
         vt = *(char **)(e + 0x28);
         (*(void (**)())(vt + 0xAC))(*(short *)(vt + 0xA8) + (int)e);
         *(int *)(scr + 0x3CC) = 10;
@@ -4297,7 +4297,7 @@ check_target:
     }
 }
 
-// timproc_uso_b5_func_000073C0 — ramp-UP twin of 000072D0's leading body.
+// SelectWin_state2_000073C0 — ramp-UP twin of 000072D0's leading body.
 // Increments scr->0x480 toward scr->0x484, using the fast step at 0xD4 when
 // state 1 is active and the normal step at 0xEC otherwise.
 // MATCH KEY (2026-05-29): the two `cur + step` adds emit `add.s fd, step, cur`
@@ -4306,7 +4306,7 @@ check_target:
 // assignment-expr lever forces cur as fs: `step + (curf = cur)` — same lever
 // that cracked game_uso_func_00003FAC's mul.s operand caps. (Old "add.s
 // operand-order stays NM / FPU-scheduler cap" comment was wrong.)
-void timproc_uso_b5_func_000073C0(char *scr) {
+void SelectWin_state2_000073C0(char *scr) {
     float cur = *(float *)(scr + 0x480);
     float curf;
     int state;
@@ -4328,13 +4328,13 @@ check_target:
     }
 }
 
-// timproc_uso_b5_func_00007430 — exact (0x3A8 / 234 words).
+// SelectWin_state3_00007430 — exact (0x3A8 / 234 words).
 // Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen sequence/script driver: a small table-driven state
 // machine that advances an intro/outro animation program.
 //
-//   void timproc_uso_b5_func_00007430(Scr *scr) {        // scr -> s0
+//   void SelectWin_state3_00007430(Scr *scr) {        // scr -> s0
 //     if (scr->0x3C4 != 0) { ...alternate path... return; }
 //     int step = func_00000000() - 1;
 //     if (step < 0) return;
@@ -4361,7 +4361,7 @@ check_target:
 // Matching notes: D_00000000_a is a 0-address alias used only for the first
 // table-dispatch call. It prevents IDO from CSE'ing the D_00000F60 table base
 // into the call argument, matching the target's separate base registers.
-void timproc_uso_b5_func_00007430(char *scr) {
+void SelectWin_state3_00007430(char *scr) {
     int step;
     int *seq_table;
     char *obj;
@@ -4467,13 +4467,13 @@ void timproc_uso_b5_func_00007430(char *scr) {
     }
 }
 
-// timproc_uso_b5_func_000077D8 — exact (0x1CC / 115 words).
+// SelectWin_state4_000077D8 — exact (0x1CC / 115 words).
 // Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen mode/transition handler: global-state-gated phase
 // entries that snapshot the camera and kick off entry/exit animation.
 //
-//   void timproc_uso_b5_func_000077D8(Scr *scr) {        // scr -> s0
+//   void SelectWin_state4_000077D8(Scr *scr) {        // scr -> s0
 //     if (func_00000000(&D_0, 0x100)) {                   // phase A
 //       func_00000000(scr);  func_00000000(scr->...table);
 //       scr->0x3CC = 5;  scr->0x400 = 0x37;  scr->0x484 = 1.0f;
@@ -4505,10 +4505,10 @@ void timproc_uso_b5_func_00007430(char *scr) {
 //   D_0 global flags 0x100 / 0x200 / 0x4002 / 0x10001 gate the phases.
 //   func_00000000 = USO placeholder dispatcher (gate / activate).
 // Matching notes: same transition/table-call idioms as the exact
-// timproc_uso_b5_func_00007430 tail. The 0x4002 and 0x10001 gates are
+// SelectWin_state3_00007430 tail. The 0x4002 and 0x10001 gates are
 // sequential inside the final else arm; the second gate uses the opposite
 // bit-test polarity and a branch-likely epilogue skip.
-void timproc_uso_b5_func_000077D8(char *scr) {
+void SelectWin_state4_000077D8(char *scr) {
     char *obj;
     char *node;
     char *cam_root;
@@ -4559,12 +4559,12 @@ void timproc_uso_b5_func_000077D8(char *scr) {
     }
 }
 
-// timproc_uso_b5_func_000079A4 — EXACT (0x188 / 98 words, 2026-10-16).
+// SelectWin_state5_000079A4 — EXACT (0x188 / 98 words, 2026-10-16).
 // Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen fade-out / teardown + next-phase re-init handler.
 //
-//   void timproc_uso_b5_func_000079A4(Scr *scr) {        // scr -> s0
+//   void SelectWin_state5_000079A4(Scr *scr) {        // scr -> s0
 //     scr->0x400--;                                       // countdown
 //     if (scr->0x34 == 2) {
 //       if (scr->0x4A0 > 0.0f) scr->0x4A0 -= K;            // K = D_01D0
@@ -4600,19 +4600,19 @@ void timproc_uso_b5_func_000077D8(char *scr) {
 // import_80020098 + 0x34, slot table = import_8002013C + 0xA4) and the
 // 0x1D0 fade step left on a DIFFERENT symbol (D_00000000: the target's
 // `lui at` is not CSE'd with the a2 gate base), all 98 words line up. The
-// tail is the timproc_uso_b5_func_000080F4 sequence (8A90 / 8ABC / 87F4 /
+// tail is the SelectWin_state8_000080F4 sequence (8A90 / 8ABC / 87F4 /
 // 866C / 8988 / 87A0 / 6D30 / 8688). The slot index is array-indexed
 // (`((int *)(scr + 0x3E0))[i]`) because `scr + i * 4` emits the addu operands
 // reversed.
-int timproc_uso_b5_func_00008A90(int *a0);
-void timproc_uso_b5_func_00008ABC(int *a0);
-int timproc_uso_b5_func_000087F4(char *a0);
-void timproc_uso_b5_func_0000866C(int *a0);
-void timproc_uso_b5_func_00006D30(int *self);
-void timproc_uso_b5_func_00008688(char *scr, int mode);
+int SelectWin_func_00008A90(int *a0);
+void SelectWin_func_00008ABC(int *a0);
+int SelectWin_func_000087F4(char *a0);
+void SelectWin_func_0000866C(int *a0);
+void SelectWin_func_00006D30(int *self);
+void SelectWin_func_00008688(char *scr, int mode);
 extern char import_8002013C;
 typedef char *(*GP_79A4)();
-void timproc_uso_b5_func_000079A4(char *scr) {
+void SelectWin_state5_000079A4(char *scr) {
     char *e;
 
     *(int *)(scr + 0x400) -= 1;
@@ -4629,35 +4629,35 @@ void timproc_uso_b5_func_000079A4(char *scr) {
             return;
         }
     }
-    e = (char *) timproc_uso_b5_func_00008A90((int *) scr);
+    e = (char *) SelectWin_func_00008A90((int *) scr);
     ((GP_79A4)FW(FW(e, 0x28), 0x8C))(*(s16*)((char *)FW(e, 0x28) + 0x88) + e, 0);
-    timproc_uso_b5_func_00008ABC((int *) scr);
-    e = (char *) timproc_uso_b5_func_00008A90((int *) scr);
+    SelectWin_func_00008ABC((int *) scr);
+    e = (char *) SelectWin_func_00008A90((int *) scr);
     ((GP_79A4)FW(FW(e, 0x28), 0x84))(*(s16*)((char *)FW(e, 0x28) + 0x80) + e, 0);
-    if (timproc_uso_b5_func_000087F4(scr) == 0) {
-        timproc_uso_b5_func_00001C08((char *) FW(scr, 0x41C));
+    if (SelectWin_func_000087F4(scr) == 0) {
+        SelectWin_finish_00001C08((char *) FW(scr, 0x41C));
         return;
     }
-    timproc_uso_b5_func_0000866C((int *) scr);
-    FW(scr, 0x3D4) = timproc_uso_b5_func_00008988(scr, 1,
+    SelectWin_func_0000866C((int *) scr);
+    FW(scr, 0x3D4) = SelectWin_func_00008988(scr, 1,
         ((int *)(&import_8002013C + 0xA4))[((int *)(scr + 0x3E0))[FW(scr, 0x3C4)]]);
-    e = (char *) timproc_uso_b5_func_000087F4(scr);
+    e = (char *) SelectWin_func_000087F4(scr);
     FW(scr, 0x3C8) = (int) e;
-    FW(scr, 0x3C4) = timproc_uso_b5_func_000087A0(scr, e);
+    FW(scr, 0x3C4) = gen_func_000087A0(scr, e);
     FW(scr, 0x3CC) = 6;
-    timproc_uso_b5_func_00006D30((int *) scr);
+    SelectWin_func_00006D30((int *) scr);
     *(f32 *)(scr + 0x484) = 1.0f;
-    timproc_uso_b5_func_00008688(scr, 0);
+    SelectWin_func_00008688(scr, 0);
 }
 
-// timproc_uso_b5_func_00007B2C — STRUCTURAL PASS (0x308 / 194 words,
+// SelectWin_state6_00007B2C — STRUCTURAL PASS (0x308 / 194 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen MASTER state-machine tick — PC-driven handler dispatch
 // that ties together the sub-handlers (func_00007430 sequencer,
 // func_000077D8 transition, func_000079A4 fade).
 //
-//   int timproc_uso_b5_func_00007B2C(Scr *scr) {         // scr -> s0
+//   int SelectWin_state6_00007B2C(Scr *scr) {         // scr -> s0
 //     if (scr->0x3C4 != 1) { ...alt path... }
 //     else if (func_00000000()) {                         // event ready
 //       h = D_00000F60[ f(scr->0x4AC) ];                   // handler PC
@@ -4691,7 +4691,7 @@ void timproc_uso_b5_func_000079A4(char *scr) {
 //   Real-C STRUCTURAL body below — PC-driven master state-machine
 //   skeleton + vtable-dispatch chain. Byte-match deferred. Name
 //   pre-checked: no extern reuse.
-// timproc_uso_b5_func_00007B2C — FULL m2c DECODE (67.36% NM, no episode). Non-jumptable control-flow fn via scripts/lift-uso-controlflow.py.
+// SelectWin_state6_00007B2C — FULL m2c DECODE (67.36% NM, no episode). Non-jumptable control-flow fn via scripts/lift-uso-controlflow.py.
 // 2026-06-21 RECONSTRUCT 60.8%->76.3% (COUNT-EXACT 194=194): the 5 gate calls'
 // a0 = &import_80020098 (reloc, not 0); the 4 list dispatches index array bases
 // (&D_7B2C_F60)[v0] / (&D_807FE778/768/748)[idx] (not bare *4 fold); dropped
@@ -4716,7 +4716,7 @@ extern int D_7B2C_F60;
 extern int timproc_uso_b5_D_807FE748;
 extern int timproc_uso_b5_D_807FE768;
 extern int timproc_uso_b5_D_807FE778;
-void timproc_uso_b5_func_00007B2C(char *arg0) {
+void SelectWin_state6_00007B2C(char *arg0) {
     s32 temp_v0;
     s32 *temp_v1;
     char *tv0_1;
@@ -4790,12 +4790,12 @@ void timproc_uso_b5_func_00007B2C(char *arg0) {
 }
 
 
-// timproc_uso_b5_func_00007E34 — STRUCTURAL PASS (0x2C0 / 176 words,
+// SelectWin_state7_00007E34 — STRUCTURAL PASS (0x2C0 / 176 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen sub-state handler (a phase branch of the master tick).
 //
-//   void timproc_uso_b5_func_00007E34(Scr *scr) {        // scr -> s0
+//   void SelectWin_state7_00007E34(Scr *scr) {        // scr -> s0
 //     if (scr->0x3BC == 2) {
 //       func_00000000(scr->0x41C, scr->0x3B8);
 //       int busy = scr->0x4B4 | scr->0x4B8;
@@ -4826,7 +4826,7 @@ void timproc_uso_b5_func_00007B2C(char *arg0) {
 //   below — mode-gated sub-state handler + show/deact + refresh
 //   skeleton only. Byte-match deferred. Name pre-checked: no extern
 //   reuse.
-// timproc_uso_b5_func_00007E34 — FULL m2c DECODE (64.79% NM, no episode). Non-jumptable control-flow fn, decoded direct via the general liftcf.py recipe (arrows->FW, GP-cast placeholder calls, void*->char*, *expr->*(int*)0/(int*)cast). No emulator needed.
+// SelectWin_state7_00007E34 — FULL m2c DECODE (64.79% NM, no episode). Non-jumptable control-flow fn, decoded direct via the general liftcf.py recipe (arrows->FW, GP-cast placeholder calls, void*->char*, *expr->*(int*)0/(int*)cast). No emulator needed.
 // 2026-06-21 RECONSTRUCT 90.07%->99.11% (COUNT-EXACT 184=184; residual is pure
 // register-renumber + 2 commutative operand-order/scheduling ties): the 4 gate
 // calls' a0 = &import_80020098 (reloc, not or zero,zero); the two list-entry
@@ -4862,7 +4862,7 @@ typedef char *(*GP_00007E34)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE758;
 extern int timproc_uso_b5_D_807FE778;
-void timproc_uso_b5_func_00007E34(char *arg0) {
+void SelectWin_state7_00007E34(char *arg0) {
     s32 temp_v0_3;
     s32 temp_v0_5;
     s32 var_v1;
@@ -4943,13 +4943,13 @@ void timproc_uso_b5_func_00007E34(char *arg0) {
 }
 
 
-// timproc_uso_b5_func_000080F4 — STRUCTURAL PASS (0x374 / 221 words,
+// SelectWin_state8_000080F4 — STRUCTURAL PASS (0x374 / 221 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen draw/update sub-handler (a phase branch of the master
 // tick), gated by mode + an FP animation-progress compare.
 //
-//   void timproc_uso_b5_func_000080F4(Scr *scr) {        // scr -> s2
+//   void SelectWin_state8_000080F4(Scr *scr) {        // scr -> s2
 //     if (scr->0x3BC == 2) {
 //       a = func_00000000(scr->0x41C, scr->0x3B8);
 //       int s0 = a->0x4C;
@@ -4982,7 +4982,7 @@ void timproc_uso_b5_func_00007E34(char *arg0) {
 //   disasm limitation prevents byte-match. Real-C STRUCTURAL body
 //   below — draw/update + idle/show skeleton only. Byte-match
 //   deferred. Name pre-checked: no extern reuse.
-// timproc_uso_b5_func_000080F4 — FULL m2c DECODE (68.73% NM, no episode). Non-jumptable control-flow fn via scripts/lift-uso-controlflow.py.
+// SelectWin_state8_000080F4 — FULL m2c DECODE (68.73% NM, no episode). Non-jumptable control-flow fn via scripts/lift-uso-controlflow.py.
 // 2026-06-21 RECONSTRUCT 41.2%->42.1% (gap -9 -> -4): the 0x44<0x4BC test is a
 // FLOAT compare *(f32*)+0x44 < *(f32*)+0x4BC (lwc1/c.lt.s, not slt); the +0x78
 // vtable-offset field is lh (signed halfword); the two 0x100/0x200 gate calls'
@@ -5009,18 +5009,18 @@ typedef char *(*GP_000080F4)();
 extern char import_80020098;
 extern int timproc_uso_b5_D_807FE748;
 extern int timproc_uso_b5_func_011E00();
-int timproc_uso_b5_func_00008A90(int *a0);
-void timproc_uso_b5_func_00008ABC(int *a0);
-int timproc_uso_b5_func_000087F4(char *a0);
-void timproc_uso_b5_func_0000866C(int *a0);
-void timproc_uso_b5_func_00006D30(int *self);
-void timproc_uso_b5_func_00008688(char *scr, int mode);
-void timproc_uso_b5_func_00006E08(char *arg0, s32 arg1);
-int timproc_uso_b5_func_000088A0(char *a0);
-void timproc_uso_b5_func_00006C00(char *scr);
-void timproc_uso_b5_func_00008D90(int *a0, int a1);
-int timproc_uso_b5_func_0000894C();
-void timproc_uso_b5_func_000080F4(char *arg0) {
+int SelectWin_func_00008A90(int *a0);
+void SelectWin_func_00008ABC(int *a0);
+int SelectWin_func_000087F4(char *a0);
+void SelectWin_func_0000866C(int *a0);
+void SelectWin_func_00006D30(int *self);
+void SelectWin_func_00008688(char *scr, int mode);
+void SelectWin_func_00006E08(char *arg0, s32 arg1);
+int SelectWin_func_000088A0(char *a0);
+void SelectWin_func_00006C00(char *scr);
+void SelectWin_func_00008D90(int *a0, int a1);
+int SelectWin_func_0000894C();
+void SelectWin_state8_000080F4(char *arg0) {
     s32 sp28;
     register s32 busy;
     char *q;
@@ -5031,46 +5031,46 @@ void timproc_uso_b5_func_000080F4(char *arg0) {
 
     if (FW(arg0, 0x3BC) == 2) {
         busy = FW(FW(arg0, 0x41C), 0x4C);
-        e = (char *) timproc_uso_b5_func_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+        e = (char *) SelectWin_func_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
         flags = (FW(arg0, 0x4B4) | FW(e, 0x4B4)) | busy;
-        q = (char *) timproc_uso_b5_func_00001D1C((char *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+        q = (char *) SelectWin_func_00001D1C((char *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
     } else {
         busy = 0;
         flags = FW(arg0, 0x4B4);
         q = (char *) 1;
     }
     if (*(f32 *)((char *)arg0 + 0x44) < *(f32 *)((char *)arg0 + 0x4BC)) {
-        e = (char *) timproc_uso_b5_func_00008A38(arg0);
+        e = (char *) SelectWin_func_00008A38(arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x7C))(*(s16*)((char *)FW(e, 0x28) + 0x78) + e);
     }
     sp28 = ((flags != 0) == 0);
     if ((sp28 != 0) && (q != 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x100) != 0)) {
-        e = (char *) timproc_uso_b5_func_00008A90((int *) arg0);
+        e = (char *) SelectWin_func_00008A90((int *) arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x8C))(*(s16*)((char *)FW(e, 0x28) + 0x88) + e, 0);
-        timproc_uso_b5_func_00008ABC((int *) arg0);
-        e = (char *) timproc_uso_b5_func_00008A90((int *) arg0);
+        SelectWin_func_00008ABC((int *) arg0);
+        e = (char *) SelectWin_func_00008A90((int *) arg0);
         ((GP_000080F4)FW(FW(e, 0x28), 0x84))(*(s16*)((char *)FW(e, 0x28) + 0x80) + e, 0);
-        if (timproc_uso_b5_func_000087F4(arg0) == 0) {
-            timproc_uso_b5_func_00001C08((char *) FW(arg0, 0x41C));
+        if (SelectWin_func_000087F4(arg0) == 0) {
+            SelectWin_finish_00001C08((char *) FW(arg0, 0x41C));
             return;
         }
-        timproc_uso_b5_func_0000866C((int *) arg0);
-        e = (char *) timproc_uso_b5_func_000087F4(arg0);
+        SelectWin_func_0000866C((int *) arg0);
+        e = (char *) SelectWin_func_000087F4(arg0);
         FW(arg0, 0x3C8) = (int) e;
-        FW(arg0, 0x3C4) = timproc_uso_b5_func_000087A0(arg0, e);
+        FW(arg0, 0x3C4) = gen_func_000087A0(arg0, e);
         FW(arg0, 0x3CC) = 8;
-        timproc_uso_b5_func_00006D30((int *) arg0);
+        SelectWin_func_00006D30((int *) arg0);
         *(f32 *)((char *)arg0 + 0x484) = 1.0f;
-        timproc_uso_b5_func_00008688(arg0, 0);
+        SelectWin_func_00008688(arg0, 0);
         return;
     }
     if ((busy == 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x14003) != 0)) {
-        timproc_uso_b5_func_00006E08(arg0, 1);
+        SelectWin_func_00006E08(arg0, 1);
     }
     import_000A7ECC(&import_80020098, FW(arg0, 0x3B8));
     if ((sp28 != 0) && (timproc_uso_b5_func_011E00(&import_80020098, 0x200) != 0)) {
-        if (timproc_uso_b5_func_000088A0(arg0) == 0) {
-            timproc_uso_b5_func_00006C00(arg0);
+        if (SelectWin_func_000088A0(arg0) == 0) {
+            SelectWin_func_00006C00(arg0);
             return;
         }
         timproc_uso_b5_func_0002FC(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (FW(arg0, 0x3C4) * 4)), FW((arg0 + (FW(arg0, 0x3C4) * 4)), 0x3D0) | FW(arg0, 0x4D4));
@@ -5079,7 +5079,7 @@ void timproc_uso_b5_func_000080F4(char *arg0) {
             busy = 0;
             if (FW(FW(FW(arg0, 0x40C), 0x48), 0x6C) > 0) {
                 do {
-                    r2 = (char *) timproc_uso_b5_func_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
+                    r2 = (char *) SelectWin_func_00001CF0((int *) FW(arg0, 0x41C), FW(arg0, 0x3B8));
                     a1v = (char *) FW(FW(FW(r2, 0x40C), 0x48) + busy, 0x3C);
                     e = (char *) FW(FW(FW(arg0, 0x40C), 0x48) + busy, 0x3C);
                     if (1) {
@@ -5091,30 +5091,30 @@ void timproc_uso_b5_func_000080F4(char *arg0) {
                 } while (flags < FW(FW(FW(arg0, 0x40C), 0x48), 0x6C));
             }
         } else {
-            e = (char *) timproc_uso_b5_func_00008A38(arg0);
+            e = (char *) SelectWin_func_00008A38(arg0);
             ((GP_000080F4)FW(FW(e, 0x28), 0xAC))(*(s16*)((char *)FW(e, 0x28) + 0xA8) + e);
-            e = (char *) timproc_uso_b5_func_00008A38(arg0);
+            e = (char *) SelectWin_func_00008A38(arg0);
             ((GP_000080F4)FW(FW(e, 0x28), 0x6C))(*(s16*)((char *)FW(e, 0x28) + 0x68) + e);
         }
         FW(arg0, 0x3CC) = 6;
-        timproc_uso_b5_func_00008D90((int *) arg0, 1);
-        timproc_uso_b5_func_0000866C((int *) arg0);
-        e = (char *) timproc_uso_b5_func_0000894C(arg0);
+        SelectWin_func_00008D90((int *) arg0, 1);
+        SelectWin_func_0000866C((int *) arg0);
+        e = (char *) SelectWin_func_0000894C(arg0);
         FW(arg0, 0x3C8) = (int) e;
-        FW(arg0, 0x3C4) = timproc_uso_b5_func_000087A0(arg0, e);
-        timproc_uso_b5_func_00006D30((int *) arg0);
-        timproc_uso_b5_func_00008688(arg0, 0);
+        FW(arg0, 0x3C4) = gen_func_000087A0(arg0, e);
+        SelectWin_func_00006D30((int *) arg0);
+        SelectWin_func_00008688(arg0, 0);
     }
 }
 
 
-// timproc_uso_b5_func_00008468 — STRUCTURAL PASS (0x178 / 94 words,
+// SelectWin_state9_00008468 — STRUCTURAL PASS (0x178 / 94 words,
 // no episode). Raw-.word USO form (genuine code). Hand-decoded.
 //
 // Timing-screen state-transition handler (phase-reset branch; sibling
 // of func_000077D8 / func_00007E34).
 //
-//   void timproc_uso_b5_func_00008468(Scr *scr) {        // scr -> s0
+//   void SelectWin_state9_00008468(Scr *scr) {        // scr -> s0
 //     if (func_00000000(&D_0, 0x100)) {                   // phase A
 //       func_00000000(scr);
 //       d = scr->0x28;  (d->0x8C)(d->0x88 + …);            // show
@@ -5156,7 +5156,7 @@ void timproc_uso_b5_func_000080F4(char *arg0) {
 // 2026-10-16 agent-g: LANDED (placeholder callees follow the landed
 //   Yay0-unit convention; block5 is cut from the unlinked .o).
 typedef void (*GPv_8468)();
-void timproc_uso_b5_func_00008468(char *arg0) {
+void SelectWin_state9_00008468(char *arg0) {
     char *temp_v0;
     char *temp_v1;
     s32 temp_v0_2;
@@ -5199,7 +5199,7 @@ void timproc_uso_b5_func_00008468(char *arg0) {
     }
 }
 
-/* timproc_uso_b5_func_000085E0 — MATCHED 2026-07-09 (35/35 words).
+/* SelectWin_state10_000085E0 — MATCHED 2026-07-09 (35/35 words).
  * FPU clamp: decrement a0->0x480 by a0->0xEC toward bound a0->0x484; on
  * crossing the bound, snap + clear 0x3CC + reset 0x488 from 0x104. If
  * already at/past bound (else arm): snap + clear + reset, then
@@ -5209,7 +5209,7 @@ void timproc_uso_b5_func_00008468(char *arg0) {
  * loaded 0x480-first (colors b=$f0 by priority, o=$f2; temps f4/f6/f8);
  * volatile reload of 0x480 for the inner compare (defeats store-forward CSE,
  * restores the lwc1 f8 + nop hazard shape). */
-void timproc_uso_b5_func_000085E0(int *a0) {
+void SelectWin_state10_000085E0(int *a0) {
     float o, b;
     int *v0, *v1;
 
@@ -5226,19 +5226,19 @@ void timproc_uso_b5_func_000085E0(int *a0) {
         *(float *)((char *)a0 + 0x480) = b;
         *(int *)((char *)a0 + 0x3CC) = 0;
         *(int *)((char *)a0 + 0x488) = *(int *)((char *)a0 + 0x104);
-        v0 = (int *)timproc_uso_b5_func_00008A38(a0);
+        v0 = (int *)SelectWin_func_00008A38(a0);
         v1 = (int *)v0[0x28 / 4];
         ((void (*)(int))v1[0x64 / 4])(*(short *)((char *)v1 + 0x60) + (int)v0);
     }
 }
 
-void timproc_uso_b5_func_0000866C(int *a0) {
+void SelectWin_func_0000866C(int *a0) {
     int idx = a0[0x3C4 / 4];
     a0[0x3F0 / 4] = idx;
     a0[0x3F4 / 4] = *(int *)((char *)a0 + (idx << 2) + 0x3D0);
 }
 
-/* timproc_uso_b5_func_00008688: timing-screen camera snapshot + view begin.
+/* SelectWin_func_00008688: timing-screen camera snapshot + view begin.
  * EXACT 2026-10-17 (agent-g run 106, 38.8 -> 100). The old structural body
  * read the mode-dependent begin as a vtable dispatch on scr->0x28; it is
  * three cfront VIRTUAL CALLS on objects returned by the in-unit getters
@@ -5247,7 +5247,7 @@ void timproc_uso_b5_func_0000866C(int *a0) {
  * mode == 2) and an unconditional third call. The 0x4B4/0x3F8 stores are the
  * constant 1 (not mode), and the missing 0x400 store is
  * (int)(scr->0x104 * 0.75f). */
-void timproc_uso_b5_func_00008688(char *scr, int mode) {
+void SelectWin_func_00008688(char *scr, int mode) {
     char *n = *(char **)(scr + 0x414);
     char *v0;
     char *v1;
@@ -5263,21 +5263,21 @@ void timproc_uso_b5_func_00008688(char *scr, int mode) {
     *(s32 *)(scr + 0x3FC) = *(s32 *)(scr + 0x404);
     *(s32 *)(scr + 0x400) = (f32)*(s32 *)(scr + 0x104) * 0.75f;
     if (mode == 1) {
-        v0 = (char *)timproc_uso_b5_func_00008AD4((int *)scr);
+        v0 = (char *)SelectWin_func_00008AD4((int *)scr);
         v1 = *(char **)(v0 + 0x28);
         ((void (*)(char *))*(int *)(v1 + 0x6C))(*(s16 *)(v1 + 0x68) + v0);
     }
     if (mode == 2) {
-        v0 = (char *)timproc_uso_b5_func_00008AD4((int *)scr);
+        v0 = (char *)SelectWin_func_00008AD4((int *)scr);
         v1 = *(char **)(v0 + 0x28);
         ((void (*)(char *))*(int *)(v1 + 0x74))(*(s16 *)(v1 + 0x70) + v0);
     }
-    v0 = (char *)timproc_uso_b5_func_00008A38(scr);
+    v0 = (char *)SelectWin_func_00008A38(scr);
     v1 = *(char **)(v0 + 0x28);
     ((void (*)(char *))*(int *)(v1 + 0x64))(*(s16 *)(v1 + 0x60) + v0);
 }
 
-/* timproc_uso_b5_func_000087A0 [0x87A0..0x87F4), 0x54 (21 words): jumptable
+/* gen_func_000087A0 [0x87A0..0x87F4), 0x54 (21 words): jumptable
  * dispatcher mapping the bit-priority value written to a0->0x3C8 by 87F4/88A0
  * (1/2/4/8) to the slot index stored at a0->0x3C4 (0..3); a0 itself is unused
  * (its `sw a0,0(sp)` home store in the beqz delay is IDO's unused-leading-arg
@@ -5302,7 +5302,7 @@ void timproc_uso_b5_func_00008688(char *scr, int mode) {
  * callers (0x3C8 = 87F4/88A0 result, 0x3C4 indexes the 0x3D0 slot array). The
  * jumptable `lw t6,%lo(.rodata)` %lo now equals the ROM's 0x1D4 via the
  * diff in verify-blocks (target bakes 0x1D4). */
-int timproc_uso_b5_func_000087A0(char *a0, int a1) {
+int gen_func_000087A0(char *a0, int a1) {
     switch (a1) {
     case 1:
         return 0;
@@ -5344,7 +5344,7 @@ int timproc_uso_b5_func_000087A0(char *a0, int a1) {
  * (split-fragments / merge-fragments) makes this switch match as-is. The goto-z
  * funnel is required — a per-case `return 0` makes IDO hoist `move v0,zero`
  * between lw and addiu, shifting the whole body. Multi-tick infra. */
-/* timproc_uso_b5_func_000087F4 [0x87F4..0x88A0), 0xAC (43 words): bit-priority
+/* SelectWin_func_000087F4 [0x87F4..0x88A0), 0xAC (43 words): bit-priority
  * encoder, 8-entry jumptable on a0->0x3C8, THREE case bodies (8 / 1 / 2 per the ROM table),
  * cases 4..8 stacked onto the goto-z funnel. BYTE-EXACT 2026-09-05 (agent-c)
  * after absorbing the mis-split "8894" symbol -- the exact sibling of 88A0+8940:
@@ -5360,7 +5360,7 @@ int timproc_uso_b5_func_000087A0(char *a0, int a1) {
  * about expected/ poisoning and wrong about the boundary: the C body below is
  * unchanged from that NM body except the case labels: the ROM table at RoData
  * +0x1F4 maps 8->881C, 1->8854, 2->887C (labels fixed 2026-10-16). */
-int timproc_uso_b5_func_000087F4(char *a0) {
+int SelectWin_func_000087F4(char *a0) {
     int v0;
     switch (*(int *)(a0 + 0x3C8)) {
     case 8:
@@ -5387,7 +5387,7 @@ int timproc_uso_b5_func_000087F4(char *a0) {
 z:
     return 0;
 }
-/* timproc_uso_b5_func_000088A0 [0x88A0..0x894C), 0xAC (43 words): 87F4's
+/* SelectWin_func_000088A0 [0x88A0..0x894C), 0xAC (43 words): 87F4's
  * mirror bit-priority encoder, 8-entry jumptable on a0->0x3C8, THREE case
  * bodies (cases 1 / 2 / 4 per the ROM table at RoData +0x214), the rest
  * stacked onto the goto-z funnel.
@@ -5404,7 +5404,7 @@ z:
  * retraction was itself wrong about the boundary (the C was already
  * exact). The jumptable %lo now equals the ROM's 0x214 (.rodata relayout,
  * case 3/4 labels fixed from the ROM table 2026-10-16). */
-int timproc_uso_b5_func_000088A0(char *a0) {
+int SelectWin_func_000088A0(char *a0) {
     int v0;
     switch (*(int *)(a0 + 0x3C8)) {
     case 1:
@@ -5434,16 +5434,16 @@ z:
 
 /* int-return K&R form (2026-07-10, 80F4): caller stores the callee's v0
  * passthrough and passes arg0. Codegen identical (v0 untouched here). */
-int timproc_uso_b5_func_0000894C() {
+int SelectWin_func_0000894C() {
     func_00000000();
 }
 
 extern float D_b5_896C_2A0;
-void timproc_uso_b5_func_0000896C(char *a0) {
+void RoomModifier_func_0000896C(char *a0) {
     D_b5_896C_2A0 = *(float *)(a0 + 0x480) * 0.4f;
 }
 
-/* timproc_uso_b5_func_00008988: 37-insn (0x94) array-scan loop. BOUNDARY
+/* SelectWin_func_00008988: 37-insn (0x94) array-scan loop. BOUNDARY
  * MERGED 2026-06-02: splat over-split off the loop bottom as a separate
  * symbols (000089DC 16-insn + 00008A1C 7-insn — TWO loop-bottom tails, each
  * with a backward branch landing inside this body: 89DC->0x89B0, 8A1C->0x89FC).
@@ -5474,7 +5474,7 @@ void timproc_uso_b5_func_0000896C(char *a0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-s32 timproc_uso_b5_func_00008988(char *arg0, s32 arg1, s32 arg2) {
+s32 SelectWin_func_00008988(char *arg0, s32 arg1, s32 arg2) {
   s32 i;
   s32 n;
   char *e;
@@ -5520,24 +5520,24 @@ s32 timproc_uso_b5_func_00008988(char *arg0, s32 arg1, s32 arg2) {
   return 0;
 }
 
-/* timproc_uso_b5_func_00008A38/A64/A90: indexed double-deref accessors. The
+/* SelectWin_func_00008A38/A64/A90: indexed double-deref accessors. The
  * addu operand-order lever (scaled index FIRST, fully inlined — no named
  * locals) emits the target's all-$t allocation. */
 /* K&R param form (2026-07-10, 80F4): lets 80F4 pass an invisible extra a1
  * arg (target precolors the 1D1C-result web a1). Codegen identical. */
-int timproc_uso_b5_func_00008A38(a0)
+int SelectWin_func_00008A38(a0)
 int *a0;
 {
     return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3D0) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
 }
 
 /* Sibling of _00008A38 (offsets 0x3CC/0x3C). */
-int timproc_uso_b5_func_00008A64(int *a0) {
+int SelectWin_func_00008A64(int *a0) {
     return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3CC) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x3C) + 0x3C);
 }
 
 /* Sibling of _00008A38 (offsets 0x3E0/0x40). */
-int timproc_uso_b5_func_00008A90(int *a0) {
+int SelectWin_func_00008A90(int *a0) {
     return *(int *)(*(int *)((char *)a0 + *(int *)((char *)a0 + 0x3C4) * 4 + 0x3E0) * 4 + *(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
 }
 
@@ -5547,17 +5547,17 @@ int timproc_uso_b5_func_00008A90(int *a0) {
 // the addu base-first (addu v0,a0,t7) with the target's t6/t7/v0/t8 registers.
 // The &a0[idx] + char*-offset form emitted index-first addu (was INSN_PATCH'd,
 // banned 2026-05-23). See docs/IDO_CODEGEN.md#feedback-ido-indexed-double-deref-allt-cap.
-void timproc_uso_b5_func_00008ABC(int *a0) {
+void SelectWin_func_00008ABC(int *a0) {
     a0[a0[0x3C4 / 4] + 0x3E0 / 4] = a0[a0[0x3C4 / 4] + 0x3D0 / 4];
 }
 
-/* timproc_uso_b5_func_00008AD4: double-indexed double-deref accessor. Same
+/* SelectWin_func_00008AD4: double-indexed double-deref accessor. Same
  * addu operand-order lever (scaled index FIRST, fully inlined). */
-int timproc_uso_b5_func_00008AD4(int *a0) {
+int SelectWin_func_00008AD4(int *a0) {
     return *(int *)(*(int *)((char *)a0 + 0x3F4) * 4 + *(int *)(*(int *)((char *)a0 + 0x3F0) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x3C);
 }
 
-// timproc_uso_b5_func_00008AFC — STRUCTURAL PASS (no episode).
+// RoomModifier_func_00008AFC — STRUCTURAL PASS (no episode).
 // Raw-.word USO. BOUNDARY NOTE: this .s is a 3-function USO bundle
 // (3 jr-ra). Named fn 0x8AFC..0x8C18 (~70 words) is the draw loop;
 // 2 trailing tiny getters (0x8C1C: idx=scr->0x3C4 ->
@@ -5565,7 +5565,7 @@ int timproc_uso_b5_func_00008AD4(int *a0) {
 // deferred USO re-split.
 //
 // Named fn = timing-screen multi-element draw loop (2-level):
-//   void timproc_uso_b5_func_00008AFC(Scr *scr) {        // scr -> s2
+//   void RoomModifier_func_00008AFC(Scr *scr) {        // scr -> s2
 //     float K = F32(D_00000238);
 //     for (g = 0; g < numGroups; g++) {                   // scr->0x40C[]
 //       grp = scr->0x40C + g*N;
@@ -5607,21 +5607,21 @@ int timproc_uso_b5_func_00008AD4(int *a0) {
  * residual above was the front end plus K being a source literal 0.9f (donor
  * .rodata pinned at RoData +0x238). The placeholder only re-emits that one
  * .rodata word the INCLUDE_ASM .s carried; the splice drops its text. */
-void timproc_uso_b5_func_00008AFC(char *scr) {
+void RoomModifier_func_00008AFC(char *scr) {
     *(volatile float *)scr = 0.9f;
 }
 
-/* timproc_uso_b5_func_00008C1C: indexed double-deref accessor. addu operand
+/* SelectWin_func_00008C1C: indexed double-deref accessor. addu operand
  * order lever: scaled index FIRST (idx*4 + base) emits the target all-$t. */
-int timproc_uso_b5_func_00008C1C(int *a0) {
+int SelectWin_func_00008C1C(int *a0) {
     return *(int *)(*(int *)(*(int *)((char *)a0 + 0x3C4) * 4 + *(int *)((char *)a0 + 0x40C) + 0x40) + 0x6C);
 }
 
-int timproc_uso_b5_func_00008C38(char *scr) {
+int SelectWin_func_00008C38(char *scr) {
     return *(int *)(*(char **)(scr + 0x40C) + 0x3C);
 }
 
-/* timproc_uso_b5_func_00008C44: timing-screen slot classification query.
+/* SelectWin_func_00008C44: timing-screen slot classification query.
  * 2026-10-17 agent-g (run 106) 22.9 -> 98.4 (old structural body had the
  * logic inverted). Decode: c = *(import_800201EC + 0x154); n = (u16)c->2 - 4;
  * for n in [0,2) scan the (n+1)-entry int table D_807FE78C+0xF1C and return
@@ -5638,7 +5638,7 @@ int timproc_uso_b5_func_00008C38(char *scr) {
  * found by scripts/blockcut-search.py (k = 2, 231 variants). */
 extern struct DBlk_8D38 import_800201EC;
 extern char timproc_uso_b5_D_807FE78C;
-int timproc_uso_b5_func_00008C44(char *r) {
+int SelectWin_func_00008C44(char *r) {
     char *c = *(char **)((char *)&import_800201EC + 0x154);
     int n = *(u16 *)(c + 2) - 4;
     int cnt;
@@ -5651,7 +5651,7 @@ int timproc_uso_b5_func_00008C44(char *r) {
             i = 0; if (1) {}
             p = (int *)((char *)&timproc_uso_b5_D_807FE78C + 0xF1C);
             do {
-                if (*p == *(int *)((char *)timproc_uso_b5_func_00008A38(r) + 0x2B0) + 1) {
+                if (*p == *(int *)((char *)SelectWin_func_00008A38(r) + 0x2B0) + 1) {
                     return i + 1;
                 }
                 i++;
@@ -5661,13 +5661,13 @@ int timproc_uso_b5_func_00008C44(char *r) {
         c = *(char **)((char *)&import_800201EC + 0x154);
     }
     if (*(u8 *)(c + 0xE) == 0xFC && *(u8 *)(c + 0xF) == 0xFF && *(u8 *)(c + 0x10) == 7 &&
-        *(int *)((char *)timproc_uso_b5_func_00008A38(r) + 0x2B0) == 4) {
+        *(int *)((char *)SelectWin_func_00008A38(r) + 0x2B0) == 4) {
         return 3;
     }
     return 0;
 }
 
-/* timproc_uso_b5_func_00008D38: 21-insn frameless bit-scan leaf
+/* SelectWin_func_00008D38: 21-insn frameless bit-scan leaf
  * (boundary-merged 2026-06-02 from the 8D78 tail).
  * DECODE RE-CORRECTED 2026-06-20: the prior "DECODE CORRECTED 2026-06-10"
  * was WRONG -- it claimed the bitmap base is the ARG (a0->0x154). The .s
@@ -5693,7 +5693,7 @@ int timproc_uso_b5_func_00008C44(char *r) {
  * everything by one (21 diffs) -- the 2-local goto form is the floor. for/
  * do-while regress to 12. Genuine 2-axis regalloc+IV-collapse cap; do NOT
  * re-run the -O matrix. */
-/* timproc_uso_b5_func_00008D38 — EXACT 22/22 words (in-tree, fresh make RUN_CC_CHECK=0 build).
+/* SelectWin_func_00008D38 — EXACT 22/22 words (in-tree, fresh make RUN_CC_CHECK=0 build).
  * Default -O2. Bit-scan leaf: reads a global byte table pointer at
  * import_800201EC+0x154 (struct-cast-fold: reloc to base, 0x154 folds into lw),
  * scans bits 0..23 of table[(i>>3)+6]; first CLEAR bit -> return 0, all set -> return 3.
@@ -5709,7 +5709,7 @@ int timproc_uso_b5_func_00008C44(char *r) {
  */
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern struct DBlk_8D38 import_800201EC;
-s32 timproc_uso_b5_func_00008D38(char *a0) {
+s32 SelectWin_func_00008D38(char *a0) {
     s32 i;
     unsigned char *p;
     s32 k;
@@ -5724,7 +5724,7 @@ s32 timproc_uso_b5_func_00008D38(char *a0) {
     return 3;
 }
 
-void timproc_uso_b5_func_00008D90(int *a0, int a1) {
+void SelectWin_func_00008D90(int *a0, int a1) {
     if (a1 == 0) {
         a0[0x4A4 / 4] = 0;
     } else {
@@ -5734,7 +5734,7 @@ void timproc_uso_b5_func_00008D90(int *a0, int a1) {
     a0[0x4B0 / 4] = *(int *)((char *)&D_00000000 + 0xF18);
 }
 
-// timproc_uso_b5_func_00008DB4 — STRUCTURAL PASS w/ REAL SYMBOLS
+// gen_createScene_00008DB4 — STRUCTURAL PASS w/ REAL SYMBOLS
 // (0x1E4 / 121 words, no episode). Timing-screen sub-panel constructor
 // (alloc-or-reuse); returns self. Default build is INCLUDE_ASM.
 //
@@ -5768,7 +5768,7 @@ void timproc_uso_b5_func_00008D90(int *a0, int a1) {
 // zero,f0` into the gap by itself. v0 C39C base coloring falls out
 // once the cached-base register is gone.
 extern struct C2CC_8DB4 { char _a[0x1C4]; int f1C4; } import_8005C2CC;
-char *timproc_uso_b5_func_00008DB4(char *self, int a1) {
+char *gen_createScene_00008DB4(char *self, int a1) {
     extern int timproc_uso_b5_func_055750();
     extern int timproc_uso_b5_func_002C94();
     extern int timproc_uso_b5_func_04C678();
@@ -5827,13 +5827,13 @@ char *timproc_uso_b5_func_00008DB4(char *self, int a1) {
         *(int *)(A + 0x4) = 1;
     }
     *(char **)(A + 0x14) = (char *)&import_80020098;
-    *(int *)(self + 0x00) = timproc_uso_b5_func_0000131C(0, a1);
+    *(int *)(self + 0x00) = gen_buildRoom_0000131C(0, a1);
     if (a1 == 1) {
-        *(int *)(self + 0x04) = timproc_uso_b5_func_0000283C(0, 1, 1, 0x3C);
+        *(int *)(self + 0x04) = gen_createCamera_0000283C(0, 1, 1, 0x3C);
         goto end;
     }
-    *(int *)(self + 0x04) = timproc_uso_b5_func_0000283C(0, 1, 2, 0x29);
-    p39c = (char *)timproc_uso_b5_func_0000283C(0, 2, 3, 0x29);
+    *(int *)(self + 0x04) = gen_createCamera_0000283C(0, 1, 2, 0x29);
+    p39c = (char *)gen_createCamera_0000283C(0, 2, 3, 0x29);
     *(char **)(self + 0x08) = p39c;
     *(int *)(*(char **)(p39c + 0x0C) + 0x1B8) = *(int *)(*(char **)(self + 0x04) + 0x0C);
 end:
@@ -5846,14 +5846,14 @@ end:
  * load and assigns $v1 to p1 + $v0 to p2 (target's reg layout). Writing
  * p1 first (the natural order) gives the swap. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
-void timproc_uso_b5_func_00008F98(char *a0) {
+void CommonInfo_vfunc8_00008F98(char *a0) {
     int *p2 = *(int**)((char*)*(int*)(a0 + 0x2C) + 0x28);
     int p1 = *(int*)(a0 + 0x2C);
     (*(int(**)())((char*)p2 + 0x5C))(*(short*)((char*)p2 + 0x58) + p1);
 }
 
 
-// timproc_uso_b5_func_00008FC8 — STRUCTURAL PASS (0x19B4 / 1645 words,
+// SelItemsMgr_ctor — STRUCTURAL PASS (0x19B4 / 1645 words,
 // no episode). Raw-.word USO form. LARGEST function in this segment —
 // entry/alloc/fan-out partial pass only; multi-run target.
 // BOUNDARY NOTE: 3-jr USO bundle (named master ctor + 2 tiny trailing
@@ -5861,7 +5861,7 @@ void timproc_uso_b5_func_00008F98(char *a0) {
 //
 // Timing-screen MASTER constructor (the full timing/replay HUD screen
 // assembly):
-//   void *timproc_uso_b5_func_00008FC8(Obj *self, a1) {
+//   void *SelItemsMgr_ctor(Obj *self, a1) {
 //     if (!self) { self = func_00000000(0x60); if (!self) return 0; }
 //     func_00000000(self, &D_00001348);                  // base-init
 //     self->0x28 = &D_0;  self->0x0C = &D_00001350;        // vtable/desc
@@ -5919,8 +5919,8 @@ extern int timproc_uso_b5_func_05D0E0();
 extern int timproc_uso_b5_func_04C774();
 extern void timproc_uso_b5_func_048E7C();
 extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-extern int timproc_uso_b5_func_0000A95C();
-void timproc_uso_b5_func_0000A928(int *a0);
+extern int CommonInfo_add_0000A95C();
+void CommonInfo_init_0000A928(int *a0);
 extern char import_80063D04[];
 extern char import_800664C4[];
 extern char import_807664C4[];
@@ -6094,7 +6094,7 @@ extern char f8fc8_e304_1[], f8fc8_e304_2[], f8fc8_e304_3[], f8fc8_e304_4[], f8fc
 #endif
 /* superseded m2c body, kept for reference only (the function is exact via the cfe donor below) */
 #if 0
-void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
+void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     VecH sp154;
     VecH sp148;
     VecH sp13C;
@@ -6158,7 +6158,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 4) = 1;
         }
         M2C_FIELD(pv0, s32 **, 0x14) = var_s2;
-        timproc_uso_b5_func_0000A928(var_s2);
+        CommonInfo_init_0000A928(var_s2);
         pv0 = timproc_uso_b5_func_055750(0x2C);
         if (pv0 != 0) {
             timproc_uso_b5_func_04C678(pv0, timproc_uso_b5_D_807FEBE0 + 0x1370);
@@ -6179,12 +6179,12 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
                 if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
                     timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FEBF4 + 0x1384);
                     M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
-                    timproc_uso_b5_func_00002B74(ps0 + 0x2C);
-                    timproc_uso_b5_func_000032C8(ps0 + 0x194);
+                    SelItemParms_ctor(ps0 + 0x2C);
+                    SelItemInfo_ctor(ps0 + 0x194);
                 }
                 M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FEBFC + 0x8B4);
                 M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FEBFC + 0x138C);
-                timproc_uso_b5_func_00003890(pv0);
+                SelItem_reset_00003890(pv0);
             }
             M2C_FIELD(var_s2, char **, 0x5C) = pv0;
             timproc_uso_b5_func_07ACE0(sp50, pv0);
@@ -6307,7 +6307,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 0x34) = (s32) M2C_FIELD(M2C_FIELD((&import_80020098), char **, 0x134), s32 *, 0x8C);
         }
         sp12C = pv0;
-        timproc_uso_b5_func_0000A95C(var_s2, pv0);
+        CommonInfo_add_0000A95C(var_s2, pv0);
         timproc_uso_b5_func_07ACE0(sp50, sp12C);
         if (M2C_FIELD(sp12C, s32 **, 0x14) != 0) {
             M2C_FIELD(sp12C, s32 *, 4) = 1;
@@ -6333,7 +6333,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 0x34) = (s32) M2C_FIELD(M2C_FIELD((&import_80020098), char **, 0x134), s32 *, 0x8C);
         }
         sp128 = pv0;
-        timproc_uso_b5_func_0000A95C(var_s2, pv0);
+        CommonInfo_add_0000A95C(var_s2, pv0);
         timproc_uso_b5_func_07ACE0(sp50, sp128);
         if (M2C_FIELD(sp128, s32 **, 0x14) != 0) {
             M2C_FIELD(sp128, s32 *, 4) = 1;
@@ -6359,7 +6359,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 0x34) = (s32) M2C_FIELD(M2C_FIELD((&import_80020098), char **, 0x134), s32 *, 0x8C);
         }
         sp124 = pv0;
-        timproc_uso_b5_func_0000A95C(var_s2, pv0);
+        CommonInfo_add_0000A95C(var_s2, pv0);
         timproc_uso_b5_func_07ACE0(sp50, sp124);
         if (M2C_FIELD(sp124, s32 **, 0x14) != 0) {
             M2C_FIELD(sp124, s32 *, 4) = 1;
@@ -6385,7 +6385,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             M2C_FIELD(pv0, s32 *, 0x34) = (s32) M2C_FIELD(M2C_FIELD((&import_80020098), char **, 0x134), s32 *, 0x8C);
         }
         sp120 = pv0;
-        timproc_uso_b5_func_0000A95C(var_s2, pv0);
+        CommonInfo_add_0000A95C(var_s2, pv0);
         timproc_uso_b5_func_07ACE0(sp50, sp120);
         if (M2C_FIELD(sp120, s32 **, 0x14) != 0) {
             M2C_FIELD(sp120, s32 *, 4) = 1;
@@ -6397,12 +6397,12 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
                 timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FECE4 + 0x1474);
                 M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
-                timproc_uso_b5_func_00002B74(ps0 + 0x2C);
-                timproc_uso_b5_func_000032C8(ps0 + 0x194);
+                SelItemParms_ctor(ps0 + 0x2C);
+                SelItemInfo_ctor(ps0 + 0x194);
             }
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FECEC + 0x8B4);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FECEC + 0x147C);
-            timproc_uso_b5_func_00003890(pv0);
+            SelItem_reset_00003890(pv0);
         }
         M2C_FIELD(var_s2, char **, 0x54) = pv0;
         timproc_uso_b5_func_07ACE0(sp50, pv0);
@@ -6507,12 +6507,12 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             if ((pv0 != 0) || (pw0 = timproc_uso_b5_func_055750(0x2B8), ps0 = pw0, (pw0 != 0))) {
                 timproc_uso_b5_func_04C678(ps0, timproc_uso_b5_D_807FED80 + 0x1510);
                 M2C_FIELD(ps0, s8 **, 0x28) = (&timproc_uso_b5_D_807FDB64);
-                timproc_uso_b5_func_00002B74(ps0 + 0x2C);
-                timproc_uso_b5_func_000032C8(ps0 + 0x194);
+                SelItemParms_ctor(ps0 + 0x2C);
+                SelItemInfo_ctor(ps0 + 0x194);
             }
             M2C_FIELD(pv0, s8 **, 0x28) = (s8 *) (timproc_uso_b5_D_807FED88 + 0x8B4);
             M2C_FIELD(pv0, s8 **, 0xC) = (s8 *) (timproc_uso_b5_D_807FED88 + 0x1518);
-            timproc_uso_b5_func_00003890(pv0);
+            SelItem_reset_00003890(pv0);
         }
         M2C_FIELD(var_s2, char **, 0x58) = pv0;
         timproc_uso_b5_func_07ACE0(sp50, pv0);
@@ -6690,7 +6690,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
  * through the pinned DF_xxx / DS_xxx, and its jumptable at +0x324) that the INCLUDE_ASM .s carried as
  * .late_rodata (docs/MATCHING_WORKFLOW.md #game-uso-rodata-relayout-late-rodata): 63 distinct float
  * literals with a nonzero low half, so every later %lo in block 5 keeps its ROM value. */
-void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
+void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     *(volatile float *)arg1 = 2.0137f; *(volatile float *)arg1 = 2.0274f; *(volatile float *)arg1 = 2.0411f;
     *(volatile float *)arg1 = 2.0548f; *(volatile float *)arg1 = 2.0685f; *(volatile float *)arg1 = 2.0822f;
     *(volatile float *)arg1 = 2.0959f; *(volatile float *)arg1 = 2.1096f; *(volatile float *)arg1 = 2.1233f;
@@ -6715,14 +6715,14 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
     return 0;
 }
 
-void timproc_uso_b5_func_0000A928(int *a0) {
+void CommonInfo_init_0000A928(int *a0) {
     a0[0x2C / 4] = *(int *)(*(int *)((char *)&D_00000000 + 0x134) + 0x84);
     a0[0x30 / 4] = *(int *)(*(int *)((char *)&D_00000000 + 0x134) + 0x80);
     a0[0x34 / 4] = *(int *)(*(int *)((char *)&D_00000000 + 0x134) + 0x8C);
     a0[0x3C / 4] = 0;
 }
 
-/* timproc_uso_b5_func_0000A95C: array-append + count-increment, returns a1.
+/* CommonInfo_add_0000A95C: array-append + count-increment, returns a1.
  * EXACT (2026-06-21, decomp-permuter). The residual was a pure 2-insn schedule
  * swap: target emits `addu t8,a0,t7` (array addr) BEFORE `sw t6,0x3C(a0)` (count
  * store), but the natural one-statement-per-line C made IDO schedule the count
@@ -6731,19 +6731,19 @@ void timproc_uso_b5_func_0000A928(int *a0) {
  * before the count sw, matching. Verified IN-TREE against the full-TU build
  * (8/8 words, 0 diffs); the prior "standalone false match" caveat is moot now
  * that the real build is byte-exact. (Twin: bootup_uso ...2088, same pair.) */
-int timproc_uso_b5_func_0000A95C(int *a0, int a1) {
+int CommonInfo_add_0000A95C(int *a0, int a1) {
     int v1 = a0[0x3C / 4];
     a0[0x3C / 4] = v1 + 1; *(int *)((char *)a0 + (v1 << 2) + 0x40) = a1;
     return a1;
 }
 
-/* timproc_uso_b5_func_0000A97C: 23-insn loop calling slot->0x28->0x4C(short@0x48)
+/* SelItemsMgr_vfunc8_0000A97C: 23-insn loop calling slot->0x28->0x4C(short@0x48)
  * per element via the incrementing cursor `p`. MATCHED 2026-06-04 via
  * decomp-permuter (base 35 -> 0): wrapping the inner block in `if (1) { }` adds
  * a basic-block boundary that flips the v0/v1 caller-save allocation to the
  * target's (the cursor-read lands in v1, not v0). The prior "register-renumber
  * cap / branch-likely not reachable from C" comment was a misdiagnosis. */
-void timproc_uso_b5_func_0000A97C(char *a0) {
+void SelItemsMgr_vfunc8_0000A97C(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -6763,11 +6763,11 @@ void timproc_uso_b5_func_0000A97C(char *a0) {
     } while (i < *(int*)(a0 + 0x3C));
 }
 
-/* timproc_uso_b5_func_0000A9EC: sibling of A97C, offsets 0x64/0x60 instead of
+/* SelItemsMgr_vfunc10_0000A9EC: sibling of A97C, offsets 0x64/0x60 instead of
  * 0x4C/0x48. MATCHED 2026-06-04 via the same `if (1) { }` block-boundary lever
  * (flips the v0/v1 allocation). The "structural cap — branch-likely not
  * reachable from std do-while C" comment was a misdiagnosis. */
-void timproc_uso_b5_func_0000A9EC(char *a0) {
+void SelItemsMgr_vfunc10_0000A9EC(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -6787,35 +6787,35 @@ void timproc_uso_b5_func_0000A9EC(char *a0) {
     } while (i < *(int*)(a0 + 0x3C));
 }
 
-void timproc_uso_b5_func_0000AA5C(char *a0) {
+void ParmInt_read_0000AA5C(char *a0) {
     int tmp;
-    timproc_uso_b5_func_00000330(&tmp);
-    timproc_uso_b5_func_00000330((int*)(a0 + 0x10));
+    gen_streamReadS32_00000330(&tmp);
+    gen_streamReadS32_00000330((int*)(a0 + 0x10));
 }
 
 
-void timproc_uso_b5_func_0000AA8C(char *a0) {
+void ParmFloat_read_0000AA8C(char *a0) {
     int tmp;
-    timproc_uso_b5_func_00000330(&tmp);
-    timproc_uso_b5_func_0000036C((float*)(a0 + 0x10));
+    gen_streamReadS32_00000330(&tmp);
+    gen_streamReadF32_0000036C((float*)(a0 + 0x10));
 }
 
 
-void timproc_uso_b5_func_0000AABC(char *a0) {
+void ParmQuad_read_0000AABC(char *a0) {
     int tmp;
-    timproc_uso_b5_func_00000330(&tmp);
-    timproc_uso_b5_func_000003A8((Quad4*)(a0 + 0x10));
+    gen_streamReadS32_00000330(&tmp);
+    gen_streamReadQuad_000003A8((Quad4*)(a0 + 0x10));
 }
 
 
-void timproc_uso_b5_func_0000AAEC(int a0) {
+void GenSelectChar_draw_0000AAEC(int a0) {
 }
 
 
-void timproc_uso_b5_func_0000AAF4(char *a0) {
+void ParmVec3_read_0000AAF4(char *a0) {
     int tmp;
-    timproc_uso_b5_func_00000330(&tmp);
-    timproc_uso_b5_func_00000400((Vec3*)(a0 + 0x10));
+    gen_streamReadS32_00000330(&tmp);
+    gen_streamReadVec3_00000400((Vec3*)(a0 + 0x10));
 }
 
 
@@ -6828,7 +6828,7 @@ void timproc_uso_b5_func_0000AAF4(char *a0) {
  * single-web/vparg body could not reach. */
 extern int timproc_uso_b5_func_051C28();
 extern char import_8006ED80;
-void *timproc_uso_b5_func_0000AB24(int *arg0) {
+void *GenItemType_create_0000AB24(int *arg0) {
     int *p2;
     int *head;
     int *p1;
@@ -6851,32 +6851,32 @@ void *timproc_uso_b5_func_0000AB24(int *arg0) {
     return p2;
 }
 
-void timproc_uso_b5_func_0000ABB4(int *a0) {
+void SelCharAnim_vfunc10_0000ABB4(int *a0) {
     *(int*)((char*)a0 + 0xB0) = 1;
     *(int*)((char*)a0 + 0x64) = -1000;
 }
 
-void timproc_uso_b5_func_0000ABC8(int a0, int a1) {
+void SelItem_vfunc21_0000ABC8(int a0, int a1) {
 }
 
 
-void timproc_uso_b5_func_0000ABD4(int a0, int a1) {
+void SelItem_vfunc22_0000ABD4(int a0, int a1) {
 }
 
-void timproc_uso_b5_func_0000ABE0(int a0, int a1, int a2, int a3) {
+void SelItem_vfunc23_0000ABE0(int a0, int a1, int a2, int a3) {
 }
 
-void timproc_uso_b5_func_0000ABF4(int a0, int a1, int a2) {
+void SelItem_vfunc24_0000ABF4(int a0, int a1, int a2) {
 }
 
 
-void timproc_uso_b5_func_0000AC04(int a0, int a1) {
+void SelItem_vfunc25_0000AC04(int a0, int a1) {
 }
 
-void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
+void SelItem_vfunc26_0000AC10(int a0, int a1, int a2) {
 }
 
-// timproc_uso_b5_func_0000AC20 — STRUCTURAL PASS (0x534 / 333 words,
+// SelBoard_display_0000AC20 — STRUCTURAL PASS (0x534 / 333 words,
 // no episode). Raw-.word USO form (genuine code, single function).
 // Heavily FP-math (83 FP ops / 19 FP moves / 13 calls) — entry/shape
 // partial pass; multi-run target.
@@ -6884,7 +6884,7 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
 // 3D transform / matrix-vector math routine operating on a transform
 // sub-struct at obj+0xDC.
 //
-//   void timproc_uso_b5_func_0000AC20(Obj *obj, …) {     // obj -> s0
+//   void SelBoard_display_0000AC20(Obj *obj, …) {     // obj -> s0
 //     T *t = (T*)((char*)obj + 0xDC);                     // xform block
 //     // load Vec3s from t / a global, compute scaled / combined
 //     //   products (mul.s/add.s/sub.s chains), build transformed
@@ -6907,20 +6907,20 @@ void timproc_uso_b5_func_0000AC10(int a0, int a1, int a2) {
 //   pre-checked: no extern reuse.
 /* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_AC20.cpp, REPLACE_FUNC_BODY-spliced into both trees
- * (Makefile TIMB5_AC20_DONOR; its .bss relocs pinned as timproc_uso_b5_func_0000AC20_bss = 0).
+ * (Makefile TIMB5_AC20_DONOR; its .bss relocs pinned as SelBoard_display_0000AC20_bss = 0).
  * The superseded 92.41 cfe NM body was dropped (agent-g run 167); the NON_MATCHING branch below is
  * an empty placeholder that the splice replaces. */
 #ifdef NON_MATCHING
 /* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
  * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
  * its own survives the splice. */
-void timproc_uso_b5_func_0000AC20(char *arg0) {
+void SelBoard_display_0000AC20(char *arg0) {
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000AC20);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelBoard_display_0000AC20);
 #endif
 
-/* timproc_uso_b5_func_0000B154: 133-insn (0x214) AI-update orchestrator.
+/* SelTesuri_display_0000B154: 133-insn (0x214) AI-update orchestrator.
  * Frame 0xA8, $s0/$s1 saves. Coarse structure decoded 2026-05-05:
  *
  *   1. Vec3 baseline + delta compute (0xB154-0xB1A8): loads 3 floats from
@@ -6967,19 +6967,19 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * Initial structural pass 2026-05-05. */
 /* EXACT 2026-10-24 (agent-g run 167, docs/IDO_CODEGEN.md kit CIX) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B154.cpp, REPLACE_FUNC_BODY-spliced into both trees
- * (Makefile TIMB5_B154_DONOR; pin timproc_uso_b5_func_0000B154_bss = 0). The superseded cfe NM
+ * (Makefile TIMB5_B154_DONOR; pin SelTesuri_display_0000B154_bss = 0). The superseded cfe NM
  * body (agent-f / agent-g 2026-07 decode, see the notes above) was dropped. */
 #ifdef NON_MATCHING
 /* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
  * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
  * its own survives the splice. */
-void timproc_uso_b5_func_0000B154(char *arg0) {
+void SelTesuri_display_0000B154(char *arg0) {
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B154);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelTesuri_display_0000B154);
 #endif
 
-// timproc_uso_b5_func_0000B368 — STRUCTURAL PASS (0x2BC / 175 words,
+// SelCourseMap_display_0000B368 — STRUCTURAL PASS (0x2BC / 175 words,
 // no episode). Raw-.word USO form. BOUNDARY NOTE: 2-jr USO bundle
 // (named fn 0xB368..0xB618 ~172 words + 1 tiny trailing setter
 // 0xB61C `jr ra; sw a0,0(…)`) — deferred USO re-split.
@@ -6987,7 +6987,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 // FP basis/transform builder on the obj+0xDC transform sub-struct —
 // sibling of func_0000AC20 (camera look-at / billboard orientation).
 //
-//   void timproc_uso_b5_func_0000B368(Obj *obj, …) {     // obj -> s0
+//   void SelCourseMap_display_0000B368(Obj *obj, …) {     // obj -> s0
 //     T *t = (T*)((char*)obj + 0xDC);
 //     // load source Vec3s from t (+0x0/+0x4/+0x8 groups) and obj
 //     //   fields; compute cross-products / differences (mul.s/
@@ -7013,24 +7013,24 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 //   pre-checked: no extern reuse.
 /* EXACT 2026-10-24 (agent-g run 166, docs/IDO_CODEGEN.md kit CVII) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B368.cpp, REPLACE_FUNC_BODY-spliced into both trees
- * (Makefile TIMB5_B368_DONOR; pins timproc_uso_b5_func_0000B368_bss / timb5_B368_gscale = 0).
+ * (Makefile TIMB5_B368_DONOR; pins SelCourseMap_display_0000B368_bss / timb5_B368_gscale = 0).
  * The superseded cfe NM body was dropped (agent-g run 167); the NON_MATCHING branch below is
  * an empty placeholder that the splice replaces. */
 #ifdef NON_MATCHING
 /* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
  * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
  * its own survives the splice. */
-void timproc_uso_b5_func_0000B368(char *arg0) {
+void SelCourseMap_display_0000B368(char *arg0) {
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B368);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelCourseMap_display_0000B368);
 #endif
 
 /* Save-arg sentinel: void f(int a0){} → jr ra; sw a0, 0(sp).
  * docs/IDO_CODEGEN.md#feedback-ido-save-arg-sentinel-empty-body */
-void timproc_uso_b5_func_0000B61C(int a0) {}
+void SelCharacter_update_0000B61C(int a0) {}
 
-// timproc_uso_b5_func_0000B624 — FULLY DECODED (single fn, 0x22C / 139
+// SelCharacter_display_0000B624 — FULLY DECODED (single fn, 0x22C / 139
 // insns; the old "0x304/4-jr-bundle" note was WRONG — it is one
 // function ending jr ra at B81C). Disassembled from the matching .o via
 // scripts/disasm-func.py (the raw-.word .s defeats m2c directly).
@@ -7069,19 +7069,19 @@ void timproc_uso_b5_func_0000B61C(int a0) {}
 // no extern reuse.
 /* EXACT 2026-10-25 (agent-g run 167, docs/IDO_CODEGEN.md kit CIX) via an IDO 7.1 NCC (C++) donor:
  * src/timproc_uso_b5/timproc_uso_b5_ncc_B624.cpp, REPLACE_FUNC_BODY-spliced into both trees
- * (Makefile TIMB5_B624_DONOR; pin timproc_uso_b5_func_0000B624_bss = 0). The superseded cfe NM
+ * (Makefile TIMB5_B624_DONOR; pin SelCharacter_display_0000B624_bss = 0). The superseded cfe NM
  * body was dropped (the "FP scheduling cap" above is retracted). */
 #ifdef NON_MATCHING
 /* Placeholder for the non_matching tree only: the donor splice replaces this body there (an
  * INCLUDE_ASM in that tree carries the .NON_MATCHING marker and reports 0). No text or data of
  * its own survives the splice. */
-void timproc_uso_b5_func_0000B624(char *arg0) {
+void SelCharacter_display_0000B624(char *arg0) {
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000B624);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelCharacter_display_0000B624);
 #endif
 
-/* timproc_uso_b5_func_0000B850 [0xB850..0xB914), 0xC4: BOUNDARY MERGE
+/* CharacterItem_vfunc10_0000B850 [0xB850..0xB914), 0xC4: BOUNDARY MERGE
  * 2026-06-10 of the B8E0 tail fragment (B850's bc1f branched into it).
  * Float fade-toward-target helper:
  *   target = a1 (f12); if (a0->f_2A4 == 0) target = 0;
@@ -7098,7 +7098,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * materializes its own v via the if(1){} pointer-mutation lever; v
  * then colors $v1 with no move, and the then-arm re-materializes at
  * +0x58. 49/49 words + reloc sites verified vs target. */
-void timproc_uso_b5_func_0000B850(char *a0, float target) {
+void CharacterItem_vfunc10_0000B850(char *a0, float target) {
     char *st;
     float *v;
     if (*(float *)(a0 + 0x2A4) == 0.0f) {
@@ -7127,25 +7127,25 @@ void timproc_uso_b5_func_0000B850(char *a0, float target) {
     }
 }
 
-void timproc_uso_b5_func_0000B914(int *a0) {
+void CharacterItem_vfunc17_0000B914(int *a0) {
     *(int*)((char*)a0 + 0x2B4) ^= 0x20000;
 }
 
-void timproc_uso_b5_func_0000B928(int *a0) {
+void CharacterItem_vfunc18_0000B928(int *a0) {
     int *p = (int*)a0[0x2B8/4];
     gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 1, 1, 1);
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = -1000;
 }
 
-void timproc_uso_b5_func_0000B98C(int *a0) {
+void CharacterItem_vfunc19_0000B98C(int *a0) {
     int *p = (int*)a0[0x2B8/4];
     gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 2, 3, 1, 1);
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = -1000;
 }
 
-void timproc_uso_b5_func_0000B9F0(int *a0) {
+void CharacterItem_vfunc20_0000B9F0(int *a0) {
     int *p = (int*)a0[0x2B8/4];
     gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 2, 1, 1);
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0x64) = 2;
@@ -7153,7 +7153,7 @@ void timproc_uso_b5_func_0000B9F0(int *a0) {
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 0x10;
 }
 
-void timproc_uso_b5_func_0000BA60(int *a0) {
+void CharacterItem_vfunc11_0000BA60(int *a0) {
     int *p = (int*)a0[0x2B8/4];
     gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 0, 2, 2, 1);
     *(int*)((char*)*(int*)((char*)(int*)a0[0x2B8/4] + 0x10C) + 0xB0) = 0;
@@ -7164,33 +7164,33 @@ void timproc_uso_b5_func_0000BA60(int *a0) {
     *(int*)((char*)a0 + 0x2C0) = 2;
 }
 
-void timproc_uso_b5_func_0000BAE8(int *a0) {
+void CharacterItem_vfunc12_0000BAE8(int *a0) {
     int *p = (int*)a0[0x2B8/4];
     gl_func_00000000(*(int*)((char*)p + 0x10C), *(int*)((char*)p + 0x140), 3, 2, 1, 1);
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x138) = 0;
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 0x20;
 }
 
-void timproc_uso_b5_func_0000BB44(int *a0) {
+void CharacterItem_vfunc13_0000BB44(int *a0) {
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x138) = 0;
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x144) = 8;
 }
 
-void timproc_uso_b5_func_0000BB5C(int a0) {
+void CharacterItem_vfunc14_0000BB5C(int a0) {
 }
 
-void timproc_uso_b5_func_0000BB64(int *a0, int unused) {
+void CharacterItem_vfunc15_0000BB64(int *a0, int unused) {
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x13C) = 1;
 }
 
-void timproc_uso_b5_func_0000BB78(int *a0, int unused) {
+void CharacterItem_vfunc16_0000BB78(int *a0, int unused) {
     *(int*)((char*)(int*)a0[0x2B8/4] + 0x13C) = 0;
 }
 
 /* 16-insn float-quad copy: v0 = a0->_2B8; copies 4 floats from
  * a0->{_25C,_260,_264,_294} into v0->{_114,_118,_110,_11C}, then calls
  * gl_func_00000000. Bundled-leaf trailer split off as 0000BBC8. */
-/* timproc_uso_b5_func_0000BB88/C1B4/CC74/CE6C: 4 sibling 4-float copy + tail-call
+/* CharacterItem_update_0000BB88/C1B4/CC74/CE6C: 4 sibling 4-float copy + tail-call
  * functions. Callee resolved 2026-06-04 to timproc_uso_b5_func_00003F58 (every
  * sibling's .s jal target; was a generic func_/gl_func_00000000 placeholder).
  * RESIDUAL CAP: FP register renumber. Target emits the 0x294 load FIRST into $f14
@@ -7199,14 +7199,14 @@ void timproc_uso_b5_func_0000BB78(int *a0, int unused) {
  * (right regs/reversed emit order), and call-before-last-store (d spills across
  * the call, frame grows). a-load-first-with-$f14 needs the scheduler to hoist a's
  * load while a is the last pseudo - not reachable from C. Stays NM (~97.5%). */
-/* timproc_uso_b5_func_0000BB88/C1B4/CC74/CE6C: 4 sibling 4-float copy + tail-call
+/* CharacterItem_update_0000BB88/C1B4/CC74/CE6C: 4 sibling 4-float copy + tail-call
  * functions. Callee = timproc_uso_b5_func_00003F58 (real intra-module symbol,
  * matches the .s jal). EXACT 16/16 (2026-07-02) — the old "FP register renumber
  * cap" was FALSE. Recipe: loads in decl order a(294),b(264),c(260),d(25C);
  * stores c,d, if(!d){}, b, if(b){}, a. Locals c,d color f2,f0 (d bumped by the
  * branch use); the empty-if BB boundaries globalize b then a, which color from
  * the pool END: b->f12, a->f14. Byte-identical body to C1B4. */
-void timproc_uso_b5_func_0000BB88(int *a0) {
+void CharacterItem_update_0000BB88(int *a0) {
   int *p = (int *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
@@ -7227,13 +7227,13 @@ void timproc_uso_b5_func_0000BB88(int *a0) {
 
 /* 5-insn float store: stores a1 to a0->_2A0 and (a0->_2B8)->_120.
  * Float arg passed in $a1 (int reg), so IDO emits mtc1 to FPU first. */
-void timproc_uso_b5_func_0000BBC8(int *a0, float a1) {
+void CharacterItem_vfunc22_0000BBC8(int *a0, float a1) {
     *(float*)((char*)a0 + 0x2A0) = a1;
     *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x120) = a1;
 }
 
 #ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000BBDC: per-channel (5x) clamp + dispatch loop.
+/* CharacterItem_vfunc25_0000BBDC: per-channel (5x) clamp + dispatch loop.
  * 2026-07-08 RISE 94.21% -> 111/113 words (98.2%, agent-e). Levers landed:
  * volatile pad0/pad2 frame shape, decl order caps-then-idxp (idxp at sp+0x8C,
  * caps at sp+0xA0), --pre-decrement compound test, while(0) i-anchor (pins
@@ -7258,7 +7258,7 @@ void timproc_uso_b5_func_0000BBC8(int *a0, float a1) {
  * 2026-10-22 agent-g run 118: the `volatile int pad0;` at the top of the
  * decl list had been lost (frame 0xB0 vs 0xB8, 15 words); restored -> back
  * to the 2-word preheader tie. NCC (C++) does not help here (88 words). */
-void timproc_uso_b5_func_0000BBDC(int *a0, int *a1) {
+void CharacterItem_vfunc25_0000BBDC(int *a0, int *a1) {
     volatile int pad0;
     int caps[5];
     int *idxp[5];
@@ -7299,7 +7299,7 @@ void timproc_uso_b5_func_0000BBDC(int *a0, int *a1) {
         v1 = (v < *cp) ? v : *cp;
         v = v1;
         if (*(int *)((char *)a1 + 0x3BC) == 1) {
-            timproc_uso_b5_func_00003A4C(
+            SelItem_func_00003A4C(
                 (int)a0,
                 *(int *)((char *)a0 + 0xA4),
                 i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
@@ -7310,7 +7310,7 @@ void timproc_uso_b5_func_0000BBDC(int *a0, int *a1) {
                 (char *)a1);
         } else {
             v1 = 0;
-            timproc_uso_b5_func_00003C8C(
+            SelItem_func_00003C8C(
                 (int)a0,
                 *(int *)((char *)a0 + 0xA4),
                 i * *(int *)((char *)a1 + 0x74) + *(int *)((char *)a0 + 0xBC),
@@ -7326,17 +7326,17 @@ void timproc_uso_b5_func_0000BBDC(int *a0, int *a1) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000BBDC);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CharacterItem_vfunc25_0000BBDC);
 #endif
 
 extern char D_b5_BDA0_table;
-void timproc_uso_b5_func_0000BDA0(int *a0, int a1, int a2, int a3) {
+void CharacterItem_vfunc23_0000BDA0(int *a0, int a1, int a2, int a3) {
     (void)a1; (void)a2; (void)a3;
     gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], (char*)&D_b5_BDA0_table + a0[0x1AC/4] * 24);
 }
 
 #ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000BDEC: 242-insn FPU-heavy color-transform helper.
+/* CharacterItem_vfunc26_0000BDEC: 242-insn FPU-heavy color-transform helper.
  * 0x3C8 size starting at 0xBDEC, ending at 0xC1B4.
  *
  * BUNDLED structure: 13 jr ra in the .s file. Splat couldn't separate the
@@ -7377,7 +7377,7 @@ void timproc_uso_b5_func_0000BDA0(int *a0, int a1, int a2, int a3) {
  * Default INCLUDE_ASM build matches via the bundled symbol. */
 #endif
 #ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000BDEC: two-arrow UI draw. Base x = arg1->0x8C, y =
+/* CharacterItem_vfunc26_0000BDEC: two-arrow UI draw. Base x = arg1->0x8C, y =
  * arg1->0x414->0xC->0xC4 + arg1->0xA4, alpha = (int)(255.0f*arg1->0x4A0). Draws a
  * center icon (0x6E8) then a left arrow (x-0x1E, 0x700) and right arrow (x+0x1E,
  * 0x718), each with a {c,c,c,1}/255 color Vec at &sp54 — c = 192/255 when the
@@ -7431,13 +7431,13 @@ extern int gl_func_00000000();
  * returning int 255 (its cvt is folded by uopt after CSE, so it is not merged with denom's f20).
  * The cfe body that was here is superseded; this empty body is only the non_matching tree's
  * splice placeholder (an INCLUDE_ASM there carries the .NON_MATCHING marker). */
-void timproc_uso_b5_func_0000BDEC(char *arg0, char *arg1, int arg2) {
+void CharacterItem_vfunc26_0000BDEC(char *arg0, char *arg1, int arg2) {
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000BDEC);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CharacterItem_vfunc26_0000BDEC);
 #endif
 
-/* timproc_uso_b5_func_0000C044 [0xC044..0xC108), 0xC4: BOUNDARY MERGE
+/* BoardItem_vfunc10_0000C044 [0xC044..0xC108), 0xC4: BOUNDARY MERGE
  * 2026-06-10 of the C0D4 tail fragment (bc1f crossed the declared size).
  * Second member of the B850 float fade-toward-target family -- identical
  * shape, fields s->f_124 / s->i_12C, step constants at reloc base +0x360/
@@ -7450,7 +7450,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * (arg reg freed by the mtc1) -- the B850 form gives each arm its own
  * v web which colors $v1 like the target. Steps are 0.1f literals
  * (RoData +0x360/+0x364). 49/49 words. */
-void timproc_uso_b5_func_0000C044(char *a0, float target) {
+void BoardItem_vfunc10_0000C044(char *a0, float target) {
     char *st;
     float *v;
     if (*(float *)(a0 + 0x2A4) == 0.0f) {
@@ -7479,16 +7479,16 @@ void timproc_uso_b5_func_0000C044(char *a0, float target) {
     }
 }
 
-void timproc_uso_b5_func_0000C108(int a0) {
+void BoardItem_vfunc18_0000C108(int a0) {
 }
 
-void timproc_uso_b5_func_0000C110(int a0) {
+void BoardItem_vfunc19_0000C110(int a0) {
 }
 
-void timproc_uso_b5_func_0000C118(int a0) {
+void BoardItem_vfunc20_0000C118(int a0) {
 }
 
-void timproc_uso_b5_func_0000C120(int *a0) {
+void BoardItem_vfunc11_0000C120(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x12C) = 1;
     *(float*)((char*)a0[0x2B8/4] + 0x10C) = 0.0f;
     *(int*)((char*)a0 + 0x2BC) = 0;
@@ -7496,32 +7496,32 @@ void timproc_uso_b5_func_0000C120(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
 }
 
-void timproc_uso_b5_func_0000C150(int *a0) {
+void BoardItem_vfunc12_0000C150(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x12C) = 0;
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
 }
 
-void timproc_uso_b5_func_0000C164(int *a0) {
+void BoardItem_vfunc13_0000C164(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
 }
 
-void timproc_uso_b5_func_0000C170(int *a0) {
+void BoardItem_vfunc14_0000C170(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
 }
 
-void timproc_uso_b5_func_0000C180(int *a0) {
+void BoardItem_vfunc17_0000C180(int *a0) {
     *(int*)((char*)a0 + 0x2B4) ^= 0x20;
 }
 
-void timproc_uso_b5_func_0000C190(int *a0, int a1) {
+void BoardItem_vfunc15_0000C190(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
 }
 
-void timproc_uso_b5_func_0000C1A4(int *a0, int a1) {
+void BoardItem_vfunc16_0000C1A4(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
 }
 
-/* timproc_uso_b5_func_0000C1B4: 16-insn 4-float copy + cross-USO call.
+/* BoardItem_update_0000C1B4: 16-insn 4-float copy + cross-USO call.
  * NATURAL CEILING: 97.5% NM. The 5-insn alt-entry tail at sp+0x40..0x50
  * (different `(a0, a1)` arg shape, jal'd directly into the post-epilogue
  * region by a separate caller — `mtc1 a1,f12; lw t6; swc1 f12,0x2A0(a0);
@@ -7531,7 +7531,7 @@ void timproc_uso_b5_func_0000C1A4(int *a0, int a1) {
  * entry only. */
 extern int func_00000000();
 extern int func_df14f(void *, void *, float, float, float);
-/* timproc_uso_b5_func_0000C1B4: 16-insn 4-float copy + cross-USO call.
+/* BoardItem_update_0000C1B4: 16-insn 4-float copy + cross-USO call.
  * EXACT 16/16 (2026-07-02). The old "FP register renumber cap" was cracked:
  * IDO colors single-BB local FP pseudos from pool {f0,f2,f12,f14} in
  * def(load)-order (use-count breaks ties), while BB-CROSSING pseudos color
@@ -7543,7 +7543,7 @@ extern int func_df14f(void *, void *, float, float, float);
  * store order. See docs/IDO_CODEGEN.md FP-pool coloring entry. */
 extern int func_00000000();
 extern int func_df14f(void *, void *, float, float, float);
-void timproc_uso_b5_func_0000C1B4(int *a0) {
+void BoardItem_update_0000C1B4(int *a0) {
   int *p = (int *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
@@ -7562,18 +7562,18 @@ void timproc_uso_b5_func_0000C1B4(int *a0) {
   timproc_uso_b5_func_00003F58();
 }
 
-/* timproc_uso_b5_func_0000C1F4: 5-insn float-store, RECOVERED 2026-05-28
+/* BoardItem_vfunc22_0000C1F4: 5-insn float-store, RECOVERED 2026-05-28
  * from the Yay0 gap (no .s, missing from build; bytes from block_5). o32
  * float-after-int arg arrives in $a1 -> mtc1; inline-deref of a0->0x2B8
  * keeps the dest pointer in $t6 (byte-exact). */
-void timproc_uso_b5_func_0000C1F4(int *a0, float val) {
+void BoardItem_vfunc22_0000C1F4(int *a0, float val) {
     *(float*)((char*)a0 + 0x2A0) = val;
     *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x120) = val;
 }
 
 extern char D_b5_C208_table0;
 extern char D_b5_C208_table1;
-void timproc_uso_b5_func_0000C208(int *a0, int a1, int a2, int a3) {
+void BoardItem_vfunc23_0000C208(int *a0, int a1, int a2, int a3) {
     (void)a1;
     gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], a2, a3,
                      (char*)&D_b5_C208_table0 + a0[0x1AC/4] * 24, 0xFF);
@@ -7584,12 +7584,12 @@ void timproc_uso_b5_func_0000C208(int *a0, int a1, int a2, int a3) {
 }
 
 extern char D_b5_C2C0_table;
-void timproc_uso_b5_func_0000C2C0(int *a0, int a1, int a2) {
+void BoardItem_vfunc24_0000C2C0(int *a0, int a1, int a2) {
     (void)a1;
     gl_func_00000000(a0, a0[0x104/4], a0[0x11C/4], (char*)&D_b5_C2C0_table + a2 * 24, 0xFF);
 }
 
-// timproc_uso_b5_func_0000C310 — STRUCTURAL PASS (0x400 / 256 words,
+// BoardItem_vfunc25_0000C310 — STRUCTURAL PASS (0x400 / 256 words,
 // no episode). Raw-.word USO form (single function; boundary already
 // split by commit 8de6787e — the named fn itself was still
 // undecoded). Hand-decoded.
@@ -7598,7 +7598,7 @@ void timproc_uso_b5_func_0000C2C0(int *a0, int a1, int a2) {
 // fixed-capacity (0xA) ring buffer, then runs FP processing over the
 // obj's parallel sub-arrays.
 //
-//   void timproc_uso_b5_func_0000C310(Obj *obj, A a1) {  // obj->s0
+//   void BoardItem_vfunc25_0000C310(Obj *obj, A a1) {  // obj->s0
 //     if (obj->0x2BC < 0xA) {                             // ring not full
 //       if (--obj->0x2C0 < 0) obj->0x2C0 = …;             // read idx wrap
 //       obj->0x2BC += 2;                                   // write idx adv
@@ -7640,7 +7640,7 @@ void timproc_uso_b5_func_0000C2C0(int *a0, int a1, int a2) {
  * (target issues `move s1,zero` late, after the vals loads). Left: the 1 in t0 at the loop top, the
  * mv / mv2 v1 / v0 copy, and one home slot (target cols 136 / ptrs 156 / vals 176, ours anchored 4 high). */
 extern char timproc_uso_b5_D_807FFAA8_b;  /* same target sym as D_807FFAA8; split name kills %hi CSE (reloc-masked) */
-void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
+void BoardItem_vfunc25_0000C310(char *arg0, char *arg1) {
     f32 sp60; /* run 162: declared first (relocation sweep, 93.75 -> 93.79) */
     s32 vals[5];
     char *ptrs[5];
@@ -7681,9 +7681,9 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
         }
         mv2 = mv;
         if (*(s32 *)(arg1 + 0x3BC) - 1 == 0) {
-            timproc_uso_b5_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            SelItem_func_00003A4C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (int)fb, mv, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         } else {
-            timproc_uso_b5_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
+            SelItem_func_00003C8C((int)arg0, *(s32 *)(arg0 + 0xA4), *(s32 *)(arg0 + 0xBC) + i * *(s32 *)(arg1 + 0x74), (char *)fb, mv2, (s32)*pp, (s32)(arg1 + 0x230), arg1);
         }
         i++;
         pv++;
@@ -7702,7 +7702,7 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[2] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
+                SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAD8 + 0x658), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA78 + 0x5F8;
             } else {
                 fnum = 105.0f;
@@ -7713,11 +7713,11 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
                 fnum2 = 155.0f;
                 cols[1] = fnum2 / 255.0f;
                 sp60 = fone / 255.0f;
-                timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
+                SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)(&timproc_uso_b5_D_807FFAF0 + 0x670), 0xFF);
                 hud = &timproc_uso_b5_D_807FFA90 + 0x610;
             }
             sp60 = sp60;
-            timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)hud, 0xFF);
+            SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4), *(s32 *)(arg0 + 0xEC), cols, (int)hud, 0xFF);
             if ((++*(s32 *)(arg0 + 0x2C4)) & 8) {
                 f32 fzero;
                 char *pa, *pb;
@@ -7731,9 +7731,9 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
                 pa = &timproc_uso_b5_D_807FFAA8 + 0x628;
                 pb = &timproc_uso_b5_D_807FFAA8_b + 0x640;
                 if (!(*(s32 *)(arg0 + 0x2B4) & 0x20)) {
-                    timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, *(s32 *)(arg0 + 0xEC), cols, (int)pa, 0xFF);
+                    SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) - *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 - 2, *(s32 *)(arg0 + 0xEC), cols, (int)pa, 0xFF);
                 } else {
-                    timproc_uso_b5_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, *(s32 *)(arg0 + 0xEC), cols, (int)pb, 0xFF);
+                    SelItem_func_00004068((int)arg0, *(s32 *)(arg0 + 0xD4) + *(s16 *)(*(char **)(hud + 0x10) + 0x20) / 2 + 2, *(s32 *)(arg0 + 0xEC), cols, (int)pb, 0xFF);
                 }
             }
         }
@@ -7744,18 +7744,18 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
  * src/timproc_uso_b5/timproc_uso_b5_ncc_C310.cpp, REPLACE_FUNC_BODY-spliced into both trees
  * (Makefile TIMB5_C310_DONOR); the cfe body above is superseded. No rodata (all constants are
  * lui immediates), so this empty body is only the splice placeholder. */
-void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
+void BoardItem_vfunc25_0000C310(char *arg0, char *arg1) {
 }
 
 /* 0000C710 absorbs 0000C7B4: bc1f at offset 0x94 of C710 branches PAST
  * the original 0xA4 declared size into C7B4's body; C7B4 has no prologue
  * and uses caller-set $v1/$at. Splat-bundled fragment merge 2026-05-05.
  * Combined size 0xD8 = 54 insns. */
-/* timproc_uso_b5_func_0000C710 - verified structural decode (0xD8,
- * 54 insns). SIBLING of timproc_uso_b5_func_0000CB40 (same
+/* CourseItem_vfunc10_0000C710 - verified structural decode (0xD8,
+ * 54 insns). SIBLING of TesuriItem_vfunc10_0000CB40 (same
  * timproc_uso_b5 FP slew-limiter family); differs only in how the
  * target is resolved.
- *   void timproc_uso_b5_func_0000C710(void *a0, f32 a1_unused) {
+ *   void CourseItem_vfunc10_0000C710(void *a0, f32 a1_unused) {
  *       f32 target;
  *       if (a0->0x2A4 == 0.0f) {
  *           target = 0.0f;
@@ -7790,7 +7790,7 @@ void timproc_uso_b5_func_0000C310(char *arg0, char *arg1) {
  * crack (see CD24's comment) -- compare derefs st+0x124 directly, each
  * arm materializes its own v via the if(1){} pointer-mutation lever.
  * 54/54 words + reloc sites verified vs target. */
-void timproc_uso_b5_func_0000C710(char *a0, float a1u) {
+void CourseItem_vfunc10_0000C710(char *a0, float a1u) {
     float target;
     char *st;
     float *v;
@@ -7822,47 +7822,47 @@ void timproc_uso_b5_func_0000C710(char *a0, float a1u) {
 
 /* timproc_uso_b5_func_0000C7B4 MERGED into C710 2026-06-10 (bc1f tail fragment, third of the fade-helper family). */
 
-void timproc_uso_b5_func_0000C7E8(char *a0, char *a1) {
+void CourseItem_vfunc21_0000C7E8(char *a0, char *a1) {
     *(float*)(*(int*)(a1 + 0x2B8) + 0x128) = *(float*)(*(int*)(a0 + 0x2B8) + 0x128);
     *(float*)(*(int*)(a1 + 0x2B8) + 0x124) = *(float*)(*(int*)(a0 + 0x2B8) + 0x124);
     *(int*)(*(int*)(a1 + 0x2B8) + 0x130) = *(int*)(*(int*)(a0 + 0x2B8) + 0x130);
     *(int*)(*(int*)(a1 + 0x2B8) + 0x13C) = *(int*)(*(int*)(a0 + 0x2B8) + 0x13C);
 }
 
-void timproc_uso_b5_func_0000C82C(int a0) {
+void CourseItem_vfunc17_0000C82C(int a0) {
 }
 
-void timproc_uso_b5_func_0000C834(int a0) {
+void CourseItem_vfunc18_0000C834(int a0) {
 }
 
-void timproc_uso_b5_func_0000C83C(int a0) {
+void CourseItem_vfunc19_0000C83C(int a0) {
 }
 
-void timproc_uso_b5_func_0000C844(int a0) {
+void CourseItem_vfunc20_0000C844(int a0) {
 }
 
-void timproc_uso_b5_func_0000C84C(int *a0) {
+void CourseItem_vfunc11_0000C84C(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
 }
 
-void timproc_uso_b5_func_0000C85C(int *a0) {
+void CourseItem_vfunc12_0000C85C(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
 }
 
-void timproc_uso_b5_func_0000C870(int a0) {
+void CourseItem_vfunc13_0000C870(int a0) {
 }
 
-void timproc_uso_b5_func_0000C878(int *a0) {
+void CourseItem_vfunc14_0000C878(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
 }
 
-void timproc_uso_b5_func_0000C888(int *a0, int a1) {
+void CourseItem_vfunc15_0000C888(int *a0, int a1) {
     (void)a1;
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
 }
 
-void timproc_uso_b5_func_0000C89C(int *a0, int a1) {
+void CourseItem_vfunc16_0000C89C(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
 }
 
@@ -7944,7 +7944,7 @@ void timproc_uso_b5_func_0000C89C(int *a0, int a1) {
  *      created first. */
 extern int gl_func_00000000();
 extern char D_00000000;
-void timproc_uso_b5_func_0000C8AC(int *a0) {
+void CourseItem_update_0000C8AC(int *a0) {
   int *v1;
   float *p128;
   p128 = (float *) (((char *) ((int *) a0[0x2B8 / 4])) + 0x128);
@@ -7987,12 +7987,12 @@ void timproc_uso_b5_func_0000C8AC(int *a0) {
 }
 
 
-void timproc_uso_b5_func_0000C978(int *a0, float a1) {
+void CourseItem_vfunc22_0000C978(int *a0, float a1) {
     *(float*)((char*)a0 + 0x2A0) = a1;
     *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = a1;
 }
 
-// timproc_uso_b5_func_0000C98C — STRUCTURAL PASS (0x1B4 / 109 words,
+// CourseItem_vfunc23_0000C98C — STRUCTURAL PASS (0x1B4 / 109 words,
 // no episode). Raw-.word USO form (single function; bundle already
 // split by commit f8c4b1b8 — the named fn itself was still
 // undecoded). Hand-decoded.
@@ -8000,7 +8000,7 @@ void timproc_uso_b5_func_0000C978(int *a0, float a1) {
 // Timing-screen draw/emit helper: assembles a draw command on the
 // stack and dispatches it.
 //
-//   void timproc_uso_b5_func_0000C98C(Obj *obj, a1, a2, a3) {  // obj->s0
+//   void CourseItem_vfunc23_0000C98C(Obj *obj, a1, a2, a3) {  // obj->s0
 //     // stack arg block @ sp+0x10..0x44:
 //     //   sp+0x38..0x44 = a zeroed Vec4 (color/coords default);
 //     //   sp+0x18 = 0xFF (alpha);  sp+0x34 = a2;  sp+0x10 = a3;
@@ -8027,7 +8027,7 @@ void timproc_uso_b5_func_0000C978(int *a0, float a1) {
 #ifdef NON_MATCHING
 extern int timproc_uso_b5_func_01EEE4();
 extern int timproc_uso_b5_func_01EFC8();
-void timproc_uso_b5_func_0000C98C(char *arg0, char *arg1, volatile int arg2, int arg3) {
+void CourseItem_vfunc23_0000C98C(char *arg0, char *arg1, volatile int arg2, int arg3) {
     float ones[4];
     int a2v;
     int sp30;
@@ -8039,10 +8039,10 @@ void timproc_uso_b5_func_0000C98C(char *arg0, char *arg1, volatile int arg2, int
     ones[3] = 1.0f;
     a2v = (*(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xC4) +
            *(int *)(*(char **)(*(char **)(arg1 + 0x414) + 0xC) + 0xBC)) - *(int *)(arg0 + 0x5C);
-    timproc_uso_b5_func_000040BC((int)arg0, *(int *)(arg0 + 0x44), a2v, arg2, arg3,
+    SelItem_func_000040BC((int)arg0, *(int *)(arg0 + 0x44), a2v, arg2, arg3,
         *(int *)(arg0 + 0x1AC) * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
     if (*(int *)&import_8002022C != 0) {
-        timproc_uso_b5_func_00003FF8((int)arg0, *(int *)(arg0 + 0x74) + *(int *)(arg0 + 0x44),
+        SelItem_func_00003FF8((int)arg0, *(int *)(arg0 + 0x74) + *(int *)(arg0 + 0x44),
             a2v + *(int *)(arg0 + 0x8C),
             *(int *)(arg0 + 0x1AC) * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
@@ -8063,17 +8063,17 @@ void timproc_uso_b5_func_0000C98C(char *arg0, char *arg1, volatile int arg2, int
         }
     }
     if (sp30 != 0) {
-        timproc_uso_b5_func_00003FF8((int)arg0, *(int *)(arg0 + 0x44) + 0x54, a2v - 0x78,
+        SelItem_func_00003FF8((int)arg0, *(int *)(arg0 + 0x44) + 0x54, a2v - 0x78,
             (int)(&timproc_uso_b5_D_807FFB50 + 0x6D0), 0xFF);
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000C98C);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CourseItem_vfunc23_0000C98C);
 #endif
 
-/* timproc_uso_b5_func_0000CB40 - verified structural decode (0xC4,
+/* TesuriItem_vfunc10_0000CB40 - verified structural decode (0xC4,
  * 49 insns, FP slew-limiter / value-approach).
- *   void timproc_uso_b5_func_0000CB40(void *a0, f32 a1) {
+ *   void TesuriItem_vfunc10_0000CB40(void *a0, f32 a1) {
  *       f32 target = a1;
  *       if (a0->0x2A4 == 0.0f) target = 0.0f;     // disabled -> 0
  *       st = a0->0x2B8;
@@ -8102,7 +8102,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
  * BYTE-EXACT 2026-07-07 (agent-e): direct sibling transfer of the
  * B850/CD24 crack -- compare derefs st+0x124 directly, per-arm if(1){}
  * pointer materialization. 49/49 words + reloc sites verified. */
-void timproc_uso_b5_func_0000CB40(char *a0, float target) {
+void TesuriItem_vfunc10_0000CB40(char *a0, float target) {
     char *st;
     float *v;
     if (*(float *)(a0 + 0x2A4) == 0.0f) {
@@ -8133,47 +8133,47 @@ void timproc_uso_b5_func_0000CB40(char *a0, float target) {
 
 /* timproc_uso_b5_func_0000CBD0 MERGED into CB40 2026-06-10 (bc1f tail fragment, fourth of the fade-helper family; the .s merge that the earlier nested-wrap decode described but never executed). */
 
-void timproc_uso_b5_func_0000CC04(int a0) {}
+void TesuriItem_vfunc17_0000CC04(int a0) {}
 
-void timproc_uso_b5_func_0000CC0C(int a0) {}
+void TesuriItem_vfunc18_0000CC0C(int a0) {}
 
-void timproc_uso_b5_func_0000CC14(int a0) {}
+void TesuriItem_vfunc19_0000CC14(int a0) {}
 
-void timproc_uso_b5_func_0000CC1C(int a0) {}
+void TesuriItem_vfunc20_0000CC1C(int a0) {}
 
-void timproc_uso_b5_func_0000CC24(int *a0) {
+void TesuriItem_vfunc11_0000CC24(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 1;
 }
 
-void timproc_uso_b5_func_0000CC34(int *a0) {
+void TesuriItem_vfunc12_0000CC34(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x134) = 0;
 }
 
-void timproc_uso_b5_func_0000CC40(int a0) {}
+void TesuriItem_vfunc13_0000CC40(int a0) {}
 
-void timproc_uso_b5_func_0000CC48(int a0) {}
+void TesuriItem_vfunc14_0000CC48(int a0) {}
 
-void timproc_uso_b5_func_0000CC50(int *a0, int a1) {
+void TesuriItem_vfunc15_0000CC50(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
 }
 
-void timproc_uso_b5_func_0000CC64(int *a0, int a1) {
+void TesuriItem_vfunc16_0000CC64(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
 }
 
-/* Sibling of timproc_uso_b5_func_0000C1B4 (4-float copy + cross-USO call + 5-insn
+/* Sibling of BoardItem_update_0000C1B4 (4-float copy + cross-USO call + 5-insn
  * alt-entry tail). Same shape, different store offsets:
  *   C1B4: stores at p+0x11C/0x110/0x118/0x114
  *   CC74: stores at p+0x118/0x10C/0x114/0x110
  *
  * Recipe: same as C1B4 — INSN_PATCH 8 float-reg-rename words +
  * SUFFIX_BYTES 5 alt-entry tail words. Both in Makefile. */
-/* Sibling of timproc_uso_b5_func_0000C1B4 (4-float copy + cross-USO call).
+/* Sibling of BoardItem_update_0000C1B4 (4-float copy + cross-USO call).
  * Same shape, different store offsets: a->0x118, b->0x10C, c->0x114, d->0x110.
  * EXACT 16/16 (2026-07-02) via the same FP-pool coloring recipe as C1B4:
  * locals c,d (d bumped by if(!d) branch use) -> f2,f0; b,a globalized across
  * empty-if BB boundaries -> f12,f14 from pool end. */
-void timproc_uso_b5_func_0000CC74(int *a0) {
+void TesuriItem_update_0000CC74(int *a0) {
   int *p = (int *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
@@ -8192,14 +8192,14 @@ void timproc_uso_b5_func_0000CC74(int *a0) {
   timproc_uso_b5_func_00003F58();
 }
 
-/* timproc_uso_b5_func_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
+/* TesuriItem_vfunc22_0000CCB4: sibling of 0000C1F4 (last store at 0x11C
  * instead of 0x120), RECOVERED 2026-05-28 from the Yay0 gap. */
-void timproc_uso_b5_func_0000CCB4(int *a0, float val) {
+void TesuriItem_vfunc22_0000CCB4(int *a0, float val) {
     *(float*)((char*)a0 + 0x2A0) = val;
     *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = val;
 }
 
-/* timproc_uso_b5_func_0000CCC8: 23-insn (0x5C) 6-arg cross-USO call
+/* TesuriItem_vfunc23_0000CCC8: 23-insn (0x5C) 6-arg cross-USO call
  * builder. Computes &D[0x1C0] + idx*24 where idx = a0->[0x1AC] and
  * passes it as the 5th arg, with 0xFF as the 6th.
  *
@@ -8224,13 +8224,13 @@ void timproc_uso_b5_func_0000CCB4(int *a0, float val) {
 extern int gl_func_00000000();
 extern char D_timb5_1C0;
 
-void timproc_uso_b5_func_0000CCC8(int *a0, int a1, int a2, int a3) {
+void TesuriItem_vfunc23_0000CCC8(int *a0, int a1, int a2, int a3) {
     gl_func_00000000(a0, a0[0x44/4], a0[0x5C/4], a2, &D_timb5_1C0 + a0[0x1AC/4] * 24, 0xFF);
 }
 
-/* timproc_uso_b5_func_0000CD24 (0xD8, 54 insns) - BYTE-EXACT 2026-07-07
+/* LevelItem_vfunc10_0000CD24 (0xD8, 54 insns) - BYTE-EXACT 2026-07-07
  * (agent-e). FP slew-limiter, INSTRUCTION-IDENTICAL SIBLING of
- * timproc_uso_b5_func_0000C710; the only difference is the constant
+ * CourseItem_vfunc10_0000C710; the only difference is the constant
  * triple (now literals 0.3f/0.1f/0.1f = in-USO 0x384/0x388/0x38C vs C710's
  * 0x368/36C/370; undefined_syms carries the linked %lo values).
  * Struct-typing: a0->0x2A4 f32 enable, a0->0x2B8 slew-state ptr,
@@ -8244,7 +8244,7 @@ void timproc_uso_b5_func_0000CCC8(int *a0, int a1, int a2, int a3) {
  * every previous shared-v variant). (2) distinct float externs fold
  * into lwc1 %lo (the &D+offset form materializes la). Reloc sites and
  * split dn HI16(+0x58)/LO16(+0xA8) pair verified against target. */
-void timproc_uso_b5_func_0000CD24(char *a0, float a1u) {
+void LevelItem_vfunc10_0000CD24(char *a0, float a1u) {
     float target;
     char *st;
     float *v;
@@ -8276,31 +8276,31 @@ void timproc_uso_b5_func_0000CD24(char *a0, float a1u) {
 
 /* timproc_uso_b5_func_0000CDC8 MERGED into CD24 2026-06-10 (bc1f tail fragment, fifth and FINAL fade-helper family member; nested double-wrap flattened same as CB40). */
 
-void timproc_uso_b5_func_0000CDFC(int a0) {}
+void LevelItem_vfunc17_0000CDFC(int a0) {}
 
-void timproc_uso_b5_func_0000CE04(int a0) {}
+void LevelItem_vfunc18_0000CE04(int a0) {}
 
-void timproc_uso_b5_func_0000CE0C(int a0) {}
+void LevelItem_vfunc19_0000CE0C(int a0) {}
 
-void timproc_uso_b5_func_0000CE14(int a0) {}
+void LevelItem_vfunc20_0000CE14(int a0) {}
 
-void timproc_uso_b5_func_0000CE1C(int *a0) {
+void LevelItem_vfunc11_0000CE1C(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 1;
 }
 
-void timproc_uso_b5_func_0000CE2C(int *a0) {
+void LevelItem_vfunc12_0000CE2C(int *a0) {
     *(int*)((char*)a0[0x2B8/4] + 0x130) = 0;
 }
 
-void timproc_uso_b5_func_0000CE38(int a0) {}
+void LevelItem_vfunc13_0000CE38(int a0) {}
 
-void timproc_uso_b5_func_0000CE40(int a0) {}
+void LevelItem_vfunc14_0000CE40(int a0) {}
 
-void timproc_uso_b5_func_0000CE48(int *a0, int a1) {
+void LevelItem_vfunc15_0000CE48(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 1;
 }
 
-void timproc_uso_b5_func_0000CE5C(int *a0, int a1) {
+void LevelItem_vfunc16_0000CE5C(int *a0, int a1) {
     *(int*)((char*)a0[0x2B8/4] + 0x138) = 0;
 }
 
@@ -8325,7 +8325,7 @@ void timproc_uso_b5_func_0000CE5C(int *a0, int a1) {
  * f14,f12,f2,f0 descending pick. Callee = timproc_uso_b5_func_00003F58
  * (extern, jal word 0x0C000000). Replaces the "FP register renumber cap
  * (immune)" verdict — that was FALSE. */
-void timproc_uso_b5_func_0000CE6C(int *a0) {
+void LevelItem_update_0000CE6C(int *a0) {
   int *p = (int *) a0[0x2B8 / 4];
   float a = *((float *) (((char *) a0) + 0x294));
   float b = *((float *) (((char *) a0) + 0x264));
@@ -8344,11 +8344,11 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
   timproc_uso_b5_func_00003F58();
 }
 
-/* timproc_uso_b5_func_0000CEB4: EXACT via the IDO 7.1 cfe -O2 donor
+/* LevelItem_vfunc25_0000CEB4: EXACT via the IDO 7.1 cfe -O2 donor
  * src/timproc_uso_b5/timproc_uso_b5_CEB4.c (REPLACE_FUNC_BODY splice, agent-c
  * run 218): the grey at RoData 0x394/0x398/0x39C is the LITERAL 0.3f (four
  * 0x3E99999A words from 0x390, one per l.s), and an `if (1) {}` closing each
- * white arm. Its .rodata reloc is renamed timproc_uso_b5_func_0000CEB4_rodata,
+ * white arm. Its .rodata reloc is renamed LevelItem_vfunc25_0000CEB4_rodata,
  * pinned to RoData +0x390. Body below is a placeholder for the splice.
  * History: three HUD-emit calls (func_00004068) with an
  * RGBA colour that is white when a0->0x2AC selects that slot and
@@ -8369,10 +8369,10 @@ void timproc_uso_b5_func_0000CE6C(int *a0) {
  * 96.9 standalone. RESIDUAL: the then-arm keeps one `swc1 $f2,64(sp)` in the
  * `b join` delay slot (target: the join's `lw a1`), and blocks 2/3 materialise
  * the 1.0 constant before the D load (target after). */
-void timproc_uso_b5_func_0000CEB4(char *a0, int a1) {
+void LevelItem_vfunc25_0000CEB4(char *a0, int a1) {
 }
 
-void timproc_uso_b5_func_0000D058(int *a0, float a1) {
+void LevelItem_vfunc22_0000D058(int *a0, float a1) {
     *(float*)((char*)a0 + 0x2A0) = a1;
     *(float*)((char*)*(int**)((char*)a0 + 0x2B8) + 0x11C) = a1;
 }
@@ -8383,7 +8383,7 @@ void timproc_uso_b5_func_0000D058(int *a0, float a1) {
  * docs/IDO_CODEGEN.md#if-1-around-an-inner-block...). Outer offsets (this
  * variant): count a0->0x6C, slot ptr a0->0x3C; inner fn ptr slot->0x28->0x4C,
  * short arg slot->0x28->0x48. */
-void timproc_uso_b5_func_0000D06C(char *a0) {
+void SelItemList_vfunc8_0000D06C(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -8407,7 +8407,7 @@ void timproc_uso_b5_func_0000D06C(char *a0) {
  * by the `if (1) {}` BB-boundary lever (was "72.21% branch-likely-preload cap").
  * Outer offsets same as D06C (count=a0->0x6C, slot=a0->0x3C); inner fn ptr
  * slot->0x28->0xE4, short arg slot->0x28->0xE0 (vs D06C's 0x4C/0x48). */
-void timproc_uso_b5_func_0000D0DC(char *a0) {
+void SelItemList_vfunc11_0000D0DC(char *a0) {
     int i;
     char *p;
     int *v1;
@@ -8428,9 +8428,9 @@ void timproc_uso_b5_func_0000D0DC(char *a0) {
 }
 
 #ifdef NON_MATCHING
-/* timproc_uso_b5_func_0000D14C: 257-insn / 0x404 constructor.
+/* CharacterList_createItem: 257-insn / 0x404 constructor.
  * Reconstructed from expected disasm with distinct named callees + data
- * symbols (sibling-ported from timproc_uso_b5_func_0000D884, the matching
+ * symbols (sibling-ported from CourseList_createItem, the matching
  * twin in this TU). Each call now emits its own R_MIPS_26 reloc and each
  * data ref its own HI16/LO16 against the real USO global.
  * 2026-07-31 (agent-g) 69.0->81.7: D550-map serial-s0 shape LANDED here
@@ -8488,7 +8488,7 @@ struct d14c_flags { int pad; unsigned hi : 12, b19 : 1, b18 : 1, b17 : 1, mid : 
 extern struct d14c_flags d14c_ee6c_bf;
 #define D14C_EE6C(s) (*(int *)((char *)&s + 4))
 
-int timproc_uso_b5_func_0000D14C(char *a0, int arg1, int arg2, float arg3,
+int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
                                  float arg4, float arg5, float arg6,
                                  float arg7, float arg8) {
     char *volatile r;
@@ -8509,12 +8509,12 @@ int timproc_uso_b5_func_0000D14C(char *a0, int arg1, int arg2, float arg3,
             (obj = (char *)timproc_uso_b5_func_055750((char *)0x2B8)) != 0) {
             timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE30 + 0x15C0);
             FW(obj, 0x28) = (int)(&timproc_uso_b5_D_807FDB64 + 0);
-            timproc_uso_b5_func_00002B74(obj + 0x2C);
-            timproc_uso_b5_func_000032C8(obj + 0x194);
+            SelItemParms_ctor(obj + 0x2C);
+            SelItemInfo_ctor(obj + 0x194);
         }
         FW(child, 0x28) = (int)(&timproc_uso_b5_D_807FEE38 + 0x5E4);
         FW(child, 0xC) = (int)(&timproc_uso_b5_D_807FEE38 + 0x15C8);
-        timproc_uso_b5_func_00003890(child);
+        SelItem_reset_00003890(child);
     }
     r = child;
     timproc_uso_b5_func_07ACE0(a0 + 0x10, child);
@@ -8628,16 +8628,16 @@ int timproc_uso_b5_func_0000D14C(char *a0, int arg1, int arg2, float arg3,
 }
 #undef D14C_EE6C
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000D14C);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", CharacterList_createItem);
 #endif
 
-// timproc_uso_b5_func_0000D550 — STRUCTURAL PASS (0x334 / 205 words,
+// BoardList_createItem — STRUCTURAL PASS (0x334 / 205 words,
 // no episode). Raw-.word USO form (single function). Dispatcher-heavy
 // (15 calls, ~1 FP op) — a constructor, not math.
 //
 // Timing-screen sub-screen/panel constructor.
 //
-//   void *timproc_uso_b5_func_0000D550(a0, a1, a2, a3) {
+//   void *BoardList_createItem(a0, a1, a2, a3) {
 //     R *r = func_00000000(0x2C8);  if (!r) return 0;      // main alloc
 //     S *s = func_00000000(0x2B8);  if (s) {               // sub alloc
 //       func_00000000(s, &D_000015F0);                     // base-init
@@ -8719,7 +8719,7 @@ extern char timproc_uso_b5_D_807FEE84;
 extern char d550_ee6c_l1, d550_ee6c_l2, d550_ee6c_l3, d550_ee6c_l4;
 extern char d550_ee6c_s1, d550_ee6c_s2, d550_ee6c_s3;
 #define D550_FLAG(s) (*(s32 *)((char *)&s + 4))
-char *timproc_uso_b5_func_0000D550(char *arg0, volatile s32 arg1, volatile s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     char *volatile r;
     volatile int pad0;
     char *volatile obj;
@@ -8738,13 +8738,13 @@ char *timproc_uso_b5_func_0000D550(char *arg0, volatile s32 arg1, volatile s32 a
             {
                 char *o2 = obj;
                 FW(o2, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
-                timproc_uso_b5_func_00002B74(o2 + 0x2C);
+                SelItemParms_ctor(o2 + 0x2C);
             }
-            timproc_uso_b5_func_000032C8(obj + 0x194);
+            SelItemInfo_ctor(obj + 0x194);
         }
         FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x6D4);
         FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x15F8);
-        timproc_uso_b5_func_00003890(child);
+        SelItem_reset_00003890(child);
         FW(child, 0x2C4) = 0;
         FW(child, 0x2B4) = 0;
     }
@@ -8832,10 +8832,10 @@ char *timproc_uso_b5_func_0000D550(char *arg0, volatile s32 arg1, volatile s32 a
 }
 #undef D550_FLAG
 #else
-INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_func_0000D550);
+INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", BoardList_createItem);
 #endif
 
-// timproc_uso_b5_func_0000D884 — FULL m2c DECODE via compressed-module
+// CourseList_createItem — FULL m2c DECODE via compressed-module
 // jumptable path (42.25% NM, no episode). 14-case switch (idx=*(sp+104),
 // dispatch jr $t3 @ 0xDB08, default 0xDDF8) extracted from the Yay0-
 // compressed USO emulator dump (ram_base 0x807ef230 forced, table @dump
@@ -8846,7 +8846,7 @@ INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", timproc_uso_b5_fun
 //
 // Timing-screen panel/sub-screen constructor.
 //
-//   void *timproc_uso_b5_func_0000D884(a0, a1, a2, a3) {
+//   void *CourseList_createItem(a0, a1, a2, a3) {
 //     R *r = func_00000000(0x2BC);  if (!r) return 0;      // main alloc
 //     S *s = func_00000000(0x2B8);  if (s) {               // sub alloc
 //       func_00000000(s, &D_00001620);                     // base-init
@@ -8984,11 +8984,11 @@ extern char d884_ee6c_s1, d884_ee6c_s2, d884_ee6c_s3, d884_ee6c_s4, d884_ee6c_s5
  * plus per-pair EE6C aliases for the flag chain; jumptable pinned to RoData +0x3C0),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees (agent-c run 217).
  * The declarations above stay: the DF14 NM body below uses them. */
-char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     return 0;
 }
 
-// timproc_uso_b5_func_0000DF14 — timing-screen panel constructor (NM, 78.5%,
+// LevelList_createItem — timing-screen panel constructor (NM, 78.5%,
 // no episode; was 59.1). Structural redecode 2026-07: (1) func_0546DC is
 // prototyped (char*,char*,f32,f32,f32) — five args, f32 SINGLES in a2/a3 via
 // mfc1 + fifth 0.0f spilled swc1 $f0,16(sp) in the jal delay (the old "K&R
@@ -9057,16 +9057,16 @@ extern char df14_ee6c_s1, df14_ee6c_s2, df14_ee6c_s3, df14_ee6c_s4, df14_ee6c_s5
  * D884 flag-chain aliases, a head `if (1) {}` and the tail through gsub; jumptable pinned to
  * RoData +0x400), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees
  * (agent-c run 217). */
-char *timproc_uso_b5_func_0000DF14(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     return 0;
 }
 
-void timproc_uso_b5_func_0000E5AC(int a0) {
+void DispItems_update_0000E5AC(int a0) {
     *(int*)&D_00000000 = 0;
     gl_func_00000000(a0);
 }
 
-/* timproc_uso_b5_func_0000E5D8: the `lui v0; lw v0,0(v0)` load of *(&D) (a state
+/* DispItems_display_0000E5D8: the `lui v0; lw v0,0(v0)` load of *(&D) (a state
  * pointer) is THIS function's real pre-prologue, mis-split into the E5AC _pad.s;
  * boundary-corrected 2026-05-30 by merging those 2 words into E5D8.s (0x48 ->
  * 0x50, start 0x0000E5D0), same fix as AudioHeap_AllocZeroedAttemptExternal/000601DC. The old
@@ -9077,7 +9077,7 @@ void timproc_uso_b5_func_0000E5AC(int a0) {
 extern int D_b5_E5D8_base;  /* distinct &D=0 alias (undefined_syms) so the base read
                              * compiles to the compact lui v0; lw v0,0(v0) instead of
                              * CSE-ing &D with the dst stores (which forces lui+addiu+lw). */
-void timproc_uso_b5_func_0000E5D8(int a0) {
+void DispItems_display_0000E5D8(int a0) {
     int *base = (int*)D_b5_E5D8_base;
     *(float*)((char*)&D_00000000 + 0) = *(float*)((char*)base[0x70/4] + 0xBC);
     *(float*)((char*)&D_00000000 + 4) = *(float*)((char*)base[0x70/4] + 0xCC);

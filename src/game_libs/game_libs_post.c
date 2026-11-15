@@ -5665,7 +5665,7 @@ void AudioLoad_SyncDma(u32 devAddr, u8 *ramAddr, u32 size, s32 medium) {
 }
 
 /* Empty 4-arg stub (byte-identical sibling of matched _00024E14,
- * timproc_uso_b5_func_0000ABE0). C-emit: sw a0,0(sp); sw a1,4(sp);
+ * SelItem_vfunc23_0000ABE0). C-emit: sw a0,0(sp); sw a1,4(sp);
  * sw a2,8(sp); jr ra; sw a3,0xC(sp). */
 void AudioLoad_SyncDmaUnkMedium(int a0, int a1, int a2, int a3) {
 }

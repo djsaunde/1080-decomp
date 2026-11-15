@@ -1,10 +1,10 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000AC20 (0x534 / 333 words): the timing-screen
+/* IDO 7.1 NCC (C++) donor for SelBoard_display_0000AC20 (0x534 / 333 words): the timing-screen
  * camera marker update (offset of the object from a fixed point, normalised; when it faces the view
  * axis, the orientation quaternion is rebuilt from three axis-angle rotations, a 0727A4 matrix and a
  * 0714D4 scale, then turned 90 degrees about two of its own axes and spun by the f10C angle).
  * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY. agent-g run 166 (kit CVII):
  * - the reference point is a file-local x / y pair plus a z (as B624's head): the donor's .bss relocs
- *   are renamed timproc_uso_b5_func_0000AC20_bss by the splice and pinned to 0 (the USO bakes the
+ *   are renamed SelBoard_display_0000AC20_bss by the splice and pinned to 0 (the USO bakes the
  *   offsets 0 / 4 / 8); as1 shares the lui of the local x / y pair as in the target, an extern symbol
  *   does not. rel()'s second parameter and the `if (0)` keep the a / g parameter temporaries (the
  *   target's v0 = &o->pos and its frame home);
@@ -37,7 +37,7 @@ struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; void *m108;
     f32 f10C, f110, f114, f118, f11C, f120, f124; s32 i128, i12C, i130;
 };
-extern "C" void timproc_uso_b5_func_0000AC20(Obj *o) {
+extern "C" void SelBoard_display_0000AC20(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     timproc_uso_b5_func_071028(&d);
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + 0x338)) {

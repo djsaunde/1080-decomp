@@ -1,0 +1,24 @@
+nonmatching DispItems_display_0000E5D8, 0x50
+
+glabel DispItems_display_0000E5D8
+    lui $v0, %hi(import_80087DA8)   /* 00E5D0 3C020000 -> import_80087DA8 */
+    /* 00E5D4 0000E5D4 8C420000 */  .word 0x8C420000
+    /* 00E5D8 0000E5D8 27BDFFE8 */  .word 0x27BDFFE8
+    /* 00E5DC 0000E5DC AFBF0014 */  .word 0xAFBF0014
+    /* 00E5E0 0000E5E0 8C4E0070 */  .word 0x8C4E0070
+    lui $v1, %hi(timproc_uso_b5_D_807FFBB0)   /* 00E5E4 3C030000 -> timproc_uso_b5_D_807FFBB0 */
+    /* 00E5E8 0000E5E8 24630000 */  .word 0x24630000
+    /* 00E5EC 0000E5EC C5C400BC */  .word 0xC5C400BC
+    /* 00E5F0 0000E5F0 E4640000 */  .word 0xE4640000
+    /* 00E5F4 0000E5F4 8C4F0070 */  .word 0x8C4F0070
+    /* 00E5F8 0000E5F8 C5E600CC */  .word 0xC5E600CC
+    /* 00E5FC 0000E5FC E4660004 */  .word 0xE4660004
+    /* 00E600 0000E600 8C580070 */  .word 0x8C580070
+    /* 00E604 0000E604 C70800DC */  .word 0xC70800DC
+    jal timproc_uso_b5_func_04CCA8   /* 00E608 0C000000 -> timproc_uso_b5_func_04CCA8 */
+    /* 00E60C 0000E60C E4680008 */  .word 0xE4680008
+    /* 00E610 0000E610 8FBF0014 */  .word 0x8FBF0014
+    /* 00E614 0000E614 27BD0018 */  .word 0x27BD0018
+    /* 00E618 0000E618 03E00008 */  .word 0x03E00008
+    /* 00E61C 0000E61C 00000000 */  .word 0x00000000
+endlabel DispItems_display_0000E5D8

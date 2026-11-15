@@ -1,4 +1,4 @@
-/* timproc_uso_b5_func_0000D884 (0x690 / 420 words) -- timing-screen panel
+/* CourseList_createItem (0x690 / 420 words) -- timing-screen panel
  * constructor: panel + widget allocs, the gc child with the RoData 0x3BC scale,
  * the EE6C flag-word chain, a 14-case mode switch wiring the 05D0E0 children,
  * the saved 0x80000 bit restore, then the arg3..arg8 placement.
@@ -6,7 +6,7 @@
  * EXACT under IDO 7.1 cfe -O2 (agent-c run 217). Spliced over the unit's empty
  * placeholder by REPLACE_FUNC_BODY (Makefile TIMB5_D884_DONOR) so the switch's
  * donor-local .rodata jumptable reloc is renamed
- * timproc_uso_b5_func_0000D884_rodata and pinned to the table the USO ships at
+ * CourseList_createItem_rodata and pinned to the table the USO ships at
  * RoData +0x3C0 (the target reads it through D_807FF3E0 + 0x3C0).
  *
  * The flag chain (run 217): the target re-reads the flag word after every
@@ -26,9 +26,9 @@
 extern int timproc_uso_b5_func_055750();
 extern int timproc_uso_b5_func_04C678();
 extern int timproc_uso_b5_func_07ACE0();
-char *timproc_uso_b5_func_00002B74(char *arg0);
-char *timproc_uso_b5_func_000032C8(char *arg0);
-extern int timproc_uso_b5_func_00003890();
+char *SelItemParms_ctor(char *arg0);
+char *SelItemInfo_ctor(char *arg0);
+extern int SelItem_reset_00003890();
 extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
 extern int timproc_uso_b5_func_05D0E0();
 extern int timproc_uso_b5_func_04DFFC();
@@ -63,7 +63,7 @@ extern char d884_db64_gc;
 #define EE6C_S(s) (*(u32 *)((char *)&s + 4))
 #define MODE (*(s32 *)((char *)&import_800200CC + 0x34))
 
-char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
+char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7, f32 arg8) {
     char *volatile r;
     volatile int pad0;
     char *obj;
@@ -80,11 +80,11 @@ char *timproc_uso_b5_func_0000D884(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32
         if (obj != 0 || (obj = timproc_uso_b5_func_055750((char *)0x2B8)) != 0) {
             timproc_uso_b5_func_04C678(obj, &timproc_uso_b5_D_807FEE90 + 0x1620);
             FW(obj, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
-            timproc_uso_b5_func_00002B74(obj + 0x2C);
-            timproc_uso_b5_func_000032C8(obj + 0x194);
+            SelItemParms_ctor(obj + 0x2C);
+            SelItemInfo_ctor(obj + 0x194);
         }
         FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4); FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE98 + 0x1628);
-        timproc_uso_b5_func_00003890(child);
+        SelItem_reset_00003890(child);
     }
     r = child;
     timproc_uso_b5_func_07ACE0(arg0 + 0x10, child);

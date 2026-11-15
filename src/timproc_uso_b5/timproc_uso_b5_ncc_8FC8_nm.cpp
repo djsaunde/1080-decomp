@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for timproc_uso_b5_func_00008FC8 (0x1960 / 1624 words):
+/* IDO 7.1 NCC (C++) NON_MATCHING comparison donor for SelItemsMgr_ctor (0x1960 / 1624 words):
  * the timing-screen master constructor Screen::Screen(int *, int *) (agent-g run 169, cfe C body 86.64).
  * Classes: B (out-of-line base ctor 04C678, vptr +0x28, inline add() = 07ACE0 + parent link), Sub30 / Sub2C,
  * the 0x2BC Panel over the 0x2B8 M2B8 base (members 2B74 / 32C8 out of line), the 0x168 WA / WB / WC widget
@@ -9,7 +9,7 @@
  * function-scope variable whose long live range takes s0 / s1, the target (cfe on cfront output) colours
  * each site's temporary separately.  NOT matchable under NCC: the target's 5-entry tail switch is a
  * jumptable (cfe; NCC always lowers a switch to a compare chain).  Symbols renamed after compile (names
- * only): __ct__6ScreenFPiT1 -> timproc_uso_b5_func_00008FC8.  NM comparison object only.
+ * only): __ct__6ScreenFPiT1 -> SelItemsMgr_ctor.  NM comparison object only.
  * 87.71 -> 88.08: the item loop stores items[i] (no pp walk), the row pointers / m38 copy declared at the top
  * (frame 368 -> 352 = target), direct `int *fp` for the kid flag RMW, third Panel explicit.
  * 88.03 -> 88.9: the WA flag RMW as one block-scope int x (and/and/and/ori/and on v0, as the target) and the three saved-bit locals volatile (the target spills them across the kid calls).
@@ -22,9 +22,9 @@ extern "C" {
 extern char import_800200CC, import_80020098;
 extern char import_80020098_a, import_80020098_b, import_80020098_c, import_80020098_d; /* agent-c run 221: per-row aliases of import_80020098 (target re-forms the address in v0 per S70 row; one shared symbol is hoisted into s0) + the row ctors' `B *const &o`: 91.56 -> 91.82 */
 #define CFGS(S) (*(char **)((char *)&S + 0x134))
-char *timproc_uso_b5_func_00002B74(...);
-char *timproc_uso_b5_func_000032C8(...);
-char *timproc_uso_b5_func_00003890(...);
+char *SelItemParms_ctor(...);
+char *SelItemInfo_ctor(...);
+char *SelItem_reset_00003890(...);
 extern char timproc_uso_b5_D_807FDB64;
 extern char import_8005EE6C;
 extern char import_80807FB8;
@@ -37,8 +37,8 @@ char *timproc_uso_b5_func_05D0E0(...);
 char *timproc_uso_b5_func_04C774(...);
 char *timproc_uso_b5_func_048E7C(...);
 char *timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-char *timproc_uso_b5_func_0000A95C(...);
-void timproc_uso_b5_func_0000A928(...);
+char *CommonInfo_add_0000A95C(...);
+void CommonInfo_init_0000A928(...);
 extern char import_80063D04[];
 extern char import_800664C4[];
 extern char import_807664C4[];
@@ -252,11 +252,11 @@ struct NodeF { char p[0x10]; f32 f; void set(f32 v) { NodeF *t = this; if (1) {}
 struct C32C8 { char p[0x22C - 0x194]; Node n22C; char p248[0x24C - 0x248]; Node n24C; char p268[0x284 - 0x268]; NodeF n284; char p298[0x29C - 0x298]; B2 *m29C; char p2a0[0x2B8 - 0x2A0]; C32C8(); };
 struct M2B8 : B { C2B74 a; C32C8 b; M2B8(char *d) : B(d) {} virtual void v(); };
 struct Panel : M2B8 { WBase *w; Panel(char *d, char *n) : M2B8(d) { name = n; init(); } void init(); virtual void v(); };
-extern "C" char *timproc_uso_b5_func_00002B74(...);
+extern "C" char *SelItemParms_ctor(...);
 #define NEWPANEL(P, D, NM) { Panel *np = (Panel *)timproc_uso_b5_func_055750(0x2BC); \
     if (np) { M2B8 *bp = np; if (bp || (bp = (M2B8 *)timproc_uso_b5_func_055750(0x2B8))) { \
         timproc_uso_b5_func_04C678(bp, D); FW(bp, 0x28) = (int)&timproc_uso_b5_D_807FDB64; \
-        timproc_uso_b5_func_00002B74((char *)bp + 0x2C); timproc_uso_b5_func_000032C8((char *)bp + 0x194); } \
+        SelItemParms_ctor((char *)bp + 0x2C); SelItemInfo_ctor((char *)bp + 0x194); } \
       FW(np, 0x28) = (int)(NM - 0x138C + 0x8B4); np->name = NM; np->init(); } \
     P = np; }
 struct Screen : B { int f2c; B *m30; int f34; B *m38; char p3c[0x50 - 0x3C]; B *m50; Panel *m54; Panel *m58; Panel *m5C;
@@ -267,7 +267,7 @@ Screen::Screen(int *arg1, int *arg2) : B(timproc_uso_b5_D_807FEBB8 + 0x1348) {
     name = timproc_uso_b5_D_807FE5F4 + 0x1350;
     m50 = new Sub30(this);
     add(m50);
-    timproc_uso_b5_func_0000A928(this);
+    CommonInfo_init_0000A928(this);
     { Sub2C *p = (Sub2C *)timproc_uso_b5_func_055750(0x2C); if (p) { p->init(); } B *q = m30; m38 = p; q->add(p); }
 
     if (FW(&import_800200CC, 0x34) != 2) {

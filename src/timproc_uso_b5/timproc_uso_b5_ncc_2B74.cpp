@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_00002B74 (0x754 / 469 words,
+/* IDO 7.1 NCC (C++) donor for SelItemParms_ctor (0x754 / 469 words,
  * composite panel constructor: 12 text / value children + two vec3 children).
  * Spliced into timproc_uso_b5.c.o via REPLACE_FUNC_BODY. The vec3 children's
  * FP constants are source literals (-1500.0f / 1500.0f); the donor's .rodata
- * pool is renamed timproc_uso_b5_func_00002B74_rodata and pinned to RoData
+ * pool is renamed SelItemParms_ctor_rodata and pinned to RoData
  * +0x11C (undefined_syms_auto.txt). */
 typedef int s32;
 typedef float f32;
@@ -19,7 +19,7 @@ extern "C" char D_timb5_2B74_vt5[];
 extern "C" char D_timb5_2B74_vt6[];
 extern "C" {
 extern int timproc_uso_b5_func_055750(...);
-extern void timproc_uso_b5_func_00000778(char *arg0);
+extern void GenSelectChar_initLabels_00000778(char *arg0);
 extern void *timproc_uso_b5_func_068D54(int, char *);
 extern char timproc_uso_b5_D_807FE9A0;
 extern char timproc_uso_b5_D_807FE9B0;
@@ -41,7 +41,7 @@ extern char D_timb5_2B74_vt7, D_timb5_2B74_vt8, D_timb5_2B74_vt9;
 extern char D_timb5_2B74_vv0, D_timb5_2B74_vv1;
 extern char D_timb5_2B74_vw0, D_timb5_2B74_vw1;
 }
-extern "C" char *timproc_uso_b5_func_00002B74(char *arg0) {
+extern "C" char *SelItemParms_ctor(char *arg0) {
     struct TimB5Nm u0;
     struct TimB5Nm u1;
     struct TimB5Nm u2;

@@ -1,17 +1,17 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_00001F14 (0x89C / 551 words,
+/* IDO 7.1 NCC (C++) donor for SelectionMgr_update_00001F14 (0x89C / 551 words,
  * per-frame two-player transition update). Spliced into timproc_uso_b5.c.o via
  * REPLACE_FUNC_BODY; its .rodata literal pool (0.05f steps, 1.333f + 1.3333 * t
- * blends) is pinned to RoData +0xC8 as timproc_uso_b5_func_00001F14_rodata.
+ * blends) is pinned to RoData +0xC8 as SelectionMgr_update_00001F14_rodata.
  * The inner 87A0 call of each copy pair takes three args (a3 keeps 2). */
 typedef int s32;
 typedef float f32;
 typedef double f64;
 extern "C" {
-extern void timproc_uso_b5_func_00001DB0(char *);
-extern int timproc_uso_b5_func_000087A0(...);
+extern void SelectionMgr_func_00001DB0(char *);
+extern int gen_func_000087A0(...);
 extern void timproc_uso_b5_func_04CD94(char *);
 }
-extern "C" void timproc_uso_b5_func_00001F14(char *arg0) {
+extern "C" void SelectionMgr_update_00001F14(char *arg0) {
     s32 dst;
     s32 frame;
     s32 frame2;
@@ -45,13 +45,13 @@ extern "C" void timproc_uso_b5_func_00001F14(char *arg0) {
                     }
                 }
                 if (*(s32 *)(arg0 + 0x48) == 1) {
-                    dst = timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0);
+                    dst = gen_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0);
                     *(s32 *)(*(s32 *)(arg0 + 0x38) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x34) + 0x3D0))[timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0)];
+                        ((s32 *)(*(s32 *)(arg0 + 0x34) + 0x3D0))[gen_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0)];
                 } else {
-                    dst = timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0);
+                    dst = gen_func_000087A0(*(char **)(arg0 + 0x34), 4, arg0);
                     *(s32 *)(*(s32 *)(arg0 + 0x34) + (dst * 4) + 0x3D0) =
-                        ((s32 *)(*(s32 *)(arg0 + 0x38) + 0x3D0))[timproc_uso_b5_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0)];
+                        ((s32 *)(*(s32 *)(arg0 + 0x38) + 0x3D0))[gen_func_000087A0(*(char **)(arg0 + 0x38), 4, arg0)];
                 }
                 if (*(s32 *)(arg0 + 0x4C) != 0) {
                     if (*(s32 *)(arg0 + 0x48) == 1) {
@@ -61,7 +61,7 @@ extern "C" void timproc_uso_b5_func_00001F14(char *arg0) {
                             *(s32 *)(arg0 + 0x4C) = 0;
                         }
                         *(s32 *)(arg0 + 0x44) = (s32) (120.0f + (*(f32 *)(arg0 + 0x54) * 120.0f));
-                        timproc_uso_b5_func_00001DB0(arg0);
+                        SelectionMgr_func_00001DB0(arg0);
                     }
                     if (*(s32 *)(arg0 + 0x48) == 2) {
                         *(f32 *)(arg0 + 0x54) = *(f32 *)(arg0 + 0x54) + 0.05f;

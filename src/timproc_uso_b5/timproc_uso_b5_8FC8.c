@@ -1,8 +1,8 @@
-/* timproc_uso_b5_func_00008FC8 (0x1960 / 1624 words) -- the timing-screen master
+/* SelItemsMgr_ctor (0x1960 / 1624 words) -- the timing-screen master
  * constructor Screen::Screen(int *, int *), written as cfront-style C for IDO 7.1 cfe -O2
  * (agent-c runs 222-225).  EXACT donor: spliced over the unit's empty placeholder in both build
  * trees (Makefile TIMB5_8FC8_DONOR); the target's 5-entry tail switch is a cfe
- * jumptable (renamed timproc_uso_b5_func_00008FC8_rodata by the splice, pinned to the
+ * jumptable (renamed SelItemsMgr_ctor_rodata by the splice, pinned to the
  * USO RoData +0x324 table), which the NCC donor (timproc_uso_b5_ncc_8FC8_nm.cpp, 93.39)
  * cannot produce.
  *
@@ -36,7 +36,7 @@
 #include "common.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
-extern char *timproc_uso_b5_func_00002B74(); extern char *timproc_uso_b5_func_000032C8(); extern char *timproc_uso_b5_func_00003890();
+extern char *SelItemParms_ctor(); extern char *SelItemInfo_ctor(); extern char *SelItem_reset_00003890();
 typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 extern char timproc_uso_b5_D_807FDB64;
 extern char import_8005EE6C;
@@ -51,8 +51,8 @@ extern int timproc_uso_b5_func_05D0E0();
 extern int timproc_uso_b5_func_04C774();
 extern void timproc_uso_b5_func_048E7C();
 extern int timproc_uso_b5_func_0546DC(char *, char *, f32, f32, f32);
-extern int timproc_uso_b5_func_0000A95C();
-void timproc_uso_b5_func_0000A928(int *a0);
+extern int CommonInfo_add_0000A95C();
+void CommonInfo_init_0000A928(int *a0);
 extern char import_80063D04[];
 extern char import_800664C4[];
 extern char import_807664C4[];
@@ -180,8 +180,8 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define NEWPANEL(P, D, NM, VT) { w = ALLOC(0x2BC); \
     if (w) { _wp = w; if (_wp || (_wp = ALLOC(0x2B8))) { \
         timproc_uso_b5_func_04C678(_wp, D); FP(_wp, 0x28) = &timproc_uso_b5_D_807FDB64; \
-        timproc_uso_b5_func_00002B74(_wp + 0x2C); timproc_uso_b5_func_000032C8(_wp + 0x194); } \
-      FP(w, 0x28) = (VT); FP(w, 0xC) = NM; timproc_uso_b5_func_00003890(w); } \
+        SelItemParms_ctor(_wp + 0x2C); SelItemInfo_ctor(_wp + 0x194); } \
+      FP(w, 0x28) = (VT); FP(w, 0xC) = NM; SelItem_reset_00003890(w); } \
     P = w; }
 #define W16C(P, D, F0) { _wp = ALLOC(0x16C); \
     if (_wp) { timproc_uso_b5_func_0546DC(_wp, D, 0.0f, 0.0f, 0.0f); fv = F0; FP(_wp, 0x28) = import_80087FB8; FW(_wp, 0x120) = 1; \
@@ -207,7 +207,7 @@ typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
 #define VSEL(V, R) V = FP(R, 0x28);
 #define VCALL(V, R) (*(AddFn *)(V + 0x5C))(*(s16 *)(V + 0x58) + (R)
 #define self ((char *)arg0)
-void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
+void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
     VecH v2a, v2b, v3a, v3b;
     char *a, *b, *c, *d;
     char *items[8];
@@ -236,7 +236,7 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
         FP(self, 0xC) = timproc_uso_b5_D_807FE5F4 + 0x1350;
         { char *p = ALLOC(0x30); w = p; if (w) { timproc_uso_b5_func_04C678(w, timproc_uso_b5_D_807FEBCC + 0x135C); FP(w, 0x28) = timproc_uso_b5_D_807FEBD4; FP(w, 0xC) = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(w, 0x2C) = self; } FP(self, 0x50) = w; }
         ADD(self, FP(self, 0x50));
-        timproc_uso_b5_func_0000A928(self);
+        CommonInfo_init_0000A928(self);
         { char *p = ALLOC(0x2C); char *q; if (p) { timproc_uso_b5_func_04C678(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
             FP(p, 0x28) = timproc_uso_b5_D_807FEBE8 + 0xCC4; FP(p, 0xC) = timproc_uso_b5_D_807FEBE8 + 0x1378; }
           q = FP(self, 0x30); FP(self, 0x38) = p;  ADD(q, p); }
@@ -270,16 +270,16 @@ void **timproc_uso_b5_func_00008FC8(void **arg0, int *arg1, int *arg2) {
             ADDV(t, FP(self, 0x38), FP(FP(self, 0x5C), 0x2B8));
         }
         NEWS70(a, timproc_uso_b5_D_807FEC90 + 0x1420, f8fc8_e304_1 + 0xA94, timproc_uso_b5_D_807FEC98 + 0xB04, timproc_uso_b5_D_807FEC98 + 0x1428, import_80020098_a)
-        timproc_uso_b5_func_0000A95C(self, a);
+        CommonInfo_add_0000A95C(self, a);
         ADDW(_at, t, self, a);
         NEWS70(b, timproc_uso_b5_D_807FECA8 + 0x1438, f8fc8_e304_2 + 0xA94, timproc_uso_b5_D_807FECB0 + 0xB74, timproc_uso_b5_D_807FECB0 + 0x1440, import_80020098_b)
-        timproc_uso_b5_func_0000A95C(self, b);
+        CommonInfo_add_0000A95C(self, b);
         ADDW(_at, t, self, b);
         NEWS70(c, timproc_uso_b5_D_807FECBC + 0x144C, f8fc8_e304_3 + 0xA94, timproc_uso_b5_D_807FECC4 + 0xBE4, timproc_uso_b5_D_807FECC4 + 0x1454, import_80020098_c)
-        timproc_uso_b5_func_0000A95C(self, c);
+        CommonInfo_add_0000A95C(self, c);
         ADDW(_at, t, self, c);
         NEWS70(d, timproc_uso_b5_D_807FECD0 + 0x1460, f8fc8_e304_4 + 0xA94, timproc_uso_b5_D_807FECD8 + 0xC54, timproc_uso_b5_D_807FECD8 + 0x1468, import_80020098_d)
-        timproc_uso_b5_func_0000A95C(self, d);
+        CommonInfo_add_0000A95C(self, d);
         ADDW(_at, t, self, d);
         {
             NEWPANEL(FP(self, 0x54), timproc_uso_b5_D_807FECE4 + 0x1474, timproc_uso_b5_D_807FECEC + 0x147C, timproc_uso_b5_D_807FECEC + 0x8B4)

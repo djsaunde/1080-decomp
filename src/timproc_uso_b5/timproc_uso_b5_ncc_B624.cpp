@@ -1,8 +1,8 @@
-/* IDO 7.1 NCC (C++) donor for timproc_uso_b5_func_0000B624 (0x22C / 139 words): AC20 / B154 /
+/* IDO 7.1 NCC (C++) donor for SelCharacter_display_0000B624 (0x22C / 139 words): AC20 / B154 /
  * B368's sibling (reference-point offset normalised, facing test against D_807FFBB0, quaternion
  * rebuilt from three axis-angle rotations, 06970C, the 0x144 countdown / 077C44 tail).
  * Spliced into timproc_uso_b5.c.o (both trees) via REPLACE_FUNC_BODY; its .bss relocs are renamed
- * timproc_uso_b5_func_0000B624_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8).
+ * SelCharacter_display_0000B624_bss by the splice and pinned to 0 (the USO bakes 0 / 4 / 8).
  * agent-g run 167 (docs/IDO_CODEGEN.md kit CIX):
  * - the first rotation through an inline `one(Quat &, f32 xa)` whose float parameter is kept by
  *   `if (0) { xa = 0.0f; }`: the parameter temp is a pooled float temp that reuses the head's
@@ -39,7 +39,7 @@ struct Obj {
     char pad0[0xDC]; V3 pos; f32 sE8, sEC, sF0; Quat q; char pad104[0x108 - 0x104]; s32 i108;
     char *p10C; f32 f110, f114, f118;
 };
-extern "C" void timproc_uso_b5_func_0000B624(Obj *o) {
+extern "C" void SelCharacter_display_0000B624(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     timproc_uso_b5_func_071028(&d);
     if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF370 + 0x350)) {
