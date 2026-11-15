@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for RiderAnim_state_00010A0C (0xBC / 47 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_stateBrakeDeep (0xBC / 47 words).
  *
  * EE84-family state handler, near-twin of 1094C: DB78(self, 0x20004,
  * 0x20005, self->0xB4->0x970, 0, 1); if self->0xB4->0x990 == 0 call
@@ -24,7 +24,7 @@ void RiderAnim_func_0000D7F4(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
-extern "C" void RiderAnim_state_00010A0C(int *a0) {
+extern "C" void RiderAnim_stateBrakeDeep(int *a0) {
     int *p;
     import_0010DB78(a0, 0x20004, 0x20005, I(I(a0, 0xB4), 0x970), 0, 1);
     p = (int *)a0[0xB4 / 4];

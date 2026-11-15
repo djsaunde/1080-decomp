@@ -10490,7 +10490,7 @@ unsigned short app_pack3_00042428(int a0, int a1) {
  *                    p[0xB8/4], p[0xBC/4])
  *
  * 2026-05-30 — ORPHAN-MERGE tested (PROLOGUE_STEALS is banned; the real fix is the
- * boundary merge that landed RiderAnim_state_0001155C). Prepending the 0x8 orphan
+ * boundary merge that landed RiderAnim_stateStartWait). Prepending the 0x8 orphan
  * (GfxLib_hostioSendFbA_00042438) to this body's .s and writing `int *p =
  * *(int**)((char*)&D_00000000 + 0x240)` DOES hoist the p-load above the prologue
  * and reproduces the orphan exactly. BUT the body carries a $v1/$t6 regalloc cap:

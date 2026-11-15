@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for RiderAnim_state_0000F6D4 (0x210 / 132 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_stateTrickStart (0x210 / 132 words).
  *
  * Node-process / queue-advance handler, sibling of E35C: optional D6E4
  * pre-flush (cur->0x38 & 1), EE30(self, active->0x30, 1), B8518 index call
@@ -38,7 +38,7 @@ void RiderAnim_setNextState_0000D5BC(void *, PM);
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 #define P(b,o) AT(char *,b,o)
-extern "C" void RiderAnim_state_0000F6D4(char *s0) {
+extern "C" void RiderAnim_stateTrickStart(char *s0) {
     char *f4;
     if (I(P(s0, 0xF4), 0x38) & 1) {
         RiderAnim_flipStance_0000D6E4(s0);

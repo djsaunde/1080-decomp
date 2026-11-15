@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for RiderAnim_state_00010694 (0x1AC / 107 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_stateRide (0x1AC / 107 words).
  *
  * State-entry handler: flag the 0xB4 object, set state 2, sample
  * 0xB4->0x970, run the E1FC/D8A8/D8EC enter hooks, pick the DB78 / DB28
@@ -30,7 +30,7 @@ void RiderAnim_setNextState_0000D5BC(void *, PM);
 #define I(b,o) (*(int *)((char *)(b) + (o)))
 #define F(b,o) (*(float *)((char *)(b) + (o)))
 #define P(b,o) (*(PM *)((char *)(b) + (o)))
-extern "C" void RiderAnim_state_00010694(A *a0) {
+extern "C" void RiderAnim_stateRide(A *a0) {
     float r;
     float ar;
     I(I(a0, 0xB4), 0xA18) = 1;

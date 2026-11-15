@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for RiderAnim_state_0000F060 (0xDC / 55 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_statePreJump (0xDC / 55 words).
  *
  * Flag-dispatch state handler: clear self->0xF4, run 11888, then if the
  * 0xB4 object's 0x800 child has (!(flags & 0x100) || (flags & 0x200)) and
@@ -27,7 +27,7 @@ void RiderAnim_setState_0000D5F8(void *, PM, int);
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
 struct V { int *child() { return AT(int *, this, 0x800); } };
-extern "C" void RiderAnim_state_0000F060(int *a0) {
+extern "C" void RiderAnim_statePreJump(int *a0) {
     int *s0 = a0;
     a0[0xF4 / 4] = 0;
     RiderAnim_func_00011888(a0);

@@ -3017,16 +3017,16 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(
 # 10694 = state-entry handler; passes PMFs by value to D5BC + the same PMF
 # null compare (107/107 words identical under NCC). Uses += (composes).
 GAMEUSO_10694_DONOR := build/src/game_uso/game_uso_ncc_10694.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_00010694=$(GAMEUSO_10694_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_stateRide=$(GAMEUSO_10694_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10694_DONOR)
 # F060 = flag-dispatch handler; the 0x800 child read through an inlined
 # member puts the 0xB4 pointer in v1 (55/55 words; cfe capped at 99.64%).
 GAMEUSO_F060_DONOR := build/src/game_uso/game_uso_ncc_F060.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_0000F060=$(GAMEUSO_F060_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_statePreJump=$(GAMEUSO_F060_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F060_DONOR)
 # F13C = sibling of F060 (same flag block + child() member; 81/81 words).
 GAMEUSO_F13C_DONOR := build/src/game_uso/game_uso_ncc_F13C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_0000F13C=$(GAMEUSO_F13C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_statePreJumpHold=$(GAMEUSO_F13C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F13C_DONOR)
 # B750 = basis/scale update with a virtual call; k is the float param itself
 # and the 4-float temp is a class whose ctor forwards to an inline set()
@@ -3036,16 +3036,16 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_B750_DONOR)
 # 10A0C = 1094C twin with PMFs passed by value (47/47 words; cfe 93.4%).
 GAMEUSO_10A0C_DONOR := build/src/game_uso/game_uso_ncc_10A0C.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_00010A0C=$(GAMEUSO_10A0C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_stateBrakeDeep=$(GAMEUSO_10A0C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10A0C_DONOR)
 # 10840 = 10694 sibling; DB78 float 4th param + DB28 else-arm args (67/67 words; cfe 87.67%).
 GAMEUSO_10840_DONOR := build/src/game_uso/game_uso_ncc_10840.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_00010840=$(GAMEUSO_10840_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_stateRideDeep=$(GAMEUSO_10840_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_10840_DONOR)
 # F6D4 = E35C-sibling queue advance; no named prev local, base-first ceil-div
 # addu (132/132 words; cfe capped at 95.4%).
 GAMEUSO_F6D4_DONOR := build/src/game_uso/game_uso_ncc_F6D4.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_state_0000F6D4=$(GAMEUSO_F6D4_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += RiderAnim_stateTrickStart=$(GAMEUSO_F6D4_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_F6D4_DONOR)
 # E35C = F6D4 sibling, same recipe (130/130 words; cfe capped at 95.3%).
 GAMEUSO_E35C_DONOR := build/src/game_uso/game_uso_ncc_E35C.cpp.o

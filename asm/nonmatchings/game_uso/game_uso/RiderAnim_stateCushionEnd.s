@@ -1,0 +1,23 @@
+nonmatching RiderAnim_stateCushionEnd, 0x4C
+
+glabel RiderAnim_stateCushionEnd
+    /* 010648 00010648 3C013F80 */  .word 0x3C013F80
+    /* 01064C 0001064C 44812000 */  .word 0x44812000
+    /* 010650 00010650 27BDFFE8 */  .word 0x27BDFFE8
+    /* 010654 00010654 AFBF0014 */  .word 0xAFBF0014
+    lui $t6, %hi(game_uso_D_807FF3E8)   /* 010658 3C0E0000 -> game_uso_D_807FF3E8 */
+    /* 01065C 0001065C 25CE0DF8 */  .word 0x25CE0DF8
+    /* 010660 00010660 E484011C */  .word 0xE484011C
+    /* 010664 00010664 8DC50000 */  .word 0x8DC50000
+    /* 010668 00010668 AFA50004 */  .word 0xAFA50004
+    /* 01066C 0001066C 8DC60004 */  .word 0x8DC60004
+    /* 010670 00010670 AFA40018 */  .word 0xAFA40018
+    jal RiderAnim_setNextState_0000D5BC   /* 010674 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    /* 010678 00010678 AFA60008 */  .word 0xAFA60008
+    jal RiderAnim_clearRiderEdge_00011868   /* 01067C 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
+    /* 010680 00010680 8FA40018 */  .word 0x8FA40018
+    /* 010684 00010684 8FBF0014 */  .word 0x8FBF0014
+    /* 010688 00010688 27BD0018 */  .word 0x27BD0018
+    /* 01068C 0001068C 03E00008 */  .word 0x03E00008
+    /* 010690 00010690 00000000 */  .word 0x00000000
+endlabel RiderAnim_stateCushionEnd

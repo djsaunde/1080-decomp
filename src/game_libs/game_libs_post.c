@@ -5077,7 +5077,7 @@ void AudioLoad_DiscardFont(int id)
  * is CSE-shared across the D[0x215C] read and the a0*0x160 store. Predecessor
  * AudioLoad_DiscardFont ends with its own jr ra, so 0x2353C is the true entry (not a
  * donated tail). The earlier note framed this as a now-banned PROLOGUE_STEALS/
- * SUFFIX cap; the clean symbol-merge is the real fix (cf. RiderAnim_state_00010648).
+ * SUFFIX cap; the clean symbol-merge is the real fix (cf. RiderAnim_stateCushionEnd).
  * a0*0x160 = ((a0*4 - a0)*4 - a0)*32 (sll/subu chain). */
 extern int gl_func_00037C50();
 int AudioLoad_SyncInitSeqPlayer(int a0) {

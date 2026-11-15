@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for RiderAnim_state_00010840 (0x10C / 67 words).
+/* IDO 7.1 NCC (C++) donor for RiderAnim_stateRideDeep (0x10C / 67 words).
  *
  * State-entry handler, sibling of 10694: self->0xB4->0x3DC = 1, D8A8(self),
  * D8EC(self); f0 = self->0xB4->0x970; if |f0| exceeds the double at
@@ -29,7 +29,7 @@ void RiderAnim_func_00011750(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
-extern "C" void RiderAnim_state_00010840(int *a0) {
+extern "C" void RiderAnim_stateRideDeep(int *a0) {
     float f0;
     I(I(a0, 0xB4), 0x3DC) = 1;
     RiderAnim_func_0000D8A8(a0);
