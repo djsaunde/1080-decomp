@@ -5422,7 +5422,7 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
     return 0;
 }
 
-/* gl_osViGetCurrentLine = libultra osViGetCurrentLine (io/vigetline.c
+/* osViGetCurrentLine = libultra osViGetCurrentLine (io/vigetline.c
  * verbatim): `return IO_READ(VI_CURRENT_REG)` (0xA4400010). BOUNDARY FIX
  * 2026-09-09 (TWENTY-SIXTH mis-split case, docs/MATCHING_WORKFLOW
  * #leading-nop-cap-is-inter-object-pad-sym-oracle-74844): the old
@@ -5437,7 +5437,7 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
  * as all-zero SUFFIX_BYTES_FORCE on gl_osSendMesg and on this symbol
  * (post1b Makefile rule); no GLOBAL_ASM sidecar (a 1-word block emits 8
  * bytes and shifts the unit +4). 3/3 words at 7.1 -O2. */
-unsigned int gl_osViGetCurrentLine(void) {
+unsigned int osViGetCurrentLine(void) {
     return *(volatile unsigned int *)0xA4400010;
 }
 
@@ -5545,7 +5545,7 @@ int gl_func_0006A304(int a0) {
     return (int)obj;
 }
 
-/* gl_func_0006A420 = libultra osSpTaskLoad (sptask.c). The function is
+/* osSpTaskLoad = libultra osSpTaskLoad (sptask.c). The function is
  * -O1 code (tp homed and reloaded around every field access, unfilled
  * delay slots): the real C lives in the -O1 donor unit
  * game_libs_o1_6A420.c, spliced over this -O2 stand-in (REPLACE_FUNC_BODY,
@@ -5570,7 +5570,7 @@ typedef struct {
     unsigned int yield_data_size;
 } OSTask_6A420;
 extern char *gl_ref_0007E970();
-void gl_func_0006A420(OSTask_6A420 *intp) {
+void osSpTaskLoad(OSTask_6A420 *intp) {
     OSTask_6A420 *tp;
     tp = (OSTask_6A420 *)gl_ref_0007E970(intp);
     if (tp->flags & 1) {

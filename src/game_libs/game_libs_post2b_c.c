@@ -125,7 +125,7 @@ void gl_osYieldThread(void) {
     gl_func_00000000(sr);
 }
 
-/* game_libs_func_00073310 = libultra osViGetCurrentField (vigetfield.c
+/* osViGetCurrentField = libultra osViGetCurrentField (vigetfield.c
  * verbatim: IO_READ(VI_CURRENT_REG) & 1). The 2026-06-10 "temp+move-in-
  * delay unreachable" negative sweep was 7.1-only: IDO 5.3 -O1 emits the
  * exact `andi t7,v0,1; jr ra; or v0,t7,zero` pair. True entry = 0x73314
@@ -134,7 +134,7 @@ void gl_osYieldThread(void) {
  * WIRED 2026-07-10 via REPLACE_FUNC_BODY donor splice: real C lives in
  * the IDO 5.3 -O1 donor unit game_libs_ido53_73310.c (5/5). Body below
  * is a placeholder for the splice. */
-u32 game_libs_func_00073310(void) {
+u32 osViGetCurrentField(void) {
     volatile u32 ret = 1;
     return ret;
 }

@@ -2,7 +2,7 @@
 
 /* gl_osRecvMesg = libultra osRecvMesg (os/recvmesg.c verbatim), statically
  * linked into the game_libs USO right after osSendMesg (gl_osSendMesg) and
- * osViGetCurrentLine (gl_osViGetCurrentLine). IDO 5.3 -O1 (the 69E04 recipe),
+ * osViGetCurrentLine (osViGetCurrentLine). IDO 5.3 -O1 (the 69E04 recipe),
  * spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. Block while the
  * queue is empty (or fail if non-blocking), pop msg[first], advance first
  * modulo msgCount, and if a thread waits on fullqueue, wake it. All OS-API

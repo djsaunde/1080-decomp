@@ -1,6 +1,6 @@
-nonmatching gl_func_00074EFC, 0x188
+nonmatching osCreateViManager, 0x188
 
-glabel gl_func_00074EFC
+glabel osCreateViManager
     /* E59FCC 00074EF4 3C0E0000 */  .word 0x3C0E0000
     /* E59FD0 00074EF8 8DCE0000 */  .word 0x8DCE0000
     /* E59FD4 00074EFC 27BDFFD0 */  .word 0x27BDFFD0
@@ -99,4 +99,4 @@ glabel gl_func_00074EFC
     /* E5A148 00075070 27BD0030 */  .word 0x27BD0030
     /* E5A14C 00075074 03E00008 */  .word 0x03E00008
     /* E5A150 00075078 00000000 */  .word 0x00000000
-endlabel gl_func_00074EFC
+endlabel osCreateViManager

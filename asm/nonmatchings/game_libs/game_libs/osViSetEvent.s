@@ -1,6 +1,6 @@
-nonmatching gl_func_00071304, 0x6C
+nonmatching osViSetEvent, 0x6C
 
-glabel gl_func_00071304
+glabel osViSetEvent
     /* E563DC 00071304 27BDFFD8 */  .word 0x27BDFFD8
     /* E563E0 00071308 AFBF001C */  .word 0xAFBF001C
     /* E563E4 0007130C AFA40028 */  .word 0xAFA40028
@@ -28,4 +28,4 @@ glabel gl_func_00071304
     /* E5643C 00071364 27BD0028 */  .word 0x27BD0028
     /* E56440 00071368 03E00008 */  .word 0x03E00008
     /* E56444 0007136C 00000000 */  .word 0x00000000
-endlabel gl_func_00071304
+endlabel osViSetEvent

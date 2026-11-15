@@ -1,5 +1,5 @@
 /* IDO 5.3 -O1 -mips2 whole-TU donor for the libultra VI-manager pair:
- *   gl_func_00074EFC = osCreateViManager (donor .text [0x000,0x188);
+ *   osCreateViManager = osCreateViManager (donor .text [0x000,0x188);
  *                      true entry USO 0x74EF4: splat's 74EFC label sits
  *                      2 words in; the .s carries the pre-prologue
  *                      active-flag load, which IS the fn's first two
@@ -32,7 +32,7 @@
  * Reloc story (every masked word fits one of these):
  *   - donor .bss section relocs -> gl_func_*_bss pins = 0x00044080;
  *   - the viMgrMain fn-ptr %hi/%lo against donor .text (addend 0x188)
- *     -> gl_func_00074EFC_text pin = 0x00089560 (bakes 0x896E8, the
+ *     -> osCreateViManager_text pin = 0x00089560 (bakes 0x896E8, the
  *     USO's original-link address of viMgrMain, same story as _Ldtob's
  *     jal 0x87F70);
  *   - gl_viDevMgr symbol relocs -> pin = 0 (USO .data offset 0);
@@ -144,7 +144,7 @@ static OSIoMesg viCounterMsg;
 
 static void viMgrMain(void *arg);
 
-void gl_func_00074EFC(OSPri pri)
+void osCreateViManager(OSPri pri)
 {
     u32 savedMask;
     OSPri oldPri;

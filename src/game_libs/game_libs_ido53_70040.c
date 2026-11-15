@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_00070040 = libultra osAiSetFrequency
+/* IDO 5.3 -O1 donor for osAiSetFrequency = libultra osAiSetFrequency
  * (aisetfreq.c verbatim). PROVEN EXACT 88/88 standalone at IDO 5.3 -O1.
  * 5.3 DISCRIMINATOR: the u8 bitRate truncation — 5.3 emits the target's
  * andi-to-temp + or copy (`andi t8,a2,0xff; or a2,t8,zero`); 7.1 -O1
@@ -18,7 +18,7 @@ extern s32 D_00000000_viclock; /* osViClock */
 
 #define IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
-s32 gl_func_00070040(u32 frequency) {
+s32 osAiSetFrequency(u32 frequency) {
     register u32 dacRate;
     register u8 bitRate;
     register f32 f;

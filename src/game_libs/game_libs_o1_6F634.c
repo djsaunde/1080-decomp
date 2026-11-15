@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006F634 = libultra osViSwapBuffer
+/* IDO -O1 donor for osViSwapBuffer = libultra osViSwapBuffer
  * (references/libreultra/src/io/viswapbuf.c, verbatim). PROVEN EXACT 20/20
  * standalone at BOTH IDO 7.1 -O1 and 5.3 -O1 (identical output; built with
  * 7.1), agent-g 2026-09-09. Section 0x83CA0 = bootup.uso export sym 1549
@@ -37,7 +37,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 
-void gl_func_0006F634(void *frameBufPtr)
+void osViSwapBuffer(void *frameBufPtr)
 {
     u32 saveMask;
     saveMask = __osDisableInt();

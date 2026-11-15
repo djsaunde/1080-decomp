@@ -1,4 +1,4 @@
-/* IDO 7.1 -O1 whole-fn donor for gl_func_00071144 = libultra
+/* IDO 7.1 -O1 whole-fn donor for osViSetSpecialFeatures = libultra
  * osViSetSpecialFeatures (libreultra src/io/visetspecial.c verbatim).
  * PROVEN EXACT 2026-08-22: first -O1 compile is 110/110 FULL-word
  * identical to the raw target .s (5.3 -O1 identical too; -O2 CSEs the
@@ -79,7 +79,7 @@ extern void gl_func_00000000_rstint711(u32);
 #define VI_STATE_08              0x0008
 
 /* osViSetSpecialFeatures */
-void gl_func_00071144(u32 func)
+void osViSetSpecialFeatures(u32 func)
 {
     register u32 saveMask;
     saveMask = gl_func_00000000_disint711();

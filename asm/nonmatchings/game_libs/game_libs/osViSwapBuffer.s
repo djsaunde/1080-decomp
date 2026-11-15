@@ -1,6 +1,6 @@
-nonmatching gl_func_0006F634, 0x50
+nonmatching osViSwapBuffer, 0x50
 
-glabel gl_func_0006F634
+glabel osViSwapBuffer
     /* E5470C 0006F634 27BDFFE0 */  .word 0x27BDFFE0
     /* E54710 0006F638 AFBF0014 */  .word 0xAFBF0014
     /* E54714 0006F63C 0C000000 */  .word 0x0C000000
@@ -21,4 +21,4 @@ glabel gl_func_0006F634
     /* E54750 0006F678 27BD0020 */  .word 0x27BD0020
     /* E54754 0006F67C 03E00008 */  .word 0x03E00008
     /* E54758 0006F680 00000000 */  .word 0x00000000
-endlabel gl_func_0006F634
+endlabel osViSwapBuffer

@@ -30,7 +30,7 @@ float fcos(float x) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070C44_pad.s")
 
-/* gl_func_00071144 = libultra osViSetSpecialFeatures (libreultra
+/* osViSetSpecialFeatures = libultra osViSetSpecialFeatures (libreultra
  * io/visetspecial.c verbatim, IDO 7.1 -O1 whole-fn donor:
  * game_libs_o1_71144.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY donor
  * splice, first-compile 110/110 FULL-word identical (blank
@@ -40,7 +40,7 @@ float fcos(float x) {
  * "register-allocation cap" reading is RETRACTED: the per-test stack
  * reloads/beql shape is plain IDO -O1, with `register u32 saveMask`
  * living in $a0. Body below is a placeholder for the splice. */
-void gl_func_00071144(s32 arg0) {
+void osViSetSpecialFeatures(s32 arg0) {
     volatile int visetspecial_spliced = 0;
     if (arg0 != 0) {
         visetspecial_spliced = arg0;
@@ -48,7 +48,7 @@ void gl_func_00071144(s32 arg0) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00071144_pad.s")
 
-/* gl_func_00071304 = libultra osViSetEvent, 27/27 words exact.
+/* osViSetEvent = libultra osViSetEvent, 27/27 words exact.
  * The old 88% s0-allocation cap was an optimization-level mismatch:
  * register unsigned saveMask at IDO 7.1 -O1 reproduces the full prologue,
  * s0 return-value copy and three reloads of the SAME __osViNext pointer.
@@ -68,7 +68,7 @@ extern ViContext71304 *gl_func_00000000_vinext711;
 extern unsigned int gl_func_00000000_disint711(void);
 extern void gl_func_00000000_rstint711(unsigned int);
 
-void gl_func_00071304(void *mq, void *m, unsigned int retraceCount) {
+void osViSetEvent(void *mq, void *m, unsigned int retraceCount) {
     register unsigned int saveMask;
     saveMask = gl_func_00000000_disint711();
     gl_func_00000000_vinext711->msgq = mq;

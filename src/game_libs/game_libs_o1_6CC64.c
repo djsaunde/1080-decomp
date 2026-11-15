@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006CC64 = libultra osViBlack
+/* IDO -O1 donor for osViBlack = libultra osViBlack
  * (references/libreultra/src/io/viblack.c, verbatim: saveMask =
  * __osDisableInt(); __osViNext->state |= / &= ~VI_STATE_BLACK(0x20);
  * __osRestoreInt(saveMask)). PROVEN EXACT 28/28 standalone at BOTH IDO
@@ -15,7 +15,7 @@ extern ViCtx *D_00000000_vinext;    /* __osViNext */
 extern u32 gl_func_00000000(void);  /* __osDisableInt */
 extern void gl_func_00000001(u32);  /* __osRestoreInt */
 
-void gl_func_0006CC64(u8 active) {
+void osViBlack(u8 active) {
     register u32 saveMask = gl_func_00000000();
     if (active)
         D_00000000_vinext->state |= 0x20;

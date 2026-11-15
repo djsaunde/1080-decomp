@@ -1,6 +1,6 @@
-nonmatching gl_func_00071144, 0x1B8
+nonmatching osViSetSpecialFeatures, 0x1B8
 
-glabel gl_func_00071144
+glabel osViSetSpecialFeatures
     /* E5621C 00071144 27BDFFD8 */  .word 0x27BDFFD8
     /* E56220 00071148 AFBF001C */  .word 0xAFBF001C
     /* E56224 0007114C AFA40028 */  .word 0xAFA40028
@@ -111,4 +111,4 @@ glabel gl_func_00071144
     /* E563C8 000712F0 27BD0028 */  .word 0x27BD0028
     /* E563CC 000712F4 03E00008 */  .word 0x03E00008
     /* E563D0 000712F8 00000000 */  .word 0x00000000
-endlabel gl_func_00071144
+endlabel osViSetSpecialFeatures

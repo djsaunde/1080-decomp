@@ -65,7 +65,7 @@ void game_libs_func_0006FC70(void)
 	}
 }
 
-/* gl_func_0006FDE8 = libultra __osSetTimerIntr (same timerintr.c TU,
+/* __osSetTimerIntr = libultra __osSetTimerIntr (same timerintr.c TU,
  * verbatim). EXACT 29/29 at both 7.1 -O1 and 5.3 -O1. Section 0x84454 =
  * export sym 2640 (jal'd from __osTimerInterrupt +0xD4 and from 0x87F48 =
  * osSetTimer). Retires the "4-call cascade w/ 64-bit-add via carry detect,
@@ -79,7 +79,7 @@ void game_libs_func_0006FC70(void)
 extern unsigned int gl_disint_6FC70(void);
 extern void gl_resint_6FC70(unsigned int);
 
-void gl_func_0006FDE8(Time6FC70 tim)
+void __osSetTimerIntr(Time6FC70 tim)
 {
 	Time6FC70 NewTime;
 	unsigned int savedMask;

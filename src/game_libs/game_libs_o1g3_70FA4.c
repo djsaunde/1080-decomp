@@ -13,7 +13,7 @@
  * "matched" as a standalone -g3 INT-reader) -- one function split
  * mid-body by splat. This TU replaces the g3_70FBC carve in the ld
  * script and covers 0x70FA4..0x70CC8; the 0x70FA0 pad nop moved to
- * SUFFIX_BYTES_FORCE on gl_func_00070C44 (post1c.c), and the 8 bytes
+ * SUFFIX_BYTES_FORCE on __osViSwapContext (post1c.c), and the 8 bytes
  * of natural -g3 .text zero-padding here cover the 0x70FCC/0x70FD0 pad
  * nops before fcos (= cosf, post2.c).
  * Blank externs (runtime-reloc'd words): D_00000000_vistate (guard

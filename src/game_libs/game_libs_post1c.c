@@ -1,8 +1,8 @@
 #include "common.h"
 
 /* DRIFT AUDIT 2026-06-10: this unit has ~2 internal byte-drop points in
- * [0x70314..0x70C44) -- guMtxL2F sits -8 and gl_func_00070B04
- * -4 relative to neighbors, re-aligning by gl_func_00070C44. Candidate
+ * [0x70314..0x70C44) -- guMtxL2F sits -8 and __osViInit
+ * -4 relative to neighbors, re-aligning by __osViSwapContext. Candidate
  * for the dropped-former-SUFFIX class (see the confirmed B5AC case +
  * docs/MATCHING_WORKFLOW suffix-fallout audit). GAP CONTENTS verified
  * 2026-06-10: [0x70A0C..0x70A14) = lui at,0x3780; mtc1 at,$f2 (REAL
@@ -188,12 +188,12 @@ GLOBAL_ASM("src/libultra/game_libs/disableint.s")
 GLOBAL_ASM("src/libultra/game_libs/restoreint.s")
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070A14_pad.s")
 
-/* gl_func_00070B04 = libultra __osViInit (vi.c verbatim): bzero the
+/* __osViInit = libultra __osViInit (vi.c verbatim): bzero the
  * game_libs-internal vi[2] context array (baked 0x2E4C0), publish
  * __osViCurr/__osViNext, retraceCount=1 + framep=K0BASE on both,
  * osTvType-selected osViMode{Pal,Mpal,Ntsc}Lan1, state=VI_STATE_BLACK,
  * control from modep->comRegs.ctrl, spin while VI_CURRENT > 10, clear
- * VI_CONTROL, tail-call __osViSwapContext (= gl_func_00070C44, the blank
+ * VI_CONTROL, tail-call __osViSwapContext (= __osViSwapContext, the blank
  * jal with the IO_WRITE in its delay slot). Retires the old "state-init
  * chain-walk" NM decode and its beqzl-tail note (5.3 emits the exact
  * loop shape).
@@ -201,14 +201,14 @@ GLOBAL_ASM("src/libultra/game_libs/restoreint.s")
  * the IDO 5.3 -O1 donor unit game_libs_ido53_70B04.c (78/78 + jr-delay
  * nop; donor symbol 0x13C). The _pad.s sidecar (8 bytes) was deleted:
  * the donor's delay nop covers 0x70C3C and the last 0x70C40 alignment
- * word is emitted as SUFFIX_BYTES_FORCE on gl_func_00070B04 itself.
+ * word is emitted as SUFFIX_BYTES_FORCE on __osViInit itself.
  * Body below is a placeholder for the splice. */
-void gl_func_00070B04(void) {
+void __osViInit(void) {
     volatile int ret = 0;
     (void)ret;
 }
 
-/* gl_func_00070C44 = libultra __osViSwapContext (viswapcontext.c
+/* __osViSwapContext = libultra __osViSwapContext (viswapcontext.c
  * verbatim): field = VI_CURRENT & 1; origin = osVirtualToPhysical
  * (vc->framep) + fldRegs[field].origin; XSCALE/YSCALE_UPDATED merge
  * (f32 y.factor * nomValue with the inline f32->u32 cfc1/ctc1 cast),
@@ -220,7 +220,7 @@ void gl_func_00070B04(void) {
  * the IDO 5.3 -O1 donor unit game_libs_ido53_70C44.c (215/215, size
  * 0x35C flush to func_00070FA0). Body below is a placeholder for the
  * splice. */
-void gl_func_00070C44(void) {
+void __osViSwapContext(void) {
     volatile int ret = 0;
     (void)ret;
 }
@@ -229,4 +229,4 @@ void gl_func_00070C44(void) {
  * game_libs_o1g3_70FA4.c (2026-07-10): the "leaf-branch-past-end CAP"
  * fragment was the head of ONE function whose tail splat carved off as
  * game_libs_g3_70FBC.c; true entry 0x70FA4 (the 0x70FA0 pad nop is the
- * SUFFIX_BYTES_FORCE word on gl_func_00070C44 above). */
+ * SUFFIX_BYTES_FORCE word on __osViSwapContext above). */

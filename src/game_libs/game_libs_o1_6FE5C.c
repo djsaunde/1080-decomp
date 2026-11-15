@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006FE5C = libultra __osInsertTimer
+/* IDO -O1 donor for __osInsertTimer = libultra __osInsertTimer
  * (references/libreultra/src/os/timerintr.c, verbatim: walk
  * __osTimerList->next accumulating tim -= timep->value until
  * timep == __osTimerList || tim <= timep->value; store t->value,
@@ -28,7 +28,7 @@ extern u32 gl_func_00000000_disint(void);   /* __osDisableInt */
 extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 extern OSTimer *D_00000000_timerlist;       /* __osTimerList */
 
-OSTime gl_func_0006FE5C(OSTimer *t)
+OSTime __osInsertTimer(OSTimer *t)
 {
     OSTimer *timep;
     OSTime tim;

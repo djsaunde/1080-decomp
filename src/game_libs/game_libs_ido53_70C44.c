@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_00070C44 = libultra __osViSwapContext
+/* IDO 5.3 -O1 donor for __osViSwapContext = libultra __osViSwapContext
  * (viswapcontext.c verbatim). PROVEN EXACT 215/215 standalone at IDO
  * 5.3 -O1. vc colors s1, vm s0, osVirtualToPhysical result s2; field
  * (48sp), nomValue (52sp), hStart (56sp), origin (60sp) are stack
@@ -62,7 +62,7 @@ extern u32 gl_func_00000000_v2p(void *);   /* osVirtualToPhysical */
 #define VI_2_10_FPART_MASK 0x3ff
 #define VI_SUBPIXEL_SH 0x10
 
-void gl_func_00070C44(void) {
+void __osViSwapContext(void) {
     register OSViMode *vm;
     register __OSViContext *vc;
     u32 origin;

@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 -mips2 donor for game_libs_func_0006FBE4 = libultra
+/* IDO 5.3 -O1 -mips2 donor for __osTimerServicesInit = libultra
  * __osTimerServicesInit (os/timerintr.c verbatim). PROVEN EXACT 2026-09-09
  * (agent-g): 35/35 words at 5.3 -O1 AND 7.1 -O1 first compile once the ONE
  * structural key is in place -- __osCurrentTime (u64, USO .bss 0x44060) is
@@ -20,7 +20,7 @@
  * gl_BaseCounter / gl_viIntrCount / D_00000000_timerlist are the existing
  * pins). Spliced over the placeholder in game_libs_post1b2c.c via
  * REPLACE_FUNC_BODY. The 3 zero words before the entry (0x6FBD8..0x6FBE0)
- * are gl_func_0006FB54's (osGetTime, 0x84) 16-byte inter-object pad:
+ * are osGetTime's (osGetTime, 0x84) 16-byte inter-object pad:
  * SUFFIX_BYTES_FORCE on 6FB54, not part of this object. */
 
 typedef unsigned int u32;
@@ -47,7 +47,7 @@ extern u32 gl_viIntrCount;              /* __osViIntrCount */
 #define __osBaseCounter gl_BaseCounter
 #define __osViIntrCount gl_viIntrCount
 
-void game_libs_func_0006FBE4(void)
+void __osTimerServicesInit(void)
 {
 	__osCurrentTime = 0;
 	__osBaseCounter = 0;

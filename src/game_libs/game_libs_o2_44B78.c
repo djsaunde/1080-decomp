@@ -23,7 +23,7 @@
  * else &modes[30], and cases 4/6/7 + out-of-range go to the error printer
  * (sym306 = text 0x75AE4 = gl_func_00061478) with the Data string at
  * +0x1FE78 "video mode not supported". Tail: osViSetSpecialFeatures-style
- * callee (sym1989 = text 0x857B0 = gl_func_00071144) with
+ * callee (sym1989 = text 0x857B0 = osViSetSpecialFeatures) with
  * 2 | (mode & 0x200 ? 0x40 : 0), bit 1 cleared when mode & 0x400. All three
  * callees are R_MIPS_26 imports (blank jal = gl_func_00000000).
  *

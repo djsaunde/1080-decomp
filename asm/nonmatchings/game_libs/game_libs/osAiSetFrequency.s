@@ -1,5 +1,5 @@
-nonmatching gl_func_00070040, 0x160
-glabel gl_func_00070040
+nonmatching osAiSetFrequency, 0x160
+glabel osAiSetFrequency
 .word 0x3C0E0000
 .word 0x8DCE0000
 .word 0x44844000
@@ -88,4 +88,4 @@ glabel gl_func_00070040
 .word 0x0006000D
 .word 0x03E00008
 .word 0x27BD0010
-endlabel gl_func_00070040
+endlabel osAiSetFrequency

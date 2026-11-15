@@ -196,7 +196,7 @@ int gl_osEPiLinkHandle(void *handle) {
     return 0;
 }
 
-/* gl_func_0006CC64 = libultra osViBlack (viblack.c verbatim): saveMask =
+/* osViBlack = libultra osViBlack (viblack.c verbatim): saveMask =
  * __osDisableInt(); __osViNext->state |= / &= ~VI_STATE_BLACK(0x20);
  * __osRestoreInt(saveMask). Retires the old "rv in s0 / frame -0x28
  * regalloc cap": `register u32 saveMask` across the call at -O1 IS the
@@ -205,7 +205,7 @@ int gl_osEPiLinkHandle(void *handle) {
  * IDO -O1 donor unit game_libs_o1_6CC64.c (28/28 at both 7.1 and 5.3 -O1),
  * spliced over this -O2 stand-in. Body below is a placeholder for the
  * splice. */
-void gl_func_0006CC64(unsigned char active) {
+void osViBlack(unsigned char active) {
     volatile unsigned char a = active;
     (void)a;
 }
@@ -231,7 +231,7 @@ int gl_func_0006CD24() {
     return gl_func_00000000(0x400);
 }
 
-/* gl_func_0006CD44 = libultra osViSetMode (io/visetmode.c verbatim),
+/* osViSetMode = libultra osViSetMode (io/visetmode.c verbatim),
  * section 0x813B0 = export sym 1988. LANDED 2026-09-09 (agent-g) via
  * REPLACE_FUNC_BODY donor splice: real C lives in the IDO -O1 donor
  * game_libs_o1_6CD44.c (26/26 at both 7.1 and 5.3 -O1). The old 86% NM
@@ -241,7 +241,7 @@ int gl_func_0006CD24() {
  * The 2-word gl_func_0006CD44_pad.s below is the inter-object pad before
  * the contpfs.c pair and is unchanged. Body below is a placeholder for
  * the splice. */
-void gl_func_0006CD44(void *modep) {
+void osViSetMode(void *modep) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006CD44_pad.s")
 
@@ -838,7 +838,7 @@ int game_libs_func_0006F614(int *a0) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006F534_pad.s")
 
-/* gl_func_0006F634 = libultra osViSwapBuffer (io/viswapbuf.c verbatim),
+/* osViSwapBuffer = libultra osViSwapBuffer (io/viswapbuf.c verbatim),
  * section 0x83CA0 = export sym 1549 (two jal refs). LANDED 2026-09-09
  * (agent-g) via REPLACE_FUNC_BODY donor splice: real C lives in the IDO -O1
  * donor game_libs_o1_6F634.c (20/20 at both 7.1 and 5.3 -O1). The old NM
@@ -848,7 +848,7 @@ int game_libs_func_0006F614(int *a0) {
  * un-`register`ed saveMask. No pad (guPositionF follows
  * directly); the C body is the same 0x50 as the old .s. Body below is a
  * placeholder for the splice. */
-void gl_func_0006F634(void *frameBufPtr) {
+void osViSwapBuffer(void *frameBufPtr) {
 }
 
 
@@ -927,7 +927,7 @@ int gl_func_0006FAD4(int* a0) {
     return flag;
 }
 
-/* gl_func_0006FB54 = libultra osGetTime (gettime.c verbatim): saveMask =
+/* osGetTime = libultra osGetTime (gettime.c verbatim): saveMask =
  * __osDisableInt(); tmptime = osGetCount(); elapseCount = tmptime -
  * __osBaseCounter; currentCount = __osCurrentTime;
  * __osRestoreInt(saveMask); return currentCount + elapseCount.
@@ -938,14 +938,14 @@ int gl_func_0006FAD4(int* a0) {
  * the IDO -O1 donor unit game_libs_o1_6FB54.c (33/33 at both 7.1 and
  * 5.3 -O1), spliced over this -O2 stand-in. Body below is a placeholder
  * for the splice. */
-long long gl_func_0006FB54(void) {
+long long osGetTime(void) {
     return 0;
 }
 
-/* game_libs_func_0006FBE4 = libultra __osTimerServicesInit (os/timerintr.c
+/* __osTimerServicesInit = libultra __osTimerServicesInit (os/timerintr.c
  * verbatim), 35 insns, EXACT 2026-09-09 (agent-g). Retires the old
  * "game_libs_func_0006FBD8" 18%-NM global-init wrap: its three leading zero
- * words were gl_func_0006FB54's (osGetTime, 0x84) 16-byte inter-object pad
+ * words were osGetTime's (osGetTime, 0x84) 16-byte inter-object pad
  * (twenty-sixth mis-split case; now SUFFIX_BYTES_FORCE on 6FB54) -- bootup.uso
  * Sym export sym 2637 sits at section 0x84250 (= 0x6FBE4); 0x84244 is not
  * exported. The "at-fused register-zero stores / distinct pointer regs /
@@ -957,7 +957,7 @@ long long gl_func_0006FB54(void) {
  * placeholder. Globals: __osCurrentTime (.bss 0x44060, u64),
  * __osBaseCounter (0x44068), __osViIntrCount (0x4406C), __osTimerList
  * (.data 0x2E4B0) -> pins = 0. */
-void game_libs_func_0006FBE4(void) {
+void __osTimerServicesInit(void) {
 }
 
 /* __osTimerInterrupt from libreultra src/os/timerintr.c.
@@ -1027,7 +1027,7 @@ void game_libs_func_0006FC70(void)
 	}
 }
 
-/* gl_func_0006FDE8 = libultra __osSetTimerIntr (os/timerintr.c verbatim,
+/* __osSetTimerIntr = libultra __osSetTimerIntr (os/timerintr.c verbatim,
  * 0x74): savedMask = __osDisableInt(); __osTimerCounter = osGetCount();
  * NewTime = tim + __osTimerCounter; __osSetCompare(NewTime);
  * __osRestoreInt(savedMask). Section 0x84454 = Sym 2640, jal'd from
@@ -1039,10 +1039,10 @@ void game_libs_func_0006FC70(void)
  * Real C lives in the IDO -O1 donor game_libs_o1_6FC70.c (same TU as
  * __osTimerInterrupt; 29/29 at both 7.1 and 5.3 -O1), spliced over this
  * placeholder via REPLACE_FUNC_BODY. Blank imports, pins = 0. */
-void gl_func_0006FDE8(long long tim) {
+void __osSetTimerIntr(long long tim) {
 }
 
-/* gl_func_0006FE5C = libultra __osInsertTimer (timerintr.c verbatim):
+/* __osInsertTimer = libultra __osInsertTimer (timerintr.c verbatim):
  * walk __osTimerList->next subtracting each timer's 64-bit value from
  * tim until timep wraps to the list head or tim <= timep->value; store
  * t->value = tim, decrement the successor's value, doubly-linked insert
@@ -1053,7 +1053,7 @@ void gl_func_0006FDE8(long long tim) {
  * the IDO -O1 donor unit game_libs_o1_6FE5C.c (98/98 at both 7.1 and
  * 5.3 -O1), spliced over this -O2 stand-in. Body below is a placeholder
  * for the splice. */
-long long gl_func_0006FE5C(void *t) {
+long long __osInsertTimer(void *t) {
     volatile void *a = t;
     (void)a;
     return 0;
@@ -1072,7 +1072,7 @@ void gl___osSetGlobalIntMask(int mask) {
     gl_func_00000000(sr);
 }
 
-/* gl_func_00070040 = libultra osAiSetFrequency (aisetfreq.c verbatim):
+/* osAiSetFrequency = libultra osAiSetFrequency (aisetfreq.c verbatim):
  * dacRate = osViClock/(f32)freq + .5f; <132 -> -1; bitRate = dacRate/66
  * capped 16; AI_DACRATE/BITRATE = -1'd; AI_CONTROL = DMA_ON; returns
  * osViClock/dacRate. BOUNDARY FIX: the 3-word orphan
@@ -1085,7 +1085,7 @@ void gl___osSetGlobalIntMask(int mask) {
  * the IDO 5.3 -O1 donor unit game_libs_ido53_70040.c (88/88; 7.1 -O1
  * coalesces the u8 bitRate andi-to-temp+or pair). Body below is a
  * placeholder for the splice. */
-int gl_func_00070040(unsigned int frequency) {
+int osAiSetFrequency(unsigned int frequency) {
     volatile int ret = -1;
     if (frequency != 0) {
         ret = 0;

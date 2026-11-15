@@ -1,6 +1,6 @@
-nonmatching gl_func_00070C44, 0x35C
+nonmatching __osViSwapContext, 0x35C
 
-glabel gl_func_00070C44
+glabel __osViSwapContext
     /* E55D1C 00070C44 27BDFFB8 */  .word 0x27BDFFB8
     /* E55D20 00070C48 AFB1001C */  .word 0xAFB1001C
     /* E55D24 00070C4C AFBF0024 */  .word 0xAFBF0024
@@ -216,4 +216,4 @@ glabel gl_func_00070C44
     /* E5606C 00070F94 8FB20020 */  .word 0x8FB20020
     /* E56070 00070F98 03E00008 */  .word 0x03E00008
     /* E56074 00070F9C 27BD0048 */  .word 0x27BD0048
-endlabel gl_func_00070C44
+endlabel __osViSwapContext

@@ -1,6 +1,6 @@
-nonmatching gl_func_0006A420, 0x190
+nonmatching osSpTaskLoad, 0x190
 
-glabel gl_func_0006A420
+glabel osSpTaskLoad
     /* E4F4F8 0006A420 27BDFFE0 */  .word 0x27BDFFE0
     /* E4F4FC 0006A424 AFBF0014 */  .word 0xAFBF0014
     /* E4F500 0006A428 AFA40020 */  .word 0xAFA40020
@@ -101,4 +101,4 @@ glabel gl_func_0006A420
     /* E4F67C 0006A5A4 27BD0020 */  .word 0x27BD0020
     /* E4F680 0006A5A8 03E00008 */  .word 0x03E00008
     /* E4F684 0006A5AC 00000000 */  .word 0x00000000
-endlabel gl_func_0006A420
+endlabel osSpTaskLoad

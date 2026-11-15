@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006CD44 = libultra osViSetMode
+/* IDO -O1 donor for osViSetMode = libultra osViSetMode
  * (references/libreultra/src/io/visetmode.c, verbatim). PROVEN EXACT 26/26
  * standalone at BOTH IDO 7.1 -O1 and 5.3 -O1 (identical output; built with
  * 7.1), agent-g 2026-09-09. Section 0x813B0 = bootup.uso export sym 1988
@@ -67,7 +67,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 #define __osDisableInt gl_func_00000000_disint
 #define __osRestoreInt gl_func_00000000_resint
 
-void gl_func_0006CD44(OSViMode *modep)
+void osViSetMode(OSViMode *modep)
 {
     register u32 saveMask;
     saveMask = __osDisableInt();

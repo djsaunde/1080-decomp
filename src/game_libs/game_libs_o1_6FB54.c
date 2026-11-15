@@ -1,4 +1,4 @@
-/* IDO -O1 donor for gl_func_0006FB54 = libultra osGetTime
+/* IDO -O1 donor for osGetTime = libultra osGetTime
  * (references/libreultra/src/os/gettime.c, verbatim: saveMask =
  * __osDisableInt(); tmptime = osGetCount(); elapseCount = tmptime -
  * __osBaseCounter; currentCount = __osCurrentTime;
@@ -22,7 +22,7 @@ extern void gl_func_00000000_resint(u32);   /* __osRestoreInt */
 extern u32 D_00000000_basecnt;              /* __osBaseCounter */
 extern OSTime D_00000000_curtime;           /* __osCurrentTime */
 
-OSTime gl_func_0006FB54(void)
+OSTime osGetTime(void)
 {
     u32 tmptime;
     u32 elapseCount;

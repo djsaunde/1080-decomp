@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for game_libs_func_00073310 = libultra
+/* IDO 5.3 -O1 donor for osViGetCurrentField = libultra
  * osViGetCurrentField (vigetfield.c verbatim: IO_READ(VI_CURRENT_REG) & 1).
  * PROVEN EXACT 5/5 standalone at IDO 5.3 -O1. 5.3 DISCRIMINATOR: 5.3
  * lands the andi in a temp with the copy in the jr delay (`andi t7,v0,1;
@@ -11,6 +11,6 @@ typedef unsigned int u32;
 
 #define IO_READ(a) (*(volatile u32 *)((a) | 0xA0000000))
 
-u32 game_libs_func_00073310(void) {
+u32 osViGetCurrentField(void) {
     return IO_READ(0xA4400010) & 1; /* VI_CURRENT_REG */
 }

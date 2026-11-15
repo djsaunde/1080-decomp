@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl_func_00070B04 = libultra __osViInit
+/* IDO 5.3 -O1 donor for __osViInit = libultra __osViInit
  * (vi.c verbatim). PROVEN EXACT 78/78 standalone at IDO 5.3 -O1 (donor
  * symbol 0x13C = 79 words incl. the jr-ra delay nop; the last 0x70C40
  * alignment word -> SUFFIX_BYTES_FORCE, _pad.s sidecar deleted).
@@ -8,7 +8,7 @@
  * D_00000000_tvtype (osTvType), D_00000000_pal/mpal/ntsc
  * (osViModePalLan1/MpalLan1/NtscLan1). Callees (blank jal 0x0C000000):
  * gl_func_00000000 = bzero, gl_func_00000001 = __osViSwapContext
- * (= gl_func_00070C44, the next function).
+ * (= __osViSwapContext, the next function).
  * Spliced into game_libs_post1c.c.o via REPLACE_FUNC_BODY. */
 typedef signed int s32;
 typedef unsigned int u32;
@@ -56,13 +56,13 @@ extern OSViMode D_00000000_pal;             /* osViModePalLan1 */
 extern OSViMode D_00000000_mpal;            /* osViModeMpalLan1 */
 extern OSViMode D_00000000_ntsc;            /* osViModeNtscLan1 */
 extern void gl_func_00000000(void *, s32);  /* bzero */
-extern void gl_func_00000001(void);         /* __osViSwapContext = gl_func_00070C44 */
+extern void gl_func_00000001(void);         /* __osViSwapContext = __osViSwapContext */
 
 #define vi gl_ref_0002E4C0
 #define IO_READ(a) (*(volatile u32 *)((a) | 0xA0000000))
 #define IO_WRITE(a, v) (*(volatile u32 *)(a) = (v))
 
-void gl_func_00070B04(void) {
+void __osViInit(void) {
     gl_func_00000000(vi, sizeof(vi)); /* bzero */
     D_00000000_vicurr = &vi[0];
     D_00000000_vinext = &vi[1];

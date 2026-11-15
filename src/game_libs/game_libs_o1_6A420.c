@@ -1,4 +1,4 @@
-/* -O1 donor for gl_func_0006A420 = libultra osSpTaskLoad (sptask.c), spliced
+/* -O1 donor for osSpTaskLoad = libultra osSpTaskLoad (sptask.c), spliced
  * over the -O2 stand-in in game_libs_post1b.c (same recipe as the 6A304
  * donor just before it). The first call is the file-static
  * _VirtualToPhysicalTask, a baked in-unit jal 0x0C01FA5C (gl_ref_0007E970);
@@ -26,7 +26,7 @@ typedef struct {
     unsigned int yield_data_size;
 } OSTask_6A420;
 
-void gl_func_0006A420(OSTask_6A420 *intp) {
+void osSpTaskLoad(OSTask_6A420 *intp) {
     OSTask_6A420 *tp;
     tp = (OSTask_6A420 *)gl_ref_0007E970(intp);
     if (tp->flags & 1) {

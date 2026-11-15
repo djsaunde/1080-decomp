@@ -1,6 +1,6 @@
-nonmatching gl_func_0006CC64, 0x70
+nonmatching osViBlack, 0x70
 
-glabel gl_func_0006CC64
+glabel osViBlack
     /* E51D3C 0006CC64 27BDFFD8 */  .word 0x27BDFFD8
     /* E51D40 0006CC68 AFBF001C */  .word 0xAFBF001C
     /* E51D44 0006CC6C AFA40028 */  .word 0xAFA40028
@@ -29,4 +29,4 @@ glabel gl_func_0006CC64
     /* E51DA0 0006CCC8 27BD0028 */  .word 0x27BD0028
     /* E51DA4 0006CCCC 03E00008 */  .word 0x03E00008
     /* E51DA8 0006CCD0 00000000 */  .word 0x00000000
-endlabel gl_func_0006CC64
+endlabel osViBlack

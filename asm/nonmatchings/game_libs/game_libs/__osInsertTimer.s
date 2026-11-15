@@ -1,6 +1,6 @@
-nonmatching gl_func_0006FE5C, 0x188
+nonmatching __osInsertTimer, 0x188
 
-glabel gl_func_0006FE5C
+glabel __osInsertTimer
     /* E54F34 0006FE5C 27BDFFC8 */  .word 0x27BDFFC8
     /* E54F38 0006FE60 AFBF0014 */  .word 0xAFBF0014
     /* E54F3C 0006FE64 0C000000 */  .word 0x0C000000
@@ -99,4 +99,4 @@ glabel gl_func_0006FE5C
     /* E550B0 0006FFD8 8FA3002C */  .word 0x8FA3002C
     /* E550B4 0006FFDC 03E00008 */  .word 0x03E00008
     /* E550B8 0006FFE0 27BD0038 */  .word 0x27BD0038
-endlabel gl_func_0006FE5C
+endlabel __osInsertTimer

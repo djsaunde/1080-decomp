@@ -1,6 +1,6 @@
-nonmatching gl_func_0006CD44, 0x68
+nonmatching osViSetMode, 0x68
 
-glabel gl_func_0006CD44
+glabel osViSetMode
     /* E51E1C 0006CD44 27BDFFD8 */  .word 0x27BDFFD8
     /* E51E20 0006CD48 AFBF001C */  .word 0xAFBF001C
     /* E51E24 0006CD4C AFA40028 */  .word 0xAFA40028
@@ -27,4 +27,4 @@ glabel gl_func_0006CD44
     /* E51E78 0006CDA0 27BD0028 */  .word 0x27BD0028
     /* E51E7C 0006CDA4 03E00008 */  .word 0x03E00008
     /* E51E80 0006CDA8 00000000 */  .word 0x00000000
-endlabel gl_func_0006CD44
+endlabel osViSetMode

@@ -1,6 +1,6 @@
-nonmatching gl_func_00070B04, 0x13c
+nonmatching __osViInit, 0x13c
 
-glabel gl_func_00070B04
+glabel __osViInit
     /* E55BDC 00070B04 27BDFFE8 */  .word 0x27BDFFE8
     /* E55BE0 00070B08 AFBF0014 */  .word 0xAFBF0014
     /* E55BE4 00070B0C 3C040003 */  .word 0x3C040003
@@ -80,4 +80,4 @@ glabel gl_func_00070B04
     /* E55D0C 00070C34 27BD0018 */  .word 0x27BD0018
     /* E55D10 00070C38 03E00008 */  .word 0x03E00008
     /* E55D14 00070C3C 00000000 */  .word 0x00000000
-endlabel gl_func_00070B04
+endlabel __osViInit

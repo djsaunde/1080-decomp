@@ -1,6 +1,6 @@
-nonmatching gl_func_0006FDE8, 0x74
+nonmatching __osSetTimerIntr, 0x74
 
-glabel gl_func_0006FDE8
+glabel __osSetTimerIntr
     /* E54EC0 0006FDE8 27BDFFD8 */  .word 0x27BDFFD8
     /* E54EC4 0006FDEC AFBF0014 */  .word 0xAFBF0014
     /* E54EC8 0006FDF0 AFA40028 */  .word 0xAFA40028
@@ -30,4 +30,4 @@ glabel gl_func_0006FDE8
     /* E54F28 0006FE50 27BD0028 */  .word 0x27BD0028
     /* E54F2C 0006FE54 03E00008 */  .word 0x03E00008
     /* E54F30 0006FE58 00000000 */  .word 0x00000000
-endlabel gl_func_0006FDE8
+endlabel __osSetTimerIntr

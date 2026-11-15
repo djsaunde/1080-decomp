@@ -1,6 +1,6 @@
-nonmatching gl_func_0006FB54, 0x84
+nonmatching osGetTime, 0x84
 
-glabel gl_func_0006FB54
+glabel osGetTime
     /* E54C2C 0006FB54 27BDFFC8 */  .word 0x27BDFFC8
     /* E54C30 0006FB58 AFBF001C */  .word 0xAFBF001C
     /* E54C34 0006FB5C 0C000000 */  .word 0x0C000000
@@ -34,4 +34,4 @@ glabel gl_func_0006FB54
     /* E54CA4 0006FBCC 27BD0038 */  .word 0x27BD0038
     /* E54CA8 0006FBD0 03E00008 */  .word 0x03E00008
     /* E54CAC 0006FBD4 004C1021 */  .word 0x004C1021
-endlabel gl_func_0006FB54
+endlabel osGetTime

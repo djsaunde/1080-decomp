@@ -11,7 +11,7 @@ typedef struct { float x, y, z; } Vec3;
  * they are appended to gl_func_00074DB4 as an all-zero SUFFIX_BYTES_FORCE
  * (Makefile, both trees; was the pseudo-function game_libs_func_00074EDC). */
 
-/* gl_func_00074EFC = osCreateViManager + gl_func_0007507C = viMgrMain
+/* osCreateViManager = osCreateViManager + gl_func_0007507C = viMgrMain
  * (libultra vimgr.c verbatim, ONE IDO 5.3 -O1 -mips2 TU donor:
  * game_libs_ido53_74EF4.c). LANDED 2026-08-22 via REPLACE_FUNC_BODY
  * donor splice, both first-compile word-exact (98/98 + 115/115 incl.
@@ -26,11 +26,11 @@ typedef struct { float x, y, z; } Vec3;
  *     definition makes IDO share $at across the 7 field stores; extern
  *     decl re-luis $at each store (+5 words, the old 65% residual);
  *   - viMgrMain fn-ptr materialized against .text (baked original-link
- *     0x896E8, addend 0x188 -> pin gl_func_00074EFC_text = 0x89560).
+ *     0x896E8, addend 0x188 -> pin osCreateViManager_text = 0x89560).
  * The old "-Olimit allocator quirk" verdict on 7507C is RETRACTED --
  * whole-TU -O1 gives the s0 switch value + 0x38 frame naturally.
  * Bodies below are placeholders for the splice. */
-void gl_func_00074EFC(int pri) {
+void osCreateViManager(int pri) {
     volatile int vimgr_spliced = 0;
     if (pri != 0) {
         vimgr_spliced = pri;
