@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for game_libs_func_00042938 (0x614 / 389 words), agent-c run 160 lift, agent-g run 381
+/* IDO 7.1 NCC (C++) EXACT donor for dbg_screenOverlay_00042938 (0x614 / 389 words), agent-c run 160 lift, agent-g run 381
  * exact (REPLACE_FUNC_BODY-spliced over a placeholder on both build paths).
  * A C++ frame-setup / text-overlay draw: three guarded one-time initialisations (edg's function-local static
  * shape: flag = 1, then the value from the 0x50-stride record table), stock-gbi packets appended through the
@@ -93,7 +93,7 @@ inline void setvp(Vp *v, f32 x, f32 y, f32 w, f32 h) {
     v->vtrans[3] = 0;
 }
 
-extern "C" void game_libs_func_00042938(void) {
+extern "C" void dbg_screenOverlay_00042938(void) {
     /* agent-c run 288: the frame is sized by the home of the one spilled variable (the gSPViewport packet pointer,
      * spilled across the func_00000000(v) call at sp+40): as the gDma1p macro's block-local _g it sat at M-72 (frame
      * 112); a function-scope g under 11 pad words sits at M-48 = the target's frame 88 (98.11311 -> 98.118256) */

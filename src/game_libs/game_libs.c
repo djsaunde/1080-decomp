@@ -639,7 +639,7 @@ void BoardsGadget_display(char *self) {
     }
 }
 
-void game_libs_func_00001354(int *a0, int a1) {
+void BoardsGadget_setCount(int *a0, int a1) {
     ((BoardsGadget *)a0)->count = a1;
 }
 
@@ -4382,7 +4382,7 @@ int *gl_func_000088B4(int *arg0) {
 /* game_libs_func_0003E9C0 split off from gl_func_0003E968 bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
-/* game_libs_func_00046048 split off from gl_func_00045FF4 bundle 2026-05-08;
+/* game_libs_func_00046048 split off from gfx_waitRetrace bundle 2026-05-08;
  * decompiled in game_libs_post.c. */
 
 /* gl_func_0004D0B4 bundle split 2026-05-08; children INCLUDE_ASM live in

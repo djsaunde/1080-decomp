@@ -9355,7 +9355,7 @@ end:
 
 /* Audio_AllocNoteFromDecaying: 20-insn cross-USO + alt-entry helper. Calls cross-USO
  * gl_func(a0+0x10, a1), then if non-NULL calls alt-entry gl_func_0003D66C
- * (inside gl_func_0003D620 at +0x4C), then cross-USO gl_func(a0+0x20, result).
+ * (inside ColourItem_handleMsg at +0x4C), then cross-USO gl_func(a0+0x20, result).
  * Returns the first call's result (or 0). */
 extern int gl_func_0003D66C();
 int Audio_AllocNoteFromDecaying(int a0, int a1) {

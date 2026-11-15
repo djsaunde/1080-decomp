@@ -480,7 +480,7 @@ int* BoardsGadget_ctor(int *self);
 void BoardsGadget_release(char *a0);
 void _asmpp_func3(void);
 void BoardsGadget_display(int *self);
-void game_libs_func_00001354(int *a0, int a1);
+void BoardsGadget_setCount(int *a0, int a1);
 extern char gl_ref_0000CC38;
 extern char gl_ref_0000C764_135C_1;
 extern char gl_ref_0000C764_135C_2;

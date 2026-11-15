@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00044CE8 (post0b, 43 words), EXACT.
+/* IDO 7.1 NCC (C++) donor for gfx_addDdm (post0b, 43 words), EXACT.
  * Spliced into build/src and build/non_matching (REPLACE_FUNC_BODY).
  * agent-c run 148 (docs/IDO_CODEGEN.md kit LXXXVII): the pool alloc
  * `&pool->e[pool->n++]` (50 twelve-byte records at +0x378, count at +0x5D0)
@@ -24,7 +24,7 @@ struct Obj {
     Rec *slot[51];
     Pool pool;
 };
-extern "C" Rec *gl_func_00044CE8(Obj *o, unsigned int i, int a2) {
+extern "C" Rec *gfx_addDdm(Obj *o, unsigned int i, int a2) {
     if (i >= 50) gl_func_00000000(D_00000000 + 0x1FE94, D_00000000 + 0x1FEA8, 0x102D);
     Rec *r;
     Pool *p = &o->pool;

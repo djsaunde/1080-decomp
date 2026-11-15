@@ -2041,7 +2041,7 @@ void fs_gdlReadVec3_0000C714(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-/* gl_func_0000C784: constructor, 77/77 BYTE-EXACT (2026-09-11 agent-g; was
+/* RaceTracker_ctor: constructor, 77/77 BYTE-EXACT (2026-09-11 agent-g; was
  * NM 95.84 with three "not C-drivable" residuals, all three were spellings).
  * Allocs self (0xB8) if arg0 == NULL; cb(self, D+0xD678); self->0x28 = &D;
  * zeros 17 fields; allocs a 0x300 buffer into self->0x44 and zeros 8 records
@@ -2058,7 +2058,7 @@ void fs_gdlReadVec3_0000C714(Vec3 *dst) {
  * docs/IDO_CODEGEN.md #for-init-vs-dowhile-preheader-lui-addiu-adjacency-66d54).
  * Calls are jal 0x0 blanks (gl_func_00000000). */
 extern int gl_func_00000000();
-void *gl_func_0000C784(char *arg0) {
+void *RaceTracker_ctor(char *arg0) {
     int v1;
 
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0xB8), (arg0 != 0))) {
@@ -2102,7 +2102,7 @@ void *gl_func_0000C784(char *arg0) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_0000C8B8: entry-array reset + view setup. Zeroes the five 0x60
+/* RaceTracker_reset: entry-array reset + view setup. Zeroes the five 0x60
  * entries at self->0x44 (floats 0x08/0x0C/0x10/0x30, ints 0x14..0x28/0x34,
  * stage counters 0x38/0x3C/0x40 = 3), then 0x30 = 0, 0x34 = 600000,
  * 0xB0 = 1, copies the camera floats from (*(D + 0x134))->0x98 (+0xC4,
@@ -2113,7 +2113,7 @@ void *gl_func_0000C784(char *arg0) {
  * calls get `or a1,a2` copies (+2 words, 32 diffs); with the single-arg
  * call self colours a1 from the entry and the second call's a1 is just
  * that colouring (the target never writes a1 before either jal). */
-void gl_func_0000C8B8(char *self) {
+void RaceTracker_reset(char *self) {
     s32 i;
     char *p;
 
@@ -2194,7 +2194,7 @@ end:
     return 0;
 }
 
-/* gl_func_0000CB9C: 22-insn bounds-check + dispatch. Body:
+/* RaceTracker_checkTimeLimit: 22-insn bounds-check + dispatch. Body:
  *   if (a0[0x30] < a0[0x34]) return 0;
  *   if (a0[0x78]) { func(a0[0x78]); a0[0x30] = a0[0x34] - 8; }
  *   return 1;
@@ -2219,7 +2219,7 @@ end:
  * the bnezl-to-epilogue and the dead `move v0,zero`); the only reloc is the
  * jal to gl_func_00000000 (real fn at game_libs VRAM 0). UNWRAPPED. */
 extern int gl_func_00000000();
-int gl_func_0000CB9C(int *a0) {
+int RaceTracker_checkTimeLimit(int *a0) {
     int p;
     int n;
 
@@ -2239,9 +2239,9 @@ retzero:
 
 
 #ifdef NON_MATCHING
-/* game_libs_func_0000CBF0: per-record percentage scaler + four handler
+/* RaceTracker_update: per-record percentage scaler + four handler
  * dispatches, ONE function [0xCBF0,0xCD74) = 0xC + 0x178 -> 0x184 (97 words;
- * 2026-09-09, agent-g). The 3-word "game_libs_func_0000CBF0" (`lui a3; addiu
+ * 2026-09-09, agent-g). The 3-word "RaceTracker_update" (`lui a3; addiu
  * a3; lw t6,0x134(a3)`) was the hoisted held-base read of the registry chain
  * for the INCLUDE_ASM gl_func_0000CBFC body (agent-c's fake-param class,
  * docs/MATCHING_WORKFLOW.md#game-libs-fake-param-exact-sweep-agent-c). Sym
@@ -2327,7 +2327,7 @@ typedef struct {
 #define CBF0_LO (*(float *)(CBF0_G + 0xCC))
 #define CBF0_HI (*(float *)(CBF0_G + 0xD8))
 extern int func_00000000();
-void game_libs_func_0000CBF0(CBF0_Self *self) {
+void RaceTracker_update(CBF0_Self *self) {
     int i;
     float range;
     float d;
@@ -2353,13 +2353,13 @@ void game_libs_func_0000CBF0(CBF0_Self *self) {
 #undef CBF0_LO
 #undef CBF0_HI
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_0000CBF0);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_update);
 #endif
 
-/* game_libs_func_0000CD74: three-threshold OR-gate, BYTE-EXACT 26/26
+/* RaceTracker_display: three-threshold OR-gate, BYTE-EXACT 26/26
  * (2026-09-09, agent-g) as ONE no-argument function [0xCD74,0xCDDC):
  *   if (D_c758 > 0.0f || D_c75c > 0.0f || D_c760 > 0.0f) callback();
- * The old 3-word "game_libs_func_0000CD74" (`lui at; mtc1 zero,$f0; lwc1
+ * The old 3-word "RaceTracker_display" (`lui at; mtc1 zero,$f0; lwc1
  * $f4,0(at)`) was the hoisted head of the 59.8% "gl_func_0000CD80(float
  * a0, float a1)" wrap: IDO -O2 materialises the shared 0.0f operand and the
  * first global load above the addiu-sp prologue (agent-c's fake-param
@@ -2377,18 +2377,18 @@ extern float D_00000000_c758;
 extern float D_00000000_c75c;
 extern float D_00000000_c760;
 extern int gl_func_00000000();
-void game_libs_func_0000CD74(void) {
+void RaceTracker_display(void) {
     if (D_00000000_c758 > 0.0f || D_00000000_c75c > 0.0f || D_00000000_c760 > 0.0f) {
         gl_func_00000000();
     }
 }
 
-/* gl_func_0000CDDC: 23-insn conditional vtable-dispatch + chain. If
+/* RaceTracker_handleMsg: 23-insn conditional vtable-dispatch + chain. If
  * *a1 == 9, load the sub-object p = *(a0 + 0x28), then call
  * (*p->[0x5C])(a0 + s16(p->[0x58])). Then always call gl_func(a0, a1).
  * The "lw v0,0x28(a0)" is the real sub-object deref (not a dummy):
  * the 0x58/0x5C accesses are off p, not off a0. */
-int gl_func_0000CDDC(int *a0, int *a1) {
+int RaceTracker_handleMsg(int *a0, int *a1) {
     int cmd = *a1;
     if (cmd == 9) {
         int *p = (int *)a0[0x28 / 4];
@@ -2478,7 +2478,7 @@ void game_libs_func_0000D090(int *a0) {
 }
 
 #ifdef NON_MATCHING
-/* gl_func_0000D0D0 NM 78.59 -> 89.49 (2026-10-14 agent-g): per child (stride
+/* RaceTracker_findGates NM 78.59 -> 89.49 (2026-10-14 agent-g): per child (stride
  * 0x60) reset +0xC to -6553600.0f, then three lookups f(D, key, owner+0xDC, 0)
  * whose key is a 4-byte STRUCT PASSED BY VALUE (the `sw a1,4(sp)` before
  * each jal; docs/IDO_CODEGEN.md#struct-by-value-arg-carrier-7bc): the int at
@@ -2500,7 +2500,7 @@ typedef struct { int v; } S4_D0D0;
 extern int D_D0D0_D680;
 extern int D_D0D0_D684;
 extern int D_D0D0_D688;
-void gl_func_0000D0D0(char *arg0) {
+void RaceTracker_findGates(char *arg0) {
     S4_D0D0 a;
     S4_D0D0 b;
     S4_D0D0 c;
@@ -2541,7 +2541,7 @@ void gl_func_0000D0D0(char *arg0) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_0000D0D0);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", RaceTracker_findGates);
 #endif
 
 #ifdef NON_MATCHING

@@ -238,7 +238,7 @@ struct GlObjectPrefix {
 };
 
 /* Shared 0x3C prefix: game.uso 041C0/03A28/AC78/11A94 pass the same
- * allocated instance to game_libs gl_func_0003D5BC (bootup Text+0x51C28).
+ * allocated instance to game_libs ColourItem_ctor (bootup Text+0x51C28).
  * The initializer stores an address at +0x28, a zero word at +0x2C,
  * and float zeros at +0x30/+0x34/+0x38. Other field meanings and the
  * original class name are unknown; no unrelated equal-offset class is implied.

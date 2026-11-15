@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_00046FA8 (0x13C / 79 words): emit a
+/* IDO 7.1 NCC (C++) donor for gfx_fillRect (0x13C / 79 words): emit a
  * gDPFillRectangle + gDPPipeSync pair through the object's display-list
  * context, after up to three pre-dispatch calls; the else arm calls out.
  * - C++: the context's inline next() append (lw dl; lw n; n+1; sw; reload dl)
@@ -15,7 +15,7 @@ struct Ctx { char pad[0xC]; DL *dl; Gfx *next() { int n = dl->n++; Gfx *g = &dl-
 struct Mgr { char pad[0x158]; Ctx *ctx; };
 struct Obj { char pad[0x254]; Mgr *mgr; char pad2[0x28C - 0x258]; int done; };
 #define _SHIFTL(v, s, w) ((unsigned int)(((unsigned int)(v) & ((0x01 << (w)) - 1)) << (s)))
-extern "C" void gl_func_00046FA8(Obj *a0, int x, int y, int w, int h, int c) {
+extern "C" void gfx_fillRect(Obj *a0, int x, int y, int w, int h, int c) {
     if (a0->done == 0) {
         if (c != 0) {
             gl_func_00000000(a0->mgr->ctx, c);

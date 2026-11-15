@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_0003DD28: cfront create + virtual call + list attach.
+/* IDO 7.1 NCC (C++) donor for SNodeItemType_newItem: cfront create + virtual call + list attach.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 133 / 134) 3DD28 = create an object through its cfront allocating
  * constructor (called with this == 0; `new Obj` compiles to the same __ct(0) call),
@@ -16,7 +16,7 @@ struct Base { char pad[0x10]; char link[0x18];
 struct Obj : Base { char pad2c[0x44]; float f70; };
 struct Node { int x0; int x4; char pad8[0xC]; Obj *o14; };
 struct Owner { char pad[0x40]; Node *n40; };
-extern "C" Obj *gl_func_0003DD28(Owner *a0) {
+extern "C" Obj *SNodeItemType_newItem(Owner *a0) {
     int pad[2];
     int kind;
     Obj *o;

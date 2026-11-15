@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) EXACT donor for gl_func_00046050 (agent-c run 268; history: agent-c run 152 NM): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
+/* IDO 7.1 NCC (C++) EXACT donor for gfx_drawText (agent-c run 268; history: agent-c run 152 NM): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
  * agent-c run 182: the character dispatch is a `switch (ch)` (edg compare chain `beq 10 / beq 9 / beql 0x30 / b default`
  * with the case bodies out of line, as the target) whose newline case jumps past the advance (`goto next`), and x is read
  * after the switch: 86.91 -> 89.54, length 1832 -> 1840 (target 1848); charw read before lineh (s1 / s2 as the
@@ -88,7 +88,7 @@ struct Font { s32 f0; s32 f4; s32 f8; s32 fC; char pad[0x21C - 0x10]; s32 x; s32
 #define CTX (o->sub->ctx)
 /* agent-c run 268: the F5801000 append (two statements -> p gets a pool temp; ctx read through the local k) */
 inline Gfx *f2(Ctx *p) { Ctx *k = p; if (0) { p = 0; } return &k->dl->buf[k->dl->n++]; }
-extern "C" s32 gl_func_00046050(Font *o, u8 *arg1, s32 arg2) {
+extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
     s32 startx = o->x;
     s32 charw;
     s32 lineh;

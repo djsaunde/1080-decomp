@@ -586,14 +586,14 @@ typedef struct {
                s32 field_B4;
 } GameLibsC784;
 extern int gl_func_00000000();
-void *gl_func_0000C784(char *arg0);
+void *RaceTracker_ctor(char *arg0);
 extern void gl_c8b8_import_0D0D0(GameLibsC784 *);
 extern void gl_c8b8_import_03298(void *);
-void gl_func_0000C8B8(GameLibsC784 *arg0);
+void RaceTracker_reset(GameLibsC784 *arg0);
 void game_libs_func_0000CA30(char *arg0, s32 arg1, s32 arg2);
 void *game_libs_func_0000CB58(int *a0, int a1);
 extern int gl_func_00000000();
-int gl_func_0000CB9C(int *a0);
+int RaceTracker_checkTimeLimit(int *a0);
 typedef struct {
     char pad0[0xCC];
     float lo;
@@ -612,14 +612,14 @@ extern void game_libs_CBF0_handler0(char *, s32);
 extern void game_libs_CBF0_handler1(char *, s32);
 extern s32 game_libs_CBF0_handler2(char *, s32);
 extern void game_libs_CBF0_handler3(s32 *, s32);
-void game_libs_func_0000CBF0(GameLibsC784 *self);
+void RaceTracker_update(GameLibsC784 *self);
 extern float D_00000000_c758;
 extern float D_00000000_c75c;
 extern float D_00000000_c760;
 extern int gl_func_00000000();
-void game_libs_func_0000CD74(void);
+void RaceTracker_display(void);
 extern s32 gl_cmd_38830_forwarded(void *, GLCommandHeader *);
-int gl_func_0000CDDC(int *a0, GLCommandHeader *a1);
+int RaceTracker_handleMsg(int *a0, GLCommandHeader *a1);
 typedef struct {
     char *field_00;
     char *field_04;
@@ -652,7 +652,7 @@ typedef struct D0D0_Root {
 } D0D0_Root;
 extern void *gl_d0d0_root_7770;
 extern D0D0_Node *gl_d0d0_import_3EAE0(void *, struct D0D0_Key, void *, s32);
-void gl_func_0000D0D0(GameLibsC784 *self);
+void RaceTracker_findGates(GameLibsC784 *self);
 typedef struct D288Node D288Node;
 typedef struct {
     char *field_00;
