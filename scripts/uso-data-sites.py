@@ -30,12 +30,16 @@ Subcommands:
   convert NAME FILE.. [--exclude RE] [--write]
                      respell the plain-D_00000000 sites of one header object alias
                      (`#define gX D_00000000 /* ... Sym N ... */`) where the relocs prove
-                     the site is that object (see cmd_convert)
+                     the site is that object (see cmd_convert); adds the gl_data.h include
+                     (relative path in NCC .cpp donors, which build without -I include)
   selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
 
 Run from the project root, with the venv python (pyelftools, crunch64):
   /home/danjs/code/decomp/.venv/bin/python scripts/uso-data-sites.py census -n 40
-Needs a built tree (build/tenshoe.map + build/src/game_libs/*.o).
+Needs a built tree (build/tenshoe.map + build/src/game_libs/*.o). A missing or stale one (map older
+than any src/game_libs or src/bootup_uso file) is refreshed with an incremental
+`make RUN_CC_CHECK=0 -j8` first; `--no-build` (before the subcommand) only warns. The readability
+gate leaves a full build behind, so `check` right after the gate needs no make and no --keep-build.
 """
 import argparse, bisect, collections, glob, os, re, struct, sys
 
@@ -173,9 +177,46 @@ def load_objfiles(objs):
     return funcs, ph
 
 
+BUILD_VENV = '/home/danjs/code/decomp/tools/build-venv/bin'
+
+
+def ensure_build(no_build=False):
+    """The census reads the built map + .o relocs, so they must be at least as new as the
+    sources. A missing or stale build is refreshed with an incremental
+    `make RUN_CC_CHECK=0 -j8` (the readability gate leaves a full build behind, so right
+    after a gate this is a no-op; `--keep-build` is NOT needed). --no-build only warns."""
+    srcs = [p for d in ('src/game_libs', 'src/bootup_uso') for e in ('c', 'cpp', 's')
+            for p in glob.glob(f'{d}/*.{e}')]
+    # headers are not make dependencies here, and the census only reads relocs (which header
+    # aliases cannot change: they expand to the same tokens); `check` reads headers live.
+    newest = max((os.path.getmtime(p) for p in srcs), default=0)
+    have = os.path.exists(MAP)
+    if have and os.path.getmtime(MAP) >= newest:
+        return
+    why = 'missing' if not have else 'older than the newest src file'
+    if no_build:
+        if not have:
+            sys.exit(f'{MAP} {why}: build first (make RUN_CC_CHECK=0 -j8)')
+        print(f'warning: {MAP} is {why}; results may be stale (--no-build)', file=sys.stderr)
+        return
+    import subprocess
+    print(f'{MAP} {why}: running make RUN_CC_CHECK=0 -j8 ...', file=sys.stderr)
+    env = dict(os.environ)
+    if os.path.isdir(BUILD_VENV):
+        env['PATH'] = BUILD_VENV + os.pathsep + env.get('PATH', '')
+    r = subprocess.run(['make', 'RUN_CC_CHECK=0', '-j8'], env=env,
+                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    if r.returncode != 0:
+        print('\n'.join(r.stdout.splitlines()[-15:]), file=sys.stderr)
+        if not os.path.exists(MAP) or os.path.getmtime(MAP) < newest:
+            sys.exit('make failed and the map is not current')
+        print('warning: make failed after linking (ROM mismatch?); using the fresh map', file=sys.stderr)
+
+
 class Census:
-    def __init__(self, root='.'):
+    def __init__(self, root='.', no_build=False):
         os.chdir(root)
+        ensure_build(no_build)
         self.rom = open(ROM, 'rb').read()
         secs = parse_uso(self.rom, INNER_HDR)
         self.secs = secs
@@ -366,6 +407,7 @@ def scan_macros():
     files = sorted(glob.glob('include/**/*.h', recursive=True)) + \
         [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
          for p in sorted(glob.glob(f'src/{d}/*.{e}'))]
+    pending = []
     for path in files:
         lines = open(path, errors='replace').read().split('\n')
         i = 0
@@ -408,8 +450,65 @@ def scan_macros():
             elif sm:
                 claim = ('sym', int(sm.group(1)))
             out.append(dict(name=name, params=params, path=path, line=i, claim=claim,
-                            local=not path.startswith('include/')))
+                            local=not path.startswith('include/'), via=None))
+        pending.extend((path, l) for l in _alias_users(lines, path))
+    # second pass: macros spelled over a HEADER OBJECT ALIAS (`(*(T *)&gAudioContext)`) or over a
+    # renamed per-site alias of one (`&gAudioContext_345c0`) inherit that alias's Sym claim.
+    aliases = header_aliases(out)
+    seen = {(m['path'], m['name']) for m in out}
+    for path, (name, params, body, line, own) in pending:
+        if (path, name) in seen or name in BASE_MACRO:
+            continue
+        hit = None
+        for tok in re.findall(r'\b[A-Za-z_]\w*\b', body):
+            a = alias_of(aliases, tok)
+            if a:
+                hit = a
+                break
+        if not hit:
+            continue
+        sm = re.search(r'\b[Ss]ym\s*#?(\d+)\b', own)
+        claim = ('sym', int(sm.group(1))) if sm else hit[1]
+        seen.add((path, name))
+        out.append(dict(name=name, params=params, path=path, line=line, claim=claim,
+                        local=not path.startswith('include/'), via=hit[0]))
     return out
+
+
+def _alias_users(lines, path):
+    """(name, params, body_without_comments, line, comment) of every #define in `lines`."""
+    i = 0
+    while i < len(lines):
+        full = lines[i]
+        while full.endswith('\\') and i + 1 < len(lines):
+            i += 1
+            full = full[:-1] + ' ' + lines[i]
+        i += 1
+        m = DEF_RE.match(full)
+        if m:
+            body = m.group(3)
+            cm = re.search(r'/\*(.*?)(\*/|$)', body)
+            yield (m.group(1), m.group(2), re.sub(r'/\*.*?(\*/|$)', '', body), i,
+                   cm.group(1) if cm else '')
+
+
+def header_aliases(macros):
+    """name -> claim for the plain header object aliases (`#define gX D_00000000 /* Sym N */`)."""
+    return {m['name']: m['claim'] for m in macros
+            if not m['local'] and m['claim'] and m['claim'][0] == 'sym' and not m['params']
+            and not m.get('via')}
+
+
+def alias_of(aliases, tok):
+    """(alias, claim) when `tok` is a header object alias, or a per-site zero alias renamed
+    after one (`<alias>_<suffix>`, READABILITY_PLAN 9.1.5); the longest alias prefix wins."""
+    if tok in aliases:
+        return tok, aliases[tok]
+    best = None
+    for a in aliases:
+        if tok.startswith(a + '_') and (best is None or len(a) > len(best)):
+            best = a
+    return (best, aliases[best]) if best else None
 
 
 FUNC_RE = re.compile(r'^(?!\s)(?:[\w\*]+[\s\*]+)+?\**(\w+)\s*\(([^;{]*?)\)\s*\{', re.M | re.S)
@@ -477,6 +576,29 @@ def func_bodies(path):
 SITE_RE = re.compile(r'&D_00000000\b(?:(\s*\+\s*)(0x[0-9A-Fa-f]+|\d+)\b)?')
 
 
+GL_DATA_REL = '../../include/gdl/gl_data.h'
+
+
+def add_gl_data_include(path, src):
+    """Include gl_data.h once. C files: after common.h, as "gdl/gl_data.h". NCC .cpp donors
+    build without -I include, so they get the relative path, placed after the file's own
+    `extern char D_00000000;` (else after `extern "C" {`, else after the last #include)."""
+    if 'gdl/gl_data.h"' in src:
+        return src
+    if not path.endswith('.cpp'):
+        i = src.find('#include "common.h"')
+        i = src.find('\n', i) + 1 if i >= 0 else 0
+        return src[:i] + '#include "gdl/gl_data.h"\n' + src[i:]
+    line = f'#include "{GL_DATA_REL}"  /* object aliases (NCC donors build without -I include) */\n'
+    m = re.search(r'^extern\s+\w+\s+D_00000000\s*;.*\n', src, re.M) or \
+        re.search(r'^extern\s+"C"\s*\{.*\n', src, re.M)
+    if not m:
+        ms = list(re.finditer(r'^#include .*\n', src, re.M))
+        m = ms[-1] if ms else None
+    i = m.end() if m else 0
+    return src[:i] + line + src[i:]
+
+
 def cmd_convert(c, a):
     """Spell plain-D_00000000 sites of one named object with its object-alias macro.
     A site `&D_00000000` (K = 0) is converted only when EVERY K=0 D_00000000-relocated
@@ -516,10 +638,7 @@ def cmd_convert(c, a):
         if a.write:
             for s0, s1, _ in sorted(edits, reverse=True):
                 src = src[:s0] + a.name + src[s1:]
-            if '"gdl/gl_data.h"' not in src:
-                i = src.find('#include "common.h"')
-                i = src.find('\n', i) + 1 if i >= 0 else 0
-                src = src[:i] + '#include "gdl/gl_data.h"\n' + src[i:]
+            src = add_gl_data_include(path, src)
             open(path, 'w').write(src)
     print(f'{a.name} (Sym {n}): {total} sites' + ('' if a.write else ' (dry run; --write to apply)'))
 
@@ -568,9 +687,33 @@ def cmd_check(c, a):
             near = sorted({c.obj_label(s.obj) for s in ss})[:6]
             print(f'MISMATCH {m["name"]} ({m["path"]}:{m["line"]}) claims {want}; '
                   f'{f} has no such site. Its objects: {near}')
-    print(f'check: {len(macros)} placeholder macros, {len(claimed)} with a Sym/section claim; '
-          f'{ok} (macro, function) uses verified, {bad} mismatches, {unused} claimed macros unused')
-    return 1 if bad else 0
+    # per-site zero aliases renamed after an object (`gAudioContext_345c0`, `MNode_vtbl_546E8_a`):
+    # the .o reloc names the symbol directly, so every LO16 site spelled with one must resolve
+    # to the alias's Sym (or a section-base site inside its span).
+    aliases = header_aliases(macros)
+    ps_ok = ps_bad = 0
+    ps_names = set()
+    for s in c.sites:
+        if s.rtype != 2 or not s.placeholder or s.placeholder.startswith('D_00000000'):
+            continue
+        hit = alias_of(aliases, s.placeholder)
+        if not hit:
+            continue
+        ps_names.add(s.placeholder)
+        n = hit[1][1]
+        if s.sym.idx == n or s.obj in (('sym', n), ('via', n)):
+            ps_ok += 1
+            continue
+        ps_bad += 1
+        print(f'MISMATCH per-site alias {s.placeholder} (named after {hit[0]} = sym{n}) in {s.func} '
+              f'T+0x{s.off:05X}: the reloc names {c.obj_label(s.obj)}')
+    nvia = sum(1 for m in claimed if m.get('via'))
+    print(f'check: {len(macros)} placeholder macros ({nvia} spelled over a header alias), '
+          f'{len(claimed)} with a Sym/section claim; {ok} (macro, function) uses verified, '
+          f'{bad} mismatches, {unused} claimed macros unused')
+    print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
+          f'{ps_bad} mismatches')
+    return 1 if bad or ps_bad else 0
 
 
 def cmd_selftest(c, a):
@@ -604,11 +747,27 @@ def cmd_selftest(c, a):
     for s_ in c.by_func['dma_startRead']:
         if s_.rtype == 2 and s_.sym.kind == 2:
             assert s_.sym.idx == 1504 and s_.k < 0x2A8, (s_.sym.idx, hex(s_.k))
+    # claims inherited through header aliases (run 491)
+    al = {'MNode_vtbl': ('sym', 315), 'MNode_vtbl_546E8': ('sym', 9)}
+    assert alias_of(al, 'MNode_vtbl') == ('MNode_vtbl', ('sym', 315))
+    assert alias_of(al, 'MNode_vtbl_546E8_a') == ('MNode_vtbl_546E8', ('sym', 9))
+    assert alias_of(al, 'MNode_vtblx') is None
+    ms = {(m['path'], m['name']): m for m in scan_macros()}
+    ac = [m for m in ms.values() if m.get('via') == 'gAudioContext']
+    assert ac and all(m['claim'] == ('sym', 1255) for m in ac), ac[:2]
+    # convert's include placement (.cpp donors get the relative path)
+    t = add_gl_data_include('x.cpp', 'typedef int s32;\nextern "C" {\nextern char D_00000000;\nint f(void);\n')
+    assert t.split('\n')[3].startswith('#include "../../include/gdl/gl_data.h"'), t
+    assert add_gl_data_include('x.cpp', t) == t
+    t = add_gl_data_include('x.c', '#include "common.h"\nint f(void);\n')
+    assert t.split('\n')[1] == '#include "gdl/gl_data.h"', t
     print('selftest OK')
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--no-build', action='store_true',
+                    help='never run make; only warn when build/tenshoe.map is older than the sources')
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('sites'); p.add_argument('funcs', nargs='*')
     p = sub.add_parser('census'); p.add_argument('-n', type=int, default=50)
@@ -620,7 +779,7 @@ def main():
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
     a = ap.parse_args()
-    c = Census('.')
+    c = Census('.', a.no_build)
     sys.exit({'sites': cmd_sites, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert}[a.cmd](c, a) or 0)
 
