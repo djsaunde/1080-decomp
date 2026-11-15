@@ -20,6 +20,9 @@
  * Spliced via REPLACE_FUNC_BODY into both trees. */
 extern "C" {
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/snowboarder.h"
+#define RIDER(p) ((SnowBoarder *)(p))
 typedef struct { int a, b; } Pair2;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -60,8 +63,8 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     sp28 = 0;
     var_v1 = (char *)FW(arg0, 0xB4);
     var_a3 = 0;
-    if (FF(var_v1, 0x348) > 30.0f) { if (*(u16 *)(var_v1 + 0xA10) & 0x1F0) {
-        temp_f2 = FF(var_v1, 0xA1C);
+    if (RIDER(var_v1)->dnode.speed > 30.0f) { if (RIDER(var_v1)->hitFlags & 0x1F0) {
+        temp_f2 = RIDER(var_v1)->bumpSide;
         if (temp_f2 < 0.0f) {
             var_f0 = -temp_f2;
         } else {
@@ -92,7 +95,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 4);
             var_v1 = (char *)FW(arg0, 0xB4);
             var_a3 = 2;
-            temp_f2_2 = FF(var_v1, 0x970);
+            temp_f2_2 = RIDER(var_v1)->edge;
             if (temp_f2_2 < 0.0f) {
                 var_f0 = -temp_f2_2;
             } else {
@@ -106,7 +109,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
                     FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xF);
                     sp2C = (char *)1;
                 }
-            } else if (FF(var_v1, 0xA1C) > 0.0f) {
+            } else if (RIDER(var_v1)->bumpSide > 0.0f) {
                 FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0xC);
                 sp2C = (char *)1;
             } else {
@@ -118,14 +121,14 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
     }
 after_24:;
     }
-    if (FF(var_v1, 0x9D0) < 500.0f) {
-        temp_v0 = var_v1 + 0xCC;
-        if ((f64) FF(var_v1, 0xA0C) < *(f64 *)((char *)&game_uso_D_807FFB20 + 0x200)) {
+    if (RIDER(var_v1)->groundDist < 500.0f) {
+        temp_v0 = (char *)RIDER(var_v1)->dnode.vqs.quat;
+        if ((f64) RIDER(var_v1)->localUp.z < *(f64 *)((char *)&game_uso_D_807FFB20 + 0x200)) {
             FF(temp_v0, 0) = 0.0f; FF(temp_v0, 0x4) = 0.0f; FF(temp_v0, 0x8) = 0.0f; FF(temp_v0, 0xC) = 1.0f;
             sp28 = 2;
             var_a3 = 4;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
-            if (FF(FW(arg0, 0xB4), 0x3CC) < 0.0f) {
+            if (RIDER(FW(arg0, 0xB4))->dnode.axes[2][1] < 0.0f) {
                 FW(arg0, 0x108) = 0x1002A;
             } else {
                 FW(arg0, 0x108) = 0x1002B;
@@ -133,29 +136,29 @@ after_24:;
             var_v1 = (char *)FW(arg0, 0xB4);
         }
     }
-    temp_v0_2 = var_v1 + 0x528;
-    if (!(FW(var_v1, 0x9A8) & 1)) {
-        var_f12 = FF(var_v1, 0xA1C) * FF(arg0, 0x11C);
-        var_f2 = FF(var_v1, 0xA20) * FF(arg0, 0x11C);
-        var_f0_4 = FF(var_v1, 0xA24) * FF(arg0, 0x11C);
-        if (!(FW(var_v1, 0xA58) & 0x4000)) {
+    temp_v0_2 = (char *)&RIDER(var_v1)->child.parms.sta;
+    if (!(RIDER(var_v1)->groundFlags & 1)) {
+        var_f12 = RIDER(var_v1)->bumpSide * FF(arg0, 0x11C);
+        var_f2 = RIDER(var_v1)->bumpUp * FF(arg0, 0x11C);
+        var_f0_4 = RIDER(var_v1)->bumpFwd * FF(arg0, 0x11C);
+        if (!(RIDER(var_v1)->flags & 0x4000)) {
             var_f0_4 = 0.0f;
             var_f2 = 0.0f;
             var_f12 = 0.0f;
         }
-        if ((FF(arg0, 0x304) * (*(volatile f32 *)(temp_v0_2 + 0x10))) <= var_f2) {
+        if ((FF(arg0, 0x304) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 3;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
             var_a3 = 5;
             FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x15);
-        } else if ((FF(arg0, 0x2EC) * (*(volatile f32 *)(temp_v0_2 + 0x10))) <= var_f2) {
+        } else if ((FF(arg0, 0x2EC) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 0;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 5);
             var_a3 = 1;
             FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2D);
-        } else if ((FF(arg0, 0x2D4) * (*(volatile f32 *)(temp_v0_2 + 0x10))) <= var_f2) {
+        } else if ((FF(arg0, 0x2D4) * ((volatile SnowBParm *)temp_v0_2)->value) <= var_f2) {
             sp28 = 0;
             sp30 = 0;
             RiderAnim_setHitKind_0000EDCC((int *)arg0, 4);
@@ -207,11 +210,11 @@ after_24:;
                 RiderAnim_setHitKind_0000EDCC((int *)arg0, 2);
                 var_a3 = 2;
                 FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x12);
-            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + 4248) <= var_f2) && ((f64) FF(arg0, 0x11C) == 1.0) && (FW(var_v1, 0x9CC) == 0)) {
+            } else if ((*(f32 *)((char *)&game_uso_D_807FF68C + 4248) <= var_f2) && ((f64) FF(arg0, 0x11C) == 1.0) && (RIDER(var_v1)->useDParms == 0)) {
                 sp28 = 0;
                 sp30 = 0;
                 FW(arg0, 0x108) = (s32) (FW(arg0, 0xFC) | 0x2F);
-                game_uso_func_07C0FC(FW(var_v1, 0x800),
+                game_uso_func_07C0FC((int)RIDER(var_v1)->input,
                                      (char *)&game_uso_D_807FF68C + 4252, 0xA);
             }
         }
@@ -223,7 +226,7 @@ after_24:;
         RiderAnim_hitFeedback_0001189C((int *)arg0, (s32) var_a3, sp2C);
         FF(arg0, 0x11C) = 1.0f;
         RiderAnim_applyDamage_0000EDD4((int *)arg0, sp28, sp2C);
-        temp_v0_3 = (char *)FW(arg0, 0xB4) + 0x2FC;
+        temp_v0_3 = (char *)RIDER(FW(arg0, 0xB4))->dnode.angVel;
         FF(temp_v0_3, 0) = 0.0f; FF(temp_v0_3, 0x4) = 0.0f; FF(temp_v0_3, 0x8) = 0.0f; FF(temp_v0_3, 0xC) = 1.0f;
         RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));
         FW(FW(arg0, 0xB4), 0x3DC) = 0;
@@ -237,7 +240,7 @@ after_24:;
         RiderAnim_clearNextState_0000D5DC(arg0);
         FW(arg0, 0x114) = 0;
     }
-    if (FW(FW(arg0, 0xB4), 0xA14) <= 0) {
+    if (RIDER(FW(arg0, 0xB4))->health <= 0) {
         FW(arg0, 0x114) = 0;
         if (FW(arg0, 0x108) != 0) {
             FW(arg0, 0x108) = (FW(arg0, 0x108) & 0xFFFF) | 0x60000;

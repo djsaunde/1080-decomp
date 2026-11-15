@@ -148,7 +148,10 @@ typedef struct SnowBChildParms {
     SnowBParm nbf, nel;     /* 0x80, 0x98 (0x4A8, 0x4C0): base friction / edge grip, normal set */
     SnowBParm dbf, del;     /* 0xB0, 0xC8 (0x4D8, 0x4F0): base friction / edge grip, alternate set */
     SnowBParm res;          /* 0xE0 (0x508): turnRate = res * nts (or dts) */
-    SnowBParm flx, sta;     /* 0xF8, 0x110 */
+    SnowBParm flx;          /* 0xF8 */
+    SnowBParm sta;          /* 0x110 (rider 0x528): RiderAnim_selectAnim (game.uso D9CC) scales its l1f / l2f / l3f
+                             * bumpUp thresholds by it (l3f * sta <= bumpUp * hitScale: hit kind 2, else l2f: 5,
+                             * else l1f: 4) */
 } SnowBChildParms;
 
 typedef struct SnowBChild {
