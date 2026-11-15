@@ -1,6 +1,6 @@
-nonmatching gl___osSiRawWriteIo_000747F4, 0x4C
+nonmatching gl___osSiRawWriteIo, 0x4C
 
-glabel gl___osSiRawWriteIo_000747F4
+glabel gl___osSiRawWriteIo
     /* E598CC 000747F4 27BDFFE8 */  .word 0x27BDFFE8
     /* E598D0 000747F8 AFBF0014 */  .word 0xAFBF0014
     /* E598D4 000747FC AFA40018 */  .word 0xAFA40018
@@ -20,4 +20,4 @@ glabel gl___osSiRawWriteIo_000747F4
     /* E5990C 00074834 27BD0018 */  .word 0x27BD0018
     /* E59910 00074838 03E00008 */  .word 0x03E00008
     /* E59914 0007483C 00000000 */  .word 0x00000000
-endlabel gl___osSiRawWriteIo_000747F4
+endlabel gl___osSiRawWriteIo

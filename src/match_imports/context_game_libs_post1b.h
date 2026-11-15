@@ -867,7 +867,7 @@ extern char gl_data_B9B4_c;
 void gl___osPiCreateAccessQueue(void);
 void gl___osPiGetAccess(void);
 void gl___osPiRelAccess(void);
-int gl_osPiRawReadIo_0006BA7C(unsigned int devAddr, unsigned int *out);
+int gl_osPiRawReadIo(unsigned int devAddr, unsigned int *out);
 void _asmpp_func49(void);
 extern unsigned long long gl_func_00000000_ll();
 extern char D_00000000_b;

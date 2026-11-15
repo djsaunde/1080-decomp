@@ -1,6 +1,6 @@
-nonmatching gl___osSiRawReadIo_0006CCD4, 0x50
+nonmatching gl___osSiRawReadIo, 0x50
 
-glabel gl___osSiRawReadIo_0006CCD4
+glabel gl___osSiRawReadIo
     /* E51DAC 0006CCD4 27BDFFE8 */  .word 0x27BDFFE8
     /* E51DB0 0006CCD8 AFBF0014 */  .word 0xAFBF0014
     /* E51DB4 0006CCDC AFA40018 */  .word 0xAFA40018
@@ -21,4 +21,4 @@ glabel gl___osSiRawReadIo_0006CCD4
     /* E51DF0 0006CD18 27BD0018 */  .word 0x27BD0018
     /* E51DF4 0006CD1C 03E00008 */  .word 0x03E00008
     /* E51DF8 0006CD20 00000000 */  .word 0x00000000
-endlabel gl___osSiRawReadIo_0006CCD4
+endlabel gl___osSiRawReadIo

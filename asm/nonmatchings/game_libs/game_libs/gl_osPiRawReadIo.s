@@ -1,6 +1,6 @@
-nonmatching gl_osPiRawReadIo_0006BA7C, 0x54
+nonmatching gl_osPiRawReadIo, 0x54
 
-glabel gl_osPiRawReadIo_0006BA7C
+glabel gl_osPiRawReadIo
     /* E50B4C 0006BA74 3C0EA460 */  .word 0x3C0EA460
     /* E50B50 0006BA78 8DC60010 */  .word 0x8DC60010
     /* E50B54 0006BA7C 27BDFFF8 */  .word 0x27BDFFF8
@@ -22,4 +22,4 @@ glabel gl_osPiRawReadIo_0006BA7C
     /* E50B94 0006BABC 27BD0008 */  .word 0x27BD0008
     /* E50B98 0006BAC0 03E00008 */  .word 0x03E00008
     /* E50B9C 0006BAC4 ACAB0000 */  .word 0xACAB0000
-endlabel gl_osPiRawReadIo_0006BA7C
+endlabel gl_osPiRawReadIo

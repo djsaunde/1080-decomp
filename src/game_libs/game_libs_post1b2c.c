@@ -212,7 +212,7 @@ void osViBlack(unsigned char active) {
     (void)a;
 }
 
-/* gl___osSiRawReadIo_0006CCD4 = libultra __osPiRawReadIo. LANDED 2026-06-21 as a
+/* gl___osSiRawReadIo = libultra __osPiRawReadIo. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel __osSiRawReadIo (kernel_001). The
  * prior "delay-slot-fill cap (80.65%)" was an -O2 artifact: this is an -O1
  * libultra helper. At IDO 5.3 -O1 the beqz delay slot is filled by the
@@ -220,7 +220,7 @@ void osViBlack(unsigned char active) {
  * game_libs_ido53_6CCD4.c (this TU is -O2), spliced in via REPLACE_FUNC_BODY.
  * The PI-busy probe collapses to the address-0 placeholder gl_func_00000000;
  * the uncached cart read is a KSEG1 literal (devAddr | 0xA0000000). */
-int gl___osSiRawReadIo_0006CCD4(int devAddr, int *data) {
+int gl___osSiRawReadIo(int devAddr, int *data) {
     if (gl_func_00000000() != 0) {
         return -1;
     }

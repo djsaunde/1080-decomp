@@ -1,6 +1,6 @@
-nonmatching gl_osPiRawWriteIo_0007307C, 0x50
+nonmatching gl_osPiRawWriteIo, 0x50
 
-glabel gl_osPiRawWriteIo_0007307C
+glabel gl_osPiRawWriteIo
     /* E5814C 00073074 3C0EA460 */  .word 0x3C0EA460
     /* E58150 00073078 8DC60010 */  .word 0x8DC60010
     /* E58154 0007307C 27BDFFF8 */  .word 0x27BDFFF8
@@ -21,4 +21,4 @@ glabel gl_osPiRawWriteIo_0007307C
     /* E58190 000730B8 AD450000 */  .word 0xAD450000
     /* E58194 000730BC 03E00008 */  .word 0x03E00008
     /* E58198 000730C0 00001025 */  .word 0x00001025
-endlabel gl_osPiRawWriteIo_0007307C
+endlabel gl_osPiRawWriteIo

@@ -30,19 +30,19 @@ int gl_osPiWriteIo(int a0, int a1) {
 
 
 /* game_libs_func_00073074 (0x8 orphan, no jr ra: lui/lw PI_STATUS_REG)
- * was the HOISTED HEAD of gl_osPiRawWriteIo_0007307C = osPiRawWriteIo — absorbed
+ * was the HOISTED HEAD of gl_osPiRawWriteIo = osPiRawWriteIo — absorbed
  * into the donor splice below (true entry 0x73074, spliced symbol covers
  * 0x73074..0x730C4). */
 
 
-/* gl_osPiRawWriteIo_0007307C = libultra osPiRawWriteIo variant: spin while
+/* gl_osPiRawWriteIo = libultra osPiRawWriteIo variant: spin while
  * PI_STATUS & 3 (the first read hoisted above the prologue = the absorbed
  * 0x8 orphan), then write data to the KSEG1-uncached cart word
  * ((cartBase | devAddr) | 0xA0000000), return 0. Needs IDO 5.3 -O1, so
  * the real C lives in the donor unit game_libs_ido53_73074.c (20/20
  * exact). Body below is a placeholder for the REPLACE_FUNC_BODY splice
  * (its bytes are replaced by the donor). */
-int gl_osPiRawWriteIo_0007307C(void) {
+int gl_osPiRawWriteIo(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
     return 0;

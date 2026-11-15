@@ -169,14 +169,14 @@ void _Litob(void *args, int type) {
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00074554_pad.s")
 
-/* gl___osSiRawWriteIo_000747F4 = libultra __osPiRawWriteIo. LANDED 2026-06-21 as a
+/* gl___osSiRawWriteIo = libultra __osPiRawWriteIo. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel __osSiRawWriteIo (kernel_046) -- the
- * write twin of the landed __osPiRawReadIo at gl___osSiRawReadIo_0006CCD4: PI-busy probe
+ * write twin of the landed __osPiRawReadIo at gl___osSiRawReadIo: PI-busy probe
  * (no-arg call), then uncached KSEG1 write of data to (devAddr | 0xA0000000).
  * The prior wrap guessed a 2-arg acquire call + a 4-stub bundle; it is a single
  * 19-insn fn. Real C lives in the donor unit game_libs_ido53_747F4.c (IDO 5.3
  * -O1), spliced via REPLACE_FUNC_BODY. Busy probe -> gl_func_00000000. */
-int gl___osSiRawWriteIo_000747F4(int devAddr, int data) {
+int gl___osSiRawWriteIo(int devAddr, int data) {
     if (gl_func_00000000() != 0) {
         return -1;
     }
@@ -194,7 +194,7 @@ int gl___osSiRawWriteIo_000747F4(int devAddr, int data) {
  * (sym 2521, three R_MIPS_26 refs) and 0x88EAC (the nop) is not. Every
  * libultra .o in this tail is 16-byte aligned in the module text, so the
  * nop is the inter-object pad after __osPiRawWriteIo (747F4, 0x4C) --
- * restored as an all-zero SUFFIX_BYTES_FORCE on gl___osSiRawWriteIo_000747F4 (a 1-word
+ * restored as an all-zero SUFFIX_BYTES_FORCE on gl___osSiRawWriteIo (a 1-word
  * GLOBAL_ASM sidecar would emit 8 bytes, docs #one-word-pad-legal-shapes).
  * 3/3 words at 7.1 -O2. */
 void gl___osSpSetStatus(unsigned int data) {

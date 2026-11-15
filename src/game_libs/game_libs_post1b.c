@@ -5855,7 +5855,7 @@ void gl___osPiRelAccess(void) {
     CALL(gl_osSendMesg)(&D_00000000, 0, 0);
 }
 
-/* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
+/* gl_osPiRawReadIo = libultra __osPiRawReadIo variant. LANDED 2026-06-21 as a
  * byte-identical TWIN-PORT of matched kernel osPiRawReadIo (kernel_045): read
  * PI_STATUS once, if busy spin until idle, then read the KSEG1-uncached cart
  * word ((D | devAddr) | 0xA0000000) into *out. The leaf `char pad[4]` frame and
@@ -5865,7 +5865,7 @@ void gl___osPiRelAccess(void) {
 #ifndef PI_STATUS_6BA7C
 #define PI_STATUS_6BA7C (*(volatile unsigned int *)0xA4600010)
 #endif
-int gl_osPiRawReadIo_0006BA7C(unsigned int devAddr, unsigned int *out) {
+int gl_osPiRawReadIo(unsigned int devAddr, unsigned int *out) {
     char pad[4];
     register unsigned int s;
     s = PI_STATUS_6BA7C;

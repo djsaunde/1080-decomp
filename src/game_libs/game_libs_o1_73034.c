@@ -17,7 +17,7 @@ extern int gl_func_00000000();
 int gl_osPiWriteIo(int a0, int a1) {
     register int r;
     CALL(gl___osPiGetAccess)();
-    r = CALL(gl_osPiRawWriteIo_0007307C)(a0, a1);
+    r = CALL(gl_osPiRawWriteIo)(a0, a1);
     CALL(gl___osPiRelAccess)();
     return r;
 }

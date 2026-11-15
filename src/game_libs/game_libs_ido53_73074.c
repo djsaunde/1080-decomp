@@ -1,8 +1,8 @@
 #include "common.h"
 
-/* gl_osPiRawWriteIo_0007307C = libultra osPiRawWriteIo variant (PI status spin +
+/* gl_osPiRawWriteIo = libultra osPiRawWriteIo variant (PI status spin +
  * uncached cart word write), statically linked into the game_libs USO.
- * Write-side twin of gl_osPiRawReadIo_0006BA7C __osPiRawReadIo (same donor recipe).
+ * Write-side twin of gl_osPiRawReadIo __osPiRawReadIo (same donor recipe).
  * BOUNDARY FIX: splat's game_libs_func_00073074 (0x8, no jr ra:
  * `lui $t6,0xA460; lw $a2,0x10($t6)`) was this function's HOISTED HEAD —
  * IDO 5.3 -O1 schedules the first PI_STATUS_REG read before the addiu-sp
@@ -17,7 +17,7 @@
 #define PI_STATUS (*(volatile unsigned int *)0xA4600010)
 extern int D_00000000;
 
-int gl_osPiRawWriteIo_0007307C(unsigned int devAddr, unsigned int data) {
+int gl_osPiRawWriteIo(unsigned int devAddr, unsigned int data) {
     char pad[4];
     register unsigned int s;
     s = PI_STATUS;

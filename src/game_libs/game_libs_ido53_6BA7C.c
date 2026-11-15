@@ -1,6 +1,6 @@
 #include "common.h"
 
-/* gl_osPiRawReadIo_0006BA7C = libultra __osPiRawReadIo variant (PI status spin + uncached
+/* gl_osPiRawReadIo = libultra __osPiRawReadIo variant (PI status spin + uncached
  * cart read), statically linked into the game_libs USO. Byte-exact masked-twin
  * of matched kernel osPiRawReadIo (kernel_045): spin while PI_STATUS & 3, then
  * read the KSEG1-uncached cart word ((D | devAddr) | 0xA0000000) into *out.
@@ -10,7 +10,7 @@
 #define PI_STATUS (*(volatile unsigned int *)0xA4600010)
 extern int D_00000000;
 
-int gl_osPiRawReadIo_0006BA7C(unsigned int devAddr, unsigned int *out) {
+int gl_osPiRawReadIo(unsigned int devAddr, unsigned int *out) {
     char pad[4];
     register unsigned int s;
     s = PI_STATUS;

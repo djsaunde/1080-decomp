@@ -16,7 +16,7 @@ extern int gl_func_00000000();
 int gl_osPiReadIo(int a0, int a1) {
     register int r;
     CALL(gl___osPiGetAccess)();
-    r = CALL(gl_osPiRawReadIo_0006BA7C)(a0, a1);
+    r = CALL(gl_osPiRawReadIo)(a0, a1);
     CALL(gl___osPiRelAccess)();
     return r;
 }

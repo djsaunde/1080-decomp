@@ -66,7 +66,7 @@ OSPiHandle *gl_osCartRomInit(void) {
     gl_CartRomHandle_cartrom.type = 0;                 /* DEVICE_TYPE_CART */
     gl_CartRomHandle_cartrom.baseAddress = 0xB0000000;
 
-    XCALL(gl_func_00000000_rdio, gl_osPiRawReadIo_0006BA7C)(0, &domain);           /* read BSD DOM1 config */
+    XCALL(gl_func_00000000_rdio, gl_osPiRawReadIo)(0, &domain);           /* read BSD DOM1 config */
 
     gl_CartRomHandle_cartrom.latency = domain & 0xFF;
     gl_CartRomHandle_cartrom.pulse = (domain >> 8) & 0xFF;
