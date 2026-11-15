@@ -35,33 +35,42 @@
 #define BACKUP_CHUNK_KEY    0xDEADBBAD  /* backup_checksum key of every chunk */
 #define BACKUP_HEADER_KEY   0xD1265205  /* key of the header hash */
 
-/* Valid bit in byte 0 of every record entry (Backup_timeEntryIsNew / 9B98 / 9CDC
- * test it, 9978 / 9AFC / 9BF4 clear it, the setters OR it in). */
-#define BACKUP_ENTRY_VALID  0x80
+/* "New record" bit in byte 0 of every record entry: the setters (<x>EntrySet) OR it
+ * in, the default tables never set it, <x>EntryIsNew tests it (the session counts
+ * drive the name-entry screen), and Backup_writeCourse / writeArcade clear it on
+ * every entry (courseClearNew / arcadeClearNew) before the chunk goes to SRAM. */
+#define BACKUP_ENTRY_NEW    0x80
+
+/* The low 7 flag bits: character | board << 3. The defaults use (i % 5) and
+ * ((i % 8) << 3) (courseRecordResetTimes); <x>EntrySetName packs a2 | a3 << 3. */
+#define BACKUP_ENTRY_CHAR(f)    ((f) & 7)
+#define BACKUP_ENTRY_BOARD(f)   (((f) >> 3) & 0xF)
 
 /* ---- records ---- */
 
-/* Best-time entry (8). Setter 9AD8 (time + extra), 99DC (defaults: "ead"-style
- * initials stored as letter - 'a'), 9988 (initials + the packed flag bits a2 | a3 << 3).
- * Compare 9A50: time[0..2] most significant first; Backup_courseRecordFindTimeRank builds the
- * triple from milliseconds as minutes, seconds, hundredths. */
+/* Best-time entry (8). Backup_timeEntrySet (time + extra), timeEntryInit (defaults:
+ * "ead"-style initials stored as letter - 'a'), timeEntrySetName (initials + character /
+ * board). timeEntryIsSlower compares time[0..2] most significant first;
+ * Backup_courseRecordFindTimeRank builds the triple from milliseconds as minutes,
+ * seconds, hundredths. */
 typedef struct BackupTimeEntry {
-    /* 0x0 */ u8 flags;         /* BACKUP_ENTRY_VALID | (a3 << 3) | a2 (low 7 bits from 9988) */
-    /* 0x1 */ u8 extra;         /* 9AD8 arg 4 */
+    /* 0x0 */ u8 flags;         /* BACKUP_ENTRY_NEW | board << 3 | character */
+    /* 0x1 */ u8 extra;         /* timeEntrySet arg 4 */
     /* 0x2 */ u8 name[3];       /* initials, letter - 'a' */
     /* 0x5 */ u8 time[3];       /* minutes, seconds, hundredths */
 } BackupTimeEntry;
 
-/* Best-score entry (8). Setter 9BE0 (score), 9B60 (defaults), 9B0C (initials +
- * flag bits); compare 9BBC (score < arg). */
+/* Best-score entry (8). Backup_scoreEntrySet (score), scoreEntryInit (defaults),
+ * scoreEntrySetName (initials + character / board); scoreEntryIsLower (score < arg). */
 typedef struct BackupScoreEntry {
-    /* 0x0 */ u8 flags;         /* BACKUP_ENTRY_VALID | flag bits (as BackupTimeEntry) */
+    /* 0x0 */ u8 flags;         /* as BackupTimeEntry.flags */
     /* 0x1 */ u8 name[3];
     /* 0x4 */ s32 score;
 } BackupScoreEntry;
 
 /* One course's records (0x30): the three best time-attack times, then the three
- * best trick-mode scores (A0CC / A130 count the valid ones, A194 / A1A0 index them;
+ * best trick-mode scores (courseRecordCountNewTimes / Scores count the new ones,
+ * courseRecordGetTime / GetScore index them;
  * TimRace_checkRecord compares time[0..2] at bytes 5-7). */
 typedef struct BackupCourseRecord {
     /* 0x00 */ BackupTimeEntry times[3];
@@ -75,18 +84,19 @@ typedef struct BackupCourse {
     /* 0x000 */ BackupCourseRecord course[BACKUP_NUM_COURSES];
 } BackupCourse;
 
-/* Arcade entry (0x20). Setter 9D24 (score, count, stages[]), 9C5C (defaults,
- * count 5), 9C04 (initials + flag bits in the flags word); compare 9D00
- * (score < arg). */
+/* Arcade entry (0x20). Backup_arcadeEntrySet (score, count, stages[]), arcadeEntryInit
+ * (defaults, count 5), arcadeEntrySetName (initials + character / board in the flags
+ * word); arcadeEntryIsLower (score < arg). */
 typedef struct BackupArcadeEntry {
-    /* 0x00 */ s32 flags;       /* word access: BACKUP_ENTRY_VALID | flag bits */
+    /* 0x00 */ s32 flags;       /* word access: BACKUP_ENTRY_NEW | board << 3 | character */
     /* 0x04 */ s8 count;        /* number of stages[] used (5 in the defaults) */
     /* 0x05 */ u8 name[3];
     /* 0x08 */ s32 stages[5];
     /* 0x1C */ s32 score;
 } BackupArcadeEntry;
 
-/* Arcade chunk (0x60): three ranked entries (AD20 indexes, AD2C finds the rank). */
+/* Arcade chunk (0x60): three ranked entries (arcadeGetEntry indexes, arcadeFindRank
+ * finds the rank, arcadeInsert shifts the lower ones down). */
 typedef struct BackupArcade {
     /* 0x00 */ BackupArcadeEntry entry[3];
 } BackupArcade;
@@ -105,9 +115,11 @@ typedef struct BackupOptions {
 /* Ghost (replay) chunk header (0x10). The data (count words) follows in SRAM at
  * BACKUP_SRAM_GHOST_DATA; in RAM `data` points at it (Backup_readGhost). */
 typedef struct BackupGhost {
-    /* 0x0 */ s32 bits;         /* bitfields: 0-1 mode (A878 / A884), 2-4 (A8A4 / A8B4), 5 (A8D8 / A900),
-                                 * 6-9 (A928 / A938), 10-13 course (A95C / A96C; openSession
-                                 * keeps the ghost only if mode and course match, AA28) */
+    /* 0x0 */ s32 bits;         /* Backup_ghostGet / Set<field>: 0-1 Mode, 2-4 Bits2, 5 Flag5,
+                                 * 6-9 Bits6, 10-13 Course. openSession keeps the ghost only
+                                 * if mode and course match (ghostMatches). app_createGame
+                                 * copies Bits2 / Flag5 / Bits6 to game global +0x181..0x183
+                                 * (probably the ghost rider's character / variant / board) */
     /* 0x4 */ s32 count;        /* data length in words */
     /* 0x8 */ s32 data;         /* RAM pointer (zeroed in the SRAM copy) */
     /* 0xC */ s32 unkC;
@@ -116,7 +128,7 @@ typedef struct BackupGhost {
 /* The Backup object (8, Backup_ctor). */
 typedef struct Backup {
     /* 0x0 */ s32 unk0;         /* 6400 */
-    /* 0x4 */ s32 ghostBits;    /* copy of BackupGhost.bits (Backup_writeGhost) */
+    /* 0x4 */ s32 ghostBits;    /* copy of BackupGhost.bits (Backup_writeGhost, Backup_cacheGhostBits) */
 } Backup;
 
 /* The record session (0x18, Backup_openSession / Backup_closeSession; the mode
@@ -132,8 +144,9 @@ typedef struct BackupSession {
 } BackupSession;
 
 /* BackupSession.modes: the mode that opened the session (tim_openSession stores 1,
- * trk_openSession 2). B3DC / B450 write the course chunk back for 1 or 2 and the
- * arcade chunk for 4; B4A4 updates course times (1), course scores (2) or arcade (4).
+ * trk_openSession 2). Backup_writeCourseArcadeOptions / sessionClearNew handle the
+ * course chunk for 1 or 2 and the arcade chunk for 4; sessionSetNewNames names the new
+ * course times (1), course scores (2) or arcade entries (4).
  * The same value is the mode in BackupGhost.bits 0-1 (Backup_ghostMatches). */
 #define BACKUP_MODE_TIME    1   /* time attack: BackupCourseRecord.times */
 #define BACKUP_MODE_TRICK   2   /* trick mode: BackupCourseRecord.scores */

@@ -152,7 +152,7 @@ int backup_checksumEqual(s32 *a0, s32 *a1) {
 }
 
 void Backup_timeEntryClearNew(BackupTimeEntry *arg0) {
-    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
+    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_NEW (~0x80 emits andi 0xFF7F) */
 }
 
 /* 4-arg string-builder: a0[2..4] = a1[0..2] (3-byte copy); then pack a flag
@@ -209,7 +209,7 @@ void Backup_timeEntryInit(char *a0, int a1, int a2, char *a3, int a4, int a5, in
  * return-0 path targets that tail. The `if(...)return 1; return 0;` form keeps
  * the early `move v0,zero` default + `li v0,1` in the taken jr-ra delay. */
 int Backup_timeEntryIsNew(BackupTimeEntry *a0) {
-    if (a0->flags & BACKUP_ENTRY_VALID) {
+    if (a0->flags & BACKUP_ENTRY_NEW) {
         return 1;
     }
     return 0;
@@ -246,12 +246,12 @@ void Backup_timeEntrySet(BackupTimeEntry *a0, int a1, int a2, int a3, int a4) {
     a0->time[1] = a2;
     a0->time[2] = a3;
     a0->extra = a4;
-    a0->flags |= BACKUP_ENTRY_VALID;
+    a0->flags |= BACKUP_ENTRY_NEW;
 }
 
 /* Clears MSB (sibling of matched _00009978). */
 void Backup_scoreEntryClearNew(BackupScoreEntry *arg0) {
-    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */
+    arg0->flags &= 0x7F; /* clear BACKUP_ENTRY_NEW (~0x80 emits andi 0xFF7F) */
 }
 
 /* Sibling of 00009988 (copy to a0[1..3] via d[0]; same flag-pack a0[0]).
@@ -297,7 +297,7 @@ void Backup_scoreEntryInit(char *a0, int a1, char *a2, int a3) {
 /* Flag/compare-test accessor family (sibling of 00009A2C): splat split each
  * return-0 tail into the following empty-stub symbol; merged each is one fn. */
 int Backup_scoreEntryIsNew(BackupScoreEntry *a0) {
-    if (a0->flags & BACKUP_ENTRY_VALID) {
+    if (a0->flags & BACKUP_ENTRY_NEW) {
         return 1;
     }
     return 0;
@@ -310,9 +310,9 @@ int Backup_scoreEntryIsLower(BackupScoreEntry *a0, int a1) {
     return 0;
 }
 
-void Backup_scoreEntrySet(BackupScoreEntry *a0, int a1) { a0->score = a1; a0->flags |= BACKUP_ENTRY_VALID; }
+void Backup_scoreEntrySet(BackupScoreEntry *a0, int a1) { a0->score = a1; a0->flags |= BACKUP_ENTRY_NEW; }
 
-void Backup_arcadeEntryClearNew(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear BACKUP_ENTRY_VALID (~0x80 emits andi 0xFF7F) */ }
+void Backup_arcadeEntryClearNew(BackupArcadeEntry *a0) { a0->flags &= 0x7F; /* clear BACKUP_ENTRY_NEW (~0x80 emits andi 0xFF7F) */ }
 
 /* Word-variant sibling of 00009988: copy to a0[5..7] via d[4]; word flag-pack
  * *(int*)a0 = (*(int*)a0 & ~0x7F) | a2 | (a3<<3) (lw/sw, mask via li -0x80).
@@ -372,7 +372,7 @@ void Backup_arcadeEntryInit(int *a0, int a1, unsigned char *a2, int *a3) {
 }
 
 int Backup_arcadeEntryIsNew(BackupArcadeEntry *a0) {
-    if (a0->flags & BACKUP_ENTRY_VALID) {
+    if (a0->flags & BACKUP_ENTRY_NEW) {
         return 1;
     }
     return 0;
@@ -493,10 +493,10 @@ void Backup_arcadeEntrySet(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
  * ctx stays the inline `(char *)&D_00000000 + 0xD430` (uopt hoists it: lui
  * s6 / sw ra / addiu s6). */
 extern int gl_func_00000000();
-void Backup_courseRecordResetTimes(int *out, int ia, int ib, int *src) {
+void Backup_courseRecordResetTimes(BackupCourseRecord *rec, int ia, int ib, int *src) {
     int k;
     for (k = 0; k < 3; k++) {
-        gl_func_00000000(out + k * 2, ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
+        gl_func_00000000(&rec->times[k], ((ia + k) % 5) + (((ib + k) % 8) << 3), 0,
                          (char *)&D_00000000 + 0xD430,
                          src[k * 3], src[k * 3 + 1], src[k * 3 + 2]);
     }
@@ -523,10 +523,10 @@ void Backup_courseRecordResetTimes(int *out, int ia, int ib, int *src) {
  * `(char *)&D_00000000 + 0xD434` (uopt hoists it to s6, lui s6,1 /
  * addiu s6,s6,-11212 = the carry form). */
 extern int gl_func_00000000();
-void Backup_courseRecordResetScores(char *x0, int a1, int a2, int *a3) {
+void Backup_courseRecordResetScores(BackupCourseRecord *rec, int a1, int a2, int *a3) {
     int k;
     for (k = 0; k < 3; k++) {
-        gl_func_00000000(x0 + 0x18 + k * 8, ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
+        gl_func_00000000(&rec->scores[k], ((a1 + k) % 5) + (((a2 + k) % 8) << 3),
                          (char *)&D_00000000 + 0xD434, a3[k]);
     }
 }
@@ -534,20 +534,21 @@ void Backup_courseRecordResetScores(char *x0, int a1, int a2, int *a3) {
 /* Backup_courseRecordClearNew: 25-insn 3-iteration loop with 2 cross-USO calls per
  * iter. Calls gl_func(a0+i) and gl_func(a0+0x18+i) for i = 0, 8, 0x10. */
 extern int gl_func_00000000();
-void Backup_courseRecordClearNew(char *a0) {
+void Backup_courseRecordClearNew(BackupCourseRecord *rec) {
     int i;
-    char *p, *q;
+    BackupTimeEntry *p;
+    BackupScoreEntry *q;
     int limit;
-    p = a0;
+    p = rec->times;
     i = 0;
-    q = a0 + 0x18;
+    q = rec->scores;
     limit = 0x18;
     do {
         gl_func_00000000(p);
         gl_func_00000000(q);
         i += 8;
-        p += 8;
-        q += 8;
+        p++;
+        q++;
     } while (i != limit);
 }
 
@@ -557,43 +558,43 @@ void Backup_courseRecordClearNew(char *a0) {
  * slots (sw a2,0x40; sw a3,0x44) AND eagerly zero-extends once at the top
  * (andi s4,a2,0xFF; andi s5,a3,0xFF), matching the target exactly. */
 extern int gl_func_00000000();
-void Backup_courseRecordSetNewNames(int a0, int a1, unsigned char a2, unsigned char a3) {
-    int s3 = a1;
-    int s4 = a2;
-    int s5 = a3;
-    int s0 = a0;
-    int s1 = a0 + 0x18;
+void Backup_courseRecordSetNewNames(BackupCourseRecord *rec, int name, unsigned char chr, unsigned char board) {
+    int s3 = name;
+    int s4 = chr;
+    int s5 = board;
+    BackupTimeEntry *t = rec->times;
+    BackupScoreEntry *sc = rec->scores;
     int s2 = 0;
     do {
-        if (gl_func_00000000(s0) != 0) {
-            gl_func_00000000(s0, s3, s4, s5);
+        if (gl_func_00000000(t) != 0) {
+            gl_func_00000000(t, s3, s4, s5);
         }
-        if (gl_func_00000000(s1) != 0) {
-            gl_func_00000000(s1, s3, s4, s5);
+        if (gl_func_00000000(sc) != 0) {
+            gl_func_00000000(sc, s3, s4, s5);
         }
         s2 += 8;
-        s0 += 8;
-        s1 += 8;
+        t++;
+        sc++;
     } while (s2 != 0x18);
 }
 
 /* Backup_courseRecordCountNewTimes: 25-insn 3-iter loop calling gl_func_00000000 on
  * a0[0], a0+8, a0+0x10. Returns count of non-zero return values. */
 extern int gl_func_00000000();
-int Backup_courseRecordCountNewTimes(char *a0) {
-    char *p;
+int Backup_courseRecordCountNewTimes(BackupCourseRecord *rec) {
+    BackupTimeEntry *p;
     int count;
     int i;
     int limit;
     count = 0;
     i = 0;
-    p = a0;
+    p = rec->times;
     limit = 0x18;
     do {
         int r = gl_func_00000000(p);
         i += 8;
         if (r != 0) count += 1;
-        p += 8;
+        p++;
     } while (i != limit);
     return count;
 }
@@ -609,15 +610,15 @@ int Backup_courseRecordCountNewTimes(char *a0) {
  * (i); source-order `count = 0; i = 0;` (count assigned first) produces
  * exactly that. Bytes 25/25. */
 extern int gl_func_00000000();
-int Backup_courseRecordCountNewScores(char *a0) {
+int Backup_courseRecordCountNewScores(BackupCourseRecord *rec) {
     int i, count;
-    char *p;
+    BackupScoreEntry *p;
     count = 0;
     i = 0;
-    p = a0 + 0x18;
+    p = rec->scores;
     for (; i != 24; i += 8) {
         if (gl_func_00000000(p) != 0) count++;
-        p += 8;
+        p++;
     }
     return count;
 }
@@ -625,17 +626,15 @@ int Backup_courseRecordCountNewScores(char *a0) {
 /* Backup_courseRecordGetTime: 3-insn leaf — return base + a1*8.
  *   sll t6, a1, 3; jr ra; addu v0, a0, t6 (delay).
  * Array stride-8 element pointer. Index-as-shift+add via int arith. */
-int Backup_courseRecordGetTime(int a0, int a1) {
-    int t = a1 << 3;
-    return a0 + t;
+BackupTimeEntry *Backup_courseRecordGetTime(BackupCourseRecord *rec, int i) {
+    return &rec->times[i];
 }
 
 /* Backup_courseRecordGetScore: 4-insn leaf — return base + a1*8 + 0x18.
  *   sll t6, a1, 3; addu v0, a0, t6; jr ra; addiu v0, v0, 0x18 (delay).
  * Same stride-8 element pointer + 0x18 field offset. */
-int Backup_courseRecordGetScore(int a0, int a1) {
-    int t = a1 << 3;
-    return a0 + t + 0x18;
+BackupScoreEntry *Backup_courseRecordGetScore(BackupCourseRecord *rec, int i) {
+    return &rec->scores[i];
 }
 
 /* Backup_courseRecordFindTimeRank: ms -> {minutes, seconds, hundredths} byte triple,
@@ -657,10 +656,10 @@ int Backup_courseRecordGetScore(int a0, int a1) {
  * to 0x50; (4) i/entry initialised in the for-header so their `or s0/s1` land
  * in the multu latency slot after the second div check, not above it. */
 extern int func_00000000();
-int Backup_courseRecordFindTimeRank(int *a0, int ms) {
+int Backup_courseRecordFindTimeRank(BackupCourseRecord *rec, int ms) {
     int i;
     unsigned char buf[4];
-    char *entry;
+    BackupTimeEntry *entry;
     int min, rem, sec;
     min = ms / 60000;
     rem = ms - min * 60000;
@@ -668,11 +667,11 @@ int Backup_courseRecordFindTimeRank(int *a0, int ms) {
     sec = rem / 1000;
     buf[1] = sec;
     buf[2] = (rem - sec * 1000) / 10;
-    for (i = 0, entry = (char *)a0; i < 3; i++) {
+    for (i = 0, entry = rec->times; i < 3; i++) {
         if (func_00000000(entry, buf) != 0) {
             return i;
         }
-        entry += 8;
+        entry++;
     }
     return 3;
 }
@@ -689,8 +688,7 @@ int Backup_courseRecordFindTimeRank(int *a0, int ms) {
  * for-loop whose own entry test IDO keeps; (3) the callee's first arg must
  * be the byte-offset form `(char *)a0 + idx * 8` -- `&a0[idx]` / `a0 + idx`
  * swap the t2/t5 colours of the a0 reload vs the idx*8 shift. */
-typedef struct { char b[8]; } Entry8;
-void Backup_courseRecordInsertTime(Entry8 *a0, int idx, int ms, int arg3) {
+void Backup_courseRecordInsertTime(BackupTimeEntry *a0, int idx, int ms, int arg3) {
     int i;
     int min, rem, sec;
     if (idx < 3) {
@@ -718,14 +716,14 @@ void Backup_courseRecordInsertTime(Entry8 *a0, int idx, int ms, int arg3) {
  * BEFORE `entry` makes IDO emit the i-init first -> byte-exact. Replaces the
  * old banned 2-insn INSN_PATCH. */
 extern int func_00000000();
-int Backup_courseRecordFindScoreRank(int *a0, int a1) {
+int Backup_courseRecordFindScoreRank(BackupCourseRecord *rec, int score) {
     int i = 0;
-    char *entry = (char*)a0 + 0x18;
+    BackupScoreEntry *entry = rec->scores;
     for (; i < 3; i++) {
-        if (func_00000000(entry, a1) != 0) {
+        if (func_00000000(entry, score) != 0) {
             return i;
         }
-        entry += 8;
+        entry++;
     }
     return 3;
 }
@@ -738,14 +736,12 @@ int Backup_courseRecordFindScoreRank(int *a0, int a1) {
  * compiling m2c's already-unrolled loop), and the doubled `slti a1,2` entry
  * test is the explicit `if (idx < 2)` guard around the for-loop
  * (docs/IDO_CODEGEN.md#dup-loop-entry-test-explicit-guard-a2b8). */
-typedef struct { int a, b; } Pair8;
-typedef struct { char pad[0x18]; Pair8 e[3]; } PairTab;
-void Backup_courseRecordInsertScore(PairTab *a0, int idx, int arg2) {
+void Backup_courseRecordInsertScore(BackupCourseRecord *a0, int idx, int arg2) {
     int i;
     if (idx < 3) {
         if (idx < 2) {
             for (i = 2; i > idx; i--) {
-                a0->e[i] = a0->e[i - 1];
+                a0->scores[i] = a0->scores[i - 1];
             }
         }
         func_00000000((char *)a0 + idx * 8 + 0x18, arg2);
@@ -763,12 +759,12 @@ void Backup_courseRecordInsertScore(PairTab *a0, int idx, int arg2) {
  * follow first occurrence: the arg cursor must be named BEFORE `i = k * 3` (s0/s1).
  * Both callees are the USO-reloc blank (jal 0x0): the in-TU K&R ColourItem_create_0000959C would
  * link a real address into the ROM. See docs/IDO_CODEGEN.md#basic-iv-elimination-leaves-dead-init-a670. */
-void Backup_resetCourseData_0000A670(s32 arg0) {
+void Backup_resetCourseData_0000A670(BackupCourse *crs) {
     s32 k;
-    s32 p;
+    BackupCourseRecord *p;
     s32 i;
-    for (k = 0; k < 8; k++) {
-        p = arg0 + k * 0x30;
+    for (k = 0; k < BACKUP_NUM_COURSES; k++) {
+        p = &crs->course[k];
         i = k * 3;
         gl_func_00000000(p, i % 5, i % 8, (char *)&D_00000000 + 0xD268 + k * 0x24);
         gl_func_00000000(p, i % 5, i % 8, (char *)&D_00000000 + 0xD388 + k * 0xC);
@@ -777,27 +773,27 @@ void Backup_resetCourseData_0000A670(s32 arg0) {
 
 extern int gl_func_00000000();
 
-void Backup_courseClearNew(char *a0) {
+void Backup_courseClearNew(BackupCourse *crs) {
     int i;
-    char *p;
+    BackupCourseRecord *p;
     i = 0;
-    p = a0;
-    for (; i != 0x180; i += 0x30) {
+    p = crs->course;
+    for (; i != sizeof(BackupCourse); i += sizeof(BackupCourseRecord)) {
         gl_func_00000000(p);
-        p += 0x30;
+        p++;
     }
 }
 
-void Backup_courseSetNewNames(char *obj, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
-    char *p = obj;
+void Backup_courseSetNewNames(BackupCourse *crs, int a1, unsigned char c2, unsigned char c3, unsigned char *flags) {
+    BackupCourseRecord *p = crs->course;
     int i;
-    for (i = 0; i != 8; i++) {
-        if (gl_func_00000000(p) != 0 || gl_func_00000000(p + 0x18) != 0) {
+    for (i = 0; i != BACKUP_NUM_COURSES; i++) {
+        if (gl_func_00000000(p->times) != 0 || gl_func_00000000(p->scores) != 0) {
             *flags |= (1 << i);
         }
         gl_func_00000000(p, a1, c2, c3);
         if (a1) {}
-        p += 0x30;
+        p++;
     }
 }
 
@@ -964,10 +960,10 @@ void Backup_ghostSetHeader(BackupGhost *a0, int a1, int a2, int a3, int arg5, in
  * bare `i + ...` / `... + i` both put the sll temp first -- the 675A4
  * deeper-operand-first rule); `(i + 4) * 8 + i` / `i * 9 + 32` are
  * strength-reduced into a second derived IV (32 words, `addiu s2,s2,9`). */
-void Backup_resetArcadeData_0000AAEC(char *a0) {
+void Backup_resetArcadeData_0000AAEC(BackupArcade *arc) {
     int i;
     for (i = 0; i < 3; i++) {
-        gl_func_00000000(a0 + i * 0x20, (i | 0) + ((i + 4) << 3),
+        gl_func_00000000(&arc->entry[i], (i | 0) + ((i + 4) << 3),
                          (char *)&D_00000000 + 0xD438,
                          (char *)&D_00000000 + 0xD3E8 + i * 0x18);
     }
@@ -975,14 +971,14 @@ void Backup_resetArcadeData_0000AAEC(char *a0) {
 
 extern int gl_func_00000000();
 
-void Backup_arcadeClearNew(char *a0) {
+void Backup_arcadeClearNew(BackupArcade *arc) {
     int i;
-    char *p;
+    BackupArcadeEntry *p;
     i = 0;
-    p = a0;
-    for (; i != 0x60; i += 0x20) {
+    p = arc->entry;
+    for (; i != sizeof(BackupArcade); i += sizeof(BackupArcadeEntry)) {
         gl_func_00000000(p);
-        p += 0x20;
+        p++;
     }
 }
 
@@ -997,11 +993,11 @@ void Backup_arcadeClearNew(char *a0) {
  * constants, not locals; the case-1 value puts the shifted term FIRST,
  * `((*f & 2) << 1) | (*f & 1)` (andi-1 then takes t9 with the and-2/sll
  * pair in t0/t1 -- the written-second-is-allocated-first order). */
-void Backup_arcadeSetNewNames(char *a0, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
+void Backup_arcadeSetNewNames(BackupArcade *arc, int a1, unsigned char a2, unsigned char a3, unsigned char *arg4) {
     int i;
     for (i = 0; i < 3; i++) {
-        if (gl_func_00000000(a0 + i * 0x20) != 0) {
-            gl_func_00000000(a0 + i * 0x20, a1, a2, a3);
+        if (gl_func_00000000(&arc->entry[i]) != 0) {
+            gl_func_00000000(&arc->entry[i], a1, a2, a3);
             switch (i) {
             case 0:
                 *arg4 = (*arg4 & 3) << 1;
@@ -1025,27 +1021,26 @@ void Backup_arcadeSetNewNames(char *a0, int a1, unsigned char a2, unsigned char 
  * match-faking (per feedback_no_instruction_forcing_matches_policy).
  * Default build is INCLUDE_ASM. */
 extern int func_00000000();
-int Backup_arcadeCountNew(char *a0) {
-    char *p;
+int Backup_arcadeCountNew(BackupArcade *arc) {
+    BackupArcadeEntry *p;
     int count;
     int i;
     int limit;
     count = 0;
     i = 0;
-    p = a0;
-    limit = 0x60;
+    p = arc->entry;
+    limit = sizeof(BackupArcade);
     do {
         int r = func_00000000(p);
-        i += 0x20;
+        i += sizeof(BackupArcadeEntry);
         if (r != 0) count += 1;
-        p += 0x20;
+        p++;
     } while (i != limit);
     return count;
 }
 
-char *Backup_arcadeGetEntry(char *a0, int a1) {
-    int off = a1 * 0x20;
-    return a0 + off;
+BackupArcadeEntry *Backup_arcadeGetEntry(BackupArcade *arc, int i) {
+    return &arc->entry[i];
 }
 
 /* Backup_arcadeFindRank: 28-insn 3-iter try-or-advance loop. MATCHED (byte-exact).
@@ -1055,14 +1050,14 @@ char *Backup_arcadeGetEntry(char *a0, int a1) {
  *   move s2,a1 / sw ra / move s0,0 (i) / move s1,a0 (p)
  * matching target). Both levers needed: the bare-loop form copied s1=a0 first. */
 extern int gl_func_00000000();
-int Backup_arcadeFindRank(char *a0, int a1) {
-    char *p;
+int Backup_arcadeFindRank(BackupArcade *arc, int score) {
+    BackupArcadeEntry *p;
     int i;
     i = 0;
-    p = a0;
+    p = arc->entry;
     for (; i != 3; i++) {
-        if (gl_func_00000000(p, a1) != 0) return i;
-        p += 0x20;
+        if (gl_func_00000000(p, score) != 0) return i;
+        p++;
     }
     return 3;
 }
@@ -1078,10 +1073,7 @@ int Backup_arcadeFindRank(char *a0, int a1) {
  * the call address must be the int-scaled `(char *)arr + idx * 32`
  * (arr-first t2/t5 ring) -- `&arr[idx]` / `arr + idx` swap the reload and
  * shift registers in both preheaders. */
-struct AD9C_Rec {
-    int w[8];
-};
-void Backup_arcadeInsert(struct AD9C_Rec *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
+void Backup_arcadeInsert(BackupArcadeEntry *arr, s32 idx, s32 a2, s32 a3, s32 a4) {
     s32 i;
 
     if (idx < 3) {
@@ -1418,7 +1410,7 @@ void Backup_sessionResetCourseTimes(BackupSession *a0, int a1) {
     int k = a1 * 9;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD268); } while (0);
-    func_00000000((char *)a0->course + a1 * 48, n % 5, n % 8, tbl + k);
+    func_00000000(&a0->course->course[a1], n % 5, n % 8, tbl + k);
     func_00000000(a0);
 }
 
@@ -1450,7 +1442,7 @@ void Backup_sessionResetCourseScores(BackupSession *a0, int a1) {
     int n = a1 * 3;
     int *tbl;
     do { tbl = (int *)((char *)&D_00000000 + 0xD388); } while (0);
-    func_00000000((char *)a0->course + a1 * 48, n % 5, n % 8, tbl + n);
+    func_00000000(&a0->course->course[a1], n % 5, n % 8, tbl + n);
     func_00000000(a0);
 }
 
