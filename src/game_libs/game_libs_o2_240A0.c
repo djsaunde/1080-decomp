@@ -12,15 +12,13 @@
  * sample 0x2C10. Blank-jal callees are gl_func_00000000; the baked jals are
  * the pinned gl_ref_000381B0 (SearchCaches), gl_ref_00038204 (GetLoadTable),
  * gl_ref_0003959C (StartAsyncLoad). */
-typedef struct { u32 romAddr; u32 size; s8 medium; s8 cachePolicy; s16 shortData1; s16 shortData2; s16 shortData3; } gl_240A0_TableEntry;
-typedef struct { s16 numEntries; s16 unkMediumParam; u32 romAddr; char pad[8]; gl_240A0_TableEntry entries[1]; } gl_240A0_Table;
 typedef AudioContext gl_240A0_Ctx; /* include/audio.h (load-status arrays 0x2C10 / 0x2C40 / 0x2C70) */
 #define ALIGN16(val) (((val) + 0xF) & ~0xF)
 extern int D_00000000;
 #define gAudioCtx (*(gl_240A0_Ctx *)&gAudioContext)
 extern int gl_func_00000000();
 extern void *gl_ref_000381B0();
-extern gl_240A0_Table *gl_ref_00038204();
+extern AudioTable *gl_ref_00038204();
 extern int gl_ref_0003959C();
 #define AudioLoad_SearchCaches gl_ref_000381B0
 #define AudioLoad_GetLoadTable gl_ref_00038204
@@ -34,7 +32,7 @@ extern int gl_ref_0003959C();
 
 void *AudioLoad_AsyncLoadInner(s32 tableType, s32 id, s32 nChunks, s32 retData, void *retQueue) {
     u32 size;
-    gl_240A0_Table *sampleBankTable;
+    AudioTable *sampleBankTable;
     void *ramAddr;
     s32 medium;
     s8 cachePolicy;

@@ -4000,13 +4000,9 @@ SampleCacheEntry *AudioHeap_AllocTemporarySampleCacheEntry(u32 size) {
  * s5 / s4 swapped (s4 / s5 in the target). The run-137 hand decode is replaced. */
 extern int gl_func_00036A04();
 typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; } gl_221D8_CacheEntry;
-typedef struct { void *sample; f32 tuning; } gl_221D8_TunedSample;
-typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_221D8_TunedSample lowPitchTunedSample; gl_221D8_TunedSample normalPitchTunedSample; gl_221D8_TunedSample highPitchTunedSample; } gl_221D8_Instrument;
-typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_221D8_TunedSample tunedSample; void *envelope; } gl_221D8_Drum;
-typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0xE]; } gl_221D8_SoundFont;
-typedef struct { s16 numEntries; } gl_221D8_Table;
-typedef struct { char pad[0x2020]; gl_221D8_Table *soundFontTable; char pad2024[0xC]; gl_221D8_SoundFont *soundFontList; } gl_221D8_Ctx;
-extern gl_221D8_Ctx gAudioContext_221D8;
+/* Instrument / Drum / SoundFont / AudioTable from audio.h (run 522); the entry keeps
+ * its s8 sampleBankId view (lb, not lbu, in the compares). */
+extern AudioContext gAudioContext_221D8;
 
 void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
     s32 fontId;
@@ -4014,7 +4010,7 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
     s32 sampleBankId1;
     s32 sampleBankId2;
 
-    numFonts = gAudioContext_221D8.soundFontTable->numEntries;
+    numFonts = gAudioContext_221D8.soundFontTable->header.numEntries;
     for (fontId = 0; fontId < numFonts; fontId++) {
         sampleBankId1 = gAudioContext_221D8.soundFontList[fontId].sampleBankId1;
         sampleBankId2 = gAudioContext_221D8.soundFontList[fontId].sampleBankId2;
@@ -4025,13 +4021,13 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
         {
             if (CALL(AudioHeap_SearchCaches)(1, 2, fontId) != 0) {
                 if (CALL(AudioLoad_IsFontLoadComplete)(fontId) != 0) {
-                    gl_221D8_Drum *drum;
-                    gl_221D8_Instrument *inst;
+                    Drum *drum;
+                    Instrument *inst;
                     s32 instId;
                     s32 drumId;
 
                     for (instId = 0; instId < gAudioContext_221D8.soundFontList[fontId].numInstruments; instId++) {
-                        inst = (gl_221D8_Instrument *)CALL(Audio_GetInstrumentInner)(fontId, instId);
+                        inst = (Instrument *)CALL(Audio_GetInstrumentInner)(fontId, instId);
                         if (inst != NULL) {
                             if (inst->normalRangeLo != 0) {
                                 gl_func_00036A04(entry, inst->lowPitchTunedSample.sample);
@@ -4044,7 +4040,7 @@ void AudioHeap_DiscardSampleCacheEntry(gl_221D8_CacheEntry *entry) {
                     }
 
                     for (drumId = 0; drumId < gAudioContext_221D8.soundFontList[fontId].numDrums; drumId++) {
-                        drum = (gl_221D8_Drum *)CALL(Audio_GetDrum)(fontId, drumId);
+                        drum = (Drum *)CALL(Audio_GetDrum)(fontId, drumId);
                         if (drum != NULL) {
                             gl_func_00036A04(entry, drum->tunedSample.sample);
                         }
@@ -4143,24 +4139,17 @@ void *AudioHeap_AllocPersistentSampleCacheEntry(int arg) {
  * facts: one 0xFF test compared unsigned ((u32)sampleBankId1 != 0xFF) so the two 255s
  * are separate constants (each a fresh li at,255, no hoisted t0), and a non-matching
  * cache entry BREAKS out of the entry loop (target bnezl to the font-loop tail). */
-typedef struct { u32 bits; u8 *sampleAddr; } gl_22464_Sample;
-typedef struct { gl_22464_Sample *sample; f32 tuning; } gl_22464_TunedSample;
-typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_22464_TunedSample lowPitchTunedSample; gl_22464_TunedSample normalPitchTunedSample; gl_22464_TunedSample highPitchTunedSample; } gl_22464_Inst;
-typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_22464_TunedSample tunedSample; } gl_22464_Drum;
+/* Fonts / instruments / drums typed from audio.h (run 522). The cache entry keeps
+ * the s8 sampleBankId view (audio.h's SampleCacheEntry has u8): the entry pointer is
+ * cast from the typed persistentSampleCache.entries[j]. */
 typedef struct { s8 inUse; s8 origMedium; s8 sampleBankId; u8 unk_03[5]; u8 *allocatedAddr; void *sampleAddr; u32 size; } gl_22464_CacheEntry;
-typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0x14 - 6]; } gl_22464_Font;
-typedef struct { s16 numEntries; } gl_22464_TableHdr;
-typedef struct { gl_22464_TableHdr header; } gl_22464_Table;
-typedef struct { char pad[0x10]; } gl_22464_Pool;
-typedef struct { gl_22464_Pool pool; gl_22464_CacheEntry entries[32]; s32 numEntries; } gl_22464_SampleCache;
-typedef struct { char pad0[0x2020]; gl_22464_Table *soundFontTable; char pad2024[0x2030 - 0x2024]; gl_22464_Font *soundFontList; char pad2034[0x26B8 - 0x2034]; gl_22464_SampleCache persistentSampleCache; } gl_22464_Ctx;
-extern gl_22464_Ctx gAudioContext_22464T;
+extern AudioContext gAudioContext_22464T;
 #define gl_22464_gAudioCtx gAudioContext_22464T
 extern int gl_func_00036A04();
 #define AudioHeap_SearchCaches (void *)gl_func_00000000
 #define AudioLoad_IsFontLoadComplete gl_func_00000000
-#define Audio_GetInstrumentInner (gl_22464_Inst *)gl_func_00000000
-#define Audio_GetDrum (gl_22464_Drum *)gl_func_00000000
+#define Audio_GetInstrumentInner (Instrument *)gl_func_00000000
+#define Audio_GetDrum (Drum *)gl_func_00000000
 #define AudioHeap_UnapplySampleCache gl_func_00036A04
 
 #define GL22464_UNAPPLY(entry, fontId) \
@@ -4181,8 +4170,8 @@ void AudioHeap_DiscardSampleCaches(void) {
     s32 fontId;
     s32 j;
     s32 numFonts;
-    gl_22464_Drum *drum;
-    gl_22464_Inst *inst;
+    Drum *drum;
+    Instrument *inst;
     s32 instId;
     s32 drumId;
     gl_22464_CacheEntry *entry;
@@ -4196,7 +4185,7 @@ void AudioHeap_DiscardSampleCaches(void) {
         if ((((u32)sampleBankId1 != 0xFF) || (sampleBankId2 != 0xFF)) &&
             (AudioHeap_SearchCaches(1, 3, fontId) != NULL) && AudioLoad_IsFontLoadComplete(fontId)) {
             for (j = 0; j < gl_22464_gAudioCtx.persistentSampleCache.numEntries; j++) {
-                entry = &gl_22464_gAudioCtx.persistentSampleCache.entries[j];
+                entry = (gl_22464_CacheEntry *)&gl_22464_gAudioCtx.persistentSampleCache.entries[j];
                 if ((entry->sampleBankId != sampleBankId1) && (entry->sampleBankId != sampleBankId2) &&
                     (entry->sampleBankId != 0)) {
                     break;
@@ -4798,10 +4787,8 @@ void AudioLoad_SyncLoadSeqParts(int a0, int a1) {
  * sll/sra pair), and the function returns -1 when the allocation fails (no value on
  * the other paths). The three callees are blank USO jals (jal 0): prototyped aliases
  * pinned to 0. Sample bitfields: codec:4, medium:2, unk:1, isRelocated:1, size:24. */
-typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_230D0_Sample;
-typedef struct { s16 numEntries; s16 unkMediumParam; } gl_230D0_Table;
-typedef struct { char pad[0x2024]; gl_230D0_Table *sampleBankTable; } gl_230D0_Ctx;
-#define gl_230D0_gAudioCtx (*(gl_230D0_Ctx *)&gAudioContext)
+/* Sample / sampleBankTable typed from audio.h (run 522). */
+#define gl_230D0_gAudioCtx (*(AudioContext *)&gAudioContext)
 extern void *gl_230d0_allocSampleCache(u32 size, s32 fontId, void *sampleAddr, s8 medium);
 extern void gl_230d0_syncDmaUnkMedium(u32 devAddr, u8 *addr, u32 size, s32 unkMediumParam);
 extern void gl_230d0_syncDma(u32 devAddr, u8 *addr, u32 size, s32 medium);
@@ -4809,7 +4796,7 @@ extern void gl_230d0_syncDma(u32 devAddr, u8 *addr, u32 size, s32 medium);
 #define AudioLoad_SyncDmaUnkMedium gl_230d0_syncDmaUnkMedium
 #define AudioLoad_SyncDma gl_230d0_syncDma
 
-s32 AudioLoad_SyncLoadSample(gl_230D0_Sample *sample, s32 fontId) {
+s32 AudioLoad_SyncLoadSample(Sample *sample, s32 fontId) {
     void *sampleAddr;
 
     if (sample->isRelocated == 1) {
@@ -4820,7 +4807,7 @@ s32 AudioLoad_SyncLoadSample(gl_230D0_Sample *sample, s32 fontId) {
             }
 
             if (sample->medium == 1) {
-                AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleAddr, sample->size, gl_230D0_gAudioCtx.sampleBankTable->unkMediumParam);
+                AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleAddr, sample->size, gl_230D0_gAudioCtx.sampleBankTable->header.unkMediumParam);
             } else {
                 AudioLoad_SyncDma((u32)sample->sampleAddr, sampleAddr, sample->size, sample->medium);
             }
@@ -5071,24 +5058,29 @@ extern int gAudioContext_23494_a;
 extern int gAudioContext_23494_b;
 extern int gAudioContext_23494_c;
 extern int gAudioContext_23494_d;
+/* run 522: typed onto AudioContext.fontCache (0x2308): temporary.entries[0/1].id
+ * = 0x23FA / 0x2406, persistent.entries[i].id = 0x2308 + 0x1E + i * 0xC. Each
+ * alias symbol is still its own base (one AUDIO_23494(sym) per site). */
+#define AUDIO_23494(sym) ((AudioContext *)&(sym))
 void AudioLoad_DiscardFont(int id)
 {
-    char *base;
+    AudioCache *cache;
     int i;
     unsigned neg = 0xFFFFFFFF;
-    if (id == *(short *)((char *)&gAudioContext + 0x23FA)) {
-        *(short *)((char *)&gAudioContext_23494_a + 0x23FA) = -1;
-    } else if (id == *(short *)((char *)&gAudioContext_23494_b + 0x2406)) {
-        *(short *)((char *)&gAudioContext_23494_c + 0x2406) = -1;
+    if (id == AUDIO_23494(gAudioContext)->fontCache.temporary.entries[0].id) {
+        AUDIO_23494(gAudioContext_23494_a)->fontCache.temporary.entries[0].id = -1;
+    } else if (id == AUDIO_23494(gAudioContext_23494_b)->fontCache.temporary.entries[1].id) {
+        AUDIO_23494(gAudioContext_23494_c)->fontCache.temporary.entries[1].id = -1;
     }
-    base = (char *)&gAudioContext_23494_d + 0x2308;
-    for (i = 0; (unsigned)i < *(unsigned int *)base; i++) {
-        if (id == *(short *)(base + i * 0xC + 0x1E)) {
-            *(short *)(base + i * 0xC + 0x1E) = neg;
+    cache = &AUDIO_23494(gAudioContext_23494_d)->fontCache;
+    for (i = 0; (unsigned)i < cache->persistent.numEntries; i++) {
+        if (id == cache->persistent.entries[i].id) {
+            cache->persistent.entries[i].id = neg;
         }
     }
     CALL(AudioHeap_DiscardFont)(id);
 }
+#undef AUDIO_23494
 
 
 /* AudioLoad_SyncInitSeqPlayer (0x50): orphan-prologue MERGE of the 0xC stub at
@@ -5358,11 +5350,11 @@ int AudioLoad_SyncLoadFont(int a0) {
     int c2;
     int c3;
     int buf[7];                                              /* @0x20..0x3B(sp) */
-    char *rec;
+    SoundFont *rec;
     a0 = gl_ref_00038174(1, a0);
-    rec = *(char **)((char *)&gAudioContext + 0x2030) + a0 * 0x14;
-    c2 = *(unsigned char *)(rec + 2);
-    c3 = *(unsigned char *)(rec + 3);
+    rec = &((AudioContext *)&gAudioContext)->soundFontList[a0];
+    c2 = rec->sampleBankId1;
+    c3 = rec->sampleBankId2;
     buf[0] = c2;
     buf[1] = c3;
     if (c2 != 0xFF) {
@@ -5560,14 +5552,8 @@ int AudioLoad_GetLoadTable(int idx) {
  * 98.51, 161 = 161 words; replaces the NCC NM donor). Left: fontDataStartAddr / the
  * instrument index colour s3 / s2 (target s2 / s3); declaration and initialiser orders
  * do not move it. gl_23bdc_str is NM-only. */
-typedef struct { u32 bits; u8 *sampleAddr; } gl_23BDC_Sample;
-typedef struct { gl_23BDC_Sample *sample; f32 tuning; } gl_23BDC_TunedSample;
-typedef struct { u8 isRelocated; u8 normalRangeLo; u8 normalRangeHi; u8 adsrDecayIndex; void *envelope; gl_23BDC_TunedSample lowPitchTunedSample; gl_23BDC_TunedSample normalPitchTunedSample; gl_23BDC_TunedSample highPitchTunedSample; } gl_23BDC_Inst;
-typedef struct { u8 adsrDecayIndex; u8 pan; u8 isRelocated; gl_23BDC_TunedSample tunedSample; void *envelope; } gl_23BDC_Drum;
-typedef struct { gl_23BDC_TunedSample tunedSample; } gl_23BDC_Sfx;
-typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; gl_23BDC_Inst **instruments; gl_23BDC_Drum **drums; gl_23BDC_Sfx *soundEffects; } gl_23BDC_Font;
-typedef struct { char pad0[0x2030]; gl_23BDC_Font *soundFontList; } gl_23BDC_Ctx;
-#define gl_23BDC_gAudioCtx (*(gl_23BDC_Ctx *)&gAudioContext)
+/* Instrument / Drum / SoundEffect / SoundFont from audio.h (run 522). */
+#define gl_23BDC_gAudioCtx (*(AudioContext *)&gAudioContext)
 typedef u8 gl_23BDC_FontData;
 typedef struct { s32 a; } gl_23BDC_RelocInfo;
 extern char gl_23bdc_str[];
@@ -5577,9 +5563,9 @@ extern int gl_ref_00039A30();
 void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC_RelocInfo *sampleBankReloc) {
     u32 soundOffset;
     u32 soundListOffset;
-    gl_23BDC_Inst *inst;
-    gl_23BDC_Drum *drum;
-    gl_23BDC_Sfx *soundEffect;
+    Instrument *inst;
+    Drum *drum;
+    SoundEffect *soundEffect;
     s32 i;
     s32 numDrums = gl_23BDC_gAudioCtx.soundFontList[fontId].numDrums;
     s32 numInstruments = gl_23BDC_gAudioCtx.soundFontList[fontId].numInstruments;
@@ -5592,15 +5578,15 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
     if ((soundListOffset != 0) && (numDrums != 0)) {
         fontData[0] = GL23BDC_RELOC(soundListOffset);
         for (i = 0; i < numDrums; i++) {
-            soundOffset = (u32)((gl_23BDC_Drum **)fontData[0])[i];
+            soundOffset = (u32)((Drum **)fontData[0])[i];
             if (soundOffset != 0) {
                 soundOffset = GL23BDC_RELOC(soundOffset);
-                ((gl_23BDC_Drum **)fontData[0])[i] = drum = (gl_23BDC_Drum *)soundOffset;
+                ((Drum **)fontData[0])[i] = drum = (Drum *)soundOffset;
                 if (!drum->isRelocated) {
                     AudioLoad_RelocateSample(&drum->tunedSample, fontDataStartAddr, sampleBankReloc);
                     drum->isRelocated = 1;
                     soundOffset = (u32)drum->envelope;
-                    drum->envelope = (void *)GL23BDC_RELOC(soundOffset);
+                    drum->envelope = (AdsrEnvelope *)GL23BDC_RELOC(soundOffset);
                 }
             }
         }
@@ -5610,8 +5596,8 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
     if ((fontData[1] != 0) && (numSfx != 0)) {
         fontData[1] = GL23BDC_RELOC(fontData[1]);
         for (i = 0; i < numSfx; i++) {
-            soundOffset = (u32)(((gl_23BDC_Sfx *)fontData[1]) + i);
-            soundEffect = (gl_23BDC_Sfx *)soundOffset;
+            soundOffset = (u32)(((SoundEffect *)fontData[1]) + i);
+            soundEffect = (SoundEffect *)soundOffset;
             if ((soundEffect == NULL) || ((u32)soundEffect->tunedSample.sample == 0)) {
                 continue;
             }
@@ -5627,7 +5613,7 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
         if (fontData[i] != 0) {
             CALL(gl_rmonPrintf)((char *)&D_00000000 + 0x1ACA4, i, fontData[i], fontDataStartAddr);
             fontData[i] = GL23BDC_RELOC(fontData[i]);
-            inst = (gl_23BDC_Inst *)fontData[i];
+            inst = (Instrument *)fontData[i];
             if (!inst->isRelocated) {
                 if (inst->normalRangeLo != 0) {
                     AudioLoad_RelocateSample(&inst->lowPitchTunedSample, fontDataStartAddr, sampleBankReloc);
@@ -5637,15 +5623,15 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
                     AudioLoad_RelocateSample(&inst->highPitchTunedSample, fontDataStartAddr, sampleBankReloc);
                 }
                 soundOffset = (u32)inst->envelope;
-                inst->envelope = (void *)GL23BDC_RELOC(soundOffset);
+                inst->envelope = (AdsrEnvelope *)GL23BDC_RELOC(soundOffset);
                 inst->isRelocated = 1;
             }
         }
     }
 
-    gl_23BDC_gAudioCtx.soundFontList[fontId].drums = (gl_23BDC_Drum **)fontData[0];
-    gl_23BDC_gAudioCtx.soundFontList[fontId].soundEffects = (gl_23BDC_Sfx *)fontData[1];
-    gl_23BDC_gAudioCtx.soundFontList[fontId].instruments = (gl_23BDC_Inst **)(fontData + 2);
+    gl_23BDC_gAudioCtx.soundFontList[fontId].drums = (Drum **)fontData[0];
+    gl_23BDC_gAudioCtx.soundFontList[fontId].soundEffects = (SoundEffect *)fontData[1];
+    gl_23BDC_gAudioCtx.soundFontList[fontId].instruments = (Instrument **)(fontData + 2);
 }
 #undef gl_23BDC_gAudioCtx
 #undef GL23BDC_RELOC
@@ -5796,9 +5782,7 @@ void AudioLoad_SetUnusedHandler(int a0) { D_2436C_a = a0; }
  * AudioThread_InitMesgQueues (an int-returning callee coloured the aiBufLengths loop
  * cursor v1 instead of v0); decls pad[16], i, ramAddr, numFonts (numFonts spill at
  * sp+0x34). The tv-type floats are rodata words read through a pinned zero base. */
-typedef struct { u32 romAddr; u32 size; s8 medium; s8 cachePolicy; s16 shortData1; s16 shortData2; s16 shortData3; } gl_24378_TableEntry;
-typedef struct { s16 numEntries; s16 unkMediumParam; u32 romAddr; char pad[8]; gl_24378_TableEntry entries[1]; } gl_24378_Table;
-typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; u16 numSfx; char pad[0xE]; } gl_24378_SoundFont;
+/* AudioTable / SoundFont from include/audio.h (run 522). */
 typedef struct { char pad[0x10]; } gl_24378_Pool;
 typedef struct { char pad[0x18]; } gl_24378_MesgQueue;
 typedef struct { s32 unk0; s32 heapSize; s32 initPoolSize; s32 permanentPoolSize; } gl_24378_HeapInitSizes;
@@ -5809,8 +5793,8 @@ typedef struct {
     char pad17d4[0x1DD4 - 0x17D4];
     gl_24378_MesgQueue syncDmaQueue; void *syncDmaMesg; char pad1df0[0x1E0C - 0x1DF0]; u32 sampleDmaCount;
     char pad1e10[0x201C - 0x1E10];
-    gl_24378_Table *sequenceTable; gl_24378_Table *soundFontTable; gl_24378_Table *sampleBankTable; u8 *sequenceFontTable;
-    s16 numSequences; char pad202e[2]; gl_24378_SoundFont *soundFontList;
+    AudioTable *sequenceTable; AudioTable *soundFontTable; AudioTable *sampleBankTable; u8 *sequenceFontTable;
+    s16 numSequences; char pad202e[2]; SoundFont *soundFontList;
     char pad2034[0x2076 - 0x2034]; s8 soundOutputMode; char pad2077; s32 totalTaskCount; s32 curAudioFrameDmaCount;
     s32 rspTaskIndex; s32 curAiBufIndex; char pad2088[0x2094 - 0x2088]; void *curTask;
     char pad2098[0x20CC - 0x2098]; s32 dataSize0; char pad20d0[0x211C - 0x20D0]; s32 dataSize1;
@@ -5825,7 +5809,7 @@ extern u8 gAudioHeap_24378[];
 extern gl_24378_HeapInitSizes gAudioHeapInitSizes_24378;
 extern s32 gl_24378_osTvType;
 extern u8 gl_24378_rodata[];
-extern gl_24378_Table gl_24378_gSequenceTable, gl_24378_gSoundFontTable, gl_24378_gSampleBankTable;
+extern AudioTable gl_24378_gSequenceTable, gl_24378_gSoundFontTable, gl_24378_gSampleBankTable;
 extern u8 gl_24378_gSequenceFontTable[];
 extern u32 gl_24378_seqRom, gl_24378_fontRom, gl_24378_sampleRom;
 extern void gl_24378_AudioThread_InitMesgQueues(void);
@@ -5901,7 +5885,7 @@ void AudioLoad_Init(void) {
     gl_24378_gAudioCtx.soundFontTable = &gl_24378_gSoundFontTable;
     gl_24378_gAudioCtx.sampleBankTable = &gl_24378_gSampleBankTable;
     gl_24378_gAudioCtx.sequenceFontTable = gl_24378_gSequenceFontTable;
-    gl_24378_gAudioCtx.numSequences = gl_24378_gAudioCtx.sequenceTable->numEntries;
+    gl_24378_gAudioCtx.numSequences = gl_24378_gAudioCtx.sequenceTable->header.numEntries;
     gl_24378_gAudioCtx.specId = 0;
     gl_24378_gAudioCtx.resetStatus = 1;
 
@@ -5910,8 +5894,8 @@ void AudioLoad_Init(void) {
     gl_ref_000375CC(gl_24378_gAudioCtx.sequenceTable, gl_24378_seqRom, 0);
     gl_ref_000375CC(gl_24378_gAudioCtx.soundFontTable, gl_24378_fontRom, 0);
     gl_ref_000375CC(gl_24378_gAudioCtx.sampleBankTable, gl_24378_sampleRom, 0);
-    numFonts = gl_24378_gAudioCtx.soundFontTable->numEntries;
-    gl_24378_gAudioCtx.soundFontList = (void *)CALL(AudioHeap_Alloc)(&gl_24378_gAudioCtx.initPool, numFonts * sizeof(gl_24378_SoundFont));
+    numFonts = gl_24378_gAudioCtx.soundFontTable->header.numEntries;
+    gl_24378_gAudioCtx.soundFontList = (void *)CALL(AudioHeap_Alloc)(&gl_24378_gAudioCtx.initPool, numFonts * sizeof(SoundFont));
 
     for (i = 0; i < numFonts; i++) {
         gl_24378_gAudioCtx.soundFontList[i].sampleBankId1 = (gl_24378_gAudioCtx.soundFontTable->entries[i].shortData1 >> 8) & 0xFF;
@@ -6437,10 +6421,8 @@ typedef struct {
     u32 retMsg; gl_250C8_OSMesgQueue *retQueue; gl_250C8_OSMesgQueue msgQueue;
 } gl_250C8_AudioAsyncLoad;
 typedef struct { s32 sampleBankId1; s32 sampleBankId2; s32 baseAddr1; s32 baseAddr2; u32 medium1; u32 medium2; } gl_250C8_SampleBankRelocInfo;
-typedef struct { u8 numInstruments; u8 numDrums; u8 sampleBankId1; u8 sampleBankId2; char pad4[0x10]; } gl_250C8_SoundFont;
-typedef struct { s16 numEntries; s16 unkMediumParam; } gl_250C8_AudioTable;
-typedef struct { char pad0[0x2024]; gl_250C8_AudioTable *sampleBankTable; char pad2028[8]; gl_250C8_SoundFont *soundFontList; } gl_250C8_Ctx;
-extern gl_250C8_Ctx gAudioContext_250C8;
+/* sampleBankTable / soundFontList typed from audio.h (run 522). */
+extern AudioContext gAudioContext_250C8;
 #define gAudioCtx gAudioContext_250C8
 extern s32 gl_250C8_osRecvMesg(void *, void *, s32);
 extern s32 gl_250C8_osSendMesg(void *, u32, s32);
@@ -6460,7 +6442,7 @@ extern void gl_ref_0003998C(gl_250C8_AudioAsyncLoad *, u32);
 #define ASYNC_STATUS(x) ((x) & 0xFF)
 
 void AudioLoad_ProcessAsyncLoad(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetStatus) {
-    gl_250C8_AudioTable *sampleBankTable = gAudioCtx.sampleBankTable;
+    AudioTable *sampleBankTable = gAudioCtx.sampleBankTable;
     u32 retMsg;
     u32 fontId;
     u32 pad;
@@ -6517,7 +6499,7 @@ void AudioLoad_ProcessAsyncLoad(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetSta
     if (asyncLoad->bytesRemaining < asyncLoad->chunkSize) {
         if (asyncLoad->medium == 1) {
             AudioLoad_AsyncDmaUnkMedium(asyncLoad->curDevAddr, asyncLoad->curRamAddr, asyncLoad->bytesRemaining,
-                                        sampleBankTable->unkMediumParam);
+                                        sampleBankTable->header.unkMediumParam);
         } else {
             AudioLoad_AsyncDma(asyncLoad, asyncLoad->bytesRemaining);
         }
@@ -6527,7 +6509,7 @@ void AudioLoad_ProcessAsyncLoad(gl_250C8_AudioAsyncLoad *asyncLoad, s32 resetSta
 
     if (asyncLoad->medium == 1) {
         AudioLoad_AsyncDmaUnkMedium(asyncLoad->curDevAddr, asyncLoad->curRamAddr, asyncLoad->chunkSize,
-                                    sampleBankTable->unkMediumParam);
+                                    sampleBankTable->header.unkMediumParam);
     } else {
         AudioLoad_AsyncDma(asyncLoad, asyncLoad->chunkSize);
     }
@@ -6598,19 +6580,16 @@ void AudioLoad_AsyncDmaUnkMedium(int a0, int a1, int a2, int a3) {
 
 /* AudioLoad_RelocateSample EXACT 2026-10-23 (agent-c run 140, 73.66 -> 100): OoT's
  * AudioLoad_RelocateSample (load.c) verbatim, including the AUDIO_RELOC
- * `reloc = ...` assignment macro. 1080 usedSamples has 0x300 entries
- * (gAudioCtx +0x430, numUsedSamples +0x1030); gAudioCtx is the run 139 fn-typed
- * blank base (gAudioContext_253c4_fd, pinned 0). */
-typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; void *loop; void *book; } gl_253C4_Sample;
-typedef struct { gl_253C4_Sample *sample; f32 tuning; } gl_253C4_TunedSample;
-typedef struct { s32 sampleBankId1; s32 sampleBankId2; u32 baseAddr1; u32 baseAddr2; u32 medium1; u32 medium2; } gl_253C4_RelocInfo;
-typedef struct { char pad0[0x430]; gl_253C4_Sample *usedSamples[0x300]; s32 numUsedSamples; } gl_253C4_Ctx;
+ * `reloc = ...` assignment macro. usedSamples is gAudioCtx +0x430 (0x80 entries,
+ * numUsedSamples +0x1030); gAudioCtx is the run 139 fn-typed blank base
+ * (gAudioContext_253c4_fd, pinned 0). Sample / TunedSample / SampleBankRelocInfo /
+ * AudioContext from include/audio.h (run 522). */
 extern void gAudioContext_253c4_fd();
-#define gl_253C4_gAudioCtx (*(gl_253C4_Ctx *)gAudioContext_253c4_fd)
+#define gl_253C4_gAudioCtx (*(AudioContext *)gAudioContext_253c4_fd)
 typedef u8 gl_253C4_FontData;
 
-void AudioLoad_RelocateSample(gl_253C4_TunedSample *tunedSample, gl_253C4_FontData *fontData, gl_253C4_RelocInfo *sampleBankReloc) {
-    gl_253C4_Sample *sample;
+void AudioLoad_RelocateSample(TunedSample *tunedSample, gl_253C4_FontData *fontData, SampleBankRelocInfo *sampleBankReloc) {
+    Sample *sample;
     void *reloc;
 
 #define AUDIO_RELOC(offset, base) (reloc = (void *)((u32)(offset) + (u32)(base)))
@@ -6743,19 +6722,12 @@ void AudioLoad_RelocateSample(gl_253C4_TunedSample *tunedSample, gl_253C4_FontDa
  * `sampleRamAddr = NULL` per iteration (the target carries it round the loop in its
  * home, declared third); four-argument AllocSampleCache, no disk-drive arm; the
  * `if (sample) {}` after the sample load fixes the s1 / s2 choice (base / ramAddr). */
-typedef struct { u32 codec : 4; u32 medium : 2; u32 unk_bit26 : 1; u32 isRelocated : 1; u32 size : 24; u8 *sampleAddr; } gl_25504_Sample;
-typedef struct { u32 endAndMediumKey; gl_25504_Sample *sample; u8 *ramAddr; u32 encodedInfo; s32 isFree; } gl_25504_Req;
-typedef struct { s32 sampleBankId1; s32 sampleBankId2; u32 baseAddr1; u32 baseAddr2; u32 medium1; u32 medium2; } gl_25504_RelocInfo;
-typedef struct { s16 numEntries; s16 unkMediumParam; } gl_25504_Table;
-typedef struct {
-    char pad0[0x430]; gl_25504_Sample *usedSamples[0x80]; gl_25504_Req preloadSampleStack[0x80]; s32 numUsedSamples; s32 preloadSampleStackTop;
-    char pad1038[0x1684 - 0x1038]; char preloadSampleQueue[0x18]; char pad169C[0x2024 - 0x169C]; gl_25504_Table *sampleBankTable;
-} gl_25504_Ctx;
-extern gl_25504_Ctx gAudioContext_25504;
+/* usedSamples / preloadSampleStack / sampleBankTable typed from audio.h (run 522). */
+extern AudioContext gAudioContext_25504;
 #define gAudioCtx gAudioContext_25504
 extern s32 gl_25504_D_8016B780;
 #define D_8016B780 gl_25504_D_8016B780
-extern void gl_25504_RelocateFont(s32, void *, gl_25504_RelocInfo *);
+extern void gl_25504_RelocateFont(s32, void *, SampleBankRelocInfo *);
 extern u8 *gl_25504_AllocSampleCache(u32, s32, void *, s8);
 extern void gl_25504_SyncDmaUnkMedium(u32, u8 *, u32, s32);
 extern void gl_25504_SyncDma(u32, u8 *, u32, s32);
@@ -6767,11 +6739,11 @@ extern void gl_25504_StartAsyncLoad(u32, u8 *, u32, s32, s32, void *, u32);
 #define AudioLoad_StartAsyncLoad gl_25504_StartAsyncLoad
 #define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
-void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, gl_25504_RelocInfo *sampleBankReloc, s32 isAsync) {
-    gl_25504_Req *preload;
-    gl_25504_Req *topPreload;
+void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, SampleBankRelocInfo *sampleBankReloc, s32 isAsync) {
+    AudioPreloadReq *preload;
+    AudioPreloadReq *topPreload;
     u8 *sampleRamAddr;
-    gl_25504_Sample *sample;
+    Sample *sample;
     s32 size;
     s32 nChunks;
     s32 preloadInProgress;
@@ -6824,7 +6796,7 @@ void AudioLoad_RelocateFontAndPreloadSamples(s32 fontId, void *fontData, gl_2550
         switch (isAsync) {
             case 0:
                 if (sample->medium == 1) {
-                    AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleRamAddr, sample->size, gAudioCtx.sampleBankTable->unkMediumParam);
+                    AudioLoad_SyncDmaUnkMedium((u32)sample->sampleAddr, sampleRamAddr, sample->size, gAudioCtx.sampleBankTable->header.unkMediumParam);
                     sample->sampleAddr = sampleRamAddr;
                     sample->medium = 0;
                 } else {
@@ -7007,86 +6979,41 @@ int AudioLoad_AddToSampleSet(int *a0, int a1, int **a2) {
     return a1;
 }
 
-// AudioLoad_GetSamplesForFont — STRUCTURAL PASS (0x18C / 99 words, no episode).
-// permuter resists: verify-fails every batch (x5+, 2026-06-19) — factory skip.
-// Raw-.word USO form (game_libs). BOUNDARY NOTE: 2-jr USO bundle
-// (named fn + 1 trailing helper) — deferred USO re-split. The named
-// leading fn iterates a registry record's sub-entries.
-//
-//   int AudioLoad_GetSamplesForFont(int idx, int a1) {
-//     R *rec = (char*)*(R**)(&D_0 + 0x2030) + idx*0x14; // reg record
-//     int  n   = rec->b_1;                               // sub count
-//     byte k   = rec->b_0;
-//     int  acc = 0;
-//     for (int i = 0; i < n; i++) {
-//       if ((*pred)(idx, i)) {                            // jal 0 USO
-//         void *p = rec->w_4;                              // sub list
-//         acc = jal 0x3A0EC(p, acc, a1);                   // 0x0C00E83B
-//       }
-//     }
-//     return acc;
-//   }
-//
-// Struct-typing reference: indexes the SAME registry record table as
-//   AudioHeap_DiscardSampleCacheEntry / AudioLoad_SyncLoadFont / AudioLoad_RelocateFont (base
-//   &D_0+0x2030, fixed 0x14 entry stride). Per record: byte +0 a
-//   type/key, byte +1 the sub-entry count, word +4 a pointer to the
-//   sub-entry list. It walks all sub-entries, gating each on a
-//   USO-relocated predicate (`jal 0` slot) and folding the accepted
-//   ones through the fixed routine 0x0C00E83B (≈0x3A0EC) with an
-//   accumulator. The "apply over a record's sub-entry list" operation
-//   of the registry family.
-// Caps (DEFERRED): single jr $ra (the "2-fn unsplit bundle" note is
-//   STALE; .s is 0x18C/81 words, ONE function). "Apply over a
-//   record's sub-entry list" of the registry family (same
-//   &D_0+0x2030 0x14-stride table as AudioHeap_DiscardSampleCacheEntry /
-//   AudioLoad_SyncLoadFont / AudioLoad_RelocateFont). Real-C STRUCTURAL body
-//   below per the analysis (rec = (*&D_0+0x2030) + idx*0x14; for
-//   each of rec->1 sub-entries gated on jal-0 pred(idx,i), fold the
-//   accepted ones through fixed 0x3A0EC(rec->4, acc, a1)). Byte-
-//   match deferred — placeholder jal-0 predicate + fixed fold need
-//   USO reloc infra + loop schedule. Name pre-checked: no extern
-//   reuse (collision-safe). gl_func_00000000 = canonical
-//   never-defined USO placeholder.
-//
-// 2026-05-31 FULL DECODE + completion 49.6->95.3%: the fn has TWO loops, not
-//   one. Loop 1 (over rec->1 count): r=pred(idx,i); if(r) acc=fold(r->4,acc,a1)
-//   — the fold arg is the PREDICATE RESULT's ->4, NOT rec->4. Loop 2 (over
-//   rec->0 count): r=pred(idx,i); if(r){ if(r->1) acc=fold(r->8,..); if(r->2!=
-//   127) acc=fold(r->24,..); acc=fold(r->16,..) [always] }. Structure now
-//   EXACT (77=77 insns). RESIDUAL (95->100): consistent saved-reg renumber
-//   (acc/i/n2/idx slot order) + the 4 placeholder jals (jal 0 vs baked 0x3A0EC
-//   — USO-reloc cap, blocks byte-exact regardless). 95.3% is the ceiling
-//   without USO-reloc infra.
-/* 2026-10-22 (agent-c run 120) EXACT (permuter-assisted): n1 declared after acc/i, and the first loop tests a block-scope copy q of the call result. */
+/* AudioLoad_GetSamplesForFont (0x134): OoT's per-font sample walk. Drums first
+ * (rec->numDrums: drum->tunedSample.sample), then instruments (low pitch if
+ * normalRangeLo != 0, high pitch if normalRangeHi != 127, always normal pitch),
+ * each folded through the baked AudioLoad_AddToSampleSet jal (0x3A0EC = splat 0x25A80) into acc.
+ * 2026-10-22 (agent-c run 120) EXACT (permuter-assisted): n1 declared after acc/i,
+ * and the first loop tests a block-scope copy q of the call result. Typed onto
+ * SoundFont / Drum / Instrument in run 522 (r stays one local for both loops). */
 extern int gl_func_00000000();
 extern int D_00000000;
 extern int gl_ref_0003A0EC(); /* baked USO jal 0x0C00E83B */
 int AudioLoad_GetSamplesForFont(int idx, int a1) {
-    char *g = (char *)&D_00000000;
-    char *rec = *(char **)(g + 0x2030) + idx * 0x14;
-    int n2 = *(unsigned char *)(rec + 1);
+    AudioContext *g = (AudioContext *)&D_00000000;
+    SoundFont *rec = &g->soundFontList[idx];
+    int n2 = rec->numDrums;
     int acc = 0;
     int i;
-    int n1 = *(unsigned char *)(rec + 0);
-    char *r;
+    int n1 = rec->numInstruments;
+    Instrument *r;
     for (i = 0; i < n2; i++) {
-        char *q;
-        r = (char *)CALL(Audio_GetDrum)(idx, i); q = r; if (1) {}
+        Drum *q;
+        r = (Instrument *)CALL(Audio_GetDrum)(idx, i); q = (Drum *)r; if (1) {}
         if (q != 0) {
-            acc = gl_ref_0003A0EC(*(void **)(q + 4), acc, a1);
+            acc = gl_ref_0003A0EC(q->tunedSample.sample, acc, a1);
         }
     }
     for (i = 0; i < n1; i++) {
-        r = (char *)CALL(Audio_GetInstrumentInner)(idx, i);
+        r = (Instrument *)CALL(Audio_GetInstrumentInner)(idx, i);
         if (r != 0) {
-            if (*(unsigned char *)(r + 1) != 0) {
-                acc = gl_ref_0003A0EC(*(void **)(r + 8), acc, a1);
+            if (r->normalRangeLo != 0) {
+                acc = gl_ref_0003A0EC(r->lowPitchTunedSample.sample, acc, a1);
             }
-            if (*(unsigned char *)(r + 2) != 127) {
-                acc = gl_ref_0003A0EC(*(void **)(r + 24), acc, a1);
+            if (r->normalRangeHi != 127) {
+                acc = gl_ref_0003A0EC(r->highPitchTunedSample.sample, acc, a1);
             }
-            acc = gl_ref_0003A0EC(*(void **)(r + 16), acc, a1);
+            acc = gl_ref_0003A0EC(r->normalPitchTunedSample.sample, acc, a1);
         }
     }
     return acc;

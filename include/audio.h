@@ -147,6 +147,93 @@ typedef struct TunedSample {
     /* 0x4 */ f32 tuning;
 } TunedSample; /* size = 0x8 */
 
+/* SoundFontSound: the older OoT-decomp name of the tuned-sample pair (sample +
+ * tuning), kept as an alias so the font views read either way. */
+typedef TunedSample SoundFontSound;
+
+/* Envelope point (OoT EnvelopePoint, older decomp AdsrEnvelope): delay < 0 is a
+ * control code (ADSR_DISABLE / HANG / GOTO / RESTART), else ticks to arg. */
+typedef struct AdsrEnvelope {
+    /* 0x0 */ s16 delay;
+    /* 0x2 */ s16 arg;
+} AdsrEnvelope; /* size = 0x4 */
+
+/* Font-data records (agent-c run 522), OoT's layouts. Proven by
+ * AudioLoad_RelocateFont (instrument isRelocated 0x0, envelope 0x4, the three
+ * tuned samples 0x8 / 0x10 / 0x18; drum isRelocated 0x2, tunedSample 0x4,
+ * envelope 0xC; sfx 0x8 stride), AudioHeap_DiscardSampleCacheEntry /
+ * DiscardSampleCaches (normalRangeLo 0x1, normalRangeHi 0x2) and
+ * AudioLoad_GetSamplesForFont. */
+typedef struct Instrument {
+    /* 0x00 */ u8 isRelocated;
+    /* 0x01 */ u8 normalRangeLo;
+    /* 0x02 */ u8 normalRangeHi;
+    /* 0x03 */ u8 adsrDecayIndex;
+    /* 0x04 */ AdsrEnvelope *envelope;
+    /* 0x08 */ TunedSample lowPitchTunedSample;
+    /* 0x10 */ TunedSample normalPitchTunedSample;
+    /* 0x18 */ TunedSample highPitchTunedSample;
+} Instrument; /* size = 0x20 */
+
+typedef struct Drum {
+    /* 0x00 */ u8 adsrDecayIndex;
+    /* 0x01 */ u8 pan;
+    /* 0x02 */ u8 isRelocated;
+    /* 0x04 */ TunedSample tunedSample;
+    /* 0x0C */ AdsrEnvelope *envelope;
+} Drum; /* size = 0x10 */
+
+typedef struct SoundEffect {
+    /* 0x00 */ TunedSample tunedSample;
+} SoundEffect; /* size = 0x8 */
+
+/* gAudioCtx.soundFontList[fontId] (stride 0x14: every fontId * 20 reader). */
+typedef struct SoundFont {
+    /* 0x00 */ u8 numInstruments;
+    /* 0x01 */ u8 numDrums;
+    /* 0x02 */ u8 sampleBankId1;
+    /* 0x03 */ u8 sampleBankId2;
+    /* 0x04 */ u16 numSfx;
+    /* 0x08 */ Instrument **instruments;
+    /* 0x0C */ Drum **drums;
+    /* 0x10 */ SoundEffect *soundEffects;
+} SoundFont; /* size = 0x14 */
+
+/* The sequence / font / sample-bank load tables (AudioContext 0x201C..0x2024):
+ * a 0x10 header then 0x10 entries (AudioLoad_Init's table walk). */
+/* AudioLoad_SyncLoadFont / ProcessAsyncLoad / RelocateSample / the preload
+ * donors: the two sample banks a font draws on (OoT layout). */
+typedef struct SampleBankRelocInfo {
+    /* 0x00 */ s32 sampleBankId1;
+    /* 0x04 */ s32 sampleBankId2;
+    /* 0x08 */ u32 baseAddr1;
+    /* 0x0C */ u32 baseAddr2;
+    /* 0x10 */ u32 medium1;
+    /* 0x14 */ u32 medium2;
+} SampleBankRelocInfo; /* size = 0x18 */
+
+typedef struct AudioTableHeader {
+    /* 0x00 */ s16 numEntries;
+    /* 0x02 */ s16 unkMediumParam;
+    /* 0x04 */ u32 romAddr;
+    /* 0x08 */ char pad[0x8];
+} AudioTableHeader; /* size = 0x10 */
+
+typedef struct AudioTableEntry {
+    /* 0x00 */ u32 romAddr;
+    /* 0x04 */ u32 size;
+    /* 0x08 */ s8 medium;
+    /* 0x09 */ s8 cachePolicy;
+    /* 0x0A */ s16 shortData1;
+    /* 0x0C */ s16 shortData2;
+    /* 0x0E */ s16 shortData3;
+} AudioTableEntry; /* size = 0x10 */
+
+typedef struct AudioTable {
+    /* 0x00 */ AudioTableHeader header;
+    /* 0x10 */ AudioTableEntry entries[1];
+} AudioTable; /* size >= 0x20 */
+
 /* 0x14 (the SM64-era item; OoT's is 0x1C). AudioSynth_InitNextRingBuf (every
  * field), AudioSynth_SaveReverbSamples (toDownsampleLeft),
  * AudioSynth_LoadRingBuffer1AtTemp / LoadAuxBufferC (startPos low half 0xE,
@@ -242,7 +329,7 @@ typedef struct SeqScriptState {
 typedef struct AdsrSettings {
     /* 0x0 */ u8 decayIndex;
     /* 0x1 */ u8 sustain;
-    /* 0x4 */ void *envelope;
+    /* 0x4 */ AdsrEnvelope *envelope;
 } AdsrSettings; /* size = 0x8 */
 
 /* Matched donor game_libs_o2_2BB7C.c (channel->stereo.asByte = cmd & 0x7F). */
@@ -471,7 +558,7 @@ typedef struct AdsrState {
     /* 0x10 */ f32 current;
     /* 0x14 */ f32 target;
     /* 0x18 */ char unk_18[4];
-    /* 0x1C */ void *envelope;
+    /* 0x1C */ AdsrEnvelope *envelope;
 } AdsrState; /* size = 0x20 */
 
 /* 0xC (Audio_GetPortamentoFreqScale: mode u8, cur / speed u16, extent f32;
@@ -567,7 +654,7 @@ typedef struct AudioContext {
     /* 0x0014 */ void *sampleStates;                  /* DoOneAudioUpdate: [updateIndex * numNotes + i] */
     /* 0x0018 */ SynthesisReverb synthesisReverbs[3]; /* at most 3 fit below usedSamples */
     /* 0x0420 */ char unk_0420[0x0430 - 0x0420];
-    /* 0x0430 */ void *usedSamples[0x80];             /* RelocateFontAndPreloadSamples, PreloadSamplesForFont */
+    /* 0x0430 */ Sample *usedSamples[0x80];                /* RelocateFontAndPreloadSamples, PreloadSamplesForFont */
     /* 0x0630 */ AudioPreloadReq preloadSampleStack[0x80]; /* ProcessSamplePreloads, AllocTemporarySampleCacheEntry */
     /* 0x1030 */ s32 numUsedSamples;
     /* 0x1034 */ s32 preloadSampleStackTop;
@@ -596,13 +683,13 @@ typedef struct AudioContext {
     /* 0x2019 */ u8 sampleDmaReuseQueue2RdPos;
     /* 0x201A */ u8 sampleDmaReuseQueue1WrPos;
     /* 0x201B */ u8 sampleDmaReuseQueue2WrPos;
-    /* 0x201C */ void *sequenceTable;                 /* AudioLoad_GetLoadTable case 0 */
-    /* 0x2020 */ void *soundFontTable;                /* case 1 */
-    /* 0x2024 */ void *sampleBankTable;               /* case 2 */
+    /* 0x201C */ AudioTable *sequenceTable;                /* AudioLoad_GetLoadTable case 0 */
+    /* 0x2020 */ AudioTable *soundFontTable;               /* case 1 */
+    /* 0x2024 */ AudioTable *sampleBankTable;              /* case 2 */
     /* 0x2028 */ u8 *sequenceFontTable;               /* SyncLoadSeqFonts, SequenceChannelProcessScript */
     /* 0x202C */ s16 numSequences;                    /* SyncLoadSeqParts bound */
     /* 0x202E */ char unk_202E[2];
-    /* 0x2030 */ void *soundFontList;                 /* SyncLoadFont, RelocateFont */
+    /* 0x2030 */ SoundFont *soundFontList;                /* SyncLoadFont, RelocateFont */
     /* 0x2034 */ s16 specUnk4;                        /* AudioBufferParameters start (ResetStep, UpdateImpl) */
     /* 0x2036 */ char unk_2036[0x203A - 0x2036];
     /* 0x203A */ s16 samplesPerFrameTarget;           /* UpdateImpl */
@@ -810,6 +897,18 @@ AUDIO_ASSERT_MEMBER(NoteSampleState, tunedSample, 0x10);
 AUDIO_ASSERT_MEMBER(Note, synthesisState, 0x10);
 AUDIO_ASSERT_MEMBER(Note, playbackState, 0x30);
 AUDIO_ASSERT_MEMBER(Note, sampleState, 0xB0);
+AUDIO_ASSERT_MEMBER(Instrument, envelope, 0x04);
+AUDIO_ASSERT_MEMBER(Instrument, highPitchTunedSample, 0x18);
+AUDIO_ASSERT_MEMBER(Drum, tunedSample, 0x04);
+AUDIO_ASSERT_MEMBER(Drum, envelope, 0x0C);
+AUDIO_ASSERT_MEMBER(SoundFont, numSfx, 0x04);
+AUDIO_ASSERT_MEMBER(SoundFont, soundEffects, 0x10);
+AUDIO_ASSERT_MEMBER(AudioTableEntry, shortData3, 0x0E);
+AUDIO_ASSERT_MEMBER(AudioTable, entries, 0x10);
+typedef char audio_instrument_size_assert[sizeof(Instrument) == 0x20 ? 1 : -1];
+typedef char audio_drum_size_assert[sizeof(Drum) == 0x10 ? 1 : -1];
+typedef char audio_soundfont_size_assert[sizeof(SoundFont) == 0x14 ? 1 : -1];
+typedef char audio_envelope_size_assert[sizeof(AdsrEnvelope) == 0x4 ? 1 : -1];
 
 /*
  * SoundObj: the game-side 0x64-byte sound object of the glue layer (game_libs 0x2DF98..0x31608,
