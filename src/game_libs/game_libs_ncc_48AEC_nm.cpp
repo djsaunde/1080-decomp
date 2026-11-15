@@ -87,6 +87,10 @@ struct Ctx {
      * variable that the target keeps in s0 (mt / arm-1 count / else c2), with c spilled to its home like the target */
     Gfx *nq3(int z0, int z1, int z2, int n) { dl->count = n + 1; return &dl->buf[n]; }
     void cS(void *src, Mtx *c) { func_00000000((char *)src, c); }
+    /* agent-g run 430: arm 1's slot as a single-return inline whose parameter is kept by a block-free `m = me(m);`
+     * (an `if (0) { m = 0; }` keep adds a block to the D_00000000 base's LR and it loses s1): the return's first
+     * holder is draw's named g, and the gctx home spill around cS() stays */
+    Gfx *lR6(Mtx *m) { m = me(m); return nq3((int)m, (int)m, (int)m, dl->count); }
     void lE3(Mtx *m) { Gfx *g = nq3((int)m, (int)m, (int)m, dl->count); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
 };
 /* agent-g run 352: kept-parameter wrapper (kit CDXXIX I2 form) on the loops' element reads: the two ctx6C tests and the
@@ -159,7 +163,10 @@ void Obj::draw() {
 #define mt ((Mtx *)((char *)&D_00000000_i + 0x3C8A0)) /* agent-c run 180: de-named (lever-sweep) */
         func_00000000(mtx, mt); /* agent-g run 293: code-free test (random insertion search on the mtxQ body): 97.669 -> 97.697 */
         gctx = GS->ctx + 0 * ((int)(mt) + (int)(mt)); /* agent-c run 288: double folded use of the mt address (zero-use --exprs sweep), 97.51 -> 97.53 */
-        { Mtx *c; if (GS->ctx) {} c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
+        { Mtx *c; if (me(me(me(me(GS->ctx))))) {} { Gfx *g; c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} g = gctx->lR6(c); g->w0 = 0x01020040; g->w1 = (u32)func_00000000(c); } } /* agent-g run 407: 98.297 -> 98.329 */
+        /* agent-g run 430: the packet slot is held in a block-scoped named `g` (draw's own word, the first holder of
+         * lR6()'s return), declared in an inner block entered after a depth-4 me() test made pool words 2 / 3: g's home
+         * is vfp-108 = target (lE3's named g was allocated after mtx()'s six words, vfp-120), 99.915 -> 99.919 */
 #undef mt
     } else {
         Mtx *c2; gctx = GS->ctx; func_00000000(I2(A), c2 = me(me(gctx))->mtx()); me(me(gctx))->LX(c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
