@@ -2429,7 +2429,7 @@ int* gl_func_00036B9C(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char*)&D_00000000 + 0x1EA08);
-    a0[0x28/4] = (int)&D_00000000;
+    ((Node *)a0)->vptr = (s32)&D_00000000;
     a0[0x38/4] = a1;
     *(float*)((char*)a0 + 0x34) = 0.0f;
     *(float*)((char*)a0 + 0x30) = 0.0f;
@@ -2587,7 +2587,7 @@ char *CamMan_ctor(char *o, int a1, int a2) {
         if (o == 0) goto out;
     }
     gl_func_00000000(o, (char *)&D_00000000 + 0x0001EA10);
-    *(char **)(o + 0x28) = (char *)&D_00000000;
+    ((Node *)o)->vptr = (s32)&D_00000000;
     *(int *)(o + 0x4C) = a2;
     *(f32 *)(o + 0x2C) = 1000.0f;
     *(f32 *)(o + 0x30) = -90.0f;
@@ -2895,7 +2895,7 @@ void gl_func_0003787C(void *a0) {
 int *gl_func_000378D0(int *a0, int a1, float a2) {
     if (a0 != 0 || (a0 = (int*)func_00000000(0x34)) != 0) {
         func_00000000(a0, (char*)&D_00000000 + 0x1EA20);
-        a0[0x28/4] = (int)&D_00000000;
+        ((Node *)a0)->vptr = (s32)&D_00000000;
         *(float*)((char*)a0 + 0x30) = a2;
         a0[0x2C/4] = a1;
     }
@@ -3403,7 +3403,7 @@ fields:
     ((Node *)p)->parent = 0;
 link:
     ((Node *)o)->vptr = (s32)&D_00000000;
-    gl_func_00000000(&((Node *)o)->unk18);
+    gl_func_00000000(&((Node *)o)->doFlags);
     gl_func_00000000_3800Cv(o, 0);
     n = *(int *)&D_00000000;
     *(int *)&D_00000000 = n + 1;
@@ -4601,7 +4601,7 @@ int *SNode_ctor(int *self) {
         if (self == NULL) goto out;
     }
     gl_func_00000000(self, (char *)&D_00000000 + 0x1ECF4);
-    self[0x28/4] = (int)&D_00000000;
+    ((Node *)self)->vptr = (s32)&D_00000000;
     self[0x84/4] = 0;
     *(float *)((char *)self + 0x74) = 0.0f;
     *(float *)((char *)self + 0x78) = 0.0f;
@@ -5982,7 +5982,7 @@ int CollObjMgr_ctor(int *a0) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, (char*)&D_00000000 + 0x1EEAC);
-    a0[0x28/4] = (int)&D_00000000;
+    ((Node *)a0)->vptr = (s32)&D_00000000;
     a0[0x2C/4] = 0;
     a0[0x30/4] = 0;
 end:
@@ -6440,7 +6440,7 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
         if (o == 0) goto out;
     }
     gl_func_00000000(o, (char *)&D_00000000 + 0x0001F2B8);
-    *(char **)(o + 0x28) = (char *)&D_00000000;
+    ((Node *)o)->vptr = (s32)&D_00000000;
     p = (S3D16C *)(o + 0x2C);
     if (p != 0 || (p = (S3D16C *)gl_func_00000000(4)) != 0) {
         p->w = 0;
@@ -7459,7 +7459,7 @@ void *MNode_ctor(char *arg0) {
     o = (char *)gl_func_00000000(0xB4);
     if (o != 0) {
         gl_func_00000000(o, (char *)&D_00000000 + 0x1F2E4);
-        *(char **)(o + 0x28) = (char *)&D_00000000;
+        ((Node *)o)->vptr = (s32)&D_00000000;
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)gl_func_00000000(0x04);
@@ -7533,7 +7533,7 @@ void *ItemMgr_ctor(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     gl_func_00000000(a0, a1);
-    a0[10] = (int)&D_00000000;    /* [0x28] */
+    ((Node *)a0)->vptr = (s32)&D_00000000;
     a0[13] = a2;                  /* [0x34] */
     a0[12] = 0;                   /* [0x30] */
     a0[11] = 0;                   /* [0x2C] */

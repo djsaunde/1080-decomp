@@ -8,7 +8,7 @@
  * as vptr->fn(this + vptr->delta). *_hostioParms is the HostIO parm slot.
  *
  * Node_ctor stores: +0x00 = -1, +0x04 = 0, +0x08 = 0x8000, +0x0C = name,
- * +0x10 = 0 (child list), +0x14 = 0 (parent), +0x18 = init'd sub-object,
+ * +0x10 = 0 (child list), +0x14 = 0 (parent), +0x18 = the DoDisplay/DoUpdate flags sub-object,
  * +0x1C = serial from a global counter, +0x20 = a handle from a registry call,
  * +0x28 = vptr. Size 0x2C (alloc(0x2C) when this == 0). The HUD's child
  * list (include/gdl/hud.h, +0x10) and the gadget parent back-link (+0x14)
@@ -20,7 +20,9 @@ typedef struct Node {
     /* 0x0C */ s32 name;           /* const char *, e.g. "App", "<Node>" */
     /* 0x10 */ s32 children;       /* child list head */
     /* 0x14 */ s32 parent;
-    /* 0x18 */ s32 unk18;          /* sub-object, initialised by a call on its address */
+    /* 0x18 */ s32 doFlags;        /* flags sub-object (initialised by a call on its address):
+                                    * 0x4 DoDisplay (Node_display), 0x8 DoUpdate (Node_update),
+                                    * 0x2 sent by hostio_sendNodeTree; Node_hostioParms publishes 4/8 */
     /* 0x1C */ s32 serial;         /* post-incremented global counter */
     /* 0x20 */ s32 handle;         /* result of the registry call (this, serial) */
     /* 0x24 */ s32 unk24;
