@@ -1,6 +1,6 @@
-nonmatching func_000009D8, 0x4C
+nonmatching SndHandle_triggerEvent2_000009D8, 0x4C
 
-glabel func_000009D8
+glabel SndHandle_triggerEvent2_000009D8
     /* DD1444 000009D8 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DD1448 000009DC AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD144C 000009E0 AFA50024 */  sw         $a1, 0x24($sp)
@@ -21,4 +21,4 @@ glabel func_000009D8
     /* DD1484 00000A18 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DD1488 00000A1C 03E00008 */  jr         $ra
     /* DD148C 00000A20 00000000 */   nop
-endlabel func_000009D8
+endlabel SndHandle_triggerEvent2_000009D8

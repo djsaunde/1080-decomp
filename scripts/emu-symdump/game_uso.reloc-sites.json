@@ -295,7 +295,7 @@
 "kind": "jal",
 "resolved": 8311776,
 "class": "func",
-"name": "func_00000940"
+"name": "SndHandle_triggerEvent3_00000940"
 },
 {
 "off": 2400,
@@ -371,7 +371,7 @@
 "kind": "jal",
 "resolved": 8311776,
 "class": "func",
-"name": "func_00000940"
+"name": "SndHandle_triggerEvent3_00000940"
 },
 {
 "off": 3160,

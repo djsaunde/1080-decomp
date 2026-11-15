@@ -1,6 +1,6 @@
-nonmatching func_00000A24, 0x2C
+nonmatching SndHandle_disable_00000A24, 0x2C
 
-glabel func_00000A24
+glabel SndHandle_disable_00000A24
     /* DD1490 00000A24 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD1494 00000A28 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD1498 00000A2C 8C850000 */  lw         $a1, 0x0($a0)
@@ -13,4 +13,4 @@ glabel func_00000A24
     /* DD14B0 00000A44 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD14B4 00000A48 03E00008 */  jr         $ra
     /* DD14B8 00000A4C 00000000 */   nop
-endlabel func_00000A24
+endlabel SndHandle_disable_00000A24

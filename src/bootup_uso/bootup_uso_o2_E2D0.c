@@ -2,7 +2,7 @@
  *
  * WIRED via REPLACE_FUNC_BODY donor splice into bootup_uso.c.o (the E270 recipe):
  * the f64 literal 0.1 lives in bootup.uso RoData at +0x9A0 (target reloc
- * func_0000098C + 0x14); the donor-local .rodata reloc is renamed
+ * SndHandle_triggerEvent1_0000098C + 0x14); the donor-local .rodata reloc is renamed
  * func_0000E2D0_rodata and pinned to 0x9A0.
  *
  * The post-call FP temp ring (1.0 f8 / arg4 f16 / sum f18, then f4 f10 f16 /

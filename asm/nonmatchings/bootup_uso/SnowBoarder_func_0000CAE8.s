@@ -34,8 +34,8 @@ glabel SnowBoarder_func_0000CAE8
     /* DDD5C8 0000CB5C 24A5017C */  addiu      $a1, $a1, 0x17C
     /* DDD5CC 0000CB60 0C000000 */  jal        func_00000000
     /* DDD5D0 0000CB64 2604090C */   addiu     $a0, $s0, 0x90C
-    /* DDD5D4 0000CB68 3C010000 */  lui        $at, %hi(func_00000940 + 0x18)
-    /* DDD5D8 0000CB6C C4240958 */  lwc1       $f4, %lo(func_00000940 + 0x18)($at)
+    /* DDD5D4 0000CB68 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x18)
+    /* DDD5D8 0000CB6C C4240958 */  lwc1       $f4, %lo(SndHandle_triggerEvent3_00000940 + 0x18)($at)
     /* DDD5DC 0000CB70 C6060768 */  lwc1       $f6, 0x768($s0)
     /* DDD5E0 0000CB74 3C020000 */  lui        $v0, %hi(func_00000008 + 0x2C)
     /* DDD5E4 0000CB78 E60409D0 */  swc1       $f4, 0x9D0($s0)

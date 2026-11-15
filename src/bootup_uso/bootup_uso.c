@@ -4,7 +4,7 @@
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
  * `lui at,0; lwc1 OFF(at)` with OFF = the RoData pool offset, so a DATA
  * symbol pinned at 0 indexed by OFF gives the lui-at/lwc1 shape (the old
- * `(char *)&func_00000940 + OFF` cast materialized the function address). */
+ * `(char *)&SndHandle_triggerEvent3_00000940 + OFF` cast materialized the function address). */
 extern float D_bu_ro_pool[];
 extern double D_bu_ro_dpool[];  /* same base, f64 view (8-aligned pool offsets) */
 extern f32 D_00000128, D_00000868, D_0000086C, D_00000870, D_00000874, D_00000878, D_0000087C, D_00000880, D_00000884, D_00000888, D_0000088C, D_00000890, D_00000894, D_00000898, D_0000089C, D_000008A0, D_000008A4, D_000008A8, D_000008AC, D_000008B0, D_000008B4, D_000008B8, D_000008BC, D_000008E0, D_000008F0, D_00000910, D_00000920, D_00000924, D_00000928, D_00000938, D_0000093C, D_00000940, D_00000944, D_00000948, D_0000094C;
@@ -333,29 +333,29 @@ void snd_updatePlayer(int *arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", snd_updatePlayer);
 #endif
 
-void func_0000085C(SndHandle *h) {
+void SndHandle_start_0000085C(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void func_00000888(SndHandle *h) {
+void SndHandle_stop_00000888(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void func_000008B4(SndHandle *h) {
+void SndHandle_setScaleIdx15_000008B4(SndHandle *h) {
     func_00000000(h->obj);
 }
 
-void func_000008D4(SndHandle *h) {
+void SndHandle_setScaleIdx31_000008D4(SndHandle *h) {
     func_00000000(h->obj);
 }
 
-void func_000008F4(SndHandle *h, int a1_orig) {
+void SndHandle_triggerEvent0_000008F4(SndHandle *h, int a1_orig) {
     int ret = func_00000000(h, h->eventArg);
     SoundObj *node = h->obj;
     if (node != 0) {
@@ -363,7 +363,7 @@ void func_000008F4(SndHandle *h, int a1_orig) {
     }
 }
 
-void func_00000940(SndHandle *h, int a1_orig) {
+void SndHandle_triggerEvent3_00000940(SndHandle *h, int a1_orig) {
     int ret = func_00000000(h, h->eventArg);
     SoundObj *node = h->obj;
     if (node != 0) {
@@ -371,7 +371,7 @@ void func_00000940(SndHandle *h, int a1_orig) {
     }
 }
 
-void func_0000098C(SndHandle *h, int a1_orig) {
+void SndHandle_triggerEvent1_0000098C(SndHandle *h, int a1_orig) {
     int ret = func_00000000(h, h->eventArg);
     SoundObj *node = h->obj;
     if (node != 0) {
@@ -379,7 +379,7 @@ void func_0000098C(SndHandle *h, int a1_orig) {
     }
 }
 
-void func_000009D8(SndHandle *h, int a1_orig) {
+void SndHandle_triggerEvent2_000009D8(SndHandle *h, int a1_orig) {
     int ret = func_00000000(h, h->eventArg);
     SoundObj *node = h->obj;
     if (node != 0) {
@@ -387,28 +387,28 @@ void func_000009D8(SndHandle *h, int a1_orig) {
     }
 }
 
-void func_00000A24(SndHandle *h) {
+void SndHandle_disable_00000A24(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void func_00000A50(SndHandle *h, int a1) {
+void SndHandle_setUnk1F_00000A50(SndHandle *h, int a1) {
     SoundObj *v0 = h->obj;
     if (v0 != 0) {
         v0->unk1F = (char)a1;
     }
 }
 
-void func_00000A68(SndHandle *h) {
+void SndHandle_setFlag1A_00000A68(SndHandle *h) {
     SoundObj *o = h->obj;
     if (o != 0) {
         func_00000000(o);
     }
 }
 
-void func_00000A94(SndHandle *h, int a1) {
+void SndHandle_setEventArg_00000A94(SndHandle *h, int a1) {
     h->eventArg = a1;
 }
 
@@ -694,7 +694,7 @@ void BGBox_func_00000D94(char *a0) {
 //   owner2(s1)->0x0C = a {data,count} index-list handle.
 //   D_000066B0 base-init descriptor; D_000066B8 instance vtable.
 //   func_00000000 + 0x4 = a placeholder/folded data ref (same JAL-target-0
-//   + folded-pool family as the func_0000098C/func_00000044 literal-pool bug,
+//   + folded-pool family as the SndHandle_triggerEvent1_0000098C/func_00000044 literal-pool bug,
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
 // EXACT (agent-h run 406, 759 words): promoted in place, INCLUDE_ASM dropped.
 //   Procedural tiled quad-mesh + index-buffer builder. Name pre-checked:
@@ -1609,7 +1609,7 @@ void CamDirector_onMessage(char *a0, int *a1) {
 //   D_00007328..D_000073CC = descriptor/template table (labels, widget
 //     specs); .L00007350/7398 are in-table sub-labels.
 //   func_000001FC + 0x10 (lw, 3x) = folded int ref — same JAL-target-0 /
-//   folded-symbol family as the func_0000098C literal-pool bug
+//   folded-symbol family as the SndHandle_triggerEvent1_0000098C literal-pool bug
 //   (docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C);
 //   here it's the integer denominator of the ratio fixups.
 // Caps (DEFERRED): 299-insn dispatcher-heavy ctor; raw-word USO +
@@ -5825,7 +5825,7 @@ extern void func_00000000_iipif(s32, s32, void *, f32, f32);
  * 7/6 dispatch order (target beq 7 first; switch / if-goto / split-switch
  * spellings all scored lower), arg1 a3-vs-t4, the u32->f32 `lui at,0x4f80`
  * schedule, vt548 hoist, and the 0x1BE0..0x1F94 call-tail scheduling. */
-/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, func_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
+/* data aliases of splat function-anchored bases (target relocs: Tree_func_00008664+40.., func_000000F0+0x44, func_00000044/80/08+K, func_00000148+24, SndHandle_setScaleIdx15_000008B4+4/8, TreeTmpl_create+0x5C/0x64).
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], bu_90cc_dF0[], bu_90cc_d8B4_01[], bu_90cc_d8B4_02[];
@@ -6884,7 +6884,7 @@ void func_0000B49C(int idx, int j) {
  * webs, as in the target (s and t both f2). `if (1) {}` before the v50 stores
  * splits the block so the v5C copy base reuses v0 after q. The pool reads are
  * pinned scalars (bu_b520_k48/k44/kc = 0x48/0x44/0xC in
- * undefined_syms_auto.txt; target FogTmpl_create + K / func_000008B4 + 0xC).
+ * undefined_syms_auto.txt; target FogTmpl_create + K / SndHandle_setScaleIdx15_000008B4 + 0xC).
  * PASS-2 2026-10-16 (agent-c, 36.90 -> 99.34): m2c had the Vec3 copies as
  * int structs with (f32)/(s32) casts (4 cvt + 4 trunc too many) and a K&R call
  * carrying stale f12/f14. 143/143 words; 19 differ: the 0.0 constant / s
@@ -6896,7 +6896,7 @@ void func_0000B49C(int idx, int j) {
  * second flag test re-reads p->0x10 (volatile read; plain CSEs the lw); the
  * 0x48 limit read inline at both uses; the call is (arg0 + 0x318, arg0). */
 extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
-extern f64 bu_b520_kc;               /* rodata f64 (target func_000008B4 + 0xC) */
+extern f64 bu_b520_kc;               /* rodata f64 (target SndHandle_setScaleIdx15_000008B4 + 0xC) */
 #define F520(p, o) (*(f32 *)((char *)(p) + (o)))
 void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     Vec3 v74;
@@ -6975,12 +6975,12 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
 //   void SnowBoarder_func_0000B75C(State *st) {           // st kept in a3
 //     // local default Vec @ sp+0x6C..0x74 = {0.0, 1.0f, 0.0}
 //     float t = *(float*)st->0x800;            // a normalized phase/time
-//     double k0 = DBL(func_000008B4+0x14), k1 = DBL(func_000008B4+0x1C);
+//     double k0 = DBL(SndHandle_setScaleIdx15_000008B4+0x14), k1 = DBL(SndHandle_setScaleIdx15_000008B4+0x1C);
 //     // curve eval: scale t (as double) by the folded f64 coefficient
 //     //   bank, producing eased blend factors;
 //     if (st->0x960 != 0x64) { ... uses st->0x974 ... }   // state guard
 //     // main body: many double mul/add/sub chains driven by the
-//     //   func_000008B4 / func_000008D4 / func_000008F4 coefficient
+//     //   SndHandle_setScaleIdx15_000008B4 / SndHandle_setScaleIdx31_000008D4 / SndHandle_triggerEvent0_000008F4 coefficient
 //     //   table (each symbol = 4 f64 at +0x4/+0xC/+0x14/+0x1C) plus
 //     //   FogTmpl_create+0x4C — interpolates a transform/orientation
 //     //   from st fields and writes the result Vec to st->0x300.. .
@@ -6995,8 +6995,8 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
 //     many other 0x300+ fields read as f32 sources.
 //   Folded f64 coefficient bank (literal-pool fold family — and this
 //   function shows the pool is a CONTIGUOUS 0x20-stride double table,
-//   not scattered singletons: func_000008B4 / func_000008D4 /
-//   func_000008F4 each carry 4 f64 at +0x4/+0xC/+0x14/+0x1C, plus
+//   not scattered singletons: SndHandle_setScaleIdx15_000008B4 / SndHandle_setScaleIdx31_000008D4 /
+//   SndHandle_triggerEvent0_000008F4 each carry 4 f64 at +0x4/+0xC/+0x14/+0x1C, plus
 //   FogTmpl_create+0x4C; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C).
 // Caps (DEFERRED): 524-insn f64 interpolation w/ folded coefficient
@@ -7281,7 +7281,7 @@ void SnowBoarder_func_0000B75C(char *arg0) {
  *       }
  *       if (s0->0x990) {                            // signed branch
  *           if (s0->0x9CC) { ... 0.5f (0x3F000000) ... }
- *           ... uses func_000008F4+0x20 / func_00008A40 ...
+ *           ... uses SndHandle_triggerEvent0_000008F4+0x20 / func_00008A40 ...
  *       }
  *       ... s0->0x9A2 (s16) further updates ...
  *   }
@@ -7297,11 +7297,11 @@ void SnowBoarder_func_0000B75C(char *arg0) {
  * direction (left vs right) parameter swap per frame.
  *
  * RECONSTRUCTED 2026-06-23: faithful full-body decode now uses the REAL
- * resolved reloc symbols (func_000008F4+0x20 f32 / +0x24 f64 const-pool;
+ * resolved reloc symbols (SndHandle_triggerEvent0_000008F4+0x20 f32 / +0x24 f64 const-pool;
  * func_00008A40+0x20 / +0x2C dispatch-target addresses passed to the
  * allocator func_00000000) in place of the old &D_00000000 placeholders.
  * Build emits EXACTLY 186 instructions = target's 186 (same opcode
- * multiset, all relocs correct: 2x func_000008F4 HI/LO, 2x func_00008A40
+ * multiset, all relocs correct: 2x SndHandle_triggerEvent0_000008F4 HI/LO, 2x func_00008A40
  * HI/LO, 8x func_00000000 R_MIPS_26).
  *
  * RESIDUAL CAP (~35 mnemonic-position diffs, permuter-immune — floored at
@@ -7335,7 +7335,7 @@ void SnowBoarder_func_0000B75C(char *arg0) {
  * one comma condition; mid block 9FC=0, 360 +=, then the 1-x temp. Only
  * residual: the first if-arm's FP ring starts at f4 vs target f16. */
 #ifdef NON_MATCHING
-extern f32 D_BF8C_pool8F4[]; /* data views of the func_000008F4 const pool (NM only; pins = func_000008F4 / func_000008F4 + 0x24 if promoted) */
+extern f32 D_BF8C_pool8F4[]; /* data views of the SndHandle_triggerEvent0_000008F4 const pool (NM only; pins = SndHandle_triggerEvent0_000008F4 / SndHandle_triggerEvent0_000008F4 + 0x24 if promoted) */
 extern f64 D_BF8C_pool8F4_24;
 extern char D_BF8C_8A40[]; /* data view of func_00008A40 (dispatch-target addresses; pin = func_00008A40 if promoted) */
 void SnowBoarder_updateDyn(char *arg0) {
@@ -7437,9 +7437,9 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
 //     // a1 = &st->0xDC (a sub-record), a3 = sp+0xCC scratch.
 //     // main body: physics/animation integration driven by folded
 //     //   constant tables —
-//     //     func_00000940 + {0x4,0x8,0xC,0x10}  (4-word table),
+//     //     SndHandle_triggerEvent3_00000940 + {0x4,0x8,0xC,0x10}  (4-word table),
 //     //     func_00008A7C + {0x14,0x18,0x28,0x34} (a folded struct),
-//     //     func_00008A40 + 0x38, func_000008F4 + {0x2C,0x30,0x34}
+//     //     func_00008A40 + 0x38, SndHandle_triggerEvent0_000008F4 + {0x2C,0x30,0x34}
 //     //   (same literal-pool fold family) — plus 16 func_00000000
 //     //   sub-calls (sub-system updates) operating on st->0x300.. and
 //     //   st->0xA00.. blocks.
@@ -7452,10 +7452,10 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
 //     0x318 a source field; 0xA24 a decayed accumulator; many 0x300+/
 //     0xA00+ fields as physics state.
 //   Folded refs (literal-pool fold family — incl. another contiguous
-//   strided table at func_00000940 +0x4/0x8/0xC/0x10; see
+//   strided table at SndHandle_triggerEvent3_00000940 +0x4/0x8/0xC/0x10; see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C):
-//     func_00000940 (4-word table), func_00008A7C (folded struct),
-//     func_00008A40+0x38, func_000008F4+{0x2C,0x30,0x34} (f-pool).
+//     SndHandle_triggerEvent3_00000940 (4-word table), func_00008A7C (folded struct),
+//     func_00008A40+0x38, SndHandle_triggerEvent0_000008F4+{0x2C,0x30,0x34} (f-pool).
 // Caps (DEFERRED): 550-insn folded-table-driven physics integrator —
 //   byte-match blocked by deferred pool symbolization. Real-C
 //   STRUCTURAL body below — per-frame entity physics/state update
@@ -7478,9 +7478,9 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
  *       spellings; 14 mtc1-zero remats vs target 13). Reverting the two
  *       compare-site casts regresses to 66.05 -- keep them.
  *   (3) Pool symbolization per expected relocs: D_00000920/24/28 ->
- *       func_000008F4+0x2C/30/34; D_00000128 -> func_000000F0+0x38;
- *       D_00000940/44/48/4C -> func_00000940+0/4/8/C; *(f64*)0x950 ->
- *       func_00000940+0x10; *(f64*)0x930 -> extern D_00000930 (target reloc
+ *       SndHandle_triggerEvent0_000008F4+0x2C/30/34; D_00000128 -> func_000000F0+0x38;
+ *       D_00000940/44/48/4C -> SndHandle_triggerEvent3_00000940+0/4/8/C; *(f64*)0x950 ->
+ *       SndHandle_triggerEvent3_00000940+0x10; *(f64*)0x930 -> extern D_00000930 (target reloc
  *       is local .L00000930 -- name mismatch tolerated by objdiff);
  *       0x8A7C/8A94/8A90/8AA4/8AB0 call args -> (char*)func_00008A7C+off;
  *       D_00000000+0x8A78 -> func_00008A40+0x38; D_00000000+0x34 ->
@@ -7519,13 +7519,13 @@ typedef struct {
             * so post-call reads reload from memory (kills the $f20 zero web) */
 /* PASS-5 2026-08-22 (agent-f): NEGATIVE RESULT — pool-base-CSE web confirmed
  * as the dominant residual and NOT C-fixable here. Target rematerializes
- * every func_00000940+N / func_00008A7C+N ref as a fresh per-use lui %hi
+ * every SndHandle_triggerEvent3_00000940+N / func_00008A7C+N ref as a fresh per-use lui %hi
  * (+addend) pair — build CSEs the shared base into a reg AND spills it
  * (0x38(sp), reloaded for the +0x28/+0x34 call args). Probed the
  * distinct-extern respelling (D_00000940/44/48/4C + f64 D_00000950 for the
  * five 940-pool sites): shape moves toward target but fuzzy REGRESSES
  * 67.99->67.32 (objdiff penalizes the D_-name/addend-0 relocs vs the
- * target's func_00000940+addend relocs more than the per-use-lui shape
+ * target's SndHandle_triggerEvent3_00000940+addend relocs more than the per-use-lui shape
  * gains). Same splat-fold family as the 55A0/6808 reloc caps: unreachable
  * without the spimdisasm USO-reloc migration (real per-symbol relocs in
  * expected/). Remaining non-reloc residual (arm-order transposition at the
@@ -7790,7 +7790,7 @@ void func_0000CACC(char *a0) {
 //     func_00000000(st+0x3EC, 1, tableB[j]);             // 2nd idx trigger
 //     if (st->0xA58 & 0x80) func_00000000(st, 0);        // cond reset
 //     func_00000000(st+0x90C, 0x17C);
-//     st->0x9D0 = F32(func_00000940+0x18);               // folded const
+//     st->0x9D0 = F32(SndHandle_triggerEvent3_00000940+0x18);               // folded const
 //     st->0xA78 = st->0x768;
 //     switch (*(int*)(func_00000008+0x2C)) {              // mode/difficulty
 //       case 2:        st->0xA14 = 0x5A;     break;       // 90
@@ -7817,7 +7817,7 @@ void func_0000CACC(char *a0) {
 //     0x9E8..0x9F4 cleared f32 quad; 0xA0C f32=1.0; 0x8BC config
 //     (bit 0x20); 0xB4/B8/BC + 0x318/31C/320 pos Vec3s snapshotted to
 //     0x890.. / 0x89C..; 0x768/0x9D0/0x840/0x804/0xC sub-objs.
-//   Folded refs (literal-pool/placeholder fold family — func_00000940
+//   Folded refs (literal-pool/placeholder fold family — SndHandle_triggerEvent3_00000940
 //   +0x18 corroborates the contiguous strided table from SnowBoarder_func_0000B75C;
 //   func_00000008+0x2C a mode global; func_00008A7C+0x40 a folded
 //   struct; see
@@ -7844,12 +7844,12 @@ void SnowBoarder_func_0000CAE8(char *st) {
 //     //   func_00000000(cont, e);             // attach to st->0x39C
 //     //   save e -> sp slot;
 //     // batch 1 TYPE/coords: {2:(140,?)}, {8:(-140)}, {1:(350)},
-//     //   {4:(-350)} with P = F32(func_00000940 + {0x1C,0x20,0x24,0x28});
+//     //   {4:(-350)} with P = F32(SndHandle_triggerEvent3_00000940 + {0x1C,0x20,0x24,0x28});
 //     // then func_00000000(st, savedE) x4  (configure pass);
 //     if (st->0xA58 & 0x200) return;           // skip optional batch
 //     // batch 2: TYPE {0,0x20,0x80,0x10,0x40} at screen coords
 //     //   140/-140/350/-350/250/-250/-150/-400/400 (0x430C0000 etc.)
-//     //   with P = F32(func_00000940 + 0x2C); attach + configure each.
+//     //   with P = F32(SndHandle_triggerEvent3_00000940 + 0x2C); attach + configure each.
 //   }
 //
 // Struct-typing reference:
@@ -7859,7 +7859,7 @@ void SnowBoarder_func_0000CAE8(char *st) {
 //     func_00000000(cont, e) = attach; func_00000000(st, e) = configure.
 //   Screen-coord consts: ±140 (0x430C0000), ±350 (0x43AF0000),
 //     ±250 (0x437A0000), -150 (0xC3160000), ±400 (0x43C80000).
-//   Folded param table: func_00000940 + {0x1C,0x20,0x24,0x28,0x2C}
+//   Folded param table: SndHandle_triggerEvent3_00000940 + {0x1C,0x20,0x24,0x28,0x2C}
 //   (read-only f32) — extends the contiguous strided fold table
 //   (now spans +0x4..+0x2C, ≥11 entries; strongly confirms the single
 //   D_base[] characterization in
@@ -7875,7 +7875,7 @@ void SnowBoarder_func_0000CAE8(char *st) {
 //   in-TU, would double-promote floats) + cap-coupled t-reg numbering.
 //   Name pre-checked: no extern reuse.
 /* RUN 108 (agent-c) EXACT: the five pool params are D_bu_ro_pool at RoData +0x95C..+0x96C
- * (lui at / lwc1; the splat text shows them as func_00000940 + 0x1C..0x2C), and the first element is created
+ * (lui at / lwc1; the splat text shows them as SndHandle_triggerEvent3_00000940 + 0x1C..0x2C), and the first element is created
  * inside the attach call (`f(cont, e0 = cce0(...))`) so its spill store
  * schedules after the a0 copy. */
 // PARTIAL-FORM corrected NM body for SnowBoarder_func_0000CCE0 (replaces lines 8516..8554)
@@ -7924,7 +7924,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 //
 // 2026-06-22 (agent-d): refined to byte-faithful structure (build 292/296
 // insns, body logic matches target instruction-for-instruction). Fixed:
-//   - reloc form: &func_0000023C+0x18 / &func_00000080+0x64 / &func_00000940
+//   - reloc form: &func_0000023C+0x18 / &func_00000080+0x64 / &SndHandle_triggerEvent3_00000940
 //     +0x30/+0x38 (was &D_00000000 — wrong reloc symbol).
 //   - 112.0f/255.0f forced runtime div via shared `float div255=255.0f`
 //     (held in $f0, reused for all 4 divisions) — defeats const-fold to .rodata.
@@ -7954,7 +7954,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 //     if (bit15(st->0xA58) && st->0x9A0==0x61 && st->0x904!=9
 //         && st->0x938!=0) {
 //       func_00000000(.,0xD);  st->0x8FC[0..2] = r[0..2];  // copy Vec3
-//       set sp Vec3 = {1,1,1, F32(func_00000940+0x30)};
+//       set sp Vec3 = {1,1,1, F32(SndHandle_triggerEvent3_00000940+0x30)};
 //       func_00000000(.); func_00000000(0x10);
 //       dispatch st->0x824->0x28 (vtbl: ->0x1C fn, ->0x18 s16 base);
 //       func_00000000(.,6);  st->0x8FC[0..2] = v0[0..2];
@@ -7970,7 +7970,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 //     if ((st->0x8B8 & 0xA) && st->0xA4C && !(st->9A8 & 0x400)) {
 //       Vec3 d = func_00000000(st->0x850, &sp44);
 //       float m = d.x*st->0x9D8 + d.y*st->0x9DC + d.z*st->0x9E0;
-//       if ((double)m < DBL(func_00000940+0x38)) {        // folded f64
+//       if ((double)m < DBL(SndHandle_triggerEvent3_00000940+0x38)) {        // folded f64
 //         // RGB: st->0xA30/A31/A32 u8 -> halve(sra1) -> u32->float fixup
 //         //   -> /255.0f (0x437F0000) -> st->0x9E8/0x9EC/0x9F0;
 //         //   0x42E00000(112.0)/255 -> st->0x9F4;
@@ -7998,7 +7998,7 @@ void SnowBoarder_func_0000CCE0(char *st, int a1) {
 //     vtable, ->0x1C fn ptr, ->0x18 s16 base — the obj->0x28 dispatch
 //     idiom); 0x850 a transform source; 0x9A0/0x904/0x938 state words.
 //   Folded refs: func_0000023C+0x18 (global ctx ptr — writable fold);
-//   func_00000940 +0x30 (f32) / +0x38 (f64) — extends the contiguous
+//   SndHandle_triggerEvent3_00000940 +0x30 (f32) / +0x38 (f64) — extends the contiguous
 //   strided fold table to +0x4..+0x38; func_00000080+0x64 (writable
 //   global flag, cleared 2x); see
 //   docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
@@ -8339,19 +8339,19 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
 //     (->0xC u16 type tag, ==0x74 here)); st(a3): 0xA80 busy/cooldown,
 //     0xA54 result/status (set 6 on default), 0x808 sub-record.
 //   CORRECTION (2026-07-10, agent-f, CONFIRMED via USO reloc table): the old
-//     "SPURIOUS code symbol func_0000098C swallows the pool" claim here is
-//     WRONG. func_0000098C is a GENUINE function (0x99C carries a live
-//     R_MIPS_26 jal reloc); D_00000988 is just func_00000940's tail nop. The
+//     "SPURIOUS code symbol SndHandle_triggerEvent1_0000098C swallows the pool" claim here is
+//     WRONG. SndHandle_triggerEvent1_0000098C is a GENUINE function (0x99C carries a live
+//     R_MIPS_26 jal reloc); D_00000988 is just SndHandle_triggerEvent3_00000940's tail nop. The
 //     FP loads reference symIdx=1 = the RoData SECTION base (immediate = pool
-//     offset), NOT func_0000098C. The real rodata constants: this fn's
-//     `func_0000098C + 0x4` (@0x988) = f64 0.1, `+ 0xC`-form (@0x990) = f64 0.2
-//     (rodata data @ ROM 0xD9FE44). `func_0000098C + N` is just the correct
+//     offset), NOT SndHandle_triggerEvent1_0000098C. The real rodata constants: this fn's
+//     `SndHandle_triggerEvent1_0000098C + 0x4` (@0x988) = f64 0.1, `+ 0xC`-form (@0x990) = f64 0.2
+//     (rodata data @ ROM 0xD9FE44). `SndHandle_triggerEvent1_0000098C + N` is just the correct
 //     placeholder-byte reproduction, NOT a pool bug to re-extract.
 //     func_00008AEC/SnowBCollider_ctor refs are the same matchable addend-reloc
 //     class. See docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
 // Caps (DEFERRED): 305-insn opcode dispatcher — byte-match blocked by full
 //   FP-body reconstruction + FP coloring + the file-split needed to fold the
-//   pool load (func_0000098C is defined in this same .c), NOT by any pool
+//   pool load (SndHandle_triggerEvent1_0000098C is defined in this same .c), NOT by any pool
 //   symbolization. Real-C STRUCTURAL body below. Name pre-checked: no extern
 //   reuse. D_00000988 reuses pre-symbolized double const at file scope.
 #ifdef NON_MATCHING
@@ -8388,7 +8388,7 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_update);
  *   join; the target copies at entry (t = f0) and keeps 0.0 in f12. Ternary,
  *   if/else, copy-first, register, if (1) and comma spellings all give the
  *   same colouring. bu_d900_k990 needs a pin at 0x990 for an exact. */
-extern f64 D_00000988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it func_0000098C + 4) */
+extern f64 D_00000988, bu_d900_k990;  /* rodata f64 0.1 (pinned 0x988) / 0.2 (0x990; target spells it SndHandle_triggerEvent1_0000098C + 4) */
 extern char bu_d900_aec[], bu_d900_b44[];  /* data aliases of func_00008AEC / SnowBCollider_ctor (target lui/addiu %hi/%lo(sym+K)) */
 typedef struct { s32 w; } S4D900;  /* 4-byte struct passed by value (target sw a1,4(sp) arg-area copy) */
 void SnowBoarder_handleMsg(char *arg0, char *arg1) {
@@ -8702,7 +8702,7 @@ void func_0000E270(char *arg0, float arg1) {
  *       lv = v.x*v.x + v.y*v.y + v.z*v.z;
  *       lw = w.x*w.x + w.y*w.y + w.z*w.z;
  *       func_00000000(...);                       // sqrtf/helper
- *       ... (uses func_0000098C datum) ...
+ *       ... (uses SndHandle_triggerEvent1_0000098C datum) ...
  *   }
  * Struct-typing reference: a2 = input Vec3f (xyz @ +0/+4/+8), a3 =
  * axis/normal Vec3f, a0->0x3BC (956) = the object's stored Vec3f
@@ -8711,12 +8711,12 @@ void func_0000E270(char *arg0, float arg1) {
  * projection/reflection against axis a3 - applied to BOTH the
  * passed vector and the object's vector, then their squared
  * magnitudes feed a reloc helper (sqrtf / normalize, also reads
- * a func_0000098C+off datum). a1 = an unused-here index/flag.
+ * a SndHandle_triggerEvent1_0000098C+off datum). a1 = an unused-here index/flag.
  * NOTE (2026-07-10, agent-f, CONFIRMED via USO reloc table): the
- * `func_0000098C + 0x14` datum this fn loads (ldc1 @ pool offset 0x9A0) is
+ * `SndHandle_triggerEvent1_0000098C + 0x14` datum this fn loads (ldc1 @ pool offset 0x9A0) is
  * **f64 0.1**, read from the module's RoData literal pool (data @ ROM
  * 0xD9FE44) — a real rodata constant, NOT code / not a "folded pool" needing
- * re-extract. func_0000098C is genuine code; the `+ N` form just reproduces
+ * re-extract. SndHandle_triggerEvent1_0000098C is genuine code; the `+ N` form just reproduces
  * the ROM placeholder bytes. See the RESOLVED block in
  * docs/N64_FORENSICS.md#bootup-uso-fp-literal-pool-folded-into-func-0000098C.
  * Caps <80: very FP-heavy (dozens of mul.s/add.s/sub.s, two
@@ -8754,7 +8754,7 @@ void func_0000E270(char *arg0, float arg1) {
  * 1.0f + arg4 colouring (target arg4 f16 / 1.0 ring f8, ours f14 / f6) and the
  * ring offset it causes in the final scale block.
  * NCC compiles of this body are much worse (frame 80, no pads). */
-extern f64 bu_e2d0_k9a0;  /* rodata f64 (target func_0000098C + 0x14) */
+extern f64 bu_e2d0_k9a0;  /* rodata f64 (target SndHandle_triggerEvent1_0000098C + 0x14) */
 void func_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg3, f32 arg4) {
     Vec3 v[2];
     f32 d;

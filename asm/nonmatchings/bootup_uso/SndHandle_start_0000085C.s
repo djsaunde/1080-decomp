@@ -1,6 +1,6 @@
-nonmatching func_0000085C, 0x2C
+nonmatching SndHandle_start_0000085C, 0x2C
 
-glabel func_0000085C
+glabel SndHandle_start_0000085C
     /* DD12C8 0000085C 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DD12CC 00000860 AFBF0014 */  sw         $ra, 0x14($sp)
     /* DD12D0 00000864 8C850000 */  lw         $a1, 0x0($a0)
@@ -15,4 +15,4 @@ glabel func_0000085C
     /* DD12EC 00000880 03E00008 */  jr         $ra
   alabel D_00000884
     /* DD12F0 00000884 00000000 */   nop
-endlabel func_0000085C
+endlabel SndHandle_start_0000085C

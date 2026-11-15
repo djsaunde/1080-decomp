@@ -53,9 +53,9 @@ glabel SnowBoarder_updateDyn
     /* DDCAB0 0000C044 3C013F00 */  lui        $at, (0x3F000000 >> 16)
     /* DDCAB4 0000C048 51400005 */  beql       $t2, $zero, .L0000C060
     /* DDCAB8 0000C04C 44816000 */   mtc1      $at, $f12
-    /* DDCABC 0000C050 3C010000 */  lui        $at, %hi(func_000008F4 + 0x20)
+    /* DDCABC 0000C050 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent0_000008F4 + 0x20)
     /* DDCAC0 0000C054 10000003 */  b          .L0000C064
-    /* DDCAC4 0000C058 C42C0914 */   lwc1      $f12, %lo(func_000008F4 + 0x20)($at)
+    /* DDCAC4 0000C058 C42C0914 */   lwc1      $f12, %lo(SndHandle_triggerEvent0_000008F4 + 0x20)($at)
     /* DDCAC8 0000C05C 44816000 */  mtc1       $at, $f12
   .L0000C060:
     /* DDCACC 0000C060 00000000 */  nop
@@ -84,8 +84,8 @@ glabel SnowBoarder_updateDyn
     /* DDCB1C 0000C0B0 50410016 */  beql       $v0, $at, .L0000C10C
     /* DDCB20 0000C0B4 C6100360 */   lwc1      $f16, 0x360($s0)
     /* DDCB24 0000C0B8 C6120360 */  lwc1       $f18, 0x360($s0)
-    /* DDCB28 0000C0BC 3C010000 */  lui        $at, %hi(func_000008F4 + 0x24)
-    /* DDCB2C 0000C0C0 D4260918 */  ldc1       $f6, %lo(func_000008F4 + 0x24)($at)
+    /* DDCB28 0000C0BC 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent0_000008F4 + 0x24)
+    /* DDCB2C 0000C0C0 D4260918 */  ldc1       $f6, %lo(SndHandle_triggerEvent0_000008F4 + 0x24)($at)
     /* DDCB30 0000C0C4 46009121 */  cvt.d.s    $f4, $f18
     /* DDCB34 0000C0C8 E60E09FC */  swc1       $f14, 0x9FC($s0)
     /* DDCB38 0000C0CC 46262200 */  add.d      $f8, $f4, $f6

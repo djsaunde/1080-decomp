@@ -76,8 +76,8 @@ glabel SnowBoarder_func_0000CFA0
     /* DDDB20 0000D0B4 ADF90008 */   sw        $t9, 0x8($t7)
     /* DDDB24 0000D0B8 3C013F80 */  lui        $at, (0x3F800000 >> 16)
     /* DDDB28 0000D0BC 44810000 */  mtc1       $at, $f0
-    /* DDDB2C 0000D0C0 3C010000 */  lui        $at, %hi(func_00000940 + 0x30)
-    /* DDDB30 0000D0C4 C4300970 */  lwc1       $f16, %lo(func_00000940 + 0x30)($at)
+    /* DDDB2C 0000D0C0 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x30)
+    /* DDDB30 0000D0C4 C4300970 */  lwc1       $f16, %lo(SndHandle_triggerEvent3_00000940 + 0x30)($at)
     /* DDDB34 0000D0C8 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DDDB38 0000D0CC 24840000 */  addiu      $a0, $a0, 0x0
     /* DDDB3C 0000D0D0 27A50064 */  addiu      $a1, $sp, 0x64
@@ -168,11 +168,11 @@ glabel SnowBoarder_func_0000CFA0
     /* DDDC84 0000D218 C60A09DC */  lwc1       $f10, 0x9DC($s0)
     /* DDDC88 0000D21C 46049182 */  mul.s      $f6, $f18, $f4
     /* DDDC8C 0000D220 C7A4004C */  lwc1       $f4, 0x4C($sp)
-    /* DDDC90 0000D224 3C010000 */  lui        $at, %hi(func_00000940 + 0x38)
+    /* DDDC90 0000D224 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x38)
     /* DDDC94 0000D228 460A4402 */  mul.s      $f16, $f8, $f10
     /* DDDC98 0000D22C C60809E0 */  lwc1       $f8, 0x9E0($s0)
     /* DDDC9C 0000D230 46082282 */  mul.s      $f10, $f4, $f8
-    /* DDDCA0 0000D234 D4240978 */  ldc1       $f4, %lo(func_00000940 + 0x38)($at)
+    /* DDDCA0 0000D234 D4240978 */  ldc1       $f4, %lo(SndHandle_triggerEvent3_00000940 + 0x38)($at)
     /* DDDCA4 0000D238 3C01437F */  lui        $at, (0x437F0000 >> 16)
     /* DDDCA8 0000D23C 46103480 */  add.s      $f18, $f6, $f16
     /* DDDCAC 0000D240 460A9180 */  add.s      $f6, $f18, $f10

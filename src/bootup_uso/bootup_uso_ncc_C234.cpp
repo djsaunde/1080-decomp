@@ -3,7 +3,7 @@
  * counter test is a post-increment compare on the old value (`slti v1,151`), the func_00008A7C sites are per-site symbols (target re-materialises
  * lui/addiu per call, one shared symbol is CSE-spilled to sp+52), the 0x2C mode word reads through a data symbol (lw %lo folded), sp40 declared first.
  * EXACT (agent-g run 236): spliced over the bootup_uso.c placeholder on both build paths via REPLACE_FUNC_BODY; the
- * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / func_00000940 + addend). */
+ * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / SndHandle_triggerEvent3_00000940 + addend). */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;

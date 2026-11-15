@@ -6,7 +6,7 @@
  *   target's (72 / 84): the float->double compare temp and the clamp temps are
  *   allocated before them here and after them in the target;
  * - case 6 keeps 0.0 in f12 (target f2);
- * - bu_d900_k990 needs a pin at 0x990 (target spells it func_0000098C + 4).
+ * - bu_d900_k990 needs a pin at 0x990 (target spells it SndHandle_triggerEvent1_0000098C + 4).
  * What fixed the rest: the clamp as an inline function with if-returns into a
  * named k (`mov.s f0,f2` copy + 0/50 sharing f12), Vec3 ctor forwarding to
  * set() (x/y/z product temps f0/f2/f14 and the f12 copy of k), dot products in

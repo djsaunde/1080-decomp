@@ -1,9 +1,9 @@
 nonmatching func_0000E270, 0x60
 
 glabel func_0000E270
-    /* DDECDC 0000E270 3C010000 */  lui        $at, %hi(func_0000098C + 0xC)
+    /* DDECDC 0000E270 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent1_0000098C + 0xC)
     /* DDECE0 0000E274 44856000 */  mtc1       $a1, $f12
-    /* DDECE4 0000E278 C4240998 */  lwc1       $f4, %lo(func_0000098C + 0xC)($at)
+    /* DDECE4 0000E278 C4240998 */  lwc1       $f4, %lo(SndHandle_triggerEvent1_0000098C + 0xC)($at)
     /* DDECE8 0000E27C 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DDECEC 0000E280 00803825 */  or         $a3, $a0, $zero
     /* DDECF0 0000E284 460C2003 */  div.s      $f0, $f4, $f12

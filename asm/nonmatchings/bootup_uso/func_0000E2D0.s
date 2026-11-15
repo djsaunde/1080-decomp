@@ -70,8 +70,8 @@ glabel func_0000E2D0
     /* DDEE44 0000E3D8 46043400 */  add.s      $f16, $f6, $f4
     /* DDEE48 0000E3DC 0C000000 */  jal        func_00000000
     /* DDEE4C 0000E3E0 46088300 */   add.s     $f12, $f16, $f8
-    /* DDEE50 0000E3E4 3C010000 */  lui        $at, %hi(func_0000098C + 0x14)
-    /* DDEE54 0000E3E8 D42A09A0 */  ldc1       $f10, %lo(func_0000098C + 0x14)($at)
+    /* DDEE50 0000E3E4 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent1_0000098C + 0x14)
+    /* DDEE54 0000E3E8 D42A09A0 */  ldc1       $f10, %lo(SndHandle_triggerEvent1_0000098C + 0x14)($at)
     /* DDEE58 0000E3EC 460001A1 */  cvt.d.s    $f6, $f0
     /* DDEE5C 0000E3F0 8FA7007C */  lw         $a3, 0x7C($sp)
     /* DDEE60 0000E3F4 4626503C */  c.lt.d     $f10, $f6
