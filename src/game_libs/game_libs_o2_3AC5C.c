@@ -21,8 +21,10 @@
  *    line -> lw s5 before the b, addiu in the delay; the old
  *    `q = arg1; arg1 += 1;` + `flag = *q;` put the lw in the delay slot.
  * The four baked lui/addiu message addresses are pinned data refs
- * (gl_ref_0001EExx_3AC5C). */
+ * (gl_ref_0001EExx_3AC5C).
+ * agent-b run 521: fields over gdl/coll.h CollShape (identical objdump -dr). */
 #include "common.h"
+#include "gdl/coll.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -41,34 +43,34 @@ int *CollShape_ctor(int *arg0, int *arg1) {
         }
     }
     CALL(Node_ctor)(arg0, &sStr_CollShape_1EE18);
-    *(int **)((char *)arg0 + 0x34) = arg1;
+    COLLSHAPE(arg0)->stream = arg1;
     flag = 0;
     CALL(sys_imin)(&sStr_CollShape_CollShape_1EE24);
-    *(int *)((char *)arg0 + 0x30) = 0;
+    COLLSHAPE(arg0)->unk30 = 0;
     if (1) {
     q = arg1; arg1 = q + 1; cmd = *q;
     while (cmd != 6) {
         switch (cmd) {
         case 2:
             q = arg1; arg1 = q + 1;
-            *(int *)((char *)arg0 + 0x30) = *q;
+            COLLSHAPE(arg0)->unk30 = *q;
             break;
         case 1:
             q = arg1; arg1 = q + 1;
-            *(f32 *)((char *)arg0 + 0x38) = (f32) *q;
+            COLLSHAPE(arg0)->unk38 = (f32) *q;
             break;
         case 0:
-            *(f32 *)((char *)arg0 + 0x3C) = (f32) arg1[0];
+            COLLSHAPE(arg0)->box[0] = (f32) arg1[0];
             arg1 += 6;
-            *(f32 *)((char *)arg0 + 0x40) = (f32) arg1[-5];
-            *(f32 *)((char *)arg0 + 0x44) = (f32) arg1[-4];
-            *(f32 *)((char *)arg0 + 0x48) = (f32) arg1[-3];
-            *(f32 *)((char *)arg0 + 0x4C) = (f32) arg1[-2];
-            *(f32 *)((char *)arg0 + 0x50) = (f32) arg1[-1];
+            COLLSHAPE(arg0)->box[1] = (f32) arg1[-5];
+            COLLSHAPE(arg0)->box[2] = (f32) arg1[-4];
+            COLLSHAPE(arg0)->box[3] = (f32) arg1[-3];
+            COLLSHAPE(arg0)->box[4] = (f32) arg1[-2];
+            COLLSHAPE(arg0)->box[5] = (f32) arg1[-1];
             break;
         case 3:
             q = arg1; arg1 = q + 1; v = *q;
-            *(int *)((char *)arg0 + 0x84) = CALL(BasePolyShape_ctor)(0, &sStr_colshape_1EE3C, v, 0);
+            COLLSHAPE(arg0)->shape = (struct BasePolyShape *)CALL(BasePolyShape_ctor)(0, &sStr_colshape_1EE3C, v, 0);
             break;
         case 4:
             arg1 += 1;
@@ -82,12 +84,12 @@ int *CollShape_ctor(int *arg0, int *arg1) {
     }
     }
     if (flag == 0) {
-        *(int *)((char *)arg0 + 0x88) = 0;
-        *(int *)((char *)arg0 + 0x8C) = 0;
+        COLLSHAPE(arg0)->unk88 = 0;
+        COLLSHAPE(arg0)->unk8C = 0;
     }
-    *(f32 *)((char *)arg0 + 0x54) = 0.0f;
-    *(f32 *)((char *)arg0 + 0x58) = 0.0f;
-    *(f32 *)((char *)arg0 + 0x5C) = 0.0f;
+    COLLSHAPE(arg0)->unk54[0] = 0.0f;
+    COLLSHAPE(arg0)->unk54[1] = 0.0f;
+    COLLSHAPE(arg0)->unk54[2] = 0.0f;
     CALL(sys_imout)();
 ret:
     return arg0;

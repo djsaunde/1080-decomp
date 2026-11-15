@@ -5193,7 +5193,7 @@ void coll_zeroQuad_0003AA40(float *dst) {
  * The old "caller-set $t2 CAP" note on 3AC50 was this mis-split.
  *
  * Dominant-axis classifier: stores the dot product of b and a, a tag, the
- * index of b's largest |component| (axis), the two other axes (b0/b1) and
+ * index of b's largest |component| (axis), the two other axes (axU/axV) and
  * the sign of b[axis].  Keys for the exact: Vec3 field access for the dot
  * (float[] indexing swaps the final add.s operands); the chained
  * `axis = o->axis = ... ? 0 : 1` (the assignment-expression value is converted
@@ -5201,20 +5201,13 @@ void coll_zeroQuad_0003AA40(float *dst) {
  * the whole tN ring); `axis = cond ? 2 : o->axis; o->axis = axis;` in both
  * arms (value select into v0 + one store per arm); `axis = o->axis; switch
  * (axis)` for the second sll/sra; `((float *)b)[o->axis]` for the sign test. */
-typedef struct {
-    signed char b0;      /* first other axis */
-    signed char b1;      /* second other axis */
-    signed char axis;    /* index of largest |b| component */
-    signed char sign;    /* sign of b[axis]: 1 or -1 */
-    short tag;
-    float dot;           /* b . a */
-} AxisInfo_3AA5C;
+/* o is a gdl/coll.h CollTri (was the local view AxisInfo_3AA5C: b0 / b1 = axU / axV, dot = d). */
 
 #define FABS_3AA5C(x) (((x) < 0.0f) ? -(x) : (x))
 
-void CollShape_initTriPlane(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
+void CollShape_initTriPlane(CollTri *o, Vec3 *a, Vec3 *b, int tag) {
     signed char axis;
-    o->dot = b->x * a->x + b->y * a->y + b->z * a->z;
+    o->d = b->x * a->x + b->y * a->y + b->z * a->z;
     o->tag = tag;
     axis = o->axis = (FABS_3AA5C(b->x) > FABS_3AA5C(b->y)) ? 0 : 1;
     if (axis) {
@@ -5226,9 +5219,9 @@ void CollShape_initTriPlane(AxisInfo_3AA5C *o, Vec3 *a, Vec3 *b, int tag) {
     }
     axis = o->axis;
     switch (axis) {
-    case 0: o->b0 = 2; o->b1 = 1; break;
-    case 1: o->b0 = 0; o->b1 = 2; break;
-    case 2: o->b0 = 1; o->b1 = 0; break;
+    case 0: o->axU = 2; o->axV = 1; break;
+    case 1: o->axU = 0; o->axV = 2; break;
+    case 2: o->axU = 1; o->axV = 0; break;
     }
     if (((float *)b)[o->axis] > 0.0f) {
         o->sign = 1;
@@ -5340,7 +5333,7 @@ int NullCollShape_ctor(char *a0) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, (sNullCollShapeName));
-    *(int*)(a0 + 0x84) = 0;
+    COLLSHAPE(a0)->shape = 0;
 end:
     return (int)a0;
 }
@@ -5577,32 +5570,26 @@ int CollShape_below(char *o) {
  * rodata words were not checked). One offset web (off) for both tris+off
  * and nrm+off. Residual: FP colouring (target n.x/y/z f16/f18/f20, dn f12,
  * t f22), frame 0xD8 vs 0xE8 (target spills off to sp+128 and saves f24). */
-typedef struct { f32 x, y, z; } V3B9;
-typedef struct { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; } TriB9;
-typedef struct { u16 mat; u16 vi[3]; } FaceB9;
-typedef struct {
-    char pad0[0x44]; u32 ntri; char pad48[4]; s16 *remap; char pad50[4]; V3B9 *nrm; char pad58[8];
-    s16 (*verts)[3]; char pad64[4]; FaceB9 *faces;
-} ColB9;
-typedef struct { char pad0[0x2C]; TriB9 *tris; char pad30[0x54]; ColB9 *col; } ObjB9;
+/* agent-b run 521: over gdl/coll.h CollShape / CollTri and polyshape.h BasePolyShape / PolyTri
+ * (were the local views ObjB9 / TriB9 / ColB9 / FaceB9). */
 extern float sqrtf(float);
 extern int D_3B9C0_a, D_3B9C0_b, gTriEdgeNext_3B9C0_c;
-extern void gl_func_00000000_vnorm3(V3B9 *);
-s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B9 *b, s32 unused, V3B9 *pts) {
+extern void gl_func_00000000_vnorm3(Vec3 *);
+s32 CollShape_raycast(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 *a, Vec3 *b, s32 unused, Vec3 *pts) {
     s32 cnt;
     u32 i;
     s32 off;
-    ColB9 *col;
-    FaceB9 *f;
-    V3B9 *n;
+    BasePolyShape *col;
+    PolyTri *f;
+    Vec3 *n;
     f32 dn;
     f32 t;
     s32 ok;
-    V3B9 p;
+    Vec3 p;
     s32 ia;
     s32 ib;
     f32 qa;
-    V3B9 d;
+    Vec3 d;
     f32 qb;
     f32 sg;
     s16 (*vt)[3];
@@ -5616,7 +5603,7 @@ s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B
     s16 dy;
 
     cnt = 0;
-    if (self->col == 0) {
+    if (self->shape == 0) {
         return 0;
     }
     d.x = b->x - a->x;
@@ -5629,11 +5616,11 @@ s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B
         d.z = 0.0f;
         d.y = -1.0f;
     }
-    for (i = 0, off = 0; i < self->col->ntri; i++, off += 12) {
-        if (((TriB9 *)((char *)self->tris + off))->grp < 0) {
+    for (i = 0, off = 0; i < self->shape->nTris; i++, off += 12) {
+        if (((CollTri *)((char *)self->tris + off))->tag < 0) {
             continue;
         }
-        n = (V3B9 *)((char *)self->col->nrm + off);
+        n = (Vec3 *)((char *)self->shape->faceNormals + off);
         dn = n->x * d.x + n->y * d.y + n->z * d.z;
         if (dn > -0.0001) {
             continue;
@@ -5643,23 +5630,23 @@ s32 CollShape_raycast(ObjB9 *self, s32 max, f32 *dist, TriB9 **out, V3B9 *a, V3B
         p.x = a->x + d.x * t;
         p.y = a->y + d.y * t;
         p.z = a->z + d.z * t;
-        col = self->col;
-        if (col->remap != 0) {
-            f = &col->faces[col->remap[i]];
+        col = self->shape;
+        if (POLY_TRILIST(col) != 0) {
+            f = &col->tris[POLY_TRILIST(col)[i]];
         } else {
-            f = &col->faces[i];
+            f = &col->tris[i];
         }
-        ia = ((TriB9 *)((char *)self->tris + off))->a;
-        ib = ((TriB9 *)((char *)self->tris + off))->b;
+        ia = ((CollTri *)((char *)self->tris + off))->axU;
+        ib = ((CollTri *)((char *)self->tris + off))->axV;
         qa = (&p.x)[ia];
         qb = (&p.x)[ib];
-        sg = ((TriB9 *)((char *)self->tris + off))->sgn;
+        sg = ((CollTri *)((char *)self->tris + off))->sign;
         vt = col->verts;
         nx = (s16 *)&D_00000000;
         fv = (u16 *)f;
         do {
             v0 = vt[fv[1]];
-            v1 = vt[f->vi[*nx++]];
+            v1 = vt[f->v[*nx++]];
             ex = v1[ia] - v0[ia];
             ey = v1[ib] - v0[ib];
             dx = (s32)(qa - v0[ia]);
@@ -5763,15 +5750,8 @@ s32 CollShape_raycast(char *self) {
  * &q (sp+188) into an s-reg, so tri offset stays in s8 instead of the
  * target's sp+84 spill; target's first inner MAX evaluates the else arm
  * before the branch; K base sym+0x128 held with addend in the target. */
-typedef struct { f32 x, y, z; } V3BE;
-typedef struct { s8 a; s8 b; s8 ax; s8 sgn; s16 grp; s16 pad6; f32 d; } TriBE;
-typedef struct { u16 mat; u16 vi[3]; } FaceBE;
-typedef struct { int w; int h; int x0; int z0; f32 cw; f32 ch; s16 *lists; int *cells; } GridBE;
-typedef struct {
-    char pad0[0x4C]; s16 *remap; char pad50[4]; V3BE *nrm; char pad58[8]; s16 (*verts)[3];
-    char pad64[4]; FaceBE *faces; char pad6c[0x34]; GridBE *grid;
-} ColBE;
-typedef struct { char pad0[0x2C]; TriBE *tris; char pad30[0x54]; ColBE *col; } ObjBE;
+/* agent-b run 521: over gdl/coll.h CollShape / CollTri / CollGrid and polyshape.h BasePolyShape /
+ * PolyTri (were the local views ObjBE / TriBE / ColBE / FaceBE / GridBE). */
 extern f32 gGfxLib_3BE1C_128[];
 extern char D_3BE1C_1EE9C[];
 #define MAXS(a, b) ((a) > (b) ? (s16)(a) : (s16)(b))
@@ -5787,21 +5767,21 @@ extern char D_3BE1C_1EE9C[];
 /* run 151 (agent-c, 76.33 -> 76.69): the grid cell index is an if/else with
  * `cell = -1` in the else arm (target `b join` after the multiply; 1524 -> 1528 of
  * 1568 bytes). The list pointer in the same form scores lower here. */
-s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
+s32 CollShape_query(CollShape *self, s32 max, f32 *dist, CollTri **out, Vec3 p) {
     s32 cnt;
     s32 cell;
     s16 *lp;
     s16 *list;
     s32 i;
     s32 off;
-    ColBE *col;
-    FaceBE *f;
+    BasePolyShape *col;
+    PolyTri *f;
     s32 r;
     s32 ok;
     f32 q[3];
     f32 d;
-    V3BE *n;
-    TriBE *t;
+    Vec3 *n;
+    CollTri *t;
     s32 a;
     s32 b;
     f32 qa;
@@ -5818,22 +5798,22 @@ s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
     s16 *nx;
     u16 *fv;
 
-    if (1) { V3BE *pp = &p; }
-    col = self->col;
+    if (1) { Vec3 *pp = &p; }
+    col = self->shape;
     cnt = 0;
     if (col == 0) {
         return 0;
     }
-    if (col->grid == 0) {
+    if (POLY_COLLGRID(col) == 0) {
         gl_func_00000000((char *)&D_00000000 + 0x1EE9C);
     }
     p.x *= gGfxLib_3BE1C_128[0];
     p.y *= gGfxLib_3BE1C_128[1];
     p.z *= gGfxLib_3BE1C_128[2];
-    c[1] = (p.x - (f32)self->col->grid->x0) / self->col->grid->cw;
-    c[0] = (p.z - (f32)self->col->grid->z0) / self->col->grid->ch;
-    if (c[1] >= 0 && c[1] < self->col->grid->w && c[0] >= 0 && c[0] < self->col->grid->h) {
-        cell = c[0] * self->col->grid->w + c[1];
+    c[1] = (p.x - (f32)POLY_COLLGRID(self->shape)->x0) / POLY_COLLGRID(self->shape)->cellW;
+    c[0] = (p.z - (f32)POLY_COLLGRID(self->shape)->z0) / POLY_COLLGRID(self->shape)->cellH;
+    if (c[1] >= 0 && c[1] < POLY_COLLGRID(self->shape)->w && c[0] >= 0 && c[0] < POLY_COLLGRID(self->shape)->h) {
+        cell = c[0] * POLY_COLLGRID(self->shape)->w + c[1];
     } else {
         cell = -1;
     }
@@ -5841,41 +5821,41 @@ s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
         return 0;
     }
     list = 0;
-    if (self->col->grid->cells[cell] != -1) {
-        list = &self->col->grid->lists[self->col->grid->cells[cell]];
+    if (POLY_COLLGRID(self->shape)->cells[cell] != -1) {
+        list = &POLY_COLLGRID(self->shape)->lists[POLY_COLLGRID(self->shape)->cells[cell]];
     }
     if (list == 0) {
         return 0;
     }
     lp = list;
     while ((i = *lp++) != -1) {
-        if (self->tris[i].grp < 0) {
+        if (self->tris[i].tag < 0) {
             continue;
         }
         off = i * 12;
-        col = self->col;
-        if (col->remap != 0) {
-            f = &col->faces[col->remap[i]];
+        col = self->shape;
+        if (POLY_TRILIST(col) != 0) {
+            f = &col->tris[POLY_TRILIST(col)[i]];
         } else {
-            f = &col->faces[i];
+            f = &col->tris[i];
         }
-        r = gl_func_00000000(col, f->mat);
+        r = gl_func_00000000(col, f->flags);
         if (!(r & 0x100)) {
             continue;
         }
         ok = 1;
-        n = (V3BE *)((char *)self->col->nrm + off);
-        t = (TriBE *)((char *)self->tris + off);
+        n = (Vec3 *)((char *)self->shape->faceNormals + off);
+        t = (CollTri *)((char *)self->tris + off);
         d = p.x * n->x + p.y * n->y + p.z * n->z - t->d;
         q[0] = p.x - n->x * d;
         q[1] = p.y - n->y * d;
         q[2] = p.z - n->z * d;
-        t = (TriBE *)((char *)self->tris + off);
+        t = (CollTri *)((char *)self->tris + off);
         if (r & 0x200) {
-            s16 *va = self->col->verts[f->vi[0]];
-            s16 *vb = self->col->verts[f->vi[1]];
-            s16 *vc = self->col->verts[f->vi[2]];
-            s32 k = 2 - t->ax;
+            s16 *va = self->shape->verts[f->v[0]];
+            s16 *vb = self->shape->verts[f->v[1]];
+            s16 *vc = self->shape->verts[f->v[2]];
+            s32 k = 2 - t->axis;
             int ia = va[k];
             int ib = vb[k];
             int ic = vc[k];
@@ -5885,17 +5865,17 @@ s32 CollShape_query(ObjBE *self, s32 max, f32 *dist, TriBE **out, V3BE p) {
                 ok = 0;
             }
         } else {
-            a = t->a;
-            b = t->b;
+            a = t->axU;
+            b = t->axV;
             qa = q[a];
             qb = q[b];
-            sg = t->sgn;
-            vt = self->col->verts;
+            sg = t->sign;
+            vt = self->shape->verts;
             nx = (s16 *)&D_00000000;
             fv = (u16 *)f;
             do {
                 v0 = vt[fv[1]];
-                v1 = vt[f->vi[*nx++]];
+                v1 = vt[f->v[*nx++]];
                 ex = v1[a] - v0[a];
                 ey = v1[b] - v0[b];
                 dx = (s32)(qa - v0[a]);
