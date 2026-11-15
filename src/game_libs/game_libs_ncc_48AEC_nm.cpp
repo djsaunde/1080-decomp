@@ -145,7 +145,9 @@ void Obj::draw() {
     }
     B = *(f32 (**)[4])(D_00000000 + 0xE4);
     A = (f32 (*)[4])((char *)&D_00000000_j + 0xA0);
-    if (B != 0) {
+    if (B != 0) { if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}
+        /* agent-g run 430: eight code-free blocks at the arm start (and no `0 * (int)B` fold in the else): B's LR
+         * (M-12) spans more units, its priority falls under i's (M-80), i takes v0 and B the target's v1, 99.886 -> 99.915 */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 mtx[i][j] = 0.0f;
@@ -160,7 +162,7 @@ void Obj::draw() {
         { Mtx *c; if (GS->ctx) {} c = me(me(me(me(gctx))))->mtx(); gctx->cS(mt, c); if (c) {} gctx->lE3(c); } /* agent-g run 407: 98.297 -> 98.329 */
 #undef mt
     } else {
-        Mtx *c2; gctx = GS->ctx + 0 * (int)B; func_00000000(I2(A), c2 = me(me(gctx))->mtx()); me(me(gctx))->LX(c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
+        Mtx *c2; gctx = GS->ctx; func_00000000(I2(A), c2 = me(me(gctx))->mtx()); me(me(gctx))->LX(c2); /* agent-g run 407: m one pool word later (unused leading parameter, kit CDXC), 98.368 -> 98.397 */ /* agent-c run 252: accessor sweep 97.26 -> 97.29; agent-c run 288: folded use of B (set on every path above; zero-use --exprs sweep), 97.48 -> 97.51 */
     }
     func_00000000(GS->ctx);
     if (*(s32 *)((char *)&D_00000000_g + 0x1C4) & 2) {
