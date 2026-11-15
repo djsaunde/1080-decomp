@@ -14,6 +14,7 @@
  *    be fsel (f12) and the dead `if (z) {}` keeps z above fsel in priority. With
  *    cfe's own join temp the temp took f2 once z no longer reached a join block. */
 #include "common.h"
+#include "game/snowai.h"
 extern char import_80020110;
 extern int import_8006EF48;
 typedef struct { float x, y, z; } Vec3;
@@ -21,22 +22,22 @@ typedef struct { int a, b, c; } Tri3i;
 extern int game_uso_func_055750();
 float game_uso_func_00003ED4(Vec3 *a0, Vec3 *a1, int *a2);
 void SnowAI_func_0000A3C4();
-void game_uso_func_0000A604(char *);
-void game_uso_func_0000A7F8(char *);
+void game_uso_func_0000A604(SnowAI *);
+void game_uso_func_0000A7F8(SnowAI *);
 int SnowAI_func_00007ACC();
-float game_uso_func_00007A98(int *);
+float game_uso_func_00007A98(SnowAI *);
 int game_uso_func_00007C1C();
 void *game_uso_func_00008CD8();
-void game_uso_func_000074D8(char *);
-void game_uso_func_0000751C(char *);
-void game_uso_func_00007448(char *);
+void game_uso_func_000074D8(SnowAI *);
+void game_uso_func_0000751C(SnowAI *);
+void game_uso_func_00007448(SnowAI *);
 void game_uso_func_00007424(void *);
 int SnowAI_func_00009B88();
-void game_uso_func_0000A7D8(int *);
-int SnowAI_func_0000A0E8(char *, char *, char *);
+void game_uso_func_0000A7D8(SnowAI *);
+int SnowAI_func_0000A0E8(SnowAI *, char *, char *);
 void game_uso_func_0000AB98(void *);
-void game_uso_func_000071A4(int *);
-int game_uso_func_00006FA8(int *);
+void game_uso_func_000071A4(SnowAI *);
+int game_uso_func_00006FA8(SnowAI *);
 void game_uso_func_00007538();
 void SnowAI_func_0000591C(int *a0) {
     Vec3 copy2;
@@ -49,7 +50,7 @@ void SnowAI_func_0000591C(int *a0) {
     int resolved_state;
     float metric_a;
     Vec3 transform_out;
-    int *self;
+    SnowAI *self;
     int out_w;
     int hit_out;
     Vec3 scratch_xz;
@@ -98,10 +99,10 @@ void SnowAI_func_0000591C(int *a0) {
     Vec3 diff_e;
     Vec3 diff_g;
     Vec3 *delta_g_dst;
-    self = a0;
+    self = (SnowAI *)a0;
     if (*(int*)((char*)&import_80020110 + 0x78) != 0) return;
     if (import_8006EF48 == 0) return;
-    v0 = *(int*)((char*)self + 0x68);
+    v0 = self->modeFlags;
     if (v0 & 1) {
         SnowAI_func_0000A3C4();
         return;
@@ -114,11 +115,11 @@ void SnowAI_func_0000591C(int *a0) {
         game_uso_func_0000A7F8(self);
         return;
     }
-    *(Tri3i *)&staged_axis = *(Tri3i *)(*(char**)((char*)self + 0x30) + 0xB4);
+    *(Tri3i *)&staged_axis = *(Tri3i *)&self->rider->pos;
     {
-        axis_src = *(float **)((char*)self + 0x30);
+        axis_src = (float *)self->rider;
         axis_src = (float *)((int)axis_src + 0x318);
-        fsel = *(float*)((char*)self + 0xA8);
+        fsel = self->unkA8;
         scale = *axis_src * fsel;
         z = *(float *)((int)axis_src + 4) * fsel; if (z) {}
         x = *(float *)((int)axis_src + 8) * fsel;
@@ -142,32 +143,32 @@ void SnowAI_func_0000591C(int *a0) {
     }
     metric_a = game_uso_func_00007A98(self);
     t0 = 0;
-    switch (v0 = *(int*)((char*)self + 0x74)) {
+    switch (v0 = self->unk74) {
     case 0:
-        if (metric_a <= *(float*)((char*)self + 0xD8)) {
+        if (metric_a <= self->unkD8) {
             if (((v0 = state_flag) == 0) && (hit_parent != 0)
                     && (*(int*)(hit_parent + 0x84) == 0)) {
-                if (*(float*)((char*)self + 0xB4) <= *(float*)(*(char**)((char*)self + 0x30) + 0x348)) {
-                    *(int*)((char*)self + 0x74) = 1;
+                if (self->unkB4 <= self->rider->speed) {
+                    self->unk74 = 1;
                     t0 = 1;
                 }
             }
         }
         break;
     case 1:
-        v0 = *(int*)((char*)self + 0x2C);
-        fsel = v0 == 3 ? *(float*)((char*)self + 0x3FC) : (scale = v0 == 2 ? *(float*)((char*)self + 0x3E4) : *(float*)((char*)self + 0x3CC), scale);
+        v0 = self->level;
+        fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_SE + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_SE + 1].value : self->parms.parm[SNOWAI_PARM_SE].value, scale);
         if (!(metric_a <= fsel) || state_flag != 0 || hit_parent == 0
                 || *(int*)(hit_parent + 0x84) != 0
-                || !(*(float*)((char*)self + 0xB4)
-                     <= *(float*)(*(char**)((char*)self + 0x30) + 0x348))) {
-            *(int*)((char*)self + 0x74) = 0;
+                || !(self->unkB4
+                     <= self->rider->speed)) {
+            self->unk74 = 0;
         }
         break;
     }
     p = 0;
     if (1) { p = &scratch_xz; }
-    switch (v0 = *(int*)((char*)self + 0x74)) {
+    switch (v0 = self->unk74) {
     case 0:
         v0 = game_uso_func_00007C1C(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
@@ -185,7 +186,7 @@ void SnowAI_func_0000591C(int *a0) {
     }
     {
         scratch_dst = p;
-        src = (float *)((int)*(char**)((char*)self + 0x30) + 968);
+        src = (float *)((int)(char *)self->rider + 968);
         if (scratch_dst != 0 || (scratch_dst = (Vec3*)game_uso_func_055750(0xC + 0 * (int)src)) != 0) {
             fsel = src[0 * ((int)src | 1)];
             z = *(float *)((int)src + 8 + 0 * (int)src);
@@ -199,24 +200,24 @@ void SnowAI_func_0000591C(int *a0) {
     fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
     yaw_metric = fsel;
     neg = -yaw_raw;
-    sub = *(char**)((char*)self + 0x30);
+    sub = (char *)self->rider;
     {
         axis_src = (float *)(*(char**)((char*)a0 + 0x30) + 1784);
-        *(float*)((char*)self + 0x3C) =
-            (neg * (1.0f + (*(float*)(sub + 0x348) / *(float*)((char*)self + 0xB0)))
-             * *(float*)((char*)self + 0xAC)) / *(float *)((int)axis_src + 16);
+        self->unk3C =
+            (neg * (1.0f + (*(float*)(sub + 0x348) / self->unkB0))
+             * self->unkAC) / *(float *)((int)axis_src + 16);
     }
-    f2v = *(float*)((char*)self + 0x3C);
+    f2v = self->unk3C;
     fsel = f2v < 0.0f ? -f2v : f2v;
     accel_metric = fsel;
-    v0 = *(int*)((char*)self + 0x74);
+    v0 = self->unk74;
     switch (v0) {
     case 0:
-    bits = *(int*)((char*)self + 0x6C);
+    bits = self->unk6C;
     if (bits & 1) {
         if ((resolved_state & 1) && !(resolved_state & 2)) {
-            *(int*)((char*)self + 0x6C) = bits & ~1;
-            *(int*)((char*)self + 0x48) = 0x14;
+            self->unk6C = bits & ~1;
+            self->unk48 = 0x14;
             if (resolved_state & 4) {
                 out_flags = 0x20;
             } else if (resolved_state & 0x800) {
@@ -253,7 +254,7 @@ void SnowAI_func_0000591C(int *a0) {
         delta_a = stage;
         p = 0;
         if (1) { p = &pos_c; }
-        child_flags = (int *)((int)*(char**)((char*)self + 0x30) + 180);
+        child_flags = (int *)((int)(char *)self->rider + 180);
         if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
             fsel = *(float *)child_flags;
             z = *(float *)((int)child_flags + 8);
@@ -277,7 +278,7 @@ void SnowAI_func_0000591C(int *a0) {
         stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
         delta_b = stage;
         sub = *(char**)((char*)a0 + 0x30);
-        f2v = *(float*)((char*)self + 0xC0) * *(float*)(sub + 0x348);
+        f2v = self->unkC0 * *(float*)(sub + 0x348);
         dist_sq = (delta_a.x * delta_a.x) + (delta_a.z * delta_a.z);
         if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -286,8 +287,8 @@ void SnowAI_func_0000591C(int *a0) {
         f12v = (dot * dot) / dist_sq;
     }
         if (f12v <= f2v * f2v) {
-            *(int*)((char*)self + 0x6C) = *(int*)((char*)self + 0x6C) & ~1;
-            *(int*)((char*)self + 0x48) = 0x14;
+            self->unk6C = self->unk6C & ~1;
+            self->unk48 = 0x14;
         }
         goto tail_common;
     }
@@ -325,7 +326,7 @@ void SnowAI_func_0000591C(int *a0) {
     delta_e = stage;
     p = 0;
     if (1) { p = &pos_g; }
-    child_flags = (int *)((int)*(char**)((char*)self + 0x30) + 180);
+    child_flags = (int *)((int)(char *)self->rider + 180);
     if (p != 0 || (p = (Vec3*)game_uso_func_055750(0xC)) != 0) {
         fsel = *(float *)child_flags;
         z = *(float *)((int)child_flags + 8);
@@ -348,8 +349,8 @@ void SnowAI_func_0000591C(int *a0) {
     }
     stage = *(Vec3 *)((int)p + 0 * (int)accel_params);
     delta_g = stage;
-    sub = *(char**)((char*)self + 0x30);
-    f2v = (*(float*)((char*)self + 0xC0) + 12.0f) * *(float*)(sub + 0x348);
+    sub = (char *)self->rider;
+    f2v = (self->unkC0 + 12.0f) * *(float*)(sub + 0x348);
     dist_sq = (delta_e.x * delta_e.x) + (delta_e.z * delta_e.z);
     if (0.0f == dist_sq) {
         f12v = 0.0f;
@@ -361,14 +362,14 @@ void SnowAI_func_0000591C(int *a0) {
         out_flags = 1;
     }
 yaw_region:
-    sub = *(char**)((char*)self + 0x30);
+    sub = (char *)self->rider;
     dot = *(float*)(sub + 0x348);
-    if (*(float*)((char*)self + 0xBC) <= yaw_metric) {
+    if (self->unkBC <= yaw_metric) {
         if (dot < 50.0f) {
             out_flags |= 0x40;
         }
     }
-    if (dot < *(float*)((char*)self + 0xB4)) {
+    if (dot < self->unkB4) {
         if (hit_out == 0) {
             if ((double)yaw_metric < 0.125) {
                 if (*(int*)((char*)&import_80020110 + 0x78) == 0) {
@@ -377,52 +378,52 @@ yaw_region:
             }
         }
     }
-    if (1.0f < (dot / *(float*)((char*)self + 0xB8)) * accel_metric) {
+    if (1.0f < (dot / self->unkB8) * accel_metric) {
         out_flags |= 8;
     }
     if (state_flag & 8) {
-        if (*(int*)((char*)self + 0x4C4) > 0) {
+        if (self->unk4C4 > 0) {
             game_uso_func_000074D8(self);
-            *(int*)((char*)self + 0x4C4) = 0;
+            self->unk4C4 = 0;
         }
         goto tail_common;
     }
-    v0 = *(int*)((char*)self + 0x4C4);
+    v0 = self->unk4C4;
     if (v0 * 1 == 0x10000) {
-        v0 = *(int*)((char*)self + 0x2C);
-        fsel = v0 == 3 ? *(float*)((char*)self + 0x2DC) : (scale = v0 == 2 ? *(float*)((char*)self + 0x2C4) : *(float*)((char*)self + 0x2AC), scale);
+        v0 = self->level;
+        fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD0 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD0 + 1].value : self->parms.parm[SNOWAI_PARM_DD0].value, scale);
         if (metric_a < fsel) {
             game_uso_func_0000751C(self);
-            v0 = *(int*)((char*)self + 0x2C);
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x324) : (scale = v0 == 2 ? *(float*)((char*)self + 0x30C) : *(float*)((char*)self + 0x2F4), scale);
-            *(int*)((char*)self + 0x4C4) = (int)fsel;
+            v0 = self->level;
+            fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DD1 + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DD1 + 1].value : self->parms.parm[SNOWAI_PARM_DD1].value, scale);
+            self->unk4C4 = (int)fsel;
         }
         goto tail_common;
     } else if (v0 > 0) {
-        *(int*)((char*)self + 0x4C4) = v0 - 1;
-        if (*(int*)((char*)self + 0x4C4) == 0) {
+        self->unk4C4 = v0 - 1;
+        if (self->unk4C4 == 0) {
             game_uso_func_000074D8(self);
         }
     } else {
-        v0 = *(int*)((char*)self + 0x2C);
+        v0 = self->level;
         if (v0 != 0) {
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x3B4) : (scale = v0 == 2 ? *(float*)((char*)self + 0x39C) : *(float*)((char*)self + 0x384), scale);
+            fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DP + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DP + 1].value : self->parms.parm[SNOWAI_PARM_DP].value, scale);
             if (fsel < metric_a) {
-                *(int*)((char*)self + 0x4C4) = 0x10000;
+                self->unk4C4 = 0x10000;
                 game_uso_func_00007448(self);
             }
         }
     }
-    v0 = *(int*)((char*)self + 0x2C);
-    fsel = v0 == 3 ? *(float*)((char*)self + 0x12C) : (scale = v0 == 2 ? *(float*)((char*)self + 0x114) : *(float*)((char*)self + 0xFC), scale);
-    sub = *(char**)((char*)self + 0x30);
+    v0 = self->level;
+    fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_DE + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_DE + 1].value : self->parms.parm[SNOWAI_PARM_DE].value, scale);
+    sub = (char *)self->rider;
     if (fsel < metric_a) {
         if (*(int*)(sub + 0x9CC) != 0) {
-            f2v = *(float*)((char*)self + 0xC8);
+            f2v = self->unkC8;
         } else {
             f2v = 1.0f;
         }
-        if (((accel_metric <= f2v * *(float*)((char*)self + 0xC4)) + 0 * (int)(*a0))) {
+        if (((accel_metric <= f2v * self->unkC4) + 0 * (int)(*a0))) {
             out_flags |= 2;
             goto tail_common;
         }
@@ -440,8 +441,8 @@ tail_common:
         v0 = *(unsigned int*)((char*)self + 0x2C);
         break;
     }
-    fsel = v0 == 1 ? *(float*)((char*)self + 0x264) : (scale = v0 == 2 ? *(float*)((char*)self + 0x27C) : *(float*)((char*)self + 0x294), scale);
-    sub = *(char**)((char*)self + 0x30);
+    fsel = v0 == 1 ? self->parms.parm[SNOWAI_PARM_CF].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_CF + 1].value : self->parms.parm[SNOWAI_PARM_CF + 2].value, scale);
+    sub = (char *)self->rider;
     {
         child_flags = (int *)((int)sub + 2648);
         if ((metric_a < fsel) && (((int)metric_a & 3) == 0)) {
@@ -450,16 +451,16 @@ tail_common:
             *child_flags &= ~0x4000;
         }
     }
-    if (*(float*)(*(char**)((char*)self + 0x30) + 0x348) < 30.0f) {
-        { int cnt; cnt = *(int*)((char*)self + 0x54) + 1;
-        *(int*)((char*)self + 0x54) = cnt;
+    if (self->rider->speed < 30.0f) {
+        { int cnt; cnt = self->unk54 + 1;
+        self->unk54 = cnt;
         if (child_flags) {}
         if (cnt >= 75) {
-            *(int*)((char*)self + 0x54) = 0;
+            self->unk54 = 0;
             game_uso_func_00007424(self);
         } }
     } else {
-        *(int*)((char*)self + 0x54) = 0;
+        self->unk54 = 0;
     }
     if (state_flag & 0x20) {
         if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
@@ -475,57 +476,57 @@ tail_common:
     }
     if (resolved_state & 0x400) {
         game_uso_func_000071A4(self);
-        *(int*)((char*)self + 0x40) = game_uso_func_00006FA8(self);
+        self->unk40 = game_uso_func_00006FA8(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
-        *(int*)((char*)self + 0x7C) = *(int*)(helper_ptr + 0x6C);
+        self->unk7C = *(int*)(helper_ptr + 0x6C);
         if (resolved_state & 0x200) {
-            v0 = *(int*)((char*)self + 0x2C);
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x24C) : (scale = v0 == 2 ? *(float*)((char*)self + 0x234) : *(float*)((char*)self + 0x21C), scale);
+            v0 = self->level;
+            fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BJ + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BJ + 1].value : self->parms.parm[SNOWAI_PARM_BJ].value, scale);
             if (!(fsel <= metric_a)) {
-                v0 = *(int*)(*(char**)((char*)self + 0x30) + 0x908);
+                v0 = *(int*)((char *)self->rider + 0x908);
                 if (v0 == 0) goto commit_flags;
                 yaw_raw = *(float*)(v0 + 0xBC);
                 f2v = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)f2v % 5) != 0) goto commit_flags;
             }
-            *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
+            self->unk40 = self->unk7C;
         } else if (resolved_state & 0x100) {
-            v0 = *(int*)((char*)self + 0x2C);
+            v0 = self->level;
             if (v0 != 0) {
-                fsel = v0 == 3 ? *(float*)((char*)self + 0x1BC) : (scale = v0 == 2 ? *(float*)((char*)self + 0x1A4) : *(float*)((char*)self + 0x18C), scale);
+                fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BT + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BT + 1].value : self->parms.parm[SNOWAI_PARM_BT].value, scale);
                 if (!(metric_a <= fsel)) goto commit_flags;
             }
-            *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
+            self->unk40 = self->unk7C;
         } else if (resolved_state & 0x80) {
-            v0 = *(int*)((char*)self + 0x2C);
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x174) : (scale = v0 == 2 ? *(float*)((char*)self + 0x15C) : *(float*)((char*)self + 0x144), scale);
+            v0 = self->level;
+            fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BD + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BD + 1].value : self->parms.parm[SNOWAI_PARM_BD].value, scale);
             if (!(metric_a <= fsel)) goto commit_flags;
-            *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
+            self->unk40 = self->unk7C;
         } else {
-            v0 = *(int*)((char*)self + 0x2C);
-            fsel = v0 == 3 ? *(float*)((char*)self + 0x204) : (scale = v0 == 2 ? *(float*)((char*)self + 0x1EC) : *(float*)((char*)self + 0x1D4), scale);
+            v0 = self->level;
+            fsel = v0 == 3 ? self->parms.parm[SNOWAI_PARM_BU + 2].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_BU + 1].value : self->parms.parm[SNOWAI_PARM_BU].value, scale);
             if (fsel <= metric_a) {
-                *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
+                self->unk40 = self->unk7C;
             } else if (0.0f < metric_a) {
-                *(int*)((char*)self + 0x68) |= 1;
+                self->modeFlags |= 1;
             } else {
-                v0 = *(int*)(*(char**)((char*)self + 0x30) + 0x908);
+                v0 = *(int*)((char *)self->rider + 0x908);
                 if (v0 == 0) goto commit_flags;
                 yaw_raw = *(float*)(v0 + 0xBC);
                 fsel = yaw_raw < 0.0f ? -yaw_raw : yaw_raw;
                 if (((int)fsel % 5) != 0) goto commit_flags;
-                *(int*)((char*)self + 0x40) = *(int*)((char*)self + 0x7C);
+                self->unk40 = self->unk7C;
             }
         }
     } else if (hit_parent != 0 && *(int*)(hit_parent + 0x2C) == 0) {
-        if (*(int*)((char*)self + 0x40) != 0) {
-            *(int*)((char*)self + 0x40) = *(int*)(hit_parent + 0x6C);
+        if (self->unk40 != 0) {
+            self->unk40 = *(int*)(hit_parent + 0x6C);
         }
     } else if (hit_parent == 0) {
-        if (*(int*)((char*)self + 0x40) != 0) {
-            *(int*)((char*)self + 0x40) = *(int*)(helper_ptr + 0x6C);
+        if (self->unk40 != 0) {
+            self->unk40 = *(int*)(helper_ptr + 0x6C);
         } else {
             out_flags |= 0x10;
         }
