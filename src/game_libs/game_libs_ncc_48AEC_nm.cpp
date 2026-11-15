@@ -65,7 +65,7 @@ struct Ctx {
      * 99.742 -> 99.829 */
     void p6b(u32 t, Gfx *g) { g->w0 = 0x06000000; g->w1 = t; }
     void dcQ(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n]) + 0 * (int)(dl); p6b(t, nextQ()); }
-    void dc3(Ctx *c, int n) { DLHead *dd = dl; u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
+    void dc3(Ctx *c, int n) { u32 t = (u32)func_00000000(&c->dl->buf[n + 0 * n]) + 0 * (int)(dl); /* agent-g run 417: folded n use here too, 99.466 -> 99.505 */ Gfx *g = next(); g->w0 = 0x06000000; g->w1 = t; }
     Gfx *nextQ() { return &dl->buf[dl->count++]; } /* agent-g run 294: n-free slot (with prim() via next(): 97.697 -> 97.715) */
     /* agent-g run 427: else-arm packet as fG(slot, m) (the slot is a parameter, so the else g is a pool word, not
      * a named word; the dead named dd keeps the frame words), with the kept I2(A) / me(me(gctx))->mtx() else
@@ -195,8 +195,15 @@ void Obj::draw() {
         me(me(GS->ctx))->prim(0xFA000000, 0xFFFF00FF); /* agent-g run 419: dl head on pool slot 4, count on slot 3; both mtx() counts on slot 3 (me(me(gctx))) */
         AIter it = arr.iter();
         while (it.next()) {
+            /* agent-h run 431: loop 2 reads the element through a named `AIter *ip` view (it takes dc3's dead dd word, so the
+             * frame homes stay put). A simple-variable receiver substitutes cur()'s `this`, so elem1 sits on pool slot 1 (loop
+             * 1's elem1 word, a3) and it.a on slot 2; `me(ip)->curM()` keeps elem2 on slot 4 and dc3's `this` on slot 7. The
+             * slot-2 word (the loop tests' invisible it.a) now reaches the body, takes a1 and keeps both e116 and e704 off it:
+             * both idx*4 get t0, loop 2 = target, 99.886 -> 99.963 (on agent-g run 430's
+             * base: 99.919 -> 99.996, only the else g home left) */
+            AIter *ip = &it;
             if (it.cur()->ctx6C != 0) {
-                GS->ctx->dc3(me(&it)->cur()->ctx6C, it.cur()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
+                GS->ctx->dc3(ip->cur()->ctx6C, me(ip)->curM()->n8A); /* agent-g run 352: n8A through cur() (loop-lever round on the I2 body), 97.869 -> 98.033 */
             }
         }
     } else {
