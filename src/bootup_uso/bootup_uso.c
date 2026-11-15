@@ -7339,87 +7339,89 @@ extern f32 D_BF8C_pool8F4[]; /* data views of the SndHandle_triggerEvent0_000008
 extern f64 D_BF8C_pool8F4_24;
 extern char D_BF8C_8A40[]; /* data view of func_00008A40 (dispatch-target addresses; pin = func_00008A40 if promoted) */
 void SnowBoarder_updateDyn(char *arg0) {
+    /* agent-g run 470: field form (snowboarder.h). The statement order, the nested-!= goto chain and the
+     * volatile turnRate parm reads are the run-108 comparison levers; keep them. */
+    SnowBoarder *sb = (SnowBoarder *)arg0;
     f32 temp_f0;
     f32 temp_f0_2;
     f32 var_f12;
     f32 var_f2;
     s16 temp_v0_2;
-    s32 temp_t9;
     s32 temp_v0_3;
-    s32 var_t6;
     char *temp_v0;
 
     var_f12 = 0.0f;
-    temp_v0 = *(char **)((char *)arg0 + 0x800);
-    *(s32 *)((char *)arg0 + 0x990) = (f64) (*(f32 *)((char *)temp_v0 + 0x4)) < -0.75;
-    if ((*(s32 *)((char *)arg0 + 0x9CC) = (*(s32 *)((char *)temp_v0 + 0x10) & 0x400) != 0, *(f32 *)((char *)arg0 + 0x9F8) = *(f32 *)((char *)arg0 + 0x490), *(s32 *)((char *)arg0 + 0x9CC)) != 0) {
-        *(f32 *)((char *)arg0 + 0x9FC) = *(f32 *)((char *)arg0 + 0x4F0);
-        *(f32 *)((char *)arg0 + 0x360) = *(f32 *)((char *)arg0 + 0x4D8);
-        *(f32 *)((char *)arg0 + 0xA00) = (f32) ((*(volatile f32 *)((char *)arg0 + 0x508)) * (*(f32 *)((char *)arg0 + 0x6F0)));
+    temp_v0 = sb->input;
+    sb->crouch = (f64) (*(f32 *)((char *)temp_v0 + 0x4)) < -0.75; /* input stick y */
+    if ((sb->useDParms = (*(s32 *)((char *)temp_v0 + 0x10) & 0x400) != 0, sb->edgeFriction = sb->child.parms.efr.value, sb->useDParms) != 0) {
+        sb->edgeGrip = sb->child.parms.del.value;
+        sb->friction = sb->child.parms.dbf.value;
+        sb->turnRate = (f32) ((*(volatile f32 *)&sb->child.parms.res.value) * sb->parms.dts.value);
     } else {
-        *(f32 *)((char *)arg0 + 0x9FC) = *(f32 *)((char *)arg0 + 0x4C0);
-        *(f32 *)((char *)arg0 + 0x360) = *(f32 *)((char *)arg0 + 0x4A8);
-        *(f32 *)((char *)arg0 + 0xA00) = (f32) ((*(volatile f32 *)((char *)arg0 + 0x508)) * (*(f32 *)((char *)arg0 + 0x708)));
+        sb->edgeGrip = sb->child.parms.nel.value;
+        sb->friction = sb->child.parms.nbf.value;
+        sb->turnRate = (f32) ((*(volatile f32 *)&sb->child.parms.res.value) * sb->parms.nts.value);
     }
-    if (*(s32 *)((char *)arg0 + 0x990) != 0) {
-        if (*(s32 *)((char *)arg0 + 0x9CC) != 0) {
+    if (sb->crouch != 0) {
+        if (sb->useDParms != 0) {
             var_f12 = D_BF8C_pool8F4[8];
         } else {
             var_f12 = 0.5f;
         }
-        temp_f0 = *(f32 *)((char *)arg0 + 0x970);
+        temp_f0 = sb->edge;
         if (temp_f0 < 0.0f) {
             var_f2 = -temp_f0;
         } else {
             var_f2 = temp_f0;
         }
-        *(f32 *)((char *)arg0 + 0x360) = (f32) ((*(f32 *)((char *)arg0 + 0x360)) + (var_f2 * var_f12));
+        sb->friction = (f32) (sb->friction + (var_f2 * var_f12));
     }
-    temp_v0_2 = *(s16 *)((char *)arg0 + 0x9A2);
+    temp_v0_2 = sb->surface;
     if (temp_v0_2 != 0x63) {
         if (temp_v0_2 != 0x61) {
             if (temp_v0_2 != 0x62) {
-        *(f32 *)((char *)arg0 + 0x360) = (f32) (D_BF8C_pool8F4_24 + (f64) (*(f32 *)((char *)arg0 + 0x360)));
-        *(f32 *)((char *)arg0 + 0x9FC) = 0.0f;
-        *(f32 *)((char *)arg0 + 0x9F8) = 0.0f;
+        /* off the ground (surface 0): extra friction, no edge terms */
+        sb->friction = (f32) (D_BF8C_pool8F4_24 + (f64) sb->friction);
+        sb->edgeGrip = 0.0f;
+        sb->edgeFriction = 0.0f;
             } else goto L62;
         } else goto Lend;
     } else goto L63;
     goto Lend;
-L63:
-        *(f32 *)((char *)arg0 + 0x360) = (f32) ((*(f32 *)((char *)arg0 + 0x448)) * (*(f32 *)((char *)arg0 + 0x360)));
-        *(f32 *)((char *)arg0 + 0x9FC) = (f32) ((*(f32 *)((char *)arg0 + 0x430)) * (*(f32 *)((char *)arg0 + 0x9FC)));
+L63: /* surface 'c' */
+        sb->friction = (f32) (sb->child.parms.ifr.value * sb->friction);
+        sb->edgeGrip = (f32) (sb->child.parms.ied.value * sb->edgeGrip);
     goto Lend;
-L62:
-        *(f32 *)((char *)arg0 + 0x360) = (f32) ((*(f32 *)((char *)arg0 + 0x478)) * (*(f32 *)((char *)arg0 + 0x360)));
-        *(f32 *)((char *)arg0 + 0x9FC) = (f32) ((*(f32 *)((char *)arg0 + 0x460)) * (*(f32 *)((char *)arg0 + 0x9FC)));
+L62: /* surface 'b' */
+        sb->friction = (f32) (sb->child.parms.dfr.value * sb->friction);
+        sb->edgeGrip = (f32) (sb->child.parms.ded.value * sb->edgeGrip);
 Lend:
-    temp_v0_3 = *(s32 *)((char *)arg0 + 0x960);
-    *(f32 *)((char *)arg0 + 0x9FC) = (f32) ((*(f32 *)((char *)arg0 + 0x5D0)) * (*(f32 *)((char *)arg0 + 0x9FC)));
-    *(f32 *)((char *)arg0 + 0x360) = (f32) ((*(f32 *)((char *)arg0 + 0x5E8)) * (*(f32 *)((char *)arg0 + 0x360)));
+    temp_v0_3 = sb->slowdown;
+    sb->edgeGrip = (f32) (sb->parms.edf.value * sb->edgeGrip);
+    sb->friction = (f32) (sb->parms.bdf.value * sb->friction);
     if (temp_v0_3 != 0) {
-        *(f32 *)((char *)arg0 + 0x9FC) = 0.0f;
-        *(f32 *)((char *)arg0 + 0x360) = (f32) ((*(f32 *)((char *)arg0 + 0x360)) + ((f32) temp_v0_3 / 100.0f));
-        temp_f0_2 = 1.0f - (*(f32 *)((char *)arg0 + 0x6D8));
-        *(f32 *)((char *)arg0 + 0x318) = (f32) ((*(f32 *)((char *)arg0 + 0x318)) * temp_f0_2);
-        *(f32 *)((char *)arg0 + 0x320) = (f32) ((*(f32 *)((char *)arg0 + 0x320)) * temp_f0_2);
+        sb->edgeGrip = 0.0f;
+        sb->friction = (f32) (sb->friction + ((f32) temp_v0_3 / 100.0f));
+        temp_f0_2 = 1.0f - sb->parms.sfr.value;
+        sb->vel.x = (f32) (sb->vel.x * temp_f0_2);
+        sb->vel.z = (f32) (sb->vel.z * temp_f0_2);
     }
-    func_00000000(arg0);
-    func_00000000(arg0);
-    func_00000000(D_BF8C_8A40 + 0x20);
-    func_00000000(arg0);
+    func_00000000(sb);                  /* SnowBoarder_limitSpeed */
+    func_00000000(sb);                  /* SnowBoarder_updateOrient */
+    func_00000000(D_BF8C_8A40 + 0x20);  /* perf section start "SnowBCol" */
+    func_00000000(sb);                  /* SnowBoarder_procColl */
     /* anchor-split (E68/CCE0 lever): same absolute addr 0x8A6C as
      * &func_00008A40+0x2C but distinct in-TU anchor kills the base
      * CSE-collapse (frame bloat cascade); reloc-name diff at this site
      * is the accepted fuzzy residual. */
-    func_00000000(D_BF8C_8A40 + 0x2C);
-    func_00000000(arg0);
-    if ((*(s32 *)((char *)arg0 + 0x960) == 0x64) && ((*(f32 *)((char *)arg0 + 0x348)) < 30.0f)) {
-        *(f32 *)((char *)arg0 + 0x318) = 0.0f;
-        *(f32 *)((char *)arg0 + 0x320) = 0.0f;
+    func_00000000(D_BF8C_8A40 + 0x2C);  /* perf section end */
+    func_00000000(sb);                  /* DNode_applyAccums_00065448 */
+    if ((sb->slowdown == 0x64) && (sb->speed < 30.0f)) {
+        sb->vel.x = 0.0f;
+        sb->vel.z = 0.0f;
     }
-    func_00000000(arg0);
-    func_00000000(arg0);
+    func_00000000(sb);                  /* DNode_integrate_00064DEC */
+    func_00000000(sb);                  /* DNode_resetAccums_00065148 */
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_updateDyn);
@@ -7564,118 +7566,118 @@ void SnowBoarder_procColl(char *arg0) {
     char *temp_a1;
     char *temp_v0_3;
     char *var_v0_2;
+    SnowBoarder *sb = (SnowBoarder *)arg0; /* agent-g run 470: field form (snowboarder.h); reference only */
 
-
-    temp_v0 = *(s32 *)((char *)(arg0) + 0xA80);
+    temp_v0 = sb->msgCooldown;
     if (temp_v0 != 0) {
-        *(s32 *)((char *)(arg0) + 0xA80) = (s32) (temp_v0 - 1);
+        sb->msgCooldown = (s32) (temp_v0 - 1);
     }
-    spB4 = *(V3C234 *)((char *)(arg0) + 0xB4);
-    temp_a1 = arg0 + 0xDC;
-    *(f32 *)((char *)(arg0) + 0x890) = spB4.x;
-    *(f32 *)((char *)(arg0) + 0x894) = spB4.y;
-    *(f32 *)((char *)(arg0) + 0x898) = spB4.z;
-    spB4 = *(V3C234 *)((char *)(arg0) + 0x318);
-    *(f32 *)((char *)(arg0) + 0x89C) = spB4.x;
-    *(f32 *)((char *)(arg0) + 0x8A0) = spB4.y;
-    *(f32 *)((char *)(arg0) + 0x8A4) = spB4.z;
+    spB4 = *(V3C234 *)&sb->pos;
+    temp_a1 = (char *)&sb->lastPos;
+    sb->prevPos.x = spB4.x;
+    sb->prevPos.y = spB4.y;
+    sb->prevPos.z = spB4.z;
+    spB4 = *(V3C234 *)&sb->vel;
+    sb->prevVel.x = spB4.x;
+    sb->prevVel.y = spB4.y;
+    sb->prevVel.z = spB4.z;
     spCC.f0 = 0.0f;
     spCC.ec = 0.0f;
     spCC.e4 = 0.0f;
     spCC.e8 = 1.0f;
-    *(s16 *)((char *)(arg0) + 0x9A2) = 0;
-    *(f32 *)((char *)(arg0) + 0x9D0) = D_bu_ro_pool[0x920 / 4];
+    sb->surface = 0;
+    sb->groundDist = D_bu_ro_pool[0x920 / 4];
     sp3C = temp_a1;
     if (func_00000000(*(s32 *)((char *)&D_00000000 + 0), temp_a1, 0x457A0000, &spCC) != 0) {
-        *(s16 *)((char *)(arg0) + 0x9A0) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+        sb->groundSurface = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
-            *(s16 *)((char *)(arg0) + 0x9A2) = *(s16 *)((char *)(arg0) + 0x9A0);
+            sb->surface = sb->groundSurface;
         } else {
-            *(s16 *)((char *)(arg0) + 0x9A2) = 0;
+            sb->surface = 0;
         }
-        *(s32 *)((char *)(arg0) + 0x9A8) = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
-        *(f32 *)((char *)(arg0) + 0x9D0) = spCC.d8;
-        if ((spCC.f0 < ((D_bu_ro_pool[0x128 / 4] * ((*(f32 *)((char *)(arg0) + 0xDC) * spCC.e4) + ((*(f32 *)((char *)(arg0) + 0xE0) + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (*(f32 *)((char *)(arg0) + 0xE4) * spCC.ec))) + 4.0f)) || (*(s32 *)((char *)(arg0) + 0x938) != 0)) {
-            *(s32 *)((char *)(arg0) + 0xA4C) = 1;
+        sb->groundFlags = func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.dc);
+        sb->groundDist = spCC.d8;
+        if ((spCC.f0 < ((D_bu_ro_pool[0x128 / 4] * ((sb->lastPos.x * spCC.e4) + ((sb->lastPos.y + D_bu_ro_pool[0x928 / 4]) * spCC.e8) + (sb->lastPos.z * spCC.ec))) + 4.0f)) || (sb->contactCount != 0)) {
+            sb->onGround = 1;
             spB4 = *(V3C234 *)&spCC.e4;
             var_t0 = 0;
-            *(f32 *)((char *)(arg0) + 0x9D8) = spB4.x;
-            *(f32 *)((char *)(arg0) + 0x9DC) = spB4.y;
-            *(f32 *)((char *)(arg0) + 0x9E0) = spB4.z;
-            *(f32 *)((char *)(arg0) + 0x9E4) = spCC.f0;
-            if (D_00000930 < (f64) *(f32 *)((char *)(arg0) + 0x9DC)) {
+            sb->groundNormal.x = spB4.x;
+            sb->groundNormal.y = spB4.y;
+            sb->groundNormal.z = spB4.z;
+            sb->groundPlaneD = spCC.f0;
+            if (D_00000930 < (f64) sb->groundNormal.y) {
                 var_t0 = 1;
             }
-            *(s32 *)((char *)(arg0) + 0xA50) = var_t0;
+            sb->groundGentle = var_t0;
         } else {
-            *(s32 *)((char *)(arg0) + 0xA4C) = 0;
-            *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-            *(s32 *)((char *)(arg0) + 0xA50) = 0;
-            *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
+            sb->onGround = 0;
+            sb->groundNormal.x = (f32) 0;
+            sb->groundNormal.z = (f32) 0;
+            sb->groundPlaneD = (f32) 0;
+            sb->groundGentle = 0;
+            sb->groundNormal.y = 1.0f;
         }
-        if ((*(f32 *)((char *)(arg0) + 0x9D0) < (f32) 0) && (spCC.e8 > (f32) 0)) {
-            *(f32 *)((char *)(arg0) + 0x31C) = 10.0f;
+        if ((sb->groundDist < (f32) 0) && (spCC.e8 > (f32) 0)) {
+            sb->vel.y = 10.0f;
         }
-        if ((*(s32 *)((char *)(arg0) + 0x938) != 0) && (*(f32 *)((char *)(arg0) + 0x348) > 10.0f)) {
-            temp_v1 = *(s16 *)((char *)(arg0) + 0x9A0);
+        if ((sb->contactCount != 0) && (sb->speed > 10.0f)) {
+            temp_v1 = sb->groundSurface;
             var_v0 = 0;
             if (temp_v1 == 0x64) {
-                *(s32 *)((char *)(arg0) + 0xA5C) = 0x64;
+                sb->shake = 0x64;
                 var_v0 = 2;
             } else if (temp_v1 == 0x63) {
-                *(s32 *)((char *)(arg0) + 0xA5C) = 0x46;
+                sb->shake = 0x46;
                 var_v0 = 1;
             }
             if (var_v0 != 0) {
-                temp_f2 = *(f32 *)((char *)(arg0) + 0x970);
+                temp_f2 = sb->edge;
                 if (temp_f2 < 0.0f) {
                     var_f0 = -temp_f2;
                 } else {
                     var_f0 = temp_f2;
                 }
-                func_00000000(*(s32 *)((char *)(arg0) + 0x800), D_000081C0[(s32) ((f32) var_v0 + (var_f0 * 3.0f))], 2);
+                func_00000000((s32)sb->input, D_000081C0[(s32) ((f32) var_v0 + (var_f0 * 3.0f))], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
          * 0x61, 0x62 (flat goto ladder); the 0x940/0x944/0x948 pool reads are
          * per-address scalars (D_bu_ro_pool[] here CSEs the base, -0.1). */
-        temp_v0_2 = *(s16 *)((char *)(arg0) + 0x9A0);
+        temp_v0_2 = sb->groundSurface;
         if (temp_v0_2 == 0x61) goto c61;
         if (temp_v0_2 == 0x62) goto c62;
-        *(f32 *)((char *)(arg0) + 0x288) = (f32) D_00000938;
-        *(f32 *)((char *)(arg0) + 0x28C) = (f32) D_0000093C;
-        *(u8 *)((char *)(arg0) + 0xA33) = 0;
-        *(u8 *)((char *)(arg0) + 0xA32) = 0;
-        *(u8 *)((char *)(arg0) + 0xA31) = 0;
-        *(u8 *)((char *)(arg0) + 0xA30) = 0;
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x5A0);
-        *(f32 *)((char *)(arg0) + 0x290) = D_00000940;
+        sb->surfImp = (f32) D_00000938;
+        sb->surfSpd = (f32) D_0000093C;
+        sb->groundColor[3] = 0;
+        sb->groundColor[2] = 0;
+        sb->groundColor[1] = 0;
+        sb->groundColor[0] = 0;
+        sb->impactScale = (f32) sb->parms.icf.value;
+        sb->surfVsc = D_00000940;
         goto cend;
 c61:
-        *(f32 *)((char *)(arg0) + 0x288) = (f32) *(f32 *)((char *)(arg0) + 0x120);
-        *(f32 *)((char *)(arg0) + 0x28C) = (f32) *(f32 *)((char *)(arg0) + 0x138);
-        *(f32 *)((char *)(arg0) + 0x290) = (f32) *(f32 *)((char *)(arg0) + 0x1B0);
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x570);
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+        sb->surfImp = (f32) sb->dparms.imp.value;
+        sb->surfSpd = (f32) sb->dparms.spd.value;
+        sb->surfVsc = (f32) sb->dparms.vsc.value;
+        sb->impactScale = (f32) sb->parms.snf.value;
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, sb->groundColor);
         goto cend;
 c62:
-        *(f32 *)((char *)(arg0) + 0x288) = 0.0f;
-        *(f32 *)((char *)(arg0) + 0x28C) = D_00000944;
-        *(f32 *)((char *)(arg0) + 0x910) = (f32) *(f32 *)((char *)(arg0) + 0x588);
-        *(f32 *)((char *)(arg0) + 0x290) = D_00000948;
-        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, arg0 + 0xA30);
+        sb->surfImp = 0.0f;
+        sb->surfSpd = D_00000944;
+        sb->impactScale = (f32) sb->parms.dsf.value;
+        sb->surfVsc = D_00000948;
+        func_00000000(*(s32 *)((char *)((*(s32 *)((char *)&D_00000000 + 0))) + 0x84), spCC.de, sb->groundColor);
 cend:
-        *(s32 *)((char *)(arg0) + 0x95C) = 0;
+        sb->noGroundFrames = 0;
     } else {
-        temp_v1_2 = *(s32 *)((char *)(arg0) + 0x95C);
-        *(s32 *)((char *)(arg0) + 0xA4C) = 0;
-        *(f32 *)((char *)(arg0) + 0x9D8) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x9E0) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x9E4) = (f32) 0;
-        *(s32 *)((char *)(arg0) + 0x95C) = (s32) (temp_v1_2 + 1);
-        *(f32 *)((char *)(arg0) + 0x9DC) = 1.0f;
+        temp_v1_2 = sb->noGroundFrames;
+        sb->onGround = 0;
+        sb->groundNormal.x = (f32) 0;
+        sb->groundNormal.z = (f32) 0;
+        sb->groundPlaneD = (f32) 0;
+        sb->noGroundFrames = (s32) (temp_v1_2 + 1);
+        sb->groundNormal.y = 1.0f;
         if (temp_v1_2 >= 0x97) {
             temp_a1_2 = *(s32 *)((char *)&func_00008A40 + 0x38);
             sp8C = temp_a1_2;
@@ -7684,61 +7686,61 @@ cend:
                 sp7C = *(V3C234 *)((char *)(temp_v0_3) + 0x30);
                 sp7C.y += 200.0f;
                 func_00000000(arg0, &sp7C);
-                *(s32 *)((char *)(arg0) + 0x95C) = 0;
+                sb->noGroundFrames = 0;
                 func_00000000((char *)func_00008A7C + 0);
                 func_00000000((char *)func_00008A7C + 0x18, (char *)func_00008A7C + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
     }
-    *(f32 *)((char *)(arg0) + 0x968) = 0.0f;
-    *(s32 *)((char *)(arg0) + 0x938) = 0;
-    *(f32 *)((char *)(arg0) + 0x93C) = 0.0f;
-    *(f32 *)((char *)(arg0) + 0x940) = 0.0f;
-    *(f32 *)((char *)(arg0) + 0x944) = 0.0f;
+    sb->contactDepth = 0.0f;
+    sb->contactCount = 0;
+    sb->contactNormal.x = 0.0f;
+    sb->contactNormal.y = 0.0f;
+    sb->contactNormal.z = 0.0f;
     func_00000000((char *)func_00008A7C + 0x28);
     func_00000000(arg0);
     func_00000000((char *)func_00008A7C + 0x34);
-    if (*(s32 *)((char *)(arg0) + 0x9A8) & 0x400) {
-        func_00000000(arg0 + 0x808, 1);
+    if (sb->groundFlags & 0x400) {
+        func_00000000(sb->sound, 1);
         var_f2 = D_bu_ro_pool[0x94C / 4];
     } else {
-        func_00000000(arg0 + 0x808, 0);
+        func_00000000(sb->sound, 0);
         var_f2 = 1.0f;
     }
     if (*(s32 *)((char *)&func_00000008 + 0x2C) != 2) {
-        temp_f0 = *(f32 *)((char *)(arg0) + 0x91C);
-        *(f32 *)((char *)(arg0) + 0x91C) = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
-        func_00000000(*(s32 *)((char *)(arg0) + 0x850), *(s32 *)((char *)(arg0) + 0x91C));
+        temp_f0 = sb->unk91C;
+        sb->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
+        func_00000000(*(s32 *)((char *)(arg0) + 0x850), *(s32 *)&sb->unk91C);
     }
-    temp_v0_4 = *(s32 *)((char *)(arg0) + 0x938);
+    temp_v0_4 = sb->contactCount;
     if (temp_v0_4 != 0) {
         temp_f2_2 = (f32) temp_v0_4;
-        var_v0_2 = arg0 + 0x93C;
-        *(f32 *)((char *)(arg0) + 0x93C) = (f32) (*(f32 *)((char *)(arg0) + 0x93C) / temp_f2_2);
-        *(f32 *)((char *)(arg0) + 0x940) = (f32) (*(f32 *)((char *)(arg0) + 0x940) / temp_f2_2);
-        *(f32 *)((char *)(arg0) + 0x968) = (f32) (*(f32 *)((char *)(arg0) + 0x968) / temp_f2_2);
-        temp_f12 = *(f32 *)((char *)(arg0) + 0x968);
-        *(f32 *)((char *)(arg0) + 0x944) = (f32) (*(f32 *)((char *)(arg0) + 0x944) / temp_f2_2);
+        var_v0_2 = (char *)&sb->contactNormal;
+        sb->contactNormal.x = (f32) (sb->contactNormal.x / temp_f2_2);
+        sb->contactNormal.y = (f32) (sb->contactNormal.y / temp_f2_2);
+        sb->contactDepth = (f32) (sb->contactDepth / temp_f2_2);
+        temp_f12 = sb->contactDepth;
+        sb->contactNormal.z = (f32) (sb->contactNormal.z / temp_f2_2);
         if (temp_f12 < (f32) 0) {
-            var_v0_2 = arg0 + 0x93C;
-            sp68.x = *(f32 *)((char *)(arg0) + 0x93C) * temp_f12;
+            var_v0_2 = (char *)&sb->contactNormal;
+            sp68.x = sb->contactNormal.x * temp_f12;
             sp68.y = *(f32 *)((char *)(var_v0_2) + 0x4) * temp_f12;
             sp68.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f12;
             spB4 = sp68;
             sp54 = spB4;
-            *(f32 *)((char *)(arg0) + 0x920) = sp54.x;
-            *(f32 *)((char *)(arg0) + 0x924) = sp54.y;
-            *(f32 *)((char *)(arg0) + 0x928) = sp54.z;
+            sb->penetration.x = sp54.x;
+            sb->penetration.y = sp54.y;
+            sb->penetration.z = sp54.z;
         } else {
-            *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
-            *(f32 *)((char *)(arg0) + 0x928) = (f32) 0;
+            sb->penetration.x = (f32) 0;
+            sb->penetration.y = (f32) 0;
+            sb->penetration.z = (f32) 0;
         }
         spB4 = *(V3C234 *)((char *)(var_v0_2) + 0x0);
-        *(f32 *)((char *)(arg0) + 0x948) = spB4.x;
-        *(f32 *)((char *)(arg0) + 0x94C) = spB4.y;
-        *(f32 *)((char *)(arg0) + 0x950) = spB4.z;
-        var_f2_2 = (*(f32 *)((char *)(arg0) + 0x33C) * *(f32 *)((char *)(arg0) + 0x93C)) + (*(f32 *)((char *)(arg0) + 0x340) * *(f32 *)((char *)(arg0) + 0x940)) + (*(f32 *)((char *)(arg0) + 0x344) * *(f32 *)((char *)(arg0) + 0x944));
+        sb->lastContactNormal.x = spB4.x;
+        sb->lastContactNormal.y = spB4.y;
+        sb->lastContactNormal.z = spB4.z;
+        var_f2_2 = (sb->lastVel.x * sb->contactNormal.x) + (sb->lastVel.y * sb->contactNormal.y) + (sb->lastVel.z * sb->contactNormal.z);
         if (var_f2_2 > 0.0f) {
             var_f2_2 = 0.0f;
         }
@@ -7748,26 +7750,26 @@ cend:
         sp40.z = *(f32 *)((char *)(var_v0_2) + 0x8) * temp_f0_2;
         spB4 = sp40;
         sp54 = spB4;
-        *(f32 *)((char *)(arg0) + 0x92C) = sp54.x;
-        *(f32 *)((char *)(arg0) + 0x930) = sp54.y;
-        *(s32 *)((char *)(arg0) + 0x9D4) = 0;
-        *(f32 *)((char *)(arg0) + 0x934) = sp54.z;
+        sb->impactVel.x = sp54.x;
+        sb->impactVel.y = sp54.y;
+        sb->airFrames = 0;
+        sb->impactVel.z = sp54.z;
     } else {
-        *(f32 *)((char *)(arg0) + 0x920) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x924) = (f32) 0;
-        *(s32 *)((char *)(arg0) + 0x9D4) = (s32) (*(s32 *)((char *)(arg0) + 0x9D4) + 1);
-        *(f32 *)((char *)(arg0) + 0x928) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x92C) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x930) = (f32) 0;
-        *(f32 *)((char *)(arg0) + 0x934) = (f32) 0;
+        sb->penetration.x = (f32) 0;
+        sb->penetration.y = (f32) 0;
+        sb->airFrames = (s32) (sb->airFrames + 1);
+        sb->penetration.z = (f32) 0;
+        sb->impactVel.x = (f32) 0;
+        sb->impactVel.y = (f32) 0;
+        sb->impactVel.z = (f32) 0;
     }
-    temp_f2_3 = *(f32 *)((char *)(arg0) + 0x92C);
-    temp_f12_2 = *(f32 *)((char *)(arg0) + 0x930);
-    temp_f14 = *(f32 *)((char *)(arg0) + 0x934);
-    temp_f16 = *(f32 *)((char *)(arg0) + 0x910);
-    *(f32 *)((char *)(arg0) + 0xA1C) = (f32) (*(f32 *)((char *)(arg0) + 0xA1C) + (((*(f32 *)((char *)(arg0) + 0x3BC) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3C0) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3C4) * temp_f14)) * temp_f16));
-    *(f32 *)((char *)(arg0) + 0xA20) = (f32) (*(f32 *)((char *)(arg0) + 0xA20) + (((*(f32 *)((char *)(arg0) + 0x3B0) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3B4) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3B8) * temp_f14)) * temp_f16));
-    *(f32 *)((char *)(arg0) + 0xA24) = (f32) (*(f32 *)((char *)(arg0) + 0xA24) - ((*(f32 *)((char *)(arg0) + 0x3C8) * temp_f2_3) + (*(f32 *)((char *)(arg0) + 0x3CC) * temp_f12_2) + (*(f32 *)((char *)(arg0) + 0x3D0) * temp_f14)));
+    temp_f2_3 = sb->impactVel.x;
+    temp_f12_2 = sb->impactVel.y;
+    temp_f14 = sb->impactVel.z;
+    temp_f16 = sb->impactScale;
+    sb->bumpSide = (f32) (sb->bumpSide + (((sb->side.x * temp_f2_3) + (sb->side.y * temp_f12_2) + (sb->side.z * temp_f14)) * temp_f16));
+    sb->bumpUp = (f32) (sb->bumpUp + (((sb->up.x * temp_f2_3) + (sb->up.y * temp_f12_2) + (sb->up.z * temp_f14)) * temp_f16));
+    sb->bumpFwd = (f32) (sb->bumpFwd - ((sb->dir.x * temp_f2_3) + (sb->dir.y * temp_f12_2) + (sb->dir.z * temp_f14)));
 }
 #else
 void SnowBoarder_procColl(char *arg0) {
@@ -8639,13 +8641,13 @@ void SnowBoarder_func_0000E124(SnowBoarder *sb) {
     float *p;
 
     sb->flags ^= SNOWB_FLAG_MIRROR;
-    sb->unkA38 = 0.0f;
+    sb->fwdSpeed = 0.0f;
     if (sb->flags & SNOWB_FLAG_08) {
         func_00000000();
     } else {
         func_00000000(sb);
     }
-    sb->spin.z = -sb->spin.z;
+    sb->edgeSlope = -sb->edgeSlope;
     up[0] = 0.0f;
     up[1] = 1.0f;
     up[2] = 0.0f;

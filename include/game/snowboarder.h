@@ -28,6 +28,23 @@ typedef struct SnowBVec3 {
     f32 x, y, z;
 } SnowBVec3;
 
+/* a quaternion (x, y, z, w) as DNode stores it (identity w = 1) */
+typedef struct SnowBQuat {
+    f32 x, y, z, w;
+} SnowBQuat;
+
+/* the 0x34-byte force accumulator of the game_libs DNode (DNodeAccum_reset_00064170 /
+ * DNodeAccum_addForce_000641DC / DNodeAccum_apply_00064388). addForce(point, force) adds |force| to weight,
+ * point * |force| to pointSum, force to force and cross(point, force) / |point| to torque; apply turns the
+ * target quat about the normalized torque by |torque| / k * scale and adds force to the target vector. */
+typedef struct SnowBAccum {
+    f32 weight;             /* 0x00 */
+    SnowBVec3 pointSum;     /* 0x04: application points weighted by |force| */
+    SnowBVec3 force;        /* 0x10 */
+    SnowBVec3 torque;       /* 0x1C */
+    SnowBVec3 origin;       /* 0x28: reference point (DNode lastPos), set by reset */
+} SnowBAccum;
+
 /* one 0x18-byte float parm (game_libs parm base 0x35B1C + float subclass; same layout as SnowAIParm) */
 typedef struct SnowBParm {
     char pad00[0xC];        /* 0x00: owner list link and the 4-char tag (game_libs Parms_addParm) */
@@ -36,21 +53,51 @@ typedef struct SnowBParm {
     s32 unk14;              /* 0x14 */
 } SnowBParm;
 
+/* one 0x20-byte Vec3 parm of DNode::Parms (vtable bootup Data 0x221F0) */
+typedef struct SnowBVec3Parm {
+    char pad00[0xC];
+    void *vptr;             /* 0x0C */
+    SnowBVec3 value;        /* 0x10 */
+    s32 unk1C;              /* 0x1C */
+} SnowBVec3Parm;
+
+/* "DNode::Parms" (0x180), the game_libs DNode base's parms (DNode_ctor builds it at +0x108; tags at bootup
+ * Data 0x223D0). Proven uses: gvt.value is added to vel.y every frame (DNode_integrate_00064DEC, gravity);
+ * tsc.value scales both accumulators (DNode_applyAccums_00065448); cog.value is the centre of gravity in
+ * body space (DNode_resetAccums_00065148 -> worldCog); imp / spd / vsc are copied to surfImp / surfSpd /
+ * surfVsc by DNode_init_00065060 and per surface by SnowBoarder_procColl. */
+typedef struct SnowBDNodeParms {
+    const char *name;       /* 0x00: "DNode::Parms" */
+    s32 unk04;              /* 0x04: parm list head */
+    SnowBParm imp, spd, spl, spw, gvt, suc, vsc, usc, tsc; /* 0x08..0xC8 (rider 0x110..0x1D0; gvt value 0x180, tsc value 0x1E0) */
+    SnowBVec3Parm cog;      /* 0xE0 (rider 0x1E8; value 0x1F8) */
+    SnowBParm unc, dsc, csc, rad; /* 0x100..0x148 */
+    SnowBVec3Parm cts;      /* 0x160 (default (1, 1, 0)) */
+} SnowBDNodeParms;
+
 /* "SnowBoarder::Parms" (0x2C0), embedded at SnowBoarder +0x540. Members are named by their
  * parms-file tag, in SnowBoarder_ctor construction order (bootup 0x9680..). Meanings are only
  * given where a reader proves them. */
 typedef struct SnowBoarderParms {
     const char *name;       /* 0x00: "SnowBoarder::Parms" */
     s32 unk04;              /* 0x04: parm list head */
-    SnowBParm hpf, snf, dsf, icf, tfc, edf, bdf, ure, mro, mpi, mdr; /* 0x08..0x0F8 */
-    SnowBParm axr, ayr, azr, tlt; /* 0x110..0x158 */
+    SnowBParm hpf;          /* 0x08 (+0x558): on the ground with groundFlags & 1, vel.x += vel.x * hpf * |dir.x| */
+    SnowBParm snf, dsf, icf; /* 0x20, 0x38, 0x50: impactScale on surface 'a' / 'b' / other (procColl) */
+    SnowBParm tfc, edf, bdf; /* 0x68, 0x80, 0x98: edgeGrip *= edf, friction *= bdf (updateDyn) */
+    SnowBParm ure;          /* 0xB0 (+0x600): self-righting gain: rotate about dir / side by localUp.y / .x * ure */
+    SnowBParm mro, mpi;     /* 0xC8, 0xE0: dead zones: self-right only while |localUp.y| > mro, |localUp.x| > mpi */
+    SnowBParm mdr;          /* 0xF8 (+0x648): counter-steer test: dot(dir, velDir) < mdr cancels the yaw input */
+    SnowBParm axr, ayr, azr; /* 0x110..0x140: air rotation rates about side (stick y), up (stick x), dir (stick x) */
+    SnowBParm tlt;          /* 0x158 */
     SnowBParm wfr;          /* 0x170 (SnowBoarder +0x6B0): XZ drag; SnowBoarder_limitSpeed scales vel.x / vel.z by 1 - value */
     SnowBParm sfr, dts;     /* 0x188, 0x1A0 (+0x6E0: dts, scaled by SnowAI_scaleRiderParms) */
     SnowBParm nts;          /* 0x1B8 (+0x6F8): steering rate; SnowAI_finishRun divides its turn output by it */
-    SnowBParm trt, twt, min; /* 0x1D0..0x200 */
+    SnowBParm trt;          /* 0x1D0 (+0x720): edgeSteer decay: edgeSteer -= edgeSteer * trt * turnRate */
+    SnowBParm twt, min;     /* 0x1E8, 0x200 */
     SnowBParm max;          /* 0x218 (+0x758): max speed; maxSpeed eases toward max.value (SnowBoarder_limitSpeed);
                              * SnowAI_update sets it per rival character from ms1..ms8 */
-    SnowBParm jmp, djp, ufs, bdm, cdm, tch; /* 0x230..0x2A8 */
+    SnowBParm jmp, djp, ufs, bdm, cdm; /* 0x230..0x290 */
+    SnowBParm tch;          /* 0x2A8 (+0x7F8): angVel decay factor while groundFlags & 1 is clear (0.724 otherwise) */
 } SnowBoarderParms;
 
 /* The 0x154-byte child at SnowBoarder +0x3EC (vtbl bootup Data 0x8108, perf label "SnowBChild"; its vtbl slot 8 is
@@ -78,14 +125,33 @@ struct SnowAI;
 struct RiderAnim;
 
 typedef struct SnowBoarder {
+    /* 0x000..0x3D4: the game_libs DNode base (DNode_ctor, DNode_update) */
     char pad000[0x0B4];
     SnowBVec3 pos;          /* 0x0B4: world position (the node position: the ctor also sets a child node's
                              * +0xB4 to (0, 100, 0)). SnowBoarder_limitSpeed compares rival->pos.z - pos.z;
-                             * SnowAI (game.uso) seeds its target from rider->pos */
-    char pad0C0[0x318 - 0x0C0];
+                             * SnowAI (game.uso) seeds its target from rider->pos. DNode_integrate adds vel */
+    char pad0C0[0x0CC - 0x0C0];
+    SnowBQuat orient;       /* 0x0CC: orientation; DNode_integrate does orient = angVel * orient,
+                             * SnowBoarder_updateOrient turns it with math_quatRotateAxisAngle */
+    SnowBVec3 lastPos;      /* 0x0DC: pos at the end of the last DNode_integrate (accumulator origin, the
+                             * ground-query origin in procColl) */
+    char pad0E8[0x0F4 - 0x0E8];
+    SnowBQuat lastOrient;   /* 0x0F4: orient at the end of the last integrate */
+    char pad104[0x108 - 0x104];
+    SnowBDNodeParms dparms; /* 0x108: "DNode::Parms" */
+    f32 surfImp;            /* 0x288: dparms.imp, or the surface value set by procColl */
+    f32 surfSpd;            /* 0x28C: dparms.spd, or the surface value */
+    f32 surfVsc;            /* 0x290: dparms.vsc, or the surface value */
+    SnowBAccum impulseAcc;  /* 0x294: applied to angVel / vel (DNode_addImpulseAt_00065250) */
+    SnowBAccum moveAcc;     /* 0x2C8: applied to orient / pos directly (DNode_addMoveAt_000652D8) */
+    SnowBQuat angVel;       /* 0x2FC: per-frame rotation quat; updateOrient resets it to identity in the air and
+                             * decays it (xyz * k, w eased to 1) every frame */
+    SnowBVec3 velDir;       /* 0x30C: vel / speed (0 when stopped) */
     SnowBVec3 vel;          /* 0x318: velocity. B520 adds dir * nudge, then rescales it to maxSpeed
                              * (normalize + scale) when speed > maxSpeed */
-    char pad324[0x348 - 0x324];
+    SnowBVec3 worldCog;     /* 0x324: dparms.cog in world space (DNode_resetAccums) */
+    SnowBVec3 velDelta;     /* 0x330: vel - lastVel of the last integrate */
+    SnowBVec3 lastVel;      /* 0x33C: vel after the last integrate; procColl's impact test dots it with the contact normal */
     f32 speed;              /* 0x348: |vel|, compared against maxSpeed (B520) and 30 / 10 thresholds */
     char pad34C[0x360 - 0x34C];
     f32 friction;           /* 0x360: ground friction, rebuilt each frame by SnowBoarder_updateDyn: nbf / dbf, + |spin.x| * k
@@ -95,7 +161,8 @@ typedef struct SnowBoarder {
     s32 unk38C;             /* 0x38C: set to 1 by SnowBoarder_ctor */
     char pad390[0x3A4 - 0x390];
     SnowBVec3 startPos;     /* 0x3A4: spawn point: ctor args (x, z), y = ground height at (x, z) + a RoData offset */
-    char pad3B0[0x3C8 - 0x3B0];
+    SnowBVec3 up;           /* 0x3B0: body up axis (row of the orientation matrix); up.y < 0.8 = steep */
+    SnowBVec3 side;         /* 0x3BC: body side axis */
     SnowBVec3 dir;          /* 0x3C8: unit forward direction (B520 nudge axis; dotted with vel in updateDyn) */
     char pad3D4[0x3EC - 0x3D4];
     SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
@@ -104,8 +171,9 @@ typedef struct SnowBoarder {
                              * by replay_addInput); its +0x10 word carries the direction bits 4 / 8 (B520) */
     struct SnowAI *ai;      /* 0x804: the AI controller (game.uso SnowAI_ctor(0, this, ...), the ctor's last child);
                              * SnowBoarder_handleMsg forwards win / lose / timeout to SnowAI_onWin / onLose / onTimeout */
-    char sub808[0xC];       /* 0x808: embedded 0xC-byte member, constructed in place and initialised
-                             * with (ctor arg 1, ctor arg 2) */
+    char sound[0xC];        /* 0x808: embedded 0xC-byte sound object, constructed in place with (ctor arg 1,
+                             * ctor arg 2); updateOrient calls snd_soundObjSetScaled_00000B2C on it, procColl
+                             * switches it with groundFlags & 0x400, update feeds it contactSurface / landImpact */
     char pad814[0x840 - 0x814];
     struct RiderAnim *anim; /* 0x840: the RiderAnim (game.uso C48C) built by the ctor; the SnowAI run-out steps and
                              * SnowBoarder_handleMsg's ending ("en1" / "en2") call its state methods */
@@ -114,7 +182,8 @@ typedef struct SnowBoarder {
                              * (game_setupVsCpu; SnowAI_update and SnowAI_onLose test == 2); 1 = other (not yet proven) */
     char pad84C[0x864 - 0x84C];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
-    char pad868[0x89C - 0x868];
+    char pad868[0x890 - 0x868];
+    SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
     SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
     char pad8A8[0x8C0 - 0x8A8];
     s32 unk8C0;             /* 0x8C0: 1 << character (one-hot mask, set by the ctor) */
@@ -129,18 +198,31 @@ typedef struct SnowBoarder {
     char pad904[0x908 - 0x904];
     struct SnowBoarder *rival; /* 0x908: the other rider; game_setupVsCpu links the two riders through it,
                                 * B520's catch-up compares positions with it */
-    char pad90C[0x938 - 0x90C];
+    char pad90C[0x910 - 0x90C];
+    f32 impactScale;        /* 0x910: parms snf / dsf / icf by groundSurface; scales the bump* response */
+    char pad914[0x91C - 0x914];
+    f32 unk91C;             /* 0x91C: eased toward a RoData value while groundFlags & 0x400, else toward 1.0,
+                             * and passed to the 0x850 object (not in game mode 2) */
+    SnowBVec3 penetration;  /* 0x920: contactNormal * contactDepth while contactDepth < 0, else 0 */
+    SnowBVec3 impactVel;    /* 0x92C: contactNormal * -min(dot(lastVel, contactNormal), 0) */
     s32 contactCount;       /* 0x938: collider contacts this frame: SnowBoarder_procColl clears it, SnowBCollider_onContact
                              * increments it; SnowBoarder_limitSpeed applies the wfr air drag only while it is 0 */
     SnowBVec3 contactNormal; /* 0x93C: summed contact directions, divided by contactCount in procColl */
-    char pad948[0x960 - 0x948];
+    SnowBVec3 lastContactNormal; /* 0x948: the averaged contactNormal of the last frame with contacts */
+    char pad954[0x95C - 0x954];
+    s32 noGroundFrames;     /* 0x95C: frames the ground query found nothing; after 151 procColl respawns the
+                             * rider 200 above the nearest course point (DNode_resetXform) */
     s32 slowdown;           /* 0x960: percent: updateDyn zeroes edgeGrip, adds slowdown / 100 to friction and scales vel.xz
                              * by 1 - sfr; 100 with speed < 30 stops the rider (RiderAnim sets 100; st / sl parms drive it) */
     char pad964[0x968 - 0x964];
     f32 contactDepth;       /* 0x968: summed contact amounts, averaged like contactNormal */
     char pad96C[0x970 - 0x96C];
-    SnowBVec3 spin;         /* 0x970: rotation rates; RiderAnim_clearRiderEdge_00011868 zeroes all three,
-                             * RiderAnim_selectAnim tests |spin.x|, spin.z is negated on a mirror flip */
+    f32 edge;               /* 0x970: board edge angle, edgeSteer + edgeSlope clamped to [-1, 1] (negated when
+                             * mirrored); RiderAnim_selectAnim tests |edge|, crouching adds |edge| * k to friction,
+                             * shake = 20 + 30 * |edge| on the ground */
+    f32 edgeSteer;          /* 0x974: steering part: decays by trt * turnRate, gains stick x * 0.15 * turnRate */
+    f32 edgeSlope;          /* 0x978: slope part: eased (0.4) toward -side.y (0 while crouching); negated on a mirror
+                             * flip. RiderAnim_clearRiderEdge_00011868 zeroes all three */
     char pad97C[0x990 - 0x97C];
     s32 crouch;             /* 0x990: input stick y < -0.75 (updateDyn); adds |spin.x| * k to friction */
     char pad994[0x9A0 - 0x994];
@@ -153,28 +235,49 @@ typedef struct SnowBoarder {
     char pad9AC[0x9CC - 0x9AC];
     s32 useDParms;          /* 0x9CC: input bit 0x400 held: updateDyn uses the d* parms (dbf, del, dts) instead of n* */
     f32 groundDist;         /* 0x9D0: distance to the ground below (a RoData default when nothing is found) */
-    char pad9D4[0x9F8 - 0x9D4];
+    s32 airFrames;          /* 0x9D4: frames since the last collider contact (procColl) */
+    SnowBVec3 groundNormal; /* 0x9D8: ground normal under the rider while onGround, else (0, 1, 0) */
+    f32 groundPlaneD;       /* 0x9E4: plane distance of the ground hit */
+    char pad9E8[0x9F8 - 0x9E8];
     f32 edgeFriction;       /* 0x9F8: child parms efr; 0 off the ground */
     f32 edgeGrip;           /* 0x9FC: nel / del, * ied / ded on 'c' / 'b', * parms.edf; 0 off the ground or while slowed */
     f32 turnRate;           /* 0xA00: res * nts (or dts with useDParms) */
-    char padA04[0xA10 - 0xA04];
+    SnowBVec3 localUp;      /* 0xA04: the target up vector in body axes (dot with dir, -side, up): world up while
+                             * groundFlags & 1 or !groundGentle, else groundNormal. .x / .y drive the self-righting */
     u16 hitFlags;           /* 0xA10: SnowBoarder_handleMsg msg 20 (bumped by an object) sets 0x1F0;
                              * RiderAnim_selectAnim picks a stumble anim while (hitFlags & 0x1F0) */
     char padA12[0xA14 - 0xA12];
     s32 health;             /* 0xA14: damage meter; RiderAnim_applyDamage_0000EDD4 subtracts dm1..dm4;
                              * game_setupVsCpu gives the CPU rider 10000000 */
-    char padA18[0xA1C - 0xA18];
-    f32 unkA1C;             /* 0xA1C: lateral wobble: msg 20 adds the bump along the side axis 0x3BC;
-                             * selectAnim compares |unkA1C| with RiderAnim parms to choose a stumble side */
-    char padA20[0xA38 - 0xA20];
-    f32 unkA38;             /* 0xA38: cleared on a mirror flip */
-    char padA3C[0xA54 - 0xA3C];
+    s32 unkA18;             /* 0xA18: non-zero enables the stick trick rotations (axr / ayr / azr) in the air */
+    f32 bumpSide;           /* 0xA1C: impact response along side: procColl adds dot(side, impactVel) * impactScale,
+                             * msg 20 adds the bump; selectAnim compares |bumpSide| with RiderAnim parms to
+                             * choose a stumble side; cleared each update */
+    f32 bumpUp;             /* 0xA20: dot(up, impactVel) * impactScale */
+    f32 bumpFwd;            /* 0xA24: minus dot(dir, impactVel) */
+    s32 unkA28;             /* 0xA28: toggled by pad button 0x20 in SnowBoarder_update (pause latch) */
+    char padA2C[0xA30 - 0xA2C];
+    u8 groundColor[4];      /* 0xA30: colour bytes of the ground triangle (procColl; display reads r, g, b) */
+    char padA34[0xA38 - 0xA34];
+    f32 fwdSpeed;           /* 0xA38: dot(dir, vel) (SnowBoarder_update); cleared on a mirror flip */
+    char padA3C[0xA4C - 0xA3C];
+    s32 onGround;           /* 0xA4C: ground hit within reach of lastPos, or collider contacts */
+    s32 groundGentle;       /* 0xA50: onGround and groundNormal.y above a RoData threshold */
     s32 raceResult;         /* 0xA54: SnowBoarder_handleMsg: 1 win (msg 1000), 2 lose (1001), 3 timeout (1003),
                              * 4 (1002), 5 (1004), 6 ending (1005..1007) */
     u32 flags;              /* 0xA58: SNOWB_FLAG_* */
-    char padA5C[0xA78 - 0xA5C];
+    s32 shake;              /* 0xA5C: percent: random jitter of six body nodes (update); 20 + 30 * |edge| on the ground,
+                             * +20 on a counter-steer bump, 100 / 70 on surface 'd' / 'c' (procColl) */
+    char padA60[0xA6C - 0xA60];
+    s16 spinHold;           /* 0xA6C: frames pad button 0x200 has been held in the air with groundFlags & 1 */
+    char padA6E[0xA70 - 0xA6E];
+    f32 airSpin;            /* 0xA70: yaw rate in the air: after 11 frames of spinHold, += stick x * 0.015, clamped +-0.2 */
+    f32 unkA74;             /* 0xA74: cleared on the ground */
     f32 maxSpeed;           /* 0xA78: speed cap; eased toward baseMaxSpeed (+-catch-up) by B520 */
-    char padA7C[0xA8C - 0xA7C];
+    char padA7C[0xA80 - 0xA7C];
+    s32 msgCooldown;        /* 0xA80: decremented each procColl; SnowBoarder_handleMsg ignores some messages while set */
+    s32 landImpact;         /* 0xA84: (|vel.y| - 100) / k, >= 0, passed to the sound object (flags 0x40000) */
+    char padA88[0xA8C - 0xA88];
 } SnowBoarder;
 
 #define SNOWB_FLAG_08     0x08  /* SnowBoarder_func_0000E124: selects the notify-call form */
@@ -199,7 +302,7 @@ SNOWB_ASSERT_OFFSET(parms.max, 0x758);
 SNOWB_ASSERT_OFFSET(input, 0x800);
 SNOWB_ASSERT_OFFSET(ai, 0x804);
 SNOWB_ASSERT_OFFSET(anim, 0x840);
-SNOWB_ASSERT_OFFSET(sub808, 0x808);
+SNOWB_ASSERT_OFFSET(sound, 0x808);
 SNOWB_ASSERT_OFFSET(unk844, 0x844);
 SNOWB_ASSERT_OFFSET(controller, 0x848);
 SNOWB_ASSERT_OFFSET(unk864, 0x864);
@@ -229,14 +332,57 @@ SNOWB_ASSERT_OFFSET(groundDist, 0x9D0);
 SNOWB_ASSERT_OFFSET(edgeFriction, 0x9F8);
 SNOWB_ASSERT_OFFSET(edgeGrip, 0x9FC);
 SNOWB_ASSERT_OFFSET(turnRate, 0xA00);
-SNOWB_ASSERT_OFFSET(spin, 0x970);
+SNOWB_ASSERT_OFFSET(edge, 0x970);
+SNOWB_ASSERT_OFFSET(edgeSlope, 0x978);
 SNOWB_ASSERT_OFFSET(hitFlags, 0xA10);
 SNOWB_ASSERT_OFFSET(health, 0xA14);
-SNOWB_ASSERT_OFFSET(unkA1C, 0xA1C);
+SNOWB_ASSERT_OFFSET(bumpSide, 0xA1C);
+SNOWB_ASSERT_OFFSET(bumpFwd, 0xA24);
 SNOWB_ASSERT_OFFSET(raceResult, 0xA54);
-SNOWB_ASSERT_OFFSET(unkA38, 0xA38);
+SNOWB_ASSERT_OFFSET(fwdSpeed, 0xA38);
 SNOWB_ASSERT_OFFSET(flags, 0xA58);
 SNOWB_ASSERT_OFFSET(maxSpeed, 0xA78);
+SNOWB_ASSERT_OFFSET(orient, 0x0CC);
+SNOWB_ASSERT_OFFSET(lastPos, 0x0DC);
+SNOWB_ASSERT_OFFSET(lastOrient, 0x0F4);
+SNOWB_ASSERT_OFFSET(dparms, 0x108);
+SNOWB_ASSERT_OFFSET(dparms.gvt, 0x170);
+SNOWB_ASSERT_OFFSET(dparms.tsc, 0x1D0);
+SNOWB_ASSERT_OFFSET(dparms.cog, 0x1E8);
+SNOWB_ASSERT_OFFSET(surfImp, 0x288);
+SNOWB_ASSERT_OFFSET(impulseAcc, 0x294);
+SNOWB_ASSERT_OFFSET(moveAcc, 0x2C8);
+SNOWB_ASSERT_OFFSET(angVel, 0x2FC);
+SNOWB_ASSERT_OFFSET(velDir, 0x30C);
+SNOWB_ASSERT_OFFSET(worldCog, 0x324);
+SNOWB_ASSERT_OFFSET(lastVel, 0x33C);
+SNOWB_ASSERT_OFFSET(up, 0x3B0);
+SNOWB_ASSERT_OFFSET(side, 0x3BC);
+SNOWB_ASSERT_OFFSET(parms.hpf, 0x548);
+SNOWB_ASSERT_OFFSET(parms.trt, 0x710);
+SNOWB_ASSERT_OFFSET(parms.tch, 0x7E8);
+SNOWB_ASSERT_OFFSET(prevPos, 0x890);
+SNOWB_ASSERT_OFFSET(impactScale, 0x910);
+SNOWB_ASSERT_OFFSET(unk91C, 0x91C);
+SNOWB_ASSERT_OFFSET(penetration, 0x920);
+SNOWB_ASSERT_OFFSET(impactVel, 0x92C);
+SNOWB_ASSERT_OFFSET(lastContactNormal, 0x948);
+SNOWB_ASSERT_OFFSET(noGroundFrames, 0x95C);
+SNOWB_ASSERT_OFFSET(airFrames, 0x9D4);
+SNOWB_ASSERT_OFFSET(groundNormal, 0x9D8);
+SNOWB_ASSERT_OFFSET(groundPlaneD, 0x9E4);
+SNOWB_ASSERT_OFFSET(localUp, 0xA04);
+SNOWB_ASSERT_OFFSET(unkA18, 0xA18);
+SNOWB_ASSERT_OFFSET(groundColor, 0xA30);
+SNOWB_ASSERT_OFFSET(onGround, 0xA4C);
+SNOWB_ASSERT_OFFSET(groundGentle, 0xA50);
+SNOWB_ASSERT_OFFSET(shake, 0xA5C);
+SNOWB_ASSERT_OFFSET(spinHold, 0xA6C);
+SNOWB_ASSERT_OFFSET(airSpin, 0xA70);
+SNOWB_ASSERT_OFFSET(msgCooldown, 0xA80);
+SNOWB_ASSERT_OFFSET(landImpact, 0xA84);
+typedef char snowb_assert_accum_size[sizeof(SnowBAccum) == 0x34 ? 1 : -1];
+typedef char snowb_assert_dparms_size[sizeof(SnowBDNodeParms) == 0x180 ? 1 : -1];
 typedef char snowb_assert_parm_size[sizeof(SnowBParm) == 0x18 ? 1 : -1];
 typedef char snowb_assert_child_size[sizeof(SnowBChild) == 0x154 ? 1 : -1];
 typedef char snowb_assert_parms_size[sizeof(SnowBoarderParms) == 0x2C0 ? 1 : -1];
