@@ -115,11 +115,13 @@ typedef struct BackupOptions {
 /* Ghost (replay) chunk header (0x10). The data (count words) follows in SRAM at
  * BACKUP_SRAM_GHOST_DATA; in RAM `data` points at it (Backup_readGhost). */
 typedef struct BackupGhost {
-    /* 0x0 */ s32 bits;         /* Backup_ghostGet / Set<field>: 0-1 Mode, 2-4 Bits2, 5 Flag5,
-                                 * 6-9 Bits6, 10-13 Course. openSession keeps the ghost only
-                                 * if mode and course match (ghostMatches). app_createGame
-                                 * copies Bits2 / Flag5 / Bits6 to game global +0x181..0x183
-                                 * (probably the ghost rider's character / variant / board) */
+    /* 0x0 */ s32 bits;         /* Backup_ghostGet / Set<field>: 0-1 Mode, 2-4 Rider, 5 BoardFlag
+                                 * (0x20, the BoardItem toggleVariant bit of the flags word),
+                                 * 6-9 Board, 10-13 Course. replay_saveGhost fills them from
+                                 * InputMgr recCourse / recRider / recFlags / recBoard (ghostSetHeader);
+                                 * openSession keeps the ghost only if mode and course match
+                                 * (ghostMatches); titproc's vs-ghost states copy rider / flag /
+                                 * board to InputMgr ghostRider / ghostFlags / ghostBoard */
     /* 0x4 */ s32 count;        /* data length in words */
     /* 0x8 */ s32 data;         /* RAM pointer (zeroed in the SRAM copy) */
     /* 0xC */ s32 unkC;

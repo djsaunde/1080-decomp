@@ -36,7 +36,13 @@ typedef struct InputMgr {
     /* 0x44 */ s32 nextProcState;  /* state to enter after the current step (select screen, fade) */
     /* 0x48 */ s32 thenProcState;  /* the state after that (arc: 10 / 9, h2h: 6) */
     /* 0x4C */ s32 playerRider;    /* player 1's rider; mgr_pickRivals never picks it */
-    char pad50[0x64 - 0x50];
+    /* 0x50 */ s32 playerFlags;    /* SelectWin out: character item flags | board item flags
+                                    * (0x20000 / 0x20 = the toggleVariant bits) */
+    /* 0x54 */ s32 playerBoard;    /* player 1's board (the three are SelectWin_init's out pointers;
+                                    * game_setupVsGhost builds the player rider from them) */
+    /* 0x58 */ s32 rider2;         /* player 2's rider / flags / board (the second SelectWin) */
+    /* 0x5C */ s32 flags2;
+    /* 0x60 */ s32 board2;
     /* 0x64 */ s32 course;         /* course id of the next race (mode procMain race state) */
     /* 0x68 */ s32 level;          /* difficulty 1..3 (mgr_initMatchRace) */
     /* 0x6C */ s32 demoIndex;      /* which attract demo n64proc / titproc runs next */
@@ -66,7 +72,16 @@ typedef struct InputMgr {
     /* 0x168 */ s32 replayData[2]; /* per player: recorded input, pad_startPlay arg 2 */
     /* 0x170 */ s32 replayLen[2];  /* per player: pad_startPlay arg 3; the replay timeouts
                                     * (h2h / mgr / arc onTimeout) are built from it */
-    char pad178[0x18C - 0x178];
+    /* 0x178 */ unsigned char recCourse;      /* replay_beginRecord*: the race being recorded (course, */
+    /* 0x179 */ unsigned char recRider;       /* playerRider, playerFlags, playerBoard as bytes); */
+    /* 0x17A */ unsigned char recFlags;       /* replay_saveGhost writes them into the ghost header */
+    /* 0x17B */ unsigned char recBoard;
+    char pad17C[0x181 - 0x17C];
+    /* 0x181 */ unsigned char ghostRider;     /* the saved ghost's rider / flags / board (titproc vs-ghost */
+    /* 0x182 */ unsigned char ghostFlags;     /* states, Backup_ghostGetRider / BoardFlag / Board); */
+    /* 0x183 */ unsigned char ghostBoard;     /* game_setupVsGhost builds the ghost rider from them */
+    /* 0x184 */ s32 unk184;        /* replay_beginRecord* / replay_saveGhost clear it */
+    char pad188[0x18C - 0x188];
     /* 0x18C */ s32 locked;        /* nonzero: every input_check* returns 0 */
     /* 0x190 */ void *fader;       /* the shared screen Fader (Fader_start / Fader_isDone /
                                     * Fader_checkDone); boot Bss 0x288 */
@@ -84,6 +99,8 @@ typedef char InputPad_released_check[(int)&((InputPad *)0)->released == 0x1C ? 1
 typedef char InputMgr_nextFlowMode_check[(int)&((InputMgr *)0)->nextFlowMode == 0x34 ? 1 : -1];
 typedef char InputMgr_procState_check[(int)&((InputMgr *)0)->procState == 0x40 ? 1 : -1];
 typedef char InputMgr_thenProcState_check[(int)&((InputMgr *)0)->thenProcState == 0x48 ? 1 : -1];
+typedef char InputMgr_board2_check[(int)&((InputMgr *)0)->board2 == 0x60 ? 1 : -1];
+typedef char InputMgr_ghost_check[(int)&((InputMgr *)0)->ghostBoard == 0x183 ? 1 : -1];
 typedef char InputMgr_course_check[(int)&((InputMgr *)0)->course == 0x64 ? 1 : -1];
 typedef char InputMgr_demoIndex_check[(int)&((InputMgr *)0)->demoIndex == 0x6C ? 1 : -1];
 typedef char InputMgr_pads_check[(int)&((InputMgr *)0)->pads == 0xE0 ? 1 : -1];
