@@ -22,14 +22,14 @@ typedef long long s64; typedef unsigned long long u64;
  *    sw v0,0x3C / lw s1,0x3C / return-from-home, and sp38/sp34 landed 0x30/0x2C.)
  * 2. Chain direction swapped: `sp34 = sp38 = (char *)D_0000004C;` -> target's
  *    store order sw t6,0x38 THEN sw t6,0x34 (old `sp38 = sp34 = ...` reversed it).
- * 3. First call arg1 via `*(int *)((char *)&D_8FFC_base + 8)` (base-0 alias,
+ * 3. First call arg1 via `*(int *)((char *)&gProcUsoPaths_8FFC_base + 8)` (base-0 alias,
  *    shared with 8FFC, in undefined_syms_auto.txt) -> 3-insn lui/addiu/lw-off-8
  *    with NO CSE against the &D_00000000 arg0 materialization.
  * 4. Separate `register char *o` (s1) alias of sp3C for the tail derefs;
  *    `tmp = base; FW(o,0x14) = (int)tmp;` two-step keeps the target's
  *    `move s2,s0; sw s2,20(s1)` (direct base store folds to sw s0 — wrong).
  * undefined_syms_auto.txt ADDITION (shared with 8FFC, line 578):
- *   D_8FFC_base = 0x00000000;
+ *   gProcUsoPaths_8FFC_base = 0x00000000;
  */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -38,7 +38,7 @@ extern int gl_func_00000000(...);  /* USO placeholder callee (jal 0) */
 extern char D_00000000;
 extern int D_0000004C, D_00000064;
 extern unsigned char D_00000181, D_00000182, D_00000183;
-extern char D_8FFC_base;   /* base-0 alias of D_00000000 (see app_createGame_00008FFC note) */
+extern char gProcUsoPaths_8FFC_base;   /* base-0 alias of D_00000000 (see app_createGame_00008FFC note) */
 char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     char *sp3C;            /* plain locals decl'd first: slots 0x3C/0x38/0x34 top-down */
     char *sp38;
@@ -48,7 +48,7 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     register char *tmp;    /* s2 */
 
     sp34 = sp38 = (char *)D_0000004C;
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));
+    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     if (FW(FW((*(int*)arg0), 0x8), 0x8) != 0) {
         D_00000181 = gl_func_00000000(FW((*(int*)arg0), 0x8));
         sp34 = (char *)(int)D_00000181;

@@ -100,7 +100,7 @@ extern char bu_90cc_g8_ld, bu_90cc_g8_st;      /* load/store alias pair: same ad
 
 
 extern s32 bu_90cc_gown;
-extern char bu_90cc_gtbl;
+extern char gNodeGlobals_90cc_gtbl;
 extern char bu_90cc_gpair;
 extern char gGfxLib_90cc_gdev;
 extern char SnowBoarder_vtbl_90cc_vt_self;  /* self +0x28 vtable (was decoded as literal 0; expected has lui/addiu reloc pair) */
@@ -154,7 +154,7 @@ extern void bu_90cc_d00_b(...);  /* second read of D_00000000.0 in the sp174 lis
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
 extern BuW90 bu_90cc_gcfg_ld, bu_90cc_gcfg_st, bu_90cc_gcfg_b_ld, bu_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
-extern BuW90 bu_90cc_d44_01, bu_90cc_d44_02, bu_90cc_d44_03, bu_90cc_d44_04, bu_90cc_d44_05, bu_90cc_d44_06, bu_90cc_d44_07, bu_90cc_d44_08, bu_90cc_d44_09, bu_90cc_d44_10, bu_90cc_d08_01, bu_90cc_d08_02, bu_90cc_d08_03, bu_90cc_d08_04, bu_90cc_d80_01, bu_90cc_d80_02, bu_90cc_d80_03;
+extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, bu_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void func_00000000_p4d(void *, char *, f64, f32);
 extern void bu_90cc_fz(...);  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2(...);  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
@@ -905,7 +905,7 @@ sw_end:
             if (sp58 >= 0x28U) {
                 func_00000000(&D_00008868, sp58);
             }
-            *(s32 *)((char *)&bu_90cc_gtbl + var_a2 * 4) = 0;
+            *(s32 *)((char *)&gNodeGlobals_90cc_gtbl + var_a2 * 4) = 0;
         }
         *(s32 *)((char *)&bu_90cc_gpair + 4) = 0x2A003;
         *(s32 *)&bu_90cc_gpair = 0;
@@ -976,7 +976,7 @@ sw_end:
             /* agent-c run 226: each draw-argument global is first loaded into var_s0 (the variable the
              * next statement overwrites) -- copy propagation sends the value on, the lui keeps s0:
              * the target's `lui s0, %hi(g); lw v0, %lo(g)(s0)` */
-            var_s0 = (char *)bu_90cc_d44_01.f28;
+            var_s0 = (char *)gNodeGlobals_90cc_d44_01.f28;
             var_v1 = (s32)var_s0;
             var_s0 = *(char **)((char *)(sp164) + 0x28);
             temp_s1 = (char *)(var_v1 + 0x70);
@@ -987,11 +987,11 @@ sw_end:
                 func_00000000(sp164);
                 func_00000000(sp164);
             }
-            var_s0 = (char *)bu_90cc_d08_01.f2C;
+            var_s0 = (char *)gNodeGlobals_90cc_d08_01.f2C;
             temp_v0_51 = (s32)var_s0;
             var_s0 = *(char **)((char *)(sp15C) + 0x28);
             ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp15C, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, temp_v0_51 + 0x70, 32.0f, 74.0f);
-            var_s0 = (char *)bu_90cc_d44_02.f04;
+            var_s0 = (char *)gNodeGlobals_90cc_d44_02.f04;
             var_t1 = (s32)var_s0;
             var_s0 = *(char **)((char *)(sp158) + 0x28);
             ((Vfn_ff)*(s32 *)((char *)(var_s0) + 0x5C))(*(s16 *)((char *)(var_s0) + 0x58) + sp158, *(s32 *)((char *)(arg0) + 0x870), *(s32 *)((char *)(arg0) + 0x86C), arg0, 8, (s32)var_t1 + 0x70, 32.0f, 74.0f);
@@ -1001,32 +1001,32 @@ sw_end:
         *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)bu_90cc_fz + 0);
         *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)bu_90cc_fz + 8);
         *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)bu_90cc_fz + 4);
-        var_s0 = (char *)bu_90cc_d44_03.f28;
+        var_s0 = (char *)gNodeGlobals_90cc_d44_03.f28;
         *(s32 *)((char *)(arg0) + 0x824) = (s32)var_s0;
-        var_s0 = (char *)bu_90cc_d80_01.f08;
+        var_s0 = (char *)gNodeGlobals_90cc_d80_01.f08;
         *(s32 *)((char *)(arg0) + 0x820) = (s32)var_s0;
-        var_s1 = (char *)bu_90cc_d08_02.f00;
+        var_s1 = (char *)gNodeGlobals_90cc_d08_02.f00;
         *(s32 *)((char *)(arg0) + 0x828) = (s32)var_s1;
-        var_s1 = (char *)bu_90cc_d08_03.f14;
+        var_s1 = (char *)gNodeGlobals_90cc_d08_03.f14;
         *(s32 *)((char *)(arg0) + 0x830) = (s32)var_s1;
         var_s1 = (char *)*(s32 *)((char *)&D_00000000 + 4);
         *(s32 *)((char *)(arg0) + 0x82C) = (s32)var_s1;
-        var_s1 = (char *)bu_90cc_d08_04.f10;
+        var_s1 = (char *)gNodeGlobals_90cc_d08_04.f10;
         *(s32 *)((char *)(arg0) + 0x834) = (s32)var_s1;
-        var_s1 = (char *)bu_90cc_d44_04.f0C;
+        var_s1 = (char *)gNodeGlobals_90cc_d44_04.f0C;
         *(s32 *)((char *)(arg0) + 0x838) = (s32)var_s1;
-        var_s0 = (char *)bu_90cc_d44_05.f2C;
+        var_s0 = (char *)gNodeGlobals_90cc_d44_05.f2C;
         *(s32 *)((char *)(arg0) + 0x844) = (s32)var_s0;
-        var_s0 = (char *)bu_90cc_d80_02.f04;
+        var_s0 = (char *)gNodeGlobals_90cc_d80_02.f04;
         *(s32 *)((char *)(arg0) + 0x860) = (s32)var_s0;
-        *(s32 *)((char *)(arg0) + 0x854) = (s32) bu_90cc_d44_06.f30;
-        var_s0 = (char *)bu_90cc_d44_07.f34;
+        *(s32 *)((char *)(arg0) + 0x854) = (s32) gNodeGlobals_90cc_d44_06.f30;
+        var_s0 = (char *)gNodeGlobals_90cc_d44_07.f34;
         *(s32 *)((char *)(arg0) + 0x85C) = (s32)var_s0;
-        var_s0 = (char *)bu_90cc_d44_08.f38;
+        var_s0 = (char *)gNodeGlobals_90cc_d44_08.f38;
         *(s32 *)((char *)(arg0) + 0x858) = (s32)var_s0;
-        var_s0 = (char *)bu_90cc_d80_03.f00;
+        var_s0 = (char *)gNodeGlobals_90cc_d80_03.f00;
         *(s32 *)((char *)(arg0) + 0x864) = (s32)var_s0;
-        var_s0 = (char *)bu_90cc_d44_09.f14;
+        var_s0 = (char *)gNodeGlobals_90cc_d44_09.f14;
         *(s32 *)((char *)(arg0) + 0x874) = (s32)var_s0;
 
         *(char **)((char *)(arg0) + 0x804) = func_00000000(0, arg0, bu_90cc_d44_10.f24);

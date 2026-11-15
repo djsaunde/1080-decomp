@@ -17,7 +17,7 @@
  * Body: store the mode word to the GBI-emit flags global (sym1924 @0x3C8E0 =
  * the existing D_00000000_3c8e0), dispatch on the low byte to
  * setmode(&modes[k]) where the mode table is Data sym1947 @0x2D700 (zero alias
- * D_44B78_modes; 0x50-byte OSViMode records: 0x0, 0x50, 0xA0, 0x280, 0x320,
+ * gl_osViModeTable_44B78_modes; 0x50-byte OSViMode records: 0x0, 0x50, 0xA0, 0x280, 0x320,
  * 0x3C0, 0x960 -> the addends bake into the lui/addiu pairs), case 2 picks
  * &modes[2] for osTvType == 1 (sym1351 = 0x80000300 = D_00000000_tvtype)
  * else &modes[30], and cases 4/6/7 + out-of-range go to the error printer
@@ -31,7 +31,7 @@
  * burns the one ugen ring slot that puts the selector in t8 -- `mode & 0xFF`
  * gives t7 and every later temp one register low); cases in source order
  * 1, 3, 5, 8, 2, 0, default (= the target's arm layout); the mode-table arms
- * as `(char *)&D_44B78_modes + K` call args; `f = 2; if (mode & 0x200) f =
+ * as `(char *)&gl_osViModeTable_44B78_modes + K` call args; `f = 2; if (mode & 0x200) f =
  * 0x42; if (mode & 0x400) f &= ~2;` for the tail. */
 #include "common.h"
 
@@ -39,9 +39,9 @@ extern int D_00000000;
 extern int gl_func_00000000();
 extern s32 D_00000000_3c8e0;     /* GBI-emit flags word (sym1924 @0x3C8E0) */
 extern s32 D_00000000_tvtype;    /* osTvType (sym1351 = 0x80000300) */
-extern char D_44B78_modes;       /* OSViMode table (sym1947 @0x2D700), zero alias */
+extern char gl_osViModeTable_44B78_modes;       /* OSViMode table (sym1947 @0x2D700), zero alias */
 
-#define VIMODE_44B78(k) ((char *)&D_44B78_modes + (k))
+#define VIMODE_44B78(k) ((char *)&gl_osViModeTable_44B78_modes + (k))
 
 void gfx_setVideoMode(int mode) {
     int f;

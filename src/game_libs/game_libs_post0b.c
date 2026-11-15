@@ -151,12 +151,12 @@ extern void gl_func_0003D074();
 // EXACT 2026-10-16: the list head and the vtable record were one placeholder
 //   (&D_00000000 + 0), so IDO CSE'd them; the target has two luis (head in s0,
 //   record address hoisted to s4). Two distinct base-0 externs gl___osActiveQueue_34458_head /
-//   D_34458_obj fix it. Templates as &D_00000000 + K (lui 2; addiu -X).
+//   gSysApi_34458_obj fix it. Templates as &D_00000000 + K (lui 2; addiu -X).
 //   Frame: outA/outB at sp+0x50/0x54 need `volatile int pad;` first and
 //   outB declared before outA.
 extern char D_0001E3F4, D_0001E400;
 extern char *gl___osActiveQueue_34458_head;
-extern char *D_34458_obj;
+extern char *gSysApi_34458_obj;
 int dbg_printThreads() {
     char *n = gl___osActiveQueue_34458_head;
     volatile int pad;
@@ -165,7 +165,7 @@ int dbg_printThreads() {
     int vB;
     gl_func_00000000((char *)&D_00000000 + 0x1E3F4);
     while (*(int *)(n + 4) != -1) {
-        (*(int (**)(int, int *, int *))(D_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
+        (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
         s1 = gl_func_00000000(*(int *)(n + 0x14));
         vB = gl_func_00000000(*(unsigned short *)(n + 0x10));
         gl_func_00000000((char *)&D_00000000 + 0x1E400, s1, *(int *)(n + 0x14), vB,
@@ -224,7 +224,7 @@ int dbg_printThreads() {
  * gets 3 nops (320 bytes), compiled after the original unit's head (343F4
  * + 34458) it gets the target's 2 (316). Body below = NM reference. */
 #ifdef NON_MATCHING
-extern char *D_34548_obj;
+extern char *gSysApi_34548_obj;
 extern char *D_34548_slot;
 #define SLOT_34548 D_34548_slot
 void dbg_faultThread(void *a0) {
@@ -240,7 +240,7 @@ void dbg_faultThread(void *a0) {
             continue;
         }
         s0 = SLOT_34548 + 0x20;
-        (*(int (**)())(D_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
+        (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
         gl_func_00000000((char *)&D_00000000 + 0x1E424);
         gl_func_00000000(SLOT_34548);
         r5 = gl_func_00000000(*(int *)(SLOT_34548 + 0x14));
@@ -614,7 +614,7 @@ int __pure_virtual_called() {
 //   (224 vs 236 bytes, 3 words short).  The target's every access is a
 //   `%hi/%lo` SYMBOL pair (`lui at,4; sb tN,-0x470C(at)`) = a base-0 USO data
 //   symbol + 0x3B8xx, one lui per access.  Rewritten with per-site aliases
-//   (the 349E0 recipe, undefined_syms_auto.txt): D_34A78_rec is the record
+//   (the 349E0 recipe, undefined_syms_auto.txt): gSysApi_34A78_rec is the record
 //   pointer read twice (adjacent same-symbol reads DO hold a `lui v0; addiu
 //   v0` base -- matches the target's v0), D_34A78_b / _c are the two stored
 //   &D values (distinct symbols -> their own `lui t6/t8; addiu`), and the
@@ -9907,11 +9907,11 @@ typedef struct { char pad[0x68]; short off68; char pad6A[2]; void (*fn6C)(); } V
 typedef struct { char pad[0xC]; void *pC; char pad10[0x18]; VT415A4 *vt; } O415A4;
 typedef struct { int a0, a4, a8, aC, a10, a14; float f18, f1C; char pad20[8]; int a28; int a2C; float v30[4]; } T415A4;
 extern int D_415A4_z;
-extern char gSysLib_415A4_s1[], D_415A4_s2[], D_415A4_s3[], gSysLib_415A4_s4[], gGfxLib_415A4_s5[], gSysLib_415A4_s6[];
+extern char gSysLib_415A4_s1[], gMainHeap_415A4_s2[], D_415A4_s3[], gSysLib_415A4_s4[], gGfxLib_415A4_s5[], gSysLib_415A4_s6[];
 extern O415A4 *D_415A4_g1;
 extern int D_415A4_g2, D_415A4_g3;
-extern T415A4 D_415A4_t;
-extern T415A4 D_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
+extern T415A4 gWindowDefaults_415A4_t;
+extern T415A4 gWindowDefaults_415A4_tA; /* run 149: second name for the a28 stores (absolute lui at like the target) */
 extern char D_415A4_u[];
 extern char D_415A4_v[];
 extern char *D_415A4_g4;
@@ -9926,7 +9926,7 @@ void App_main(O415A4 *self) {
     *(int *)((char *)&D_415A4_z + 0x3C160) = 0;
     gl_func_00000000(gSysLib_415A4_s1, &a, &b);
     if (1) {}
-    gl_func_00000000(D_415A4_s2, a, a + b);
+    gl_func_00000000(gMainHeap_415A4_s2, a, a + b);
     gl_func_00000000(0);
     gl_func_00000000(D_415A4_s3, 50);
     if (1) {}
@@ -9934,7 +9934,7 @@ void App_main(O415A4 *self) {
     D_415A4_g2 = gl_func_00000000(0);
     D_415A4_g3 = gl_func_00000000(0);
     if (1) {} /* agent-c run 303: BB split (the mode word v leaves the call block: v0 allowed) */
-    t = &D_415A4_t;
+    t = &gWindowDefaults_415A4_t;
     t->a4 = 2; /* agent-c run 303: agent-g run 210's `+ 0 * (int)(t->v30)` fold dropped (its address CSE took the Vec4 base off v0) */
     t->a0 = 0;
     t->a10 = 0;
@@ -9942,25 +9942,25 @@ void App_main(O415A4 *self) {
     t->a8 = 320; t->aC = 240; /* agent-g run 228: one line, 320 first (target t9 = 0x140, t0 = 0xF0; kit CCXXXIV): 94.49 -> 94.59 */
     v = (float *)1030; /* agent-c run 303: after the a8 / aC line (target `li v0,1030` after `li t0,240`): 99.26 -> 99.42 */
     t->f18 = 100.0f;
-    t->f1C = 16000.0f; if (1) {} D_415A4_tA.a28 = (int)v;
+    t->f1C = 16000.0f; if (1) {} gWindowDefaults_415A4_tA.a28 = (int)v;
     v = (float *)((int)v | 2);
     v = (float *)((int)v | 6); if (1) {}
-    v = (float *)((int)v | 0x400); D_415A4_tA.a28 = (int)v + 0 * (int)(v);
+    v = (float *)((int)v | 0x400); gWindowDefaults_415A4_tA.a28 = (int)v + 0 * (int)(v);
     /* agent-c run 303: the folded use of v ranks the mode word above t (v0 / v1 as the target); a value-preserving `| 2` (1030 already has bit 1) ahead of the `| 6`: uopt folds
      * only the FIRST identity OR on the known constant, so the target's `ori 6` / `ori 0x400` chain both survive; the a2C
-     * store through the plain D_415A4_t name reuses the record base v1 like the target (t->a2C went absolute); line
+     * store through the plain gWindowDefaults_415A4_t name reuses the record base v1 like the target (t->a2C went absolute); line
      * layout from a random line-join / BB-split sweep (200): 97.70 -> 99.26, same length. */
     /* agent-c run 302: v = 1030 assigned before t (target `li v0,1030` among the record constants), one split after the first store: 97.35 -> 97.70. agent-c run 300: split after the first store (line-split sweep, as1 source-line tie): 97.30 -> 97.35 */
     /* agent-g run 279: the mode word held in v from the start (int -> pointer conversions keep it a separate web),
      * BOTH stores through the absolute tA name (target `lui at; sw t1,40(at)` twice): the first store keeps its own
      * `addiu t1,1030` and the ori chain survives (grid of holder / stores / BB splits): 95.92 -> 97.30, same length.
      * A new int local for the chain also gives 97.19 but grows the frame 56 -> 64.
-     * Previous spelling `t->a28 = 1030; if (1) {} v = (float *)(t->a28 | 6); if (1) {} D_415A4_tA.a28 = (int)v | 0x400;` -- agent-g run 274: the chain reads the
+     * Previous spelling `t->a28 = 1030; if (1) {} v = (float *)(t->a28 | 6); if (1) {} gWindowDefaults_415A4_tA.a28 = (int)v | 0x400;` -- agent-g run 274: the chain reads the
      * just-stored word back (store-forwarded into a register after constant folding, so the ors stay unfolded like the
      * target's ori chain; target addiu v0,1030 hoisted with the record constants): 95.58 -> 95.92, same length.
      * agent-g run 257 (previous spelling `v = 1030; t->a28 = v; v |= 6; if (1) {} v |= 0x400; tA.a28 = v`): the mode word through a variable (1030 | 6 | 0x400 == 1030; the target's unfolded ori chain says the value went through one), BB split before the 0x400 (shape grid 90 + 216): 94.87 -> 95.20; held in an existing local (v, assigned again below before any other read) instead of a new one keeps the 56-byte frame, and v's web takes v0 like the target's chain: 95.58 with the p reuse at the vcall, same length */
     if (1) { v = t->v30; } /* run 149: v from t (target addiu v0 base), stores z-first */
-    D_415A4_t.a2C = 1; v[3] = v[2] = v[1] = v[0] = 0.0f; /* agent-c run 303: a2C on the Vec4 line (as1 source-line tie: the base's addiu before the a2C sw) */
+    gWindowDefaults_415A4_t.a2C = 1; v[3] = v[2] = v[1] = v[0] = 0.0f; /* agent-c run 303: a2C on the Vec4 line (as1 source-line tie: the base's addiu before the a2C sw) */
     gl_func_00000000((char *)&D_00000000 + 0x1F5D4, 0);
     gl_func_00000000(gSysLib_415A4_s4);
     gl_func_00000000();
@@ -10755,7 +10755,7 @@ void gfx_calcHilite_00042778(int *a0, float *a1, float *a2) {
  * ROM path) kill the s0=0x38000 far-global pool base; base-0 aliases keep
  * t2/t0/s0 as separate registers. */
 extern int gl_d_42938_idx;            /* record index global (base-0 sym) */
-extern char gl_d_42938_rec;           /* 0x50-stride record array base    */
+extern char gl_osViModeTable_42938_rec;           /* 0x50-stride record array base    */
 extern int gl_d_42938_ia;             /* SetTextureImage src A            */
 extern int gl_d_42938_ib;             /* SetTextureImage src B            */
 extern char gl_d_42938_cb;            /* arg0 of the three draw calls     */
@@ -10803,17 +10803,17 @@ void dbg_screenOverlay_00042938(void) {
     if (gl_d_42938_fa[0] == 0) {
         gl_d_42938_fa[0] = 1;
         gl_d_42938_pa =
-            FI38(&gl_d_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x1C);
+            FI38(&gl_osViModeTable_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x1C);
     }
     if (gl_d_42938_fb[0] == 0) {
         gl_d_42938_fb[0] = 1;
         gl_d_42938_pb =
-            FI38(&gl_d_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x30);
+            FI38(&gl_osViModeTable_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x30);
     }
     if (gl_d_42938_fc[0] == 0) {
         gl_d_42938_fc[0] = 1;
         gl_d_42938_pc =
-            FI38(&gl_d_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x44);
+            FI38(&gl_osViModeTable_42938_rec + (u32)gl_d_42938_idx * 0x50, 0x44);
     }
 
     four = 4.0f;
@@ -10883,7 +10883,7 @@ void dbg_screenOverlay_00042938(void) {
     idx = gl_d_42938_idx;
     va = gl_d_42938_pa;
     lo1 = gl_d_42938_sa;
-    rec = &gl_d_42938_rec + idx * 0x50;
+    rec = &gl_osViModeTable_42938_rec + idx * 0x50;
     FI38(rec, 0x1C) = (((((va >> 16) & 0xFFFF) + lo1) % 65535) << 16) |
                       (((va & 0xFFFF) + lo1) % 65535);
     vb = gl_d_42938_pb;
@@ -26356,7 +26356,7 @@ void MemTracker_walk_00060318(int *a0, int a1) {
 char *MemTrackerMgr_ctor(char *o) {
     extern int D_00000000;
     extern int MemTrackerMgr_vtbl_sym_a_00060370, gSysLib_sym_b_00060370;
-    extern char *D_global_00060370;
+    extern char *gMemTrackerMgr_global_00060370;
     char *a;
     int b;
     char *c;
@@ -26373,7 +26373,7 @@ char *MemTrackerMgr_ctor(char *o) {
         p[3] = 0;
         p[0] = gl_func_00000000(5440);
     }
-    D_global_00060370 = o;
+    gMemTrackerMgr_global_00060370 = o;
     gl_func_00000000(o);
     a = (char *)gl_func_00000000(sMemTrackTotal, 0);
     b = gl_func_00000000(&gSysLib_sym_b_00060370);

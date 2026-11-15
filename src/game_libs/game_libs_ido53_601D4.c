@@ -19,7 +19,7 @@
  * the assembler bakes hi=2 into the lui imm and lo=0x1CA4 into the
  * addiu under the HI16/LO16 relocs — this is how a "baked-USO-symbol"
  * lui;addiu pair IS reachable at .o level (addend, not int literal).
- * Blank externs: D_00000000_trk601 = tracker-state ptr global;
+ * Blank externs: gMemTrackerMgr_trk601 = tracker-state ptr global;
  * gl_func_00000000_init601 / _get601 = the two blank jals.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 typedef struct {
@@ -35,13 +35,13 @@ typedef struct {
     Rec601 *f40;        /* 0x40 — current record */
 } Trk601;
 
-extern Trk601 *D_00000000_trk601;
+extern Trk601 *gMemTrackerMgr_trk601;
 extern char D_00000000[];
 extern void gl_func_00000000_init601();
 extern int gl_func_00000000_get601();
 
 int memtrack_end(void) {
-    Rec601 *v1 = D_00000000_trk601->f40;
+    Rec601 *v1 = gMemTrackerMgr_trk601->f40;
     int v0;
 
     if (v1 == 0) {
@@ -50,6 +50,6 @@ int memtrack_end(void) {
     v0 = gl_func_00000000_get601();
     v1->f04 = v0;
     v1->f08 = v1->f08 + v0 - v1->f00;
-    D_00000000_trk601->f40 = (Rec601 *)v1->f20;
+    gMemTrackerMgr_trk601->f40 = (Rec601 *)v1->f20;
     return v1->f08;
 }

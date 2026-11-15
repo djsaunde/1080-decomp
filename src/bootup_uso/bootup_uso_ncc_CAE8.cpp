@@ -21,7 +21,7 @@ struct V3 { float x, y, z;
     V3 &operator=(const V3 &v) { set(v); return *this; } };
 extern "C" {
 void func_00000000(...);
-extern int bu_cae8_ta[], bu_cae8_tb[];
+extern int gPlayerBinPaths_cae8_ta[], gBoardBinPaths_cae8_tb[];
 extern int bu_cae8_x_ld, bu_cae8_x_st, bu_cae8_y;
 extern int bu_cae8_mode;
 extern float bu_cae8_k958;
@@ -30,8 +30,8 @@ extern char bu_cae8_d8abc[];
 #define I(o) (*(int *)(st + (o)))
 #define F(o) (*(float *)(st + (o)))
 extern "C" void SnowBoarder_func_0000CAE8(char *st) {
-    func_00000000(st, 1, bu_cae8_ta[I(0x8C4)]);
-    func_00000000(st + 0x3EC, 1, bu_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
+    func_00000000(st, 1, gPlayerBinPaths_cae8_ta[I(0x8C4)]);
+    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
     if (I(0xA58) & 0x80) func_00000000(st);
     func_00000000(st + 0x90C, (st + 0x17C) - st);
     F(0x9D0) = bu_cae8_k958;

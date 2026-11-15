@@ -14,7 +14,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * target's %hi/%lo(func_00000008 + 0x28) — the F7D0 trick, addend baked in
  * the addiu (form-a LO16-fold, unreachable via struct-member address-of). */
 extern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */
-extern char D_0000002C;        /* == func_00000008 + 0x24 */
+extern char gSnowBoard_0000002C;        /* == func_00000008 + 0x24 */
 typedef struct {
     char pad44[0x44];
     char *ptr44;                /* +0x44: object holder, result stored at +0x114 */
@@ -56,7 +56,7 @@ void *game_createProcessWindow(int a0, int a1) {
     result = func_00000000(0, 0x64, &D_0000C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
                            0x140, 0xF0, 0x70, flags | 0x400, 0x71, 2, 0);
     p = (float *)result;
-    q = &D_0000002C;
+    q = &gSnowBoard_0000002C;
     func_00000000(q, p);
     *(int *)(func_000000F0.ptr44 + 0x114) = result;
     return (void *)result;

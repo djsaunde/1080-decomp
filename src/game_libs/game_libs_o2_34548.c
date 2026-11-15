@@ -41,7 +41,7 @@ int dbg_threadStateName(int a0) {
 }
 
 extern char *gl___osActiveQueue_34458_head;
-extern char *D_34458_obj;
+extern char *gSysApi_34458_obj;
 int dbg_printThreads() {
     char *n = gl___osActiveQueue_34458_head;
     volatile int pad;
@@ -50,7 +50,7 @@ int dbg_printThreads() {
     int vB;
     gl_func_00000000((char *)&D_00000000 + 0x1E3F4);
     while (*(int *)(n + 4) != -1) {
-        (*(int (**)(int, int *, int *))(D_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
+        (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
         s1 = gl_func_00000000(*(int *)(n + 0x14));
         vB = gl_func_00000000(*(unsigned short *)(n + 0x10));
         gl_func_00000000((char *)&D_00000000 + 0x1E400, s1, *(int *)(n + 0x14), vB,
@@ -59,7 +59,7 @@ int dbg_printThreads() {
     }
 }
 
-extern char *D_34548_obj;
+extern char *gSysApi_34548_obj;
 extern char *D_34548_slot;
 void dbg_faultThread(void *a0) {
     int sp5C;
@@ -74,7 +74,7 @@ void dbg_faultThread(void *a0) {
             continue;
         }
         s0 = D_34548_slot + 0x20;
-        (*(int (**)())(D_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
+        (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
         gl_func_00000000((char *)&D_00000000 + 0x1E424);
         gl_func_00000000(D_34548_slot);
         r5 = gl_func_00000000(*(int *)(D_34548_slot + 0x14));

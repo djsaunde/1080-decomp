@@ -14,7 +14,7 @@
  * alias is load-bearing: decl order sets rc's cross-call spill slot
  * (target 0x1C vs 0x18 in the 0x20 frame); the no-alias direct-deref
  * spelling is byte-identical (both renumber rc's spill to 0x1C).
- * Blank externs: D_00000000_dbg669 = the debug-state pointer global
+ * Blank externs: gSysApi_dbg669 = the debug-state pointer global
  * (kept-address head load in $v1/$v0, then two lui/lw reloads after the
  * aliasing f34 store / the calls); D_00000000 + 0x217C/0x2184/0x218C/
  * 0x21A4/0x21AC = the five format strings; gl_func_00000000_print669 =
@@ -31,20 +31,20 @@ typedef struct {
     void (*vt44)();     /* 0x44 — banner print */
 } Dbg669;
 
-extern Dbg669 *D_00000000_dbg669;
+extern Dbg669 *gSysApi_dbg669;
 extern char D_00000000[];
 extern void gl_func_00000000_print669();
 
 void boot_reloadMainUso_000669B8(void) {
     int rc;
-    Dbg669 *st = D_00000000_dbg669;
+    Dbg669 *st = gSysApi_dbg669;
 
     st->f34 = st->f30;
-    D_00000000_dbg669->vt44((char *)D_00000000 + 0x217C);
-    rc = D_00000000_dbg669->vt40((char *)D_00000000 + 0x2184);
+    gSysApi_dbg669->vt44((char *)D_00000000 + 0x217C);
+    rc = gSysApi_dbg669->vt40((char *)D_00000000 + 0x2184);
     if (rc != 0) {
         gl_func_00000000_print669((char *)D_00000000 + 0x218C, rc);
     }
     gl_func_00000000_print669((char *)D_00000000 + 0x21A4, rc);
-    gl_func_00000000_print669((char *)D_00000000 + 0x21AC, D_00000000_dbg669->f00, D_00000000_dbg669->f04);
+    gl_func_00000000_print669((char *)D_00000000 + 0x21AC, gSysApi_dbg669->f00, gSysApi_dbg669->f04);
 }

@@ -9,7 +9,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * target's %hi/%lo(func_00000008 + 0x28) — the F7D0 trick, addend baked in
  * the addiu (form-a LO16-fold, unreachable via struct-member address-of). */
 extern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */
-extern char D_0000002C;        /* == func_00000008 + 0x24 */
+extern char gSnowBoard_0000002C;        /* == func_00000008 + 0x24 */
 typedef struct {
     char pad44[0x44];
     char *ptr44;                /* +0x44: object holder, result stored at +0x114 */

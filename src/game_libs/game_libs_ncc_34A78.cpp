@@ -10,7 +10,7 @@
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY (agent-c run 136). */
 extern "C" {
 extern int gl_func_00000000(...);
-extern int D_34A78_rec, D_34A78_b, D_34A78_c;
+extern int gSysApi_34A78_rec, D_34A78_b, D_34A78_c;
 extern signed char gl_ref_0003B8F4, gl_ref_0003B8F5, gl_ref_0003B8F8, gl_ref_0003B8F9;
 extern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st, gl_ref_0003B900, gl_ref_0003B904;
 }
@@ -20,8 +20,8 @@ extern "C" void app_initSystem(int a0) {
     gl_func_00000000();
     gl_func_00000000(a0);
     gl_func_00000000(a0);
-    *(int *)(*(char **)&D_34A78_rec + 0x8C) = (int)&D_34A78_b;
-    *(int *)(*(char **)&D_34A78_rec + 0x90) = (int)&D_34A78_c;
+    *(int *)(*(char **)&gSysApi_34A78_rec + 0x8C) = (int)&D_34A78_b;
+    *(int *)(*(char **)&gSysApi_34A78_rec + 0x90) = (int)&D_34A78_c;
     if (gl_ref_0003B8FC != (int)0xA8000000) {
         gl_ref_0003B8F4 = 3;
         gl_ref_0003B8FC_st = (int)0xA8000000;

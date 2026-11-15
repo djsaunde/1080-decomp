@@ -3,7 +3,7 @@
  * end without cfe's closing-brace `b epilogue; nop` marker, so the
  * "-O0 return-value dead-double-b" gap of the cfe build (67 words) is gone.
  * The bodies are the cfe NM bodies unchanged (plain obj home + register
- * s0/s1/s2 aliases; D_8FFC_base defeats the &D CSE for the +8 read).
+ * s0/s1/s2 aliases; gProcUsoPaths_8FFC_base defeats the &D CSE for the +8 read).
  * Spliced into game_libs_mid.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 int gl_func_00000000(...);
@@ -11,7 +11,7 @@ extern char D_00000000;
 extern int D_0000004C, D_00000050, D_00000064;
 extern unsigned char D_0000017D;
 extern unsigned char D_00000179, D_0000017A, D_0000017B, D_00000181, D_00000182, D_00000183;
-extern char D_8FFC_base;
+extern char gProcUsoPaths_8FFC_base;
 
 int app_createGame_00008FFC(int a0, int a1, int a2) {
     int obj;
@@ -19,7 +19,7 @@ int app_createGame_00008FFC(int a0, int a1, int a2) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));
+    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     gl_func_00000000(D_0000004C, D_0000017D);
     D_00000050 = D_00000050 & 0x20;
     obj = gl_func_00000000(&D_00000000, D_00000064, 5, a2);

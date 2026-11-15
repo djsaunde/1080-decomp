@@ -1,6 +1,6 @@
 /* IDO 7.1 NCC (C++) -O0 donors for app_createGame_00009204 (60 words) and
  * app_createGame_000092F4 (58 words), siblings of app_createGame_00008FFC: re-decoded on the
- * 8FFC shape (plain obj home + register base/o/tmp aliases, D_8FFC_base for
+ * 8FFC shape (plain obj home + register base/o/tmp aliases, gProcUsoPaths_8FFC_base for
  * the &D+8 read) and compiled with NCC -O0 (no cfe closing-brace b-epilogue).
  * The old "s-reg promotion cap" note was the missing obj home + aliases.
  * Spliced into game_libs_mid.c.o via REPLACE_FUNC_BODY. */
@@ -8,7 +8,7 @@ extern "C" {
 int gl_func_00000000(...);
 extern char D_00000000;
 extern int D_0000004C, D_00000058, D_00000064;
-extern char D_8FFC_base;
+extern char gProcUsoPaths_8FFC_base;
 
 int app_createGame_00009204(int a0, int a1, int a2) {
     int obj;
@@ -16,7 +16,7 @@ int app_createGame_00009204(int a0, int a1, int a2) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));
+    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     gl_func_00000000(D_0000004C, D_00000058);
     obj = gl_func_00000000(&D_00000000, D_00000064, 6, a2);
     base = (char *)&D_00000000;
@@ -40,7 +40,7 @@ int app_createGame_000092F4(int a0, int a1) {
     register int *o;
     register char *tmp;
 
-    gl_func_00000000(&D_00000000, *(int *)((char *)&D_8FFC_base + 8));
+    gl_func_00000000(&D_00000000, *(int *)((char *)&gProcUsoPaths_8FFC_base + 8));
     gl_func_00000000(D_0000004C, D_0000004C);
     obj = gl_func_00000000(&D_00000000, 8, 2, a1);
     base = (char *)&D_00000000;

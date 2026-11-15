@@ -60,7 +60,7 @@ struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; ch
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
 extern "C" {
 extern u32 gl_d_42938_idx;
-extern Rec gl_d_42938_rec[];
+extern Rec gl_osViModeTable_42938_rec[];
 extern int gl_d_42938_ia, gl_d_42938_ib;
 extern char gl_d_42938_cb, gl_d_42938_z;
 extern int gl_d_42938_fa[], gl_d_42938_fb[], gl_d_42938_fc[];
@@ -110,15 +110,15 @@ extern "C" void dbg_screenOverlay_00042938(void) {
      * dropped (99.769 -> 99.884) */
     if (gl_d_42938_fa[0] == 0) {
         gl_d_42938_fa[0] = 1;
-        gl_d_42938_pa = gl_d_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].a;
+        gl_d_42938_pa = gl_osViModeTable_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].a;
     }
     if (gl_d_42938_fb[0] == 0) {
         gl_d_42938_fb[0] = 1;
-        gl_d_42938_pb = gl_d_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].b;
+        gl_d_42938_pb = gl_osViModeTable_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].b;
     }
     if (gl_d_42938_fc[0] == 0) {
         gl_d_42938_fc[0] = 1;
-        gl_d_42938_pc = gl_d_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].c;
+        gl_d_42938_pc = gl_osViModeTable_42938_rec[0 * ((int)&gl_d_42938_z) + gl_d_42938_idx].c;
     }
     gDPSetScissor(G.o->ctx->nC(), 0, 0, 0, gl_d_42938_ia, gl_d_42938_ib);
     gImmp1(G.o->ctx->nC(), 0xB6, -1);
@@ -169,7 +169,7 @@ extern "C" void dbg_screenOverlay_00042938(void) {
     /* agent-c run 279: the tail written with NO named locals (the record via a macro, every global read
      * inline): six dead frame homes gone (frame 0x88 -> 0x70, target 0x58) and the 0x2E0 store pair
      * re-ordered; 97.60 -> 98.11 */
-#define R (&gl_d_42938_rec[gl_d_42938_idx])
+#define R (&gl_osViModeTable_42938_rec[gl_d_42938_idx])
     R->a = (((((gl_d_42938_pa >> 16) & 0xFFFF) + gl_d_42938_sa) % 65535) << 16) | (((gl_d_42938_pa & 0xFFFF) + gl_d_42938_sa) % 65535);
     R->b = (((((gl_d_42938_pb >> 16) & 0xFFFF) + gl_d_42938_sb) % 65535) << 16) | (((gl_d_42938_pb & 0xFFFF) + gl_d_42938_sb) % 65535);
     R->c = (((((gl_d_42938_pc >> 16) & 0xFFFF) + gl_d_42938_sb) % 65535) << 16) | (((gl_d_42938_pc & 0xFFFF) + gl_d_42938_sb) % 65535);

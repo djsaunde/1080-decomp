@@ -12,6 +12,6 @@ struct M8 { int a, b; M8() { b = 0; a = 0; } };
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };
 struct G { M8 m8; char pad[0x28 - 8]; W4 w; G() {} };
-extern "C" G D_4E584_arr;
-G D_4E584_arr
+extern "C" G gWindowDefaults_4E584_arr;
+G gWindowDefaults_4E584_arr
 ;

@@ -22,7 +22,7 @@ extern "C" {
 int func_00000000(...);
 extern char D_00000000;
 extern char func_000089FC[], func_00008A40[];
-extern int bu_b1b4_tblA[], bu_b1b4_tblB[];
+extern int gBoardModelUsoPaths_b1b4_tblA[], gBoarderUsoPaths_b1b4_tblB[];
 }
 struct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };
 struct Bb4Word { int a; Bb4Word() { a = 0; } };
@@ -56,9 +56,9 @@ extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned i
     func_00000000(func_00008A40 + 0x8, 0);
     func_00000000(func_00008A40 + 0x14, 0);
     if (idx != 0) {
-        if (func_00000000(bu_b1b4_tblA[idx]) == 0) func_00000000(&D_00000000, bu_b1b4_tblA[idx]);
+        if (func_00000000(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) func_00000000(&D_00000000, gBoardModelUsoPaths_b1b4_tblA[idx]);
     }
-    if (func_00000000(bu_b1b4_tblB[cat]) == 0) func_00000000(&D_00000000, bu_b1b4_tblB[cat]);
+    if (func_00000000(gBoarderUsoPaths_b1b4_tblB[cat]) == 0) func_00000000(&D_00000000, gBoarderUsoPaths_b1b4_tblB[cat]);
     func_00000000();
     func_00000000(&D_00000000, a4, a3, &o);
     func_00000000();

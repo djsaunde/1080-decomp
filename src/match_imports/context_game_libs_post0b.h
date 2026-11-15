@@ -478,7 +478,7 @@ void hostio_start(void);
 extern int gl_func_00000000();
 extern int D_00000000;
 int __pure_virtual_called();
-extern int D_34A78_rec, D_34A78_b, D_34A78_c;
+extern int gSysApi_34A78_rec, D_34A78_b, D_34A78_c;
 extern signed char gl_ref_0003B8F4, gl_ref_0003B8F5, gl_ref_0003B8F6, gl_ref_0003B8F7,
                    gl_ref_0003B8F8, gl_ref_0003B8F9;
 extern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st,
@@ -1481,7 +1481,7 @@ extern int D_00000000;
 extern float sqrtf(float);
 float gfx_calcHilite_00042778(void *a0, char *a1, char *a2);
 extern int gl_d_42938_idx;
-extern char gl_d_42938_rec;
+extern char gl_osViModeTable_42938_rec;
 extern int gl_d_42938_ia;
 extern int gl_d_42938_ib;
 extern char gl_d_42938_cb;
@@ -2150,7 +2150,7 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_0004E4E8(int *dst);
 void fs_gdlReadQuad_0004E524(Quad4 *dst);
 extern int gl_func_00000000();
-extern int D_4E584_arr[];
+extern int gWindowDefaults_4E584_arr[];
 void Window_vfn0_0004E584(void);
 typedef struct Word4E600 {u32 field00;}Word4E600;
 typedef struct Pair4E600 {u32 field00,field04;}Pair4E600;
