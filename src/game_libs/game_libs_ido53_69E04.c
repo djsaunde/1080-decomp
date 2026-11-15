@@ -7,25 +7,17 @@
  * 5.3 -O1, spliced into game_libs_post1b.c.o via REPLACE_FUNC_BODY. All OS-API
  * callees collapse to the address-0 placeholder gl_func_00000000; the single
  * global (running-thread ptr, kernel D_8000A420) maps to D_00000000. */
-typedef struct {
-    void *mtqueue;
-    void *fullqueue;
-    int validCount;
-    int first;
-    int msgCount;
-    int **msg;
-} OSMesgQueue_69E04;
-typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69E04;
+#include "libultra/os_message.h"
 
 extern int gl_func_00000000();
-extern int D_00000000;
+extern int D_00000000; /* __osRunningThread (OSThread *) */
 
-int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
+int gl_osSendMesg(OSMesgQueue *mq, OSMesg msg, int flags) {
     register int saveMask = gl_func_00000000();
     register int last;
     while (mq->validCount >= mq->msgCount) {
-        if (flags == 1) {
-            ((Thread_69E04 *)D_00000000)->state = 8;
+        if (flags == OS_MESG_BLOCK) {
+            ((OSThread *)D_00000000)->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000((int *)&mq->fullqueue);
         } else {
             gl_func_00000000(saveMask);
@@ -33,9 +25,9 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
         }
     }
     last = (mq->first + mq->validCount) % mq->msgCount;
-    mq->msg[last] = (int *)msg;
+    mq->msg[last] = msg;
     mq->validCount++;
-    if (*(void **)mq->mtqueue != 0) {
+    if (mq->mtqueue->next != 0) {
         register void *t = (void *)gl_func_00000000(mq);
         gl_func_00000000(t);
     }

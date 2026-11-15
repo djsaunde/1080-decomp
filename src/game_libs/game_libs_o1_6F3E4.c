@@ -14,28 +14,7 @@
  * __osPopThread, _startthr = osStartThread; D_00000000_runthread =
  * __osRunningThread (OSThread*, lui/lw pair).
  * Spliced into game_libs_post1b2c.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef int s32;
-typedef void *OSMesg;
-
-typedef struct OSThread_s {
-    /* 0x00 */ struct OSThread_s *next;
-    /* 0x04 */ s32 priority;
-    /* 0x08 */ struct OSThread_s **queue;
-    /* 0x0C */ struct OSThread_s *tlnext;
-    /* 0x10 */ u16 state;
-    /* 0x12 */ u16 flags;
-} OSThread;
-
-typedef struct {
-    /* 0x00 */ OSThread *mtqueue;
-    /* 0x04 */ OSThread *fullqueue;
-    /* 0x08 */ s32 validCount;
-    /* 0x0C */ s32 first;
-    /* 0x10 */ s32 msgCount;
-    /* 0x14 */ OSMesg *msg;
-} OSMesgQueue;
+#include "libultra/os_message.h"
 
 extern u32 gl_func_00000000_disint(void);              /* __osDisableInt */
 extern void gl_func_00000000_enqyield(OSThread **);    /* __osEnqueueAndYield */
@@ -49,8 +28,8 @@ s32 gl_osJamMesg(OSMesgQueue *mq, OSMesg msg, s32 flag)
     register u32 saveMask = gl_func_00000000_disint();
 
     while (mq->validCount >= mq->msgCount) {
-        if (flag == 1) {
-            D_00000000_runthread->state = 8;
+        if (flag == OS_MESG_BLOCK) {
+            D_00000000_runthread->state = 8; /* OS_STATE_WAITING */
             gl_func_00000000_enqyield(&mq->fullqueue);
         } else {
             gl_func_00000000_resint(saveMask);

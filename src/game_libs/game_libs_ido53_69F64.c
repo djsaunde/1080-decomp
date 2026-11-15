@@ -9,28 +9,20 @@
  * callees (__osDisableInt / __osRestoreInt / __osEnqueueAndYield /
  * __osPopThread / osStartThread) collapse to the address-0 placeholder
  * gl_func_00000000; __osRunningThread maps to D_00000000. */
-typedef struct {
-    void *mtqueue;
-    void *fullqueue;
-    int validCount;
-    int first;
-    int msgCount;
-    int **msg;
-} OSMesgQueue_69F64;
-typedef struct { int field0; int pri; int queue; int pad0C; unsigned short state; } Thread_69F64;
+#include "libultra/os_message.h"
 
 extern int gl_func_00000000();
-extern int D_00000000;
+extern int D_00000000; /* __osRunningThread (OSThread *) */
 
-int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
+int gl_osRecvMesg(OSMesgQueue *mq, OSMesg *msg, int flags) {
     register int saveMask = gl_func_00000000();
 
     while (mq->validCount == 0) {
-        if (flags == 0) {
+        if (flags == OS_MESG_NOBLOCK) {
             gl_func_00000000(saveMask);
             return -1;
         }
-        ((Thread_69F64 *)D_00000000)->state = 8;
+        ((OSThread *)D_00000000)->state = 8; /* OS_STATE_WAITING */
         gl_func_00000000((int *)&mq->mtqueue);
     }
     if (msg != 0) {
@@ -38,7 +30,7 @@ int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     }
     mq->first = (mq->first + 1) % mq->msgCount;
     mq->validCount--;
-    if (*(void **)mq->fullqueue != 0) {
+    if (mq->fullqueue->next != 0) {
         gl_func_00000000(gl_func_00000000((int *)&mq->fullqueue));
     }
     gl_func_00000000(saveMask);
