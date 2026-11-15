@@ -1,10 +1,10 @@
-nonmatching skin_cmdSkinMgr_00068C14, 0x108
+nonmatching skin_cmdSkinMgr, 0x108
 
 glabel _pad_pre_68C14, local
     /* 1-word ROM pad folded in-block (1-word GLOBAL_ASM blocks emit +4; docs/MATCHING_WORKFLOW) */
     .word 0x00000000
 endlabel _pad_pre_68C14
-glabel skin_cmdSkinMgr_00068C14
+glabel skin_cmdSkinMgr
     /* E4DCEC 00068C14 27BDFFC8 */  .word 0x27BDFFC8
     /* E4DCF0 00068C18 AFBF001C */  .word 0xAFBF001C
     /* E4DCF4 00068C1C AFB00018 */  .word 0xAFB00018
@@ -70,4 +70,4 @@ glabel skin_cmdSkinMgr_00068C14
     /* E4DDE4 00068D0C 27BD0038 */  .word 0x27BD0038
     /* E4DDE8 00068D10 03E00008 */  .word 0x03E00008
     /* E4DDEC 00068D14 AC2A0000 */  .word 0xAC2A0000
-endlabel skin_cmdSkinMgr_00068C14
+endlabel skin_cmdSkinMgr

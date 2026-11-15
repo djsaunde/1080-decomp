@@ -1,6 +1,6 @@
-nonmatching SkinMgr_addAnim_00069C38, 0x20
+nonmatching SkinMgr_addAnim, 0x20
 
-glabel SkinMgr_addAnim_00069C38
+glabel SkinMgr_addAnim
     /* E4ED10 00069C38 27BDFFE8 */  .word 0x27BDFFE8
     /* E4ED14 00069C3C AFBF0014 */  .word 0xAFBF0014
     /* E4ED18 00069C40 0C000000 */  .word 0x0C000000
@@ -9,4 +9,4 @@ glabel SkinMgr_addAnim_00069C38
     /* E4ED24 00069C4C 27BD0018 */  .word 0x27BD0018
     /* E4ED28 00069C50 03E00008 */  .word 0x03E00008
     /* E4ED2C 00069C54 00000000 */  .word 0x00000000
-endlabel SkinMgr_addAnim_00069C38
+endlabel SkinMgr_addAnim

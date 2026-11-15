@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_initEntry, 0x1C
+nonmatching AnimData_init, 0x1C
 
-glabel AnimDataMgr_initEntry
+glabel AnimData_init
     /* E47048 00061F70 AC80001C */  .word 0xAC80001C
     /* E4704C 00061F74 A4800000 */  .word 0xA4800000
     /* E47050 00061F78 A4800002 */  .word 0xA4800002
@@ -8,4 +8,4 @@ glabel AnimDataMgr_initEntry
     /* E47058 00061F80 AC80000C */  .word 0xAC80000C
     /* E4705C 00061F84 03E00008 */  .word 0x03E00008
     /* E47060 00061F88 AC850018 */  .word 0xAC850018
-endlabel AnimDataMgr_initEntry
+endlabel AnimData_init

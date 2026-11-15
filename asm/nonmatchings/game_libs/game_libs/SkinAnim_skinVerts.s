@@ -1,6 +1,6 @@
-nonmatching SkinMgr_skinVerts_000693A4, 0x250
+nonmatching SkinAnim_skinVerts, 0x250
 
-glabel SkinMgr_skinVerts_000693A4
+glabel SkinAnim_skinVerts
     /* E4E47C 000693A4 27BDFFC8 */  .word 0x27BDFFC8
     /* E4E480 000693A8 AFB0000C */  .word 0xAFB0000C
     /* E4E484 000693AC F7B40000 */  .word 0xF7B40000
@@ -149,4 +149,4 @@ glabel SkinMgr_skinVerts_000693A4
     /* E4E6C0 000695E8 8FB0000C */  .word 0x8FB0000C
     /* E4E6C4 000695EC 03E00008 */  .word 0x03E00008
     /* E4E6C8 000695F0 27BD0038 */  .word 0x27BD0038
-endlabel SkinMgr_skinVerts_000693A4
+endlabel SkinAnim_skinVerts

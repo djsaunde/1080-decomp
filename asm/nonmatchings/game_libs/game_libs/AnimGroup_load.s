@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_loadSlot_000622D8, 0x90
+nonmatching AnimGroup_load, 0x90
 
-glabel AnimDataMgr_loadSlot_000622D8
+glabel AnimGroup_load
     /* E473B0 000622D8 27BDFFC8 */  .word 0x27BDFFC8
     /* E473B4 000622DC AFB20020 */  .word 0xAFB20020
     /* E473B8 000622E0 00809025 */  .word 0x00809025
@@ -37,4 +37,4 @@ glabel AnimDataMgr_loadSlot_000622D8
     /* E47434 0006235C 8FB20020 */  .word 0x8FB20020
     /* E47438 00062360 03E00008 */  .word 0x03E00008
     /* E4743C 00062364 27BD0038 */  .word 0x27BD0038
-endlabel AnimDataMgr_loadSlot_000622D8
+endlabel AnimGroup_load

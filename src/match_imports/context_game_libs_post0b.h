@@ -2900,13 +2900,13 @@ typedef struct {
     int f18;
     int f1C;
 } GlFunc61F70Struct;
-void AnimDataMgr_initEntry(GlFunc61F70Struct *a0, int a1);
+void AnimData_init(GlFunc61F70Struct *a0, int a1);
 int AnimData_load();
-int AnimDataMgr_loadAsync_00062194(int *self, int a1, int a2, int a3);
+int AnimData_readFrames(int *self, int a1, int a2, int a3);
 extern int gl_func_00000000();
-void AnimDataMgr_wait_00062298(int a0, int a1);
-void AnimDataMgr_initPool(int *a0, int a1);
-void AnimDataMgr_loadSlot_000622D8(int *self, int a1);
+void AnimData_waitFrames(int a0, int a1);
+void AnimGroup_init(int *a0, int a1);
+void AnimGroup_load(int *self, int a1);
 extern void *gl_62368_alloc(unsigned int);
 typedef struct Entry62368 {
     void *buffer00;
@@ -2918,7 +2918,7 @@ typedef struct Owner62368 {
     int count;
 } Owner62368;
 Owner62368 *AnimDataMgr_initSlots(Owner62368 *arg0, int count, int size);
-void AnimDataMgr_resetPool(int *a0);
+void AnimFrameCache_releaseAll(int *a0);
 int AnimDataMgr_allocSlot(int *self);
 typedef struct {
     int f0;
@@ -2932,20 +2932,20 @@ typedef struct {
     SlotEntry624EC *entries;
     int count;
 } SlotPool624EC;
-int AnimDataMgr_findSlot(SlotPool624EC *p, int key1, int key2);
+int AnimFrameCache_find(SlotPool624EC *p, int key1, int key2);
 extern int gl_62540_lookup(SlotPool624EC *, int, int);
 extern int gl_62540_allocate(SlotPool624EC *);
 extern int gl_62540_bind(void *, int, int, int);
 int AnimDataMgr_getSlot(SlotPool624EC *self, int key1, int key2);
-int AnimDataMgr_ensureLoaded_000625FC(int *a0, int a1);
+int AnimFrameCache_getPose(int *a0, int a1);
 int* AnimDataMgr_ctor(int *self_or_null, int a1, int a2, int a3);
 extern int gl_func_00000000();
-int AnimDataMgr_reset(char *a0);
+int AnimDataMgr_releaseFrames(char *a0);
 void gl_func_0006270C_inner(int a0);
 void AnimDataMgr_handleMsg(int a0, int *a1);
 extern int gl_func_00000000();
 int AnimDataMgr_update(char *a0);
-void AnimDataMgr_vfn8_0006275C(int *self);
+void AnimDataMgr_loadFile(int *self);
 typedef struct {
     u8 unknown_00[2];
     s16 field_02;

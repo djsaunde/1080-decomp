@@ -1,6 +1,6 @@
-nonmatching SkinAnim_create_00068FBC, 0xEC
+nonmatching SkinAnim_ctor, 0xEC
 
-glabel SkinAnim_create_00068FBC
+glabel SkinAnim_ctor
     /* E4E094 00068FBC 27BDFFD8 */  .word 0x27BDFFD8
     /* E4E098 00068FC0 AFB00018 */  .word 0xAFB00018
     /* E4E09C 00068FC4 00808025 */  .word 0x00808025
@@ -60,4 +60,4 @@ glabel SkinAnim_create_00068FBC
     /* E4E174 0006909C 8FB00018 */  .word 0x8FB00018
     /* E4E178 000690A0 03E00008 */  .word 0x03E00008
     /* E4E17C 000690A4 27BD0028 */  .word 0x27BD0028
-endlabel SkinAnim_create_00068FBC
+endlabel SkinAnim_ctor

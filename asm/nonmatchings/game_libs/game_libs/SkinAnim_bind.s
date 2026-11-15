@@ -1,6 +1,6 @@
-nonmatching SkinMgr_bindPose_000690A8, 0x2FC
+nonmatching SkinAnim_bind, 0x2FC
 
-glabel SkinMgr_bindPose_000690A8
+glabel SkinAnim_bind
     /* E4E180 000690A8 27BDFFD0 */  .word 0x27BDFFD0
     /* E4E184 000690AC AFBF001C */  .word 0xAFBF001C
     /* E4E188 000690B0 AFB10018 */  .word 0xAFB10018
@@ -192,4 +192,4 @@ glabel SkinMgr_bindPose_000690A8
     /* E4E470 00069398 8FB10018 */  .word 0x8FB10018
     /* E4E474 0006939C 03E00008 */  .word 0x03E00008
     /* E4E478 000693A0 27BD0030 */  .word 0x27BD0030
-endlabel SkinMgr_bindPose_000690A8
+endlabel SkinAnim_bind

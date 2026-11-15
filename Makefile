@@ -2524,7 +2524,7 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_65494_DONOR)
 # 690A8 = vertex transform; NCC donor, EXACT (agent-g run 182: inline M4::xf(V3 &) on one stack V3 declared before loop 1).
 GAMELIBS_690A8_DONOR := build/src/game_libs/game_libs_ncc_690A8.cpp.o
-build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_bindPose_000690A8=$(GAMELIBS_690A8_DONOR)
+build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinAnim_bind=$(GAMELIBS_690A8_DONOR)
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: $(GAMELIBS_690A8_DONOR)
 # 67D50 = memset; NCC donor (cfe capped at 2 raw).
 GAMELIBS_67D50_DONOR := build/src/game_libs/game_libs_ncc_67D50.cpp.o
@@ -4094,16 +4094,16 @@ build/src/match_imports/pad_request_000671E4.c.o: src/match_imports/pad_request_
 build/non_matching/src/match_imports/pad_request_000671E4.c.o: src/match_imports/pad_request_000671E4.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/skin_cmdSkinMgr.c.o: src/match_imports/skin_cmdSkinMgr.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o: src/match_imports/skin_cmdSkinMgr.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c src/match_imports/context_game_libs_post1b.h
+build/src/match_imports/SkinAnim_skinVerts.c.o: src/match_imports/SkinAnim_skinVerts.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c src/match_imports/context_game_libs_post1b.h
+build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o: src/match_imports/SkinAnim_skinVerts.c src/match_imports/context_game_libs_post1b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/SkinMgr_update.c.o: src/match_imports/SkinMgr_update.c src/match_imports/context_game_libs_post1b.h
@@ -4660,18 +4660,18 @@ build/src/match_imports/pad_request_000671E4.c.o.linked.elf: build/src/match_imp
 build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf: build/non_matching/src/match_imports/pad_request_000671E4.c.o scripts/match-origins-pad_request_000671E4-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-pad_request_000671E4-nm.ld -e pad_request_000671E4 -o $@ $@.stripped.o
-build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o scripts/match-origins-skin_cmdSkinMgr_00068C14.ld
+build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf: build/src/match_imports/skin_cmdSkinMgr.c.o scripts/match-origins-skin_cmdSkinMgr.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr_00068C14.ld -e skin_cmdSkinMgr_00068C14 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o scripts/match-origins-skin_cmdSkinMgr_00068C14-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr.ld -e skin_cmdSkinMgr -o $@ $@.stripped.o
+build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o scripts/match-origins-skin_cmdSkinMgr-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr_00068C14-nm.ld -e skin_cmdSkinMgr_00068C14 -o $@ $@.stripped.o
-build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o scripts/match-origins-SkinMgr_skinVerts_000693A4.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-skin_cmdSkinMgr-nm.ld -e skin_cmdSkinMgr -o $@ $@.stripped.o
+build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf: build/src/match_imports/SkinAnim_skinVerts.c.o scripts/match-origins-SkinAnim_skinVerts.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_skinVerts_000693A4.ld -e SkinMgr_skinVerts_000693A4 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o scripts/match-origins-SkinMgr_skinVerts_000693A4-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinAnim_skinVerts.ld -e SkinAnim_skinVerts -o $@ $@.stripped.o
+build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf: build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o scripts/match-origins-SkinAnim_skinVerts-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_skinVerts_000693A4-nm.ld -e SkinMgr_skinVerts_000693A4 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinAnim_skinVerts-nm.ld -e SkinAnim_skinVerts -o $@ $@.stripped.o
 build/src/match_imports/SkinMgr_update.c.o.linked.elf: build/src/match_imports/SkinMgr_update.c.o scripts/match-origins-SkinMgr_update.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-SkinMgr_update.ld -e SkinMgr_update -o $@ $@.stripped.o
@@ -5096,14 +5096,14 @@ build/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf: build/src
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-pad_request_000671E4.json $@
 build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf scripts/match-bindings-pad_request_000671E4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-pad_request_000671E4-nm.json $@
-build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr_00068C14.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr_00068C14.json $@
-build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json $@
-build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf scripts/match-bindings-SkinMgr_skinVerts_000693A4.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_skinVerts_000693A4.json $@
-build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json $@
+build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf: build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr.json $@
+build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf scripts/match-bindings-skin_cmdSkinMgr-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-skin_cmdSkinMgr-nm.json $@
+build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf: build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf scripts/match-bindings-SkinAnim_skinVerts.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinAnim_skinVerts.json $@
+build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf scripts/match-bindings-SkinAnim_skinVerts-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinAnim_skinVerts-nm.json $@
 build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: build/src/match_imports/SkinMgr_update.c.o.linked.elf scripts/match-bindings-SkinMgr_update.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-SkinMgr_update.json $@
 build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf scripts/match-bindings-SkinMgr_update-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5474,14 +5474,14 @@ build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_reque
 build/src/game_libs/game_libs_post1b.c.o: src/match_imports/pad_request_000671E4.c scripts/match-bindings-pad_request_000671E4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_request_000671E4=build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/pad_request_000671E4.c scripts/match-bindings-pad_request_000671E4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr_00068C14=build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c scripts/match-bindings-skin_cmdSkinMgr_00068C14.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr_00068C14=build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr_00068C14.c scripts/match-bindings-skin_cmdSkinMgr_00068C14-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_skinVerts_000693A4=build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c scripts/match-bindings-SkinMgr_skinVerts_000693A4.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_skinVerts_000693A4=build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_skinVerts_000693A4.c scripts/match-bindings-SkinMgr_skinVerts_000693A4-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr=build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr.c scripts/match-bindings-skin_cmdSkinMgr.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += skin_cmdSkinMgr=build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/skin_cmdSkinMgr.c scripts/match-bindings-skin_cmdSkinMgr-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinAnim_skinVerts=build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinAnim_skinVerts.c scripts/match-bindings-SkinAnim_skinVerts.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinAnim_skinVerts=build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinAnim_skinVerts.c scripts/match-bindings-SkinAnim_skinVerts-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_update=build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post1b.c.o: src/match_imports/SkinMgr_update.c scripts/match-bindings-SkinMgr_update.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += SkinMgr_update=build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
@@ -5880,14 +5880,14 @@ build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/pad_request_00
 build/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/pad_request_000671E4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
-build/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/skin_cmdSkinMgr_00068C14.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
-build/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/SkinMgr_skinVerts_000693A4.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf
+build/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/skin_cmdSkinMgr.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf
+build/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/SkinAnim_skinVerts.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post1b.c.o: build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf
 build/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post1b.c.o: build/non_matching/src/match_imports/SkinMgr_update.c.o.linked.elf.bound.elf

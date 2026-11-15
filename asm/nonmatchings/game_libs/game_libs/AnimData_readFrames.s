@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_loadAsync_00062194, 0x104
+nonmatching AnimData_readFrames, 0x104
 
-glabel AnimDataMgr_loadAsync_00062194
+glabel AnimData_readFrames
     /* E4726C 00062194 27BDFFD8 */  .word 0x27BDFFD8
     /* E47270 00062198 AFBF001C */  .word 0xAFBF001C
     /* E47274 0006219C AFB00018 */  .word 0xAFB00018
@@ -66,4 +66,4 @@ glabel AnimDataMgr_loadAsync_00062194
     /* E47364 0006228C 27BD0028 */  .word 0x27BD0028
     /* E47368 00062290 03E00008 */  .word 0x03E00008
     /* E4736C 00062294 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_loadAsync_00062194
+endlabel AnimData_readFrames

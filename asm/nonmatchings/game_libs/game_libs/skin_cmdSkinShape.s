@@ -1,6 +1,6 @@
-nonmatching skin_cmdSkinShape_00068DD4, 0x154
+nonmatching skin_cmdSkinShape, 0x154
 
-glabel skin_cmdSkinShape_00068DD4
+glabel skin_cmdSkinShape
     /* E4DEAC 00068DD4 27BDFFC8 */  .word 0x27BDFFC8
     /* E4DEB0 00068DD8 AFBF001C */  .word 0xAFBF001C
     /* E4DEB4 00068DDC AFB00018 */  .word 0xAFB00018
@@ -86,4 +86,4 @@ glabel skin_cmdSkinShape_00068DD4
     /* E4DFF4 00068F1C 27BD0038 */  .word 0x27BD0038
     /* E4DFF8 00068F20 03E00008 */  .word 0x03E00008
     /* E4DFFC 00068F24 00000000 */  .word 0x00000000
-endlabel skin_cmdSkinShape_00068DD4
+endlabel skin_cmdSkinShape

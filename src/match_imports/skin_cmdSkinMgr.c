@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post1b.c. Target bytes unchanged. */
 #include "context_game_libs_post1b.h"
-void skin_cmdSkinMgr_00068C14(int *self) {
+void skin_cmdSkinMgr(int *self) {
     extern int D_00000000;
     extern int gl_68C14_table;
     extern void gl_68C14_check(void *);

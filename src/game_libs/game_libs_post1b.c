@@ -405,7 +405,7 @@ void AnimPlayer_setBlend(int *a0, int a1, int a2, float a3, int a4, int a5) {
 }
 
 
-void AnimPlayer_vfn10_00063704(int a0) {}
+void AnimPlayer_onKey(int a0) {}
 
 extern int gl_ref_00076488();
 extern int gl_ref_00076584();
@@ -4567,7 +4567,7 @@ void ImageFile_vfn3_00068BF4(int *a0) {
 }
 
 #ifdef NON_MATCHING
-/* skin_cmdSkinMgr_00068C14: 65-insn ext-pre-init + 3-call cascade + linked-set finalizer (0x104, frame 0x38).
+/* skin_cmdSkinMgr: 65-insn ext-pre-init + 3-call cascade + linked-set finalizer (0x104, frame 0x38).
  *
  * Decoded structure (raw-word disasm):
  *   func_pre(a0);                                     // pre-init (unknown args)
@@ -4629,7 +4629,7 @@ void ImageFile_vfn3_00068BF4(int *a0) {
  * struct-typed self, cfront-style finaliser temps. INCLUDE_ASM stays.
  */
 extern void gl_func_00000000_68c14_v();
-void skin_cmdSkinMgr_00068C14(int *self) {
+void skin_cmdSkinMgr(int *self) {
     extern int D_00000000;
     extern int D_global_00068C14;
     int count1;
@@ -4679,10 +4679,10 @@ void skin_cmdSkinMgr_00068C14(int *self) {
     *(int *)((char *)&D_global_00068C14 + count1 * 4) = self[0x18 / 4];
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr_00068C14);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr);
 #endif
 
-/* skin_cmdSkinAnim_00068D18: two packed-stream entry pops + table lookup + dual dispatch.
+/* skin_cmdSkinAnim: two packed-stream entry pops + table lookup + dual dispatch.
  * EXACT 2026-07-15. Prior 99.91% residual (spill homes 40/32 vs target 48/36)
  * was decl-order slot placement: uopt homes named locals at frame top in decl
  * order (first-declared = highest slot); order bufp,saved,p,a1,h,entry puts
@@ -4690,7 +4690,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr_00068C14);
  * ROM; real table = 0x41310 per reloc data) so it is spelled via the =0
  * placeholder &D_00000000; the calls (real targets USO-resolved at load) go
  * through the =0 placeholder gl_func_00000000 so jal links to 0x0C000000. */
-void skin_cmdSkinAnim_00068D18(int *self) {
+void skin_cmdSkinAnim(int *self) {
     int **bufp;
     int *saved;
     int *p;
@@ -4721,7 +4721,7 @@ void skin_cmdSkinAnim_00068D18(int *self) {
     }
 }
 
-/* skin_cmdSkinShape_00068DD4: script-op handler (85 words). EXACT (agent-g run 155): the residual
+/* skin_cmdSkinShape: script-op handler (85 words). EXACT (agent-g run 155): the residual
  * colours were two levers: (1) the leading discarded call goes through a void alias
  * (gl_func_00000000_68dd4v, pinned 0) -- the K&R int return kept a dead v0 def that
  * pushed every later value one register up (kit IX); (2) the two stream reads share
@@ -4751,7 +4751,7 @@ void skin_cmdSkinAnim_00068D18(int *self) {
 #endif
 typedef int (*GP_00068DD4)();
 extern void gl_func_00000000_68dd4v(void);
-void skin_cmdSkinShape_00068DD4(char *arg0) {
+void skin_cmdSkinShape(char *arg0) {
     int *p;
     s32 sp30;
     char *sp2C;
@@ -4815,7 +4815,7 @@ void fs_gdlReadQuad_00068F64(Quad4 *dst) {
     *dst = scratch;
 }
 
-/* SkinAnim_create_00068FBC: nested alloc/init get-or-create constructor (size 0xEC, frame 0x28).
+/* SkinAnim_ctor: nested alloc/init get-or-create constructor (size 0xEC, frame 0x28).
  *
  * obj = arg0; if NULL alloc(0xA8) master record (return NULL on fail).
  * sub = obj; if NULL alloc(0x18); on fail skip the sub-init and fall to the
@@ -4832,7 +4832,7 @@ void fs_gdlReadQuad_00068F64(Quad4 *dst) {
  */
 extern int D_00000000;
 extern void *alloc(int size);
-void *SkinAnim_create_00068FBC(void *obj, int arg1, int arg2, int arg3) {
+void *SkinAnim_ctor(void *obj, int arg1, int arg2, int arg3) {
     void *sub;
     void *inner;
 
@@ -4873,7 +4873,7 @@ done:
 }
 
 #ifdef NON_MATCHING
-/* SkinMgr_bindPose_000690A8: vertex matrix-transform. Loop 1 applies the (index, delta)
+/* SkinAnim_bind: vertex matrix-transform. Loop 1 applies the (index, delta)
  * s16 pair list to the s16 table at arg1+0x30; alloc count*sizeof(Vec3s) via
  * a USO import (jal 0, one arg); copy the 0x40-byte matrix at *(arg0+0x18)+0x70
  * to arg0+0x68; second import; loop 2 converts arg2[pair.a] to a stack f32[3]
@@ -4894,7 +4894,7 @@ done:
 typedef struct { int _w[16]; } Mtx690A8;
 typedef struct { s16 x, y, z; } V3s690A8;
 typedef struct { s16 a, b; } Pr690A8;
-void SkinMgr_bindPose_000690A8(char *arg0, char *arg1, V3s690A8 *arg2) {
+void SkinAnim_bind(char *arg0, char *arg1, V3s690A8 *arg2) {
     s32 i;
     f32 v[3];
     f32 *m;
@@ -4937,7 +4937,7 @@ void SkinMgr_bindPose_000690A8(char *arg0, char *arg1, V3s690A8 *arg2) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinMgr_bindPose_000690A8);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinAnim_bind);
 #endif
 
 #ifdef NON_MATCHING
@@ -4948,7 +4948,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinMgr_bindPose_000690A8);
 #define M693(o) (*(f32*)((char*)mtx + (o)))
 #define S693(p, o) (*(s16*)((char*)(p) + (o)))
 #endif
-/* SkinMgr_skinVerts_000693A4: skin-vertex rigid transform: v = R(node+0x70) * src[i] + (node.T - parent.T);
+/* SkinAnim_skinVerts: skin-vertex rigid transform: v = R(node+0x70) * src[i] + (node.T - parent.T);
  * out[idx] = v (mode 100) or out[idx] += v * mode * 0.01f.  NM (2026-10-14 agent-g):
  * every row sum is spelled REVERSED + right-associated `m20*v2 + (m10*v1 + v0*m0)` (the
  * #reversed-right-assoc-sum-load-last-phantom-slots-4f0c8 rule) with the INNERMOST product
@@ -4961,7 +4961,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinMgr_bindPose_000690A8);
  * order, entry/src inlining, IV step order, v-load same-line joins, if-arm inversion; earlier:
  * Ent/S3 array views, (unsigned char) burn, IDO 5.3; (2) mode==100 arm ends nop + sh + `b; lw t0`
  * where target puts the sh in the b delay; (3) else-arm third lh scheduled early. */
-void SkinMgr_skinVerts_000693A4(char *arg0, char *arg1, s32 arg2) {
+void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
     f32 kscale;
     f32 v[7];
     f32 o0;
@@ -5028,7 +5028,7 @@ void SkinMgr_skinVerts_000693A4(char *arg0, char *arg1, s32 arg2) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinMgr_skinVerts_000693A4);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", SkinAnim_skinVerts);
 #endif
 
 /* SkinMgr_ctor: 37-insn alloc-or-init + sym-store + sentinel-branch (0x94, frame 0x18).
@@ -5331,7 +5331,7 @@ void SkinMgr_reset(int *self) {
 }
 
 extern int gl_func_00000000();
-int SkinMgr_addAnim_00069C38(char *a0) {
+int SkinMgr_addAnim(char *a0) {
     return gl_func_00000000(a0 + 0x48);
 }
 

@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_reset, 0x20
+nonmatching AnimDataMgr_releaseFrames, 0x20
 
-glabel AnimDataMgr_reset
+glabel AnimDataMgr_releaseFrames
     /* E477C4 000626EC 27BDFFE8 */  .word 0x27BDFFE8
     /* E477C8 000626F0 AFBF0014 */  .word 0xAFBF0014
     /* E477CC 000626F4 0C000000 */  .word 0x0C000000
@@ -9,4 +9,4 @@ glabel AnimDataMgr_reset
     /* E477D8 00062700 27BD0018 */  .word 0x27BD0018
     /* E477DC 00062704 03E00008 */  .word 0x03E00008
     /* E477E0 00062708 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_reset
+endlabel AnimDataMgr_releaseFrames

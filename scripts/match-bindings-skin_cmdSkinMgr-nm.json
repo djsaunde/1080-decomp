@@ -1,5 +1,5 @@
 {
-  "function": "skin_cmdSkinMgr_00068C14",
+  "function": "skin_cmdSkinMgr",
   "raw_sha256": "fe9e928dd2dd239d1ad9bc2fd5374fed0547f90ecf6e58ed777f3334eaa22035",
   "renames": {
     "gl_68C14_check": "snw_port_gl_func_00068C14_gl_68C14_check",

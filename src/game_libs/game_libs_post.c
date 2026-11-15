@@ -11980,7 +11980,7 @@ void snd_SetPlayer0VolumeLevel_2D748(int a0) {
 /* snd_SetPlayer2VolumeLevel_2D784: 14-insn main body + 4-insn trailing alt-entry
  * (`li v0, 8; lui at, 0; sw v0, 0(at); lui at, 0`) — declared size 0x48
  * (18 insns). Same MERGE-BLOCKED post-epilogue alt-entry class as
- * AnimDataMgr_wait_00062298 (per existing in-source doc).
+ * AnimData_waitFrames (per existing in-source doc).
  *
  * Main body decodes:
  *   *(int*)&D_a = a0;

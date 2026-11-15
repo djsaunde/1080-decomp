@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_vfn8_0006275C, 0xB0
+nonmatching AnimDataMgr_loadFile, 0xB0
 
-glabel AnimDataMgr_vfn8_0006275C
+glabel AnimDataMgr_loadFile
     /* E47834 0006275C 27BDFFD8 */  .word 0x27BDFFD8
     /* E47838 00062760 AFB20020 */  .word 0xAFB20020
     /* E4783C 00062764 00809025 */  .word 0x00809025
@@ -45,4 +45,4 @@ glabel AnimDataMgr_vfn8_0006275C
     /* E478D8 00062800 8FB20020 */  .word 0x8FB20020
     /* E478DC 00062804 03E00008 */  .word 0x03E00008
     /* E478E0 00062808 27BD0028 */  .word 0x27BD0028
-endlabel AnimDataMgr_vfn8_0006275C
+endlabel AnimDataMgr_loadFile

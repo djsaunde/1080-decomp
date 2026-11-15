@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for SkinMgr_bindPose_000690A8 (0x2FC / 191 words): vertex transform. EXACT; spliced
+/* IDO 7.1 NCC (C++) donor for SkinAnim_bind (0x2FC / 191 words): vertex transform. EXACT; spliced
  * into BOTH build trees via REPLACE_FUNC_BODY over the INCLUDE_ASM body (Makefile GAMELIBS_690A8_DONOR).
  * agent-g run 182 (docs/IDO_CODEGEN.md kit CXXXI): the cfe body (86.90) needed scrambled operand orders
  * to approximate the transform; it is an inline M4 member applied to a stack V3 by reference: the
@@ -28,7 +28,7 @@ struct M4 {
 struct Body { char pad[0x70]; M4 mtx; };
 struct Tab { char pad[0x30]; s16 *s; char pad34[4]; Body *body; };
 struct Obj { char pad[0x18]; Body *src; Pr *pairs; int count; V3s *out; M4 m28; M4 m68; };
-extern "C" void SkinMgr_bindPose_000690A8(Obj *o, Tab *t, V3s *arg2) {
+extern "C" void SkinAnim_bind(Obj *o, Tab *t, V3s *arg2) {
     int i;
     V3 v;
     for (i = 0; i < o->count; i++) {

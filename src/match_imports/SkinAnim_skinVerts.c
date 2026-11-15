@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post1b.c. Target bytes unchanged. */
 #include "context_game_libs_post1b.h"
-void SkinMgr_skinVerts_000693A4(GLVertexElement *arg0, GLVertexContext *arg1, GLVertexS16 *arg2) {
+void SkinAnim_skinVerts(GLVertexElement *arg0, GLVertexContext *arg1, GLVertexS16 *arg2) {
     f32 kscale;
     f32 v[7];
     f32 o0;

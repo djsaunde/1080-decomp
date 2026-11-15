@@ -100,7 +100,7 @@ typedef struct AnimDataMgr {
 /* AnimPlayer (0xB0, "<Node>", vtable Data 0x21F58; ctor 0x62E80, reset 0x62F08). Base of
  * game.uso RiderAnim (include/game/rideranim.h) and genproc's character-select model.
  * Vtable: slot 3 AnimPlayer_update (advance + applyPose), 4 handleMsg, 10 onKey
- * (AnimPlayer_vfn10_00063704, empty here; called when time passes keys[eventKey].frame, and
+ * (AnimPlayer_onKey, empty here; called when time passes keys[eventKey].frame, and
  * when a blend-in finishes while blendEvent == -1). */
 typedef struct AnimPlayer {
     /* 0x00 */ Node node;

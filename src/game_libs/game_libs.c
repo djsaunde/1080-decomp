@@ -4345,7 +4345,7 @@ int *ColourItem_create_000088B4(int *arg0) {
  * moved to game_libs_post.c (correct file for VRAM past 0x8944 cap of
  * game_libs.c). */
 
-/* AnimDataMgr_initPool split off from AnimDataMgr_wait_00062298 bundle on
+/* AnimGroup_init split off from AnimData_waitFrames bundle on
  * 2026-05-08; decompiled to C body in game_libs_post.c. */
 
 /* AudioLoad_SetDmaHandler + AudioLoad_SetUnusedHandler split off from

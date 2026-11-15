@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_resetPool, 0x40
+nonmatching AnimFrameCache_releaseAll, 0x40
 
-glabel AnimDataMgr_resetPool
+glabel AnimFrameCache_releaseAll
     /* E4751C 00062444 8C8E0004 */  .word 0x8C8E0004
     /* E47520 00062448 00001025 */  .word 0x00001025
     /* E47524 0006244C 00001825 */  .word 0x00001825
@@ -17,4 +17,4 @@ glabel AnimDataMgr_resetPool
     /* E47550 00062478 8C8F0000 */  .word 0x8C8F0000
     /* E47554 0006247C 03E00008 */  .word 0x03E00008
     /* E47558 00062480 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_resetPool
+endlabel AnimFrameCache_releaseAll

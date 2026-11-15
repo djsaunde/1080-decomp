@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_wait_00062298, 0x30
+nonmatching AnimData_waitFrames, 0x30
 
-glabel AnimDataMgr_wait_00062298
+glabel AnimData_waitFrames
     /* E47370 00062298 27BDFFE8 */  .word 0x27BDFFE8
     /* E47374 0006229C 2401FFFF */  .word 0x2401FFFF
     /* E47378 000622A0 AFBF0014 */  .word 0xAFBF0014
@@ -13,4 +13,4 @@ glabel AnimDataMgr_wait_00062298
     /* E47394 000622BC 27BD0018 */  .word 0x27BD0018
     /* E47398 000622C0 03E00008 */  .word 0x03E00008
     /* E4739C 000622C4 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_wait_00062298
+endlabel AnimData_waitFrames

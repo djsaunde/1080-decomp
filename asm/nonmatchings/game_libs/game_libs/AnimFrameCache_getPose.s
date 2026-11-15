@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_ensureLoaded_000625FC, 0x50
+nonmatching AnimFrameCache_getPose, 0x50
 
-glabel AnimDataMgr_ensureLoaded_000625FC
+glabel AnimFrameCache_getPose
     /* E476D4 000625FC 27BDFFE0 */  .word 0x27BDFFE0
     /* E476D8 00062600 AFBF0014 */  .word 0xAFBF0014
     /* E476DC 00062604 8C8E0000 */  .word 0x8C8E0000
@@ -21,4 +21,4 @@ glabel AnimDataMgr_ensureLoaded_000625FC
     /* E47718 00062640 27BD0020 */  .word 0x27BD0020
     /* E4771C 00062644 03E00008 */  .word 0x03E00008
     /* E47720 00062648 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_ensureLoaded_000625FC
+endlabel AnimFrameCache_getPose

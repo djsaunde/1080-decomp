@@ -27587,7 +27587,7 @@ typedef struct {
     int f18;
     int f1C;
 } GlFunc61F70Struct;
-void AnimDataMgr_initEntry(GlFunc61F70Struct *a0, int a1) {
+void AnimData_init(GlFunc61F70Struct *a0, int a1) {
     a0->f1C = 0;
     a0->f00 = 0;
     a0->f02 = 0;
@@ -27608,7 +27608,7 @@ void AnimData_load(char *self) {
     *(volatile int *)(self + 4) = 7;
 }
 
-/* AnimDataMgr_loadAsync_00062194: 65-insn 64-bit-multiply-based scale + dispatch (0x104, frame 0x28).
+/* AnimData_readFrames: 65-insn 64-bit-multiply-based scale + dispatch (0x104, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   key = self->[0x8];                                // discriminator
@@ -27673,7 +27673,7 @@ void AnimData_load(char *self) {
  * before the call: q becomes a uopt candidate (v1) instead of a ugen
  * t-reg, and the a3 reload drops back to t4. q alone, b += alone, or
  * if (q) {} without b += q all stay at 4. */
-int AnimDataMgr_loadAsync_00062194(char *self, int a1, unsigned int a2, unsigned int a3) {
+int AnimData_readFrames(char *self, int a1, unsigned int a2, unsigned int a3) {
     extern int gSysLib_62194_a, gSysLib_62194_b, gSysLib_62194_c, gSysLib_62194_d;
     unsigned int stride;
     unsigned int n[1];
@@ -27692,23 +27692,23 @@ int AnimDataMgr_loadAsync_00062194(char *self, int a1, unsigned int a2, unsigned
     return -1;
 }
 
-/* AnimDataMgr_wait_00062298: was 16-insn bundle. Split via split-fragments.py
- * 2026-05-08 into: parent AnimDataMgr_wait_00062298 (12 insns / 0x30, conditional
- * call) + AnimDataMgr_initPool (4 insns / 0x10, no-frame setter). */
+/* AnimData_waitFrames: was 16-insn bundle. Split via split-fragments.py
+ * 2026-05-08 into: parent AnimData_waitFrames (12 insns / 0x30, conditional
+ * call) + AnimGroup_init (4 insns / 0x10, no-frame setter). */
 extern int gl_func_00000000();
-void AnimDataMgr_wait_00062298(int a0, int a1) {
+void AnimData_waitFrames(int a0, int a1) {
     if (a1 != -1) {
         gl_func_00000000(&gSysLib);
     }
 }
 
-void AnimDataMgr_initPool(int *a0, int a1) {
+void AnimGroup_init(int *a0, int a1) {
     a0[1] = 0;
     a0[0] = 0;
     a0[2] = a1;
 }
 
-/* AnimDataMgr_loadSlot_000622D8: 36-insn alloc-array + N-init loop (0x90, frame 0x38).
+/* AnimGroup_load: 36-insn alloc-array + N-init loop (0x90, frame 0x38).
  *
  * Decoded structure (raw-word disasm):
  *   func_at_0x764C4(&local_buf, a1);                // direct-address jal (libc-style thunk)
@@ -27732,7 +27732,7 @@ void AnimDataMgr_initPool(int *a0, int a1) {
  * gl_ref_0007644C pin (61F8C's stream int reader), not a fn-ptr cast.
  */
 extern int gl_ref_0007644C(); /* baked jal 0x0C01D913: stream int reader */
-void AnimDataMgr_loadSlot_000622D8(int *self, int a1) {
+void AnimGroup_load(int *self, int a1) {
     int count;
     int i;
     gl_ref_0007644C(&count, a1);
@@ -27775,7 +27775,7 @@ end:
     return (int)s2;
 }
 
-void AnimDataMgr_resetPool(int *a0) {
+void AnimFrameCache_releaseAll(int *a0) {
     int v0 = 0;
     int v1 = 0;
     if (a0[1] > 0) {
@@ -27834,7 +27834,7 @@ fail:
 }
 
 
-/* AnimDataMgr_findSlot: find the slot index whose (key1, key2) pair
+/* AnimFrameCache_find: find the slot index whose (key1, key2) pair
  * matches, in the same 20-byte-entry table that AnimDataMgr_allocSlot allocates
  * from and AnimDataMgr_getSlot fills (entry[0x8] = key1, entry[0x4] = key2).
  * Returns the index or -1.
@@ -27868,7 +27868,7 @@ typedef struct {
     SlotEntry624EC *entries;
     int count;
 } SlotPool624EC;
-int AnimDataMgr_findSlot(SlotPool624EC *p, int key1, int key2) {
+int AnimFrameCache_find(SlotPool624EC *p, int key1, int key2) {
     int i;
     SlotEntry624EC *e;
     int count;
@@ -27934,10 +27934,10 @@ int AnimDataMgr_getSlot(Ent_62540 **self, int key1, int key2) {
     return slot;
 }
 
-/* AnimDataMgr_ensureLoaded_000625FC: 20-insn array-walk + conditional-call helper.
+/* AnimFrameCache_getPose: 20-insn array-walk + conditional-call helper.
  * Indexes into (*a0)[a1*5]; if entry[0x10] (signed halfword) != -1,
  * calls gl_func(entry->[0x8], val). Returns *entry. */
-int AnimDataMgr_ensureLoaded_000625FC(int *a0, int a1) {
+int AnimFrameCache_getPose(int *a0, int a1) {
     int *entry = (int*)((char*)*a0 + a1 * 20);
     short val = *(short*)((char*)entry + 0x10);
     if (val != -1) {
@@ -27991,7 +27991,7 @@ int* AnimDataMgr_ctor(int *obj, int a1, int a2, int a3) {
 }
 
 extern int gl_func_00000000();
-int AnimDataMgr_reset(char *a0) {
+int AnimDataMgr_releaseFrames(char *a0) {
     return gl_func_00000000(a0 + 0x40);
 }
 
@@ -28008,7 +28008,7 @@ int AnimDataMgr_update(char *a0) {
     return gl_func_00000000(a0 + 0x40);
 }
 
-/* AnimDataMgr_vfn8_0006275C: 44-insn factory + 2 direct-jal + 12×-stride alloc + N-init loop (0xB0, frame 0x28).
+/* AnimDataMgr_loadFile: 44-insn factory + 2 direct-jal + 12×-stride alloc + N-init loop (0xB0, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   self->[0x3C] = func_a(&D_sym);                     // factory
@@ -28021,7 +28021,7 @@ int AnimDataMgr_update(char *a0) {
  *       func_d(self->[0x30] + i*12, count);
  *   }
  *
- * 3rd/4th direct-address jal case (0x764C4 also in AnimDataMgr_loadSlot_000622D8;
+ * 3rd/4th direct-address jal case (0x764C4 also in AnimGroup_load;
  * 0x76488 new). Both in the 0x764xx cluster — likely libc-family
  * (memset/memcpy/strncpy-style).
  *
@@ -28032,7 +28032,7 @@ int AnimDataMgr_update(char *a0) {
  * locals), and only the first per-entry call takes self as a 2nd arg.
  */
 extern int gl_ref_00076488();
-void AnimDataMgr_vfn8_0006275C(char *self) {
+void AnimDataMgr_loadFile(char *self) {
     extern int gSysLib_sym_6275C;
     int i;
     *(int *)(self + 0x3C) = gl_func_00000000(&gSysLib_sym_6275C);

@@ -1,6 +1,6 @@
-nonmatching AnimDataMgr_findSlot, 0x54
+nonmatching AnimFrameCache_find, 0x54
 
-glabel AnimDataMgr_findSlot
+glabel AnimFrameCache_find
     /* E475C4 000624EC 8C820004 */  .word 0x8C820004
     /* E475C8 000624F0 00C03825 */  .word 0x00C03825
     /* E475CC 000624F4 00001825 */  .word 0x00001825
@@ -22,4 +22,4 @@ glabel AnimDataMgr_findSlot
     /* E4760C 00062534 2402FFFF */  .word 0x2402FFFF
     /* E47610 00062538 03E00008 */  .word 0x03E00008
     /* E47614 0006253C 00000000 */  .word 0x00000000
-endlabel AnimDataMgr_findSlot
+endlabel AnimFrameCache_find
