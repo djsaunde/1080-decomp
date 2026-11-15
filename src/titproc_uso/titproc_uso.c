@@ -343,7 +343,7 @@ void tit_openSession_00000B6C(int **a0, int a1) {
     r1 = gl_func_00000000(2);
     r2 = gl_func_00000000(0, INPUT_MGR(D_00000000).backup, a1, -1);
     *a0 = r2;
-    INPUT_MGR(D_00000000).session = r2;
+    INPUT_MGR(D_00000000).session = (struct BackupSession *)r2;
     gl_func_00000000(r1);
     (*a0)[5] = 0;
     if (a1 != -1) {
