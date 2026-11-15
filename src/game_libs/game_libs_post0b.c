@@ -1,5 +1,6 @@
 #include "common.h"
 #include "gdl/node.h"
+#include "gdl/heap.h"
 extern int game_libs_func_00062F08();
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -9778,7 +9779,7 @@ int heap_new(unsigned int s1, int arg1) {
     }
     if (*(int *)((char *)&D_00000000 + 0x3C160) != 0) {
         gl_proto_41148((int)((char *)&D_00000000 + 0x1F598), (int)s0,
-                       (int)((unsigned int)s0[-4] >> 24), (int)s1, arg1,
+                       (int)HEAP_BLOCK_ID((HeapBlock *)s0 - 1), (int)s1, arg1,
                        (double)((float)(unsigned int)s1 / div));
     }
     if (arg1 != 0) {
