@@ -66,7 +66,7 @@ extern char gl_d_42938_cb, gl_d_42938_z;
 extern int gl_d_42938_fa[], gl_d_42938_fb[], gl_d_42938_fc[];
 extern GState gGfxLib_42938_gb;
 extern int gl_d_42938_pa, gl_d_42938_pb, gl_d_42938_pc, gl_d_42938_sa, gl_d_42938_sb, gl_d_42938_ck;
-extern char gl_d_42938_qa, gl_d_42938_qb, gl_d_42938_qc, gl_d_42938_qd;
+extern char sFmt_num_1FCCC, sFmt_X_1FCE8, sFmt_Y_1FCF0, sStr_Hold_1FCF8;
 void *func_00000000(...);
 void gl_func_00000000_void(...); /* agent-g run 377: pinned void alias (=0x0) for the ctx call, kit CCCXLVII */
 }
@@ -152,18 +152,18 @@ extern "C" void dbg_screenOverlay_00042938(void) {
      * then `+ 0 * (w + w)` (two more counted uses of w: it now colours before the x / y phantoms, t0 like the target):
      * 99.537 -> 99.563 */
     /* agent-g run 381: w is the function-scope `t` (see the top) */
-    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &gl_d_42938_qa, x + 0 * (gGfxFbWidth_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
+    { Obj254 *o = G.o; int x = o->c0; t = o->b8; int h = o->bc; int y = o->c4; func_00000000(&gl_d_42938_cb, &sFmt_num_1FCCC, x + 0 * (gGfxFbWidth_42938_ia) + 0 * (t + t), y + 0 * (gl_d_42938_sa), t + x, y + h); }
     func_00000000(&G, &gl_d_42938_z, 320);
     G.m224 = 0x10;
     G.m228 = 0x10;
     G.m21c = 0x78;
     G.m220 = 0x78;
-    func_00000000(&gl_d_42938_cb, &gl_d_42938_qb, gl_d_42938_sa);
+    func_00000000(&gl_d_42938_cb, &sFmt_X_1FCE8, gl_d_42938_sa);
     func_00000000(&G, &gl_d_42938_z, 320);
-    func_00000000(&gl_d_42938_cb, &gl_d_42938_qc, gl_d_42938_sb);
+    func_00000000(&gl_d_42938_cb, &sFmt_Y_1FCF0, gl_d_42938_sb);
     func_00000000(&G, &gl_d_42938_z, 320);
     if (gl_d_42938_ck != 0) {
-        func_00000000(&G, &gl_d_42938_qd, 320);
+        func_00000000(&G, &sStr_Hold_1FCF8, 320);
         return;
     }
     /* agent-c run 279: the tail written with NO named locals (the record via a macro, every global read

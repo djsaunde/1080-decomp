@@ -28,8 +28,8 @@ glabel PauseMenu_create
     /* DE09B0 0000FF44 00000000 */   nop
   .L0000FF48:
     /* DE09B4 0000FF48 02002025 */  or         $a0, $s0, $zero
-    /* DE09B8 0000FF4C 3C050001 */  lui        $a1, %hi(D_0000C5BC)
-    /* DE09BC 0000FF50 24A5C5BC */  addiu      $a1, $a1, %lo(D_0000C5BC)
+    /* DE09B8 0000FF4C 3C050001 */  lui        $a1, %hi(sStr_Node_C5BC)
+    /* DE09BC 0000FF50 24A5C5BC */  addiu      $a1, $a1, %lo(sStr_Node_C5BC)
     /* DE09C0 0000FF54 0C000000 */  jal        func_00000000
     /* DE09C4 0000FF58 00000000 */   nop
     /* DE09C8 0000FF5C 3C180000 */  lui        $t8, (0x0 >> 16)
@@ -41,8 +41,8 @@ glabel PauseMenu_create
     /* DE09DC 0000FF70 8FA80028 */  lw         $t0, 0x28($sp)
     /* DE09E0 0000FF74 AD190028 */  sw         $t9, 0x28($t0)
     /* DE09E4 0000FF78 8FB00028 */  lw         $s0, 0x28($sp)
-    /* DE09E8 0000FF7C 3C110001 */  lui        $s1, %hi(D_0000C5C4)
-    /* DE09EC 0000FF80 2631C5C4 */  addiu      $s1, $s1, %lo(D_0000C5C4)
+    /* DE09E8 0000FF7C 3C110001 */  lui        $s1, %hi(sStr_PauseMenu_C5C4)
+    /* DE09EC 0000FF80 2631C5C4 */  addiu      $s1, $s1, %lo(sStr_PauseMenu_C5C4)
     /* DE09F0 0000FF84 AE11000C */  sw         $s1, 0xC($s0)
     /* DE09F4 0000FF88 8FB00028 */  lw         $s0, 0x28($sp)
     /* DE09F8 0000FF8C 2610004C */  addiu      $s0, $s0, 0x4C

@@ -32,6 +32,6 @@ glabel Tv1Tmpl_display
   .L00007EBC:
     /* DD8928 00007EBC 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DD892C 00007EC0 03E00008 */  jr         $ra
-  alabel D_00007EC4
+  alabel sStr_ItemMgr_7EC4
     /* DD8930 00007EC4 00000000 */   nop
 endlabel Tv1Tmpl_display

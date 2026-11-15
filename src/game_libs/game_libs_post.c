@@ -16073,9 +16073,9 @@ void sys_assertFail(int a0, int a1, int a2) {
  * one line gives the entry order. */
 extern int gl_func_00000000();
 extern u8 gFsStream0_334e8_dst;
-extern u8 gl_ref_0001E280;
-extern u8 gl_ref_0001E29C;
-extern u8 gl_ref_0001E2B0;
+extern u8 sStr_arse_1E280;
+extern u8 sStr_Write_not_at_end_1E29C;
+extern u8 sStr_Write_ve_len_1E2B0;
 #define base ((u8 *)&D_00000000)   /* one hoisted address constant, not a variable (frame + entry order) */
 void fs_bufWrite_334E8(void) {
     u8 buf[8];
@@ -16092,7 +16092,7 @@ void fs_bufWrite_334E8(void) {
     u8 *p;
 
     p = buf;
-    gl_func_00000000(p, &gl_ref_0001E280);
+    gl_func_00000000(p, &sStr_arse_1E280);
     src = (s32)p; rem = 8; gl_func_00000000(base);
     do {
         chunk = rem;
@@ -16131,7 +16131,7 @@ void fs_bufWrite_334E8(void) {
             *(s32 *)(g + 0x14) = cur;
             gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                gl_func_00000000(base, &gl_ref_0001E29C);
+                gl_func_00000000(base, &sStr_Write_not_at_end_1E29C);
             }
             p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8, 0x12340001);   /* kick DMA */
             if (p = *(u8 **)(g + 0x28), gl_func_00000000(base, p + 8) == 0x12340002) {
@@ -16160,7 +16160,7 @@ void fs_bufWrite_334E8(void) {
         rem -= chunk;
         src += chunk;
         if (rem < 0) {
-            gl_func_00000000(base, &gl_ref_0001E2B0);   /* underflow diag */
+            gl_func_00000000(base, &sStr_Write_ve_len_1E2B0);   /* underflow diag */
         }
         if (rem != 0) {
             gl_func_00000000(base);
@@ -16536,9 +16536,9 @@ extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all call sit
 /* (the old per-site gl_d_33be4_8a.. aliases were retired in run 177: the heap
  * words are read through the local base pointer g below) */
 extern u8 gFsStream1_33be4_dst;               /* base-0 alias: copy-loop dest (fresh lui/addiu into a0) */
-extern u8 gl_ref_0001E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
-extern u8 gl_ref_0001E344;              /* baked USO data sym */
-extern u8 gl_ref_0001E358;              /* baked USO data sym */
+extern u8 sStr_Write_bad_length_1E330;              /* baked USO data sym (lui 2 / addiu -0x1CD0) */
+extern u8 sStr_Write_not_at_end_1E344;              /* baked USO data sym */
+extern u8 sStr_Write_ve_len_1E358;              /* baked USO data sym */
 void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     s32 src;
     u8 *base;
@@ -16554,7 +16554,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
     u8 *g = &gFsStream1_33be4_dst;
 
     rem = flags; src = src0;
-    if (flags & 1) { base = (u8 *)&gFsStream1; gl_func_00000000(base, &gl_ref_0001E330);
+    if (flags & 1) { base = (u8 *)&gFsStream1; gl_func_00000000(base, &sStr_Write_bad_length_1E330);
     }
     base = (u8 *)&gFsStream1;
     gl_func_00000000(base);
@@ -16597,7 +16597,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
             *(s32 *)(g + 0x14) = cur;
             gl_func_00000000(base, *(s32 *)(g + 0x28) + 12, cur);
             if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                gl_func_00000000(base, &gl_ref_0001E344);
+                gl_func_00000000(base, &sStr_Write_not_at_end_1E344);
             }
             flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8, 0x12340001);   /* kick DMA */
             if (flags = *(s32 *)(g + 0x28), gl_func_00000000(base, flags + 8) == sent) {
@@ -16626,7 +16626,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
         rem -= chunk;
         src += chunk;
         if (rem < 0) {
-            gl_func_00000000(base, &gl_ref_0001E358);   /* underflow diag */
+            gl_func_00000000(base, &sStr_Write_ve_len_1E358);   /* underflow diag */
         }
         if (rem != 0) {
             gl_func_00000000(base);
@@ -16681,7 +16681,7 @@ void fs_bufWrite_33BE4(s32 src0, u32 flags) {
 //   00033BE4 alloc). Byte-match deferred. Name pre-checked: no
 //   extern reuse.
 // fs_bufRead_33EB8 — AUDIT REWRITE EXECUTED 2026-07-17 agent-h: 70.0 -> 90.3 NM.
-// All 6 audit items applied: 16x gl_func_00000000 (jal 0), &gl_ref_0001E368/37C/
+// All 6 audit items applied: 16x gl_func_00000000 (jal 0), &sStr_Read_bad_length_1E368/37C/
 // 394/3AC baked syms, per-SITE gl_d_33eb8_* base-0 aliases (one extern per access
 // site — per-WORD aliases got their addresses CSE'd into s-regs, and volatile
 // unfolds the %lo into a separate addiu, both wrong), unsigned sltu size compares,
@@ -16721,10 +16721,10 @@ extern int gl_func_00000000();          /* jal 0x0 USO placeholder (all 16 call 
 /* (the old per-site gl_d_33eb8_8a.. aliases were retired in run 177: the heap
  * words are read through the local base pointer g below) */
 extern u8 gFsStream2_33eb8_src;               /* base-0 alias: copy-loop src (fresh lui/addiu into v1) */
-extern u8 gl_ref_0001E368;              /* baked USO data sym (lui 2 / addiu -0x1C98) */
-extern u8 gl_ref_0001E37C;              /* baked USO data sym */
-extern u8 gl_ref_0001E394;              /* baked USO data sym */
-extern u8 gl_ref_0001E3AC;              /* baked USO data sym */
+extern u8 sStr_Read_bad_length_1E368;              /* baked USO data sym (lui 2 / addiu -0x1C98) */
+extern u8 sStr_Read_read_not_at_end_1E37C;              /* baked USO data sym */
+extern u8 sStr_Read_write_not_at_end_1E394;              /* baked USO data sym */
+extern u8 sStr_Read_ve_len_1E3AC;              /* baked USO data sym */
 void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     s32 pad[3];
     s32 dst;
@@ -16737,7 +16737,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
     u8 *g = &gFsStream2_33eb8_src;
 
     rem = flags; dst = dst0;
-    if (flags & 1) { base = (u8 *)&gFsStream2; gl_func_00000000(base, &gl_ref_0001E368);
+    if (flags & 1) { base = (u8 *)&gFsStream2; gl_func_00000000(base, &sStr_Read_bad_length_1E368);
     }
     base = (u8 *)&gFsStream2;
     gl_func_00000000(base);
@@ -16749,10 +16749,10 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
                 *(s32 *)(g + 0x10) = tmp;
                 if (tmp == 0x12340001) {
                     if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 0xC)) {
-                        gl_func_00000000(base, &gl_ref_0001E37C);
+                        gl_func_00000000(base, &sStr_Read_read_not_at_end_1E37C);
                     }
                     if (*(s32 *)(g + 0x2C) != *(s32 *)(g + 8)) {
-                        gl_func_00000000(base, &gl_ref_0001E394);
+                        gl_func_00000000(base, &sStr_Read_write_not_at_end_1E394);
                     }
                     gl_func_00000000(base, *(s32 *)(g + 0x28) + 8, 0x12340002); if (1) {}
                     tmp = *(s32 *)(g + 0x24);
@@ -16798,7 +16798,7 @@ void fs_bufRead_33EB8(s32 dst0, u32 flags) {
             rem -= flags;
             dst += flags;
             if (rem < 0) {
-                gl_func_00000000(base, &gl_ref_0001E3AC);
+                gl_func_00000000(base, &sStr_Read_ve_len_1E3AC);
             }
             if (rem != 0) {
                 gl_func_00000000(base);

@@ -2,71 +2,71 @@ nonmatching Fog_display, 0x1B0
 
 glabel Fog_display
     /* DD8934 00007EC8 3C0E0000 */  lui        $t6, %hi(func_00000008 + 0x2C)
-  alabel D_00007ECC
+  alabel sStr_Sun_Flare_7ECC
     /* DD8938 00007ECC 8DCE0034 */  lw         $t6, %lo(func_00000008 + 0x2C)($t6)
     /* DD893C 00007ED0 27BDFFD0 */  addiu      $sp, $sp, -0x30
     /* DD8940 00007ED4 AFB00028 */  sw         $s0, 0x28($sp)
-  alabel D_00007ED8
+  alabel sStr_rom_flare5_bin_7ED8
     /* DD8944 00007ED8 24010008 */  addiu      $at, $zero, 0x8
     /* DD8948 00007EDC 00808025 */  or         $s0, $a0, $zero
     /* DD894C 00007EE0 11C10050 */  beq        $t6, $at, .L00008024
     /* DD8950 00007EE4 AFBF002C */   sw        $ra, 0x2C($sp)
-  alabel D_00007EE8
+  alabel sStr_sun_7EE8
     /* DD8954 00007EE8 3C030000 */  lui        $v1, (0x0 >> 16)
-  alabel D_00007EEC
+  alabel sStr_len_7EEC
     /* DD8958 00007EEC 24630000 */  addiu      $v1, $v1, 0x0
-  alabel D_00007EF0
+  alabel sStr_lt0_7EF0
     /* DD895C 00007EF0 8C6F0254 */  lw         $t7, 0x254($v1)
-  alabel D_00007EF4
+  alabel sStr_lt1_7EF4
     /* DD8960 00007EF4 C4620130 */  lwc1       $f2, 0x130($v1)
   alabel D_00007EF8
     /* DD8964 00007EF8 C4860038 */  lwc1       $f6, 0x38($a0)
-  alabel D_00007EFC
+  alabel sStr_CourseShape_7EFC
     /* DD8968 00007EFC 8DF80070 */  lw         $t8, 0x70($t7)
     /* DD896C 00007F00 C4900054 */  lwc1       $f16, 0x54($a0)
     /* DD8970 00007F04 44809000 */  mtc1       $zero, $f18
-  alabel D_00007F08
+  alabel sStr_Map_7F08
     /* DD8974 00007F08 C70400A8 */  lwc1       $f4, 0xA8($t8)
-  alabel D_00007F0C
+  alabel sStr_MorphShape_7F0C
     /* DD8978 00007F0C 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
     /* DD897C 00007F10 3C0B0000 */  lui        $t3, (0x0 >> 16)
     /* DD8980 00007F14 46022002 */  mul.s      $f0, $f4, $f2
-  alabel D_00007F18
+  alabel sStr_morphpolyshape_7F18
     /* DD8984 00007F18 00001025 */  or         $v0, $zero, $zero
     /* DD8988 00007F1C 24840294 */  addiu      $a0, $a0, %lo(func_0000027C + 0x18)
     /* DD898C 00007F20 46023302 */  mul.s      $f12, $f6, $f2
     /* DD8990 00007F24 256B0000 */  addiu      $t3, $t3, 0x0
-  alabel D_00007F28
+  alabel sStr_ParseCmds_7F28
     /* DD8994 00007F28 4600603C */  c.lt.s     $f12, $f0
     /* DD8998 00007F2C 460C8380 */  add.s      $f14, $f16, $f12
     /* DD899C 00007F30 4502000A */  bc1fl      .L00007F5C
-  alabel D_00007F34
+  alabel sStr_Colours_7F34
     /* DD89A0 00007F34 4600703C */   c.lt.s    $f14, $f0
     /* DD89A4 00007F38 460E003C */  c.lt.s     $f0, $f14
-  alabel D_00007F3C
+  alabel sStr_Init_7F3C
     /* DD89A8 00007F3C 00000000 */  nop
     /* DD89AC 00007F40 45020006 */  bc1fl      .L00007F5C
-  alabel D_00007F44
+  alabel sStr_MapLighter_7F44
     /* DD89B0 00007F44 4600703C */   c.lt.s    $f14, $f0
     /* DD89B4 00007F48 460C0201 */  sub.s      $f8, $f0, $f12
     /* DD89B8 00007F4C 24020001 */  addiu      $v0, $zero, 0x1
-  alabel D_00007F50
+  alabel sStr_ItemMgr_7F50
     /* DD89BC 00007F50 1000000E */  b          .L00007F8C
     /* DD89C0 00007F54 46104483 */   div.s     $f18, $f8, $f16
-  alabel D_00007F58
+  alabel sStr_st0_7F58
     /* DD89C4 00007F58 4600703C */  c.lt.s     $f14, $f0
   .L00007F5C:
     /* DD89C8 00007F5C 00000000 */  nop
     /* DD89CC 00007F60 4502000B */  bc1fl      .L00007F90
-  alabel D_00007F64
+  alabel sStr_gol_7F64
     /* DD89D0 00007F64 8E19008C */   lw        $t9, 0x8C($s0)
-  alabel D_00007F68
+  alabel sStr_no_gol_7F68
     /* DD89D4 00007F68 C60A006C */  lwc1       $f10, 0x6C($s0)
     /* DD89D8 00007F6C 3C013F80 */  lui        $at, (0x3F800000 >> 16)
-  alabel D_00007F70
+  alabel sStr_Markers_7F70
     /* DD89DC 00007F70 460C5100 */  add.s      $f4, $f10, $f12
     /* DD89E0 00007F74 4604003C */  c.lt.s     $f0, $f4
-  alabel D_00007F78
+  alabel sStr_MarkerMgr_7F78
     /* DD89E4 00007F78 00000000 */  nop
     /* DD89E8 00007F7C 45020004 */  bc1fl      .L00007F90
     /* DD89EC 00007F80 8E19008C */   lw        $t9, 0x8C($s0)

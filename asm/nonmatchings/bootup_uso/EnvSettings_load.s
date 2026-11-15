@@ -106,18 +106,18 @@ glabel EnvSettings_load
     /* DD7EC0 00007454 8E620038 */  lw         $v0, 0x38($s3)
     /* DD7EC4 00007458 3C040000 */  lui        $a0, %hi(func_0000027C + 0x18)
     /* DD7EC8 0000745C 30490001 */  andi       $t1, $v0, 0x1
-  alabel D_00007460
+  alabel sStr_snowlookat_7460
     /* DD7ECC 00007460 51200005 */  beql       $t1, $zero, .L00007478
     /* DD7ED0 00007464 304A0002 */   andi      $t2, $v0, 0x2
     /* DD7ED4 00007468 0C000000 */  jal        func_00000000
-  alabel D_0000746C
+  alabel sStr_rom_cam_info_bin_746C
     /* DD7ED8 0000746C 24840294 */   addiu     $a0, $a0, %lo(func_0000027C + 0x18)
     /* DD7EDC 00007470 8E620038 */  lw         $v0, 0x38($s3)
     /* DD7EE0 00007474 304A0002 */  andi       $t2, $v0, 0x2
   .L00007478:
     /* DD7EE4 00007478 11400005 */  beqz       $t2, .L00007490
     /* DD7EE8 0000747C 00000000 */   nop
-  alabel D_00007480
+  alabel sStr_rom_cam_ca_bin_7480
     /* DD7EEC 00007480 0C0013FC */  jal        stream_readS32_00004FF0
     /* DD7EF0 00007484 26640030 */   addiu     $a0, $s3, 0x30
     /* DD7EF4 00007488 0C0013FC */  jal        stream_readS32_00004FF0
@@ -128,18 +128,18 @@ glabel EnvSettings_load
     /* DD7F04 00007498 24010006 */  addiu      $at, $zero, 0x6
     /* DD7F08 0000749C 10410002 */  beq        $v0, $at, .L000074A8
     /* DD7F0C 000074A0 2401000B */   addiu     $at, $zero, 0xB
-  alabel D_000074A4
+  alabel sStr_LookAtChase_74A4
     /* DD7F10 000074A4 14410009 */  bne        $v0, $at, .L000074CC
   .L000074A8:
     /* DD7F14 000074A8 3C013F80 */   lui       $at, (0x3F800000 >> 16)
     /* DD7F18 000074AC 44812000 */  mtc1       $at, $f4
-  alabel D_000074B0
+  alabel sStr_rom_lookat_ca_bin_74B0
     /* DD7F1C 000074B0 3C010000 */  lui        $at, %hi(func_0000029C + 0x4)
     /* DD7F20 000074B4 240D0320 */  addiu      $t5, $zero, 0x320
     /* DD7F24 000074B8 E42402A0 */  swc1       $f4, %lo(func_0000029C + 0x4)($at)
     /* DD7F28 000074BC 8E6B0038 */  lw         $t3, 0x38($s3)
     /* DD7F2C 000074C0 AE6D0034 */  sw         $t5, 0x34($s3)
-  alabel D_000074C4
+  alabel sStr_LookAtChase_74C4
     /* DD7F30 000074C4 356C0002 */  ori        $t4, $t3, 0x2
     /* DD7F34 000074C8 AE6C0038 */  sw         $t4, 0x38($s3)
   .L000074CC:

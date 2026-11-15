@@ -7,7 +7,7 @@
  * jumptable in the donor's local .rodata; the splice renames that reloc to
  * Node_doCommand_rodata, pinned to 0x1A1C in undefined_syms_auto.txt (the
  * target's `lw t6,0x1A1C(at)`). The three baked lui/addiu message addresses
- * are the existing D_0001EC6C / D_0001EC84 / D_0001EC9C pins; the callbacks
+ * are the existing sFmt_Global_out_of_range_1EC6C / sFmt_Global_out_of_range_1EC84 / sFmt_unknown_Node_cmd_for_1EC9C pins; the callbacks
  * are `jal 0` in the ROM (0-pinned gl_func_00000000).
  *
  * Register levers (agent-g runs 207-209, docs/IDO_CODEGEN.md kit CXCI):
@@ -25,7 +25,7 @@
 
 extern int gl_func_00000000();
 extern int D_00000000;
-extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
+extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], sFmt_unknown_Node_cmd_for_1EC9C[];
 
 void Node_doCommand(char *o, char *c) {
     unsigned int key;
@@ -50,7 +50,7 @@ void Node_doCommand(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000(D_0001EC6C, key);
+                gl_func_00000000(sFmt_Global_out_of_range_1EC6C, key);
             }
             r = *(char **)((char *)&gNodeGlobals + key * 4);
             gl_func_00000000(r + 0x10, o);
@@ -64,7 +64,7 @@ void Node_doCommand(char *o, char *c) {
             *(int **)(c + 0x4) = p + 1;
             key = *p;
             if (key >= 40) {
-                gl_func_00000000(D_0001EC84, key);
+                gl_func_00000000(sFmt_Global_out_of_range_1EC84, key);
             }
             *(char **)((char *)&gNodeGlobals + key * 4) = o;
             return;
@@ -72,5 +72,5 @@ void Node_doCommand(char *o, char *c) {
             return;
     }
     key = code; code = 0;
-    p = *(int **)(o + 0xC); gl_func_00000000(D_0001EC9C, key, p);
+    p = *(int **)(o + 0xC); gl_func_00000000(sFmt_unknown_Node_cmd_for_1EC9C, key, p);
 }

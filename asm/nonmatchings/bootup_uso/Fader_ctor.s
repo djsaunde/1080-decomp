@@ -19,8 +19,8 @@ glabel Fader_ctor
     /* DE38A4 00012E38 10400009 */  beqz       $v0, .L00012E60
     /* DE38A8 00012E3C 00402025 */   or        $a0, $v0, $zero
   .L00012E40:
-    /* DE38AC 00012E40 3C050001 */  lui        $a1, %hi(D_0000C730)
-    /* DE38B0 00012E44 24A5C730 */  addiu      $a1, $a1, %lo(D_0000C730)
+    /* DE38AC 00012E40 3C050001 */  lui        $a1, %hi(sStr_Node_C730)
+    /* DE38B0 00012E44 24A5C730 */  addiu      $a1, $a1, %lo(sStr_Node_C730)
     /* DE38B4 00012E48 0C000000 */  jal        func_00000000
     /* DE38B8 00012E4C AFA40020 */   sw        $a0, 0x20($sp)
     /* DE38BC 00012E50 8FA40020 */  lw         $a0, 0x20($sp)
@@ -29,9 +29,9 @@ glabel Fader_ctor
     /* DE38C8 00012E5C AC8E0028 */  sw         $t6, 0x28($a0)
   .L00012E60:
     /* DE38CC 00012E60 3C0F0000 */  lui        $t7, (0x0 >> 16)
-    /* DE38D0 00012E64 3C180001 */  lui        $t8, %hi(D_0000C738)
+    /* DE38D0 00012E64 3C180001 */  lui        $t8, %hi(sStr_Fader_C738)
     /* DE38D4 00012E68 25EF0000 */  addiu      $t7, $t7, 0x0
-    /* DE38D8 00012E6C 2718C738 */  addiu      $t8, $t8, %lo(D_0000C738)
+    /* DE38D8 00012E6C 2718C738 */  addiu      $t8, $t8, %lo(sStr_Fader_C738)
     /* DE38DC 00012E70 AE0F0028 */  sw         $t7, 0x28($s0)
     /* DE38E0 00012E74 AE18000C */  sw         $t8, 0xC($s0)
     /* DE38E4 00012E78 8FB90044 */  lw         $t9, 0x44($sp)

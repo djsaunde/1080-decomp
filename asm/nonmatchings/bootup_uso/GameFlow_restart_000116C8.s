@@ -17,8 +17,8 @@ glabel GameFlow_restart_000116C8
     /* DE2168 000116FC 24040001 */  addiu      $a0, $zero, 0x1
     /* DE216C 00011700 0C000000 */  jal        func_00000000
     /* DE2170 00011704 00000000 */   nop
-    /* DE2174 00011708 3C040001 */  lui        $a0, %hi(D_0000C624)
-    /* DE2178 0001170C 2484C624 */  addiu      $a0, $a0, %lo(D_0000C624)
+    /* DE2174 00011708 3C040001 */  lui        $a0, %hi(sStr_starLine_C624)
+    /* DE2178 0001170C 2484C624 */  addiu      $a0, $a0, %lo(sStr_starLine_C624)
     /* DE217C 00011710 0C000000 */  jal        func_00000000
     /* DE2180 00011714 00000000 */   nop
     /* DE2184 00011718 3C040000 */  lui        $a0, (0x0 >> 16)
@@ -27,8 +27,8 @@ glabel GameFlow_restart_000116C8
     /* DE2190 00011724 00000000 */   nop
     /* DE2194 00011728 0C000000 */  jal        func_00000000
     /* DE2198 0001172C 00000000 */   nop
-    /* DE219C 00011730 3C040001 */  lui        $a0, %hi(D_0000C65C)
-    /* DE21A0 00011734 2484C65C */  addiu      $a0, $a0, %lo(D_0000C65C)
+    /* DE219C 00011730 3C040001 */  lui        $a0, %hi(sStr_starLine_C65C)
+    /* DE21A0 00011734 2484C65C */  addiu      $a0, $a0, %lo(sStr_starLine_C65C)
     /* DE21A4 00011738 0C000000 */  jal        func_00000000
     /* DE21A8 0001173C 00000000 */   nop
     /* DE21AC 00011740 3C040000 */  lui        $a0, (0x0 >> 16)
@@ -69,8 +69,8 @@ glabel GameFlow_restart_000116C8
     /* DE2230 000117C4 8E190034 */  lw         $t9, 0x34($s0)
     /* DE2234 000117C8 0320F809 */  jalr       $t9
     /* DE2238 000117CC 00000000 */   nop
-    /* DE223C 000117D0 3C040001 */  lui        $a0, %hi(D_0000C694)
-    /* DE2240 000117D4 2484C694 */  addiu      $a0, $a0, %lo(D_0000C694)
+    /* DE223C 000117D0 3C040001 */  lui        $a0, %hi(sStr_done_C694)
+    /* DE2240 000117D4 2484C694 */  addiu      $a0, $a0, %lo(sStr_done_C694)
     /* DE2244 000117D8 0C000000 */  jal        func_00000000
     /* DE2248 000117DC 00000000 */   nop
     /* DE224C 000117E0 10000001 */  b          .L000117E8

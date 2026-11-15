@@ -17,12 +17,12 @@ extern int func_00000000(...);
 extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } func_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
-extern char D_0000C58C;
-extern char D_0000C594;
-extern char D_0000C5A4;
-extern char D_0000C5AC;
-extern char D_0000C5BC;
-extern char D_0000C5C4;
+extern char sStr_Node_C58C;
+extern char sStr_Quit_Process_C594;
+extern char sStr_Node_C5A4;
+extern char sStr_Quit_Process_C5AC;
+extern char sStr_Node_C5BC;
+extern char sStr_PauseMenu_C5C4;
 extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $at-fused scratch store/reload */
 
 /* QuitProcess_ctor0: 73-insn (0x124) constructor + init chain, returns a0.
@@ -43,7 +43,7 @@ extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $
  * the outer `||`'s false-exit IS the a0-alloc-fail `beqz t7,end`.
  * (2) `register void*
  * s0,s1` (callee-saved cascade temps, no home spill). (3) TAIL recycles
- * the now-dead s0/s1: `s0=a0; s1=&D_0000C594; *(int*)(s0+0xC)=(int)s1;`
+ * the now-dead s0/s1: `s0=a0; s1=&sStr_Quit_Process_C594; *(int*)(s0+0xC)=(int)s1;`
  * reproduces `lw s0; lui s1; sw s1,0xC(s0)`, and `s0=a0; f(scratch,s0)`
  * the final-call arg. (4) D_bootup_scratch0 (int-typed base-0 alias of
  * D_00000000, undefined_syms) $at-fuses the *&D store/reload (lui/sw)
@@ -59,14 +59,14 @@ void *QuitProcess_ctor0(void *a0) {
         if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &D_0000C58C);
+                func_00000000(s1, &sStr_Node_C58C);
                 *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
             }
             *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
         }
         *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
         s0 = a0;
-        s1 = (void*)&D_0000C594;
+        s1 = (void*)&sStr_Quit_Process_C594;
         *(int*)((char*)s0 + 0x0C) = (int)s1;
         D_bootup_scratch0 = func_00000000(a0, 0);
         s0 = a0;
@@ -98,7 +98,7 @@ void *QuitProcess_ctor0(void *a0) {
  * (2) `register void *s0,s1;` = the callee-saved cascade temps (or s0,v0 / or
  *     s1,s0 — no home spill; plain locals would stack-home and lose the shape).
  * (3) TAIL RE-USE of the now-dead register vars as scratch (the target recycles
- *     $s0/$s1 once the cascade vars die): `s0=a0; s1=&D_0000C5AC;
+ *     $s0/$s1 once the cascade vars die): `s0=a0; s1=&sStr_Quit_Process_C5AC;
  *     *(int*)(s0+0xC)=(int)s1;` -> `lw s0; lui s1; sw s1,0xC(s0)`; and
  *     `s0=a0; f(scratch,s0)` for the last call's arg.
  * (4) struct-typed func_00000008 (member .f2C/.f38) $at-fuses the global stashes
@@ -114,14 +114,14 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
         if (s0 != 0 || (s0 = (void*)func_00000000(0x50)) != 0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
-                func_00000000(s1, &D_0000C5A4);
+                func_00000000(s1, &sStr_Node_C5A4);
                 *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
             }
             *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
         }
         *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
         s0 = a0;
-        s1 = (void*)&D_0000C5AC;
+        s1 = (void*)&sStr_Quit_Process_C5AC;
         *(int*)((char*)s0 + 0x0C) = (int)s1;
         func_00000008.f2C = a1;
         func_00000008.f38 = a2;
@@ -159,10 +159,10 @@ void QuitProcess_onQuit(char *a0) {
  *       if (!o) return 0;
  *       s = func_00000000(0x2C);
  *       if (!s) return ...;
- *       func_00000000(s, &D_0000C5BC);            // init sub
+ *       func_00000000(s, &sStr_Node_C5BC);            // init sub
  *       s->0x28 = &D_a;                            // descriptor
  *       o->0x28 = &D_b;                            // descriptor
- *       o->0xC  = &D_0000C5C4;                     // type/vtable
+ *       o->0xC  = &sStr_PauseMenu_C5C4;                     // type/vtable
  *       f32 *c = (f32*)((char*)o + 0x4C);
  *       c[0] = 0x77 / 255.0f;                      // 119/255
  *       c[1] = 0x75 / 255.0f;                      // 117/255
@@ -171,9 +171,9 @@ void QuitProcess_onQuit(char *a0) {
  *       ... (further normalized float fields)
  *   }
  * Struct-typing reference: o = 0x304-byte object; o->0x28 (40)
- * descriptor (&D), o->0xC (12) type/vtable ptr (&D_0000C5C4).
+ * descriptor (&D), o->0xC (12) type/vtable ptr (&sStr_PauseMenu_C5C4).
  * s = 0x2C-byte sub-object (s->0x28 descriptor, init datum
- * D_0000C5BC). o+0x4C (76) = a float array initialized from u8
+ * sStr_Node_C5BC). o+0x4C (76) = a float array initialized from u8
  * literals divided by 255.0f (0x437F0000) - a 0..1 normalized
  * colour / parameter vector (the int-byte / 255.0 idiom). Caps
  * <80: get-or-create + alloc-cascade (~3 reloc) + repeated
@@ -195,12 +195,12 @@ void *PauseMenu_create(char *a0) {
     register char *d;
     if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
         if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
-            func_00000000(s, &D_0000C5BC);
+            func_00000000(s, &sStr_Node_C5BC);
             *(char **)(s + 0x28) = &Process_vtbl;
         }
         *(char **)(a0 + 0x28) = &PauseMenu_vtbl;
         s = a0;
-        d = &D_0000C5C4;
+        d = &sStr_PauseMenu_C5C4;
         *(char **)(s + 0xC) = d;
         s = a0 + 0x4C;
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;

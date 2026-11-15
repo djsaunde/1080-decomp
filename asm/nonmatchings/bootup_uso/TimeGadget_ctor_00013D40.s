@@ -18,13 +18,13 @@ glabel TimeGadget_ctor_00013D40
     /* DE47E0 00013D74 10400005 */  beqz       $v0, .L00013D8C
     /* DE47E4 00013D78 00401825 */   or        $v1, $v0, $zero
   .L00013D7C:
-    /* DE47E8 00013D7C 3C0E0001 */  lui        $t6, %hi(D_0000CAAC)
-    /* DE47EC 00013D80 25CECAAC */  addiu      $t6, $t6, %lo(D_0000CAAC)
+    /* DE47E8 00013D7C 3C0E0001 */  lui        $t6, %hi(sStr_TimeGadget_Parms_CAAC)
+    /* DE47EC 00013D80 25CECAAC */  addiu      $t6, $t6, %lo(sStr_TimeGadget_Parms_CAAC)
     /* DE47F0 00013D84 AC6E0000 */  sw         $t6, 0x0($v1)
     /* DE47F4 00013D88 AC600004 */  sw         $zero, 0x4($v1)
   .L00013D8C:
-    /* DE47F8 00013D8C 3C0F0001 */  lui        $t7, %hi(D_0000CAC0)
-    /* DE47FC 00013D90 8DEFCAC0 */  lw         $t7, %lo(D_0000CAC0)($t7)
+    /* DE47F8 00013D8C 3C0F0001 */  lui        $t7, %hi(sTag_xps_CAC0)
+    /* DE47FC 00013D90 8DEFCAC0 */  lw         $t7, %lo(sTag_xps_CAC0)($t7)
     /* DE4800 00013D94 2401FFF8 */  addiu      $at, $zero, -0x8
     /* DE4804 00013D98 26040008 */  addiu      $a0, $s0, 0x8
     /* DE4808 00013D9C AFAF004C */  sw         $t7, 0x4C($sp)
@@ -49,8 +49,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE4850 00013DE4 AC88000C */  sw         $t0, 0xC($a0)
     /* DE4854 00013DE8 AC800014 */  sw         $zero, 0x14($a0)
   .L00013DEC:
-    /* DE4858 00013DEC 3C0A0001 */  lui        $t2, %hi(D_0000CAC4)
-    /* DE485C 00013DF0 8D4ACAC4 */  lw         $t2, %lo(D_0000CAC4)($t2)
+    /* DE4858 00013DEC 3C0A0001 */  lui        $t2, %hi(sTag_yps_CAC4)
+    /* DE485C 00013DF0 8D4ACAC4 */  lw         $t2, %lo(sTag_yps_CAC4)($t2)
     /* DE4860 00013DF4 2401FFE0 */  addiu      $at, $zero, -0x20
     /* DE4864 00013DF8 26040020 */  addiu      $a0, $s0, 0x20
     /* DE4868 00013DFC AFAA0048 */  sw         $t2, 0x48($sp)
@@ -75,8 +75,8 @@ glabel TimeGadget_ctor_00013D40
     /* DE48B0 00013E44 AC8D000C */  sw         $t5, 0xC($a0)
     /* DE48B4 00013E48 AC800014 */  sw         $zero, 0x14($a0)
   .L00013E4C:
-    /* DE48B8 00013E4C 3C0F0001 */  lui        $t7, %hi(D_0000CAC8)
-    /* DE48BC 00013E50 8DEFCAC8 */  lw         $t7, %lo(D_0000CAC8)($t7)
+    /* DE48B8 00013E4C 3C0F0001 */  lui        $t7, %hi(sTag_lbx_CAC8)
+    /* DE48BC 00013E50 8DEFCAC8 */  lw         $t7, %lo(sTag_lbx_CAC8)($t7)
     /* DE48C0 00013E54 2401FFC8 */  addiu      $at, $zero, -0x38
     /* DE48C4 00013E58 26040038 */  addiu      $a0, $s0, 0x38
     /* DE48C8 00013E5C AFAF0044 */  sw         $t7, 0x44($sp)

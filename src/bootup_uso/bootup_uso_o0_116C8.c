@@ -9,9 +9,9 @@
 
 extern int func_00000000();
 extern int D_00000000;
-extern char D_0000C624;
-extern char D_0000C65C;
-extern char D_0000C694;
+extern char sStr_starLine_C624;
+extern char sStr_starLine_C65C;
+extern char sStr_done_C694;
 /* Two module-external word reads whose baked LO16 fields are 0x34 / 0x40
  * (splat mislabeled them func_00000008+0x2C / +0x38). Bare-symbol reads via
  * undefined_syms_auto.txt entries, same recipe as gInputMgr_8AE4_mode (= 0x34). */
@@ -48,10 +48,10 @@ void GameFlow_restart_000116C8(void) {
     func_00000000(&gInputMgr);
     D_00000000 = 0;
     func_00000000(1);
-    func_00000000(&D_0000C624);
+    func_00000000(&sStr_starLine_C624);
     func_00000000(&gSnowBoard);
     func_00000000();
-    func_00000000(&D_0000C65C);
+    func_00000000(&sStr_starLine_C65C);
     func_00000000(&gInputMgr, gInputMgr_bu_116C8_34, gInputMgr_bu_116C8_40);
     (*(FN116C8)*(int *)(p + 0x14))(
         *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x10) + (int)&gSnowBoard);
@@ -62,5 +62,5 @@ void GameFlow_restart_000116C8(void) {
     (*(FN116C8)*(int *)(p + 0x34))(
         *(short *)((p = *(char **)((char *)&gSnowBoard + 0x28)) + 0x30) + (int)&gSnowBoard,
         &local);
-    func_00000000(&D_0000C694);
+    func_00000000(&sStr_done_C694);
 }

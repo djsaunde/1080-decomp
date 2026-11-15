@@ -40,8 +40,8 @@ glabel QuitProcess_ctor
     /* DE0840 0000FDD4 00000000 */   nop
   .L0000FDD8:
     /* DE0844 0000FDD8 02202025 */  or         $a0, $s1, $zero
-    /* DE0848 0000FDDC 3C050001 */  lui        $a1, %hi(D_0000C5A4)
-    /* DE084C 0000FDE0 24A5C5A4 */  addiu      $a1, $a1, %lo(D_0000C5A4)
+    /* DE0848 0000FDDC 3C050001 */  lui        $a1, %hi(sStr_Node_C5A4)
+    /* DE084C 0000FDE0 24A5C5A4 */  addiu      $a1, $a1, %lo(sStr_Node_C5A4)
     /* DE0850 0000FDE4 0C000000 */  jal        func_00000000
     /* DE0854 0000FDE8 00000000 */   nop
     /* DE0858 0000FDEC 3C180000 */  lui        $t8, (0x0 >> 16)
@@ -57,8 +57,8 @@ glabel QuitProcess_ctor
     /* DE0878 0000FE0C 8FA90028 */  lw         $t1, 0x28($sp)
     /* DE087C 0000FE10 AD280028 */  sw         $t0, 0x28($t1)
     /* DE0880 0000FE14 8FB00028 */  lw         $s0, 0x28($sp)
-    /* DE0884 0000FE18 3C110001 */  lui        $s1, %hi(D_0000C5AC)
-    /* DE0888 0000FE1C 2631C5AC */  addiu      $s1, $s1, %lo(D_0000C5AC)
+    /* DE0884 0000FE18 3C110001 */  lui        $s1, %hi(sStr_Quit_Process_C5AC)
+    /* DE0888 0000FE1C 2631C5AC */  addiu      $s1, $s1, %lo(sStr_Quit_Process_C5AC)
     /* DE088C 0000FE20 AE11000C */  sw         $s1, 0xC($s0)
     /* DE0890 0000FE24 8FAA002C */  lw         $t2, 0x2C($sp)
     /* DE0894 0000FE28 3C010000 */  lui        $at, %hi(func_00000008 + 0x2C)

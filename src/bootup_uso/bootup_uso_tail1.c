@@ -16,9 +16,9 @@ typedef struct {
 } F0Struct;
 extern F0Struct func_000000F0; /* USO-base reloc */
 extern int func_00000188;      /* USO-base reloc */
-extern char D_0000C57C;
-extern char D_0000C58C;
-extern char D_0000C594;
+extern char sStr_ProcessWindow_C57C;
+extern char sStr_Node_C58C;
+extern char sStr_Quit_Process_C594;
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_F81C.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 119). */

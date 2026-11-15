@@ -11,12 +11,12 @@
 extern int func_00000000();
 extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } func_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
 extern char D_00000000;
-extern char D_0000C58C;
-extern char D_0000C594;
-extern char D_0000C5A4;
-extern char D_0000C5AC;
-extern char D_0000C5BC;
-extern char D_0000C5C4;
+extern char sStr_Node_C58C;
+extern char sStr_Quit_Process_C594;
+extern char sStr_Node_C5A4;
+extern char sStr_Quit_Process_C5AC;
+extern char sStr_Node_C5BC;
+extern char sStr_PauseMenu_C5C4;
 extern int D_bootup_scratch0;         /* int-typed base-0 alias of D_00000000; $at-fused scratch store/reload */
 
 /* EXACT via an IDO 7.1 NCC (C++) -O0 donor: src/bootup_uso/bootup_uso_ncc_FC28.cpp,
@@ -56,10 +56,10 @@ void QuitProcess_onQuit(char *a0) {
  *       if (!o) return 0;
  *       s = func_00000000(0x2C);
  *       if (!s) return ...;
- *       func_00000000(s, &D_0000C5BC);            // init sub
+ *       func_00000000(s, &sStr_Node_C5BC);            // init sub
  *       s->0x28 = &D_a;                            // descriptor
  *       o->0x28 = &D_b;                            // descriptor
- *       o->0xC  = &D_0000C5C4;                     // type/vtable
+ *       o->0xC  = &sStr_PauseMenu_C5C4;                     // type/vtable
  *       f32 *c = (f32*)((char*)o + 0x4C);
  *       c[0] = 0x77 / 255.0f;                      // 119/255
  *       c[1] = 0x75 / 255.0f;                      // 117/255
@@ -68,9 +68,9 @@ void QuitProcess_onQuit(char *a0) {
  *       ... (further normalized float fields)
  *   }
  * Struct-typing reference: o = 0x304-byte object; o->0x28 (40)
- * descriptor (&D), o->0xC (12) type/vtable ptr (&D_0000C5C4).
+ * descriptor (&D), o->0xC (12) type/vtable ptr (&sStr_PauseMenu_C5C4).
  * s = 0x2C-byte sub-object (s->0x28 descriptor, init datum
- * D_0000C5BC). o+0x4C (76) = a float array initialized from u8
+ * sStr_Node_C5BC). o+0x4C (76) = a float array initialized from u8
  * literals divided by 255.0f (0x437F0000) - a 0..1 normalized
  * colour / parameter vector (the int-byte / 255.0 idiom). Caps
  * <80: get-or-create + alloc-cascade (~3 reloc) + repeated

@@ -18,8 +18,8 @@ glabel cam_create
     /* DD3C64 000031F8 10400029 */  beqz       $v0, .L000032A0
     /* DD3C68 000031FC 00403025 */   or        $a2, $v0, $zero
   .L00003200:
-    /* DD3C6C 00003200 3C050000 */  lui        $a1, %hi(D_00007460)
-    /* DD3C70 00003204 24A57460 */  addiu      $a1, $a1, %lo(D_00007460)
+    /* DD3C6C 00003200 3C050000 */  lui        $a1, %hi(sStr_snowlookat_7460)
+    /* DD3C70 00003204 24A57460 */  addiu      $a1, $a1, %lo(sStr_snowlookat_7460)
     /* DD3C74 00003208 00C02025 */  or         $a0, $a2, $zero
     /* DD3C78 0000320C 0C000000 */  jal        func_00000000
     /* DD3C7C 00003210 AFA6006C */   sw        $a2, 0x6C($sp)
@@ -79,8 +79,8 @@ glabel cam_create
     /* DD3D40 000032D4 3C010000 */  lui        $at, %hi(func_000003F8 + 0x138)
     /* DD3D44 000032D8 C4280530 */  lwc1       $f8, %lo(func_000003F8 + 0x138)($at)
     /* DD3D48 000032DC 8FB800A0 */  lw         $t8, 0xA0($sp)
-    /* DD3D4C 000032E0 3C190000 */  lui        $t9, %hi(D_0000746C)
-    /* DD3D50 000032E4 2739746C */  addiu      $t9, $t9, %lo(D_0000746C)
+    /* DD3D4C 000032E0 3C190000 */  lui        $t9, %hi(sStr_rom_cam_info_bin_746C)
+    /* DD3D50 000032E4 2739746C */  addiu      $t9, $t9, %lo(sStr_rom_cam_info_bin_746C)
     /* DD3D54 000032E8 AFB9001C */  sw         $t9, 0x1C($sp)
     /* DD3D58 000032EC 00002025 */  or         $a0, $zero, $zero
     /* DD3D5C 000032F0 8FA5009C */  lw         $a1, 0x9C($sp)
@@ -93,8 +93,8 @@ glabel cam_create
     /* DD3D78 0000330C 8FA5009C */  lw         $a1, 0x9C($sp)
     /* DD3D7C 00003310 AFA2008C */  sw         $v0, 0x8C($sp)
     /* DD3D80 00003314 AFA20088 */  sw         $v0, 0x88($sp)
-    /* DD3D84 00003318 3C070000 */  lui        $a3, %hi(D_00007480)
-    /* DD3D88 0000331C 24E77480 */  addiu      $a3, $a3, %lo(D_00007480)
+    /* DD3D84 00003318 3C070000 */  lui        $a3, %hi(sStr_rom_cam_ca_bin_7480)
+    /* DD3D88 0000331C 24E77480 */  addiu      $a3, $a3, %lo(sStr_rom_cam_ca_bin_7480)
     /* DD3D8C 00003320 00002025 */  or         $a0, $zero, $zero
     /* DD3D90 00003324 0C000000 */  jal        func_00000000
     /* DD3D94 00003328 8CA60874 */   lw        $a2, 0x874($a1)
@@ -104,8 +104,8 @@ glabel cam_create
     /* DD3DA4 00003338 AFA20080 */   sw        $v0, 0x80($sp)
     /* DD3DA8 0000333C 8FA5008C */  lw         $a1, 0x8C($sp)
     /* DD3DAC 00003340 8FA60080 */  lw         $a2, 0x80($sp)
-    /* DD3DB0 00003344 3C070000 */  lui        $a3, %hi(D_00007490)
-    /* DD3DB4 00003348 24E77490 */  addiu      $a3, $a3, %lo(D_00007490)
+    /* DD3DB0 00003344 3C070000 */  lui        $a3, %hi(sStr_rom_lookat_ca2_bin_7490)
+    /* DD3DB4 00003348 24E77490 */  addiu      $a3, $a3, %lo(sStr_rom_lookat_ca2_bin_7490)
     /* DD3DB8 0000334C 00002025 */  or         $a0, $zero, $zero
     /* DD3DBC 00003350 0C000000 */  jal        func_00000000
     /* DD3DC0 00003354 ACA60154 */   sw        $a2, 0x154($a1)
@@ -115,8 +115,8 @@ glabel cam_create
     /* DD3DD0 00003364 AFA2007C */   sw        $v0, 0x7C($sp)
     /* DD3DD4 00003368 8FA3007C */  lw         $v1, 0x7C($sp)
     /* DD3DD8 0000336C 8FA90078 */  lw         $t1, 0x78($sp)
-    /* DD3DDC 00003370 3C0A0000 */  lui        $t2, %hi(D_000074A4)
-    /* DD3DE0 00003374 254A74A4 */  addiu      $t2, $t2, %lo(D_000074A4)
+    /* DD3DDC 00003370 3C0A0000 */  lui        $t2, %hi(sStr_LookAtChase_74A4)
+    /* DD3DE0 00003374 254A74A4 */  addiu      $t2, $t2, %lo(sStr_LookAtChase_74A4)
     /* DD3DE4 00003378 AD2300B4 */  sw         $v1, 0xB4($t1)
     /* DD3DE8 0000337C 10000026 */  b          .L00003418
     /* DD3DEC 00003380 AC6A000C */   sw        $t2, 0xC($v1)
@@ -145,8 +145,8 @@ glabel cam_create
   .L000033D8:
     /* DD3E44 000033D8 8FA5009C */  lw         $a1, 0x9C($sp)
     /* DD3E48 000033DC 8FAC0068 */  lw         $t4, 0x68($sp)
-    /* DD3E4C 000033E0 3C070000 */  lui        $a3, %hi(D_000074B0)
-    /* DD3E50 000033E4 24E774B0 */  addiu      $a3, $a3, %lo(D_000074B0)
+    /* DD3E4C 000033E0 3C070000 */  lui        $a3, %hi(sStr_rom_lookat_ca_bin_74B0)
+    /* DD3E50 000033E4 24E774B0 */  addiu      $a3, $a3, %lo(sStr_rom_lookat_ca_bin_74B0)
     /* DD3E54 000033E8 00002025 */  or         $a0, $zero, $zero
     /* DD3E58 000033EC 00A03025 */  or         $a2, $a1, $zero
     /* DD3E5C 000033F0 0C000000 */  jal        func_00000000
@@ -156,8 +156,8 @@ glabel cam_create
     /* DD3E6C 00003400 0C000000 */  jal        func_00000000
     /* DD3E70 00003404 00402825 */   or        $a1, $v0, $zero
     /* DD3E74 00003408 8FAE0084 */  lw         $t6, 0x84($sp)
-    /* DD3E78 0000340C 3C0D0000 */  lui        $t5, %hi(D_000074C4)
-    /* DD3E7C 00003410 25AD74C4 */  addiu      $t5, $t5, %lo(D_000074C4)
+    /* DD3E78 0000340C 3C0D0000 */  lui        $t5, %hi(sStr_LookAtChase_74C4)
+    /* DD3E7C 00003410 25AD74C4 */  addiu      $t5, $t5, %lo(sStr_LookAtChase_74C4)
     /* DD3E80 00003414 ADCD000C */  sw         $t5, 0xC($t6)
   .L00003418:
     /* DD3E84 00003418 8FA40098 */  lw         $a0, 0x98($sp)

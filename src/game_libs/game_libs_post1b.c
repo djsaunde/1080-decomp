@@ -1119,22 +1119,22 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", DNodeAccum_apply_00064388);
 extern int gl_func_0001CA10();
 extern int gl_init_00000000_64588(void *, void *, float, float, float);
 extern char gl_ref_00000000_64588;
-extern char gl_ref_000223C0_64588;
-extern int gl_ref_000223D0_64588_i;
-extern int gl_ref_000223D4_64588_i;
-extern int gl_ref_000223D8_64588_i;
-extern int gl_ref_000223DC_64588_i;
-extern int gl_ref_000223E0_64588_i;
-extern int gl_ref_000223E4_64588_i;
-extern int gl_ref_000223E8_64588_i;
-extern int gl_ref_000223EC_64588_i;
-extern int gl_ref_000223F0_64588_i;
-extern int gl_ref_000223F4_64588_i;
-extern int gl_ref_000223F8_64588_i;
-extern int gl_ref_000223FC_64588_i;
-extern int gl_ref_00022400_64588_i;
-extern int gl_ref_00022404_64588_i;
-extern int gl_ref_00022408_64588_i;
+extern char sStr_DNode_Parms_223C0;
+extern int sTag_imp_223D0;
+extern int sTag_spd_223D4;
+extern int sTag_spl_223D8;
+extern int sTag_spw_223DC;
+extern int sTag_gvt_223E0;
+extern int sTag_suc_223E4;
+extern int sTag_vsc_223E8;
+extern int sTag_usc_223EC;
+extern int sTag_tsc_223F0;
+extern int sTag_cog_223F4;
+extern int sTag_unc_223F8;
+extern int sTag_dsc_223FC;
+extern int sTag_csc_22400;
+extern int sTag_rad_22404;
+extern int sTag_cts_22408;
 extern char gl_ref_000221D8_64588_1;
 extern char gl_ref_000221D8_64588_2;
 extern char gl_ref_000221D8_64588_3;
@@ -1203,10 +1203,10 @@ void *DNode_ctor(void *arg0, void *arg1) {
         if ((base = (char *)arg0 + 0x108) != 0 ||
             (base = (char *)gl_func_00000000(0x180)) != 0) {
             if ((p = base) != 0 || (p = (char *)gl_func_00000000(8)) != 0) {
-                FW64(p, 0) = (int)&gl_ref_000223C0_64588;
+                FW64(p, 0) = (int)&sStr_DNode_Parms_223C0;
                 FW64(p, 4) = 0;
             }
-            u1.v = gl_ref_000223D0_64588_i;
+            u1.v = sTag_imp_223D0;
             {
                 t = u1;
                 if ((m = base + 0x8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1216,7 +1216,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 0.0f;
                 }
             }
-            u2.v = gl_ref_000223D4_64588_i;
+            u2.v = sTag_spd_223D4;
             {
                 t = u2;
                 if ((m = base + 0x20) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1226,7 +1226,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = gl_ref_000020D4_64588_f;
                 }
             }
-            u3.v = gl_ref_000223D8_64588_i;
+            u3.v = sTag_spl_223D8;
             {
                 t = u3;
                 if ((m = base + 0x38) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1236,7 +1236,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 100.0f;
                 }
             }
-            u4.v = gl_ref_000223DC_64588_i;
+            u4.v = sTag_spw_223DC;
             {
                 t = u4;
                 if ((m = base + 0x50) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1246,7 +1246,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 0.0f;
                 }
             }
-            u5.v = gl_ref_000223E0_64588_i;
+            u5.v = sTag_gvt_223E0;
             {
                 t = u5;
                 if ((m = base + 0x68) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1256,7 +1256,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = gl_ref_000020D8_64588_f;
                 }
             }
-            u6.v = gl_ref_000223E4_64588_i;
+            u6.v = sTag_suc_223E4;
             {
                 t = u6;
                 if ((m = base + 0x80) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1266,7 +1266,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 0.0f;
                 }
             }
-            u7.v = gl_ref_000223E8_64588_i;
+            u7.v = sTag_vsc_223E8;
             {
                 t = u7;
                 if ((m = base + 0x98) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1276,7 +1276,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = gl_ref_000020DC_64588_f;
                 }
             }
-            u8.v = gl_ref_000223EC_64588_i;
+            u8.v = sTag_usc_223EC;
             {
                 t = u8;
                 if ((m = base + 0xB0) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1286,7 +1286,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = gl_ref_000020E0_64588_f;
                 }
             }
-            u9.v = gl_ref_000223F0_64588_i;
+            u9.v = sTag_tsc_223F0;
             {
                 t = u9;
                 if ((m = base + 0xC8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1300,7 +1300,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 b1min.z = b1min.y = b1min.x = -1000.0f;
                 b1zero.z = b1zero.y = b1zero.x = 0;
                 if (1) {}
-                uc1.v = gl_ref_000223F4_64588_i;
+                uc1.v = sTag_cog_223F4;
                 b1max.z = b1max.y = b1max.x = 1000.0f;
                 set[2].v = b1zero;
                 set[1].v = b1min;
@@ -1316,7 +1316,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(mb1, 0x18) = tmp.z;
                 }
             }
-            u10.v = gl_ref_000223F8_64588_i;
+            u10.v = sTag_unc_223F8;
             {
                 t = u10;
                 if ((m = base + 0x100) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1326,7 +1326,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 0.0f;
                 }
             }
-            u11.v = gl_ref_000223FC_64588_i;
+            u11.v = sTag_dsc_223FC;
             {
                 t = u11;
                 if ((m = base + 0x118) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1336,7 +1336,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 1.0f;
                 }
             }
-            u12.v = gl_ref_00022400_64588_i;
+            u12.v = sTag_csc_22400;
             {
                 t = u12;
                 if ((m = base + 0x130) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1346,7 +1346,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                     FF64(m, 0x10) = 420.0f;
                 }
             }
-            u13.v = gl_ref_00022404_64588_i;
+            u13.v = sTag_rad_22404;
             {
                 t = u13;
                 if ((m = base + 0x148) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1362,7 +1362,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 if (1) {}
                 b2min.x = -10.0f; b2min.y = -10.0f; b2min.z = -10.0f;
                 if (1) {}
-                uc2.v = gl_ref_00022408_64588_i;
+                uc2.v = sTag_cts_22408;
                 b2max.x = 10.0f; b2max.y = 10.0f; b2max.z = 10.0f;
                 b2zero.z = 0.0f;
                 set[2].v = b2zero;

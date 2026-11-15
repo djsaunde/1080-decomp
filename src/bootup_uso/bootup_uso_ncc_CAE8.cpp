@@ -25,7 +25,7 @@ extern int gPlayerBinPaths_cae8_ta[], gBoardBinPaths_cae8_tb[];
 extern int gPolyFlags_3EEC4_cae8_x_ld, gPolyFlags_3EEC4_cae8_x_st, bu_cae8_y;
 extern int gInputMgr_cae8_mode;
 extern float bu_cae8_k958;
-extern char bu_cae8_d8abc[];
+extern char sFmt_HANDICAP_ON_8ABC[];
 }
 #define I(o) (*(int *)(st + (o)))
 #define F(o) (*(float *)(st + (o)))
@@ -58,7 +58,7 @@ extern "C" void SnowBoarder_func_0000CAE8(char *st) {
     func_00000000(st);
     func_00000000(*(char **)(st + 0x840));
     func_00000000(*(char **)(st + 0x804));
-    if (I(0xA58) & 0x20000) func_00000000(bu_cae8_d8abc, I(0xC));
+    if (I(0xA58) & 0x20000) func_00000000(sFmt_HANDICAP_ON_8ABC, I(0xC));
     V3 *p = (V3 *)(st + 0x890); V3 *q = (V3 *)(st + 0x89C);
     *p = *(V3 *)(st + 0xB4);
     *q = *(V3 *)(st + 0x318);

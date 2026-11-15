@@ -12,9 +12,9 @@ typedef struct { int a, b, c, d; } Quad4;
  *   void *Fader_ctor(void *a0, int a1) {
  *       o = a0 ? a0 : func_00000000(0x78); if (!o) return 0;
  *       s = func_00000000(0x2C);
- *       func_00000000(s, &D_0000C730);            // init sub
+ *       func_00000000(s, &sStr_Node_C730);            // init sub
  *       s->0x28 = &D_a;  o->0x28 = &D_b;          // descriptors
- *       o->0xC  = &D_0000C738;                    // type/vtable
+ *       o->0xC  = &sStr_Fader_C738;                    // type/vtable
  *       o->0x5C = 0x20;                            // dim W
  *       o->0x60 = 0x20;                            // dim H
  *       o->0x64 = 0x400;                           // cell count
@@ -28,13 +28,13 @@ typedef struct { int a, b, c, d; } Quad4;
  *       ...
  *   }
  * Struct-typing reference: o = 0x78-byte object. o->0x28 (40)
- * descriptor (&D), o->0xC (12) type/vtable (&D_0000C738), o->0x2C
+ * descriptor (&D), o->0xC (12) type/vtable (&sStr_Fader_C738), o->0x2C
  * (44) = a1, o->0x48 (72) f32 = 1.0 (scale/alpha), o->0x5C (92) /
  * o->0x60 (96) s32 = grid dims 0x20 x 0x20, o->0x64 (100) s32 =
  * 0x400 cell count (= 32*32). o->0x4C (76) / o->0x50 (80) / o->0x58
  * (88) = pointers to work buffers allocated at sizes 0x800 / 0x400
  * / 0x1000 (some with 0x10 alignment arg). s = 0x2C-byte sub-object
- * (s->0x28 descriptor, init datum D_0000C730). Likely a 32x32
+ * (s->0x28 descriptor, init datum sStr_Node_C730). Likely a 32x32
  * tile/heightfield/render-target context. Caps <80: get-or-create
  * + alloc-cascade (~8 func_00000000 buffer reloc) + &D descriptors
  * + FP-1.0 const. Full body INCLUDE_ASM-preserved (.s = source of
@@ -309,10 +309,10 @@ void stream_readQuad_00013CE8(Quad4 *dst) {
  * stores 0x38..0x4C are the u homes, a2 homed to 8(sp) by the by-value arg),
  * two volatile pads for the phantom slots. */
 typedef struct { int v; } Val13D40;
-extern char D_0000CAAC;
-extern int D_0000CAC0;
-extern int D_0000CAC4;
-extern int D_0000CAC8;
+extern char sStr_TimeGadget_Parms_CAAC;
+extern int sTag_xps_CAC0;
+extern int sTag_yps_CAC4;
+extern int sTag_lbx_CAC8;
 extern int func_0000CACC[];  /* data words 0xCACC/0xCAD0/0xCAD4 (table tail) */
 extern char D_0000C764;
 char *TimeGadget_ctor_00013D40(char *self) {
@@ -329,22 +329,22 @@ char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 t2;
     if (self != 0 || (self = (char *)func_00000000(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)func_00000000(8)) != 0) {
-            *(char **)(p2 + 0) = &D_0000CAAC;
+            *(char **)(p2 + 0) = &sStr_TimeGadget_Parms_CAAC;
             *(int *)(p2 + 4) = 0;
         }
-        u1.v = D_0000CAC0;
+        u1.v = sTag_xps_CAC0;
         t2 = u1;
         if ((m2 = self + 8) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
         }
-        u2.v = D_0000CAC4;
+        u2.v = sTag_yps_CAC4;
         t2 = u2;
         if ((m2 = self + 0x20) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);
             *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
         }
-        u3.v = D_0000CAC8;
+        u3.v = sTag_lbx_CAC8;
         t2 = u3;
         if ((m2 = self + 0x38) != 0 || (m2 = (char *)func_00000000(0x18)) != 0) {
             func_00000000(m2, self, t2, 1);

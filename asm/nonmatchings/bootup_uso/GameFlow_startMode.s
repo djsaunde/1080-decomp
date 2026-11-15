@@ -76,8 +76,8 @@ glabel GameFlow_startMode
     /* DE1B6C 00011100 AC2E0000 */  sw         $t6, 0x0($at)
     /* DE1B70 00011104 3C040000 */  lui        $a0, %hi(func_000000F0)
     /* DE1B74 00011108 8C8400F0 */  lw         $a0, %lo(func_000000F0)($a0)
-    /* DE1B78 0001110C 3C050001 */  lui        $a1, %hi(D_0000C604)
-    /* DE1B7C 00011110 24A5C604 */  addiu      $a1, $a1, %lo(D_0000C604)
+    /* DE1B78 0001110C 3C050001 */  lui        $a1, %hi(sFmt_num_C604)
+    /* DE1B7C 00011110 24A5C604 */  addiu      $a1, $a1, %lo(sFmt_num_C604)
     /* DE1B80 00011114 02003025 */  or         $a2, $s0, $zero
     /* DE1B84 00011118 8FAF0044 */  lw         $t7, 0x44($sp)
     /* DE1B88 0001111C 000FC080 */  sll        $t8, $t7, 2
@@ -95,8 +95,8 @@ glabel GameFlow_startMode
     /* DE1BB8 0001114C 24010001 */  addiu      $at, $zero, 0x1
     /* DE1BBC 00011150 13210005 */  beq        $t9, $at, .L00011168
     /* DE1BC0 00011154 00000000 */   nop
-    /* DE1BC4 00011158 3C040001 */  lui        $a0, %hi(D_0000C60C)
-    /* DE1BC8 0001115C 2484C60C */  addiu      $a0, $a0, %lo(D_0000C60C)
+    /* DE1BC4 00011158 3C040001 */  lui        $a0, %hi(sStr_FLOW_free_blocks_1_C60C)
+    /* DE1BC8 0001115C 2484C60C */  addiu      $a0, $a0, %lo(sStr_FLOW_free_blocks_1_C60C)
     /* DE1BCC 00011160 0C000000 */  jal        func_00000000
     /* DE1BD0 00011164 00000000 */   nop
   .L00011168:

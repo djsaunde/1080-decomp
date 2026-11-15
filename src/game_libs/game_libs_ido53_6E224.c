@@ -8,7 +8,7 @@
  *     (spaces) / 0x2E484 (zeroes) -- ROM data @0xDD0850 shows 32 spaces
  *     THEN 32 zeros, so spaces is the LOWER address (the 2026-08-22
  *     vein-probe doc had the two swapped). Modelled as pinned externs
- *     gl_spaces_pin6E / gl_zeroes_pin6E.
+ *     sStr_spaces_2E460 / sStr_zeroes_2E484.
  *   - donor-local .rodata ("hlL" +0x00, fchar " +-#0" +0x04, fbit[6]
  *     +0x0C, _Putfld's 25-entry 'F'..'^' jumptable +0x24): target bakes
  *     lo 9168/9172/9180/9204 = single base 0x23D0; splice renames the
@@ -102,10 +102,10 @@ extern void gl_func_00000000_ldtob6E(printf_struct *, char);
 #define _Ldtob gl_func_00000000_ldtob6E
 
 /* spaces/zeroes: baked-absolute pinned externs (0x2E484 / 0x2E460) */
-extern char gl_spaces_pin6E[33];
-extern char gl_zeroes_pin6E[33];
-#define spaces gl_spaces_pin6E
-#define zeroes gl_zeroes_pin6E
+extern char sStr_spaces_2E460[33];
+extern char sStr_zeroes_2E484[33];
+#define spaces sStr_spaces_2E460
+#define zeroes sStr_zeroes_2E484
 
 #define isdigit(x) ((x >= '0' && x <= '9'))
 #define LDSIGN(x) (((unsigned short *)&(x))[0] & 0x8000)

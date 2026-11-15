@@ -46,7 +46,7 @@ extern float func_411c_rf(void);
 extern void func_00008A7C(...);
 extern char gInputMgr_c234_g8[];
 extern void bu_c234_v5(char *, char *, f64, f64, f64);
-extern char bu_c234_k0[], bu_c234_k1[], bu_c234_k2[], bu_c234_k3[], bu_c234_k4[];
+extern char sStr_Player_Pos_Reset_8A7C[], sFmt_num_8A94[], bu_c234_k2[], sStr_SBProcColl_8AA4[], sStr_SBProcColl_8AB0[];
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern void func_00000000_p4d(void *, s32, f64, f32);
 extern s32 unk0;
@@ -225,8 +225,8 @@ cend:
                 sp7C.y += 200.0f;
                 func_00000000(rider, &sp7C);
                 rider->noGroundFrames = 0;
-                func_00000000(bu_c234_k0 + 0);
-                bu_c234_v5(bu_c234_k1 + 0x18, bu_c234_k2 + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
+                func_00000000(sStr_Player_Pos_Reset_8A7C + 0);
+                bu_c234_v5(sFmt_num_8A94 + 0x18, bu_c234_k2 + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
     }
@@ -235,9 +235,9 @@ cend:
     zf(rider->contactNormal.x, 0); /* run 196: int-zero inline (kit CLVIII): the target's own f0 zero */
     zf(rider->contactNormal.y, 0);
     zf(rider->contactNormal.z, 0);
-    func_00000000(bu_c234_k3 + 0x28);
+    func_00000000(sStr_SBProcColl_8AA4 + 0x28);
     func_00000000(rider);
-    func_00000000(bu_c234_k4 + 0x34);
+    func_00000000(sStr_SBProcColl_8AB0 + 0x34);
     if (rider->groundFlags & 0x400) {
         func_00000000((char *)&rider->sound, 1);
         var_f2 = D_bu_ro_pool[0x94C / 4];

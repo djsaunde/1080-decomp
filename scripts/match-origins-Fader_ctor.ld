@@ -9,8 +9,8 @@ SECTIONS {
  .sbss 0x0 : SUBALIGN(4) { *(.sbss) *(.sbss.*) }
  /DISCARD/ : { *(.mdebug) *(.reginfo) *(.pdr) *(.comment) *(.MIPS.abiflags) *(.options) }
 }
-D_0000C730 = 0x0;
-D_0000C738 = 0x0;
+sStr_Node_C730 = 0x0;
+sStr_Fader_C738 = 0x0;
 boot12E00_alloc = 0x0;
 boot12E00_alloc_aligned = 0x0;
 boot12E00_base_init = 0x0;

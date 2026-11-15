@@ -1134,7 +1134,7 @@ end:
  *   (docs/IDO_CODEGEN.md #same-line-store-pair-schedule-35440)
  * - Baked absolute addresses are per-site gl_ref_ pins. */
 extern int gl_ref_0003B8E8, gl_ref_0003B8EC;
-extern char gl_ref_0001E5AC, gl_ref_0001E5C8, gl_ref_0001E5DC;
+extern char sFmt_SRAM_read_from_1E5AC, sStr_bad_SRAM_DMA_align_1E5C8, sFmt_ReadFile_Error_1E5DC;
 typedef struct {
     short h;
     signed char b;
@@ -1162,10 +1162,10 @@ L2: {
         Msg35440 s;
         char buf[24];
         int tmp;
-        gl_func_00000000(&gl_ref_0001E5AC, a1, a2, gl_ref_0003B8E8);
+        gl_func_00000000(&sFmt_SRAM_read_from_1E5AC, a1, a2, gl_ref_0003B8E8);
         if (a2 != 0) {
             if (a1 & 7) {
-                gl_func_00000000(&gl_ref_0001E5C8);
+                gl_func_00000000(&sStr_bad_SRAM_DMA_align_1E5C8);
             }
             gl_func_00000000(buf, &tmp, 1);
             s.p = buf;
@@ -1182,7 +1182,7 @@ L2: {
     }
 end:
     if (r < 0) {
-        gl_func_00000000(&gl_ref_0001E5DC, r);
+        gl_func_00000000(&sFmt_ReadFile_Error_1E5DC, r);
     }
     return r;
 }
@@ -1397,7 +1397,7 @@ end:
  * survives as the dead `or v0,zero,zero` after the kind-2 return), kind 0
  * returns the callback directly, kind 2 returns a2. The queue send passes 1. */
 extern int D_00000000;
-extern char gl_ref_0001E608, gl_ref_0001E61C, gl_ref_0001E638;
+extern char sStr_Cant_write_to_Local_1E608, sFmt_SRAM_write_to_1E61C, sStr_bad_SRAM_DMA_align_1E638;
 int fs_gdlWriteFile(char *o, int a1, int a2) {
     int k = *(int *)(o + 4);
     if (k == 1) goto L1;
@@ -1405,7 +1405,7 @@ int fs_gdlWriteFile(char *o, int a1, int a2) {
     if (k != 2) goto end;
     goto L2;
 L1:
-    gl_func_00000000(&gl_ref_0001E608);
+    gl_func_00000000(&sStr_Cant_write_to_Local_1E608);
     goto end;
 L0:
     return gl_func_00000000(&gHostio, a1, a2);
@@ -1413,10 +1413,10 @@ L2: {
         Msg35440 s;
         char buf[24];
         int tmp;
-        gl_func_00000000(&gl_ref_0001E61C, a1, a2, gl_ref_0003B8E8);
+        gl_func_00000000(&sFmt_SRAM_write_to_1E61C, a1, a2, gl_ref_0003B8E8);
         if (a2 != 0) {
             if (a1 & 7) {
-                gl_func_00000000(&gl_ref_0001E638);
+                gl_func_00000000(&sStr_bad_SRAM_DMA_align_1E638);
             }
             gl_func_00000000(buf, &tmp, 1);
             s.p = buf;
@@ -1732,8 +1732,8 @@ void fs_gdlReadInt_00035AE0(int *dst) {
  * keeps its own higher line while ugen emits it first), and c35 starts with
  * `p = o + 4; q = p;` so ugen numbers the la (t6) before p's o + 4 (t7) like the
  * target (t8 for the a3 load). The baked 0x1E6B0 address is the
- * gl_ref_0001E6B0 pin. */
-extern char gl_ref_0001E6B0;
+ * sFmt_Dup_parm_1E6B0 pin. */
+extern char sFmt_Dup_parm_1E6B0;
 typedef struct { int v; } W35B1C;
 char *Parms_addParm(char *o, char *a1, W35B1C a2, int a3) {
     int *a3p = &a3;
@@ -1750,7 +1750,7 @@ char *Parms_addParm(char *o, char *a1, W35B1C a2, int a3) {
         *(int *)(o + 8) = *a3p;
         for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) {
             tmp = *(W35B1C *)(s0 + 4);
-            if (tmp.v == a2.v) gl_func_00000000(&gl_ref_0001E6B0, &a2);
+            if (tmp.v == a2.v) gl_func_00000000(&sFmt_Dup_parm_1E6B0, &a2);
         }
         last = 0;
         for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) last = s0;
@@ -4120,7 +4120,7 @@ extern int D_00000000;
  * the arms return and the report follows the switch (case 0x6C makes the 9-entry table).
  * Residual: cfe never colours `code` across the jump-table switch (memory home + reload; the
  * target keeps it in v0) and keeps o in a3 with call spills (target s0) -- NCC's allocation. */
-extern char D_0001EC6C[], D_0001EC84[], D_0001EC9C[];
+extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], sFmt_unknown_Node_cmd_for_1EC9C[];
 #endif
 /* Node_doCommand: EXACT (agent-g run 209). WIRED via REPLACE_FUNC_BODY donor splice:
  * the real C lives in the IDO 7.1 -O2 donor unit game_libs_o2_38A28.c; the splice renames
@@ -10772,10 +10772,10 @@ extern int gl_d_42938_pc;
 extern int gl_d_42938_sa;             /* blend addends @0x3C930/34        */
 extern int gl_d_42938_sb;
 extern int gl_d_42938_ck;             /* skip flag @0x1FCC8               */
-extern char gl_d_42938_qa;            /* arg blobs @0x1FCCC/CE8/CF0/CF8   */
-extern char gl_d_42938_qb;
-extern char gl_d_42938_qc;
-extern char gl_d_42938_qd;
+extern char sFmt_num_1FCCC;            /* arg blobs @0x1FCCC/CE8/CF0/CF8   */
+extern char sFmt_X_1FCE8;
+extern char sFmt_Y_1FCF0;
+extern char sStr_Hold_1FCF8;
 #define FI38(p, o) (*(int *)((char *)(p) + (o)))
 #define FP38(p, o) (*(void **)((char *)(p) + (o)))
 /* cx/nd/n are FUNCTION-SCOPE role pools (target colors cx=a2, nd=v0, n=v1
@@ -10862,7 +10862,7 @@ void dbg_screenOverlay_00042938(void) {
     FI38(gGfxLib_42938_gb, 0x21C) = 0x32;
     {
         char *cv = FP38(gGfxLib_42938_gb, 0x254);
-        func_00000000(&gl_d_42938_cb, &gl_d_42938_qa,
+        func_00000000(&gl_d_42938_cb, &sFmt_num_1FCCC,
                       FI38(cv, 0xC0), FI38(cv, 0xC4),
                       FI38(cv, 0xB8) + FI38(cv, 0xC0),
                       FI38(cv, 0xC4) + FI38(cv, 0xBC));
@@ -10872,12 +10872,12 @@ void dbg_screenOverlay_00042938(void) {
     FI38(gGfxLib_42938_gb, 0x228) = 0x10;
     FI38(gGfxLib_42938_gb, 0x21C) = 0x78;
     FI38(gGfxLib_42938_gb, 0x220) = 0x78;
-    func_00000000(&gl_d_42938_cb, &gl_d_42938_qb, gl_d_42938_sa);
+    func_00000000(&gl_d_42938_cb, &sFmt_X_1FCE8, gl_d_42938_sa);
     func_00000000(gGfxLib_42938_gb, &gl_d_42938_z, 320);
-    func_00000000(&gl_d_42938_cb, &gl_d_42938_qc, gl_d_42938_sb);
+    func_00000000(&gl_d_42938_cb, &sFmt_Y_1FCF0, gl_d_42938_sb);
     func_00000000(gGfxLib_42938_gb, &gl_d_42938_z, 320);
     if (gl_d_42938_ck != 0) {
-        func_00000000(gGfxLib_42938_gb, &gl_d_42938_qd, 320);
+        func_00000000(gGfxLib_42938_gb, &sStr_Hold_1FCF8, 320);
         return;
     }
     idx = gl_d_42938_idx;

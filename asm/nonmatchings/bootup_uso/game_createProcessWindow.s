@@ -30,8 +30,8 @@ glabel game_createProcessWindow
     /* DE02EC 0000F880 E6180000 */  swc1       $f24, 0x0($s0)
     /* DE02F0 0000F884 00002025 */  or         $a0, $zero, $zero
     /* DE02F4 0000F888 24050064 */  addiu      $a1, $zero, 0x64
-    /* DE02F8 0000F88C 3C060001 */  lui        $a2, %hi(D_0000C57C)
-    /* DE02FC 0000F890 24C6C57C */  addiu      $a2, $a2, %lo(D_0000C57C)
+    /* DE02F8 0000F88C 3C060001 */  lui        $a2, %hi(sStr_ProcessWindow_C57C)
+    /* DE02FC 0000F890 24C6C57C */  addiu      $a2, $a2, %lo(sStr_ProcessWindow_C57C)
     /* DE0300 0000F894 2407006D */  addiu      $a3, $zero, 0x6D
     /* DE0304 0000F898 AFA00010 */  sw         $zero, 0x10($sp)
     /* DE0308 0000F89C 2419006E */  addiu      $t9, $zero, 0x6E

@@ -1130,9 +1130,9 @@ void ItemMgr_removeItem(int *a0, int a1);
 typedef int (*gl_e594_fn_t)();
 void ItemMgr_rebuildAll(int *a0);
 extern char gHostio_e5e0a, D_00000000_e5e0b, D_00000000_e5e0c, D_00000000_e5e0d,
-    gHostio_e5e0e, D_00000000_e5e0f, D_00000000_e5e0g, D_00000000_e5e0h,
-    D_00000000_e5e0i, gHostio_e5e0j, D_00000000_e5e0k, gHostio_e5e0l,
-    D_00000000_e5e0m, D_00000000_e5e0n, D_00000000_e5e0o, D_00000000_e5e0p,
+    gHostio_e5e0e, sStr_RemoveItems_1F318, D_00000000_e5e0g, D_00000000_e5e0h,
+    D_00000000_e5e0i, gHostio_e5e0j, sStr_ChangeType_1F324, gHostio_e5e0l,
+    sStr_Items_1F330, D_00000000_e5e0n, D_00000000_e5e0o, D_00000000_e5e0p,
     gHostio_e5e0q, gHostio_e5e0r, gHostio_e5e0s;
 typedef struct { s32 w0, w1; } PairE5E0;
 void ItemMgr_hostioParms(char *arg0);
@@ -1496,10 +1496,10 @@ extern int gl_d_42938_pc;
 extern int gl_d_42938_sa;
 extern int gl_d_42938_sb;
 extern int gl_d_42938_ck;
-extern char gl_d_42938_qa;
-extern char gl_d_42938_qb;
-extern char gl_d_42938_qc;
-extern char gl_d_42938_qd;
+extern char sFmt_num_1FCCC;
+extern char sFmt_X_1FCE8;
+extern char sFmt_Y_1FCF0;
+extern char sStr_Hold_1FCF8;
 void dbg_screenOverlay_00042938(void);
 void gfx_makeLookAt_00042F4C(char *arg0, char *arg1, char *arg2);
 typedef struct { Link_430D8 *cur; Link_430D8 *next; int e1; int e2; } Iter_430D8;

@@ -21,9 +21,9 @@ typedef struct {
 } F0Struct;
 extern F0Struct func_000000F0; /* USO-base reloc */
 extern int func_00000188;      /* USO-base reloc */
-extern char D_0000C57C;
-extern char D_0000C58C;
-extern char D_0000C594;
+extern char sStr_ProcessWindow_C57C;
+extern char sStr_Node_C58C;
+extern char sStr_Quit_Process_C594;
 
 /* game_createProcessWindow: 78-insn (0x138) allocator + init helper — -O0 island
  * (arg homing above frame, unfilled beqz/jal delays, b-to-epilogue return).
@@ -53,7 +53,7 @@ void *game_createProcessWindow(int a0, int a1) {
     f3 = f2;
     p[1] = f3;
     p[0] = f3;
-    result = func_00000000(0, 0x64, &D_0000C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
+    result = func_00000000(0, 0x64, &sStr_ProcessWindow_C57C, 0x6D, 0, 0x6E, 0, 0, 0x6F,
                            0x140, 0xF0, 0x70, flags | 0x400, 0x71, 2, 0);
     p = (float *)result;
     q = &gSnowBoard_0000002C;

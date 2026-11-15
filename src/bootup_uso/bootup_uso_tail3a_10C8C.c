@@ -21,10 +21,10 @@ extern char *gui_getCurrentRow_00010324();
  * bootup_uso_o0_100F0.c). MATCHED 2026-07-10 (216/216). */
 extern int func_000000F0;
 extern struct { float f0, f1, f2, f3; } func_00000C10; /* FP literal pool */
-extern char D_0000C5D0;
-extern char D_0000C5DC;
-extern char D_0000C5E4;
-extern char D_0000C5F0;
+extern char sStr_GameFlow_C5D0;
+extern char sStr_Flow_C5DC;
+extern char sStr_rom_gui_uso_C5E4;
+extern char sStr_rom_flowimgs_bin_C5F0;
 
 typedef struct {
     float x, y, z, w;
@@ -42,7 +42,7 @@ void GameFlow_create(int *arg0, int arg1) {
     register float w;   /* f26, home 0x58 */
 
     p = (char *)arg0;
-    q = (char *)&D_0000C5D0;
+    q = (char *)&sStr_GameFlow_C5D0;
     *(int *)(p + 0xC) = (int)q;
     *(int *)((char *)arg0 + 0x12C) = arg1;
     sp68 = func_00000000(0);
@@ -58,7 +58,7 @@ void GameFlow_create(int *arg0, int arg1) {
         *(float *)(q + 8) = z;
         *(float *)(q + 0xC) = w;
     }
-    func_000000F0 = func_00000000(0, &D_0000C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
+    func_000000F0 = func_00000000(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
     func_00000000(sp68);
     *(int *)((char *)arg0 + 0x130) = 0;
     *(int *)((char *)arg0 + 0x2C) = 0;
@@ -67,7 +67,7 @@ void GameFlow_create(int *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x70) = 0;
     *(int *)((char *)arg0 + 0x13C) = 0;
     sp84 = func_00000000(0);
-    func_00000000(&gSysLib, &D_0000C5E4);
+    func_00000000(&gSysLib, &sStr_rom_gui_uso_C5E4);
     p = 0;
     if (p != 0 || (p = (char *)func_00000000(0x80)) != 0) {
         func_00000000(p, 1);
@@ -93,7 +93,7 @@ void GameFlow_create(int *arg0, int arg1) {
     D_00000000 = (*(unsigned short *)(*(int *)((char *)arg0 + 0x154) + 4) & 4) == 4;
     *(int *)((char *)arg0 + 0x164) = **(int **)((char *)arg0 + 0x148);
     *(int *)((char *)arg0 + 0x160) = func_00000000(*(int *)((char *)arg0 + 0x164) << 2);
-    *(int *)((char *)arg0 + 0x150) = func_00000000(0, &D_0000C5F0);
+    *(int *)((char *)arg0 + 0x150) = func_00000000(0, &sStr_rom_flowimgs_bin_C5F0);
     func_00000000(sp84);
     func_00000000(arg0);
 }
@@ -123,8 +123,8 @@ void GameFlow_create(int *arg0, int arg1) {
 typedef int (*FN10FEC)();
 
 extern char D_0000C550;
-extern char D_0000C604;
-extern char D_0000C60C;
+extern char sFmt_num_C604;
+extern char sStr_FLOW_free_blocks_1_C60C;
 extern int D_0000C4EC[];
 
 void GameFlow_startMode(char *arg0, int arg1, int arg2) {
@@ -175,10 +175,10 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
 
     p = (char *)D_00000000;
     D_00000000 = (int)p + 1;
-    func_00000000(func_000000F0, &D_0000C604, p, (&D_00000000)[arg1]);
+    func_00000000(func_000000F0, &sFmt_num_C604, p, (&D_00000000)[arg1]);
     sp3C = func_00000000(func_000000F0);
     if (sp3C != 1) {
-        func_00000000(&D_0000C60C);
+        func_00000000(&sStr_FLOW_free_blocks_1_C60C);
     }
 
     if (*(int *)((char *)arg0 + 0x38) != (0, arg1)) {

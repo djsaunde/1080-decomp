@@ -20,17 +20,17 @@
 #define FF(p, o) (*(float *)((char *)(p) + (o)))
 extern "C" {
 void *gl_func_00000000(...);
-extern char D_15FC_cc58[], D_15FC_cc60[];
+extern char sStr_Node_CC58[], sStr_CoolGadget_CC60[];
 extern float D_15FC_c7c, D_15FC_c80, D_15FC_c84, D_15FC_c88, D_15FC_c8c, D_15FC_c90, D_15FC_c94;
 }
 inline void *operator new(unsigned n) { return gl_func_00000000(n); }
 struct B { char p[0x28]; B(char *); virtual void g(); };
 struct M { char p[0xA8]; M(); };
 struct G : B { M m; char rest[0x198 - 0xD4]; G(int arg1); virtual void g(); };
-G::G(int arg1) : B(D_15FC_cc58) {
+G::G(int arg1) : B(sStr_Node_CC58) {
     char *self = (char *)this;
     float temp_f2 = D_15FC_c7c;
-    FW(self, 0xC) = (int)D_15FC_cc60;
+    FW(self, 0xC) = (int)sStr_CoolGadget_CC60;
     FF(self, 0xE8) = temp_f2;
     FF(self, 0xF8) = temp_f2;
     FF(self, 0xEC) = 0.0f; FF(self, 0xF0) = 0.0f; FF(self, 0xF4) = 0.0f; FF(self, 0xFC) = 0.0f; FF(self, 0x100) = 0.0f; FF(self, 0x104) = 0.0f;

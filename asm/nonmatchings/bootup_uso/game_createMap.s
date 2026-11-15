@@ -57,10 +57,10 @@ glabel game_createMap
   .L000068DC:
     /* DD7348 000068DC 44812000 */  mtc1       $at, $f4
     /* DD734C 000068E0 AE530014 */  sw         $s3, 0x14($s2)
-    /* DD7350 000068E4 3C050000 */  lui        $a1, %hi(D_00007EC4)
+    /* DD7350 000068E4 3C050000 */  lui        $a1, %hi(sStr_ItemMgr_7EC4)
     /* DD7354 000068E8 E7A000A0 */  swc1       $f0, 0xA0($sp)
     /* DD7358 000068EC E7A000A4 */  swc1       $f0, 0xA4($sp)
-    /* DD735C 000068F0 24A57EC4 */  addiu      $a1, $a1, %lo(D_00007EC4)
+    /* DD735C 000068F0 24A57EC4 */  addiu      $a1, $a1, %lo(sStr_ItemMgr_7EC4)
     /* DD7360 000068F4 2406FFFF */  addiu      $a2, $zero, -0x1
     /* DD7364 000068F8 0C000000 */  jal        func_00000000
     /* DD7368 000068FC E7A4009C */   swc1      $f4, 0x9C($sp)
@@ -86,15 +86,15 @@ glabel game_createMap
     /* DD73B4 00006948 8C2D05B4 */  lw         $t5, %lo(func_0000057C + 0x38)($at)
     /* DD73B8 0000694C 01A00008 */  jr         $t5
     /* DD73BC 00006950 00000000 */   nop
-    /* DD73C0 00006954 3C040000 */  lui        $a0, %hi(D_00007ECC)
-    /* DD73C4 00006958 24847ECC */  addiu      $a0, $a0, %lo(D_00007ECC)
+    /* DD73C0 00006954 3C040000 */  lui        $a0, %hi(sStr_Sun_Flare_7ECC)
+    /* DD73C4 00006958 24847ECC */  addiu      $a0, $a0, %lo(sStr_Sun_Flare_7ECC)
     /* DD73C8 0000695C 0C000000 */  jal        func_00000000
     /* DD73CC 00006960 00002825 */   or        $a1, $zero, $zero
     /* DD73D0 00006964 0C000000 */  jal        func_00000000
     /* DD73D4 00006968 00002025 */   or        $a0, $zero, $zero
-    /* DD73D8 0000696C 3C050000 */  lui        $a1, %hi(D_00007ED8)
+    /* DD73D8 0000696C 3C050000 */  lui        $a1, %hi(sStr_rom_flare5_bin_7ED8)
     /* DD73DC 00006970 00408025 */  or         $s0, $v0, $zero
-    /* DD73E0 00006974 24A57ED8 */  addiu      $a1, $a1, %lo(D_00007ED8)
+    /* DD73E0 00006974 24A57ED8 */  addiu      $a1, $a1, %lo(sStr_rom_flare5_bin_7ED8)
     /* DD73E4 00006978 00002025 */  or         $a0, $zero, $zero
     /* DD73E8 0000697C 0C000000 */  jal        func_00000000
     /* DD73EC 00006980 00403025 */   or        $a2, $v0, $zero
@@ -102,15 +102,15 @@ glabel game_createMap
     /* DD73F4 00006988 02002025 */  or         $a0, $s0, $zero
     /* DD73F8 0000698C 0C000000 */  jal        func_00000000
     /* DD73FC 00006990 00402825 */   or        $a1, $v0, $zero
-    /* DD7400 00006994 3C0E0000 */  lui        $t6, %hi(D_00007EE8)
-    /* DD7404 00006998 8DC67EE8 */  lw         $a2, %lo(D_00007EE8)($t6)
+    /* DD7400 00006994 3C0E0000 */  lui        $t6, %hi(sStr_sun_7EE8)
+    /* DD7404 00006998 8DC67EE8 */  lw         $a2, %lo(sStr_sun_7EE8)($t6)
     /* DD7408 0000699C 8E840000 */  lw         $a0, 0x0($s4)
     /* DD740C 000069A0 02002825 */  or         $a1, $s0, $zero
     /* DD7410 000069A4 AFA60078 */  sw         $a2, 0x78($sp)
     /* DD7414 000069A8 0C000000 */  jal        func_00000000
     /* DD7418 000069AC AFA60008 */   sw        $a2, 0x8($sp)
-    /* DD741C 000069B0 3C180000 */  lui        $t8, %hi(D_00007EEC)
-    /* DD7420 000069B4 8F067EEC */  lw         $a2, %lo(D_00007EEC)($t8)
+    /* DD741C 000069B0 3C180000 */  lui        $t8, %hi(sStr_len_7EEC)
+    /* DD7420 000069B4 8F067EEC */  lw         $a2, %lo(sStr_len_7EEC)($t8)
     /* DD7424 000069B8 8E840000 */  lw         $a0, 0x0($s4)
     /* DD7428 000069BC 02402825 */  or         $a1, $s2, $zero
     /* DD742C 000069C0 AFA60074 */  sw         $a2, 0x74($sp)
@@ -130,15 +130,15 @@ glabel game_createMap
   .L000069F8:
     /* DD7464 000069F8 0C000000 */  jal        func_00000000
     /* DD7468 000069FC 8EE50094 */   lw        $a1, 0x94($s7)
-    /* DD746C 00006A00 3C0A0000 */  lui        $t2, %hi(D_00007EF0)
-    /* DD7470 00006A04 8D467EF0 */  lw         $a2, %lo(D_00007EF0)($t2)
+    /* DD746C 00006A00 3C0A0000 */  lui        $t2, %hi(sStr_lt0_7EF0)
+    /* DD7470 00006A04 8D467EF0 */  lw         $a2, %lo(sStr_lt0_7EF0)($t2)
     /* DD7474 00006A08 8EE50090 */  lw         $a1, 0x90($s7)
     /* DD7478 00006A0C 8E840000 */  lw         $a0, 0x0($s4)
     /* DD747C 00006A10 AFA60008 */  sw         $a2, 0x8($sp)
     /* DD7480 00006A14 0C000000 */  jal        func_00000000
     /* DD7484 00006A18 AFA60070 */   sw        $a2, 0x70($sp)
-    /* DD7488 00006A1C 3C0C0000 */  lui        $t4, %hi(D_00007EF4)
-    /* DD748C 00006A20 8D867EF4 */  lw         $a2, %lo(D_00007EF4)($t4)
+    /* DD7488 00006A1C 3C0C0000 */  lui        $t4, %hi(sStr_lt1_7EF4)
+    /* DD748C 00006A20 8D867EF4 */  lw         $a2, %lo(sStr_lt1_7EF4)($t4)
     /* DD7490 00006A24 8EE50094 */  lw         $a1, 0x94($s7)
     /* DD7494 00006A28 8E840000 */  lw         $a0, 0x0($s4)
     /* DD7498 00006A2C AFA60008 */  sw         $a2, 0x8($sp)
@@ -234,8 +234,8 @@ glabel game_createMap
     /* DD75FC 00006B90 AF30003C */   sw        $s0, 0x3C($t9)
     /* DD7600 00006B94 10000033 */  b          .L00006C64
     /* DD7604 00006B98 8FB900A8 */   lw        $t9, 0xA8($sp)
-    /* DD7608 00006B9C 3C040000 */  lui        $a0, %hi(D_00007EFC)
-    /* DD760C 00006BA0 24847EFC */  addiu      $a0, $a0, %lo(D_00007EFC)
+    /* DD7608 00006B9C 3C040000 */  lui        $a0, %hi(sStr_CourseShape_7EFC)
+    /* DD760C 00006BA0 24847EFC */  addiu      $a0, $a0, %lo(sStr_CourseShape_7EFC)
     /* DD7610 00006BA4 0C000000 */  jal        func_00000000
     /* DD7614 00006BA8 00002825 */   or        $a1, $zero, $zero
     /* DD7618 00006BAC 02A02025 */  or         $a0, $s5, $zero
@@ -322,8 +322,8 @@ glabel game_createMap
     /* DD774C 00006CE0 0C000000 */  jal        func_00000000
     /* DD7750 00006CE4 26640010 */   addiu     $a0, $s3, 0x10
     /* DD7754 00006CE8 8E4C0014 */  lw         $t4, 0x14($s2)
-    /* DD7758 00006CEC 3C040000 */  lui        $a0, %hi(D_00007F08)
-    /* DD775C 00006CF0 24847F08 */  addiu      $a0, $a0, %lo(D_00007F08)
+    /* DD7758 00006CEC 3C040000 */  lui        $a0, %hi(sStr_Map_7F08)
+    /* DD775C 00006CF0 24847F08 */  addiu      $a0, $a0, %lo(sStr_Map_7F08)
     /* DD7760 00006CF4 11800003 */  beqz       $t4, .L00006D04
     /* DD7764 00006CF8 00002825 */   or        $a1, $zero, $zero
     /* DD7768 00006CFC 240D0001 */  addiu      $t5, $zero, 0x1
@@ -360,22 +360,22 @@ glabel game_createMap
     /* DD77D8 00006D6C AC220000 */  sw         $v0, 0x0($at)
     /* DD77DC 00006D70 3C020000 */  lui        $v0, (0x0 >> 16)
     /* DD77E0 00006D74 24420000 */  addiu      $v0, $v0, 0x0
-    /* DD77E4 00006D78 3C040000 */  lui        $a0, %hi(D_00007F0C)
+    /* DD77E4 00006D78 3C040000 */  lui        $a0, %hi(sStr_MorphShape_7F0C)
     /* DD77E8 00006D7C AC4A0004 */  sw         $t2, 0x4($v0)
     /* DD77EC 00006D80 AC400000 */  sw         $zero, 0x0($v0)
-    /* DD77F0 00006D84 24847F0C */  addiu      $a0, $a0, %lo(D_00007F0C)
+    /* DD77F0 00006D84 24847F0C */  addiu      $a0, $a0, %lo(sStr_MorphShape_7F0C)
     /* DD77F4 00006D88 0C000000 */  jal        func_00000000
     /* DD77F8 00006D8C 00002825 */   or        $a1, $zero, $zero
-    /* DD77FC 00006D90 3C050000 */  lui        $a1, %hi(D_00007F18)
-    /* DD7800 00006D94 24A57F18 */  addiu      $a1, $a1, %lo(D_00007F18)
+    /* DD77FC 00006D90 3C050000 */  lui        $a1, %hi(sStr_morphpolyshape_7F18)
+    /* DD7800 00006D94 24A57F18 */  addiu      $a1, $a1, %lo(sStr_morphpolyshape_7F18)
     /* DD7804 00006D98 00002025 */  or         $a0, $zero, $zero
     /* DD7808 00006D9C 00003025 */  or         $a2, $zero, $zero
     /* DD780C 00006DA0 0C000000 */  jal        func_00000000
     /* DD7810 00006DA4 00003825 */   or        $a3, $zero, $zero
     /* DD7814 00006DA8 0C000000 */  jal        func_00000000
     /* DD7818 00006DAC 00408825 */   or        $s1, $v0, $zero
-    /* DD781C 00006DB0 3C040000 */  lui        $a0, %hi(D_00007F28)
-    /* DD7820 00006DB4 24847F28 */  addiu      $a0, $a0, %lo(D_00007F28)
+    /* DD781C 00006DB0 3C040000 */  lui        $a0, %hi(sStr_ParseCmds_7F28)
+    /* DD7820 00006DB4 24847F28 */  addiu      $a0, $a0, %lo(sStr_ParseCmds_7F28)
     /* DD7824 00006DB8 0C000000 */  jal        func_00000000
     /* DD7828 00006DBC 00002825 */   or        $a1, $zero, $zero
     /* DD782C 00006DC0 02202025 */  or         $a0, $s1, $zero
@@ -383,8 +383,8 @@ glabel game_createMap
     /* DD7834 00006DC8 8FA500D0 */   lw        $a1, 0xD0($sp)
     /* DD7838 00006DCC 0C000000 */  jal        func_00000000
     /* DD783C 00006DD0 00000000 */   nop
-    /* DD7840 00006DD4 3C040000 */  lui        $a0, %hi(D_00007F34)
-    /* DD7844 00006DD8 24847F34 */  addiu      $a0, $a0, %lo(D_00007F34)
+    /* DD7840 00006DD4 3C040000 */  lui        $a0, %hi(sStr_Colours_7F34)
+    /* DD7844 00006DD8 24847F34 */  addiu      $a0, $a0, %lo(sStr_Colours_7F34)
     /* DD7848 00006DDC 0C000000 */  jal        func_00000000
     /* DD784C 00006DE0 00002825 */   or        $a1, $zero, $zero
     /* DD7850 00006DE4 8E230040 */  lw         $v1, 0x40($s1)
@@ -392,8 +392,8 @@ glabel game_createMap
     /* DD7858 00006DEC 00032080 */   sll       $a0, $v1, 2
     /* DD785C 00006DF0 0C000000 */  jal        func_00000000
     /* DD7860 00006DF4 AE220050 */   sw        $v0, 0x50($s1)
-    /* DD7864 00006DF8 3C040000 */  lui        $a0, %hi(D_00007F3C)
-    /* DD7868 00006DFC 24847F3C */  addiu      $a0, $a0, %lo(D_00007F3C)
+    /* DD7864 00006DF8 3C040000 */  lui        $a0, %hi(sStr_Init_7F3C)
+    /* DD7868 00006DFC 24847F3C */  addiu      $a0, $a0, %lo(sStr_Init_7F3C)
     /* DD786C 00006E00 0C000000 */  jal        func_00000000
     /* DD7870 00006E04 00002825 */   or        $a1, $zero, $zero
     /* DD7874 00006E08 0C000000 */  jal        func_00000000
@@ -420,8 +420,8 @@ glabel game_createMap
     /* DD78BC 00006E50 0C000000 */  jal        func_00000000
   alabel D_00006E54
     /* DD78C0 00006E54 AC2E01C4 */   sw        $t6, %lo(func_00000188 + 0x3C)($at)
-    /* DD78C4 00006E58 3C040000 */  lui        $a0, %hi(D_00007F44)
-    /* DD78C8 00006E5C 24847F44 */  addiu      $a0, $a0, %lo(D_00007F44)
+    /* DD78C4 00006E58 3C040000 */  lui        $a0, %hi(sStr_MapLighter_7F44)
+    /* DD78C8 00006E5C 24847F44 */  addiu      $a0, $a0, %lo(sStr_MapLighter_7F44)
   alabel D_00006E60
     /* DD78CC 00006E60 0C000000 */  jal        func_00000000
     /* DD78D0 00006E64 00002825 */   or        $a1, $zero, $zero
@@ -471,9 +471,9 @@ glabel game_createMap
     /* DD7964 00006EF8 0C000000 */  jal        func_00000000
     /* DD7968 00006EFC 02202825 */   or        $a1, $s1, $zero
     /* DD796C 00006F00 3C010000 */  lui        $at, (0x0 >> 16)
-    /* DD7970 00006F04 3C040000 */  lui        $a0, %hi(D_00007F50)
+    /* DD7970 00006F04 3C040000 */  lui        $a0, %hi(sStr_ItemMgr_7F50)
     /* DD7974 00006F08 AC220000 */  sw         $v0, 0x0($at)
-    /* DD7978 00006F0C 24847F50 */  addiu      $a0, $a0, %lo(D_00007F50)
+    /* DD7978 00006F0C 24847F50 */  addiu      $a0, $a0, %lo(sStr_ItemMgr_7F50)
     /* DD797C 00006F10 0C000000 */  jal        func_00000000
     /* DD7980 00006F14 00002825 */   or        $a1, $zero, $zero
     /* DD7984 00006F18 8FAB00DC */  lw         $t3, 0xDC($sp)
@@ -487,7 +487,7 @@ glabel game_createMap
     /* DD79A0 00006F34 0C000000 */  jal        func_00000000
     /* DD79A4 00006F38 00000000 */   nop
     /* DD79A8 00006F3C C7A600C8 */  lwc1       $f6, 0xC8($sp)
-    /* DD79AC 00006F40 3C0C0000 */  lui        $t4, %hi(D_00007F58)
+    /* DD79AC 00006F40 3C0C0000 */  lui        $t4, %hi(sStr_st0_7F58)
     /* DD79B0 00006F44 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DD79B4 00006F48 E60600C4 */  swc1       $f6, 0xC4($s0)
     /* DD79B8 00006F4C C7A800C4 */  lwc1       $f8, 0xC4($sp)
@@ -501,7 +501,7 @@ glabel game_createMap
     /* DD79D8 00006F6C E61200D4 */  swc1       $f18, 0xD4($s0)
     /* DD79DC 00006F70 C7A4009C */  lwc1       $f4, 0x9C($sp)
     /* DD79E0 00006F74 E60400D8 */  swc1       $f4, 0xD8($s0)
-    /* DD79E4 00006F78 8D857F58 */  lw         $a1, %lo(D_00007F58)($t4)
+    /* DD79E4 00006F78 8D857F58 */  lw         $a1, %lo(sStr_st0_7F58)($t4)
     /* DD79E8 00006F7C 8C840000 */  lw         $a0, 0x0($a0)
     /* DD79EC 00006F80 AFA500E4 */  sw         $a1, 0xE4($sp)
     /* DD79F0 00006F84 0C000000 */  jal        func_00000000
@@ -523,12 +523,12 @@ glabel game_createMap
     /* DD7A30 00006FC4 10000004 */  b          .L00006FD8
     /* DD7A34 00006FC8 E60A00CC */   swc1      $f10, 0xCC($s0)
   .L00006FCC:
-    /* DD7A38 00006FCC 3C040000 */  lui        $a0, %hi(D_00007F5C)
+    /* DD7A38 00006FCC 3C040000 */  lui        $a0, %hi(sStr_no_st0_7F5C)
     /* DD7A3C 00006FD0 0C000000 */  jal        func_00000000
-    /* DD7A40 00006FD4 24847F5C */   addiu     $a0, $a0, %lo(D_00007F5C)
+    /* DD7A40 00006FD4 24847F5C */   addiu     $a0, $a0, %lo(sStr_no_st0_7F5C)
   .L00006FD8:
-    /* DD7A44 00006FD8 3C190000 */  lui        $t9, %hi(D_00007F64)
-    /* DD7A48 00006FDC 8F257F64 */  lw         $a1, %lo(D_00007F64)($t9)
+    /* DD7A44 00006FD8 3C190000 */  lui        $t9, %hi(sStr_gol_7F64)
+    /* DD7A48 00006FDC 8F257F64 */  lw         $a1, %lo(sStr_gol_7F64)($t9)
     /* DD7A4C 00006FE0 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DD7A50 00006FE4 8C840000 */  lw         $a0, 0x0($a0)
     /* DD7A54 00006FE8 00003025 */  or         $a2, $zero, $zero
@@ -536,7 +536,7 @@ glabel game_createMap
     /* DD7A5C 00006FF0 0C000000 */  jal        func_00000000
     /* DD7A60 00006FF4 AFA50004 */   sw        $a1, 0x4($sp)
     /* DD7A64 00006FF8 1040000F */  beqz       $v0, .L00007038
-    /* DD7A68 00006FFC 3C040000 */   lui       $a0, %hi(D_00007F68)
+    /* DD7A68 00006FFC 3C040000 */   lui       $a0, %hi(sStr_no_gol_7F68)
     /* DD7A6C 00007000 8C4B0030 */  lw         $t3, 0x30($v0)
     /* DD7A70 00007004 27A9004C */  addiu      $t1, $sp, 0x4C
     /* DD7A74 00007008 AD2B0000 */  sw         $t3, 0x0($t1)
@@ -553,17 +553,17 @@ glabel game_createMap
     /* DD7AA0 00007034 E60400D8 */   swc1      $f4, 0xD8($s0)
   .L00007038:
     /* DD7AA4 00007038 0C000000 */  jal        func_00000000
-    /* DD7AA8 0000703C 24847F68 */   addiu     $a0, $a0, %lo(D_00007F68)
+    /* DD7AA8 0000703C 24847F68 */   addiu     $a0, $a0, %lo(sStr_no_gol_7F68)
   .L00007040:
     /* DD7AAC 00007040 8EF30084 */  lw         $s3, 0x84($s7)
     /* DD7AB0 00007044 02002825 */  or         $a1, $s0, $zero
     /* DD7AB4 00007048 0C000000 */  jal        func_00000000
     /* DD7AB8 0000704C 26640010 */   addiu     $a0, $s3, 0x10
     /* DD7ABC 00007050 8E0C0014 */  lw         $t4, 0x14($s0)
-    /* DD7AC0 00007054 3C040000 */  lui        $a0, %hi(D_00007F70)
+    /* DD7AC0 00007054 3C040000 */  lui        $a0, %hi(sStr_Markers_7F70)
     /* DD7AC4 00007058 240E0006 */  addiu      $t6, $zero, 0x6
     /* DD7AC8 0000705C 11800003 */  beqz       $t4, .L0000706C
-    /* DD7ACC 00007060 24847F70 */   addiu     $a0, $a0, %lo(D_00007F70)
+    /* DD7ACC 00007060 24847F70 */   addiu     $a0, $a0, %lo(sStr_Markers_7F70)
     /* DD7AD0 00007064 240D0001 */  addiu      $t5, $zero, 0x1
     /* DD7AD4 00007068 AE0D0004 */  sw         $t5, 0x4($s0)
   .L0000706C:
@@ -571,8 +571,8 @@ glabel game_createMap
     /* DD7ADC 00007070 AEAE0000 */  sw         $t6, 0x0($s5)
     /* DD7AE0 00007074 0C000000 */  jal        func_00000000
     /* DD7AE4 00007078 00002825 */   or        $a1, $zero, $zero
-    /* DD7AE8 0000707C 3C050000 */  lui        $a1, %hi(D_00007F78)
-    /* DD7AEC 00007080 24A57F78 */  addiu      $a1, $a1, %lo(D_00007F78)
+    /* DD7AE8 0000707C 3C050000 */  lui        $a1, %hi(sStr_MarkerMgr_7F78)
+    /* DD7AEC 00007080 24A57F78 */  addiu      $a1, $a1, %lo(sStr_MarkerMgr_7F78)
     /* DD7AF0 00007084 00002025 */  or         $a0, $zero, $zero
     /* DD7AF4 00007088 0C000000 */  jal        func_00000000
     /* DD7AF8 0000708C 2406FFFF */   addiu     $a2, $zero, -0x1

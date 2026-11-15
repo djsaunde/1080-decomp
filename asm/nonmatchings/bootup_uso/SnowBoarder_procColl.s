@@ -225,56 +225,56 @@ glabel SnowBoarder_procColl
     /* DDCFE0 0000C574 860209A0 */  lh         $v0, 0x9A0($s0)
   .L0000C578:
     /* DDCFE4 0000C578 24010061 */  addiu      $at, $zero, 0x61
-  alabel D_0000C57C
+  alabel sStr_ProcessWindow_C57C
     /* DDCFE8 0000C57C 3C0D0000 */  lui        $t5, (0x0 >> 16)
     /* DDCFEC 0000C580 10410014 */  beq        $v0, $at, .L0000C5D4
     /* DDCFF0 0000C584 26060A30 */   addiu     $a2, $s0, 0xA30
     /* DDCFF4 0000C588 24010062 */  addiu      $at, $zero, 0x62
-  alabel D_0000C58C
+  alabel sStr_Node_C58C
     /* DDCFF8 0000C58C 10410020 */  beq        $v0, $at, .L0000C610
     /* DDCFFC 0000C590 3C0E0000 */   lui       $t6, (0x0 >> 16)
-  alabel D_0000C594
+  alabel sStr_Quit_Process_C594
     /* DDD000 0000C594 3C010000 */  lui        $at, %hi(D_00000938)
     /* DDD004 0000C598 C42A0938 */  lwc1       $f10, %lo(D_00000938)($at)
     /* DDD008 0000C59C 3C010000 */  lui        $at, %hi(D_0000093C)
     /* DDD00C 0000C5A0 C60405A0 */  lwc1       $f4, 0x5A0($s0)
-  alabel D_0000C5A4
+  alabel sStr_Node_C5A4
     /* DDD010 0000C5A4 E60A0288 */  swc1       $f10, 0x288($s0)
     /* DDD014 0000C5A8 C426093C */  lwc1       $f6, %lo(D_0000093C)($at)
-  alabel D_0000C5AC
+  alabel sStr_Quit_Process_C5AC
     /* DDD018 0000C5AC 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940)
     /* DDD01C 0000C5B0 E606028C */  swc1       $f6, 0x28C($s0)
     /* DDD020 0000C5B4 C4320940 */  lwc1       $f18, %lo(SndHandle_triggerEvent3_00000940)($at)
     /* DDD024 0000C5B8 A2000A33 */  sb         $zero, 0xA33($s0)
-  alabel D_0000C5BC
+  alabel sStr_Node_C5BC
     /* DDD028 0000C5BC A2000A32 */  sb         $zero, 0xA32($s0)
     /* DDD02C 0000C5C0 A2000A31 */  sb         $zero, 0xA31($s0)
-  alabel D_0000C5C4
+  alabel sStr_PauseMenu_C5C4
     /* DDD030 0000C5C4 A2000A30 */  sb         $zero, 0xA30($s0)
     /* DDD034 0000C5C8 E6040910 */  swc1       $f4, 0x910($s0)
     /* DDD038 0000C5CC 10000020 */  b          .L0000C650
-  alabel D_0000C5D0
+  alabel sStr_GameFlow_C5D0
     /* DDD03C 0000C5D0 E6120290 */   swc1      $f18, 0x290($s0)
   .L0000C5D4:
     /* DDD040 0000C5D4 C6080120 */  lwc1       $f8, 0x120($s0)
     /* DDD044 0000C5D8 C60A0138 */  lwc1       $f10, 0x138($s0)
-  alabel D_0000C5DC
+  alabel sStr_Flow_C5DC
     /* DDD048 0000C5DC C60601B0 */  lwc1       $f6, 0x1B0($s0)
     /* DDD04C 0000C5E0 C6120570 */  lwc1       $f18, 0x570($s0)
-  alabel D_0000C5E4
+  alabel sStr_rom_gui_uso_C5E4
     /* DDD050 0000C5E4 E6080288 */  swc1       $f8, 0x288($s0)
     /* DDD054 0000C5E8 E60A028C */  swc1       $f10, 0x28C($s0)
     /* DDD058 0000C5EC E6060290 */  swc1       $f6, 0x290($s0)
-  alabel D_0000C5F0
+  alabel sStr_rom_flowimgs_bin_C5F0
     /* DDD05C 0000C5F0 E6120910 */  swc1       $f18, 0x910($s0)
     /* DDD060 0000C5F4 8DAD0000 */  lw         $t5, 0x0($t5)
     /* DDD064 0000C5F8 87A500DE */  lh         $a1, 0xDE($sp)
     /* DDD068 0000C5FC 0C000000 */  jal        func_00000000
     /* DDD06C 0000C600 8DA40084 */   lw        $a0, 0x84($t5)
-  alabel D_0000C604
+  alabel sFmt_num_C604
     /* DDD070 0000C604 44808000 */  mtc1       $zero, $f16
     /* DDD074 0000C608 10000011 */  b          .L0000C650
-  alabel D_0000C60C
+  alabel sStr_FLOW_free_blocks_1_C60C
     /* DDD078 0000C60C 00000000 */   nop
   .L0000C610:
     /* DDD07C 0000C610 E6100288 */  swc1       $f16, 0x288($s0)
@@ -282,7 +282,7 @@ glabel SnowBoarder_procColl
     /* DDD084 0000C618 C4240944 */  lwc1       $f4, %lo(SndHandle_triggerEvent3_00000940 + 0x4)($at)
     /* DDD088 0000C61C 3C010000 */  lui        $at, %hi(SndHandle_triggerEvent3_00000940 + 0x8)
     /* DDD08C 0000C620 C60A0588 */  lwc1       $f10, 0x588($s0)
-  alabel D_0000C624
+  alabel sStr_starLine_C624
     /* DDD090 0000C624 E604028C */  swc1       $f4, 0x28C($s0)
     /* DDD094 0000C628 C4280948 */  lwc1       $f8, %lo(SndHandle_triggerEvent3_00000940 + 0x8)($at)
     /* DDD098 0000C62C E60A0910 */  swc1       $f10, 0x910($s0)
@@ -299,7 +299,7 @@ glabel SnowBoarder_procColl
     /* DDD0C0 0000C654 AE00095C */   sw        $zero, 0x95C($s0)
   .L0000C658:
     /* DDD0C4 0000C658 8E03095C */  lw         $v1, 0x95C($s0)
-  alabel D_0000C65C
+  alabel sStr_starLine_C65C
     /* DDD0C8 0000C65C 44813000 */  mtc1       $at, $f6
     /* DDD0CC 0000C660 AE000A4C */  sw         $zero, 0xA4C($s0)
     /* DDD0D0 0000C664 28610097 */  slti       $at, $v1, 0x97
@@ -314,7 +314,7 @@ glabel SnowBoarder_procColl
     /* DDD0F4 0000C688 8F058A78 */  lw         $a1, %lo(func_00008A40 + 0x38)($t8)
     /* DDD0F8 0000C68C 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DDD0FC 0000C690 8C840000 */  lw         $a0, 0x0($a0)
-  alabel D_0000C694
+  alabel sStr_done_C694
     /* DDD100 0000C694 8FA6003C */  lw         $a2, 0x3C($sp)
     /* DDD104 0000C698 00003825 */  or         $a3, $zero, $zero
   alabel D_0000C69C
@@ -355,10 +355,10 @@ glabel SnowBoarder_procColl
     /* DDD190 0000C724 24A58A90 */  addiu      $a1, $a1, %lo(func_00008A7C + 0x14)
     /* DDD194 0000C728 24848A94 */  addiu      $a0, $a0, %lo(func_00008A7C + 0x18)
     /* DDD198 0000C72C F7AA0018 */  sdc1       $f10, 0x18($sp)
-  alabel D_0000C730
+  alabel sStr_Node_C730
     /* DDD19C 0000C730 0C000000 */  jal        func_00000000
     /* DDD1A0 0000C734 F7A40010 */   sdc1      $f4, 0x10($sp)
-  alabel D_0000C738
+  alabel sStr_Fader_C738
     /* DDD1A4 0000C738 44808000 */  mtc1       $zero, $f16
     /* DDD1A8 0000C73C 00000000 */  nop
   .L0000C740:
@@ -592,16 +592,16 @@ glabel SnowBoarder_procColl
     /* DDD50C 0000CAA0 46044180 */  add.s      $f6, $f8, $f4
     /* DDD510 0000CAA4 460E5482 */  mul.s      $f18, $f10, $f14
     /* DDD514 0000CAA8 C6080A24 */  lwc1       $f8, 0xA24($s0)
-  alabel D_0000CAAC
+  alabel sStr_TimeGadget_Parms_CAAC
     /* DDD518 0000CAAC 46123000 */  add.s      $f0, $f6, $f18
     /* DDD51C 0000CAB0 46004101 */  sub.s      $f4, $f8, $f0
     /* DDD520 0000CAB4 E6040A24 */  swc1       $f4, 0xA24($s0)
     /* DDD524 0000CAB8 8FBF002C */  lw         $ra, 0x2C($sp)
     /* DDD528 0000CABC 8FB00028 */  lw         $s0, 0x28($sp)
-  alabel D_0000CAC0
+  alabel sTag_xps_CAC0
     /* DDD52C 0000CAC0 27BD00F8 */  addiu      $sp, $sp, 0xF8
-  alabel D_0000CAC4
+  alabel sTag_yps_CAC4
     /* DDD530 0000CAC4 03E00008 */  jr         $ra
-  alabel D_0000CAC8
+  alabel sTag_lbx_CAC8
     /* DDD534 0000CAC8 00000000 */   nop
 endlabel SnowBoarder_procColl

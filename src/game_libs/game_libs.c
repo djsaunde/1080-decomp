@@ -119,10 +119,10 @@ int BestTimeGadget_release(char *a0) {
 }
 
 extern int gl_func_00000000();
-extern char gl_ref_0000CB30;
+extern char sFmt_b_a_CB30;
 
 void BestTimeGadget_setTime(char *a0, char a1, char a2, char a3) {
-    gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CB30, a1, a2, a3);
+    gl_func_00000000(((Gadget *)a0)->text, &sFmt_b_a_CB30, a1, a2, a3);
 }
 
 /* BestScoreGadget_ctor: twin of BestTimeGadget_ctor (0x174, 93 words; vtable
@@ -172,9 +172,9 @@ int BestScoreGadget_release(char *a0) {
 }
 
 extern int gl_func_00000000();
-extern char gl_ref_0000CB58;
+extern char sFmt_num_CB58;
 int BestScoreGadget_setScore(char *a0, int arg1) {
-    return gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CB58, arg1);
+    return gl_func_00000000(((Gadget *)a0)->text, &sFmt_num_CB58, arg1);
 }
 
 /* TimeGadgetParms_ctor: MATCH 2026-07-15 (agent-h) — 5-member composite constructor,
@@ -200,15 +200,15 @@ int BestScoreGadget_setScore(char *a0, int arg1) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-extern char gl_ref_0000CB60;
+extern char sStr_TimeGadget_Parms_CB60;
 extern char gl_ref_0000C764_1;
 extern char gl_ref_0000C764_2;
 extern char gl_ref_0000C764_3;
 extern char gl_ref_0000C764_4;
-extern int gl_ref_0000CB74_i;
-extern int gl_ref_0000CB78_i;
-extern int gl_ref_0000CB7C_i;
-extern int gl_ref_0000CB80_i;
+extern int sTag_xps_CB74;
+extern int sTag_yps_CB78;
+extern int sTag_shx_CB7C;
+extern int sTag_shy_CB80;
 struct SB7BC { int v; };
 char *TimeGadgetParms_ctor(char *self) {
     struct SB7BC u1;
@@ -222,28 +222,28 @@ char *TimeGadgetParms_ctor(char *self) {
     struct SB7BC t;
     if (self != 0 || (self = (char *)gl_func_00000000(0x68)) != 0) {
         if ((p = self) != 0 || (p = (char *)gl_func_00000000(8)) != 0) {
-            FW(p, 0) = (int)&gl_ref_0000CB60;
+            FW(p, 0) = (int)&sStr_TimeGadget_Parms_CB60;
             FW(p, 4) = 0;
         }
-        u1.v = gl_ref_0000CB74_i;
+        u1.v = sTag_xps_CB74;
         t = u1;
         if ((m = self + 8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m, self, t, 1);
             FW(m, 0xC) = (int)&gl_ref_0000C764_1; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
         }
-        u2.v = gl_ref_0000CB78_i;
+        u2.v = sTag_yps_CB78;
         t = u2;
         if ((m = self + 0x20) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m, self, t, 1);
             FW(m, 0xC) = (int)&gl_ref_0000C764_2; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
         }
-        u3.v = gl_ref_0000CB7C_i;
+        u3.v = sTag_shx_CB7C;
         t = u3;
         if ((m = self + 0x38) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m, self, t, 1);
             FW(m, 0xC) = (int)&gl_ref_0000C764_3; FW(m, 0x10) = 4; FW(m, 0x14) = 0;
         }
-        u4.v = gl_ref_0000CB80_i;
+        u4.v = sTag_shy_CB80;
         t = u4;
         if ((m = self + 0x50) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m, self, t, 1);
@@ -462,9 +462,9 @@ int PointsGadget_release(char *a0) {
 }
 
 extern int gl_func_00000000();
-extern char gl_ref_0000CBD8;
+extern char sFmt_num_CBD8;
 int PointsGadget_setPoints(char *a0, int arg1) {
-    return gl_func_00000000(((Gadget *)a0)->text, &gl_ref_0000CBD8, arg1);
+    return gl_func_00000000(((Gadget *)a0)->text, &sFmt_num_CBD8, arg1);
 }
 
 /* PointsGadget_ctor_00000ED0: constructor. obj = a0 ?: alloc(212); a defensive second
@@ -658,19 +658,19 @@ void BoardsGadget_setCount(int *a0, int a1) {
  * gl_ref_0000C764_135C_N aliases per expansion, volatile pads for the two
  * phantom slots. Retracts the "genuine cap / scheduler tie" verdict — the
  * prologue tie disappeared with this structure too. */
-extern char gl_ref_0000CC38;
+extern char sStr_Parms_CC38;
 extern char gl_ref_0000C764_135C_1;
 extern char gl_ref_0000C764_135C_2;
 extern char gl_ref_0000C764_135C_3;
 extern char gl_ref_0000C764_135C_4;
 extern char gl_ref_0000C764_135C_5;
 extern char gl_ref_0000C764_135C_6;
-extern int gl_ref_0000CC40_i;
-extern int gl_ref_0000CC44_i;
-extern int gl_ref_0000CC48_i;
-extern int gl_ref_0000CC4C_i;
-extern int gl_ref_0000CC50_i;
-extern int gl_ref_0000CC54_i;
+extern int sTag_xps_CC40;
+extern int sTag_yps_CC44;
+extern int sTag_lbx_CC48;
+extern int sTag_lby_CC4C;
+extern int sTag_l2x_CC50;
+extern int sTag_l2y_CC54;
 struct SB135C { int v; };
 char *CoolGadgetParms_ctor(char *self) {
     struct SB135C u1;
@@ -686,40 +686,40 @@ char *CoolGadgetParms_ctor(char *self) {
     struct SB135C t2;
     if (self != 0 || (self = (char *)gl_func_00000000(0x98)) != 0) {
         if ((p2 = self) != 0 || (p2 = (char *)gl_func_00000000(8)) != 0) {
-            FW(p2, 0) = (int)&gl_ref_0000CC38;
+            FW(p2, 0) = (int)&sStr_Parms_CC38;
             FW(p2, 4) = 0;
         }
-        u1.v = gl_ref_0000CC40_i;
+        u1.v = sTag_xps_CC40;
         t2 = u1;
         if ((m2 = self + 8) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
             FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_1; FW(m2, 0x10) = 0x1E; FW(m2, 0x14) = 0;
         }
-        u2.v = gl_ref_0000CC44_i;
+        u2.v = sTag_yps_CC44;
         t2 = u2;
         if ((m2 = self + 0x20) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
             FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_2; FW(m2, 0x10) = 0x1E; FW(m2, 0x14) = 0;
         }
-        u3.v = gl_ref_0000CC48_i;
+        u3.v = sTag_lbx_CC48;
         t2 = u3;
         if ((m2 = self + 0x38) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
             FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_3; FW(m2, 0x10) = 2; FW(m2, 0x14) = 0;
         }
-        u4.v = gl_ref_0000CC4C_i;
+        u4.v = sTag_lby_CC4C;
         t2 = u4;
         if ((m2 = self + 0x50) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
             FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_4; FW(m2, 0x10) = -0xC; FW(m2, 0x14) = 0;
         }
-        u5.v = gl_ref_0000CC50_i;
+        u5.v = sTag_l2x_CC50;
         t2 = u5;
         if ((m2 = self + 0x68) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
             FW(m2, 0xC) = (int)&gl_ref_0000C764_135C_5; FW(m2, 0x10) = 2; FW(m2, 0x14) = 0;
         }
-        u6.v = gl_ref_0000CC54_i;
+        u6.v = sTag_l2y_CC54;
         t2 = u6;
         if ((m2 = self + 0x80) != 0 || (m2 = (char *)gl_func_00000000(0x18)) != 0) {
             gl_func_00000000(m2, self, t2, 1);
@@ -984,23 +984,23 @@ void CoolGadget_display(char *o) {
  * and colors $v0; volatile/chain/array/prototyped-direct-pass/comma/ternary
  * spellings all fail one leg). Slot-sharing cap, not a register cap. */
 extern int gl_func_00000000();
-extern char gl_ref_0000CC6C;
-extern int gl_ref_0000CC74_i;
-extern int gl_ref_0000CC78_i;
-extern int gl_ref_0000CC7C_i;
-extern int gl_ref_0000CC80_i;
-extern int gl_ref_0000CC84_i;
-extern int gl_ref_0000CC88_i;
-extern int gl_ref_0000CC8C_i;
-extern int gl_ref_0000CC90_i;
-extern int gl_ref_0000CC94_i;
-extern int gl_ref_0000CC98_i;
-extern int gl_ref_0000CC9C_i;
-extern int gl_ref_0000CCA0_i;
-extern int gl_ref_0000CCA4_i;
-extern int gl_ref_0000CCA8_i;
-extern int gl_ref_0000CCAC_i;
-extern int gl_ref_0000CCB0_i;
+extern char sStr_Parms_CC6C;
+extern int sTag_xps_CC74;
+extern int sTag_yps_CC78;
+extern int sTag_mx0_CC7C;
+extern int sTag_my0_CC80;
+extern int sTag_sx0_CC84;
+extern int sTag_sy0_CC88;
+extern int sTag_mx1_CC8C;
+extern int sTag_my1_CC90;
+extern int sTag_gx0_CC94;
+extern int sTag_gy0_CC98;
+extern int sTag_pxp_CC9C;
+extern int sTag_pyp_CCA0;
+extern int sTag_bxp_CCA4;
+extern int sTag_byp_CCA8;
+extern int sTag_col_CCAC;
+extern int sTag_adz_CCB0;
 extern char gl_ref_0000C764_1C54_1;
 extern char gl_ref_0000C764_1C54_2;
 extern char gl_ref_0000C764_1C54_3;
@@ -1046,10 +1046,10 @@ char *CourseGadgetParms_ctor(char *self) {
     struct SB1C54 t;
     if (self != 0 || (self = (char *)gl_func_00000000(0x194)) != 0) {
         if ((p = self) != 0 || (p = (char *)gl_func_00000000(8)) != 0) {
-            FW(p, 0) = (int)&gl_ref_0000CC6C;
+            FW(p, 0) = (int)&sStr_Parms_CC6C;
             FW(p, 4) = 0;
         }
-        u1.v = gl_ref_0000CC74_i;
+        u1.v = sTag_xps_CC74;
         {
             t = u1;
             if ((m = self + 0x8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1057,7 +1057,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_1; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
             }
         }
-        u2.v = gl_ref_0000CC78_i;
+        u2.v = sTag_yps_CC78;
         {
             t = u2;
             if ((m = self + 0x20) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1065,7 +1065,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_2; FW(m, 0x10) = 0x1E; FW(m, 0x14) = 0;
             }
         }
-        u3.v = gl_ref_0000CC7C_i;
+        u3.v = sTag_mx0_CC7C;
         {
             t = u3;
             if ((m = self + 0x38) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1073,7 +1073,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_3; FW(m, 0x10) = 0xA; FW(m, 0x14) = 0;
             }
         }
-        u4.v = gl_ref_0000CC80_i;
+        u4.v = sTag_my0_CC80;
         {
             t = u4;
             if ((m = self + 0x50) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1081,7 +1081,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_4; FW(m, 0x10) = 0x73; FW(m, 0x14) = 0;
             }
         }
-        u5.v = gl_ref_0000CC84_i;
+        u5.v = sTag_sx0_CC84;
         {
             t = u5;
             if ((m = self + 0x68) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1089,7 +1089,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_5; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
             }
         }
-        u6.v = gl_ref_0000CC88_i;
+        u6.v = sTag_sy0_CC88;
         {
             t = u6;
             if ((m = self + 0x80) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1097,7 +1097,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_6; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
             }
         }
-        u7.v = gl_ref_0000CC8C_i;
+        u7.v = sTag_mx1_CC8C;
         {
             t = u7;
             if ((m = self + 0x98) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1105,7 +1105,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_7; FW(m, 0x10) = 0xB; FW(m, 0x14) = 0;
             }
         }
-        u8.v = gl_ref_0000CC90_i;
+        u8.v = sTag_my1_CC90;
         {
             t = u8;
             if ((m = self + 0xB0) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1113,7 +1113,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_8; FW(m, 0x10) = 0xD; FW(m, 0x14) = 0;
             }
         }
-        u9.v = gl_ref_0000CC94_i;
+        u9.v = sTag_gx0_CC94;
         {
             t = u9;
             if ((m = self + 0xC8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1121,7 +1121,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_9; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
             }
         }
-        u10.v = gl_ref_0000CC98_i;
+        u10.v = sTag_gy0_CC98;
         {
             t = u10;
             if ((m = self + 0xE0) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1129,7 +1129,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_10; FW(m, 0x14) = 0; FW(m, 0x10) = 0;
             }
         }
-        u11.v = gl_ref_0000CC9C_i;
+        u11.v = sTag_pxp_CC9C;
         {
             t = u11;
             if ((m = self + 0xF8) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1137,7 +1137,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_11; FW(m, 0x10) = 0x10C; FW(m, 0x14) = 0;
             }
         }
-        u12.v = gl_ref_0000CCA0_i;
+        u12.v = sTag_pyp_CCA0;
         {
             t = u12;
             if ((m = self + 0x110) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1145,7 +1145,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_12; FW(m, 0x10) = 0x50; FW(m, 0x14) = 0;
             }
         }
-        u13.v = gl_ref_0000CCA4_i;
+        u13.v = sTag_bxp_CCA4;
         {
             t = u13;
             if ((m = self + 0x128) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1153,7 +1153,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 FW(m, 0xC) = (int)&gl_ref_0000C764_1C54_13; FW(m, 0x10) = 0xA0; FW(m, 0x14) = 0;
             }
         }
-        u14.v = gl_ref_0000CCA8_i;
+        u14.v = sTag_byp_CCA8;
         {
             t = u14;
             if ((m = self + 0x140) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1173,7 +1173,7 @@ char *CourseGadgetParms_ctor(char *self) {
             srcA0[0] = 1.0f; srcA0[1] = 1.0f; srcA0[2] = 1.0f; srcA0[3] = 1.0f;
             srcC0[0] = 0.0f;
             srcB0[0] = 0.0f; srcB0[1] = 0.0f; srcB0[2] = 0.0f; srcB0[3] = 0.0f;
-            u15.v = gl_ref_0000CCAC_i; srcC0[2] = gl_ref_00000C98_f;
+            u15.v = sTag_col_CCAC; srcC0[2] = gl_ref_00000C98_f;
             dst40 = *(Quad4 *)srcC0;
             dst30 = *(Quad4 *)srcB0;
             dst20 = *(Quad4 *)srcA0;
@@ -1185,7 +1185,7 @@ char *CourseGadgetParms_ctor(char *self) {
                 *(Quad4 *)(mf + 0x10) = dst40;
             }
         }
-        u16.v = gl_ref_0000CCB0_i;
+        u16.v = sTag_adz_CCB0;
         {
             t = u16;
             if ((m = self + 0x17C) != 0 || (m = (char *)gl_func_00000000(0x18)) != 0) {
@@ -1547,8 +1547,8 @@ void PointsGadget_update_00003430(char *arg0) {
  * 1. RELOC EXTERNS: the two format strings are baked USO data addrs. Target
  *    words lui a1,0x1 / addiu a1,CCEC compose to 0x0000CCEC (NOT 0x1CCEC —
  *    prior extern names D_0001CCEC/F8 mis-derived the value by ignoring lo16
- *    sign). extern char D_0000CCEC / D_0000CCF8 + undefined_syms_auto.txt
- *    entries `D_0000CCEC = 0x0000CCEC; D_0000CCF8 = 0x0000CCF8;` make ld bake
+ *    sign). extern char sFmt_pts_CCEC / sFmt_pts_CCF8 + undefined_syms_auto.txt
+ *    entries `sFmt_pts_CCEC = 0x0000CCEC; sFmt_pts_CCF8 = 0x0000CCF8;` make ld bake
  *    the exact 4 words (verified by link simulation of HI16/LO16).
  * 2. NAMED idx LOCAL: `idx = (FW(arg0,0x80)+var_s4)&3; s0v = &((int*)arg0)[idx]`
  *    instead of one nested expression — named int colors to v0 and reuses it
@@ -1566,8 +1566,8 @@ void PointsGadget_update_00003430(char *arg0) {
  *    emits addu s0,s1,t1 (base-first); `arg0 + tv0*4` emits addu s0,t1,s1
  *    and IDO canonicalizes the source-level operand swap back.
  * REQUIRES (report to lander): undefined_syms_auto.txt additions
- *   D_0000CCEC = 0x0000CCEC;
- *   D_0000CCF8 = 0x0000CCF8;
+ *   sFmt_pts_CCEC = 0x0000CCEC;
+ *   sFmt_pts_CCF8 = 0x0000CCF8;
  */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
@@ -1576,8 +1576,8 @@ typedef int (*GP_000038F4)();
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 #endif
-extern char D_0000CCEC;  /* baked USO data addr 0xCCEC (lui 1/addiu CCEC); defined in undefined_syms_auto.txt */
-extern char D_0000CCF8;  /* baked USO data addr 0xCCF8 */
+extern char sFmt_pts_CCEC;  /* baked USO data addr 0xCCEC (lui 1/addiu CCEC); defined in undefined_syms_auto.txt */
+extern char sFmt_pts_CCF8;  /* baked USO data addr 0xCCF8 */
 void PointsGadget_display_000038F4(char *arg0) {
     int temp_s2;
     int temp_s3;
@@ -1611,8 +1611,8 @@ void PointsGadget_display_000038F4(char *arg0) {
             s0v = (char *)&((int *)arg0)[tv0];
             temp_a3 = (int *)FW(s0v, 0x6C);
             if (temp_a3 != (int *)-1) {
-                func_00000000(spE4, &D_0000CCEC, FW(s0v, 0x5C), temp_a3);
-                func_00000000(sp64, &D_0000CCF8, FW(s0v, 0x6C));
+                func_00000000(spE4, &sFmt_pts_CCEC, FW(s0v, 0x5C), temp_a3);
+                func_00000000(sp64, &sFmt_pts_CCF8, FW(s0v, 0x6C));
                 temp_s2 = func_00000000(FW(arg0, 0x50), FW(s0v, 0xAC), spE4);
                 temp_s3 = func_00000000(FW(arg0, 0x50), FW(s0v, 0x5C)) + temp_s2;
                 func_00000000(FW(arg0, 0x50), (s32) (*(f32 *)&D_00000000 * (f32) FW(s0v, 0x9C)), temp_s7, 0xFF);
@@ -2072,39 +2072,39 @@ extern int D_00000000_0dd4;
 extern int D_00000000_0ddc;
 extern int D_00000000_0de0;
 extern int D_00000000_0de4;
-extern int D_00000000_cf80;
-extern int D_00000000_cf90;
-extern int D_00000000_cf94;
-extern int D_00000000_cf98;
-extern int D_00000000_cf9c;
-extern int D_00000000_cfa0;
-extern int D_00000000_cfa4;
-extern int D_00000000_cfa8;
-extern int D_00000000_cfac;
-extern int D_00000000_cfb0;
-extern int D_00000000_cfb4;
-extern int D_00000000_cfb8;
-extern int D_00000000_cfbc;
-extern int D_00000000_cfc0;
-extern int D_00000000_cfc4;
-extern int D_00000000_cfc8;
-extern int D_00000000_cfcc;
-extern int D_00000000_cfd0;
-extern int D_00000000_cfd4;
-extern int D_00000000_cfd8;
-extern int D_00000000_cfdc;
-extern int D_00000000_cfe0;
-extern int D_00000000_cfe4;
-extern int D_00000000_cfe8;
-extern int D_00000000_cfec;
-extern int D_00000000_cff0;
-extern int D_00000000_cff4;
-extern int D_00000000_cff8;
-extern int D_00000000_cffc;
-extern int D_00000000_d000;
-extern int D_00000000_d004;
-extern int D_00000000_d008;
-extern int D_00000000_d00c;
+extern int sStr_Colour_Parms_CF80;
+extern int sTag_rdP_CF90;
+extern int sTag_rdE_CF94;
+extern int sTag_32P_CF98;
+extern int sTag_32E_CF9C;
+extern int sTag_goP_CFA0;
+extern int sTag_goE_CFA4;
+extern int sTag_glP_CFA8;
+extern int sTag_glE_CFAC;
+extern int sTag_lsP_CFB0;
+extern int sTag_lsE_CFB4;
+extern int sTag_rtP_CFB8;
+extern int sTag_rtE_CFBC;
+extern int sTag_toP_CFC0;
+extern int sTag_toE_CFC4;
+extern int sTag_rnP_CFC8;
+extern int sTag_rnE_CFCC;
+extern int sTag_rsP_CFD0;
+extern int sTag_rsE_CFD4;
+extern int sTag_nrP_CFD8;
+extern int sTag_nrE_CFDC;
+extern int sTag_adP_CFE0;
+extern int sTag_adE_CFE4;
+extern int sTag_csP_CFE8;
+extern int sTag_csE_CFEC;
+extern int sTag_grP_CFF0;
+extern int sTag_grE_CFF4;
+extern int sTag_dwP_CFF8;
+extern int sTag_dwE_CFFC;
+extern int sTag_ctt_D000;
+extern int sTag_cnm_D004;
+extern int sTag_ccl_D008;
+extern int sTag_clg_D00C;
 typedef struct { f32 x, y, z, w; } GlV4_4244;
 typedef struct { s32 v; } GlF1_4244;
 /* 9916-byte fully-unrolled initializer (32 units, zero backward branches).
@@ -2278,8 +2278,8 @@ void *ColourParms_ctor(char *arg0) {
     if ((arg0 != 0) || (temp_v0 = func_00000000(0x488), arg0 = temp_v0, (temp_v0 != 0))) {
         var_v1 = arg0;
         if ((arg0 != 0) || (temp_v0_2 = func_00000000(8), var_v1 = temp_v0_2, (temp_v0_2 != 0))) {
-            *(s32 *)((char *)(var_v1) + 0x0) = (s32)((char *)&D_00000000_cf80 + 0xCF80);
-        *(s32 *)((char *)(var_v1) + 0x4) = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = *(s32 *)((char *)&D_00000000_cf90 + 0xCF90); sp78 = u1_a; var_a0 = arg0 + 8; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = func_00000000(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
+            *(s32 *)((char *)(var_v1) + 0x0) = (s32)((char *)&sStr_Colour_Parms_CF80 + 0xCF80);
+        *(s32 *)((char *)(var_v1) + 0x4) = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = *(s32 *)((char *)&sTag_rdP_CF90 + 0xCF90); sp78 = u1_a; var_a0 = arg0 + 8; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = func_00000000(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
             func_00000000(var_a0, arg0, sp54, 1);
             *(s32 *)((char *)(var_a0) + 0xC) = (s32)((char *)&D_00000000_cd58_u1 + 0xCD58);
             *(s32 *)((char *)(var_a0) + 0x20) = 0;
@@ -2297,7 +2297,7 @@ void *ColourParms_ctor(char *arg0) {
         u2_c.y = 1.0f;
         u2_c.z = 1.0f;
         u2_c.w = 1.0f;
-        u2_f.v = *(s32 *)((char *)&D_00000000_cf94 + 0xCF94);
+        u2_f.v = *(s32 *)((char *)&sTag_rdE_CF94 + 0xCF94);
         sp78 = u2_a;
         var_a0_2 = arg0 + 0x2C;
         sp68 = u2_b;
@@ -2321,7 +2321,7 @@ void *ColourParms_ctor(char *arg0) {
         u3_c.y = 1.0f;
         u3_c.z = 1.0f;
         u3_c.w = 1.0f;
-        u3_f.v = *(s32 *)((char *)&D_00000000_cf98 + 0xCF98);
+        u3_f.v = *(s32 *)((char *)&sTag_32P_CF98 + 0xCF98);
         sp78 = u3_a;
         var_a0_2 = arg0 + 0x50;
         sp68 = u3_b;
@@ -2345,7 +2345,7 @@ void *ColourParms_ctor(char *arg0) {
         u4_c.y = 1.0f;
         u4_c.z = 1.0f;
         u4_c.w = 1.0f;
-        u4_f.v = *(s32 *)((char *)&D_00000000_cf9c + 0xCF9C);
+        u4_f.v = *(s32 *)((char *)&sTag_32E_CF9C + 0xCF9C);
         sp78 = u4_a;
         var_a0_2 = arg0 + 0x74;
         sp68 = u4_b;
@@ -2368,7 +2368,7 @@ void *ColourParms_ctor(char *arg0) {
         u5_c.z = 1.0f;
         u5_c.w = 1.0f;
         u5_a.y = *(f32 *)((char *)&D_00000000_0d0c + 0xD0C);
-        u5_f.v = *(s32 *)((char *)&D_00000000_cfa0 + 0xCFA0); u5_a.z = *(f32 *)((char *)&D_00000000_0d10 + 0xD10);
+        u5_f.v = *(s32 *)((char *)&sTag_goP_CFA0 + 0xCFA0); u5_a.z = *(f32 *)((char *)&D_00000000_0d10 + 0xD10);
         sp78 = u5_a;
         var_a0_2 = arg0 + 0x98;
         sp68 = u5_b;
@@ -2391,7 +2391,7 @@ void *ColourParms_ctor(char *arg0) {
         u6_c.y = 1.0f;
         u6_c.z = 1.0f;
         u6_c.w = 1.0f;
-        u6_a.z = *(f32 *)((char *)&D_00000000_0d14 + 0xD14); u6_f.v = *(s32 *)((char *)&D_00000000_cfa4 + 0xCFA4);
+        u6_a.z = *(f32 *)((char *)&D_00000000_0d14 + 0xD14); u6_f.v = *(s32 *)((char *)&sTag_goE_CFA4 + 0xCFA4);
         sp78 = u6_a;
         var_a0_2 = arg0 + 0xBC;
         sp68 = u6_b;
@@ -2414,7 +2414,7 @@ void *ColourParms_ctor(char *arg0) {
         u7_c.z = 1.0f;
         u7_c.w = 1.0f;
         u7_a.y = *(f32 *)((char *)&D_00000000_0d18 + 0xD18);
-        u7_f.v = *(s32 *)((char *)&D_00000000_cfa8 + 0xCFA8); u7_a.z = *(f32 *)((char *)&D_00000000_0d1c + 0xD1C);
+        u7_f.v = *(s32 *)((char *)&sTag_glP_CFA8 + 0xCFA8); u7_a.z = *(f32 *)((char *)&D_00000000_0d1c + 0xD1C);
         sp78 = u7_a;
         var_a0_2 = arg0 + 0xE0;
         sp68 = u7_b;
@@ -2437,7 +2437,7 @@ void *ColourParms_ctor(char *arg0) {
         u8_c.y = 1.0f;
         u8_c.z = 1.0f;
         u8_c.w = 1.0f;
-        u8_a.z = *(f32 *)((char *)&D_00000000_0d20 + 0xD20); u8_f.v = *(s32 *)((char *)&D_00000000_cfac + 0xCFAC);
+        u8_a.z = *(f32 *)((char *)&D_00000000_0d20 + 0xD20); u8_f.v = *(s32 *)((char *)&sTag_glE_CFAC + 0xCFAC);
         sp78 = u8_a;
         var_a0_2 = arg0 + 0x104;
         sp68 = u8_b;
@@ -2460,7 +2460,7 @@ void *ColourParms_ctor(char *arg0) {
         u9_c.z = 1.0f;
         u9_c.w = 1.0f;
         u9_a.y = *(f32 *)((char *)&D_00000000_0d24 + 0xD24);
-        u9_f.v = *(s32 *)((char *)&D_00000000_cfb0 + 0xCFB0); u9_a.z = *(f32 *)((char *)&D_00000000_0d28 + 0xD28);
+        u9_f.v = *(s32 *)((char *)&sTag_lsP_CFB0 + 0xCFB0); u9_a.z = *(f32 *)((char *)&D_00000000_0d28 + 0xD28);
         sp78 = u9_a;
         var_a0_2 = arg0 + 0x128;
         sp68 = u9_b;
@@ -2483,7 +2483,7 @@ void *ColourParms_ctor(char *arg0) {
         u10_c.y = 1.0f;
         u10_c.z = 1.0f;
         u10_c.w = 1.0f;
-        u10_a.z = *(f32 *)((char *)&D_00000000_0d2c + 0xD2C); u10_f.v = *(s32 *)((char *)&D_00000000_cfb4 + 0xCFB4);
+        u10_a.z = *(f32 *)((char *)&D_00000000_0d2c + 0xD2C); u10_f.v = *(s32 *)((char *)&sTag_lsE_CFB4 + 0xCFB4);
         sp78 = u10_a;
         var_a0_2 = arg0 + 0x14C;
         sp68 = u10_b;
@@ -2506,7 +2506,7 @@ void *ColourParms_ctor(char *arg0) {
         u11_c.z = 1.0f;
         u11_c.w = 1.0f;
         u11_a.y = *(f32 *)((char *)&D_00000000_0d30 + 0xD30);
-        u11_f.v = *(s32 *)((char *)&D_00000000_cfb8 + 0xCFB8); u11_a.z = *(f32 *)((char *)&D_00000000_0d34 + 0xD34);
+        u11_f.v = *(s32 *)((char *)&sTag_rtP_CFB8 + 0xCFB8); u11_a.z = *(f32 *)((char *)&D_00000000_0d34 + 0xD34);
         sp78 = u11_a;
         var_a0_2 = arg0 + 0x170;
         sp68 = u11_b;
@@ -2529,7 +2529,7 @@ void *ColourParms_ctor(char *arg0) {
         u12_c.y = 1.0f;
         u12_c.z = 1.0f;
         u12_c.w = 1.0f;
-        u12_a.z = *(f32 *)((char *)&D_00000000_0d38 + 0xD38); u12_f.v = *(s32 *)((char *)&D_00000000_cfbc + 0xCFBC);
+        u12_a.z = *(f32 *)((char *)&D_00000000_0d38 + 0xD38); u12_f.v = *(s32 *)((char *)&sTag_rtE_CFBC + 0xCFBC);
         sp78 = u12_a;
         var_a0_2 = arg0 + 0x194;
         sp68 = u12_b;
@@ -2552,7 +2552,7 @@ void *ColourParms_ctor(char *arg0) {
         u13_c.z = 1.0f;
         u13_c.w = 1.0f;
         u13_a.y = *(f32 *)((char *)&D_00000000_0d3c + 0xD3C);
-        u13_f.v = *(s32 *)((char *)&D_00000000_cfc0 + 0xCFC0); u13_a.z = *(f32 *)((char *)&D_00000000_0d40 + 0xD40);
+        u13_f.v = *(s32 *)((char *)&sTag_toP_CFC0 + 0xCFC0); u13_a.z = *(f32 *)((char *)&D_00000000_0d40 + 0xD40);
         sp78 = u13_a;
         var_a0_2 = arg0 + 0x1B8;
         sp68 = u13_b;
@@ -2575,7 +2575,7 @@ void *ColourParms_ctor(char *arg0) {
         u14_c.y = 1.0f;
         u14_c.z = 1.0f;
         u14_c.w = 1.0f;
-        u14_a.z = *(f32 *)((char *)&D_00000000_0d44 + 0xD44); u14_f.v = *(s32 *)((char *)&D_00000000_cfc4 + 0xCFC4);
+        u14_a.z = *(f32 *)((char *)&D_00000000_0d44 + 0xD44); u14_f.v = *(s32 *)((char *)&sTag_toE_CFC4 + 0xCFC4);
         sp78 = u14_a;
         var_a0_2 = arg0 + 0x1DC;
         sp68 = u14_b;
@@ -2598,7 +2598,7 @@ void *ColourParms_ctor(char *arg0) {
         u15_c.z = 1.0f;
         u15_c.w = 1.0f;
         u15_a.y = *(f32 *)((char *)&D_00000000_0d48 + 0xD48);
-        u15_f.v = *(s32 *)((char *)&D_00000000_cfc8 + 0xCFC8); u15_a.z = *(f32 *)((char *)&D_00000000_0d4c + 0xD4C);
+        u15_f.v = *(s32 *)((char *)&sTag_rnP_CFC8 + 0xCFC8); u15_a.z = *(f32 *)((char *)&D_00000000_0d4c + 0xD4C);
         sp78 = u15_a;
         var_a0_2 = arg0 + 0x200;
         sp68 = u15_b;
@@ -2621,7 +2621,7 @@ void *ColourParms_ctor(char *arg0) {
         u16_c.z = 1.0f;
         u16_c.w = 1.0f;
         u16_a.x = *(f32 *)((char *)&D_00000000_0d50 + 0xD50);
-        u16_f.v = *(s32 *)((char *)&D_00000000_cfcc + 0xCFCC); u16_a.y = *(f32 *)((char *)&D_00000000_0d54 + 0xD54);
+        u16_f.v = *(s32 *)((char *)&sTag_rnE_CFCC + 0xCFCC); u16_a.y = *(f32 *)((char *)&D_00000000_0d54 + 0xD54);
         sp78 = u16_a;
         var_a0_2 = arg0 + 0x224;
         sp68 = u16_b;
@@ -2644,7 +2644,7 @@ void *ColourParms_ctor(char *arg0) {
         u17_c.w = 1.0f;
         u17_a.x = *(f32 *)((char *)&D_00000000_0d58 + 0xD58);
         u17_a.y = *(f32 *)((char *)&D_00000000_0d5c + 0xD5C);
-        u17_f.v = *(s32 *)((char *)&D_00000000_cfd0 + 0xCFD0); u17_a.z = *(f32 *)((char *)&D_00000000_0d60 + 0xD60);
+        u17_f.v = *(s32 *)((char *)&sTag_rsP_CFD0 + 0xCFD0); u17_a.z = *(f32 *)((char *)&D_00000000_0d60 + 0xD60);
         sp78 = u17_a;
         var_a0_2 = arg0 + 0x248;
         sp68 = u17_b;
@@ -2667,7 +2667,7 @@ void *ColourParms_ctor(char *arg0) {
         u18_c.y = 1.0f;
         u18_c.z = 1.0f;
         u18_c.w = 1.0f;
-        u18_a.z = *(f32 *)((char *)&D_00000000_0d64 + 0xD64); u18_f.v = *(s32 *)((char *)&D_00000000_cfd4 + 0xCFD4);
+        u18_a.z = *(f32 *)((char *)&D_00000000_0d64 + 0xD64); u18_f.v = *(s32 *)((char *)&sTag_rsE_CFD4 + 0xCFD4);
         sp78 = u18_a;
         var_a0_2 = arg0 + 0x26C;
         sp68 = u18_b;
@@ -2690,7 +2690,7 @@ void *ColourParms_ctor(char *arg0) {
         u19_c.y = 1.0f;
         u19_c.z = 1.0f;
         u19_c.w = 1.0f;
-        u19_a.x = *(f32 *)((char *)&D_00000000_0d68 + 0xD68); u19_f.v = *(s32 *)((char *)&D_00000000_cfd8 + 0xCFD8);
+        u19_a.x = *(f32 *)((char *)&D_00000000_0d68 + 0xD68); u19_f.v = *(s32 *)((char *)&sTag_nrP_CFD8 + 0xCFD8);
         sp78 = u19_a;
         var_a0_2 = arg0 + 0x290;
         sp68 = u19_b;
@@ -2713,7 +2713,7 @@ void *ColourParms_ctor(char *arg0) {
         u20_c.z = 1.0f;
         u20_c.w = 1.0f;
         u20_a.x = *(f32 *)((char *)&D_00000000_0d6c + 0xD6C);
-        u20_f.v = *(s32 *)((char *)&D_00000000_cfdc + 0xCFDC); u20_a.y = *(f32 *)((char *)&D_00000000_0d70 + 0xD70);
+        u20_f.v = *(s32 *)((char *)&sTag_nrE_CFDC + 0xCFDC); u20_a.y = *(f32 *)((char *)&D_00000000_0d70 + 0xD70);
         sp78 = u20_a;
         var_a0_2 = arg0 + 0x2B4;
         sp68 = u20_b;
@@ -2736,7 +2736,7 @@ void *ColourParms_ctor(char *arg0) {
         u21_c.w = 1.0f;
         u21_a.x = *(f32 *)((char *)&D_00000000_0d74 + 0xD74);
         u21_a.y = *(f32 *)((char *)&D_00000000_0d78 + 0xD78);
-        u21_f.v = *(s32 *)((char *)&D_00000000_cfe0 + 0xCFE0); u21_a.z = *(f32 *)((char *)&D_00000000_0d7c + 0xD7C);
+        u21_f.v = *(s32 *)((char *)&sTag_adP_CFE0 + 0xCFE0); u21_a.z = *(f32 *)((char *)&D_00000000_0d7c + 0xD7C);
         sp78 = u21_a;
         var_a0_2 = arg0 + 0x2D8;
         sp68 = u21_b;
@@ -2759,7 +2759,7 @@ void *ColourParms_ctor(char *arg0) {
         u22_c.w = 1.0f;
         u22_a.x = *(f32 *)((char *)&D_00000000_0d80 + 0xD80);
         u22_a.y = *(f32 *)((char *)&D_00000000_0d84 + 0xD84);
-        u22_f.v = *(s32 *)((char *)&D_00000000_cfe4 + 0xCFE4); u22_a.z = *(f32 *)((char *)&D_00000000_0d88 + 0xD88);
+        u22_f.v = *(s32 *)((char *)&sTag_adE_CFE4 + 0xCFE4); u22_a.z = *(f32 *)((char *)&D_00000000_0d88 + 0xD88);
         sp78 = u22_a;
         var_a0_2 = arg0 + 0x2FC;
         sp68 = u22_b;
@@ -2782,7 +2782,7 @@ void *ColourParms_ctor(char *arg0) {
         u23_c.z = 1.0f;
         u23_c.w = 1.0f;
         u23_a.y = *(f32 *)((char *)&D_00000000_0d8c + 0xD8C);
-        u23_f.v = *(s32 *)((char *)&D_00000000_cfe8 + 0xCFE8); u23_a.z = *(f32 *)((char *)&D_00000000_0d90 + 0xD90);
+        u23_f.v = *(s32 *)((char *)&sTag_csP_CFE8 + 0xCFE8); u23_a.z = *(f32 *)((char *)&D_00000000_0d90 + 0xD90);
         sp78 = u23_a;
         var_a0_2 = arg0 + 0x320;
         sp68 = u23_b;
@@ -2807,7 +2807,7 @@ void *ColourParms_ctor(char *arg0) {
         u24_a.x = temp_f0;
         u24_a.y = temp_f0;
         u24_a.z = temp_f0;
-        u24_f.v = *(s32 *)((char *)&D_00000000_cfec + 0xCFEC);
+        u24_f.v = *(s32 *)((char *)&sTag_csE_CFEC + 0xCFEC);
         sp78 = u24_a;
         var_a0_2 = arg0 + 0x344;
         sp68 = u24_b;
@@ -2830,7 +2830,7 @@ void *ColourParms_ctor(char *arg0) {
         u25_c.w = 1.0f;
         u25_a.x = *(f32 *)((char *)&D_00000000_0d9c + 0xD9C);
         u25_a.y = *(f32 *)((char *)&D_00000000_0da0 + 0xDA0);
-        u25_f.v = *(s32 *)((char *)&D_00000000_cff0 + 0xCFF0); u25_a.z = *(f32 *)((char *)&D_00000000_0da4 + 0xDA4);
+        u25_f.v = *(s32 *)((char *)&sTag_grP_CFF0 + 0xCFF0); u25_a.z = *(f32 *)((char *)&D_00000000_0da4 + 0xDA4);
         sp78 = u25_a;
         var_a0_2 = arg0 + 0x368;
         sp68 = u25_b;
@@ -2853,7 +2853,7 @@ void *ColourParms_ctor(char *arg0) {
         u26_c.w = 1.0f;
         u26_a.x = *(f32 *)((char *)&D_00000000_0da8 + 0xDA8);
         u26_a.y = *(f32 *)((char *)&D_00000000_0dac + 0xDAC);
-        u26_f.v = *(s32 *)((char *)&D_00000000_cff4 + 0xCFF4); u26_a.z = *(f32 *)((char *)&D_00000000_0db0 + 0xDB0);
+        u26_f.v = *(s32 *)((char *)&sTag_grE_CFF4 + 0xCFF4); u26_a.z = *(f32 *)((char *)&D_00000000_0db0 + 0xDB0);
         sp78 = u26_a;
         var_a0_2 = arg0 + 0x38C;
         sp68 = u26_b;
@@ -2876,7 +2876,7 @@ void *ColourParms_ctor(char *arg0) {
         u27_c.w = 1.0f;
         u27_a.x = *(f32 *)((char *)&D_00000000_0db4 + 0xDB4);
         u27_a.y = *(f32 *)((char *)&D_00000000_0db8 + 0xDB8);
-        u27_f.v = *(s32 *)((char *)&D_00000000_cff8 + 0xCFF8); u27_a.z = *(f32 *)((char *)&D_00000000_0dbc + 0xDBC);
+        u27_f.v = *(s32 *)((char *)&sTag_dwP_CFF8 + 0xCFF8); u27_a.z = *(f32 *)((char *)&D_00000000_0dbc + 0xDBC);
         sp78 = u27_a;
         var_a0_2 = arg0 + 0x3B0;
         sp68 = u27_b;
@@ -2899,7 +2899,7 @@ void *ColourParms_ctor(char *arg0) {
         u28_c.w = 1.0f;
         u28_a.x = *(f32 *)((char *)&D_00000000_0dc0 + 0xDC0);
         u28_a.y = *(f32 *)((char *)&D_00000000_0dc4 + 0xDC4);
-        u28_f.v = *(s32 *)((char *)&D_00000000_cffc + 0xCFFC); u28_a.z = *(f32 *)((char *)&D_00000000_0dc8 + 0xDC8);
+        u28_f.v = *(s32 *)((char *)&sTag_dwE_CFFC + 0xCFFC); u28_a.z = *(f32 *)((char *)&D_00000000_0dc8 + 0xDC8);
         sp78 = u28_a;
         var_a0_2 = arg0 + 0x3D4;
         sp68 = u28_b;
@@ -2922,7 +2922,7 @@ void *ColourParms_ctor(char *arg0) {
         u29_c.z = 1.0f;
         u29_c.w = 1.0f;
         u29_a.y = *(f32 *)((char *)&D_00000000_0dcc + 0xDCC);
-        u29_f.v = *(s32 *)((char *)&D_00000000_d000 + 0xD000); u29_a.z = *(f32 *)((char *)&D_00000000_0dd0 + 0xDD0);
+        u29_f.v = *(s32 *)((char *)&sTag_ctt_D000 + 0xD000); u29_a.z = *(f32 *)((char *)&D_00000000_0dd0 + 0xDD0);
         sp78 = u29_a;
         var_a0_2 = arg0 + 0x3F8;
         sp68 = u29_b;
@@ -2947,7 +2947,7 @@ void *ColourParms_ctor(char *arg0) {
         u30_a.x = temp_f0_2;
         u30_a.y = temp_f0_2;
         u30_a.z = temp_f0_2;
-        u30_f.v = *(s32 *)((char *)&D_00000000_d004 + 0xD004);
+        u30_f.v = *(s32 *)((char *)&sTag_cnm_D004 + 0xD004);
         sp78 = u30_a;
         var_a0_2 = arg0 + 0x41C;
         sp68 = u30_b;
@@ -2970,7 +2970,7 @@ void *ColourParms_ctor(char *arg0) {
         u31_c.w = 1.0f;
         u31_a.x = *(f32 *)((char *)&D_00000000_0ddc + 0xDDC);
         u31_a.y = *(f32 *)((char *)&D_00000000_0de0 + 0xDE0);
-        u31_f.v = *(s32 *)((char *)&D_00000000_d008 + 0xD008); u31_a.z = *(f32 *)((char *)&D_00000000_0de4 + 0xDE4);
+        u31_f.v = *(s32 *)((char *)&sTag_ccl_D008 + 0xD008); u31_a.z = *(f32 *)((char *)&D_00000000_0de4 + 0xDE4);
         sp78 = u31_a;
         var_a0_2 = arg0 + 0x440;
         sp68 = u31_b;
@@ -2994,7 +2994,7 @@ void *ColourParms_ctor(char *arg0) {
         u32_c.y = 1.0f;
         u32_c.z = 1.0f;
         u32_c.w = 1.0f;
-        u32_f.v = *(s32 *)((char *)&D_00000000_d00c + 0xD00C);
+        u32_f.v = *(s32 *)((char *)&sTag_clg_D00C + 0xD00C);
         sp78 = u32_a;
         var_a0_2 = arg0 + 0x464;
         sp68 = u32_b;

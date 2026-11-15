@@ -56,13 +56,13 @@ void  fn_31c0_fin(void *);
 void  fn_31c0_vec(void *, const V3 &);   /* math_mtxAddTranslation(mtx, &delta) */
 void  fn_31c0_link(void *, void *);      /* link(parent, child) */
 void  fn_31c0_tail(void *, void *);      /* list append */
-extern char D_00007460[], D_0000746C[], D_00007480[], D_000074A4[], D_000074B0[], D_000074C4[], D_00007490[];
+extern char sStr_snowlookat_7460[], sStr_rom_cam_info_bin_746C[], sStr_rom_cam_ca_bin_7480[], sStr_LookAtChase_74A4[], sStr_rom_lookat_ca_bin_74B0[], sStr_LookAtChase_74C4[], sStr_rom_lookat_ca2_bin_7490[];
 }
 inline void *operator new(unsigned n) { return fn_31c0_alloc(n); }
 struct N { int v; N() { v = 0; } };
 struct M { N n; M() {} };
 struct MNode { char p[0x28]; MNode(void *name); virtual void g(); };
-struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(D_00007460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
+struct LookAtMNode : MNode { M m; char rest[0xB4 - 0x30]; LookAtMNode(void *u) : MNode(sStr_snowlookat_7460) { { volatile int q0, q1, q2; } fn_31c0_fin(this); pos(); } void pos() { fn_31c0_vec((char *)this + 0x30, V3(0.0f, 500.0f, 0.0f)); } virtual void g(); };
 struct LookAtNode : LookAtMNode { int chase; LookAtNode() : LookAtMNode(this) { LookAtNode *p = this; } }; /* agent-c run 238: the named p is a home between the new-temp and the LookAtNode this temp (kit CCLV) */
 struct MCamera { char p[0x28]; MCamera(LookAtMNode *target, float x, float y, float z); virtual void g(); };
 struct RiderCam : MCamera { char q[0x14C - 0x2C]; float fov; float baseFov; char *rider; int mode;
@@ -92,15 +92,15 @@ extern "C" void *cam_create(int a0, int mode, Node *parent, char *a3v, int p4) {
     case 0:
     case 2:
         /* the game.uso course camera (eye) with its eye chase component; the look-at gets a SnowChaseActorLook */
-        w = (char *)new CourseCam(a3v, obj, 0.0f, 500.0f, -1500.0f, p4, D_0000746C);
+        w = (char *)new CourseCam(a3v, obj, 0.0f, 500.0f, -1500.0f, p4, sStr_rom_cam_info_bin_746C);
         h = w;
-        r2 = (char *)new SnowChaseActorCam(a3v, RIDER_CAM_SOURCE(a3v), D_00007480);
+        r2 = (char *)new SnowChaseActorCam(a3v, RIDER_CAM_SOURCE(a3v), sStr_rom_cam_ca_bin_7480);
         fn_31c0_link(w, r2);
         COURSECAM_EYE_CHASE(w) = (int)r2;
-        r3 = (char *)new SnowChaseActorLook(w, r2, D_00007490);
+        r3 = (char *)new SnowChaseActorLook(w, r2, sStr_rom_lookat_ca2_bin_7490);
         fn_31c0_link((LookAtMNode *)obj, r3);
         LOOKAT_CHASE((LookAtMNode *)obj) = (int)r3;
-        CHASE_NAME(r3) = (int)D_000074A4;
+        CHASE_NAME(r3) = (int)sStr_LookAtChase_74A4;
         break;
     case 1:
         /* agent-c run 271 (EXACT): the RiderCam new-temp on the target's fresh pool entry WITHOUT any live write to T's entry.
@@ -108,9 +108,9 @@ extern "C" void *cam_create(int a0, int mode, Node *parent, char *a3v, int p4) {
          * dead arm first and keeps it for the whole full-expression, so the new-temp of the live arm lands past it (sp+0x68)
          * while T (sp+0x74) is never redefined on this path: the RiderCam / MCamera `o` argument copy-propagates obj -> T and reads
          * sp+0x74 like the target. The SnowChaseActor new shares the arm; link / store stay statements (link reads obj's home). */
-        (mode * 0) ? (void)dm(a3v) : (void)(h = (char *)new RiderCam(obj, a3v), v = (char *)new SnowChaseActor(a3v, a3v, D_000074B0));
+        (mode * 0) ? (void)dm(a3v) : (void)(h = (char *)new RiderCam(obj, a3v), v = (char *)new SnowChaseActor(a3v, a3v, sStr_rom_lookat_ca_bin_74B0));
         fn_31c0_link(obj, v);
-        CHASE_NAME(v) = (int)D_000074C4;
+        CHASE_NAME(v) = (int)sStr_LookAtChase_74C4;
         break;
     }
     {

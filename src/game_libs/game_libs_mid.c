@@ -14,7 +14,7 @@ extern char D_8C3C_root_desc;
  * Built at -O2 (default). */
 
 /* app_launchNameEnt — VERIFIED 92/92 reloc-resolved EXACT (2026-07-03, agent-e W5).
- * Baseline was 88/92 raw = 84 byte-identical + 4 reloc-false (D_0000D138/D_0000D148
+ * Baseline was 88/92 raw = 84 byte-identical + 4 reloc-false (sStr_rom_nameent_uso_D138/sStr_Node_D148
  * HI16/LO16: syms valued 0xD138/0xD148 in undefined_syms_auto.txt resolve to the
  * target's lui 0x1 / addiu -0x2EC8 words at link).
  *
@@ -29,18 +29,18 @@ extern char D_8C3C_root_desc;
  *
  * VOID fn -> NOT blocked by the -O0 return-value dead-double-b toolchain gap.
  * PROMOTABLE: replace the #ifdef NON_MATCHING wrap with this body (drop INCLUDE_ASM).
- * No new undefined_syms needed (D_0000D138/D_0000D148/D_8C3C_* already present). */
+ * No new undefined_syms needed (sStr_rom_nameent_uso_D138/sStr_Node_D148/D_8C3C_* already present). */
 extern int gl_func_00000000();
 extern char D_00000000;
 extern char Process_vtbl_8C3C_child_desc, Process_vtbl_C3A0_8C3C_mid_desc, D_8C3C_root_desc;
-extern char D_0000D138, D_0000D148, gProcUsoPaths_8C3C_v0;
+extern char sStr_rom_nameent_uso_D138, sStr_Node_D148, gProcUsoPaths_8C3C_v0;
 app_launchNameEnt(a0, a1) int * a0; int a1; {
     int *call_root;       /* declared FIRST -> top local slot 0x34 (-O0 slots are decl-order top-down; register vars reserve the slots below) */
     register int *root;
     register int *mid;
     register int *child;
 
-    gl_func_00000000(&D_00000000, &D_0000D138);
+    gl_func_00000000(&D_00000000, &sStr_rom_nameent_uso_D138);
     gl_func_00000000(&D_00000000, *(int*)&gProcUsoPaths_8C3C_v0);
     gl_func_00000000(&D_00000000, 7, 0, 0);
 
@@ -50,7 +50,7 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
         if (mid != 0 || (mid = (int*)gl_func_00000000(0x50)) != 0) {
             child = mid;
             if (child != 0 || (child = (int*)gl_func_00000000(0x2C)) != 0) {
-                gl_func_00000000(child, &D_0000D148);
+                gl_func_00000000(child, &sStr_Node_D148);
                 child[0x28 / 4] = (int)&Process_vtbl_8C3C_child_desc;
             }
             mid[0x28 / 4] = (int)&Process_vtbl_C3A0_8C3C_mid_desc;
@@ -67,14 +67,14 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
 /* app_launchViewRec: 39-insn 4-call init sequencer. -O0 island (file built
  * OPT_FLAGS := -O0: all 4 args spilled at entry, unfilled jal delays, b-to-epilogue).
  * The 2nd arg is the data symbol at offset 0xD150 referenced DIRECTLY as
- * &D_0000D150 (defined = 0x0000D150 in undefined_syms) so -O0 emits the 2-insn
+ * &sStr_rom_viewrec_uso_D150 (defined = 0x0000D150 in undefined_syms) so -O0 emits the 2-insn
  * %hi/%lo (lui 0x1; addiu -0x2EB0) the target uses -- NOT &D_00000000+0xD150 (3
  * insns at -O0). rv kept in s0 via `register`. */
 extern int gl_func_00000000();
-extern char D_0000D150;
+extern char sStr_rom_viewrec_uso_D150;
 void app_launchViewRec(int a0, int a1, int a2, int a3) {
     register int rv;
-    gl_func_00000000(&gInputMgr, &D_0000D150);
+    gl_func_00000000(&gInputMgr, &sStr_rom_viewrec_uso_D150);
     gl_func_00000000(&gInputMgr, 8, 0, 0);
     rv = gl_func_00000000(0, a1, a2, a3);
     gl_func_00000000(a0, 1, rv);

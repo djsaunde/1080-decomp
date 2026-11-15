@@ -13,11 +13,11 @@ BootupGrid139B0 *Fader_ctor(BootupGrid139B0 *arg0, s32 arg1) { void *saved_conte
         sub = boot12E00_alloc(0x2C);
         if (sub == ((void*)0)) goto fields;
     }
-    boot12E00_base_init(sub, &D_0000C730);
+    boot12E00_base_init(sub, &sStr_Node_C730);
     sub->unk28 = &boot12E00_desc_base;
 fields:
     o->unk28 = &boot12E00_desc_self;
-    o->unk0C = &D_0000C738;
+    o->unk0C = &sStr_Fader_C738;
     o->unk2C = arg1;
     o->columns = 0x20;
     o->rows = 0x20;

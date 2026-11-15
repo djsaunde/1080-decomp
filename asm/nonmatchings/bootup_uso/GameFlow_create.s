@@ -12,8 +12,8 @@ glabel GameFlow_create
     /* DE1718 00010CAC F7B60030 */  sdc1       $f22, 0x30($sp)
     /* DE171C 00010CB0 F7B40028 */  sdc1       $f20, 0x28($sp)
     /* DE1720 00010CB4 8FB00088 */  lw         $s0, 0x88($sp)
-    /* DE1724 00010CB8 3C110001 */  lui        $s1, %hi(D_0000C5D0)
-    /* DE1728 00010CBC 2631C5D0 */  addiu      $s1, $s1, %lo(D_0000C5D0)
+    /* DE1724 00010CB8 3C110001 */  lui        $s1, %hi(sStr_GameFlow_C5D0)
+    /* DE1728 00010CBC 2631C5D0 */  addiu      $s1, $s1, %lo(sStr_GameFlow_C5D0)
     /* DE172C 00010CC0 AE11000C */  sw         $s1, 0xC($s0)
     /* DE1730 00010CC4 8FAE008C */  lw         $t6, 0x8C($sp)
     /* DE1734 00010CC8 8FAF0088 */  lw         $t7, 0x88($sp)
@@ -44,8 +44,8 @@ glabel GameFlow_create
     /* DE1794 00010D28 E63A000C */  swc1       $f26, 0xC($s1)
   .L00010D2C:
     /* DE1798 00010D2C 00002025 */  or         $a0, $zero, $zero
-    /* DE179C 00010D30 3C050001 */  lui        $a1, %hi(D_0000C5DC)
-    /* DE17A0 00010D34 24A5C5DC */  addiu      $a1, $a1, %lo(D_0000C5DC)
+    /* DE179C 00010D30 3C050001 */  lui        $a1, %hi(sStr_Flow_C5DC)
+    /* DE17A0 00010D34 24A5C5DC */  addiu      $a1, $a1, %lo(sStr_Flow_C5DC)
     /* DE17A4 00010D38 24060010 */  addiu      $a2, $zero, 0x10
     /* DE17A8 00010D3C 2407012C */  addiu      $a3, $zero, 0x12C
     /* DE17AC 00010D40 24180010 */  addiu      $t8, $zero, 0x10
@@ -88,8 +88,8 @@ glabel GameFlow_create
     /* DE1840 00010DD4 AFA20084 */  sw         $v0, 0x84($sp)
     /* DE1844 00010DD8 3C040000 */  lui        $a0, (0x0 >> 16)
     /* DE1848 00010DDC 24840000 */  addiu      $a0, $a0, 0x0
-    /* DE184C 00010DE0 3C050001 */  lui        $a1, %hi(D_0000C5E4)
-    /* DE1850 00010DE4 24A5C5E4 */  addiu      $a1, $a1, %lo(D_0000C5E4)
+    /* DE184C 00010DE0 3C050001 */  lui        $a1, %hi(sStr_rom_gui_uso_C5E4)
+    /* DE1850 00010DE4 24A5C5E4 */  addiu      $a1, $a1, %lo(sStr_rom_gui_uso_C5E4)
     /* DE1854 00010DE8 0C000000 */  jal        func_00000000
     /* DE1858 00010DEC 00000000 */   nop
     /* DE185C 00010DF0 00008025 */  or         $s0, $zero, $zero
@@ -199,8 +199,8 @@ glabel GameFlow_create
     /* DE19EC 00010F80 8FB90088 */  lw         $t9, 0x88($sp)
     /* DE19F0 00010F84 AF220160 */  sw         $v0, 0x160($t9)
     /* DE19F4 00010F88 00002025 */  or         $a0, $zero, $zero
-    /* DE19F8 00010F8C 3C050001 */  lui        $a1, %hi(D_0000C5F0)
-    /* DE19FC 00010F90 24A5C5F0 */  addiu      $a1, $a1, %lo(D_0000C5F0)
+    /* DE19F8 00010F8C 3C050001 */  lui        $a1, %hi(sStr_rom_flowimgs_bin_C5F0)
+    /* DE19FC 00010F90 24A5C5F0 */  addiu      $a1, $a1, %lo(sStr_rom_flowimgs_bin_C5F0)
     /* DE1A00 00010F94 0C000000 */  jal        func_00000000
     /* DE1A04 00010F98 00000000 */   nop
     /* DE1A08 00010F9C 8FA80088 */  lw         $t0, 0x88($sp)
