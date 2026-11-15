@@ -14575,7 +14575,7 @@ s16 *MorphPoly_genUpdateList(char *arg0, s32 arg1, s16 *arg2) {
 void MorphPoly_applyUpdateList_0004A9F0(short *self, char *a1, short *cursor) {
 }
 
-void BasePolyShape_setVerts_0004AA90(int *a0, int a1) {
+void MorphPoly_setVerts_0004AA90(int *a0, int a1) {
     int v0 = a0[0x30/4];
     a0[0xC0/4] = a1;
     if (v0 & 0x800) {

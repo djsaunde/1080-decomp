@@ -1876,7 +1876,7 @@ void MorphPoly_morph(char *a0);
 extern int D_00000000;
 s16 *MorphPoly_genUpdateList(char *arg0, s32 arg1, s16 *arg2);
 void MorphPoly_applyUpdateList_0004A9F0(short *self, char *a1, short *cursor);
-void BasePolyShape_setVerts_0004AA90(int *a0, int a1);
+void MorphPoly_setVerts_0004AA90(int *a0, int a1);
 typedef struct Record4AAF0 {s16 a,b,c;}Record4AAF0;
 typedef struct Owner4AAF0 {u8 unknown00[0xC0];Record4AAF0 *sourceC0;u8 unknownC4[12];s16 *indicesD0;s16 baseD4,endD6;}Owner4AAF0;
 typedef struct Table4AAF0 {char *buffer00;}Table4AAF0;

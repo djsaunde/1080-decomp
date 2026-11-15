@@ -1,6 +1,6 @@
-nonmatching BasePolyShape_setVerts_0004AA90, 0x60
+nonmatching MorphPoly_setVerts_0004AA90, 0x60
 
-glabel BasePolyShape_setVerts_0004AA90
+glabel MorphPoly_setVerts_0004AA90
     /* E2FB68 0004AA90 27BDFFE8 */  .word 0x27BDFFE8
     /* E2FB6C 0004AA94 AFBF0014 */  .word 0xAFBF0014
     /* E2FB70 0004AA98 8C820030 */  .word 0x8C820030
@@ -25,4 +25,4 @@ glabel BasePolyShape_setVerts_0004AA90
     /* E2FBBC 0004AAE4 27BD0018 */  .word 0x27BD0018
     /* E2FBC0 0004AAE8 03E00008 */  .word 0x03E00008
     /* E2FBC4 0004AAEC 00000000 */  .word 0x00000000
-endlabel BasePolyShape_setVerts_0004AA90
+endlabel MorphPoly_setVerts_0004AA90

@@ -3637,3 +3637,4 @@ gfx_func_00045394	gfx_emptyStub_00045394
 gfx_func_00046048	gfx_emptyStub_00046048
 gfx_func_00048A60	gfx_emptyStub_00048A60
 gfx_func_0004ACCC	gfx_emptyStub_0004ACCC
+BasePolyShape_setVerts_0004AA90	MorphPoly_setVerts_0004AA90
