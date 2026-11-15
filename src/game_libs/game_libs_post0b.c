@@ -11111,7 +11111,11 @@ void game_libs_func_00043468(int x, int y, int w, int h) {
 void gl_func_00043558(int *a0) {
     gl_func_00000000(*(int*)((char*)*(int**)((char*)a0 + 0x148) + 0x180));
 }
-#pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00043558_pad.s")
+/* Unreferenced empty function after gl_func_00043558: IDO still emits an
+ * unused static procedure, as `jr ra; nop` with no symbol (the 8 bytes
+ * splat had kept as asm-pad _pad_gl_func_00043558). */
+static void pad_after_gl_func_00043558(void) {
+}
 
 extern int func_00000000();
 extern int D_00000000;
