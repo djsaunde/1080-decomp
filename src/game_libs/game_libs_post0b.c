@@ -4563,17 +4563,17 @@ void MNode_doCommand(int *a0, int *a1) {
     volatile int *ret = a0;
 }
 
-/* MNode_vslot9_00039960: 10-insn 2-arg-add wrapper. Calls
+/* MNode_setAnimPose: 10-insn 2-arg-add wrapper. Calls
  * gl_func(a1+0xD0, a0+0x30). Splat bundles a 2-insn alt-entry leaf
  * (jr ra; addiu $v0, $a0, 0x70 — returns a0+0x70) at the tail; both
  * sit inside the declared 0x30 symbol. Bundled trailer handled via
  * SUFFIX_BYTES = 0x03E00008,0x24820070. */
 extern int gl_func_00000000();
-void MNode_vslot9_00039960(char *a0, char *a1) {
+void MNode_setAnimPose(char *a0, char *a1) {
     gl_func_00000000(a1 + 0xD0, a0 + 0x30);
 }
 
-int *MNode_vslot10_00039988(int *a0) {
+int *MNode_getCMtx(int *a0) {
     return (int *)MNODE(a0)->cmtx;
 }
 
@@ -9631,11 +9631,11 @@ void QNode_hostioParms(char *a0) {
 void QNode_updateChildren(char *arg0) {
 }
 
-// QNode_vslot9_00041008 — STRUCTURAL PASS (0xA0 / 41 words, no episode). Raw-.word
+// QNode_setAnimPose — STRUCTURAL PASS (0xA0 / 41 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0, NO calls (leaf) → ONE clean function. Single
 // prologue frame 0x30. Struct Vec3-block copier with int<->FP reinterpret.
 //
-//   void QNode_vslot9_00041008(Dst a0, Src a1) {
+//   void QNode_setAnimPose(Dst a0, Src a1) {
 //     // each 32-bit word is round-tripped through sp+0x14 as an int store
 //     // then an FP (lwc1) load — IDO's bitwise int<->float copy idiom when
 //     // the value crosses the GPR/FPR register files; semantically a plain
@@ -9666,7 +9666,7 @@ void QNode_updateChildren(char *arg0) {
 //   (3) volatile pad sandwich (0x10 below + 0x10 above buf) = frame 0x30
 //   with buf at sp+0x14. Name pre-checked: no extern reuse.
 typedef struct { int w0, w1, w2; } W3;
-void QNode_vslot9_00041008(char *a0, char *a1) {
+void QNode_setAnimPose(char *a0, char *a1) {
     volatile char padA[0x10];
     float buf[3];
     volatile char padB[0x10];
@@ -11326,13 +11326,13 @@ void BaseMat_vslot4_000437C0(char *self, char *arg1) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_vslot4_000437C0);
 #endif
 
-// BaseMat_func_00043BEC — STRUCTURAL PASS (0x14C / 83 words, no episode). Raw-.word
+// BaseMat_emitDisplayLists_00043BEC — STRUCTURAL PASS (0x14C / 83 words, no episode). Raw-.word
 // USO. realjr=2, regjr=0 → 2-function BUNDLE + BOUNDARY NOTE: named fn ends
 // at the jr at 0x43D24; a tiny trailing leaf at 0x43D2C (DEFERRED USO
 // RE-SPLIT — belongs to the next symbol). Named fn = global-registry insert
 // + packed-table append (cb = jal 0 USO-relocated).
 //
-//   void BaseMat_func_00043BEC(void *a0, void *a1) {
+//   void BaseMat_emitDisplayLists_00043BEC(void *a0, void *a1) {
 //     self = a0;  arg = a1;
 //     if (self->p6C != 0) return;                    // beql already-registered
 //     g = *(void**)0x4C7C4;                            // global registry head
@@ -11363,7 +11363,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_vslot4_000437C0);
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 typedef char *(*GP_00043BEC)();
-void BaseMat_func_00043BEC(char *arg0, char *arg1) {
+void BaseMat_emitDisplayLists_00043BEC(char *arg0, char *arg1) {
     s32 temp_a0;
     s32 temp_a0_2;
     s32 temp_a2;
@@ -11417,7 +11417,7 @@ void BaseMat_func_00043BEC(char *arg0, char *arg1) {
     }
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_func_00043BEC);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", BaseMat_emitDisplayLists_00043BEC);
 #endif
 
 void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(int*)((char*)a1 + 0x64); }
@@ -11451,7 +11451,7 @@ void gfx_copyField64_00043D2C(int *a0, int *a1) { *(int*)((char*)a0 + 0x64) = *(
 // at &D_g+0x254 and, for each, resets the packed slot reached via
 // self->0x6C->0x0C->0 + key*8 (key = (short)self->0x7C[i]) to the
 // {0xC0000000, 0} invalid sentinel — the release/clear counterpart of the
-// append routines BaseMat_func_00043BEC / 00042684. A second pass repeats the
+// append routines BaseMat_emitDisplayLists_00043BEC / 00042684. A second pass repeats the
 // invalidation for the self->0x7C+0x80 key block. Family: packed-table
 // management (invalidate side). Second-pass key detail representative; the
 // 0x7C entry guard, the &D_g+0x254 base, the 0x10C-1 / 0x110 range, the
@@ -13441,12 +13441,12 @@ void gfx_vtxBatchBegin_000483A0(int *a0) {
     a0[3] = ((int*)v[7])[1];
 }
 
-// PolyShape_func_000483BC — STRUCTURAL PASS (0x150 / 85 words, no episode). Raw-.word
+// PolyShape_emitTriBatch_000483BC — STRUCTURAL PASS (0x150 / 85 words, no episode). Raw-.word
 // USO. realjr=1, regjr=0 → ONE clean function. Single prologue frame 0x28
 // (saves ra, s0). Packed-command table append with DL-style bit-pack
 // (cb = jal 0 USO-relocated).
 //
-//   void PolyShape_func_000483BC(Obj a0) {
+//   void PolyShape_emitTriBatch_000483BC(Obj a0) {
 //     self = a0;
 //     if (self->p04 == 0) return;                    // beql early-out
 //     Tbl *t = self->p00->...;
@@ -13473,7 +13473,7 @@ void gfx_vtxBatchBegin_000483A0(int *a0) {
 //   Byte-match deferred. Name pre-checked: no extern reuse.
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/game_libs/game_libs_ncc_483BC.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 134). */
-void PolyShape_func_000483BC(char *a0) {
+void PolyShape_emitTriBatch_000483BC(char *a0) {
 }
 
 // PolyShape_addFace_00048510 — STRUCTURAL PASS (0x20C / 132 words, no episode). Raw-.word
@@ -13699,7 +13699,7 @@ int gfx_findFaceVtxs_0004880C(int a0, int a1) {
 // USO RE-SPLIT — belongs to the next symbol).
 //
 // Named fn = packed-command table append (SIBLING-VARIANT of
-// PolyShape_func_000483BC; single prologue frame 0x28, saves ra, s0; cb = jal 0
+// PolyShape_emitTriBatch_000483BC; single prologue frame 0x28, saves ra, s0; cb = jal 0
 // USO-relocated):
 //   void gfx_emitLineBatch_000488A0(Obj a0) {
 //     self = a0;
@@ -13715,18 +13715,18 @@ int gfx_findFaceVtxs_0004880C(int a0, int a1) {
 //     cb(...);                                          // post-pack hook
 //     slot[1] = v;                                      // word1 = raw value
 //   }
-// Same two-word packed-entry append as PolyShape_func_000483BC (0x04 entry guard,
+// Same two-word packed-entry append as PolyShape_emitTriBatch_000483BC (0x04 entry guard,
 // count bump at +4, slot = base + n*8, word0 = 0x04000000 |
 // (v << s1) | ((v << s2 - 1) & 0xFFFF), cb between the two stores) — only
 // the bitfield shift amounts differ from the 000483BC variant. Family:
-// packed-table append + command bit-pack (siblings PolyShape_func_000483BC /
+// packed-table append + command bit-pack (siblings PolyShape_emitTriBatch_000483BC /
 // 00042684 / 00043BEC). Trailing leaf at 0x48A5C = small stub (deferred
 // re-split). v derivation representative; the 0x04 guard, the count-bump,
 // the base + n*8 slot math, the 0x04000000 tag and the OR-pack structure
 // are exact. Caps: Obj/Tbl struct + cb signature untyped; bundle re-split
 // deferred. Full body INCLUDE_ASM-preserved.
 #ifdef NON_MATCHING
-/* F3DEX re-decode (agent-c 2026-10-14; same decode as PolyShape_func_000483BC, see
+/* F3DEX re-decode (agent-c 2026-10-14; same decode as PolyShape_emitTriBatch_000483BC, see
  * docs/IDO_CODEGEN.md#f3dex-dl-cursor-483bc): gSPVertex into the
  * {Gfx *base; int count} DL cursor at ctx+0xC, then per line i a G_LINE3D
  * (0xB5) packet: gSPLineW3D(pkt, ln[i][0]-vbase, ln[i][1]-vbase, wd[i], 0)
@@ -16817,7 +16817,7 @@ out:
     return s0;
 }
 
-void DisplayMgr_func_0004DE80(int *a0) {
+void DisplayMgr_clear(int *a0) {
     a0[0xE] = 0;
 }
 
@@ -18249,7 +18249,7 @@ u32 BasePolyShape_addPoints(int start, char *m, f32 *pos, f32 *uv, u32 max) {
 s32 BasePolyShape_subdivide(void) {
 }
 
-/* BasePolyShape_func_000510F0: triangle -> 3 positions + 3 texcoords, passed BY VALUE
+/* BasePolyShape_emitTriPosUv_000510F0: triangle -> 3 positions + 3 texcoords, passed BY VALUE
  * to a USO emit callback (0x2DC / 183 words). EXACT 2026-10-16 agent-g.
  * o->tri[idx] = {h0, a, b, c}; each corner reads o->uv[i] (2 x s16, z = 0)
  * and o->pos[i] (3 x s16), converted with cvt.s.w into six 12-byte stack
@@ -18268,7 +18268,7 @@ typedef struct { s16 x, y, z; } P_510F0;
 typedef struct { u16 h0, a, b, c; } Tri_510F0;
 typedef struct { char pad[0x60]; P_510F0 *pos; UV_510F0 *uv; Tri_510F0 *tri; } Obj_510F0;
 
-s32 BasePolyShape_func_000510F0(s32 arg0, volatile s32 arg1, Obj_510F0 *o, s32 idx, char *arg4, s32 arg5, s32 arg6) {
+s32 BasePolyShape_emitTriPosUv_000510F0(s32 arg0, volatile s32 arg1, Obj_510F0 *o, s32 idx, char *arg4, s32 arg5, s32 arg6) {
     V3_510F0 p0;
     V3_510F0 p1;
     V3_510F0 p2;
@@ -18785,7 +18785,7 @@ void BaseMat_sendImage_00051E98(char *a0) {
     gl_func_00000000(&gl_data_00000000, *(int*)(a0 + 0x24), *(int*)(a0 + 0x1C), *(short*)(a0 + 0x20), *(short*)(a0 + 0x22));
 }
 
-/* BaseMat_func_00051ED8: varargs per-arg dispatch loop. Decoded from bare
+/* BaseMat_forEachVarArg_00051ED8: varargs per-arg dispatch loop. Decoded from bare
  * stub 2026-05-18. Signature: void f(void *obj, int a1, ...).
  * Sets up an aligned va pointer ((sp+0x43)&~3 → the a1/a2/a3 caller
  * save area at sp+0x3C..), saves a1/a2/a3 to those slots (varargs
@@ -18819,7 +18819,7 @@ void BaseMat_sendImage_00051E98(char *a0) {
  * block boundary, found by scripts/blockcut-search.py). */
 extern int gl_func_00000000();
 typedef struct { short d; short i; int (*f)(); } VtE51ED8;
-void BaseMat_func_00051ED8(a0, va_alist) char *a0; int va_alist; {
+void BaseMat_forEachVarArg_00051ED8(a0, va_alist) char *a0; int va_alist; {
     char *p;
     char *ap;
     int stash;
@@ -19206,7 +19206,7 @@ void BasePolyShape_doCommand(int *a0, int **a1) {
 void ShapeNode_func_000525F0(int *self, int *target) {
 }
 
-/* BasePolyShape_func_00052674 (0x5C, 23 insns): 7-global init (USO data refs,
+/* BasePolyShape_initGeomGlobals_00052674 (0x5C, 23 insns): 7-global init (USO data refs,
  * the seven D_52674_* externs are distinct 0-pinned symbols: 7 separate
  * luis, no CSE). The old NM blamed an "-O1 lower-opt cap" for the three
  * unfolded `ori 0x2000; ori 1; ori 0x8000` + `or at(0x20000)`: -O2 keeps
@@ -19215,7 +19215,7 @@ void ShapeNode_func_000525F0(int *self, int *target) {
  * v0, pushing the first base (two zero stores) into v1 -- an empty
  * `if (1) {}` after those stores (BB lever, cf 3EDBC) frees v0 for it. */
 extern int gPolyGeomMode_3EEC8_52674_a[2], gPolyGeomMode_3EEC8_52674_b[2], gPolyFlags_3EEC4_52674_c, gPolyGeomMode_3EEC8_52674_d[2], gPolyFlags_3EEC4_52674_e, D_52674_f, D_52674_g;
-void BasePolyShape_func_00052674(void) {
+void BasePolyShape_initGeomGlobals_00052674(void) {
     int v;
     gPolyGeomMode_3EEC8_52674_a[1] = 0;
     gPolyGeomMode_3EEC8_52674_a[0] = 0;
@@ -19392,7 +19392,7 @@ void ZoneShape_build(char *self) {
     gl_func_00000000();
 }
 
-/* BasePolyShape_func_00052BBC: dual-row directory min/max scan (clean leaf, NO calls).
+/* BasePolyShape_findExtremeVtx_00052BBC: dual-row directory min/max scan (clean leaf, NO calls).
  * f(a0, row1, row2, flagX, flagY): seeds lo=hi=0x7530, v1=-1; for each of
  * the 3 vertex slots of row1 and row2 (u16 index at a0->0x68[row][slot+1]),
  * rec = a0->0x64 + idx*4 (s16 x,y); when (x>=lo) differs from flagX AND
@@ -19406,7 +19406,7 @@ void ZoneShape_build(char *self) {
  * li/sh order; (3) the tests as `(m[0] >= m[2]) ^ flagX` (or `- flagX`):
  * `!=` always emits `beq flag,cmp`, the truthiness form emits the target's
  * `beq cmp,flag` and the t-reg ring follows. */
-int BasePolyShape_func_00052BBC(int *a0, int row1, int row2, int flagX, int flagY) {
+int BasePolyShape_findExtremeVtx_00052BBC(int *a0, int row1, int row2, int flagX, int flagY) {
     volatile int padA;               /* pad pair: frame 0x20 with m[] at sp+0xC */
     volatile char padB[8];
     short m[4];                      /* m[0]=x m[1]=y m[2]=lo m[3]=hi */
@@ -26360,7 +26360,7 @@ end:
     return arg0;
 }
 
-void TextWin_toggleFlag34(int *a0) { TEXTWIN(a0)->muted ^= 0x1; }
+void TextWin_toggleMute(int *a0) { TEXTWIN(a0)->muted ^= 0x1; }
 
 /* The four ConsoleMgr_scroll* helpers take the TextWin (include/gdl/console.h), not the ConsoleMgr. */
 void ConsoleMgr_scrollUp(int *a0) {
@@ -26662,12 +26662,12 @@ void ConsoleMgr_display(int *self) {
     gl_func_00000000(s0, CONSOLEMGR(self)->unk38);
 }
 
-/* TextWin_remove_00060ED0: walk a circular list (head a0->0x30, next at node->0x38),
+/* ConsoleMgr_closeOwnerWins: walk a circular list (head a0->0x30, next at node->0x38),
  * call gl_func(a0, node) for each node whose node->0x44 == a1; stop when next
  * wraps to head. Byte-exact (incl. the branch-likely); the callback is a
  * runtime-relocated USO placeholder (jal 0). */
 extern int gl_func_00000000();
-void TextWin_remove_00060ED0(int *a0, int a1) {
+void ConsoleMgr_closeOwnerWins(int *a0, int a1) {
     int *self = a0;
     int key = a1;
     int *node = (int *)CONSOLEMGR(a0)->winList;
@@ -26685,13 +26685,13 @@ void TextWin_remove_00060ED0(int *a0, int a1) {
     } while (node != 0);
 }
 
-/* TextWin_link_00060F44: circular doubly-linked-list insert. splat's jr-ra
+/* ConsoleMgr_linkWin: circular doubly-linked-list insert. splat's jr-ra
  * heuristic mis-split the head==0 early-return tail into 00060F64; both were
  * mislabeled caps (head "leaf-branch-past-end", tail "caller-set $v0" — but $v0
  * is arg0->0x30 set in the head, not caller-set). Merged: empty list -> a1
  * points to itself; else splice a1 before head (the 3x arg0->0x30 reloads are
  * forced by the intervening stores). */
-void TextWin_link_00060F44(int *a0, int *a1) {
+void ConsoleMgr_linkWin(int *a0, int *a1) {
     int *v0 = (int *)CONSOLEMGR(a0)->winList;
     if (v0 == 0) {
         TEXTWIN(a1)->prev = TEXTWIN(a1);
@@ -26706,7 +26706,7 @@ void TextWin_link_00060F44(int *a0, int *a1) {
     }
 }
 
-/* TextWin_unlink_00060F90: doubly-linked-list unlink of node a1, with head/tail
+/* ConsoleMgr_unlinkWin: doubly-linked-list unlink of node a1, with head/tail
  * (a0->0x30 / a0->0x2C) fixups. next=a1->0x3C, prev=a1->0x38; if next!=prev,
  * prev->0x3C=next; (a1->0x3C)->0x38 = a1->0x38; if a1==a0->0x30, a0->0x30=prev;
  * a0->0x2C=prev. Empty-list edge (next==prev && a1==prev): a0->0x30=a0->0x2C=0.
@@ -26714,7 +26714,7 @@ void TextWin_link_00060F44(int *a0, int *a1) {
  * a0[12]=0 BEFORE cur=0 (not after) flips the base/cur register roles to match
  * (mine had an extra `or a2,a0,zero` move). The prior "branch-likely-reorg cap"
  * comment was a misdiagnosis — it was a 2-statement-order regalloc lever. */
-void TextWin_unlink_00060F90(int *a0, int *a1) {
+void ConsoleMgr_unlinkWin(int *a0, int *a1) {
     int *next = (int *)TEXTWIN(a1)->prev; /* the local names predate the struct: "next" is the ring's prev link */
     int *prev = (int *)TEXTWIN(a1)->next;
     int cur;

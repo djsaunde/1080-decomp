@@ -1,6 +1,6 @@
-nonmatching BasePolyShape_func_00052674, 0x5C
+nonmatching BasePolyShape_initGeomGlobals_00052674, 0x5C
 
-glabel BasePolyShape_func_00052674
+glabel BasePolyShape_initGeomGlobals_00052674
     /* E3774C 00052674 3C020000 */  .word 0x3C020000
     /* E37750 00052678 24420000 */  .word 0x24420000
     /* E37754 0005267C AC400004 */  .word 0xAC400004
@@ -24,4 +24,4 @@ glabel BasePolyShape_func_00052674
     /* E3779C 000526C4 3C010000 */  .word 0x3C010000
     /* E377A0 000526C8 03E00008 */  .word 0x03E00008
     /* E377A4 000526CC AC200000 */  .word 0xAC200000
-endlabel BasePolyShape_func_00052674
+endlabel BasePolyShape_initGeomGlobals_00052674

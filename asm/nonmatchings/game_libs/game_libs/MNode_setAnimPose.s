@@ -1,6 +1,6 @@
-nonmatching MNode_vslot9_00039960, 0x28
+nonmatching MNode_setAnimPose, 0x28
 
-glabel MNode_vslot9_00039960
+glabel MNode_setAnimPose
     /* E1EA38 00039960 27BDFFE8 */  .word 0x27BDFFE8
     /* E1EA3C 00039964 00803825 */  .word 0x00803825
     /* E1EA40 00039968 AFBF0014 */  .word 0xAFBF0014
@@ -11,4 +11,4 @@ glabel MNode_vslot9_00039960
     /* E1EA54 0003997C 27BD0018 */  .word 0x27BD0018
     /* E1EA58 00039980 03E00008 */  .word 0x03E00008
     /* E1EA5C 00039984 00000000 */  .word 0x00000000
-endlabel MNode_vslot9_00039960
+endlabel MNode_setAnimPose

@@ -4008,8 +4008,8 @@ int *ColourItem_create_000088B4(int *arg0) {
 /* sys_timeInFrames_00033444 split 2026-05-15; INCLUDE_ASM lives in
  * game_libs_post.c next to parent heap_tempFreeDefault_0003341C. */
 
-/* MNode_vslot10_00039988 split 2026-05-15; INCLUDE_ASM/body lives in
- * game_libs_post.c next to parent MNode_vslot9_00039960. */
+/* MNode_getCMtx split 2026-05-15; INCLUDE_ASM/body lives in
+ * game_libs_post.c next to parent MNode_setAnimPose. */
 
 /* sys_getResetType split 2026-05-15; INCLUDE_ASM lives in
  * game_libs_post.c next to parent heap_tempFree. */

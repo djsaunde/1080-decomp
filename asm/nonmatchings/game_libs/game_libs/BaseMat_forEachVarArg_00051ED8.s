@@ -1,6 +1,6 @@
-nonmatching BaseMat_func_00051ED8, 0x84
+nonmatching BaseMat_forEachVarArg_00051ED8, 0x84
 
-glabel BaseMat_func_00051ED8
+glabel BaseMat_forEachVarArg_00051ED8
     /* E36FB0 00051ED8 27BDFFC8 */  .word 0x27BDFFC8
     /* E36FB4 00051EDC 27AF0043 */  .word 0x27AF0043
     /* E36FB8 00051EE0 2401FFFC */  .word 0x2401FFFC
@@ -34,4 +34,4 @@ glabel BaseMat_func_00051ED8
     /* E37028 00051F50 8FB10018 */  .word 0x8FB10018
     /* E3702C 00051F54 03E00008 */  .word 0x03E00008
     /* E37030 00051F58 27BD0038 */  .word 0x27BD0038
-endlabel BaseMat_func_00051ED8
+endlabel BaseMat_forEachVarArg_00051ED8

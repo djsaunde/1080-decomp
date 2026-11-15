@@ -1,6 +1,6 @@
-nonmatching TextWin_unlink_00060F90, 0x4C
+nonmatching ConsoleMgr_unlinkWin, 0x4C
 
-glabel TextWin_unlink_00060F90
+glabel ConsoleMgr_unlinkWin
     /* E46068 00060F90 8CA2003C */  .word 0x8CA2003C
     /* E4606C 00060F94 8CA30038 */  .word 0x8CA30038
     /* E46070 00060F98 54430006 */  .word 0x54430006
@@ -20,4 +20,4 @@ glabel TextWin_unlink_00060F90
     /* E460A8 00060FD0 AC860030 */  .word 0xAC860030
     /* E460AC 00060FD4 03E00008 */  .word 0x03E00008
     /* E460B0 00060FD8 AC86002C */  .word 0xAC86002C
-endlabel TextWin_unlink_00060F90
+endlabel ConsoleMgr_unlinkWin

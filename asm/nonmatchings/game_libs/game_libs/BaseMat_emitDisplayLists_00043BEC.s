@@ -1,6 +1,6 @@
-nonmatching BaseMat_func_00043BEC, 0x140
+nonmatching BaseMat_emitDisplayLists_00043BEC, 0x140
 
-glabel BaseMat_func_00043BEC
+glabel BaseMat_emitDisplayLists_00043BEC
     /* E28CC4 00043BEC 27BDFFE0 */  .word 0x27BDFFE0
     /* E28CC8 00043BF0 AFBF001C */  .word 0xAFBF001C
     /* E28CCC 00043BF4 AFB10018 */  .word 0xAFB10018
@@ -81,4 +81,4 @@ glabel BaseMat_func_00043BEC
     /* E28DF8 00043D20 8FB10018 */  .word 0x8FB10018
     /* E28DFC 00043D24 03E00008 */  .word 0x03E00008
     /* E28E00 00043D28 27BD0020 */  .word 0x27BD0020
-endlabel BaseMat_func_00043BEC
+endlabel BaseMat_emitDisplayLists_00043BEC

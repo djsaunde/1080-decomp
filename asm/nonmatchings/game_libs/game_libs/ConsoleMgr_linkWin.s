@@ -1,6 +1,6 @@
-nonmatching TextWin_link_00060F44, 0x4C
+nonmatching ConsoleMgr_linkWin, 0x4C
 
-glabel TextWin_link_00060F44
+glabel ConsoleMgr_linkWin
     /* E4601C 00060F44 8C820030 */  .word 0x8C820030
     /* E46020 00060F48 54400007 */  .word 0x54400007
     /* E46024 00060F4C ACA20038 */  .word 0xACA20038
@@ -20,5 +20,5 @@ glabel TextWin_link_00060F44
     /* E4605C 00060F84 AD05003C */  .word 0xAD05003C
     /* E46060 00060F88 03E00008 */  .word 0x03E00008
     /* E46064 00060F8C 00000000 */  .word 0x00000000
-endlabel TextWin_link_00060F44
+endlabel ConsoleMgr_linkWin
 

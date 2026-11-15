@@ -13,7 +13,7 @@
  * TextWin_write appends to rows[cur] until maxCols, TextWin_newLine advances cur (rotating
  * the line records once the buffer is full) and keeps top = cur - visRows + 1; the
  * ConsoleMgr_scroll* helpers move top / hScroll. The windows of a ConsoleMgr form a
- * circular doubly-linked list through next / prev (TextWin_link_00060F44). */
+ * circular doubly-linked list through next / prev (ConsoleMgr_linkWin). */
 typedef struct TextWinRow {
     /* 0x0 */ char *text;
     /* 0x4 */ s32 len;
@@ -33,11 +33,11 @@ typedef struct TextWin {
     /* 0x28 */ s32 ch;             /* cell height, 8 */
     /* 0x2C */ s32 x;              /* 0x14 */
     /* 0x30 */ s32 y;              /* 0x28 */
-    /* 0x34 */ s32 muted;          /* TextWin_printf prints only when 0; TextWin_toggleFlag34 flips bit 0 */
+    /* 0x34 */ s32 muted;          /* TextWin_printf prints only when 0; TextWin_toggleMute flips bit 0 */
     /* 0x38 */ struct TextWin *next; /* ConsoleMgr window ring */
     /* 0x3C */ struct TextWin *prev;
     /* 0x40 */ char *title;        /* ctor arg1, drawn in the title bar */
-    /* 0x44 */ s32 owner;          /* ctor: result of a blank-import call; TextWin_remove_00060ED0 matches it */
+    /* 0x44 */ s32 owner;          /* ctor: result of a blank-import call; ConsoleMgr_closeOwnerWins matches it */
     /* 0x48 */ u8 colour[16];      /* 16-byte by-value ctor arg (S_00060584); its first 4 bytes are the RGBA
                                     * passed to the colour call */
 } TextWin;

@@ -1,6 +1,6 @@
-nonmatching TextWin_remove_00060ED0, 0x74
+nonmatching ConsoleMgr_closeOwnerWins, 0x74
 
-glabel TextWin_remove_00060ED0
+glabel ConsoleMgr_closeOwnerWins
     /* E45FA8 00060ED0 27BDFFD8 */  .word 0x27BDFFD8
     /* E45FAC 00060ED4 AFBF0024 */  .word 0xAFBF0024
     /* E45FB0 00060ED8 AFB20020 */  .word 0xAFB20020
@@ -30,4 +30,4 @@ glabel TextWin_remove_00060ED0
     /* E46010 00060F38 8FB20020 */  .word 0x8FB20020
     /* E46014 00060F3C 03E00008 */  .word 0x03E00008
     /* E46018 00060F40 27BD0028 */  .word 0x27BD0028
-endlabel TextWin_remove_00060ED0
+endlabel ConsoleMgr_closeOwnerWins

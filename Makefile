@@ -2332,7 +2332,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_42778_DONOR)
 # 483BC = G_VTX + G_TRI1 packet emitter (488A0 struct form, early return, loop packet in its own h); NCC donor.
 GAMELIBS_483BC_DONOR := build/src/game_libs/game_libs_ncc_483BC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_func_000483BC=$(GAMELIBS_483BC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_emitTriBatch_000483BC=$(GAMELIBS_483BC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_483BC_DONOR)
 # 525F0 = Self::reg(Tgt *): cfront `new Foo(cfg, this)` (out-of-line ctor) + member call on the +0x10 subobject;
 # NCC donor, EXACT (agent-c run 180), symbols renamed (names only).
@@ -3982,10 +3982,10 @@ build/src/match_imports/BaseMat_vslot4_000437C0.c.o: src/match_imports/BaseMat_v
 build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o: src/match_imports/BaseMat_vslot4_000437C0.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/BaseMat_func_00043BEC.c.o: src/match_imports/BaseMat_func_00043BEC.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o: src/match_imports/BaseMat_func_00043BEC.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/GfxLib_hostioParms.c.o: src/match_imports/GfxLib_hostioParms.c src/match_imports/context_game_libs_post0b.h
@@ -4552,12 +4552,12 @@ build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf: build/src/match_
 build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o scripts/match-origins-BaseMat_vslot4_000437C0-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_vslot4_000437C0-nm.ld -e BaseMat_vslot4_000437C0 -o $@ $@.stripped.o
-build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf: build/src/match_imports/BaseMat_func_00043BEC.c.o scripts/match-origins-BaseMat_func_00043BEC.ld
+build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o scripts/match-origins-BaseMat_emitDisplayLists_00043BEC.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_func_00043BEC.ld -e BaseMat_func_00043BEC -o $@ $@.stripped.o
-build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf: build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o scripts/match-origins-BaseMat_func_00043BEC-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_emitDisplayLists_00043BEC.ld -e BaseMat_emitDisplayLists_00043BEC -o $@ $@.stripped.o
+build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf: build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o scripts/match-origins-BaseMat_emitDisplayLists_00043BEC-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_func_00043BEC-nm.ld -e BaseMat_func_00043BEC -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_emitDisplayLists_00043BEC-nm.ld -e BaseMat_emitDisplayLists_00043BEC -o $@ $@.stripped.o
 build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf: build/src/match_imports/GfxLib_hostioParms.c.o scripts/match-origins-GfxLib_hostioParms.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-GfxLib_hostioParms.ld -e GfxLib_hostioParms -o $@ $@.stripped.o
@@ -5024,10 +5024,10 @@ build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_vslot4_000437C0.json $@
 build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json $@
-build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf: build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_func_00043BEC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_func_00043BEC.json $@
-build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_func_00043BEC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_func_00043BEC-nm.json $@
+build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json $@
+build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC-nm.json $@
 build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf: build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf scripts/match-bindings-GfxLib_hostioParms.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-GfxLib_hostioParms.json $@
 build/non_matching/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/GfxLib_hostioParms.c.o.linked.elf scripts/match-bindings-GfxLib_hostioParms-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5402,10 +5402,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_v
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_vslot4_000437C0.c scripts/match-bindings-BaseMat_vslot4_000437C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_vslot4_000437C0=build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_vslot4_000437C0.c scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_func_00043BEC=build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_func_00043BEC.c scripts/match-bindings-BaseMat_func_00043BEC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_func_00043BEC=build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_func_00043BEC.c scripts/match-bindings-BaseMat_func_00043BEC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_emitDisplayLists_00043BEC=build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_emitDisplayLists_00043BEC=build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxLib_hostioParms=build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/GfxLib_hostioParms.c scripts/match-bindings-GfxLib_hostioParms.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxLib_hostioParms=build/non_matching/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf
@@ -5808,10 +5808,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_vslot4
 build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf
-build/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/BaseMat_func_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
+build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf
 build/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/GfxLib_hostioParms.c.o.linked.elf.bound.elf

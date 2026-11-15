@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for PolyShape_func_000483BC: G_VTX + per-triple G_TRI1 packets (488A0 sibling).
+/* IDO 7.1 NCC (C++) donor for PolyShape_emitTriBatch_000483BC: G_VTX + per-triple G_TRI1 packets (488A0 sibling).
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 /* (agent-c run 134) 483BC = emit a G_VTX packet for the object's nv vertices
  * (0x04 | nv<<10 | nv*16-1, address from the context's vertex table + vbase),
@@ -50,7 +50,7 @@ typedef struct { Ctx488A0 *ctx; int nv; int nline; int vbase; int pad; short ln[
 extern "C" {
 extern int gl_func_00000000(...);
 }
-extern "C" void PolyShape_func_000483BC(Obj488A0 *obj) {
+extern "C" void PolyShape_emitTriBatch_000483BC(Obj488A0 *obj) {
     Ctx488A0 *c2; Gfx488A0 *g; int i; Ctx488A0 *ctx; int n;
     if (obj->nv == 0) return;
     {

@@ -11,7 +11,7 @@
  * MNode (0xB4, "<MNode>", MNode_ctor 0x3E0F0 / MNode_def 0x37AF0): a matrix node. "Mtx" is the local
  * matrix, "CMtx" the combined (world) matrix that MNode_updateChildren (0x38DC0) builds from parent and local
  * (row 3 = world position; docs/1080_CAMERA.md calls it world, include/game/camera.h CamMNode
- * is the same layout). Vtable slot 9 (MNode_vslot9_00039960) builds Mtx from an
+ * is the same layout). Vtable slot 9 (MNode_setAnimPose) builds Mtx from an
  * Animator's dst pose (Animator +0xD0), slot 10 returns &cmtx. MNode_initMatrices sets
  * Node.flags 0x200 and doFlags 0x10. */
 typedef struct MNode {
@@ -23,7 +23,7 @@ typedef struct MNode {
 } MNode;
 
 /* QNode (MNode + two VQS poses, "QNode"): "VQS" (+0xB4) is the local translation / scale /
- * quaternion in the AnimPose layout (QNode_vslot9_00041008 copies an Animator's dst pose into
+ * quaternion in the AnimPose layout (QNode_setAnimPose copies an Animator's dst pose into
  * it), "CVQS" (+0xDC) the combined one. QNode_translate adds to vqs.trans. DNode and the
  * physics nodes derive from it. */
 typedef struct QNode {

@@ -1,6 +1,6 @@
-nonmatching PolyShape_func_000483BC, 0x154
+nonmatching PolyShape_emitTriBatch_000483BC, 0x154
 
-glabel PolyShape_func_000483BC
+glabel PolyShape_emitTriBatch_000483BC
     /* E2D494 000483BC 27BDFFD8 */  .word 0x27BDFFD8
     /* E2D498 000483C0 AFBF001C */  .word 0xAFBF001C
     /* E2D49C 000483C4 AFB00018 */  .word 0xAFB00018
@@ -86,4 +86,4 @@ glabel PolyShape_func_000483BC
     /* E2D5DC 00048504 27BD0028 */  .word 0x27BD0028
     /* E2D5E0 00048508 03E00008 */  .word 0x03E00008
     /* E2D5E4 0004850C 00000000 */  .word 0x00000000
-endlabel PolyShape_func_000483BC
+endlabel PolyShape_emitTriBatch_000483BC

@@ -1,6 +1,6 @@
-nonmatching QNode_vslot9_00041008, 0xA8
+nonmatching QNode_setAnimPose, 0xA8
 
-glabel QNode_vslot9_00041008
+glabel QNode_setAnimPose
     /* E260DC 00041004 8CAF00D0 */  .word 0x8CAF00D0
     /* E260E0 00041008 27BDFFD0 */  .word 0x27BDFFD0
     /* E260E4 0004100C 27A20014 */  .word 0x27A20014
@@ -43,4 +43,4 @@ glabel QNode_vslot9_00041008
     /* E26178 000410A0 27BD0030 */  .word 0x27BD0030
     /* E2617C 000410A4 03E00008 */  .word 0x03E00008
     /* E26180 000410A8 E48A00D8 */  .word 0xE48A00D8
-endlabel QNode_vslot9_00041008
+endlabel QNode_setAnimPose

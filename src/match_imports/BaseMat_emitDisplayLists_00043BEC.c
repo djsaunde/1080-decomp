@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
-void BaseMat_func_00043BEC(GL43BECObject *arg0, GL470E4Object *arg1) {
+void BaseMat_emitDisplayLists_00043BEC(GL43BECObject *arg0, GL470E4Object *arg1) {
     void *temp_a0;
     s32 temp_a0_2;
     s32 temp_a2;

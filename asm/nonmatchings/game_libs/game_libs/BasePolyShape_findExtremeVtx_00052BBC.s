@@ -1,6 +1,6 @@
-nonmatching BasePolyShape_func_00052BBC, 0x118
+nonmatching BasePolyShape_findExtremeVtx_00052BBC, 0x118
 
-glabel BasePolyShape_func_00052BBC
+glabel BasePolyShape_findExtremeVtx_00052BBC
     /* E37C94 00052BBC 27BDFFE0 */  .word 0x27BDFFE0
     /* E37C98 00052BC0 AFB00004 */  .word 0xAFB00004
     /* E37C9C 00052BC4 240E7530 */  .word 0x240E7530
@@ -71,4 +71,4 @@ glabel BasePolyShape_func_00052BBC
     /* E37DA0 00052CC8 27BD0020 */  .word 0x27BD0020
     /* E37DA4 00052CCC 03E00008 */  .word 0x03E00008
     /* E37DA8 00052CD0 00601025 */  .word 0x00601025
-endlabel BasePolyShape_func_00052BBC
+endlabel BasePolyShape_findExtremeVtx_00052BBC

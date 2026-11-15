@@ -1,6 +1,6 @@
-nonmatching BasePolyShape_func_000510F0, 0x2DC
+nonmatching BasePolyShape_emitTriPosUv_000510F0, 0x2DC
 
-glabel BasePolyShape_func_000510F0
+glabel BasePolyShape_emitTriPosUv_000510F0
     /* E361C8 000510F0 27BDFF28 */  .word 0x27BDFF28
     /* E361CC 000510F4 AFBF0074 */  .word 0xAFBF0074
     /* E361D0 000510F8 AFB00070 */  .word 0xAFB00070
@@ -184,4 +184,4 @@ glabel BasePolyShape_func_000510F0
     /* E36498 000513C0 8FB00070 */  .word 0x8FB00070
     /* E3649C 000513C4 03E00008 */  .word 0x03E00008
     /* E364A0 000513C8 27BD00D8 */  .word 0x27BD00D8
-endlabel BasePolyShape_func_000510F0
+endlabel BasePolyShape_emitTriPosUv_000510F0
