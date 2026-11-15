@@ -70,8 +70,8 @@
  * the remaining slot order, kit CDXCIX). */
 extern "C" void *game_uso_func_055750(unsigned);
 template <class T> inline const T &KR1(const T &r) { const T *p = &r; if (0) { p = 0; } return *p; } /* kept const-ref identity with a dead block */
-/* agent-c run 423 (kit DVII): the same dead-block identity written with parameters only. Its pointer is a pooled
- * edg VREG, so it adds no frame word (KR1's named `p` gets its own word at every expansion). */
+/* run 425: the same dead-block identity written with parameters only (kit DII): its pointer is a pooled word,
+ * not a named one; used at the sites below that the target frame has no named word for */
 template <class T> inline const T *KP(const T *p) { if (0) { p = 0; } return p; }
 template <class T> inline const T &KR2(const T &r) { return *KP(&r); }
 struct Vec3 {
@@ -80,10 +80,11 @@ struct Vec3 {
     Vec3() {}
     void set(float a, float b, float c) { x = a; y = b; z = c; }
     Vec3(float a, float b, float c) { set(a, b, c); }
-    /* agent-h run 422 (kit DVI, scratch h422/46): kept float / int dummies that hoist the x product into its own
-     * def / use block, so the else-arm product slots and dot take the target's FP registers */
-    Vec3(float a, float d1, float d2, float b, float c, int, int, int, int, int, int, int, int, int, int, int, int, int) { d1 = d1; d2 = d2; set(a, b, c); }
-    Vec3(float a, float b, float c, float d, int) { d = d; set(a, b, c); }
+    /* agent-h run 425: mvf's product ctor, member stores (no set() call, so set's float parameters take no pool
+     * words); the kept int splits float slot 3 in the flag arm (kit DVI section 6); the three kept dead floats
+     * grow the float pool by one word in that statement (the target's flag-arm pool word), which puts e .. the
+     * += objects at the target's offsets */
+    Vec3(float a, float b, float c, float d0, float d1, float d2, int d) { x = a; y = b; z = c; d0 = d0; d1 = d1; d2 = d2; d = d; }
     Vec3 &operator=(Vec3 v) { x = v.x; y = v.y; z = v.z; return *this; }
     Vec3 &operator+=(const Vec3 &v) { x += v.x; y += v.y; z += v.z; return *this; }
     Vec3 &operator*=(float s) { x = x * s; y = y * s; z = z * s; return *this; }
@@ -98,18 +99,14 @@ struct XZ : Vec3 {
     XZ(float a, float c) : Vec3(a, 0.0f, c) {}
     /* run 415: XZ's own copy of Vec3::operator* (only `e * dot` uses it; the dir products are byte-identical
      * either way): the else-arm product's float temps leave the Vec3 operator's words, 97.458 -> 97.472 */
-    Vec3 operator*(float s) const { return KR1(Vec3(x * s, y * s, z * s)); }
-    /* agent-h run 422: e * dot and the first flag-arm product through the hoisting ctors above. mvf alone grew the
-     * frame 528 -> 536 (its fifth float slot); agent-c run 423: mvf and its `+=` operand through KR2 instead of KR1
-     * give the two named words back (frame 528, pool a2 at sp+372), 98.508 -> 98.550 */
-    Vec3 mv(float s) const { return KR1(Vec3(x * s, x, x, y * s, z * s, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-    Vec3 mvf(float s) const { return KR2(Vec3(x * s, y * s, z * s, x, 0)); }
+    Vec3 operator*(float s) const { return KR2(Vec3(x * s, y * s, z * s)); }
+    Vec3 mvf(float s) const { return KR2(Vec3(x * s, y * s, z * s, x, x, x, (int)this)); } /* run 425: first flag-arm dir * (...) */
     /* agent-h run 414: code-free block splits inside the plain-return (subp1 / subp2 / perp) chain temps' ctor:
      * their `this` address LRs grow from 7 to 11 blocks, uopt priority 3/3 = 1.0 -> 3/4 = 0.75 */
     XZ(float a, float c, int) : Vec3(a, 0.0f, c) { if (1) {} if (1) {} if (1) {} if (1) {} }
 };
-inline XZ operator-(const Vec3 &a, const Vec3 &b) { return KR1(XZ(a.x - b.x, a.z - b.z)); }
-inline XZ sub1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR1(XZ(a.x - b.x, a.z - b.z)); }
+inline XZ operator-(const Vec3 &a, const Vec3 &b) { return KR2(XZ(a.x - b.x, a.z - b.z)); }
+inline XZ sub1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return KR2(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ sub2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return KR1(XZ(a.x - b.x, a.z - b.z)); }
 inline XZ subp1(int z0, const Vec3 &a, const Vec3 &b) { z0 = z0; return XZ(a.x - b.x, a.z - b.z, 0); }
 inline XZ subp2(int z0, int z1, const Vec3 &a, const Vec3 &b) { z0 = z0; z1 = z1; return XZ(a.x - b.x, a.z - b.z, 0); }
@@ -126,14 +123,15 @@ void game_uso_func_071028(Vec3 *v);
 template <class T> inline T *K3(T *p) { p = p; return p; } /* kept identity: zero code */
 template <class T> inline T *K1(T *p) { if (0) { p = 0; } return p; } /* kept identity with a dead block */
 inline float dot2(const Vec3 &u, const Vec3 &v) { return u.x * v.x + u.z * v.z; }
+inline float hdot(const Vec3 &h, const Vec3 &e) { return e.x * h.x + e.z * h.z; } /* run 425: e first (load order) */
 extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         game_uso_func_071028(&dir);
         float lenf = dot2(dir, sub1((int)a, XZ(s->w->pos), K3(a)->pos)); /* run 418: d2 a temporary, lenf M-100 */
         float dot = lenf; /* run 415: one named dot read by both operands, 97.289 -> 97.458, frame 528 */
-        K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
-        s->p84 = s->p90;
+        /* run 425: chained (kit CDXCIX): the outer operator=(Vec3) parameter is the 2nd struct pool word (M-244, v0) */
+        s->p84 = K3(s)->p90 = (const Vec3 &)XZ((int)a, (int)a, a->pos);
         s->p84 += KR2(dir.mvf(dot + (s->w->speed * s->kDC) / 2));
         s->p90 += dir * (dot - (s->w->speed * s->kDC) / 2);
         s->phase = 0;
@@ -149,15 +147,13 @@ extern "C" XZ game_uso_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
             game_uso_func_071028(&e);
             XZ side = perp(e);
             s->p84 = (const Vec3 &)XZ((int)a, (int)a, (int)a, a->pos);
-            const Vec3 &h = subp2((int)a, (int)a, s->p90, a->pos);
-            float dot = h.x * e.x + e.z * h.z; /* run 422: the h.e partial in a uopt register (target f12, no ring pop) */
-            dot += K3(s)->w->speed * K3(s)->kDC;
-            K1(s)->p84 += e.mv(dot);
+            /* run 425: h is a temporary of the += statement (the target's += operand temp M-408 sits above h's
+             * M-420, and h's subtraction takes struct pool word 1, so e * dot returns through word 2 = M-244) */
+            s->p84 += e * (hdot(subp2((int)a, (int)a, s->p90, a->pos), e) + s->w->speed * s->kDC); /* frame 528 */
             side *= (250.0f * b->width) * s->kE0; /* the target muls 250 * width first, then kE0 (run 422: as the left operand) */
             s->phase++; /* agent-h run 361: the target stores phase twice (phase + 1, then & 3), 91.182 -> 91.288 */
-            /* agent-c run 423: the switch reads the stored phase back through a kept pointer identity, so the masked
-             * value is no uopt live range (v0) but a ugen temp (t8 / t9, as in the target), 98.550 -> 98.719 */
-            switch (*K3(&(s->phase &= 3))) {
+            s->phase &= 3; /* run 425: a statement of its own, then switch on the field: the masked value stays a */
+            switch (s->phase) { /* ugen temp (target t8) instead of a uopt LR (v0), and the return copy recolours */
             case 0:
                 side *= 0.0f;
                 break;
