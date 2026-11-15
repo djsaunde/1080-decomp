@@ -7,18 +7,7 @@
  * gl_func_00000000 runtime-patch placeholders; constants as literals:
  * PFS_ERR_NEW_PACK=2 (this build), PFS_ERR_INCONSISTENT=3, OS_WRITE=1,
  * DIR_STATUS_EMPTY=0, PFS_CORRUPTED=2. */
-typedef unsigned char u8;
-typedef signed char s8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef int s32;
-
-typedef struct {
-    int status; void *queue; int channel;
-    u8 id[32]; u8 label[32];
-    int version; int dir_size; int inode_table; int minode_table;
-    int dir_table; int inode_start_page; u8 banks; u8 activebank;
-} OSPfs;
+#include "libultra/os_cont.h" /* OSPfs + base types (were private copies) */
 
 typedef union {
     struct { u8 bank; u8 page; } inode_t;
