@@ -1,10 +1,10 @@
-nonmatching CoolGadget_setQuad_00001800, 0x18
+nonmatching CoolGadget_setLabelPos, 0x18
 
-glabel CoolGadget_setQuad_00001800
+glabel CoolGadget_setLabelPos
     /* DE68D8 00001800 AC850074 */  .word 0xAC850074
     /* DE68DC 00001804 AC86008C */  .word 0xAC86008C
     /* DE68E0 00001808 AC8700A4 */  .word 0xAC8700A4
     /* DE68E4 0000180C 8FAE0010 */  .word 0x8FAE0010
     /* DE68E8 00001810 03E00008 */  .word 0x03E00008
     /* DE68EC 00001814 AC8E00BC */  .word 0xAC8E00BC
-endlabel CoolGadget_setQuad_00001800
+endlabel CoolGadget_setLabelPos

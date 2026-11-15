@@ -1,6 +1,6 @@
-nonmatching gadget_slideStep_000144F4, 0xA4
+nonmatching PointsPopup_slideStep, 0xA4
 
-glabel gadget_slideStep_000144F4
+glabel PointsPopup_slideStep
     /* DE4F60 000144F4 3C014180 */  lui        $at, (0x41800000 >> 16)
     /* DE4F64 000144F8 44812000 */  mtc1       $at, $f4
     /* DE4F68 000144FC C48000A8 */  lwc1       $f0, 0xA8($a0)
@@ -45,4 +45,4 @@ glabel gadget_slideStep_000144F4
   .L00014590:
     /* DE4FFC 00014590 03E00008 */  jr         $ra
     /* DE5000 00014594 00601025 */   or        $v0, $v1, $zero
-endlabel gadget_slideStep_000144F4
+endlabel PointsPopup_slideStep

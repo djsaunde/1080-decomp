@@ -1597,7 +1597,7 @@ typedef struct {
 extern f64 D_00000930;
 extern s32 D_000081C0[];
 void SnowBoarder_procColl(char *arg0);
-void func_0000CACC(char *a0);
+void SnowBoarder_toggleNudge(char *a0);
 extern void bu_cae8_gl38108(void *, int, int);
 extern void bu_cae8_e124(BootupState *);
 extern void bu_cae8_07f6c0(void *, int);

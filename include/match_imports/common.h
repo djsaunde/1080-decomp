@@ -43,7 +43,7 @@ typedef struct GlInput675A4 {
 
 /* Shared display-slot prefix evidenced by TrickPointsGadget_reset_00003298 (reset),
  * PointsGadget_update_00003430 (update), PointsGadget_display_000038F4 (dispatch), and allocators
- * PointsGadget_allocSlot_00003B1C/00003C0C/00003DB8. TimeGadgetParms_setPosF_000144B4 initializes +44/+5C
+ * PointsGadget_allocSlot_00003B1C/00003C0C/00003DB8. PointsPopup_setPosScale initializes +44/+5C
  * and +88/+8C. This prefix does not establish the full allocation size. */
 typedef struct {
     char pad_00[0x28];

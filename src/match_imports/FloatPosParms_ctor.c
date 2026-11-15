@@ -1,6 +1,6 @@
 /* Native original-compiler source port from src/bootup_uso/bootup_uso_tail4.c. Target bytes unchanged. */
 #include "context_bootup_uso_tail4.h"
-char *TimeGadgetParms_ctor_0001438C(char *arg0) {
+char *FloatPosParms_ctor(char *arg0) {
     Val13D40 x;
     Val13D40 y;
     char pad[12];

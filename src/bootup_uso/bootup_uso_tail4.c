@@ -10,7 +10,7 @@ typedef struct { int a, b, c, d; } Quad4;
 
 /* Fader_ctor - verified structural decode (0x24C, 147 insns,
  * get-or-create constructor + work-buffer allocation). bootup_uso
- * constructor family (cf. item_createBal / TimeGadgetParms_ctor_0001438C).
+ * constructor family (cf. item_createBal / FloatPosParms_ctor).
  *   void *Fader_ctor(void *a0, int a1) {
  *       o = a0 ? a0 : func_00000000(0x78); if (!o) return 0;
  *       s = func_00000000(0x2C);
@@ -317,7 +317,7 @@ extern int sTag_yps_CAC4;
 extern int sTag_lbx_CAC8;
 extern int sTimeGadgetParmsTags_CACC[];  /* Data 0xCACC: the "lby" / "l2x" / "l2y" tags (the tail of the
                                          * table at 0xCAC0); [3] = Data 0xCAD8, the float
-                                         * "TimeGadget::Parms" name (TimeGadgetParms_ctor_0001438C) */
+                                         * "TimeGadget::Parms" name (FloatPosParms_ctor) */
 extern char D_0000C764;
 char *TimeGadget_ctor_00013D40(char *self) {
     Val13D40 u1;
@@ -565,9 +565,9 @@ void BestGadget_display_00014228(char *s0) {
     func_00000000(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
 
-/* TimeGadgetParms_ctor_0001438C - verified structural decode (0x128, 74 insns,
+/* FloatPosParms_ctor - verified structural decode (0x128, 74 insns,
  * get-or-create constructor + 2 child sub-objects).
- *   void *TimeGadgetParms_ctor_0001438C(void *a0) {
+ *   void *FloatPosParms_ctor(void *a0) {
  *       o = a0;
  *       if (o == 0) { o = alloc(0x38); if (!o) return 0; }
  *       s1 = alloc(8);
@@ -644,7 +644,7 @@ void BestGadget_display_00014228(char *s0) {
 extern int sFloatParmsTags_CAE8[];  /* Data 0xCAE8: [1] "xps", [2] "yps" (the parm tags after this
                                      * Parms' name at Data 0xCAD8) */
 extern char D_0000C83C;
-char *TimeGadgetParms_ctor_0001438C(char *arg0) {
+char *FloatPosParms_ctor(char *arg0) {
     char *o;
     char *s;
     char *c;
@@ -685,24 +685,24 @@ end:
     return o;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/bootup_uso", TimeGadgetParms_ctor_0001438C);
+INCLUDE_ASM("asm/nonmatchings/bootup_uso", FloatPosParms_ctor);
 #endif
 
-void TimeGadgetParms_setPosF_000144B4(int *a0, int a1, int a2, float a3, float arg5) {
+void PointsPopup_setPosScale(int *a0, int a1, int a2, float a3, float arg5) {
     POPUP(a0)->parms.xps.value = (float)a1;
     POPUP(a0)->parms.yps.value = (float)a2;
     POPUP(a0)->scaleX = a3;
     POPUP(a0)->scaleY = arg5;
 }
 
-void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
+void PointsPopup_setScale(void *a0, float a1, float a2) {
     POPUP(a0)->scaleX = a1;
     POPUP(a0)->scaleY = a2;
 }
 
-/* gadget_slideStep_000144F4 - verified structural decode (leaf, 43 insns, FP
+/* PointsPopup_slideStep - verified structural decode (leaf, 43 insns, FP
  * physics integrator). Returns s32 (0 = running, 1 = clamped).
- *   s32 gadget_slideStep_000144F4(void *a0, s32 a1) {
+ *   s32 PointsPopup_slideStep(void *a0, s32 a1) {
  *       s32 r = 0;
  *       f32 spd = a0->0xA8;                  // rate/accumulator
  *       if (spd < 16.0f)                     // ramp-up gate
@@ -731,7 +731,7 @@ void TimeGadget_setPos_000144E0(void *a0, float a1, float a2) {
  * condition (an assignment-expression: a separate statement schedules the
  * lwc1 before the 16.0f mtc1), x / (f32)4 keeps the div.s, and r = 1 is the
  * inner (6 < spd) branch only; both stores follow it unconditionally. */
-int gadget_slideStep_000144F4(char *a0, int a1) {
+int PointsPopup_slideStep(char *a0, int a1) {
     int r = 0;
     float spd;
     float pos;

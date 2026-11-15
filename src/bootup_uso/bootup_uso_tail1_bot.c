@@ -50,7 +50,7 @@ void QuitProcess_onQuit(char *a0) {
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,
  * get-or-create constructor + normalized-colour init). bootup_uso
- * constructor family (cf. item_createBal / TimeGadgetParms_ctor_0001438C).
+ * constructor family (cf. item_createBal / FloatPosParms_ctor).
  *   void *PauseMenu_create(void *a0) {
  *       o = a0 ? a0 : func_00000000(0x304);
  *       if (!o) return 0;

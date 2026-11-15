@@ -836,14 +836,14 @@ void CoolGadget_setValue(int *a0, int a1) {
 }
 
 /* 3-insn 2-field setter: label1 / label2 (the ctor passes &label1Sprite / &label2Sprite). */
-void CoolGadget_setPair_000017F4(int *a0, int a1, int a2) {
+void CoolGadget_setLabels(int *a0, int a1, int a2) {
     COOLG(a0)->label1 = a1;
     COOLG(a0)->label2 = a2;
 }
 
 /* 6-insn 4-arg setter: the label offsets lbx / lby / l2x / l2y (a4 from the caller-arg-save
  * sp+0x10); the ctor passes -73, -2, -50, -1. */
-void CoolGadget_setQuad_00001800(int *a0, int a1, int a2, int a3, int a4) {
+void CoolGadget_setLabelPos(int *a0, int a1, int a2, int a3, int a4) {
     COOLG(a0)->parms.lbx.value = a1;
     COOLG(a0)->parms.lby.value = a2;
     COOLG(a0)->parms.l2x.value = a3;

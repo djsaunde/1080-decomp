@@ -134,7 +134,7 @@ typedef char CountDownGadget_size_check[sizeof(CountDownGadget) == 0xD4 ? 1 : -1
 
 #define COUNTDOWN(p) ((CountDownGadget *)(p))
 
-/* A float "TimeGadget::Parms" (0x38, Data 0xCAD8; ctor TimeGadgetParms_ctor_0001438C): two float
+/* A float "TimeGadget::Parms" (0x38, Data 0xCAD8; ctor FloatPosParms_ctor): two float
  * parms xps / yps (tags "xps" / "yps" = sFloatParmsTags_CAE8[1] / [2], default 30). PointsPopup's
  * screen position (agent-h run 509). */
 typedef struct FloatPosParms {
@@ -153,8 +153,8 @@ typedef char FloatPosParms_size_check[sizeof(FloatPosParms) == 0x38 ? 1 : -1];
  * runs it: state 5.. counts timer down while moving pos by vel, then flies it to (100, 40) or
  * (200, 20) in 10.625 steps. Names are from those bodies (agent-h run 496). The position is the
  * float Parms at +0x2C (parms.xps.value = x at 0x44, parms.yps.value = y at 0x5C): the bootup
- * helpers TimeGadgetParms_setPosF_000144B4 (x, y, scaleX, scaleY), TimeGadget_setPos_000144E0
- * (scale), gadget_slideStep_000144F4 (y += velY up to a limit) and gadget_decodeStringB4_00014598
+ * helpers PointsPopup_setPosScale (x, y, scaleX, scaleY), PointsPopup_setScale
+ * (scale), PointsPopup_slideStep (y += velY up to a limit) and gadget_decodeStringB4_00014598
  * (text) work on it (callers: uso-imports.py; agent-h run 509). */
 typedef struct PointsPopup {
     /* 0x00 */ Node node;          /* node.name = "PointsGadget" */

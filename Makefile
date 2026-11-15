@@ -3762,10 +3762,10 @@ build/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match
 build/non_matching/src/match_imports/Fader_ctor.c.o: src/match_imports/Fader_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/src/match_imports/FloatPosParms_ctor.c.o: src/match_imports/FloatPosParms_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c src/match_imports/context_bootup_uso_tail4.h
+build/non_matching/src/match_imports/FloatPosParms_ctor.c.o: src/match_imports/FloatPosParms_ctor.c src/match_imports/context_bootup_uso_tail4.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/CountDownGadget_setTime.c.o: src/match_imports/CountDownGadget_setTime.c src/match_imports/context_game_libs.h
@@ -4336,12 +4336,12 @@ build/src/match_imports/Fader_ctor.c.o.linked.elf: build/src/match_imports/Fader
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf: build/non_matching/src/match_imports/Fader_ctor.c.o scripts/match-origins-Fader_ctor-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Fader_ctor-nm.ld -e Fader_ctor -o $@ $@.stripped.o
-build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o scripts/match-origins-TimeGadgetParms_ctor_0001438C.ld
+build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf: build/src/match_imports/FloatPosParms_ctor.c.o scripts/match-origins-FloatPosParms_ctor.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadgetParms_ctor_0001438C.ld -e TimeGadgetParms_ctor_0001438C -o $@ $@.stripped.o
-build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o scripts/match-origins-TimeGadgetParms_ctor_0001438C-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-FloatPosParms_ctor.ld -e FloatPosParms_ctor -o $@ $@.stripped.o
+build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf: build/non_matching/src/match_imports/FloatPosParms_ctor.c.o scripts/match-origins-FloatPosParms_ctor-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-TimeGadgetParms_ctor_0001438C-nm.ld -e TimeGadgetParms_ctor_0001438C -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-FloatPosParms_ctor-nm.ld -e FloatPosParms_ctor -o $@ $@.stripped.o
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf: build/src/match_imports/CountDownGadget_setTime.c.o scripts/match-origins-CountDownGadget_setTime.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-CountDownGadget_setTime.ld -e CountDownGadget_setTime -o $@ $@.stripped.o
@@ -4880,10 +4880,10 @@ build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/src/match_imp
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor.json $@
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Fader_ctor-nm.json $@
-build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json $@
-build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json $@
+build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf: build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf scripts/match-bindings-FloatPosParms_ctor.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-FloatPosParms_ctor.json $@
+build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf scripts/match-bindings-FloatPosParms_ctor-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-FloatPosParms_ctor-nm.json $@
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-CountDownGadget_setTime.json $@
 build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf scripts/match-bindings-CountDownGadget_setTime-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5258,10 +5258,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ct
 build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += Fader_ctor=build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/Fader_ctor.c scripts/match-bindings-Fader_ctor-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadgetParms_ctor_0001438C=build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
-build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c scripts/match-bindings-TimeGadgetParms_ctor_0001438C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += TimeGadgetParms_ctor_0001438C=build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/TimeGadgetParms_ctor_0001438C.c scripts/match-bindings-TimeGadgetParms_ctor_0001438C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += FloatPosParms_ctor=build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf
+build/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/FloatPosParms_ctor.c scripts/match-bindings-FloatPosParms_ctor.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: private REPLACE_FUNC_BODY += FloatPosParms_ctor=build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: src/match_imports/FloatPosParms_ctor.c scripts/match-bindings-FloatPosParms_ctor-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs.c.o: src/match_imports/CountDownGadget_setTime.c scripts/match-bindings-CountDownGadget_setTime.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CountDownGadget_setTime=build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
@@ -5663,10 +5663,10 @@ build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/Fader_ctor.c.
 build/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/Fader_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
-build/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/TimeGadgetParms_ctor_0001438C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/bootup_uso/bootup_uso_tail4.c.o: build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf
+build/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/bootup_uso/bootup_uso_tail4.c.o: build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/FloatPosParms_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs.c.o: build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf
 build/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs.c.o: build/non_matching/src/match_imports/CountDownGadget_setTime.c.o.linked.elf.bound.elf

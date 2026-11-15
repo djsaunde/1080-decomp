@@ -1,6 +1,6 @@
-nonmatching TimeGadgetParms_ctor_0001438C, 0x128
+nonmatching FloatPosParms_ctor, 0x128
 
-glabel TimeGadgetParms_ctor_0001438C
+glabel FloatPosParms_ctor
     /* DE4DF8 0001438C 27BDFFC0 */  addiu      $sp, $sp, -0x40
     /* DE4DFC 00014390 AFB00018 */  sw         $s0, 0x18($sp)
     /* DE4E00 00014394 00808025 */  or         $s0, $a0, $zero
@@ -82,4 +82,4 @@ glabel TimeGadgetParms_ctor_0001438C
     /* DE4F14 000144A8 8FB00018 */  lw         $s0, 0x18($sp)
     /* DE4F18 000144AC 03E00008 */  jr         $ra
     /* DE4F1C 000144B0 27BD0040 */   addiu     $sp, $sp, 0x40
-endlabel TimeGadgetParms_ctor_0001438C
+endlabel FloatPosParms_ctor

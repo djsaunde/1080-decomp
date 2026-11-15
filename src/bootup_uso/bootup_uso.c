@@ -4363,7 +4363,7 @@ void Fog_readParms(char *a0) {
 }
 
 /* FogTmpl_create - verified structural decode (0x1D4, 117 insns).
- * NEAR-SIBLING of TimeGadgetParms_ctor_0001438C / SnowTmpl_create (bootup_uso
+ * NEAR-SIBLING of FloatPosParms_ctor / SnowTmpl_create (bootup_uso
  * get-or-create constructor + child sub-objects family); variant
  * params: object 0x90, init datum D_00007878, child descriptor
  * sStr_Parms_7FC4, child type D_00007540, child->0x10 = 200.0f
@@ -4387,7 +4387,7 @@ void Fog_readParms(char *a0) {
  *       }
  *       ... (further child from D_00007FD0, same family shape)
  *   }
- * Struct-typing reference (same as TimeGadgetParms_ctor_0001438C): o = 0x90-byte
+ * Struct-typing reference (same as FloatPosParms_ctor): o = 0x90-byte
  * object, o->0x28 (40) descriptor (&D_00007878). s = 0x38-byte
  * sub; c = 8-byte aux (c->0x0 = &sStr_Parms_7FC4 descriptor, c->0x4=0);
  * c2 = 0x18-byte child: c2->0xC (12) type ptr (&D_00007540),
@@ -4577,7 +4577,7 @@ void Snower_readParms(char *a0) {
 /* SnowTmpl_create - verified structural decode (0x1C4, 113 insns,
  * guarded singleton constructor). Member of the bootup_uso
  * alloc-cascade-ctor + defensive-dead-check family (cf.
- * item_createBal / TimeGadgetParms_ctor_0001438C / MapProp_ctor).
+ * item_createBal / FloatPosParms_ctor / MapProp_ctor).
  *   void SnowTmpl_create(void *a0) {
  *       g = *(St**)&D_root;
  *       if (g->0x40 != 0) return;                 // already built
@@ -5552,7 +5552,7 @@ void SnowBoarder_procColl(char *arg0) {
     volatile char *r = arg0;
 }
 
-void func_0000CACC(char *a0) {
+void SnowBoarder_toggleNudge(char *a0) {
     SNOWB(a0)->health = 0xF4240;
     SNOWB(a0)->flags = (int)SNOWB(a0)->flags ^ 0x100;
 }
