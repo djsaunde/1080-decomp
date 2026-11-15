@@ -13,7 +13,7 @@
  * the collision pass SnowBoarder_procColl take the same `this`.
  *
  * Only the fields below are typed. Their offsets are proven by the matched
- * bodies of SnowBoarder_func_0000DDCC / _0000DF04 / _0000E014 / _0000E124 and
+ * bodies of SnowBoarder_setDefaultDdms / _0000DF04 / _0000E014 / _0000E124 and
  * (physics: pos / vel / speed / dir / maxSpeed / rival, run 452) _0000B520;
  * everything else is padding. Names stay unkNNN where the meaning is unknown.
  */

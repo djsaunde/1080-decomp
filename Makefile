@@ -158,7 +158,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # call; NCC donors.
 BOOTUP_E740_DONOR := build/src/bootup_uso/bootup_uso_ncc_E740.cpp.o
 BOOTUP_E800_DONOR := build/src/bootup_uso/bootup_uso_ncc_E800.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_func_0000E740=$(BOOTUP_E740_DONOR) SnowBoard_ctor=$(BOOTUP_E800_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += SnowBoarder_grabScreenThumb_0000E740=$(BOOTUP_E740_DONOR) SnowBoard_ctor=$(BOOTUP_E800_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_E740_DONOR) $(BOOTUP_E800_DONOR)
 # B1B4 = sound bank lazy loader + registry add (cfront Bank chain, inline Reg::add); NCC donor.
 BOOTUP_B1B4_DONOR := build/src/bootup_uso/bootup_uso_ncc_B1B4.cpp.o
@@ -2893,14 +2893,14 @@ build/assets/timproc_uso_block5_yay0.bin: YAY0_TEXT_SIZE := 0xE620
 # sits at 0xEC80. All-zero pad words, FORCE for the same skip-path reason.
 # TreeTmpl_create (2026-10-16): exact C body ends at 0x8914; three all-zero file-end
 # alignment pad words to game_isUsoLoaded (0x8914..0x891C). FORCE for the same reason.
-build/src/bootup_uso/bootup_uso.c.o: private SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 RiderCam_update_00004948=0x00000000 boot_readQuadParm_0000F1B4=0x00000000,0x00000000,0x00000000 boot_ItemType_create_0000EE8C=0x00000000 boot_ItemType_create_0000EBE8=0x00000000,0x00000000 SnowBoarder_func_0000E740=0x00000000,0x00000000,0x00000000
+build/src/bootup_uso/bootup_uso.c.o: private SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 RiderCam_update_00004948=0x00000000 boot_readQuadParm_0000F1B4=0x00000000,0x00000000,0x00000000 boot_ItemType_create_0000EE8C=0x00000000 boot_ItemType_create_0000EBE8=0x00000000,0x00000000 SnowBoarder_grabScreenThumb_0000E740=0x00000000,0x00000000,0x00000000
 # Mirror onto the non_matching object so report.json/objdiff score the trailing
 # alignment-nop word (splat-symbol-boundary trailing-delay-nop class).
 # boot_readQuadParm_0000F1B4 likewise: matching build has SUFFIX_BYTES (3 all-zero pad words to
 # the next-fn boundary at 0xF1F0); mirror it so objdiff sizes the symbol 0x3C not
 # 0x30 (was scoring 80%=12/15w on a byte-identical fn). F1B4 is the LAST fn in the
 # file so the pad just extends .text (no shift / TRUNCATE needed on non_matching).
-build/non_matching/src/bootup_uso/bootup_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 RiderCam_update_00004948=0x00000000 boot_ItemType_create_0000EE8C=0x00000000 boot_readQuadParm_0000F1B4=0x00000000,0x00000000,0x00000000 boot_ItemType_create_0000EBE8=0x00000000,0x00000000 SnowBoarder_func_0000E740=0x00000000,0x00000000,0x00000000
+build/non_matching/src/bootup_uso/bootup_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := TreeTmpl_create=0x00000000,0x00000000,0x00000000 RiderCam_update_00004948=0x00000000 boot_ItemType_create_0000EE8C=0x00000000 boot_readQuadParm_0000F1B4=0x00000000,0x00000000,0x00000000 boot_ItemType_create_0000EBE8=0x00000000,0x00000000 SnowBoarder_grabScreenThumb_0000E740=0x00000000,0x00000000,0x00000000
 
 # Collect source files (kernel/, bootup_uso/, game_libs/, gui_uso/ — exclude o1/ reference)
 C_FILES := $(filter-out src/game_libs/game_libs_o1_6EF64.c src/timproc_uso_b1/timproc_uso_b1_o0_5A4.c src/timproc_uso_b1/timproc_uso_b1_o0_65C.c src/timproc_uso_b1/timproc_uso_b1_o0_B0.c src/timproc_uso_b3/timproc_uso_b3_o0_65C.c src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c src/timproc_uso_b3/timproc_uso_b3_o0_B0.c src/game_libs/game_libs_o1_6C8AC.c src/game_libs/game_libs_o1_6AF0C.c src/game_libs/game_libs_o1_6A304.c src/game_libs/game_libs_o1_6A420.c src/game_libs/game_libs_o1_6AF44.c src/game_libs/game_libs_o1_6B880.c src/game_libs/game_libs_o1_6B974.c src/game_libs/game_libs_o1_6BAD4.c src/game_libs/game_libs_o1_6B7A0.c src/game_libs/game_libs_ido53_6C11C.c src/game_libs/game_libs_o1_6FAD4.c src/game_libs/game_libs_o1_71144.c src/game_libs/game_libs_ido53_71708.c src/game_libs/game_libs_ido53_71624.c src/game_libs/game_libs_ido53_71384.c src/game_libs/game_libs_ido53_717C8.c src/game_libs/game_libs_ido53_73904.c src/game_libs/game_libs_ido53_6E224.c src/game_libs/game_libs_ido53_74554.c src/game_libs/game_libs_o1_73824.c src/game_libs/game_libs_o1_73034.c src/game_libs/game_libs_o1_6BF34.c src/game_libs/game_libs_ido53_6C1B8.c src/game_libs/game_libs_ido53_6C2A4.c src/game_libs/game_libs_ido53_6DC0C.c src/game_libs/game_libs_ido53_6DD14.c src/game_libs/game_libs_ido53_6F8A4.c src/game_libs/game_libs_ido53_6B0FC.c src/game_libs/game_libs_ido53_744C4.c src/game_libs/game_libs_ido53_73074.c src/game_libs/game_libs_ido53_669AC.c src/game_libs/game_libs_ido53_601D4.c src/game_libs/game_libs_ido53_6D0F4.c src/game_libs/game_libs_o1_6DA74.c src/game_libs/game_libs_o1_6D554.c src/game_libs/game_libs_ido53_6D6F4.c src/game_libs/game_libs_ido53_6D7CC.c src/game_libs/game_libs_ido53_6CDB4.c src/game_libs/game_libs_o1_6CAD4.c src/game_libs/game_libs_o1_6CB84.c src/game_libs/game_libs_o1_6CC64.c src/game_libs/game_libs_o1_6D270.c src/game_libs/game_libs_ido53_70040.c src/game_libs/game_libs_ido53_730CC.c src/game_libs/game_libs_ido53_7369C.c src/game_libs/game_libs_ido53_70B04.c src/game_libs/game_libs_ido53_70C44.c src/game_libs/game_libs_ido53_73310.c src/game_libs/game_libs_ido53_6F088.c src/game_libs/game_libs_ido53_6F38C.c src/game_libs/game_libs_ido53_6F3BC.c src/game_libs/game_libs_o2_70FCC.c src/game_libs/game_libs_o2_29CCC.c src/arcproc_uso/arcproc_uso_o0_748.c src/arcproc_uso/arcproc_uso_o0_688.c src/arcproc_uso/arcproc_uso_o0_5C8.c src/kernel/kernel_000_ido53_2530.c src/kernel/kernel_018_f_ido53_7564.c src/kernel/kernel_018_d_ido53_70A0.c src/kernel/kernel_018_b_ido53_698C.c src/kernel/kernel_006_o1_5520.c src/kernel/kernel_008_o1_58C0.c src/kernel/kernel_024_o1_9AB0.c src/game_libs/game_libs_o2_2E290.c src/game_libs/game_libs_o2_343F4.c src/game_libs/game_libs_o2_34548.c src/game_libs/game_libs_o1_6FC70.c src/game_libs/game_libs_ido53_6C484.c src/game_libs/game_libs_o1_6CD44.c src/game_libs/game_libs_ido53_6F834.c src/game_libs/game_libs_o1_6F634.c src/game_libs/game_libs_o1_6CC14.c src/game_libs/game_libs_ido53_6F684.c src/game_libs/game_libs_o1_6D964.c src/game_libs/game_libs_o2_44B78.c src/game_libs/game_libs_o2_68990.c src/game_libs/game_libs_o2_2B94.c src/game_libs/game_libs_o2_7344.c src/game_libs/game_libs_o2_3C0C.c src/game_libs/game_libs_o2_3430.c src/game_libs/game_libs_o2_25A8.c src/game_libs/game_libs_o2_273B8.c src/game_libs/game_libs_o2_31334.c src/game_libs/game_libs_o2_52CD4.c src/game_libs/game_libs_o2_51AD8.c src/game_libs/game_libs_o2_396FC.c src/game_libs/game_libs_o2_3AC5C.c src/game_libs/game_libs_o2_40304.c src/game_libs/game_libs_o2_4E424.c src/game_libs/game_libs_o2_61F8C.c src/game_libs/game_libs_o2_38A28.csrc/game_libs/game_libs_o2_4E96C.c src/game_libs/game_libs_o2_2FB74.c src/game_libs/game_libs_o2_26D64.c src/game_libs/game_libs_o2_240A0.c src/game_libs/game_libs_o2_2119C.c src/game_libs/game_libs_o2_2AD1C.c src/game_libs/game_libs_o2_2B09C.c src/game_libs/game_libs_o2_2B5F4.c src/game_libs/game_libs_o2_2C7A4.c src/game_libs/game_libs_o2_2BB7C.c src/game_libs/game_libs_o2_27804.c src/game_libs/game_libs_o2_2A07C.c src/game_libs/game_libs_o2_26214.c src/game_libs/game_libs_o2_25C54.c src/game_libs/game_libs_o2_25320.c src/game_libs/game_libs_o2_26790.c src/game_libs/game_libs_o2_675A4.c src/bootup_uso/bootup_uso_o2_2DA4.c src/timproc_uso_b5/timproc_uso_b5_o2_5FC0.c src/timproc_uso_b5/timproc_uso_b5_4118.c src/timproc_uso_b5/timproc_uso_b5_D884.c src/timproc_uso_b5/timproc_uso_b5_DF14.c src/timproc_uso_b5/timproc_uso_b5_CEB4.c src/titproc_uso/titproc_uso_5DC.c,$(shell find src/kernel src/bootup_uso src/game_libs src/gui_uso src/n64proc_uso src/eddproc_uso src/arcproc_uso src/h2hproc_uso src/titproc_uso src/boarder1_uso src/boarder2_uso src/boarder3_uso src/boarder4_uso src/boarder5_uso src/mgrproc_uso src/game_uso src/timproc_uso_b1 src/timproc_uso_b3 src/timproc_uso_b5 src/map4_data_uso_b2 -name '*.c' -type f 2>/dev/null))
@@ -3065,7 +3065,7 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_71E0_DONOR)
 # 6FA8: closer-of-two compare; named `w` ref + a `const Vec3 &u = *this` inline local set the frame; cfe capped at 79.7%.
 GAMEUSO_6FA8_DONOR := build/src/game_uso/game_uso_ncc_6FA8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_00006FA8=$(GAMEUSO_6FA8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_pickFinishBranch=$(GAMEUSO_6FA8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_6FA8_DONOR)
 # 2CC8: camera position snap (28C0 / BB8C sibling); Ctx read through inline accessors (v0 reloads), POD P3 return, by-value operator=; cfe capped at 190 raw.
 GAMEUSO_2CC8_DONOR := build/src/game_uso/game_uso_ncc_2CC8.cpp.o
@@ -5521,10 +5521,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_3558_DONOR)
 # 7C1C: EXACT (agent-c run 231) via the cfront-style cfe C donor game_uso_7C1C.c (kits CCXL / CCXLI),
 # filtered out of C_FILES and spliced over the placeholder on both paths. The placeholder re-emits the
-# RoData +0xFC float (3000.0f) the donor reads through SnowAI_func_00007C1C_rodata (= 0) + 0xFC.
+# RoData +0xFC float (3000.0f) the donor reads through SnowAI_aimAlongSegment_rodata (= 0) + 0xFC.
 # The NCC donor game_uso_ncc_7C1C_nm.cpp is kept as a reference only.
 GAMEUSO_7C1C_DONOR := build/src/game_uso/game_uso_7C1C.c.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_00007C1C=$(GAMEUSO_7C1C_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_aimAlongSegment=$(GAMEUSO_7C1C_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_7C1C_DONOR)
 # 591C: EXACT (agent-c run 237) via the cfe C donor game_uso_591C.c (the in-unit NM body plus the
 # `v0 * 1` const-first compare and the selector inner joins through `scale`), filtered out of C_FILES
@@ -5534,10 +5534,10 @@ build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: pr
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_591C_DONOR)
 # 8CD8: EXACT MIPSpro 7.2.1 donor (709/709; agent-h run 428 on agent-c run 426's frame body): native 4-entry phase
 # table at RoData +0x100 = in-place %lo (layout-only game_uso_func_00008CD8_lay in the donor);
-# SnowAI_func_00008CD8_rodata pinned to 0. Host body = a placeholder re-emitting the 8 RoData words.
+# SnowAI_aimWeave_rodata pinned to 0. Host body = a placeholder re-emitting the 8 RoData words.
 # Built by the game_uso_mp72_% pattern rule above.
 GAMEUSO_8CD8_DONOR := build/src/game_uso/game_uso_mp72_8CD8.cpp.o
-build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_func_00008CD8=$(GAMEUSO_8CD8_DONOR)
+build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: private REPLACE_FUNC_BODY += SnowAI_aimWeave=$(GAMEUSO_8CD8_DONOR)
 build/src/game_uso/game_uso.c.o build/non_matching/src/game_uso/game_uso.c.o: $(GAMEUSO_8CD8_DONOR)
 build/src/gui_uso/gui_uso.c.o: private REPLACE_FUNC_BODY += gui_drawSpriteIA8Clip_00002BB0=build/src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c.o.linked.elf.bound.elf
 build/src/gui_uso/gui_uso.c.o: src/match_imports/gui_drawSpriteIA8Clip_00002BB0.c scripts/match-bindings-gui_drawSpriteIA8Clip_00002BB0.json scripts/bind-native-relocations.py scripts/replace-function-body.py

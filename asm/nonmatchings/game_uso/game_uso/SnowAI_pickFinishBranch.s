@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00006FA8, 0x1FC
+nonmatching SnowAI_pickFinishBranch, 0x1FC
 
-glabel SnowAI_func_00006FA8
+glabel SnowAI_pickFinishBranch
     /* 006FA8 00006FA8 27BDFF40 */  .word 0x27BDFF40
     /* 006FAC 00006FAC AFBF001C */  .word 0xAFBF001C
     /* 006FB0 00006FB0 AFB00018 */  .word 0xAFB00018
@@ -128,4 +128,4 @@ glabel SnowAI_func_00006FA8
     /* 007198 00007198 8FB00018 */  .word 0x8FB00018
     /* 00719C 0000719C 03E00008 */  .word 0x03E00008
     /* 0071A0 000071A0 27BD00C0 */  .word 0x27BD00C0
-endlabel SnowAI_func_00006FA8
+endlabel SnowAI_pickFinishBranch

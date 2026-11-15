@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for SnowAI_func_00006FA8 (0x1FC / 127 words).
+/* IDO 7.1 NCC (C++) donor for SnowAI_pickFinishBranch (0x1FC / 127 words).
  *
  * Picks the closer of two 0xA374 lookups (handles from D_807FEB60+0x570 /
  * D_807FEB64+0x574) to s0->w->pos: returns 10 if the first is closer,
@@ -37,7 +37,7 @@ extern char game_uso_D_807FEB64;
 float SnowAI_rivalLeadZ(Self *);
 Obj *SnowAI_findNearestMarker_0000A374(Self *, Handle, Vec3 *);
 }
-extern "C" int SnowAI_func_00006FA8(Self *s0) {
+extern "C" int SnowAI_pickFinishBranch(Self *s0) {
     int result = 0;
     if (SnowAI_rivalLeadZ(s0) < 0.0f) {
         Handle h1;

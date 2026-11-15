@@ -3705,7 +3705,7 @@ void SnowAI_update(char *a0) {
  *
  * Following insns (50+): FPU-heavy quaternion/matrix math against
  * (a2->0x18->+0x318) Mat4-like region — same structural fingerprint as
- * SnowAI_func_00007C1C (sp+0x348/0x38C dual-buffer). Likely THIS
+ * SnowAI_aimAlongSegment (sp+0x348/0x38C dual-buffer). Likely THIS
  * function and 6A30/7C1C all build the same per-frame transform output
  * but from different entry contexts (boarder physics, AI, replay?).
  *
@@ -3973,18 +3973,18 @@ void SnowAI_scanNodes(SnowAI *);
 void SnowAI_scanSegments(SnowAI *);
 int SnowAI_updateMarker();
 float SnowAI_rivalLeadZ(int *);
-int SnowAI_func_00007C1C();
-void *SnowAI_func_00008CD8();
+int SnowAI_aimAlongSegment();
+void *SnowAI_aimWeave();
 void SnowAI_restoreRiderParms(char *);
 void SnowAI_scaleRiderMax(char *);
 void SnowAI_scaleRiderParms(char *);
 void SnowAI_enterRecover(void *);
-int SnowAI_func_00009B88();
+int SnowAI_isInSegmentWidth();
 void SnowAI_startNodeScan(SnowAI *);
-int SnowAI_func_0000A0E8(char *, char *, char *);
+int SnowAI_isAboveSegmentFloor(char *, char *, char *);
 void SnowAI_startSegmentScan(SnowAI *);
 void SnowAI_enterFinish(int *);
-int SnowAI_func_00006FA8(int *);
+int SnowAI_pickFinishBranch(int *);
 void SnowAI_applyStickInput();
 #endif
 /* SnowAI_steer: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_591C.c,
@@ -4191,14 +4191,14 @@ void SnowAI_steer(int *a0) {
      * result words -> fresh V276/V264 -> V252 -> transform_out floats. */
     switch (v0 = *(int*)((char*)self + 0x74)) {
     case 0:
-        v0 = SnowAI_func_00007C1C(&stage, self, helper_ptr, hit_parent,
+        v0 = SnowAI_aimAlongSegment(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
-        v0 = (int)SnowAI_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
+        v0 = (int)SnowAI_aimWeave(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
         if (1) {}
@@ -4552,13 +4552,13 @@ tail_common:
     }
 
     if (state_flag & 0x20) {
-        if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_isInSegmentWidth(self, helper_ptr, hit_parent) == 0) {
             SnowAI_startNodeScan(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
-        if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_isAboveSegmentFloor(self, helper_ptr, hit_parent) == 0) {
             SnowAI_startSegmentScan(self);
             goto commit_flags;
         }
@@ -4566,7 +4566,7 @@ tail_common:
 
     if (resolved_state & 0x400) {
         SnowAI_enterFinish(self);
-        *(int*)((char*)self + 0x40) = SnowAI_func_00006FA8(self);
+        *(int*)((char*)self + 0x40) = SnowAI_pickFinishBranch(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {
@@ -4801,7 +4801,7 @@ int SnowAI_isAtFinish(int *a0) {
     return b;
 }
 
-/* SnowAI_func_00006FA8: closer-of-two-lookups compare (0x1FC / 127 words).
+/* SnowAI_pickFinishBranch: closer-of-two-lookups compare (0x1FC / 127 words).
  * EXACT via REPLACE_FUNC_BODY donor splice: the real body lives in the IDO
  * 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_6FA8.cpp (Vec3 value class;
  * the d / e word-copy hops are edg return slots, and the frame is set by a
@@ -4809,7 +4809,7 @@ int SnowAI_isAtFinish(int *a0) {
  * 79.7%. docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe and
  * docs/IDO_CODEGEN.md#ncc-temp-order-named-assign-6fa8. Body below is a
  * placeholder for the splice. */
-int SnowAI_func_00006FA8(int *a0) {
+int SnowAI_pickFinishBranch(int *a0) {
     volatile int *ret = a0;
     return 0;
 }
@@ -5171,13 +5171,13 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
     return (int)r;
 }
 
-/* SnowAI_func_00007C1C: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_7C1C.c,
+/* SnowAI_aimAlongSegment: EXACT via the IDO 7.1 cfe donor src/game_uso/game_uso_7C1C.c,
  * REPLACE_FUNC_BODY-spliced over the placeholder below on both build paths (agent-c run 231,
  * kits CCXL / CCXLI). The placeholder re-emits the unit's .rodata +0xFC word (3000.0f) the
- * donor reads through SnowAI_func_00007C1C_rodata (= 0) + 0xFC. The superseded in-unit
+ * donor reads through SnowAI_aimAlongSegment_rodata (= 0) + 0xFC. The superseded in-unit
  * decode is kept for reference under GAMEUSO_7C1C_OLD_DECODE (never defined). */
 #ifdef GAMEUSO_7C1C_OLD_DECODE
-/* SnowAI_func_00007C1C: 0x10BC (1071 insns). Collision/penetration sweep:
+/* SnowAI_aimAlongSegment: 0x10BC (1071 insns). Collision/penetration sweep:
  * builds an xz-plane "closest approach" vector by walking the arg3->0x2C
  * collider chain. Re-decoded 2026-06-24 from expected/.o via fan-out subagent.
  * 2026-07-17 (agent-g, 62.85 -> 75.75) FRESH-RING RESTRUCTURE from the raw
@@ -5201,7 +5201,7 @@ int SnowAI_updateMarker(int *a0, int *a1, int arg3, int *arg4) {
  * the C++ Vec3 operator=), not struct assignment (lw/sw). */
 /* NM object: replaced by the NCC comparison donor game_uso_ncc_7C1C_nm.cpp (89.3). */
 
-int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
+int SnowAI_aimAlongSegment(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5) {
     Vec3 result;                     /* sp+932 */
     Vec3 cpA;                        /* sp+920 */
@@ -5609,21 +5609,21 @@ int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
     return (int)arg0;
 }
 #else
-int SnowAI_func_00007C1C(char *arg0, char *arg1, char *arg2, char *arg3,
+int SnowAI_aimAlongSegment(char *arg0, char *arg1, char *arg2, char *arg3,
                            char *arg4, f32 *arg5) {
     *arg5 = 3000.0f;
     return 0;
 }
 #endif
 
-/* SnowAI_func_00008CD8: segment-relative position update (709 words). EXACT 2026-11-14 (agent-h run 428)
+/* SnowAI_aimWeave: segment-relative position update (709 words). EXACT 2026-11-14 (agent-h run 428)
  * through the MIPSpro 7.2.1 C++ front end donor src/game_uso/game_uso_mp72_8CD8.cpp (tools/ncc721.sh),
  * REPLACE_FUNC_BODY-spliced in both trees (the B3C recipe: its 4-label phase switch is a native 4-entry jump
  * table, which only EDG 2.29 emits). The placeholder below only re-emits the 8 RoData words the INCLUDE_ASM .s
  * carried as .late_rodata (+0x100..+0x120: the 4-word table, the A7D8 / AB98 floats and two pad words) at its
  * place in the layout; IDO merges equal literals, so the stand-ins are distinct, and none has a zero low half.
  * Its text and relocs are dropped by the splice. The cfe NM body is kept under #if 0 for reference. */
-void *SnowAI_func_00008CD8(char *arg0) {
+void *SnowAI_aimWeave(char *arg0) {
     *(volatile float *)arg0 = 1.1f;
     *(volatile float *)arg0 = 1.2f;
     *(volatile float *)arg0 = 1.3f;
@@ -5636,7 +5636,7 @@ void *SnowAI_func_00008CD8(char *arg0) {
 }
 
 #if 0
-/* SnowAI_func_00008CD8: large vector/triangle integrator.
+/* SnowAI_aimWeave: large vector/triangle integrator.
  * Reconstructed from EXPECTED .o (0x8cd8..0x97ec, 0xb14/709w).
  * arg0 = out Vec3* (returned). arg1 = self obj. arg2 = ref obj.
  * arg3 = aux obj. arg4 = flag selecting the two main branches.
@@ -5657,7 +5657,7 @@ void *SnowAI_func_00008CD8(char *arg0) {
  * phase is `*= (f32)0` (a 0.0f literal multiply is folded away). Open: the
  * target's phase switch is a 4-entry jumptable (cc lowers 4 labels to a beq
  * chain; the NCC front end likely differs). */
-void *SnowAI_func_00008CD8(char *arg0, char *arg1, char *arg2, char *arg3, s32 arg4) {
+void *SnowAI_aimWeave(char *arg0, char *arg1, char *arg2, char *arg3, s32 arg4) {
     Vec3 sp204;   /* sp+516 */
     Vec3 sp1F8;   /* sp+504 */
     Vec3 dotv;    /* sp+492 */
@@ -5979,7 +5979,7 @@ tail:
     *(Tri3i *)arg0 = *(Tri3i *)&sp174;
     return arg0;
 }
-#endif /* cfe reference body of SnowAI_func_00008CD8 */
+#endif /* cfe reference body of SnowAI_aimWeave */
 
 // SnowAI_getRider_000097EC — STRUCTURAL PASS (0x39C / 231 words,
 // no episode). Raw-.word USO form (single function, game_uso main
@@ -6021,7 +6021,7 @@ int SnowAI_getRider_000097EC(char *a0) {
 
 extern void game_uso_func_047B1C();
 extern char game_uso_D_807FEDB8;
-/* SnowAI_func_00009B88: XZ segment-side predicate, 344 target words.
+/* SnowAI_isInSegmentWidth: XZ segment-side predicate, 344 target words.
  * 2026-09-12: exact C, all 344 words; 0x560 bytes, 0x1A8-byte frame.
  *
  * Project a2's position onto XZ, subtract a1's position, rotate/normalize
@@ -6046,7 +6046,7 @@ extern char game_uso_D_807FEDB8;
  * See agent docs/IDO_CODEGEN.md#vector-staging-stack-map-9b88 and
  * #vector-endpoint-scopes-exact-9b88.
  */
-int SnowAI_func_00009B88(a0, a1, a2)
+int SnowAI_isInSegmentWidth(a0, a1, a2)
     int *a0;
     int *a1;
     int *a2;
@@ -6259,7 +6259,7 @@ skip9:;
         float cross1 = (*(float*)&local_160[2] * *(float*)&local_154[0]) - (*(float*)&local_154[2] * *(float*)&local_160[0]); return ((*(float*)&local_178[2] * *(float*)&local_16C[0]) - (*(float*)&local_16C[2] * *(float*)&local_178[0])) * cross1 < (float)0;
     }
 }
-/* SnowAI_func_0000A0E8: projected-height predicate, 163 target words.
+/* SnowAI_isAboveSegmentFloor: projected-height predicate, 163 target words.
  * Build two XZ vectors relative to a1->position: a2's position and
  * a0's child position at +0xB4. Compare their projected height against
  * the child height above a1.y - 400. The three length calls are retained.
@@ -6277,7 +6277,7 @@ skip9:;
  */
 extern float game_uso_func_082880(float);
 extern char game_uso_D_807FEDD0;
-int SnowAI_func_0000A0E8(char *a0, char *a1, char *a2) {
+int SnowAI_isAboveSegmentFloor(char *a0, char *a1, char *a2) {
     volatile int local_BC[3];
     volatile int local_B0[3];
     char pad_AC[4];
@@ -6597,8 +6597,8 @@ void SnowAI_scanNodes(SnowAI *obj) {
     if (v0var != 0) {
         t = (int)((CourseMarker *)v0var)->link;
         if (t != 0) {
-            if (SnowAI_func_00009B88(obj, v0var, t) != 0) {
-                if (SnowAI_func_0000A0E8((char *)obj, v0var, (char *)t) != 0) {
+            if (SnowAI_isInSegmentWidth(obj, v0var, t) != 0) {
+                if (SnowAI_isAboveSegmentFloor((char *)obj, v0var, (char *)t) != 0) {
                     f0 = tbuf.z - ((CourseMarker *)v0var)->pos[2];
                     if (f0 < 0.0f) {
                         f0 += 250.0f * ((CourseMarker *)v0var)->parms.wid.value;
@@ -6687,7 +6687,7 @@ void SnowAI_scanSegments(SnowAI *obj) {
         slots[0] = (char *)cnt;
         if (cnt != 0) {
             slots[1] = r1;
-            if (SnowAI_func_0000A0E8((char *)obj, r1, (char *)cnt) != 0) {
+            if (SnowAI_isAboveSegmentFloor((char *)obj, r1, (char *)cnt) != 0) {
                 f0 = blockA.z - ((CourseMarker *)slots[1])->pos[2];
                 if (f0 < 0.0f) f0 += 250.0f * ((CourseMarker *)slots[1])->parms.wid.value;
                 if (f0 >= 0.0f) {

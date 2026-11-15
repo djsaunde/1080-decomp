@@ -67,7 +67,7 @@ glabel SnowAI_finishRun
     /* 006B2C 00006B2C 27A4006C */  .word 0x27A4006C
     /* 006B30 00006B30 02002825 */  .word 0x02002825
     /* 006B34 00006B34 8FA70094 */  .word 0x8FA70094
-    jal SnowAI_func_00007C1C   /* 006B38 0C000000 -> SnowAI_func_00007C1C */
+    jal SnowAI_aimAlongSegment   /* 006B38 0C000000 -> SnowAI_aimAlongSegment */
     /* 006B3C 00006B3C AFA00014 */  .word 0xAFA00014
     /* 006B40 00006B40 8C590000 */  .word 0x8C590000
     /* 006B44 00006B44 27AF0088 */  .word 0x27AF0088

@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000E740, 0xB4
+nonmatching SnowBoarder_grabScreenThumb_0000E740, 0xB4
 
-glabel SnowBoarder_func_0000E740
+glabel SnowBoarder_grabScreenThumb_0000E740
     /* DDF1AC 0000E740 27BDFFE8 */  addiu      $sp, $sp, -0x18
     /* DDF1B0 0000E744 3C030000 */  lui        $v1, %hi(func_0000023C + 0x4)
     /* DDF1B4 0000E748 8C630240 */  lw         $v1, %lo(func_0000023C + 0x4)($v1)
@@ -48,7 +48,7 @@ glabel SnowBoarder_func_0000E740
     /* DDF254 0000E7E8 27BD0018 */  addiu      $sp, $sp, 0x18
     /* DDF258 0000E7EC 03E00008 */  jr         $ra
     /* DDF25C 0000E7F0 00000000 */   nop
-endlabel SnowBoarder_func_0000E740
+endlabel SnowBoarder_grabScreenThumb_0000E740
     /* DDF260 0000E7F4 00000000 */  nop
     /* DDF264 0000E7F8 00000000 */  nop
     /* DDF268 0000E7FC 00000000 */  nop

@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00007C1C, 0x10BC
+nonmatching SnowAI_aimAlongSegment, 0x10BC
 
-glabel SnowAI_func_00007C1C
+glabel SnowAI_aimAlongSegment
     /* 007C1C 00007C1C 27BDFC50 */  .word 0x27BDFC50
     /* 007C20 00007C20 AFB00038 */  .word 0xAFB00038
     /* 007C24 00007C24 8FB003C4 */  .word 0x8FB003C4
@@ -1072,7 +1072,7 @@ glabel SnowAI_func_00007C1C
     /* 008CCC 00008CCC 8FA203B0 */  .word 0x8FA203B0
     /* 008CD0 00008CD0 03E00008 */  .word 0x03E00008
     /* 008CD4 00008CD4 27BD03B0 */  .word 0x27BD03B0
-endlabel SnowAI_func_00007C1C
+endlabel SnowAI_aimAlongSegment
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */

@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000DF04, 0x110
+nonmatching SnowBoarder_setReflectionDdms, 0x110
 
-glabel SnowBoarder_func_0000DF04
+glabel SnowBoarder_setReflectionDdms
     /* DDE970 0000DF04 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DDE974 0000DF08 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DDE978 0000DF0C AFB00018 */  sw         $s0, 0x18($sp)
@@ -71,4 +71,4 @@ glabel SnowBoarder_func_0000DF04
     /* DDEA74 0000E008 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DDEA78 0000E00C 03E00008 */  jr         $ra
     /* DDEA7C 0000E010 00000000 */   nop
-endlabel SnowBoarder_func_0000DF04
+endlabel SnowBoarder_setReflectionDdms

@@ -1,4 +1,4 @@
-/* SnowAI_func_00007C1C: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
+/* SnowAI_aimAlongSegment: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
  * runs 230-231, from agent-g's run 229 port c7c7.c), REPLACE_FUNC_BODY-spliced over
  * the placeholder in src/game_uso/game_uso.c on both build paths (GAMEUSO_7C1C_DONOR).
  * The NCC donor game_uso_ncc_7C1C_nm.cpp is kept as a C++-shape reference. Kits CCXL /
@@ -20,7 +20,7 @@ typedef struct { float x, y, z; } Vec3;
 typedef struct Node { char pad0[0x2C]; struct Node *next; Vec3 pos; char pad3C[0x54 - 0x3C]; float width; } Node;
 typedef struct W { char pad0[0xB4]; Vec3 pos; char padC0[0x348 - 0xC0]; float speed; char pad34C[0x908 - 0x34C]; struct W *other; } W;
 typedef struct Self { char pad0[0x30]; W *w; char pad34[0xA0 - 0x34]; float lim; int active; char padA8[0xCC - 0xA8]; float range; } Self;
-extern char SnowAI_func_00007C1C_rodata; /* = 0: game_uso RoData base (+0xFC = 3000.0f, re-emitted by the host placeholder) */
+extern char SnowAI_aimAlongSegment_rodata; /* = 0: game_uso RoData base (+0xFC = 3000.0f, re-emitted by the host placeholder) */
 extern void *game_uso_func_055750(unsigned);
 extern void math_rotateXZPair_00003FAC(float *, float *, float *, float, float);
 extern float game_uso_func_082880(float);
@@ -56,7 +56,7 @@ extern float SnowAI_rivalLeadZ(Self *);
 
 #define SUBQ2(PP, A, B) if (PP || (PP = (Vec3 *)game_uso_func_055750(12))) { vp = (B); do { sa = (A).x - vp->x; sc = (A).z - vp->z; } while (0); PP->x = sa; PP->y = 0.0f; PP->z = sc; }
 
-Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
+Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
     Vec3 d;
     Vec3 t38c;
@@ -153,7 +153,7 @@ Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 s->active = 0;
             }
             active = s->active;
-            if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_func_00007C1C_rodata + 0xFC)) {
+            if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_aimAlongSegment_rodata + 0xFC)) {
                 XZV(p, t280, &s->w->other->pos)
                 SUB2VS(q, p, t274, t280, &a->pos)
                 R = t274;

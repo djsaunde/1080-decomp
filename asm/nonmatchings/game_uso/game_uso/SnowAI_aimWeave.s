@@ -1,6 +1,6 @@
-nonmatching SnowAI_func_00008CD8, 0xB14
+nonmatching SnowAI_aimWeave, 0xB14
 
-glabel SnowAI_func_00008CD8
+glabel SnowAI_aimWeave
     /* 008CD8 00008CD8 27BDFDF0 */  .word 0x27BDFDF0
     /* 008CDC 00008CDC 8FAE0220 */  .word 0x8FAE0220
     /* 008CE0 00008CE0 AFBF0014 */  .word 0xAFBF0014
@@ -710,7 +710,7 @@ glabel SnowAI_func_00008CD8
     /* 0097E0 000097E0 27BD0210 */  .word 0x27BD0210
     /* 0097E4 000097E4 03E00008 */  .word 0x03E00008
     /* 0097E8 000097E8 00000000 */  .word 0x00000000
-endlabel SnowAI_func_00008CD8
+endlabel SnowAI_aimWeave
 
 /* game_uso .rodata (offsets past the USO RoData marker word, see   */
 /* game_uso_func_00000000.s). Emitted here so every C fn's local    */

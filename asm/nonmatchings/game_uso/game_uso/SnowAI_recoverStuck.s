@@ -94,7 +94,7 @@ glabel SnowAI_recoverStuck
     /* 007348 00007348 27A4005C */  .word 0x27A4005C
     /* 00734C 0000734C 02002825 */  .word 0x02002825
     /* 007350 00007350 8FA70084 */  .word 0x8FA70084
-    jal SnowAI_func_00007C1C   /* 007354 0C000000 -> SnowAI_func_00007C1C */
+    jal SnowAI_aimAlongSegment   /* 007354 0C000000 -> SnowAI_aimAlongSegment */
     /* 007358 00007358 AFA00014 */  .word 0xAFA00014
     /* 00735C 0000735C 8C4A0000 */  .word 0x8C4A0000
     /* 007360 00007360 27A80078 */  .word 0x27A80078

@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000DDCC, 0x138
+nonmatching SnowBoarder_setDefaultDdms, 0x138
 
-glabel SnowBoarder_func_0000DDCC
+glabel SnowBoarder_setDefaultDdms
     /* DDE838 0000DDCC 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DDE83C 0000DDD0 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DDE840 0000DDD4 AFB00018 */  sw         $s0, 0x18($sp)
@@ -84,4 +84,4 @@ glabel SnowBoarder_func_0000DDCC
     /* DDE964 0000DEF8 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DDE968 0000DEFC 03E00008 */  jr         $ra
     /* DDE96C 0000DF00 00000000 */   nop
-endlabel SnowBoarder_func_0000DDCC
+endlabel SnowBoarder_setDefaultDdms

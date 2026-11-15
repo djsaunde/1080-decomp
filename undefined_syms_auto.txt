@@ -1860,7 +1860,7 @@ SnowAI_steer = 0;
 SnowAI_finishRun = 0;
 SnowAI_timeoutRun = 0;
 SnowAI_isAtFinish = 0;
-SnowAI_func_00006FA8 = 0;
+SnowAI_pickFinishBranch = 0;
 SnowAI_enterFinish = 0;
 SnowAI_recoverStuck = 0;
 SnowAI_enterRecover = 0;
@@ -1870,10 +1870,10 @@ SnowAI_scaleRiderMax = 0;
 SnowAI_applyStickInput = 0;
 SnowAI_rivalLeadZ = 0;
 SnowAI_updateMarker = 0;
-SnowAI_func_00007C1C = 0;
-SnowAI_func_00008CD8 = 0;
-SnowAI_func_00009B88 = 0;
-SnowAI_func_0000A0E8 = 0;
+SnowAI_aimAlongSegment = 0;
+SnowAI_aimWeave = 0;
+SnowAI_isInSegmentWidth = 0;
+SnowAI_isAboveSegmentFloor = 0;
 SnowAI_findNearestMarker_0000A374 = 0;
 SnowAI_pickFork = 0;
 SnowAI_scanNodes = 0;
@@ -4324,9 +4324,9 @@ gInputMgr_74e8_h = 0x000000F0;  /* FallingSnow_create: = func_000000F0 (expected
 game_uso_func_00000000_rodata = 0x00000000;  /* game_uso_func_00000000 NCC donor: its 1/6 float literal = game_uso RoData item 0 (lui 0 / lwc1 0); renamed donor-local .rodata reloc, content re-emitted by the host placeholder */
 D_43D8_fmin = 0x00000000;  /* CourseMarker_findNearestZ_000043D8 NCC donor: zero base, +0x94 addend = game_uso RoData FLT_MAX (re-emitted by the host placeholder) */
 D_43D8_fmax = 0x00000000;  /* same, +0x98 = -FLT_MAX */
-SnowAI_func_00007C1C_rodata = 0x00000000;
+SnowAI_aimAlongSegment_rodata = 0x00000000;
 cam_updateView_00000B3C_rodata = 0x00000000;  /* cam_updateView_00000B3C MIPSpro 7.2.1 donor: renamed donor-local .rodata reloc; its 4-entry jump table is at donor .rodata +0x50 = game_uso RoData +0x50 (in-place addend), content re-emitted by the host placeholder */
-SnowAI_func_00008CD8_rodata = 0x00000000;  /* SnowAI_func_00008CD8 MIPSpro 7.2.1 donor (agent-h run 428): renamed donor-local .rodata reloc; its 4-entry phase table is at donor .rodata +0x100 = game_uso RoData +0x100 (in-place addend), content re-emitted by the host placeholder */
+SnowAI_aimWeave_rodata = 0x00000000;  /* SnowAI_aimWeave MIPSpro 7.2.1 donor (agent-h run 428): renamed donor-local .rodata reloc; its 4-entry phase table is at donor .rodata +0x100 = game_uso RoData +0x100 (in-place addend), content re-emitted by the host placeholder */
 sFmt_Dup_parm_1E6B0 = 0x0001E6B0;  /* Parms_addParm blank-USO data ref baked in the ROM (lui 0x2 / addiu -6480) */
 D_39E24_c = 0x000000A0;  /* SNode_display camera block (same blank USO data ref as gGfxLib_4BAF4_cam: base 0xA0, fields at +0x30) */
 gHostio_34EB4_flags = 0x00000000;  /* app_run flags-word test: distinct zero alias so the test does not share base's s3 */

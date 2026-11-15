@@ -16,7 +16,7 @@ glabel SnowAI_onLose
     /* 006EFC 00006EFC 02002025 */  .word 0x02002025
     /* 006F00 00006F00 10400004 */  .word 0x10400004
     /* 006F04 00006F04 AE020080 */  .word 0xAE020080
-    jal SnowAI_func_00006FA8   /* 006F08 0C000000 -> SnowAI_func_00006FA8 */
+    jal SnowAI_pickFinishBranch   /* 006F08 0C000000 -> SnowAI_pickFinishBranch */
     /* 006F0C 00006F0C 02002025 */  .word 0x02002025
     /* 006F10 00006F10 AE020040 */  .word 0xAE020040
     /* 006F14 00006F14 8FBF001C */  .word 0x8FBF001C

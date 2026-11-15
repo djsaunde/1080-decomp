@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NON_MATCHING donor for SnowAI_func_00007C1C
+/* IDO 7.1 NCC (C++) NON_MATCHING donor for SnowAI_aimAlongSegment
  * (1071 words). NM object only (build/non_matching); the ROM build keeps
  * INCLUDE_ASM.
  *
@@ -66,7 +66,7 @@ float game_uso_func_082880(float);
 void game_uso_func_071028(Vec3 *v);
 float SnowAI_rivalLeadZ(Self *);
 }
-extern "C" Vec3 SnowAI_func_00007C1C(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
+extern "C" Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
     Vec3 result;
     float m2; /* agent-g run 206: the walk's m2 declared at function scope (lever-sweep hoist): 95.239 -> 95.261 */
     if (out != 0) {

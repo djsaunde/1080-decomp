@@ -26,18 +26,18 @@ void SnowAI_scanNodes(SnowAI *);
 void SnowAI_scanSegments(SnowAI *);
 int SnowAI_updateMarker();
 float SnowAI_rivalLeadZ(SnowAI *);
-int SnowAI_func_00007C1C();
-void *SnowAI_func_00008CD8();
+int SnowAI_aimAlongSegment();
+void *SnowAI_aimWeave();
 void SnowAI_restoreRiderParms(SnowAI *);
 void SnowAI_scaleRiderMax(SnowAI *);
 void SnowAI_scaleRiderParms(SnowAI *);
 void SnowAI_enterRecover(void *);
-int SnowAI_func_00009B88();
+int SnowAI_isInSegmentWidth();
 void SnowAI_startNodeScan(SnowAI *);
-int SnowAI_func_0000A0E8(SnowAI *, char *, char *);
+int SnowAI_isAboveSegmentFloor(SnowAI *, char *, char *);
 void SnowAI_startSegmentScan(void *);
 void SnowAI_enterFinish(SnowAI *);
-int SnowAI_func_00006FA8(SnowAI *);
+int SnowAI_pickFinishBranch(SnowAI *);
 void SnowAI_applyStickInput();
 void SnowAI_steer(int *a0) {
     Vec3 copy2;
@@ -170,14 +170,14 @@ void SnowAI_steer(int *a0) {
     if (1) { p = &scratch_xz; }
     switch (v0 = self->unk74) {
     case 0:
-        v0 = SnowAI_func_00007C1C(&stage, self, helper_ptr, hit_parent,
+        v0 = SnowAI_aimAlongSegment(&stage, self, helper_ptr, hit_parent,
             &staged_axis, &out_w);
         *(Tri3i *)&res_a = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_a;
         x = res_c.x; scale = res_c.y; z = res_c.z; transform_out.x = x; transform_out.y = scale; transform_out.z = z;
         break;
     case 1:
-        v0 = (int)SnowAI_func_00008CD8(&stage, self, helper_ptr, hit_parent, t0);
+        v0 = (int)SnowAI_aimWeave(&stage, self, helper_ptr, hit_parent, t0);
         *(Tri3i *)&res_b = *(Tri3i *)v0;
         *(Tri3i *)&res_c = *(Tri3i *)&res_b;
         if (1) {}
@@ -463,20 +463,20 @@ tail_common:
         self->unk54 = 0;
     }
     if (state_flag & 0x20) {
-        if (SnowAI_func_00009B88(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_isInSegmentWidth(self, helper_ptr, hit_parent) == 0) {
             SnowAI_startNodeScan(self);
             goto commit_flags;
         }
     }
     if (state_flag & 0x40) {
-        if (SnowAI_func_0000A0E8(self, helper_ptr, hit_parent) == 0) {
+        if (SnowAI_isAboveSegmentFloor(self, helper_ptr, hit_parent) == 0) {
             SnowAI_startSegmentScan(self);
             goto commit_flags;
         }
     }
     if (resolved_state & 0x400) {
         SnowAI_enterFinish(self);
-        self->targetNode = SnowAI_func_00006FA8(self);
+        self->targetNode = SnowAI_pickFinishBranch(self);
         goto commit_flags;
     }
     if (resolved_state & 0x10) {

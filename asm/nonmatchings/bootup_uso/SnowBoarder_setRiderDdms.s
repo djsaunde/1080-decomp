@@ -1,6 +1,6 @@
-nonmatching SnowBoarder_func_0000E014, 0x110
+nonmatching SnowBoarder_setRiderDdms, 0x110
 
-glabel SnowBoarder_func_0000E014
+glabel SnowBoarder_setRiderDdms
     /* DDEA80 0000E014 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* DDEA84 0000E018 AFBF001C */  sw         $ra, 0x1C($sp)
     /* DDEA88 0000E01C AFB00018 */  sw         $s0, 0x18($sp)
@@ -71,4 +71,4 @@ glabel SnowBoarder_func_0000E014
     /* DDEB84 0000E118 27BD0020 */  addiu      $sp, $sp, 0x20
     /* DDEB88 0000E11C 03E00008 */  jr         $ra
     /* DDEB8C 0000E120 00000000 */   nop
-endlabel SnowBoarder_func_0000E014
+endlabel SnowBoarder_setRiderDdms

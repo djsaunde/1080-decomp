@@ -1,4 +1,4 @@
-/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for SnowAI_func_00008CD8 (709 words; agent-h run 428),
+/* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for SnowAI_aimWeave (709 words; agent-h run 428),
  * compiled by tools/ncc721.sh and spliced over a placeholder in both build trees (the B3C recipe).
  *
  * The target lowers the 4-label `switch (s->phase)` as a native 4-entry jump table (sltiu 4), which only
@@ -182,7 +182,7 @@ inline float hdotp(const Vec3 &h, const Vec3 &e, const Vec3 *p0) { p0 = p0; retu
  * block is raw .text, no reloc bake), so the phase table must sit at donor .rodata +0x100. These 64 distinct literals
  * (none with a zero low half, so none loads by lui) stand in for game_uso RoData +0x0 .. +0x100 (0000's 1/6, 940's
  * tables, B3C's table and strings, the 3ED4 / 43D8 / 44F4 / 7C1C floats). The splice copies only
- * SnowAI_func_00008CD8; its renamed .rodata reloc (SnowAI_func_00008CD8_rodata) is pinned to 0. */
+ * SnowAI_aimWeave; its renamed .rodata reloc (SnowAI_aimWeave_rodata) is pinned to 0. */
 extern "C" void game_uso_func_00008CD8_lay(volatile float *o) {
     float v = *o;
     v = v * 1.10f; v = v * 1.20f; v = v * 1.30f; v = v * 1.40f; v = v * 1.60f; v = v * 1.70f; v = v * 1.80f; v = v * 1.90f;
@@ -195,7 +195,7 @@ extern "C" void game_uso_func_00008CD8_lay(volatile float *o) {
     v = v * 8.10f; v = v * 8.20f; v = v * 8.30f; v = v * 8.40f; v = v * 8.60f; v = v * 8.70f; v = v * 8.80f; v = v * 8.90f;
     *o = v;
 }
-extern "C" XZ SnowAI_func_00008CD8(Self *s, Node *a, Node *b, int flag) {
+extern "C" XZ SnowAI_aimWeave(Self *s, Node *a, Node *b, int flag) {
     if (flag != 0) {
         XZ dir(subp2((int)a, (int)a, XZ((int)a, (int)a, b->pos), a->pos));
         game_uso_func_071028(&dir);

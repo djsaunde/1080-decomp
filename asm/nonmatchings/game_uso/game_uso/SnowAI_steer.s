@@ -180,7 +180,7 @@ glabel SnowAI_steer
     /* 005BDC 00005BDC AFAB0010 */  .word 0xAFAB0010
     /* 005BE0 00005BE0 02002825 */  .word 0x02002825
     /* 005BE4 00005BE4 8FA601B0 */  .word 0x8FA601B0
-    jal SnowAI_func_00007C1C   /* 005BE8 0C000000 -> SnowAI_func_00007C1C */
+    jal SnowAI_aimAlongSegment   /* 005BE8 0C000000 -> SnowAI_aimAlongSegment */
     /* 005BEC 00005BEC 8FA701AC */  .word 0x8FA701AC
     /* 005BF0 00005BF0 8C4E0000 */  .word 0x8C4E0000
     /* 005BF4 00005BF4 27A30114 */  .word 0x27A30114
@@ -208,7 +208,7 @@ glabel SnowAI_steer
     /* 005C4C 00005C4C 02002825 */  .word 0x02002825
     /* 005C50 00005C50 8FA601B0 */  .word 0x8FA601B0
     /* 005C54 00005C54 8FA701AC */  .word 0x8FA701AC
-    jal SnowAI_func_00008CD8   /* 005C58 0C000000 -> SnowAI_func_00008CD8 */
+    jal SnowAI_aimWeave   /* 005C58 0C000000 -> SnowAI_aimWeave */
     /* 005C5C 00005C5C AFA80010 */  .word 0xAFA80010
     /* 005C60 00005C60 8C4A0000 */  .word 0x8C4A0000
     /* 005C64 00005C64 27A30108 */  .word 0x27A30108
@@ -884,7 +884,7 @@ glabel SnowAI_steer
     /* 0066DC 000066DC 31AE0020 */  .word 0x31AE0020
     /* 0066E0 000066E0 51C0000B */  .word 0x51C0000B
     /* 0066E4 000066E4 8FB801A4 */  .word 0x8FB801A4
-    jal SnowAI_func_00009B88   /* 0066E8 0C000000 -> SnowAI_func_00009B88 */
+    jal SnowAI_isInSegmentWidth   /* 0066E8 0C000000 -> SnowAI_isInSegmentWidth */
     /* 0066EC 000066EC 8FA601AC */  .word 0x8FA601AC
     /* 0066F0 000066F0 44808000 */  .word 0x44808000
     /* 0066F4 000066F4 54400006 */  .word 0x54400006
@@ -899,7 +899,7 @@ glabel SnowAI_steer
     /* 006718 00006718 330F0040 */  .word 0x330F0040
     /* 00671C 0000671C 51E0000B */  .word 0x51E0000B
     /* 006720 00006720 8FA201A0 */  .word 0x8FA201A0
-    jal SnowAI_func_0000A0E8   /* 006724 0C000000 -> SnowAI_func_0000A0E8 */
+    jal SnowAI_isAboveSegmentFloor   /* 006724 0C000000 -> SnowAI_isAboveSegmentFloor */
     /* 006728 00006728 8FA601AC */  .word 0x8FA601AC
     /* 00672C 0000672C 44808000 */  .word 0x44808000
     /* 006730 00006730 54400006 */  .word 0x54400006
@@ -915,7 +915,7 @@ glabel SnowAI_steer
     /* 006758 00006758 30490010 */  .word 0x30490010
     jal SnowAI_enterFinish   /* 00675C 0C000000 -> SnowAI_enterFinish */
     /* 006760 00006760 02002025 */  .word 0x02002025
-    jal SnowAI_func_00006FA8   /* 006764 0C000000 -> SnowAI_func_00006FA8 */
+    jal SnowAI_pickFinishBranch   /* 006764 0C000000 -> SnowAI_pickFinishBranch */
     /* 006768 00006768 02002025 */  .word 0x02002025
     /* 00676C 0000676C 100000A8 */  .word 0x100000A8
     /* 006770 00006770 AE020040 */  .word 0xAE020040

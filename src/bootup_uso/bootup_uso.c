@@ -8471,11 +8471,11 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowBoarder_handleMsg);
 void SnowBoarder_stub_0000DDC4(int a0) {
 }
 
-/* SnowBoarder_func_0000DDCC - verified structural decode (0x138, 78 insns).
- * NEAR-SIBLING of SnowBoarder_func_0000DF04 / SnowBoarder_func_0000E014 (same Vec3
+/* SnowBoarder_setDefaultDdms - verified structural decode (0x138, 78 insns).
+ * NEAR-SIBLING of SnowBoarder_setReflectionDdms / SnowBoarder_setRiderDdms (same Vec3
  * fetch-and-store fan-out + s0 struct); variant: a leading state
  * switch on s0->0x8C4.
- * Struct-typing reference: same layout as SnowBoarder_func_0000DF04/E014 -
+ * Struct-typing reference: same layout as SnowBoarder_setReflectionDdms/E014 -
  * s0->0xA58 (2648) u32 flags bit 7 (0x80) selector; s0->0x8F4
  * (2292) / 0x8F8 (2296) / 0x8FC (2300) Vec3i dest pointers (3x int
  * @ +0/+4/+8). NEW: s0->0x8C4 (2244) s32 state - values 6/7 take
@@ -8490,7 +8490,7 @@ void SnowBoarder_stub_0000DDC4(int a0) {
  * as gl_func_0004E384 etc. — using distinct C locals per `d` does not move IDO off
  * the $v1 reuse (the load is post-call so $v1 is the next free caller-saved reg).
  * INCLUDE_ASM remains build path. */
-void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
+void SnowBoarder_setDefaultDdms(SnowBoarder *sb) {
     unsigned int st = sb->character;
     if (st == 7 || st == 6) {
         func_00000000(sb);
@@ -8506,7 +8506,7 @@ void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
     *sb->unk8F4[2] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0xC);
 }
 
-/* SnowBoarder_func_0000DF04 - verified structural decode (0x110, 68 insns,
+/* SnowBoarder_setReflectionDdms - verified structural decode (0x110, 68 insns,
  * Vec3 fetch-and-store fan-out).
  * Struct-typing reference: s0->0xA58 (2648) u32 flags, bit 7 (0x80)
  * selects which source-id pair feeds the two slots; s0->0x8F4
@@ -8517,8 +8517,8 @@ void SnowBoarder_func_0000DDCC(SnowBoarder *sb) {
  * clear) fill 0x8F4/0x8F8, id 0x16 always fills 0x8FC.
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + per-slot
  * 3-word struct copies. INCLUDE_ASM remains build path. */
-/* SnowBoarder_func_0000DF04 — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
-void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
+/* SnowBoarder_setReflectionDdms — EXACT 68/68 (Tri3i struct-assign cascade, same form as promoted E014/DDCC) */
+void SnowBoarder_setReflectionDdms(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
         *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x11);
         *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 0x12);
@@ -8532,11 +8532,11 @@ void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
    Single lever: Tri3i struct-assign cascade (same form as promoted E014/DDCC siblings).
    First variant hit. Ready to promote (INCLUDE_ASM -> body) + land. */
 
-/* SnowBoarder_func_0000E014 - verified structural decode (0x110, 68 insns).
- * NEAR-SIBLING of SnowBoarder_func_0000DF04 (same Vec3 fetch-and-store fan-out,
+/* SnowBoarder_setRiderDdms - verified structural decode (0x110, 68 insns).
+ * NEAR-SIBLING of SnowBoarder_setReflectionDdms (same Vec3 fetch-and-store fan-out,
  * same s0 struct); variant: the first id of each pair comes from a
  * signed-half field on s0 instead of a constant.
- * Struct-typing reference: same layout as SnowBoarder_func_0000DF04 -
+ * Struct-typing reference: same layout as SnowBoarder_setReflectionDdms -
  * s0->0xA58 (2648) u32 flags bit 7 (0x80) selector; s0->0x8F4
  * (2292) / 0x8F8 (2296) / 0x8FC (2300) Vec3i dest pointers (3x int
  * @ +0/+4/+8). NEW fields here: s0->0x902 (2306) and s0->0x900
@@ -8546,7 +8546,7 @@ void SnowBoarder_func_0000DF04(SnowBoarder *sb) {
  * Caps <80: 3-5 reloc calls + &D reloc + flag branch + lh
  * dynamic-id + per-slot 3-word struct copies. INCLUDE_ASM remains
  * build path. */
-void SnowBoarder_func_0000E014(SnowBoarder *sb) {
+void SnowBoarder_setRiderDdms(SnowBoarder *sb) {
     if (sb->flags & SNOWB_FLAG_MIRROR) {
         *sb->unk8F4[0] = *(SnowBRec3 *)func_00000000(&gGfxLib, sb->unk902);
         *sb->unk8F4[1] = *(SnowBRec3 *)func_00000000(&gGfxLib, 8);
@@ -8573,7 +8573,7 @@ void SnowBoarder_func_0000E014(SnowBoarder *sb) {
  * f32 consts + beql branch-likely + flag-bit branches + reloc.
  * INCLUDE_ASM remains build path. */
 /* EXACT (agent-c run 115). Mirror-flip toggle: callees from the TextReloc
- * (SnowBoarder_func_0000DDCC / SnowBoarder_func_0000E014, func_072E58 x2, func_072F1C, func_072FB0
+ * (SnowBoarder_setDefaultDdms / SnowBoarder_setRiderDdms, func_072E58 x2, func_072F1C, func_072FB0
  * which takes (ptr, ptr, float) so 180.0f goes out in a2); the flag word is
  * a plain ^= RMW re-read per test; the r-call sits inside the null check and
  * one pointer variable p carries the negated component and both call args;
@@ -8855,7 +8855,7 @@ void SnowBChild_readParms_0000E720(char *a0) {
     func_00000000(a0 + 0x2C);
 }
 
-/* SnowBoarder_func_0000E740 - verified structural decode (0xB4, 48 insns,
+/* SnowBoarder_grabScreenThumb_0000E740 - verified structural decode (0xB4, 48 insns,
  * 2D strided->packed halfword blit / unswizzle).
  * Struct-typing reference: global root *(func_0000023C+4); root->0x28
  * (40) vtable ptr with fn @0x64 (100) + s16 base-adjust @0x60 (96)
@@ -8868,7 +8868,7 @@ void SnowBChild_readParms_0000E720(char *a0) {
  * INCLUDE_ASM remains build path. */
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/bootup_uso/bootup_uso_ncc_E740.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-c run 116). */
-void SnowBoarder_func_0000E740(char *a0, int a1) {
+void SnowBoarder_grabScreenThumb_0000E740(char *a0, int a1) {
     volatile char *r = a0;
 }
 

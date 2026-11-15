@@ -10,7 +10,7 @@ glabel SnowAI_onWin
     /* 006EA0 00006EA0 02002025 */  .word 0x02002025
     /* 006EA4 00006EA4 10400004 */  .word 0x10400004
     /* 006EA8 00006EA8 AE020080 */  .word 0xAE020080
-    jal SnowAI_func_00006FA8   /* 006EAC 0C000000 -> SnowAI_func_00006FA8 */
+    jal SnowAI_pickFinishBranch   /* 006EAC 0C000000 -> SnowAI_pickFinishBranch */
     /* 006EB0 00006EB0 02002025 */  .word 0x02002025
     /* 006EB4 00006EB4 AE020040 */  .word 0xAE020040
     /* 006EB8 00006EB8 8FBF001C */  .word 0x8FBF001C
