@@ -36,8 +36,8 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         {
         s32 a2v = arg2;
         ((TimB5ObjectPrefix *)child)->field_14 = arg0;
-        ((TimB5EntryFields *)rr)->field_2A4 = (f32) arg1;
-        ((TimB5EntryFields *)rr)->field_2B0 = a2v;
+        ((TimB5EntryFields *)rr)->enabled = (f32) arg1;
+        ((TimB5EntryFields *)rr)->id = a2v;
         obj = (char *)(a2v + 1);
     }}
     child = (char *)gen_imp_mem_new((char *)0x138);
@@ -87,9 +87,9 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     {
         g2 = r;
         do {
-        ((TimB5EntryFields *)g2)->field_2B8 = child;
-        ((TimB5EntryFields *)g2)->field_134 = *(f32 *)((char *)&import_80807FB8 + 0x3B8);
-        ((TimB5EntryFields *)g2)->field_29C = child;
+        ((TimB5EntryFields *)g2)->model = child;
+        ((TimB5EntryFields *)g2)->cfv = *(f32 *)((char *)&import_80807FB8 + 0x3B8);
+        ((TimB5EntryFields *)g2)->node = child;
         } while (0);
     }
     p = (char *)(*(s32 *)((char *)(arg0) + 0x38));

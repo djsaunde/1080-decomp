@@ -10,60 +10,60 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
     int i, idx, n, j;
     float divisor;
     f32 (*records)[4];
-    screen->field_4DC[0] = arg1;
-    screen->field_4DC[1] = arg2;
-    screen->field_4DC[2] = arg3;
-    screen->field_4DC[3] = arg4;
-    screen->field_4DC[4] = arg5;
-    screen->field_4A4 = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
-    screen->field_3E0[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
-    screen->field_4A8 = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
-    screen->field_3E0[1] = SelectWin_findItem_00008988((char *)screen, 1, *arg4);
-    row = screen->field_40C->field_40[0];
+    screen->out[0] = arg1;
+    screen->out[1] = arg2;
+    screen->out[2] = arg3;
+    screen->out[3] = arg4;
+    screen->out[4] = arg5;
+    screen->cheatChar = *(int *)(&timproc_uso_b5_D_807FE6E4 + *arg2 * 4 + 0xE74);
+    screen->chosenItem[0] = *(int *)(&timproc_uso_b5_D_807FE6E4_b + *arg2 * 4 + 0xE54);
+    screen->cheatBoard = *(int *)(&timproc_uso_b5_D_807FE6C4 + *arg4 * 4 + 0xE94);
+    screen->chosenItem[1] = SelectWin_findItem_00008988((char *)screen, 1, *arg4);
+    row = screen->itemsMgr->lists[0];
     i = 0;
-    if (row->field_6C > 0) {
+    if (row->count > 0) {
         tbl = (int *)(&import_80020150 + 0xB8);
         do {
-            if (screen->field_3BC == 2) {
-                if (tbl[screen->field_3B8] != 0) {
-                    row->field_3C[i]->field_2B4 = 0x20000;
+            if (screen->numPlayers == 2) {
+                if (tbl[screen->player] != 0) {
+                    row->items[i]->flags = 0x20000;
                 } else {
-                    row->field_3C[i]->field_2B4 = 0;
+                    row->items[i]->flags = 0;
                 }
             } else {
-                row->field_3C[i]->field_2B4 = 0;
+                row->items[i]->flags = 0;
             }
             i++;
-            row = screen->field_40C->field_40[0];
-        } while (i < row->field_6C);
+            row = screen->itemsMgr->lists[0];
+        } while (i < row->count);
     }
-    row2 = screen->field_40C->field_40[1];
+    row2 = screen->itemsMgr->lists[1];
     j = 0;
-    if (row2->field_6C > 0) {
+    if (row2->count > 0) {
         do {
-            row2->field_3C[j]->field_2B4 = *screen->field_4DC[2] & 0x20;
+            row2->items[j]->flags = *screen->out[2] & 0x20;
             j++;
-            row2 = screen->field_40C->field_40[1];
-        } while (j < row2->field_6C);
+            row2 = screen->itemsMgr->lists[1];
+        } while (j < row2->count);
     }
-    screen->field_3E0[2] = SelectWin_findItem_00008988((char *)screen, 2, *screen->field_4DC[4]);
-    idx = SelectWin_findItem_00008988((char *)screen, 3, *screen->field_4DC[0]);
-    screen->field_3E0[3] = idx;
-    screen->field_3D0[3] = idx;
-    n = screen->field_3E0[0];
-    screen->field_3D0[0] = n;
-    screen->field_3D0[1] = screen->field_3E0[1];
-    screen->field_3D0[2] = screen->field_3E0[2];
-    e = screen->field_40C->field_40[0]->field_3C[n];
-    vt = e->field_28;
-    vt->field_84((char *)(vt->field_80 + (int)e), 0);
-    e2 = screen->field_40C->field_40[1]->field_3C[screen->field_3E0[1]];
-    vt = e2->field_28;
-    vt->field_84((char *)(vt->field_80 + (int)e2), 0);
-    e3 = screen->field_40C->field_40[2]->field_3C[screen->field_3E0[2]];
-    vt = e3->field_28;
-    vt->field_84((char *)(vt->field_80 + (int)e3), 0);
-    records = screen->field_420;
+    screen->chosenItem[2] = SelectWin_findItem_00008988((char *)screen, 2, *screen->out[4]);
+    idx = SelectWin_findItem_00008988((char *)screen, 3, *screen->out[0]);
+    screen->chosenItem[3] = idx;
+    screen->curItem[3] = idx;
+    n = screen->chosenItem[0];
+    screen->curItem[0] = n;
+    screen->curItem[1] = screen->chosenItem[1];
+    screen->curItem[2] = screen->chosenItem[2];
+    e = screen->itemsMgr->lists[0]->items[n];
+    vt = e->vt;
+    vt->setChosen((char *)(vt->setChosenDelta + (int)e), 0);
+    e2 = screen->itemsMgr->lists[1]->items[screen->chosenItem[1]];
+    vt = e2->vt;
+    vt->setChosen((char *)(vt->setChosenDelta + (int)e2), 0);
+    e3 = screen->itemsMgr->lists[2]->items[screen->chosenItem[2]];
+    vt = e3->vt;
+    vt->setChosen((char *)(vt->setChosenDelta + (int)e3), 0);
+    records = screen->colors;
     divisor = 255.0f;
     records[0][0] = 90.0f / divisor;
     records[0][1] = 90.0f / divisor;
@@ -89,18 +89,18 @@ void SelectWin_init_00005BF0(B5TimingScreen *screen, int *arg1, int *arg2, int *
     records[5][1] = 70.0f / divisor;
     records[5][2] = 70.0f / divisor;
     records[5][3] = (float)255 / divisor;
-    screen->field_4D0 = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
+    screen->font = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
     e = timproc_uso_b5_func_00008A38_entry(screen);
-    vt = e->field_28;
-    vt->field_64((char *)(vt->field_60 + (int)e));
+    vt = e->vt;
+    vt->focus((char *)(vt->focusDelta + (int)e));
     {
         char *p414;
         e = timproc_uso_b5_func_00008A38_entry(screen);
-        p414 = screen->field_414;
+        p414 = screen->scene;
         SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
     SelectWin_beginTransition_00008688((char *)screen, 0);
-    screen->field_488 = screen->field_104;
-    screen->field_404 = 0x40;
-    screen->field_4BC = 1.0f;
+    screen->idleTimer = screen->lfw;
+    screen->transCountdownInit = 0x40;
+    screen->transition = 1.0f;
 }

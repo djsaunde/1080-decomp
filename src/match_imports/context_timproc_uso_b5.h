@@ -294,33 +294,35 @@ typedef struct TimB5ObjectPrefix {
     char pad_18[0x10];
     void *field_28;
 } TimB5ObjectPrefix;
+/* A SelItemEx (include/game/select.h) seen by the donors: the parm values are flattened
+ * (SelItemParms at +0x2C, SelItemInfo at +0x194; each parm's value is at its record +0x10). */
 typedef struct TimB5EntryFields {
     char pad_000[0xA4];
-    s32 field_A4;
+    s32 xp0;                /* 0x0A4: parms.xp0.value (stat bar x) */
     char pad_0A8[0x14];
-    s32 field_BC;
+    s32 yp0;                /* 0x0BC: parms.yp0.value (stat bar y) */
     char pad_0C0[0x74];
-    f32 field_134;
+    f32 cfv;                /* 0x134: parms.cfv.value */
     char pad_138[0x8C];
-    s32 field_1C4;
+    s32 am0;                /* 0x1C4: info.am0.value (stat values am0..am4) */
     char pad_1C8[0x14];
-    s32 field_1DC;
+    s32 am1;                /* 0x1DC */
     char pad_1E0[0x14];
-    s32 field_1F4;
+    s32 am2;                /* 0x1F4 */
     char pad_1F8[0x14];
-    s32 field_20C;
+    s32 am3;                /* 0x20C */
     char pad_210[0x14];
-    s32 field_224;
+    s32 am4;                /* 0x224 */
     char pad_228[0x74];
-    void *field_29C;
-    f32 field_2A0;
-    f32 field_2A4;
+    void *node;             /* 0x29C */
+    f32 alpha;              /* 0x2A0 */
+    f32 enabled;            /* 0x2A4 */
     char pad_2A8[8];
-    s32 field_2B0;
-    s32 field_2B4;
-    void *field_2B8;
-    s32 field_2BC;
-    s32 field_2C0;
+    s32 id;                 /* 0x2B0 */
+    s32 flags;              /* 0x2B4 */
+    void *model;            /* 0x2B8 */
+    s32 barCount;           /* 0x2BC */
+    s32 barTimer;           /* 0x2C0 */
 } TimB5EntryFields;
 extern char *timproc_uso_b5_alias();
 extern int gl_func_00000000();
@@ -689,74 +691,78 @@ typedef struct { f32 unk0,unk4,unk8,unkC; } Q;
 typedef char *(*FP4)();
 typedef struct { char *p; } P1;
 char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, char *arg6, char *arg7, s32 arg8, char *arg9, char *arg10, s32 arg11);
+/* The donors' flat views of the genproc select classes (include/game/select.h names):
+ * B5TimingVtable = a SelItem vtable (slot N = {s16 delta, fn} at vtbl + 8N + 8),
+ * B5TimingEntry = SelItem, B5TimingRow = SelItemList, B5TimingPanels = SelItemsMgr,
+ * B5TimingScreen = SelectWin (SelectWinParms at +0x2C flattened: parm value = record +0x10). */
 typedef struct B5TimingVtable {
     char pad_00[0x60];
-    s16 field_60;
+    s16 focusDelta;         /* 0x60: slot 11 focus */
     char pad_62[2];
-    void (*field_64)(char *);
+    void (*focus)(char *);  /* 0x64 */
     char pad_68[0x18];
-    s16 field_80;
+    s16 setChosenDelta;     /* 0x80: slot 15 setChosen */
     char pad_82[2];
-    void (*field_84)(char *, s32);
+    void (*setChosen)(char *, s32); /* 0x84 */
 } B5TimingVtable;
 typedef struct B5TimingEntry {
     char pad_000[0x28];
-    B5TimingVtable *field_28;
+    B5TimingVtable *vt;     /* 0x028 */
     char pad_02C[0x278];
-    f32 field_2A4;
+    f32 enabled;            /* 0x2A4: 0 = locked */
     char pad_2A8[8];
-    s32 field_2B0;
-    s32 field_2B4;
+    s32 id;                 /* 0x2B0 */
+    s32 flags;              /* 0x2B4 */
 } B5TimingEntry;
 typedef struct B5TimingRow {
     char pad_00[0x3C];
-    B5TimingEntry *field_3C[12];
-    s32 field_6C;
+    B5TimingEntry *items[12]; /* 0x3C */
+    s32 count;              /* 0x6C */
 } B5TimingRow;
 typedef struct B5TimingPanels {
     char pad_00[0x40];
-    B5TimingRow *field_40[4];
+    B5TimingRow *lists[4];  /* 0x40: character, board, course, level */
 } B5TimingPanels;
 typedef struct B5TimingScreen {
     char pad_000[0x74];
-    s32 field_74;
+    s32 ysp;                /* 0x074: parms.ysp.value (stat row spacing) */
     char pad_078[0x8C];
-    s32 field_104;
+    s32 lfw;                /* 0x104: parms.lfw.value (idleTimer reload) */
     char pad_108[0x2C];
-    char field_134[0x24];
-    char field_158[0x24];
-    char field_17C[0x24];
-    char field_1A0[0x24];
-    char field_1C4[0x24];
+    char cc0[0x24];         /* 0x134: parms.cc0.rgba (the stat bar colours cc0..cc4) */
+    char cc1[0x24];         /* 0x158 */
+    char cc2[0x24];         /* 0x17C */
+    char cc3[0x24];         /* 0x1A0 */
+    char cc4[0x24];         /* 0x1C4 */
     char pad_1E8[0x48];
-    char field_230[0x188];
-    s32 field_3B8;
-    s32 field_3BC;
-    s32 field_3C0;
-    s32 field_3C4;
-    s32 field_3C8;
-    s32 field_3CC;
-    s32 field_3D0[4];
-    s32 field_3E0[4];
+    char cc7[0x188];        /* 0x230: parms.cc7.rgba */
+    s32 player;             /* 0x3B8 */
+    s32 numPlayers;         /* 0x3BC */
+    s32 stageMask;          /* 0x3C0 */
+    s32 stage;              /* 0x3C4 */
+    s32 stageBit;           /* 0x3C8 */
+    s32 state;              /* 0x3CC */
+    s32 curItem[4];         /* 0x3D0 */
+    s32 chosenItem[4];      /* 0x3E0 */
     char pad_3F0[0x14];
-    s32 field_404;
+    s32 transCountdownInit; /* 0x404 */
     char pad_408[4];
-    B5TimingPanels *field_40C;
+    B5TimingPanels *itemsMgr; /* 0x40C */
     char pad_410[4];
-    char *field_414;
+    char *scene;            /* 0x414 */
     char pad_418[8];
-    f32 field_420[6][4];
+    f32 colors[6][4];       /* 0x420 */
     char pad_480[8];
-    s32 field_488;
+    s32 idleTimer;          /* 0x488 */
     char pad_48C[0x18];
-    s32 field_4A4;
-    s32 field_4A8;
+    s32 cheatChar;          /* 0x4A4 */
+    s32 cheatBoard;         /* 0x4A8 */
     char pad_4AC[0x10];
-    f32 field_4BC;
+    f32 transition;         /* 0x4BC */
     char pad_4C0[0x10];
-    s32 field_4D0;
+    s32 font;               /* 0x4D0 */
     char pad_4D4[8];
-    s32 *field_4DC[5];
+    s32 *out[5];            /* 0x4DC: commitSelection output pointers */
 } B5TimingScreen;
 extern char timproc_uso_b5_D_807FE6E4;
 extern char timproc_uso_b5_D_807FE6E4_b;

@@ -7,31 +7,31 @@ int SelectWin_startGame_000069E8(char *scr, int a1) {
     import_000A53B4(scr, a1);
     gen_imp_Process_fadeOut_0000F954(*(char **)(scr + 0x418), -1, 0);
     *(int *)(timproc_uso_b5_69E8_global + 0x40) = *(int *)(timproc_uso_b5_69E8_global + 0x44);
-    *screen->field_4DC[1] = screen->field_40C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B0;
-    a4 = screen->field_4A4;
+    *screen->out[1] = screen->itemsMgr->lists[0]->items[screen->curItem[0]]->id;
+    a4 = screen->cheatChar;
     if (a4 != 0 && a4 < 4) {
         timproc_uso_b5_69E8_print(&timproc_uso_b5_D_807FEB74 + 0x1304, a4);
-        *screen->field_4DC[1] = ((int *)(&timproc_uso_b5_D_807FE794 + 0xF24))[screen->field_4A4] - 1;
+        *screen->out[1] = ((int *)(&timproc_uso_b5_D_807FE794 + 0xF24))[screen->cheatChar] - 1;
     }
     if (*(int *)&import_80000310 == 0x17D7) {
-        *screen->field_4DC[0] = screen->field_40C->field_40[3]->field_3C[screen->field_3D0[3]]->field_2B0;
+        *screen->out[0] = screen->itemsMgr->lists[3]->items[screen->curItem[3]]->id;
     } else {
-        *screen->field_4DC[0] = 1;
+        *screen->out[0] = 1;
     }
-    *screen->field_4DC[3] = screen->field_40C->field_40[1]->field_3C[screen->field_3D0[1]]->field_2B0;
-    if (screen->field_4A8 == 4) {
-        *screen->field_4DC[3] = 8;
+    *screen->out[3] = screen->itemsMgr->lists[1]->items[screen->curItem[1]]->id;
+    if (screen->cheatBoard == 4) {
+        *screen->out[3] = 8;
     }
-    C = screen->field_40C;
-    *screen->field_4DC[2] = C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B4 | C->field_40[1]->field_3C[screen->field_3D0[1]]->field_2B4;
+    C = screen->itemsMgr;
+    *screen->out[2] = C->lists[0]->items[screen->curItem[0]]->flags | C->lists[1]->items[screen->curItem[1]]->flags;
     if (a1 != 0) {
-        *screen->field_4DC[4] = screen->field_40C->field_40[2]->field_3C[screen->field_3D0[2]]->field_2B0;
+        *screen->out[4] = screen->itemsMgr->lists[2]->items[screen->curItem[2]]->id;
     }
     if (*(int *)(timproc_uso_b5_69E8_global + 0x34) != 2) {
-        ((int *)(&import_8002013C + 0xA4))[screen->field_3D0[0]] = *screen->field_4DC[3];
+        ((int *)(&import_8002013C + 0xA4))[screen->curItem[0]] = *screen->out[3];
     } else {
-        ((int *)(&import_80020150 + 0xB8))[screen->field_3B8] =
-            (screen->field_40C->field_40[0]->field_3C[screen->field_3D0[0]]->field_2B4 & 0x20000) != 0;
+        ((int *)(&import_80020150 + 0xB8))[screen->player] =
+            (screen->itemsMgr->lists[0]->items[screen->curItem[0]]->flags & 0x20000) != 0;
     }
     return 1;
 }
