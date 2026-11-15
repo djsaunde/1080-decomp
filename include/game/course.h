@@ -94,7 +94,13 @@ typedef struct CourseItemTmpl {
  * entries[0].gate to gate->next once gate->z <= entries[0].progress, then calls a gate test (gate, rider
  * pos, entry); a non-zero result is reported through the tracker's vtable (the +0x60 / +0x64 slot). Note: findGates looks up with
  * entries[0]'s rider and stores the "chk" result in entries[0].gate on every iteration (only the fork
- * pair is per entry), so checkpoints are tracked for the first rider only. */
+ * pair is per entry), so checkpoints are tracked for the first rider only.
+ *
+ * The gate class itself is in checkpoint.uso (USO module / file id 50, ROM Info record 0x7F6D1A), which is
+ * not split, so only the fields game_libs reads are typed here (agent-g run 488). bootup's item templates
+ * item_createChk (0x4C) / item_createGtr / item_createGtl (0x50) first store SNodeItemType_vtbl (Data
+ * 0x1EFC0, Sym 414) at +0x28, then a checkpoint.uso export (import 50: chk Sym 418, gtr and gtl share
+ * Sym 420) at +0x28 and another at +0x48 (Syms 417 / 419 / 421: the per-type descriptor). */
 typedef struct RaceGate {
     char unk00[0x64];
     f32 z;                      /* 0x64: the gate's course coordinate (world z) */

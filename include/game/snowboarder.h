@@ -201,8 +201,12 @@ typedef struct SnowBoarder {
     char pad854[0x864 - 0x854];
     char *unk864;           /* 0x864: child object B (may be NULL); transform at +0x30 */
     char pad868[0x874 - 0x868];
-    char *camSource;        /* 0x874: a body of the rider model (set by the ctor); cam_create passes it as the
-                             * SnowChaseActorCam source, where a mode-3 (fixed) eye parks */
+    char *camSource;        /* 0x874: a node of the rider model: slot 22 of the shape-file node registry
+                             * (bootup Bss 0x3C058, Sym 550, 40 slots; shape cmd 0x67 registers the current
+                             * node in a slot, cmd 0x66 parents to one: Node_doCommand), read by the ctor
+                             * right after the model is built, like 0x820..0x864 (agent-g run 488).
+                             * cam_create passes it as the SnowChaseActorCam source, where a mode-3
+                             * (fixed) eye parks */
     char pad878[0x890 - 0x878];
     SnowBVec3 prevPos;      /* 0x890: pos saved at the start of SnowBoarder_procColl */
     SnowBVec3 prevVel;      /* 0x89C: vel saved at the start of SnowBoarder_procColl */
