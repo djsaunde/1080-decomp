@@ -6,7 +6,7 @@ typedef struct { int a, b, c, d; } Quad4;
 /* gl_func_00000000 (0x1CC) was the tail of game_libs_func_FFFFFFE0, whose 8-word
  * hoisted head sits before VRAM 0: it moved to game_libs_head.c (its own unit). */
 
-/* gl_func_000001CC: get-or-create constructor (0x13C object, one inlined
+/* TimeGadget_ctor: get-or-create constructor (0x13C object, one inlined
  * 0x10C base sub-object) + colour normalize (0x13C, 79 words). EXACT in-unit.
  * arg0 IS self (reassigned by the || alloc fallback): a separate self local
  * adds a named home (frame 0x40 instead of 0x38) and schedules `or s0,a0`
@@ -14,7 +14,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * spill lands at +0x34 (d255 first -> +0x30). d255 keeps the four
  * divisions at run time. */
 extern int gl_func_00000000();
-char *gl_func_000001CC(char *arg0, s32 arg1) {
+char *TimeGadget_ctor(char *arg0, s32 arg1) {
     char *sub;
     f32 d255 = 255.0f;
 
@@ -43,18 +43,18 @@ char *gl_func_000001CC(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00000308(char *a0) {
+int TimeGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x10C);
     return gl_func_00000000(a0 + 0x124);
 }
 
-/* gl_func_00000338: MATCHED 2026-05-31. ms time formatter — SIGNED div (the
+/* TimeGadget_setTime: MATCHED 2026-05-31. ms time formatter — SIGNED div (the
  * break-0x7/0x6 div-by-zero+INT_MIN-overflow traps confirm signed, not unsigned):
  * mins = a1/60000, rem = a1 - mins*60000, secs = rem/1000, ms = (rem - secs*1000)/10;
  * then sprintf(out+0xE4, &D+0xCB08, mins, secs, ms). The old stub had a1 unsigned +
  * wrong arithmetic (a1-mins, rem-secs*10). */
 extern int gl_func_00000000();
-void gl_func_00000338(char *a0, int a1) {
+void TimeGadget_setTime(char *a0, int a1) {
     int mins = a1 / 60000;
     int rem = a1 - mins * 60000;
     int secs = rem / 1000;
@@ -62,9 +62,9 @@ void gl_func_00000338(char *a0, int a1) {
     gl_func_00000000(a0 + 0xE4, (char*)&D_00000000 + 0xCB08, mins, secs, ms_part);
 }
 
-/* gl_func_00000400: three-level get-or-create constructor (0x13C object ->
+/* BestTimeGadget_ctor: three-level get-or-create constructor (0x13C object ->
  * 0x10C sub -> 0x10C sub2) + colour normalize (0x174, 93 words). EXACT
- * in-unit. Same arg0-is-self || fallback as gl_func_000001CC at the outer
+ * in-unit. Same arg0-is-self || fallback as TimeGadget_ctor at the outer
  * level, but the target frame (0x38) has only four slots: the sub/sub2
  * spill homes and the two CSE'd obj+0x10C/obj+0x124 call-arg temps. A
  * named f32 d255 divisor costs a fifth (unused) home -> frame 0x40, so the
@@ -73,7 +73,7 @@ void gl_func_00000338(char *a0, int a1) {
  * the 250/235/100/0 constants but never folds a float divide, and the first
  * stores die. */
 extern int gl_func_00000000();
-char *gl_func_00000400(char *arg0, s32 arg1) {
+char *BestTimeGadget_ctor(char *arg0, s32 arg1) {
     char *sub;
     char *sub2;
 
@@ -110,7 +110,7 @@ char *gl_func_00000400(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00000574(char *a0) {
+int BestTimeGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x10C);
     return gl_func_00000000(a0 + 0x124);
 }
@@ -118,15 +118,15 @@ int gl_func_00000574(char *a0) {
 extern int gl_func_00000000();
 extern char gl_ref_0000CB30;
 
-void gl_func_000005A4(char *a0, char a1, char a2, char a3) {
+void BestTimeGadget_setTime(char *a0, char a1, char a2, char a3) {
     gl_func_00000000(a0 + 0xE4, &gl_ref_0000CB30, a1, a2, a3);
 }
 
-/* gl_func_000005EC: twin of gl_func_00000400 (0x174, 93 words; vtable
+/* BestScoreGadget_ctor: twin of BestTimeGadget_ctor (0x174, 93 words; vtable
  * 0xCB40/0xCB48, ids 0x5001E/0x5001D, tint -56/-1/-38). EXACT in-unit;
  * same store-then-/= colour normalize (no named divisor home). */
 extern int gl_func_00000000();
-char *gl_func_000005EC(char *arg0, s32 arg1) {
+char *BestScoreGadget_ctor(char *arg0, s32 arg1) {
     char *sub;
     char *sub2;
 
@@ -163,18 +163,18 @@ char *gl_func_000005EC(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00000760(char *a0) {
+int BestScoreGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x10C);
     return gl_func_00000000(a0 + 0x124);
 }
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CB58;
-int gl_func_00000790(char *a0, int arg1) {
+int BestScoreGadget_setScore(char *a0, int arg1) {
     return gl_func_00000000(a0 + 0xE4, &gl_ref_0000CB58, arg1);
 }
 
-/* gl_func_000007BC: MATCH 2026-07-15 (agent-h) — 5-member composite constructor,
+/* TimeGadgetParms_ctor: MATCH 2026-07-15 (agent-h) — 5-member composite constructor,
  * full ||-alloc-fallback reconstruction (was 59.4% m2c lift). Levers, in order:
  * (1) head `if (self != 0 || (self = alloc(0x68)) != 0)` with alloc-failure
  *     falling to the SHARED epilogue; per-member `if ((m = self+OFF) != 0 ||
@@ -207,7 +207,7 @@ extern int gl_ref_0000CB78_i;
 extern int gl_ref_0000CB7C_i;
 extern int gl_ref_0000CB80_i;
 struct SB7BC { int v; };
-char *gl_func_000007BC(char *self) {
+char *TimeGadgetParms_ctor(char *self) {
     struct SB7BC u1;
     struct SB7BC u2;
     struct SB7BC u3;
@@ -252,7 +252,7 @@ char *gl_func_000007BC(char *self) {
 
 
 /* 3-insn 2-field setter: a0[0x44]=a1, a0[0x5C]=a2. No frame, no jal. */
-void game_libs_func_0000099C(int *a0, int a1, int a2) {
+void CountDownGadget_setPos(int *a0, int a1, int a2) {
     a0[0x44/4] = a1;
     a0[0x5C/4] = a2;
 }
@@ -285,13 +285,13 @@ void gl_func_000009B4(char *arg0) {
                      arg0 + 0xBC);
 }
 
-/* gl_func_00000A8C: get-or-create ctor + colour normalize (0x100, 64 words).
- * EXACT in-unit with the gl_func_000001CC / 0FD0 shape (arg0 is self via the
+/* CountDownGadget_ctor: get-or-create ctor + colour normalize (0x100, 64 words).
+ * EXACT in-unit with the TimeGadget_ctor / 0FD0 shape (arg0 is self via the
  * || fallback; sub declared before the named d255 whose unused home is the
  * otherwise-empty sp+0x20 slot, sub spills to sp+0x24). Was 95.9 NM with a
  * separate obj local + goto ladder (move s0 in the bnez delay, sub at 0x20). */
 extern int gl_func_00000000();
-char *gl_func_00000A8C(char *arg0, int a1, int a2) {
+char *CountDownGadget_ctor(char *arg0, int a1, int a2) {
     char *sub;
     f32 d255 = 255.0f;
 
@@ -318,7 +318,7 @@ char *gl_func_00000A8C(char *arg0, int a1, int a2) {
     return arg0;
 }
 
-void game_libs_func_00000B8C(int a0) {}
+void CountDownGadget_release(int a0) {}
 
 /* game_libs_func_00000B94: ms->time formatter (a1 / 60000 = minutes, etc.).
  * Merged 2026-05-23: splat mis-split this at 0xBAC into game_libs_func_00000B94
@@ -397,7 +397,7 @@ void game_libs_func_00000B94(GlTimer0B94 *arg0, s32 arg1, s32 arg2) {
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00000B94);
 #endif
 
-/* gl_func_00000D5C - verified structural decode (0x118, 70 insns,
+/* PointsGadget_ctor - verified structural decode (0x118, 70 insns,
  * get-or-create constructor + child wiring).
  * Struct-typing reference: object = 316 (0x13C) bytes. s0->0xC (12)
  * descriptor/vtable ptr (&D); sub-object (separate alloc) ->0x28
@@ -411,7 +411,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00000B94);
  * Caps <80: get-or-create branch + ~8 gl_func_00000000 reloc calls +
  * &D descriptor relocs + FP const + packed-id args. INCLUDE_ASM
  * remains build path (no episode; tautology-trap rule). */
-/* gl_func_00000D5C - get-or-create constructor + child wiring (0x118,
+/* PointsGadget_ctor - get-or-create constructor + child wiring (0x118,
  * 70 insns). Two nested get-or-create branches: outer allocs the main
  * object s0 (316/0x13C bytes) when arg null; inner allocs a sub-object
  * `sub` (268/0x10C bytes) when null, then init-calls
@@ -427,7 +427,7 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", game_libs_func_00000B94);
  * the lui/addiu descriptor relocs; outer alloc-fail routed to shared `done`
  * (returns s0=0) not a separate `return 0`; inner alloc-fail skips only the
  * sub-init block (goto skip_init) rather than the whole tail. */
-void *gl_func_00000D5C(char *s0, int a1) {
+void *PointsGadget_ctor(char *s0, int a1) {
     char *sub;
     float k;
     if (s0 == 0) {
@@ -462,24 +462,24 @@ done:
 }
 
 extern int gl_func_00000000();
-int gl_func_00000E74(char *a0) {
+int PointsGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x10C);
     return gl_func_00000000(a0 + 0x124);
 }
 
 extern int gl_func_00000000();
 extern char gl_ref_0000CBD8;
-int gl_func_00000EA4(char *a0, int arg1) {
+int PointsGadget_setPoints(char *a0, int arg1) {
     return gl_func_00000000(a0 + 0xE4, &gl_ref_0000CBD8, arg1);
 }
 
-/* gl_func_00000ED0: constructor. obj = a0 ?: alloc(212); a defensive second
+/* PointsGadget_ctor_00000ED0: constructor. obj = a0 ?: alloc(212); a defensive second
  * obj-or-alloc (node); init(node, &D+0xCBE0); node->0x28 = &D; init(node+0x2C);
  * then field inits (vtable ptr &D+0xCBE8, three 0xC74-floats, flags). Returns
  * obj. Matched: param-direct (reuse a0 instead of separate obj local) puts obj
  * in $a2 / node in $a3; second-alloc failure falls through to field-init (not
  * ret); 0xA0/0xB0 store-order swap fixes the as1 scheduler tie. */
-int gl_func_00000ED0(int a0, int a1) {
+int PointsGadget_ctor_00000ED0(int a0, int a1) {
     int node;
     float v;
     if (a0 == 0) {
@@ -513,7 +513,7 @@ ret:
     return a0;
 }
 
-void game_libs_func_00000F9C(int a0) {
+void PointsGadget_release_00000F9C(int a0) {
 }
 
 extern int gl_func_00000000();
@@ -522,14 +522,14 @@ int gl_func_00000FA4(char *a0, int arg1) {
     return gl_func_00000000(a0 + 0xB4, &gl_ref_0000CBF8, arg1);
 }
 
-/* gl_func_00000FD0: two-level get-or-create ctor + colour normalize (0x144,
- * 81 words). EXACT in-unit with the gl_func_000001CC shape verbatim (arg0 is
+/* SpeedGadget_ctor: two-level get-or-create ctor + colour normalize (0x144,
+ * 81 words). EXACT in-unit with the TimeGadget_ctor shape verbatim (arg0 is
  * self via the || fallback, sub declared before the named d255 whose unused
  * home completes the 0x38 frame); only the vtable/ids/0xD4 value differ. The
  * old wrap's separate self local + volatile pad scheduled `or s0,a0` into
  * the bnez delay slot. */
 extern int gl_func_00000000();
-char *gl_func_00000FD0(char *arg0, s32 arg1) {
+char *SpeedGadget_ctor(char *arg0, s32 arg1) {
     char *sub;
     f32 d255 = 255.0f;
 
@@ -558,15 +558,15 @@ char *gl_func_00000FD0(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-int gl_func_00001114(char *a0) {
+int SpeedGadget_release(char *a0) {
     return gl_func_00000000(a0 + 0x10C);
 }
 
-/* gl_func_00001134: 3-way value-formatter dispatcher — picks one of
+/* SpeedGadget_setSpeed: 3-way value-formatter dispatcher — picks one of
  * 3 format strings by a1's magnitude and calls the cross-USO
  * printf-like gl_func_00000000. Per-arm arg counts/buffers differ. */
 extern int gl_data_00000000;
-void gl_func_00001134(char *a0, int a1) {
+void SpeedGadget_setSpeed(char *a0, int a1) {
     if (a1 < 10) {
         gl_func_00000000(a0 + 0xE4, (char*)&gl_data_00000000 + 0xCC10, a1);
     } else if (a1 < 100) {
@@ -576,7 +576,7 @@ void gl_func_00001134(char *a0, int a1) {
     }
 }
 
-/* gl_func_000011A4: MATCH 2026-07-15 (agent-h) — ||-alloc-fallback rewrite of
+/* BoardsGadget_ctor: MATCH 2026-07-15 (agent-h) — ||-alloc-fallback rewrite of
  * the goto-form get-or-create body (89.7 -> 100). The documented residual
  * ("prologue scheduler tie + sub spill 0x24 vs 0x20 — not C-coaxable") was
  * the CONTROL-FLOW SPELLING: `if (self != 0 || (self = alloc(0x140)) != 0)`
@@ -587,7 +587,7 @@ void gl_func_00001134(char *a0, int a1) {
  * (target rematerializes; shared symbol spilled a candidate). 54/54 words. */
 extern int gl_data_00000000;
 extern int gl_data_00000000_11a4;
-int* gl_func_000011A4(int *self) {
+int* BoardsGadget_ctor(int *self) {
     int *sub;
     float f;
     if (self != 0 || (self = (int*)gl_func_00000000(0x140)) != 0) {
@@ -612,7 +612,7 @@ int* gl_func_000011A4(int *self) {
     return self;
 }
 
-void gl_func_0000127C(char *a0) {
+void BoardsGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x110);
 }
 
@@ -654,8 +654,8 @@ void game_libs_func_00001354(int *a0, int a1) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_0000135C: MATCH 2026-07-15 (agent-h) — direct transfer of the
- * gl_func_000007BC struct-by-value ||-alloc-fallback kit (see 7BC comment /
+/* CoolGadgetParms_ctor: MATCH 2026-07-15 (agent-h) — direct transfer of the
+ * TimeGadgetParms_ctor struct-by-value ||-alloc-fallback kit (see 7BC comment /
  * docs/IDO_CODEGEN "struct-by-value arg carrier"): 6-member get-or-create
  * constructor, head alloc 0x98, header node CC38, member seeds CC40..CC54
  * as gl_ref symbol loads (destructive lui/lw base reuse), 4-byte struct t2
@@ -678,7 +678,7 @@ extern int gl_ref_0000CC4C_i;
 extern int gl_ref_0000CC50_i;
 extern int gl_ref_0000CC54_i;
 struct SB135C { int v; };
-char *gl_func_0000135C(char *self) {
+char *CoolGadgetParms_ctor(char *self) {
     struct SB135C u1;
     struct SB135C u2;
     struct SB135C u3;
@@ -740,7 +740,7 @@ char *gl_func_0000135C(char *self) {
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
-/* gl_func_000015FC: EXACT via the NCC donor game_libs_ncc_15FC.cpp (a real
+/* CoolGadget_ctor: EXACT via the NCC donor game_libs_ncc_15FC.cpp (a real
  * G::G(int) constructor, spliced into both build trees, agent-g run 163); the
  * cfe body below is the older comparison form (li 100 stays v0 under cfe).
  * History: NM wrap, 2026-07-15 agent-h wave re-probe: 82 -> ~90
@@ -781,7 +781,7 @@ char *gl_func_0000135C(char *self) {
 extern f32 D_00000C7C, D_00000C80, D_00000C84, D_00000C88, D_00000C8C, D_00000C90, D_00000C94;
 extern char D_0000CC58[], D_0000CC60[];
 extern int gl_data_00000000_15fc;
-char *gl_func_000015FC(char *self, s32 arg1) {
+char *CoolGadget_ctor(char *self, s32 arg1) {
     f32 temp_f2;
     volatile int pad_15fc;
     if (self != 0 || (self = (char *)func_00000000(0x198)) != 0) {
@@ -820,10 +820,10 @@ char *gl_func_000015FC(char *self, s32 arg1) {
     return self;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gl_func_000015FC);
+INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", CoolGadget_ctor);
 #endif
 
-void gl_func_00001798(char *a0) {
+void CoolGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x138);
     gl_func_00000000(a0 + 0x150);
     gl_func_00000000(a0 + 0x180);
@@ -831,13 +831,13 @@ void gl_func_00001798(char *a0) {
 }
 
 /* 3-insn 2-field setter: a0[0x44]=a1, a0[0x5C]=a2. */
-void game_libs_func_000017E0(int *a0, int a1, int a2) {
+void CoolGadget_setPos(int *a0, int a1, int a2) {
     a0[0x44/4] = a1;
     a0[0x5C/4] = a2;
 }
 
 /* 2-insn 1-field setter: a0[0xCC]=a1 (in jr-ra delay slot). */
-void game_libs_func_000017EC(int *a0, int a1) {
+void CoolGadget_setValue(int *a0, int a1) {
     a0[0xCC/4] = a1;
 }
 
@@ -969,14 +969,14 @@ void game_libs_func_00001818(char *o) {
     }
 }
 
-/* gl_func_00001C54: EXACT 2026-10-16 (agent-g). The "sibling-scope slot-sharing
+/* CourseGadgetParms_ctor: EXACT 2026-10-16 (agent-g). The "sibling-scope slot-sharing
  * cap" below was the 4244 lever: ONE function-scope `char *m; struct SB1C54 t;`
  * declared LAST (homes 0x88/0x84) instead of per-block pairs, with an empty
  * `if (1) {}` after each of the 16 ctor calls so neither m nor &t is colored
  * (no s-reg, no &t CSE); plus the unit-15 `u15.v = ...; srcC0[2] = ...;` pair on
  * ONE line for the lui at / lui t3 order. See docs/IDO_CODEGEN.md
  * #if1-bbs-uncolor-shared-name-4244. */
-/* gl_func_00001C54: PASS-5 2026-07-15 (agent-h) 77.1 -> ~85: 7BC/135C
+/* CourseGadgetParms_ctor: PASS-5 2026-07-15 (agent-h) 77.1 -> ~85: 7BC/135C
  * struct-by-value ||-alloc-fallback kit, BLOCK-SCOPED {m,t} per expansion.
  * ALL 458/458 instructions now have exact mnemonic+register shape (m in $a0
  * with call-crossing spill, id value a ring temp feeding sw-rot + sw-t-home
@@ -1025,7 +1025,7 @@ extern char gl_ref_0000C764_1C54_15;
 extern char gl_ref_0000CA34_1C54;
 extern float gl_ref_00000C98_f;
 struct SB1C54 { int v; };
-char *gl_func_00001C54(char *self) {
+char *CourseGadgetParms_ctor(char *self) {
     struct SB1C54 u1;
     struct SB1C54 u2;
     struct SB1C54 u3;
@@ -1203,13 +1203,13 @@ char *gl_func_00001C54(char *self) {
     return self;
 }
 
-/* gl_func_0000237C: get-or-create constructor (0x2FC object) + eleven
+/* CourseGadget_ctor: get-or-create constructor (0x2FC object) + eleven
  * sub-object inits at +0x1F4..+0x2E4 (0x148, 82 words). EXACT in-unit.
  * Levers: arg0 IS self (reassigned by the || alloc fallback; a separate
  * var_s0 local moves `or s0,a0` into the bnez delay slot), and the +0x1C0
  * arg1 store comes BEFORE the four zero-float stores (after them the
  * arg1 reload / lui a1 schedule below the swc1 run). */
-char *gl_func_0000237C(char *arg0, s32 arg1) {
+char *CourseGadget_ctor(char *arg0, s32 arg1) {
     if ((arg0 != 0) || (arg0 = (char *)gl_func_00000000(0x2FC), (arg0 != 0))) {
         gl_func_00000000(arg0, (char *)&D_00000000 + 0xCCB4);
         *(s32 *)(arg0 + 0x28) = (s32)&D_00000000;
@@ -1237,7 +1237,7 @@ char *gl_func_0000237C(char *arg0, s32 arg1) {
 }
 
 extern int gl_func_00000000();
-void gl_func_000024C4(char *a0) {
+void CourseGadget_release(char *a0) {
     gl_func_00000000(a0 + 0x1F4);
     gl_func_00000000(a0 + 0x20C);
     gl_func_00000000(a0 + 0x224);
@@ -1252,7 +1252,7 @@ void gl_func_000024C4(char *a0) {
 }
 
 /* 3-insn 2-int setter: a0[0x1C4]=a1, a0[0x1C8]=a2. */
-void game_libs_func_00002540(int *a0, int a1, int a2) {
+void CourseGadget_setPos(int *a0, int a1, int a2) {
     a0[0x1C4/4] = a1;
     a0[0x1C8/4] = a2;
 }
@@ -1379,16 +1379,16 @@ void gl_func_00002B94(char *self) {
     (void)ret;
 }
 
-/* gl_func_00003138: get-or-create ctor (0x168 object) + 8-slot fill + colour
+/* PointsGadget_ctor_00003138: get-or-create ctor (0x168 object) + 8-slot fill + colour
  * normalize (0x160, 88 words). EXACT in-unit: arg0 IS self (reassigned by the
  * || alloc fallback, no separate self local) -- the old var_s3 = arg0 copy
  * scheduled `or s3,a0` into the bnez delay slot instead of before `sw ra`
- * (96.9 NM). Same lever as gl_func_000001CC / 0FD0 / 0A8C. */
+ * (96.9 NM). Same lever as TimeGadget_ctor / 0FD0 / 0A8C. */
 #ifndef FW
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #endif
 extern int gl_func_00000000();
-char *gl_func_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
+char *PointsGadget_ctor_00003138(char *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 d255 = 255.0f;
     f32 temp_f0;
     f32 temp_f12;
@@ -1486,7 +1486,7 @@ void game_libs_func_00003298(int *a0) {
 
 extern int gl_func_00000000();
 
-void gl_func_000033E4(char *a0) {
+void PointsGadget_release_000033E4(char *a0) {
     gl_func_00000000(a0 + 0xF0);
     gl_func_00000000(a0 + 0x108);
     gl_func_00000000(a0 + 0x120);

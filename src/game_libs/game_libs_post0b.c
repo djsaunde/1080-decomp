@@ -9090,7 +9090,7 @@ void gl_func_0003FC58(int arg0) {
 // emit, size matches (38 insns). RESIDUAL (~2%, regalloc/spill): target keeps
 // node in $a1 / n in $v0 (spills sp+0x28/0x2C); mine lands node in $v1 / n in
 // $a1 (spills sp+0x30/0x2C) -> frame 0x38 vs 0x30. The reg-assignment +
-// 8-byte frame are the spill-slot nuance (cf. gl_func_0000E6E8). Stays NM.
+// 8-byte frame are the spill-slot nuance (cf. hud_addSpeedGadget). Stays NM.
 // 2026-07-15 lever wave: 13 -> 11 raw diffs (standalone+in-tree verified). FIXED:
 // (a) frame 0x38->0x30 via B49C DE-NAMING — `handle` was a dead 8-byte home;
 // the nameless chain-store `self[0x10/4] = (self[0xC/4] = call())` emits

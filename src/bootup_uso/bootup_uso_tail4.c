@@ -297,7 +297,7 @@ void func_00013CE8(Quad4 *dst) {
     *dst = buf;
 }
 
-/* func_00013D40 - EXACT (run 113 agent-c, twin port of gl_func_0000135C).
+/* func_00013D40 - EXACT (run 113 agent-c, twin port of CoolGadgetParms_ctor).
  * bootup_uso get-or-create constructor + 6 child sub-objects at o+8/0x20/
  * 0x38/0x50/0x68/0x80, values from the 6-word table at 0xCAC0, kinds
  * 0x1E/0x1E/2/-0xC/2/-0xC, child type ptr &D_0000C764. The earlier

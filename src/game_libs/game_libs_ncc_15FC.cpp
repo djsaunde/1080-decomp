@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for gl_func_000015FC (0x19C / 103 words), EXACT.
+/* IDO 7.1 NCC (C++) donor for CoolGadget_ctor (0x19C / 103 words), EXACT.
  * The function is a cfront-style constructor G::G(int) of a 0x198-byte class:
  * edg's ctor protocol gives the get-or-create head (`if (this == 0) this =
  * new(0x198)`, operator new forwarded inline to the alloc), the out-of-line
@@ -12,7 +12,7 @@
  * and the last three init calls take ((char *)this) instead of self, which
  * orders the two call-crossing address spills like the target (0x180 at
  * sp+40, 0x168 at sp+44).
- * Symbols renamed after compile (names only): __ct__1GFi -> gl_func_000015FC,
+ * Symbols renamed after compile (names only): __ct__1GFi -> CoolGadget_ctor,
  * __ct__1BFPc -> gl_func_00000000_15fc_base, __ct__1MFv ->
  * gl_func_00000000_15fc_m, __vtbl__1G -> gl_data_00000000_15fc. The data
  * words are pinned at their USO offsets (D_15FC_* in undefined_syms_auto.txt). */

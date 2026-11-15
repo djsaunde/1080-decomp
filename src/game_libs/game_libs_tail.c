@@ -3317,13 +3317,13 @@ void gl_func_0000E230(int *a0) {
     }
 }
 
-/* gl_func_0000E2A4: destructor — conditionally release 8 sub-objects of `o`.
+/* hud_releaseGadgets: destructor — conditionally release 8 sub-objects of `o`.
  * For each of fields 0x6C, 0x70, 0x8C, 0x78, 0x80, 0x84, 0x94, 0x98: if
  * non-null, cb(field). MATCHED 2026-05-29 (fresh decode, first attempt): the
  * `if (o->field) cb(o->field)` chain emits the beqzl-with-next-load-in-delay
  * idiom; cb is the gl_func_00000000 release placeholder. */
 extern int gl_func_00000000();
-void gl_func_0000E2A4(int *o) {
+void hud_releaseGadgets(int *o) {
     if (o[0x6C / 4]) gl_func_00000000(o[0x6C / 4]);
     if (o[0x70 / 4]) gl_func_00000000(o[0x70 / 4]);
     if (o[0x8C / 4]) gl_func_00000000(o[0x8C / 4]);
@@ -3470,7 +3470,7 @@ void game_libs_func_0000E490(char *a0) {
     *p = *p & ~4;
 }
 
-void gl_func_0000E4A8(int *a0) {
+void hud_initSprites_0000E4A8(int *a0) {
     int r;
     r = gl_func_00000000(0, &D_00000000, 16, 320, 1, 10);
     a0[0x58 / 4] = r;
@@ -3480,7 +3480,7 @@ void gl_func_0000E4A8(int *a0) {
     gl_func_00000000(r, -1);
 }
 
-void gl_func_0000E53C(int *a0) {
+void hud_initSprites_0000E53C(int *a0) {
     int r;
     r = gl_func_00000000(0, &D_00000000, 352, 17, 11, 1);
     a0[0x64 / 4] = r;
@@ -3490,7 +3490,7 @@ void gl_func_0000E53C(int *a0) {
     gl_func_00000000(r, -4);
 }
 
-/* gl_func_0000E5D0: 39-insn factory + 2-threshold side-effect (0x9C, frame 0x20).
+/* hud_initSprites_0000E5D0: 39-insn factory + 2-threshold side-effect (0x9C, frame 0x20).
  *
  *   factory = func1(0, &D_00000000, 0xC0, 0xB, 0xC, 1); self->[0x60] = factory;
  *   func2(factory, -2);
@@ -3507,7 +3507,7 @@ void gl_func_0000E53C(int *a0) {
  * docs/IDO_CODEGEN.md#wave3-round2-38c0-15fc). */
 struct gl_E5D0_factory { int n; char pad[0x1c]; int *sub; };
 extern void gl_func_00000000_e5d0_v();
-void gl_func_0000E5D0(int *self) {
+void hud_initSprites_0000E5D0(int *self) {
     struct gl_E5D0_factory *factory =
         (struct gl_E5D0_factory *)gl_func_00000000(0, &D_00000000, 0xC0, 0xB, 0xC, 1);
     self[0x60 / 4] = (int)factory;
@@ -3522,7 +3522,7 @@ void gl_func_0000E5D0(int *self) {
     }
 }
 
-/* gl_func_0000E66C: 31-insn lazy-init + 4-arg + linked-set (0x7C, frame 0x28).
+/* hud_addPointsGadgetList: 31-insn lazy-init + 4-arg + linked-set (0x7C, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   if (self->[0x58] == 0) gl_func(self);            // lazy-init
@@ -3540,7 +3540,7 @@ void gl_func_0000E5D0(int *self) {
  * (the object) — held across the 3rd call (spilled + reloaded), with the 3rd call's
  * return DISCARDED — NOT on the 3rd call's return (the prior wrong decode). Same
  * back-link-finalizer family shape as gl_func_0003FF44. */
-void gl_func_0000E66C(int *self) {
+void hud_addPointsGadgetList(int *self) {
     int *obj;
     if (self[0x58 / 4] == 0) {
         gl_func_00000000(self);
@@ -3554,7 +3554,7 @@ void gl_func_0000E66C(int *self) {
     obj[0x14 / 4] = (int)self;
 }
 
-/* gl_func_0000E6E8: 45-insn lazy-init + 4-call chain + linked-set finalizer (0xB4, frame 0x30).
+/* hud_addSpeedGadget: 45-insn lazy-init + 4-call chain + linked-set finalizer (0xB4, frame 0x30).
  *
  * Decoded structure (raw-word disasm):
  *   self->[0x74] = a3_float;                          // save float-arg pointer
@@ -3568,13 +3568,13 @@ void gl_func_0000E66C(int *self) {
  *   obj->[0x14] = self;                                // back-link
  *
  * The tail (last 2 stmts) is the back-link-with-conditional-flag idiom
- * also seen in gl_func_0000E66C, gl_func_0000EAAC, gl_func_000525F0 —
+ * also seen in hud_addPointsGadgetList, hud_addCoolGadget, gl_func_000525F0 —
  * this is the 4th sibling confirming a SHARED LINKED-SET FINALIZER
  * pattern across 1080's game_libs.
  *
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
  * feedback_doc_marker_is_bail.md. 2026-05-29: 99.27% -> 99.82% by applying the
- * gl_func_0000E84C pattern (store factory result straight to self->0x70, re-read
+ * hud_addCourseGadget pattern (store factory result straight to self->0x70, re-read
  * self->0x70 inline per call, dedicated `q` spanning func5+final) — this fixed
  * the reloaded-obj register (was $a3, now $a1). RESIDUAL (8 frame-cascade diffs):
  * target frame -48 has an 8-byte UNUSED alignment gap that IDO here packs away
@@ -3601,7 +3601,7 @@ void gl_func_0000E66C(int *self) {
  * target layout (rule 4 dead-local sizing: the gap was 8 bytes, the pad must
  * match it). Same lever cracked E79C + E910 same day.
  */
-void gl_func_0000E6E8(int *self, int a1, int a2, float *a3_float) {
+void hud_addSpeedGadget(int *self, int a1, int a2, float *a3_float) {
     int *q;
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self[0x74 / 4] = (int)a3_float;
@@ -3620,9 +3620,9 @@ void gl_func_0000E6E8(int *self, int a1, int a2, float *a3_float) {
 }
 
 
-/* gl_func_0000E79C: 44-insn lazy-init + 4-call chain + linked-set finalizer (0xB0, frame 0x30).
+/* hud_addCountDownGadget: 44-insn lazy-init + 4-call chain + linked-set finalizer (0xB0, frame 0x30).
  *
- * Sibling of gl_func_0000E6E8 with different field offsets and one extra
+ * Sibling of hud_addSpeedGadget with different field offsets and one extra
  * a2 arg on the factory call. Same overall pattern.
  *
  * Decoded structure (raw-word disasm):
@@ -3637,11 +3637,11 @@ void gl_func_0000E6E8(int *self, int a1, int a2, float *a3_float) {
  *   if (obj->[0x14] != 0) obj->[0x4] = 1;
  *   obj->[0x14] = self;
  *
- * Same finalizer tail as gl_func_0000E66C / EAAC / 525F0 / E6E8 (5th
+ * Same finalizer tail as hud_addPointsGadgetList / EAAC / 525F0 / E6E8 (5th
  * sibling — per feedback_1080_linked_set_finalizer_tail_idiom memo).
  *
  * Replaced 1-line "Multi-pass decode pending" bail-marker 2026-05-19 per
- * feedback_doc_marker_is_bail.md. 2026-05-29: applied the gl_func_0000E84C
+ * feedback_doc_marker_is_bail.md. 2026-05-29: applied the hud_addCourseGadget
  * pattern (factory result straight to self->0x84, re-read inline per call,
  * dedicated `q` spanning func5+final) -> 99.82%, fixing the reloaded-obj reg
  * ($a3 -> $a1). RESIDUAL = the SAME 8-byte frame-alignment gap as E6E8 (target
@@ -3649,7 +3649,7 @@ void gl_func_0000E6E8(int *self, int a1, int a2, float *a3_float) {
  * gap is a consistent family spill-slot-packing cap, not float-related.
  * INCLUDE_ASM remains build path.
  */
-void gl_func_0000E79C(int *self, int a1, int a2, int *a3_int_ptr) {
+void hud_addCountDownGadget(int *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];  /* phantom-slot lever, 8-byte form (wave-2 2026-06-11) */
     self[0x88 / 4] = (int)a3_int_ptr;
@@ -3668,7 +3668,7 @@ void gl_func_0000E79C(int *self, int a1, int a2, int *a3_int_ptr) {
 }
 
 
-/* gl_func_0000E84C: constructor. obj = cb(0, a3); s0->0x80 = obj. Then marshals
+/* hud_addCourseGadget: constructor. obj = cb(0, a3); s0->0x80 = obj. Then marshals
  * obj with: cb(obj, 0.0f, 0.0f); cb(obj, f38, f3C, f38, f3C) [floats as raw bits
  * in int regs/stack via mfc1]; cb(obj, i38, i3C, i40) [same fields as int];
  * cb(obj, a1, a2); cb(s0+0x10, obj). Ends: if (obj->0x14) obj->4 = 1; obj->0x14
@@ -3683,7 +3683,7 @@ void gl_func_0000E79C(int *self, int a1, int a2, int *a3_int_ptr) {
 extern int gl_func_00000000();
 extern void gl_func_00000000_e84c2(int, float, float);
 extern void gl_func_00000000_e84c4(int, float, float, float, float);
-void gl_func_0000E84C(int *s0, int a1, int a2, int a3) {
+void hud_addCourseGadget(int *s0, int a1, int a2, int a3) {
     int *q;
     s0[0x80 / 4] = gl_func_00000000(0, a3);
     gl_func_00000000_e84c2(s0[0x80 / 4], 0.0f, 0.0f);
@@ -3698,7 +3698,7 @@ void gl_func_0000E84C(int *s0, int a1, int a2, int a3) {
     q[0x14 / 4] = (int)s0;
 }
 
-/* gl_func_0000E910: 44-insn lazy-init + 4-call chain + linked-set finalizer (0xB0, frame 0x30).
+/* hud_addTimeGadget: 44-insn lazy-init + 4-call chain + linked-set finalizer (0xB0, frame 0x30).
  *
  * 6th sibling of the E66C/EAAC/525F0/E6E8/E79C linked-set finalizer family
  * (per feedback_1080_linked_set_finalizer_tail_idiom memo). Distinguished
@@ -3720,7 +3720,7 @@ void gl_func_0000E84C(int *s0, int a1, int a2, int a3) {
  * lands BEFORE that store (both paths execute it). Moving it after the `if` makes
  * a3 live across func1() so IDO homes it at entry (sw a3) + reloads — exactly the
  * "2 insns mine lacks" the old comment misattributed to a regalloc cap. Also
- * applied the gl_func_0000E84C pattern (factory result straight to self->0x78,
+ * applied the hud_addCourseGadget pattern (factory result straight to self->0x78,
  * re-read inline per call, dedicated `q`). 2026-06-10 FRAME CRACKED:
  * `volatile int pad;` (unused, declared after q) reserves the missing
  * 8-byte slot WITHOUT emitting any access -- the -O2 phantom-slot
@@ -3730,7 +3730,7 @@ void gl_func_0000E84C(int *s0, int a1, int a2, int a3) {
  * and the spill goes above; the target has them swapped, and local-vs-
  * spill slot ordering is not C-controllable (3 placements tested).
  * TRY THE SAME PAD ON E6E8/E79C (same family gap). */
-void gl_func_0000E910(int *self, int a1, int a2, int *a3_int_ptr) {
+void hud_addTimeGadget(int *self, int a1, int a2, int *a3_int_ptr) {
     int *q;
     volatile int pad[2];
     if (self[0x60 / 4] == 0) {
@@ -3749,11 +3749,11 @@ void gl_func_0000E910(int *self, int a1, int a2, int *a3_int_ptr) {
 }
 
 
-/* gl_func_0000E9C0: linked-set-finalizer family member with FP color init.
+/* hud_addPointsGadget: linked-set-finalizer family member with FP color init.
  * Lazy-init self->0x60; self->0x90 = a3; obj = factory(0, self->0x60) -> 0x8C;
  * cb(obj, a1, a2); write RGBA {250,235,100,0}/255 to obj+0xC4..0xD0; cb(self+0x10,
  * obj); finalizer (if obj->0x14 set obj->4=1; obj->0x14=self). Fresh decode
- * 2026-05-29 via the gl_func_0000E84C pattern + inv-divisor runtime div.s.
+ * 2026-05-29 via the hud_addCourseGadget pattern + inv-divisor runtime div.s.
  * EXACT 2026-07-15 (was 99.20; the "not reachable from C" $a1 cap RETRACTED).
  * Cracks: (1) the color-base is q ITSELF advanced destructively
  * (q = self->0x8C; q = (int*)((char*)q + 0xC4)) — same-name web reuse binds
@@ -3765,7 +3765,7 @@ void gl_func_0000E910(int *self, int a1, int a2, int *a3_int_ptr) {
  * lazy-flag spilltemp to 32(sp) (frame 48 unchanged: q=44, inv=40, pad=36,
  * temp=32). */
 extern int gl_func_00000000();
-void gl_func_0000E9C0(int *self, int a1, int a2, int a3) {
+void hud_addPointsGadget(int *self, int a1, int a2, int a3) {
     int *q;
     float inv;
     volatile int pad;
@@ -3790,7 +3790,7 @@ void gl_func_0000E9C0(int *self, int a1, int a2, int a3) {
     q[0x14 / 4] = (int)self;
 }
 
-/* gl_func_0000EAAC: 35-insn 4-arg create-and-link (0x8C, frame 0x28).
+/* hud_addCoolGadget: 35-insn 4-arg create-and-link (0x8C, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   self->[0x9C] = a3;                              // store user data slot
@@ -3803,15 +3803,15 @@ void gl_func_0000E9C0(int *self, int a1, int a2, int a3) {
  *   node->[0x14] = self;                            // back-link
  *
  * The tail (last 2 stmts) is the same back-link-with-conditional-flag
- * pattern as gl_func_0000E66C — shared linked-set finalizer family.
+ * pattern as hud_addPointsGadgetList — shared linked-set finalizer family.
  *
- * MATCHED 2026-05-29 via the gl_func_0000E84C pattern: store the factory result
+ * MATCHED 2026-05-29 via the hud_addCourseGadget pattern: store the factory result
  * straight to self->0x98, re-read self->0x98 inline for each call (don't cache
  * the node in an $s-reg), and use a dedicated `q` spanning the link call + the
  * finalizer. The simplest family member (no lazy-init, no a3-home-across-call)
  * so it has no frame-alignment gap — full byte match.
  */
-void gl_func_0000EAAC(int *self, int a1, int a2, int a3) {
+void hud_addCoolGadget(int *self, int a1, int a2, int a3) {
     int *q;
     self[0x9C / 4] = a3;
     self[0x98 / 4] = gl_func_00000000(0, 0x4B);

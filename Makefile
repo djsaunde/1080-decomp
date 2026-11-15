@@ -1723,8 +1723,8 @@ GAMELIBS_15FC_DONOR := build/src/game_libs/game_libs_ncc_15FC.cpp.o
 $(GAMELIBS_15FC_DONOR): src/game_libs/game_libs_ncc_15FC.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym __ct__1GFi=gl_func_000015FC --redefine-sym __ct__1BFPc=gl_func_00000000_15fc_base --redefine-sym __ct__1MFv=gl_func_00000000_15fc_m --redefine-sym __vtbl__1G=gl_data_00000000_15fc $@
-build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += gl_func_000015FC=$(GAMELIBS_15FC_DONOR)
+	$(OBJCOPY) --redefine-sym __ct__1GFi=CoolGadget_ctor --redefine-sym __ct__1BFPc=gl_func_00000000_15fc_base --redefine-sym __ct__1MFv=gl_func_00000000_15fc_m --redefine-sym __vtbl__1G=gl_data_00000000_15fc $@
+build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: private REPLACE_FUNC_BODY += CoolGadget_ctor=$(GAMELIBS_15FC_DONOR)
 build/src/game_libs/game_libs.c.o build/non_matching/src/game_libs/game_libs.c.o: $(GAMELIBS_15FC_DONOR)
 # 7344 = per-panel HUD-element updater (7-entry jumptable switch), IDO 7.1
 # -O2 donor: game_libs_o2_7344.c (225/225 word-exact). Spliced only so the
