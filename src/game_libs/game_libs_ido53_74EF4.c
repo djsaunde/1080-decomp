@@ -39,14 +39,8 @@
  *   - imported kernel data (__osViIntrCount/__osCurrentTime/
  *     __osBaseCounter) and all jals: blank USO relocs -> pins = 0.
  * Spliced into game_libs_post2b_f.c.o via REPLACE_FUNC_BODY. */
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
-typedef int s32;
-typedef unsigned long long u64;
-typedef void *OSMesg;
-typedef s32 OSPri;
-typedef u64 OSTime;
+#include "libultra/os_pi.h"    /* OSMesgQueue, OSIoMesgHdr, OSIoMesg, OSDevMgr, OSThread (were private copies) */
+#include "libultra/os_timer.h" /* OSTime */
 
 typedef struct {
     u16 state;       /* 0x00 */
@@ -58,55 +52,9 @@ typedef struct {
     OSMesg msg;      /* 0x14 */
 } __OSViContext;
 
-typedef struct OSMesgQueue_s {
-    void *mtqueue;   /* 0x00 (OSThread *) */
-    void *fullqueue; /* 0x04 */
-    s32 validCount;  /* 0x08 */
-    s32 first;       /* 0x0C */
-    s32 msgCount;    /* 0x10 */
-    OSMesg *msg;     /* 0x14 */
-} OSMesgQueue;
-
-typedef struct {
-    u16 type;        /* 0x00 */
-    u8 pri;          /* 0x02 */
-    u8 status;       /* 0x03 */
-    OSMesgQueue *retQueue; /* 0x04 */
-} OSIoMesgHdr;
-
-typedef struct {
-    OSIoMesgHdr hdr; /* 0x00 */
-    void *dramAddr;  /* 0x08 */
-    u32 devAddr;     /* 0x0C */
-    u32 size;        /* 0x10 */
-    void *piHandle;  /* 0x14 */
-} OSIoMesg;
-
-typedef struct {
-    s32 active;      /* 0x00 */
-    void *thread;    /* 0x04 */
-    OSMesgQueue *cmdQueue; /* 0x08 */
-    OSMesgQueue *evtQueue; /* 0x0C */
-    OSMesgQueue *acsQueue; /* 0x10 */
-    s32 (*dma)(s32, u32, void *, u32);      /* 0x14 */
-    s32 (*edma)(void *, s32, u32, void *, u32); /* 0x18 */
-} OSDevMgr;
-
-typedef struct OSThread_s {
-    struct OSThread_s *next; /* 0x000 */
-    OSPri priority;          /* 0x004 */
-    u8 pad[0x1A8];           /* 0x008 .. 0x1B0 (full 2.0I OSThread) */
-} OSThread;
-
 #define OS_VIM_STACKSIZE 0x1000
 #define OS_EVENT_COUNTER 3
 #define OS_EVENT_VI 7
-#define OS_MESG_TYPE_VRETRACE 13
-#define OS_MESG_TYPE_COUNTER 14
-#define OS_MESG_PRI_NORMAL 0
-#define OS_MESG_BLOCK 1
-#define OS_MESG_NOBLOCK 0
-#define NULL 0
 #define TRUE 1
 
 /* __osViDevMgr: DEFINED in-TU (structural key #2 above); the splice
