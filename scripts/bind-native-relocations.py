@@ -2,8 +2,8 @@
 """Give native relocations distinct audited carrier names; never edit .text.
 
 Uses the existing standard-library ELF editor, so building C objects needs no
-new Python dependency. Bindings are checked independently against the original
-ROM by verify-match-ports.py; input and output function bytes must agree.
+new Python dependency. Input and output function bytes must agree; the final
+check of the bound bodies is the byte-identical ROM build.
 """
 from pathlib import Path
 import argparse,json,hashlib,importlib.util,struct
