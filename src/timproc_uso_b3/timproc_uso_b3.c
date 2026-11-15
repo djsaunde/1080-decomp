@@ -1294,20 +1294,18 @@ void timproc_uso_b3_func_000021F4(void) {
     gl_func_00000000(gl_ref_0000020C, -1, 0);
 }
 
-/* vram 0x2238: 2-word stolen-prologue orphan (lui $a0,%hi; lw $a0,0x148($a0)
- * ahead of func_00002240's prologue; twin of b1's 0x2028 orphan).
- * Standalone 2-word GLOBAL_ASM emits exactly. */
-#pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b3/timproc_uso_b3/timproc_uso_b3_orphan_00002238.s")
-
-/* Dual-branch state setter, twin of timproc_uso_b1_func_00002030.
- * MATCHED 2026-06-10 (31/31) -- see the b1 twin for the full story:
- * first call arg = PARAM+4 (old decode error), one shared +0x208 call
+/* Dual-branch state setter, twin of timproc_uso_b1_func_00002028.
+ * Starts at 0x2238 (was split as a 2-word orphan + func_00002240 taking
+ * a0 as a parameter): the lui/lw of D+0x148 is the first call's argument,
+ * hoisted by IDO above the addiu sp prologue (see the b1 twin).
+ * MATCHED 2026-06-10 (31/31) as 2240 -- see the b1 twin for the full story:
+ * first call arg = pointer+4, one shared +0x208 call
  * target, volatile pointer-fetch cur (+0x20C), and the if(1){} BB-split
  * in each arm (v0/v1 lever). */
 extern int D_call_b3_2240_a;
 extern int * volatile D_cur_b3_2240;
-void timproc_uso_b3_func_00002240(char *a0) {
-    if (gl_func_00000000(a0 + 4) != 0) {
+void timproc_uso_b3_func_00002238(void) {
+    if (gl_func_00000000(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
         gl_func_00000000(D_call_b3_2240_a);
         if (1) {}
         D_cur_b3_2240[0x14] = 2;
@@ -1888,6 +1886,6 @@ void timproc_uso_b3_func_00003050(int *a0, int a1) {
  *   _00001920: exists as its own 8-byte NM symbol after 1870 (correct).
  *   _000021F4: was missing entirely (no INCLUDE_ASM line; -0x4C damage) --
  *   restored at its address-ordered position after 21B0.
- *   _00002238: 2-word stolen-prologue orphan, now a standalone GLOBAL_ASM
- *   block after 21F4. Block byte-verified vs assets/timproc_uso_block_3.bin
- *   (only reloc-class lui/jal field diffs remain). */
+ *   _00002238: was a 2-word stolen-prologue orphan; merged 2026-11-15 into
+ *   timproc_uso_b3_func_00002238 (formerly _00002240) as its hoisted first
+ *   load, compiled from C. */

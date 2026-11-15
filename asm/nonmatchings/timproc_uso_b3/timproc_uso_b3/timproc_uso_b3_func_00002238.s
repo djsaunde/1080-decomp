@@ -1,6 +1,8 @@
-nonmatching timproc_uso_b3_func_00002240, 0x7C
+nonmatching timproc_uso_b3_func_00002238, 0x84
 
-glabel timproc_uso_b3_func_00002240
+glabel timproc_uso_b3_func_00002238
+    /* 002238 00002238 3C040000 */  .word 0x3C040000
+    /* 00223C 0000223C 8C840148 */  .word 0x8C840148
     /* 002240 00002240 27BDFFE8 */  .word 0x27BDFFE8
     /* 002244 00002244 AFBF0014 */  .word 0xAFBF0014
     /* 002248 00002248 0C000000 */  .word 0x0C000000
@@ -32,4 +34,4 @@ glabel timproc_uso_b3_func_00002240
     /* 0022B0 000022B0 27BD0018 */  .word 0x27BD0018
     /* 0022B4 000022B4 03E00008 */  .word 0x03E00008
     /* 0022B8 000022B8 00000000 */  .word 0x00000000
-endlabel timproc_uso_b3_func_00002240
+endlabel timproc_uso_b3_func_00002238
