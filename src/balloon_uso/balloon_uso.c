@@ -1,5 +1,7 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
+#include "gdl/mnode.h" /* SNode (scale +0x70) */
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -112,4 +114,39 @@ void balloon_uso_func_0000042C(char *self, int *msg) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/balloon_uso/balloon_uso", balloon_uso_func_0000047C);
+/* balloon_uso_func_0000047C: BalloonTmpl create. Builds the template's PolyShape
+ * on first use (gPolyFlags |= 8 and gPolyGeomMode = {0, 0xAA002} around the
+ * PolyShape_ctor, as bootup TreeTmpl_create), then new Balloon, scale 10,
+ * handleMsg (vtable slot 4) with tag 19 and attach the shape under it (the
+ * SNodeItemType_newItem template). Same levers as fire 148: 12-byte NodeMsg +
+ * `volatile int pad` (frame 0x38), `if (o) {}` (o in v1), and the TreeTmpl
+ * `if (1) {}` after the flag store (keeps the flag luis ahead of the branch).
+ * The ctor jal field is 0 in the ROM (USO TextReloc), so it is called via CALL. */
+extern int gPolyFlags_3EEC4_tmpl_rd, gPolyFlags_3EEC4_tmpl_wr;
+extern int gPolyGeomMode_3EEC8_tmpl[2];
+Node *balloon_uso_func_0000047C(char *tmpl) {
+    NodeMsg msg;
+    Node *o;
+    Node *shape;
+    volatile int pad;
+
+    if (*(Node **)(tmpl + 0x40) == 0) {
+        gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
+        if (1) {}
+        gPolyGeomMode_3EEC8_tmpl[1] = 0xAA002;
+        gPolyGeomMode_3EEC8_tmpl[0] = 0;
+        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x41A8, *(int *)(tmpl + 0x48), 0);
+    }
+    o = (Node *)CALL(balloon_uso_func_00000140)(0);
+    if (o) {}
+    SNODE(o)->scale = 10.0f;
+    msg.tag = 19;
+    VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
+    shape = *(Node **)(tmpl + 0x40);
+    CALL(list_append)(&o->children, shape);
+    if (shape->parent != 0) {
+        shape->unk04 = 1;
+    }
+    shape->parent = o;
+    return o;
+}

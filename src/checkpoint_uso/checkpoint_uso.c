@@ -1,5 +1,7 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
+#include "gdl/mnode.h" /* SNode (scale +0x70) */
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -92,9 +94,105 @@ void checkpoint_uso_func_00000694(char *self, int *msg) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000006F0);
+int *checkpoint_uso_func_000000E0(char *self);
+int *checkpoint_uso_func_0000058C(char *self, int arg);
+extern int gPolyFlags_3EEC4_tmpl_rd, gPolyFlags_3EEC4_tmpl_wr;
+extern int gPolyGeomMode_3EEC8_tmpl[2];
+extern int gCollObjMgr_tmpl;
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000007F4);
+/* checkpoint_uso_func_000006F0: cylinder CheckpointTmpl create. Builds the
+ * template's PolyShape on first use (as balloon 47C / bootup TreeTmpl_create),
+ * new cylinder checkpoint (0xE0), scale 10, handleMsg (vtable slot 4) tag 19,
+ * attach the shape, then register its two CollObjs (+0x8C, +0xCC) as statics.
+ * Levers as fire 148 / balloon 47C (NodeMsg + volatile pad frame, `if (o) {}`
+ * after the ctor, `if (1) {}` after the flag store); here o lands in s0.
+ * The ROM leaves these local ctor jal fields 0 (filled by the USO TextReloc),
+ * so the ctor calls go through CALL (the zero placeholder), not a direct call. */
+Node *checkpoint_uso_func_000006F0(char *tmpl) {
+    NodeMsg msg;
+    Node *o;
+    Node *shape;
+    volatile int pad;
 
-INCLUDE_ASM("asm/nonmatchings/checkpoint_uso/checkpoint_uso", checkpoint_uso_func_000008E8);
+    if (*(Node **)(tmpl + 0x40) == 0) {
+        gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
+        if (1) {}
+        gPolyGeomMode_3EEC8_tmpl[1] = 0xAA002;
+        gPolyGeomMode_3EEC8_tmpl[0] = 0;
+        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EE8, *(int *)(tmpl + 0x48), 0);
+    }
+    o = (Node *)CALL(checkpoint_uso_func_000000E0)(0);
+    if (o) {}
+    SNODE(o)->scale = 10.0f;
+    msg.tag = 19;
+    VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
+    shape = *(Node **)(tmpl + 0x40);
+    CALL(list_append)(&o->children, shape);
+    if (shape->parent != 0) {
+        shape->unk04 = 1;
+    }
+    shape->parent = o;
+    CALL(CollObjMgr_addStatic)(gCollObjMgr_tmpl, (char *)o + 0x8C);
+    CALL(CollObjMgr_addStatic)(gCollObjMgr_tmpl, (char *)o + 0xCC);
+    return o;
+}
+
+/* checkpoint_uso_func_000007F4: box CheckpointTmpl create: the 6F0 shape with
+ * geomMode 0x8A002, the shape data at tmpl+0x4C, new box checkpoint
+ * (0x58C, passed tmpl+0x48) and one static CollObj (+0x88). */
+Node *checkpoint_uso_func_000007F4(char *tmpl) {
+    NodeMsg msg;
+    Node *o;
+    Node *shape;
+    volatile int pad;
+
+    if (*(Node **)(tmpl + 0x40) == 0) {
+        gPolyFlags_3EEC4_tmpl_wr = gPolyFlags_3EEC4_tmpl_rd | 8;
+        if (1) {}
+        gPolyGeomMode_3EEC8_tmpl[1] = 0x8A002;
+        gPolyGeomMode_3EEC8_tmpl[0] = 0;
+        *(Node **)(tmpl + 0x40) = (Node *)CALL(PolyShape_ctor)(0, &D_00000000 + 0x3EF0, *(int *)(tmpl + 0x4C), 0);
+    }
+    o = (Node *)CALL(checkpoint_uso_func_0000058C)(0, *(int *)(tmpl + 0x48));
+    if (o) {}
+    SNODE(o)->scale = 10.0f;
+    msg.tag = 19;
+    VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
+    shape = *(Node **)(tmpl + 0x40);
+    CALL(list_append)(&o->children, shape);
+    if (shape->parent != 0) {
+        shape->unk04 = 1;
+    }
+    shape->parent = o;
+    CALL(CollObjMgr_addStatic)(gCollObjMgr_tmpl, (char *)o + 0x88);
+    return o;
+}
+
+/* checkpoint_uso_func_000008E8: the checkpoint ColourItem type's create: alloc
+ * 0x40, ColourItem_ctor, vtable (bootup Data+0x75A0), clear +0x3C, attach the
+ * type's +0x40 node. Byte-identical to eddproc edd_ItemType_create_000003BC;
+ * its body is ported verbatim (the p1 / p2 split and the p1 reuse for tmpl are
+ * load-bearing, see the edd comment). */
+void *checkpoint_uso_func_000008E8(int *arg0) {
+    int *p2;
+    int *head;
+    int *p1;
+    p1 = (int *)CALL(mem_new)(0x40);
+    if (p1 != 0) {
+        CALL(ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (char *)&D_00000000;
+        p1[0x3C / 4] = 0;
+    }
+    p2 = p1;
+    p1 = arg0;
+    head = (int *)p1[0x40 / 4];
+    if ((int *)p1[0x40 / 4] != 0) {
+        CALL(list_append)((char *)p2 + 0x10, head);
+        if ((int)NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
+        }
+        NODE(head)->parent = (Node *)p2;
+    }
+    return p2;
+}
 

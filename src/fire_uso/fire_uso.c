@@ -1,5 +1,7 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"  /* Node, NodeMsg, VT_SLOT */
+#include "gdl/mnode.h" /* SNode (scale +0x70) */
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -26,12 +28,33 @@ INCLUDE_ASM("asm/nonmatchings/fire_uso/fire_uso", fire_uso_func_00000000);
 int *fire_uso_func_00000270(char *self, int sprite);
 
 /* fire_uso_func_00000148: FireTmpl create: new Fire(tmpl->sprite), scale 1,
- * virtual handleMsg (vtable slot at +0x28) with message 19, then link into the
- * sprite's list. not matched yet (an NM body scored 74%): the target keeps the new object in v1
- * (v0 reused for the vtable), homes it at sp+0x28 with the message at sp+0x2C
- * (frame 0x38), reads tmpl->sprite from a0 before the home store and leaves the
- * jalr delay slot empty; cfe and NCC (real class + new) both give frame 0x30. */
-INCLUDE_ASM("asm/nonmatchings/fire_uso/fire_uso", fire_uso_func_00000148);
+ * handleMsg (vtable slot 4) with tag 19, then attach the template's sprite node
+ * under the new object (the SNodeItemType_newItem template, game_libs 3DD28).
+ * Levers: the 12-byte NodeMsg plus one unused `volatile int pad` give frame 0x38
+ * with the message at sp+0x2C; the code-free `if (o) {}` after the ctor call keeps
+ * o off v0 (the target's `move v1,v0`, v0 reused for the vtable, empty jalr slot);
+ * the second tmpl->sprite read is a fresh load.
+ * The ctor jal field is 0 in the ROM (USO TextReloc), so it is called via CALL. */
+Node *fire_uso_func_00000148(char *tmpl) {
+    NodeMsg msg;
+    Node *o;
+    Node *node;
+    volatile int pad;
+
+    node = *(Node **)(tmpl + 0x40);
+    o = (Node *)CALL(fire_uso_func_00000270)(0, (int)node);
+    if (o) {}
+    SNODE(o)->scale = 1.0f;
+    msg.tag = 19;
+    VT_SLOT(o->vptr, 4).fn((char *)o + VT_SLOT(o->vptr, 4).delta, &msg);
+    node = *(Node **)(tmpl + 0x40);
+    CALL(list_append)(&o->children, node);
+    if (node->parent != 0) {
+        node->unk04 = 1;
+    }
+    node->parent = o;
+    return o;
+}
 
 /* Fire_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */
 void fire_uso_func_000001E4(char *self) {
