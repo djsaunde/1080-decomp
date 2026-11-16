@@ -658,7 +658,7 @@ void Friction_applyContact(char *arg0, f32 arg1, char *arg2, f32 arg3) {
 
     if (arg1 < 10.0f) {
         /* arg2 = the unit contact normal */
-        *(V3i_63F34 *)&sp44 = *(V3i_63F34 *)FRICTION(arg0)->unk114;
+        *(V3i_63F34 *)&sp44 = *(V3i_63F34 *)FRICTION(arg0)->contactDelta;
         temp_f0 = (sp44.unk8 * *(f32 *)(arg2 + 0x8)) + ((sp44.unk4 * *(f32 *)(arg2 + 0x4)) + (*(f32 *)(arg2 + 0x0) * (0, sp44.unk0)));
         sp44.unk0 = (*(f32 *)(arg2 + 0x0) * (0, temp_f0)) - sp44.unk0;
         sp44.unk4 = (*(f32 *)(arg2 + 0x4) * (0, temp_f0)) - sp44.unk4;
@@ -723,9 +723,9 @@ void Friction_reset_00064124(char *a0) {
     FRICTION(a0)->unk12C[0] = 0.0f;
     FRICTION(a0)->unk12C[1] = 0.0f;
     FRICTION(a0)->unk12C[2] = 0.0f;
-    FRICTION(a0)->unk108[0] = 0.0f;
-    FRICTION(a0)->unk108[1] = 0.0f;
-    FRICTION(a0)->unk108[2] = 0.0f;
+    FRICTION(a0)->prevContact[0] = 0.0f;
+    FRICTION(a0)->prevContact[1] = 0.0f;
+    FRICTION(a0)->prevContact[2] = 0.0f;
     FRICTION(a0)->unk144 = (float)0;
 }
 
@@ -1750,8 +1750,10 @@ void DNode_solveContacts(char *arg0) {
  * reconstruct the original 0x68-byte frame without runtime padding operations.
  * Bootup Text 0x7A038 is exported as Sym2413; no instruction relocations.
  */
+/* The attached objects are Frictions (include/gdl/dnode.h): the +0xDC / +0x108 / +0x114 / +0x120
+ * fields read here are Friction cvqs.trans / prevContact / contactDelta / contactPoint, and
+ * Friction_applyContact pushes the owner at contactPoint along contactDelta. */
 typedef struct Node659D0 {char *data; struct Node659D0 *next;} Node659D0;
-#define VEC_FIELD_659D0(p, o) (*(float *)((char *)(p) + (o)))
 void DNode_updateAttached(char *self) {
     Node659D0 *it[2];
     float x,y,z;
@@ -1777,28 +1779,28 @@ void DNode_updateAttached(char *self) {
     child = value;
     if (value) {
         do {
-            value = child + 0x120;
-            previous = (float *)(child + 0x108);
-            *(Vec3 *)common = *(Vec3 *)(child + 0xDC);
-            VEC_FIELD_659D0(child,0x120) = common[0];
-            VEC_FIELD_659D0(child,0x124) = common[1];
-            VEC_FIELD_659D0(child,0x128) = common[2];
-            VEC_FIELD_659D0(child,0x120) += DNODE(self)->vel[0];
-            VEC_FIELD_659D0(child,0x124) += DNODE(self)->vel[1];
-            VEC_FIELD_659D0(child,0x128) += DNODE(self)->vel[2];
+            value = (char *)FRICTION(child)->contactPoint;
+            previous = FRICTION(child)->prevContact;
+            *(Vec3 *)common = *(Vec3 *)FRICTION(child)->cvqs.trans;
+            FRICTION(child)->contactPoint[0] = common[0];
+            FRICTION(child)->contactPoint[1] = common[1];
+            FRICTION(child)->contactPoint[2] = common[2];
+            FRICTION(child)->contactPoint[0] += DNODE(self)->vel[0];
+            FRICTION(child)->contactPoint[1] += DNODE(self)->vel[1];
+            FRICTION(child)->contactPoint[2] += DNODE(self)->vel[2];
             do {
-                x = VEC_FIELD_659D0(value,0) - previous[0]; y = VEC_FIELD_659D0(value,4) - previous[1]; z = VEC_FIELD_659D0(value,8) - previous[2];
+                x = ((float *)value)[0] - previous[0]; y = ((float *)value)[1] - previous[1]; z = ((float *)value)[2] - previous[2];
                 delta[0] = x; delta[1] = y; delta[2] = z;
             } while (0);
             *(Vec3 *)common = *(Vec3 *)delta;
             *(Vec3 *)out = *(Vec3 *)common;
-            VEC_FIELD_659D0(child,0x114) = out[0];
-            VEC_FIELD_659D0(child,0x118) = out[1];
-            VEC_FIELD_659D0(child,0x11C) = out[2];
+            FRICTION(child)->contactDelta[0] = out[0];
+            FRICTION(child)->contactDelta[1] = out[1];
+            FRICTION(child)->contactDelta[2] = out[2];
             *(Vec3 *)common = *(Vec3 *)value;
-            VEC_FIELD_659D0(child,0x108) = common[0];
-            VEC_FIELD_659D0(child,0x10C) = common[1];
-            VEC_FIELD_659D0(child,0x110) = common[2];
+            FRICTION(child)->prevContact[0] = common[0];
+            FRICTION(child)->prevContact[1] = common[1];
+            FRICTION(child)->prevContact[2] = common[2];
             it[0] = it[1];
             if (it[0]) {
                 it[1] = it[0]->next;
@@ -1811,7 +1813,6 @@ void DNode_updateAttached(char *self) {
     }
 }
 
-#undef VEC_FIELD_659D0
 
 /* DNode_quatToMtx_00065B40: quaternion -> 3x3 rotation matrix, BYTE-EXACT 69/69
  * (2026-09-09, agent-g) as ONE function [0x65B40,0x65C54): the 7-word

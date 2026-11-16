@@ -91,9 +91,9 @@ typedef struct DNode {
     /* 0x364 */ char pad364[0x38C - 0x364];
     /* 0x38C */ s32 unk38C;         /* DNode_init 0xFFFF; SnowBoarder_ctor 1 */
     /* 0x390 */ f32 unk390[3];      /* DNode_init (1, 1, 1) */
-    /* 0x39C */ s32 attached;       /* list of attached objects ({data, next} cells): DNode_updateAttached
-                                     * sets each one's +0x120 to its +0xDC plus vel and keeps the
-                                     * frame delta (+0x114) and previous value (+0x108) */
+    /* 0x39C */ s32 attached;       /* list of attached Frictions ({data, next} cells): DNode_updateAttached
+                                     * sets each one's contactPoint to its cvqs.trans plus vel and keeps
+                                     * the frame delta (contactDelta) and previous value (prevContact) */
     /* 0x3A0 */ s32 unk3A0;         /* 0 at ctor */
     /* 0x3A4 */ f32 unk3A4[3];      /* SnowBoarder: startPos */
     /* 0x3B0 */ f32 axes[3][3];     /* rotation matrix of cvqs.quat (DNode_quatToMtx_00065B40);
@@ -143,9 +143,11 @@ typedef struct Friction {
     /* 0x0B4 */ AnimPose vqs;
     /* 0x0DC */ AnimPose cvqs;
     /* 0x104 */ s32 unk104;
-    /* 0x108 */ f32 unk108[3];      /* 0 at reset */
-    /* 0x114 */ f32 unk114[3];      /* the vector vfn11 reflects about the normal */
-    /* 0x120 */ f32 contactPoint[3]; /* world point passed to DNode_addImpulseAt_00065250 */
+    /* 0x108 */ f32 prevContact[3]; /* 0 at reset; contactPoint of the last DNode_updateAttached */
+    /* 0x114 */ f32 contactDelta[3]; /* contactPoint - prevContact (DNode_updateAttached): the vector
+                                     * vfn11 reflects about the normal */
+    /* 0x120 */ f32 contactPoint[3]; /* world point passed to DNode_addImpulseAt_00065250: cvqs.trans
+                                     * + owner vel, set by DNode_updateAttached */
     /* 0x12C */ f32 unk12C[3];      /* 0 at reset */
     /* 0x138 */ char pad138[0x144 - 0x138];
     /* 0x144 */ f32 unk144;         /* 0 at reset */
