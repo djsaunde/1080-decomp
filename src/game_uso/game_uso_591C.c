@@ -437,12 +437,12 @@ yaw_region:
         }
     }
 tail_common:
-        /* self->level, read as unsigned: the member form (even cast) moves the code by 10 words */
-        v0 = *(unsigned int*)((char*)self + 0x2C);
+        /* self->level, read as unsigned through its address: the plain member (even cast) moves the code by 10 words */
+        v0 = *(unsigned int *)&self->level;
         break;
     case 1:
     default:
-        v0 = *(unsigned int*)((char*)self + 0x2C);
+        v0 = *(unsigned int *)&self->level;
         break;
     }
     fsel = v0 == 1 ? self->parms.parm[SNOWAI_PARM_CF].value : (scale = v0 == 2 ? self->parms.parm[SNOWAI_PARM_CF + 1].value : self->parms.parm[SNOWAI_PARM_CF + 2].value, scale);

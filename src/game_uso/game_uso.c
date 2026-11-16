@@ -2850,9 +2850,9 @@ void SnowAI_restoreRiderParms(char *a0) {
 
 /* rider max speed = saved max * dd3 */
 void SnowAI_scaleRiderMax(char *a0) {
-    /* savedMax stays a char-based read: as a member the two loads swap (lwc1 order) */
+    /* savedMax is read through its address: as a plain member the two loads swap (lwc1 order) */
     SnowBParm *t = &((SnowAI *)a0)->rider->parms.max;
-    t->value = ((SnowAI *)a0)->parms.parm[SNOWAI_PARM_DD2 + 1].value * *(float*)(a0 + 0x4C8);
+    t->value = ((SnowAI *)a0)->parms.parm[SNOWAI_PARM_DD2 + 1].value * *(float *)&((SnowAI *)a0)->savedMax;
 }
 
 #ifdef NON_MATCHING
@@ -4630,7 +4630,7 @@ int MemberCallback_invoke_0000BFDC(char *a0) {
     if (pair[1] < 0) {
         fnptr = (int (*)(char *))((MemberCallback *)a0)->pmf.b;
     } else {
-        int sel = *(int*)(pair + 2); /* pmf.b, read through pair (a0 + 0xC moves the code) */
+        int sel = ((Pair2 *)pair)->b; /* pmf.b, read through pair (a0 + 0xC moves the code) */
         idx = (sel == 0 && pair[0] == 0) ? 0x28 : sel;
         sel = (int)((char*)(pair[1] << 3) + *(int*)(arg + idx));
         arg = *(short*)sel + arg;

@@ -28,7 +28,7 @@ void RiderAnim_clearTricks_00011888(void *);
 void RiderAnim_queueState_0000D5F8(void *, PM, int);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-struct V { int *child() { return AT(int *, this, 0x800); } };
+struct V { int *child() { return (int *)((SnowBoarder *)this)->input; } }; /* rider->input */
 extern "C" void RiderAnim_statePreJump(int *a0) {
     int *s0 = a0;
     RA(a0)->curTrick = 0;

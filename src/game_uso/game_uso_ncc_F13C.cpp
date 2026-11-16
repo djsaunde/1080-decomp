@@ -27,7 +27,7 @@ void RiderAnim_startHop_0001001C(void *);
 void RiderAnim_enterState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-struct V { int *child() { return AT(int *, this, 0x800); } };
+struct V { int *child() { return (int *)((SnowBoarder *)this)->input; } }; /* rider->input */
 extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
     int *s0 = a0;
     a1 = ((V *)RA(s0)->rider)->child(); /* rider->input */
