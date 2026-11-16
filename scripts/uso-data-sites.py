@@ -47,7 +47,22 @@ Subcommands:
                      GL_DATA(K) / GL_RODATA(K) / GL_BSS(K). `check` verifies every direct
                      GL_*(K) use (a base site with that section and K in the function) and
                      every *_STR text against the ROM bytes.
-  selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype).
+  selftest           invariants on the tables (counts from USO_FORMAT.md, the DMA prototype),
+                     then the game.uso ones.
+
+game.uso (agent-g run 538): `--uso game` before the subcommand runs sites / calls / census /
+object on game.uso instead (inner header 0x7CC900; its Text = src/game_uso, read from the
+built block object GAME_TEXT_O, whose .text offsets ARE Text section offsets). game_uso sites
+are spelled `(char *)&game_uso_D_<addr> + K` (one zero symbol per address); `check` also
+verifies the named game.uso section offsets in include/game/game_uso_data.h (check_game:
+`kName 0xK /* Data+0xK: PMF -> FUNC */`, the target read from the DataReloc), and
+`--uso game check` runs only that. Two game.uso subcommands:
+  pmf-table START END [--sect Data|RoData]
+                     the #define lines naming a table of 8-byte PMF records by their target
+  spell FILE.. [-v] [--write]
+                     respell the literal K of each game_uso site (`&game_uso_D_x + K`,
+                     `AT(T, &game_uso_D_x, K)`, `&D_00000000 + K`) with the header constant
+                     whose section the relocs prove it is (adds the header include)
 
 Run from the project root. Needs pyelftools + crunch64 (the repo .venv); any other python re-execs
 itself under /home/danjs/code/decomp/.venv/bin/python, so `python3 scripts/uso-data-sites.py` works too:
@@ -78,6 +93,11 @@ SECT_ABBR = {5: 'T', 6: 'D', 7: 'R', 8: 'B'}
 BASE_MACRO = {'GL_DATA': 6, 'GL_RODATA': 7, 'GL_BSS': 8, 'GL_TEXT': 5}
 # string-documenting section-base spellings: GL_DATA_STR(K, "text") == GL_DATA(K)
 STR_MACRO = {'GL_DATA_STR': 6, 'GL_RODATA_STR': 7}
+# game.uso: inner module header, and the block object whose .text is its Text section (the
+# Makefile's game_uso_block1_yay0 recipe: game_uso.c.o after drop-text-word, before the clip)
+GAME_INNER_HDR = 0x7CC900
+GAME_TEXT_O = 'build/assets/game_uso_block1_yay0.lnk.o'
+GAME_SRC = 'src/game_uso'
 TYPES = {1: 'Sym', 2: 'TextReloc', 3: 'DataReloc', 4: 'RoDataReloc', 5: 'Text', 6: 'Data',
          7: 'RoData', 9: 'EntrySym', 11: 'End'}
 
@@ -208,27 +228,28 @@ def load_objfiles(objs):
 BUILD_VENV = '/home/danjs/code/decomp/tools/build-venv/bin'
 
 
-def ensure_build(no_build=False):
+def ensure_build(no_build=False, uso='bootup'):
     """The census reads the built map + .o relocs, so they must be at least as new as the
     sources. A missing or stale build is refreshed with an incremental
     `make RUN_CC_CHECK=0 -j8` (the readability gate leaves a full build behind, so right
     after a gate this is a no-op; `--keep-build` is NOT needed). --no-build only warns."""
-    srcs = [p for d in ('src/game_libs', 'src/bootup_uso') for e in ('c', 'cpp', 's')
+    dirs, target = ((GAME_SRC,), GAME_TEXT_O) if uso == 'game' else (('src/game_libs', 'src/bootup_uso'), MAP)
+    srcs = [p for d in dirs for e in ('c', 'cpp', 's')
             for p in glob.glob(f'{d}/*.{e}')]
     # headers are not make dependencies here, and the census only reads relocs (which header
     # aliases cannot change: they expand to the same tokens); `check` reads headers live.
     newest = max((os.path.getmtime(p) for p in srcs), default=0)
-    have = os.path.exists(MAP)
-    if have and os.path.getmtime(MAP) >= newest:
+    have = os.path.exists(target)
+    if have and os.path.getmtime(target) >= newest:
         return
     why = 'missing' if not have else 'older than the newest src file'
     if no_build:
         if not have:
-            sys.exit(f'{MAP} {why}: build first (make RUN_CC_CHECK=0 -j8)')
-        print(f'warning: {MAP} is {why}; results may be stale (--no-build)', file=sys.stderr)
+            sys.exit(f'{target} {why}: build first (make RUN_CC_CHECK=0 -j8)')
+        print(f'warning: {target} is {why}; results may be stale (--no-build)', file=sys.stderr)
         return
     import subprocess
-    print(f'{MAP} {why}: running make RUN_CC_CHECK=0 -j8 ...', file=sys.stderr)
+    print(f'{target} {why}: running make RUN_CC_CHECK=0 -j8 ...', file=sys.stderr)
     env = dict(os.environ)
     if os.path.isdir(BUILD_VENV):
         env['PATH'] = BUILD_VENV + os.pathsep + env.get('PATH', '')
@@ -236,23 +257,32 @@ def ensure_build(no_build=False):
                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     if r.returncode != 0:
         print('\n'.join(r.stdout.splitlines()[-15:]), file=sys.stderr)
-        if not os.path.exists(MAP) or os.path.getmtime(MAP) < newest:
-            sys.exit('make failed and the map is not current')
+        if not os.path.exists(target) or os.path.getmtime(target) < newest:
+            sys.exit(f'make failed and {target} is not current')
         print('warning: make failed after linking (ROM mismatch?); using the fresh map', file=sys.stderr)
 
 
 class Census:
-    def __init__(self, root='.', no_build=False):
+    def __init__(self, root='.', no_build=False, uso='bootup'):
         os.chdir(root)
-        ensure_build(no_build)
+        ensure_build(no_build, uso)
+        self.uso = uso
         self.rom = open(ROM, 'rb').read()
-        secs = parse_uso(self.rom, INNER_HDR)
+        secs = parse_uso(self.rom, GAME_INNER_HDR if uso == 'game' else INNER_HDR)
         self.secs = secs
         sd = secs['Sym']
         self.syms = [Sym(i, *struct.unpack_from('>II', sd, i * 12)) for i in range(len(sd) // 12)]
+        # section-base Syms (kind 4) by section type: bootup 1 RoData / 2 Data / 3 Text / 4 Bss,
+        # game.uso 2 RoData / 3 Data / 4 Bss / 1 Text
+        self.base = {s.sect: s.idx for s in self.syms if s.kind == 4}
         self.text = secs['Text']
-        mfuncs, objs = load_map(MAP)
-        ofuncs, self.ph = load_objfiles(objs)
+        if uso == 'game':
+            # one object: its .text offsets are game.uso Text offsets (local + global symbols)
+            mfuncs = {}
+            ofuncs, self.ph = load_objfiles([(0, len(self.text), GAME_TEXT_O)])
+        else:
+            mfuncs, objs = load_map(MAP)
+            ofuncs, self.ph = load_objfiles(objs)
         allf = dict(ofuncs)
         allf.update(mfuncs)       # global names win over local aliases at the same address
         # text Sym -> function name
@@ -329,7 +359,7 @@ class Census:
     def _data_ptrs(self):
         """DataReloc words inside each Data object: vtables / string tables / fn tables."""
         self.dptr = collections.defaultdict(list)    # obj key -> [(off, target sym)]
-        for secname, base in (('DataReloc', self.syms[2]), ('RoDataReloc', self.syms[1])):
+        for secname, base in (('DataReloc', self.syms[self.base[6]]), ('RoDataReloc', self.syms[self.base[7]])):
             dr = self.secs[secname]
             for i in range(len(dr) // 12):
                 info, off, _ = struct.unpack_from('>III', dr, i * 12)
@@ -966,6 +996,8 @@ def check_direct(c, bodies, verbose=False):
 
 
 def cmd_check(c, a):
+    if c.uso == 'game':
+        return 1 if check_game(a.no_build, a.verbose) else 0
     macros = scan_macros()
     claimed = [m for m in macros if m['claim']]
     srcs = [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
@@ -1089,7 +1121,8 @@ def cmd_check(c, a):
     print(f'check: {len(ps_names)} per-site aliases named after an object, {ps_ok} LO16 sites verified, '
           f'{ps_bad} mismatches')
     rb = check_plain_ratchet(c, srcs, a.update_ratchet)
-    return 1 if bad or ps_bad or d_bad or str_bad or rb else 0
+    gb = check_game(a.no_build, a.verbose) if c.uso == 'bootup' else 0
+    return 1 if bad or ps_bad or d_bad or str_bad or rb or gb else 0
 
 
 PLAIN_RATCHET = 'scripts/uso-data-sites.plain-base.txt'
@@ -1175,12 +1208,192 @@ def cmd_selftest(c, a):
     t = add_gl_data_include('x.c', '#include "common.h"\nint f(void);\n')
     assert t.split('\n')[1] == '#include "gdl/gl_data.h"', t
     print('selftest OK')
+    if c.uso == 'bootup':
+        selftest_game(a)
+
+
+def selftest_game(a):
+    """game.uso invariants (agent-g run 538): base Syms, the Text object, the RiderAnim PMF table."""
+    g = Census('.', a.no_build, 'game')
+    assert g.base == {7: 2, 6: 3, 8: 4, 5: 1}, g.base
+    assert len(g.text) == 0x11B30 and len(g.secs['Data']) == 0x1310
+    lo = [s for s in g.sites if s.rtype == 2]
+    print(f'game.uso: HI16 {sum(1 for s in g.sites if s.rtype == 3)}  LO16 {len(lo)}')
+    assert not [s for s in lo if s.func == '?']
+    assert game_ptr_target(g, 6, 0xE44) == 'RiderAnim_stateRide'
+    assert game_ptr_target(g, 6, 0xDCC) == 'null'
+    assert game_ptr_target(g, 6, 0xEC4) == 'RiderAnim_stateTrickWindup'
+    # RiderAnim_stateTrickStart queues the windup PMF through a Data-base site K = 0xEC0
+    assert any(s.sym.is_base and s.sym.sect == 6 and s.k == 0xEC0 for s in g.by_func['RiderAnim_stateTrickStart'])
+    m = GSITE_RE.search('AT(PM, &game_uso_D_807FF4B0, 0xEC0)')
+    assert m and m.group(1) == 'game_uso_D_807FF4B0' and m.group(3) == '0xEC0'
+    m = GSITE_RE.search('*(Pair2*)((char*)&D_00000000 + 0xE40)')
+    assert m and m.group(1) == 'D_00000000' and m.group(3) == '0xE40'
+    print('selftest game.uso OK')
+
+
+# ---------------------------------------------------------------- game.uso (agent-g run 538)
+# game_uso sites keep their per-address zero symbol (`&game_uso_D_807FF430 + 0xE40`, or a plain
+# `&D_00000000 + K`): the symbol is part of the matched spelling. What gets a NAME is the
+# section offset K: include/game/game_uso_data.h defines
+#     #define kPmf_RiderAnim_stateRide 0xE40 /* Data+0xE40: PMF -> RiderAnim_stateRide */
+# and the site reads `AT(PM, &game_uso_D_807FF430, kPmf_RiderAnim_stateRide)` (an integer
+# constant: byte-safe by construction). `check` verifies every such constant against the relocs
+# (each function using it has a section-base LO16 site of that section with K = the value) and
+# a `PMF -> FUNC` / `ptr -> FUNC` comment against the DataReloc at K + 4 / K + 0 (`-> null`:
+# no reloc and a zero word).
+GAME_HDR = 'include/game/game_uso_data.h'
+GAME_HDR_REL = '../../include/game/game_uso_data.h'
+GCONST_RE = re.compile(r'^\s*#\s*define\s+(k\w+)\s+(0x[0-9A-Fa-f]+)\s*/\*\s*(Data|RoData|Bss)\+0x([0-9A-Fa-f]+)\b'
+                       r'([^*]*(?:\*(?!/)[^*]*)*)\*/', re.M)
+GSECT = {'Data': 6, 'RoData': 7, 'Bss': 8}
+# a site literal K next to a zero placeholder: `&S + K`, `(char *)&S + K`, `(&S) + K`, `AT(T, &S, K)`
+GSITE_RE = re.compile(r'&\s*\(?\s*(game_uso_D_[0-9A-Fa-f]+|D_00000000)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
+
+
+def game_consts():
+    """[(name, value, sect, comment, line)] from GAME_HDR."""
+    if not os.path.exists(GAME_HDR):
+        return []
+    src = open(GAME_HDR).read()
+    out = []
+    for m in GCONST_RE.finditer(src):
+        out.append((m.group(1), int(m.group(2), 16), GSECT[m.group(3)], int(m.group(4), 16),
+                    m.group(5), src.count('\n', 0, m.start()) + 1))
+    return out
+
+
+def game_ptr_target(c, sect, k):
+    """(section-relative) name of the Text function the R_MIPS_32 reloc at sect+k points at,
+    'null' when there is no reloc there and the word is 0, else None."""
+    secname = {6: 'DataReloc', 7: 'RoDataReloc'}.get(sect)
+    for i in range(len(c.secs.get(secname, b'')) // 12):
+        info, off, _ = struct.unpack_from('>III', c.secs[secname], i * 12)
+        if off == k and info & 7 == 4:
+            t = c.syms[info >> 4]
+            return t.name or t.label()
+    d = c.secs.get(SECT_NAME[sect], b'')
+    return 'null' if k + 4 <= len(d) and u32(d, k) == 0 else None
+
+
+def check_game(no_build=False, verbose=False):
+    """game.uso section-offset constants (GAME_HDR) and their uses in src/game_uso."""
+    consts = game_consts()
+    if not consts:
+        print('check: game.uso: no named constants')
+        return 0
+    g = Census('.', no_build, 'game')
+    bad = ok = tgt = 0
+    srcs = [p for e in ('c', 'cpp') for p in sorted(glob.glob(f'{GAME_SRC}/*.{e}'))]
+    bodies = {p: func_bodies(p) for p in srcs}
+    for name, val, sect, coff, comment, line in consts:
+        if val != coff:
+            bad += 1
+            print(f'MISMATCH {name} ({GAME_HDR}:{line}) = 0x{val:X} but its comment says +0x{coff:X}')
+            continue
+        pm = re.search(r'\b(PMF|ptr)\s*->\s*(\w+)', comment)
+        if pm:
+            got = game_ptr_target(g, sect, val + (4 if pm.group(1) == 'PMF' else 0))
+            if got != pm.group(2):
+                bad += 1
+                print(f'MISMATCH {name} ({GAME_HDR}:{line}): {pm.group(1)} -> {pm.group(2)}, '
+                      f'the ROM has {got}')
+            else:
+                tgt += 1
+        pat = re.compile(r'\b%s\b' % re.escape(name))
+        for p, fb in bodies.items():
+            for f, b in fb.items():
+                if not pat.search(b):
+                    continue
+                ss = [x for x in g.by_func.get(f, []) if x.rtype == 2]
+                if any(x.sym.is_base and x.sym.sect == sect and x.k == val for x in ss):
+                    ok += 1
+                    if verbose:
+                        print(f'ok       {name} in {f}')
+                    continue
+                bad += 1
+                print(f'MISMATCH {name} in {f} ({p}): no {SECT_NAME[sect]}-base site with K=0x{val:X}')
+    print(f'check: game.uso: {len(consts)} named section offsets ({GAME_HDR}), {tgt} pointer targets '
+          f'verified, {ok} (constant, function) uses verified, {bad} mismatches')
+    return bad
+
+
+def plan_game_const(c, src, consts):
+    """(start, end, name, func) of literal site offsets in `src` that a GAME_HDR constant names:
+    the literal follows a zero placeholder S, and every LO16 site of the function with placeholder S
+    and that K is a section-base site of the constant's section."""
+    byval = collections.defaultdict(list)
+    for name, val, sect, *_ in consts:
+        byval[val].append((name, sect))
+    edits = []
+    for f, b0, b1 in func_spans(src):
+        ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+        if not ss:
+            continue
+        for mm in GSITE_RE.finditer(src, b0, b1):
+            k = int(mm.group(3), 0)
+            if k not in byval:
+                continue
+            hit = [x for x in ss if x.placeholder == mm.group(1) and x.k == k]
+            secs_ = {x.sym.sect for x in hit if x.sym.is_base}
+            if not hit or len(secs_) != 1 or any(not x.sym.is_base for x in hit):
+                continue
+            names = [n for n, sct in byval[k] if sct in secs_]
+            if len(names) == 1:
+                edits.append((mm.start(3), mm.end(3), names[0], f))
+    return edits
+
+
+def cmd_game_spell(c, a):
+    """Respell the literal K of game_uso sites with their GAME_HDR constant (`--uso game spell`)."""
+    consts = game_consts()
+    total = 0
+    for path in a.files:
+        src = open(path, errors='replace').read()
+        edits = plan_game_const(c, src, consts)
+        if not edits:
+            continue
+        fs = sorted({e[3] for e in edits})
+        print(f'{path}: {len(edits)} sites in {len(fs)} functions')
+        if a.verbose:
+            for e in edits:
+                print(f'  {e[3]}: {src[e[0]:e[1]]} -> {e[2]}')
+        total += len(edits)
+        if a.write:
+            for s0, s1, n, _ in sorted(edits, reverse=True):
+                src = src[:s0] + n + src[s1:]
+            if 'game/game_uso_data.h"' not in src:
+                if path.endswith('.cpp'):
+                    ms = list(re.finditer(r'^#include .*\n', src, re.M))
+                    i = ms[-1].end() if ms else 0
+                    src = src[:i] + f'#include "{GAME_HDR_REL}"\n' + src[i:]
+                else:
+                    i = src.find('#include "common.h"')
+                    i = src.find('\n', i) + 1 if i >= 0 else 0
+                    src = src[:i] + '#include "game/game_uso_data.h"\n' + src[i:]
+            open(path, 'w').write(src)
+    print(f'{total} sites' + ('' if a.write else ' (dry run; --write to apply)'))
+
+
+def cmd_pmf_table(c, a):
+    """#define lines naming a table of 8-byte PMF records {s16 delta, s16 index, fn} by the
+    function each one points at (`--uso game pmf-table 0xDB0 0xF60`)."""
+    sect = GSECT[a.sect]
+    for k in range(int(a.start, 0), int(a.end, 0), 8):
+        t = game_ptr_target(c, sect, k + 4)
+        if t is None:
+            print(f'/* {a.sect}+0x{k:X}: not a PMF record */')
+            continue
+        n = f'kPmf_{t}' if t != 'null' else f'kPmfNull_{k:X}'
+        print(f'#define {n} 0x{k:X} /* {a.sect}+0x{k:X}: PMF -> {t} */')
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--no-build', action='store_true',
                     help='never run make; only warn when build/tenshoe.map is older than the sources')
+    ap.add_argument('--uso', choices=('bootup', 'game'), default='bootup',
+                    help='module: bootup.uso (bootup_uso + game_libs, default) or game.uso (src/game_uso)')
     sub = ap.add_subparsers(dest='cmd', required=True)
     p = sub.add_parser('sites'); p.add_argument('funcs', nargs='*')
     p = sub.add_parser('calls'); p.add_argument('funcs', nargs='+')
@@ -1206,11 +1419,16 @@ def main():
     p.add_argument('-v', '--verbose', action='store_true')
     p.add_argument('--write', action='store_true')
     sub.add_parser('selftest')
+    p = sub.add_parser('pmf-table'); p.add_argument('start'); p.add_argument('end')
+    p.add_argument('--sect', default='Data', choices=('Data', 'RoData'))
+    p = sub.add_parser('spell'); p.add_argument('files', nargs='+')
+    p.add_argument('-v', '--verbose', action='store_true')
+    p.add_argument('--write', action='store_true')
     a = ap.parse_args()
-    c = Census('.', a.no_build)
+    c = Census('.', a.no_build, a.uso)
     sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert,
-              'spell-base': cmd_spell_base}[a.cmd](c, a) or 0)
+              'spell-base': cmd_spell_base, 'pmf-table': cmd_pmf_table, 'spell': cmd_game_spell}[a.cmd](c, a) or 0)
 
 
 if __name__ == '__main__':
