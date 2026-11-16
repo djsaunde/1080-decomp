@@ -412,7 +412,11 @@ void trnproc_uso_func_00000B44(char *self) {
  * buttons on one line. */
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B78);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000DD4);
+/* trnproc_uso_func_00000DD4: TrnDataManager results screen (12 lesson rows, done ones red, the
+ * cursor sprite). EXACT via the NCC (C++) donor src/trnproc_uso/trnproc_uso_ncc.cpp
+ * (REPLACE_FUNC_BODY). */
+void trnproc_uso_func_00000DD4(char *self) {
+}
 
 /* trnproc_uso_func_00001098: results-list scrolling with key repeat: up (0x8008) / down
  * (0x2004) move the cursor (+0x100) through the lesson count (+0x108), scrolling the
@@ -514,7 +518,10 @@ int trnproc_uso_func_000013A0(char *self, int idx) {
     return (*(unsigned char **)(self + 0xB8) + 0x6B0)[idx >> 3] & (1 << (idx & 7));
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000013C4);
+/* trnproc_uso_func_000013C4: build lesson idx's input list at +0x118. EXACT via the NCC (C++)
+ * donor src/trnproc_uso/trnproc_uso_ncc.cpp (REPLACE_FUNC_BODY). */
+void trnproc_uso_func_000013C4(char *self, int idx) {
+}
 
 /* trnproc_uso_func_000016C8: stick direction bits (input & 0xF0) -> direction sprite 1..8
  * (0 = none). self is unused. */
@@ -547,29 +554,11 @@ int trnproc_uso_func_000016C8(char *self, int input) {
     return 0;
 }
 
-/* NM 32/37: the target reloads the spilled mask into t6 before the race +0x44 chain (t7..t9);
- * cfe evaluates the chain first in every operand order / unsigned / volatile spelling tried.
- * trnproc_uso_func_00001778: is lesson idx available: its trick's unlock mask (TrickTable
- * field 0x34) against the player's unlocked bits (race +0x44 -> [0] -> +0x8C0); on the
- * restricted course (+0xF8 == 1) a trick flagged 4 is excluded. */
-#ifdef NON_MATCHING
+/* trnproc_uso_func_00001778: is lesson idx available (TrickTable unlock mask against the
+ * player's bits; flag 4 excluded on the restricted course). EXACT via the NCC (C++) donor
+ * src/trnproc_uso/trnproc_uso_ncc.cpp (REPLACE_FUNC_BODY). */
 int trnproc_uso_func_00001778(char *self, int idx) {
-    int mask = gl_func_00000000(trn_gTrickTable, idx);  /* TrickTable_getField34_0000C394 */
-    int flags = gl_func_00000000(trn_gTrickTable, idx); /* TrickTable_getFlags_0000C3B0 */
-    if (*(int *)(**(char ***)(self + 0x44) + 0x8C0) & mask) {
-        if (*(int *)(self + 0xF8) == 1) {
-            if (flags & 4) {
-                return 0;
-            }
-            return 1;
-        }
-        return 1;
-    }
-    return 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001778);
-#endif
 
 /* trnproc_uso_func_0000180C: next lesson after cur (wrapping at the count +0x108) that 1778
  * accepts; cur itself if none. */
@@ -587,7 +576,11 @@ int trnproc_uso_func_0000180C(char *self, int cur) {
     return cur;
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_0000188C);
+/* trnproc_uso_func_0000188C: TrnDataManager update (Start disarms the lesson or opens the results
+ * screen; there a picked available lesson becomes current). EXACT via the NCC (C++) donor
+ * src/trnproc_uso/trnproc_uso_ncc.cpp (REPLACE_FUNC_BODY). */
+void trnproc_uso_func_0000188C(char *self) {
+}
 
 /* trnproc_uso_func_00001A98: TrnDataManager display: the results screen (DD4) once the course
  * is over (+0xFC); else while the race is not paused (+0x30) and a lesson is set (+0xF8 >= 0),

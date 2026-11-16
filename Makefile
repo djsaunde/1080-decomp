@@ -116,6 +116,14 @@ build/src/trnproc_uso/trnproc_uso.c.o: SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
 build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
 build/src/trnproc_uso/trnproc_uso.c.o: TRUNCATE_TEXT := 0x1CE0
 build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1CE0
+# trnproc.uso is C++: functions only edg reproduces come from one NCC donor (agent-c run 643).
+TRN_NCC_DONOR := build/src/trnproc_uso/trnproc_uso_ncc.cpp.o
+$(TRN_NCC_DONOR): src/trnproc_uso/trnproc_uso_ncc.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+TRN_NCC_FUNCS := trnproc_uso_func_00000DD4 trnproc_uso_func_000013C4 trnproc_uso_func_00001778 trnproc_uso_func_0000188C
+build/src/trnproc_uso/trnproc_uso.c.o build/non_matching/src/trnproc_uso/trnproc_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(TRN_NCC_FUNCS),$(f)=$(TRN_NCC_DONOR))
+build/src/trnproc_uso/trnproc_uso.c.o build/non_matching/src/trnproc_uso/trnproc_uso.c.o: $(TRN_NCC_DONOR)
 # 9F44: EXACT IDO 7.1 NCC donor (agent-h run 621): inline Parm<T>::get() + Vec3 operator=.
 SNOW_9F44_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp.o
 $(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
