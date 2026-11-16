@@ -330,7 +330,7 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
             CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (char *)&D_b1_097C_v4;
         }
-        TIMRACE(obj)->dataManager = (int)o2;
+        TIMRACE(obj)->dataManager = (RaceTracker *)o2;
         INPUT_MGR(D_b1_097C_g).dataMgr = (struct RaceTracker *)o2;
 
         XCALL(gl_func_00000000_994v, TimDataManager_init_00001A64)(TIMRACE(obj)->dataManager, obj, RACEPROC(obj)->spriteSet, (int)RACEPROC(obj)->session);
@@ -946,7 +946,7 @@ void TimDataManager_init_00001A64(int *a0, int a1, int a2, int a3) {
   int r6;
   NODE(a0)->name = (const char *)(((char *) (&D_00000000)) + 0x40C);
   TIMDATAMGR(a0)->race = a1;
-  DATAMGR(a0)->owner = a1;
+  DATAMGR(a0)->owner = (RaceProcess *)a1;
   DATAMGR(a0)->session = (BackupSession *)a3;
   DATAMGR(a0)->blinkTimer = 0;
   TIMDATAMGR(a0)->beepTimer = 0;

@@ -2065,7 +2065,7 @@ void *RaceTracker_ctor(RaceTracker *arg0) {
 
     if ((arg0 != 0) || (arg0 = (char *)CALL(mem_new)(0xB8), (arg0 != 0))) {
         CALL(Node_ctor)(arg0, GL_DATA_STR(0xD678, "<Node>"));
-        arg0->vptr = (int)&RaceTracker_vtbl;
+        arg0->vptr = (char *)&RaceTracker_vtbl;
         arg0->session = 0;
         arg0->hudFlags = 0;
         arg0->digitsWide = 0;
@@ -3286,7 +3286,7 @@ void RaceTracker_endTrick(int a0, int a1, int a2, int a3) {
             ((RaceEntry *)v0)->pendingPoints = 0;
         }
         {
-            int t = ((RaceTracker *)a0)->vptr;
+            char *t = ((RaceTracker *)a0)->vptr;
             (*(void (**)(int, int))(t + 0x74))(*(short *)(t + 0x70) + a0, a2);
         }
     }

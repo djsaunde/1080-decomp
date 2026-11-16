@@ -342,7 +342,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (char *)&D_b3_994_v4;
         }
-        TIMRACE(obj)->dataManager = (int)o2;
+        TIMRACE(obj)->dataManager = (RaceTracker *)o2;
         *(char **)((char *)&D_b3_994_g + 0x138) = o2;
         if ((RACEPROC(obj)->flags << 15) < 0) {
             o1 = (char *)TIMRACE(obj)->dataManager;
@@ -1005,7 +1005,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
 
     DATAMGR(arg0)->name = (int)(&D_b3_19CC_0C + 0x3E4);
     TIMDATAMGR(arg0)->race = (int)arg1;
-    DATAMGR(arg0)->owner = (int)arg1;
+    DATAMGR(arg0)->owner = (RaceProcess *)arg1;
     DATAMGR(arg0)->session = (BackupSession *)arg3;
     DATAMGR(arg0)->blinkTimer = 0;
     if (RACEPROC(arg1)->flags & 0x10000) {

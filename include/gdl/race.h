@@ -123,7 +123,7 @@ typedef struct RaceProcess {
     /* 0x008 */ s32 nodeFlags;
     /* 0x00C */ s32 name;               /* RaceProcess_init arg2 ("TIMRace Process", ...) */
     /* 0x010 */ char children[4];       /* Node child list (address taken) */
-    /* 0x014 */ s32 parent;
+    /* 0x014 */ Node *parent;         /* Node parent back-link (include/gdl/node.h) */
     /* 0x018 */ char unk018[0x10];
     /* 0x028 */ RaceProcessVt *vt;
     /* 0x02C */ s32 unk02C;
@@ -196,7 +196,7 @@ typedef char RaceProcess_sprites_check[(int)&((RaceProcess *)0)->sprites[1] == 0
  * subclass) into dataManager. */
 typedef struct TimRace {
     /* 0x000 */ RaceProcess race;
-    /* 0x6A8 */ s32 dataManager;        /* Tim/TrkDataManager (RaceTracker *) */
+    /* 0x6A8 */ struct RaceTracker *dataManager; /* Tim/TrkDataManager (a RaceTracker subclass) */
     /* 0x6AC */ s32 finalTime;          /* checkRecord: dataManager->elapsed */
     /* 0x6B0 */ s32 recordRank;         /* checkRecord: dataManager->entries[0].rank[0], then tie-scan */
     /* 0x6B4 */ RaceSprite labels[5];   /* initLabels: 0x1D / 0x1E / 0x210009 / 0x21000A / 0x21000D */
@@ -265,7 +265,7 @@ typedef struct RaceTracker {
     /* 0x00 */ char unk00[0xC];
     /* 0x0C */ s32 name;                 /* Node name: "DataManager"; h2hDataManager_ctor stores base + 0x41C */
     /* 0x10 */ char children[0x18];      /* node child list (address taken only) */
-    /* 0x28 */ s32 vptr;                 /* Cfront vtable (Data+0xD678 + ...) */
+    /* 0x28 */ char *vptr;               /* Cfront vtable (Data+0xD678 + ...), as Node.vptr */
     /* 0x2C */ s32 active;               /* RaceTracker_update runs while set */
     /* 0x30 */ s32 elapsed;              /* race time (ms) */
     /* 0x34 */ s32 timeLimit;            /* 600000 after reset; checkTimeLimit */
@@ -275,7 +275,7 @@ typedef struct RaceTracker {
     /* 0x44 */ RaceEntry *entries;       /* alloc 0x300 = 8 entries */
     /* 0x48 */ s32 numEntries;
     /* 0x4C */ BackupSession *session;   /* = RaceProcess.session (include/gdl/backup.h) */
-    /* 0x50 */ s32 owner;                /* the race process (tim / trk init store it; toggleGhost reads
+    /* 0x50 */ RaceProcess *owner;       /* the race process (tim / trk init store it; toggleGhost reads
                                        * its RaceProcess.flags) */
     /* 0x54 */ s32 pointsListArg;        /* 3rd ctor arg of PointsGadget_ctor_00003138 */
     /* 0x58 */ s32 digitsTall;           /* hud_initSprites_0000E4A8: 16x320 grid, 1x10 cells */
