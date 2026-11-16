@@ -17,16 +17,29 @@ typedef struct { int a, b, c, d; } TrnQuad4;
 extern char trn_bss[];
 /* Bss+0x1B0: the running TrnRace process (stored by onPauseSelect before the menu callback). */
 #define gTrnRace (*(char **)(trn_bss + 0x1B0))
+/* trnproc.uso's own Data section base (pinned at 0 like trn_bss). */
+extern char trn_data[];
+/* game.uso Bss+0x8: the TrickTable (TrickTable_getCount / getEntry / getInputMask). */
+extern char *trn_gTrickTable;
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000000);
+/* trnproc_uso_func_00000000 / 00000008: empty functions. */
+void trnproc_uso_func_00000000(void) {
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000008);
+void trnproc_uso_func_00000008(void) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000010);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000194);
+/* trnproc_uso_func_00000194: clear *out and GameFlow +0x14C. */
+void trnproc_uso_func_00000194(int *out) {
+    *out = 0;
+    *(int *)((char *)&D_00000000 + 0x14C) = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000001A4);
+/* trnproc_uso_func_000001A4: empty one-argument function (the word after it is .text pad). */
+void trnproc_uso_func_000001A4(int a0) {
+}
 
 /* trnproc_uso_func_000001B0: pause menu "continue" (as TimRace_pauseContinue_000006B0, without
  * the input_clearActivePad). */
@@ -167,7 +180,15 @@ void trnproc_uso_func_000009F0(char *self) {
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000A2C);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B44);
+/* trnproc_uso_func_00000B44: TrnDataManager reset: clear the trick state, then RaceTracker_reset. */
+void trnproc_uso_func_00000B44(char *self) {
+    *(int *)(self + 0x114) = 0;
+    *(int *)(self + 0xF8) = -1;
+    *(int *)(self + 0xFC) = 0;
+    *(int *)(self + 0xF4) = 0;
+    *(int *)(self + 0x198) = 0;
+    CALL(RaceTracker_reset)(self);
+}
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000B78);
 
@@ -175,15 +196,56 @@ INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000DD
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001098);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001228);
+/* trnproc_uso_func_00001228: TrnDataManager onCheckpoint: +0xF8 = (gate +0x88 < 21), arm the
+ * trick lesson (+0xF4), show lesson +0xF0 (13C4), then RaceTracker_onCheckpoint. */
+void trnproc_uso_func_00001228(char *self, char *gate) {
+    if (*(int *)(gate + 0x88) >= 21) {
+        *(int *)(self + 0xF8) = 0;
+    } else {
+        *(int *)(self + 0xF8) = 1;
+    }
+    *(int *)(self + 0xF4) = 1;
+    CALL(trnproc_uso_func_000013C4)(self, *(int *)(self + 0xF0));
+    CALL(RaceTracker_onCheckpoint)(self, gate);
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001284);
+/* trnproc_uso_func_00001284: mark the current lesson's trick done (+0x114) when it is index a1. */
+void trnproc_uso_func_00001284(char *self, int idx) {
+    if (*(int *)(self + 0xF4) != 0 && idx == *(int *)(self + 0xF0)) {
+        *(int *)(self + 0x114) = 1;
+    }
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000012AC);
+/* trnproc_uso_func_000012AC: lesson passed: sound 39, set the trick's done bit (1324), advance
+ * to the next lesson (180C) and show it (13C4). */
+void trnproc_uso_func_000012AC(char *self, int ok) {
+    int next;
+    if (*(int *)(self + 0xF4) != 0 && *(int *)(self + 0x114) != 0 && ok != 0) {
+        CALL(snd_sendEvent)(39, 0);
+        CALL(trnproc_uso_func_00001324)(self, *(int *)(self + 0xF0));
+        next = CALL(trnproc_uso_func_0000180C)(self, *(int *)(self + 0xF0));
+        *(int *)(self + 0xF0) = next;
+        CALL(trnproc_uso_func_000013C4)(self, next);
+    }
+    *(int *)(self + 0x114) = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001324);
+/* trnproc_uso_func_00001324: set trick idx's done bit in the race's bitset (+0xB8 -> +0x6B0);
+ * fatal on an index outside the TrickTable. */
+void trnproc_uso_func_00001324(char *self, int idx) {
+    if (idx < 0 || (unsigned)idx >= (unsigned)CALL(TrickTable_getCount_0000C3E8)(trn_gTrickTable)) {
+        CALL(sys_fatal)(trn_data + 0x338);
+    }
+    {
+        char *bits = *(char **)(self + 0xB8) + (idx >> 3) + 0x6B0;
+        *bits = *bits | (1 << (idx & 7));
+    }
+}
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000013A0);
+/* trnproc_uso_func_000013A0: trick idx's done bit. */
+int trnproc_uso_func_000013A0(char *self, int idx) {
+    return (*(unsigned char **)(self + 0xB8) + 0x6B0)[idx >> 3] & (1 << (idx & 7));
+}
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000013C4);
 
