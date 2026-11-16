@@ -2,13 +2,16 @@
  * over the empty NON_MATCHING placeholder in heli_uso.c on the non_matching build only (the matching build
  * keeps INCLUDE_ASM). 0xB08 is the Heli per-frame update (decode: docs/1080_NEW_MODULES.md "heli.uso").
  * MIPSpro 7.2.1 is the right front end: the target's 8-way switch is an inline jump table (RoData+0x7C),
- * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 84.2:
+ * which IDO 7.1 NCC (EDG 2.19) never emits. Levers that took mp72 from 77.3 to 85.7:
  *  - an explicit empty `default: break;` after case 6. The default edge then gets its own block, so uopt
  *    computes tg / ps (self+0x114 / self+0xDC) at the end of every case, as the target does; without it the
  *    default goes straight to the join and both are computed once there.
  *  - `mode = mode * 1;` before the switch (code-free; mode takes v0 as in the target);
  *  - the marker field is read back through self (`*(self + 0x168)`) after the advance;
- *  - `Vec3 old = *FWD;` copy-initialised (a word copy, no operator= by-value temp).
+ *  - `Vec3 old = *FWD;` copy-initialised (a word copy, no operator= by-value temp);
+ *  - `f *= HF(0x154) / h` with `int h = 100` (run 678): with two 100.0f literals uopt keeps one constant LR
+ *    (f14) for the compare and the divide; the int is converted late, so each site rematerialises
+ *    `lui at,0x42c8` as the target does (84.2 -> 85.7).
  * Left: register numbering, the slerp's heading pointer (target keeps self+0x138 in a spilled register), the
  * frame (temps sit between the named locals in the target). RoData floats are literals. */
 extern "C" {
@@ -224,7 +227,8 @@ extern "C" void heli_uso_func_00000B08(char *self) {
         }
         f = -(side.x * dir.x + side.y * dir.y + side.z * dir.z) * 1.5;
         if (HF(0x154) < 100.0f) {
-            f *= HF(0x154) / 100.0f;
+            int h = 100; /* int: uopt folds the conversion late, so 100.0f is materialised twice as in the target */
+            f *= HF(0x154) / h;
         }
         HF(0x144) = (f - HF(0x144)) * (0.07f) + HF(0x144);
         yaw = (yaw < (-0.3f)) ? (-0.3f) : (((0.3f) < yaw) ? (0.3f) : yaw);
