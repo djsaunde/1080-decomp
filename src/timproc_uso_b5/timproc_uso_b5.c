@@ -638,7 +638,7 @@ void RoomModifier_update_0000115C(int *a0) {
  * strategy divergence, no C knob for register-early/spill-around-calls-only).
  * Cascade: -5 const a1 (vs a0), self reads via s0 (vs a1), beqz+nop (vs
  * beqzl w/ move-a0 delay). */
-void RoomModifier_applyScale_0000896C();
+void SelectWin_setGlobalFade_0000896C();
 void SelectWin_dimOtherItems_00008AFC();
 extern void gen_imp_Node_display();
 void RoomModifier_display_0000117C(int *a0) {
@@ -646,7 +646,7 @@ void RoomModifier_display_0000117C(int *a0) {
     typedef int R1[1];
 
     b = a0;
-    RoomModifier_applyScale_0000896C((int *)((R1 *)a0)[*(int *)((char *)a0 + 0x34)][14]);
+    SelectWin_setGlobalFade_0000896C((int *)((R1 *)a0)[*(int *)((char *)a0 + 0x34)][14]);
     SelectWin_dimOtherItems_00008AFC((int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14]);
     slot = (int *)((R1 *)b)[*(int *)((char *)b + 0x34)][14];
     if (*(int *)(*(int *)((char *)slot + 0x41C) + 0x50) & (1 << *(int *)((char *)b + 0x34))) {
@@ -5247,7 +5247,7 @@ int SelectWin_callPrevStageBit_0000894C() {
 }
 
 extern float D_b5_896C_2A0;
-void RoomModifier_applyScale_0000896C(char *a0) {
+void SelectWin_setGlobalFade_0000896C(char *a0) {
     D_b5_896C_2A0 = *(float *)(a0 + 0x480) * 0.4f;
 }
 

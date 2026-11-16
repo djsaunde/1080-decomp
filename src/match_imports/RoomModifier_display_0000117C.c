@@ -5,7 +5,7 @@ void RoomModifier_display_0000117C(TimB5SlotController *a0) {
     s32 *flags;
     TimB5SlotController *b;
     b = a0;
-    RoomModifier_applyScale_0000896C(a0->field_38[a0->field_34]);
+    SelectWin_setGlobalFade_0000896C(a0->field_38[a0->field_34]);
     SelectWin_dimOtherItems_00008AFC(b->field_38[b->field_34]);
     slot = b->field_38[b->field_34];
     if ((1 << b->field_34) & *(s32 *)(slot->field_41C + 0x50)) {

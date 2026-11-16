@@ -503,7 +503,7 @@ typedef struct TimB5SlotController {
     s32 field_34;
     TimB5Screen *field_38[2];
 } TimB5SlotController;
-void RoomModifier_applyScale_0000896C();
+void SelectWin_setGlobalFade_0000896C();
 void SelectWin_dimOtherItems_00008AFC();
 extern void gen_imp_Node_display();
 void RoomModifier_display_0000117C(TimB5SlotController *a0);
@@ -977,7 +977,7 @@ int SelectWin_prevStageBit_000088A0(char *a0);
 int SelectWin_callPrevStageBit_0000894C();
 extern float D_b5_896C_234;
 extern float D_b5_896C_2A0;
-void RoomModifier_applyScale_0000896C(char *a0);
+void SelectWin_setGlobalFade_0000896C(char *a0);
 s32 SelectWin_findItem_00008988(char *arg0, s32 arg1, s32 arg2);
 int SelectWin_curItem_00008A38();
 int SelectWin_prevStageItem_00008A64(int *a0);

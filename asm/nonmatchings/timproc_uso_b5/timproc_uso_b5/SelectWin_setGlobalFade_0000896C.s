@@ -1,6 +1,6 @@
-nonmatching RoomModifier_applyScale_0000896C, 0x1C
+nonmatching SelectWin_setGlobalFade_0000896C, 0x1C
 
-glabel RoomModifier_applyScale_0000896C
+glabel SelectWin_setGlobalFade_0000896C
     /* 00896C 0000896C 3C010000 */  .word 0x3C010000
     /* 008970 00008970 C4260234 */  .word 0xC4260234
     /* 008974 00008974 C4840480 */  .word 0xC4840480
@@ -8,4 +8,4 @@ glabel RoomModifier_applyScale_0000896C
     /* 00897C 0000897C 46062202 */  .word 0x46062202
     /* 008980 00008980 03E00008 */  .word 0x03E00008
     /* 008984 00008984 E42802A0 */  .word 0xE42802A0
-endlabel RoomModifier_applyScale_0000896C
+endlabel SelectWin_setGlobalFade_0000896C

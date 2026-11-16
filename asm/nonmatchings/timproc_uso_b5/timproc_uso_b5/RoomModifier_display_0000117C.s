@@ -8,7 +8,7 @@ glabel RoomModifier_display_0000117C
     /* 00118C 0000118C 000E7880 */  .word 0x000E7880
     /* 001190 00001190 008FC021 */  .word 0x008FC021
     /* 001194 00001194 8F040038 */  .word 0x8F040038
-    jal RoomModifier_applyScale_0000896C   /* 001198 0C000000 -> RoomModifier_applyScale_0000896C */
+    jal SelectWin_setGlobalFade_0000896C   /* 001198 0C000000 -> SelectWin_setGlobalFade_0000896C */
     /* 00119C 0000119C AFA50018 */  .word 0xAFA50018
     /* 0011A0 000011A0 8FA50018 */  .word 0x8FA50018
     /* 0011A4 000011A4 8CB90034 */  .word 0x8CB90034

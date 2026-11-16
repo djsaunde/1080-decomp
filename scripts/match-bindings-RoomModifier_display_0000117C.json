@@ -2,7 +2,7 @@
   "function": "RoomModifier_display_0000117C",
   "raw_sha256": "ed76405700b44498a0f6e93e486565020718242f1028d2f65a1f9bd19f6a512a",
   "renames": {
-    "RoomModifier_applyScale_0000896C": "snw_port_timproc_uso_b5_func_0000117C_timproc_uso_b5_func_0000896C",
+    "SelectWin_setGlobalFade_0000896C": "snw_port_timproc_uso_b5_func_0000117C_timproc_uso_b5_func_0000896C",
     "SelectWin_dimOtherItems_00008AFC": "snw_port_timproc_uso_b5_func_0000117C_timproc_uso_b5_func_00008AFC",
     "gen_imp_Node_display": "snw_port_timproc_uso_b5_func_0000117C_timproc_uso_b5_func_04CCA8"
   },
