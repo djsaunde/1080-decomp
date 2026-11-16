@@ -212,7 +212,7 @@ s32 AudioSeq_SeqLayerProcessScriptStep4(gl_2B09C_Layer *layer, s32 cmd) {
     layer->freqScale *= layer->bend;
 
     if (layer->delay == 0) {
-        time = (*(u32 **)((u8 *)layer->tunedSample->sample + 8))[1];
+        time = layer->tunedSample->sample->loop->end;
         time *= seqPlayer->tempo;
         time *= gAudioCtx.unk_2870;
         time /= layer->freqScale;

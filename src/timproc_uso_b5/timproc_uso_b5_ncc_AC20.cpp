@@ -14,6 +14,7 @@
  * - operand order of the axis rows as edg evaluates them, 2.0f as a literal;
  * - the scalar declarations and the nested angle blocks give the target's frame homes. */
 typedef float f32; typedef int s32; typedef double f64;
+#include "../../include/game/camera.h" /* CamWindow / MCamera (import_80087DA8 is the CamWindow *); offset asserts are C-only */
 extern "C" {
 extern char timproc_uso_b5_D_807FF358, import_80087DA8, D_timb5_AC20_w0, D_timb5_AC20_w1, D_timb5_AC20_w2, D_timb5_AC20_w3;
 extern char timproc_uso_b5_D_807FFBB0;
@@ -50,7 +51,7 @@ extern "C" void SelBoard_display_0000AC20(Obj *o) {
         o->q.x = 0.0f; o->q.y = 0.0f; o->q.z = 0.0f; o->q.w = 1.0f;
         { f32 ang = o->f114; V3 a(1.0f, 0.0f, 0.0f); o->q.rot(&a, ang); }
         { f32 ang = o->f110; { V3 a(0.0f, 0.0f, 1.0f); o->q.rot(&a, ang); } ang = o->f118; { V3 a(0.0f, 1.0f, 0.0f); o->q.rot(&a, ang); } }
-        gen_imp_math_mtx4Transpose(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
+        gen_imp_math_mtx4Transpose((*(CamWindow **)&import_80087DA8)->cam->view, m7C); /* the active view camera */
         import_0010806C(m7C, m6C);
         {
             t120 = o->f120;

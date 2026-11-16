@@ -3306,9 +3306,6 @@ void SelectWin_update_00005FC0(char *arg0) {
  * in first-occurrence (bitpos) order: a dead `tmpl_w = 0;` at entry makes the
  * width the earlier variable -> width t0, row t1 = target. See
  * docs/IDO_CODEGEN.md#named-locals-reserve-ring-regs-6394. */
-#ifndef FW
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-#endif
 typedef char *(*GP_00006394)();
 extern int timproc_uso_b5_D_807FE728[];
 extern char import_8024CAF8;
@@ -3370,8 +3367,8 @@ void SelectWin_display_00006394(char *arg0) {
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5B0 + 0x130);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5B0;
                         temp_v1 += 0x130;
-                        temp_v1_2 = (char *)FW(sp40, 0x10); temp_v0 = *(s16 *)(temp_v1_2 + 0x20);
-                        tmpl_row = (char *)FW(temp_v1, 0x10); tmpl_w = *(s16 *)(tmpl_row + 0x20);
+                        temp_v1_2 = (char *)((RaceSprite *)sp40)->image; temp_v0 = ((RaceSpriteImage *)temp_v1_2)->width;
+                        tmpl_row = (char *)((RaceSprite *)temp_v1)->image; tmpl_w = ((RaceSpriteImage *)tmpl_row)->width;
                         import_0024F34C(temp_v1, (s32) (((temp_v0 / 2) + 0xA0) - (tmpl_w * 0.25f)), sp44, 2);
                     }
                     if (SelectWin_canScrollPrev_0000687C((int *)arg0) != 0) {
@@ -3379,8 +3376,8 @@ void SelectWin_display_00006394(char *arg0) {
                         import_0024F2C8((char *)&timproc_uso_b5_D_807FF5C8 + 0x148);
                         temp_v1 = (char *)&timproc_uso_b5_D_807FF5C8;
                         temp_v1 += 0x148;
-                        temp_v1_2 = (char *)FW(sp40, 0x10); temp_v0 = *(s16 *)(temp_v1_2 + 0x20);
-                        tmpl_row = (char *)FW(temp_v1, 0x10); tmpl_w = *(s16 *)(tmpl_row + 0x20);
+                        temp_v1_2 = (char *)((RaceSprite *)sp40)->image; temp_v0 = ((RaceSpriteImage *)temp_v1_2)->width;
+                        tmpl_row = (char *)((RaceSprite *)temp_v1)->image; tmpl_w = ((RaceSpriteImage *)tmpl_row)->width;
                         import_0024F34C(temp_v1, (s32) ((0xA0 - (temp_v0 / 2)) - (tmpl_w * 0.75f)), sp44, 2);
                     }
                 }
@@ -3769,14 +3766,15 @@ void SelectWin_commitSelection_00006C00(char *scr) {
     import_000A53B4(scr);
     gen_imp_Process_fadeOut_0000F954(SELWIN(scr)->fadeProc, -1, 0);
     INPUT_MGR(import_80020098).procState = INPUT_MGR(import_80020098).thenProcState;
-#define E6C00(tb, ix, f) (*(int *)(*(char **)(*(int *)(scr + (ix)) * 4 + *(char **)((char *)SELWIN(scr)->itemsMgr + (tb)) + 0x3C) + (f)))
-    *SELWIN(scr)->out[0] = (s32 *)(E6C00(0x4C, 0x3DC, 0x2B0));
-    *SELWIN(scr)->out[1] = (s32 *)(E6C00(0x40, 0x3D0, 0x2B0));
-    *SELWIN(scr)->out[3] = (s32 *)(E6C00(0x44, 0x3D4, 0x2B0));
-    *SELWIN(scr)->out[2] =(s32 *)(*(int *)(*(char **)(*(char **)((char *)SELWIN(scr)->itemsMgr + 0x40) + SELWIN(scr)->curItem[0] * 4 + 0x3C) + 0x2B4) |
-        E6C00(0x44, 0x3D4, 0x2B4));
-    *SELWIN(scr)->out[4] = (s32 *)(E6C00(0x48, 0x3D8, 0x2B0));
-#undef E6C00
+/* the picked item of stage s: lists[s]->items[curItem[s]], written index-first (the operand
+ * order picks the t-reg ring position of the loads) */
+#define PICK(s) (*(SELWIN(scr)->curItem[s] + SELWIN(scr)->itemsMgr->lists[s]->items))
+    *SELWIN(scr)->out[0] = PICK(3)->id;
+    *SELWIN(scr)->out[1] = PICK(0)->id;
+    *SELWIN(scr)->out[3] = PICK(1)->id;
+    *SELWIN(scr)->out[2] = SELWIN(scr)->itemsMgr->lists[0]->items[SELWIN(scr)->curItem[0]]->flags | PICK(1)->flags;
+    *SELWIN(scr)->out[4] = PICK(2)->id;
+#undef PICK
 }
 
 /* SelectWin_skipDisabled_00006D30: 54-insn poll-loop over a record table.

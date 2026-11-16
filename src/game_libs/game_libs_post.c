@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/dma.h"
 #include "gdl/node.h"   /* Node (MCamera_ctor) */
+#include "gdl/nodelist.h" /* NodeListState (cam_createDefault_00033228) */
 #include "game/camera.h" /* MCamera (MCamera_ctor) */
 #include "gdl/console.h" /* ConsoleMgr (sys_fatalHaltLoop) */
 #include "gdl/pad.h"     /* PadCtl (sys_fatalHaltLoop) */
@@ -7858,8 +7859,8 @@ void AudioThread_ClearExtWord_000275BC(void) { D_gl275BC = 0; }
 //   USO placeholder.
 extern int gl_func_00000000();
 void AudioThread_WaitForAudioTask(void) {
-    char *g = (char *)&D_00000000;
-    CALL(gl_osRecvMesg)(*(void **)(g + 0x53C8), 0, 1);
+    AudioContext *g = (AudioContext *)&gAudioContext;
+    CALL(gl_osRecvMesg)(g->taskStartQueueP, 0, 1);
 }
 
 /* AudioThread_GetLayerSamplesLeft: EXACT MATCH (60/60 words, 2026-07-08 agent-e)
@@ -9960,10 +9961,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Audio_NoteVibratoInit);
  * into $v0 (97.27% cap). The inline struct-copy form keeps the base off
  * $v0 → IDO colors it $t6, shifting the whole body up to match; the block
  * copy supplies the $t8/$t7/$t8 (X/Y/X reuse) alternation. Byte-exact. */
-void Audio_NotePortamentoInit(char *a0) {
-    struct S { int a, b, c; };
-    *(float*)(a0 + 0x38) = 1.0f;
-    *(struct S*)(a0 + 0x80) = *(struct S*)((char*)*(int**)(a0 + 0x44) + 0x20);
+void Audio_NotePortamentoInit(Note *note) {
+    note->playbackState.portamentoFreqScale = 1.0f;
+    note->playbackState.portamento = note->playbackState.parentLayer->portamento;
 }
 
 void Audio_AdsrInit(char *a0, int a1, int a2) {
@@ -15800,16 +15800,16 @@ int MCamera_updateLookAt(char *o) {
  * pad[4]` / four volatile ints FIRST also work (docs/IDO_CODEGEN.md
  * #unreferenced-array-first-decl-frame-pad-33228). */
 extern void *gl_func_00000000_f228(int, int, float, float, float);
-void cam_createDefault_00033228(char *o) {
+void cam_createDefault_00033228(NodeListState *o) {
     char pad[16];
     char *n;
     char *lst;
     CALL(nodelist_checkPrevNode)(o);
     n = (char *)XCALL(gl_func_00000000_f228, MCamera_ctor)(0, 0, 0.0f, 0.0f, 0.0f);
-    *(int *)(o + 0x28) = (int)n;
-    *(int *)(o + 0x0C) = (int)n;
-    *(int *)(o + 0x10) = (int)n;
-    lst = *(char **)(*(char **)(o + 0x3C) + 0x10);
+    o->obj = n;
+    o->mnode = n;
+    o->node = n;
+    lst = o->parent->node; /* the calling list's Node (Node_def's linkNodes walk) */
     /* the Node child-attach idiom: append to lst's children, mark a re-parented node */
     CALL(list_append)(&NODE(lst)->children, n);
     if (NODE(n)->parent != 0) {
@@ -15872,16 +15872,15 @@ void MCamera_doCommand(char *o, char *c) {
 
 /* MCamera_hostioParms: 27-insn 3-call wrapper. The float-promote "cap" was
  * mis-diagnosed: route the 6-arg float call through a typed absolute-0 alias
- * gl_func_00000000_33338(int,int,int,float,float,int) → single swc1, no
+ * gl_func_00000000_33338(void *,const char *,f32 *,float,float,int) → single swc1, no
  * cvt.d.s (same fix as snd_SetPlayer0ChannelFreqScale). arg4 = 0.0f (float bit pattern in
  * a3 → addiu a3,zero,0, the li form) not int 0; call1 takes a 3rd arg 0
  * (a2=0 in the jal delay). Byte-exact. */
-extern int gl_func_00000000_33338(int, int, int, float, float, int);
-void MCamera_hostioParms(int *a0) {
-    int arg1 = *(int*)((char*)a0 + 0xC);
+extern int gl_func_00000000_33338(void *, const char *, f32 *, float, float, int);
+void MCamera_hostioParms(MCamera *a0) {
+    const char *arg1 = NODE(a0)->name;
     CALL(hostio_beginGroup)(&gHostio, arg1, 0);
-    XCALL(gl_func_00000000_33338, hostio_addFloat)((int)&gHostio, (int)(GL_DATA_STR(0x1E1AC, "FOV")),
-                           (int)((char*)a0 + 0x14C), 0.0f, 180.0f, 0);
+    XCALL(gl_func_00000000_33338, hostio_addFloat)(&gHostio, GL_DATA_STR(0x1E1AC, "FOV"), &a0->fov, 0.0f, 180.0f, 0);
     CALL(hostio_endGroup)(&gHostio);
 }
 

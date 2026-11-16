@@ -15,6 +15,7 @@
  *   the scale's return temp; the reference parameter's own temp sat above it).
  * History: runs 142-157 cfe lift / relPos helpers (87.47 -> 95.71). */
 typedef float f32; typedef int s32; typedef double f64;
+#include "../../include/game/camera.h" /* CamWindow / MCamera (import_80087DA8 is the CamWindow *); offset asserts are C-only */
 #define FW(p, o) (*(s32 *)((char *)(p) + (o)))
 extern "C" {
 extern char import_80087DA8;
@@ -54,7 +55,7 @@ extern "C" void SelCourseMap_display_0000B368(Obj *o) {
         if (FW(o, 0x13C) != 0) {
             s32 m7C[16];
             s32 m6C[4];
-            gen_imp_math_mtx4Transpose(*(char **)((char *)(*(char **)&import_80087DA8) + 0x70) + 0xB4, m7C);
+            gen_imp_math_mtx4Transpose((*(CamWindow **)&import_80087DA8)->cam->view, m7C); /* the active view camera */
             import_0010806C(m7C, m6C);
             gen_imp_math_quatSlerp(&o->q, m6C, o->f128, 0);
         }
