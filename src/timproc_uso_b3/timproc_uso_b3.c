@@ -81,7 +81,7 @@ trk_main(a0, a1) int * a0; int a1; {
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: unknown-object: d +4 word of the session pair (no struct) */
+            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: data-table: compile stand-in for the timproc_uso_b3_o0_B0.c donor, whose case 5 is game_loadUso(&GameFlow, word at reloc bootup Data+0xC510 + 4) (scripts/uso-imports.py) */
             gl_func_00000000(d, 4, GAMEFLOW(d)->course, 2);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
@@ -529,9 +529,9 @@ state1:
         CALL(GameFlow_releaseFiles_00012110)(base);
         CALL(RaceProcess_createReplayCam)(saved);
         CALL(RaceProcess_restartWithTimeout)(saved, base[0x170 / 4] + 0x00220000);
-        RACEPROC(saved)->unk524 = CALL(TrkNameEntry_ctor_00001660)(0, saved, 0);
-        gl_func_00000000(RACEPROC(saved)->unk524, (int)RACEPROC(saved)->session);
-        created = (int *)RACEPROC(saved)->unk524;
+        RACEPROC(saved)->nameEntry = CALL(TrkNameEntry_ctor_00001660)(0, saved, 0);
+        gl_func_00000000(RACEPROC(saved)->nameEntry, (int)RACEPROC(saved)->session);
+        created = (int *)RACEPROC(saved)->nameEntry;
         link = (char *)RACEPROC(saved)->handler;
         CALL(list_append)(link + 0x10, created);
         if (created[0x14 / 4] != 0) {
@@ -1050,9 +1050,10 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
             ((float *)o)[2] = 100.0f / denom;
             ((float *)o)[3] = 0.0f / denom;
         }
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0xA0) = DATAMGR(arg0)->pointsList + 0x108; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0x80) = 0; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0x84) = -0x12; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
+        /* points94 is a PointsPopup (PointsGadget_ctor_00000ED0); font = the list's sprite1 */
+        POPUP(DATAMGR(arg0)->points94)->font = (char *)(DATAMGR(arg0)->pointsList + 0x108);
+        POPUP(DATAMGR(arg0)->points94)->unk80 = 0;
+        POPUP(DATAMGR(arg0)->points94)->unk84 = -0x12;
         o = (char *)DATAMGR(arg0)->points94;
         CALL(list_append)(arg0 + 0x10, o);
         if (NODE(o)->parent != 0) {

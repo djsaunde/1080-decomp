@@ -677,17 +677,17 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
             XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(&import_80020098);
             import_000B2888(arg0);
             mgr_startReplay_00001AD0((int *)arg0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
-            arg0->race.unk524 = (int)MgrNameEntry_ctor_00002940(0, (char *)arg0, arg0->nameEntryMode);
-            import_007FE4E8(arg0->race.unk524, arg0->race.session);
+            arg0->race.nameEntry = (int)MgrNameEntry_ctor_00002940(0, (char *)arg0, arg0->nameEntryMode);
+            import_007FE4E8(arg0->race.nameEntry, arg0->race.session);
             hdr = (char *)arg0->race.handler;
-            node = (void *)arg0->race.unk524;
+            node = (void *)arg0->race.nameEntry;
             XCALL(mgrproc_uso_func_07ACE0, list_append)(hdr + 0x10, node);
             if (NODE(node)->parent != 0) {
                 NODE(node)->unk04 = 1;
             }
             NODE(node)->parent = (Node *) hdr;
             if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
-                *(int *)((char *)arg0->race.unk524 + 0x60) = 2; /* RAW: unknown-object: RaceProcess.unk524 object +0x60 state word (no struct) */
+                ((NameEntry *)arg0->race.nameEntry)->phase = 2;
                 XCALL(mgrproc_uso_func_00001BD4, mgr_startEnding_00001BE4)(arg0);
             }
             XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
@@ -817,7 +817,9 @@ void MGRRaceProcess_updateSub2(char *s0) {
     int sel;
 
     v0 = (char *)import_000A7B90(&import_80020098, 1);
-    import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9)); /* RAW: unknown-object: import_000A7B90 result bytes +8 / +9 and RaceProcess.unk524 +0x60 (no struct) */
+    /* import_000A7B90 = input_getPad_00011D40, import_00096228 = snd_setPlayer3FreqScaleFromStick
+     * (scripts/uso-imports.py sites mgrproc): pad 1's raw stick bytes */
+    import_00096228(((InputPad *)v0)->rawStickX, ((InputPad *)v0)->rawStickY);
     MGRRACE(s0)->endingFrame = MGRRACE(s0)->endingFrame + 1;
     sel = MGRRACE(s0)->exitStep;
     switch (sel) {
@@ -884,7 +886,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
             mgr_startReplay_00001AD0(s0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
-            *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1; /* RAW: unknown-object: import_000A7B90 result bytes +8 / +9 and RaceProcess.unk524 +0x60 (no struct) */
+            ((NameEntry *)RACEPROC(s0)->nameEntry)->phase = 1;
             GAMEFLOW(vt)->procState = 5;
             GAMEFLOW(vt)->nextProcState = 7;
             MGRRACE(s0)->fade7A4 = 0.0f;

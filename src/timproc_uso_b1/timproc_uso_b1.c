@@ -58,7 +58,7 @@ tim_main(a0, a1) int * a0; int a1; {
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: unknown-object: d +4 word of the session pair (no struct) */
+            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: data-table: compile stand-in for the timproc_uso_b1_o0_B0.c donor, whose case 5 is game_loadUso(&GameFlow, word at reloc bootup Data+0xC510 + 4) (scripts/uso-imports.py) */
             gl_func_00000000(d, 4, GAMEFLOW(d)->course, 1);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
@@ -514,9 +514,9 @@ state1:
     CALL(GameFlow_releaseFiles_00012110)(base);
     CALL(RaceProcess_createReplayCam)(s2);
     CALL(RaceProcess_restartWithTimeout)(s2, base[0x170 / 4] + 0x00220000);
-    s2->race.unk524 = CALL(TimNameEntry_ctor_000016F8)(0, s2, 0);
-    gl_func_00000000(s2->race.unk524, s2->race.session);
-    created = (int *)s2->race.unk524;
+    s2->race.nameEntry = CALL(TimNameEntry_ctor_000016F8)(0, s2, 0);
+    gl_func_00000000(s2->race.nameEntry, s2->race.session);
+    created = (int *)s2->race.nameEntry;
     link = (char *)s2->race.handler;
     CALL(list_append)(link + 0x10, created);
     if (created[0x14 / 4] != 0) {

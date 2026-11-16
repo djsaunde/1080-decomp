@@ -607,9 +607,9 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
         CALL(RaceProcess_createReplayCam)(s1);
         CALL(func_00000148)(7, 0, 0);
         CALL(RaceProcess_restartWithTimeout)(s1, INPUT_MGR(D_00000000).replayLen[0] + 0x26000F);
-        s1->race.unk524 = CALL(ArcNameEntry_ctor_0000199C)(0, s1, 0);
-        gl_func_00000000_FA8v(s1->race.unk524, s1->race.session);
-        node = (char *)s1->race.unk524;
+        s1->race.nameEntry = CALL(ArcNameEntry_ctor_0000199C)(0, s1, 0);
+        gl_func_00000000_FA8v(s1->race.nameEntry, s1->race.session);
+        node = (char *)s1->race.nameEntry;
         buf = (char *)s1->race.handler;
         XCALL(gl_func_00000000_FA8v, list_append)(buf + 16, node);
         if (NODE(node)->parent != 0) {

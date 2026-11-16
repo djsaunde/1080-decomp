@@ -152,7 +152,9 @@ typedef struct RaceProcess {
     /* 0x518 */ s32 endCounter;         /* endRaceAlt: 60 */
     /* 0x51C */ s32 replayCam;          /* RaceProcess_createReplayCam */
     /* 0x520 */ s32 savedCam;           /* the world camera replaced by replayCam */
-    /* 0x524 */ s32 unk524;
+    /* 0x524 */ s32 nameEntry;          /* the record name-entry overlay (a NameEntry, include/game/nameentry.h):
+                                       * each mode's onRaceOver stores <Cls>NameEntry_ctor's result and
+                                       * links it under the handler; mgr sets its phase (1 / 2) */
     /* 0x528 */ BackupSession *session; /* record session (*_openSession, include/gdl/backup.h); = RaceTracker.session */
     /* 0x52C */ char unk52C[8];
     /* 0x534 */ f32 scaleX;             /* countdown digit scale (1.0 after reset) */
