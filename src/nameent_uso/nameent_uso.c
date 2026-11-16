@@ -1,9 +1,13 @@
 #include "common.h"
 #include "gdl/node.h"
+#include "game/input.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
+/* nameent.uso's own Data section base (Data-base relocs, in-place addend = offset; pinned at
+ * 0 in undefined_syms_auto.txt). */
+extern char ne_data[];
 
 /* nameent_uso_func_00000000: empty function. */
 void nameent_uso_func_00000000(void) {
@@ -17,13 +21,94 @@ void nameent_uso_func_00000008(void) {
 void nameent_uso_func_00000010(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000018);
+/* nameent_uso_func_00000018: NameEnter process init: name (Data+0x140), mode a1 at +0x50,
+ * cursor 160 / 85, the entry object (760) at +0x54, pad 0 active, three gui sprites
+ * 0x280000..2. */
+void nameent_uso_func_00000018(char *self, int mode) {
+    *(char **)(self + 0xC) = ne_data + 0x140;
+    *(int *)(self + 0x50) = mode;
+    *(int *)(self + 0x6C) = 0;
+    *(int *)(self + 0x58) = 160;
+    *(int *)(self + 0x5C) = 85;
+    *(int *)(self + 0x70) = 1;
+    *(int *)(self + 0x54) = CALL(nameent_uso_func_00000760)(0, self, mode);
+    CALL(input_setActivePad_0001207C)(&D_00000000, 0);
+    CALL(gui_spriteInit)(self + 0x8C, 0x280000);
+    CALL(gui_spriteInit)(self + 0xA4, 0x280001);
+    CALL(gui_spriteInit)(self + 0xBC, 0x280002);
+    *(int *)(self + 0x48) = 0;
+    *(int *)(self + 0x30) = 1;
+    *(int *)(self + 0x2C) = 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000000C8);
+/* nameent_uso_func_000000C8: start: phase 1 (+0x60), bump GameFlow procState, link this under
+ * the shared Fader and fade in. */
+void nameent_uso_func_000000C8(char *self) {
+    char *head;
+    *(int *)(self + 0x70) = 0;
+    *(int *)(self + 0x60) = 1;
+    INPUT_MGR(D_00000000).procState++;
+    head = INPUT_MGR(D_00000000).fader;
+    CALL(list_append)(self + 0x10, head);
+    if (NODE(head)->parent != 0) {
+        NODE(head)->unk04 = 1;
+    }
+    NODE(head)->parent = (Node *)self;
+    CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
+}
 
+/* nameent_uso_func_00000150: update: stick sound from pad 1, then the phase's virtual
+ * (slots 14 / 15 / 16 by +0x60). */
+#ifdef NON_MATCHING
+/* NM 41/45 words: the target keeps the phase in v0 (then reuses v0 for the vtable); cfe colours
+ * the phase v1 under switch, return, vt-local and int-array spellings. */
+void nameent_uso_func_00000150(char *self) {
+    char *pad = (char *)gl_func_00000000(&D_00000000, 1); /* input_getPad_00011D40 */
+    gl_func_00000000( /* snd_setPlayer3FreqScaleFromStick */
+        *(signed char *)(pad + 8), *(signed char *)(pad + 9));
+    switch (*(int *)(self + 0x60)) {
+    case 0:
+        VT_SLOT(NODE(self)->vptr, 14).fn(VT_SLOT(NODE(self)->vptr, 14).delta + self);
+        return;
+    case 1:
+        VT_SLOT(NODE(self)->vptr, 15).fn(VT_SLOT(NODE(self)->vptr, 15).delta + self);
+        return;
+    case 2:
+        VT_SLOT(NODE(self)->vptr, 16).fn(VT_SLOT(NODE(self)->vptr, 16).delta + self);
+        return;
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000150);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000204);
+/* nameent_uso_func_00000204: display by phase (+0x60): phases 0 / 1 draw the sprites (5B4) and
+ * the board (2F4) or a cleared screen (458), then the phase's virtual (slots 17 / 18 / 19). */
+void nameent_uso_func_00000204(char *self) {
+    switch (*(int *)(self + 0x60)) {
+    case 0:
+        CALL(nameent_uso_func_000005B4)(self);
+        if (*(int *)(self + 0x70) != 0) {
+            CALL(nameent_uso_func_000002F4)(self);
+        } else {
+            CALL(nameent_uso_func_00000458)(self);
+        }
+        VT_SLOT(NODE(self)->vptr, 17).fn(VT_SLOT(NODE(self)->vptr, 17).delta + self);
+        break;
+    case 1:
+        CALL(nameent_uso_func_000005B4)(self);
+        if (*(int *)(self + 0x70) != 0) {
+            CALL(nameent_uso_func_000002F4)(self);
+        } else {
+            CALL(nameent_uso_func_00000458)(self);
+        }
+        VT_SLOT(NODE(self)->vptr, 18).fn(VT_SLOT(NODE(self)->vptr, 18).delta + self);
+        break;
+    case 2:
+        VT_SLOT(NODE(self)->vptr, 19).fn(VT_SLOT(NODE(self)->vptr, 19).delta + self);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000002F4);
 
@@ -44,7 +129,35 @@ void nameent_uso_func_00000458(char *self) {
 void nameent_uso_func_000004C8(int a0) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000004D0);
+/* nameent_uso_func_000004D0: finish: with a name entered (+0x6C) and a record session (+0x50),
+ * copy the 3-char name + the +0xB0 word into GameFlow +0x158 / +0x15C, write it to the session
+ * (with GameFlow +0x4F / +0x57) and set the new names; fade the process out. Without a name,
+ * forward to the entry object's virtual slot 3. */
+void nameent_uso_func_000004D0(char *self) {
+    char name[4];
+    char *dst;
+    int i;
+    char *obj;
+    if (*(int *)(self + 0x6C) != 0) {
+        if (*(int *)(self + 0x50) != 0) {
+            i = 0;
+            *(int *)((char *)&D_00000000 + 0x15C) = *(int *)(*(char **)(self + 0x54) + 0xB0);
+            dst = (char *)&D_00000000 + 0x158;
+            do {
+                *dst++ = (*(char **)(self + 0x54))[0xB8 + i];
+                name[i] = (*(char **)(self + 0x54))[0xB8 + i];
+                i++;
+            } while (i != 3);
+            CALL(Backup_writeCourseArcadeOptions_0000B3DC)(*(int *)(self + 0x50), name,
+                *((unsigned char *)&D_00000000 + 0x4F), *((unsigned char *)&D_00000000 + 0x57));
+            CALL(Backup_sessionSetNewNames)(*(int *)(self + 0x50));
+        }
+        CALL(Process_fadeOut_0000F954)(self, -1, 0);
+    } else {
+        obj = *(char **)(self + 0x54);
+        VT_SLOT(NODE(obj)->vptr, 3).fn(VT_SLOT(NODE(obj)->vptr, 3).delta + obj);
+    }
+}
 
 /* nameent_uso_func_000005AC: empty one-argument function (a no-op virtual). */
 void nameent_uso_func_000005AC(int a0) {
