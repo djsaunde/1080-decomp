@@ -54,6 +54,9 @@ extern u64 *gl_26214_AudioSynth_Update(u64 *, s32 *, s16 *, s32);
 #define AudioThread_ScheduleProcessCmds gl_26214_AudioThread_ScheduleProcessCmds
 #define AudioSynth_Update gl_26214_AudioSynth_Update
 #define MQ_GET_COUNT(q) ((q)->validCount)
+#ifdef PORT
+extern unsigned char *port_audio_noise_base(void);
+#endif
 
 AudioTask *AudioThread_UpdateImpl(void) {
     u32 samplesRemainingInAi;
@@ -177,7 +180,13 @@ AudioTask *AudioThread_UpdateImpl(void) {
     gAudioCtx.audioRandom = (gAudioCtx.audioRandom + gAudioCtx.totalTaskCount) * osGetCount();
     gAudioCtx.audioRandom = gAudioCtx.audioRandom + gAudioCtx.aiBuffers[index][gAudioCtx.totalTaskCount & 0xFF];
 
+#ifdef PORT
+    /* The N64 reads noise from the code bytes after AudioThread_Update; the port has its
+     * own copy of those ROM bytes (port/audio/port_audio.c, plan 15.6). */
+    gWaveSamples[8] = (s16 *)(port_audio_noise_base() + (gAudioCtx.audioRandom & 0xFFF0));
+#else
     gWaveSamples[8] = (s16 *)((u8 *)AudioThread_Update + (gAudioCtx.audioRandom & 0xFFF0));
+#endif
 
     index = gAudioCtx.rspTaskIndex;
     gAudioCtx.curTask->taskQueue = NULL;

@@ -5573,6 +5573,9 @@ typedef struct { s32 a; } gl_23BDC_RelocInfo;
 extern char gl_23bdc_str[];
 extern int gl_ref_00039A30();
 #define AudioLoad_RelocateSample gl_ref_00039A30
+#ifdef PORT
+extern void port_audio_swap_font(void *font, int numInstruments, int numDrums, int numSfx);
+#endif
 
 void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl_23BDC_RelocInfo *sampleBankReloc) {
     u32 soundOffset;
@@ -5587,6 +5590,12 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
     u32 *fontData = (u32 *)fontDataStartAddr;
 
 #define GL23BDC_RELOC(offset) ((u32)(offset) + (u32)(fontDataStartAddr))
+
+#ifdef PORT
+    /* The font is still big-endian here: swap every field this function, RelocateSample,
+     * the ADSR / note code and the mixer read (port/audio/audio_swap.c). */
+    port_audio_swap_font(fontDataStartAddr, numInstruments, numDrums, numSfx);
+#endif
 
     soundListOffset = fontData[0];
     if ((soundListOffset != 0) && (numDrums != 0)) {
@@ -5810,6 +5819,9 @@ extern u8 gl_24378_gSequenceFontTable[];
 extern u32 gl_24378_seqRom, gl_24378_fontRom, gl_24378_sampleRom;
 extern void gl_24378_AudioThread_InitMesgQueues(void);
 extern int gl_ref_000375CC();
+#ifdef PORT
+extern void port_audio_swap_static(void);
+#endif
 
 void AudioLoad_Init(void) {
     s32 pad[16];
@@ -5817,6 +5829,9 @@ void AudioLoad_Init(void) {
     void *ramAddr;
     s32 numFonts;
 
+#ifdef PORT
+    port_audio_swap_static(); /* bootup Data audio tables -> host order (port/audio/audio_swap.c) */
+#endif
     gl_24378_gAudioCustomUpdateFunction = NULL;
     gl_24378_gAudioCtx.resetTimer = 0;
 
@@ -5939,6 +5954,17 @@ typedef struct {
     char pad[100 - 0x30];
 } gl_2495C_Rec;
 typedef struct { char p0[0x1578]; int cnt; gl_2495C_Rec recs[2]; } gl_2495C_GS;
+/* Sample header word 0 (codec:4 medium:2 unk:1 isRelocated:1 size:24). Under PORT the
+ * font loader stores it in the host bitfield order (port/audio/audio_swap.h). */
+#ifdef PORT
+#define GL2495C_MEDIUM(w) (((w) >> 4) & 3)
+#define GL2495C_CODEC(w) ((w) & 0xF)
+#define GL2495C_SIZE(w) ((w) >> 8)
+#else
+#define GL2495C_MEDIUM(w) (((w) << 4) >> 30)
+#define GL2495C_CODEC(w) ((w) >> 28)
+#define GL2495C_SIZE(w) ((w) & 0xFFFFFF)
+#endif
 int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
     gl_2495C_Hdr *obj;
     gl_2495C_Rec *rec;
@@ -5949,7 +5975,7 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
         *s0 = 0;
         return -1;
     }
-    if (((obj->w0 << 4) >> 30) == 0) {
+    if (GL2495C_MEDIUM(obj->w0) == 0) {
         *s0 = 2;
         return 0;
     }
@@ -5959,10 +5985,10 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
     }
     rec->hdr = *obj;
     rec->out = s0;
-    r = CALL(aud_AllocSampleCacheTemporary)(obj->w0 & 0xFFFFFF, a0, obj->w1, (signed char)((obj->w0 << 4) >> 30));
+    r = CALL(aud_AllocSampleCacheTemporary)(GL2495C_SIZE(obj->w0), a0, obj->w1, (signed char)GL2495C_MEDIUM(obj->w0));
     rec->xC = r;
     if (r == 0) {
-        if (((obj->w0 << 4) >> 30) == 1 || (obj->w0 >> 28) == 2) {
+        if (GL2495C_MEDIUM(obj->w0) == 1 || GL2495C_CODEC(obj->w0) == 2) {
             *s0 = 0;
         } else {
             *s0 = 3;
@@ -5970,10 +5996,10 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
         return -1;
     }
     rec->state = 1;
-    rec->size = ((obj->w0 & 0xFFFFFF) + 15) & ~15;
+    rec->size = (GL2495C_SIZE(obj->w0) + 15) & ~15;
     rec->x10 = rec->xC;
     rec->x8 = obj->w1;
-    rec->tag = (obj->w0 << 4) >> 30;
+    rec->tag = GL2495C_MEDIUM(obj->w0);
     rec->id = a0;
     rec->sub = a1;
     if (rec->tag == 1) {
@@ -5982,6 +6008,9 @@ int AudioLoad_SlowLoadSample(int a0, unsigned char a1, char *s0) {
     *(int *)((char *)&D_00000000 + 0x1578) ^= 1;
     return 0;
 }
+#undef GL2495C_MEDIUM
+#undef GL2495C_CODEC
+#undef GL2495C_SIZE
 
 int AudioLoad_GetFontSample(int a0, int a1) {
     int v0;
@@ -15514,7 +15543,13 @@ void snd_FrameUpdate(void) {
 }
 
 /* [0x31DF8..0x32D74) = RSP MICROCODE, not CPU code (reclassified
- * 2026-08-22). splat mis-split this 0xF7C-byte SP ucode image into five
+ * 2026-08-22): the IMEM text of the AUDIO ucode, aspMain (1998). The blob
+ * starts with 3 zero words; aspMainTextStart = 0x31E04 (ROM 0xE16EDC, 0xF70
+ * bytes, loaded at IMEM 0x1000; AudioThread_UpdateImpl passes it as both
+ * ucode_boot and ucode). Its data image (jump table at DMEM 0x10, resample
+ * LUT at 0xE0) is bootup.uso Data +0x1D340 = aspMainDataStart (ROM 0xDBF730,
+ * 0x2E0 bytes); 24 dispatch entries, ops 0-23 (PC port plan 15.2 / 15.3).
+ * splat mis-split it into five
  * fake CPU "functions" (31DF8 / 31F20 / 31F4C / 32884 / 32934). Evidence:
  * jal/j targets in SP IMEM (0x04001xxx), RSP COP0 moves (SP status /
  * semaphore / DP regs — the old notes read these 0x40xxxxxx words as CPU
