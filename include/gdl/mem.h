@@ -36,6 +36,7 @@ typedef struct MemHeap {
     /* 0x10 */ MemBlock usedList;   /* sentinel of the allocated-block list */
     /* 0x20 */ s32 id;              /* stored in the top byte of each block's hdr */
     /* 0x24 */ s32 usedSize;        /* allocated 16-byte units */
+    /* 0x28 */ u32 size;            /* heap size in bytes: heap_printStats "%dk/%dk used/size" (gMainHeap is 44 bytes) */
 } MemHeap;
 
 typedef char MemBlock_size_check[sizeof(MemBlock) == 0x10 ? 1 : -1];

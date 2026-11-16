@@ -6468,7 +6468,7 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
     if (p != 0 || (p = (S3D16C *)CALL(mem_new)(4)) != 0) {
         p->w = 0;
     }
-    *(S3D16C *)(o + 0x2C) = a1;
+    *(S3D16C *)&ITEMTYPE(o)->tag = a1;
     ITEMTYPE(o)->unk3C = 0;
     ITEMTYPE(o)->unk40 = a2.w;
     ITEMTYPE(o)->searchDown = 0;
@@ -10274,7 +10274,7 @@ int app_setHeapMode(void *a0) {
  * bundle: `lui v0; jr ra; lw v0,0x20(v0)` after app_setHeapMode's
  * proper jr ra at 0x420E0). */
 int app_getHeapMode(void) {
-    return *(int*)((char*)&gMainHeap + 0x20);
+    return ((MemHeap *)&gMainHeap)->id;
 }
 
 extern int gl_func_00000000();
@@ -10307,7 +10307,7 @@ void heap_printStats(void) {
                      (unsigned int)CALL(Mem_largestFree)(&gMainHeap) >> 10);
     CALL(dbg_printf)((int)(GL_DATA_STR(0x1F704, "%dk/%dk used/size\n")),
                      (unsigned int)CALL(Mem_getUsed)(&gMainHeap) >> 10,
-                     *(unsigned int *)((char *)&gMainHeap + 0x28) >> 10);
+                     ((MemHeap *)&gMainHeap)->size >> 10);
     CALL(Mem_dumpStats)(&gMainHeap);
     CALL(dbg_printStarLine)();
 }
@@ -10423,7 +10423,7 @@ typedef unsigned short GridRow_42374[320];
 void dbg_fillFbRect(int a0) {
     GridRow_42374 *g;
     int x, y;
-    g = ((GridRow_42374 **)(*(int **)(((int)gGfx->mainWindow) + 0x148)))[a0 + 0x3D];
+    g = ((GridRow_42374 **)((ScreenWindow *)gGfx->mainWindow)->fbOwner)[a0 + 0x3D];
     for (x = 50; x < 150; x++) {
         for (y = 50; y < 150; y++) g[y][x] = 0xFFFF;
     }
@@ -16720,7 +16720,7 @@ void GfxObj_ctor_0004DF90(int *a0) {
     v1->unk0C = 0;
     v1->items = (void **)CALL(mem_new)(20);
 end:
-    *(int*)((char*)a0 + 0x134) = (int)obj;
+    ((GfxLib *)a0)->unk134 = (int)obj;
 }
 
 // gfx_initMtxBlock_0004E00C — STRUCTURAL PASS + BOUNDARY NOTE (0x140 / 81 words, no
