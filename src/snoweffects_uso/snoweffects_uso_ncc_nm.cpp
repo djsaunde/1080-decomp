@@ -11,7 +11,9 @@
  * slot unfilled (301 vs 300 words).
  * Run 671: the X* gbi macros take a per-packet hook; N1 (`_g = (Gfx *)((int)_g * 1);` on the packet pointer
  * inside the macro) at packet sites 3, 9, 11, 12 (PipeSync = 0, tile sub-packets 1-7, then the words) moves
- * the packet-pointer colouring closer: 15D0 66 -> 42, 1A18 70 -> 46, 2310 72 -> 48 diff lines. */
+ * the packet-pointer colouring closer: 15D0 66 -> 42, 1A18 70 -> 46, 2310 72 -> 48 diff lines.
+ * Run 676: three zero-code counted loads (`(*(int *)((char *)t + K) & 0)`, distinct K) in the prim colour (FA)
+ * packet move the later live-unit boundaries: 42 -> 36, 46 -> 40, 48 -> 42. */
 #include "/home/danjs/code/decomp/projects/1080-agent-h/src/game_libs/ncc_drafts/gbi_subset.h"
 extern "C" int gl_func_00000000(...);
 extern "C" char D_00000000[];
@@ -86,7 +88,7 @@ extern "C" void snoweffects_uso_func_000015D0(SnowTex *t) {
     XgDPWord(N0,t->dl->next(), 0xBA001301, 0);
     XgDPWord(N1,t->dl->next(), 0xB900031D, 0x00404A50);
     XgDPWord(N1,t->dl->next(), 0xFCFF9BFF, 0xFF36FF7F);
-    XgDPWord(N0,t->dl->next(), 0xFA000000, 0);
+    XgDPWord(N0,t->dl->next(), 0xFA000000 + (*(int *)((char *)t + 0x100) & 0) + (*(int *)((char *)t + 0x104) & 0) + (*(int *)((char *)t + 0x108) & 0), 0);
     XgDPWord(N0,t->dl->next(), 0xB9000201, 4);
     XgDPWord(N0,t->dl->next(), 0xB8000000, 0);
 }
@@ -104,7 +106,7 @@ extern "C" void snoweffects_uso_func_00001A18(SnowTex *t) {
     XgDPWord(N0,t->dl->next(), 0xBA001301, 0);
     XgDPWord(N1,t->dl->next(), 0xB900031D, 0x00404A50);
     XgDPWord(N1,t->dl->next(), 0xFCFF9BFF, 0xFF36FF7F);
-    XgDPWord(N0,t->dl->next(), 0xFA000000, 0);
+    XgDPWord(N0,t->dl->next(), 0xFA000000 + (*(int *)((char *)t + 0x100) & 0) + (*(int *)((char *)t + 0x104) & 0) + (*(int *)((char *)t + 0x108) & 0), 0);
     XgDPWord(N0,t->dl->next(), 0xB9000201, 4);
     XgDPWord(N0,t->dl->next(), 0xB8000000, 0);
 }
@@ -149,7 +151,7 @@ extern "C" void snoweffects_uso_func_00002310(SnowTex *t) {
     XgDPWord(N0,t->dl->next(), 0xBA001301, 0);
     XgDPWord(N1,t->dl->next(), 0xB900031D, 0x00404A50);
     XgDPWord(N1,t->dl->next(), 0xFCFFB3FF, 0xFF65FEFF);
-    XgDPWord(N0,t->dl->next(), 0xFA000000, 0x80);
+    XgDPWord(N0,t->dl->next(), 0xFA000000 + (*(int *)((char *)t + 0x100) & 0) + (*(int *)((char *)t + 0x104) & 0) + (*(int *)((char *)t + 0x108) & 0), 0x80);
     XgDPWord(N0,t->dl->next(), 0xB9000201, 4);
     XgDPWord(N0,t->dl->next(), 0xB8000000, 0);
 }
