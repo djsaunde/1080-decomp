@@ -12,7 +12,6 @@
 
 #include "gdl/node.h"
 #include "gdl/race.h"
-#include "game/guimenu.h"
 
 /* ---- the course list (InputMgr.session +8; RaceProcess ctor arg 3) ----
  * arc_initCourses fills it with {2, 0, 3, 1, 4}; mgr_initMatchRace with 4..6
@@ -176,7 +175,7 @@ typedef struct H2HWinsDisplay {
                                       * update its timeout (< 2 fades the fader in, else out) */
     /* 0x30 */ s32 menu;             /* GuiMenu (PauseMenu_create); its unk30 gets the gui_fontCreate font */
     /* 0x34 */ s32 fader;            /* h2h_WhiteFader_ctor; onTimeout waits for its alpha to reach 0xFF */
-    /* 0x38 */ GuiSprite sprites[4]; /* gui_spriteLoad: base-data sprite words 0x4C / 0x54 / 0x58 / 0x60; display
+    /* 0x38 */ RaceSprite sprites[4]; /* gui_spriteLoad: base-data sprite words 0x4C / 0x54 / 0x58 / 0x60; display
                                       * draws [0] / [1] (player 1) and [2] / [3] (player 2) */
     /* 0x98 */ s32 frame;            /* display: +1 per frame (bit 4 blinks the text) */
 } H2HWinsDisplay;

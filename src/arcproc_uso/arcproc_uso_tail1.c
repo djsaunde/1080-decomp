@@ -4,6 +4,7 @@
 #include "game/nameentry.h"
 #include "game/modemenu.h"
 #include "game/guimenu.h"
+#include "gdl/gadget.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -103,17 +104,17 @@ void arc_pauseContinue_000007B4(void) {
 
 extern char *D_arc800_a;       /* gl_func 1st-arg AND chain-2 (0x6A8) base */
 extern char *D_arc800_b;       /* chain-1 (0x6AC) base */
-extern int   D_arc800_d;       /* store target +0x40 / +0x44 */
+extern int   D_arc800_d;       /* GameFlow (bootup Bss 0xF8 import): procState / nextProcState */
 
 void arc_pauseRetry_00000800(void) {
     int v;
     CALL(Process_setWindowFlag8_0000FBCC)(D_arc800_a);
     v = CALL(Backup_sessionHasNew)((int)DATAMGR(ARCRACE(D_arc800_b)->dataMgr)->session);
     if (v != 0) {
-        *(int*)((char*)&D_arc800_d + 0x40) = 7;
-        *(int*)((char*)&D_arc800_d + 0x44) = 4;
+        INPUT_MGR(D_arc800_d).procState = 7;
+        INPUT_MGR(D_arc800_d).nextProcState = 4;
     } else {
-        *(int*)((char*)&D_arc800_d + 0x40) = 4;
+        INPUT_MGR(D_arc800_d).procState = 4;
     }
     CALL(Process_fadeOut_0000F954)(D_arc800_a, 4,
         ARCRACE(D_arc800_a)->courseList->courses[0]);
@@ -127,16 +128,16 @@ void arc_pauseRetry_00000800(void) {
  * (vs $v1 with a named local). */
 extern int D_arc880_X;
 extern char *D_arc880_Y;
-extern char D_arc880_Z[];
+extern char D_arc880_Z[];      /* GameFlow (bootup Bss 0xF8 import) */
 void arc_pauseQuit_00000880(void) {
     int v0;
     CALL(Process_setWindowFlag8_0000FBCC)(D_arc880_X);
     v0 = CALL(Backup_sessionHasNew)((int)DATAMGR(ARCRACE(D_arc880_Y)->dataMgr)->session);
     if (v0 != 0) {
-        *(int*)(D_arc880_Z + 0x40) = 7;
-        *(int*)(D_arc880_Z + 0x44) = 9;
+        INPUT_MGR(D_arc880_Z).procState = 7;
+        INPUT_MGR(D_arc880_Z).nextProcState = 9;
     } else {
-        *(int*)(D_arc880_Z + 0x40) = 9;
+        INPUT_MGR(D_arc880_Z).procState = 9;
     }
     CALL(Process_fadeOut_0000F954)(D_arc880_X, 0, 0);
 }
@@ -282,7 +283,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
 
         w = (char *)ARCRACE(obj)->dataMgr;
         o1 = (char *)NODE(w)->vptr;
-        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
         DATAMGR(ARCRACE(obj)->dataMgr)->entries->score = ARCRACE(obj)->courseList->total;
         DATAMGR(ARCRACE(obj)->dataMgr)->entries->time = ARCRACE(obj)->courseList->total;
@@ -418,7 +419,7 @@ int ARCRaceProcess_endTimerEnabled(ArcRace *a0) {
     if (p == 0) {
         goto ret0;
     }
-    if (*(int*)((char*)p + 0xEC) == 0) {
+    if (TPOINTS(p)->allIdle == 0) {
         goto ret0;
     }
     return 1;
@@ -479,7 +480,7 @@ int ARCRaceProcess_altEndTimerEnabled(ArcRace *a0) {
     int *v;
     v = (int *)((ArcDataManager *)a0->dataMgr)->base.pointsList;
     if (v != 0) {
-        if (*(int*)((char*)v + 0xEC) != 0) {
+        if (TPOINTS(v)->allIdle != 0) {
             return 1;
         }
     }
@@ -589,7 +590,7 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
         s1->recordRank = DATAMGR(list)->entries->rank[2];
         for (i = s1->recordRank - 1; i >= 0; i--) {
             r = (char *)CALL(Backup_arcadeGetEntry)((int)s1->race.session->arcade, i);
-            if (s1->finalTime != *(int*)(r + 0x1C)) break;
+            if (((BackupArcadeEntry *)r)->score != s1->finalTime) break;
             s1->recordRank = s1->recordRank - 1;
         }
         s1->race.subState = 1;
@@ -823,32 +824,32 @@ void ARCRaceProcess_drawIntro(char *arg0) {
             }
         }
         CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x380, arg0 + 0x3A4);
-        CALL(gui_spriteRefresh)(arg0 + 0x6BC);
-        CALL(gui_drawSprite)(arg0 + 0x6BC, 0xA0, 0xB6, 3);
+        CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[0]);
+        CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[0], 0xA0, 0xB6, 3);
         while (0) { w = *(short *)(arg0 + 0x20); }
-        q = *(char **)(arg0 + 0x6FC);
-        w = *(short *)(q + 0x20);
-        p6d8 = *(char **)(arg0 + 0x6E4);
-        sp48 = 0xA0 - ((*(short *)(p6d8 + 0x20) + w + 4) / 2);
+        q = (char *)ARCRACE(arg0)->sprites[2].image;
+        w = ((RaceSpriteImage *)q)->width;
+        p6d8 = (char *)ARCRACE(arg0)->sprites[1].image;
+        sp48 = 0xA0 - ((((RaceSpriteImage *)p6d8)->width + w + 4) / 2);
         CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), arg0 + 0x260, arg0 + 0x284);
         p6a8 = (char *)ARCRACE(arg0)->courseList;
         /* count == idx + 1 (the final course). Kept raw: the ArcCourseList member form
          * swaps the two loads' registers (agent-h run 492). */
         if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
-            CALL(gui_spriteRefresh)(arg0 + 0x6EC);
-            CALL(gui_drawSprite)(arg0 + 0x6EC, sp48, 0x8E, 2);
-            CALL(gui_spriteRefresh)(arg0 + 0x6D4);
-            q = *(char **)(arg0 + 0x6FC);
-            w = *(short *)(q + 0x20);
-            CALL(gui_drawSprite)(arg0 + 0x6D4, sp48 + w + 4, 0x8E, 2);
+            CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[2]);
+            CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[2], sp48, 0x8E, 2);
+            CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[1]);
+            q = (char *)ARCRACE(arg0)->sprites[2].image;
+            w = ((RaceSpriteImage *)q)->width;
+            CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[1], sp48 + w + 4, 0x8E, 2);
             return;
         }
-        CALL(gui_spriteRefresh)(arg0 + 0x6D4);
-        CALL(gui_drawSprite)(arg0 + 0x6D4, sp48, 0x8E, 2);
-        CALL(gui_spriteRefresh)(arg0 + 0x6EC);
-        q = *(char **)(arg0 + 0x6E4);
-        w = *(short *)(q + 0x20);
-        CALL(gui_drawSprite)(arg0 + 0x6EC, sp48 + w + 4, 0x8E, 2);
+        CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[1]);
+        CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[1], sp48, 0x8E, 2);
+        CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[2]);
+        q = (char *)ARCRACE(arg0)->sprites[1].image;
+        w = ((RaceSpriteImage *)q)->width;
+        CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[2], sp48 + w + 4, 0x8E, 2);
     }
 }
 
@@ -1182,7 +1183,7 @@ void ArcNameEntry_drawExitOverlay(int *self) {
 
     CALL(ArcNameEntry_drawBlinkBanner_00001C74)(self);
     sub = (int *)MODENAMEENT(self)->race;
-    fp = (float *)((char *)sub + 0x77C);
+    fp = &ARCRACE(sub)->resultFade;
     val = *fp;
     if (val > 0.0f) {
         *fp -= *(float *)(base + 0x44);
@@ -1273,24 +1274,24 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
         gl_proto_1d18((char *)arg0->base.points94, 0xA0, 0x46, 1.0f, 1.0f);
         {
             sub = (char *)arg0->base.points94;
-            if (1) { sub += 0x18; }
+            if (1) { sub = (char *)&NODE(sub)->doFlags; }
             *(int *)sub = *(int *)sub & ~4;
             sub = (char *)arg0->base.points94;
-            if (1) { sub += 0x64; }
-            *(float *)(sub + 0x0) = 250.0f / denom;
-            *(float *)(sub + 0x4) = 235.0f / denom;
-            *(float *)(sub + 0x8) = 100.0f / denom;
-            *(float *)(sub + 0xC) = r0;
+            if (1) { sub = (char *)POPUP(sub)->colour; }
+            ((f32 *)sub)[0] = 250.0f / denom;
+            ((f32 *)sub)[1] = 235.0f / denom;
+            ((f32 *)sub)[2] = 100.0f / denom;
+            ((f32 *)sub)[3] = r0;
         }
-        *(int *)((char *)arg0->base.points94 + 0xA0) = arg0->base.pointsList + 0x108;
-        *(int *)((char *)arg0->base.points94 + 0x80) = 0;
-        *(int *)((char *)arg0->base.points94 + 0x84) = -0x12;
+        POPUP(arg0->base.points94)->font = (int)TPOINTS(arg0->base.pointsList)->sprite1;
+        POPUP(arg0->base.points94)->unk80 = 0;
+        POPUP(arg0->base.points94)->unk84 = -0x12;
         sub = (char *)arg0->base.points94;
         CALL(list_append)(arg0->base.children, sub);
         if (NODE(sub)->parent != 0) {
             NODE(sub)->unk04 = 1;
         }
-        *(ArcDataManager **)(sub + 0x14) = arg0;
+        NODE(sub)->parent = (int)arg0;
     }
 }
 
@@ -1643,8 +1644,8 @@ char *ARCMenuProcess_ctor(char *arg0) {
         CALL(gui_centerAt_000102A4)(MENUPROC(arg0)->menu, 120);
         if (1) {}
         v0 = (char *)MENUPROC(arg0)->menu;
-        a3 = *(char **)(v0 + 40);
-        ((void (*)(int))(*(int *)(a3 + 0x5C)))(*(short *)(a3 + 0x58) + (int)v0);
+        a3 = (char *)NODE(v0)->vptr;
+        ((void (*)(int))VT_SLOT(a3, 10).fn)(VT_SLOT(a3, 10).delta + (int)v0);
         a3 = (char *)MENUPROC(arg0)->menu;
         CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {

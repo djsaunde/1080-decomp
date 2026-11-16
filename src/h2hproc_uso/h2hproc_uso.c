@@ -1319,13 +1319,13 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     gl_func_00000000_1360v(sub, 60, 64, 3);
     sub = (int*)&H2HWINS(self)->sprites[1];
     gl_func_00000000_1360v(sub);
-    gl_func_00000000_1360v(sub, *(short*)(H2HWINS(self)->sprites[0].image + 0x20) + 68, 64, 3);
+    gl_func_00000000_1360v(sub, H2HWINS(self)->sprites[0].image->width + 68, 64, 3);
     sub = (int*)&H2HWINS(self)->sprites[2];
     gl_func_00000000_1360v(sub);
     gl_func_00000000_1360v(sub, 220, 64, 3);
     sub = (int*)&H2HWINS(self)->sprites[3];
     gl_func_00000000_1360v(sub);
-    gl_func_00000000_1360v(sub, *(short*)(H2HWINS(self)->sprites[2].image + 0x20) + 228, 64, 3);
+    gl_func_00000000_1360v(sub, H2HWINS(self)->sprites[2].image->width + 228, 64, 3);
     gl_func_00000000_1360v(self);
 }
 #else

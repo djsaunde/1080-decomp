@@ -32,10 +32,22 @@ typedef char RaceProcessVt_size_check[sizeof(RaceProcessVt) == 0x138 ? 1 : -1];
 #define RACEVT_DRAW_RESULT      32
 #define RACEVT_ON_MESSAGE_BOUNCE 37
 
-/* One 2D sprite instance (ids 0x6000x, set up by RaceProcess_init). */
+/* One 2D sprite instance (ids 0x6000x, set up by RaceProcess_init): a gui_uso sprite slot (gui_spriteInit /
+ * spriteLoad / spriteRefresh / spriteRelease, agent-h run 533). fileId is the BinFileMgr id (spriteLoad arg 2:
+ * bank << 16 | entry), image the acquired file (0 until loaded); the mode overlays read the image's s16 at
+ * +0x20 (its width) to lay sprites out side by side. */
+typedef struct RaceSpriteImage {
+    /* 0x00 */ char unk00[0x20];
+    /* 0x20 */ s16 width;           /* pixels: the overlays place the next sprite at x + width + 4 */
+} RaceSpriteImage;
+
 typedef struct RaceSprite {
-    /* 0x00 */ char data[0x18];
+    /* 0x00 */ char unk00[0x10];
+    /* 0x10 */ RaceSpriteImage *image; /* BinFileMgr_getAcquire(fileId) */
+    /* 0x14 */ s32 fileId;
 } RaceSprite;
+
+typedef char RaceSprite_size_check[sizeof(RaceSprite) == 0x18 ? 1 : -1];
 
 /* A colour parm block (address passed to the sprite colour call as a top / bottom pair). */
 typedef struct RaceColour {

@@ -18,18 +18,6 @@ typedef struct GuiRow {
     /* 0x10 */ char sub[0x18];      /* gui_addRowSub initialises it with its arg 1 */
 } GuiRow;
 
-/* A gui_uso sprite slot (0x18; gui_spriteInit / spriteLoad / spriteRelease / spriteRefresh, agent-h
- * run 533): fileId is the BinFileMgr id (spriteLoad arg 2: bank << 16 | entry), image the acquired
- * file (0 until loaded). The h2h WinsDisplay reads the image's s16 at +0x20 (its width) to place
- * the label after a sprite. */
-typedef struct GuiSprite {
-    /* 0x00 */ char unk00[0x10];
-    /* 0x10 */ char *image;         /* BinFileMgr_getAcquire(fileId); +0x20 = s16 width */
-    /* 0x14 */ s32 fileId;
-} GuiSprite;
-
-typedef char GuiSprite_size_check[sizeof(GuiSprite) == 0x18 ? 1 : -1];
-
 typedef struct GuiMenu {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 arg;             /* gui_initRows arg 1 */
