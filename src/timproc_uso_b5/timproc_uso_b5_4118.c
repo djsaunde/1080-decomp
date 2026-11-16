@@ -689,7 +689,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             break;
         }
         SELWIN(arg0)->stageMask = arg5;
-        SELWIN(arg0)->scene = (char *)arg9;
+        SELWIN(arg0)->scene = (GenCamera *)arg9;
         temp_f0 = *(f32 *)((char *)FW(FW(arg9, 0xC), 0x70) + 0x14C);
         SELWIN(arg0)->stageLock = 0;
         SELWIN(arg0)->busy = 0;

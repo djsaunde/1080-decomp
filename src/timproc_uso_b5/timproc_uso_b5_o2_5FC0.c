@@ -121,25 +121,25 @@ void SelectWin_update_00005FC0(char *arg0) {
     if (SELWIN(arg0)->prevItemActive != 0) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(arg0);
         v1 = (char *)FW(v0, 0x28);
-        ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
+        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
     }
     v0 = (char *)SelectWin_curItem_00008A38(arg0);
     v1 = (char *)FW(v0, 0x28);
-    ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
+    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
     v1 = (char *)SELWIN(arg0)->itemsMgr->tesuri[0];
     v0 = (char *)FW(v1, 0x28);
-    ((FPv)FW(v0, 0xBC))(*(s16 *)(v0 + 0xB8) + v1, FW(arg0, 0x480));
+    ((FPv)SELVT(v0)->setAlpha.fn)(SELVT(v0)->setAlpha.delta + v1, FW(arg0, 0x480));
     v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[1];
     v1 = (char *)FW(v0, 0x28);
-    ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
-    if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
+    ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
+    if (*(s32 *)(&import_800200CC + 0x34) != 2) {
         v0 = (char *)SELWIN(arg0)->itemsMgr->tesuri[2];
         v1 = (char *)FW(v0, 0x28);
-        ((FPv)FW(v1, 0xBC))(*(s16 *)(v1 + 0xB8) + v0, FW(arg0, 0x480));
+        ((FPv)SELVT(v1)->setAlpha.fn)(SELVT(v1)->setAlpha.delta + v0, FW(arg0, 0x480));
     }
     if (SELWIN(arg0)->state == 5) {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_lerpCamToItemZoom_0000396C(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
+        SelectWin_lerpCamToItemZoom_0000396C(sp2C, (int)SELWIN(arg0)->scene->target, arg0 + 0x4C4,
             gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1BC) * *(f32 *)(arg0 + 0x4BC)),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
@@ -149,7 +149,7 @@ void SelectWin_update_00005FC0(char *arg0) {
             *(f32 *)(sp2C + 0x14C);
     } else {
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
-        SelectWin_lerpCamToItem_000038B0(sp2C, FW(FW(arg0, 0x414), 0x10), arg0 + 0x4C4,
+        SelectWin_lerpCamToItem_000038B0(sp2C, (int)SELWIN(arg0)->scene->target, arg0 + 0x4C4,
             gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C4) * *(f32 *)(arg0 + 0x4BC)),
             SELWIN(arg0)->parms.voy.value);
         sp2C = (char *)SelectWin_curItem_00008A38(arg0);
@@ -158,7 +158,7 @@ void SelectWin_update_00005FC0(char *arg0) {
             gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1C8) * *(f32 *)(arg0 + 0x480)) *
             *(f32 *)(sp2C + 0x134);
     }
-    *(f32 *)(SELWIN_VIEW(SELWIN(arg0))->camera + 0x14C) =
+    SELWIN_CAMERA(SELWIN(arg0))->fov =
         SELWIN(arg0)->fovFrom +
         (SELWIN(arg0)->fovTarget - SELWIN(arg0)->fovFrom) *
         gen_imp_fsin(*(f32 *)(&D_00000000 + 0x1CC) * *(f32 *)(arg0 + 0x4BC));

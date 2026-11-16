@@ -1536,6 +1536,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
     extern int gen_imp_list_append();
     extern int gen_imp_game_create3DWindow();
     extern s32 *gen_imp_MCamera_ctor(s32 arg0, s32 *arg1, f32 arg2, f32 arg3, f32 arg4);
+#define GCAM ((GenCamera *)arg0)
     char *q;
     char *g;
     s32 *v1t;
@@ -1553,9 +1554,9 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
 
     if ((arg0 != 0) || ((arg0 = (s32 *)gen_imp_mem_new(0x20)) != 0)) {
         g = &import_80020098;
-        FW(arg0, 0x0) = FW(FW(g, 0x134), 0x84);
-        FW(arg0, 0x4) = FW(FW(g, 0x134), 0x80);
-        FW(arg0, 0x8) = FW(FW(g, 0x134), 0x8C);
+        GCAM->world = (char *)FW(FW(g, 0x134), 0x84);
+        GCAM->unk04 = (char *)FW(FW(g, 0x134), 0x80);
+        GCAM->unk08 = (char *)FW(FW(g, 0x134), 0x8C);
         w = (s32 *)gen_imp_mem_new(0x80);
         if (w != 0) {
             gen_imp_pad_open(w, arg1);
@@ -1575,7 +1576,7 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
             zA[2] = 0.0f;
             gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zA);
         }
-        FW(arg0, 0x14) = (int)w;
+        GCAM->anchor = (struct MNode *)w;
         w = (s32 *)gen_imp_mem_new(0xB4);
         if (w != 0) {
             gen_imp_Node_ctor(w, &timproc_uso_b5_D_807FE998 + 0x1128);
@@ -1590,47 +1591,48 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
             zB[2] = 0.0f;
             gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zB);
         }
-        FW(arg0, 0x10) = (int)w;
+        GCAM->target = (struct MNode *)w;
         w = gen_imp_MCamera_ctor(0, w, 0.0f, 0.0f, 0.0f);
-        v1t = (s32 *)FW(arg0, 0x0);
-        FW(arg0, 0x18) = (int)w;
+        v1t = (s32 *)GCAM->world;
+        GCAM->camera = (MCamera *)w;
         gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
         if (FW(w, 0x14) != 0) {
             FW(w, 0x4) = 1;
         }
         FW(w, 0x14) = (int)v1t;
-        v1t = (s32 *)FW(arg0, 0x0);
-        w = (s32 *)FW(arg0, 0x10);
+        v1t = (s32 *)GCAM->world;
+        w = (s32 *)GCAM->target;
         gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
         if (FW(w, 0x14) != 0) {
             FW(w, 0x4) = 1;
         }
         FW(w, 0x14) = (int)v1t;
-        w = (s32 *)FW(arg0, 0x10);
+        w = (s32 *)GCAM->target;
         zC[1] = 0.0f;
         zC[0] = 0.0f;
         zC[2] = -400.0f;
         gen_imp_math_mtxAddTranslation((s32 *)((char *)w + 0x30), zC);
         if (arg1 == (s32 *)1) {
-            w = (s32 *)gen_imp_game_create3DWindow(*(int *)&INPUT_MGR(import_800201CC).game, &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
-            FW(arg0, 0xC) = (int)w;
+            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_800201CC, 0x134), &import_8006EA70 + (arg2 * 0x1C), GCAM->camera);
+            GCAM->view = (Window *)w;
         } else {
-            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), FW(arg0, 0x18));
-            FW(arg0, 0xC) = (int)w;
+            w = (s32 *)gen_imp_game_create3DWindow(FW(&import_8001EA70, 0x134), &import_8006EA70 + (arg2 * 0x1C), GCAM->camera);
+            GCAM->view = (Window *)w;
         }
-        FW(FW(arg0, 0xC), 0x108) = 0x201;
-        w = (s32 *)FW(arg0, 0xC);
+        GCAM->view->displayMask = 0x201;
+        w = (s32 *)GCAM->view;
         if (1) {
             w = (s32 *)((char *)w + 0x78);
         }
         FW(w, 0x0) = FW(w, 0x0) | 6;
-        *(f32 *)((char *)FW(FW(arg0, 0xC), 0x70) + 0x14C) = (f32) arg3;
-        w = (s32 *)FW(arg0, 0xC);
+        ((MCamera *)GCAM->view->camera)->fov = (f32) arg3;
+        w = (s32 *)GCAM->view;
         w = (s32 *)((char *)w + 0xDC);
         *(f32 *)((char *)w + 0xC) = 0.0f; *(f32 *)((char *)w + 0x8) = 0.0f; *(f32 *)((char *)w + 0x4) = 0.0f; *(f32 *)((char *)w + 0x0) = 0.0f;
     }
     return arg0;
 }
+#undef GCAM
 
 // SelItemParms_ctor — STRUCTURAL PASS (0x754 / 469 words,
 // no episode). Raw-.word USO form (genuine code, single function).
@@ -2940,7 +2942,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             break;
         }
         SELWIN(arg0)->stageMask = arg5;
-        SELWIN(arg0)->scene = (char *)arg9;
+        SELWIN(arg0)->scene = (GenCamera *)arg9;
         temp_f0 = *(f32 *)((char *)FW(FW(arg9, 0xC), 0x70) + 0x14C);
         SELWIN(arg0)->stageLock = 0;
         SELWIN(arg0)->busy = 0;
@@ -3072,13 +3074,13 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     SELWIN(arg0)->curItem[2] = SELWIN(arg0)->chosenItem[2];
     e = *(char **)(*(char **)((char *)SELWIN(arg0)->itemsMgr + 0x40) + n * 4 + 0x3C);
     vt = *(char **)(e + 0x28);
-    (*(void (**)())(vt + 0x84))(*(short *)(vt + 0x80) + (int)e, 0);
+    ((void (*)())SELVT(vt)->setChosen.fn)(SELVT(vt)->setChosen.delta + (int)e, 0);
     e = *(char **)(*(char **)((char *)SELWIN(arg0)->itemsMgr + 0x44) + SELWIN(arg0)->chosenItem[1] * 4 + 0x3C);
     vt = *(char **)(e + 0x28);
-    (*(void (**)())(vt + 0x84))(*(short *)(vt + 0x80) + (int)e, 0);
+    ((void (*)())SELVT(vt)->setChosen.fn)(SELVT(vt)->setChosen.delta + (int)e, 0);
     e = *(char **)(*(char **)((char *)SELWIN(arg0)->itemsMgr + 0x48) + SELWIN(arg0)->chosenItem[2] * 4 + 0x3C);
     vt = *(char **)(e + 0x28);
-    (*(void (**)())(vt + 0x84))(*(short *)(vt + 0x80) + (int)e, 0);
+    ((void (*)())SELVT(vt)->setChosen.fn)(SELVT(vt)->setChosen.delta + (int)e, 0);
     fnum = 145.0f;
     SELWIN(arg0)->colors[1][1] = fnum / 255.0f;
     fone = (float)255;
@@ -3115,11 +3117,11 @@ void SelectWin_init_00005BF0(char *arg0, int *arg1, int *arg2, int *arg3, int *a
     SELWIN(arg0)->font = import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 0xD);
     e = (char *)SelectWin_curItem_00008A38(arg0);
     vt = *(char **)(e + 0x28);
-    (*(void (**)())(vt + 0x64))(*(short *)(vt + 0x60) + (int)e);
+    ((void (*)())SELVT(vt)->focus.fn)(SELVT(vt)->focus.delta + (int)e);
     {
         char *p414;
         e = (char *)SelectWin_curItem_00008A38(arg0);
-        p414 = SELWIN(arg0)->scene;
+        p414 = (char *)SELWIN(arg0)->scene;
         SelectWin_setCamToItem_00003A28((int *)e, (int *)*(int *)(p414 + 0x10), *(int *)(p414 + 0x14));
     }
     SelectWin_beginTransition_00008688(arg0, 0);
@@ -3359,44 +3361,44 @@ void SelectWin_display_00006394(char *arg0) {
             if ((temp_v0_3 == 5) || (temp_v0_3 == 7)) {
                 if (SELWIN(arg0)->frame & 8) {
                     temp_v0_4 = (char *)SelectWin_curItem_00008A38(arg0);
-                    temp_v1_2 = FW(temp_v0_4, 0x28);
-                    ((GP_00006394)FW(temp_v1_2, 0xC4))(*(s16*)((char*)temp_v1_2 + 0xC0) + temp_v0_4, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
+                    temp_v1_2 = (int)SELITEM(temp_v0_4)->vptr;
+                    ((GP_00006394)SELVT(temp_v1_2)->drawLabel.fn)(SELVT(temp_v1_2)->drawLabel.delta + temp_v0_4, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
                 }
             } else if (temp_v0_3 == 8) {
                 temp_v0_5 = (char *)SelectWin_curItem_00008A38(arg0);
-                temp_v1_3 = FW(temp_v0_5, 0x28);
-                ((GP_00006394)FW(temp_v1_3, 0xC4))(*(s16*)((char*)temp_v1_3 + 0xC0) + temp_v0_5, arg0, (int)arg0 + 0x29C, (int)arg0 + 0x2C0);
+                temp_v1_3 = (int)SELITEM(temp_v0_5)->vptr;
+                ((GP_00006394)SELVT(temp_v1_3)->drawLabel.fn)(SELVT(temp_v1_3)->drawLabel.delta + temp_v0_5, arg0, (int)arg0 + 0x29C, (int)arg0 + 0x2C0);
             } else {
                 temp_v0_6 = (char *)SelectWin_curItem_00008A38(arg0);
-                temp_v1_4 = FW(temp_v0_6, 0x28);
-                ((GP_00006394)FW(temp_v1_4, 0xC4))(*(s16*)((char*)temp_v1_4 + 0xC0) + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
+                temp_v1_4 = (int)SELITEM(temp_v0_6)->vptr;
+                ((GP_00006394)SELVT(temp_v1_4)->drawLabel.fn)(SELVT(temp_v1_4)->drawLabel.delta + temp_v0_6, arg0, (int)arg0 + 0x254, (int)arg0 + 0x278);
             }
             if (INPUT_MGR(import_800200CC).nextFlowMode == 2) {
                 temp_v0_7 = SELWIN(arg0)->state;
                 if (temp_v0_7 == 4) {
                     temp_v0_8 = (char *)SelectWin_curItem_00008A38(arg0);
-                    temp_v1_5 = FW(temp_v0_8, 0x28);
-                    ((GP_00006394)FW(temp_v1_5, 0xDC))(*(s16*)((char*)temp_v1_5 + 0xD8) + temp_v0_8, arg0, SELWIN(arg0)->frame);
+                    temp_v1_5 = (int)SELITEM(temp_v0_8)->vptr;
+                    ((GP_00006394)SELVT(temp_v1_5)->drawArrows.fn)(SELVT(temp_v1_5)->drawArrows.delta + temp_v0_8, arg0, SELWIN(arg0)->frame);
                 } else if (temp_v0_7 == 5) {
                     temp_v0_9 = (char *)SelectWin_curItem_00008A38(arg0);
-                    temp_v1_6 = FW(temp_v0_9, 0x28);
-                    ((GP_00006394)FW(temp_v1_6, 0xDC))(*(s16*)((char*)temp_v1_6 + 0xD8) + temp_v0_9, arg0, 8);
+                    temp_v1_6 = (int)SELITEM(temp_v0_9)->vptr;
+                    ((GP_00006394)SELVT(temp_v1_6)->drawArrows.fn)(SELVT(temp_v1_6)->drawArrows.delta + temp_v0_9, arg0, 8);
                 } else {
                     temp_v0_10 = (char *)SelectWin_curItem_00008A38(arg0);
-                    temp_v1_7 = FW(temp_v0_10, 0x28);
-                    ((GP_00006394)FW(temp_v1_7, 0xD4))(*(s16*)((char*)temp_v1_7 + 0xD0) + temp_v0_10, arg0);
+                    temp_v1_7 = (int)SELITEM(temp_v0_10)->vptr;
+                    ((GP_00006394)SELVT(temp_v1_7)->drawStats.fn)(SELVT(temp_v1_7)->drawStats.delta + temp_v0_10, arg0);
                 }
             } else {
                 temp_v0_11 = (char *)SelectWin_curItem_00008A38(arg0);
-                temp_v1_8 = FW(temp_v0_11, 0x28);
-                ((GP_00006394)FW(temp_v1_8, 0xD4))(*(s16*)((char*)temp_v1_8 + 0xD0) + temp_v0_11, arg0);
+                temp_v1_8 = (int)SELITEM(temp_v0_11)->vptr;
+                ((GP_00006394)SELVT(temp_v1_8)->drawStats.fn)(SELVT(temp_v1_8)->drawStats.delta + temp_v0_11, arg0);
             }
-            var_v1 = FW(FW(FW(arg0, 0x414), 0xC), 0xBC);
+            var_v1 = SELWIN_VIEW(SELWIN(arg0))->height;
         }
     }
     temp_v0_12 = SELWIN(arg0)->state;
     if (((var_v1 >= 0x78) && (SELWIN(arg0)->busy != 1) && (temp_v0_12 == 6)) || (temp_v0_12 == 7)) {
-        var_a2 = FW((SelectWin_prevStageItem_00008A64((int *)arg0)), 0x2B0);
+        var_a2 = SELITEM(SelectWin_prevStageItem_00008A64((int *)arg0))->id;
         temp_v1_9 = SELWIN(arg0)->cheatChar;
         if (temp_v1_9 == 1) {
             var_a2 = 5;
@@ -3408,8 +3410,8 @@ void SelectWin_display_00006394(char *arg0) {
             var_a2 = 7;
         }
         temp_v0_13 = (char *)SelectWin_curItem_00008A38(arg0);
-        temp_v1_10 = FW(temp_v0_13, 0x28);
-        ((GP_00006394)FW(temp_v1_10, 0xCC))(*(s16*)((char*)temp_v1_10 + 0xC8) + temp_v0_13, arg0, var_a2);
+        temp_v1_10 = (int)SELITEM(temp_v0_13)->vptr;
+        ((GP_00006394)SELVT(temp_v1_10)->drawSubLabel.fn)(SELVT(temp_v1_10)->drawSubLabel.delta + temp_v0_13, arg0, var_a2);
     }
     gen_imp_Node_display(arg0);
 }
@@ -3970,12 +3972,12 @@ void SelectWin_state0_00007078(char *arg0) {
     char *temp_v1_3;
     char *temp_v1_4;
 
-    if (FW(FW(FW(arg0, 0x414), 0x18), 0x130) != 0) {
+    if (SELWIN(arg0)->scene->camera->rotEnable != 0) {
         f32 two = 2.0f;
         f32 *p1;
         f32 *p2;
-        *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x134));
-        *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = (f32 *)((char *)FW(FW(arg0, 0x414), 0x18) + 0x138));
+        *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch);
+        *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
     } else {
         SELWIN(arg0)->idleTimer = SELWIN(arg0)->idleTimer - 1;
         if (SELWIN(arg0)->idleTimer < 0) {
@@ -3983,8 +3985,8 @@ void SelectWin_state0_00007078(char *arg0) {
             SELWIN(arg0)->state = 1;
             SELWIN(arg0)->fadeTarget = 1.0f;
             temp_v0 = timproc_uso_b5_alias(arg0);
-            temp_v1_3 = FW(temp_v0, 0x28);
-            ((GP_00007078)FW(temp_v1_3, 0xA4))(*(s16 *)((char *)temp_v1_3 + 0xA0) + (char *)temp_v0);
+            temp_v1_3 = (int)SELITEM(temp_v0)->vptr;
+            ((GP_00007078)SELVT(temp_v1_3)->playAcceptAnim.fn)(SELVT(temp_v1_3)->playAcceptAnim.delta + (char *)temp_v0);
         }
         timproc_uso_b5_alias(arg0, 2);
     }
@@ -3994,8 +3996,8 @@ void SelectWin_state0_00007078(char *arg0) {
         SELWIN(arg0)->zoomTimer = 0;
         SELWIN(arg0)->fadeTarget = 1.0f;
         temp_v0_2 = timproc_uso_b5_alias(arg0);
-        temp_v1_4 = FW(temp_v0_2, 0x28);
-        ((GP_00007078)FW(temp_v1_4, 0xA4))(*(s16 *)((char *)temp_v1_4 + 0xA0) + (char *)temp_v0_2);
+        temp_v1_4 = (int)SELITEM(temp_v0_2)->vptr;
+        ((GP_00007078)SELVT(temp_v1_4)->playAcceptAnim.fn)(SELVT(temp_v1_4)->playAcceptAnim.delta + (char *)temp_v0_2);
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
         SELWIN(arg0)->state = 0;
@@ -4069,8 +4071,8 @@ check_target:
     if (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x14203) != 0) {
         SelectWin_moveCursorPrev_00006E08(scr, 1);
         e = (char *)SelectWin_curItem_00008A38(scr);
-        vt = *(char **)(e + 0x28);
-        (*(void (**)())(vt + 0xAC))(*(short *)(vt + 0xA8) + (int)e);
+        vt = (char *)SELITEM(e)->vptr;
+        ((void (*)())SELVT(vt)->confirm.fn)(SELVT(vt)->confirm.delta + (int)e);
         SELWIN(scr)->state = 10;
         SELWIN(scr)->fadeTarget = 0.0f;
     }
@@ -4145,7 +4147,7 @@ void SelectWin_state3_00007430(char *scr) {
     int *seq_table;
     char *obj;
     char *node;
-    char *cam_root;
+    GenCamera *cam_root;
 
     if (SELWIN(scr)->stage == 0) {
         step = FCALL(SelectWin_charCheatIndex_00008C44)() - 1;
@@ -4189,14 +4191,14 @@ void SelectWin_state3_00007430(char *scr) {
         }
 
         obj = (char *)FCALL(SelectWin_chosenItem_00008A90)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int, int))(node + 0x8C))(*(short *)(node + 0x88) + (int)obj, 0);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int, int))SELVT(node)->clearChosen.fn)(SELVT(node)->clearChosen.delta + (int)obj, 0);
 
         FCALL(SelectWin_chooseCurrent_00008ABC)(scr);
 
         obj = (char *)FCALL(SelectWin_chosenItem_00008A90)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int, int))(node + 0x84))(*(short *)(node + 0x80) + (int)obj, 0);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int, int))SELVT(node)->setChosen.fn)(SELVT(node)->setChosen.delta + (int)obj, 0);
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
         FCALL(snd_sendEvent)(((int **)&D_00000000)[SELWIN(scr)->stage],
@@ -4207,14 +4209,14 @@ void SelectWin_state3_00007430(char *scr) {
         SELWIN(scr)->fadeTarget = 1.0f;
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int))SELVT(node)->playPickAnim.fn)(SELVT(node)->playPickAnim.delta + (int)obj);
 
         cam_root = SELWIN(scr)->scene;
-        SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
-        SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
-        SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->camPos[0] = cam_root->target->mtx[3][0];
+        SELWIN(scr)->camPos[1] = cam_root->target->mtx[3][1];
+        SELWIN(scr)->camPos[2] = cam_root->target->mtx[3][2];
+        SELWIN(scr)->fovFrom = ((MCamera *)cam_root->view->camera)->fov;
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
     } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x14203)) {
@@ -4225,8 +4227,8 @@ void SelectWin_state3_00007430(char *scr) {
         }
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int))(node + 0xAC))(*(short *)(node + 0xA8) + (int)obj);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int))SELVT(node)->confirm.fn)(SELVT(node)->confirm.delta + (int)obj);
 
         FCALL(SelectWin_moveCursorPrev_00006E08)(scr, 1);
 
@@ -4241,8 +4243,8 @@ void SelectWin_state3_00007430(char *scr) {
                       (SELITEM(obj)->id + 1) | *(int *)(scr + 0x4D4));
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int))(node + 0xA4))(*(short *)(node + 0xA0) + (int)obj);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int))SELVT(node)->playAcceptAnim.fn)(SELVT(node)->playAcceptAnim.delta + (int)obj);
     }
 }
 
@@ -4290,7 +4292,7 @@ void SelectWin_state3_00007430(char *scr) {
 void SelectWin_state4_000077D8(char *scr) {
     char *obj;
     char *node;
-    char *cam_root;
+    GenCamera *cam_root;
     char *d;
 
     if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x100)) {
@@ -4303,14 +4305,14 @@ void SelectWin_state4_000077D8(char *scr) {
         SELWIN(scr)->fadeTarget = 1.0f;
 
         obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-        node = *(char **)(obj + 0x28);
-        (*(void (**)(int))(node + 0x9C))(*(short *)(node + 0x98) + (int)obj);
+        node = (char *)SELITEM(obj)->vptr;
+        ((void (*)(int))SELVT(node)->playPickAnim.fn)(SELVT(node)->playPickAnim.delta + (int)obj);
 
         cam_root = SELWIN(scr)->scene;
-        SELWIN(scr)->camPos[0] = *(float *)(*(char **)(cam_root + 0x10) + 0x60);
-        SELWIN(scr)->camPos[1] = *(float *)(*(char **)(cam_root + 0x10) + 0x64);
-        SELWIN(scr)->camPos[2] = *(float *)(*(char **)(cam_root + 0x10) + 0x68);
-        SELWIN(scr)->fovFrom = *(float *)(*(char **)(*(char **)(cam_root + 0xC) + 0x70) + 0x14C);
+        SELWIN(scr)->camPos[0] = cam_root->target->mtx[3][0];
+        SELWIN(scr)->camPos[1] = cam_root->target->mtx[3][1];
+        SELWIN(scr)->camPos[2] = cam_root->target->mtx[3][2];
+        SELWIN(scr)->fovFrom = ((MCamera *)cam_root->view->camera)->fov;
         SELWIN(scr)->busy = 2;
         SELWIN(scr)->transition = 0.0f;
     } else if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x200)) {
@@ -4322,8 +4324,8 @@ void SelectWin_state4_000077D8(char *scr) {
             if ((SELITEM(obj)->flags << 14) < 0) {
                 FCALL(snd_sendEvent)(0x101, 0);
                 obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-                d = *(char **)(obj + 0x28);
-                (*(void (**)(int))(d + 0x94))(*(short *)(d + 0x90) + (int)obj);
+                d = (char *)SELITEM(obj)->vptr;
+                ((void (*)(int))SELVT(d)->toggleVariant.fn)(SELVT(d)->toggleVariant.delta + (int)obj);
             }
         }
         if (FCALL(input_checkPressed_00011E00)(&D_00000000, 0x10001)) {
@@ -4331,8 +4333,8 @@ void SelectWin_state4_000077D8(char *scr) {
             if ((SELITEM(obj)->flags << 14) >= 0) {
                 FCALL(snd_sendEvent)(0x101, 0);
                 obj = (char *)FCALL(SelectWin_curItem_00008A38)(scr);
-                d = *(char **)(obj + 0x28);
-                (*(void (**)(int))(d + 0x94))(*(short *)(d + 0x90) + (int)obj);
+                d = (char *)SELITEM(obj)->vptr;
+                ((void (*)(int))SELVT(d)->toggleVariant.fn)(SELVT(d)->toggleVariant.delta + (int)obj);
             }
         }
     }
@@ -4409,10 +4411,10 @@ void SelectWin_state5_000079A4(char *scr) {
         }
     }
     e = (char *) SelectWin_chosenItem_00008A90((int *) scr);
-    ((GP_79A4)FW(FW(e, 0x28), 0x8C))(*(s16*)((char *)FW(e, 0x28) + 0x88) + e, 0);
+    ((GP_79A4)SELITEM(e)->vptr->clearChosen.fn)(SELITEM(e)->vptr->clearChosen.delta + e, 0);
     SelectWin_chooseCurrent_00008ABC((int *) scr);
     e = (char *) SelectWin_chosenItem_00008A90((int *) scr);
-    ((GP_79A4)FW(FW(e, 0x28), 0x84))(*(s16*)((char *)FW(e, 0x28) + 0x80) + e, 0);
+    ((GP_79A4)SELITEM(e)->vptr->setChosen.fn)(SELITEM(e)->vptr->setChosen.delta + e, 0);
     if (SelectWin_nextStageBit_000087F4(scr) == 0) {
         SelectionMgr_finish_00001C08((char *) (int)SELWIN(scr)->owner);
         return;
@@ -4530,10 +4532,10 @@ void SelectWin_state6_00007B2C(char *arg0) {
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
         tv0_1 = timproc_uso_b5_alias(arg0);
-        ((GP_00007B2C)FW(FW(tv0_1, 0x28), 0x8C))(*(s16*)((char*)FW(tv0_1, 0x28) + 0x88) + tv0_1, 0);
+        ((GP_00007B2C)SELITEM(tv0_1)->vptr->clearChosen.fn)(SELITEM(tv0_1)->vptr->clearChosen.delta + tv0_1, 0);
         timproc_uso_b5_alias(arg0);
         tv0_2 = timproc_uso_b5_alias(arg0);
-        ((GP_00007B2C)FW(FW(tv0_2, 0x28), 0x84))(*(s16*)((char*)FW(tv0_2, 0x28) + 0x80) + tv0_2, 0);
+        ((GP_00007B2C)SELITEM(tv0_2)->vptr->setChosen.fn)(SELITEM(tv0_2)->vptr->setChosen.delta + tv0_2, 0);
         if (1) {
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
         }
@@ -4542,7 +4544,7 @@ void SelectWin_state6_00007B2C(char *arg0) {
         timproc_uso_b5_alias((&timproc_uso_b5_D_807FE768)[SELWIN(arg0)->stage], (SELITEM(timproc_uso_b5_alias(arg0))->id + 1) | FW(arg0, 0x4D4));
         SELWIN(arg0)->fadeTarget = 1.0f;
         tv0_3 = timproc_uso_b5_alias(arg0);
-        ((GP_00007B2C)FW(FW(tv0_3, 0x28), 0x74))(*(s16*)((char*)FW(tv0_3, 0x28) + 0x70) + tv0_3);
+        ((GP_00007B2C)SELITEM(tv0_3)->vptr->onStageLeave.fn)(SELITEM(tv0_3)->vptr->onStageLeave.delta + tv0_3);
         return;
     }
     if (timproc_uso_b5_alias(&import_80020098, 0x200) != 0) {
@@ -4551,7 +4553,7 @@ void SelectWin_state6_00007B2C(char *arg0) {
         } else {
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE748 + (SELWIN(arg0)->stage * 4)), FW((arg0 + (SELWIN(arg0)->stage * 4)), 0x3D0) | FW(arg0, 0x4D4));
             tv0_4 = timproc_uso_b5_alias(arg0);
-            ((GP_00007B2C)FW(FW(tv0_4, 0x28), 0xAC))(*(s16*)((char*)FW(tv0_4, 0x28) + 0xA8) + tv0_4);
+            ((GP_00007B2C)SELITEM(tv0_4)->vptr->confirm.fn)(SELITEM(tv0_4)->vptr->confirm.delta + tv0_4);
             SELWIN(arg0)->state = 0xA;
             timproc_uso_b5_alias(arg0, 0);
             SELWIN(arg0)->fadeTarget = 0.0f;
@@ -4666,12 +4668,12 @@ void SelectWin_state7_00007E34(char *arg0) {
     }
     if ((var_v1 == 0) && (timproc_uso_b5_alias(&import_80020098, 0x100) != 0)) {
         temp_v0 = timproc_uso_b5_alias(arg0);
-        temp_v1 = FW(temp_v0, 0x28);
-        ((GP_00007E34)FW(temp_v1, 0x8C))(*(s16*)((char*)temp_v1 + 0x88) + temp_v0, 0);
+        temp_v1 = (int)SELITEM(temp_v0)->vptr;
+        ((GP_00007E34)SELVT(temp_v1)->clearChosen.fn)(SELVT(temp_v1)->clearChosen.delta + temp_v0, 0);
         timproc_uso_b5_alias(arg0);
         temp_v0_2 = timproc_uso_b5_alias(arg0);
-        temp_v1_2 = FW(temp_v0_2, 0x28);
-        ((GP_00007E34)FW(temp_v1_2, 0x84))(*(s16*)((char*)temp_v1_2 + 0x80) + temp_v0_2, 0);
+        temp_v1_2 = (int)SELITEM(temp_v0_2)->vptr;
+        ((GP_00007E34)SELVT(temp_v1_2)->setChosen.fn)(SELVT(temp_v1_2)->setChosen.delta + temp_v0_2, 0);
         if (1) {
             temp_v0_3 = SELWIN(arg0)->stage * 4;
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + temp_v0_3), FW((arg0 + temp_v0_3), 0x3D0) | FW(arg0, 0x4D4));
@@ -4698,26 +4700,26 @@ void SelectWin_state7_00007E34(char *arg0) {
             temp_v0_5 = SELWIN(arg0)->stage * 4;
             timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE758 + temp_v0_5), FW((arg0 + temp_v0_5), 0x3D0) | FW(arg0, 0x4D4));
             temp_v0_6 = timproc_uso_b5_alias(arg0);
-            temp_v1_3 = FW(temp_v0_6, 0x28);
-            ((GP_00007E34)FW(temp_v1_3, 0xAC))(*(s16*)((char*)temp_v1_3 + 0xA8) + temp_v0_6);
+            temp_v1_3 = (int)SELITEM(temp_v0_6)->vptr;
+            ((GP_00007E34)SELVT(temp_v1_3)->confirm.fn)(SELVT(temp_v1_3)->confirm.delta + temp_v0_6);
             SELWIN(arg0)->state = 6;
             temp_v0_7 = timproc_uso_b5_alias(arg0);
-            temp_v1_4 = FW(temp_v0_7, 0x28);
-            ((GP_00007E34)FW(temp_v1_4, 0x7C))(*(s16*)((char*)temp_v1_4 + 0x78) + temp_v0_7);
+            temp_v1_4 = (int)SELITEM(temp_v0_7)->vptr;
+            ((GP_00007E34)SELVT(temp_v1_4)->onStageReturn.fn)(SELVT(temp_v1_4)->onStageReturn.delta + temp_v0_7);
             SELWIN(arg0)->fadeTarget = 1.0f;
         }
     }
     if ((timproc_uso_b5_alias(&import_80020098, 0x4002) != 0) && (SELITEM(timproc_uso_b5_alias(arg0))->flags & 0x20)) {
         timproc_uso_b5_alias((char *)0x101, 0);
         temp_v0_8 = timproc_uso_b5_alias(arg0);
-        temp_v1_5 = FW(temp_v0_8, 0x28);
-        ((GP_00007E34)FW(temp_v1_5, 0x94))(*(s16*)((char*)temp_v1_5 + 0x90) + temp_v0_8);
+        temp_v1_5 = (int)SELITEM(temp_v0_8)->vptr;
+        ((GP_00007E34)SELVT(temp_v1_5)->toggleVariant.fn)(SELVT(temp_v1_5)->toggleVariant.delta + temp_v0_8);
     }
     if ((timproc_uso_b5_alias(&import_80020098, 0x10001) != 0) && !(SELITEM(timproc_uso_b5_alias(arg0))->flags & 0x20)) {
         timproc_uso_b5_alias((char *)0x101, 0);
         temp_v0_9 = timproc_uso_b5_alias(arg0);
-        temp_v1_6 = FW(temp_v0_9, 0x28);
-        ((GP_00007E34)FW(temp_v1_6, 0x94))(*(s16*)((char*)temp_v1_6 + 0x90) + temp_v0_9);
+        temp_v1_6 = (int)SELITEM(temp_v0_9)->vptr;
+        ((GP_00007E34)SELVT(temp_v1_6)->toggleVariant.fn)(SELVT(temp_v1_6)->toggleVariant.delta + temp_v0_9);
     }
 }
 
@@ -4822,15 +4824,15 @@ void SelectWin_state8_000080F4(char *arg0) {
     }
     if (*(f32 *)((char *)arg0 + 0x44) < SELWIN(arg0)->transition) {
         e = (char *) SelectWin_curItem_00008A38(arg0);
-        ((GP_000080F4)FW(FW(e, 0x28), 0x7C))(*(s16*)((char *)FW(e, 0x28) + 0x78) + e);
+        ((GP_000080F4)SELITEM(e)->vptr->onStageReturn.fn)(SELITEM(e)->vptr->onStageReturn.delta + e);
     }
     sp28 = ((flags != 0) == 0);
     if ((sp28 != 0) && (q != 0) && (gen_imp_input_checkPressed_00011E00(&import_80020098, 0x100) != 0)) {
         e = (char *) SelectWin_chosenItem_00008A90((int *) arg0);
-        ((GP_000080F4)FW(FW(e, 0x28), 0x8C))(*(s16*)((char *)FW(e, 0x28) + 0x88) + e, 0);
+        ((GP_000080F4)SELITEM(e)->vptr->clearChosen.fn)(SELITEM(e)->vptr->clearChosen.delta + e, 0);
         SelectWin_chooseCurrent_00008ABC((int *) arg0);
         e = (char *) SelectWin_chosenItem_00008A90((int *) arg0);
-        ((GP_000080F4)FW(FW(e, 0x28), 0x84))(*(s16*)((char *)FW(e, 0x28) + 0x80) + e, 0);
+        ((GP_000080F4)SELITEM(e)->vptr->setChosen.fn)(SELITEM(e)->vptr->setChosen.delta + e, 0);
         if (SelectWin_nextStageBit_000087F4(arg0) == 0) {
             SelectionMgr_finish_00001C08((char *) SELWIN(arg0)->owner);
             return;
@@ -4865,7 +4867,7 @@ void SelectWin_state8_000080F4(char *arg0) {
                     e = (char *) FW(FW(FW(arg0, 0x40C), 0x48) + busy, 0x3C);
                     if (1) {
                         r2 = (char *) FW(e, 0x28);
-                        ((GP_000080F4)FW(r2, 0xB4))(*(s16*)((char *)r2 + 0xB0) + e, a1v);
+                        ((GP_000080F4)SELVT(r2)->copyState.fn)(SELVT(r2)->copyState.delta + e, a1v);
                     }
                     flags += 1;
                     busy += 4;
@@ -4873,9 +4875,9 @@ void SelectWin_state8_000080F4(char *arg0) {
             }
         } else {
             e = (char *) SelectWin_curItem_00008A38(arg0);
-            ((GP_000080F4)FW(FW(e, 0x28), 0xAC))(*(s16*)((char *)FW(e, 0x28) + 0xA8) + e);
+            ((GP_000080F4)SELITEM(e)->vptr->confirm.fn)(SELITEM(e)->vptr->confirm.delta + e);
             e = (char *) SelectWin_curItem_00008A38(arg0);
-            ((GP_000080F4)FW(FW(e, 0x28), 0x6C))(*(s16*)((char *)FW(e, 0x28) + 0x68) + e);
+            ((GP_000080F4)SELITEM(e)->vptr->unfocus.fn)(SELITEM(e)->vptr->unfocus.delta + e);
         }
         SELWIN(arg0)->state = 6;
         SelectWin_resetCheat_00008D90((int *) arg0, 1);
@@ -4945,12 +4947,12 @@ void SelectWin_state9_00008468(char *arg0) {
 
     if (timproc_uso_b5_alias(&import_80020098, 0x100) != 0) {
         temp_v0 = timproc_uso_b5_alias(arg0);
-        temp_v1 = FW(temp_v0, 0x28);
-        ((GPv_8468)FW(temp_v1, 0x8C))(*(s16*)((char*)temp_v1 + 0x88) + temp_v0, 0);
+        temp_v1 = (int)SELITEM(temp_v0)->vptr;
+        ((GPv_8468)SELVT(temp_v1)->clearChosen.fn)(SELVT(temp_v1)->clearChosen.delta + temp_v0, 0);
         timproc_uso_b5_alias(arg0);
         temp_v0 = timproc_uso_b5_alias(arg0);
-        temp_v1 = FW(temp_v0, 0x28);
-        ((GPv_8468)FW(temp_v1, 0x84))(*(s16*)((char*)temp_v1 + 0x80) + temp_v0, 0);
+        temp_v1 = (int)SELITEM(temp_v0)->vptr;
+        ((GPv_8468)SELVT(temp_v1)->setChosen.fn)(SELVT(temp_v1)->setChosen.delta + temp_v0, 0);
         timproc_uso_b5_alias(*(int *)((char *)&timproc_uso_b5_D_807FE778 + (SELWIN(arg0)->stage * 4)),
                              FW(arg0 + (SELWIN(arg0)->stage * 4), 0x3D0) | FW(arg0, 0x4D4));
         if (timproc_uso_b5_alias(arg0) == 0) {
@@ -5009,7 +5011,7 @@ void SelectWin_state10_000085E0(int *a0) {
         SELWIN(a0)->idleTimer = SELWIN(a0)->parms.lfw.value;
         v0 = (int *)SelectWin_curItem_00008A38(a0);
         v1 = (int *)v0[0x28 / 4];
-        ((void (*)(int))v1[0x64 / 4])(*(short *)((char *)v1 + 0x60) + (int)v0);
+        ((void (*)(int))SELVT(v1)->focus.fn)(SELVT(v1)->focus.delta + (int)v0);
     }
 }
 
@@ -5029,13 +5031,13 @@ void SelectWin_saveFocus_0000866C(SelectWin *w) {
  * constant 1 (not mode), and the missing 0x400 store is
  * (int)(scr->0x104 * 0.75f). */
 void SelectWin_beginTransition_00008688(SelectWin *w, int mode) {
-    char *n = w->scene;
+    GenCamera *n = w->scene;
     char *v0;
     char *v1;
-    w->camPos[0] = *(f32 *)(*(char **)(n + 0x10) + 0x60);
-    w->camPos[1] = *(f32 *)(*(char **)(n + 0x10) + 0x64);
-    w->camPos[2] = *(f32 *)(*(char **)(n + 0x10) + 0x68);
-    w->fovFrom = *(f32 *)(*(char **)(*(char **)(n + 0xC) + 0x70) + 0x14C);
+    w->camPos[0] = n->target->mtx[3][0];
+    w->camPos[1] = n->target->mtx[3][1];
+    w->camPos[2] = n->target->mtx[3][2];
+    w->fovFrom = ((MCamera *)n->view->camera)->fov;
     w->busy = 1;
     w->prevItemActive = 1;
     w->idleTimer = w->parms.lfw.value;
@@ -5045,17 +5047,17 @@ void SelectWin_beginTransition_00008688(SelectWin *w, int mode) {
     w->zoomTimer = (f32)w->parms.lfw.value * 0.75f;
     if (mode == 1) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(w);
-        v1 = *(char **)(v0 + 0x28);
-        ((void (*)(char *))*(int *)(v1 + 0x6C))(*(s16 *)(v1 + 0x68) + v0);
+        v1 = (char *)SELITEM(v0)->vptr;
+        ((void (*)(char *))SELVT(v1)->unfocus.fn)(SELVT(v1)->unfocus.delta + v0);
     }
     if (mode == 2) {
         v0 = (char *)SelectWin_prevFocusItem_00008AD4(w);
-        v1 = *(char **)(v0 + 0x28);
-        ((void (*)(char *))*(int *)(v1 + 0x74))(*(s16 *)(v1 + 0x70) + v0);
+        v1 = (char *)SELITEM(v0)->vptr;
+        ((void (*)(char *))SELVT(v1)->onStageLeave.fn)(SELVT(v1)->onStageLeave.delta + v0);
     }
     v0 = (char *)SelectWin_curItem_00008A38(w);
-    v1 = *(char **)(v0 + 0x28);
-    ((void (*)(char *))*(int *)(v1 + 0x64))(*(s16 *)(v1 + 0x60) + v0);
+    v1 = (char *)SELITEM(v0)->vptr;
+    ((void (*)(char *))SELVT(v1)->focus.fn)(SELVT(v1)->focus.delta + v0);
 }
 
 /* gen_stageBitToIndex_000087A0 [0x87A0..0x87F4), 0x54 (21 words): jumptable
@@ -7125,8 +7127,8 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
     ones[1] = 1.0f;
     ones[2] = 1.0f;
     ones[3] = 1.0f;
-    a2v = (*(int *)(*(char **)(SELWIN(arg1)->scene + 0xC) + 0xC4) +
-           *(int *)(*(char **)(SELWIN(arg1)->scene + 0xC) + 0xBC)) - SELITEM(arg0)->parms.ypn.value;
+    a2v = (SELWIN_VIEW(SELWIN(arg1))->originY +
+           SELWIN_VIEW(SELWIN(arg1))->height) - SELITEM(arg0)->parms.ypn.value;
     SelItem_drawSpriteColorEx_000040BC((int)arg0, SELITEM(arg0)->parms.xpn.value, a2v, arg2, arg3,
         SELITEM(arg0)->info.ixn.value * 24 + (int)(&timproc_uso_b5_D_807FF640 + 0x1C0), 0xFF);
     if (*(int *)&import_8002022C != 0) {
@@ -7833,8 +7835,8 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         FW(child, 0x28) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x6D4);
         FW(child, 0xC) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x15F8);
         SelItem_reset_00003890(child);
-        FW(child, 0x2C4) = 0;
-        FW(child, 0x2B4) = 0;
+        ((SelBoardItem *)child)->blink = 0;
+        SELITEM(child)->flags = 0;
     }
     r = child;
     gen_imp_list_append(arg0 + 0x10, child);

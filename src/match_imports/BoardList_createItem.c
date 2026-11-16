@@ -25,7 +25,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
             SelItemInfo_ctor(obj + 0x194);
         }
         (*(s32 *)((char *)(child) + 0x28)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x6D4); (*(s32 *)((char *)(child) + 0xC)) = (s32) (&timproc_uso_b5_D_807FEE68 + 0x15F8); SelItem_reset_00003890(child);
-        (*(s32 *)((char *)(child) + 0x2C4)) = 0;
+        ((SelBoardItem *)child)->blink = 0;
         SELITEM(child)->flags = 0;
     }
     r = child;

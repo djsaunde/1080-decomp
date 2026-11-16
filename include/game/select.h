@@ -4,6 +4,7 @@
 #ifndef __cplusplus
 #include "gdl/mnode.h"  /* QNode (the SelModel base) */
 #include "gdl/window.h" /* Window (SelectWin.scene +0xC) */
+#include "game/camera.h" /* MCamera (GenCamera.camera) */
 #else
 /* The edg (NCC) donors build without -I include and edg rejects the gdl headers' offset
  * asserts: they get this mirror of include/gdl/window.h's Window with the members the
@@ -96,9 +97,48 @@ typedef struct SelItemInfo {
     SelParmF scl;           /* 0x0F0: 0 */
 } SelItemInfo;              /* 0x108 */
 
+/* A cfront virtual-table entry: slot N of a genproc vtable is at vtbl + 8 + 8 * N, and a call is
+ * fn(this + delta, ...). */
+typedef struct SelVEntry {
+    short delta;            /* 0x0 (short: the edg donors have no s16) */
+    short pad2;
+    void *fn;               /* 0x4 */
+} SelVEntry;
+
+/* The SelItem vtable (base Data 0x2F4; CharacterItem / BoardItem / CourseItem / TesuriItem /
+ * LevelItem 0x5E4 / 0x6D4 / 0x7C4 / 0x8B4 / 0x9A4). Slot names from the BoardItem / SelItem
+ * overrides (renames.tsv; slots 10-20 are pure in SelItem, 21-26 empty, 27 = loadInfo) and from
+ * the SelectWin state calls (agent-c run 530). */
+typedef struct SelItemVtbl {
+    char head[0x8];
+    SelVEntry base[10];     /* 0x08: slots 0..9 (Node; slot 8 = loadData) */
+    SelVEntry updateHighlight; /* 0x58: slot 10 (fade the model highlight toward a target) */
+    SelVEntry focus;        /* 0x60: slot 11 (the cursor moves onto the item) */
+    SelVEntry unfocus;      /* 0x68: slot 12 */
+    SelVEntry onStageLeave; /* 0x70: slot 13 */
+    SelVEntry onStageReturn; /* 0x78: slot 14 */
+    SelVEntry setChosen;    /* 0x80: slot 15 (item, flag) */
+    SelVEntry clearChosen;  /* 0x88: slot 16 (item, flag) */
+    SelVEntry toggleVariant; /* 0x90: slot 17 (flags slot-17 toggle) */
+    SelVEntry playPickAnim; /* 0x98: slot 18 */
+    SelVEntry playAcceptAnim; /* 0xA0: slot 19 */
+    SelVEntry confirm;      /* 0xA8: slot 20 */
+    SelVEntry copyState;    /* 0xB0: slot 21 (item, the other player's item) */
+    SelVEntry setAlpha;     /* 0xB8: slot 22 (item, f32 alpha) */
+    SelVEntry drawLabel;    /* 0xC0: slot 23 (item, win, colour, colour) */
+    SelVEntry drawSubLabel; /* 0xC8: slot 24 */
+    SelVEntry drawStats;    /* 0xD0: slot 25 (item, win) */
+    SelVEntry drawArrows;   /* 0xD8: slot 26 (item, win, frame / 8) */
+    SelVEntry loadInfo;     /* 0xE0: slot 27 */
+} SelItemVtbl;              /* 0xE8 */
+
+/* View a raw vtable pointer (the state functions load item->vptr into a char * / int * local)
+ * as SelItemVtbl. */
+#define SELVT(v) ((SelItemVtbl *)(v))
+
 typedef struct SelItem {
     char pad000[0x28];
-    void *vptr;             /* 0x028 */
+    SelItemVtbl *vptr;      /* 0x028 */
     SelItemParms parms;     /* 0x02C: xpn.value 0x44 / ypn.value 0x5C = label position;
                              * off.v 0x164 */
     SelItemInfo info;       /* 0x194: ixn.value 0x1AC; rot.v 0x25C; scl.value 0x294 */
@@ -213,7 +253,15 @@ typedef struct SelLevelModel {  /* LevelItem's model */
 /* SelItemEx with the model typed per class. */
 #define SEL_ITEM_CLASS(T, M) typedef struct T { SelItem base; M *model; s32 barCount; s32 barTimer; } T
 SEL_ITEM_CLASS(SelCharacterItem, SelCharModel);
-SEL_ITEM_CLASS(SelBoardItem, SelBoardModel);
+/* BoardItem is 0x2C8 (BoardList_createItem allocates 0x2C8 and clears blink): */
+typedef struct SelBoardItem {
+    SelItem base;           /* 0x000 */
+    SelBoardModel *model;   /* 0x2B8 */
+    s32 barCount;           /* 0x2BC */
+    s32 barTimer;           /* 0x2C0 */
+    s32 blink;              /* 0x2C4: BoardItem_drawStats counts it up once per draw and shows the
+                             * extra (233, 247, 0) sprite while bit 3 is set (8 frames on / 8 off) */
+} SelBoardItem;             /* 0x2C8 */
 SEL_ITEM_CLASS(SelCourseItem, SelCourseModel);
 SEL_ITEM_CLASS(SelTesuriItem, SelTesuriModel);
 SEL_ITEM_CLASS(SelLevelItem, SelLevelModel);
@@ -271,6 +319,26 @@ typedef struct SelectWinParms {
 } SelectWinParms;           /* 0x38C */
 
 struct SelectWin;
+struct MNode;
+struct MCamera;
+
+/* A select-screen camera rig (gen_createCamera_0000283C, alloc 0x20; GenScene.cam / cam2 =
+ * SelectWin.scene). It builds two 0xB4 MNodes (Node_ctor + MNode_initMatrices, local
+ * translation 0): the first goes to +0x14, the second to +0x10 and becomes the MCamera's
+ * look-at target (MCamera_ctor(0, target, 0, 0, 0)); both are appended to world's +0x10 list,
+ * and target is moved to (0, 0, -400). The 3D Window renders camera (game_create3DWindow(...,
+ * camera)); its fov (MCamera +0x14C) is the ctor's arg 3 (0x3C one player / 0x29 two). */
+typedef struct GenCamera {
+    char *world;            /* 0x00: (app +0x134) +0x84 (= GenRoom.world) */
+    char *unk04;            /* 0x04: (app +0x134) +0x80 */
+    char *unk08;            /* 0x08: (app +0x134) +0x8C */
+    Window *view;           /* 0x0C: the screen Window (SelectionMgr_setSplit sizes it) */
+    struct MNode *target;   /* 0x10: the look-at node; SelectWin.camPos copies its local
+                             * translation (mtx[3], +0x60..0x68), lerpCamToItem moves it */
+    struct MNode *anchor;   /* 0x14: the first MNode (SelectWin_init passes it to setCamToItem) */
+    struct MCamera *camera; /* 0x18: MCamera_ctor; state 6 turns pitch / yaw while rotEnable */
+    s32 unk1C;              /* 0x1C */
+} GenCamera;                /* 0x20 */
 
 typedef struct SelectionMgr {
     char pad00[0x2C];
@@ -326,8 +394,8 @@ typedef struct SelectWin {
                              * inside genproc */
     SelItemsMgr *itemsMgr;  /* 0x40C */
     char *sceneSet;         /* 0x410: ctor arg 8 = SelectionMgr.sceneSet */
-    char *scene;            /* 0x414: ctor arg 9 = sceneSet +4 (player 0) / +8 (player 1);
-                             * +0xC camera, +0x10 / +0x14 the camera nodes */
+    GenCamera *scene;       /* 0x414: ctor arg 9 = sceneSet +4 (player 0) / +8 (player 1):
+                             * GenScene.cam / cam2 */
     char *fadeProc;         /* 0x418: ctor arg 2 (SelectionMgr_ctor's arg 1); commitSelection
                              * fades it out with Process_fadeOut(fadeProc, -1, 0) */
     SelectionMgr *owner;    /* 0x41C */
@@ -380,7 +448,9 @@ typedef struct SelectWin {
  * The two-player split is vertical: SelectionMgr_setSplit gives wins[0] height = vpH = split at
  * originY = vpY = 0 and wins[1] height = vpH = 0xF0 - split at originY = vpY = split, and
  * blends aspect (1.333 + 1.3333 * t). */
-#define SELWIN_VIEW(w) (*(Window **)((w)->scene + 0xC))
+#define SELWIN_VIEW(w) ((w)->scene->view)
+/* The window's camera as the Window draws it (view->camera; the same MCamera as scene->camera). */
+#define SELWIN_CAMERA(w) ((MCamera *)SELWIN_VIEW(w)->camera)
 /* View a raw item pointer (the item virtuals take char * / int *) as SelItem. */
 #define SELITEM(p) ((SelItem *)(p))
 
@@ -429,6 +499,8 @@ SELECT_ASSERT(item_xpn, (int)&((SelItem *)0)->parms.xpn.value == 0x44);
 SELECT_ASSERT(item_alpha, (int)&((SelItem *)0)->alpha == 0x2A0);
 SELECT_ASSERT(item_id, (int)&((SelItem *)0)->id == 0x2B0);
 SELECT_ASSERT(item_size, sizeof(SelItem) == 0x2B8);
+SELECT_ASSERT(vt_focus, (int)&((SelItemVtbl *)0)->focus == 0x60);
+SELECT_ASSERT(vt_size, sizeof(SelItemVtbl) == 0xE8);
 SELECT_ASSERT(itemex_model, (int)&((SelItemEx *)0)->model == 0x2B8);
 SELECT_ASSERT(itemex_size, sizeof(SelItemEx) == 0x2C4);
 SELECT_ASSERT(model_inner, (int)&((SelModel *)0)->inner == 0x108);
@@ -439,6 +511,7 @@ SELECT_ASSERT(coursemodel_13c, (int)&((SelCourseModel *)0)->unk13C == 0x13C);
 SELECT_ASSERT(tesurimodel_chosen, (int)&((SelTesuriModel *)0)->chosen == 0x138);
 SELECT_ASSERT(levelmodel_chosen, (int)&((SelLevelModel *)0)->chosen == 0x138);
 SELECT_ASSERT(charitem_size, sizeof(SelCharacterItem) == 0x2C4);
+SELECT_ASSERT(boarditem_size, sizeof(SelBoardItem) == 0x2C8);
 SELECT_ASSERT(list_count, (int)&((SelItemList *)0)->count == 0x6C);
 SELECT_ASSERT(list_disp, (int)&((SelItemList *)0)->dispItems == 0x38);
 SELECT_ASSERT(item_cfv, (int)&((SelItem *)0)->parms.cfv.value == 0x134);
@@ -470,6 +543,8 @@ SELECT_ASSERT(win_flags, (int)&((SelectWin *)0)->eventFlags == 0x4D4);
 SELECT_ASSERT(room_walls, (int)&((GenRoom *)0)->walls == 0x44);
 SELECT_ASSERT(room_size, sizeof(GenRoom) == 0x60);
 SELECT_ASSERT(win_size, sizeof(SelectWin) == 0x4F0);
+SELECT_ASSERT(gencam_target, (int)&((GenCamera *)0)->target == 0x10);
+SELECT_ASSERT(gencam_size, sizeof(GenCamera) == 0x20);
 #endif /* !__cplusplus */
 
 #endif
