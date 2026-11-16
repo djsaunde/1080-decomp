@@ -20,6 +20,18 @@
  * a shape uses to pick lights: LightTarget_display calls gfx_selectLights with
  * its position, mask (+0x120) and scale (+0x124). */
 
+/* BaseLight +0x10C "Parms" group (0x2C, BaseLight_ctor): the 8-byte GdlParms head (name "Parms", 0),
+ * then one "col" colour parm (GdlParmRGBA layout, include/gdl/gadget.h) whose value is the light
+ * colour (default {1, 1, 1, 1}; gen_createLights_00001460 sets it per light). */
+typedef struct BaseLightParms {
+    /* 0x00 */ s32 name;              /* "Parms" */
+    /* 0x04 */ s32 unk04;             /* 0 */
+    /* 0x08 */ char colHead[0xC];     /* the "col" parm: parm base head */
+    /* 0x14 */ s32 colType;           /* the colour parm type */
+    /* 0x18 */ f32 col[4];            /* BaseLight +0x124: RGBA colour */
+    /* 0x28 */ s32 unk28;             /* 0 */
+} BaseLightParms;
+
 typedef struct BaseLight {
     /* 0x000 */ Node node;
     /* 0x02C */ s32 unk2C;
@@ -36,7 +48,7 @@ typedef struct BaseLight {
     /* 0x0F0 */ f32 xdir[3];          /* transformed direction */
     /* 0x0FC */ f32 unkFC;            /* 1.0 */
     /* 0x100 */ f32 unk100[3];        /* 0 */
-    /* 0x10C */ s32 parms[0xB];       /* colour parm group (0x2C) */
+    /* 0x10C */ BaseLightParms parms; /* colour parm group (0x2C); parms.col at +0x124 */
 } BaseLight;
 
 typedef struct LightTarget {
@@ -53,6 +65,8 @@ typedef char BaseLight_size_check[sizeof(BaseLight) == 0x138 ? 1 : -1];
 typedef char BaseLight_flags_check[(int)&((BaseLight *)0)->flags == 0xC4 ? 1 : -1];
 typedef char BaseLight_dir_check[(int)&((BaseLight *)0)->dir == 0xE4 ? 1 : -1];
 typedef char BaseLight_parms_check[(int)&((BaseLight *)0)->parms == 0x10C ? 1 : -1];
+typedef char BaseLight_col_check[(int)&((BaseLight *)0)->parms.col == 0x124 ? 1 : -1];
+typedef char BaseLightParms_size_check[sizeof(BaseLightParms) == 0x2C ? 1 : -1];
 typedef char LightTarget_size_check[sizeof(LightTarget) == 0x16C ? 1 : -1];
 typedef char LightTarget_mask_check[(int)&((LightTarget *)0)->mask == 0x120 ? 1 : -1];
 
