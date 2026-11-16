@@ -220,7 +220,10 @@ def named_offsets():
     (`#define kX <integer>`) in game_uso_data.h / gl_data.h (run 568, agent-g's rule), and select.h /
     audio.h (run 585: genproc and audio section offsets)."""
     names = set()
-    for p in NAMED_OFF_HDRS:
+    import glob
+    # every per-module named-offset header (include/game/*_data.h: game_uso / bootup / mode / genproc ...)
+    hdrs = list(NAMED_OFF_HDRS) + sorted(set(glob.glob('include/game/*_data.h')) - set(NAMED_OFF_HDRS))
+    for p in hdrs:
         if os.path.exists(p):
             names |= set(NAMED_OFF_DEF.findall(open(p, errors='replace').read()))
     return names
