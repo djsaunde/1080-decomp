@@ -19,6 +19,8 @@
 #include "game/snowboarder.h"
 #include "gdl/coll.h"
 #include "gdl/light.h"
+#include "game/input.h"
+#include "game/course.h"
 typedef struct { float x, y, z; } Vec3;
 extern char D_00000000;
 extern char *func_00000000();
@@ -155,6 +157,8 @@ extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
 extern u8 gGfxLib_90cc_d148_18[];
 extern void bu_90cc_d00_b();  /* second read of D_00000000.0 in the sp174 list walk: distinct symbol keeps the target's reload (else CSE'd into a copy) */
 typedef struct { s32 f00, f04, f08, f0C, f10, f14, f18, f1C, f20, f24, f28, f2C, f30, f34, f38; } BuW90;
+/* GameFlow through the func_000000F0 + 0x44 alias (as bootup_uso.c's FLOW_74E8_H): ->game = +0x134 */
+#define FLOW_90CC GAMEFLOW((char *)gInputMgr_90cc_dF0 - 0xF0)
 extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st, gPolyGeomMode_3EEC8_90cc_gcfg_b_ld, gPolyGeomMode_3EEC8_90cc_gcfg_b_st;
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
 extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
@@ -778,7 +782,7 @@ sw_end:
             var_s0 += 0x18;
             *(s32 *)var_s0 &= ~8;
             var_s1 = SNOWB(arg0)->dispSpray;
-            var_s0 = *(char **)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x88);
+            var_s0 = (char *)((WorldRegistry *)FLOW_90CC->game)->egRoot;
             FCALL(list_append)(var_s0 + 0x10, var_s1);
             if (NODE(var_s1)->parent != 0) {
                 NODE(var_s1)->unk04 = 1;
@@ -790,7 +794,7 @@ sw_end:
             if (1) { fq += 6; }
             *fq &= ~8;
             var_s1 = SNOWB(arg0)->dispTrails;
-            var_s0 = *(char **)(*(char **)(gInputMgr_90cc_dF0 + 0x44) + 0x84);
+            var_s0 = (char *)((WorldRegistry *)FLOW_90CC->game)->bgRoot;
             FCALL(list_append)(var_s0 + 0x10, var_s1);
             if (NODE(var_s1)->parent != 0) {
                 NODE(var_s1)->unk04 = 1;
@@ -1001,9 +1005,9 @@ sw_end:
             FCALL(Node_setNewNodeMask)(0xFFFF);
             FCALL(memtrack_end)();
         }
-        SNOWB(arg0)->unk814 = (char *) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 0);
-        SNOWB(arg0)->unk818 = (char *) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 8);
-        SNOWB(arg0)->unk81C = (char *) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 4);
+        SNOWB(arg0)->unk814 = (char *)((BuW90 *)gSkinMgrs_41700_90cc_fz)->f00;
+        SNOWB(arg0)->unk818 = (char *)((BuW90 *)gSkinMgrs_41700_90cc_fz)->f08;
+        SNOWB(arg0)->unk81C = (char *)((BuW90 *)gSkinMgrs_41700_90cc_fz)->f04;
         var_s0 = (char *)gNodeGlobals_90cc_d44_03.f28;
         SNOWB(arg0)->bodyNodes[1] = var_s0;
         var_s0 = (char *)gNodeGlobals_90cc_d80_01.f08;
@@ -1012,7 +1016,7 @@ sw_end:
         SNOWB(arg0)->bodyNodes[2] = var_s1;
         var_s1 = (char *)gNodeGlobals_90cc_d08_03.f14;
         SNOWB(arg0)->bodyNodes[4] = var_s1;
-        var_s1 = (char *)*(s32 *)((char *)&gNodeGlobals + 4);
+        var_s1 = (char *)((BuW90 *)&gNodeGlobals)->f04;
         SNOWB(arg0)->bodyNodes[3] = var_s1;
         var_s1 = (char *)gNodeGlobals_90cc_d08_04.f10;
         SNOWB(arg0)->bodyNodes[5] = var_s1;
