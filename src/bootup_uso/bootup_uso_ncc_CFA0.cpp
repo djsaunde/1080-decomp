@@ -19,7 +19,13 @@
  * docs/IDO_CODEGEN.md#kit-xvi-agent-c-run-116. Spliced into bootup_uso.c.o
  * via REPLACE_FUNC_BODY; the bu_cfa0_* aliases are pinned in
  * undefined_syms_auto.txt (ctx 0x254 = func_0000023C+0x18, flag 0xE4,
- * k970 0x970, k978 0x978, the per-site blank args a..f and the two callees 0). */
+ * k970 0x970, k978 0x978, the per-site blank args a..f and the two callees 0).
+ * agent-g run 543: field form over include/game/snowboarder.h. Same bytes; the two position words passed
+ * as int arguments read as `*(int *)&st->dnode.vqs.trans[i]`. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
+typedef float f32; typedef double f64;
+#include "../../include/game/snowboarder.h"
 extern "C" {
 char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
@@ -33,8 +39,8 @@ void bu_cfa0_v(...);
 #define CTX gGfxLib_cfa0_ctx
 struct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };
 struct V3 { float x, y, z; };
-#define DISPATCH_CFA0(off) { (*(VO **)(st + (off)))->f(); }
-extern "C" void SnowBoarder_display(char *st) {
+#define DISPATCH_CFA0(node) { ((VO *)(node))->f(); }
+extern "C" void SnowBoarder_display(SnowBoarder *st) {
     float out;
     volatile int changed;
     char *r;
@@ -49,75 +55,75 @@ extern "C" void SnowBoarder_display(char *st) {
     float dp[3];
 
     dst = 0; o = 0; vt = 0;
-    if ((*(int *)(st + 0xA58) & 0x2000) && *(char **)(st + 0x8DC) == CTX) return;
-    r = bu_cfa0_probe(ctx = CTX, 2, *(int *)(st + 0xB4), *(int *)(st + 0xB8),
-                  *(float *)(st + 0xBC), &out, 0.0f);
-    *(char **)(st + 0xA40) = r;
+    if ((st->flags & 0x2000) && st->camera == CTX) return;
+    r = bu_cfa0_probe(ctx = CTX, 2, *(int *)&st->dnode.vqs.trans[0], *(int *)&st->dnode.vqs.trans[1],
+                  st->dnode.vqs.trans[2], &out, 0.0f);
+    st->unkA40 = r;
     if (r == 0) return;
     ctx = CTX;
-    changed = (*(float *)(ctx + 0x98) < out) || (ctx != *(char **)(st + 0x8DC));
-    if ((*(int *)(st + 0xA58) & 0x10000) && *(short *)(st + 0x9A0) == 0x61 &&
-        *(short *)(st + 0x904) != 9 && *(int *)(st + 0x938) != 0) {
+    changed = (*(float *)(ctx + 0x98) < out) || (ctx != st->camera);
+    if ((st->flags & 0x10000) && st->groundSurface == 0x61 &&
+        st->board != 9 && st->contactCount != 0) {
         p = (char *)func_00000000(&gGfxLib_cfa0_a, 0xD);
-        *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;
+        *(V3 *)st->unk8F4[2] = *(V3 *)p;
         bu_cfa0_v(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
         c[3] = kRo_SnowBoarder_display_970;
         bu_cfa0_v(&gGfxLib_cfa0_b, c);
         bu_cfa0_v(0x10);
-        DISPATCH_CFA0(0x824);
+        DISPATCH_CFA0(st->bodyNodes[1]);
         p = (char *)func_00000000(&gGfxLib_cfa0_c, 6);
-        *(V3 *)*(char **)(st + 0x8FC) = *(V3 *)p;
+        *(V3 *)st->unk8F4[2] = *(V3 *)p;
     }
-    if (!changed || !(*(int *)(st + 0x8B8) & 4)) {
-        flg = *(int *)(st + 0x9A8);
-        *(int *)(st + 0xA44) = 1;
-        if ((flg & 2) && (*(int *)(st + 0xA58) & 0x1000) && *(int *)(st + 0xA4C)) {
-            bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8);
+    if (!changed || !(st->unk8B8 & 4)) {
+        flg = st->groundFlags;
+        st->unkA44 = 1;
+        if ((flg & 2) && (st->flags & 0x1000) && st->onGround) {
+            bu_cfa0_v(st->light, &st->groundNormal);
             bu_cfa0_v(st);
             bu_cfa0_v(0x11);
-            t = st + 0x8E0;
+            t = (char *)st->tint;
             bu_cfa0_v(&gGfxLib_cfa0_d, t);
             bu_cfa0_v(st);
             bu_cfa0_v(st);
             gGfxLib_cfa0_flag = 0;
         } else {
-          if ((*(int *)(st + 0x8B8) & 0xA) && *(int *)(st + 0xA4C) && !(flg & 0x400)) {
-            bu_cfa0_v(*(int *)(st + 0x850), st + 0x9D8, dp);
-            if ((double)(dp[0] * *(float *)(st + 0x9D8) + dp[1] * *(float *)(st + 0x9DC) +
-                         dp[2] * *(float *)(st + 0x9E0)) < kRo_SnowBoarder_display_978) {
+          if ((st->unk8B8 & 0xA) && st->onGround && !(flg & 0x400)) {
+            bu_cfa0_v(st->light, &st->groundNormal, dp);
+            if ((double)(dp[0] * st->groundNormal.x + dp[1] * st->groundNormal.y +
+                         dp[2] * st->groundNormal.z) < kRo_SnowBoarder_display_978) {
                 float div255 = 255.0f;
-                unsigned char cr = *(unsigned char *)(st + 0xA30) / 2;
-                unsigned char cg = *(unsigned char *)(st + 0xA31) / 2;
-                unsigned char cb = *(unsigned char *)(st + 0xA32) / 2;
-                *(float *)(st + 0x9E8) = (float)(unsigned int)cr / div255;
-                *(float *)(st + 0x9EC) = (float)(unsigned int)cg / div255;
-                *(float *)(st + 0x9F0) = (float)(unsigned int)cb / div255;
-                *(float *)(st + 0x9F4) = 112.0f / div255;
-                bu_cfa0_v(&gGfxLib_cfa0_e, st + 0x9E8);
-                if (*(int *)(st + 0x8B8) & 2) {
+                unsigned char cr = st->groundColor[0] / 2;
+                unsigned char cg = st->groundColor[1] / 2;
+                unsigned char cb = st->groundColor[2] / 2;
+                st->shade[0] = (float)(unsigned int)cr / div255;
+                st->shade[1] = (float)(unsigned int)cg / div255;
+                st->shade[2] = (float)(unsigned int)cb / div255;
+                st->shade[3] = 112.0f / div255;
+                bu_cfa0_v(&gGfxLib_cfa0_e, st->shade);
+                if (st->unk8B8 & 2) {
                     bu_cfa0_v(2);
-                    DISPATCH_CFA0(0x814);
-                    DISPATCH_CFA0(0x820);
+                    DISPATCH_CFA0(st->unk814);
+                    DISPATCH_CFA0(st->bodyNodes[0]);
                 }
-                if ((*(int *)(st + 0x8B8) & 8) && *(int *)(st + 0x938) == 0) {
+                if ((st->unk8B8 & 8) && st->contactCount == 0) {
                     bu_cfa0_v(8);
-                    DISPATCH_CFA0(0x824);
+                    DISPATCH_CFA0(st->bodyNodes[1]);
                 }
             }
             gGfxLib_cfa0_flag = 0;
           }
-          t = st + 0x8E0;
+          t = (char *)st->tint;
         }
-        if (*(int *)(st + 0x8B8) & 1) {
+        if (st->unk8B8 & 1) {
             bu_cfa0_v(0x11);
         } else {
             bu_cfa0_v(0x14);
         }
     } else {
-        *(int *)(st + 0xA44) = 0;
+        st->unkA44 = 0;
         bu_cfa0_v(0x14);
-        t = st + 0x8E0;
+        t = (char *)st->tint;
     }
     bu_cfa0_v(&gGfxLib_cfa0_f, t);
     bu_cfa0_v(st);

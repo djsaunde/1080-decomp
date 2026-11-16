@@ -2,11 +2,13 @@
  * EXACT in agent-g run 241, REPLACE_FUNC_BODY-spliced over the bootup_uso.c placeholder on both build paths.
  * Reloc binding from the target relocations: every blank (reloc-free) lui/addiu pair references a 0-pinned
  * D_55A0_* name (gRoot -> D_55A0_root, the list table -> D_55A0_it0), the others are pinned to their target
- * addresses in undefined_syms_auto.txt. */
+ * addresses in undefined_syms_auto.txt.
+ * agent-g run 543: the vptr stores spelled NODE(p)->vptr (include/gdl/node.h, relative include). Same bytes. */
 typedef unsigned char u8;
 typedef signed short s16;
 typedef signed int s32;
 typedef float f32;
+#include "../../include/gdl/node.h"
 typedef struct { int w; } SC4_;
 extern "C" {
 extern char D_00000000;
@@ -153,9 +155,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_0;
+                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_0;
             }
-            OI(obj, 0x28) = (int)&D_55A0_o28_0;
+            NODE(obj)->vptr = (int)&D_55A0_o28_0;
             node = obj + 0x5C;
             if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
@@ -177,9 +179,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_1;
+                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_1;
             }
-            OI(obj, 0x28) = (int)&D_55A0_o28_1;
+            NODE(obj)->vptr = (int)&D_55A0_o28_1;
             n2 = obj + 0x5C;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
@@ -204,9 +206,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_2;
+                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_2;
             }
-            OI(obj, 0x28) = (int)&D_55A0_o28_2;
+            NODE(obj)->vptr = (int)&D_55A0_o28_2;
             n2 = obj + 0x5C;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
@@ -230,9 +232,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, nl0);
-                OI(sub, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_3;
+                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_3;
             }
-            OI(obj, 0x28) = (int)&D_55A0_o28_3;
+            NODE(obj)->vptr = (int)&D_55A0_o28_3;
             n2 = obj + 0x48;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x10)) != 0) {
                 n3 = n2;
@@ -265,7 +267,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     if (nl) {} /* agent-g run 241: nl's reload before the obj test (target lw a2 above the beqz) */
     if (obj != 0) {
         func_00000000(obj, p1, nl);
-        OI(obj, 0x28) = (int)&SNodeItemType_vtbl_55A0_o28_4;
+        NODE(obj)->vptr = (int)&SNodeItemType_vtbl_55A0_o28_4;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -277,9 +279,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         s5 = obj;
         if (s5 != 0 || (s5 = (char *)func_00000000(0x48)) != 0) {
             func_00000000(s5, p2, D_55A0_g5);
-            OI(s5, 0x28) = (int)&SNodeItemType_vtbl_55A0_s28_5;
+            NODE(s5)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_5;
         }
-        OI(obj, 0x28) = (int)&D_55A0_o28_5;
+        NODE(obj)->vptr = (int)&D_55A0_o28_5;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -293,7 +295,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     obj = (char *)func_00000000(0x58);
     if (obj != 0) {
         func_00000000(obj, p1, D_55A0_g10, &M(0xE4));
-        OI(obj, 0x28) = (int)&D_00007600;
+        NODE(obj)->vptr = (int)&D_00007600;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 }

@@ -12,10 +12,16 @@
  * shared `_n`: the matrix count++ as `_n = ms->count++` (post-increment into _n)
  * and the 0x06 packet as an explicit `_n = d->count; d->count = _n + 1` slot;
  * the other three packets use the `_n = d->count++` slot macro.
- * Spliced over the placeholder in both bootup_uso.c.o trees via REPLACE_FUNC_BODY. */
-typedef float f32;
-typedef int s32;
-typedef unsigned int u32;
+ * Spliced over the placeholder in both bootup_uso.c.o trees via REPLACE_FUNC_BODY.
+ * agent-g run 543: GfxLib / ScreenWindow / DLContext / camera fields from include/gdl/{gfxlib, window, dlctx}.h
+ * and include/game/camera.h (relative includes; their offset asserts are C-only). Same bytes. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
+typedef float f32; typedef double f64;
+#include "../../include/gdl/gfxlib.h"
+#include "../../include/gdl/window.h"
+#include "../../include/gdl/dlctx.h"
+#include "../../include/game/camera.h"
 extern "C" {
 extern int gGfxLib_8005C108[];
 extern int gGfxLib_8005C108_g1a44[];   /* gate read alias (same import) */
@@ -32,25 +38,25 @@ typedef struct { Mtx1A44 *buf; s32 count; } Ms1A44;
 #define W1A44(pkt, a, b) { Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 #define W1A44B(pkt, a, b) { u32 _b = (b); Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = _b; }
 extern "C" void U64BGWall_func_00001A44(char *a0) {
-    char *gc;
-    char *g;
+    DLContext *gc;
+    GfxLib *g;
     s32 _n;
 
     if (gGfxLib_8005C108_g1a44[0x3C / 4] & 2) {
         return;
     }
-    g = (char *)gGfxLib_8005C108;
-    gc = *(char **)(*(char **)(g + 0x254) + 0x158);
-    func_1a44_emit(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count],
+    g = (GfxLib *)gGfxLib_8005C108;
+    gc = g->curWindow->dl;
+    func_1a44_emit(&((Ms1A44 *)gc->mtx.cur)->buf[((Ms1A44 *)gc->mtx.cur)->count],
                    (f32)*(s32 *)(a0 + 0x2C), (f32)*(s32 *)(a0 + 0x30), (f32)*(s32 *)(a0 + 0x34),
                    1.0f,
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA0) * *(f32 *)(g + 0x128),
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA4) * *(f32 *)(g + 0x12C),
-                   *(f32 *)(*(char **)(D_bu_205CC + 0x70) + 0xA8) * *(f32 *)(g + 0x130));
-    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0x01020040,
-          func_1a44_emit2(&(*(Ms1A44 **)(gc + 0x3C))->buf[(*(Ms1A44 **)(gc + 0x3C))->count]));
-    _n = (*(Ms1A44 **)(gc + 0x3C))->count++;
-    W1A44B(NEXTX1A44(*(Dl1A44 **)(gc + 0xC)), 0x06000000, *(u32 *)(a0 + 0x38));
-    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xE7000000, 0);
-    W1A44(NEXT1A44(*(Dl1A44 **)(gc + 0xC)), 0xBA000E02, 0);
+                   ((CamWindow *)D_bu_205CC)->cam->mnode.world[3][0] * g->worldScale[0],
+                   ((CamWindow *)D_bu_205CC)->cam->mnode.world[3][1] * g->worldScale[1],
+                   ((CamWindow *)D_bu_205CC)->cam->mnode.world[3][2] * g->worldScale[2]);
+    W1A44(NEXT1A44((Dl1A44 *)gc->gfx.cur), 0x01020040,
+          func_1a44_emit2(&((Ms1A44 *)gc->mtx.cur)->buf[((Ms1A44 *)gc->mtx.cur)->count]));
+    _n = ((Ms1A44 *)gc->mtx.cur)->count++;
+    W1A44B(NEXTX1A44((Dl1A44 *)gc->gfx.cur), 0x06000000, *(u32 *)(a0 + 0x38));
+    W1A44(NEXT1A44((Dl1A44 *)gc->gfx.cur), 0xE7000000, 0);
+    W1A44(NEXT1A44((Dl1A44 *)gc->gfx.cur), 0xBA000E02, 0);
 }

@@ -338,7 +338,9 @@ typedef struct SnowBoarder {
     s32 airFrames;          /* 0x9D4: frames since the last collider contact (procColl) */
     SnowBVec3 groundNormal; /* 0x9D8: ground normal under the rider while onGround, else (0, 1, 0) */
     f32 groundPlaneD;       /* 0x9E4: plane distance of the ground hit */
-    char pad9E8[0x9F8 - 0x9E8];
+    f32 shade[4];           /* 0x9E8: r, g, b, a: SnowBoarder_display writes groundColor / 2 / 255 and alpha 112 / 255
+                             * when the 0x850 light's direction faces away from groundNormal, then hands it to a
+                             * gfx colour call */
     f32 edgeFriction;       /* 0x9F8: child parms efr; 0 off the ground */
     f32 edgeGrip;           /* 0x9FC: nel / del, * ied / ded on 'c' / 'b', * parms.edf; 0 off the ground or while slowed */
     f32 turnRate;           /* 0xA00: res * nts (or dts with useDParms) */
@@ -360,7 +362,12 @@ typedef struct SnowBoarder {
     u8 groundColor[4];      /* 0xA30: colour bytes of the ground triangle (procColl; display reads r, g, b) */
     char padA34[0xA38 - 0xA34];
     f32 fwdSpeed;           /* 0xA38: dot(dir, vel) (SnowBoarder_update); cleared on a mirror flip */
-    char padA3C[0xA4C - 0xA3C];
+    char padA3C[0xA40 - 0xA3C];
+    char *unkA40;           /* 0xA40: SnowBoarder_display: the context query's result for the rider's position
+                             * (display returns early when it is 0) */
+    s32 unkA44;             /* 0xA44: SnowBoarder_display: 1 on the lit path, 0 when the context is unchanged and
+                             * unk8B8 & 4 */
+    char padA48[0xA4C - 0xA48];
     s32 onGround;           /* 0xA4C: ground hit within reach of lastPos, or collider contacts */
     s32 groundGentle;       /* 0xA50: onGround and groundNormal.y above a RoData threshold */
     s32 raceResult;         /* 0xA54: SnowBoarder_handleMsg: 1 win (msg 1000), 2 lose (1001), 3 timeout (1003),

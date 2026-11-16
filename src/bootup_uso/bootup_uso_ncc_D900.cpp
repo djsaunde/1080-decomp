@@ -12,7 +12,13 @@
  * set() (x/y/z product temps f0/f2/f14 and the f12 copy of k), dot products in
  * natural x + y + z order, a named Data *p held across the stores, block locals
  * k / s and a block-scope int r for the frame.
- * Spliced into the NON_MATCHING comparison object only. */
+ * Spliced into the NON_MATCHING comparison object only.
+ * agent-g run 543: field form over include/game/snowboarder.h (included by relative path; its asserts are
+ * C-only). Same bytes. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
+typedef float f32; typedef double f64;
+#include "../../include/game/snowboarder.h"
 struct Vec3 {
     float x, y, z;
     Vec3() {}
@@ -32,10 +38,7 @@ extern double bu_d900_k990;
 extern char bu_d900_aec[], bu_d900_b44[];
 extern int D_00000000;
 }
-#define F(p,o) (*(float *)((char *)(p) + (o)))
-#define W(p,o) (*(int *)((char *)(p) + (o)))
-#define H(p,o) (*(unsigned short *)((char *)(p) + (o)))
-extern "C" void SnowBoarder_handleMsg(char *self, Ev *ev) {
+extern "C" void SnowBoarder_handleMsg(SnowBoarder *self, Ev *ev) {
     S4 sp8C;
     Data *p;
     S4 *sp84;
@@ -45,27 +48,27 @@ extern "C" void SnowBoarder_handleMsg(char *self, Ev *ev) {
     float s;
     switch (ev->type) {
     case 20:
-        if (W(self, 0xA80) == 0) {
+        if (self->msgCooldown == 0) {
             p = ev->data;
             if (p->speed < kRo_SnowBoarder_handleMsg_988 && p->o->id == 0x74) {
-                func_00000000(self + 0x808);
+                func_00000000(self->sound);
                 return;
             }
             k = clampf(p->speed, 0.0f, 50.0f);
             d = p->pos * k;
-            F(self, 0xB4) += d.x;
-            F(self, 0xB8) += d.y;
-            F(self, 0xBC) += d.z;
-            F(self, 0x318) += d.x;
-            F(self, 0x31C) += d.y;
-            F(self, 0x320) += d.z;
-            s = F(self, 0x3BC) * d.x + F(self, 0x3C0) * d.y + F(self, 0x3C4) * d.z;
-            F(self, 0xA1C) = F(self, 0xA1C) + s * bu_d900_k990;
-            s = F(self, 0x3C8) * d.x + F(self, 0x3CC) * d.y + F(self, 0x3D0) * d.z;
-            H(self, 0xA10) |= 0x1F0;
-            F(self, 0xA24) = F(self, 0xA24) + -s * 0.5;
-            H(self, 0x9A4) = p->o->id;
-            W(self, 0xA80) = 10;
+            self->dnode.vqs.trans[0] += d.x;
+            self->dnode.vqs.trans[1] += d.y;
+            self->dnode.vqs.trans[2] += d.z;
+            self->dnode.vel[0] += d.x;
+            self->dnode.vel[1] += d.y;
+            self->dnode.vel[2] += d.z;
+            s = self->dnode.axes[1][0] * d.x + self->dnode.axes[1][1] * d.y + self->dnode.axes[1][2] * d.z;
+            self->bumpSide = self->bumpSide + s * bu_d900_k990;
+            s = self->dnode.axes[2][0] * d.x + self->dnode.axes[2][1] * d.y + self->dnode.axes[2][2] * d.z;
+            self->hitFlags |= 0x1F0;
+            self->bumpFwd = self->bumpFwd + -s * 0.5;
+            self->contactSurface = p->o->id;
+            self->msgCooldown = 10;
         }
         break;
     case 9:
@@ -76,49 +79,49 @@ extern "C" void SnowBoarder_handleMsg(char *self, Ev *ev) {
         v.x *= 4.0f;
         v.y *= 4.0f;
         v.z *= 4.0f;
-        F(self, 0xB4) += v.x;
-        F(self, 0xB8) += v.y;
-        F(self, 0xBC) += v.z;
-        F(self, 0x320) = 0.0f;
-        F(self, 0x31C) = 0.0f;
-        F(self, 0x318) = 0.0f;
+        self->dnode.vqs.trans[0] += v.x;
+        self->dnode.vqs.trans[1] += v.y;
+        self->dnode.vqs.trans[2] += v.z;
+        self->dnode.vel[2] = 0.0f;
+        self->dnode.vel[1] = 0.0f;
+        self->dnode.vel[0] = 0.0f;
         break;
     }
     case 1000:
-        W(self, 0xA54) = 1;
-        W(self, 0xA58) |= 4;
-        func_00000000(W(self, 0x804));
+        self->raceResult = 1;
+        self->flags |= 4;
+        func_00000000(self->ai);
         func_00000000(bu_d900_aec + 0x4C);
         break;
     case 1001:
-        W(self, 0xA54) = 2;
-        W(self, 0xA58) |= 4;
-        func_00000000(W(self, 0x804));
+        self->raceResult = 2;
+        self->flags |= 4;
+        func_00000000(self->ai);
         func_00000000(bu_d900_aec + 0x54);
         break;
     case 1003:
-        W(self, 0xA54) = 3;
-        W(self, 0xA58) |= 4;
+        self->raceResult = 3;
+        self->flags |= 4;
         func_00000000(bu_d900_b44 + 0x4);
-        func_00000000(W(self, 0x804));
+        func_00000000(self->ai);
         break;
     case 1002:
-        W(self, 0xA54) = 4;
+        self->raceResult = 4;
         break;
     case 1004:
-        W(self, 0xA54) = 5;
+        self->raceResult = 5;
         break;
     case 1005:
     case 1006:
     case 1007:
-        W(self, 0xA54) = 6;
+        self->raceResult = 6;
         func_00000000(bu_d900_b44 + 0x10);
-        if (W(self, 0x848) == 2) {
+        if (self->controller == 2) {
             sp84 = (S4 *)(bu_d900_b44 + 0x24);
-            func_00000000(W(self, 0x840));
+            func_00000000(self->anim);
         } else {
             sp84 = (S4 *)(bu_d900_b44 + 0x28);
-            func_00000000(W(self, 0x840));
+            func_00000000(self->anim);
         }
         sp8C.w = sp84->w;
         int r = func_00000000(D_00000000, sp8C, 0, self);

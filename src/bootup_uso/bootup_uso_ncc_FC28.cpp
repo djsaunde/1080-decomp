@@ -1,9 +1,12 @@
 /* IDO 7.1 NCC (C++) -O0 donor for QuitProcess_ctor0 QuitProcess_ctor PauseMenu_create: the NM C body of
  * bootup_uso_tail1_bot.c compiled as C++ (bootup_uso is C++). cfe -O0 left a dead
  * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.
- * Spliced into bootup_uso_tail1_bot.c.o via REPLACE_FUNC_BODY. */
+ * Spliced into bootup_uso_tail1_bot.c.o via REPLACE_FUNC_BODY.
+ * agent-g run 543: the Node vptr / name stores spelled through include/gdl/node.h (NODE(p)->vptr / ->name; relative
+ * include, its offset asserts are C-only). Same bytes. */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
+#include "../../include/gdl/node.h"
 extern "C" {
 /* bootup_uso 0xFC28..0x100F0 region, split off bootup_uso_tail1.c on
  * 2026-05-28 so that Process_setWindowFlag8_0000FBCC could move to a -O0 sub-file
@@ -60,14 +63,14 @@ void *QuitProcess_ctor0(void *a0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &sStr_Node_C58C);
-                *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
+                NODE(s1)->vptr = (int)&Process_vtbl;
             }
-            *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (int)&Process_vtbl_C3A0;
         }
-        *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C594;
-        *(int*)((char*)s0 + 0x0C) = (int)s1;
+        NODE(s0)->name = (int)s1;
         D_bootup_scratch0 = func_00000000(a0, 0);
         s0 = a0;
         func_00000000(D_bootup_scratch0, s0);
@@ -115,14 +118,14 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &sStr_Node_C5A4);
-                *(int*)((char*)s1 + 0x28) = (int)&Process_vtbl;
+                NODE(s1)->vptr = (int)&Process_vtbl;
             }
-            *(int*)((char*)s0 + 0x28) = (int)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (int)&Process_vtbl_C3A0;
         }
-        *(int*)((char*)a0 + 0x28) = (int)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (int)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C5AC;
-        *(int*)((char*)s0 + 0x0C) = (int)s1;
+        NODE(s0)->name = (int)s1;
         func_00000008.f2C = a1;
         func_00000008.f38 = a2;
         *(int*)((char*)a0 + 0x44) = 0;
@@ -148,7 +151,7 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
  * notes retired: all four 2026-05-08 variants were two-statement forms. */
 void QuitProcess_onQuit(char *a0) {
     register char *p;
-    (*(void(**)(...))(p + 0x64))(*(short*)((p = *(char**)(a0 + 0x28)) + 0x60) + a0);
+    (*(void(**)(...))&VT_SLOT(p, 11).fn)(VT_SLOT((p = *(char **)&NODE(a0)->vptr), 11).delta + a0);
 }
 
 /* PauseMenu_create - verified structural decode (0x208, 130 insns,
@@ -196,12 +199,12 @@ void *PauseMenu_create(char *a0) {
     if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
         if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
             func_00000000(s, &sStr_Node_C5BC);
-            *(char **)(s + 0x28) = &Process_vtbl;
+            NODE(s)->vptr = (int)&Process_vtbl;
         }
-        *(char **)(a0 + 0x28) = &PauseMenu_vtbl;
+        NODE(a0)->vptr = (int)&PauseMenu_vtbl;
         s = a0;
         d = &sStr_PauseMenu_C5C4;
-        *(char **)(s + 0xC) = d;
+        NODE(s)->name = (int)d;
         s = a0 + 0x4C;
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;
         *(float *)(s + 4) = (float)(0, 117) / 255.0f;
