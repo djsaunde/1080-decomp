@@ -10,9 +10,15 @@
  * the value claim (f32 V) against the genproc section bytes, and each function that uses it
  * (src/timproc_uso_b5 and its src/match_imports ports) against a section-base LO16 reloc of
  * that section with that K. Macros only: C and C++ safe. (Owner c's earlier genproc offsets,
- * kRoF_gen_* / kTag_gen_*, are in include/game/select.h.) */
+ * kRoF_gen_* / kTag_gen_*, agent-c run 585, moved here from include/game/select.h in run 600;
+ * kTag_ = a 4-byte parm tag.) */
 
 /* ---- RoData ---- */
+#define kRoF_gen_1e7_23C    0x23C  /* RoData+0x23C: f32 1e7 (SelItemsMgr_ctor: Tesuri model 1 inner scale) */
+#define kRoF_gen_1e7_270    0x270  /* RoData+0x270: f32 1e7 (SelItemsMgr_ctor: Tesuri model 2 inner scale) */
+#define kRoF_gen_1e7_2B8    0x2B8  /* RoData+0x2B8: f32 1e7 (SelItemsMgr_ctor: LightTarget unk108[2]) */
+#define kRoF_gen_2p89_31C   0x31C  /* RoData+0x31C: f32 2.89 (SelItemsMgr_ctor: item 7 angle) */
+#define kRoF_gen_3pi2_320   0x320  /* RoData+0x320: f32 4.712389 = 3 pi / 2 (SelItemsMgr_ctor: the course items' angle) */
 #define kRoF_gen_1e7_3A0 0x3A0       /* RoData+0x3A0: f32 1e7, CharacterList_createItem's LightTarget
                                       * unk108[0..2] (the model's light-target scale) */
 #define kRoF_gen_0p1_3A4 0x3A4       /* RoData+0x3A4: f32 0.1, CharacterList_createItem's
@@ -20,6 +26,9 @@
 #define kRoF_gen_1e7_3B4 0x3B4       /* RoData+0x3B4: f32 1e7, BoardList_createItem's LightTarget
                                       * unk108[0..2] */
 #define kRoF_gen_m28p48_3B8 0x3B8    /* RoData+0x3B8: f32 -28.48, BoardList_createItem's item cfv */
+#define kRoF_gen_1e7_3BC    0x3BC  /* RoData+0x3BC: f32 1e7 (CourseList_createItem: LightTarget scale) */
+#define kRoF_gen_0p28_3F8   0x3F8  /* RoData+0x3F8: f32 0.28 (CourseList_createItem: model unk120) */
+#define kRoF_gen_1e7_3FC    0x3FC  /* RoData+0x3FC: f32 1e7 (LevelList_createItem: LightTarget scale) */
 
 /* ---- Data ---- */
 #define kData_gen_charItemSlot_E54 0xE54 /* Data+0xE54: s32[8] {4, 3, 1, 2, 0, 1, 3, 0}: SelectWin_init's
@@ -29,5 +38,11 @@
                                           * matched cheat sequence + 1) */
 #define kData_gen_boardCheat_E94 0xE94   /* Data+0xE94: s32[] (all 0 in the ROM): SelectWin_init's
                                           * cheatBoard per board */
+
+#define kTag_gen_cf2_116C   0x116C /* Data+0x116C: "cf2" (SelItemParms_ctor) */
+#define kTag_gen_off_1170   0x1170 /* Data+0x1170: "off" (SelItemParms_ctor) */
+#define kTag_gen_of2_1174   0x1174 /* Data+0x1174: "of2" (SelItemParms_ctor) */
+#define kTag_gen_pos_11A0   0x11A0 /* Data+0x11A0: "pos" (SelItemInfo_ctor) */
+#define kTag_gen_rot_11A4   0x11A4 /* Data+0x11A4: "rot" (SelItemInfo_ctor) */
 
 #endif
