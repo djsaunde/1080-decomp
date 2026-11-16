@@ -16,6 +16,7 @@ typedef float f32;
 #include "../../include/game/course.h"
 #include "../../include/gdl/item.h" /* ItemMgr (D_55A0_root = the root ItemMgr) */
 #include "../../include/game/envobj.h" /* TreeTmpl (the 0x74 "tr1".."tr3" types), Tv1Tmpl (the 0x6C "tv1" type) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef struct { int w; } SC4_;
 extern "C" {
 extern char D_00000000;
@@ -116,12 +117,12 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     if (arg1 == 1) {
         gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
         gPolyGeomMode_3EEC8_55A0_G.a = 0;
-        D_55A0_list = func_00000000(0, &sTag_pyr_7E20, &D_55A0_lb0, 0);
+        D_55A0_list = FCALL(PolyShape_ctor)(0, &sTag_pyr_7E20, &D_55A0_lb0, 0);
         it = (R12_55A0 *)&D_55A0_it0;
         if (D_55A0_listchk != 0) {
             do {
-                func_00000000(&sFmt_register_7E24, it->w, it);
-                func_00000000(D_55A0_list2, it);
+                FCALL(dbg_printf)(&sFmt_register_7E24, it->w, it);
+                FCALL(ItemMgr_registerTemplate)(D_55A0_list2, it);
                 it++;
             } while (it->w != 0);
             /* agent-g run 241: `it` is a plain register variable in the target (a2, spilled to its home 0x98 around
@@ -158,49 +159,49 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         /* agent-g run 241: whole-struct copies (one load, two stores through a ugen temp, not a coloured
          * register; v0 stored first); the other actors copy p1 from their v: 98.07 -> 98.98 */
         p1.w = (v0 = sTag_tr1_7E34).w;
-        obj = (char *)func_00000000(0x74);
+        obj = (char *)FCALL(mem_new)(0x74);
         if (obj != 0) {
             p2.w = p1.w;
             sub = obj;
-            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-                func_00000000(sub, p2, 0);
+            if (sub != 0 || (sub = (char *)FCALL(mem_new)(0x48)) != 0) {
+                FCALL(ItemType_ctor)(sub, p2, 0);
                 NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_0;
             }
             NODE(obj)->vptr = (char *)&D_55A0_o28_0;
             node = TREETMPL(obj)->fog;
-            if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
-                func_00000000(node);
+            if (node != 0 || (node = (char *)FCALL(mem_new)(0x18)) != 0) {
+                FCALL(FogParms_setDefault_00043EAC)(node);
             }
             TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f; if (1) {}
             vec0.w = 1.0f; vec0.x = kRo_item_registerTemplates_59C; vec0.y = kRo_item_registerTemplates_59C; vec0.z = kRo_item_registerTemplates_59C;
-            func_00000000(TREETMPL(obj)->fog, &vec0, 993, 997);
+            FCALL(FogParms_set_00043EF0)(TREETMPL(obj)->fog, &vec0, 993, 997);
             TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = &D_55A0_o48_0;
         }
-        func_00000000(DROOT, obj, 4);
+        FCALL(ItemMgr_addType)(DROOT, obj, 4);
 
         /* actor 1 (0x74) */
         v1 = sTag_tr2_7E38;
         p1 = v1;
-        obj = (char *)func_00000000(0x74);
+        obj = (char *)FCALL(mem_new)(0x74);
         if (obj != 0) {
             V4_55A0 vec1;
             p2.w = p1.w;
             sub = obj;
-            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-                func_00000000(sub, p2, 0);
+            if (sub != 0 || (sub = (char *)FCALL(mem_new)(0x48)) != 0) {
+                FCALL(ItemType_ctor)(sub, p2, 0);
                 NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_1;
             }
             NODE(obj)->vptr = (char *)&D_55A0_o28_1;
             n2 = TREETMPL(obj)->fog;
-            if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
-                func_00000000(n2);
+            if (n2 != 0 || (n2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+                FCALL(FogParms_setDefault_00043EAC)(n2);
             }
             TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f; if (1) {}
             vec1.w = 1.0f; vec1.x = kRo_item_registerTemplates_5A0; vec1.y = kRo_item_registerTemplates_5A0; vec1.z = kRo_item_registerTemplates_5A0;
-            func_00000000(TREETMPL(obj)->fog, &vec1, 993, 997);
+            FCALL(FogParms_set_00043EF0)(TREETMPL(obj)->fog, &vec1, 993, 997);
             TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = &D_55A0_o48_1;
         }
-        func_00000000(DROOT, obj, 4);
+        FCALL(ItemMgr_addType)(DROOT, obj, 4);
 
         /* actor 2 (0x74) */
         /* agent-g run 241: a dead nested call-result temp grows edg's pool here, so the dead-stored call-result
@@ -208,49 +209,49 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         if (0) { func_00000000(func_00000000(0)); }
         v2 = sTag_tr3_7E3C;
         p1 = v2;
-        obj = (char *)func_00000000(0x74);
+        obj = (char *)FCALL(mem_new)(0x74);
         if (obj != 0) {
             int b0 = 0; int b1 = 0; V4_55A0 vec2;
             p2.w = p1.w;
             sub = obj;
-            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-                func_00000000(sub, p2, 0);
+            if (sub != 0 || (sub = (char *)FCALL(mem_new)(0x48)) != 0) {
+                FCALL(ItemType_ctor)(sub, p2, 0);
                 NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_2;
             }
             NODE(obj)->vptr = (char *)&D_55A0_o28_2;
             n2 = TREETMPL(obj)->fog;
-            if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
-                func_00000000(n2);
+            if (n2 != 0 || (n2 = (char *)FCALL(mem_new)(0x18)) != 0) {
+                FCALL(FogParms_setDefault_00043EAC)(n2);
             }
             TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f;
             vec2.x = kRo_item_registerTemplates_5A4; vec2.y = kRo_item_registerTemplates_5A8; vec2.z = kRo_item_registerTemplates_5AC; vec2.w = 1.0f;
-            func_00000000(TREETMPL(obj)->fog, &vec2, 993, 997);
+            FCALL(FogParms_set_00043EF0)(TREETMPL(obj)->fog, &vec2, 993, 997);
             TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = &D_55A0_o48_2;
         }
-        func_00000000(DROOT, obj, 4);
+        FCALL(ItemMgr_addType)(DROOT, obj, 4);
 
         /* list object (0x6C) */
         gPolyGeomMode_3EEC8_55A0_G.b = 0x28002;
         gPolyGeomMode_3EEC8_55A0_G.a = 0;
-        nl0 = (char *)func_00000000(0, &D_55A0_la, &D_55A0_lb, 0);
+        nl0 = (char *)FCALL(PolyShape_ctor)(0, &D_55A0_la, &D_55A0_lb, 0);
         v3 = sTag_tv1_7E44;
         p1 = v3;
-        obj = (char *)func_00000000(0x6C);
+        obj = (char *)FCALL(mem_new)(0x6C);
         if (obj != 0) {
             p2.w = p1.w;
             sub = obj;
-            if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
-                func_00000000(sub, p2, nl0);
+            if (sub != 0 || (sub = (char *)FCALL(mem_new)(0x48)) != 0) {
+                FCALL(ItemType_ctor)(sub, p2, nl0);
                 NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_3;
             }
             NODE(obj)->vptr = (char *)&D_55A0_o28_3;
             /* the in-place Tv1Callback cascade (envobj.h): base vptr, obj / pmf, concrete vptr */
             n2 = (char *)&((Tv1Tmpl *)obj)->stepCallback;
-            if (n2 != 0 || (n2 = (char *)func_00000000(0x10)) != 0) {
+            if (n2 != 0 || (n2 = (char *)FCALL(mem_new)(0x10)) != 0) {
                 n3 = n2;
-                if (n3 != 0 || (n3 = (char *)func_00000000(0x10)) != 0) {
+                if (n3 != 0 || (n3 = (char *)FCALL(mem_new)(0x10)) != 0) {
                     n4 = n3;
-                    if (n4 != 0 || (n4 = (char *)func_00000000(4)) != 0) {
+                    if (n4 != 0 || (n4 = (char *)FCALL(mem_new)(4)) != 0) {
                         ((Tv1Callback *)n4)->vptr = &D_55A0_n4;
                     }
                     ((Tv1Callback *)n3)->obj = obj; ((Tv1Callback *)n3)->pmf = D_55A0_pair;
@@ -264,48 +265,48 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             ((Tv1Tmpl *)obj)->scroll = 0;
             ((Tv1Tmpl *)obj)->displayCount = 0;
         }
-        func_00000000(DROOT, obj, 0xFFFF);
+        FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
     }
 
-    func_00000000(DROOT, DP(0));
+    FCALL(ItemType_setNext)(DROOT, DP(0));
 
     /* trailing 0x48 / 0x58 objects + transform-group registration */
-    nl = (char *)func_00000000(0, &sStr_light01_7E48, &D_55A0_tb, 0);
+    nl = (char *)FCALL(PolyShape_ctor)(0, &sStr_light01_7E48, &D_55A0_tb, 0);
     *(SC4_ *)&(t4.w) = *(SC4_ *)&(*(int *)&Tv1Tmpl_update);
     p1.w = t4.w;
-    obj = (char *)func_00000000(0x48);
+    obj = (char *)FCALL(mem_new)(0x48);
     if (nl) {} /* agent-g run 241: nl's reload before the obj test (target lw a2 above the beqz) */
     if (obj != 0) {
-        func_00000000(obj, p1, nl);
+        FCALL(ItemType_ctor)(obj, p1, nl);
         NODE(obj)->vptr = (char *)&SNodeItemType_vtbl_55A0_o28_4;
     }
-    func_00000000(DROOT, obj, 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
 
     t5 = *(S4_55A0 *)&sTag_lig_7E54;
     p1 = t5;
-    obj = (char *)func_00000000(0x48);
+    obj = (char *)FCALL(mem_new)(0x48);
     if (obj != 0) {
         p2.w = p1.w;
         s5 = obj;
-        if (s5 != 0 || (s5 = (char *)func_00000000(0x48)) != 0) {
-            func_00000000(s5, p2, D_55A0_g5);
+        if (s5 != 0 || (s5 = (char *)FCALL(mem_new)(0x48)) != 0) {
+            FCALL(ItemType_ctor)(s5, p2, D_55A0_g5);
             NODE(s5)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_5;
         }
         NODE(obj)->vptr = (char *)&D_55A0_o28_5;
     }
-    func_00000000(DROOT, obj, 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
 
-    func_00000000(DROOT, func_00000000(0, (t6.w = *(int *)&sTag_gol_7E58, t6), D_55A0_g6, &M(0x144)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t7.w = *(int *)&sTag_st0_7E5C, t7), D_55A0_g7, &M(0x114)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t8.w = *(int *)&sTag_en1_7E60, t8), D_55A0_g8, &M(0xD4)), 0xFFFF);
-    func_00000000(DROOT, func_00000000(0, (t9.w = *(int *)&sTag_en2_7E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, FCALL(ColourItemType_ctor)(0, (t6.w = *(int *)&sTag_gol_7E58, t6), D_55A0_g6, &M(0x144)), 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, FCALL(ColourItemType_ctor)(0, (t7.w = *(int *)&sTag_st0_7E5C, t7), D_55A0_g7, &M(0x114)), 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, FCALL(ColourItemType_ctor)(0, (t8.w = *(int *)&sTag_en1_7E60, t8), D_55A0_g8, &M(0xD4)), 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, FCALL(ColourItemType_ctor)(0, (t9.w = *(int *)&sTag_en2_7E64, t9), D_55A0_g9, &M(0xC4)), 0xFFFF);
 
     t10 = *(S4_55A0 *)&sTag_cam_7E68;
     p1 = t10;
-    obj = (char *)func_00000000(0x58);
+    obj = (char *)FCALL(mem_new)(0x58);
     if (obj != 0) {
-        func_00000000(obj, p1, D_55A0_g10, &M(0xE4));
+        FCALL(ColourItemType_ctor)(obj, p1, D_55A0_g10, &M(0xE4));
         NODE(obj)->vptr = (char *)&D_00007600;
     }
-    func_00000000(DROOT, obj, 0xFFFF);
+    FCALL(ItemMgr_addType)(DROOT, obj, 0xFFFF);
 }

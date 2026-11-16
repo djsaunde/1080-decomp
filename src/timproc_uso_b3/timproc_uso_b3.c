@@ -164,11 +164,11 @@ extern int D_00000068;
  * -O0 indicators preserved (the donor IS compiled at -O0): unfilled jal delay
  * slots, `move s0,v0` save, trailing `b epilogue; nop`, frame -0x28. */
 void trk_openSession_000005A4(int **arg0, int arg1, int arg2) {
-    int handle = gl_func_00000000(2);
-    register int new_obj = gl_func_00000000(0, D_00000148, 2, arg2);
+    int handle = CALL(app_setHeapMode)(2);
+    register int new_obj = CALL(Backup_openSession)(0, D_00000148, 2, arg2);
     *arg0 = (int*)new_obj;
     D_0000014C = new_obj;
-    gl_func_00000000(handle);
+    CALL(app_setHeapMode)(handle);
     if (arg1 != 0) {
         ((BackupSession *)*arg0)->modes = 2;
     } else {

@@ -5309,7 +5309,7 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
             ((Thread_69E04 *)gl___osRunningThread)->state = 8;
             gl_func_00000000((int *)&mq->fullqueue);
         } else {
-            gl_func_00000000(saveMask);
+            CALL(gl___osRestoreInt)(saveMask);
             return -1;
         }
     }
@@ -5317,10 +5317,10 @@ int gl_osSendMesg(OSMesgQueue_69E04 *mq, int msg, int flags) {
     mq->msg[last] = (int *)msg;
     mq->validCount++;
     if (*(void **)mq->mtqueue != 0) {
-        register void *t = (void *)gl_func_00000000(mq);
-        gl_func_00000000(t);
+        register void *t = (void *)CALL(gl___osPopThread)(mq);
+        CALL(gl_osStartThread)(t);
     }
-    gl_func_00000000(saveMask);
+    CALL(gl___osRestoreInt)(saveMask);
     return 0;
 }
 
@@ -5359,7 +5359,7 @@ int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
 
     while (mq->validCount == 0) {
         if (flags == 0) {
-            gl_func_00000000(saveMask);
+            CALL(gl___osRestoreInt)(saveMask);
             return -1;
         }
         ((Thread_69F64 *)gl___osRunningThread)->state = 8;
@@ -5371,9 +5371,9 @@ int gl_osRecvMesg(OSMesgQueue_69F64 *mq, int **msg, int flags) {
     mq->first = (mq->first + 1) % mq->msgCount;
     mq->validCount--;
     if (*(void **)mq->fullqueue != 0) {
-        gl_func_00000000(gl_func_00000000((int *)&mq->fullqueue));
+        CALL(gl_osStartThread)(CALL(gl___osPopThread)((int *)&mq->fullqueue));
     }
-    gl_func_00000000(saveMask);
+    CALL(gl___osRestoreInt)(saveMask);
     return 0;
 }
 
@@ -5422,27 +5422,27 @@ int gl__VirtualToPhysicalTask(OSTask_t *intp) {
     OSTask_t *tp;
 
     tp = (OSTask_t *)D_00041710;
-    gl_func_00000000(intp, tp, sizeof(OSTask_t)); /* bcopy */
+    CALL(gl_bcopy)(intp, tp, sizeof(OSTask_t)); /* bcopy */
     if (tp->ucode) {
-        tp->ucode = (u64 *)gl_func_00000000(tp->ucode); /* osVirtualToPhysical */
+        tp->ucode = (u64 *)CALL(gl_osVirtualToPhysical)(tp->ucode); /* osVirtualToPhysical */
     }
     if (tp->ucode_data) {
-        tp->ucode_data = (u64 *)gl_func_00000000(tp->ucode_data);
+        tp->ucode_data = (u64 *)CALL(gl_osVirtualToPhysical)(tp->ucode_data);
     }
     if (tp->dram_stack) {
-        tp->dram_stack = (u64 *)gl_func_00000000(tp->dram_stack);
+        tp->dram_stack = (u64 *)CALL(gl_osVirtualToPhysical)(tp->dram_stack);
     }
     if (tp->output_buff) {
-        tp->output_buff = (u64 *)gl_func_00000000(tp->output_buff);
+        tp->output_buff = (u64 *)CALL(gl_osVirtualToPhysical)(tp->output_buff);
     }
     if (tp->output_buff_size) {
-        tp->output_buff_size = (u64 *)gl_func_00000000(tp->output_buff_size);
+        tp->output_buff_size = (u64 *)CALL(gl_osVirtualToPhysical)(tp->output_buff_size);
     }
     if (tp->data_ptr) {
-        tp->data_ptr = (u64 *)gl_func_00000000(tp->data_ptr);
+        tp->data_ptr = (u64 *)CALL(gl_osVirtualToPhysical)(tp->data_ptr);
     }
     if (tp->yield_data_ptr) {
-        tp->yield_data_ptr = (u64 *)gl_func_00000000(tp->yield_data_ptr);
+        tp->yield_data_ptr = (u64 *)CALL(gl_osVirtualToPhysical)(tp->yield_data_ptr);
     }
     return (int)tp;
 }
@@ -5484,14 +5484,14 @@ void osSpTaskLoad(OSTask_6A420 *intp) {
         }
     }
     gl_func_00000000(tp, sizeof(OSTask_6A420));
-    gl_func_00000000(0x2B00);
-    while (gl_func_00000000(0x04001000) == -1)
+    CALL(gl___osSpSetStatus)(0x2B00);
+    while (CALL(gl___osSpSetPc)(0x04001000) == -1)
         ;
-    while (gl_func_00000000(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)
+    while (CALL(gl___osSpRawStartDma)(1, 0x04001000 - sizeof(*tp), tp, sizeof(OSTask_6A420)) == -1)
         ;
-    while (gl_func_00000000())
+    while (CALL(gl___osSpDeviceBusy)())
         ;
-    while (gl_func_00000000(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)
+    while (CALL(gl___osSpRawStartDma)(1, 0x04001000, tp->ucode_boot, tp->ucode_boot_size) == -1)
         ;
 }
 
@@ -5628,7 +5628,7 @@ void gl_osDestroyThread(int *target) {
         target = *(int **)&gl___osRunningThread;
     } else {
         if (((OSThread *)target)->state != OS_STATE_STOPPED) {
-            gl_func_00000000(target[2], target);
+            CALL(gl___osDequeueThread)(target[2], target);
         }
     }
     if (*(int **)&gl___osActiveQueue == target) {
@@ -5645,9 +5645,9 @@ void gl_osDestroyThread(int *target) {
         }
     }
     if (target == *(int **)&gl___osRunningThread) {
-        gl_func_00000000();
+        CALL(gl___osDispatchThread)();
     }
-    gl_func_00000000(prelim);
+    CALL(gl___osRestoreInt)(prelim);
 }
 
 /* gl_bzero: libc-style bzero / memset-zero (declared size 0xB4, 45 words).
@@ -5809,7 +5809,7 @@ void gl___osLeoResume(void) {
     mq->validCount++;
     if (mq->mtqueue->next != NULL) {
         /* osStartThread(__osPopThread(&mq->mtqueue)) */
-        gl_func_00000000((char *)&gl___osRunQueue, gl_func_00000000(mq));
+        gl_func_00000000((char *)&gl___osRunQueue, CALL(gl___osPopThread)(mq));
     }
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_0006B880_pad.s")
@@ -5823,9 +5823,9 @@ void gl___osLeoResume(void) {
  * -O2 stand-in. */
 int gl_osPiReadIo(int a0, int a1) {
     register int r;
-    gl_func_00000000();
-    r = gl_func_00000000(a0, a1);
-    gl_func_00000000();
+    CALL(gl___osPiGetAccess)();
+    r = CALL(gl_osPiRawReadIo)(a0, a1);
+    CALL(gl___osPiRelAccess)();
     return r;
 }
 
@@ -5916,21 +5916,21 @@ int gl_osContInit(int a0, int a1, int a2) {
         return 0;
     }
     gl___osContinitialized = 1;
-    time = gl_func_00000000_ll();
+    time = XCALL(gl_func_00000000_ll, osGetTime)();
     if (time < (unsigned long long)0x165A0BC) {
-        gl_func_00000000(q, &msg, 1);
-        gl_func_00000000(timer, (unsigned long long)0x165A0BC - time, (unsigned long long)0, q, &msg);
-        gl_func_00000000(q, &msg, 1);
+        CALL(gl_osCreateMesgQueue)(q, &msg, 1);
+        CALL(gl_osSetTimer)(timer, (unsigned long long)0x165A0BC - time, (unsigned long long)0, q, &msg);
+        CALL(gl_osRecvMesg)(q, &msg, 1);
     }
     D_00000000_b = 4;
-    gl_func_00000000(0);
-    ret = gl_func_00000000(1, &gl___osContPifRam);
-    gl_func_00000000(a0, &msg, 1);
-    ret = gl_func_00000000(0, &gl___osContPifRam);
-    gl_func_00000000(a0, &msg, 1);
-    gl_func_00000000(a1, a2);
+    CALL(gl___osPackRequestData_6BD14)(0);
+    ret = CALL(gl___osSiRawStartDma)(1, &gl___osContPifRam);
+    CALL(gl_osRecvMesg)(a0, &msg, 1);
+    ret = CALL(gl___osSiRawStartDma)(0, &gl___osContPifRam);
+    CALL(gl_osRecvMesg)(a0, &msg, 1);
+    CALL(gl___osContGetInitData_6BC44)(a1, a2);
     D_00000000_b = 0;
-    gl_func_00000000();
-    gl_func_00000000(&D_00000000_c, &D_00000000_d, 1);
+    CALL(gl___osSiCreateAccessQueue)();
+    CALL(gl_osCreateMesgQueue)(&D_00000000_c, &D_00000000_d, 1);
     return ret;
 }

@@ -12,6 +12,7 @@
  * The host retains this same C definition; keep both definitions identical.
  */
 #include "common.h"
+#include "uso_call.h"
 extern void gl_ref_00034810(char *, ...);
 extern int gl_ref_00034240();
 extern int D_00000000;
@@ -80,22 +81,22 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
         c = *q + 0 * *q;
             if (*q == 'd') {
                 D_00000000 = 0;
-                out = gl_func_00034458_6126C(out, arg2.i, 0x3B9ACA00);
+                out = XCALL(gl_func_00034458_6126C, console_itoa)(out, arg2.i, 0x3B9ACA00);
             } else if (c == 'x') {
                 D_00000000 = 1;
-                out = gl_func_00034458_6126C(out, arg2.i);
+                out = XCALL(gl_func_00034458_6126C, console_formatHex8)(out, arg2.i);
             } else if (c == 'f') {
                 int ip = (int) arg2.f;
                 int frac;
                 char *dot;
 
-                frac = (f32) gl_func_00034458_6126C(0xA, B) * (arg2.f - (f32) ip);
+                frac = (f32) XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, B) * (arg2.f - (f32) ip);
                 D_00000000 = 0;
-                dot = gl_func_00034458_6126C(out, ip, gl_func_00034458_6126C(0xA, A));
+                dot = XCALL(gl_func_00034458_6126C, console_itoa)(out, ip, XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, A));
                 *dot = '.';
                 out = dot + 1;
                 D_00000000 = 1;
-                out = gl_func_00034458_6126C(out, frac, gl_func_00034458_6126C(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
+                out = XCALL(gl_func_00034458_6126C, console_itoa)(out, frac, XCALL(gl_func_00034458_6126C, console_pow10Scale)(0xA, B - 1)); /* B - 1 de-named (lever-sweep 93.30 -> 93.46) */
             } else if ((ch = c, c >= '0') && (c < ':')) {
                 ch -= '0';
                 A = (u8)ch;
@@ -103,7 +104,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
                     B = (q = fmt, fmt = q + 1, *q) - '0';
                 }
             } else {
-                gl_func_00034458_6126C(out, (char *)&D_00000000 + 0x21E08);
+                XCALL(gl_func_00034458_6126C, str_copyEnd)(out, (char *)&D_00000000 + 0x21E08);
                 out += 0xA;
             }
     }
@@ -112,7 +113,7 @@ char *console_formatValue(char *arg0, FI_0006126C arg2, u8 *fmt) {
 
 extern int gl_func_00000000();
 int math_singularFatal_00061458() {
-    return gl_func_00000000();
+    return CALL(sys_fatal)();
 }
 
 /* The classic MIPS <stdarg.h> walk (pre-ANSI SGI form): VA_ADVANCE rounds the cursor up past the

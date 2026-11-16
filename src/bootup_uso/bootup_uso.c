@@ -6604,9 +6604,9 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
     v[0].x = d * arg3->x - v[0].x;
     v[0].y = d * arg3->y - v[0].y;
     v[0].z = d * arg3->z - v[0].z;
-    if (0.1 < (f64)func_00000000_4948_ff(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
+    if (0.1 < (f64)XCALL(func_00000000_4948_ff, math_vec3Length_0005BBCC)(v[0].z * v[0].z + (v[0].y * v[0].y + v[0].x * v[0].x))) {
         dot = v[1].z * v[0].z + (v[1].y * v[0].y + v[0].x * v[1].x);
-        func_00000000(&v[0]); if (arg3) {}
+        FCALL(math_vec3Normalize)(&v[0]); if (arg3) {}
         lim = SNOWB(arg0)->edgeGrip;
         dot *= SNOWB(arg0)->edgeFriction;
         if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != lim) {} if ((((v[1].z + v[1].y) + (v[0].z * v[0].x)) - (v[0].y * v[1].x)) != dot) {}
@@ -6620,7 +6620,7 @@ void SnowBCollider_edgeGrip_0000E2D0(char *arg0, s32 arg1, Vec3 *arg2, Vec3 *arg
         v[0].x *= dot;
         v[0].y *= dot;
         v[0].z *= dot;
-        func_00000000(arg0, arg1, &v[0]);
+        FCALL(DNode_addImpulseAt_00065250)(arg0, arg1, &v[0]);
     }
 }
 

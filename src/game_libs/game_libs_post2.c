@@ -1,4 +1,5 @@
 #include "common.h"
+#include "uso_call.h"
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
@@ -74,7 +75,7 @@ void osViSetEvent(void *mq, void *m, unsigned int retraceCount) {
     gl_func_00000000_vinext711->msgq = mq;
     gl_func_00000000_vinext711->msg = m;
     gl_func_00000000_vinext711->retraceCount = retraceCount;
-    gl_func_00000000_rstint711(saveMask);
+    XCALL(gl_func_00000000_rstint711, gl___osRestoreInt)(saveMask);
 }
 
 /* gl___osSetFpcCsr = __osSetFpcCsr (game_libs libultra copy, + 1 leading pad word): handwritten cfc1/ctc1 assembly, real source in src/libultra/game_libs/setfpccsr.s. See docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources. */

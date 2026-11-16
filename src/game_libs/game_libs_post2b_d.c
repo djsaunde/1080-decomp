@@ -1,5 +1,6 @@
 #include "common.h"
 #include "libultra/os_timer.h"
+#include "uso_call.h"
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { float x, y, z; } Vec3;
@@ -175,7 +176,7 @@ void _Litob(void *args, int type) {
  * 19-insn fn. Real C lives in the donor unit game_libs_ido53_747F4.c (IDO 5.3
  * -O1), spliced via REPLACE_FUNC_BODY. Busy probe -> gl_func_00000000. */
 int gl___osSiRawWriteIo(int devAddr, int data) {
-    if (gl_func_00000000() != 0) {
+    if (CALL(gl___osSiDeviceBusy)() != 0) {
         return -1;
     }
     *(volatile int *)(0xA0000000 | devAddr) = data;

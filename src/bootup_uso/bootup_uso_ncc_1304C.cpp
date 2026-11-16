@@ -12,6 +12,7 @@
  *   between the index bump and the slot address (nextb). Found by an exhaustive
  *   placement search (kit XXXV #4); see docs/IDO_CODEGEN.md kit XXXIV. */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/gdl/gfxlib.h"  /* GfxLib.curWindow */
@@ -63,7 +64,7 @@ extern "C" void Fader_display(Fire *f) {
     if (f->timerOn) {
         if (f->timer != 0) f->timer--;
         if (f->timer == 0) {
-            func_00000000(gGfxLib, 0);
+            FCALL(gfx_viBlack)(gGfxLib, 0);
             f->timerOn = 0;
             if (f->state == 2) {
                 f->state = 0;
@@ -72,7 +73,7 @@ extern "C" void Fader_display(Fire *f) {
             }
         }
     }
-    func_00000000(f);
+    FCALL(Fader_buildTexture)(f);
     if (f->state == 2) k = kRo_Fader_display_C50;
     if (f->state == 3) {
         if (f->flag68) k = kRo_Fader_display_C54;

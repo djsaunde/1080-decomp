@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for BGBox_ctor (0xF4 / 61 words): the
  * constructor D::D(int, int, int) of a 0x40-byte class with a base B whose
  * ctor is out of line (B(&sStr_Node_66A8), import) and a vptr at +0x28 (B
@@ -18,7 +19,7 @@ void *func_00000000(...);
 extern char sStr_Node_66A8;
 extern int bu_ca0_g[], bu_ca0_g_b[];
 }
-inline void *operator new(unsigned n) { return func_00000000(n); }
+inline void *operator new(unsigned n) { return FCALL(mem_new)(n); }
 struct V { short x, y, z, w; int p, q; void set(int a, int b, int c) { x = a; y = b; z = c; } };
 extern "C" V bu_ca0_box[];
 struct B { int p0[3]; int a1; int p1[6]; B(char *); virtual void g(); };

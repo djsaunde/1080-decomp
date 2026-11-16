@@ -27,6 +27,7 @@ typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsign
 typedef float f32; typedef double f64;
 #include "../../include/game/snowboarder.h"
 #include "../../include/gdl/window.h" /* Window: drawDistFov / displayMask on the current window */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
@@ -71,7 +72,7 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
     changed = (CTX_WIN(ctx)->drawDistFov[0] < out) || (ctx != st->camera);
     if ((st->flags & 0x10000) && st->groundSurface == 0x61 &&
         st->board != 9 && st->contactCount != 0) {
-        p = (char *)func_00000000(&gGfxLib_cfa0_a, 0xD);
+        p = (char *)FCALL(gfx_getDdm)(&gGfxLib_cfa0_a, 0xD);
         *(V3 *)st->unk8F4[2] = *(V3 *)p;
         bu_cfa0_v(0x10);
         c[0] = 1.0f; c[1] = 1.0f; c[2] = 1.0f;
@@ -79,7 +80,7 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
         bu_cfa0_v(&gGfxLib_cfa0_b, c);
         bu_cfa0_v(0x10);
         DISPATCH_CFA0(st->bodyNodes[1]);
-        p = (char *)func_00000000(&gGfxLib_cfa0_c, 6);
+        p = (char *)FCALL(gfx_getDdm)(&gGfxLib_cfa0_c, 6);
         *(V3 *)st->unk8F4[2] = *(V3 *)p;
     }
     if (!changed || !(st->unk8B8 & 4)) {

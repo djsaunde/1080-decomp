@@ -20,6 +20,7 @@
  * undefined_syms_auto.txt; the three vtables are aliases too. */
 typedef short s16; typedef int s32; typedef unsigned char u8; typedef float f32;
 #include "../../include/gdl/material.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 int func_00000000(...);
 extern char D_00000000;
@@ -56,18 +57,18 @@ extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned i
     o.idx = idx;
     if (cat == 7 || cat == 6) {
         if (func_00000148.tbl[0] == 0) {
-            func_00000000(func_000089FC + 0x2C);
+            FCALL(dbg_printf)(func_000089FC + 0x2C);
             Bb4Bank *r = new Bb4Bank;
             func_00000148.add(r);
         }
     }
-    func_00000000(func_00008A40 + 0x8, 0);
-    func_00000000(func_00008A40 + 0x14, 0);
+    FCALL(memtrack_begin)(func_00008A40 + 0x8, 0);
+    FCALL(memtrack_begin)(func_00008A40 + 0x14, 0);
     if (idx != 0) {
-        if (func_00000000(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) func_00000000(&D_00000000, gBoardModelUsoPaths_b1b4_tblA[idx]);
+        if (FCALL(game_isUsoLoaded)(gBoardModelUsoPaths_b1b4_tblA[idx]) == 0) FCALL(game_loadUso)(&D_00000000, gBoardModelUsoPaths_b1b4_tblA[idx]);
     }
-    if (func_00000000(gBoarderUsoPaths_b1b4_tblB[cat]) == 0) func_00000000(&D_00000000, gBoarderUsoPaths_b1b4_tblB[cat]);
-    func_00000000();
-    func_00000000(&D_00000000, a4, a3, &o);
-    func_00000000();
+    if (FCALL(game_isUsoLoaded)(gBoarderUsoPaths_b1b4_tblB[cat]) == 0) FCALL(game_loadUso)(&D_00000000, gBoarderUsoPaths_b1b4_tblB[cat]);
+    FCALL(memtrack_end)();
+    FCALL(ProcNodeList)(&D_00000000, a4, a3, &o);
+    FCALL(memtrack_end)();
 }

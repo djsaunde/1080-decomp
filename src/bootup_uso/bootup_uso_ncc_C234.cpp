@@ -17,6 +17,7 @@ typedef float f32; typedef double f64;
 #include "../../include/game/course.h" /* CourseMarker (the marker query result) */
 #include "../../include/gdl/gl_data.h" /* gCourseColl = Bss+0x50 Sym 451 (the course CollShape *) */
 #include "../../include/gdl/coll.h"    /* CollShape (C++-safe since agent-b run 553) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #define COURSE_COLL (*(CollShape **)&gCourseColl)
 /* GameFlow through gInputMgr_c234_g8: the token is pinned at 8 (undefined_syms_auto.txt), so the object starts 8 bytes below it; the reloc names Bss+0xF8 (GameFlow) +0x34 = nextFlowMode (uso-data-sites.py sites). */
 #define C234_FLOW INPUT_MGR(gInputMgr_c234_g8[-8])
@@ -134,14 +135,14 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
     /* agent-g run 235: sp3C is a frozen-home named pointer (saved at its own home across the call, not in the
      * temp area): the folded read of *rider stops uopt copy-propagating it; defined in the argument list after
      * argument 0 so its addiu follows the D_00000000 lui (99.84 -> 99.85, spill slot = target) */
-    if ((var_v0 = func_00000000((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
-        rider->groundSurface = func_00000000(COURSE_COLL->shape, spCC.dc);
+    if ((var_v0 = FCALL(CollShape_nearestHit)((sp3Ck = *(s32 *)&gCourseColl), sp3C = (char *)rider->dnode.cvqs.trans + 0 * (int)(*(char *)rider), 0x457A0000, &spCC)) != 0) {
+        rider->groundSurface = FCALL(BasePolyShape_getMatCodeChar_00052A4C)(COURSE_COLL->shape, spCC.dc);
         if (spCC.d8 < D_bu_ro_pool[0x924 / 4]) {
             rider->surface = rider->groundSurface;
         } else {
             rider->surface = 0;
         }
-        rider->groundFlags = func_00000000(COURSE_COLL->shape, spCC.dc);
+        rider->groundFlags = FCALL(BasePolyShape_getMatCodeNum_00052A64)(COURSE_COLL->shape, spCC.dc);
         rider->groundDist = spCC.d8;
         /* agent-g run 231: the plane distance on its own line before the test (spCC.f0 then loads after it, as1 line
          * order), operands K * (dc * e4 + (e0 + K2) * e8 + e4' * ec) + 4 in the target's load / multiply order: 95.45 -> 98.17 */
@@ -187,7 +188,7 @@ extern "C" void SnowBoarder_procColl(SnowBoarder *rider) {
                     temp_f0 = temp_f2;
                 }
                 var_v0 = (s32) ((f32) var_v0 + (temp_f0 * 3.0f)); /* agent-g run 233: index in var_v0 (target mfc1 v0, coloured, not a ugen temp) */
-                func_00000000(rider->input, D_000081C0[var_v0], 2);
+                FCALL(pad_startRumble)(rider->input, D_000081C0[var_v0], 2);
             }
         }
         /* Run 109 (agent-c, 69.25 -> 70.94): target block order is default,
@@ -210,14 +211,14 @@ c61:
         rider->dnode.surfSpd = (f32) rider->dnode.parms.spd.value;
         rider->dnode.surfVsc = (f32) rider->dnode.parms.vsc.value;
         rider->impactScale = (f32) rider->parms.snf.value;
-        func_00000000(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
+        FCALL(BasePolyShape_avgTriColour)(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
         goto cend;
 c62:
         rider->dnode.surfImp = 0.0f;
         rider->dnode.surfSpd = kRo_SnowBoarder_procColl_944;
         rider->dnode.surfVsc = kRo_SnowBoarder_procColl_948;
         rider->impactScale = (f32) rider->parms.dsf.value;
-        func_00000000(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
+        FCALL(BasePolyShape_avgTriColour)(COURSE_COLL->shape, spCC.de, (char *)&rider->groundColor);
 cend:
         rider->noGroundFrames = 0;
     } else {
@@ -235,9 +236,9 @@ cend:
             if (temp_v0_3 != 0) {
                 sp7C = *(V3C234 *)((CourseMarker *)temp_v0_3)->pos;
                 sp7C.y += 200.0f;
-                func_00000000(rider, &sp7C);
+                FCALL(DNode_resetXform_00065360)(rider, &sp7C);
                 rider->noGroundFrames = 0;
-                func_00000000(sStr_Player_Pos_Reset_8A7C + 0);
+                FCALL(dbg_printf)(sStr_Player_Pos_Reset_8A7C + 0);
                 bu_c234_v5(sFmt_num_8A94 + 0x18, bu_c234_k2 + 0x14, (f64) sp7C.x, (f64) sp7C.y, (f64) sp7C.z);
             }
         }
@@ -247,20 +248,20 @@ cend:
     zf(rider->contactNormal.x, 0); /* run 196: int-zero inline (kit CLVIII): the target's own f0 zero */
     zf(rider->contactNormal.y, 0);
     zf(rider->contactNormal.z, 0);
-    func_00000000(sStr_SBProcColl_8AA4 + 0x28);
-    func_00000000(rider);
-    func_00000000(sStr_SBProcColl_8AB0 + 0x34);
+    FCALL(prof_timerStart)(sStr_SBProcColl_8AA4 + 0x28);
+    FCALL(DNode_solveContacts)(rider);
+    FCALL(prof_timerStop)(sStr_SBProcColl_8AB0 + 0x34);
     if (rider->groundFlags & 0x400) {
-        func_00000000((char *)&rider->sound, 1);
+        FCALL(snd_soundObjSetReverb)((char *)&rider->sound, 1);
         var_f2 = D_bu_ro_pool[0x94C / 4];
     } else {
-        func_00000000((char *)&rider->sound, 0);
+        FCALL(snd_soundObjSetReverb)((char *)&rider->sound, 0);
         var_f2 = 1.0f;
     }
     if (C234_FLOW.nextFlowMode != 2) {
         temp_f0 = rider->unk91C;
         rider->unk91C = (f32) ((f64) temp_f0 + ((f64) (var_f2 - temp_f0) * D_bu_ro_dpool[0x950 / 8]));
-        func_00000000(rider->light, *(s32 *)&rider->unk91C);
+        FCALL(light_setF124_000550A0)(rider->light, *(s32 *)&rider->unk91C);
     }
     temp_v0_4 = rider->contactCount;
     if (temp_v0_4 != 0) {

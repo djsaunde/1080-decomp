@@ -7,6 +7,7 @@
 #include "context_game_libs_post.h"
 #define COMMON_H /* the context header already typedefs u8..f64; audio.h needs only the types */
 #include "../../include/audio.h"
+#include "uso_call.h"
 /* arg0 stays char * (every callee here takes char *); SO() reads it as audio.h's 0x64-byte SoundObj.
  * Five reads are spelled (*SO(arg0)).field: there the -> spelling swaps a commutative operand
  * pair (mul.s / add.s / beql) relative to its neighbour, and the (*p).f spelling keeps the
@@ -76,7 +77,7 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
         }
         if ((D_stateD_E354 != 1) && (SO(arg0)->unk23 != 0)) {
             if (SO(arg0)->fired == 0) {
-                func_00000000(arg0);
+                FCALL(snd_SoundObjReset)(arg0);
                 return;
             }
             temp_f18 = SO(arg0)->unk04 * (*SO(arg0)).speed * 100.0f;
@@ -121,14 +122,14 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                 switch (arg1) {
                 case 0:
                     gl_E354_v(0x90000000, 6 + 0 * (int)(var_v0 + var_v0 + var_v0));
-                    func_00000000(0x0500FF00, (s8) var_v0);
-                    func_00000000(0x05020000, (s8) var_v0);
+                    FCALL(AudioThread_QueueCmdS8)(0x0500FF00, (s8) var_v0);
+                    FCALL(AudioThread_QueueCmdS8)(0x05020000, (s8) var_v0);
                     break;
                 case 1:
                 case 2:
                     gl_E354_v(0x90000000, 0x60 + 0 * (int)(var_v0 + var_v0 + var_v0));
-                    func_00000000(0x0500FF00, (s8) var_v0);
-                    func_00000000(0x05020100, (s8) var_v0);
+                    FCALL(AudioThread_QueueCmdS8)(0x0500FF00, (s8) var_v0);
+                    FCALL(AudioThread_QueueCmdS8)(0x05020100, (s8) var_v0);
                     break;
                 }
                 SO(arg0)->reverbOnSent = SO(arg0)->reverbOn;
@@ -141,16 +142,16 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                 SO(arg0)->unk28 = (u8) ((s32) (temp_v0 + SO(arg0)->unk28) >> 1);
                 if (SO(arg0)->kind == 0) {
                     gl_E354_setf(0x01020000, temp_f0);
-                    func_00000000(0x03020000, (s8) SO(arg0)->unk28);
-                    func_00000000(0x90000000, 0x806);
-                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
-                    temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
+                    FCALL(AudioThread_QueueCmdS8)(0x03020000, (s8) SO(arg0)->unk28);
+                    FCALL(AudioThread_QueueCmdU16)(0x90000000, 0x806);
+                    FCALL(AudioThread_QueueCmdS8)(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
+                    temp_f10_2 = FCALL(AudioThread_QueueCmdU16)(0x0D00FF00, 0x3000);
                 } else {
                     gl_E354_setf(0x01020100, temp_f0);
-                    func_00000000(0x03020100, (s8) SO(arg0)->unk28);
-                    func_00000000(0x90000000, 0x1060);
-                    func_00000000(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
-                    temp_f10_2 = func_00000000(0x0D00FF00, 0x3000);
+                    FCALL(AudioThread_QueueCmdS8)(0x03020100, (s8) SO(arg0)->unk28);
+                    FCALL(AudioThread_QueueCmdU16)(0x90000000, 0x1060);
+                    FCALL(AudioThread_QueueCmdS8)(0x0C00FF00, *(s8 *)&SO(arg0)->voice.pan[3]);
+                    temp_f10_2 = FCALL(AudioThread_QueueCmdU16)(0x0D00FF00, 0x3000);
                 }
             } else {
                 if (D_stateF_E354 == 4) {
@@ -166,17 +167,17 @@ void snd_SoundObjUpdate(char *arg0, s32 arg1) {
                     SO(arg0)->unk28 = 0x40U;
                 }
                 if (SO(arg0)->kind == 0) {
-                    func_00000000(0x01020000, 0x3F800000);
-                    temp_f10_2 = func_00000000(0x03020000, (s8) SO(arg0)->unk28);
+                    FCALL(AudioThread_QueueCmdF32)(0x01020000, 0x3F800000);
+                    temp_f10_2 = FCALL(AudioThread_QueueCmdS8)(0x03020000, (s8) SO(arg0)->unk28);
                 } else {
-                    func_00000000(0x01020100, 0x3F800000);
-                    temp_f10_2 = func_00000000(0x03020100, (s8) SO(arg0)->unk28);
+                    FCALL(AudioThread_QueueCmdF32)(0x01020100, 0x3F800000);
+                    temp_f10_2 = FCALL(AudioThread_QueueCmdS8)(0x03020100, (s8) SO(arg0)->unk28);
                 }
             }
             if (SO(arg0)->flags & 1) {
                 SO(arg0)->unk08 = (f32) (SO(arg0)->unk08 + 50.0f);
                 gl_func_00043BE4(arg0, 0, SO(arg0)->unk2C - 1, SO(arg0)->unk08, (s32) SO(arg0)->unk28);
-                temp_f10_2 = func_00000000(arg0, (*(u32 *)((char *)&D_00000000 + 0x2154) & 7) + 0x20);
+                temp_f10_2 = FCALL(snd_SoundObjRequestCue)(arg0, (*(u32 *)((char *)&D_00000000 + 0x2154) & 7) + 0x20);
                 SO(arg0)->flags = (u8) (SO(arg0)->flags & ~1);
             }
             var_v0_2 = SO(arg0)->unk14;
@@ -321,7 +322,7 @@ block_83:
                         }
                         break;
                     }
-                    func_00000000(arg0, ((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50) + (0, temp_v1));
+                    FCALL(snd_SoundObjRequestCue)(arg0, ((u32) *(s32 *)((char *)&D_00000000 + 0x2154) % sp50) + (0, temp_v1));
                     SO(arg0)->unk48 = 0xA;
                     SO(arg0)->level = 0U;
                     SO(arg0)->unk2B = sp6B;
@@ -395,7 +396,7 @@ block_83:
                         SO(arg0)->unk38 = (s32) (SO(arg0)->unk38 + 1);
                     } if (1) {}
                     if ((*(volatile u8 *)&SO(arg0)->kind == 0) && (SO(arg0)->unk38 == 0x1E)) {
-                        func_00000000(0x20, 0x12, 0);
+                        FCALL(snd_TriggerChannel8CueIfIdle)(0x20, 0x12, 0);
                     }
                     if (D_raceD_E354) {}
                     var_v0_3 = D_raceD_E354;
@@ -406,7 +407,7 @@ block_83:
                         }
                         if (*(f32 *)((char *)&D_00000000 + 0x172C) < SO(arg0)->unk0C) {
                             if (++SO(arg0)->unk33 == 0x19) {
-                                func_00000000(arg0, 0x3C);
+                                FCALL(snd_SoundObjRequestCue)(arg0, 0x3C);
                             }
                         }
                     }
@@ -418,15 +419,15 @@ block_83:
                         if (SO(arg0)->unk1E == 0) {
                             var_t9 = -var_t9;
                         }
-                        func_00000000(SO(arg0)->kind, SO(arg0)->unk15, var_t9);
+                        FCALL(snd_SetPlayer0ChannelIO12_2FA90)(SO(arg0)->kind, SO(arg0)->unk15, var_t9);
                     } else {
-                        func_00000000(SO(arg0)->kind);
+                        FCALL(snd_ResetPlayer0ChannelIO1_2FB10)(SO(arg0)->kind);
                     }
                     gl_E354_emitf(SO(arg0)->kind, sp7D * 0x10, SO(arg0)->unk26, sp78, (s32) SO(arg0)->unk15, (s32) SO(arg0)->unk28);
                     break;
                 default:
                     gl_E354_emitf(SO(arg0)->kind, sp7D * 0x10, SO(arg0)->unk26, sp78, temp_v0_2 + 2, (s32) SO(arg0)->unk28);
-                    func_00000000(SO(arg0)->kind);
+                    FCALL(snd_ResetPlayer0ChannelIO1_2FB10)(SO(arg0)->kind);
                     break;
                 }
                 gl_func_000438F4(arg0);

@@ -1,6 +1,7 @@
 #include "common.h"
 #include "gdl/gl_data.h"
 #include "libultra/os_thread.h"
+#include "uso_call.h"
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Vec3i;
@@ -23,9 +24,9 @@ extern int gl_func_00000000();
 
 int gl_osPiWriteIo(int a0, int a1) {
     register int r;
-    gl_func_00000000();
-    r = gl_func_00000000(a0, a1);
-    gl_func_00000000();
+    CALL(gl___osPiGetAccess)();
+    r = CALL(gl_osPiRawWriteIo)(a0, a1);
+    CALL(gl___osPiRelAccess)();
     return r;
 }
 
@@ -91,7 +92,7 @@ void gl_osYieldThread(void) {
     register int sr = gl_func_00000000();
     ((OSThread *)gl___osRunningThread)->state = OS_STATE_RUNNABLE;
     gl_func_00000000(&gl_data_00000000);
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }
 
 /* osViGetCurrentField = libultra osViGetCurrentField (vigetfield.c

@@ -19,6 +19,7 @@ typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64
 #include "../../include/game/envobj.h" /* EnvSettings (handlers / clipNear / clipFar / flags) */
 #include "../../include/game/input.h"  /* GameFlow (InputMgr) */
 #include "../../include/gdl/gfxlib.h"  /* GfxLib.fog */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 void func_00000000(...);
 void stream_readS32_00005EF8(void *);
@@ -62,17 +63,17 @@ extern "C" void EnvSettings_load(char *self) {
             }
         }
         if (found != 0) {
-            func_00000000(&sFmt_Env_Load_7F90, &found->id);
+            FCALL(dbg_printf)(&sFmt_Env_Load_7F90, &found->id);
             Handler73 *h = found->h;
             h->handle();
         } else {
-            func_00000000(&sFmt_Env_Skip_7FA0, &msg);
-            func_00000000(&D_00000000, 1, out);
+            FCALL(dbg_printf)(&sFmt_Env_Skip_7FA0, &msg);
+            FCALL(fs_gdlSeekFile)(&D_00000000, 1, out);
         }
     }
     stream_readS32_0000502C(&ENVSET(self)->flags);
     if (ENVSET(self)->flags & 1) {
-        func_00000000(func_0000027C + 0x18);
+        FCALL(gfx_loadQuadIntInt_00044034)(func_0000027C + 0x18);
     }
     if (ENVSET(self)->flags & 2) {
         stream_readS32_00004FF0(&ENVSET(self)->clipNear);

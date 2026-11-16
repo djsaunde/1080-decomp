@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for arc_drawNumber_000016F4, EXACT (twin of trk_drawScore_000013B8;
  * see that donor). agent-g run 184 (kit CXXXIII): ported from the b3 C++ rewrite -- sprite member objects
  * (sA 0x704, sB 0x71C, sC 0x734, tim 0x74C, alpha 0x77C) and the inline `Spr::width()` with a named image pointer.
@@ -40,14 +41,14 @@ extern "C" void arc_drawNumber_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {
     one[2] = 1.0f;
     one[3] = 1.0f;
     if (FL(arg0)->f & 4) {
-        gl_func_00000000(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
-        gl_func_00000000(&arg0->tim); if (1) {}
+        CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (s32)(255.0f * arg0->alpha), arg0->c2A8, arg0->c2CC);
+        CALL(gui_spriteRefresh)(&arg0->tim); if (1) {}
         s32 w = arg0->tim.width() / 12 + 0 * arg0->tim.pw();
-        gl_func_00000000(&arg0->sA);
-        gl_func_00000000(&arg0->sB);
-        gl_func_00000000(&arg0->sC);
-        gl_func_00000000(buf, &D_00000000 + 0x3D8, arg2);
-        s32 n = gl_func_00000000(buf);
+        CALL(gui_spriteRefresh)(&arg0->sA);
+        CALL(gui_spriteRefresh)(&arg0->sB);
+        CALL(gui_spriteRefresh)(&arg0->sC);
+        CALL(gl_sprintf)(buf, &D_00000000 + 0x3D8, arg2);
+        s32 n = CALL(str_len)(buf);
         {
         s32 xoff, xb, xa, x;
         Spr *pC = &arg0->sC, *pA = &arg0->sA, *pB = &arg0->sB;
@@ -56,14 +57,14 @@ extern "C" void arc_drawNumber_000016F4(Obj *arg0, s32 arg1, f32 *arg2) {
         xa = pA->pw() + xb + 4;
         x = pC->pw() + xa + 8;
         volatile s32 pad0, pad1, pad2;
-        gl_func_00000000(&arg0->sC, xa, arg1 + 0x32, 2);
+        CALL(gui_drawSprite)(&arg0->sC, xa, arg1 + 0x32, 2);
         for (i = 0; i < n; i++) {
             buf[i] -= 0x30;
-            gl_func_00000000(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
+            CALL(gui_drawSpriteIA8Clip_00002BB0)(&arg0->tim, x + i * 13, arg1 - arg0->tim.img->gh() / 2 + 0x32, buf[i] * w, w);
         }
-        gl_func_00000000(&D_00000000, (s32)(255.0f * arg0->alpha), one);
-        gl_func_00000000(&arg0->sA, xb, arg1 + 0x32, 2);
-        gl_func_00000000(&arg0->sB, xoff, arg1 + 0x32, 2);
+        CALL(gui_setColor_00001A5C)(&D_00000000, (s32)(255.0f * arg0->alpha), one);
+        CALL(gui_drawSprite)(&arg0->sA, xb, arg1 + 0x32, 2);
+        CALL(gui_drawSprite)(&arg0->sB, xoff, arg1 + 0x32, 2);
         }
     }
 }

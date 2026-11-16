@@ -13,6 +13,7 @@
  * Spliced into bootup_uso.c.o (both trees) via REPLACE_FUNC_BODY over an empty placeholder;
  * func_00000000_63b4_* are blank (0) aliases, bu_63b4_c57c = func_0000057C (target reloc func_0000057C + 0x34). */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
 extern "C" {
 extern char D_00000000;
@@ -51,8 +52,8 @@ struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
 extern "C" void MapProp_display(Obj *obj) {
     V3 A;
     V3 B;
-    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / kRo_MapProp_degPerRad));
-    func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);
+    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / XCALL(func_00000000_63b4_ff, fcos)((f32)obj->nbc / kRo_MapProp_degPerRad));
+    XCALL(func_00000000_63b4_fpp, math_rotate2D)((f32)obj->nbc, &A.x, &A.z);
     B.y = 0.0f;
     B.x = -A.x;
     B.z = A.z;
@@ -88,6 +89,6 @@ extern "C" void MapProp_display(Obj *obj) {
     q.y = 0.0f;
     q.x = 0.0f;
     q.w = 1.0f;
-    func_00000000_63b4_pq(gG, &q);
-    func_00000000_63b4_p(obj);
+    XCALL(func_00000000_63b4_pq, gfx_setPrimColour)(gG, &q);
+    XCALL(func_00000000_63b4_p, MNode_display)(obj);
 }

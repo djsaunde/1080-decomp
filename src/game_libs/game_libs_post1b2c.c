@@ -133,7 +133,7 @@ extern int gl_func_00000000();
 int gl_osPiRawStartDma(int direction, unsigned int devAddr, int dramAddr, unsigned int size) {
     register unsigned int status;
     while ((status = *(volatile unsigned int*)0xA4600010) & 3) ;
-    *(volatile unsigned int*)0xA4600000 = gl_func_00000000(dramAddr);
+    *(volatile unsigned int*)0xA4600000 = CALL(gl_osVirtualToPhysical)(dramAddr);
     *(volatile unsigned int*)0xA4600004 = (D_00000000 | devAddr) & 0x1FFFFFFF;
     switch (direction) {
         case 0: *(volatile unsigned int*)0xA460000C = size - 1; break;
@@ -221,7 +221,7 @@ void osViBlack(unsigned char active) {
  * The PI-busy probe collapses to the address-0 placeholder gl_func_00000000;
  * the uncached cart read is a KSEG1 literal (devAddr | 0xA0000000). */
 int gl___osSiRawReadIo(int devAddr, int *data) {
-    if (gl_func_00000000() != 0) {
+    if (CALL(gl___osSiDeviceBusy)() != 0) {
         return -1;
     }
     *data = *(volatile int *)(0xA0000000 | devAddr);
@@ -463,7 +463,7 @@ void gl_osSetEventMesg(int event, void *queue, int msg) {
     EventState_0006E1A4 *es = &((EventState_0006E1A4 *)&gl___osEventStateTab)[event];
     es->queue = (int)queue;
     es->msg = msg;
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }
 
 
@@ -748,7 +748,7 @@ void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
     if (thread->pri != pri) {
         thread->pri = pri;
         if ((Thread_0006F534 *)(void *)thread != (Thread_0006F534 *)gl___osRunningThread && thread->state != 1) {
-            gl_func_00000000(thread->queue, thread);
+            CALL(gl___osDequeueThread)(thread->queue, thread);
             gl_func_00000000(thread->queue, thread);
         }
         if (((Thread_0006F534 *)gl___osRunningThread)->pri < ((Thread_0006F534 *)gl_data_00000000)->pri) {
@@ -756,7 +756,7 @@ void gl_osSetThreadPri(Thread_0006F534 *thread, int pri) {
             gl_func_00000000(&gl_data_00000000);
         }
     }
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }
 
 extern int *gl___osRunningThread_6F614_X;
@@ -997,7 +997,7 @@ long long __osInsertTimer(void *t) {
 void gl___osSetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
     gl___OSGlobalIntMask |= mask;
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }
 
 /* osAiSetFrequency = libultra osAiSetFrequency (aisetfreq.c verbatim):

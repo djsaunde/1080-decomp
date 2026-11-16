@@ -15,6 +15,7 @@
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/gdl/node.h" /* Node.vptr (+0x28) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 void func_00000000(...);
 extern char D_00000000;
@@ -35,13 +36,13 @@ struct AppVptrE800 { char node[0x28]; void *vptr; };
 extern "C" void SnowBoard_ctor(void) {
     VO *root;
     int z, x, y;
-    func_00000000();
+    FCALL(boot_stub_00066C58)();
     z = 0; x = 0; y = 0;
-    func_00000000(&gSysLib_e800_g1, &sStr_rom_audio_seq_uso_8D34, &x);
-    func_00000000(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
-    func_00000000(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
-    func_00000000(x, z, y);
-    func_00000000(&gSnowBoard_e800_g4); SNOWBOARD_E800->vptr = &SnowBoard_vtbl_e800_v; /* install the app's vtable */
+    FCALL(fs_gdlFileInfo)(&gSysLib_e800_g1, &sStr_rom_audio_seq_uso_8D34, &x);
+    FCALL(fs_gdlFileInfo)(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
+    FCALL(fs_gdlFileInfo)(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
+    FCALL(snd_Init)(x, z, y);
+    FCALL(App_ctor)(&gSnowBoard_e800_g4); SNOWBOARD_E800->vptr = &SnowBoard_vtbl_e800_v; /* install the app's vtable */
     root = (VO *)&D_00000000;
     root->f();
 }

@@ -75,7 +75,7 @@ extern int gl_func_00000000();
 void gl___osResetGlobalIntMask(int mask) {
     register int sr = gl_func_00000000();
     gl___OSGlobalIntMask &= ~(mask & ~0x401);
-    gl_func_00000000(sr);
+    CALL(gl___osRestoreInt)(sr);
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_libs/game_libs/gl_func_00070634_pad.s")
 

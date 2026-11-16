@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for map_addEntry_00007204: allocate a two-field record
  * (new Pair(a1, p): word + M4 member with its own cfront this==0 protocol)
  * and hand it to the list at a0 + 0x2C. 33/33 words.
@@ -10,7 +11,7 @@
  * casts, prototypes, operator new forms) coalesces the result into a1.
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY (agent-c run 123). */
 extern "C" void *func_00000000(...);
-inline void *operator new(unsigned n) { return func_00000000(n); }
+inline void *operator new(unsigned n) { return FCALL(mem_new)(n); }
 struct Val { int v; };
 struct M4 { int a; M4() { a = 0; } };
 struct Pair {

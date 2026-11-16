@@ -32,11 +32,12 @@ extern char sFmt_HANDICAP_ON_8ABC[];
 typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 #include "../../include/game/snowboarder.h"
 #include "../../include/gdl/node.h" /* NODE(p)->name (the DNode mirror has no Node fields) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 #define RIDER(st) ((SnowBoarder *)(st))
 extern "C" void SnowBoarder_reset(char *st) {
-    func_00000000(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
-    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[RIDER(st)->boardBin[RIDER(st)->board - 1]]);
-    if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) func_00000000(st);
+    FCALL(Node_Load)(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
+    FCALL(Node_Load)(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[RIDER(st)->boardBin[RIDER(st)->board - 1]]);
+    if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) FCALL(SnowBoarder_mirrorFlip_0000E124)(st);
     func_00000000(st + 0x90C, (st + 0x17C) - st);
     RIDER(st)->groundDist = bu_cae8_k958;
     RIDER(st)->maxSpeed = RIDER(st)->parms.max.value;
@@ -57,12 +58,12 @@ extern "C" void SnowBoarder_reset(char *st) {
     RIDER(st)->localUp.z = 1.0f;
     bu_cae8_y = 0;
     RIDER(st)->flags = RIDER(st)->initFlags;
-    if (RIDER(st)->initFlags & SNOWB_FLAG_20) func_00000000(st);
-    func_00000000(st, RIDER(st)->dnode.unk3A4); /* reset to the spawn point (startPos) */
-    func_00000000(st);
-    func_00000000(RIDER(st)->anim);
-    func_00000000(RIDER(st)->ai);
-    if (RIDER(st)->flags & SNOWB_FLAG_CATCHUP) func_00000000(sFmt_HANDICAP_ON_8ABC, NODE(st)->name);
+    if (RIDER(st)->initFlags & SNOWB_FLAG_20) FCALL(SnowBoarder_mirrorFlip_0000E124)(st);
+    FCALL(DNode_resetXform_00065360)(st, RIDER(st)->dnode.unk3A4); /* reset to the spawn point (startPos) */
+    FCALL(DNode_init_00065060)(st);
+    FCALL(RiderAnim_init_0000D458)(RIDER(st)->anim);
+    FCALL(SnowAI_reset)(RIDER(st)->ai);
+    if (RIDER(st)->flags & SNOWB_FLAG_CATCHUP) FCALL(dbg_printf)(sFmt_HANDICAP_ON_8ABC, NODE(st)->name);
     V3 *p = (V3 *)&RIDER(st)->prevPos; V3 *q = (V3 *)&RIDER(st)->prevVel;
     *p = *(V3 *)RIDER(st)->dnode.vqs.trans; /* prevPos = pos */
     *q = *(V3 *)RIDER(st)->dnode.vel;       /* prevVel = vel */

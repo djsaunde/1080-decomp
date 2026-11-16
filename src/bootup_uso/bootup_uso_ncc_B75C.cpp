@@ -25,6 +25,7 @@
 typedef float f32; typedef double f64; typedef int s32; typedef short s16;
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 #include "../../include/game/snowboarder.h"
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 /* math_quatRotateAxisAngle(quat, axis, angle, owner): turn quat about axis (per-site alias of the game_libs helper) */
 void bu_b75c_mvf(char *, char *, f32, SnowBoarder *);
@@ -167,7 +168,7 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         }
         rider->shake = (s32) (20.0f + (30.0f * var_f0));
         if (rider->groundFlags & 1) {
-            func_00000000((char *)&rider->sound, *(s32 *)&rider->dnode.vqs.trans[0]);
+            FCALL(snd_soundObjSetPan_00000B2C)((char *)&rider->sound, *(s32 *)&rider->dnode.vqs.trans[0]);
             if (rider->slowdown == 0) {
                 if (rider->dnode.axes[2][0] < 0.0f) {
                     var_f0 = -rider->dnode.axes[2][0];
@@ -183,7 +184,7 @@ void SnowBoarder_updateOrient(SnowBoarder *rider) {
         } else {
             if ((sp58 < rider->parms.mdr.value) && (((sp54 > 0.0f) && (sp60 < 0.0f)) || ((sp54 < 0.0f) && (sp60 > 0.0f)))) {
                 rider->shake = (s32) (rider->shake + 0x14);
-                func_00000000(rider->input, D_00008170, 1, rider);
+                FCALL(pad_startRumble)(rider->input, D_00008170, 1, rider);
                 sp60 = 0.0f;
             }
             if (rider->localUp.y < 0.0f) {

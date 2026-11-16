@@ -16,6 +16,7 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/game/course.h"
 #include "../../include/game/envobj.h" /* Tv1 (the SNode-layout instance) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 int func_00000000_76f4_q(void *, int, int, int, float, int, float);
 void func_00000000_76f4_v(...);
@@ -28,15 +29,15 @@ struct G { char pad[0xA0]; Cam cam; char padDC[0x128 - 0xDC]; V3 scale; char pad
 inline void Cam::mul(G &g) { v.x *= g.scale.x; v.y *= g.scale.y; v.z *= g.scale.z; }
 extern "C" G gGfxLib_76f4_g;
 extern "C" void Tv1_display(Tv1 *self) {
-    if (func_00000000_76f4_q(gGfxLib_76f4_g.root, 3, *(int *)&self->pos[0], *(int *)&self->pos[1],
+    if (XCALL(func_00000000_76f4_q, cam_isSphereInView)(gGfxLib_76f4_g.root, 3, *(int *)&self->pos[0], *(int *)&self->pos[1],
                     self->pos[2], 0, self->radius * self->scale) != 0) {
-        func_00000000_76f4_v(&gGfxLib_76f4_g, self->mtx);
+        XCALL(func_00000000_76f4_v, gfx_loadMatrix_00047DD8)(&gGfxLib_76f4_g, self->mtx);
         {
             Cam &c = gGfxLib_76f4_g.cam;
             c.mul(gGfxLib_76f4_g);
             c.v.y += self->height;
         }
-        func_00000000_76f4_v(self);
+        XCALL(func_00000000_76f4_v, Node_display)(self);
         bu_76f4_cnt += 1;
     }
 }
