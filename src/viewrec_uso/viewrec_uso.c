@@ -1023,7 +1023,104 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002FC
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000319C);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003364);
+typedef struct VrArcadeEnt {
+    /* 0x00 */ s32 b0;
+    /* 0x04 */ u8 count;
+    /* 0x05 */ char name[3];
+    /* 0x08 */ s32 sub[5];
+    /* 0x1C */ s32 score;
+} VrArcadeEnt;
+/* the arcade records screen's draw: each entry's sub-score row count (+0x60[i]) grows toward the
+ * entry's count while it is the selected one (+0x58 is 1-based) and shrinks otherwise; the block is
+ * centred on y = 150; then per entry: the cursor sprite (label 36) on the selected row, rank / icons,
+ * the sub scores (label j, 0x2D9C) and the name / total score. Levers: `d` declared first (its home
+ * above the three colours puts them at sp+0x74 / 0x84 / 0x94), int numerators over d, do-while loops
+ * (the outer one orders the loop-end increments; the inner guarded do-while, too), `show = 1` after
+ * the entry read, the counter updates spelled on the array element (no named temp: one home less). */
+void viewrec_uso_func_00003364(ViewRecScreen *self) {
+    f32 d;
+    f32 col3[4];
+    f32 col1[4];
+    f32 col2[4];
+    s32 i;
+    s32 j;
+    s32 total;
+    s32 y;
+    s32 prev;
+    s32 show;
+    s32 rank;
+    VrArcadeEnt *e;
+
+    d = 255.0f;
+    col1[0] = 40 / d;
+    col1[1] = 100 / d;
+    col1[2] = 255 / d;
+    col1[3] = 255 / d;
+    col2[0] = 255 / d;
+    col2[1] = 255 / d;
+    col2[2] = 160 / d;
+    col2[3] = 255 / d;
+    col3[0] = 233 / d;
+    col3[1] = 255 / d;
+    col3[2] = 0 / d;
+    col3[3] = 255 / d;
+    total = 0;
+    for (i = 0; i < 3; i++) {
+        e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);
+        if (i + 1 == *(s32 *)((char *)self + 0x58)) {
+            if (((s32 *)((char *)self + 0x60))[i] < e->count) {
+                ((s32 *)((char *)self + 0x60))[i]++;
+            }
+        } else if (((s32 *)((char *)self + 0x60))[i] > 0) {
+            ((s32 *)((char *)self + 0x60))[i]--;
+        }
+        if (((s32 *)((char *)self + 0x60))[i] != 0) {
+            total += ((s32 *)((char *)self + 0x60))[i] * 15;
+        }
+        total += 30;
+    }
+    y = 150 - total / 2;
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+    CALL(viewrec_uso_func_00001488)(self->proc, 8, 37);
+    prev = -1;
+    i = 0;
+    do {
+        e = (VrArcadeEnt *)CALL(Backup_arcadeGetEntry)(((VrArcadeEnt **)self->proc->session)[1], i);
+        show = 1;
+        if (CALL(Backup_arcadeEntryIsNew)(&((VrArcadeEnt **)self->proc->session)[1][i]) &&
+            (*(s32 *)((char *)self + 0x6C) & 8)) {
+            show = 0;
+        }
+        if (i == *(s32 *)((char *)self + 0x5C)) {
+            CALL(gui_spriteRefresh)(&sVrLabels[36]);
+            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[36], 255, col3, 255);
+            CALL(gui_drawSprite)(&sVrLabels[36], 30, y, 3);
+        }
+        rank = i;
+        if (prev == e->score) {
+            rank = -1;
+        }
+        if (show) {
+            CALL(viewrec_uso_func_000029B0)(self, rank, 38, y, e->b0 & 7, (e->b0 & 0x78) >> 3);
+        }
+        j = 0;
+        if (((s32 *)((char *)self + 0x60))[i] > 0) {
+            do {
+                CALL(viewrec_uso_func_00002F1C)(self, j, 132, y);
+                CALL(viewrec_uso_func_00002D9C)(self, 196, y, e->sub[j], col2);
+                y += 15;
+                j++;
+            } while (j < ((s32 *)((char *)self + 0x60))[i]);
+        }
+        if (show) {
+            CALL(viewrec_uso_func_00002AE4)(self, 132, y, e->name);
+            CALL(viewrec_uso_func_00002D9C)(self, 196, y, e->score, col1);
+        }
+        prev = e->score;
+        y += 30;
+        i++;
+    } while (i < 3);
+}
 
 /* the erase screen's ctor (200 bytes): the cfront chain Node (0x2C) -> Process (0x50) -> screen, each
  * level allocating when called with 0; the Node ctor call and its vptr store on one line (as in the
