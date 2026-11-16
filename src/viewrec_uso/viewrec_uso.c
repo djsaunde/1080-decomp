@@ -40,7 +40,7 @@ typedef struct ViewRecProc {
 /* The module's Bss statics (relocated against viewrec Bss(base); each symbol is pinned at its
  * Bss offset in undefined_syms_auto.txt, so the linked words carry the offset as in the ROM). */
 extern RaceSprite sVrSprites[21];   /* 0x000: gui_spriteLoad (0x718) */
-extern RaceSprite sVrLabels[43];    /* 0x1F8: gui_spriteInit (0x8C8) */
+extern RaceSprite sVrLabels[68];    /* 0x1F8: gui_spriteInit (0x8C8) */
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
@@ -318,7 +318,18 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000336
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000036B4);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003818);
+/* the erase screen's update: dispatch on the process mode */
+void viewrec_uso_func_00003818(ViewRecScreen *self) {
+    switch (self->proc->mode) {
+        case 0x80000:
+            CALL(viewrec_uso_func_00003F24)(self);
+            break;
+        case 0x2000000:
+            CALL(viewrec_uso_func_00004354)(self);
+            break;
+    }
+    CALL(Node_update)(self);
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003878);
 
@@ -328,11 +339,27 @@ INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000435
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004518);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004670);
+void viewrec_uso_func_00004670(ViewRecScreen *self) {
+    CALL(viewrec_uso_func_000047B0)(self);
+    CALL(Node_update)(self);
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004698);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000047B0);
+/* the replay screen's pad handling: A / Start fades out to the saved ghost's mode
+ * (procState = Backup_ghostGetMode + 6, then state 1); B goes back to the main menu */
+void viewrec_uso_func_000047B0(ViewRecScreen *self) {
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40100)) {
+        CALL(snd_postEvent)(5);
+        gInputMgr_vr.procState = CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) + 6;
+        gInputMgr_vr.nextProcState = 1;
+        CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+        CALL(snd_postEvent)(0x802);
+        CALL(viewrec_uso_func_00000000)();
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004854);
 
