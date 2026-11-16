@@ -1103,7 +1103,63 @@ void snoweffects_uso_func_00009BE8(char *this, char *src) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009C48);
+/* the flicker sequences named by Data+0x958[this+0x2AC]: count, then count brightness bytes */
+typedef struct SnowFlicker {
+    s32 count;
+    u8 *vals;
+} SnowFlicker;
+extern SnowFlicker *snow_flickerTbl_958[];
+
+/* the glow / flicker state of a snow light (only what 0x9BE8 / 0x9C48 touch) */
+typedef struct SnowGlow {
+    /* 0x000 */ char unk000[0xAC];
+    /* 0x0AC */ s16 vtx[0x40];
+    /* 0x12C */ SnowRGBA col[0x40];
+    /* 0x22C */ s32 n;
+    /* 0x230 */ s32 updateList;
+    /* 0x234 */ s32 unk234;
+    /* 0x238 */ s32 timer;
+    /* 0x23C */ s32 step;
+    /* 0x240 */ char unk240[0x288 - 0x240];
+    /* 0x288 */ Vec3 colour;
+    /* 0x294 */ char unk294[0x2AC - 0x294];
+    /* 0x2AC */ s32 seq;
+    /* 0x2B0 */ char unk2B0[0x2C4 - 0x2B0];
+    /* 0x2C4 */ s32 period;
+} SnowGlow;
+
+void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
+    SnowRGBA *cols = *(SnowRGBA **)(src + 0x50);
+    SnowFlicker *fl = snow_flickerTbl_958[this->seq];
+    float f;
+    int i;
+    if (--this->timer < 0) {
+        this->timer = this->period;
+        if (fl->count == ++this->step) {
+            this->step = 0;
+        }
+    }
+    f = (unsigned int)fl->vals[this->step] / 255.0f;
+    for (i = 0; i < this->n; i++) {
+        int idx = this->vtx[i];
+        int r = this->col[i].r;
+        int g = this->col[i].g;
+        int b = this->col[i].b;
+        int k = (unsigned int)this->col[i].a * f;
+        r += this->colour.x * k;
+        g += this->colour.y * k;
+        b += this->colour.z * k;
+        if (r > 255) r = 255;
+        if (g > 255) g = 255;
+        if (b > 255) b = 255;
+        cols[idx].r = r;
+        cols[idx].g = g;
+        cols[idx].b = b;
+    }
+    if (this->updateList != 0) {
+        CALL(MorphPoly_applyUpdateList_0004A9F0)(src, *(void **)(src + 0x50), this->updateList);
+    }
+}
 
 #ifdef NON_MATCHING
 /* item-type create: 0x9328 ctor(0), +0x70 = 1.0f, attach the type's +0x40 node.
