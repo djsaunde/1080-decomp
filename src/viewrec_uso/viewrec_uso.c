@@ -54,6 +54,19 @@ extern RaceSprite sVrLabels_318[];    /* 0x318 (sVrLabels[12..]): the 0x11B4 bac
 extern RaceSprite sVrLabels_540;
 /* bootup Bss+0x28C (the gui string-table / language base; trnproc's trn_gRowBase), 0-pinned */
 extern s32 vr_gLanguage;
+extern RaceSprite sVrLabels_3F0[8];   /* 0x3F0 (sVrLabels[21..28]): the options grid (0x1D64) */
+/* the vptrs the ctors store: bootup's Node (Data+0xC338) / Process (Data+0xC3A0) vtables and this
+ * module's screen vtables (Data+0x98 / +0x118); the offset is in the USO reloc, so each is its own
+ * 0-pinned symbol */
+extern char vr_vt_node, vr_vt_proc, vr_vt_screen54, vr_vt_screen60;
+/* void-returning alias of the placeholder (0-pinned): no dead v0 def to colour around */
+extern void gl_func_00000000_vrv();
+/* bootup image header: width / height at +0x20 / +0x22 */
+typedef struct VrImage {
+    /* 0x00 */ char unk00[0x20];
+    /* 0x20 */ s16 width;
+    /* 0x22 */ s16 height;
+} VrImage;
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
@@ -429,7 +442,61 @@ void viewrec_uso_func_000016E8(ViewRecProc *self, int *msg) {
     CALL(Node_handleMsg)(self, msg);
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001748);
+/* the main-menu screen (0x58 bytes, vtable Data+0x98) */
+typedef struct VrMainMenu {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ s32 unk30;
+    /* 0x34 */ char pad34[0x48 - 0x34];
+    /* 0x48 */ s32 unk48;
+    /* 0x4C */ char pad4C[0x50 - 0x4C];
+    /* 0x50 */ ViewRecProc *proc;
+    /* 0x54 */ s32 font;
+} VrMainMenu;
+
+/* its ctor: create the pause menu (proc->menu88), fill its rows (0x1A08), centre it, start it and
+ * attach it as a child; the screen starts stopped */
+
+VrMainMenu *viewrec_uso_func_00001748(VrMainMenu *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+    char *w;
+
+    if (self != 0 || (self = (VrMainMenu *)CALL(mem_new)(0x58)) != 0) {
+        o1 = (char *)self;
+        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o2 = o1;
+            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) {
+                CALL(Node_ctor)(o2, (char *)&D_00000000 + 1020); ((Node *)o2)->vptr = (void *)&vr_vt_node;
+            }
+            ((Node *)o1)->vptr = (void *)&vr_vt_proc;
+        }
+        self->node.vptr = (void *)&vr_vt_screen54;
+        self->node.name = (char *)&D_00000000 + 1028;
+        self->proc = proc;
+        self->font = proc->font;
+        self->proc->menu88 = (GuiMenu *)CALL(PauseMenu_create)(0);
+        CALL(gui_initRows_000100F0)(self->proc->menu88, self);
+        CALL(viewrec_uso_func_00001A08)(self);
+        self->proc->menu88->unk30 = self->font;
+        CALL(gui_centerRows_0001016C)(self->proc->menu88);
+        XCALL(gl_func_00000000_vrv, gui_centerAt_000102A4)(self->proc->menu88, 130);
+        w = (char *)self->proc->menu88;
+        o1 = (char *)NODE(w)->vptr;
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
+        o1 = (char *)self->proc->menu88;
+        CALL(list_append)(&self->node.children, o1);
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
+        }
+        NODE(o1)->parent = &self->node;
+        CALL(Process_stop)(self);
+        self->unk30 = 1;
+        self->unk2C = 0;
+        self->unk48 = 0;
+    }
+    return self;
+}
 
 typedef struct ViewRecScreen {
     /* 0x00 */ Node node;
@@ -478,9 +545,104 @@ void viewrec_uso_func_000019C8(ViewRecScreen *self, int *msg) {
     CALL(Node_handleMsg)(self, msg);
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001A08);
+/* The main menu's row callbacks (the screen switches): Text relocs whose in-place addend is 0,
+ * so each address is a 0-pinned alias of the function (as trnproc's 3A8). */
+extern void viewrec_uso_func_00000084_ref(void), viewrec_uso_func_00000214_ref(void),
+    viewrec_uso_func_000000E8_ref(void), viewrec_uso_func_0000014C_ref(void), viewrec_uso_func_000001B0_ref(void);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001B4C);
+/* fill the main menu: rows 1..5 of string bank vr_gLanguage + 42 (row 2 only when the word at
+ * 0xA0000284 is 0x240B17D7); row 1 is disabled without a saved ghost */
+void viewrec_uso_func_00001A08(ViewRecScreen *self) {
+    CALL(gui_clearRows_00010A9C)(self->proc->menu88);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 1, -1, viewrec_uso_func_00000084_ref);
+    if (*(s32 *)0xA0000284 == 0x240B17D7) {
+        CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 2, -1, viewrec_uso_func_00000214_ref);
+    }
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 3, -1, viewrec_uso_func_000000E8_ref);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 4, -1, viewrec_uso_func_0000014C_ref);
+    CALL(gui_addRowSub_00010B6C)(self->proc->menu88, ((vr_gLanguage + 42) << 16) | 5, -1, viewrec_uso_func_000001B0_ref);
+    if (CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) == 0) {
+        self->proc->menu88->rows[1].enabled = 0;
+    }
+}
+
+/* the options screen (proc->screen60) */
+typedef struct VrScreen60 {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ s32 unk30;
+    /* 0x34 */ char pad34[0x48 - 0x34];
+    /* 0x48 */ s32 unk48;
+    /* 0x4C */ char pad4C[0x50 - 0x4C];
+    /* 0x50 */ ViewRecProc *proc;
+    /* 0x54 */ s32 font;
+    /* 0x58 */ s32 unk58;
+    /* 0x5C */ s32 unk5C;
+    /* 0x60 */ s32 unk60[3];
+    /* 0x6C */ s32 frame;
+    /* 0x70 */ s32 gridDx;
+    /* 0x74 */ s32 gridDy;
+    /* 0x78 */ s32 gridX;
+    /* 0x7C */ s32 gridY;
+    /* 0x80 */ s32 tabDx;
+    /* 0x84 */ s32 unk84;
+    /* 0x88 */ s32 tabX;
+    /* 0x8C */ s32 tabY;
+    /* 0x90 */ s32 unk90;
+    /* 0x94 */ s32 tab;
+    /* 0x98 */ s32 cursor;
+    /* 0x9C */ s32 minCursor;
+} VrScreen60;
+
+/* its ctor (0xA0 bytes, vtable Data+0x118): the grid / tab layout constants; starts stopped */
+
+VrScreen60 *viewrec_uso_func_00001B4C(VrScreen60 *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+    char *o3;
+    s32 i;
+
+    if (self != 0 || (self = (VrScreen60 *)CALL(mem_new)(0xA0)) != 0) {
+        o1 = (char *)self;
+        o2 = o1;
+        if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o3 = o2;
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) {
+                CALL(Node_ctor)(o3, (char *)&D_00000000 + 1040); ((Node *)o3)->vptr = (void *)&vr_vt_node;
+            }
+            ((Node *)o2)->vptr = (void *)&vr_vt_proc;
+        }
+        self->node.vptr = (void *)&vr_vt_screen60;
+        self->node.name = (char *)&D_00000000 + 1048;
+        self->proc = proc;
+        self->font = proc->font;
+        self->unk58 = 0;
+        self->unk5C = 0;
+        i = 0;
+        do {
+            self->unk60[i] = 0;
+            i++;
+        } while (i < 3);
+        self->frame = 0;
+        self->gridX = 101;
+        self->gridDx = 119;
+        self->gridY = 114;
+        self->gridDy = 26;
+        self->tabX = 67;
+        self->tabDx = 87;
+        self->tabY = 81;
+        self->unk84 = 15;
+        self->unk90 = 0;
+        self->tab = 0;
+        self->cursor = 0;
+        self->minCursor = 0;
+        CALL(Process_stop)(self);
+        self->unk30 = 1;
+        self->unk2C = 0;
+        self->unk48 = 0;
+    }
+    return self;
+}
 
 void viewrec_uso_func_00001CCC(ViewRecScreen *self) {
     switch (self->proc->mode) {
@@ -500,7 +662,74 @@ void viewrec_uso_func_00001CCC(ViewRecScreen *self) {
     CALL(Node_update)(self);
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001D64);
+/* the options screen draw: the 4 x 2 option grid (alpha 64 below minCursor or on tab 2, the cursor
+ * blinking when unk90 == 1), the three tabs (the current one blinking), or per mode the sub-screens */
+void viewrec_uso_func_00001D64(VrScreen60 *self) {
+    f32 col[4];
+    s32 pad[2];
+    s32 blink;
+    s32 pad2[3];
+    s32 b1, b0;
+    s32 a;
+    s32 c;
+    s32 i;
+    s32 row;
+    RaceSprite *spr;
+    col[0] = 1.0f;
+    col[1] = 1.0f;
+    col[2] = 1.0f;
+    col[3] = 1.0f;
+    self->frame++;
+    blink = (-self->frame << 4) & 0xFF;
+    b1 = CALL(viewrec_uso_func_00002088)(self) != self->cursor ? 1 : 0;
+    b0 = CALL(viewrec_uso_func_00002190)(self) != self->cursor ? 1 : 0;
+    CALL(viewrec_uso_func_000011B4)(self->proc);
+    XCALL(gl_func_00000000_vrv, viewrec_uso_func_000014DC)(self->proc);
+    switch (self->proc->mode) {
+        case 0x1000:
+            CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+            CALL(gui_spriteRefresh)(&sVrLabels[39]);
+            XCALL(gl_func_00000000_vrv, gui_drawSprite)(&sVrLabels[39], 160, 37, 3);
+            for (row = 0; row < 4; row++) {
+                for (c = 0; c != 2; c++) {
+                    spr = &sVrLabels_3F0[row * 2 + c];
+                    CALL(gui_spriteRefresh)(spr);
+                    a = 255;
+                    if (row * 2 + c < self->minCursor || self->tab == 2) {
+                        a = 64;
+                    }
+                    if (row * 2 + c == self->cursor && self->unk90 == 1) {
+                        a = blink;
+                    }
+                    CALL(gui_setColorEnvPrim_000017DC)(spr, a, col, 255);
+                    CALL(gui_drawSprite)(spr, self->gridX + c * self->gridDx, self->gridY + row * self->gridDy, 3);
+                }
+            }
+            spr = &sVrLabels[29];
+            for (i = 0; i != 3; i++) {
+                CALL(gui_spriteRefresh)(spr);
+                if (i == self->tab) {
+                    CALL(gui_setColorEnvPrim_000017DC)(spr, blink, col, 255);
+                } else {
+                    CALL(gui_setCombine_00001794)(spr);
+                }
+                CALL(gui_drawSprite)(spr, self->tabX + i * self->tabDx, self->tabY, 3);
+                spr++;
+            }
+            break;
+        case 0x2000:
+            CALL(viewrec_uso_func_000012D4)(self->proc, &sVrLabels[45], 37, b1, b0);
+            CALL(viewrec_uso_func_00002FC0)(self);
+            break;
+        case 0x4000:
+            CALL(viewrec_uso_func_000012D4)(self->proc, &sVrLabels[46], 37, b1, b0);
+            CALL(viewrec_uso_func_0000319C)(self);
+            break;
+        case 0x8000:
+            CALL(viewrec_uso_func_00003364)(self);
+            break;
+    }
+}
 
 /* options screen: the previous enabled option before the cursor (wrapping 0 -> 7), at least
  * minCursor; proc->unk78 holds the enabled bits. */
@@ -593,13 +822,126 @@ void viewrec_uso_func_00002468(ViewRecScreen *self) {
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000266C);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000029B0);
+/* a record row's sprites: the rank number i (tinted, skipped when i < 0), rider and board at x + 26 / x + 60 */
+void viewrec_uso_func_000029B0(ViewRecScreen *self, s32 i, s32 x, s32 y, s32 rider, s32 board) {
+    RaceSprite *spr = &sVrSprites[i];
+    f32 col[4];
+    f32 d;
 
+    d = 255.0f;
+    col[0] = 20 / d;
+    col[1] = 100 / d;
+    col[2] = 255 / d;
+    col[3] = 255 / d;
+    if (i >= 0) {
+        CALL(gui_spriteRefresh)(spr);
+        CALL(gui_setColorEnvPrim_000017DC)(spr, 255, col, 255);
+        CALL(gui_drawSprite)(spr, x, y, 2);
+    }
+    spr = &sVrSprites_048[rider];
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setCombine_00001794)(spr);
+    CALL(gui_drawSprite)(spr, x + 26, y, 2);
+    spr = &sVrSprites_108[board];
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setCombine_00001794)(spr);
+    CALL(gui_drawSprite)(spr, x + 60, y, 2);
+}
+
+/* NM (6/73 words): the time digits; in the loop the target has img in v1 and h in v0, here swapped (declaration order, block scope, s16 h, do/while tried). */
+#ifdef NON_MATCHING
+void viewrec_uso_func_00002AE4(ViewRecScreen *self, s32 x, s32 y, u8 *digits) {
+    RaceSprite *spr = &sVrSprites[20];
+    f32 col[4];
+    f32 d;
+    s32 i;
+    VrImage *img;
+    s32 h;
+
+    d = 255.0f;
+    col[0] = 40 / d;
+    col[1] = 138 / d;
+    col[2] = 255 / d;
+    col[3] = 255 / d;
+    gl_func_00000000(/* gui_spriteRefresh */ spr);
+    gl_func_00000000(/* gui_setColorEnvPrim_000017DC */ spr, 255, col, 255);
+    for (i = 0; i < 3; i++) {
+        img = (VrImage *)spr->image;
+        h = img->height;
+        gl_func_00000000(/* gui_drawSpriteIA8Clip_00002BB0 */ spr, x + i * 21, y - h / 2, digits[i] * 22 + 2, 20);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002AE4);
+#endif
 
+/* NM (8/101 words): the time string; only the loop temporaries differ (target image t0, 16 t9, half height t8). */
+#ifdef NON_MATCHING
+void viewrec_uso_func_00002C08(ViewRecScreen *self, s32 x, s32 y, u8 *t) {
+    RaceSprite *spr = &sVrLabels[11];
+    char buf[16];
+    f32 col[4];
+    f32 d;
+    u32 i;
+    u8 c;
+    s32 h;
+
+    d = 255.0f;
+    col[0] = 40 / d;
+    col[1] = 100 / d;
+    col[2] = 255 / d;
+    col[3] = 255 / d;
+    gl_func_00000000(/* gui_spriteRefresh */ spr);
+    gl_func_00000000(/* gui_setColorEnvPrim_000017DC */ spr, 255, col, 255);
+    gl_func_00000000(/* gl_sprintf */ buf, (char *)&D_00000000 + 1064, t[0], t[1], t[2]);
+    for (i = 0; i < gl_func_00000000(/* str_len */ buf); i++) {
+        if (buf[i] == '[') {
+            c = 10;
+        } else if (buf[i] == ']') {
+            c = 11;
+        } else {
+            c = buf[i] - '0';
+        }
+        h = ((VrImage *)spr->image)->height;
+        gl_func_00000000(/* gui_drawSpriteIA8Clip_00002BB0 */ spr, x + i * 12, y - h / 2, c * 16, 16);
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002C08);
+#endif
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002D9C);
+/* draw `val` (sprintf'd with the Data+0x438 format) as label-sprite-11 digits from x, 12 px apart,
+ * skipping leading zeros ('[' -> glyph 10, ']' -> glyph 11; the last character is always drawn) */
+void viewrec_uso_func_00002D9C(ViewRecScreen *self, s32 x, s32 y, s32 val, f32 *col) {
+    RaceSprite *spr = &sVrLabels[11];
+    s32 started = 0;
+    char buf[12];
+    u32 i;
+    s32 d;
+
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_setColorEnvPrim_000017DC)(spr, 255, col, 255);
+    CALL(gl_sprintf)(buf, (char *)&D_00000000 + 1080, val);
+    for (i = 0; i < CALL(str_len)(buf); i++) {
+        u8 c;
+        if (buf[i] == '[') {
+            c = 10;
+        } else if (buf[i] == ']') {
+            c = 11;
+        } else {
+            c = buf[i] - '0';
+        }
+        d = c;
+        if (d) {
+            started = 1;
+        }
+        if (started || i == CALL(str_len)(buf) - 1) {
+            VrImage *img = (VrImage *)spr->image;
+            s32 h = img->height;
+            CALL(gui_drawSpriteIA8Clip_00002BB0)(spr, x + i * 12, y - h / 2, d * 16, 16);
+        }
+    }
+}
 
 /* draw label sprite i (from 0x378) at (x, y) tinted (255, 175, 44): the colour is r / d with the
  * divisor in a local (fire ctor lever) and int numerators, which keeps the 255.0f dividend apart from
@@ -619,7 +961,65 @@ void viewrec_uso_func_00002F1C(ViewRecScreen *self, s32 i, s32 x, s32 y) {
     CALL(gui_drawSprite)(spr, x, y, 2);
 }
 
+/* NM (6/119 words): the course records (three rows through 0x29B0 / 0x2AE4 / 0x2C08, a new record blinking, ties drawn without a rank); rec[5] is in v1 (target v0). */
+#ifdef NON_MATCHING
+typedef struct VrTime { u8 b[4]; } VrTime;
+typedef struct VrCourse { char e[6][8]; } VrCourse;
+typedef struct VrScreen2 {
+    char pad0[0x50];
+    ViewRecProc *proc;
+    char pad54[0x6C - 0x54];
+    s32 blink;
+    char pad70[0x98 - 0x70];
+    s32 course;
+} VrScreen2;
+void viewrec_uso_func_00002FC0(VrScreen2 *self) {
+    s32 pad1;
+    f32 col[4];
+    s32 pad2[3];
+    u8 prev[4];
+    s32 pad3[2];
+    s32 course;
+    s32 y;
+    s32 i;
+    s32 show;
+    s32 rank;
+    u8 *rec;
+
+    col[0] = 1.0f;
+    col[1] = 1.0f;
+    col[2] = 1.0f;
+    col[3] = 1.0f;
+    course = self->course;
+    y = 123;
+    gl_func_00000000(/* gui_setCombine_00001794 */ &D_00000000);
+    gl_func_00000000(/* viewrec_uso_func_00001488 */ self->proc, self->course, 83);
+    *(VrTime *)prev = *(VrTime *)((char *)&D_00000000 + 1088);
+    for (i = 0; i < 3; y += 34, i++) {
+        rec = (u8 *)gl_func_00000000(/* Backup_courseRecordGetTime */ *self->proc->session + course * 48, i);
+        show = 1;
+        if (gl_func_00000000(/* Backup_timeEntryIsNew */ ((VrCourse *)*self->proc->session)[course].e[i])) {
+            if (self->blink & 8) {
+                show = 0;
+            }
+        }
+        rank = i;
+        if (prev[0] == rec[5] && prev[1] == rec[6] && prev[2] == rec[7]) {
+            rank = -1;
+        }
+        if (show) {
+            gl_func_00000000(/* viewrec_uso_func_000029B0 */ self, rank, 38, y, rec[0] & 7, (rec[0] & 0x78) >> 3);
+            gl_func_00000000(/* viewrec_uso_func_00002AE4 */ self, 132, y, rec + 2);
+            gl_func_00000000(/* viewrec_uso_func_00002C08 */ self, 196, y, rec + 5);
+        }
+        prev[0] = rec[5];
+        prev[1] = rec[6];
+        prev[2] = rec[7];
+    }
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002FC0);
+#endif
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000319C);
 
