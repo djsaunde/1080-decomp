@@ -1,8 +1,8 @@
 #ifndef GDL_LIGHT_H
 #define GDL_LIGHT_H
 
-#include "gdl/node.h"
-#include "gdl/parm.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
+#include "parm.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl lights (game_libs post0b 0x51448 / 0x546E8-0x54C6C; docs/1080_GRAPHICS.md).
  *
@@ -65,13 +65,17 @@ typedef struct LightTarget {
 } LightTarget;
 
 typedef char BaseLight_size_check[sizeof(BaseLight) == 0x138 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BaseLight_flags_check[(int)&((BaseLight *)0)->flags == 0xC4 ? 1 : -1];
 typedef char BaseLight_dir_check[(int)&((BaseLight *)0)->dir == 0xE4 ? 1 : -1];
 typedef char BaseLight_parms_check[(int)&((BaseLight *)0)->parms == 0x10C ? 1 : -1];
 typedef char BaseLight_col_check[(int)&((BaseLight *)0)->parms.col == 0x124 ? 1 : -1];
+#endif
 typedef char BaseLightParms_size_check[sizeof(BaseLightParms) == 0x2C ? 1 : -1];
 typedef char LightTarget_size_check[sizeof(LightTarget) == 0x16C ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char LightTarget_mask_check[(int)&((LightTarget *)0)->mask == 0x120 ? 1 : -1];
 typedef char LightTarget_pos_check[(int)&((LightTarget *)0)->pos == 0xDC ? 1 : -1];
+#endif
 
 #endif /* GDL_LIGHT_H */

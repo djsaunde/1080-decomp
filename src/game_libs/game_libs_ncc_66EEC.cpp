@@ -15,6 +15,8 @@ typedef int s32;
 typedef unsigned int u32;
 typedef unsigned char u8;
 typedef short s16;
+typedef unsigned short u16; typedef float f32; typedef signed char s8;
+#include "../../include/gdl/pad.h" /* PadDev (arg0): motorValue, readDone */
 extern "C" int func_00000000(...);
 extern "C" int gl_ncc_66eec_phase(int *p) { p[0] = 1; p[1] = 2; return 0; }
 extern "C" void pad_threadLoop_00066EEC(char *arg0) {
@@ -49,12 +51,11 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
         case 1:
             if (flag == 0) {
                 for (i = 0; i != 4; i++) {
-                    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-                    FCALL(pad_updateMotor_00067084)(arg0, i, *(s16 *)(arg0 + i * 2 + 0x13E0));
+                    FCALL(pad_updateMotor_00067084)(arg0, i, PADDEV(arg0)->motorValue[i]);
                 }
             }
             FCALL(osContStartReadData)(arg0 + 0x11B0);
-            *(int *)(arg0 + 0x13E8) = 0; /* RAW: donor-mirror (as above) */
+            PADDEV(arg0)->readDone = 0;
             break;
         case 4:
             break;
@@ -63,7 +64,7 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
             if (flag == 0) {
                 FCALL(pad_initMotors_00067264)(arg0);
             }
-            *(int *)(arg0 + 0x13E8) = 1; /* RAW: donor-mirror (as above) */
+            PADDEV(arg0)->readDone = 1;
             break;
         }
     }

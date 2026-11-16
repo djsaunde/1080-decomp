@@ -1,4 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/gfxlib.h" /* GfxLib.unk1C8: the object hostio message 28 reports */
 /* IDO 7.1 NCC (C++) EXACT donor for hostio_dispatch (0x2E8 / 186 words + 1 all-zero pad word), agent-c run 163.
  * Message pump: read one message, set flag bit 2, dispatch on msg.type, clear bit 2 of the second
  * flag word. The cfe body (85.12) spelled the compare chain with gotos; under NCC a plain switch IS
@@ -83,8 +84,7 @@ extern "C" void hostio_dispatch(int arg0) {
         CALL(hostio_start)();
         break;
     case 28: {
-        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-        O28 *o = *(O28 **)(gGfxLib_3FC58_g + 0x1C8);
+        O28 *o = (O28 *)GFXLIB(gGfxLib_3FC58_g)->unk1C8;
         out.type = 25;
         out.obj = o;
         if (o == 0) {

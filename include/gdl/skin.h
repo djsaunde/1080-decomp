@@ -1,7 +1,7 @@
 #ifndef GDL_SKIN_H
 #define GDL_SKIN_H
 
-#include "gdl/node.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl vertex skinning (skin.cpp; game_libs 0x68C14-0x69C58, agent-b run 486).
  * Port-author description: docs/1080_GRAPHICS.md section 12.
@@ -64,7 +64,9 @@ typedef struct SkinAnim {
 } SkinAnim;
 
 typedef char SkinMgr_size_check[sizeof(SkinMgr) == 0x98 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char SkinMgr_boneTable_check[(int)&((SkinMgr *)0)->boneTable == 0x90 ? 1 : -1];
+#endif
 typedef char SkinAnim_size_check[sizeof(SkinAnim) == 0xA8 ? 1 : -1];
 
 #endif

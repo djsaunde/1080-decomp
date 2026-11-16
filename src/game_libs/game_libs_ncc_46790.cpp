@@ -10,6 +10,8 @@
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
+#include "../../include/gdl/gfxlib.h" /* GfxLib: mainWindow, fbIndex */
+#include "../../include/gdl/window.h" /* Window.colorBuf */
 #undef NULL
 #define NULL 0
 extern "C" {
@@ -31,8 +33,7 @@ extern "C" void gfx_drawFbChar_00046790(char *o, unsigned char ch, int x, int y)
     unsigned short px;
 
     if (1) { q = &dst; }
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    dst = *(unsigned short **)(*(char **)(gGfxLib_46790_g + 576) + *(int *)(o + 516) * 4 + 244);
+    dst = ((Window *)GFXLIB(gGfxLib_46790_g)->mainWindow)->colorBuf[GFXLIB(o)->fbIndex]; /* the main window's colour buffer for this frame */
     dst += y * 320 + x;
     c = ch;
     if (c < 128) {

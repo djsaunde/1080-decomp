@@ -859,8 +859,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
-            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-            temp_ra_8 = tmem + 0 * FW(mat, 0x0); sp50 = (temp_ra_8 & 0x1FF) + 0 * FW(mat, 0x4);
+            temp_ra_8 = tmem + 0 * *(int *)&mat->colour[0]; sp50 = (temp_ra_8 & 0x1FF) + 0 * *(int *)&mat->colour[1]; /* folded counted uses of mat (zero code) */
             temp_a0 = (char *)( ctx->gfx.cur->base + (temp_a1 * 8));
             GFXW(temp_a0)->w0 = (s32) (sp50 | 0xF5500000);
             temp_t2 = (sp1E0 & 3) << 0x12;

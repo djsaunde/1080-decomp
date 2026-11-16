@@ -27,7 +27,8 @@
  * Spliced over a placeholder in both build trees; the vtables / the blank jal are renamed to pinned absolutes
  * (gl_3e5e0_vk / _v1 / _v2 = the target's 0x1F0D8 / 0x1F1F8 / 0x1F210, gl_3e5e0_c34458 = 0) in the Makefile.
  */
-typedef int s32;
+typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef unsigned char u8; typedef float f32;
+#include "../../include/gdl/item.h" /* ItemMgr (arg0), ItemType (the type list) */
 extern "C" {
 int dbg_printThreads(...);
 extern char gHostio_e5e0a, D_00000000_e5e0c, gHostio_e5e0e, sStr_RemoveItems_1F318, D_00000000_e5e0h,
@@ -52,19 +53,17 @@ inline void loop(char *it, int d0) {
     if (it != 0) {
         do {
             dbg_printThreads(&gHostio_e5e0q, it + 0x2C, new CB2(it, *(PMF *)(&D_00000000_e5e0o + 0x1EED0)));
-            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-            it = (char *)FW(it, 0x30);
+            it = (char *)ITEMTYPE(it)->next;
         } while (it != 0);
     }
 }
 extern "C" void ItemMgr_hostioParms(char *arg0) {
 
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    { int x = FW(arg0, 0xC); dbg_printThreads(&gHostio_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
+    { int x = (int)ITEMMGR(arg0)->node.name; dbg_printThreads(&gHostio_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
     reg0(arg0);
     reg1(arg0);
     dbg_printThreads(&gHostio_e5e0l, &sStr_Items_1F330 + 0x1F330, 0);
-    loop((char *)FW(arg0, 0x2C), 1); /* RAW: donor-mirror (as above) */
+    loop((char *)ITEMMGR(arg0)->types, 1);
     dbg_printThreads(&gHostio_e5e0r);
     dbg_printThreads(&gHostio_e5e0s);
     dbg_printThreads(arg0);

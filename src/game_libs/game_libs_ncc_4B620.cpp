@@ -21,6 +21,8 @@
  * notes on set0 / curM() / satD() below). */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+typedef int s32; typedef short s16; typedef unsigned short u16; typedef unsigned char u8; typedef unsigned int u32; typedef float f32;
+#include "../../include/gdl/node.h" /* Node.vptr */
 extern "C" {
 void *gl_func_00000000(...);
 extern char D_00000000[];
@@ -104,8 +106,7 @@ struct Obj : Base {         /* Sprite (sprite.h) */
 };
 inline void g1(Elem *e) { if (0) { e = 0; } CALL(gfx_endDL)(e->m64); } /* run 173: the last per-element call through a kept parameter */
 Obj::Obj(void *a1) : Base(a1) {
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    *(char **)((char *)this + 0x28) = Sprite_vtbl; /* Sym 1871 */
+    ((Node *)this)->vptr = Sprite_vtbl; /* Sym 1871 */
     endDL = 0;
     unkD4 = 0;
     startDL = (DL *)CALL(gfx_newDLContext)(0, S(0x20104), 0x14, 0, 0, 0, 0); /* "SS StartDL" */

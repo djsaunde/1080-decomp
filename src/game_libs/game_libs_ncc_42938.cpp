@@ -21,6 +21,8 @@
  * (target loads 0xC4 last-scheduled first): report 97.39 -> 97.43, schedule rows 10 -> 6.
  */
 typedef float f32; typedef unsigned int u32; typedef int s32; typedef short s16;
+typedef unsigned short u16; typedef unsigned char u8;
+#include "../../include/gdl/window.h" /* Window.zBuffer (p148 is the fbOwner ScreenWindow) */
 struct Rec { char pad[0x1C]; int a; char p20[0x30 - 0x20]; int b; char p34[0x44 - 0x34]; int c; char p48[0x50 - 0x48]; };
 struct Gfx { u32 w0, w1; };
 struct DLHead { Gfx *buf; int count; };
@@ -57,8 +59,7 @@ extern "C" void gl_func_00000000_void(...);
  * share v1 in one block like the target */
 struct Obj254 { char pad[0xB8]; int b8, bc, c0, c4; char padc8[0x148 - 0xC8]; char *p148; char pad14c[0x158 - 0x14C]; Ctx *ctx;
     Obj254 *me() { return this; }
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    void cf() { gl_func_00000000_void(ctx, *(int *)(p148 + 0xF0)); } };
+    void cf() { gl_func_00000000_void(ctx, (int)((Window *)p148)->zBuffer); } };
 struct GState { char pad[0x21C]; int m21c, m220, m224, m228; char pad22c[0x254 - 0x22C]; Obj254 *o; };
 extern "C" {
 extern u32 gl_d_42938_idx;

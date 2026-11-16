@@ -39,11 +39,13 @@ typedef struct UsoModuleSlot {
 
 /* compile-time layout checks (IDO cfe accepts negative-size typedefs as errors) */
 typedef char UsoModuleSlot_size_check[sizeof(UsoModuleSlot) == 0x9C ? 1 : -1];
+#ifndef __cplusplus /* edg (C++ donors): &((T *)0)->f is not an integral constant expression */
 typedef char UsoModuleSlot_secData_check[(int)&((UsoModuleSlot *)0)->secData == 0x38 ? 1 : -1];
 typedef char UsoModuleSlot_id_check[(int)&((UsoModuleSlot *)0)->id == 0x70 ? 1 : -1];
 typedef char UsoModuleSlot_name_check[(int)&((UsoModuleSlot *)0)->name == 0x72 ? 1 : -1];
 typedef char UsoModuleSlot_romOffset_check[(int)&((UsoModuleSlot *)0)->romOffset == 0x94 ? 1 : -1];
 typedef char UsoModuleSlot_inUse_check[(int)&((UsoModuleSlot *)0)->inUse == 0x98 ? 1 : -1];
+#endif
 
 /* A device-table entry (uso_init's argument, fs_setDeviceTable; the ROM table is
  * k_gFsDevices in kernel_026.c, spelled there as KernelUsoEntry). */
@@ -116,7 +118,9 @@ typedef struct UsoCtx {
 
 typedef char FsDevice_size_check[sizeof(FsDevice) == 0x14 ? 1 : -1];
 typedef char FsDeviceHeap_size_check[sizeof(FsDeviceHeap) == 0xC ? 1 : -1];
+#ifndef __cplusplus /* edg (C++ donors): &((T *)0)->f is not an integral constant expression */
 typedef char UsoCtx_print_check[(int)&((UsoCtx *)0)->print == 0x84 ? 1 : -1];
 typedef char UsoCtx_printSlots_check[(int)&((UsoCtx *)0)->printSlots == 0xA0 ? 1 : -1];
+#endif
 
 #endif

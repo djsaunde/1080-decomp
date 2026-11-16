@@ -18,6 +18,7 @@
  * Left: the 0x148 load colours t4 (target t5) because the mC0 load is CSE-hoisted into t5.
  * agent-c runs 260 / 261: named viewport conversions (length = target), named shared head / count for the two
  * G_DL appends, then folded counted uses in the else arm: EXACT. */
+#include "../../include/gdl/gfxlib.h" /* GfxLib: curWindow, fbIndex, perspNorm, flags */
 extern "C" {
 int dbg_printThreads(...);
 extern char D_00000000[];
@@ -73,17 +74,16 @@ struct Obj {                                         /* ScreenWindow (window.h) 
 };
 void Obj::run() {
     char *g = S(0);
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    *(Obj **)(g + 0x254) = this;
-    fbIndex = *(int *)(g + 0x204); /* RAW: donor-mirror (as above) */
+    GFXLIB(g)->curWindow = (struct ScreenWindow *)this;
+    fbIndex = GFXLIB(g)->fbIndex;
     curBg = bgDL[fbIndex];
-    *(short *)(gGfxLib_4c5e4_sh + 0x208) = dbg_printThreads(g, nearWord, farWord); /* gfx perspNorm = gfx_calcPerspNorm(near, far) */ /* RAW: donor-mirror (as above) */
+    GFXLIB(gGfxLib_4c5e4_sh)->perspNorm = dbg_printThreads(g, nearWord, farWord); /* gfx_calcPerspNorm(near, far) */
     unk1B4 = 0;
     g = mark15C; /* agent-g run 260 (kit CCXCIII spilltemps): the mark15C address first mentioned before the fbOwner load, so its item takes the first temp (spill 68 -> 72 = target); held in the dead g (a fresh name costs a home) */
     dl = ((DL **)((char *)fbOwner + fbIndex * 4))[0x198 / 4]; /* fbOwner->setupDL[fbIndex] */
     dbg_printThreads(g, dl); /* gfx_dlMarkBegin */
     char *s1;
-    if (*(int *)(gGfxLib_4c5e4_flag + 0x1C4) & 2) { /* gfx flags bit 2: clear with a zero quad */ /* RAW: donor-mirror (as above) */
+    if (GFXLIB(gGfxLib_4c5e4_flag)->flags & 2) { /* gfx flags bit 2: clear with a zero quad */
         int f = ((clearFlags & 2) != 0) + 0 * (int)(originX); /* agent-c run 210: folded counted use of the member originX (zero code) */
         s1 = (char *)fbOwner->zBuffer;
         if (f) f = (flags & 2) != 0;
@@ -139,5 +139,5 @@ void Obj::run() {
     }
     dbg_printThreads(this);
     dbg_printThreads(gGfxLib_4c5e4_arg, this);
-    *(int *)(gGfxLib_4c5e4_clr + 0x254) = 0; /* RAW: donor-mirror (as above) */
+    GFXLIB(gGfxLib_4c5e4_clr)->curWindow = 0;
 }

@@ -1,4 +1,6 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16; typedef int s32; typedef unsigned int u32; typedef float f32;
+#include "../../include/gdl/polyshape.h" /* BasePolyShape (self): matCap, the +0x2C group word */
 /* IDO 7.1 NCC (C++) donor for PolyShape_hostioParms (0x280 / 160 words), EXACT (agent-g run 190), spliced over
  * the post0b.c placeholder in both trees.
  * agent-c run 174 built the shape (E1 / E2 virtual-call element types, kept-parameter iter(), for-init list walk).
@@ -43,9 +45,8 @@ extern "C" void PolyShape_hostioParms(char *self) {
     while (it.next()) {
           it.cur()->tick(); 
     }
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    CALL(hostio_addInt)(gHostio_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, *(int *)(self + 140), 0); if (1) {}
-     if (*(Grp **)(self + 44)) { Grp *g = *(Grp **)(self + 44); /* RAW: donor-mirror (as above) */
+    CALL(hostio_addInt)(gHostio_49B3C_s5, D_00000000 + 0x20004, self + 164, -1, BASEPOLY(self)->matCap, 0); if (1) {}
+     if (*(Grp **)&BASEPOLY(self)->unk0C[8]) { Grp *g = *(Grp **)&BASEPOLY(self)->unk0C[8]; /* +0x2C: a group whose list (+0x10) the loop updates */
         LI li(g->head); while (li.next()) {
              callu(li.cur->data); 
         }

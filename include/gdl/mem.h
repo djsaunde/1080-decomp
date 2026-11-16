@@ -1,7 +1,7 @@
 #ifndef GDL_MEM_H
 #define GDL_MEM_H
 
-#include "gdl/node.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl heap ("Mem::Alloc" / "Mem::Free", game_libs 0x5AFD4-0x5B90C in
  * src/game_libs/game_libs_post0b.c). A heap is two circular doubly linked
@@ -40,9 +40,11 @@ typedef struct MemHeap {
 } MemHeap;
 
 typedef char MemBlock_size_check[sizeof(MemBlock) == 0x10 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char MemHeap_usedList_check[(int)&((MemHeap *)0)->usedList == 0x10 ? 1 : -1];
 typedef char MemHeap_id_check[(int)&((MemHeap *)0)->id == 0x20 ? 1 : -1];
 typedef char MemHeap_usedSize_check[(int)&((MemHeap *)0)->usedSize == 0x24 ? 1 : -1];
+#endif
 
 /* Memory accounting (game_libs 0x5FE14-0x60370, MemTracker_* / memtrack_*).
  * A MemTracker (0x44) is one named section ("Total", "BootUp", ...) of a tree:
@@ -83,9 +85,13 @@ typedef struct MemTrackerMgr {
 } MemTrackerMgr;
 
 typedef char MemTracker_size_check[sizeof(MemTracker) == 0x44 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char MemTracker_name_check[(int)&((MemTracker *)0)->name == 0x24 ? 1 : -1];
+#endif
 typedef char MemTrackerMgr_size_check[sizeof(MemTrackerMgr) == 0x48 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char MemTrackerMgr_root_check[(int)&((MemTrackerMgr *)0)->root == 0x44 ? 1 : -1];
+#endif
 
 #define MEMTRACKER(p) ((MemTracker *)(p))
 #define MEMTRACKERMGR(p) ((MemTrackerMgr *)(p))

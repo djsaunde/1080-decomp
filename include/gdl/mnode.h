@@ -1,8 +1,8 @@
 #ifndef GDL_MNODE_H
 #define GDL_MNODE_H
 
-#include "gdl/node.h"
-#include "gdl/anim.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
+#include "anim.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl Node subclasses (game_libs post0b). Field names are the HostIO parm tags their
  * *_hostioParms register (Data strings after the class name: MNode 0x1ECD0.., SNode
@@ -52,11 +52,15 @@ typedef struct SNode {
 } SNode;
 
 typedef char MNode_size_check[sizeof(MNode) == 0xB4 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char MNode_cmtx_check[(int)&((MNode *)0)->cmtx == 0x70 ? 1 : -1];
 typedef char QNode_vqs_check[(int)&((QNode *)0)->vqs == 0xB4 ? 1 : -1];
 typedef char QNode_cvqs_check[(int)&((QNode *)0)->cvqs == 0xDC ? 1 : -1];
+#endif
 typedef char SNode_size_check[sizeof(SNode) == 0x88 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char SNode_radius_check[(int)&((SNode *)0)->radius == 0x80 ? 1 : -1];
+#endif
 
 #define MNODE(p) ((MNode *)(p))
 #define QNODE(p) ((QNode *)(p))

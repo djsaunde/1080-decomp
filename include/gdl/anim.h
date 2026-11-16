@@ -1,7 +1,7 @@
 #ifndef GDL_ANIM_H
 #define GDL_ANIM_H
 
-#include "gdl/node.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl skeletal keyframe animation (animate.cpp; game_libs 0x61E58-0x63704, agent-b run 486).
  * Port-author description: docs/1080_GRAPHICS.md section 11.
@@ -140,8 +140,10 @@ typedef struct AnimPlayer {
 } AnimPlayer;
 
 typedef char AnimPlayer_size_check[sizeof(AnimPlayer) == 0xB0 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char AnimPlayer_anim_check[(int)&((AnimPlayer *)0)->anim == 0x74 ? 1 : -1];
 typedef char AnimPlayer_flags_check[(int)&((AnimPlayer *)0)->flags == 0x98 ? 1 : -1];
+#endif
 typedef char AnimData_size_check[sizeof(AnimData) == 0x20 ? 1 : -1];
 typedef char AnimFrameSlot_size_check[sizeof(AnimFrameSlot) == 0x14 ? 1 : -1];
 typedef char AnimDataMgr_size_check[sizeof(AnimDataMgr) == 0x48 ? 1 : -1];
@@ -169,7 +171,9 @@ typedef struct Animator {
 } Animator;
 
 typedef char Animator_size_check[sizeof(Animator) == 0x130 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char Animator_dst_check[(int)&((Animator *)0)->dst == 0xD0 ? 1 : -1];
 typedef char Animator_nodeIndex_check[(int)&((Animator *)0)->nodeIndex == 0x10C ? 1 : -1];
+#endif
 
 #endif

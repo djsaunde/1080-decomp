@@ -22,6 +22,8 @@ typedef short s16;
 typedef unsigned int u32;
 typedef unsigned short u16;
 typedef void (*FuncPtr2)(...);
+typedef unsigned char u8;
+#include "../../include/uso.h" /* UsoModuleSlot (obj): secData[USO_SEC_SYM] */
 extern "C" FuncPtr2 gUsoPrintfHook;
 extern "C" char D_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
@@ -37,8 +39,7 @@ extern "C" s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
     s32 hival;
     u32 *p;
 
-    /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-    symtab = *(UsoRelSym_1ADC **)(obj + 0x3C);
+    symtab = (UsoRelSym_1ADC *)((UsoModuleSlot *)obj)->secData[USO_SEC_SYM];
     if (0) { info = 0; sym = 0; }
     if (base == 0 || rel == 0) {
         return 0;

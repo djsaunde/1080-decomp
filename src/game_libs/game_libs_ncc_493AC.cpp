@@ -1,4 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/gfxlib.h" /* GfxLib.staticDL ("MainStaticDL") */
 /* IDO 7.1 NCC (C++) EXACT donor for PolyShape_init (0x790 / 484 words), REPLACE_FUNC_BODY-spliced over the
  * placeholder in game_libs_post0b.c on both build paths (agent-g run 312, kit CDIV: virtual int hit(), cur2() on
  * one p34-call argument, me(me()) on the k-loop's closing noop, the AIter ctor's dead block dropped and three
@@ -157,8 +158,7 @@ int Mgr::run() {
          * local: stored to o->triDL and re-read through the member (uopt forwards the store), rec.ctx taken before
          * the rec stores that would kill the forwarding; `g` kept as a home-keeping local (frame offsets) --
          * agent-c run 299: g dropped, the first loop's block-scoped e1 now holds that home word */
-        /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-        o->triDL = *(Ctx **)((char *)&gGfxLib_493AC_d + 0x214);
+        o->triDL = (Ctx *)GFXLIB(&gGfxLib_493AC_d)->staticDL;
         o->triStart = o->triDL->count();
         rec.ctx = o->triDL;
         rec.n58C = 0;

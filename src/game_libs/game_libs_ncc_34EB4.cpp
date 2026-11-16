@@ -14,6 +14,9 @@ extern char D_00000000[];
 extern int gHostio_34EB4_flags;
 }
 #define DB D_00000000
+typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef unsigned char u8; typedef float f32; typedef unsigned long long u64;
+#include "../../include/gdl/gfxlib.h" /* GfxLib.rcp */
+#include "../../include/gdl/rcp.h" /* RcpMgr */
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 struct Pad40 { char pad[0x28]; };
 struct AppB : Pad40 {
@@ -36,8 +39,7 @@ extern "C" void app_run(St *a0, App *a1) {
         do {
             Node *n;
             for (n = a0->list; n != 0; n = n->next) CALL(pad_update)(n);
-            /* RAW: donor-mirror: C++ donor (NCC Cfront); its local mirror structs cannot include the C headers */
-            if (FW(FW(DB, 0x218), 0x48) != 0) a1->v15();
+            if (GFXLIB(DB)->rcp->unk48[0] != 0) a1->v15(); /* RcpMgr +0x48 set: run the app's slot-15 hook */
             while (a0->flags & 4) {
                 a0->f10 = 0;
                 CALL(gl_osYieldThread)();
