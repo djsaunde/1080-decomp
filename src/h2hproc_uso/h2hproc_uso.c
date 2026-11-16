@@ -958,7 +958,7 @@ void h2h_startReplay_00000E04(int *a0, unsigned int a1) {
     }
 
     CALL(RaceProcess_callGlobalSlot11_00008674)(a0);
-    *(unsigned int*)((char*)a0 + 0x4F4) = a1 & 0xFFFF;
+    *(unsigned int *)&RACEPROC(a0)->timeout = a1 & 0xFFFF;
 }
 
 /* h2h_WhiteFader_ctor: 44-insn (0xB0) constructor with optional alloc.

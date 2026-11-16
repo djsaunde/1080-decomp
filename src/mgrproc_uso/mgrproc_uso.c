@@ -606,9 +606,9 @@ extern int mgrproc_uso_func_013980();
  */
 void MGRRaceProcess_onPauseSelect(int *a0) {
     if (XCALL(mgrproc_uso_func_013980, Fader_isDone_00013980)(INPUT_MGR(import_80020228).fader, a0) == 0) return;
-    if (*(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90) == 0) return;
+    if (*(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg == 0) return;
     *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
-    ((void(*)()) *(int*)(*(int*)((char*)a0[0x48 / 4] + 0x7C) * 0x28 + (char*)a0[0x48 / 4] + 0x90))();
+    ((void(*)()) *(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg)();
 }
 
 /* MGRRaceProcess_onRaceOver: state-machine step (switch arg0->0x504, cases 0/1/4

@@ -2444,16 +2444,16 @@ void hud_loadRecords_0000CE38(RaceTracker *self, s32 a1, s32 a2) {
                 fl = m->modes;
                 if (CE38_E(i)->finished != 0) {
                     if (fl & BACKUP_MODE_TIME) {
-                        CE38_E(i)->rank[0] = CALL(Backup_courseRecordFindTimeRank)(CE38_D(0x64) * 0x30 + FW(m, 0x0), self->elapsed);
-                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertTime)(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
+                        CE38_E(i)->rank[0] = CALL(Backup_courseRecordFindTimeRank)(CE38_D(0x64) * 0x30 + *(int *)&m->course, self->elapsed);
+                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertTime)(CE38_D(0x64) * 0x30 + *(int *)&self->session->course, CE38_E(i)->rank[0], self->elapsed, CE38_D(0x68) - 1);
                         v = CE38_E(i)->rank[0];
                         if (v < 3) CE38_D(0x7C) = v + 1;
                         m = self->session;
                         fl = m->modes;
                     }
                     if (fl & BACKUP_MODE_TRICK) {
-                        CE38_E(i)->rank[1] = CALL(Backup_courseRecordFindScoreRank)(CE38_D(0x64) * 0x30 + FW(m, 0x0), CE38_E(i)->time);
-                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertScore)(CE38_D(0x64) * 0x30 + FW(self->session, 0x0), CE38_E(i)->rank[1], CE38_E(i)->time);
+                        CE38_E(i)->rank[1] = CALL(Backup_courseRecordFindScoreRank)(CE38_D(0x64) * 0x30 + *(int *)&m->course, CE38_E(i)->time);
+                        XCALL(gl_func_00000000_ce38_v, Backup_courseRecordInsertScore)(CE38_D(0x64) * 0x30 + *(int *)&self->session->course, CE38_E(i)->rank[1], CE38_E(i)->time);
                         v = CE38_E(i)->rank[1];
                         if (v < 3) CE38_D(0x7C) = v + 1;
                         m = self->session;
