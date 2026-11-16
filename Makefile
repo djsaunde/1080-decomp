@@ -121,6 +121,14 @@ $(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += SnowLink_update_00009F44=$(SNOW_9F44_DONOR)
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9F44_DONOR)
+# agent-h run 628: further NCC donors (shared class model src/snoweffects_uso/snoweffects_ncc.h).
+SNOW_NCC_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc.cpp.o
+$(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_uso/snoweffects_ncc.h
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+SNOW_NCC_FUNCS := SnowRing_draw_000040B4
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
 # on the last function, then clip .text back to the Text size (same mechanism as h2hproc / snoweffects).
 build/src/viewrec_uso/viewrec_uso.c.o: SUFFIX_BYTES_FORCE := viewrec_uso_func_000055A4=0x00000000
