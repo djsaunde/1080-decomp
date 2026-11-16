@@ -10,7 +10,7 @@
 typedef struct ReplayInput {
     u32 frame;
     s32 replayFrame;
-    u16 held;
+    u32 held; /* the decoded PadCtl.held word (bits up to 0x40000) */
     s8 rawX;
     s8 rawY;
     u8 pad;
@@ -77,7 +77,7 @@ static int load_replay(const char *path) {
                 r->frame = (u32)fr;
                 r->pad = (u8)pad;
                 r->replayFrame = (s32)rf;
-                r->held = (u16)held;
+                r->held = (u32)held;
                 r->rawX = (s8)rx;
                 r->rawY = (s8)ry;
                 if ((u32)fr > sReplayLastFrame) {
@@ -100,7 +100,7 @@ int port_trace_open(const char *recordPath, const char *replayPath, const char *
             host_log("trace: cannot write %s", recordPath);
             return -1;
         }
-        fprintf(sRecord, "# 1080 port input log v1: I frame pad replayFrame held rawX rawY\n");
+        fprintf(sRecord, "# 1080 port input log v2: I frame pad replayFrame held:hex8 rawX rawY\n");
     }
     if (statePath != NULL) {
         sState = fopen(statePath, "w");
@@ -163,7 +163,7 @@ static ReplayInput *find_replay(u32 frame, int pad) {
     return NULL;
 }
 
-void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u16 *held, s8 *rawX, s8 *rawY) {
+void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u32 *held, s8 *rawX, s8 *rawY) {
     if (sReplay != NULL) {
         ReplayInput *r = find_replay(frameCount, pad);
         if (r == NULL) {
@@ -181,7 +181,7 @@ void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u16 *held, s8 *raw
         }
     }
     if (sRecord != NULL) {
-        fprintf(sRecord, "I %u %d %d %04x %d %d\n", (unsigned)frameCount, pad, (int)replayFrame,
+        fprintf(sRecord, "I %u %d %d %08x %d %d\n", (unsigned)frameCount, pad, (int)replayFrame,
                 (unsigned)*held, (int)*rawX, (int)*rawY);
     }
 }

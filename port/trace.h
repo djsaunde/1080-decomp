@@ -16,7 +16,7 @@
  *                             SysLib.frameCount++ and the one-shot callback).
  *
  * File format (text, one record per line, '#' comments):
- *   I <frame> <pad> <replayFrame> <held:hex4> <rawX> <rawY>
+ *   I <frame> <pad> <replayFrame> <held:hex8> <rawX> <rawY>
  *   F <frame> have=<hex> flow=<state>,<next> race=<state>,<flags:hex>
  *     rand=<hex8> rt=<retraceCount> vi=<viRetraces> el=<elapsed>
  *     cam=<6 x hex8> r<i>=<px,py,pz,qx,qy,qz,qw,speed as hex8>/<anim>
@@ -68,7 +68,7 @@ int port_trace_replaying(void);
 u32 port_trace_replay_last_frame(void);
 
 /* game hooks */
-void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u16 *held, s8 *rawX, s8 *rawY);
+void port_trace_pad(int pad, u32 frameCount, s32 replayFrame, u32 *held, s8 *rawX, s8 *rawY);
 void port_trace_frame_end(u32 frameCount);
 
 /* State collector. trace.c has a weak default that reads what is linkable

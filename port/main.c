@@ -16,13 +16,19 @@
  * only the host GPU submit of a skipped frame may be dropped (M2). In
  * headless / trace mode the steps run back to back with no sleeping.
  *
- * Game entry points. These are the PORT restructure of app_run (plan 9.6.2),
- * which is game-side work not linked yet; they are weak here, and main.c runs
- * a stand-in frame while they are absent:
- *   port_game_boot()    boot chain up to app_run: boot_main_00066850's
- *                       manager setup + SnowBoard_ctor, then app_runInit()
+ * Game entry points: the PORT restructure of app_run (plan 9.6.2, 17.7), defined
+ * in src/game_libs/game_libs_ncc_34EB4.cpp under #ifdef PORT. They are weak
+ * here, so main.c also links (and runs a stand-in frame) without libgame.a:
+ *   port_game_boot()    port/uso bootup load, boot_main_00066850 .. App_main
+ *                       -> app_runInit()
  *   app_runOneFrame()   one iteration of app_run's inner loop
  *   port_game_frame_count()  SysLib.frameCount (trace key)
+ *
+ * Host hooks the game side calls (weak defaults below, replaced by M2 / M4 code):
+ *   port_audio_frame()  once per VI retrace (RcpMgr 'd'); port/audio (agent-c)
+ *   port_gfx_task()     an M_GFXTASK from osSpTaskStartGo; Fast3D (M2)
+ *   port_audio_task()   an M_AUDTASK from osSpTaskStartGo; port/audio, if it
+ *                       runs the audio task through the SP path at all
  *
  * Usage: 1080 [--rom baserom.z64] [--sram save.sram] [--frames N]
  *             [--record in.log] [--replay in.log] [--trace state.log]
@@ -39,6 +45,34 @@
 extern void port_game_boot(void) __attribute__((weak));
 extern void app_runOneFrame(void) __attribute__((weak));
 extern u32 port_game_frame_count(void) __attribute__((weak));
+
+/* ---- host hooks the game side reaches (weak no-ops until M2 / M4 provide them) ---- */
+__attribute__((weak)) void port_audio_frame(void) {
+}
+
+__attribute__((weak)) void port_gfx_task(OSTask_t *task) {
+    (void)task;
+}
+
+__attribute__((weak)) void port_audio_task(OSTask_t *task) {
+    (void)task;
+}
+
+/* PortUltraConfig.rcpTask: osSpTaskStartGo runs the task here, synchronously. */
+static void rcp_task(OSTask_t *task) {
+    if (task->type == M_GFXTASK) {
+        port_gfx_task(task);
+    } else if (task->type == M_AUDTASK) {
+        port_audio_task(task);
+    }
+}
+
+/* A PORT wait on the RCP queue (gfx_end / gfx_waitRcpIdle) that RcpMgr_portDrain cannot
+ * advance: nothing is queued, yet a task is still marked busy. */
+void port_rcp_stuck(void *rcpMgr, const char *where) {
+    port_ultra_log("main: DEADLOCK: %s: RcpMgr %p busy with no message pending", where, rcpMgr);
+    host_fatal("main: RCP wait cannot complete");
+}
 
 typedef struct Options {
     const char *romPath;
@@ -116,7 +150,7 @@ static void stub_frame(void) {
     osRecvMesg(&sStubSiQueue, &m, OS_MESG_BLOCK);
     osContGetReadData(pads);
     for (i = 0; i < MAXCONTROLLERS; i++) {
-        u16 held = pads[i].button;
+        u32 held = pads[i].button;
         s8 rx = pads[i].stick_x;
         s8 ry = pads[i].stick_y;
         if (pads[i].errno != 0) {
@@ -262,7 +296,7 @@ int main(int argc, char **argv) {
     uc.sramPath = o.sramPath;
     uc.deadlockFatal = 1;
     uc.maxIdleRetraces = 600;
-    uc.rcpTask = NULL; /* M2: Fast3D for M_GFXTASK; M4: CPU audio for M_AUDTASK */
+    uc.rcpTask = rcp_task; /* M2: Fast3D for M_GFXTASK; M4: CPU audio for M_AUDTASK */
     port_ultra_init(&uc);
     osInitialize();
 
