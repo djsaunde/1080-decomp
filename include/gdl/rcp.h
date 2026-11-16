@@ -54,7 +54,10 @@ typedef struct RcpMgr {
     /* 0x3C */ char *rspTaskName;
     /* 0x40 */ char *rdpTaskName;
     /* 0x44 */ s32 unk44;
-    /* 0x48 */ s32 unk48[2];
+    /* 0x48 */ s32 preNmi;          /* RcpMgr_service clears it on entry and sets it on the
+                                    * pre-NMI event message 108 (osSetEventMesg(14 = OS_EVENT_PRENMI, q, 108));
+                                    * the app loop calls App_onPreNmi (vtable slot 14) while it is set */
+    /* 0x4C */ s32 unk4C;
 } RcpMgr;
 
 typedef char RcpTask_size_check[sizeof(RcpTask) == 0x78 ? 1 : -1];
