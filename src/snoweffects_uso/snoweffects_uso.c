@@ -17,6 +17,25 @@ typedef struct SnowColourItem {
     /* 0x3C */ s32 unk3C;
 } SnowColourItem;
 
+/* one 0x58-byte snow particle record (SnowPool items) */
+typedef struct SnowParticle {
+    /* 0x00 */ char unk00[0x30];
+    /* 0x30 */ f32 unk30;
+    /* 0x34 */ char unk34[0x24];
+} SnowParticle;
+
+/* a Node-derived particle pool: items[max] from mem_new, count in use */
+typedef struct SnowPool {
+    /* 0x00 */ Node node;
+    /* 0x2C */ s32 unk2C;
+    /* 0x30 */ SnowParticle *items;
+    /* 0x34 */ s32 unk34[2];
+    /* 0x3C */ s32 count;
+    /* 0x40 */ s32 max;
+} SnowPool;
+
+float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
+
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
@@ -64,13 +83,36 @@ void snoweffects_uso_func_0000019C(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000020C);
+void snoweffects_uso_func_0000020C(SnowPool *this, int n) {
+    this->items = (SnowParticle *)CALL(mem_new)(n * sizeof(SnowParticle));
+    this->count = 0;
+    this->max = n;
+    VT_SLOT(this->node.vptr, 11).fn((char *)this + VT_SLOT(this->node.vptr, 11).delta);
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000270);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000680);
+SnowParticle *snoweffects_uso_func_00000680(SnowPool *this) {
+    float best = 65536.0f;
+    SnowParticle *p = this->items;
+    SnowParticle *found = 0;
+    int i;
+    for (i = 0; i < this->count; i++, p++) {
+        if (p->unk30 < best) {
+            best = p->unk30;
+            found = p;
+        }
+    }
+    return found;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000006D0);
+SnowParticle *snoweffects_uso_func_000006D0(SnowPool *this) {
+    if (this->count < this->max) {
+        this->count++;
+        return &this->items[this->count - 1];
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000718);
 
@@ -94,9 +136,20 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000028E0);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003544);
+void snoweffects_uso_func_00003544(char *this, float *out, Vec3 *v) {
+    out[0] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x74));
+    out[1] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x80));
+    out[2] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x8C));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000035B0);
+void snoweffects_uso_func_000035B0(char *this, float *n, float *p, float s) {
+    Vec3 t;
+    (void)&this;
+    t.x = p[0] - n[0] * s;
+    t.y = p[1] - n[1] * s;
+    t.z = p[2] - n[2] * s;
+    n[3] = snoweffects_uso_func_00000000(&t, (Vec3 *)n);
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003620);
 
@@ -169,7 +222,17 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004374);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000046BC);
+int snoweffects_uso_func_000046BC(char *this) {
+    if (*(int *)(this + 0x144) >= 2) {
+        if (--*(int *)(this + 0x84) < 0) {
+            *(int *)(this + 0x84) = *(int *)(this + 0x88);
+            CALL(snoweffects_uso_func_0000535C)(this);
+        }
+        return 1;
+    }
+    *(int *)(this + 0x84) = 1;
+    return 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004714);
 
