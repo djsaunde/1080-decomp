@@ -89,10 +89,9 @@ void AnimData_load(AnimData *self) {
             break;
         }
     }
-    /* the second numNodes read stays a raw `*(s16 *)` deref: spelled self->numNodes,
-     * the beql operands swap (t3, v0 -> v0, t3) */
-    /* RAW: byte-lock: spelled self->numNodes the beql operands swap (t3, v0 -> v0, t3); see the comment above */
-    if (self->numNodes != 0 && ((AnimDataMgr *)self->mgr)->numNodes != *(s16 *)((char *)self + 0)) {
+    /* the second numNodes read is an lvalue-cast `*(s16 *)&self->numNodes`: spelled plainly as
+     * self->numNodes, the beql operands swap (t3, v0 -> v0, t3) (run 590: the &-form is byte-identical) */
+    if (self->numNodes != 0 && ((AnimDataMgr *)self->mgr)->numNodes != *(s16 *)&self->numNodes) {
         CALL(sys_fatal)(sStr_AMgr_bad_num_Nodes_220AC);
     }
     self->state = 7;

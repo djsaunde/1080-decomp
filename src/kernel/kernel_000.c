@@ -1226,11 +1226,13 @@ void uso_initSlot(void* arg0) {
      * (docs/IDO_CODEGEN.md for-loop comma-init lever). Now byte-exact. */
     for (i = 2, ptr = (char*)arg0 + 8; i != 0xE; ) {
         i += 4;
-        /* RAW: byte-lock: ptr is a char cursor over secData[2..13] (16 bytes per pass); the for-comma-init lever (docs/IDO_CODEGEN.md) needs that cursor */
-        *(s32*)(ptr + 0x38) = 0;
-        *(s32*)(ptr + 0x3C) = 0; /* RAW: byte-lock (as above) */
-        *(s32*)(ptr + 0x40) = 0; /* RAW: byte-lock (as above) */
-        *(s32*)(ptr + 0x44) = 0; /* RAW: byte-lock (as above) */
+        /* ptr = (char *)arg0 + 8 + 16 * pass, so the slot view's secData[0..3] are arg0's
+         * secData[2 + 4 * pass ..] (types 2..13 over three passes); the for-comma-init lever
+         * (docs/IDO_CODEGEN.md) needs that char cursor */
+        ((UsoModuleSlot *)ptr)->secData[0] = 0;
+        ((UsoModuleSlot *)ptr)->secData[1] = 0;
+        ((UsoModuleSlot *)ptr)->secData[2] = 0;
+        ((UsoModuleSlot *)ptr)->secData[3] = 0;
         ptr += 0x10;
     }
 }
