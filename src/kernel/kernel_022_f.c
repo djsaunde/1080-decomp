@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -128,15 +129,14 @@ typedef struct RmonRegDump {
 } RmonRegDump;                 /* 0xB0 bytes */
 
 s32 __rmonGetSRegs(char *arg0) {
-    register char *s0 = arg0;
+    register KKObjectRequest *s0 = (KKObjectRequest *)arg0;
     RmonRegDump dump;
     register int i;
     if (func_80008430() != 0) {
         return -4;
     }
-    /* RAW: unknown-object: s0 is the rmon request packet, untyped in this TU */
-    dump.type = *(int *)(s0 + 0xC);
-    dump.domain = *(unsigned char *)(s0 + 0x4); /* RAW: unknown-object (as above) */
+    dump.type = s0->object;        /* reply.tid */
+    dump.domain = s0->header.code; /* reply.header.code */
     dump.zero6 = 0;
     func_80009148(0);
     for (i = 0; i < 0x20; i++) {

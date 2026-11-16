@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 extern s32 __rmonUtilityBuffer[];
 extern s32 D_8000A828;
@@ -6,22 +7,18 @@ extern s32 D_8000A830;
 extern void func_80006B54(void*, void*);
 extern void func_800073F8(void*, s32, s32);
 
-typedef struct { s32 pad0; u8 type; char pad5[4]; u8 domain; char padA[2]; s32 id; } RmonMsg;
-
 /* __rmonGetExeName (rmonmem.c): rmon dispatchTable[2] */
-s32 __rmonGetExeName(RmonMsg* msg) {
-    RmonMsg* p = msg;
-    s32* buf = (s32*)__rmonUtilityBuffer;
-    /* RAW: unknown-object: buf is the rmon reply packet header, untyped in this TU */
-    *(u8*)((char*)buf + 4) = p->type;
-    *(s16*)((char*)buf + 6) = 0; /* RAW: unknown-object (as above) */
-    *(s32*)((char*)buf + 0xC) = p->id; /* RAW: unknown-object (as above) */
-    if (msg->domain == 1) {
-        func_80006B54((char*)buf + 0x10, &D_8000A828);
+s32 __rmonGetExeName(KKObjectRequest* msg) {
+    KKObjectRequest* p = msg;
+    KKBufferEvent* buf = (KKBufferEvent*)__rmonUtilityBuffer;
+    buf->header.code = p->header.code;
+    buf->header.error = TV_ERROR_NO_ERROR;
+    buf->object = p->object;
+    if (msg->header.method == RMON_RSP) {
+        func_80006B54(buf->buffer, &D_8000A828); /* strcpy "imem" */
     } else {
-        func_80006B54((char*)buf + 0x10, &D_8000A830);
+        func_80006B54(buf->buffer, &D_8000A830); /* strcpy "rmon" */
     }
-    func_800073F8(buf, 0x18, 1);
+    func_800073F8(buf, 0x18, KK_TYPE_REPLY); /* __rmonSendReply */
     return 0;
 }
-

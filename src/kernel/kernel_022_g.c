@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -93,19 +94,18 @@ s32 __rmonGetVRegs(char* volatile arg0) {
     char* p;
     s32 cnt;
     s32 val;
-    register char* s0;
+    register KKObjectRequest* s0;
     s32 buf[128];
     RmonHdr16 hdr;
     register s32 i;
     register s32 recv;
 
-    s0 = arg0;
+    s0 = (KKObjectRequest*)arg0;
     if (func_80008430() != 0) {
         return -4;
     }
-    /* RAW: unknown-object: s0 is the rmon request packet, untyped in this TU */
-    hdr.code = *(s32*)(s0 + 0xC);
-    hdr.type = *(u8*)(s0 + 0x4); /* RAW: unknown-object (as above) */
+    hdr.code = s0->object;        /* reply.tid */
+    hdr.type = s0->header.code;   /* reply.header.code */
     hdr.flags = 0;
     hdr.zero0 = 0x210;
     val = 0x210;

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
 /* Forward declarations */
 extern s32 __osPiAccessQueue;
@@ -102,12 +103,9 @@ s32 __rmonGetGRegisters(void *arg0) {
         s16 zero;   /* +6 */
         s32 w8;
         s32 id;     /* +C */
-        s32 reg[0x22]; /* +0x10 .. +0x98 */
-        s32 sp98;
-        s32 sp9C;
-        s32 spA0;
+        s32 reg[0x25]; /* +0x10: KKGregSet gregs[37] (0 zero, 1..0x19 at..t9, 0x1C..0x21 gp..hi, 0x22 cause, 0x23 pc, 0x24 sr) */
     } hdr;
-    void *ctx;
+    OSThread *ctx;
     s64 *src;
     register s32 i;
 
@@ -119,21 +117,20 @@ s32 __rmonGetGRegisters(void *arg0) {
         if (ctx == NULL) {
             return -2;
         }
-        src = (s64 *)((char *)ctx + 0x20);
+        src = (s64 *)&ctx->context.at;
         for (i = 1; i < 0x1A; i++) {
             hdr.reg[i] = (s32)*src;
             src++;
         }
-        src = (s64 *)((char *)ctx + 0xE8);
+        src = (s64 *)&ctx->context.gp;
         for (i = 0x1C; i < 0x22; i++) {
             hdr.reg[i] = (s32)*src;
             src++;
         }
-        /* RAW: unknown-object: the rmon register-reply packet tail (0x98..0xA0) and ctx (thread context words) are untyped here */
-        *(s32 *)((char *)&hdr + 0x98) = FW(ctx, 0x120);
-        *(s32 *)((char *)&hdr + 0x9C) = FW(ctx, 0x11C); /* RAW: unknown-object (as above) */
-        *(s32 *)((char *)&hdr + 0xA0) = FW(ctx, 0x118); /* RAW: unknown-object (as above) */
-        *(s32 *)((char *)&hdr + 0x10) = 0; /* RAW: unknown-object (as above) */
+        hdr.reg[0x22] = ctx->context.cause;
+        hdr.reg[0x23] = ctx->context.pc;
+        hdr.reg[0x24] = ctx->context.sr;
+        hdr.reg[0] = 0;
     } else {
         return -2;
     }
@@ -150,7 +147,7 @@ s32 __rmonGetGRegisters(void *arg0) {
 s32 __rmonSetGRegisters(void *arg0) {
     register s32 *msg = arg0;
     struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 id; } hdr;
-    void *ctx;
+    OSThread *ctx;
     s64 *p;
     register s32 i;
 
@@ -159,20 +156,19 @@ s32 __rmonSetGRegisters(void *arg0) {
         if (ctx == NULL) {
             return -2;
         }
-        p = (s64 *)((char *)ctx + 0x20);
+        p = (s64 *)&ctx->context.at;
         for (i = 1; i < 0x1A; i++) {
             *p = (s64)msg[i + 4];
             p++;
         }
-        p = (s64 *)((char *)ctx + 0xE8);
+        p = (s64 *)&ctx->context.gp;
         for (i = 0x1C; i < 0x22; i++) {
             *p = (s64)msg[i + 4];
             p++;
         }
-        /* RAW: unknown-object: ctx is the thread context as an untyped word base (0x118 sr, 0x11C pc, 0x120 cause) */
-        FW(ctx, 0x120) = msg[0x26];
-        FW(ctx, 0x11C) = msg[0x27]; /* RAW: unknown-object (as above) */
-        FW(ctx, 0x118) = msg[0x28]; /* RAW: unknown-object (as above) */
+        ctx->context.cause = msg[0x26];
+        ctx->context.pc = msg[0x27];
+        ctx->context.sr = msg[0x28];
     } else {
         return -2;
     }

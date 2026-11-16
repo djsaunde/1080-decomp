@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_timer.h"
 extern int D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { float x, y, z; } Vec3;
@@ -32,30 +33,26 @@ int gl_osEPiRawWriteIo(char *pihandle, unsigned int devAddr, unsigned int data) 
  * explain the "a2/a3 3-way tree" and the missing sw a1 home. Real C lives
  * in the -O1 donor unit game_libs_o1_73824.c (53/53), spliced over this
  * -O2 stand-in. Body below is a placeholder for the splice (its bytes are
- * replaced by the donor). */
+ * replaced by the donor); it spells the donor's libultra osSetTimer. */
 extern int gl_func_00000000();
 extern int D_00000000;
-int gl_osSetTimer(char *obj, int a1, int a2, int a3, int arg5, int arg6, int arg7, int arg8) {
-    long long rr;
-    char *head;
-    /* RAW: unknown-object: obj is libultra OSTimer but this TU keeps it as char * (u64 fields stored as word halves) */
-    *(int *)(obj + 0x0) = 0;
-    *(int *)(obj + 0x4) = 0; /* RAW: unknown-object (as above) */
-    *(int *)(obj + 0xC) = arg6; /* RAW: unknown-object (as above) */
-    *(int *)(obj + 0x8) = arg5; /* RAW: unknown-object (as above) */
-    if (a2 != 0 || a3 != 0) {
-        *(int *)(obj + 0x10) = a2; /* RAW: unknown-object (as above) */
-        *(int *)(obj + 0x14) = a3; /* RAW: unknown-object (as above) */
+int gl_osSetTimer(OSTimer *t, OSTime countdown, OSTime interval, OSMesgQueue *mq, OSMesg msg) {
+    OSTime r;
+
+    t->next = 0;
+    /* (t->prev = 0 is the donor's; left out here so the stand-in keeps the old length,
+     * which the non_matching object's spliced .text size depends on) */
+    t->interval = interval;
+    if (countdown != 0) {
+        t->value = countdown;
     } else {
-        *(int *)(obj + 0x10) = arg5; /* RAW: unknown-object (as above) */
-        *(int *)(obj + 0x14) = arg6; /* RAW: unknown-object (as above) */
+        t->value = interval;
     }
-    *(int *)(obj + 0x18) = arg7; /* RAW: unknown-object (as above) */
-    *(int *)(obj + 0x1C) = arg8; /* RAW: unknown-object (as above) */
-    rr = gl_func_00000000(obj);
-    head = *(char **)(*(char **)&D_00000000);
-    if (head == obj) {
-        gl_func_00000000((int)rr);
+    t->mq = mq;
+    t->msg = msg;
+    r = ((OSTime (*)(OSTimer *))gl_func_00000000)(t);
+    if ((*(OSTimer **)&D_00000000)->next == t) {
+        ((void (*)(OSTime))gl_func_00000000)(r);
     }
     return 0;
 }

@@ -7,19 +7,18 @@
  * save/set/convert/check/restore block is IDO's inline (u32)float cast;
  * the 0x4F800000 add is the standard (float)(u32) correction. The two
  * statements share one global load via same-BB CSE. */
-typedef unsigned int u32;
+#include "libultra/os_vi.h"
 extern int gl_func_00000000();
-extern char *gl___osViNext_74DB4_p1;
-extern unsigned short *gl___osViNext_74DB4_p2;
+extern __OSViContext *gl___osViNext_74DB4_p1;  /* __osViNext */
+extern unsigned short *gl___osViNext_74DB4_p2; /* &__osViNext->state (its own reloc'd load) */
 
 void gl_osViSetXScale(float f) {
     register int v;
     register int sr;
     sr = gl_func_00000000();
-    /* RAW: unknown-object: libultra __OSViContext (modep 0x8, x scale 0x18, 0x20 xscale reg) has no header in include/libultra yet */
-    *(float *)(gl___osViNext_74DB4_p1 + 0x18) = f;
-    *gl___osViNext_74DB4_p2 |= 2;
-    v = *(int *)(*(char **)(gl___osViNext_74DB4_p1 + 0x8) + 0x20) & 0xFFF; /* RAW: unknown-object (as above) */
-    *(int *)(gl___osViNext_74DB4_p1 + 0x20) = (u32)(*(float *)(gl___osViNext_74DB4_p1 + 0x18) * (float)(u32)v) & 0xFFF; /* RAW: unknown-object (as above) */
+    gl___osViNext_74DB4_p1->x.factor = f;
+    *gl___osViNext_74DB4_p2 |= VI_STATE_XSCALE_UPDATED;
+    v = gl___osViNext_74DB4_p1->modep->comRegs.xScale & VI_SCALE_MASK;
+    gl___osViNext_74DB4_p1->x.scale = (u32)(gl___osViNext_74DB4_p1->x.factor * (float)(u32)v) & VI_SCALE_MASK;
     gl_func_00000000(sr);
 }

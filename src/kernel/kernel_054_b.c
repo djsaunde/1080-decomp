@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/os_thread.h"
 
 extern void* func_800077DC(s32 id);
 extern void func_80006B20(void* dst, void* src, s32 n);
@@ -61,7 +62,7 @@ s32 __rmonGetFRegisters(RmonMsg91FC* msg) {
     register RmonMsg91FC* p;
     char pad[8];
     RmonPkt98 pkt;
-    s32* buf;
+    OSThread* buf;
     f32 dummy;
 
     p = msg;
@@ -69,13 +70,12 @@ s32 __rmonGetFRegisters(RmonMsg91FC* msg) {
         return -2;
     }
     dummy = 0.0f;
-    buf = (s32*)func_800077DC(p->field_0C);
+    buf = (OSThread*)func_800077DC(p->field_0C);
     if (buf == 0) {
         return -2;
     }
-    func_80006B20((char*)&pkt + 0x10, (char*)buf + 0x130, 0x20);
-    /* RAW: unknown-object: buf is the thread context (fpcsr at 0x12C), untyped in this TU */
-    pkt.field_90 = *(s32*)((char*)buf + 0x12C);
+    func_80006B20((char*)&pkt + 0x10, (char*)&buf->context.fp0, 0x20);
+    pkt.field_90 = buf->context.fpcsr;
     pkt.type = p->field_04;
     pkt.flags = 0;
     pkt.field_0C = p->field_0C;
@@ -87,7 +87,7 @@ s32 __rmonGetFRegisters(RmonMsg91FC* msg) {
 s32 __rmonSetFRegisters(RmonMsg91FC* msg) {
     register RmonMsg91FC* p;
     RmonHdr16 hdr;
-    s32* buf;
+    OSThread* buf;
     f32 dummy;
 
     p = msg;
@@ -95,13 +95,12 @@ s32 __rmonSetFRegisters(RmonMsg91FC* msg) {
         return -2;
     }
     dummy = 0.0f;
-    buf = (s32*)func_800077DC(p->field_0C);
+    buf = (OSThread*)func_800077DC(p->field_0C);
     if (buf == 0) {
         return -2;
     }
-    func_80006B20((char*)buf + 0x130, (char*)p + 0x10, 0x20);
-    /* RAW: unknown-object: buf is the thread context (fpcsr at 0x12C), untyped in this TU */
-    *(s32*)((char*)buf + 0x12C) = p->field_90;
+    func_80006B20((char*)&buf->context.fp0, (char*)p + 0x10, 0x20);
+    buf->context.fpcsr = p->field_90;
     hdr.field_0C = p->field_0C;
     hdr.type = p->field_04;
     hdr.flags = 0;
