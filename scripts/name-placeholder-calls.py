@@ -35,6 +35,18 @@ Then site N's reloc offset(s) give the module Text offset(s), and the ROM TextRe
 there gives the callee. A site whose jals (an inlined/duplicated call) resolve to two
 callees is refused.
 
+REPLACE_FUNC_BODY hosts (run 594): a host function whose own verify bytes differ (its body is a
+stand-in, the donor object's body is spliced in) is proven through the donor instead:
+  1. the host's verify copy compiled with the DONOR object's flags gives fn byte-identical to
+     the donor object's fn, which is the real (spliced) host body (words without a reloc):
+     its npc_uc_N relocs place the sites in the spliced body as above; else
+  2. mirror: the donor source's fn (whose CALL names `check` pins on the donor object's own
+     relocs) is token-identical to the host's fn (sites as `@<token>`), or has the same control
+     skeleton (control keywords, braces, `;`, `?:`, `&&`/`||`, and each call as
+     `@<token>/<argc>`) with the same number of sites: host site k takes donor site k's name.
+src/match_imports/X.c donors map to their host object's module (the REPLACE_FUNC_BODY spec).
+Relative #includes in the verify copy are made absolute.
+
 Subcommands (run from the project root after a full build; re-execs under the repo .venv
 when pyelftools / crunch64 are missing):
   plan FILE.. [--write] [-v]   name every provable placeholder call (dry run unless
@@ -397,6 +409,32 @@ class MakeVars:
         return {k: self.expand(loc.get(k, self.glob.get(k, '')), loc)
                 for k in ('CC', 'CFLAGS', 'OPT_FLAGS', 'CC_ONLY_FLAGS', 'MIPSISET', 'CPPFLAGS')}
 
+    def splices(self):
+        """REPLACE_FUNC_BODY specs (run 594): {host_obj: {func: donor_obj}} for the matching-build
+        objects (build/src/...); each `func=$(DONOR_VAR)` entry expanded."""
+        if getattr(self, '_spl', None) is None:
+            self._spl = collections.defaultdict(dict)
+            for tgts, k, op, v in self.tgt:
+                if k != 'REPLACE_FUNC_BODY':
+                    continue
+                for item in self.expand(v, {}).split():
+                    if '=' not in item:
+                        continue
+                    fn, donor = item.split('=', 1)
+                    for tg in tgts:
+                        tg = self.expand(tg, {})
+                        if tg.startswith('build/src/'):
+                            self._spl[tg][fn] = donor
+        return self._spl
+
+    def donor_hosts(self):
+        """{donor_obj: [(host_obj, func)]}"""
+        out = collections.defaultdict(list)
+        for host, d in self.splices().items():
+            for fn, donor in d.items():
+                out[donor].append((host, fn))
+        return out
+
     def recipe(self, obj):
         """The recipe lines of obj's rule: an explicit rule naming it (targets may be $(VAR)s),
         else the matching pattern rule with the shortest stem (GNU make's choice)."""
@@ -585,15 +623,35 @@ def is_placeholder(symname, tok):
     return symname == tok or bool(PH_RE.fullmatch(symname or '')) or symname.startswith('sect:')
 
 
-def compile_verify(path, text, mv):
-    """-> (funcs, rel) of the verify object, or raises RuntimeError."""
+_DONOR_MOD = {}
+
+
+def donor_module(path, rom, mv):
+    """A REPLACE_FUNC_BODY donor outside the module dirs (src/match_imports/X.c, run 594): the
+    module of the host object(s) it is spliced into (one module for all of them, else None)."""
+    if path not in _DONOR_MOD:
+        obj = obj_of(path)
+        mods = {rom.module_for(h[len('build/'):-len('.o')])
+                for d, hs in mv.donor_hosts().items() if d == obj or d.startswith(obj + '.') for h, _ in hs}
+        _DONOR_MOD[path] = mods.pop() if len(mods) == 1 else None
+    return _DONOR_MOD[path]
+
+
+def compile_verify(path, text, mv, flags_of=None, tag='v'):
+    """-> (funcs, rel) of the verify object, or raises RuntimeError. flags_of: compile with that
+    object's target-specific flags instead of path's own (a donor's, run 594); tag names the
+    scratch files so several flag sets of one file can be compiled side by side."""
     obj = obj_of(path)
-    fl = mv.for_target(obj)
-    base = os.path.join(SCRATCH, path)
+    fl = mv.for_target(flags_of or obj)
+    base = os.path.join(SCRATCH, path) + ('' if tag == 'v' else '.' + tag)
     os.makedirs(os.path.dirname(base), exist_ok=True)
     if path.endswith('.cpp'):
         return compile_verify_cpp(path, text, mv, base)
     vsrc, pre, vobj = base + '.v.c', base + '.pre.c', base + '.v.o'
+    d = os.path.dirname(os.path.abspath(path))       # relative #includes (src/match_imports, run 594)
+    text = re.sub(r'^(\s*#\s*include\s*")([^"/][^"]*)"',
+                  lambda x: x.group(1) + os.path.normpath(os.path.join(d, x.group(2))) + '"'
+                  if os.path.exists(os.path.join(d, x.group(2))) else x.group(0), text, flags=re.M)
     open(vsrc, 'w').write(text)
     asmproc = ['python3', 'tools/asm-processor/asm_processor.py'] + fl['OPT_FLAGS'].split()
     with open(pre, 'w') as fo:
@@ -652,7 +710,7 @@ def plan_file(path, rom, mv, verbose=False):
     out['hidden'] = hidden = macro_hidden(src, m, extra)
     if not sites:
         return out
-    md = rom.module_for(path)
+    md = rom.module_for(path) or donor_module(path, rom, mv)
     if md is None:
         out['error'] = 'no USO module mapped for this src dir (MODULE_OF_DIR)'
         return out
@@ -678,6 +736,7 @@ def plan_file(path, rom, mv, verbose=False):
         fn = next((f for f, (v, sz, _) in vfuncs.items() if v <= off < v + sz), None)
         site_offs[int(mm.group(1))].append((fn, off - vfuncs[fn][0] if fn else None))
     bad_funcs = {}
+    mirrored = {}       # site i -> name, from the donor source's checked CALL names (run 594)
     for fn, (v, sz, b) in vfuncs.items():
         mine = [i for i, l in site_offs.items() if any(f == fn for f, _ in l)]
         if not mine:
@@ -687,8 +746,24 @@ def plan_file(path, rom, mv, verbose=False):
             continue
         rv, rsz, rb = rfuncs[fn]
         if rb != b:
-            bad_funcs[fn] = 'verify bytes differ from the real object (donor splice / other recipe)'
-            continue
+            donor = mv.splices().get(obj_of(path), {}).get(fn)
+            alt = donor_offsets(path, src, m, sites, mv, fn, donor, rb, rv, rall) if donor else None
+            if isinstance(alt, dict):
+                # the host's C compiled with the donor's flags IS the spliced body (run 594):
+                # its npc_uc_N relocs pin the sites onto the real (spliced) function
+                for i in mine:
+                    site_offs[i] = [x for x in site_offs[i] if x[0] != fn]
+                for i, offs in alt.items():
+                    site_offs[i] = [x for x in site_offs.get(i, []) if x[0] != fn] + [(fn, o) for o in offs]
+                mine = [i for i, l in site_offs.items() if any(f == fn for f, _ in l)]
+            else:
+                mir = mirror_names(src, m, sites, fn, donor) if donor else None
+                if isinstance(mir, dict):
+                    mirrored.update(mir)
+                    continue
+                bad_funcs[fn] = 'verify bytes differ from the real object (donor splice / other recipe)' + \
+                    (f' -- donor {donor}: {alt}; mirror: {mir}' if donor else '')
+                continue
         covered = {o for i in mine for f, o in site_offs[i] if f == fn}
         real_ph = {off - rv for off, s in rrel.items() if rv <= off < rv + rsz and
                    (PH_RE.fullmatch(s) or s in extra or s.startswith('sect:'))}
@@ -705,6 +780,9 @@ def plan_file(path, rom, mv, verbose=False):
         elif not rom_bytes_match(md, rom.func_off(md, fn), rb, rv, rall):
             bad_funcs[fn] = f'real object bytes are not the {md.short} Text at {fn} (unspliced donor?)'
     for s in sites:
+        if s.i in mirrored:
+            out['derived'][s.i] = mirrored[s.i]
+            continue
         offs = site_offs.get(s.i)
         if not offs:
             out['left'][s.i] = 'no jal in the build (not a call, or not compiled)'
@@ -737,6 +815,148 @@ def plan_file(path, rom, mv, verbose=False):
             continue
         out['derived'][s.i] = nm
     return out
+
+
+_DONOR_VERIFY = {}
+TOKEN = re.compile(r'\w+|\S')
+
+
+CTRL = {'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default', 'return', 'goto', 'break',
+        'continue', '{', '}', ';', '?', ':', '&&', '||'}
+
+
+def site_argc(m, s):
+    """argument count of the call at site s (-1: not a call)"""
+    k = s.end
+    while k < len(m) and m[k] in ' \t\n':
+        k += 1
+    if k < len(m) and m[k] == ')':       # `CALL(f)` macro: the call's ( follows the macro's )
+        k += 1
+        while k < len(m) and m[k] in ' \t\n':
+            k += 1
+    if k >= len(m) or m[k] != '(':
+        return -1
+    depth, i, n, empty = 1, k + 1, 1, True
+    while i < len(m) and depth:
+        ch = m[i]
+        if ch in '([{':
+            depth += 1
+        elif ch in ')]}':
+            depth -= 1
+        elif ch == ',' and depth == 1:
+            n += 1
+        if depth and not ch.isspace():
+            empty = False
+        i += 1
+    return 0 if empty else n
+
+
+def skeleton(m, blk, sites):
+    """The control skeleton of a block: control keywords, braces, `;`, `?:`, `&&`/`||` and each
+    call site as `@<tok>/<argc>`, in source order."""
+    toks = body_tokens(m, blk, sites, argc=True)
+    out = []
+    for i, x in enumerate(toks):
+        if x.startswith('@') or x in CTRL:
+            out.append(x)
+        elif x in '&|' and i + 1 < len(toks) and toks[i + 1] == x:
+            pass
+    return out
+
+
+def body_tokens(m, blk, sites, argc=False):
+    """Tokens of a function block (header .. closing brace) with each call site spelled `@<tok>`
+    (`@<tok>/<argc>` with argc)."""
+    a, op, cl = blk
+    edits = sorted((s.pos, s.end, '@' + s.tok + (f'/{site_argc(m, s)}' if argc else '')) for s in sites if s.block == blk)
+    out, k = [], a
+    for pos, end, rep_ in edits:
+        out += TOKEN.findall(m[k:pos]) + [rep_]
+        k = end
+    return out + TOKEN.findall(m[k:cl + 1])
+
+
+def donor_source(donor):
+    s = donor[len('build/'):] if donor.startswith('build/') else donor
+    s = re.sub(r'\.o(?:\.linked\.elf\.bound\.elf)?$', '', s)
+    return s if os.path.exists(s) else None
+
+
+def mirror_names(src, m, sites, fn, donor):
+    """REPLACE_FUNC_BODY host whose C is the donor's C (run 594): when fn's body in the host is
+    token-identical to fn's body in the donor source (comments, whitespace and the CALL spelling
+    aside: every site compared as `@<placeholder token>`), the host's site k IS the donor's site
+    k, whose name the donor carries (CALL-named there; `check` pins it on the donor object's
+    relocs). -> {host site i: name}, or a reason string."""
+    dsrc_path = donor_source(donor)
+    if not dsrc_path:
+        return 'no donor source'
+    dsrc = open(dsrc_path, errors='replace').read()
+    dsites, dm = scan(dsrc, extra=addr_tokens(dsrc_path))
+    dblk = {s.block for s in dsites if s.func == fn}
+    hblk = {s.block for s in sites if s.func == fn}
+    if len(dblk) != 1 or len(hblk) != 1:
+        return 'fn is not one block in both sources'
+    dblk, hblk = dblk.pop(), hblk.pop()
+    ds = [s for s in dsites if s.block == dblk]
+    hs = [s for s in sites if s.block == hblk]
+    if body_tokens(dm, dblk, dsites) != body_tokens(m, hblk, sites):
+        # a stand-in body that differs in types / casts / decl order only (run 594): the same
+        # control skeleton with the same calls (token + argument count) in the same places
+        if len(ds) != len(hs):
+            return f'host has {len(hs)} sites, the donor {len(ds)}'
+        if skeleton(dm, dblk, dsites) != skeleton(m, hblk, sites):
+            return 'host control skeleton / call sequence differs from the donor\'s'
+        if len({(s.tok, s.name) for s in ds}) > 1 and len(set(skeleton(dm, dblk, dsites))) < 3:
+            return 'no skeleton to order the calls by'
+    ds = [s for s in dsites if s.block == dblk]
+    hs = [s for s in sites if s.block == hblk]
+    if len(ds) != len(hs) or any(h.tok != d.tok for h, d in zip(hs, ds)):
+        return 'site tokens differ from the donor\'s'
+    got = {h.i: d.name for h, d in zip(hs, ds) if h.name is None and d.name}
+    return got if got else 'the donor\'s matching sites are unnamed too'
+
+
+
+def donor_offsets(path, src, m, sites, mv, fn, donor, rb, rv, rall):
+    """REPLACE_FUNC_BODY host (run 594): compile the host's verify copy with the DONOR object's
+    target-specific flags. When that compile's fn is byte-identical to the donor object's fn and
+    to the real (spliced) host object's fn (words without a reloc), its npc_uc_N relocs place
+    each site in the spliced body: -> {site i: [offset in fn]}; else a reason string."""
+    if not os.path.exists(donor) or donor.endswith('.cpp.o') != path.endswith('.cpp'):
+        return 'donor object missing or of another language'
+    if path.endswith('.cpp'):
+        return 'C++ host: the donor recipe is not replayed'
+    dfuncs, _ = elf_info(donor)
+    if fn not in dfuncs:
+        return 'fn not in the donor object'
+    db = dfuncs[fn][2]
+    if len(db) != len(rb):
+        return 'donor size differs from the spliced body'
+    if not all(rb[k:k + 4] == db[k:k + 4] for k in range(0, len(rb), 4) if rv + k not in rall):
+        return 'the real object\'s body is not the donor\'s (not spliced?)'
+    key = (path, tuple(sorted(mv.for_target(donor).items())))
+    if key not in _DONOR_VERIFY:
+        tag = 'd%d' % len([k for k in _DONOR_VERIFY if k[0] == path])
+        try:
+            _DONOR_VERIFY[key] = compile_verify(path, verify_text(src, m, sites), mv, flags_of=donor, tag=tag)
+        except RuntimeError as ex:
+            _DONOR_VERIFY[key] = str(ex)
+    got = _DONOR_VERIFY[key]
+    if isinstance(got, str):
+        return 'verify compile with the donor flags failed: ' + got
+    vfuncs, vrel = got
+    if fn not in vfuncs:
+        return 'fn not in the donor-flag verify object'
+    v, sz, vb = vfuncs[fn]
+    if vb != db:
+        return 'the host C with the donor flags is not the donor body'
+    out = collections.defaultdict(list)
+    for off, sym in vrel.items():
+        mm = re.fullmatch(r'npc_uc_(\d+)', sym)
+        if mm and v <= off < v + sz:
+            out[int(mm.group(1))].append(off - v)
+    return dict(out)
 
 
 def spelled(tok, name):
@@ -882,7 +1102,7 @@ def check_fast(path, src, rom, quiet=False):
     mac = [s for s in sites if s.name is not None]
     if not mac:
         return 0, 0
-    md = rom.module_for(path)
+    md = rom.module_for(path) or donor_module(path, rom, MakeVars())
     if md is None or not md.funcs:
         print(f'{path}: module not resolvable' + (f' ({md.short}: no function names)' if md else ''))
         return len(mac), len(mac)
