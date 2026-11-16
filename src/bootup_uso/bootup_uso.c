@@ -225,8 +225,9 @@ void func_0000057C(int *arg0, int arg1, int arg2) {
     case 1: sel = 1; break;
     case 2: sel = 2; break;
     }
-    *(char *)(arg0[0] + 0x22) = (char)arg2; /* RAW: unknown-object: arg0[0] object (byte +0x22, float +0x10) has no identified type */
-    *(float *)(arg0[0] + 0x10) = 0.0f; /* RAW: unknown-object: arg0[0] object (byte +0x22, float +0x10) has no identified type */
+    /* arg0[0] is a SoundObj (audio.h, 0x64: snd_SoundObjInit's object) */
+    ((SoundObj *)arg0[0])->surface = (char)arg2;
+    ((SoundObj *)arg0[0])->unk10 = 0.0f;
     arg0[2] = 0;
     FCALL(snd_SoundObjInit)(arg0[0], sel);
 }
@@ -657,7 +658,7 @@ void BGBox_func_00000D94(char *a0) {
         FCALL(gfx_setPrimColour)(gGfxLib_d94_g, gGfxLib_d94_src);
         FCALL(Node_display)(a0);
         p = &GFXLIB(gGfxLib_d94_g)->curWindow->win.flags;
-        on = *(int *)(a0 + 0x3C); /* RAW: unknown-object: BGBox +0x3C enable word, BGBox has no struct yet */
+        on = ((BGBox *)a0)->clearWindow;
         if (on != 0) {
             *p |= 4;
         } else {
@@ -817,8 +818,8 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
         FCALL(Node_ctor)(self, &sStr_Node_66B0);
         NODE(self)->vptr = (char *)(&U64BGWall_vtbl);
         NODE(self)->name = (const char *)(&sStr_U64BGWall_66B8);
-        timg = *(u32 *)(cfg + 0x8); /* RAW: unknown-object: the U64BGWall cfg record (timg +8 / tlut +0xC) has no struct yet */
-        tlut = *(u32 *)(cfg + 0xC); /* RAW: unknown-object: the U64BGWall cfg record (timg +8 / tlut +0xC) has no struct yet */
+        timg = ((BGWallTex *)cfg)->timg;
+        tlut = ((BGWallTex *)cfg)->tlut;
         ((U64BGWall *)self)->rotX = arg2;
         ((U64BGWall *)self)->rotY = arg3;
         ((U64BGWall *)self)->rotZ = arg4;
@@ -1977,7 +1978,7 @@ void *game_create3DWindow(char *a0, int *a1, int a2) {
                               2, 0x6E, a1[0], a1[1], 0x6F, a1[2], a1[3],
                               0x70, a1[6] | 2, 0x71, 1, 0x73, a1[4],
                               0x74, a1[5], 0);
-    *(int *)(r + 0x70) = a2; /* RAW: unknown-object: ScreenWindow +0x70 (ScreenWindow is agent-b's gdl type, field not named yet) */
+    ((ScreenWindow *)r)->win.camera = (char *)a2; /* the window's MCamera (a2 = cam_create's result) */
     FCALL(list_append)(&gSnowBoard_0000002C, r);
     if ((p = WORLDREG(a0)->bgRoot) != 0) FCALL(node_linkBack_0004E8D4)(r, p);
     if ((p = WORLDREG(a0)->fgRoot) != 0) FCALL(node_linkBack_0004E920)(r, p);
@@ -2466,7 +2467,7 @@ void game_setupVs2P(char *s1, int a1) {
     f2 = (char*)FCALL(game_create3DWindow)(s1, row + 0x1C, b4);
     SNOWB(r1)->camera = y;
     SNOWB(r2)->camera = f2;
-    *(char**)(f2 + 0x1B8) = y; /* RAW: unknown-object: ScreenWindow +0x1B8 partner window (gdl ScreenWindow layout not named) */
+    ((ScreenWindow *)f2)->unk1B8 = (struct Window *)y; /* player 2's window points at player 1's */
 }
 
 /* game_setupDemoRace - verified structural decode (0x2B8, 174 insns,
@@ -3972,7 +3973,7 @@ void Tv1Tmpl_func_000077D0(char *arg0, u16 *dst, s32 arg2) {
     s32 k;
     u16 *p;
 
-    tbl = *(u16 **)(arg0 + 0x64); /* RAW: unknown-object: Tv1Tmpl +0x64 u16 table, arg0 is the model object (no struct) */
+    tbl = ((Tv1Tmpl *)arg0)->frameImage; /* arg0 is the Tv1Tmpl (Tv1Tmpl_func_00007D04 passes s0) */
     if (tbl == NULL) {
         return;
     }
@@ -4556,7 +4557,8 @@ void Snower_display(int *a0) {
         }
     }
 
-    if (*(int*)(&D_func_00000008_data + 0x2C) == 8) { /* RAW: data-table: bootup data alias word (D_func_00000008_data + 0x2C) */
+    /* GameFlow (Bss+0xF8 Sym 272) +0x34 through the value-8 alias: flow mode 8 = EDITORS */
+    if (GAMEFLOW((char *)&D_func_00000008_data - 8)->nextFlowMode == 8) {
         if (XCALL(func_00000000_082F8, cam_isSphereInView)(
             *(int *)&gGfx->curWindow,
             3,
@@ -4814,8 +4816,9 @@ void *TreeTmpl_create(char *arg0) {
     if (TREETMPL(arg0)->shape == 0) {
         gPolyFlags_3EEC4_87A4_wr = gPolyFlags_3EEC4_87A4_rd | 8;
         if (1) {}
-        *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 4) = 0xAA002; /* RAW: data-table: gPolyGeomMode_3EEC8 mode words through a per-site alias (gl_data.h) */
-        *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 0) = 0; /* RAW: data-table: gPolyGeomMode_3EEC8 mode words through a per-site alias (gl_data.h) */
+        /* gPolyGeomMode_3EEC8's two mode words (gl_data.h): [1] = the geometry-mode bits */
+        ((int *)&gPolyGeomMode_3EEC8_87A4_cfg)[1] = 0xAA002;
+        ((int *)&gPolyGeomMode_3EEC8_87A4_cfg)[0] = 0;
         TREETMPL(arg0)->shape = func_00000000(0, &sStr_tree_7FF4, TREETMPL(arg0)->shapeData, 0);
     }
     s1 = (char *)func_00000000(0xC8);
@@ -6671,7 +6674,7 @@ void boot_readVec3Parm_0000E5B8(char *a0) {
     func_00008A7C((int*)(a0 + 0x10));
 }
 
-float ShpNode_func_0000E5E8(char *a0) { return *(float*)(a0 + 0x198); } /* RAW: unknown-object: ShpNode +0x198 float, ShpNode has no struct */
+float ShpNode_func_0000E5E8(char *a0) { return SHPNODE(a0)->dnode.parms.suc.value; } /* the "suc" DNode parm (+0x198) */
 
 void ShpNode_func_0000E5F0(char *a0) {
     FCALL(Parms_save)(a0 + 0x108);

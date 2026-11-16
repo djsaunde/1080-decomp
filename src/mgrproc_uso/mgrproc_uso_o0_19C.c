@@ -108,7 +108,7 @@ mgr_procMain(a0, a1) char * a0; int a1; {
                 import_000A8094(import_80020098, gInputMgr_800200FC.v);
                 v0_save = import_000B34B8(a0, *(int*)a0, 1);
                 node = (int*)MGRRaceProcess_ctor(0, 0x450000, v0_save,
-                                                       *(int*)(a0 + 8), /* RAW: unknown-object: flow proc a0 +8 word (no struct for this -O0 flow object) */
+                                                       (int)FLOWPROC(a0)->courseList,
                                                        *(int*)a0);
                 mgrproc_uso_func_01DA48(a0, 0, node);
                 loop_continue = 1;

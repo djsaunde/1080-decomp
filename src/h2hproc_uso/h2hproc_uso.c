@@ -142,8 +142,9 @@ void h2h_openSession_0000020C(int *a0) {
     CALL(app_setHeapMode)(saved);
     *a0 = 0;
     INPUT_MGR(D_00000000).session = 0;
-    *(int*)a0[2] = 0;
-    *(int*)(a0[2] + 4) = 0; /* RAW: unknown-object: the 8-byte h2h session pair allocated here (no struct) */
+    /* a0[2] = the s32[2] per-player win tally (h2h_procMain passes it as H2HRace.wins) */
+    ((s32 *)a0[2])[0] = 0;
+    ((s32 *)a0[2])[1] = 0;
     *(int*)((char*)&D_00000000 + 0x68) = 0;
 }
 

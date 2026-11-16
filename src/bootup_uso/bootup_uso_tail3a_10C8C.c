@@ -2,6 +2,7 @@
 #include "gdl/gl_data.h"
 #include "gdl/node.h"
 #include "game/input.h"
+#include "game/course.h"
 #include "gdl/backup.h"
 #include "game/modeproc.h"
 #include "uso_call.h"
@@ -58,10 +59,11 @@ void GameFlow_create(int *arg0, int arg1) {
         y = 0;
         z = 0;
         w = func_00000C10.f3;
-        *(float *)q = x;
-        *(float *)(q + 4) = y; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
-        *(float *)(q + 8) = z; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
-        *(float *)(q + 0xC) = w; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
+        /* q = &rec (the inline Vec4 ctor's this; mem_new fallback): the TextWin colour */
+        ((Vec4_10C8C *)q)->x = x;
+        ((Vec4_10C8C *)q)->y = y;
+        ((Vec4_10C8C *)q)->z = z;
+        ((Vec4_10C8C *)q)->w = w;
     }
     func_000000F0 = FCALL(TextWin_ctor)(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
     FCALL(app_setHeapMode)(sp68);
@@ -313,5 +315,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     GAMEFLOW(arg0)->flowMode = arg1;
     FCALL(heap_printStats)();
     p = (char *)D_00000000;
-    FCALL(node_linkBack_0004E888)(*(int *)(GAMEFLOW(arg0)->game + 0x114), p); /* RAW: unknown-object: InputMgr.game world object +0x114 (no struct for the game world) */
+    /* GameFlow.game is the WorldRegistry (game/course.h); windows[3] (+0x114) is the "ProcessWindow"
+     * game_createProcessWindow stores there */
+    FCALL(node_linkBack_0004E888)(WORLDREG(GAMEFLOW(arg0)->game)->windows[3], p);
 }

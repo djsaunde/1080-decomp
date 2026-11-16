@@ -29,6 +29,29 @@ typedef struct U64BGWall {
     f32 scale[4];               /* 0x3C: 1.0f x 4 (stored 0x48 first) */
 } U64BGWall;
 
+/* One wall-face texture record of a bgNtex.uso (the cfg argument of U64BGWall_ctor; game_createBGBox
+ * passes six of them, the course BG op's p[2..7] imports). The ctor reads only the two addresses
+ * (agent-h run 584). */
+typedef struct BGWallTex {
+    s32 unk00;                  /* 0x00: not read by U64BGWall_ctor */
+    s32 unk04;                  /* 0x04: not read by U64BGWall_ctor */
+    s32 timg;                   /* 0x08: the CI texture: G_LOADTEXTILE source of each 64x32 tile */
+    s32 tlut;                   /* 0x0C: the palette: G_SETTIMG (0xFD100000) before the TLUT load */
+} BGWallTex;
+
+/* ---- BGBox (0x40, vtbl Data 0x65E8; BGBox_ctor CA0 = NCC donor bootup_uso_ncc_CA0.cpp,
+ * BGBox_func_00000D94 = display slot +0x1C) ----
+ * The background box node: game_createBGBox builds it as BGBox_ctor(0, "BGBox", 0, half) and hangs
+ * the U64BGWall faces under it. The display draws the box while the scene fog is (nearly)
+ * transparent and copies clearWindow into the current window's flags bit 2 (agent-h run 584). */
+typedef struct BGBox {
+    Node node;                  /* 0x00: node.name = ctor arg 1 */
+    f32 scale[3];               /* 0x2C: 1.0f x 3 */
+    f32 unk38;                  /* 0x38: 0.0f */
+    s32 clearWindow;            /* 0x3C: ctor arg 2 (game_createBGBox: 0): BGBox_func_00000D94 sets
+                                 * the window's clear bit (flags bit 2) from it */
+} BGBox;
+
 /* ---- EnvSettings (0x44, vtbl Data 0x76A8; EnvSettings_ctor 7150) ----
  * The course environment ("rom/<course>_env.bin", EnvSettings_load). EnvSettings_display copies
  * clipNear / clipFar into the gfx context near / far (+0xAC / +0xB0, int -> float) when flags & 2,
@@ -233,6 +256,9 @@ typedef struct TreeTmpl {
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 #define ENVOBJ_ASSERT(T, f, off) typedef char envobj_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 ENVOBJ_ASSERT(U64BGWall, scale, 0x3C);
+ENVOBJ_ASSERT(BGWallTex, tlut, 0xC);
+ENVOBJ_ASSERT(BGBox, clearWindow, 0x3C);
+typedef char envobj_size_BGBox[sizeof(BGBox) == 0x40 ? 1 : -1];
 ENVOBJ_ASSERT(EnvSettings, fallingSnow, 0x40);
 ENVOBJ_ASSERT(FogItem, inside, 0x8C);
 ENVOBJ_ASSERT(FogItem, rng, 0x5C);
