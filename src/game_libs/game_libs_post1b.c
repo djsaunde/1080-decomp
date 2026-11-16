@@ -4796,7 +4796,7 @@ void SkinAnim_bind(char *arg0, char *arg1, V3s690A8 *arg2) {
         *p -= pr->weight;
     }
     i = 0;
-    SA690->bindVerts = (s32)gl_func_00000000(SA690->count * sizeof(V3s690A8));
+    SA690->bindVerts = (s16 (*)[3])gl_func_00000000(SA690->count * sizeof(V3s690A8));
     *(Mtx690A8 *)SA690->boneAtBind = *(Mtx690A8 *)((char *)SA690->bone + 0x70);
     gl_func_00000000((char *)SA690->bone + 0x70, SA690->invBone);
     for (i = 0; i < SA690->count; i++) {
@@ -4893,7 +4893,7 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
             mode = S693(entry, 2);                 /* weight (percent) */
             if (mode > 0) {
                 idx = S693(entry, 0);              /* vert */
-                src = SA693->bindVerts + (var_a3 * 6);
+                src = (char *)SA693->bindVerts + (var_a3 * 6);
                 v[0] = (f32)S693(src, 0);
                 v[1] = (f32)S693(src, 2);
                 v[2] = (f32)S693(src, 4);
