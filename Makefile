@@ -116,6 +116,17 @@ build/src/trnproc_uso/trnproc_uso.c.o: SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
 build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(TRN_SUFFIX)
 build/src/trnproc_uso/trnproc_uso.c.o: TRUNCATE_TEXT := 0x1CE0
 build/non_matching/src/trnproc_uso/trnproc_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1CE0
+# nameent.uso: the spliced donors leave the .text 16-aligned past the module's Text (0x1510); clip it.
+build/src/nameent_uso/nameent_uso.c.o: TRUNCATE_TEXT := 0x1510
+build/non_matching/src/nameent_uso/nameent_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1510
+# nameent.uso is C++ too: its NCC donor (agent-c run 643).
+NE_NCC_DONOR := build/src/nameent_uso/nameent_uso_ncc.cpp.o
+$(NE_NCC_DONOR): src/nameent_uso/nameent_uso_ncc.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+NE_NCC_FUNCS := nameent_uso_func_000002F4 nameent_uso_func_00000760
+build/src/nameent_uso/nameent_uso.c.o build/non_matching/src/nameent_uso/nameent_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(NE_NCC_FUNCS),$(f)=$(NE_NCC_DONOR))
+build/src/nameent_uso/nameent_uso.c.o build/non_matching/src/nameent_uso/nameent_uso.c.o: $(NE_NCC_DONOR)
 # trnproc.uso is C++: functions only edg reproduces come from one NCC donor (agent-c run 643).
 TRN_NCC_DONOR := build/src/trnproc_uso/trnproc_uso_ncc.cpp.o
 $(TRN_NCC_DONOR): src/trnproc_uso/trnproc_uso_ncc.cpp

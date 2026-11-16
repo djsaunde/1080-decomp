@@ -112,47 +112,9 @@ void nameent_uso_func_00000204(char *self) {
 /* nameent_uso_func_000002F4: board draw: the name-board image (a copy of the Data+0x158 image
  * header with the current rider's texture from virtual slot 11) centred on the cursor x (+0x58)
  * at y 40 in white, then the two black letterbox bars. */
-typedef struct NeImage {
-    /* 0x00 */ int tex;
-    /* 0x04 */ int width;
-    /* 0x08 */ int rest[4];
-} NeImage;
-/* NM 84/89: the target holds the rider object in v1 and its vtable in v0 (cfe: the reverse);
- * the volatile pads give the target's frame (0x80). */
-#ifdef NON_MATCHING
+/* EXACT via the NCC (C++) donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
 void nameent_uso_func_000002F4(char *self) {
-    int x;
-    volatile int pad1[2];
-    float col[4];
-    NeImage img;
-    float black[4];
-    volatile int pad2[4];
-    char *obj;
-    char *vt;
-
-    col[0] = 1.0f;
-    col[1] = 1.0f;
-    col[2] = 1.0f;
-    col[3] = 1.0f;
-    img = *(NeImage *)(ne_data + 0x158);
-    obj = *(char **)(*(char **)((char *)&D_00000000 + 0x134) + 0x108);
-    vt = NODE(obj)->vptr;
-    img.tex = ((int (*)(int))VT_SLOT(vt, 11).fn)(VT_SLOT(vt, 11).delta + (int)obj);
-    gl_func_00000000(&img); /* gui_beginFrame_000016A4 */
-    x = *(int *)(self + 0x58) - img.width / 2;
-    gl_func_00000000(&img, 128, col, 255); /* gui_setColorEnvPrim_00002334 */
-    gl_func_00000000(&img, x, 40); /* gui_drawImage_00003B80 */
-    black[0] = 0.0f;
-    black[1] = 0.0f;
-    black[2] = 0.0f;
-    black[3] = 0.0f;
-    gl_func_00000000(&ne_gGui, 255, black); /* gui_setFillColor_00001CA8 */
-    gl_func_00000000(&ne_gGui, 0, 0, 319, 7, 0x10001); /* gui_fillRect */
-    gl_func_00000000(&ne_gGui, 0, 232, 319, 239, 0x10001); /* gui_fillRect */
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000002F4);
-#endif
 
 /* nameent_uso_func_00000458: clear the screen: fill colour {0, 0, 0, 0} at alpha 255, then a
  * full-screen 320x240 fillRect (as tit_WhiteFader_display). */
@@ -264,7 +226,10 @@ void nameent_uso_func_00000750(int a0) {
 void nameent_uso_func_00000758(int a0) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000760);
+/* nameent_uso_func_00000760: the name-entry object's ctor. EXACT via the NCC (C++) donor
+ * src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
+int nameent_uso_func_00000760(char *self, char *owner, int mode) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000009BC);
 
