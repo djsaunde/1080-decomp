@@ -49,31 +49,31 @@ typedef struct AnimData {
     /* 0x04 */ s32 state;          /* 7 once loaded */
     /* 0x08 */ s32 frameData;      /* AnimNodeKey *: resident frames (cmd 3), 0 when streamed */
     /* 0x0C */ s32 numKeys;        /* cmd 1 */
-    /* 0x10 */ s32 keys;           /* AnimKey *, numKeys entries (cmd 1) */
+    /* 0x10 */ AnimKey *keys;      /* numKeys entries (cmd 1) */
     /* 0x14 */ s32 fileOffset;     /* streamed frame data: file position of frame 0 (cmd 3) */
-    /* 0x18 */ s32 mgr;            /* AnimDataMgr * */
+    /* 0x18 */ struct AnimDataMgr *mgr;
     /* 0x1C */ s32 keepKeys;       /* nonzero: a reload reads and drops the key block */
 } AnimData;
 
 /* one anim group (0xC; AnimGroup_init 0x622C8, AnimGroup_load 0x622D8) */
 typedef struct AnimGroup {
-    /* 0x0 */ s32 anims;           /* AnimData *, count entries */
+    /* 0x0 */ AnimData *anims;      /* count entries */
     /* 0x4 */ s32 count;
-    /* 0x8 */ s32 mgr;             /* AnimDataMgr * */
+    /* 0x8 */ struct AnimDataMgr *mgr;
 } AnimGroup;
 
 /* one cached frame (0x14; AnimDataMgr_initSlots 0x62368) */
 typedef struct AnimFrameSlot {
     /* 0x00 */ s32 pose;           /* AnimNodeKey *: numNodes records (alloc numNodes * 14) */
     /* 0x04 */ s32 frame;          /* cache key 2 */
-    /* 0x08 */ s32 anim;           /* cache key 1: AnimData * */
+    /* 0x08 */ AnimData *anim;      /* cache key 1 */
     /* 0x0C */ s32 inUse;          /* cleared for every slot each update (0x62444) */
     /* 0x10 */ s16 pending;        /* async read handle, -1 when the pose is ready */
     /* 0x12 */ s16 pad12;
 } AnimFrameSlot;
 
 typedef struct AnimFrameCache {
-    /* 0x0 */ s32 slots;           /* AnimFrameSlot * */
+    /* 0x0 */ AnimFrameSlot *slots;
     /* 0x4 */ s32 count;
 } AnimFrameCache;
 
@@ -81,7 +81,7 @@ typedef struct AnimFrameCache {
 typedef struct AnimDataMgr {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 version;        /* first int of the anim file */
-    /* 0x30 */ s32 groups;         /* AnimGroup *, numGroups entries */
+    /* 0x30 */ AnimGroup *groups;    /* numGroups entries */
     /* 0x34 */ s32 numGroups;
     /* 0x38 */ s32 numNodes;       /* skeleton size; frame stride = numNodes * 14 */
     /* 0x3C */ s32 file;           /* anim file handle (fs_getHandle) */
@@ -105,7 +105,7 @@ typedef struct AnimDataMgr {
 typedef struct AnimPlayer {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C;
-    /* 0x30 */ s32 animators;      /* list head {Animator *, next}: one per animated node */
+    /* 0x30 */ NodeLink *animators; /* list head, item = Animator *: one per animated node */
     /* 0x34 */ s32 slot0;          /* AnimFrameSlot index of frame0 / frame1 */
     /* 0x38 */ s32 slot1;
     /* 0x3C */ s32 unk3C;
@@ -115,7 +115,7 @@ typedef struct AnimPlayer {
     /* 0x4C */ s32 frame0;         /* (int)time */
     /* 0x50 */ s32 frame1;         /* frame0 + 1, clamped to numFrames - 1 */
     /* 0x54 */ f32 frac;           /* time - frame0 */
-    /* 0x58 */ s32 mgr;            /* AnimDataMgr * */
+    /* 0x58 */ AnimDataMgr *mgr;
     /* 0x5C */ s32 unk5C;
     /* 0x60 */ s32 unk60;
     /* 0x64 */ s32 eventKey;       /* onKey fires when time passes this key's frame; ANIM_NO_KEY */

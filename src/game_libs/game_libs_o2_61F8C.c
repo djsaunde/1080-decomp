@@ -53,7 +53,7 @@ void AnimData_load(AnimData *self) {
             if (self->keepKeys == 0) {
                 self->numKeys = val;
                 gl_ref_00076400(sFmt_numkeys_2205C, self->numKeys);
-                self->keys = CALL(mem_new)(self->numKeys * 8);   /* mem_new */
+                self->keys = (AnimKey *)CALL(mem_new)(self->numKeys * 8);   /* mem_new */
                 CALL(fs_gdlReadFile)(base, self->keys, n);              /* fs_gdlReadFile */
             } else {
                 buf = CALL(mem_new)(n);

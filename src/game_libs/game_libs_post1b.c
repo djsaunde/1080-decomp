@@ -185,7 +185,7 @@ void AnimPlayer_advance(char *arg0) {
                 AP(arg0)->updateCount = dec;
                 if (dec <= 0) {
                     /* the frame cache (AnimDataMgr +0x40): fetch frame0 / frame1 of this anim */
-                    sp38 = (char *) (AP(arg0)->mgr + 0x40);
+                    sp38 = (char *)&AP(arg0)->mgr->cache;
                     AP(arg0)->slot0 = CALL(AnimDataMgr_getSlot)(sp38, (char *) sp3C, AP(arg0)->frame0);
                     AP(arg0)->slot1 = CALL(AnimDataMgr_getSlot)(sp38, (char *) sp3C, AP(arg0)->frame1);
                 }
@@ -250,7 +250,7 @@ void AnimPlayer_applyPose(int *self) {
         return;
     }
     {
-        int base = AP(self)->mgr + 0x40;
+        int base = (int)&AP(self)->mgr->cache;
         AP(self)->pose0 = CALL(AnimFrameCache_getPose)(base, AP(self)->slot0);
         AP(self)->pose1 = CALL(AnimFrameCache_getPose)(base, AP(self)->slot1);
     }

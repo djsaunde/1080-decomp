@@ -26291,7 +26291,7 @@ void AnimData_init(AnimData *a0, int a1) {
     a0->numFrames = 0;
     a0->frameData = 0;
     a0->numKeys = 0;
-    a0->mgr = a1;
+    a0->mgr = (AnimDataMgr *)a1;
 }
 
 /* AnimData_load: (cmd, val) record loader (0x208 / 130 words). Reads
@@ -26406,7 +26406,7 @@ void AnimData_waitFrames(int a0, int a1) {
 void AnimGroup_init(AnimGroup *a0, int a1) {
     a0->count = 0;
     a0->anims = 0;
-    a0->mgr = a1;
+    a0->mgr = (AnimDataMgr *)a1;
 }
 
 /* AnimGroup_load: 36-insn alloc-array + N-init loop (0x90, frame 0x38).
@@ -26437,7 +26437,7 @@ void AnimGroup_load(AnimGroup *self, int a1) {
     int count;
     int i;
     gl_ref_0007644C(&count, a1);
-    self->anims = CALL(mem_new)(count * 32);
+    self->anims = (AnimData *)CALL(mem_new)(count * 32);
     self->count = count;
     for (i = 0; i < self->count; i++) {
         CALL(AnimData_init)((char *)self->anims + i * 32, self->mgr); /* AnimData_init */
@@ -26460,7 +26460,7 @@ void AnimGroup_load(AnimGroup *self, int a1) {
 extern int gl_func_00000000();
 /* (agent-b run 489: anim.h field names; the slot address stays `slots + byte offset`,
  * the loops' two-IV shape is the match) */
-#define SLOT_AT(c, off) ((AnimFrameSlot *)((c)->slots + (off)))
+#define SLOT_AT(c, off) ((AnimFrameSlot *)((char *)(c)->slots + (off)))
 int AnimDataMgr_initSlots(AnimFrameCache *s2, int count, int poseBytes) {
     int i, off;
     if (s2 == 0) {
@@ -26468,7 +26468,7 @@ int AnimDataMgr_initSlots(AnimFrameCache *s2, int count, int poseBytes) {
         if (s2 == 0) goto end;
     }
     s2->count = count;
-    s2->slots = CALL(mem_new)(count * 20);
+    s2->slots = (AnimFrameSlot *)CALL(mem_new)(count * 20);
     for (i = 0, off = 0; i < s2->count; i++, off += 20) {
         SLOT_AT(s2, off)->pose = CALL(mem_new)(poseBytes);
         SLOT_AT(s2, off)->frame = -1;
@@ -26574,7 +26574,7 @@ int AnimFrameCache_find(AnimFrameCache *p, int key1, int key2) {
     while (0) { i = key1; }
     e = (AnimFrameSlot *)p->slots;
 loop:
-    if (e->anim == key1 && e->frame == key2) return i;
+    if (e->anim == (AnimData *)key1 && e->frame == key2) return i;
     i++;
     e++;
     if (i < count) goto loop;
@@ -26625,7 +26625,7 @@ int AnimDataMgr_getSlot(AnimFrameSlot **self, int key1, int key2) {
     slot = CALL(AnimDataMgr_allocSlot)(self);
     e = &(*self)[slot];
     e->pending = CALL(AnimData_readFrames)(key1, e->pose, key2, 1);
-    e->anim = key1;
+    e->anim = (AnimData *)key1;
     e->frame = key2;
     return slot;
 }
@@ -26734,7 +26734,7 @@ void AnimDataMgr_loadFile(char *self) {
     ((AnimDataMgr *)self)->file = CALL(fs_getHandle)(&gSysLib_sym_6275C); /* fs_getHandle */
     gl_ref_0007644C(&((AnimDataMgr *)self)->version);
     gl_ref_00076488(&((AnimDataMgr *)self)->numGroups);
-    ((AnimDataMgr *)self)->groups = CALL(mem_new)(((AnimDataMgr *)self)->numGroups * 12);
+    ((AnimDataMgr *)self)->groups = (AnimGroup *)CALL(mem_new)(((AnimDataMgr *)self)->numGroups * 12);
     for (i = 0; i < ((AnimDataMgr *)self)->numGroups; i++) {
         CALL(AnimGroup_init)((char *)((AnimDataMgr *)self)->groups + i * 12, self); /* AnimGroup_init */
         CALL(AnimGroup_load)((char *)((AnimDataMgr *)self)->groups + i * 12);       /* AnimGroup_load */
@@ -26923,7 +26923,7 @@ void *AnimPlayer_ctor(void *s0, int a1) {
     FCALL(Node_ctor)(s0, GL_DATA_STR(0x22178, "<Node>")); /* Node_ctor(this, "<Node>") */
     *(void **)&((AnimPlayer *)s0)->node.vptr = (char *)&AnimPlayer_vtbl + 0; /* vtable Data 0x21F58 */
     {
-        int *v1 = &((AnimPlayer *)s0)->animators;
+        int *v1 = (int *)&((AnimPlayer *)s0)->animators;
         if (s0 == (void *)-48) {
             v1 = (int *)FCALL(mem_new)(4);
             if (v1 == 0) goto L64;
@@ -26931,7 +26931,7 @@ void *AnimPlayer_ctor(void *s0, int a1) {
         *v1 = 0;
     }
 L64:
-    ((AnimPlayer *)s0)->mgr = a1;
+    ((AnimPlayer *)s0)->mgr = (AnimDataMgr *)a1;
     FCALL(AnimPlayer_reset)(s0);
 end:
     return s0;
