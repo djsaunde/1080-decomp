@@ -40,7 +40,7 @@ void gen_createLights_00001460(char *arg0) {
     if (LIGHT(o)->node.parent != 0) {
         LIGHT(o)->node.unk04 = 1;
     }
-    LIGHT(o)->node.parent = (s32)arg0;
+    LIGHT(o)->node.parent = (Node *)arg0;
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE90C + 0x109C);
     ROOM->local = o;
     LIGHT(o)->parms.col[0] = 1.0f;
@@ -55,7 +55,7 @@ void gen_createLights_00001460(char *arg0) {
     if (LIGHT(o)->node.parent != 0) {
         LIGHT(o)->node.unk04 = 1;
     }
-    LIGHT(o)->node.parent = (s32)arg0;
+    LIGHT(o)->node.parent = (Node *)arg0;
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
     ROOM->ambient2 = o;
     LIGHT(o)->parms.col[0] = 174.0f / denom;
@@ -76,5 +76,5 @@ void gen_createLights_00001460(char *arg0) {
     if (LIGHT(o)->node.parent != 0) {
         LIGHT(o)->node.unk04 = 1;
     }
-    LIGHT(o)->node.parent = (s32)arg0;
+    LIGHT(o)->node.parent = (Node *)arg0;
 }

@@ -1585,7 +1585,7 @@ int *game_ItemType_create_00003A28(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -1841,7 +1841,7 @@ int *CourseMarkerTmpl_create(int a0) {
         if (NODE(x)->parent != 0) {
             NODE(x)->unk04 = 1;
         }
-        NODE(x)->parent = (s32)p1;
+        NODE(x)->parent = (Node *)p1;
     }
     return (int *)p1;
 }
@@ -3929,7 +3929,7 @@ int *game_ItemType_create_0000AC78(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -7853,7 +7853,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }

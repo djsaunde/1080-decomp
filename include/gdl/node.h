@@ -19,7 +19,7 @@ typedef struct Node {
     /* 0x08 */ s32 flags;          /* 0x8000 */
     /* 0x0C */ s32 name;           /* const char *, e.g. "App", "<Node>" */
     /* 0x10 */ s32 children;       /* child list head */
-    /* 0x14 */ s32 parent;
+    /* 0x14 */ struct Node *parent; /* the node whose child list (+0x10) holds this one */
     /* 0x18 */ s32 doFlags;        /* flags sub-object (initialised by a call on its address):
                                     * 0x4 DoDisplay (Node_display), 0x8 DoUpdate (Node_update),
                                     * 0x2 sent by hostio_sendNodeTree; Node_hostioParms publishes 4/8 */
@@ -49,7 +49,7 @@ typedef struct GdlVtEnt {
 
 /* Field access through an untyped `char *` / `int` object pointer (agent-h run 492), e.g. the
  * child-attach idiom every ctor inlines: `if (NODE(c)->parent != 0) NODE(c)->unk04 = 1;
- * NODE(c)->parent = (int)this;`. Lowers to the same base + offset access as the raw form. */
+ * NODE(c)->parent = (Node *)this;`. Lowers to the same base + offset access as the raw form. */
 #define NODE(p) ((Node *)(p))
 
 /* A Node message, the second argument of the handleMsg / doCommand vtable slots (Node_handleMsg

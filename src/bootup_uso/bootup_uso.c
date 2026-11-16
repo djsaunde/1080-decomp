@@ -566,7 +566,7 @@ void *func_00000C10(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -1625,7 +1625,7 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     *(int *)&D_00000000 = (int)g;
     func_00000000(s4C + 0x10, g);
     if (NODE(g)->parent) NODE(g)->unk04 = 1;
-    NODE(g)->parent = (int)s4C;
+    NODE(g)->parent = (Node *)s4C;
     func_00000000();
     func_00000000((int)((InputMgr *)scene)->game, s44, s4C, s3C, s48, s40);
     func_00000000((int)((InputMgr *)scene)->game);
@@ -1652,17 +1652,17 @@ void *game_init(char *scene, int a1, int a2, int a3) {
     p = s48 + 0x10;
     func_00000000(p, s44);
     if (NODE(s44)->parent) NODE(s44)->unk04 = 1;
-    NODE(s44)->parent = (int)s48;
+    NODE(s44)->parent = (Node *)s48;
     func_00000000(p, s40);
     if (NODE(s40)->parent) NODE(s40)->unk04 = 1;
-    NODE(s40)->parent = (int)s48;
+    NODE(s40)->parent = (Node *)s48;
     p = s3C + 0x10;
     func_00000000(p, s4C);
     if (NODE(s4C)->parent) NODE(s4C)->unk04 = 1;
-    NODE(s4C)->parent = (int)s3C;
+    NODE(s4C)->parent = (Node *)s3C;
     func_00000000(p, s48);
     if (NODE(s48)->parent) NODE(s48)->unk04 = 1;
-    NODE(s48)->parent = (int)s3C;
+    NODE(s48)->parent = (Node *)s3C;
     return s3C;
 }
 #else
@@ -1885,7 +1885,7 @@ void game_createLights(char *s1) {
     if (NODE(p90)->parent != 0) {
         NODE(p90)->unk04 = 1;
     }
-    NODE(p90)->parent = (int)o;
+    NODE(p90)->parent = (Node *)o;
     o = (char *)FCALL(mem_new)(0x16C);
     if (o != 0) {
         XCALL(func_00000000_2F90_f, QNode_ctor)(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
@@ -1901,7 +1901,7 @@ void game_createLights(char *s1) {
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
-    NODE(o)->parent = n2;
+    NODE(o)->parent = (Node *)n2;
     XCALL(func_00000000_2F90_v, memtrack_end)();
 }
 
@@ -2139,7 +2139,7 @@ void game_setupDemoSolo(char *s1, int a1) {
     p = (char *)WORLDREG(s1)->bgRoot;
     FCALL(list_append)(p + 0x10, s0);
     if (NODE(s0)->parent != 0) NODE(s0)->unk04 = 1;
-    NODE(s0)->parent = (s32)p;
+    NODE(s0)->parent = (Node *)p;
     SNOWB(r1)->camera = r4;
 }
 
@@ -2356,7 +2356,7 @@ void game_setupReplay(char *s1, int a1) {
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
-    NODE(o)->parent = v1_84;
+    NODE(o)->parent = (Node *)v1_84;
     SNOWB(r1)->camera = f1;
 }
 
@@ -2555,7 +2555,7 @@ void game_setupDemoRace(char *s1, int a1) {
     p84 = (char *)WORLDREG(s1)->bgRoot;
     FCALL(list_append)(p84 + 0x10, t);
     if (NODE(t)->parent != 0) NODE(t)->unk04 = 1;
-    NODE(t)->parent = (s32)p84;
+    NODE(t)->parent = (Node *)p84;
     SNOWB(r[0])->camera = f;
     SNOWB(r[1])->camera = f;
 }
@@ -2675,7 +2675,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -3793,8 +3793,8 @@ void FallingSnow_create(char *a0) {
     if (1) { char **pa = &a0; }
     FCALL(list_append)(head + 0x10, r);
     if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
-    NODE(r)->parent = (s32)head;
-    v = (int *)NODE(ENVSET(a0)->fallingSnow)->vptr;
+    NODE(r)->parent = (Node *)head;
+    v = (int *)NODE(*(char**)(a0 + 0x40))->vptr;
     ((void (*)(char*, int))VT_SLOT(v, 10).fn)(
         (char *)ENVSET(a0)->fallingSnow + VT_SLOT(v, 10).delta,
         0x96);
@@ -4086,7 +4086,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -4496,7 +4496,7 @@ char *FogTmpl_create(char *arg0) {
         if (NODE(o)->parent != 0) {
             NODE(o)->unk04 = 1;
         }
-        NODE(o)->parent = (s32)v;
+        NODE(o)->parent = (Node *)v;
     }
     return v;
 }
@@ -4702,7 +4702,7 @@ char *SnowTmpl_create(char *arg0) {
         if (NODE(o)->parent != 0) {
             NODE(o)->unk04 = 1;
         }
-        NODE(o)->parent = (s32)v;
+        NODE(o)->parent = (Node *)v;
     }
     return v;
 }
@@ -4822,7 +4822,7 @@ skip:
     if (NODE(s1)->parent != 0) {
         NODE(s1)->unk04 = 1;
     }
-    NODE(s1)->parent = (int)s0;
+    NODE(s1)->parent = (Node *)s0;
     func_00000000_087A4_f((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, D_000005F0);
     TREE(s0)->coll.obj.flags |= 1;
     func_00000000_087A4(D_87A4_tail, &TREE(s0)->coll);
@@ -6697,7 +6697,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }

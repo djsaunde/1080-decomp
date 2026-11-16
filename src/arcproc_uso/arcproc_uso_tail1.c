@@ -293,7 +293,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         CALL(RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
@@ -308,14 +308,14 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         o1 = INPUT_MGR(D_00000000).fader;
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
         CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
         CALL(memtrack_end)();
         *(int *)((char *)&D_00000000 + 0x40) = 5;
@@ -613,7 +613,7 @@ void ARCRaceProcess_onRaceOver(ArcRace *a0) {
         if (NODE(node)->parent != 0) {
             NODE(node)->unk04 = 1;
         }
-        NODE(node)->parent = (int)buf;
+        NODE(node)->parent = (Node *)buf;
         CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 1);
         break;
     case 4:
@@ -1291,7 +1291,7 @@ void arc_DataManager_init(ArcDataManager *arg0, char *arg1, int arg2, char *arg3
         if (NODE(sub)->parent != 0) {
             NODE(sub)->unk04 = 1;
         }
-        NODE(sub)->parent = (int)arg0;
+        NODE(sub)->parent = (Node *)arg0;
     }
 }
 
@@ -1519,7 +1519,7 @@ void *arc_ItemType_create_00002334(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -1651,13 +1651,13 @@ char *ARCMenuProcess_ctor(char *arg0) {
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
-        NODE(a3)->parent = (int)arg0;
+        NODE(a3)->parent = (Node *)arg0;
         a3 = *(char **)(D_arc251C_h + 400);
         CALL(list_append)(arg0 + 16, a3);
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
-        NODE(a3)->parent = (int)arg0;
+        NODE(a3)->parent = (Node *)arg0;
         CALL(Fader_start)(*(int *)(D_arc251C_h + 400), 1, 0);
         MENUPROC(arg0)->state = 0;
         MENUPROC(arg0)->unk30 = 1;

@@ -118,7 +118,7 @@ trk_main(a0, a1) int * a0; int a1; {
                 char *r = (char *)s0v;
                 gl_func_00000000(&NODE(d)->children, r);
                 if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
-                NODE(r)->parent = (int)d;
+                NODE(r)->parent = (Node *)d;
             }
             gl_func_00000000(a0, *a0);
             done = 1;
@@ -134,7 +134,7 @@ trk_main(a0, a1) int * a0; int a1; {
                 char *r = (char *)s0v;
                 gl_func_00000000(&NODE(d)->children, r);
                 if (NODE(r)->parent != 0) NODE(r)->unk04 = 1;
-                NODE(r)->parent = (int)d;
+                NODE(r)->parent = (Node *)d;
             }
             done = 1;
             break;
@@ -363,7 +363,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         CALL(RaceProcess_restart)(obj, a1);
 
@@ -383,7 +383,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
             if (NODE(o1)->parent != 0) {
                 NODE(o1)->unk04 = 1;
             }
-            NODE(o1)->parent = (int)obj;
+            NODE(o1)->parent = (Node *)obj;
         } else {
             RACEPROC(obj)->timeout = a1 & 0xFFFF;
             RACEPROC(obj)->menu = 0;
@@ -394,7 +394,7 @@ void *TrkRace_ctor(char *obj, int a1, int a2, int a3) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
         CALL(Fader_start)(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
         CALL(memtrack_end)();
     }
@@ -1032,7 +1032,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
         if (NODE(o)->parent != 0) {
             NODE(o)->unk04 = 1;
         }
-        NODE(o)->parent = (int)arg0;
+        NODE(o)->parent = (Node *)arg0;
         sub = (char *)CALL(PointsGadget_ctor_00000ED0)(0, DATAMGR(arg0)->digitsTall, o);
         DATAMGR(arg0)->points94 = (int)sub;
         CALL(PointsGadget_setValue)(sub, 0);
@@ -1056,7 +1056,7 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
         if (NODE(o)->parent != 0) {
             NODE(o)->unk04 = 1;
         }
-        NODE(o)->parent = (int)arg0;
+        NODE(o)->parent = (Node *)arg0;
     }
 }
 
@@ -1272,7 +1272,7 @@ void *TrkItemType_create_000020EC(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -1428,7 +1428,7 @@ char *TrkMenu_ctor(char *arg0) {
         a3 = (char *)NODE(v0)->vptr;
         ((void (*)(int))VT_SLOT(a3, 10).fn)(VT_SLOT(a3, 10).delta + (int)v0);
         a3 = (char *)TIMMENU(arg0)->base.menu;
-        CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (int)arg0;
+        CALL(list_append)(arg0 + 16, a3); if (NODE(a3)->parent != 0) { NODE(a3)->unk04 = 1; } NODE(a3)->parent = (Node *)arg0;
         if (INPUT_MGR(D_b3_23E4_base).unk184 == 0 ||
             (D_b3_23E4_17D7 == 0x17D7) == 0) {
             GUIMENU(TIMMENU(arg0)->base.menu)->rows[2].enabled = 0;
@@ -1438,7 +1438,7 @@ char *TrkMenu_ctor(char *arg0) {
         if (NODE(a3)->parent != 0) {
             NODE(a3)->unk04 = 1;
         }
-        NODE(a3)->parent = (int)arg0;
+        NODE(a3)->parent = (Node *)arg0;
         CALL(Fader_start)(INPUT_MGR(D_b3_23E4_base).fader, 1, 0, a3);
         TIMMENU(arg0)->unk54 = 0;
         TIMMENU(arg0)->base.state = 0;

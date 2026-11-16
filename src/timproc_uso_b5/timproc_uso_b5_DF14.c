@@ -103,7 +103,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     {
         char *rr = r;
         if (1) {} /* run 217: the r reload issues before the arg2 reload (target) */
-        NODE(child)->parent = (int)arg0;
+        NODE(child)->parent = (Node *)arg0;
         ITEM(rr)->base.enabled = (f32) arg1; /* run 216: cvt store before the id store */
         ITEM(rr)->base.id = arg2;
         sub = (char *)(arg2 + 10);
@@ -229,7 +229,7 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     if (NODE(child)->parent != 0) {
         NODE(child)->unk04 = 1;
     }
-    NODE(child)->parent = (int)sub;
+    NODE(child)->parent = (Node *)sub;
     child = (char *)LIST->count;
     LIST->count = (s32) child + 1;
     LIST->items[(s32) child] = (SelItem *)r;

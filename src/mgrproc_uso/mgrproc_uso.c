@@ -270,7 +270,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         XCALL(mgrproc_uso_func_01B0F8, RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)import_000A5D38(0);
@@ -296,14 +296,14 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         o1 = *(char **)&INPUT_MGR(import_80020228).fader;
         XCALL(mgrproc_uso_func_07ACE0, list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         XCALL(mgrproc_uso_func_0139B0, Fader_start)(*(int *)&INPUT_MGR(import_80020228).fader, 1, 0);
         XCALL(mgrproc_uso_func_074840, memtrack_end)();
@@ -685,7 +685,7 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
             if (NODE(node)->parent != 0) {
                 NODE(node)->unk04 = 1;
             }
-            NODE(node)->parent = (int) hdr;
+            NODE(node)->parent = (Node *) hdr;
             if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
                 *(int *)((char *)arg0->race.unk524 + 0x60) = 2;
                 XCALL(mgrproc_uso_func_00001BD4, mgr_startEnding_00001BE4)(arg0);
@@ -1703,7 +1703,7 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
         if (NODE(node)->parent != 0) {
             NODE(node)->unk04 = 1;
         }
-        NODE(node)->parent = (int)self;
+        NODE(node)->parent = (Node *)self;
     }
 }
 
@@ -1879,7 +1879,7 @@ void *mgr_ItemType_create_00003358(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }

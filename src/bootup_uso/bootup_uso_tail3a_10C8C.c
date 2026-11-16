@@ -151,7 +151,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
         NODE(p)->unk04 = 1;
     }
     r = q;
-    NODE(p)->parent = (int)r;
+    NODE(p)->parent = (Node *)r;
 
     p = arg0;
     q = (char *)&D_00000000;
@@ -161,7 +161,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
         NODE(p)->unk04 = 1;
     }
     s = q;
-    NODE(p)->parent = (int)s;
+    NODE(p)->parent = (Node *)s;
 
     p = (char *)GAMEFLOW(arg0)->flowImgs;
     q = arg0;
@@ -171,7 +171,7 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
         NODE(p)->unk04 = 1;
     }
     s = q;
-    NODE(p)->parent = (int)s;
+    NODE(p)->parent = (Node *)s;
 
     FCALL(GameFlow_addPads_00011AB4)(arg0);
     GAMEFLOW(arg0)->unk74 = 0;

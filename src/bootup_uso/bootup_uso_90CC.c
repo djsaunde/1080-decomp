@@ -783,7 +783,7 @@ sw_end:
             if (NODE(var_s1)->parent != 0) {
                 NODE(var_s1)->unk04 = 1;
             }
-            NODE(var_s1)->parent = (s32) var_s0;
+            NODE(var_s1)->parent = (Node *) var_s0;
             temp_v0_5 = FCALL(Node_ctor)(0, &sStr_DispTrails_8820);
             SNOWB(arg0)->dispTrails = temp_v0_5;
             fq = (s32 *)temp_v0_5;
@@ -795,7 +795,7 @@ sw_end:
             if (NODE(var_s1)->parent != 0) {
                 NODE(var_s1)->unk04 = 1;
             }
-            NODE(var_s1)->parent = (s32) var_s0;
+            NODE(var_s1)->parent = (Node *) var_s0;
             FCALL(Node_setNewNodeMask)(1);
             var_s0 = FCALL(mem_new)(0x23C);
             if (var_s0 != 0) {
@@ -812,7 +812,7 @@ sw_end:
             if (NODE(var_s0)->parent != 0) {
                 NODE(var_s0)->unk04 = 1;
             }
-            NODE(var_s0)->parent = (s32) var_s1;
+            NODE(var_s0)->parent = (Node *) var_s1;
             if (SNOWB(arg0)->flags & 1) {
                 var_s1 = FCALL(mem_new)(0X1F4);
                 if (var_s1 != 0) {
@@ -830,7 +830,7 @@ sw_end:
                 if (NODE(var_s0)->parent != 0) {
                     NODE(var_s0)->unk04 = 1;
                 }
-                NODE(var_s0)->parent = (s32) var_s1;
+                NODE(var_s0)->parent = (Node *) var_s1;
             }
             var_s1 = FCALL(mem_new)(0X174);
             if (var_s1 != 0) {
@@ -848,7 +848,7 @@ sw_end:
             if (NODE(var_s0)->parent != 0) {
                 NODE(var_s0)->unk04 = 1;
             }
-            NODE(var_s0)->parent = (s32) var_s1;
+            NODE(var_s0)->parent = (Node *) var_s1;
             var_s1 = FCALL(mem_new)(0X174);
             if (var_s1 != 0) {
                 var_a2 = (s32) var_s1;
@@ -865,7 +865,7 @@ sw_end:
             if (NODE(var_s0)->parent != 0) {
                 NODE(var_s0)->unk04 = 1;
             }
-            NODE(var_s0)->parent = (s32) var_s1;
+            NODE(var_s0)->parent = (Node *) var_s1;
             FCALL(Node_setNewNodeMask)(0xFFFF);
             FCALL(memtrack_end)();
         }
@@ -954,27 +954,27 @@ sw_end:
             if (NODE(sp164)->parent != 0) {
                 NODE(sp164)->unk04 = 1;
             }
-            NODE(sp164)->parent = (s32) var_s1;
+            NODE(sp164)->parent = (Node *) var_s1;
             if (SNOWB(arg0)->flags & 1) {
                 var_s1 = SNOWB(arg0)->trails;
                 FCALL(list_append)(var_s1 + 0x10, sp160);
                 if (NODE(sp160)->parent != 0) {
                     NODE(sp160)->unk04 = 1;
                 }
-                NODE(sp160)->parent = (s32) var_s1;
+                NODE(sp160)->parent = (Node *) var_s1;
             }
             var_s1 = SNOWB(arg0)->trails;
             FCALL(list_append)(var_s1 + 0x10, sp15C); if (1) {}
             if (NODE(sp15C)->parent != 0) {
                 NODE(sp15C)->unk04 = 1;
             }
-            NODE(sp15C)->parent = (s32) var_s1;
+            NODE(sp15C)->parent = (Node *) var_s1;
             var_s1 = SNOWB(arg0)->trails;
             FCALL(list_append)(var_s1 + 0x10, sp158); if (1) {}
             if (NODE(sp158)->parent != 0) {
                 NODE(sp158)->unk04 = 1;
             }
-            NODE(sp158)->parent = (s32) var_s1;
+            NODE(sp158)->parent = (Node *) var_s1;
             FCALL(Node_setNewNodeMask)(1); if (1) {}
             /* a call does not end a uopt basic block: without the split, the sp158 temp's v0 live range
              * covers this block and the site-1 value cannot take v0. Each draw-argument global goes

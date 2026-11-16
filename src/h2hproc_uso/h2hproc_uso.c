@@ -122,10 +122,10 @@ void h2h_procMain(int *a0, int a1) {
                 s0 = (int *)gl_func_00000000(0, 1, 0);
                 gl_func_00000000(&D_00000000 + 0x10, s0);
                 if (NODE(s0)->parent == 0) {
-                    NODE(s0)->parent = (int)&D_00000000;
+                    NODE(s0)->parent = (Node *)&D_00000000;
                 } else {
                     NODE(s0)->unk04 = 1;
-                    NODE(s0)->parent = (int)&D_00000000;
+                    NODE(s0)->parent = (Node *)&D_00000000;
                 }
                 break;
         }
@@ -422,7 +422,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         CALL(RaceProcess_restart)(obj, a1);
         RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
@@ -436,14 +436,14 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
 
         o1 = INPUT_MGR(D_00000000).fader;
         CALL(list_append)(obj + 16, o1);
         if (NODE(o1)->parent != 0) {
             NODE(o1)->unk04 = 1;
         }
-        NODE(o1)->parent = (int)obj;
+        NODE(o1)->parent = (Node *)obj;
         CALL(Fader_start)(INPUT_MGR(D_00000000).fader, 1, 0);
         CALL(memtrack_end)();
     }
@@ -655,7 +655,7 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
         if (NODE(tmp)->parent != 0) {
             NODE(tmp)->unk04 = 1;
         }
-        NODE(tmp)->parent = a3;
+        NODE(tmp)->parent = (Node *)a3;
         CALL(Fader_start)((int)GAMEFLOW(base)->fader, 1, 1);
         break;
     }
@@ -848,7 +848,7 @@ void h2h_setupCameras_00000C18(int *a0) {
     if (NODE(r2)->parent != 0) {
         NODE(r2)->unk04 = 1;
     }
-    NODE(r2)->parent = b84;
+    NODE(r2)->parent = (Node *)b84;
     gl_func_00000000(RACEPROC(a0)->replayCam, a0);
 
     /* Final flag clear. */
@@ -1114,7 +1114,7 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
     if (NODE(tmp)->parent != 0) {
         NODE(tmp)->unk04 = 1;
     }
-    NODE(tmp)->parent = (int)a0;
+    NODE(tmp)->parent = (Node *)a0;
     CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16));
     CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16));
     CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16));
@@ -1370,7 +1370,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     sub1 = (int*)self->health1;
     CALL(list_append)(self_p10, sub1);
     if (NODE(sub1)->parent != 0) NODE(sub1)->unk04 = 1;
-    NODE(sub1)->parent = (int)self;
+    NODE(sub1)->parent = (Node *)self;
 
     sub2 = (int*)CALL(CoolGadget_ctor)(0, 90);
     self->health2 = (int)sub2;
@@ -1379,7 +1379,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     sub2 = (int*)self->health2;
     CALL(list_append)(self_p10, sub2);
     if (NODE(sub2)->parent != 0) NODE(sub2)->unk04 = 1;
-    NODE(sub2)->parent = (int)self;
+    NODE(sub2)->parent = (Node *)self;
 
     sub3 = (int*)CALL(CourseGadget_ctor)(0, 35);
     src = (int*)self->base.entries;
@@ -1397,7 +1397,7 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     sub3 = (int*)self->base.course;
     CALL(list_append)(self_p10, sub3);
     if (NODE(sub3)->parent != 0) NODE(sub3)->unk04 = 1;
-    NODE(sub3)->parent = (int)self;
+    NODE(sub3)->parent = (Node *)self;
 }
 
 /* h2h_DataManager_update: 143-insn (0x23C) per-frame state-machine.
@@ -1652,7 +1652,7 @@ void *h2h_ItemType_create_00001A6C(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }

@@ -2064,7 +2064,7 @@ void BallRotator_hostioParms(char *a0) {
  * dead spill" cap. */
 extern int gl_func_00000000();
 void BallRotator_update_0003604C(int *a0) {
-    int t = BALLROT(a0)->node.parent;
+    int t = (int)BALLROT(a0)->node.parent;
     int *p = &t;
     CALL(BallRotator_func_00036224)(a0, t + 0x30);   /* &parent->mtx (MNode) */
     (void)p;
@@ -3122,7 +3122,7 @@ void MNode_def(NodeListState *a0) {
         if (MNODE(o)->node.parent != 0) {
             MNODE(o)->node.unk04 = 1;
         }
-        MNODE(o)->node.parent = tmp;
+        MNODE(o)->node.parent = (Node *)tmp;
     }
 }
 
@@ -18197,7 +18197,7 @@ void shape_cmdLightTarget(NodeListState *a0) {
     if (n->node.parent != 0) {
         n->node.unk04 = 1;
     }
-    n->node.parent = (s32)l;
+    n->node.parent = (Node *)l;
     }
 }
 

@@ -804,11 +804,11 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
     ((GenRoom *)self)->modifier = sub;
     gen_imp_list_append(&NODE(entity)->children, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)entity;
+    NODE(sub)->parent = (Node *)entity;
     entity = ((GenRoom *)self)->modifier;
     gen_imp_list_append(&NODE(entity)->children, self);
     if (NODE(self)->parent != 0) NODE(self)->unk04 = 1;
-    NODE(self)->parent = (int)entity;
+    NODE(self)->parent = (Node *)entity;
     gen_createLights_00001460(self);
     gen_createVRBox_00001658(self);
     {
@@ -819,7 +819,7 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
     *(int*)&import_8001FFF0 = 0;
     gen_imp_list_append(&NODE(self)->children, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)self;
+    NODE(sub)->parent = (Node *)self;
     gen_imp_AnimDataMgr_releaseFrames(*(int*)&import_80020078);
     (void)a1;
 end:
@@ -895,7 +895,7 @@ void gen_createLights_00001460(char *arg0) {
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
-    NODE(o)->parent = (int)arg0;
+    NODE(o)->parent = (Node *)arg0;
 
     /* widget B (id 2) — white RGBA = 1.0f */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE90C + 0x109C);
@@ -912,7 +912,7 @@ void gen_createLights_00001460(char *arg0) {
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
-    NODE(o)->parent = (int)arg0;
+    NODE(o)->parent = (Node *)arg0;
 
     /* widget C (id 4) — RGBA = 174/255, 113/255, 61/255, retA */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
@@ -935,7 +935,7 @@ void gen_createLights_00001460(char *arg0) {
     if (NODE(o)->parent != 0) {
         NODE(o)->unk04 = 1;
     }
-    NODE(o)->parent = (int)arg0;
+    NODE(o)->parent = (Node *)arg0;
     if (1) {} if (1) {} if (1) {} if (1) {}
 }
 #else
@@ -985,7 +985,7 @@ void gen_createVRBox_00001658(char *arg0) {
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)arg0;
+    NODE(c)->parent = (Node *)arg0;
     ((GenRoom *)arg0)->walls[0] = (char *)gen_imp_U64BGWall_ctor(0, &import_807C3820, 0, 0, 0);
     ((GenRoom *)arg0)->walls[1] = (char *)gen_imp_U64BGWall_ctor(0, &import_807D3A40, 0, 0x5A, 0);
     ((GenRoom *)arg0)->walls[2] = (char *)gen_imp_U64BGWall_ctor(0, &import_807B3600, 0, 0xB4, 0);
@@ -997,37 +997,37 @@ void gen_createVRBox_00001658(char *arg0) {
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     c = ((GenRoom *)arg0)->walls[1];
     gen_imp_list_append(ap, c);
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     c = ((GenRoom *)arg0)->walls[2];
     gen_imp_list_append(ap, c);
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     c = ((GenRoom *)arg0)->walls[3];
     gen_imp_list_append(ap, c);
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     c = ((GenRoom *)arg0)->walls[4];
     gen_imp_list_append(ap, c);
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     c = ((GenRoom *)arg0)->walls[5];
     gen_imp_list_append(ap, c);
     if (NODE(c)->parent != 0) {
         NODE(c)->unk04 = 1;
     }
-    NODE(c)->parent = (int)P;
+    NODE(c)->parent = (Node *)P;
     gen_imp_memtrack_end();
     gen_imp_memtrack_end();
 }
@@ -1106,7 +1106,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             if (NODE(w)->parent != 0) {
                 NODE(w)->unk04 = 1;
             }
-            NODE(w)->parent = (int)arg0;
+            NODE(w)->parent = (Node *)arg0;
             FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
         } else {
             w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, ((GenScene *)E)->cam, &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
@@ -1118,7 +1118,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             if (NODE(w)->parent != 0) {
                 NODE(w)->unk04 = 1;
             }
-            NODE(w)->parent = (int)arg0;
+            NODE(w)->parent = (Node *)arg0;
             FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
             w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, ((GenScene *)E)->cam2, &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
             ((SelectionMgr *)arg0)->wins[1] = (SelectWin *)w;
@@ -1128,7 +1128,7 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             if (NODE(w)->parent != 0) {
                 NODE(w)->unk04 = 1;
             }
-            NODE(w)->parent = (int)arg0;
+            NODE(w)->parent = (Node *)arg0;
             FW(((GenScene *)E)->room->modifier, 0x3C) = (int)((SelectionMgr *)arg0)->wins[1];
             if (((SelectionMgr *)arg0)->wins[0]->stageBit != 4) {
                 ((SelectionMgr *)arg0)->waitMask = 0;
@@ -1604,14 +1604,14 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         if (NODE(w)->parent != 0) {
             NODE(w)->unk04 = 1;
         }
-        NODE(w)->parent = (int)v1t;
+        NODE(w)->parent = (Node *)v1t;
         v1t = (s32 *)GCAM->bg;
         w = (s32 *)GCAM->target;
         gen_imp_list_append(&NODE(v1t)->children, w);
         if (NODE(w)->parent != 0) {
             NODE(w)->unk04 = 1;
         }
-        NODE(w)->parent = (int)v1t;
+        NODE(w)->parent = (Node *)v1t;
         w = (s32 *)GCAM->target;
         zC[1] = 0.0f;
         zC[0] = 0.0f;
@@ -5616,18 +5616,18 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     if (NODE(B)->parent != 0) {
         NODE(B)->unk04 = 1;
     }
-    NODE(B)->parent = (int)A;
+    NODE(B)->parent = (Node *)A;
     gen_imp_list_append(&NODE(A)->children, C);
     if (1) { }
     if (NODE(C)->parent != 0) {
         NODE(C)->unk04 = 1;
     }
-    NODE(C)->parent = (int)A;
+    NODE(C)->parent = (Node *)A;
     gen_imp_list_append((char *)&import_800200A8 + 0x10, A);
     if (NODE(A)->parent != 0) {
         NODE(A)->unk04 = 1;
     }
-    NODE(A)->parent = (int)&import_80020098;
+    NODE(A)->parent = (Node *)&import_80020098;
     ((GenScene *)self)->room = gen_buildRoom_0000131C(0, a1);
     if (a1 == 1) {
         ((GenScene *)self)->cam = (GenCamera *)gen_createCamera_0000283C(0, 1, 1, 0x3C);
@@ -6059,7 +6059,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
@@ -7631,7 +7631,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     }
     {
         char *rr = r;
-        NODE(child)->parent = (int)a0;
+        NODE(child)->parent = (Node *)a0;
         *(float *)(rr + 0x2A4) = (float)arg1;
         FW(rr, 0x2B0) = arg2 - 1;
     }
@@ -7727,7 +7727,7 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     if (NODE(child)->parent != 0) {
         NODE(child)->unk04 = 1;
     }
-    NODE(child)->parent = (int)obj;
+    NODE(child)->parent = (Node *)obj;
 
     child = (char *)FW(a0, 0x6C);
     FW(a0, 0x6C) = (int)child + 1;
@@ -7863,7 +7863,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     }
     {
         char *rr = r;
-        NODE(child)->parent = (int)arg0;
+        NODE(child)->parent = (Node *)arg0;
         {
         s32 a2v = arg2;
         FW(rr, 0x2B0) = a2v;
@@ -7932,7 +7932,7 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     if (NODE(child)->parent != 0) {
         NODE(child)->unk04 = 1;
     }
-    NODE(child)->parent = (int)obj;
+    NODE(child)->parent = (Node *)obj;
     child = (char *)FW(arg0, 0x6C);
     FW(arg0, 0x6C) = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;

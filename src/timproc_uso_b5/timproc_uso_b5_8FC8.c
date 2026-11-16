@@ -171,9 +171,9 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define FP(p, o) (*(char **)((char *)(p) + (o)))
 #define ALLOC(n) ((char *)gen_imp_mem_new(n))
 /* inline B::add(B *n): list insert + parent link */
-#define ADDV(V, T, N) { V = (T); w = (char *)(N); gen_imp_list_append(&NODE(V)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (int)V; }
-#define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(&NODE(V)->children, W); if (1) {} if (NODE(W)->parent) NODE(W)->unk04 = 1; NODE(W)->parent = (int)V; }
-#define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(&NODE(_at)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (int)_at; }
+#define ADDV(V, T, N) { V = (T); w = (char *)(N); gen_imp_list_append(&NODE(V)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (Node *)V; }
+#define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(&NODE(V)->children, W); if (1) {} if (NODE(W)->parent) NODE(W)->unk04 = 1; NODE(W)->parent = (Node *)V; }
+#define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(&NODE(_at)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (Node *)_at; }
 #define CFGS(S) FP(&S, 0x134)
 /* The four stage lists (Character / Board / Course / LevelList, 0x70 = SelItemList):
  * cfront ctor(this) with the nested base-ctor allocation check. VT is the SelItemList

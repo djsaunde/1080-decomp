@@ -3018,7 +3018,7 @@ void RaceProcess_init(RaceProcess *arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (NODE(sp28)->parent != 0) {
         NODE(sp28)->unk04 = 1;
     }
-    NODE(sp28)->parent = (int)arg0;
+    NODE(sp28)->parent = (Node *)arg0;
 }
 
 extern int gl_func_00000000();
@@ -3576,7 +3576,7 @@ void RaceProcess_createReplayCam(RaceProcess *a0) {
     side = (int *)STATE->bgRoot;
     CALL(list_append)(&NODE(side)->children, obj);
     if (NODE(obj)->parent != 0) NODE(obj)->unk04 = 1;
-    NODE(obj)->parent = (int)side;
+    NODE(obj)->parent = (Node *)side;
     if (a0) {}
 #undef STATE
 }
@@ -3918,7 +3918,7 @@ int *ColourItem_create_000088B4(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }

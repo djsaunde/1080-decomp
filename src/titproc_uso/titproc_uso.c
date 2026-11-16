@@ -469,12 +469,12 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     sub = (void *)TITLEDEMO(root)->dataMgr;
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     TITLEDEMO(root)->keyMessage = (s32)(XCALL(titproc_uso_func_0015F4, KeyMessage_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->keyMessage);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     if (INPUT_MGR(import_00020098).locked != 0) {
         child = (void *)TITLEDEMO(root)->keyMessage;
         sub = (void *)NODE(child)->vptr;
@@ -485,17 +485,17 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->mainLogo);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     TITLEDEMO(root)->langMenu = (s32)(XCALL(titproc_uso_func_001B10, LangMenu_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->langMenu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     TITLEDEMO(root)->whiteFader = (s32)(XCALL(titproc_uso_func_001D7C, tit_WhiteFader_ctor)(0));
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->whiteFader);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     TITLEDEMO(root)->menu = (s32)(import_000A5D38(0));
 
     import_000A5F40((void *)TITLEDEMO(root)->menu, root);
@@ -510,12 +510,12 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
 
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub = (void *)TITLEDEMO(root)->menu);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
 
     sub = INPUT_MGR(import_00020098).fader;
     XCALL(titproc_uso_func_07ACE0, list_append)((char *)root + 0x10, sub);
     if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
-    NODE(sub)->parent = (int)root;
+    NODE(sub)->parent = (Node *)root;
     XCALL(titproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_00020098).fader, 1, 0);
 
     TITLEDEMO(root)->unk6C = 5;
@@ -1746,7 +1746,7 @@ void *tit_ItemType_create_00002980(int *arg0) {
         if (NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
         }
-        NODE(head)->parent = (int)p2;
+        NODE(head)->parent = (Node *)p2;
     }
     return p2;
 }
