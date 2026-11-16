@@ -17,6 +17,7 @@
 #include "gdl/ballrot.h"
 #include "gdl/gfxlib.h"
 #include "gdl/texload.h"
+#include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
 extern int AnimPlayer_reset();
@@ -20744,8 +20745,6 @@ void sys_dumpMemory(int arg0, unsigned char *byte_array, int outer_count) {
  * pairs, all lw/sw; last block two), NOT four ints at +8-off offsets; the
  * eight tail blocks pass (fmt, long long, double) (lw pair + ldc1/sdc1).
  * 64-bit context/register dump printf function. */
-#define FLL_55C34(p, o) (*(long long *)((char *)(p) + (o)))
-#define FD_55C34(p, o) (*(double *)((char *)(p) + (o)))
 /* Unwrapped EXACT 2026-10-16 (run 97): the 18 jal-0 sites go through the
  * blank alias gl_func_00034458_55C34 (= 0), and the 3 baked in-unit jal
  * 0x6A620 words (+0x4c/+0x64/+0x284, the AnimPlayer_reset calls)
@@ -20753,36 +20752,39 @@ void sys_dumpMemory(int arg0, unsigned char *byte_array, int outer_count) {
  * undefined_syms_auto.txt, so the link writes the ROM 0x0C01A988 at each. */
 extern int gl_func_00034458_55C34();
 extern int game_libs_func_00062F08_55C34();
+/* arg0 = the faulting OSThread; temp_s0 = &thread->context */
+#define FCTX ((__OSThreadContext *)temp_s0)
 void fault_printThread(char *arg0) {
     char *temp_s0;
 
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x215EC, "\nFault in thread %d:\n\n")), FW(arg0, 0x14));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x215EC, "\nFault in thread %d:\n\n")), ((OSThread *)arg0)->id);
     temp_s0 = 0; /* multi-def anti-fold guard: keeps call 2 reading 252(s0) instead of folding to [arg0+0x11C] + extra home reload */
     if (1) { temp_s0 = arg0 + 0x20; }
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21604, "epc\t\t0x%08x\n")), FW(temp_s0, 0xFC));
-    game_libs_func_00062F08_55C34(FW(temp_s0, 0x100), (GL_DATA_STR(0x21614, "cause")), (GL_DATA(0x211E0)));
-    game_libs_func_00062F08_55C34(FW(temp_s0, 0xF8), (GL_DATA(0x2161C)), (GL_DATA(0x21330)));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21620, "badvaddr\t0x%08x\n\n")), FW(temp_s0, 0x104));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21634, "at 0x%016llx v0 0x%016llx v1 0x%016llx\n")), FLL_55C34(temp_s0, 0x0), FLL_55C34(temp_s0, 0x8), FLL_55C34(temp_s0, 0x10));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2165C, "a0 0x%016llx a1 0x%016llx a2 0x%016llx\n")), FLL_55C34(temp_s0, 0x18), FLL_55C34(temp_s0, 0x20), FLL_55C34(temp_s0, 0x28));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21684, "a3 0x%016llx t0 0x%016llx t1 0x%016llx\n")), FLL_55C34(temp_s0, 0x30), FLL_55C34(temp_s0, 0x38), FLL_55C34(temp_s0, 0x40));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216AC, "t2 0x%016llx t3 0x%016llx t4 0x%016llx\n")), FLL_55C34(temp_s0, 0x48), FLL_55C34(temp_s0, 0x50), FLL_55C34(temp_s0, 0x58));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216D4, "t5 0x%016llx t6 0x%016llx t7 0x%016llx\n")), FLL_55C34(temp_s0, 0x60), FLL_55C34(temp_s0, 0x68), FLL_55C34(temp_s0, 0x70));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216FC, "s0 0x%016llx s1 0x%016llx s2 0x%016llx\n")), FLL_55C34(temp_s0, 0x78), FLL_55C34(temp_s0, 0x80), FLL_55C34(temp_s0, 0x88));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21724, "s3 0x%016llx s4 0x%016llx s5 0x%016llx\n")), FLL_55C34(temp_s0, 0x90), FLL_55C34(temp_s0, 0x98), FLL_55C34(temp_s0, 0xA0));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2174C, "s6 0x%016llx s7 0x%016llx t8 0x%016llx\n")), FLL_55C34(temp_s0, 0xA8), FLL_55C34(temp_s0, 0xB0), FLL_55C34(temp_s0, 0xB8));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21774, "t9 0x%016llx gp 0x%016llx sp 0x%016llx\n")), FLL_55C34(temp_s0, 0xC0), FLL_55C34(temp_s0, 0xC8), FLL_55C34(temp_s0, 0xD0));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2179C, "s8 0x%016llx ra 0x%016llx\n\n")), FLL_55C34(temp_s0, 0xD8), FLL_55C34(temp_s0, 0xE0));
-    game_libs_func_00062F08_55C34(FW(temp_s0, 0x10C), (GL_DATA_STR(0x217B8, "fpcsr")), (GL_DATA(0x214A4)));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217C0, "d0  %.15e\td2  %.15e\n")), FLL_55C34(temp_s0, 0x110), FD_55C34(temp_s0, 0x118));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217D8, "d4  %.15e\td6  %.15e\n")), FLL_55C34(temp_s0, 0x120), FD_55C34(temp_s0, 0x128));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217F0, "d8  %.15e\td10 %.15e\n")), FLL_55C34(temp_s0, 0x130), FD_55C34(temp_s0, 0x138));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21808, "d12 %.15e\td14 %.15e\n")), FLL_55C34(temp_s0, 0x140), FD_55C34(temp_s0, 0x148));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21820, "d16 %.15e\td18 %.15e\n")), FLL_55C34(temp_s0, 0x150), FD_55C34(temp_s0, 0x158));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21838, "d20 %.15e\td22 %.15e\n")), FLL_55C34(temp_s0, 0x160), FD_55C34(temp_s0, 0x168));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21850, "d24 %.15e\td26 %.15e\n")), FLL_55C34(temp_s0, 0x170), FD_55C34(temp_s0, 0x178));
-    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21868, "d28 %.15e\td30 %.15e\n")), FLL_55C34(temp_s0, 0x180), FD_55C34(temp_s0, 0x188));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21604, "epc\t\t0x%08x\n")), FCTX->pc);
+    game_libs_func_00062F08_55C34(FCTX->cause, (GL_DATA_STR(0x21614, "cause")), (GL_DATA(0x211E0)));
+    game_libs_func_00062F08_55C34(FCTX->sr, (GL_DATA(0x2161C)), (GL_DATA(0x21330)));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21620, "badvaddr\t0x%08x\n\n")), FCTX->badvaddr);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21634, "at 0x%016llx v0 0x%016llx v1 0x%016llx\n")), FCTX->at, FCTX->v0, FCTX->v1);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2165C, "a0 0x%016llx a1 0x%016llx a2 0x%016llx\n")), FCTX->a0, FCTX->a1, FCTX->a2);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21684, "a3 0x%016llx t0 0x%016llx t1 0x%016llx\n")), FCTX->a3, FCTX->t0, FCTX->t1);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216AC, "t2 0x%016llx t3 0x%016llx t4 0x%016llx\n")), FCTX->t2, FCTX->t3, FCTX->t4);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216D4, "t5 0x%016llx t6 0x%016llx t7 0x%016llx\n")), FCTX->t5, FCTX->t6, FCTX->t7);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x216FC, "s0 0x%016llx s1 0x%016llx s2 0x%016llx\n")), FCTX->s0, FCTX->s1, FCTX->s2);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21724, "s3 0x%016llx s4 0x%016llx s5 0x%016llx\n")), FCTX->s3, FCTX->s4, FCTX->s5);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2174C, "s6 0x%016llx s7 0x%016llx t8 0x%016llx\n")), FCTX->s6, FCTX->s7, FCTX->t8);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21774, "t9 0x%016llx gp 0x%016llx sp 0x%016llx\n")), FCTX->t9, FCTX->gp, FCTX->sp);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x2179C, "s8 0x%016llx ra 0x%016llx\n\n")), FCTX->s8, FCTX->ra);
+    game_libs_func_00062F08_55C34(FCTX->fpcsr, (GL_DATA_STR(0x217B8, "fpcsr")), (GL_DATA(0x214A4)));
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217C0, "d0  %.15e\td2  %.15e\n")), *(long long *)&FCTX->fp0, FCTX->fp2.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217D8, "d4  %.15e\td6  %.15e\n")), *(long long *)&FCTX->fp4, FCTX->fp6.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x217F0, "d8  %.15e\td10 %.15e\n")), *(long long *)&FCTX->fp8, FCTX->fp10.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21808, "d12 %.15e\td14 %.15e\n")), *(long long *)&FCTX->fp12, FCTX->fp14.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21820, "d16 %.15e\td18 %.15e\n")), *(long long *)&FCTX->fp16, FCTX->fp18.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21838, "d20 %.15e\td22 %.15e\n")), *(long long *)&FCTX->fp20, FCTX->fp22.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21850, "d24 %.15e\td26 %.15e\n")), *(long long *)&FCTX->fp24, FCTX->fp26.d);
+    XCALL(gl_func_00034458_55C34, dbg_printf)((GL_DATA_STR(0x21868, "d28 %.15e\td30 %.15e\n")), *(long long *)&FCTX->fp28, FCTX->fp30.d);
 }
+#undef FCTX
 
 /* fault_printFlags: print a flag word by name: header (a1, val), then
  * for each table entry {mask, bits, name} until mask == 0, print the name
