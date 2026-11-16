@@ -34,12 +34,12 @@ extern void *gUsoModuleSlotsPtr;
 extern void func_80001584(FsDevice *, u32);   /* uso_clearMemStats */
 extern void func_80000874(FsDevice *);        /* fs_setDeviceTable */
 extern void func_800018A8(void);              /* uso_scanRom */
-extern char func_80001994[], func_80000DEC[], D_80000CF0[], func_80001088[];
-extern char D_80001258[], D_8000128C[], D_80000BD4[], D_800016BC[];
-extern char D_80001814[], D_80001894[], D_80001870[], D_80001748[];
+extern char func_80001994[], func_80000DEC[], uso_unload_rt[], func_80001088[];
+extern char uso_printVersion_rt[], uso_addrToModule_rt[], uso_printModules_rt[], fs_openFile_rt[];
+extern char fs_readChecked_rt[], fs_closeFile_rt[], fs_seek_rt[], uso_findDataSection_rt[];
 /* the target's .text-relative (0x80000C5C) and .L800007A8 local-label references, pinned in undefined_syms_auto.txt */
 extern char func_80001594_L80000C5C[], func_80001594_L800007A8[];
-extern char D_800016AC[], D_80001860[], D_8000189C[];
+extern char uso_getErrno_rt[], fs_tell_rt[], uso_returnZeroF_8000149C_rt[];
 extern char func_800014A8[], func_800010E8[], func_80000480[];
 
 /* a gUsoCtx field by name, addressed as the int cb + its offset (see the header comment) */
@@ -58,31 +58,31 @@ void uso_init(FsDevice *devices, u32 ramSize) {
     CTX(init) = (s32)func_80001994;                        /* uso_init */
     CTX(load) = (s32)func_80000DEC;                        /* uso_load */
     CTX(error) = 0;
-    CTX(unload) = (s32)D_80000CF0;                         /* uso_unload */
+    CTX(unload) = (s32)uso_unload_rt;                         /* uso_unload */
     CTX(callEntry) = (s32)func_80001088;                   /* uso_callEntry */
     CTX(getModuleName) = (s32)(func_800010E8 + 0x44);      /* uso_getModuleName */
     CTX(print) = (s32)(func_800014A8 + 0x24);              /* uso_nullPrintf */
     CTX(print88) = (s32)(func_800014A8 + 0x24);            /* uso_nullPrintf */
     CTX(alloc) = (s32)(func_80000480 + 0x30);              /* uso_alloc */
-    CTX(printVersion) = (s32)D_80001258;                   /* uso_printVersion */
+    CTX(printVersion) = (s32)uso_printVersion_rt;                   /* uso_printVersion */
     CTX(alloc30) = (s32)(func_80000480 + 0x30);            /* uso_alloc */
-    CTX(addrToModule) = (s32)D_8000128C;                   /* uso_addrToModule */
+    CTX(addrToModule) = (s32)uso_addrToModule_rt;                   /* uso_addrToModule */
     CTX(clearMemStats) = (s32)func_80001584;               /* uso_clearMemStats */
     CTX(printMemStats) = (s32)(func_800014A8 + 0x40);      /* uso_printMemStats */
-    CTX(printModules) = (s32)D_80000BD4;                   /* uso_printModules */
+    CTX(printModules) = (s32)uso_printModules_rt;                   /* uso_printModules */
     CTX(unk38) = 0;
-    CTX(openFile) = (s32)D_800016BC;                       /* fs_openFile */
-    CTX(readFile) = (s32)D_80001814;                       /* fs_readChecked */
-    CTX(closeFile) = (s32)D_80001894;                      /* fs_closeFile */
-    CTX(seekFile) = (s32)D_80001870;                       /* fs_seek */
-    CTX(findDataSection) = (s32)D_80001748;                /* uso_findDataSection */
+    CTX(openFile) = (s32)fs_openFile_rt;                       /* fs_openFile */
+    CTX(readFile) = (s32)fs_readChecked_rt;                       /* fs_readChecked */
+    CTX(closeFile) = (s32)fs_closeFile_rt;                      /* fs_closeFile */
+    CTX(seekFile) = (s32)fs_seek_rt;                       /* fs_seek */
+    CTX(findDataSection) = (s32)uso_findDataSection_rt;                /* uso_findDataSection */
     CTX(printSlots) = (s32)func_80001594_L80000C5C;        /* uso_printSlots */
     CTX(print8C) = (s32)(func_800014A8 + 0x24);            /* uso_nullPrintf */
     CTX(nop90) = (s32)(func_800014A8 + 0x18);              /* uso_nop_800010C0 */
     CTX(romRead) = (s32)func_80001594_L800007A8;           /* fs_romRead */
-    CTX(getErrno) = (s32)D_800016AC;                       /* uso_getErrno */
-    CTX(tellFile) = (s32)D_80001860;                       /* fs_tell */
-    CTX(zeroF94) = (s32)D_8000189C;                        /* uso_returnZeroF_8000149C */
+    CTX(getErrno) = (s32)uso_getErrno_rt;                       /* uso_getErrno */
+    CTX(tellFile) = (s32)fs_tell_rt;                       /* fs_tell */
+    CTX(zeroF94) = (s32)uso_returnZeroF_8000149C_rt;                        /* uso_returnZeroF_8000149C */
     for (i = 0; i < 135; i++) { gUsoModules[i] = 0; ((UsoModuleSlot *)&gUsoModuleSlots)[i].name[0] = 0; }
     for (i = 0; i < 16; i++) {
         if (devices[i].name == 0) break;

@@ -35,7 +35,7 @@ extern void func_800066D0(unsigned int);
 extern void func_80005F10(void *, s32, void *, void *, void *, OSPri);
 extern void func_8000A110(void *);
 typedef struct { s32 f0; void *f4; void *f8; void *fC; void *f10, *f14, *f18; } PiDevMgr;
-extern s32 D_80006060, D_80005AEC;
+extern s32 __osDevMgrMain_rt, pimgr_ramromMain_rt;
 extern void func_80004A50();
 extern void func_800056F0();
 extern unsigned char pimgr_piThread[], pimgr_piThreadStack[], pimgr_ramromThread[], pimgr_ramromThreadStack[], pimgr_piEventQueue[], pimgr_piEventBuf[];
@@ -68,9 +68,9 @@ void osCreatePiManager(OSPri pri, void *cmdQ, void *cmdBuf, s32 cmdMsgCnt) {
         __osPiDevMgr.f10 = &__osPiAccessQueue;
         __osPiDevMgr.f14 = &func_80004A50;
         __osPiDevMgr.f18 = &func_800056F0;
-        func_80005F10(pimgr_piThread, 0, &D_80006060, &__osPiDevMgr, pimgr_piThreadStack + 0x1000, pri);
+        func_80005F10(pimgr_piThread, 0, &__osDevMgrMain_rt, &__osPiDevMgr, pimgr_piThreadStack + 0x1000, pri);
         func_8000A110(pimgr_piThread);
-        func_80005F10(pimgr_ramromThread, 0, &D_80005AEC, 0, pimgr_ramromThreadStack + 0x400, pri - 1);
+        func_80005F10(pimgr_ramromThread, 0, &pimgr_ramromMain_rt, 0, pimgr_ramromThreadStack + 0x400, pri - 1);
         func_8000A110(pimgr_ramromThread);
         func_800066D0(savedMask);
         if (oldPri != -1) {

@@ -25,7 +25,7 @@ typedef void (*FuncPtr2)(...);
 typedef unsigned char u8;
 #include "../../include/uso.h" /* UsoModuleSlot (obj): secData[USO_SEC_SYM] */
 extern "C" FuncPtr2 gUsoPrintfHook;
-extern "C" char D_8000A36C[];
+extern "C" char sFmt_unkown_reloc_type_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoRelSym_1ADC;
 
@@ -79,7 +79,7 @@ extern "C" s32 uso_relocate(char *obj, char *base, UsoRel_1ADC *rel, s32 n) {
             *p = *p + val;
             break;
         default:
-            gUsoPrintfHook(D_8000A36C, (void *)type);
+            gUsoPrintfHook(sFmt_unkown_reloc_type_8000A36C, (void *)type);
             return -2;
         }
         rel[i].info = rel[i].info | 8;

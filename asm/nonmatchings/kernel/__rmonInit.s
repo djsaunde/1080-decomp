@@ -34,10 +34,10 @@ glabel __rmonInit
     /* 8F60 80007F60 25CEBE38 */  addiu      $t6, $t6, %lo(rmon_rmonIOStack)
     /* 8F64 80007F64 25CF4000 */  addiu      $t7, $t6, 0x4000
     /* 8F68 80007F68 3C048002 */  lui        $a0, %hi(rmon_rmonIOThread)
-    /* 8F6C 80007F6C 3C068000 */  lui        $a2, %hi(D_800055F0)
+    /* 8F6C 80007F6C 3C068000 */  lui        $a2, %hi(__rmonIOhandler_rt)
     /* 8F70 80007F70 241800FF */  addiu      $t8, $zero, 0xFF
     /* 8F74 80007F74 AFB80014 */  sw         $t8, 0x14($sp)
-    /* 8F78 80007F78 24C655F0 */  addiu      $a2, $a2, %lo(D_800055F0)
+    /* 8F78 80007F78 24C655F0 */  addiu      $a2, $a2, %lo(__rmonIOhandler_rt)
     /* 8F7C 80007F7C 2484BC68 */  addiu      $a0, $a0, %lo(rmon_rmonIOThread)
     /* 8F80 80007F80 AFAF0010 */  sw         $t7, 0x10($sp)
     /* 8F84 80007F84 00002825 */  or         $a1, $zero, $zero

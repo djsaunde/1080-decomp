@@ -25,8 +25,8 @@ extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 gUsoPrintfHook;
-extern s32 D_8000A32C;
-extern s32 D_8000A340;
+extern s32 sFmt_USO_Version_8000A32C;
+extern s32 sStr_3_1_8000A340;
 extern s32 gUsoCtx;
 extern s32 gUsoEntryResult;
 extern s32 gUsoEntryIndex;
@@ -78,14 +78,14 @@ typedef struct {
     UsoSlot slots[4];
 } UsoSlotGroup;
 
-extern u8 D_80013138;
+extern u8 gUsoModuleSlot0InUse;
 extern UsoSlot gUsoModuleSlots;
-extern u8 D_800131D4;
-extern UsoSlot D_8001313C;
-extern u8 D_80013270;
-extern UsoSlot D_800131D8;
-extern UsoSlotGroup D_80013274;
-extern UsoSlotGroup D_800182E4;
+extern u8 gUsoModuleSlot1InUse;
+extern UsoSlot gUsoModuleSlot1;
+extern u8 gUsoModuleSlot2InUse;
+extern UsoSlot gUsoModuleSlot2;
+extern UsoSlotGroup gUsoModuleSlot3;
+extern UsoSlotGroup gUsoModuleSlotsEnd;
 
 
 /* split from kernel_000.c - 2026-06-10 kernel ROM-order relayout */

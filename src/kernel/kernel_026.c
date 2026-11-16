@@ -27,51 +27,51 @@ typedef struct {
     u32 unk10;
 } KernelUsoEntry; /* size 0x14 */
 
-extern char D_8000A590[];
-extern char D_8000A598[];
-extern char D_8000A5B0[];
-extern char D_8000A5B8[];
-extern char D_8000A5BC[];
-extern char D_8000A5C8[];
-extern char D_8000A5D4[];
-extern char D_8000A5E4[];
-extern char D_8000A5EC[];
-extern char D_8000A5F4[];
-extern char D_8000A5FC[];
-extern char D_8000A600[];
-extern char D_8000A60C[];
-extern char D_8000A618[];
-extern char D_8000A61C[];
-extern char D_8000A630[];
+extern char sStr_mainuso_8000A590[];
+extern char sStr_rom_8000A598[];
+extern char sStr_Info_8000A5B0[];
+extern char sStr_Sym_8000A5B8[];
+extern char sStr_Text_Reloc_8000A5BC[];
+extern char sStr_Data_Reloc_8000A5C8[];
+extern char sStr_RoData_Reloc_8000A5D4[];
+extern char sStr_Text_8000A5E4[];
+extern char sStr_Data_8000A5EC[];
+extern char sStr_RoData_8000A5F4[];
+extern char sStr_Bss_8000A5FC[];
+extern char sStr_EntrySym_8000A600[];
+extern char sStr_EndOfFile_8000A60C[];
+extern char sStr_End_8000A618[];
+extern char sStr_BinaryDataSection_8000A61C[];
+extern char sStr_DiskInfo_8000A630[];
 
 const KernelUsoEntry k_gFsDevices[] = {
-    { D_8000A590, 0x00D9FDB0, 0x00E984B0, 0x8001FFA0, 0 },
-    { D_8000A598, 0x0000B7C0, 0x00D9FDB0, 0, 0 },
+    { sStr_mainuso_8000A590, 0x00D9FDB0, 0x00E984B0, 0x8001FFA0, 0 },
+    { sStr_rom_8000A598, 0x0000B7C0, 0x00D9FDB0, 0, 0 },
     { NULL, 0, 0, 0, 0 },
 };
 u32 D_80009E9C = 0;
 
 const char *const func_80009EA0[] = {
-    D_8000A5B0, D_8000A5B8, D_8000A5BC, D_8000A5C8,
+    sStr_Info_8000A5B0, sStr_Sym_8000A5B8, sStr_Text_Reloc_8000A5BC, sStr_Data_Reloc_8000A5C8,
 };
 
 const char *const func_80009EB0[] = {
-    D_8000A5D4, D_8000A5E4, D_8000A5EC, D_8000A5F4, D_8000A5FC,
-    D_8000A600, D_8000A60C, D_8000A618, D_8000A61C, D_8000A630,
+    sStr_RoData_Reloc_8000A5D4, sStr_Text_8000A5E4, sStr_Data_8000A5EC, sStr_RoData_8000A5F4, sStr_Bss_8000A5FC,
+    sStr_EntrySym_8000A600, sStr_EndOfFile_8000A60C, sStr_End_8000A618, sStr_BinaryDataSection_8000A61C, sStr_DiskInfo_8000A630,
     NULL,       NULL,       NULL,
 };
 
-char D_80009EE4[] = "%s: Text=%x-%x\n";
-char D_80009EF4[] = "%d = %x,%s\n";
-char D_80009F00[] = "USO: unloading %s\n";
-char D_80009F14[] = "USO: loading %s\n";
-char D_80009F28[] = "rb";
-char D_80009F2C[] = "USO Version: %s\n";
-char D_80009F40[] = "3.1";
-char D_80009F44[] = "unknown";
-char D_80009F4C[] = "MemUsed = %d\n";
-char D_80009F5C[] = "%s = %d\n";
-char D_80009F68[] = "rb";
-char D_80009F6C[] = "unkown reloc type %x\n"; /* sic: "unkown" in ROM */
-char D_80009F84[] = "USO: UnCompress %d to %d\n";
-char D_80009FA0[] = "cross referenced symbol section not loaded";
+char sFmt_Text_range_80009EE4[] = "%s: Text=%x-%x\n";
+char sFmt_slot_line_80009EF4[] = "%d = %x,%s\n";
+char sFmt_USO_unloading_80009F00[] = "USO: unloading %s\n";
+char sFmt_USO_loading_80009F14[] = "USO: loading %s\n";
+char sStr_rb_80009F28[] = "rb";
+char sFmt_USO_Version_80009F2C[] = "USO Version: %s\n";
+char sStr_3_1_80009F40[] = "3.1";
+char sStr_unknown_80009F44[] = "unknown";
+char sFmt_MemUsed_80009F4C[] = "MemUsed = %d\n";
+char sFmt_section_bytes_80009F5C[] = "%s = %d\n";
+char sStr_rb_80009F68[] = "rb";
+char sFmt_unkown_reloc_type_80009F6C[] = "unkown reloc type %x\n"; /* sic: "unkown" in ROM */
+char sFmt_USO_UnCompress_80009F84[] = "USO: UnCompress %d to %d\n";
+char sStr_cross_referenced_symbol_section_not_loaded_80009FA0[] = "cross referenced symbol section not loaded";

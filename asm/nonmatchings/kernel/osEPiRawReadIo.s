@@ -2,15 +2,15 @@
 nonmatching osEPiRawReadIo, 0x194
 
 glabel osEPiRawReadIo
-    /* A850 80009850 3C0EA460 */  lui        $t6, %hi(D_A4600010)
-    /* A854 80009854 8DC70010 */  lw         $a3, %lo(D_A4600010)($t6)
+    /* A850 80009850 3C0EA460 */  lui        $t6, %hi(gPiStatusReg)
+    /* A854 80009854 8DC70010 */  lw         $a3, %lo(gPiStatusReg)($t6)
     /* A858 80009858 27BDFFF0 */  addiu      $sp, $sp, -0x10
     /* A85C 8000985C 30EF0003 */  andi       $t7, $a3, 0x3
     /* A860 80009860 11E00006 */  beqz       $t7, .L8000987C
     /* A864 80009864 00000000 */   nop
   .L80009868:
-    /* A868 80009868 3C18A460 */  lui        $t8, %hi(D_A4600010)
-    /* A86C 8000986C 8F070010 */  lw         $a3, %lo(D_A4600010)($t8)
+    /* A868 80009868 3C18A460 */  lui        $t8, %hi(gPiStatusReg)
+    /* A86C 8000986C 8F070010 */  lw         $a3, %lo(gPiStatusReg)($t8)
     /* A870 80009870 30F90003 */  andi       $t9, $a3, 0x3
     /* A874 80009874 1720FFFC */  bnez       $t9, .L80009868
     /* A878 80009878 00000000 */   nop

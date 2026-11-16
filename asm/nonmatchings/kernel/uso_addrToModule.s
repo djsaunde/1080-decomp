@@ -48,7 +48,7 @@ glabel uso_addrToModule
     /* 1F30 80000F30 3C038001 */  lui        $v1, %hi(D_80012D6C)
     /* 1F34 80000F34 24632D6C */  addiu      $v1, $v1, %lo(D_80012D6C)
     /* 1F38 80000F38 10400010 */  beqz       $v0, .L80000F7C
-    /* 1F3C 80000F3C 3C098001 */   lui       $t1, %hi(D_80012F7C)
+    /* 1F3C 80000F3C 3C098001 */   lui       $t1, %hi(gUsoModulesEnd)
     /* 1F40 80000F40 8C44004C */  lw         $a0, 0x4C($v0)
     /* 1F44 80000F44 00E4082B */  sltu       $at, $a3, $a0
     /* 1F48 80000F48 1420000C */  bnez       $at, .L80000F7C
@@ -65,7 +65,7 @@ glabel uso_addrToModule
     /* 1F74 80000F74 03E00008 */  jr         $ra
     /* 1F78 80000F78 ACCD0000 */   sw        $t5, 0x0($a2)
   .L80000F7C:
-    /* 1F7C 80000F7C 25292F7C */  addiu      $t1, $t1, %lo(D_80012F7C)
+    /* 1F7C 80000F7C 25292F7C */  addiu      $t1, $t1, %lo(gUsoModulesEnd)
     /* 1F80 80000F80 8C640000 */  lw         $a0, 0x0($v1)
   .L80000F84:
     /* 1F84 80000F84 50800010 */  beql       $a0, $zero, .L80000FC8
@@ -145,8 +145,8 @@ glabel uso_addrToModule
   .L80001094:
     /* 2094 80001094 5469FFBB */  bnel       $v1, $t1, .L80000F84
     /* 2098 80001098 8C640000 */   lw        $a0, 0x0($v1)
-    /* 209C 8000109C 3C0A8001 */  lui        $t2, %hi(D_8000A344)
-    /* 20A0 800010A0 254AA344 */  addiu      $t2, $t2, %lo(D_8000A344)
+    /* 209C 8000109C 3C0A8001 */  lui        $t2, %hi(sStr_unknown_8000A344)
+    /* 20A0 800010A0 254AA344 */  addiu      $t2, $t2, %lo(sStr_unknown_8000A344)
     /* 20A4 800010A4 ACAA0000 */  sw         $t2, 0x0($a1)
     /* 20A8 800010A8 ACC00000 */  sw         $zero, 0x0($a2)
     /* 20AC 800010AC 03E00008 */  jr         $ra

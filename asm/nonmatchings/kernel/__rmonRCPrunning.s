@@ -2,8 +2,8 @@
 nonmatching __rmonRCPrunning, 0x24
 
 glabel __rmonRCPrunning
-    /* 9030 80008030 3C08A404 */  lui        $t0, %hi(D_A4040010)
-    /* 9034 80008034 8D080010 */  lw         $t0, %lo(D_A4040010)($t0)
+    /* 9030 80008030 3C08A404 */  lui        $t0, %hi(gSpStatusReg)
+    /* 9034 80008034 8D080010 */  lw         $t0, %lo(gSpStatusReg)($t0)
     /* 9038 80008038 00001025 */  or         $v0, $zero, $zero
     /* 903C 8000803C 31080003 */  andi       $t0, $t0, 0x3
     /* 9040 80008040 15000002 */  bnez       $t0, .L8000804C

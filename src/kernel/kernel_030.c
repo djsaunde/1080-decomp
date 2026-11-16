@@ -23,7 +23,7 @@ extern s32 rmon_rmonIOStack;
 extern s32 rmon_rmonIOThread;
 extern s32 rmon_rmonPiMQ;
 extern s32 rmon_rmonPiMsgs;
-extern s32 D_800055F0;
+extern s32 __rmonIOhandler_rt;
 extern void func_800053D0(void*, void*, s32);
 extern void func_800051E0(s32, void*, s32);
 extern void func_80005F10(void*, s32, void*, s32, void*, s32);
@@ -36,7 +36,7 @@ void __rmonInit(void) {
     func_800051E0(0xB, &__rmonMQ, 4);
     func_800051E0(0xC, &__rmonMQ, 8);
     func_800051E0(0xD, &__rmonMQ, 0);
-    func_80005F10(&rmon_rmonIOThread, 0, &D_800055F0, 0,
+    func_80005F10(&rmon_rmonIOThread, 0, &__rmonIOhandler_rt, 0,
                   (char*)&rmon_rmonIOStack + 0x4000, 0xFF);
     func_80005920(0x96, &rmon_rmonPiMQ, &rmon_rmonPiMsgs, 8);
     func_8000A110(&rmon_rmonIOThread);

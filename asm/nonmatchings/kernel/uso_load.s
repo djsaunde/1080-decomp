@@ -13,11 +13,11 @@ glabel uso_load
     /* 1A0C 80000A0C AFBF0024 */  sw         $ra, 0x24($sp)
     /* 1A10 80000A10 AFB20020 */  sw         $s2, 0x20($sp)
     /* 1A14 80000A14 3C018001 */  lui        $at, %hi(gUsoEntryModule)
-    /* 1A18 80000A18 3C048001 */  lui        $a0, %hi(D_8000A314)
+    /* 1A18 80000A18 3C048001 */  lui        $a0, %hi(sFmt_USO_loading_8000A314)
     /* 1A1C 80000A1C AFB1001C */  sw         $s1, 0x1C($sp)
     /* 1A20 80000A20 AC222C68 */  sw         $v0, %lo(gUsoEntryModule)($at)
     /* 1A24 80000A24 00009025 */  or         $s2, $zero, $zero
-    /* 1A28 80000A28 2484A314 */  addiu      $a0, $a0, %lo(D_8000A314)
+    /* 1A28 80000A28 2484A314 */  addiu      $a0, $a0, %lo(sFmt_USO_loading_8000A314)
     /* 1A2C 80000A2C 0320F809 */  jalr       $t9
     /* 1A30 80000A30 02002825 */   or        $a1, $s0, $zero
     /* 1A34 80000A34 3C028001 */  lui        $v0, %hi(gUsoCtx)
@@ -31,8 +31,8 @@ glabel uso_load
     /* 1A54 80000A54 02202825 */  or         $a1, $s1, $zero
     /* 1A58 80000A58 0C000198 */  jal        func_80000660
     /* 1A5C 80000A5C 02002025 */   or        $a0, $s0, $zero
-    /* 1A60 80000A60 3C068001 */  lui        $a2, %hi(D_8000A328)
-    /* 1A64 80000A64 24C6A328 */  addiu      $a2, $a2, %lo(D_8000A328)
+    /* 1A60 80000A60 3C068001 */  lui        $a2, %hi(sStr_rb_8000A328)
+    /* 1A64 80000A64 24C6A328 */  addiu      $a2, $a2, %lo(sStr_rb_8000A328)
     /* 1A68 80000A68 27A40050 */  addiu      $a0, $sp, 0x50
     /* 1A6C 80000A6C 0C00022E */  jal        func_800008B8
     /* 1A70 80000A70 02202825 */   or        $a1, $s1, $zero
@@ -48,9 +48,9 @@ glabel uso_load
     /* 1A90 80000A90 AC2EA2D8 */  sw         $t6, %lo(gUsoHeapCur)($at)
     /* 1A94 80000A94 8C4F0004 */  lw         $t7, 0x4($v0)
     /* 1A98 80000A98 3C018001 */  lui        $at, %hi(gUsoHeapEnd)
-    /* 1A9C 80000A9C 3C108001 */  lui        $s0, %hi(D_80013112)
+    /* 1A9C 80000A9C 3C108001 */  lui        $s0, %hi(gUsoModuleSlot0Name)
     /* 1AA0 80000AA0 AFA00048 */  sw         $zero, 0x48($sp)
-    /* 1AA4 80000AA4 26103112 */  addiu      $s0, $s0, %lo(D_80013112)
+    /* 1AA4 80000AA4 26103112 */  addiu      $s0, $s0, %lo(gUsoModuleSlot0Name)
     /* 1AA8 80000AA8 263130A0 */  addiu      $s1, $s1, %lo(gUsoModuleSlots)
     /* 1AAC 80000AAC 00001825 */  or         $v1, $zero, $zero
     /* 1AB0 80000AB0 AC2FA2DC */  sw         $t7, %lo(gUsoHeapEnd)($at)
@@ -115,8 +115,8 @@ glabel uso_load
     /* 1B88 80000B88 0C000263 */  jal        func_8000098C
     /* 1B8C 80000B8C ACE30000 */   sw        $v1, 0x0($a3)
     /* 1B90 80000B90 3C108001 */  lui        $s0, %hi(gUsoModules)
-    /* 1B94 80000B94 3C118001 */  lui        $s1, %hi(D_80012F7C)
-    /* 1B98 80000B98 26312F7C */  addiu      $s1, $s1, %lo(D_80012F7C)
+    /* 1B94 80000B94 3C118001 */  lui        $s1, %hi(gUsoModulesEnd)
+    /* 1B98 80000B98 26312F7C */  addiu      $s1, $s1, %lo(gUsoModulesEnd)
     /* 1B9C 80000B9C 26102D60 */  addiu      $s0, $s0, %lo(gUsoModules)
     /* 1BA0 80000BA0 8E040000 */  lw         $a0, 0x0($s0)
   .L80000BA4:
@@ -135,8 +135,8 @@ glabel uso_load
     /* 1BD0 80000BD0 10000027 */  b          .L80000C70
     /* 1BD4 80000BD4 2402FFF6 */   addiu     $v0, $zero, -0xA
   .L80000BD8:
-    /* 1BD8 80000BD8 3C118001 */  lui        $s1, %hi(D_80012F7C)
-    /* 1BDC 80000BDC 26312F7C */  addiu      $s1, $s1, %lo(D_80012F7C)
+    /* 1BD8 80000BD8 3C118001 */  lui        $s1, %hi(gUsoModulesEnd)
+    /* 1BDC 80000BDC 26312F7C */  addiu      $s1, $s1, %lo(gUsoModulesEnd)
     /* 1BE0 80000BE0 26102D60 */  addiu      $s0, $s0, %lo(gUsoModules)
     /* 1BE4 80000BE4 8E040000 */  lw         $a0, 0x0($s0)
   .L80000BE8:
@@ -155,8 +155,8 @@ glabel uso_load
     /* 1C14 80000C14 10000016 */  b          .L80000C70
     /* 1C18 80000C18 2402FFF4 */   addiu     $v0, $zero, -0xC
   .L80000C1C:
-    /* 1C1C 80000C1C 3C118001 */  lui        $s1, %hi(D_80012F7C)
-    /* 1C20 80000C20 26312F7C */  addiu      $s1, $s1, %lo(D_80012F7C)
+    /* 1C1C 80000C1C 3C118001 */  lui        $s1, %hi(gUsoModulesEnd)
+    /* 1C20 80000C20 26312F7C */  addiu      $s1, $s1, %lo(gUsoModulesEnd)
     /* 1C24 80000C24 26102D60 */  addiu      $s0, $s0, %lo(gUsoModules)
     /* 1C28 80000C28 8E040000 */  lw         $a0, 0x0($s0)
   .L80000C2C:

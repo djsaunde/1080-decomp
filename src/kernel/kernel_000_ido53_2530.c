@@ -12,13 +12,13 @@
  *   - exception-vector installs are literal-address struct copies
  *     (*(V*)0x80000000 etc; %lo(0x80000000)=0 gives the bare-lui form);
  *   - KMC stub copy is a stack-resident `*dst=*src; dst++; src++` walk from
- *     D_80003280 with one `src+=2; dst+=2;` skip step (each increment pair on
+ *     __ptExceptionPreamble_rt with one `src+=2; dst+=2;` skip step (each increment pair on
  *     its OWN line — same-line grouping flips the as1 addiu order);
  *   - RDRAM 0x800-word copy loop body: `*sp30=*sp34; sp30+=1; sp34+=1;` with
  *     BOTH increments on ONE line + `sp2C-=1;` last (line grouping again);
  *   - two dead pad locals (pad50/pad4C) reproduce the 0x60 frame.
  * Spliced into kernel_000.c.o via REPLACE_FUNC_BODY (real 5.3 -O1 output;
- * donor relocs imported by the splice; D_80003280 added to
+ * donor relocs imported by the splice; __ptExceptionPreamble_rt added to
  * undefined_syms_auto.txt). */
 typedef int s32;
 typedef unsigned int u32;
@@ -48,7 +48,7 @@ extern s32 osResetType;                          /* osResetType */
 extern s32 osTvType;                          /* osTvType */
 extern s32 osAppNMIBuffer;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
-extern s32 D_80003280[];
+extern s32 __ptExceptionPreamble_rt[];
 
 /* The KMC PARTNER-N64 debugger monitor image at 0xBFF00000 (ultralib os/initialize.c, BUILD_VERSION < K:
  * `mon = 0xBFF00000; if (*mon != 0x4B4D4300) return; ... monadr = *(mon + 1)`): word 0 is the
@@ -109,7 +109,7 @@ void osInitialize(void) {
         sp38 = (s32 *)0xBFF08004;
         sp3C = (void *)0xBFF00000;
         if (*(s32 *)0xBFF00000 == 0x4B4D4300) {
-            src = D_80003280;
+            src = __ptExceptionPreamble_rt;
             dst = (s32 *)0x80000180;
             *dst = *src;
             dst++; src++;

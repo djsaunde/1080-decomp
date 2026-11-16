@@ -78,7 +78,7 @@ typedef struct {
     /* 0x18 */ s32 edma;
 } PiDevMgr;
 extern PiDevMgr __osPiDevMgr;
-extern s32 D_80006060, D_80005AEC;
+extern s32 __osDevMgrMain_rt, pimgr_ramromMain_rt;
 extern void func_80004A50();
 /* 2026-06-10 kernel-relayout: this is ROM 0x800056EC (addiu included).
  * ALL ROM callers jal 0x800056F0 (post-addiu alt entry, the old "stolen
@@ -121,9 +121,9 @@ void osCreatePiManager(s32 arg0, s32 *arg1, s32 *arg2, s32 arg3) {
         __osPiDevMgr.acsQueue = (s32) &__osPiAccessQueue;
         __osPiDevMgr.dma = (s32) &func_80004A50;
         __osPiDevMgr.edma = (s32) &func_800056F0; /* ROM stores the post-addiu entry */
-        func_80005F10(&pimgr_piThread, 0, &D_80006060, &__osPiDevMgr, (char *) &pimgr_piThreadStack + 0x1000, arg0);
+        func_80005F10(&pimgr_piThread, 0, &__osDevMgrMain_rt, &__osPiDevMgr, (char *) &pimgr_piThreadStack + 0x1000, arg0);
         func_8000A110(&pimgr_piThread);
-        func_80005F10(&pimgr_ramromThread, 0, &D_80005AEC, NULL, (char *) &pimgr_ramromThreadStack + 0x400, arg0 - 1);
+        func_80005F10(&pimgr_ramromThread, 0, &pimgr_ramromMain_rt, NULL, (char *) &pimgr_ramromThreadStack + 0x400, arg0 - 1);
         func_8000A110(&pimgr_ramromThread);
         sp24 = 0; /* dead: sizes this host body to 0x1EC, see below */
         func_800066D0(sp2C);

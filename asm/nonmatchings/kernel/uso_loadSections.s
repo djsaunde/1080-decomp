@@ -88,8 +88,8 @@ glabel uso_loadSections
     /* 2FF4 80001FF4 8FAD0058 */   lw        $t5, 0x58($sp)
     /* 2FF8 80001FF8 8E990084 */  lw         $t9, 0x84($s4)
     /* 2FFC 80001FFC 8E300004 */  lw         $s0, 0x4($s1)
-    /* 3000 80002000 3C048001 */  lui        $a0, %hi(D_8000A384)
-    /* 3004 80002004 2484A384 */  addiu      $a0, $a0, %lo(D_8000A384)
+    /* 3000 80002000 3C048001 */  lui        $a0, %hi(sFmt_USO_UnCompress_8000A384)
+    /* 3004 80002004 2484A384 */  addiu      $a0, $a0, %lo(sFmt_USO_UnCompress_8000A384)
     /* 3008 80002008 8FA5005C */  lw         $a1, 0x5C($sp)
     /* 300C 8000200C 0320F809 */  jalr       $t9
     /* 3010 80002010 02003025 */   or        $a2, $s0, $zero

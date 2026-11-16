@@ -25,8 +25,8 @@ extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 gUsoPrintfHook;
-extern s32 D_8000A32C;
-extern s32 D_8000A340;
+extern s32 sFmt_USO_Version_8000A32C;
+extern s32 sStr_3_1_8000A340;
 extern s32 gUsoCtx;
 extern s32 gFsDeviceTable;
 extern s32 __osActiveQueue;
@@ -89,7 +89,7 @@ extern s32 func_80004B30(void *);
  * (same as __osLeoInterrupt's in kernel_000_b); merged into this unit.
  * EXACT via twin port of game_libs' copy gl_osEPiRawStartDma
  * (game_libs_ido53_6F8A4.c, 5.3 -O1; 7.1 -O1 emits the same bytes).
- * The old NM's miss was the PI registers: `extern u32 D_A4600010` lets IDO
+ * The old NM's miss was the PI registers: `extern u32 gPiStatusReg` lets IDO
  * hoist the first PI_STATUS load above the argument homing stores; raw
  * volatile literals keep it after them. __osCurrentHandle = __osCurrentHandle,
  * osVirtualToPhysical = func_80004B30. */

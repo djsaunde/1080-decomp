@@ -34,8 +34,8 @@ glabel exceptasm_rdbFront
     /* 3EE0 80002EE0 13400018 */  beqz       $k0, .L80002F44 /* handwritten instruction */
     /* 3EE4 80002EE4 00000000 */   nop
   .L80002EE8:
-    /* 3EE8 80002EE8 3C1AA460 */  lui        $k0, %hi(D_A4600010) /* handwritten instruction */
-    /* 3EEC 80002EEC 8F5A0010 */  lw         $k0, %lo(D_A4600010)($k0) /* handwritten instruction */
+    /* 3EE8 80002EE8 3C1AA460 */  lui        $k0, %hi(gPiStatusReg) /* handwritten instruction */
+    /* 3EEC 80002EEC 8F5A0010 */  lw         $k0, %lo(gPiStatusReg)($k0) /* handwritten instruction */
     /* 3EF0 80002EF0 00000000 */  nop
     /* 3EF4 80002EF4 335A0003 */  andi       $k0, $k0, 0x3 /* handwritten instruction */
     /* 3EF8 80002EF8 1740FFFB */  bnez       $k0, .L80002EE8 /* handwritten instruction */

@@ -1082,7 +1082,7 @@ build/src/kernel/kernel_031.c.o build/non_matching/src/kernel/kernel_031.c.o: OP
 build/src/kernel/kernel_031.c.o: TRUNCATE_TEXT := 0x48  # 0x44 content + ROM pad word at 0x802C (2026-06-10 relayout)
 # kernel_031b: file-split holding __rmonRCPrunning (compiled at -O2). Per
 # feedback_insn_patch_on_reloc_instructions_breaks_byte_verify.md: skip
-# patching offsets 0x0/0x4 (R_MIPS_HI16/LO16 for D_A4040010); only patch
+# patching offsets 0x0/0x4 (R_MIPS_HI16/LO16 for gSpStatusReg); only patch
 # non-reloc offsets 0xC/0x10/0x18/0x20.
 build/src/kernel/kernel_031b.c.o build/non_matching/src/kernel/kernel_031b.c.o: OPT_FLAGS := -O2
 build/src/kernel/kernel_031b.c.o: TRUNCATE_TEXT := 0x24  # ROM slot [0x8030..0x8054) is flush (2026-06-10 relayout)

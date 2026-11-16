@@ -291,14 +291,14 @@ alabel D_80003344
     andi    $t1, $s1, 0x1
     beqz    $t1, .Lvi
      nop
-    lui     $t4, %hi(D_A4040010)
-    lw      $t4, %lo(D_A4040010)($t4)
+    lui     $t4, %hi(gSpStatusReg)
+    lw      $t4, %lo(gSpStatusReg)($t4)
     ori     $t1, $zero, 0x8008
-    lui     $at, %hi(D_A4040010)
+    lui     $at, %hi(gSpStatusReg)
     andi    $t4, $t4, 0x300
     andi    $s1, $s1, 0x3E
     beqz    $t4, .Lsp_other_break
-     sw     $t1, %lo(D_A4040010)($at)
+     sw     $t1, %lo(gSpStatusReg)($at)
     jal     func_80003C24
      addiu  $a0, $zero, 0x20
     beqz    $s1, .LNoMoreRcpInts
@@ -347,9 +347,9 @@ alabel D_80003344
     beqz    $t1, .Ldp
      nop
     addiu   $t1, $zero, 0x2
-    lui     $at, %hi(D_A4600010)
+    lui     $at, %hi(gPiStatusReg)
     andi    $s1, $s1, 0x2F
-    sw      $t1, %lo(D_A4600010)($at)
+    sw      $t1, %lo(gPiStatusReg)($at)
     jal     func_80003C24
      addiu  $a0, $zero, 0x40
     beqz    $s1, .LNoMoreRcpInts

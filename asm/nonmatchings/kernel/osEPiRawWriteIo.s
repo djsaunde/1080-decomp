@@ -2,15 +2,15 @@
 nonmatching osEPiRawWriteIo, 0xB0
 
 glabel osEPiRawWriteIo
-    /* AAB0 80009AB0 3C0EA460 */  lui        $t6, %hi(D_A4600010)
-    /* AAB4 80009AB4 8DC70010 */  lw         $a3, %lo(D_A4600010)($t6)
+    /* AAB0 80009AB0 3C0EA460 */  lui        $t6, %hi(gPiStatusReg)
+    /* AAB4 80009AB4 8DC70010 */  lw         $a3, %lo(gPiStatusReg)($t6)
     /* AAB8 80009AB8 27BDFFF0 */  addiu      $sp, $sp, -0x10
     /* AABC 80009ABC 30EF0003 */  andi       $t7, $a3, 0x3
     /* AAC0 80009AC0 11E00006 */  beqz       $t7, .L80009ADC
     /* AAC4 80009AC4 00000000 */   nop
   .L80009AC8:
-    /* AAC8 80009AC8 3C18A460 */  lui        $t8, %hi(D_A4600010)
-    /* AACC 80009ACC 8F070010 */  lw         $a3, %lo(D_A4600010)($t8)
+    /* AAC8 80009AC8 3C18A460 */  lui        $t8, %hi(gPiStatusReg)
+    /* AACC 80009ACC 8F070010 */  lw         $a3, %lo(gPiStatusReg)($t8)
     /* AAD0 80009AD0 30F90003 */  andi       $t9, $a3, 0x3
     /* AAD4 80009AD4 1720FFFC */  bnez       $t9, .L80009AC8
     /* AAD8 80009AD8 00000000 */   nop

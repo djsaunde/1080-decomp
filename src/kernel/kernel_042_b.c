@@ -1,11 +1,11 @@
 #include "common.h"
 
 extern s32 osRomBase;
-extern s32 D_A4600000;
-extern s32 D_A4600004;
-extern s32 D_A4600008;
-extern s32 D_A460000C;
-extern s32 D_A4600010;
+extern s32 gPiDramAddrReg;
+extern s32 gPiCartAddrReg;
+extern s32 gPiRdLenReg;
+extern s32 gPiWrLenReg;
+extern s32 gPiStatusReg;
 extern s32 func_80004B30(s32);
 extern s32 func_800066B0(void);
 extern void func_800066D0(s32);

@@ -26,7 +26,7 @@ extern Cb gUsoCtx;
 extern int func_800009D8();
 extern int func_800027E0();
 extern int gUsoErrno;
-extern int D_8000A384;
+extern int sFmt_USO_UnCompress_8000A384;
 extern int gUsoSectionBytes[];
 extern int gUsoEntryIndex;
 extern int gUsoEntryModule;
@@ -64,7 +64,7 @@ int uso_loadSections(int *mod, void *file) {
                 if (rec.flags & 1) {
                     void *sub = ((void **)buf)[1];
                     void *sub2;
-                    gUsoCtx.reloc84(&D_8000A384, rec.size, sub);
+                    gUsoCtx.reloc84(&sFmt_USO_UnCompress_8000A384, rec.size, sub);
                     sub2 = gUsoCtx.lookup34(sub, rec.b8);
                     func_800027E0(buf, sub2);
                     rec.size = (unsigned int)sub;

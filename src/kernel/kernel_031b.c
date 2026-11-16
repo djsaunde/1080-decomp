@@ -45,7 +45,7 @@
  *    plausibly HAND-WRITTEN ASM in the original (SP idle-check boot helper).
  *    If so, no C will ever land it — candidate for a GLOBAL_ASM/hand-asm
  *    disposition rather than further C grinding. */
-extern u32 D_A4040010;  /* SP_STATUS_REG */
+extern u32 gSpStatusReg;  /* SP_STATUS_REG */
 
 /* __rmonRCPrunning: handwritten assembly, real source in src/handwritten/kernel/sp_halted.s (docs/MATCHING_WORKFLOW.md#handwritten-assembly-sources). The comment above records the C probes. */
 GLOBAL_ASM("src/handwritten/kernel/sp_halted.s")

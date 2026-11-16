@@ -149,10 +149,10 @@ glabel __osDevMgrMain
     /* 6E84 80005E84 8FAA002C */  lw         $t2, 0x2C($sp)
     /* 6E88 80005E88 240C0004 */  addiu      $t4, $zero, 0x4
     /* 6E8C 80005E8C 240F0002 */  addiu      $t7, $zero, 0x2
-    /* 6E90 80005E90 3C08A460 */  lui        $t0, %hi(D_A4600010)
+    /* 6E90 80005E90 3C08A460 */  lui        $t0, %hi(gPiStatusReg)
     /* 6E94 80005E94 3C040010 */  lui        $a0, (0x100C01 >> 16)
     /* 6E98 80005E98 AD4C0000 */  sw         $t4, 0x0($t2)
-    /* 6E9C 80005E9C AD0F0010 */  sw         $t7, %lo(D_A4600010)($t0)
+    /* 6E9C 80005E9C AD0F0010 */  sw         $t7, %lo(gPiStatusReg)($t0)
     /* 6EA0 80005EA0 0C00197C */  jal        func_800065F0
     /* 6EA4 80005EA4 34840C01 */   ori       $a0, $a0, (0x100C01 & 0xFFFF)
   .L80005EA8:

@@ -26,8 +26,8 @@ extern void func_80008ED0(void);
 extern void func_80007760(void);
 typedef void (*FuncPtr2)(void*, void*);
 extern FuncPtr2 gUsoPrintfHook;
-extern s32 D_8000A32C;
-extern s32 D_8000A340;
+extern s32 sFmt_USO_Version_8000A32C;
+extern s32 sStr_3_1_8000A340;
 extern UsoCtx gUsoCtx;
 extern s32 gUsoEntryResult;
 extern s32 gUsoEntryIndex;
@@ -79,14 +79,14 @@ typedef struct {
     UsoSlot slots[4];
 } UsoSlotGroup;
 
-extern u8 D_80013138;
+extern u8 gUsoModuleSlot0InUse;
 extern UsoSlot gUsoModuleSlots;
-extern u8 D_800131D4;
-extern UsoSlot D_8001313C;
-extern u8 D_80013270;
-extern UsoSlot D_800131D8;
-extern UsoSlotGroup D_80013274;
-extern UsoSlotGroup D_800182E4;
+extern u8 gUsoModuleSlot1InUse;
+extern UsoSlot gUsoModuleSlot1;
+extern u8 gUsoModuleSlot2InUse;
+extern UsoSlot gUsoModuleSlot2;
+extern UsoSlotGroup gUsoModuleSlot3;
+extern UsoSlotGroup gUsoModuleSlotsEnd;
 
 
 /* kernel_entrypoint (entry stub) + kernel_boot (boot main) live in kernel_000_entry.c */
@@ -591,11 +591,11 @@ typedef struct {
 } UsoEntry74;
 
 
-extern s32 D_8000A2E4;
-extern s32 D_80012F7C;
+extern s32 sFmt_Text_range_8000A2E4;
+extern s32 gUsoModulesEnd;
 
 /* uso_printModules: for every live module slot (gUsoModules[0..0x86]) call the
- * loader hook gUsoCtx.print(&D_8000A2E4, name, base, base + size).
+ * loader hook gUsoCtx.print(&sFmt_Text_range_8000A2E4, name, base, base + size).
  * IDO 7.1 -O2. EXACT 2026-10-20 (agent-g run 112; was NM 83.0, written as a
  * pointer walk with four `register` invariants and called a coloring cap):
  * a plain index loop lets uopt build the p/end walk and hold &gUsoCtx in
@@ -607,7 +607,7 @@ void uso_printModules(void) {
     for (i = 0; i < 0x87; i++) {
         e = ((UsoEntry74 **)&gUsoModules)[i];
         if (e != 0) {
-            gUsoCtx.print(&D_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
+            gUsoCtx.print(&sFmt_Text_range_8000A2E4, (char *)e + 0x72, e->field_4C, e->field_4C + e->field_14);
         }
     }
 }
@@ -617,9 +617,9 @@ typedef struct {
     s32 field_94;
 } UsoTable94;
 
-extern s32 D_8000A2F4;
+extern s32 sFmt_slot_line_8000A2F4;
 
-/* uso_printSlots: call the loader hook gUsoCtx.print(&D_8000A2F4, i,
+/* uso_printSlots: call the loader hook gUsoCtx.print(&sFmt_slot_line_8000A2F4, i,
  * slot->unk94, slot->name) for all 135 module slots. IDO 7.1 -O2. The old
  * NM (a hand pointer walk) was filed as a coloring cap. */
 /* EXACT 2026-10-20 (agent-g run 112): a plain index loop over the typed
@@ -629,7 +629,7 @@ void uso_printSlots(void) {
     s32 i;
 
     for (i = 0; i < 0x87; i++) {
-        gUsoCtx.print(&D_8000A2F4, i, ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset, ((UsoModuleSlot *)&gUsoModuleSlots)[i].name);
+        gUsoCtx.print(&sFmt_slot_line_8000A2F4, i, ((UsoModuleSlot *)&gUsoModuleSlots)[i].romOffset, ((UsoModuleSlot *)&gUsoModuleSlots)[i].name);
     }
 }
 
@@ -645,14 +645,14 @@ void uso_printSlots(void) {
  * function-pointer casts (jalr) believing they were shared-epilogue stubs;
  * kernel jal targets sit 0x400 above our numbering, so they are plain
  * direct calls to the absolute names. The inner loop's end pointer is
- * gUsoModules+0x21C (the target .s names it D_80012F7C; same address). */
-extern s32 D_8000A300;
+ * gUsoModules+0x21C (the target .s names it gUsoModulesEnd; same address). */
+extern s32 sFmt_USO_unloading_8000A300;
 extern s32 gUsoPathFile;
 extern s32 gUsoPathDir;
 extern s32 func_800021D0();
 extern s32 func_8000275C();
-extern s32 D_8000A314;
-extern s32 D_8000A328;
+extern s32 sFmt_USO_loading_8000A314;
+extern s32 sStr_rb_8000A328;
 extern s32* func_800008B8(void*, void*, void*);
 extern s32 func_80000A98();
 
@@ -661,7 +661,7 @@ s32 uso_unload(char *path) {
     s32 j;
     char *e;
 
-    gUsoPrintfHook((void *)&D_8000A300, path);
+    gUsoPrintfHook((void *)&sFmt_USO_unloading_8000A300, path);
     func_80000660(path, &gUsoPathDir, &gUsoPathFile);
     for (i = 0; i < 0x87; i++) {
         if (gUsoModules[i] != 0 &&
@@ -708,7 +708,7 @@ s32 uso_unload(char *path) {
  *   target's mod-in-s1 / i-in-v1 coloring.
  * EXACT 2026-10-22 (agent-g run 118): the last 2 words (lui s0/s1 order)
  * were the loop-1 induction-variable shape. desc is NOT a separate stepped
- * pointer: the call takes `&D_80013112 + i * 0x9C` (uopt strength-reduces it
+ * pointer: the call takes `&gUsoModuleSlot0Name + i * 0x9C` (uopt strength-reduces it
  * into its own IV, created after mod's -> mod's lui schedules first), and
  * the for-init is the comma `mod = base, i = 0` with the step `mod++, i++`
  * (mod init before the loop as its own statement, or `i++, mod++`, leaves
@@ -722,9 +722,9 @@ typedef struct UsoModule {
     char pad98[4];
 } UsoModule;
 
-extern char D_80013112;                 /* = &gUsoModuleSlots[0].unk72 */
-extern s32 D_8000A314;
-extern s32 D_8000A328;
+extern char gUsoModuleSlot0Name;                 /* = &gUsoModuleSlots[0].unk72 */
+extern s32 sFmt_USO_loading_8000A314;
+extern s32 sStr_rb_8000A328;
 extern s32 gUsoPathDir;
 extern s32 gUsoPathFile;
 extern void func_80001CB0();
@@ -751,11 +751,11 @@ s32 uso_load(s32 file) {
     err = 0;
     if (1) {
     }
-    gUsoPrintfHook(&D_8000A314, (void *)file);
+    gUsoPrintfHook(&sFmt_USO_loading_8000A314, (void *)file);
     gUsoCtx.missCount = 0;
     gUsoCtx.unk2C = 0;
     func_80000660(file, &gUsoPathDir, &gUsoPathFile);
-    range = func_800008B8(header, &gUsoPathDir, &D_8000A328);
+    range = func_800008B8(header, &gUsoPathDir, &sStr_rb_8000A328);
     if (range == NULL) {
         return -0x11;
     }
@@ -763,7 +763,7 @@ s32 uso_load(s32 file) {
     gUsoHeapEnd = range[1];
     found = NULL;
     for (mod = (UsoModule *)&gUsoModuleSlots, i = 0; i != 0x87; mod++, i++) {
-        if (func_80000568(&D_80013112 + i * 0x9C, &gUsoPathFile) == 0) {
+        if (func_80000568(&gUsoModuleSlot0Name + i * 0x9C, &gUsoPathFile) == 0) {
             found = mod;
             func_80001CB0(mod);
             mod->unk70 = i;
@@ -924,14 +924,14 @@ s32 uso_getModuleName(u8 *out, s32 id) {
 }
 
 void uso_printVersion(void) {
-    gUsoPrintfHook(&D_8000A32C, &D_8000A340);
+    gUsoPrintfHook(&sFmt_USO_Version_8000A32C, &sStr_3_1_8000A340);
 }
 
-extern s32 D_8000A344;
+extern s32 sStr_unknown_8000A344;
 /* Address -> loaded-USO resolver: scan the USO slot-pointer table
- * (&gUsoModules .. &D_80012F7C); for the first loaded slot whose
+ * (&gUsoModules .. &gUsoModulesEnd); for the first loaded slot whose
  * [field_4C, field_4C+field_14) range contains arg0, return its code base
- * (slot+0x72) and the in-USO offset (arg0 - field_4C). Not found -> &D_8000A344
+ * (slot+0x72) and the in-USO offset (arg0 - field_4C). Not found -> &sStr_unknown_8000A344
  * / 0. IDO -O2 unrolls the simple slot loop x4 with a 3-iteration prologue.
  * The `tbl` decl inside the loop body is load-bearing: it makes IDO recompute
  * the table base each iteration (matching the target's coloring exactly). */
@@ -949,7 +949,7 @@ void uso_addrToModule(u32 arg0, void **arg1, s32 *arg2) {
             }
         }
     }
-    *arg1 = &D_8000A344;
+    *arg1 = &sStr_unknown_8000A344;
     *arg2 = 0;
 }
 
@@ -966,13 +966,13 @@ void uso_nop_800010C0(s32 a0, s32 a1) {
 void uso_nullPrintf(s32 a0, ...) {
 }
 
-extern s32 D_8000A34C;
-extern s32 D_8000A35C;
-extern s32 D_8000A2A0;
+extern s32 sFmt_MemUsed_8000A34C;
+extern s32 sFmt_section_bytes_8000A35C;
+extern s32 gUsoSectionNames_rt;
 extern s32 gUsoSectionBytes;
 
 /* uso_printMemStats: dump the 11 loader counters through the gUsoCtx.print
- * logger: one header line with gUsoMemUsed, then (&D_8000A35C, name[i],
+ * logger: one header line with gUsoMemUsed, then (&sFmt_section_bytes_8000A35C, name[i],
  * gUsoSectionBytes[i]) per entry. IDO 7.1 -O2.
  * EXACT 2026-10-20 (agent-g run 112; was NM 58.5, a pointer walk with five
  * `register` locals filed as a 5th-callee-save coloring cap): a plain
@@ -981,16 +981,16 @@ extern s32 gUsoSectionBytes;
 void uso_printMemStats(void) {
     s32 i;
 
-    gUsoCtx.print(&D_8000A34C, gUsoMemUsed);
+    gUsoCtx.print(&sFmt_MemUsed_8000A34C, gUsoMemUsed);
     for (i = 0; i < 11; i++) {
-        gUsoCtx.print(&D_8000A35C, (&D_8000A2A0)[i], (&gUsoSectionBytes)[i]);
+        gUsoCtx.print(&sFmt_section_bytes_8000A35C, (&gUsoSectionNames_rt)[i], (&gUsoSectionBytes)[i]);
     }
 }
 
 extern s32 gUsoSectionBytes;
-extern s32 D_80012D34;
-extern s32 D_80012D38;
-extern s32 D_80012D3C[];
+extern s32 gUsoSectionBytesSym;
+extern s32 gUsoSectionBytesTextReloc;
+extern s32 gUsoSectionBytesDataReloc[];
 extern s32 gUsoMemUsed;
 extern s32 D_80012D5C_alias; /* distinct extern @ 0x80012D5C: breaks store<->end CSE */
 
@@ -1013,13 +1013,13 @@ void uso_clearMemStats(void) {
  * off; an index loop over a TYPED slot array (`slots[i].name` /
  * `slots[i].unk94`) gives both. The 0x30-byte hole at the top of the frame
  * is an unused local (any 0x29..0x2C-byte array; s32 pad[11] here). */
-extern char D_8000A368, D_80013112, D_80018356;
+extern char sStr_rb_8000A368, gUsoModuleSlot0Name, gUsoModuleSlotsEndName;
 s32 uso_find_file(void *arg0, void *arg1) {
     s32 pad[11];
     s32 i;
     s32 found;
     func_80000660(arg0, &gUsoPathDir, &gUsoPathFile);
-    if (func_800008B8(arg1, &gUsoPathDir, &D_8000A368) == 0) {
+    if (func_800008B8(arg1, &gUsoPathDir, &sStr_rb_8000A368) == 0) {
         return -0x11;
     }
     found = 0;
@@ -1180,7 +1180,7 @@ void uso_scanRom(void) {
  * (the slot-clear loop is a one-line index loop on i, which gives the
  * fs_initFile + 0x30 address the target's a2); this definition is only the
  * splice placeholder on both build paths (a C stub: the INCLUDE_ASM body
- * defines labels such as D_800016BC inside the replaced range). */
+ * defines labels such as fs_openFile_rt inside the replaced range). */
 void uso_init(void) {
 }
 
@@ -1323,7 +1323,7 @@ s32 uso_unrelocate(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
  * flags lack bit 3 (unresolved) is skipped. Types: R_26 (jal target field),
  * HI16 (remember the half and its address), LO16 (fold hi<<16 + lo + value,
  * patch the remembered HI16 with the carry-adjusted upper half), R_32 (add).
- * Bad type: gUsoPrintfHook(D_8000A36C, type) and return -2. Case numbers from the
+ * Bad type: gUsoPrintfHook(sFmt_unkown_reloc_type_8000A36C, type) and return -2. Case numbers from the
  * jumptable (2026-10-20, agent-g run 112): jtbl_8000A63C IS in the ROM, 0x400
  * lower like every kernel address (our 0xA23C): type 1 = R_26, 2 = LO16,
  * 3 = HI16, 4 = R_32. Open: the target dispatches through that 4-entry jumptable;
@@ -1348,7 +1348,7 @@ s32 uso_unrelocate(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 arg4) {
  * statements sit inside the flags test's then-arm (they keep their source
  * lines), see the donor header. Its .rodata reloc is pinned as
  * uso_relocate_rodata = jtbl_8000A63C. */
-extern char D_8000A36C[];
+extern char sFmt_unkown_reloc_type_8000A36C[];
 typedef struct { s32 info; s32 offset; s32 orig; } UsoRel_1ADC;
 typedef struct { s16 flags; s16 pad; s32 value; s32 pad2; } UsoUsoRelSym_1ADC_1ADC;
 
@@ -1552,7 +1552,7 @@ INCLUDE_ASM("asm/nonmatchings/kernel", uso_bindLocalSyms);
  *   entry's link index: that web takes a0 and pushes the count into a1;
  * - plain `i < o->count` loop test: cfe's PRE puts the count reload only into
  *   the two store arms (the miss-arm delay slot and before the latch). */
-extern s32 D_8000A3A0;
+extern s32 sStr_cross_referenced_symbol_section_not_loaded_8000A3A0;
 typedef struct { short type; short pad; int val; short idx; short pad2; } Ent80002250;
 typedef struct {
     char p0[4];
@@ -1585,7 +1585,7 @@ int uso_bindImports(Obj80002250 *o) {
             } else {
                 l = u->list;
                 if (l == 0) {
-                    gUsoCtx.print(&D_8000A3A0, u, l);
+                    gUsoCtx.print(&sStr_cross_referenced_symbol_section_not_loaded_8000A3A0, u, l);
                     return -2;
                 }
                 e->type |= 8;
@@ -1684,7 +1684,7 @@ GLOBAL_ASM("src/handwritten/kernel/decode_yay0_setintmask.s")
  * `osClockRate = osClockRate * 3 / 4` calls the 64-bit helpers
  * func_80002F78 (__ll_mul) / exceptasm_rdbFront (__ll_div); osViClock =
  * osViClock by osTvType = osTvType; then the KMC debugger hook: if
- * *(u32*)0xBFF00000 == 'KMC\0', copy the 9-word stub at D_80003280 to the
+ * *(u32*)0xBFF00000 == 'KMC\0', copy the 9-word stub at __ptExceptionPreamble_rt to the
  * general-exception vector, and if the KMC flags word lacks bit 4, copy the
  * 0x800-word KMC ROM image high and tail-call its entry(+8). */
 typedef struct {
@@ -1697,7 +1697,7 @@ extern s32 osResetType;                          /* osResetType */
 extern s32 osTvType;                          /* osTvType */
 extern s32 osAppNMIBuffer;                          /* osAppNMIBuffer */
 extern s32 __kmc_pt_mode;
-extern s32 D_80003280[];                        /* KMC E_VEC stub words */
+extern s32 __ptExceptionPreamble_rt[];                        /* KMC E_VEC stub words */
 
 /* The KMC PARTNER-N64 debugger monitor image at 0xBFF00000 (ultralib os/initialize.c, BUILD_VERSION < K:
  * `mon = 0xBFF00000; if (*mon != 0x4B4D4300) return; ... monadr = *(mon + 1)`): word 0 is the
@@ -1768,7 +1768,7 @@ void osInitialize(void) {
         sp38 = (s32 *)0xBFF08004;
         sp3C = (void *)0xBFF00000;
         if (*(s32 *)0xBFF00000 == 0x4B4D4300) {
-            src = D_80003280;
+            src = __ptExceptionPreamble_rt;
             dst = (s32 *)0x80000180;
             *dst = *src;
             dst++; src++;

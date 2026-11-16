@@ -6,13 +6,13 @@ glabel uso_clearMemStats
     /* 2188 80001188 AC202D5C */  sw         $zero, %lo(gUsoMemUsed)($at)
     /* 218C 8000118C 3C018001 */  lui        $at, %hi(gUsoSectionBytes)
     /* 2190 80001190 AC202D30 */  sw         $zero, %lo(gUsoSectionBytes)($at)
-    /* 2194 80001194 AC202D34 */  sw         $zero, %lo(D_80012D34)($at)
-    /* 2198 80001198 3C018001 */  lui        $at, %hi(D_80012D38)
-    /* 219C 8000119C 3C038001 */  lui        $v1, %hi(D_80012D3C)
+    /* 2194 80001194 AC202D34 */  sw         $zero, %lo(gUsoSectionBytesSym)($at)
+    /* 2198 80001198 3C018001 */  lui        $at, %hi(gUsoSectionBytesTextReloc)
+    /* 219C 8000119C 3C038001 */  lui        $v1, %hi(gUsoSectionBytesDataReloc)
     /* 21A0 800011A0 3C028001 */  lui        $v0, %hi(gUsoMemUsed)
     /* 21A4 800011A4 24422D5C */  addiu      $v0, $v0, %lo(gUsoMemUsed)
-    /* 21A8 800011A8 24632D3C */  addiu      $v1, $v1, %lo(D_80012D3C)
-    /* 21AC 800011AC AC202D38 */  sw         $zero, %lo(D_80012D38)($at)
+    /* 21A8 800011A8 24632D3C */  addiu      $v1, $v1, %lo(gUsoSectionBytesDataReloc)
+    /* 21AC 800011AC AC202D38 */  sw         $zero, %lo(gUsoSectionBytesTextReloc)($at)
   .L800011B0:
     /* 21B0 800011B0 24630010 */  addiu      $v1, $v1, 0x10
     /* 21B4 800011B4 AC60FFF0 */  sw         $zero, -0x10($v1)

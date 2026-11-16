@@ -84,7 +84,7 @@ glabel osSendMesg
     /* 6AE4 80005AE4 02402025 */   or        $a0, $s2, $zero
   .L80005AE8:
     /* 6AE8 80005AE8 0C0019B4 */  jal        func_800066D0
-  alabel D_80005AEC
+  alabel pimgr_ramromMain_rt
     /* 6AEC 80005AEC 02002025 */   or        $a0, $s0, $zero
     /* 6AF0 80005AF0 00001025 */  or         $v0, $zero, $zero
   .L80005AF4:

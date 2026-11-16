@@ -271,14 +271,14 @@ glabel __osException
     /* 45D0 800035D0 32290001 */  andi       $t1, $s1, 0x1
     /* 45D4 800035D4 11200013 */  beqz       $t1, .L80003624
     /* 45D8 800035D8 00000000 */   nop
-    /* 45DC 800035DC 3C0CA404 */  lui        $t4, %hi(D_A4040010)
-    /* 45E0 800035E0 8D8C0010 */  lw         $t4, %lo(D_A4040010)($t4)
+    /* 45DC 800035DC 3C0CA404 */  lui        $t4, %hi(gSpStatusReg)
+    /* 45E0 800035E0 8D8C0010 */  lw         $t4, %lo(gSpStatusReg)($t4)
     /* 45E4 800035E4 34098008 */  ori        $t1, $zero, 0x8008
-    /* 45E8 800035E8 3C01A404 */  lui        $at, %hi(D_A4040010)
+    /* 45E8 800035E8 3C01A404 */  lui        $at, %hi(gSpStatusReg)
     /* 45EC 800035EC 318C0300 */  andi       $t4, $t4, 0x300
     /* 45F0 800035F0 3231003E */  andi       $s1, $s1, 0x3E
     /* 45F4 800035F4 11800007 */  beqz       $t4, .L80003614
-    /* 45F8 800035F8 AC290010 */   sw        $t1, %lo(D_A4040010)($at)
+    /* 45F8 800035F8 AC290010 */   sw        $t1, %lo(gSpStatusReg)($at)
     /* 45FC 800035FC 0C000F09 */  jal        func_80003C24
     /* 4600 80003600 24040020 */   addiu     $a0, $zero, 0x20
     /* 4604 80003604 12200038 */  beqz       $s1, .L800036E8
@@ -327,9 +327,9 @@ glabel __osException
     /* 469C 8000369C 11200009 */  beqz       $t1, .L800036C4
     /* 46A0 800036A0 00000000 */   nop
     /* 46A4 800036A4 24090002 */  addiu      $t1, $zero, 0x2
-    /* 46A8 800036A8 3C01A460 */  lui        $at, %hi(D_A4600010)
+    /* 46A8 800036A8 3C01A460 */  lui        $at, %hi(gPiStatusReg)
     /* 46AC 800036AC 3231002F */  andi       $s1, $s1, 0x2F
-    /* 46B0 800036B0 AC290010 */  sw         $t1, %lo(D_A4600010)($at)
+    /* 46B0 800036B0 AC290010 */  sw         $t1, %lo(gPiStatusReg)($at)
     /* 46B4 800036B4 0C000F09 */  jal        func_80003C24
     /* 46B8 800036B8 24040040 */   addiu     $a0, $zero, 0x40
     /* 46BC 800036BC 1220000A */  beqz       $s1, .L800036E8

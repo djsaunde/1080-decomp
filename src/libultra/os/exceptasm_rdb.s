@@ -47,8 +47,8 @@ glabel exceptasm_rdbFront
      nop
     # wait for the PI to go idle, then ask the monitor whether it is attached
 .Lexc_kmc_wait_pi:
-    lui     $k0, %hi(D_A4600010)
-    lw      $k0, %lo(D_A4600010)($k0)
+    lui     $k0, %hi(gPiStatusReg)
+    lw      $k0, %lo(gPiStatusReg)($k0)
     nop
     andi    $k0, $k0, 0x3
     bnez    $k0, .Lexc_kmc_wait_pi

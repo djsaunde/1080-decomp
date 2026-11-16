@@ -55,7 +55,7 @@ glabel osCreatePiManager
     /* 65E4 800055E4 3C0A8002 */  lui        $t2, %hi(pimgr_piThread)
     /* 65E8 800055E8 3C0C8002 */  lui        $t4, %hi(pimgr_piEventQueue)
     /* 65EC 800055EC 24090001 */  addiu      $t1, $zero, 0x1
-  alabel D_800055F0
+  alabel __rmonIOhandler_rt
     /* 65F0 800055F0 254A9E70 */  addiu      $t2, $t2, %lo(pimgr_piThread)
     /* 65F4 800055F4 258CB610 */  addiu      $t4, $t4, %lo(pimgr_piEventQueue)
     /* 65F8 800055F8 AC29A450 */  sw         $t1, %lo(__osPiDevMgr)($at)
@@ -73,14 +73,14 @@ glabel osCreatePiManager
     /* 6628 80005628 25CE4A50 */  addiu      $t6, $t6, %lo(func_80004A50)
     /* 662C 8000562C 25EF56F0 */  addiu      $t7, $t7, %lo(func_800056F0)
     /* 6630 80005630 27191000 */  addiu      $t9, $t8, 0x1000
-    /* 6634 80005634 3C068000 */  lui        $a2, %hi(D_80006060)
+    /* 6634 80005634 3C068000 */  lui        $a2, %hi(__osDevMgrMain_rt)
     /* 6638 80005638 3C078001 */  lui        $a3, %hi(__osPiDevMgr)
     /* 663C 8000563C AFA2002C */  sw         $v0, 0x2C($sp)
     /* 6640 80005640 AC2DA460 */  sw         $t5, %lo(D_8000A460)($at)
     /* 6644 80005644 AC2EA464 */  sw         $t6, %lo(D_8000A464)($at)
     /* 6648 80005648 AC2FA468 */  sw         $t7, %lo(D_8000A468)($at)
     /* 664C 8000564C 24E7A450 */  addiu      $a3, $a3, %lo(__osPiDevMgr)
-    /* 6650 80005650 24C66060 */  addiu      $a2, $a2, %lo(D_80006060)
+    /* 6650 80005650 24C66060 */  addiu      $a2, $a2, %lo(__osDevMgrMain_rt)
     /* 6654 80005654 AFB90010 */  sw         $t9, 0x10($sp)
     /* 6658 80005658 01402025 */  or         $a0, $t2, $zero
     /* 665C 8000565C 00002825 */  or         $a1, $zero, $zero
@@ -94,10 +94,10 @@ glabel osCreatePiManager
     /* 667C 8000567C 2529B1D0 */  addiu      $t1, $t1, %lo(pimgr_ramromThreadStack)
     /* 6680 80005680 252B0400 */  addiu      $t3, $t1, 0x400
     /* 6684 80005684 3C048002 */  lui        $a0, %hi(pimgr_ramromThread)
-    /* 6688 80005688 3C068000 */  lui        $a2, %hi(D_80005AEC)
+    /* 6688 80005688 3C068000 */  lui        $a2, %hi(pimgr_ramromMain_rt)
     /* 668C 8000568C 258DFFFF */  addiu      $t5, $t4, -0x1
     /* 6690 80005690 AFAD0014 */  sw         $t5, 0x14($sp)
-    /* 6694 80005694 24C65AEC */  addiu      $a2, $a2, %lo(D_80005AEC)
+    /* 6694 80005694 24C65AEC */  addiu      $a2, $a2, %lo(pimgr_ramromMain_rt)
     /* 6698 80005698 2484B020 */  addiu      $a0, $a0, %lo(pimgr_ramromThread)
     /* 669C 8000569C AFAB0010 */  sw         $t3, 0x10($sp)
     /* 66A0 800056A0 00002825 */  or         $a1, $zero, $zero

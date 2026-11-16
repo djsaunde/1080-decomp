@@ -48,8 +48,8 @@ glabel uso_bindImports
     /* 32F0 800022F0 54C00009 */  bnel       $a2, $zero, .L80002318
     /* 32F4 800022F4 84640008 */   lh        $a0, 0x8($v1)
     /* 32F8 800022F8 8D190084 */  lw         $t9, 0x84($t0)
-    /* 32FC 800022FC 3C048001 */  lui        $a0, %hi(D_8000A3A0)
-    /* 3300 80002300 2484A3A0 */  addiu      $a0, $a0, %lo(D_8000A3A0)
+    /* 32FC 800022FC 3C048001 */  lui        $a0, %hi(sStr_cross_referenced_symbol_section_not_loaded_8000A3A0)
+    /* 3300 80002300 2484A3A0 */  addiu      $a0, $a0, %lo(sStr_cross_referenced_symbol_section_not_loaded_8000A3A0)
     /* 3304 80002304 0320F809 */  jalr       $t9
     /* 3308 80002308 00000000 */   nop
     /* 330C 8000230C 1000000E */  b          .L80002348

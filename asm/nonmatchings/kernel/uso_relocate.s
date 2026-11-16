@@ -122,8 +122,8 @@ glabel uso_relocate
   .L80001C98:
     /* 2C98 80001C98 3C198001 */  lui        $t9, %hi(gUsoPrintfHook)
     /* 2C9C 80001C9C 8F392C44 */  lw         $t9, %lo(gUsoPrintfHook)($t9)
-    /* 2CA0 80001CA0 3C048001 */  lui        $a0, %hi(D_8000A36C)
-    /* 2CA4 80001CA4 2484A36C */  addiu      $a0, $a0, %lo(D_8000A36C)
+    /* 2CA0 80001CA0 3C048001 */  lui        $a0, %hi(sFmt_unkown_reloc_type_8000A36C)
+    /* 2CA4 80001CA4 2484A36C */  addiu      $a0, $a0, %lo(sFmt_unkown_reloc_type_8000A36C)
     /* 2CA8 80001CA8 0320F809 */  jalr       $t9
     /* 2CAC 80001CAC 00C02825 */   or        $a1, $a2, $zero
     /* 2CB0 80001CB0 10000009 */  b          .L80001CD8

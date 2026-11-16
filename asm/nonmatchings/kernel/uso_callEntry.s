@@ -31,7 +31,7 @@ glabel uso_callEntry
     /* 1CE4 80000CE4 01E57823 */  subu       $t7, $t7, $a1
     /* 1CE8 80000CE8 14C00003 */  bnez       $a2, .L80000CF8
     /* 1CEC 80000CEC 000F7880 */   sll       $t7, $t7, 2
-  alabel D_80000CF0
+  alabel uso_unload_rt
     /* 1CF0 80000CF0 1000000A */  b          .L80000D1C
     /* 1CF4 80000CF4 2402FFFF */   addiu     $v0, $zero, -0x1
   .L80000CF8:

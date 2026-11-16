@@ -2,15 +2,15 @@
 nonmatching osPiRawReadIo, 0x54
 
 glabel osPiRawReadIo
-    /* 39B0 800029B0 3C0EA460 */  lui        $t6, %hi(D_A4600010)
-    /* 39B4 800029B4 8DC60010 */  lw         $a2, %lo(D_A4600010)($t6)
+    /* 39B0 800029B0 3C0EA460 */  lui        $t6, %hi(gPiStatusReg)
+    /* 39B4 800029B4 8DC60010 */  lw         $a2, %lo(gPiStatusReg)($t6)
     /* 39B8 800029B8 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* 39BC 800029BC 30CF0003 */  andi       $t7, $a2, 0x3
     /* 39C0 800029C0 11E00006 */  beqz       $t7, .L800029DC
     /* 39C4 800029C4 00000000 */   nop
   .L800029C8:
-    /* 39C8 800029C8 3C18A460 */  lui        $t8, %hi(D_A4600010)
-    /* 39CC 800029CC 8F060010 */  lw         $a2, %lo(D_A4600010)($t8)
+    /* 39C8 800029C8 3C18A460 */  lui        $t8, %hi(gPiStatusReg)
+    /* 39CC 800029CC 8F060010 */  lw         $a2, %lo(gPiStatusReg)($t8)
     /* 39D0 800029D0 30D90003 */  andi       $t9, $a2, 0x3
     /* 39D4 800029D4 1720FFFC */  bnez       $t9, .L800029C8
     /* 39D8 800029D8 00000000 */   nop

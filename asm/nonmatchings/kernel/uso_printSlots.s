@@ -11,11 +11,11 @@ glabel uso_printSlots
     /* 1874 80000874 AFB00014 */  sw         $s0, 0x14($sp)
     /* 1878 80000878 3C118001 */  lui        $s1, %hi(gUsoModuleSlots)
     /* 187C 8000087C 3C128001 */  lui        $s2, %hi(gUsoModuleSlots + 0x72)
-    /* 1880 80000880 3C138001 */  lui        $s3, %hi(D_8000A2F4)
+    /* 1880 80000880 3C138001 */  lui        $s3, %hi(sFmt_slot_line_8000A2F4)
     /* 1884 80000884 3C148001 */  lui        $s4, %hi(gUsoCtx)
     /* 1888 80000888 AFBF002C */  sw         $ra, 0x2C($sp)
     /* 188C 8000088C 26942BC0 */  addiu      $s4, $s4, %lo(gUsoCtx)
-    /* 1890 80000890 2673A2F4 */  addiu      $s3, $s3, %lo(D_8000A2F4)
+    /* 1890 80000890 2673A2F4 */  addiu      $s3, $s3, %lo(sFmt_slot_line_8000A2F4)
     /* 1894 80000894 26523112 */  addiu      $s2, $s2, %lo(gUsoModuleSlots + 0x72)
     /* 1898 80000898 263130A0 */  addiu      $s1, $s1, %lo(gUsoModuleSlots)
     /* 189C 8000089C 00008025 */  or         $s0, $zero, $zero

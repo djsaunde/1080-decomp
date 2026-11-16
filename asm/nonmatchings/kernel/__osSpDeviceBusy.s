@@ -2,8 +2,8 @@
 nonmatching __osSpDeviceBusy, 0x2C
 
 glabel __osSpDeviceBusy
-    /* 9C00 80008C00 3C0EA404 */  lui        $t6, %hi(D_A4040010)
-    /* 9C04 80008C04 8DC40010 */  lw         $a0, %lo(D_A4040010)($t6)
+    /* 9C00 80008C00 3C0EA404 */  lui        $t6, %hi(gSpStatusReg)
+    /* 9C04 80008C04 8DC40010 */  lw         $a0, %lo(gSpStatusReg)($t6)
     /* 9C08 80008C08 27BDFFF8 */  addiu      $sp, $sp, -0x8
     /* 9C0C 80008C0C 308F001C */  andi       $t7, $a0, 0x1C
     /* 9C10 80008C10 11E00003 */  beqz       $t7, .L80008C20

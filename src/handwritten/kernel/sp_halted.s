@@ -6,8 +6,8 @@
 # explicit nop in the bnez delay slot (see the probe battery in kernel_031b.c).
 
 glabel __rmonRCPrunning
-    lui     $t0, %hi(D_A4040010)        # t0 = SP_STATUS_REG
-    lw      $t0, %lo(D_A4040010)($t0)
+    lui     $t0, %hi(gSpStatusReg)        # t0 = SP_STATUS_REG
+    lw      $t0, %lo(gSpStatusReg)($t0)
     or      $v0, $zero, $zero           # v0 = 0
     andi    $t0, $t0, 0x3               # HALT | BROKE
     bnez    $t0, .Lsphalted_done
