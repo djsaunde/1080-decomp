@@ -4,6 +4,9 @@
 #include "gdl/skin.h"
 #include "gdl/dnode.h"
 #include "gdl/pad.h"
+#ifdef PORT
+#include "port_game.h" /* port/include: the PORT pad glue */
+#endif
 #include "gdl/mem.h"
 #include "gdl/binfile.h"
 #include "gdl/polyshape.h"
@@ -3127,11 +3130,90 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", pad_request_000671E4);
  * copy-propagated onto the raw a0; a volatile load is not propagated, so
  * the param lives in s0 from the prologue (docs/IDO_CODEGEN.md
  * #volatile-poll-read-pins-param-sreg-67220). */
+#ifdef PORT
+int pad_portDrain(char *arg0);
+#endif
 void pad_waitIdle_00067220(char *a0) {
     while (((volatile PadDev *)a0)->readDone == 0) {
+#ifdef PORT
+        /* the pad thread's work as a direct call: handle the queued request / SI event */
+        if (pad_portDrain(a0) == 0) {
+            break; /* no read outstanding: nothing on the N64 would set readDone either */
+        }
+#else
         CALL(gl_osYieldThread)();
+#endif
     }
 }
+
+#ifdef PORT
+/* PORT (plan 17.4): the pad thread (pad_threadEntry_00067370 -> pad_threadLoop_00066EEC) is not
+ * run. Its loop body is this drain: the same switch on the message type, one pending message at
+ * a time, NOBLOCK. The shim completes an SI read at once (osContStartReadData posts the SI event,
+ * message 2, to the same queue), so a request (message 1) drains to readDone = 1 in one call. */
+extern int gl_osRecvMesg();
+extern int osContStartReadData();
+extern int gl_osContGetReadData();
+extern int osPfsIsPlug();
+extern int osMotorInit();
+extern int gl_osMotorStop();
+extern void pad_request_000671E4();
+void pad_initMotors_00067264(char *self);
+static int sPortPadStopped; /* pad_threadLoop's `flag`: motors stopped by the pre-NMI message 5 */
+
+int pad_portDrain(char *arg0) {
+    PadDev *dev = PADDEV(arg0);
+    unsigned int *msg;
+    int handled = 0;
+    int i;
+
+    while (gl_osRecvMesg(dev->mq, &msg, 0 /* OS_MESG_NOBLOCK */) != -1) {
+        handled++;
+        switch (*msg) {
+        case 5: { /* pre-NMI (RcpMgr 'l' -> pad_sendMsg_00067168): stop every rumble pak */
+            unsigned char mask = 0;
+            osPfsIsPlug(dev->mq, &mask);
+            for (i = 0; i != 4; i++) {
+                if ((mask & (1 << i)) && osMotorInit(dev->mq, dev->pfs[i], i) == 0) {
+                    gl_osMotorStop(dev->pfs[i]);
+                }
+            }
+            sPortPadStopped = 1;
+            break;
+        }
+        case 1: /* pad_request_000671E4: push the rumble requests, start a read */
+            if (sPortPadStopped == 0) {
+                for (i = 0; i != 4; i++) {
+                    pad_updateMotor_00067084(arg0, i, dev->motorValue[i]);
+                }
+            }
+            osContStartReadData(dev->mq);
+            dev->readDone = 0;
+            break;
+        case 2: /* the SI event: the read is complete */
+            gl_osContGetReadData(dev->conts);
+            if (sPortPadStopped == 0) {
+                pad_initMotors_00067264(arg0);
+            }
+            dev->readDone = 1;
+            break;
+        default: /* 0, 4, 6: nothing */
+            break;
+        }
+    }
+    return handled;
+}
+
+/* Once per frame, before pad_update (app_runOneFrame): what the RcpMgr thread did on every
+ * other VI retrace (pad_waitIdleGlobal + pad_requestGlobal), completed at once. */
+void pad_portFrame(void) {
+    char *dev = PORT_PADDEV;
+
+    pad_portDrain(dev);
+    pad_request_000671E4(dev);
+    pad_portDrain(dev);
+}
+#endif
 
 /* pad_initMotors_00067264 — EXACT 61/61 words in-tree (2026-07-03), including raw
  * 0x0C000000 jal words (three gl_func_00000000 placeholder callees).

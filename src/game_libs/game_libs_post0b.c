@@ -5,6 +5,9 @@
 #include "gdl/mem.h"
 #include "gdl/dlctx.h"
 #include "gdl/rcp.h"
+#ifdef PORT
+#include "port_game.h" /* port/include: the PORT frame / RCP / pad glue */
+#endif
 #include "gdl/polyshape.h"
 #include "gdl/window.h"
 #include "gdl/light.h"
@@ -9960,7 +9963,13 @@ void App_main(O415A4 *self) {
     ((ConsoleMgr *)gConsoleNode_3EF04_415A4_g4)->input = (s32)p; /* gConsoleNode holds the ConsoleMgr_ctor(0) result (above); p is the pad_open'd pad state */
     p = (char *)self->vt;
     ((VT415A4 *)p)->fn6C(((VT415A4 *)p)->off68 + (char *)self); /* agent-g run 257: the vtable held in the dead p (its alloc web sits in a2) -- the target loads vt into a2 and self into v0: 95.27 -> 95.53 */
+#ifdef PORT
+    /* PORT (plan 9.6.2): app_run never returns; the port runs its setup here and then one
+     * inner-loop iteration per host step (app_runOneFrame, called by port/main.c). */
+    app_runInit(gSysLib_415A4_s6, self);
+#else
     CALL(app_run)(gSysLib_415A4_s6, self);
+#endif
 }
 
 /* App_Reset: 25-insn 3-call vtable-dispatch.
@@ -11885,7 +11894,15 @@ void gfx_waitRcpIdle(GfxLib *arg0) {
 
     busy = state->rspBusy != 0 || state->queue != 0 || state->active != 0;
     while (busy) {
+#ifdef PORT
+        /* the RcpMgr thread's work as a direct call: run the queued RCP messages */
+        if (RcpMgr_portDrain(state) == 0) {
+            port_rcp_stuck(state, "gfx_waitRcpIdle");
+            break;
+        }
+#else
         CALL(gl_osYieldThread)();
+#endif
         busy = state->rspBusy != 0 || state->queue != 0 || state->active != 0;
     }
 }
@@ -12177,7 +12194,14 @@ void gfx_end(GfxLib *arg0) {
     CALL(prof_beginSection)(GL_DATA_STR(0x1FECC, "CPU"));
     obj = ((char *)GFXLIB(&gGfxLib_44EDC_c)->rcp);
     while (((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0) {
+#ifdef PORT
+        if (RcpMgr_portDrain(obj) == 0) {
+            port_rcp_stuck(obj, "gfx_end queue");
+            break;
+        }
+#else
         CALL(gl_osYieldThread)();
+#endif
     }
     CALL(prof_timerStart)(GL_DATA_STR(0x1FED0, "MorphUpd"));
     r = arg0->morphs;
@@ -12187,7 +12211,14 @@ void gfx_end(GfxLib *arg0) {
     obj = ((char *)GFXLIB(&gGfxLib_44EDC_d)->rcp);
     cond = (((RcpMgr *)obj)->rspBusy != 0 || ((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0);
     while (cond) {
+#ifdef PORT
+        if (RcpMgr_portDrain(obj) == 0) {
+            port_rcp_stuck(obj, "gfx_end idle");
+            break;
+        }
+#else
         CALL(gl_osYieldThread)();
+#endif
         cond = (((RcpMgr *)obj)->rspBusy != 0 || ((RcpMgr *)obj)->queue != 0 || ((RcpMgr *)obj)->active != 0);
     }
     CALL(prof_timerStart)(GL_DATA_STR(0x1FEE8, "ADrawUpd"));
@@ -12205,9 +12236,17 @@ void gfx_end(GfxLib *arg0) {
     CALL(prof_timerStop)(GL_DATA_STR(0x1FF00, "1GFrame"));
     *(float *)&D_44EDC_e = XCALL(gl_func_00000000_fret, prof_timerRead_0004DD2C)(GL_DATA_STR(0x1FF08, "1GFrame"));
     *(char **)&gGfxPhase_44EDC_f = GL_DATA_STR(0x1FF10, "Swap");
+#ifdef PORT
+    /* PORT (plan 9.6.3): "at least one retrace since gfx_start" on virtual VI time is exactly
+     * one retrace when none has passed (gfx_start stored the count); no spin. */
+    if (arg0->rcp->retraceCount == D_44EDC_g[0]) { /* D_44EDC_g = gfx_start's D_44DE4_val */
+        arg0->rcp->retraceCount++;
+    }
+#else
     while (arg0->rcp->retraceCount == D_44EDC_g[0]) {
         CALL(gl_osYieldThread)();
     }
+#endif
     CALL(gfx_swapBuffer)(arg0);
     CALL(prof_endSection)(GL_DATA_STR(0x1FF18, "CPU"));
     *(char **)&gGfxPhase_44EDC_h = GL_DATA_STR(0x1FF1C, "DoneSwap");
@@ -12486,12 +12525,21 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", gfx_setupMatTextures_00045E2
  * value remains unchanged. Byte-exact: inlining the a0[0x218] reload (vs a
  * named `volatile int *v0` local) allocates the pointer to $t7 not $v0 to
  * match. jal-0 placeholder call = no episode. */
+#ifdef PORT
+/* PORT (plan 9.6.3): VI time is virtual. The wait is one retrace, so the count advances by
+ * one and the wait is over; with gfx_end's "a retrace since gfx_start" step that keeps the
+ * N64 meaning of the counter, 2 per 30 Hz frame. */
+void gfx_waitRetrace(GfxLib *a0) {
+    a0->rcp->retraceCount++;
+}
+#else
 void gfx_waitRetrace(GfxLib *a0) {
     int initial = ((volatile RcpMgr *)a0->rcp)->retraceCount;
     while (initial == ((volatile RcpMgr *)a0->rcp)->retraceCount) {
         CALL(gl_osYieldThread)();
     }
 }
+#endif
 
 /* Split off from gfx_waitRetrace bundle 2026-05-08: 2-insn empty void
  * stub. The `sw a0, 0(sp)` is the IDO -O2 unused-arg-save sentinel

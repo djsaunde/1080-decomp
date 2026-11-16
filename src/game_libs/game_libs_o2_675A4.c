@@ -20,6 +20,9 @@
 #include "gdl/gl_data.h"
 #include "gdl/pad.h"
 #include "uso_call.h"
+#ifdef PORT
+#include "port_game.h" /* port/include: the trace hook */
+#endif
 
 extern int D_00000000;
 extern int gl_func_00000000();
@@ -64,6 +67,16 @@ void pad_update(PadCtl *p) {
     if (p->paused == 0) {
         if (p->port != 0) {
             CALL(pad_decodeButtonMap_00034CC8)(&gSysLib, p);
+#ifdef PORT
+            /* trace input hook (plan 9.6.4): log, or inject on replay, the decoded held word
+             * and the raw stick bytes, before mirroring and the game's own replay block */
+            {
+                unsigned int held = (unsigned int)p->held;
+                port_trace_pad(p->port - 1, port_game_frame_count(), p->replayFrame, &held,
+                               &p->rawStickX, &p->rawStickY);
+                p->held = (int)held;
+            }
+#endif
         }
         if (p->mirrorX != 0) {
             p->rawStickX = (s8) -p->rawStickX;

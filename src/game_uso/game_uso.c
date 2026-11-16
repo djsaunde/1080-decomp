@@ -7865,3 +7865,102 @@ void *game_ItemType_create_00011A94(int *arg0) {
     return p2;
 }
 #pragma GLOBAL_ASM("asm/nonmatchings/game_uso/game_uso/game_uso_func_00011A94_pad.s")
+
+#ifdef PORT
+/* PORT trace collector (plan 9.6.4, 17.7): the strong port_trace_collect that replaces the weak
+ * default in port/trace.c. It lives in game.uso because the race objects it reads (SnowBoarder,
+ * RiderAnim, the cameras) are game.uso's. Everything is reached from GameFlow (InputMgr, bootup
+ * Bss 0xF8, through the port/uso blob):
+ *   flow     GameFlow.procState (+0x40) / nextFlowMode (+0x34)
+ *   rand     the sys_randf state word (bootup Data 0x21E04)
+ *   rt       RcpMgr.retraceCount (virtual: 2 per frame)
+ *   el       GameFlow.dataMgr->elapsed (RaceTracker / DataManager, ms)
+ *   race     dataMgr->owner->raceState / flags (RaceProcess)
+ *   r<i>     dataMgr->entries[i].rider (a SnowBoarder): dnode.vqs.trans, dnode.vqs.quat,
+ *            dnode.speed, and the RiderAnim state method (anim->state.b, the PMF's function word;
+ *            a host address on the port, a ROM address in an emulator trace: map both to names
+ *            before diffing)
+ *   cam      the eye (MCamera mnode.world[3]) and target (target->world[3], or eye + lookDir * 10
+ *            with no target, as the lookAt does) of the camera in GameFlow.game +0x108's window.
+ * GameFlow.dataMgr and .game are never cleared when a race ends, so the race groups are read only
+ * while game.uso is loaded (port/uso registry); between races they would point at freed heap. */
+#include "gdl/race.h"
+#include "port_game.h"
+#include "../../port/trace.h"
+#include "../../port/uso/port_uso.h"
+
+static int port_trace_raceLive(void) {
+    static int sGameUsoId = -2;
+    if (sGameUsoId == -2) {
+        const PortUsoModule *m = port_uso_find("game.uso");
+        sGameUsoId = m != NULL ? m->id : -1;
+    }
+    return sGameUsoId >= 0 && port_uso_isLoaded(sGameUsoId);
+}
+
+void port_trace_collect(PortTraceFrame *f) {
+    InputMgr *flow = (InputMgr *)PORT_GAMEFLOW;
+    RaceTracker *dm;
+    char *game;
+    s32 i;
+
+    f->flowState = flow->procState;
+    f->flowNext = flow->nextFlowMode;
+    f->randState = *(u32 *)PORT_RANDSTATE;
+    f->retraceCount = port_game_retrace_count();
+    f->have |= PORT_TRACE_HAVE_FLOW | PORT_TRACE_HAVE_RAND | PORT_TRACE_HAVE_RETRACE;
+    if (!port_trace_raceLive()) {
+        return;
+    }
+    dm = flow->dataMgr;
+    if (dm != NULL) {
+        f->elapsed = dm->elapsed;
+        f->have |= PORT_TRACE_HAVE_ELAPSED;
+        if (dm->owner != NULL) {
+            f->raceState = dm->owner->raceState;
+            f->raceFlags = (u32)dm->owner->flags;
+            f->have |= PORT_TRACE_HAVE_RACE;
+        }
+        if (dm->entries != NULL) {
+            for (i = 0; i < dm->numEntries && f->numRiders < PORT_TRACE_MAX_RIDERS; i++) {
+                SnowBoarder *r = (SnowBoarder *)dm->entries[i].rider;
+                PortTraceRider *o = &f->riders[f->numRiders];
+                if (r == NULL) {
+                    continue;
+                }
+                o->pos[0] = r->dnode.vqs.trans[0];
+                o->pos[1] = r->dnode.vqs.trans[1];
+                o->pos[2] = r->dnode.vqs.trans[2];
+                o->quat[0] = r->dnode.vqs.quat[0];
+                o->quat[1] = r->dnode.vqs.quat[1];
+                o->quat[2] = r->dnode.vqs.quat[2];
+                o->quat[3] = r->dnode.vqs.quat[3];
+                o->speed = r->dnode.speed;
+                o->animState = r->anim != NULL ? r->anim->state.b : -1;
+                f->numRiders++;
+            }
+            f->have |= PORT_TRACE_HAVE_RIDERS;
+        }
+    }
+    game = flow->game;
+    if (game != NULL) {
+        CamWindow *w = *(CamWindow **)(game + 0x108);
+        MCamera *cam = w != NULL ? w->cam : NULL;
+        if (cam != NULL) {
+            for (i = 0; i < 3; i++) {
+                f->camEye[i] = cam->mnode.world[3][i];
+            }
+            if (cam->target != NULL) {
+                for (i = 0; i < 3; i++) {
+                    f->camTarget[i] = cam->target->world[3][i];
+                }
+            } else {
+                f->camTarget[0] = f->camEye[0] + cam->lookDir.x * 10.0f;
+                f->camTarget[1] = f->camEye[1] + cam->lookDir.y * 10.0f;
+                f->camTarget[2] = f->camEye[2] + cam->lookDir.z * 10.0f;
+            }
+            f->have |= PORT_TRACE_HAVE_CAMERA;
+        }
+    }
+}
+#endif

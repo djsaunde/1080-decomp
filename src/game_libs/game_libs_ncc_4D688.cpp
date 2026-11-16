@@ -251,3 +251,117 @@ void Obj::run()
         }
     }
 }
+
+#ifdef PORT
+/* PORT (plan 9.6.3 / 17.4): the RcpMgr thread (entry RcpMgr_update -> RcpMgr_service = Obj::run
+ * above) is not run. RcpMgr_portDrain is its loop body as a direct call: every message pending
+ * on SysLib.msgQueue is handled with run()'s switch, NOBLOCK. The shim runs an SP task inside
+ * osSpTaskStartGo (PortUltraConfig.rcpTask) and posts its SP / DP done events ('e' / 'f') to the
+ * same queue at once, so one drain takes a frame's whole task chain ('h' -> startTask -> 'e' ->
+ * next task ...) to idle. Callers: gfx_end / gfx_waitRcpIdle (PORT spins), app_runInit /
+ * app_runOneFrame, and the port_ultra service step of the RcpMgr thread (any other yield).
+ * Differences from run(), all for the port's virtual VI time (plan 9.6.3):
+ *  - 'd' (VI retrace) no longer counts retraces (gfx_waitRetrace / gfx_end do), reads the pads
+ *    (pad_portFrame, once per frame) or runs snd_AudioUpdate + the audio task: it calls
+ *    port_audio_frame(), once per retrace as the N64 did;
+ *  - the audio-task yield / resume path (`keep` / `pend`) is gone with it;
+ *  - the m44 'd' forward is NOBLOCK (no thread drains that queue on the port).
+ * Strings are the same bootup Data words (debug labels), reached through the blob. */
+#include "port_game.h"
+#define PSTR(o) (port_bootup_data + (o))
+
+static void *sPortRcpMgr;
+static int sPortRcpDraining;
+static unsigned int sPortRcpVi;
+
+static void RcpMgr_portHandle(Obj *self, int k) {
+    switch (k) {
+    case 'e':
+        self->m20 = 0;
+        if (self->m18 != 0) {
+            prof_timerStop((int)PSTR(0x20240), k);
+            Child *c = self->mC;
+            if (c != 0 && c->m5C != 0) {
+                self->m3C = PSTR(0x20248);
+                RcpMgr_loadTask_0004D354((RcpTask *)c);
+                self->m40 = PSTR(0x20250);
+                self->m20 = 1;
+            } else {
+                RcpMgr_insert_0004DCD4(self);
+                RcpMgr_startTask(self);
+            }
+            self->m18 = 0;
+        } else {
+            RcpMgr_insert_0004DCD4(self, k);
+            RcpMgr_startTask(self);
+        }
+        break;
+    case 'f':
+        self->m1C = 0;
+        prof_timerStop((int)PSTR(0x2026C), k);
+        break;
+    case 'd': {
+        void *p = self->m44;
+        port_audio_frame();
+        sPortRcpVi++;
+        if (p != 0 && (sPortRcpVi & 1)) {
+            gl_osSendMesg(p, 'd', 0 /* OS_MESG_NOBLOCK */);
+        }
+        break;
+    }
+    case 'g':
+    case 'h':
+        if (self->mC != 0) {
+            sys_fatal(PSTR(0x202A0), k);
+        }
+        if (self->m4 != 0) {
+            sys_fatal(PSTR(0x202B4));
+        }
+        self->m4 = self->m8;
+        self->m8 = 0;
+        self->m28 = 0;
+        if (self->m18 == 0) {
+            RcpMgr_startTask(self);
+        }
+        prof_timerStart((int)PSTR(0x202D0));
+        break;
+    case 'l':
+        pad_sendMsg_00067168(PORT_PADDEV, k);
+        snd_PreNMI();
+        self->m48 = 1;
+        break;
+    default:
+        sys_fatal(PSTR(0x202D4), k);
+        break;
+    }
+}
+
+extern "C" int RcpMgr_portDrain(void *mgr) {
+    Obj *self = (Obj *)mgr;
+    void *q = ((Q *)PORT_SYSLIB)->ev;
+    int key;
+    int n = 0;
+
+    if (self == 0 || q == 0 || sPortRcpDraining) {
+        return 0;
+    }
+    if (sPortRcpMgr != mgr) { /* run()'s entry */
+        sPortRcpMgr = mgr;
+        self->m48 = 0;
+        self->m18 = 0;
+        self->m40 = PSTR(0x2021C);
+        self->m10 = 0;
+    }
+    sPortRcpDraining = 1;
+    while (gl_osRecvMesg(q, &key, 0 /* OS_MESG_NOBLOCK */) != -1) {
+        n++;
+        RcpMgr_portHandle(self, key);
+    }
+    sPortRcpDraining = 0;
+    return n;
+}
+
+extern "C" int RcpMgr_portStep(void *mgr) {
+    return RcpMgr_portDrain(mgr) != 0;
+}
+#endif
