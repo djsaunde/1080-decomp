@@ -1,7 +1,7 @@
 #ifndef GDL_COLL_H
 #define GDL_COLL_H
 
-#include "gdl/node.h"
+#include "node.h" /* same directory: the NCC donors include this header by relative path */
 
 /* libgdl dynamic collision objects (game_libs post0b: CollObjMgr_ctor 0x3C814, CollObjMgr_update 0x3C86C,
  * coll_boxCtor_0003CAA0, CollObj_init 0x3CB00, CollObj_initCylinder 0x3CB6C,
@@ -100,7 +100,9 @@ typedef struct CollShape {
 } CollShape;
 
 typedef char CollObj_size_check[sizeof(CollObj) == 0x34 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char CollObj_vptr_check[(int)&((CollObj *)0)->vptr == 0x30 ? 1 : -1];
+#endif
 typedef char CollCylinder_size_check[sizeof(CollCylinder) == 0x40 ? 1 : -1];
 typedef char CollContact_size_check[sizeof(CollContact) == 0x40 ? 1 : -1];
 typedef char CollObjMgr_size_check[sizeof(CollObjMgr) == 0x34 ? 1 : -1];
@@ -108,7 +110,9 @@ typedef char CollObjMgr_size_check[sizeof(CollObjMgr) == 0x34 ? 1 : -1];
 typedef char CollTri_size_check[sizeof(CollTri) == 12 ? 1 : -1];
 typedef char CollGrid_size_check[sizeof(CollGrid) == 0x20 ? 1 : -1];
 typedef char CollShape_size_check[sizeof(CollShape) == 0x90 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char CollShape_shape_check[(int)&((CollShape *)0)->shape == 0x84 ? 1 : -1];
+#endif
 
 #define COLLOBJ(p) ((CollObj *)(p))
 #define COLLCYL(p) ((CollCylinder *)(p))

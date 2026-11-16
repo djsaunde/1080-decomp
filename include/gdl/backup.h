@@ -174,13 +174,19 @@ typedef char BackupScoreEntry_size_check[sizeof(BackupScoreEntry) == 8 ? 1 : -1]
 typedef char BackupCourseRecord_size_check[sizeof(BackupCourseRecord) == 0x30 ? 1 : -1];
 typedef char BackupCourse_size_check[sizeof(BackupCourse) == 0x180 ? 1 : -1];
 typedef char BackupArcadeEntry_size_check[sizeof(BackupArcadeEntry) == 0x20 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BackupArcadeEntry_score_check[(int)&((BackupArcadeEntry *)0)->score == 0x1C ? 1 : -1];
+#endif
 typedef char BackupArcade_size_check[sizeof(BackupArcade) == 0x60 ? 1 : -1];
 typedef char BackupOptions_size_check[sizeof(BackupOptions) == 0x18 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BackupOptions_levels_check[(int)&((BackupOptions *)0)->levels == 0x12 ? 1 : -1];
+#endif
 typedef char BackupGhost_size_check[sizeof(BackupGhost) == 0x10 ? 1 : -1];
 typedef char Backup_size_check[sizeof(Backup) == 8 ? 1 : -1];
 typedef char BackupSession_size_check[sizeof(BackupSession) == 0x18 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char BackupSession_modes_check[(int)&((BackupSession *)0)->modes == 0x14 ? 1 : -1];
+#endif
 
 #endif
