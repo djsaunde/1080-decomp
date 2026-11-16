@@ -18,7 +18,8 @@
 typedef struct Sprite {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C[0x16];
-    /* 0x84 */ s32 children;          /* collection walked by the ctor */
+    /* 0x84 */ void **children;       /* element array (the ctor's Arr: data here, count at +0x90),
+                                     * walked by the ctor; element i is the image for unkC0 == i */
     /* 0x88 */ s32 unk88[10];
     /* 0xB0 */ f32 scaleX;            /* 1.0 */
     /* 0xB4 */ f32 scaleY;            /* 1.0 */

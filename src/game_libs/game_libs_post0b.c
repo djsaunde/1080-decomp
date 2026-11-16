@@ -15015,7 +15015,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
         itp = 0;
         if (1) { itp = &it; }
         if ((itp != 0) || ((itp = (Iter620 *) gl_func_00000000(0xC)) != 0)) {
-            s32 *coll = &self->children;
+            s32 *coll = (s32 *)&self->children;
             itp->idx = -1;
             itp->ptr = (s32 **) coll;
             itp->count = ((s32 *) coll)[3] - 1;
