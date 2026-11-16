@@ -3,6 +3,8 @@
  * nameent.uso is C++: these are the functions whose shape only edg's lowering reproduces (a
  * virtual call keeps the object in v1 and its vtable in v0). */
 extern "C" int gl_func_00000000(...);
+/* void-returning blank import (pinned at 0): a callee that returns nothing leaves v0 free */
+extern "C" void gl_func_00000000_void(...);
 
 /* gui.uso Bss (the gui draw state) and nameent.uso's own Data (pinned at 0) */
 extern "C" char ne_gGui;
@@ -24,7 +26,9 @@ struct NeGameFlow {
     NePlayer *player;           /* 0x134 */
     char pad138[0x158 - 0x138];
     unsigned char name[4];      /* 0x158: the last name entered (9 bytes copied, through +0x160) */
-    int nameWord;               /* 0x15C */
+    int nameLen;                /* 0x15C */
+    char pad160[0x190 - 0x160];
+    void *fader;                /* 0x190: the shared Fader */
 };
 extern "C" NeGameFlow D_00000000;
 
@@ -94,12 +98,20 @@ struct NeEntry {
     int mode;                   /* 0x2C: the record session (0 = none) */
     void *owner;                /* 0x30: the NameEnter process */
     int newCount;               /* 0x34: Backup_sessionCountNew(mode) */
-    int w38, w3C, w40, w44, w48, w4C, w50, w54, w58, w5C, w60, w64, w68; /* 0x38..0x68 */
-    float f6C, f70, f74, f78, f7C;  /* 0x6C..0x7C */
+    int w38, w3C, w40, w44, w48, w4C, w50, w54, w58; /* 0x38..0x58: board / letter layout */
+    int repeat;                 /* 0x5C: stick held frames (auto-repeat after repeatDelay) */
+    int repeatTick;             /* 0x60 */
+    int repeatDelay;            /* 0x64: 6 */
+    int repeatRate;             /* 0x68: 1 */
+    float pos;                  /* 0x6C: the letter wheel's position (0..42, eased toward target) */
+    float target;               /* 0x70: the selected letter (41 = END) */
+    float vel;                  /* 0x74 */
+    float maxVel;               /* 0x78: 0.5 */
+    float gain;                 /* 0x7C: 0.2 */
     Colour c80, c90, cA0;       /* 0x80, 0x90, 0xA0 */
-    int nameWord;               /* 0xB0: GameFlow +0x15C */
-    int wB4;                    /* 0xB4 */
-    unsigned char name2[12];    /* 0xB8: GameFlow +0x158.. */
+    int len;                    /* 0xB0: letters entered (GameFlow +0x15C) */
+    int done;                   /* 0xB4: 3 letters entered: the wheel goes to END */
+    unsigned char name2[12];    /* 0xB8: the letters (42 = blank; GameFlow +0x158..) */
     int wC4, wC8, wCC;          /* 0xC4..0xCC */
     float fD0;                  /* 0xD0 */
     char spr0[0x18];            /* 0xD4: gui sprites */
@@ -137,27 +149,27 @@ extern "C" NeEntry *nameent_uso_func_00000760(NeEntry *self, void *owner, int mo
         self->w58 = 22;
         self->w50 = 5;
         self->w54 = 33;
-        self->w5C = 0;
-        self->w64 = 6;
-        self->w60 = 0;
-        self->w68 = 1;
-        self->f74 = 0.0f;
-        self->f78 = 0.5f;
-        self->f7C = 0.2f;
-        self->wB4 = 0;
+        self->repeat = 0;
+        self->repeatDelay = 6;
+        self->repeatTick = 0;
+        self->repeatRate = 1;
+        self->vel = 0.0f;
+        self->maxVel = 0.5f;
+        self->gain = 0.2f;
+        self->done = 0;
         self->wC4 = 128;
         self->wC8 = 255;
         self->wCC = 255;
-        self->nameWord = D_00000000.nameWord;
+        self->len = D_00000000.nameLen;
         for (i = 0; i < 9; i++) {
             self->name2[i] = D_00000000.name[i];
         }
-        if (self->nameWord != 0) {
-            self->f70 = 41.0f;
+        if (self->len != 0) {
+            self->target = 41.0f;
         } else {
-            self->f70 = 0.0f;
+            self->target = 0.0f;
         }
-        self->f6C = self->f70;
+        self->pos = self->target;
         self->c80.set255(128, 255, 128, 255);
         self->c90.clear();
         self->cA0.set255(128, 128, 128, 255);
@@ -167,4 +179,156 @@ extern "C" NeEntry *nameent_uso_func_00000760(NeEntry *self, void *owner, int mo
         gl_func_00000000(self->spr2, 0x250000);
     }
     return self;
+}
+
+/* the owning NameEnter process: +0x6C = a name was entered (nameent_uso_func_000004D0) */
+struct NeOwner { char pad0[0x6C]; int entered; };
+/* input_getStickX_00011D78 returns a float: a typed alias of the blank import (pinned at 0) */
+extern "C" float ne_input_getStickX(void *input);
+
+/* nameent_uso_func_00000E44: the name-entry input: the letter wheel (42 entries: letters, 39 =
+ * space, 40 = back, 41 = END) steps with 0x10000 / 0x4000 or the stick (auto-repeat), the
+ * position eases toward the target (gain +0x7C, clamped to +-maxVel, wrapping at 42); 0x200
+ * deletes a letter, A / 0x40000 picks the letter under the wheel (END fades out with
+ * owner->entered set). Once 3 letters are in, the wheel is held on END. The 0.05f literal is
+ * RoData+0x10 (nameent_uso_func_00000E44_rodata pinned). The dead stores to `scratch1` /
+ * `scratch2` emit no code; their words give the target's frame (0x30: sel at 0x24, stick 0x1C). */
+extern "C" void nameent_uso_func_00000E44(NeEntry *self) {
+    float d;
+    float tgt;
+    int sel;
+    int scratch1;
+    float stick;
+    int scratch2;
+
+    scratch1 = 0;
+    scratch2 = 0;
+    if (self->done != 0 && self->target < 41.0f) {
+        self->target = 41.0f;
+        tgt = self->target;
+    } else {
+        if (self->done != 0 && self->pos >= 41.0f) {
+            self->done = 0;
+        }
+        stick = ne_input_getStickX(&D_00000000);
+        if (self->repeat < self->repeatDelay) {
+            if (gl_func_00000000(&D_00000000, 0x10000)) { /* input_checkPressed_00011E00 */
+                self->target -= 1.0f;
+                if (self->len == 3 && self->target < 40.0f) {
+                    self->target = 40.0f;
+                } else {
+                    gl_func_00000000_void(157); /* snd_postEvent */
+                }
+            }
+            if (gl_func_00000000(&D_00000000, 0x4000)) {
+                self->target += 1.0f;
+                if (self->len == 3 && self->target >= 42.0f) {
+                    self->target = 41.0f;
+                } else {
+                    gl_func_00000000_void(157);
+                }
+            }
+        }
+        if (stick == 0.0f) {
+            self->repeat = 0;
+            self->repeatTick = 0;
+        } else {
+            self->repeat++;
+            if (self->repeat > self->repeatDelay) {
+                self->repeatTick++;
+                if (self->repeatTick > self->repeatRate) {
+                    self->repeatTick = 0;
+                    if (stick < 0.0f) {
+                        self->target -= 1.0f;
+                        if (self->len == 3 && self->target < 40.0f) {
+                            self->target = 40.0f;
+                        } else {
+                            gl_func_00000000_void(157);
+                        }
+                    }
+                    if (stick > 0.0f) {
+                        self->target += 1.0f;
+                        if (self->len == 3 && self->target >= 42.0f) {
+                            self->target = 41.0f;
+                        } else {
+                            gl_func_00000000_void(157);
+                        }
+                    }
+                }
+            }
+        }
+        if (self->target < 0.0f) {
+            self->target += 42.0f;
+        }
+        if (self->target >= 42.0f) {
+            self->target -= 42.0f;
+        }
+        tgt = self->target;
+    }
+    d = tgt - self->pos;
+    if (d > 21.0f) {
+        d -= 42.0f;
+    } else if (d < -21.0f) {
+        d += 42.0f;
+    }
+    if ((d < 0.0f ? -d : d) < 0.05f) {
+        self->pos = tgt;
+    } else {
+        self->vel = d * self->gain;
+        if (self->vel > self->maxVel) {
+            self->vel = self->maxVel;
+        } else if (self->vel < -self->maxVel) {
+            self->vel = -self->maxVel;
+        }
+        self->pos += self->vel;
+    }
+    if (self->pos < 0.0f) {
+        self->pos += 42.0f;
+    }
+    if (self->pos >= 42.0f) {
+        self->pos -= 42.0f;
+    }
+    sel = (int)(self->pos + 0.5f);
+    if (self->done == 0 && self->len > 0 && gl_func_00000000(&D_00000000, 0x200)) {
+        gl_func_00000000_void(168);
+        self->done = 0;
+        self->len--;
+        self->name2[self->len] = 42;
+    }
+    if (self->done == 0 && gl_func_00000000(&D_00000000, 0x40100)) {
+        if (sel == 41) {
+            if (gl_func_00000000(D_00000000.fader)) { /* Fader_isDone_00013980 */
+                gl_func_00000000_void(160);
+                ((NeOwner *)self->owner)->entered = 1;
+            }
+            return;
+        }
+        if (sel == 40) {
+            if (self->len > 0) {
+                gl_func_00000000_void(168);
+                self->len--;
+                self->name2[self->len] = 42;
+            }
+            return;
+        }
+        if (sel == 39) {
+            if (self->len < 3) {
+                gl_func_00000000_void(167);
+                self->name2[self->len] = 42;
+                self->len++;
+            }
+        } else {
+            if (self->len < 3) {
+                gl_func_00000000_void(167);
+                self->name2[self->len] = self->pos + 0.5f;
+                if (self->name2[self->len] >= 42) {
+                    self->name2[self->len] -= 42;
+                }
+                self->len++;
+            }
+        }
+        if (self->len == 3) {
+            self->done = 1;
+        }
+    }
 }

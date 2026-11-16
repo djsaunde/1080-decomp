@@ -233,5 +233,8 @@ int nameent_uso_func_00000760(char *self, char *owner, int mode) {
 
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000009BC);
 
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000E44);
+/* nameent_uso_func_00000E44: the name-entry input (the letter wheel). EXACT via the NCC (C++)
+ * donor src/nameent_uso/nameent_uso_ncc.cpp (REPLACE_FUNC_BODY). */
+void nameent_uso_func_00000E44(char *self) {
+}
 
