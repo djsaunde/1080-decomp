@@ -7780,7 +7780,7 @@ Node *ItemMgr_spawnItem(ItemMgr *mgr, ItemType *type, int arg) {
         CALL(ItemType_addItem)(type, obj);
         obj->name = (const char *)&type->tag;
         msg.tag = 7;
-        msg.arg = arg;
+        msg.arg.value = arg;
         if (1) {
             vt = obj->vptr;
             VT_SLOT(vt, 4).fn(VT_SLOT(vt, 4).delta + (char *)obj, &msg);
