@@ -92,9 +92,9 @@ void arc_initCourses_00000688(int *a0) {
  * function. Unblocked by the replace-function-body.py realign fix (2026-05-30).
  * See docs/MATCHING_WORKFLOW.md#feedback-replace-func-body-o0-donor. */
 void arc_closeSession_00000748(int *a0) {
-    gl_func_00000000((int*)a0[2]);
+    CALL(mem_delete)((int*)a0[2]);
     a0[2] = 0;
-    gl_func_00000000((int*)a0[0], 3);
+    CALL(Backup_closeSession)((int*)a0[0], 3);
     a0[0] = 0;
     INPUT_MGR(D_00000000).session = 0;
 }
