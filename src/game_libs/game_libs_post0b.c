@@ -10982,7 +10982,7 @@ void gfx_setLightDirs_000430D8(char *self, int flag) {
     Iter_430D8 *p = &it;
     char *node;
     char *obj;
-    char *base = **(char ***)(self + 0x2C); /* RAW: unknown-object: self +0x2C holds a pointer to the light-slot buffer; owner class not identified */
+    char *base = (char *)DLCTX(self)->light.cur->base; /* self is a DLContext: its current light block */
     int idx = 0;
     char *slot;
     p->next = ((Link_430D8 *)gGfx->lights); if (1) {}
@@ -11713,7 +11713,7 @@ void gfx_initDdm(int* a0, int a1) {
     a0[1] = 0;
     a0[2] = a1;
     s1 = &a0[1];
-    a0[0] = *(int*)(((char*)s0[3]) + 0x4); /* RAW: unknown-object: s0[3] is a render-state record whose word +4 is copied; class not identified */
+    a0[0] = ((DLContext *)s0)->gfx.cur->count; /* s0 is the DLContext: a0 = {gfx count, GdlRenderState {0, a1}} */
     CALL(gfx_emitCycleType)(s0, s1);
     CALL(gfx_emitRenderMode)(s0, s1);
     CALL(gfx_emitCombineMode)(s0, s1);
@@ -13538,7 +13538,7 @@ int gfx_findVtx_00048720(int *a0, int a1, int a2) {
     if (i < end) {
         hdr = *a0;
         do {
-            int rec = *(volatile int *)(*(volatile int *)(hdr + 0x1C)) + (i * 16); /* RAW: unknown-object: hdr +0x1C points to the GdlVtx record array; hdr class not identified (volatile double load is the match lever) */
+            int rec = *(volatile s32 *)&(*(DLBuf *volatile *)&DLCTX(hdr)->vtx.cur)->base + (i * 16); /* hdr is a DLContext: Vtx i of its vtx buffer (the volatile double load is the match lever) */
             if (GDLVTX(a2)->ob[0] == GDLVTX(rec)->ob[0] &&
                 GDLVTX(a2)->ob[1] == GDLVTX(rec)->ob[1] &&
                 GDLVTX(a2)->ob[2] == GDLVTX(rec)->ob[2] &&
@@ -14623,7 +14623,7 @@ void MorphPoly_allocUpdateList(int *self) {
     {
         int *g = ((int *)gGfx->staticDL);
         ((MorphPoly *)self)->vtxStart =
-            *(int *)((char *)(*(int *)((char *)g + 0x1C)) + 4); /* RAW: unknown-object: gGfx->staticDL record +0x1C points to a vertex-count record (word +4); class not identified */
+            DLCTX(g)->vtx.cur->count; /* staticDL is a DLContext: the Vtx count so far */
     }
 }
 
@@ -16000,7 +16000,7 @@ void gfx_submitFrame_0004CDB0(ScreenWindow *self, int flag)
     if (flag) {
         { int i; unsigned int *p; g = GFX_4CDB0(obj); i = DLBUF(g)->count; DLBUF(g)->count = i + 1; p = (unsigned int *)(*(char **)&DLBUF(GFX_4CDB0(obj))->base + i * 8); p[0] = (0xE9000000); p[1] = (0); }
     }
-    *(int *)((char *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4) + 0x70) = self->unk1B4; /* RAW: unknown-object: gfx_queueGfxTask_0004CEFC result is a task record (+0x70 = DL word); type not identified */
+    *(int *)&((RcpTask *)CALL(gfx_queueGfxTask_0004CEFC)(self, 4))->clipShape = self->unk1B4; /* the queued RcpTask (rcp.h) */
 }
 #undef GFX_4CDB0
 #undef PACKET_4CDB0
@@ -20958,7 +20958,7 @@ s32 gfx_renderModeWord(char *a0) {
     s32 f;
     s32 m;
 
-    v = *(s32 *)(a0 + 4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
+    v = ((GdlRenderState *)a0)->flags;
     f = v & 0x80000;
     if (f != 0) {
         return 0xC8000000;
@@ -21057,7 +21057,7 @@ s32 gfx_renderMode2Word(char *arg0) {
     s32 temp_a1;
     s32 temp_v0;
 
-    temp_a1 = FW(arg0, 0x4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
+    temp_a1 = ((GdlRenderState *)arg0)->flags;
     temp_v0 = temp_a1 & 0xFF;
     if (temp_v0 == 0) goto c0;
     if (temp_v0 == 3) goto c3;
@@ -21351,7 +21351,7 @@ void gfx_emitGeometryMode(DLContext *a0, int *a1) {
 extern int gl_func_00000000();
 void gfx_emitRenderMode(DLContext *a0, int a1) {
     int r = CALL(gfx_renderModeWord)(a1);
-    int flags = *(int *)((char *)a1 + 4); /* RAW: unknown-object: render-mode record (word +4 = mode flags); caller passes an int */
+    int flags = ((GdlRenderState *)a1)->flags;
     int v = r;
     if ((flags << 12) < 0 || (flags << 8) < 0) {
         v = CALL(gfx_renderMode2Word)(a1);
@@ -25477,8 +25477,8 @@ void TextWin_clear(int *a0) {
     int off = 0;
     if (TEXTWIN(a0)->nRows > 0) {
         do {
-            *(char *)(*(int *)((char *)TEXTWIN(a0)->rows + off)) = 0;
-            *(int *)((char *)TEXTWIN(a0)->rows + off + 4) = 0; /* RAW: unknown-object: TextWin row records (8 bytes: text pointer, length) walked by a byte offset cursor */
+            *((TextWinRow *)((char *)TEXTWIN(a0)->rows + off))->text = 0; /* row i, walked by the byte offset off */
+            ((TextWinRow *)((char *)TEXTWIN(a0)->rows + off))->len = 0;
             off += 8;
             i++;
         } while (i < TEXTWIN(a0)->nRows);

@@ -62,4 +62,15 @@ typedef struct DLGfx {
 #define DLPKT(p) ((DLGfx *)(p))
 #define DLBUF(p) ((DLBuf *)(p))
 
+/* GdlRenderState: the render-state record the gfx_emit* state emitters take as `int *` (agent-b run 583).
+ * Only its flags word is read: gfx_emitRenderState_00047644 emits the cycle type always, the combine
+ * mode when flags & 0xF00, the geometry mode when flags >> 12 and the render mode when flags & 0xFF;
+ * gfx_renderModeWord / gfx_renderMode2Word map bits 18 / 19 / 23 and the low byte to an other-mode
+ * word; bits 19 / 23 select two-cycle (gfx_emitCycleType, gfx_emitCombineMode). gfx_initDdm builds
+ * one in place after a DL count (flags = its argument). Word 0 is not read by these emitters. */
+typedef struct GdlRenderState {
+    /* 0x0 */ s32 unk0;
+    /* 0x4 */ s32 flags;
+} GdlRenderState;
+
 #endif /* GDL_DLCTX_H */
