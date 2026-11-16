@@ -171,22 +171,25 @@ extern void gl_func_0003D074();
 //   Frame: outA/outB at sp+0x50/0x54 need `volatile int pad;` first and
 //   outB declared before outA.
 extern char D_0001E3F4, D_0001E400;
-extern char *gl___osActiveQueue_34458_head;
+/* agent-b run 566: n walks libultra's active-thread list (OSThread, libultra/os_thread.h) by
+ * tlnext up to the priority -1 tail sentinel, printing name, id, state, the symbol of
+ * context.pc, and the pc. */
+extern OSThread *gl___osActiveQueue_34458_head;
 extern char *gSysApi_34458_obj;
 int dbg_printThreads() {
-    char *n = gl___osActiveQueue_34458_head;
+    OSThread *n = gl___osActiveQueue_34458_head;
     volatile int pad;
     int outB, outA;
     int s1;
     int vB;
     CALL(dbg_printf)(GL_DATA_STR(0x1E3F4, "Threads: \n"));
-    while (*(int *)(n + 4) != -1) {
-        SYSAPI_AT(gSysApi_34458_obj)->symLookup(*(int *)(n + 0x11C), &outA, &outB);
-        s1 = CALL(dbg_threadName)(*(int *)(n + 0x14));
-        vB = CALL(dbg_threadStateName)(*(unsigned short *)(n + 0x10));
-        CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
-                         outA, outB, *(int *)(n + 0x11C));
-        n = *(char **)(n + 0xC);
+    while (n->priority != -1) {
+        SYSAPI_AT(gSysApi_34458_obj)->symLookup(n->context.pc, &outA, &outB);
+        s1 = CALL(dbg_threadName)(n->id);
+        vB = CALL(dbg_threadStateName)(n->state);
+        CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, n->id, vB,
+                         outA, outB, n->context.pc);
+        n = n->tlnext;
     }
 }
 
@@ -3184,11 +3187,11 @@ void Node_def(NodeListState *p) {
     if (p->linkNodes != 0) {
         lst = p->parent->node;
         n = p->node;
-        XCALL(gl_func_00000000_37bec, list_append)(lst + 0x10, n);
-        if (*(int *)(n + 0x14) != 0) {
-            *(int *)(n + 0x04) = 1;
+        XCALL(gl_func_00000000_37bec, list_append)(&NODE(lst)->children, n);
+        if (NODE(n)->parent != 0) {
+            NODE(n)->unk04 = 1;
         }
-        *(char **)(n + 0x14) = lst;
+        NODE(n)->parent = NODE(lst);
     }
 }
 
@@ -3574,8 +3577,8 @@ void Node_Save(char *o) {
                          (char *)&D_00000000 + 0x0001EC28, &D_00000000_d, 0)) {
         if (CALL(fs_gdlOpenFile)(&D_00000000_e, &D_00000000_f,
                              (char *)&D_00000000 + 0x0001EC30)) {
-            r = *(char **)(o + 0x28);
-            (*(int (**)(int))(r + 0x44))(*(short *)(r + 0x40) + (int)o);
+            r = NODE(o)->vptr;
+            VT_SLOT(r, 7).fn(VT_SLOT(r, 7).delta + o);
             CALL(fs_gdlCloseFile)(&D_00000000_c);
         }
     }
@@ -6599,12 +6602,12 @@ void ItemType_load(char *o) {
     s2 = 0;
     do {
         h = (char *)ITEMTYPE(o)->node.vptr;
-        s0 = ((char *(*)(int))*(int *)(h + 0x5C))(*(short *)(h + 0x58) + (int)o);
+        s0 = (char *)VT_SLOT(h, 10).fn(VT_SLOT(h, 10).delta + o);
         CALL(ItemType_addItem)(o, s0);
-        *(char **)(s0 + 0x0C) = s3;
+        NODE(s0)->name = s3;
         if (1) {
-            h2 = *(char **)(s0 + 0x28);
-            ((void (*)(int))*(int *)(h2 + 0x4C))(*(short *)(h2 + 0x48) + (int)s0);
+            h2 = NODE(s0)->vptr;
+            VT_SLOT(h2, 8).fn(VT_SLOT(h2, 8).delta + s0);
         }
         s2++;
     } while ((u32)s2 < (u32)count);
@@ -6855,14 +6858,14 @@ int *arg0; int arg1, arg2, arg3;
         if (pa0 == 0) goto end;
     }
     gl_func_00000000(pa0, *(struct { int x; } *)&arg1, ia2);
-    pa0[0x28 / 4] = (int)&D_00000000;
+    NODE(pa0)->vptr = (char *)&D_00000000;
     if (pa3 == 0) {
         COLOURITEMTYPE(pa0)->colour[1] = 0.0f;
         COLOURITEMTYPE(pa0)->colour[2] = 0.0f;
         COLOURITEMTYPE(pa0)->colour[0] = 1.0f;
         COLOURITEMTYPE(pa0)->colour[3] = 1.0f;
     } else {
-        *(struct q3d *)((char *)pa0 + 0x48) = **(struct q3d **)&arg3;
+        *(struct q3d *)COLOURITEMTYPE(pa0)->colour = **(struct q3d **)&arg3;
     }
 end:
     return pa0;
@@ -15306,7 +15309,7 @@ int *ScreenWindow_ctor(int *a0, int a1, ...) {
         }
     }
     CALL(Window_ctor)(a0);
-    a0[0x28 / 4] = (int)&ScreenWindow_vtbl;
+    NODE(a0)->vptr = (char *)&ScreenWindow_vtbl;
     aligned = (((int)((char *)&a1 + 4)) + 3) & ~3;
     CALL(Node_runCommandArgs_00038C70)(a0, a1, aligned);
     CALL(ScreenWindow_allocBuffers)(a0);
@@ -18632,20 +18635,19 @@ void BaseMat_sendImage_00051E98(char *a0) {
  * a1, the old residual), plus one empty `if (1) {}` after `p = ap;` (a uopt
  * block boundary, found by scripts/blockcut-search.py). */
 extern int gl_func_00000000();
-typedef struct { short d; short i; int (*f)(); } VtE51ED8;
 void BaseMat_forEachVarArg_00051ED8(a0, va_alist) char *a0; int va_alist; {
     char *p;
     char *ap;
     int stash;
-    VtE51ED8 *vt;
+    char *vt;
     if (1) { char **q = &ap; }
     ap = (char *)(((int)&va_alist + sizeof(va_alist) + 3) & ~3);
     if ((stash = va_alist) == 0) {
         return;
     }
     do {
-        vt = *(VtE51ED8 **)(a0 + 0x5C);
-        vt[4].f(a0 + vt[4].d, &stash);
+        vt = ((BaseMat *)a0)->vptr;
+        VT_SLOT(vt, 3).fn(a0 + VT_SLOT(vt, 3).delta, &stash);
         p = ap; if (1) {}
         ap = p + 4;
         stash = *(int *)p;
@@ -18773,12 +18775,12 @@ int state;
     int *self;
     if (dmy) {}
     if (state) {}
-    state = *(int*)((char*)a0 + 0x24);
+    state = ((BaseMat *)a0)->format;
     self = a0;
-    if (state != 0x120) {
-        if (state != 0x110) {
-            if (state != 0x308 && state != 0x408 && state != 0x508 && state != 0x608) {
-                if (state != 0x304) {
+    if (state != MAT_FMT_RGBA32) {
+        if (state != MAT_FMT_RGBA16) {
+            if (state != MAT_FMT_I8 && state != MAT_FMT_IA8 && state != MAT_FMT_CI8 && state != MAT_FMT_CI8_B) {
+                if (state != MAT_FMT_I4) {
                     goto def;
                 }
                 goto half;
@@ -18795,7 +18797,7 @@ one:
 half:
     return 0.5f;
 def:
-    gl_func_00000000((char*)&gl_data_00000000 + 0x20F90, *(int*)((char*)self + 0x18));
+    gl_func_00000000((char*)&gl_data_00000000 + 0x20F90, ((BaseMat *)self)->id);
     return 0.0f;
 }
 
@@ -20140,11 +20142,11 @@ int BaseLight_vfn8_00054C04(char *a0) {
 
 extern int gl_func_00000000();
 
-void LightTarget_doCommand(char *a0, char *a1) {
-    int val = *(int*)a1;
+void LightTarget_doCommand(char *a0, NodeMsg *a1) {
+    int val = a1->tag;
     if (val == 0x72) {
-        int *p = *(int**)(a1 + 4);
-        *(int**)(a1 + 4) = p + 1;
+        int *p = (int *)a1->arg.payload;
+        a1->arg.payload = (char *)(p + 1);
         ((LightTarget *)a0)->mask = *p;
     } else {
         CALL(Node_doCommand)();
