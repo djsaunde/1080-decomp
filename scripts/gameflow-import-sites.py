@@ -39,7 +39,12 @@ Usage (project root, after a full build):
   scripts/gameflow-import-sites.py check [FILE..]
       every INPUT_MGR(tok) use (tok = an address-range token, not the shared D_00000000)
       must have tok's relocs in its function target GameFlow in the ROM (fast, no compile).
-      Exit 1 on a mismatch. Tested: INPUT_MGR(import_8002022C) in MGRRaceProcess_ctor (that
+      Exit 1 on a mismatch. Shared / per-site tokens (D_00000000 / gInputMgr, import_00020098,
+      D_<mod>_<addr>_b) name other objects too, so each such use is proven on its own site: an
+      LO16 reloc against the token in the function whose ROM immediate falls on the field (or a
+      base `addiu %lo(tok)` with immediate 0) must target bootup Bss+0xF8; if they all target
+      something else it is a mismatch, if there is none (donor-spliced / -O0 alias) it is
+      counted as unproven (`check -v` lists them). agent-a run 540. Tested: INPUT_MGR(import_8002022C) in MGRRaceProcess_ctor (that
       token's relocs target bootup Bss+0x28C) fails with the 8 reloc sites listed.
 
 src/match_imports units are native relink objects (no module Text mapping) and are skipped.
@@ -232,6 +237,8 @@ class GSite:
 
 def scan(src, toks):
     m = NPC.mask(src)
+    if not toks:    # an empty alternation `()` would match everywhere (KeyError '' in dls)
+        return [], m
     dead = nm_regions(src)
     blocks = [b for b in NPC.top_blocks(m) if NPC.func_header_name(m, b[0], b[1])]
     T = '(' + '|'.join(sorted(map(re.escape, toks))) + ')'
@@ -447,6 +454,8 @@ def plan_file(path, rom, mv):
     out = {'path': path, 'done': [], 'left': [], 'error': None, 'text': None}
     src = open(path, errors='replace').read()
     toks = file_tokens(src)
+    if not toks:
+        return out
     sites, m = scan(src, toks)
     if not sites:
         return out
@@ -533,6 +542,85 @@ def cmd_plan(a, rom, mv):
 
 
 USE_RE = re.compile(r'\b' + MACRO + r'\s*\(\s*(\w+)\s*\)')
+FIELD_USE_RE = re.compile(r'\s*\.\s*(\w+)\s*(?:\[\s*([^\]]*)\])?')
+# source spellings that are macros for a relocated symbol (include/gdl/gl_data.h)
+SYM_ALIAS = {'gInputMgr': 'D_00000000'}
+
+
+def use_range(m, end):
+    """byte range [lo, hi) inside GameFlow that `INPUT_MGR(tok)` + the member access after `end`
+    names (a constant index narrows it to one element), or None"""
+    fm = FIELD_USE_RE.match(m, end)
+    if not fm:
+        return None
+    f = next((x for x in FIELDS if x[1] == fm.group(1)), None)
+    if f is None:
+        return None
+    off, name, typ, es, n = f
+    if n and fm.group(2) is not None:
+        i = cval(fm.group(2))
+        if i is not None:
+            return off + es * i, off + es * (i + 1)
+    return off, off + es * (n or 1)
+
+
+def lo16_proof(path, rom, md, sym, fn, rng, cache):
+    """A shared / per-site token (D_00000000, import_00020098, D_<mod>_<addr>_b) names other
+    objects too, so the function-wide rom_proof is not enough: prove the SITE. Its LO16 relocs
+    against sym in fn whose ROM immediate (the offset inside the target, kind-2 Sym) falls in
+    rng: ok if one of them targets GameFlow; 'mismatch: ...' if they all target something else;
+    'unproven: ...' if there is none (or the function is not provably the module Text)."""
+    obj = NPC.obj_of(path)
+    if obj not in cache:
+        funcs, _ = NPC.elf_info(obj)
+        rel = collections.defaultdict(lambda: collections.defaultdict(list))
+        with open(obj, 'rb') as f:
+            e = ELFFile(f)
+            st = e.get_section_by_name('.symtab')
+            for sec in e.iter_sections():
+                if sec.name in ('.rel.text', '.rela.text'):
+                    for r in sec.iter_relocations():
+                        if r['r_info_type'] != 6:     # R_MIPS_LO16
+                            continue
+                        o = r['r_offset']
+                        f1 = next((nm for nm, (v, sz, _) in funcs.items() if v <= o < v + sz), None)
+                        if f1:
+                            rel[st.get_symbol(r['r_info_sym']).name][f1].append(o - funcs[f1][0])
+        cache[obj] = (funcs, rel, NPC.reloc_offsets(obj), {o: f1 for f1, o, _ in md.relocs('Text')})
+    funcs, rel, rall, rmap = cache[obj]
+    if fn not in funcs:
+        return 'unproven: %s not in the object' % fn
+    base = rom.func_off(md, fn)
+    v, sz, b = funcs[fn]
+    if base is None or not NPC.rom_bytes_match(md, base, b, v, rall):
+        return 'unproven: %s is not provably the %s Text' % (fn, md.short)
+    text = md.secs.get('Text', b'')
+    hit, other, bhit, bother = False, set(), False, set()
+    for o in rel.get(sym, {}).get(fn, []):
+        if base + o + 4 > len(text) or base + o not in rmap:
+            continue
+        imm = int.from_bytes(text[base + o + 2:base + o + 4], 'big', signed=True)
+        if not (rng[0] <= imm < rng[1] or imm == 0):
+            continue
+        ex, nm = rom.res.target(md, rmap[base + o] >> 4)
+        ok = (ex.short if ex else None, nm) == TARGET
+        why = 'Text+0x%X -> %s:%s+0x%X' % (base + o, ex.short if ex else '?', nm, imm)
+        if rng[0] <= imm < rng[1]:
+            hit, other = hit or ok, other if ok else other | {why}
+        else:
+            # `addiu rX, %lo(sym)` = the object's base, the field offset in the load / store after it
+            bhit, bother = bhit or ok, bother if ok else bother | {why}
+    if hit:
+        return None
+    if other:
+        return 'mismatch: ' + '; '.join(sorted(other))
+    if bhit and not bother:
+        return 'base'
+    if bhit:    # sym is GameFlow's base at one site and another object's at another: not provable here
+        return 'unproven: %s is a base for GameFlow and for %s' % (sym, '; '.join(sorted(bother)))
+    if bother:
+        return 'mismatch: ' + '; '.join(sorted(bother))
+    return 'unproven: no LO16 reloc against %s at GameFlow+[0x%X, 0x%X)' % (sym, rng[0], rng[1])
 
 
 def cmd_check(a, rom, mv):
@@ -540,24 +628,49 @@ def cmd_check(a, rom, mv):
                               {os.path.join(r, f) for r, _, fs in os.walk('src') for f in fs
                                if f.endswith(('.c', '.cpp')) and not r.startswith('src/match_imports')
                                and MACRO + '(' in open(os.path.join(r, f), errors='replace').read()})
-    bad = n = 0
+    bad = n = ns = nsp = nsb = nsu = 0
     for path in files:
         src = open(path, errors='replace').read()
         m = NPC.mask(src)
         dead = nm_regions(src)
         blocks = [b for b in NPC.top_blocks(m) if NPC.func_header_name(m, b[0], b[1])]
-        uses = []
+        uses, shared = [], []
         for mt in USE_RE.finditer(m):
             blk = next((b for b in blocks if b[1] < mt.start() < b[2]), None)
+            if not blk or any(x <= mt.start() < y for x, y in dead):
+                continue
+            fn = NPC.func_header_name(m, blk[0], blk[1])
             tm = TOK_RE.fullmatch(mt.group(1))
-            if not tm or not BASE <= int(tm.group(1), 16) < BASE + 0x194:
-                continue    # shared placeholders (D_00000000) name many objects: not checkable here
-            if blk and not any(x <= mt.start() < y for x, y in dead):
-                uses.append((mt.group(1), NPC.func_header_name(m, blk[0], blk[1])))
-        if not uses:
+            if tm and BASE <= int(tm.group(1), 16) < BASE + 0x194:
+                uses.append((mt.group(1), fn))
+            else:
+                # a shared placeholder / per-site token: proven per site (lo16_proof)
+                line = src.count('\n', 0, mt.start()) + 1
+                shared.append((mt.group(1), fn, use_range(m, mt.end()), line))
+        if not uses and not shared:
             continue
         md = rom.module_for(path)
         if md is None or not os.path.exists(NPC.obj_of(path)):
+            continue
+        cache = {}
+        for tok, fn, rng, line in shared:
+            ns += 1
+            if rng is None:
+                p = 'unproven: no InputMgr member access after %s(%s)' % (MACRO, tok)
+            else:
+                p = lo16_proof(path, rom, md, SYM_ALIAS.get(tok, tok), fn, rng, cache)
+            if p is None:
+                nsp += 1
+            elif p == 'base':
+                nsb += 1
+            elif p.startswith('mismatch'):
+                bad += 1
+                print(f'{path}:{line}: {fn}: {MACRO}({tok}): {p}')
+            else:
+                nsu += 1
+                if a.verbose:
+                    print(f'{path}:{line}: {fn}: {MACRO}({tok}): {p}')
+        if not uses:
             continue
         proof = rom_proof(path, rom, md, {t for t, _ in uses})
         for tok, fn in uses:
@@ -568,7 +681,9 @@ def cmd_check(a, rom, mv):
             if p and '->' in p:
                 bad += 1
                 print(f'{path}: {fn}: {MACRO}({tok}): {p}')
-    print(f'check: {n} {MACRO} uses, {bad} mismatches')
+    print(f'check: {n} {MACRO} uses of GameFlow address tokens + {ns} of shared / per-site tokens '
+          f'({nsp} proven on the field\'s LO16 reloc, {nsb} on a base `addiu %lo` reloc, {nsu} unproven{"" if a.verbose else " (-v lists them)"}), '
+          f'{bad} mismatches')
     return 1 if bad else 0
 
 
@@ -582,6 +697,7 @@ def main():
     p.add_argument('-v', '--verbose', action='store_true')
     p = sp.add_parser('check')
     p.add_argument('files', nargs='*')
+    p.add_argument('-v', '--verbose', action='store_true')
     a = ap.parse_args()
     global FIELDS
     FIELDS = parse_struct()
