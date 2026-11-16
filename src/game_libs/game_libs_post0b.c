@@ -11070,11 +11070,11 @@ static void pad_after_gl_func_00043558(void) {
 
 extern int func_00000000();
 extern int D_00000000;
-/* PolyShape_func_00043584: resets a material (Mat, material.h) before PolyShape_init
+/* Mat_reset_00043584: resets a material (Mat, material.h) before PolyShape_init
  * (ncc_493AC.cpp) compiles the shape's triangles into it: minCut = -1, the DL pointers cleared,
  * and the 0x100-byte clip-row table when the course has map parms (agent-b run 550: the old
  * "clip-row Elem" is Mat: Elem's 0x50 / 0x54 / 0x6C / 0x7C / 0x80 / 0x8A are Mat fields). */
-void PolyShape_func_00043584(Mat *a0) {
+void Mat_reset_00043584(Mat *a0) {
     a0->unk84 = 1;
     a0->base.unk4C = 1;
     a0->base.minCut = -1;
@@ -20641,12 +20641,12 @@ NodeListState *a3;
      * `lui at; sw zero` per clear, so route each through a DISTINCT extern to
      * bust IDO's base CSE (else they all share one lui). */
     {
-        extern int D_5591C_z0a, gProcNodeList_41700_5591C_z0b, gProcNodeList_41700_5591C_z4, gProcNodeList_41700_5591C_z8, gProcNodeList_41700_5591C_zc;
+        extern int D_5591C_z0a, gSkinMgrs_41700_5591C_z0b, gSkinMgrs_41700_5591C_z4, gSkinMgrs_41700_5591C_z8, gSkinMgrs_41700_5591C_zc;
         D_5591C_z0a = 0;
-        gProcNodeList_41700_5591C_z0b = 0;
-        *(int*)((char*)&gProcNodeList_41700_5591C_z4 + 0x4) = 0;
-        *(int*)((char*)&gProcNodeList_41700_5591C_z8 + 0x8) = 0;
-        *(int*)((char*)&gProcNodeList_41700_5591C_zc + 0xC) = 0;
+        gSkinMgrs_41700_5591C_z0b = 0;
+        *(int*)((char*)&gSkinMgrs_41700_5591C_z4 + 0x4) = 0;
+        *(int*)((char*)&gSkinMgrs_41700_5591C_z8 + 0x8) = 0;
+        *(int*)((char*)&gSkinMgrs_41700_5591C_zc + 0xC) = 0;
     }
     v0 = 0;
     if (a0 == 0) {

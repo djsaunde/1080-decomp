@@ -80,12 +80,12 @@ typedef struct Mat {
     /* 0x70 */ s32 unk70;
     /* 0x74 */ s32 unk74;
     /* 0x78 */ s32 unk78;
-    /* 0x7C */ s16 *rowGfx;                /* GFX_FLAG_MAPPARMS only (0x100 bytes, PolyShape_func_00043584):
+    /* 0x7C */ s16 *rowGfx;                /* GFX_FLAG_MAPPARMS only (0x100 bytes, Mat_reset_00043584):
                                             * triDL Gfx count at the end of each clip row (grid row),
                                             * the spans PolyShape_clipRows draws for rows minCut..maxCut */
     /* 0x80 */ s16 rowStart;               /* triDL Gfx count where the rows begin */
     /* 0x82 */ s16 pad82;
-    /* 0x84 */ s32 unk84;                  /* 1 after PolyShape_func_00043584 */
+    /* 0x84 */ s32 unk84;                  /* 1 after Mat_reset_00043584 */
     /* 0x88 */ s16 stateStart;             /* stateDL->gfx.cur->count before the state commands */
     /* 0x8A */ s16 triStart;               /* triDL Gfx count before this material's triangles */
     /* 0x8C */ s32 unk8C;

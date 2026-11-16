@@ -156,7 +156,7 @@ extern BuW90 gPolyGeomMode_3EEC8_90cc_gcfg_ld, gPolyGeomMode_3EEC8_90cc_gcfg_st,
 /* scalar-field form: a named global field read is a uopt candidate (target lui/lw temps land in s0/s1/a2, not the t-ring) */
 extern BuW90 gNodeGlobals_90cc_d44_01, gNodeGlobals_90cc_d44_02, gNodeGlobals_90cc_d44_03, gNodeGlobals_90cc_d44_04, gNodeGlobals_90cc_d44_05, gNodeGlobals_90cc_d44_06, gNodeGlobals_90cc_d44_07, gNodeGlobals_90cc_d44_08, gNodeGlobals_90cc_d44_09, gInputMgr_90cc_d44_10, gNodeGlobals_90cc_d08_01, gNodeGlobals_90cc_d08_02, gNodeGlobals_90cc_d08_03, gNodeGlobals_90cc_d08_04, gNodeGlobals_90cc_d80_01, gNodeGlobals_90cc_d80_02, gNodeGlobals_90cc_d80_03;
 extern void func_00000000_p4d(void *, char *, f64, f32);
-extern void gProcNodeList_41700_90cc_fz(...);  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
+extern void gSkinMgrs_41700_90cc_fz(...);  /* 0x814/818/81C source base: target lui v0/addiu v0 (no reloc) then lw 0/8/4(v0) -- a fn-typed symbol keeps the %lo in an addiu so the base is CSEd in one register */
 extern void bu_90cc_fz2(...);  /* sp174 list-walk head (same blank address), fn-typed for the same reason */
 }
 static inline f32 fi(int v) { return v; }
@@ -998,9 +998,9 @@ sw_end:
             func_00000000(0xFFFF);
             func_00000000();
         }
-        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 0);
-        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 8);
-        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)gProcNodeList_41700_90cc_fz + 4);
+        *(s32 *)((char *)(arg0) + 0x814) = (s32) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 0);
+        *(s32 *)((char *)(arg0) + 0x818) = (s32) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 8);
+        *(s32 *)((char *)(arg0) + 0x81C) = (s32) *(s32 *)((char *)gSkinMgrs_41700_90cc_fz + 4);
         var_s0 = (char *)gNodeGlobals_90cc_d44_03.f28;
         *(s32 *)((char *)(arg0) + 0x824) = (s32)var_s0;
         var_s0 = (char *)gNodeGlobals_90cc_d80_01.f08;

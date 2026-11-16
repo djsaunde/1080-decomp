@@ -1,6 +1,6 @@
-nonmatching PolyShape_func_00043584, 0x78
+nonmatching Mat_reset_00043584, 0x78
 
-glabel PolyShape_func_00043584
+glabel Mat_reset_00043584
     /* E2865C 00043584 27BDFFE8 */  .word 0x27BDFFE8
     /* E28660 00043588 AFBF0014 */  .word 0xAFBF0014
     /* E28664 0004358C 24020001 */  .word 0x24020001
@@ -31,4 +31,4 @@ glabel PolyShape_func_00043584
     /* E286C8 000435F0 27BD0018 */  .word 0x27BD0018
     /* E286CC 000435F4 03E00008 */  .word 0x03E00008
     /* E286D0 000435F8 00000000 */  .word 0x00000000
-endlabel PolyShape_func_00043584
+endlabel Mat_reset_00043584

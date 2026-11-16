@@ -109,7 +109,7 @@ typedef struct GfxLib {
 
 
 /* GfxLib.flags 0x8: set by game_createMap (bootup) when the course has a COURSE_OP_MAP record (the
- * map angle / end / add parms); PolyShape_func_00043584 then gives each shape a 0x100-byte buffer
+ * map angle / end / add parms); Mat_reset_00043584 then gives each shape a 0x100-byte buffer
  * at +0x7C. */
 #define GFX_FLAG_MAPPARMS 0x8
 

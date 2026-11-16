@@ -224,7 +224,7 @@ typedef struct SnowBoarder {
     char sound[0xC];        /* 0x808: embedded 0xC-byte sound object, constructed in place with (ctor arg 1,
                              * ctor arg 2); updateOrient calls snd_soundObjSetPan_00000B2C on it, procColl
                              * switches it with groundFlags & 0x400, update feeds it contactSurface / landImpact */
-    char *unk814;           /* 0x814: ctor: word 0 of the gProcNodeList_41700_90cc_fz source table */
+    char *unk814;           /* 0x814: ctor: word 0 of the gSkinMgrs_41700_90cc_fz source table */
     char *unk818;           /* 0x818: ctor: word 2 of that table; update stores landImpact at +0x94 when unk8B8 & 4 */
     char *unk81C;           /* 0x81C: ctor: word 1; update stores landImpact at +0x94 when unk8B8 & 1 */
     char *bodyNodes[7];     /* 0x820..0x838: rider model nodes read by the ctor from the shape-file node registry

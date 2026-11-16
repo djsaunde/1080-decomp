@@ -1516,7 +1516,7 @@ void gfx_printWindowDLUsage_00043558(int *a0);
 void _asmpp_func99(void);
 extern int func_00000000();
 extern int D_00000000;
-void PolyShape_func_00043584(int *a0);
+void Mat_reset_00043584(int *a0);
 int PolyShape_allocLightDL_000435FC(int *a0, int a1);
 typedef char *(*GP_00043654)();
 void PolyShape_buildStateDL_00043654(char *arg0, char *arg1);
