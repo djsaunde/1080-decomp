@@ -52,6 +52,8 @@ extern VrGameFlow gInputMgr_vrncc;      /* bootup Bss 0xF8 import */
 extern VrNode *sVrScreen;               /* viewrec Bss 0x880 */
 extern VrNode *sVrMenu;                 /* viewrec Bss 0x878 */
 extern VrProc *sVrProc;                 /* viewrec Bss 0x87C */
+struct VrSprite { char data[0x18]; };   /* RaceSprite (gdl/race.h) */
+extern VrSprite sVrLabels[68];          /* viewrec Bss 0x1F8 */
 
 /* the records menu screen (VrScreen60 in viewrec_uso.c, ctor 0x1B4C) */
 struct VrScreen60 : VrNode {
@@ -219,4 +221,14 @@ extern "C" void viewrec_uso_func_0000266C(VrScreen60 *self) {
         }
         break;
     }
+}
+
+/* 0x1488: draw label sprite i centred at y. edg: the sprite bound through a reference and then
+ * addressed gives the target's frame (0x28, the pointer spilled at sp+0x1C across the first call);
+ * a plain pointer local is 7 words off. */
+extern "C" void viewrec_uso_func_00001488(VrProc *proc, int i, int y) {
+    VrSprite &label = sVrLabels[i];
+    VrSprite *spr = &label;
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_drawSprite)(spr, 160, y, 3);
 }

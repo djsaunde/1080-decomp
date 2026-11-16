@@ -186,7 +186,7 @@ VIEWREC_NCC_DONOR := build/src/viewrec_uso/viewrec_uso_ncc.cpp.o
 $(VIEWREC_NCC_DONOR): src/viewrec_uso/viewrec_uso_ncc.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00001664=$(VIEWREC_NCC_DONOR) viewrec_uso_func_00000290=$(VIEWREC_NCC_DONOR) viewrec_uso_func_000022A8=$(VIEWREC_NCC_DONOR) viewrec_uso_func_0000266C=$(VIEWREC_NCC_DONOR)
+build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00001664=$(VIEWREC_NCC_DONOR) viewrec_uso_func_00000290=$(VIEWREC_NCC_DONOR) viewrec_uso_func_000022A8=$(VIEWREC_NCC_DONOR) viewrec_uso_func_0000266C=$(VIEWREC_NCC_DONOR) viewrec_uso_func_00001488=$(VIEWREC_NCC_DONOR)
 build/src/viewrec_uso/viewrec_uso.c.o build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NCC_DONOR)
 # viewrec 4990 (sound options pad handling): EXACT MIPSpro 7.2.1 donor (two native 4-entry tables; agent-g
 # run 652). Donor .rodata = the two tables (+0x0 / +0x10); viewrec_uso_func_00004990_rodata pinned to 0x38.

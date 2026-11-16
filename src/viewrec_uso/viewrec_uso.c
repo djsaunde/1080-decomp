@@ -373,16 +373,9 @@ void viewrec_uso_func_000012D4(VrBlinkOwner *self, RaceSprite *spr, s32 y, s32 l
     }
 }
 
-/* draw label sprite i centred at y. NM: the target frame is 0x28 (sprite pointer at sp+0x1C). */
-#ifdef NON_MATCHING
+/* draw label sprite i centred at y. EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp. */
 void viewrec_uso_func_00001488(ViewRecProc *proc, int i, int y) {
-    RaceSprite *spr = &sVrLabels[i];
-    gl_func_00000000(/* gui_spriteRefresh */ spr);
-    gl_func_00000000(/* gui_drawSprite */ spr, 160, y, 3);
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001488);
-#endif
 
 /* with flag 0x10000 set, draw label sprites 57, 56, 55, 54 right to left from x 285 at y 220, each
  * spaced by its image width + 4 (+ 4 more after every odd one). The image and its width read into
