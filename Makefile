@@ -106,6 +106,14 @@ build/src/heli_uso/heli_uso.c.o: SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x
 build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x00000000
 build/src/heli_uso/heli_uso.c.o: TRUNCATE_TEXT := 0x1B60
 build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1B60
+# heli.uso is C++: functions only edg reproduces come from one NCC donor (agent-g run 658).
+HELI_NCC_DONOR := build/src/heli_uso/heli_uso_ncc.cpp.o
+$(HELI_NCC_DONOR): src/heli_uso/heli_uso_ncc.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+HELI_NCC_FUNCS := heli_uso_func_000008A8
+build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NCC_FUNCS),$(f)=$(HELI_NCC_DONOR))
+build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NCC_DONOR)
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900

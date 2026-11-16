@@ -303,38 +303,9 @@ out:;
 
 /* heli_uso_func_000008A8: Heli flight-state reset (+0x114 Vec3 zeroed and copied to +0x12C,
  * +0x120 = (0, 400, 2000), tuning constants +0x138..+0x164, int state +0x168..+0x170).
- * NM 94%: the +0x120 zero is its own constant web ((float)0) colouring f8 as in the target,
- * but its mtc1 / store schedule before the 2000 load where the target puts them last; every
- * statement order / zero spelling probed either keeps that or re-colours 400 into f8. */
-#ifdef NON_MATCHING
+ * EXACT via the NCC (C++) donor src/heli_uso/heli_uso_ncc.cpp (REPLACE_FUNC_BODY). */
 void heli_uso_func_000008A8(char *self) {
-    int pad_top[4];
-    HeliTri3i t;
-    int pad_bot[1];
-    *(float *)(self + 0x140) = 1.0f;
-    *(float *)(self + 0x144) = *(float *)(self + 0x148) = *(float *)(self + 0x14C) = 0.0f;
-    *(float *)(self + 0x138) = 0.0f;
-    *(float *)(self + 0x13C) = 0.0f;
-    *(float *)(self + 0x154) = 0.0f;
-    *(float *)(self + 0x158) = 5.0f;
-    *(float *)(self + 0x150) = 200.0f;
-    *(float *)(self + 0x15C) = 250.0f;
-    *(float *)(self + 0x164) = HELI_RODATA_F(0x74);
-    *(float *)(self + 0x114) = 0.0f;
-    *(float *)(self + 0x160) = 0.0f;
-    *(float *)(self + 0x11C) = 0.0f;
-    *(float *)(self + 0x118) = 0.0f;
-    HELI_VEC3_SET(self + 0x12C, self + 0x114, t);
-    *(float *)(self + 0x120) = (float)0;
-    *(float *)(self + 0x124) = 400.0f;
-    *(float *)(self + 0x128) = 2000.0f;
-    *(int *)(self + 0x16C) = 7;
-    *(int *)(self + 0x168) = 0;
-    *(int *)(self + 0x170) = 0;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000008A8);
-#endif
 
 /* heli_uso_func_00000980: place the Heli at its "hem" marker: look the "hem" ItemType up in
  * the ItemMgr (bootup Data+0x776C) and walk its items (cursor / next iterator, as game_libs
