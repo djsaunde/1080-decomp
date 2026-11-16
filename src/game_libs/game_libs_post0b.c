@@ -2452,7 +2452,7 @@ int* CamFollow_ctor(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, GL_DATA_STR(0x1EA08, "<Node>"));
-    ((Node *)a0)->vptr = (s32)&CamFollow_vtbl;
+    ((Node *)a0)->vptr = (char *)&CamFollow_vtbl;
     a0[0x38/4] = a1;
     ((CamFollow *)a0)->unk2C.z = 0.0f;
     ((CamFollow *)a0)->unk2C.y = 0.0f;
@@ -2613,7 +2613,7 @@ char *CamMan_ctor(char *o, int a1, int a2) {
         if (o == 0) goto out;
     }
     CALL(Node_ctor)(o, GL_DATA_STR(0x1EA10, "cam man"));
-    ((Node *)o)->vptr = (s32)&CamMan_vtbl;
+    ((Node *)o)->vptr = (char *)&CamMan_vtbl;
     ((FreeCam *)o)->ctl = (void *)a2;
     ((FreeCam *)o)->dist = 1000.0f;
     ((FreeCam *)o)->pitch = -90.0f;
@@ -2921,7 +2921,7 @@ void Spinner_hostioParms(void *a0) {
 int *SeekNode_ctor(int *a0, int a1, float a2) {
     if (a0 != 0 || (a0 = (int*)FCALL(mem_new)(0x34)) != 0) {
         FCALL(Node_ctor)(a0, GL_DATA_STR(0x1EA20, "<Node>"));
-        ((Node *)a0)->vptr = (s32)&SeekNode_vtbl;
+        ((Node *)a0)->vptr = (char *)&SeekNode_vtbl;
         *(float*)((char*)a0 + 0x30) = a2;
         a0[0x2C/4] = a1;
     }
@@ -3096,7 +3096,7 @@ void MNode_def(NodeListState *a0) {
     o = (char *)CALL(mem_new)(0xB4);
     if (o != 0) {
         CALL(Node_ctor)(o, GL_DATA_STR(0x1EBE4, "DefMNode"));
-        MNODE(o)->node.vptr = (s32)((char *)&MNode_vtbl);
+        MNODE(o)->node.vptr = (char *)((char *)&MNode_vtbl);
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)CALL(mem_new)(0x04);
@@ -3428,7 +3428,7 @@ fields:
     ((Node *)p)->name = (const char *)a1;
     ((Node *)p)->parent = 0;
 link:
-    ((Node *)o)->vptr = (s32)&D_00000000;
+    ((Node *)o)->vptr = (char *)&D_00000000;
     gl_func_00000000(&((Node *)o)->doFlags);
     gl_func_00000000_3800Cv(o, 0);
     n = *(int *)&D_00000000;
@@ -4627,7 +4627,7 @@ int *SNode_ctor(int *self) {
         if (self == NULL) goto out;
     }
     CALL(Node_ctor)(self, sSNodeName);
-    ((Node *)self)->vptr = (s32)&SNode_vtbl;
+    ((Node *)self)->vptr = (char *)&SNode_vtbl;
     self[0x84/4] = 0;
     SNODE(self)->rotX = 0.0f;
     SNODE(self)->rotY = 0.0f;
@@ -5988,7 +5988,7 @@ int CollObjMgr_ctor(int *a0) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, sCollObjMgrName);
-    ((Node *)a0)->vptr = (s32)&CollObjMgr_vtbl;
+    ((Node *)a0)->vptr = (char *)&CollObjMgr_vtbl;
     COLLOBJMGR(a0)->statics = 0;
     COLLOBJMGR(a0)->dynamics = 0;
 end:
@@ -6443,7 +6443,7 @@ char *ItemType_ctor(char *o, S3D16C a1, S3D16C a2) {
         if (o == 0) goto out;
     }
     CALL(Node_ctor)(o, GL_DATA_STR(0x1F2B8, "<Node>"));
-    ((Node *)o)->vptr = (s32)&ItemType_vtbl;
+    ((Node *)o)->vptr = (char *)&ItemType_vtbl;
     p = (S3D16C *)(o + 0x2C);
     if (p != 0 || (p = (S3D16C *)CALL(mem_new)(4)) != 0) {
         p->w = 0;
@@ -7407,7 +7407,7 @@ void *MNode_ctor(char *arg0) {
     o = (char *)CALL(mem_new)(0xB4);
     if (o != 0) {
         CALL(Node_ctor)(o, sMNodeName);
-        ((Node *)o)->vptr = (s32)&MNode_vtbl;
+        ((Node *)o)->vptr = (char *)&MNode_vtbl;
         s1 = (int *)(o + 0x2C);
         if (o == (char *)-0x2C) {
             s1 = (int *)CALL(mem_new)(0x04);
@@ -7481,7 +7481,7 @@ void *ItemMgr_ctor(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, a1);
-    ((Node *)a0)->vptr = (s32)&ItemMgr_vtbl;
+    ((Node *)a0)->vptr = (char *)&ItemMgr_vtbl;
     ITEMMGR(a0)->unk34 = a2;
     ITEMMGR(a0)->unk30 = 0;
     ITEMMGR(a0)->types = 0;
@@ -15000,7 +15000,7 @@ char *Sprite_ctor_0004B620(char *arg0, char *arg1) {
             sub->scaleX = 1.0f;
             sub->scaleY = 1.0f;
         }
-        self->node.vptr = (s32) ((char *)&Sprite_vtbl + 0);
+        self->node.vptr = (char *)((char *)&Sprite_vtbl + 0);
         self->endDL = 0;
         self->unkD4 = 0;
         self->startDL = (DLContext *) gl_func_00000000(0, GL_DATA_STR(0x20104, "SS StartDL"), 0x14, 0, 0, 0, 0); /* "SS StartDL" */
@@ -18191,7 +18191,7 @@ void shape_cmdLightTarget(NodeListState *a0) {
     if (o != 0) {
         XCALL(gl_func_00000000f3, QNode_ctor)(o, GL_DATA_STR(0x20E68, "lighttarget"), 0.0f, 0.0f, 0.0f); /* "lighttarget" */
         k = *(f32 *)(GL_RODATA(0x1BB0));
-        o->mask = (o->node.vptr = (s32)&LightTarget_vtbl_51448_vt, 0xFFFF);
+        o->mask = (o->node.vptr = (char *)&LightTarget_vtbl_51448_vt, 0xFFFF);
         o->unk108[0] = k;
         o->unk108[1] = k;
         o->unk108[2] = k;
@@ -19930,7 +19930,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
     if (self != 0 || (self = (char *)CALL(mem_new)(0x138)) != 0) {
         if ((s1 = self) != 0 || (s1 = (char *)CALL(mem_new)(0xB4)) != 0) {
             CALL(Node_ctor)(s1, arg1); /* Node_ctor(this, name) */
-            ((Node *)s1)->vptr = (int)&MNode_vtbl_546E8_a;
+            ((Node *)s1)->vptr = (char *)&MNode_vtbl_546E8_a;
             if (((v1 = s1 + 0x2C) != 0 || (v1 = (char *)CALL(mem_new)(4)) != 0) &&
                 ((m = v1) != 0 || (m = (char *)CALL(mem_new)(4)) != 0)) {
                 FW(m, 0) = 0;
@@ -19939,7 +19939,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             zv.x = 0.0f;
             zv.y = 0.0f;
             zv.z = 0.0f;
-            CALL(math_mtxAddTranslation)(s1 + 0x30, &zv); } BL_546E8->node.vptr = (int)&BaseLight_vtbl_546E8_b;
+            CALL(math_mtxAddTranslation)(s1 + 0x30, &zv); } BL_546E8->node.vptr = (char *)&BaseLight_vtbl_546E8_b;
         s1 = self + 0xC4;
         sp20 = (int *)s1;
         if ((s1 != 0 || (s1 = (char *)CALL(mem_new)(4)) != 0) &&
@@ -25071,7 +25071,7 @@ char *MemTrackerMgr_ctor(char *o) {
         if (o == 0) goto out;
     }
     CALL(Node_ctor)(o, sMemTrackerMgrName);
-    MEMTRACKERMGR(o)->node.vptr = (int)&MemTrackerMgr_vtbl_sym_a_00060370;
+    MEMTRACKERMGR(o)->node.vptr = (char *)&MemTrackerMgr_vtbl_sym_a_00060370;
     p = &MEMTRACKERMGR(o)->pool;
     if (p != 0 || (p = (MemTrackerPool *)CALL(mem_new)(20)) != 0) {
         p->capacity = 80;
@@ -25437,7 +25437,7 @@ int* ConsoleMgr_ctor(int *s0) {
         if (s0 == 0) goto end;
     }
     CALL(Node_ctor)(s0, sConsoleMgrName);
-    CONSOLEMGR(s0)->node.vptr = (int)&ConsoleMgr_vtbl;
+    CONSOLEMGR(s0)->node.vptr = (char *)&ConsoleMgr_vtbl;
     CONSOLEMGR(s0)->input = 0;
     CONSOLEMGR(s0)->winList = 0;
     CONSOLEMGR(s0)->curWin = 0;
@@ -26660,7 +26660,7 @@ int* AnimDataMgr_ctor(int *obj, int a1, int a2, int a3) {
     extern int AnimDataMgr_vtbl_sym_6264C;
     if (obj != 0 || (obj = (int*)CALL(mem_new)(0x48)) != 0) {
         CALL(Node_ctor)(obj, GL_DATA_STR(0x220DC, "AnimDataMgr"));    /* Node_ctor(this, "AnimDataMgr") */
-        ((AnimDataMgr *)obj)->node.vptr = (int)&AnimDataMgr_vtbl_sym_6264C;
+        ((AnimDataMgr *)obj)->node.vptr = (char *)&AnimDataMgr_vtbl_sym_6264C;
         CALL(AnimDataMgr_initSlots)(&((AnimDataMgr *)obj)->cache, a3, a2 * 14); /* AnimDataMgr_initSlots: a3 slots of a2 * 14 bytes */
         ((AnimDataMgr *)obj)->numNodes = a2;
         ((AnimDataMgr *)obj)->version = 0;

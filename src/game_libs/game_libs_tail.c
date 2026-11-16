@@ -1992,7 +1992,7 @@ int *ColourItem_create_0000C5B0(int *arg0) {
     p1 = (int*)gl_func_00000000(0x40);
     if (p1 != 0) {
         gl_func_00000000(p1);
-        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

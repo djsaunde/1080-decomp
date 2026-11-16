@@ -14,7 +14,7 @@ void h2h_WinsDisplay_display_00001360(int *self) {
     int gate;
     char c;
     H2HWINS(self)->frame += 1;
-    gate = NODE(H2HWINS(self)->fader)->vptr;
+    gate = (int)NODE(H2HWINS(self)->fader)->vptr;
     ((void(*)(int))VT_SLOT(gate, 2).fn)(H2HWINS(self)->fader + VT_SLOT(gate, 2).delta);
     h2hproc_1360_import_157(RACE->race.spriteSet);
     h2hproc_1360_import_158(RACE->race.spriteSet);

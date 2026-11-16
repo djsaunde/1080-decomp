@@ -455,10 +455,10 @@ void *TitleDemoProcess_ctor(void *root, int a1) {
     sub = root;
     if (sub != 0 || (sub = XCALL(titproc_uso_func_055750, mem_new)(0x50)) != 0) {
         o2 = sub;
-        if (o2 != 0 || (o2 = XCALL(titproc_uso_func_055750, mem_new)(0x2C)) != 0) { XCALL(titproc_uso_func_04C678, Node_ctor)(o2, (char *)&titproc_uso_D_00048C + 0x4A8); NODE(o2)->vptr = (int)&import_00073B18; }
-        NODE(sub)->vptr = (int)&import_00073B80;
+        if (o2 != 0 || (o2 = XCALL(titproc_uso_func_055750, mem_new)(0x2C)) != 0) { XCALL(titproc_uso_func_04C678, Node_ctor)(o2, (char *)&titproc_uso_D_00048C + 0x4A8); NODE(o2)->vptr = (char *)&import_00073B18; }
+        NODE(sub)->vptr = (char *)&import_00073B80;
     }
-    NODE(root)->vptr = (int)&titproc_uso_D_000114;
+    NODE(root)->vptr = (char *)&titproc_uso_D_000114;
     NODE(root)->name = (const char *)((char *)&titproc_uso_D_00048C + 0x4B0);
     XCALL(titproc_uso_func_000000, titproc_uso_func_00000000)();
     XCALL(titproc_uso_func_000098, tit_loadLogoSprite_00000098)();
@@ -841,7 +841,7 @@ void *MainLogo_ctor(void *self) {
     XCALL(titproc_uso_func_04C678, Node_ctor)(sub, (char*)&titproc_uso_D_00048C + 0x4D8);
     *(int*)((char*)sub + 0x28) = (int)&import_00073B18;
 skip:
-    NODE(self)->vptr = (int)&titproc_uso_D_0001FC;
+    NODE(self)->vptr = (char *)&titproc_uso_D_0001FC;
     NODE(self)->name = (const char *)((char*)&titproc_uso_D_00048C + 0x4E0);
     MAINLOGO(self)->posX = 163;
     MAINLOGO(self)->posY = 154;
@@ -1735,7 +1735,7 @@ void *tit_ItemType_create_00002980(int *arg0) {
     p1 = (int*)XCALL(titproc_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
         XCALL(titproc_uso_func_051C28, ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&import_0006ED80;
+        NODE(p1)->vptr = (char *)&import_0006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

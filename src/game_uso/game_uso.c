@@ -378,7 +378,7 @@ int *cam_ctor_00000858(int *a0, int arg1, int arg2, int arg3, int arg4, float ar
         if (a0 == 0) goto out;
     }
     XCALL(game_uso_func_047484, MCamera_ctor)(a0, arg2, arg3, arg4, arg5); /* MCamera ctor (target, x, y, z) */
-    NODE(a0)->vptr = (int)&game_uso_D_807FE770;
+    NODE(a0)->vptr = (char *)&game_uso_D_807FE770;
     ((CourseCam *)a0)->numLists = 0;
     ((CourseCam *)a0)->numPaths = 0;
     if (arg7 != 0) XCALL(game_uso_func_04C774, Node_Load)(a0, 1, arg7); /* load arg7 ("rom/cam_info.bin") */
@@ -750,7 +750,7 @@ SnowChaseActorCam *SnowChaseActorCam_ctor(SnowChaseActorCam *a0, int target, int
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, &D_00000000 + kStr_SnowChaseActorCam_340); /* Node init, name "SnowChaseActorCam" */
-    NODE(a0)->vptr = (int)&D_00000000;
+    NODE(a0)->vptr = (char *)&D_00000000;
     CALL(SnowChaseActorCamParms_ctor)(&a0->parms); /* SnowChaseActorCamParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
         CALL(Node_Load)(a0, 1, parmsFile);
@@ -1140,7 +1140,7 @@ SnowChaseActorLook *SnowChaseActorLook_ctor(SnowChaseActorLook *a0, int anchor, 
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, &D_00000000 + kStr_SnowChaseActorLook_360); /* Node init, name "SnowChaseActorLook" */
-    NODE(a0)->vptr = (int)&D_00000000;
+    NODE(a0)->vptr = (char *)&D_00000000;
     CALL(SnowChaseActorLookParms_ctor)(&a0->parms); /* SnowChaseActorLookParms_ctor */
     if (parmsFile != 0) { /* load the parms from that file (bootup cam_create: "rom/cam_ca.bin" etc.) */
         CALL(Node_Load)(a0, 1, parmsFile);
@@ -1458,7 +1458,7 @@ SnowChaseActor *SnowChaseActor_ctor(SnowChaseActor *a0, int target, int lookBody
         if (a0 == 0) goto out;
     }
     XCALL(game_uso_func_04C678, Node_ctor)((int *)a0, (char *)&game_uso_D_807FE990 + kStr_SnowChaseActor_3A0); /* Node init, name "SnowChaseActor" */
-    NODE(a0)->vptr = (int)&game_uso_D_807FE8A8;
+    NODE(a0)->vptr = (char *)&game_uso_D_807FE8A8;
     SnowChaseActorParms_ctor(&a0->parms);
     /* load the parms file */
     if (parmsFile != 0) XCALL(game_uso_func_04C774, Node_Load)((int *)a0, 1, parmsFile);
@@ -1574,7 +1574,7 @@ int *game_ItemType_create_00003A28(int *arg0) {
     p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&import_8006ED80;
+        NODE(p1)->vptr = (char *)&import_8006ED80;
         ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
@@ -1969,7 +1969,7 @@ void *SnowAI_ctor(char *a0, int a1, int a2) {
 
     /* Stage 2: the Node base (name at D[0x6D0]); then the SnowAI vtable at +0x28 */
     CALL(Node_ctor)(a0, (char*)&D_00000000 + kStr_Node_6D0);
-    NODE(a0)->vptr = (int)&D_00000000;
+    NODE(a0)->vptr = (char *)&D_00000000;
 
     /* Stage 3: sub-region; alloc failure still runs the finalize phase */
     s1 = a0 + 0xE4;
@@ -2552,7 +2552,7 @@ void SnowAI_reset(SnowAI *self) {
 
 void SnowAI_dtor(int *a0, int a1) {
     if (a0 == 0) return;
-    NODE(a0)->vptr = (int)&D_00000000;
+    NODE(a0)->vptr = (char *)&D_00000000;
     if (a1 & 1) {
         GCALL(mem_delete)();
     }
@@ -3918,7 +3918,7 @@ int *game_ItemType_create_0000AC78(int *arg0) {
     p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&import_8006ED80;
+        NODE(p1)->vptr = (char *)&import_8006ED80;
         ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;
@@ -4013,7 +4013,7 @@ void *Sun_ctor(void *arg0) {
         if (s0 == NULL) goto skip_sub;
     }
     XCALL(game_uso_func_04C678, Node_ctor)(s0, (char *)&game_uso_D_807FF340 + kTag_sun_D50);
-    NODE(s0)->vptr = (int)&import_80086288;
+    NODE(s0)->vptr = (char *)&import_80086288;
 
     p = (char *)s0 + 0x2C;
     if (s0 == (void *)-0x2C) {
@@ -4032,7 +4032,7 @@ after_node:
     XCALL(game_uso_func_072EE8, math_mtxAddTranslation)((char *)s0 + 0x30, (Vec3 *)v3);
 skip_sub:
 
-    NODE(arg0)->vptr = (int)&game_uso_D_807FF24C;
+    NODE(arg0)->vptr = (char *)&game_uso_D_807FF24C;
 
     s0 = (char *)arg0 + 0xDC;
     if (arg0 == (void *)-0xDC) {
@@ -4438,7 +4438,7 @@ void *LensFlare_create(void *arg0, int arg1, int arg2) {
         if (sp1 == NULL) goto skip_sub;
     }
     XCALL(game_uso_func_04C678, Node_ctor)((int *)sp1, (char *)&game_uso_D_807FF360 + kStr_MNode_D70);
-    NODE(sp1)->vptr = (int)&import_80086288;
+    NODE(sp1)->vptr = (char *)&import_80086288;
 
     p = sp1 + 0x2C;
     if (sp1 == (char *)-0x2C) {
@@ -4459,7 +4459,7 @@ after_node:
     XCALL(game_uso_func_072EE8, math_mtxAddTranslation)(sp1 + 0x30, &v3);
 skip_sub:
 
-    NODE(arg0)->vptr = (int)&game_uso_D_807FF2D8;
+    NODE(arg0)->vptr = (char *)&game_uso_D_807FF2D8;
     ((LensFlare *)arg0)->sun = (Sun *)a2v;
     sp1 = (char *)arg0 + 0x224;
     if (arg0 == (void *)-0x224) {
@@ -4719,7 +4719,7 @@ void *TrickTable_ctor_0000C2D4(void *a0, int a1) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, (char*)&D_00000000 + 0x121C);
-    NODE(a0)->vptr = (int)&D_00000000;
+    NODE(a0)->vptr = (char *)&D_00000000;
     if (a1 != 0) {
         CALL(Node_Load)(a0, 1, a1);
     }
@@ -4877,7 +4877,7 @@ void *RiderAnim_ctor_0000C48C(char *p, int a1, int a2) {
     struct C48CArg t;
     if (p == 0) { p = (char *)XCALL(game_uso_func_055750, mem_new)(0x444); if (p == 0) goto end; }
     import_0010D33C(p, a1);
-    NODE(p)->vptr = (int)&game_uso_D_807FF74C;
+    NODE(p)->vptr = (char *)&game_uso_D_807FF74C;
     s1 = (int *)(p + 0x13C);
     if (p == (char *)-0x13C) { s1 = (int *)XCALL(game_uso_func_055750, mem_new)(0x308); if (s1 == 0) goto tail; }
     v1 = s1;
@@ -7842,7 +7842,7 @@ void *game_ItemType_create_00011A94(int *arg0) {
     p1 = (int*)XCALL(game_uso_func_055750, mem_new)(sizeof(ColourSubItem));
     if (p1 != 0) {
         XCALL(game_uso_func_051C28, ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&import_8006ED80;
+        NODE(p1)->vptr = (char *)&import_8006ED80;
         ((ColourSubItem *)p1)->unk3C = 0;
     }
     p2 = p1;

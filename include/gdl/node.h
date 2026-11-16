@@ -33,7 +33,7 @@ typedef struct Node {
     /* 0x1C */ s32 serial;         /* post-incremented global counter */
     /* 0x20 */ s32 handle;         /* result of the registry call (this, serial) */
     /* 0x24 */ s32 unk24;
-    /* 0x28 */ s32 vptr;           /* Cfront vtable pointer */
+    /* 0x28 */ char *vptr;         /* Cfront vtable pointer (slots via VT_SLOT) */
 } Node;
 
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */

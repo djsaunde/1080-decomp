@@ -225,13 +225,13 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(80)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(44)) != 0) { XCALL(mgrproc_uso_func_04C678, Node_ctor)(o3, &import_802649D8 + 1544); NODE(o3)->vptr = (int)&import_80073B18; }
-            NODE(o2)->vptr = (int)&import_80073B80;
+            if (o3 != 0 || (o3 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(44)) != 0) { XCALL(mgrproc_uso_func_04C678, Node_ctor)(o3, &import_802649D8 + 1544); NODE(o3)->vptr = (char *)&import_80073B18; }
+            NODE(o2)->vptr = (char *)&import_80073B80;
         }
-        NODE(o1)->vptr = (int)&import_800745F8;
+        NODE(o1)->vptr = (char *)&import_800745F8;
         import_000AE700(o1 + 80);
     }
-    NODE(obj)->vptr = (int)&import_80264880;
+    NODE(obj)->vptr = (char *)&import_80264880;
     RACEPROC(obj)->spriteSet = 0;
     import_000B0DBC(obj, a1, &import_802649E0 + 1552, a2);
     RACEPROC(obj)->session = (BackupSession *)arg5;
@@ -253,7 +253,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
         o2 = (char *)XCALL(mgrproc_uso_func_055750, mem_new)(224);
         if (o2 != 0) {
             import_000B6C40(o2);
-            NODE(o2)->vptr = (int)&import_80264800;
+            NODE(o2)->vptr = (char *)&import_80264800;
         }
         MGRRACE(obj)->dataMgr = (int)o2;
         *(int *)&INPUT_MGR(import_800201D0).dataMgr = (int)o2;
@@ -1476,13 +1476,13 @@ void *MgrNameEntry_ctor_00002940(char *arg0, int arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)CALL(mem_new)(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)CALL(mem_new)(0x2C), (a0 != 0))) {
-                    CALL(Node_ctor)(a0, D_mgr2940_v + 0x650); NODE(a0)->vptr = (int)D_mgr2940_w;
+                    CALL(Node_ctor)(a0, D_mgr2940_v + 0x650); NODE(a0)->vptr = (char *)D_mgr2940_w;
                 }
-                NODE(v1)->vptr = (int)D_mgr2940_x;
+                NODE(v1)->vptr = (char *)D_mgr2940_x;
             }
-            NODE(a2)->vptr = (int)D_mgr2940_y;
+            NODE(a2)->vptr = (char *)D_mgr2940_y;
         }
-        NODE(arg0)->vptr = (int)D_mgr2940_z;
+        NODE(arg0)->vptr = (char *)D_mgr2940_z;
         MGRNAMEENT(arg0)->base.phase = arg2;
         MGRNAMEENT(arg0)->race = arg1;
         MGRNAMEENT(arg0)->pos[1][0] = 0xA0;
@@ -1868,7 +1868,7 @@ void *mgr_ItemType_create_00003358(int *arg0) {
     p1 = (int*)XCALL(mgrproc_uso_func_055750, mem_new)(0x40);
     if (p1 != 0) {
         XCALL(mgrproc_uso_func_051C28, ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&import_8006ED80;
+        NODE(p1)->vptr = (char *)&import_8006ED80;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

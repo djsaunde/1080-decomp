@@ -309,13 +309,13 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_b1_097C_v0; }
-            NODE(o2)->vptr = (int)&D_b1_097C_v1;
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (char *)&D_b1_097C_v0; }
+            NODE(o2)->vptr = (char *)&D_b1_097C_v1;
         }
-        NODE(o1)->vptr = (int)&D_b1_097C_v2;
+        NODE(o1)->vptr = (char *)&D_b1_097C_v2;
         CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
     }
-    NODE(obj)->vptr = (int)&D_b1_097C_v3;
+    NODE(obj)->vptr = (char *)&D_b1_097C_v3;
     RACEPROC(obj)->spriteSet = 0;
     CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a3;
@@ -328,7 +328,7 @@ int TimRace_ctor(char *obj, int a1, int a2, int a3) {
         o2 = (char *)CALL(mem_new)(0xE0);
         if (o2 != 0) {
             CALL(RaceTracker_ctor)(o2);
-            NODE(o2)->vptr = (int)&D_b1_097C_v4;
+            NODE(o2)->vptr = (char *)&D_b1_097C_v4;
         }
         TIMRACE(obj)->dataManager = (int)o2;
         INPUT_MGR(D_b1_097C_g).dataMgr = (struct RaceTracker *)o2;
@@ -767,13 +767,13 @@ char *TimNameEntry_ctor_000016F8(char *arg0, char *arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)CALL(mem_new)(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)CALL(mem_new)(0x2C), (a0 != 0))) {
-                    CALL(Node_ctor)(a0, D_tim16F8_v + 0x404); NODE(a0)->vptr = (int)D_tim16F8_w;
+                    CALL(Node_ctor)(a0, D_tim16F8_v + 0x404); NODE(a0)->vptr = (char *)D_tim16F8_w;
                 }
-                NODE(v1)->vptr = (int)D_tim16F8_x;
+                NODE(v1)->vptr = (char *)D_tim16F8_x;
             }
-            NODE(a2)->vptr = (int)D_tim16F8_y;
+            NODE(a2)->vptr = (char *)D_tim16F8_y;
         }
-        NODE(arg0)->vptr = (int)D_tim16F8_z;
+        NODE(arg0)->vptr = (char *)D_tim16F8_z;
         MODENAMEENT(arg0)->base.phase = arg2;
         MODENAMEENT(arg0)->race = (s32)arg1;
         MODENAMEENT(arg0)->pos[1][0] = 0xA0;
@@ -1110,7 +1110,7 @@ void *TimItemType_create_00001ED4(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&D_00000000;
+        NODE(p1)->vptr = (char *)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1256,7 +1256,7 @@ char *TimMenu_ctor(char *arg0) {
             }
             *(char **)&NODE(a3)->vptr = &D_00000000;
         }
-        TIMMENU(arg0)->base.node.vptr = (s32)(&D_00000000);
+        TIMMENU(arg0)->base.node.vptr = (char *)(&D_00000000);
         TIMMENU(arg0)->base.node.name = (const char *)((char *)&D_00000000 + 0x4C0);
         CALL(TimMenu_initLabels_000024F4)(arg0);
         TIMMENU(arg0)->unk60 = 120;

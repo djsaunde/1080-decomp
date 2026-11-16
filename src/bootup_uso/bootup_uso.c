@@ -811,7 +811,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     if (&self) {} /* agent-c run 353 (kit CDXLIII): self address-taken = homed at 472(sp) with a reload per use, as in the target -- byte-identical on the one-m body, and with m2 it keeps self / buf out of the s-registers */
     if ((self != 0) || (self = (char *)FCALL(mem_new)(0x4C)) != 0) {
         FCALL(Node_ctor)(self, &sStr_Node_66B0);
-        NODE(self)->vptr = (s32)(&U64BGWall_vtbl);
+        NODE(self)->vptr = (char *)(&U64BGWall_vtbl);
         NODE(self)->name = (const char *)(&sStr_U64BGWall_66B8);
         timg = *(u32 *)(cfg + 0x8);
         tlut = *(u32 *)(cfg + 0xC);
@@ -1890,7 +1890,7 @@ void game_createLights(char *s1) {
     if (o != 0) {
         XCALL(func_00000000_2F90_f, QNode_ctor)(o, &sStr_lighttarget_7454, 0.0f, 0.0f, 0.0f);
         k2 = kRo_game_createLights_52C;
-        NODE(o)->vptr = (int)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
+        NODE(o)->vptr = (char *)&LightTarget_vtbl_2F90_m28; ((LightTarget *)o)->mask = 0xFFFF;
         ((LightTarget *)o)->unk108[0] = k2;
         ((LightTarget *)o)->unk108[1] = k2;
         ((LightTarget *)o)->unk108[2] = k2;
@@ -2664,7 +2664,7 @@ void *boot_ItemType_create_000046EC(int *arg0) {
     p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -2924,10 +2924,10 @@ void *item_createBal(Box5124 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -2978,10 +2978,10 @@ void *item_createBa2(Box51D4 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -3031,10 +3031,10 @@ void *item_createChk(Box5284 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x48) = t; }
     }
     return obj;
 }
@@ -3083,10 +3083,10 @@ void *item_createGtr(Box5334 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); whole tail on ONE line (line-number scheduling hint) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(char **)(obj + 0x4C) = t; *(int *)(obj + 0x48) = 0; }
     }
     return obj;
 }
@@ -3137,10 +3137,10 @@ void *item_createGtl(Box53E8 arg) {
         b2 = b1;
         o2 = obj;
         if (o2 != 0 || (o2 = (char *)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (s32)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
+            FCALL(ItemType_ctor)(o2, b2, 0); NODE(o2)->vptr = (char *)(&D_00000000_a); /* same-line: keeps obj reload after the addiu */
         }
         /* temp-first `t = &c` -> addiu(c) before addiu(b); store order b,1,c = temp numbering t0/t1/t2; whole tail on ONE line (multi-line tail perturbs the li/addiu schedule) */
-        { char *t = &D_00000000_c; NODE(obj)->vptr = (s32)(&D_00000000_b); *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
+        { char *t = &D_00000000_c; NODE(obj)->vptr = (char *)(&D_00000000_b); *(int *)(obj + 0x48) = 1; *(char **)(obj + 0x4C) = t; }
     }
     return obj;
 }
@@ -3375,7 +3375,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     s = a0;
     if (s != 0 || (s = (char*)FCALL(mem_new)(0xB4)) != 0) {
         FCALL(Node_ctor)(s, &sStr_MNode_7E74);
-        NODE(s)->vptr = (s32)(&MNode_vtbl);
+        NODE(s)->vptr = (char *)(&MNode_vtbl);
         {
             int *c = (int*)(s + 0x2C);
             if (c != 0 || (c = (int*)FCALL(mem_new)(4)) != 0) {
@@ -3389,7 +3389,7 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
         z[0] = 0.0f;
         FCALL(math_mtxAddTranslation)(s + 0x30, (z[1] = 0.0f, z[2] = 0.0f, z));
     }
-    NODE(a0)->vptr = (s32)(&MapProp_vtbl);
+    NODE(a0)->vptr = (char *)(&MapProp_vtbl);
     *(void**)(a0 + 0xC) = &sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
     FCALL(MNode_addChild)(a0, a1);
@@ -3599,7 +3599,7 @@ void *EnvSettings_ctor(char *a0) {
         if (a0 == 0) goto end;
     }
     FCALL(Node_ctor)(a0, &sStr_EnvSettings_7F84);
-    NODE(a0)->vptr = (s32)(&EnvSettings_vtbl);
+    NODE(a0)->vptr = (char *)(&EnvSettings_vtbl);
     {
         int *v1 = (int *)(a0 + 0x2C);
         if (v1 == 0) {
@@ -3776,9 +3776,9 @@ void FallingSnow_create(char *a0) {
     if (r != 0) {
         sub = r;
         if (sub != 0 || (sub = (char*)FCALL(mem_new)(0x48)) != 0) {
-            FCALL(Node_ctor)(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (s32)(&D_00000000);
+            FCALL(Node_ctor)(sub, &sStr_Node_7FBC); NODE(sub)->vptr = (char *)(&D_00000000);
         }
-        NODE(r)->vptr = (s32)(&D_00000000);
+        NODE(r)->vptr = (char *)(&D_00000000);
     }
     ENVSET(a0)->fallingSnow = (FallingSnow *)r;
     head = (char *)WORLDREG(FLOW_74E8_H->game)->egRoot;
@@ -4075,7 +4075,7 @@ void *boot_ItemType_create_00007B08(int *arg0) {
     p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -4194,7 +4194,7 @@ void *Tv1Tmpl_create(char *a0) {
     ret = (char*)FCALL(mem_new)(0x88);
     if (ret != 0) {
         FCALL(SNode_ctor)(ret);
-        NODE(ret)->vptr = (s32)(&Tv1_vtbl);
+        NODE(ret)->vptr = (char *)(&Tv1_vtbl);
     }
 
     *(float*)(ret + 0x80) = D_000005EC;
@@ -4456,7 +4456,7 @@ char *FogTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x90);
     if (o != 0) {
         func_00000000(o);
-        NODE(o)->vptr = (s32)(&D_00007878);
+        NODE(o)->vptr = (char *)(&D_00007878);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             c = u;
@@ -4667,7 +4667,7 @@ char *SnowTmpl_create(char *arg0) {
     o = (char *)func_00000000(0x74);
     if (o != 0) {
         func_00000000(o);
-        NODE(o)->vptr = (s32)(&D_00007968);
+        NODE(o)->vptr = (char *)(&D_00007968);
         u = o + 0x3C;
         if (u != 0 || (u = (char *)func_00000000(0x38)) != 0) {
             s = u;
@@ -4801,7 +4801,7 @@ void *TreeTmpl_create(char *arg0) {
     s1 = (char *)func_00000000(0xC8);
     if (s1 != 0) {
         func_00000000_087A4(s1);
-        NODE(s1)->vptr = (int)(D_087A4_vtable + 0x10);
+        NODE(s1)->vptr = (char *)(D_087A4_vtable + 0x10);
         s0 = (char *)&TREE(s1)->coll;
         if (s0 == 0) {
             s0 = (char *)func_00000000(0x40);
@@ -4909,7 +4909,7 @@ char* SnowBCollider_ctor(char *a0, int a1, int a2, int a3, int a4, float f_arg) 
         if (a0 == 0) goto end;
     }
     func_8b44_init(a0, a1, a3, a4, f_arg);
-    NODE(a0)->vptr = (int)&SnowBCollider_vtbl;
+    NODE(a0)->vptr = (char *)&SnowBCollider_vtbl;
     SNOWBCOL(a0)->rider = (struct SnowBoarder *)a1;
     SNOWBCOL(a0)->contactFlags = ((unsigned short*)&a2)[1];
     SNOWBCOL(a0)->unk150 = 1.0f;
@@ -4979,7 +4979,7 @@ char *ShpNode_ctor(char *self) {
         if (self == 0) goto end;
     }
     FCALL(DNode_ctor)(self, &sStr_QNode_8708);
-    NODE(self)->vptr = (s32)(&ShpNode_vtbl_8F18_vtable);
+    NODE(self)->vptr = (char *)(&ShpNode_vtbl_8F18_vtable);
     handle = FCALL(PolyShape_ctor)(0, &sStr_shp_8710, &D_8F18_call_arg, 0);
     FCALL(MNode_addChild)(self, handle);
     SHPNODE(self)->life = 100;
@@ -6686,7 +6686,7 @@ void *boot_ItemType_create_0000E690(int *arg0) {
     p1 = (int*)FCALL(mem_new)(0x40);
     if (p1 != 0) {
         FCALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&ColourItem_vtbl_75A0;
+        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;

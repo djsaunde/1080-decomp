@@ -77,11 +77,11 @@ void *QuitProcess_ctor0(void *a0) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &sStr_Node_C58C);
-                NODE(s1)->vptr = (int)&Process_vtbl;
+                NODE(s1)->vptr = (char *)&Process_vtbl;
             }
-            NODE(s0)->vptr = (int)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
         }
-        NODE(a0)->vptr = (int)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (char *)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C594;
         NODE(s0)->name = (const char *)s1;
@@ -132,11 +132,11 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
             s1 = s0;
             if (s1 != 0 || (s1 = (void*)func_00000000(0x2C)) != 0) {
                 func_00000000(s1, &sStr_Node_C5A4);
-                NODE(s1)->vptr = (int)&Process_vtbl;
+                NODE(s1)->vptr = (char *)&Process_vtbl;
             }
-            NODE(s0)->vptr = (int)&Process_vtbl_C3A0;
+            NODE(s0)->vptr = (char *)&Process_vtbl_C3A0;
         }
-        NODE(a0)->vptr = (int)&QuitProcess_vtbl;
+        NODE(a0)->vptr = (char *)&QuitProcess_vtbl;
         s0 = a0;
         s1 = (void*)&sStr_Quit_Process_C5AC;
         NODE(s0)->name = (const char *)s1;
@@ -213,9 +213,9 @@ void *PauseMenu_create(char *a0) {
     if (a0 != 0 || (a0 = (char *)func_00000000(0x304)) != 0) {
         if ((s = a0) != 0 || (s = (char *)func_00000000(0x2C)) != 0) {
             func_00000000(s, &sStr_Node_C5BC);
-            NODE(s)->vptr = (int)&Process_vtbl;
+            NODE(s)->vptr = (char *)&Process_vtbl;
         }
-        NODE(a0)->vptr = (int)&PauseMenu_vtbl;
+        NODE(a0)->vptr = (char *)&PauseMenu_vtbl;
         s = a0;
         d = &sStr_PauseMenu_C5C4;
         NODE(s)->name = (const char *)d;

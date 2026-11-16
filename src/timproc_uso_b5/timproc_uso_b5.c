@@ -2440,7 +2440,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         var_s0 = arg0;
         if ((var_s0 != NULL) || (temp_v0_2 = timproc_uso_b5_alias((char *)0x2C), var_s0 = temp_v0_2, (temp_v0_2 != NULL))) {
             timproc_uso_b5_alias(var_s0, ((char *)&D_00000000 + 0x1260));
-            NODE(var_s0)->vptr = (s32)&D_00000000;
+            NODE(var_s0)->vptr = (char *)&D_00000000;
         }
         SELWIN(arg0)->vptr = (void *)((s32)&D_00000000);
         var_s0 = (char *)&SELWIN(arg0)->parms;

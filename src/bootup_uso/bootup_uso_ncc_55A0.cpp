@@ -160,9 +160,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_0;
+                NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_0;
             }
-            NODE(obj)->vptr = (int)&D_55A0_o28_0;
+            NODE(obj)->vptr = (char *)&D_55A0_o28_0;
             node = TREETMPL(obj)->fog;
             if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
@@ -184,9 +184,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_1;
+                NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_1;
             }
-            NODE(obj)->vptr = (int)&D_55A0_o28_1;
+            NODE(obj)->vptr = (char *)&D_55A0_o28_1;
             n2 = TREETMPL(obj)->fog;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
@@ -211,9 +211,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, 0);
-                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_2;
+                NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_2;
             }
-            NODE(obj)->vptr = (int)&D_55A0_o28_2;
+            NODE(obj)->vptr = (char *)&D_55A0_o28_2;
             n2 = TREETMPL(obj)->fog;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
@@ -237,9 +237,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
             sub = obj;
             if (sub != 0 || (sub = (char *)func_00000000(0x48)) != 0) {
                 func_00000000(sub, p2, nl0);
-                NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_3;
+                NODE(sub)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_3;
             }
-            NODE(obj)->vptr = (int)&D_55A0_o28_3;
+            NODE(obj)->vptr = (char *)&D_55A0_o28_3;
             n2 = obj + 0x48;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x10)) != 0) {
                 n3 = n2;
@@ -272,7 +272,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     if (nl) {} /* agent-g run 241: nl's reload before the obj test (target lw a2 above the beqz) */
     if (obj != 0) {
         func_00000000(obj, p1, nl);
-        NODE(obj)->vptr = (int)&SNodeItemType_vtbl_55A0_o28_4;
+        NODE(obj)->vptr = (char *)&SNodeItemType_vtbl_55A0_o28_4;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -284,9 +284,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
         s5 = obj;
         if (s5 != 0 || (s5 = (char *)func_00000000(0x48)) != 0) {
             func_00000000(s5, p2, D_55A0_g5);
-            NODE(s5)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_5;
+            NODE(s5)->vptr = (char *)&SNodeItemType_vtbl_55A0_s28_5;
         }
-        NODE(obj)->vptr = (int)&D_55A0_o28_5;
+        NODE(obj)->vptr = (char *)&D_55A0_o28_5;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 
@@ -300,7 +300,7 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     obj = (char *)func_00000000(0x58);
     if (obj != 0) {
         func_00000000(obj, p1, D_55A0_g10, &M(0xE4));
-        NODE(obj)->vptr = (int)&D_00007600;
+        NODE(obj)->vptr = (char *)&D_00007600;
     }
     func_00000000(DROOT, obj, 0xFFFF);
 }

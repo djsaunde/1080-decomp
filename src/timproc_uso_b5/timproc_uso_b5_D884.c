@@ -85,11 +85,11 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
         obj = child;
         if (obj != 0 || (obj = gen_imp_mem_new((char *)0x2B8)) != 0) {
             gen_imp_Node_ctor(obj, &timproc_uso_b5_D_807FEE90 + 0x1620);
-            NODE(obj)->vptr = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
+            NODE(obj)->vptr = (char *)(&timproc_uso_b5_D_807FDB64 + 0);
             SelItemParms_ctor(&((SelItem *)obj)->parms);
             SelItemInfo_ctor(&((SelItem *)obj)->info);
         }
-        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEE98 + 0x7C4); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEE98 + 0x1628);
+        NODE(child)->vptr = (char *)(&timproc_uso_b5_D_807FEE98 + 0x7C4); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEE98 + 0x1628);
         SelItem_reset_00003890(child);
     }
     r = child;
@@ -106,7 +106,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
     child = gen_imp_mem_new((char *)0x144);
     if (child != 0) {
         gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEEA4 + 0x1634, 0.0f, 0.0f, 0.0f);
-        NODE(child)->vptr = (s32) (&timproc_uso_b5_D_807FEEAC + 0x514); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEEAC + 0x163C);
+        NODE(child)->vptr = (char *)(&timproc_uso_b5_D_807FEEAC + 0x514); NODE(child)->name = (const char *)(&timproc_uso_b5_D_807FEEAC + 0x163C);
         gc = gen_imp_mem_new((char *)0x16C);
         if (gc != 0) {
             f32 one;
@@ -114,7 +114,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEEB8 + 0x1648, 0.0f, 0.0f, 0.0f);
             g2 = gc;
             one = *(f32 *)((char *)&import_80807FB8 + 0x3BC);
-            NODE(g2)->vptr = (s32) (&d884_db64_gc + 0); ((LightTarget *)g2)->mask = 1;
+            NODE(g2)->vptr = (char *)(&d884_db64_gc + 0); ((LightTarget *)g2)->mask = 1;
             ((LightTarget *)g2)->unk108[0] = one; /* the RoData 0x3BC constant, not 1.0f */
             ((LightTarget *)g2)->unk108[1] = one;
             ((LightTarget *)g2)->unk108[2] = one;

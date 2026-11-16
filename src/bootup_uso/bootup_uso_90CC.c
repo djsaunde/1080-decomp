@@ -237,9 +237,9 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
 
     if ((arg0 != 0) || (temp_v0_5 = FCALL(mem_new)(0xA8C), arg0 = temp_v0_5, (temp_v0_5 != 0))) {
         FCALL(DNode_ctor)(arg0, &sStr_SnowB_8730);
-        NODE(arg0)->vptr = (s32) &SnowBoarder_vtbl_90cc_vt_self;
+        NODE(arg0)->vptr = (char *)&SnowBoarder_vtbl_90cc_vt_self;
         var_s0 = arg0 + 0x3EC;
-        if (((arg0 != (void *)-0x3EC) || ((var_s0 = FCALL(mem_new)(0x154)) != 0)) && ((FCALL(Node_ctor)(var_s0, &sStr_Node_8738), NODE(var_s0)->vptr = (s32) &D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = FCALL(mem_new)(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
+        if (((arg0 != (void *)-0x3EC) || ((var_s0 = FCALL(mem_new)(0x154)) != 0)) && ((FCALL(Node_ctor)(var_s0, &sStr_Node_8738), NODE(var_s0)->vptr = (char *)&D_00008108, var_s1 = var_s0 + 0x2C, (var_s0 != (void *)-0x2C)) || (temp_v0_5 = FCALL(mem_new)(0x128), var_s1 = temp_v0_5, (temp_v0_5 != 0)))) {
             var_a2 = (s32)var_s1;
             if ((var_s1 != 0) || (temp_v0_5 = FCALL(mem_new)(8), var_a2 = (s32)temp_v0_5, (temp_v0_5 != 0))) {
                 PARMS(var_a2)->name = (s32) &sStr_Parms_8740;
@@ -802,9 +802,9 @@ sw_end:
                 var_s1 = var_s0;
                 if ((var_s1 != 0) || (var_s1 = FCALL(mem_new)(0x174), (var_s1 != 0))) {
                     FCALL(Node_ctor)(var_s1, &sStr_Node_882C);
-                    NODE(var_s1)->vptr = (s32) &bu_90cc_vt545;
+                    NODE(var_s1)->vptr = (char *)&bu_90cc_vt545;
                 }
-                NODE(var_s0)->vptr = (s32) &bu_90cc_vt546;
+                NODE(var_s0)->vptr = (char *)&bu_90cc_vt546;
             }
             sp164 = var_s0;
             var_s1 = SNOWB(arg0)->dispTrails;
@@ -819,9 +819,9 @@ sw_end:
                     var_a2 = (s32) var_s1;
                     if ((var_a2 != 0) || (var_a2 = (s32)FCALL(mem_new)(0x174), (var_a2 != 0))) {
                         FCALL(Node_ctor)((char *)var_a2, &sStr_Node_8834);
-                        NODE(var_a2)->vptr = (s32) &bu_90cc_vt545_b;
+                        NODE(var_a2)->vptr = (char *)&bu_90cc_vt545_b;
                     }
-                    NODE(var_s1)->vptr = (s32) &bu_90cc_vt547;
+                    NODE(var_s1)->vptr = (char *)&bu_90cc_vt547;
                 }
                 sp160 = var_s1;
                 var_s0 = var_s1;
@@ -837,9 +837,9 @@ sw_end:
                 var_a2 = (s32) var_s1;
                 if ((var_a2 != 0) || (var_a2 = (s32)FCALL(mem_new)(0x174), (var_a2 != 0))) {
                     FCALL(Node_ctor)((char *)var_a2, &sStr_Node_883C);
-                    NODE(var_a2)->vptr = (s32) &bu_90cc_vt545_c;
+                    NODE(var_a2)->vptr = (char *)&bu_90cc_vt545_c;
                 }
-                NODE(var_s1)->vptr = (s32) &bu_90cc_vt548;
+                NODE(var_s1)->vptr = (char *)&bu_90cc_vt548;
             }
             sp15C = var_s1;
             var_s0 = var_s1;
@@ -854,9 +854,9 @@ sw_end:
                 var_a2 = (s32) var_s1;
                 if ((var_a2 != 0) || (var_a2 = (s32)FCALL(mem_new)(0x174), (var_a2 != 0))) {
                     FCALL(Node_ctor)((char *)var_a2, &sStr_Node_8844);
-                    NODE(var_a2)->vptr = (s32) &bu_90cc_vt545_d;
+                    NODE(var_a2)->vptr = (char *)&bu_90cc_vt545_d;
                 }
-                NODE(var_s1)->vptr = (s32) &bu_90cc_vt548_b;
+                NODE(var_s1)->vptr = (char *)&bu_90cc_vt548_b;
             }
             sp158 = var_s1;
             var_s0 = var_s1;
@@ -874,7 +874,7 @@ sw_end:
         if (var_s1 != 0) {
             bu_90cc_call_p4d(var_s1, &sStr_lighttarget_885C, 0.0, 0.0f);
             temp_f0 = kRo_SnowBoarder_ctor_8B4;
-            NODE(var_s1)->vptr = (s32) &LightTarget_vtbl_90cc_d207dc; ((LightTarget *)var_s1)->mask = 0xFFFF;
+            NODE(var_s1)->vptr = (char *)&LightTarget_vtbl_90cc_d207dc; ((LightTarget *)var_s1)->mask = 0xFFFF;
             ((LightTarget *)var_s1)->unk108[0] = temp_f0;
             ((LightTarget *)var_s1)->unk108[1] = temp_f0;
             ((LightTarget *)var_s1)->unk108[2] = temp_f0;

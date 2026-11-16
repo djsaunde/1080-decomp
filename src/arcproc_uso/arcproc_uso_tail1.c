@@ -251,13 +251,13 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (int)&D_arc_A3C_v0; }
-            NODE(o2)->vptr = (int)&D_arc_A3C_v1;
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3B8); NODE(o3)->vptr = (char *)&D_arc_A3C_v0; }
+            NODE(o2)->vptr = (char *)&D_arc_A3C_v1;
         }
-        NODE(o1)->vptr = (int)&D_arc_A3C_v2;
+        NODE(o1)->vptr = (char *)&D_arc_A3C_v2;
         CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
     }
-    NODE(obj)->vptr = (int)&D_arc_A3C_v3;
+    NODE(obj)->vptr = (char *)&D_arc_A3C_v3;
     RACEPROC(obj)->spriteSet = 0;
     CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C0, a2);
     RACEPROC(obj)->session = (BackupSession *)a4;
@@ -272,7 +272,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
         o2 = (char *)CALL(mem_new)(0xD8);
         if (o2 != 0) {
             CALL(RaceTracker_ctor)(o2);
-            NODE(o2)->vptr = (int)&D_arc_A3C_v4;
+            NODE(o2)->vptr = (char *)&D_arc_A3C_v4;
         }
         ARCRACE(obj)->dataMgr = (int)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
@@ -1097,13 +1097,13 @@ char *ArcNameEntry_ctor_0000199C(char *arg0, char *arg1, int arg2) {
             if ((a2 != 0) || (v1 = (char *)CALL(mem_new)(0x50), (v1 != 0))) {
                 a0 = v1;
                 if ((v1 != 0) || (a0 = (char *)CALL(mem_new)(0x2C), (a0 != 0))) {
-                    CALL(Node_ctor)(a0, D_arc199C_v + 0x3DC); NODE(a0)->vptr = (int)D_arc199C_w;
+                    CALL(Node_ctor)(a0, D_arc199C_v + 0x3DC); NODE(a0)->vptr = (char *)D_arc199C_w;
                 }
-                NODE(v1)->vptr = (int)D_arc199C_x;
+                NODE(v1)->vptr = (char *)D_arc199C_x;
             }
-            NODE(a2)->vptr = (int)D_arc199C_y;
+            NODE(a2)->vptr = (char *)D_arc199C_y;
         }
-        NODE(arg0)->vptr = (int)D_arc199C_z;
+        NODE(arg0)->vptr = (char *)D_arc199C_z;
         MODENAMEENT(arg0)->base.phase = arg2;
         MODENAMEENT(arg0)->race = (s32)arg1;
         MODENAMEENT(arg0)->pos[1][0] = 0xA0;
@@ -1508,7 +1508,7 @@ void *arc_ItemType_create_00002334(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&D_00000000;
+        NODE(p1)->vptr = (char *)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
@@ -1623,11 +1623,11 @@ char *ARCMenuProcess_ctor(char *arg0) {
         if ((arg0 != 0) || (a3 = (char *)CALL(mem_new)(80), (a3 != 0))) {
             a0 = a3;
             if ((a3 != 0) || (a0 = (char *)CALL(mem_new)(44), (a0 != 0))) {
-                CALL(Node_ctor)(a0, D_arc251C_a + 0x488); NODE(a0)->vptr = (int)D_arc251C_b;
+                CALL(Node_ctor)(a0, D_arc251C_a + 0x488); NODE(a0)->vptr = (char *)D_arc251C_b;
             }
-            NODE(a3)->vptr = (int)D_arc251C_c;
+            NODE(a3)->vptr = (char *)D_arc251C_c;
         }
-        NODE(arg0)->vptr = (int)D_arc251C_d;
+        NODE(arg0)->vptr = (char *)D_arc251C_d;
         NODE(arg0)->name = (const char *)(D_arc251C_e + 0x490);
         CALL(gui_spriteInit)(D_arc251C_reg + 16, 0x280000);
         CALL(gui_spriteInit)(D_arc251C_reg + 40, 0x280001);

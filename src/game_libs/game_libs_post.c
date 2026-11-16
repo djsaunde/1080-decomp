@@ -15593,7 +15593,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
     o = self;
     if (o != 0 || (o = (char *)gl_func_0001CA10(0xB4)) != 0) {
         gl_func_0001CA10(o, GL_DATA_STR(0x1E178, "<MNode>"));
-        NODE(o)->vptr = (s32)&MNode_vtbl; /* the inlined MNode base ctor */
+        NODE(o)->vptr = (char *)&MNode_vtbl; /* the inlined MNode base ctor */
         r = (int *)(o + 0x2C);
         if (r != 0 || (r = (int *)gl_func_0001CA10(4)) != 0) {
             q = r;
@@ -15608,7 +15608,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
         zv.z = 0.0f;
         gl_func_0001CA10(o, &zv);
     }
-    NODE(self)->vptr = (s32)&MCamera_vtbl;
+    NODE(self)->vptr = (char *)&MCamera_vtbl;
     o = self + 0x110;
     if (o != 0 || (o = (char *)gl_func_0001CA10(0x20)) != 0) {
         b = o;

@@ -512,7 +512,7 @@ void *PhysQNode_ctor_00063884(void *a0, int a1, int *a2, int *a3) {
         if (a0 == 0) goto end;
     }
     XCALL(gl_init_00000000_63884, QNode_ctor)(a0, GL_DATA_STR(0x22388, "<QNode>"), 0.0f, 0.0f, 0.0f);
-    PHYSQNODE(a0)->mnode.node.vptr = (int)&PhysQNode_vtbl;
+    PHYSQNODE(a0)->mnode.node.vptr = (char *)&PhysQNode_vtbl;
     tmp = *(Tri3i*)a2;
     PHYSQNODE(a0)->probeA[0] = *(float*)&tmp.a;
     PHYSQNODE(a0)->probeA[1] = *(float*)&tmp.b;
@@ -569,7 +569,7 @@ extern float aD63DC4_1(float);
 void *Friction_ctor_00063DC4(void *s0, int a1, float a2, float a3, float a4) {
     if (s0 != 0 || (s0 = (void*)CALL(mem_new)(368)) != 0) {
         XCALL(aD63DC4_5, QNode_ctor)(s0, GL_DATA_STR(0x22390, "<QNode>"), 0.0f, 0.0f, 0.0f);
-        FRICTION(s0)->mnode.node.vptr = (int)&Friction_vtbl;
+        FRICTION(s0)->mnode.node.vptr = (char *)&Friction_vtbl;
         FRICTION(s0)->owner = a1;
         XCALL(aD63DC4_4, QNode_translate)(s0, a2, a3, a4);
         CALL(Friction_reset_00064124)(s0);
@@ -1101,7 +1101,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
 
     if (arg0 != 0 || (arg0 = (void *)CALL(mem_new)(0x3D4)) != 0) {
         XCALL(gl_init_00000000_64588, QNode_ctor)(arg0, arg1, 0.0f, 0.0f, 0.0f);
-        DNODE(arg0)->mnode.node.vptr = (int)&gl_ref_00000000_64588; /* DNode_vtbl */
+        DNODE(arg0)->mnode.node.vptr = (char *)&gl_ref_00000000_64588; /* DNode_vtbl */
         if ((base = (char *)&DNODE(arg0)->parms) != 0 ||
             (base = (char *)CALL(mem_new)(0x180)) != 0) {
             if ((p = base) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
@@ -1699,7 +1699,7 @@ void DNode_resetXform_00065360(char *a0, Vec3_f *a1) {
     DNODE(a0)->cvqs.trans[1] = tmp.y;
     DNODE(a0)->cvqs.trans[2] = tmp.z;
     tmp = *a1;
-    v0 = DNODE(a0)->mnode.node.vptr;
+    v0 = (int)DNODE(a0)->mnode.node.vptr;
     DNODE(a0)->vqs.trans[0] = tmp.x;
     DNODE(a0)->vqs.trans[1] = tmp.y;
     DNODE(a0)->vqs.trans[2] = tmp.z;
@@ -4129,7 +4129,7 @@ int *BinFileMgr_ctor_000684AC(int *a0, int a1, int a2) {
         if (a0 == 0) goto end;
     }
     CALL(Node_ctor)(a0, a1);
-    BINFILEMGR(a0)->node.vptr = (int)&BinFileMgr_vtbl;
+    BINFILEMGR(a0)->node.vptr = (char *)&BinFileMgr_vtbl;
     BINFILEMGR(a0)->nGroups = 0;
     BINFILEMGR(a0)->groups = 0;
     if (a2 != 0) {
@@ -4325,7 +4325,7 @@ int *ImageFileMgr_ctor(int *a0, int a1) {
         if (a0 == 0) goto end;
     }
     CALL(BinFileMgr_ctor_000684AC)(a0, sImageFileMgrName, 0);
-    BINFILEMGR(a0)->node.vptr = (int)&ImageFileMgr_vtbl;
+    BINFILEMGR(a0)->node.vptr = (char *)&ImageFileMgr_vtbl;
     if (a1 != 0) {
         CALL(Node_Load)(a0, 1, a1);
     }

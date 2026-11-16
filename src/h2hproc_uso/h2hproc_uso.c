@@ -388,13 +388,13 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         o2 = o1;
         if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
             o3 = o2;
-            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3C0); NODE(o3)->vptr = (int)&D_h2h_620_d0; }
-            NODE(o2)->vptr = (int)&D_h2h_620_d1;
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, (char *)&D_00000000 + 0x3C0); NODE(o3)->vptr = (char *)&D_h2h_620_d0; }
+            NODE(o2)->vptr = (char *)&D_h2h_620_d1;
         }
-        NODE(o1)->vptr = (int)&D_h2h_620_d2;
+        NODE(o1)->vptr = (char *)&D_h2h_620_d2;
         CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
     }
-    NODE(obj)->vptr = (int)&D_h2h_620_d3;
+    NODE(obj)->vptr = (char *)&D_h2h_620_d3;
     RACEPROC(obj)->spriteSet = 0;
     CALL(RaceProcess_init)(obj, a1, (char *)&D_00000000 + 0x3C8, a2);
     H2HRACE(obj)->wins = a3;
@@ -406,7 +406,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
         o2 = (char *)CALL(mem_new)(0xF0);
         if (o2 != 0) {
             CALL(RaceTracker_ctor)(o2);
-            NODE(o2)->vptr = (int)&D_00000000;
+            NODE(o2)->vptr = (char *)&D_00000000;
         }
         H2HRACE(obj)->dataMgr = (int)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
@@ -1005,7 +1005,7 @@ int *h2h_WhiteFader_ctor(int *a0) {
     if (a0 == 0) {                /* dead arm — IDO emits it anyway */
         if ((r = (int*)CALL(mem_new)(0x2C)) == 0) goto tail;
     }
-    CALL(Node_ctor)(r, (char*)&D_00000000 + 0x3E0); NODE(r)->vptr = (int)&D_00000000;
+    CALL(Node_ctor)(r, (char*)&D_00000000 + 0x3E0); NODE(r)->vptr = (char *)&D_00000000;
 tail:
     *(int*)((char*)a0 + 0x28) = (int)&D_h2h_eb0_y;
     *(int*)((char*)a0 + 0xC) = (int)((char*)&D_00000000 + 0x3E8);
@@ -1079,7 +1079,7 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
                                      `or v0,zero,zero` return-0 path */
     }
     CALL(Node_ctor)(a0, base + 0x3F4);
-    NODE(a0)->vptr = (int)base;
+    NODE(a0)->vptr = (char *)base;
     H2HWINS(a0)->race = (int)a1;
     H2HWINS(a0)->fader = CALL(h2h_WhiteFader_ctor)(0);
     H2HWINS(a0)->menu = CALL(PauseMenu_create)(0);
@@ -1641,7 +1641,7 @@ void *h2h_ItemType_create_00001A6C(int *arg0) {
     p1 = (int*)CALL(mem_new)(0x40);
     if (p1 != 0) {
         CALL(ColourItem_ctor)(p1);
-        NODE(p1)->vptr = (int)&D_00000000;
+        NODE(p1)->vptr = (char *)&D_00000000;
         *(int*)((char*)p1 + 0x3C) = 0;
     }
     p2 = p1;
