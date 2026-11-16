@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00003DE8, 0x58
+nonmatching fs_gdlReadQuad_snow_00003DE8, 0x58
 
-glabel snoweffects_uso_func_00003DE8
+glabel fs_gdlReadQuad_snow_00003DE8
     /* 90D70E 00003DE8 27BDFFD8 */  .word 0x27BDFFD8
     /* 90D712 00003DEC AFA40028 */  .word 0xAFA40028
     /* 90D716 00003DF0 AFBF0014 */  .word 0xAFBF0014
@@ -23,4 +23,4 @@ glabel snoweffects_uso_func_00003DE8
     /* 90D75A 00003E34 27BD0028 */  .word 0x27BD0028
     /* 90D75E 00003E38 03E00008 */  .word 0x03E00008
     /* 90D762 00003E3C 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00003DE8
+endlabel fs_gdlReadQuad_snow_00003DE8

@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00003544, 0x6C
+nonmatching SnowFall_rotateNormal_00003544, 0x6C
 
-glabel snoweffects_uso_func_00003544
+glabel SnowFall_rotateNormal_00003544
     /* 90CE6A 00003544 27BDFFE8 */  .word 0x27BDFFE8
     /* 90CE6E 00003548 AFA40018 */  .word 0xAFA40018
     /* 90CE72 0000354C AFA5001C */  .word 0xAFA5001C
@@ -28,4 +28,4 @@ glabel snoweffects_uso_func_00003544
     /* 90CECA 000035A4 27BD0018 */  .word 0x27BD0018
     /* 90CECE 000035A8 03E00008 */  .word 0x03E00008
     /* 90CED2 000035AC 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00003544
+endlabel SnowFall_rotateNormal_00003544

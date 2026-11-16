@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00003620, 0x12C
+nonmatching SnowFall_copyCamRot_00003620, 0x12C
 
-glabel snoweffects_uso_func_00003620
+glabel SnowFall_copyCamRot_00003620
     /* 90CF46 00003620 3C020000 */  .word 0x3C020000
     /* 90CF4A 00003624 24420000 */  .word 0x24420000
     /* 90CF4E 00003628 8C4E0254 */  .word 0x8C4E0254
@@ -76,4 +76,4 @@ glabel snoweffects_uso_func_00003620
     /* 90D066 00003740 C53200DC */  .word 0xC53200DC
     /* 90D06A 00003744 03E00008 */  .word 0x03E00008
     /* 90D06E 00003748 E4920094 */  .word 0xE4920094
-endlabel snoweffects_uso_func_00003620
+endlabel SnowFall_copyCamRot_00003620

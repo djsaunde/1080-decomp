@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00000064, 0x34
+nonmatching SnowPlane_solveY_00000064, 0x34
 
-glabel snoweffects_uso_func_00000064
+glabel SnowPlane_solveY_00000064
     /* 90998A 00000064 C4840000 */  .word 0xC4840000
     /* 90998E 00000068 C4A60000 */  .word 0xC4A60000
     /* 909992 0000006C C48A0008 */  .word 0xC48A0008
@@ -14,4 +14,4 @@ glabel snoweffects_uso_func_00000064
     /* 9099B2 0000008C 46005407 */  .word 0x46005407
     /* 9099B6 00000090 03E00008 */  .word 0x03E00008
     /* 9099BA 00000094 46088003 */  .word 0x46088003
-endlabel snoweffects_uso_func_00000064
+endlabel SnowPlane_solveY_00000064

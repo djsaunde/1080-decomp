@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00000108, 0x3C
+nonmatching fs_gdlReadFloat_snow_00000108, 0x3C
 
-glabel snoweffects_uso_func_00000108
+glabel fs_gdlReadFloat_snow_00000108
     /* 909A2E 00000108 27BDFFE0 */  .word 0x27BDFFE0
     /* 909A32 0000010C AFA40020 */  .word 0xAFA40020
     /* 909A36 00000110 AFBF0014 */  .word 0xAFBF0014
@@ -16,4 +16,4 @@ glabel snoweffects_uso_func_00000108
     /* 909A5E 00000138 27BD0020 */  .word 0x27BD0020
     /* 909A62 0000013C 03E00008 */  .word 0x03E00008
     /* 909A66 00000140 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00000108
+endlabel fs_gdlReadFloat_snow_00000108

@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_0000374C, 0x278
+nonmatching SnowFall_buildFrustum_0000374C, 0x278
 
-glabel snoweffects_uso_func_0000374C
+glabel SnowFall_buildFrustum_0000374C
     /* 90D072 0000374C 27BDFFA8 */  .word 0x27BDFFA8
     /* 90D076 00003750 3C014120 */  .word 0x3C014120
     /* 90D07A 00003754 44812000 */  .word 0x44812000
@@ -159,4 +159,4 @@ glabel snoweffects_uso_func_0000374C
     /* 90D2DE 000039B8 D7B40010 */  .word 0xD7B40010
     /* 90D2E2 000039BC 03E00008 */  .word 0x03E00008
     /* 90D2E6 000039C0 27BD0058 */  .word 0x27BD0058
-endlabel snoweffects_uso_func_0000374C
+endlabel SnowFall_buildFrustum_0000374C

@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00003E40, 0x70
+nonmatching fs_gdlReadVec3_snow_00003E40, 0x70
 
-glabel snoweffects_uso_func_00003E40
+glabel fs_gdlReadVec3_snow_00003E40
     /* 90D766 00003E40 27BDFFB8 */  .word 0x27BDFFB8
     /* 90D76A 00003E44 00803825 */  .word 0x00803825
     /* 90D76E 00003E48 AFBF0014 */  .word 0xAFBF0014
@@ -29,4 +29,4 @@ glabel snoweffects_uso_func_00003E40
     /* 90D7CA 00003EA4 27BD0048 */  .word 0x27BD0048
     /* 90D7CE 00003EA8 03E00008 */  .word 0x03E00008
     /* 90D7D2 00003EAC 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00003E40
+endlabel fs_gdlReadVec3_snow_00003E40

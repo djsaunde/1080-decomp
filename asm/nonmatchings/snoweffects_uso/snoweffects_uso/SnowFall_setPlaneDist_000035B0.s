@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_000035B0, 0x70
+nonmatching SnowFall_setPlaneDist_000035B0, 0x70
 
-glabel snoweffects_uso_func_000035B0
+glabel SnowFall_setPlaneDist_000035B0
     /* 90CED6 000035B0 27BDFFD8 */  .word 0x27BDFFD8
     /* 90CEDA 000035B4 AFBF0014 */  .word 0xAFBF0014
     /* 90CEDE 000035B8 AFA40028 */  .word 0xAFA40028
@@ -29,4 +29,4 @@ glabel snoweffects_uso_func_000035B0
     /* 90CF3A 00003614 27BD0028 */  .word 0x27BD0028
     /* 90CF3E 00003618 03E00008 */  .word 0x03E00008
     /* 90CF42 0000361C 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_000035B0
+endlabel SnowFall_setPlaneDist_000035B0

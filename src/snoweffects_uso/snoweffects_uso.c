@@ -219,37 +219,37 @@ float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-float snoweffects_uso_func_00000030(float *p, float *pl) {
+float SnowPlane_solveX_00000030(float *p, float *pl) {
     return -(p[1] * pl[1] + p[2] * pl[2] - pl[3]) / pl[0];
 }
 
-float snoweffects_uso_func_00000064(float *p, float *pl) {
+float SnowPlane_solveY_00000064(float *p, float *pl) {
     return -(p[0] * pl[0] + p[2] * pl[2] - pl[3]) / pl[1];
 }
 
-float snoweffects_uso_func_00000098(float *p, float *pl) {
+float SnowPlane_solveZ_00000098(float *p, float *pl) {
     return -(p[0] * pl[0] + p[1] * pl[1] - pl[3]) / pl[2];
 }
 
-void snoweffects_uso_func_000000CC(int *dst) {
+void fs_gdlReadInt_snow_000000CC(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00000108(float *dst) {
+void fs_gdlReadFloat_snow_00000108(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00000144(Quad4 *dst) {
+void fs_gdlReadQuad_snow_00000144(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void snoweffects_uso_func_0000019C(Vec3 *dst) {
+void fs_gdlReadVec3_snow_0000019C(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -271,7 +271,7 @@ void SnowPool_init_0000020C(SnowPool *this, int n) {
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000270);
 
-SnowParticle *snoweffects_uso_func_00000680(SnowPool *this) {
+SnowParticle *SnowPool_oldest_00000680(SnowPool *this) {
     float best = 65536.0f;
     SnowParticle *p = this->items;
     SnowParticle *found = 0;
@@ -285,7 +285,7 @@ SnowParticle *snoweffects_uso_func_00000680(SnowPool *this) {
     return found;
 }
 
-SnowParticle *snoweffects_uso_func_000006D0(SnowPool *this) {
+SnowParticle *SnowPool_alloc_000006D0(SnowPool *this) {
     if (this->count < this->max) {
         this->count++;
         return &this->items[this->count - 1];
@@ -294,7 +294,7 @@ SnowParticle *snoweffects_uso_func_000006D0(SnowPool *this) {
 }
 
 /* SnowPool remove: move the last live particle into p's slot (field by field, the Vec3s through one temp) */
-void snoweffects_uso_func_00000718(SnowPool *this, SnowParticle *p) {
+void SnowPool_remove_00000718(SnowPool *this, SnowParticle *p) {
     int pad[2];
     Vec3 t;
     int pad2[2];
@@ -334,7 +334,7 @@ void snoweffects_uso_func_00000718(SnowPool *this, SnowParticle *p) {
 /* SnowPool spawn with a random size / fade (sys_randf). 63 / 65 words: the reload of p after the first
  * sys_randf call is scheduled one slot above the `r * 2` mul.s (target: below). Tried: statement order
  * hill-climb (both groups), (float)2 / 2 * r / named products, top-level locals. */
-SnowParticle *snoweffects_uso_func_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel) {
+SnowParticle *SnowPool_spawnRandom_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel) {
     SnowParticle *p = (SnowParticle *)gl_func_00000000(this) /* 0x6D0 SnowPool alloc */;
     if (p != 0) {
         float x, y, z, r;
@@ -364,13 +364,13 @@ SnowParticle *snoweffects_uso_func_0000097C(SnowPool *this, Vec3 *pos, Vec3 *vel
     return p;
 }
 #else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000097C);
+INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", SnowPool_spawnRandom_0000097C);
 #endif
 
-SnowParticle *snoweffects_uso_func_00000A7C(SnowPool *this, Vec3 *pos) {
-    SnowParticle *p = (SnowParticle *)CALL(snoweffects_uso_func_000006D0)(this);
+SnowParticle *SnowPool_spawn_00000A7C(SnowPool *this, Vec3 *pos) {
+    SnowParticle *p = (SnowParticle *)CALL(SnowPool_alloc_000006D0)(this);
     if (p == 0) {
-        p = (SnowParticle *)CALL(snoweffects_uso_func_00000680)(this);
+        p = (SnowParticle *)CALL(SnowPool_oldest_00000680)(this);
     }
     if (p != 0) {
         float x = pos->x, y = pos->y, z = pos->z;
@@ -399,7 +399,7 @@ SnowParticle *snoweffects_uso_func_00000A7C(SnowPool *this, Vec3 *pos) {
 
 /* SnowPool update: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp (user
  * Vec3 operator+= schedule), REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_00000B44(SnowPool *this) {
+void SnowPool_update_00000B44(SnowPool *this) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00000C90);
@@ -414,18 +414,18 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 /* SnowFall flake motion: EXACT via the IDO 7.1 NCC donor src/snoweffects_uso/snoweffects_uso_ncc.cpp
  * (user Vec3 operator+=, RoData+0xC literal pin), REPLACE_FUNC_BODY-spliced over this placeholder. */
-void snoweffects_uso_func_000027A8(SnowFall *this) {
+void SnowFall_moveFlakes_000027A8(SnowFall *this) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000028E0);
 
-void snoweffects_uso_func_00003544(char *this, float *out, Vec3 *v) {
+void SnowFall_rotateNormal_00003544(char *this, float *out, Vec3 *v) {
     out[0] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x74));
     out[1] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x80));
     out[2] = snoweffects_uso_func_00000000(v, (Vec3 *)(this + 0x8C));
 }
 
-void snoweffects_uso_func_000035B0(char *this, float *n, float *p, float s) {
+void SnowFall_setPlaneDist_000035B0(char *this, float *n, float *p, float s) {
     Vec3 t;
     (void)&this;
     t.x = p[0] - n[0] * s;
@@ -445,7 +445,7 @@ extern void gl_func_00000000_snow_35b0(void *self, f32 (*pl)[4], Vec3 *p, float 
 #define SNOW_CAM_POS(i) (((f32 *)(((GfxLib *)&D_00000000)->curWindow->win.camera + 0xA0))[i])
 
 /* SnowFall: copy the camera rotation, transposed into camRotT and as-is into camRot */
-void snoweffects_uso_func_00003620(SnowFall *this) {
+void SnowFall_copyCamRot_00003620(SnowFall *this) {
     this->camRotT[0][0] = SNOW_CAM_ROT(0, 0);
     this->camRotT[0][1] = SNOW_CAM_ROT(1, 0);
     this->camRotT[0][2] = SNOW_CAM_ROT(2, 0);
@@ -468,14 +468,14 @@ void snoweffects_uso_func_00003620(SnowFall *this) {
 
 /* SnowFall: build the six view-frustum planes (near / far / left / right / bottom / top as camera-space
  * normals rotated by 0x3544, placed through the camera position by 0x35B0) */
-void snoweffects_uso_func_0000374C(SnowFall *this) {
+void SnowFall_buildFrustum_0000374C(SnowFall *this) {
     Vec3 eye;
     Vec3 n;
     int pad; /* frame slot: the planes spill lands at sp+0x34 */
     f32 (*pl)[4];
     this->nearDist = 10.0f;
     this->farDist = 100.0f;
-    CALL(snoweffects_uso_func_00003620)(this);
+    CALL(SnowFall_copyCamRot_00003620)(this);
     eye.x = ((GfxLib *)&D_00000000)->worldScale[0] * SNOW_CAM_POS(0);
     eye.y = ((GfxLib *)&D_00000000)->worldScale[1] * SNOW_CAM_POS(1);
     eye.z = ((GfxLib *)&D_00000000)->worldScale[2] * SNOW_CAM_POS(2);
@@ -483,75 +483,75 @@ void snoweffects_uso_func_0000374C(SnowFall *this) {
     n.y = 0.0f;
     n.z = 1.0f;
     pl = this->planes;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, this->farDist);
     n.z = -1.0f;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, -this->nearDist);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, -this->nearDist);
     n.y = 0.0f;
     n.z = 0.0f;
     n.x = 1.0f;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, this->farDist / 2);
     n.x = -1.0f;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, this->farDist / 2);
     n.x = 0.0f;
     n.z = 0.0f;
     n.y = 1.0f;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, this->farDist / 2);
     n.y = -1.0f;
-    CALL(snoweffects_uso_func_00003544)(this, pl, &n);
-    XCALL(gl_func_00000000_snow_35b0, snoweffects_uso_func_000035B0)(this, pl++, &eye, this->farDist / 2);
+    CALL(SnowFall_rotateNormal_00003544)(this, pl, &n);
+    XCALL(gl_func_00000000_snow_35b0, SnowFall_setPlaneDist_000035B0)(this, pl++, &eye, this->farDist / 2);
     this->nPlanes = ((char *)pl - (char *)this->planes) / 16;
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000039C4);
 
-void snoweffects_uso_func_00003CA4(char *a0) {
+void ParmFloat_read_snow_00003CA4(char *a0) {
     int tag;
-    snoweffects_uso_func_000000CC(&tag);
-    snoweffects_uso_func_00000108((float *)(a0 + 0x10));
+    fs_gdlReadInt_snow_000000CC(&tag);
+    fs_gdlReadFloat_snow_00000108((float *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00003CD4(char *a0) {
+void ParmQuad_read_snow_00003CD4(char *a0) {
     int tag;
-    snoweffects_uso_func_000000CC(&tag);
-    snoweffects_uso_func_00000144((Quad4 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_000000CC(&tag);
+    fs_gdlReadQuad_snow_00000144((Quad4 *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00003D04(char *a0) {
+void ParmInt_read_snow_00003D04(char *a0) {
     int tag;
-    snoweffects_uso_func_000000CC(&tag);
-    snoweffects_uso_func_000000CC((int *)(a0 + 0x10));
+    fs_gdlReadInt_snow_000000CC(&tag);
+    fs_gdlReadInt_snow_000000CC((int *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00003D34(char *a0) {
+void ParmVec3_read_snow_00003D34(char *a0) {
     int tag;
-    snoweffects_uso_func_000000CC(&tag);
-    snoweffects_uso_func_0000019C((Vec3 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_000000CC(&tag);
+    fs_gdlReadVec3_snow_0000019C((Vec3 *)(a0 + 0x10));
 }
 
-void snoweffects_uso_func_00003D70(int *dst) {
+void fs_gdlReadInt_snow_00003D70(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00003DAC(float *dst) {
+void fs_gdlReadFloat_snow_00003DAC(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
     *dst = buf[0];
 }
 
-void snoweffects_uso_func_00003DE8(Quad4 *dst) {
+void fs_gdlReadQuad_snow_00003DE8(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
     *dst = buf;
 }
 
-void snoweffects_uso_func_00003E40(Vec3 *dst) {
+void fs_gdlReadVec3_snow_00003E40(Vec3 *dst) {
     int pad_top[1];
     Tri3i raw;
     int pad_mid[2];
@@ -725,7 +725,7 @@ void snoweffects_uso_func_00005440(int a0, int a1) {
 
 /* SnowRing update: virtual slot 12, then step the live slots' points from the read cursor (drag by
  * +0x44 on the velocity, w[0] accumulates +0x48 and feeds vel.y, w[1] decays by w[2]), then Node_update */
-void snoweffects_uso_func_0000544C(SnowRing *this) {
+void SnowRing_update_0000544C(SnowRing *this) {
     int idx, n, k, j;
     SnowPoint *pt;
     VT_SLOT(this->node.vptr, 12).fn((char *)this + VT_SLOT(this->node.vptr, 12).delta);
@@ -867,26 +867,26 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 void snoweffects_uso_func_00007CCC(char *a0) {
     int tag;
-    snoweffects_uso_func_00003D70(&tag);
-    snoweffects_uso_func_00003DAC((float *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00003D70(&tag);
+    fs_gdlReadFloat_snow_00003DAC((float *)(a0 + 0x10));
 }
 
 void snoweffects_uso_func_00007CFC(char *a0) {
     int tag;
-    snoweffects_uso_func_00003D70(&tag);
-    snoweffects_uso_func_00003DE8((Quad4 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00003D70(&tag);
+    fs_gdlReadQuad_snow_00003DE8((Quad4 *)(a0 + 0x10));
 }
 
 void snoweffects_uso_func_00007D2C(char *a0) {
     int tag;
-    snoweffects_uso_func_00003D70(&tag);
-    snoweffects_uso_func_00003D70((int *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00003D70(&tag);
+    fs_gdlReadInt_snow_00003D70((int *)(a0 + 0x10));
 }
 
 void snoweffects_uso_func_00007D5C(char *a0) {
     int tag;
-    snoweffects_uso_func_00003D70(&tag);
-    snoweffects_uso_func_00003E40((Vec3 *)(a0 + 0x10));
+    fs_gdlReadInt_snow_00003D70(&tag);
+    fs_gdlReadVec3_snow_00003E40((Vec3 *)(a0 + 0x10));
 }
 
 void *snoweffects_uso_func_00007D8C(int *arg0) {

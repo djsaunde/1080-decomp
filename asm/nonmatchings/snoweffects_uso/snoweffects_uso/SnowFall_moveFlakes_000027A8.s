@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_000027A8, 0x138
+nonmatching SnowFall_moveFlakes_000027A8, 0x138
 
-glabel snoweffects_uso_func_000027A8
+glabel SnowFall_moveFlakes_000027A8
     /* 90C0CE 000027A8 8C8E00B8 */  .word 0x8C8E00B8
     /* 90C0D2 000027AC 8C820030 */  .word 0x8C820030
     /* 90C0D6 000027B0 00001825 */  .word 0x00001825
@@ -79,4 +79,4 @@ glabel snoweffects_uso_func_000027A8
     /* 90C1FA 000028D4 C4440010 */  .word 0xC4440010
     /* 90C1FE 000028D8 03E00008 */  .word 0x03E00008
     /* 90C202 000028DC 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_000027A8
+endlabel SnowFall_moveFlakes_000027A8

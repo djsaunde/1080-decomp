@@ -15,9 +15,9 @@ extern "C" void SnowRing_draw_000040B4(SnowRing *t) {
 
 /* 0x27A8 (0x138): SnowFall flake motion. Gravity down to a terminal speed, a sideways sway that
  * accelerates against the current x / z velocity, then integrate. The 0.0015f literal is the RoData+0xC
- * word (loop-hoisted lwc1, pinned as snoweffects_uso_func_000027A8_rodata); `pos += vel` must be the
+ * word (loop-hoisted lwc1, pinned as SnowFall_moveFlakes_000027A8_rodata); `pos += vel` must be the
  * user operator+= (the target computes z before y), which is why this is an NCC donor. */
-extern "C" void snoweffects_uso_func_000027A8(SnowFall *t) {
+extern "C" void SnowFall_moveFlakes_000027A8(SnowFall *t) {
     SnowParticle *p = t->items;
     int i;
     for (i = 0; i < t->count; i++, p++) {
@@ -46,13 +46,13 @@ extern "C" void snoweffects_uso_func_000027A8(SnowFall *t) {
 /* 0xB44 (0x14C): SnowPool update. Age each particle and drop the dead ones (0x718 moves the last one into
  * the slot, so it is revisited), integrate, then grow / shrink the size once life falls below fadeAt and
  * fade the alpha; either reaching 0 kills the particle. NCC for the user `pos += vel` schedule. */
-extern "C" void snoweffects_uso_func_00000B44(SnowPool *t) {
+extern "C" void SnowPool_update_00000B44(SnowPool *t) {
     SnowParticle *p = t->items;
     int i;
     for (i = 0; i < t->count; i++, p++) {
         p->life -= p->decay;
         if (p->life <= 0.0f) {
-            CALL(snoweffects_uso_func_00000718)(t, p);
+            CALL(SnowPool_remove_00000718)(t, p);
             p--;
             i--;
             continue;

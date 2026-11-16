@@ -90,7 +90,7 @@ void heli_uso_func_000000AC(float *dst) {
 }
 
 /* heli_uso_func_000000E8: read a 16-byte quad from the gdl file (template, as snoweffects
- * snoweffects_uso_func_00000144). */
+ * fs_gdlReadQuad_snow_00000144). */
 void heli_uso_func_000000E8(HeliQuad4 *dst) {
     HeliQuad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);

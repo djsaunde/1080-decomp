@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00003D04, 0x30
+nonmatching ParmInt_read_snow_00003D04, 0x30
 
-glabel snoweffects_uso_func_00003D04
+glabel ParmInt_read_snow_00003D04
     /* 90D62A 00003D04 27BDFFE0 */  .word 0x27BDFFE0
     /* 90D62E 00003D08 AFBF0014 */  .word 0xAFBF0014
     /* 90D632 00003D0C AFA40020 */  .word 0xAFA40020
@@ -13,4 +13,4 @@ glabel snoweffects_uso_func_00003D04
     /* 90D64E 00003D28 27BD0020 */  .word 0x27BD0020
     /* 90D652 00003D2C 03E00008 */  .word 0x03E00008
     /* 90D656 00003D30 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00003D04
+endlabel ParmInt_read_snow_00003D04

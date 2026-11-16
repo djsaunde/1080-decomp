@@ -98,7 +98,7 @@ build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := g
 # snoweffects.uso is four C++ TUs linked into one Text (each TU's reader helpers repeat at
 # 0xCC / 0x3D70 / 0x7E20 / 0x9250); the 16-byte .text pad at the end of each TU is an all-zero
 # SUFFIX on that TU's last function (same mechanism as gui / h2hproc above).
-SNOW_SUFFIX := snoweffects_uso_func_00003D34=0x00000000,0x00000000,0x00000000 snoweffects_uso_func_00007D8C=0x00000000 snoweffects_uso_func_000091BC=0x00000000
+SNOW_SUFFIX := ParmVec3_read_snow_00003D34=0x00000000,0x00000000,0x00000000 snoweffects_uso_func_00007D8C=0x00000000 snoweffects_uso_func_000091BC=0x00000000
 build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 # heli.uso: the 16-byte .text pad after the last function (0x1B5C) is an all-zero SUFFIX on it.
@@ -128,7 +128,7 @@ SNOW_NCC_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc.cpp.o
 $(SNOW_NCC_DONOR): src/snoweffects_uso/snoweffects_uso_ncc.cpp src/snoweffects_uso/snoweffects_ncc.h
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-SNOW_NCC_FUNCS := SnowRing_draw_000040B4 snoweffects_uso_func_00000B44 snoweffects_uso_func_000027A8
+SNOW_NCC_FUNCS := SnowRing_draw_000040B4 SnowPool_update_00000B44 SnowFall_moveFlakes_000027A8
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_FUNCS),$(f)=$(SNOW_NCC_DONOR))
 build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_DONOR)
 # viewrec.uso Text ends with one zero pad word after 0x55A4's `jr ra; sw a0,0(sp)`: all-zero SUFFIX
