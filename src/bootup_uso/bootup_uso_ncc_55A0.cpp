@@ -69,6 +69,7 @@ extern char D_55A0_lb0, sFmt_register_7E24, gInputMgr_55A0_cfg;
 #define CFG55A0(o) (*(int *)(&gInputMgr_55A0_cfg + (o)))
 }
 static inline f32 fi(int v) { return v; }
+#define ESC_55A0(x) ((char *)&(x) - (char *)0)
 extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 t4, t5, t6, t7, t8, t9, t10;
     float m[40]; /* sp+0xC4 .. sp+0x163 */
@@ -91,7 +92,9 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
     S4_55A0 p2;
     char *n2, *n3;
 
-    if (0 * ((int)&v0 + (int)&v1 + (int)&v2 + (int)&v3 + (int)&t4 + (int)&t5 + (int)&t10 + (int)&p1 + (int)&vecp1 + (int)&vk1 + (int)&vk2)) {}
+    /* address-taken escape (frame layout): folds to nothing; pointer differences, not (int)& casts, so
+     * nothing is truncated on a 64-bit host */
+    if (0 * (ESC_55A0(v0) + ESC_55A0(v1) + ESC_55A0(v2) + ESC_55A0(v3) + ESC_55A0(t4) + ESC_55A0(t5) + ESC_55A0(t10) + ESC_55A0(p1) + ESC_55A0(vecp1) + ESC_55A0(vk1) + ESC_55A0(vk2))) {}
     gPolyFlags_3EEC4_55A0_w0 = gPolyFlags_3EEC4_55A0_r0 | 8; if (1) {}
     gPolyGeomMode_3EEC8_55A0_G.b = 0xAA002;
     gPolyGeomMode_3EEC8_55A0_G.a = 0;

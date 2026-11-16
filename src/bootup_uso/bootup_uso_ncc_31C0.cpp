@@ -73,8 +73,9 @@ struct CourseCam { CourseCam(char *rider, LookAtNode *lookat, float x, float y, 
 struct SnowChaseActorCam { SnowChaseActorCam(char *target, int source, char *parmsFile); };
 struct SnowChaseActorLook { SnowChaseActorLook(char *anchor, char *cam, char *parmsFile); };
 struct SnowChaseActor { SnowChaseActor(char *target, char *lookBody, char *parmsFile); };
-struct Node { char p[0x10]; char list[4];
-    void add(char *n) { fn_31c0_tail(list, n); if (FW(n, 0x14) != 0) FW(n, 0x4) = 1; FW(n, 0x14) = (int)this; } };
+/* libgdl Node (include/gdl/node.h) up to its parent link; add = Node_addChild's inlined child-attach idiom */
+struct Node { int unk00; int unk04; int flags; const char *name; char list[4] /* 0x10: children */; Node *parent;
+    void add(char *n) { fn_31c0_tail(list, n); if (((Node *)n)->parent != 0) ((Node *)n)->unk04 = 1; ((Node *)n)->parent = this; } };
 /* agent-c run 271: a dummy whose parameter temp is allocated in the DEAD arm of a folded-zero conditional (case 1) */
 inline char *dm(char *a) { if (0) { a = 0; } return a; }
 extern "C" void *cam_create(int a0, int mode, Node *parent, char *a3v, int p4) {

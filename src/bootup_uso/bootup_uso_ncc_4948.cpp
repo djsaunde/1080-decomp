@@ -43,6 +43,10 @@ extern E8 bu_4948_t8[];
 extern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;
 }
 #define F(p,o) (*(float *)((char *)(p) + (o)))
+/* bootup RoData pool words reached off the func_000003F8 base (RoData-base + 0x3F8 + K, per the TextRelocs;
+ * uso-data-sites.py sites): two separate f32 pi literals, the degree <-> radian factors */
+#define RO_PI_554 F(func_000003F8, 0x15C) /* RoData 0x554: f32 3.1415927 */
+#define RO_PI_558 F(func_000003F8, 0x160) /* RoData 0x558: f32 3.1415927 */
 #define SNAP(SETPOS) { Vec3 *sv = (Vec3 *)obj->rider->dnode.vel; Vec3 B; B = *sv * bu_4948_k0; B.y *= bu_4948_k1; SETPOS(obj->cam.mnode.local, &B); }
 extern "C" void RiderCam_update_00004948(RiderCam *obj) {
 #define st (*(unsigned *)&obj->mode)
@@ -90,10 +94,10 @@ extern "C" void RiderCam_update_00004948(RiderCam *obj) {
         }
 #undef e
 #define e (&bu_4948_t8[idx])
-        ang = e->b / 2 * F(func_000003F8, 0x15C) / 180.0f;
+        ang = e->b / 2 * RO_PI_554 / 180.0f; /* half-angle, degrees -> radians */
         r = bu4948_ff(ang) * e->a / bu4948_ff(ang);
         t = bu4948_ff(dist * dist + r * r);
-        t = bu4948_ff(dist / t) * 2 / F(func_000003F8, 0x160) * 180.0f;
+        t = bu4948_ff(dist / t) * 2 / RO_PI_558 * 180.0f; /* radians -> degrees */
         if (t < bu_4948_klo) obj->cam.fov = bu_4948_klo; else if (bu_4948_khi < t) obj->cam.fov = bu_4948_khi; else obj->cam.fov = t;
         if (st >= 0x22 && st < 0x27) SNAP(FCALL(math_mtxAddTranslation));
     } else {
