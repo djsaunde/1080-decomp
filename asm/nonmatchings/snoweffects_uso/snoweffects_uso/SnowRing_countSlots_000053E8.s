@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_000053E8, 0x58
+nonmatching SnowRing_countSlots_000053E8, 0x58
 
-glabel snoweffects_uso_func_000053E8
+glabel SnowRing_countSlots_000053E8
     /* 90ED0E 000053E8 8C8E005C */  .word 0x8C8E005C
     /* 90ED12 000053EC 8C8F0058 */  .word 0x8C8F0058
     /* 90ED16 000053F0 01CF1823 */  .word 0x01CF1823
@@ -23,4 +23,4 @@ glabel snoweffects_uso_func_000053E8
     /* 90ED5A 00005434 24630001 */  .word 0x24630001
     /* 90ED5E 00005438 03E00008 */  .word 0x03E00008
     /* 90ED62 0000543C 00601025 */  .word 0x00601025
-endlabel snoweffects_uso_func_000053E8
+endlabel SnowRing_countSlots_000053E8

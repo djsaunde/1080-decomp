@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00004714, 0xC0
+nonmatching SnowRing_setSlotState_00004714, 0xC0
 
-glabel snoweffects_uso_func_00004714
+glabel SnowRing_setSlotState_00004714
     /* 90E03A 00004714 27BDFFE8 */  .word 0x27BDFFE8
     /* 90E03E 00004718 AFBF0014 */  .word 0xAFBF0014
     /* 90E042 0000471C 10A60020 */  .word 0x10A60020
@@ -49,4 +49,4 @@ glabel snoweffects_uso_func_00004714
     /* 90E0EE 000047C8 27BD0018 */  .word 0x27BD0018
     /* 90E0F2 000047CC 03E00008 */  .word 0x03E00008
     /* 90E0F6 000047D0 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_00004714
+endlabel SnowRing_setSlotState_00004714

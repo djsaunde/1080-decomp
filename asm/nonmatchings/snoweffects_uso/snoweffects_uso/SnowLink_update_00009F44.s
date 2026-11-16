@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_00009F44, 0xA4
+nonmatching SnowLink_update_00009F44, 0xA4
 
-glabel snoweffects_uso_func_00009F44
+glabel SnowLink_update_00009F44
     /* 91386A 00009F44 8C820030 */  .word 0x8C820030
     /* 91386E 00009F48 24180001 */  .word 0x24180001
     /* 913872 00009F4C 3C010000 */  .word 0x3C010000
@@ -42,4 +42,4 @@ glabel snoweffects_uso_func_00009F44
     /* 913902 00009FDC E4AC0008 */  .word 0xE4AC0008
     /* 913906 00009FE0 03E00008 */  .word 0x03E00008
     /* 91390A 00009FE4 AC380000 */  .word 0xAC380000
-endlabel snoweffects_uso_func_00009F44
+endlabel SnowLink_update_00009F44

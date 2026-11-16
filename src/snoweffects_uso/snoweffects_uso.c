@@ -224,7 +224,7 @@ void snoweffects_uso_func_0000019C(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-void snoweffects_uso_func_0000020C(SnowPool *this, int n) {
+void SnowPool_init_0000020C(SnowPool *this, int n) {
     this->items = (SnowParticle *)CALL(mem_new)(n * sizeof(SnowParticle));
     this->count = 0;
     this->max = n;
@@ -355,7 +355,7 @@ void snoweffects_uso_func_00003E40(Vec3 *dst) {
 
 /* clear a point: the second mtc1 zero of the target is the int 0 of a chained assignment
  * (a 0.0f chain shares the first register) */
-void snoweffects_uso_func_00003EB0(SnowPoint *p) {
+void SnowPoint_clear_00003EB0(SnowPoint *p) {
     p->pos.x = 0.0f;
     p->pos.y = 0.0f;
     p->pos.z = 0.0f;
@@ -371,7 +371,7 @@ extern f32 snow_ro_24;
 
 /* emitter init: ring geometry, the Vtx / point / slot arrays, the display-list context, then the
  * virtual reset (slot 11) and the default colour / size parameters */
-void snoweffects_uso_func_00003EE4(SnowRing *this, int a1, int stride, int count, int a4, float f5, float f6) {
+void SnowRing_init_00003EE4(SnowRing *this, int a1, int stride, int count, int a4, float f5, float f6) {
     int i;
     int n;
     this->unk2C = a1;
@@ -393,7 +393,7 @@ void snoweffects_uso_func_00003EE4(SnowRing *this, int a1, int stride, int count
     n = this->size;
     this->points = (SnowPoint *)CALL(mem_new)(n * sizeof(SnowPoint));
     for (i = 0; i < this->size; i++) {
-        CALL(snoweffects_uso_func_00003EB0)(&this->points[i]);
+        CALL(SnowPoint_clear_00003EB0)(&this->points[i]);
     }
     this->slots = (SnowSlot *)CALL(mem_new)(count * sizeof(SnowSlot));
     this->dl = (void *)CALL(gfx_newDLContext)(0, (char *)&D_00000000 + 0x634, 0x18, 0, 0, 0, 0);
@@ -414,7 +414,7 @@ void snoweffects_uso_func_00003EE4(SnowRing *this, int a1, int stride, int count
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc.cpp (agent-h run 628),
  * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_000040B4(void *self) {
+void SnowRing_draw_000040B4(void *self) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004188);
@@ -425,7 +425,7 @@ int snoweffects_uso_func_000046BC(char *this) {
     if (*(int *)(this + 0x144) >= 2) {
         if (--*(int *)(this + 0x84) < 0) {
             *(int *)(this + 0x84) = *(int *)(this + 0x88);
-            CALL(snoweffects_uso_func_0000535C)(this);
+            CALL(SnowRing_advance_0000535C)(this);
         }
         return 1;
     }
@@ -435,14 +435,14 @@ int snoweffects_uso_func_000046BC(char *this) {
 
 /* on a level change, mark the write slot 2; a change to 0 also advances the ring (0x535C) and
  * marks the next slot 2. No change while set: clear the write slot. */
-void snoweffects_uso_func_00004714(SnowRing *r, int on, int prev, int a3) {
+void SnowRing_setSlotState_00004714(SnowRing *r, int on, int prev, int a3) {
     (void)&a3;
     if (on != prev) {
         if (on != 0) {
             r->slots[r->write].state = 2;
         } else {
             r->slots[r->write].state = 2;
-            CALL(snoweffects_uso_func_0000535C)(r);
+            CALL(SnowRing_advance_0000535C)(r);
             r->slots[r->write].state = 2;
         }
     } else if (on) {
@@ -479,7 +479,7 @@ float snoweffects_uso_func_000052D4(char *this, int a1, Vec3 *out, int a3) {
     return 0.0f;
 }
 
-void snoweffects_uso_func_0000535C(SnowRing *r) {
+void SnowRing_advance_0000535C(SnowRing *r) {
     if (++r->write == r->count) {
         r->write = 0;
     }
@@ -498,7 +498,7 @@ void snoweffects_uso_func_0000535C(SnowRing *r) {
     }
 }
 
-int snoweffects_uso_func_000053E8(char *this) {
+int SnowRing_countSlots_000053E8(char *this) {
     int d = *(int *)(this + 0x5C) - *(int *)(this + 0x58);
     if (d < 0) {
         d += *(int *)(this + 0x68);
@@ -615,7 +615,7 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
     (void)&a2;
     (void)&a3;
     *(char **)(this + 0xC) = (char *)&D_00000000 + 0x660;
-    XCALL(gl_func_00000000_snow_3ee4, snoweffects_uso_func_00003EE4)(this, a3, 2, a4, a5, f6, f7);
+    XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 2, a4, a5, f6, f7);
     *(float *)(this + 0x15C) = 24.0f;
     *(float *)(this + 0x164) = 140.0f;
 }
@@ -706,7 +706,7 @@ void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, i
     (void)&a2;
     (void)&a3;
     *(char **)(this + 0xC) = (char *)&D_00000000 + 0x810;
-    XCALL(gl_func_00000000_snow_3ee4, snoweffects_uso_func_00003EE4)(this, a3, 4, a4, a5, f6, f7);
+    XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);
     CALL(snoweffects_uso_func_00009010)(this, 97);
     *(float *)(this + 0x194) = 0.0f;
     *(float *)(this + 0x198) = 100.0f;
@@ -876,7 +876,7 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 /* the SnowLink vtable (Data+0x9C4; its USO reloc names the object, so the lo16 is 0: a 0 pin) */
 extern char snowLink_vtbl_9C4;
 
-SnowLink *snoweffects_uso_func_00009E88(SnowLink *this, int a1, void *src, int a3) {
+SnowLink *SnowLink_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
     Node *c;
     if (this != 0 || (this = (SnowLink *)CALL(mem_new)(0x50)) != 0) {
         CALL(Node_ctor)(this, (char *)&D_00000000 + 0xA64);
@@ -897,7 +897,7 @@ SnowLink *snoweffects_uso_func_00009E88(SnowLink *this, int a1, void *src, int a
 
 /* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
  * (agent-h run 621), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
-void snoweffects_uso_func_00009F44(void *self) {
+void SnowLink_update_00009F44(void *self) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009FE8);

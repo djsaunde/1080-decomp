@@ -1,6 +1,6 @@
-nonmatching snoweffects_uso_func_000040B4, 0xD4
+nonmatching SnowRing_draw_000040B4, 0xD4
 
-glabel snoweffects_uso_func_000040B4
+glabel SnowRing_draw_000040B4
     /* 90D9DA 000040B4 27BDFFE8 */  .word 0x27BDFFE8
     /* 90D9DE 000040B8 AFBF0014 */  .word 0xAFBF0014
     /* 90D9E2 000040BC 00803025 */  .word 0x00803025
@@ -54,4 +54,4 @@ glabel snoweffects_uso_func_000040B4
     /* 90DAA2 0000417C 27BD0018 */  .word 0x27BD0018
     /* 90DAA6 00004180 03E00008 */  .word 0x03E00008
     /* 90DAAA 00004184 00000000 */  .word 0x00000000
-endlabel snoweffects_uso_func_000040B4
+endlabel SnowRing_draw_000040B4
