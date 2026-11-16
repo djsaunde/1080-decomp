@@ -284,5 +284,12 @@ void edd_readVec3Parm_0000044C(char *dst) {
     gl_func_00000000(&tmp);
     eddproc_uso_func_edd_D0((Vec3*)(dst + 0x10));
 }
-#pragma GLOBAL_ASM("asm/nonmatchings/eddproc_uso/eddproc_uso/eddproc_uso_func_0000044C_pad.s")
+/* EditorsProcess drawGui (Text record payload +0x478, splat offset 0x47C; Sym 42, the vtable slot
+ * at Data+0x1FC right after edd_EditorsProcess_handleInput's at +0x1F4, the same pair as titproc's
+ * TitleDemoProcess_handleInput / TitleDemoProcess_drawGui at Data+0x19C / +0x1A4). An empty
+ * `void f(int a0){}`: IDO -O2 keeps the arg home store in the jr delay slot (jr ra; sw a0,0(sp)).
+ * Until 2026-11-16 its jr ra was a symbol-less 1-word _pad.s and the sw sat in the post bin
+ * (docs/ROM_COVERAGE.md). */
+void edd_EditorsProcess_drawGui(int a0) {
+}
 

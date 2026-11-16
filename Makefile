@@ -76,9 +76,11 @@ build/src/boarder4_uso/boarder4_uso.c.o: TRUNCATE_TEXT := 0x198
 build/src/boarder5_uso/boarder5_uso.c.o: TRUNCATE_TEXT := 0x1A0
 build/src/n64proc_uso/n64proc_uso.c.o: TRUNCATE_TEXT := 0x430
 build/src/titproc_uso/titproc_uso.c.o: TRUNCATE_TEXT := 0x2A30
-# eddproc orig text ends on a dead jr-ra word (delay-slot nop lives in the post
-# bin); the 1-word _pad.s emits jr-ra + an extra nop — truncate clips that nop.
-build/src/eddproc_uso/eddproc_uso.c.o: TRUNCATE_TEXT := 0x480
+# eddproc's Text ends with edd_EditorsProcess_drawGui (jr ra; sw a0,0(sp)) at
+# 0x47C..0x484 (Text record payload +0x478; vtable slot Data+0x1FC, after handleInput
+# at +0x1F4, as titproc's TitleDemoProcess_drawGui). It was a symbol-less 1-word _pad.s
+# with its delay slot in the post bin until 2026-11-16; truncate drops IDO's 16-byte pad.
+build/src/eddproc_uso/eddproc_uso.c.o: TRUNCATE_TEXT := 0x484
 # gui/h2hproc: single alignment-nop pads between/after matched C fns are
 # all-zero SUFFIX_BYTES_FORCE (1-word GLOBAL_ASM pad blocks emit 2 words, +4
 # drift each — documented trap). FORCE because the payload is a zero word and

@@ -14,7 +14,8 @@
 #      Units marked `"complete": false` in objdiff.json (the 2026-11-16 new modules,
 #      docs/1080_NEW_MODULES.md) may hold unmatched INCLUDE_ASM functions; a unit
 #      absent from REF may be added whole (a complete one with every function at 100%,
-#      e.g. code split out of a bin, as game_libs_EBF8 on 2026-11-16). Every other count must stay identical,
+#      e.g. code split out of a bin, as game_libs_EBF8 on 2026-11-16), and a unit REF has
+#      may gain a 100% function over bytes no REF function covered (eddproc drawGui). Every other count must stay identical,
 #      and a function at 100% in REF must stay at 100%.
 #   then writes the regenerated report.json into the tree (commit it with the batch).
 #   5. source checks: name-placeholder-calls.py check (every CALL(X) names a ROM
@@ -107,8 +108,13 @@ incomplete = {u["name"] for u in json.load(open("objdiff.json"))["units"]
               if not u.get("metadata", {}).get("complete", True)}
 bad = []
 # a unit absent from REF may be added whole: an incomplete one with any functions, a complete
-# one only at 100% (the not100 check below), e.g. a function split out of a bin
-added = {k for k in set(n) - set(b) if k[0] not in bunits}
+# one only at 100% (the not100 check below), e.g. a function split out of a bin.  In a unit
+# REF has, a NEW function may appear only at 100% and over bytes no REF function covered
+# (code that was a symbol-less pad or a bin, e.g. eddproc's drawGui on 2026-11-16).
+def fresh(k):
+    return n[k][1] == 100.0 and not any(u == k[0] and a < k[1] + k[2] and k[1] < a + s
+                                        for (u, a, s) in b)
+added = {k for k in set(n) - set(b) if k[0] not in bunits or fresh(k)}
 if set(b) != set(n) - added:
     bad.append(f"function (unit,addr,size) set changed: -{len(set(b)-set(n))} +{len(set(n)-set(b)-added)}")
     for k in sorted(set(b) ^ (set(n) - added))[:10]: bad.append(f"   {k}")
@@ -117,7 +123,7 @@ dropped = [(k, v) for k, v in n.items() if v[1] != 100.0 and k in b and b[k][1] 
 if not100 or dropped:
     bad.append(f"{len(not100) + len(dropped)} functions not at 100%: {(not100 + dropped)[:5]}")
 if added:
-    print(f"    {len(added)} functions in {len({k[0] for k in added})} new incomplete unit(s) added")
+    print(f"    {len(added)} new functions added in {len({k[0] for k in added})} unit(s)")
 renamed, unexplained = 0, []
 for k in set(b) & set(n):
     ob, nb = b[k][0], n[k][0]

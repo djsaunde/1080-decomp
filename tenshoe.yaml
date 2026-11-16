@@ -149,7 +149,10 @@ segments:
     vram: 0x00000000
     subsegments:
       - [0x59F480, c, eddproc_uso/eddproc_uso]
-  - [0x59F900, bin, eddproc_uso_post]
+  # 0x59F904: the Text payload ends 4 bytes past the C segment's old end (PREFIX_BYTES starts
+  # the segment at the Text record's flag word), so the last function's delay slot was in this bin
+  # until 2026-11-16 (edd_EditorsProcess_drawGui). The bin now starts at the Sym record header.
+  - [0x59F904, bin, eddproc_uso_post_sym]
   # mgrproc_uso: Yay0-compressed USO. 2 Yay0 blocks; block 0 is bss-zeros (passthrough),
   # block 1 is the actual text (50 functions, 0x3420 uncompressed). Block 1 is built
   # from C and re-compressed at link time via crunch64; other slices passthrough.

@@ -701,19 +701,19 @@ SECTIONS
     eddproc_uso_VRAM = ADDR(.eddproc_uso);
     eddproc_uso_VRAM_END = .;
 
-    eddproc_uso_post_ROM_START = __romPos;
-    eddproc_uso_post_VRAM = ADDR(.eddproc_uso_post);
-    .eddproc_uso_post : AT(eddproc_uso_post_ROM_START)
+    eddproc_uso_post_sym_ROM_START = __romPos;
+    eddproc_uso_post_sym_VRAM = ADDR(.eddproc_uso_post_sym);
+    .eddproc_uso_post_sym : AT(eddproc_uso_post_sym_ROM_START)
     {
         FILL(0x00000000);
-        eddproc_uso_post_DATA_START = .;
-        build/assets/eddproc_uso_post.bin.o(.data);
-        eddproc_uso_post_DATA_END = .;
-        eddproc_uso_post_DATA_SIZE = ABSOLUTE(eddproc_uso_post_DATA_END - eddproc_uso_post_DATA_START);
+        eddproc_uso_post_sym_DATA_START = .;
+        build/assets/eddproc_uso_post_sym.bin.o(.data);
+        eddproc_uso_post_sym_DATA_END = .;
+        eddproc_uso_post_sym_DATA_SIZE = ABSOLUTE(eddproc_uso_post_sym_DATA_END - eddproc_uso_post_sym_DATA_START);
     }
-    __romPos += SIZEOF(.eddproc_uso_post);
-    eddproc_uso_post_ROM_END = __romPos;
-    eddproc_uso_post_VRAM_END = .;
+    __romPos += SIZEOF(.eddproc_uso_post_sym);
+    eddproc_uso_post_sym_ROM_END = __romPos;
+    eddproc_uso_post_sym_VRAM_END = .;
 
     /* mgrproc_uso: 5 slices, see tenshoe.yaml comment. block1 is the text
      * Yay0 block — for now passthrough; later swap with `crunch64`-compressed

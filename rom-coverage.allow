@@ -9,13 +9,6 @@
 #   RANGE 0xSTART 0xEND <category> <reason>      categories: see scripts/rom-coverage.py
 #   HIDDEN <section-label> <reason>              accept a hidden-code scan hit
 
-# eddproc.uso Text+0x478: a 2-insn function (jr ra; sw a0,0(sp)) that report.json does not list.
-# Its jr ra is assembled from asm/nonmatchings/eddproc_uso/eddproc_uso/eddproc_uso_func_0000044C_pad.s
-# (a symbol-less "dead jr-ra pad"); PREFIX_BYTES starts the C segment at the Text record's flag
-# word, 4 bytes before the payload, so the delay slot (the payload's last word) lands in the
-# eddproc_uso_post bin.  Compare titproc's TitleDemoProcess_drawGui, the same stub as C.
-RANGE 0x59F8FC 0x59F904 code-asm/undecomp eddproc Text+0x478: unlisted 2-insn save-arg stub (jr ra from a _pad.s, delay slot in the post bin)
-
 # game_libs_text2_rsp_pre (bin, game_libs VRAM 0xEC88..0x15364; until 2026-11-16 it began at
 # 0xEBF8 with a hidden CPU function, now src/game_libs/game_libs_EBF8.c).
 RANGE 0xDF3D60 0xDF3D6C padding game_libs 0xEC88: 3 zero words between ColourItem_create_0000EBF8 and the RSP code
