@@ -1,0 +1,32 @@
+{
+  "function_name": "viewrec_uso_func_00004354",
+  "project": "1080-decomp",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T22:50:31.500273+00:00",
+  "end_time": "2026-11-16T22:50:31.500290+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T22:50:31.500285+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 113,
+  "initial_m2c_source": null,
+  "final_source": "/* The erase screen's pad handling. Left / right pick yes / no (+0x70), A erases the record set named\n * by proc+0x70 (0x100000 course times, 0x200000 course scores, 0x400000 arcade, 0x800000 ghost,\n * 0x1000000 everything, which restarts the game flow). The snd_postEvent(5) before the switch goes\n * through the void alias: with no dead int $v0 def at the call, the switch value takes v0 and the\n * reloaded proc v1. */\nvoid viewrec_uso_func_00004354(ViewRecScreen *self) {\n    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x10001) && *(s32 *)((char *)self + 0x70) != 0) {\n        gl_func_00000000(/* snd_postEvent */ 1);\n        *(s32 *)((char *)self + 0x70) = 0;\n    }\n    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x4002) && *(s32 *)((char *)self + 0x70) == 0) {\n        gl_func_00000000(/* snd_postEvent */ 1);\n        *(s32 *)((char *)self + 0x70) = 1;\n    }\n    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x40100)) {\n        if (*(s32 *)((char *)self + 0x70) == 0) {\n            XCALL(gl_func_00000000_vrv, snd_postEvent)(5);\n            switch (*(s32 *)((char *)self->proc + 0x70)) {\n                case 0x100000:\n                    gl_func_00000000(/* Backup_sessionResetCourseTimes */ self->proc->session, *(s32 *)((char *)self + 0xA8));\n                    break;\n                case 0x200000:\n                    gl_func_00000000(/* Backup_sessionResetCourseScores */ self->proc->session, *(s32 *)((char *)self + 0xA8));\n                    break;\n                case 0x400000:\n                    gl_func_00000000(/* Backup_sessionResetArcade */ self->proc->session);\n                    break;\n                case 0x800000:\n                    gl_func_00000000(/* Backup_sessionResetGhost */ self->proc->session);\n                    break;\n                case 0x1000000:\n                    gInputMgr_vr.procState = gInputMgr_vr.nextProcState;\n                    gInputMgr_vr.unk84 = 0;\n                    gInputMgr_vr.unk88 = 1;\n                    gl_func_00000000(/* Backup_resetAll_0000B710 */ self->proc->session);\n                    gl_func_00000000(/* Process_fadeOut_0000F954 */ self->proc, -1, 0);\n                    return;\n            }\n            self->proc->mode = 0x80000;\n        } else {\n            gl_func_00000000(/* snd_postEvent */ 0x802);\n            self->proc->mode = 0x80000;\n        }\n    }\n    if (gl_func_00000000(/* input_checkPressed_00011E00 */ &gInputMgr_vr, 0x200)) {\n        gl_func_00000000(/* snd_postEvent */ 0x802);\n        self->proc->mode = 0x80000;\n    }\n}\n",
+  "metadata": {
+    "source_path": "src/viewrec_uso/viewrec_uso.c",
+    "asm_path": "asm/nonmatchings/viewrec_uso/viewrec_uso/viewrec_uso_func_00004354.s",
+    "segment": "viewrec_uso",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -mips2"
+  }
+}
