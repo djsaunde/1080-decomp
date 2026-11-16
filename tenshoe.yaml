@@ -375,7 +375,11 @@ segments:
       # The DMEM data tables (paired with these IMEMs) live in
       # bootup_uso_ucodes at 0xDB7140/7940/9140 (F3DLP_Rej_data only at
       # 0xDB8940 — no public ref).
-      - [0xDF3CD0, bin, game_libs_text2_pre]
+      # 0xEBF8: ColourItem_create_0000EBF8, the one CPU function in the old
+      # game_libs_text2_pre bin (a twin of ColourItem_create_0000C5B0); split
+      # out 2026-11-16 (docs/ROM_COVERAGE.md). The rest is RSP IMEM.
+      - [0xDF3CD0, c, game_libs/game_libs_EBF8]
+      - [0xDF3D60, bin, game_libs_text2_rsp_pre]
       - [0xDFA43C, bin, game_libs_text2_F3DEX_NoN_imem]
       - [0xDFB86C, bin, game_libs_text2_F3DEX_imem]
       - [0xDFCC9C, bin, game_libs_text2_F3DLP_Rej_imem]

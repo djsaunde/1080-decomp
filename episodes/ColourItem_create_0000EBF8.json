@@ -1,0 +1,33 @@
+{
+  "function_name": "ColourItem_create_0000EBF8",
+  "project": "1080-agent-e",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:10:59.417769+00:00",
+  "end_time": "2026-11-16T21:10:59.417788+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:10:59.417783+00:00",
+      "assistant_text": "Exact match by porting ColourItem_create_0000C5B0 verbatim: the hidden function split from the game_libs_text2_pre bin is a word-for-word twin (same TextReloc targets mem_new / ColourItem_ctor / list_append, vtable Data+0x75A0).",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 36,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n#include \"gdl/node.h\"    /* NODE(p): vptr (+0x28), parent (+0x14) */\n#include \"gdl/gl_data.h\" /* ColourItem_vtbl_75A0 */\n#include \"game/course.h\" /* ColourSubItem (0x40: a ColourItem + unk3C) */\n\n/* game_libs 0xEBF8..0xEC88 (bootup.uso Text+0x23264). Until 2026-11-16 these 36 words\n * were the head of the game_libs_text2_pre bin, so no unit held them and report.json did\n * not count them; scripts/rom-coverage.py found the function shape (docs/ROM_COVERAGE.md).\n * The rest of that bin is RSP IMEM.\n *\n * It is a word-for-word twin of ColourItem_create_0000C5B0 (game_libs_tail.c) and of\n * edd_ItemType_create_000003BC: the TextReloc table resolves its jals to mem_new,\n * ColourItem_ctor and list_append, and its vptr store to Data+0x75A0 (Sym 143,\n * ColourItem_vtbl_75A0), the same targets as C5B0. Ported verbatim from C5B0, whose\n * flat int* form (decl order p2,head,p1; p1 reused for arg0; the arg0[0x40] re-load)\n * is load-bearing for the register / spill-slot allocation. Here the body is exactly\n * 0x90 (jr-delay nop included): no pad word follows it. */\nextern int gl_func_00000000();\nextern char D_00000000;\n\nint *ColourItem_create_0000EBF8(int *arg0) {\n    int *p2;\n    int *head;\n    int *p1;\n    p1 = (int*)CALL(mem_new)(0x40);\n    if (p1 != 0) {\n        CALL(ColourItem_ctor)(p1);\n        NODE(p1)->vptr = (char *)&ColourItem_vtbl_75A0;\n        ((ColourSubItem *)p1)->unk3C = 0;\n    }\n    p2 = p1;\n    p1 = arg0;\n    head = (int*)p1[0x40 / 4];\n    if ((int*)p1[0x40 / 4] != 0) {\n        CALL(list_append)((char*)p2 + 0x10, head);\n        if (NODE(head)->parent != 0) {\n            NODE(head)->unk04 = 1;\n        }\n        NODE(head)->parent = (Node *)p2;\n    }\n    return p2;\n}\n",
+  "metadata": {
+    "source_path": "src/game_libs/game_libs_EBF8.c",
+    "asm_path": "asm/nonmatchings/game_libs/game_libs_EBF8/ColourItem_create_0000EBF8.s",
+    "segment": "game_libs",
+    "compiler": "ido7.1",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Verified with the project build: ROM byte-identical and .text identical to the INCLUDE_ASM expected .o."
+  }
+}

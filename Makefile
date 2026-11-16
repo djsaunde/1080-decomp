@@ -1004,6 +1004,11 @@ build/non_matching/src/game_libs/game_libs_o0_949C.c.o: NON_MATCHING_SUFFIX_BYTE
 # byte-verify fails even though ROM ends up identical post-link.
 # 0x565c -> 0x5584 (2026-10-15 agent-g): ColourItem_create_0000959C (0xD8) moved out to game_libs_o0_949C.c; tail now starts at 0x9674.
 build/src/game_libs/game_libs_tail.c.o: TRUNCATE_TEXT := 0x5584
+# game_libs_EBF8.c (ColourItem_create_0000EBF8, split from the text2_pre bin 2026-11-16): its
+# .text is exactly the 0x90 function; the truncate only lowers sh_addralign to 4 so it
+# links right after the tail at 0xEBF8 (8 mod 16). The 3 zero words after it, before the
+# RSP IMEM at 0xEC94, open the game_libs_text2_rsp_pre bin.
+build/src/game_libs/game_libs_EBF8.c.o: TRUNCATE_TEXT := 0x90
 # ColourItem_create_0000C5B0 (unwrapped 2026-10-16 agent-g): its trailing alignment nop is an all-zero
 # SUFFIX_BYTES_FORCE word; the old 1-word _pad.s GLOBAL_ASM emits 8 bytes after a C body.
 build/src/game_libs/game_libs_tail.c.o: SUFFIX_BYTES_FORCE := ColourItem_create_0000C5B0=0x00000000
