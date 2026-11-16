@@ -1,7 +1,7 @@
 #include "common.h"
 #include "libultra/os_thread.h"
 
-extern s32 D_80003FE0;          /* __osCleanupThread (thread return address) */
+extern s32 __osCleanupThread;          /* __osCleanupThread (thread return address) */
 extern OSThread *__osActiveQueue;    /* __osActiveQueue */
 extern s32 func_800066B0(void); /* __osDisableInt */
 extern void func_800066D0(s32); /* __osRestoreInt */
@@ -23,7 +23,7 @@ void osCreateThread(OSThread *t, OSId id, void *entry, s32 arg, void *sp, OSPri 
     t->context.pc = (u32)entry;
     t->context.a0 = (s64)arg;
     t->context.sp = (s64)(s32)sp - 16;
-    t->context.ra = (s64)(s32)&D_80003FE0;
+    t->context.ra = (s64)(s32)&__osCleanupThread;
     mask = 0x3FFF01;
     t->context.sr = 0xFF03;
     t->context.rcp = (mask & 0x3F0000) >> 16;

@@ -30,7 +30,7 @@ glabel osCreateThread
     /* 6B74 80005B74 ADAF003C */  sw         $t7, 0x3C($t5)
     /* 6B78 80005B78 8FB80038 */  lw         $t8, 0x38($sp)
     /* 6B7C 80005B7C 8FB90028 */  lw         $t9, 0x28($sp)
-    /* 6B80 80005B80 3C0C8000 */  lui        $t4, %hi(D_80003FE0)
+    /* 6B80 80005B80 3C0C8000 */  lui        $t4, %hi(__osCleanupThread)
     /* 6B84 80005B84 03004825 */  or         $t1, $t8, $zero
     /* 6B88 80005B88 2D210010 */  sltiu      $at, $t1, 0x10
     /* 6B8C 80005B8C 001847C3 */  sra        $t0, $t8, 31
@@ -39,7 +39,7 @@ glabel osCreateThread
     /* 6B98 80005B98 AF2B00F4 */  sw         $t3, 0xF4($t9)
     /* 6B9C 80005B9C AF2A00F0 */  sw         $t2, 0xF0($t9)
     /* 6BA0 80005BA0 8FAD0028 */  lw         $t5, 0x28($sp)
-    /* 6BA4 80005BA4 258C3FE0 */  addiu      $t4, $t4, %lo(D_80003FE0)
+    /* 6BA4 80005BA4 258C3FE0 */  addiu      $t4, $t4, %lo(__osCleanupThread)
     /* 6BA8 80005BA8 01807825 */  or         $t7, $t4, $zero
     /* 6BAC 80005BAC 000C77C3 */  sra        $t6, $t4, 31
     /* 6BB0 80005BB0 ADAE0100 */  sw         $t6, 0x100($t5)

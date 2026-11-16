@@ -24,16 +24,16 @@ glabel __rmonGetExeName
     /* 7CB0 80006CB0 15810008 */  bne        $t4, $at, .L80006CD4
     /* 7CB4 80006CB4 00000000 */   nop
     /* 7CB8 80006CB8 8FA40018 */  lw         $a0, 0x18($sp)
-    /* 7CBC 80006CBC 3C058001 */  lui        $a1, %hi(D_8000A828)
-    /* 7CC0 80006CC0 24A5A828 */  addiu      $a1, $a1, %lo(D_8000A828)
+    /* 7CBC 80006CBC 3C058001 */  lui        $a1, %hi(__rmonGetExeName_imemStr)
+    /* 7CC0 80006CC0 24A5A828 */  addiu      $a1, $a1, %lo(__rmonGetExeName_imemStr)
     /* 7CC4 80006CC4 0C001AD5 */  jal        func_80006B54
     /* 7CC8 80006CC8 24840010 */   addiu     $a0, $a0, 0x10
     /* 7CCC 80006CCC 10000006 */  b          .L80006CE8
     /* 7CD0 80006CD0 00000000 */   nop
   .L80006CD4:
     /* 7CD4 80006CD4 8FA40018 */  lw         $a0, 0x18($sp)
-    /* 7CD8 80006CD8 3C058001 */  lui        $a1, %hi(D_8000A830)
-    /* 7CDC 80006CDC 24A5A830 */  addiu      $a1, $a1, %lo(D_8000A830)
+    /* 7CD8 80006CD8 3C058001 */  lui        $a1, %hi(__rmonGetExeName_rmonStr)
+    /* 7CDC 80006CDC 24A5A830 */  addiu      $a1, $a1, %lo(__rmonGetExeName_rmonStr)
     /* 7CE0 80006CE0 0C001AD5 */  jal        func_80006B54
     /* 7CE4 80006CE4 24840010 */   addiu     $a0, $a0, 0x10
   .L80006CE8:

@@ -1358,7 +1358,7 @@ KERNEL000_2530_DONOR := build/src/kernel/kernel_000_ido53_2530.c.o
 # osCreatePiManager = kernel osCreatePiManager (KMC 2-worker variant): TU-defined
 # __osPiDevMgr shared-$at donor, proven exact 115/115 standalone (see header).
 KERNEL006_5520_DONOR := build/src/kernel/kernel_006_o1_5520.c.o
-# osCartRomInit = libultra osCartRomInit: TU-defined D_8001B656 2-byte-struct
+# osCartRomInit = libultra osCartRomInit: TU-defined CartRomHandle_pageSize 2-byte-struct
 # shared-$at donor, proven exact 60/60 standalone (see header).
 KERNEL008_58C0_DONOR := build/src/kernel/kernel_008_o1_58C0.c.o
 # osEPiRawWriteIo = libultra osEPiRawWriteIo (spans former 9AB0+9B60 fragments):

@@ -3,13 +3,13 @@
  * asm/nonmatchings/kernel/osCartRomInit.s, IDO 7.1 -O1 -mips2).
  * Breaks the 2026-06-10 documented "one extra lui" cap.
  * KEY LEVERS:
- *   - TU-DEFINED 2-byte struct `PgsRls D_8001B656 = {0};` (pageSize +
+ *   - TU-DEFINED 2-byte struct `PgsRls CartRomHandle_pageSize = {0};` (pageSize +
  *     relDuration) => the srl;srl;andi;andi;sb;sb pair emits under ONE
  *     `lui $at` (extern scalars = one lui per store = the old 60/61
  *     floor). Same shared-$at family as the 5520/6DA74 donors; the
  *     splice imports the reloc as UNDEF and undefined_syms_auto.txt
- *     carries D_8001B656 = 0x8001B656 (relDuration = %lo(D_8001B656)+1
- *     links byte-identically to the .s's D_8001B657 reloc).
+ *     carries CartRomHandle_pageSize = 0x8001B656 (relDuration = %lo(CartRomHandle_pageSize)+1
+ *     links byte-identically to the .s's CartRomHandle_relDuration reloc).
  *   - CartRomHandle typed `extern void *` (the 0x00 `next` field):
  *     `CartRomHandle = __osPiTable` emits the direct lui-$at global store
  *     (a struct/array deref form materializes a base pointer instead).
@@ -28,38 +28,38 @@ typedef struct {
 } PgsRls;
 
 extern void *CartRomHandle;         /* 0x8001B650 (next field / handle base) */
-extern u8 D_8001B654;               /* type */
-extern u8 D_8001B655;               /* latency */
-extern u8 D_8001B658;               /* pulse */
-extern u8 D_8001B659;               /* domain */
-extern volatile u32 D_8001B65C;     /* baseAddress */
-extern u32 D_8001B660;              /* speed */
+extern u8 CartRomHandle_type;               /* type */
+extern u8 CartRomHandle_latency;               /* latency */
+extern u8 CartRomHandle_pulse;               /* pulse */
+extern u8 CartRomHandle_domain;               /* domain */
+extern volatile u32 CartRomHandle_baseAddress;     /* baseAddress */
+extern u32 CartRomHandle_speed;              /* speed */
 extern void *__osPiTable;            /* __osPiTable */
 extern s32 func_80002DB0(s32, u32 *);   /* osPiRawReadIo */
 extern void func_800030D0(void *, s32); /* bzero */
 extern s32 func_800066B0(void);         /* __osDisableInt */
 extern void func_800066D0(s32);         /* __osRestoreInt */
 
-PgsRls D_8001B656 = {0};
+PgsRls CartRomHandle_pageSize = {0};
 
 void *osCartRomInit(void) {
     u32 domain;
     u32 saveMask;
 
     domain = 0;
-    if (D_8001B65C == 0xB0000000) {
+    if (CartRomHandle_baseAddress == 0xB0000000) {
         return &CartRomHandle;
     }
 
-    D_8001B654 = 0;
-    D_8001B65C = 0xB0000000;
+    CartRomHandle_type = 0;
+    CartRomHandle_baseAddress = 0xB0000000;
     func_80002DB0(0, &domain);
-    D_8001B655 = domain & 0xFF;
-    D_8001B658 = (domain >> 8) & 0xFF;
-    D_8001B656.pageSize = (domain >> 0x10) & 0xF;
-    D_8001B656.relDuration = (domain >> 0x14) & 0xF;
-    D_8001B659 = 0;
-    D_8001B660 = 0;
+    CartRomHandle_latency = domain & 0xFF;
+    CartRomHandle_pulse = (domain >> 8) & 0xFF;
+    CartRomHandle_pageSize.pageSize = (domain >> 0x10) & 0xF;
+    CartRomHandle_pageSize.relDuration = (domain >> 0x14) & 0xF;
+    CartRomHandle_domain = 0;
+    CartRomHandle_speed = 0;
     func_800030D0((u8 *)&CartRomHandle + 0x14, 0x60);
     saveMask = func_800066B0();
     CartRomHandle = __osPiTable;

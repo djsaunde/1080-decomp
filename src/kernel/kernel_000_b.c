@@ -229,7 +229,7 @@ void osDestroyThread(int *target) {
  *   __osDiskHandle (was D_80019644), __OSGlobalIntMask,
  *   func_800048CC = __osLeoResume, func_800047E4 = abnormal-resume entry
  *   used by this copy, func_800056F0 = osEPiRawStartDma (post-addiu entry).
- * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and D_80003FE0 point
+ * The old alabels func_80003E0C/3E54/3E64/3FF0/4030 and __osCleanupThread point
  * into the middle of this body (jal'd by other kernel code as stale
  * exceptasm addresses); they stay resolvable as absolute
  * undefined_syms_auto.txt entries.

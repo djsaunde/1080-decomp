@@ -2,8 +2,8 @@
 #include "libultra/rmon.h"
 
 extern s32 __rmonUtilityBuffer[];
-extern s32 D_8000A828;
-extern s32 D_8000A830;
+extern s32 __rmonGetExeName_imemStr;
+extern s32 __rmonGetExeName_rmonStr;
 extern void func_80006B54(void*, void*);
 extern void func_800073F8(void*, s32, s32);
 
@@ -15,9 +15,9 @@ s32 __rmonGetExeName(KKObjectRequest* msg) {
     buf->header.error = TV_ERROR_NO_ERROR;
     buf->object = p->object;
     if (msg->header.method == RMON_RSP) {
-        func_80006B54(buf->buffer, &D_8000A828); /* strcpy "imem" */
+        func_80006B54(buf->buffer, &__rmonGetExeName_imemStr); /* strcpy "imem" */
     } else {
-        func_80006B54(buf->buffer, &D_8000A830); /* strcpy "rmon" */
+        func_80006B54(buf->buffer, &__rmonGetExeName_rmonStr); /* strcpy "rmon" */
     }
     func_800073F8(buf, 0x18, KK_TYPE_REPLY); /* __rmonSendReply */
     return 0;

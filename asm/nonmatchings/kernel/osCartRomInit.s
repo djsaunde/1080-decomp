@@ -2,8 +2,8 @@
 nonmatching osCartRomInit, 0xF4
 
 glabel osCartRomInit
-    /* 68C0 800058C0 3C0E8002 */  lui        $t6, %hi(D_8001B65C)
-    /* 68C4 800058C4 8DCEB65C */  lw         $t6, %lo(D_8001B65C)($t6)
+    /* 68C0 800058C0 3C0E8002 */  lui        $t6, %hi(CartRomHandle_baseAddress)
+    /* 68C4 800058C4 8DCEB65C */  lw         $t6, %lo(CartRomHandle_baseAddress)($t6)
     /* 68C8 800058C8 27BDFFE0 */  addiu      $sp, $sp, -0x20
     /* 68CC 800058CC 3C01B000 */  lui        $at, (0xB0000000 >> 16)
     /* 68D0 800058D0 AFBF0014 */  sw         $ra, 0x14($sp)
@@ -13,35 +13,35 @@ glabel osCartRomInit
     /* 68E0 800058E0 10000030 */  b          .L800059A4
     /* 68E4 800058E4 2442B650 */   addiu     $v0, $v0, %lo(CartRomHandle)
   .L800058E8:
-    /* 68E8 800058E8 3C018002 */  lui        $at, %hi(D_8001B654)
-    /* 68EC 800058EC A020B654 */  sb         $zero, %lo(D_8001B654)($at)
-    /* 68F0 800058F0 3C018002 */  lui        $at, %hi(D_8001B65C)
+    /* 68E8 800058E8 3C018002 */  lui        $at, %hi(CartRomHandle_type)
+    /* 68EC 800058EC A020B654 */  sb         $zero, %lo(CartRomHandle_type)($at)
+    /* 68F0 800058F0 3C018002 */  lui        $at, %hi(CartRomHandle_baseAddress)
     /* 68F4 800058F4 3C0FB000 */  lui        $t7, (0xB0000000 >> 16)
-    /* 68F8 800058F8 AC2FB65C */  sw         $t7, %lo(D_8001B65C)($at)
+    /* 68F8 800058F8 AC2FB65C */  sw         $t7, %lo(CartRomHandle_baseAddress)($at)
     /* 68FC 800058FC 00002025 */  or         $a0, $zero, $zero
     /* 6900 80005900 0C000B6C */  jal        func_80002DB0
     /* 6904 80005904 27A5001C */   addiu     $a1, $sp, 0x1C
     /* 6908 80005908 8FB8001C */  lw         $t8, 0x1C($sp)
-    /* 690C 8000590C 3C018002 */  lui        $at, %hi(D_8001B655)
+    /* 690C 8000590C 3C018002 */  lui        $at, %hi(CartRomHandle_latency)
     /* 6910 80005910 3C048002 */  lui        $a0, (0x80020000 >> 16)
     /* 6914 80005914 331900FF */  andi       $t9, $t8, 0xFF
-    /* 6918 80005918 A039B655 */  sb         $t9, %lo(D_8001B655)($at)
+    /* 6918 80005918 A039B655 */  sb         $t9, %lo(CartRomHandle_latency)($at)
     /* 691C 8000591C 00184202 */  srl        $t0, $t8, 8
     /* 6920 80005920 310900FF */  andi       $t1, $t0, 0xFF
-    /* 6924 80005924 3C018002 */  lui        $at, %hi(D_8001B658)
-    /* 6928 80005928 A029B658 */  sb         $t1, %lo(D_8001B658)($at)
-    /* 692C 8000592C 3C018002 */  lui        $at, %hi(D_8001B656)
+    /* 6924 80005924 3C018002 */  lui        $at, %hi(CartRomHandle_pulse)
+    /* 6928 80005928 A029B658 */  sb         $t1, %lo(CartRomHandle_pulse)($at)
+    /* 692C 8000592C 3C018002 */  lui        $at, %hi(CartRomHandle_pageSize)
     /* 6930 80005930 00185402 */  srl        $t2, $t8, 16
     /* 6934 80005934 00186502 */  srl        $t4, $t8, 20
     /* 6938 80005938 314B000F */  andi       $t3, $t2, 0xF
     /* 693C 8000593C 318D000F */  andi       $t5, $t4, 0xF
-    /* 6940 80005940 A02BB656 */  sb         $t3, %lo(D_8001B656)($at)
-    /* 6944 80005944 A02DB657 */  sb         $t5, %lo(D_8001B657)($at)
-    /* 6948 80005948 3C018002 */  lui        $at, %hi(D_8001B659)
-    /* 694C 8000594C A020B659 */  sb         $zero, %lo(D_8001B659)($at)
-    /* 6950 80005950 3C018002 */  lui        $at, %hi(D_8001B660)
+    /* 6940 80005940 A02BB656 */  sb         $t3, %lo(CartRomHandle_pageSize)($at)
+    /* 6944 80005944 A02DB657 */  sb         $t5, %lo(CartRomHandle_relDuration)($at)
+    /* 6948 80005948 3C018002 */  lui        $at, %hi(CartRomHandle_domain)
+    /* 694C 8000594C A020B659 */  sb         $zero, %lo(CartRomHandle_domain)($at)
+    /* 6950 80005950 3C018002 */  lui        $at, %hi(CartRomHandle_speed)
     /* 6954 80005954 2484B650 */  addiu      $a0, $a0, -0x49B0
-    /* 6958 80005958 AC20B660 */  sw         $zero, %lo(D_8001B660)($at)
+    /* 6958 80005958 AC20B660 */  sw         $zero, %lo(CartRomHandle_speed)($at)
     /* 695C 8000595C 24840014 */  addiu      $a0, $a0, 0x14
     /* 6960 80005960 0C000C34 */  jal        func_800030D0
     /* 6964 80005964 24050060 */   addiu     $a1, $zero, 0x60
