@@ -14,7 +14,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
-#include "../../include/game/rideranim_anims.h" /* NCC has no -I include */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -29,20 +31,19 @@ void RiderAnim_enterState_0000D5BC(void *, PM);
 void RiderAnim_checkBackwardSwitch_00011750(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-#define I(b,o) AT(int,b,o)
 extern "C" void RiderAnim_stateRideDeep(int *a0) {
     float f0;
-    I(I(a0, 0xB4), 0x3DC) = 1;
+    RA(a0)->rider->riding = 1;
     RiderAnim_checkBrake_0000D8A8(a0);
     RiderAnim_checkJump_0000D8EC(a0);
-    f0 = AT(float, I(a0, 0xB4), 0x970);
+    f0 = RA(a0)->rider->edge;
     if ((double)(f0 < 0.0f ? -f0 : f0) > AT(double, &game_uso_D_807FFB78, 0x258)) {
         import_0010DB78(a0, RANIM_ID(2, RANIM_TURN_B), RANIM_ID(2, RANIM_TURN_F), f0, 0, 1);
     } else {
         import_0010DB28(a0, RANIM_ID(2, RANIM_UP_DOWN), 0, 1, 6, 1);
     }
     RiderAnim_checkRow_0000E1FC(a0);
-    if (I(I(a0, 0xB4), 0x9CC) == 0) {
+    if (RA(a0)->rider->useDParms == 0) {
         RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
     }
     RiderAnim_checkBackwardSwitch_00011750(a0);

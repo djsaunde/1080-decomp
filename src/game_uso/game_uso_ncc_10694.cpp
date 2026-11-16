@@ -12,6 +12,9 @@
  * `mfc1 a3,$f0` straight from the prototype -- the "mfc1-from-C cap" of the
  * old C wrap was a missing prototype, not an IDO limit. Every symbol is
  * extern "C". */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/rideranim.h" /* NCC has no -I include */
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
 extern "C" {
@@ -27,35 +30,34 @@ void RiderAnim_checkGroundSpin_0000E91C(void *);
 void RiderAnim_checkBackwardSwitch_00011750(void *);
 void RiderAnim_enterState_0000D5BC(void *, PM);
 }
-#define I(b,o) (*(int *)((char *)(b) + (o)))
-#define F(b,o) (*(float *)((char *)(b) + (o)))
-#define P(b,o) (*(PM *)((char *)(b) + (o)))
+#define AT(T,b,o) (*(T *)((char *)(b) + (o)))
+#define PMF(pair) (*(PM *)&(pair)) /* a Pair2 field read as the PMF it holds */
 extern "C" void RiderAnim_stateRide(A *a0) {
     float r;
     float ar;
-    I(I(a0, 0xB4), 0xA18) = 1;
-    I(a0, 0x114) = 2;
-    I(I(a0, 0xB4), 0x3DC) = 1;
-    F(a0, 0x11C) = 1.0f;
-    r = F(I(a0, 0xB4), 0x970);
+    RA(a0)->rider->unkA18 = 1;
+    RA(a0)->trickPhase = 2;
+    RA(a0)->rider->riding = 1;
+    RA(a0)->hitScale = 1.0f;
+    r = RA(a0)->rider->edge;
     RiderAnim_checkRow_0000E1FC(a0);
-    I(I(a0, 0xB4), 0x960) = 0;
+    RA(a0)->rider->slowdown = 0;
     RiderAnim_checkBrake_0000D8A8(a0);
     RiderAnim_checkJump_0000D8EC(a0);
     ar = (r < 0.0f) ? -r : r;
-    if ((double)ar > *(double *)(&game_uso_D_807FFB70 + 0x250)) {
-        int v = I(a0, 0xFC);
-        import_0010DB78(a0, v | 2, v | 3, r, 0, 1);
+    if ((double)ar > AT(double, &game_uso_D_807FFB70, 0x250)) {
+        int v = RA(a0)->animSet;
+        import_0010DB78(a0, v | RANIM_TURN_B, v | RANIM_TURN_F, r, 0, 1);
     } else {
-        import_0010DB28(a0, I(a0, 0xFC) | 8, 0, 1, 6, 1);
+        import_0010DB28(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
     }
-    if (I(I(a0, 0xB4), 0x9CC) != 0) {
-        RiderAnim_enterState_0000D5BC(a0, P(&game_uso_D_807FF438, 0xE48));
+    if (RA(a0)->rider->useDParms != 0) {
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
     }
     RiderAnim_checkGroundSpin_0000E91C(a0);
     RiderAnim_checkBackwardSwitch_00011750(a0);
-    I(a0, 0xDC) = I(I(a0, 0xB4), 0x938);
-    if (P(a0, 0xD0) != P(&game_uso_D_807FF3B8, 0xDC8)) {
-        RiderAnim_enterState_0000D5BC(a0, P(a0, 0xD0));
+    RA(a0)->rideContacts = RA(a0)->rider->contactCount;
+    if (PMF(RA(a0)->pendingState) != AT(PM, &game_uso_D_807FF3B8, 0xDC8)) { /* the null PMF */
+        RiderAnim_enterState_0000D5BC(a0, PMF(RA(a0)->pendingState));
     }
 }

@@ -63,8 +63,8 @@ typedef struct AnimPlayer {
  * 0x444 bytes; agent-g runs 456 / 461). SnowBoarder_ctor creates it (rider->anim, +0x840).
  *
  * Its base (game_libs 0x62E80, vtable Data 0x21F58) is the libgdl AnimPlayer (include/gdl/anim.h).
- * The state machine runs on the player's onKey hook (vtable slot 10): setState(pmf, key) stores the
- * key in player.eventKey, so the state changes when playback passes that key; key -1 goes to
+ * The state machine runs on the player's onKey hook (vtable slot 10, RiderAnim_onKey_0000D438):
+ * queueState(pmf, key) stores the key in player.eventKey, so the state changes when playback passes that key; key -1 goes to
  * player.blendEvent instead (the change happens when the ANIM_BLENDIN cross-fade ends).
  * Anim ids: include/game/rideranim_anims.h. The state table (anims, keys, next states):
  * docs/1080_GAME_CLASSES.md section 17.
@@ -106,19 +106,19 @@ typedef struct RiderAnimParms {
 } RiderAnimParms;
 
 typedef struct RiderAnim {
-    AnimPlayer player;      /* 0x00: base. player.eventKey (0x64) = setState's key when it is not -1,
-                             * player.blendEvent (0x68) = -1 for setState(.., -1); reset sets both to
+    AnimPlayer player;      /* 0x00: base. player.eventKey (0x64) = queueState's key when it is not -1,
+                             * player.blendEvent (0x68) = -1 for queueState(.., -1); onKey sets both to
                              * ANIM_NO_KEY */
     s32 spinAnim;           /* 0xB0: ground spin anim picked by checkGroundSpin (animSet | RANIM_TO_FAKIE_*),
                              * 0 = none; cleared at the top of every check */
     SnowBoarder *rider;     /* 0xB4 */
     char pad0B8[0xC0 - 0xB8];
-    Pair2 queuedState;      /* 0xC0: state PMF to enter at the armed key: setState(pmf, key) stores it, and
+    Pair2 queuedState;      /* 0xC0: state PMF to enter at the armed key: queueState(pmf, key) stores it, and
                              * the onKey override (RiderAnim_onKey_0000D438, vtable slot 10) copies it into
                              * `state` when playback passes player.eventKey (or the blend-in ends) */
     Pair2 state;            /* 0xC8: the running state PMF: RiderAnim_update (D204) calls it every frame;
-                             * setNextState (D5BC) writes it directly (immediate change), clearNextState
-                             * (D5DC) stores the null PMF (run 532: the old names state / nextState were
+                             * enterState (D5BC) writes it directly (immediate change), clearState (D5DC)
+                             * stores the null PMF (run 532: the old field names state / nextState were
                              * swapped; evidence: Data 0x115C vtable +0x5C = D438, AnimPlayer's onKey call) */
     Pair2 pendingState;     /* 0xD0: state to enter at the next stateRide (null PMF = none): startFinish /
                              * startTimeout set stateFinish / stateTimeUp here, so a race that ends mid-move

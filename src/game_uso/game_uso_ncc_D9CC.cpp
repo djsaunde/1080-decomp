@@ -23,7 +23,6 @@ typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h"
 #define RIDER(p) ((SnowBoarder *)(p))
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
 int game_uso_func_077C44(...);
 void RiderAnim_clearState_0000D5DC(char *a0);
 void RiderAnim_queueState_0000D5F8(char *a0, Pair2 pair, int a3);
@@ -227,7 +226,7 @@ after_24:;
         temp_v0_3 = RA(arg0)->rider->dnode.angVel;
         temp_v0_3[0] = 0.0f; temp_v0_3[1] = 0.0f; temp_v0_3[2] = 0.0f; temp_v0_3[3] = 1.0f;
         RiderAnim_endTrick_0000D63C(arg0, (sp28 == 0));
-        FW(RA(arg0)->rider, 0x3DC) = 0;
+        RA(arg0)->rider->riding = 0;
         if (sp30 != 0) {
             game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 2, 1, 1);
             RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);

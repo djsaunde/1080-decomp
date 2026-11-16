@@ -210,8 +210,12 @@ typedef struct SnowBoarder {
                              * - axes[0] / [1] / [2] [up / side / dir]: rows of the orientation matrix. axes[0] is the
                              *   body up axis (axes[0][1] < 0.8 = steep), axes[2] the unit forward direction (the
                              *   limitSpeed nudge axis; dotted with vel in updateDyn). */
-    char pad3D4[0x3EC - 0x3D4];
-    SnowBChild child;       /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
+    char pad3D4[0x3DC - 0x3D4];
+    s32 riding;             /* 0x3DC: 1 = riding normally: SnowBoarder_reset and the ride-state entries (RiderAnim_stateRide,
+                             * stateRideDeep) set it, RiderAnim_selectAnim_0000D9CC clears it when it starts a hit / crash
+                             * anim. Write-only as far as the code goes (run 532: no load of +0x3DC from a rider in any .s) */
+    char pad3E0[0x3EC - 0x3E0];
+    SnowBChild child;      /* 0x3EC: the "SnowBChild" sub-object and its ground-handling Parms */
     SnowBoarderParms parms; /* 0x540: "SnowBoarder::Parms" (the ctor builds it in place) */
     RiderInput *input;      /* 0x800: input object (SnowBoarder_ctor arg 4: the pad / replay / AI input built
                              * by input_addRacePad); its +0x10 word carries the direction bits 4 / 8 (B520) */
@@ -432,6 +436,7 @@ SNOWB_ASSERT_OFFSET(unk8F4, 0x8F4);
 SNOWB_ASSERT_OFFSET(unk900, 0x900);
 SNOWB_ASSERT_OFFSET(unk902, 0x902);
 SNOWB_ASSERT_OFFSET(rival, 0x908);
+SNOWB_ASSERT_OFFSET(riding, 0x3DC);
 SNOWB_ASSERT_OFFSET(child, 0x3EC);
 SNOWB_ASSERT_OFFSET(child.parms.efr, 0x480);
 SNOWB_ASSERT_OFFSET(child.parms.nbf, 0x498);
