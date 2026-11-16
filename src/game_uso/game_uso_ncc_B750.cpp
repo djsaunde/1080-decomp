@@ -22,6 +22,9 @@
  * Spliced into game_uso.c.o via REPLACE_FUNC_BODY
  * (docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe). Every
  * symbol is extern "C". */
+typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
+typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
+#include "../../include/game/sun.h" /* NCC has no -I include */
 struct V { char pad[40]; virtual void m0(); virtual void m1(); virtual void m2(); };
 struct Q {
     float x, y, z, w;
@@ -35,22 +38,24 @@ extern char game_uso_D_807FFA78;
 void game_uso_func_05B750(void *, Q *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
-extern "C" void LensFlareElem_draw_0000B750(char *a0, char *s0, float *a2, float *a3, float arg4) {
-    float f0 = AT(float, a0, 0x00);
+/* elem: the LensFlareElem; sprite: the flare's Sprite (LensFlare.sprite); sunPos / dir: the sun's world position
+ * and the unit direction the elements are laid along; fade: the alignment fade (LensFlare_display) */
+extern "C" void LensFlareElem_draw_0000B750(LensFlareElem *elem, Sprite *sprite, float *sunPos, float *dir, float fade) {
+    float f0 = elem->pos;
     float v;
-    if (AT(int, a0, 0x1C) & 4) f0 += arg4 * 400.0f;
-    if (!(AT(int, a0, 0x1C) & 8)) arg4 = 1.0f;
-    AT(float, (int)&import_8005C1A8 + 0xA0, 0x30) = a2[0] + a3[0] * f0;
-    AT(float, (int)&import_8005C1A8 + 0xA0, 0x34) = a2[1] + a3[1] * f0;
-    AT(float, (int)&import_8005C1A8 + 0xA0, 0x38) = a2[2] + a3[2] * f0;
-    AT(short, s0, 0xC0) = AT(int, a0, 0x18);
-    v = AT(float, a0, 0x14);
-    if (AT(int, a0, 0x1C) & 2) v *= arg4;
+    if (elem->flags & LFELEM_FLAG_SLIDE) f0 += fade * 400.0f;
+    if (!(elem->flags & LFELEM_FLAG_FADE)) fade = 1.0f;
+    AT(float, (int)&import_8005C1A8 + 0xA0, 0x30) = sunPos[0] + dir[0] * f0;
+    AT(float, (int)&import_8005C1A8 + 0xA0, 0x34) = sunPos[1] + dir[1] * f0;
+    AT(float, (int)&import_8005C1A8 + 0xA0, 0x38) = sunPos[2] + dir[2] * f0;
+    sprite->unkC0 = elem->image;
+    v = elem->size;
+    if (elem->flags & LFELEM_FLAG_SIZE) v *= fade;
     if ((double)v > AT(double, &game_uso_D_807FFA78, 0x158)) {
-        AT(float, s0, 0xB0) = v;
-        AT(float, s0, 0xB4) = v;
-        Q q(AT(float, a0, 0x04), AT(float, a0, 0x08), AT(float, a0, 0x0C), AT(float, a0, 0x10) * arg4);
+        sprite->scaleX = v;
+        sprite->scaleY = v;
+        Q q(elem->color[0], elem->color[1], elem->color[2], elem->color[3] * fade);
         XCALL(game_uso_func_05B750, gfx_setPrimColour)(&gGfxLib_8005C108, &q);
-        ((V *)s0)->m2();
+        ((V *)sprite)->m2(); /* the sprite's third virtual: draw */
     }
 }

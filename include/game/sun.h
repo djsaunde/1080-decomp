@@ -1,9 +1,34 @@
 #ifndef GAME_SUN_H
 #define GAME_SUN_H
 
+#ifndef __cplusplus
 #include "game/camera.h"
 #include "game/rideranim.h" /* Pair2 */
 #include "gdl/sprite.h"
+#else
+/* The edg (NCC) donors include this header by relative path, without -I include (same-directory includes
+ * below), and edg rejects gdl/sprite.h's &((T *)0)->f asserts. They get this mirror of include/gdl/sprite.h's
+ * Sprite: the same layout and member names, the Node base opaque. Keep the two in step. */
+#include "camera.h"
+#include "rideranim.h" /* Pair2 */
+typedef struct Sprite {
+    char node[0x2C];        /* 0x00: Node; vptr at +0x28 */
+    s32 unk2C[0x16];
+    s32 children;           /* 0x84 */
+    s32 unk88[10];
+    f32 scaleX;             /* 0xB0 */
+    f32 scaleY;             /* 0xB4 */
+    f32 unkB8;
+    f32 unkBC;
+    s16 unkC0;              /* 0xC0: image / material */
+    s16 padC2;
+    s32 unkC4;
+    f32 unkC8;
+    struct DLContext *startDL; /* 0xCC */
+    struct DLContext *endDL;   /* 0xD0 */
+    s32 unkD4;
+} Sprite;
+#endif
 
 /*
  * Sun and LensFlare: the course sky objects of game.uso 0xAE1C-0xC0E8 (agent-g runs 465 / 497;
@@ -81,9 +106,15 @@ typedef struct LensFlareElem {
     f32 color[4];           /* 0x04: r, g, b, a [1, 1, 1, 1] */
     f32 size;               /* 0x14: [RoData 0x150] */
     s32 image;              /* 0x18: [0] */
-    s32 flags;              /* 0x1C: [8]; bit 0 = fade with the squared (dlv) term instead of the linear one */
+    s32 flags;              /* 0x1C: [8]; LFELEM_FLAG_* */
     f32 minDot;             /* 0x20: drawn only while the camera-to-sun alignment exceeds it [0] */
 } LensFlareElem;
+
+/* LensFlareElem.flags. `fade` = LensFlare_display's alignment fade passed to LensFlareElem_draw_0000B750 */
+#define LFELEM_FLAG_SQFADE  0x01 /* drawn with the squared (dlv) fade instead of the linear one */
+#define LFELEM_FLAG_SIZE    0x02 /* draw: size *= fade */
+#define LFELEM_FLAG_SLIDE   0x04 /* draw: pos += fade * 400 */
+#define LFELEM_FLAG_FADE    0x08 /* draw: size / alpha use fade (else 1.0) */
 
 #define LENSFLARE_MAX_ELEMS 10
 
