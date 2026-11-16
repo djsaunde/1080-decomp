@@ -150,7 +150,7 @@
 #define SnowBoarder_vtbl       D_00000000 /* Data+0x83D0 Sym 490: vtable (17 Text ptrs in span, slot +0x1C SnowBoarder_display); vptr store by SnowBoarder_ctor */
 #define RaceTracker_vtbl       D_00000000 /* Data+0xD508 Sym 1125: vtable (34 Text ptrs in span, slot +0x1C RaceTracker_display); vptr store by RaceTracker_ctor */
 #define MCamera_vtbl           D_00000000 /* Data+0x1E0E8 Sym 1496: vtable (14 Text ptrs in span, slot +0x1C MNode_display); vptr store by MCamera_ctor */
-#define HostioDev_vtbl_1E1B8   D_00000000 /* Data+0x1E1B8 Sym 1502: vtable (5 Text ptrs in span, slot +0x1C hostio_devSlot2_000359B8); vptr store by app_func_000412E8 */
+#define SysLib_vtbl_1E1B8      D_00000000 /* Data+0x1E1B8 Sym 1502: gSysLib's own (most-derived) vtable, stored at gSysLib +0x18 by app_staticInit_000412E8 after the base ConsoleDev_vtbl (slots hostio_devWrite / hostio_devRead / hostio_devSlot2 / app_loadUso; not gHostio's: HostioDev has no vptr) */
 #define ConsoleDev_vtbl        D_00000000 /* Data+0x21DA0 Sym 1814: vtable (5 Text ptrs in span, slot +0x1C ConsoleDev_vfn2_00061B04); vptr store by app_func_000412E8 */
 #define CamFollow_vtbl         D_00000000 /* Data+0x1E878 Sym 1636: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by CamFollow_ctor */
 #define CamMan_vtbl            D_00000000 /* Data+0x1E8D8 Sym 1637: vtable (10 Text ptrs in span, slot +0x1C Node_display); vptr store by CamMan_ctor */

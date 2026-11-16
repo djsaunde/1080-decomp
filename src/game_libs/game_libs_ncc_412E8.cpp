@@ -8,7 +8,9 @@
  *    at holder+off compares `&holder != -off` (the target's `li at, -0x234; bne`); a TU-defined object
  *    itself would have its own this==0 test folded away, which is why every protocol object is a member.
  *  - gSysLib_412E8_i: holder of I, whose W4 is a BASE (built before the vptr store at +0x18).
- *  - gSysLib_412E8_l: L has a vptr and no user ctor -> a bare vtable store.
+ *  - gSysLib_412E8_l: L has a vptr and no user ctor -> a bare vtable store. In the ROM both
+ *    _i and _l relocate to gSysLib (Sym 73): one object whose base-class ctor stores
+ *    ConsoleDev_vtbl at +0x18 and whose own implicit ctor then stores SysLib_vtbl_1E1B8 there.
  *  - gHostio_412E8_m: holder of a W4.
  * The cfe body (92.24) needed per-site section aliases. The Makefile renames the __sti__ symbol and
  * the El ctor / vtables / __vec_new references (symbol names only). Spliced over an empty
