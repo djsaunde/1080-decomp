@@ -5,12 +5,16 @@
  * EXACT (agent-g run 236): spliced over the bootup_uso.c placeholder on both build paths via REPLACE_FUNC_BODY; the
  * 0x930..0x948 constants are bu_c234_k9xx pins (target relocs .L00000930 / SndHandle_triggerEvent3_00000940 + addend).
  * agent-g run 475: field form over include/game/snowboarder.h (included by relative path; the header's asserts are
- * C-only). Same bytes: every access keeps its width / type (a mismatched read stays `*(T *)&rider->field`). */
+ * C-only). Same bytes: every access keeps its width / type (a mismatched read stays `*(T *)&rider->field`).
+ * agent-g run 558: the 151-frame airborne reset asks ItemMgr_queryType(MarkerMgr, "mrk", pos, 0) for the nearest
+ * generic marker (sTag_mrk_8A78 = Data 0x8A78, D_C234_markerMgr = Data 0x7768 Sym 302) and moves the rider 200 above its
+ * CourseMarker.pos. The .o's tag reloc is now sTag_mrk_8A78 + 0 (was func_00008A40 + 0x38); linked bytes identical. */
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
 #include "../../include/game/snowboarder.h"
 #include "../../include/game/input.h" /* GameFlow (InputMgr) */
+#include "../../include/game/course.h" /* CourseMarker (the marker query result) */
 #include "../../include/gdl/gl_data.h" /* gCourseColl = Bss+0x50 Sym 451 (the course CollShape *; its +0x84 is
                                         * CollShape.shape, gdl/coll.h, which is C-only) */
 /* GameFlow through gInputMgr_c234_g8: the token is pinned at 8 (undefined_syms_auto.txt), so the object
@@ -33,7 +37,8 @@ typedef struct {
      f32 ec;
      f32 f0;
 } C234Rec;
-extern "C" char func_00008A40[];
+extern "C" s32 sTag_mrk_8A78;    /* Data 0x8A78: "mrk" (MARKER_MRK), passed by value */
+extern "C" s32 D_C234_markerMgr; /* Data 0x7768 (Sym 302): the MarkerMgr (game_createMap: ItemMgr_ctor(0, "MarkerMgr", -1)) */
 struct S4C234 { s32 v; };
 extern "C" int bu_c234_sv(s32, S4C234, char *, int);
 extern "C" {
@@ -224,10 +229,11 @@ cend:
         /* agent-g run 235: the call result held in var_v0 with a folded use at the compare: its v0 LR now overlaps
          * the post-increment's old value, which colours v1 like the target (99.85 -> 99.87) */
         if ((rider->noGroundFrames)++ + 0 * var_v0 >= 0x97) {
-            sp8C.v = *(s32 *)((char *)&func_00008A40 + 0x38);
-            temp_v0_3 = (char *)(bu_c234_sv(*(s32 *)((char *)&D_00000000 + 0), sp8C, sp3C, 0));
+            /* ItemMgr_queryType(gMarkerMgr, "mrk", pos, 0): the nearest generic course marker */
+            sp8C.v = sTag_mrk_8A78;
+            temp_v0_3 = (char *)(bu_c234_sv(D_C234_markerMgr, sp8C, sp3C, 0));
             if (temp_v0_3 != 0) {
-                sp7C = *(V3C234 *)((char *)(temp_v0_3) + 0x30);
+                sp7C = *(V3C234 *)((CourseMarker *)temp_v0_3)->pos;
                 sp7C.y += 200.0f;
                 func_00000000(rider, &sp7C);
                 rider->noGroundFrames = 0;

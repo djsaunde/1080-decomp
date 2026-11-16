@@ -15,7 +15,9 @@
  * extern "C"; the blank (in-place addend) refs go through the bu_cae8_*
  * aliases in undefined_syms_auto.txt (ta/tb/x/y = 0, mode = 0x34,
  * k958 = 0x958, d8abc = 0x8ABC). Callees are func_00000000 (USO TextReloc
- * jal 0). */
+ * jal 0).
+ * agent-g run 558: the HANDICAP printf arg is the Node name (NODE(st)->name, gdl/node.h); the board index is
+ * RIDER(st)->board. Same bytes. */
 struct V3 { float x, y, z;
     void set(V3 v) { x = v.x; y = v.y; z = v.z; }
     V3 &operator=(const V3 &v) { set(v); return *this; } };
@@ -29,12 +31,11 @@ extern char sFmt_HANDICAP_ON_8ABC[];
 }
 typedef float f32; typedef int s32; typedef short s16; typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 #include "../../include/game/snowboarder.h"
+#include "../../include/gdl/node.h" /* NODE(p)->name (the DNode mirror has no Node fields) */
 #define RIDER(st) ((SnowBoarder *)(st))
-#define I(o) (*(int *)(st + (o)))
-#define F(o) (*(float *)(st + (o)))
 extern "C" void SnowBoarder_reset(char *st) {
     func_00000000(st, 1, gPlayerBinPaths_cae8_ta[RIDER(st)->character]);
-    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[((short *)(st + 0x8C6))[*(short *)(st + 0x904)]]);
+    func_00000000(st + 0x3EC, 1, gBoardBinPaths_cae8_tb[((short *)(st + 0x8C6))[RIDER(st)->board]]);
     if (RIDER(st)->flags & SNOWB_FLAG_MIRROR) func_00000000(st);
     func_00000000(st + 0x90C, (st + 0x17C) - st);
     RIDER(st)->groundDist = bu_cae8_k958;
@@ -61,7 +62,7 @@ extern "C" void SnowBoarder_reset(char *st) {
     func_00000000(st);
     func_00000000(RIDER(st)->anim);
     func_00000000(RIDER(st)->ai);
-    if (RIDER(st)->flags & SNOWB_FLAG_CATCHUP) func_00000000(sFmt_HANDICAP_ON_8ABC, I(0xC));
+    if (RIDER(st)->flags & SNOWB_FLAG_CATCHUP) func_00000000(sFmt_HANDICAP_ON_8ABC, NODE(st)->name);
     V3 *p = (V3 *)&RIDER(st)->prevPos; V3 *q = (V3 *)&RIDER(st)->prevVel;
     *p = *(V3 *)RIDER(st)->dnode.vqs.trans; /* prevPos = pos */
     *q = *(V3 *)RIDER(st)->dnode.vel;       /* prevVel = vel */
