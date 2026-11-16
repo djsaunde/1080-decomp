@@ -21,12 +21,34 @@ struct VrNode {
 /* the records process (ViewRecProc in viewrec_uso.c) */
 struct VrProc : VrNode {
     /* 0x2C */ int started;
+    /* 0x30 */ char pad30[0x50 - 0x30];
+    /* 0x50 */ int *session;
+    /* 0x54 */ char pad54[0x6C - 0x54];
+    /* 0x6C */ int mode;
+    /* 0x70 */ int pad70;
+    /* 0x74 */ int flags;
+};
+
+/* a records / options screen (ViewRecScreen in viewrec_uso.c) */
+struct VrScreen : VrNode {
+    /* 0x2C */ char pad2C[0x50 - 0x2C];
+    /* 0x50 */ VrProc *proc;
+    /* 0x54 */ char pad54[0x98 - 0x54];
+    /* 0x98 */ int cursor;
+    /* 0x9C */ int minCursor;
 };
 
 /* GameFlow (include/game/input.h InputMgr): only the shared Fader */
-struct VrGameFlow { char pad[0x190]; void *fader; };
+struct VrGameFlow {
+    char pad[0x40];
+    int procState;              /* 0x40 */
+    int nextProcState;          /* 0x44 */
+    char pad48[0x190 - 0x48];
+    void *fader;                /* 0x190 */
+};
 extern VrGameFlow gInputMgr_vrncc;      /* bootup Bss 0xF8 import */
 extern VrNode *sVrScreen;               /* viewrec Bss 0x880 */
+extern VrNode *sVrMenu;                 /* viewrec Bss 0x878 */
 
 /* the process update: until the fade-in has started, let the shown screen draw (slot 3); once it
  * has, wait for the shared Fader and then call onFadedIn (slot 11) */
@@ -57,4 +79,48 @@ extern "C" void viewrec_uso_func_00000290() {
     { float &r = sEnvColour[1]; r = 0; }
     { float &r = sEnvColour[2]; r = 1.0f; }
     { float &r = sEnvColour[3]; r = 1.0f; }
+}
+
+/* 0x22A8: the options screen input. The stick steers player 3's frequency scale; left / right move
+ * the cursor to the previous / next enabled option (0x2088 / 0x2190); A leaves (fade out) unless the
+ * screen was entered from the main menu, where A and B go back to it. Only edg's `sVrMenu->start()`
+ * gives the menu / vptr registers of the final virtual call (cfe swaps them). */
+extern "C" void viewrec_uso_func_000022A8(VrScreen *self) {
+    char *pad;
+    int back;
+    pad = (char *)CALL(input_getPad_00011D40)(&gInputMgr_vrncc, 1);
+    CALL(snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x10001)) {
+        if (CALL(viewrec_uso_func_00002088)(self) != self->cursor) {
+            CALL(snd_postEvent)(1);
+            self->cursor = CALL(viewrec_uso_func_00002088)(self);
+        }
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x4002)) {
+        if (CALL(viewrec_uso_func_00002190)(self) != self->cursor) {
+            CALL(snd_postEvent)(1);
+            self->cursor = CALL(viewrec_uso_func_00002190)(self);
+        }
+    }
+    back = 0;
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x40100)) {
+        if (!(self->proc->flags & 0x1000)) {
+            gInputMgr_vrncc.procState = gInputMgr_vrncc.nextProcState;
+            CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);
+            CALL(Backup_sessionClearNew)(self->proc->session);
+        } else {
+            back = 1;
+        }
+        CALL(snd_postEvent)(5);
+    }
+    if (back || CALL(input_checkPressed_00011E00)(&gInputMgr_vrncc, 0x200)) {
+        CALL(snd_postEvent)(0x802);
+        if (self->proc->flags & 0x1000) {
+            if (self->proc->mode == 0x8000) {
+                CALL(viewrec_uso_func_00001000)(self->proc);
+            }
+            self->proc->mode = 0x1000;
+            sVrMenu->start();
+        }
+    }
 }

@@ -269,9 +269,14 @@ typedef struct ViewRecScreen {
     /* 0x2C */ char pad2C[0x50 - 0x2C];
     /* 0x50 */ ViewRecProc *proc;
     /* 0x54 */ char pad54[0x58 - 0x54];
-    /* 0x58 */ s32 frame;            /* replay screen: counted up per draw (0x4698) */
-    /* 0x5C */ char pad5C[0x80 - 0x5C];
+    /* 0x58 */ s32 frame;            /* replay screen: counted up per draw (0x4698); 0x2468: the
+                                      * selected row + 1 (0 = none) */
+    /* 0x5C */ s32 unk5C;            /* 0x2468: the highlighted row (0..2) */
+    /* 0x60 */ char pad60[0x80 - 0x60];
     /* 0x80 */ s32 rowY;             /* replay screen: y of the ghost's row (0x1588) */
+    /* 0x84 */ char pad84[0x98 - 0x84];
+    /* 0x98 */ s32 cursor;           /* options screen: the selected option (0..7) */
+    /* 0x9C */ s32 minCursor;        /* the lowest selectable option */
 } ViewRecScreen;
 
 /* NM: the target holds &gInputMgr in v0 for the procState copy (here v1). */
@@ -330,13 +335,94 @@ void viewrec_uso_func_00001CCC(ViewRecScreen *self) {
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00001D64);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002088);
+/* options screen: the previous enabled option before the cursor (wrapping 0 -> 7), at least
+ * minCursor; proc->unk78 holds the enabled bits. */
+s32 viewrec_uso_func_00002088(ViewRecScreen *self) {
+    s32 c = self->cursor;
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        c--;
+        if (c < 0) {
+            c = 7;
+        }
+        if ((self->proc->unk78 & (1 << c)) && c >= self->minCursor) {
+            return c;
+        }
+    }
+    return c;
+}
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002190);
+/* options screen: the next enabled option after the cursor (wrapping 7 -> 0) */
+s32 viewrec_uso_func_00002190(ViewRecScreen *self) {
+    s32 c = self->cursor;
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        c++;
+        if (c >= 8) {
+            c = 0;
+        }
+        if ((self->proc->unk78 & (1 << c)) && c >= self->minCursor) {
+            return c;
+        }
+    }
+    return c;
+}
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000022A8);
+/* EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (sVrMenu->start()). */
+void viewrec_uso_func_000022A8(ViewRecScreen *self) {
+}
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00002468);
+/* the arcade-records screen input: up / down move the highlighted row (0..2), A selects it,
+ * B deselects or goes back, Start leaves (fade out, or back to the main menu when entered from it) */
+void viewrec_uso_func_00002468(ViewRecScreen *self) {
+    s32 back = 0;
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x8008)) {
+        if (self->unk5C < 2) {
+            CALL(snd_postEvent)(1);
+            self->unk5C++;
+        }
+        if (self->frame) {
+            self->frame = self->unk5C + 1;
+        }
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x2004)) {
+        if (self->unk5C > 0) {
+            CALL(snd_postEvent)(1);
+            self->unk5C--;
+        }
+        if (self->frame) {
+            self->frame = self->unk5C + 1;
+        }
+    }
+    if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
+        if (self->frame == 0) {
+            CALL(snd_postEvent)(5);
+            self->frame = self->unk5C + 1;
+        } else if (!(self->proc->flags & 0x1000)) {
+            back = 1;
+        }
+        CALL(snd_postEvent)(5);
+    }
+    if ((self->proc->flags & 0x1000) && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+        if (self->frame) {
+            CALL(snd_postEvent)(0x802);
+            self->frame = 0;
+        } else {
+            back = 1;
+        }
+    }
+    if (back || CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x40000)) {
+        if (!(self->proc->flags & 0x1000)) {
+            CALL(snd_postEvent)(5);
+            gInputMgr_vr.procState = gInputMgr_vr.nextProcState;
+            CALL(Process_fadeOut_0000F954)(self->proc, -1, 0);
+            CALL(Backup_sessionClearNew)(self->proc->session);
+        } else {
+            CALL(snd_postEvent)(0x802);
+            self->proc->mode = 0x1000;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000266C);
 
