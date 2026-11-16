@@ -8,3 +8,4 @@
 /* port-drop: trk_main */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_B0.c */
 #pragma weak trk_openSession_000005A4
 /* port-drop: trk_openSession_000005A4 */ /* placeholder copy; shipped body in src/timproc_uso_b3/timproc_uso_b3_o0_5A4.c */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

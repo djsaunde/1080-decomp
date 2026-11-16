@@ -2,3 +2,30 @@
 /* src/titproc_uso/titproc_uso.c: 43 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak TitleDemoProcess_handleInput
 /* port-drop: TitleDemoProcess_handleInput */ /* placeholder copy; shipped body in src/titproc_uso/titproc_uso_mp72_116C.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_000098(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_0002DC(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_00101C(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_0015F4(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_001840(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_001AF8(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_001B10(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_001BB8(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_001D7C(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_0022BC(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_00F4CC(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_00F954(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_011E00(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_012150(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_0139B0(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_01B0F8(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_01CCD4(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_01F7FC(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_04C678(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_051C28(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_055750(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_074710(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_074840(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_07ACE0(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_07BA68(); /* CALL placeholder token: file-scope K&R declaration */
+int titproc_uso_func_07C07C(); /* CALL placeholder token: file-scope K&R declaration */

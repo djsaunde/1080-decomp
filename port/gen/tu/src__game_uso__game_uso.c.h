@@ -54,3 +54,18 @@
 /* port-drop: cam_updateView_00000B3C */ /* placeholder copy; shipped body in src/game_uso/game_uso_mp72_B3C.cpp */
 #pragma weak game_uso_func_00000000
 /* port-drop: game_uso_func_00000000 */ /* placeholder copy; shipped body in src/game_uso/game_uso_ncc_0000.cpp */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_000003F4(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_00E124(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_022784(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_048020(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_049280(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_04A188(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_051C28(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_055750(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_071028(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_072EE8(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_077574(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_077C44(); /* CALL placeholder token: file-scope K&R declaration */
+int game_uso_func_07ACE0(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

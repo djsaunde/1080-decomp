@@ -10,3 +10,5 @@
 /* port-drop: dbg_startFaultThread */ /* helper copy; shipped body in src/game_libs/game_libs_post0b.c */
 #pragma weak dbg_threadStateName
 /* port-drop: dbg_threadStateName */ /* helper copy; shipped body in src/game_libs/game_libs_o2_343F4.c */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

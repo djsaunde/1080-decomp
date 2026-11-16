@@ -4,3 +4,4 @@
 /* port-drop: mgr_initMatchRace_00000700 */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp */
 #pragma weak mgr_prepareReplay_00000A14
 /* port-drop: mgr_prepareReplay_00000A14 */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_o0_700.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

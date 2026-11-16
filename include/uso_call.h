@@ -26,9 +26,36 @@
  *
  * NCC .cpp donors build without -I include: include this file by relative path.
  */
+#ifdef PORT
+/* PC port (docs/1080_PC_PORT_PLAN.md decision 4, section 14): the USO system is a static
+ * link, so a placeholder call names its real callee f.
+ *  - C++ (the NCC donors): f itself; port/gen/decls_cpp.h (forced include) declares it.
+ *  - C: f called WITH THE PLACEHOLDER'S TYPE at this site (the in-scope declaration of
+ *    the token: usually K&R `int gl_func_00000000()`, or a per-site typed alias).  That is
+ *    the type the matched call was compiled against, so the arguments are passed exactly as
+ *    in the ROM, and no prototype of f (which may not be in scope, or may disagree with the
+ *    IDO-era call) is needed.  A block-scope extern with an asm label names the symbol f;
+ *    __COUNTER__ keeps each site's declaration distinct. */
+#ifdef __cplusplus
+#define CALL(f) f
+#define FCALL(f) f
+#define GCALL(f) f
+#define XCALL(tok, f) f
+#else
+#define PORT_CALL_AS(tok, f) PORT_CALL_AS_(tok, f, __COUNTER__)
+#define PORT_CALL_AS_(tok, f, n) PORT_CALL_AS__(tok, f, n)
+#define PORT_CALL_AS__(tok, f, n) \
+    (*({ extern __typeof__(tok) __port_call_##n __asm__(#f); &__port_call_##n; }))
+#define CALL(f) PORT_CALL_AS(gl_func_00000000, f)
+#define FCALL(f) PORT_CALL_AS(func_00000000, f)
+#define GCALL(f) PORT_CALL_AS(game_uso_func_00000000, f)
+#define XCALL(tok, f) PORT_CALL_AS(tok, f)
+#endif
+#else
 #define CALL(f) gl_func_00000000
 #define FCALL(f) func_00000000
 #define GCALL(f) game_uso_func_00000000
 #define XCALL(tok, f) tok
+#endif
 
 #endif

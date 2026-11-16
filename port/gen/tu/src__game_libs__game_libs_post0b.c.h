@@ -236,3 +236,11 @@
 /* port-drop: nodelist_walk_0005534C */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_5534C.cpp */
 #pragma weak sys_hang
 /* port-drop: sys_hang */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_34548.c */
+int gl_func_00000000_5f3e0(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_4EB54(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_4F85C(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_5185C(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_55C34(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_5AD54(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_5CB68(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00034458_6126C(); /* CALL placeholder token: file-scope K&R declaration */

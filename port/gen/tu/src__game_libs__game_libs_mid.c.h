@@ -10,3 +10,4 @@
 /* port-drop: app_createGame_00009204 */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_o0_9204.cpp */
 #pragma weak app_createGame_000092F4
 /* port-drop: app_createGame_000092F4 */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_o0_9204.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

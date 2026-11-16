@@ -16,3 +16,4 @@
 /* port-drop: guOrtho */ /* placeholder copy; shipped body in src/game_libs/game_libs_ido53_70694.c */
 #pragma weak guOrthoF
 /* port-drop: guOrthoF */ /* placeholder copy; shipped body in src/game_libs/game_libs_ido53_70694.c */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

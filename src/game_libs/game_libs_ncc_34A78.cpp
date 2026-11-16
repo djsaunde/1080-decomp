@@ -18,7 +18,12 @@ extern int gl_ref_0003B8EC, gl_ref_0003B8F0, gl_ref_0003B8FC, gl_ref_0003B8FC_st
 }
 static signed char sF6[2];
 extern "C" void app_initSystem(int a0) {
+#ifdef PORT
+    /* the callee takes `self`; IDO passes app_initSystem's untouched a0 (still in $a0) */
+    console_createSystemWin((int *)a0);
+#else
     CALL(console_createSystemWin)();
+#endif
     CALL(dbg_startFaultThread)();
     CALL(pad_initGlobal)(a0);
     CALL(sys_pollDevices_00034B64)(a0);

@@ -40,3 +40,5 @@
 /* port-drop: gui_setupRenderMode_0000055C */ /* placeholder copy; shipped body in src/gui_uso/gui_uso_ncc_055C.cpp */
 #pragma weak gui_texRect_00004568
 /* port-drop: gui_texRect_00004568 */ /* placeholder copy; shipped body in src/gui_uso/gui_uso_ncc_4568.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int gui_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

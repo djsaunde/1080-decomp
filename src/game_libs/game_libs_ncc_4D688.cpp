@@ -74,7 +74,11 @@ extern "C" S4D *RcpMgr_ctor(S4D *s) {
     s->w8 = 0;
     s->wC = 0;
     for (int i = 0; i < 16; i++) {
+#ifdef PORT
+        int p = mem_newAligned(0x78, 16u); RcpMgr_insertTask((RcpTask *)(p ? p : 0), (RcpTask **)s);
+#else
         int p = CALL(mem_newAligned)(0x78, 16u); CALL(RcpMgr_insertTask)(p ? p : 0, s);
+#endif
     }
     { int p = CALL(mem_newAligned)(0x78, 16); s->w14 = p ? p : 0; }
     D_4D468_x = CALL(mem_newAligned)(0xC00, 16);
@@ -152,7 +156,11 @@ void Obj::run()
                 Child *c = mC;
                 if (c != 0 && c->m5C != 0) {
                     m3C = DSTR(0x20248);
+#ifdef PORT
+                    RcpMgr_loadTask_0004D354((RcpTask *)c); /* Child is a mirror of RcpTask */
+#else
                     CALL(RcpMgr_loadTask_0004D354)(c);
+#endif
                     m40 = DSTR(0x20250);
                     m20 = 1;
                 } else {

@@ -52,3 +52,4 @@
 /* port-drop: item_registerTemplates */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_55A0.cpp */
 #pragma weak map_addEntry_00007204
 /* port-drop: map_addEntry_00007204 */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_7204.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

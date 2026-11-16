@@ -2,3 +2,4 @@
 /* src/bootup_uso/bootup_uso_tail3a_10C8C.c: 2 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak gui_getCurrentRow_00010324
 /* port-drop: gui_getCurrentRow_00010324 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso_o0_10324.c */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

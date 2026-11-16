@@ -8,3 +8,4 @@
 /* port-drop: arc_initCourses_00000688 */ /* placeholder copy; shipped body in src/arcproc_uso/arcproc_uso_o0_688.c */
 #pragma weak arc_openSession_000005C8
 /* port-drop: arc_openSession_000005C8 */ /* placeholder copy; shipped body in src/arcproc_uso/arcproc_uso_o0_5C8.c */
+int arcproc_uso_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

@@ -4,3 +4,23 @@
 /* port-drop: MgrNameEntry_drawCongrats_00002B7C */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp */
 #pragma weak mgr_drawResults_000023FC
 /* port-drop: mgr_drawResults_000023FC */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_00001BD4(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_000148(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_000188(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_0002DC(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_00F954(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_012110(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_013924(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_013980(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_0139B0(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_01B0F8(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_01CCD4(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_01F874(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_01FA1C(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_04C678(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_051C28(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_055750(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_074710(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_074840(); /* CALL placeholder token: file-scope K&R declaration */
+int mgrproc_uso_func_07BA68(); /* CALL placeholder token: file-scope K&R declaration */

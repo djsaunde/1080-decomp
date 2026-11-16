@@ -22,3 +22,6 @@
 /* port-drop: SelectionMgr_setSplit_00001DB0 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp */
 #pragma weak SelectionMgr_update_00001F14
 /* port-drop: SelectionMgr_update_00001F14 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int timproc_uso_b5_func_00003F58(); /* CALL placeholder token: file-scope K&R declaration */

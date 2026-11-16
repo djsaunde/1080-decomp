@@ -14,3 +14,4 @@
 /* port-drop: RaceProcess_drawResult */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_7344.c */
 #pragma weak RaceProcess_handleInput
 /* port-drop: RaceProcess_handleInput */ /* placeholder copy; shipped body in src/game_libs/game_libs_mp72_76F0.cpp */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

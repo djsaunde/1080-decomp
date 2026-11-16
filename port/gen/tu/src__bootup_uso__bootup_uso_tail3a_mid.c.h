@@ -2,3 +2,4 @@
 /* src/bootup_uso/bootup_uso_tail3a_mid.c: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak input_pauseRacePads
 /* port-drop: input_pauseRacePads */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_11B5C.cpp */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

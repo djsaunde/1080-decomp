@@ -30,6 +30,10 @@ extern "C" void Node_printContents(Owner *o, int a1) {
     for (Node *n = it.next(); n; n = it.next()) {
         CALL(dbg_printIndent)(a1);
         { int v = n->x0c; CALL(dbg_printf)((char *)&D_00000000 + 0x1ECCC, v); }
+#ifdef PORT
+        Node_printContents((Owner *)n, a1); /* a child Node is an Owner (head at +0x10) */
+#else
         CALL(Node_printContents)(n, a1);
+#endif
     }
 }

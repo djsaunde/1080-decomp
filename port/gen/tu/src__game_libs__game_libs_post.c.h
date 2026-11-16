@@ -54,3 +54,5 @@
 /* port-drop: snd_TickChannel8Fade */ /* placeholder copy; shipped body in src/game_libs/game_libs_ncc_307A8.cpp */
 #pragma weak snd_dispatchEvent
 /* port-drop: snd_dispatchEvent */ /* placeholder copy; shipped body in src/game_libs/game_libs_o2_2FB74.c */
+int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
+int gl_func_0001CA10_1FFAC(); /* CALL placeholder token: file-scope K&R declaration */
