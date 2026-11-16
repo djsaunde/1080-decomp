@@ -37,7 +37,7 @@ typedef struct TextWin {
     /* 0x38 */ struct TextWin *next; /* ConsoleMgr window ring */
     /* 0x3C */ struct TextWin *prev;
     /* 0x40 */ char *title;        /* ctor arg1, drawn in the title bar */
-    /* 0x44 */ s32 owner;          /* ctor: result of a blank-import call; ConsoleMgr_closeOwnerWins matches it */
+    /* 0x44 */ void *owner;        /* ctor: result of a blank-import call; ConsoleMgr_closeOwnerWins matches it */
     /* 0x48 */ u8 colour[16];      /* 16-byte by-value ctor arg (S_00060584); its first 4 bytes are the RGBA
                                     * passed to the colour call */
 } TextWin;

@@ -25190,7 +25190,7 @@ void *TextWin_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, int arg5,
     }
     TEXTWIN(arg0)->title = (char *)arg1;
     *(S_00060584 *)TEXTWIN(arg0)->colour = s;
-    TEXTWIN(arg0)->owner = CALL(app_getHeapMode)();
+    TEXTWIN(arg0)->owner = (void *)CALL(app_getHeapMode)();
     TEXTWIN(arg0)->nRows = arg3;
     TEXTWIN(arg0)->maxCols = arg2;
     TEXTWIN(arg0)->visRows = arg5;
@@ -25529,7 +25529,7 @@ void ConsoleMgr_closeOwnerWins(int *a0, int a1) {
         return;
     }
     do {
-        if (key == TEXTWIN(node)->owner) {
+        if ((void *)key == TEXTWIN(node)->owner) {
             CALL(ConsoleMgr_unlinkWin)(self, node);
         }
         node = (int *)TEXTWIN(node)->next;
