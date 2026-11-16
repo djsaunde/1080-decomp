@@ -217,38 +217,49 @@ typedef struct SelCourseModel { /* SelCourseMap (vtbl Data 0x514) */
     SelModel head;          /* 0x000 */
     f32 view[4];            /* 0x10C */
     f32 alpha;              /* 0x11C */
-    char pad120[0x124 - 0x120];
+    f32 unk120;             /* 0x120: createItem: RoData 0x3F8 */
     f32 highlight;          /* 0x124 */
     f32 mapFade;            /* 0x128: CourseItem_update fades it while `lit` */
     char pad12C[0x130 - 0x12C];
     s32 focused;            /* 0x130 */
     s32 lit;                /* 0x134: onStageReturn sets, unfocus clears */
     s32 chosen;             /* 0x138 */
-    s32 unk13C;             /* 0x13C: copied by copyState */
-} SelCourseModel;
+    s32 unk13C;             /* 0x13C: copied by copyState; createItem: 1, 0 for courses 11..13 */
+    s32 unk140;             /* 0x140: createItem: 1 */
+} SelCourseModel;           /* 0x144 (CourseList_createItem allocates 0x144) */
 
-typedef struct SelTesuriModel { /* SelTesuri (vtbl Data 0x4AC) */
-    SelModel head;          /* 0x000 */
+typedef struct SelTesuriModel { /* SelTesuri (vtbl Data 0x4AC; SelItemsMgr_ctor allocates 0x168) */
+    SelModel head;          /* 0x000 (the ctor sets head.qnode.cvqs.trans = (x, 720, -220)) */
     f32 view[4];            /* 0x10C */
-    f32 alpha;              /* 0x11C */
-    char pad120[0x124 - 0x120];
-    f32 highlight;          /* 0x124 */
-    char pad128[0x134 - 0x128];
-    s32 focused;            /* 0x134 */
+    f32 alpha;              /* 0x11C: 0 */
+    f32 unk120;             /* 0x120: RoData constant per Tesuri */
+    f32 highlight;          /* 0x124: 1.0 */
+    f32 unk128;             /* 0x128: RoData constant (1.0 for tesuri[1]) */
+    f32 unk12C;             /* 0x12C: RoData constant */
+    char pad130[0x134 - 0x130];
+    s32 focused;            /* 0x134: 0 */
     s32 chosen;             /* 0x138 */
-} SelTesuriModel;
+    s32 numShapes;          /* 0x13C: 8 (tesuri[2]) / 1; each shape is MNode_addChild'ed to the
+                             * model with its DoDisplay doFlags bit (4) cleared */
+    s32 unk140;             /* 0x140: 0 */
+    s32 unk144;             /* 0x144: 0 */
+    char *shapes[8];        /* 0x148: PolyShape_ctor results */
+} SelTesuriModel;           /* 0x168 */
 
 typedef struct SelLevelModel {  /* LevelItem's model */
     SelModel head;          /* 0x000 */
     f32 view[4];            /* 0x10C */
     f32 alpha;              /* 0x11C */
-    char pad120[0x124 - 0x120];
+    f32 unk120;             /* 0x120: createItem: RoData 0x438 */
     f32 highlight;          /* 0x124 */
-    char pad128[0x130 - 0x128];
+    f32 unk128;             /* 0x128: createItem: 0 */
+    char pad12C[0x130 - 0x12C];
     s32 focused;            /* 0x130 */
-    char pad134[0x138 - 0x134];
+    s32 unk134;             /* 0x134: createItem: 0 */
     s32 chosen;             /* 0x138 */
-} SelLevelModel;
+    s32 unk13C;             /* 0x13C: createItem: 1, 0 for some levels */
+    s32 unk140;             /* 0x140: createItem: 1 */
+} SelLevelModel;            /* 0x144 (LevelList_createItem allocates 0x144) */
 
 /* SelItemEx with the model typed per class. */
 #define SEL_ITEM_CLASS(T, M) typedef struct T { SelItem base; M *model; s32 barCount; s32 barTimer; } T
@@ -269,9 +280,9 @@ SEL_ITEM_CLASS(SelLevelItem, SelLevelModel);
 typedef struct SelItemList {
     char pad00[0x28];
     void *vptr;             /* 0x28 */
-    s32 cfg2C;              /* 0x2C..0x34: the SelItemsMgr's three CommonInfo words, copied by the ctor */
-    char *parent;           /* 0x30 */
-    s32 cfg34;              /* 0x34 */
+    char *bg;               /* 0x2C: WorldRegistry.bgRoot (the SelItemsMgr's three world roots, */
+    char *fg;               /* 0x30:  copied by the ctor: fgRoot */
+    char *mainGame;         /* 0x34:  and mainGame; as GenRoom / GenCamera) */
     char *dispItems;        /* 0x38: the SelItemsMgr's DispItems node; createItem adds each model under it */
     SelItem *items[12];     /* 0x3C */
     s32 count;              /* 0x6C */
@@ -281,9 +292,10 @@ typedef struct SelItemList {
 typedef struct SelItemsMgr {
     char pad00[0x28];
     void *vptr;             /* 0x28 */
-    s32 cfg2C;              /* 0x2C: CommonInfo_init: (D+0x134)->0x84 (the S70 lists copy the same three) */
-    char *parent;           /* 0x30: (D+0x134)->0x80; the ctor adds dispItems under it */
-    s32 cfg34;              /* 0x34: (D+0x134)->0x8C */
+    char *bg;               /* 0x2C: WorldRegistry.bgRoot (CommonInfo_init: GameFlow.game->0x84; the
+                             * stage lists copy the same three roots) */
+    char *fg;               /* 0x30: WorldRegistry.fgRoot (0x80); the ctor adds dispItems under it */
+    char *mainGame;         /* 0x34: WorldRegistry.mainGame (0x8C) */
     char *dispItems;        /* 0x38: "DispItems" node (0x2C, vtbl Data 0xCC4); the lists and the item
                              * models are added under it */
     s32 count;              /* 0x3C */
@@ -413,7 +425,10 @@ typedef struct SelectWin {
                              * also stored to fovTarget / fovBase) */
     f32 fovTarget;          /* 0x498: SelectWin_update: fovBase + f(fade) * item zoom fov */
     f32 fovBase;            /* 0x49C */
-    f32 unk4A0;             /* 0x4A0 */
+    f32 acceptAlpha;        /* 0x4A0: the accept-flash alpha, 0..1: set to 1 when an accept is
+                             * pressed in game mode 2 (state3 -> state 4), faded down by RoData
+                             * 0x1D0 per frame in state5 (mode 2); the BDEC draw slot multiplies
+                             * its sprites' alpha (255) by it. Was unk4A0 (agent-c run 544) */
     /* Cheat input (pad sequences typed on the character / board stage; state3 /
      * state6 match them, SelectWin_resetCheat clears them). */
     s32 cheatChar;          /* 0x4A4: matched character-stage sequence + 1 (charCheatIndex) */

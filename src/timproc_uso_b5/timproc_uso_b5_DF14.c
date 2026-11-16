@@ -19,6 +19,7 @@
 #include "common.h"
 #include "game/select.h"
 #include "gdl/node.h"
+#include "gdl/light.h" /* LightTarget (the model's inner node) */
 #include "game/input.h"
 #define LIST ((SelItemList *)arg0)
 #define ITEM(p) ((SelLevelItem *)(p))
@@ -86,11 +87,11 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         sub = child;
         if ((sub != 0) || ((sub = (char *) gen_imp_mem_new((char *)0x2B8)) != 0)) {
             gen_imp_Node_ctor(sub, &timproc_uso_b5_D_807FEF48[5848]);
-            FW(sub, 0x28) = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
-            SelItemParms_ctor(sub + 0x2C);
-            SelItemInfo_ctor(sub + 0x194);
+            NODE(sub)->vptr = (s32) (&timproc_uso_b5_D_807FDB64 + 0);
+            SelItemParms_ctor(&((SelItem *)sub)->parms);
+            SelItemInfo_ctor(&((SelItem *)sub)->info);
         }
-        FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF50[2468]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF50[5856];
+        NODE(child)->vptr = (s32) &timproc_uso_b5_D_807FEF50[2468]; NODE(child)->name = (s32) &timproc_uso_b5_D_807FEF50[5856];
         SelItem_reset_00003890(child);
     }
     r = child;
@@ -110,46 +111,46 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     child = (char *) gen_imp_mem_new((char *)0x144);
     if (child != 0) {
         gen_imp_QNode_ctor(child, &timproc_uso_b5_D_807FEF5C[5868], 0.0f, 0.0f, 0.0f);
-        FW(child, 0x28) = (s32) &timproc_uso_b5_D_807FEF64[1300]; FW(child, 0xC) = (s32) &timproc_uso_b5_D_807FEF64[5876];
+        NODE(child)->vptr = (s32) &timproc_uso_b5_D_807FEF64[1300]; NODE(child)->name = (s32) &timproc_uso_b5_D_807FEF64[5876];
         gsub = (char *) gen_imp_mem_new((char *)0x16C);
         if (gsub != 0) {
             gen_imp_QNode_ctor(gsub, &timproc_uso_b5_D_807FEF70[5888], 0.0f, 0.0f, 0.0f);
             t = *(f32 *)(&import_80807FB8 + 1020);
-            FW(gsub, 0x28) = (s32) &import_80087FB8[0]; *(s32 *)(gsub + 0x120) = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
-            *(f32 *)(gsub + 0x108) = t;
-            *(f32 *)(gsub + 0x10C) = t;
-            *(f32 *)(gsub + 0x110) = t;
-            *(f32 *)(gsub + 0x124) = 1.0f;
+            NODE(gsub)->vptr = (s32) &import_80087FB8[0]; ((LightTarget *)gsub)->mask = 1; /* run 216: one line = D884's store order (0x120 first) */ /* vptr: bootup LightTarget_vtbl (gl_data.h) */
+            ((LightTarget *)gsub)->unk108[0] = t;
+            ((LightTarget *)gsub)->unk108[1] = t;
+            ((LightTarget *)gsub)->unk108[2] = t;
+            ((LightTarget *)gsub)->scale = 1.0f;
         }
-        FW(child, 0x108) = (s32) gsub;
+        MODEL(child)->head.inner = gsub;
         gen_imp_MNode_addChild(child, gsub);
         if (1) {}
-        p = (f32 *)((char *) FW(child, 0x108) + 0xB4);
+        p = (f32 *)&((QNode *)MODEL(child)->head.inner)->vqs;
         p[2] = 0; /* int 0: one mtc1 zero for the three stores (0.0f gives three) */
         p[1] = 0;
         p[0] = 0;
-        *(f32 *)(child + 0x124) = 1.0f;
+        MODEL(child)->highlight = 1.0f;
         /* flag chain on one line (run 216); per-pair aliases (run 217, see top) */
         flag = EE6C_L(df14_ee6c_l1) & 0x80000; EE6C_S(df14_ee6c_s1) = EE6C_L(df14_ee6c_l2) & 0xFFF7FFFF; EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_s1) & ~1; EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_s2) | 2; EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_s2) & 0xFFFDFFFF; EE6C_S(df14_ee6c_s4) = EE6C_L(df14_ee6c_s4) | 0x2000;
-        FW(child, 0x140) = 1; FW(child, 0x13C) = 1;
+        MODEL(child)->unk140 = 1; MODEL(child)->unk13C = 1;
         switch ((s32) sub) {
         case 0:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FEBB4 + 5900), (&import_8077EBB4 + 0), 0));
             }
-            FW(child, 0x13C) = 0;
+            MODEL(child)->unk13C = 0;
             break;
         case 1:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&timproc_uso_b5_D_807FA914 + 5912), (&import_8077A914 + 0), 0));
             }
-            FW(child, 0x13C) = 0;
+            MODEL(child)->unk13C = 0;
             break;
         case 2:
             if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
                 gen_imp_MNode_addChild(child, gen_imp_PolyShape_ctor(0, (&import_80806674 + 5924), (&import_80776674 + 0), 0));
             }
-            FW(child, 0x13C) = 0;
+            MODEL(child)->unk13C = 0;
             break;
         case 3:
             if (INPUT_MGR(import_800200CC).nextFlowMode != 2) {
@@ -204,17 +205,17 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         }
         /* one line (D884's lui order fix, run 216) */
         if (flag) EE6C_S(df14_ee6c_s2) = EE6C_L(df14_ee6c_s1) | 0x80000; else EE6C_S(df14_ee6c_s7) = EE6C_L(df14_ee6c_s4) & 0xFFF7FFFF;
-        *(f32 *)(child + 0xDC) = arg3;
-        *(f32 *)(child + 0xE0) = arg4;
-        *(f32 *)(child + 0xE4) = arg5;
+        MODEL(child)->head.qnode.cvqs.trans[0] = arg3;
+        MODEL(child)->head.qnode.cvqs.trans[1] = arg4;
+        MODEL(child)->head.qnode.cvqs.trans[2] = arg5;
         MODEL(child)->view[0] = arg6;
         MODEL(child)->view[1] = arg7;
         MODEL(child)->view[2] = arg8; /* arg8 right after arg7, 0x120 before 0x124: as1 then issues the stack-arg loads like the target (run 161) */
-        FW(child, 0x134) = 0;
+        MODEL(child)->unk134 = 0;
         MODEL(child)->focused = 0;
-        *(f32 *)(child + 0x128) = 0.0f;
+        MODEL(child)->unk128 = 0.0f;
         MODEL(child)->alpha = 0.0f;
-        *(f32 *)(child + 0x120) = *(f32 *)&import_80087FB8[1080];
+        MODEL(child)->unk120 = *(f32 *)&import_80087FB8[1080];
         MODEL(child)->highlight = 0.0f;
     }
     {
@@ -231,6 +232,6 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     NODE(child)->parent = (int)sub;
     child = (char *)LIST->count;
     LIST->count = (s32) child + 1;
-    FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;
+    LIST->items[(s32) child] = (SelItem *)r;
     return r;
 }
