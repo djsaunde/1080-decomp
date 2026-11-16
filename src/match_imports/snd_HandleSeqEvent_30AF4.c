@@ -27,7 +27,13 @@ extern s32 D_30AF4_m, D_30AF4_n, D_30AF4_o, D_30AF4_p, D_30AF4_q;
 extern u32 D_30AF4_r;
 extern s32 D_30AF4_s, D_30AF4_t, D_30AF4_v, D_30AF4_w, D_30AF4_x;
 extern char gl_data_30AF4_45010, gl_data_30AF4_45F78;
+#ifdef PORT
+/* the command word's low byte: byte 3 on the cartridge (big-endian), byte 0 on the host.  The
+ * word (bootup Data 0x1C0AC) is typed u32 in port/gen/blob_types.tsv (plan 18.1). */
+#define CMD_B3 ((u8)gl_cmd_30AF4)
+#else
 #define CMD_B3 (((u8 *)&gl_cmd_30AF4)[3])
+#endif
 extern void gl_func_emit_30AF4v();
 extern void gl_func_00030AF4_44F18v();
 extern void gl_func_00030AF4_42364v();
