@@ -1,5 +1,9 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/dlctx.h" /* DLContext / DLBuf: the gui's current display-list context */
+#include "gdl/race.h"  /* RaceSprite: the gui sprite (handle +0x10, file id +0x14) */
+
+#define GUISPRITE(p) ((RaceSprite *)(p))
 
 extern char D_00000000;
 
@@ -601,10 +605,9 @@ void gui_setScissor(a0, x0, y0, x1, y1)
     int x1;
     int y1;
 {
-    int *global = *(int **)&D_00000000;
-    /* RAW: unknown-object: the gui display-list context (global->0xC: list base 0, cursor 4) is not typed yet */
-    int *ctx = *(int **)((char *)global + 0xC);
-    int cursor = *(int *)((char *)ctx + 4); /* RAW: unknown-object (as above) */
+    DLContext *global = *(DLContext **)&D_00000000;
+    DLBuf *ctx = global->gfx.cur;
+    int cursor = ctx->count;
     int *dst;
     int sx0;
     int sy0;
@@ -612,8 +615,8 @@ void gui_setScissor(a0, x0, y0, x1, y1)
     int sy1;
 
     (void)&a0;
-    *(int *)((char *)ctx + 4) = cursor + 1; /* RAW: unknown-object (as above) */
-    dst = (int *)(*(int *)((char *)*(int **)((char *)global + 0xC) + 0) + (cursor << 3)); /* RAW: unknown-object (as above) */
+    ctx->count = cursor + 1;
+    dst = (int *)(global->gfx.cur->base + (cursor << 3));
 
     sx0 = (int)((float)x0 * 4.0f) & 0xFFF;
     sy0 = (int)((float)y0 * 4.0f) & 0xFFF;
@@ -629,10 +632,10 @@ extern char D_00000000;
 
 void gui_spriteLoad(char *a0, int a1) {
     int saved;
-    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
-    *(int*)(a0 + 0x14) = a1;
+    GUISPRITE(a0)->fileId = a1;
     saved = CALL(app_setHeapMode)(7);
-    *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
+    /* RAW: data-table: D_00000000 + 0x150 is a USO-local pool word (the BinFileMgr) */
+    *(int *)&GUISPRITE(a0)->image = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), GUISPRITE(a0)->fileId);
     CALL(app_setHeapMode)(saved);
 }
 
@@ -645,11 +648,11 @@ extern int gui_func_00000000();
 extern char D_00000000;
 
 void gui_spriteRelease(char *a0) {
-    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
-    if (*(int*)(a0 + 0x10) != 0) {
-        XCALL(gui_func_00000000, BinFileMgr_getRelease)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14), a0); /* RAW: unknown-object (as above) */
+    if (GUISPRITE(a0)->image != 0) {
+        /* RAW: data-table: D_00000000 + 0x150 is a USO-local pool word (the BinFileMgr) */
+        XCALL(gui_func_00000000, BinFileMgr_getRelease)((*(int *)((char *)&D_00000000 + 0x150)), GUISPRITE(a0)->fileId, a0);
     }
-    *(int*)(a0 + 0x10) = 0; /* RAW: unknown-object (as above) */
+    GUISPRITE(a0)->image = 0;
 }
 
 extern int gl_func_00000000();
@@ -657,15 +660,16 @@ void gui_spriteRefresh(char *a0) {
     int saved;
     int v0;
     int v1;
-    /* RAW: unknown-object: the gui sprite (file id 0x14, handle 0x10) is untyped; D_00000000 + 0x150 is a USO-local pool word */
-    if (*(int*)(a0 + 0x14) == -1) {
-        *(int*)(a0 + 0x14) = 0; /* RAW: unknown-object (as above) */
+    if (GUISPRITE(a0)->fileId == -1) {
+        GUISPRITE(a0)->fileId = 0;
     }
     saved = CALL(app_setHeapMode)(7);
-    v0 = CALL(BinFileMgr_get_00068730)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
-    v1 = *(int*)(a0 + 0x10); /* RAW: unknown-object (as above) */
+    /* RAW: data-table: D_00000000 + 0x150 is a USO-local pool word (the BinFileMgr) */
+    v0 = CALL(BinFileMgr_get_00068730)((*(int *)((char *)&D_00000000 + 0x150)), GUISPRITE(a0)->fileId);
+    v1 = (int)GUISPRITE(a0)->image;
     if (v1 == 0 || v0 != v1) {
-        *(int*)(a0 + 0x10) = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), *(int*)(a0 + 0x14)); /* RAW: unknown-object (as above) */
+        /* RAW: data-table (as above) */
+        *(int *)&GUISPRITE(a0)->image = CALL(BinFileMgr_getAcquire)((*(int *)((char *)&D_00000000 + 0x150)), GUISPRITE(a0)->fileId);
     }
     CALL(app_setHeapMode)(saved);
 }
