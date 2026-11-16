@@ -8,6 +8,10 @@ extern char D_00000000;
 /* nameent.uso's own Data section base (Data-base relocs, in-place addend = offset; pinned at
  * 0 in undefined_syms_auto.txt). */
 extern char ne_data[];
+/* void-typed alias of the placeholder (pinned 0): a call whose dead int return would hold v0. */
+extern void ne_func_00000000_v();
+/* gui.uso Bss (the gui draw state: gui_setColor / gui_setFillColor / gui_fillRect first argument). */
+extern char ne_gGui;
 
 /* nameent_uso_func_00000000: empty function. */
 void nameent_uso_func_00000000(void) {
@@ -59,13 +63,11 @@ void nameent_uso_func_000000C8(char *self) {
 
 /* nameent_uso_func_00000150: update: stick sound from pad 1, then the phase's virtual
  * (slots 14 / 15 / 16 by +0x60). */
-#ifdef NON_MATCHING
-/* NM 41/45 words: the target keeps the phase in v0 (then reuses v0 for the vtable); cfe colours
- * the phase v1 under switch, return, vt-local and int-array spellings. */
+/* The stick-sound call goes through a void alias: its dead int return would hold v0, and the
+ * target keeps the phase (then the vtable) in v0. */
 void nameent_uso_func_00000150(char *self) {
-    char *pad = (char *)gl_func_00000000(&D_00000000, 1); /* input_getPad_00011D40 */
-    gl_func_00000000( /* snd_setPlayer3FreqScaleFromStick */
-        *(signed char *)(pad + 8), *(signed char *)(pad + 9));
+    char *pad = (char *)CALL(input_getPad_00011D40)(&D_00000000, 1);
+    XCALL(ne_func_00000000_v, snd_setPlayer3FreqScaleFromStick)(*(signed char *)(pad + 8), *(signed char *)(pad + 9));
     switch (*(int *)(self + 0x60)) {
     case 0:
         VT_SLOT(NODE(self)->vptr, 14).fn(VT_SLOT(NODE(self)->vptr, 14).delta + self);
@@ -78,9 +80,6 @@ void nameent_uso_func_00000150(char *self) {
         return;
     }
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_00000150);
-#endif
 
 /* nameent_uso_func_00000204: display by phase (+0x60): phases 0 / 1 draw the sprites (5B4) and
  * the board (2F4) or a cleared screen (458), then the phase's virtual (slots 17 / 18 / 19). */
@@ -110,7 +109,50 @@ void nameent_uso_func_00000204(char *self) {
     }
 }
 
+/* nameent_uso_func_000002F4: board draw: the name-board image (a copy of the Data+0x158 image
+ * header with the current rider's texture from virtual slot 11) centred on the cursor x (+0x58)
+ * at y 40 in white, then the two black letterbox bars. */
+typedef struct NeImage {
+    /* 0x00 */ int tex;
+    /* 0x04 */ int width;
+    /* 0x08 */ int rest[4];
+} NeImage;
+/* NM 84/89: the target holds the rider object in v1 and its vtable in v0 (cfe: the reverse);
+ * the volatile pads give the target's frame (0x80). */
+#ifdef NON_MATCHING
+void nameent_uso_func_000002F4(char *self) {
+    int x;
+    volatile int pad1[2];
+    float col[4];
+    NeImage img;
+    float black[4];
+    volatile int pad2[4];
+    char *obj;
+    char *vt;
+
+    col[0] = 1.0f;
+    col[1] = 1.0f;
+    col[2] = 1.0f;
+    col[3] = 1.0f;
+    img = *(NeImage *)(ne_data + 0x158);
+    obj = *(char **)(*(char **)((char *)&D_00000000 + 0x134) + 0x108);
+    vt = NODE(obj)->vptr;
+    img.tex = ((int (*)(int))VT_SLOT(vt, 11).fn)(VT_SLOT(vt, 11).delta + (int)obj);
+    gl_func_00000000(&img); /* gui_beginFrame_000016A4 */
+    x = *(int *)(self + 0x58) - img.width / 2;
+    gl_func_00000000(&img, 128, col, 255); /* gui_setColorEnvPrim_00002334 */
+    gl_func_00000000(&img, x, 40); /* gui_drawImage_00003B80 */
+    black[0] = 0.0f;
+    black[1] = 0.0f;
+    black[2] = 0.0f;
+    black[3] = 0.0f;
+    gl_func_00000000(&ne_gGui, 255, black); /* gui_setFillColor_00001CA8 */
+    gl_func_00000000(&ne_gGui, 0, 0, 319, 7, 0x10001); /* gui_fillRect */
+    gl_func_00000000(&ne_gGui, 0, 232, 319, 239, 0x10001); /* gui_fillRect */
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/nameent_uso/nameent_uso", nameent_uso_func_000002F4);
+#endif
 
 /* nameent_uso_func_00000458: clear the screen: fill colour {0, 0, 0, 0} at alpha 255, then a
  * full-screen 320x240 fillRect (as tit_WhiteFader_display). */

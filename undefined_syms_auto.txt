@@ -5768,6 +5768,8 @@ trn_ro_28 = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_u
 trn_ro_2C = 0x00000000;  /* trnproc RoData float pin, addend = offset (trnproc_uso.c) */
 trn_sprites = 0x00000000;  /* trnproc Bss+0x0 sprite table pin (trnproc_uso.c B78) */
 ne_data = 0x00000000;  /* nameent.uso Data section base */
+ne_gGui = 0x00000000;  /* gui.uso Bss draw state (nameent import) */
+ne_func_00000000_v = 0x00000000;  /* void-typed call alias (nameent_uso.c 150: frees v0 for the phase) */
 snow_ro_20 = 0x00000020;  /* snoweffects RoData+0x20 float (0x3EE4 emitter default, own lui) */
 snow_ro_24 = 0x00000024;  /* snoweffects RoData+0x24 float (0x3EE4 emitter default, own lui) */
 snowLink_vtbl_9C4 = 0x00000000;  /* snoweffects Data+0x9C4 SnowLink vtable (0x9E88; reloc on the object, lo16 0) */
