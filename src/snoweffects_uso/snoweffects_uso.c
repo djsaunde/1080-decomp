@@ -723,7 +723,39 @@ void snoweffects_uso_func_00005440(int a0, int a1) {
     (void)&a1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000544C);
+/* SnowRing update: virtual slot 12, then step the live slots' points from the read cursor (drag by
+ * +0x44 on the velocity, w[0] accumulates +0x48 and feeds vel.y, w[1] decays by w[2]), then Node_update */
+void snoweffects_uso_func_0000544C(SnowRing *this) {
+    int idx, n, k, j;
+    SnowPoint *pt;
+    VT_SLOT(this->node.vptr, 12).fn((char *)this + VT_SLOT(this->node.vptr, 12).delta);
+    idx = this->readOfs;
+    n = CALL(SnowRing_countSlots_000053E8)(this);
+    if (n >= 2) {
+        for (k = 0; k < n;) {
+            pt = &this->points[idx];
+            j = 0;
+            k++; /* counted here: the addiu sits between the j = 0 and the index mflo */
+            for (; j < this->stride; j++, pt++) {
+                f32 drag = this->unk44;
+                pt->vel.x *= drag;
+                pt->vel.y *= drag;
+                pt->vel.z *= drag;
+                pt->w[0] += this->unk48;
+                pt->vel.y += pt->w[0];
+                pt->pos.x += pt->vel.x;
+                pt->pos.y += pt->vel.y;
+                pt->pos.z += pt->vel.z;
+                pt->w[1] -= pt->w[2];
+            }
+            idx += this->stride;
+            if (idx == this->size) {
+                idx = 0;
+            }
+        }
+    }
+    CALL(Node_update)(this);
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000559C);
 
