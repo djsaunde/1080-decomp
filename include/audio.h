@@ -23,6 +23,7 @@
 
 #include "common.h"
 #include "libultra/os_task.h" /* OSTask_t (AudioTask) */
+#include "libultra/os_message.h" /* OSMesgQueue (curAudioFrameDmaQueue) */
 
 /* One RSP audio task (OoT AudioTask, 0x50; AudioContext.rspTask[2]): AudioLoad_Init clears
  * task.data_size of both, AudioThread_Update fills them (agent-c run 525). */
@@ -701,7 +702,7 @@ typedef struct AudioContext {
     /* 0x1664 */ void *externalLoadMsgBuf[8];
     /* 0x1684 */ u8 preloadSampleQueue[0x18];         /* OSMesgQueue */
     /* 0x169C */ void *preloadSampleMsgBuf[8];
-    /* 0x16BC */ u8 curAudioFrameDmaQueue[0x18];      /* OSMesgQueue (UpdateImpl, DmaSampleData) */
+    /* 0x16BC */ OSMesgQueue curAudioFrameDmaQueue;   /* UpdateImpl (MQ_GET_COUNT), DmaSampleData */
     /* 0x16D4 */ void *curAudioFrameDmaMsgBuf[0x40];
     /* 0x17D4 */ u8 curAudioFrameDmaIoMsgBuf[0x40][0x18]; /* OSIoMesg[64] (DmaSampleData) */
     /* 0x1DD4 */ u8 syncDmaQueue[0x18];               /* OSMesgQueue (AudioLoad_SyncDma) */

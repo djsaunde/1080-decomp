@@ -1,4 +1,5 @@
 #include "common.h"
+#include "audio.h"
 
 /* IDO 7.1 -O2 donor for AudioThread_UpdateImpl (0x57C / 351 words) = OoT's
  * AudioThread_UpdateImpl (thread.c) in its older form: no AudioLoad_ProcessScriptLoads,
@@ -9,36 +10,18 @@
  * instead of taking s1), and the sMaxAbiCmdCnt store bound to its own symbol at the
  * same address (the target does not share the lui/addiu base between the load and the
  * store). Spliced into game_libs_post.c.o via REPLACE_FUNC_BODY (no rodata). */
-typedef struct { void *a; void *b; s32 validCount; } gl_26214_OSMesgQueue;
-typedef struct {
-    u32 type; u32 flags; u64 *ucode_boot; u32 ucode_boot_size; u64 *ucode; u32 ucode_size;
-    u64 *ucode_data; u32 ucode_data_size; u64 *dram_stack; u32 dram_stack_size;
-    u64 *output_buff; u64 *output_buff_size; u64 *data_ptr; u32 data_size;
-    u64 *yield_data_ptr; u32 yield_data_size;
-} gl_26214_OSTask_t;
-typedef struct { gl_26214_OSTask_t t; void *msgQueue; void *unk_44; char pad48[8]; } gl_26214_AudioTask;
-typedef struct {
-    char pad0[0x16BC]; gl_26214_OSMesgQueue curAudioFrameDmaQueue;
-    char pad16c8[0x2034 - 0x16C8]; s16 specUnk4; char pad2036[4]; s16 samplesPerFrameTarget;
-    s16 maxAiBufferLength; s16 minAiBufferLength; char pad2040[0x2078 - 0x2040];
-    s32 totalTaskCount; s32 curAudioFrameDmaCount; s32 rspTaskIndex; s32 curAiBufIndex;
-    u64 *abiCmdBufs[2]; u64 *curAbiCmdBuf; gl_26214_AudioTask *curTask; gl_26214_AudioTask rspTask[2];
-    char pad2138[0x2140 - 0x2138]; s16 *aiBuffers[3]; s16 aiBufLengths[3]; char pad2152[2];
-    u32 audioRandom; char pad2158[4]; volatile u32 resetTimer; char pad2160[0x2CF0 - 0x2160];
-    volatile u8 resetStatus; u8 specId; char pad2cf2[0x53BA - 0x2CF2]; u8 threadCmdQueueFinished;
-    char pad53bb[0x53C4 - 0x53BB]; void *audioResetQueueP; void *taskStartQueueP; void *threadCmdProcQueueP;
-} gl_26214_Ctx;
-extern gl_26214_Ctx gAudioContext_26214;
+/* AudioContext / AudioTask / OSTask_t / OSMesgQueue from include/audio.h (agent-c run 535). */
+extern AudioContext gAudioContext_26214;
 #define gAudioCtx gAudioContext_26214
 extern void (*gl_26214_gAudioCustomUpdateFunction)(void);
 extern s32 gl_26214_sMaxAbiCmdCnt;
 extern s32 gl_26214_sMaxAbiCmdCntW;
-extern gl_26214_AudioTask *gl_26214_sWaitingAudioTask;
+extern AudioTask *gl_26214_sWaitingAudioTask;
 extern s16 *gl_26214_gWaveSamples[];
 extern u64 gl_26214_aspMainTextStart[];
 extern u64 gl_26214_aspMainDataStart[];
 extern u64 gl_26214_aspMainDataEnd[];
-extern gl_26214_AudioTask *gl_26214_AudioThread_Update(void);
+extern AudioTask *gl_26214_AudioThread_Update(void);
 extern void gl_ref_0003B3D0(u32);
 extern int gl_func_00000000();
 #define gAudioCustomUpdateFunction gl_26214_gAudioCustomUpdateFunction
@@ -72,14 +55,14 @@ extern u64 *gl_26214_AudioSynth_Update(u64 *, s32 *, s16 *, s32);
 #define AudioSynth_Update gl_26214_AudioSynth_Update
 #define MQ_GET_COUNT(q) ((q)->validCount)
 
-gl_26214_AudioTask *AudioThread_UpdateImpl(void) {
+AudioTask *AudioThread_UpdateImpl(void) {
     u32 samplesRemainingInAi;
     s32 abiCmdCnt;
     s32 pad;
     s32 j;
     s32 sp5C;
     s16 *curAiBuffer;
-    gl_26214_OSTask_t *task;
+    OSTask_t *task;
     s32 index;
     u32 sp4C;
     s32 sp48;
@@ -197,10 +180,10 @@ gl_26214_AudioTask *AudioThread_UpdateImpl(void) {
     gWaveSamples[8] = (s16 *)((u8 *)AudioThread_Update + (gAudioCtx.audioRandom & 0xFFF0));
 
     index = gAudioCtx.rspTaskIndex;
-    gAudioCtx.curTask->msgQueue = NULL;
+    gAudioCtx.curTask->taskQueue = NULL;
     gAudioCtx.curTask->unk_44 = NULL;
 
-    task = &gAudioCtx.curTask->t;
+    task = &gAudioCtx.curTask->task;
     task->type = 2;
     task->flags = 0;
     task->ucode_boot = aspMainTextStart;
