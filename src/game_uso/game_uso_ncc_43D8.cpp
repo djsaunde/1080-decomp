@@ -1,3 +1,4 @@
+#include "../../include/game/game_uso_data.h"
 /* IDO 7.1 NCC (C++) donor for CourseMarker_findNearestZ_000043D8 (0xF0 / 60 words).
  *
  * Nearest neighbours of a1's value among the owner's children (skipping
@@ -24,8 +25,8 @@ struct Iter {
 struct Owner { char pad[0x10]; Link *head; };
 struct Ref { char pad[8]; float v; };
 extern "C" Node *CourseMarker_findNearestZ_000043D8(Owner *o, Ref *a1, Node *skip) {
-    float fmin = *(float *)(&D_43D8_fmin + 0x94); /* FLT_MAX */
-    float fmax = *(float *)(&D_43D8_fmax + 0x98); /* -FLT_MAX */
+    float fmin = *(float *)(&D_43D8_fmin + kRoF_FLT_MAX_94); /* FLT_MAX */
+    float fmax = *(float *)(&D_43D8_fmax + kRoF_mFLT_MAX_98); /* -FLT_MAX */
     Node *above = 0;
     Node *below = 0;
     Iter it(o->head);

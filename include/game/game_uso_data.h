@@ -146,6 +146,32 @@
 #define kTag_stm_12A8 0x12A8 /* Data+0x12A8: "stm" */
 /* float / double constants (the type is the one the site reads) */
 #define kDataF_60_1098 0x1098 /* Data+0x1098: f32 60.0 */
+#define kRoF_FLT_MAX_94 0x94 /* RoData+0x94: f32 3.4028235e+38 */
+#define kRoF_mFLT_MAX_98 0x98 /* RoData+0x98: f32 -3.4028235e+38 */
+#define kRoF_m10000_9C 0x9C /* RoData+0x9C: f32 -10000.0 */
+#define kRoF_m10000_A0 0xA0 /* RoData+0xA0: f32 -10000.0 */
+#define kRoF_m10000_A4 0xA4 /* RoData+0xA4: f32 -10000.0 */
+#define kRoF_m3000_A8 0xA8 /* RoData+0xA8: f32 -3000.0 */
+#define kRoF_m15000_AC 0xAC /* RoData+0xAC: f32 -15000.0 */
+#define kRoF_m15000_B0 0xB0 /* RoData+0xB0: f32 -15000.0 */
+#define kRoF_m10000_B4 0xB4 /* RoData+0xB4: f32 -10000.0 */
+#define kRoF_m10000_B8 0xB8 /* RoData+0xB8: f32 -10000.0 */
+#define kRoF_m10000_BC 0xBC /* RoData+0xBC: f32 -10000.0 */
+#define kRoF_m10000_C0 0xC0 /* RoData+0xC0: f32 -10000.0 */
+#define kRoF_m10000_C4 0xC4 /* RoData+0xC4: f32 -10000.0 */
+#define kRoF_m10000_C8 0xC8 /* RoData+0xC8: f32 -10000.0 */
+#define kRoF_m10000_CC 0xCC /* RoData+0xCC: f32 -10000.0 */
+#define kRoF_m10000_D0 0xD0 /* RoData+0xD0: f32 -10000.0 */
+#define kRoF_m10000_D4 0xD4 /* RoData+0xD4: f32 -10000.0 */
+#define kRoF_1p1_D8 0xD8 /* RoData+0xD8: f32 1.1 */
+#define kRoF_m6000_DC 0xDC /* RoData+0xDC: f32 -6000.0 */
+#define kRoF_m6000_E0 0xE0 /* RoData+0xE0: f32 -6000.0 */
+#define kRoF_m6000_E4 0xE4 /* RoData+0xE4: f32 -6000.0 */
+#define kRoF_2p4_E8 0xE8 /* RoData+0xE8: f32 2.4 */
+#define kRoF_0p4_EC 0xEC /* RoData+0xEC: f32 0.4 */
+#define kRoF_0p3_F0 0xF0 /* RoData+0xF0: f32 0.3 */
+#define kRoF_0p8_F4 0xF4 /* RoData+0xF4: f32 0.8 */
+#define kRoF_m100000_F8 0xF8 /* RoData+0xF8: f32 -100000.0 */
 #define kRoF_FLT_MAX_110 0x110 /* RoData+0x110: f32 3.4028235e+38 */
 #define kRoF_FLT_MAX_114 0x114 /* RoData+0x114: f32 3.4028235e+38 */
 #define kRoF_16000000_140 0x140 /* RoData+0x140: f32 16000000.0 */

@@ -2021,24 +2021,24 @@ skip_head:
         ((SnowAIParm *)s0)->value = (FLOAT_EXPR); \
 skip_##ID:;
 
-        INIT_ITER(0,  SNOWAI_PARM_DE + 0,  0x6E8, *(float*)((char*)&D_44F4_iter0 + 0x9C), D_44F4_iter0)   /* iter 0 */
-        INIT_ITER(A,  SNOWAI_PARM_DE + 1,  0x6EC, *(float*)((char*)&D_44F4_iterA + 0xA0), D_44F4_iterA)   /* A */
-        INIT_ITER(B,  SNOWAI_PARM_DE + 2,  0x6F0, *(float*)((char*)&D_44F4_iterB + 0xA4), D_44F4_iterB)   /* B */
+        INIT_ITER(0,  SNOWAI_PARM_DE + 0,  0x6E8, *(float*)((char*)&D_44F4_iter0 + kRoF_m10000_9C), D_44F4_iter0)   /* iter 0 */
+        INIT_ITER(A,  SNOWAI_PARM_DE + 1,  0x6EC, *(float*)((char*)&D_44F4_iterA + kRoF_m10000_A0), D_44F4_iterA)   /* A */
+        INIT_ITER(B,  SNOWAI_PARM_DE + 2,  0x6F0, *(float*)((char*)&D_44F4_iterB + kRoF_m10000_A4), D_44F4_iterB)   /* B */
         INIT_ITER(C,  SNOWAI_PARM_BD + 0,  0x6F4, -800.0f,                                D_44F4_iterC)   /* C (lui 0xC448) */
-        INIT_ITER(D,  SNOWAI_PARM_BD + 1,  0x6F8, *(float*)((char*)&D_44F4_iterD + 0xA8), D_44F4_iterD)   /* D */
-        INIT_ITER(E,  SNOWAI_PARM_BD + 2,  0x6FC, *(float*)((char*)&D_44F4_iterE + 0xAC), D_44F4_iterE)   /* E */
+        INIT_ITER(D,  SNOWAI_PARM_BD + 1,  0x6F8, *(float*)((char*)&D_44F4_iterD + kRoF_m3000_A8), D_44F4_iterD)   /* D */
+        INIT_ITER(E,  SNOWAI_PARM_BD + 2,  0x6FC, *(float*)((char*)&D_44F4_iterE + kRoF_m15000_AC), D_44F4_iterE)   /* E */
         INIT_ITER(F,  SNOWAI_PARM_BT + 0,  0x700, -4000.0f,                               D_44F4_iterF)   /* F (lui 0xC57A) */
         INIT_ITER(G,  SNOWAI_PARM_BT + 1,  0x704, -8000.0f,                               D_44F4_iterG)   /* G (lui 0xC5FA) */
-        INIT_ITER(H,  SNOWAI_PARM_BT + 2,  0x708, *(float*)((char*)&D_44F4_iterH + 0xB0), D_44F4_iterH)   /* H */
-        INIT_ITER(I,  SNOWAI_PARM_BU + 0,  0x70C, *(float*)((char*)&D_44F4_iterI + 0xB4), D_44F4_iterI)   /* I */
-        INIT_ITER(J,  SNOWAI_PARM_BU + 1,  0x710, *(float*)((char*)&D_44F4_iterJ + 0xB8), D_44F4_iterJ)   /* J */
-        INIT_ITER(K,  SNOWAI_PARM_BU + 2, 0x714, *(float*)((char*)&D_44F4_iterK + 0xBC), D_44F4_iterK)   /* K */
-        INIT_ITER(L,  SNOWAI_PARM_BJ + 0, 0x718, *(float*)((char*)&D_44F4_iterL + 0xC0), D_44F4_iterL)   /* L */
-        INIT_ITER(M,  SNOWAI_PARM_BJ + 1, 0x71C, *(float*)((char*)&D_44F4_iterM + 0xC4), D_44F4_iterM)   /* M */
-        INIT_ITER(N,  SNOWAI_PARM_BJ + 2, 0x720, *(float*)((char*)&D_44F4_iterN + 0xC8), D_44F4_iterN)   /* N */
-        INIT_ITER(O,  SNOWAI_PARM_CF + 0, 0x724, *(float*)((char*)&D_44F4_iterO + 0xCC), D_44F4_iterO)   /* O */
-        INIT_ITER(P,  SNOWAI_PARM_CF + 1, 0x728, *(float*)((char*)&D_44F4_iterP + 0xD0), D_44F4_iterP)   /* P */
-        INIT_ITER(Q,  SNOWAI_PARM_CF + 2, 0x72C, *(float*)((char*)&D_44F4_iterQ + 0xD4), D_44F4_iterQ)   /* Q */
+        INIT_ITER(H,  SNOWAI_PARM_BT + 2,  0x708, *(float*)((char*)&D_44F4_iterH + kRoF_m15000_B0), D_44F4_iterH)   /* H */
+        INIT_ITER(I,  SNOWAI_PARM_BU + 0,  0x70C, *(float*)((char*)&D_44F4_iterI + kRoF_m10000_B4), D_44F4_iterI)   /* I */
+        INIT_ITER(J,  SNOWAI_PARM_BU + 1,  0x710, *(float*)((char*)&D_44F4_iterJ + kRoF_m10000_B8), D_44F4_iterJ)   /* J */
+        INIT_ITER(K,  SNOWAI_PARM_BU + 2, 0x714, *(float*)((char*)&D_44F4_iterK + kRoF_m10000_BC), D_44F4_iterK)   /* K */
+        INIT_ITER(L,  SNOWAI_PARM_BJ + 0, 0x718, *(float*)((char*)&D_44F4_iterL + kRoF_m10000_C0), D_44F4_iterL)   /* L */
+        INIT_ITER(M,  SNOWAI_PARM_BJ + 1, 0x71C, *(float*)((char*)&D_44F4_iterM + kRoF_m10000_C4), D_44F4_iterM)   /* M */
+        INIT_ITER(N,  SNOWAI_PARM_BJ + 2, 0x720, *(float*)((char*)&D_44F4_iterN + kRoF_m10000_C8), D_44F4_iterN)   /* N */
+        INIT_ITER(O,  SNOWAI_PARM_CF + 0, 0x724, *(float*)((char*)&D_44F4_iterO + kRoF_m10000_CC), D_44F4_iterO)   /* O */
+        INIT_ITER(P,  SNOWAI_PARM_CF + 1, 0x728, *(float*)((char*)&D_44F4_iterP + kRoF_m10000_D0), D_44F4_iterP)   /* P */
+        INIT_ITER(Q,  SNOWAI_PARM_CF + 2, 0x72C, *(float*)((char*)&D_44F4_iterQ + kRoF_m10000_D4), D_44F4_iterQ)   /* Q */
         INIT_ITER(R,  SNOWAI_PARM_DD0 + 0, 0x730, 1200.0f,                                D_44F4_iterR)   /* R (lui 0x4496) */
         INIT_ITER(S,  SNOWAI_PARM_DD0 + 1, 0x734, 1200.0f,                                D_44F4_iterS)   /* S */
         INIT_ITER(T,  SNOWAI_PARM_DD0 + 2, 0x738, 1200.0f,                                D_44F4_iterT)   /* T */
@@ -2046,14 +2046,14 @@ skip_##ID:;
         INIT_ITER(V,  SNOWAI_PARM_DD1 + 1, 0x740, 60.0f,                                  D_44F4_iterV)   /* V */
         INIT_ITER(W,  SNOWAI_PARM_DD1 + 2, 0x744, 60.0f,                                  D_44F4_iterW)   /* W */
         INIT_ITER(X,  SNOWAI_PARM_DD2 + 0, 0x748, 1.5f,                                   D_44F4_iterX)   /* X (lui 0x3FC0) */
-        INIT_ITER(Y,  SNOWAI_PARM_DD2 + 1, 0x74C, *(float*)((char*)&D_44F4_iterY + 0xD8), D_44F4_iterY)   /* Y */
+        INIT_ITER(Y,  SNOWAI_PARM_DD2 + 1, 0x74C, *(float*)((char*)&D_44F4_iterY + kRoF_1p1_D8), D_44F4_iterY)   /* Y */
         INIT_ITER(Z,  SNOWAI_PARM_DD2 + 2, 0x750, 1.5f,                                   D_44F4_iterZ)   /* Z */
         INIT_ITER(AA, SNOWAI_PARM_DP + 0, 0x754, 2000.0f,                                D_44F4_iterAA)  /* AA (lui 0x44FA) */
         INIT_ITER(BB, SNOWAI_PARM_DP + 1, 0x758, 2000.0f,                                D_44F4_iterBB)  /* BB */
         INIT_ITER(CC, SNOWAI_PARM_DP + 2, 0x75C, 2000.0f,                                D_44F4_iterCC)  /* CC */
-        INIT_ITER(DD, SNOWAI_PARM_SE + 0, 0x760, *(float*)((char*)&D_44F4_iterDD + 0xDC), D_44F4_iterDD) /* DD */
-        INIT_ITER(EE, SNOWAI_PARM_SE + 1, 0x764, *(float*)((char*)&D_44F4_iterEE + 0xE0), D_44F4_iterEE) /* EE */
-        INIT_ITER(FF, SNOWAI_PARM_SE + 2, 0x768, *(float*)((char*)&D_44F4_iterFF + 0xE4), D_44F4_iterFF) /* FF */
+        INIT_ITER(DD, SNOWAI_PARM_SE + 0, 0x760, *(float*)((char*)&D_44F4_iterDD + kRoF_m6000_DC), D_44F4_iterDD) /* DD */
+        INIT_ITER(EE, SNOWAI_PARM_SE + 1, 0x764, *(float*)((char*)&D_44F4_iterEE + kRoF_m6000_E0), D_44F4_iterEE) /* EE */
+        INIT_ITER(FF, SNOWAI_PARM_SE + 2, 0x768, *(float*)((char*)&D_44F4_iterFF + kRoF_m6000_E4), D_44F4_iterFF) /* FF */
         INIT_ITER(GG, SNOWAI_PARM_MS + 0, 0x76C, 240.0f,                                 D_44F4_iterGG)  /* GG (lui 0x4370) */
         INIT_ITER(HH, SNOWAI_PARM_MS + 1, 0x770, 240.0f,                                 D_44F4_iterHH)  /* HH */
         INIT_ITER(II, SNOWAI_PARM_MS + 2, 0x774, 240.0f,                                 D_44F4_iterII)  /* II */
@@ -2506,20 +2506,20 @@ finalize:;
         *(int*)&AI(a0)->rider = a1;
         AI(a0)->level = a2;
         AI(a0)->lookAhead = 0.0f;
-        AI(a0)->turnGain = *(float*)((char*)&D_44F4_st12_E8 + 0xE8);
+        AI(a0)->turnGain = *(float*)((char*)&D_44F4_st12_E8 + kRoF_2p4_E8);
         AI(a0)->turnSpeedRef = 500.0f;
         AI(a0)->minSpeed = 70.0f;
         AI(a0)->crouchSteerRef = 230.0f;
-        AI(a0)->stallYaw = *(float*)((char*)&D_44F4_st12_EC + 0xEC);
+        AI(a0)->stallYaw = *(float*)((char*)&D_44F4_st12_EC + kRoF_0p4_EC);
         AI(a0)->reachTime = 12.0f;
-        AI(a0)->dParmsSteer = *(float*)((char*)&D_44F4_st12_F0 + 0xF0);
+        AI(a0)->dParmsSteer = *(float*)((char*)&D_44F4_st12_F0 + kRoF_0p3_F0);
         AI(a0)->dParmsSteerScale = 2.0f;
         AI(a0)->aimRange = 50.0f;
         AI(a0)->rivalPathTime = 20.0f;
         AI(a0)->rivalPathDist = 500.0f;
         AI(a0)->weaveLeadTime = 15.0f;
-        AI(a0)->weaveSideScale = *(float*)((char*)&D_44F4_st12_F4 + 0xF4);
-        AI(a0)->weaveLead = *(float*)((char*)&D_44F4_st12_F8 + 0xF8);
+        AI(a0)->weaveSideScale = *(float*)((char*)&D_44F4_st12_F4 + kRoF_0p8_F4);
+        AI(a0)->weaveLead = *(float*)((char*)&D_44F4_st12_F8 + kRoF_m100000_F8);
         AI(a0)->leadLimit = 1000.0f;
         AI(a0)->unk4DC = 3;
     }
