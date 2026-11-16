@@ -1,5 +1,7 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"
+#include "gdl/item.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
@@ -7,6 +9,13 @@ extern char D_00000000;
 typedef struct { int a, b, c, d; } Quad4;
 typedef struct { int a, b, c; } Tri3i;
 typedef struct { float x, y, z; } Vec3;
+
+/* the 0x40-byte course item the ItemType create methods allocate (0x7D8C / 0x91BC, the
+ * edd_ItemType_create_000003BC twin): a ColourItem plus one word the create clears */
+typedef struct SnowColourItem {
+    /* 0x00 */ ColourItem base;
+    /* 0x3C */ s32 unk3C;
+} SnowColourItem;
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
@@ -119,13 +128,36 @@ void snoweffects_uso_func_00003D34(char *a0) {
     snoweffects_uso_func_0000019C((Vec3 *)(a0 + 0x10));
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003D70);
+void snoweffects_uso_func_00003D70(int *dst) {
+    int buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003DAC);
+void snoweffects_uso_func_00003DAC(float *dst) {
+    float buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003DE8);
+void snoweffects_uso_func_00003DE8(Quad4 *dst) {
+    Quad4 buf;
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+    *dst = buf;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003E40);
+void snoweffects_uso_func_00003E40(Vec3 *dst) {
+    int pad_top[1];
+    Tri3i raw;
+    int pad_mid[2];
+    Tri3i tmp;
+    int pad_bot[2];
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+    tmp = raw;
+    dst->x = *(float*)&tmp.a;
+    dst->y = *(float*)&tmp.b;
+    dst->z = *(float*)&tmp.c;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00003EB0);
 
@@ -199,23 +231,83 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007CCC);
+void snoweffects_uso_func_00007CCC(char *a0) {
+    int tag;
+    snoweffects_uso_func_00003D70(&tag);
+    snoweffects_uso_func_00003DAC((float *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007CFC);
+void snoweffects_uso_func_00007CFC(char *a0) {
+    int tag;
+    snoweffects_uso_func_00003D70(&tag);
+    snoweffects_uso_func_00003DE8((Quad4 *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007D2C);
+void snoweffects_uso_func_00007D2C(char *a0) {
+    int tag;
+    snoweffects_uso_func_00003D70(&tag);
+    snoweffects_uso_func_00003D70((int *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007D5C);
+void snoweffects_uso_func_00007D5C(char *a0) {
+    int tag;
+    snoweffects_uso_func_00003D70(&tag);
+    snoweffects_uso_func_00003E40((Vec3 *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007D8C);
+void *snoweffects_uso_func_00007D8C(int *arg0) {
+    int *p2;
+    int *head;
+    int *p1;
+    p1 = (int*)CALL(mem_new)(0x40);
+    if (p1 != 0) {
+        CALL(ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (char *)&D_00000000;
+        ((SnowColourItem *)p1)->unk3C = 0;
+    }
+    p2 = p1;
+    p1 = arg0;
+    head = (int*)p1[0x40 / 4];
+    if ((int*)p1[0x40 / 4] != 0) {
+        CALL(list_append)((char*)p2 + 0x10, head);
+        if ((int)NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
+        }
+        NODE(head)->parent = (Node *)p2;
+    }
+    return p2;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007E20);
+void snoweffects_uso_func_00007E20(int *dst) {
+    int buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007E5C);
+void snoweffects_uso_func_00007E5C(float *dst) {
+    float buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007E98);
+void snoweffects_uso_func_00007E98(Quad4 *dst) {
+    Quad4 buf;
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+    *dst = buf;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007EF0);
+void snoweffects_uso_func_00007EF0(Vec3 *dst) {
+    int pad_top[1];
+    Tri3i raw;
+    int pad_mid[2];
+    Tri3i tmp;
+    int pad_bot[2];
+    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+    tmp = raw;
+    dst->x = *(float*)&tmp.a;
+    dst->y = *(float*)&tmp.b;
+    dst->z = *(float*)&tmp.c;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007F60);
 
@@ -232,30 +324,85 @@ void snoweffects_uso_func_000090F0(int a0, int a1) {
     (void)&a1;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000090FC);
+void snoweffects_uso_func_000090FC(char *a0) {
+    int tag;
+    snoweffects_uso_func_00007E20(&tag);
+    snoweffects_uso_func_00007E5C((float *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000912C);
+void snoweffects_uso_func_0000912C(char *a0) {
+    int tag;
+    snoweffects_uso_func_00007E20(&tag);
+    snoweffects_uso_func_00007E98((Quad4 *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000915C);
+void snoweffects_uso_func_0000915C(char *a0) {
+    int tag;
+    snoweffects_uso_func_00007E20(&tag);
+    snoweffects_uso_func_00007E20((int *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000918C);
+void snoweffects_uso_func_0000918C(char *a0) {
+    int tag;
+    snoweffects_uso_func_00007E20(&tag);
+    snoweffects_uso_func_00007EF0((Vec3 *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000091BC);
+void *snoweffects_uso_func_000091BC(int *arg0) {
+    int *p2;
+    int *head;
+    int *p1;
+    p1 = (int*)CALL(mem_new)(0x40);
+    if (p1 != 0) {
+        CALL(ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (char *)&D_00000000;
+        ((SnowColourItem *)p1)->unk3C = 0;
+    }
+    p2 = p1;
+    p1 = arg0;
+    head = (int*)p1[0x40 / 4];
+    if ((int*)p1[0x40 / 4] != 0) {
+        CALL(list_append)((char*)p2 + 0x10, head);
+        if ((int)NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
+        }
+        NODE(head)->parent = (Node *)p2;
+    }
+    return p2;
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009250);
+void snoweffects_uso_func_00009250(int *dst) {
+    int buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000928C);
+void snoweffects_uso_func_0000928C(float *dst) {
+    float buf[2];
+    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+    *dst = buf[0];
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000092C8);
+void snoweffects_uso_func_000092C8(Quad4 *dst) {
+    Quad4 buf;
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+    *dst = buf;
+}
 
 void snoweffects_uso_func_00009320(void) {
 }
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009328);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009704);
+void snoweffects_uso_func_00009704(char *a0) {
+    CALL(gfx_setBlendColour)(&D_00000000, a0 + 0x288);
+    CALL(SNode_display)(a0);
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000973C);
+void snoweffects_uso_func_0000973C(char *a0) {
+    CALL(Parms_load_00035C6C)(a0 + 0x240);
+    CALL(SNode_loadData)(a0);
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009768);
 
@@ -277,9 +424,21 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A760);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A870);
+void snoweffects_uso_func_0000A870(char *a0) {
+    int tag;
+    snoweffects_uso_func_00009250(&tag);
+    snoweffects_uso_func_0000928C((float *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A8A0);
+void snoweffects_uso_func_0000A8A0(char *a0) {
+    int tag;
+    snoweffects_uso_func_00009250(&tag);
+    snoweffects_uso_func_000092C8((Quad4 *)(a0 + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A8D0);
+void snoweffects_uso_func_0000A8D0(char *a0) {
+    int tag;
+    snoweffects_uso_func_00009250(&tag);
+    snoweffects_uso_func_00009250((int *)(a0 + 0x10));
+}
 

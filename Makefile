@@ -96,7 +96,7 @@ build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := g
 # snoweffects.uso is four C++ TUs linked into one Text (each TU's reader helpers repeat at
 # 0xCC / 0x3D70 / 0x7E20 / 0x9250); the 16-byte .text pad at the end of each TU is an all-zero
 # SUFFIX on that TU's last function (same mechanism as gui / h2hproc above).
-SNOW_SUFFIX := snoweffects_uso_func_00003D34=0x00000000,0x00000000,0x00000000
+SNOW_SUFFIX := snoweffects_uso_func_00003D34=0x00000000,0x00000000,0x00000000 snoweffects_uso_func_00007D8C=0x00000000 snoweffects_uso_func_000091BC=0x00000000
 build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
