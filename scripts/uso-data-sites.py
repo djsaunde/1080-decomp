@@ -1227,6 +1227,7 @@ def selftest_game(a):
     assert any(s.sym.is_base and s.sym.sect == 6 and s.k == 0xEC0 for s in g.by_func['RiderAnim_stateTrickStart'])
     m = GSITE_RE.search('AT(PM, &game_uso_D_807FF4B0, 0xEC0)')
     assert m and m.group(1) == 'game_uso_D_807FF4B0' and m.group(3) == '0xEC0'
+    assert [n for n, _, _ in game_spans('extern "C" int f(char *a) {\n    return 0;\n}\n')] == ['f']
     m = GSITE_RE.search('*(Pair2*)((char*)&D_00000000 + 0xE40)')
     assert m and m.group(1) == 'D_00000000' and m.group(3) == '0xE40'
     print('selftest game.uso OK')
@@ -1249,6 +1250,20 @@ GCONST_RE = re.compile(r'^\s*#\s*define\s+(k\w+)\s+(0x[0-9A-Fa-f]+)\s*/\*\s*(Dat
 GSECT = {'Data': 6, 'RoData': 7, 'Bss': 8}
 # a site literal K next to a zero placeholder: `&S + K`, `(char *)&S + K`, `(&S) + K`, `AT(T, &S, K)`
 GSITE_RE = re.compile(r'&\s*\(?\s*(game_uso_D_[0-9A-Fa-f]+|D_00000000)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
+
+
+def game_spans(src):
+    """func_spans that also sees NCC donor definitions (`extern "C" int f(...) {`): the linkage
+    prefix is blanked to a same-length word so offsets stay valid."""
+    return func_spans(re.sub(r'^extern "C" (?=[\w*])', 'extern_C_x ', src, flags=re.M))
+
+
+def game_bodies(path):
+    src = open(path, errors='replace').read()
+    out = {}
+    for name, a, b in game_spans(src):
+        out.setdefault(name, src[a:b])
+    return out
 
 
 def game_consts():
@@ -1285,7 +1300,7 @@ def check_game(no_build=False, verbose=False):
     g = Census('.', no_build, 'game')
     bad = ok = tgt = 0
     srcs = [p for e in ('c', 'cpp') for p in sorted(glob.glob(f'{GAME_SRC}/*.{e}'))]
-    bodies = {p: func_bodies(p) for p in srcs}
+    bodies = {p: game_bodies(p) for p in srcs}
     for name, val, sect, coff, comment, line in consts:
         if val != coff:
             bad += 1
@@ -1326,7 +1341,7 @@ def plan_game_const(c, src, consts):
     for name, val, sect, *_ in consts:
         byval[val].append((name, sect))
     edits = []
-    for f, b0, b1 in func_spans(src):
+    for f, b0, b1 in game_spans(src):
         ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
         if not ss:
             continue
