@@ -28,14 +28,14 @@
 /* a Vec3 parm (0x20; type vtable Data 0x221F0, the float parm type is Data 0x221D8) */
 typedef struct GdlParmV3 {
     /* 0x00 */ char head[0xC];      /* filled by the parm base ctor (Parms_addParm) */
-    /* 0x0C */ s32 type;
+    /* 0x0C */ void *type;           /* the Vec3 parm type vtable (Data 0x221F0) */
     /* 0x10 */ f32 value[3];
     /* 0x1C */ s32 unk1C;           /* 0 */
 } GdlParmV3;
 
 /* "DNode::Parms" (0x180) */
 typedef struct DNodeParms {
-    /* 0x000 */ s32 name;           /* "DNode::Parms" */
+    /* 0x000 */ const char *name;   /* "DNode::Parms" */
     /* 0x004 */ s32 head;           /* parm list head */
     /* 0x008 */ GdlParmF imp;       /* surface impulse scale (-> surfImp) */
     /* 0x020 */ GdlParmF spd;       /* surface speed scale (-> surfSpd) */

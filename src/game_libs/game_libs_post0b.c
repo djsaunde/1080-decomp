@@ -20061,15 +20061,15 @@ extern int gl_func_00000000();
  * with the float max) — `0.0f` through a float-typed prototype marshals as
  * `li a3,0` (integer materialization of +0.0 bits), where an int-typed 0
  * emits `move a3,zero`. The "mode_flag int 0" reading was wrong. */
-extern void gl_func_00000000_54a(int, int, int, float, float, int);
-extern int D_00000000, gHostio_54a_o0, gHostio_54a_o1, gHostio_54a_o2, gHostio_54a_o3, gHostio_54a_o4;
-void BaseLight_hostioParms(int *s0) {
-    CALL(hostio_beginGroup)((int)&gHostio_54a_o0, (int)(GL_DATA_STR(0x21090, "BaseLight")), 0);
-    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o1, (int)(GL_DATA_STR(0x2109C, "Atten")), (int)((char *)s0 + 0xC8), 0.0f, 8000.0f, 1);
-    XCALL(gl_func_00000000_54a, hostio_addFloat)((int)&gHostio_54a_o2, (int)(GL_DATA_STR(0x210A4, "FallOff")), (int)((char *)s0 + 0xCC), 0.0f, 1000.0f, 1);
-    CALL(hostio_addHexVar)((int)&gHostio_54a_o3, (int)(GL_DATA_STR(0x210AC, "MaskID")), (int)((char *)s0 + 0xD0), 0);
-    CALL(Parms_hostio)((int)((char *)s0 + 0x10C), 0);
-    CALL(hostio_endGroup)((int)&gHostio_54a_o4);
+extern void gl_func_00000000_54a(void *, char *, f32 *, float, float, int); /* hostio_addFloat(dev, label, var, min, max, 1) */
+extern int D_00000000, gHostio_54a_o0, gHostio_54a_o1, gHostio_54a_o2, gHostio_54a_o3, gHostio_54a_o4; /* per-site aliases of gHostio */
+void BaseLight_hostioParms(BaseLight *s0) {
+    CALL(hostio_beginGroup)(&gHostio_54a_o0, GL_DATA_STR(0x21090, "BaseLight"), 0);
+    XCALL(gl_func_00000000_54a, hostio_addFloat)(&gHostio_54a_o1, GL_DATA_STR(0x2109C, "Atten"), &s0->atten, 0.0f, 8000.0f, 1);
+    XCALL(gl_func_00000000_54a, hostio_addFloat)(&gHostio_54a_o2, GL_DATA_STR(0x210A4, "FallOff"), &s0->falloff, 0.0f, 1000.0f, 1);
+    CALL(hostio_addHexVar)(&gHostio_54a_o3, GL_DATA_STR(0x210AC, "MaskID"), &s0->mask, 0);
+    CALL(Parms_hostio)(&s0->parms, 0);
+    CALL(hostio_endGroup)(&gHostio_54a_o4);
     CALL(MNode_hostioParms)(s0);
 }
 
@@ -21484,13 +21484,16 @@ void gfx_setDepthImage(DLContext *a0, int a1) {
  * is the int carrier q (so it shares q's v0 web with idx1 and the check
  * flags), and the FIRST check reads a0->0xC INLINE twice (uopt CSEs it into
  * an expression temp coloured a1) instead of loading it into q. Checks 2-6
- * keep the q-carrier pointer. Flush helper = blank jal-0 placeholder. */
+ * read each buffer through the DLBuf *b (agent-b run 553: same bytes as the old
+ * q carrier there; the second append's q must stay the int carrier, a DLBuf *
+ * there recolours 57 insns). Flush helper = blank jal-0 placeholder. */
 void gfx_endDL(DLContext *a0) {
     DLBuf *rec1;
     int *arr1;
     int idx2;
     int *arr2;
     int q;
+    DLBuf *b;
 
     rec1 = a0->gfx.cur;
     q = rec1->count;
@@ -21508,20 +21511,20 @@ void gfx_endDL(DLContext *a0) {
 
     q = ((unsigned int)a0->gfx.cur->max < (unsigned int)a0->gfx.cur->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
-    q = (int)a0->vtx.cur;
-    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
+    b = a0->vtx.cur;
+    q = ((unsigned int)b->max < (unsigned int)b->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
-    q = (int)a0->light.cur;
-    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
+    b = a0->light.cur;
+    q = ((unsigned int)b->max < (unsigned int)b->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
-    q = (int)a0->mtx.cur;
-    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
+    b = a0->mtx.cur;
+    q = ((unsigned int)b->max < (unsigned int)b->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
-    q = (int)a0->vp.cur;
-    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
+    b = a0->vp.cur;
+    q = ((unsigned int)b->max < (unsigned int)b->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
-    q = (int)a0->hilite.cur;
-    q = ((unsigned int)((DLBuf *)q)->max < (unsigned int)((DLBuf *)q)->count) ? 1 : 0;
+    b = a0->hilite.cur;
+    q = ((unsigned int)b->max < (unsigned int)b->count) ? 1 : 0;
     if (q != 0) CALL(gfx_checkDLOverflow)(a0);
 }
 

@@ -75,7 +75,7 @@ typedef struct Mat {
     /* 0x60 */ struct DLContext *lightDL; /* PolyShape_allocLightDL_000435FC ("light"), geomFlags 0x2000 */
     /* 0x64 */ struct DLContext *stateDL;  /* gGfx->staticDL ("MainStaticDL") */
     /* 0x68 */ struct DLContext *texgenDL; /* geomFlags bit 20: gfx_newDLContext(.., 0xA, 0, 5, ..) */
-    /* 0x6C */ struct DLContext *triDL;    /* PolyShape_init (ncc_493AC.cpp Elem::ctx6C): gGfx->staticDL,
+    /* 0x6C */ struct DLContext *triDL;    /* PolyShape_init (ncc_493AC.cpp Mat::triDL): gGfx->staticDL,
                                             * 0 when no triangle uses this material */
     /* 0x70 */ s32 unk70;
     /* 0x74 */ s32 unk74;

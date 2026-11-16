@@ -1105,7 +1105,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
         if ((base = (char *)&DNODE(arg0)->parms) != 0 ||
             (base = (char *)CALL(mem_new)(0x180)) != 0) {
             if ((p = base) != 0 || (p = (char *)CALL(mem_new)(8)) != 0) {
-                ((DNodeParms *)p)->name = (int)&sStr_DNode_Parms_223C0;
+                ((DNodeParms *)p)->name = (const char *)&sStr_DNode_Parms_223C0;
                 ((DNodeParms *)p)->head = 0;
             }
             u1.v = sTag_imp_223D0;
@@ -1210,7 +1210,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = uc1;
                 if ((mb1 = base + 0xE0) != 0 || (mb1 = (char *)CALL(mem_new)(0x20)) != 0) {
                     CALL(Parms_addParm)(mb1, base, t, 1);
-                    ((GdlParmV3 *)mb1)->type = (int)&gl_ref_000221F0_64588_c1;
+                    ((GdlParmV3 *)mb1)->type = &gl_ref_000221F0_64588_c1;
                     ((GdlParmV3 *)mb1)->unk1C = 0;
                     tmp = set[2].v;
                     ((GdlParmV3 *)mb1)->value[0] = tmp.x;
@@ -1273,7 +1273,7 @@ void *DNode_ctor(void *arg0, void *arg1) {
                 t = uc2;
                 if ((mb2 = base + 0x160) != 0 || (mb2 = (char *)CALL(mem_new)(0x20)) != 0) {
                     CALL(Parms_addParm)(mb2, base, t, 1);
-                    ((GdlParmV3 *)mb2)->type = (int)&gl_ref_000221F0_64588_c2;
+                    ((GdlParmV3 *)mb2)->type = &gl_ref_000221F0_64588_c2;
                     ((GdlParmV3 *)mb2)->unk1C = 0;
                     tmp = set[2].v;
                     ((GdlParmV3 *)mb2)->value[0] = tmp.x;
