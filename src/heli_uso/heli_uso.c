@@ -369,7 +369,14 @@ void heli_uso_func_00000A70(char *self) {
     }
 }
 
+#ifdef NON_MATCHING
+/* heli_uso_func_00000B08: Heli update (C++; NM ~80 %): NCC donor src/heli_uso/heli_uso_ncc_nm.cpp
+ * (agent-g run 663), REPLACE_FUNC_BODY-spliced over this placeholder on the non_matching build. */
+void heli_uso_func_00000B08(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000B08);
+#endif
 
 /* heli_uso_func_000019C4: empty virtual. */
 void heli_uso_func_000019C4(int a0) {

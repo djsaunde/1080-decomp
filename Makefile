@@ -114,6 +114,15 @@ $(HELI_NCC_DONOR): src/heli_uso/heli_uso_ncc.cpp
 HELI_NCC_FUNCS := heli_uso_func_000008A8
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NCC_FUNCS),$(f)=$(HELI_NCC_DONOR))
 build/src/heli_uso/heli_uso.c.o build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NCC_DONOR)
+# agent-g run 663: NON_MATCHING-only NCC donor for 0xB08 (the Heli update, ~80 %; the target's jump table
+# needs MIPSpro 7.2.1); the matching build keeps INCLUDE_ASM.
+HELI_NM_DONOR := build/src/heli_uso/heli_uso_ncc_nm.cpp.o
+$(HELI_NM_DONOR): src/heli_uso/heli_uso_ncc_nm.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+HELI_NM_FUNCS := heli_uso_func_00000B08
+build/non_matching/src/heli_uso/heli_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(HELI_NM_FUNCS),$(f)=$(HELI_NM_DONOR))
+build/non_matching/src/heli_uso/heli_uso.c.o: $(HELI_NM_DONOR)
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900
