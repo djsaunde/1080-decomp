@@ -43,8 +43,10 @@ typedef int s32;
 typedef unsigned char u8;
 typedef short s16;
 typedef unsigned short u16;
+typedef signed char s8;
 #include "../../include/game/modeproc.h" /* MgrRace: arg0 (agent-h run 552) */
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
+#include "../../include/gdl/backup.h" /* BackupSession.modes (C++-guarded since main 24749e1ce) */
+#include "../../include/game/input.h" /* GameFlow.dataMgr (agent-h run 565) */
 extern "C" {
 extern char import_800201D0, import_80263D30, import_8024CAF8, import_80264A10;
 void import_0024E608(...);
@@ -97,8 +99,8 @@ void mgr_drawResults_000023FC(char *arg0) {
             import_0024F34C(panel, 0xA0, 0x78, 3);
         }
     }
-    if ((MGRRACE(arg0)->race.unk508 & 8) && (FW((char *) MGRRACE(arg0)->race.session, 0x14) & 1)) {
-        t = FW((char *) FW(&import_800201D0, 0x138), 0x30);
+    if ((MGRRACE(arg0)->race.unk508 & 8) && (MGRRACE(arg0)->race.session->modes & BACKUP_MODE_TIME)) {
+        t = GAMEFLOW(&import_800201D0)->dataMgr->elapsed;
         s32 min, sec;
         min = t / 60000;
         t -= min * 60000;
@@ -136,7 +138,7 @@ void mgr_drawResults_000023FC(char *arg0) {
         }
     }
     flag = 0;
-    if ((FW((char *) MGRRACE(arg0)->race.session, 0x14) & 1) && (MGRRACE(arg0)->race.unk4FC != 0) && (FW((char *) FW((char *) FW(&import_800201D0, 0x138), 0x44), 0x38) < 3)) {
+    if ((MGRRACE(arg0)->race.session->modes & BACKUP_MODE_TIME) && (MGRRACE(arg0)->race.unk4FC != 0) && (GAMEFLOW(&import_800201D0)->dataMgr->entries->rank[0] < 3)) {
         flag = 1;
     }
     import_0024EAA0(&import_8024CAF8, (s32) (255.0f * MGRRACE(arg0)->overlayAlpha), MGRRACE(arg0)->race.colours.pair[RACECOL_NR][0].value, MGRRACE(arg0)->race.colours.pair[RACECOL_NR][1].value);

@@ -302,7 +302,7 @@ typedef char TrickPointsGadget_allIdle_check[(int)&((TrickPointsGadget *)0)->all
 /* A colour parm (0x24, type Data 0xCA34): an RGBA value instead of one word. */
 typedef struct GdlParmRGBA {
     /* 0x00 */ char head[0xC];
-    /* 0x0C */ s32 type;            /* the colour parm type (Data 0xCA34) */
+    /* 0x0C */ void *type;          /* the colour parm type vtable (Data 0xCA34), as GdlParm.type */
     /* 0x10 */ f32 value[4];
     /* 0x20 */ s32 unk20;           /* 0 */
 } GdlParmRGBA;

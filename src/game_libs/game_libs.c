@@ -2249,7 +2249,7 @@ void *ColourParms_ctor(char *arg0) {
             PARMS(var_v1)->name = &sStr_Colour_Parms_CF80;
         PARMS(var_v1)->unk04 = 0; } u1_a.x = 1.0f; u1_a.y = 1.0f; u1_a.z = 1.0f; u1_c.x = 1.0f; u1_c.y = 1.0f; u1_c.z = 1.0f; u1_c.w = 1.0f; u1_a.w = 0.0f; u1_b.x = 0.0f; u1_b.y = 0.0f; u1_b.z = 0.0f; u1_b.w = 0.0f; u1_f.v = sTag_rdP_CF90; sp78 = u1_a; var_a0 = (char *)&((RaceColourParms *)arg0)->pair[RACECOL_RD][0]; sp68 = u1_b; sp58 = u1_c; sp54 = u1_f; if ((arg0 != (void *)-8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0, arg0, sp54, 1);
-            PARMRGBA(var_a0)->type = (s32)((char *)&D_00000000_cd58_u1 + 0xCD58);
+            PARMRGBA(var_a0)->type = (char *)&D_00000000_cd58_u1 + 0xCD58;
             PARMRGBA(var_a0)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0)->value = sp78;
         }
@@ -2273,7 +2273,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u2_f;
         if ((arg0 != (void *)-0x2C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u2 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u2 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2297,7 +2297,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u3_f;
         if ((arg0 != (void *)-0x50) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u3 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u3 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2321,7 +2321,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u4_f;
         if ((arg0 != (void *)-0x74) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u4 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u4 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2344,7 +2344,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u5_f;
         if ((arg0 != (void *)-0x98) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u5 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u5 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2367,7 +2367,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u6_f;
         if ((arg0 != (void *)-0xBC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u6 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u6 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2390,7 +2390,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u7_f;
         if ((arg0 != (void *)-0xE0) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u7 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u7 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2413,7 +2413,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u8_f;
         if ((arg0 != (void *)-0x104) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u8 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u8 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2436,7 +2436,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u9_f;
         if ((arg0 != (void *)-0x128) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u9 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u9 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2459,7 +2459,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u10_f;
         if ((arg0 != (void *)-0x14C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u10 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u10 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2482,7 +2482,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u11_f;
         if ((arg0 != (void *)-0x170) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u11 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u11 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2505,7 +2505,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u12_f;
         if ((arg0 != (void *)-0x194) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u12 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u12 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2528,7 +2528,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u13_f;
         if ((arg0 != (void *)-0x1B8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u13 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u13 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2551,7 +2551,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u14_f;
         if ((arg0 != (void *)-0x1DC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u14 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u14 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2574,7 +2574,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u15_f;
         if ((arg0 != (void *)-0x200) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u15 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u15 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2597,7 +2597,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u16_f;
         if ((arg0 != (void *)-0x224) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u16 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u16 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2620,7 +2620,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u17_f;
         if ((arg0 != (void *)-0x248) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u17 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u17 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2643,7 +2643,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u18_f;
         if ((arg0 != (void *)-0x26C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u18 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u18 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2666,7 +2666,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u19_f;
         if ((arg0 != (void *)-0x290) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u19 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u19 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2689,7 +2689,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u20_f;
         if ((arg0 != (void *)-0x2B4) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u20 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u20 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2712,7 +2712,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u21_f;
         if ((arg0 != (void *)-0x2D8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1); if (1) {}
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u21 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u21 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2735,7 +2735,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u22_f;
         if ((arg0 != (void *)-0x2FC) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u22 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u22 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2758,7 +2758,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u23_f;
         if ((arg0 != (void *)-0x320) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u23 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u23 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2783,7 +2783,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u24_f;
         if ((arg0 != (void *)-0x344) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u24 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u24 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2806,7 +2806,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u25_f;
         if ((arg0 != (void *)-0x368) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u25 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u25 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2829,7 +2829,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u26_f;
         if ((arg0 != (void *)-0x38C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u26 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u26 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2852,7 +2852,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u27_f;
         if ((arg0 != (void *)-0x3B0) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u27 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u27 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2875,7 +2875,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u28_f;
         if ((arg0 != (void *)-0x3D4) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u28 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u28 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2898,7 +2898,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u29_f;
         if ((arg0 != (void *)-0x3F8) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u29 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u29 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2923,7 +2923,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u30_f;
         if ((arg0 != (void *)-0x41C) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u30 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u30 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2946,7 +2946,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u31_f;
         if ((arg0 != (void *)-0x440) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u31 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u31 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }
@@ -2970,7 +2970,7 @@ void *ColourParms_ctor(char *arg0) {
         sp54 = u32_f;
         if ((arg0 != (void *)-0x464) || (temp_v0_2 = FCALL(mem_new)(0x24), var_a0_2 = temp_v0_2, (temp_v0_2 != 0))) {
             FCALL(Parms_addParm)(var_a0_2, arg0, sp54, 1);
-            PARMRGBA(var_a0_2)->type = (s32)((char *)&D_00000000_cd58_u32 + 0xCD58);
+            PARMRGBA(var_a0_2)->type = (char *)&D_00000000_cd58_u32 + 0xCD58;
             PARMRGBA(var_a0_2)->unk20 = 0;
             *(GlV4_4244 *)PARMRGBA(var_a0_2)->value = sp78;
         }

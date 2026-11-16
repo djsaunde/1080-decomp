@@ -60,7 +60,7 @@ typedef char RaceSprite_size_check[sizeof(RaceSprite) == 0x18 ? 1 : -1];
  * addresses of a pair's two `value`s: the prim colour (tag "<x>P") and the env colour ("<x>E"). */
 typedef struct RaceColourParm {
     /* 0x00 */ char head[0xC];
-    /* 0x0C */ int type;              /* the colour parm type */
+    /* 0x0C */ void *type;            /* the colour parm type vtable, as GdlParmRGBA.type */
     /* 0x10 */ float value[4];        /* RGBA 0..1 */
     /* 0x20 */ int unk20;
 } RaceColourParm;
