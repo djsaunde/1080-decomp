@@ -56,7 +56,7 @@ typedef struct SkinAnim {
     /* 0x10 */ s32 list;
     /* 0x14 */ s32 unk14;
     /* 0x18 */ struct MNode *bone;
-    /* 0x1C */ s32 weights;        /* SkinWeight * */
+    /* 0x1C */ SkinWeight *weights;
     /* 0x20 */ s32 count;
     /* 0x24 */ s32 bindVerts;      /* s16 (*)[3]: the vertices in bone space (SkinAnim_bind) */
     /* 0x28 */ f32 invBone[4][4];  /* inverse of the bone matrix at bind time */

@@ -4750,7 +4750,7 @@ sub_writes:
     ((SkinAnim *)sub)->unk14 = 0;
 obj_writes:
     ((SkinAnim *)obj)->count = arg1;    /* (agent-b run 489: skin.h names) */
-    ((SkinAnim *)obj)->weights = arg2;
+    ((SkinAnim *)obj)->weights = (SkinWeight *)arg2;
     ((SkinAnim *)obj)->bone = (MNode *)arg3;
     ((SkinAnim *)obj)->name = (int)(GL_DATA_STR(0x2C598, "skinanimator")); /* "skinanimator" */
 done:
@@ -4889,7 +4889,7 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
         kscale = *(f32*)((char*)&D_00000000 + 0x2240);
         var_v1 = 0;
         do {
-            entry = SA693->weights + var_v1;       /* SkinWeight {vert, weight} */
+            entry = (char *)SA693->weights + var_v1;       /* SkinWeight {vert, weight} */
             mode = S693(entry, 2);                 /* weight (percent) */
             if (mode > 0) {
                 idx = S693(entry, 0);              /* vert */
