@@ -140,7 +140,7 @@
 #define BinFile_vtbl           D_00000000 /* Data+0x2B2B0 Sym 2475: vtable (5 Text ptrs in span, slot +0x1C BinFile_vfn2_00068340); vptr store by BinFileMgr_newFile_0006877C, ImageFileMgr_newFile_000688F8 */
 #define ImageFile_vtbl         D_00000000 /* Data+0x2B278 Sym 2474: vtable (5 Text ptrs in span, slot +0x1C ImageFile_free_00068BAC); vptr store by ImageFileMgr_newFile_000688F8 */
 #define BGBox_vtbl             D_00000000 /* Data+0x65E8 Sym 164: vtable (10 Text ptrs in span, slot +0x1C BGBox_func_00000D94); vptr store by BGBox_ctor */
-#define U64BGWall_vtbl         D_00000000 /* Data+0x6648 Sym 165: vtable (32 Text ptrs in span, slot +0x1C U64BGWall_func_00001A44); vptr store by U64BGWall_ctor */
+#define U64BGWall_vtbl         D_00000000 /* Data+0x6648 Sym 165: vtable (32 Text ptrs in span, slot +0x1C U64BGWall_display); vptr store by U64BGWall_ctor */
 #define WorldRegistry_vtbl     D_00000000 /* Data+0x6DD0 Sym 176: vtable (31 Text ptrs in span, slot +0x1C Node_display); vptr store by WorldRegistry_create_00001E08 */
 #define CamDirector_vtbl       D_00000000 /* Data+0x6FD8 Sym 247: vtable (20 Text ptrs in span, slot +0x1C Node_display); vptr store by CamDirector_ctor */
 #define EnvSettings_vtbl       D_00000000 /* Data+0x76A8 Sym 348: vtable (20 Text ptrs in span, slot +0x1C EnvSettings_display); vptr store by EnvSettings_ctor */

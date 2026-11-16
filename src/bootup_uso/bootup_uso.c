@@ -963,12 +963,12 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
     return self;
 }
 
-/* U64BGWall_func_00001A44 - verified structural decode (0x1CC, 115 insns,
+/* U64BGWall_display - verified structural decode (0x1CC, 115 insns,
  * FP transform/draw + DL list-append). Same family as
  * Mountain_display / Tv1_display (global root vector scaled by the
  * Dc->0x128/0x12C/0x130 triple, reloc draw helper, command-list
  * append).
- *   void U64BGWall_func_00001A44(Obj *a0) {
+ *   void U64BGWall_display(Obj *a0) {
  *       if (*(int*)(func_00000188 + 0x3C) & 0x2) return;  // gate
  *       st  = (*(int*)&D_a)->0x254;
  *       n   = st->0x158;
@@ -1009,7 +1009,7 @@ void *U64BGWall_ctor(char *self, char *cfg, s32 arg2, s32 arg3, s32 arg4) {
  * undecoded — body is 66/115 insns. Next pass: decode the 8-byte-entry payload
  * stores + any trailing FP from the target asm. */
 extern void func_00000188();  /* used as data-symbol base */
-/* U64BGWall_func_00001A44: EXACT via an IDO 7.1 NCC (C++) donor, src/bootup_uso/bootup_uso_ncc_1A44.cpp,
+/* U64BGWall_display: EXACT via an IDO 7.1 NCC (C++) donor, src/bootup_uso/bootup_uso_ncc_1A44.cpp,
  * REPLACE_FUNC_BODY-spliced over this placeholder (agent-g run 172). Decode notes kept: */
 /* PASS-3 2026-10-20 (agent-c run 114): fresh decode against the target
  * words and the bootup.uso reloc table. It is a gSPMatrix + gSPDisplayList
@@ -1020,7 +1020,7 @@ extern void func_00000188();  /* used as data-symbol base */
  * count++. DL appends use the comma-temp reload macro (see E68). The
  * camera pointer must stay inline (a named local costs a frame slot and
  * re-colors the a0 reloads: 81.7 -> 91.4 when inlined). */
-void U64BGWall_func_00001A44(char *a0) {
+void U64BGWall_display(char *a0) {
     volatile int r = 0;
 }
 

@@ -243,7 +243,7 @@ build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso
 # 1A44 = gSPMatrix + gSPDisplayList draw as C++ (camera * G operand order, w1 read before the
 # 0x06 packet's slot, `_n = ms->count++`; agent-g run 172, cfe 92.23); NCC donor, exact.
 BOOTUP_1A44_DONOR := build/src/bootup_uso/bootup_uso_ncc_1A44.cpp.o
-build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += U64BGWall_func_00001A44=$(BOOTUP_1A44_DONOR)
+build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: private REPLACE_FUNC_BODY += U64BGWall_display=$(BOOTUP_1A44_DONOR)
 build/src/bootup_uso/bootup_uso.c.o build/non_matching/src/bootup_uso/bootup_uso.c.o: $(BOOTUP_1A44_DONOR)
 # 31C0 = cam_create, written as C++ (new LookAtNode / new RiderCam / out-of-line ctor(0, ...) calls; agent-g run 164,
 # cfe 93.61). EXACT NCC donor over a placeholder (agent-c run 271: case 1 through a folded-zero conditional whose dead

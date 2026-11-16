@@ -1,6 +1,6 @@
-nonmatching U64BGWall_func_00001A44, 0x1CC
+nonmatching U64BGWall_display, 0x1CC
 
-glabel U64BGWall_func_00001A44
+glabel U64BGWall_display
     /* DD24B0 00001A44 3C0E0000 */  lui        $t6, %hi(func_00000188 + 0x3C)
     /* DD24B4 00001A48 8DCE01C4 */  lw         $t6, %lo(func_00000188 + 0x3C)($t6)
     /* DD24B8 00001A4C 27BDFFC8 */  addiu      $sp, $sp, -0x38
@@ -117,4 +117,4 @@ glabel U64BGWall_func_00001A44
     /* DD2670 00001C04 27BD0038 */  addiu      $sp, $sp, 0x38
     /* DD2674 00001C08 03E00008 */  jr         $ra
     /* DD2678 00001C0C 00000000 */   nop
-endlabel U64BGWall_func_00001A44
+endlabel U64BGWall_display

@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for U64BGWall_func_00001A44 (0x1CC / 115 words): gSPMatrix +
+/* IDO 7.1 NCC (C++) donor for U64BGWall_display (0x1CC / 115 words): gSPMatrix +
  * gSPDisplayList draw (agent-c run 114 decode) as C++. 115/115 words (agent-g run 172).
  *
  * Under NCC: the three scale products are written camera * G (edg keeps the
@@ -37,7 +37,7 @@ typedef struct { Mtx1A44 *buf; s32 count; } Ms1A44;
 #define NEXTX1A44(d) (_n = (d)->count, (d)->count = _n + 1, &(d)->buf[_n])
 #define W1A44(pkt, a, b) { Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = (b); }
 #define W1A44B(pkt, a, b) { u32 _b = (b); Gw1A44 *_g = (Gw1A44 *)(pkt); _g->w0 = (a); _g->w1 = _b; }
-extern "C" void U64BGWall_func_00001A44(char *a0) {
+extern "C" void U64BGWall_display(char *a0) {
     DLContext *gc;
     GfxLib *g;
     s32 _n;

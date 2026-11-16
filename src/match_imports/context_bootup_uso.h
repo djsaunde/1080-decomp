@@ -635,7 +635,7 @@ void *U64BGWall_ctor(char *arg0, char *arg1, s32 arg2, s32 arg3, s32 arg4);
 extern void func_00000188();
 extern void func_1a44_emit(void *, float, float, float, float, float, float, float);
 extern int func_1a44_emit2(void *);
-void U64BGWall_func_00001A44(char *a0);
+void U64BGWall_display(char *a0);
 void stream_readS32_00001C10(int *dst);
 void stream_readF32_00001C4C(float *dst);
 extern void stream_readVec3_00001C88();
