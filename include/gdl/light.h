@@ -2,6 +2,7 @@
 #define GDL_LIGHT_H
 
 #include "gdl/node.h"
+#include "gdl/parm.h"
 
 /* libgdl lights (game_libs post0b 0x51448 / 0x546E8-0x54C6C; docs/1080_GRAPHICS.md).
  *
@@ -24,10 +25,9 @@
  * then one "col" colour parm (GdlParmRGBA layout, include/gdl/gadget.h) whose value is the light
  * colour (default {1, 1, 1, 1}; gen_createLights_00001460 sets it per light). */
 typedef struct BaseLightParms {
-    /* 0x00 */ s32 name;              /* "Parms" */
-    /* 0x04 */ s32 unk04;             /* 0 */
-    /* 0x08 */ char colHead[0xC];     /* the "col" parm: parm base head */
-    /* 0x14 */ s32 colType;           /* the colour parm type */
+    /* 0x00 */ const char *name;      /* "Parms" (GdlParmList head, gdl/parm.h) */
+    /* 0x04 */ GdlParmBase *first;    /* parm list head: colParm */
+    /* 0x08 */ GdlParmBase colParm;   /* the "col" parm base (Parms_addParm); type = the colour parm type */
     /* 0x18 */ f32 col[4];            /* BaseLight +0x124: RGBA colour */
     /* 0x28 */ s32 unk28;             /* 0 */
 } BaseLightParms;

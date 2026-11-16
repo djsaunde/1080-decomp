@@ -22,6 +22,7 @@
 #include "gdl/pad.h"
 #include "gdl/gdlfile.h"
 #include "gdl/hostio.h"
+#include "gdl/parm.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -1748,33 +1749,33 @@ void fs_gdlReadInt_00035AE0(int *dst) {
  * `p = o + 4; q = p;` so ugen numbers the la (t6) before p's o + 4 (t7) like the
  * target (t8 for the a3 load). The baked 0x1E6B0 address is the
  * sFmt_Dup_parm_1E6B0 pin. */
+/* agent-b run 566: over gdl/parm.h GdlParmBase / GdlParmList (W35B1C is GdlParmTag). */
 extern char sFmt_Dup_parm_1E6B0;
-typedef struct { int v; } W35B1C;
-char *Parms_addParm(char *o, char *a1, W35B1C a2, int a3) {
+GdlParmBase *Parms_addParm(GdlParmBase *o, GdlParmList *a1, GdlParmTag a2, int a3) {
     int *a3p = &a3;
-    W35B1C *q;
-    char *last;
-    char *s0;
-    W35B1C tmp;
-    W35B1C *p;
-    if (o != 0 || (o = (char *)CALL(mem_new)(0x10)) != 0) {
+    GdlParmTag *q;
+    GdlParmBase *last;
+    GdlParmBase *s0;
+    GdlParmTag tmp;
+    GdlParmTag *p;
+    if (o != 0 || (o = (GdlParmBase *)CALL(mem_new)(sizeof(GdlParmBase))) != 0) {
         goto z35;
     c35:
-        p = (W35B1C *)(o + 4); q = p;
-        if ((W35B1C *)(o + 4) != 0 || (q = (W35B1C *)CALL(mem_new)(4)) != 0) q->v = 0;
-        *(int *)(o + 8) = *a3p;
-        for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) {
-            tmp = *(W35B1C *)(s0 + 4);
+        p = &o->tag; q = p;
+        if (&o->tag != 0 || (q = (GdlParmTag *)CALL(mem_new)(sizeof(GdlParmTag))) != 0) q->v = 0;
+        o->unk08 = *a3p;
+        for (s0 = a1->first; s0 != 0; s0 = s0->next) {
+            tmp = s0->tag;
             if (tmp.v == a2.v) CALL(sys_fatal)(&sFmt_Dup_parm_1E6B0, &a2);
         }
         last = 0;
-        for (s0 = *(char **)(a1 + 4); s0 != 0; s0 = *(char **)s0) last = s0;
-        if (last != 0) *(char **)last = o; else *(char **)(a1 + 4) = o;
-        *(char **)o = 0;
+        for (s0 = a1->first; s0 != 0; s0 = s0->next) last = s0;
+        if (last != 0) last->next = o; else a1->first = o;
+        o->next = 0;
         *p = a2;
         goto e35;
     z35:
-        if (1) { *(int **)(o + 0xC) = &D_00000000; } goto c35;
+        if (1) { o->type = &D_00000000; } goto c35;
     }
 e35:
     return o;
@@ -3491,7 +3492,9 @@ INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", Node_ctor);
 //   blocks + p folded into the a2 home + a distinct 4th-arg symbol. 51.0 -> ~80.
 extern int D_00000000;
 extern char D_38108_d;
-void Node_Load(char *o, int a1, int a2) {
+/* agent-b run 566: a2 is the file name (char *); r = Node.vptr, Cfront slots 8 (+0x48 / 0x4C,
+ * called on a successful open) and 0 (+0x8 / 0xC, after the HostIO dialog load). */
+void Node_Load(char *o, int a1, char *a2) {
     char *r;
     CALL(sys_setWord4_00061D80)(&D_00000000);
     if (a1 == 0) {
@@ -3499,12 +3502,12 @@ void Node_Load(char *o, int a1, int a2) {
                              (char *)&D_00000000 + 0x0001EC00, &D_38108_d, 0) == 0) {
             return;
         }
-        a2 = (int)&D_00000000;
+        a2 = (char *)&D_00000000;
     }
     CALL(dbg_printf)(GL_DATA_STR(0x1EC08, "Node::Load(\"%s\")\n"), a2);
     if (CALL(fs_gdlOpenFile)(&D_00000000, a2, GL_DATA(0x1EC1C))) {
-        if (1) { r = *(char **)(o + 0x28); }
-        (*(void (**)(char *))(r + 0x4C))(*(short *)(r + 0x48) + o);
+        if (1) { r = NODE(o)->vptr; }
+        VT_SLOT(r, 8).fn(VT_SLOT(r, 8).delta + o);
         CALL(fs_gdlCloseFile)(&D_00000000);
     }
     if (1) { }
@@ -3513,8 +3516,8 @@ void Node_Load(char *o, int a1, int a2) {
     if (1) { }
     if (a1 == 0) {
         CALL(hostio_msg27_0003FB0C)(&D_00000000);
-        if (1) { r = *(char **)(o + 0x28); }
-        (*(void (**)(char *))(r + 0xC))(*(short *)(r + 0x8) + o);
+        if (1) { r = NODE(o)->vptr; }
+        VT_SLOT(r, 0).fn(VT_SLOT(r, 0).delta + o);
     }
 }
 
@@ -19349,9 +19352,9 @@ void PolyShape_getNormal8(char *a0, int a1, unsigned char *a2) {
     if (pal != 0) {
         *(RGB5323C *)a2 = pal[idx];
     } else {
-        a2[0] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 0] * 127.0f);
-        a2[1] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 1] * 127.0f);
-        a2[2] = (int)(((float *)BASEPOLY(a0)->vtxNormals)[idx * 3 + 2] * 127.0f);
+        a2[0] = (int)(BASEPOLY(a0)->vtxNormals[idx * 3 + 0] * 127.0f);
+        a2[1] = (int)(BASEPOLY(a0)->vtxNormals[idx * 3 + 1] * 127.0f);
+        a2[2] = (int)(BASEPOLY(a0)->vtxNormals[idx * 3 + 2] * 127.0f);
     }
 }
 
@@ -19972,8 +19975,8 @@ s32 *BaseLight_ctor(char *self, int arg1) {
         }
         if ((s1 = (char *)&BL_546E8->parms) != 0 || (s1 = (char *)CALL(mem_new)(0x2C)) != 0) {
             if ((v1 = s1) != 0 || (v1 = (char *)CALL(mem_new)(8)) != 0) {
-                ((BaseLightParms *)v1)->name = (int)(&sStr_Parms_21084 + 0x21084);
-                ((BaseLightParms *)v1)->unk04 = 0;
+                ((BaseLightParms *)v1)->name = &sStr_Parms_21084 + 0x21084;
+                ((BaseLightParms *)v1)->first = 0;
             }
             u1.v = *(int *)(&sTag_col_2108C + 0x2108C);
             sp94.x = 0.0f;
@@ -19992,9 +19995,9 @@ s32 *BaseLight_ctor(char *self, int arg1) {
             sp38 = sp94;
             sp28 = sp84;
             t = u1;
-            if ((m = ((BaseLightParms *)s1)->colHead) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
+            if ((m = (char *)&((BaseLightParms *)s1)->colParm) != 0 || (m = (char *)CALL(mem_new)(0x24)) != 0) {
                 CALL(Parms_addParm)(m, s1, t, 1);
-                FW(m, 0xC) = (int)(&gl_ref_546E8_e + 0x20758);
+                ((GdlParmBase *)m)->type = &gl_ref_546E8_e + 0x20758;
                 FW(m, 0x20) = 0;
                 *(struct V4_546E8 *)(m + 0x10) = sp48;
             }
