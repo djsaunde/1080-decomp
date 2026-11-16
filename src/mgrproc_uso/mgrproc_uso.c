@@ -1066,31 +1066,31 @@ void MGRRaceProcess_drawIntro(char *arg0) {
         gl_func_00000000(&D_00000000);
         gl_func_00000000(&D_00000000, 0xA0, 0x9C, 3);
         gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x380, arg0 + 0x3A4);
-        gl_func_00000000(arg0 + 0x6B0);
-        gl_func_00000000(arg0 + 0x6B0, 0xA0, 0xB0, 3);
-        q = *(char **)(arg0 + 0x6F0);
+        gl_func_00000000(&MGRRACE(arg0)->sprites[0]);
+        gl_func_00000000(&MGRRACE(arg0)->sprites[0], 0xA0, 0xB0, 3);
+        q = (char *)MGRRACE(arg0)->sprites[2].image;
         if (1) {}
-        w = *(short *)(q + 0x20);
-        sp48 = 0xA0 - ((*(short *)(*(char **)(arg0 + 0x6D8) + 0x20) + w + 4) / 2);
+        w = ((RaceSpriteImage *)q)->width;
+        sp48 = 0xA0 - ((MGRRACE(arg0)->sprites[1].image->width + w + 4) / 2);
         gl_func_00000000(&D_00000000, (int)(MGRRACE(arg0)->overlayAlpha * 255.0f), arg0 + 0x260, arg0 + 0x284);
         p6a8 = (char *)MGRRACE(arg0)->courseList;
         if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
-            gl_func_00000000(arg0 + 0x6E0);
-            gl_func_00000000(arg0 + 0x6E0, sp48, 0x88, 2);
-            gl_func_00000000(arg0 + 0x6C8);
-            q2 = *(char **)(arg0 + 0x6F0);
+            gl_func_00000000(&MGRRACE(arg0)->sprites[2]);
+            gl_func_00000000(&MGRRACE(arg0)->sprites[2], sp48, 0x88, 2);
+            gl_func_00000000(&MGRRACE(arg0)->sprites[1]);
+            q2 = (char *)MGRRACE(arg0)->sprites[2].image;
             if (1) {}
-            w2 = *(short *)(q2 + 0x20);
-            gl_func_00000000(arg0 + 0x6C8, sp48 + w2 + 4, 0x88, 2);
+            w2 = ((RaceSpriteImage *)q2)->width;
+            gl_func_00000000(&MGRRACE(arg0)->sprites[1], sp48 + w2 + 4, 0x88, 2);
             return;
         }
-        gl_func_00000000(arg0 + 0x6C8);
-        gl_func_00000000(arg0 + 0x6C8, sp48, 0x88, 2);
-        gl_func_00000000(arg0 + 0x6E0);
-        q3 = *(char **)(arg0 + 0x6D8);
+        gl_func_00000000(&MGRRACE(arg0)->sprites[1]);
+        gl_func_00000000(&MGRRACE(arg0)->sprites[1], sp48, 0x88, 2);
+        gl_func_00000000(&MGRRACE(arg0)->sprites[2]);
+        q3 = (char *)MGRRACE(arg0)->sprites[1].image;
         if (1) {}
-        w3 = *(short *)(q3 + 0x20);
-        gl_func_00000000(arg0 + 0x6E0, sp48 + w3 + 4, 0x88, 2);
+        w3 = ((RaceSpriteImage *)q3)->width;
+        gl_func_00000000(&MGRRACE(arg0)->sprites[2], sp48 + w3 + 4, 0x88, 2);
     }
 }
 #else

@@ -341,37 +341,37 @@ char *TimeGadget_ctor_00013D40(char *self) {
         t2 = u1;
         if ((m2 = self + 8) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u2.v = sTag_yps_CAC4;
         t2 = u2;
         if ((m2 = self + 0x20) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 0x1E; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 0x1E; PARM(m2)->unk14 = 0;
         }
         u3.v = sTag_lbx_CAC8;
         t2 = u3;
         if ((m2 = self + 0x38) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u4.v = sTimeGadgetParmsTags_CACC[0];
         t2 = u4;
         if ((m2 = self + 0x50) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
         u5.v = sTimeGadgetParmsTags_CACC[1];
         t2 = u5;
         if ((m2 = self + 0x68) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = 2; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = 2; PARM(m2)->unk14 = 0;
         }
         u6.v = sTimeGadgetParmsTags_CACC[2];
         t2 = u6;
         if ((m2 = self + 0x80) != 0 || (m2 = (char *)FCALL(mem_new)(0x18)) != 0) {
             FCALL(Parms_addParm)(m2, self, t2, 1);
-            *(char **)(m2 + 0xC) = &D_0000C764; *(int *)(m2 + 0x10) = -0xC; *(int *)(m2 + 0x14) = 0;
+            *(char **)&PARM(m2)->type = &D_0000C764; PARM(m2)->value = -0xC; PARM(m2)->unk14 = 0;
         }
     }
     return self;
@@ -480,7 +480,7 @@ void TimeGadget_display_000140C4(char *s0) {
     if (1) { }
     if (GADGET(s0)->label1) {
         FCALL(gui_spriteRefresh)(GADGET(s0)->label1);
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
+        n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->labelAlpha);
         FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label1, n, col, 0);
         FCALL(gui_drawSprite)(GADGET(s0)->label1,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
@@ -488,14 +488,14 @@ void TimeGadget_display_000140C4(char *s0) {
     }
     if (GADGET(s0)->label2) {
         FCALL(gui_spriteRefresh)(GADGET(s0)->label2);
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+        n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->alpha);
         FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label2, n, col, 0);
         FCALL(gui_drawSprite)(GADGET(s0)->label2,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
     FCALL(gui_setupRenderMode_0000055C)(GADGET(s0)->font);
-    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+    n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->alpha);
     FCALL(gui_setPrimColor_000006B8)(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
     FCALL(gui_drawString_00000D04)(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
@@ -548,7 +548,7 @@ void BestGadget_display_00014228(char *s0) {
     if (1) { }
     if (GADGET(s0)->label1) {
         FCALL(gui_spriteRefresh)(GADGET(s0)->label1);
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xDC)); /* labelAlpha */
+        n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->labelAlpha);
         FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label1, n, col, 0);
         FCALL(gui_drawSprite)(GADGET(s0)->label1,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.lbx.value,
@@ -556,14 +556,14 @@ void BestGadget_display_00014228(char *s0) {
     }
     if (GADGET(s0)->label2) {
         FCALL(gui_spriteRefresh)(GADGET(s0)->label2);
-        n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+        n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->alpha);
         FCALL(gui_setColorEnvPrim_000017DC)(GADGET(s0)->label2, n, col, 0);
         FCALL(gui_drawSprite)(GADGET(s0)->label2,
                       GADGET(s0)->parms.xps.value + GADGET(s0)->parms.l2x.value,
                       GADGET(s0)->parms.yps.value + GADGET(s0)->parms.l2y.value, 0);
     }
     FCALL(gui_setupRenderMode_0000055C)(GADGET(s0)->font);
-    n = (int)(*(float*)&D_00000000 * (float)*(int*)(s0 + 0xD8)); /* alpha */
+    n = (int)(*(float*)&D_00000000 * (float)*(int *)&GADGET(s0)->alpha);
     FCALL(gui_setPrimColor_000006B8)(GADGET(s0)->font, n, GADGET(s0)->colour, GADGET(s0)->unkD4);
     FCALL(gui_drawString_00000D04)(GADGET(s0)->font, GADGET(s0)->parms.xps.value, GADGET(s0)->parms.yps.value, GADGET(s0)->text);
 }
