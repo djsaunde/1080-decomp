@@ -84,49 +84,49 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
     if (arg0 != 0 || (arg0 = (char *)gen_imp_mem_new(0x108)) != 0) {
         vt = arg0;
         if (vt != 0 || (vt = (char *)gen_imp_mem_new(8)) != 0) {
-            ((SelItemInfo *)vt)->vptr = (int)((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
+            ((SelItemInfo *)vt)->vptr = ((char *)&timproc_uso_b5_D_807FE9E8 + 0x1178);
             ((SelItemInfo *)vt)->unk004 = 0;
         }
         u0.v = B5_NAME(timproc_uso_b5_D_807FE9F8, 0x1188); nm = u0;
         {
             if ((c = (char *)&SELF->ixn) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt0 + 0x1A0), PI(c)->unk14 = 0, PI(c)->value = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt0 + 0x1A0), PI(c)->unk14 = 0, PI(c)->value = 0);
             }
         }
         u1.v = B5_NAME(timproc_uso_b5_D_807FE9FC, 0x118C); nm = u1;
         {
             if ((c = (char *)&SELF->am0) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt1 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt1 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u2.v = B5_NAME(timproc_uso_b5_D_807FEA00, 0x1190); nm = u2;
         {
             if ((c = (char *)&SELF->am1) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt2 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt2 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u3.v = B5_NAME(timproc_uso_b5_D_807FEA04, 0x1194); nm = u3;
         {
             if ((c = (char *)&SELF->am2) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt3 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt3 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u4.v = B5_NAME(timproc_uso_b5_D_807FEA08, 0x1198); nm = u4;
         {
             if ((c = (char *)&SELF->am3) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt4 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt4 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         u5.v = B5_NAME(timproc_uso_b5_D_807FEA0C, 0x119C); nm = u5;
         {
             if ((c = (char *)&SELF->am4) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                (PI(c)->vptr = (int)((char *)&D_timb5_32C8_vt5 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
+                (PI(c)->vptr = ((char *)&D_timb5_32C8_vt5 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
         h = (f32)iz(); u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA10 + 0x11A0); if (1) {} vC.x = h; vC.y = h; vC.z = h; vA.x = -2500.0f; vA.y = -1500.0f; vA.z = -2500.0f; if (1) {} vB.x = 2500.0f; vB.y = 1500.0f; vB.z = 2500.0f;
@@ -138,7 +138,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
                  (h = (f32)iz()), (cA != 0))) {
                 gen_imp_Parms_addParm(cA, arg0, nm, 1);
                 h = (f32)iz();
-                PV(cA)->vptr = (int)((char *)&D_timb5_32C8_vv0 + 0x170);
+                PV(cA)->vptr = ((char *)&D_timb5_32C8_vv0 + 0x170);
                 PV(cA)->unk1C = 0;
                 t = cp0;
                 PV(cA)->v[0] = t.x;
@@ -159,7 +159,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         {
             if ((cB = (char *)&SELF->rot) != 0 || (cB = (char *)gen_imp_mem_new(0x20)) != 0) {
                 gen_imp_Parms_addParm(cB, arg0, nm, 1);
-                PV(cB)->vptr = (int)((char *)&D_timb5_32C8_vv1 + 0x170);
+                PV(cB)->vptr = ((char *)&D_timb5_32C8_vv1 + 0x170);
                 PV(cB)->unk1C = 0;
                 t = cp0;
                 PV(cB)->v[0] = t.x;
@@ -171,7 +171,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         {
             if ((c = (char *)&SELF->chy) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                PF(c)->vptr = (int)((char *)&D_timb5_32C8_vw0 + 0x158);
+                PF(c)->vptr = ((char *)&D_timb5_32C8_vw0 + 0x158);
                 PF(c)->unk14 = 0;
                 PF(c)->value = 0.0f;
             }
@@ -180,7 +180,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
         {
             if ((c = (char *)&SELF->scl) != 0 || (c = (char *)gen_imp_mem_new(0x18)) != 0) {
                 gen_imp_Parms_addParm(c, arg0, nm, 1);
-                PF(c)->vptr = (int)((char *)&D_timb5_32C8_vw1 + 0x158);
+                PF(c)->vptr = ((char *)&D_timb5_32C8_vw1 + 0x158);
                 PF(c)->unk14 = 0;
                 PF(c)->value = 0.0f;
             }

@@ -172,14 +172,14 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         var_s0 = arg0;
         if ((var_s0 != NULL) || (temp_v0_2 = timproc_uso_b5_alias((char *)0x2C), var_s0 = temp_v0_2, (temp_v0_2 != NULL))) {
             timproc_uso_b5_alias(var_s0, ((char *)&D_00000000 + 0x1260));
-            NODE(var_s0)->vptr = (char *)&D_00000000;
+            *(char **)&NODE(var_s0)->vptr = (char *)&D_00000000;
         }
         SELWIN(arg0)->vptr = (void *)&D_00000000;
         var_s0 = (char *)&SELWIN(arg0)->parms;
         if ((arg0 != (char *)-0x2C) || (temp_v0_3 = timproc_uso_b5_alias((char *)0x38C), var_s0 = temp_v0_3, (temp_v0_3 != NULL))) {
             var_v1 = var_s0;
             if ((var_s0 != NULL) || (temp_v0_4 = timproc_uso_b5_alias((char *)8), var_v1 = temp_v0_4, (temp_v0_4 != NULL))) {
-                WPARMS(var_v1)->vptr = (s32)((char *)&D_00000000 + 0x1268);
+                WPARMS(var_v1)->vptr = ((char *)&D_00000000 + 0x1268);
                 WPARMS(var_v1)->unk004 = 0;
             }
             sp3A0.p = *(char **)((char *)&D_00000000 + 0x127C);
@@ -187,7 +187,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp3A0;
             if ((var_s0 != (char *)-8) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PF(spA8)->vptr = (s32)((char *)&D_b5_4118_s01 + 0x158);
+                PF(spA8)->vptr = ((char *)&D_b5_4118_s01 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.45f;
             }
@@ -196,7 +196,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp39C;
             if ((var_s0 != (char *)-0x20) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PF(spA8)->vptr = (s32)((char *)&D_b5_4118_s02 + 0x158);
+                PF(spA8)->vptr = ((char *)&D_b5_4118_s02 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.0f;
             }
@@ -205,7 +205,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp398;
             if ((var_s0 != (char *)-0x38) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s03 + 0x1A0); PI(spA8)->value = 0x18;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s03 + 0x1A0); PI(spA8)->value = 0x18;
                 PI(spA8)->unk14 = 0;
             }
             sp394.p = *(char **)((char *)&D_00000000 + 0x1288);
@@ -213,7 +213,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp394;
             if ((var_s0 != (char *)-0x50) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s04 + 0x1A0); PI(spA8)->value = 0x78;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s04 + 0x1A0); PI(spA8)->value = 0x78;
                 PI(spA8)->unk14 = 0;
             }
             sp390.p = *(char **)((char *)&D_00000000 + 0x128C);
@@ -221,7 +221,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp390;
             if ((var_s0 != (char *)-0x68) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s05 + 0x1A0); PI(spA8)->value = 0x78;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s05 + 0x1A0); PI(spA8)->value = 0x78;
                 PI(spA8)->unk14 = 0;
             }
             sp38C.p = *(char **)((char *)&D_00000000 + 0x1290);
@@ -229,7 +229,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp38C;
             if ((var_s0 != (char *)-0x80) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PF(spA8)->vptr = (s32)((char *)&D_b5_4118_s06 + 0x158);
+                PF(spA8)->vptr = ((char *)&D_b5_4118_s06 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
@@ -238,7 +238,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp388;
             if ((var_s0 != (char *)-0x98) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PF(spA8)->vptr = (s32)((char *)&D_b5_4118_s07 + 0x158);
+                PF(spA8)->vptr = ((char *)&D_b5_4118_s07 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
@@ -247,7 +247,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp384;
             if ((var_s0 != (char *)-0xB0) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PF(spA8)->vptr = (s32)((char *)&D_b5_4118_s08 + 0x158);
+                PF(spA8)->vptr = ((char *)&D_b5_4118_s08 + 0x158);
                 PF(spA8)->unk14 = 0;
                 PF(spA8)->value = 0.036f;
             }
@@ -256,7 +256,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp380;
             if ((var_s0 != (char *)-0xC8) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s09 + 0x1A0); PI(spA8)->value = 0x99;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s09 + 0x1A0); PI(spA8)->value = 0x99;
                 PI(spA8)->unk14 = 0;
             }
             sp37C.p = *(char **)((char *)&D_00000000 + 0x12A0);
@@ -264,7 +264,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp37C;
             if ((var_s0 != (char *)-0xE0) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s10 + 0x1A0); PI(spA8)->value = 0x99;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s10 + 0x1A0); PI(spA8)->value = 0x99;
                 PI(spA8)->unk14 = 0;
             }
             sp36C.unkC = 0.0f;
@@ -288,7 +288,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp348;
             if ((var_s0 != (char *)-0xF8) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp74 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp74, var_s0, marsh, 1);
-                PC(sp74)->vptr = (s32)((char *)&D_b5_4118_s11 + 0x188);
+                PC(sp74)->vptr = ((char *)&D_b5_4118_s11 + 0x188);
                 PC(sp74)->unk20 = 0;
                 *(Q *)PC(sp74)->rgba = sp60;
             }
@@ -312,7 +312,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp314;
             if ((var_s0 != (char *)-0x11C) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s12 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s12 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -336,7 +336,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp2E0;
             if ((var_s0 != (char *)-0x140) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s13 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s13 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -360,7 +360,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp2AC;
             if ((var_s0 != (char *)-0x164) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s14 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s14 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -384,7 +384,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp278;
             if ((var_s0 != (char *)-0x188) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s15 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s15 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -408,7 +408,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp244;
             if ((var_s0 != (char *)-0x1AC) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s16 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s16 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -432,7 +432,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp210;
             if ((var_s0 != (char *)-0x1D0) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s17 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s17 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -456,7 +456,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp1DC;
             if ((var_s0 != (char *)-0x1F4) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s18 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s18 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -480,7 +480,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp1A8;
             if ((var_s0 != (char *)-0x218) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s19 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s19 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -504,7 +504,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp174;
             if ((var_s0 != (char *)-0x23C) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s20 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s20 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -528,7 +528,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp140;
             if ((var_s0 != (char *)-0x260) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s21 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s21 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -552,7 +552,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = sp10C;
             if ((var_s0 != (char *)-0x284) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s22 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s22 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -576,7 +576,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spD8;
             if ((var_s0 != (char *)-0x2A8) || (temp_v0 = timproc_uso_b5_alias((char *)0x24), sp28 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(sp28, var_s0, marsh, 1);
-                PC(sp28)->vptr = (s32)((char *)&D_b5_4118_s23 + 0x188);
+                PC(sp28)->vptr = ((char *)&D_b5_4118_s23 + 0x188);
                 PC(sp28)->unk20 = 0;
                 *(Q *)PC(sp28)->rgba = sp60;
             }
@@ -585,7 +585,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spD4;
             if ((var_s0 != (char *)-0x2CC) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s24 + 0x1A0); PI(spA8)->value = -4;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s24 + 0x1A0); PI(spA8)->value = -4;
                 PI(spA8)->unk14 = 0;
             }
             spD0.p = *(char **)((char *)&D_00000000 + 0x12DC);
@@ -593,7 +593,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spD0;
             if ((var_s0 != (char *)-0x2E4) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s25 + 0x1A0); PI(spA8)->value = 0xD;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s25 + 0x1A0); PI(spA8)->value = 0xD;
                 PI(spA8)->unk14 = 0;
             }
             spCC.p = *(char **)((char *)&D_00000000 + 0x12E0);
@@ -601,7 +601,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spCC;
             if ((var_s0 != (char *)-0x2FC) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s26 + 0x1A0); PI(spA8)->value = -0x10;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s26 + 0x1A0); PI(spA8)->value = -0x10;
                 PI(spA8)->unk14 = 0;
             }
             spC8.p = *(char **)((char *)&D_00000000 + 0x12E4);
@@ -609,7 +609,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spC8;
             if ((var_s0 != (char *)-0x314) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s27 + 0x1A0); PI(spA8)->value = -0x15;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s27 + 0x1A0); PI(spA8)->value = -0x15;
                 PI(spA8)->unk14 = 0;
             }
             spC4.p = *(char **)((char *)&D_00000000 + 0x12E8);
@@ -617,7 +617,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spC4;
             if ((var_s0 != (char *)-0x32C) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s28 + 0x1A0); PI(spA8)->value = 0x73;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s28 + 0x1A0); PI(spA8)->value = 0x73;
                 PI(spA8)->unk14 = 0;
             }
             spC0.p = *(char **)((char *)&D_00000000 + 0x12EC);
@@ -625,7 +625,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spC0;
             if ((var_s0 != (char *)-0x344) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s29 + 0x1A0); PI(spA8)->value = 0x62;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s29 + 0x1A0); PI(spA8)->value = 0x62;
                 PI(spA8)->unk14 = 0;
             }
             spBC.p = *(char **)((char *)&D_00000000 + 0x12F0);
@@ -633,7 +633,7 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spBC;
             if ((var_s0 != (char *)-0x35C) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s30 + 0x1A0); PI(spA8)->value = 0x62;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s30 + 0x1A0); PI(spA8)->value = 0x62;
                 PI(spA8)->unk14 = 0;
             }
             spB8.p = *(char **)((char *)&D_00000000 + 0x12F4);
@@ -641,11 +641,11 @@ char *SelectWin_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
             marsh = spB8;
             if ((var_s0 != (char *)-0x374) || (temp_v0 = timproc_uso_b5_alias((char *)0x18), spA8 = temp_v0, (temp_v0 != NULL))) {
                 timproc_uso_b5_alias(spA8, var_s0, marsh, 1);
-                PI(spA8)->vptr = (s32)((char *)&D_b5_4118_s31 + 0x1A0); PI(spA8)->value = 0xD;
+                PI(spA8)->vptr = ((char *)&D_b5_4118_s31 + 0x1A0); PI(spA8)->value = 0xD;
                 PI(spA8)->unk14 = 0;
             }
         }
-        NODE(arg0)->name = (const char *)((char *)&D_00000000 + 0x12F8);
+        *(char **)&NODE(arg0)->name = (char *)&D_00000000 + 0x12F8;
         SELWIN(arg0)->eventFlags = arg11;
         SELWIN(arg0)->fadeProc = (char *)arg2;
         SELWIN(arg0)->itemsMgr = (SelItemsMgr *)arg7;

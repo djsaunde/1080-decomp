@@ -44,8 +44,8 @@ extern char import_80020098; extern char import_800200CC;
 extern char *SelItemParms_ctor(); extern char *SelItemInfo_ctor(); extern char *SelItem_reset_00003890();
 typedef struct { f32 f0; f32 f4; f32 f8; } VecH;
 extern char timproc_uso_b5_D_807FDB64;
-extern char gPolyGeomMode_3EEC8_8005EE6C;
-extern char f8fc8_ee6c_r3; /* site-3 flag-restore store: separate symbol keeps the address un-CSE'd */
+extern SelPolyGeomMode gPolyGeomMode_3EEC8_8005EE6C;
+extern SelPolyGeomMode f8fc8_ee6c_r3; /* site-3 flag-restore store: separate symbol keeps the address un-CSE'd */
 extern char import_80807FB8;
 extern struct DBlk_8D38 import_800201EC;
 extern int gen_imp_mem_new();
@@ -58,8 +58,8 @@ extern void gen_imp_dbg_printf();
 extern int gen_imp_QNode_ctor(char *, char *, f32, f32, f32);
 extern int CommonInfo_add_0000A95C();
 void CommonInfo_init_0000A928(int *a0);
-extern char import_80063D04[];
-extern char import_800664C4[];
+extern SelPolyGeomMode import_80063D04; /* gPolyGeomMode aliases (the shape-build stores) */
+extern SelPolyGeomMode import_800664C4;
 extern char import_807664C4[];
 extern char import_80768434[];
 extern char import_8076A3A4[];
@@ -164,7 +164,8 @@ extern f32 DF_310;
 extern f32 DF_314;
 extern f32 DF_318;
 extern f32 DF_320;
-extern char f8fc8_e304_1[], f8fc8_e304_2[], f8fc8_e304_3[], f8fc8_e304_4[], f8fc8_e3d04_2[], f8fc8_ee6c_sb1[], f8fc8_ee6c_sb2[], f8fc8_ee6c_sb3[];
+extern char f8fc8_e304_1[], f8fc8_e304_2[], f8fc8_e304_3[], f8fc8_e304_4[], f8fc8_e3d04_2[];
+extern SelPolyGeomMode f8fc8_ee6c_sb1, f8fc8_ee6c_sb2, f8fc8_ee6c_sb3; /* gPolyGeomMode aliases (the bit-0x80000 saves) */
 extern char import_80020098_a, import_80020098_b, import_80020098_c, import_80020098_d;
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
@@ -207,7 +208,7 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
  * so it is coloured with an already-paid s0 instead of v1 + spill/reload around the call */
 #define ATTACH(P, W, I) { for (I = 0; I < TM(W)->numShapes; I++) { P = TM(W)->shapes[I]; gen_imp_MNode_addChild(W, P); { P = (char *)&NODE(TM(W)->shapes[I])->doFlags; *(int *)P &= ~4; } if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {} if (1) {}  } }
 #define ATTACH1(P, W) { for (i1 = 0; i1 < TM(W)->numShapes; i1++) { gen_imp_MNode_addChild(W, TM(W)->shapes[i1]); { P = (char *)&NODE(TM(W)->shapes[i1])->doFlags; *(int *)P &= ~4; } } }
-#define RESTORE(SB) if (SB) { do {   _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x |= 0x80000; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); } else { do {   _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); }
+#define RESTORE(SB) if (SB) { do {   _x = gPolyGeomMode_3EEC8_8005EE6C.geomMode; _x |= 0x80000; gPolyGeomMode_3EEC8_8005EE6C.geomMode = _x; } while (0); } else { do {   _x = gPolyGeomMode_3EEC8_8005EE6C.geomMode; _x &= 0xFFF7FFFF; gPolyGeomMode_3EEC8_8005EE6C.geomMode = _x; } while (0); }
 #define WTAIL(W, F0, F1, F2, F3, F4, F5, F6) TM(W)->head.qnode.cvqs.trans[0] = F0; TM(W)->head.qnode.cvqs.trans[1] = 720.0f; TM(W)->head.qnode.cvqs.trans[2] = -220.0f; \
     TM(W)->view[0] = F1; TM(W)->view[1] = F2; TM(W)->view[2] = F3; TM(W)->alpha = 0.0f; TM(W)->focused = 0; TM(W)->unk120 = F4; TM(W)->highlight = 1.0f; TM(W)->unk12C = F5; TM(W)->unk128 = F6;
 typedef void *(*AddFn)(void *, s32, s32, f32, f32, f32, f32, f32, f32);
@@ -246,7 +247,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
         gen_imp_Node_ctor(self, timproc_uso_b5_D_807FEBB8 + 0x1348);
         MGR->vptr = timproc_uso_b5_D_807FE5F4;
         *(char **)&NODE(self)->name = timproc_uso_b5_D_807FE5F4 + 0x1350;
-        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FEBD4; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FEBD4 + 0x1364; FP(w, 0x2C) = self; } MGR->commonInfo = w; }
+        { char *p = ALLOC(0x30); w = p; if (w) { gen_imp_Node_ctor(w, timproc_uso_b5_D_807FEBCC + 0x135C); *(char **)&NODE(w)->vptr = timproc_uso_b5_D_807FEBD4; *(char **)&NODE(w)->name = timproc_uso_b5_D_807FEBD4 + 0x1364; ((SelCommonInfo *)w)->mgr = MGR; } MGR->commonInfo = w; }
         ADD(self, MGR->commonInfo);
         CommonInfo_init_0000A928(self);
         { char *p = ALLOC(0x2C); char *q; if (p) { gen_imp_Node_ctor(p, timproc_uso_b5_D_807FEBE0 + 0x1370);
@@ -263,7 +264,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(t, TM(w)->head.inner)
                 TM(w)->highlight = 1.0f;
-                sb1 = FW(f8fc8_ee6c_sb1, 4) & 0x80000; { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; _x &= ~1; _x &= 0xFFFDFFFF; _x |= 0x2000; _x &= ~2; FW(import_800664C4, 4) = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_808064C4 + 0x13C0, import_807664C4, 0), TM(w)->shapes[1] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0), TM(w)->shapes[2] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0), TM(w)->shapes[3] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FC314 + 0x13E4, import_8076C314, 0), TM(w)->shapes[4] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FE284 + 0x13F0, import_8076E284, 0), TM(w)->shapes[5] = (char *)gen_imp_PolyShape_ctor(0, import_808001F4 + 0x13FC, import_807701F4, 0), TM(w)->shapes[6] = (char *)gen_imp_PolyShape_ctor(0, import_80802164 + 0x1408, import_80772164, 0), TM(w)->shapes[7] = (char *)gen_imp_PolyShape_ctor(0, import_808040D4 + 0x1414, import_807740D4, 0); TM(w)->numShapes = 8; if (1) {}
+                sb1 = f8fc8_ee6c_sb1.geomMode & 0x80000; { _x = gPolyGeomMode_3EEC8_8005EE6C.geomMode; _x &= 0xFFF7FFFF; _x &= ~1; _x &= 0xFFFDFFFF; _x |= 0x2000; _x &= ~2; import_800664C4.geomMode = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_808064C4 + 0x13C0, import_807664C4, 0), TM(w)->shapes[1] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807F8434 + 0x13CC, import_80768434, 0), TM(w)->shapes[2] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FA3A4 + 0x13D8, import_8076A3A4, 0), TM(w)->shapes[3] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FC314 + 0x13E4, import_8076C314, 0), TM(w)->shapes[4] = (char *)gen_imp_PolyShape_ctor(0, timproc_uso_b5_D_807FE284 + 0x13F0, import_8076E284, 0), TM(w)->shapes[5] = (char *)gen_imp_PolyShape_ctor(0, import_808001F4 + 0x13FC, import_807701F4, 0), TM(w)->shapes[6] = (char *)gen_imp_PolyShape_ctor(0, import_80802164 + 0x1408, import_80772164, 0), TM(w)->shapes[7] = (char *)gen_imp_PolyShape_ctor(0, import_808040D4 + 0x1414, import_807740D4, 0); TM(w)->numShapes = 8; if (1) {}
                 TM(w)->unk140 = 0;
                 ATTACH1(t, w)
                 TM(w)->unk144 = 0;
@@ -304,7 +305,7 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(_at, TM(w)->head.inner)
                 TM(w)->highlight = 1.0f;
-                sb2 = FW(f8fc8_ee6c_sb2, 4) & 0x80000; { _x = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); TM(w)->numShapes = 1; if (1) {}
+                sb2 = f8fc8_ee6c_sb2.geomMode & 0x80000; { _x = (gPolyGeomMode_3EEC8_8005EE6C.geomMode & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } import_80063D04.geomMode = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_80803D04 + 0x14A4, timproc_uso_b5_D_807E3D04, 0); TM(w)->numShapes = 1; if (1) {}
                 TM(w)->unk140 = 0;
                 ATTACH(_at, w, i2)
                 TM(w)->unk144 = 0;
@@ -336,11 +337,11 @@ void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2) {
                 gen_imp_MNode_addChild(w, TM(w)->head.inner);
                 SETI(_at, TM(w)->head.inner)
                 TM(w)->highlight = 1.0f;
-                sb3 = FW(f8fc8_ee6c_sb3, 4) & 0x80000; { _x = (FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } FW(import_80063D04, 4) = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); TM(w)->numShapes = 1; if (1) {}
+                sb3 = f8fc8_ee6c_sb3.geomMode & 0x80000; { _x = (gPolyGeomMode_3EEC8_8005EE6C.geomMode & 0xFFF7FFFF & ~1 & 0xFFFDFFFF) | 0x2000; if (1) { _x |= 2; } import_80063D04.geomMode = _x; } TM(w)->shapes[0] = (char *)gen_imp_PolyShape_ctor(0, import_80803D04 + 0x1540, f8fc8_e3d04_2, 0); TM(w)->numShapes = 1; if (1) {}
                 TM(w)->unk140 = 0;
                 ATTACH(_at, w, i3)
                 TM(w)->unk144 = 0;
-                if (sb3) { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x |= 0x80000; FW(&f8fc8_ee6c_r3, 4) = _x; } while (0); } else { do { _x = FW(&gPolyGeomMode_3EEC8_8005EE6C, 4); _x &= 0xFFF7FFFF; FW(&gPolyGeomMode_3EEC8_8005EE6C, 4) = _x; } while (0); }
+                if (sb3) { do { _x = gPolyGeomMode_3EEC8_8005EE6C.geomMode; _x |= 0x80000; f8fc8_ee6c_r3.geomMode = _x; } while (0); } else { do { _x = gPolyGeomMode_3EEC8_8005EE6C.geomMode; _x &= 0xFFF7FFFF; gPolyGeomMode_3EEC8_8005EE6C.geomMode = _x; } while (0); }
                 WTAIL(w, DF_2BC, DF_2C0, DF_2C4, DF_2C8, DF_2CC, DF_2D0, DF_2D4)
             }
             TESURI(1)->model = (void *)w;

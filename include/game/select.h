@@ -42,35 +42,35 @@ typedef struct Window {
  * 0x127C..0x12F4). ---- */
 typedef struct SelParmI {       /* int parm (type vtable D+0x1A0 in the ctor) */
     char hdr[0xC];
-    s32 vptr;               /* 0x0C */
+    void *vptr;             /* 0x0C */
     s32 value;              /* 0x10 */
     s32 unk14;              /* 0x14: 0 */
 } SelParmI;                 /* 0x18 */
 
 typedef struct SelParmF {       /* float parm (type vtable D+0x158) */
     char hdr[0xC];
-    s32 vptr;
+    void *vptr;
     f32 value;              /* 0x10 */
     s32 unk14;
 } SelParmF;                 /* 0x18 */
 
 typedef struct SelParmV3 {      /* vec3 parm with a range (min / max vec3 passed to the ctor) */
     char hdr[0xC];
-    s32 vptr;
+    void *vptr;
     f32 v[3];               /* 0x10 */
     s32 unk1C;
 } SelParmV3;                /* 0x20 */
 
 typedef struct SelParmRGBA {    /* colour parm (type vtable D+0x188): RGBA, each 0..1 */
     char hdr[0xC];
-    s32 vptr;
+    void *vptr;
     f32 rgba[4];            /* 0x10 */
     s32 unk20;
 } SelParmRGBA;              /* 0x24 */
 
 /* SelItem::Parms (SelItemParms_ctor 0x2B74, at SelItem +0x2C): the item's screen layout. */
 typedef struct SelItemParms {
-    s32 vptr;               /* 0x000 */
+    void *vptr;             /* 0x000 */
     s32 unk004;
     SelParmI xpn;           /* 0x008: label x (SelItem_drawLabel / the camera lerp) */
     SelParmI ypn;           /* 0x020: label y */
@@ -86,7 +86,7 @@ typedef struct SelItemParms {
 
 /* SelItem::Info (SelItemInfo_ctor 0x32C8, at SelItem +0x194): the item's model pose. */
 typedef struct SelItemInfo {
-    s32 vptr;               /* 0x000 */
+    void *vptr;             /* 0x000 */
     s32 unk004;
     SelParmI ixn;           /* 0x008: label sprite row (24-byte rows) */
     SelParmI am0, am1, am2, am3, am4; /* 0x020..0x080: 2 */
@@ -323,9 +323,27 @@ typedef struct SelItemsMgr {
                              * mode (import 800200CC +0x34) is not 2 */
 } SelItemsMgr;              /* 0x60 */
 
+/* "Common Info" (SelItemsMgr_ctor, alloc 0x30): a Node that points back
+ * at its SelItemsMgr (CommonInfo_loadData_00008F98 calls the manager's vtable slot 11 through it). */
+typedef struct SelCommonInfo {
+    char pad00[0x28];
+    void *vptr;             /* 0x28 */
+    SelItemsMgr *mgr;       /* 0x2C: the owning SelItemsMgr (the ctor stores `this`) */
+} SelCommonInfo;            /* 0x30 */
+
+/* bootup gPolyGeomMode_3EEC8 (gl_data.h): two mode words. The Tesuri model build in
+ * SelItemsMgr_ctor saves bit 0x80000 of geomMode, sets the PolyShape geometry bits
+ * (|0x2000, &~1 / ~0x20000 / ~0x80000, +-2) while it builds the shapes, then restores bit
+ * 0x80000. The b5 extern aliases (all relocated to the same import) keep the target's
+ * separate %hi / %lo pairs. */
+typedef struct SelPolyGeomMode {
+    s32 mode0;              /* 0x0 */
+    s32 geomMode;           /* 0x4 */
+} SelPolyGeomMode;
+
 /* SelectWin::Parms (SelectWin_ctor, at SelectWin +0x2C). Defaults in the comments. */
 typedef struct SelectWinParms {
-    s32 vptr;               /* 0x000 */
+    void *vptr;             /* 0x000 */
     s32 unk004;
     SelParmF cwt;           /* 0x008 (win 0x044): 0.45 */
     SelParmF voy;           /* 0x020 (0x05C): 0 */
@@ -472,9 +490,10 @@ typedef struct SelectWin {
 
 /* View a raw `char *` window pointer as SelectWin (the state functions keep their
  * char * parameter: their `arg0 + stage * 4` cluster offsets are matching levers).
- * Exception: `eventFlags` stays a raw `FW(w, 0x4D4)` / `*(int *)(w + 0x4D4)` read in
- * every state function. As an `|` operand, the struct-member form takes its temp
- * register later and renumbers t6..t8 (checked in state0/3/4/6/7/8/9, agent-c run 484). */
+ * `eventFlags` as an `|` operand: the plain member takes its temp register later and
+ * renumbers t6..t8 (state0/3/4/6/7/8/9, agent-c runs 484 / 554), so every state function
+ * reads it as `*(int *)&SELWIN(w)->eventFlags` (the address-deref lever: the same bytes as the
+ * old raw `FW(w, 0x4D4)`; all 15 sites, run 554). */
 #define SELWIN(p) ((SelectWin *)(p))
 /* The screen Window of a SelectWin (scene +0xC; scene +0xC +0x70 is its camera, fov at +0x14C).
  * The two-player split is vertical: SelectionMgr_setSplit gives wins[0] height = vpH = split at
@@ -485,6 +504,21 @@ typedef struct SelectWin {
 #define SELWIN_CAMERA(w) ((MCamera *)SELWIN_VIEW(w)->camera)
 /* View a raw item pointer (the item virtuals take char * / int *) as SelItem. */
 #define SELITEM(p) ((SelItem *)(p))
+
+/* RoomModifier (RoomModifier_ctor 0x10EC, alloc 0x40, vtbl Data 0x3E4): the node under GenRoom that
+ * renders the room once per SelectWin. Its display (0x117C) runs once per window pass: it calls
+ * SelectWin_setGlobalFade / SelectWin_dimOtherItems on wins[pass], turns that window's DispItems
+ * DoDisplay bit (Node doFlags 4) on and the other window's off, draws the room when the window's
+ * SelectionMgr shows it (owner->shownMask bit `pass`), and counts pass up; update resets it. */
+typedef struct RoomModifier {
+    char node[0x28];        /* 0x00: Node */
+    void *vptr;             /* 0x28 */
+    s32 showItems;          /* 0x2C: 1 (ctor); 0 = display hides both windows' DispItems */
+    s32 unk30;              /* 0x30: 0 */
+    s32 pass;               /* 0x34: the window being drawn (update: 0, display: ++) */
+    struct SelectWin *wins[2]; /* 0x38: SelectionMgr_ctor stores its windows here */
+} RoomModifier;             /* 0x40 */
+#define RMOD(p) ((RoomModifier *)(p))
 
 /* The select-screen room (gen_buildRoom_0000131C: a 0x60 "<Node>"; gen_createScene_00008DB4
  * builds it). gen_createLights / gen_createVRBox fill the lights and the sky box. */
