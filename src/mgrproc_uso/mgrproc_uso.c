@@ -53,7 +53,7 @@ extern char D_mgr_B20_1;
 extern char D_mgr_B20_2;
 void mgr_pauseRetire_00000B20(void) {
     CALL(RaceProcess_endResult4_00006F90)(*(int*)(&D_00000000 + 0x30));
-    CALL(Process_resume_0000FAE8)(*(int*)(&D_mgr_B20_1 + 0x30));
+    CALL(Process_resume_0000FAE8)(*(int*)(&D_mgr_B20_1 + 0x30)); /* RAW: data-table: mgrproc data alias word (D_mgr_B20_1 + 0x30) */
     CALL(input_clearActivePad_00012090)(&D_mgr_B20_2);
 }
 
@@ -607,7 +607,7 @@ extern int mgrproc_uso_func_013980();
 void MGRRaceProcess_onPauseSelect(int *a0) {
     if (XCALL(mgrproc_uso_func_013980, Fader_isDone_00013980)(INPUT_MGR(import_80020228).fader, a0) == 0) return;
     if (*(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg == 0) return;
-    *(int*)((char*)&import_80263D60 + 0x30) = (int)a0;
+    *(int*)((char*)&import_80263D60 + 0x30) = (int)a0; /* RAW: byte-lock: pause menu rows[cursor].arg read through a0[0x48 / 4] twice; the GUIMENU member form re-CSEs the base */
     ((void(*)()) *(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg)();
 }
 
@@ -687,7 +687,7 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
             }
             NODE(node)->parent = (Node *) hdr;
             if (mgr_isLastCourse_00000140(arg0->courseList, node) != 0) {
-                *(int *)((char *)arg0->race.unk524 + 0x60) = 2;
+                *(int *)((char *)arg0->race.unk524 + 0x60) = 2; /* RAW: unknown-object: RaceProcess.unk524 object +0x60 state word (no struct) */
                 XCALL(mgrproc_uso_func_00001BD4, mgr_startEnding_00001BE4)(arg0);
             }
             XCALL(mgrproc_uso_func_0139B0, Fader_start)(INPUT_MGR(import_80020228).fader, 1, 1);
@@ -817,7 +817,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
     int sel;
 
     v0 = (char *)import_000A7B90(&import_80020098, 1);
-    import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9));
+    import_00096228(*(signed char *)(v0 + 8), *(signed char *)(v0 + 9)); /* RAW: unknown-object: import_000A7B90 result bytes +8 / +9 and RaceProcess.unk524 +0x60 (no struct) */
     MGRRACE(s0)->endingFrame = MGRRACE(s0)->endingFrame + 1;
     sel = MGRRACE(s0)->exitStep;
     switch (sel) {
@@ -884,7 +884,7 @@ void MGRRaceProcess_updateSub2(char *s0) {
             mgr_startReplay_00001AD0(s0, INPUT_MGR(import_80020208).replayLen[0] + 0x26000F);
             vt = (char *)&import_80020098;
             RACEPROC(s0)->subState = 3;
-            *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1;
+            *(int *)((char *)RACEPROC(s0)->unk524 + 0x60) = 1; /* RAW: unknown-object: import_000A7B90 result bytes +8 / +9 and RaceProcess.unk524 +0x60 (no struct) */
             GAMEFLOW(vt)->procState = 5;
             GAMEFLOW(vt)->nextProcState = 7;
             MGRRACE(s0)->fade7A4 = 0.0f;
@@ -998,12 +998,12 @@ extern void mgrproc_1BE4_call_1B58(int *, int);
 void mgr_startEnding_00001BE4(MgrRace *state) {
     int idx;
     char *base = &D_00000000;
-    idx = *(int*)(base + 0x64) - 5;
+    idx = *(int*)(base + 0x64) - 5; /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
     state->race.subState = 2;
     state->creditLine = 0;
     state->creditScroll = 0;
-    state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0);
-    state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC);
+    state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0); /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
+    state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC); /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
     state->endingFrame = 0;
     XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(base);
     mgr_switchToView2_00001A64((int *)state);

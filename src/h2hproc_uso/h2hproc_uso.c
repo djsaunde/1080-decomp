@@ -143,7 +143,7 @@ void h2h_openSession_0000020C(int *a0) {
     *a0 = 0;
     INPUT_MGR(D_00000000).session = 0;
     *(int*)a0[2] = 0;
-    *(int*)(a0[2] + 4) = 0;
+    *(int*)(a0[2] + 4) = 0; /* RAW: unknown-object: the 8-byte h2h session pair allocated here (no struct) */
     *(int*)((char*)&D_00000000 + 0x68) = 0;
 }
 
@@ -1119,10 +1119,10 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
         NODE(tmp)->unk04 = 1;
     }
     NODE(tmp)->parent = (Node *)a0;
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16));
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16));
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16));
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
 end:
     return a0;
 }

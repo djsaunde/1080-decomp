@@ -336,7 +336,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
 extern char D_arc_D70_base;
 void arc_loadSprites_00000D70(ArcRace *a0) {
     int *p;                  /* ArcCourseList: p[1] idx, p[2] count (array form keeps the t6/t7 order) */
-    CALL(gui_spriteLoad)(&a0->sprites[0], *(int*)(&D_arc_D70_base + 0x64) | 0xA0000);
+    CALL(gui_spriteLoad)(&a0->sprites[0], *(int*)(&D_arc_D70_base + 0x64) | 0xA0000); /* RAW: data-table: sprite-id words in the arcproc data table */
     CALL(gui_spriteLoad)(&a0->sprites[1], 0x210000);
     p = (int *)a0->courseList;
     if (p[2] == p[1] + 1) {
@@ -344,8 +344,8 @@ void arc_loadSprites_00000D70(ArcRace *a0) {
     } else {
         CALL(gui_spriteLoad)(&a0->sprites[2], (p[1] + 2) | 0x210000);
     }
-    CALL(gui_spriteInit)(&a0->sprites[4], *(int*)(&D_arc_D70_base + 0x4C) | 0x1D0000);
-    CALL(gui_spriteInit)(&a0->sprites[3], *(int*)(&D_arc_D70_base + 0x54) | 0x1E0000);
+    CALL(gui_spriteInit)(&a0->sprites[4], *(int*)(&D_arc_D70_base + 0x4C) | 0x1D0000); /* RAW: data-table: sprite-id words in the arcproc data table */
+    CALL(gui_spriteInit)(&a0->sprites[3], *(int*)(&D_arc_D70_base + 0x54) | 0x1E0000); /* RAW: data-table: sprite-id words in the arcproc data table */
     CALL(gui_spriteInit)(&a0->sprites[5], 0x21000B);
     CALL(gui_spriteInit)(&a0->sprites[6], 0x21000D);
     CALL(gui_spriteInit)(&a0->sprites[7], 0x210009);
@@ -828,7 +828,7 @@ void ARCRaceProcess_drawIntro(char *arg0) {
         CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, (int)(ARCRACE(arg0)->resultFade * (0, (float)255)), ARCRACE(arg0)->race.colours.pair[RACECOL_CS][0].value, ARCRACE(arg0)->race.colours.pair[RACECOL_CS][1].value);
         CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[0]);
         CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[0], 0xA0, 0xB6, 3);
-        while (0) { w = *(short *)(arg0 + 0x20); }
+        while (0) { w = *(short *)(arg0 + 0x20); } /* RAW: byte-lock: ArcCourseList member form (count / idx) swaps the two loads registers (agent-h run 492); the dead while (0) read is a regalloc lever */
         q = (char *)ARCRACE(arg0)->sprites[2].image;
         w = ((RaceSpriteImage *)q)->width;
         p6d8 = (char *)ARCRACE(arg0)->sprites[1].image;
@@ -837,7 +837,7 @@ void ARCRaceProcess_drawIntro(char *arg0) {
         p6a8 = (char *)ARCRACE(arg0)->courseList;
         /* count == idx + 1 (the final course). Kept raw: the ArcCourseList member form
          * swaps the two loads' registers (agent-h run 492). */
-        if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) {
+        if (*(int *)(p6a8 + 8) == (*(int *)(p6a8 + 4) + 1)) { /* RAW: byte-lock: ArcCourseList member form (count / idx) swaps the two loads registers (agent-h run 492); the dead while (0) read is a regalloc lever */
             CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[2]);
             CALL(gui_drawSprite)(&ARCRACE(arg0)->sprites[2], sp48, 0x8E, 2);
             CALL(gui_spriteRefresh)(&ARCRACE(arg0)->sprites[1]);
@@ -1188,7 +1188,7 @@ void ArcNameEntry_drawExitOverlay(int *self) {
     fp = &ARCRACE(sub)->resultFade;
     val = *fp;
     if (val > 0.0f) {
-        *fp -= *(float *)(base + 0x44);
+        *fp -= *(float *)(base + 0x44); /* RAW: data-table: rodata float step (base = &D_00000000 + 0x44) */
         sub = (int *)MODENAMEENT(self)->race;
         if (ARCRACE(sub)->resultFade < 0.0f) {
             ARCRACE(sub)->resultFade = 0.0f;

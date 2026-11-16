@@ -68,7 +68,7 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
     st->unkA40 = r;
     if (r == 0) return;
     ctx = CTX;
-    changed = (CTX_WIN(ctx)->drawDistFov[0] < out) || (ctx != st->camera);
+    changed = (*(float *)(ctx + 0x98) < out) || (ctx != st->camera); /* RAW: donor-mirror: NCC donor gfx context fields, edg cannot take the gdl headers */
     if ((st->flags & 0x10000) && st->groundSurface == 0x61 &&
         st->board != 9 && st->contactCount != 0) {
         p = (char *)func_00000000(&gGfxLib_cfa0_a, 0xD);
@@ -134,5 +134,5 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
     }
     bu_cfa0_v(&gGfxLib_cfa0_f, t);
     bu_cfa0_v(st);
-    bu_cfa0_v(CTX_WIN(CTX)->displayMask);
+    bu_cfa0_v(*(int *)(CTX + 0x108)); /* RAW: donor-mirror: NCC donor gfx context fields, edg cannot take the gdl headers */
 }

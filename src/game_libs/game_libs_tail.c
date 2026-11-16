@@ -296,7 +296,7 @@ void Backup_scoreEntryInit(char *a0, int a1, char *a2, int a3) {
             break;
         }
     }
-    *(int *)(a0 + 4) = a3;
+    *(int *)(a0 + 4) = a3; /* RAW: unknown-object: score entry record (+4 time), no struct */
 }
 
 /* Flag/compare-test accessor family (sibling of 00009A2C): splat split each

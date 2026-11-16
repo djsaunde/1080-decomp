@@ -75,7 +75,7 @@ void arc_procMain(int a0, int a1) {
             D_00000000.procState = 5;
             break;
         case 5: {
-            CALL(game_loadUso)(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4));
+            CALL(game_loadUso)(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4)); /* RAW: data-table: arcproc data alias word (D_arc240_B + 4), not a struct */
             D_00000000.course = ((int **)a0)[2][((int **)a0)[2][1] + 3];
             CALL(snd_playSeq_000120A8)(&D_arc240_C, 4, D_00000000.course, 3);
             v = CALL(app_createGame_00008E48)(a0, ((int *)a0)[0], 1);

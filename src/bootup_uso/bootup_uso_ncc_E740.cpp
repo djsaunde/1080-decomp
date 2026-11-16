@@ -24,7 +24,7 @@ struct VO { char pad[0x28];
     virtual void v10(); virtual char *buf(); };
 struct Obj { char pad[0x1C]; unsigned short *pix; };
 extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
-    unsigned short *src = (unsigned short *)(((VO *)GFX_E740->mainWindow)->buf() + 0x9140);
+    unsigned short *src = (unsigned short *)((*(VO **)(func_0000023C + 4))->buf() + 0x9140); /* RAW: donor-mirror: NCC donor framebuffer offset 0x9140 into the video buffer */
     unsigned short *dst = self->pix;
     for (int y = 0; y < 32; y++) {
         for (int x = 0; x < 64; x++) {

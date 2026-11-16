@@ -992,10 +992,10 @@ sw_end:
             var_s0_3 = (s32 *)var_s0;
             var_s0 = ((char *) NODE(sp164)->vptr);
             temp_s1 = (char *)((s32)var_s0_3 + 0x70);
-            ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp164, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0x10, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8B8 + 4), 100.0f);
+            ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp164, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0x10, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8B8 + 4), 100.0f); /* RAW: data-table: kRo_ rodata float pool word */
             if (SNOWB(arg0)->flags & 1) {
                 var_s0 = ((char *) NODE(sp160)->vptr); 
-                ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp160, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + 8), 100.0f);
+                ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp160, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + 8), 100.0f); /* RAW: data-table: kRo_ rodata float pool word */
                 func_00000000(sp164);
                 func_00000000(sp164);
             }

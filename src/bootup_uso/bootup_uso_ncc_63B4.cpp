@@ -48,8 +48,7 @@ struct Obj { char p[0xB4]; Rr *rr; int nb8; int nbc; int org; };
 extern "C" void MapProp_display(Obj *obj) {
     V3 A;
     V3 B;
-    /* RAW: data-table: bootup RoData+0x5B0 f32 constant (reloc RoData-base K 0x5B0), not a struct field */
-    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34)));
+    A.set(0.0f, 0.0f, (f32)(-obj->nb8) / func_00000000_63b4_ff((f32)obj->nbc / *(f32 *)(bu_63b4_c57c + 0x34))); /* RAW: donor-mirror: NCC donor rodata float pool (bu_63b4_c57c + 0x34) */
     func_00000000_63b4_fpp((f32)obj->nbc, &A.x, &A.z);
     B.y = 0.0f;
     B.x = -A.x;

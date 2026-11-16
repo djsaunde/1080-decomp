@@ -81,7 +81,7 @@ trk_main(a0, a1) int * a0; int a1; {
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, *(int *)(d + 4));
+            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: unknown-object: d +4 word of the session pair (no struct) */
             gl_func_00000000(d, 4, GAMEFLOW(d)->course, 2);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
@@ -761,8 +761,8 @@ void TrkRace_drawResultExtra(TimRace *a0) {
 
     if (a0->race.leave != 0) {
         if (D_b3_1240_f0 <= 0.0f) {
-            if (a0->recordFade < *(float*)((char*)&D_b3_1240_f40 + 0x40)) {
-                a0->recordFade += *(float*)((char*)&D_b3_1240_f44 + 0x44);
+            if (a0->recordFade < *(float*)((char*)&D_b3_1240_f40 + 0x40)) { /* RAW: data-table: rodata float pool words */
+                a0->recordFade += *(float*)((char*)&D_b3_1240_f44 + 0x44); /* RAW: data-table: rodata float pool words */
             }
 
             a0->race.unk508 = a0->race.unk508 + 1;
@@ -917,7 +917,7 @@ void TrkNameEntry_drawExitOverlay(int *self) {
     fp = (float *)((char *)sub + 0x72C);
     val = *fp;
     if (val > 0.0f) {
-        *fp -= *(float *)(base + 0x48);
+        *fp -= *(float *)(base + 0x48); /* RAW: data-table: rodata float step (base = &D_00000000 + 0x48) */
         sub = (int *)MODENAMEENT(self)->race;
         if (TIMRACE(sub)->recordFade < 0.0f) {
             TIMRACE(sub)->recordFade = 0.0f;
@@ -1050,9 +1050,9 @@ void TrkDataManager_init_000019CC(char *arg0, char *arg1, int arg2, int *arg3) {
             ((float *)o)[2] = 100.0f / denom;
             ((float *)o)[3] = 0.0f / denom;
         }
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0xA0) = DATAMGR(arg0)->pointsList + 0x108;
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0x80) = 0;
-        *(int *)((char *)DATAMGR(arg0)->points94 + 0x84) = -0x12;
+        *(int *)((char *)DATAMGR(arg0)->points94 + 0xA0) = DATAMGR(arg0)->pointsList + 0x108; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
+        *(int *)((char *)DATAMGR(arg0)->points94 + 0x80) = 0; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
+        *(int *)((char *)DATAMGR(arg0)->points94 + 0x84) = -0x12; /* RAW: unknown-object: points94 PointsGadget words +0x80 / +0x84 / +0xA0 not yet in gadget.h */
         o = (char *)DATAMGR(arg0)->points94;
         CALL(list_append)(arg0 + 0x10, o);
         if (NODE(o)->parent != 0) {

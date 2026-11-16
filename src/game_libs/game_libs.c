@@ -1353,8 +1353,8 @@ void hud_findMarkers_000029F8(char *arg0) {
         it[1] = (GlNode29F8 *)ITEMTYPE(list)->node.children; /* the type's items */
         while (GL29F8_ITER_NEXT(it) != 0) {
             item = it[0]->data;
-            x = (s32)(((*(f32 *)(item + 0x30) - COURSEG(arg0)->originX) / COURSEG(arg0)->extent) * (t = scale));
-            y = (s32)(((*(f32 *)(item + 0x38) - COURSEG(arg0)->originZ) / COURSEG(arg0)->extent) * (t = scale));
+            x = (s32)(((*(f32 *)(item + 0x30) - COURSEG(arg0)->originX) / COURSEG(arg0)->extent) * (t = scale)); /* RAW: unknown-object: item list entry (pos x / z at +0x30 / +0x38) whose type is not proven a ColourSubItem */
+            y = (s32)(((*(f32 *)(item + 0x38) - COURSEG(arg0)->originZ) / COURSEG(arg0)->extent) * (t = scale)); /* RAW: unknown-object: item list entry (pos x / z at +0x30 / +0x38) whose type is not proven a ColourSubItem */
             vec[3] = 0.0f;
             vec[2] = 0.0f;
             vec[1] = 0.0f;
@@ -3505,7 +3505,7 @@ void RaceProcess_drawGui(RaceProcess *arg0) {
             if (!(arg0->flags & RACEF_NO_RESULT_MSG)) {
                 vt = arg0->vt;
                 vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, arg0->result, (s32)arg0->msgY);
-                if (*(s32 *)((char *)new_var + 0x34) == 2) {
+                if (*(s32 *)((char *)new_var + 0x34) == 2) { /* RAW: data-table: GameFlow word through a shared &D_00000000 base held in a local */
                     vt = arg0->vt;
                     vt->slot[RACEVT_DRAW_RESULT].fn((char *)arg0 + vt->slot[RACEVT_DRAW_RESULT].delta, ((int *)new_var)[arg0->result], (s32)(arg0->msgY + 120.0f));
                 }

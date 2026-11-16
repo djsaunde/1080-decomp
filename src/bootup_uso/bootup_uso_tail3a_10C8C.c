@@ -59,9 +59,9 @@ void GameFlow_create(int *arg0, int arg1) {
         z = 0;
         w = func_00000C10.f3;
         *(float *)q = x;
-        *(float *)(q + 4) = y;
-        *(float *)(q + 8) = z;
-        *(float *)(q + 0xC) = w;
+        *(float *)(q + 4) = y; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
+        *(float *)(q + 8) = z; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
+        *(float *)(q + 0xC) = w; /* RAW: unknown-object: q is a fresh 0x10 float quad (x, y, z, w) with no identified type */
     }
     func_000000F0 = FCALL(TextWin_ctor)(0, &sStr_Flow_C5DC, 0x10, 0x12C, 0x10, 0x14, rec);
     FCALL(app_setHeapMode)(sp68);
@@ -313,5 +313,5 @@ void GameFlow_startMode(char *arg0, int arg1, int arg2) {
     GAMEFLOW(arg0)->flowMode = arg1;
     FCALL(heap_printStats)();
     p = (char *)D_00000000;
-    FCALL(node_linkBack_0004E888)(*(int *)(GAMEFLOW(arg0)->game + 0x114), p);
+    FCALL(node_linkBack_0004E888)(*(int *)(GAMEFLOW(arg0)->game + 0x114), p); /* RAW: unknown-object: InputMgr.game world object +0x114 (no struct for the game world) */
 }
