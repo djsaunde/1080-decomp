@@ -4561,7 +4561,7 @@ void skin_cmdSkinMgr(NodeListState *self) {
     obj->node.parent = cf;
 
     /* gSkinMgrs[slot] = the new SkinMgr (skin_cmdSkinAnim / SkinShape look it up by slot) */
-    ((int *)&gProcNodeList_41700)[count1] = (int)self->skinMgr;
+    ((int *)&gSkinMgrs_41700)[count1] = (int)self->skinMgr;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr);
@@ -4588,7 +4588,7 @@ void skin_cmdSkinAnim(NodeListState *self) {
     *bufp = p + 1;
     a1 = p[0];
     self->cmd = a1;
-    saved = (int *)((int *)&gProcNodeList_41700)[a1];
+    saved = (int *)((int *)&gSkinMgrs_41700)[a1];
     if (saved == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x2C550, "No skinmgr for skinanim"));
     }
@@ -4658,7 +4658,7 @@ void skin_cmdSkinShape(NodeListState *arg0) {
     *(int **)A = q + 1;
     B = *q;
     arg0->cmd = B;
-    sp30 = (&gProcNodeList_41700)[B];
+    sp30 = (&gSkinMgrs_41700)[B];
     B = (int)arg0->cursor;
     A = *(int *)B;
     *(int *)B = A + 4;
