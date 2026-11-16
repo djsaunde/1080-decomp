@@ -17176,42 +17176,42 @@ void Window_stub_0004EB4C(int a0) {}
 typedef char *(*GP_0004EB54)();
 extern int gl_func_00034458_4EB54(); /* blank alias (= 0): ROM jal words are jal 0 */
 extern char *D_g_0004EB54; /* per-site alias of D_00000000 (lo16 0): register-self slot; separate name keeps the sw off the call-arg la CSE */
-void Window_display(char *arg0) {
+void Window_display(Window *arg0) {
     f32 temp_f0;
     char *temp_v0;
     char *temp_v0_3;
     char *temp_v1;
     int i;
 
-    FW(arg0, 0x11C) = 0;
-    FW(arg0, 0x120) = 0;
-    if (FW(arg0, 0x78) & 0x20) {
+    arg0->nTaskHooks = 0;
+    arg0->nHooks = 0;
+    if (arg0->flags & 0x20) {
         XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D0, "CPU")));
         XCALL(gl_func_00034458_4EB54, prof_beginSection)((GL_DATA_STR(0x205D4, "Display()")));
     }
-    XCALL(gl_func_00034458_4EB54, Node_setDisplayMask)(FW(arg0, 0x108));
-    D_g_0004EB54 = arg0;
+    XCALL(gl_func_00034458_4EB54, Node_setDisplayMask)(arg0->displayMask);
+    D_g_0004EB54 = (char *)arg0;
     XCALL(gl_func_00034458_4EB54, gfx_beginView_00046BC4)((char*)&gGfxLib);
-    temp_v1 = (char*)FW(arg0, 0x70);
+    temp_v1 = arg0->camera;
     if (temp_v1 != 0) {
         temp_v0 = (char*)FW(temp_v1, 0x28);
         ((GP_0004EB54)FW(temp_v0, 0x64))(*(s16*)(temp_v0 + 0x60) + temp_v1);
-        temp_f0 = 85.0f / *(f32*)((char*)FW(arg0, 0x70) + 0x14C);
+        temp_f0 = 85.0f / ((MCamera *)arg0->camera)->fov;
         for (i = 0; i < 5; i++) {
-            ((Window *)arg0)->drawDistFov[i] = ((Window *)arg0)->drawDist[i] * temp_f0;
+            arg0->drawDistFov[i] = arg0->drawDist[i] * temp_f0;
         }
     }
     XCALL(gl_func_00034458_4EB54, gfx_setViewStage_00047F68)((char*)&gGfxLib, 0);
     XCALL(gl_func_00034458_4EB54, gfx_matrixModeProjection_000478D8)((char*)&gGfxLib);
     XCALL(gl_func_00034458_4EB54, Window_setupView)(arg0);
-    XCALL(gl_func_00034458_4EB54, gfx_loadMatrix_00047DD8)((char*)&gGfxLib, arg0 + 0x30);
+    XCALL(gl_func_00034458_4EB54, gfx_loadMatrix_00047DD8)((char*)&gGfxLib, arg0->proj);
     XCALL(gl_func_00034458_4EB54, gfx_setViewStage_00047F68)((char*)&gGfxLib, 1);
     XCALL(gl_func_00034458_4EB54, gfx_matrixModeModelView_000478EC)((char*)&gGfxLib);
     XCALL(gl_func_00034458_4EB54, gfx_loadIdentity_00047F48)((char*)&gGfxLib);
     XCALL(gl_func_00034458_4EB54, gfx_emitProjection)((char*)&gGfxLib);
-    temp_v0_3 = (char*)FW(arg0, 0x28);
+    temp_v0_3 = (char *)arg0->node.vptr;
     ((GP_0004EB54)FW(temp_v0_3, 0x6C))(*(s16*)(temp_v0_3 + 0x68) + (int)arg0);
-    if (FW(arg0, 0x78) & 0x20) {
+    if (arg0->flags & 0x20) {
         XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E0, "CPU")));
         XCALL(gl_func_00034458_4EB54, prof_endSection)((GL_DATA_STR(0x205E4, "Display()")));
     }
@@ -17560,10 +17560,10 @@ extern float gl_func_00000000_f704(float);
 int cam_isSphereInView(char *a0, int a1, float px, float py, float pz, float *out, float arg7) {
     float dist;
     f32 d[3];
-    char *o;
-    d[0] = *(float *)(*(char **)(a0 + 0x70) + 0xA0) - px;
-    d[1] = *(float *)(*(char **)(a0 + 0x70) + 0xA4) - py;
-    d[2] = *(float *)(*(char **)(a0 + 0x70) + 0xA8) - pz;
+    MCamera *o;
+    d[0] = ((MCamera *)((Window *)a0)->camera)->mnode.world[3][0] - px;
+    d[1] = ((MCamera *)((Window *)a0)->camera)->mnode.world[3][1] - py;
+    d[2] = ((MCamera *)((Window *)a0)->camera)->mnode.world[3][2] - pz;
     dist = XCALL(gl_func_00000000_f704, math_vec3Length_0005BBCC)(d[2] * d[2] + (d[1] * d[1] + d[0] * d[0]));
     if (out != 0) {
         *out = dist;
@@ -17575,8 +17575,8 @@ int cam_isSphereInView(char *a0, int a1, float px, float py, float pz, float *ou
     d[0] *= dist;
     d[1] *= dist;
     d[2] *= dist;
-    o = *(char **)(a0 + 0x70);
-    dist = d[2] * *(float *)(o + 0xDC) + (d[1] * *(float *)(o + 0xCC) + *(float *)(o + 0xBC) * d[0]);
+    o = (MCamera *)((Window *)a0)->camera;
+    dist = d[2] * o->view[2][2] + (d[1] * o->view[1][2] + o->view[0][2] * d[0]);
     if (dist < ((Window *)a0)->coneCos) {
         return 0;
     }
@@ -19457,11 +19457,12 @@ void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2) {
     s32 var_v1;
     u32 var_s3;
     u32 var_s8;
-    char *temp_s0;
-    char *temp_s1;
+    PolyVert *temp_s0;
+    PolyVert *temp_s1;
     char *temp_s2;
     char *temp_v0;
     char *temp_v1;
+    PolyVert *temp_c;
 
     if (arg1 != 0) {
         var_s8 = 0;
@@ -19489,11 +19490,10 @@ void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2) {
             do {
                 temp_s0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[0]);
                 temp_s1 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[1]);
-                temp_v0 = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[2]);
-                /* the cross-product reads stay raw: POLYVERT(v)->x there reorders the lh loads (run 521) */
-                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->x = (f32) (((*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2)) * (*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4))) - ((*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2)) * (*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4))));
-                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->y = (f32) (((*(s16*)(temp_s1 + 4) - *(s16*)(temp_s0 + 4)) * (*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0))) - ((*(s16*)(temp_v0 + 4) - *(s16*)(temp_s1 + 4)) * (*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0))));
-                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->z = (f32) (((*(s16*)(temp_s1 + 0) - *(s16*)(temp_s0 + 0)) * (*(s16*)(temp_v0 + 2) - *(s16*)(temp_s1 + 2))) - ((*(s16*)(temp_v0 + 0) - *(s16*)(temp_s1 + 0)) * (*(s16*)(temp_s1 + 2) - *(s16*)(temp_s0 + 2))));
+                temp_c = CALL(PolyShape_getVertex)(arg0, (s32) POLYTRI((int)BASEPOLY(arg0)->tris + var_s2)->v[2]);
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->x = (f32) (((temp_s1->y - temp_s0->y) * (temp_c->z - temp_s1->z)) - ((temp_s1->z - temp_s0->z) * (temp_c->y - temp_s1->y)));
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->y = (f32) (((temp_s1->z - temp_s0->z) * (temp_c->x - temp_s1->x)) - ((temp_s1->x - temp_s0->x) * (temp_c->z - temp_s1->z)));
+                POLYNORMAL((int)BASEPOLY(arg0)->faceNormals + var_s7)->z = (f32) (((temp_s1->x - temp_s0->x) * (temp_c->y - temp_s1->y)) - ((temp_s1->y - temp_s0->y) * (temp_c->x - temp_s1->x)));
                 CALL(math_vec3Normalize)((int)BASEPOLY(arg0)->faceNormals + var_s7);
                 var_s8 += 1;
                 var_s7 += 0xC;
