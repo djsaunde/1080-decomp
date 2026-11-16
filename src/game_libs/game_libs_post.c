@@ -923,14 +923,14 @@ typedef struct { unsigned int w0, w1; } Gfx1DA7C;
 Gfx1DA7C *AudioSynth_LoadReverbSamples(Gfx1DA7C *dl, int a1, short a2, short a3) {
     int pad[1];
     char *rec = (char *)&gAudioContext + a2 * 0x158;
-    if (*(unsigned char *)(rec + 0x1C) == 1) {
+    if (REVERB_AT(rec)->downsampleRate == 1) {
         dl = gl_ref_00031EDC(dl, a1, a2, a3);
     } else {
         dl = gl_ref_0003186C(dl, a1, a2, a3);
     }
-    G1DA7C(dl++, (*(unsigned short *)(rec + 0x22) & 0xFFFF) | 0x0C340000, 0x0C800940);
-    G1DA7C(dl++, ((*(unsigned short *)(rec + 0x24) + 0x8000) & 0xFFFF) | 0x0C340000, 0x0C800C80);
-    if (*(unsigned short *)(rec + 0x28) != 0 || *(unsigned short *)(rec + 0x2A) != 0) {
+    G1DA7C(dl++, (*(u16 *)&REVERB_AT(rec)->volume & 0xFFFF) | 0x0C340000, 0x0C800940);
+    G1DA7C(dl++, ((REVERB_AT(rec)->decayRatio + 0x8000) & 0xFFFF) | 0x0C340000, 0x0C800C80);
+    if (REVERB_AT(rec)->leakRtl != 0 || REVERB_AT(rec)->leakLtr != 0) {
         dl = gl_ref_000317E8(dl, a2);
     }
     return dl;
@@ -4702,22 +4702,22 @@ void AudioLoad_SetSampleFontLoadStatus(int a0, int a1) {
  * form + a redundant `i = 0;` reassignment inside the guard -> IDO sinks the
  * counter init into the blez delay slot and colors cursor=$a2 (home-freed arg
  * reg) / const 2=$a3, keeping the two header stores adjacent before the guard. */
-void AudioLoad_InitTable(short *a0, int a1, unsigned short a2) {
+void AudioLoad_InitTable(AudioTable *a0, int a1, unsigned short a2) {
     int i = 0;
-    short n = *a0;
-    char *cursor;
-    *(short *)((char *)a0 + 2) = a2;
-    *(int *)((char *)a0 + 4) = a1;
+    short n = a0->header.numEntries;
+    AudioTableEntry *cursor; /* cursor[1] = entries[i]: the header is the 0x10 slot before entries[0] */
+    a0->header.unkMediumParam = a2;
+    a0->header.romAddr = a1;
     if (n > 0) {
         i = 0;
-        cursor = (char *)a0;
+        cursor = (AudioTableEntry *)a0;
         do {
             i++;
-            if (*(int *)(cursor + 0x14) != 0 && *(signed char *)(cursor + 0x18) == 2) {
-                *(int *)(cursor + 0x10) += a1;
-                n = *a0;
+            if (cursor[1].size != 0 && cursor[1].medium == 2) { /* MEDIUM_CART: rom-relative -> absolute */
+                cursor[1].romAddr += a1;
+                n = a0->header.numEntries;
             }
-            cursor += 16;
+            cursor++;
         } while (i < n);
     }
 }
@@ -5282,9 +5282,9 @@ int AudioLoad_GetSampleBank(int x, int *out) {
         *out = 0;
         return nv;
     }
-    if ((ok = *(signed char *)((char *)r0 + x * 0x10 + 0x19)) == 4) {
-        *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);
-        return *(int *)((char *)r0 + x * 0x10 + 0x10);
+    if ((ok = ((AudioTable *)r0)->entries[x].cachePolicy) == 4) {
+        *out = ((AudioTable *)r0)->entries[x].medium;
+        return ((AudioTable *)r0)->entries[x].romAddr;
     }
     {
         int local;
@@ -5293,8 +5293,8 @@ int AudioLoad_GetSampleBank(int x, int *out) {
             return nv;
         }
     }
-    *out = *(signed char *)((char *)r0 + x * 0x10 + 0x18);
-    return *(int *)((char *)r0 + x * 0x10 + 0x10);
+    *out = ((AudioTable *)r0)->entries[x].medium;
+    return ((AudioTable *)r0)->entries[x].romAddr;
 }
 
 // AudioLoad_SyncLoadFont — STRUCTURAL PASS (0xDC / 55 words, no episode).
