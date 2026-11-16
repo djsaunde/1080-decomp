@@ -129,7 +129,9 @@ extern "C" void snoweffects_uso_func_00002310(SnowTex *t) {
  * end points (+-len, 0, 0) and the origin go through the matrix (inline point transform); dir = a - b
  * (operator- through set(), by-value operator=), normalized, kept as fwd (+0xFC), then crossed with the
  * camera's +0x3B0 vector in place; +0x108 = camera +0x318, normalized; then virtual slots 14 and 15.
- * Left: the operator- result temps sit 8 bytes lower than the target's (frame 152 vs 160). */
+ * Frame 160 as the target (run 666): no named end-point pointers, the transform's results declared z, y, x,
+ * and one dead scratch word in operator- (agent-e run 659 lever). Left: the operator- result address
+ * (sp+0x74) is scheduled up into a1 at entry; the target forms it in v0 right before the copy. */
 struct SnowBV3 {
     float x, y, z;
     SnowBV3() {}
@@ -137,13 +139,19 @@ struct SnowBV3 {
     SnowBV3 &operator=(SnowBV3 o) { x = o.x; y = o.y; z = o.z; return *this; }
     SnowBV3 &operator+=(SnowBV3 o) { x += o.x; y += o.y; z += o.z; return *this; }
 };
-inline SnowBV3 operator-(const SnowBV3 &a, const SnowBV3 &b) { SnowBV3 r; r.set(a.x - b.x, a.y - b.y, a.z - b.z); return r; }
+inline SnowBV3 operator-(const SnowBV3 &a, const SnowBV3 &b) {
+    SnowBV3 r;
+    r.set(a.x - b.x, a.y - b.y, a.z - b.z);
+    { int sc[1]; sc[0] = 0; }  /* dead scratch word: puts the operator= param at the target's sp+60 */
+    return r;
+}
 inline SnowBV3 operator*(const SnowBV3 &a, float s) { SnowBV3 r; r.set(a.x * s, a.y * s, a.z * s); return r; }
 inline float dot(const SnowBV3 &a, const SnowBV3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline void xf(SnowBV3 *v, float (*m)[4]) {
-    float nx = m[0][0] * v->x + m[1][0] * v->y + m[2][0] * v->z + m[3][0];
-    float ny = m[0][1] * v->x + m[1][1] * v->y + m[2][1] * v->z + m[3][1];
-    float nz = m[0][2] * v->x + m[1][2] * v->y + m[2][2] * v->z + m[3][2];
+    float nz, ny, nx;
+    nx = m[0][0] * v->x + m[1][0] * v->y + m[2][0] * v->z + m[3][0];
+    ny = m[0][1] * v->x + m[1][1] * v->y + m[2][1] * v->z + m[3][1];
+    nz = m[0][2] * v->x + m[1][2] * v->y + m[2][2] * v->z + m[3][2];
     v->x = nx; v->y = ny; v->z = nz;
 }
 struct SnowVEnt { short d; short pad; void (*fn)(void *); };
@@ -189,10 +197,10 @@ struct SnowBasis {
 };
 extern "C" void snoweffects_uso_func_00004374(SnowBasis *t) {
     t->a.x = t->len; t->a.y = 0.0f; t->a.z = 0.0f;
-    SnowBV3 *pa = &t->a; xf(pa, t->m);
+    xf(&t->a, t->m);
     t->b.x = -t->len; t->b.z = 0.0f; t->b.y = 0.0f;
-    SnowBV3 *pb = &t->b; xf(pb, t->m);
-    t->dir = *pa - *pb;
+    xf(&t->b, t->m);
+    t->dir = t->a - t->b;
     gl_func_00000000(&t->dir);  /* math_vec3Normalize */
     t->fwd = t->dir;
     gl_func_00000000(&t->dir, &t->cam->up, &t->dir);  /* math_vec3Cross */
