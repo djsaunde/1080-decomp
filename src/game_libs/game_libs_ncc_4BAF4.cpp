@@ -73,7 +73,7 @@ extern "C" void Sprite_display_0004BAF4(Sprite *self) {
      * first packet as dlG and the 0xEE append as add() at depth 2: 99.586 -> 99.681; the else-arm packet as dlS
      * (count = nextP()'s by-value int parameter) and the B4 x MAX through mx4B(): -> 99.894, same length */
 
-    /* RAW: byte-lock: the camera position x / Sprite.depthBias typed (Cam4B member, ((Sprite *)me(self))->depthBias, *(f32 *)&) move edg spill slots and the FP operand order (runs 568 / 586) */
+    /* RAW: byte-lock: the camera position x / Sprite.depthBias typed (Cam4B member, ((Sprite *)me(self))->depthBias, *(f32 *)&) move edg spill slots and the FP operand order (runs 568 / 586). Run 592 retry: ((Cam4B *)me(..))->p.x, *(f32 *)& of it, me(&cam)->p.x, a flat {pad, x} record and (*(Cam4B *)..).p.x all move the a3 spill 0x8C -> 0x84; ((Sprite *)me((Ctx4B *)self))->depthBias, me(self)->depthBias and *(f32 *)& of it change 32 lines. Only the index form ((f32 *)me(..))[12] keeps the bytes, which names nothing */
     pos.x = F4B(me((Ctx4B *)&gGfxLib_4BAF4_cam), 0x30, f32);
     {
     u32 r;

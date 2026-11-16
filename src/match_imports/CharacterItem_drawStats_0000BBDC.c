@@ -40,8 +40,8 @@ void CharacterItem_drawStats_0000BBDC(TimB5EntryFields *a0, B5TimingScreen *a1) 
             SelItem_drawStatBar_00003A4C(
                 (char *)a0,
                 a0->xp0,
-                /* RAW: byte-lock: a0->yp0 changes the bytes (see the line comment) */
-                i * a1->ysp + *(int *)((char *)a0 + 0xBC), /* yp0; a0->yp0 changes the bytes */
+                /* *(int *)&a0->yp0: the plain member read a0->yp0 re-colours the loop temps (run 592) */
+                i * a1->ysp + *(int *)&a0->yp0,
                 tbl,
                 v1,
                 (f32 *)idxp[i],
@@ -52,7 +52,7 @@ void CharacterItem_drawStats_0000BBDC(TimB5EntryFields *a0, B5TimingScreen *a1) 
             SelItem_drawStatBarRight_00003C8C(
                 (char *)a0,
                 a0->xp0,
-                i * a1->ysp + *(int *)((char *)a0 + 0xBC), /* yp0; a0->yp0 changes the bytes */ /* RAW: byte-lock (as above) */
+                i * a1->ysp + *(int *)&a0->yp0, /* (as above) */
                 tbl,
                 v,
                 (f32 *)idxp[i],
