@@ -113,7 +113,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             char *g2;
             gen_imp_QNode_ctor(gc, &timproc_uso_b5_D_807FEEB8 + 0x1648, 0.0f, 0.0f, 0.0f);
             g2 = gc;
-            one = *(f32 *)((char *)&import_80807FB8 + 0x3BC); /* RAW: data-table: import_80807FB8 RoData constant */
+            one = *(f32 *)((char *)&import_80807FB8 + kRoF_gen_1e7_3BC);
             NODE(g2)->vptr = (char *)&d884_db64_gc; ((LightTarget *)g2)->mask = 1;
             ((LightTarget *)g2)->unk108[0] = one; /* the RoData 0x3BC constant, not 1.0f */
             ((LightTarget *)g2)->unk108[1] = one;
@@ -205,7 +205,7 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
             MODEL(child)->focused = 0;
             MODEL(child)->mapFade = 0.0f;
             MODEL(child)->alpha = 0.0f;
-            MODEL(child)->unk120 = *(f32 *)((char *)&import_80807FB8 + 0x3F8); /* RAW: data-table: import_80807FB8 RoData constant */
+            MODEL(child)->unk120 = *(f32 *)((char *)&import_80807FB8 + kRoF_gen_0p28_3F8);
             MODEL(child)->highlight = 0.0f;
         }
     }

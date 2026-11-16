@@ -727,9 +727,10 @@ typedef struct Note {
 
 /* gAudioHeapInitSizes (bootup.uso Sym 1284): AudioLoad_Init clears heapSize bytes of
  * gAudioHeap and passes initPoolSize to InitMainPools / permanentPoolSize to the
- * initPool alloc; InitMainPools reads heapSize at +0x4. The leading word is unread. */
+ * initPool alloc; InitMainPools reads heapSize at +0x4. AudioHeap_Init reads the s16 at +0x2. */
 typedef struct AudioHeapInitSizes {
-    /* 0x0 */ s32 unk0;
+    /* 0x0 */ s16 unk0;             /* 0x1400 */
+    /* 0x2 */ s16 tatumsPerBeat;    /* 48 (OoT's gTatumsPerBeat): AudioHeap_Init's tempo divisor */
     /* 0x4 */ s32 heapSize;
     /* 0x8 */ s32 initPoolSize;
     /* 0xC */ s32 permanentPoolSize;
@@ -1172,5 +1173,42 @@ typedef char audio_sndcuequeues_size_assert[sizeof(SndCueQueues) == 0x160 ? 1 : 
 #endif /* !__cplusplus */
 #define SND_CUEQ(sym)          (*(SndCueQueues *)&(sym))
 #define SND_CUEQ_AT_BASE(sym)  (*(SndCueQueues *)((char *)&(sym) + 0x338))
+
+/* The sound-timer record: bootup Data 0x1C080, Sym 1425, 0x1C bytes (scripts/uso-data-sites.py
+ * object 1425: snd_dispatchEvent, snd_UpdateTimers, snd_SoundObjUpdate, snd_HandleSeqEvent_30AF4,
+ * snd_ScheduleSeq / Default, snd_PlayPlayer1Seq, snd_HandleSeqEnd). snd_UpdateTimers counts the
+ * non-zero words down once per frame. agent-c run 585. */
+typedef struct SndTimers {
+    /* 0x00 */ s32 seqDelay;    /* on reaching 0 plays the scheduled sequence (0x423C4 / 0x42490 pairs) */
+    /* 0x04 */ s32 timer04;
+    /* 0x08 */ s32 timer08;
+    /* 0x0C */ s32 ramp;        /* the 256-frame ramp (SndCueQueues.rampBase / rampValue / rampStep):
+                                 * snd_HandleSeqEnd(6, ..) sets 256, snd_PlayPlayer1Seq clears it */
+    /* 0x10 */ s32 timer10;
+    /* 0x14 */ s32 unk14;       /* not counted down */
+    /* 0x18 */ s32 fade;        /* each tick sends (127 - fade) / 127 as audio cmd 0x01010300 */
+} SndTimers;
+#ifndef __cplusplus /* edg (the NCC donors) rejects the &((T *)0)->f constant form */
+AUDIO_ASSERT_MEMBER(SndTimers, ramp, 0xC);
+typedef char audio_sndtimers_size_assert[sizeof(SndTimers) == 0x1C ? 1 : -1];
+#endif /* !__cplusplus */
+#define SND_TIMERS(sym)        (*(SndTimers *)&(sym))
+
+/* Named bootup.uso section offsets that the audio code reads through a per-site token
+ * (`*(f32 *)(token + kX)`: the token is a zero symbol relocated against the section base, so the
+ * offset is the section offset). Values read from baserom.z64 (bootup.uso RoData / Data).
+ * The Data tables sit inside Sym 1450's span (Data 0x1C128, scripts/uso-data-sites.py object 1450).
+ * agent-c run 585. */
+#define kRoF_tempoScale_E90     0xE90   /* RoData+0xE90: f32 2880000 (AudioHeap_Init; OoT's 2880000.0f) */
+#define kRoF_maxTempoPal_EC8    0xEC8   /* RoData+0xEC8: f32 20.0304, osTvType 0 (PAL); kRo_AudioLoad_Init pool */
+#define kRoF_maxTempoMpal_ECC   0xECC   /* RoData+0xECC: f32 16.546, osTvType 2 (MPAL) */
+#define kRoF_maxTempoNtsc_ED0   0xED0   /* RoData+0xED0: f32 16.713, osTvType 1 (NTSC) and default */
+#define kD_sndLevelWobble_1C330 0x1C330 /* Data+0x1C330: f32[32], 1.0 0.9 .. 0.8 .. 1.2 .. 1.0: SoundObjUpdateChannel
+                                         * multiplies the level by entry [SoundObj +0x32] */
+#define kD_sndScaleWobble_1C3B0 0x1C3B0 /* Data+0x1C3B0: f32[32], 1.0 .. 1.7 .. 1.0: the same index, on the scale */
+#define kD_sndGainWobble_1C430  0x1C430 /* Data+0x1C430: f32[32], 1.1 1.0 1.2 .. 2.0 .. 1.1: snd_SoundObjUpdate
+                                         * multiplies by entry [count & 0x1F] while its Bss 0x31C countdown runs */
+#define kD_sndWobbleCount_1C740 0x1C740 /* Data+0x1C740: s32, 3 in the ROM: SoundObjUpdateChannel counts it down
+                                         * and on 0 nudges the amount and reloads 3 - (audioRandom & 1) */
 
 #endif /* AUDIO_H */

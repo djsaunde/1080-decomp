@@ -1,16 +1,11 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
+#define COMMON_H /* the context header already typedefs u8..f64; audio.h needs only the types */
+#include "../../include/audio.h"
 /* D_00000000 here is game_libs Data sym1443 @0x1C0C0 (TextReloc HI16 / LO16 at section 0x43918 /
- * 0x4391C, addend 0): the level-ramp record snd_SetLevelRampTarget fills. snd_RampInit(rec, target,
- * 30) sets target / count / frac, snd_RampTick steps current toward target, and SetLevelRampTarget
- * keeps its 0 / 1 / 2 selector at +0x10. audio.h declares the same record for game_libs_post.c. */
-typedef struct SndLevelRamp {
-    /* 0x00 */ s32 target;
-    /* 0x04 */ s32 current;
-    /* 0x08 */ s32 count;
-    /* 0x0C */ s32 frac;
-    /* 0x10 */ s32 mode;
-} SndLevelRamp;
+ * 0x4391C, addend 0): the level-ramp record snd_SetLevelRampTarget fills (audio.h SndLevelRamp).
+ * The gl_2F288_* tokens are zero symbols relocated against a section base (Data / RoData) or
+ * gAudioContext; their offsets are the audio.h named section offsets. */
 #define gSndLevelRamp (*(SndLevelRamp *)&D_00000000)
 void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
     f32 value;
@@ -50,8 +45,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
             aux = arg0->field_1F;
             amount = (u8)(amount + base);
             if (aux != 0) {
-                base = *(s32 *)(&gl_2F288_countdown + 0x1C740) - 1; /* RAW: data-table: countdown word at section offset 0x1C740 */
-                *(s32 *)(&gl_2F288_countdown_store + 0x1C740) = base; /* RAW: data-table: countdown word at section offset 0x1C740 */
+                base = *(s32 *)(&gl_2F288_countdown + kD_sndWobbleCount_1C740) - 1;
+                *(s32 *)(&gl_2F288_countdown_store + kD_sndWobbleCount_1C740) = base;
                 if (base == 0) {
                     if (kind == 0) {
                         base = aux / 2;
@@ -61,8 +56,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
                     } else {
                         amount = (u8)(amount + aux);
                     }
-                    base = 3 - (*(s32 *)(&gl_2F288_random + 0x2154) & 1); /* RAW: data-table: context-only TU (no audio.h types); +0x2154 is gAudioContext.audioRandom */
-                    *(s32 *)(&gl_2F288_countdown_reset + 0x1C740) = base; /* RAW: data-table: countdown word at section offset 0x1C740 */
+                    base = 3 - (((AudioContext *)&gl_2F288_random)->audioRandom & 1); /* gl_2F288_random: gAudioContext (Bss 0x345C0, Sym 1255) */
+                    *(s32 *)(&gl_2F288_countdown_reset + kD_sndWobbleCount_1C740) = base;
                 } else if ((kind != 0) && (amount >= 10)) {
                     amount = (u8)(amount - 10);
                 }
@@ -72,8 +67,8 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
         level = value / 80.0f;
         level += gl_2F288_pool173C[0x173C / 4];
         if (aux != 0) {
-            level *= *(f32 *)((u32)&gl_2F288_tableC330 + (aux * 4) + 0x1C330); /* RAW: data-table: f32 table at Data 0x1C330 */
-            scale *= *(f32 *)((u32)&gl_2F288_tableC3B0 + (aux * 4) + 0x1C3B0); /* RAW: data-table: f32 table at Data 0x1C3B0 */
+            level *= *(f32 *)((u32)&gl_2F288_tableC330 + (aux * 4) + kD_sndLevelWobble_1C330);
+            scale *= *(f32 *)((u32)&gl_2F288_tableC3B0 + (aux * 4) + kD_sndScaleWobble_1C3B0);
         }
         if (kind == 0xFF) {
             aux = (mode & 0xFF) << 8;

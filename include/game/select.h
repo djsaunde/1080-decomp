@@ -560,6 +560,36 @@ typedef struct GenSelectChar {
     s32 unk54;              /* 0x54: 0 */
 } GenSelectChar;            /* 0x58 */
 
+/* Named genproc (timproc_uso_b5) section offsets, read through a per-site token: the token is a
+ * zero symbol relocated against the genproc RoData / Data base, so token + K reads section + K.
+ * (scripts/uso-data-sites.py covers only bootup.uso and game.uso; these values are read from the
+ * genproc module in baserom.z64, scripts/uso-imports.py sites genproc for the relocations.)
+ * Same naming as game_uso_data.h: kRoF_ f32, kRoD_ f64, kTag_ a 4-byte parm tag. agent-c run 585. */
+#define kRoF_gen_1e7_23C    0x23C  /* RoData+0x23C: f32 1e7 (SelItemsMgr_ctor: Tesuri model 1 inner scale) */
+#define kRoF_gen_1e7_270    0x270  /* RoData+0x270: f32 1e7 (SelItemsMgr_ctor: Tesuri model 2 inner scale) */
+#define kRoF_gen_1e7_2B8    0x2B8  /* RoData+0x2B8: f32 1e7 (SelItemsMgr_ctor: LightTarget unk108[2]) */
+#define kRoF_gen_2p89_31C   0x31C  /* RoData+0x31C: f32 2.89 (SelItemsMgr_ctor: item 7 angle) */
+#define kRoF_gen_3pi2_320   0x320  /* RoData+0x320: f32 4.712389 = 3 pi / 2 (SelItemsMgr_ctor: the course items' angle) */
+#define kRoF_gen_1e7_3BC    0x3BC  /* RoData+0x3BC: f32 1e7 (CourseList_createItem: LightTarget scale) */
+#define kRoF_gen_0p28_3F8   0x3F8  /* RoData+0x3F8: f32 0.28 (CourseList_createItem: model unk120) */
+#define kRoF_gen_1e7_3FC    0x3FC  /* RoData+0x3FC: f32 1e7 (LevelList_createItem: LightTarget scale) */
+#define kTag_gen_cf2_116C   0x116C /* Data+0x116C: "cf2" (SelItemParms_ctor) */
+#define kTag_gen_off_1170   0x1170 /* Data+0x1170: "off" (SelItemParms_ctor) */
+#define kTag_gen_of2_1174   0x1174 /* Data+0x1174: "of2" (SelItemParms_ctor) */
+#define kTag_gen_pos_11A0   0x11A0 /* Data+0x11A0: "pos" (SelItemInfo_ctor) */
+#define kTag_gen_rot_11A4   0x11A4 /* Data+0x11A4: "rot" (SelItemInfo_ctor) */
+
+/* genproc Bss 0x0, the course-menu pick (scripts/uso-imports.py sites genproc: Bss(base) relocs,
+ * addends 0 / 4): GenCourse_update_0000024C stores its pause menu and itself here just before it
+ * calls the picked row's callback (GuiMenu.rows[cursor].arg); that callback,
+ * timproc_uso_b5_func_00000000, copies menu->cursor to GameFlow.course and fades the owner out
+ * (Process_fadeOut(owner, -1, 0)). Same pattern as titproc's GuiSpriteTable menu owner. */
+typedef struct GenMenuPick {
+    struct GuiMenu *menu;   /* 0x0: GenCourse +0x48 (PauseMenu_create) */
+    char *owner;            /* 0x4: the GenCourse process */
+} GenMenuPick;
+#define GEN_PICK(sym) (*(GenMenuPick *)&(sym))
+
 #ifndef __cplusplus /* edg (the NCC donors ncc_1DB0 / ncc_1F14 include this header) rejects the
                      * &((T *)0)->f constant form; the C builds check the offsets */
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]

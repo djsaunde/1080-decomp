@@ -129,7 +129,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
                 (PI(c)->vptr = ((char *)&D_timb5_32C8_vt5 + 0x1A0), PI(c)->value = 2, PI(c)->unk14 = 0);
             }
         }
-        h = (f32)iz(); u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA10 + 0x11A0); if (1) {} vC.x = h; vC.y = h; vC.z = h; vA.x = -2500.0f; vA.y = -1500.0f; vA.z = -2500.0f; if (1) {} vB.x = 2500.0f; vB.y = 1500.0f; vB.z = 2500.0f; /* RAW: data-table: TimB5Nm RoData record (section offset) */
+        h = (f32)iz(); u12 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA10 + kTag_gen_pos_11A0); if (1) {} vC.x = h; vC.y = h; vC.z = h; vA.x = -2500.0f; vA.y = -1500.0f; vA.z = -2500.0f; if (1) {} vB.x = 2500.0f; vB.y = 1500.0f; vB.z = 2500.0f;
         cp0 = vC; cp1 = vA; cp2 = vB;
         nm.v = u12.v;
         {
@@ -146,7 +146,7 @@ extern "C" char *SelItemInfo_ctor(char *arg0) {
                 PV(cA)->v[2] = t.z;
             }
         }
-        u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA14 + 0x11A4); /* RAW: data-table: TimB5Nm RoData record (section offset) */
+        u13 = *(struct TimB5Nm *)((char *)&timproc_uso_b5_D_807FEA14 + kTag_gen_rot_11A4);
         vC2.x = h; vC2.y = h; vC2.z = h;
         if (1) {}
         vD.x = -3.1415927f; vD.y = -3.1415927f; vD.z = -3.1415927f;

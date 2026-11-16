@@ -3545,7 +3545,7 @@ void AudioHeap_Init(void) {
         G.n2048 = 4;
     }
     G.h2 = rec->h14;
-    G.h2074 = (unsigned int)((float)a3 * *(float *)(D_sym1_21498 + 0xE90) / *(short *)(gAudioHeapInitSizes_1cdd0_21498 + 2) / G.f2138); /* RAW: data-table: RoData f32 at 0xE90 and the gAudioHeapInitSizes leading word read as s16 (+2) */
+    G.h2074 = (unsigned int)((float)a3 * *(float *)(D_sym1_21498 + kRoF_tempoScale_E90) / *(short *)&((AudioHeapInitSizes *)gAudioHeapInitSizes_1cdd0_21498)->tatumsPerBeat / G.f2138); /* *(short *)&: the plain member read swaps the mul.s operands */
     G.f205C = (float)t1 * (float)a3 / (float)(unsigned int)G.h2038 / G.h2074;
     G.h2034 = rec->b4;
     n = G.h2034;
@@ -5835,16 +5835,16 @@ void AudioLoad_Init(void) {
 
     switch (gl_24378_osTvType) {
         case 0:
-            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xEC8); /* RAW: data-table: RoData f32 per osTvType (0xEC8 / 0xECC / 0xED0) */
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + kRoF_maxTempoPal_EC8);
             gl_24378_gAudioCtx.refreshRate = 50;
             break;
         case 2:
-            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xECC); /* RAW: data-table: RoData f32 per osTvType (0xEC8 / 0xECC / 0xED0) */
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + kRoF_maxTempoMpal_ECC);
             gl_24378_gAudioCtx.refreshRate = 60;
             break;
         case 1:
         default:
-            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + 0xED0); /* RAW: data-table: RoData f32 per osTvType (0xEC8 / 0xECC / 0xED0) */
+            gl_24378_gAudioCtx.maxTempoTvTypeFactors = *(f32 *)(gl_24378_rodata + kRoF_maxTempoNtsc_ED0);
             gl_24378_gAudioCtx.refreshRate = 60;
             break;
     }
@@ -12510,7 +12510,7 @@ extern int D_2DE24_a, D_2DE24_b, D_2DE24_c;
 void snd_PlayPlayer1Seq(unsigned char a0, int a1) {
     unsigned char *p = &a0;
     D_2DE24_a = a0;
-    *(int *)((char *)&D_2DE24_b + 0xC) = 0; /* RAW: unknown-object: word +0xC of an unidentified Data object (per-site base-0 extern D_2DE24_b) */
+    SND_TIMERS(D_2DE24_b).ramp = 0; /* D_2DE24_b: per-site base-0 alias of the SndTimers record (Data 0x1C080, Sym 1425) */
     CALL(AudioThread_QueueCmdF32)(0x4D010000, 0x3F800000);
     CALL(AudioThread_QueueCmdS32)((a0 << 8) | 0x82010000, a1);
     CALL(AudioThread_QueueCmdU16)(0x90010000, 0xFFFF);
@@ -15140,7 +15140,7 @@ int snd_CueQueueStep(int *a0) {
             a0[0x48 / 4] = *q;
             *(unsigned short **)&a0[0x50 / 4] = q + 1;
         }
-        *(unsigned short *)((char *)a0 + 0x60) = cmd; /* RAW: unknown-object: the cue-queue record (a0 +0x48 / +0x50 / +0x60) has no struct yet */
+        ((SndCueQueue *)a0)->cmd = cmd; /* a0: a SndCueQueue (audio.h; +0x48 timer, +0x50 script) */
         return ret;
     }
     return ret;

@@ -6,6 +6,8 @@
 #include "game/course.h" /* WorldRegistry (GameFlow.game) */
 #include "gdl/race.h" /* RaceSprite: the gui sprite slot (image at +0x10, its width at +0x20) */
 #include "gdl/backup.h" /* BackupOptions (SETTINGS(GameFlow.options), SelectWin_charCheatIndex) */
+#include "game/guimenu.h" /* GuiMenu: GenCourse's pause menu (import_000A5D38 = PauseMenu_create) */
+#include "gdl/gfxlib.h" /* GfxLib: gen_createScene's import_8005C2CC / C39C / EBA4 are gGfxLib */
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -28,12 +30,15 @@ typedef struct { int a, b, c, d; } Quad4;
 #define TIMB5_F_3A0 (*(float*)((char*)&D_00000000 + 0x3A0))
 #endif
 
+/* The course menu's row callback (GenMenuPick, select.h). Per-site base-0 aliases (one lui each):
+ * D_b5_0_a / D_b5_0_c = genproc Bss 0 (GenMenuPick: menu, owner), D_b5_0_b = bootup Bss 0xF8
+ * (GameFlow). */
 extern char D_b5_0_a;
 extern char D_b5_0_b;
 extern char D_b5_0_c;
 void timproc_uso_b5_func_00000000(void) {
-    *(int*)((char*)&D_b5_0_b + 0x64) = (*(int**)&D_b5_0_a)[0x1F]; /* RAW: unknown-object: per-site base-0 aliases D_b5_0_a / _b of unidentified objects */
-    CALL(Process_fadeOut_0000F954)(*(int*)((char*)&D_b5_0_c + 0x4), -1, 0); /* RAW: unknown-object: per-site base-0 alias D_b5_0_c of an unidentified object */
+    INPUT_MGR(D_b5_0_b).course = GEN_PICK(D_b5_0_a).menu->cursor;
+    CALL(Process_fadeOut_0000F954)(GEN_PICK(D_b5_0_c).owner, -1, 0);
 }
 
 void gen_nop_00000040(void) {
@@ -52,11 +57,11 @@ extern int gen_imp_mem_new();
 extern int gen_imp_Node_ctor();
 extern int gen_imp_list_append();
 extern int gen_imp_Fader_start();
-extern int import_000A5D38();
-extern void import_000A5F40();
-extern int import_000A6900();
-extern int import_0024CCF4();
-extern int import_000A5FBC();
+extern int import_000A5D38(); /* bootup PauseMenu_create (scripts/uso-imports.py sites genproc: GenCourse_ctor 0xFC): returns a GuiMenu (game/guimenu.h) */
+extern void import_000A5F40(); /* bootup gui_initRows_000100F0 */
+extern int import_000A6900(); /* bootup gui_addRow_00010AB0 */
+extern int import_0024CCF4(); /* gui gui_fontCreate */
+extern int import_000A5FBC(); /* bootup gui_centerRows_0001016C */
 extern char timproc_uso_b5_D_807FD908;
 extern char timproc_uso_b5_D_807FD888;
 extern char timproc_uso_b5_D_807EF230;
@@ -107,7 +112,7 @@ after_sub:
         n = (int *)n[0x44 / 4];
     }
 
-    *(int *)(a0[0x48 / 4] + 0x30) = /* RAW: unknown-object: the import_000A5D38 display object (+0x30 slot) has no struct yet */
+    ((GuiMenu *)a0[0x48 / 4])->unk30 = /* the menu font (as SelectWin.font, select.h) */
         import_0024CCF4(0, &import_80074E78, 0x48, 0xDD, 3, 13);
 
     import_000A5FBC(a0[0x48 / 4]);
@@ -186,8 +191,8 @@ void GenCourse_update_0000024C(int *a0) {
     gen_imp_dbg_printf(&timproc_uso_b5_D_807FD924 + 0xB4);
     p = (int *)a0[0x48 / 4];
     if (((B5Ent24C *)((char *)p + 0x90))[p[0x7C / 4]].fn == 0) return;
-    *(int *)&timproc_uso_b5_D_807FF480 = (int)p;
-    *(int *)(&timproc_uso_b5_D_807FF484 + 4) = (int)a0; /* RAW: data-table: Data word pair D_807FF480 / D_807FF484 (+4) */
+    GEN_PICK(timproc_uso_b5_D_807FF480).menu = (struct GuiMenu *)p; /* both symbols are genproc Bss 0 (GenMenuPick, select.h) */
+    GEN_PICK(timproc_uso_b5_D_807FF484).owner = (char *)a0;
     p = (int *)a0[0x48 / 4];
     ((B5Ent24C *)((char *)p + 0x90))[p[0x7C / 4]].fn();
 }
@@ -3284,12 +3289,15 @@ void SelectWin_update_00005FC0(char *arg0) {
     }
     /* IDO merges equal literals in one fn: five distinct words stand in for
      * the ROM's five pi/2 (0x3FC90FDB) entries. */
-    *(volatile float *)(arg0 + 8) = 1.5707964f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
-    *(volatile float *)(arg0 + 8) = 1.5707966f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
-    *(volatile float *)(arg0 + 8) = 1.5707967f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
-    *(volatile float *)(arg0 + 8) = 1.5707968f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
-    *(volatile float *)(arg0 + 8) = 1.5707970f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
-    *(volatile float *)(arg0 + 8) = 0.1f; /* RAW: donor-mirror: placeholder body (REPLACE_FUNC_BODY drops its text); only its RoData literals matter */
+    {
+        volatile float *lit = (volatile float *)(arg0 + 8); /* any store: only the literal words matter */
+        *lit = 1.5707964f;
+        *lit = 1.5707966f;
+        *lit = 1.5707967f;
+        *lit = 1.5707968f;
+        *lit = 1.5707970f;
+        *lit = 0.1f;
+    }
 }
 
 /* SelectWin_display_00006394 (0x4C8 / 306 words): timing-screen row draw.
@@ -4014,8 +4022,9 @@ void SelectWin_state0_00007078(char *arg0) {
         f32 two = 2.0f;
         f32 *p1;
         f32 *p2;
-        *p1 = *(f32 *)((char *)timproc_uso_b5_alias(&import_80020098, 1) + 0x4) * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch); /* RAW: unknown-object: the two-float pair returned by timproc_uso_b5_alias(&GameFlow, 1) */
-        *p2 = *(f32 *)timproc_uso_b5_alias(&import_80020098, 1) * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
+        /* timproc_uso_b5_alias(&GameFlow, 1) here = input_getPad_00011D40 (uso-imports.py: 0x70A4 / 0x70DC): pad 1's InputPad */
+        *p1 = ((InputPad *)timproc_uso_b5_alias(&import_80020098, 1))->stickY * two + *(p1 = &SELWIN(arg0)->scene->camera->pitch);
+        *p2 = ((InputPad *)timproc_uso_b5_alias(&import_80020098, 1))->stickX * two + *(p2 = &SELWIN(arg0)->scene->camera->yaw);
     } else {
         SELWIN(arg0)->idleTimer = SELWIN(arg0)->idleTimer - 1;
         if (SELWIN(arg0)->idleTimer < 0) {
@@ -5590,7 +5599,11 @@ void SelectWin_resetCheat_00008D90(SelectWin *w, int a1) {
 // t6-load / $at-store pair; as1 then schedules the Vec4 `mtc1
 // zero,f0` into the gap by itself. v0 C39C base coloring falls out
 // once the cached-base register is gone.
-extern struct C2CC_8DB4 { char _a[0x1C4]; int f1C4; } import_8005C2CC;
+// The three game_libs imports are all gGfxLib (bootup Bss+0x3C168, Sym 154, gdl/gfxlib.h):
+// scripts/uso-imports.py sites genproc puts all four hi/lo pairs (0x8DF0..0x8E38) on
+// bootup:Bss+0x3C168, and the symbols are 0 in undefined_syms_auto, so the immediates
+// (+0x1C4 flags, +0x294 fog.colour, +0x2A0 fog.colour[3]) are the field offsets.
+extern GfxLib import_8005C2CC;
 char *gen_createScene_00008DB4(char *self, int a1) {
     extern int gen_imp_mem_new();
     extern int gen_imp_game_initDdm_00002C94();
@@ -5598,8 +5611,8 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     extern int gen_imp_game_setParams_00002060();
     extern int gen_imp_list_append();
     extern char import_800201CC;
-    extern char import_8005C39C;
-    extern char import_8005EBA4;
+    extern GfxLib import_8005C39C;
+    extern GfxLib import_8005EBA4;
     extern char import_800200A8;
     extern char import_80020098;
     extern char timproc_uso_b5_D_807FEBA4;
@@ -5618,18 +5631,17 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     }
     gen_imp_game_initDdm_00002C94(INPUT_MGR(import_800201CC).game, 2);
     {
-        extern char import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
-        *(int *)((char *)&import_8005C2CC_w + 0x1C4) = /* RAW: unknown-object: import_8005C2CC owner not identified (docs/1080_MODES.md) */
-            *(int *)((char *)&import_8005C2CC + 0x1C4) & ~8; /* RAW: unknown-object: import_8005C2CC owner not identified (docs/1080_MODES.md) */
+        extern GfxLib import_8005C2CC_w; /* same-value alias (=import_8005C2CC): distinct extern per site busts the read/write base CSE -> twin form-a luis */
+        import_8005C2CC_w.flags = import_8005C2CC.flags & ~GFX_FLAG_MAPPARMS;
     }
     if (1) { }
     p39c = (char *)&import_8005C39C;
-    p39c += 0x294;
+    p39c += 0x294; /* &gGfxLib.fog.colour: the pointer-mutate lever (see History) */
     ((float *)p39c)[3] = 0.0f;
     ((float *)p39c)[2] = 0.0f;
     ((float *)p39c)[1] = 0.0f;
     ((float *)p39c)[0] = 0.0f;
-    *(float *)((char *)&import_8005EBA4 + 0x2A0) = 0.0f; /* RAW: unknown-object: import_8005EBA4 owner not identified (docs/1080_MODES.md) */
+    import_8005EBA4.fog.colour[3] = 0.0f;
     A = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBA4 + 0x1334);
     B = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB0 + 0x1340);
     C = (char *)gen_imp_Node_ctor(0, (char *)&timproc_uso_b5_D_807FEBB4 + 0x1344);
@@ -6071,7 +6083,7 @@ void *GenItemType_create_0000AB24(int *arg0) {
     if (p1 != 0) {
         gen_imp_ColourItem_ctor(p1);
         NODE(p1)->vptr = (char *)&import_8006ED80;
-        *(int*)((char*)p1 + 0x3C) = 0; /* RAW: unknown-object: the 0x40 ColourItem subclass (vtbl import_8006ED80) has no struct yet */
+        ((ColourSubItem *)p1)->unk3C = 0; /* import_8006ED80 = bootup ColourItem_vtbl_75A0 (Data+0x75A0, uso-imports.py 0xAB4C): the ColourSubItem of the bootup twin func_00000C10 */
     }
     p2 = p1;
     p1 = arg0;

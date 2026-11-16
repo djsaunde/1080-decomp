@@ -270,7 +270,7 @@ block_83:
                         if ((s32) temp_v1_5 >= 6) {
                             var_t9 = temp_v1_5 + 0xE;
                         }
-                        if ((*(s32 *)(D_E354_G + 0)  == 4) || (SO(arg0)->flags1C & 1)) { /* RAW: data-table: section-relative global word (placeholder D_E354_G, offset 0) */
+                        if ((*(s32 *)D_E354_G == 4) || (SO(arg0)->flags1C & 1)) { /* D_E354_G: Data 0x1C0B4 (Sym 1432), the word D_stateC / D_stateF read */
                             gl_func_00043BE4(arg0, 0x10, var_t9, temp_f10_2, (s32) SO(arg0)->unk28); var_v0_2 = 0;
                         } else {
                             var_v0_3 = SO(arg0)->eventArg;
@@ -354,11 +354,11 @@ block_83:
                             if (temp_f16 <= temp_f10_2) {
                                 temp_f10_2 = temp_f16;
                             }
-                            temp_v0 = *(s32 *)((char *)D_E354_GA + 0); /* RAW: data-table: section-relative global word (placeholder D_E354_GA, offset 0) */
+                            temp_v0 = *(s32 *)D_E354_GA; /* D_E354_GA: the Bss 0x31C (Sym 1439) gain-wobble countdown */
                             if (temp_v0 != 0) {
-                                temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + 0x1C430); /* RAW: data-table: f32 table at Data 0x1C430 indexed by (v & 0x1F) */
+                                temp_f16 = *(f32 *)((char *)(((temp_v0 & 0x1F) * 4)) + kD_sndGainWobble_1C430);
                                 temp_f10_2 *= temp_f16;
-                                *(s32 *)((char *)D_E354_GA + 0) = (s32) (temp_v0 - 1); /* RAW: data-table: section-relative global word (placeholder D_E354_GA, offset 0) */
+                                *(s32 *)D_E354_GA = (s32) (temp_v0 - 1);
                             }
                             temp_f16 = *(f32 *)((char *)&D_00000000 + 0x1724);
                             if (temp_f16 <= temp_f10_2) {

@@ -17,6 +17,13 @@ typedef float f32; typedef int s32; typedef double f64;
 #include "../../include/game/camera.h" /* CamWindow / MCamera (import_80087DA8 is the CamWindow *); offset asserts are C-only */
 extern "C" {
 extern char timproc_uso_b5_D_807FF358, import_80087DA8, D_timb5_AC20_w0, D_timb5_AC20_w1, D_timb5_AC20_w2, D_timb5_AC20_w3;
+/* named genproc RoData offsets (the per-site tokens below are relocated against the RoData base;
+ * same names as the kRo*_gen_ block in game/select.h, which this donor does not include) */
+#define kRoD_gen_m0p64_338 0x338 /* RoData+0x338: f64 -0.64 (the facing-cone cosine) */
+#define kRoF_gen_2pi_340   0x340 /* RoData+0x340: f32 6.283185 = 2 pi (spin wrap) */
+#define kRoF_gen_0p05_344  0x344 /* RoData+0x344: f32 0.05 (spin step) */
+#define kRoF_gen_2pi_348   0x348 /* RoData+0x348: f32 6.283185 = 2 pi (spin wrap) */
+#define kRoF_gen_0p45_34C  0x34C /* RoData+0x34C: f32 0.45 (spin step) */
 extern char timproc_uso_b5_D_807FFBB0;
 void *gen_imp_math_vec3Normalize(...);
 void gen_imp_math_quatRotateAxisAngle(void *quat, void *axis, f32 angle);
@@ -41,7 +48,7 @@ struct Obj {
 extern "C" void SelBoard_display_0000AC20(Obj *o) {
     V3 d = rel(o->pos, &sXY[0]);
     gen_imp_math_vec3Normalize(&d);
-    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + 0x338)) { /* RAW: data-table: RoData f64 constant (section offset) */
+    if ((f64)dot(*(V3 *)&timproc_uso_b5_D_807FFBB0, d) < *(f64 *)((char *)&timproc_uso_b5_D_807FF358 + kRoD_gen_m0p64_338)) {
         f32 wrap;
         f32 sc;
         s32 m7C[13];
@@ -69,16 +76,16 @@ extern "C" void SelBoard_display_0000AC20(Obj *o) {
         ax.z = (o->q.x * o->q.z * 2.0f) - (o->q.w * o->q.y * 2.0f);
         o->q.rot(&ax, 1.5707964f);
         if (o->i12C != 0 && o->i130 != 0) {
-            wrap = *(f32 *)((char *)&D_timb5_AC20_w0 + 0x340); /* RAW: data-table: RoData f32 constant (section offset) */
-            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w1 + 0x344); /* RAW: data-table: RoData f32 constant (section offset) */
+            wrap = *(f32 *)((char *)&D_timb5_AC20_w0 + kRoF_gen_2pi_340);
+            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w1 + kRoF_gen_0p05_344);
             if (wrap <= o->f10C) o->f10C = o->f10C - wrap;
             ax.x = (1.0f - (o->q.y * o->q.y * 2.0f)) - (o->q.z * o->q.z * 2.0f);
             ax.y = (o->q.x * o->q.y * 2.0f) + (o->q.w * o->q.z * 2.0f);
             ax.z = (o->q.x * o->q.z * 2.0f) - (o->q.w * o->q.y * 2.0f);
             o->q.rot(&ax, o->f10C);
         } else if (o->f10C > 0.0f) {
-            wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + 0x348); /* RAW: data-table: RoData f32 constant (section offset) */
-            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w2 + 0x34C); /* RAW: data-table: RoData f32 constant (section offset) */
+            wrap = *(f32 *)((char *)&D_timb5_AC20_w3 + kRoF_gen_2pi_348);
+            o->f10C = o->f10C + *(f32 *)((char *)&D_timb5_AC20_w2 + kRoF_gen_0p45_34C);
             if (wrap <= o->f10C) o->f10C = 0.0f;
             ax.x = (1.0f - (o->q.y * o->q.y * 2.0f)) - (o->q.z * o->q.z * 2.0f);
             ax.y = (o->q.x * o->q.y * 2.0f) + (o->q.w * o->q.z * 2.0f);
