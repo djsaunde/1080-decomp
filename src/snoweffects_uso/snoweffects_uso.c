@@ -1017,7 +1017,10 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 void snoweffects_uso_func_00008C60(void *self) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00008D70);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 659),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00008D70(void *self) {
+}
 
 /* the RoData floats of the 0x9010 defaults (own lui each) */
 extern f32 snow_ro_C0, snow_ro_C4, snow_ro_C8, snow_ro_CC, snow_ro_D0, snow_ro_D4, snow_ro_D8, snow_ro_DC, snow_ro_E0, snow_ro_E4;

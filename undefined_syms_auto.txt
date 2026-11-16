@@ -5725,6 +5725,7 @@ SnowFall_moveFlakes_000027A8_rodata = 0x0000000C;  /* snoweffects 0x27A8 NCC don
 snoweffects_uso_func_000039C4_rodata = 0x00000010;  /* snoweffects 0x39C4 NCC donor: -0.015f / 0.15f / 0.15f (donor .rodata+4..0xC, renamed by the splice) -> RoData+0x14..0x1C */
 gl_func_00000000_snow_sqrtf = 0x00000000;  /* sqrtf (snoweffects 0x9884 NCC donor, typed blank jal: float(float)) */
 snoweffects_uso_func_00009884_rodata = 0x000000F0;  /* snoweffects 0x9884 NCC donor: its 0.1f literal (.rodata+0, renamed by the splice) -> RoData+0xF0 */
+gl_func_00000000_snow_52d4 = 0x00000000;  /* snoweffects 0x52D4 (CollShape probe, float return) as a typed blank jal (0x8D70 NCC donor) */
 sVrSprites = 0x00000000;  /* viewrec Bss static */
 sVrLabels = 0x000001F8;  /* viewrec Bss static */
 sVrLabels_378 = 0x00000378;  /* viewrec Bss static */

@@ -115,3 +115,67 @@ extern "C" void snoweffects_uso_func_00009884(SnowGlowE *t, SnowMesh *m) {
         t->updateList = (void *)CALL(MorphPoly_genUpdateList)(m, t->n, t->vtx);
     }
 }
+
+/* 0x8D70 (0x2A0): trail point probe. Reset the hit count, +0x148 = -dot(+0x114, +0x108), copy the start
+ * points (+0xE4 / +0xF0) to +0x120 / +0x12C, then probe each one through the CollShape test 0x52D4
+ * (distance into +0x14C / +0x150, normal into n) and push it back by -d * n when 0 < d < +0x15C;
+ * finally +0xD4 = +0xC4. The SV helpers are the libgdl Vec3 shapes (operator= by value, operator* through
+ * set(), += by const reference); each push is a named local of its if-block.
+ * Frame (target 168, read from -O0 -g2 .mdebug: n at vfp-12, push / r at -56 / -72 and -116 / -128): the
+ * two dead scratch stores in blocks of their own are code-free frame words (agent-c run 643 lever) that
+ * put each if-block's locals at the target's offsets (edg orders a block's words before its nested
+ * blocks, agent-a run 648). */
+extern "C" float gl_func_00000000_snow_52d4(void *self, void *pos, void *out, void *a3);
+struct Quad4 { int a, b, c, d; };
+struct SV {
+    float x, y, z;
+    SV() {}
+    SV(float a, float b, float c) { x = a; y = b; z = c; }
+    SV &operator=(SV o) { x = o.x; y = o.y; z = o.z; return *this; }
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SV operator*(float s) const { SV r; r.set(x * s, y * s, z * s); return r; }
+    SV &operator+=(const SV &v) { x += v.x; y += v.y; z += v.z; return *this; }
+};
+struct SnowProbe {
+    char pad00[0xB4];
+    /* 0xB4 */ Quad4 qB4;
+    /* 0xC4 */ Quad4 qC4;
+    /* 0xD4 */ Quad4 qD4;
+    /* 0xE4 */ SV startA;
+    /* 0xF0 */ SV startB;
+    /* 0xFC */ char padFC[0x108 - 0xFC];
+    /* 0x108 */ SV n;
+    /* 0x114 */ SV p;
+    /* 0x120 */ SV a;
+    /* 0x12C */ SV b;
+    char pad138[0x144 - 0x138];
+    /* 0x144 */ int hits;
+    /* 0x148 */ float dist;
+    /* 0x14C */ float da;
+    /* 0x150 */ float db;
+    char pad154[0x15C - 0x154];
+    /* 0x15C */ float maxDist;
+};
+inline float dot(const SV &a, const SV &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+extern "C" void snoweffects_uso_func_00008D70(SnowProbe *t) {
+    SV n;
+    t->hits = 0;
+    t->dist = -dot(t->p, t->n);
+    t->a = t->startA;
+    t->b = t->startB;
+    t->da = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->a, &n, &t->qB4);
+    { int sc[2]; sc[0] = 0; }
+    if (t->da != 0.0f && t->da < t->maxDist) {
+        SV push = n * -t->da;
+        t->a += push;
+        t->hits++;
+    }
+    { int sc2[3]; sc2[0] = 0; }
+    t->db = XCALL(gl_func_00000000_snow_52d4, snoweffects_uso_func_000052D4)(t, &t->b, &n, &t->qC4);
+    if (t->db != 0.0f && t->db < t->maxDist) {
+        SV push = n * -t->db;
+        t->b += push;
+        t->hits++;
+    }
+    t->qD4 = t->qC4;
+}
