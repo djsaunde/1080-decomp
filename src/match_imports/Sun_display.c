@@ -1,10 +1,11 @@
 /* Native original-compiler source port from src/game_uso/game_uso_pool_B274.c. Target bytes unchanged. */
 #include "context_game_uso_pool_B274.h"
+#include "game/game_uso_data.h" /* kRoD_* thresholds */
 void Sun_display(GameUsoB274Object *s0) {
     float vec[4];
     GameUsoB274Dispatch *table;
     float r;
-    if ((double)game_uso_B274_context[0].field_2A0 > *(double *)(&game_uso_D_807FFA40 + 0x120)) return;
+    if ((double)game_uso_B274_context[0].field_2A0 > *(double *)(&game_uso_D_807FFA40 + kRoD_0p98_120)) return;
     vec[1] = s0->field_A0[0];
     vec[2] = s0->field_A0[1];
     vec[3] = s0->field_A0[2];
@@ -15,9 +16,9 @@ void Sun_display(GameUsoB274Object *s0) {
     s0->field_D8 = game_uso_B274_context[0].context;
     s0->field_C8 = s0->field_CC;
     if (0.7 < (double)game_uso_B274_context[0].field_2A0) {
-        s0->field_C8 *= (1.0 - (((double)game_uso_B274_context[0].field_2A0 - 0.7) / *(double *)(&game_uso_D_807FFA50 + 0x130)));
+        s0->field_C8 *= (1.0 - (((double)game_uso_B274_context[0].field_2A0 - 0.7) / *(double *)(&game_uso_D_807FFA50 + kRoD_0p3_130)));
     }
-    if (!(*(double *)(&game_uso_D_807FFA58 + 0x138) < (double)s0->field_C8)) return;
+    if (!(*(double *)(&game_uso_D_807FFA58 + kRoD_0p1_138) < (double)s0->field_C8)) return;
     game_uso_func_04D700(s0);
     if (1) {
         *(float *)((char *)(unsigned)(&import_8005C1A8 + 0xA0) + 0x30) = s0->field_A0[0];

@@ -1802,10 +1802,10 @@ int *CourseMarkerTmpl_create(int a0) {
         if (obj != 0 || (obj = (char *)game_uso_func_055750(0x50)) != 0) {
             b = obj;
             if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
-                *(char **)(b + 0) = &game_uso_D_807FECA0 + 0x6B0;
+                *(char **)(b + 0) = &game_uso_D_807FECA0 + kStr_CourseMarker_Parms_6B0;
                 *(int *)(b + 4) = 0;
             }
-            t1.w = ((T4_41C0 *)(&game_uso_D_807FECB4 + 0x6C4))->w;
+            t1.w = ((T4_41C0 *)(&game_uso_D_807FECB4 + kTag_wid_6C4))->w;
             prm = t1;
             s = obj + 8;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
@@ -1814,21 +1814,21 @@ int *CourseMarkerTmpl_create(int a0) {
                 ((CourseParm *)s)->value2 = 0;
                 ((CourseFParm *)s)->value = 1.0f;
             }
-            t2.w = ((T4_41C0 *)(&game_uso_D_807FECB8 + 0x6C8))->w;
+            t2.w = ((T4_41C0 *)(&game_uso_D_807FECB8 + kTag_ext_6C8))->w;
             prm = t2;
             s = obj + 0x20;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 1);
-                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + 0x410);
+                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + kVtbl_IntParm_410);
                 ((CourseParm *)s)->value = 0;
                 ((CourseParm *)s)->value2 = 0;
             }
-            t3.w = ((T4_41C0 *)(&game_uso_D_807FECBC + 0x6CC))->w;
+            t3.w = ((T4_41C0 *)(&game_uso_D_807FECBC + kTag_flg_6CC))->w;
             prm = t3;
             s = obj + 0x38;
             if (s != 0 || (s = (char *)game_uso_func_055750(0x18)) != 0) {
                 game_uso_func_04A188(s, obj, prm, 0);
-                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + 0x410);
+                ((CourseParm *)s)->vptr = (s32)(&game_uso_D_807FEA00 + kVtbl_IntParm_410);
                 ((CourseParm *)s)->value2 = 0;
                 ((CourseParm *)s)->value = 0;
             }
@@ -4207,7 +4207,7 @@ void Sun_display(char *s0) {
     char *v1;
     int *vt;
 
-    if ((double)*(float *)(s1 + 0x2A0) > *(double *)(&game_uso_D_807FFA40 + 0x120)) return;
+    if ((double)*(float *)(s1 + 0x2A0) > *(double *)(&game_uso_D_807FFA40 + kRoD_0p98_120)) return;
 
     vec[0] = SUN(s0)->mnode.world[3][0];
     vec[1] = SUN(s0)->mnode.world[3][1];
@@ -4220,11 +4220,11 @@ void Sun_display(char *s0) {
     SUN(s0)->depthImage = *(void **)(s1 + 0x254);
     SUN(s0)->fade = SUN(s0)->visibility;
 
-    if (*(double *)(&game_uso_D_807FFA48 + 0x128) < (double)*(float *)(s1 + 0x2A0)) {
-        SUN(s0)->fade *= (1.0 - (((double)*(float *)(s1 + 0x2A0) - *(double *)(&game_uso_D_807FFA48 + 0x128)) / *(double *)(&game_uso_D_807FFA50 + 0x130)));
+    if (*(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128) < (double)*(float *)(s1 + 0x2A0)) {
+        SUN(s0)->fade *= (1.0 - (((double)*(float *)(s1 + 0x2A0) - *(double *)(&game_uso_D_807FFA48 + kRoD_0p7_128)) / *(double *)(&game_uso_D_807FFA50 + kRoD_0p3_130)));
     }
 
-    if (!(*(double *)(&game_uso_D_807FFA58 + 0x138) < (double)SUN(s0)->fade)) return;
+    if (!(*(double *)(&game_uso_D_807FFA58 + kRoD_0p1_138) < (double)SUN(s0)->fade)) return;
 
     game_uso_func_04D700(s0);
 

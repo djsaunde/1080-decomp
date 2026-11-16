@@ -102,6 +102,23 @@
 #define kRumble_hit4_10C0 0x10C0 /* Data+0x10C0: 26 frames, three bursts */
 #define kRumble_hit5_10DC 0x10DC /* Data+0x10DC: 31 frames, three bursts */
 
+/* CourseMarkerTmpl_create's parm group (agent-g run 563): the "CourseMarker::Parms" name and the three
+ * 4-byte parm tags read by value (wid float, ext int, flg int); the ext / flg parms store the int-parm
+ * vtable (Data 0x410, slot 1 at +0xC = game_readIntParm_000039F8; the float / vec3 / quad parm vtables
+ * are Data 0x3C8 / 0x3E0 / 0x3F8, slot 1 = game_read{Float,Vec3,Quad}Parm). These sites' placeholder
+ * tokens differ from the reloc's, so const-table / spell do not see them. */
+#define kStr_CourseMarker_Parms_6B0 0x6B0 /* Data+0x6B0: "CourseMarker::Parms" */
+#define kTag_wid_6C4 0x6C4 /* Data+0x6C4: "wid" */
+#define kTag_ext_6C8 0x6C8 /* Data+0x6C8: "ext" */
+#define kTag_flg_6CC 0x6CC /* Data+0x6CC: "flg" */
+#define kVtbl_IntParm_410 0x410 /* Data+0x410: int-parm vtable */
+/* Sun_display's visibility thresholds (RoData f64; the site tokens differ from the reloc's): hidden
+ * above 0.98 (gGfxLib +0x2A0), the fade eases out over 0.7 .. 1.0 (divisor 0.3), drawn above 0.1. */
+#define kRoD_0p98_120 0x120 /* RoData+0x120: f64 0.98 */
+#define kRoD_0p7_128 0x128 /* RoData+0x128: f64 0.7 */
+#define kRoD_0p3_130 0x130 /* RoData+0x130: f64 0.3 */
+#define kRoD_0p1_138 0x138 /* RoData+0x138: f64 0.1 */
+
 /* const-table:begin (uso-data-sites.py --uso game const-table --write; do not edit by hand) */
 /* strings (class names, "Parms" group names, assert texts, file names) */
 #define kStr_Parms_318 0x318 /* Data+0x318: "Parms" */
