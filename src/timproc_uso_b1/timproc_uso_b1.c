@@ -544,9 +544,9 @@ void TimRace_onTimeout(int a0) {
     XCALL(timproc_uso_b1_func_00000000, RaceProcess_restartWithTimeout)(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
-extern int gl_ref_00000040;
-extern int gl_ref_00000208;
-extern int gl_ref_0000020C;
+extern int gInputMgr_procState_40;
+extern int sTimPauseMenu_208;
+extern int sTimPauseProc_20C;
 
 void TimRace_onQuitButton(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
@@ -1140,9 +1140,9 @@ void ParmVec3_read_00001F64(char *dst) {
 #pragma GLOBAL_ASM("asm/nonmatchings/timproc_uso_b1/timproc_uso_b1/timproc_uso_b1_func_00001F64_pad.s")
 
 void TimMenu_rowRetry_00001FA0(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 4;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 4;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 /* EXACT 2026-05-03. Mirror of TrkMenu_rowGhost_000021F4. Same recipe:
@@ -1178,47 +1178,47 @@ void TimMenu_rowGhost_00001FE4(void) {
  * reload of cur (+0x20C), and the if(1){} BB-split inside each arm
  * AFTER the jal (the documented v0/v1 lever, 4-for-4) which flips the
  * address temp into $v0 / the li-1 into $v1. */
-extern int D_call_b1_2030_a;
-extern int * volatile D_cur_b1_2030;
+extern int sTimPauseMenu_2030;
+extern int * volatile sTimPauseProc_2030;
 void TimMenu_rowToggle_00002028(void) {
     if (CALL(Backup_ghostGetMode)(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
-        CALL(Process_stop)(D_call_b1_2030_a);
+        CALL(Process_stop)(sTimPauseMenu_2030);
         if (1) {}
-        D_cur_b1_2030[0x14] = 2;
-        D_cur_b1_2030[0x16] = 1;
+        sTimPauseProc_2030[0x14] = 2;
+        sTimPauseProc_2030[0x16] = 1;
     } else {
-        CALL(Process_stop)(D_call_b1_2030_a);
+        CALL(Process_stop)(sTimPauseMenu_2030);
         if (1) {}
-        D_cur_b1_2030[0x14] = 1;
-        D_cur_b1_2030[0x16] = 1;
+        sTimPauseProc_2030[0x14] = 1;
+        sTimPauseProc_2030[0x16] = 1;
     }
 }
 
 void TimMenu_rowChangeCharacter(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 1;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 1;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 void TimMenu_rowChangeBoard(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 2;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 2;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
-extern int gl_ref_00000208;
-extern int gl_ref_0000020C;
+extern int sTimPauseMenu_208;
+extern int sTimPauseProc_20C;
 
 void TimMenu_rowChangeCourse(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 3;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 3;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 void TimMenu_rowQuit_00002178(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 0xD;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 0xD;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 /* 000021BC/21C4/21CC: 3 empty stubs RECOVERED 2026-05-28 from the Yay0 gap
@@ -1349,7 +1349,7 @@ void TimMenu_initLabels_000024F4(int a0) {
 }
 
 /* TimMenu_update_00002740 — 95.69% → 99.35% (2026-05-18) via distinct
- * externs D_b1_2740_g208/g20C for the &D+0x208/+0x20C absolute stores so each
+ * externs sTimPauseMenu_2740/g20C for the &D+0x208/+0x20C absolute stores so each
  * sw gets its own R_MIPS_HI16/LO16 reloc (per
  * docs/IDO_CODEGEN.md#feedback-ido-cse-bust-via-distinct-externs).
  * switch on a0->0x50: case 0 → gl_func(&D,0x40100) gate, then walk
@@ -1365,7 +1365,7 @@ void TimMenu_initLabels_000024F4(int a0) {
  *
  * 2026-05-31 MIGRATION-VALUE NOTE: this fn is the canonical MIXED-cap case —
  * 7 real diffs = 2 reloc-blind (`sw $8,0x208($1)`/`sw $6,0x20C($1)`: the
- * D_b1_2740_g208/g20C scalar %lo stores expected bakes but C-emit relocs,
+ * sTimPauseMenu_2740/g20C scalar %lo stores expected bakes but C-emit relocs,
  * NOT C-bakeable per MATCHING_WORKFLOW#addend-only-folds-in-addiu) PLUS 5
  * register-renumber/operand-order ($2/$3, addu $2+$15 vs $15+$2). So the
  * USO-reloc migration would only DROP the 2 reloc diffs (98.9%->~99.x), NOT
@@ -1379,8 +1379,8 @@ void TimMenu_initLabels_000024F4(int a0) {
  * typically mixed reloc-blind + regalloc, so the migration helps only fns
  * whose SOLE residual is reloc-blind; it does not credit the mixed near-100
  * band. C here is already CORRECT (right symbols); nothing to fix in C. */
-extern int D_b1_2740_g208;
-extern int D_b1_2740_g20C;
+extern int sTimPauseMenu_2740;
+extern int sTimPauseProc_2740;
 /* 2026-06-11: scoped permuter run IN FLIGHT (base 80, log
  * /tmp/perm2740.log) -- CONCLUDED 2026-06-11 ~02:50: both twins
  * terminally plateau at permuter-score 60 (= one diff, objdiff 99.84;
@@ -1413,8 +1413,8 @@ void TimMenu_update_00002740(int *a0)
           {
           }
           slot = a0; /* reusing slot for a0 is load-bearing */
-          D_b1_2740_g208 = MENUPROC(slot)->menu;
-          D_b1_2740_g20C = (int) a0;
+          sTimPauseMenu_2740 = MENUPROC(slot)->menu;
+          sTimPauseProc_2740 = (int) a0;
           base2 = (int *) MENUPROC(slot)->menu;
           ;
           ((void (*)(void)) ((int *) (base2 + (GUIMENU(base2)->cursor * 0xA)))[(0x90 ^ 0) / (new_var = 4)])();

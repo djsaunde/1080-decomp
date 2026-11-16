@@ -588,9 +588,9 @@ void TrkRace_onTimeout(int a0) {
     XCALL(timproc_uso_b3_func_00000000, RaceProcess_restartWithTimeout)(a0, *(char **)((char *)&D_00000000 + 0x170) + 0x00220000);
 }
 
-extern int gl_ref_00000040;
-extern int gl_ref_00000208;
-extern int gl_ref_0000020C;
+extern int gInputMgr_procState_40;
+extern int sTimPauseMenu_208;
+extern int sTimPauseProc_20C;
 
 void TrkRace_onQuitButton(int a0) {
     *(int *)((char *)&D_00000000 + 0x40) = 9;
@@ -1289,18 +1289,18 @@ void ParmVec3_read_0000217C(char *dst) {
 }
 
 void TrkMenu_rowRetry_000021B0(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 4;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 4;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 /* func_000021F4 (0x44): byte-identical twin of TimMenu_rowChangeCharacter
  * (matched) except the state constant (li 6 vs li 1). Ported donor body w/
- * gl_ref_00000040 = 6. */
+ * gInputMgr_procState_40 = 6. */
 void TrkMenu_rowGhost_000021F4(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 6;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 6;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 /* Dual-branch state setter, twin of TimMenu_rowToggle_00002028.
@@ -1311,50 +1311,50 @@ void TrkMenu_rowGhost_000021F4(void) {
  * first call arg = pointer+4, one shared +0x208 call
  * target, volatile pointer-fetch cur (+0x20C), and the if(1){} BB-split
  * in each arm (v0/v1 lever). */
-extern int D_call_b3_2240_a;
-extern int * volatile D_cur_b3_2240;
+extern int sTrkPauseMenu_2240;
+extern int * volatile sTrkPauseProc_2240;
 void TrkMenu_rowToggle_00002238(void) {
     if (CALL(Backup_ghostGetMode)(*(char**)((char*)&D_00000000 + 0x148) + 4) != 0) {
-        CALL(Process_stop)(D_call_b3_2240_a);
+        CALL(Process_stop)(sTrkPauseMenu_2240);
         if (1) {}
-        D_cur_b3_2240[0x14] = 2;
-        D_cur_b3_2240[0x16] = 1;
+        sTrkPauseProc_2240[0x14] = 2;
+        sTrkPauseProc_2240[0x16] = 1;
     } else {
-        CALL(Process_stop)(D_call_b3_2240_a);
+        CALL(Process_stop)(sTrkPauseMenu_2240);
         if (1) {}
-        D_cur_b3_2240[0x14] = 1;
-        D_cur_b3_2240[0x16] = 1;
+        sTrkPauseProc_2240[0x14] = 1;
+        sTrkPauseProc_2240[0x16] = 1;
     }
 }
 
 void TrkMenu_rowChangeCharacter(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 1;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 1;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
-extern int gl_ref_00000208;
-extern int gl_ref_0000020C;
+extern int sTimPauseMenu_208;
+extern int sTimPauseProc_20C;
 
 void TrkMenu_rowChangeBoard(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 2;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 2;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
-extern int gl_ref_00000208;
-extern int gl_ref_0000020C;
+extern int sTimPauseMenu_208;
+extern int sTimPauseProc_20C;
 
 void TrkMenu_rowChangeCourse(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 3;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 3;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 void TrkMenu_rowQuit_00002388(void) {
-    CALL(Process_stop)(gl_ref_00000208);
-    gl_ref_00000040 = 0xD;
-    CALL(Process_fadeOut_0000F954)(gl_ref_0000020C, -1, 0);
+    CALL(Process_stop)(sTimPauseMenu_208);
+    gInputMgr_procState_40 = 0xD;
+    CALL(Process_fadeOut_0000F954)(sTimPauseProc_20C, -1, 0);
 }
 
 /* 000023CC/23D4/23DC: 3 empty stubs RECOVERED 2026-05-28 from the Yay0 gap
@@ -1503,8 +1503,8 @@ void TrkMenu_initLabels_00002700(int a0) {
  * (base + idx*0xA) goes through cfe's ADD path which evaluates the deeper
  * mpy operand first -> addu rd, scaled, base. See docs/IDO_CODEGEN.md
  * "addu operand order" uopt-source entry. */
-extern int D_b3_294C_g208;
-extern int D_b3_294C_g20C;
+extern int sTrkPauseMenu_294C;
+extern int sTrkPauseProc_294C;
 void TrkMenu_update_0000294C(int *a0)
 {
   int new_var;
@@ -1530,8 +1530,8 @@ void TrkMenu_update_0000294C(int *a0)
           {
           }
           slot = a0; /* reusing slot for a0 is load-bearing */
-          D_b3_294C_g208 = MENUPROC(slot)->menu;
-          D_b3_294C_g20C = (int) a0;
+          sTrkPauseMenu_294C = MENUPROC(slot)->menu;
+          sTrkPauseProc_294C = (int) a0;
           base2 = (int *) MENUPROC(slot)->menu;
           ;
           ((void (*)(void)) ((int *) (base2 + (GUIMENU(base2)->cursor * 0xA)))[(0x90 ^ 0) / (new_var = 4)])();

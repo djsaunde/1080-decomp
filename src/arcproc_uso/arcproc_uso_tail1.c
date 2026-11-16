@@ -1530,26 +1530,26 @@ void arc_readVec3Parm_000023C4(char *dst) {
     arcproc_uso_func_arc_9C8((Vec3*)(dst + 0x10));
 }
 
-extern int gl_ref_00000040;
-extern int gl_ref_00000070;
-extern int gl_ref_00000074;
+extern int gInputMgr_procState_40;
+extern int sArcPauseMenu_70;
+extern int sArcPauseProc_74;
 
 void ARCMenuProcess_rowRetry_000023F4(void) {
-    CALL(Process_stop)(gl_ref_00000070);
-    gl_ref_00000040 = 4;
-    CALL(Process_fadeOut_0000F954)(gl_ref_00000074, -1, 0);
+    CALL(Process_stop)(sArcPauseMenu_70);
+    gInputMgr_procState_40 = 4;
+    CALL(Process_fadeOut_0000F954)(sArcPauseProc_74, -1, 0);
 }
 
 void ARCMenuProcess_rowChangeCharacter(void) {
-    CALL(Process_stop)(gl_ref_00000070);
-    gl_ref_00000040 = 1;
-    CALL(Process_fadeOut_0000F954)(gl_ref_00000074, -1, 0);
+    CALL(Process_stop)(sArcPauseMenu_70);
+    gInputMgr_procState_40 = 1;
+    CALL(Process_fadeOut_0000F954)(sArcPauseProc_74, -1, 0);
 }
 
 void ARCMenuProcess_rowChangeBoard(void) {
-    CALL(Process_stop)(gl_ref_00000070);
-    gl_ref_00000040 = 2;
-    CALL(Process_fadeOut_0000F954)(gl_ref_00000074, -1, 0);
+    CALL(Process_stop)(sArcPauseMenu_70);
+    gInputMgr_procState_40 = 2;
+    CALL(Process_fadeOut_0000F954)(sArcPauseProc_74, -1, 0);
 }
 
 /* ARCMenuProcess_rowQuit_000024C0: F1 + 3 trailing empty stubs (0x5C total).
@@ -1572,11 +1572,11 @@ void ARCMenuProcess_rowChangeBoard(void) {
  * so the suffix was instruction-bytes. NATURAL CEILING: F1 body C-only
  * (plus byte-exact-via-includes for trailers via splat coverage). */
 extern int gl_func_00000000();
-extern int gl_ref_00000040, gl_ref_00000070, gl_ref_00000074;
+extern int gInputMgr_procState_40, sArcPauseMenu_70, sArcPauseProc_74;
 void ARCMenuProcess_rowQuit_000024C0(void) {
-    CALL(Process_stop)(gl_ref_00000070);
-    gl_ref_00000040 = 9;
-    CALL(Process_fadeOut_0000F954)(gl_ref_00000074, -1, 0);
+    CALL(Process_stop)(sArcPauseMenu_70);
+    gInputMgr_procState_40 = 9;
+    CALL(Process_fadeOut_0000F954)(sArcPauseProc_74, -1, 0);
 }
 
 /* arc_nop_00002504/250C/2514: 3 empty `jr ra; nop` stubs RECOVERED
@@ -1686,7 +1686,7 @@ char *ARCMenuProcess_ctor(char *arg0) {
  * 0x28-byte stride table at p; vtable slot at +0x90 per entry.
  * 2026-05-18: 86.02% → 91.19% via two fixes:
  *  (1) inner gl_func arg is 5 (not 0-arg); (2) two distinct externs
- *  D_arc_27BC_g70 / g74 to defeat IDO CSE on the two &D+0x70 / &D+0x74
+ *  sArcPauseMenu_27BC / g74 to defeat IDO CSE on the two &D+0x70 / &D+0x74
  *  stores so each gets its own lui (matches target's two-lui shape).
  *  Remaining: register-name $t0/$v0/$t9 vs mine $t8/$v1/$a1 — reg-alloc.
  *  2026-06-10 (15F0-recipe pass): 91.19 -> 99.29. The shared p/idx/fn
@@ -1718,8 +1718,8 @@ char *ARCMenuProcess_ctor(char *arg0) {
 extern int gl_func_00000000();
 extern void gl_func_00000000_void(int);  /* void-prototyped alias (=0x0): dead-return-reuse lever */
 extern char D_arc_27BC_str;
-extern int D_arc_27BC_g70;
-extern int D_arc_27BC_g74;
+extern int sArcPauseMenu_27BC;
+extern int sArcPauseProc_27BC;
 void ARCMenuProcess_handleInput(int *a0)
 {
   int new_var2;
@@ -1735,8 +1735,8 @@ void ARCMenuProcess_handleInput(int *a0)
     if (GUIMENU(((char *) p0) + (GUIMENU(p0)->cursor * 0x28))->rows[0].arg != ((0, 0)))
     {
       XCALL(gl_func_00000000_void, snd_postEvent)(5);
-      D_arc_27BC_g70 = a0[new_var = 0x48 / 4];
-      D_arc_27BC_g74 = (int) a0;
+      sArcPauseMenu_27BC = a0[new_var = 0x48 / 4];
+      sArcPauseProc_27BC = (int) a0;
       {
         int *p1 = 0;
         p1 = (int *) a0[new_var];
