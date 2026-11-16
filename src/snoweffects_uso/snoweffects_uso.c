@@ -36,11 +36,27 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
-/* the 0x6248-created snow effect object (only the fields its default init 0x70C0 sets) */
+/* the snow effect object whose 0x6144 / 0x6248 create the two child nodes at +0x98 / +0xA0 (only the
+ * fields its default inits 0x6420 / 0x70C0 set) */
 typedef struct SnowEffect {
     /* 0x000 */ char unk000[0x54];
     /* 0x054 */ s32 flags;
-    /* 0x058 */ char unk058[0x1DC - 0x58];
+    /* 0x058 */ char unk058[0x174 - 0x58];
+    /* 0x174 */ f32 unk174;
+    /* 0x178 */ f32 unk178;
+    /* 0x17C */ f32 unk17C;
+    /* 0x180 */ f32 unk180;
+    /* 0x184 */ f32 unk184;
+    /* 0x188 */ f32 unk188;
+    /* 0x18C */ f32 unk18C;
+    /* 0x190 */ f32 unk190;
+    /* 0x194 */ f32 unk194;
+    /* 0x198 */ f32 unk198;
+    /* 0x19C */ s32 unk19C;
+    /* 0x1A0 */ s32 unk1A0;
+    /* 0x1A4 */ s32 unk1A4;
+    /* 0x1A8 */ s32 unk1A8;
+    /* 0x1AC */ char unk1AC[0x1DC - 0x1AC];
     /* 0x1DC */ f32 unk1DC;
     /* 0x1E0 */ f32 unk1E0;
     /* 0x1E4 */ f32 unk1E4;
@@ -502,7 +518,28 @@ void snoweffects_uso_func_000063B4(char *this) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006420);
+/* the RoData floats of the 0x6420 defaults (own lui each) */
+extern f32 snow_ro_2C, snow_ro_30, snow_ro_34, snow_ro_38, snow_ro_3C, snow_ro_40;
+extern f32 snow_ro_44, snow_ro_48, snow_ro_4C;
+
+/* default parameters of the 0x6144 child (flag bit 0 at +0x54), the 0x70C0 sibling */
+void snoweffects_uso_func_00006420(SnowEffect *this) {
+    this->flags |= 1;
+    this->unk174 = snow_ro_2C;
+    this->unk178 = snow_ro_30;
+    this->unk180 = snow_ro_34;
+    this->unk184 = 0.0f;
+    this->unk198 = snow_ro_38;
+    this->unk194 = snow_ro_3C;
+    this->unk190 = snow_ro_40;
+    this->unk17C = snow_ro_44;
+    this->unk188 = snow_ro_48;
+    this->unk18C = snow_ro_4C;
+    this->unk19C = 1;
+    this->unk1A0 = 0;
+    this->unk1A4 = 0;
+    this->unk1A8 = 0;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000064B8);
 
@@ -634,7 +671,17 @@ void snoweffects_uso_func_00007EF0(Vec3 *dst) {
     dst->z = *(float*)&tmp.c;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007F60);
+/* emitter ctor tail, the 0x78E8 twin: name = Data+0x810, 0x3EE4 init with stride 4, then 0x9010(this, 97) */
+void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+    (void)&a1;
+    (void)&a2;
+    (void)&a3;
+    *(char **)(this + 0xC) = (char *)&D_00000000 + 0x810;
+    XCALL(gl_func_00000000_snow_3ee4, snoweffects_uso_func_00003EE4)(this, a3, 4, a4, a5, f6, f7);
+    CALL(snoweffects_uso_func_00009010)(this, 97);
+    *(float *)(this + 0x194) = 0.0f;
+    *(float *)(this + 0x198) = 100.0f;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007FE0);
 
