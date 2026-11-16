@@ -1,10 +1,54 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"
+#include "gdl/mnode.h"
+#include "gdl/item.h"
 
 extern int gl_func_00000000();
 extern char D_00000000;
 
+/* heli.uso: the helicopter course object. IDO 7.1 cfe -O2 C (libgdl C++ classes, cfront
+ * `this == 0` allocating ctors, vptr at +0x28), like the other course-object modules.
+ *
+ * Classes (Data strings "heli", "helib", "<QNode>" x4, "hem", "mrk"):
+ *  - HeliItemType (0x54, vtable Data+0xCAF0): an ItemType that loads the helicopter's models
+ *    once ("heli" body PolyShape +0x48, "helib" rotor blade PolyShape +0x4C, a Sprite +0x50)
+ *    and builds the Heli (0x274).
+ *  - Heli (0x174, vtable Data+0xCA88): a QNode. Children: the body shape, two HeliRotor
+ *    QNodes (main rotor: pitched 90 deg, at y = 480, spinning about y; tail rotor: yawed
+ *    90 deg, spinning about x) that share the blade shape, and a plain QNode holding the
+ *    sprite. +0x108 Vec3 start position (loadData), path / flight state from +0x114.
+ *  - HeliRotor (0x118, vtable Data+0xCA20): a QNode; +0x108 spin speed, +0x10C Vec3 axis.
+ *  - two 0x40 ColourItem creates (0x140 module vtable, 0x1ACC bootup ColourItem vtable):
+ *    the "hem" / "mrk" marker items (rgb = position, +0x3C an int id).
+ * Module-local zero symbols: heli_data_00000000 (Data base), heli_rodata_00000000 (RoData
+ * base, float constants); per-site bootup aliases in undefined_syms_auto.txt. */
+extern char heli_data_00000000;
+extern char heli_rodata_00000000;
+#define HELI_RODATA_F(off) (*(float *)(&heli_rodata_00000000 + (off)))
+
+/* typed blank (0) aliases for imports that take floats */
+extern void *gl_func_00000000f3(void *, char *, float, float, float); /* QNode_ctor */
+extern void gl_func_00000000_heli_ppf(void *, void *, float);         /* math_quatRotateAxisAngle */
+extern int gl_func_00000000_heli_cull(void *, int, float, float, float, int, float); /* cam_isSphereInView */
+
+/* the bootup globals heli touches, one alias per access site (no shared lui / addiu base) */
+typedef struct HeliGeomMode { int mode0; int geomMode; } HeliGeomMode;
+extern int heli_polyFlags_ld, heli_polyFlags_st;   /* gPolyFlags_3EEC4 */
+extern HeliGeomMode heli_polyGeomMode;             /* gPolyGeomMode_3EEC8 */
+extern int heli_mode_1EBD8;
+extern char heli_model_1C1C, heli_model_B984;      /* module Data: PolyShape model data */
+extern char heli_gGfxLib_a, heli_gGfxLib_b, heli_gGfxLib_c;
+
+/* the 4-byte ItemType name tag, passed by value (lands in a1 and the a1 home slot) */
+typedef struct HeliTypeTag { int v; } HeliTypeTag;
+
+typedef struct HeliColour { float r, g, b, a; } HeliColour;
+
+char *heli_uso_func_000004C0(char *self, void *body, void *blades, void *sprite);
+
 typedef struct { int a, b, c; } HeliTri3i;
+typedef struct { int a, b, c, d; } HeliQuad4;
 
 /* heli_uso_func_00000000: read an int from the gdl file (cross-USO template, as checkpoint
  * checkpoint_uso_func_00000034 / game_uso stream_readS32_00000280). */
@@ -36,21 +80,108 @@ void heli_uso_func_000000AC(float *dst) {
     *dst = buf[0];
 }
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000000E8);
+/* heli_uso_func_000000E8: read a 16-byte quad from the gdl file (template, as snoweffects
+ * snoweffects_uso_func_00000144). */
+void heli_uso_func_000000E8(HeliQuad4 *dst) {
+    HeliQuad4 buf;
+    CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+    *dst = buf;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000140);
+/* heli_uso_func_00000140: ItemType create: a new 0x40 marker item (ColourItem, module vtable
+ * Data+0x18, +0x3C id = 0), appended to the type's child list (+0x40). */
+void *heli_uso_func_00000140(char *type) {
+    char *q;
+    char *p;
+    p = (char *)CALL(mem_new)(0x40);
+    if (p != 0) {
+        CALL(ColourItem_ctor)(p);
+        NODE(p)->vptr = &heli_data_00000000 + 0x18;
+        *(int *)(p + 0x3C) = 0;
+    }
+    q = p;
+    p = *(char **)(type + 0x40);
+    if (*(char **)(type + 0x40) != 0) {
+        CALL(list_append)(q + 0x10, p);
+        if (NODE(p)->parent != 0) {
+            NODE(p)->unk04 = 1;
+        }
+        NODE(p)->parent = (Node *)q;
+    }
+    return q;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000001D4);
+/* heli_uso_func_000001D4: HeliItemType ctor (0x54; the ItemType base ctor is inlined with its
+ * own this == 0 allocation, as bootup item_createBal). */
+void *heli_uso_func_000001D4(char *self, HeliTypeTag name) {
+    char *base;
+    volatile int pad;
+    HeliTypeTag tag;
+    if (self != 0 || (self = (char *)CALL(mem_new)(0x54)) != 0) {
+        tag = name;
+        base = self;
+        if (base != 0 || (base = (char *)CALL(mem_new)(0x48)) != 0) {
+            CALL(ItemType_ctor)(base, tag, 0); NODE(base)->vptr = (char *)&D_00000000; /* bootup ItemType vtable Data+0x1F050 */
+        }
+        NODE(self)->vptr = (char *)&D_00000000; /* HeliItemType vtable (Data+0xCAF0) */
+        *(void **)(self + 0x4C) = 0;
+        *(void **)(self + 0x48) = 0;
+    }
+    return self;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000274);
+/* heli_uso_func_00000274: HeliItemType item create: load the shapes on first use (body "heli"
+ * with poly flag 8 and geometry mode 0x2A003, blades "helib" with geometry mode 11, the
+ * sprite), then build the Heli. */
+void heli_uso_func_00000274(char *self) {
+    if (*(void **)(self + 0x48) == 0) {
+        heli_polyFlags_st = heli_polyFlags_ld | 8; if (1) {}
+        heli_polyGeomMode.geomMode = 0x2A003;
+        heli_polyGeomMode.mode0 = 0;
+        *(void **)(self + 0x40) = *(void **)(self + 0x48) =
+            (void *)CALL(PolyShape_ctor)(0, &heli_data_00000000 + 0xCB78, &heli_model_1C1C, 0); /* "heli" */
+        heli_polyFlags_st = heli_polyFlags_ld & ~8;
+        heli_polyGeomMode.geomMode = 11;
+        heli_polyGeomMode.mode0 = 0;
+        *(void **)(self + 0x4C) = (void *)CALL(PolyShape_ctor)(0, &heli_data_00000000 + 0xCB80, &heli_model_B984, 0); /* "helib" */
+        *(char **)(self + 0x50) = (char *)CALL(Sprite_ctor_0004B620)(0, &heli_data_00000000 + 0xCA10);
+        *(int *)(*(char **)(self + 0x50) + 0xC4) = 1;
+        *(float *)(*(char **)(self + 0x50) + 0xC8) = -200.0f;
+    }
+    heli_mode_1EBD8 = 6;
+    {
+        void *blades = *(void **)(self + 0x4C);
+        void *body = *(void **)(self + 0x48);
+        void *sprite = *(void **)(self + 0x50);
+        CALL(heli_uso_func_000004C0)(0, body, blades, sprite);
+    }
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000388);
+/* heli_uso_func_00000388: HeliRotor ctor (0x118, "<QNode>"; spin speed +0x108 from RoData). */
+char *heli_uso_func_00000388(char *self) {
+    if (self != 0 || (self = (char *)CALL(mem_new)(0x118)) != 0) {
+        XCALL(gl_func_00000000f3, QNode_ctor)(self, &heli_data_00000000 + 0xCB88, 0.0f, 0.0f, 0.0f);
+        NODE(self)->vptr = (char *)&D_00000000; /* HeliRotor vtable (Data+0xCA20) */
+        *(float *)(self + 0x108) = HELI_RODATA_F(0x50);
+    }
+    return self;
+}
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000003F4);
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000458);
+/* heli_uso_func_00000458: empty virtual (one-arg no-op slot). */
+void heli_uso_func_00000458(int a0) {
+    (void)&a0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000460);
+/* heli_uso_func_00000460: Heli default ctor (0x174, "<QNode>", no children). */
+char *heli_uso_func_00000460(char *self) {
+    if (self != 0 || (self = (char *)CALL(mem_new)(0x174)) != 0) {
+        XCALL(gl_func_00000000f3, QNode_ctor)(self, &heli_data_00000000 + 0xCB90, 0.0f, 0.0f, 0.0f);
+        NODE(self)->vptr = (char *)&D_00000000; /* Heli vtable (Data+0xCA88) */
+    }
+    return self;
+}
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000004C0);
 
@@ -62,23 +193,90 @@ INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000008A8);
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000980);
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000A70);
+/* heli_uso_func_00000A70: Heli display: when the combined position (cvqs.trans) is in view,
+ * update the channel-10 sound emitter there, set a white prim colour, draw the QNode. */
+void heli_uso_func_00000A70(char *self) {
+    HeliColour col;
+    int pad[2];
+    if (XCALL(gl_func_00000000_heli_cull, cam_isSphereInView)(*(void **)(&heli_gGfxLib_a + 0x254), 3,
+            *(float *)(self + 0xDC), *(float *)(self + 0xE0), *(float *)(self + 0xE4), 0, 0.0f)) {
+        void *win = *(void **)(&heli_gGfxLib_b + 0x254); /* GfxLib current ScreenWindow */
+        CALL(snd_updateChannel10Emitter)(1, self + 0xDC, win);
+        col.r = col.g = col.b = col.a = 1.0f;
+        CALL(gfx_setPrimColour)(&heli_gGfxLib_c, &col);
+        CALL(QNode_display)(self);
+    }
+}
 
 INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00000B08);
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000019C4);
+/* heli_uso_func_000019C4: empty virtual. */
+void heli_uso_func_000019C4(int a0) {
+    (void)&a0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000019CC);
+/* heli_uso_func_000019CC: getItemPos stub returning 0 (as game_libs ItemType_getItemPos). */
+int heli_uso_func_000019CC(int a0, int a1, int a2) {
+    (void)&a0;
+    (void)&a1;
+    (void)&a2;
+    return 0;
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_000019E0);
+/* heli_uso_func_000019E0: the colour item's load: the int at +0x3C, then ColourItem_load. */
+void heli_uso_func_000019E0(char *self) {
+    heli_uso_func_00000000((int *)(self + 0x3C));
+    CALL(ColourItem_load)(self);
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00001A0C);
+/* heli_uso_func_00001A0C..1A9C: Parm read methods (tag into a local, value at +0x10), as
+ * eddproc edd_readIntParm_0000032C / edd_readFloatParm_0000035C. */
+void heli_uso_func_00001A0C(char *dst) {
+    int tag;
+    heli_uso_func_00000000(&tag);
+    heli_uso_func_000000AC((float *)(dst + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00001A3C);
+void heli_uso_func_00001A3C(char *dst) {
+    int tag;
+    heli_uso_func_00000000(&tag);
+    heli_uso_func_0000003C((float *)(dst + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00001A6C);
+void heli_uso_func_00001A6C(char *dst) {
+    int tag;
+    heli_uso_func_00000000(&tag);
+    heli_uso_func_000000E8((HeliQuad4 *)(dst + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00001A9C);
+void heli_uso_func_00001A9C(char *dst) {
+    int tag;
+    heli_uso_func_00000000(&tag);
+    heli_uso_func_00000000((int *)(dst + 0x10));
+}
 
-INCLUDE_ASM("asm/nonmatchings/heli_uso/heli_uso", heli_uso_func_00001ACC);
+/* heli_uso_func_00001ACC: ItemType create: a new 0x40 colour item (ColourItem + the int at
+ * +0x3C), linked into the type's list (twin of snoweffects_uso_func_00007D8C). */
+void *heli_uso_func_00001ACC(int *arg0) {
+    int *p2;
+    int *head;
+    int *p1;
+    p1 = (int *)CALL(mem_new)(0x40);
+    if (p1 != 0) {
+        CALL(ColourItem_ctor)(p1);
+        NODE(p1)->vptr = (char *)&D_00000000; /* bootup ColourItem vtable (Data+0x75A0) */
+        p1[0x3C / 4] = 0;
+    }
+    p2 = p1;
+    p1 = arg0;
+    head = (int *)p1[0x40 / 4];
+    if ((int *)p1[0x40 / 4] != 0) {
+        CALL(list_append)((char *)p2 + 0x10, head);
+        if ((int)NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
+        }
+        NODE(head)->parent = (Node *)p2;
+    }
+    return p2;
+}
 

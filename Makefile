@@ -99,6 +99,11 @@ build/non_matching/src/gui_uso/gui_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := g
 SNOW_SUFFIX := snoweffects_uso_func_00003D34=0x00000000,0x00000000,0x00000000 snoweffects_uso_func_00007D8C=0x00000000 snoweffects_uso_func_000091BC=0x00000000
 build/src/snoweffects_uso/snoweffects_uso.c.o: SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := $(SNOW_SUFFIX)
+# heli.uso: the 16-byte .text pad after the last function (0x1B5C) is an all-zero SUFFIX on it.
+build/src/heli_uso/heli_uso.c.o: SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x00000000
+build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := heli_uso_func_00001ACC=0x00000000
+build/src/heli_uso/heli_uso.c.o: TRUNCATE_TEXT := 0x1B60
+build/non_matching/src/heli_uso/heli_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0x1B60
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900
