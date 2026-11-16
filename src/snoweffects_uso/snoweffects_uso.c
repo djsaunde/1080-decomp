@@ -915,9 +915,9 @@ void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, i
 }
 
 /* 0x7960: trail head update (angle from acosf of the +0x114 / +0x108 dot, 0x52D4 push-back, side
- * points +0x120 / +0x12C through the +0x30 matrix). NM: an NCC draft at 193 / 219 words (every
- * instruction except frame offsets and one FP colour) is kept in ncc_drafts/snoweffects_nm_e.cpp
- * (agent-e runs 650 / 653); the xform homes and frame (160 vs 176) are left. */
+ * points +0x120 / +0x12C through the +0x30 matrix). NM: an NCC draft at 212 / 219 words (frame exact
+ * since run 659; only the zero / |speed| FP colour swap is left) is kept in
+ * ncc_drafts/snoweffects_nm_e.cpp (agent-e runs 650 / 653 / 659). */
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
 
 void snoweffects_uso_func_00007CCC(char *a0) {
@@ -1223,7 +1223,8 @@ void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
  * NM 26/30 (agent-e run 645): item / head colour as the target once the test reads the head
  * local; left: the target loads head into a2 and copies it to a1 in the beqz delay slot (spilling
  * a2), where this form loads a1 directly (beqzl). Two-variable / chained-assignment forms are
- * copy-propagated (11 diffs). */
+ * copy-propagated (11 diffs). Run 659: passing head twice, `(item + 0x10, head, head)`, gives the
+ * target's beqz + delay-slot copy shape with the registers reversed (head a1, copy a2; 26/30). */
 void *snoweffects_uso_func_00009E10(char *type) {
     int *item;
     int *head;

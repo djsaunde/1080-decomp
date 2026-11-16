@@ -32,8 +32,7 @@ struct SnowV {
 };
 inline SnowV operator-(const SnowV &a, const SnowV &b) { return SnowV(a.x - b.x, a.y - b.y, a.z - b.z); }
 inline float dotv(const SnowV &a, const SnowV &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-/* 0x7960 (NM draft; run 653: 193 / 219 words, every instruction except the frame offsets and one FP
- * colour): trail head update. +0x148 = -dot(+0x114, +0x108) and its acosf gives the trail angle (negated
+/* 0x7960 (NM draft; run 659: 212 / 219 words, frame exact, one FP colour swap left): trail head update. +0x148 = -dot(+0x114, +0x108) and its acosf gives the trail angle (negated
  * when the camera's +0x318 / +0x3C8 vectors point apart); when |speed| (+0x4C) is at least RoData+0xB4,
  * probe 0x52D4 at +0x138 and push the point back by -d * normal when 0 < d < +0x15C, then set the two
  * side points +0x120 / +0x12C from cos / sin of the angle times +0x3C / +0x40 and transform them by the
@@ -41,11 +40,15 @@ inline float dotv(const SnowV &a, const SnowV &b) { return a.x * b.x + a.y * b.y
  * Run 653 layout levers (read from -O2 -g3 .mdebug): `ang` declared before `n` (n at vfp-16), no named
  * |speed| local (inline ?: expression), d in the outer if-block, a NAMED `push = n * -d` in the inner
  * block and `operator+=(const SnowV &)`: operator* result vfp-72, copy -60, push -44 = the target's.
- * Left: (1) the xform x/y/z homes sit 8 bytes too high (z spills -104 / -116, target -112 / -124) and
- * the frame is 160 vs 176. Two extra pool words fix the homes: a 5-argument SnowV ctor called as
- * SnowV(x * s, y * s, z * s, s, s) from operator* gives -112 / -124 with identical code (frame 168),
- * but that is a dummy-parameter lever, and 8 bytes below the second xform block are still missing.
- * (2) the |speed| value colours f12 and the zero f2; the target has them swapped. Pins a donor needs:
+ * Run 659: the frame is now exact (176, every sp offset right): two dead scratch stores in blocks of
+ * their own, one before the side-point code (8 bytes above the first xform homes) and one after the
+ * second xform (8 bytes below), the agent-c run 643 / agent-a run 648 levers. 212 / 219: only the
+ * zero / |speed| FP swap is left (target zero f12 / |speed| f2, ours the reverse). The instrumented
+ * uopt (/tmp/claude-1000/h414/u/out/NCC -Wo,-zdbug:5) shows why: |speed| (pri 2.0) is coloured
+ * before the split zero constant piece (pri 0.33) and takes the first FP colour. Tried without effect:
+ * an inline / member / reference fabs, `>=` / `0.0f >` / int 0 spellings, a named zero (propagated),
+ * a named |speed| (also frame), d reused for |speed|, a member dot, `if (1) {}` splits (lose the f20
+ * home for ang). Pins a donor needs:
  * typed float-return 0 aliases for 0x52D4 and acosf / fcos / fsin, and RoData+0xB4. */
 struct M44 { float m[4][4]; };
 inline void xform(SnowV &v, const M44 &m) { float x = m.m[0][0] * v.x + m.m[1][0] * v.y + m.m[2][0] * v.z + m.m[3][0]; float y = m.m[0][1] * v.x + m.m[1][1] * v.y + m.m[2][1] * v.z + m.m[3][1]; float z = m.m[0][2] * v.x + m.m[1][2] * v.y + m.m[2][2] * v.z + m.m[3][2]; v.x = x; v.y = y; v.z = z; }
@@ -86,6 +89,7 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
             SnowV push = n * -d;
             t->pos += push;
             t->hits = 2;
+            { int sc[2]; sc[0] = 0; }
             t->a.x = fcos(ang) * t->w;
             t->a.y = 0.0f;
             t->a.z = fsin(ang) * t->h;
@@ -94,6 +98,7 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
             t->b.y = 0.0f;
             t->b.z = fsin(ang) * -t->h;
             xform(t->b, *t->mtx);
+            { int sc2[2]; sc2[0] = 0; }
         }
     }
 }
@@ -108,7 +113,13 @@ extern "C" void snoweffects_uso_func_00007960(SnowBody7 *t) {
  * Body: name (+0xC) = Data+0xA58, +0x22C..+0x23C = 0, 0, 1, 3, 0, colour +0x88 = 1 x4, +0x98..+0xA8 = 0.
  * Left: the target keeps the Parms `this` in a1 (spilled to sp+0xDC around every call, only s0 saved)
  * where this keeps it in s1, and every Parm's name copy has its own frame word (sp+0xD8 / 0xD4 / 0xA0 /
- * 0x9C / 0x98, outgoing copy 0x84); frame 224 vs 168. */
+ * 0x9C / 0x98, outgoing copy 0x84); frame 224 vs 168.
+ * Run 659: `if (&n) {}` in the ParmF ctor body (extra blocks) moves the Parms `this` to a1 with the
+ * target's sp spills (register / offset-normalised 213 / 247, from 188). Still missing: the second
+ * name word per Parm (target 0xD8 / 0xD4 / 0xA0 / 0x9C / 0x98 hold the materialised by-value name
+ * parameter, then 0x84 is the pooled copy for the GdlParmBase call). A non-POD PName (copy ctor)
+ * gives both stores but passes the name by address; an identity inline returning the name gives a
+ * pooled (shared) word, not one per Parm; an inline GdlParmBase ctor adds this == 0 checks. */
 struct PName { char *s; };
 struct Colour { float r, g, b, a; Colour() {} Colour(float r_, float g_, float b_, float a_) { r = r_; g = g_; b = b_; a = a_; } };
 struct Parms9;
