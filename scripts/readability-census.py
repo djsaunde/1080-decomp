@@ -21,7 +21,8 @@ Measures (per segment = src/<segment>/ or the report.json unit's segment):
     `spell-base` dry-run plans); source spellings (GL_*_STR, GL_*, sStr_/sFmt_/sTag_, kRo_, raw
     `&D_00000000`).
   * Raw struct offsets in compiled code: `*(T *)(expr + K)` casts and uses of offset-accessor
-    macros (any `#define NAME(p, o ...)` whose body is `*(T *)((char *)(p) + (o))`, e.g. FW / FF).
+    macros (any `#define NAME(p, o ...)` whose body is `*(T *)((char *)(p) + (o))`, e.g. FW / FF),
+    except accessor uses whose offset is a named constant (kPmf_/kRoD_/kStr_/kTag_ ..., run 568).
     Per file for the C++ donors (.cpp), and the top N functions by raw-site count with their
     owner area (owner(): b / c / g / h / a, run 520).
   * Globals: distinct `D_<8 hex>` names (not the D_00000000 sentinels) in compiled code.
@@ -188,9 +189,45 @@ def accessor_macros():
     return names
 
 
+NAMED_OFF_HDRS = ('include/game/game_uso_data.h', 'include/gdl/gl_data.h')
+NAMED_OFF_DEF = re.compile(r'^\s*#\s*define\s+(k[A-Z]\w*)\s+\(?\s*(?:0x[0-9A-Fa-f]+|\d+)\s*\)?\s*(?:/\*.*)?$', re.M)
+
+
+def named_offsets():
+    """`kPmf_*` / `kRoD_*` / `kRoF_*` / `kStr_*` / `kTag_*` ...: the named section offsets
+    (`#define kX <integer>`) in game_uso_data.h / gl_data.h (run 568, agent-g's rule)."""
+    names = set()
+    for p in NAMED_OFF_HDRS:
+        if os.path.exists(p):
+            names |= set(NAMED_OFF_DEF.findall(open(p, errors='replace').read()))
+    return names
+
+
+NAMED_OFF = set()
+
+
+def top_args(code, i):
+    """Top-level comma-split arguments of the call whose `(` is at code[i - 1]."""
+    args, depth, start = [], 1, i
+    while i < len(code) and depth:
+        ch = code[i]
+        if ch in '([{':
+            depth += 1
+        elif ch in ')]}':
+            depth -= 1
+        elif ch == ',' and depth == 1:
+            args.append(code[start:i])
+            start = i + 1
+        i += 1
+    args.append(code[start:i - 1])
+    return [a.strip() for a in args]
+
+
 def raw_offset_sites(code, acc_re):
     """Positions of `*(T *)(expr + K)` casts (not data-placeholder sites) and of accessor-macro
-    uses: ([cast pos], [accessor pos])."""
+    uses: ([cast pos], [accessor pos]). An accessor use whose offset argument is a named
+    constant (NAMED_OFF: per-site token + named offset, the documented spelling) is not raw;
+    the cast form already needs a literal K (TAIL_OFF)."""
     casts = []
     for m in CAST_RE.finditer(code):
         i, depth = m.end(), 1
@@ -200,7 +237,8 @@ def raw_offset_sites(code, acc_re):
         inner = code[m.end():i - 1]
         if TAIL_OFF.search(inner) and 'D_00000000' not in inner and 'gl_data' not in inner:
             casts.append(m.start())
-    accs = [m.start() for m in acc_re.finditer(code)] if acc_re else []
+    accs = [m.start() for m in acc_re.finditer(code)
+            if not any(a in NAMED_OFF for a in top_args(code, m.end()))] if acc_re else []
     return casts, accs
 
 
@@ -337,6 +375,7 @@ def main():
     defined = DB.defined_macros('.')
     compiled = compiled_sources()
     acc = accessor_macros()
+    NAMED_OFF.update(named_offsets())
     acc_re = re.compile(r'\b(?:' + '|'.join(sorted(acc)) + r')\s*\(') if acc else None
 
     calls = collections.defaultdict(collections.Counter)
@@ -408,7 +447,9 @@ def main():
               'raw `*(T *)(p+K)`', 'accessor macro uses', '`D_` globals'], rows)
     L += ['', 'Function classes: sentinel = `[<segment>_]func_00000000` (address-0 placeholder, never renamed); placeholder = `func_<addr>` / `<segment>_func_<addr>`; weak = '
           '`<Kind>_func_<addr>`, `<Kind>_vfnN[_<addr>]`, `<Kind>_vslotN[_<addr>]`; real = the rest; real % excludes sentinels. '
-          f'Accessor macros counted: {", ".join(sorted(acc))}.', '']
+          f'Accessor macros counted: {", ".join(sorted(acc))}; a use whose offset argument is one of the '
+          f'{len(NAMED_OFF)} named offsets (`#define kX <int>` in game_uso_data.h / gl_data.h: kPmf_, kRoD_, kRoF_, '
+          'kStr_, kTag_ ...) is not counted.', '']
     L += ['### Data sites (bootup.uso Text: game_libs + bootup_uso)', '']
     L += tbl(['', 'LO16 sites', 'named linker alias', 'provably raw left'],
              [('object-relocated (Sym kind 2)', ds['obj'], ds['obj_named'], ds['left_obj']),
