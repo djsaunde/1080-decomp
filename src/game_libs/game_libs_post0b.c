@@ -6149,7 +6149,7 @@ end:
  * emitted 0x16-before-0x14. */
 void CollObj_init(int *a0, int a1, int a2, short a3) {
     int v = 0xFFFF;
-    COLLOBJ(a0)->owner = a1;
+    COLLOBJ(a0)->owner = (Node *)a1;
     COLLOBJ(a0)->kind = a2;
     COLLOBJ(a0)->category = v;
     COLLOBJ(a0)->hitMask = v;

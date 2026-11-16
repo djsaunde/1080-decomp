@@ -16,7 +16,7 @@
  * The vtable pointer sits at +0x30 (not in a Node header) with Cfront {s16 delta, pad, fn}
  * entries: slot 1 = delta +0x8 / fn +0xC, slot 2 = delta +0x10 / fn +0x14. */
 typedef struct CollObj {
-    /* 0x00 */ s32 owner;          /* the Node (CollObj_init arg1) */
+    /* 0x00 */ Node *owner;        /* CollObj_init arg1 */
     /* 0x04 */ struct CollObj *next; /* CollObjMgr list link */
     /* 0x08 */ s32 kind;           /* CollObj_init arg2; 1 = cylinder (CollObj_initCylinder) */
     /* 0x0C */ s16 id;             /* CollObj_init arg3 */
