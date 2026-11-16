@@ -1278,7 +1278,11 @@ SECTIONS
     {
         FILL(0x00000000);
         game_uso_DATA_START = .;
-        build/assets/game_uso.bin.o(.data);
+        build/assets/game_uso_pre.bin.o(.data);
+        build/assets/game_uso_block0_yay0.bin.o(.data);
+        build/assets/game_uso_inter01.bin.o(.data);
+        build/assets/game_uso_block1_yay0.bin.o(.data);
+        build/assets/game_uso_inter12.bin.o(.data);
         game_uso_DATA_END = .;
         game_uso_DATA_SIZE = ABSOLUTE(game_uso_DATA_END - game_uso_DATA_START);
     }

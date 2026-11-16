@@ -3054,8 +3054,16 @@ HANDWRITTEN_S_FILES := $(shell find src/libultra src/handwritten -name '*.s' -ty
 HANDWRITTEN_HOSTS := $(shell grep -rlE --include='*.c' 'GLOBAL_ASM."src/(libultra|handwritten)/' src 2>/dev/null)
 $(foreach h,$(HANDWRITTEN_HOSTS),$(eval build/$(h).o build/non_matching/$(h).o: $(HANDWRITTEN_S_FILES)))
 
-# Yay0-recompressed blocks (built from C, not extracted from baserom)
+# Yay0-recompressed code blocks, built from C (never from the baserom extract).
+# splat also extracts assets/<blk>.bin under the same names, and the
+# `build/assets/%.bin.o: assets/%.bin` pattern rule comes first, so until
+# 2026-11-16 the ROM linked the baserom bins and the C was proven only by
+# verify-blocks. They are filtered out of BIN_O_FILES here and wrapped by the
+# static pattern rule below (explicit, so it beats both pattern rules): the
+# byte-identical ROM check now covers the C of all six blocks. crunch64's Yay0
+# encoder reproduces the original compressed streams byte for byte.
 YAY0_O_FILES := build/assets/mgrproc_uso_block1_yay0.bin.o                 build/assets/game_uso_block1_yay0.bin.o                 build/assets/timproc_uso_block1_yay0.bin.o                 build/assets/timproc_uso_block3_yay0.bin.o                 build/assets/timproc_uso_block5_yay0.bin.o                 build/assets/map4_data_uso_block2_yay0.bin.o
+BIN_O_FILES := $(filter-out $(YAY0_O_FILES),$(BIN_O_FILES))
 
 O_FILES     := $(BIN_O_FILES) $(YAY0_O_FILES) $(C_O_FILES) $(ASM_O_FILES)
 
@@ -3700,14 +3708,18 @@ build/assets/map4_data_uso_block2_yay0.bin: build/src/map4_data_uso_b2/map4_data
 	$(OBJCOPY) -O binary --only-section=.text $< $(@:.bin=.text.bin)
 	python3 -c "import sys, crunch64; open(sys.argv[2],'wb').write(crunch64.yay0.compress(open(sys.argv[1],'rb').read()))" $(@:.bin=.text.bin) $@
 
-# Wrap a build/-located .bin into a .o (mirror of the assets/-located rule above)
-build/assets/%.bin.o: build/assets/%.bin
+# Wrap a built Yay0 block into a .o. Static pattern rule: it must win over
+# `build/assets/%.bin.o: assets/%.bin`, which would link the baserom extract.
+# The objcopy symbols record the source (_binary_build_assets_..._bin_start);
+# scripts/rom-coverage.py checks them.
+$(YAY0_O_FILES): build/assets/%.bin.o: build/assets/%.bin
 	@mkdir -p $(dir $@)
 	$(OBJCOPY) -I binary -O elf32-tradbigmips $< $@
 
-# Verify every built Yay0 code block against its ROM-extracted ground truth
-# (exact length + only reloc-field word diffs). Catches the asm-processor
-# pad/orphan emission damage class -- see docs/MATCHING_WORKFLOW.md.
+# Verify every built Yay0 code block against its ROM-extracted ground truth:
+# decompressed and compressed bytes both identical (strict since 2026-11-16;
+# the ROM links these blocks, so `make verify` proves the same). Names the
+# differing word when one breaks -- see docs/MATCHING_WORKFLOW.md.
 verify-blocks: build/assets/mgrproc_uso_block1_yay0.bin build/assets/game_uso_block1_yay0.bin \
 		build/assets/timproc_uso_block1_yay0.bin build/assets/timproc_uso_block3_yay0.bin \
 		build/assets/timproc_uso_block5_yay0.bin build/assets/map4_data_uso_block2_yay0.bin

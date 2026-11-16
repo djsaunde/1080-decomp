@@ -33,9 +33,10 @@ Sources of truth:
   * port-sourcemap.py (rerun into a scratch dir): which body ships per function
     (c / cpp / asm; unresolved = INCLUDE_ASM, not decompiled);
   * the Makefile's Yay0 block recipes: which C objects form each compressed code
-    block (the blocks themselves are linked from the extracted baserom bin and
-    proven by `make verify-blocks`; this audit lays the functions out inside the
-    decompressed block and word-compares them against it).
+    block.  The ROM links the block the C build compressed (crunch64 reproduces the
+    original Yay0 stream), and this audit checks that provenance, so the
+    byte-identical ROM check proves the C; it also lays the functions out inside the
+    decompressed block and word-compares them against it.
 
 Hidden code: every Data / RoData / BinaryDataSection payload (decompressed when
 Yay0) and every non-code linked blob is scanned for MIPS function shapes
@@ -652,8 +653,27 @@ class Audit:
                     counts = {ASM_UNDEC: len(data)}
                 else:
                     counts = self.audit_block(label, blk, data)
+                    self.check_block_provenance(label, blk, lo, hi)
                 self.apportion(lo, hi, counts)
                 self.yay0_text.append((lo, hi, counts))
+
+    def check_block_provenance(self, label, blk, lo, hi):
+        """The compressed Text must be linked from the block the C build compressed
+        (build/assets/<blk>.bin, wrapped by objcopy -I binary, whose symbols name the
+        source file), not from splat's baserom extract assets/<blk>.bin.  Then the
+        byte-identical ROM check proves the C of the whole block."""
+        want = f"build/assets/{blk}.bin.o"
+        cover = [(rom_, rom_ + size) for rom_, size, sec, f, out in self.insecs
+                 if f == want and rom_ <= lo < rom_ + size]
+        if not cover:
+            self.problems.append(f"{label} (Yay0, ROM 0x{lo:X}): not linked from {want}")
+            return
+        # (the walker's payload range can run a few bytes past the Yay0 stream into the
+        # next record; those bytes belong to that record's bin)
+        strtab = open(os.path.join(ROOT, want), "rb").read()
+        if f"_binary_build_assets_{blk}_bin_start".encode() + b"\0" not in strtab:
+            self.problems.append(f"{label} (Yay0, ROM 0x{lo:X}): {want} was not wrapped from the "
+                                 f"C-built build/assets/{blk}.bin (baserom extract linked?)")
 
     def audit_block(self, label, blk, data):
         dcat = bytearray(len(data))
@@ -845,7 +865,7 @@ def main():
     print(f"  functions: {nfun} placed, {nfun - nund} with a C / asm source body, {nund} INCLUDE_ASM")
 
     print("\nDecompressed Yay0 Text blocks (compressed ROM bytes apportioned by this content;"
-          " linked from the extracted baserom bin, C proven by `make verify-blocks`):")
+          " linked from the C build's own Yay0 output, so proven by the byte-identical ROM):")
     for label, c in A.decomp:
         tot = sum(c.values())
         print(f"  {label}: " + ", ".join(f"{CAT_NAMES[k]} {v:#x}" for k, v in sorted(c.items())))

@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Verify every built Yay0 code block against its ROM-extracted ground truth.
 
-For each (built compressed block, assets/<name>_block_N.bin) pair:
-  - decompress the build, compare lengths (must be EXACT), and
-  - word-diff; every diff must be reloc-field class (jal-vs-jal target field,
-    or same opcode+regs with differing lo16 immediate at lui/lw/sw/addiu sites
-    of MATCHED C fns -- the USO reloc table fills these at load).
-Any length mismatch, contiguous shift range, or non-reloc-class word diff
-is a FAILURE (the asm-processor pad/orphan emission damage class --
-see docs/MATCHING_WORKFLOW.md, asm-processor 1-word-pad defect).
+Strict since 2026-11-16: for each block,
+  - the decompressed build must equal the decompressed ROM block byte for byte
+    (reloc fields included: jal / lo16 diffs used to be tolerated, but there are
+    none, so any diff is now a FAILURE), and
+  - the compressed build must equal splat's compressed extract
+    assets/<blk>_yay0.bin byte for byte (crunch64 reproduces the original Yay0
+    encoder's stream).
+The ROM itself links the built blocks (Makefile YAY0_O_FILES), so `make` /
+`make verify` already prove this; this script names the block and word that
+differ when they do not.
 
 Usage: python3 scripts/verify-yay0-blocks.py   (after `make <blocks>` or with
        --build to make the block targets first)
@@ -53,10 +55,13 @@ def main():
                 counts[k] += 1
                 if k == "other":
                     others.append((i, o, b))
-        ok = len(orig) == len(built) and counts["other"] == 0
+        comp_p = built_p.replace("build/assets/", "assets/")
+        comp_ok = open(comp_p, "rb").read() == open(built_p, "rb").read()
+        ok = len(orig) == len(built) and not any(counts.values()) and comp_ok
         fail += not ok
         print(f'{"OK  " if ok else "FAIL"}  {built_p}: len {len(orig):#x}/{len(built):#x}, '
-              f'jal={counts["jal"]} lo16={counts["lo16"]} other={counts["other"]}')
+              f'jal={counts["jal"]} lo16={counts["lo16"]} other={counts["other"]}, '
+              f'compressed {"identical" if comp_ok else "DIFFERS from " + comp_p}')
         for i, o, b in others[:12]:
             print(f"        OTHER at {i:#07x}: {o:08x} vs {b:08x}")
     return 1 if fail else 0
