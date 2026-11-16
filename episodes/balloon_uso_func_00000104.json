@@ -1,0 +1,33 @@
+{
+  "function_name": "balloon_uso_func_00000104",
+  "project": "1080-decomp",
+  "model": "claude-opus-5.5",
+  "start_time": "2026-11-16T20:40:55.535209+00:00",
+  "end_time": "2026-11-16T20:40:55.535226+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T20:40:55.535222+00:00",
+      "assistant_text": null,
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 15,
+  "initial_m2c_source": null,
+  "final_source": "#include \"common.h\"\n#include \"uso_call.h\"\n\nextern int gl_func_00000000();\nextern char D_00000000;\nextern char gl_data_00000000;\n\ntypedef struct { int a, b, c; } BalloonTri3i;\n\n/* balloon.uso: the balloon course object (an SNode subclass, 0x9C bytes) and\n * its PolyShape-based template. IDO 7.1 cfe -O2, like game_uso.\n * Relocs (scripts/uso-imports.py sites balloon): bootup Bss+0x3C740 = the\n * gdl file system object (fs_gdlReadFile / fs_gdlWriteFile), Bss+0x3C768 =\n * the hostio object, Bss+0x3C168 = GfxLib. Object fields: 0x88 Vec3 bob\n * amplitude (hostio \"x/y/z\" +-500), 0x94 float bob speed, 0x98 float phase. */\n\n/* balloon_uso_func_00000000: write a Vec3 to the gdl file (the cross-USO\n * template, same body as game_libs fs_gdlWriteVec3_00037D48). */\nvoid balloon_uso_func_00000000(int *a0) {\n    volatile int padA[1];\n    float fbuf[3];\n    volatile int padB[2];\n    float tmp[3];\n    volatile int padC[3];\n    *(BalloonTri3i *)tmp = *(BalloonTri3i *)a0;\n    fbuf[0] = tmp[0]; fbuf[1] = tmp[1]; fbuf[2] = tmp[2];\n    CALL(fs_gdlWriteFile)(&D_00000000, fbuf, 12);\n    (void)padA;\n    (void)padB;\n    (void)padC;\n}\n\n/* balloon_uso_func_00000060: write a float to the gdl file. */\nvoid balloon_uso_func_00000060(float *a0) {\n    float pad, scratch;\n    scratch = *a0;\n    CALL(fs_gdlWriteFile)(&D_00000000, &scratch, 4);\n}\n\n/* balloon_uso_func_00000094: read a Vec3 from the gdl file (game_uso\n * stream_readVec3_000001D4 template). */\nvoid balloon_uso_func_00000094(float *dst) {\n    int pad_top[1];\n    BalloonTri3i raw;\n    int pad_mid[2];\n    BalloonTri3i tmp;\n    int pad_bot[2];\n    CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);\n    tmp = raw;\n    dst[0] = *(float *)&tmp.a;\n    dst[1] = *(float *)&tmp.b;\n    dst[2] = *(float *)&tmp.c;\n}\n\n/* balloon_uso_func_00000104: read a float from the gdl file. */\nvoid balloon_uso_func_00000104(float *dst) {\n    float buf[2];\n    CALL(fs_gdlReadFile)(&D_00000000, buf, 4);\n    *dst = buf[0];\n}\n\n/* balloon_uso_func_00000140: Balloon ctor (0x9C bytes; cfront this==0 alloc). */\nint *balloon_uso_func_00000140(char *self) {\n    if (self != 0 || (self = (char *)CALL(mem_new)(0x9C)) != 0) {\n        CALL(SNode_ctor)(self);\n        *(char **)(self + 0x28) = &D_00000000; /* Data+0x4128: Balloon vtable */\n        *(float *)(self + 0x88) = 0.0f;\n        *(float *)(self + 0x8C) = 0.0f;\n        *(float *)(self + 0x90) = 0.0f;\n        *(float *)(self + 0x94) = *(float *)(&gl_data_00000000 + 0x1C); /* RoData+0x1C (a separate zero symbol: RoData base) */\n        *(float *)(self + 0x98) = 0.0f;\n    }\n    return (int *)self;\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/balloon_uso/balloon_uso\", balloon_uso_func_000001A8);\n\n/* balloon_uso_func_000002BC: saveData: bob amplitude, bob speed, then the SNode part. */\nvoid balloon_uso_func_000002BC(char *self) {\n    balloon_uso_func_00000000((int *)(self + 0x88));\n    balloon_uso_func_00000060((float *)(self + 0x94));\n    CALL(SNode_saveData)(self);\n}\n\n/* balloon_uso_func_000002F4: loadData (mirror of saveData). */\nvoid balloon_uso_func_000002F4(char *self) {\n    balloon_uso_func_00000094((float *)(self + 0x88));\n    balloon_uso_func_00000104((float *)(self + 0x94));\n    CALL(SNode_loadData)(self);\n}\n\n/* balloon_uso_func_0000032C: hostioParms (group named by the node's name). */\nextern void gl_func_00000000_ff(void *, char *, void *, float, float, int);\nvoid balloon_uso_func_0000032C(char *self) {\n    char *name = *(char **)(self + 0xC); /* Node name */\n#define h (&D_00000000)\n    CALL(hostio_beginGroup)(h, name, 0);\n    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4188, self + 0x94, 0.0f, 1.0f, 1);\n    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4190, self + 0x88, -500.0f, 500.0f, 1);\n    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x4198, self + 0x8C, -500.0f, 500.0f, 1);\n    XCALL(gl_func_00000000_ff, hostio_addFloat)(h, &D_00000000 + 0x41A0, self + 0x90, -500.0f, 500.0f, 1);\n    CALL(hostio_endGroup)(h);\n    CALL(SNode_hostioParms)(self);\n}\n#undef h\n\n/* balloon_uso_func_0000042C: handleMsg: messages 7 and 19 reset the bob phase. */\nvoid balloon_uso_func_0000042C(char *self, int *msg) {\n    CALL(SNode_handleMsg)(self, msg);\n    if (*msg == 7 || *msg == 19) {\n        *(float *)(self + 0x98) = 0.0f;\n    }\n}\n\nINCLUDE_ASM(\"asm/nonmatchings/balloon_uso/balloon_uso\", balloon_uso_func_0000047C);\n",
+  "metadata": {
+    "source_path": "src/balloon_uso/balloon_uso.c",
+    "asm_path": "asm/nonmatchings/balloon_uso/balloon_uso/balloon_uso_func_00000104.s",
+    "segment": "balloon_uso",
+    "compiler": "IDO 7.1 cc",
+    "compiler_flags": "-O2 -G 0 -mips2 -32 -non_shared -Xcpluscomm -Wab,-r4300_mul",
+    "verification": "Byte-identical to the asm .word target; readability-gate PASS (ROM identical)."
+  }
+}
