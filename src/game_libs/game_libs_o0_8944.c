@@ -46,17 +46,26 @@ typedef struct { int a, b, c, d; } Quad4;
 void fs_gdlReadInt_00008944(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_00008990(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&gSysLib, &buf, 0x10);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 0x10);
+#endif
     *dst = buf;
 }
 
 void fs_gdlReadFloat_000089F4(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }

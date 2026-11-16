@@ -75,6 +75,9 @@ void fs_gdlReadVec3_00008A40(Vec3 *dst) {
     int pad_mid[2];
     register float *src;
     CALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     p1 = dst;
     tmp = raw;
     p2 = p1;

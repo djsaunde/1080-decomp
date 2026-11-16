@@ -449,6 +449,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_00063744(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -457,6 +460,9 @@ void fs_gdlReadFloat_00063780(float *dst) {
     int pad;
     float scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -467,6 +473,9 @@ void fs_gdlReadVec3_000637BC(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -477,6 +486,9 @@ extern int gl_func_00000000();
 void fs_gdlReadQuad_0006382C(Quad4 *dst) {
     Quad4 scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 16);
+#endif
     *dst = scratch;
 }
 
@@ -4050,6 +4062,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_000681F4(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -4061,6 +4076,9 @@ void fs_gdlReadVec3_00068230(Tri3i *dst) {
     int pad;
     Tri3i buf;
     CALL(fs_gdlReadFile)(&gSysLib, &buf, 0xC);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 0xC);
+#endif
     *dst = buf;
     (void)pad;
 }
@@ -4069,6 +4087,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_00068280(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -4076,6 +4097,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_000682BC(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -4777,6 +4801,9 @@ extern int gl_func_00000000();
 void fs_gdlReadInt_00068F28(int *dst) {
     int pad, scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 4);
+#endif
     *dst = scratch;
 }
 
@@ -4784,6 +4811,9 @@ extern int gl_func_00000000();
 void fs_gdlReadQuad_00068F64(Quad4 *dst) {
     Quad4 scratch;
     CALL(fs_gdlReadFile)(&gSysLib, &scratch, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&scratch, 16);
+#endif
     *dst = scratch;
 }
 
