@@ -7,12 +7,13 @@
  * symbols (the non_matching object is never linked).
  */
 #include "snoweffects_ncc.h"
-/* the callees, by name (a matching donor would call them through typed 0-pinned aliases) */
+/* the callees, by name (a matching donor would call them through typed 0-pinned aliases); the
+ * discarded-result ones are void (an int return leaves a dead v0 def) */
 extern "C" {
 int ItemMgr_findType_0003EA98(...);
 void PolyShape_getNormal8(...);
 int PolyShape_getVertex(...);
-int snoweffects_uso_func_00004374(...);
+void snoweffects_uso_func_00004374(...);
 int snoweffects_uso_func_000046BC(...);
 void snoweffects_uso_func_00009768(...);
 void snoweffects_uso_func_00009884(...);
@@ -185,7 +186,10 @@ same:
  * the cam colour bytes (+0xA30..; points 1 and 2 faded towards 255 by +0x178, 0 in state 98).
  * Edg temp chains: op* result -> return temp (sp+244) -> by-value operator= param (sp+188). Next:
  * the frame (target named Vec3 locals at 336 / 324 / 312 / 300 / 284 / 272 / 100) and in-loop
- * 64.0f. ---- */
+ * 64.0f. Run 669: t->speed read once into v before the cam-speed test (target f0 at 0x8064): 85.49 -> 85.74.
+ * Left at the |speed| compare: the target's zero for the +0x120 clears is a ugen f0 constant and the
+ * ramp's 0.0f is rematerialised per arm into f24 (bc1tl + two mtc1 zero); here one 0.0f LR spans the
+ * 0x4374 call in f20. ---- */
 extern "C" void SnowRing_setSlotState_00004714(void *, int, int, float);
 
 struct TV {
@@ -290,15 +294,16 @@ extern "C" void snoweffects_uso_func_00007FE0(TTrail *t) {
     t->f3C = t->f34;
     t->f40 = t->f38;
     snoweffects_uso_func_00004374(t);
+    float v = t->speed;
     if (t->cam->speed < 60.0f) {
         s = 0.0f;
-    } else if ((t->speed < 0.0f ? -t->speed : t->speed) < t->lo) {
+    } else if ((v < 0.0f ? -v : v) < t->lo) {
         s = 0.0f;
-    } else if (t->hi < (t->speed < 0.0f ? -t->speed : t->speed)) {
-        s = t->speed < 0.0f ? -1.0f : 1.0f;
+    } else if (t->hi < (v < 0.0f ? -v : v)) {
+        s = v < 0.0f ? -1.0f : 1.0f;
     } else {
-        float f = ((t->speed < 0.0f ? -t->speed : t->speed) - t->lo) / (t->hi - t->lo);
-        if (t->speed < 0.0f) {
+        float f = ((v < 0.0f ? -v : v) - t->lo) / (t->hi - t->lo);
+        if (v < 0.0f) {
             s = -((1.0f - t->base) * f + t->base);
         } else {
             s = (1.0f - t->base) * f + t->base;
