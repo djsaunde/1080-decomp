@@ -211,9 +211,13 @@ char *heli_uso_func_00000460(char *self) {
 /* heli_uso_func_000004C0: Heli ctor (0x174, "<QNode>"): attach the body shape, two HeliRotor
  * children sharing the blade shape (main: pitched 90 deg, y = 480, axis y; tail: yawed 90 deg,
  * scale / trans from RoData, axis x) and a QNode carrying the sprite, then reset the flight
- * state (0x8A8). NM ~82%: the rotor-field zero stores need their own constant web (the
+ * state (0x8A8). NM ~91%: the rotor-field zero stores need their own constant web (the
  * `(float)0` int-cast literal gives it) but land in f2 where the target uses f0; the
- * RoData loads need one alias per site (heli_ro_*). */
+ * RoData loads need one alias per site (heli_ro_*). The tail statements are in the target's
+ * store order. The -Wo,-zdbug:5 dump shows why f2: the zero is ONE uopt LR over both rotor
+ * blocks (6 uses / 2 BBs, priority 2.5), and the scale chain's value is an LR of priority 4
+ * that interferes in the tail block, so it colours f0 first. Three separate scale loads
+ * free f0 for the zero (both blocks then match), but they reload. */
 #ifdef NON_MATCHING
 extern char heli_ro_58, heli_ro_5C, heli_ro_60, heli_ro_64, heli_ro_68, heli_ro_6C;
 extern void gl_func_00000000_heli_euler(void *, float, float, float); /* math_eulerToQuat */
@@ -240,13 +244,13 @@ char *heli_uso_func_000004C0(char *self, void *body, void *blades, void *sprite)
         *(float *)(mainRotor + 0x110) = 1.0f;
         *(float *)(mainRotor + 0x114) = (float)0;
         gl_func_00000000_heli_euler /* math_eulerToQuat */(tailRotor + 0xCC, 0.0f, 90.0f, 0.0f);
-        *(float *)(tailRotor + 0xC0) = *(float *)(tailRotor + 0xC4) = *(float *)(tailRotor + 0xC8) = HELI_RO_SITE(58);
         *(float *)(tailRotor + 0xB4) = HELI_RO_SITE(5C);
         *(float *)(tailRotor + 0xB8) = HELI_RO_SITE(60);
+        *(float *)(tailRotor + 0xC0) = *(float *)(tailRotor + 0xC4) = *(float *)(tailRotor + 0xC8) = HELI_RO_SITE(58);
+        *(float *)(tailRotor + 0x114) = (float)0;
+        *(float *)(tailRotor + 0x110) = (float)0;
         *(float *)(tailRotor + 0xBC) = HELI_RO_SITE(64);
         *(float *)(tailRotor + 0x10C) = 1.0f;
-        *(float *)(tailRotor + 0x110) = (float)0;
-        *(float *)(tailRotor + 0x114) = (float)0;
         n = (char *)gl_func_00000000f3 /* QNode_ctor */(0, &heli_data_00000000 + 0xCBA0, 0.0f, 0.0f, 0.0f);
         gl_func_00000000 /* MNode_addChild */(self, n);
         *(float *)(n + 0xB4) = 0.0f;
