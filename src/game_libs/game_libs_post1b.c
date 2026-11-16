@@ -7,6 +7,7 @@
 #include "gdl/mem.h"
 #include "gdl/binfile.h"
 #include "gdl/polyshape.h"
+#include "gdl/sysapi.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -2529,7 +2530,7 @@ void dma_writeChunked_00066794(char *dst, char *src, unsigned int count) {
 /* game_libs_func_00066808 (2-word splat mis-split: lui t6,0; lw t6,0(t6)) was
  * the stolen prologue of boot_usoLoadFatal_00066810 — forward-merged into it. */
 void boot_usoLoadFatal_00066810(int a0) {
-    int v0 = (*(int(**)())((char*)*(void**)&D_00000000 + 0x40))();
+    int v0 = SYSAPI->usoLoad(a0);
     if (v0 < 0) {
         CALL(sys_fatal)(GL_RODATA_STR(0x20F0, "usoLoad() error loading file %s: %d"), a0, v0);
     }
@@ -2548,6 +2549,9 @@ void boot_usoLoadFatal_00066810(int a0) {
  * address) and D_gl66850_h0..h5 are pinned to 0 (distinct names keep six
  * lui/addiu pairs), all at the end of undefined_syms_auto.txt. */
 extern int gl_func_00062F64_66850();
+/* h0..h5 resolve to dma_readChunked_00066720, mem_heapNewThunk_00041258, dbg_printf,
+ * heap_tempAllocDefault_000333F4, heap_tempFreeDefault_0003341C, sys_timeInFrames_00033444
+ * (bootup.uso TextReloc), installed into the SysApi table (gdl/sysapi.h). */
 extern int D_gl66850_h0, D_gl66850_h1, D_gl66850_h2, D_gl66850_h3, D_gl66850_h4, D_gl66850_h5;
 void boot_main_00066850(s32 arg0) {
     u32 temp_a1;
@@ -2559,22 +2563,22 @@ void boot_main_00066850(s32 arg0) {
     XCALL(gl_func_00062F64_66850, osViSetMode)((char*)&gl_osViModeTable + 0xA0);
     XCALL(gl_func_00062F64_66850, osViSetSpecialFeatures)(0x42);
     XCALL(gl_func_00062F64_66850, osViBlack)(1);
-    temp_a1 = FW(*(int**)&gSysApi, 0xC);
+    temp_a1 = SYSAPI->usoWarnNum;
     if (temp_a1 != 0) {
-        XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2114, "USO warning num %d, data=%x, %x\n"), temp_a1, FW(*(int**)&gSysApi, 0x14), FW(*(int**)&gSysApi, 0x1C));
+        XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2114, "USO warning num %d, data=%x, %x\n"), temp_a1, SYSAPI->usoWarnData, SYSAPI->usoWarnData2);
     }
-    temp_a1_2 = FW(*(int**)&gSysApi, 0x8);
+    temp_a1_2 = SYSAPI->usoErrNum;
     if (temp_a1_2 != 0) {
-        XCALL(gl_func_00062F64_66850, sys_fatal)(GL_RODATA_STR(0x2138, "USO error num %d, data=%x\n"), temp_a1_2, FW(*(int**)&gSysApi, 0x10));
+        XCALL(gl_func_00062F64_66850, sys_fatal)(GL_RODATA_STR(0x2138, "USO error num %d, data=%x\n"), temp_a1_2, SYSAPI->usoErrData);
     }
-    XCALL(gl_func_00062F64_66850, sys_setRegion_0003487C)(FW(*(int**)&gSysApi, 0x0), FW(*(int**)&gSysApi, 0x4));
-    XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2154, "Bootup Code size %dk\n"), (u32) (FW(*(int**)&gSysApi, 0x0) + 0x80000000) >> 0xA);
-    FW(*(int**)&gSysApi, 0x80) = (int)&D_gl66850_h0;
-    FW(*(int**)&gSysApi, 0x34) = (int)&D_gl66850_h1;
-    FW(*(int**)&gSysApi, 0x84) = (int)&D_gl66850_h2;
-    FW(*(int**)&gSysApi, 0x98) = (int)&D_gl66850_h3;
-    FW(*(int**)&gSysApi, 0x9C) = (int)&D_gl66850_h4;
-    FW(*(int**)&gSysApi, 0x94) = (int)&D_gl66850_h5;
+    XCALL(gl_func_00062F64_66850, sys_setRegion_0003487C)(SYSAPI->memStart, SYSAPI->memEnd);
+    XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x2154, "Bootup Code size %dk\n"), (u32) (SYSAPI->memStart + 0x80000000) >> 0xA);
+    SYSAPI->dmaRead = &D_gl66850_h0;
+    SYSAPI->heapNew = (void *(*)())&D_gl66850_h1;
+    SYSAPI->printfFn = &D_gl66850_h2;
+    SYSAPI->tempAlloc = &D_gl66850_h3;
+    SYSAPI->tempFree = &D_gl66850_h4;
+    SYSAPI->timeInFrames = &D_gl66850_h5;
     XCALL(gl_func_00062F64_66850, dbg_printf)(GL_RODATA_STR(0x216C, "running main\n"));
     XCALL(gl_func_00062F64_66850, SnowBoard_ctor)();
 }
@@ -2823,7 +2827,7 @@ void boot_startThread_00066BD4(int a0) {
  * split off 2026-05-15 as boot_stub_00066C58 / _00066C60 below. */
 extern int D_00000000;
 void boot_entry_00066C30(int a0) {
-    gSysApi = a0;
+    SYSAPI = (SysApi *)a0;
     CALL(boot_startThread_00066B64)(0);
 }
 

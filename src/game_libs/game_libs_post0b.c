@@ -17,6 +17,7 @@
 #include "gdl/ballrot.h"
 #include "gdl/gfxlib.h"
 #include "gdl/texload.h"
+#include "gdl/sysapi.h"
 #include "libultra/os_thread.h"
 #include "game/camera.h"
 #include "uso_call.h"
@@ -175,7 +176,7 @@ int dbg_printThreads() {
     int vB;
     CALL(dbg_printf)(GL_DATA_STR(0x1E3F4, "Threads: \n"));
     while (*(int *)(n + 4) != -1) {
-        (*(int (**)(int, int *, int *))(gSysApi_34458_obj + 0x70))(*(int *)(n + 0x11C), &outA, &outB);
+        SYSAPI_AT(gSysApi_34458_obj)->symLookup(*(int *)(n + 0x11C), &outA, &outB);
         s1 = CALL(dbg_threadName)(*(int *)(n + 0x14));
         vB = CALL(dbg_threadStateName)(*(unsigned short *)(n + 0x10));
         CALL(dbg_printf)(GL_DATA_STR(0x1E400, "%s (%d): %s : (%s,0x%x) PC=0x%x \n"), s1, *(int *)(n + 0x14), vB,
@@ -250,7 +251,7 @@ void dbg_faultThread(void *a0) {
             continue;
         }
         s0 = SLOT_34548 + 0x20;
-        (*(int (**)())(gSysApi_34548_obj + 0x70))(*(int *)(s0 + 0xFC), &sp50, &sp54);
+        SYSAPI_AT(gSysApi_34548_obj)->symLookup(*(int *)(s0 + 0xFC), &sp50, &sp54);
         gl_func_00000000(GL_DATA_STR(0x1E424, "****************\n"));
         gl_func_00000000(SLOT_34548);
         r5 = gl_func_00000000(*(int *)(SLOT_34548 + 0x14));
@@ -946,8 +947,8 @@ void app_loadUso(int a0, int a1) {
      * made it a colored LR -> $v0 for both vtable-base loads; inlining the
      * *(int**)&D deref into each call expression keeps the base in the ugen
      * temp pool -> fresh $t6/$t7 per statement, matching. */
-    ((void(*)(int, int))(*(int**)&gSysApi)[0x74/4])(a0, a1);
-    rv = ((int(*)(int))(*(int**)&gSysApi)[0x40/4])(a1);
+    SYSAPI->usoPreLoad(a0, a1);
+    rv = SYSAPI->usoLoad(a1);
     if (rv < 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E510, "usoLoad() error loading file %s: %d"), a1, rv);
     }
@@ -960,7 +961,7 @@ void app_loadUso(int a0, int a1) {
  * the indirect call (no named table/fn locals) puts the fn ptr in $t9 (canonical
  * jalr reg) + table in $t6 to match; named locals force $v0/$v1. */
 void app_unloadUso(int a0, int a1) {
-    int rc = ((int(*)(int))(*(int**)&gSysApi)[0x44/4])(a1);
+    int rc = SYSAPI->usoUnload(a1);
     if (rc < 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E534, "cant unload %s (%d)\n"), a1, rc);
     }
@@ -1102,7 +1103,7 @@ int fs_gdlOpenFile(char *o, int a1) {
     } else goto c1;
     goto end;
 c1:
-    r = (*(int (***)(int))&D_00000000)[0x4C / 4](a1);
+    r = SYSAPI->fileOpen(a1);
     *(int *)(o + 0x20) = r;
     if (r == 0) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E578, "OpenFile Error '%s': %d"), a1, CALL(fs_func_0003593C)(o));
@@ -1163,7 +1164,7 @@ int fs_gdlReadFile(char *o, int a1, int a2) {
     if (k != 2) goto end;
     goto L2;
 L1:
-    r = (*(int (***)(int, int, int))&D_00000000)[0x50 / 4](*(int *)(o + 0x20), a1, a2);
+    r = SYSAPI->fileRead(*(int *)(o + 0x20), a1, a2);
     goto end;
 L0:
     r = CALL(hostio_readFile)(&D_00000000, a1, a2);
@@ -1243,7 +1244,7 @@ int fs_gdlReadFileAsync(char *o, int a1, int a2) {
     if (*(int *)(o + 4) != 1) {
         CALL(sys_fatal)(GL_DATA_STR(0x1E5F0, "read async local only"));
     }
-    v = CALL(dma_readAsync)(a1, (*(int (**)(int))(*(char **)&D_00000000 + 0x60))(*(int *)(o + 0x20)), a2);
+    v = CALL(dma_readAsync)(a1, SYSAPI->fileRomAddr(*(int *)(o + 0x20)), a2);
     CALL(fs_gdlSeekFile)(o, 1, a2);
     return v;
 }
@@ -1322,7 +1323,7 @@ int fs_gdlSeekFile(char *o, int a1, int a2) {
     } else goto c1;
     goto end;
 c1:
-    r = (*(int (**)(int))(*(char **)&D_00000000 + 0x54))(*(int *)(o + 0x20));
+    r = SYSAPI->fileSeek(*(int *)(o + 0x20));
     goto end;
 c0:
     r = CALL(hostio_seekFile)(&D_00000000);
@@ -1504,7 +1505,7 @@ extern int D_00000000;
  * call argument before writing an allocator-cap note.
  * EXACT (unwrapped run 95): func_00000000 and D_00000000 are real symbols at 0. */
 int fs_gdlFileInfo(int a0, int a1, int a2) {
-    int r = ((int(*)(int,int))(*(int**)&gSysApi)[0x48/4])(a1, a2);
+    int r = SYSAPI->fileInfo(a1, a2);
     if (r < 0) {
         FCALL(sys_fatal)(GL_DATA_STR(0x1E64C, "FileInfo '%s': %d\n"), a1, r);
     }
@@ -1534,7 +1535,7 @@ void fs_gdlCloseFile(char *a0) {
     if (k != 0) return;
     goto L0;
 L1:
-    (*(void (**)())(*(char **)&D_00000000 + 0x58))(*(int *)(a0 + 0x20), a0);
+    SYSAPI->fileClose(*(int *)(a0 + 0x20), a0);
     return;
 L0:
     CALL(hostio_closeFile)(&D_00000000, a0);
@@ -1597,7 +1598,7 @@ L0:
 int fs_func_0003593C(char *o) {
     int r;
     if ((r = *(int *)(o + 4)) == 1) {
-        return (*(int (**)(int))(*(char **)&D_00000000 + 0x5C))(*(int *)(o + 0x20));
+        return SYSAPI->fileError(*(int *)(o + 0x20));
     }
     return 0;
 }
