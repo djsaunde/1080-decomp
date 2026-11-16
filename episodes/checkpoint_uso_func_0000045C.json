@@ -1,0 +1,31 @@
+{
+  "function_name": "checkpoint_uso_func_0000045C",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:42:07.892292+00:00",
+  "end_time": "2026-11-16T21:42:07.892308+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:42:07.892303+00:00",
+      "assistant_text": "V3 value class: by-value operator= returning V3 & forwarding to set; const V3 &pos = *p; kept post pointers via if (0); w.y = u.y = 0 and a named dot result d.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 76,
+  "initial_m2c_source": null,
+  "final_source": "/* IDO 7.1 NCC (C++) donor for checkpoint_uso_func_0000045C (0x130), spliced into\n * checkpoint_uso.c.o via REPLACE_FUNC_BODY (agent-b run 640). EXACT.\n *\n * Cylinder checkpoint \"between the posts\" test: u = pos - postA, w = pos - postB, both\n * flattened to the XZ plane (y = 0); returns 1 when u . w < 0, i.e. pos lies between the two\n * gate posts that CheckpointCyl_handleMsg places at +0xA4 / +0xE4.\n *\n * Load-bearing (each found by a grid over the shape, run 640):\n *  - V3 value class: `operator-` builds a ctor temp that is returned by value, and the\n *    by-value `operator=` forwards to `set(const V3 &)`. That gives the target's copy chain\n *    (ctor temp sp+0x44 / 0x8 -> return slot 0x54 -> by-value parameter 0x1C -> float copies).\n *    `operator=` must return `V3 &`: with `void` the first ctor temp lands 4 bytes low (0x40).\n *  - `const V3 &pos = *p` and `pos - *a`: the same expression on the pointer, `*p - *a`, gives\n *    a different edg temp layout (frame and first temp 4 bytes off).\n *  - The post pointers are kept named with `if (0) { a = 0; }` (game_libs_ncc_3B01C.cpp): no\n *    offset folding, so the target's `addiu v0, a0, 0xA4` / `0xE4` base.\n *  - `w.y = u.y = 0.0f` then the plain 3-term dot: the y stores are dead and go away, but the\n *    `0 * 0` term stays (an mtc1 zero that is not folded).\n *  - The dot product in a named `d`: uopt colours it (f16) alongside the zero (f18), which takes\n *    both out of the FP temp ring, so the z loads reuse f4 / f6 as in the target.\n */\ntypedef float f32;\nstruct V3 {\n    f32 x, y, z;\n    V3() {}\n    V3(f32 a, f32 b, f32 c) { x = a; y = b; z = c; }\n    void set(const V3 &v) { x = v.x; y = v.y; z = v.z; }\n    V3 operator-(const V3 &o) const { return V3(x - o.x, y - o.y, z - o.z); }\n    V3 &operator=(V3 v) { set(v); return *this; }\n    f32 operator*(const V3 &o) const { return x * o.x + y * o.y + z * o.z; }\n};\n/* CheckpointCyl (0x10C): SNode, then two CollObj gate posts; the post positions are kept at\n * +0xA4 / +0xE4 (CheckpointCyl_handleMsg). */\nstruct CheckpointCyl { char pad[0xA4]; V3 postA; char padb[0xE4 - 0xB0]; V3 postB; };\n\nextern \"C\" int checkpoint_uso_func_0000045C(CheckpointCyl *self, V3 *p) {\n    V3 u, w;\n    const V3 &pos = *p;\n    V3 *a = &self->postA;\n    if (0) { a = 0; }\n    u = pos - *a;\n    V3 *b = &self->postB;\n    if (0) { b = 0; }\n    w = pos - *b;\n    w.y = u.y = 0.0f;\n    f32 d = u * w;\n    if (d < 0.0f) return 1;\n    return 0;\n}\n",
+  "metadata": {
+    "source_path": "src/checkpoint_uso/checkpoint_uso_ncc_45C.cpp",
+    "asm_path": "asm/nonmatchings/checkpoint_uso/checkpoint_uso/checkpoint_uso_func_0000045C.s",
+    "segment": "checkpoint_uso",
+    "compiler": "IDO 7.1 NCC -O2"
+  }
+}

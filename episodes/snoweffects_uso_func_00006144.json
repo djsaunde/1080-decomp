@@ -1,0 +1,31 @@
+{
+  "function_name": "snoweffects_uso_func_00006144",
+  "project": "1080-agent-b",
+  "model": "claude-manual",
+  "start_time": "2026-11-16T21:50:05.212513+00:00",
+  "end_time": "2026-11-16T21:50:05.212527+00:00",
+  "steps": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-11-16T21:50:05.212523+00:00",
+      "assistant_text": "new child as an argument of the first attach (one full-expression: separate edg pool words for the ctor this and q); list_append through a void-typed alias keeps the group in v0.",
+      "tool_calls": [],
+      "match_percent": 100.0,
+      "compiled": true,
+      "token_usage": null
+    }
+  ],
+  "outcome": "match",
+  "final_match_percent": 100.0,
+  "best_match_percent": 100.0,
+  "total_tokens": 0,
+  "instruction_count": 65,
+  "initial_m2c_source": null,
+  "final_source": "#include \"../../include/uso_call.h\"  /* NCC donors build without -I include */\n/* IDO 7.1 NCC (C++) donors for the snow effect's child-node creators (agent-b run 640), spliced into\n * snoweffects_uso.c.o via REPLACE_FUNC_BODY. All three EXACT:\n *   0x5FD4  SnowEffect::init (name Data+0x63C, both groups, SnowRing_init stride 4, 0x6B08, child0 +0x9C)\n *   0x6144  SnowEffect::createA (0x6420 defaults, childA +0x98, virtual slot 11 arg 8)\n *   0x6248  SnowEffect::createB (0x70C0 defaults, childB +0xA0, virtual slot 11 arg 16)\n * Each `new`s a 0x48-byte child: the inline SnowNode ctor (edg's this == 0 protocol, so a second\n * mem_new(0x48) fallback) calls the out-of-line Node ctor with the child's name (Data+0x648 / 0x650 /\n * 0x658), stores the SnowNode vptr (Data+0x60), then the child's own vptr (Data+0x1C8 / 0x158 / 0x238).\n * The child is attached to the groups at +0x238 then +0x234 (list_append on the group's child list,\n * flag = 1 if it already had a parent, parent = group), then gets virtual slot 11.\n * Load-bearing:\n *  - the `new` is an argument of the first attach (`lnk(childA = new SnowChildA, grpA)`): in one\n *    full-expression the inline ctor's `this` and the attach's q get separate edg pool words (0x24 /\n *    0x2C, a0 / a2). As two statements they share a word and the ctor's `this` is coloured a2.\n *  - list_append through a void-typed alias (gl_func_00000000_snowb_v): v0 is forbidden through a\n *    value-returning call's block, and the target keeps the group in v0 across the first attach.\n * Symbols are renamed after the compile (Makefile): the member functions to the C names, the Node\n * ctor and the four vtables to 0-pinned names in undefined_syms_auto.txt (blank lui/addiu in the ROM). */\nextern \"C\" {\nint gl_func_00000000(...);\nvoid gl_func_00000000_snowb_v(...); /* list_append, typed void */\nvoid gl_func_00000000_snow_3ee4(void *self, int a1, int a2, int a3, int a4, float f5, float f6);\nextern char D_00000000[];\n}\ninline void *operator new(unsigned n) { return (void *)CALL(mem_new)(n); }\n\n/* bootup Node (0x28 data bytes, vptr at +0x28; virtual slot 11 takes an int) */\nstruct Node {\n    char pad00[4];\n    /* 0x04 */ int flag;\n    char pad08[0xC - 8];\n    /* 0x0C */ char *name;\n    /* 0x10 */ int list;      /* child list */\n    /* 0x14 */ Node *parent;\n    char pad18[0x28 - 0x18];\n    Node(char *name);\n    virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6();\n    virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(int);\n};\n\n/* attach q under group s */\ninline void lnk(Node *q, Node *s) {\n    XCALL(gl_func_00000000_snowb_v, list_append)(&s->list, q);\n    if (q->parent) q->flag = 1;\n    q->parent = s;\n}\n\n/* the 0x48-byte child nodes: a SnowNode base (vtable Data+0x60) and one class per child */\nstruct SnowNode : Node { char pad2c[0x48 - 0x2C]; SnowNode(char *name) : Node(name) {} virtual void v1(); };\nstruct SnowChild0 : SnowNode { SnowChild0() : SnowNode(D_00000000 + 0x648) {} virtual void v1(); };\nstruct SnowChildA : SnowNode { SnowChildA() : SnowNode(D_00000000 + 0x650) {} virtual void v1(); };\nstruct SnowChildB : SnowNode { SnowChildB() : SnowNode(D_00000000 + 0x658) {} virtual void v1(); };\n\nstruct SnowEffect : Node {\n    char pad2c[0x98 - 0x2C];\n    /* 0x098 */ SnowChildA *childA;\n    /* 0x09C */ SnowChild0 *child0;\n    /* 0x0A0 */ SnowChildB *childB;\n    char padA4[0x234 - 0xA4];\n    /* 0x234 */ Node *grpB;\n    /* 0x238 */ Node *grpA;\n    void init(Node *gB, Node *gA, int a3, int a4, int a5, float f6, float f7);\n    void createA();\n    void createB();\n};\n\nvoid SnowEffect::init(Node *gB, Node *gA, int a3, int a4, int a5, float f6, float f7) {\n    name = D_00000000 + 0x63C;\n    grpA = gA;\n    grpB = gB;\n    XCALL(gl_func_00000000_snow_3ee4, SnowRing_init_00003EE4)(this, a3, 4, a4, a5, f6, f7);\n    CALL(snoweffects_uso_func_00006B08)(this);\n    lnk(child0 = new SnowChild0, gA);\n    lnk(child0, gB);\n    child0->v11(8);\n}\n\nvoid SnowEffect::createA() {\n    CALL(snoweffects_uso_func_00006420)(this);\n    lnk(childA = new SnowChildA, grpA);\n    lnk(childA, grpB);\n    childA->v11(8);\n}\n\nvoid SnowEffect::createB() {\n    CALL(snoweffects_uso_func_000070C0)(this);\n    lnk(childB = new SnowChildB, grpA);\n    lnk(childB, grpB);\n    childB->v11(16);\n}\n",
+  "metadata": {
+    "source_path": "src/snoweffects_uso/snoweffects_uso_ncc_b.cpp",
+    "asm_path": "asm/nonmatchings/snoweffects_uso/snoweffects_uso/snoweffects_uso_func_00006144.s",
+    "segment": "snoweffects_uso",
+    "compiler": "IDO 7.1 NCC -O2"
+  }
+}
