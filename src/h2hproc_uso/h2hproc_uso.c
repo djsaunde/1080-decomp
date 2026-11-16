@@ -251,18 +251,27 @@ void h2h_pauseForfeit_0000049C(void) {
 void fs_gdlReadInt_h2h_000004E0(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadFloat_h2h_0000051C(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void fs_gdlReadQuad_h2h_00000558(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -275,6 +284,9 @@ void fs_gdlReadVec3_h2h_000005B0(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;

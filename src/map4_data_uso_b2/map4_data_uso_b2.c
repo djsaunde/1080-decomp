@@ -8,12 +8,18 @@ typedef struct { int a, b, c, d; } Quad4;
 void map4_data_uso_b2_func_00000000(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void map4b2_copyQuad_0000003C(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

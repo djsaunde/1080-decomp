@@ -119,6 +119,9 @@ static void stream_readVec3_000001D4(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -128,24 +131,36 @@ static void stream_readVec3_000001D4(Vec3 *dst) {
 static void stream_readF32_00000244(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readS32_00000280(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readQuad_000002BC(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
 static void stream_read8_00000314(Pair2 *dst) {
     Pair2 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 8);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 8);
+#endif
     *dst = buf;
 }
 
@@ -169,12 +184,18 @@ typedef struct { int a; } One1;
 static void stream_readWord_0000035C(One1 *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = *(One1*)buf;
 }
 
 static void stream_readQuad_0000039C(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 /* Historical 003F8 name: true entry is 003F4, including the hoisted mtc1.
@@ -1713,12 +1734,18 @@ void math_rotateXZPair_00003FAC(float *a0, float *a1, float *a2, float a3, float
 static void stream_readS32_00004080(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readF32_000040BC(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -1729,6 +1756,9 @@ static void stream_readVec3_000040F8(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1738,6 +1768,9 @@ static void stream_readVec3_000040F8(Vec3 *dst) {
 static void stream_readQuad_00004168(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -3943,24 +3976,36 @@ int *game_ItemType_create_0000AC78(int *arg0) {
 static void stream_readF32_0000AD10(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readS32_0000AD4C(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readQuad_0000AD88(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
 static void stream_readS32_0000ADE0(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -4673,6 +4718,9 @@ void game_readQuadParm_0000C0BC(char *dst) {
 static void TrickTable_readCount_0000C0F0(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -4691,12 +4739,18 @@ static void TrickTable_readEntry_0000C12C(int *a0) {
 static void stream_readS32_0000C194(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 static void stream_readF32_0000C1D0(float *dst) {
     float buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -4707,6 +4761,9 @@ static void stream_readVec3_0000C20C(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     CALL(fs_gdlReadFile)(&D_00000000, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -4716,6 +4773,9 @@ static void stream_readVec3_0000C20C(Vec3 *dst) {
 static void stream_read16_0000C27C(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

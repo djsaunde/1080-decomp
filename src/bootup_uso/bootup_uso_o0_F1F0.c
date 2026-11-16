@@ -23,18 +23,27 @@ typedef struct { float x, y, z; } Vec3;
 void stream_readS32_0000F1F0(int *a0) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *a0 = buf[0];
 }
 
 void stream_readF32_0000F23C(float *a0) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *a0 = buf[0];
 }
 
 void stream_readQuad_0000F288(Quad4 *a0) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *a0 = buf;
 }
 
@@ -78,6 +87,9 @@ void stream_readVec3_0000F2EC(Vec3 *dst) {
     register float *src;
     int pad_lo[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     p1 = dst;
     tmp = raw;
     p2 = p1;

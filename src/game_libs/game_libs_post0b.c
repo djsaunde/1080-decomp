@@ -3236,6 +3236,9 @@ struct gl_func_00037CE0_Six { int a, b, c, d, e, f; };
 void fs_gdlRead24_00037CE0(struct gl_func_00037CE0_Six *a0) {
     struct gl_func_00037CE0_Six buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 24);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 24);
+#endif
     *a0 = buf;
 }
 

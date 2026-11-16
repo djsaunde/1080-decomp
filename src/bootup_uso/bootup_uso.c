@@ -39,12 +39,18 @@ extern char D_00000000;
 void stream_readS32_00000008(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_00000044(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -57,6 +63,9 @@ void stream_readVec3_00000080(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -67,6 +76,9 @@ typedef struct { int a, b, c, d; } Quad4;
 void stream_readQuad_000000F0(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -1036,12 +1048,18 @@ void U64BGWall_display(char *a0) {
 void stream_readS32_00001C10(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_00001C4C(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -1053,6 +1071,9 @@ void stream_readVec3_00001C88(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1062,12 +1083,18 @@ void stream_readVec3_00001C88(Vec3 *dst) {
 void stream_readS32_00001CF8(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readQuad_00001D34(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -1296,12 +1323,18 @@ int *boot_ItemType_create_00002244(int *caller_a0) {
 void stream_readS32_000022E0(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_0000231C(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -1313,6 +1346,9 @@ void stream_readVec3_00002358(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -1322,6 +1358,9 @@ void stream_readVec3_00002358(Vec3 *dst) {
 void stream_readQuad_000023C8(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -2755,12 +2794,18 @@ void RiderCam_update_00004948(char *obj) {
 void stream_readS32_00004FF0(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readS32_0000502C(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -3329,12 +3374,18 @@ char *game_createBGBox(int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
 void stream_readF32_00006100(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readQuad_0000613C(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -3346,6 +3397,9 @@ void stream_readVec3_00006194(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -4884,12 +4938,18 @@ int game_loadUsoOnce(int arg0) {
 void stream_readS32_000089C0(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_read16_000089FC(short *dst) {
     short buf[4];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 2);
+#ifdef PORT
+    PORT_BE_SWAP16S(buf, 2);
+#endif
     *dst = buf[0];
 }
 
@@ -4899,6 +4959,9 @@ void boot_emptyStub_00008A38(int a0) {
 void stream_readF32_00008A40(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -4910,6 +4973,9 @@ void stream_readVec3_00008A7C(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -4919,6 +4985,9 @@ void stream_readVec3_00008A7C(Vec3 *dst) {
 void stream_readQuad_00008AEC(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -6775,12 +6844,18 @@ void SnowBoard_ctor(void) {
 void stream_readS32_0000E8BC(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_0000E8F8(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -6792,6 +6867,9 @@ void stream_readVec3_0000E934(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -6801,6 +6879,9 @@ void stream_readVec3_0000E934(Vec3 *dst) {
 void stream_readQuad_0000E9A4(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -6911,12 +6992,18 @@ int *boot_ItemType_create_0000EBE8(int *caller_a0) {
 void stream_readS32_0000EC80(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_0000ECBC(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -6928,6 +7015,9 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -6937,6 +7027,9 @@ void stream_readVec3_0000ECF8(Vec3 *dst) {
 void stream_readQuad_0000ED68(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -7006,12 +7099,18 @@ void *boot_ItemType_create_0000EE8C(void *caller_a0) {
 void stream_readS32_0000EF20(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_0000EF5C(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -7023,6 +7122,9 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
     Tri3i tmp;
     int pad_bot[2];
     FCALL(fs_gdlReadFile)(&gSysLib, &raw, 12);
+#ifdef PORT
+    PORT_BE_SWAP32S(&raw, 12);
+#endif
     tmp = raw;
     dst->x = *(float*)&tmp.a;
     dst->y = *(float*)&tmp.b;
@@ -7032,6 +7134,9 @@ void stream_readVec3_0000EF98(Vec3 *dst) {
 void stream_readQuad_0000F008(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 
@@ -7062,12 +7167,18 @@ void boot_readIntParm_0000F0F0(char *a0) {
 void stream_readS32_0000F120(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readQuad_0000F15C(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

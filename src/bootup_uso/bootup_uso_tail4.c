@@ -286,18 +286,27 @@ void Fader_buildTexture(char *arg0) {
 void stream_readS32_00013C70(int *dst) {
     int buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readF32_00013CAC(float *dst) {
     float buf[2];
     FCALL(fs_gdlReadFile)(&gSysLib, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
 void stream_readQuad_00013CE8(Quad4 *dst) {
     Quad4 buf;
     FCALL(fs_gdlReadFile)(&gSysLib, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

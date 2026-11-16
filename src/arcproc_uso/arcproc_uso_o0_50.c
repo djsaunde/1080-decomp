@@ -11,6 +11,9 @@ typedef struct { int a, b, c, d; } Quad4;
 void fs_gdlReadQuad_arc_00000050(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

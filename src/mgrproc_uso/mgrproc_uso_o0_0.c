@@ -16,6 +16,9 @@ typedef struct { int a, b, c, d; } Quad4;
 void mgrproc_uso_func_00000000(int *dst) {
     int buf[2];
     CALL(fs_gdlReadFile)(&D_00000000, buf, 4);
+#ifdef PORT
+    PORT_BE_SWAP32S(buf, 4);
+#endif
     *dst = buf[0];
 }
 
@@ -23,6 +26,9 @@ void mgrproc_uso_func_00000000(int *dst) {
 void fs_gdlReadQuad_mgr_0000004C(Quad4 *dst) {
     Quad4 buf;
     CALL(fs_gdlReadFile)(&D_00000000, &buf, 16);
+#ifdef PORT
+    PORT_BE_SWAP32S(&buf, 16);
+#endif
     *dst = buf;
 }
 

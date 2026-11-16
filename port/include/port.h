@@ -8,7 +8,9 @@
 #define GLOBAL_ASM(x)
 
 /* Byte order (plan "M1/M2: byte order"): ROM files are big-endian.  The fixed-size parm / stream
- * readers (fs_gdlRead{Int,Float,Quad,Vec3}_*) swap their buffer in place under PORT. */
+ * readers (fs_gdlRead{Int,Float,Quad,Vec3}_*, stream_read*_*) swap their buffer in place under
+ * PORT.  The tag readers (fs_gdlReadInt_00035AA4, stream_readS32_00005EF8) do not: tags compare
+ * against unswapped string words from USO data. */
 static __inline__ void port_be_swap32s(void *p, int nbytes) {
     unsigned char *b = (unsigned char *)p, t;
     int i;
@@ -18,5 +20,13 @@ static __inline__ void port_be_swap32s(void *p, int nbytes) {
     }
 }
 #define PORT_BE_SWAP32S(p, nbytes) port_be_swap32s((p), (nbytes))
+static __inline__ void port_be_swap16s(void *p, int nbytes) {
+    unsigned char *b = (unsigned char *)p, t;
+    int i;
+    for (i = 0; i + 2 <= nbytes; i += 2) {
+        t = b[i]; b[i] = b[i + 1]; b[i + 1] = t;
+    }
+}
+#define PORT_BE_SWAP16S(p, nbytes) port_be_swap16s((p), (nbytes))
 
 #endif
