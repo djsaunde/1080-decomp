@@ -90,6 +90,12 @@
 /* port-bind: boot_main_00066850 D_00000000+8556 port_bootup_rodata+0x0 */
 /* port-bind: boot_main_00066850 D_00000000+267712 port_bootup_bss+0x0 */
 /* port-bind: boot_main_00066850 D_00000000+267912 port_bootup_bss+0x0 */
+/* port-bind: boot_main_00066850 D_gl66850_h0+0 dma_readChunked_00066720 */
+/* port-bind: boot_main_00066850 D_gl66850_h1+0 mem_heapNewThunk_00041258 */
+/* port-bind: boot_main_00066850 D_gl66850_h2+0 dbg_printf */
+/* port-bind: boot_main_00066850 D_gl66850_h3+0 heap_tempAllocDefault_000333F4 */
+/* port-bind: boot_main_00066850 D_gl66850_h4+0 heap_tempFreeDefault_0003341C */
+/* port-bind: boot_main_00066850 D_gl66850_h5+0 sys_timeInFrames_00033444 */
 /* port-bind: boot_startThread_00066BD4 D_00000000+0 boot_halt_00066A50 */
 /* port-bind: boot_startThread_00066BD4 D_00000000+267024 port_bootup_bss+0x0 */
 /* port-bind: boot_startThread_00066BD4 D_00000000+267712 port_bootup_bss+0x0 */

@@ -4,3 +4,4 @@
 /* port-bind: RcpMgr_ctor D_00000000+131572 port_bootup_data+0x0 */
 /* port-bind: RcpMgr_ctor D_00000000+248144 port_bootup_bss+0x0 */
 /* port-bind: RcpMgr_ctor D_00000000+256768 port_bootup_bss+0x0 */
+/* port-bind: RcpMgr_ctor D_4D468_a2+0 RcpMgr_update */

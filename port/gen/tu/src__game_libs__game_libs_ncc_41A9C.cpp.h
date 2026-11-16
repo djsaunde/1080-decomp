@@ -2,3 +2,5 @@
 /* src/game_libs/game_libs_ncc_41A9C.cpp: 1 shipped bodies kept, 0 bodies dropped, 0 aliases */
 /* port-bind: App_hostioParms gl_alloc_2D130 mem_new */
 /* port-bind: App_hostioParms D_00000000 port_bootup_data+0x0 */
+/* port-bind: App_hostioParms D_41A9C_v2+0 heap_printStats */
+/* port-bind: App_hostioParms D_41A9C_v4+0 dbg_hostioHexDump */

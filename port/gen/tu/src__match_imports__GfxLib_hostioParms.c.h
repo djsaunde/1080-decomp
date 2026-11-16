@@ -204,3 +204,7 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: GfxLib_hostioParms GfxLib_hostioSendFbB_44144_cb+0 GfxLib_hostioSendFbB_0004247C */
+/* port-bind: GfxLib_hostioParms GfxLib_hostioSendFbA_44144_cb+0 GfxLib_hostioSendFbA_00042438 */
+/* port-bind: GfxLib_hostioParms GfxLib_hostioForceError_44144_cb+0 GfxLib_hostioForceError */
+/* port-bind: GfxLib_hostioParms GfxLib_hostioPrintDLUsage_44144_cb+0 GfxLib_hostioPrintDLUsage */

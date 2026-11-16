@@ -223,6 +223,7 @@ def main():
     data = []           # (src, fn, tok, Counter(target))
     gcall = collections.defaultdict(collections.Counter)   # every ROM jal site, per token
     gdata = collections.defaultdict(collections.Counter)
+    gtext = set()       # data tokens with a site into Text: bound per addend, never aliased
     stats = collections.Counter()
     for src in sorted(by_src):
         obj = npc.obj_of(src)
@@ -257,6 +258,7 @@ def main():
             # LO16's signed field; the .o holds it in the instruction, REL) -> ROM targets
             pera = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
             hi = {}
+            textdata = set()
             for off, typ, sym in orel:
                 if not rv <= off < rv + rsz:
                     continue
@@ -274,7 +276,16 @@ def main():
                 elif typ == 6:
                     lo = field & 0xFFFF
                     lo -= 0x10000 if lo & 0x8000 else 0
-                    pera[sym][(hi.get(sym, 0) + lo + 0x80000000) % 0x100000000 - 0x80000000][t] += 1
+                    full = (hi.get(sym, 0) + lo + 0x80000000) % 0x100000000 - 0x80000000
+                    raw = rt.site(md, base + off - rv)
+                    raw = raw and rt.raw(md, raw[1])
+                    if raw and raw[1] == "Text":
+                        # an address in Text (a callback): the addend picks the function, and the
+                        # port spelling drops it (`f-N` + the source's `+N`)
+                        f = raw[0].name_text(raw[2] + pins.get(sym, 0) + full)
+                        t = None if f is None or "+" in f else "%s%+d" % (f, -full) if full else f
+                        textdata.add(sym)
+                    pera[sym][full][t] += 1
                 elif typ == 2:
                     pera[sym][field - (0x100000000 if field & 0x80000000 else 0)][t] += 1
             for tok in list(per):
@@ -282,16 +293,20 @@ def main():
                 if per[tok]:
                     calls.append((src, fn, tok, per[tok]))
             for tok, tg in perd.items():
-                data.append((src, fn, tok, tg, pera.get(tok, {})))
+                data.append((src, fn, tok, tg, pera.get(tok, {}), tok in textdata))
+                if tok in textdata:
+                    gtext.add(tok)
 
     def usable(t):
-        return t is not None and not t.startswith("Text+") and not t.endswith("_00000000") and \
-            ("+" not in t or t.startswith("port_"))
+        # a `*_00000000` name is a placeholder token, unless it is the shipped Text+0 function of
+        # a module (timproc_uso_b5_func_00000000: GenCourse_ctor's callback)
+        return t is not None and not t.startswith("Text+") and \
+            (not t.endswith("_00000000") or t in shipped) and ("+" not in t or t.startswith("port_"))
 
     # global aliases: every ROM site of the token, in every proven function, is one target
     aliases = {}
     for tok, tg in list(gcall.items()) + list(gdata.items()):
-        if tok in aliases or tok in shimdef:
+        if tok in aliases or tok in shimdef or tok in gtext:
             continue
         both = gcall.get(tok, collections.Counter()) + gdata.get(tok, collections.Counter())
         if len(both) == 1:
@@ -309,18 +324,21 @@ def main():
             n = sum(tg.values())
             if tok in aliases or tok in shimdef:
                 continue
-            if len(tg) > 1 and kind == "data" and row[4]:
+            if kind == "data" and (len(tg) > 1 or row[5]) and row[4]:
                 # several blob objects, told apart by the addend: bind each `tok+N` whose ROM
                 # sites all reach one target (cc-select); list the addends that do not
                 def ok(c):
                     t = next(iter(c))
-                    return len(c) == 1 and usable(t) and (t.startswith("port_") or t in shipped)
+                    return len(c) == 1 and t is not None and (
+                        usable(t) and (t.startswith("port_") or t in shipped) or
+                        re.fullmatch(r"\w+[+-]\d+", t) and t.split("+")[0].split("-")[0] in shipped)
                 good = {a: c for a, c in row[4].items() if ok(c)}
                 for addend, c in sorted(good.items()):
                     binds.append((src, fn, "%s%+d" % (tok, addend), next(iter(c)), sum(c.values())))
                 bad = {a: c for a, c in row[4].items() if a not in good}
                 if bad:
-                    left.append((src, fn, tok, "ambiguous", " ".join(
+                    left.append((src, fn, tok, "unnamed" if all(set(c) == {None} for c in bad.values())
+                                 else "ambiguous", " ".join(
                         "%+d:%s" % (a, "|".join("%s*%d" % kv for kv in c.items() if kv[0]))
                         for a, c in sorted(bad.items())), sum(sum(c.values()) for c in bad.values())))
                 nbyaddend += 1
@@ -338,7 +356,7 @@ def main():
                 left.append((src, fn, tok, "unnamed", target, n))
             elif "+" in target and not target.startswith("port_"):
                 left.append((src, fn, tok, "mid-entry", target, n))
-            elif target.endswith("_00000000"):
+            elif target.endswith("_00000000") and target not in shipped:
                 left.append((src, fn, tok, "sentinel", target, n))
             else:
                 binds.append((src, fn, tok, target, n))
@@ -350,6 +368,11 @@ def main():
         fh.write("# generated by scripts/port-gen-binds.py: unit\tfunction\ttoken\tkind\ttarget(s)\tsites\n")
         for r in left:
             fh.write("\t".join(map(str, r)) + "\n")
+    # gcc's names of the C++ runtime entry points the NCC donors reach under their cfront names:
+    # the cfront name's ROM target is theirs too (global operator new = mem_new)
+    for gnu, cfront in (("_Znwj", "__nw__FUi"),):
+        if cfront in aliases and gnu not in defined:
+            aliases[gnu] = aliases[cfront]
     dropdata = sorted((t, datadefs[t]) for t in datadefs
                       if t in aliases or any(r[2] == t for r in binds))
     with open("port/gen/dropdata.tsv", "w") as fh:

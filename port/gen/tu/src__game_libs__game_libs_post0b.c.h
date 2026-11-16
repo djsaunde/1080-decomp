@@ -443,7 +443,7 @@
 /* port-bind: Spinner_hostioParms D_00000000+0 port_bootup_bss+0x3C768 */
 /* port-bind: Spinner_hostioParms D_00000000+125464 port_bootup_data+0x0 */
 /* port-bind: TextWin_ctor D_00000000 port_bootup_bss+0x3EF04 */
-/* port-bind: TextWin_printf D_00000000 TextWin_puts_00060D08 */
+/* port-bind: TextWin_printf D_00000000+0 TextWin_puts_00060D08 */
 /* port-bind: TextWin_puts_00060D08 gl_data_00000000 port_bootup_bss+0x3EF08 */
 /* port-bind: Window_ctor D_00000000+0 port_bootup_data+0x20508 */
 /* port-bind: Window_ctor D_00000000+132556 port_bootup_data+0x0 */
@@ -497,6 +497,7 @@
 /* port-bind: dbg_printSet_00042540 D_00000000 port_bootup_data+0x0 */
 /* port-bind: dbg_printStarLine D_00000000 port_bootup_data+0x0 */
 /* port-bind: dbg_printThreads D_00000000 port_bootup_data+0x0 */
+/* port-bind: dbg_printf D_00000000+298332 dbg_printfSink-298332 */
 /* port-bind: dbg_startFaultThread D_00000000+0 dbg_faultThread */
 /* port-bind: dbg_startFaultThread D_00000000+244072 port_bootup_bss+0x0 */
 /* port-bind: dbg_startFaultThread D_00000000+244504 port_bootup_bss+0x0 */
@@ -637,6 +638,7 @@
 /* port-bind: sys_pollDevices_00034B64 D_00000000 port_bootup_bss+0x3A4E8 */
 /* port-bind: sys_randFromSeed D_00000000 port_bootup_rodata+0x0 */
 /* port-bind: sys_randf D_00000000 port_bootup_rodata+0x0 */
+/* port-bind: sys_sprintf_00061B30 D_61B30_out+0 console_drawTextN_00061BC8 */
 /* port-bind: sys_srand D_00000000 port_bootup_data+0x0 */
 /* port-bind: vFP1_call D_00000000 port_bootup_data+0x0 */
 int gl_func_00000000_5f3e0(); /* CALL placeholder token: file-scope K&R declaration */

@@ -2,6 +2,20 @@
 /* src/titproc_uso/titproc_uso.c: 43 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak TitleDemoProcess_handleInput
 /* port-drop: TitleDemoProcess_handleInput */ /* placeholder copy; shipped body in src/titproc_uso/titproc_uso_mp72_116C.cpp */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg0_22BC+0 tit_menuMultiRace */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg1_22BC+0 tit_menuTimeAttack */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg2_22BC+0 tit_menuTrick */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg3_22BC+0 tit_menuArcade */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg4_22BC+0 tit_menuHead2Head */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg5_22BC+0 tit_menuTraining */
+/* port-bind: GameDemoProcess_buildMenu titproc_uso_D_arg6_22BC+0 tit_startTitleDemo_00000380 */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg0_101C+0 tit_menuMultiRace */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg1_101C+0 tit_menuTimeAttack */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg2_101C+0 tit_menuTrick */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg3_101C+0 tit_menuArcade */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg4_101C+0 tit_menuHead2Head */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg5_101C+0 tit_menuTraining */
+/* port-bind: TitleDemoProcess_buildMenu D_t_arg6_101C+0 tit_startTitleDemo_00000380 */
 /* port-bind: fs_gdlReadFloat_tit_000004D8 D_00000000 port_bootup_bss+0x3C740 */
 /* port-bind: fs_gdlReadInt_tit_0000049C D_00000000 port_bootup_bss+0x3C740 */
 /* port-bind: fs_gdlReadQuad_tit_00000514 D_00000000 port_bootup_bss+0x3C740 */

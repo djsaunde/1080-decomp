@@ -136,22 +136,21 @@ src/game_libs/game_libs_ncc_445AC.cpp	GfxLib_init	D_445AC_gb	ambiguous	+0:port_b
 src/game_libs/game_libs_ncc_493AC.cpp	PolyShape_init	D_00000000	ambiguous	+0:port_bootup_bss+0x3C740*2|port_bootup_data+0x1F7A8*1	3
 src/game_libs/game_libs_ncc_55470.cpp	nodelist_dispatch	D_00000000	ambiguous	+0:port_bootup_bss+0x3EEC8*2|port_bootup_bss+0x3EEC4*2	4
 src/game_libs/game_libs_ncc_59E80.cpp	gfx_initRDPState	D_00000000	ambiguous	+0:port_bootup_data+0x224F0*1|port_bootup_data+0x224D0*1	2
-src/game_libs/game_libs_o2_26214.c	AudioThread_UpdateImpl	gl_26214_aspMainTextStart	unnamed	Text+0x46470	1
+src/game_libs/game_libs_o2_26214.c	AudioThread_UpdateImpl	gl_26214_aspMainTextStart	unnamed	+0:	1
 src/game_libs/game_libs_o2_675A4.c	pad_update	D_00000000	ambiguous	+0:port_bootup_bss+0x3C740*2|port_bootup_data+0x225C8*1	3
 src/game_libs/game_libs_post.c	MCamera_ctor	D_00000000	ambiguous	+0:port_bootup_data+0x1EAA8*1|port_bootup_data+0x1E0E8*1	2
 src/game_libs/game_libs_post0b.c	MorphPoly_shade	D_00000000	ambiguous	+0:port_bootup_bss+0x3C8E4*3|port_bootup_bss+0x3C8EC*1	4
 src/game_libs/game_libs_post0b.c	Node_Load	D_00000000	ambiguous	+0:port_bootup_bss+0x3C740*3|port_bootup_bss+0x3C768*2|port_bootup_bss+0x3C100*1	6
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX	D_00000000_a	unnamed	Text+0x2AE00	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX_NoN	D_00000000_a	unnamed	Text+0x28F10	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLP_Rej	D_00000000_a	unnamed	Text+0x2D4A0	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLX_Rej	D_00000000_a	unnamed	Text+0x2E870	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HFifo_0004D1C0	D_00000000_a	unnamed	Text+0x2FC40	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HOut_0004D1F4	D_4D1F4_a	unnamed	Text+0x27B00	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D16C	D_4D16C_a	unnamed	Text+0x23300	1
-src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D188	D_4D188_a	unnamed	Text+0x26700	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX	D_00000000_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DEX_NoN	D_00000000_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLP_Rej	D_00000000_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeF3DLX_Rej	D_00000000_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HFifo_0004D1C0	D_00000000_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20HOut_0004D1F4	D_4D1F4_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D16C	D_4D16C_a	unnamed	+0:	1
+src/game_libs/game_libs_post0b.c	RcpTask_setUcodeSgi20H_0004D188	D_4D188_a	unnamed	+0:	1
 src/game_libs/game_libs_post0b.c	Window_hostioParms	D_00000000	ambiguous	+0:port_bootup_bss+0x3C768*3|gfx_printWindowDLUsage_00043558*1	4
 src/game_libs/game_libs_post0b.c	dbg_hostioHexDump	D_00000000	ambiguous	+0:port_bootup_bss+0x3C768*2|port_bootup_bss+0x3C740*1	3
-src/game_libs/game_libs_post0b.c	dbg_printf	D_00000000	sentinel	func_00000000	1
 src/game_libs/game_libs_post0b.c	fs_gdlCloseFile	D_00000000	ambiguous	+0:port_bootup_bss+0x416A0*1|port_bootup_bss+0x3C768*1	2
 src/game_libs/game_libs_post0b.c	fs_gdlOpenFile	D_00000000	ambiguous	+0:port_bootup_bss+0x416A0*1|port_bootup_bss+0x3C768*1	2
 src/game_libs/game_libs_post0b.c	fs_gdlReadFile	D_00000000	ambiguous	+0:port_bootup_bss+0x416A0*1|port_bootup_bss+0x3C768*1	2
@@ -177,7 +176,6 @@ src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_ctor	D_b3_23E4_d1	ambiguous	+0:TrkMe
 src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_ctor	D_b3_23E4_17D7	unresolved		1
 src/timproc_uso_b3/timproc_uso_b3.c	TrkMenu_draw_00002A44	D_00000000	ambiguous	+0:port_gui_bss+0x8*2|port_bootup_bss+0x28C*2 +376:port_bootup_bss+0xF8*2|port_trkproc_bss+0x0*3	9
 src/timproc_uso_b3/timproc_uso_b3.c	TrkRace_ctor	D_00000000	ambiguous	+0:port_bootup_bss+0xF8*1|TrkRace_pauseContinue_000006B0*1|TrkRace_pauseRow1_000006FC*1|TrkRace_pauseChangeCourse*1|TrkRace_pauseChangeBoard*1|TrkRace_pauseChangeCharacter*1|TrkRace_pauseQuit_00000818*1	7
-src/timproc_uso_b5/timproc_uso_b5.c	GenCourse_ctor	timproc_uso_b5_D_807EF230	sentinel	timproc_uso_b5_func_00000000	1
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_state3_00007430	D_00000000	ambiguous	+0:port_bootup_bss+0xF8*5|port_genproc_data+0xF08*1|port_genproc_data+0xED8*1|port_genproc_data+0xEF8*1	8
 src/timproc_uso_b5/timproc_uso_b5.c	SelectWin_state4_000077D8	D_00000000	ambiguous	+0:port_bootup_bss+0xF8*4|port_genproc_data+0xF08*1	5
 src/timproc_uso_b5/timproc_uso_b5_4118.c	SelectWin_ctor	D_00000000	ambiguous	+0:port_bootup_data+0xC338*1|port_genproc_data+0xDEC*1	2

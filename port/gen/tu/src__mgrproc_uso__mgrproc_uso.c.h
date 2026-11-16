@@ -4,6 +4,10 @@
 /* port-drop: MgrNameEntry_drawCongrats_00002B7C */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp */
 #pragma weak mgr_drawResults_000023FC
 /* port-drop: mgr_drawResults_000023FC */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp */
+/* port-bind: MGRRaceProcess_ctor import_80265570+0 mgr_pauseContinue_00000AE0 */
+/* port-bind: MGRRaceProcess_ctor import_802655B0+0 mgr_pauseRetire_00000B20 */
+/* port-bind: MGRRaceProcess_ctor import_802655EC+0 mgr_pauseRetry_00000B5C */
+/* port-bind: MGRRaceProcess_ctor import_802656A4+0 mgr_pauseQuit_00000C14 */
 /* port-bind: MGRRaceProcess_drawHud D_00000000 port_mgrproc_rodata+0x0 */
 /* port-bind: MGRRaceProcess_onQuitButton D_00000000 port_bootup_bss+0xF8 */
 /* port-bind: MgrNameEntry_drawExitOverlay D_00000000 port_mgrproc_rodata+0x0 */

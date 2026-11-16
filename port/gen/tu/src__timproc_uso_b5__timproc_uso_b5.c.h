@@ -29,6 +29,7 @@
 /* port-bind: DispItems_update_0000E5AC D_00000000 port_genproc_bss+0x73C */
 /* port-bind: GenCourse_ctor timproc_uso_b5_D_807FD888+0 port_genproc_data+0x18 */
 /* port-bind: GenCourse_ctor timproc_uso_b5_D_807FD888+160 port_genproc_data+0x0 */
+/* port-bind: GenCourse_ctor timproc_uso_b5_D_807EF230+0 timproc_uso_b5_func_00000000 */
 /* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FD948+0 port_genproc_data+0xD8 */
 /* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FD948+4068 port_genproc_data+0x0 */
 /* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FE8AC+0 port_genproc_bss+0x740 */
