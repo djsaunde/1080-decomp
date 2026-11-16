@@ -1166,14 +1166,17 @@ void snoweffects_uso_func_00009C48(SnowGlow *this, char *src) {
 
 #ifdef NON_MATCHING
 /* item-type create: 0x9328 ctor(0), +0x70 = 1.0f, attach the type's +0x40 node.
- * Logic exact; residual = item / head colouring swap (target item v1, head a2). */
+ * NM 26/30 (agent-e run 645): item / head colour as the target once the test reads the head
+ * local; left: the target loads head into a2 and copies it to a1 in the beqz delay slot (spilling
+ * a2), where this form loads a1 directly (beqzl). Two-variable / chained-assignment forms are
+ * copy-propagated (11 diffs). */
 void *snoweffects_uso_func_00009E10(char *type) {
     int *item;
     int *head;
     item = (int *)gl_func_00000000(0) /* 0x9328 ctor */;
     *(float *)((char *)item + 0x70) = 1.0f;
     head = *(int **)(type + 0x40);
-    if (*(int **)(type + 0x40) != 0) {
+    if (head != 0) {
         gl_func_00000000( /* list_append */ (char *)item + 0x10, head);
         if ((int)NODE(head)->parent != 0) {
             NODE(head)->unk04 = 1;
