@@ -138,8 +138,9 @@ typedef struct H2HDataManager {
     /* 0xD4 */ s32 beepTimer;        /* update: 0..50; sound 309 (0x135) when it wraps while a
                                       * player's cool gadget +0xC4 >= 12 (as tim / mgr) */
     /* 0xD8 */ char unkD8[0x10];
-    /* 0xE8 */ s32 gadgetE8;         /* the first of the gadgets init builds (gl ctor (0, 90)) */
-    /* 0xEC */ s32 unkEC;
+    /* 0xE8 */ s32 health1;          /* CoolGadget (ctor (0, 90), at 68, 21): entries[0].health; update beeps
+                                      * while its seg >= 12 and player 1 retires when its cur reaches 0 */
+    /* 0xEC */ s32 health2;          /* the same for entries[1] (at 68, 130) */
 } H2HDataManager;
 
 typedef char H2HDataManager_size_check[sizeof(H2HDataManager) == 0xF0 ? 1 : -1];

@@ -2,6 +2,9 @@
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/guimenu.h"
+#include "game/course.h"
+#include "game/snowboarder.h"
+#include "gdl/gadget.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -153,12 +156,12 @@ void h2h_closeSession_00000274(int *a0) {
  * 2 words (+4 segment length drift, the documented trap). */
 
 extern char *D_h2h_2A4_a;       /* call 1 base, *(D+4) */
-extern char *D_h2h_2A4_b;       /* call 2 a0 + store +0x40 */
+extern char *D_h2h_2A4_b;       /* GameFlow (bootup Bss 0xF8 import): procState; replay_freeRecord arg */
 extern int  *D_h2h_2A4_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseRetry(void) {
     CALL(Process_stop)(*(int*)((char*)&D_h2h_2A4_a + 4));
-    *(int*)((char*)&D_h2h_2A4_b + 0x40) = 5;
+    INPUT_MGR(D_h2h_2A4_b).procState = 5;
     CALL(replay_freeRecord)(&D_h2h_2A4_b);
     *(int*)((char*)D_h2h_2A4_c + 0x30) = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_2A4_c, -1, 0);
@@ -170,7 +173,7 @@ extern int  *D_h2h_2FC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeCharacter(void) {
     CALL(Process_stop)(*(int*)((char*)&D_h2h_2FC_a + 4));
-    *(int*)((char*)&D_h2h_2FC_b + 0x40) = 2;
+    INPUT_MGR(D_h2h_2FC_b).procState = 2;
     CALL(replay_freeRecord)(&D_h2h_2FC_b);
     *(int*)((char*)D_h2h_2FC_c + 0x30) = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_2FC_c, -1, 0);
@@ -182,7 +185,7 @@ extern int  *D_h2h_354_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeBoard(void) {
     CALL(Process_stop)(*(int*)((char*)&D_h2h_354_a + 4));
-    *(int*)((char*)&D_h2h_354_b + 0x40) = 3;
+    INPUT_MGR(D_h2h_354_b).procState = 3;
     CALL(replay_freeRecord)(&D_h2h_354_b);
     *(int*)((char*)D_h2h_354_c + 0x30) = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_354_c, -1, 0);
@@ -194,7 +197,7 @@ extern int  *D_h2h_3AC_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseChangeCourse(void) {
     CALL(Process_stop)(*(int*)((char*)&D_h2h_3AC_a + 4));
-    *(int*)((char*)&D_h2h_3AC_b + 0x40) = 4;
+    INPUT_MGR(D_h2h_3AC_b).procState = 4;
     CALL(replay_freeRecord)(&D_h2h_3AC_b);
     *(int*)((char*)D_h2h_3AC_c + 0x30) = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_3AC_c, -1, 0);
@@ -206,7 +209,7 @@ extern int  *D_h2h_404_c;       /* call 3 base, *D->0x30 = 0 + delay-arg */
 
 void h2h_pauseQuit(void) {
     CALL(Process_stop)(*(int*)((char*)&D_h2h_404_a + 4));
-    *(int*)((char*)&D_h2h_404_b + 0x40) = 6;
+    INPUT_MGR(D_h2h_404_b).procState = 6;
     CALL(replay_freeRecord)(&D_h2h_404_b);
     *(int*)((char*)D_h2h_404_c + 0x30) = 0;
     CALL(Process_fadeOut_0000F954)(D_h2h_404_c, -1, 0);
@@ -403,7 +406,7 @@ void *H2HRaceProcess_ctor(char *obj, int a1, int a2, int a3) {
 
         w = (char *)H2HRACE(obj)->dataMgr;
         o1 = (char *)NODE(w)->vptr;
-        ((void (*)(int))(*(int *)(o1 + 0x5C)))(*(short *)(o1 + 0x58) + (int)w);
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
 
         o1 = (char *)H2HRACE(obj)->dataMgr;
         CALL(list_append)(obj + 16, o1);
@@ -623,13 +626,13 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
     char *base = &D_00000000;
     switch (tmp) {
     case 0:
-        CALL(Fader_start)(*(int*)(base + 0x190), 3, 1);
+        CALL(Fader_start)((int)GAMEFLOW(base)->fader, 3, 1);
         s0->race.unk504 = 1;
         CALL(func_00000188)(7, 0, 0);
         break;
     case 1: {
         unsigned min;
-        if (CALL(Fader_checkDone_00013924)(*(int*)(base + 0x190)) == 0) return;
+        if (CALL(Fader_checkDone_00013924)((int)GAMEFLOW(base)->fader) == 0) return;
         CALL(func_00000148)(7, 0, 0);
         h2hproc_call_00000C18(s0);
         min = A88_diffpair[0x170 / 4];
@@ -644,7 +647,7 @@ void H2HRaceProcess_onRaceOver(H2HRace *a0) {
             NODE(tmp)->unk04 = 1;
         }
         NODE(tmp)->parent = a3;
-        CALL(Fader_start)(*(int*)(base + 0x190), 1, 1);
+        CALL(Fader_start)((int)GAMEFLOW(base)->fader, 1, 1);
         break;
     }
     }
@@ -926,17 +929,17 @@ void h2h_startReplay_00000E04(int *a0, unsigned int a1) {
     CALL(RaceProcess_restart)(a0, a1);
 
     {
-        slotC4 = *(int**)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0xC4);
-        *(int*)((char*)slotC4 + 0x8DC) = *(int*)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0x108);
-        r1 = *(int**)((char*)slotC4 + 0x800);
+        slotC4 = (int *)WORLDREG(INPUT_MGR(D_00000000).game)->players[0].rider;
+        SNOWB(slotC4)->camera = (char *)WORLDREG(INPUT_MGR(D_00000000).game)->windows[0];
+        r1 = (int *)SNOWB(slotC4)->input;
         CALL(pad_reset_000673FC)(r1, 0);
         CALL(pad_startPlay_00067A10)(r1, INPUT_MGR(D_00000000).replayData[0], INPUT_MGR(D_00000000).replayLen[0]);
     }
 
     {
-        slotCC = *(int**)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0xCC);
-        *(int*)((char*)slotCC + 0x8DC) = *(int*)((char*)*(int**)((char*)&D_00000000 + 0x134) + 0x108);
-        r2 = *(int**)((char*)slotCC + 0x800);
+        slotCC = (int *)WORLDREG(INPUT_MGR(D_00000000).game)->players[1].rider;
+        SNOWB(slotCC)->camera = (char *)WORLDREG(INPUT_MGR(D_00000000).game)->windows[0];
+        r2 = (int *)SNOWB(slotCC)->input;
         CALL(pad_reset_000673FC)(r2, 0);
         CALL(pad_startPlay_00067A10)(r2, INPUT_MGR(D_00000000).replayData[1], INPUT_MGR(D_00000000).replayLen[1]);
     }
@@ -993,7 +996,7 @@ int *h2h_WhiteFader_ctor(int *a0) {
     if (a0 == 0) {                /* dead arm — IDO emits it anyway */
         if ((r = (int*)CALL(mem_new)(0x2C)) == 0) goto tail;
     }
-    CALL(Node_ctor)(r, (char*)&D_00000000 + 0x3E0); *(int*)((char*)r + 0x28) = (int)&D_00000000;
+    CALL(Node_ctor)(r, (char*)&D_00000000 + 0x3E0); NODE(r)->vptr = (int)&D_00000000;
 tail:
     *(int*)((char*)a0 + 0x28) = (int)&D_h2h_eb0_y;
     *(int*)((char*)a0 + 0xC) = (int)((char*)&D_00000000 + 0x3E8);
@@ -1352,19 +1355,19 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     if ((int)(((RaceProcess *)a1)->flags << 15) >= 0) return;  /* bit 16 clear: skip */
     self_p10 = self->base.children;
     sub1 = (int*)CALL(CoolGadget_ctor)(0, 90);
-    self->gadgetE8 = (int)sub1;
+    self->health1 = (int)sub1;
     CALL(CoolGadget_setValue)(sub1, self->base.entries[0].health);
-    CALL(CoolGadget_setPos)(self->gadgetE8, 68, 21);
-    sub1 = (int*)self->gadgetE8;
+    CALL(CoolGadget_setPos)(self->health1, 68, 21);
+    sub1 = (int*)self->health1;
     CALL(list_append)(self_p10, sub1);
     if (NODE(sub1)->parent != 0) NODE(sub1)->unk04 = 1;
     NODE(sub1)->parent = (int)self;
 
     sub2 = (int*)CALL(CoolGadget_ctor)(0, 90);
-    self->unkEC = (int)sub2;
+    self->health2 = (int)sub2;
     CALL(CoolGadget_setValue)(sub2, self->base.entries[1].health);
-    CALL(CoolGadget_setPos)(self->unkEC, 68, 130);
-    sub2 = (int*)self->unkEC;
+    CALL(CoolGadget_setPos)(self->health2, 68, 130);
+    sub2 = (int*)self->health2;
     CALL(list_append)(self_p10, sub2);
     if (NODE(sub2)->parent != 0) NODE(sub2)->unk04 = 1;
     NODE(sub2)->parent = (int)self;
@@ -1372,14 +1375,14 @@ void h2h_DataManager_init(int *a0, int *a1, int a2) {
     sub3 = (int*)CALL(CourseGadget_ctor)(0, 35);
     src = (int*)self->base.entries;
     self->base.course = (int)sub3;
-    CALL(CourseGadget_setFloat2_0000254C)(sub3, *(int*)((char*)src + 0x30), *(int*)((char*)src + 0x90));
+    CALL(CourseGadget_setFloat2_0000254C)(sub3, *(int *)&((RaceEntry *)src)[0].pct, *(int *)&((RaceEntry *)src)[1].pct);
     src = (int*)self->base.entries;
     sub3 = (int*)self->base.course;
-    gl_func_15f0(sub3, *(int*)((char*)src + 0x8), *(int*)((char*)src + 0xC),
-                 *(int*)((char*)src + 0x68), *(float*)((char*)src + 0x6C));
+    gl_func_15f0(sub3, *(int *)&((RaceEntry *)src)[0].posX, *(int *)&((RaceEntry *)src)[0].progress,
+                 *(int *)&((RaceEntry *)src)[1].posX, ((RaceEntry *)src)[1].progress);
     sub3 = (int*)self->base.course;
-    CALL(CourseGadget_setVec3_00002560)(sub3, *(int*)((char*)self + 0x38),
-                     *(int*)((char*)self + 0x3C), *(int*)((char*)self + 0x40));
+    CALL(CourseGadget_setVec3_00002560)(sub3, *(int *)&self->base.courseStart,
+                     *(int *)&self->base.courseZ, *(int *)&self->base.courseLength);
     sub3 = (int*)self->base.course;
     CALL(CourseGadget_setPos)(sub3, 285, 179);
     sub3 = (int*)self->base.course;
@@ -1527,12 +1530,12 @@ void h2h_DataManager_update(int *self) {
             H2HDATAMGR(self)->beepTimer += 1;
             if (H2HDATAMGR(self)->beepTimer >= 51) H2HDATAMGR(self)->beepTimer = 0;
 
-            q = (int*)H2HDATAMGR(self)->gadgetE8;
-            if (q != 0 && q[0xC4/4] >= 12 && H2HDATAMGR(self)->beepTimer == 0) XCALL(gl_func_00000000_17A0v, snd_sendEvent)(309, 0);
-            q = (int*)H2HDATAMGR(self)->unkEC;
-            if (q != 0 && q[0xC4/4] >= 12 && H2HDATAMGR(self)->beepTimer == 0) XCALL(gl_func_00000000_17A0v, snd_sendEvent)(309, 1);
-            if (*(int*)((char*)H2HDATAMGR(self)->gadgetE8 + 0xC8) <= 0) XCALL(gl_func_00000000_17A0v, h2h_winByRetire_00000944)(H2HDATAMGR(self)->race, 1);
-            if (*(int*)((char*)H2HDATAMGR(self)->unkEC + 0xC8) <= 0) XCALL(gl_func_00000000_17A0v, h2h_winByRetire_00000944)(H2HDATAMGR(self)->race, 0);
+            q = (int*)H2HDATAMGR(self)->health1;
+            if (q != 0 && ((CoolGadget *)q)->seg >= 12 && H2HDATAMGR(self)->beepTimer == 0) XCALL(gl_func_00000000_17A0v, snd_sendEvent)(309, 0);
+            q = (int*)H2HDATAMGR(self)->health2;
+            if (q != 0 && ((CoolGadget *)q)->seg >= 12 && H2HDATAMGR(self)->beepTimer == 0) XCALL(gl_func_00000000_17A0v, snd_sendEvent)(309, 1);
+            if (((CoolGadget *)H2HDATAMGR(self)->health1)->cur <= 0) XCALL(gl_func_00000000_17A0v, h2h_winByRetire_00000944)(H2HDATAMGR(self)->race, 1);
+            if (((CoolGadget *)H2HDATAMGR(self)->health2)->cur <= 0) XCALL(gl_func_00000000_17A0v, h2h_winByRetire_00000944)(H2HDATAMGR(self)->race, 0);
             gate = RACEPROC(H2HDATAMGR(self)->race)->flags & 0x10000;
         }
     }
@@ -1541,13 +1544,13 @@ void h2h_DataManager_update(int *self) {
             XCALL(gl_func_00000000_17A0v, RaceProcess_timeUp)(H2HDATAMGR(self)->race);
             XCALL(gl_func_00000000_17A0v, Node_pauseUpdate_0000E464)(self);
         }
-        XCALL(gl_func_00000000_17A0v, CoolGadget_setValue)(H2HDATAMGR(self)->gadgetE8, ((int *)DATAMGR(self)->entries)[0x28/4]);
-        XCALL(gl_func_00000000_17A0v, CoolGadget_setValue)(H2HDATAMGR(self)->unkEC, ((int *)DATAMGR(self)->entries)[0x88/4]);
+        XCALL(gl_func_00000000_17A0v, CoolGadget_setValue)(H2HDATAMGR(self)->health1, DATAMGR(self)->entries[0].health);
+        XCALL(gl_func_00000000_17A0v, CoolGadget_setValue)(H2HDATAMGR(self)->health2, DATAMGR(self)->entries[1].health);
         v = (int*)(int)DATAMGR(self)->entries;
-        XCALL(gl_func_00000000_17A0v, CourseGadget_setFloat2_0000254C)(DATAMGR(self)->course, v[0x30/4], v[0x90/4]);
+        XCALL(gl_func_00000000_17A0v, CourseGadget_setFloat2_0000254C)(DATAMGR(self)->course, *(int *)&((RaceEntry *)v)[0].pct, *(int *)&((RaceEntry *)v)[1].pct);
         v = (int*)(int)DATAMGR(self)->entries;
-        gl_func_15f0((void*)DATAMGR(self)->course, v[0x8/4], v[0xC/4],
-                     v[0x68/4], *(float*)((char*)v + 0x6C));
+        gl_func_15f0((void*)DATAMGR(self)->course, *(int *)&((RaceEntry *)v)[0].posX, *(int *)&((RaceEntry *)v)[0].progress,
+                     *(int *)&((RaceEntry *)v)[1].posX, ((RaceEntry *)v)[1].progress);
     }
     XCALL(gl_func_00000000_17A0v, Node_update)(self);
 }
