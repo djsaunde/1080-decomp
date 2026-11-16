@@ -218,7 +218,7 @@ void *PauseMenu_create(char *a0) {
         NODE(a0)->vptr = (char *)&PauseMenu_vtbl;
         s = a0;
         d = &sStr_PauseMenu_C5C4;
-        NODE(s)->name = (int)d;
+        NODE(s)->name = (const char *)d;
         s = (char *)GUIMENU(a0)->selColour;   /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;
         *(float *)(s + 4) = (float)(0, 117) / 255.0f;
