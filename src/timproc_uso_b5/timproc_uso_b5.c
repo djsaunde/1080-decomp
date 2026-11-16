@@ -1289,14 +1289,14 @@ int SelectionMgr_canCommit_00001D1C(char *a0, int a1) {
     char *p2;
     int c1;
     if (((SelectionMgr *)a0)->numPlayers == 2) {
-        p1 = ((char **)(a0 + 0x34))[a1]; c1 = *(int *)(p1 + 0x3C8); p2 = ((char **)(a0 + 0x34))[a1 ^ 1];
-        if (c1 != *(int *)(p2 + 0x3C8)) {
+        p1 = (char *)((SelectionMgr *)a0)->wins[a1]; c1 = SELWIN(p1)->stageBit; p2 = (char *)((SelectionMgr *)a0)->wins[a1 ^ 1];
+        if (c1 != SELWIN(p2)->stageBit) {
             return 0;
         }
         switch (c1) {
         case 1:
-            if (*(int *)(p1 + 0x3CC) != 5) {
-                if (*(int *)(p2 + 0x3CC) != 5) {
+            if (SELWIN(p1)->state != 5) {
+                if (SELWIN(p2)->state != 5) {
                     break;
                 }
             }
@@ -1955,14 +1955,16 @@ void SelectWin_lerpCamToItemZoom_0000396C(char *arg0, s32 arg1, char *arg2, f32 
 INCLUDE_ASM("asm/nonmatchings/timproc_uso_b5/timproc_uso_b5", SelectWin_lerpCamToItemZoom_0000396C);
 #endif
 
+/* Snap a camera node onto an item: copy the item's display node world position
+ * (QNode.cvqs.trans) into the node's local translation (MNode.mtx[3]). */
 void SelectWin_setCamToItem_00003A28(int *a0, int *a1, int a2) {
-    float *src = (float *)a0[0x29C / 4];
-    float x = *(float *)((char *)src + 0xDC);
-    float y = *(float *)((char *)src + 0xE0);
-    float z = *(float *)((char *)src + 0xE4);
-    *(float *)((char *)a1 + 0x60) = x;
-    *(float *)((char *)a1 + 0x64) = y;
-    *(float *)((char *)a1 + 0x68) = z;
+    QNode *src = (QNode *)SELITEM(a0)->node;
+    float x = src->cvqs.trans[0];
+    float y = src->cvqs.trans[1];
+    float z = src->cvqs.trans[2];
+    ((MNode *)a1)->mtx[3][0] = x;
+    ((MNode *)a1)->mtx[3][1] = y;
+    ((MNode *)a1)->mtx[3][2] = z;
 }
 
 /* SelItem_drawStatBar_00003A4C: 144-insn (0x240) heavy data-init function.
@@ -8198,16 +8200,18 @@ void DispItems_update_0000E5AC(int a0) {
  * 0x50, start 0x0000E5D0), same fix as AudioHeap_AllocZeroedAttemptExternal/000601DC. The old
  * PROLOGUE_STEALS=8 note is obsolete (that mechanism was banned 2026-05-23).
  * Body copies 3 floats from (*&D)->0x70's fields (0xBC/0xCC/0xDC) into
- * &D+0/+4/+8, then calls gl_func(a0). Load lands in $v0 (IDO's first-temp) =
+ * &D+0/+4/+8, then calls gl_func(a0): *&D is a Window (CamWindow, +0x70 = its MCamera),
+ * the three floats are MCamera.view[0..2][2] (include/game/camera.h). Load lands in $v0 (IDO's first-temp) =
  * the target's register, so no register-renumber residual. */
 extern int D_b5_E5D8_base;  /* distinct &D=0 alias (undefined_syms) so the base read
                              * compiles to the compact lui v0; lw v0,0(v0) instead of
                              * CSE-ing &D with the dst stores (which forces lui+addiu+lw). */
 void DispItems_display_0000E5D8(int a0) {
-    int *base = (int*)D_b5_E5D8_base;
-    *(float*)((char*)&D_00000000 + 0) = *(float*)((char*)base[0x70/4] + 0xBC);
-    *(float*)((char*)&D_00000000 + 4) = *(float*)((char*)base[0x70/4] + 0xCC);
-    *(float*)((char*)&D_00000000 + 8) = *(float*)((char*)base[0x70/4] + 0xDC);
+    CamWindow *base = (CamWindow *)D_b5_E5D8_base; /* the current 3D window */
+    /* the camera's view-matrix z column (its look axis) into an imported vec3 */
+    *(float*)((char*)&D_00000000 + 0) = base->cam->view[0][2];
+    *(float*)((char*)&D_00000000 + 4) = base->cam->view[1][2];
+    *(float*)((char*)&D_00000000 + 8) = base->cam->view[2][2];
     CALL(Node_display)(a0);
 }
 

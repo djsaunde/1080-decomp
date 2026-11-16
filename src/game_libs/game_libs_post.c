@@ -5481,21 +5481,21 @@ int AudioLoad_SearchCaches(int a0, int a1) {
  * required (an if/else-if chain tests with bne + fallthrough); case order
  * inside the switch is inert. */
 extern char gAudioContext_23B98[];
-int AudioLoad_GetLoadTable(int idx) {
+AudioTable *AudioLoad_GetLoadTable(int idx) {
     char *g = gAudioContext_23B98;
-    int r;
+    AudioTable *r;
     switch (idx) {
     case 0:
-        r = *(int *)(g + 0x201C);
+        r = ((AudioContext *)g)->sequenceTable;
         break;
     case 1:
-        r = *(int *)(g + 0x2020);
+        r = ((AudioContext *)g)->soundFontTable;
         break;
     case 2:
-        r = *(int *)(g + 0x2024);
+        r = ((AudioContext *)g)->sampleBankTable;
         break;
     default:
-        r = 0;
+        r = NULL;
         break;
     }
     return r;
@@ -6166,13 +6166,15 @@ void AudioLoad_ProcessSlowLoads(int arg0) {
 extern int gl_func_00000000();
 extern int gl_func_00038604();
 extern int D_00000000;
+#define SL ((AudioSlowLoad *)obj)
 void AudioLoad_DmaSlowCopy(char *obj, int a1) {
-    CALL(Audio_InvalDCache)(*(int *)(obj + 0xC));
-    CALL(gl_osCreateMesgQueue)(obj + 0x30, obj + 0x48, 1);
-    gl_func_00038604(obj + 0x4C, 0, 0, *(int *)(obj + 0x8),
-                     *(int *)(obj + 0xC), a1, obj + 0x30,
-                     *(unsigned char *)obj, GL_DATA_STR(0x1AFCC, "SLOWCOPY"));
+    CALL(Audio_InvalDCache)(SL->curRamAddr);
+    CALL(gl_osCreateMesgQueue)(&SL->msgQueue, &SL->msg, 1);
+    gl_func_00038604(SL->ioMesg, 0, 0, SL->curDevAddr, /* AudioLoad_Dma(&ioMesg, PRI_NORMAL, OS_READ, ...) */
+                     SL->curRamAddr, a1, &SL->msgQueue,
+                     SL->medium, GL_DATA_STR(0x1AFCC, "SLOWCOPY"));
 }
+#undef SL
 
 void AudioLoad_DmaSlowCopyUnkMedium(int a0, int a1, int a2, int a3) {
 }
@@ -8178,13 +8180,13 @@ void Audio_NoteInit(Note *note) {
  * reloads → byte-exact. */
 #define NOTE ((Note *)a0)
 void Audio_NoteDisable(char *a0) {
-    if ((((unsigned int)*(int *)(a0 + 0xB0) << 1) >> 31) == 1) {
-        *(unsigned char *)(a0 + 0xB0) &= ~0x40;
+    if (NOTE->sampleState.needsInit == 1) {
+        NOTE->sampleState.needsInit = 0;
     }
     NOTE->playbackState.priority = 0;
-    *(volatile unsigned char *)(a0 + 0xB0) &= ~0x80;
+    ((volatile NoteSampleState *)&NOTE->sampleState)->enabled = 0;
     NOTE->playbackState.unk_04 = 0;
-    *(volatile unsigned char *)(a0 + 0xB0) &= ~0x20;
+    ((volatile NoteSampleState *)&NOTE->sampleState)->finished = 0;
     NOTE->playbackState.parentLayer = (SequenceLayer *)-1; /* NO_LAYER */
     NOTE->playbackState.prevParentLayer = (SequenceLayer *)-1;
     NOTE->playbackState.adsr.action.asByte &= ~0x0F; /* action.s.state = 0 (ADSR_STATE_DISABLED) */
@@ -10393,7 +10395,7 @@ unsigned short a1;
     for (; i != 16; i++) {
         s = a1;
         if (s & 1) {
-            a0 = (unsigned char *)*(int *)(base + 0x38 + i * 4);
+            a0 = *(unsigned char **)&((SequencePlayer *)base)->channels[i];
             a0[7] = base[5];
             a0[3] = base[3];
             a0[2] = base[2];
@@ -10450,7 +10452,7 @@ void AudioSeq_SequencePlayerDisableChannels(char *arg0, s32 arg1) {
     char *var_s1;
 
     for (var_s0 = 0, var_s1 = arg0; var_s0 != 0x40; var_s0 += 4, var_s1 += 4) {
-        s32 temp_a0 = *(s32 *)(var_s1 + 0x38);
+        s32 temp_a0 = *(s32 *)&((SequencePlayer *)var_s1)->channels[0]; /* var_s1 walks channels[i] */
         if ((temp_a0 != dflt) == 1) {
             CALL(AudioSeq_SequenceChannelDisable)(temp_a0);
         }
@@ -11492,7 +11494,7 @@ void AudioSeq_ResetSequencePlayer(char *a0) {
     int i;
     CALL(AudioSeq_SequencePlayerDisable)();
     i = 0;
-    *(char*)(a0 + 0) = *(char*)(a0 + 0) & ~2; /* stopScript = 0 (byte RMW) */
+    SP->stopScript = 0;
     SP->delay = 0;
     SP->state = 1;
     SP->fadeTimer = 0;
@@ -11511,7 +11513,7 @@ void AudioSeq_ResetSequencePlayer(char *a0) {
     SP->muteVolumeScale = 0.5f;
     p = a0;
     for (; i < 64; i += 4) {
-        gl_ref_0003E8C4(*(int*)(p + 56));
+        gl_ref_0003E8C4(((SequencePlayer *)p)->channels[0]); /* p walks channels[i] (OoT: per-channel init / disable) */
         p += 4;
     }
 }
@@ -16795,12 +16797,12 @@ void sys_fatalSwapBuffer_00034180(void) {
     char *vt;
     int i;
 
-    vt = *(char **)(gConsoleNode_3EF04_34180_dev + 0x28);
-    (*(int (**)())(vt + 0x1C))(gConsoleNode_3EF04_34180_dev + *(short *)(vt + 0x18));
+    vt = NODE(gConsoleNode_3EF04_34180_dev)->vptr;
+    VT_SLOT(vt, 2).fn(gConsoleNode_3EF04_34180_dev + VT_SLOT(vt, 2).delta);
     CALL(sys_writebackDCacheAll)();
     while ((u32)CALL(osViGetCurrentLine)() < 0x1E0) {}
-    vt = *(char **)(*(char **)((char *)&D_00000000 + 0x240) + 0x28);
-    CALL(osViSwapBuffer)((*(int (**)())(vt + 0x64))(*(char **)((char *)&D_00000000 + 0x240) + *(short *)(vt + 0x60), &gGfxLib));
+    vt = NODE(*(char **)((char *)&D_00000000 + 0x240))->vptr;
+    CALL(osViSwapBuffer)(VT_SLOT(vt, 11).fn(*(char **)((char *)&D_00000000 + 0x240) + VT_SLOT(vt, 11).delta, &gGfxLib));
     *(int *)(*(char **)((char *)&D_00000000 + 0x240) + 0x144) = (*(int *)((char *)&D_00000000 + 0x204) ^= 1);
     if (1) {}
     for (i = 0; i < 2000000; i++) {}

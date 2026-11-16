@@ -154,6 +154,28 @@ typedef struct AudioPreloadReq {
     /* 0x10 */ s32 isFree;
 } AudioPreloadReq; /* size = 0x14 */
 
+/* One slow-load slot (OoT AudioSlowLoad, 0x64; AudioContext.slowLoads[2] at 0x157C, the slot
+ * index at 0x1578 toggles). Offsets from AudioLoad_SlowLoadSample / _ProcessSlowLoads /
+ * _FinishSlowLoad (their gl_2495C_Rec view) and AudioLoad_DmaSlowCopy. 1080's instId is a u8
+ * (SlowLoadSample stores its u8 arg 2 there with sb). */
+typedef struct AudioSlowLoad {
+    /* 0x00 */ u8 medium;
+    /* 0x01 */ u8 seqOrFontId;
+    /* 0x02 */ u8 instId;
+    /* 0x03 */ u8 unk_03;
+    /* 0x04 */ s32 unkMediumParam;
+    /* 0x08 */ s32 curDevAddr;
+    /* 0x0C */ u8 *curRamAddr;
+    /* 0x10 */ u8 *ramAddr;
+    /* 0x14 */ s32 state;
+    /* 0x18 */ s32 bytesRemaining;
+    /* 0x1C */ s8 *isDone;
+    /* 0x20 */ Sample sample;
+    /* 0x30 */ OSMesgQueue msgQueue;
+    /* 0x48 */ void *msg;
+    /* 0x4C */ u8 ioMesg[0x18];             /* OSIoMesg (the DMA request) */
+} AudioSlowLoad; /* size = 0x64 */
+
 typedef struct TunedSample {
     /* 0x0 */ Sample *sample;
     /* 0x4 */ f32 tuning;
@@ -717,7 +739,7 @@ typedef struct AudioContext {
     /* 0x1034 */ s32 preloadSampleStackTop;
     /* 0x1038 */ AudioAsyncLoad asyncLoads[16];
     /* 0x1578 */ char unk_1578[0x157C - 0x1578];
-    /* 0x157C */ u8 slowLoads[0x1644 - 0x157C];      /* two slow-load slots (ProcessSlowLoads) */
+    /* 0x157C */ AudioSlowLoad slowLoads[2];        /* ProcessSlowLoads */
     /* 0x1644 */ void *cartHandle;                    /* AudioLoad_Dma */
     /* 0x1648 */ void *driveHandle;                   /* AudioLoad_Dma */
     /* 0x164C */ u8 externalLoadQueue[0x18];          /* OSMesgQueue (AudioLoad_Init) */
@@ -852,6 +874,8 @@ AUDIO_ASSERT_OFFSET(syncDmaIoMesg, 0x1DF0);
 AUDIO_ASSERT_OFFSET(sampleDmas, 0x1E08);
 AUDIO_ASSERT_OFFSET(sampleDmaReuseQueue1WrPos, 0x201A);
 AUDIO_ASSERT_OFFSET(sequenceTable, 0x201C);
+AUDIO_ASSERT_OFFSET(slowLoads, 0x157C);
+typedef char AudioSlowLoad_size_check[sizeof(AudioSlowLoad) == 0x64 ? 1 : -1];
 AUDIO_ASSERT_OFFSET(sequenceFontTable, 0x2028);
 AUDIO_ASSERT_OFFSET(soundFontList, 0x2030);
 AUDIO_ASSERT_OFFSET(specUnk4, 0x2034);
