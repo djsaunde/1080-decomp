@@ -83,7 +83,7 @@ Node *FireTmpl_create(char *tmpl) {
     return o;
 }
 
-/* Fire_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */
+/* FireTmpl_declColourParms: hostio colour parms for the env (0x48) and prim (0x58) colours. */
 void FireTmpl_declColourParms(char *self) {
     CALL(gfx_declColourParm)(self + 0x48, &D_00000000 + 0x237C);
     CALL(gfx_declColourParm)(self + 0x58, &D_00000000 + 0x2380);

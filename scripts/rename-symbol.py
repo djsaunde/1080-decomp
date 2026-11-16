@@ -51,7 +51,15 @@ bytes are guarded here):
     the section-base placeholder, kept distinct to defeat IDO's address CSE), so
     renaming it to an object-derived name (`gAudioContext_345c0`, READABILITY_PLAN
     9.1.2) is a plain linker-symbol rename. D_00000000 itself, func_/gl_func_
-    placeholders and their blank-import aliases stay refused;
+    placeholders and their blank-import aliases stay refused.
+    Second exception (automatic, so renames.tsv replays need no flag): a module's own function at
+    offset 0, `<seg>_func_00000000`, when it is
+    defined as code in exactly one segment <seg>, is not pinned in any linker-symbol
+    file, is not a uso_call.h macro token, no object outside src/<seg>/ mentions it
+    (defined or undefined), and every tracked text file that uses it lives under
+    src/<seg>/ or asm/**/<seg>/ (asm is renamed with the file). That shape is a
+    real function, not an import placeholder; game_uso_func_00000000 (GCALL), etc.
+    fail the cross-module checks and stay refused;
   * NEW not a valid identifier / is a C keyword / already a symbol in any
     expected or build object, undefined_syms, symbol_addrs or tenshoe.ld
     (exception, "alias merge": NEW is only a second undefined_syms pin of
@@ -322,17 +330,59 @@ def zero_pinned(name):
     return bool(pat.search((ROOT / "undefined_syms_auto.txt").read_text(errors="surrogateescape")))
 
 
-def check(old, new, idx, files, pending_new, allow_scoped_alias=False):
+MODULE_ZERO = re.compile(r"^([a-z0-9]+(?:_[a-z0-9]+)*)_func_00000000$")
+
+
+def module_zero_ok(old, idx, files):
+    """(ok, why): OLD is a module's own offset-0 function confined to its segment
+    (see the module's-own-offset-0 entry in the docstring)."""
+    m = MODULE_ZERO.match(old)
+    if not m:
+        return False, "not of the form <seg>_func_00000000"
+    seg = m.group(1)
+    if idx.defining_segments(old) != {seg}:
+        return False, f"not defined in exactly segment {seg}"
+    if not idx.defined_as_code(old):
+        return False, "not defined as code"
+    if old in idx.linker_names:
+        return False, "pinned in a linker-symbol file (a placeholder alias)"
+    uc = ROOT / "include" / "uso_call.h"
+    if uc.exists() and word_re(old).search(uc.read_text(errors="replace")):
+        return False, "a uso_call.h placeholder token"
+    for o, syms in idx.obj_syms.items():
+        rel = o.relative_to(ROOT).parts
+        inside = "src" in rel and rel.index("src") + 1 < len(rel) - 1 and rel[rel.index("src") + 1] == seg
+        if not inside and any(n == old for n, _ in syms):
+            return False, f"{o.relative_to(ROOT)} (outside src/{seg}) mentions it"
+    tr = token_re(old)
+    for p in files:
+        t = read_text(p)
+        if t is None or old not in t or not tr.search(t):
+            continue
+        parts = Path(p).parts
+        if (len(parts) > 2 and parts[0] == "src" and parts[1] == seg) or (parts[0] == "asm" and seg in parts[:-1]):
+            continue
+        if p.endswith(".md"):
+            continue  # prose ledgers (renames.tsv is skipped already)
+        return False, f"{p} (outside src/{seg}) uses it"
+    return True, ""
+
+
+def check(old, new, idx, files, pending_new, allow_scoped_alias=False, allow_module_zero=True):
     errs, warns = [], []
     if not IDENT.match(new) or new in C_KEYWORDS:
         errs.append(f"NEW {new!r} is not a valid C identifier")
     if old == new:
         errs.append("OLD == NEW")
     if "00000000" in old:
+        mz = module_zero_ok(old, idx, files) if allow_module_zero else (False, "")
         if ZERO_DATA_ALIAS.match(old) and zero_pinned(old):
             warns.append(f"{old} is a per-site zero DATA alias (pinned 0x0); renamed as a data symbol")
+        elif mz[0]:
+            warns.append(f"{old} is its module's own offset-0 function, confined to one segment; renamed")
         else:
-            errs.append(f"{old} is a zero-address sentinel/placeholder name (USO import/base); never rename")
+            errs.append(f"{old} is a zero-address sentinel/placeholder name (USO import/base); never rename"
+                        + (f" [module-zero check: {mz[1]}]" if mz[1] else ""))
     if new in pending_new:
         errs.append(f"NEW {new} already used earlier in this batch")
     elif new in idx.all_names:
