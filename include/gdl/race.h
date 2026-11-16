@@ -1,8 +1,14 @@
 #ifndef GDL_RACE_H
 #define GDL_RACE_H
 
+#ifndef __cplusplus
 #include "gdl/backup.h"
-#include "gdl/node.h"
+#else
+/* C++ (NCC donors, which include this header by relative path): backup.h's offset asserts
+ * are C-only, and only the BackupSession pointer is needed here. */
+typedef struct BackupSession BackupSession;
+#endif
+#include "node.h" /* same directory: found by the relative-path NCC includes too */
 
 /* libgdl race objects shared by every race mode (tim / trk / arc / mgr / h2h / trn
  * and titproc's GameDemoProcess). See docs/1080_SYSTEM_LAYER.md section 10 (the
@@ -170,6 +176,7 @@ typedef struct RaceProcess {
 } RaceProcess;                          /* 0x6A8: derived classes start here (DataManager at +0x6A8) */
 
 typedef char RaceProcess_size_check[sizeof(RaceProcess) == 0x6A8 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char RaceProcess_vt_check[(int)&((RaceProcess *)0)->vt == 0x28 ? 1 : -1];
 typedef char RaceProcess_colours_check[(int)&((RaceProcess *)0)->colours.pair[RACECOL_GO][1].value == 0x11C ? 1 : -1];
 typedef char RaceProcess_colourCS_check[(int)&((RaceProcess *)0)->colours.pair[RACECOL_CS][1].value == 0x3A4 ? 1 : -1];
@@ -181,6 +188,7 @@ typedef char RaceProcess_scaleX_check[(int)&((RaceProcess *)0)->scaleX == 0x534 
 typedef char RaceProcess_msgFloor_check[(int)&((RaceProcess *)0)->msgFloor == 0x554 ? 1 : -1];
 typedef char RaceProcess_spriteSet_check[(int)&((RaceProcess *)0)->spriteSet == 0x568 ? 1 : -1];
 typedef char RaceProcess_sprites_check[(int)&((RaceProcess *)0)->sprites[1] == 0x5A0 ? 1 : -1];
+#endif
 
 /* ---- TimRace / TrkRace (timproc / trkproc, "TIMRace Process", alloc 0x730) ----
  * Identical layouts in both modules. The ctor inlines Node (0x2C) -> 0x50 ->
@@ -196,7 +204,9 @@ typedef struct TimRace {
 } TimRace;
 
 typedef char TimRace_size_check[sizeof(TimRace) == 0x730 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char TimRace_labels_check[(int)&((TimRace *)0)->labels[2] == 0x6E4 ? 1 : -1];
+#endif
 
 /* Field access through an untyped pointer (agent-h run 487). The Tim / Trk ctors and the
  * DataManager / name-entry methods keep their `char *` / `int` parameters and locals, because
@@ -236,8 +246,10 @@ typedef struct RaceEntry {
 } RaceEntry;
 
 typedef char RaceEntry_size_check[sizeof(RaceEntry) == 0x60 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char RaceEntry_pct_check[(int)&((RaceEntry *)0)->pct == 0x30 ? 1 : -1];
 typedef char RaceEntry_gate_check[(int)&((RaceEntry *)0)->gate == 0x4C ? 1 : -1];
+#endif
 
 /* The entry at byte offset `off` (the matched loops walk entries in 0x60 byte steps). */
 #define RACE_ENTRY_AT(t, off) ((RaceEntry *)((char *)(t)->entries + (off)))
@@ -296,12 +308,14 @@ typedef struct RaceTracker {
 } RaceTracker;
 
 typedef char RaceTracker_size_check[sizeof(RaceTracker) == 0xB8 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char RaceTracker_children_check[(int)&((RaceTracker *)0)->children == 0x10 ? 1 : -1];
 typedef char RaceTracker_entries_check[(int)&((RaceTracker *)0)->entries == 0x44 ? 1 : -1];
 typedef char RaceTracker_pointsListArg_check[(int)&((RaceTracker *)0)->pointsListArg == 0x54 ? 1 : -1];
 typedef char RaceTracker_course_check[(int)&((RaceTracker *)0)->course == 0x80 ? 1 : -1];
 typedef char RaceTracker_coolValue_check[(int)&((RaceTracker *)0)->coolValue == 0x9C ? 1 : -1];
 typedef char RaceTracker_hudFlags_check[(int)&((RaceTracker *)0)->hudFlags == 0xB4 ? 1 : -1];
+#endif
 
 /* ---- DataManager (agent-h run 473) ----
  * "DataManager" is the node name of the RaceTracker class itself (game_libs 0xC784,
@@ -335,7 +349,9 @@ typedef struct TimDataManager {
 } TimDataManager;
 
 typedef char TimDataManager_size_check[sizeof(TimDataManager) == 0xE0 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char TimDataManager_beepTimer_check[(int)&((TimDataManager *)0)->beepTimer == 0xD8 ? 1 : -1];
+#endif
 
 #define TIMDATAMGR(p) ((TimDataManager *)(p))
 

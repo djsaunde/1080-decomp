@@ -1,7 +1,7 @@
 #ifndef GAME_NAMEENTRY_H
 #define GAME_NAMEENTRY_H
 
-#include "gdl/node.h"
+#include "../gdl/node.h" /* relative: NCC donors include this header without -I include */
 
 /* The record name-entry overlay (agent-h run 509). The base class lives in nameent.uso
  * (module 33, export 69, vtable Data 0x80; docs/1080_MODES.md) and is 0xD4: each mode's
@@ -22,7 +22,9 @@ typedef struct NameEntry {
 } NameEntry;
 
 typedef char NameEntry_size_check[sizeof(NameEntry) == 0xD4 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char NameEntry_phase_check[(int)&((NameEntry *)0)->phase == 0x60 ? 1 : -1];
+#endif
 
 /* The Tim / Trk / Arc overlay (0x10C: TimNameEntry_ctor_000016F8, TrkNameEntry_ctor_00001660,
  * ArcNameEntry_ctor_0000199C). The three text positions are only set here (nameent.uso reads

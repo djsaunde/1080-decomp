@@ -10,8 +10,8 @@
  * Only offsets that a matched body touches are named. Pointer-valued fields that the
  * bodies use as ints stay s32 (READABILITY_PLAN 9.1). */
 
-#include "gdl/node.h"
-#include "gdl/race.h"
+#include "../gdl/node.h" /* relative: NCC donors include this header without -I include */
+#include "../gdl/race.h"
 
 /* ---- the course list (InputMgr.session +8; RaceProcess ctor arg 3) ----
  * arc_initCourses fills it with {2, 0, 3, 1, 4}; mgr_initMatchRace with 4..6
@@ -86,8 +86,10 @@ typedef struct ArcRace {
 } ArcRace;
 
 typedef char ArcRace_size_check[sizeof(ArcRace) == 0x780 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char ArcRace_retry_check[(int)&((ArcRace *)0)->retry == 0x6B8 ? 1 : -1];
 typedef char ArcRace_resultFade_check[(int)&((ArcRace *)0)->resultFade == 0x77C ? 1 : -1];
+#endif
 
 /* ---- MgrDataManager (mgrproc, alloc 0xE0; mgr_DataManager_init) ---- */
 typedef struct MgrDataManager {
@@ -137,10 +139,12 @@ typedef struct MgrRace {
 } MgrRace;
 
 typedef char MgrRace_size_check[sizeof(MgrRace) == 0x7F0 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char MgrRace_overlayAlpha_check[(int)&((MgrRace *)0)->overlayAlpha == 0x7A0 ? 1 : -1];
 typedef char MgrRace_retriesVel_check[(int)&((MgrRace *)0)->retriesVel == 0x7B8 ? 1 : -1];
 typedef char MgrRace_retries_check[(int)&((MgrRace *)0)->retries == 0x7C8 ? 1 : -1];
 typedef char MgrRace_endingFrame_check[(int)&((MgrRace *)0)->endingFrame == 0x7EC ? 1 : -1];
+#endif
 
 /* ---- H2HRace (H2HRaceProcess, alloc 0x6BC) ---- */
 typedef struct H2HRace {
@@ -155,7 +159,9 @@ typedef struct H2HRace {
 } H2HRace;
 
 typedef char H2HRace_size_check[sizeof(H2HRace) == 0x6BC ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char H2HRace_winner_check[(int)&((H2HRace *)0)->winner == 0x6B8 ? 1 : -1];
+#endif
 
 /* ---- H2HDataManager (h2hproc, alloc 0xF0; h2h_DataManager_init) ---- */
 typedef struct H2HDataManager {
@@ -192,7 +198,9 @@ typedef struct TrkDataManager {
 } TrkDataManager;
 
 typedef char TrkDataManager_size_check[sizeof(TrkDataManager) == 0xE0 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char TrkDataManager_ghost_check[(int)&((TrkDataManager *)0)->ghostReplayMode == 0xD8 ? 1 : -1];
+#endif
 
 #define TRKDATAMGR(p) ((TrkDataManager *)(p))
 
@@ -229,7 +237,9 @@ typedef struct GameDemoProcess {
 } GameDemoProcess;
 
 typedef char GameDemoProcess_size_check[sizeof(GameDemoProcess) == 0x6C8 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char GameDemoProcess_menu_check[(int)&((GameDemoProcess *)0)->menu == 0x6C0 ? 1 : -1];
+#endif
 
 /* ---- TitleDemoProcess (titproc, alloc 0x78) ----
  * A plain Process (0x50 head, no RaceProcess) with the same overlays as GameDemoProcess. */
@@ -252,7 +262,9 @@ typedef struct TitleDemoProcess {
 } TitleDemoProcess;
 
 typedef char TitleDemoProcess_size_check[sizeof(TitleDemoProcess) == 0x78 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char TitleDemoProcess_state_check[(int)&((TitleDemoProcess *)0)->state == 0x40 ? 1 : -1];
+#endif
 
 /* Field access through an untyped pointer (agent-h run 492), as RACEPROC / TIMRACE in
  * gdl/race.h: the race ctors, DataManager methods and name-entry overlays keep their
