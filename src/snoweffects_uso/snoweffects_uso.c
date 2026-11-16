@@ -1222,7 +1222,48 @@ void snoweffects_uso_func_00009FE8(void *self) {
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A10C);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A760);
+/* the ItemType item list walked by 0xA760 (a cursor / next iterator, as game_libs
+ * hud_findMarkers_000029F8) */
+typedef struct SnowIterNode {
+    char *data;
+    struct SnowIterNode *next;
+} SnowIterNode;
+typedef struct SnowTypeKey {
+    s32 v;
+} SnowTypeKey;
+#define SNOW_ITER_NEXT(it) \
+    (((it)[0] = (it)[1], (it)[1] != 0) ? ((it)[1] = (it)[1]->next, (it)[0]->data) : 0)
+extern char *snow_itemMgr;  /* bootup Data+0x776C (0 pin) */
+extern char snow_gGfxLib;   /* bootup Bss+0x3C168 (0 pin) */
+extern int gl_func_00000000_snow_cull(void *, int, float, float, float, int, float); /* cam_isSphereInView */
+
+/* 0xA760: cull pass over the snow lights. Look the ItemType tagged by Data+0xA80 up in the ItemMgr
+ * and walk its items; an item with +0x22C and +0x2AC set whose position (+0x5C) is in view
+ * (cam_isSphereInView on the GfxLib camera root, radius 0) gets bit 2 of +0x234. Frame levers: the
+ * iterator is block-scoped in the if (so it sits below the call's key copy) and padA is an
+ * unidentified 8-byte local; item is assigned before the tests that read it[0]->data again (the
+ * target's v0 -> s0 copy). */
+void snoweffects_uso_func_0000A760(char *self) {
+    SnowTypeKey key;
+    char padA[0x8];
+    char *type;
+    char *item;
+    key.v = *(int *)(&D_00000000 + 0xA80);
+    type = (char *)CALL(ItemMgr_findType_0003EA98)(snow_itemMgr, key);
+    if (type != 0) {
+        SnowIterNode *it[2];
+        it[1] = *(SnowIterNode **)(type + 0x10);
+        while (SNOW_ITER_NEXT(it) != 0) {
+            item = it[0]->data;
+            if (*(int *)(it[0]->data + 0x22C) != 0 && *(int *)(it[0]->data + 0x2AC) != 0) {
+                if (XCALL(gl_func_00000000_snow_cull, cam_isSphereInView)(*(void **)(&snow_gGfxLib + 0x254), 3,
+                        *(float *)(item + 0x5C), *(float *)(item + 0x60), *(float *)(item + 0x64), 0, 0.0f)) {
+                    *(int *)(item + 0x234) |= 4;
+                }
+            }
+        }
+    }
+}
 
 void snoweffects_uso_func_0000A870(char *a0) {
     int tag;
