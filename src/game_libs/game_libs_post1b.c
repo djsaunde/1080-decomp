@@ -4751,7 +4751,7 @@ sub_writes:
 obj_writes:
     ((SkinAnim *)obj)->count = arg1;    /* (agent-b run 489: skin.h names) */
     ((SkinAnim *)obj)->weights = arg2;
-    ((SkinAnim *)obj)->bone = arg3;
+    ((SkinAnim *)obj)->bone = (MNode *)arg3;
     ((SkinAnim *)obj)->name = (int)(GL_DATA_STR(0x2C598, "skinanimator")); /* "skinanimator" */
 done:
     return obj;
@@ -4897,7 +4897,7 @@ void SkinAnim_skinVerts(char *arg0, char *arg1, s32 arg2) {
                 v[0] = (f32)S693(src, 0);
                 v[1] = (f32)S693(src, 2);
                 v[2] = (f32)S693(src, 4);
-                mtx = SA693->bone + 0x70;
+                mtx = (char *)SA693->bone + 0x70;
                 o0 = M693(0x20)*v[2] + (M693(0x10)*v[1] + v[0]*M693(0));
                 o1 = M693(0x24)*v[2] + (M693(0x14)*v[1] + v[0]*M693(4));
                 o2 = M693(0x28)*v[2] + (M693(0x18)*v[1] + v[0]*M693(8));
