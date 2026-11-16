@@ -94,20 +94,10 @@ extern InputMgr gInputMgr_vr4698;
         if (sVrScreen) {}                                                                         \
     }
 
-/* NM: the show part matches; the tail differs. The target puts &sVrProc in v0 for the two loads
- * after the 0x1A08 call (`lui v0; addiu v0,v0,0x87C`) while keeping the load before the call as a
- * plain `lui t8; lw t8`; cfe uses a `lui` per load. */
-#ifdef NON_MATCHING
+/* back to the main menu. EXACT via the NCC (C++) donor src/viewrec_uso/viewrec_uso_ncc.cpp (a
+ * second code-free test of sVrScreen after the 0x1A08 call puts &sVrScreen in a1). */
 void viewrec_uso_func_00000000(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    VR_SHOW_SCREEN(mainMenu);
-    gl_func_00000000(/* viewrec_uso_func_00001A08 */ sVrProc->mainMenu);
-    sVrProc->mode = 0x10000;
-    sVrMenu = sVrProc->menu88;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000000);
-#endif
 
 void viewrec_uso_func_00000084(void) {
     CALL(Process_stop)(sVrScreen);

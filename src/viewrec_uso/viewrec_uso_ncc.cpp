@@ -25,10 +25,13 @@ struct VrProc : VrNode {
     /* 0x2C */ int started;
     /* 0x30 */ char pad30[0x50 - 0x30];
     /* 0x50 */ int *session;
-    /* 0x54 */ char pad54[0x6C - 0x54];
+    /* 0x54 */ VrNode *mainMenu;
+    /* 0x58 */ char pad58[0x6C - 0x58];
     /* 0x6C */ int mode;
     /* 0x70 */ int nextMode;        /* the options mode the records menu picked (0x2000 / 0x4000) */
     /* 0x74 */ int flags;
+    /* 0x78 */ char pad78[0x88 - 0x78];
+    /* 0x88 */ VrNode *menu88;
 };
 
 /* a records / options screen (ViewRecScreen in viewrec_uso.c) */
@@ -231,4 +234,27 @@ extern "C" void viewrec_uso_func_00001488(VrProc *proc, int i, int y) {
     VrSprite *spr = &label;
     CALL(gui_spriteRefresh)(spr);
     CALL(gui_drawSprite)(spr, 160, y, 3);
+}
+
+/* 0x0: back to the main menu: stop the shown screen, start the main menu (slot 10) and make it the
+ * shown screen, refresh it (0x1A08), record mode 0x10000 and take its gui menu as the one with the pad.
+ * The code-free `if (sVrScreen) {}` tests are uses of &sVrScreen: the first splits the screen into
+ * the v1 copy with the vptr in v0, the second (after the 0x1A08 call) stretches the &sVrScreen range
+ * over the virtual call's `this` temp, so it takes a1 (target) instead of a0. The reference local
+ * gives the tail's `lui v0; addiu v0,0x87C` CSE of &sVrProc. */
+extern "C" void viewrec_uso_func_00000000() {
+    CALL(Process_stop)(sVrScreen);
+    {
+        VrNode *s = sVrProc->mainMenu;
+        sVrScreen = s;
+        if (sVrScreen) {}
+        sVrScreen->start();
+    }
+    CALL(viewrec_uso_func_00001A08)(sVrProc->mainMenu);
+    if (sVrScreen) {}
+    {
+        VrProc *&p = sVrProc;
+        p->mode = 0x10000;
+        sVrMenu = p->menu88;
+    }
 }
