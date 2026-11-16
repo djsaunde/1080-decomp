@@ -19,7 +19,7 @@
 /* P0 RESOLVED 2026-06-10: game_uso_block1 byte-verified vs
  * assets/game_uso_block_1.bin (exact length, only reloc-class lui/jal
  * field diffs). The +0x90 damage was: +4 at 0x3F4 (1-word pad sidecar,
- * now folded into func_000003F8.s head), +4 at 0xC0EC (1-word zero pad
+ * now folded into camKey_init_000003F8.s head), +4 at 0xC0EC (1-word zero pad
  * between two matched C fns -- kept as sidecar, the Makefile recipe
  * drops the asserted-zero placeholder leftover at 0xC0F0), +0x80 at
  * 0xD5BC (func_0000D458.s over-extended into duplicated copies of

@@ -4081,7 +4081,7 @@ void SelectWin_state0_00007078(char *arg0) {
 // 0x3CC==1) ? 0xD4 : 0xEC; 0x480 = step + cur; if overshoot clamp
 // 0x480=0x484 and 0x3CC = (0x3C8==1) ? 3 : 9; }. Then UNCONDITIONAL
 // gate func_011E00(&import_80020098, 0x14203): if hit ->
-// func_00006E08(scr,1); e=func_00008A38(scr); vtable e->0x28
+// func_00006E08(scr,1); e=SelectWin_curItem_00008A38(scr); vtable e->0x28
 // (->0xAC fn, ->0xA8 s16 base) dispatch; 0x3CC=10; 0x484=0.0f.
 // Levers: 73C0's `step + (curf = cur)` add.s operand lever; same-line
 // `cur = ...; if (...)` collapse fixes the tgt/cur lwc1 as1 tie.
@@ -5034,7 +5034,7 @@ void SelectWin_state9_00008468(char *arg0) {
  * FPU clamp: decrement a0->0x480 by a0->0xEC toward bound a0->0x484; on
  * crossing the bound, snap + clear 0x3CC + reset 0x488 from 0x104. If
  * already at/past bound (else arm): snap + clear + reset, then
- * func_00008A38(a0) and vtable dispatch v0->0x28->[0x64](v0 + (short)v0->0x28->[0x60]).
+ * SelectWin_curItem_00008A38(a0) and vtable dispatch v0->0x28->[0x64](v0 + (short)v0->0x28->[0x60]).
  * (Old NM decode had the arms swapped — the "idx lookup else" belongs to 866C.)
  * Levers: NO gl placeholder; direct real syms; two named FP locals o(0x480)/b(0x484)
  * loaded 0x480-first (colors b=$f0 by priority, o=$f2; temps f4/f6/f8);
@@ -5456,7 +5456,7 @@ int SelectWin_listCount_00008C38(SelectWin *w) {
  * 2026-10-17 agent-g (run 106) 22.9 -> 98.4 (old structural body had the
  * logic inverted). Decode: c = *(import_800201EC + 0x154); n = (u16)c->2 - 4;
  * for n in [0,2) scan the (n+1)-entry int table D_807FE78C+0xF1C and return
- * i+1 when an entry equals func_00008A38(r)->0x2B0 + 1 (getter re-called per
+ * i+1 when an entry equals SelectWin_curItem_00008A38(r)->0x2B0 + 1 (getter re-called per
  * entry); then reload c and return 3 for the FC/FF/07 sentinel bytes with
  * getter->0x2B0 == 4, else 0. The loop is a guarded do-while (`if (cnt > 0)
  * { ... } while (i != cnt)`): that gives the target's `blez s2` guard +
