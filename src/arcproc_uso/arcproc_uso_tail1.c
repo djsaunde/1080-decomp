@@ -274,7 +274,7 @@ void *ARCRaceProcess_ctor(char *obj, int a1, int a2, int a3, int a4) {
             CALL(RaceTracker_ctor)(o2);
             NODE(o2)->vptr = (char *)&D_arc_A3C_v4;
         }
-        ARCRACE(obj)->dataMgr = (int)o2;
+        ARCRACE(obj)->dataMgr = (ArcDataManager *)o2;
         INPUT_MGR(D_00000000).dataMgr = (RaceTracker *)o2;
         o1 = (char *)ARCRACE(obj)->dataMgr;
         DATAMGR(o1)->hudFlags = 7;

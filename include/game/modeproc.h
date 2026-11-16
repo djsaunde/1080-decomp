@@ -75,7 +75,7 @@ typedef char ArcDataManager_size_check[sizeof(ArcDataManager) == 0xD8 ? 1 : -1];
 typedef struct ArcRace {
     /* 0x000 */ RaceProcess race;
     /* 0x6A8 */ ArcCourseList *courseList; /* ctor arg 3 */
-    /* 0x6AC */ s32 dataMgr;         /* ArcDataManager * (also InputMgr.dataMgr) */
+    /* 0x6AC */ ArcDataManager *dataMgr; /* also InputMgr.dataMgr */
     /* 0x6B0 */ s32 finalTime;       /* onRaceOver: dataMgr->entries[0].time */
     /* 0x6B4 */ s32 recordRank;      /* onRaceOver: entries[0] +0x40, then the tie scan */
     /* 0x6B8 */ s32 retry;           /* onLeave: the time was not accepted; onEndTimerDone
@@ -109,7 +109,7 @@ typedef char MgrDataManager_size_check[sizeof(MgrDataManager) == 0xE0 ? 1 : -1];
 typedef struct MgrRace {
     /* 0x000 */ RaceProcess race;
     /* 0x6A8 */ MgrCourseList *courseList; /* ctor arg 3 = ModeFlowProc.courseList (mgr_procMain) */
-    /* 0x6AC */ s32 dataMgr;         /* MgrDataManager * (also InputMgr.dataMgr) */
+    /* 0x6AC */ MgrDataManager *dataMgr; /* also InputMgr.dataMgr */
     /* 0x6B0 */ RaceSprite sprites[10]; /* mgr_loadSprites: 0x6B0 0x6C8 0x6E0(course n of m)
                                       * 0x6F8 (0x710 unused) 0x728 0x740 0x758 0x770 0x788 */
     /* 0x7A0 */ f32 overlayAlpha;     /* 0..1: drawIntro / the 23FC draws scale it to 0..255;

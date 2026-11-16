@@ -255,7 +255,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, MgrCourseList *a3, int arg5
             import_000B6C40(o2);
             NODE(o2)->vptr = (char *)&import_80264800;
         }
-        MGRRACE(obj)->dataMgr = (int)o2;
+        MGRRACE(obj)->dataMgr = (MgrDataManager *)o2;
         *(int *)&INPUT_MGR(import_800201D0).dataMgr = (int)o2;
 
         mgr_DataManager_init(MGRRACE(obj)->dataMgr, obj, RACEPROC(obj)->spriteSet,
@@ -405,7 +405,7 @@ int MGRRaceProcess_endTimerEnabled(MgrRace *arg0) {
             mgr_useRetry_000000F8(arg0->courseList);
         }
         if (mgr_noRetriesLeft_00000170(arg0->courseList) != 0 &&
-            XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(((MgrDataManager *)arg0->dataMgr)->base.session) != 0) {
+            XCALL(mgrproc_uso_func_01FA1C, Backup_sessionHasNew)(arg0->dataMgr->base.session) != 0) {
             arg0->race.unk4EC = -0x258;
         }
         arg0->lastResult = arg0->race.result;
