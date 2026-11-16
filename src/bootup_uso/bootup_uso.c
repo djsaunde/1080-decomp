@@ -3636,7 +3636,7 @@ void *EnvSettings_ctor(char *a0) {
         *(int *)q &= ~8;
     }
     ENVSET(a0)->fallingSnow = 0;
-    ENVSET(a0)->mode = 0;
+    ENVSET(a0)->bgBox = 0;
     ENVSET(a0)->clipNear = 4;
     ENVSET(a0)->clipFar = 0xB00;
     ENVSET(a0)->flags = 1;
@@ -3705,7 +3705,7 @@ void EnvSettings_display(int *a0) {
         base->curWindow->win.near = (float)(int)ENVSET(a0)->clipNear;
         base->curWindow->win.far = (float)(int)ENVSET(a0)->clipFar;
     }
-    if (ENVSET(a0)->mode == 0) {
+    if (ENVSET(a0)->bgBox == 0) { /* no BG box: clear the screen */
         GfxLib *b2 = gGfx;
         int *q;
         q = &b2->curWindow->win.flags;

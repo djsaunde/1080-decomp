@@ -32,14 +32,17 @@ typedef struct U64BGWall {
 /* ---- EnvSettings (0x44, vtbl Data 0x76A8; EnvSettings_ctor 7150) ----
  * The course environment ("rom/<course>_env.bin", EnvSettings_load). EnvSettings_display copies
  * clipNear / clipFar into the gfx context near / far (+0xAC / +0xB0, int -> float) when flags & 2,
- * and while mode == 0 sets the context +0x78 bit 4 and its +0xDC 16-byte record. */
+ * and while bgBox is NULL (no BG box: nothing covers the frame) sets the context +0x78 bit 4 and its
+ * +0xDC 16-byte record (the screen clear). */
 typedef struct EnvSettings {
     Node node;                  /* 0x00 */
     s32 handlers;               /* 0x2C: the parm-handler list EnvSettings_load searches by tag */
     s32 clipNear;               /* 0x30: [4] */
     s32 clipFar;                /* 0x34: [0xB00]; EnvSettings_load sets 800 for game modes 6 / 11 */
     s32 flags;                  /* 0x38: [1]; bit 2 = override the clip range (set with the 800 far) */
-    s32 mode;                   /* 0x3C: [0] */
+    struct Node *bgBox;         /* 0x3C: [0] the course BG box: game_createMap (COURSE_OP_BG) stores
+                                 * game_createBGBox's node here; was `mode` (agent-h's evidence;
+                                 * EnvSettings_ctor clears it) */
     struct FallingSnow *fallingSnow; /* 0x40: [0] FallingSnow_create(this) builds it (not in the editor flow
                                  * mode); EnvSettings_setSnow switches it */
 } EnvSettings;

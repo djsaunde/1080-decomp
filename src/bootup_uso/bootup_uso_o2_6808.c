@@ -29,6 +29,7 @@
 #include "game/course.h"
 #include "uso_call.h"
 #include "game/input.h"
+#include "game/envobj.h"
 
 typedef struct { int w; } S4_55A0;
 typedef struct { f32 x, y, z; } V3_6808;
@@ -161,7 +162,7 @@ void *game_createMap(WorldRegistry *obj, char *arg1, s32 arg2) {
                 o = (char *)FCALL(game_createBGBox)(p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
                 t = o;
                 ATTACH6808(FCALL(list_append), (char *)obj->bgRoot, t);
-                *(char **)(gEnvSettings_6808 + 0x3C) = o;
+                ENVSET(gEnvSettings_6808)->bgBox = (Node *)o;
                 FCALL(memtrack_end)();
             }
             break;
