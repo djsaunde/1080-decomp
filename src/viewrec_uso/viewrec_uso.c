@@ -1323,7 +1323,43 @@ void viewrec_uso_func_000047B0(ViewRecScreen *self) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00004854);
+/* the 0x98-byte screen's ctor: Node -> Process -> screen, as the erase screen's 0x36B4; here every
+ * constant field store follows the Process_stop call, made through the void alias so that no v0 def
+ * sits at the call and the shared constant 76 colours v0 (lever from agent-g) */
+extern char vr_vtNode_4854[], vr_vtProc_4854[], vr_vtScreen_4854[];
+ViewRecScreen *viewrec_uso_func_00004854(ViewRecScreen *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+
+    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(0x98)) != 0) {
+        o1 = (char *)self;
+        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o2 = o1;
+            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x474); NODE(o2)->vptr = vr_vtNode_4854; }
+            NODE(o1)->vptr = vr_vtProc_4854;
+        }
+        self->node.vptr = vr_vtScreen_4854;
+        self->node.name = &D_00000000 + 0x47C;
+        self->proc = proc;
+        *(s32 *)((char *)self + 0x54) = proc->font;
+        XCALL(gl_func_00000000_vrv, Process_stop)(self);
+        *(s32 *)((char *)self + 0x60) = 76;
+        *(s32 *)((char *)self + 0x58) = 83;
+        *(s32 *)((char *)self + 0x64) = 173;
+        *(s32 *)((char *)self + 0x5C) = 32;
+        *(s32 *)((char *)self + 0x6C) = 38;
+        *(s32 *)((char *)self + 0x70) = 57;
+        *(s32 *)((char *)self + 0x68) = 24;
+        *(s32 *)((char *)self + 0x78) = 111;
+        *(s32 *)((char *)self + 0x74) = 15;
+        *(s32 *)((char *)self + 0x7C) = 76;
+        *(s32 *)((char *)self + 0x84) = 0;
+        *(s32 *)((char *)self + 0x30) = 1;
+        *(s32 *)((char *)self + 0x2C) = 0;
+        *(s32 *)((char *)self + 0x48) = 0;
+    }
+    return self;
+}
 
 /* 0x4990: the sound options screen's pad handling (up / down move the row, left / right step the BGM /
  * SE / voice level or the sound mode, B / Start save and go back). EXACT via the MIPSpro 7.2.1 donor
@@ -1445,7 +1481,40 @@ void viewrec_uso_func_00004DEC(VrSoundOptions *self) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00005200);
+/* the 0x70-byte screen's ctor: Node -> Process -> screen, as 0x4854; +0x68 = the language word,
+ * white colour at +0x58 spelled 255 / d with the divisor in a local and an int numerator (the 0x2F1C
+ * lever), which keeps the 255.0f dividend apart from the divisor (lever from agent-g) */
+extern char vr_vtNode_5200[], vr_vtProc_5200[], vr_vtScreen_5200[];
+ViewRecScreen *viewrec_uso_func_00005200(ViewRecScreen *self, ViewRecProc *proc) {
+    char *o1;
+    char *o2;
+    f32 c;
+    f32 d;
+
+    if (self != 0 || (self = (ViewRecScreen *)CALL(mem_new)(0x70)) != 0) {
+        o1 = (char *)self;
+        if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o2 = o1;
+            if (o2 != 0 || (o2 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o2, &D_00000000 + 0x48C); NODE(o2)->vptr = vr_vtNode_5200; }
+            NODE(o1)->vptr = vr_vtProc_5200;
+        }
+        self->node.vptr = vr_vtScreen_5200;
+        self->node.name = &D_00000000 + 0x494;
+        self->proc = proc;
+        *(s32 *)((char *)self + 0x54) = proc->font;
+        CALL(Process_stop)(self);
+        *(s32 *)((char *)self + 0x68) = vr_gLanguage;
+        d = 255.0f; c = 255 / d;
+        *(s32 *)((char *)self + 0x30) = 1;
+        *(s32 *)((char *)self + 0x2C) = 0;
+        *(s32 *)((char *)self + 0x48) = 0;
+        *(f32 *)((char *)self + 0x58) = c;
+        *(f32 *)((char *)self + 0x5C) = c;
+        *(f32 *)((char *)self + 0x60) = c;
+        *(f32 *)((char *)self + 0x64) = c;
+    }
+    return self;
+}
 
 /* the screen at proc+0x5C (0x70 bytes, ctor 0x5200): the setting flag that 0x5318 toggles */
 typedef struct VrScreen5C {
