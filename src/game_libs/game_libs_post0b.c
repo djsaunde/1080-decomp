@@ -26063,20 +26063,20 @@ void sys_hexDump(int a0, char *a1, unsigned int s4) {
     CALL(dbg_printf)(GL_DATA(0x21F30));
 }
 
-int ConsoleDev_vfn0_00061ADC(int a0, int a1, int a2) {
+int SysLibBase_devWrite_00061ADC(int a0, int a1, int a2) {
     return -1;
 }
 
-int ConsoleDev_vfn1_00061AF0(int a0, int a1, int a2) {
+int SysLibBase_devRead_00061AF0(int a0, int a1, int a2) {
     return -1;
 }
 
-int ConsoleDev_vfn2_00061B04(int a0) {
+int SysLibBase_devSlot2_00061B04(int a0) {
     return -1;
 }
 
 /* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
-void ConsoleDev_vfn3_00061B10(int a0, int a1) {
+void SysLibBase_loadUso_00061B10(int a0, int a1) {
 }
 
 /* two-global HALFWORD setter (*(short*)D_X=a0; *(short*)D_Y=a1) — `sh` stores.

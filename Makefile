@@ -2177,7 +2177,7 @@ GAMELIBS_412E8_DONOR := build/src/game_libs/game_libs_ncc_412E8.cpp.o
 $(GAMELIBS_412E8_DONOR): src/game_libs/game_libs_ncc_412E8.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_staticInit_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=ConsoleDev_vtbl_412E8_j --redefine-sym __vtbl__1L=SysLib_vtbl_1E1B8_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=app_staticInit_000412E8 --redefine-sym __ct__2ElFv=D_412E8_h --redefine-sym __vtbl__1I=SysLibBase_vtbl_412E8_j --redefine-sym __vtbl__1L=SysLib_vtbl_1E1B8_412E8_k --redefine-sym __vec_new=gl_412E8_vec_new $@
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += app_staticInit_000412E8=$(GAMELIBS_412E8_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_412E8_DONOR)
 # 4FBA4 = cfront factory: new Der + key-list virtual dispatch (iterator next() inline) EXACT NCC donor over an empty placeholder (agent-c run 163).

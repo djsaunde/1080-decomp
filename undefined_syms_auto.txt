@@ -653,7 +653,7 @@ D_48184_img = 0x00000000;  /* gfx_drawFbSplash_00048184 128x128 u16 source image
 D_412E8_g = 0x00000000;  /* app_staticInit_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_412E8_h = 0x00000000;  /* app_staticInit_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 gSysLib_412E8_i = 0x00000000;  /* app_staticInit_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
-ConsoleDev_vtbl_412E8_j = 0x00000000;  /* app_staticInit_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
+SysLibBase_vtbl_412E8_j = 0x00000000;  /* app_staticInit_000412E8 guarded-init section alias of D_00000000 (defeats cross-section &D CSE) */
 D_26D64_a = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
 D_26D64_b = 0x00000000;  /* AudioThread_ProcessCmds per-access alias of D_00000000 for the +0x1B5DC cursor byte (fresh lui per access; one symbol is base-CSE'd) */
 gFsStream0_65EE4_rgn0 = 0x00000000;  /* fs_piXfer_00065EE4 region-1 backup-store record = sym1520 (BSS 0x3F030, 0x40 bytes); blank USO import */
