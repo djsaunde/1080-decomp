@@ -3,6 +3,7 @@
 #include "gdl/node.h"
 #include "gdl/race.h"
 #include "game/input.h"
+#include "game/guimenu.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -29,7 +30,55 @@ void trnproc_uso_func_00000000(void) {
 void trnproc_uso_func_00000008(void) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00000010);
+/* trnproc_uso_func_00000010: trn_procMain, the mode's process loop (n64_procMain's template):
+ * 0 launch the GenProc (next 1, then 4), 1 reset (194, state 2), 2 sound + build the TrnRace
+ * (3A8) and run it, 3 resume (state = next), 4 quit. The switch table is RoData+0 (the unit's
+ * .rodata is pinned NOLOAD at VMA 0 in tenshoe.ld, the arcproc 240 recipe). */
+void trnproc_uso_func_00000194(int *out);
+void trnproc_uso_func_000001A4(int a0);
+void trnproc_uso_func_00000010(int arg0, int arg1) {
+    int *cur;
+    int flag = 0;
+    int r;
+
+    do {
+        switch (arg1) {
+        case 0:
+            CALL(app_launchGenProc)(arg0, 1, 3, 1);
+            flag = 1;
+            *(int *)((char *)&D_00000000 + 0x44) = 1;
+            *(int *)((char *)&D_00000000 + 0x48) = 4;
+            break;
+        case 1:
+            CALL(trnproc_uso_func_00000194)(arg0);
+            *(int *)((char *)&D_00000000 + 0x40) = 2;
+            break;
+        case 2:
+            CALL(snd_playSeq_000120A8)(&D_00000000, 4, 8, 5);
+            flag = 1;
+            *(int *)((char *)&D_00000000 + 0x34) = 6;
+            r = CALL(app_createGame_000092F4)(arg0, 1);
+            *(int *)((char *)&D_00000000 + 0x34) = 7;
+            r = CALL(trnproc_uso_func_000003A8)(0, 0x4010000, r);
+            CALL(app_runProcess)(arg0, 0, r);
+            break;
+        case 3:
+            CALL(trnproc_uso_func_000001A4)(arg0);
+            *(int *)((char *)&D_00000000 + 0x40) = *(int *)((char *)&D_00000000 + 0x44);
+            break;
+        case 4:
+            cur = (int *)CALL(QuitProcess_ctor)(0, 1, 0);
+            flag = 1;
+            CALL(list_append)((char *)&D_00000000 + 0x10, cur);
+            if ((int)NODE(cur)->parent != 0) {
+                NODE(cur)->unk04 = 1;
+            }
+            NODE(cur)->parent = (Node *)&D_00000000;
+            break;
+        }
+        arg1 = *(int *)((char *)&D_00000000 + 0x40);
+    } while (flag == 0);
+}
 
 /* trnproc_uso_func_00000194: clear *out and GameFlow +0x14C. */
 void trnproc_uso_func_00000194(int *out) {
@@ -101,7 +150,102 @@ void trnproc_uso_func_00000338(float *dst) {
     dst[2] = *(float *)&tmp.c;
 }
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000003A8);
+/* trnproc_uso_func_000003A8: TrnRace ctor (TimRace_ctor's skeleton: inlined Node / Process /
+ * RaceProcess base ctors, then the TrnDataManager (0x19C RaceTracker subclass, lesson count +0xB4 = 17),
+ * a three-row pause menu and the saved trick bits read into +0x6B0). The vtable stores carry their
+ * Data offset in the USO reloc, so each vptr is its own 0-pinned symbol. */
+extern char trn_vt_node, trn_vt_proc, trn_vt_raceproc, trn_vt_trnrace, trn_vt_dm;
+/* bootup Bss+0x28C: the gui string-table base of the pause-menu rows. */
+extern int trn_gRowBase;
+/* The pause rows' callbacks (1B0 / 1E4 / 214): Text relocs whose in-place addend is 0, so
+ * each address is a 0-pinned alias of the function. */
+extern void trnproc_uso_func_000001B0_ref(void), trnproc_uso_func_000001E4_ref(void), trnproc_uso_func_00000214_ref(void);
+/* D_00000000 (bootup Bss+0xF8, the InputMgr) under a second 0-pinned name: the dataMgr store
+ * must not share the earlier &D_00000000 lui (as TimRace's D_b1_097C_g). */
+extern char trn_gInputMgr;
+/* void-typed alias of the global A2C call (its dead int return would hold v0; the vtable base
+ * that follows colours v0, as TrkRace_ctor's gl_func_00000000_994v). */
+extern void trn_func_00000A2C_v();
+char *trnproc_uso_func_000003A8(char *obj, int a1, int a2) {
+    char *o1;
+    char *o2;
+    char *o3;
+    char *w;
+
+    if (obj != 0 || (obj = (char *)CALL(mem_new)(0x6BC)) != 0) {
+    o1 = obj;
+    if (o1 != 0 || (o1 = (char *)CALL(mem_new)(0x6A8)) != 0) {
+        o2 = o1;
+        if (o1 != 0 || (o2 = (char *)CALL(mem_new)(0x50)) != 0) {
+            o3 = o2;
+            if (o3 != 0 || (o3 = (char *)CALL(mem_new)(0x2C)) != 0) { CALL(Node_ctor)(o3, trn_data + 0x2F8); NODE(o3)->vptr = (char *)&trn_vt_node; }
+            NODE(o2)->vptr = (char *)&trn_vt_proc;
+        }
+        NODE(o1)->vptr = (char *)&trn_vt_raceproc;
+        CALL(ColourParms_ctor)(&RACEPROC(o1)->colours);
+    }
+    NODE(obj)->vptr = (char *)&trn_vt_trnrace;
+    RACEPROC(obj)->spriteSet = 0;
+    CALL(RaceProcess_init)(obj, a1, trn_data + 0x300, a2);
+    CALL(trnproc_uso_func_000006CC)(obj);
+    *(float *)(obj + 0x6AC) = 0.0f;
+    CALL(memtrack_begin)(trn_data + 0x314, 0);
+    CALL(input_setActivePad_0001207C)(&D_00000000, 0);
+
+    {
+        o2 = (char *)CALL(mem_new)(0x19C);
+        if (o2 != 0) {
+            CALL(RaceTracker_ctor)(o2);
+            NODE(o2)->vptr = (char *)&trn_vt_dm;
+        }
+        *(char **)(obj + 0x6A8) = o2;
+        INPUT_MGR(trn_gInputMgr).dataMgr = (struct RaceTracker *)o2;
+        o1 = *(char **)(obj + 0x6A8);
+        *(int *)(o1 + 0xB4) = 17;
+        XCALL(trn_func_00000A2C_v, trnproc_uso_func_00000A2C)(*(char **)(obj + 0x6A8), obj, RACEPROC(obj)->spriteSet);
+
+        w = *(char **)(obj + 0x6A8);
+        o1 = (char *)NODE(w)->vptr;
+        ((void (*)(int))VT_SLOT(o1, 10).fn)(VT_SLOT(o1, 10).delta + (int)w);
+
+        o1 = *(char **)(obj + 0x6A8);
+        CALL(list_append)(obj + 16, o1);
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
+        }
+        NODE(o1)->parent = (Node *)obj;
+
+        CALL(RaceProcess_restart)(obj, a1);
+
+        if ((RACEPROC(obj)->flags << 15) < 0) {
+            RACEPROC(obj)->menu = (GuiMenu *)CALL(PauseMenu_create)(0);
+            CALL(gui_initRows_000100F0)(RACEPROC(obj)->menu, obj);
+            RACEPROC(obj)->menu->unk30 = RACEPROC(obj)->spriteSet;
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, (*(int *)&trn_gRowBase + 3) << 16, -1, trnproc_uso_func_000001B0_ref);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&trn_gRowBase + 3) << 16) | 1, -1, trnproc_uso_func_000001E4_ref);
+            CALL(gui_addRowSub_00010B6C)(RACEPROC(obj)->menu, ((*(int *)&trn_gRowBase + 3) << 16) | 5, -1, trnproc_uso_func_00000214_ref);
+            CALL(gui_centerRows_0001016C)(RACEPROC(obj)->menu);
+            o1 = (char *)RACEPROC(obj)->menu;
+            CALL(list_append)(obj + 16, o1);
+            if (NODE(o1)->parent != 0) {
+                NODE(o1)->unk04 = 1;
+            }
+            NODE(o1)->parent = (Node *)obj;
+        }
+
+        CALL(settings_get8_000127CC)(&D_00000000, obj + 0x6B0);
+        o1 = *(char **)((char *)&D_00000000 + 0x190);
+        CALL(list_append)(obj + 16, o1);
+        if (NODE(o1)->parent != 0) {
+            NODE(o1)->unk04 = 1;
+        }
+        NODE(o1)->parent = (Node *)obj;
+        CALL(Fader_start)(*(int **)((char *)&D_00000000 + 0x190), 1, 0);
+        CALL(memtrack_end)();
+    }
+    }
+    return obj;
+}
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000006CC);
 

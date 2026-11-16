@@ -1926,6 +1926,17 @@ SECTIONS
         build/src/arcproc_uso/arcproc_uso_o0_240.c.o(.rodata.*);
     }
 
+    /* trn_procMain (trnproc_uso.c 0x10) is a 5-case C switch. Its table is the first thing
+     * in trnproc.uso's RoData (baked in trnproc_uso_post), and the dispatch is the reloc
+     * form `lui at,0; lw t6,0(at)`. Pin the unit's .rodata NOLOAD at VMA 0 (arcproc 240
+     * recipe): %hi/%lo(0) = 0 and no ROM bytes. The unit's float literals are spelled off
+     * 0-pinned symbols, so the jumptable is the only .rodata. */
+    .trnproc_uso_10_jtbl 0x0 (NOLOAD) :
+    {
+        build/src/trnproc_uso/trnproc_uso.c.o(.rodata);
+        build/src/trnproc_uso/trnproc_uso.c.o(.rodata.*);
+    }
+
     /DISCARD/ :
     {
         *(*);
