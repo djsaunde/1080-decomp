@@ -78,9 +78,9 @@ extern "C" void EnvSettings_load(char *self) {
         stream_readS32_00004FF0(&ENVSET(self)->clipNear);
         stream_readS32_00004FF0(&ENVSET(self)->clipFar);
     }
-    { int mode = *(int *)(func_00000008 + 0x34); /* GameFlow.gameMode (Bss 0xF8 + 0x3C: alias value 8 + 0x34) */ /* RAW: data-table: data alias symbol carries a nonzero base (value 8 / 0x29C), so the field offset cannot be spelled through INPUT_MGR */
+    { int mode = GAMEFLOW_7328->gameMode; /* GameFlow.gameMode (Bss 0xF8 + 0x3C: alias value 8, + 0x34) */
     if (mode == 6 || mode == 11) {
-        *(float *)(func_0000029C + 4) = 1.0f; /* RAW: data-table: data alias symbol carries a nonzero base (value 8 / 0x29C), so the field offset cannot be spelled through INPUT_MGR */
+        GFX_7328->fog.colour[3] = 1.0f; /* GfxLib +0x2A0 (alias value 0x29C, + 4) */
         ENVSET(self)->flags |= 2;
         ENVSET(self)->clipFar = 800;
     } }

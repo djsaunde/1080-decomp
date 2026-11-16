@@ -12,6 +12,9 @@
  * - the last config call and the handler store share one source line; on two
  *   lines as1 schedules the handler's addiu after `lui v1`.
  * Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY. */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/gdl/node.h" /* Node.vptr (+0x28) */
 extern "C" {
 void func_00000000(...);
 extern char D_00000000;
@@ -32,7 +35,7 @@ extern "C" void SnowBoard_ctor(void) {
     func_00000000(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
     func_00000000(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
     func_00000000(x, z, y);
-    func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v; /* RAW: donor-mirror: NCC donor vptr store through a data alias (func_00000008 + 0x20) */
+    func_00000000(&gSnowBoard_e800_g4); NODE(func_00000008 - 8)->vptr = &SnowBoard_vtbl_e800_v; /* gSnowBoard (Bss+0x58; the alias is valued 8) ->vptr (+0x28) = the SnowBoard vtable (Data+0x8BA8) */
     root = (VO *)&D_00000000;
     root->f();
 }

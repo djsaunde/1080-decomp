@@ -9,6 +9,7 @@
 #include "game/input.h"
 #include "game/snowboarder.h"
 #include "gdl/gadget.h"
+#include "game/mode_uso_data.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -31,6 +32,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * so the lui/lw dispatch words carry in-place addend 0 = the target's raw
  * pre-USO-reloc words. Twin: trk_main (4 immediates
  * differ: case5/case7 second-a3 1->2, case12 mask 0x2000->0x4000). */
+extern char D_00000000_raw[]; /* bootup gProcUsoPaths (Data+0xC510 import; the B0 donor's name) */
 tim_main(a0, a1) int * a0; int a1; {
     char *d = (char *)&D_00000000;
     int done = 0;
@@ -58,7 +60,7 @@ tim_main(a0, a1) int * a0; int a1; {
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: data-table: compile stand-in for the timproc_uso_b1_o0_B0.c donor, whose case 5 is game_loadUso(&GameFlow, word at reloc bootup Data+0xC510 + 4) (scripts/uso-imports.py) */
+            gl_func_00000000(d, ((char **)D_00000000_raw)[1]); /* stand-in; the donor's game_loadUso(&GameFlow, gProcUsoPaths[1] = "rom/nameent.uso"): D_00000000_raw is the bootup Data+0xC510 import */
             gl_func_00000000(d, 4, GAMEFLOW(d)->course, 1);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
@@ -492,7 +494,7 @@ state0:
     base = (volatile int *)&D_00000000;
     s2->finalTime = DATAMGR(work)->elapsed;
     s2->recordRank = DATAMGR(work)->entries->rank[0];
-    s1 = (char *)CALL(Backup_courseRecordGetTime)(*(int *)((int)base + 0x64) * 0x30 + *(int *)s2->race.session, s2->recordRank); /* RAW: data-table: GameFlow course word read through the file-wide volatile &D_00000000 base local (base + 0x64) */
+    s1 = (char *)CALL(Backup_courseRecordGetTime)(((InputMgr *)base)->course * 0x30 + *(int *)s2->race.session, s2->recordRank); /* base = the GameFlow import (bootup Bss+0xF8); a plain (non-volatile) read, as the target */
     for (state = s2->recordRank - 1; state >= 0; state--) {
         r = (char *)CALL(Backup_courseRecordGetTime)(base[0x64 / 4] * 0x30 + *(int *)s2->race.session, state);
         if (((BackupTimeEntry *)s1)->time[0] != ((BackupTimeEntry *)r)->time[0]) break;
@@ -668,8 +670,8 @@ void TimRace_drawResultExtra(TimRace *a0) {
     if (a0->race.leave == 0) return;
     if (*(float *)&D_b1_11d8_a <= 0.0f) {
         fv = a0->recordFade;
-        if (fv < *(float *)((char *)&D_b1_11d8_b + 0x40)) { /* RAW: data-table: rodata float pool words */
-            a0->recordFade = *(float *)((char *)&D_b1_11d8_c + 0x44) + (ft = fv); /* RAW: data-table: rodata float pool words */
+        if (fv < *(float *)((char *)&D_b1_11d8_b + kRoF_tim_recordFadeMax_40)) {
+            a0->recordFade = *(float *)((char *)&D_b1_11d8_c + kRoF_tim_recordFadeIn_44) + (ft = fv);
         }
         a0->race.unk508 = a0->race.unk508 + 1;
         flag = 0;
@@ -828,7 +830,7 @@ void TimNameEntry_drawExitOverlay(int *self) {
     fp = (float *)((char *)sub + 0x72C);
     val = *fp;
     if (val > 0.0f) {
-        *fp -= *(float *)(base + 0x48); /* RAW: data-table: rodata float step (base = &D_00000000 + 0x48) */
+        *fp -= *(float *)(base + kRoF_tim_recordFadeOut_48); /* timproc RoData section base + named offset */
         sub = (int *)MODENAMEENT(self)->race;
         if (TIMRACE(sub)->recordFade < 0.0f) {
             TIMRACE(sub)->recordFade = 0.0f;

@@ -4,6 +4,7 @@
  * Spliced into bootup_uso_tail1.c.o via REPLACE_FUNC_BODY. */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
+#include "../../include/game/course.h" /* WorldRegistry (GameFlow.game) */
 extern "C" {
 extern int func_00000000(...);
 extern char D_00000000;
@@ -58,7 +59,9 @@ void *game_createProcessWindow(int a0, int a1) {
     p = (float *)result;
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
-    *(int *)(func_000000F0.ptr44 + 0x114) = result; /* RAW: unknown-object: GameFlow.game (the game world) +0x114; no struct for the game world yet */
+    /* GameFlow.game is the WorldRegistry: the new window becomes windows[3] (+0x114), the "ProcessWindow"
+     * slot that bootup_uso_tail3a_10C8C.c links the pause / quit nodes under */
+    WORLDREG(func_000000F0.ptr44)->windows[3] = result;
     return (void *)result;
 }
 

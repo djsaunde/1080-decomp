@@ -7,6 +7,7 @@
 #include "game/snowboarder.h"
 #include "gdl/gadget.h"
 #include "gdl/pad.h"
+#include "game/mode_uso_data.h"
 #include "uso_call.h"
 
 extern int gl_func_00000000();
@@ -53,7 +54,7 @@ extern char D_mgr_B20_1;
 extern char D_mgr_B20_2;
 void mgr_pauseRetire_00000B20(void) {
     CALL(RaceProcess_endResult4_00006F90)(*(int*)(&D_00000000 + 0x30));
-    CALL(Process_resume_0000FAE8)(*(int*)(&D_mgr_B20_1 + 0x30)); /* RAW: data-table: mgrproc data alias word (D_mgr_B20_1 + 0x30) */
+    CALL(Process_resume_0000FAE8)(*(int*)(&D_mgr_B20_1 + kBss_mgr_raceProc_30)); /* mgrproc Bss+0x30: the running race */
     CALL(input_clearActivePad_00012090)(&D_mgr_B20_2);
 }
 
@@ -607,7 +608,7 @@ extern int mgrproc_uso_func_013980();
 void MGRRaceProcess_onPauseSelect(int *a0) {
     if (XCALL(mgrproc_uso_func_013980, Fader_isDone_00013980)(INPUT_MGR(import_80020228).fader, a0) == 0) return;
     if (*(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg == 0) return;
-    *(int*)((char*)&import_80263D60 + 0x30) = (int)a0; /* RAW: byte-lock: pause menu rows[cursor].arg read through a0[0x48 / 4] twice; the GUIMENU member form re-CSEs the base */
+    *(int*)((char*)&import_80263D60 + kBss_mgr_raceProc_30) = (int)a0; /* mgrproc Bss+0x30 (the running race) = this */
     ((void(*)()) *(int *)&GUIMENU(a0[0x48 / 4])->rows[GUIMENU(a0[0x48 / 4])->cursor].arg)();
 }
 
@@ -1000,12 +1001,12 @@ extern void mgrproc_1BE4_call_1B58(int *, int);
 void mgr_startEnding_00001BE4(MgrRace *state) {
     int idx;
     char *base = &D_00000000;
-    idx = *(int*)(base + 0x64) - 5; /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
+    idx = ((InputMgr *)base)->course - 5; /* base = the GameFlow import (bootup Bss+0xF8) */
     state->race.subState = 2;
     state->creditLine = 0;
     state->creditScroll = 0;
-    state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + 0x5F0); /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
-    state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + 0x5FC); /* RAW: data-table: per-course ending tables in mgrproc data (idx * 4) */
+    state->endingPhase = *(int*)((char*)&import_802649C0 + idx * 4 + kData_mgr_endingPhase_5F0); /* mgrproc Data tables, by course */
+    state->endingTimer = *(int*)((char*)&import_802649CC + idx * 4 + kData_mgr_endingTimer_5FC);
     state->endingFrame = 0;
     XCALL(mgrproc_uso_func_012110, GameFlow_releaseFiles_00012110)(base);
     mgr_switchToView2_00001A64((int *)state);

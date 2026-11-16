@@ -154,6 +154,11 @@ extern void bu_90cc_call_iipif(s32, s32, void *, f32, f32);
  * A fn-typed symbol never folds its addend into %lo (separate addiu) and cfe rejects a data redeclaration; a data alias folds. */
 extern u8 bu_90cc_rgb28[], bu_90cc_rgb24[], bu_90cc_rgb30[], bu_90cc_rgb2C[];
 extern u8 bu_90cc_d8664[], bu_90cc_d87A4[], gInputMgr_90cc_dF0[], kRo_SnowBoarder_ctor_8B8[], kRo_SnowBoarder_ctor_8BC[];
+/* RoData offsets of the two f32 393.0 words SnowBoarder_ctor passes to the trail / spray vslot 10 calls
+ * (uso-data-sites: RoData-base+0x8B8 / +0x8BC). Both per-site symbols are valued 0x8B4 (the start of
+ * that float run, undefined_syms_auto.txt), so each site is symbol + addend; these name the addends. */
+#define kRoF_SnowBoarder_ctor_8B8 4 /* RoData+0x8B8 = 0x8B4 + 4: f32 393.0 */
+#define kRoF_SnowBoarder_ctor_8BC 8 /* RoData+0x8BC = 0x8B4 + 8: f32 393.0 */
 /* per-site aliases (one symbol per access) bust the shared-base GCSE that turns lui/%lo-folded loads into base+K */
 extern u8 gGfxLib_90cc_d148_01[], bu_90cc_d148_02[], bu_90cc_d148_03[];
 extern u8 gGfxLib_90cc_d148_18[];
@@ -992,10 +997,10 @@ sw_end:
             var_s0_3 = (s32 *)var_s0;
             var_s0 = ((char *) NODE(sp164)->vptr);
             temp_s1 = (char *)((s32)var_s0_3 + 0x70);
-            ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp164, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0x10, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8B8 + 4), 100.0f); /* RAW: data-table: kRo_ rodata float pool word */
+            ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp164, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0x10, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8B8 + kRoF_SnowBoarder_ctor_8B8), 100.0f);
             if (SNOWB(arg0)->flags & 1) {
                 var_s0 = ((char *) NODE(sp160)->vptr); 
-                ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp160, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + 8), 100.0f); /* RAW: data-table: kRo_ rodata float pool word */
+                ((Vfn_ff)VT_SLOT(var_s0, 10).fn)(VT_SLOT(var_s0, 10).delta + sp160, ((s32) SNOWB(arg0)->trails), ((s32) SNOWB(arg0)->dispSpray), arg0, 0xC, (s32)temp_s1, *(f32 *)(kRo_SnowBoarder_ctor_8BC + kRoF_SnowBoarder_ctor_8BC), 100.0f);
                 func_00000000(sp164);
                 func_00000000(sp164);
             }

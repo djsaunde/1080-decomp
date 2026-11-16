@@ -9,6 +9,7 @@
 #include "game/input.h"
 #include "game/modeproc.h"
 #include "game/snowboarder.h"
+#include "game/mode_uso_data.h"
 #include "uso_call.h"
 
 /* P0 AUDIT WARNING 2026-06-10: the decompressed block3 build differs
@@ -54,6 +55,7 @@ typedef struct { int a, b, c, d; } Quad4;
  * so the lui/lw dispatch words carry in-place addend 0 = the target's raw
  * pre-USO-reloc words. Twin: tim_main (4 immediates
  * differ: case5/case7 second-a3 1->2, case12 mask 0x2000->0x4000). */
+extern char D_00000000_raw[]; /* bootup gProcUsoPaths (Data+0xC510 import; the B0 donor's name) */
 trk_main(a0, a1) int * a0; int a1; {
     char *d = (char *)&D_00000000;
     int done = 0;
@@ -81,7 +83,7 @@ trk_main(a0, a1) int * a0; int a1; {
             GAMEFLOW(d)->procState = 5;
             break;
         case 5:
-            gl_func_00000000(d, *(int *)(d + 4)); /* RAW: data-table: compile stand-in for the timproc_uso_b3_o0_B0.c donor, whose case 5 is game_loadUso(&GameFlow, word at reloc bootup Data+0xC510 + 4) (scripts/uso-imports.py) */
+            gl_func_00000000(d, ((char **)D_00000000_raw)[1]); /* stand-in; the donor's game_loadUso(&GameFlow, gProcUsoPaths[1] = "rom/nameent.uso"): D_00000000_raw is the bootup Data+0xC510 import */
             gl_func_00000000(d, 4, GAMEFLOW(d)->course, 2);
             v = gl_func_00000000(a0, *a0, 1);
             s0v = gl_func_00000000(0, 0x410000, v, *a0);
@@ -761,8 +763,8 @@ void TrkRace_drawResultExtra(TimRace *a0) {
 
     if (a0->race.leave != 0) {
         if (D_b3_1240_f0 <= 0.0f) {
-            if (a0->recordFade < *(float*)((char*)&D_b3_1240_f40 + 0x40)) { /* RAW: data-table: rodata float pool words */
-                a0->recordFade += *(float*)((char*)&D_b3_1240_f44 + 0x44); /* RAW: data-table: rodata float pool words */
+            if (a0->recordFade < *(float*)((char*)&D_b3_1240_f40 + kRoF_trk_recordFadeMax_40)) {
+                a0->recordFade += *(float*)((char*)&D_b3_1240_f44 + kRoF_trk_recordFadeIn_44);
             }
 
             a0->race.unk508 = a0->race.unk508 + 1;
@@ -917,7 +919,7 @@ void TrkNameEntry_drawExitOverlay(int *self) {
     fp = (float *)((char *)sub + 0x72C);
     val = *fp;
     if (val > 0.0f) {
-        *fp -= *(float *)(base + 0x48); /* RAW: data-table: rodata float step (base = &D_00000000 + 0x48) */
+        *fp -= *(float *)(base + kRoF_trk_recordFadeOut_48); /* trkproc RoData section base + named offset */
         sub = (int *)MODENAMEENT(self)->race;
         if (TIMRACE(sub)->recordFade < 0.0f) {
             TIMRACE(sub)->recordFade = 0.0f;

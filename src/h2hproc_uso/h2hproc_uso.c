@@ -1120,10 +1120,10 @@ void *h2h_createPauseMenu_00000FD0(void *a0, int *a1) {
         NODE(tmp)->unk04 = 1;
     }
     NODE(tmp)->parent = (Node *)a0;
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], *(int*)(base + 0x4C) | (0x1D << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], *(int*)(base + 0x54) | (0x1E << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], *(int*)(base + 0x58) | (0x1D << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
-    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], *(int*)(base + 0x60) | (0x1E << 16)); /* RAW: data-table: sprite-id words in the h2hproc data table */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[0], ((InputMgr *)base)->playerRider | (0x1D << 16)); /* base = the GameFlow import here (bootup Bss+0xF8 relocs) */
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[1], ((InputMgr *)base)->playerBoard | (0x1E << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[2], ((InputMgr *)base)->rider2 | (0x1D << 16));
+    CALL(gui_spriteLoad)(&H2HWINS(a0)->sprites[3], ((InputMgr *)base)->board2 | (0x1E << 16));
 end:
     return a0;
 }

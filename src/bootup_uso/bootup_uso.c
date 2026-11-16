@@ -10,6 +10,8 @@
 #include "gdl/node.h"
 #include "gdl/item.h"
 #include "gdl/light.h"
+#include "gdl/polyshape.h"
+#include "gdl/material.h"
 #include "game/envobj.h"
 #include "uso_call.h"
 /* bootup.uso RoData section base (USO symIdx 1): every FP literal load is
@@ -3414,7 +3416,9 @@ void *MapProp_ctor(char *a0, int a1, int a2, int a3, int a4) {
     NODE(a0)->name = (const char *)&sStr_Course_7E7C;
     ((MapProp *)a0)->shape = a1;
     FCALL(MNode_addChild)(a0, a1);
-    if (*(int*)((char*)((MapProp *)a0)->shape + 0xA0) == 0) /* shp->pGrid != NULL */ /* RAW: unknown-object: course shape +0xA0 grid pointer, past the named BasePolyShape fields (agent-b area) */
+    /* shp->pGrid != NULL: the course shape is a BasePolyShape (MapProp.shape), its +0xA0 is the
+     * parse-cmd-35 XZ cell grid (polyshape.h collGrid), the "pGrid" of the assert string */
+    if (((BasePolyShape *)((MapProp *)a0)->shape)->collGrid == 0)
         FCALL(sys_assertFail)(&sStr_shp_pGrid_NULL_7E84, &sStr_mapprop_cpp_7E98, 0x3E4);
     ((MapProp *)a0)->end = a3;
     ((MapProp *)a0)->angle = a2;
@@ -4298,9 +4302,11 @@ c2:
 end:
     { int *l; /* k is reused for the model (one variable keeps it in v1; a Tv1Model * local swaps v0 / v1) */
     k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens;
-    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 0, a3); if (1) {} /* RAW: unknown-object: Tv1Model screen object +0x1C (no struct) */
+    /* The two "screens" are BaseMats (Tv1Model +0x84 is the shape's material table, BasePolyShape.mats):
+     * the frame image is blitted into each screen material's texels (+0x1C, gdl/material.h) */
+    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 0, a3); if (1) {}
     k = *(int *)&((Tv1Tmpl *)s0)->model; l = (int *)((Tv1Model *)k)->screens + 1;
-    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)(*l + 0x1C), 1, a3); } /* RAW: unknown-object: Tv1Model screen object +0x1C (no struct) */
+    FCALL(Tv1Tmpl_func_000077D0)(s0, *(int *)&((BaseMat *)*l)->texels, 1, a3); }
     ((Tv1Tmpl *)s0)->state = a3;
 }
 

@@ -1,7 +1,8 @@
 #include "common.h"
 
 extern int gl_func_00000000();
-extern int D_arc240_A, D_arc240_B, D_arc240_C;
+extern int D_arc240_A, D_arc240_C;
+extern char *D_arc240_B[]; /* bootup gProcUsoPaths (Data+0xC510 import, gl_data.h): [1] = "rom/nameent.uso" */
 #include "game/input.h"
 #include "uso_call.h"
 extern InputMgr D_00000000; /* the bootup input manager (Bss 0xF8) import */
@@ -75,7 +76,7 @@ void arc_procMain(int a0, int a1) {
             D_00000000.procState = 5;
             break;
         case 5: {
-            CALL(game_loadUso)(&D_arc240_A, *(int *)((char *)&D_arc240_B + 4)); /* RAW: data-table: arcproc data alias word (D_arc240_B + 4), not a struct */
+            CALL(game_loadUso)(&D_arc240_A, D_arc240_B[1]); /* gProcUsoPaths[1] */
             D_00000000.course = ((int **)a0)[2][((int **)a0)[2][1] + 3];
             CALL(snd_playSeq_000120A8)(&D_arc240_C, 4, D_00000000.course, 3);
             v = CALL(app_createGame_00008E48)(a0, ((int *)a0)[0], 1);
