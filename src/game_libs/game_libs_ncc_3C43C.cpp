@@ -18,6 +18,8 @@
 typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
+#include "../../include/gdl/polyshape.h"
+#include "../../include/gdl/coll.h"
 #undef NULL
 #define NULL 0
 typedef struct { float x, y, z; } Vec3;
@@ -46,9 +48,11 @@ extern short idx;
 extern Vec3 vtx;
 extern float f24;
 }
+/* o is a CollShape (gdl/coll.h): the hit's tag is its triangle index into shape->faceNormals / tris. */
+#define SHAPE (COLLSHAPE(o)->shape)
 extern "C" int CollShape_nearestHit(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
     float dist[8];
-    char *hitbuf[8];
+    CollTri *hitbuf[8];  /* CollShape_query fills the hit triangles' plane records */
     Vec3 acc;
     int n;
     int i;
@@ -76,7 +80,7 @@ extern "C" int CollShape_nearestHit(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
             }
         }
         if (best >= 0) {
-            row = (Vec3 *)(*(char **)(*(char **)(o + 0x84) + 0x54) + *(short *)(hitbuf[best] + 4) * 12);
+            row = (Vec3 *)((char *)SHAPE->faceNormals + hitbuf[best]->tag * 12);
             acc.x += row->x;
             acc.y += row->y;
             acc.z += row->z;
@@ -87,10 +91,10 @@ extern "C" int CollShape_nearestHit(char *o, Vec3 *r, float s, GLHit3C43C *a3) {
             a3->vtx.x = tmp2.pos.x;
             a3->vtx.y = tmp2.pos.y;
             a3->vtx.z = tmp2.pos.z;
-            a3->f24 = *(float *)(hitbuf[best] + 8);
+            a3->f24 = hitbuf[best]->d;
             if (1) {} dd = dd + dist[best];
-            a3->h10 = *(unsigned short *)(*(char **)(*(char **)(o + 0x84) + 0x68) + *(short *)(hitbuf[best] + 4) * 8);
-            a3->idx = *(short *)(hitbuf[best] + 4);
+            a3->h10 = SHAPE->tris[hitbuf[best]->tag].flags;
+            a3->idx = hitbuf[best]->tag;
             tmp2.pos = acc;
             a3->pos.x = tmp2.pos.x;
             a3->pos.y = tmp2.pos.y;

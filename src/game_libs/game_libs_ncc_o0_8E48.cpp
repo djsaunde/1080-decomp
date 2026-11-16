@@ -6,6 +6,9 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 typedef long long s64; typedef unsigned long long u64;
 #define NULL 0
+}
+#include "../../include/gdl/node.h"  /* o is a Node: parented to gInputMgr (also a Node, children at +0x10) */
+extern "C" {
 
 
 /* app_createGame_00008E48 — VERIFIED 101/111 reloc-resolved (was 10/109 raw baseline).
@@ -64,13 +67,13 @@ char *app_createGame_00008E48(char **arg0, int arg1, s32 arg2) {
     }
     base = (char *)&gInputMgr;
     o = sp3C;
-    tmp = base + 0x10;
+    tmp = base + 0x10;  /* &gInputMgr's Node.children: list_append(children, o) */
     gl_func_00000000(tmp, o);
-    if (FW(o, 0x14) != 0) {
-        FW(o, 0x4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
     tmp = base;
-    FW(o, 0x14) = (int)tmp;
+    NODE(o)->parent = (Node *)tmp;
     gl_func_00000000(&gInputMgr, 0);
     (void)arg1;
     return sp3C;

@@ -14,6 +14,7 @@
  * The run-139 .. 276 levers below are unchanged. */
 typedef int s32;
 typedef float f32;
+#include "../../include/game/camera.h"
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 extern "C" {
 extern int D_00000000;
@@ -28,7 +29,7 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
      * agent-g run 277: p moved after f18 (home sp+0x28 = target) with pad words pz / py */
     f32 vec[4];
     volatile int pz;
-    char *temp_v0;
+    MCamera *temp_v0; /* the player's camera (game/camera.h): eye world position and view axes */
     f32 b4; /* agent-g run 271: moved up (single-move decl sweep): b4's home at 84 = target */
     f32 d4;
     f32 f0;
@@ -43,18 +44,18 @@ extern "C" void CourseGadget_drawMarker(char *arg0, s32 arg1, f32 arg2, f32 arg3
     char *p;
     volatile int py;
 
-    temp_v0 = (char *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
-    f0 = (*(f32*)((char*)temp_v0 + 0xBC));
-    f16 = (*(f32*)((char*)temp_v0 + 0xA0));
-    f2 = (*(f32*)((char*)temp_v0 + 0xDC));
-    f18 = (*(f32*)((char*)temp_v0 + 0xA8)); if (f0 != f2) {} if (f0 != f2) {} /* agent-g run 271 (kit CCCXX priorities): two code-free tests on f0 / f2 (was one on f16 / f18, run 263) -- f0 / f2 colour before the two CSE'd sums, which then take f12 / f14 and leave f16 / f18 to 0xA0 / 0xA8 like the target: 94.48 -> 95.21 */
+    temp_v0 = (MCamera *)FW(FW(((*(s32*)((char*)&D_00000000 + 0x134)) + (arg1 * 4)), 0x108), 0x70);
+    f0 = temp_v0->view[0][2];
+    f16 = temp_v0->mnode.world[3][0];
+    f2 = temp_v0->view[2][2];
+    f18 = temp_v0->mnode.world[3][2]; if (f0 != f2) {} if (f0 != f2) {} /* agent-g run 271 (kit CCCXX priorities): two code-free tests on f0 / f2 (was one on f16 / f18, run 263) -- f0 / f2 colour before the two CSE'd sums, which then take f12 / f14 and leave f16 / f18 to 0xA0 / 0xA8 like the target: 94.48 -> 95.21 */
     if ((((f16 * f0) + (f18 * f2)) < ((f0 * arg2) + (f2 * arg3))) && ((((f0 * arg2) + (f2 * arg3)) - ((f16 * f0) + (f18 * f2))) < 4000.0f)) {
-        b4 = (*(f32*)((char*)temp_v0 + 0xB4));
+        b4 = temp_v0->view[0][0];
         /* agent-g run 276: d4 read right after b4 and WITHOUT the run-263 code-free `if (d4 != dx) {}` -- that
          * test kept a coloured piece of d4 (f0, target reads it into the ugen temp f6), which put the ugen FP
          * ring one step off for dx * dx / dy * dy and everything after; read before dx / dy, its store frees
          * f6 for dy * dy as in the target (statement-order grid b4 / d4 / dx / dy): 95.26 -> 99.88 */
-        d4 = (*(f32*)((char*)temp_v0 + 0xD4));
+        d4 = temp_v0->view[2][0];
         /* agent-g run 263: plain dx / dy variables (the target keeps both in their homes across the
          * calls); `dx = arg2 - f16` alone leaves the item arg2 - f16 coloured and copied into dx (spill
          * temps 28 / 32) -- the dead parameter stores arg2 = dx / arg3 = dy kill the items (no code):

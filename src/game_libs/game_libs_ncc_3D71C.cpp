@@ -8,7 +8,9 @@
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
 typedef float f32;
-struct Blk { int w[16]; };
+#include "../../include/gdl/gfxlib.h"
+struct Blk { float m[4][4]; }; /* a 4x4 matrix copied as one block */
+#define GFX GFXLIB(gGfxLib) /* gGfxLib_3d71c_dA0 is the zero-valued alias that keeps the &modelView lui/addiu */
 struct Obj { char pad[0x30]; f32 x, y, z; };
 extern "C" {
 int gl_3D71C_test(int, int, f32, f32, f32, int, f32);
@@ -17,13 +19,15 @@ void gGfxLib_3d71c_dA0();
 extern char D_00000000[];
 }
 extern "C" void ColourItem_display(Obj *o) {
-    if (gl_3D71C_test(*(int *)(gGfxLib + 0x254), 3, o->x, o->y, o->z, 0, 0.0f) != 0) {
+    if (gl_3D71C_test((int)GFX->curWindow, 3, o->x, o->y, o->z, 0, 0.0f) != 0) {
         Blk *d = (Blk *)gGfxLib_3d71c_dA0;
         if (0) { d = 0; }
-        *d = *(Blk *)(gGfxLib + 0xE8);
-        *(f32 *)((char *)d + 0x30) = o->x * *(f32 *)(gGfxLib + 0x128);
-        *(f32 *)((char *)d + 0x34) = o->y * *(f32 *)(gGfxLib + 0x12C);
-        *(f32 *)((char *)d + 0x38) = o->z * *(f32 *)(gGfxLib + 0x130);
+        *d = *(Blk *)GFX->worldMtx;  /* modelView = worldMtx, then its translation row = the position * worldScale
+                                       * (GfxLib +0x128..0x130; GFX->worldScale[i] folds the 0x128 into the base
+                                       * address and splits it from the curWindow base, so those three stay raw) */
+        d->m[3][0] = o->x * *(f32 *)(gGfxLib + 0x128);
+        d->m[3][1] = o->y * *(f32 *)(gGfxLib + 0x12C);
+        d->m[3][2] = o->z * *(f32 *)(gGfxLib + 0x130);
         CALL(Node_display)(o);
     }
 }

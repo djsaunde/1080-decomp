@@ -15,6 +15,12 @@ typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsign
 typedef float f32; typedef double f64;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
+#include "../../include/gdl/polyshape.h"
+/* arg0 is a PolyShape (gdl/polyshape.h): verts / vtxColours / alphas. unk6C is a table of 8-byte
+ * records whose u16 pair at +4 / +6 is a vertex-index pair (the two ends this slot builds
+ * vertices for); the first word is not read here. */
+struct PolySeg { s32 unk0; u16 v[2]; };
+#define P BASEPOLY(arg0)
 extern "C" {
 extern int D_00000000;
 extern int gl_func_00000000(...);
@@ -29,23 +35,23 @@ extern "C" s32 PolyShape_vslot12_0004A308(char *arg0, int arg1, int arg2, int ar
     unsigned char sp58[0x10];
     unsigned char sp48[0x10];
     int t0;
-#define pal (*(char **)(arg0 + 0x7C))
-#define entry (*(char **)(arg0 + 0x6C) + arg3 * 8 + 0 * (int)(*(char **)(arg0 + 0x60))) /* run 219: expression, not a local */
-#define v60 (*(char **)(arg0 + 0x60))
-    t0 = *(unsigned short *)(entry + 4);
-#define t2 (*(unsigned short *)(entry + 6))
+#define pal (P->alphas)
+#define entry ((char *)P->unk6C + arg3 * 8 + 0 * (int)P->verts) /* run 219: expression, not a local */
+#define v60 ((char *)P->verts)
+    t0 = ((PolySeg *)entry)->v[0];
+#define t2 (((PolySeg *)entry)->v[1])
     sp7C = v60 + t0 * 6;
     sp78 = v60 + t2 * 6;
     if (pal != 0) {
-        sp6C = *(unsigned char *)(pal + t0);
-        sp6E = *(unsigned char *)(pal + t2);
+        sp6C = pal[t0];
+        sp6E = pal[t2];
     } else {
         sp6E = 0xFF;
         sp6C = 0xFF;
     }
-    if (*(char **)(arg0 + 0x50) != 0) {
-        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp74, *(char **)(arg0 + 0x50) + t0 * 4);
-        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp70, *(char **)(arg0 + 0x50) + *(unsigned short *)(*(char **)(arg0 + 0x6C) + arg3 * 8 + 6) * 4);
+    if (P->vtxColours != 0) {
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp74, P->vtxColours + t0);
+        CALL(gfx_copyBytes3_00046DA0)(&gGfxLib,sp70, P->vtxColours + ((PolySeg *)P->unk6C)[arg3].v[1]);
         CALL(dbg_printf)((char *)&D_00000000 + 0x20030, sp74[0], sp74[1], sp74[2]);
     } else {
         unsigned char col[4];
