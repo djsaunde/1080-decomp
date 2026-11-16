@@ -290,3 +290,150 @@ extern "C" void snoweffects_uso_func_00006B28(SnowEmB *t) {
         t->i1D0 = t->cam->state;
     }
 }
+
+/* 0x718C: spawn update of effect C (flag bit 2), run 673. On course state 99 with +0x80 clear: a = 0 when
+ * cam f348 < 60 or |speed| < +0x214, +-1 above +0x218, else the +0x21C-based ramp, signed by speed; the
+ * +0x1FC / +0x204 timer, then (a != 0) one pool +0xA0 spawn: pos = lerp(+0x138, +0xF0, randf), vel =
+ * v318 * f208 + v114 * (1 + randf * RoData+0xB0) * f210 * |a| * (a > 0 ? -1 : 1) + v3B0 * f20C * |a|, fields
+ * from +0x1DC..+0x1F8, alpha 128 + randf * 127, colour lerped from the camera colour to +0x224 by +0x220.
+ * NM (96.9 %, 471 words = target, frame 368 = target): the operator* scalars colour f12 where the target has
+ * f16 (the |speed| temp too), the u copy materialises &t->pos, and the inner edg temps sit 4..8 bytes off. */
+extern "C" float snow_ro_B0;  /* RoData+0xB0: the 0x718C spin scale */
+struct SVc {
+    float x, y, z;
+    SVc() {}
+    SVc(float a, float b, float c) { x = a; y = b; z = c; }
+    SVc &operator=(SVc o) { x = o.x; y = o.y; z = o.z; return *this; }
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SVc operator*(float s) const { SVc r; r.set(x * s, y * s, z * s); return r; }
+    SVc &operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
+    SVc &operator+=(const SVc &v) { x += v.x; y += v.y; z += v.z; return *this; }
+};
+struct SnowCamC {
+    char pad000[0x318];
+    /* 0x318 */ SVc v318;
+    char pad324[0x348 - 0x324];
+    /* 0x348 */ float f348;
+    char pad34C[0x3B0 - 0x34C];
+    /* 0x3B0 */ SVc v3B0;
+    char pad3BC[0x9A2 - 0x3BC];
+    /* 0x9A2 */ short state;
+    char pad9A4[0xA30 - 0x9A4];
+    /* 0xA30 */ C4 col;
+};
+struct SnowEmC {
+    char pad00[0x2C];
+    /* 0x2C */ SnowCamC *cam;
+    char pad30[0x4C - 0x30];
+    /* 0x4C */ float speed;
+    char pad50[0x80 - 0x50];
+    /* 0x80 */ int i80;
+    char pad84[0xA0 - 0x84];
+    /* 0xA0 */ void *pool;
+    char padA4[0xF0 - 0xA4];
+    /* 0xF0 */ SVc vF0;
+    char padFC[0x114 - 0xFC];
+    /* 0x114 */ SVc v114;
+    char pad120[0x138 - 0x120];
+    /* 0x138 */ SVc pos;
+    char pad144[0x1DC - 0x144];
+    /* 0x1DC */ float f1DC;
+    /* 0x1E0 */ float f1E0;
+    /* 0x1E4 */ float f1E4;
+    /* 0x1E8 */ float f1E8;
+    /* 0x1EC */ float f1EC;
+    /* 0x1F0 */ float f1F0;
+    /* 0x1F4 */ float f1F4;
+    /* 0x1F8 */ float f1F8;
+    /* 0x1FC */ int timer;
+    /* 0x200 */ int i200;
+    /* 0x204 */ int period;
+    /* 0x208 */ float f208;
+    /* 0x20C */ float f20C;
+    /* 0x210 */ float f210;
+    /* 0x214 */ float lo;
+    /* 0x218 */ float hi;
+    /* 0x21C */ float f21C;
+    /* 0x220 */ float f220;
+    /* 0x224 */ float col[3];
+};
+extern "C" void snoweffects_uso_func_0000718C(SnowEmC *t) {
+    float a, sp, r;
+    int i, n, go;
+    if (t->cam->state != 99 || t->i80 != 0) {
+        return;
+    }
+    sp = t->speed;
+    if (t->cam->f348 < 60.0f || (sp < 0.0f ? -sp : sp) < t->lo) {
+        a = 0.0f;
+    } else if (t->hi < (sp < 0.0f ? -sp : sp)) {
+        if (sp < 0.0f) {
+            a = -1.0f;
+        } else {
+            a = 1.0f;
+        }
+    } else {
+        r = ((sp < 0.0f ? -sp : sp) - t->lo) / (t->hi - t->lo);
+        if (sp < 0.0f) {
+            a = -((1.0f - t->f21C) * r + t->f21C);
+        } else {
+            a = (1.0f - t->f21C) * r + t->f21C;
+        }
+    }
+    go = 0;
+    t->timer--;
+    if (t->timer < 0) {
+        t->timer = t->period;
+        go = 1;
+    }
+    if (!go || !(60.0f < t->cam->f348)) {
+        return;
+    }
+    n = a != 0.0f;
+    if ((n < 0 ? -n : n) == 0) return;
+    for (i = 0; i < 1; i++) {
+        SPart *p = gl_func_00000000_snow_pool(t->pool);
+        if (p == 0) {
+            p = gl_func_00000000_snow_pool(t->pool);
+        }
+        if (p != 0) {
+            SVc w;
+            SVc u = t->pos;
+            r = gl_func_00000000_snow_randf();
+            u.x = (t->vF0.x - u.x) * r + u.x;
+            u.y = (t->vF0.y - u.y) * r + u.y;
+            u.z = (t->vF0.z - u.z) * r + u.z;
+            { int sc[2]; sc[0] = 0; }
+            w = t->cam->v318 * t->f208;
+            SVc a1 = t->cam->v3B0 * t->f20C * (a < 0.0f ? -a : a);
+            SVc a2 = t->v114 * (1.0f + gl_func_00000000_snow_randf() * snow_ro_B0) * t->f210;
+            a2 *= (a < 0.0f ? -a : a);
+            if (0.0f < a) {
+                a2 *= -1.0f;
+            }
+            w += a2;
+            w += a1;
+            p->pos.set(u.x, u.y, u.z);
+            p->vel.set(w.x, w.y, w.z);
+            p->size = t->f1F8;
+            p->unk3C = 1.0f;
+            p->fadeAt = 256.0f;
+            p->sizeVel = t->f1DC;
+            p->gravity = t->f1E0;
+            p->decay = t->f1E8;
+            p->life = 256.0f;
+            r = gl_func_00000000_snow_randf();
+            p->alphaVel = t->f1EC;
+            p->alpha = 128.0f + r * 127.0f;
+            {
+                float c, f = t->f220;
+                c = t->cam->col.c[0];
+                p->col.c[0] = (int)(c + (t->col[0] * 255.0f - c) * f);
+                c = t->cam->col.c[1];
+                p->col.c[1] = (int)(c + (t->col[1] * 255.0f - c) * f);
+                c = t->cam->col.c[2];
+                p->col.c[2] = (int)(c + (t->col[2] * 255.0f - c) * f);
+            }
+        }
+    }
+}

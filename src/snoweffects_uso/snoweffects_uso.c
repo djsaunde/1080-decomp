@@ -936,7 +936,16 @@ void snoweffects_uso_func_000070C0(SnowEffect *this) {
     this->unk220 = snow_ro_AC;
 }
 
+/* 0x718C: spawn update of effect C (flag bit 2): speed-ramped side push, the +0x1FC timer, one pool spawn
+ * with a lerped position, a velocity from the camera +0x318 / +0x3B0 axes and +0x114, and a lerped colour.
+ * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 673, 96.9 %, 471 words = target),
+ * spliced over this placeholder on the non_matching build. */
+#ifdef NON_MATCHING
+void snoweffects_uso_func_0000718C(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000718C);
+#endif
 
 void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
     (void)&a1;

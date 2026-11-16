@@ -5880,6 +5880,7 @@ snow_gfx_scale_130 = 0x00000130;  /* gGfxLib+0x130 world scale z (snoweffects 0x
 snow_ro_128 = 0x00000128;  /* snoweffects RoData+0x128 float (0xC90 world scale x, own lui) */
 snow_ro_12C = 0x0000012C;  /* snoweffects RoData+0x12C float (0xC90 world scale y, own lui) */
 snow_ro_130 = 0x00000130;  /* snoweffects RoData+0x130 float (0xC90 world scale z, own lui) */
+snow_ro_B0 = 0x000000B0;  /* snoweffects RoData+0xB0 float (0x718C spin scale; NM donor) */
 snow_ro_B4 = 0x000000B4;  /* snoweffects RoData+0xB4 float (0x7960 minimum speed; NM donor) */
 snow_ro_50 = 0x00000050;  /* snoweffects RoData+0x50 float (0x64B8 burst speed scale; NM donor) */
 snow_ro_54 = 0x00000054;  /* snoweffects RoData+0x54 float (0x64B8 burst speed bias; NM donor) */
