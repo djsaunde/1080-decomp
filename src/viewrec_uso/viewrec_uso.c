@@ -1177,7 +1177,119 @@ void viewrec_uso_func_00003818(ViewRecScreen *self) {
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003878);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003F24);
+/* the erase screen's selection pad handling (proc mode 0x80000). Phase +0xA0 = 0: up / down move
+ * the cursor +0xA4 over the five record sets (wrapping); A picks one: course times / scores go to
+ * phase 1 (course picker), arcade / ghost / everything ask for confirmation (proc mode 0x2000000,
+ * +0x70 = 1; the ghost only when one is saved). Phase 1: pick the course +0xA8 on the 2 x 4 grid
+ * from +0xAC (2 for course times); A asks for confirmation, B goes back. */
+void viewrec_uso_func_00003F24(ViewRecScreen *self) {
+    s32 old;
+
+    switch (*(s32 *)((char *)self + 0xA0)) {
+        case 0:
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA4) -= 1;
+                if (*(s32 *)((char *)self + 0xA4) < 0) {
+                    *(s32 *)((char *)self + 0xA4) = 4;
+                }
+            }
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA4) += 1;
+                if (*(s32 *)((char *)self + 0xA4) >= 5) {
+                    *(s32 *)((char *)self + 0xA4) = 0;
+                }
+            }
+            if (*(s32 *)((char *)self + 0xA4) == 0) {
+                *(s32 *)((char *)self + 0xAC) = 2;
+            } else {
+                *(s32 *)((char *)self + 0xAC) = 0;
+            }
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
+                switch (*(s32 *)((char *)self + 0xA4)) {
+                    case 0:
+                        XCALL(gl_func_00000000_vrv, snd_postEvent)(5);
+                        *(s32 *)((char *)self->proc + 0x70) = 0x100000;
+                        if (*(s32 *)((char *)self + 0xA8) < *(s32 *)((char *)self + 0xAC)) {
+                            *(s32 *)((char *)self + 0xA8) = *(s32 *)((char *)self + 0xAC);
+                        }
+                        *(s32 *)((char *)self + 0xA0) += 1;
+                        break;
+                    case 1:
+                        CALL(snd_postEvent)(5);
+                        *(s32 *)((char *)self->proc + 0x70) = 0x200000;
+                        *(s32 *)((char *)self + 0xA0) += 1;
+                        break;
+                    case 2:
+                        CALL(snd_postEvent)(0x195);
+                        *(s32 *)((char *)self->proc + 0x70) = 0x400000;
+                        self->proc->mode = 0x2000000;
+                        *(s32 *)((char *)self + 0x70) = 1;
+                        break;
+                    case 3:
+                        if (CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4)) {
+                            CALL(snd_postEvent)(0x195);
+                            *(s32 *)((char *)self->proc + 0x70) = 0x800000;
+                            self->proc->mode = 0x2000000;
+                            *(s32 *)((char *)self + 0xB8) = CALL(Backup_ghostGetCourse)((char *)gInputMgr_vr.backup + 4);
+                            *(s32 *)((char *)self + 0xBC) = CALL(Backup_ghostGetRider)((char *)gInputMgr_vr.backup + 4);
+                            *(s32 *)((char *)self + 0xC0) = CALL(Backup_ghostGetBoard)((char *)gInputMgr_vr.backup + 4);
+                            *(s32 *)((char *)self + 0xC4) = CALL(Backup_ghostGetMode)((char *)gInputMgr_vr.backup + 4) - 1;
+                            *(s32 *)((char *)self + 0x70) = 1;
+                        }
+                        break;
+                    case 4:
+                        CALL(snd_postEvent)(0x195);
+                        *(s32 *)((char *)self->proc + 0x70) = 0x1000000;
+                        self->proc->mode = 0x2000000;
+                        *(s32 *)((char *)self + 0x70) = 1;
+                        break;
+                }
+            }
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+                CALL(snd_postEvent)(0x802);
+                if (self->proc->flags & 0x10000) {
+                    CALL(viewrec_uso_func_00000000)();
+                }
+            }
+            break;
+        case 1:
+            old = *(s32 *)((char *)self + 0xA8);
+            if (*(s32 *)((char *)self + 0xA8) > *(s32 *)((char *)self + 0xAC) && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x10001) &&
+                (*(s32 *)((char *)self + 0xA8) & 1)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA8) -= 1;
+            }
+            if (*(s32 *)((char *)self + 0xA8) < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x4002) &&
+                !(*(s32 *)((char *)self + 0xA8) & 1)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA8) += 1;
+            }
+            if (*(s32 *)((char *)self + 0xA8) - 2 >= *(s32 *)((char *)self + 0xAC) &&
+                CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x2004)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA8) -= 2;
+            }
+            if (*(s32 *)((char *)self + 0xA8) + 2 < 8 && CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x8008)) {
+                CALL(snd_postEvent)(1);
+                *(s32 *)((char *)self + 0xA8) += 2;
+            }
+            if (old != *(s32 *)((char *)self + 0xA8)) {
+                *(s32 *)((char *)self + 0x6C) = 0;
+            }
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x100)) {
+                CALL(snd_postEvent)(0x195);
+                self->proc->mode = 0x2000000;
+                *(s32 *)((char *)self + 0x70) = 1;
+            }
+            if (CALL(input_checkPressed_00011E00)(&gInputMgr_vr, 0x200)) {
+                CALL(snd_postEvent)(0x802);
+                *(s32 *)((char *)self + 0xA0) -= 1;
+            }
+            break;
+    }
+}
 
 /* NM (84%): the erase screen's pad handling. Left / right pick yes / no (+0x70), A erases the record
  * set named by proc+0x70 (0x100000 course times, 0x200000 course scores, 0x400000 arcade, 0x800000
