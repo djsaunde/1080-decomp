@@ -253,7 +253,21 @@ INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_000016C
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_00001778);
 
-INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_0000180C);
+/* trnproc_uso_func_0000180C: next lesson after cur (wrapping at the count +0x108) that 1778
+ * accepts; cur itself if none. */
+int trnproc_uso_func_0000180C(char *self, int cur) {
+    int i;
+    for (i = 0; i < *(int *)(self + 0x108); i++) {
+        cur++;
+        if (cur == *(int *)(self + 0x108)) {
+            cur = 0;
+        }
+        if (CALL(trnproc_uso_func_00001778)(self, cur) != 0) {
+            return cur;
+        }
+    }
+    return cur;
+}
 
 INCLUDE_ASM("asm/nonmatchings/trnproc_uso/trnproc_uso", trnproc_uso_func_0000188C);
 
