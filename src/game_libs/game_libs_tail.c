@@ -1127,12 +1127,12 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
     char *temp_v0;
     char *var_v0;
 
-    *(s16 *)(arg0 + 2) = 1;
-    *(s16 *)(arg0 + 0) = 0x1F;
-    *(u16 *)(arg0 + 4) = 8;
-    arg0[18] = 8;
-    arg0[19] = 8;
-    arg0[20] = 8;
+    SETTINGS(arg0)->seqStep = 1;
+    SETTINGS(arg0)->unlocks = 0x1F;
+    SETTINGS(arg0)->flags = 8;
+    SETTINGS(arg0)->levels[0] = 8;
+    SETTINGS(arg0)->levels[1] = 8;
+    SETTINGS(arg0)->levels[2] = 8;
     var_v0 = arg0;
     for (var_v1 = 0; var_v1 != 8; var_v1 += 4) {
         var_v0[6] = 0;
@@ -1141,15 +1141,15 @@ void Backup_resetOptionsData_0000AFC4(char *arg0) {
         var_v0[9] = 0;
         var_v0 += 4;
     }
-    arg0[14] = 0;
-    arg0[15] = 0;
-    arg0[16] = 0;
-    arg0[17] = 0;
-    CALL(snd_setPlayer1VolumeLevel)(*(u8 *)(arg0 + 18));
-    CALL(func_0000023C)(*(u8 *)(arg0 + 19));
-    CALL(snd_setPlayer2VolumeLevel)(*(u8 *)(arg0 + 20));
-    CALL(func_000001FC)(*(u16 *)(arg0 + 4) & 3);
-    gl_flag_AFC4_bit2 = (*(u16 *)(arg0 + 4) & 4) == 4;
+    SETTINGS(arg0)->newMark[0] = 0;
+    SETTINGS(arg0)->newMark[1] = 0;
+    SETTINGS(arg0)->newMark[2] = 0;
+    SETTINGS(arg0)->unk11 = 0;
+    CALL(snd_setPlayer1VolumeLevel)(SETTINGS(arg0)->levels[0]);
+    CALL(func_0000023C)(SETTINGS(arg0)->levels[1]);
+    CALL(snd_setPlayer2VolumeLevel)(SETTINGS(arg0)->levels[2]);
+    CALL(func_000001FC)(SETTINGS(arg0)->flags & 3);
+    gl_flag_AFC4_bit2 = (SETTINGS(arg0)->flags & 4) == 4;
     do {
         temp_v0 = *(char **)((char *)&D_00000000 + 0x28);
         sp3C = 0x15;
@@ -1343,7 +1343,7 @@ void Backup_writeCourseArcadeOptions_0000B3DC(BackupSession *a0) {
     if ((v & BACKUP_MODE_ARCADE) != 0) {
         FCALL(Backup_writeArcade)(a0->backup, a0->arcade);
     }
-    FCALL(Backup_writeOptions)(a0->backup, (int)INPUT_MGR(gInputMgr).options);
+    FCALL(Backup_writeOptions)(a0->backup, INPUT_MGR(gInputMgr).options);
 }
 
 void Backup_sessionClearNew(BackupSession *a0) {
@@ -1470,9 +1470,9 @@ void Backup_resetAll_0000B710(BackupSession *a0) {
     CALL(Backup_resetArcadeData_0000AAEC)(a0->arcade);
     CALL(Backup_writeCourseArcade_0000B560)(a0);
     CALL(Backup_sessionResetGhost)(a0);
-    CALL(Backup_resetOptionsData_0000AFC4)((int)INPUT_MGR(gInputMgr).options);
+    CALL(Backup_resetOptionsData_0000AFC4)(INPUT_MGR(gInputMgr).options);
     CALL(input_initDefaults_00012188)(&gInputMgr);
-    CALL(Backup_writeOptions)(a0->backup, (int)INPUT_MGR(gInputMgr).options);
+    CALL(Backup_writeOptions)(a0->backup, INPUT_MGR(gInputMgr).options);
 }
 
 /* Backup_ctor: 59-insn alloc-if-null constructor (BBxx streaming
