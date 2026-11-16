@@ -102,6 +102,13 @@ build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_SUFFIX_
 # inject-suffix-bytes appends at the section end as well: clip .text back to the Text size
 build/src/snoweffects_uso/snoweffects_uso.c.o: TRUNCATE_TEXT := 0xA900
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: NON_MATCHING_TRUNCATE_TEXT := 0xA900
+# 9F44: EXACT IDO 7.1 NCC donor (agent-h run 621): inline Parm<T>::get() + Vec3 operator=.
+SNOW_9F44_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp.o
+$(SNOW_9F44_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += snoweffects_uso_func_00009F44=$(SNOW_9F44_DONOR)
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_9F44_DONOR)
 build/src/h2hproc_uso/h2hproc_uso.c.o: SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000
 build/src/h2hproc_uso/h2hproc_uso.c.o: TRUNCATE_TEXT := 0x1B30
 build/non_matching/src/h2hproc_uso/h2hproc_uso.c.o: NON_MATCHING_SUFFIX_BYTES_FORCE := h2h_closeSession_00000274=0x00000000 h2h_readVec3Parm_00001AFC=0x00000000

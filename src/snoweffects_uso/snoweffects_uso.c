@@ -36,6 +36,21 @@ typedef struct SnowPool {
 
 float snoweffects_uso_func_00000000(Vec3 *a, Vec3 *b);
 
+/* the ring-buffer cursors of the emitter that 0x46BC / 0x535C / 0x53E8 step */
+typedef struct SnowRing {
+    /* 0x00 */ char unk00[0x58];
+    /* 0x58 */ s32 readOfs;
+    /* 0x5C */ s32 writeOfs;
+    /* 0x60 */ s32 read;
+    /* 0x64 */ s32 write;
+    /* 0x68 */ s32 size;
+    /* 0x6C */ s32 stride;
+    /* 0x70 */ s32 count;
+} SnowRing;
+
+/* typed blank (0) alias for the reloc'd call to the global 0x3EE4 (floats on the stack) */
+extern void gl_func_00000000_snow_3ee4(void *self, int a1, int a2, int a3, int a4, float f5, float f6);
+
 typedef struct SnowRGBA {
     u8 r, g, b, a;
 } SnowRGBA;
@@ -279,7 +294,24 @@ float snoweffects_uso_func_000052D4(char *this, int a1, Vec3 *out, int a3) {
     return 0.0f;
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000535C);
+void snoweffects_uso_func_0000535C(SnowRing *r) {
+    if (++r->write == r->count) {
+        r->write = 0;
+    }
+    if (r->write == r->read) {
+        if (++r->read == r->count) {
+            r->read = 0;
+        }
+    }
+    if ((r->writeOfs += r->stride) == r->size) {
+        r->writeOfs = 0;
+    }
+    if (r->writeOfs == r->readOfs) {
+        if ((r->readOfs += r->stride) == r->size) {
+            r->readOfs = 0;
+        }
+    }
+}
 
 int snoweffects_uso_func_000053E8(char *this) {
     int d = *(int *)(this + 0x5C) - *(int *)(this + 0x58);
@@ -347,7 +379,15 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000718C);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000078E8);
+void snoweffects_uso_func_000078E8(char *this, int a1, int a2, int a3, int a4, int a5, float f6, float f7) {
+    (void)&a1;
+    (void)&a2;
+    (void)&a3;
+    *(char **)(this + 0xC) = (char *)&D_00000000 + 0x660;
+    XCALL(gl_func_00000000_snow_3ee4, snoweffects_uso_func_00003EE4)(this, a3, 2, a4, a5, f6, f7);
+    *(float *)(this + 0x15C) = 24.0f;
+    *(float *)(this + 0x164) = 140.0f;
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007960);
 
@@ -565,7 +605,10 @@ INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009E88);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009F44);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_9F44.cpp
+ * (agent-h run 621), REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00009F44(void *self) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009FE8);
 
