@@ -5,64 +5,78 @@
  * (+2 words each). Spliced into mgrproc_uso_o0_19C.c.o via REPLACE_FUNC_BODY. */
 extern "C" {
 typedef int s32;
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
-struct IC { int pad[0x13]; int v; };
-extern struct IC import_800200E4;
+/* import_800200E4 = GameFlow +0x4C: playerRider (game/input.h). */
+extern struct { char pad[0x4C]; int playerRider; } import_800200E4;
 /* import_800201EC = GameFlow (bootup Bss 0xF8, game/input.h) +0x154: `options`, the
  * BackupOptions settings record (gdl/backup.h). Local view of its head: this .cpp builds
  * without common.h (agent-h run 509). */
 struct GameFlowOptionsHead { unsigned short unlocks; unsigned short seqStep; };
 extern struct { char pad[0x154]; struct GameFlowOptionsHead *options; } import_800201EC;
 extern char import_8005C6E0;
+/* Mirror of game/modeproc.h MgrCourseList / ModeFlowProc (that header pulls gdl/race.h and
+ * gdl/backup.h, whose offset asserts edg rejects; keep the two in step). arg0 is the mgr
+ * flow object (GameFlow.flowProc), +8 its course list (agent-h run 552). */
+typedef struct MgrCourseList {
+    s32 retries;                /* 0x00 */
+    s32 idx;                    /* 0x04: current course */
+    s32 count;                  /* 0x08 */
+    s32 courses[6];             /* 0x0C */
+    s32 riders[6];              /* 0x24: the opponent of each course */
+} MgrCourseList;
+typedef struct ModeFlowProc {
+    struct BackupSession *session; /* 0x0 */
+    void *vptr;                 /* 0x4 */
+    MgrCourseList *courseList;  /* 0x8 */
+} ModeFlowProc;
 void mgr_pickRivals_000005D0(char *a0);
 int import_000B574C(...);
 int mgrproc_uso_D_01F97C(...);
 int import_000AE5B0(...);
 
-int mgr_initMatchRace_00000700(char *arg0, int arg1) {
+int mgr_initMatchRace_00000700(ModeFlowProc *flow, int level) {
     register char *base; /* s0; case-1 dead address of import_8005C6E0 */
-    *(int*)(FW(arg0, 0x8)) = 3;
-    FW(FW(arg0, 0x8), 0x4) = 0;
-    switch (arg1) { /* irregular */
+    flow->courseList->retries = 3;
+    flow->courseList->idx = 0;
+    switch (level) { /* irregular */
     case 1:
         base = &import_8005C6E0;
         if (*(s32 *)0xA0000284 == 0x240B17D7) {
-            FW(FW(arg0, 0x8), 0x8) = 4;
+            flow->courseList->count = 4;
         } else {
-            FW(FW(arg0, 0x8), 0x8) = 3;
+            flow->courseList->count = 3;
         }
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        mgr_pickRivals_000005D0(arg0);
+        flow->courseList->courses[0] = 2;
+        flow->courseList->courses[1] = 3;
+        flow->courseList->courses[2] = 4;
+        flow->courseList->courses[3] = 5;
+        mgr_pickRivals_000005D0((char *)flow);
         break;
     case 2:
-        FW(FW(arg0, 0x8), 0x8) = 5;
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        FW(FW(arg0, 0x8), 0x1C) = 6;
-        mgr_pickRivals_000005D0(arg0);
-        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;
+        flow->courseList->count = 5;
+        flow->courseList->courses[0] = 2;
+        flow->courseList->courses[1] = 3;
+        flow->courseList->courses[2] = 4;
+        flow->courseList->courses[3] = 5;
+        flow->courseList->courses[4] = 6;
+        mgr_pickRivals_000005D0((char *)flow);
+        flow->courseList->riders[4] = import_800200E4.playerRider;
         break;
     case 3:
-        FW(FW(arg0, 0x8), 0x8) = 6;
-        FW(FW(arg0, 0x8), 0xC) = 2;
-        FW(FW(arg0, 0x8), 0x10) = 3;
-        FW(FW(arg0, 0x8), 0x14) = 4;
-        FW(FW(arg0, 0x8), 0x18) = 5;
-        FW(FW(arg0, 0x8), 0x1C) = 6;
-        FW(FW(arg0, 0x8), 0x20) = 7;
-        mgr_pickRivals_000005D0(arg0);
-        FW(FW(arg0, 0x8), 0x34) = import_800200E4.v;
+        flow->courseList->count = 6;
+        flow->courseList->courses[0] = 2;
+        flow->courseList->courses[1] = 3;
+        flow->courseList->courses[2] = 4;
+        flow->courseList->courses[3] = 5;
+        flow->courseList->courses[4] = 6;
+        flow->courseList->courses[5] = 7;
+        mgr_pickRivals_000005D0((char *)flow);
+        flow->courseList->riders[4] = import_800200E4.playerRider;
         if (import_800201EC.options->seqStep == 3) {
-            FW(FW(arg0, 0x8), 0x38) = 5;
+            flow->courseList->riders[5] = 5;
         } else if (import_800201EC.options->seqStep == 4) {
-            FW(FW(arg0, 0x8), 0x38) = 6;
+            flow->courseList->riders[5] = 6;
         } else {
-            FW(FW(arg0, 0x8), 0x38) = 7;
+            flow->courseList->riders[5] = 7;
         }
         break;
     }

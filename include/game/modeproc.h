@@ -30,6 +30,35 @@ typedef struct ArcCourseList {
 
 typedef char ArcCourseList_size_check[sizeof(ArcCourseList) == 0x38 ? 1 : -1];
 
+/* ---- MgrCourseList (mgrproc, mem_new(0x3C) in mgr_openSession_00000504) ----
+ * mgr_initMatchRace_00000700(flow, level) fills it: 3 retries, level 1 / 2 / 3 = 4 / 5 / 6 courses
+ * (ids 2..7; only 3 courses when the cart check word at 0xA0000284 differs), one rider per course:
+ * riders[0..3] the CPU rivals from mgr_pickRivals_000005D0, riders[4] the player's own rider
+ * (GameFlow.playerRider), riders[5] the boss 5 / 6 / 7 picked by options->seqStep. mgr_procMain's
+ * race state reads courses[idx] into GameFlow.course and riders[idx] into GameFlow +0x17D (run 552). */
+typedef struct MgrCourseList {
+    /* 0x00 */ s32 retries;
+    /* 0x04 */ s32 idx;              /* current course */
+    /* 0x08 */ s32 count;
+    /* 0x0C */ s32 courses[6];
+    /* 0x24 */ s32 riders[6];        /* the opponent of each course */
+} MgrCourseList;
+
+typedef char MgrCourseList_size_check[sizeof(MgrCourseList) == 0x3C ? 1 : -1];
+
+/* ---- ModeFlowProc (GameFlow.flowProc: the per-mode entry object GameFlow_startMode builds) ----
+ * mem_new(8) or (0xC) for flow modes 2 / 3 / 5; the inlined ctor cascade stores the base vtable
+ * (bootup Data 0xC550) and then the mode module's vtable at +4. GameFlow_startMode calls the vtable
+ * entry at +8 (`<pfx>_procMain(this + delta, state)`). The arc / mgr procMains keep the record
+ * session at +0 (<pfx>_openSession / closeSession) and the course list at +8 (run 552). */
+typedef struct ModeFlowProc {
+    /* 0x0 */ struct BackupSession *session;
+    /* 0x4 */ void *vptr;            /* Cfront vtable: VT_SLOT(vptr, 0) = <pfx>_procMain */
+    /* 0x8 */ MgrCourseList *courseList; /* 0xC objects only (ArcCourseList for arcproc) */
+} ModeFlowProc;
+
+#define FLOWPROC(p) ((ModeFlowProc *)(p))
+
 /* ---- ArcDataManager (arcproc, alloc 0xD8; arc_DataManager_init) ---- */
 typedef struct ArcDataManager {
     /* 0x00 */ DataManager base;
