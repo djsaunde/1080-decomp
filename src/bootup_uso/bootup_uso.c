@@ -4712,18 +4712,18 @@ void TreeTmpl_display(char *arg0) {
     char *node;
     char *obj;
 
-    FCALL(gfx_setPrimColour)(&gGfxLib, arg0 + 0x4C);
-    FCALL(FogParms_emit_00043F1C)(arg0 + 0x5C);
+    FCALL(gfx_setPrimColour)(&gGfxLib, TREETMPL(arg0)->colour);
+    FCALL(FogParms_emit_00043F1C)(TREETMPL(arg0)->fog);
 
-    node = *(char**)(arg0 + 0x34);
+    node = (char *)TREETMPL(arg0)->items;
     if (node != 0) {
         arg0 = node;
         do {
             if ((NODE(arg0)->doFlags & 4) != 0) {
                 obj = (char *)NODE(arg0)->vptr;
-                ((int (*)(char *))*(int*)(obj + 0x1C))(arg0 + *(short*)(obj + 0x18));
+                ((int (*)(char *))VT_SLOT(obj, 2).fn)(arg0 + VT_SLOT(obj, 2).delta);
             }
-            arg0 = *(char**)(arg0 + 0x84);
+            arg0 = (char *)((SNode *)arg0)->next;
         } while (arg0 != 0);
     }
     FCALL(FogParms_emit_00043F1C)(&gGfxLib_00000294);  /* alt-entry tail call to func_0000027C+0x18 */
@@ -4734,8 +4734,8 @@ extern char gHostio_func_00008744_arg2;
 void TreeTmpl_hostioParms(char *a0) {
     int arg = *(int*)(a0 + 0xC);
     FCALL(hostio_beginGroup)(&gHostio_func_00008744_arg1, arg, 0);
-    FCALL(gfx_declColourParm)(a0 + 0x4C, 0);
-    FCALL(FogParms_hostioParms)(a0 + 0x5C);
+    FCALL(gfx_declColourParm)(TREETMPL(a0)->colour, 0);
+    FCALL(FogParms_hostioParms)(TREETMPL(a0)->fog);
     FCALL(hostio_endGroup)(&gHostio_func_00008744_arg2);
     FCALL(Node_hostioParms)(a0);
 }
@@ -4771,18 +4771,18 @@ void *TreeTmpl_create(char *arg0) {
     char *s0;
     int kind; int pad[5];
 
-    if (*(int *)(arg0 + 0x40) == 0) {
+    if (TREETMPL(arg0)->shape == 0) {
         gPolyFlags_3EEC4_87A4_wr = gPolyFlags_3EEC4_87A4_rd | 8;
         if (1) {}
         *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 4) = 0xAA002;
         *(int *)(&gPolyGeomMode_3EEC8_87A4_cfg + 0) = 0;
-        *(int *)(arg0 + 0x40) = func_00000000(0, &sStr_tree_7FF4, *(int *)(arg0 + 0x48), 0);
+        TREETMPL(arg0)->shape = func_00000000(0, &sStr_tree_7FF4, TREETMPL(arg0)->shapeData, 0);
     }
     s1 = (char *)func_00000000(0xC8);
     if (s1 != 0) {
         func_00000000_087A4(s1);
         NODE(s1)->vptr = (int)(D_087A4_vtable + 0x10);
-        s0 = s1 + 0x88;
+        s0 = (char *)&TREE(s1)->coll;
         if (s0 == 0) {
             s0 = (char *)func_00000000(0x40);
             if (s0 == 0) {
@@ -4796,16 +4796,16 @@ skip:
     TREE(s1)->snode.scale = 10.0f;
     kind = 0x13;
     s0 = s1;
-    ((void (*)(char *, int *))*(int *)(NODE(s1)->vptr + 0x2C))(s1 + *(short *)(NODE(s1)->vptr + 0x28), &kind);
-    s1 = (char *)*(int *)(arg0 + 0x40);
-    func_00000000_087A4(s0 + 0x10, s1);
+    ((void (*)(char *, int *))VT_SLOT(NODE(s1)->vptr, 4).fn)(s1 + VT_SLOT(NODE(s1)->vptr, 4).delta, &kind);
+    s1 = (char *)TREETMPL(arg0)->shape;
+    func_00000000_087A4(&NODE(s0)->children, s1);
     if (NODE(s1)->parent != 0) {
         NODE(s1)->unk04 = 1;
     }
     NODE(s1)->parent = (int)s0;
-    func_00000000_087A4_f(s0 + 0x88, s0, 0x74, 150.0f, D_000005F0);
+    func_00000000_087A4_f((char *)&TREE(s0)->coll, s0, 0x74, 150.0f, D_000005F0);
     TREE(s0)->coll.obj.flags |= 1;
-    func_00000000_087A4(D_87A4_tail, s0 + 0x88);
+    func_00000000_087A4(D_87A4_tail, &TREE(s0)->coll);
     return s0;
 }
 

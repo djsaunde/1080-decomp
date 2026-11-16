@@ -132,6 +132,28 @@ typedef struct Tree {
 
 #define TREE(p) ((Tree *)(p))
 
+/* ---- TreeTmpl (0x74; the "tr1".. item types item_registerTemplates builds, bootup_uso_ncc_55A0.cpp) ----
+ * An SNodeItemType (gdl/item.h ItemType head, 0x48) for trees (agent-h run 533). Its items are Trees chained
+ * through SNode.next from `items`; TreeTmpl_create lazily builds the one PolyShape every tree shares
+ * (PolyShape_ctor(0, "tree", shapeData, 0)) and hangs it under each new Tree. TreeTmpl_display sets the
+ * prim colour, emits the fog parms, draws every item with DoDisplay set, then restores the GfxLib fog;
+ * TreeTmpl_hostioParms publishes colour (gfx_declColourParm) and fog (FogParms_hostioParms). */
+typedef struct TreeTmpl {
+    Node node;                  /* 0x00 */
+    s32 tag;                    /* 0x2C: ItemType tag ("tr1" ..) */
+    s32 next;                   /* 0x30: ItemMgr type list */
+    struct SNode *items;        /* 0x34: the Trees, chained through SNode.next */
+    s32 unk38;                  /* 0x38: 1 (item_registerTemplates) */
+    s32 unk3C;
+    s32 shape;                  /* 0x40: the shared PolyShape (0 until the first TreeTmpl_create) */
+    s32 typeId;                 /* 0x44 */
+    s32 shapeData;              /* 0x48: PolyShape_ctor arg 3 (Data, item_registerTemplates) */
+    f32 colour[4];              /* 0x4C: gfx_setPrimColour; (0, 0, 0, 1) */
+    char fog[0x18];             /* 0x5C: FogParms (FogParms_emit / FogParms_hostioParms) */
+} TreeTmpl;                     /* 0x74 */
+
+#define TREETMPL(p) ((TreeTmpl *)(p))
+
 #define ENVOBJ_ASSERT(T, f, off) typedef char envobj_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 ENVOBJ_ASSERT(U64BGWall, scale, 0x3C);
 ENVOBJ_ASSERT(EnvSettings, unk40, 0x40);
@@ -140,6 +162,9 @@ ENVOBJ_ASSERT(FogItem, rng, 0x5C);
 ENVOBJ_ASSERT(SnowItem, unk5C, 0x5C);
 ENVOBJ_ASSERT(FallingSnow, unkBC, 0xBC);
 ENVOBJ_ASSERT(Tv1Tmpl, displayCount, 0x68);
+ENVOBJ_ASSERT(TreeTmpl, shapeData, 0x48);
+ENVOBJ_ASSERT(TreeTmpl, fog, 0x5C);
+typedef char TreeTmpl_size_check[sizeof(TreeTmpl) == 0x74 ? 1 : -1];
 ENVOBJ_ASSERT(SnowBCollider, contactFlags, 0x174);
 ENVOBJ_ASSERT(ShpNode, life, 0x3D4);
 ENVOBJ_ASSERT(Tree, coll.obj.pos, 0xA0);
