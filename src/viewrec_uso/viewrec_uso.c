@@ -52,15 +52,26 @@ extern Node *sVrScreen;             /* 0x880: the screen being shown */
 /* Cfront virtual call through slot n of a Node's vtable */
 #define VCALL(obj, n) ((void (*)(int))VT_SLOT((obj)->vptr, n).fn)(VT_SLOT((obj)->vptr, n).delta + (int)(obj))
 
-/* 0x0 .. 0x214: switch the shown screen (Process_stop the old one, start the new one through
- * vtable slot 10, record the mode). NM: the target copies the new screen into v1 and loads the
- * vptr into v0 (`or v1,v0,zero; lw v0,40(v0)`), one word longer; cfe and NCC (plain virtual
- * call, inline setter) both load the vptr into v1. */
+/* 0x0 .. 0x214: switch the shown screen: Process_stop the old one, start the new one through
+ * vtable slot 10, record the mode. The new screen is read through a local and the code-free
+ * `if (sVrScreen) {}` tests around the start call give the target's copy of the screen into v1
+ * with the vptr in v0 (`or v1,v0,zero; lw v0,40(v0)`) and the &sVrScreen base in a1. */
+#define VR_SHOW_SCREEN(field)                                                                     \
+    {                                                                                             \
+        Node *s = sVrProc->field;                                                                 \
+        sVrScreen = s;                                                                            \
+        if (sVrScreen) {}                                                                         \
+        VCALL(sVrScreen, 10);                                                                     \
+        if (sVrScreen) {}                                                                         \
+    }
+
+/* NM: the show part matches; the tail differs. The target puts &sVrProc in v0 for the two loads
+ * after the 0x1A08 call (`lui v0; addiu v0,v0,0x87C`) while keeping the load before the call as a
+ * plain `lui t8; lw t8`; cfe uses a `lui` per load. */
 #ifdef NON_MATCHING
 void viewrec_uso_func_00000000(void) {
     gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->mainMenu;
-    VCALL(sVrScreen, 10);
+    VR_SHOW_SCREEN(mainMenu);
     gl_func_00000000(/* viewrec_uso_func_00001A08 */ sVrProc->mainMenu);
     sVrProc->mode = 0x10000;
     sVrMenu = sVrProc->menu88;
@@ -69,60 +80,35 @@ void viewrec_uso_func_00000000(void) {
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000000);
 #endif
 
-#ifdef NON_MATCHING
 void viewrec_uso_func_00000084(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->screen60;
-    VCALL(sVrScreen, 10);
+    CALL(Process_stop)(sVrScreen);
+    VR_SHOW_SCREEN(screen60);
     sVrProc->mode = 0x1000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000084);
-#endif
 
-#ifdef NON_MATCHING
 void viewrec_uso_func_000000E8(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->screen58;
-    VCALL(sVrScreen, 10);
+    CALL(Process_stop)(sVrScreen);
+    VR_SHOW_SCREEN(screen58);
     sVrProc->mode = 0x40000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000000E8);
-#endif
 
-#ifdef NON_MATCHING
 void viewrec_uso_func_0000014C(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->screen5C;
-    VCALL(sVrScreen, 10);
+    CALL(Process_stop)(sVrScreen);
+    VR_SHOW_SCREEN(screen5C);
     sVrProc->mode = 0x20000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_0000014C);
-#endif
 
-#ifdef NON_MATCHING
 void viewrec_uso_func_000001B0(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->screen68;
-    VCALL(sVrScreen, 10);
+    CALL(Process_stop)(sVrScreen);
+    VR_SHOW_SCREEN(screen68);
     sVrProc->mode = 0x80000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000001B0);
-#endif
 
-#ifdef NON_MATCHING
 void viewrec_uso_func_00000214(void) {
-    gl_func_00000000(/* Process_stop */ sVrScreen);
-    sVrScreen = sVrProc->screen64;
-    VCALL(sVrScreen, 10);
+    CALL(Process_stop)(sVrScreen);
+    VR_SHOW_SCREEN(screen64);
     sVrProc->mode = 0x4000000;
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000214);
-#endif
 
 void viewrec_uso_func_00000278(void) {
 }
