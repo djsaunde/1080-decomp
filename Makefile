@@ -6080,3 +6080,13 @@ build/src/titproc_uso/titproc_uso.c.o: build/src/match_imports/KeyMessage_displa
 build/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/titproc_uso/titproc_uso.c.o: build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/KeyMessage_display.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+
+# snoweffects.uso: agent-e's NCC donors for the functions at 0x6000+ (agent-e run 639; kept apart from
+# agent-h's SNOW_NCC_FUNCS block). Classes: src/snoweffects_uso/snoweffects_ncc_e.h.
+SNOW_NCC_E_DONOR := build/src/snoweffects_uso/snoweffects_uso_ncc_e.cpp.o
+$(SNOW_NCC_E_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_e.cpp src/snoweffects_uso/snoweffects_ncc_e.h src/snoweffects_uso/snoweffects_ncc.h
+	@mkdir -p $(dir $@)
+	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
+SNOW_NCC_E_FUNCS := snoweffects_uso_func_00008C60 snoweffects_uso_func_00009FE8
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NCC_E_FUNCS),$(f)=$(SNOW_NCC_E_DONOR))
+build/src/snoweffects_uso/snoweffects_uso.c.o build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NCC_E_DONOR)

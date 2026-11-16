@@ -957,7 +957,10 @@ void snoweffects_uso_func_00007F60(char *this, int a1, int a2, int a3, int a4, i
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00007FE0);
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00008C60);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 639),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00008C60(void *self) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00008D70);
 
@@ -1143,7 +1146,10 @@ SnowLink *SnowLink_ctor_00009E88(SnowLink *this, int a1, void *src, int a3) {
 void SnowLink_update_00009F44(void *self) {
 }
 
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00009FE8);
+/* EXACT via an IDO 7.1 NCC (C++) donor: src/snoweffects_uso/snoweffects_uso_ncc_e.cpp (agent-e run 639),
+ * REPLACE_FUNC_BODY-spliced over this placeholder in both build trees. */
+void snoweffects_uso_func_00009FE8(void *self) {
+}
 
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_0000A10C);
 
