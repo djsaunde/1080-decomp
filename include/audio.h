@@ -524,13 +524,20 @@ typedef struct SequenceLayer {
     /* 0x00 */ u32 notePropertiesNeedInit : 1; /* set by Audio_NoteInitForLayer */
     /* 0x01 */ u32 rest : 24;                  /* byte 0x02 is OoT's u8 instOrWave (0xFF = take the
                                                 * channel's); Audio_NoteInitForLayer reads it as a byte */
-    /* 0x04 */ char unk_04[0x18 - 0x04];
+    /* 0x04 */ char unk_04;
+    /* 0x05 */ u8 pan;                         /* Audio_SequenceChannelProcessSound: notePan = */
+    /* 0x06 */ s8 notePan;                     /* (pan * (0x80 - ch->panChannelWeight) + ch->pan) >> 7 */
+    /* 0x07 */ char unk_07[0x18 - 0x07];
     /* 0x18 */ AdsrSettings adsr;
     /* 0x20 */ char unk_20[0x2C - 0x20];
     /* 0x2C */ struct Note *note;              /* Audio_NoteInitForLayer */
-    /* 0x30 */ char unk_30[0x40 - 0x30];
+    /* 0x30 */ f32 freqScale;                  /* ProcessSound: noteFreqScale = freqScale * channel freq */
+    /* 0x34 */ char unk_34[0x38 - 0x34];
+    /* 0x38 */ f32 velocitySquare;             /* ProcessSound: noteVelocity = velocitySquare * ch->appliedVolume */
+    /* 0x3C */ char unk_3C[0x40 - 0x3C];
     /* 0x40 */ f32 noteVelocity;               /* Audio_NoteInitForLayer (= 0) */
-    /* 0x44 */ char unk_44[0x4C - 0x44];
+    /* 0x44 */ f32 noteFreqScale;
+    /* 0x48 */ char unk_48[0x4C - 0x48];
     /* 0x4C */ TunedSample *tunedSample;       /* Audio_NoteInitForLayer -> note sampleState */
     /* 0x50 */ SequenceChannel *channel;
     /* 0x54 */ SeqScriptState scriptState;

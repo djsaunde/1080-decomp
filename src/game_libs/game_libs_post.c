@@ -9535,6 +9535,7 @@ typedef struct { unsigned p0:2; unsigned b29:1; unsigned rest:29; } BF_000295BC;
  * the other way round), and the layer pan sum keeps the raw FW(arg0, 0x30) (channel->pan): as a
  * member, in either order, the addu operands and the t-temps after it swap. */
 #define CH ((SequenceChannel *)arg0)
+#define LAYER ((SequenceLayer *)temp_v1)
 void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     f32 var_f0;
     f32 var_f0_2;
@@ -9560,28 +9561,29 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     }
     for (arg2 = 0; arg2 != 0x20; arg2 += 4) {
         temp_v1 = *(char **)(arg0 + arg2 + 0x50);
-        if ((temp_v1 != 0) && (((u32) FW(temp_v1, 0x0) >> 0x1F) != 0) && (FW(temp_v1, 0x2C) != 0)) {
+        if ((temp_v1 != 0) && LAYER->enabled && (LAYER->note != 0)) {
             b = *(u8*)temp_v1;
             if (b & 1) {
-                FF(temp_v1, 0x44) = FF(temp_v1, 0x30) * var_f0_2;
-                FF(temp_v1, 0x40) = FF(temp_v1, 0x38) * CH->appliedVolume;
-                (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
+                LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
+                LAYER->noteVelocity = LAYER->velocitySquare * CH->appliedVolume;
+                LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
                 *(u8*)temp_v1 = b & 0xFFFE;
             } else {
                 if (((BF1_000295BC *) arg0)->f80) {
-                    FF(temp_v1, 0x44) = FF(temp_v1, 0x30) * var_f0_2;
+                    LAYER->noteFreqScale = LAYER->freqScale * var_f0_2;
                 }
                 if (((FW(arg0, 0x0) << 8 << 1) < 0) || (arg1 != 0)) {
-                    FF(temp_v1, 0x40) = FF(temp_v1, 0x38) * CH->appliedVolume;
+                    LAYER->noteVelocity = LAYER->velocitySquare * CH->appliedVolume;
                 }
                 if (((FW(arg0, 0x0) << 9 << 1) < 0)) {
-                    (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
+                    LAYER->notePan = (s32) ((LAYER->pan * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
                 }
             }
         }
     }
     (*(u8*)(arg0 + 0x1)) = 0;
 }
+#undef LAYER
 #undef CH
 
 // Audio_SequencePlayerProcessSound — STRUCTURAL PASS (0x1EC / 123 words, no episode).
