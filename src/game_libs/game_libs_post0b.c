@@ -5454,8 +5454,8 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
     V3_3B1A8 t;
     f32 pad[3];
     f32 X, Y, Z;
-    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
-        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
+    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
+        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
         q = &p;
         q->x = t.x; q->y = t.y; q->z = t.z;
         X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));
@@ -5465,7 +5465,7 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
         q->x = X;
         q->z = Z;
         {
-            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: CollObj +0x8C is the point list (coll.h unk8C); a0 is passed as char * by every caller */
+            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is the point list; not CollObj (0x34 bytes), perhaps CollShape.unk8C (coll.h), no caller in C to prove it */
             i++;
             d->x = d->x + q->x;
             d->y = d->y + q->y;
