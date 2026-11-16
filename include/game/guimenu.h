@@ -29,7 +29,9 @@ typedef struct GuiMenu {
     /* 0x34 */ s32 alpha;           /* 0xFF on centerRows; PauseMenu_update counts a lower value up to 0xFF */
     /* 0x38 */ s32 timer;           /* 0 on centerRows, +1 per update */
     /* 0x3C */ f32 colour[4];       /* rgb from the RoData triple at 0xC10, a = 0 */
-    /* 0x4C */ char unk4C[0x6C - 0x4C];
+    /* 0x4C */ f32 selColour[4];    /* the cursor row's rgba (PauseMenu_create: 119 / 117 / 229 / 255 over 255;
+                                     * PauseMenu_display's q4C) */
+    /* 0x5C */ f32 rowColour[4];    /* the other rows' rgba (192 / 194 / 229 / 255 over 255; display's q5C) */
     /* 0x6C */ f32 x;               /* 160 (centerRows) */
     /* 0x70 */ f32 y;               /* 120 - rowHeight / 2 * numRows */
     /* 0x74 */ f32 rowHeight;       /* 17 (initRows) */
@@ -43,6 +45,7 @@ typedef char GuiRow_size_check[sizeof(GuiRow) == 0x28 ? 1 : -1];
 typedef char GuiMenu_size_check[sizeof(GuiMenu) == 0x304 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char GuiMenu_cursor_check[(int)&((GuiMenu *)0)->cursor == 0x7C ? 1 : -1];
+typedef char GuiMenu_rowColour_check[(int)&((GuiMenu *)0)->rowColour == 0x5C ? 1 : -1];
 #endif
 
 /* Field access through an untyped `char *` / `int *` (the -O0 bodies keep them). */

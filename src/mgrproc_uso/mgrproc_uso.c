@@ -86,7 +86,7 @@ void mgr_pauseRetry_00000B5C(void) {
         import_000A5938(import_80263D60_30);
     } else {
         INPUT_MGR(import_80020098).procState = 3;
-        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 4, *(int *)((char *)(int *)MGRRACE(import_80263D60_30)->courseList + 0xC));
+        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(import_80263D60_30, 4, MGRRACE(import_80263D60_30)->courseList->courses[0]);
     }
 }
 
@@ -213,7 +213,7 @@ extern char import_802655EC;
 extern char import_802656A4;
 extern int import_80020228;
 extern char import_800200D8;
-char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
+char *MGRRaceProcess_ctor(char *obj, int a1, int a2, MgrCourseList *a3, int arg5) {
     char *o1;
     char *o2;
     char *o3;
@@ -242,7 +242,7 @@ char *MGRRaceProcess_ctor(char *obj, int a1, int a2, int a3, int arg5) {
     MGRRACE(obj)->overlayAlpha = 0.0f;
     MGRRACE(obj)->fade7A4 = 0.0f;
     MGRRACE(obj)->retriesVel = 0.0f;
-    MGRRACE(obj)->retries = *(int *)MGRRACE(obj)->courseList;
+    MGRRACE(obj)->retries = MGRRACE(obj)->courseList->retries;
     MGRRACE(obj)->retriesX = 160.0f - (float)(MGRRACE(obj)->retries * 2 - 2);
     MGRRACE(obj)->nameEntryMode = 1;
     MGRRACE(obj)->retriesY = 210.0f;
@@ -336,15 +336,15 @@ extern int import_800200EC;
 extern int gInputMgr_800200FC;
 extern char import_80020100;
 void mgr_loadSprites_0000119C(MgrRace *s0) {
-    int *q;                  /* the course list: q[1] idx, q[2] count */
+    MgrCourseList *q;
     import_0024F228(&import_80263D30, (INPUT_MGR(import_80020100).level - 1) | 0x200000);
     import_0024F228(&s0->sprites[0], INPUT_MGR(gInputMgr_800200FC).course | 0x000A0000);
     import_0024F228(&s0->sprites[1], 0x210000);
-    q = (int *)s0->courseList;
-    if (q[2] == q[1] + 1) {
+    q = s0->courseList;
+    if (*(int *)&q->count == *(int *)&q->idx + 1) { /* the last course (the plain member form swaps t6 / t7) */
         import_0024F228(&s0->sprites[2], 0x210000 | 1);
     } else {
-        import_0024F228(&s0->sprites[2], 0x210000 | (q[1] + 2));
+        import_0024F228(&s0->sprites[2], 0x210000 | (q->idx + 2));
     }
     import_0024F228(&s0->sprites[3], INPUT_MGR(import_800200EC).playerBoard | 0x001E0000);
     import_0024F278(&s0->sprites[5], 0x210000 | 0x7);
@@ -694,7 +694,7 @@ void MGRRaceProcess_onRaceOver(MgrRace *arg0) {
         }
         break;
     case 4:
-        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(arg0, 4, ((int *)arg0->courseList)[((int *)arg0->courseList)[1] + 4]);
+        XCALL(mgrproc_uso_func_00F954, Process_fadeOut_0000F954)(arg0, 4, arg0->courseList->courses[arg0->courseList->idx + 1]);
         break;
     }
 }
@@ -1666,7 +1666,7 @@ void MgrNameEntry_drawBlinkBanner_00002E3C(char *a0) {
  * docs/MATCHING_WORKFLOW.md#yay0-block-unlinked-in-unit-jal-f360. Also
  * dropped a stray unmatched #endif that IDO cfe had silently tolerated. */
 void mgr_DataManager_init(self, a1, a2, a3, arg5)
-    MgrDataManager *self; int a1, a2, a3, arg5;
+    MgrDataManager *self; int a1, a2, arg5; MgrCourseList *a3;
 {
     int *node;
     int obj;

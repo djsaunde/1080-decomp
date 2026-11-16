@@ -94,7 +94,7 @@ typedef char ArcRace_resultFade_check[(int)&((ArcRace *)0)->resultFade == 0x77C 
 /* ---- MgrDataManager (mgrproc, alloc 0xE0; mgr_DataManager_init) ---- */
 typedef struct MgrDataManager {
     /* 0x00 */ DataManager base;
-    /* 0xB8 */ s32 courseList;       /* init arg 3 */
+    /* 0xB8 */ MgrCourseList *courseList; /* init arg 3 (MGRRaceProcess_ctor passes MgrRace.courseList) */
     /* 0xBC */ s32 race;             /* the owning MgrRace (init arg 1) */
     /* 0xC0 */ s32 rankLabel;        /* built from the session record's bytes 5-7 */
     /* 0xC4 */ f32 colour[4];
@@ -108,8 +108,7 @@ typedef char MgrDataManager_size_check[sizeof(MgrDataManager) == 0xE0 ? 1 : -1];
 /* ---- MgrRace (MGRRaceProcess, alloc 0x7F0) ---- */
 typedef struct MgrRace {
     /* 0x000 */ RaceProcess race;
-    /* 0x6A8 */ s32 courseList;      /* course list (ctor arg 3): +0 retries, +4 idx, +8 count,
-                                      * +0xC courses, +0x24 riders */
+    /* 0x6A8 */ MgrCourseList *courseList; /* ctor arg 3 = ModeFlowProc.courseList (mgr_procMain) */
     /* 0x6AC */ s32 dataMgr;         /* MgrDataManager * (also InputMgr.dataMgr) */
     /* 0x6B0 */ RaceSprite sprites[10]; /* mgr_loadSprites: 0x6B0 0x6C8 0x6E0(course n of m)
                                       * 0x6F8 (0x710 unused) 0x728 0x740 0x758 0x770 0x788 */

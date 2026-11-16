@@ -218,13 +218,13 @@ void *PauseMenu_create(char *a0) {
         NODE(a0)->vptr = (char *)&PauseMenu_vtbl;
         s = a0;
         d = &sStr_PauseMenu_C5C4;
-        NODE(s)->name = (const char *)d;
-        s = GUIMENU(a0)->unk4C;               /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
+        NODE(s)->name = (int)d;
+        s = (char *)GUIMENU(a0)->selColour;   /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;
         *(float *)(s + 4) = (float)(0, 117) / 255.0f;
         *(float *)(s + 8) = (float)(0, 229) / 255.0f;
         *(float *)(s + 12) = (float)(0, 255) / 255.0f;
-        s = GUIMENU(a0)->unk4C + 0x10;        /* 0x5C: the other rows' colour (PauseMenu_display's q5C) */
+        s = (char *)GUIMENU(a0)->rowColour;   /* 0x5C: the other rows' colour (PauseMenu_display's q5C) */
         *(float *)(s + 0) = (float)(0, 192) / 255.0f;
         *(float *)(s + 4) = (float)(0, 194) / 255.0f;
         *(float *)(s + 8) = (float)(0, 229) / 255.0f;
