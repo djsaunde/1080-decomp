@@ -4693,9 +4693,9 @@ INCLUDE_ASM("asm/nonmatchings/bootup_uso", SnowTmpl_create);
 void Tree_handleMsg(char *a0, int *a1) {
     FCALL(SNode_handleMsg)(a0);
     if (*a1 == 7 || *a1 == 19) {
-        *(float*)(a0 + 0xA0) = *(float*)(a0 + 0x5C);
-        *(float*)(a0 + 0xA4) = *(float*)(a0 + 0x60);
-        *(float*)(a0 + 0xA8) = *(float*)(a0 + 0x64);
+        TREE(a0)->coll.obj.pos[0] = TREE(a0)->snode.pos[0];
+        TREE(a0)->coll.obj.pos[1] = TREE(a0)->snode.pos[1];
+        TREE(a0)->coll.obj.pos[2] = TREE(a0)->snode.pos[2];
     }
 }
 
@@ -4790,10 +4790,10 @@ void *TreeTmpl_create(char *arg0) {
             }
         }
         func_00000000_087A4(s0);
-        *(int *)(s0 + 0x30) = (int)&D_87A4_vt;
+        COLLOBJ(s0)->vptr = (int)&D_87A4_vt;
     }
 skip:
-    *(float *)(s1 + 0x70) = 10.0f;
+    TREE(s1)->snode.scale = 10.0f;
     kind = 0x13;
     s0 = s1;
     ((void (*)(char *, int *))*(int *)(NODE(s1)->vptr + 0x2C))(s1 + *(short *)(NODE(s1)->vptr + 0x28), &kind);
@@ -4804,7 +4804,7 @@ skip:
     }
     NODE(s1)->parent = (int)s0;
     func_00000000_087A4_f(s0 + 0x88, s0, 0x74, 150.0f, D_000005F0);
-    *(int *)(s0 + 0x98) |= 1;
+    TREE(s0)->coll.obj.flags |= 1;
     func_00000000_087A4(D_87A4_tail, s0 + 0x88);
     return s0;
 }

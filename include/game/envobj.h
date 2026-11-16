@@ -7,6 +7,7 @@
  * come from the ctors' stores. Needs gdl/node.h and game/course.h first. */
 
 #include "gdl/dnode.h"
+#include "gdl/coll.h"
 
 /* ---- U64BGWall (0x4C, vtbl Data 0x6648; U64BGWall_ctor E68) ----
  * The tiled background-wall mesh. The ctor builds the quad grid into a scratch vertex buffer and
@@ -119,6 +120,18 @@ typedef struct ShpNode {
 
 #define SHPNODE(p) ((ShpNode *)(p))
 
+/* ---- Tree (0xC8, vtbl Data 0x87A4 + 0x10; built by TreeTmpl_create for the "tree" item) ----
+ * An SNode with a collision cylinder in place (agent-h run 529): TreeTmpl_create sets snode.scale to 10,
+ * sends message 0x13, inits coll as a cylinder (owner this, id 0x74, radius 150), sets coll.obj.flags bit 0
+ * and adds it to the collision manager. Tree_handleMsg copies snode.pos into coll.obj.pos on messages 7
+ * (set position) and 19, so the cylinder follows the tree. */
+typedef struct Tree {
+    SNode snode;                /* 0x00: pos 0x5C, scale 0x70 */
+    CollCylinder coll;          /* 0x88: obj.pos at 0xA0, obj.flags at 0x98, obj.vptr at 0xB8 */
+} Tree;                         /* 0xC8 */
+
+#define TREE(p) ((Tree *)(p))
+
 #define ENVOBJ_ASSERT(T, f, off) typedef char envobj_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 ENVOBJ_ASSERT(U64BGWall, scale, 0x3C);
 ENVOBJ_ASSERT(EnvSettings, unk40, 0x40);
@@ -129,11 +142,13 @@ ENVOBJ_ASSERT(FallingSnow, unkBC, 0xBC);
 ENVOBJ_ASSERT(Tv1Tmpl, displayCount, 0x68);
 ENVOBJ_ASSERT(SnowBCollider, contactFlags, 0x174);
 ENVOBJ_ASSERT(ShpNode, life, 0x3D4);
+ENVOBJ_ASSERT(Tree, coll.obj.pos, 0xA0);
 typedef char envobj_size_U64BGWall[sizeof(U64BGWall) == 0x4C ? 1 : -1];
 typedef char envobj_size_EnvSettings[sizeof(EnvSettings) == 0x44 ? 1 : -1];
 typedef char envobj_size_FogItem[sizeof(FogItem) == 0x90 ? 1 : -1];
 typedef char envobj_size_SnowItem[sizeof(SnowItem) == 0x74 ? 1 : -1];
 typedef char envobj_size_SnowBCollider[sizeof(SnowBCollider) == 0x178 ? 1 : -1];
 typedef char envobj_size_ShpNode[sizeof(ShpNode) == 0x3D8 ? 1 : -1];
+typedef char envobj_size_Tree[sizeof(Tree) == 0xC8 ? 1 : -1];
 
 #endif
