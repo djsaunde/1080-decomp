@@ -204,5 +204,6 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: MorphPoly_display D_00000000 port_bootup_bss+0x3C168 */
 /* port-bind: MorphPoly_display D_00000000_a port_bootup_bss+0x3C168 */
 /* port-bind: MorphPoly_display D_00000000_b port_bootup_data+0x0 */

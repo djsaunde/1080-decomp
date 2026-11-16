@@ -204,3 +204,4 @@
 /* port-local: _asmpp_large_func79 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func84 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func88 */ /* asm-processor stub from the context header */
+/* port-bind: SNode_handleMsg D_00000000 port_bootup_bss+0x3C168 */

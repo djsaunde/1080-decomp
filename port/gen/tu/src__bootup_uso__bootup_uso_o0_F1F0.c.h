@@ -2,4 +2,8 @@
 /* src/bootup_uso/bootup_uso_o0_F1F0.c: 4 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak func_00000000
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
+/* port-bind: stream_readF32_0000F23C D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: stream_readQuad_0000F288 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: stream_readS32_0000F1F0 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: stream_readVec3_0000F2EC D_00000000 port_bootup_bss+0x3C740 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

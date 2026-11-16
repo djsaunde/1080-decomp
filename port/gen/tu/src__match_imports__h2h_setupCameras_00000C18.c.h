@@ -6,3 +6,4 @@
 /* port-drop: fs_gdlReadQuad_h2h_00000558 */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso.c */
 #pragma weak h2h_WinsDisplay_update_00001204
 /* port-drop: h2h_WinsDisplay_update_00001204 */ /* helper copy; shipped body in src/h2hproc_uso/h2hproc_uso_ncc_1204.cpp */
+/* port-bind: h2h_setupCameras_00000C18 D_00000000 port_bootup_bss+0xF8 */

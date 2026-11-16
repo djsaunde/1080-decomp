@@ -2,3 +2,4 @@
 /* src/game_libs/game_libs_mp72_76F0.cpp: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak func_00000000
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
+/* port-bind: RaceProcess_handleInput D_00000000 port_bootup_bss+0xF8 */

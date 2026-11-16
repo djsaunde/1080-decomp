@@ -2,4 +2,8 @@
 /* src/timproc_uso_b5/timproc_uso_b5_8FC8.c: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak SelItem_reset_00003890
 /* port-drop: SelItem_reset_00003890 */ /* helper copy; shipped body in src/timproc_uso_b5/timproc_uso_b5.c */
+/* port-bind: SelItemsMgr_ctor timproc_uso_b5_D_807FE5F4+0 port_genproc_data+0xD84 */
+/* port-bind: SelItemsMgr_ctor timproc_uso_b5_D_807FE5F4+4944 port_genproc_data+0x0 */
+/* port-bind: SelItemsMgr_ctor timproc_uso_b5_D_807FEBD4+0 port_genproc_data+0xD24 */
+/* port-bind: SelItemsMgr_ctor timproc_uso_b5_D_807FEBD4+4964 port_genproc_data+0x0 */
 /* port-bind: SelItemsMgr_ctor import_80087FB8 port_bootup_data+0x207D8 */

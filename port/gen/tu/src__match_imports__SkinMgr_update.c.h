@@ -50,3 +50,4 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
+/* port-bind: SkinMgr_update D_00000000 port_bootup_data+0x0 */

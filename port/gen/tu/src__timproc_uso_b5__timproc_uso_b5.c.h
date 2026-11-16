@@ -22,8 +22,41 @@
 /* port-drop: SelectionMgr_setSplit_00001DB0 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1DB0.cpp */
 #pragma weak SelectionMgr_update_00001F14
 /* port-drop: SelectionMgr_update_00001F14 */ /* placeholder copy; shipped body in src/timproc_uso_b5/timproc_uso_b5_ncc_1F14.cpp */
+/* port-bind: BoardItem_drawLabel_0000C208 D_00000000 port_bootup_bss+0x28C */
+/* port-bind: CommonInfo_init_0000A928 D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: CourseItem_update_0000C8AC D_00000000 port_genproc_rodata+0x0 */
+/* port-bind: DispItems_display_0000E5D8 D_00000000 port_genproc_bss+0x730 */
+/* port-bind: DispItems_update_0000E5AC D_00000000 port_genproc_bss+0x73C */
+/* port-bind: GenCourse_ctor timproc_uso_b5_D_807FD888+0 port_genproc_data+0x18 */
+/* port-bind: GenCourse_ctor timproc_uso_b5_D_807FD888+160 port_genproc_data+0x0 */
+/* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FD948+0 port_genproc_data+0xD8 */
+/* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FD948+4068 port_genproc_data+0x0 */
+/* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FE8AC+0 port_genproc_bss+0x740 */
+/* port-bind: GenSelectChar_ctor timproc_uso_b5_D_807FE8AC+4156 port_genproc_data+0x0 */
+/* port-bind: RoomModifier_ctor D_00000000+0 port_genproc_data+0x3E4 */
+/* port-bind: RoomModifier_ctor D_00000000+4204 port_genproc_data+0x0 */
+/* port-bind: RoomModifier_ctor D_00000000+4212 port_genproc_data+0x0 */
+/* port-bind: SelItem_drawSpriteColorEx_000040BC D_00000000 port_gui_bss+0x8 */
+/* port-bind: SelItem_drawSpriteColor_00004068 D_00000000 port_gui_bss+0x8 */
+/* port-bind: SelItem_drawSpritePlain_00003FA8 D_00000000 port_gui_bss+0x8 */
+/* port-bind: SelItem_drawSpriteWhite_00003FF8 D_00000000 port_gui_bss+0x8 */
+/* port-bind: SelectWin_resetCheat_00008D90 D_00000000 port_genproc_data+0x0 */
+/* port-bind: SelectWin_state3_00007430 D_00000000+52 port_bootup_bss+0xF8 */
+/* port-bind: SelectWin_state3_00007430 D_00000000+3864 port_genproc_data+0x0 */
+/* port-bind: SelectWin_state3_00007430 D_00000000+3892 port_genproc_data+0x0 */
+/* port-bind: SelectWin_state3_00007430 D_00000000+3936 port_genproc_data+0x0 */
+/* port-bind: SelectWin_state3_00007430 D_00000000+4896 port_genproc_data+0x0 */
 /* port-bind: SelectWin_state3_00007430 D_00000000_a port_bootup_bss+0xF8 */
+/* port-bind: SelectWin_state5_000079A4 D_00000000 port_genproc_rodata+0x0 */
+/* port-bind: SelectWin_state6_00007B2C D_00000000 port_genproc_data+0x0 */
+/* port-bind: SelectionMgr_ctor timproc_uso_b5_D_807FE7E0+0 port_genproc_data+0xF70 */
+/* port-bind: SelectionMgr_ctor timproc_uso_b5_D_807FE7E0+4312 port_genproc_data+0x0 */
+/* port-bind: SelectionMgr_display_000027B0 D_00000000 port_gui_bss+0x8 */
 /* port-bind: gen_createCamera_0000283C D_00000000_a port_bootup_data+0x1EAA8 */
+/* port-bind: gen_streamReadF32_0000036C D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: gen_streamReadQuad_000003A8 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: gen_streamReadS32_00000330 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: gen_streamReadVec3_00000400 D_00000000 port_bootup_bss+0x3C740 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int timproc_uso_b5_func_00003F58(); /* CALL placeholder token: file-scope K&R declaration */

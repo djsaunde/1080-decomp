@@ -10,5 +10,9 @@
 /* port-drop: dbg_startFaultThread */ /* helper copy; shipped body in src/game_libs/game_libs_post0b.c */
 #pragma weak dbg_threadStateName
 /* port-drop: dbg_threadStateName */ /* helper copy; shipped body in src/game_libs/game_libs_o2_343F4.c */
+/* port-bind: dbg_faultThread D_00000000+123940 port_bootup_data+0x0 */
+/* port-bind: dbg_faultThread D_00000000+123960 port_bootup_data+0x0 */
+/* port-bind: dbg_faultThread D_00000000+244504 port_bootup_bss+0x0 */
+/* port-bind: dbg_faultThread D_00000000+244536 port_bootup_bss+0x0 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

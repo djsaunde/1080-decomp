@@ -2,3 +2,4 @@
 /* src/bootup_uso/bootup_uso_ncc_E9FC.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: SnowBoard_staticCtor_0000E9FC _GLOBAL__sub_I_gSnowBoard_func_0000E9FC_arg1 */
 /* port-noinit: _GLOBAL__sub_I_gSnowBoard_func_0000E9FC_arg1 */
+/* port-dropdata: gSnowBoard_func_0000E9FC_arg1 */ /* the ROM object is in the module blob */

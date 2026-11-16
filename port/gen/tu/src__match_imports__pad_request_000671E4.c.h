@@ -48,3 +48,4 @@
 /* port-local: _asmpp_large_func42 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func43 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func44 */ /* asm-processor stub from the context header */
+/* port-bind: pad_request_000671E4 D_00000000 port_bootup_bss+0x0 */

@@ -2,3 +2,5 @@
 /* src/bootup_uso/bootup_uso_ncc_6204.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: boot_staticInit_00006204 _GLOBAL__sub_I_D_00000000 */
 /* port-noinit: _GLOBAL__sub_I_D_00000000 */
+/* port-dropdata: D_00000000 */ /* the ROM object is in the module blob */
+/* port-bind: boot_staticInit_00006204 D_00000000 port_bootup_bss+0x28 */

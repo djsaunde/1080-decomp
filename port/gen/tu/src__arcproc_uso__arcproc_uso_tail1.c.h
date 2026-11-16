@@ -8,4 +8,27 @@
 /* port-drop: arc_initCourses_00000688 */ /* placeholder copy; shipped body in src/arcproc_uso/arcproc_uso_o0_688.c */
 #pragma weak arc_openSession_000005C8
 /* port-drop: arc_openSession_000005C8 */ /* placeholder copy; shipped body in src/arcproc_uso/arcproc_uso_o0_5C8.c */
+/* port-bind: ARCRaceProcess_ctor D_00000000+64 port_bootup_bss+0xF8 */
+/* port-bind: ARCRaceProcess_ctor D_00000000+312 port_bootup_bss+0xF8 */
+/* port-bind: ARCRaceProcess_ctor D_00000000+400 port_bootup_bss+0xF8 */
+/* port-bind: ARCRaceProcess_ctor D_00000000+952 port_arcproc_data+0x0 */
+/* port-bind: ARCRaceProcess_ctor D_00000000+960 port_arcproc_data+0x0 */
+/* port-bind: ARCRaceProcess_ctor D_00000000+976 port_arcproc_data+0x0 */
+/* port-bind: ARCRaceProcess_drawIntro D_00000000 port_gui_bss+0x8 */
+/* port-bind: ARCRaceProcess_onPauseSelect D_00000000+0 port_arcproc_bss+0x0 */
+/* port-bind: ARCRaceProcess_onPauseSelect D_00000000+400 port_bootup_bss+0xF8 */
+/* port-bind: ARCRaceProcess_onRaceOver D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: ARCRaceProcess_onTimeout D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: ArcNameEntry_drawBlinkBanner_00001C74 D_00000000 port_gui_bss+0x8 */
+/* port-bind: ArcNameEntry_drawExitOverlay D_00000000 port_arcproc_rodata+0x0 */
+/* port-bind: arc_DataManager_init D_00000000 port_arcproc_data+0x0 */
+/* port-bind: arc_DataManager_reset_00001F0C D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: arc_ItemType_create_00002334 D_00000000 port_bootup_data+0x75A0 */
+/* port-bind: arc_drawMenuBackground_00002884 D_00000000+16 port_arcproc_bss+0x0 */
+/* port-bind: arc_drawMenuBackground_00002884 D_00000000+1184 port_arcproc_data+0x0 */
+/* port-bind: arc_drawResultScore_000014C8 D_00000000 port_gui_bss+0x8 */
+/* port-bind: fs_gdlReadFloat_arc_00000938 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadInt_arc_000008FC D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadQuad_arc_00000974 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadVec3_arc_000009CC D_00000000 port_bootup_bss+0x3C740 */
 int arcproc_uso_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

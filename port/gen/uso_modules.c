@@ -38,6 +38,7 @@ extern char port_trnproc_bss[];
 extern char port_genproc_data[], port_genproc_data_init[];
 extern char port_genproc_rodata[], port_genproc_rodata_init[];
 extern char port_genproc_bss[];
+extern char port_gamegfx_data[], port_gamegfx_data_init[];
 extern char port_charsel_data[], port_charsel_data_init[];
 extern char port_charsel_rodata[], port_charsel_rodata_init[];
 extern char port_charsps_data[], port_charsps_data_init[];
@@ -62,672 +63,11 @@ extern char port_fire_data[], port_fire_data_init[];
 extern char port_checkpoint_data[], port_checkpoint_data_init[];
 extern char port_checkpoint_rodata[], port_checkpoint_rodata_init[];
 
-extern char ARCMenuProcess_drawGui[];
-extern char ARCMenuProcess_handleInput[];
-extern char ARCRaceProcess_altEndTimerEnabled[];
-extern char ARCRaceProcess_drawIntro[];
-extern char ARCRaceProcess_drawResultExtra[];
-extern char ARCRaceProcess_drawTimeUpExtra[];
-extern char ARCRaceProcess_endTimerEnabled[];
-extern char ARCRaceProcess_onAltEndTimerDone[];
-extern char ARCRaceProcess_onCountdownStart[];
-extern char ARCRaceProcess_onEndTimerDone[];
-extern char ARCRaceProcess_onLeave[];
-extern char ARCRaceProcess_onPause[];
-extern char ARCRaceProcess_onPauseSelect[];
-extern char ARCRaceProcess_onRaceOver[];
-extern char ARCRaceProcess_onTimeout[];
-extern char AnimDataMgr_handleMsg[];
-extern char AnimDataMgr_loadFile[];
-extern char AnimDataMgr_update[];
-extern char AnimPlayer_handleMsg[];
-extern char AnimPlayer_onKey[];
-extern char AnimPlayer_update[];
-extern char App_Display[];
-extern char App_InitInstance[];
-extern char App_Reset[];
-extern char App_Update[];
-extern char App_hostioParms[];
-extern char App_main[];
-extern char App_onPreNmi[];
-extern char App_restart[];
-extern char App_softReset[];
-extern char ArcNameEntry_drawEntryOverlay[];
-extern char ArcNameEntry_drawExitOverlay[];
-extern char ArcNameEntry_update_00001B04[];
-extern char BGBox_display[];
-extern char BallRotator_hostioParms[];
-extern char BallRotator_update_0003604C[];
-extern char BaseLight_doCommand[];
-extern char BaseLight_hostioParms[];
-extern char BaseLight_loadData[];
-extern char BaseLight_saveData[];
-extern char BaseMat_hostioParms[];
-extern char BaseMat_onFrameStart[];
-extern char BaseMat_sendImage_00051E98[];
-extern char BasePolyShape_copyMatDL[];
-extern char BasePolyShape_doCommand[];
-extern char BasePolyShape_handleMsg[];
-extern char BestGadget_display_00014228[];
-extern char BinFileMgr_loadData[];
-extern char BinFileMgr_newFile_0006877C[];
-extern char BinFile_acquire[];
-extern char BinFile_init_000682F8[];
-extern char BinFile_invalidate[];
-extern char BinFile_load_00068350[];
-extern char BinFile_release[];
-extern char BoardItem_clearChosen_0000C1A4[];
-extern char BoardItem_confirm_0000C118[];
-extern char BoardItem_drawLabel_0000C208[];
-extern char BoardItem_drawStats_0000C310[];
-extern char BoardItem_drawSubLabel_0000C2C0[];
-extern char BoardItem_focus_0000C120[];
-extern char BoardItem_onStageLeave_0000C164[];
-extern char BoardItem_onStageReturn_0000C170[];
-extern char BoardItem_playAcceptAnim_0000C110[];
-extern char BoardItem_playPickAnim_0000C108[];
-extern char BoardItem_setAlpha_0000C1F4[];
-extern char BoardItem_setChosen_0000C190[];
-extern char BoardItem_toggleVariant_0000C180[];
-extern char BoardItem_unfocus_0000C150[];
-extern char BoardItem_updateHighlight_0000C044[];
-extern char BoardItem_update_0000C1B4[];
-extern char BoardList_createItem[];
-extern char BoardsGadget_display[];
-extern char CMod_callbackInvoke_000551E0[];
-extern char CMod_display[];
-extern char CMod_hostioParms[];
-extern char CMod_staticInit[];
-extern char CamDirector_onMessage[];
-extern char CamDirector_update[];
-extern char CamFollow_update[];
-extern char CamMan_update[];
-extern char CameraBase_update_00002FF8[];
-extern char CharacterItem_clearChosen_0000BB78[];
-extern char CharacterItem_confirm_0000B9F0[];
-extern char CharacterItem_drawArrows_0000BDEC[];
-extern char CharacterItem_drawLabel_0000BDA0[];
-extern char CharacterItem_drawStats_0000BBDC[];
-extern char CharacterItem_focus_0000BA60[];
-extern char CharacterItem_onStageLeave_0000BB44[];
-extern char CharacterItem_onStageReturn_0000BB5C[];
-extern char CharacterItem_playAcceptAnim_0000B98C[];
-extern char CharacterItem_playPickAnim_0000B928[];
-extern char CharacterItem_setAlpha_0000BBC8[];
-extern char CharacterItem_setChosen_0000BB64[];
-extern char CharacterItem_toggleVariant_0000B914[];
-extern char CharacterItem_unfocus_0000BAE8[];
-extern char CharacterItem_updateHighlight_0000B850[];
-extern char CharacterItem_update_0000BB88[];
-extern char CharacterList_createItem[];
-extern char CollObjMgr_update[];
-extern char CollObj_sendBump[];
-extern char CollObj_sphereHitTest[];
-extern char ColourItemType_buildItems[];
-extern char ColourItemType_display[];
-extern char ColourItemType_findNearest[];
-extern char ColourItemType_findNextByZ[];
-extern char ColourItemType_getItem[];
-extern char ColourItemType_getItemPos[];
-extern char ColourItemType_newItem[];
-extern char ColourItem_create_00000C10[];
-extern char ColourItem_display[];
-extern char ColourItem_handleMsg[];
-extern char ColourItem_load[];
-extern char ColourItem_readParms_00006228[];
-extern char ColourItem_readParms_00007BC8[];
-extern char CommonInfo_loadData_00008F98[];
-extern char ConsoleMgr_display[];
-extern char ConsoleMgr_update[];
-extern char CoolGadget_display[];
-extern char CountDownGadget_display[];
-extern char CourseGadget_display[];
-extern char CourseItem_clearChosen_0000C89C[];
-extern char CourseItem_confirm_0000C844[];
-extern char CourseItem_copyState_0000C7E8[];
-extern char CourseItem_drawLabel_0000C98C[];
-extern char CourseItem_focus_0000C84C[];
-extern char CourseItem_onStageLeave_0000C870[];
-extern char CourseItem_onStageReturn_0000C878[];
-extern char CourseItem_playAcceptAnim_0000C83C[];
-extern char CourseItem_playPickAnim_0000C834[];
-extern char CourseItem_setAlpha_0000C978[];
-extern char CourseItem_setChosen_0000C888[];
-extern char CourseItem_toggleVariant_0000C82C[];
-extern char CourseItem_unfocus_0000C85C[];
-extern char CourseItem_updateHighlight_0000C710[];
-extern char CourseItem_update_0000C8AC[];
-extern char CourseList_createItem[];
-extern char CourseMarkerTmpl_create[];
-extern char CourseMarker_readParms[];
-extern char DNode_handleMsg[];
-extern char DNode_hostioParms[];
-extern char DNode_update[];
-extern char DispItems_display_0000E5D8[];
-extern char DispItems_update_0000E5AC[];
-extern char DisplayMgr_display[];
-extern char EnvSettings_display[];
-extern char EnvSettings_load[];
-extern char Fader_display[];
-extern char FogTmpl_create[];
-extern char Fog_display[];
-extern char Fog_hostioParms[];
-extern char Fog_readParms[];
-extern char Fog_saveData[];
-extern char Friction_applyContact[];
-extern char Friction_handleMsg_000640E4[];
-extern char Friction_hostioParms_00063E84[];
-extern char Functor_call_00069C94[];
-extern char GameDemoProcess_handleInput[];
-extern char GameDemoProcess_handleMsg[];
-extern char GameDemoProcess_onQuitButton[];
-extern char GameDemoProcess_onTimeoutExit[];
-extern char GenCourse_draw_000002F4[];
-extern char GenCourse_update_0000024C[];
-extern char GenItemType_create_0000AB24[];
-extern char GenSelectChar_draw_0000AAEC[];
-extern char GenSelectChar_update_00000770[];
-extern char GfxLib_hostioParms[];
-extern char GfxObj_displayAll[];
-extern char H2HRaceProcess_onEndTimerDone[];
-extern char H2HRaceProcess_onPause[];
-extern char H2HRaceProcess_onPauseSelect[];
-extern char H2HRaceProcess_onRaceOver[];
-extern char H2HRaceProcess_onTimeout[];
-extern char ImageFileMgr_newFile_000688F8[];
-extern char ImageFile_acquire[];
-extern char ImageFile_free_00068BAC[];
-extern char ImageFile_init_00068960[];
-extern char ImageFile_invalidate[];
-extern char ImageFile_load_00068990[];
-extern char ItemMgr_Load[];
-extern char ItemMgr_changeType[];
-extern char ItemMgr_hostioParms[];
-extern char ItemMgr_removeItems[];
-extern char ItemMgr_saveData[];
-extern char ItemType_buildItems[];
-extern char ItemType_findNearest[];
-extern char ItemType_getItem[];
-extern char ItemType_getItemPos[];
-extern char ItemType_hostioParms[];
-extern char ItemType_load[];
-extern char ItemType_newItem[];
-extern char ItemType_saveData[];
-extern char KeyMessage_display[];
-extern char KeyMessage_update[];
-extern char LangMenu_display[];
-extern char LensFlare_display[];
-extern char LensFlare_readParms[];
-extern char LevelItem_clearChosen_0000CE5C[];
-extern char LevelItem_confirm_0000CE14[];
-extern char LevelItem_drawStats_0000CEB4[];
-extern char LevelItem_focus_0000CE1C[];
-extern char LevelItem_onStageLeave_0000CE38[];
-extern char LevelItem_onStageReturn_0000CE40[];
-extern char LevelItem_playAcceptAnim_0000CE0C[];
-extern char LevelItem_playPickAnim_0000CE04[];
-extern char LevelItem_setAlpha_0000D058[];
-extern char LevelItem_setChosen_0000CE48[];
-extern char LevelItem_toggleVariant_0000CDFC[];
-extern char LevelItem_unfocus_0000CE2C[];
-extern char LevelItem_updateHighlight_0000CD24[];
-extern char LevelItem_update_0000CE6C[];
-extern char LevelList_createItem[];
-extern char LightTarget_display[];
-extern char LightTarget_doCommand[];
-extern char LightTarget_hostioParms[];
-extern char MCamera_command[];
-extern char MCamera_doCommand[];
-extern char MCamera_hostioParms[];
-extern char MCamera_updateLookAt[];
-extern char MGRRaceProcess_drawHud[];
-extern char MGRRaceProcess_drawIntro[];
-extern char MGRRaceProcess_drawResultExtra[];
-extern char MGRRaceProcess_endTimerEnabled[];
-extern char MGRRaceProcess_onCountdownStart[];
-extern char MGRRaceProcess_onEndRaceAlt[];
-extern char MGRRaceProcess_onEndTimerDone[];
-extern char MGRRaceProcess_onMessageBounce[];
-extern char MGRRaceProcess_onPauseSelect[];
-extern char MGRRaceProcess_onQuitButton[];
-extern char MGRRaceProcess_onRaceOver[];
-extern char MGRRaceProcess_onTimeout[];
-extern char MGRRaceProcess_updateSub0[];
-extern char MGRRaceProcess_updateSub1[];
-extern char MGRRaceProcess_updateSub2[];
-extern char MGRRaceProcess_updateSub3[];
-extern char MNodeItemType_getItemPos[];
-extern char MNode_ctor[];
-extern char MNode_def[];
-extern char MNode_display[];
-extern char MNode_doCommand[];
-extern char MNode_getCMtx[];
-extern char MNode_handleMsg[];
-extern char MNode_hostioParms[];
-extern char MNode_setAnimPose[];
-extern char MNode_update[];
-extern char MNode_updateChildren[];
-extern char MainLogo_display[];
-extern char MapProp_display[];
-extern char MapProp_hostioParms[];
-extern char Mat_draw[];
-extern char Mat_print[];
-extern char MemTrackerMgr_hostioParms[];
-extern char MemberCallback_invoke[];
-extern char MemberCallback_invoke_00007BF4[];
-extern char MemberCallback_invoke_0000BFDC[];
-extern char MemberCallback_invoke_0003A0C4[];
-extern char MemberCallback_invoke_0003EBDC[];
-extern char MemberCallback_invoke_0003EC5C[];
-extern char MgrNameEntry_drawCongrats_00002B7C[];
-extern char MgrNameEntry_drawExitOverlay[];
-extern char MorphPoly_display[];
-extern char MorphPoly_makeEdgeVtxs[];
-extern char MorphPoly_morphAll_0004B040[];
-extern char MorphPoly_shade[];
-extern char Mountain_display[];
-extern char Mountain_hostioParms[];
-extern char N64DemoProcess_drawGui[];
-extern char N64DemoProcess_handleInput[];
-extern char Node_Load[];
-extern char Node_Save[];
-extern char Node_broadcastMsg[];
-extern char Node_display[];
-extern char Node_doCommand[];
-extern char Node_handleMsg[];
-extern char Node_hostioParms[];
-extern char Node_loadData[];
-extern char Node_saveData[];
-extern char Node_setAnimPose[];
-extern char Node_update[];
-extern char Node_updateChildren[];
-extern char ParmFloat_read_00001E74[];
-extern char ParmFloat_read_0000208C[];
-extern char ParmFloat_read_0000AA8C[];
-extern char ParmInt_read_00001E44[];
-extern char ParmInt_read_0000205C[];
-extern char ParmInt_read_0000AA5C[];
-extern char ParmQuad_read_00001EA4[];
-extern char ParmQuad_read_000020BC[];
-extern char ParmQuad_read_0000AABC[];
-extern char ParmVec3_read_00001F64[];
-extern char ParmVec3_read_0000217C[];
-extern char ParmVec3_read_0000AAF4[];
-extern char Parms_stub_00035C50[];
-extern char PauseMenu_display[];
-extern char PauseMenu_exit[];
-extern char PauseMenu_start[];
-extern char PauseMenu_update[];
-extern char PhysQNode_pushProbes_00063964[];
-extern char PointsGadget_display_000038F4[];
-extern char PointsGadget_display_FFFFFFE0[];
-extern char PointsGadget_update_00003430[];
-extern char PolyShape_copyMatDL[];
-extern char PolyShape_display[];
-extern char PolyShape_emitTriBatch_000483BC[];
-extern char PolyShape_hostioParms[];
-extern char PolyShape_makeEdgeVtxs[];
-extern char PolyShape_shade_00049DBC[];
-extern char Process_display[];
-extern char Process_exit[];
-extern char Process_onQuit[];
-extern char Process_start[];
-extern char Process_update[];
-extern char QNode_display[];
-extern char QNode_doCommand[];
-extern char QNode_handleMsg[];
-extern char QNode_hostioParms[];
-extern char QNode_setAnimPose[];
-extern char QNode_update[];
-extern char QNode_updateChildren[];
-extern char QuitProcess_onQuit[];
-extern char QuitProcess_stub_00012DA4[];
-extern char RaceProcess_altEndTimerEnabled[];
-extern char RaceProcess_drawGui[];
-extern char RaceProcess_drawHud[];
-extern char RaceProcess_drawIntro[];
-extern char RaceProcess_drawResult[];
-extern char RaceProcess_drawResultExtra[];
-extern char RaceProcess_drawTimeUpExtra[];
-extern char RaceProcess_endTimerEnabled[];
-extern char RaceProcess_handleInput[];
-extern char RaceProcess_handleMsg[];
-extern char RaceProcess_loadData[];
-extern char RaceProcess_onAltEndTimerDone[];
-extern char RaceProcess_onCountdownStart[];
-extern char RaceProcess_onEndRace[];
-extern char RaceProcess_onEndRaceAlt[];
-extern char RaceProcess_onEndTimerDone[];
-extern char RaceProcess_onLeave[];
-extern char RaceProcess_onMessageBounce[];
-extern char RaceProcess_onPause[];
-extern char RaceProcess_onPauseSelect[];
-extern char RaceProcess_onQuitButton[];
-extern char RaceProcess_onRaceOver[];
-extern char RaceProcess_onTimeout[];
-extern char RaceProcess_onTimeoutExit[];
-extern char RaceProcess_updateSub0[];
-extern char RaceProcess_updateSub1[];
-extern char RaceProcess_updateSub2[];
-extern char RaceProcess_updateSub3[];
-extern char RaceTracker_display[];
-extern char RaceTracker_handleMsg[];
-extern char RaceTracker_onCheckpoint[];
-extern char RaceTracker_onTrickEnd[];
-extern char RaceTracker_onTrickStart[];
-extern char RaceTracker_reset[];
-extern char RaceTracker_update[];
-extern char RiderAnim_display_0000D634[];
-extern char RiderAnim_onKey_0000D438[];
-extern char RiderAnim_readParms_0000D418[];
-extern char RiderAnim_stateBrake[];
-extern char RiderAnim_stateBrakeBlendIn[];
-extern char RiderAnim_stateBrakeDeep[];
-extern char RiderAnim_stateCrashRecover[];
-extern char RiderAnim_stateCushion[];
-extern char RiderAnim_stateCushionEnd[];
-extern char RiderAnim_stateCushionIn[];
-extern char RiderAnim_stateEnding1[];
-extern char RiderAnim_stateEnding2[];
-extern char RiderAnim_stateEnding3[];
-extern char RiderAnim_stateFinish[];
-extern char RiderAnim_stateFlipToRide[];
-extern char RiderAnim_stateGoalLose[];
-extern char RiderAnim_stateGoalNormal[];
-extern char RiderAnim_stateGoalWin[];
-extern char RiderAnim_stateGoalWinOM[];
-extern char RiderAnim_stateHopAir[];
-extern char RiderAnim_stateHopDrop[];
-extern char RiderAnim_stateHopLand[];
-extern char RiderAnim_stateHopRise[];
-extern char RiderAnim_stateHopStart[];
-extern char RiderAnim_stateIdle[];
-extern char RiderAnim_stateOllieDrop[];
-extern char RiderAnim_stateOllieHang[];
-extern char RiderAnim_stateOllieLand[];
-extern char RiderAnim_stateOllieRise[];
-extern char RiderAnim_stateOllieTakeoff[];
-extern char RiderAnim_statePreJump[];
-extern char RiderAnim_statePreJumpCancel[];
-extern char RiderAnim_statePreJumpHold[];
-extern char RiderAnim_stateResumeRide[];
-extern char RiderAnim_stateRide[];
-extern char RiderAnim_stateRideBlendIn[];
-extern char RiderAnim_stateRideDeep[];
-extern char RiderAnim_stateRideDeepBlendIn[];
-extern char RiderAnim_stateRow[];
-extern char RiderAnim_stateRowIn[];
-extern char RiderAnim_stateRowOut[];
-extern char RiderAnim_stateStand[];
-extern char RiderAnim_stateStartIntro[];
-extern char RiderAnim_stateStartIntroEnd[];
-extern char RiderAnim_stateStartWait[];
-extern char RiderAnim_stateStopped[];
-extern char RiderAnim_stateSwitchStance[];
-extern char RiderAnim_stateSwitchStanceEnd[];
-extern char RiderAnim_stateTimeUp[];
-extern char RiderAnim_stateTimeUpLose[];
-extern char RiderAnim_stateTrickAir[];
-extern char RiderAnim_stateTrickEnd[];
-extern char RiderAnim_stateTrickHold[];
-extern char RiderAnim_stateTrickRelease[];
-extern char RiderAnim_stateTrickStart[];
-extern char RiderAnim_stateTrickWindup[];
-extern char RiderAnim_update_0000D204[];
-extern char RiderCam_command_00004914[];
-extern char RiderCam_update_00004948[];
-extern char RoomModifier_display_0000117C[];
-extern char RoomModifier_update_0000115C[];
-extern char SNodeItemType_buildItems[];
-extern char SNodeItemType_findNearest[];
-extern char SNodeItemType_findNextByZ[];
-extern char SNodeItemType_getItem[];
-extern char SNodeItemType_getItemPos[];
-extern char SNodeItemType_newItem[];
-extern char SNode_display[];
-extern char SNode_handleMsg[];
-extern char SNode_hostioParms[];
-extern char SNode_loadData[];
-extern char SNode_saveData[];
-extern char ScreenThumbMat_grab_0000E740[];
-extern char ScreenWindow_display[];
-extern char ScreenWindow_drawScene[];
-extern char ScreenWindow_getCurBuffer_0004D014[];
-extern char ScreenWindow_updateAspect[];
-extern char SeekNode_update[];
-extern char SelBoard_display_0000AC20[];
-extern char SelCharAnim_vfunc10_0000ABB4[];
-extern char SelCharacter_display_0000B624[];
-extern char SelCharacter_update_0000B61C[];
-extern char SelCourseMap_display_0000B368[];
-extern char SelItemList_loadData_0000D06C[];
-extern char SelItemList_loadInfo_0000D0DC[];
-extern char SelItem_copyState_0000ABC8[];
-extern char SelItem_display_00003FA0[];
-extern char SelItem_drawArrows_0000AC10[];
-extern char SelItem_drawLabel_0000ABE0[];
-extern char SelItem_drawStats_0000AC04[];
-extern char SelItem_drawSubLabel_0000ABF4[];
-extern char SelItem_loadData_00003ED8[];
-extern char SelItem_loadInfo_00003F18[];
-extern char SelItem_setAlpha_0000ABD4[];
-extern char SelItem_update_00003F5C[];
-extern char SelItemsMgr_loadData_0000A97C[];
-extern char SelItemsMgr_loadInfo_0000A9EC[];
-extern char SelTesuri_display_0000B154[];
-extern char SelectWin_display_00006394[];
-extern char SelectWin_loadData_0000685C[];
-extern char SelectWin_update_00005FC0[];
-extern char SelectionMgr_display_000027B0[];
-extern char SelectionMgr_onFadeDone_00000470[];
-extern char SelectionMgr_update_00001F14[];
-extern char Shadow_display_0004B2F4[];
-extern char ShpNode_getSuc[];
-extern char ShpNode_readParms[];
-extern char ShpNode_saveData[];
-extern char ShpNode_update[];
-extern char SkinMgr_update[];
-extern char SnowAI_readParms[];
-extern char SnowAI_update[];
-extern char SnowBChild_readParms_0000E720[];
-extern char SnowBCollider_onContact[];
-extern char SnowBoard_InitInstance[];
-extern char SnowBoard_onPreNmi[];
-extern char SnowBoard_restart[];
-extern char SnowBoard_softReset[];
 extern char SnowBoard_staticCtor_0000E9FC[];
-extern char SnowBoarder_display[];
-extern char SnowBoarder_handleMsg[];
-extern char SnowBoarder_readParms[];
-extern char SnowBoarder_update[];
-extern char SnowChaseActorCam_loadParms[];
-extern char SnowChaseActorCam_update[];
-extern char SnowChaseActorLook_loadParms[];
-extern char SnowChaseActorLook_update[];
-extern char SnowChaseActor_loadParms[];
-extern char SnowChaseActor_update[];
-extern char SnowTmpl_create[];
-extern char Snower_display[];
-extern char Snower_hostioParms[];
-extern char Snower_readParms[];
-extern char Snower_saveData[];
-extern char Spinner_hostioParms[];
-extern char Spinner_update[];
-extern char Sprite_display_0004BAF4[];
-extern char StickCtrlA_update_00037348[];
-extern char StickCtrlB_update_00037540[];
-extern char Sun_display[];
-extern char Sun_measureVisibility[];
-extern char Sun_readParms[];
-extern char Sun_update[];
-extern char SysLibBase_devRead_00061AF0[];
-extern char SysLibBase_devSlot2_00061B04[];
-extern char SysLibBase_devWrite_00061ADC[];
-extern char SysLibBase_loadUso_00061B10[];
-extern char TesuriItem_clearChosen_0000CC64[];
-extern char TesuriItem_confirm_0000CC1C[];
-extern char TesuriItem_drawLabel_0000CCC8[];
-extern char TesuriItem_focus_0000CC24[];
-extern char TesuriItem_onStageLeave_0000CC40[];
-extern char TesuriItem_onStageReturn_0000CC48[];
-extern char TesuriItem_playAcceptAnim_0000CC14[];
-extern char TesuriItem_playPickAnim_0000CC0C[];
-extern char TesuriItem_setAlpha_0000CCB4[];
-extern char TesuriItem_setChosen_0000CC50[];
-extern char TesuriItem_toggleVariant_0000CC04[];
-extern char TesuriItem_unfocus_0000CC34[];
-extern char TesuriItem_updateHighlight_0000CB40[];
-extern char TesuriItem_update_0000CC74[];
-extern char TimDataManager_update_00001BCC[];
-extern char TimItemType_create_00001ED4[];
-extern char TimMenu_draw_00002838[];
-extern char TimMenu_update_00002740[];
-extern char TimNameEntry_drawEntryOverlay[];
-extern char TimNameEntry_drawExitOverlay[];
-extern char TimNameEntry_update_00001860[];
-extern char TimRace_drawResultExtra[];
-extern char TimRace_endTimerEnabled[];
-extern char TimRace_onAltEndTimerDone[];
-extern char TimRace_onEndTimerDone[];
-extern char TimRace_onPauseSelect[];
-extern char TimRace_onQuitButton[];
-extern char TimRace_onRaceOver[];
-extern char TimRace_onTimeout[];
-extern char TimRace_onTimeoutExit[];
-extern char TimeGadget_display_000140C4[];
-extern char TitleDemoProcess_drawGui[];
-extern char TitleDemoProcess_handleInput[];
-extern char TitleDemoProcess_handleMsg[];
-extern char TreeTmpl_create[];
-extern char TreeTmpl_display[];
-extern char TreeTmpl_hostioParms[];
-extern char Tree_handleMsg[];
-extern char TrickTable_load_0000C3F8[];
-extern char TrkDataManager_loadData[];
-extern char TrkDataManager_update_00001C68[];
-extern char TrkItemType_create_000020EC[];
-extern char TrkMenu_draw_00002A44[];
-extern char TrkMenu_update_0000294C[];
-extern char TrkNameEntry_drawEntryOverlay[];
-extern char TrkNameEntry_drawExitOverlay[];
-extern char TrkNameEntry_update_000017C8[];
-extern char TrkRace_drawResultExtra[];
-extern char TrkRace_endTimerEnabled[];
-extern char TrkRace_onEndTimerDone[];
-extern char TrkRace_onLeave[];
-extern char TrkRace_onPause[];
-extern char TrkRace_onPauseSelect[];
-extern char TrkRace_onQuitButton[];
-extern char TrkRace_onRaceOver[];
-extern char TrkRace_onTimeout[];
-extern char TrkRace_onTimeoutExit[];
-extern char Tv1Tmpl_create[];
-extern char Tv1Tmpl_display[];
-extern char Tv1Tmpl_stepPicture_00007D04[];
-extern char Tv1Tmpl_update[];
-extern char Tv1_display[];
-extern char U64BGWall_display[];
-extern char Window_display[];
-extern char Window_doCommand[];
-extern char Window_hostioParms[];
 extern char Window_staticInit[];
-extern char Window_update[];
-extern char Window_updateAspect[];
-extern char __pure_virtual_called[];
-extern char anim_createAnimator[];
-extern char app_loadUso[];
 extern char app_staticInit_000412E8[];
-extern char arc_DataManager_reset_00001F0C[];
-extern char arc_DataManager_update[];
-extern char arc_ItemType_create_00002334[];
-extern char arc_procMain[];
-extern char arc_readFloatParm_000022D4[];
-extern char arc_readIntParm_000022A4[];
-extern char arc_readQuadParm_00002304[];
-extern char arc_readVec3Parm_000023C4[];
-extern char boarder1_readQuadParm_00000094[];
-extern char boarder2_readQuadParm_00000094[];
-extern char boarder3_readQuadParm_00000094[];
-extern char boarder4_readQuadParm_00000094[];
-extern char boarder5_readQuadParm_00000098[];
-extern char boot_readFloatParm_00000B50[];
-extern char boot_readIntParm_00000BE0[];
-extern char boot_readIntParm_000021B4[];
-extern char boot_readQuadParm_00000BB0[];
-extern char boot_readVec3Parm_00000B80[];
 extern char boot_staticInit_00006204[];
-extern char cam_command_0000174C[];
-extern char cam_handleMsg_00001714[];
-extern char cam_readParms_00001644[];
-extern char cam_update_00000B14[];
-extern char coll_nop_00035FCC[];
-extern char edd_DataManager_update[];
-extern char edd_EditorsProcess_handleInput[];
-extern char edd_ItemType_create_000003BC[];
-extern char edd_procMain[];
-extern char edd_readFloatParm_0000035C[];
-extern char edd_readIntParm_0000032C[];
-extern char edd_readQuadParm_0000038C[];
-extern char edd_readVec3Parm_0000044C[];
-extern char game_ItemType_create_00003A28[];
-extern char game_readFloatParm_00003968[];
-extern char game_readIntParm_000039F8[];
-extern char game_readIntParm_0000C08C[];
-extern char game_readQuadParm_000039C8[];
-extern char game_readVec3Parm_00003998[];
-extern char game_stub_0000214C[];
-extern char gfx_decodeMatCmd[];
-extern char gfx_emitLineBatch_000488A0[];
 extern char gl_osEPiStartDma[];
-extern char h2h_DataManager_update[];
-extern char h2h_ItemType_create_00001A6C[];
-extern char h2h_WhiteFader_display[];
-extern char h2h_WinsDisplay_display_00001360[];
-extern char h2h_WinsDisplay_update_00001204[];
-extern char h2h_procMain[];
-extern char h2h_readFloatParm_00001A0C[];
-extern char h2h_readIntParm_000019DC[];
-extern char h2h_readQuadParm_00001A3C[];
-extern char h2h_readVec3Parm_00001AFC[];
-extern char hostio_devRead_000359A4[];
-extern char hostio_devSlot2_000359B8[];
-extern char hostio_devWrite_00035990[];
-extern char input_ctor_0000F390[];
-extern char item_createBa2[];
-extern char item_createBal[];
-extern char item_createCfr[];
-extern char item_createChk[];
-extern char item_createFog[];
-extern char item_createGtl[];
-extern char item_createGtr[];
-extern char item_createHel[];
-extern char item_createHem[];
-extern char item_createSnow[];
-extern char map4b2_init_00000094[];
-extern char mgr_DataManager_display[];
-extern char mgr_DataManager_update[];
-extern char mgr_ItemType_create_00003358[];
-extern char mgr_procMain[];
-extern char mgr_readFloatParm_000032F8[];
-extern char mgr_readIntParm_000032C8[];
-extern char mgr_readQuadParm_00003328[];
-extern char mgr_readVec3Parm_000033E8[];
-extern char n64_procMain[];
-extern char shape_cmdShape_00051520[];
-extern char skin_cmdSkinAnim[];
-extern char skin_cmdSkinMgr[];
-extern char skin_cmdSkinShape[];
-extern char tim_main[];
-extern char tit_ItemType_create_00002980[];
-extern char tit_WhiteFader_display[];
-extern char tit_procMain[];
-extern char tit_readFloatParm_000028F0[];
-extern char tit_readIntParm_000028C0[];
-extern char tit_readQuadParm_00002920[];
-extern char tit_readVec3Parm_00002950[];
-extern char trk_main[];
-extern char vFP1_call[];
-extern char vFP1_invokeFn_0004D084[];
 
 static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x120, port_bootup_rodata + 0x0},
@@ -773,70 +113,70 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x5BFC, port_bootup_data + 0x5B74},
     {0x5C08, port_bootup_data + 0x5B84},
     {0x5C14, port_bootup_data + 0x5B94},
-    {0x643C, (void *)__pure_virtual_called},
-    {0x6454, (void *)boot_readFloatParm_00000B50},
-    {0x646C, (void *)boot_readVec3Parm_00000B80},
-    {0x6484, (void *)boot_readQuadParm_00000BB0},
-    {0x649C, (void *)boot_readIntParm_00000BE0},
-    {0x64B4, (void *)ItemType_hostioParms},
-    {0x64BC, (void *)Node_updateChildren},
-    {0x64C4, (void *)ColourItemType_display},
-    {0x64CC, (void *)Node_update},
-    {0x64D4, (void *)Node_handleMsg},
-    {0x64DC, (void *)Node_broadcastMsg},
-    {0x64E4, (void *)Node_doCommand},
-    {0x64EC, (void *)ItemType_saveData},
-    {0x64F4, (void *)ItemType_load},
-    {0x64FC, (void *)Node_setAnimPose},
-    {0x6504, (void *)ColourItem_create_00000C10},
-    {0x650C, (void *)ColourItemType_buildItems},
-    {0x6514, (void *)ColourItemType_findNearest},
-    {0x651C, (void *)ColourItemType_getItemPos},
-    {0x6524, (void *)ColourItemType_getItem},
-    {0x652C, (void *)ColourItemType_findNextByZ},
-    {0x659C, (void *)__pure_virtual_called},
-    {0x65F4, (void *)Node_hostioParms},
-    {0x65FC, (void *)Node_updateChildren},
-    {0x6604, (void *)BGBox_display},
-    {0x660C, (void *)Node_update},
-    {0x6614, (void *)Node_handleMsg},
-    {0x661C, (void *)Node_broadcastMsg},
-    {0x6624, (void *)Node_doCommand},
-    {0x662C, (void *)Node_saveData},
-    {0x6634, (void *)Node_loadData},
-    {0x663C, (void *)Node_setAnimPose},
-    {0x6654, (void *)Node_hostioParms},
-    {0x665C, (void *)Node_updateChildren},
-    {0x6664, (void *)U64BGWall_display},
-    {0x666C, (void *)Node_update},
-    {0x6674, (void *)Node_handleMsg},
-    {0x667C, (void *)Node_broadcastMsg},
-    {0x6684, (void *)Node_doCommand},
-    {0x668C, (void *)Node_saveData},
-    {0x6694, (void *)Node_loadData},
-    {0x669C, (void *)Node_setAnimPose},
-    {0x66DC, (void *)__pure_virtual_called},
-    {0x66F4, (void *)boot_readFloatParm_00000B50},
-    {0x670C, (void *)boot_readVec3Parm_00000B80},
-    {0x6724, (void *)boot_readIntParm_000021B4},
-    {0x673C, (void *)boot_readQuadParm_00000BB0},
-    {0x6754, (void *)boot_readIntParm_00000BE0},
-    {0x676C, (void *)ItemType_hostioParms},
-    {0x6774, (void *)Node_updateChildren},
-    {0x677C, (void *)ColourItemType_display},
-    {0x6784, (void *)Node_update},
-    {0x678C, (void *)Node_handleMsg},
-    {0x6794, (void *)Node_broadcastMsg},
-    {0x679C, (void *)Node_doCommand},
-    {0x67A4, (void *)ItemType_saveData},
-    {0x67AC, (void *)ItemType_load},
-    {0x67B4, (void *)Node_setAnimPose},
-    {0x67BC, (void *)ColourItem_create_00000C10},
-    {0x67C4, (void *)ColourItemType_buildItems},
-    {0x67CC, (void *)ColourItemType_findNearest},
-    {0x67D4, (void *)ColourItemType_getItemPos},
-    {0x67DC, (void *)ColourItemType_getItem},
-    {0x67E4, (void *)ColourItemType_findNextByZ},
+    {0x643C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x6454, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x646C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x6484, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x649C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x64B4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x64BC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64C4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x64CC, 0}, /* Text target bootup:Node_update */
+    {0x64D4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x64DC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x64E4, 0}, /* Text target bootup:Node_doCommand */
+    {0x64EC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x64F4, 0}, /* Text target bootup:ItemType_load */
+    {0x64FC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x6504, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x650C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x6514, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x651C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x6524, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x652C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x659C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x65F4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x65FC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6604, 0}, /* Text target bootup:BGBox_display */
+    {0x660C, 0}, /* Text target bootup:Node_update */
+    {0x6614, 0}, /* Text target bootup:Node_handleMsg */
+    {0x661C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x6624, 0}, /* Text target bootup:Node_doCommand */
+    {0x662C, 0}, /* Text target bootup:Node_saveData */
+    {0x6634, 0}, /* Text target bootup:Node_loadData */
+    {0x663C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x6654, 0}, /* Text target bootup:Node_hostioParms */
+    {0x665C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6664, 0}, /* Text target bootup:U64BGWall_display */
+    {0x666C, 0}, /* Text target bootup:Node_update */
+    {0x6674, 0}, /* Text target bootup:Node_handleMsg */
+    {0x667C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x6684, 0}, /* Text target bootup:Node_doCommand */
+    {0x668C, 0}, /* Text target bootup:Node_saveData */
+    {0x6694, 0}, /* Text target bootup:Node_loadData */
+    {0x669C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x66DC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x66F4, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x670C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x6724, 0}, /* Text target bootup:boot_readIntParm_000021B4 */
+    {0x673C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x6754, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x676C, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x6774, 0}, /* Text target bootup:Node_updateChildren */
+    {0x677C, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6784, 0}, /* Text target bootup:Node_update */
+    {0x678C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x6794, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x679C, 0}, /* Text target bootup:Node_doCommand */
+    {0x67A4, 0}, /* Text target bootup:ItemType_saveData */
+    {0x67AC, 0}, /* Text target bootup:ItemType_load */
+    {0x67B4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x67BC, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x67C4, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x67CC, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x67D4, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x67DC, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x67E4, 0}, /* Text target bootup:ColourItemType_findNextByZ */
     {0x67F4, port_bootup_rodata + 0x80},
     {0x67F8, port_map5_data_data + 0x9A4},
     {0x6800, port_bootup_rodata + 0x94},
@@ -957,299 +297,299 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x6DB0, port_bootup_rodata + 0x4A8},
     {0x6DB8, port_bootup_rodata + 0x4BC},
     {0x6DC0, port_bootup_rodata + 0x4D0},
-    {0x6DDC, (void *)game_stub_0000214C},
-    {0x6DE4, (void *)Node_updateChildren},
-    {0x6DEC, (void *)Node_display},
-    {0x6DF4, (void *)Node_update},
-    {0x6DFC, (void *)Node_handleMsg},
-    {0x6E04, (void *)Node_broadcastMsg},
-    {0x6E0C, (void *)Node_doCommand},
-    {0x6E14, (void *)Node_saveData},
-    {0x6E1C, (void *)Node_loadData},
-    {0x6E24, (void *)Node_setAnimPose},
-    {0x6EDC, (void *)__pure_virtual_called},
-    {0x6EF4, (void *)boot_readFloatParm_00000B50},
-    {0x6F0C, (void *)boot_readVec3Parm_00000B80},
-    {0x6F24, (void *)boot_readQuadParm_00000BB0},
-    {0x6F3C, (void *)boot_readIntParm_00000BE0},
-    {0x6F54, (void *)ItemType_hostioParms},
-    {0x6F5C, (void *)Node_updateChildren},
-    {0x6F64, (void *)ColourItemType_display},
-    {0x6F6C, (void *)Node_update},
-    {0x6F74, (void *)Node_handleMsg},
-    {0x6F7C, (void *)Node_broadcastMsg},
-    {0x6F84, (void *)Node_doCommand},
-    {0x6F8C, (void *)ItemType_saveData},
-    {0x6F94, (void *)ItemType_load},
-    {0x6F9C, (void *)Node_setAnimPose},
-    {0x6FA4, (void *)ColourItem_create_00000C10},
-    {0x6FAC, (void *)ColourItemType_buildItems},
-    {0x6FB4, (void *)ColourItemType_findNearest},
-    {0x6FBC, (void *)ColourItemType_getItemPos},
-    {0x6FC4, (void *)ColourItemType_getItem},
-    {0x6FCC, (void *)ColourItemType_findNextByZ},
-    {0x6FE4, (void *)Node_hostioParms},
-    {0x6FEC, (void *)Node_updateChildren},
-    {0x6FF4, (void *)Node_display},
-    {0x6FFC, (void *)CamDirector_update},
-    {0x7004, (void *)CamDirector_onMessage},
-    {0x700C, (void *)Node_broadcastMsg},
-    {0x7014, (void *)Node_doCommand},
-    {0x701C, (void *)Node_saveData},
-    {0x7024, (void *)Node_loadData},
-    {0x702C, (void *)Node_setAnimPose},
-    {0x7044, (void *)Mountain_hostioParms},
-    {0x704C, (void *)Node_updateChildren},
-    {0x7054, (void *)Mountain_display},
-    {0x705C, (void *)Node_update},
-    {0x7064, (void *)Node_handleMsg},
-    {0x706C, (void *)Node_broadcastMsg},
-    {0x7074, (void *)Node_doCommand},
-    {0x707C, (void *)Node_saveData},
-    {0x7084, (void *)Node_loadData},
-    {0x708C, (void *)Node_setAnimPose},
-    {0x712C, (void *)MCamera_hostioParms},
-    {0x7134, (void *)MNode_updateChildren},
-    {0x713C, (void *)MNode_display},
-    {0x7144, (void *)RiderCam_update_00004948},
-    {0x714C, (void *)MNode_handleMsg},
-    {0x7154, (void *)Node_broadcastMsg},
-    {0x715C, (void *)MCamera_doCommand},
-    {0x7164, (void *)Node_saveData},
-    {0x716C, (void *)Node_loadData},
-    {0x7174, (void *)MNode_setAnimPose},
-    {0x717C, (void *)MNode_getCMtx},
-    {0x7184, (void *)MCamera_updateLookAt},
-    {0x718C, (void *)RiderCam_command_00004914},
-    {0x7524, (void *)Tv1Tmpl_stepPicture_00007D04},
-    {0x7534, (void *)__pure_virtual_called},
-    {0x754C, (void *)boot_readFloatParm_00000B50},
-    {0x7564, (void *)boot_readQuadParm_00000BB0},
-    {0x757C, (void *)boot_readIntParm_00000BE0},
-    {0x7594, (void *)boot_readVec3Parm_00000B80},
-    {0x75AC, (void *)Node_hostioParms},
-    {0x75B4, (void *)Node_updateChildren},
-    {0x75BC, (void *)ColourItem_display},
-    {0x75C4, (void *)Node_update},
-    {0x75CC, (void *)ColourItem_handleMsg},
-    {0x75D4, (void *)Node_broadcastMsg},
-    {0x75DC, (void *)Node_doCommand},
-    {0x75E4, (void *)Node_saveData},
-    {0x75EC, (void *)ColourItem_readParms_00006228},
-    {0x75F4, (void *)Node_setAnimPose},
-    {0x760C, (void *)ItemType_hostioParms},
-    {0x7614, (void *)Node_updateChildren},
-    {0x761C, (void *)ColourItemType_display},
-    {0x7624, (void *)Node_update},
-    {0x762C, (void *)Node_handleMsg},
-    {0x7634, (void *)Node_broadcastMsg},
-    {0x763C, (void *)Node_doCommand},
-    {0x7644, (void *)ItemType_saveData},
-    {0x764C, (void *)ItemType_load},
-    {0x7654, (void *)Node_setAnimPose},
-    {0x765C, (void *)ColourItem_create_00000C10},
-    {0x7664, (void *)ColourItemType_buildItems},
-    {0x766C, (void *)ColourItemType_findNearest},
-    {0x7674, (void *)ColourItemType_getItemPos},
-    {0x767C, (void *)ColourItemType_getItem},
-    {0x7684, (void *)ColourItemType_findNextByZ},
-    {0x769C, (void *)boot_readIntParm_000021B4},
-    {0x76B4, (void *)Node_hostioParms},
-    {0x76BC, (void *)Node_updateChildren},
-    {0x76C4, (void *)EnvSettings_display},
-    {0x76CC, (void *)Node_update},
-    {0x76D4, (void *)Node_handleMsg},
-    {0x76DC, (void *)Node_broadcastMsg},
-    {0x76E4, (void *)Node_doCommand},
-    {0x76EC, (void *)Node_saveData},
-    {0x76F4, (void *)EnvSettings_load},
-    {0x76FC, (void *)Node_setAnimPose},
-    {0x7714, (void *)Node_hostioParms},
-    {0x771C, (void *)Node_updateChildren},
-    {0x7724, (void *)ColourItem_display},
-    {0x772C, (void *)Node_update},
-    {0x7734, (void *)ColourItem_handleMsg},
-    {0x773C, (void *)Node_broadcastMsg},
-    {0x7744, (void *)Node_doCommand},
-    {0x774C, (void *)Node_saveData},
-    {0x7754, (void *)ColourItem_readParms_00007BC8},
-    {0x775C, (void *)Node_setAnimPose},
-    {0x777C, (void *)MemberCallback_invoke_00007BF4},
-    {0x7794, (void *)ItemType_hostioParms},
-    {0x779C, (void *)Node_updateChildren},
-    {0x77A4, (void *)Tv1Tmpl_display},
-    {0x77AC, (void *)Tv1Tmpl_update},
-    {0x77B4, (void *)Node_handleMsg},
-    {0x77BC, (void *)Node_broadcastMsg},
-    {0x77C4, (void *)Node_doCommand},
-    {0x77CC, (void *)ItemType_saveData},
-    {0x77D4, (void *)ItemType_load},
-    {0x77DC, (void *)Node_setAnimPose},
-    {0x77E4, (void *)Tv1Tmpl_create},
-    {0x77EC, (void *)SNodeItemType_buildItems},
-    {0x77F4, (void *)SNodeItemType_findNearest},
-    {0x77FC, (void *)SNodeItemType_getItemPos},
-    {0x7804, (void *)SNodeItemType_getItem},
-    {0x780C, (void *)SNodeItemType_findNextByZ},
-    {0x7824, (void *)SNode_hostioParms},
-    {0x782C, (void *)Node_updateChildren},
-    {0x7834, (void *)Tv1_display},
-    {0x783C, (void *)Node_update},
-    {0x7844, (void *)SNode_handleMsg},
-    {0x784C, (void *)Node_broadcastMsg},
-    {0x7854, (void *)Node_doCommand},
-    {0x785C, (void *)SNode_saveData},
-    {0x7864, (void *)SNode_loadData},
-    {0x786C, (void *)Node_setAnimPose},
-    {0x7884, (void *)Fog_hostioParms},
-    {0x788C, (void *)Node_updateChildren},
-    {0x7894, (void *)Fog_display},
-    {0x789C, (void *)Node_update},
-    {0x78A4, (void *)ColourItem_handleMsg},
-    {0x78AC, (void *)Node_broadcastMsg},
-    {0x78B4, (void *)Node_doCommand},
-    {0x78BC, (void *)Fog_saveData},
-    {0x78C4, (void *)Fog_readParms},
-    {0x78CC, (void *)Node_setAnimPose},
-    {0x78E4, (void *)ItemType_hostioParms},
-    {0x78EC, (void *)Node_updateChildren},
-    {0x78F4, (void *)ColourItemType_display},
-    {0x78FC, (void *)Node_update},
-    {0x7904, (void *)Node_handleMsg},
-    {0x790C, (void *)Node_broadcastMsg},
-    {0x7914, (void *)Node_doCommand},
-    {0x791C, (void *)ItemType_saveData},
-    {0x7924, (void *)ItemType_load},
-    {0x792C, (void *)Node_setAnimPose},
-    {0x7934, (void *)FogTmpl_create},
-    {0x793C, (void *)ColourItemType_buildItems},
-    {0x7944, (void *)ColourItemType_findNearest},
-    {0x794C, (void *)ColourItemType_getItemPos},
-    {0x7954, (void *)ColourItemType_getItem},
-    {0x795C, (void *)ColourItemType_findNextByZ},
-    {0x7974, (void *)Snower_hostioParms},
-    {0x797C, (void *)Node_updateChildren},
-    {0x7984, (void *)Snower_display},
-    {0x798C, (void *)Node_update},
-    {0x7994, (void *)ColourItem_handleMsg},
-    {0x799C, (void *)Node_broadcastMsg},
-    {0x79A4, (void *)Node_doCommand},
-    {0x79AC, (void *)Snower_saveData},
-    {0x79B4, (void *)Snower_readParms},
-    {0x79BC, (void *)Node_setAnimPose},
-    {0x79D4, (void *)ItemType_hostioParms},
-    {0x79DC, (void *)Node_updateChildren},
-    {0x79E4, (void *)ColourItemType_display},
-    {0x79EC, (void *)Node_update},
-    {0x79F4, (void *)Node_handleMsg},
-    {0x79FC, (void *)Node_broadcastMsg},
-    {0x7A04, (void *)Node_doCommand},
-    {0x7A0C, (void *)ItemType_saveData},
-    {0x7A14, (void *)ItemType_load},
-    {0x7A1C, (void *)Node_setAnimPose},
-    {0x7A24, (void *)SnowTmpl_create},
-    {0x7A2C, (void *)ColourItemType_buildItems},
-    {0x7A34, (void *)ColourItemType_findNearest},
-    {0x7A3C, (void *)ColourItemType_getItemPos},
-    {0x7A44, (void *)ColourItemType_getItem},
-    {0x7A4C, (void *)ColourItemType_findNextByZ},
-    {0x7A64, (void *)SNode_hostioParms},
-    {0x7A6C, (void *)Node_updateChildren},
-    {0x7A74, (void *)SNode_display},
-    {0x7A7C, (void *)Node_update},
-    {0x7A84, (void *)Tree_handleMsg},
-    {0x7A8C, (void *)Node_broadcastMsg},
-    {0x7A94, (void *)Node_doCommand},
-    {0x7A9C, (void *)SNode_saveData},
-    {0x7AA4, (void *)SNode_loadData},
-    {0x7AAC, (void *)Node_setAnimPose},
-    {0x7AC4, (void *)TreeTmpl_hostioParms},
-    {0x7ACC, (void *)Node_updateChildren},
-    {0x7AD4, (void *)TreeTmpl_display},
-    {0x7ADC, (void *)Node_update},
-    {0x7AE4, (void *)Node_handleMsg},
-    {0x7AEC, (void *)Node_broadcastMsg},
-    {0x7AF4, (void *)Node_doCommand},
-    {0x7AFC, (void *)ItemType_saveData},
-    {0x7B04, (void *)ItemType_load},
-    {0x7B0C, (void *)Node_setAnimPose},
-    {0x7B14, (void *)TreeTmpl_create},
-    {0x7B1C, (void *)SNodeItemType_buildItems},
-    {0x7B24, (void *)SNodeItemType_findNearest},
-    {0x7B2C, (void *)SNodeItemType_getItemPos},
-    {0x7B34, (void *)SNodeItemType_getItem},
-    {0x7B3C, (void *)SNodeItemType_findNextByZ},
+    {0x6DDC, 0}, /* Text target bootup:game_stub_0000214C */
+    {0x6DE4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6DEC, 0}, /* Text target bootup:Node_display */
+    {0x6DF4, 0}, /* Text target bootup:Node_update */
+    {0x6DFC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x6E04, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x6E0C, 0}, /* Text target bootup:Node_doCommand */
+    {0x6E14, 0}, /* Text target bootup:Node_saveData */
+    {0x6E1C, 0}, /* Text target bootup:Node_loadData */
+    {0x6E24, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x6EDC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x6EF4, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x6F0C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x6F24, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x6F3C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x6F54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x6F5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6F64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6F6C, 0}, /* Text target bootup:Node_update */
+    {0x6F74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x6F7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x6F84, 0}, /* Text target bootup:Node_doCommand */
+    {0x6F8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x6F94, 0}, /* Text target bootup:ItemType_load */
+    {0x6F9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x6FA4, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x6FAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x6FB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x6FBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x6FC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x6FCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x6FE4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x6FEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6FF4, 0}, /* Text target bootup:Node_display */
+    {0x6FFC, 0}, /* Text target bootup:CamDirector_update */
+    {0x7004, 0}, /* Text target bootup:CamDirector_onMessage */
+    {0x700C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7014, 0}, /* Text target bootup:Node_doCommand */
+    {0x701C, 0}, /* Text target bootup:Node_saveData */
+    {0x7024, 0}, /* Text target bootup:Node_loadData */
+    {0x702C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7044, 0}, /* Text target bootup:Mountain_hostioParms */
+    {0x704C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7054, 0}, /* Text target bootup:Mountain_display */
+    {0x705C, 0}, /* Text target bootup:Node_update */
+    {0x7064, 0}, /* Text target bootup:Node_handleMsg */
+    {0x706C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7074, 0}, /* Text target bootup:Node_doCommand */
+    {0x707C, 0}, /* Text target bootup:Node_saveData */
+    {0x7084, 0}, /* Text target bootup:Node_loadData */
+    {0x708C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x712C, 0}, /* Text target bootup:MCamera_hostioParms */
+    {0x7134, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x713C, 0}, /* Text target bootup:MNode_display */
+    {0x7144, 0}, /* Text target bootup:RiderCam_update_00004948 */
+    {0x714C, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x7154, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x715C, 0}, /* Text target bootup:MCamera_doCommand */
+    {0x7164, 0}, /* Text target bootup:Node_saveData */
+    {0x716C, 0}, /* Text target bootup:Node_loadData */
+    {0x7174, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x717C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x7184, 0}, /* Text target bootup:MCamera_updateLookAt */
+    {0x718C, 0}, /* Text target bootup:RiderCam_command_00004914 */
+    {0x7524, 0}, /* Text target bootup:Tv1Tmpl_stepPicture_00007D04 */
+    {0x7534, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x754C, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x7564, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x757C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x7594, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x75AC, 0}, /* Text target bootup:Node_hostioParms */
+    {0x75B4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x75BC, 0}, /* Text target bootup:ColourItem_display */
+    {0x75C4, 0}, /* Text target bootup:Node_update */
+    {0x75CC, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x75D4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x75DC, 0}, /* Text target bootup:Node_doCommand */
+    {0x75E4, 0}, /* Text target bootup:Node_saveData */
+    {0x75EC, 0}, /* Text target bootup:ColourItem_readParms_00006228 */
+    {0x75F4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x760C, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x7614, 0}, /* Text target bootup:Node_updateChildren */
+    {0x761C, 0}, /* Text target bootup:ColourItemType_display */
+    {0x7624, 0}, /* Text target bootup:Node_update */
+    {0x762C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7634, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x763C, 0}, /* Text target bootup:Node_doCommand */
+    {0x7644, 0}, /* Text target bootup:ItemType_saveData */
+    {0x764C, 0}, /* Text target bootup:ItemType_load */
+    {0x7654, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x765C, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x7664, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x766C, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x7674, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x767C, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x7684, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x769C, 0}, /* Text target bootup:boot_readIntParm_000021B4 */
+    {0x76B4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x76BC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x76C4, 0}, /* Text target bootup:EnvSettings_display */
+    {0x76CC, 0}, /* Text target bootup:Node_update */
+    {0x76D4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x76DC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x76E4, 0}, /* Text target bootup:Node_doCommand */
+    {0x76EC, 0}, /* Text target bootup:Node_saveData */
+    {0x76F4, 0}, /* Text target bootup:EnvSettings_load */
+    {0x76FC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7714, 0}, /* Text target bootup:Node_hostioParms */
+    {0x771C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7724, 0}, /* Text target bootup:ColourItem_display */
+    {0x772C, 0}, /* Text target bootup:Node_update */
+    {0x7734, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x773C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7744, 0}, /* Text target bootup:Node_doCommand */
+    {0x774C, 0}, /* Text target bootup:Node_saveData */
+    {0x7754, 0}, /* Text target bootup:ColourItem_readParms_00007BC8 */
+    {0x775C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x777C, 0}, /* Text target bootup:MemberCallback_invoke_00007BF4 */
+    {0x7794, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x779C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x77A4, 0}, /* Text target bootup:Tv1Tmpl_display */
+    {0x77AC, 0}, /* Text target bootup:Tv1Tmpl_update */
+    {0x77B4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x77BC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x77C4, 0}, /* Text target bootup:Node_doCommand */
+    {0x77CC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x77D4, 0}, /* Text target bootup:ItemType_load */
+    {0x77DC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x77E4, 0}, /* Text target bootup:Tv1Tmpl_create */
+    {0x77EC, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x77F4, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x77FC, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x7804, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x780C, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
+    {0x7824, 0}, /* Text target bootup:SNode_hostioParms */
+    {0x782C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7834, 0}, /* Text target bootup:Tv1_display */
+    {0x783C, 0}, /* Text target bootup:Node_update */
+    {0x7844, 0}, /* Text target bootup:SNode_handleMsg */
+    {0x784C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7854, 0}, /* Text target bootup:Node_doCommand */
+    {0x785C, 0}, /* Text target bootup:SNode_saveData */
+    {0x7864, 0}, /* Text target bootup:SNode_loadData */
+    {0x786C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7884, 0}, /* Text target bootup:Fog_hostioParms */
+    {0x788C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7894, 0}, /* Text target bootup:Fog_display */
+    {0x789C, 0}, /* Text target bootup:Node_update */
+    {0x78A4, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x78AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x78B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x78BC, 0}, /* Text target bootup:Fog_saveData */
+    {0x78C4, 0}, /* Text target bootup:Fog_readParms */
+    {0x78CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x78E4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x78EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x78F4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x78FC, 0}, /* Text target bootup:Node_update */
+    {0x7904, 0}, /* Text target bootup:Node_handleMsg */
+    {0x790C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7914, 0}, /* Text target bootup:Node_doCommand */
+    {0x791C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x7924, 0}, /* Text target bootup:ItemType_load */
+    {0x792C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7934, 0}, /* Text target bootup:FogTmpl_create */
+    {0x793C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x7944, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x794C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x7954, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x795C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x7974, 0}, /* Text target bootup:Snower_hostioParms */
+    {0x797C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7984, 0}, /* Text target bootup:Snower_display */
+    {0x798C, 0}, /* Text target bootup:Node_update */
+    {0x7994, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x799C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x79A4, 0}, /* Text target bootup:Node_doCommand */
+    {0x79AC, 0}, /* Text target bootup:Snower_saveData */
+    {0x79B4, 0}, /* Text target bootup:Snower_readParms */
+    {0x79BC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x79D4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x79DC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x79E4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x79EC, 0}, /* Text target bootup:Node_update */
+    {0x79F4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x79FC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7A04, 0}, /* Text target bootup:Node_doCommand */
+    {0x7A0C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x7A14, 0}, /* Text target bootup:ItemType_load */
+    {0x7A1C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7A24, 0}, /* Text target bootup:SnowTmpl_create */
+    {0x7A2C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x7A34, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x7A3C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x7A44, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x7A4C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x7A64, 0}, /* Text target bootup:SNode_hostioParms */
+    {0x7A6C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7A74, 0}, /* Text target bootup:SNode_display */
+    {0x7A7C, 0}, /* Text target bootup:Node_update */
+    {0x7A84, 0}, /* Text target bootup:Tree_handleMsg */
+    {0x7A8C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7A94, 0}, /* Text target bootup:Node_doCommand */
+    {0x7A9C, 0}, /* Text target bootup:SNode_saveData */
+    {0x7AA4, 0}, /* Text target bootup:SNode_loadData */
+    {0x7AAC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7AC4, 0}, /* Text target bootup:TreeTmpl_hostioParms */
+    {0x7ACC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7AD4, 0}, /* Text target bootup:TreeTmpl_display */
+    {0x7ADC, 0}, /* Text target bootup:Node_update */
+    {0x7AE4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7AEC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7AF4, 0}, /* Text target bootup:Node_doCommand */
+    {0x7AFC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x7B04, 0}, /* Text target bootup:ItemType_load */
+    {0x7B0C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x7B14, 0}, /* Text target bootup:TreeTmpl_create */
+    {0x7B1C, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x7B24, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x7B2C, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x7B34, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x7B3C, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
     {0x7B6C, port_bootup_rodata + 0x560},
-    {0x7B70, (void *)item_createHel},
+    {0x7B70, 0}, /* Text target bootup:item_createHel */
     {0x7B78, port_bootup_rodata + 0x564},
-    {0x7B7C, (void *)item_createHem},
+    {0x7B7C, 0}, /* Text target bootup:item_createHem */
     {0x7B84, port_bootup_rodata + 0x568},
-    {0x7B88, (void *)item_createBal},
+    {0x7B88, 0}, /* Text target bootup:item_createBal */
     {0x7B90, port_bootup_rodata + 0x56C},
-    {0x7B94, (void *)item_createBa2},
+    {0x7B94, 0}, /* Text target bootup:item_createBa2 */
     {0x7B9C, port_bootup_rodata + 0x570},
-    {0x7BA0, (void *)item_createChk},
+    {0x7BA0, 0}, /* Text target bootup:item_createChk */
     {0x7BA8, port_bootup_rodata + 0x574},
-    {0x7BAC, (void *)item_createGtr},
+    {0x7BAC, 0}, /* Text target bootup:item_createGtr */
     {0x7BB4, port_bootup_rodata + 0x578},
-    {0x7BB8, (void *)item_createGtl},
+    {0x7BB8, 0}, /* Text target bootup:item_createGtl */
     {0x7BC0, port_bootup_rodata + 0x57C},
-    {0x7BC4, (void *)item_createCfr},
+    {0x7BC4, 0}, /* Text target bootup:item_createCfr */
     {0x7BCC, port_bootup_rodata + 0x580},
-    {0x7BD0, (void *)item_createSnow},
+    {0x7BD0, 0}, /* Text target bootup:item_createSnow */
     {0x7BD8, port_bootup_rodata + 0x584},
-    {0x7BDC, (void *)item_createFog},
+    {0x7BDC, 0}, /* Text target bootup:item_createFog */
     {0x7BE4, port_bootup_rodata + 0x588},
-    {0x7BE8, (void *)item_createSnow},
+    {0x7BE8, 0}, /* Text target bootup:item_createSnow */
     {0x7BF0, port_bootup_rodata + 0x58C},
-    {0x7BF4, (void *)item_createFog},
+    {0x7BF4, 0}, /* Text target bootup:item_createFog */
     {0x7BFC, port_bootup_rodata + 0x590},
-    {0x7C00, (void *)item_createSnow},
+    {0x7C00, 0}, /* Text target bootup:item_createSnow */
     {0x7C08, port_bootup_rodata + 0x594},
-    {0x7C0C, (void *)item_createFog},
-    {0x7C2C, (void *)MapProp_hostioParms},
-    {0x7C34, (void *)MNode_updateChildren},
-    {0x7C3C, (void *)MapProp_display},
-    {0x7C44, (void *)MNode_update},
-    {0x7C4C, (void *)MNode_handleMsg},
-    {0x7C54, (void *)Node_broadcastMsg},
-    {0x7C5C, (void *)MNode_doCommand},
-    {0x7C64, (void *)Node_saveData},
-    {0x7C6C, (void *)Node_loadData},
-    {0x7C74, (void *)MNode_setAnimPose},
-    {0x7C7C, (void *)MNode_getCMtx},
-    {0x7C8C, (void *)boot_staticInit_00006204},
-    {0x800C, (void *)__pure_virtual_called},
-    {0x8024, (void *)boot_readFloatParm_00000B50},
-    {0x803C, (void *)boot_readVec3Parm_00000B80},
-    {0x8054, (void *)boot_readQuadParm_00000BB0},
-    {0x806C, (void *)boot_readIntParm_00000BE0},
-    {0x8084, (void *)ItemType_hostioParms},
-    {0x808C, (void *)Node_updateChildren},
-    {0x8094, (void *)ColourItemType_display},
-    {0x809C, (void *)Node_update},
-    {0x80A4, (void *)Node_handleMsg},
-    {0x80AC, (void *)Node_broadcastMsg},
-    {0x80B4, (void *)Node_doCommand},
-    {0x80BC, (void *)ItemType_saveData},
-    {0x80C4, (void *)ItemType_load},
-    {0x80CC, (void *)Node_setAnimPose},
-    {0x80D4, (void *)ColourItem_create_00000C10},
-    {0x80DC, (void *)ColourItemType_buildItems},
-    {0x80E4, (void *)ColourItemType_findNearest},
-    {0x80EC, (void *)ColourItemType_getItemPos},
-    {0x80F4, (void *)ColourItemType_getItem},
-    {0x80FC, (void *)ColourItemType_findNextByZ},
-    {0x8114, (void *)Node_hostioParms},
-    {0x811C, (void *)Node_updateChildren},
-    {0x8124, (void *)Node_display},
-    {0x812C, (void *)Node_update},
-    {0x8134, (void *)Node_handleMsg},
-    {0x813C, (void *)Node_broadcastMsg},
-    {0x8144, (void *)Node_doCommand},
-    {0x814C, (void *)Node_saveData},
-    {0x8154, (void *)SnowBChild_readParms_0000E720},
-    {0x815C, (void *)Node_setAnimPose},
+    {0x7C0C, 0}, /* Text target bootup:item_createFog */
+    {0x7C2C, 0}, /* Text target bootup:MapProp_hostioParms */
+    {0x7C34, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x7C3C, 0}, /* Text target bootup:MapProp_display */
+    {0x7C44, 0}, /* Text target bootup:MNode_update */
+    {0x7C4C, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x7C54, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x7C5C, 0}, /* Text target bootup:MNode_doCommand */
+    {0x7C64, 0}, /* Text target bootup:Node_saveData */
+    {0x7C6C, 0}, /* Text target bootup:Node_loadData */
+    {0x7C74, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x7C7C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x7C8C, 0}, /* Text target bootup:boot_staticInit_00006204 */
+    {0x800C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8024, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x803C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x8054, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x806C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x8084, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x808C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8094, 0}, /* Text target bootup:ColourItemType_display */
+    {0x809C, 0}, /* Text target bootup:Node_update */
+    {0x80A4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x80AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x80B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x80BC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x80C4, 0}, /* Text target bootup:ItemType_load */
+    {0x80CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x80D4, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x80DC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x80E4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x80EC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x80F4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x80FC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x8114, 0}, /* Text target bootup:Node_hostioParms */
+    {0x811C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8124, 0}, /* Text target bootup:Node_display */
+    {0x812C, 0}, /* Text target bootup:Node_update */
+    {0x8134, 0}, /* Text target bootup:Node_handleMsg */
+    {0x813C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x8144, 0}, /* Text target bootup:Node_doCommand */
+    {0x814C, 0}, /* Text target bootup:Node_saveData */
+    {0x8154, 0}, /* Text target bootup:SnowBChild_readParms_0000E720 */
+    {0x815C, 0}, /* Text target bootup:Node_setAnimPose */
     {0x81C0, port_bootup_data + 0x8180},
     {0x81C4, port_bootup_data + 0x8180},
     {0x81C8, port_bootup_data + 0x8190},
@@ -1258,18 +598,18 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x81D4, port_bootup_data + 0x81B0},
     {0x81D8, port_bootup_data + 0x81B0},
     {0x81DC, port_bootup_data + 0x81B0},
-    {0x81EC, (void *)DNode_hostioParms},
-    {0x81F4, (void *)QNode_updateChildren},
-    {0x81FC, (void *)QNode_display},
-    {0x8204, (void *)ShpNode_update},
-    {0x820C, (void *)DNode_handleMsg},
-    {0x8214, (void *)Node_broadcastMsg},
-    {0x821C, (void *)QNode_doCommand},
-    {0x8224, (void *)ShpNode_saveData},
-    {0x822C, (void *)ShpNode_readParms},
-    {0x8234, (void *)QNode_setAnimPose},
-    {0x823C, (void *)MNode_getCMtx},
-    {0x8244, (void *)ShpNode_getSuc},
+    {0x81EC, 0}, /* Text target bootup:DNode_hostioParms */
+    {0x81F4, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x81FC, 0}, /* Text target bootup:QNode_display */
+    {0x8204, 0}, /* Text target bootup:ShpNode_update */
+    {0x820C, 0}, /* Text target bootup:DNode_handleMsg */
+    {0x8214, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x821C, 0}, /* Text target bootup:QNode_doCommand */
+    {0x8224, 0}, /* Text target bootup:ShpNode_saveData */
+    {0x822C, 0}, /* Text target bootup:ShpNode_readParms */
+    {0x8234, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x823C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x8244, 0}, /* Text target bootup:ShpNode_getSuc */
     {0x825C, port_bootup_data + 0x22620},
     {0x82D8, port_bootup_data + 0x82B8},
     {0x82E0, port_bootup_data + 0x8298},
@@ -1319,99 +659,99 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x83C4, port_bootup_rodata + 0x82C},
     {0x83C8, port_bootup_rodata + 0x840},
     {0x83CC, port_bootup_rodata + 0x854},
-    {0x83DC, (void *)DNode_hostioParms},
-    {0x83E4, (void *)QNode_updateChildren},
-    {0x83EC, (void *)SnowBoarder_display},
-    {0x83F4, (void *)SnowBoarder_update},
-    {0x83FC, (void *)SnowBoarder_handleMsg},
-    {0x8404, (void *)Node_broadcastMsg},
-    {0x840C, (void *)QNode_doCommand},
-    {0x8414, (void *)ShpNode_saveData},
-    {0x841C, (void *)SnowBoarder_readParms},
-    {0x8424, (void *)QNode_setAnimPose},
-    {0x842C, (void *)MNode_getCMtx},
-    {0x8434, (void *)ShpNode_getSuc},
-    {0x844C, (void *)ScreenThumbMat_grab_0000E740},
-    {0x8454, (void *)BaseMat_hostioParms},
-    {0x845C, (void *)Mat_print},
-    {0x8464, (void *)gfx_decodeMatCmd},
-    {0x846C, (void *)Mat_draw},
-    {0x86A4, (void *)Friction_hostioParms_00063E84},
-    {0x86AC, (void *)QNode_updateChildren},
-    {0x86B4, (void *)QNode_display},
-    {0x86BC, (void *)QNode_update},
-    {0x86C4, (void *)Friction_handleMsg_000640E4},
-    {0x86CC, (void *)Node_broadcastMsg},
-    {0x86D4, (void *)QNode_doCommand},
-    {0x86DC, (void *)Node_saveData},
-    {0x86E4, (void *)Node_loadData},
-    {0x86EC, (void *)QNode_setAnimPose},
-    {0x86F4, (void *)MNode_getCMtx},
-    {0x86FC, (void *)SnowBCollider_onContact},
-    {0x8B9C, (void *)__pure_virtual_called},
-    {0x8BB4, (void *)App_hostioParms},
-    {0x8BBC, (void *)Node_updateChildren},
-    {0x8BC4, (void *)App_Display},
-    {0x8BCC, (void *)App_Update},
-    {0x8BD4, (void *)Node_handleMsg},
-    {0x8BDC, (void *)Node_broadcastMsg},
-    {0x8BE4, (void *)Node_doCommand},
-    {0x8BEC, (void *)Node_saveData},
-    {0x8BF4, (void *)Node_loadData},
-    {0x8BFC, (void *)Node_setAnimPose},
-    {0x8C04, (void *)App_main},
-    {0x8C0C, (void *)App_Reset},
-    {0x8C14, (void *)SnowBoard_restart},
-    {0x8C1C, (void *)SnowBoard_softReset},
-    {0x8C24, (void *)SnowBoard_onPreNmi},
-    {0x8C2C, (void *)SnowBoard_InitInstance},
-    {0x8C44, (void *)boot_readFloatParm_00000B50},
-    {0x8C5C, (void *)boot_readVec3Parm_00000B80},
-    {0x8C74, (void *)boot_readQuadParm_00000BB0},
-    {0x8C8C, (void *)boot_readIntParm_00000BE0},
-    {0x8CA4, (void *)ItemType_hostioParms},
-    {0x8CAC, (void *)Node_updateChildren},
-    {0x8CB4, (void *)ColourItemType_display},
-    {0x8CBC, (void *)Node_update},
-    {0x8CC4, (void *)Node_handleMsg},
-    {0x8CCC, (void *)Node_broadcastMsg},
-    {0x8CD4, (void *)Node_doCommand},
-    {0x8CDC, (void *)ItemType_saveData},
-    {0x8CE4, (void *)ItemType_load},
-    {0x8CEC, (void *)Node_setAnimPose},
-    {0x8CF4, (void *)ColourItem_create_00000C10},
-    {0x8CFC, (void *)ColourItemType_buildItems},
-    {0x8D04, (void *)ColourItemType_findNearest},
-    {0x8D0C, (void *)ColourItemType_getItemPos},
-    {0x8D14, (void *)ColourItemType_getItem},
-    {0x8D1C, (void *)ColourItemType_findNextByZ},
-    {0x8D2C, (void *)SnowBoard_staticCtor_0000E9FC},
-    {0x8DBC, (void *)__pure_virtual_called},
-    {0x8DD4, (void *)boot_readFloatParm_00000B50},
-    {0x8DEC, (void *)boot_readVec3Parm_00000B80},
-    {0x8E04, (void *)boot_readQuadParm_00000BB0},
-    {0x8E1C, (void *)boot_readIntParm_00000BE0},
-    {0x8E34, (void *)ItemType_hostioParms},
-    {0x8E3C, (void *)Node_updateChildren},
-    {0x8E44, (void *)ColourItemType_display},
-    {0x8E4C, (void *)Node_update},
-    {0x8E54, (void *)Node_handleMsg},
-    {0x8E5C, (void *)Node_broadcastMsg},
-    {0x8E64, (void *)Node_doCommand},
-    {0x8E6C, (void *)ItemType_saveData},
-    {0x8E74, (void *)ItemType_load},
-    {0x8E7C, (void *)Node_setAnimPose},
-    {0x8E84, (void *)ColourItem_create_00000C10},
-    {0x8E8C, (void *)ColourItemType_buildItems},
-    {0x8E94, (void *)ColourItemType_findNearest},
-    {0x8E9C, (void *)ColourItemType_getItemPos},
-    {0x8EA4, (void *)ColourItemType_getItem},
-    {0x8EAC, (void *)ColourItemType_findNextByZ},
-    {0x8ECC, (void *)__pure_virtual_called},
-    {0x8EE4, (void *)boot_readFloatParm_00000B50},
-    {0x8EFC, (void *)boot_readVec3Parm_00000B80},
-    {0x8F14, (void *)boot_readQuadParm_00000BB0},
-    {0x8F2C, (void *)boot_readIntParm_00000BE0},
+    {0x83DC, 0}, /* Text target bootup:DNode_hostioParms */
+    {0x83E4, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x83EC, 0}, /* Text target bootup:SnowBoarder_display */
+    {0x83F4, 0}, /* Text target bootup:SnowBoarder_update */
+    {0x83FC, 0}, /* Text target bootup:SnowBoarder_handleMsg */
+    {0x8404, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x840C, 0}, /* Text target bootup:QNode_doCommand */
+    {0x8414, 0}, /* Text target bootup:ShpNode_saveData */
+    {0x841C, 0}, /* Text target bootup:SnowBoarder_readParms */
+    {0x8424, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x842C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x8434, 0}, /* Text target bootup:ShpNode_getSuc */
+    {0x844C, 0}, /* Text target bootup:ScreenThumbMat_grab_0000E740 */
+    {0x8454, 0}, /* Text target bootup:BaseMat_hostioParms */
+    {0x845C, 0}, /* Text target bootup:Mat_print */
+    {0x8464, 0}, /* Text target bootup:gfx_decodeMatCmd */
+    {0x846C, 0}, /* Text target bootup:Mat_draw */
+    {0x86A4, 0}, /* Text target bootup:Friction_hostioParms_00063E84 */
+    {0x86AC, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x86B4, 0}, /* Text target bootup:QNode_display */
+    {0x86BC, 0}, /* Text target bootup:QNode_update */
+    {0x86C4, 0}, /* Text target bootup:Friction_handleMsg_000640E4 */
+    {0x86CC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x86D4, 0}, /* Text target bootup:QNode_doCommand */
+    {0x86DC, 0}, /* Text target bootup:Node_saveData */
+    {0x86E4, 0}, /* Text target bootup:Node_loadData */
+    {0x86EC, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x86F4, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x86FC, 0}, /* Text target bootup:SnowBCollider_onContact */
+    {0x8B9C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8BB4, 0}, /* Text target bootup:App_hostioParms */
+    {0x8BBC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8BC4, 0}, /* Text target bootup:App_Display */
+    {0x8BCC, 0}, /* Text target bootup:App_Update */
+    {0x8BD4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x8BDC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x8BE4, 0}, /* Text target bootup:Node_doCommand */
+    {0x8BEC, 0}, /* Text target bootup:Node_saveData */
+    {0x8BF4, 0}, /* Text target bootup:Node_loadData */
+    {0x8BFC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x8C04, 0}, /* Text target bootup:App_main */
+    {0x8C0C, 0}, /* Text target bootup:App_Reset */
+    {0x8C14, 0}, /* Text target bootup:SnowBoard_restart */
+    {0x8C1C, 0}, /* Text target bootup:SnowBoard_softReset */
+    {0x8C24, 0}, /* Text target bootup:SnowBoard_onPreNmi */
+    {0x8C2C, 0}, /* Text target bootup:SnowBoard_InitInstance */
+    {0x8C44, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x8C5C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x8C74, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x8C8C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x8CA4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x8CAC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8CB4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x8CBC, 0}, /* Text target bootup:Node_update */
+    {0x8CC4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x8CCC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x8CD4, 0}, /* Text target bootup:Node_doCommand */
+    {0x8CDC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x8CE4, 0}, /* Text target bootup:ItemType_load */
+    {0x8CEC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x8CF4, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x8CFC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x8D04, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x8D0C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x8D14, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x8D1C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x8D2C, 0}, /* Text target bootup:SnowBoard_staticCtor_0000E9FC */
+    {0x8DBC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8DD4, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x8DEC, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x8E04, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x8E1C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x8E34, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x8E3C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8E44, 0}, /* Text target bootup:ColourItemType_display */
+    {0x8E4C, 0}, /* Text target bootup:Node_update */
+    {0x8E54, 0}, /* Text target bootup:Node_handleMsg */
+    {0x8E5C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x8E64, 0}, /* Text target bootup:Node_doCommand */
+    {0x8E6C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x8E74, 0}, /* Text target bootup:ItemType_load */
+    {0x8E7C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x8E84, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0x8E8C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x8E94, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x8E9C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x8EA4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x8EAC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x8ECC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8EE4, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x8EFC, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x8F14, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x8F2C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
     {0x9078, port_bootup_data + 0x90F0},
     {0x90BC, port_bootup_data + 0x8F38},
     {0x90C4, port_bootup_data + 0x8F88},
@@ -1426,230 +766,230 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0xA904, port_bootup_data + 0xA870},
     {0xA910, port_bootup_data + 0xA894},
     {0xA91C, port_bootup_data + 0xA8D4},
-    {0xA93C, (void *)skin_cmdSkinMgr},
+    {0xA93C, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xA944, port_boarder1_data + 0x8064},
-    {0xA964, (void *)skin_cmdSkinMgr},
+    {0xA964, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xA96C, port_boarder1_data + 0x897C},
-    {0xA998, (void *)skin_cmdSkinMgr},
+    {0xA998, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xA9A0, port_boarder2_data + 0x659C},
-    {0xA9C0, (void *)skin_cmdSkinMgr},
+    {0xA9C0, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xA9C8, port_boarder2_data + 0x6F68},
-    {0xA9F4, (void *)skin_cmdSkinMgr},
+    {0xA9F4, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xA9FC, port_boarder3_data + 0x7504},
-    {0xAA1C, (void *)skin_cmdSkinMgr},
+    {0xAA1C, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAA24, port_boarder3_data + 0x7EE4},
-    {0xAA50, (void *)skin_cmdSkinMgr},
+    {0xAA50, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAA58, port_boarder4_data + 0x7F64},
-    {0xAA78, (void *)skin_cmdSkinMgr},
+    {0xAA78, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAA80, port_boarder4_data + 0x898C},
-    {0xAAAC, (void *)skin_cmdSkinMgr},
+    {0xAAAC, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAAB4, port_boarder5_data + 0x7F10},
-    {0xAAD4, (void *)skin_cmdSkinMgr},
+    {0xAAD4, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAADC, port_boarder5_data + 0x893C},
-    {0xAB08, (void *)skin_cmdSkinMgr},
+    {0xAB08, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAB10, port_boarder1_data + 0x8064},
-    {0xAB3C, (void *)skin_cmdSkinMgr},
+    {0xAB3C, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAB44, port_boarder1_data + 0x8064},
-    {0xAB70, (void *)skin_cmdSkinMgr},
+    {0xAB70, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xAB78, port_boarder5_data + 0x7F10},
-    {0xAB98, (void *)skin_cmdSkinMgr},
+    {0xAB98, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xABA0, port_boarder5_data + 0x893C},
     {0xABC4, port_bootup_data + 0xA924},
-    {0xABD4, (void *)skin_cmdSkinMgr},
+    {0xABD4, 0}, /* Text target bootup:skin_cmdSkinMgr */
     {0xABDC, port_bootup_data + 0xC12C},
-    {0xABF4, (void *)MNode_def},
+    {0xABF4, 0}, /* Text target bootup:MNode_def */
     {0xAC04, port_bootup_rodata + 0x9B0},
-    {0xACF0, (void *)MNode_def},
+    {0xACF0, 0}, /* Text target bootup:MNode_def */
     {0xACF8, port_bootup_rodata + 0x9B4},
-    {0xAD08, (void *)MNode_def},
-    {0xAD20, (void *)shape_cmdShape_00051520},
+    {0xAD08, 0}, /* Text target bootup:MNode_def */
+    {0xAD20, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAD24, 0}, /* tahoe151 Data module not kept */
-    {0xAD3C, (void *)shape_cmdShape_00051520},
+    {0xAD3C, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAD40, 0}, /* merlot147 Data module not kept */
-    {0xAD58, (void *)shape_cmdShape_00051520},
+    {0xAD58, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAD5C, 0}, /* blin149 Data module not kept */
-    {0xAD74, (void *)shape_cmdShape_00051520},
+    {0xAD74, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAD78, 0}, /* scout156 Data module not kept */
-    {0xAD90, (void *)shape_cmdShape_00051520},
+    {0xAD90, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAD94, 0}, /* tahoe155 Data module not kept */
-    {0xADAC, (void *)shape_cmdShape_00051520},
+    {0xADAC, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xADB0, 0}, /* scoutltd162 Data module not kept */
-    {0xADC8, (void *)shape_cmdShape_00051520},
+    {0xADC8, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xADCC, 0}, /* merlot143 Data module not kept */
-    {0xADE4, (void *)shape_cmdShape_00051520},
+    {0xADE4, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xADE8, 0}, /* blin154 Data module not kept */
-    {0xAE00, (void *)shape_cmdShape_00051520},
+    {0xAE00, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAE04, 0}, /* penguin Data module not kept */
-    {0xAE34, (void *)shape_cmdShape_00051520},
+    {0xAE34, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAE38, port_bootup_data + 0xA8FC},
-    {0xAE60, (void *)shape_cmdShape_00051520},
+    {0xAE60, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xAE64, port_bootup_data + 0xA42C},
     {0xAE84, port_bootup_data + 0xA38C},
-    {0xAE8C, (void *)anim_createAnimator},
-    {0xAEA4, (void *)MNode_def},
+    {0xAE8C, 0}, /* Text target bootup:anim_createAnimator */
+    {0xAEA4, 0}, /* Text target bootup:MNode_def */
     {0xAEAC, port_bootup_rodata + 0x9BC},
     {0xAEBC, port_bootup_data + 0xA38C},
-    {0xAEC4, (void *)anim_createAnimator},
-    {0xAED8, (void *)MNode_def},
+    {0xAEC4, 0}, /* Text target bootup:anim_createAnimator */
+    {0xAED8, 0}, /* Text target bootup:MNode_def */
     {0xAEE8, port_bootup_rodata + 0x9C8},
     {0xAEF0, port_bootup_data + 0xA224},
-    {0xAF00, (void *)skin_cmdSkinAnim},
-    {0xAF20, (void *)skin_cmdSkinAnim},
-    {0xAF40, (void *)skin_cmdSkinAnim},
-    {0xAF58, (void *)anim_createAnimator},
-    {0xAF6C, (void *)MNode_def},
+    {0xAF00, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAF20, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAF40, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAF58, 0}, /* Text target bootup:anim_createAnimator */
+    {0xAF6C, 0}, /* Text target bootup:MNode_def */
     {0xAF7C, port_bootup_rodata + 0x9D4},
     {0xAF84, port_bootup_data + 0xA10C},
-    {0xAF94, (void *)skin_cmdSkinAnim},
-    {0xAFB4, (void *)skin_cmdSkinAnim},
-    {0xAFD4, (void *)skin_cmdSkinAnim},
-    {0xAFEC, (void *)anim_createAnimator},
-    {0xB000, (void *)MNode_def},
+    {0xAF94, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAFB4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAFD4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xAFEC, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB000, 0}, /* Text target bootup:MNode_def */
     {0xB008, port_bootup_rodata + 0x9E0},
     {0xB010, port_bootup_data + 0xA120},
-    {0xB018, (void *)MNode_def},
-    {0xB030, (void *)shape_cmdShape_00051520},
+    {0xB018, 0}, /* Text target bootup:MNode_def */
+    {0xB030, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xB034, port_boarder2_data + 0x10F0},
-    {0xB05C, (void *)shape_cmdShape_00051520},
+    {0xB05C, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xB060, port_boarder3_data + 0x12D4},
-    {0xB088, (void *)shape_cmdShape_00051520},
+    {0xB088, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xB08C, port_boarder4_data + 0x52C4},
-    {0xB0B4, (void *)shape_cmdShape_00051520},
+    {0xB0B4, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xB0B8, port_boarder5_data + 0x47C8},
-    {0xB0E0, (void *)shape_cmdShape_00051520},
+    {0xB0E0, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xB0E4, port_boarder5_data + 0x6ABC},
-    {0xB10C, (void *)skin_cmdSkinAnim},
-    {0xB12C, (void *)skin_cmdSkinAnim},
-    {0xB148, (void *)anim_createAnimator},
-    {0xB15C, (void *)MNode_def},
+    {0xB10C, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB12C, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB148, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB15C, 0}, /* Text target bootup:MNode_def */
     {0xB16C, port_bootup_rodata + 0x9EC},
     {0xB174, port_bootup_data + 0xA15C},
-    {0xB184, (void *)skin_cmdSkinAnim},
-    {0xB1A4, (void *)skin_cmdSkinAnim},
-    {0xB1C4, (void *)skin_cmdSkinAnim},
-    {0xB1DC, (void *)anim_createAnimator},
-    {0xB1F0, (void *)MNode_def},
+    {0xB184, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB1A4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB1C4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB1DC, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB1F0, 0}, /* Text target bootup:MNode_def */
     {0xB200, port_bootup_rodata + 0x9F8},
     {0xB208, port_bootup_data + 0xA170},
-    {0xB218, (void *)skin_cmdSkinAnim},
-    {0xB238, (void *)skin_cmdSkinAnim},
-    {0xB258, (void *)skin_cmdSkinAnim},
-    {0xB270, (void *)anim_createAnimator},
-    {0xB284, (void *)MNode_def},
+    {0xB218, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB238, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB258, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB270, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB284, 0}, /* Text target bootup:MNode_def */
     {0xB294, port_bootup_rodata + 0xA04},
     {0xB29C, port_bootup_data + 0xA184},
-    {0xB2AC, (void *)skin_cmdSkinAnim},
-    {0xB2CC, (void *)skin_cmdSkinAnim},
-    {0xB2EC, (void *)skin_cmdSkinAnim},
-    {0xB304, (void *)anim_createAnimator},
-    {0xB318, (void *)MNode_def},
+    {0xB2AC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB2CC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB2EC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB304, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB318, 0}, /* Text target bootup:MNode_def */
     {0xB328, port_bootup_rodata + 0xA10},
     {0xB330, port_bootup_data + 0xA198},
-    {0xB338, (void *)anim_createAnimator},
-    {0xB34C, (void *)MNode_def},
+    {0xB338, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB34C, 0}, /* Text target bootup:MNode_def */
     {0xB35C, port_bootup_rodata + 0xA1C},
     {0xB364, port_bootup_data + 0xA1C0},
-    {0xB36C, (void *)anim_createAnimator},
-    {0xB384, (void *)skin_cmdSkinAnim},
-    {0xB3A4, (void *)skin_cmdSkinAnim},
-    {0xB3C4, (void *)skin_cmdSkinAnim},
-    {0xB3E0, (void *)MNode_def},
+    {0xB36C, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB384, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB3A4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB3C4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB3E0, 0}, /* Text target bootup:MNode_def */
     {0xB3F0, port_bootup_rodata + 0xA28},
     {0xB3F8, port_bootup_data + 0xA1D4},
-    {0xB400, (void *)anim_createAnimator},
-    {0xB418, (void *)skin_cmdSkinAnim},
-    {0xB438, (void *)skin_cmdSkinAnim},
-    {0xB458, (void *)skin_cmdSkinAnim},
-    {0xB474, (void *)MNode_def},
+    {0xB400, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB418, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB438, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB458, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB474, 0}, /* Text target bootup:MNode_def */
     {0xB484, port_bootup_rodata + 0xA34},
     {0xB48C, port_bootup_data + 0xA1E8},
-    {0xB494, (void *)anim_createAnimator},
-    {0xB4AC, (void *)skin_cmdSkinAnim},
-    {0xB4CC, (void *)skin_cmdSkinAnim},
-    {0xB4EC, (void *)skin_cmdSkinAnim},
-    {0xB508, (void *)MNode_def},
+    {0xB494, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB4AC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB4CC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB4EC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB508, 0}, /* Text target bootup:MNode_def */
     {0xB518, port_bootup_rodata + 0xA40},
     {0xB520, port_bootup_data + 0xA1FC},
-    {0xB528, (void *)anim_createAnimator},
-    {0xB53C, (void *)MNode_def},
+    {0xB528, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB53C, 0}, /* Text target bootup:MNode_def */
     {0xB54C, port_bootup_rodata + 0xA4C},
     {0xB554, port_bootup_data + 0xA260},
-    {0xB55C, (void *)anim_createAnimator},
-    {0xB574, (void *)skin_cmdSkinAnim},
-    {0xB594, (void *)skin_cmdSkinAnim},
-    {0xB5B4, (void *)skin_cmdSkinAnim},
-    {0xB5D0, (void *)MNode_def},
+    {0xB55C, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB574, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB594, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB5B4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB5D0, 0}, /* Text target bootup:MNode_def */
     {0xB5E0, port_bootup_rodata + 0xA58},
     {0xB5E8, port_bootup_data + 0xA274},
-    {0xB5F0, (void *)anim_createAnimator},
-    {0xB608, (void *)skin_cmdSkinAnim},
-    {0xB628, (void *)skin_cmdSkinAnim},
-    {0xB648, (void *)skin_cmdSkinAnim},
-    {0xB664, (void *)MNode_def},
+    {0xB5F0, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB608, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB628, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB648, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB664, 0}, /* Text target bootup:MNode_def */
     {0xB674, port_bootup_rodata + 0xA64},
     {0xB67C, port_bootup_data + 0xA288},
-    {0xB684, (void *)anim_createAnimator},
-    {0xB69C, (void *)skin_cmdSkinAnim},
-    {0xB6BC, (void *)skin_cmdSkinAnim},
-    {0xB6DC, (void *)skin_cmdSkinAnim},
-    {0xB6F8, (void *)MNode_def},
+    {0xB684, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB69C, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB6BC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB6DC, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB6F8, 0}, /* Text target bootup:MNode_def */
     {0xB708, port_bootup_rodata + 0xA70},
     {0xB710, port_bootup_data + 0xA2C4},
-    {0xB718, (void *)anim_createAnimator},
-    {0xB730, (void *)skin_cmdSkinAnim},
-    {0xB750, (void *)skin_cmdSkinAnim},
-    {0xB770, (void *)skin_cmdSkinAnim},
-    {0xB78C, (void *)MNode_def},
+    {0xB718, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB730, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB750, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB770, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB78C, 0}, /* Text target bootup:MNode_def */
     {0xB79C, port_bootup_rodata + 0xA7C},
     {0xB7A4, port_bootup_data + 0xA2D8},
-    {0xB7AC, (void *)anim_createAnimator},
-    {0xB7C4, (void *)skin_cmdSkinAnim},
-    {0xB7E4, (void *)skin_cmdSkinAnim},
-    {0xB804, (void *)skin_cmdSkinAnim},
-    {0xB820, (void *)MNode_def},
+    {0xB7AC, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB7C4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB7E4, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB804, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB820, 0}, /* Text target bootup:MNode_def */
     {0xB830, port_bootup_rodata + 0xA88},
     {0xB838, port_bootup_data + 0xA2EC},
-    {0xB840, (void *)anim_createAnimator},
-    {0xB858, (void *)skin_cmdSkinAnim},
-    {0xB878, (void *)skin_cmdSkinAnim},
-    {0xB898, (void *)skin_cmdSkinAnim},
-    {0xB8B4, (void *)MNode_def},
-    {0xB8C0, (void *)MNode_def},
+    {0xB840, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB858, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB878, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB898, 0}, /* Text target bootup:skin_cmdSkinAnim */
+    {0xB8B4, 0}, /* Text target bootup:MNode_def */
+    {0xB8C0, 0}, /* Text target bootup:MNode_def */
     {0xB8C8, port_bootup_rodata + 0xA94},
     {0xB8D0, port_bootup_data + 0xA314},
-    {0xB8D8, (void *)anim_createAnimator},
-    {0xB900, (void *)skin_cmdSkinShape},
+    {0xB8D8, 0}, /* Text target bootup:anim_createAnimator */
+    {0xB900, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xB908, port_boarder1_data + 0x7FC0},
-    {0xB930, (void *)skin_cmdSkinShape},
+    {0xB930, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xB938, port_boarder1_data + 0x8954},
-    {0xB964, (void *)skin_cmdSkinShape},
+    {0xB964, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xB96C, port_boarder2_data + 0x6560},
-    {0xB994, (void *)skin_cmdSkinShape},
+    {0xB994, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xB99C, port_boarder2_data + 0x6F40},
-    {0xB9C8, (void *)skin_cmdSkinShape},
+    {0xB9C8, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xB9D0, port_boarder3_data + 0x74C8},
-    {0xB9F8, (void *)skin_cmdSkinShape},
+    {0xB9F8, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBA00, port_boarder3_data + 0x7EBC},
-    {0xBA2C, (void *)skin_cmdSkinShape},
+    {0xBA2C, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBA34, port_boarder4_data + 0x7F28},
-    {0xBA5C, (void *)skin_cmdSkinShape},
+    {0xBA5C, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBA64, port_boarder4_data + 0x8964},
-    {0xBA90, (void *)skin_cmdSkinShape},
+    {0xBA90, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBA98, port_boarder5_data + 0x3CC8},
-    {0xBAC0, (void *)skin_cmdSkinShape},
+    {0xBAC0, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBAC8, port_boarder5_data + 0x8914},
-    {0xBAF4, (void *)skin_cmdSkinShape},
+    {0xBAF4, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBAFC, port_boarder1_data + 0x7FFC},
-    {0xBB30, (void *)skin_cmdSkinShape},
+    {0xBB30, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBB38, port_boarder1_data + 0x8030},
-    {0xBB6C, (void *)skin_cmdSkinShape},
+    {0xBB6C, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBB74, port_boarder5_data + 0x3CC8},
-    {0xBB9C, (void *)skin_cmdSkinShape},
+    {0xBB9C, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBBA4, port_boarder5_data + 0x8914},
-    {0xBBC8, (void *)skin_cmdSkinShape},
+    {0xBBC8, 0}, /* Text target bootup:skin_cmdSkinShape */
     {0xBBD0, port_bootup_data + 0xC104},
-    {0xBC0C, (void *)__pure_virtual_called},
-    {0xBC24, (void *)boot_readQuadParm_00000BB0},
+    {0xBC0C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xBC24, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
     {0xC10C, port_bootup_data + 0xBD34},
     {0xC118, port_bootup_data + 0xBE84},
     {0xC124, port_bootup_data + 0xC0DC},
@@ -1665,48 +1005,48 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0xC208, port_bootup_data + 0xBC88},
     {0xC210, port_bootup_data + 0xBC7C},
     {0xC230, port_bootup_data + 0xBC30},
-    {0xC2AC, (void *)__pure_virtual_called},
-    {0xC2C4, (void *)Node_hostioParms},
-    {0xC2CC, (void *)Node_updateChildren},
-    {0xC2D4, (void *)Process_display},
-    {0xC2DC, (void *)Process_update},
-    {0xC2E4, (void *)Node_handleMsg},
-    {0xC2EC, (void *)Node_broadcastMsg},
-    {0xC2F4, (void *)Node_doCommand},
-    {0xC2FC, (void *)Node_saveData},
-    {0xC304, (void *)Node_loadData},
-    {0xC30C, (void *)Node_setAnimPose},
-    {0xC314, (void *)Process_start},
-    {0xC31C, (void *)Process_exit},
-    {0xC324, (void *)QuitProcess_onQuit},
-    {0xC32C, (void *)QuitProcess_stub_00012DA4},
-    {0xC344, (void *)Node_hostioParms},
-    {0xC34C, (void *)Node_updateChildren},
-    {0xC354, (void *)Node_display},
-    {0xC35C, (void *)Node_update},
-    {0xC364, (void *)Node_handleMsg},
-    {0xC36C, (void *)Node_broadcastMsg},
-    {0xC374, (void *)Node_doCommand},
-    {0xC37C, (void *)Node_saveData},
-    {0xC384, (void *)Node_loadData},
-    {0xC38C, (void *)Node_setAnimPose},
-    {0xC394, (void *)Process_start},
-    {0xC3AC, (void *)Node_hostioParms},
-    {0xC3B4, (void *)Node_updateChildren},
-    {0xC3BC, (void *)Process_display},
-    {0xC3C4, (void *)Process_update},
-    {0xC3CC, (void *)Node_handleMsg},
-    {0xC3D4, (void *)Node_broadcastMsg},
-    {0xC3DC, (void *)Node_doCommand},
-    {0xC3E4, (void *)Node_saveData},
-    {0xC3EC, (void *)Node_loadData},
-    {0xC3F4, (void *)Node_setAnimPose},
-    {0xC3FC, (void *)Process_start},
-    {0xC404, (void *)Process_exit},
-    {0xC40C, (void *)Process_onQuit},
-    {0xC414, (void *)__pure_virtual_called},
-    {0xC42C, (void *)boot_readFloatParm_00000B50},
-    {0xC444, (void *)boot_readVec3Parm_00000B80},
+    {0xC2AC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xC2C4, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC2CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC2D4, 0}, /* Text target bootup:Process_display */
+    {0xC2DC, 0}, /* Text target bootup:Process_update */
+    {0xC2E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC2EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC2F4, 0}, /* Text target bootup:Node_doCommand */
+    {0xC2FC, 0}, /* Text target bootup:Node_saveData */
+    {0xC304, 0}, /* Text target bootup:Node_loadData */
+    {0xC30C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC314, 0}, /* Text target bootup:Process_start */
+    {0xC31C, 0}, /* Text target bootup:Process_exit */
+    {0xC324, 0}, /* Text target bootup:QuitProcess_onQuit */
+    {0xC32C, 0}, /* Text target bootup:QuitProcess_stub_00012DA4 */
+    {0xC344, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC34C, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC354, 0}, /* Text target bootup:Node_display */
+    {0xC35C, 0}, /* Text target bootup:Node_update */
+    {0xC364, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC36C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC374, 0}, /* Text target bootup:Node_doCommand */
+    {0xC37C, 0}, /* Text target bootup:Node_saveData */
+    {0xC384, 0}, /* Text target bootup:Node_loadData */
+    {0xC38C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC394, 0}, /* Text target bootup:Process_start */
+    {0xC3AC, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC3B4, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC3BC, 0}, /* Text target bootup:Process_display */
+    {0xC3C4, 0}, /* Text target bootup:Process_update */
+    {0xC3CC, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC3D4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC3DC, 0}, /* Text target bootup:Node_doCommand */
+    {0xC3E4, 0}, /* Text target bootup:Node_saveData */
+    {0xC3EC, 0}, /* Text target bootup:Node_loadData */
+    {0xC3F4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC3FC, 0}, /* Text target bootup:Process_start */
+    {0xC404, 0}, /* Text target bootup:Process_exit */
+    {0xC40C, 0}, /* Text target bootup:Process_onQuit */
+    {0xC414, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xC42C, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xC444, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
     {0xC450, port_bootup_rodata + 0xAA0},
     {0xC454, port_bootup_rodata + 0xAA8},
     {0xC458, port_bootup_rodata + 0xAB4},
@@ -1717,18 +1057,18 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0xC46C, port_bootup_rodata + 0xAF4},
     {0xC470, port_bootup_rodata + 0xB00},
     {0xC474, port_bootup_rodata + 0xB08},
-    {0xC488, (void *)Node_hostioParms},
-    {0xC490, (void *)Node_updateChildren},
-    {0xC498, (void *)PauseMenu_display},
-    {0xC4A0, (void *)PauseMenu_update},
-    {0xC4A8, (void *)Node_handleMsg},
-    {0xC4B0, (void *)Node_broadcastMsg},
-    {0xC4B8, (void *)Node_doCommand},
-    {0xC4C0, (void *)Node_saveData},
-    {0xC4C8, (void *)Node_loadData},
-    {0xC4D0, (void *)Node_setAnimPose},
-    {0xC4D8, (void *)PauseMenu_start},
-    {0xC4E0, (void *)PauseMenu_exit},
+    {0xC488, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC490, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC498, 0}, /* Text target bootup:PauseMenu_display */
+    {0xC4A0, 0}, /* Text target bootup:PauseMenu_update */
+    {0xC4A8, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC4B0, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC4B8, 0}, /* Text target bootup:Node_doCommand */
+    {0xC4C0, 0}, /* Text target bootup:Node_saveData */
+    {0xC4C8, 0}, /* Text target bootup:Node_loadData */
+    {0xC4D0, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC4D8, 0}, /* Text target bootup:PauseMenu_start */
+    {0xC4E0, 0}, /* Text target bootup:PauseMenu_exit */
     {0xC4EC, port_bootup_rodata + 0xB10},
     {0xC4F0, port_bootup_rodata + 0xB20},
     {0xC4F4, port_bootup_rodata + 0xB30},
@@ -1745,243 +1085,243 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0xC520, port_bootup_rodata + 0xBE0},
     {0xC524, port_bootup_rodata + 0xBF0},
     {0xC528, port_bootup_rodata + 0xC00},
-    {0xC55C, (void *)__pure_virtual_called},
-    {0xC56C, (void *)input_ctor_0000F390},
-    {0xC6BC, (void *)__pure_virtual_called},
-    {0xC6D4, (void *)Node_hostioParms},
-    {0xC6DC, (void *)Node_updateChildren},
-    {0xC6E4, (void *)Fader_display},
-    {0xC6EC, (void *)Node_update},
-    {0xC6F4, (void *)Node_handleMsg},
-    {0xC6FC, (void *)Node_broadcastMsg},
-    {0xC704, (void *)Node_doCommand},
-    {0xC70C, (void *)Node_saveData},
-    {0xC714, (void *)Node_loadData},
-    {0xC71C, (void *)Node_setAnimPose},
-    {0xC724, (void *)Process_start},
-    {0xC74C, (void *)__pure_virtual_called},
-    {0xC770, (void *)boot_readIntParm_00000BE0},
-    {0xC788, (void *)Node_hostioParms},
-    {0xC790, (void *)Node_updateChildren},
-    {0xC798, (void *)TimeGadget_display_000140C4},
-    {0xC7A0, (void *)Node_update},
-    {0xC7A8, (void *)Node_handleMsg},
-    {0xC7B0, (void *)Node_broadcastMsg},
-    {0xC7B8, (void *)Node_doCommand},
-    {0xC7C0, (void *)Node_saveData},
-    {0xC7C8, (void *)Node_loadData},
-    {0xC7D0, (void *)Node_setAnimPose},
-    {0xC7E8, (void *)Node_hostioParms},
-    {0xC7F0, (void *)Node_updateChildren},
-    {0xC7F8, (void *)CountDownGadget_display},
-    {0xC800, (void *)Node_update},
-    {0xC808, (void *)Node_handleMsg},
-    {0xC810, (void *)Node_broadcastMsg},
-    {0xC818, (void *)Node_doCommand},
-    {0xC820, (void *)Node_saveData},
-    {0xC828, (void *)Node_loadData},
-    {0xC830, (void *)Node_setAnimPose},
-    {0xC848, (void *)boot_readFloatParm_00000B50},
-    {0xC860, (void *)Node_hostioParms},
-    {0xC868, (void *)Node_updateChildren},
-    {0xC870, (void *)PointsGadget_display_FFFFFFE0},
-    {0xC878, (void *)Node_update},
-    {0xC880, (void *)Node_handleMsg},
-    {0xC888, (void *)Node_broadcastMsg},
-    {0xC890, (void *)Node_doCommand},
-    {0xC898, (void *)Node_saveData},
-    {0xC8A0, (void *)Node_loadData},
-    {0xC8A8, (void *)Node_setAnimPose},
-    {0xC8C0, (void *)Node_hostioParms},
-    {0xC8C8, (void *)Node_updateChildren},
-    {0xC8D0, (void *)BestGadget_display_00014228},
-    {0xC8D8, (void *)Node_update},
-    {0xC8E0, (void *)Node_handleMsg},
-    {0xC8E8, (void *)Node_broadcastMsg},
-    {0xC8F0, (void *)Node_doCommand},
-    {0xC8F8, (void *)Node_saveData},
-    {0xC900, (void *)Node_loadData},
-    {0xC908, (void *)Node_setAnimPose},
-    {0xC920, (void *)Node_hostioParms},
-    {0xC928, (void *)Node_updateChildren},
-    {0xC930, (void *)BoardsGadget_display},
-    {0xC938, (void *)Node_update},
-    {0xC940, (void *)Node_handleMsg},
-    {0xC948, (void *)Node_broadcastMsg},
-    {0xC950, (void *)Node_doCommand},
-    {0xC958, (void *)Node_saveData},
-    {0xC960, (void *)Node_loadData},
-    {0xC968, (void *)Node_setAnimPose},
-    {0xC980, (void *)Node_hostioParms},
-    {0xC988, (void *)Node_updateChildren},
-    {0xC990, (void *)CoolGadget_display},
-    {0xC998, (void *)Node_update},
-    {0xC9A0, (void *)Node_handleMsg},
-    {0xC9A8, (void *)Node_broadcastMsg},
-    {0xC9B0, (void *)Node_doCommand},
-    {0xC9B8, (void *)Node_saveData},
-    {0xC9C0, (void *)Node_loadData},
-    {0xC9C8, (void *)Node_setAnimPose},
-    {0xC9E0, (void *)Node_hostioParms},
-    {0xC9E8, (void *)Node_updateChildren},
-    {0xC9F0, (void *)CourseGadget_display},
-    {0xC9F8, (void *)Node_update},
-    {0xCA00, (void *)Node_handleMsg},
-    {0xCA08, (void *)Node_broadcastMsg},
-    {0xCA10, (void *)Node_doCommand},
-    {0xCA18, (void *)Node_saveData},
-    {0xCA20, (void *)Node_loadData},
-    {0xCA28, (void *)Node_setAnimPose},
-    {0xCA40, (void *)boot_readQuadParm_00000BB0},
-    {0xCA58, (void *)Node_hostioParms},
-    {0xCA60, (void *)Node_updateChildren},
-    {0xCA68, (void *)PointsGadget_display_000038F4},
-    {0xCA70, (void *)PointsGadget_update_00003430},
-    {0xCA78, (void *)Node_handleMsg},
-    {0xCA80, (void *)Node_broadcastMsg},
-    {0xCA88, (void *)Node_doCommand},
-    {0xCA90, (void *)Node_saveData},
-    {0xCA98, (void *)Node_loadData},
-    {0xCAA0, (void *)Node_setAnimPose},
-    {0xCD1C, (void *)__pure_virtual_called},
-    {0xCD34, (void *)boot_readFloatParm_00000B50},
-    {0xCD4C, (void *)boot_readVec3Parm_00000B80},
-    {0xCD64, (void *)boot_readQuadParm_00000BB0},
-    {0xCD7C, (void *)boot_readIntParm_00000BE0},
-    {0xCD94, (void *)ItemType_hostioParms},
-    {0xCD9C, (void *)Node_updateChildren},
-    {0xCDA4, (void *)ColourItemType_display},
-    {0xCDAC, (void *)Node_update},
-    {0xCDB4, (void *)Node_handleMsg},
-    {0xCDBC, (void *)Node_broadcastMsg},
-    {0xCDC4, (void *)Node_doCommand},
-    {0xCDCC, (void *)ItemType_saveData},
-    {0xCDD4, (void *)ItemType_load},
-    {0xCDDC, (void *)Node_setAnimPose},
-    {0xCDE4, (void *)ColourItem_create_00000C10},
-    {0xCDEC, (void *)ColourItemType_buildItems},
-    {0xCDF4, (void *)ColourItemType_findNearest},
-    {0xCDFC, (void *)ColourItemType_getItemPos},
-    {0xCE04, (void *)ColourItemType_getItem},
-    {0xCE0C, (void *)ColourItemType_findNextByZ},
-    {0xCE24, (void *)Node_hostioParms},
-    {0xCE2C, (void *)Node_updateChildren},
-    {0xCE34, (void *)Process_display},
-    {0xCE3C, (void *)Process_update},
-    {0xCE44, (void *)RaceProcess_handleMsg},
-    {0xCE4C, (void *)Node_broadcastMsg},
-    {0xCE54, (void *)Node_doCommand},
-    {0xCE5C, (void *)Node_saveData},
-    {0xCE64, (void *)RaceProcess_loadData},
-    {0xCE6C, (void *)Node_setAnimPose},
-    {0xCE74, (void *)Process_start},
-    {0xCE7C, (void *)Process_exit},
-    {0xCE84, (void *)RaceProcess_handleInput},
-    {0xCE8C, (void *)RaceProcess_drawGui},
-    {0xCE94, (void *)RaceProcess_onEndRace},
-    {0xCE9C, (void *)RaceProcess_onEndRaceAlt},
-    {0xCEA4, (void *)RaceProcess_onPause},
-    {0xCEAC, (void *)RaceProcess_onCountdownStart},
-    {0xCEB4, (void *)RaceProcess_endTimerEnabled},
-    {0xCEBC, (void *)RaceProcess_altEndTimerEnabled},
-    {0xCEC4, (void *)RaceProcess_onRaceOver},
-    {0xCECC, (void *)RaceProcess_onEndTimerDone},
-    {0xCED4, (void *)RaceProcess_onTimeoutExit},
-    {0xCEDC, (void *)RaceProcess_onTimeout},
-    {0xCEE4, (void *)RaceProcess_onAltEndTimerDone},
-    {0xCEEC, (void *)RaceProcess_onPauseSelect},
-    {0xCEF4, (void *)RaceProcess_onQuitButton},
-    {0xCEFC, (void *)RaceProcess_onLeave},
-    {0xCF04, (void *)RaceProcess_drawHud},
-    {0xCF0C, (void *)RaceProcess_drawIntro},
-    {0xCF14, (void *)RaceProcess_drawResultExtra},
-    {0xCF1C, (void *)RaceProcess_drawTimeUpExtra},
-    {0xCF24, (void *)RaceProcess_drawResult},
-    {0xCF2C, (void *)RaceProcess_updateSub0},
-    {0xCF34, (void *)RaceProcess_updateSub1},
-    {0xCF3C, (void *)RaceProcess_updateSub2},
-    {0xCF44, (void *)RaceProcess_updateSub3},
-    {0xCF4C, (void *)RaceProcess_onMessageBounce},
+    {0xC55C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xC56C, 0}, /* Text target bootup:input_ctor_0000F390 */
+    {0xC6BC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xC6D4, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC6DC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC6E4, 0}, /* Text target bootup:Fader_display */
+    {0xC6EC, 0}, /* Text target bootup:Node_update */
+    {0xC6F4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC6FC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC704, 0}, /* Text target bootup:Node_doCommand */
+    {0xC70C, 0}, /* Text target bootup:Node_saveData */
+    {0xC714, 0}, /* Text target bootup:Node_loadData */
+    {0xC71C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC724, 0}, /* Text target bootup:Process_start */
+    {0xC74C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xC770, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0xC788, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC790, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC798, 0}, /* Text target bootup:TimeGadget_display_000140C4 */
+    {0xC7A0, 0}, /* Text target bootup:Node_update */
+    {0xC7A8, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC7B0, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC7B8, 0}, /* Text target bootup:Node_doCommand */
+    {0xC7C0, 0}, /* Text target bootup:Node_saveData */
+    {0xC7C8, 0}, /* Text target bootup:Node_loadData */
+    {0xC7D0, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC7E8, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC7F0, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC7F8, 0}, /* Text target bootup:CountDownGadget_display */
+    {0xC800, 0}, /* Text target bootup:Node_update */
+    {0xC808, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC810, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC818, 0}, /* Text target bootup:Node_doCommand */
+    {0xC820, 0}, /* Text target bootup:Node_saveData */
+    {0xC828, 0}, /* Text target bootup:Node_loadData */
+    {0xC830, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC848, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xC860, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC868, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC870, 0}, /* Text target bootup:PointsGadget_display_FFFFFFE0 */
+    {0xC878, 0}, /* Text target bootup:Node_update */
+    {0xC880, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC888, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC890, 0}, /* Text target bootup:Node_doCommand */
+    {0xC898, 0}, /* Text target bootup:Node_saveData */
+    {0xC8A0, 0}, /* Text target bootup:Node_loadData */
+    {0xC8A8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC8C0, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC8C8, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC8D0, 0}, /* Text target bootup:BestGadget_display_00014228 */
+    {0xC8D8, 0}, /* Text target bootup:Node_update */
+    {0xC8E0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC8E8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC8F0, 0}, /* Text target bootup:Node_doCommand */
+    {0xC8F8, 0}, /* Text target bootup:Node_saveData */
+    {0xC900, 0}, /* Text target bootup:Node_loadData */
+    {0xC908, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC920, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC928, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC930, 0}, /* Text target bootup:BoardsGadget_display */
+    {0xC938, 0}, /* Text target bootup:Node_update */
+    {0xC940, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC948, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC950, 0}, /* Text target bootup:Node_doCommand */
+    {0xC958, 0}, /* Text target bootup:Node_saveData */
+    {0xC960, 0}, /* Text target bootup:Node_loadData */
+    {0xC968, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC980, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC988, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC990, 0}, /* Text target bootup:CoolGadget_display */
+    {0xC998, 0}, /* Text target bootup:Node_update */
+    {0xC9A0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC9A8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC9B0, 0}, /* Text target bootup:Node_doCommand */
+    {0xC9B8, 0}, /* Text target bootup:Node_saveData */
+    {0xC9C0, 0}, /* Text target bootup:Node_loadData */
+    {0xC9C8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC9E0, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC9E8, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC9F0, 0}, /* Text target bootup:CourseGadget_display */
+    {0xC9F8, 0}, /* Text target bootup:Node_update */
+    {0xCA00, 0}, /* Text target bootup:Node_handleMsg */
+    {0xCA08, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCA10, 0}, /* Text target bootup:Node_doCommand */
+    {0xCA18, 0}, /* Text target bootup:Node_saveData */
+    {0xCA20, 0}, /* Text target bootup:Node_loadData */
+    {0xCA28, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xCA40, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0xCA58, 0}, /* Text target bootup:Node_hostioParms */
+    {0xCA60, 0}, /* Text target bootup:Node_updateChildren */
+    {0xCA68, 0}, /* Text target bootup:PointsGadget_display_000038F4 */
+    {0xCA70, 0}, /* Text target bootup:PointsGadget_update_00003430 */
+    {0xCA78, 0}, /* Text target bootup:Node_handleMsg */
+    {0xCA80, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCA88, 0}, /* Text target bootup:Node_doCommand */
+    {0xCA90, 0}, /* Text target bootup:Node_saveData */
+    {0xCA98, 0}, /* Text target bootup:Node_loadData */
+    {0xCAA0, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xCD1C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xCD34, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xCD4C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0xCD64, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0xCD7C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0xCD94, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xCD9C, 0}, /* Text target bootup:Node_updateChildren */
+    {0xCDA4, 0}, /* Text target bootup:ColourItemType_display */
+    {0xCDAC, 0}, /* Text target bootup:Node_update */
+    {0xCDB4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xCDBC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCDC4, 0}, /* Text target bootup:Node_doCommand */
+    {0xCDCC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xCDD4, 0}, /* Text target bootup:ItemType_load */
+    {0xCDDC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xCDE4, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0xCDEC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xCDF4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xCDFC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xCE04, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCE0C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xCE24, 0}, /* Text target bootup:Node_hostioParms */
+    {0xCE2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0xCE34, 0}, /* Text target bootup:Process_display */
+    {0xCE3C, 0}, /* Text target bootup:Process_update */
+    {0xCE44, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0xCE4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCE54, 0}, /* Text target bootup:Node_doCommand */
+    {0xCE5C, 0}, /* Text target bootup:Node_saveData */
+    {0xCE64, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0xCE6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xCE74, 0}, /* Text target bootup:Process_start */
+    {0xCE7C, 0}, /* Text target bootup:Process_exit */
+    {0xCE84, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0xCE8C, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0xCE94, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0xCE9C, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0xCEA4, 0}, /* Text target bootup:RaceProcess_onPause */
+    {0xCEAC, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0xCEB4, 0}, /* Text target bootup:RaceProcess_endTimerEnabled */
+    {0xCEBC, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0xCEC4, 0}, /* Text target bootup:RaceProcess_onRaceOver */
+    {0xCECC, 0}, /* Text target bootup:RaceProcess_onEndTimerDone */
+    {0xCED4, 0}, /* Text target bootup:RaceProcess_onTimeoutExit */
+    {0xCEDC, 0}, /* Text target bootup:RaceProcess_onTimeout */
+    {0xCEE4, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
+    {0xCEEC, 0}, /* Text target bootup:RaceProcess_onPauseSelect */
+    {0xCEF4, 0}, /* Text target bootup:RaceProcess_onQuitButton */
+    {0xCEFC, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0xCF04, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0xCF0C, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0xCF14, 0}, /* Text target bootup:RaceProcess_drawResultExtra */
+    {0xCF1C, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0xCF24, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0xCF2C, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0xCF34, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0xCF3C, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0xCF44, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0xCF4C, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
     {0xCF58, port_bootup_rodata + 0xD00},
     {0xCF5C, port_bootup_rodata + 0xD04},
     {0xCF60, port_bootup_rodata + 0xD08},
-    {0xD03C, (void *)__pure_virtual_called},
-    {0xD054, (void *)boot_readFloatParm_00000B50},
-    {0xD06C, (void *)boot_readVec3Parm_00000B80},
-    {0xD084, (void *)boot_readQuadParm_00000BB0},
-    {0xD09C, (void *)boot_readIntParm_00000BE0},
-    {0xD0B4, (void *)ItemType_hostioParms},
-    {0xD0BC, (void *)Node_updateChildren},
-    {0xD0C4, (void *)ColourItemType_display},
-    {0xD0CC, (void *)Node_update},
-    {0xD0D4, (void *)Node_handleMsg},
-    {0xD0DC, (void *)Node_broadcastMsg},
-    {0xD0E4, (void *)Node_doCommand},
-    {0xD0EC, (void *)ItemType_saveData},
-    {0xD0F4, (void *)ItemType_load},
-    {0xD0FC, (void *)Node_setAnimPose},
-    {0xD104, (void *)ColourItem_create_00000C10},
-    {0xD10C, (void *)ColourItemType_buildItems},
-    {0xD114, (void *)ColourItemType_findNearest},
-    {0xD11C, (void *)ColourItemType_getItemPos},
-    {0xD124, (void *)ColourItemType_getItem},
-    {0xD12C, (void *)ColourItemType_findNextByZ},
-    {0xD16C, (void *)__pure_virtual_called},
-    {0xD184, (void *)boot_readFloatParm_00000B50},
-    {0xD19C, (void *)boot_readVec3Parm_00000B80},
-    {0xD1B4, (void *)boot_readQuadParm_00000BB0},
-    {0xD1CC, (void *)boot_readIntParm_00000BE0},
-    {0xD1E4, (void *)ItemType_hostioParms},
-    {0xD1EC, (void *)Node_updateChildren},
-    {0xD1F4, (void *)ColourItemType_display},
-    {0xD1FC, (void *)Node_update},
-    {0xD204, (void *)Node_handleMsg},
-    {0xD20C, (void *)Node_broadcastMsg},
-    {0xD214, (void *)Node_doCommand},
-    {0xD21C, (void *)ItemType_saveData},
-    {0xD224, (void *)ItemType_load},
-    {0xD22C, (void *)Node_setAnimPose},
-    {0xD234, (void *)ColourItem_create_00000C10},
-    {0xD23C, (void *)ColourItemType_buildItems},
-    {0xD244, (void *)ColourItemType_findNearest},
-    {0xD24C, (void *)ColourItemType_getItemPos},
-    {0xD254, (void *)ColourItemType_getItem},
-    {0xD25C, (void *)ColourItemType_findNextByZ},
-    {0xD4FC, (void *)__pure_virtual_called},
-    {0xD514, (void *)Node_hostioParms},
-    {0xD51C, (void *)Node_updateChildren},
-    {0xD524, (void *)RaceTracker_display},
-    {0xD52C, (void *)RaceTracker_update},
-    {0xD534, (void *)RaceTracker_handleMsg},
-    {0xD53C, (void *)Node_broadcastMsg},
-    {0xD544, (void *)Node_doCommand},
-    {0xD54C, (void *)Node_saveData},
-    {0xD554, (void *)Node_loadData},
-    {0xD55C, (void *)Node_setAnimPose},
-    {0xD564, (void *)RaceTracker_reset},
-    {0xD56C, (void *)RaceTracker_onCheckpoint},
-    {0xD574, (void *)RaceTracker_onTrickStart},
-    {0xD57C, (void *)RaceTracker_onTrickEnd},
-    {0xD594, (void *)boot_readFloatParm_00000B50},
-    {0xD5AC, (void *)boot_readVec3Parm_00000B80},
-    {0xD5C4, (void *)ItemType_hostioParms},
-    {0xD5CC, (void *)Node_updateChildren},
-    {0xD5D4, (void *)ColourItemType_display},
-    {0xD5DC, (void *)Node_update},
-    {0xD5E4, (void *)Node_handleMsg},
-    {0xD5EC, (void *)Node_broadcastMsg},
-    {0xD5F4, (void *)Node_doCommand},
-    {0xD5FC, (void *)ItemType_saveData},
-    {0xD604, (void *)ItemType_load},
-    {0xD60C, (void *)Node_setAnimPose},
-    {0xD614, (void *)ColourItem_create_00000C10},
-    {0xD61C, (void *)ColourItemType_buildItems},
-    {0xD624, (void *)ColourItemType_findNearest},
-    {0xD62C, (void *)ColourItemType_getItemPos},
-    {0xD634, (void *)ColourItemType_getItem},
-    {0xD63C, (void *)ColourItemType_findNextByZ},
-    {0xD654, (void *)boot_readIntParm_00000BE0},
-    {0xD66C, (void *)boot_readQuadParm_00000BB0},
+    {0xD03C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xD054, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xD06C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0xD084, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0xD09C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0xD0B4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xD0BC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xD0C4, 0}, /* Text target bootup:ColourItemType_display */
+    {0xD0CC, 0}, /* Text target bootup:Node_update */
+    {0xD0D4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xD0DC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD0E4, 0}, /* Text target bootup:Node_doCommand */
+    {0xD0EC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xD0F4, 0}, /* Text target bootup:ItemType_load */
+    {0xD0FC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD104, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0xD10C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xD114, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xD11C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xD124, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xD12C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xD16C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xD184, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xD19C, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0xD1B4, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0xD1CC, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0xD1E4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xD1EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xD1F4, 0}, /* Text target bootup:ColourItemType_display */
+    {0xD1FC, 0}, /* Text target bootup:Node_update */
+    {0xD204, 0}, /* Text target bootup:Node_handleMsg */
+    {0xD20C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD214, 0}, /* Text target bootup:Node_doCommand */
+    {0xD21C, 0}, /* Text target bootup:ItemType_saveData */
+    {0xD224, 0}, /* Text target bootup:ItemType_load */
+    {0xD22C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD234, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0xD23C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xD244, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xD24C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xD254, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xD25C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xD4FC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xD514, 0}, /* Text target bootup:Node_hostioParms */
+    {0xD51C, 0}, /* Text target bootup:Node_updateChildren */
+    {0xD524, 0}, /* Text target bootup:RaceTracker_display */
+    {0xD52C, 0}, /* Text target bootup:RaceTracker_update */
+    {0xD534, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0xD53C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD544, 0}, /* Text target bootup:Node_doCommand */
+    {0xD54C, 0}, /* Text target bootup:Node_saveData */
+    {0xD554, 0}, /* Text target bootup:Node_loadData */
+    {0xD55C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD564, 0}, /* Text target bootup:RaceTracker_reset */
+    {0xD56C, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0xD574, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0xD57C, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0xD594, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0xD5AC, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0xD5C4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xD5CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xD5D4, 0}, /* Text target bootup:ColourItemType_display */
+    {0xD5DC, 0}, /* Text target bootup:Node_update */
+    {0xD5E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xD5EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD5F4, 0}, /* Text target bootup:Node_doCommand */
+    {0xD5FC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xD604, 0}, /* Text target bootup:ItemType_load */
+    {0xD60C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD614, 0}, /* Text target bootup:ColourItem_create_00000C10 */
+    {0xD61C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xD624, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xD62C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xD634, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xD63C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xD654, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0xD66C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
     {0x18D50, port_bootup_data + 0x17D50},
     {0x18D54, port_bootup_data + 0x17F50},
     {0x18D58, port_bootup_data + 0x18150},
@@ -2000,26 +1340,26 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x1CD30, port_bootup_data + 0x1CBB4},
     {0x1CD68, port_bootup_data + 0x1CBD8},
     {0x1CDA0, port_bootup_data + 0x1CB48},
-    {0x1E0DC, (void *)__pure_virtual_called},
-    {0x1E0F4, (void *)MCamera_hostioParms},
-    {0x1E0FC, (void *)MNode_updateChildren},
-    {0x1E104, (void *)MNode_display},
-    {0x1E10C, (void *)MNode_update},
-    {0x1E114, (void *)MNode_handleMsg},
-    {0x1E11C, (void *)Node_broadcastMsg},
-    {0x1E124, (void *)MCamera_doCommand},
-    {0x1E12C, (void *)Node_saveData},
-    {0x1E134, (void *)Node_loadData},
-    {0x1E13C, (void *)MNode_setAnimPose},
-    {0x1E144, (void *)MNode_getCMtx},
-    {0x1E14C, (void *)MCamera_updateLookAt},
-    {0x1E154, (void *)MCamera_command},
-    {0x1E16C, (void *)boot_readQuadParm_00000BB0},
-    {0x1E1C4, (void *)hostio_devWrite_00035990},
-    {0x1E1CC, (void *)hostio_devRead_000359A4},
-    {0x1E1D4, (void *)hostio_devSlot2_000359B8},
-    {0x1E1DC, (void *)app_loadUso},
-    {0x1E1F4, (void *)__pure_virtual_called},
+    {0x1E0DC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1E0F4, 0}, /* Text target bootup:MCamera_hostioParms */
+    {0x1E0FC, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x1E104, 0}, /* Text target bootup:MNode_display */
+    {0x1E10C, 0}, /* Text target bootup:MNode_update */
+    {0x1E114, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x1E11C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E124, 0}, /* Text target bootup:MCamera_doCommand */
+    {0x1E12C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E134, 0}, /* Text target bootup:Node_loadData */
+    {0x1E13C, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x1E144, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x1E14C, 0}, /* Text target bootup:MCamera_updateLookAt */
+    {0x1E154, 0}, /* Text target bootup:MCamera_command */
+    {0x1E16C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x1E1C4, 0}, /* Text target bootup:hostio_devWrite_00035990 */
+    {0x1E1CC, 0}, /* Text target bootup:hostio_devRead_000359A4 */
+    {0x1E1D4, 0}, /* Text target bootup:hostio_devSlot2_000359B8 */
+    {0x1E1DC, 0}, /* Text target bootup:app_loadUso */
+    {0x1E1F4, 0}, /* Text target bootup:__pure_virtual_called */
     {0x1E200, port_bootup_rodata + 0x1980},
     {0x1E204, port_bootup_rodata + 0x1988},
     {0x1E208, port_bootup_rodata + 0x1990},
@@ -2027,311 +1367,311 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x1E210, port_bootup_rodata + 0x19A0},
     {0x1E214, port_bootup_rodata + 0x19A8},
     {0x1E218, port_bootup_rodata + 0x19B0},
-    {0x1E244, (void *)MemberCallback_invoke},
-    {0x1E68C, (void *)__pure_virtual_called},
-    {0x1E6A4, (void *)Parms_stub_00035C50},
-    {0x1E6EC, (void *)__pure_virtual_called},
-    {0x1E704, (void *)BallRotator_hostioParms},
-    {0x1E70C, (void *)Node_updateChildren},
-    {0x1E714, (void *)Node_display},
-    {0x1E71C, (void *)BallRotator_update_0003604C},
-    {0x1E724, (void *)Node_handleMsg},
-    {0x1E72C, (void *)Node_broadcastMsg},
-    {0x1E734, (void *)Node_doCommand},
-    {0x1E73C, (void *)Node_saveData},
-    {0x1E744, (void *)Node_loadData},
-    {0x1E74C, (void *)Node_setAnimPose},
-    {0x1E764, (void *)Node_hostioParms},
-    {0x1E76C, (void *)Node_updateChildren},
-    {0x1E774, (void *)Node_display},
-    {0x1E77C, (void *)StickCtrlA_update_00037348},
-    {0x1E784, (void *)Node_handleMsg},
-    {0x1E78C, (void *)Node_broadcastMsg},
-    {0x1E794, (void *)Node_doCommand},
-    {0x1E79C, (void *)Node_saveData},
-    {0x1E7A4, (void *)Node_loadData},
-    {0x1E7AC, (void *)Node_setAnimPose},
-    {0x1E7C4, (void *)Node_hostioParms},
-    {0x1E7CC, (void *)Node_updateChildren},
-    {0x1E7D4, (void *)Node_display},
-    {0x1E7DC, (void *)StickCtrlB_update_00037540},
-    {0x1E7E4, (void *)Node_handleMsg},
-    {0x1E7EC, (void *)Node_broadcastMsg},
-    {0x1E7F4, (void *)Node_doCommand},
-    {0x1E7FC, (void *)Node_saveData},
-    {0x1E804, (void *)Node_loadData},
-    {0x1E80C, (void *)Node_setAnimPose},
-    {0x1E824, (void *)Spinner_hostioParms},
-    {0x1E82C, (void *)Node_updateChildren},
-    {0x1E834, (void *)Node_display},
-    {0x1E83C, (void *)Spinner_update},
-    {0x1E844, (void *)Node_handleMsg},
-    {0x1E84C, (void *)Node_broadcastMsg},
-    {0x1E854, (void *)Node_doCommand},
-    {0x1E85C, (void *)Node_saveData},
-    {0x1E864, (void *)Node_loadData},
-    {0x1E86C, (void *)Node_setAnimPose},
-    {0x1E884, (void *)Node_hostioParms},
-    {0x1E88C, (void *)Node_updateChildren},
-    {0x1E894, (void *)Node_display},
-    {0x1E89C, (void *)CamFollow_update},
-    {0x1E8A4, (void *)Node_handleMsg},
-    {0x1E8AC, (void *)Node_broadcastMsg},
-    {0x1E8B4, (void *)Node_doCommand},
-    {0x1E8BC, (void *)Node_saveData},
-    {0x1E8C4, (void *)Node_loadData},
-    {0x1E8CC, (void *)Node_setAnimPose},
-    {0x1E8E4, (void *)Node_hostioParms},
-    {0x1E8EC, (void *)Node_updateChildren},
-    {0x1E8F4, (void *)Node_display},
-    {0x1E8FC, (void *)CamMan_update},
-    {0x1E904, (void *)Node_handleMsg},
-    {0x1E90C, (void *)Node_broadcastMsg},
-    {0x1E914, (void *)Node_doCommand},
-    {0x1E91C, (void *)Node_saveData},
-    {0x1E924, (void *)Node_loadData},
-    {0x1E92C, (void *)Node_setAnimPose},
-    {0x1E944, (void *)Node_hostioParms},
-    {0x1E94C, (void *)Node_updateChildren},
-    {0x1E954, (void *)Node_display},
-    {0x1E95C, (void *)SeekNode_update},
-    {0x1E964, (void *)Node_handleMsg},
-    {0x1E96C, (void *)Node_broadcastMsg},
-    {0x1E974, (void *)Node_doCommand},
-    {0x1E97C, (void *)Node_saveData},
-    {0x1E984, (void *)Node_loadData},
-    {0x1E98C, (void *)Node_setAnimPose},
-    {0x1E99C, (void *)coll_nop_00035FCC},
-    {0x1EA3C, (void *)Node_Save},
-    {0x1EA44, (void *)Node_Load},
-    {0x1EA54, (void *)Node_hostioParms},
-    {0x1EA5C, (void *)Node_updateChildren},
-    {0x1EA64, (void *)Node_display},
-    {0x1EA6C, (void *)Node_update},
-    {0x1EA74, (void *)Node_handleMsg},
-    {0x1EA7C, (void *)Node_broadcastMsg},
-    {0x1EA84, (void *)Node_doCommand},
-    {0x1EA8C, (void *)Node_saveData},
-    {0x1EA94, (void *)Node_loadData},
-    {0x1EA9C, (void *)Node_setAnimPose},
-    {0x1EAB4, (void *)MNode_hostioParms},
-    {0x1EABC, (void *)MNode_updateChildren},
-    {0x1EAC4, (void *)MNode_display},
-    {0x1EACC, (void *)MNode_update},
-    {0x1EAD4, (void *)MNode_handleMsg},
-    {0x1EADC, (void *)Node_broadcastMsg},
-    {0x1EAE4, (void *)MNode_doCommand},
-    {0x1EAEC, (void *)Node_saveData},
-    {0x1EAF4, (void *)Node_loadData},
-    {0x1EAFC, (void *)MNode_setAnimPose},
-    {0x1EB04, (void *)MNode_getCMtx},
-    {0x1EB1C, (void *)__pure_virtual_called},
-    {0x1EB34, (void *)boot_readQuadParm_00000BB0},
-    {0x1EB4C, (void *)MemberCallback_invoke},
-    {0x1EB64, (void *)MemberCallback_invoke_0003A0C4},
-    {0x1EB7C, (void *)SNode_hostioParms},
-    {0x1EB84, (void *)Node_updateChildren},
-    {0x1EB8C, (void *)SNode_display},
-    {0x1EB94, (void *)Node_update},
-    {0x1EB9C, (void *)SNode_handleMsg},
-    {0x1EBA4, (void *)Node_broadcastMsg},
-    {0x1EBAC, (void *)Node_doCommand},
-    {0x1EBB4, (void *)SNode_saveData},
-    {0x1EBBC, (void *)SNode_loadData},
-    {0x1EBC4, (void *)Node_setAnimPose},
-    {0x1ED4C, (void *)__pure_virtual_called},
-    {0x1ED64, (void *)__pure_virtual_called},
-    {0x1ED6C, (void *)CollObj_sendBump},
-    {0x1ED84, (void *)boot_readQuadParm_00000BB0},
-    {0x1EDA4, (void *)Node_hostioParms},
-    {0x1EDAC, (void *)Node_updateChildren},
-    {0x1EDB4, (void *)Node_display},
-    {0x1EDBC, (void *)CollObjMgr_update},
-    {0x1EDC4, (void *)Node_handleMsg},
-    {0x1EDCC, (void *)Node_broadcastMsg},
-    {0x1EDD4, (void *)Node_doCommand},
-    {0x1EDDC, (void *)Node_saveData},
-    {0x1EDE4, (void *)Node_loadData},
-    {0x1EDEC, (void *)Node_setAnimPose},
-    {0x1EE04, (void *)CollObj_sphereHitTest},
-    {0x1EE0C, (void *)CollObj_sendBump},
-    {0x1EEC4, (void *)ItemMgr_removeItems},
-    {0x1EECC, (void *)ItemMgr_changeType},
-    {0x1EEE4, (void *)ItemType_hostioParms},
-    {0x1EEEC, (void *)Node_updateChildren},
-    {0x1EEF4, (void *)Node_display},
-    {0x1EEFC, (void *)Node_update},
-    {0x1EF04, (void *)Node_handleMsg},
-    {0x1EF0C, (void *)Node_broadcastMsg},
-    {0x1EF14, (void *)Node_doCommand},
-    {0x1EF1C, (void *)ItemType_saveData},
-    {0x1EF24, (void *)ItemType_load},
-    {0x1EF2C, (void *)Node_setAnimPose},
-    {0x1EF34, (void *)ItemType_newItem},
-    {0x1EF3C, (void *)ItemType_buildItems},
-    {0x1EF44, (void *)ItemType_findNearest},
-    {0x1EF4C, (void *)ItemType_getItemPos},
-    {0x1EF54, (void *)ItemType_getItem},
-    {0x1EF6C, (void *)Node_hostioParms},
-    {0x1EF74, (void *)Node_updateChildren},
-    {0x1EF7C, (void *)ColourItem_display},
-    {0x1EF84, (void *)Node_update},
-    {0x1EF8C, (void *)ColourItem_handleMsg},
-    {0x1EF94, (void *)Node_broadcastMsg},
-    {0x1EF9C, (void *)Node_doCommand},
-    {0x1EFA4, (void *)Node_saveData},
-    {0x1EFAC, (void *)ColourItem_load},
-    {0x1EFB4, (void *)Node_setAnimPose},
-    {0x1EFCC, (void *)ItemType_hostioParms},
-    {0x1EFD4, (void *)Node_updateChildren},
-    {0x1EFDC, (void *)Node_display},
-    {0x1EFE4, (void *)Node_update},
-    {0x1EFEC, (void *)Node_handleMsg},
-    {0x1EFF4, (void *)Node_broadcastMsg},
-    {0x1EFFC, (void *)Node_doCommand},
-    {0x1F004, (void *)ItemType_saveData},
-    {0x1F00C, (void *)ItemType_load},
-    {0x1F014, (void *)Node_setAnimPose},
-    {0x1F01C, (void *)SNodeItemType_newItem},
-    {0x1F024, (void *)SNodeItemType_buildItems},
-    {0x1F02C, (void *)SNodeItemType_findNearest},
-    {0x1F034, (void *)SNodeItemType_getItemPos},
-    {0x1F03C, (void *)SNodeItemType_getItem},
-    {0x1F044, (void *)SNodeItemType_findNextByZ},
-    {0x1F05C, (void *)ItemType_hostioParms},
-    {0x1F064, (void *)Node_updateChildren},
-    {0x1F06C, (void *)Node_display},
-    {0x1F074, (void *)Node_update},
-    {0x1F07C, (void *)Node_handleMsg},
-    {0x1F084, (void *)Node_broadcastMsg},
-    {0x1F08C, (void *)Node_doCommand},
-    {0x1F094, (void *)ItemType_saveData},
-    {0x1F09C, (void *)ItemType_load},
-    {0x1F0A4, (void *)Node_setAnimPose},
-    {0x1F0AC, (void *)MNode_ctor},
-    {0x1F0B4, (void *)ItemType_buildItems},
-    {0x1F0BC, (void *)ItemType_findNearest},
-    {0x1F0C4, (void *)MNodeItemType_getItemPos},
-    {0x1F0CC, (void *)ItemType_getItem},
-    {0x1F0E4, (void *)__pure_virtual_called},
-    {0x1F0FC, (void *)boot_readQuadParm_00000BB0},
+    {0x1E244, 0}, /* Text target bootup:MemberCallback_invoke */
+    {0x1E68C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1E6A4, 0}, /* Text target bootup:Parms_stub_00035C50 */
+    {0x1E6EC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1E704, 0}, /* Text target bootup:BallRotator_hostioParms */
+    {0x1E70C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E714, 0}, /* Text target bootup:Node_display */
+    {0x1E71C, 0}, /* Text target bootup:BallRotator_update_0003604C */
+    {0x1E724, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E72C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E734, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E73C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E744, 0}, /* Text target bootup:Node_loadData */
+    {0x1E74C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E764, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1E76C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E774, 0}, /* Text target bootup:Node_display */
+    {0x1E77C, 0}, /* Text target bootup:StickCtrlA_update_00037348 */
+    {0x1E784, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E78C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E794, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E79C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E7A4, 0}, /* Text target bootup:Node_loadData */
+    {0x1E7AC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E7C4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1E7CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E7D4, 0}, /* Text target bootup:Node_display */
+    {0x1E7DC, 0}, /* Text target bootup:StickCtrlB_update_00037540 */
+    {0x1E7E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E7EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E7F4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E7FC, 0}, /* Text target bootup:Node_saveData */
+    {0x1E804, 0}, /* Text target bootup:Node_loadData */
+    {0x1E80C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E824, 0}, /* Text target bootup:Spinner_hostioParms */
+    {0x1E82C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E834, 0}, /* Text target bootup:Node_display */
+    {0x1E83C, 0}, /* Text target bootup:Spinner_update */
+    {0x1E844, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E84C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E854, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E85C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E864, 0}, /* Text target bootup:Node_loadData */
+    {0x1E86C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E884, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1E88C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E894, 0}, /* Text target bootup:Node_display */
+    {0x1E89C, 0}, /* Text target bootup:CamFollow_update */
+    {0x1E8A4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E8AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E8B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E8BC, 0}, /* Text target bootup:Node_saveData */
+    {0x1E8C4, 0}, /* Text target bootup:Node_loadData */
+    {0x1E8CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E8E4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1E8EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E8F4, 0}, /* Text target bootup:Node_display */
+    {0x1E8FC, 0}, /* Text target bootup:CamMan_update */
+    {0x1E904, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E90C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E914, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E91C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E924, 0}, /* Text target bootup:Node_loadData */
+    {0x1E92C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E944, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1E94C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1E954, 0}, /* Text target bootup:Node_display */
+    {0x1E95C, 0}, /* Text target bootup:SeekNode_update */
+    {0x1E964, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E96C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1E974, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E97C, 0}, /* Text target bootup:Node_saveData */
+    {0x1E984, 0}, /* Text target bootup:Node_loadData */
+    {0x1E98C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E99C, 0}, /* Text target bootup:coll_nop_00035FCC */
+    {0x1EA3C, 0}, /* Text target bootup:Node_Save */
+    {0x1EA44, 0}, /* Text target bootup:Node_Load */
+    {0x1EA54, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1EA5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EA64, 0}, /* Text target bootup:Node_display */
+    {0x1EA6C, 0}, /* Text target bootup:Node_update */
+    {0x1EA74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1EA7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EA84, 0}, /* Text target bootup:Node_doCommand */
+    {0x1EA8C, 0}, /* Text target bootup:Node_saveData */
+    {0x1EA94, 0}, /* Text target bootup:Node_loadData */
+    {0x1EA9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1EAB4, 0}, /* Text target bootup:MNode_hostioParms */
+    {0x1EABC, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x1EAC4, 0}, /* Text target bootup:MNode_display */
+    {0x1EACC, 0}, /* Text target bootup:MNode_update */
+    {0x1EAD4, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x1EADC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EAE4, 0}, /* Text target bootup:MNode_doCommand */
+    {0x1EAEC, 0}, /* Text target bootup:Node_saveData */
+    {0x1EAF4, 0}, /* Text target bootup:Node_loadData */
+    {0x1EAFC, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x1EB04, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x1EB1C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1EB34, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x1EB4C, 0}, /* Text target bootup:MemberCallback_invoke */
+    {0x1EB64, 0}, /* Text target bootup:MemberCallback_invoke_0003A0C4 */
+    {0x1EB7C, 0}, /* Text target bootup:SNode_hostioParms */
+    {0x1EB84, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EB8C, 0}, /* Text target bootup:SNode_display */
+    {0x1EB94, 0}, /* Text target bootup:Node_update */
+    {0x1EB9C, 0}, /* Text target bootup:SNode_handleMsg */
+    {0x1EBA4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EBAC, 0}, /* Text target bootup:Node_doCommand */
+    {0x1EBB4, 0}, /* Text target bootup:SNode_saveData */
+    {0x1EBBC, 0}, /* Text target bootup:SNode_loadData */
+    {0x1EBC4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1ED4C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1ED64, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1ED6C, 0}, /* Text target bootup:CollObj_sendBump */
+    {0x1ED84, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x1EDA4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1EDAC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EDB4, 0}, /* Text target bootup:Node_display */
+    {0x1EDBC, 0}, /* Text target bootup:CollObjMgr_update */
+    {0x1EDC4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1EDCC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EDD4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1EDDC, 0}, /* Text target bootup:Node_saveData */
+    {0x1EDE4, 0}, /* Text target bootup:Node_loadData */
+    {0x1EDEC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1EE04, 0}, /* Text target bootup:CollObj_sphereHitTest */
+    {0x1EE0C, 0}, /* Text target bootup:CollObj_sendBump */
+    {0x1EEC4, 0}, /* Text target bootup:ItemMgr_removeItems */
+    {0x1EECC, 0}, /* Text target bootup:ItemMgr_changeType */
+    {0x1EEE4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x1EEEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EEF4, 0}, /* Text target bootup:Node_display */
+    {0x1EEFC, 0}, /* Text target bootup:Node_update */
+    {0x1EF04, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1EF0C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EF14, 0}, /* Text target bootup:Node_doCommand */
+    {0x1EF1C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1EF24, 0}, /* Text target bootup:ItemType_load */
+    {0x1EF2C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1EF34, 0}, /* Text target bootup:ItemType_newItem */
+    {0x1EF3C, 0}, /* Text target bootup:ItemType_buildItems */
+    {0x1EF44, 0}, /* Text target bootup:ItemType_findNearest */
+    {0x1EF4C, 0}, /* Text target bootup:ItemType_getItemPos */
+    {0x1EF54, 0}, /* Text target bootup:ItemType_getItem */
+    {0x1EF6C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1EF74, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EF7C, 0}, /* Text target bootup:ColourItem_display */
+    {0x1EF84, 0}, /* Text target bootup:Node_update */
+    {0x1EF8C, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x1EF94, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EF9C, 0}, /* Text target bootup:Node_doCommand */
+    {0x1EFA4, 0}, /* Text target bootup:Node_saveData */
+    {0x1EFAC, 0}, /* Text target bootup:ColourItem_load */
+    {0x1EFB4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1EFCC, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x1EFD4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1EFDC, 0}, /* Text target bootup:Node_display */
+    {0x1EFE4, 0}, /* Text target bootup:Node_update */
+    {0x1EFEC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1EFF4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EFFC, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F004, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1F00C, 0}, /* Text target bootup:ItemType_load */
+    {0x1F014, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F01C, 0}, /* Text target bootup:SNodeItemType_newItem */
+    {0x1F024, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x1F02C, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x1F034, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x1F03C, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x1F044, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
+    {0x1F05C, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x1F064, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F06C, 0}, /* Text target bootup:Node_display */
+    {0x1F074, 0}, /* Text target bootup:Node_update */
+    {0x1F07C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F084, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F08C, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F094, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1F09C, 0}, /* Text target bootup:ItemType_load */
+    {0x1F0A4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F0AC, 0}, /* Text target bootup:MNode_ctor */
+    {0x1F0B4, 0}, /* Text target bootup:ItemType_buildItems */
+    {0x1F0BC, 0}, /* Text target bootup:ItemType_findNearest */
+    {0x1F0C4, 0}, /* Text target bootup:MNodeItemType_getItemPos */
+    {0x1F0CC, 0}, /* Text target bootup:ItemType_getItem */
+    {0x1F0E4, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1F0FC, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
     {0x1F178, port_bootup_data + 0x1F108},
     {0x1F184, port_bootup_data + 0x1F120},
     {0x1F190, port_bootup_data + 0x1F140},
-    {0x1F1A4, (void *)ItemMgr_hostioParms},
-    {0x1F1AC, (void *)Node_updateChildren},
-    {0x1F1B4, (void *)Node_display},
-    {0x1F1BC, (void *)Node_update},
-    {0x1F1C4, (void *)Node_handleMsg},
-    {0x1F1CC, (void *)Node_broadcastMsg},
-    {0x1F1D4, (void *)Node_doCommand},
-    {0x1F1DC, (void *)ItemMgr_saveData},
-    {0x1F1E4, (void *)ItemMgr_Load},
-    {0x1F1EC, (void *)Node_setAnimPose},
-    {0x1F204, (void *)MemberCallback_invoke_0003EBDC},
-    {0x1F21C, (void *)MemberCallback_invoke_0003EC5C},
-    {0x1F234, (void *)ItemType_hostioParms},
-    {0x1F23C, (void *)Node_updateChildren},
-    {0x1F244, (void *)ColourItemType_display},
-    {0x1F24C, (void *)Node_update},
-    {0x1F254, (void *)Node_handleMsg},
-    {0x1F25C, (void *)Node_broadcastMsg},
-    {0x1F264, (void *)Node_doCommand},
-    {0x1F26C, (void *)ItemType_saveData},
-    {0x1F274, (void *)ItemType_load},
-    {0x1F27C, (void *)Node_setAnimPose},
-    {0x1F284, (void *)ColourItemType_newItem},
-    {0x1F28C, (void *)ColourItemType_buildItems},
-    {0x1F294, (void *)ColourItemType_findNearest},
-    {0x1F29C, (void *)ColourItemType_getItemPos},
-    {0x1F2A4, (void *)ColourItemType_getItem},
-    {0x1F2AC, (void *)ColourItemType_findNextByZ},
-    {0x1F38C, (void *)__pure_virtual_called},
-    {0x1F3FC, (void *)QNode_hostioParms},
-    {0x1F404, (void *)QNode_updateChildren},
-    {0x1F40C, (void *)QNode_display},
-    {0x1F414, (void *)QNode_update},
-    {0x1F41C, (void *)QNode_handleMsg},
-    {0x1F424, (void *)Node_broadcastMsg},
-    {0x1F42C, (void *)QNode_doCommand},
-    {0x1F434, (void *)Node_saveData},
-    {0x1F43C, (void *)Node_loadData},
-    {0x1F444, (void *)QNode_setAnimPose},
-    {0x1F44C, (void *)MNode_getCMtx},
-    {0x1F464, (void *)__pure_virtual_called},
-    {0x1F47C, (void *)boot_readQuadParm_00000BB0},
-    {0x1F4BC, (void *)__pure_virtual_called},
-    {0x1F4D8, (void *)App_hostioParms},
-    {0x1F4E0, (void *)Node_updateChildren},
-    {0x1F4E8, (void *)App_Display},
-    {0x1F4F0, (void *)App_Update},
-    {0x1F4F8, (void *)Node_handleMsg},
-    {0x1F500, (void *)Node_broadcastMsg},
-    {0x1F508, (void *)Node_doCommand},
-    {0x1F510, (void *)Node_saveData},
-    {0x1F518, (void *)Node_loadData},
-    {0x1F520, (void *)Node_setAnimPose},
-    {0x1F528, (void *)App_main},
-    {0x1F530, (void *)App_Reset},
-    {0x1F538, (void *)App_restart},
-    {0x1F540, (void *)App_softReset},
-    {0x1F548, (void *)App_onPreNmi},
-    {0x1F550, (void *)App_InitInstance},
-    {0x1F560, (void *)app_staticInit_000412E8},
-    {0x1F73C, (void *)__pure_virtual_called},
-    {0x1F754, (void *)GfxLib_hostioParms},
-    {0x1F75C, (void *)Node_updateChildren},
-    {0x1F764, (void *)Node_display},
-    {0x1F76C, (void *)Node_update},
-    {0x1F774, (void *)Node_handleMsg},
-    {0x1F77C, (void *)Node_broadcastMsg},
-    {0x1F784, (void *)Node_doCommand},
-    {0x1F78C, (void *)Node_saveData},
-    {0x1F794, (void *)Node_loadData},
-    {0x1F79C, (void *)Node_setAnimPose},
-    {0x1F7B4, (void *)PolyShape_emitTriBatch_000483BC},
-    {0x1F7CC, (void *)gfx_emitLineBatch_000488A0},
-    {0x1F7E4, (void *)PolyShape_hostioParms},
-    {0x1F7EC, (void *)Node_updateChildren},
-    {0x1F7F4, (void *)PolyShape_display},
-    {0x1F7FC, (void *)Node_update},
-    {0x1F804, (void *)BasePolyShape_handleMsg},
-    {0x1F80C, (void *)Node_broadcastMsg},
-    {0x1F814, (void *)BasePolyShape_doCommand},
-    {0x1F81C, (void *)Node_saveData},
-    {0x1F824, (void *)Node_loadData},
-    {0x1F82C, (void *)Node_setAnimPose},
-    {0x1F834, (void *)PolyShape_copyMatDL},
-    {0x1F83C, (void *)PolyShape_shade_00049DBC},
-    {0x1F844, (void *)PolyShape_makeEdgeVtxs},
-    {0x1F85C, (void *)PolyShape_hostioParms},
-    {0x1F864, (void *)Node_updateChildren},
-    {0x1F86C, (void *)MorphPoly_display},
-    {0x1F874, (void *)Node_update},
-    {0x1F87C, (void *)BasePolyShape_handleMsg},
-    {0x1F884, (void *)Node_broadcastMsg},
-    {0x1F88C, (void *)BasePolyShape_doCommand},
-    {0x1F894, (void *)Node_saveData},
-    {0x1F89C, (void *)Node_loadData},
-    {0x1F8A4, (void *)Node_setAnimPose},
-    {0x1F8AC, (void *)PolyShape_copyMatDL},
-    {0x1F8B4, (void *)MorphPoly_shade},
-    {0x1F8BC, (void *)MorphPoly_makeEdgeVtxs},
-    {0x1F8D4, (void *)MorphPoly_morphAll_0004B040},
-    {0x1F8EC, (void *)Window_hostioParms},
-    {0x1F8F4, (void *)Node_updateChildren},
-    {0x1F8FC, (void *)ScreenWindow_display},
-    {0x1F904, (void *)Window_update},
-    {0x1F90C, (void *)Node_handleMsg},
-    {0x1F914, (void *)Node_broadcastMsg},
-    {0x1F91C, (void *)Window_doCommand},
-    {0x1F924, (void *)Node_saveData},
-    {0x1F92C, (void *)Node_loadData},
-    {0x1F934, (void *)Node_setAnimPose},
-    {0x1F93C, (void *)ScreenWindow_updateAspect},
-    {0x1F944, (void *)ScreenWindow_getCurBuffer_0004D014},
-    {0x1F94C, (void *)ScreenWindow_drawScene},
-    {0x1F964, (void *)boot_readQuadParm_00000BB0},
+    {0x1F1A4, 0}, /* Text target bootup:ItemMgr_hostioParms */
+    {0x1F1AC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F1B4, 0}, /* Text target bootup:Node_display */
+    {0x1F1BC, 0}, /* Text target bootup:Node_update */
+    {0x1F1C4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F1CC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F1D4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F1DC, 0}, /* Text target bootup:ItemMgr_saveData */
+    {0x1F1E4, 0}, /* Text target bootup:ItemMgr_Load */
+    {0x1F1EC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F204, 0}, /* Text target bootup:MemberCallback_invoke_0003EBDC */
+    {0x1F21C, 0}, /* Text target bootup:MemberCallback_invoke_0003EC5C */
+    {0x1F234, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x1F23C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F244, 0}, /* Text target bootup:ColourItemType_display */
+    {0x1F24C, 0}, /* Text target bootup:Node_update */
+    {0x1F254, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F25C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F264, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F26C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1F274, 0}, /* Text target bootup:ItemType_load */
+    {0x1F27C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F284, 0}, /* Text target bootup:ColourItemType_newItem */
+    {0x1F28C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x1F294, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x1F29C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x1F2A4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x1F2AC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x1F38C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1F3FC, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x1F404, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x1F40C, 0}, /* Text target bootup:QNode_display */
+    {0x1F414, 0}, /* Text target bootup:QNode_update */
+    {0x1F41C, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x1F424, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F42C, 0}, /* Text target bootup:QNode_doCommand */
+    {0x1F434, 0}, /* Text target bootup:Node_saveData */
+    {0x1F43C, 0}, /* Text target bootup:Node_loadData */
+    {0x1F444, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x1F44C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x1F464, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1F47C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x1F4BC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1F4D8, 0}, /* Text target bootup:App_hostioParms */
+    {0x1F4E0, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F4E8, 0}, /* Text target bootup:App_Display */
+    {0x1F4F0, 0}, /* Text target bootup:App_Update */
+    {0x1F4F8, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F500, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F508, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F510, 0}, /* Text target bootup:Node_saveData */
+    {0x1F518, 0}, /* Text target bootup:Node_loadData */
+    {0x1F520, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F528, 0}, /* Text target bootup:App_main */
+    {0x1F530, 0}, /* Text target bootup:App_Reset */
+    {0x1F538, 0}, /* Text target bootup:App_restart */
+    {0x1F540, 0}, /* Text target bootup:App_softReset */
+    {0x1F548, 0}, /* Text target bootup:App_onPreNmi */
+    {0x1F550, 0}, /* Text target bootup:App_InitInstance */
+    {0x1F560, 0}, /* Text target bootup:app_staticInit_000412E8 */
+    {0x1F73C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x1F754, 0}, /* Text target bootup:GfxLib_hostioParms */
+    {0x1F75C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F764, 0}, /* Text target bootup:Node_display */
+    {0x1F76C, 0}, /* Text target bootup:Node_update */
+    {0x1F774, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F77C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F784, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F78C, 0}, /* Text target bootup:Node_saveData */
+    {0x1F794, 0}, /* Text target bootup:Node_loadData */
+    {0x1F79C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F7B4, 0}, /* Text target bootup:PolyShape_emitTriBatch_000483BC */
+    {0x1F7CC, 0}, /* Text target bootup:gfx_emitLineBatch_000488A0 */
+    {0x1F7E4, 0}, /* Text target bootup:PolyShape_hostioParms */
+    {0x1F7EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F7F4, 0}, /* Text target bootup:PolyShape_display */
+    {0x1F7FC, 0}, /* Text target bootup:Node_update */
+    {0x1F804, 0}, /* Text target bootup:BasePolyShape_handleMsg */
+    {0x1F80C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F814, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x1F81C, 0}, /* Text target bootup:Node_saveData */
+    {0x1F824, 0}, /* Text target bootup:Node_loadData */
+    {0x1F82C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F834, 0}, /* Text target bootup:PolyShape_copyMatDL */
+    {0x1F83C, 0}, /* Text target bootup:PolyShape_shade_00049DBC */
+    {0x1F844, 0}, /* Text target bootup:PolyShape_makeEdgeVtxs */
+    {0x1F85C, 0}, /* Text target bootup:PolyShape_hostioParms */
+    {0x1F864, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F86C, 0}, /* Text target bootup:MorphPoly_display */
+    {0x1F874, 0}, /* Text target bootup:Node_update */
+    {0x1F87C, 0}, /* Text target bootup:BasePolyShape_handleMsg */
+    {0x1F884, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F88C, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x1F894, 0}, /* Text target bootup:Node_saveData */
+    {0x1F89C, 0}, /* Text target bootup:Node_loadData */
+    {0x1F8A4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F8AC, 0}, /* Text target bootup:PolyShape_copyMatDL */
+    {0x1F8B4, 0}, /* Text target bootup:MorphPoly_shade */
+    {0x1F8BC, 0}, /* Text target bootup:MorphPoly_makeEdgeVtxs */
+    {0x1F8D4, 0}, /* Text target bootup:MorphPoly_morphAll_0004B040 */
+    {0x1F8EC, 0}, /* Text target bootup:Window_hostioParms */
+    {0x1F8F4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1F8FC, 0}, /* Text target bootup:ScreenWindow_display */
+    {0x1F904, 0}, /* Text target bootup:Window_update */
+    {0x1F90C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1F914, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F91C, 0}, /* Text target bootup:Window_doCommand */
+    {0x1F924, 0}, /* Text target bootup:Node_saveData */
+    {0x1F92C, 0}, /* Text target bootup:Node_loadData */
+    {0x1F934, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F93C, 0}, /* Text target bootup:ScreenWindow_updateAspect */
+    {0x1F944, 0}, /* Text target bootup:ScreenWindow_getCurBuffer_0004D014 */
+    {0x1F94C, 0}, /* Text target bootup:ScreenWindow_drawScene */
+    {0x1F964, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
     {0x1F9D4, port_bootup_data + 0x20374},
     {0x1F9D8, port_bootup_data + 0x2038C},
     {0x1F9DC, port_bootup_data + 0x20374},
@@ -2396,118 +1736,118 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x1FAC8, port_bootup_data + 0x2038C},
     {0x1FACC, port_bootup_data + 0x20374},
     {0x1FAD0, port_bootup_data + 0x2038C},
-    {0x1FB28, (void *)Node_hostioParms},
-    {0x1FB30, (void *)Node_updateChildren},
-    {0x1FB38, (void *)Sprite_display_0004BAF4},
-    {0x1FB40, (void *)Node_update},
-    {0x1FB48, (void *)BasePolyShape_handleMsg},
-    {0x1FB50, (void *)Node_broadcastMsg},
-    {0x1FB58, (void *)BasePolyShape_doCommand},
-    {0x1FB60, (void *)Node_saveData},
-    {0x1FB68, (void *)Node_loadData},
-    {0x1FB70, (void *)Node_setAnimPose},
-    {0x1FB78, (void *)BasePolyShape_copyMatDL},
-    {0x1FB90, (void *)Node_hostioParms},
-    {0x1FB98, (void *)Node_updateChildren},
-    {0x1FBA0, (void *)Shadow_display_0004B2F4},
-    {0x1FBA8, (void *)Node_update},
-    {0x1FBB0, (void *)Node_handleMsg},
-    {0x1FBB8, (void *)Node_broadcastMsg},
-    {0x1FBC0, (void *)BasePolyShape_doCommand},
-    {0x1FBC8, (void *)Node_saveData},
-    {0x1FBD0, (void *)Node_loadData},
-    {0x1FBD8, (void *)Node_setAnimPose},
-    {0x1FBE0, (void *)BasePolyShape_copyMatDL},
-    {0x1FBF8, (void *)BaseMat_onFrameStart},
-    {0x1FC00, (void *)BaseMat_hostioParms},
-    {0x1FC08, (void *)Mat_print},
-    {0x1FC10, (void *)gfx_decodeMatCmd},
-    {0x1FC18, (void *)Mat_draw},
-    {0x1FC30, (void *)vFP1_call},
-    {0x1FC48, (void *)vFP1_invokeFn_0004D084},
+    {0x1FB28, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1FB30, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1FB38, 0}, /* Text target bootup:Sprite_display_0004BAF4 */
+    {0x1FB40, 0}, /* Text target bootup:Node_update */
+    {0x1FB48, 0}, /* Text target bootup:BasePolyShape_handleMsg */
+    {0x1FB50, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1FB58, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x1FB60, 0}, /* Text target bootup:Node_saveData */
+    {0x1FB68, 0}, /* Text target bootup:Node_loadData */
+    {0x1FB70, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1FB78, 0}, /* Text target bootup:BasePolyShape_copyMatDL */
+    {0x1FB90, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1FB98, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1FBA0, 0}, /* Text target bootup:Shadow_display_0004B2F4 */
+    {0x1FBA8, 0}, /* Text target bootup:Node_update */
+    {0x1FBB0, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1FBB8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1FBC0, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x1FBC8, 0}, /* Text target bootup:Node_saveData */
+    {0x1FBD0, 0}, /* Text target bootup:Node_loadData */
+    {0x1FBD8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1FBE0, 0}, /* Text target bootup:BasePolyShape_copyMatDL */
+    {0x1FBF8, 0}, /* Text target bootup:BaseMat_onFrameStart */
+    {0x1FC00, 0}, /* Text target bootup:BaseMat_hostioParms */
+    {0x1FC08, 0}, /* Text target bootup:Mat_print */
+    {0x1FC10, 0}, /* Text target bootup:gfx_decodeMatCmd */
+    {0x1FC18, 0}, /* Text target bootup:Mat_draw */
+    {0x1FC30, 0}, /* Text target bootup:vFP1_call */
+    {0x1FC48, 0}, /* Text target bootup:vFP1_invokeFn_0004D084 */
     {0x1FC58, 0}, /* Text target bootup:pad_after_gl_func_00043558 */
-    {0x201CC, (void *)__pure_virtual_called},
-    {0x203EC, (void *)__pure_virtual_called},
-    {0x2040C, (void *)GfxObj_displayAll},
-    {0x20424, (void *)__pure_virtual_called},
-    {0x2043C, (void *)boot_readQuadParm_00000BB0},
-    {0x20454, (void *)Node_hostioParms},
-    {0x2045C, (void *)Node_updateChildren},
-    {0x20464, (void *)DisplayMgr_display},
-    {0x2046C, (void *)Node_update},
-    {0x20474, (void *)Node_handleMsg},
-    {0x2047C, (void *)Node_broadcastMsg},
-    {0x20484, (void *)Node_doCommand},
-    {0x2048C, (void *)Node_saveData},
-    {0x20494, (void *)Node_loadData},
-    {0x2049C, (void *)Node_setAnimPose},
-    {0x204FC, (void *)__pure_virtual_called},
-    {0x20514, (void *)Node_hostioParms},
-    {0x2051C, (void *)Node_updateChildren},
-    {0x20524, (void *)Window_display},
-    {0x2052C, (void *)Window_update},
-    {0x20534, (void *)Node_handleMsg},
-    {0x2053C, (void *)Node_broadcastMsg},
-    {0x20544, (void *)Window_doCommand},
-    {0x2054C, (void *)Node_saveData},
-    {0x20554, (void *)Node_loadData},
-    {0x2055C, (void *)Node_setAnimPose},
-    {0x20564, (void *)Window_updateAspect},
-    {0x2056C, (void *)__pure_virtual_called},
-    {0x20574, (void *)__pure_virtual_called},
-    {0x2058C, (void *)boot_readQuadParm_00000BB0},
-    {0x205C0, (void *)Window_staticInit},
-    {0x2063C, (void *)BaseMat_sendImage_00051E98},
-    {0x2064C, (void *)BaseMat_onFrameStart},
-    {0x20654, (void *)BaseMat_hostioParms},
-    {0x2065C, (void *)Mat_print},
-    {0x20664, (void *)gfx_decodeMatCmd},
-    {0x2067C, (void *)Node_hostioParms},
-    {0x20684, (void *)Node_updateChildren},
-    {0x2068C, (void *)Node_display},
-    {0x20694, (void *)Node_update},
-    {0x2069C, (void *)Node_handleMsg},
-    {0x206A4, (void *)Node_broadcastMsg},
-    {0x206AC, (void *)BasePolyShape_doCommand},
-    {0x206B4, (void *)Node_saveData},
-    {0x206BC, (void *)Node_loadData},
-    {0x206C4, (void *)Node_setAnimPose},
-    {0x206CC, (void *)BasePolyShape_copyMatDL},
-    {0x206E4, (void *)Node_hostioParms},
-    {0x206EC, (void *)Node_updateChildren},
-    {0x206F4, (void *)Node_display},
-    {0x206FC, (void *)Node_update},
-    {0x20704, (void *)BasePolyShape_handleMsg},
-    {0x2070C, (void *)Node_broadcastMsg},
-    {0x20714, (void *)BasePolyShape_doCommand},
-    {0x2071C, (void *)Node_saveData},
-    {0x20724, (void *)Node_loadData},
-    {0x2072C, (void *)Node_setAnimPose},
-    {0x20734, (void *)BasePolyShape_copyMatDL},
-    {0x2074C, (void *)__pure_virtual_called},
-    {0x20764, (void *)boot_readQuadParm_00000BB0},
-    {0x2077C, (void *)BaseLight_hostioParms},
-    {0x20784, (void *)MNode_updateChildren},
-    {0x2078C, (void *)MNode_display},
-    {0x20794, (void *)MNode_update},
-    {0x2079C, (void *)MNode_handleMsg},
-    {0x207A4, (void *)Node_broadcastMsg},
-    {0x207AC, (void *)BaseLight_doCommand},
-    {0x207B4, (void *)BaseLight_saveData},
-    {0x207BC, (void *)BaseLight_loadData},
-    {0x207C4, (void *)MNode_setAnimPose},
-    {0x207CC, (void *)MNode_getCMtx},
-    {0x207E4, (void *)LightTarget_hostioParms},
-    {0x207EC, (void *)QNode_updateChildren},
-    {0x207F4, (void *)LightTarget_display},
-    {0x207FC, (void *)QNode_update},
-    {0x20804, (void *)QNode_handleMsg},
-    {0x2080C, (void *)Node_broadcastMsg},
-    {0x20814, (void *)LightTarget_doCommand},
-    {0x2081C, (void *)Node_saveData},
-    {0x20824, (void *)Node_loadData},
-    {0x2082C, (void *)QNode_setAnimPose},
-    {0x20834, (void *)MNode_getCMtx},
+    {0x201CC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x203EC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2040C, 0}, /* Text target bootup:GfxObj_displayAll */
+    {0x20424, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2043C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x20454, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2045C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x20464, 0}, /* Text target bootup:DisplayMgr_display */
+    {0x2046C, 0}, /* Text target bootup:Node_update */
+    {0x20474, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2047C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x20484, 0}, /* Text target bootup:Node_doCommand */
+    {0x2048C, 0}, /* Text target bootup:Node_saveData */
+    {0x20494, 0}, /* Text target bootup:Node_loadData */
+    {0x2049C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x204FC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x20514, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2051C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x20524, 0}, /* Text target bootup:Window_display */
+    {0x2052C, 0}, /* Text target bootup:Window_update */
+    {0x20534, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2053C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x20544, 0}, /* Text target bootup:Window_doCommand */
+    {0x2054C, 0}, /* Text target bootup:Node_saveData */
+    {0x20554, 0}, /* Text target bootup:Node_loadData */
+    {0x2055C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x20564, 0}, /* Text target bootup:Window_updateAspect */
+    {0x2056C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x20574, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2058C, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x205C0, 0}, /* Text target bootup:Window_staticInit */
+    {0x2063C, 0}, /* Text target bootup:BaseMat_sendImage_00051E98 */
+    {0x2064C, 0}, /* Text target bootup:BaseMat_onFrameStart */
+    {0x20654, 0}, /* Text target bootup:BaseMat_hostioParms */
+    {0x2065C, 0}, /* Text target bootup:Mat_print */
+    {0x20664, 0}, /* Text target bootup:gfx_decodeMatCmd */
+    {0x2067C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x20684, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2068C, 0}, /* Text target bootup:Node_display */
+    {0x20694, 0}, /* Text target bootup:Node_update */
+    {0x2069C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x206A4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x206AC, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x206B4, 0}, /* Text target bootup:Node_saveData */
+    {0x206BC, 0}, /* Text target bootup:Node_loadData */
+    {0x206C4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x206CC, 0}, /* Text target bootup:BasePolyShape_copyMatDL */
+    {0x206E4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x206EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x206F4, 0}, /* Text target bootup:Node_display */
+    {0x206FC, 0}, /* Text target bootup:Node_update */
+    {0x20704, 0}, /* Text target bootup:BasePolyShape_handleMsg */
+    {0x2070C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x20714, 0}, /* Text target bootup:BasePolyShape_doCommand */
+    {0x2071C, 0}, /* Text target bootup:Node_saveData */
+    {0x20724, 0}, /* Text target bootup:Node_loadData */
+    {0x2072C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x20734, 0}, /* Text target bootup:BasePolyShape_copyMatDL */
+    {0x2074C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x20764, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x2077C, 0}, /* Text target bootup:BaseLight_hostioParms */
+    {0x20784, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x2078C, 0}, /* Text target bootup:MNode_display */
+    {0x20794, 0}, /* Text target bootup:MNode_update */
+    {0x2079C, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x207A4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x207AC, 0}, /* Text target bootup:BaseLight_doCommand */
+    {0x207B4, 0}, /* Text target bootup:BaseLight_saveData */
+    {0x207BC, 0}, /* Text target bootup:BaseLight_loadData */
+    {0x207C4, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x207CC, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x207E4, 0}, /* Text target bootup:LightTarget_hostioParms */
+    {0x207EC, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x207F4, 0}, /* Text target bootup:LightTarget_display */
+    {0x207FC, 0}, /* Text target bootup:QNode_update */
+    {0x20804, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x2080C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x20814, 0}, /* Text target bootup:LightTarget_doCommand */
+    {0x2081C, 0}, /* Text target bootup:Node_saveData */
+    {0x20824, 0}, /* Text target bootup:Node_loadData */
+    {0x2082C, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x20834, 0}, /* Text target bootup:MNode_getCMtx */
     {0x208DC, port_bootup_data + 0x20840},
     {0x208E8, port_bootup_data + 0x20858},
     {0x208F4, port_bootup_data + 0x20878},
@@ -2526,20 +1866,20 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x20D0C, port_bootup_data + 0x20CA4},
     {0x20D18, port_bootup_data + 0x20CBC},
     {0x20D24, port_bootup_data + 0x20CDC},
-    {0x20D94, (void *)CMod_callbackInvoke_000551E0},
-    {0x20DAC, (void *)CMod_hostioParms},
-    {0x20DB4, (void *)Node_updateChildren},
-    {0x20DBC, (void *)CMod_display},
-    {0x20DC4, (void *)Node_update},
-    {0x20DCC, (void *)Node_handleMsg},
-    {0x20DD4, (void *)Node_broadcastMsg},
-    {0x20DDC, (void *)Node_doCommand},
-    {0x20DE4, (void *)Node_saveData},
-    {0x20DEC, (void *)Node_loadData},
-    {0x20DF4, (void *)Node_setAnimPose},
-    {0x20E04, (void *)CMod_staticInit},
-    {0x2110C, (void *)__pure_virtual_called},
-    {0x21124, (void *)boot_readQuadParm_00000BB0},
+    {0x20D94, 0}, /* Text target bootup:CMod_callbackInvoke_000551E0 */
+    {0x20DAC, 0}, /* Text target bootup:CMod_hostioParms */
+    {0x20DB4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x20DBC, 0}, /* Text target bootup:CMod_display */
+    {0x20DC4, 0}, /* Text target bootup:Node_update */
+    {0x20DCC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x20DD4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x20DDC, 0}, /* Text target bootup:Node_doCommand */
+    {0x20DE4, 0}, /* Text target bootup:Node_saveData */
+    {0x20DEC, 0}, /* Text target bootup:Node_loadData */
+    {0x20DF4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x20E04, 0}, /* Text target bootup:CMod_staticInit */
+    {0x2110C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21124, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
     {0x211E8, port_bootup_rodata + 0x1C90},
     {0x211F4, port_bootup_rodata + 0x1C94},
     {0x21200, port_bootup_rodata + 0x1C98},
@@ -2622,149 +1962,149 @@ static const PortUsoReloc port_bootup_data_rel[2042] = {
     {0x2159C, port_bootup_rodata + 0x201C},
     {0x215A8, port_bootup_rodata + 0x2020},
     {0x215B4, port_bootup_rodata + 0x2024},
-    {0x218AC, (void *)__pure_virtual_called},
-    {0x219EC, (void *)__pure_virtual_called},
-    {0x21ABC, (void *)__pure_virtual_called},
-    {0x21BCC, (void *)__pure_virtual_called},
-    {0x21BE4, (void *)MemTrackerMgr_hostioParms},
-    {0x21BEC, (void *)Node_updateChildren},
-    {0x21BF4, (void *)Node_display},
-    {0x21BFC, (void *)Node_update},
-    {0x21C04, (void *)Node_handleMsg},
-    {0x21C0C, (void *)Node_broadcastMsg},
-    {0x21C14, (void *)Node_doCommand},
-    {0x21C1C, (void *)Node_saveData},
-    {0x21C24, (void *)Node_loadData},
-    {0x21C2C, (void *)Node_setAnimPose},
-    {0x21D1C, (void *)__pure_virtual_called},
-    {0x21D34, (void *)Node_hostioParms},
-    {0x21D3C, (void *)Node_updateChildren},
-    {0x21D44, (void *)ConsoleMgr_display},
-    {0x21D4C, (void *)ConsoleMgr_update},
-    {0x21D54, (void *)Node_handleMsg},
-    {0x21D5C, (void *)Node_broadcastMsg},
-    {0x21D64, (void *)Node_doCommand},
-    {0x21D6C, (void *)Node_saveData},
-    {0x21D74, (void *)Node_loadData},
-    {0x21D7C, (void *)Node_setAnimPose},
-    {0x21DAC, (void *)SysLibBase_devWrite_00061ADC},
-    {0x21DB4, (void *)SysLibBase_devRead_00061AF0},
-    {0x21DBC, (void *)SysLibBase_devSlot2_00061B04},
-    {0x21DC4, (void *)SysLibBase_loadUso_00061B10},
-    {0x21DDC, (void *)__pure_virtual_called},
-    {0x21F4C, (void *)__pure_virtual_called},
-    {0x21F64, (void *)Node_hostioParms},
-    {0x21F6C, (void *)Node_updateChildren},
-    {0x21F74, (void *)Node_display},
-    {0x21F7C, (void *)AnimPlayer_update},
-    {0x21F84, (void *)AnimPlayer_handleMsg},
-    {0x21F8C, (void *)Node_broadcastMsg},
-    {0x21F94, (void *)Node_doCommand},
-    {0x21F9C, (void *)Node_saveData},
-    {0x21FA4, (void *)Node_loadData},
-    {0x21FAC, (void *)Node_setAnimPose},
-    {0x21FB4, (void *)AnimPlayer_onKey},
-    {0x21FCC, (void *)boot_readQuadParm_00000BB0},
-    {0x21FE4, (void *)Node_hostioParms},
-    {0x21FEC, (void *)Node_updateChildren},
-    {0x21FF4, (void *)Node_display},
-    {0x21FFC, (void *)AnimDataMgr_update},
-    {0x22004, (void *)AnimDataMgr_handleMsg},
-    {0x2200C, (void *)Node_broadcastMsg},
-    {0x22014, (void *)Node_doCommand},
-    {0x2201C, (void *)Node_saveData},
-    {0x22024, (void *)AnimDataMgr_loadFile},
-    {0x2202C, (void *)Node_setAnimPose},
-    {0x221CC, (void *)__pure_virtual_called},
-    {0x221E4, (void *)boot_readFloatParm_00000B50},
-    {0x221FC, (void *)boot_readVec3Parm_00000B80},
-    {0x22214, (void *)DNode_hostioParms},
-    {0x2221C, (void *)QNode_updateChildren},
-    {0x22224, (void *)QNode_display},
-    {0x2222C, (void *)DNode_update},
-    {0x22234, (void *)DNode_handleMsg},
-    {0x2223C, (void *)Node_broadcastMsg},
-    {0x22244, (void *)QNode_doCommand},
-    {0x2224C, (void *)ShpNode_saveData},
-    {0x22254, (void *)ShpNode_readParms},
-    {0x2225C, (void *)QNode_setAnimPose},
-    {0x22264, (void *)MNode_getCMtx},
-    {0x2226C, (void *)ShpNode_getSuc},
-    {0x22284, (void *)boot_readQuadParm_00000BB0},
-    {0x2229C, (void *)boot_readIntParm_00000BE0},
-    {0x222B4, (void *)QNode_hostioParms},
-    {0x222BC, (void *)QNode_updateChildren},
-    {0x222C4, (void *)QNode_display},
-    {0x222CC, (void *)QNode_update},
-    {0x222D4, (void *)QNode_handleMsg},
-    {0x222DC, (void *)Node_broadcastMsg},
-    {0x222E4, (void *)QNode_doCommand},
-    {0x222EC, (void *)Node_saveData},
-    {0x222F4, (void *)Node_loadData},
-    {0x222FC, (void *)QNode_setAnimPose},
-    {0x22304, (void *)MNode_getCMtx},
-    {0x2230C, (void *)PhysQNode_pushProbes_00063964},
-    {0x22324, (void *)Friction_hostioParms_00063E84},
-    {0x2232C, (void *)QNode_updateChildren},
-    {0x22334, (void *)QNode_display},
-    {0x2233C, (void *)QNode_update},
-    {0x22344, (void *)Friction_handleMsg_000640E4},
-    {0x2234C, (void *)Node_broadcastMsg},
-    {0x22354, (void *)QNode_doCommand},
-    {0x2235C, (void *)Node_saveData},
-    {0x22364, (void *)Node_loadData},
-    {0x2236C, (void *)QNode_setAnimPose},
-    {0x22374, (void *)MNode_getCMtx},
-    {0x2237C, (void *)Friction_applyContact},
-    {0x2248C, (void *)__pure_virtual_called},
-    {0x225BC, (void *)__pure_virtual_called},
-    {0x2B26C, (void *)__pure_virtual_called},
-    {0x2B284, (void *)ImageFile_init_00068960},
-    {0x2B28C, (void *)ImageFile_acquire},
-    {0x2B294, (void *)ImageFile_free_00068BAC},
-    {0x2B29C, (void *)ImageFile_invalidate},
-    {0x2B2A4, (void *)ImageFile_load_00068990},
-    {0x2B2BC, (void *)BinFile_init_000682F8},
-    {0x2B2C4, (void *)BinFile_acquire},
-    {0x2B2CC, (void *)BinFile_release},
-    {0x2B2D4, (void *)BinFile_invalidate},
-    {0x2B2DC, (void *)BinFile_load_00068350},
-    {0x2B2F4, (void *)Node_hostioParms},
-    {0x2B2FC, (void *)Node_updateChildren},
-    {0x2B304, (void *)Node_display},
-    {0x2B30C, (void *)Node_update},
-    {0x2B314, (void *)Node_handleMsg},
-    {0x2B31C, (void *)Node_broadcastMsg},
-    {0x2B324, (void *)Node_doCommand},
-    {0x2B32C, (void *)Node_saveData},
-    {0x2B334, (void *)BinFileMgr_loadData},
-    {0x2B33C, (void *)Node_setAnimPose},
-    {0x2B344, (void *)BinFileMgr_newFile_0006877C},
-    {0x2B35C, (void *)Node_hostioParms},
-    {0x2B364, (void *)Node_updateChildren},
-    {0x2B36C, (void *)Node_display},
-    {0x2B374, (void *)Node_update},
-    {0x2B37C, (void *)Node_handleMsg},
-    {0x2B384, (void *)Node_broadcastMsg},
-    {0x2B38C, (void *)Node_doCommand},
-    {0x2B394, (void *)Node_saveData},
-    {0x2B39C, (void *)BinFileMgr_loadData},
-    {0x2B3A4, (void *)Node_setAnimPose},
-    {0x2B3AC, (void *)ImageFileMgr_newFile_000688F8},
-    {0x2C46C, (void *)__pure_virtual_called},
-    {0x2C484, (void *)boot_readQuadParm_00000BB0},
-    {0x2C49C, (void *)Node_hostioParms},
-    {0x2C4A4, (void *)Node_updateChildren},
-    {0x2C4AC, (void *)SkinMgr_update},
-    {0x2C4B4, (void *)Node_update},
-    {0x2C4BC, (void *)Node_handleMsg},
-    {0x2C4C4, (void *)Node_broadcastMsg},
-    {0x2C4CC, (void *)Node_doCommand},
-    {0x2C4D4, (void *)Node_saveData},
-    {0x2C4DC, (void *)Node_loadData},
-    {0x2C4E4, (void *)Node_setAnimPose},
-    {0x2C62C, (void *)__pure_virtual_called},
-    {0x2C644, (void *)Functor_call_00069C94},
+    {0x218AC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x219EC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21ABC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21BCC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21BE4, 0}, /* Text target bootup:MemTrackerMgr_hostioParms */
+    {0x21BEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x21BF4, 0}, /* Text target bootup:Node_display */
+    {0x21BFC, 0}, /* Text target bootup:Node_update */
+    {0x21C04, 0}, /* Text target bootup:Node_handleMsg */
+    {0x21C0C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x21C14, 0}, /* Text target bootup:Node_doCommand */
+    {0x21C1C, 0}, /* Text target bootup:Node_saveData */
+    {0x21C24, 0}, /* Text target bootup:Node_loadData */
+    {0x21C2C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x21D1C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21D34, 0}, /* Text target bootup:Node_hostioParms */
+    {0x21D3C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x21D44, 0}, /* Text target bootup:ConsoleMgr_display */
+    {0x21D4C, 0}, /* Text target bootup:ConsoleMgr_update */
+    {0x21D54, 0}, /* Text target bootup:Node_handleMsg */
+    {0x21D5C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x21D64, 0}, /* Text target bootup:Node_doCommand */
+    {0x21D6C, 0}, /* Text target bootup:Node_saveData */
+    {0x21D74, 0}, /* Text target bootup:Node_loadData */
+    {0x21D7C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x21DAC, 0}, /* Text target bootup:SysLibBase_devWrite_00061ADC */
+    {0x21DB4, 0}, /* Text target bootup:SysLibBase_devRead_00061AF0 */
+    {0x21DBC, 0}, /* Text target bootup:SysLibBase_devSlot2_00061B04 */
+    {0x21DC4, 0}, /* Text target bootup:SysLibBase_loadUso_00061B10 */
+    {0x21DDC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21F4C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x21F64, 0}, /* Text target bootup:Node_hostioParms */
+    {0x21F6C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x21F74, 0}, /* Text target bootup:Node_display */
+    {0x21F7C, 0}, /* Text target bootup:AnimPlayer_update */
+    {0x21F84, 0}, /* Text target bootup:AnimPlayer_handleMsg */
+    {0x21F8C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x21F94, 0}, /* Text target bootup:Node_doCommand */
+    {0x21F9C, 0}, /* Text target bootup:Node_saveData */
+    {0x21FA4, 0}, /* Text target bootup:Node_loadData */
+    {0x21FAC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x21FB4, 0}, /* Text target bootup:AnimPlayer_onKey */
+    {0x21FCC, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x21FE4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x21FEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x21FF4, 0}, /* Text target bootup:Node_display */
+    {0x21FFC, 0}, /* Text target bootup:AnimDataMgr_update */
+    {0x22004, 0}, /* Text target bootup:AnimDataMgr_handleMsg */
+    {0x2200C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x22014, 0}, /* Text target bootup:Node_doCommand */
+    {0x2201C, 0}, /* Text target bootup:Node_saveData */
+    {0x22024, 0}, /* Text target bootup:AnimDataMgr_loadFile */
+    {0x2202C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x221CC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x221E4, 0}, /* Text target bootup:boot_readFloatParm_00000B50 */
+    {0x221FC, 0}, /* Text target bootup:boot_readVec3Parm_00000B80 */
+    {0x22214, 0}, /* Text target bootup:DNode_hostioParms */
+    {0x2221C, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x22224, 0}, /* Text target bootup:QNode_display */
+    {0x2222C, 0}, /* Text target bootup:DNode_update */
+    {0x22234, 0}, /* Text target bootup:DNode_handleMsg */
+    {0x2223C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x22244, 0}, /* Text target bootup:QNode_doCommand */
+    {0x2224C, 0}, /* Text target bootup:ShpNode_saveData */
+    {0x22254, 0}, /* Text target bootup:ShpNode_readParms */
+    {0x2225C, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x22264, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x2226C, 0}, /* Text target bootup:ShpNode_getSuc */
+    {0x22284, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x2229C, 0}, /* Text target bootup:boot_readIntParm_00000BE0 */
+    {0x222B4, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x222BC, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x222C4, 0}, /* Text target bootup:QNode_display */
+    {0x222CC, 0}, /* Text target bootup:QNode_update */
+    {0x222D4, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x222DC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x222E4, 0}, /* Text target bootup:QNode_doCommand */
+    {0x222EC, 0}, /* Text target bootup:Node_saveData */
+    {0x222F4, 0}, /* Text target bootup:Node_loadData */
+    {0x222FC, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x22304, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x2230C, 0}, /* Text target bootup:PhysQNode_pushProbes_00063964 */
+    {0x22324, 0}, /* Text target bootup:Friction_hostioParms_00063E84 */
+    {0x2232C, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x22334, 0}, /* Text target bootup:QNode_display */
+    {0x2233C, 0}, /* Text target bootup:QNode_update */
+    {0x22344, 0}, /* Text target bootup:Friction_handleMsg_000640E4 */
+    {0x2234C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x22354, 0}, /* Text target bootup:QNode_doCommand */
+    {0x2235C, 0}, /* Text target bootup:Node_saveData */
+    {0x22364, 0}, /* Text target bootup:Node_loadData */
+    {0x2236C, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x22374, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x2237C, 0}, /* Text target bootup:Friction_applyContact */
+    {0x2248C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x225BC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2B26C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2B284, 0}, /* Text target bootup:ImageFile_init_00068960 */
+    {0x2B28C, 0}, /* Text target bootup:ImageFile_acquire */
+    {0x2B294, 0}, /* Text target bootup:ImageFile_free_00068BAC */
+    {0x2B29C, 0}, /* Text target bootup:ImageFile_invalidate */
+    {0x2B2A4, 0}, /* Text target bootup:ImageFile_load_00068990 */
+    {0x2B2BC, 0}, /* Text target bootup:BinFile_init_000682F8 */
+    {0x2B2C4, 0}, /* Text target bootup:BinFile_acquire */
+    {0x2B2CC, 0}, /* Text target bootup:BinFile_release */
+    {0x2B2D4, 0}, /* Text target bootup:BinFile_invalidate */
+    {0x2B2DC, 0}, /* Text target bootup:BinFile_load_00068350 */
+    {0x2B2F4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2B2FC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2B304, 0}, /* Text target bootup:Node_display */
+    {0x2B30C, 0}, /* Text target bootup:Node_update */
+    {0x2B314, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2B31C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2B324, 0}, /* Text target bootup:Node_doCommand */
+    {0x2B32C, 0}, /* Text target bootup:Node_saveData */
+    {0x2B334, 0}, /* Text target bootup:BinFileMgr_loadData */
+    {0x2B33C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2B344, 0}, /* Text target bootup:BinFileMgr_newFile_0006877C */
+    {0x2B35C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2B364, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2B36C, 0}, /* Text target bootup:Node_display */
+    {0x2B374, 0}, /* Text target bootup:Node_update */
+    {0x2B37C, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2B384, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2B38C, 0}, /* Text target bootup:Node_doCommand */
+    {0x2B394, 0}, /* Text target bootup:Node_saveData */
+    {0x2B39C, 0}, /* Text target bootup:BinFileMgr_loadData */
+    {0x2B3A4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2B3AC, 0}, /* Text target bootup:ImageFileMgr_newFile_000688F8 */
+    {0x2C46C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2C484, 0}, /* Text target bootup:boot_readQuadParm_00000BB0 */
+    {0x2C49C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C4A4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2C4AC, 0}, /* Text target bootup:SkinMgr_update */
+    {0x2C4B4, 0}, /* Text target bootup:Node_update */
+    {0x2C4BC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2C4C4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2C4CC, 0}, /* Text target bootup:Node_doCommand */
+    {0x2C4D4, 0}, /* Text target bootup:Node_saveData */
+    {0x2C4DC, 0}, /* Text target bootup:Node_loadData */
+    {0x2C4E4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2C62C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2C644, 0}, /* Text target bootup:Functor_call_00069C94 */
     {0x2D698, port_bootup_data + 0x2D690},
     {0x2D69C, port_bootup_data + 0x2D690},
     {0x2E450, port_bootup_bss + 0x43EB0},
@@ -3699,8 +3039,8 @@ static const PortUsoReloc port_bootup_rodata_rel[922] = {
 };
 static void (*const port_bootup_inits[])(void) = {(void (*)(void))boot_staticInit_00006204, (void (*)(void))SnowBoard_staticCtor_0000E9FC, (void (*)(void))app_staticInit_000412E8, (void (*)(void))Window_staticInit, 0};
 static const PortUsoReloc port_boarder1_data_rel[60] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)boarder1_readQuadParm_00000094},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target boarder1:boarder1_readQuadParm_00000094 */
     {0x1F9C, port_boarder1_data + 0x4EC8},
     {0x1FE0, port_boarder1_data + 0x70F0},
     {0x2024, port_boarder1_data + 0x60E0},
@@ -3739,8 +3079,8 @@ static const PortUsoReloc port_boarder1_data_rel[60] = {
     {0x8148, port_boarder1_data + 0x210},
     {0x8160, port_boarder1_data + 0xE8},
     {0x8168, port_boarder1_data + 0x30},
-    {0x81EC, (void *)__pure_virtual_called},
-    {0x8204, (void *)boarder1_readQuadParm_00000094},
+    {0x81EC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8204, 0}, /* Text target boarder1:boarder1_readQuadParm_00000094 */
     {0x895C, port_boarder1_data + 0x8398},
     {0x8968, port_boarder1_data + 0x8544},
     {0x8974, port_boarder1_data + 0x8894},
@@ -3761,8 +3101,8 @@ static const PortUsoReloc port_boarder1_data_rel[60] = {
     {0x8A80, port_boarder1_data + 0x8210},
 };
 static const PortUsoReloc port_boarder2_data_rel[57] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)boarder2_readQuadParm_00000094},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target boarder2:boarder2_readQuadParm_00000094 */
     {0xFE8, port_boarder2_data + 0x1138},
     {0x102C, port_boarder2_data + 0x1340},
     {0x1070, port_boarder2_data + 0x1B48},
@@ -3798,8 +3138,8 @@ static const PortUsoReloc port_boarder2_data_rel[57] = {
     {0x6680, port_boarder2_data + 0x10C},
     {0x6698, port_boarder2_data + 0xD8},
     {0x66A0, port_boarder2_data + 0x30},
-    {0x671C, (void *)__pure_virtual_called},
-    {0x6734, (void *)boarder2_readQuadParm_00000094},
+    {0x671C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x6734, 0}, /* Text target boarder2:boarder2_readQuadParm_00000094 */
     {0x6F48, port_boarder2_data + 0x68E8},
     {0x6F54, port_boarder2_data + 0x6AAC},
     {0x6F60, port_boarder2_data + 0x6E3C},
@@ -3820,8 +3160,8 @@ static const PortUsoReloc port_boarder2_data_rel[57] = {
     {0x706C, port_boarder2_data + 0x6740},
 };
 static const PortUsoReloc port_boarder3_data_rel[55] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)boarder3_readQuadParm_00000094},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target boarder3:boarder3_readQuadParm_00000094 */
     {0x1210, port_boarder3_data + 0x3328},
     {0x1254, port_boarder3_data + 0x2320},
     {0x1298, port_boarder3_data + 0x1318},
@@ -3855,8 +3195,8 @@ static const PortUsoReloc port_boarder3_data_rel[55] = {
     {0x75E8, port_boarder3_data + 0xF0},
     {0x7600, port_boarder3_data + 0xB8},
     {0x7608, port_boarder3_data + 0x30},
-    {0x768C, (void *)__pure_virtual_called},
-    {0x76A4, (void *)boarder3_readQuadParm_00000094},
+    {0x768C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x76A4, 0}, /* Text target boarder3:boarder3_readQuadParm_00000094 */
     {0x7EC4, port_boarder3_data + 0x7840},
     {0x7ED0, port_boarder3_data + 0x79E4},
     {0x7EDC, port_boarder3_data + 0x7D24},
@@ -3877,8 +3217,8 @@ static const PortUsoReloc port_boarder3_data_rel[55] = {
     {0x7FE8, port_boarder3_data + 0x76B0},
 };
 static const PortUsoReloc port_boarder4_data_rel[59] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)boarder4_readQuadParm_00000094},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target boarder4:boarder4_readQuadParm_00000094 */
     {0x16D8, port_boarder4_data + 0x2310},
     {0x171C, port_boarder4_data + 0x1900},
     {0x1764, port_boarder4_data + 0x2108},
@@ -3916,8 +3256,8 @@ static const PortUsoReloc port_boarder4_data_rel[59] = {
     {0x8048, port_boarder4_data + 0x108},
     {0x8060, port_boarder4_data + 0xD0},
     {0x8068, port_boarder4_data + 0x30},
-    {0x80EC, (void *)__pure_virtual_called},
-    {0x8104, (void *)boarder4_readQuadParm_00000094},
+    {0x80EC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x8104, 0}, /* Text target boarder4:boarder4_readQuadParm_00000094 */
     {0x896C, port_boarder4_data + 0x82B8},
     {0x8978, port_boarder4_data + 0x8488},
     {0x8984, port_boarder4_data + 0x8838},
@@ -3938,8 +3278,8 @@ static const PortUsoReloc port_boarder4_data_rel[59] = {
     {0x8A90, port_boarder4_data + 0x8110},
 };
 static const PortUsoReloc port_boarder5_data_rel[65] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)boarder5_readQuadParm_00000098},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target boarder5:boarder5_readQuadParm_00000098 */
     {0x16FC, port_boarder5_data + 0x34C8},
     {0x1740, port_boarder5_data + 0x28B0},
     {0x1784, port_boarder5_data + 0x2AB8},
@@ -3983,8 +3323,8 @@ static const PortUsoReloc port_boarder5_data_rel[65] = {
     {0x7FF4, port_boarder5_data + 0xF4},
     {0x800C, port_boarder5_data + 0xCC},
     {0x8014, port_boarder5_data + 0x30},
-    {0x808C, (void *)__pure_virtual_called},
-    {0x80A4, (void *)boarder5_readQuadParm_00000098},
+    {0x808C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x80A4, 0}, /* Text target boarder5:boarder5_readQuadParm_00000098 */
     {0x891C, port_boarder5_data + 0x8260},
     {0x8928, port_boarder5_data + 0x8428},
     {0x8934, port_boarder5_data + 0x87C8},
@@ -4005,147 +3345,147 @@ static const PortUsoReloc port_boarder5_data_rel[65] = {
     {0x8A40, port_boarder5_data + 0x80B0},
 };
 static const PortUsoReloc port_gui_data_rel[3] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x2C, (void *)__pure_virtual_called},
-    {0x4C, (void *)__pure_virtual_called},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x2C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x4C, 0}, /* Text target bootup:__pure_virtual_called */
 };
 static const PortUsoReloc port_n64proc_data_rel[16] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)Node_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)Process_display},
-    {0x3C, (void *)Process_update},
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)Node_saveData},
-    {0x64, (void *)Node_loadData},
-    {0x6C, (void *)Node_setAnimPose},
-    {0x74, (void *)Process_start},
-    {0x7C, (void *)Process_exit},
-    {0x84, (void *)N64DemoProcess_handleInput},
-    {0x8C, (void *)N64DemoProcess_drawGui},
-    {0xA4, (void *)n64_procMain},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:Process_display */
+    {0x3C, 0}, /* Text target bootup:Process_update */
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:Node_saveData */
+    {0x64, 0}, /* Text target bootup:Node_loadData */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x74, 0}, /* Text target bootup:Process_start */
+    {0x7C, 0}, /* Text target bootup:Process_exit */
+    {0x84, 0}, /* Text target n64proc:N64DemoProcess_handleInput */
+    {0x8C, 0}, /* Text target n64proc:N64DemoProcess_drawGui */
+    {0xA4, 0}, /* Text target n64proc:n64_procMain */
 };
 static const PortUsoReloc port_titproc_data_rel[118] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)tit_readFloatParm_000028F0},
-    {0x3C, (void *)tit_readVec3Parm_00002950},
-    {0x54, (void *)tit_readQuadParm_00002920},
-    {0x6C, (void *)tit_readIntParm_000028C0},
-    {0x84, (void *)ItemType_hostioParms},
-    {0x8C, (void *)Node_updateChildren},
-    {0x94, (void *)ColourItemType_display},
-    {0x9C, (void *)Node_update},
-    {0xA4, (void *)Node_handleMsg},
-    {0xAC, (void *)Node_broadcastMsg},
-    {0xB4, (void *)Node_doCommand},
-    {0xBC, (void *)ItemType_saveData},
-    {0xC4, (void *)ItemType_load},
-    {0xCC, (void *)Node_setAnimPose},
-    {0xD4, (void *)tit_ItemType_create_00002980},
-    {0xDC, (void *)ColourItemType_buildItems},
-    {0xE4, (void *)ColourItemType_findNearest},
-    {0xEC, (void *)ColourItemType_getItemPos},
-    {0xF4, (void *)ColourItemType_getItem},
-    {0xFC, (void *)ColourItemType_findNextByZ},
-    {0x13C, (void *)Node_hostioParms},
-    {0x144, (void *)Node_updateChildren},
-    {0x14C, (void *)Process_display},
-    {0x154, (void *)Process_update},
-    {0x15C, (void *)TitleDemoProcess_handleMsg},
-    {0x164, (void *)Node_broadcastMsg},
-    {0x16C, (void *)Node_doCommand},
-    {0x174, (void *)Node_saveData},
-    {0x17C, (void *)Node_loadData},
-    {0x184, (void *)Node_setAnimPose},
-    {0x18C, (void *)Process_start},
-    {0x194, (void *)Process_exit},
-    {0x19C, (void *)TitleDemoProcess_handleInput},
-    {0x1A4, (void *)TitleDemoProcess_drawGui},
-    {0x1BC, (void *)Node_hostioParms},
-    {0x1C4, (void *)Node_updateChildren},
-    {0x1CC, (void *)KeyMessage_display},
-    {0x1D4, (void *)KeyMessage_update},
-    {0x1DC, (void *)Node_handleMsg},
-    {0x1E4, (void *)Node_broadcastMsg},
-    {0x1EC, (void *)Node_doCommand},
-    {0x1F4, (void *)Node_saveData},
-    {0x1FC, (void *)Node_loadData},
-    {0x204, (void *)Node_setAnimPose},
-    {0x20C, (void *)Process_start},
-    {0x224, (void *)Node_hostioParms},
-    {0x22C, (void *)Node_updateChildren},
-    {0x234, (void *)MainLogo_display},
-    {0x23C, (void *)Node_update},
-    {0x244, (void *)Node_handleMsg},
-    {0x24C, (void *)Node_broadcastMsg},
-    {0x254, (void *)Node_doCommand},
-    {0x25C, (void *)Node_saveData},
-    {0x264, (void *)Node_loadData},
-    {0x26C, (void *)Node_setAnimPose},
-    {0x274, (void *)Process_start},
-    {0x28C, (void *)Node_hostioParms},
-    {0x294, (void *)Node_updateChildren},
-    {0x29C, (void *)LangMenu_display},
-    {0x2A4, (void *)Node_update},
-    {0x2AC, (void *)Node_handleMsg},
-    {0x2B4, (void *)Node_broadcastMsg},
-    {0x2BC, (void *)Node_doCommand},
-    {0x2C4, (void *)Node_saveData},
-    {0x2CC, (void *)Node_loadData},
-    {0x2D4, (void *)Node_setAnimPose},
-    {0x2DC, (void *)Process_start},
-    {0x2F4, (void *)Node_hostioParms},
-    {0x2FC, (void *)Node_updateChildren},
-    {0x304, (void *)tit_WhiteFader_display},
-    {0x30C, (void *)Node_update},
-    {0x314, (void *)Node_handleMsg},
-    {0x31C, (void *)Node_broadcastMsg},
-    {0x324, (void *)Node_doCommand},
-    {0x32C, (void *)Node_saveData},
-    {0x334, (void *)Node_loadData},
-    {0x33C, (void *)Node_setAnimPose},
-    {0x344, (void *)Process_start},
-    {0x35C, (void *)Node_hostioParms},
-    {0x364, (void *)Node_updateChildren},
-    {0x36C, (void *)Process_display},
-    {0x374, (void *)Process_update},
-    {0x37C, (void *)GameDemoProcess_handleMsg},
-    {0x384, (void *)Node_broadcastMsg},
-    {0x38C, (void *)Node_doCommand},
-    {0x394, (void *)Node_saveData},
-    {0x39C, (void *)RaceProcess_loadData},
-    {0x3A4, (void *)Node_setAnimPose},
-    {0x3AC, (void *)Process_start},
-    {0x3B4, (void *)Process_exit},
-    {0x3BC, (void *)GameDemoProcess_handleInput},
-    {0x3C4, (void *)RaceProcess_drawGui},
-    {0x3CC, (void *)RaceProcess_onEndRace},
-    {0x3D4, (void *)RaceProcess_onEndRaceAlt},
-    {0x3DC, (void *)RaceProcess_onPause},
-    {0x3E4, (void *)RaceProcess_onCountdownStart},
-    {0x3EC, (void *)RaceProcess_endTimerEnabled},
-    {0x3F4, (void *)RaceProcess_altEndTimerEnabled},
-    {0x3FC, (void *)RaceProcess_onRaceOver},
-    {0x404, (void *)RaceProcess_onEndTimerDone},
-    {0x40C, (void *)GameDemoProcess_onTimeoutExit},
-    {0x414, (void *)RaceProcess_onTimeout},
-    {0x41C, (void *)RaceProcess_onAltEndTimerDone},
-    {0x424, (void *)RaceProcess_onPauseSelect},
-    {0x42C, (void *)GameDemoProcess_onQuitButton},
-    {0x434, (void *)RaceProcess_onLeave},
-    {0x43C, (void *)RaceProcess_drawHud},
-    {0x444, (void *)RaceProcess_drawIntro},
-    {0x44C, (void *)RaceProcess_drawResultExtra},
-    {0x454, (void *)RaceProcess_drawTimeUpExtra},
-    {0x45C, (void *)RaceProcess_drawResult},
-    {0x464, (void *)RaceProcess_updateSub0},
-    {0x46C, (void *)RaceProcess_updateSub1},
-    {0x474, (void *)RaceProcess_updateSub2},
-    {0x47C, (void *)RaceProcess_updateSub3},
-    {0x484, (void *)RaceProcess_onMessageBounce},
-    {0x49C, (void *)tit_procMain},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target titproc:tit_readFloatParm_000028F0 */
+    {0x3C, 0}, /* Text target titproc:tit_readVec3Parm_00002950 */
+    {0x54, 0}, /* Text target titproc:tit_readQuadParm_00002920 */
+    {0x6C, 0}, /* Text target titproc:tit_readIntParm_000028C0 */
+    {0x84, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x8C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x94, 0}, /* Text target bootup:ColourItemType_display */
+    {0x9C, 0}, /* Text target bootup:Node_update */
+    {0xA4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xAC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xB4, 0}, /* Text target bootup:Node_doCommand */
+    {0xBC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xC4, 0}, /* Text target bootup:ItemType_load */
+    {0xCC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD4, 0}, /* Text target titproc:tit_ItemType_create_00002980 */
+    {0xDC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xE4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xEC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xF4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xFC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x13C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x144, 0}, /* Text target bootup:Node_updateChildren */
+    {0x14C, 0}, /* Text target bootup:Process_display */
+    {0x154, 0}, /* Text target bootup:Process_update */
+    {0x15C, 0}, /* Text target titproc:TitleDemoProcess_handleMsg */
+    {0x164, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x16C, 0}, /* Text target bootup:Node_doCommand */
+    {0x174, 0}, /* Text target bootup:Node_saveData */
+    {0x17C, 0}, /* Text target bootup:Node_loadData */
+    {0x184, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x18C, 0}, /* Text target bootup:Process_start */
+    {0x194, 0}, /* Text target bootup:Process_exit */
+    {0x19C, 0}, /* Text target titproc:TitleDemoProcess_handleInput */
+    {0x1A4, 0}, /* Text target titproc:TitleDemoProcess_drawGui */
+    {0x1BC, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1C4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1CC, 0}, /* Text target titproc:KeyMessage_display */
+    {0x1D4, 0}, /* Text target titproc:KeyMessage_update */
+    {0x1DC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1E4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1EC, 0}, /* Text target bootup:Node_doCommand */
+    {0x1F4, 0}, /* Text target bootup:Node_saveData */
+    {0x1FC, 0}, /* Text target bootup:Node_loadData */
+    {0x204, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x20C, 0}, /* Text target bootup:Process_start */
+    {0x224, 0}, /* Text target bootup:Node_hostioParms */
+    {0x22C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x234, 0}, /* Text target titproc:MainLogo_display */
+    {0x23C, 0}, /* Text target bootup:Node_update */
+    {0x244, 0}, /* Text target bootup:Node_handleMsg */
+    {0x24C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x254, 0}, /* Text target bootup:Node_doCommand */
+    {0x25C, 0}, /* Text target bootup:Node_saveData */
+    {0x264, 0}, /* Text target bootup:Node_loadData */
+    {0x26C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x274, 0}, /* Text target bootup:Process_start */
+    {0x28C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x294, 0}, /* Text target bootup:Node_updateChildren */
+    {0x29C, 0}, /* Text target titproc:LangMenu_display */
+    {0x2A4, 0}, /* Text target bootup:Node_update */
+    {0x2AC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2B4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2BC, 0}, /* Text target bootup:Node_doCommand */
+    {0x2C4, 0}, /* Text target bootup:Node_saveData */
+    {0x2CC, 0}, /* Text target bootup:Node_loadData */
+    {0x2D4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2DC, 0}, /* Text target bootup:Process_start */
+    {0x2F4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2FC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x304, 0}, /* Text target titproc:tit_WhiteFader_display */
+    {0x30C, 0}, /* Text target bootup:Node_update */
+    {0x314, 0}, /* Text target bootup:Node_handleMsg */
+    {0x31C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x324, 0}, /* Text target bootup:Node_doCommand */
+    {0x32C, 0}, /* Text target bootup:Node_saveData */
+    {0x334, 0}, /* Text target bootup:Node_loadData */
+    {0x33C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x344, 0}, /* Text target bootup:Process_start */
+    {0x35C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x364, 0}, /* Text target bootup:Node_updateChildren */
+    {0x36C, 0}, /* Text target bootup:Process_display */
+    {0x374, 0}, /* Text target bootup:Process_update */
+    {0x37C, 0}, /* Text target titproc:GameDemoProcess_handleMsg */
+    {0x384, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x38C, 0}, /* Text target bootup:Node_doCommand */
+    {0x394, 0}, /* Text target bootup:Node_saveData */
+    {0x39C, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x3A4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x3AC, 0}, /* Text target bootup:Process_start */
+    {0x3B4, 0}, /* Text target bootup:Process_exit */
+    {0x3BC, 0}, /* Text target titproc:GameDemoProcess_handleInput */
+    {0x3C4, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x3CC, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x3D4, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x3DC, 0}, /* Text target bootup:RaceProcess_onPause */
+    {0x3E4, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0x3EC, 0}, /* Text target bootup:RaceProcess_endTimerEnabled */
+    {0x3F4, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0x3FC, 0}, /* Text target bootup:RaceProcess_onRaceOver */
+    {0x404, 0}, /* Text target bootup:RaceProcess_onEndTimerDone */
+    {0x40C, 0}, /* Text target titproc:GameDemoProcess_onTimeoutExit */
+    {0x414, 0}, /* Text target bootup:RaceProcess_onTimeout */
+    {0x41C, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
+    {0x424, 0}, /* Text target bootup:RaceProcess_onPauseSelect */
+    {0x42C, 0}, /* Text target titproc:GameDemoProcess_onQuitButton */
+    {0x434, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0x43C, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x444, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0x44C, 0}, /* Text target bootup:RaceProcess_drawResultExtra */
+    {0x454, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x45C, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x464, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x46C, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x474, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x47C, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x484, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
+    {0x49C, 0}, /* Text target titproc:tit_procMain */
 };
 static const PortUsoReloc port_titproc_rodata_rel[16] = {
     {0x0, 0}, /* jump table tit_procMain+0x6C */
@@ -4166,101 +3506,101 @@ static const PortUsoReloc port_titproc_rodata_rel[16] = {
     {0x3C, 0}, /* jump table TitleDemoProcess_handleInput+0x288 */
 };
 static const PortUsoReloc port_eddproc_data_rel[50] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)ItemType_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)ColourItemType_display},
-    {0x3C, (void *)Node_update},
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)ItemType_saveData},
-    {0x64, (void *)ItemType_load},
-    {0x6C, (void *)Node_setAnimPose},
-    {0x74, (void *)edd_ItemType_create_000003BC},
-    {0x7C, (void *)ColourItemType_buildItems},
-    {0x84, (void *)ColourItemType_findNearest},
-    {0x8C, (void *)ColourItemType_getItemPos},
-    {0x94, (void *)ColourItemType_getItem},
-    {0x9C, (void *)ColourItemType_findNextByZ},
-    {0xB4, (void *)edd_readFloatParm_0000035C},
-    {0xCC, (void *)edd_readVec3Parm_0000044C},
-    {0xE4, (void *)edd_readQuadParm_0000038C},
-    {0xFC, (void *)edd_readIntParm_0000032C},
-    {0x114, (void *)Node_hostioParms},
-    {0x11C, (void *)Node_updateChildren},
-    {0x124, (void *)RaceTracker_display},
-    {0x12C, (void *)edd_DataManager_update},
-    {0x134, (void *)RaceTracker_handleMsg},
-    {0x13C, (void *)Node_broadcastMsg},
-    {0x144, (void *)Node_doCommand},
-    {0x14C, (void *)Node_saveData},
-    {0x154, (void *)Node_loadData},
-    {0x15C, (void *)Node_setAnimPose},
-    {0x164, (void *)RaceTracker_reset},
-    {0x16C, (void *)RaceTracker_onCheckpoint},
-    {0x174, (void *)RaceTracker_onTrickStart},
-    {0x17C, (void *)RaceTracker_onTrickEnd},
-    {0x194, (void *)Node_hostioParms},
-    {0x19C, (void *)Node_updateChildren},
-    {0x1A4, (void *)Process_display},
-    {0x1AC, (void *)Process_update},
-    {0x1B4, (void *)Node_handleMsg},
-    {0x1BC, (void *)Node_broadcastMsg},
-    {0x1C4, (void *)Node_doCommand},
-    {0x1CC, (void *)Node_saveData},
-    {0x1D4, (void *)Node_loadData},
-    {0x1DC, (void *)Node_setAnimPose},
-    {0x1E4, (void *)Process_start},
-    {0x1EC, (void *)Process_exit},
-    {0x1F4, (void *)edd_EditorsProcess_handleInput},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:ColourItemType_display */
+    {0x3C, 0}, /* Text target bootup:Node_update */
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x64, 0}, /* Text target bootup:ItemType_load */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x74, 0}, /* Text target eddproc:edd_ItemType_create_000003BC */
+    {0x7C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x84, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x8C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x94, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x9C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xB4, 0}, /* Text target eddproc:edd_readFloatParm_0000035C */
+    {0xCC, 0}, /* Text target eddproc:edd_readVec3Parm_0000044C */
+    {0xE4, 0}, /* Text target eddproc:edd_readQuadParm_0000038C */
+    {0xFC, 0}, /* Text target eddproc:edd_readIntParm_0000032C */
+    {0x114, 0}, /* Text target bootup:Node_hostioParms */
+    {0x11C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x124, 0}, /* Text target bootup:RaceTracker_display */
+    {0x12C, 0}, /* Text target eddproc:edd_DataManager_update */
+    {0x134, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x13C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x144, 0}, /* Text target bootup:Node_doCommand */
+    {0x14C, 0}, /* Text target bootup:Node_saveData */
+    {0x154, 0}, /* Text target bootup:Node_loadData */
+    {0x15C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x164, 0}, /* Text target bootup:RaceTracker_reset */
+    {0x16C, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x174, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x17C, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x194, 0}, /* Text target bootup:Node_hostioParms */
+    {0x19C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1A4, 0}, /* Text target bootup:Process_display */
+    {0x1AC, 0}, /* Text target bootup:Process_update */
+    {0x1B4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1BC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1C4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1CC, 0}, /* Text target bootup:Node_saveData */
+    {0x1D4, 0}, /* Text target bootup:Node_loadData */
+    {0x1DC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1E4, 0}, /* Text target bootup:Process_start */
+    {0x1EC, 0}, /* Text target bootup:Process_exit */
+    {0x1F4, 0}, /* Text target eddproc:edd_EditorsProcess_handleInput */
     {0x1FC, 0}, /* Text target eddproc:Text+0x478 */
-    {0x214, (void *)edd_procMain},
+    {0x214, 0}, /* Text target eddproc:edd_procMain */
 };
 static const PortUsoReloc port_mgrproc_data_rel[239] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)mgr_procMain},
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
-    {0xA4, (void *)mgr_ItemType_create_00003358},
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, (void *)mgr_readFloatParm_000032F8},
-    {0xFC, (void *)mgr_readVec3Parm_000033E8},
-    {0x114, (void *)mgr_readQuadParm_00003328},
-    {0x12C, (void *)mgr_readIntParm_000032C8},
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)Process_display},
-    {0x15C, (void *)Process_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
-    {0x194, (void *)Process_start},
-    {0x19C, (void *)Process_exit},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target mgrproc:mgr_procMain */
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA4, 0}, /* Text target mgrproc:mgr_ItemType_create_00003358 */
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xE4, 0}, /* Text target mgrproc:mgr_readFloatParm_000032F8 */
+    {0xFC, 0}, /* Text target mgrproc:mgr_readVec3Parm_000033E8 */
+    {0x114, 0}, /* Text target mgrproc:mgr_readQuadParm_00003328 */
+    {0x12C, 0}, /* Text target mgrproc:mgr_readIntParm_000032C8 */
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target bootup:Process_display */
+    {0x15C, 0}, /* Text target bootup:Process_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x194, 0}, /* Text target bootup:Process_start */
+    {0x19C, 0}, /* Text target bootup:Process_exit */
     {0x1A4, 0}, /* Text target nameent:Text+0x150 */
     {0x1AC, 0}, /* Text target nameent:Text+0x204 */
     {0x1B4, 0}, /* Text target nameent:Text+0x4C8 */
     {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
     {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
     {0x1CC, 0}, /* Text target nameent:Text+0x710 */
-    {0x1D4, (void *)MgrNameEntry_drawExitOverlay},
-    {0x1DC, (void *)MgrNameEntry_drawCongrats_00002B7C},
+    {0x1D4, 0}, /* Text target mgrproc:MgrNameEntry_drawExitOverlay */
+    {0x1DC, 0}, /* Text target mgrproc:MgrNameEntry_drawCongrats_00002B7C */
     {0x1E4, 0}, /* Text target nameent:Text+0x750 */
     {0x1EC, 0}, /* Text target nameent:Text+0x758 */
     {0x1F8, port_mgrproc_rodata + 0x30},
@@ -4405,58 +3745,58 @@ static const PortUsoReloc port_mgrproc_data_rel[239] = {
     {0x424, port_mgrproc_rodata + 0x5AC},
     {0x428, port_mgrproc_rodata + 0x5B0},
     {0x42C, port_mgrproc_rodata + 0x5B4},
-    {0x43C, (void *)Node_hostioParms},
-    {0x444, (void *)Node_updateChildren},
-    {0x44C, (void *)mgr_DataManager_display},
-    {0x454, (void *)mgr_DataManager_update},
-    {0x45C, (void *)RaceTracker_handleMsg},
-    {0x464, (void *)Node_broadcastMsg},
-    {0x46C, (void *)Node_doCommand},
-    {0x474, (void *)Node_saveData},
-    {0x47C, (void *)Node_loadData},
-    {0x484, (void *)Node_setAnimPose},
-    {0x48C, (void *)RaceTracker_reset},
-    {0x494, (void *)RaceTracker_onCheckpoint},
-    {0x49C, (void *)RaceTracker_onTrickStart},
-    {0x4A4, (void *)RaceTracker_onTrickEnd},
-    {0x4BC, (void *)Node_hostioParms},
-    {0x4C4, (void *)Node_updateChildren},
-    {0x4CC, (void *)Process_display},
-    {0x4D4, (void *)Process_update},
-    {0x4DC, (void *)RaceProcess_handleMsg},
-    {0x4E4, (void *)Node_broadcastMsg},
-    {0x4EC, (void *)Node_doCommand},
-    {0x4F4, (void *)Node_saveData},
-    {0x4FC, (void *)RaceProcess_loadData},
-    {0x504, (void *)Node_setAnimPose},
-    {0x50C, (void *)Process_start},
-    {0x514, (void *)Process_exit},
-    {0x51C, (void *)RaceProcess_handleInput},
-    {0x524, (void *)RaceProcess_drawGui},
-    {0x52C, (void *)RaceProcess_onEndRace},
-    {0x534, (void *)MGRRaceProcess_onEndRaceAlt},
-    {0x53C, (void *)RaceProcess_onPause},
-    {0x544, (void *)MGRRaceProcess_onCountdownStart},
-    {0x54C, (void *)MGRRaceProcess_endTimerEnabled},
-    {0x554, (void *)RaceProcess_altEndTimerEnabled},
-    {0x55C, (void *)MGRRaceProcess_onRaceOver},
-    {0x564, (void *)MGRRaceProcess_onEndTimerDone},
-    {0x56C, (void *)RaceProcess_onTimeoutExit},
-    {0x574, (void *)MGRRaceProcess_onTimeout},
-    {0x57C, (void *)RaceProcess_onAltEndTimerDone},
-    {0x584, (void *)MGRRaceProcess_onPauseSelect},
-    {0x58C, (void *)MGRRaceProcess_onQuitButton},
-    {0x594, (void *)RaceProcess_onLeave},
-    {0x59C, (void *)MGRRaceProcess_drawHud},
-    {0x5A4, (void *)MGRRaceProcess_drawIntro},
-    {0x5AC, (void *)MGRRaceProcess_drawResultExtra},
-    {0x5B4, (void *)RaceProcess_drawTimeUpExtra},
-    {0x5BC, (void *)RaceProcess_drawResult},
-    {0x5C4, (void *)MGRRaceProcess_updateSub0},
-    {0x5CC, (void *)MGRRaceProcess_updateSub1},
-    {0x5D4, (void *)MGRRaceProcess_updateSub2},
-    {0x5DC, (void *)MGRRaceProcess_updateSub3},
-    {0x5E4, (void *)MGRRaceProcess_onMessageBounce},
+    {0x43C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x444, 0}, /* Text target bootup:Node_updateChildren */
+    {0x44C, 0}, /* Text target mgrproc:mgr_DataManager_display */
+    {0x454, 0}, /* Text target mgrproc:mgr_DataManager_update */
+    {0x45C, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x464, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x46C, 0}, /* Text target bootup:Node_doCommand */
+    {0x474, 0}, /* Text target bootup:Node_saveData */
+    {0x47C, 0}, /* Text target bootup:Node_loadData */
+    {0x484, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x48C, 0}, /* Text target bootup:RaceTracker_reset */
+    {0x494, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x49C, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x4A4, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x4BC, 0}, /* Text target bootup:Node_hostioParms */
+    {0x4C4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x4CC, 0}, /* Text target bootup:Process_display */
+    {0x4D4, 0}, /* Text target bootup:Process_update */
+    {0x4DC, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x4E4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x4EC, 0}, /* Text target bootup:Node_doCommand */
+    {0x4F4, 0}, /* Text target bootup:Node_saveData */
+    {0x4FC, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x504, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x50C, 0}, /* Text target bootup:Process_start */
+    {0x514, 0}, /* Text target bootup:Process_exit */
+    {0x51C, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x524, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x52C, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x534, 0}, /* Text target mgrproc:MGRRaceProcess_onEndRaceAlt */
+    {0x53C, 0}, /* Text target bootup:RaceProcess_onPause */
+    {0x544, 0}, /* Text target mgrproc:MGRRaceProcess_onCountdownStart */
+    {0x54C, 0}, /* Text target mgrproc:MGRRaceProcess_endTimerEnabled */
+    {0x554, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0x55C, 0}, /* Text target mgrproc:MGRRaceProcess_onRaceOver */
+    {0x564, 0}, /* Text target mgrproc:MGRRaceProcess_onEndTimerDone */
+    {0x56C, 0}, /* Text target bootup:RaceProcess_onTimeoutExit */
+    {0x574, 0}, /* Text target mgrproc:MGRRaceProcess_onTimeout */
+    {0x57C, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
+    {0x584, 0}, /* Text target mgrproc:MGRRaceProcess_onPauseSelect */
+    {0x58C, 0}, /* Text target mgrproc:MGRRaceProcess_onQuitButton */
+    {0x594, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0x59C, 0}, /* Text target mgrproc:MGRRaceProcess_drawHud */
+    {0x5A4, 0}, /* Text target mgrproc:MGRRaceProcess_drawIntro */
+    {0x5AC, 0}, /* Text target mgrproc:MGRRaceProcess_drawResultExtra */
+    {0x5B4, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x5BC, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x5C4, 0}, /* Text target mgrproc:MGRRaceProcess_updateSub0 */
+    {0x5CC, 0}, /* Text target mgrproc:MGRRaceProcess_updateSub1 */
+    {0x5D4, 0}, /* Text target mgrproc:MGRRaceProcess_updateSub2 */
+    {0x5DC, 0}, /* Text target mgrproc:MGRRaceProcess_updateSub3 */
+    {0x5E4, 0}, /* Text target mgrproc:MGRRaceProcess_onMessageBounce */
 };
 static const PortUsoReloc port_mgrproc_rodata_rel[14] = {
     {0x0, 0}, /* jump table mgr_procMain+0x48 */
@@ -4475,118 +3815,118 @@ static const PortUsoReloc port_mgrproc_rodata_rel[14] = {
     {0x5C8, 0}, /* jump table MGRRaceProcess_updateSub2+0x160 */
 };
 static const PortUsoReloc port_arcproc_data_rel[112] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)arc_procMain},
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
-    {0xA4, (void *)arc_ItemType_create_00002334},
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, (void *)arc_readFloatParm_000022D4},
-    {0xFC, (void *)arc_readVec3Parm_000023C4},
-    {0x114, (void *)arc_readQuadParm_00002304},
-    {0x12C, (void *)arc_readIntParm_000022A4},
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)Process_display},
-    {0x15C, (void *)Process_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
-    {0x194, (void *)Process_start},
-    {0x19C, (void *)Process_exit},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target arcproc:arc_procMain */
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA4, 0}, /* Text target arcproc:arc_ItemType_create_00002334 */
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xE4, 0}, /* Text target arcproc:arc_readFloatParm_000022D4 */
+    {0xFC, 0}, /* Text target arcproc:arc_readVec3Parm_000023C4 */
+    {0x114, 0}, /* Text target arcproc:arc_readQuadParm_00002304 */
+    {0x12C, 0}, /* Text target arcproc:arc_readIntParm_000022A4 */
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target bootup:Process_display */
+    {0x15C, 0}, /* Text target bootup:Process_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x194, 0}, /* Text target bootup:Process_start */
+    {0x19C, 0}, /* Text target bootup:Process_exit */
     {0x1A4, 0}, /* Text target nameent:Text+0x150 */
     {0x1AC, 0}, /* Text target nameent:Text+0x204 */
-    {0x1B4, (void *)ArcNameEntry_update_00001B04},
+    {0x1B4, 0}, /* Text target arcproc:ArcNameEntry_update_00001B04 */
     {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
     {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
-    {0x1CC, (void *)ArcNameEntry_drawEntryOverlay},
-    {0x1D4, (void *)ArcNameEntry_drawExitOverlay},
+    {0x1CC, 0}, /* Text target arcproc:ArcNameEntry_drawEntryOverlay */
+    {0x1D4, 0}, /* Text target arcproc:ArcNameEntry_drawExitOverlay */
     {0x1DC, 0}, /* Text target nameent:Text+0x748 */
     {0x1E4, 0}, /* Text target nameent:Text+0x750 */
     {0x1EC, 0}, /* Text target nameent:Text+0x758 */
-    {0x204, (void *)Node_hostioParms},
-    {0x20C, (void *)Node_updateChildren},
-    {0x214, (void *)RaceTracker_display},
-    {0x21C, (void *)arc_DataManager_update},
-    {0x224, (void *)RaceTracker_handleMsg},
-    {0x22C, (void *)Node_broadcastMsg},
-    {0x234, (void *)Node_doCommand},
-    {0x23C, (void *)Node_saveData},
-    {0x244, (void *)Node_loadData},
-    {0x24C, (void *)Node_setAnimPose},
-    {0x254, (void *)arc_DataManager_reset_00001F0C},
-    {0x25C, (void *)RaceTracker_onCheckpoint},
-    {0x264, (void *)RaceTracker_onTrickStart},
-    {0x26C, (void *)RaceTracker_onTrickEnd},
-    {0x284, (void *)Node_hostioParms},
-    {0x28C, (void *)Node_updateChildren},
-    {0x294, (void *)Process_display},
-    {0x29C, (void *)Process_update},
-    {0x2A4, (void *)RaceProcess_handleMsg},
-    {0x2AC, (void *)Node_broadcastMsg},
-    {0x2B4, (void *)Node_doCommand},
-    {0x2BC, (void *)Node_saveData},
-    {0x2C4, (void *)RaceProcess_loadData},
-    {0x2CC, (void *)Node_setAnimPose},
-    {0x2D4, (void *)Process_start},
-    {0x2DC, (void *)Process_exit},
-    {0x2E4, (void *)RaceProcess_handleInput},
-    {0x2EC, (void *)RaceProcess_drawGui},
-    {0x2F4, (void *)RaceProcess_onEndRace},
-    {0x2FC, (void *)RaceProcess_onEndRaceAlt},
-    {0x304, (void *)ARCRaceProcess_onPause},
-    {0x30C, (void *)ARCRaceProcess_onCountdownStart},
-    {0x314, (void *)ARCRaceProcess_endTimerEnabled},
-    {0x31C, (void *)ARCRaceProcess_altEndTimerEnabled},
-    {0x324, (void *)ARCRaceProcess_onRaceOver},
-    {0x32C, (void *)ARCRaceProcess_onEndTimerDone},
-    {0x334, (void *)RaceProcess_onTimeoutExit},
-    {0x33C, (void *)ARCRaceProcess_onTimeout},
-    {0x344, (void *)ARCRaceProcess_onAltEndTimerDone},
-    {0x34C, (void *)ARCRaceProcess_onPauseSelect},
-    {0x354, (void *)RaceProcess_onQuitButton},
-    {0x35C, (void *)ARCRaceProcess_onLeave},
-    {0x364, (void *)RaceProcess_drawHud},
-    {0x36C, (void *)ARCRaceProcess_drawIntro},
-    {0x374, (void *)ARCRaceProcess_drawResultExtra},
-    {0x37C, (void *)ARCRaceProcess_drawTimeUpExtra},
-    {0x384, (void *)RaceProcess_drawResult},
-    {0x38C, (void *)RaceProcess_updateSub0},
-    {0x394, (void *)RaceProcess_updateSub1},
-    {0x39C, (void *)RaceProcess_updateSub2},
-    {0x3A4, (void *)RaceProcess_updateSub3},
-    {0x3AC, (void *)RaceProcess_onMessageBounce},
-    {0x3FC, (void *)__pure_virtual_called},
-    {0x414, (void *)Node_hostioParms},
-    {0x41C, (void *)Node_updateChildren},
-    {0x424, (void *)Process_display},
-    {0x42C, (void *)Process_update},
-    {0x434, (void *)Node_handleMsg},
-    {0x43C, (void *)Node_broadcastMsg},
-    {0x444, (void *)Node_doCommand},
-    {0x44C, (void *)Node_saveData},
-    {0x454, (void *)Node_loadData},
-    {0x45C, (void *)Node_setAnimPose},
-    {0x464, (void *)Process_start},
-    {0x46C, (void *)Process_exit},
-    {0x474, (void *)ARCMenuProcess_handleInput},
-    {0x47C, (void *)ARCMenuProcess_drawGui},
+    {0x204, 0}, /* Text target bootup:Node_hostioParms */
+    {0x20C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x214, 0}, /* Text target bootup:RaceTracker_display */
+    {0x21C, 0}, /* Text target arcproc:arc_DataManager_update */
+    {0x224, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x22C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x234, 0}, /* Text target bootup:Node_doCommand */
+    {0x23C, 0}, /* Text target bootup:Node_saveData */
+    {0x244, 0}, /* Text target bootup:Node_loadData */
+    {0x24C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x254, 0}, /* Text target arcproc:arc_DataManager_reset_00001F0C */
+    {0x25C, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x264, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x26C, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x284, 0}, /* Text target bootup:Node_hostioParms */
+    {0x28C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x294, 0}, /* Text target bootup:Process_display */
+    {0x29C, 0}, /* Text target bootup:Process_update */
+    {0x2A4, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x2AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x2BC, 0}, /* Text target bootup:Node_saveData */
+    {0x2C4, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x2CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2D4, 0}, /* Text target bootup:Process_start */
+    {0x2DC, 0}, /* Text target bootup:Process_exit */
+    {0x2E4, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x2EC, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x2F4, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x2FC, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x304, 0}, /* Text target arcproc:ARCRaceProcess_onPause */
+    {0x30C, 0}, /* Text target arcproc:ARCRaceProcess_onCountdownStart */
+    {0x314, 0}, /* Text target arcproc:ARCRaceProcess_endTimerEnabled */
+    {0x31C, 0}, /* Text target arcproc:ARCRaceProcess_altEndTimerEnabled */
+    {0x324, 0}, /* Text target arcproc:ARCRaceProcess_onRaceOver */
+    {0x32C, 0}, /* Text target arcproc:ARCRaceProcess_onEndTimerDone */
+    {0x334, 0}, /* Text target bootup:RaceProcess_onTimeoutExit */
+    {0x33C, 0}, /* Text target arcproc:ARCRaceProcess_onTimeout */
+    {0x344, 0}, /* Text target arcproc:ARCRaceProcess_onAltEndTimerDone */
+    {0x34C, 0}, /* Text target arcproc:ARCRaceProcess_onPauseSelect */
+    {0x354, 0}, /* Text target bootup:RaceProcess_onQuitButton */
+    {0x35C, 0}, /* Text target arcproc:ARCRaceProcess_onLeave */
+    {0x364, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x36C, 0}, /* Text target arcproc:ARCRaceProcess_drawIntro */
+    {0x374, 0}, /* Text target arcproc:ARCRaceProcess_drawResultExtra */
+    {0x37C, 0}, /* Text target arcproc:ARCRaceProcess_drawTimeUpExtra */
+    {0x384, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x38C, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x394, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x39C, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x3A4, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x3AC, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
+    {0x3FC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x414, 0}, /* Text target bootup:Node_hostioParms */
+    {0x41C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x424, 0}, /* Text target bootup:Process_display */
+    {0x42C, 0}, /* Text target bootup:Process_update */
+    {0x434, 0}, /* Text target bootup:Node_handleMsg */
+    {0x43C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x444, 0}, /* Text target bootup:Node_doCommand */
+    {0x44C, 0}, /* Text target bootup:Node_saveData */
+    {0x454, 0}, /* Text target bootup:Node_loadData */
+    {0x45C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x464, 0}, /* Text target bootup:Process_start */
+    {0x46C, 0}, /* Text target bootup:Process_exit */
+    {0x474, 0}, /* Text target arcproc:ARCMenuProcess_handleInput */
+    {0x47C, 0}, /* Text target arcproc:ARCMenuProcess_drawGui */
 };
 static const PortUsoReloc port_arcproc_rodata_rel[11] = {
     {0x0, 0}, /* jump table arc_procMain+0x48 */
@@ -4602,102 +3942,102 @@ static const PortUsoReloc port_arcproc_rodata_rel[11] = {
     {0x28, 0}, /* jump table arc_procMain+0x2EC */
 };
 static const PortUsoReloc port_h2hproc_data_rel[96] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)h2h_procMain},
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
-    {0xA4, (void *)h2h_ItemType_create_00001A6C},
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, (void *)h2h_readFloatParm_00001A0C},
-    {0xFC, (void *)h2h_readVec3Parm_00001AFC},
-    {0x114, (void *)h2h_readQuadParm_00001A3C},
-    {0x12C, (void *)h2h_readIntParm_000019DC},
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)h2h_WhiteFader_display},
-    {0x15C, (void *)Node_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
-    {0x194, (void *)Process_start},
-    {0x1AC, (void *)Node_hostioParms},
-    {0x1B4, (void *)Node_updateChildren},
-    {0x1BC, (void *)h2h_WinsDisplay_display_00001360},
-    {0x1C4, (void *)h2h_WinsDisplay_update_00001204},
-    {0x1CC, (void *)Node_handleMsg},
-    {0x1D4, (void *)Node_broadcastMsg},
-    {0x1DC, (void *)Node_doCommand},
-    {0x1E4, (void *)Node_saveData},
-    {0x1EC, (void *)Node_loadData},
-    {0x1F4, (void *)Node_setAnimPose},
-    {0x20C, (void *)Node_hostioParms},
-    {0x214, (void *)Node_updateChildren},
-    {0x21C, (void *)RaceTracker_display},
-    {0x224, (void *)h2h_DataManager_update},
-    {0x22C, (void *)RaceTracker_handleMsg},
-    {0x234, (void *)Node_broadcastMsg},
-    {0x23C, (void *)Node_doCommand},
-    {0x244, (void *)Node_saveData},
-    {0x24C, (void *)Node_loadData},
-    {0x254, (void *)Node_setAnimPose},
-    {0x25C, (void *)RaceTracker_reset},
-    {0x264, (void *)RaceTracker_onCheckpoint},
-    {0x26C, (void *)RaceTracker_onTrickStart},
-    {0x274, (void *)RaceTracker_onTrickEnd},
-    {0x28C, (void *)Node_hostioParms},
-    {0x294, (void *)Node_updateChildren},
-    {0x29C, (void *)Process_display},
-    {0x2A4, (void *)Process_update},
-    {0x2AC, (void *)RaceProcess_handleMsg},
-    {0x2B4, (void *)Node_broadcastMsg},
-    {0x2BC, (void *)Node_doCommand},
-    {0x2C4, (void *)Node_saveData},
-    {0x2CC, (void *)RaceProcess_loadData},
-    {0x2D4, (void *)Node_setAnimPose},
-    {0x2DC, (void *)Process_start},
-    {0x2E4, (void *)Process_exit},
-    {0x2EC, (void *)RaceProcess_handleInput},
-    {0x2F4, (void *)RaceProcess_drawGui},
-    {0x2FC, (void *)RaceProcess_onEndRace},
-    {0x304, (void *)RaceProcess_onEndRaceAlt},
-    {0x30C, (void *)H2HRaceProcess_onPause},
-    {0x314, (void *)RaceProcess_onCountdownStart},
-    {0x31C, (void *)RaceProcess_endTimerEnabled},
-    {0x324, (void *)RaceProcess_altEndTimerEnabled},
-    {0x32C, (void *)H2HRaceProcess_onRaceOver},
-    {0x334, (void *)H2HRaceProcess_onEndTimerDone},
-    {0x33C, (void *)RaceProcess_onTimeoutExit},
-    {0x344, (void *)H2HRaceProcess_onTimeout},
-    {0x34C, (void *)RaceProcess_onAltEndTimerDone},
-    {0x354, (void *)H2HRaceProcess_onPauseSelect},
-    {0x35C, (void *)RaceProcess_onQuitButton},
-    {0x364, (void *)RaceProcess_onLeave},
-    {0x36C, (void *)RaceProcess_drawHud},
-    {0x374, (void *)RaceProcess_drawIntro},
-    {0x37C, (void *)RaceProcess_drawResultExtra},
-    {0x384, (void *)RaceProcess_drawTimeUpExtra},
-    {0x38C, (void *)RaceProcess_drawResult},
-    {0x394, (void *)RaceProcess_updateSub0},
-    {0x39C, (void *)RaceProcess_updateSub1},
-    {0x3A4, (void *)RaceProcess_updateSub2},
-    {0x3AC, (void *)RaceProcess_updateSub3},
-    {0x3B4, (void *)RaceProcess_onMessageBounce},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target h2hproc:h2h_procMain */
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA4, 0}, /* Text target h2hproc:h2h_ItemType_create_00001A6C */
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xE4, 0}, /* Text target h2hproc:h2h_readFloatParm_00001A0C */
+    {0xFC, 0}, /* Text target h2hproc:h2h_readVec3Parm_00001AFC */
+    {0x114, 0}, /* Text target h2hproc:h2h_readQuadParm_00001A3C */
+    {0x12C, 0}, /* Text target h2hproc:h2h_readIntParm_000019DC */
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target h2hproc:h2h_WhiteFader_display */
+    {0x15C, 0}, /* Text target bootup:Node_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x194, 0}, /* Text target bootup:Process_start */
+    {0x1AC, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1B4, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1BC, 0}, /* Text target h2hproc:h2h_WinsDisplay_display_00001360 */
+    {0x1C4, 0}, /* Text target h2hproc:h2h_WinsDisplay_update_00001204 */
+    {0x1CC, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1D4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1DC, 0}, /* Text target bootup:Node_doCommand */
+    {0x1E4, 0}, /* Text target bootup:Node_saveData */
+    {0x1EC, 0}, /* Text target bootup:Node_loadData */
+    {0x1F4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x20C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x214, 0}, /* Text target bootup:Node_updateChildren */
+    {0x21C, 0}, /* Text target bootup:RaceTracker_display */
+    {0x224, 0}, /* Text target h2hproc:h2h_DataManager_update */
+    {0x22C, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x234, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x23C, 0}, /* Text target bootup:Node_doCommand */
+    {0x244, 0}, /* Text target bootup:Node_saveData */
+    {0x24C, 0}, /* Text target bootup:Node_loadData */
+    {0x254, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x25C, 0}, /* Text target bootup:RaceTracker_reset */
+    {0x264, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x26C, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x274, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x28C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x294, 0}, /* Text target bootup:Node_updateChildren */
+    {0x29C, 0}, /* Text target bootup:Process_display */
+    {0x2A4, 0}, /* Text target bootup:Process_update */
+    {0x2AC, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x2B4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2BC, 0}, /* Text target bootup:Node_doCommand */
+    {0x2C4, 0}, /* Text target bootup:Node_saveData */
+    {0x2CC, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x2D4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2DC, 0}, /* Text target bootup:Process_start */
+    {0x2E4, 0}, /* Text target bootup:Process_exit */
+    {0x2EC, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x2F4, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x2FC, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x304, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x30C, 0}, /* Text target h2hproc:H2HRaceProcess_onPause */
+    {0x314, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0x31C, 0}, /* Text target bootup:RaceProcess_endTimerEnabled */
+    {0x324, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0x32C, 0}, /* Text target h2hproc:H2HRaceProcess_onRaceOver */
+    {0x334, 0}, /* Text target h2hproc:H2HRaceProcess_onEndTimerDone */
+    {0x33C, 0}, /* Text target bootup:RaceProcess_onTimeoutExit */
+    {0x344, 0}, /* Text target h2hproc:H2HRaceProcess_onTimeout */
+    {0x34C, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
+    {0x354, 0}, /* Text target h2hproc:H2HRaceProcess_onPauseSelect */
+    {0x35C, 0}, /* Text target bootup:RaceProcess_onQuitButton */
+    {0x364, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0x36C, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x374, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0x37C, 0}, /* Text target bootup:RaceProcess_drawResultExtra */
+    {0x384, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x38C, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x394, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x39C, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x3A4, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x3AC, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x3B4, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
 };
 static const PortUsoReloc port_h2hproc_rodata_rel[7] = {
     {0x0, 0}, /* jump table h2h_procMain+0x74 */
@@ -4709,118 +4049,118 @@ static const PortUsoReloc port_h2hproc_rodata_rel[7] = {
     {0x18, 0}, /* jump table h2h_procMain+0x168 */
 };
 static const PortUsoReloc port_timproc_data_rel[112] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)tim_main},
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
-    {0xA4, (void *)TimItemType_create_00001ED4},
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, (void *)ParmFloat_read_00001E74},
-    {0xFC, (void *)ParmVec3_read_00001F64},
-    {0x114, (void *)ParmQuad_read_00001EA4},
-    {0x12C, (void *)ParmInt_read_00001E44},
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)Process_display},
-    {0x15C, (void *)Process_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
-    {0x194, (void *)Process_start},
-    {0x19C, (void *)Process_exit},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target timproc:tim_main */
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA4, 0}, /* Text target timproc:TimItemType_create_00001ED4 */
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xE4, 0}, /* Text target timproc:ParmFloat_read_00001E74 */
+    {0xFC, 0}, /* Text target timproc:ParmVec3_read_00001F64 */
+    {0x114, 0}, /* Text target timproc:ParmQuad_read_00001EA4 */
+    {0x12C, 0}, /* Text target timproc:ParmInt_read_00001E44 */
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target bootup:Process_display */
+    {0x15C, 0}, /* Text target bootup:Process_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x194, 0}, /* Text target bootup:Process_start */
+    {0x19C, 0}, /* Text target bootup:Process_exit */
     {0x1A4, 0}, /* Text target nameent:Text+0x150 */
     {0x1AC, 0}, /* Text target nameent:Text+0x204 */
-    {0x1B4, (void *)TimNameEntry_update_00001860},
+    {0x1B4, 0}, /* Text target timproc:TimNameEntry_update_00001860 */
     {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
     {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
-    {0x1CC, (void *)TimNameEntry_drawEntryOverlay},
-    {0x1D4, (void *)TimNameEntry_drawExitOverlay},
+    {0x1CC, 0}, /* Text target timproc:TimNameEntry_drawEntryOverlay */
+    {0x1D4, 0}, /* Text target timproc:TimNameEntry_drawExitOverlay */
     {0x1DC, 0}, /* Text target nameent:Text+0x748 */
     {0x1E4, 0}, /* Text target nameent:Text+0x750 */
     {0x1EC, 0}, /* Text target nameent:Text+0x758 */
-    {0x204, (void *)Node_hostioParms},
-    {0x20C, (void *)Node_updateChildren},
-    {0x214, (void *)RaceTracker_display},
-    {0x21C, (void *)TimDataManager_update_00001BCC},
-    {0x224, (void *)RaceTracker_handleMsg},
-    {0x22C, (void *)Node_broadcastMsg},
-    {0x234, (void *)Node_doCommand},
-    {0x23C, (void *)Node_saveData},
-    {0x244, (void *)Node_loadData},
-    {0x24C, (void *)Node_setAnimPose},
-    {0x254, (void *)RaceTracker_reset},
-    {0x25C, (void *)RaceTracker_onCheckpoint},
-    {0x264, (void *)RaceTracker_onTrickStart},
-    {0x26C, (void *)RaceTracker_onTrickEnd},
-    {0x284, (void *)Node_hostioParms},
-    {0x28C, (void *)Node_updateChildren},
-    {0x294, (void *)Process_display},
-    {0x29C, (void *)Process_update},
-    {0x2A4, (void *)RaceProcess_handleMsg},
-    {0x2AC, (void *)Node_broadcastMsg},
-    {0x2B4, (void *)Node_doCommand},
-    {0x2BC, (void *)Node_saveData},
-    {0x2C4, (void *)RaceProcess_loadData},
-    {0x2CC, (void *)Node_setAnimPose},
-    {0x2D4, (void *)Process_start},
-    {0x2DC, (void *)Process_exit},
-    {0x2E4, (void *)RaceProcess_handleInput},
-    {0x2EC, (void *)RaceProcess_drawGui},
-    {0x2F4, (void *)RaceProcess_onEndRace},
-    {0x2FC, (void *)RaceProcess_onEndRaceAlt},
-    {0x304, (void *)RaceProcess_onPause},
-    {0x30C, (void *)RaceProcess_onCountdownStart},
-    {0x314, (void *)TimRace_endTimerEnabled},
-    {0x31C, (void *)RaceProcess_altEndTimerEnabled},
-    {0x324, (void *)TimRace_onRaceOver},
-    {0x32C, (void *)TimRace_onEndTimerDone},
-    {0x334, (void *)TimRace_onTimeoutExit},
-    {0x33C, (void *)TimRace_onTimeout},
-    {0x344, (void *)TimRace_onAltEndTimerDone},
-    {0x34C, (void *)TimRace_onPauseSelect},
-    {0x354, (void *)TimRace_onQuitButton},
-    {0x35C, (void *)RaceProcess_onLeave},
-    {0x364, (void *)RaceProcess_drawHud},
-    {0x36C, (void *)RaceProcess_drawIntro},
-    {0x374, (void *)TimRace_drawResultExtra},
-    {0x37C, (void *)RaceProcess_drawTimeUpExtra},
-    {0x384, (void *)RaceProcess_drawResult},
-    {0x38C, (void *)RaceProcess_updateSub0},
-    {0x394, (void *)RaceProcess_updateSub1},
-    {0x39C, (void *)RaceProcess_updateSub2},
-    {0x3A4, (void *)RaceProcess_updateSub3},
-    {0x3AC, (void *)RaceProcess_onMessageBounce},
-    {0x42C, (void *)__pure_virtual_called},
-    {0x444, (void *)Node_hostioParms},
-    {0x44C, (void *)Node_updateChildren},
-    {0x454, (void *)Process_display},
-    {0x45C, (void *)Process_update},
-    {0x464, (void *)Node_handleMsg},
-    {0x46C, (void *)Node_broadcastMsg},
-    {0x474, (void *)Node_doCommand},
-    {0x47C, (void *)Node_saveData},
-    {0x484, (void *)Node_loadData},
-    {0x48C, (void *)Node_setAnimPose},
-    {0x494, (void *)Process_start},
-    {0x49C, (void *)Process_exit},
-    {0x4A4, (void *)TimMenu_update_00002740},
-    {0x4AC, (void *)TimMenu_draw_00002838},
+    {0x204, 0}, /* Text target bootup:Node_hostioParms */
+    {0x20C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x214, 0}, /* Text target bootup:RaceTracker_display */
+    {0x21C, 0}, /* Text target timproc:TimDataManager_update_00001BCC */
+    {0x224, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x22C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x234, 0}, /* Text target bootup:Node_doCommand */
+    {0x23C, 0}, /* Text target bootup:Node_saveData */
+    {0x244, 0}, /* Text target bootup:Node_loadData */
+    {0x24C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x254, 0}, /* Text target bootup:RaceTracker_reset */
+    {0x25C, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x264, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x26C, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x284, 0}, /* Text target bootup:Node_hostioParms */
+    {0x28C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x294, 0}, /* Text target bootup:Process_display */
+    {0x29C, 0}, /* Text target bootup:Process_update */
+    {0x2A4, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x2AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x2BC, 0}, /* Text target bootup:Node_saveData */
+    {0x2C4, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x2CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2D4, 0}, /* Text target bootup:Process_start */
+    {0x2DC, 0}, /* Text target bootup:Process_exit */
+    {0x2E4, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x2EC, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x2F4, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x2FC, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x304, 0}, /* Text target bootup:RaceProcess_onPause */
+    {0x30C, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0x314, 0}, /* Text target timproc:TimRace_endTimerEnabled */
+    {0x31C, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0x324, 0}, /* Text target timproc:TimRace_onRaceOver */
+    {0x32C, 0}, /* Text target timproc:TimRace_onEndTimerDone */
+    {0x334, 0}, /* Text target timproc:TimRace_onTimeoutExit */
+    {0x33C, 0}, /* Text target timproc:TimRace_onTimeout */
+    {0x344, 0}, /* Text target timproc:TimRace_onAltEndTimerDone */
+    {0x34C, 0}, /* Text target timproc:TimRace_onPauseSelect */
+    {0x354, 0}, /* Text target timproc:TimRace_onQuitButton */
+    {0x35C, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0x364, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x36C, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0x374, 0}, /* Text target timproc:TimRace_drawResultExtra */
+    {0x37C, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x384, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x38C, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x394, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x39C, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x3A4, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x3AC, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
+    {0x42C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x444, 0}, /* Text target bootup:Node_hostioParms */
+    {0x44C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x454, 0}, /* Text target bootup:Process_display */
+    {0x45C, 0}, /* Text target bootup:Process_update */
+    {0x464, 0}, /* Text target bootup:Node_handleMsg */
+    {0x46C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x474, 0}, /* Text target bootup:Node_doCommand */
+    {0x47C, 0}, /* Text target bootup:Node_saveData */
+    {0x484, 0}, /* Text target bootup:Node_loadData */
+    {0x48C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x494, 0}, /* Text target bootup:Process_start */
+    {0x49C, 0}, /* Text target bootup:Process_exit */
+    {0x4A4, 0}, /* Text target timproc:TimMenu_update_00002740 */
+    {0x4AC, 0}, /* Text target timproc:TimMenu_draw_00002838 */
 };
 static const PortUsoReloc port_timproc_rodata_rel[14] = {
     {0x0, 0}, /* jump table tim_main+0x4C */
@@ -4839,118 +4179,118 @@ static const PortUsoReloc port_timproc_rodata_rel[14] = {
     {0x34, 0}, /* jump table tim_main+0x454 */
 };
 static const PortUsoReloc port_trkproc_data_rel[112] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)trk_main},
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
-    {0xA4, (void *)TrkItemType_create_000020EC},
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
-    {0xE4, (void *)ParmFloat_read_0000208C},
-    {0xFC, (void *)ParmVec3_read_0000217C},
-    {0x114, (void *)ParmQuad_read_000020BC},
-    {0x12C, (void *)ParmInt_read_0000205C},
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)Process_display},
-    {0x15C, (void *)Process_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
-    {0x194, (void *)Process_start},
-    {0x19C, (void *)Process_exit},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target trkproc:trk_main */
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA4, 0}, /* Text target trkproc:TrkItemType_create_000020EC */
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xE4, 0}, /* Text target trkproc:ParmFloat_read_0000208C */
+    {0xFC, 0}, /* Text target trkproc:ParmVec3_read_0000217C */
+    {0x114, 0}, /* Text target trkproc:ParmQuad_read_000020BC */
+    {0x12C, 0}, /* Text target trkproc:ParmInt_read_0000205C */
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target bootup:Process_display */
+    {0x15C, 0}, /* Text target bootup:Process_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x194, 0}, /* Text target bootup:Process_start */
+    {0x19C, 0}, /* Text target bootup:Process_exit */
     {0x1A4, 0}, /* Text target nameent:Text+0x150 */
     {0x1AC, 0}, /* Text target nameent:Text+0x204 */
-    {0x1B4, (void *)TrkNameEntry_update_000017C8},
+    {0x1B4, 0}, /* Text target trkproc:TrkNameEntry_update_000017C8 */
     {0x1BC, 0}, /* Text target nameent:Text+0x4D0 */
     {0x1C4, 0}, /* Text target nameent:Text+0x5AC */
-    {0x1CC, (void *)TrkNameEntry_drawEntryOverlay},
-    {0x1D4, (void *)TrkNameEntry_drawExitOverlay},
+    {0x1CC, 0}, /* Text target trkproc:TrkNameEntry_drawEntryOverlay */
+    {0x1D4, 0}, /* Text target trkproc:TrkNameEntry_drawExitOverlay */
     {0x1DC, 0}, /* Text target nameent:Text+0x748 */
     {0x1E4, 0}, /* Text target nameent:Text+0x750 */
     {0x1EC, 0}, /* Text target nameent:Text+0x758 */
-    {0x204, (void *)Node_hostioParms},
-    {0x20C, (void *)Node_updateChildren},
-    {0x214, (void *)RaceTracker_display},
-    {0x21C, (void *)TrkDataManager_update_00001C68},
-    {0x224, (void *)RaceTracker_handleMsg},
-    {0x22C, (void *)Node_broadcastMsg},
-    {0x234, (void *)Node_doCommand},
-    {0x23C, (void *)Node_saveData},
-    {0x244, (void *)Node_loadData},
-    {0x24C, (void *)Node_setAnimPose},
-    {0x254, (void *)TrkDataManager_loadData},
-    {0x25C, (void *)RaceTracker_onCheckpoint},
-    {0x264, (void *)RaceTracker_onTrickStart},
-    {0x26C, (void *)RaceTracker_onTrickEnd},
-    {0x284, (void *)Node_hostioParms},
-    {0x28C, (void *)Node_updateChildren},
-    {0x294, (void *)Process_display},
-    {0x29C, (void *)Process_update},
-    {0x2A4, (void *)RaceProcess_handleMsg},
-    {0x2AC, (void *)Node_broadcastMsg},
-    {0x2B4, (void *)Node_doCommand},
-    {0x2BC, (void *)Node_saveData},
-    {0x2C4, (void *)RaceProcess_loadData},
-    {0x2CC, (void *)Node_setAnimPose},
-    {0x2D4, (void *)Process_start},
-    {0x2DC, (void *)Process_exit},
-    {0x2E4, (void *)RaceProcess_handleInput},
-    {0x2EC, (void *)RaceProcess_drawGui},
-    {0x2F4, (void *)RaceProcess_onEndRace},
-    {0x2FC, (void *)RaceProcess_onEndRaceAlt},
-    {0x304, (void *)TrkRace_onPause},
-    {0x30C, (void *)RaceProcess_onCountdownStart},
-    {0x314, (void *)TrkRace_endTimerEnabled},
-    {0x31C, (void *)RaceProcess_altEndTimerEnabled},
-    {0x324, (void *)TrkRace_onRaceOver},
-    {0x32C, (void *)TrkRace_onEndTimerDone},
-    {0x334, (void *)TrkRace_onTimeoutExit},
-    {0x33C, (void *)TrkRace_onTimeout},
-    {0x344, (void *)RaceProcess_onAltEndTimerDone},
-    {0x34C, (void *)TrkRace_onPauseSelect},
-    {0x354, (void *)TrkRace_onQuitButton},
-    {0x35C, (void *)TrkRace_onLeave},
-    {0x364, (void *)RaceProcess_drawHud},
-    {0x36C, (void *)RaceProcess_drawIntro},
-    {0x374, (void *)TrkRace_drawResultExtra},
-    {0x37C, (void *)RaceProcess_drawTimeUpExtra},
-    {0x384, (void *)RaceProcess_drawResult},
-    {0x38C, (void *)RaceProcess_updateSub0},
-    {0x394, (void *)RaceProcess_updateSub1},
-    {0x39C, (void *)RaceProcess_updateSub2},
-    {0x3A4, (void *)RaceProcess_updateSub3},
-    {0x3AC, (void *)RaceProcess_onMessageBounce},
-    {0x3FC, (void *)__pure_virtual_called},
-    {0x414, (void *)Node_hostioParms},
-    {0x41C, (void *)Node_updateChildren},
-    {0x424, (void *)Process_display},
-    {0x42C, (void *)Process_update},
-    {0x434, (void *)Node_handleMsg},
-    {0x43C, (void *)Node_broadcastMsg},
-    {0x444, (void *)Node_doCommand},
-    {0x44C, (void *)Node_saveData},
-    {0x454, (void *)Node_loadData},
-    {0x45C, (void *)Node_setAnimPose},
-    {0x464, (void *)Process_start},
-    {0x46C, (void *)Process_exit},
-    {0x474, (void *)TrkMenu_update_0000294C},
-    {0x47C, (void *)TrkMenu_draw_00002A44},
+    {0x204, 0}, /* Text target bootup:Node_hostioParms */
+    {0x20C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x214, 0}, /* Text target bootup:RaceTracker_display */
+    {0x21C, 0}, /* Text target trkproc:TrkDataManager_update_00001C68 */
+    {0x224, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x22C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x234, 0}, /* Text target bootup:Node_doCommand */
+    {0x23C, 0}, /* Text target bootup:Node_saveData */
+    {0x244, 0}, /* Text target bootup:Node_loadData */
+    {0x24C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x254, 0}, /* Text target trkproc:TrkDataManager_loadData */
+    {0x25C, 0}, /* Text target bootup:RaceTracker_onCheckpoint */
+    {0x264, 0}, /* Text target bootup:RaceTracker_onTrickStart */
+    {0x26C, 0}, /* Text target bootup:RaceTracker_onTrickEnd */
+    {0x284, 0}, /* Text target bootup:Node_hostioParms */
+    {0x28C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x294, 0}, /* Text target bootup:Process_display */
+    {0x29C, 0}, /* Text target bootup:Process_update */
+    {0x2A4, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x2AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x2BC, 0}, /* Text target bootup:Node_saveData */
+    {0x2C4, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x2CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2D4, 0}, /* Text target bootup:Process_start */
+    {0x2DC, 0}, /* Text target bootup:Process_exit */
+    {0x2E4, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x2EC, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x2F4, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x2FC, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x304, 0}, /* Text target trkproc:TrkRace_onPause */
+    {0x30C, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0x314, 0}, /* Text target trkproc:TrkRace_endTimerEnabled */
+    {0x31C, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
+    {0x324, 0}, /* Text target trkproc:TrkRace_onRaceOver */
+    {0x32C, 0}, /* Text target trkproc:TrkRace_onEndTimerDone */
+    {0x334, 0}, /* Text target trkproc:TrkRace_onTimeoutExit */
+    {0x33C, 0}, /* Text target trkproc:TrkRace_onTimeout */
+    {0x344, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
+    {0x34C, 0}, /* Text target trkproc:TrkRace_onPauseSelect */
+    {0x354, 0}, /* Text target trkproc:TrkRace_onQuitButton */
+    {0x35C, 0}, /* Text target trkproc:TrkRace_onLeave */
+    {0x364, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x36C, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0x374, 0}, /* Text target trkproc:TrkRace_drawResultExtra */
+    {0x37C, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x384, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x38C, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x394, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x39C, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x3A4, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x3AC, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
+    {0x3FC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x414, 0}, /* Text target bootup:Node_hostioParms */
+    {0x41C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x424, 0}, /* Text target bootup:Process_display */
+    {0x42C, 0}, /* Text target bootup:Process_update */
+    {0x434, 0}, /* Text target bootup:Node_handleMsg */
+    {0x43C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x444, 0}, /* Text target bootup:Node_doCommand */
+    {0x44C, 0}, /* Text target bootup:Node_saveData */
+    {0x454, 0}, /* Text target bootup:Node_loadData */
+    {0x45C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x464, 0}, /* Text target bootup:Process_start */
+    {0x46C, 0}, /* Text target bootup:Process_exit */
+    {0x474, 0}, /* Text target trkproc:TrkMenu_update_0000294C */
+    {0x47C, 0}, /* Text target trkproc:TrkMenu_draw_00002A44 */
 };
 static const PortUsoReloc port_trkproc_rodata_rel[14] = {
     {0x0, 0}, /* jump table trk_main+0x4C */
@@ -4969,81 +4309,81 @@ static const PortUsoReloc port_trkproc_rodata_rel[14] = {
     {0x34, 0}, /* jump table trk_main+0x454 */
 };
 static const PortUsoReloc port_trnproc_data_rel[75] = {
-    {0xC, (void *)__pure_virtual_called},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
     {0x24, 0}, /* Text target trnproc:Text+0x10 */
-    {0x3C, (void *)__pure_virtual_called},
-    {0x54, (void *)ItemType_hostioParms},
-    {0x5C, (void *)Node_updateChildren},
-    {0x64, (void *)ColourItemType_display},
-    {0x6C, (void *)Node_update},
-    {0x74, (void *)Node_handleMsg},
-    {0x7C, (void *)Node_broadcastMsg},
-    {0x84, (void *)Node_doCommand},
-    {0x8C, (void *)ItemType_saveData},
-    {0x94, (void *)ItemType_load},
-    {0x9C, (void *)Node_setAnimPose},
+    {0x3C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x54, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x5C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x64, 0}, /* Text target bootup:ColourItemType_display */
+    {0x6C, 0}, /* Text target bootup:Node_update */
+    {0x74, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x84, 0}, /* Text target bootup:Node_doCommand */
+    {0x8C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x94, 0}, /* Text target bootup:ItemType_load */
+    {0x9C, 0}, /* Text target bootup:Node_setAnimPose */
     {0xA4, 0}, /* Text target trnproc:Text+0x1C14 */
-    {0xAC, (void *)ColourItemType_buildItems},
-    {0xB4, (void *)ColourItemType_findNearest},
-    {0xBC, (void *)ColourItemType_getItemPos},
-    {0xC4, (void *)ColourItemType_getItem},
-    {0xCC, (void *)ColourItemType_findNextByZ},
+    {0xAC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xB4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xBC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xC4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xCC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
     {0xE4, 0}, /* Text target trnproc:Text+0x1BB4 */
     {0xFC, 0}, /* Text target trnproc:Text+0x1CA4 */
     {0x114, 0}, /* Text target trnproc:Text+0x1BE4 */
     {0x12C, 0}, /* Text target trnproc:Text+0x1B84 */
-    {0x144, (void *)Node_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
+    {0x144, 0}, /* Text target bootup:Node_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
     {0x154, 0}, /* Text target trnproc:Text+0x1A98 */
     {0x15C, 0}, /* Text target trnproc:Text+0x188C */
-    {0x164, (void *)RaceTracker_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)Node_saveData},
-    {0x184, (void *)Node_loadData},
-    {0x18C, (void *)Node_setAnimPose},
+    {0x164, 0}, /* Text target bootup:RaceTracker_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:Node_saveData */
+    {0x184, 0}, /* Text target bootup:Node_loadData */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
     {0x194, 0}, /* Text target trnproc:Text+0xB44 */
     {0x19C, 0}, /* Text target trnproc:Text+0x1228 */
     {0x1A4, 0}, /* Text target trnproc:Text+0x1284 */
     {0x1AC, 0}, /* Text target trnproc:Text+0x12AC */
-    {0x1C4, (void *)Node_hostioParms},
-    {0x1CC, (void *)Node_updateChildren},
-    {0x1D4, (void *)Process_display},
-    {0x1DC, (void *)Process_update},
-    {0x1E4, (void *)RaceProcess_handleMsg},
-    {0x1EC, (void *)Node_broadcastMsg},
-    {0x1F4, (void *)Node_doCommand},
-    {0x1FC, (void *)Node_saveData},
-    {0x204, (void *)RaceProcess_loadData},
-    {0x20C, (void *)Node_setAnimPose},
-    {0x214, (void *)Process_start},
-    {0x21C, (void *)Process_exit},
-    {0x224, (void *)RaceProcess_handleInput},
-    {0x22C, (void *)RaceProcess_drawGui},
-    {0x234, (void *)RaceProcess_onEndRace},
-    {0x23C, (void *)RaceProcess_onEndRaceAlt},
-    {0x244, (void *)RaceProcess_onPause},
-    {0x24C, (void *)RaceProcess_onCountdownStart},
-    {0x254, (void *)RaceProcess_endTimerEnabled},
-    {0x25C, (void *)RaceProcess_altEndTimerEnabled},
+    {0x1C4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1D4, 0}, /* Text target bootup:Process_display */
+    {0x1DC, 0}, /* Text target bootup:Process_update */
+    {0x1E4, 0}, /* Text target bootup:RaceProcess_handleMsg */
+    {0x1EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1FC, 0}, /* Text target bootup:Node_saveData */
+    {0x204, 0}, /* Text target bootup:RaceProcess_loadData */
+    {0x20C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x214, 0}, /* Text target bootup:Process_start */
+    {0x21C, 0}, /* Text target bootup:Process_exit */
+    {0x224, 0}, /* Text target bootup:RaceProcess_handleInput */
+    {0x22C, 0}, /* Text target bootup:RaceProcess_drawGui */
+    {0x234, 0}, /* Text target bootup:RaceProcess_onEndRace */
+    {0x23C, 0}, /* Text target bootup:RaceProcess_onEndRaceAlt */
+    {0x244, 0}, /* Text target bootup:RaceProcess_onPause */
+    {0x24C, 0}, /* Text target bootup:RaceProcess_onCountdownStart */
+    {0x254, 0}, /* Text target bootup:RaceProcess_endTimerEnabled */
+    {0x25C, 0}, /* Text target bootup:RaceProcess_altEndTimerEnabled */
     {0x264, 0}, /* Text target trnproc:Text+0x910 */
     {0x26C, 0}, /* Text target trnproc:Text+0x908 */
-    {0x274, (void *)RaceProcess_onTimeoutExit},
-    {0x27C, (void *)RaceProcess_onTimeout},
-    {0x284, (void *)RaceProcess_onAltEndTimerDone},
+    {0x274, 0}, /* Text target bootup:RaceProcess_onTimeoutExit */
+    {0x27C, 0}, /* Text target bootup:RaceProcess_onTimeout */
+    {0x284, 0}, /* Text target bootup:RaceProcess_onAltEndTimerDone */
     {0x28C, 0}, /* Text target trnproc:Text+0x858 */
-    {0x294, (void *)RaceProcess_onQuitButton},
-    {0x29C, (void *)RaceProcess_onLeave},
-    {0x2A4, (void *)RaceProcess_drawHud},
-    {0x2AC, (void *)RaceProcess_drawIntro},
-    {0x2B4, (void *)RaceProcess_drawResultExtra},
-    {0x2BC, (void *)RaceProcess_drawTimeUpExtra},
-    {0x2C4, (void *)RaceProcess_drawResult},
-    {0x2CC, (void *)RaceProcess_updateSub0},
-    {0x2D4, (void *)RaceProcess_updateSub1},
-    {0x2DC, (void *)RaceProcess_updateSub2},
-    {0x2E4, (void *)RaceProcess_updateSub3},
-    {0x2EC, (void *)RaceProcess_onMessageBounce},
+    {0x294, 0}, /* Text target bootup:RaceProcess_onQuitButton */
+    {0x29C, 0}, /* Text target bootup:RaceProcess_onLeave */
+    {0x2A4, 0}, /* Text target bootup:RaceProcess_drawHud */
+    {0x2AC, 0}, /* Text target bootup:RaceProcess_drawIntro */
+    {0x2B4, 0}, /* Text target bootup:RaceProcess_drawResultExtra */
+    {0x2BC, 0}, /* Text target bootup:RaceProcess_drawTimeUpExtra */
+    {0x2C4, 0}, /* Text target bootup:RaceProcess_drawResult */
+    {0x2CC, 0}, /* Text target bootup:RaceProcess_updateSub0 */
+    {0x2D4, 0}, /* Text target bootup:RaceProcess_updateSub1 */
+    {0x2DC, 0}, /* Text target bootup:RaceProcess_updateSub2 */
+    {0x2E4, 0}, /* Text target bootup:RaceProcess_updateSub3 */
+    {0x2EC, 0}, /* Text target bootup:RaceProcess_onMessageBounce */
 };
 static const PortUsoReloc port_trnproc_rodata_rel[5] = {
     {0x0, 0}, /* Text target trnproc:Text+0x84 */
@@ -5053,67 +4393,67 @@ static const PortUsoReloc port_trnproc_rodata_rel[5] = {
     {0x10, 0}, /* Text target trnproc:Text+0x124 */
 };
 static const PortUsoReloc port_genproc_data_rel[414] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)Node_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)Process_display},
-    {0x3C, (void *)Process_update},
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)Node_saveData},
-    {0x64, (void *)Node_loadData},
-    {0x6C, (void *)Node_setAnimPose},
-    {0x74, (void *)Process_start},
-    {0x7C, (void *)Process_exit},
-    {0x84, (void *)GenCourse_update_0000024C},
-    {0x8C, (void *)GenCourse_draw_000002F4},
-    {0xCC, (void *)__pure_virtual_called},
-    {0xE4, (void *)Node_hostioParms},
-    {0xEC, (void *)Node_updateChildren},
-    {0xF4, (void *)Process_display},
-    {0xFC, (void *)Process_update},
-    {0x104, (void *)Node_handleMsg},
-    {0x10C, (void *)Node_broadcastMsg},
-    {0x114, (void *)Node_doCommand},
-    {0x11C, (void *)Node_saveData},
-    {0x124, (void *)Node_loadData},
-    {0x12C, (void *)Node_setAnimPose},
-    {0x134, (void *)Process_start},
-    {0x13C, (void *)Process_exit},
-    {0x144, (void *)GenSelectChar_update_00000770},
-    {0x14C, (void *)GenSelectChar_draw_0000AAEC},
-    {0x164, (void *)ParmFloat_read_0000AA8C},
-    {0x17C, (void *)ParmVec3_read_0000AAF4},
-    {0x194, (void *)ParmQuad_read_0000AABC},
-    {0x1AC, (void *)ParmInt_read_0000AA5C},
-    {0x1C4, (void *)ItemType_hostioParms},
-    {0x1CC, (void *)Node_updateChildren},
-    {0x1D4, (void *)ColourItemType_display},
-    {0x1DC, (void *)Node_update},
-    {0x1E4, (void *)Node_handleMsg},
-    {0x1EC, (void *)Node_broadcastMsg},
-    {0x1F4, (void *)Node_doCommand},
-    {0x1FC, (void *)ItemType_saveData},
-    {0x204, (void *)ItemType_load},
-    {0x20C, (void *)Node_setAnimPose},
-    {0x214, (void *)GenItemType_create_0000AB24},
-    {0x21C, (void *)ColourItemType_buildItems},
-    {0x224, (void *)ColourItemType_findNearest},
-    {0x22C, (void *)ColourItemType_getItemPos},
-    {0x234, (void *)ColourItemType_getItem},
-    {0x23C, (void *)ColourItemType_findNextByZ},
-    {0x254, (void *)Node_hostioParms},
-    {0x25C, (void *)Node_updateChildren},
-    {0x264, (void *)Node_display},
-    {0x26C, (void *)AnimPlayer_update},
-    {0x274, (void *)AnimPlayer_handleMsg},
-    {0x27C, (void *)Node_broadcastMsg},
-    {0x284, (void *)Node_doCommand},
-    {0x28C, (void *)Node_saveData},
-    {0x294, (void *)Node_loadData},
-    {0x29C, (void *)Node_setAnimPose},
-    {0x2A4, (void *)SelCharAnim_vfunc10_0000ABB4},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:Process_display */
+    {0x3C, 0}, /* Text target bootup:Process_update */
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:Node_saveData */
+    {0x64, 0}, /* Text target bootup:Node_loadData */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x74, 0}, /* Text target bootup:Process_start */
+    {0x7C, 0}, /* Text target bootup:Process_exit */
+    {0x84, 0}, /* Text target genproc:GenCourse_update_0000024C */
+    {0x8C, 0}, /* Text target genproc:GenCourse_draw_000002F4 */
+    {0xCC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xE4, 0}, /* Text target bootup:Node_hostioParms */
+    {0xEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xF4, 0}, /* Text target bootup:Process_display */
+    {0xFC, 0}, /* Text target bootup:Process_update */
+    {0x104, 0}, /* Text target bootup:Node_handleMsg */
+    {0x10C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x114, 0}, /* Text target bootup:Node_doCommand */
+    {0x11C, 0}, /* Text target bootup:Node_saveData */
+    {0x124, 0}, /* Text target bootup:Node_loadData */
+    {0x12C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x134, 0}, /* Text target bootup:Process_start */
+    {0x13C, 0}, /* Text target bootup:Process_exit */
+    {0x144, 0}, /* Text target genproc:GenSelectChar_update_00000770 */
+    {0x14C, 0}, /* Text target genproc:GenSelectChar_draw_0000AAEC */
+    {0x164, 0}, /* Text target genproc:ParmFloat_read_0000AA8C */
+    {0x17C, 0}, /* Text target genproc:ParmVec3_read_0000AAF4 */
+    {0x194, 0}, /* Text target genproc:ParmQuad_read_0000AABC */
+    {0x1AC, 0}, /* Text target genproc:ParmInt_read_0000AA5C */
+    {0x1C4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x1CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1D4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x1DC, 0}, /* Text target bootup:Node_update */
+    {0x1E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1F4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1FC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x204, 0}, /* Text target bootup:ItemType_load */
+    {0x20C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x214, 0}, /* Text target genproc:GenItemType_create_0000AB24 */
+    {0x21C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x224, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x22C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x234, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x23C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x254, 0}, /* Text target bootup:Node_hostioParms */
+    {0x25C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x264, 0}, /* Text target bootup:Node_display */
+    {0x26C, 0}, /* Text target bootup:AnimPlayer_update */
+    {0x274, 0}, /* Text target bootup:AnimPlayer_handleMsg */
+    {0x27C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x284, 0}, /* Text target bootup:Node_doCommand */
+    {0x28C, 0}, /* Text target bootup:Node_saveData */
+    {0x294, 0}, /* Text target bootup:Node_loadData */
+    {0x29C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2A4, 0}, /* Text target genproc:SelCharAnim_vfunc10_0000ABB4 */
     {0x2B0, port_genproc_rodata + 0x0},
     {0x2B4, port_genproc_rodata + 0xC},
     {0x2B8, port_genproc_rodata + 0x18},
@@ -5125,330 +4465,330 @@ static const PortUsoReloc port_genproc_data_rel[414] = {
     {0x2D0, port_genproc_rodata + 0x70},
     {0x2D4, port_genproc_rodata + 0x80},
     {0x2D8, port_genproc_rodata + 0x8C},
-    {0x300, (void *)Node_hostioParms},
-    {0x308, (void *)Node_updateChildren},
-    {0x310, (void *)SelItem_display_00003FA0},
-    {0x318, (void *)SelItem_update_00003F5C},
-    {0x320, (void *)Node_handleMsg},
-    {0x328, (void *)Node_broadcastMsg},
-    {0x330, (void *)Node_doCommand},
-    {0x338, (void *)Node_saveData},
-    {0x340, (void *)SelItem_loadData_00003ED8},
-    {0x348, (void *)Node_setAnimPose},
-    {0x350, (void *)__pure_virtual_called},
-    {0x358, (void *)__pure_virtual_called},
-    {0x360, (void *)__pure_virtual_called},
-    {0x368, (void *)__pure_virtual_called},
-    {0x370, (void *)__pure_virtual_called},
-    {0x378, (void *)__pure_virtual_called},
-    {0x380, (void *)__pure_virtual_called},
-    {0x388, (void *)__pure_virtual_called},
-    {0x390, (void *)__pure_virtual_called},
-    {0x398, (void *)__pure_virtual_called},
-    {0x3A0, (void *)__pure_virtual_called},
-    {0x3A8, (void *)SelItem_copyState_0000ABC8},
-    {0x3B0, (void *)SelItem_setAlpha_0000ABD4},
-    {0x3B8, (void *)SelItem_drawLabel_0000ABE0},
-    {0x3C0, (void *)SelItem_drawSubLabel_0000ABF4},
-    {0x3C8, (void *)SelItem_drawStats_0000AC04},
-    {0x3D0, (void *)SelItem_drawArrows_0000AC10},
-    {0x3D8, (void *)SelItem_loadInfo_00003F18},
-    {0x3F0, (void *)Node_hostioParms},
-    {0x3F8, (void *)Node_updateChildren},
-    {0x400, (void *)RoomModifier_display_0000117C},
-    {0x408, (void *)RoomModifier_update_0000115C},
-    {0x410, (void *)Node_handleMsg},
-    {0x418, (void *)Node_broadcastMsg},
-    {0x420, (void *)Node_doCommand},
-    {0x428, (void *)Node_saveData},
-    {0x430, (void *)Node_loadData},
-    {0x438, (void *)Node_setAnimPose},
-    {0x450, (void *)QNode_hostioParms},
-    {0x458, (void *)QNode_updateChildren},
-    {0x460, (void *)SelBoard_display_0000AC20},
-    {0x468, (void *)QNode_update},
-    {0x470, (void *)QNode_handleMsg},
-    {0x478, (void *)Node_broadcastMsg},
-    {0x480, (void *)QNode_doCommand},
-    {0x488, (void *)Node_saveData},
-    {0x490, (void *)Node_loadData},
-    {0x498, (void *)QNode_setAnimPose},
-    {0x4A0, (void *)MNode_getCMtx},
-    {0x4B8, (void *)QNode_hostioParms},
-    {0x4C0, (void *)QNode_updateChildren},
-    {0x4C8, (void *)SelTesuri_display_0000B154},
-    {0x4D0, (void *)QNode_update},
-    {0x4D8, (void *)QNode_handleMsg},
-    {0x4E0, (void *)Node_broadcastMsg},
-    {0x4E8, (void *)QNode_doCommand},
-    {0x4F0, (void *)Node_saveData},
-    {0x4F8, (void *)Node_loadData},
-    {0x500, (void *)QNode_setAnimPose},
-    {0x508, (void *)MNode_getCMtx},
-    {0x520, (void *)QNode_hostioParms},
-    {0x528, (void *)QNode_updateChildren},
-    {0x530, (void *)SelCourseMap_display_0000B368},
-    {0x538, (void *)QNode_update},
-    {0x540, (void *)QNode_handleMsg},
-    {0x548, (void *)Node_broadcastMsg},
-    {0x550, (void *)QNode_doCommand},
-    {0x558, (void *)Node_saveData},
-    {0x560, (void *)Node_loadData},
-    {0x568, (void *)QNode_setAnimPose},
-    {0x570, (void *)MNode_getCMtx},
-    {0x588, (void *)QNode_hostioParms},
-    {0x590, (void *)QNode_updateChildren},
-    {0x598, (void *)SelCharacter_display_0000B624},
-    {0x5A0, (void *)SelCharacter_update_0000B61C},
-    {0x5A8, (void *)QNode_handleMsg},
-    {0x5B0, (void *)Node_broadcastMsg},
-    {0x5B8, (void *)QNode_doCommand},
-    {0x5C0, (void *)Node_saveData},
-    {0x5C8, (void *)Node_loadData},
-    {0x5D0, (void *)QNode_setAnimPose},
-    {0x5D8, (void *)MNode_getCMtx},
-    {0x5F0, (void *)Node_hostioParms},
-    {0x5F8, (void *)Node_updateChildren},
-    {0x600, (void *)SelItem_display_00003FA0},
-    {0x608, (void *)CharacterItem_update_0000BB88},
-    {0x610, (void *)Node_handleMsg},
-    {0x618, (void *)Node_broadcastMsg},
-    {0x620, (void *)Node_doCommand},
-    {0x628, (void *)Node_saveData},
-    {0x630, (void *)SelItem_loadData_00003ED8},
-    {0x638, (void *)Node_setAnimPose},
-    {0x640, (void *)CharacterItem_updateHighlight_0000B850},
-    {0x648, (void *)CharacterItem_focus_0000BA60},
-    {0x650, (void *)CharacterItem_unfocus_0000BAE8},
-    {0x658, (void *)CharacterItem_onStageLeave_0000BB44},
-    {0x660, (void *)CharacterItem_onStageReturn_0000BB5C},
-    {0x668, (void *)CharacterItem_setChosen_0000BB64},
-    {0x670, (void *)CharacterItem_clearChosen_0000BB78},
-    {0x678, (void *)CharacterItem_toggleVariant_0000B914},
-    {0x680, (void *)CharacterItem_playPickAnim_0000B928},
-    {0x688, (void *)CharacterItem_playAcceptAnim_0000B98C},
-    {0x690, (void *)CharacterItem_confirm_0000B9F0},
-    {0x698, (void *)SelItem_copyState_0000ABC8},
-    {0x6A0, (void *)CharacterItem_setAlpha_0000BBC8},
-    {0x6A8, (void *)CharacterItem_drawLabel_0000BDA0},
-    {0x6B0, (void *)SelItem_drawSubLabel_0000ABF4},
-    {0x6B8, (void *)CharacterItem_drawStats_0000BBDC},
-    {0x6C0, (void *)CharacterItem_drawArrows_0000BDEC},
-    {0x6C8, (void *)SelItem_loadInfo_00003F18},
-    {0x6E0, (void *)Node_hostioParms},
-    {0x6E8, (void *)Node_updateChildren},
-    {0x6F0, (void *)SelItem_display_00003FA0},
-    {0x6F8, (void *)BoardItem_update_0000C1B4},
-    {0x700, (void *)Node_handleMsg},
-    {0x708, (void *)Node_broadcastMsg},
-    {0x710, (void *)Node_doCommand},
-    {0x718, (void *)Node_saveData},
-    {0x720, (void *)SelItem_loadData_00003ED8},
-    {0x728, (void *)Node_setAnimPose},
-    {0x730, (void *)BoardItem_updateHighlight_0000C044},
-    {0x738, (void *)BoardItem_focus_0000C120},
-    {0x740, (void *)BoardItem_unfocus_0000C150},
-    {0x748, (void *)BoardItem_onStageLeave_0000C164},
-    {0x750, (void *)BoardItem_onStageReturn_0000C170},
-    {0x758, (void *)BoardItem_setChosen_0000C190},
-    {0x760, (void *)BoardItem_clearChosen_0000C1A4},
-    {0x768, (void *)BoardItem_toggleVariant_0000C180},
-    {0x770, (void *)BoardItem_playPickAnim_0000C108},
-    {0x778, (void *)BoardItem_playAcceptAnim_0000C110},
-    {0x780, (void *)BoardItem_confirm_0000C118},
-    {0x788, (void *)SelItem_copyState_0000ABC8},
-    {0x790, (void *)BoardItem_setAlpha_0000C1F4},
-    {0x798, (void *)BoardItem_drawLabel_0000C208},
-    {0x7A0, (void *)BoardItem_drawSubLabel_0000C2C0},
-    {0x7A8, (void *)BoardItem_drawStats_0000C310},
-    {0x7B0, (void *)SelItem_drawArrows_0000AC10},
-    {0x7B8, (void *)SelItem_loadInfo_00003F18},
-    {0x7D0, (void *)Node_hostioParms},
-    {0x7D8, (void *)Node_updateChildren},
-    {0x7E0, (void *)SelItem_display_00003FA0},
-    {0x7E8, (void *)CourseItem_update_0000C8AC},
-    {0x7F0, (void *)Node_handleMsg},
-    {0x7F8, (void *)Node_broadcastMsg},
-    {0x800, (void *)Node_doCommand},
-    {0x808, (void *)Node_saveData},
-    {0x810, (void *)SelItem_loadData_00003ED8},
-    {0x818, (void *)Node_setAnimPose},
-    {0x820, (void *)CourseItem_updateHighlight_0000C710},
-    {0x828, (void *)CourseItem_focus_0000C84C},
-    {0x830, (void *)CourseItem_unfocus_0000C85C},
-    {0x838, (void *)CourseItem_onStageLeave_0000C870},
-    {0x840, (void *)CourseItem_onStageReturn_0000C878},
-    {0x848, (void *)CourseItem_setChosen_0000C888},
-    {0x850, (void *)CourseItem_clearChosen_0000C89C},
-    {0x858, (void *)CourseItem_toggleVariant_0000C82C},
-    {0x860, (void *)CourseItem_playPickAnim_0000C834},
-    {0x868, (void *)CourseItem_playAcceptAnim_0000C83C},
-    {0x870, (void *)CourseItem_confirm_0000C844},
-    {0x878, (void *)CourseItem_copyState_0000C7E8},
-    {0x880, (void *)CourseItem_setAlpha_0000C978},
-    {0x888, (void *)CourseItem_drawLabel_0000C98C},
-    {0x890, (void *)SelItem_drawSubLabel_0000ABF4},
-    {0x898, (void *)SelItem_drawStats_0000AC04},
-    {0x8A0, (void *)SelItem_drawArrows_0000AC10},
-    {0x8A8, (void *)SelItem_loadInfo_00003F18},
-    {0x8C0, (void *)Node_hostioParms},
-    {0x8C8, (void *)Node_updateChildren},
-    {0x8D0, (void *)SelItem_display_00003FA0},
-    {0x8D8, (void *)TesuriItem_update_0000CC74},
-    {0x8E0, (void *)Node_handleMsg},
-    {0x8E8, (void *)Node_broadcastMsg},
-    {0x8F0, (void *)Node_doCommand},
-    {0x8F8, (void *)Node_saveData},
-    {0x900, (void *)SelItem_loadData_00003ED8},
-    {0x908, (void *)Node_setAnimPose},
-    {0x910, (void *)TesuriItem_updateHighlight_0000CB40},
-    {0x918, (void *)TesuriItem_focus_0000CC24},
-    {0x920, (void *)TesuriItem_unfocus_0000CC34},
-    {0x928, (void *)TesuriItem_onStageLeave_0000CC40},
-    {0x930, (void *)TesuriItem_onStageReturn_0000CC48},
-    {0x938, (void *)TesuriItem_setChosen_0000CC50},
-    {0x940, (void *)TesuriItem_clearChosen_0000CC64},
-    {0x948, (void *)TesuriItem_toggleVariant_0000CC04},
-    {0x950, (void *)TesuriItem_playPickAnim_0000CC0C},
-    {0x958, (void *)TesuriItem_playAcceptAnim_0000CC14},
-    {0x960, (void *)TesuriItem_confirm_0000CC1C},
-    {0x968, (void *)SelItem_copyState_0000ABC8},
-    {0x970, (void *)TesuriItem_setAlpha_0000CCB4},
-    {0x978, (void *)TesuriItem_drawLabel_0000CCC8},
-    {0x980, (void *)SelItem_drawSubLabel_0000ABF4},
-    {0x988, (void *)SelItem_drawStats_0000AC04},
-    {0x990, (void *)SelItem_drawArrows_0000AC10},
-    {0x998, (void *)SelItem_loadInfo_00003F18},
-    {0x9B0, (void *)Node_hostioParms},
-    {0x9B8, (void *)Node_updateChildren},
-    {0x9C0, (void *)SelItem_display_00003FA0},
-    {0x9C8, (void *)LevelItem_update_0000CE6C},
-    {0x9D0, (void *)Node_handleMsg},
-    {0x9D8, (void *)Node_broadcastMsg},
-    {0x9E0, (void *)Node_doCommand},
-    {0x9E8, (void *)Node_saveData},
-    {0x9F0, (void *)SelItem_loadData_00003ED8},
-    {0x9F8, (void *)Node_setAnimPose},
-    {0xA00, (void *)LevelItem_updateHighlight_0000CD24},
-    {0xA08, (void *)LevelItem_focus_0000CE1C},
-    {0xA10, (void *)LevelItem_unfocus_0000CE2C},
-    {0xA18, (void *)LevelItem_onStageLeave_0000CE38},
-    {0xA20, (void *)LevelItem_onStageReturn_0000CE40},
-    {0xA28, (void *)LevelItem_setChosen_0000CE48},
-    {0xA30, (void *)LevelItem_clearChosen_0000CE5C},
-    {0xA38, (void *)LevelItem_toggleVariant_0000CDFC},
-    {0xA40, (void *)LevelItem_playPickAnim_0000CE04},
-    {0xA48, (void *)LevelItem_playAcceptAnim_0000CE0C},
-    {0xA50, (void *)LevelItem_confirm_0000CE14},
-    {0xA58, (void *)SelItem_copyState_0000ABC8},
-    {0xA60, (void *)LevelItem_setAlpha_0000D058},
-    {0xA68, (void *)SelItem_drawLabel_0000ABE0},
-    {0xA70, (void *)SelItem_drawSubLabel_0000ABF4},
-    {0xA78, (void *)LevelItem_drawStats_0000CEB4},
-    {0xA80, (void *)SelItem_drawArrows_0000AC10},
-    {0xA88, (void *)SelItem_loadInfo_00003F18},
-    {0xAA0, (void *)Node_hostioParms},
-    {0xAA8, (void *)Node_updateChildren},
-    {0xAB0, (void *)Node_display},
-    {0xAB8, (void *)Node_update},
-    {0xAC0, (void *)Node_handleMsg},
-    {0xAC8, (void *)Node_broadcastMsg},
-    {0xAD0, (void *)Node_doCommand},
-    {0xAD8, (void *)Node_saveData},
-    {0xAE0, (void *)SelItemList_loadData_0000D06C},
-    {0xAE8, (void *)Node_setAnimPose},
-    {0xAF0, (void *)__pure_virtual_called},
-    {0xAF8, (void *)SelItemList_loadInfo_0000D0DC},
-    {0xB10, (void *)Node_hostioParms},
-    {0xB18, (void *)Node_updateChildren},
-    {0xB20, (void *)Node_display},
-    {0xB28, (void *)Node_update},
-    {0xB30, (void *)Node_handleMsg},
-    {0xB38, (void *)Node_broadcastMsg},
-    {0xB40, (void *)Node_doCommand},
-    {0xB48, (void *)Node_saveData},
-    {0xB50, (void *)SelItemList_loadData_0000D06C},
-    {0xB58, (void *)Node_setAnimPose},
-    {0xB60, (void *)CharacterList_createItem},
-    {0xB68, (void *)SelItemList_loadInfo_0000D0DC},
-    {0xB80, (void *)Node_hostioParms},
-    {0xB88, (void *)Node_updateChildren},
-    {0xB90, (void *)Node_display},
-    {0xB98, (void *)Node_update},
-    {0xBA0, (void *)Node_handleMsg},
-    {0xBA8, (void *)Node_broadcastMsg},
-    {0xBB0, (void *)Node_doCommand},
-    {0xBB8, (void *)Node_saveData},
-    {0xBC0, (void *)SelItemList_loadData_0000D06C},
-    {0xBC8, (void *)Node_setAnimPose},
-    {0xBD0, (void *)BoardList_createItem},
-    {0xBD8, (void *)SelItemList_loadInfo_0000D0DC},
-    {0xBF0, (void *)Node_hostioParms},
-    {0xBF8, (void *)Node_updateChildren},
-    {0xC00, (void *)Node_display},
-    {0xC08, (void *)Node_update},
-    {0xC10, (void *)Node_handleMsg},
-    {0xC18, (void *)Node_broadcastMsg},
-    {0xC20, (void *)Node_doCommand},
-    {0xC28, (void *)Node_saveData},
-    {0xC30, (void *)SelItemList_loadData_0000D06C},
-    {0xC38, (void *)Node_setAnimPose},
-    {0xC40, (void *)CourseList_createItem},
-    {0xC48, (void *)SelItemList_loadInfo_0000D0DC},
-    {0xC60, (void *)Node_hostioParms},
-    {0xC68, (void *)Node_updateChildren},
-    {0xC70, (void *)Node_display},
-    {0xC78, (void *)Node_update},
-    {0xC80, (void *)Node_handleMsg},
-    {0xC88, (void *)Node_broadcastMsg},
-    {0xC90, (void *)Node_doCommand},
-    {0xC98, (void *)Node_saveData},
-    {0xCA0, (void *)SelItemList_loadData_0000D06C},
-    {0xCA8, (void *)Node_setAnimPose},
-    {0xCB0, (void *)LevelList_createItem},
-    {0xCB8, (void *)SelItemList_loadInfo_0000D0DC},
-    {0xCD0, (void *)Node_hostioParms},
-    {0xCD8, (void *)Node_updateChildren},
-    {0xCE0, (void *)DispItems_display_0000E5D8},
-    {0xCE8, (void *)DispItems_update_0000E5AC},
-    {0xCF0, (void *)Node_handleMsg},
-    {0xCF8, (void *)Node_broadcastMsg},
-    {0xD00, (void *)Node_doCommand},
-    {0xD08, (void *)Node_saveData},
-    {0xD10, (void *)Node_loadData},
-    {0xD18, (void *)Node_setAnimPose},
-    {0xD30, (void *)Node_hostioParms},
-    {0xD38, (void *)Node_updateChildren},
-    {0xD40, (void *)Node_display},
-    {0xD48, (void *)Node_update},
-    {0xD50, (void *)Node_handleMsg},
-    {0xD58, (void *)Node_broadcastMsg},
-    {0xD60, (void *)Node_doCommand},
-    {0xD68, (void *)Node_saveData},
-    {0xD70, (void *)CommonInfo_loadData_00008F98},
-    {0xD78, (void *)Node_setAnimPose},
-    {0xD90, (void *)Node_hostioParms},
-    {0xD98, (void *)Node_updateChildren},
-    {0xDA0, (void *)Node_display},
-    {0xDA8, (void *)Node_update},
-    {0xDB0, (void *)Node_handleMsg},
-    {0xDB8, (void *)Node_broadcastMsg},
-    {0xDC0, (void *)Node_doCommand},
-    {0xDC8, (void *)Node_saveData},
-    {0xDD0, (void *)SelItemsMgr_loadData_0000A97C},
-    {0xDD8, (void *)Node_setAnimPose},
-    {0xDE0, (void *)SelItemsMgr_loadInfo_0000A9EC},
-    {0xDF8, (void *)Node_hostioParms},
-    {0xE00, (void *)Node_updateChildren},
-    {0xE08, (void *)SelectWin_display_00006394},
-    {0xE10, (void *)SelectWin_update_00005FC0},
-    {0xE18, (void *)Node_handleMsg},
-    {0xE20, (void *)Node_broadcastMsg},
-    {0xE28, (void *)Node_doCommand},
-    {0xE30, (void *)Node_saveData},
-    {0xE38, (void *)SelectWin_loadData_0000685C},
-    {0xE40, (void *)Node_setAnimPose},
-    {0xE48, (void *)Process_start},
+    {0x300, 0}, /* Text target bootup:Node_hostioParms */
+    {0x308, 0}, /* Text target bootup:Node_updateChildren */
+    {0x310, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x318, 0}, /* Text target genproc:SelItem_update_00003F5C */
+    {0x320, 0}, /* Text target bootup:Node_handleMsg */
+    {0x328, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x330, 0}, /* Text target bootup:Node_doCommand */
+    {0x338, 0}, /* Text target bootup:Node_saveData */
+    {0x340, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x348, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x350, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x358, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x360, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x368, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x370, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x378, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x380, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x388, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x390, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x398, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x3A0, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x3A8, 0}, /* Text target genproc:SelItem_copyState_0000ABC8 */
+    {0x3B0, 0}, /* Text target genproc:SelItem_setAlpha_0000ABD4 */
+    {0x3B8, 0}, /* Text target genproc:SelItem_drawLabel_0000ABE0 */
+    {0x3C0, 0}, /* Text target genproc:SelItem_drawSubLabel_0000ABF4 */
+    {0x3C8, 0}, /* Text target genproc:SelItem_drawStats_0000AC04 */
+    {0x3D0, 0}, /* Text target genproc:SelItem_drawArrows_0000AC10 */
+    {0x3D8, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0x3F0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x3F8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x400, 0}, /* Text target genproc:RoomModifier_display_0000117C */
+    {0x408, 0}, /* Text target genproc:RoomModifier_update_0000115C */
+    {0x410, 0}, /* Text target bootup:Node_handleMsg */
+    {0x418, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x420, 0}, /* Text target bootup:Node_doCommand */
+    {0x428, 0}, /* Text target bootup:Node_saveData */
+    {0x430, 0}, /* Text target bootup:Node_loadData */
+    {0x438, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x450, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x458, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x460, 0}, /* Text target genproc:SelBoard_display_0000AC20 */
+    {0x468, 0}, /* Text target bootup:QNode_update */
+    {0x470, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x478, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x480, 0}, /* Text target bootup:QNode_doCommand */
+    {0x488, 0}, /* Text target bootup:Node_saveData */
+    {0x490, 0}, /* Text target bootup:Node_loadData */
+    {0x498, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x4A0, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x4B8, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x4C0, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x4C8, 0}, /* Text target genproc:SelTesuri_display_0000B154 */
+    {0x4D0, 0}, /* Text target bootup:QNode_update */
+    {0x4D8, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x4E0, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x4E8, 0}, /* Text target bootup:QNode_doCommand */
+    {0x4F0, 0}, /* Text target bootup:Node_saveData */
+    {0x4F8, 0}, /* Text target bootup:Node_loadData */
+    {0x500, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x508, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x520, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x528, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x530, 0}, /* Text target genproc:SelCourseMap_display_0000B368 */
+    {0x538, 0}, /* Text target bootup:QNode_update */
+    {0x540, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x548, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x550, 0}, /* Text target bootup:QNode_doCommand */
+    {0x558, 0}, /* Text target bootup:Node_saveData */
+    {0x560, 0}, /* Text target bootup:Node_loadData */
+    {0x568, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x570, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x588, 0}, /* Text target bootup:QNode_hostioParms */
+    {0x590, 0}, /* Text target bootup:QNode_updateChildren */
+    {0x598, 0}, /* Text target genproc:SelCharacter_display_0000B624 */
+    {0x5A0, 0}, /* Text target genproc:SelCharacter_update_0000B61C */
+    {0x5A8, 0}, /* Text target bootup:QNode_handleMsg */
+    {0x5B0, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x5B8, 0}, /* Text target bootup:QNode_doCommand */
+    {0x5C0, 0}, /* Text target bootup:Node_saveData */
+    {0x5C8, 0}, /* Text target bootup:Node_loadData */
+    {0x5D0, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0x5D8, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x5F0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x5F8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x600, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x608, 0}, /* Text target genproc:CharacterItem_update_0000BB88 */
+    {0x610, 0}, /* Text target bootup:Node_handleMsg */
+    {0x618, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x620, 0}, /* Text target bootup:Node_doCommand */
+    {0x628, 0}, /* Text target bootup:Node_saveData */
+    {0x630, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x638, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x640, 0}, /* Text target genproc:CharacterItem_updateHighlight_0000B850 */
+    {0x648, 0}, /* Text target genproc:CharacterItem_focus_0000BA60 */
+    {0x650, 0}, /* Text target genproc:CharacterItem_unfocus_0000BAE8 */
+    {0x658, 0}, /* Text target genproc:CharacterItem_onStageLeave_0000BB44 */
+    {0x660, 0}, /* Text target genproc:CharacterItem_onStageReturn_0000BB5C */
+    {0x668, 0}, /* Text target genproc:CharacterItem_setChosen_0000BB64 */
+    {0x670, 0}, /* Text target genproc:CharacterItem_clearChosen_0000BB78 */
+    {0x678, 0}, /* Text target genproc:CharacterItem_toggleVariant_0000B914 */
+    {0x680, 0}, /* Text target genproc:CharacterItem_playPickAnim_0000B928 */
+    {0x688, 0}, /* Text target genproc:CharacterItem_playAcceptAnim_0000B98C */
+    {0x690, 0}, /* Text target genproc:CharacterItem_confirm_0000B9F0 */
+    {0x698, 0}, /* Text target genproc:SelItem_copyState_0000ABC8 */
+    {0x6A0, 0}, /* Text target genproc:CharacterItem_setAlpha_0000BBC8 */
+    {0x6A8, 0}, /* Text target genproc:CharacterItem_drawLabel_0000BDA0 */
+    {0x6B0, 0}, /* Text target genproc:SelItem_drawSubLabel_0000ABF4 */
+    {0x6B8, 0}, /* Text target genproc:CharacterItem_drawStats_0000BBDC */
+    {0x6C0, 0}, /* Text target genproc:CharacterItem_drawArrows_0000BDEC */
+    {0x6C8, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0x6E0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x6E8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x6F0, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x6F8, 0}, /* Text target genproc:BoardItem_update_0000C1B4 */
+    {0x700, 0}, /* Text target bootup:Node_handleMsg */
+    {0x708, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x710, 0}, /* Text target bootup:Node_doCommand */
+    {0x718, 0}, /* Text target bootup:Node_saveData */
+    {0x720, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x728, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x730, 0}, /* Text target genproc:BoardItem_updateHighlight_0000C044 */
+    {0x738, 0}, /* Text target genproc:BoardItem_focus_0000C120 */
+    {0x740, 0}, /* Text target genproc:BoardItem_unfocus_0000C150 */
+    {0x748, 0}, /* Text target genproc:BoardItem_onStageLeave_0000C164 */
+    {0x750, 0}, /* Text target genproc:BoardItem_onStageReturn_0000C170 */
+    {0x758, 0}, /* Text target genproc:BoardItem_setChosen_0000C190 */
+    {0x760, 0}, /* Text target genproc:BoardItem_clearChosen_0000C1A4 */
+    {0x768, 0}, /* Text target genproc:BoardItem_toggleVariant_0000C180 */
+    {0x770, 0}, /* Text target genproc:BoardItem_playPickAnim_0000C108 */
+    {0x778, 0}, /* Text target genproc:BoardItem_playAcceptAnim_0000C110 */
+    {0x780, 0}, /* Text target genproc:BoardItem_confirm_0000C118 */
+    {0x788, 0}, /* Text target genproc:SelItem_copyState_0000ABC8 */
+    {0x790, 0}, /* Text target genproc:BoardItem_setAlpha_0000C1F4 */
+    {0x798, 0}, /* Text target genproc:BoardItem_drawLabel_0000C208 */
+    {0x7A0, 0}, /* Text target genproc:BoardItem_drawSubLabel_0000C2C0 */
+    {0x7A8, 0}, /* Text target genproc:BoardItem_drawStats_0000C310 */
+    {0x7B0, 0}, /* Text target genproc:SelItem_drawArrows_0000AC10 */
+    {0x7B8, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0x7D0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x7D8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x7E0, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x7E8, 0}, /* Text target genproc:CourseItem_update_0000C8AC */
+    {0x7F0, 0}, /* Text target bootup:Node_handleMsg */
+    {0x7F8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x800, 0}, /* Text target bootup:Node_doCommand */
+    {0x808, 0}, /* Text target bootup:Node_saveData */
+    {0x810, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x818, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x820, 0}, /* Text target genproc:CourseItem_updateHighlight_0000C710 */
+    {0x828, 0}, /* Text target genproc:CourseItem_focus_0000C84C */
+    {0x830, 0}, /* Text target genproc:CourseItem_unfocus_0000C85C */
+    {0x838, 0}, /* Text target genproc:CourseItem_onStageLeave_0000C870 */
+    {0x840, 0}, /* Text target genproc:CourseItem_onStageReturn_0000C878 */
+    {0x848, 0}, /* Text target genproc:CourseItem_setChosen_0000C888 */
+    {0x850, 0}, /* Text target genproc:CourseItem_clearChosen_0000C89C */
+    {0x858, 0}, /* Text target genproc:CourseItem_toggleVariant_0000C82C */
+    {0x860, 0}, /* Text target genproc:CourseItem_playPickAnim_0000C834 */
+    {0x868, 0}, /* Text target genproc:CourseItem_playAcceptAnim_0000C83C */
+    {0x870, 0}, /* Text target genproc:CourseItem_confirm_0000C844 */
+    {0x878, 0}, /* Text target genproc:CourseItem_copyState_0000C7E8 */
+    {0x880, 0}, /* Text target genproc:CourseItem_setAlpha_0000C978 */
+    {0x888, 0}, /* Text target genproc:CourseItem_drawLabel_0000C98C */
+    {0x890, 0}, /* Text target genproc:SelItem_drawSubLabel_0000ABF4 */
+    {0x898, 0}, /* Text target genproc:SelItem_drawStats_0000AC04 */
+    {0x8A0, 0}, /* Text target genproc:SelItem_drawArrows_0000AC10 */
+    {0x8A8, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0x8C0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x8C8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x8D0, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x8D8, 0}, /* Text target genproc:TesuriItem_update_0000CC74 */
+    {0x8E0, 0}, /* Text target bootup:Node_handleMsg */
+    {0x8E8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x8F0, 0}, /* Text target bootup:Node_doCommand */
+    {0x8F8, 0}, /* Text target bootup:Node_saveData */
+    {0x900, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x908, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x910, 0}, /* Text target genproc:TesuriItem_updateHighlight_0000CB40 */
+    {0x918, 0}, /* Text target genproc:TesuriItem_focus_0000CC24 */
+    {0x920, 0}, /* Text target genproc:TesuriItem_unfocus_0000CC34 */
+    {0x928, 0}, /* Text target genproc:TesuriItem_onStageLeave_0000CC40 */
+    {0x930, 0}, /* Text target genproc:TesuriItem_onStageReturn_0000CC48 */
+    {0x938, 0}, /* Text target genproc:TesuriItem_setChosen_0000CC50 */
+    {0x940, 0}, /* Text target genproc:TesuriItem_clearChosen_0000CC64 */
+    {0x948, 0}, /* Text target genproc:TesuriItem_toggleVariant_0000CC04 */
+    {0x950, 0}, /* Text target genproc:TesuriItem_playPickAnim_0000CC0C */
+    {0x958, 0}, /* Text target genproc:TesuriItem_playAcceptAnim_0000CC14 */
+    {0x960, 0}, /* Text target genproc:TesuriItem_confirm_0000CC1C */
+    {0x968, 0}, /* Text target genproc:SelItem_copyState_0000ABC8 */
+    {0x970, 0}, /* Text target genproc:TesuriItem_setAlpha_0000CCB4 */
+    {0x978, 0}, /* Text target genproc:TesuriItem_drawLabel_0000CCC8 */
+    {0x980, 0}, /* Text target genproc:SelItem_drawSubLabel_0000ABF4 */
+    {0x988, 0}, /* Text target genproc:SelItem_drawStats_0000AC04 */
+    {0x990, 0}, /* Text target genproc:SelItem_drawArrows_0000AC10 */
+    {0x998, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0x9B0, 0}, /* Text target bootup:Node_hostioParms */
+    {0x9B8, 0}, /* Text target bootup:Node_updateChildren */
+    {0x9C0, 0}, /* Text target genproc:SelItem_display_00003FA0 */
+    {0x9C8, 0}, /* Text target genproc:LevelItem_update_0000CE6C */
+    {0x9D0, 0}, /* Text target bootup:Node_handleMsg */
+    {0x9D8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x9E0, 0}, /* Text target bootup:Node_doCommand */
+    {0x9E8, 0}, /* Text target bootup:Node_saveData */
+    {0x9F0, 0}, /* Text target genproc:SelItem_loadData_00003ED8 */
+    {0x9F8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xA00, 0}, /* Text target genproc:LevelItem_updateHighlight_0000CD24 */
+    {0xA08, 0}, /* Text target genproc:LevelItem_focus_0000CE1C */
+    {0xA10, 0}, /* Text target genproc:LevelItem_unfocus_0000CE2C */
+    {0xA18, 0}, /* Text target genproc:LevelItem_onStageLeave_0000CE38 */
+    {0xA20, 0}, /* Text target genproc:LevelItem_onStageReturn_0000CE40 */
+    {0xA28, 0}, /* Text target genproc:LevelItem_setChosen_0000CE48 */
+    {0xA30, 0}, /* Text target genproc:LevelItem_clearChosen_0000CE5C */
+    {0xA38, 0}, /* Text target genproc:LevelItem_toggleVariant_0000CDFC */
+    {0xA40, 0}, /* Text target genproc:LevelItem_playPickAnim_0000CE04 */
+    {0xA48, 0}, /* Text target genproc:LevelItem_playAcceptAnim_0000CE0C */
+    {0xA50, 0}, /* Text target genproc:LevelItem_confirm_0000CE14 */
+    {0xA58, 0}, /* Text target genproc:SelItem_copyState_0000ABC8 */
+    {0xA60, 0}, /* Text target genproc:LevelItem_setAlpha_0000D058 */
+    {0xA68, 0}, /* Text target genproc:SelItem_drawLabel_0000ABE0 */
+    {0xA70, 0}, /* Text target genproc:SelItem_drawSubLabel_0000ABF4 */
+    {0xA78, 0}, /* Text target genproc:LevelItem_drawStats_0000CEB4 */
+    {0xA80, 0}, /* Text target genproc:SelItem_drawArrows_0000AC10 */
+    {0xA88, 0}, /* Text target genproc:SelItem_loadInfo_00003F18 */
+    {0xAA0, 0}, /* Text target bootup:Node_hostioParms */
+    {0xAA8, 0}, /* Text target bootup:Node_updateChildren */
+    {0xAB0, 0}, /* Text target bootup:Node_display */
+    {0xAB8, 0}, /* Text target bootup:Node_update */
+    {0xAC0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xAC8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xAD0, 0}, /* Text target bootup:Node_doCommand */
+    {0xAD8, 0}, /* Text target bootup:Node_saveData */
+    {0xAE0, 0}, /* Text target genproc:SelItemList_loadData_0000D06C */
+    {0xAE8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xAF0, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xAF8, 0}, /* Text target genproc:SelItemList_loadInfo_0000D0DC */
+    {0xB10, 0}, /* Text target bootup:Node_hostioParms */
+    {0xB18, 0}, /* Text target bootup:Node_updateChildren */
+    {0xB20, 0}, /* Text target bootup:Node_display */
+    {0xB28, 0}, /* Text target bootup:Node_update */
+    {0xB30, 0}, /* Text target bootup:Node_handleMsg */
+    {0xB38, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xB40, 0}, /* Text target bootup:Node_doCommand */
+    {0xB48, 0}, /* Text target bootup:Node_saveData */
+    {0xB50, 0}, /* Text target genproc:SelItemList_loadData_0000D06C */
+    {0xB58, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xB60, 0}, /* Text target genproc:CharacterList_createItem */
+    {0xB68, 0}, /* Text target genproc:SelItemList_loadInfo_0000D0DC */
+    {0xB80, 0}, /* Text target bootup:Node_hostioParms */
+    {0xB88, 0}, /* Text target bootup:Node_updateChildren */
+    {0xB90, 0}, /* Text target bootup:Node_display */
+    {0xB98, 0}, /* Text target bootup:Node_update */
+    {0xBA0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xBA8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xBB0, 0}, /* Text target bootup:Node_doCommand */
+    {0xBB8, 0}, /* Text target bootup:Node_saveData */
+    {0xBC0, 0}, /* Text target genproc:SelItemList_loadData_0000D06C */
+    {0xBC8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xBD0, 0}, /* Text target genproc:BoardList_createItem */
+    {0xBD8, 0}, /* Text target genproc:SelItemList_loadInfo_0000D0DC */
+    {0xBF0, 0}, /* Text target bootup:Node_hostioParms */
+    {0xBF8, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC00, 0}, /* Text target bootup:Node_display */
+    {0xC08, 0}, /* Text target bootup:Node_update */
+    {0xC10, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC18, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC20, 0}, /* Text target bootup:Node_doCommand */
+    {0xC28, 0}, /* Text target bootup:Node_saveData */
+    {0xC30, 0}, /* Text target genproc:SelItemList_loadData_0000D06C */
+    {0xC38, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xC40, 0}, /* Text target genproc:CourseList_createItem */
+    {0xC48, 0}, /* Text target genproc:SelItemList_loadInfo_0000D0DC */
+    {0xC60, 0}, /* Text target bootup:Node_hostioParms */
+    {0xC68, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC70, 0}, /* Text target bootup:Node_display */
+    {0xC78, 0}, /* Text target bootup:Node_update */
+    {0xC80, 0}, /* Text target bootup:Node_handleMsg */
+    {0xC88, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC90, 0}, /* Text target bootup:Node_doCommand */
+    {0xC98, 0}, /* Text target bootup:Node_saveData */
+    {0xCA0, 0}, /* Text target genproc:SelItemList_loadData_0000D06C */
+    {0xCA8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xCB0, 0}, /* Text target genproc:LevelList_createItem */
+    {0xCB8, 0}, /* Text target genproc:SelItemList_loadInfo_0000D0DC */
+    {0xCD0, 0}, /* Text target bootup:Node_hostioParms */
+    {0xCD8, 0}, /* Text target bootup:Node_updateChildren */
+    {0xCE0, 0}, /* Text target genproc:DispItems_display_0000E5D8 */
+    {0xCE8, 0}, /* Text target genproc:DispItems_update_0000E5AC */
+    {0xCF0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xCF8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD00, 0}, /* Text target bootup:Node_doCommand */
+    {0xD08, 0}, /* Text target bootup:Node_saveData */
+    {0xD10, 0}, /* Text target bootup:Node_loadData */
+    {0xD18, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD30, 0}, /* Text target bootup:Node_hostioParms */
+    {0xD38, 0}, /* Text target bootup:Node_updateChildren */
+    {0xD40, 0}, /* Text target bootup:Node_display */
+    {0xD48, 0}, /* Text target bootup:Node_update */
+    {0xD50, 0}, /* Text target bootup:Node_handleMsg */
+    {0xD58, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD60, 0}, /* Text target bootup:Node_doCommand */
+    {0xD68, 0}, /* Text target bootup:Node_saveData */
+    {0xD70, 0}, /* Text target genproc:CommonInfo_loadData_00008F98 */
+    {0xD78, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD90, 0}, /* Text target bootup:Node_hostioParms */
+    {0xD98, 0}, /* Text target bootup:Node_updateChildren */
+    {0xDA0, 0}, /* Text target bootup:Node_display */
+    {0xDA8, 0}, /* Text target bootup:Node_update */
+    {0xDB0, 0}, /* Text target bootup:Node_handleMsg */
+    {0xDB8, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xDC0, 0}, /* Text target bootup:Node_doCommand */
+    {0xDC8, 0}, /* Text target bootup:Node_saveData */
+    {0xDD0, 0}, /* Text target genproc:SelItemsMgr_loadData_0000A97C */
+    {0xDD8, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xDE0, 0}, /* Text target genproc:SelItemsMgr_loadInfo_0000A9EC */
+    {0xDF8, 0}, /* Text target bootup:Node_hostioParms */
+    {0xE00, 0}, /* Text target bootup:Node_updateChildren */
+    {0xE08, 0}, /* Text target genproc:SelectWin_display_00006394 */
+    {0xE10, 0}, /* Text target genproc:SelectWin_update_00005FC0 */
+    {0xE18, 0}, /* Text target bootup:Node_handleMsg */
+    {0xE20, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xE28, 0}, /* Text target bootup:Node_doCommand */
+    {0xE30, 0}, /* Text target bootup:Node_saveData */
+    {0xE38, 0}, /* Text target genproc:SelectWin_loadData_0000685C */
+    {0xE40, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xE48, 0}, /* Text target bootup:Process_start */
     {0xF34, port_genproc_rodata + 0x98},
     {0xF38, port_genproc_rodata + 0xA4},
     {0xF3C, port_genproc_rodata + 0xB0},
@@ -5456,17 +4796,17 @@ static const PortUsoReloc port_genproc_data_rel[414] = {
     {0xF64, port_genproc_data + 0xF48},
     {0xF68, port_genproc_data + 0xF50},
     {0xF6C, port_genproc_data + 0xF58},
-    {0xF7C, (void *)Node_hostioParms},
-    {0xF84, (void *)Node_updateChildren},
-    {0xF8C, (void *)SelectionMgr_display_000027B0},
-    {0xF94, (void *)SelectionMgr_update_00001F14},
-    {0xF9C, (void *)Node_handleMsg},
-    {0xFA4, (void *)Node_broadcastMsg},
-    {0xFAC, (void *)Node_doCommand},
-    {0xFB4, (void *)Node_saveData},
-    {0xFBC, (void *)Node_loadData},
-    {0xFC4, (void *)Node_setAnimPose},
-    {0xFD4, (void *)SelectionMgr_onFadeDone_00000470},
+    {0xF7C, 0}, /* Text target bootup:Node_hostioParms */
+    {0xF84, 0}, /* Text target bootup:Node_updateChildren */
+    {0xF8C, 0}, /* Text target genproc:SelectionMgr_display_000027B0 */
+    {0xF94, 0}, /* Text target genproc:SelectionMgr_update_00001F14 */
+    {0xF9C, 0}, /* Text target bootup:Node_handleMsg */
+    {0xFA4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xFAC, 0}, /* Text target bootup:Node_doCommand */
+    {0xFB4, 0}, /* Text target bootup:Node_saveData */
+    {0xFBC, 0}, /* Text target bootup:Node_loadData */
+    {0xFC4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xFD4, 0}, /* Text target genproc:SelectionMgr_onFadeDone_00000470 */
 };
 static const PortUsoReloc port_genproc_rodata_rel[76] = {
     {0x170, 0}, /* jump table SelectWin_ctor+0x1984 */
@@ -5609,104 +4949,104 @@ static const PortUsoReloc port_charsps_data_rel[39] = {
     {0x87B4, port_charsps_data + 0x8650},
 };
 static const PortUsoReloc port_viewrec_data_rel[100] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)Node_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)Process_display},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:Process_display */
     {0x3C, 0}, /* Text target viewrec:Text+0x1664 */
     {0x44, 0}, /* Text target viewrec:Text+0x16E8 */
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)Node_saveData},
-    {0x64, (void *)Node_loadData},
-    {0x6C, (void *)Node_setAnimPose},
-    {0x74, (void *)Process_start},
-    {0x7C, (void *)Process_exit},
-    {0x84, (void *)Process_onQuit},
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:Node_saveData */
+    {0x64, 0}, /* Text target bootup:Node_loadData */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x74, 0}, /* Text target bootup:Process_start */
+    {0x7C, 0}, /* Text target bootup:Process_exit */
+    {0x84, 0}, /* Text target bootup:Process_onQuit */
     {0x8C, 0}, /* Text target viewrec:Text+0x55A4 */
-    {0xA4, (void *)Node_hostioParms},
-    {0xAC, (void *)Node_updateChildren},
-    {0xB4, (void *)Process_display},
+    {0xA4, 0}, /* Text target bootup:Node_hostioParms */
+    {0xAC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xB4, 0}, /* Text target bootup:Process_display */
     {0xBC, 0}, /* Text target viewrec:Text+0x18D4 */
     {0xC4, 0}, /* Text target viewrec:Text+0x19C8 */
-    {0xCC, (void *)Node_broadcastMsg},
-    {0xD4, (void *)Node_doCommand},
-    {0xDC, (void *)Node_saveData},
-    {0xE4, (void *)Node_loadData},
-    {0xEC, (void *)Node_setAnimPose},
-    {0xF4, (void *)Process_start},
-    {0xFC, (void *)Process_exit},
-    {0x104, (void *)Process_onQuit},
+    {0xCC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD4, 0}, /* Text target bootup:Node_doCommand */
+    {0xDC, 0}, /* Text target bootup:Node_saveData */
+    {0xE4, 0}, /* Text target bootup:Node_loadData */
+    {0xEC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xF4, 0}, /* Text target bootup:Process_start */
+    {0xFC, 0}, /* Text target bootup:Process_exit */
+    {0x104, 0}, /* Text target bootup:Process_onQuit */
     {0x10C, 0}, /* Text target viewrec:Text+0x1954 */
-    {0x124, (void *)Node_hostioParms},
-    {0x12C, (void *)Node_updateChildren},
-    {0x134, (void *)Process_display},
+    {0x124, 0}, /* Text target bootup:Node_hostioParms */
+    {0x12C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x134, 0}, /* Text target bootup:Process_display */
     {0x13C, 0}, /* Text target viewrec:Text+0x1CCC */
-    {0x144, (void *)Node_handleMsg},
-    {0x14C, (void *)Node_broadcastMsg},
-    {0x154, (void *)Node_doCommand},
-    {0x15C, (void *)Node_saveData},
-    {0x164, (void *)Node_loadData},
-    {0x16C, (void *)Node_setAnimPose},
-    {0x174, (void *)Process_start},
-    {0x17C, (void *)Process_exit},
-    {0x184, (void *)Process_onQuit},
+    {0x144, 0}, /* Text target bootup:Node_handleMsg */
+    {0x14C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x154, 0}, /* Text target bootup:Node_doCommand */
+    {0x15C, 0}, /* Text target bootup:Node_saveData */
+    {0x164, 0}, /* Text target bootup:Node_loadData */
+    {0x16C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x174, 0}, /* Text target bootup:Process_start */
+    {0x17C, 0}, /* Text target bootup:Process_exit */
+    {0x184, 0}, /* Text target bootup:Process_onQuit */
     {0x18C, 0}, /* Text target viewrec:Text+0x1D64 */
-    {0x1A4, (void *)Node_hostioParms},
-    {0x1AC, (void *)Node_updateChildren},
-    {0x1B4, (void *)Process_display},
+    {0x1A4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1AC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1B4, 0}, /* Text target bootup:Process_display */
     {0x1BC, 0}, /* Text target viewrec:Text+0x3818 */
-    {0x1C4, (void *)Node_handleMsg},
-    {0x1CC, (void *)Node_broadcastMsg},
-    {0x1D4, (void *)Node_doCommand},
-    {0x1DC, (void *)Node_saveData},
-    {0x1E4, (void *)Node_loadData},
-    {0x1EC, (void *)Node_setAnimPose},
-    {0x1F4, (void *)Process_start},
-    {0x1FC, (void *)Process_exit},
-    {0x204, (void *)Process_onQuit},
+    {0x1C4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1CC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1D4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1DC, 0}, /* Text target bootup:Node_saveData */
+    {0x1E4, 0}, /* Text target bootup:Node_loadData */
+    {0x1EC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1F4, 0}, /* Text target bootup:Process_start */
+    {0x1FC, 0}, /* Text target bootup:Process_exit */
+    {0x204, 0}, /* Text target bootup:Process_onQuit */
     {0x20C, 0}, /* Text target viewrec:Text+0x3878 */
-    {0x224, (void *)Node_hostioParms},
-    {0x22C, (void *)Node_updateChildren},
-    {0x234, (void *)Process_display},
+    {0x224, 0}, /* Text target bootup:Node_hostioParms */
+    {0x22C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x234, 0}, /* Text target bootup:Process_display */
     {0x23C, 0}, /* Text target viewrec:Text+0x4670 */
-    {0x244, (void *)Node_handleMsg},
-    {0x24C, (void *)Node_broadcastMsg},
-    {0x254, (void *)Node_doCommand},
-    {0x25C, (void *)Node_saveData},
-    {0x264, (void *)Node_loadData},
-    {0x26C, (void *)Node_setAnimPose},
-    {0x274, (void *)Process_start},
-    {0x27C, (void *)Process_exit},
-    {0x284, (void *)Process_onQuit},
+    {0x244, 0}, /* Text target bootup:Node_handleMsg */
+    {0x24C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x254, 0}, /* Text target bootup:Node_doCommand */
+    {0x25C, 0}, /* Text target bootup:Node_saveData */
+    {0x264, 0}, /* Text target bootup:Node_loadData */
+    {0x26C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x274, 0}, /* Text target bootup:Process_start */
+    {0x27C, 0}, /* Text target bootup:Process_exit */
+    {0x284, 0}, /* Text target bootup:Process_onQuit */
     {0x28C, 0}, /* Text target viewrec:Text+0x4698 */
-    {0x2A4, (void *)Node_hostioParms},
-    {0x2AC, (void *)Node_updateChildren},
-    {0x2B4, (void *)Process_display},
+    {0x2A4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2AC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2B4, 0}, /* Text target bootup:Process_display */
     {0x2BC, 0}, /* Text target viewrec:Text+0x4990 */
-    {0x2C4, (void *)Node_handleMsg},
-    {0x2CC, (void *)Node_broadcastMsg},
-    {0x2D4, (void *)Node_doCommand},
-    {0x2DC, (void *)Node_saveData},
-    {0x2E4, (void *)Node_loadData},
-    {0x2EC, (void *)Node_setAnimPose},
-    {0x2F4, (void *)Process_start},
-    {0x2FC, (void *)Process_exit},
-    {0x304, (void *)Process_onQuit},
+    {0x2C4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2CC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2D4, 0}, /* Text target bootup:Node_doCommand */
+    {0x2DC, 0}, /* Text target bootup:Node_saveData */
+    {0x2E4, 0}, /* Text target bootup:Node_loadData */
+    {0x2EC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2F4, 0}, /* Text target bootup:Process_start */
+    {0x2FC, 0}, /* Text target bootup:Process_exit */
+    {0x304, 0}, /* Text target bootup:Process_onQuit */
     {0x30C, 0}, /* Text target viewrec:Text+0x4DEC */
-    {0x334, (void *)Node_hostioParms},
-    {0x33C, (void *)Node_updateChildren},
-    {0x344, (void *)Process_display},
+    {0x334, 0}, /* Text target bootup:Node_hostioParms */
+    {0x33C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x344, 0}, /* Text target bootup:Process_display */
     {0x34C, 0}, /* Text target viewrec:Text+0x5318 */
-    {0x354, (void *)Node_handleMsg},
-    {0x35C, (void *)Node_broadcastMsg},
-    {0x364, (void *)Node_doCommand},
-    {0x36C, (void *)Node_saveData},
-    {0x374, (void *)Node_loadData},
-    {0x37C, (void *)Node_setAnimPose},
-    {0x384, (void *)Process_start},
-    {0x38C, (void *)Process_exit},
-    {0x394, (void *)Process_onQuit},
+    {0x354, 0}, /* Text target bootup:Node_handleMsg */
+    {0x35C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x364, 0}, /* Text target bootup:Node_doCommand */
+    {0x36C, 0}, /* Text target bootup:Node_saveData */
+    {0x374, 0}, /* Text target bootup:Node_loadData */
+    {0x37C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x384, 0}, /* Text target bootup:Process_start */
+    {0x38C, 0}, /* Text target bootup:Process_exit */
+    {0x394, 0}, /* Text target bootup:Process_onQuit */
     {0x39C, 0}, /* Text target viewrec:Text+0x5440 */
     {0x3AC, 0}, /* Text target viewrec:Text+0x290 */
 };
@@ -5731,30 +5071,30 @@ static const PortUsoReloc port_viewrec_rodata_rel[18] = {
     {0x54, 0}, /* Text target viewrec:Text+0x4D54 */
 };
 static const PortUsoReloc port_nameent_data_rel[34] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)Node_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
     {0x34, 0}, /* Text target nameent:Text+0x9BC */
     {0x3C, 0}, /* Text target nameent:Text+0xE44 */
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)Node_saveData},
-    {0x64, (void *)Node_loadData},
-    {0x6C, (void *)Node_setAnimPose},
-    {0x74, (void *)Process_start},
-    {0x8C, (void *)Node_hostioParms},
-    {0x94, (void *)Node_updateChildren},
-    {0x9C, (void *)Process_display},
-    {0xA4, (void *)Process_update},
-    {0xAC, (void *)Node_handleMsg},
-    {0xB4, (void *)Node_broadcastMsg},
-    {0xBC, (void *)Node_doCommand},
-    {0xC4, (void *)Node_saveData},
-    {0xCC, (void *)Node_loadData},
-    {0xD4, (void *)Node_setAnimPose},
-    {0xDC, (void *)Process_start},
-    {0xE4, (void *)Process_exit},
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:Node_saveData */
+    {0x64, 0}, /* Text target bootup:Node_loadData */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x74, 0}, /* Text target bootup:Process_start */
+    {0x8C, 0}, /* Text target bootup:Node_hostioParms */
+    {0x94, 0}, /* Text target bootup:Node_updateChildren */
+    {0x9C, 0}, /* Text target bootup:Process_display */
+    {0xA4, 0}, /* Text target bootup:Process_update */
+    {0xAC, 0}, /* Text target bootup:Node_handleMsg */
+    {0xB4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xBC, 0}, /* Text target bootup:Node_doCommand */
+    {0xC4, 0}, /* Text target bootup:Node_saveData */
+    {0xCC, 0}, /* Text target bootup:Node_loadData */
+    {0xD4, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xDC, 0}, /* Text target bootup:Process_start */
+    {0xE4, 0}, /* Text target bootup:Process_exit */
     {0xEC, 0}, /* Text target nameent:Text+0x150 */
     {0xF4, 0}, /* Text target nameent:Text+0x204 */
     {0xFC, 0}, /* Text target nameent:Text+0x4C8 */
@@ -5841,136 +5181,136 @@ static const PortUsoReloc port_charfir_data_rel[72] = {
     {0xDD64, port_charfir_data + 0xDC98},
 };
 static const PortUsoReloc port_map5_data_data_rel[14] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)map4b2_init_00000094},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target map5_data:map4b2_init_00000094 */
     {0x950, port_map5_data_rodata + 0x0},
     {0x97C, port_map5_data_rodata + 0x4},
     {0x9A8, port_map5_data_data + 0x11944},
     {0x9B4, port_map5_data_data + 0x30},
     {0x9C0, port_map5_data_data + 0x308},
     {0x9CC, port_map5_data_data + 0x948},
-    {0x9DC, (void *)MNode_def},
+    {0x9DC, 0}, /* Text target bootup:MNode_def */
     {0x9E4, port_map5_data_rodata + 0x8},
-    {0xA1C, (void *)shape_cmdShape_00051520},
+    {0xA1C, 0}, /* Text target bootup:shape_cmdShape_00051520 */
     {0xA20, port_map5_data_data + 0x9A4},
     {0x1195C, port_map5_data_data + 0xA30},
     {0x11960, port_map5_data_data + 0x1944},
 };
 static const PortUsoReloc port_game_data_rel[295] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)game_readFloatParm_00003968},
-    {0x3C, (void *)game_readVec3Parm_00003998},
-    {0x54, (void *)game_readQuadParm_000039C8},
-    {0x6C, (void *)game_readIntParm_000039F8},
-    {0x84, (void *)ItemType_hostioParms},
-    {0x8C, (void *)Node_updateChildren},
-    {0x94, (void *)ColourItemType_display},
-    {0x9C, (void *)Node_update},
-    {0xA4, (void *)Node_handleMsg},
-    {0xAC, (void *)Node_broadcastMsg},
-    {0xB4, (void *)Node_doCommand},
-    {0xBC, (void *)ItemType_saveData},
-    {0xC4, (void *)ItemType_load},
-    {0xCC, (void *)Node_setAnimPose},
-    {0xD4, (void *)game_ItemType_create_00003A28},
-    {0xDC, (void *)ColourItemType_buildItems},
-    {0xE4, (void *)ColourItemType_findNearest},
-    {0xEC, (void *)ColourItemType_getItemPos},
-    {0xF4, (void *)ColourItemType_getItem},
-    {0xFC, (void *)ColourItemType_findNextByZ},
-    {0x114, (void *)MCamera_hostioParms},
-    {0x11C, (void *)MNode_updateChildren},
-    {0x124, (void *)MNode_display},
-    {0x12C, (void *)CameraBase_update_00002FF8},
-    {0x134, (void *)MNode_handleMsg},
-    {0x13C, (void *)Node_broadcastMsg},
-    {0x144, (void *)MCamera_doCommand},
-    {0x14C, (void *)Node_saveData},
-    {0x154, (void *)Node_loadData},
-    {0x15C, (void *)MNode_setAnimPose},
-    {0x164, (void *)MNode_getCMtx},
-    {0x16C, (void *)MCamera_updateLookAt},
-    {0x174, (void *)MCamera_command},
-    {0x18C, (void *)MCamera_hostioParms},
-    {0x194, (void *)MNode_updateChildren},
-    {0x19C, (void *)MNode_display},
-    {0x1A4, (void *)cam_update_00000B14},
-    {0x1AC, (void *)cam_handleMsg_00001714},
-    {0x1B4, (void *)Node_broadcastMsg},
-    {0x1BC, (void *)MCamera_doCommand},
-    {0x1C4, (void *)Node_saveData},
-    {0x1CC, (void *)cam_readParms_00001644},
-    {0x1D4, (void *)MNode_setAnimPose},
-    {0x1DC, (void *)MNode_getCMtx},
-    {0x1E4, (void *)MCamera_updateLookAt},
-    {0x1EC, (void *)cam_command_0000174C},
-    {0x204, (void *)Node_hostioParms},
-    {0x20C, (void *)Node_updateChildren},
-    {0x214, (void *)Node_display},
-    {0x21C, (void *)SnowChaseActorCam_update},
-    {0x224, (void *)Node_handleMsg},
-    {0x22C, (void *)Node_broadcastMsg},
-    {0x234, (void *)Node_doCommand},
-    {0x23C, (void *)Node_saveData},
-    {0x244, (void *)SnowChaseActorCam_loadParms},
-    {0x24C, (void *)Node_setAnimPose},
-    {0x264, (void *)Node_hostioParms},
-    {0x26C, (void *)Node_updateChildren},
-    {0x274, (void *)Node_display},
-    {0x27C, (void *)SnowChaseActorLook_update},
-    {0x284, (void *)Node_handleMsg},
-    {0x28C, (void *)Node_broadcastMsg},
-    {0x294, (void *)Node_doCommand},
-    {0x29C, (void *)Node_saveData},
-    {0x2A4, (void *)SnowChaseActorLook_loadParms},
-    {0x2AC, (void *)Node_setAnimPose},
-    {0x2C4, (void *)Node_hostioParms},
-    {0x2CC, (void *)Node_updateChildren},
-    {0x2D4, (void *)Node_display},
-    {0x2DC, (void *)SnowChaseActor_update},
-    {0x2E4, (void *)Node_handleMsg},
-    {0x2EC, (void *)Node_broadcastMsg},
-    {0x2F4, (void *)Node_doCommand},
-    {0x2FC, (void *)Node_saveData},
-    {0x304, (void *)SnowChaseActor_loadParms},
-    {0x30C, (void *)Node_setAnimPose},
-    {0x3BC, (void *)__pure_virtual_called},
-    {0x3D4, (void *)game_readFloatParm_00003968},
-    {0x3EC, (void *)game_readVec3Parm_00003998},
-    {0x404, (void *)game_readQuadParm_000039C8},
-    {0x41C, (void *)game_readIntParm_000039F8},
-    {0x434, (void *)ItemType_hostioParms},
-    {0x43C, (void *)Node_updateChildren},
-    {0x444, (void *)ColourItemType_display},
-    {0x44C, (void *)Node_update},
-    {0x454, (void *)Node_handleMsg},
-    {0x45C, (void *)Node_broadcastMsg},
-    {0x464, (void *)Node_doCommand},
-    {0x46C, (void *)ItemType_saveData},
-    {0x474, (void *)ItemType_load},
-    {0x47C, (void *)Node_setAnimPose},
-    {0x484, (void *)game_ItemType_create_00003A28},
-    {0x48C, (void *)ColourItemType_buildItems},
-    {0x494, (void *)ColourItemType_findNearest},
-    {0x49C, (void *)ColourItemType_getItemPos},
-    {0x4A4, (void *)ColourItemType_getItem},
-    {0x4AC, (void *)ColourItemType_findNextByZ},
-    {0x4C4, (void *)ItemType_hostioParms},
-    {0x4CC, (void *)Node_updateChildren},
-    {0x4D4, (void *)ColourItemType_display},
-    {0x4DC, (void *)Node_update},
-    {0x4E4, (void *)Node_handleMsg},
-    {0x4EC, (void *)Node_broadcastMsg},
-    {0x4F4, (void *)Node_doCommand},
-    {0x4FC, (void *)ItemType_saveData},
-    {0x504, (void *)ItemType_load},
-    {0x50C, (void *)Node_setAnimPose},
-    {0x514, (void *)CourseMarkerTmpl_create},
-    {0x51C, (void *)ColourItemType_buildItems},
-    {0x524, (void *)ColourItemType_findNearest},
-    {0x52C, (void *)ColourItemType_getItemPos},
-    {0x534, (void *)ColourItemType_getItem},
-    {0x53C, (void *)ColourItemType_findNextByZ},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target game:game_readFloatParm_00003968 */
+    {0x3C, 0}, /* Text target game:game_readVec3Parm_00003998 */
+    {0x54, 0}, /* Text target game:game_readQuadParm_000039C8 */
+    {0x6C, 0}, /* Text target game:game_readIntParm_000039F8 */
+    {0x84, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x8C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x94, 0}, /* Text target bootup:ColourItemType_display */
+    {0x9C, 0}, /* Text target bootup:Node_update */
+    {0xA4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xAC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xB4, 0}, /* Text target bootup:Node_doCommand */
+    {0xBC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xC4, 0}, /* Text target bootup:ItemType_load */
+    {0xCC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0xD4, 0}, /* Text target game:game_ItemType_create_00003A28 */
+    {0xDC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xE4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xEC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xF4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xFC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x114, 0}, /* Text target bootup:MCamera_hostioParms */
+    {0x11C, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x124, 0}, /* Text target bootup:MNode_display */
+    {0x12C, 0}, /* Text target game:CameraBase_update_00002FF8 */
+    {0x134, 0}, /* Text target bootup:MNode_handleMsg */
+    {0x13C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x144, 0}, /* Text target bootup:MCamera_doCommand */
+    {0x14C, 0}, /* Text target bootup:Node_saveData */
+    {0x154, 0}, /* Text target bootup:Node_loadData */
+    {0x15C, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x164, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x16C, 0}, /* Text target bootup:MCamera_updateLookAt */
+    {0x174, 0}, /* Text target bootup:MCamera_command */
+    {0x18C, 0}, /* Text target bootup:MCamera_hostioParms */
+    {0x194, 0}, /* Text target bootup:MNode_updateChildren */
+    {0x19C, 0}, /* Text target bootup:MNode_display */
+    {0x1A4, 0}, /* Text target game:cam_update_00000B14 */
+    {0x1AC, 0}, /* Text target game:cam_handleMsg_00001714 */
+    {0x1B4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1BC, 0}, /* Text target bootup:MCamera_doCommand */
+    {0x1C4, 0}, /* Text target bootup:Node_saveData */
+    {0x1CC, 0}, /* Text target game:cam_readParms_00001644 */
+    {0x1D4, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0x1DC, 0}, /* Text target bootup:MNode_getCMtx */
+    {0x1E4, 0}, /* Text target bootup:MCamera_updateLookAt */
+    {0x1EC, 0}, /* Text target game:cam_command_0000174C */
+    {0x204, 0}, /* Text target bootup:Node_hostioParms */
+    {0x20C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x214, 0}, /* Text target bootup:Node_display */
+    {0x21C, 0}, /* Text target game:SnowChaseActorCam_update */
+    {0x224, 0}, /* Text target bootup:Node_handleMsg */
+    {0x22C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x234, 0}, /* Text target bootup:Node_doCommand */
+    {0x23C, 0}, /* Text target bootup:Node_saveData */
+    {0x244, 0}, /* Text target game:SnowChaseActorCam_loadParms */
+    {0x24C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x264, 0}, /* Text target bootup:Node_hostioParms */
+    {0x26C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x274, 0}, /* Text target bootup:Node_display */
+    {0x27C, 0}, /* Text target game:SnowChaseActorLook_update */
+    {0x284, 0}, /* Text target bootup:Node_handleMsg */
+    {0x28C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x294, 0}, /* Text target bootup:Node_doCommand */
+    {0x29C, 0}, /* Text target bootup:Node_saveData */
+    {0x2A4, 0}, /* Text target game:SnowChaseActorLook_loadParms */
+    {0x2AC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x2C4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x2D4, 0}, /* Text target bootup:Node_display */
+    {0x2DC, 0}, /* Text target game:SnowChaseActor_update */
+    {0x2E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x2EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2F4, 0}, /* Text target bootup:Node_doCommand */
+    {0x2FC, 0}, /* Text target bootup:Node_saveData */
+    {0x304, 0}, /* Text target game:SnowChaseActor_loadParms */
+    {0x30C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x3BC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x3D4, 0}, /* Text target game:game_readFloatParm_00003968 */
+    {0x3EC, 0}, /* Text target game:game_readVec3Parm_00003998 */
+    {0x404, 0}, /* Text target game:game_readQuadParm_000039C8 */
+    {0x41C, 0}, /* Text target game:game_readIntParm_000039F8 */
+    {0x434, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x43C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x444, 0}, /* Text target bootup:ColourItemType_display */
+    {0x44C, 0}, /* Text target bootup:Node_update */
+    {0x454, 0}, /* Text target bootup:Node_handleMsg */
+    {0x45C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x464, 0}, /* Text target bootup:Node_doCommand */
+    {0x46C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x474, 0}, /* Text target bootup:ItemType_load */
+    {0x47C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x484, 0}, /* Text target game:game_ItemType_create_00003A28 */
+    {0x48C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x494, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x49C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x4A4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x4AC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x4C4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x4CC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x4D4, 0}, /* Text target bootup:ColourItemType_display */
+    {0x4DC, 0}, /* Text target bootup:Node_update */
+    {0x4E4, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4EC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x4F4, 0}, /* Text target bootup:Node_doCommand */
+    {0x4FC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x504, 0}, /* Text target bootup:ItemType_load */
+    {0x50C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x514, 0}, /* Text target game:CourseMarkerTmpl_create */
+    {0x51C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x524, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x52C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x534, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x53C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
     {0x548, port_game_rodata + 0x60},
     {0x54C, port_game_rodata + 0x64},
     {0x550, port_game_rodata + 0x68},
@@ -5983,31 +5323,31 @@ static const PortUsoReloc port_game_data_rel[295] = {
     {0x56C, port_game_rodata + 0x84},
     {0x570, port_game_rodata + 0x88},
     {0x574, port_game_rodata + 0x8C},
-    {0x584, (void *)Node_hostioParms},
-    {0x58C, (void *)Node_updateChildren},
-    {0x594, (void *)ColourItem_display},
-    {0x59C, (void *)Node_update},
-    {0x5A4, (void *)ColourItem_handleMsg},
-    {0x5AC, (void *)Node_broadcastMsg},
-    {0x5B4, (void *)Node_doCommand},
-    {0x5BC, (void *)Node_saveData},
-    {0x5C4, (void *)CourseMarker_readParms},
-    {0x5CC, (void *)Node_setAnimPose},
-    {0x5E4, (void *)Node_hostioParms},
-    {0x5EC, (void *)Node_updateChildren},
-    {0x5F4, (void *)Node_display},
-    {0x5FC, (void *)SnowAI_update},
-    {0x604, (void *)Node_handleMsg},
-    {0x60C, (void *)Node_broadcastMsg},
-    {0x614, (void *)Node_doCommand},
-    {0x61C, (void *)Node_saveData},
-    {0x624, (void *)SnowAI_readParms},
-    {0x62C, (void *)Node_setAnimPose},
-    {0x844, (void *)Sun_measureVisibility},
-    {0x854, (void *)__pure_virtual_called},
-    {0x86C, (void *)game_readFloatParm_00003968},
-    {0x884, (void *)game_readIntParm_0000C08C},
-    {0x89C, (void *)game_readQuadParm_000039C8},
+    {0x584, 0}, /* Text target bootup:Node_hostioParms */
+    {0x58C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x594, 0}, /* Text target bootup:ColourItem_display */
+    {0x59C, 0}, /* Text target bootup:Node_update */
+    {0x5A4, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x5AC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x5B4, 0}, /* Text target bootup:Node_doCommand */
+    {0x5BC, 0}, /* Text target bootup:Node_saveData */
+    {0x5C4, 0}, /* Text target game:CourseMarker_readParms */
+    {0x5CC, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x5E4, 0}, /* Text target bootup:Node_hostioParms */
+    {0x5EC, 0}, /* Text target bootup:Node_updateChildren */
+    {0x5F4, 0}, /* Text target bootup:Node_display */
+    {0x5FC, 0}, /* Text target game:SnowAI_update */
+    {0x604, 0}, /* Text target bootup:Node_handleMsg */
+    {0x60C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x614, 0}, /* Text target bootup:Node_doCommand */
+    {0x61C, 0}, /* Text target bootup:Node_saveData */
+    {0x624, 0}, /* Text target game:SnowAI_readParms */
+    {0x62C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x844, 0}, /* Text target game:Sun_measureVisibility */
+    {0x854, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x86C, 0}, /* Text target game:game_readFloatParm_00003968 */
+    {0x884, 0}, /* Text target game:game_readIntParm_0000C08C */
+    {0x89C, 0}, /* Text target game:game_readQuadParm_000039C8 */
     {0x8B4, 0}, /* unresolved sym 162 */
     {0x8F8, 0}, /* unresolved sym 163 */
     {0x93C, 0}, /* unresolved sym 164 */
@@ -6023,124 +5363,124 @@ static const PortUsoReloc port_game_data_rel[295] = {
     {0xBE8, 0}, /* unresolved sym 164 */
     {0xC2C, port_game_data + 0x978},
     {0xC3C, port_game_data + 0x8A8},
-    {0xC50, (void *)MemberCallback_invoke_0000BFDC},
-    {0xC68, (void *)MNode_hostioParms},
-    {0xC70, (void *)MNode_updateChildren},
-    {0xC78, (void *)Sun_display},
-    {0xC80, (void *)Sun_update},
-    {0xC88, (void *)MNode_handleMsg},
-    {0xC90, (void *)Node_broadcastMsg},
-    {0xC98, (void *)MNode_doCommand},
-    {0xCA0, (void *)Node_saveData},
-    {0xCA8, (void *)Sun_readParms},
-    {0xCB0, (void *)MNode_setAnimPose},
-    {0xCB8, (void *)MNode_getCMtx},
-    {0xCF4, (void *)MNode_hostioParms},
-    {0xCFC, (void *)MNode_updateChildren},
-    {0xD04, (void *)LensFlare_display},
-    {0xD0C, (void *)MNode_update},
-    {0xD14, (void *)MNode_handleMsg},
-    {0xD1C, (void *)Node_broadcastMsg},
-    {0xD24, (void *)MNode_doCommand},
-    {0xD2C, (void *)Node_saveData},
-    {0xD34, (void *)LensFlare_readParms},
-    {0xD3C, (void *)MNode_setAnimPose},
-    {0xD44, (void *)MNode_getCMtx},
-    {0xDB4, (void *)RiderAnim_stateStartIntro},
-    {0xDBC, (void *)RiderAnim_stateStartWait},
-    {0xDC4, (void *)RiderAnim_stateStopped},
-    {0xDD4, (void *)RiderAnim_stateHopStart},
-    {0xDDC, (void *)RiderAnim_stateHopRise},
-    {0xDE4, (void *)RiderAnim_stateCushionIn},
-    {0xDEC, (void *)RiderAnim_stateHopDrop},
-    {0xDF4, (void *)RiderAnim_stateHopAir},
-    {0xDFC, (void *)RiderAnim_stateHopLand},
-    {0xE04, (void *)RiderAnim_stateCushionEnd},
-    {0xE0C, (void *)RiderAnim_stateCushion},
-    {0xE14, (void *)RiderAnim_stateRideBlendIn},
-    {0xE1C, (void *)RiderAnim_stateOllieRise},
-    {0xE24, (void *)RiderAnim_stateOllieTakeoff},
-    {0xE2C, (void *)RiderAnim_stateOllieLand},
-    {0xE34, (void *)RiderAnim_stateOllieHang},
-    {0xE3C, (void *)RiderAnim_stateOllieDrop},
-    {0xE44, (void *)RiderAnim_stateRide},
-    {0xE4C, (void *)RiderAnim_stateRideDeepBlendIn},
-    {0xE54, (void *)RiderAnim_stateRow},
-    {0xE5C, (void *)RiderAnim_stateRowOut},
-    {0xE64, (void *)RiderAnim_stateRideDeep},
-    {0xE6C, (void *)RiderAnim_stateRowIn},
-    {0xE74, (void *)RiderAnim_stateBrakeBlendIn},
-    {0xE7C, (void *)RiderAnim_stateBrakeDeep},
-    {0xE84, (void *)RiderAnim_stateBrake},
-    {0xE8C, (void *)RiderAnim_stateCrashRecover},
-    {0xE94, (void *)RiderAnim_stateResumeRide},
-    {0xE9C, (void *)RiderAnim_stateSwitchStanceEnd},
-    {0xEA4, (void *)RiderAnim_stateSwitchStance},
-    {0xEAC, (void *)RiderAnim_statePreJumpCancel},
-    {0xEB4, (void *)RiderAnim_statePreJumpHold},
-    {0xEBC, (void *)RiderAnim_statePreJump},
-    {0xEC4, (void *)RiderAnim_stateTrickWindup},
-    {0xECC, (void *)RiderAnim_stateTrickRelease},
-    {0xED4, (void *)RiderAnim_stateTrickAir},
-    {0xEDC, (void *)RiderAnim_stateTrickHold},
-    {0xEE4, (void *)RiderAnim_stateTrickStart},
-    {0xEEC, (void *)RiderAnim_stateTrickEnd},
-    {0xEF4, (void *)RiderAnim_stateFlipToRide},
-    {0xEFC, (void *)RiderAnim_stateStartIntroEnd},
-    {0xF04, (void *)RiderAnim_stateIdle},
-    {0xF0C, (void *)RiderAnim_stateEnding2},
-    {0xF14, (void *)RiderAnim_stateEnding3},
-    {0xF1C, (void *)RiderAnim_stateEnding1},
-    {0xF24, (void *)RiderAnim_stateFinish},
-    {0xF2C, (void *)RiderAnim_stateGoalNormal},
-    {0xF34, (void *)RiderAnim_stateGoalWinOM},
-    {0xF3C, (void *)RiderAnim_stateGoalWin},
-    {0xF44, (void *)RiderAnim_stateGoalLose},
-    {0xF4C, (void *)RiderAnim_stateTimeUp},
-    {0xF54, (void *)RiderAnim_stateTimeUpLose},
-    {0xF5C, (void *)RiderAnim_stateStand},
-    {0xF6C, (void *)__pure_virtual_called},
-    {0xF84, (void *)game_readFloatParm_00003968},
-    {0xF9C, (void *)game_readVec3Parm_00003998},
-    {0xFB4, (void *)game_readQuadParm_000039C8},
-    {0xFCC, (void *)game_readIntParm_000039F8},
-    {0xFE4, (void *)ItemType_hostioParms},
-    {0xFEC, (void *)Node_updateChildren},
-    {0xFF4, (void *)ColourItemType_display},
-    {0xFFC, (void *)Node_update},
-    {0x1004, (void *)Node_handleMsg},
-    {0x100C, (void *)Node_broadcastMsg},
-    {0x1014, (void *)Node_doCommand},
-    {0x101C, (void *)ItemType_saveData},
-    {0x1024, (void *)ItemType_load},
-    {0x102C, (void *)Node_setAnimPose},
-    {0x1034, (void *)game_ItemType_create_00003A28},
-    {0x103C, (void *)ColourItemType_buildItems},
-    {0x1044, (void *)ColourItemType_findNearest},
-    {0x104C, (void *)ColourItemType_getItemPos},
-    {0x1054, (void *)ColourItemType_getItem},
-    {0x105C, (void *)ColourItemType_findNextByZ},
-    {0x1108, (void *)Node_hostioParms},
-    {0x1110, (void *)Node_updateChildren},
-    {0x1118, (void *)Node_display},
-    {0x1120, (void *)Node_update},
-    {0x1128, (void *)Node_handleMsg},
-    {0x1130, (void *)Node_broadcastMsg},
-    {0x1138, (void *)Node_doCommand},
-    {0x1140, (void *)Node_saveData},
-    {0x1148, (void *)TrickTable_load_0000C3F8},
-    {0x1150, (void *)Node_setAnimPose},
-    {0x1168, (void *)Node_hostioParms},
-    {0x1170, (void *)Node_updateChildren},
-    {0x1178, (void *)RiderAnim_display_0000D634},
-    {0x1180, (void *)RiderAnim_update_0000D204},
-    {0x1188, (void *)AnimPlayer_handleMsg},
-    {0x1190, (void *)Node_broadcastMsg},
-    {0x1198, (void *)Node_doCommand},
-    {0x11A0, (void *)Node_saveData},
-    {0x11A8, (void *)RiderAnim_readParms_0000D418},
-    {0x11B0, (void *)Node_setAnimPose},
-    {0x11B8, (void *)RiderAnim_onKey_0000D438},
+    {0xC50, 0}, /* Text target game:MemberCallback_invoke_0000BFDC */
+    {0xC68, 0}, /* Text target bootup:MNode_hostioParms */
+    {0xC70, 0}, /* Text target bootup:MNode_updateChildren */
+    {0xC78, 0}, /* Text target game:Sun_display */
+    {0xC80, 0}, /* Text target game:Sun_update */
+    {0xC88, 0}, /* Text target bootup:MNode_handleMsg */
+    {0xC90, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xC98, 0}, /* Text target bootup:MNode_doCommand */
+    {0xCA0, 0}, /* Text target bootup:Node_saveData */
+    {0xCA8, 0}, /* Text target game:Sun_readParms */
+    {0xCB0, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0xCB8, 0}, /* Text target bootup:MNode_getCMtx */
+    {0xCF4, 0}, /* Text target bootup:MNode_hostioParms */
+    {0xCFC, 0}, /* Text target bootup:MNode_updateChildren */
+    {0xD04, 0}, /* Text target game:LensFlare_display */
+    {0xD0C, 0}, /* Text target bootup:MNode_update */
+    {0xD14, 0}, /* Text target bootup:MNode_handleMsg */
+    {0xD1C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xD24, 0}, /* Text target bootup:MNode_doCommand */
+    {0xD2C, 0}, /* Text target bootup:Node_saveData */
+    {0xD34, 0}, /* Text target game:LensFlare_readParms */
+    {0xD3C, 0}, /* Text target bootup:MNode_setAnimPose */
+    {0xD44, 0}, /* Text target bootup:MNode_getCMtx */
+    {0xDB4, 0}, /* Text target game:RiderAnim_stateStartIntro */
+    {0xDBC, 0}, /* Text target game:RiderAnim_stateStartWait */
+    {0xDC4, 0}, /* Text target game:RiderAnim_stateStopped */
+    {0xDD4, 0}, /* Text target game:RiderAnim_stateHopStart */
+    {0xDDC, 0}, /* Text target game:RiderAnim_stateHopRise */
+    {0xDE4, 0}, /* Text target game:RiderAnim_stateCushionIn */
+    {0xDEC, 0}, /* Text target game:RiderAnim_stateHopDrop */
+    {0xDF4, 0}, /* Text target game:RiderAnim_stateHopAir */
+    {0xDFC, 0}, /* Text target game:RiderAnim_stateHopLand */
+    {0xE04, 0}, /* Text target game:RiderAnim_stateCushionEnd */
+    {0xE0C, 0}, /* Text target game:RiderAnim_stateCushion */
+    {0xE14, 0}, /* Text target game:RiderAnim_stateRideBlendIn */
+    {0xE1C, 0}, /* Text target game:RiderAnim_stateOllieRise */
+    {0xE24, 0}, /* Text target game:RiderAnim_stateOllieTakeoff */
+    {0xE2C, 0}, /* Text target game:RiderAnim_stateOllieLand */
+    {0xE34, 0}, /* Text target game:RiderAnim_stateOllieHang */
+    {0xE3C, 0}, /* Text target game:RiderAnim_stateOllieDrop */
+    {0xE44, 0}, /* Text target game:RiderAnim_stateRide */
+    {0xE4C, 0}, /* Text target game:RiderAnim_stateRideDeepBlendIn */
+    {0xE54, 0}, /* Text target game:RiderAnim_stateRow */
+    {0xE5C, 0}, /* Text target game:RiderAnim_stateRowOut */
+    {0xE64, 0}, /* Text target game:RiderAnim_stateRideDeep */
+    {0xE6C, 0}, /* Text target game:RiderAnim_stateRowIn */
+    {0xE74, 0}, /* Text target game:RiderAnim_stateBrakeBlendIn */
+    {0xE7C, 0}, /* Text target game:RiderAnim_stateBrakeDeep */
+    {0xE84, 0}, /* Text target game:RiderAnim_stateBrake */
+    {0xE8C, 0}, /* Text target game:RiderAnim_stateCrashRecover */
+    {0xE94, 0}, /* Text target game:RiderAnim_stateResumeRide */
+    {0xE9C, 0}, /* Text target game:RiderAnim_stateSwitchStanceEnd */
+    {0xEA4, 0}, /* Text target game:RiderAnim_stateSwitchStance */
+    {0xEAC, 0}, /* Text target game:RiderAnim_statePreJumpCancel */
+    {0xEB4, 0}, /* Text target game:RiderAnim_statePreJumpHold */
+    {0xEBC, 0}, /* Text target game:RiderAnim_statePreJump */
+    {0xEC4, 0}, /* Text target game:RiderAnim_stateTrickWindup */
+    {0xECC, 0}, /* Text target game:RiderAnim_stateTrickRelease */
+    {0xED4, 0}, /* Text target game:RiderAnim_stateTrickAir */
+    {0xEDC, 0}, /* Text target game:RiderAnim_stateTrickHold */
+    {0xEE4, 0}, /* Text target game:RiderAnim_stateTrickStart */
+    {0xEEC, 0}, /* Text target game:RiderAnim_stateTrickEnd */
+    {0xEF4, 0}, /* Text target game:RiderAnim_stateFlipToRide */
+    {0xEFC, 0}, /* Text target game:RiderAnim_stateStartIntroEnd */
+    {0xF04, 0}, /* Text target game:RiderAnim_stateIdle */
+    {0xF0C, 0}, /* Text target game:RiderAnim_stateEnding2 */
+    {0xF14, 0}, /* Text target game:RiderAnim_stateEnding3 */
+    {0xF1C, 0}, /* Text target game:RiderAnim_stateEnding1 */
+    {0xF24, 0}, /* Text target game:RiderAnim_stateFinish */
+    {0xF2C, 0}, /* Text target game:RiderAnim_stateGoalNormal */
+    {0xF34, 0}, /* Text target game:RiderAnim_stateGoalWinOM */
+    {0xF3C, 0}, /* Text target game:RiderAnim_stateGoalWin */
+    {0xF44, 0}, /* Text target game:RiderAnim_stateGoalLose */
+    {0xF4C, 0}, /* Text target game:RiderAnim_stateTimeUp */
+    {0xF54, 0}, /* Text target game:RiderAnim_stateTimeUpLose */
+    {0xF5C, 0}, /* Text target game:RiderAnim_stateStand */
+    {0xF6C, 0}, /* Text target bootup:__pure_virtual_called */
+    {0xF84, 0}, /* Text target game:game_readFloatParm_00003968 */
+    {0xF9C, 0}, /* Text target game:game_readVec3Parm_00003998 */
+    {0xFB4, 0}, /* Text target game:game_readQuadParm_000039C8 */
+    {0xFCC, 0}, /* Text target game:game_readIntParm_000039F8 */
+    {0xFE4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xFEC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xFF4, 0}, /* Text target bootup:ColourItemType_display */
+    {0xFFC, 0}, /* Text target bootup:Node_update */
+    {0x1004, 0}, /* Text target bootup:Node_handleMsg */
+    {0x100C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1014, 0}, /* Text target bootup:Node_doCommand */
+    {0x101C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1024, 0}, /* Text target bootup:ItemType_load */
+    {0x102C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1034, 0}, /* Text target game:game_ItemType_create_00003A28 */
+    {0x103C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x1044, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x104C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x1054, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x105C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0x1108, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1110, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1118, 0}, /* Text target bootup:Node_display */
+    {0x1120, 0}, /* Text target bootup:Node_update */
+    {0x1128, 0}, /* Text target bootup:Node_handleMsg */
+    {0x1130, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1138, 0}, /* Text target bootup:Node_doCommand */
+    {0x1140, 0}, /* Text target bootup:Node_saveData */
+    {0x1148, 0}, /* Text target game:TrickTable_load_0000C3F8 */
+    {0x1150, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x1168, 0}, /* Text target bootup:Node_hostioParms */
+    {0x1170, 0}, /* Text target bootup:Node_updateChildren */
+    {0x1178, 0}, /* Text target game:RiderAnim_display_0000D634 */
+    {0x1180, 0}, /* Text target game:RiderAnim_update_0000D204 */
+    {0x1188, 0}, /* Text target bootup:AnimPlayer_handleMsg */
+    {0x1190, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1198, 0}, /* Text target bootup:Node_doCommand */
+    {0x11A0, 0}, /* Text target bootup:Node_saveData */
+    {0x11A8, 0}, /* Text target game:RiderAnim_readParms_0000D418 */
+    {0x11B0, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x11B8, 0}, /* Text target game:RiderAnim_onKey_0000D438 */
     {0x11F0, port_game_rodata + 0x180},
     {0x11F4, port_game_rodata + 0x18C},
     {0x11F8, port_game_rodata + 0x198},
@@ -6198,23 +5538,23 @@ static const PortUsoReloc port_game_rodata_rel[42] = {
     {0x270, 0}, /* jump table RiderAnim_hitFeedback_0001189C+0xFC */
 };
 static const PortUsoReloc port_balloon_data_rel[51] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)ItemType_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)Node_display},
-    {0x3C, (void *)Node_update},
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)ItemType_saveData},
-    {0x64, (void *)ItemType_load},
-    {0x6C, (void *)Node_setAnimPose},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:Node_display */
+    {0x3C, 0}, /* Text target bootup:Node_update */
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x64, 0}, /* Text target bootup:ItemType_load */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
     {0x74, 0}, /* Text target balloon:Text+0x47C */
-    {0x7C, (void *)SNodeItemType_buildItems},
-    {0x84, (void *)SNodeItemType_findNearest},
-    {0x8C, (void *)SNodeItemType_getItemPos},
-    {0x94, (void *)SNodeItemType_getItem},
-    {0x9C, (void *)SNodeItemType_findNextByZ},
+    {0x7C, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x84, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x8C, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x94, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x9C, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
     {0xA94, port_balloon_rodata + 0x0},
     {0xAA0, port_balloon_data + 0xC00},
     {0xAE0, port_balloon_rodata + 0x4},
@@ -6240,64 +5580,64 @@ static const PortUsoReloc port_balloon_data_rel[51] = {
     {0x3908, port_balloon_data + 0x359C},
     {0x3914, port_balloon_data + 0x37FC},
     {0x4134, 0}, /* Text target balloon:Text+0x32C */
-    {0x413C, (void *)Node_updateChildren},
+    {0x413C, 0}, /* Text target bootup:Node_updateChildren */
     {0x4144, 0}, /* Text target balloon:Text+0x1A8 */
-    {0x414C, (void *)Node_update},
+    {0x414C, 0}, /* Text target bootup:Node_update */
     {0x4154, 0}, /* Text target balloon:Text+0x42C */
-    {0x415C, (void *)Node_broadcastMsg},
-    {0x4164, (void *)Node_doCommand},
+    {0x415C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x4164, 0}, /* Text target bootup:Node_doCommand */
     {0x416C, 0}, /* Text target balloon:Text+0x2BC */
     {0x4174, 0}, /* Text target balloon:Text+0x2F4 */
-    {0x417C, (void *)Node_setAnimPose},
+    {0x417C, 0}, /* Text target bootup:Node_setAnimPose */
 };
 static const PortUsoReloc port_heli_data_rel[136] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)Node_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)ColourItem_display},
-    {0x3C, (void *)Node_update},
-    {0x44, (void *)ColourItem_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)Node_saveData},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:Node_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:ColourItem_display */
+    {0x3C, 0}, /* Text target bootup:Node_update */
+    {0x44, 0}, /* Text target bootup:ColourItem_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:Node_saveData */
     {0x64, 0}, /* Text target heli:Text+0x19E0 */
-    {0x6C, (void *)Node_setAnimPose},
-    {0x84, (void *)ItemType_hostioParms},
-    {0x8C, (void *)Node_updateChildren},
-    {0x94, (void *)ColourItemType_display},
-    {0x9C, (void *)Node_update},
-    {0xA4, (void *)Node_handleMsg},
-    {0xAC, (void *)Node_broadcastMsg},
-    {0xB4, (void *)Node_doCommand},
-    {0xBC, (void *)ItemType_saveData},
-    {0xC4, (void *)ItemType_load},
-    {0xCC, (void *)Node_setAnimPose},
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x84, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x8C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x94, 0}, /* Text target bootup:ColourItemType_display */
+    {0x9C, 0}, /* Text target bootup:Node_update */
+    {0xA4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xAC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xB4, 0}, /* Text target bootup:Node_doCommand */
+    {0xBC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xC4, 0}, /* Text target bootup:ItemType_load */
+    {0xCC, 0}, /* Text target bootup:Node_setAnimPose */
     {0xD4, 0}, /* Text target heli:Text+0x140 */
-    {0xDC, (void *)ColourItemType_buildItems},
-    {0xE4, (void *)ColourItemType_findNearest},
-    {0xEC, (void *)ColourItemType_getItemPos},
-    {0xF4, (void *)ColourItemType_getItem},
-    {0xFC, (void *)ColourItemType_findNextByZ},
+    {0xDC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0xE4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0xEC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0xF4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0xFC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
     {0x114, 0}, /* Text target heli:Text+0x1A0C */
     {0x12C, 0}, /* Text target heli:Text+0x1A3C */
     {0x144, 0}, /* Text target heli:Text+0x1A6C */
     {0x15C, 0}, /* Text target heli:Text+0x1A9C */
-    {0x174, (void *)ItemType_hostioParms},
-    {0x17C, (void *)Node_updateChildren},
-    {0x184, (void *)ColourItemType_display},
-    {0x18C, (void *)Node_update},
-    {0x194, (void *)Node_handleMsg},
-    {0x19C, (void *)Node_broadcastMsg},
-    {0x1A4, (void *)Node_doCommand},
-    {0x1AC, (void *)ItemType_saveData},
-    {0x1B4, (void *)ItemType_load},
-    {0x1BC, (void *)Node_setAnimPose},
+    {0x174, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x17C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x184, 0}, /* Text target bootup:ColourItemType_display */
+    {0x18C, 0}, /* Text target bootup:Node_update */
+    {0x194, 0}, /* Text target bootup:Node_handleMsg */
+    {0x19C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x1A4, 0}, /* Text target bootup:Node_doCommand */
+    {0x1AC, 0}, /* Text target bootup:ItemType_saveData */
+    {0x1B4, 0}, /* Text target bootup:ItemType_load */
+    {0x1BC, 0}, /* Text target bootup:Node_setAnimPose */
     {0x1C4, 0}, /* Text target heli:Text+0x1ACC */
-    {0x1CC, (void *)ColourItemType_buildItems},
-    {0x1D4, (void *)ColourItemType_findNearest},
-    {0x1DC, (void *)ColourItemType_getItemPos},
-    {0x1E4, (void *)ColourItemType_getItem},
-    {0x1EC, (void *)ColourItemType_findNextByZ},
+    {0x1CC, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x1D4, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x1DC, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x1E4, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x1EC, 0}, /* Text target bootup:ColourItemType_findNextByZ */
     {0x167C, port_heli_rodata + 0x0},
     {0x1688, port_heli_data + 0x1C60},
     {0x16C8, port_heli_rodata + 0x4},
@@ -6351,42 +5691,42 @@ static const PortUsoReloc port_heli_data_rel[136] = {
     {0xC9D4, 0}, /* unresolved sym 95 */
     {0xCA18, port_heli_data + 0xC9C8},
     {0xCA2C, 0}, /* Text target heli:Text+0x458 */
-    {0xCA34, (void *)QNode_updateChildren},
-    {0xCA3C, (void *)QNode_display},
+    {0xCA34, 0}, /* Text target bootup:QNode_updateChildren */
+    {0xCA3C, 0}, /* Text target bootup:QNode_display */
     {0xCA44, 0}, /* Text target heli:Text+0x3F4 */
-    {0xCA4C, (void *)QNode_handleMsg},
-    {0xCA54, (void *)Node_broadcastMsg},
-    {0xCA5C, (void *)QNode_doCommand},
-    {0xCA64, (void *)Node_saveData},
-    {0xCA6C, (void *)Node_loadData},
-    {0xCA74, (void *)QNode_setAnimPose},
-    {0xCA7C, (void *)MNode_getCMtx},
-    {0xCA94, (void *)QNode_hostioParms},
-    {0xCA9C, (void *)QNode_updateChildren},
+    {0xCA4C, 0}, /* Text target bootup:QNode_handleMsg */
+    {0xCA54, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCA5C, 0}, /* Text target bootup:QNode_doCommand */
+    {0xCA64, 0}, /* Text target bootup:Node_saveData */
+    {0xCA6C, 0}, /* Text target bootup:Node_loadData */
+    {0xCA74, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0xCA7C, 0}, /* Text target bootup:MNode_getCMtx */
+    {0xCA94, 0}, /* Text target bootup:QNode_hostioParms */
+    {0xCA9C, 0}, /* Text target bootup:QNode_updateChildren */
     {0xCAA4, 0}, /* Text target heli:Text+0xA70 */
     {0xCAAC, 0}, /* Text target heli:Text+0xB08 */
     {0xCAB4, 0}, /* Text target heli:Text+0x7B4 */
-    {0xCABC, (void *)Node_broadcastMsg},
-    {0xCAC4, (void *)QNode_doCommand},
-    {0xCACC, (void *)Node_saveData},
+    {0xCABC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCAC4, 0}, /* Text target bootup:QNode_doCommand */
+    {0xCACC, 0}, /* Text target bootup:Node_saveData */
     {0xCAD4, 0}, /* Text target heli:Text+0x69C */
-    {0xCADC, (void *)QNode_setAnimPose},
-    {0xCAE4, (void *)MNode_getCMtx},
-    {0xCAFC, (void *)ItemType_hostioParms},
-    {0xCB04, (void *)Node_updateChildren},
-    {0xCB0C, (void *)Node_display},
-    {0xCB14, (void *)Node_update},
-    {0xCB1C, (void *)Node_handleMsg},
-    {0xCB24, (void *)Node_broadcastMsg},
-    {0xCB2C, (void *)Node_doCommand},
-    {0xCB34, (void *)ItemType_saveData},
-    {0xCB3C, (void *)ItemType_load},
-    {0xCB44, (void *)Node_setAnimPose},
+    {0xCADC, 0}, /* Text target bootup:QNode_setAnimPose */
+    {0xCAE4, 0}, /* Text target bootup:MNode_getCMtx */
+    {0xCAFC, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xCB04, 0}, /* Text target bootup:Node_updateChildren */
+    {0xCB0C, 0}, /* Text target bootup:Node_display */
+    {0xCB14, 0}, /* Text target bootup:Node_update */
+    {0xCB1C, 0}, /* Text target bootup:Node_handleMsg */
+    {0xCB24, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xCB2C, 0}, /* Text target bootup:Node_doCommand */
+    {0xCB34, 0}, /* Text target bootup:ItemType_saveData */
+    {0xCB3C, 0}, /* Text target bootup:ItemType_load */
+    {0xCB44, 0}, /* Text target bootup:Node_setAnimPose */
     {0xCB4C, 0}, /* Text target heli:Text+0x274 */
     {0xCB54, 0}, /* Text target heli:Text+0x19C4 */
     {0xCB5C, 0}, /* Text target heli:Text+0x19CC */
-    {0xCB64, (void *)MNodeItemType_getItemPos},
-    {0xCB6C, (void *)ItemType_getItem},
+    {0xCB64, 0}, /* Text target bootup:MNodeItemType_getItemPos */
+    {0xCB6C, 0}, /* Text target bootup:ItemType_getItem */
 };
 static const PortUsoReloc port_heli_rodata_rel[8] = {
     {0x7C, 0}, /* Text target heli:Text+0xE04 */
@@ -6399,7 +5739,7 @@ static const PortUsoReloc port_heli_rodata_rel[8] = {
     {0x98, 0}, /* Text target heli:Text+0xC5C */
 };
 static const PortUsoReloc port_fire_data_rel[36] = {
-    {0xC, (void *)__pure_virtual_called},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
     {0x2064, port_fire_data + 0x20},
     {0x20A8, port_fire_data + 0x428},
     {0x20EC, port_fire_data + 0x830},
@@ -6410,82 +5750,82 @@ static const PortUsoReloc port_fire_data_rel[36] = {
     {0x2240, port_fire_data + 0x1C58},
     {0x2284, port_fire_data + 0x2058},
     {0x2298, 0}, /* Text target fire:Text+0x1E4 */
-    {0x22A0, (void *)Node_updateChildren},
+    {0x22A0, 0}, /* Text target bootup:Node_updateChildren */
     {0x22A8, 0}, /* Text target fire:Text+0x224 */
-    {0x22B0, (void *)Node_update},
-    {0x22B8, (void *)Node_handleMsg},
-    {0x22C0, (void *)Node_broadcastMsg},
-    {0x22C8, (void *)Node_doCommand},
-    {0x22D0, (void *)ItemType_saveData},
-    {0x22D8, (void *)ItemType_load},
-    {0x22E0, (void *)Node_setAnimPose},
+    {0x22B0, 0}, /* Text target bootup:Node_update */
+    {0x22B8, 0}, /* Text target bootup:Node_handleMsg */
+    {0x22C0, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x22C8, 0}, /* Text target bootup:Node_doCommand */
+    {0x22D0, 0}, /* Text target bootup:ItemType_saveData */
+    {0x22D8, 0}, /* Text target bootup:ItemType_load */
+    {0x22E0, 0}, /* Text target bootup:Node_setAnimPose */
     {0x22E8, 0}, /* Text target fire:Text+0x148 */
-    {0x22F0, (void *)SNodeItemType_buildItems},
-    {0x22F8, (void *)SNodeItemType_findNearest},
-    {0x2300, (void *)SNodeItemType_getItemPos},
-    {0x2308, (void *)SNodeItemType_getItem},
-    {0x2310, (void *)SNodeItemType_findNextByZ},
+    {0x22F0, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x22F8, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x2300, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x2308, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x2310, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
     {0x2328, 0}, /* Text target fire:Text+0x338 */
-    {0x2330, (void *)Node_updateChildren},
+    {0x2330, 0}, /* Text target bootup:Node_updateChildren */
     {0x2338, 0}, /* Text target fire:Text+0x2E8 */
-    {0x2340, (void *)Node_update},
-    {0x2348, (void *)SNode_handleMsg},
-    {0x2350, (void *)Node_broadcastMsg},
-    {0x2358, (void *)Node_doCommand},
-    {0x2360, (void *)SNode_saveData},
-    {0x2368, (void *)SNode_loadData},
-    {0x2370, (void *)Node_setAnimPose},
+    {0x2340, 0}, /* Text target bootup:Node_update */
+    {0x2348, 0}, /* Text target bootup:SNode_handleMsg */
+    {0x2350, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x2358, 0}, /* Text target bootup:Node_doCommand */
+    {0x2360, 0}, /* Text target bootup:SNode_saveData */
+    {0x2368, 0}, /* Text target bootup:SNode_loadData */
+    {0x2370, 0}, /* Text target bootup:Node_setAnimPose */
 };
 static const PortUsoReloc port_checkpoint_data_rel[92] = {
-    {0xC, (void *)__pure_virtual_called},
-    {0x24, (void *)ItemType_hostioParms},
-    {0x2C, (void *)Node_updateChildren},
-    {0x34, (void *)ColourItemType_display},
-    {0x3C, (void *)Node_update},
-    {0x44, (void *)Node_handleMsg},
-    {0x4C, (void *)Node_broadcastMsg},
-    {0x54, (void *)Node_doCommand},
-    {0x5C, (void *)ItemType_saveData},
-    {0x64, (void *)ItemType_load},
-    {0x6C, (void *)Node_setAnimPose},
+    {0xC, 0}, /* Text target bootup:__pure_virtual_called */
+    {0x24, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x2C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x34, 0}, /* Text target bootup:ColourItemType_display */
+    {0x3C, 0}, /* Text target bootup:Node_update */
+    {0x44, 0}, /* Text target bootup:Node_handleMsg */
+    {0x4C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x54, 0}, /* Text target bootup:Node_doCommand */
+    {0x5C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x64, 0}, /* Text target bootup:ItemType_load */
+    {0x6C, 0}, /* Text target bootup:Node_setAnimPose */
     {0x74, 0}, /* Text target checkpoint:Text+0x8E8 */
-    {0x7C, (void *)ColourItemType_buildItems},
-    {0x84, (void *)ColourItemType_findNearest},
-    {0x8C, (void *)ColourItemType_getItemPos},
-    {0x94, (void *)ColourItemType_getItem},
-    {0x9C, (void *)ColourItemType_findNextByZ},
-    {0xB4, (void *)ItemType_hostioParms},
-    {0xBC, (void *)Node_updateChildren},
-    {0xC4, (void *)Node_display},
-    {0xCC, (void *)Node_update},
-    {0xD4, (void *)Node_handleMsg},
-    {0xDC, (void *)Node_broadcastMsg},
-    {0xE4, (void *)Node_doCommand},
-    {0xEC, (void *)ItemType_saveData},
-    {0xF4, (void *)ItemType_load},
-    {0xFC, (void *)Node_setAnimPose},
+    {0x7C, 0}, /* Text target bootup:ColourItemType_buildItems */
+    {0x84, 0}, /* Text target bootup:ColourItemType_findNearest */
+    {0x8C, 0}, /* Text target bootup:ColourItemType_getItemPos */
+    {0x94, 0}, /* Text target bootup:ColourItemType_getItem */
+    {0x9C, 0}, /* Text target bootup:ColourItemType_findNextByZ */
+    {0xB4, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0xBC, 0}, /* Text target bootup:Node_updateChildren */
+    {0xC4, 0}, /* Text target bootup:Node_display */
+    {0xCC, 0}, /* Text target bootup:Node_update */
+    {0xD4, 0}, /* Text target bootup:Node_handleMsg */
+    {0xDC, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0xE4, 0}, /* Text target bootup:Node_doCommand */
+    {0xEC, 0}, /* Text target bootup:ItemType_saveData */
+    {0xF4, 0}, /* Text target bootup:ItemType_load */
+    {0xFC, 0}, /* Text target bootup:Node_setAnimPose */
     {0x104, 0}, /* Text target checkpoint:Text+0x6F0 */
-    {0x10C, (void *)SNodeItemType_buildItems},
-    {0x114, (void *)SNodeItemType_findNearest},
-    {0x11C, (void *)SNodeItemType_getItemPos},
-    {0x124, (void *)SNodeItemType_getItem},
-    {0x12C, (void *)SNodeItemType_findNextByZ},
-    {0x144, (void *)ItemType_hostioParms},
-    {0x14C, (void *)Node_updateChildren},
-    {0x154, (void *)Node_display},
-    {0x15C, (void *)Node_update},
-    {0x164, (void *)Node_handleMsg},
-    {0x16C, (void *)Node_broadcastMsg},
-    {0x174, (void *)Node_doCommand},
-    {0x17C, (void *)ItemType_saveData},
-    {0x184, (void *)ItemType_load},
-    {0x18C, (void *)Node_setAnimPose},
+    {0x10C, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x114, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x11C, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x124, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x12C, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
+    {0x144, 0}, /* Text target bootup:ItemType_hostioParms */
+    {0x14C, 0}, /* Text target bootup:Node_updateChildren */
+    {0x154, 0}, /* Text target bootup:Node_display */
+    {0x15C, 0}, /* Text target bootup:Node_update */
+    {0x164, 0}, /* Text target bootup:Node_handleMsg */
+    {0x16C, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x174, 0}, /* Text target bootup:Node_doCommand */
+    {0x17C, 0}, /* Text target bootup:ItemType_saveData */
+    {0x184, 0}, /* Text target bootup:ItemType_load */
+    {0x18C, 0}, /* Text target bootup:Node_setAnimPose */
     {0x194, 0}, /* Text target checkpoint:Text+0x7F4 */
-    {0x19C, (void *)SNodeItemType_buildItems},
-    {0x1A4, (void *)SNodeItemType_findNearest},
-    {0x1AC, (void *)SNodeItemType_getItemPos},
-    {0x1B4, (void *)SNodeItemType_getItem},
-    {0x1BC, (void *)SNodeItemType_findNextByZ},
+    {0x19C, 0}, /* Text target bootup:SNodeItemType_buildItems */
+    {0x1A4, 0}, /* Text target bootup:SNodeItemType_findNearest */
+    {0x1AC, 0}, /* Text target bootup:SNodeItemType_getItemPos */
+    {0x1B4, 0}, /* Text target bootup:SNodeItemType_getItem */
+    {0x1BC, 0}, /* Text target bootup:SNodeItemType_findNextByZ */
     {0x3B4, port_checkpoint_rodata + 0x0},
     {0x3C0, port_checkpoint_data + 0x488},
     {0x400, port_checkpoint_rodata + 0x4},
@@ -6510,25 +5850,25 @@ static const PortUsoReloc port_checkpoint_data_rel[92] = {
     {0x2E00, port_checkpoint_data + 0x2D84},
     {0x2E0C, port_checkpoint_data + 0x2D8C},
     {0x3E2C, 0}, /* Text target checkpoint:Text+0x23C */
-    {0x3E34, (void *)Node_updateChildren},
-    {0x3E3C, (void *)SNode_display},
-    {0x3E44, (void *)Node_update},
+    {0x3E34, 0}, /* Text target bootup:Node_updateChildren */
+    {0x3E3C, 0}, /* Text target bootup:SNode_display */
+    {0x3E44, 0}, /* Text target bootup:Node_update */
     {0x3E4C, 0}, /* Text target checkpoint:Text+0x2AC */
-    {0x3E54, (void *)Node_broadcastMsg},
-    {0x3E5C, (void *)Node_doCommand},
+    {0x3E54, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x3E5C, 0}, /* Text target bootup:Node_doCommand */
     {0x3E64, 0}, /* Text target checkpoint:Text+0x210 */
     {0x3E6C, 0}, /* Text target checkpoint:Text+0x1E4 */
-    {0x3E74, (void *)Node_setAnimPose},
-    {0x3E8C, (void *)SNode_hostioParms},
-    {0x3E94, (void *)Node_updateChildren},
-    {0x3E9C, (void *)SNode_display},
-    {0x3EA4, (void *)Node_update},
+    {0x3E74, 0}, /* Text target bootup:Node_setAnimPose */
+    {0x3E8C, 0}, /* Text target bootup:SNode_hostioParms */
+    {0x3E94, 0}, /* Text target bootup:Node_updateChildren */
+    {0x3E9C, 0}, /* Text target bootup:SNode_display */
+    {0x3EA4, 0}, /* Text target bootup:Node_update */
     {0x3EAC, 0}, /* Text target checkpoint:Text+0x694 */
-    {0x3EB4, (void *)Node_broadcastMsg},
-    {0x3EBC, (void *)Node_doCommand},
+    {0x3EB4, 0}, /* Text target bootup:Node_broadcastMsg */
+    {0x3EBC, 0}, /* Text target bootup:Node_doCommand */
     {0x3EC4, 0}, /* Text target checkpoint:Text+0x668 */
     {0x3ECC, 0}, /* Text target checkpoint:Text+0x63C */
-    {0x3ED4, (void *)Node_setAnimPose},
+    {0x3ED4, 0}, /* Text target bootup:Node_setAnimPose */
 };
 
 const PortUsoModule port_uso_modules[] = {
@@ -6549,6 +5889,7 @@ const PortUsoModule port_uso_modules[] = {
     {"trkproc.uso", 26, port_trkproc_data, port_trkproc_data_init, 1216, port_trkproc_rodata, port_trkproc_rodata_init, 80, port_trkproc_bss, 528, port_trkproc_data_rel, 112, port_trkproc_rodata_rel, 14, 0},
     {"trnproc.uso", 27, port_trnproc_data, port_trnproc_data_init, 848, port_trnproc_rodata, port_trnproc_rodata_init, 48, port_trnproc_bss, 448, port_trnproc_data_rel, 75, port_trnproc_rodata_rel, 5, 0},
     {"genproc.uso", 28, port_genproc_data, port_genproc_data_init, 6032, port_genproc_rodata, port_genproc_rodata_init, 1088, port_genproc_bss, 1872, port_genproc_data_rel, 414, port_genproc_rodata_rel, 76, 0},
+    {"gamegfx.uso", 29, port_gamegfx_data, port_gamegfx_data_init, 18464, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {"charsel.uso", 30, port_charsel_data, port_charsel_data_init, 400800, port_charsel_rodata, port_charsel_rodata_init, 16, 0, 0, port_charsel_data_rel, 19, 0, 0, 0},
     {"charsps.uso", 31, port_charsps_data, port_charsps_data_init, 51168, port_charsps_rodata, port_charsps_rodata_init, 48, 0, 0, port_charsps_data_rel, 39, 0, 0, 0},
     {"viewrec.uso", 32, port_viewrec_data, port_viewrec_data_init, 1200, port_viewrec_rodata, port_viewrec_rodata_init, 96, port_viewrec_bss, 2192, port_viewrec_data_rel, 100, port_viewrec_rodata_rel, 18, 0},
@@ -6561,4 +5902,4 @@ const PortUsoModule port_uso_modules[] = {
     {"fire.uso", 49, port_fire_data, port_fire_data_init, 9120, 0, 0, 0, 0, 0, port_fire_data_rel, 36, 0, 0, 0},
     {"checkpoint.uso", 50, port_checkpoint_data, port_checkpoint_data_init, 16128, port_checkpoint_rodata, port_checkpoint_rodata_init, 16, 0, 0, port_checkpoint_data_rel, 92, 0, 0, 0},
 };
-const int port_uso_nmodules = 28;
+const int port_uso_nmodules = 29;

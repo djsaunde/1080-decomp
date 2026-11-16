@@ -2,4 +2,5 @@
 /* src/game_libs/game_libs_ncc_4E584.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: Window_staticInit _GLOBAL__sub_I_gWindowDefaults_4E584_arr */
 /* port-noinit: _GLOBAL__sub_I_gWindowDefaults_4E584_arr */
+/* port-dropdata: gWindowDefaults_4E584_arr */ /* the ROM object is in the module blob */
 /* port-bind: Window_staticInit gl_func_00000000 mem_new */

@@ -52,4 +52,11 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
+/* port-bind: snd_SoundObjUpdate D_00000000+5856 port_bootup_rodata+0x0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+5924 port_bootup_rodata+0x0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+5928 port_bootup_rodata+0x0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+5932 port_bootup_rodata+0x0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+8532 port_bootup_bss+0x345C0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+115280 port_bootup_data+0x0 */
+/* port-bind: snd_SoundObjUpdate D_00000000+115344 port_bootup_data+0x0 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

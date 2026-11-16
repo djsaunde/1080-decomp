@@ -50,3 +50,4 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
+/* port-bind: AudioSeq_InitSequencePlayer D_00000000 port_bootup_bss+0x345C0 */

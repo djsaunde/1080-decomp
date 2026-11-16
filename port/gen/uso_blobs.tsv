@@ -36,6 +36,7 @@ trnproc	trnproc.uso	Bss	448
 genproc	genproc.uso	Data	6032
 genproc	genproc.uso	RoData	1088
 genproc	genproc.uso	Bss	1872
+gamegfx	gamegfx.uso	Data	18464
 charsel	charsel.uso	Data	400800
 charsel	charsel.uso	RoData	16
 charsps	charsps.uso	Data	51168

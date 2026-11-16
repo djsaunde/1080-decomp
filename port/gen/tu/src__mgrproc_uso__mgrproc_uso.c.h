@@ -4,6 +4,22 @@
 /* port-drop: MgrNameEntry_drawCongrats_00002B7C */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_2B7C.cpp */
 #pragma weak mgr_drawResults_000023FC
 /* port-drop: mgr_drawResults_000023FC */ /* placeholder copy; shipped body in src/mgrproc_uso/mgrproc_uso_ncc_23FC.cpp */
+/* port-bind: MGRRaceProcess_drawHud D_00000000 port_mgrproc_rodata+0x0 */
+/* port-bind: MGRRaceProcess_onQuitButton D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: MgrNameEntry_drawExitOverlay D_00000000 port_mgrproc_rodata+0x0 */
+/* port-bind: fs_gdlReadFloat_mgr_00000D00 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadInt_mgr_00000CC4 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadQuad_mgr_00000D3C D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadVec3_mgr_00000D94 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: mgr_DataManager_init D_00000000+100 port_bootup_bss+0xF8 */
+/* port-bind: mgr_DataManager_init D_00000000+1672 port_mgrproc_data+0x0 */
+/* port-bind: mgr_pauseContinue_00000AE0 D_00000000+0 port_bootup_bss+0xF8 */
+/* port-bind: mgr_pauseContinue_00000AE0 D_00000000+48 port_mgrproc_bss+0x0 */
+/* port-bind: mgr_pauseRetire_00000B20 D_00000000 port_mgrproc_bss+0x0 */
+/* port-bind: mgr_releaseSprites_000012AC D_00000000 port_mgrproc_bss+0x0 */
+/* port-bind: mgr_restartForEnding_00001B58 D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: mgr_startEnding_00001BE4 D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: mgr_startReplay_00001AD0 D_00000000 port_bootup_bss+0xF8 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int mgrproc_uso_func_00001BD4(); /* CALL placeholder token: file-scope K&R declaration */
 int mgrproc_uso_func_000148(); /* CALL placeholder token: file-scope K&R declaration */

@@ -2,3 +2,4 @@
 /* src/game_libs/game_libs_ncc_43D38.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: PolyShape_clipRows_00043D38 _ZN4Elem4clipEv */
 /* port-bind: PolyShape_clipRows_00043D38 gl_func_00000000 gl_osVirtualToPhysical */
+/* port-bind: PolyShape_clipRows_00043D38 D_00000000 port_bootup_bss+0x3C168 */

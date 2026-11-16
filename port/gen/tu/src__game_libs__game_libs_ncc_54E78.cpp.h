@@ -2,3 +2,4 @@
 /* src/game_libs/game_libs_ncc_54E78.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: light_setMirrorMatrix_00054E78 _ZN3Obj7reflectERK5Plane */
 /* port-bind: light_setMirrorMatrix_00054E78 gl_func_00000000 math_mtx4Identity */
+/* port-bind: light_setMirrorMatrix_00054E78 D_00000000 port_bootup_bss+0x3C168 */

@@ -69,3 +69,4 @@
 #pragma weak stream_readVec3_00000080
 /* port-drop: stream_readVec3_00000080 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
 /* port-local: _asmpp_func13 */ /* asm-processor stub from the context header */
+/* port-bind: game_init D_00000000 port_bootup_data+0x0 */

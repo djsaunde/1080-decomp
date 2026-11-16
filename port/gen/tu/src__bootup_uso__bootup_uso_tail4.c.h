@@ -4,3 +4,9 @@
 /* port-drop: Fader_display */ /* placeholder copy; shipped body in src/bootup_uso/bootup_uso_ncc_1304C.cpp */
 #pragma weak func_00000000
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
+/* port-bind: BestGadget_display_00014228 D_00000000 port_bootup_data+0xC75C */
+/* port-bind: Fader_checkDone_00013924 D_00000000 port_bootup_bss+0x3C168 */
+/* port-bind: TimeGadget_display_000140C4 D_00000000 port_bootup_data+0xC758 */
+/* port-bind: stream_readF32_00013CAC D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: stream_readQuad_00013CE8 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: stream_readS32_00013C70 D_00000000 port_bootup_bss+0x3C740 */

@@ -10,3 +10,4 @@
 /* port-drop: gui_setPrimColor_000006B8 */ /* helper copy; shipped body in src/gui_uso/gui_uso_ncc_06B8.cpp */
 #pragma weak gui_setupRenderMode_0000055C
 /* port-drop: gui_setupRenderMode_0000055C */ /* helper copy; shipped body in src/gui_uso/gui_uso_ncc_055C.cpp */
+/* port-bind: gui_drawSpriteIA8Clip_00002BB0 D_00000000 port_gui_bss+0x0 */

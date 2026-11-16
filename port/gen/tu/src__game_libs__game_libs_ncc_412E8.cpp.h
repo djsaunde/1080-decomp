@@ -2,3 +2,7 @@
 /* src/game_libs/game_libs_ncc_412E8.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: app_staticInit_000412E8 _GLOBAL__sub_I_gGfxLib_412E8_a */
 /* port-noinit: _GLOBAL__sub_I_gGfxLib_412E8_a */
+/* port-dropdata: gGfxLib_412E8_a */ /* the ROM object is in the module blob */
+/* port-dropdata: gHostio_412E8_m */ /* the ROM object is in the module blob */
+/* port-dropdata: gSysLib_412E8_i */ /* the ROM object is in the module blob */
+/* port-dropdata: gSysLib_412E8_l */ /* the ROM object is in the module blob */

@@ -52,3 +52,4 @@
 /* port-local: _asmpp_large_func179 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func180 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
+/* port-bind: snd_SoundObjUpdateChannel D_00000000 port_bootup_data+0x1C0C0 */

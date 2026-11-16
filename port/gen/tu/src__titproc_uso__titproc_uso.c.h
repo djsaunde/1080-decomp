@@ -2,6 +2,27 @@
 /* src/titproc_uso/titproc_uso.c: 43 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak TitleDemoProcess_handleInput
 /* port-drop: TitleDemoProcess_handleInput */ /* placeholder copy; shipped body in src/titproc_uso/titproc_uso_mp72_116C.cpp */
+/* port-bind: fs_gdlReadFloat_tit_000004D8 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadInt_tit_0000049C D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadQuad_tit_00000514 D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: fs_gdlReadVec3_tit_0000056C D_00000000 port_bootup_bss+0x3C740 */
+/* port-bind: tit_WhiteFader_display D_00000000 port_gui_bss+0x8 */
+/* port-bind: tit_closeSession_00000C0C D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_loadLogoSprite_00000098 D_00000000 port_titproc_bss+0x0 */
+/* port-bind: tit_menuArcade D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuEditors D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuHead2Head D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuMultiRace D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuTimeAttack D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuTraining D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_menuTrick D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_openSession_00000B6C D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: tit_startTitleDemo_00000380 D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: titproc_uso_func_00000000 D_00000000+24 port_titproc_bss+0x0 */
+/* port-bind: titproc_uso_func_00000000 D_00000000+48 port_titproc_bss+0x0 */
+/* port-bind: titproc_uso_func_00000000 D_00000000+72 port_titproc_bss+0x0 */
+/* port-bind: titproc_uso_func_00000000 D_00000000+120 port_titproc_bss+0x0 */
+/* port-bind: titproc_uso_func_00000000 D_00000000+144 port_titproc_bss+0x0 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_000098(); /* CALL placeholder token: file-scope K&R declaration */
 int titproc_uso_func_0002DC(); /* CALL placeholder token: file-scope K&R declaration */

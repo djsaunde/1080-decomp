@@ -24,6 +24,13 @@ assembled:
                           decision 4), under its shipped name.
   port-local: SYM         SYM's `.globl` is removed (file-local junk such as the
                           asm-processor `_asmpp_large_func*` stubs).
+  port-dropdata: SYM      the unit's definition of the data object SYM is renamed to
+                          the local `__port_dead_SYM`; references keep SYM (aliased
+                          to the module blob by port/gen/aliases.ld, or bound).
+  port-bind: FUNC TOK+N TGT  (data) only the references `TOK+N` (N the addend, signed
+                          decimal; `TOK` alone is N = 0) become `TGT+N`: a token that
+                          reaches several blob objects in one function, told apart by
+                          the ROM site's addend.
   port-bind: FUNC TOK TGT inside FUNC's body (and its gcc clones FUNC.part.N / .isra.N
                           ...), every reference to the placeholder token TOK becomes TGT:
                           the ROM callee of all of FUNC's unnamed TOK calls
@@ -36,10 +43,13 @@ import re
 import subprocess
 import sys
 
-DIRECTIVE_RE = re.compile(r"/\*\s*port-(drop|alias|noinit|local|bind):\s*([^*]*?)\s*\*/")
+DIRECTIVE_RE = re.compile(r"/\*\s*port-(dropdata|drop|alias|noinit|local|bind):\s*([^*]*?)\s*\*/")
 
 
 BINDS = {}
+
+
+DROPDATA = set()
 
 
 def parse_header(path):
@@ -50,10 +60,16 @@ def parse_header(path):
                 parts = arg.split()
                 if kind == "drop":
                     drop.add(parts[0])
+                elif kind == "dropdata":
+                    DROPDATA.add(parts[0])
                 elif kind == "local":
                     local.add(parts[0])
                 elif kind == "bind":
-                    BINDS.setdefault(parts[0], {})[parts[1]] = parts[2]
+                    m = re.fullmatch(r"(\w+)([+-]\d+)", parts[1])
+                    if m:
+                        BINDS.setdefault(parts[0], {}).setdefault(m.group(1), {})[int(m.group(2))] = parts[2]
+                    else:
+                        BINDS.setdefault(parts[0], {})[parts[1]] = parts[2]
                 elif kind == "alias":
                     alias.append((parts[0], parts[1]))
                 else:
@@ -80,7 +96,13 @@ def bind_calls(text, binds):
             continue
         if cur and not line.lstrip().startswith("."):
             for tok, tgt in cur.items():
-                line = re.sub(r"(?<![\w.$])%s(?![\w$])" % re.escape(tok), tgt, line)
+                if isinstance(tgt, dict):       # per addend: {N: target}
+                    def sub(m, tgt=tgt):
+                        n = int(m.group(1) or "0")
+                        return tgt[n] + (m.group(1) or "") if n in tgt else m.group(0)
+                    line = re.sub(r"(?<![\w.])%s([+-]\d+)?(?![\w$])" % re.escape(tok), sub, line)
+                else:
+                    line = re.sub(r"(?<![\w.])%s(?![\w$])" % re.escape(tok), tgt, line)  # `$tok`: an immediate
         out.append(line)
     return "\n".join(out) + "\n"
 
@@ -97,7 +119,14 @@ def filter_asm(text, drop, alias, noinit, local=()):
         toks = re.split(r"[\s,]+", s)
         if toks and toks[0] in (".section", ".text", ".data", ".bss"):
             section = toks[1] if toks[0] == ".section" and len(toks) > 1 else toks[0]
-        if len(toks) >= 2 and toks[0] in (".globl", ".weak") and toks[1] in drop:
+        if len(toks) >= 2 and toks[0] in (".globl", ".weak") and toks[1] in drop | DROPDATA:
+            continue
+        if len(toks) >= 2 and toks[0] in (".type", ".size") and toks[1] in DROPDATA:
+            found.add(toks[1])
+            out.append(line.replace(toks[1], "__port_dead_" + toks[1], 1))
+            continue
+        if s.endswith(":") and s[:-1] in DROPDATA:
+            out.append("__port_dead_" + s)
             continue  # the reference stays a plain global undefined symbol
         if len(toks) >= 2 and toks[0] == ".globl" and toks[1] in local_targets:
             continue

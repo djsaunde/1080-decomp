@@ -2,4 +2,5 @@
 /* src/arcproc_uso/arcproc_uso_o0_50.c: 1 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak arc_nextCourse_000000B4
 /* port-drop: arc_nextCourse_000000B4 */ /* placeholder copy; shipped body in src/arcproc_uso/arcproc_uso_ncc_o0_B4.cpp */
+/* port-bind: fs_gdlReadQuad_arc_00000050 D_00000000 port_bootup_bss+0x3C740 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

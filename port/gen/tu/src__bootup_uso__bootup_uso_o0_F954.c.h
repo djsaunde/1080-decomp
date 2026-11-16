@@ -2,4 +2,6 @@
 /* src/bootup_uso/bootup_uso_o0_F954.c: 2 shipped bodies kept, 1 bodies dropped, 0 aliases */
 #pragma weak func_00000000
 /* port-drop: func_00000000 */ /* helper copy; shipped body in src/bootup_uso/bootup_uso.c */
+/* port-bind: Process_fadeOut_0000F954 D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: Process_pause_0000F9E8 D_00000000 port_bootup_bss+0xF8 */
 int func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

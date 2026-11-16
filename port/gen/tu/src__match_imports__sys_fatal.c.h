@@ -8,5 +8,6 @@
 /* port-drop: console_pow10Scale */ /* helper copy; shipped body in src/game_libs/game_libs_post0b.c */
 #pragma weak math_singularFatal_00061458
 /* port-drop: math_singularFatal_00061458 */ /* helper copy; shipped body in src/game_libs/game_libs_post0b.c */
+/* port-bind: sys_fatal D_00000000 port_bootup_data+0x0 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gl_func_00034458_6126C(); /* CALL placeholder token: file-scope K&R declaration */

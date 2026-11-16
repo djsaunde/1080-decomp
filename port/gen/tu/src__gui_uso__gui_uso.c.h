@@ -40,5 +40,11 @@
 /* port-drop: gui_setupRenderMode_0000055C */ /* placeholder copy; shipped body in src/gui_uso/gui_uso_ncc_055C.cpp */
 #pragma weak gui_texRect_00004568
 /* port-drop: gui_texRect_00004568 */ /* placeholder copy; shipped body in src/gui_uso/gui_uso_ncc_4568.cpp */
+/* port-bind: gui_fillRect D_00000000 port_gui_bss+0x0 */
+/* port-bind: gui_setCombine_00001794 D_00000000 port_gui_bss+0x0 */
+/* port-bind: gui_setScissor D_00000000 port_gui_bss+0x0 */
+/* port-bind: gui_spriteLoad D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: gui_spriteRefresh D_00000000 port_bootup_bss+0xF8 */
+/* port-bind: gui_spriteRelease D_00000000 port_bootup_bss+0xF8 */
 int gl_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */
 int gui_func_00000000(); /* CALL placeholder token: file-scope K&R declaration */

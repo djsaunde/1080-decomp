@@ -11,3 +11,4 @@
 #pragma weak RcpMgr_update
 /* port-drop: RcpMgr_update */ /* helper copy; shipped body in src/game_libs/game_libs_post0b.c */
 /* port-alias: RcpMgr_service _ZN3Obj3runEv */
+/* port-bind: RcpMgr_service D_00000000 port_bootup_data+0x0 */

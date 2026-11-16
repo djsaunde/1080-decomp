@@ -140,9 +140,21 @@ def load_pins():
 
 
 def port_defined(lib):
-    """global symbols libgame.a defines"""
-    out = subprocess.run(["nm", "--defined-only", lib], capture_output=True, text=True).stdout
-    return {l.split()[-1] for l in out.splitlines() if len(l.split()) == 3 and l.split()[1].isupper()}
+    """(global symbols libgame.a defines, {data object it defines: its member object}).  The
+    data objects (B / D: the objects the C++ donors define for their static initialisers,
+    gGfxLib_412E8_a ...) are tokens too: the ROM has them in a module's Data / Bss, which the
+    game code reaches through the blob, so the port definition is dropped (port-dropdata) and
+    the name aliased to the blob, and the initialiser and the readers share memory."""
+    out = subprocess.run(["nm", "-A", "--defined-only", lib], capture_output=True, text=True).stdout
+    defs, data = set(), {}
+    for l in out.splitlines():
+        f = l.split()
+        if len(f) == 3 and f[1].isupper():
+            sym = f[2]
+            defs.add(sym)
+            if f[1] in "BD" and not sym.startswith("_Z"):
+                data[sym] = f[0].split(":")[1]
+    return defs, data
 
 
 def asm_pad(sourcemap):
@@ -192,7 +204,10 @@ def main():
                     help="the port library (its undefined symbols are the tokens to bind)")
     a = ap.parse_args()
     excluded = {r[0] for r in read_tsv("port/gen/excluded.tsv")}
-    defined = port_defined(a.lib)
+    defined, datadefs = port_defined(a.lib)
+    if os.path.exists("port/gen/dropdata.tsv"):     # dropped by an earlier run: still tokens
+        datadefs.update({r[0]: r[1] for r in read_tsv("port/gen/dropdata.tsv")})
+    defined -= set(datadefs)
     by_src = collections.defaultdict(list)
     smap = read_tsv("port/sourcemap.tsv")
     pad = asm_pad(smap)
@@ -238,6 +253,10 @@ def main():
                 continue
             per = collections.defaultdict(collections.Counter)
             perd = collections.defaultdict(collections.Counter)
+            # per data token: full addend (the source's `tok+N`: HI16 field << 16 + the paired
+            # LO16's signed field; the .o holds it in the instruction, REL) -> ROM targets
+            pera = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+            hi = {}
             for off, typ, sym in orel:
                 if not rv <= off < rv + rsz:
                     continue
@@ -245,15 +264,25 @@ def main():
                 if typ == 4:
                     per[sym][t] += 1
                     gcall[sym][t] += 1
-                elif typ != 6:      # count a HI16 / LO16 pair once
+                    continue
+                field = struct.unpack_from(">I", rb, off - rv)[0]
+                if typ != 6:        # count a HI16 / LO16 pair once
                     perd[sym][t] += 1
                     gdata[sym][t] += 1
+                if typ == 5:
+                    hi[sym] = (field & 0xFFFF) << 16
+                elif typ == 6:
+                    lo = field & 0xFFFF
+                    lo -= 0x10000 if lo & 0x8000 else 0
+                    pera[sym][(hi.get(sym, 0) + lo + 0x80000000) % 0x100000000 - 0x80000000][t] += 1
+                elif typ == 2:
+                    pera[sym][field - (0x100000000 if field & 0x80000000 else 0)][t] += 1
             for tok in list(per):
                 per[tok] -= named.get((fn, tok), collections.Counter())
                 if per[tok]:
                     calls.append((src, fn, tok, per[tok]))
             for tok, tg in perd.items():
-                data.append((src, fn, tok, tg))
+                data.append((src, fn, tok, tg, pera.get(tok, {})))
 
     def usable(t):
         return t is not None and not t.startswith("Text+") and not t.endswith("_00000000") and \
@@ -273,10 +302,28 @@ def main():
             elif usable(t) and (t.startswith("port_") or t in shipped or t in excluded or t in defined):
                 aliases[tok] = t
     binds, left = [], []
+    nbyaddend = 0
     for kind, rows in (("call", calls), ("data", data)):
-        for src, fn, tok, tg in rows:
+        for row in rows:
+            src, fn, tok, tg = row[:4]
             n = sum(tg.values())
             if tok in aliases or tok in shimdef:
+                continue
+            if len(tg) > 1 and kind == "data" and row[4]:
+                # several blob objects, told apart by the addend: bind each `tok+N` whose ROM
+                # sites all reach one target (cc-select); list the addends that do not
+                def ok(c):
+                    t = next(iter(c))
+                    return len(c) == 1 and usable(t) and (t.startswith("port_") or t in shipped)
+                good = {a: c for a, c in row[4].items() if ok(c)}
+                for addend, c in sorted(good.items()):
+                    binds.append((src, fn, "%s%+d" % (tok, addend), next(iter(c)), sum(c.values())))
+                bad = {a: c for a, c in row[4].items() if a not in good}
+                if bad:
+                    left.append((src, fn, tok, "ambiguous", " ".join(
+                        "%+d:%s" % (a, "|".join("%s*%d" % kv for kv in c.items() if kv[0]))
+                        for a, c in sorted(bad.items())), sum(sum(c.values()) for c in bad.values())))
+                nbyaddend += 1
                 continue
             if len(tg) > 1:
                 left.append((src, fn, tok, "ambiguous", " ".join("%s*%d" % kv for kv in tg.items() if kv[0]), n))
@@ -303,12 +350,22 @@ def main():
         fh.write("# generated by scripts/port-gen-binds.py: unit\tfunction\ttoken\tkind\ttarget(s)\tsites\n")
         for r in left:
             fh.write("\t".join(map(str, r)) + "\n")
+    dropdata = sorted((t, datadefs[t]) for t in datadefs
+                      if t in aliases or any(r[2] == t for r in binds))
+    with open("port/gen/dropdata.tsv", "w") as fh:
+        fh.write("# generated by scripts/port-gen-binds.py: data objects the port units define that the\n"
+                 "# ROM keeps in a module's blob (port-dropdata; aliased / bound to the blob)\n"
+                 "# symbol\tobject\n")
+        for r in dropdata:
+            fh.write("%s\t%s\n" % r)
     with open("port/gen/aliases.ld", "w") as fh:
         fh.write("/* generated by scripts/port-gen-binds.py: placeholder / alias tokens whose every ROM\n"
                  "   site is one target (an implicit linker script of the port link) */\n")
         for tok in sorted(aliases):
             fh.write("%s = %s;\n" % (tok, aliases[tok]))
     kinds = collections.Counter(r[3] for r in left)
+    print("data tokens bound per addend: %d (function, token) pairs" % nbyaddend)
+    print("dropped data definitions %d: %s" % (len(dropdata), " ".join(t for t, _ in dropdata)))
     print("aliases %d (call %d, data %d); bound %d (function, token) pairs, %d sites; left %d: %s; %s" % (
         len(aliases), sum(1 for t in aliases if t in gcall), sum(1 for t in aliases if t not in gcall),
         len(binds), sum(r[4] for r in binds), len(left), dict(kinds), dict(stats)))

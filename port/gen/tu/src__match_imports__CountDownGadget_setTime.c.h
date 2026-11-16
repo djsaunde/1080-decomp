@@ -24,3 +24,4 @@
 /* port-local: _asmpp_func24 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_func3 */ /* asm-processor stub from the context header */
 /* port-local: _asmpp_large_func2 */ /* asm-processor stub from the context header */
+/* port-bind: CountDownGadget_setTime D_00000000 port_bootup_data+0x0 */

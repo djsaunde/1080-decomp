@@ -2,3 +2,4 @@
 /* src/game_libs/game_libs_ncc_50444.cpp: 1 shipped bodies kept, 0 bodies dropped, 1 aliases */
 /* port-alias: BasePolyShape_addPoints intern */
 /* port-bind: BasePolyShape_addPoints gl_func_00000000 sys_fatal */
+/* port-bind: BasePolyShape_addPoints D_00000000 port_bootup_data+0x0 */
