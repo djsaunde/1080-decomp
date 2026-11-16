@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for ColourItemType_vslot13_0003DBEC (0xA4 / 41 words): walk the
+/* IDO 7.1 NCC (C++) donor for ColourItemType_getItemPos (0xA4 / 41 words): walk the
  * owner's child list; when the child equals the argument, copy its position
  * into *out (by-value V3 operator= through the sp+4 temp) and return 1.
  * The first next() goes through an inline first() { return next(); }: the
@@ -20,7 +20,7 @@ struct Iter3DB {
     Node3DB *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner3DB { char pad[0x10]; Link3DB *head; };
-extern "C" int ColourItemType_vslot13_0003DBEC(Owner3DB *o, Node3DB *t, V3 *out) {
+extern "C" int ColourItemType_getItemPos(Owner3DB *o, Node3DB *t, V3 *out) {
     Iter3DB it(o->head);
     for (Node3DB *n = it.first(); n; n = it.next()) {
         if (n == t) { *out = n->pos; return 1; }

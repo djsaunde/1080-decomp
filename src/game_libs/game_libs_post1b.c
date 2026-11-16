@@ -4011,9 +4011,9 @@ void BinFile_init_000682F8(int *self) {
 
 /* Three save-arg-sentinel stubs split from BinFile_init_000682F8 bundle. Each
  * is `jr ra; sw a0, 0(sp)` — `void f(int)` body produces exact bytes. */
-void BinFile_vfn1_00068338(int a0) {}
-void BinFile_vfn2_00068340(int a0) {}
-void BinFile_vfn3_00068348(int a0) {}
+void BinFile_acquire(int a0) {}
+void BinFile_release(int a0) {}
+void BinFile_invalidate(int a0) {}
 
 /* BinFile_load_00068350: 29-insn (0x74) vtable-dispatch + flag-gated init.
  * 2026-05-13 tightened 64.07% → 99.59% via three fixes:
@@ -4142,7 +4142,7 @@ end:
     return a0;
 }
 
-/* BinFileMgr_vfn8_00068524: 39-insn (0x9C) alloc-and-init-loop. Sibling of
+/* BinFileMgr_loadData: 39-insn (0x9C) alloc-and-init-loop. Sibling of
  * BinFileMgr_check_000685C0 (the bounds-checker for the same table). The
  * INITIALIZER/CONSTRUCTOR for the 2-level table that 685C0 / 68730 read.
  *
@@ -4151,7 +4151,7 @@ end:
  * usual `jal 0` + R_MIPS_26 placeholder for cross-USO calls). */
 extern int gl_func_00000000();
 extern int func_7C860();
-void BinFileMgr_vfn8_00068524(int *a0, int a1) {
+void BinFileMgr_loadData(int *a0, int a1) {
     int s1, s0;
     BINFILEMGR(a0)->fileHandle = (int)CALL(fs_getHandle)(&gSysLib, a1);
     func_7C860(&BINFILEMGR(a0)->nGroups);
@@ -4169,7 +4169,7 @@ void BinFileMgr_vfn8_00068524(int *a0, int a1) {
 }
 
 /* BinFileMgr_check_000685C0: 55-insn (0xDC) bounds-checked 2-level table lookup
- * with 3 assertion-call sites. Sibling of matched BinFileMgr_vfn8_00068524
+ * with 3 assertion-call sites. Sibling of matched BinFileMgr_loadData
  * (constructor for the same table).
  *
  * NEAR-MISS: 6 stack-slot offset diffs (was 8). Declaring key_l BEFORE
@@ -4188,7 +4188,7 @@ void BinFileMgr_vfn8_00068524(int *a0, int a1) {
  * (same boundary as 8C3C's internal temps). Phantom-slot cap stands. */
 extern int gl_func_00000000();
 /* BinFileMgr_check_000685C0: 55-insn (0xDC) bounds-checked 2-level table lookup
- * with 3 assertion-call sites. Sibling of matched BinFileMgr_vfn8_00068524
+ * with 3 assertion-call sites. Sibling of matched BinFileMgr_loadData
  * (constructor for the same table).
  *
  * 2026-07-03 EXACT (55/55, agent-e): the "phantom-slot cap" was NAMED-LOCAL
@@ -4396,7 +4396,7 @@ void ImageFile_load_00068990(char *o) {
     (void)ret;
 }
 
-/* ImageFile_vfn1_00068B04: 42-insn 2-guard + lazy-init + 5-dispatch (0xA8, frame 0x28).
+/* ImageFile_acquire: 42-insn 2-guard + lazy-init + 5-dispatch (0xA8, frame 0x28).
  *
  * Decoded structure (raw-word disasm):
  *   if (*self & 1) return;                          // bnel guard 1 (LSB set -> skip)
@@ -4416,7 +4416,7 @@ void ImageFile_load_00068990(char *o) {
  * 2026-10-16 agent-g: UNWRAPPED. D_X is the base-0 placeholder gSysLib_gl68B04 (= 0 in
  * undefined_syms_auto.txt; the ROM words are lui 0 / addiu 0 / lw 4).
  */
-void ImageFile_vfn1_00068B04(int *self) {
+void ImageFile_acquire(int *self) {
     extern int gSysLib_gl68B04[];
     int saved_dx1;
     if (IMAGEFILE(self)->base.flags & 1) return;
@@ -4440,9 +4440,9 @@ void ImageFile_free_00068BAC(int *a0) {
     }
 }
 
-/* ImageFile_vfn3_00068BF4: 7-insn sibling without the func call.
+/* ImageFile_invalidate: 7-insn sibling without the func call.
  *   if (!(*a0 & 1)) a0[2] = 0; */
-void ImageFile_vfn3_00068BF4(int *a0) {
+void ImageFile_invalidate(int *a0) {
     if (!(BINFILE(a0)->flags & 1)) {
         BINFILE(a0)->data = 0;
     }

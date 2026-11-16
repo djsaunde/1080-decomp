@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) NM-only comparison donor for SNodeItemType_vslot15_0003DF58 (0x168 / 90
+/* IDO 7.1 NCC (C++) NM-only comparison donor for SNodeItemType_findNextByZ (0x168 / 90
  * words): extremal search over the owner's child list through the stack
  * {cur, nxt} iterator of 3D48C / 3D54C (cur sp+4, nxt sp+8): with o->0x38 set,
  * the largest +0x64 value below ref (a1's or the 0x1AD0 literal) and above the
@@ -17,7 +17,7 @@
  * occurrence of n and the next() temps earlier, so the unconstrained (bitpos-order) colouring assigns them the
  * target's v0 / a0 / a1. Spliced over the game_libs_post0b.c placeholder on both build paths; the pool constants
  * are gl_3df58_k* zero pins (target: lui at,0 / lwc1 0x1AD0.. with no reloc). */
-extern "C" float kRo_SNodeItemType_vslot15_0003DF58_1AD0[], kRo_SNodeItemType_vslot15_0003DF58_1AD4[], kRo_SNodeItemType_vslot15_0003DF58_1AD8[], kRo_SNodeItemType_vslot15_0003DF58_1ADC[];
+extern "C" float kRo_SNodeItemType_findNextByZ_1AD0[], kRo_SNodeItemType_findNextByZ_1AD4[], kRo_SNodeItemType_findNextByZ_1AD8[], kRo_SNodeItemType_findNextByZ_1ADC[];
 struct Node { char pad[0x64]; float f; };
 struct Link { Node *obj; Link *next; };
 struct Iter {
@@ -27,12 +27,12 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; char pad14[0x24]; int x38; };
-extern "C" Node *SNodeItemType_vslot15_0003DF58(Owner *o, Node *a1) {
+extern "C" Node *SNodeItemType_findNextByZ(Owner *o, Node *a1) {
     Node *best = 0;
     Iter it(o->head);
     if (o->x38) {
-        float ref = a1 ? a1->f : kRo_SNodeItemType_vslot15_0003DF58_1AD0[0x1AD0 / 4];
-        float lim = kRo_SNodeItemType_vslot15_0003DF58_1AD4[0x1AD4 / 4];
+        float ref = a1 ? a1->f : kRo_SNodeItemType_findNextByZ_1AD0[0x1AD0 / 4];
+        float lim = kRo_SNodeItemType_findNextByZ_1AD4[0x1AD4 / 4];
         Node *n;
         /* agent-g run 236: dead loop = earlier first occurrence (bitpos) of n and of the next() temps, so the
          * unconstrained colouring gives pass-1 n v0, the nxt temp a0 and the shared next() result a1 (target) */
@@ -42,8 +42,8 @@ extern "C" Node *SNodeItemType_vslot15_0003DF58(Owner *o, Node *a1) {
             if (v < ref && lim < v) { best = n; lim = v; }
         }
     } else {
-        float ref = a1 ? a1->f : kRo_SNodeItemType_vslot15_0003DF58_1AD8[0x1AD8 / 4];
-        float lim = kRo_SNodeItemType_vslot15_0003DF58_1ADC[0x1ADC / 4];
+        float ref = a1 ? a1->f : kRo_SNodeItemType_findNextByZ_1AD8[0x1AD8 / 4];
+        float lim = kRo_SNodeItemType_findNextByZ_1ADC[0x1ADC / 4];
         Node *n;
         for (n = it.next(); n; n = it.next()) {
             float v = n->f;

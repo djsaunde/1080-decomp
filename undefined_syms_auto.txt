@@ -3730,9 +3730,9 @@ gl_ref_0003B8FC = 0x0003B8FC;  /* app_initSystem config block: KSEG1 base gate L
 gl_ref_0003B8FC_st = 0x0003B8FC;  /* app_initSystem config block: KSEG1 base STORE alias */
 gl_ref_0003B900 = 0x0003B900;  /* app_initSystem config block word = 0 */
 gl_ref_0003B904 = 0x0003B904;  /* app_initSystem config block: 96-byte buffer passed to init cb */
-gPolyFlags_3EEC4_5165C_arr = 0x00000000;  /* CMod_vfn0_0005165C head base (array-extern spelling of D_00000000: lui+addiu held base) */
-D_5165C_b = 0x00000000;  /* CMod_vfn0_0005165C per-site alias of D_00000000 for the second tail store (two luis; the target's shared-$at pair is the 66A50 cap) */
-gWindowDefaults_4E584_arr = 0x00000000;  /* Window_vfn0_0004E584 head base (array-extern spelling of D_00000000: lui+addiu held base, re-assigned after the first alloc) */
+gPolyFlags_3EEC4_5165C_arr = 0x00000000;  /* CMod_staticInit head base (array-extern spelling of D_00000000: lui+addiu held base) */
+D_5165C_b = 0x00000000;  /* CMod_staticInit per-site alias of D_00000000 for the second tail store (two luis; the target's shared-$at pair is the 66A50 cap) */
+gWindowDefaults_4E584_arr = 0x00000000;  /* Window_staticInit head base (array-extern spelling of D_00000000: lui+addiu held base, re-assigned after the first alloc) */
 gl_ffunc_00001818 = 0x00000000;
 gl_reset_3298 = 0x00000000;  /* Typed float-argument import, runtime TextReloc patches jal 0. */
 gl_func_000032B0 = 0x0001791C;  /* Historical internal split, module Text-relative address. */
@@ -4032,7 +4032,7 @@ gl_func_00062F64_65494 = 0x00000000;
 gl_func_00062F64_b = 0x00000000;
 gl_func_00062F64_d = 0x00000000;
 gl_func_00062F64_e = 0x00000000;
-/* ImageFile_vfn1_00068B04: base-0 dispatch table placeholder (lui 0; addiu 0) */
+/* ImageFile_acquire: base-0 dispatch table placeholder (lui 0; addiu 0) */
 gSysLib_gl68B04 = 0x00000000;
 /* SkinMgr_ctor: blank USO jal alias of the in-unit AnimPlayer_update, and the base-0 vtable store address */
 gl_func_00062F64_695F4 = 0x00000000;
@@ -5261,7 +5261,7 @@ gSndCueQueues_307A8_o = 0x00000000;
 gSndCueQueues_307A8_p = 0x00000000;
 D_00000000_1c0a8 = 0x00000000;
 app_initSystem_bss = 0x0003B8F6;  /* app_initSystem NCC donor: static F6/F7 byte pair (.bss reloc renamed by the splice) */
-CMod_vfn0_0005165C_bss = 0x00000000;  /* CMod_vfn0_0005165C NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
+CMod_staticInit_bss = 0x00000000;  /* CMod_staticInit NCC donor: renamed .bss reloc of the static tail pair (stores at base-0 USO data +4 / +0) */
 boot_halt_00066A50_bss = 0x0003F310;  /* boot_halt_00066A50 NCC donor: renamed .bss reloc of the static long long canary pair (0x3F310/0x3F314) */
 gGfxLib_3d71c_dA0 = 0x000000A0;  /* ColourItem_display NM: fn-typed blank base of the D+0xA0 copy destination (lui/addiu 160, no USO reloc) */
 gSkinMgrs_41700_90cc_fz = 0x00000000;  /* SnowBoarder_ctor NM: fn-typed blank base for the 0x814..0x81C copies (lui/addiu 0, no reloc) */
@@ -5639,11 +5639,11 @@ kRo_SnowBoarder_procColl_930 = 0x00000930;
 kRo_SnowBoarder_procColl_940 = 0x00000940;
 kRo_SnowBoarder_procColl_944 = 0x00000944;
 kRo_SnowBoarder_procColl_948 = 0x00000948;
-/* SNodeItemType_vslot15_0003DF58 NCC donor (agent-g run 236): FP pool constants, target lui at,0 / lwc1 0x1AD0..0x1ADC(at) with no reloc */
-kRo_SNodeItemType_vslot15_0003DF58_1AD0 = 0x00000000;
-kRo_SNodeItemType_vslot15_0003DF58_1AD4 = 0x00000000;
-kRo_SNodeItemType_vslot15_0003DF58_1AD8 = 0x00000000;
-kRo_SNodeItemType_vslot15_0003DF58_1ADC = 0x00000000;
+/* SNodeItemType_findNextByZ NCC donor (agent-g run 236): FP pool constants, target lui at,0 / lwc1 0x1AD0..0x1ADC(at) with no reloc */
+kRo_SNodeItemType_findNextByZ_1AD0 = 0x00000000;
+kRo_SNodeItemType_findNextByZ_1AD4 = 0x00000000;
+kRo_SNodeItemType_findNextByZ_1AD8 = 0x00000000;
+kRo_SNodeItemType_findNextByZ_1ADC = 0x00000000;
 /* math_lookAtF NCC donor (agent-g run 247): baked USO jal placeholders (target 0x0C000000, no reloc) */
 gl_func_0005F5F0_sqrtf = 0x00000000;
 gl_func_0005F5F0_normalize = 0x00000000;

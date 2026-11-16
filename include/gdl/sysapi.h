@@ -33,7 +33,7 @@ typedef struct SysApi {
     /* 0x50 */ int (*fileRead)(int handle, int buf, int size); /* fs_gdlReadFile kind 1 */
     /* 0x54 */ int (*fileSeek)(int handle);        /* fs_gdlSeekFile kind 1 */
     /* 0x58 */ void (*fileClose)();                /* fs_gdlCloseFile kind 1: (handle, file) */
-    /* 0x5C */ int (*fileError)(int handle);       /* fs_func_0003593C; the "OpenFile Error" code */
+    /* 0x5C */ int (*fileError)(int handle);       /* fs_gdlFileError; the "OpenFile Error" code */
     /* 0x60 */ int (*fileRomAddr)(int handle);     /* fs_gdlReadFileAsync: the dma_readAsync source */
     /* 0x64 */ int unk64[3];
     /* 0x70 */ int (*symLookup)(int addr, int *name, int *offset); /* "(%s,0x%x)": dbg_printThreads

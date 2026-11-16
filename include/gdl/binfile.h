@@ -7,7 +7,7 @@
  * libgdl packed-file managers (game_libs post1b 0x682F8-0x68BF4; agent-b run 515).
  *
  * A BinFileMgr is a Node that owns one ROM file of groups of sub-files. Its vfn8
- * (BinFileMgr_vfn8_00068524) opens the file (fs_getHandle), reads the group count and
+ * (BinFileMgr_loadData) opens the file (fs_getHandle), reads the group count and
  * runs BinFileMgr_loadFile_000683D4 on each 0x10-byte group: read the file count,
  * allocate the BinFile * array, and per file create it through the manager's newFile
  * slot (vtable +0x5C, this-adjust +0x58), back-link it and run BinFile_load_00068350.

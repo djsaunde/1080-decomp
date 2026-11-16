@@ -1,5 +1,5 @@
-/* IDO 7.1 NCC (C++) donor for MNodeItemType_vslot13_0003E1B0 (0x88 / 34 words): twin of
- * SNodeItemType_vslot13_0003DDC0 reading the child's +0xA0 vector. The inline
+/* IDO 7.1 NCC (C++) donor for MNodeItemType_getItemPos (0x88 / 34 words): twin of
+ * SNodeItemType_getItemPos reading the child's +0xA0 vector. The inline
  * first() { return next(); } gives the entry call its own return temp.
  * Spliced into game_libs_post0b.c.o via REPLACE_FUNC_BODY. */
 struct V3 { float x, y, z; void set(const V3 &v) { x = v.x; y = v.y; z = v.z; } V3 &operator=(const V3 &v) { set(v); return *this; } };
@@ -13,7 +13,7 @@ struct Iter {
     Node *get() { return cur->obj; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" int MNodeItemType_vslot13_0003E1B0(Owner *o, Node *target, V3 *out) {
+extern "C" int MNodeItemType_getItemPos(Owner *o, Node *target, V3 *out) {
     Iter it(o->head);
     for (Node *n = it.first(); n; n = it.next()) {
         if (n == target) {

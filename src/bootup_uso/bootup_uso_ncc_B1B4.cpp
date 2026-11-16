@@ -34,7 +34,7 @@ struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
  * vtable BaseMat_vtbl Data+0x20640), Bb4Mid = Mat (0x90, Mat_vtbl Data+0x1FBEC), and Bb4Bank = a Mat subclass
  * whose vtable is Data+0x8440 (gl_data.h's "SnowBoarder_vtbl + 0x70"; a separate table after SnowBoarder's):
  * slot 0 = ScreenThumbMat_grab_0000E740, then BaseMat_hostioParms, Mat_print, gfx_decodeMatCmd,
- * BaseMat_vslot4_000437C0. add() puts it in gGfxLib.frameStartCbs (Bss+0x3C168 +0x148 / count +0x15C), so
+ * Mat_draw. add() puts it in gGfxLib.frameStartCbs (Bss+0x3C168 +0x148 / count +0x15C), so
  * gfx_start calls slot 0 every frame: a 64x32 RGBA16 texture (texels = mem_new(0x1000)) that E740 refills
  * with every 4th pixel of the main screen. The stores below are BaseMat fields (gdl/material.h). */
 #define BM ((BaseMat *)this)

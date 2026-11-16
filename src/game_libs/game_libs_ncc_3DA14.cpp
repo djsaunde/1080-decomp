@@ -1,4 +1,4 @@
-/* IDO 7.1 NCC (C++) donor for ColourItemType_vslot12_0003DA14 (0x124 / 73 words): twin of
+/* IDO 7.1 NCC (C++) donor for ColourItemType_findNearest (0x124 / 73 words): twin of
  * 3DE48 (pos at +0x30): nearest child to *p by |dx| + |dy| + |dz| through a
  * V3 *q = &n->pos (the target's addiu a1,a0,48 in both ABS arms), ABS as a
  * preprocessor macro so edg evaluates the sum left to right.
@@ -15,7 +15,7 @@ struct Iter {
     Node *next() { return (cur = nxt) ? (nxt = nxt->next, cur->obj) : 0; }
 };
 struct Owner { char pad[0x10]; Link *head; };
-extern "C" Node *ColourItemType_vslot12_0003DA14(Owner *o, V3 *p, Node *skip) {
+extern "C" Node *ColourItemType_findNearest(Owner *o, V3 *p, Node *skip) {
     float bestd = D_00000000[0x1AC0 / 4];
     Node *best = 0;
     Iter it(o->head);

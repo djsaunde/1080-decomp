@@ -12748,7 +12748,7 @@ void snd_SoundObjDisable(SoundObj *o) {
 //   id in a1, 0 in a2, 80.0f in a3, and o->0x28 as the 5th (stack sp+16)
 //   arg — the prior decode mis-placed o->0x28 as a0. The jal 0x0C010EF9
 //   resolves to 0x43BE4, which is the bare `jr ra` epilogue tail of
-//   BaseMat_vslot4_000437C0 used as a no-op event stub (this build stubs the
+//   Mat_draw used as a no-op event stub (this build stubs the
 //   submit). Named via undefined_syms_auto.txt gl_func_00043BE4 = 0x43BE4
 //   so the reloc resolves — same intra-segment-jal recipe as gl_func_00037C50.
 //   Float in a3 lands as raw 0x42A00000 thanks to the float-PROTOTYPED extern
@@ -15893,7 +15893,7 @@ void MCamera_hostioParms(MCamera *a0) {
     CALL(hostio_endGroup)(&gHostio);
 }
 
-void MCamera_vfn12_000333A4(int a0, int a1, int a2) {
+void MCamera_command(int a0, int a1, int a2) {
 }
 
 extern int gl_ref_000473F0();

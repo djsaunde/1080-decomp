@@ -1833,8 +1833,8 @@ GAMELIBS_4E584_DONOR := build/src/game_libs/game_libs_ncc_4E584.cpp.o
 $(GAMELIBS_4E584_DONOR): src/game_libs/game_libs_ncc_4E584.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=Window_vfn0_0004E584 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Window_vfn0_0004E584=$(GAMELIBS_4E584_DONOR)
+	$(OBJCOPY) --redefine-sym $$($(CROSS)nm $@ | awk '/ T __sti__/{print $$3}')=Window_staticInit $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Window_staticInit=$(GAMELIBS_4E584_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E584_DONOR)
 # 5D134 = quaternion rotate about axis i (Givens pairs); NCC donor (cfe capped at 96.5).
 GAMELIBS_5D134_DONOR := build/src/game_libs/game_libs_ncc_5D134.cpp.o
@@ -1860,7 +1860,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 # 3DF58 = extremal search over the {cur, nxt} list iterator (NCC 99.0 vs cfe 82.2). EXACT NCC donor over an empty placeholder
 # (agent-g run 236: dead while (0) loop ahead of pass 1 = the target's bitpos colouring order).
 GAMELIBS_3DF58_DONOR := build/src/game_libs/game_libs_ncc_3DF58.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_vslot15_0003DF58=$(GAMELIBS_3DF58_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_findNextByZ=$(GAMELIBS_3DF58_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DF58_DONOR)
 # 4A9F0 = stream -> grid byte copier (NCC, frameless; agent-c run 133). EXACT NCC donor over an empty placeholder (agent-c run 217: inner-body `if (1) {}` + one-expression cell address).
 GAMELIBS_4A9F0_DONOR := build/src/game_libs/game_libs_ncc_4A9F0.cpp.o
@@ -1888,8 +1888,8 @@ GAMELIBS_4FD00_DONOR := build/src/game_libs/game_libs_ncc_4FD00.cpp.o
 $(GAMELIBS_4FD00_DONOR): src/game_libs/game_libs_ncc_4FD00.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym side__3ColFiT1=Mesh_func_0004FD00 $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mesh_func_0004FD00=$(GAMELIBS_4FD00_DONOR)
+	$(OBJCOPY) --redefine-sym side__3ColFiT1=Mesh_facesConcave $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mesh_facesConcave=$(GAMELIBS_4FD00_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4FD00_DONOR)
 # 54E78 = real C++ `void Obj::reflect(const Plane &)` (agent-c run 175 lift; cfe 86.62): plane-reflection matrix, translation via V3 operator* / by-value set(); symbols renamed (names only).
 # agent-g run 304: EXACT NCC donor over a placeholder on both build paths (the shared idv() pool variable starts in the m[0][0] block; operator*'s folded int pool temp).
@@ -2219,7 +2219,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34A78_DONOR)
 # 5165C = alloc-or-passthrough zeroing setter; NCC donor with the tail pair as one static object (kit LXI).
 GAMELIBS_5165C_DONOR := build/src/game_libs/game_libs_ncc_5165C.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CMod_vfn0_0005165C=$(GAMELIBS_5165C_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += CMod_staticInit=$(GAMELIBS_5165C_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_5165C_DONOR)
 # 5534C / 558A0 = command-stream walkers; NCC donors: the cursor step is an inline member
 # `int next() { return *(*pp)++; }` (kit LXIII: gives the target's p = v1 colouring).
@@ -2235,7 +2235,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E00C_DONOR)
 # 4A308 = record -> colour/vertex setup (NCC; agent-c run 134 lift). EXACT NCC donor over an empty placeholder (agent-c run 219: entry as an expression = the target's ugen temp word below the spill).
 GAMELIBS_4A308_DONOR := build/src/game_libs/game_libs_ncc_4A308.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_vslot12_0004A308=$(GAMELIBS_4A308_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += PolyShape_makeEdgeVtxs=$(GAMELIBS_4A308_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4A308_DONOR)
 # 4A890 = real C++ `s16 *Map::build()` (agent-c run 160); EXACT NCC donor over a placeholder (agent-g run 257: the byte size is the reused parameter n, end pointer as int arithmetic); symbol renamed (name only).
 GAMELIBS_4A890_DONOR := build/src/game_libs/game_libs_ncc_4A890.cpp.o
@@ -2340,8 +2340,8 @@ GAMELIBS_525F0_DONOR := build/src/game_libs/game_libs_ncc_525F0.cpp.o
 $(GAMELIBS_525F0_DONOR): src/game_libs/game_libs_ncc_525F0.cpp
 	@mkdir -p $(dir $@)
 	$(NCC) -c $(NCC_CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-	$(OBJCOPY) --redefine-sym reg__4SelfFP3Tgt=ShapeNode_func_000525F0 --redefine-sym __ct__3FooFPcP4Self=gl_func_00000000_525f0_ct --redefine-sym add__3SubFP3Tgt=gl_func_00000000_525f0_add $@
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ShapeNode_func_000525F0=$(GAMELIBS_525F0_DONOR)
+	$(OBJCOPY) --redefine-sym reg__4SelfFP3Tgt=ShapeNode_addToGroup --redefine-sym __ct__3FooFPcP4Self=gl_func_00000000_525f0_ct --redefine-sym add__3SubFP3Tgt=gl_func_00000000_525f0_add $@
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ShapeNode_addToGroup=$(GAMELIBS_525F0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_525F0_DONOR)
 # 39E24 = camera scale through an inline Cam::mul(G &) on a member of the same global block (Cam &c = g.cam); NCC donor (agent-c run 180).
 GAMELIBS_39E24_DONOR := build/src/game_libs/game_libs_ncc_39E24.cpp.o
@@ -2409,15 +2409,15 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_372D4_DONOR)
 # 3DBEC = find a child in the owner list and copy its position out ({cur, nxt} iterator, first() wrapper); NCC donor.
 GAMELIBS_3DBEC_DONOR := build/src/game_libs/game_libs_ncc_3DBEC.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_vslot13_0003DBEC=$(GAMELIBS_3DBEC_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_getItemPos=$(GAMELIBS_3DBEC_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DBEC_DONOR)
 # 3DDC0 = find a child in the owner list, copy its +0x5C position out (first() wrapper); NCC donor.
 GAMELIBS_3DDC0_DONOR := build/src/game_libs/game_libs_ncc_3DDC0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_vslot13_0003DDC0=$(GAMELIBS_3DDC0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_getItemPos=$(GAMELIBS_3DDC0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DDC0_DONOR)
 # 3E1B0 = find a child in the owner list, copy its +0xA0 position out (first() wrapper); NCC donor.
 GAMELIBS_3E1B0_DONOR := build/src/game_libs/game_libs_ncc_3E1B0.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MNodeItemType_vslot13_0003E1B0=$(GAMELIBS_3E1B0_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += MNodeItemType_getItemPos=$(GAMELIBS_3E1B0_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3E1B0_DONOR)
 # 41EDC = child-list walk calling virtual slot 2 on flag 4 (first() wrapper, inline Node::tick); NCC donor.
 GAMELIBS_41EDC_DONOR := build/src/game_libs/game_libs_ncc_41EDC.cpp.o
@@ -2461,7 +2461,7 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_393B8_DONOR)
 # 4E244 = virtual call over a pointer array via the by-value index iterator (base-class ctor = cfront new protocol); NCC donor.
 GAMELIBS_4E244_DONOR := build/src/game_libs/game_libs_ncc_4E244.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxObj_vfn0_0004E244=$(GAMELIBS_4E244_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += GfxObj_displayAll=$(GAMELIBS_4E244_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_4E244_DONOR)
 # 45CB0 = light record fill + light packets through two inline next() pools (C++); NCC donor.
 GAMELIBS_45CB0_DONOR := build/src/game_libs/game_libs_ncc_45CB0.cpp.o
@@ -2477,15 +2477,15 @@ build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_l
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_34EB4_DONOR)
 # 3DE48 = nearest-child search by Manhattan distance, skipping one node ({cur, nxt} iterator, first(), ABS macro sum); NCC donor.
 GAMELIBS_3DE48_DONOR := build/src/game_libs/game_libs_ncc_3DE48.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_vslot12_0003DE48=$(GAMELIBS_3DE48_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += SNodeItemType_findNearest=$(GAMELIBS_3DE48_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DE48_DONOR)
 # 3DA14 = nearest-child search by Manhattan distance through a position pointer, skipping one node ({cur, nxt} iterator, first(), ABS macro sum); NCC donor.
 GAMELIBS_3DA14_DONOR := build/src/game_libs/game_libs_ncc_3DA14.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_vslot12_0003DA14=$(GAMELIBS_3DA14_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_findNearest=$(GAMELIBS_3DA14_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DA14_DONOR)
 # 3DB38 = child search: the smallest field-0x38 value above a reference and below a limit ({cur, nxt} iterator, first(), loop variable zero-initialised first); NCC donor.
 GAMELIBS_3DB38_DONOR := build/src/game_libs/game_libs_ncc_3DB38.cpp.o
-build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_vslot15_0003DB38=$(GAMELIBS_3DB38_DONOR)
+build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += ColourItemType_findNextByZ=$(GAMELIBS_3DB38_DONOR)
 build/src/game_libs/game_libs_post0b.c.o build/non_matching/src/game_libs/game_libs_post0b.c.o: $(GAMELIBS_3DB38_DONOR)
 # 5062C = recursive triangle subdivider; NCC (C++) donor (explicit (P3 &) right operands pin the edg temp slots).
 GAMELIBS_5062C_DONOR := build/src/game_libs/game_libs_ncc_5062C.cpp.o
@@ -3925,10 +3925,10 @@ build/src/match_imports/Parms_load_00035C6C.c.o: src/match_imports/Parms_load_00
 build/non_matching/src/match_imports/Parms_load_00035C6C.c.o: src/match_imports/Parms_load_00035C6C.c src/match_imports/context_game_libs_o2_35C6C.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/BallRotator_func_00036224.c.o: src/match_imports/BallRotator_func_00036224.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/BallRotator_applyArcball.c.o: src/match_imports/BallRotator_applyArcball.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/BallRotator_func_00036224.c.o: src/match_imports/BallRotator_func_00036224.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/BallRotator_applyArcball.c.o: src/match_imports/BallRotator_applyArcball.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/Node_ctor.c.o: src/match_imports/Node_ctor.c src/match_imports/context_game_libs_post0b.h
@@ -3979,10 +3979,10 @@ build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o: src/match_impor
 build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
-build/src/match_imports/BaseMat_vslot4_000437C0.c.o: src/match_imports/BaseMat_vslot4_000437C0.c src/match_imports/context_game_libs_post0b.h
+build/src/match_imports/Mat_draw.c.o: src/match_imports/Mat_draw.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -o $@ $<
-build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o: src/match_imports/BaseMat_vslot4_000437C0.c src/match_imports/context_game_libs_post0b.h
+build/non_matching/src/match_imports/Mat_draw.c.o: src/match_imports/Mat_draw.c src/match_imports/context_game_libs_post0b.h
 	@mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) -O2 $(MIPSISET) $(CPPFLAGS) -DNON_MATCHING -o $@ $<
 build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c src/match_imports/context_game_libs_post0b.h
@@ -4495,12 +4495,12 @@ build/src/match_imports/Parms_load_00035C6C.c.o.linked.elf: build/src/match_impo
 build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf: build/non_matching/src/match_imports/Parms_load_00035C6C.c.o scripts/match-origins-Parms_load_00035C6C-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Parms_load_00035C6C-nm.ld -e Parms_load_00035C6C -o $@ $@.stripped.o
-build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf: build/src/match_imports/BallRotator_func_00036224.c.o scripts/match-origins-BallRotator_func_00036224.ld
+build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf: build/src/match_imports/BallRotator_applyArcball.c.o scripts/match-origins-BallRotator_applyArcball.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BallRotator_func_00036224.ld -e BallRotator_func_00036224 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf: build/non_matching/src/match_imports/BallRotator_func_00036224.c.o scripts/match-origins-BallRotator_func_00036224-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BallRotator_applyArcball.ld -e BallRotator_applyArcball -o $@ $@.stripped.o
+build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf: build/non_matching/src/match_imports/BallRotator_applyArcball.c.o scripts/match-origins-BallRotator_applyArcball-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BallRotator_func_00036224-nm.ld -e BallRotator_func_00036224 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BallRotator_applyArcball-nm.ld -e BallRotator_applyArcball -o $@ $@.stripped.o
 build/src/match_imports/Node_ctor.c.o.linked.elf: build/src/match_imports/Node_ctor.c.o scripts/match-origins-Node_ctor.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Node_ctor.ld -e Node_ctor -o $@ $@.stripped.o
@@ -4549,12 +4549,12 @@ build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf: buil
 build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o scripts/match-origins-gfx_emitStateAndPrimColour_00042684-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-gfx_emitStateAndPrimColour_00042684-nm.ld -e gfx_emitStateAndPrimColour_00042684 -o $@ $@.stripped.o
-build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf: build/src/match_imports/BaseMat_vslot4_000437C0.c.o scripts/match-origins-BaseMat_vslot4_000437C0.ld
+build/src/match_imports/Mat_draw.c.o.linked.elf: build/src/match_imports/Mat_draw.c.o scripts/match-origins-Mat_draw.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_vslot4_000437C0.ld -e BaseMat_vslot4_000437C0 -o $@ $@.stripped.o
-build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o scripts/match-origins-BaseMat_vslot4_000437C0-nm.ld
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Mat_draw.ld -e Mat_draw -o $@ $@.stripped.o
+build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf: build/non_matching/src/match_imports/Mat_draw.c.o scripts/match-origins-Mat_draw-nm.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
-	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_vslot4_000437C0-nm.ld -e BaseMat_vslot4_000437C0 -o $@ $@.stripped.o
+	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-Mat_draw-nm.ld -e Mat_draw -o $@ $@.stripped.o
 build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o scripts/match-origins-BaseMat_emitDisplayLists_00043BEC.ld
 	$(OBJCOPY) --strip-debug $< $@.stripped.o
 	$(LD) --emit-relocs --no-check-sections -T scripts/match-origins-BaseMat_emitDisplayLists_00043BEC.ld -e BaseMat_emitDisplayLists_00043BEC -o $@ $@.stripped.o
@@ -4987,10 +4987,10 @@ build/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf: build/src/
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Parms_load_00035C6C.json $@
 build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf scripts/match-bindings-Parms_load_00035C6C-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Parms_load_00035C6C-nm.json $@
-build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf: build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf scripts/match-bindings-BallRotator_func_00036224.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BallRotator_func_00036224.json $@
-build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf scripts/match-bindings-BallRotator_func_00036224-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BallRotator_func_00036224-nm.json $@
+build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf: build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf scripts/match-bindings-BallRotator_applyArcball.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BallRotator_applyArcball.json $@
+build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf scripts/match-bindings-BallRotator_applyArcball-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BallRotator_applyArcball-nm.json $@
 build/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf: build/src/match_imports/Node_ctor.c.o.linked.elf scripts/match-bindings-Node_ctor.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Node_ctor.json $@
 build/non_matching/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Node_ctor.c.o.linked.elf scripts/match-bindings-Node_ctor-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5023,10 +5023,10 @@ build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_emitStateAndPrimColour_00042684.json $@
 build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json $@
-build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf scripts/match-bindings-BaseMat_vslot4_000437C0.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_vslot4_000437C0.json $@
-build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
-	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json $@
+build/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf: build/src/match_imports/Mat_draw.c.o.linked.elf scripts/match-bindings-Mat_draw.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Mat_draw.json $@
+build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf scripts/match-bindings-Mat_draw-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
+	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-Mat_draw-nm.json $@
 build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
 	python3 scripts/bind-native-relocations.py $< scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json $@
 build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC-nm.json scripts/bind-native-relocations.py scripts/uso_native_audit.py
@@ -5365,10 +5365,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Parms_loa
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/Parms_load_00035C6C.c scripts/match-bindings-Parms_load_00035C6C.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Parms_load_00035C6C=build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/Parms_load_00035C6C.c scripts/match-bindings-Parms_load_00035C6C-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BallRotator_func_00036224=build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BallRotator_func_00036224.c scripts/match-bindings-BallRotator_func_00036224.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BallRotator_func_00036224=build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BallRotator_func_00036224.c scripts/match-bindings-BallRotator_func_00036224-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BallRotator_applyArcball=build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BallRotator_applyArcball.c scripts/match-bindings-BallRotator_applyArcball.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BallRotator_applyArcball=build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BallRotator_applyArcball.c scripts/match-bindings-BallRotator_applyArcball-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Node_ctor=build/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/Node_ctor.c scripts/match-bindings-Node_ctor.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Node_ctor=build/non_matching/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf
@@ -5401,10 +5401,10 @@ build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitS
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c scripts/match-bindings-gfx_emitStateAndPrimColour_00042684.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += gfx_emitStateAndPrimColour_00042684=build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
 build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/gfx_emitStateAndPrimColour_00042684.c scripts/match-bindings-gfx_emitStateAndPrimColour_00042684-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_vslot4_000437C0=build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
-build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_vslot4_000437C0.c scripts/match-bindings-BaseMat_vslot4_000437C0.json scripts/bind-native-relocations.py scripts/replace-function-body.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_vslot4_000437C0=build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
-build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_vslot4_000437C0.c scripts/match-bindings-BaseMat_vslot4_000437C0-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mat_draw=build/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf
+build/src/game_libs/game_libs_post0b.c.o: src/match_imports/Mat_draw.c scripts/match-bindings-Mat_draw.json scripts/bind-native-relocations.py scripts/replace-function-body.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += Mat_draw=build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf
+build/non_matching/src/game_libs/game_libs_post0b.c.o: src/match_imports/Mat_draw.c scripts/match-bindings-Mat_draw-nm.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_emitDisplayLists_00043BEC=build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
 build/src/game_libs/game_libs_post0b.c.o: src/match_imports/BaseMat_emitDisplayLists_00043BEC.c scripts/match-bindings-BaseMat_emitDisplayLists_00043BEC.json scripts/bind-native-relocations.py scripts/replace-function-body.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: private REPLACE_FUNC_BODY += BaseMat_emitDisplayLists_00043BEC=build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
@@ -5770,10 +5770,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/Parms_load_000
 build/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/Parms_load_00035C6C.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf
-build/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/BallRotator_func_00036224.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf
+build/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/BallRotator_applyArcball.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf
 build/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/Node_ctor.c.o.linked.elf.bound.elf
@@ -5806,10 +5806,10 @@ build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/gfx_emitStateA
 build/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf
 build/non_matching/src/match_imports/gfx_emitStateAndPrimColour_00042684.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
-build/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
-build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf
-build/non_matching/src/match_imports/BaseMat_vslot4_000437C0.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf
+build/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
+build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf
+build/non_matching/src/match_imports/Mat_draw.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/src/game_libs/game_libs_post0b.c.o: build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf
 build/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf: scripts/replace-function-body.py scripts/elf_text_addends.py
 build/non_matching/src/game_libs/game_libs_post0b.c.o: build/non_matching/src/match_imports/BaseMat_emitDisplayLists_00043BEC.c.o.linked.elf.bound.elf

@@ -3962,7 +3962,7 @@ int *ColourItem_create_000088B4(int *arg0) {
 
 /* BinFile_set_000683C4 split off from BinFile_load_00068350 bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
-/* ScreenWindow_getCurBuffer_0004D014 split off from PolyShape_vfn10_0004CFD4 bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
+/* ScreenWindow_getCurBuffer_0004D014 split off from PolyShape_copyMatDL bundle on 2026-05-08; NM-wrapped in game_libs_post.c. */
 
 /* BasePolyShape_triCentroid split off from BasePolyShape_genNormalsFast bundle on 2026-05-08; INCLUDE_ASM in game_libs_post.c. */
 
@@ -4050,9 +4050,9 @@ int *ColourItem_create_000088B4(int *arg0) {
  * so none of its bytes reached the link. The ROM words are the hoisted first
  * insns of the next function, which already emits them from source:
  *   0x3FB64 andi/multu       -> hostio_sendImage (C body in post0b.c)
- *   0x4E57C lui/addiu a1     -> Window_vfn0_0004E584 (game_libs_ncc_4E584.cpp donor
+ *   0x4E57C lui/addiu a1     -> Window_staticInit (game_libs_ncc_4E584.cpp donor
  *                               spliced into post0b.c.o)
- *   0x51654 lui/addiu v1     -> CMod_vfn0_0005165C (game_libs_ncc_5165C.cpp donor
+ *   0x51654 lui/addiu v1     -> CMod_staticInit (game_libs_ncc_5165C.cpp donor
  *                               spliced into post0b.c.o)
  *   0x6BA74 lui 0xA460/lw    -> gl_osPiRawReadIo (game_libs_ido53_6BA7C.c donor
  *                               spliced into post1b.c.o)

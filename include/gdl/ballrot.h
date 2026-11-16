@@ -6,7 +6,7 @@
 /*
  * BallRotator: the libgdl virtual trackball (game_libs post0b 0x35FD4-0x36694; agent-b
  * run 515). A Node whose update (BallRotator_update_0003604C) runs
- * BallRotator_func_00036224(this, &parent->mtx) on its parent MNode (Node.parent +0x30):
+ * BallRotator_applyArcball(this, &parent->mtx) on its parent MNode (Node.parent +0x30):
  * the cursor's current and previous screen points (the input object at +0x1CC, +0xF8 /
  * +0xBC, minus 160 / 120 and y flipped) are projected onto a sphere of `radius` around
  * `center` (the 0x34458 helper, called once per point), turned into world space

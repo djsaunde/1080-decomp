@@ -92,7 +92,7 @@ typedef struct GdlVtx {
 
 /* Strip (0x59C): the Cfront class `Strip` whose `void Strip::add(Vtx *, s16 *, int *, u16 *)` is
  * PolyShape_addFace_00048510 (its exact donor src/game_libs/game_libs_ncc_48510.cpp declares the
- * same layout). PolyShape_shade_00049DBC and PolyShape_vslot12_0004A308 pass the same object (their
+ * same layout). PolyShape_shade_00049DBC and PolyShape_makeEdgeVtxs pass the same object (their
  * arg2) to Strip::add and to gfx_findFaceVtxs_0004880C, which loops gfx_findVtx_00048720 over the
  * three face vertices: findVtx searches Vtx i of mesh->vtx.cur for i in [vtxBase, vtxBase + nv)
  * (word 0 is the DLContext, a0[1] / a0[3] the range). mode == 2 compares the colour / normal bytes

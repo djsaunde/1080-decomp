@@ -1,5 +1,5 @@
 #include "../../include/uso_call.h"  /* NCC donors build without -I include */
-/* IDO 7.1 NCC (C++) donor for GfxObj_vfn0_0004E244 (0x138 / 78 words): call the
+/* IDO 7.1 NCC (C++) donor for GfxObj_displayAll (0x138 / 78 words): call the
  * third virtual of every element of a pointer array, through the array's
  * by-value index iterator (12-byte {arr, idx, last}).
  * - The iterator's fields live in a BASE class whose ctor is reached through
@@ -32,7 +32,7 @@ struct AIter : IBase {
     Elem *cur() { return (*a)[idx]; }
 };
 inline AIter Arr::iter() { Arr *self = this; if (0) { self = this; } return AIter(self); }
-extern "C" void GfxObj_vfn0_0004E244(Arr *src) {
+extern "C" void GfxObj_displayAll(Arr *src) {
     AIter it = src->iter();
     while (it.next()) it.cur()->v3();
 }

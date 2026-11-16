@@ -1627,7 +1627,7 @@ void cam_createDefault_00033228(struct Gl33228Owner *o);
 void MCamera_doCommand(char *o, char *c);
 extern int gl_func_00000000_33338(int, int, int, float, float, int);
 void MCamera_hostioParms(int *a0);
-void MCamera_vfn12_000333A4(int a0, int a1, int a2);
+void MCamera_command(int a0, int a1, int a2);
 extern int gl_ref_000473F0();
 extern int gl_ref_0004742C();
 void hostio_readQuadParm_000333B4(char *a0);
