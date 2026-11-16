@@ -8157,19 +8157,21 @@ void Audio_NoteInit(Note *note) {
  * non-aliasing byte stores let IDO CSE the just-stored value, dropping a reload);
  * routing those two clears through a `volatile unsigned char*` view forces the
  * reloads → byte-exact. */
+#define NOTE ((Note *)a0)
 void Audio_NoteDisable(char *a0) {
     if ((((unsigned int)*(int *)(a0 + 0xB0) << 1) >> 31) == 1) {
         *(unsigned char *)(a0 + 0xB0) &= ~0x40;
     }
-    *(char *)(a0 + 0x30) = 0;
+    NOTE->playbackState.priority = 0;
     *(volatile unsigned char *)(a0 + 0xB0) &= ~0x80;
-    *(char *)(a0 + 0x34) = 0;
+    NOTE->playbackState.unk_04 = 0;
     *(volatile unsigned char *)(a0 + 0xB0) &= ~0x20;
-    *(int *)(a0 + 0x44) = -1;
-    *(int *)(a0 + 0x40) = -1;
-    *(unsigned char *)(a0 + 0x60) &= ~0x0F;
-    *(float *)(a0 + 0x70) = 0.0f;
+    NOTE->playbackState.parentLayer = (SequenceLayer *)-1; /* NO_LAYER */
+    NOTE->playbackState.prevParentLayer = (SequenceLayer *)-1;
+    NOTE->playbackState.adsr.action.asByte &= ~0x0F; /* action.s.state = 0 (ADSR_STATE_DISABLED) */
+    NOTE->playbackState.adsr.current = 0.0f;
 }
+#undef NOTE
 
 /* Audio_ProcessNotes (0x4F8): per-record attach/detach + sound-param pass over
  * the bootup.uso sym1255 record table (count +0x2070, recs +0x2CFC stride 0xD0), through
@@ -9553,6 +9555,12 @@ typedef struct { unsigned p0:2; unsigned b29:1; unsigned rest:29; } BF_000295BC;
 #ifndef FF
 #define FF(p, o) (*(f32 *)((char *)(p) + (o)))
 #endif
+/* agent-c run 530: channel / seqPlayer fields as SequenceChannel / SequencePlayer members.
+ * Byte levers: as members the float products need the operand order written here
+ * ((volume * volumeScale) * appliedFadeVolume, layer 0x38 * appliedVolume; the raw form had them
+ * the other way round), and the layer pan sum keeps the raw FW(arg0, 0x30) (channel->pan): as a
+ * member, in either order, the addu operands and the t-temps after it swap. */
+#define CH ((SequenceChannel *)arg0)
 void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     f32 var_f0;
     f32 var_f0_2;
@@ -9561,19 +9569,19 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
     char *temp_v1;
 
     if (((FW(arg0, 0x0) << 8 << 1) < 0) || (arg1 != 0)) {
-        temp_v0 = (char *) FW(arg0, 0x4C);
-        var_f0 = FF(temp_v0, 0x30) * (FF(arg0, 0x28) * FF(arg0, 0x2C));
-        if ((((BF_000295BC *)temp_v0)->b29) && ((*(u8*)(arg0 + 0x3)) & 0x20)) {
-            var_f0 = FF(temp_v0, 0x28) * var_f0;
+        temp_v0 = (char *)CH->seqPlayer;
+        var_f0 = (CH->volume * CH->volumeScale) * ((SequencePlayer *)temp_v0)->appliedFadeVolume;
+        if ((((BF_000295BC *)temp_v0)->b29) && (CH->muteBehavior & 0x20)) {
+            var_f0 = ((SequencePlayer *)temp_v0)->muteVolumeScale * var_f0;
         }
-        FF(arg0, 0x34) = var_f0 * var_f0;
+        CH->appliedVolume = var_f0 * var_f0;
     }
     if ((FW(arg0, 0x0) << 9 << 1) < 0) {
-        FW(arg0, 0x30) = (*(u8*)(arg0 + 0xB)) * (*(u8*)(arg0 + 0xA));
+        CH->pan = CH->newPan * CH->panChannelWeight;
     }
-    var_f0_2 = FF(arg0, 0x38);
+    var_f0_2 = CH->freqScale;
     if (arg2 != 0) {
-        var_f0_2 *= FF((char *) FW(arg0, 0x4C), 0x34);
+        var_f0_2 *= CH->seqPlayer->bend;
         (*(u8*)(arg0 + 0x1)) = ((*(u8*)(arg0 + 0x1)) & 0xFF) | 0x80;
     }
     for (arg2 = 0; arg2 != 0x20; arg2 += 4) {
@@ -9582,24 +9590,25 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
             b = *(u8*)temp_v1;
             if (b & 1) {
                 FF(temp_v1, 0x44) = FF(temp_v1, 0x30) * var_f0_2;
-                FF(temp_v1, 0x40) = FF(arg0, 0x34) * FF(temp_v1, 0x38);
-                (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - (*(u8*)(arg0 + 0xB)))) + FW(arg0, 0x30)) >> 7;
+                FF(temp_v1, 0x40) = FF(temp_v1, 0x38) * CH->appliedVolume;
+                (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
                 *(u8*)temp_v1 = b & 0xFFFE;
             } else {
                 if (((BF1_000295BC *) arg0)->f80) {
                     FF(temp_v1, 0x44) = FF(temp_v1, 0x30) * var_f0_2;
                 }
                 if (((FW(arg0, 0x0) << 8 << 1) < 0) || (arg1 != 0)) {
-                    FF(temp_v1, 0x40) = FF(arg0, 0x34) * FF(temp_v1, 0x38);
+                    FF(temp_v1, 0x40) = FF(temp_v1, 0x38) * CH->appliedVolume;
                 }
                 if (((FW(arg0, 0x0) << 9 << 1) < 0)) {
-                    (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - (*(u8*)(arg0 + 0xB)))) + FW(arg0, 0x30)) >> 7;
+                    (*(s8*)(temp_v1 + 0x6)) = (s32) (((*(u8*)(temp_v1 + 0x5)) * (0x80 - CH->panChannelWeight)) + FW(arg0, 0x30)) >> 7;
                 }
             }
         }
     }
     (*(u8*)(arg0 + 0x1)) = 0;
 }
+#undef CH
 
 // Audio_SequencePlayerProcessSound — STRUCTURAL PASS (0x1EC / 123 words, no episode).
 // Raw-.word USO form (game_libs). BOUNDARY NOTE: 3-jr USO bundle
@@ -9655,27 +9664,28 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
  * callee 0x3DC30 is a baked jal (gl_ref_0003DC30 pin). */
 typedef struct { unsigned int pad:5; unsigned int f4:1; unsigned int p25:1; unsigned int f1:1; unsigned int rest:24; } Fl_2978C;
 extern int gl_ref_0003DC30();
+#define SP ((SequencePlayer *)obj)
 void Audio_SequencePlayerProcessSound(char *obj) {
     char *p;
     int s0;
 
-    if (*(unsigned short *)(obj + 0x12) != 0) {
-        *(float *)(obj + 0x1C) += *(float *)(obj + 0x20);
+    if (SP->fadeTimer != 0) {
+        SP->fadeVolume += SP->fadeVelocity;
         ((Fl_2978C *)obj)->f4 = 1;
-        if (1.0f < *(float *)(obj + 0x1C)) {
-            *(float *)(obj + 0x1C) = 1.0f;
+        if (1.0f < SP->fadeVolume) {
+            SP->fadeVolume = 1.0f;
         }
-        if (*(float *)(obj + 0x1C) < 0.0f) {
-            *(float *)(obj + 0x1C) = 0.0f;
+        if (SP->fadeVolume < 0.0f) {
+            SP->fadeVolume = 0.0f;
         }
-        *(unsigned short *)(obj + 0x12) = *(unsigned short *)(obj + 0x12) - 1;
-        if (*(unsigned short *)(obj + 0x12) == 0 && *(unsigned char *)(obj + 1) == 2) {
+        SP->fadeTimer = SP->fadeTimer - 1;
+        if (SP->fadeTimer == 0 && SP->state == 2) {
             CALL(AudioSeq_SequencePlayerDisable)(obj);
             return;
         }
     }
     if (((Fl_2978C *)obj)->f4) {
-        *(float *)(obj + 0x30) = *(float *)(obj + 0x2C) * *(float *)(obj + 0x1C);
+        SP->appliedFadeVolume = SP->fadeVolume * SP->fadeVolumeScale;
     }
     for (s0 = 0, p = obj; s0 != 64; s0 += 4) {
         char *e = *(char **)(p + 0x38);
@@ -9686,6 +9696,7 @@ void Audio_SequencePlayerProcessSound(char *obj) {
     }
     ((Fl_2978C *)obj)->f4 = 0;
 }
+#undef SP
 
 /* Audio_GetPortamentoFreqScale (0x5C, 23 words, BYTE-EXACT 2026-09-06 agent-g):
  * accumulate-and-scale. Adds the two u16 fields at a0+2 and a0+4, stores the
@@ -10100,6 +10111,7 @@ extern int D_2A260_deflt; /* distinct placeholder: the obj+0x90 default-target g
  * -1 fill: 0xd0 store inside the loop after v1+=4 (becomes the bne delay slot).
  * Residual: sh 0x14/0x10 + addiu 0x800 scheduled ~10 slots earlier than target
  * (const-block interleave), or v1,a1 copy 2 slots early, prologue-orphan boundary. */
+#define CH ((SequenceChannel *)obj)
 void AudioSeq_InitSequenceChannel(char *obj) {
     unsigned char *p;
     int c, i;
@@ -10115,45 +10127,46 @@ void AudioSeq_InitSequenceChannel(char *obj) {
     *p &= 0xEF;
     *p &= 0xF7;
     *p &= 0xFB;
-    *(short *)(obj + 0x26) = 0;
+    CH->transposition = 0;
     *p &= 0xFD;
-    *(unsigned char *)(obj + 9) = 0;
-    *(unsigned char *)(obj + 0xE0) = 0;
-    *(unsigned char *)(obj + 1) = 255;
-    *(unsigned char *)(obj + 0x88) = 0;
-    *(unsigned char *)(obj + 0xA) = 64;
-    *(unsigned char *)(obj + 0xB) = 128;
-    *(unsigned char *)(obj + 0xD) = 0;
-    *(unsigned char *)(obj + 0xE) = 0;
-    *(int *)(obj + 0x40) = 0;
-    *(unsigned char *)(obj + 8) = 0;
-    *(unsigned char *)(obj + 4) = 0;
-    *(unsigned char *)(obj + 0xC) = 0;
-    *(unsigned char *)(obj + 5) = 3;
-    *(unsigned char *)(obj + 6) = 1;
-    *(short *)(obj + 0x1E) = 0;
-    *(int *)(obj + 0x90) = (int)&D_2A260_deflt;
-    *(unsigned char *)(obj + 0x8C) = 240;
-    *(unsigned char *)(obj + 0x8D) = 0;
-    *(short *)(obj + 0x14) = 2048;
-    *(short *)(obj + 0x10) = 2048;
-    *(short *)(obj + 0x16) = 0;
-    *(short *)(obj + 0x12) = 0;
-    *(short *)(obj + 0x18) = 0;
-    *(short *)(obj + 0x1A) = 0;
-    *(short *)(obj + 0x1C) = 0;
-    *(int *)(obj + 0xDC) = 0;
-    *(short *)(obj + 0x20) = 0;
-    *(unsigned char *)(obj + 0xF) = 0;
-    *(float *)(obj + 0x2C) = 1.0f;
-    *(float *)(obj + 0x28) = 1.0f;
-    *(float *)(obj + 0x38) = 1.0f;
+    CH->bookOffset = 0;
+    CH->stereo.asByte = 0;
+    *(unsigned char *)(obj + 1) = 255; /* changes.asByte (the bitfield container's second byte) */
+    CH->scriptState.depth = 0;
+    CH->newPan = 64;
+    CH->panChannelWeight = 128;
+    CH->velocityRandomVariance = 0;
+    CH->gateTimeRandomVariance = 0;
+    CH->noteUnused = 0;
+    CH->reverbIndex = 0;
+    CH->targetReverbVol = 0;
+    CH->gain = 0;
+    CH->notePriority = 3;
+    CH->someOtherPriority = 1;
+    CH->delay = 0;
+    CH->adsr.envelope = (AdsrEnvelope *)&D_2A260_deflt;
+    CH->adsr.decayIndex = 240;
+    CH->adsr.sustain = 0;
+    CH->vibratoRateTarget = 2048;
+    CH->vibratoRateStart = 2048;
+    CH->vibratoDepthTarget = 0;
+    CH->vibratoDepthStart = 0;
+    CH->vibratoRateChangeDelay = 0;
+    CH->vibratoDepthChangeDelay = 0;
+    CH->vibratoDelay = 0;
+    CH->filter = 0;
+    CH->combFilterGain = 0;
+    CH->combFilterSize = 0;
+    CH->volume = 1.0f;
+    CH->volumeScale = 1.0f;
+    CH->freqScale = 1.0f;
     for (i = 0; i < 8; i++) {
-        *(signed char *)(obj + 0xD4 + i) = -1;
+        CH->seqScriptIO[i] = -1;
     }
     *(unsigned char *)obj = *(unsigned char *)obj & ~1;
     CALL(Audio_InitNoteLists)(obj + 0x94);
 }
+#undef CH
 
 // AudioSeq_SeqChannelSetLayer — STRUCTURAL PASS (0x124 / 73 words, no episode).
 // Raw-.word USO form (game_libs). CLEAN SINGLE FUNCTION (1 jr, no
@@ -11472,34 +11485,36 @@ void AudioSeq_SkipForwardSequence(SequencePlayer *a0) {
 extern char D_2D064_148;
 extern char D_2D064_152;
 extern int gl_ref_0003E8C4();
+#define SP ((SequencePlayer *)a0)
 void AudioSeq_ResetSequencePlayer(char *a0) {
     char *p;
     int i;
     CALL(AudioSeq_SequencePlayerDisable)();
     i = 0;
-    *(char*)(a0 + 0) = *(char*)(a0 + 0) & ~2;
-    *(short*)(a0 + 16) = 0;
-    *(char*)(a0 + 1) = 1;
-    *(short*)(a0 + 18) = 0;
-    *(short*)(a0 + 20) = 0;
-    *(short*)(a0 + 10) = 0;
-    *(short*)(a0 + 8) = 0x1680;
-    *(short*)(a0 + 12) = 0;
-    *(short*)(a0 + 14) = 0;
-    *(char*)(a0 + 2) = 0;
-    *(int*)(a0 + 148) = (int)&D_2D064_148;
-    *(int*)(a0 + 152) = (int)&D_2D064_152;
-    *(int*)(a0 + 224) = 0;
-    *(float*)(a0 + 28) = 1.0f;
-    *(float*)(a0 + 32) = 0.0f;
-    *(float*)(a0 + 36) = 0.0f;
-    *(float*)(a0 + 40) = 0.5f;
+    *(char*)(a0 + 0) = *(char*)(a0 + 0) & ~2; /* stopScript = 0 (byte RMW) */
+    SP->delay = 0;
+    SP->state = 1;
+    SP->fadeTimer = 0;
+    SP->fadeTimerUnkEu = 0;
+    SP->tempoAcc = 0;
+    SP->tempo = 0x1680; /* 120 bpm * 48 */
+    SP->tempoChange = 0;
+    SP->transposition = 0;
+    SP->noteAllocPolicy = 0;
+    SP->shortNoteVelocityTable = (u8 *)&D_2D064_148;
+    SP->shortNoteGateTimeTable = (u8 *)&D_2D064_152;
+    SP->scriptCounter = 0;
+    SP->fadeVolume = 1.0f;
+    SP->fadeVelocity = 0.0f;
+    SP->volume = 0.0f;
+    SP->muteVolumeScale = 0.5f;
     p = a0;
     for (; i < 64; i += 4) {
         gl_ref_0003E8C4(*(int*)(p + 56));
         p += 4;
     }
 }
+#undef SP
 
 /* 61 instructions: initialize 16 per-record objects and their two groups
  * of four words. Store allocator result before testing it, then reload the
