@@ -10,6 +10,7 @@
 #include "gdl/sysapi.h"
 #include "gdl/nodelist.h"
 #include "gdl/mnode.h"
+#include "gdl/dma.h"
 #include "libultra/os_task.h"
 #include "libultra/os_message.h"
 #include "uso_call.h"
@@ -2007,27 +2008,17 @@ void hostio_readIntParm_00065EB4(int a0) {
  * records). Not the edg static initializer: an __sti__ has no `{` line
  * before its body (prologue lands 1-2 words late) and 65EE4 has no .data
  * link record (no DataReloc to sym2416, unlike the __sti__ 412E8). */
-typedef struct Save65EE4 {
-    char pad0[8];
-    int f8, fC;          /* 0x08, 0x0C: words read back from base / base+4 */
-    char pad1[0x14];
-    int data;            /* 0x24: base + 0x10 */
-    int base;            /* 0x28 */
-    int end;             /* 0x2C: base + 0x10 + size */
-    int size;            /* 0x30 */
-    int f34;             /* 0x34: cleared before the successor call */
-    char pad38[8];       /* 0x40 bytes: the three records sit 0x40 apart */
-} Save65EE4;
-extern Save65EE4 gFsStream0_65EE4_rgn0;   /* sym1520 (BSS 0x3F030) */
-extern Save65EE4 gFsStream1_65EE4_rgn1;   /* sym1542 (BSS 0x3F070) */
-extern Save65EE4 gFsStream2_65EE4_rgn2;   /* sym1544 (BSS 0x3F0B0) */
-extern void gl_func_000662E8_65EE4(Save65EE4 *, int, int);
-extern int gl_func_00066210_65EE4(Save65EE4 *, int);
-extern void gl_func_0006612C_65EE4(Save65EE4 *);
+/* the three records are FsStreams (gdl/dma.h): hdr = base, wrPos / rdPos read back from hdr / hdr+4 (agent-b run 550) */
+extern FsStream gFsStream0_65EE4_rgn0;   /* sym1520 (BSS 0x3F030) */
+extern FsStream gFsStream1_65EE4_rgn1;   /* sym1542 (BSS 0x3F070) */
+extern FsStream gFsStream2_65EE4_rgn2;   /* sym1544 (BSS 0x3F0B0) */
+extern void gl_func_000662E8_65EE4(FsStream *, int, int);
+extern int gl_func_00066210_65EE4(FsStream *, int);
+extern void gl_func_0006612C_65EE4(FsStream *);
 void fs_piXfer_00065EE4(void) {
-    { Save65EE4 *s = &gFsStream0_65EE4_rgn0; if (s != 0) {} s->base = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF0000 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
-    { Save65EE4 *s = &gFsStream1_65EE4_rgn1; if (s != 0) {} s->base = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF2710 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
-    { Save65EE4 *s = &gFsStream2_65EE4_rgn2; if (s != 0) {} s->base = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FFC350 + 4, s->data); { int b = s->base; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->base; s->f8 = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->fC = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->base + 4); s->f34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
+    { FsStream *s = &gFsStream0_65EE4_rgn0; if (s != 0) {} s->hdr = 0xB1FF0000; s->data = 0xB1FF0000 + 0x10; s->size = 0x2700; s->end = 0xB1FF0000 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF0000 + 4, s->data); { int b = s->hdr; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->hdr; s->wrPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->rdPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->hdr + 4); s->unk34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
+    { FsStream *s = &gFsStream1_65EE4_rgn1; if (s != 0) {} s->hdr = 0xB1FF2710; s->data = 0xB1FF2710 + 0x10; s->size = 0x9C30; s->end = 0xB1FF2710 + 0x10 + 0x9C30; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FF2710 + 4, s->data); { int b = s->hdr; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->hdr; s->wrPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->rdPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->hdr + 4); s->unk34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
+    { FsStream *s = &gFsStream2_65EE4_rgn2; if (s != 0) {} s->hdr = 0xB1FFC350; s->data = 0xB1FFC350 + 0x10; s->size = 0x2700; s->end = 0xB1FFC350 + 0x10 + 0x2700; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, 0xB1FFC350 + 4, s->data); { int b = s->hdr; XCALL(gl_func_000662E8_65EE4, fs_piWriteWord_000662E8)(s, b, s->data); } { int b = s->hdr; s->wrPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, b); } s->rdPos = XCALL(gl_func_00066210_65EE4, fs_piReadWord_00066210)(s, s->hdr + 4); s->unk34 = 0; XCALL(gl_func_0006612C_65EE4, fs_piXfer_0006612C)(s); }
 }
 
 /* fs_piXfer_0006612C: magic-value spin-handshake helper (0xAC, frame 0x20,
@@ -4455,7 +4446,16 @@ void ImageFile_vfn3_00068BF4(int *a0) {
 }
 
 #ifdef NON_MATCHING
-/* skin_cmdSkinMgr: 65-insn ext-pre-init + 3-call cascade + linked-set finalizer (0x104, frame 0x38).
+/* skin_cmdSkinMgr: the SkinMgr node-list command (NodeListState, like skin_cmdSkinAnim /
+ * SkinShape): reads the slot (0..3, MAX_SKIN_MGRS) and the SkinBone table from the stream,
+ * builds a SkinMgr, makes it the current node (and self / parent->skinMgr), appends it to the
+ * parent node's child list and registers it in the 4-entry table at Bss 0x41700 that
+ * skin_cmdSkinAnim / SkinShape index by slot. Both builds splice the exact native port
+ * src/match_imports/skin_cmdSkinMgr.c (REPLACE_FUNC_BODY); the body below is the readable
+ * reference (callees from the TextReloc jals, in comments: the name-placeholder-calls check
+ * cannot prove CALL() names in a spliced function; agent-b run 550).
+ *
+ * History: 65-insn ext-pre-init + 3-call cascade + linked-set finalizer (0x104, frame 0x38).
  *
  * Decoded structure (raw-word disasm):
  *   func_pre(a0);                                     // pre-init (unknown args)
@@ -4517,54 +4517,51 @@ void ImageFile_vfn3_00068BF4(int *a0) {
  * struct-typed self, cfront-style finaliser temps. INCLUDE_ASM stays.
  */
 extern void gl_func_00000000_68c14_v();
-void skin_cmdSkinMgr(int *self) {
-    extern int D_00000000;
-    extern int D_global_00068C14;
+void skin_cmdSkinMgr(NodeListState *self) {
     int count1;
-    int *bufstruct;
-    int *obj;
-    int *cf;
+    int **bufstruct;
+    SkinMgr *obj;
+    Node *cf;
     int *p;
     int count2;
 
-    gl_func_00000000_68c14_v(self);                 /* pre(self), void */
+    gl_func_00000000_68c14_v(self);                /* nodelist_checkPrevMNode(self) */
 
-    /* block 1: pop one int from the stream, store, overflow assert */
-    bufstruct = (int *)self[0];
-    p = (int *)bufstruct[0];
-    bufstruct[0] = (int)(p + 1);
-    self[1] = p[0];
-    count1 = self[1];
+    /* block 1: pop the SkinMgr slot from the stream, assert slot < 4 */
+    bufstruct = self->cursor;
+    p = *bufstruct;
+    *bufstruct = p + 1;
+    self->cmd = p[0];
+    count1 = self->cmd;
     if (count1 >= 4) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C4F4, (char *)&D_00000000 + 0x2C508, 221); /* assert "num < MAX_SKIN_MGRS", skin.cpp:221 (count1 = the SkinMgr slot) */
+        gl_func_00000000(GL_DATA(0x2C4F4), GL_DATA_STR(0x2C508, "/usr/people/giles/src/gdl/lib/system/skin.cpp"), 221); /* sys_assertFail(expr, file, line) */
     }
 
-    /* block 2: pop again, store, log on zero */
-    bufstruct = (int *)self[0];
-    p = (int *)bufstruct[0];
-    bufstruct[0] = (int)(p + 1);
+    /* block 2: pop the SkinBone table, log on zero */
+    bufstruct = self->cursor;
+    p = *bufstruct;
+    *bufstruct = p + 1;
     count2 = p[0];
-    self[1] = count2;
+    self->cmd = count2;
     if (count2 == 0) {
-        gl_func_00000000((char *)&D_00000000 + 0x2C538, count1); /* "Bad Skin Weights : %d\n" (count2 = the SkinBone table) */
+        gl_func_00000000(GL_DATA_STR(0x2C538, "Bad Skin Weights : %d\n"), count1); /* sys_fatal */
     }
 
-    /* sub-init returning the child object */
-    obj = (int *)gl_func_00000000(0, self[0x14 / 4], count2);
-    ((int *)self[0x3C / 4])[0x18 / 4] = (int)obj;   /* (self->0x3C)->0x18 = obj */
-    self[0x10 / 4] = (int)obj;
-    self[0x18 / 4] = (int)obj;
-    cf = (int *)((int *)self[0x3C / 4])[0x10 / 4];  /* (self->0x3C)->0x10 */
-    gl_func_00000000((char *)cf + 0x10, obj);       /* func_d(cf + 0x10, obj) */
+    obj = (SkinMgr *)gl_func_00000000(0, self->animMgr, count2); /* SkinMgr_ctor */
+    self->parent->skinMgr = (char *)obj;
+    self->node = (char *)obj;
+    self->skinMgr = (char *)obj;
+    cf = (Node *)self->parent->node;
+    gl_func_00000000(&cf->children, obj); /* list_append */
 
-    /* linked-set finalizer */
-    if (obj[0x14 / 4] != 0) {
-        obj[0x4 / 4] = 1;
+    /* child attach (linked-set finalizer) */
+    if (obj->node.parent != 0) {
+        obj->node.unk04 = 1;
     }
-    obj[0x14 / 4] = (int)cf;
+    obj->node.parent = cf;
 
-    /* D_global[count1] = self->0x18 (obj): the 4-entry SkinMgr table, indexed by slot */
-    *(int *)((char *)&D_global_00068C14 + count1 * 4) = self[0x18 / 4];
+    /* gSkinMgrs[slot] = the new SkinMgr (skin_cmdSkinAnim / SkinShape look it up by slot) */
+    ((int *)&gProcNodeList_41700)[count1] = (int)self->skinMgr;
 }
 #else
 INCLUDE_ASM("asm/nonmatchings/game_libs/game_libs", skin_cmdSkinMgr);

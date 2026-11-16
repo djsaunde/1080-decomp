@@ -42,8 +42,8 @@ typedef struct BallRotator {
     /* 0x164 */ char pad164[0x184 - 0x164];
     /* 0x184 */ s32 unk184;         /* 0 at reset */
     /* 0x188 */ char pad188[0x1CC - 0x188];
-    /* 0x1CC */ char *input;        /* cursor source: +0xF8 current / +0xBC previous screen
-                                     * point, +0xB4 -> +0x10 button bits, +0x108 enable */
+    /* 0x1CC */ struct GdlInput *input; /* cursor source (gdl/pad.h): curPoint / prevPoint screen
+                                     * points, pad->held button bits, enable */
     /* 0x1D0 */ char *camera;       /* QNode whose VQS quaternion (+0xB4) maps camera space
                                      * to world */
     /* 0x1D4 */ s32 buttonMask;     /* drag while (input buttons & buttonMask) */

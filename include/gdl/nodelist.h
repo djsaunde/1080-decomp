@@ -5,7 +5,7 @@
  * pointer to every command handler (shape_cmd*, skin_cmd*, nodelist_check*) and by value to
  * the sub-list calls. The edg donor nodelist_dispatch (game_libs_ncc_55470.cpp) calls it
  * Strm. ProcNodeList builds it: cursor = &list pointer, mnode = node = a1, animMgr = a2,
- * obj / unk18 / op113 / parent = 0, linkNodes = 1. docs/1080_GAME_CLASSES.md section 20 has
+ * obj / skinMgr / op113 / parent = 0, linkNodes = 1. docs/1080_GAME_CLASSES.md section 20 has
  * the command set; docs/1080_GRAPHICS.md section 19 the handler fields.
  *
  * Plain C types only (the NCC donors may include it). */
@@ -17,7 +17,8 @@ typedef struct NodeListState {
     /* 0x0C */ char *mnode;      /* the current MNode (nodelist_checkMNode "No MNode") */
     /* 0x10 */ char *node;       /* the current Node (nodelist_checkNode "No Node") */
     /* 0x14 */ char *animMgr;    /* ProcNodeList a2; anim_createAnimator "Null AnimatorMgr specified" */
-    /* 0x18 */ int unk18;
+    /* 0x18 */ char *skinMgr;    /* the SkinMgr the SkinMgr command (skin_cmdSkinMgr) built; that
+                                * command stores it here and in parent->skinMgr */
     /* 0x1C */ int unk1C[3];
     /* 0x28 */ char *obj;        /* the object the last constructing command built */
     /* 0x2C */ char *light;      /* light_addDefault_000513CC: the DefLight it built */

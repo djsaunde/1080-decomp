@@ -2178,7 +2178,7 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     f32 mtx[4][4];  /* sp+0xB0 camera matrix copy */
     f32 vecC[4];    /* sp+0xA0 tail scratch vec */
     union { Vec3 v; f32 pad[5]; } tmp; /* sp+0x8C struct-copy staging (s2) */
-    char *src;      /* home slots in the 0x78..0x8B band */
+    GdlInput *src;  /* home slots in the 0x78..0x8B band */
     volatile int pad0; /* phantom slot: band is 20B in target */
     f32 x, y, z;
     Vec3 rv;        /* sp+0x6C call-return copy (12B) */
@@ -2188,13 +2188,13 @@ void BallRotator_func_00036224(char *o, char *arg1) {
 
     pA = &vecA.v;
     pB = &vecB.v;
-    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xF8);
+    tmp.v = *(Vec3 *)BALLROT(o)->input->curPoint;
     vecA.p[2] = tmp.v.z;
     vecA.p[1] = tmp.v.y;
     vecA.p[0] = tmp.v.x;
     vecA.v.x = vecA.p[0] - 160.0f;
     vecA.v.y = vecA.p[1] - 120.0f;
-    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xBC);
+    tmp.v = *(Vec3 *)BALLROT(o)->input->prevPoint;
     vecB.p[0] = tmp.v.x;
     vecB.p[1] = tmp.v.y;
     vecB.v.x = vecB.p[0] - 160.0f;
@@ -2244,7 +2244,7 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     BALLROT(o)->hitPrev[1] = out2[1];
     BALLROT(o)->hitPrev[2] = out2[2];
     src = BALLROT(o)->input;
-    if ((*(int *)(*(char **)(src + 0xB4) + 0x10) & BALLROT(o)->buttonMask) && (*(int *)(src + 0x108) != 0)) {
+    if ((src->pad->held & BALLROT(o)->buttonMask) && (src->enable != 0)) {
         dbg_printThreads(BALLROT(o)->dragRot, BALLROT(o)->hitCur, BALLROT(o)->hitPrev);
         dbg_printThreads(BALLROT(o)->dragRot, BALLROT(o)->prevRot, BALLROT(o)->rot);
         dbg_printThreads(BALLROT(o)->baseRot, BALLROT(o)->lastHit, BALLROT(o)->hitPrev);
@@ -11070,27 +11070,31 @@ static void pad_after_gl_func_00043558(void) {
 
 extern int func_00000000();
 extern int D_00000000;
-void PolyShape_func_00043584(int *a0) {
-    a0[0x84/4] = 1;
-    a0[0x4C/4] = 1;
-    a0[0x50/4] = -1;
-    a0[0x60/4] = 0;
-    a0[0x64/4] = 0;
-    a0[0x68/4] = 0;
-    a0[0x6C/4] = 0;
-    a0[0x70/4] = 0;
-    a0[0x74/4] = 0;
+/* PolyShape_func_00043584: resets a material (Mat, material.h) before PolyShape_init
+ * (ncc_493AC.cpp) compiles the shape's triangles into it: minCut = -1, the DL pointers cleared,
+ * and the 0x100-byte clip-row table when the course has map parms (agent-b run 550: the old
+ * "clip-row Elem" is Mat: Elem's 0x50 / 0x54 / 0x6C / 0x7C / 0x80 / 0x8A are Mat fields). */
+void PolyShape_func_00043584(Mat *a0) {
+    a0->unk84 = 1;
+    a0->base.unk4C = 1;
+    a0->base.minCut = -1;
+    a0->lightDL = 0;
+    a0->stateDL = 0;
+    a0->texgenDL = 0;
+    a0->triDL = 0;
+    a0->unk70 = 0;
+    a0->unk74 = 0;
     if ((gGfx->flags & GFX_FLAG_MAPPARMS) != 0) {
-        a0[0x7C/4] = FCALL(mem_new)(0x100);
+        a0->rowGfx = (s16 *)FCALL(mem_new)(0x100);
     } else {
-        a0[0x7C/4] = 0;
+        a0->rowGfx = 0;
     }
 }
 
 /* PolyShape_allocLightDL_000435FC: 22-insn 7-arg + 1-arg call chain. */
-int PolyShape_allocLightDL_000435FC(int *a0, int a1) {
+int PolyShape_allocLightDL_000435FC(Mat *a0, int a1) {
     int v = CALL(gfx_newDLContext)(0, GL_DATA_STR(0x1FD14, "light"), 10, 0, 1, 0, 0);
-    a0[0x60/4] = v;
+    a0->lightDL = (struct DLContext *)v;
     return CALL(gfx_endDL)(v);
 }
 
@@ -11678,7 +11682,10 @@ void gfx_initDdm(int* a0, int a1) {
 void gfx_ddmNop_00044534(int a0, int a1) {
 }
 
-/* gfx_callStaticDL_00044540: 25-insn DList/RDP-cmd appender. Loads `self` from
+/* gfx_callStaticDL_00044540: appends gSPDisplayList(dl, &staticDL Gfx[*start]): a G_DL call into
+ * the GfxLib static display list ("MainStaticDL", gGfx->staticDL) at Gfx index *start (a Mat's
+ * stateStart span, material.h). Fields over GfxLib / DLContext (agent-b run 550).
+ * History: 25-insn DList/RDP-cmd appender. Loads `self` from
  * the global at &D+0x214 (the orphan-merged prologue), appends a 2-word F3DEX2
  * G_DL command (0x06000000 marker + the call return rv) into a per-handle ring
  * buffer at a1->0xC, post-incrementing the slot counter. 2026-06-21: MATCHED
@@ -11689,18 +11696,19 @@ void gfx_ddmNop_00044534(int a0, int a1) {
  * (`&base[counter*2]`) gives the target's load-base-then-addu tail. */
 extern int gl_func_00000000();
 extern int D_00000000;
-void gfx_callStaticDL_00044540(int *a0, int **a1) {
+void gfx_callStaticDL_00044540(int *start, DLContext *dl) {
   int rv;
   int counter;
   int *base;
-  int *self = *((int **) (((char *) (&D_00000000)) + 0x214));
-  rv = CALL(gl_osVirtualToPhysical)((char *) ((a0[0] * 8) + ((int) ((int **) self[0xC / 4])[0])));
+  DLContext *self = gGfx->staticDL;
+  /* *(int *)&...->base: the plain member read swaps the t6 / t8 load order (byte lever) */
+  rv = CALL(gl_osVirtualToPhysical)((char *) ((start[0] * 8) + *(int *)&self->gfx.cur->base));
   {
-  int *fld = (int *) a1[0xC / 4];
-  counter = fld[0x4 / 4];
-  fld[0x4 / 4] = counter + 1;
+  DLBuf *fld = dl->gfx.cur;
+  counter = fld->count;
+  fld->count = counter + 1;
   }
-  base = &((int *) ((int *) a1[0xC / 4])[0])[counter * 2];
+  base = &((int *) dl->gfx.cur->base)[counter * 2];
   if ((rv && rv) && rv)
   {
   }
@@ -12701,7 +12709,10 @@ void gfx_swapBuffer(GfxLib *a0) {
     FCALL(gfx_waitRetrace)(a0);
 }
 
-/* gfx_beginView_00046BC4: 34-insn cleanup helper. Named base pointers lift the C
+/* gfx_beginView_00046BC4 (GfxLib *): updates the lights, clears flags bit 1, resets the
+ * modelview, and mirrors the current window's clearFlags bit 2 into renderFlags bit 2. Both
+ * builds splice the exact port src/match_imports/gfx_beginView_00046BC4.c (agent-b run 550:
+ * both on GfxLib / Window fields). History: 34-insn cleanup helper. Named base pointers lift the C
  * body from the old 84.68% direct-offset RMW shape to same-size 89.68%.
  * The final residual is an IDO scheduling/regalloc cap around the dead
  * child+0x100 addiu and branch-likely selection; a 15-word INSN_PATCH closes
@@ -12709,24 +12720,22 @@ void gfx_swapBuffer(GfxLib *a0) {
 extern int gl_func_0001CA10();
 
 #ifdef NON_MATCHING
-void gfx_beginView_00046BC4(int *a0) {
-    int *s0 = a0;
-    int *clear_flags = (int*)((char*)s0 + 0x1C4);
-    int *state_flags = (int*)((char*)s0 + 0x138);
-    int *child;
-    gl_func_0001CA10(a0);
+void gfx_beginView_00046BC4(GfxLib *a0) {
+    GfxLib *s0 = a0;
+    int *clear_flags = &s0->flags;
+    int *render_flags = &s0->renderFlags;
+    gl_func_0001CA10(a0);                       /* gfx_updateLights_00047F9C */
     *clear_flags &= ~1;
-    gl_func_0001CA10(s0);
-    gl_func_0001CA10(s0);
-    child = *(int**)((char*)s0 + 0x254);
-    if ((*(int*)((char*)child + 0x104) & 2) == 0) {
+    gl_func_0001CA10(s0);                       /* gfx_resetModelView_0004E180 */
+    gl_func_0001CA10(s0);                       /* gfx_matrixModeModelView_000478EC */
+    if ((s0->curWindow->win.clearFlags & 2) == 0) {
         goto clear_state;
     }
-    state_flags[1] |= 2;
+    *render_flags |= 2;
     goto done;
 
 clear_state:
-    state_flags[1] &= ~2;
+    *render_flags &= ~2;
 
 done:
     ;
@@ -20651,7 +20660,7 @@ NodeListState *a3;
     if (((NodeListState **)&a0)[3] != 0) s = *((NodeListState **)&a0)[3];
     s.cursor = (int **)&a0;
     s.obj = 0;
-    s.unk18 = 0;
+    s.skinMgr = 0;
     s.op113 = 0;
     s.parent = 0;
     s.mnode = (char *)a1;

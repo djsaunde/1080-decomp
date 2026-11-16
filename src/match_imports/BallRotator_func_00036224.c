@@ -1,6 +1,7 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post0b.c. Target bytes unchanged. */
 #include "context_game_libs_post0b.h"
 #include "gdl/ballrot.h"
+#include "gdl/pad.h"
 void BallRotator_func_00036224(char *o, char *arg1) {
     extern Vec3 *gl_36224_direction(Vec3 *, char *, Vec3, Vec3, f32);
     extern void gl_36224_matrix(f32 (*)[4], f32 (*)[4]);
@@ -15,7 +16,7 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     f32 vecC[4];
     f32 x1, y1;
     union { Vec3 v; f32 pad[3]; } tmp;
-    char *src;
+    GdlInput *src;
     f32 x, y, z;
     f32 z1;
     Vec3 rv;
@@ -25,11 +26,11 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     GlQuaternion *pA;
     void *ap = &pA;
     (void)ap;
-    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xF8);
+    tmp.v = *(Vec3 *)BALLROT(o)->input->curPoint;
     vecA.p[0] = tmp.v.x; vecA.p[1] = tmp.v.y; vecA.p[2] = tmp.v.z;
     vecA.v.x = vecA.p[0] - 160.0f;
     vecA.v.y = vecA.p[1] - 120.0f;
-    tmp.v = *(Vec3 *)(BALLROT(o)->input + 0xBC);
+    tmp.v = *(Vec3 *)BALLROT(o)->input->prevPoint;
     vecB.p[0] = tmp.v.x; vecB.p[1] = tmp.v.y; vecB.p[2] = tmp.v.z;
     vecB.v.x = vecB.p[0] - 160.0f;
     vecB.v.y = vecB.p[1] - 120.0f;
@@ -73,8 +74,9 @@ void BallRotator_func_00036224(char *o, char *arg1) {
     BALLROT(o)->hitPrev[1] = out2[1];
     BALLROT(o)->hitPrev[2] = out2[2];
     src = BALLROT(o)->input;
-    ap = *(char **)(src + 0xB4);
-    if ((BALLROT(o)->buttonMask & *(int *)((char *)ap + 0x10)) && (*(int *)(src + 0x108) != 0)) {
+    ap = src->pad;
+    /* *(int *)&...->held: the plain member read changes the bytes (byte lever) */
+    if ((BALLROT(o)->buttonMask & *(int *)&((PadCtl *)ap)->held) && (src->enable != 0)) {
         pA = (GlQuaternion *)BALLROT(o)->dragRot;
         gl_36224_between(pA, (Vec3 *)BALLROT(o)->hitCur, pB = (Vec3 *)BALLROT(o)->hitPrev);
         gl_36224_product(pA, (GlQuaternion *)BALLROT(o)->prevRot, (GlQuaternion *)BALLROT(o)->rot);

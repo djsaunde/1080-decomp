@@ -72,12 +72,22 @@ typedef struct BaseMat {
  * untextured materials append G_TEXTURE off (0xBB040000, -1). */
 typedef struct Mat {
     /* 0x00 */ BaseMat base;
-    /* 0x60 */ s32 unk60;
+    /* 0x60 */ struct DLContext *lightDL; /* PolyShape_allocLightDL_000435FC ("light"), geomFlags 0x2000 */
     /* 0x64 */ struct DLContext *stateDL;  /* gGfx->staticDL ("MainStaticDL") */
     /* 0x68 */ struct DLContext *texgenDL; /* geomFlags bit 20: gfx_newDLContext(.., 0xA, 0, 5, ..) */
-    /* 0x6C */ s32 unk6C[7];
+    /* 0x6C */ struct DLContext *triDL;    /* PolyShape_init (ncc_493AC.cpp Elem::ctx6C): gGfx->staticDL,
+                                            * 0 when no triangle uses this material */
+    /* 0x70 */ s32 unk70;
+    /* 0x74 */ s32 unk74;
+    /* 0x78 */ s32 unk78;
+    /* 0x7C */ s16 *rowGfx;                /* GFX_FLAG_MAPPARMS only (0x100 bytes, PolyShape_func_00043584):
+                                            * triDL Gfx count at the end of each clip row (grid row),
+                                            * the spans PolyShape_clipRows draws for rows minCut..maxCut */
+    /* 0x80 */ s16 rowStart;               /* triDL Gfx count where the rows begin */
+    /* 0x82 */ s16 pad82;
+    /* 0x84 */ s32 unk84;                  /* 1 after PolyShape_func_00043584 */
     /* 0x88 */ s16 stateStart;             /* stateDL->gfx.cur->count before the state commands */
-    /* 0x8A */ s16 pad8A;
+    /* 0x8A */ s16 triStart;               /* triDL Gfx count before this material's triangles */
     /* 0x8C */ s32 unk8C;
 } Mat;
 
@@ -91,6 +101,8 @@ typedef char BaseMat_format_check[(int)&((BaseMat *)0)->format == 0x24 ? 1 : -1]
 typedef char BaseMat_name_check[(int)&((BaseMat *)0)->name == 0x44 ? 1 : -1];
 typedef char BaseMat_vptr_check[(int)&((BaseMat *)0)->vptr == 0x5C ? 1 : -1];
 typedef char Mat_stateStart_check[(int)&((Mat *)0)->stateStart == 0x88 ? 1 : -1];
+typedef char Mat_rowGfx_check[(int)&((Mat *)0)->rowGfx == 0x7C ? 1 : -1];
+typedef char Mat_unk84_check[(int)&((Mat *)0)->unk84 == 0x84 ? 1 : -1];
 #endif
 
 #endif /* GDL_MATERIAL_H */
