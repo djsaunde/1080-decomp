@@ -10,7 +10,7 @@
  * (s, t) of a `width`-texel-wide image (SetTextureImage gets width - 1, LoadTile starts at
  * (s, t)). Integer fields: the matched loader does all address math in int. */
 typedef struct TexImage {
-    /* 0x00 */ s32 pixels;             /* image address (TexCI * for MAT_FMT_CI8) */
+    /* 0x00 */ char *pixels;           /* image address (TexCI * for MAT_FMT_CI8) */
     /* 0x04 */ s32 s;                  /* sub-rectangle origin (texels) */
     /* 0x08 */ s32 t;
     /* 0x0C */ s32 width;              /* image width = row stride (texels) */
