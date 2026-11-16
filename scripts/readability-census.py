@@ -3,6 +3,8 @@
 
   scripts/readability-census.py [--no-build] [--write [PLAN.md]] [--top N]
   scripts/readability-census.py [--no-build] --unjustified [--owner X]   (file:line function list)
+  scripts/readability-census.py [--no-build] --by-reason [--list KEYWORD [--owner X]]
+      (justified sites per RAW: keyword per owner; --list prints one keyword's sites as file:line function)
 
 Run from the project root after a full build (the readability gate leaves one). Without --write
 the dashboard (Markdown) goes to stdout; with --write it replaces the block between
@@ -255,11 +257,11 @@ RAW_TAG = re.compile(r'\bRAW:\s*(' + '|'.join(RAW_KEYWORDS) + r')\b')
 
 
 def justified_lines(src):
-    """Set of 1-based line numbers whose raw sites are justified: a `RAW: <keyword>` tag on the
+    """{1-based line: keyword} for the lines whose raw sites are justified: a `RAW: <keyword>` tag on the
     line itself, or on the line just above (when that line closes a multi-line comment, anywhere
     in that comment)."""
     lines = src.split('\n')
-    tagged = [bool(RAW_TAG.search(ln)) for ln in lines]
+    tagged = [(RAW_TAG.search(ln) or None) and RAW_TAG.search(ln).group(1) for ln in lines]
     # a multi-line /* ... */ comment carries its tag to its closing line
     in_c, start = False, 0
     for i, ln in enumerate(lines):
@@ -276,12 +278,12 @@ def justified_lines(src):
                     break
                 in_c, j = False, k + 2
                 if start != i and any(tagged[start:i + 1]):
-                    tagged[i] = True
-    ok = set()
+                    tagged[i] = next(t for t in tagged[start:i + 1] if t)
+    ok = {}                                  # line -> keyword (the site's own line wins)
     for i, tg in enumerate(tagged):
         if tg:
-            ok.add(i + 1)
-            ok.add(i + 2)
+            ok.setdefault(i + 2, tg)
+            ok[i + 1] = tg
     return ok
 
 
@@ -427,6 +429,7 @@ def main():
     just = collections.defaultdict(collections.Counter)   # file -> {'raw', 'just'} ; owner via sites
     own_just = collections.defaultdict(collections.Counter)
     unjust = []                              # (file, line, function, owner)
+    reasons = []                             # (file, line, function, owner, keyword) justified sites
     seg_off = collections.defaultdict(collections.Counter)
     dnames = collections.defaultdict(set)
     spell = collections.Counter()
@@ -455,6 +458,7 @@ def main():
                 just[p]['raw'] += 1
                 own_just[o]['raw'] += 1
                 if ok:
+                    reasons.append((p, line, fname, o, okl[line]))
                     just[p]['just'] += 1
                     own_just[o]['just'] += 1
                 else:
@@ -472,6 +476,25 @@ def main():
             spell['salias'] += len(STR_ALIAS.findall(m))
             spell['kro'] += len(KRO.findall(m))
             spell['raw'] += len(RAW_BASE.findall(m))
+
+    if '--by-reason' in args:
+        # justified raw sites per RAW: keyword per owner (run 582); --list KEY [--owner X] lists them
+        if '--list' in args:
+            key = args[args.index('--list') + 1]
+            only = args[args.index('--owner') + 1] if '--owner' in args else None
+            for p, line, f, o, k in sorted(reasons):
+                if k == key and (only is None or o == only):
+                    print(f'{p}:{line} {f} [{o}]')
+            return
+        cnt = collections.Counter((k, o) for _, _, _, o, k in reasons)
+        owners = 'abcgh'
+        for r in tbl(['keyword'] + list(owners) + ['total'],
+                     [[f'`{k}`'] + [cnt[(k, o)] for o in owners] + [sum(cnt[(k, o)] for o in owners)]
+                      for k in RAW_KEYWORDS] +
+                     [['**all**'] + [sum(cnt[(k, o)] for k in RAW_KEYWORDS) for o in owners] + [len(reasons)]]):
+            print(r)
+        print(f'{len(unjust)} unjustified raw sites', file=sys.stderr)
+        return
 
     if '--unjustified' in args:
         only = args[args.index('--owner') + 1] if '--owner' in args else None
