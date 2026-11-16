@@ -1376,7 +1376,7 @@ extern int D_412E8_g;
 extern int D_412E8_h;
 extern int gSysLib_412E8_i;
 extern int ConsoleDev_vtbl_412E8_j;
-extern int HostioDev_vtbl_1E1B8_412E8_k;
+extern int SysLib_vtbl_1E1B8_412E8_k;
 extern int gSysLib_412E8_l;
 extern int gHostio_412E8_m;
 void app_staticInit_000412E8(void);
