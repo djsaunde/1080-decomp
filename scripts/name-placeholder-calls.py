@@ -1119,7 +1119,10 @@ def check_fast(path, src, rom, quiet=False):
     for (fn, tok), cnt in want.items():
         n += sum(cnt.values())
         have = collections.Counter()
-        for f in (live if cpp else [fn] if fn in rfuncs else []):
+        # a static function whose object symbol a POST_COMPILE add-elf-func-symbol.py injected under a
+        # segment-prefixed name (viMgrMain -> gl_viMgrMain, game_libs_ido53_74EF4.c; agent-a run 598)
+        fo = fn if fn in rfuncs else ('gl_' + fn) if fn and ('gl_' + fn) in rfuncs else None
+        for f in (live if cpp else [fo] if fo else []):
             base = rom.func_off(md, f)
             if base is None:
                 continue
