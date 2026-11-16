@@ -48,6 +48,12 @@ extern RaceSprite sVrLabels_378[52];
 extern RaceSprite sVrSprites_048[8];  /* 0x048 (sVrSprites[3..]) */
 extern RaceSprite sVrSprites_108[8];  /* 0x108 (sVrSprites[11..]) */
 extern RaceSprite sVrLabels_7B0[7];   /* 0x7B0 (sVrLabels[61..]) */
+extern RaceSprite sVrLabels_318[];    /* 0x318 (sVrLabels[12..]): the 0x11B4 background tiles */
+/* 0x540 (sVrLabels[35]), the left arrow: its own symbol lets 0x12D4 keep &sprite in a0 for the
+ * call and the .image load (sVrLabels[35] folds the load into the reloc) */
+extern RaceSprite sVrLabels_540;
+/* bootup Bss+0x28C (the gui string-table / language base; trnproc's trn_gRowBase), 0-pinned */
+extern s32 vr_gLanguage;
 extern f32 sVrPrimColour[4];        /* 0x858 */
 extern f32 sVrEnvColour[4];         /* 0x868 */
 extern GuiMenu *sVrMenu;            /* 0x878: the menu that has the pad */
@@ -135,9 +141,102 @@ void viewrec_uso_func_00000290(void) {
 
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000002D0);
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00000718);
+/* load the 21 sprites of sVrSprites (0x1F0000.., the riders 0x1D0000.., the boards 0x1E0000.., 0x250000) */
+void viewrec_uso_func_00000718(ViewRecProc *proc) {
+    CALL(gui_spriteLoad)(&sVrSprites[0], 0x1F0000);
+    CALL(gui_spriteLoad)(&sVrSprites[1], 0x1F0001);
+    CALL(gui_spriteLoad)(&sVrSprites[2], 0x1F0002);
+    CALL(gui_spriteLoad)(&sVrSprites[3], 0x1D0000);
+    CALL(gui_spriteLoad)(&sVrSprites[4], 0x1D0001);
+    CALL(gui_spriteLoad)(&sVrSprites[5], 0x1D0002);
+    CALL(gui_spriteLoad)(&sVrSprites[6], 0x1D0003);
+    CALL(gui_spriteLoad)(&sVrSprites[7], 0x1D0004);
+    CALL(gui_spriteLoad)(&sVrSprites[8], 0x1D0005);
+    CALL(gui_spriteLoad)(&sVrSprites[9], 0x1D0006);
+    CALL(gui_spriteLoad)(&sVrSprites[10], 0x1D0007);
+    CALL(gui_spriteLoad)(&sVrSprites[11], 0x1E0000);
+    CALL(gui_spriteLoad)(&sVrSprites[12], 0x1E0001);
+    CALL(gui_spriteLoad)(&sVrSprites[13], 0x1E0002);
+    CALL(gui_spriteLoad)(&sVrSprites[14], 0x1E0003);
+    CALL(gui_spriteLoad)(&sVrSprites[15], 0x1E0004);
+    CALL(gui_spriteLoad)(&sVrSprites[16], 0x1E0005);
+    CALL(gui_spriteLoad)(&sVrSprites[17], 0x1E0006);
+    CALL(gui_spriteLoad)(&sVrSprites[18], 0x1E0007);
+    CALL(gui_spriteLoad)(&sVrSprites[19], 0x1E0008);
+    CALL(gui_spriteLoad)(&sVrSprites[20], 0x250000);
+}
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000008C8);
+/* init the 68 label sprites of sVrLabels; the language-dependent ones take vr_gLanguage */
+void viewrec_uso_func_000008C8(ViewRecProc *proc) {
+    CALL(gui_spriteInit)(&sVrLabels[0], 0x260000 | (vr_gLanguage * 8));
+    CALL(gui_spriteInit)(&sVrLabels[1], 0x260000 | (vr_gLanguage * 8 + 1));
+    CALL(gui_spriteInit)(&sVrLabels[2], 0x260000 | (vr_gLanguage * 8 + 2));
+    CALL(gui_spriteInit)(&sVrLabels[3], 0x260000 | (vr_gLanguage * 8 + 3));
+    CALL(gui_spriteInit)(&sVrLabels[4], 0x260000 | (vr_gLanguage * 8 + 4));
+    CALL(gui_spriteInit)(&sVrLabels[5], 0x260000 | (vr_gLanguage * 8 + 5));
+    CALL(gui_spriteInit)(&sVrLabels[6], 0x260000 | (vr_gLanguage * 8 + 6));
+    CALL(gui_spriteInit)(&sVrLabels[7], 0x260000 | (vr_gLanguage * 8 + 7));
+    CALL(gui_spriteInit)(&sVrLabels[8], ((vr_gLanguage + 47) << 16) | 10);
+    CALL(gui_spriteInit)(&sVrLabels[9], ((vr_gLanguage + 47) << 16) | 15);
+    CALL(gui_spriteInit)(&sVrLabels[10], ((vr_gLanguage + 47) << 16) | 17);
+    CALL(gui_spriteInit)(&sVrLabels[16], 0x290002);
+    CALL(gui_spriteInit)(&sVrLabels[17], 0x290000);
+    CALL(gui_spriteInit)(&sVrLabels[18], 0x290003);
+    CALL(gui_spriteInit)(&sVrLabels[19], 0x290001);
+    CALL(gui_spriteInit)(&sVrLabels[20], 0x290004);
+    CALL(gui_spriteInit)(&sVrLabels[21], 0x2C0000);
+    CALL(gui_spriteInit)(&sVrLabels[22], 0x2C0001);
+    CALL(gui_spriteInit)(&sVrLabels[23], 0x2C0002);
+    CALL(gui_spriteInit)(&sVrLabels[24], 0x2C0003);
+    CALL(gui_spriteInit)(&sVrLabels[25], 0x2C0004);
+    CALL(gui_spriteInit)(&sVrLabels[26], 0x2C0005);
+    CALL(gui_spriteInit)(&sVrLabels[27], 0x2C0006);
+    CALL(gui_spriteInit)(&sVrLabels[28], 0x2C0007);
+    CALL(gui_spriteInit)(&sVrLabels[29], (vr_gLanguage + 47) << 16);
+    CALL(gui_spriteInit)(&sVrLabels[30], ((vr_gLanguage + 47) << 16) | 1);
+    CALL(gui_spriteInit)(&sVrLabels[31], ((vr_gLanguage + 47) << 16) | 2);
+    CALL(gui_spriteInit)(&sVrLabels[32], ((vr_gLanguage + 47) << 16) | 3);
+    CALL(gui_spriteInit)(&sVrLabels[33], ((vr_gLanguage + 47) << 16) | 4);
+    CALL(gui_spriteInit)(&sVrLabels[11], 0x270003);
+    CALL(gui_spriteInit)(&sVrLabels[12], 0x280000);
+    CALL(gui_spriteInit)(&sVrLabels[13], 0x280001);
+    CALL(gui_spriteInit)(&sVrLabels[14], 0x280002);
+    CALL(gui_spriteInit)(&sVrLabels[15], 0x280003);
+    CALL(gui_spriteInit)(&sVrLabels[34], 0x70003);
+    CALL(gui_spriteInit)(&sVrLabels[35], 0x70004);
+    CALL(gui_spriteInit)(&sVrLabels[36], 0x7000B);
+    CALL(gui_spriteInit)(&sVrLabels[37], 0x2F0012);
+    CALL(gui_spriteInit)(&sVrLabels[38], (vr_gLanguage + 42) << 16);
+    CALL(gui_spriteInit)(&sVrLabels[39], ((vr_gLanguage + 47) << 16) | 7);
+    CALL(gui_spriteInit)(&sVrLabels[40], ((vr_gLanguage + 47) << 16) | 11);
+    CALL(gui_spriteInit)(&sVrLabels[41], ((vr_gLanguage + 47) << 16) | 14);
+    CALL(gui_spriteInit)(&sVrLabels[42], ((vr_gLanguage + 47) << 16) | 13);
+    CALL(gui_spriteInit)(&sVrLabels[43], ((vr_gLanguage + 47) << 16) | 12);
+    CALL(gui_spriteInit)(&sVrLabels[45], ((vr_gLanguage + 47) << 16) | 8);
+    CALL(gui_spriteInit)(&sVrLabels[46], ((vr_gLanguage + 47) << 16) | 9);
+    CALL(gui_spriteInit)(&sVrLabels[47], ((vr_gLanguage + 47) << 16) | 10);
+    CALL(gui_spriteInit)(&sVrLabels[44], ((vr_gLanguage + 47) << 16) | 15);
+    CALL(gui_spriteInit)(&sVrLabels[48], 0x310003);
+    CALL(gui_spriteInit)(&sVrLabels[49], 0x310004);
+    CALL(gui_spriteInit)(&sVrLabels[50], 0x310005);
+    CALL(gui_spriteInit)(&sVrLabels[51], (vr_gLanguage + 49) << 16);
+    CALL(gui_spriteInit)(&sVrLabels[52], ((vr_gLanguage + 49) << 16) | 2);
+    CALL(gui_spriteInit)(&sVrLabels[53], ((vr_gLanguage + 49) << 16) | 1);
+    CALL(gui_spriteInit)(&sVrLabels[54], 0x2D0000);
+    CALL(gui_spriteInit)(&sVrLabels[55], 0x2D0002);
+    CALL(gui_spriteInit)(&sVrLabels[56], 0x2D0001);
+    CALL(gui_spriteInit)(&sVrLabels[57], ((vr_gLanguage + 45) << 16) | 3);
+    CALL(gui_spriteInit)(&sVrLabels[58], ((vr_gLanguage + 45) << 16) | 4);
+    CALL(gui_spriteInit)(&sVrLabels[59], ((vr_gLanguage + 45) << 16) | 5);
+    CALL(gui_spriteInit)(&sVrLabels[60], ((vr_gLanguage + 45) << 16) | 6);
+    CALL(gui_spriteInit)(&sVrLabels[61], ((vr_gLanguage + 52) << 16) | 1);
+    CALL(gui_spriteInit)(&sVrLabels[62], ((vr_gLanguage + 52) << 16) | 2);
+    CALL(gui_spriteInit)(&sVrLabels[63], ((vr_gLanguage + 49) << 16) | 6);
+    CALL(gui_spriteInit)(&sVrLabels[64], ((vr_gLanguage + 49) << 16) | 7);
+    CALL(gui_spriteInit)(&sVrLabels[65], ((vr_gLanguage + 49) << 16) | 8);
+    CALL(gui_spriteInit)(&sVrLabels[66], ((vr_gLanguage + 49) << 16) | 9);
+    CALL(gui_spriteInit)(&sVrLabels[67], ((vr_gLanguage + 49) << 16) | 10);
+}
 
 /* push the current menu on the process's menu stack and start `menu` */
 void viewrec_uso_func_00000F84(ViewRecProc *proc, GuiMenu *menu) {
@@ -190,9 +289,77 @@ void viewrec_uso_func_0000110C(ViewRecProc *proc) {
     }
 }
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000011B4);
+/* the records background: a 5 x 7 grid of tiles (tile per column from the .data row at 0x3D4),
+ * then label sprite 37 at (160, 37). The unused x / j give the 0x68 frame. */
+typedef struct { int v[5]; } VrRow5;
 
-INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_000012D4);
+void viewrec_uso_func_000011B4(void *arg0) {
+    VrRow5 row;
+    int x, y, i, j;
+    RaceSprite *spr;
+
+    row = *(VrRow5 *)((char *)&D_00000000 + 0x3D4);
+    CALL(gui_setCombine_00001794)(&D_00000000);
+    for (y = 16; y != 240; y += 32) {
+        for (i = 0; i < 5; i++) {
+            spr = &sVrLabels_318[row.v[i]];
+            CALL(gui_spriteRefresh)(spr);
+            CALL(gui_drawSprite)(spr, i * 64, y, 0);
+        }
+    }
+    CALL(gui_spriteRefresh)(&sVrLabels[37]);
+    CALL(gui_drawSprite)(&sVrLabels[37], 160, 37, 3);
+}
+
+/* draw sprite spr centred at y, and every 8 frames the blinking right / left arrows beside it
+ * (labels 34 / 35, tinted (233, 255, 0)); col2 is set and unused, as in the target. */
+typedef struct VrBlinkOwner {
+    char pad0[0x98];
+    s32 blink;
+} VrBlinkOwner;
+
+void viewrec_uso_func_000012D4(VrBlinkOwner *self, RaceSprite *spr, s32 y, s32 left, s32 right) {
+    f32 col2[4];
+    f32 col[4];
+    f32 d;
+    RaceSpriteImage *img;
+    s32 w;
+    RaceSpriteImage *aimg;
+    s32 aw;
+
+    d = 255.0f;
+    col2[0] = 200 / d;
+    col2[1] = 168 / d;
+    col2[2] = 255 / d;
+    col2[3] = 255 / d;
+    col[0] = 233 / d;
+    col[1] = 255 / d;
+    col[2] = 0 / d;
+    col[3] = 255 / d;
+    CALL(gui_setEnvPrimColor_00001EF4)(&D_00000000, 255, sVrPrimColour, sVrEnvColour);
+    CALL(gui_spriteRefresh)(spr);
+    CALL(gui_drawSprite)(spr, 160, y, 3);
+    w = self->blink;
+    self->blink = w + 1;
+    if (w & 8) {
+        if (right) {
+            CALL(gui_spriteRefresh)(&sVrLabels[34]);
+            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels[34], 255, col, 255);
+            img = spr->image;
+            w = img->width;
+            CALL(gui_drawSprite)(&sVrLabels[34], w / 2 + 168, y, 2);
+        }
+        if (left) {
+            CALL(gui_spriteRefresh)(&sVrLabels_540);
+            CALL(gui_setColorEnvPrim_000017DC)(&sVrLabels_540, 255, col, 255);
+            img = spr->image;
+            aimg = sVrLabels_540.image;
+            w = img->width;
+            aw = aimg->width;
+            CALL(gui_drawSprite)(&sVrLabels_540, -(w / 2) - aw + 152, y, 2);
+        }
+    }
+}
 
 /* draw label sprite i centred at y. NM: the target frame is 0x28 (sprite pointer at sp+0x1C). */
 #ifdef NON_MATCHING
