@@ -1215,7 +1215,15 @@ void viewrec_uso_func_00003818(ViewRecScreen *self) {
     CALL(Node_update)(self);
 }
 
+/* the erase screen's draw: the five set labels, the course grid (selFade > 0) and the yes / no prompt
+ * (selFade < 1). MIPSpro 7.2.1 donor src/viewrec_uso/viewrec_uso_mp72_nm_3878.cpp (agent-b run 675, 426 of
+ * 427 words: one c.lt.s delay-slot nop short), spliced over this placeholder on the non_matching build. */
+#ifdef NON_MATCHING
+void viewrec_uso_func_00003878(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/viewrec_uso/viewrec_uso", viewrec_uso_func_00003878);
+#endif
 
 /* the erase screen's selection pad handling (proc mode 0x80000). Phase +0xA0 = 0: up / down move
  * the cursor +0xA4 over the five record sets (wrapping); A picks one: course times / scores go to

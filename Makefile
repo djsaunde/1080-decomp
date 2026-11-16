@@ -6197,3 +6197,8 @@ $(SNOW_NM_A_DONOR): src/snoweffects_uso/snoweffects_uso_ncc_nm_a.cpp src/snoweff
 SNOW_NM_A_FUNCS := snoweffects_uso_func_0000A10C
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: private REPLACE_FUNC_BODY += $(foreach f,$(SNOW_NM_A_FUNCS),$(f)=$(SNOW_NM_A_DONOR))
 build/non_matching/src/snoweffects_uso/snoweffects_uso.c.o: $(SNOW_NM_A_DONOR)
+# agent-b run 675: NON_MATCHING-only MIPSpro 7.2.1 donor for viewrec 0x3878 (426 of 427 words; the target
+# keeps a nop in the `selFade < 1.0f` c.lt.s delay slot). Built by the viewrec_uso_mp72_% rule above.
+VIEWREC_NM_B_DONOR := build/src/viewrec_uso/viewrec_uso_mp72_nm_3878.cpp.o
+build/non_matching/src/viewrec_uso/viewrec_uso.c.o: private REPLACE_FUNC_BODY += viewrec_uso_func_00003878=$(VIEWREC_NM_B_DONOR)
+build/non_matching/src/viewrec_uso/viewrec_uso.c.o: $(VIEWREC_NM_B_DONOR)
