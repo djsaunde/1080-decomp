@@ -25,6 +25,9 @@
  * conditionally-assigned value of the target (no default arm), as in the cfe body.
  * Spliced over the placeholder in mgrproc_uso.c via REPLACE_FUNC_BODY (both build paths). */
 typedef float f32;
+typedef signed short s16; typedef signed int s32; typedef unsigned char u8; typedef unsigned short u16;
+#include "../../include/game/modeproc.h"  /* MgrRace (RaceColourParms ctt / cnm / ccl / clg) */
+#include "../../include/game/nameentry.h" /* MgrNameEntry */
 extern "C" {
 extern char import_8024CAF8;
 extern void import_0024E608(...);
@@ -44,9 +47,9 @@ struct Col { f32 r, g, b, a; Col() { r = 1.0f; g = 1.0f; b = 1.0f; a = 1.0f; } }
 void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
     char *n1;
     Col col;
-    char *sub;
+    f32 *sub;
     char sp60[64];
-    char *p;
+    RaceColourParm *p;
     char *a3;
     char *panel;
     int s0;
@@ -57,78 +60,78 @@ void MgrNameEntry_drawCongrats_00002B7C(char *arg0) {
     char *panel2;
     char *n2;
 
-    a3 = *(char **)(arg0 + 0xD4);
-    switch (*(int *)(a3 + 0x7E4)) {
+    a3 = (char *)MGRNAMEENT(arg0)->race;
+    switch (MGRRACE(a3)->endingPhase) {
     case 1:
-        p = a3 + 0x490;
+        p = &MGRRACE(a3)->race.colours.ccl;
         if (p) {}
-        import_0024D108(*(int *)(a3 + 0x568));
-        a3 = *(char **)(arg0 + 0xD4);
+        import_0024D108(MGRRACE(a3)->race.spriteSet);
+        a3 = (char *)MGRNAMEENT(arg0)->race;
         /* Uninitialised-local exception: the target reads sub's never-written home (`lw s3,0xA0(sp)` at 0x2CA4). */
         if (s1) {}
         if (s2) {}
         if (sub) {}
         if (s0) {}
-        import_0024E608(&import_8024CAF8, 0xFF, p + 0x10);
+        import_0024E608(&import_8024CAF8, 0xFF, p->value);
         /* Uninitialised-local exception: the target reads sub's never-written home (`lw s3,0xA0(sp)` at 0x2CA4). */
         if (sub) {}
         XCALL(mgrproc_uso_func_083574, gl_sprintf)(&sp60, (n1 = &import_80264A28 + 0x658));
-        import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                        import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
+        import_0024D704(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet,
+                        import_0024E060(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet, 0xA0, &sp60),
                         0x46, &sp60);
         XCALL(mgrproc_uso_func_083574, gl_sprintf)(&sp60, (n2 = &import_80264A3C + 0x66C));
-        import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                        import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, &sp60),
+        import_0024D704(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet,
+                        import_0024E060(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet, 0xA0, &sp60),
                         0x64, &sp60);
         return;
     case 3:
-        s2 = -1 - *(int *)(a3 + 0x7E0);
-        import_0024D108(*(int *)(a3 + 0x568));
+        s2 = -1 - MGRRACE(a3)->creditScroll;
+        import_0024D108(MGRRACE(a3)->race.spriteSet);
         s0 = 0;
         do {
-            a3 = *(char **)(arg0 + 0xD4);
-            idx = *(int *)(a3 + 0x7DC) + s0;
+            a3 = (char *)MGRNAMEENT(arg0)->race;
+            idx = MGRRACE(a3)->creditLine + s0;
             s1 = ((char **)&import_8025CAF8)[idx] + 1;
             digit = s1[-1] - 0x30;
             switch (digit) {
             case 0:
-                sub = a3 + 0x458;
+                sub = MGRRACE(a3)->race.colours.ctt.value;
                 break;
             case 1:
-                sub = a3 + 0x47C;
+                sub = MGRRACE(a3)->race.colours.cnm.value;
                 break;
             case 2:
-                sub = a3 + 0x4A0;
+                sub = MGRRACE(a3)->race.colours.ccl.value;
                 break;
             }
             import_0024E608(&import_8024CAF8, 0xFF, sub);
-            import_0024D704(*(int *)(*(char **)(arg0 + 0xD4) + 0x568),
-                            import_0024E060(*(int *)(*(char **)(arg0 + 0xD4) + 0x568), 0xA0, s1),
+            import_0024D704(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet,
+                            import_0024E060(MGRRACE(MGRNAMEENT(arg0)->race)->race.spriteSet, 0xA0, s1),
                             s2, s1);
             s0 += 1;
             s2 += 0x10;
         } while (s0 != 0x10);
-        a3 = *(char **)(arg0 + 0xD4);
-        if (*(int *)(a3 + 0x7E8) < 0x96) {
-            if (*(int *)(arg0 + 0x170) >= 0x79) {
-                *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
-                a3 = *(char **)(arg0 + 0xD4);
+        a3 = (char *)MGRNAMEENT(arg0)->race;
+        if (MGRRACE(a3)->endingTimer < 0x96) {
+            if (MGRNAMEENT(arg0)->panelY >= 0x79) {
+                MGRNAMEENT(arg0)->panelY = MGRNAMEENT(arg0)->panelY - 1; if (arg0) {}
+                a3 = (char *)MGRNAMEENT(arg0)->race;
             }
-            import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
+            import_0024E608(&import_8024CAF8, 0xFF, MGRRACE(a3)->race.colours.clg.value);
             panel = &import_80263D48 + 0x18;
             import_0024F2C8(panel);
-            import_0024F34C(panel, 0xA0, *(int *)(arg0 + 0x170), 3);
+            import_0024F34C(panel, 0xA0, MGRNAMEENT(arg0)->panelY, 3);
         }
         return;
     case 4:
-        if (*(int *)(arg0 + 0x170) >= 0x79) {
-            *(int *)(arg0 + 0x170) = *(int *)(arg0 + 0x170) - 1; if (arg0) {}
-            a3 = *(char **)(arg0 + 0xD4);
+        if (MGRNAMEENT(arg0)->panelY >= 0x79) {
+            MGRNAMEENT(arg0)->panelY = MGRNAMEENT(arg0)->panelY - 1; if (arg0) {}
+            a3 = (char *)MGRNAMEENT(arg0)->race;
         }
-        import_0024E608(&import_8024CAF8, 0xFF, a3 + 0x4C4);
+        import_0024E608(&import_8024CAF8, 0xFF, MGRRACE(a3)->race.colours.clg.value);
         panel2 = &import_80263D48 + 0x18;
         import_0024F2C8(panel2);
-        import_0024F34C(panel2, 0xA0, *(int *)(arg0 + 0x170), 3);
+        import_0024F34C(panel2, 0xA0, MGRNAMEENT(arg0)->panelY, 3);
         break;
     }
 }

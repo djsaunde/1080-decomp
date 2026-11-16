@@ -3,8 +3,10 @@
  * unchanged (700's K&R definition spelled as a prototype). mgrproc is C++;
  * edg -O0 emits no closing-brace b-epilogue, which was the whole cfe residual
  * (+2 words each). Spliced into mgrproc_uso_o0_19C.c.o via REPLACE_FUNC_BODY. */
+typedef signed short s16; typedef signed int s32; typedef unsigned char u8; typedef unsigned short u16;
+typedef float f32;
+#include "../../include/game/modeproc.h" /* ModeFlowProc / MgrCourseList: arg0 is the mgr flow object */
 extern "C" {
-typedef int s32;
 /* import_800200E4 = GameFlow +0x4C: playerRider (game/input.h). */
 extern struct { char pad[0x4C]; int playerRider; } import_800200E4;
 /* import_800201EC = GameFlow (bootup Bss 0xF8, game/input.h) +0x154: `options`, the
@@ -13,21 +15,6 @@ extern struct { char pad[0x4C]; int playerRider; } import_800200E4;
 struct GameFlowOptionsHead { unsigned short unlocks; unsigned short seqStep; };
 extern struct { char pad[0x154]; struct GameFlowOptionsHead *options; } import_800201EC;
 extern char import_8005C6E0;
-/* Mirror of game/modeproc.h MgrCourseList / ModeFlowProc (that header pulls gdl/race.h and
- * gdl/backup.h, whose offset asserts edg rejects; keep the two in step). arg0 is the mgr
- * flow object (GameFlow.flowProc), +8 its course list (agent-h run 552). */
-typedef struct MgrCourseList {
-    s32 retries;                /* 0x00 */
-    s32 idx;                    /* 0x04: current course */
-    s32 count;                  /* 0x08 */
-    s32 courses[6];             /* 0x0C */
-    s32 riders[6];              /* 0x24: the opponent of each course */
-} MgrCourseList;
-typedef struct ModeFlowProc {
-    struct BackupSession *session; /* 0x0 */
-    void *vptr;                 /* 0x4 */
-    MgrCourseList *courseList;  /* 0x8 */
-} ModeFlowProc;
 void mgr_pickRivals_000005D0(char *a0);
 int import_000B574C(...);
 int mgrproc_uso_D_01F97C(...);
