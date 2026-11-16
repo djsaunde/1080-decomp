@@ -9,16 +9,22 @@
  * 0/8/16/24 offsets with one `addiu v1,v1,32`. The cfe NM indexed src[4*k]
  * by hand and scored 26.4. Spliced into bootup_uso.c.o via REPLACE_FUNC_BODY;
  * the root reference is func_0000023C itself (same reloc as the target). */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/gdl/gfxlib.h"  /* GfxLib.mainWindow (NCC donors build without -I include) */
 extern "C" {
 extern char func_0000023C[];
 }
+/* func_0000023C + 4 is GfxLib +0x240 = mainWindow (uso-data-sites: Bss+0x3C168 sym154, K = 0x240; agent-g
+ * run 580), so the root object is the main ScreenWindow and buf() its frame buffer. */
+#define GFX_E740 GFXLIB(func_0000023C - 0x23C)
 struct VO { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
     virtual void v10(); virtual char *buf(); };
 struct Obj { char pad[0x1C]; unsigned short *pix; };
 extern "C" void ScreenThumbMat_grab_0000E740(Obj *self, int a1) {
-    unsigned short *src = (unsigned short *)((*(VO **)(func_0000023C + 4))->buf() + 0x9140);
+    unsigned short *src = (unsigned short *)(((VO *)GFX_E740->mainWindow)->buf() + 0x9140);
     unsigned short *dst = self->pix;
     for (int y = 0; y < 32; y++) {
         for (int x = 0; x < 64; x++) {

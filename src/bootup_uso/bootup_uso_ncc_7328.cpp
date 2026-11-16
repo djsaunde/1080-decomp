@@ -17,6 +17,8 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
 #include "../../include/game/course.h"
 #include "../../include/game/envobj.h" /* EnvSettings (handlers / clipNear / clipFar / flags) */
+#include "../../include/game/input.h"  /* GameFlow (InputMgr) */
+#include "../../include/gdl/gfxlib.h"  /* GfxLib.fog */
 extern "C" {
 void func_00000000(...);
 void stream_readS32_00005EF8(void *);
@@ -25,6 +27,11 @@ void stream_readS32_00004FF0(void *);
 extern char D_00000000, sFmt_Env_Load_7F90, sFmt_Env_Skip_7FA0;
 extern char func_0000027C[], func_00000008[], func_0000029C[];
 }
+/* The relocs (uso-data-sites.py sites EnvSettings_load): func_00000008 + 0x34 = GameFlow (bootup Bss
+ * 0xF8, sym272) +0x3C, func_0000029C + 4 = GfxLib (sym154) +0x2A0 = fog.colour[3]; the symbols and
+ * addends stay the target's (agent-g run 580). */
+#define GAMEFLOW_7328 GAMEFLOW(func_00000008 - 8)
+#define GFX_7328 GFXLIB(func_0000029C - 0x29C)
 struct Msg73 { int id; };
 struct Handler73 { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void handle(); };
@@ -71,9 +78,9 @@ extern "C" void EnvSettings_load(char *self) {
         stream_readS32_00004FF0(&ENVSET(self)->clipNear);
         stream_readS32_00004FF0(&ENVSET(self)->clipFar);
     }
-    { int mode = *(int *)(func_00000008 + 0x34); /* GameFlow.gameMode (Bss 0xF8 + 0x3C: alias value 8 + 0x34) */
+    { int mode = GAMEFLOW_7328->gameMode;
     if (mode == 6 || mode == 11) {
-        *(float *)(func_0000029C + 4) = 1.0f;
+        GFX_7328->fog.colour[3] = 1.0f;
         ENVSET(self)->flags |= 2;
         ENVSET(self)->clipFar = 800;
     } }

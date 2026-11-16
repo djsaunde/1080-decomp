@@ -4055,7 +4055,7 @@ skip_sub:
             ((MemberCallback *)p)->vptr = (char *)&game_uso_D_807FEE38 + 0x848;
         o16_fill:
             ((MemberCallback *)r)->obj = arg0;
-            ((MemberCallback *)r)->pmf = *(Pair2 *)((char *)&game_uso_D_807FEE30 + 0x840);
+            ((MemberCallback *)r)->pmf = *(Pair2 *)((char *)&game_uso_D_807FEE30 + kPmf_Sun_measureVisibility);
         }
     o16_set:
         ((MemberCallback *)s0)->vptr = (char *)&game_uso_D_807FF234 + 0xC44;

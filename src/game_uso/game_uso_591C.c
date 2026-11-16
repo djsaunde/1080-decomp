@@ -208,7 +208,7 @@ void SnowAI_steer(int *a0) {
         axis_src = (float *)&((SnowAI *)a0)->rider->parms.nts;
         self->unk3C =
             (neg * (1.0f + (((SnowBoarder *)sub)->dnode.speed / self->turnSpeedRef))
-             * self->turnGain) / *(float *)((int)axis_src + 16);
+             * self->turnGain) / *(float *)&((SnowBParm *)axis_src)->value;
     }
     f2v = self->unk3C;
     fsel = f2v < 0.0f ? -f2v : f2v;

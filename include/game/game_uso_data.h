@@ -17,6 +17,9 @@
  * `--uso game spell FILE --write` respells the sites. Macros only, so the header
  * is C and C++ safe (NCC donors include it by relative path). */
 
+/* Sun_ctor's MemberCallback PMF (agent-g run 580). */
+#define kPmf_Sun_measureVisibility 0x840 /* Data+0x840: PMF -> Sun_measureVisibility */
+
 /* RiderAnim states: the 8-byte PMF records {s16 delta, s16 index, fn} at
  * Data 0xDB0..0xF60 that RiderAnim_enterState / queueState take
  * (rideranim.h: queuedState 0xC0, state 0xC8). Data 0xDC8 is the null PMF
@@ -119,6 +122,9 @@
 #define kRoD_0p3_130 0x130 /* RoData+0x130: f64 0.3 */
 #define kRoD_0p1_138 0x138 /* RoData+0x138: f64 0.1 */
 
+/* hand-named RoData floats (agent-g run 580; value claims checked by uso-data-sites.py --uso game check) */
+#define kRoF_3000_FC 0xFC /* RoData+0xFC: f32 3000.0 */
+#define kRoF_28555_1F4 0x1F4 /* RoData+0x1F4: f32 28555.0 */
 /* const-table:begin (uso-data-sites.py --uso game const-table --write; do not edit by hand) */
 /* strings (class names, "Parms" group names, assert texts, file names) */
 #define kStr_Parms_318 0x318 /* Data+0x318: "Parms" */

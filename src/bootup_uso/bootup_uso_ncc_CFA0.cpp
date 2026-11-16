@@ -26,6 +26,7 @@ typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef uns
 typedef int s32; typedef unsigned int u32; typedef long long s64; typedef unsigned long long u64;
 typedef float f32; typedef double f64;
 #include "../../include/game/snowboarder.h"
+#include "../../include/gdl/window.h" /* Window: drawDistFov / displayMask on the current window */
 extern "C" {
 char *bu_cfa0_probe(char *, int, int, int, float, float *, float);
 extern char gGfxLib_cfa0_a, gGfxLib_cfa0_b, gGfxLib_cfa0_c, gGfxLib_cfa0_d, gGfxLib_cfa0_e, gGfxLib_cfa0_f;
@@ -37,6 +38,12 @@ int func_00000000(...);
 void bu_cfa0_v(...);
 }
 #define CTX gGfxLib_cfa0_ctx
+/* CTX = GfxLib.curWindow (gfx +0x254, the alias value 0x254 = func_0000023C + 0x18; GfxLib +0x240 is
+ * mainWindow, the Fader_buildTexture root at func_0000023C + 4): a ScreenWindow, whose Window base
+ * holds drawDistFov[0] at +0x98 (the class-0 draw distance at this fov, the float compared with the
+ * probe distance) and displayMask at +0x108 (passed on, as Window_display passes it to
+ * Node_setDisplayMask). agent-g run 580. */
+#define CTX_WIN(c) ((Window *)(c))
 struct VO { char pad[0x28]; virtual void v0(); virtual void v1(); virtual void f(); };
 struct V3 { float x, y, z; };
 #define DISPATCH_CFA0(node) { ((VO *)(node))->f(); }
@@ -61,7 +68,7 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
     st->unkA40 = r;
     if (r == 0) return;
     ctx = CTX;
-    changed = (*(float *)(ctx + 0x98) < out) || (ctx != st->camera);
+    changed = (CTX_WIN(ctx)->drawDistFov[0] < out) || (ctx != st->camera);
     if ((st->flags & 0x10000) && st->groundSurface == 0x61 &&
         st->board != 9 && st->contactCount != 0) {
         p = (char *)func_00000000(&gGfxLib_cfa0_a, 0xD);
@@ -127,5 +134,5 @@ extern "C" void SnowBoarder_display(SnowBoarder *st) {
     }
     bu_cfa0_v(&gGfxLib_cfa0_f, t);
     bu_cfa0_v(st);
-    bu_cfa0_v(*(int *)(CTX + 0x108));
+    bu_cfa0_v(CTX_WIN(CTX)->displayMask);
 }

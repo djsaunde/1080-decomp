@@ -43,7 +43,7 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
     /* import_80020098 is GameFlow (include/game/input.h); on course 0 its dataMgr's hudFlags get
      * RTF_FLUSH | RTF_POINTS while endTrickFlag is set and the rider is past the RoData z threshold */
     if (INPUT_MGR(import_80020098).course == 0) {
-        float th = F(&D_00000000, 0x1F4);
+        float th = F(&D_00000000, kRoF_28555_1F4);
         if (RA(a0)->rider->dnode.vqs.trans[2] < th) {
             RA(a0)->endTrickFlag = 0;
         }

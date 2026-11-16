@@ -8,8 +8,9 @@
  * The period-correct MIPSpro 7.2 / 7.2.1 edgcpfe (EDG 2.29: table iff n >= 4 and size <= 2n) does, and
  * this body is byte-exact under it (docs/TOOLING_DECOMP.md "Toolchain forensics III", run 352).
  * Source = the cfe NM body (99.9986) with the phantom `case 4:` dropped, `ob[0] = tv` stored through
- * `*(char **)((char *)ob + 0)` (edg forwards a plain store) and `x == 1` instead of `1 == x` in the
- * first && test.
+ * `*(char **)(char *)ob` (edg forwards a plain `ob[0]` / `*(char **)&ob[0]` store; the cast chain, like
+ * the old `*(char **)((char *)ob + 0)`, is not forwarded: same bytes, agent-g run 580) and `x == 1`
+ * instead of `1 == x` in the first && test.
  *
  * RoData layout: the target's `lw t,0x50(at)` is an in-place %lo (the game_uso Yay0 block is raw .text,
  * no reloc bake), so the table must sit at donor .rodata+0x50. The two layout-only functions below
@@ -150,7 +151,7 @@ void cam_updateView_00000B3C(CourseCam *arg0) {
     Vec3 v30;         /* 0x30 */
 
     s = arg0;
-    tv = (char *)s->cam.target; *(char **)((char *)ob + 0) = tv;
+    tv = (char *)s->cam.target; *(char **)(char *)ob = tv;
     /* a new race result picks a result view */
     tmp = s->rider->raceResult;
     if (tmp != s->lastResult) {

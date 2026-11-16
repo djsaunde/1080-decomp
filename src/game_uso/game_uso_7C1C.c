@@ -1,4 +1,5 @@
 #include "uso_call.h"
+#include "game/game_uso_data.h" /* kRoF_3000_FC */
 /* SnowAI_aimAlongSegment: EXACT donor, cfront-style C for IDO 7.1 cfe -O2 (agent-c
  * runs 230-231, from agent-g's run 229 port c7c7.c), REPLACE_FUNC_BODY-spliced over
  * the placeholder in src/game_uso/game_uso.c on both build paths (GAMEUSO_7C1C_DONOR).
@@ -155,7 +156,7 @@ Vec3 SnowAI_aimAlongSegment(Self *s, Node *a, Node *b, Vec3 *pos, float *out) {
                 s->active = 0;
             }
             active = s->active;
-            if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_aimAlongSegment_rodata + 0xFC)) {
+            if (active == 1 && DOTV <= *(float *)((char *)&SnowAI_aimAlongSegment_rodata + kRoF_3000_FC)) {
                 XZV(p, t280, &s->w->other->pos, XCALL(game_uso_func_055750, mem_new))
                 SUB2VS(q, p, t274, t280, &a->pos, XCALL(game_uso_func_055750, mem_new))
                 R = t274;

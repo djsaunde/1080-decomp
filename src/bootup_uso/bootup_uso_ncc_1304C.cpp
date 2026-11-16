@@ -12,6 +12,10 @@
  *   between the index bump and the slot address (nextb). Found by an exhaustive
  *   placement search (kit XXXV #4); see docs/IDO_CODEGEN.md kit XXXIV. */
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
+typedef signed char s8; typedef unsigned char u8; typedef short s16; typedef unsigned short u16;
+typedef int s32; typedef unsigned int u32; typedef float f32; typedef double f64;
+#include "../../include/gdl/gfxlib.h"  /* GfxLib.curWindow */
+#include "../../include/gdl/window.h"  /* ScreenWindow.dl */
 typedef struct { unsigned int w0, w1; } Gwords;
 typedef union { Gwords words; long long force_structure_alignment; } Gfx;
 struct DL { Gfx *buf; int n; };
@@ -45,6 +49,9 @@ extern char D_00000000[];
 extern float kRo_Fader_display_C50, kRo_Fader_display_C54, kRo_Fader_display_C58, kRo_Fader_display_C5C, kRo_Fader_display_C60;
 extern char func_0000023C[];
 }
+/* func_0000023C + 0x18 is GfxLib +0x254 (uso-data-sites: the reloc names Bss+0x3C168 sym154, the GfxLib
+ * global, K = 0x254), so func_0000023C stands for &gGfxLib + 0x23C; the same reloc as the target. */
+#define GFX_1304C GFXLIB(func_0000023C - 0x23C)
 extern "C" void Fader_display(Fire *f) {
     int x, y, i, j;
     float up, dn;
@@ -100,7 +107,7 @@ extern "C" void Fader_display(Fire *f) {
         f->f48 = 1.0f;
         if (f->state == 1) f->state = 0;
     }
-    Ctx *c = *(Ctx **)(*(char **)(func_0000023C + 0x18) + 0x158);
+    Ctx *c = (Ctx *)GFX_1304C->curWindow->dl; /* the current window's display list */
     G2(c->next(), 0xE7000000, 0);
     G2(c->next(), 0xBA001402, 0x100000);
     G2B(c->next(), 0xBA001301, 0);
