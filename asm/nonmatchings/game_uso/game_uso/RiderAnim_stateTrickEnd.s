@@ -23,7 +23,7 @@ glabel RiderAnim_stateTrickEnd
     /* 00F4E8 0000F4E8 AFA50004 */  .word 0xAFA50004
     /* 00F4EC 0000F4EC 8D460004 */  .word 0x8D460004
     /* 00F4F0 0000F4F0 AFA40018 */  .word 0xAFA40018
-    jal RiderAnim_setNextState_0000D5BC   /* 00F4F4 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00F4F4 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00F4F8 0000F4F8 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateHopAir   /* 00F4FC 0C000000 -> RiderAnim_stateHopAir */
     /* 00F500 0000F500 8FA40018 */  .word 0x8FA40018

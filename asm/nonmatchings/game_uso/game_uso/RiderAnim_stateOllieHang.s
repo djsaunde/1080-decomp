@@ -27,7 +27,7 @@ glabel RiderAnim_stateOllieHang
     /* 00FF24 0000FF24 8F250000 */  .word 0x8F250000
     /* 00FF28 0000FF28 AFA50004 */  .word 0xAFA50004
     /* 00FF2C 0000FF2C 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setNextState_0000D5BC   /* 00FF30 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00FF30 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00FF34 0000FF34 AFA60008 */  .word 0xAFA60008
     /* 00FF38 0000FF38 8FBF001C */  .word 0x8FBF001C
     /* 00FF3C 0000FF3C 27BD0020 */  .word 0x27BD0020

@@ -24,7 +24,7 @@ glabel RiderAnim_blendWeightDeep_00010C4C
     /* 010C9C 00010C9C AFA50004 */  .word 0xAFA50004
     /* 010CA0 00010CA0 8F260004 */  .word 0x8F260004
     /* 010CA4 00010CA4 AFA40020 */  .word 0xAFA40020
-    jal RiderAnim_setNextState_0000D5BC   /* 010CA8 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 010CA8 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 010CAC 00010CAC AFA60008 */  .word 0xAFA60008
     /* 010CB0 00010CB0 8FA40020 */  .word 0x8FA40020
     /* 010CB4 00010CB4 8C8A00B4 */  .word 0x8C8A00B4
@@ -36,7 +36,7 @@ glabel RiderAnim_blendWeightDeep_00010C4C
     /* 010CCC 00010CCC 8D850000 */  .word 0x8D850000
     /* 010CD0 00010CD0 AFA50004 */  .word 0xAFA50004
     /* 010CD4 00010CD4 8D860004 */  .word 0x8D860004
-    jal RiderAnim_setNextState_0000D5BC   /* 010CD8 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 010CD8 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 010CDC 00010CDC AFA60008 */  .word 0xAFA60008
     /* 010CE0 00010CE0 8FBF001C */  .word 0x8FBF001C
     /* 010CE4 00010CE4 27BD0020 */  .word 0x27BD0020

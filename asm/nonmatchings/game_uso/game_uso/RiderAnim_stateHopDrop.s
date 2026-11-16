@@ -31,7 +31,7 @@ glabel RiderAnim_stateHopDrop
     /* 010474 00010474 02002025 */  .word 0x02002025
     /* 010478 00010478 AFA50004 */  .word 0xAFA50004
     /* 01047C 0001047C 8D060004 */  .word 0x8D060004
-    jal RiderAnim_setNextState_0000D5BC   /* 010480 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 010480 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 010484 00010484 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateHopLand   /* 010488 0C000000 -> RiderAnim_stateHopLand */
     /* 01048C 0001048C 02002025 */  .word 0x02002025

@@ -41,14 +41,14 @@ glabel RiderAnim_checkRow_0000E1FC
     /* 00E290 0000E290 8F250000 */  .word 0x8F250000
     /* 00E294 0000E294 AFA50004 */  .word 0xAFA50004
     /* 00E298 0000E298 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setNextState_0000D5BC   /* 00E29C 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00E29C 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00E2A0 0000E2A0 AFA60008 */  .word 0xAFA60008
     /* 00E2A4 0000E2A4 10000007 */  .word 0x10000007
     /* 00E2A8 0000E2A8 8FBF0014 */  .word 0x8FBF0014
     /* 00E2AC 0000E2AC 8D450000 */  .word 0x8D450000
     /* 00E2B0 0000E2B0 AFA50004 */  .word 0xAFA50004
     /* 00E2B4 0000E2B4 8D460004 */  .word 0x8D460004
-    jal RiderAnim_setNextState_0000D5BC   /* 00E2B8 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00E2B8 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00E2BC 0000E2BC AFA60008 */  .word 0xAFA60008
     /* 00E2C0 0000E2C0 8FBF0014 */  .word 0x8FBF0014
     /* 00E2C4 0000E2C4 27BD0018 */  .word 0x27BD0018

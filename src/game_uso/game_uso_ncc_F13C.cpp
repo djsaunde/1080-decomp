@@ -24,7 +24,7 @@ void import_0010DB28(void *, int, int, int, int, int);
 void import_0010DB78(void *, int, int, float, int, int);
 void RiderAnim_jumpTakeoff_0000F360(void *);
 void RiderAnim_startHop_0001001C(void *);
-void RiderAnim_setNextState_0000D5BC(void *, PM);
+void RiderAnim_enterState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 struct V { int *child() { return AT(int *, this, 0x800); } };
@@ -50,7 +50,7 @@ extern "C" void RiderAnim_statePreJumpHold(int *a0, int *a1) {
         short v0 = RA(s0)->holdFrames;
         RA(s0)->holdFrames = v0 + 1;
         if (RA(s0)->parms.jht.value.i < v0) {
-            RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
+            RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF498, 0xEA8));
         }
     }
 }

@@ -11,7 +11,7 @@ glabel RiderAnim_stateResumeRide
     /* 00FAD8 0000FAD8 8FA40018 */  .word 0x8FA40018
     /* 00FADC 0000FADC AFA50004 */  .word 0xAFA50004
     /* 00FAE0 0000FAE0 8DC60004 */  .word 0x8DC60004
-    jal RiderAnim_setNextState_0000D5BC   /* 00FAE4 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00FAE4 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00FAE8 0000FAE8 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateRide   /* 00FAEC 0C000000 -> RiderAnim_stateRide */
     /* 00FAF0 0000FAF0 8FA40018 */  .word 0x8FA40018

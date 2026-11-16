@@ -20,7 +20,7 @@ glabel RiderAnim_stateOllieDrop
     /* 00FFF8 0000FFF8 24070006 */  .word 0x24070006
     /* 00FFFC 0000FFFC AFA50004 */  .word 0xAFA50004
     /* 010000 00010000 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setState_0000D5F8   /* 010004 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 010004 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 010008 00010008 AFA60008 */  .word 0xAFA60008
     /* 01000C 0001000C 8FBF001C */  .word 0x8FBF001C
     /* 010010 00010010 27BD0020 */  .word 0x27BD0020

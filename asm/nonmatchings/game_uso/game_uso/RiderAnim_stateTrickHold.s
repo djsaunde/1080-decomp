@@ -20,7 +20,7 @@ glabel RiderAnim_stateTrickHold
     /* 00F6A4 0000F6A4 24070003 */  .word 0x24070003
     /* 00F6A8 0000F6A8 AFA50004 */  .word 0xAFA50004
     /* 00F6AC 0000F6AC 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setState_0000D5F8   /* 00F6B0 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00F6B0 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00F6B4 0000F6B4 AFA60008 */  .word 0xAFA60008
     /* 00F6B8 0000F6B8 8FA40020 */  .word 0x8FA40020
     jal RiderAnim_readTrickInput_0000E5C8   /* 00F6BC 0C000000 -> RiderAnim_readTrickInput_0000E5C8 */

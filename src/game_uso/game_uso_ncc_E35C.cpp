@@ -28,8 +28,8 @@ void RiderAnim_addTrickPoints_0000EE30(void *, int, int);
 void import_000B8518(int, void *, int);
 void RiderAnim_playSpinSound_0000E564(void *);
 void game_uso_func_077C44(void *, int, int, int, int, int);
-void RiderAnim_setState_0000D5F8(void *, PM, int);
-void RiderAnim_setNextState_0000D5BC(void *, PM);
+void RiderAnim_queueState_0000D5F8(void *, PM, int);
+void RiderAnim_enterState_0000D5BC(void *, PM);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
 #define I(b,o) AT(int,b,o)
@@ -67,12 +67,12 @@ extern "C" int RiderAnim_startQueuedTrick_0000E35C(char *s0) {
         f4 = CUR_TRICK(s0);
         if (f4->flags & TRICK_FLAG_GRAB) {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 0, 2, 1, 1);
-            RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, 0xEC0), 2);
+            RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B0, 0xEC0), 2);
         } else {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(s0, f4->anim, 0, 3, 1, 1);
-            RiderAnim_setState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, 0xEC8), 3);
+            RiderAnim_queueState_0000D5F8(s0, AT(PM, &game_uso_D_807FF4B8, 0xEC8), 3);
         }
-        RiderAnim_setNextState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, 0xED0));
+        RiderAnim_enterState_0000D5BC(s0, AT(PM, &game_uso_D_807FF4C0, 0xED0));
         return 1;
     }
     return 0;

@@ -25,8 +25,8 @@ typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #define RIDER(p) ((SnowBoarder *)(p))
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 int game_uso_func_077C44(...);
-void RiderAnim_clearNextState_0000D5DC(char *a0);
-void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
+void RiderAnim_clearState_0000D5DC(char *a0);
+void RiderAnim_queueState_0000D5F8(char *a0, Pair2 pair, int a3);
 void RiderAnim_endTrick_0000D63C(char *a0, int a1);
 void game_uso_func_07C0FC(...);
 void RiderAnim_setHitKind_0000EDCC(int *a0, int a1);
@@ -230,12 +230,12 @@ after_24:;
         FW(RA(arg0)->rider, 0x3DC) = 0;
         if (sp30 != 0) {
             game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 2, 1, 1);
-            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
+            RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF478 + 0xE88), 2);
         } else {
             game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
-            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
+            RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF480 + 0xE90), 1);
         }
-        RiderAnim_clearNextState_0000D5DC(arg0);
+        RiderAnim_clearState_0000D5DC(arg0);
         RA(arg0)->trickPhase = 0;
     }
     if (RA(arg0)->rider->health <= 0) {
@@ -243,10 +243,10 @@ after_24:;
         if (RA(arg0)->selectedAnim != 0) {
             RA(arg0)->selectedAnim = (RA(arg0)->selectedAnim & 0xFFFF) | 0x60000;
             game_uso_func_077C44(arg0, RA(arg0)->selectedAnim, 0, 1, 1, 1);
-            RiderAnim_setState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
+            RiderAnim_queueState_0000D5F8(arg0, *(Pair2 *)((char *)&game_uso_D_807FF3B8 + 0xDC8), 1);
         }
         RA(arg0)->rider->slowdown = 0x64;
-        RiderAnim_clearNextState_0000D5DC(arg0);
+        RiderAnim_clearState_0000D5DC(arg0);
     }
 }
 }

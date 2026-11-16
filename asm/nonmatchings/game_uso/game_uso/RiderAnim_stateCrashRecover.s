@@ -25,7 +25,7 @@ glabel RiderAnim_stateCrashRecover
     /* 00FB58 0000FB58 24070001 */  .word 0x24070001
     /* 00FB5C 0000FB5C AFA50004 */  .word 0xAFA50004
     /* 00FB60 0000FB60 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setState_0000D5F8   /* 00FB64 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00FB64 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00FB68 0000FB68 AFA60008 */  .word 0xAFA60008
     /* 00FB6C 0000FB6C 8FBF001C */  .word 0x8FBF001C
     /* 00FB70 0000FB70 27BD0020 */  .word 0x27BD0020

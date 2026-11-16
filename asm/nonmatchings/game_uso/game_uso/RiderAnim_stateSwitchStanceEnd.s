@@ -24,7 +24,7 @@ glabel RiderAnim_stateSwitchStanceEnd
     /* 00EFC0 0000EFC0 02002025 */  .word 0x02002025
     /* 00EFC4 0000EFC4 AFA50004 */  .word 0xAFA50004
     /* 00EFC8 0000EFC8 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setNextState_0000D5BC   /* 00EFCC 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00EFCC 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00EFD0 0000EFD0 AFA60008 */  .word 0xAFA60008
     /* 00EFD4 0000EFD4 1000001E */  .word 0x1000001E
     /* 00EFD8 0000EFD8 8FBF001C */  .word 0x8FBF001C
@@ -42,7 +42,7 @@ glabel RiderAnim_stateSwitchStanceEnd
     /* 00F008 0000F008 02002025 */  .word 0x02002025
     /* 00F00C 0000F00C AFA50004 */  .word 0xAFA50004
     /* 00F010 0000F010 8D660004 */  .word 0x8D660004
-    jal RiderAnim_setNextState_0000D5BC   /* 00F014 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00F014 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00F018 0000F018 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateRideDeep   /* 00F01C 0C000000 -> RiderAnim_stateRideDeep */
     /* 00F020 0000F020 02002025 */  .word 0x02002025
@@ -52,7 +52,7 @@ glabel RiderAnim_stateSwitchStanceEnd
     /* 00F030 0000F030 02002025 */  .word 0x02002025
     /* 00F034 0000F034 AFA50004 */  .word 0xAFA50004
     /* 00F038 0000F038 8DC60004 */  .word 0x8DC60004
-    jal RiderAnim_setNextState_0000D5BC   /* 00F03C 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00F03C 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00F040 0000F040 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateRide   /* 00F044 0C000000 -> RiderAnim_stateRide */
     /* 00F048 0000F048 02002025 */  .word 0x02002025

@@ -1886,9 +1886,9 @@ LensFlareElem_init_0000B710 = 0;
 LensFlareElem_draw_0000B750 = 0;
 LensFlareElem_read_0000B884 = 0;
 RiderAnim_init_0000D458 = 0;
-RiderAnim_setNextState_0000D5BC = 0;
-RiderAnim_clearNextState_0000D5DC = 0;
-RiderAnim_setState_0000D5F8 = 0;
+RiderAnim_enterState_0000D5BC = 0;
+RiderAnim_clearState_0000D5DC = 0;
+RiderAnim_queueState_0000D5F8 = 0;
 RiderAnim_endTrick_0000D63C = 0;
 RiderAnim_flipStance_0000D6E4 = 0;
 RiderAnim_trickCrash_0000D74C = 0;
@@ -3881,7 +3881,7 @@ D_31334_y = 0x00000000;  /* snd_HandleSeqEnd secondary gate word */
 D_31334_z = 0x00000000;  /* snd_HandleSeqEnd mode word, step 5 arm */
 gl_ref_0003F010 = 0x0003F010;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC04) */
 gl_ref_0003F024 = 0x0003F024;  /* AudioSeq_GetScriptControlFlowArgument baked USO jal (0x0C00FC09) */
-game_uso_func_0000D5BC_a3 = 0x00000000;  /* (char *, Pair2, char *) alias of RiderAnim_setNextState_0000D5BC: RiderAnim_startOllie_0000FC34 passes a3 = base+0x770 */
+game_uso_func_0000D5BC_a3 = 0x00000000;  /* (char *, Pair2, char *) alias of RiderAnim_enterState_0000D5BC: RiderAnim_startOllie_0000FC34 passes a3 = base+0x770 */
 gl_ref_0003F1A0 = 0x0003F1A0;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FC68) */
 gl_ref_0003F388 = 0x0003F388;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FCE2) */
 gl_ref_0003FC60 = 0x0003FC60;  /* AudioSeq_SeqLayerProcessScript baked USO jal (0x0C00FF18) */

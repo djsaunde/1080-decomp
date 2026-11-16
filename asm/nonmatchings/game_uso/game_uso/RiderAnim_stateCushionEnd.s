@@ -12,7 +12,7 @@ glabel RiderAnim_stateCushionEnd
     /* 010668 00010668 AFA50004 */  .word 0xAFA50004
     /* 01066C 0001066C 8DC60004 */  .word 0x8DC60004
     /* 010670 00010670 AFA40018 */  .word 0xAFA40018
-    jal RiderAnim_setNextState_0000D5BC   /* 010674 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 010674 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 010678 00010678 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_clearRiderEdge_00011868   /* 01067C 0C000000 -> RiderAnim_clearRiderEdge_00011868 */
     /* 010680 00010680 8FA40018 */  .word 0x8FA40018

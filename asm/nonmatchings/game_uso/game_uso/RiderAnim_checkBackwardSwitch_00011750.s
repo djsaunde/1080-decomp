@@ -42,7 +42,7 @@ glabel RiderAnim_checkBackwardSwitch_00011750
     /* 0117E8 000117E8 2407FFFF */  .word 0x2407FFFF
     /* 0117EC 000117EC AFA50004 */  .word 0xAFA50004
     /* 0117F0 000117F0 8D460004 */  .word 0x8D460004
-    jal RiderAnim_setState_0000D5F8   /* 0117F4 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 0117F4 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 0117F8 000117F8 AFA60008 */  .word 0xAFA60008
     /* 0117FC 000117FC 10000010 */  .word 0x10000010
     /* 011800 00011800 00000000 */  .word 0x00000000
@@ -59,9 +59,9 @@ glabel RiderAnim_checkBackwardSwitch_00011750
     /* 01182C 0001182C 2407FFFF */  .word 0x2407FFFF
     /* 011830 00011830 AFA50004 */  .word 0xAFA50004
     /* 011834 00011834 8DE60004 */  .word 0x8DE60004
-    jal RiderAnim_setState_0000D5F8   /* 011838 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 011838 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 01183C 0001183C AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearNextState_0000D5DC   /* 011840 0C000000 -> RiderAnim_clearNextState_0000D5DC */
+    jal RiderAnim_clearState_0000D5DC   /* 011840 0C000000 -> RiderAnim_clearState_0000D5DC */
     /* 011844 00011844 02002025 */  .word 0x02002025
     /* 011848 00011848 10000003 */  .word 0x10000003
     /* 01184C 0001184C 8FBF0024 */  .word 0x8FBF0024

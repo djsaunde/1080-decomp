@@ -21,7 +21,7 @@ extern "C" {
 extern char game_uso_D_807FF438;
 extern char game_uso_D_807FF460;
 void import_0010DB78(void *, int, int, int, int, int);
-void RiderAnim_setNextState_0000D5BC(void *, PM);
+void RiderAnim_enterState_0000D5BC(void *, PM);
 void RiderAnim_checkJump_0000D8EC(void *);
 void RiderAnim_checkReverseBrake_0000D7F4(void *);
 }
@@ -31,11 +31,11 @@ extern "C" void RiderAnim_stateBrakeDeep(int *a0) {
     import_0010DB78(a0, RANIM_ID(2, RANIM_BRAKE_B), RANIM_ID(2, RANIM_BRAKE_F), *(int *)&RA(a0)->rider->edge, 0, 1);
     p = RA(a0)->rider;
     if (p->crouch == 0) {
-        RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF438, 0xE48));
         p = RA(a0)->rider;
     }
     if (p->useDParms == 0) {
-        RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF460, 0xE70));
     }
     RiderAnim_checkJump_0000D8EC(a0);
     RiderAnim_checkReverseBrake_0000D7F4(a0);

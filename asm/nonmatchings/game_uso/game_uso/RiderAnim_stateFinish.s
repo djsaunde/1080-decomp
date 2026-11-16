@@ -24,7 +24,7 @@ glabel RiderAnim_stateFinish
     /* 0111B8 000111B8 24070001 */  .word 0x24070001
     /* 0111BC 000111BC AFA50004 */  .word 0xAFA50004
     /* 0111C0 000111C0 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setState_0000D5F8   /* 0111C4 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 0111C4 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 0111C8 000111C8 AFA60008 */  .word 0xAFA60008
     /* 0111CC 000111CC 1000001F */  .word 0x1000001F
     /* 0111D0 000111D0 8FBF0014 */  .word 0x8FBF0014
@@ -39,7 +39,7 @@ glabel RiderAnim_stateFinish
     /* 0111F4 000111F4 24070001 */  .word 0x24070001
     /* 0111F8 000111F8 AFA50004 */  .word 0xAFA50004
     /* 0111FC 000111FC 8D660004 */  .word 0x8D660004
-    jal RiderAnim_setState_0000D5F8   /* 011200 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 011200 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 011204 00011204 AFA60008 */  .word 0xAFA60008
     /* 011208 00011208 10000010 */  .word 0x10000010
     /* 01120C 0001120C 8FBF0014 */  .word 0x8FBF0014
@@ -47,7 +47,7 @@ glabel RiderAnim_stateFinish
     /* 011214 00011214 24070001 */  .word 0x24070001
     /* 011218 00011218 AFA50004 */  .word 0xAFA50004
     /* 01121C 0001121C 8DC60004 */  .word 0x8DC60004
-    jal RiderAnim_setState_0000D5F8   /* 011220 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 011220 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 011224 00011224 AFA60008 */  .word 0xAFA60008
     /* 011228 00011228 10000008 */  .word 0x10000008
     /* 01122C 0001122C 8FBF0014 */  .word 0x8FBF0014
@@ -55,7 +55,7 @@ glabel RiderAnim_stateFinish
     /* 011234 00011234 24070001 */  .word 0x24070001
     /* 011238 00011238 AFA50004 */  .word 0xAFA50004
     /* 01123C 0001123C 8F260004 */  .word 0x8F260004
-    jal RiderAnim_setState_0000D5F8   /* 011240 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 011240 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 011244 00011244 AFA60008 */  .word 0xAFA60008
     /* 011248 00011248 8FBF0014 */  .word 0x8FBF0014
     /* 01124C 0001124C 27BD0018 */  .word 0x27BD0018

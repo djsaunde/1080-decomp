@@ -25,7 +25,7 @@ void import_0010DB78(void *, int, int, float, int, int);
 void RiderAnim_checkBrake_0000D8A8(void *);
 void RiderAnim_checkJump_0000D8EC(void *);
 void RiderAnim_checkRow_0000E1FC(void *);
-void RiderAnim_setNextState_0000D5BC(void *, PM);
+void RiderAnim_enterState_0000D5BC(void *, PM);
 void RiderAnim_checkBackwardSwitch_00011750(void *);
 }
 #define AT(T,b,o) (*(T *)((char *)(b) + (o)))
@@ -43,7 +43,7 @@ extern "C" void RiderAnim_stateRideDeep(int *a0) {
     }
     RiderAnim_checkRow_0000E1FC(a0);
     if (I(I(a0, 0xB4), 0x9CC) == 0) {
-        RiderAnim_setNextState_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
+        RiderAnim_enterState_0000D5BC(a0, AT(PM, &game_uso_D_807FF400, 0xE10));
     }
     RiderAnim_checkBackwardSwitch_00011750(a0);
 }

@@ -20,9 +20,9 @@ glabel RiderAnim_startEndingCpu_00011258
     /* 011298 00011298 24070002 */  .word 0x24070002
     /* 01129C 0001129C AFA50004 */  .word 0xAFA50004
     /* 0112A0 000112A0 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setState_0000D5F8   /* 0112A4 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 0112A4 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 0112A8 000112A8 AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearNextState_0000D5DC   /* 0112AC 0C000000 -> RiderAnim_clearNextState_0000D5DC */
+    jal RiderAnim_clearState_0000D5DC   /* 0112AC 0C000000 -> RiderAnim_clearState_0000D5DC */
     /* 0112B0 000112B0 8FA40020 */  .word 0x8FA40020
     /* 0112B4 000112B4 8FA90020 */  .word 0x8FA90020
     /* 0112B8 000112B8 2401F7FF */  .word 0x2401F7FF

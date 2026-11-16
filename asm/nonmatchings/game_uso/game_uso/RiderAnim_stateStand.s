@@ -22,7 +22,7 @@ glabel RiderAnim_stateStand
     /* 011000 00011000 8D050000 */  .word 0x8D050000
     /* 011004 00011004 AFA50004 */  .word 0xAFA50004
     /* 011008 00011008 8D060004 */  .word 0x8D060004
-    jal RiderAnim_setNextState_0000D5BC   /* 01100C 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 01100C 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 011010 00011010 AFA60008 */  .word 0xAFA60008
     /* 011014 00011014 8FBF001C */  .word 0x8FBF001C
     /* 011018 00011018 27BD0020 */  .word 0x27BD0020

@@ -72,8 +72,8 @@ typedef struct AnimPlayer {
  * States are Cfront pointers to member functions. Every record of the game.uso Data table
  * 0xDB0..0xF60 is {0x0000FFFF, method}: delta 0, index -1 (non-virtual), then the
  * RiderAnim_state_* function; the record at 0xDC8 is the null PMF {0, 0}.
- * RiderAnim_setState_0000D5F8 stores one in `queuedState` (entered at the key), RiderAnim_setNextState_0000D5BC
- * in `state` (entered now), RiderAnim_clearNextState_0000D5DC stores the null one in `state`.
+ * RiderAnim_queueState_0000D5F8 stores one in `queuedState` (entered at the key), RiderAnim_enterState_0000D5BC
+ * in `state` (entered now), RiderAnim_clearState_0000D5DC stores the null one in `state`.
  */
 
 /* an 8-byte pair; for RiderAnim it is a state PMF: a = 0x0000FFFF (delta 0, index -1), b = method */
@@ -114,7 +114,7 @@ typedef struct RiderAnim {
     SnowBoarder *rider;     /* 0xB4 */
     char pad0B8[0xC0 - 0xB8];
     Pair2 queuedState;      /* 0xC0: state PMF to enter at the armed key: setState(pmf, key) stores it, and
-                             * the onKey override (RiderAnim_reset_0000D438, vtable slot 10) copies it into
+                             * the onKey override (RiderAnim_onKey_0000D438, vtable slot 10) copies it into
                              * `state` when playback passes player.eventKey (or the blend-in ends) */
     Pair2 state;            /* 0xC8: the running state PMF: RiderAnim_update (D204) calls it every frame;
                              * setNextState (D5BC) writes it directly (immediate change), clearNextState

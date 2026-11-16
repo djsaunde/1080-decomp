@@ -40,9 +40,9 @@ glabel RiderAnim_stateOllieRise
     /* 00FE5C 0000FE5C 2407FFFF */  .word 0x2407FFFF
     /* 00FE60 0000FE60 AFA50004 */  .word 0xAFA50004
     /* 00FE64 0000FE64 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setState_0000D5F8   /* 00FE68 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00FE68 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00FE6C 0000FE6C AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearNextState_0000D5DC   /* 00FE70 0C000000 -> RiderAnim_clearNextState_0000D5DC */
+    jal RiderAnim_clearState_0000D5DC   /* 00FE70 0C000000 -> RiderAnim_clearState_0000D5DC */
     /* 00FE74 0000FE74 02002025 */  .word 0x02002025
     /* 00FE78 0000FE78 1000000F */  .word 0x1000000F
     /* 00FE7C 0000FE7C 8FBF0024 */  .word 0x8FBF0024
@@ -57,7 +57,7 @@ glabel RiderAnim_stateOllieRise
     /* 00FEA0 0000FEA0 24070004 */  .word 0x24070004
     /* 00FEA4 0000FEA4 AFA50004 */  .word 0xAFA50004
     /* 00FEA8 0000FEA8 8D660004 */  .word 0x8D660004
-    jal RiderAnim_setState_0000D5F8   /* 00FEAC 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00FEAC 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00FEB0 0000FEB0 AFA60008 */  .word 0xAFA60008
     /* 00FEB4 0000FEB4 8FBF0024 */  .word 0x8FBF0024
     /* 00FEB8 0000FEB8 8FB00020 */  .word 0x8FB00020

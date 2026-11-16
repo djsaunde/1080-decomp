@@ -14,7 +14,7 @@ glabel RiderAnim_stateStartWait
     /* 011584 00011584 8F050000 */  .word 0x8F050000
     /* 011588 00011588 AFA50004 */  .word 0xAFA50004
     /* 01158C 0001158C 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setNextState_0000D5BC   /* 011590 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 011590 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 011594 00011594 AFA60008 */  .word 0xAFA60008
     /* 011598 00011598 1000000D */  .word 0x1000000D
     /* 01159C 0001159C 8FBF001C */  .word 0x8FBF001C

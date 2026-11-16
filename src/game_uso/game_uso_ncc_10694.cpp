@@ -3,7 +3,7 @@
  * State-entry handler: flag the 0xB4 object, set state 2, sample
  * 0xB4->0x970, run the E1FC/D8A8/D8EC enter hooks, pick the DB78 / DB28
  * import by |r| vs the D_807FFB70+0x250 double, then two SetState-style
- * calls RiderAnim_setNextState_0000D5BC(this, pm) taking a pointer-to-member BY VALUE
+ * calls RiderAnim_enterState_0000D5BC(this, pm) taking a pointer-to-member BY VALUE
  * (a1/a2 + home-slot stores): once with the null-ish PMF at
  * D_807FF438+0xE48, once with this->pm at +0xD0 when it is non-null (the
  * same edg 2-word `at`/`addi` PMF compare as D204). Spliced into
@@ -25,7 +25,7 @@ void import_0010DB78(void *, int, int, float, int, int);
 void import_0010DB28(void *, int, int, int, int, int);
 void RiderAnim_checkGroundSpin_0000E91C(void *);
 void RiderAnim_checkBackwardSwitch_00011750(void *);
-void RiderAnim_setNextState_0000D5BC(void *, PM);
+void RiderAnim_enterState_0000D5BC(void *, PM);
 }
 #define I(b,o) (*(int *)((char *)(b) + (o)))
 #define F(b,o) (*(float *)((char *)(b) + (o)))
@@ -50,12 +50,12 @@ extern "C" void RiderAnim_stateRide(A *a0) {
         import_0010DB28(a0, I(a0, 0xFC) | 8, 0, 1, 6, 1);
     }
     if (I(I(a0, 0xB4), 0x9CC) != 0) {
-        RiderAnim_setNextState_0000D5BC(a0, P(&game_uso_D_807FF438, 0xE48));
+        RiderAnim_enterState_0000D5BC(a0, P(&game_uso_D_807FF438, 0xE48));
     }
     RiderAnim_checkGroundSpin_0000E91C(a0);
     RiderAnim_checkBackwardSwitch_00011750(a0);
     I(a0, 0xDC) = I(I(a0, 0xB4), 0x938);
     if (P(a0, 0xD0) != P(&game_uso_D_807FF3B8, 0xDC8)) {
-        RiderAnim_setNextState_0000D5BC(a0, P(a0, 0xD0));
+        RiderAnim_enterState_0000D5BC(a0, P(a0, 0xD0));
     }
 }

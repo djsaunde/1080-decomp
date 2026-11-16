@@ -5261,7 +5261,7 @@ void RiderAnim_readParms_0000D418(char *a0) {
  * target's t7/t6 register order; two separate s32 field-copies gave t6/t7 swapped
  * (was INSN_PATCH'd, banned 2026-05-23). Struct-copy vs separate-field-copy is the
  * lever for adjacent-field $t-renumber. Byte-exact. */
-void RiderAnim_reset_0000D438(char *a0) {
+void RiderAnim_onKey_0000D438(char *a0) {
     RA(a0)->player.eventKey = ANIM_NO_KEY;
     RA(a0)->player.blendEvent = ANIM_NO_KEY;
     RA(a0)->state = RA(a0)->queuedState;
@@ -5297,7 +5297,7 @@ extern int game_uso_func_077C44();
 extern int import_0010D420();
 extern int game_uso_func_049280();
 extern int game_uso_func_048020();
-extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
+extern void RiderAnim_enterState_0000D5BC(char *, Pair2);
 extern char import_800200CC;
 extern char game_uso_D_807FF3A0, game_uso_D_807FF3A8, game_uso_D_807FF3B0;
 void RiderAnim_init_0000D458(s32 arg0) {
@@ -5316,9 +5316,9 @@ void RiderAnim_init_0000D458(s32 arg0) {
     XCALL(game_uso_func_077C44, AnimPlayer_start)(arg0, RA(arg0)->animSet | RANIM_UP_DOWN, 0, 0, 1, 1);
     import_0010D420(arg0);
     if (INPUT_MGR(import_800200CC).nextFlowMode == 3) {
-        RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A0 + 0xDB0));
     } else {
-        RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3A8 + 0xDB8));
     }
     XCALL(game_uso_func_049280, sys_writebackDCacheAll)();
     XCALL(game_uso_func_048020, dma_read)((s32) &sp30, 0xF10, 0x10);
@@ -5330,17 +5330,17 @@ void RiderAnim_init_0000D458(s32 arg0) {
         var_v0 = 1;
     }
     if (var_v0 == 0) {
-        RiderAnim_setNextState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + 0xDC0));
+        RiderAnim_enterState_0000D5BC(arg0, *(Pair2*)((char*)&game_uso_D_807FF3B0 + 0xDC0));
     }
 }
 
-/* RiderAnim_setNextState_0000D5BC: copies the varargs pair (a1,a2 via &a1) to the
+/* RiderAnim_enterState_0000D5BC: copies the varargs pair (a1,a2 via &a1) to the
  * adjacent a0->0xC8/0xCC.
  * MATCH: a STRUCT copy `*(Pair2*)(a0+0xC8) = *(Pair2*)&a1` homes the args, takes
  * &a1 into $t6, and emits the lw/sw/lw/sw via the pointer in the target's regs.
  * The volatile-int-pointer form left the &a1 pointer in $v0 (was a regalloc cap);
- * struct-copy is the lever (same as RiderAnim_reset_0000D438). Byte-exact. */
-void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
+ * struct-copy is the lever (same as RiderAnim_onKey_0000D438). Byte-exact. */
+void RiderAnim_enterState_0000D5BC(char *a0, Pair2 pair) {
     RA(a0)->state = pair;
 }
 
@@ -5350,7 +5350,7 @@ void RiderAnim_setNextState_0000D5BC(char *a0, Pair2 pair) {
  * gave the wrong $t order. Same lever as D438/D5BC (here the source is a global).
  * Byte-exact (in-tree verified). */
 extern char game_uso_D_807FF3B8;
-void RiderAnim_clearNextState_0000D5DC(char *a0) {
+void RiderAnim_clearState_0000D5DC(char *a0) {
     RA(a0)->state = *(Pair2*)((char*)&game_uso_D_807FF3B8 + 0xDC8); /* the null PMF */
 }
 
@@ -5366,7 +5366,7 @@ void RiderAnim_clearNextState_0000D5DC(char *a0) {
  * DROP the `volatile`: plain `*(int*)&a3` forces the a3 home (sw a3,0xC(sp) in
  * the bne delay) AND lets IDO fold the reload to a direct sp-offset load.
  * 15/15 words byte-exact, 0 diffs. */
-void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3) {
+void RiderAnim_queueState_0000D5F8(char *a0, Pair2 pair, int a3) {
     if (a3 == -1) {
         RA(a0)->player.blendEvent = a3;
     } else {
@@ -5498,8 +5498,8 @@ void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
         if (data->contactCount != 0) {
             CALL(RiderAnim_applyDamage_0000EDD4)(a0, 1, 2);
             CALL(AnimPlayer_start)(a0, RA(a0)->animSet | RANIM_BUMP_R_BREAK, 0, 1, 1, 1);
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE90), 1);
-            CALL(RiderAnim_clearNextState_0000D5DC)(a0);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE90), 1);
+            CALL(RiderAnim_clearState_0000D5DC)(a0);
             RA(a0)->trickPhase = 0;
         }
     }
@@ -5511,7 +5511,7 @@ void RiderAnim_checkReverseBrake_0000D7F4(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_checkBrake_0000D8A8(char *a0) {
     if (RA(a0)->rider->crouch != 0) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE70));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE70));
     }
 }
 
@@ -5550,7 +5550,7 @@ void RiderAnim_checkJump_0000D8EC(int *a0) {
             if ((((RiderInput *)v0)->held & 0x100) != 0) a1 = 1;
         }
         if (a1 != 0) {
-            CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xEB8));
+            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xEB8));
             RA(a0)->jumpCharge = 0;
             RA(a0)->jumpRepress = 0;
         }
@@ -5626,7 +5626,7 @@ void RiderAnim_selectAnim_0000D9CC(char *arg0) {
  * -> $f16, matching target); the named form let uopt number the load early
  * and reuse dead low regs (ldc1 $f0 / cvt $f10, 3-word residual). Same
  * de-naming lever as bootup B49C (int side). */
-extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
+extern void RiderAnim_enterState_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FF458;
 extern char game_uso_D_807FF440;
 void RiderAnim_checkRow_0000E1FC(char *obj) {
@@ -5642,9 +5642,9 @@ void RiderAnim_checkRow_0000E1FC(char *obj) {
     m = (raw < 0.0f) ? -raw : raw;
     if (*(double *)((char *)&game_uso_D_807FF458 + 0x208) < (double)m) {
     callA:
-        RiderAnim_setNextState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + 0xE68));
+        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF458 + 0xE68));
     } else {
-        RiderAnim_setNextState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + 0xE50));
+        RiderAnim_enterState_0000D5BC(obj, *(Pair2 *)((char *)&game_uso_D_807FF440 + 0xE50));
     }
 }
 
@@ -5959,7 +5959,7 @@ INCLUDE_ASM("asm/nonmatchings/game_uso/game_uso", RiderAnim_readTrickInput_0000E
  * literal into a0->0xB0 (from a0->0xFC), homes a Pair2 from D_807FF430+0xE40
  * or D_807FF4E0+0xEF0 into the shared sp+0x38 slot, calls an import with
  * a0=a0->0xB4+0x808. Tail (a0->0xB0!=0): zero a0->0x12C, import_0010DB28,
- * RiderAnim_setState_0000D5F8(a0, homed, 1), RiderAnim_clearNextState_0000D5DC(a0).
+ * RiderAnim_queueState_0000D5F8(a0, homed, 1), RiderAnim_clearState_0000D5DC(a0).
  *
  * 2026-10-15 (agent-g, 98.98 -> EXACT 118/118):
  *   (1) the A58 word is NOT a named local: inlined at all three uses (CSE'd
@@ -6027,8 +6027,8 @@ void RiderAnim_checkGroundSpin_0000E91C(char *a0) {
     if (RA(a0)->spinAnim != 0) {
         RA(a0)->spinKind = 0;
         import_0010DB28(a0, RA(a0)->spinAnim, 0, 1, 1, 1);
-        RiderAnim_setState_0000D5F8(a0, homed, 1);
-        RiderAnim_clearNextState_0000D5DC(a0);
+        RiderAnim_queueState_0000D5F8(a0, homed, 1);
+        RiderAnim_clearState_0000D5DC(a0);
     }
 }
 
@@ -6309,15 +6309,15 @@ void RiderAnim_stateSwitchStance(int *a0) {
         a1 = RA(a0)->animSet | RANIM_SWITCH_STANCE;
     }
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, a1, 0, 1, 1, 1);
-    RiderAnim_setState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
-    RiderAnim_clearNextState_0000D5DC((char *)a0);
+    RiderAnim_queueState_0000D5F8((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF488 + 0xE98), 1);
+    RiderAnim_clearState_0000D5DC((char *)a0);
 }
 
 /* MATCHED 2026-05-28 via struct-by-value (E40/E44 pair homes a1,a2). See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateFlipToRide(int a0) {
     CALL(RiderAnim_flipStance_0000D6E4)(a0);
-    CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     CALL(RiderAnim_stateRide)(a0);
 }
@@ -6354,14 +6354,14 @@ void RiderAnim_stateSwitchStanceEnd(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
     if (RA(s0)->rider->contactCount == 0) {
         CALL(RiderAnim_stateRide)(s0);
-        CALL(RiderAnim_setNextState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xDF8));
+        CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xDF8));
     } else {
         CALL(RiderAnim_endTrick_0000D63C)(s0, 1);
         if (RA(s0)->rider->useDParms != 0) {
-            CALL(RiderAnim_setNextState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE60));
+            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE60));
             CALL(RiderAnim_stateRideDeep)(s0);
         } else {
-            CALL(RiderAnim_setNextState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40));
+            CALL(RiderAnim_enterState_0000D5BC)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40));
             CALL(RiderAnim_stateRide)(s0);
         }
     }
@@ -6407,7 +6407,7 @@ void RiderAnim_statePreJump(int *a0) {
  * docs/MATCHING_WORKFLOW.md#game-uso-ncc-cplusplus-donor-recipe.
  * Body below is a placeholder for the splice. */
 extern void RiderAnim_startHop_0001001C(int *);
-extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
+extern void RiderAnim_enterState_0000D5BC(char *, Pair2);
 extern char game_uso_D_807FFB58;
 extern char game_uso_D_807FF498;
 void RiderAnim_statePreJumpHold(int *a0, int *a1) {
@@ -6429,10 +6429,10 @@ void RiderAnim_statePreJumpCancel(int *a0) {
     CALL(SndHandle_stop)(RA(a0)->rider->sound);
     if (RA(a0)->rider->useDParms != 0) {
         m = (RANIM_GROUP_DEEP | RANIM_UP_DOWN);
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE60), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE60), -1);
     } else {
         m = RA(a0)->animSet | RANIM_UP_DOWN;
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), -1);
     }
     RA(a0)->jumpRepress = 1;
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
@@ -6547,7 +6547,7 @@ void RiderAnim_stateTrickEnd(int *a0) {
     }
     RA(a0)->rider->unkA18 = 1;
     RA(a0)->curTrick = 0;
-    CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF0));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF0));
     CALL(RiderAnim_stateHopAir)(a0);
 }
 
@@ -6564,7 +6564,7 @@ void RiderAnim_stateTrickWindup(int *a0) {
     RA(a0)->rider->unkA68 = 1;
     p2 = RA(a0)->rider->input;
     if (!(p2->held & 0x200)) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0,
+        CALL(RiderAnim_enterState_0000D5BC)(a0,
             *(Pair2*)((char*)&D_00000000 + 0xED8));
     } else {
         CALL(RiderAnim_clearTricks_00011888)(a0);
@@ -6583,11 +6583,11 @@ void RiderAnim_stateTrickStart(char *a0);
  * MATCHED 2026-06-21 (call-graph DFS + just-in-time family typing). The prior
  * NM body called the cross-USO placeholder gl_func_00000000 for every call and
  * carried a phantom `int a1` param. The resolved .s relocs name the real in-TU
- * callees: RiderAnim_trickCrash_0000D74C (predicate), RiderAnim_setNextState_0000D5BC /
- * _0000D5F8 (pair-sinks), RiderAnim_clearNextState_0000D5DC (pair-copy),
+ * callees: RiderAnim_trickCrash_0000D74C (predicate), RiderAnim_enterState_0000D5BC /
+ * _0000D5F8 (pair-sinks), RiderAnim_clearState_0000D5DC (pair-copy),
  * import_0010DB28 (state logger), RiderAnim_stateTrickStart (sibling). The last
  * residual (the D5BC call not homing a1/a2 to sp+4/sp+8) was cracked by
- * converting RiderAnim_setNextState_0000D5BC to its true Pair2-by-value prototype
+ * converting RiderAnim_enterState_0000D5BC to its true Pair2-by-value prototype
  * `(char*, Pair2)` — the by-value pair triggers the K&R home spill that the
  * folded two-int form suppressed (same lever as the matched D5F8 callers
  * 00011258/000112E0). Byte-exact (0 SUSPECT / 0 reloc-type diffs). */
@@ -6596,14 +6596,14 @@ void RiderAnim_stateTrickRelease(int *a0) {
     if (RA(s0)->queuedTrick != 0) {
         if (RiderAnim_trickCrash_0000D74C((char*)a0) == 0) {
             char *p = (char *)&game_uso_D_807FF4D0 + 0xEE0;
-            RiderAnim_setNextState_0000D5BC((char*)s0, *(Pair2*)p);
+            RiderAnim_enterState_0000D5BC((char*)s0, *(Pair2*)p);
             RiderAnim_stateTrickStart((char*)s0);
         }
     } else {
         import_0010DB28(s0, RA(s0)->curTrick->anim, 3, 1, 1, 1);
-        RiderAnim_setState_0000D5F8((char*)s0,
+        RiderAnim_queueState_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF4D8 + 0xEE8), 1);
-        RiderAnim_clearNextState_0000D5DC((char*)s0);
+        RiderAnim_clearState_0000D5DC((char*)s0);
     }
 }
 
@@ -6613,7 +6613,7 @@ void RiderAnim_stateTrickRelease(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateTrickHold(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->curTrick->anim, 2, 3, 1, 1);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xEC8), 3);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xEC8), 3);
     CALL(RiderAnim_readTrickInput_0000E5C8)(a0, 0);
 }
 
@@ -6645,7 +6645,7 @@ void RiderAnim_stateTrickStart(char *a0) {
  * not varargs. See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateRowIn(int *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet, 0, 0, 0x100, 5);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE50), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE50), -1);
 }
 
 /* EXACT 2026-07-02 (67/67 words vs asm .s, self-verified via clean
@@ -6682,7 +6682,7 @@ void RiderAnim_stateRow(int *a0) {
     volatile int padbot[5];
 
     import_0010DB28(a0, RA(a0)->animSet, 0, 2, 1, 1);
-    RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF448 + 0xE58), 2);
 
     q = RA(a0)->rider->dnode.axes[2];
     scale = RA(a0)->parms.rfc.value.f;
@@ -6708,7 +6708,7 @@ void RiderAnim_stateRow(int *a0) {
 void RiderAnim_stateRowOut(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet, 2, 1, 1, 1);
     GCALL(RiderAnim_clearRiderEdge_00011868)(a0);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E40/E44 pair). 18-insn 3-call
@@ -6716,7 +6716,7 @@ void RiderAnim_stateRowOut(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateResumeRide(int a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
-    CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
     CALL(RiderAnim_stateRide)(a0);
 }
 
@@ -6727,7 +6727,7 @@ void RiderAnim_stateCrashRecover(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     if (RA(a0)->slowCrash != 0) {
         CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->selectedAnim, 2, 1, 1, 1);
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
     }
 }
 
@@ -6736,7 +6736,7 @@ void RiderAnim_startCrashSlide_0000FB7C(int *a0) {
     int v = RA(a0)->animSet | RANIM_CRASH_SLIDE;
     RA(a0)->selectedAnim = v;
     CALL(AnimPlayer_startIfChanged)(a0, v, 0, 2, 1, 1);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE88), 2);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE88), 2);
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     RA(a0)->trickPhase = 0;
 }
@@ -6772,8 +6772,8 @@ extern char D_00000000;
  * docs/MATCHING_WORKFLOW.md#game-uso-rodata-relayout-late-rodata. */
 extern char game_uso_D_807FF400;
 extern char game_uso_D_807FF410;
-void RiderAnim_setNextState_0000D5BC(char *, Pair2);
-void RiderAnim_setState_0000D5F8(char *a0, Pair2 pair, int a3);
+void RiderAnim_enterState_0000D5BC(char *, Pair2);
+void RiderAnim_queueState_0000D5F8(char *a0, Pair2 pair, int a3);
 void game_uso_func_0000D5BC_a3(char *, Pair2, char *);  /* alias of D5BC (pinned 0) with the a3 word the target passes */
 extern int import_0010DB28();
 void RiderAnim_startOllie_0000FC34(int *a0) {
@@ -6790,20 +6790,20 @@ void RiderAnim_startOllie_0000FC34(int *a0) {
                 * 0.8
                 + (double)*field_31C);
         } while (0);
-        XCALL(game_uso_func_0000D5BC_a3, RiderAnim_setNextState_0000D5BC)((char*)a0,
+        XCALL(game_uso_func_0000D5BC_a3, RiderAnim_enterState_0000D5BC)((char*)a0,
             *(Pair2*)((char*)&game_uso_D_807FF400 + 0xE10), field_770);
     }
     import_0010DB28(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 2, ANIM_BLENDIN, 0xA);
-    RiderAnim_setState_0000D5F8((char*)a0,
+    RiderAnim_queueState_0000D5F8((char*)a0,
         *(Pair2*)((char*)&game_uso_D_807FF410 + 0xE20), -1);
 }
 
 extern char game_uso_D_807FF408;
-void RiderAnim_clearNextState_0000D5DC(char *a0);
+void RiderAnim_clearState_0000D5DC(char *a0);
 /* RiderAnim_stateOllieTakeoff: 50-insn sibling of RiderAnim_startOllie_0000FC34. When
  * bit 0x100 of (a0->0xB4)->0x800->0x10 is clear: log via import_0010DB28,
  * push the pair at game_uso_D_807FF408 + 0xE18 through
- * RiderAnim_setState_0000D5F8 (trailing 3), RiderAnim_clearNextState_0000D5DC, then
+ * RiderAnim_queueState_0000D5F8 (trailing 3), RiderAnim_clearState_0000D5DC, then
  * sub->0x31C += sub->0x798 and sub->0x2FC..0x308 = {0, 0, 0, 1.0f}.
  *
  * Exact-match notes (2026-10-15, after the 2026-07-18 97.08 wrap): each base
@@ -6825,9 +6825,9 @@ void RiderAnim_stateOllieTakeoff(int *a0) {
         float *base_31C;
         float *base_2FC;
         import_0010DB28(s0, (RANIM_GROUP_AIR | RANIM_OLLIE), 2, 3, 1, 1);
-        RiderAnim_setState_0000D5F8((char*)s0,
+        RiderAnim_queueState_0000D5F8((char*)s0,
             *(Pair2 *)((char *)&game_uso_D_807FF408 + 0xE18), 3);
-        RiderAnim_clearNextState_0000D5DC((char*)s0);
+        RiderAnim_clearState_0000D5DC((char*)s0);
 
         zero = 0.0f;
         base_788 = &RA(s0)->rider->parms.djp;
@@ -6859,11 +6859,11 @@ void RiderAnim_stateOllieRise(int *a0) {
     if (base->dnode.vel[1] < -1.0f) {
         if (base->groundDist < 1000.0f) {
             CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 6, ANIM_BLENDIN, 0x14);
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), -1);
-            CALL(RiderAnim_clearNextState_0000D5DC)(a0);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), -1);
+            CALL(RiderAnim_clearState_0000D5DC)(a0);
         } else {
             CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 3, 4, 1, 1);
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE30), 4);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE30), 4);
         }
     }
 }
@@ -6873,7 +6873,7 @@ void RiderAnim_stateOllieRise(int *a0) {
 void RiderAnim_stateOllieHang(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 4, 5, 2, 1);
     if (RA(a0)->rider->groundDist < 1000.0f) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE38));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE38));
     }
 }
 
@@ -6885,7 +6885,7 @@ void RiderAnim_stateOllieHang(char *a0) {
 void RiderAnim_stateOllieLand(char *a0) {
     if (RA(a0)->rider->contactCount != 0) {
         CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 6, 1, 1, 1);
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
     }
 }
 
@@ -6894,7 +6894,7 @@ void RiderAnim_stateOllieLand(char *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateOllieDrop(int *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_AIR | RANIM_OLLIE), 5, 6, 1, 1);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), 6);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE28), 6);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (DD0/DD4 pair). The middle call's
@@ -6904,7 +6904,7 @@ void RiderAnim_stateOllieDrop(int *a0) {
 void RiderAnim_startHop_0001001C(int *a0) {
     RA(a0)->curTrick = 0;
     CALL(RiderAnim_clearTricks_00011888)(a0);
-    CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD0));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD0));
     CALL(RiderAnim_stateHopStart)(a0);
 }
 
@@ -6919,13 +6919,13 @@ void RiderAnim_stateHopStart(int *a0) {
                      0, 2,
                      0x100, 10);
     /* Call 2: 4-arg with D[0xDD8/0xDDC] */
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD8), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDD8), -1);
     /* Conditional Call 3 — inline `outer` (arg0[0xB4]) so it takes $t1 not $v0,
      * but NAME the middle pointer `mid` so it claims $v0 like the target. */
     {
         RiderInput *mid = RA(a0)->rider->input;
         if (mid->pressed & 0x400) {
-            CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDE0));
+            CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDE0));
         }
     }
     /* Call 4 */
@@ -6941,8 +6941,8 @@ void RiderAnim_stateHopStart(int *a0) {
  * diffs vs expected). The "outer<->mid v0/v1 spilltemp-web coloring cap" was a
  * PLACEHOLDER-SYMBOL artifact, NOT a real coloring cap: the body had used
  * gl_func_00000000/D_00000000 placeholders, which color differently than the
- * REAL reloc callees. Rewriting with the real symbols (RiderAnim_setNextState_0000D5BC,
- * import_0010DB28, RiderAnim_setState_0000D5F8 typed varargs-Pair2-by-value,
+ * REAL reloc callees. Rewriting with the real symbols (RiderAnim_enterState_0000D5BC,
+ * import_0010DB28, RiderAnim_queueState_0000D5F8 typed varargs-Pair2-by-value,
  * D5DC/E5C8/E35C/E2D0/11750, and game_uso_D_807FF3D0/D8/E0) flipped the
  * coloring so `outer`(a0->0xB4 reload)=$v0 and `mid`(outer->0x800)=$v1 — exactly
  * the target — and the 6 v0/v1 word diffs vanished. (Same lesson as twin 11258:
@@ -6999,8 +6999,8 @@ void RiderAnim_stateHopStart(int *a0) {
 extern char game_uso_D_807FF3D0;
 extern char game_uso_D_807FF3D8;
 extern char game_uso_D_807FF3E0;
-extern void RiderAnim_setState_0000D5F8(char *, Pair2, int);
-extern void RiderAnim_clearNextState_0000D5DC(char *);
+extern void RiderAnim_queueState_0000D5F8(char *, Pair2, int);
+extern void RiderAnim_clearState_0000D5DC(char *);
 extern void RiderAnim_readTrickInput_0000E5C8(char *, int);
 extern int RiderAnim_startQueuedTrick_0000E35C(char *);
 extern void RiderAnim_holdJumpLift_0000E2D0();
@@ -7012,12 +7012,12 @@ void RiderAnim_stateHopRise(int *a0) {
     RA(a0)->rider->unkA18 = 1;
     mid = (int *)RA(a0)->rider->input;
     if ((((RiderInput *)mid)->pressed & 0x400) != 0) {
-        RiderAnim_setNextState_0000D5BC((char*)a0,
+        RiderAnim_enterState_0000D5BC((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3D0 + 0xDE0));
     }
     if (RA(a0)->rider->groundDist < 1000.0f) {
         if (RA(a0)->rider->contactCount != 0) {
-            RiderAnim_setNextState_0000D5BC((char*)a0,
+            RiderAnim_enterState_0000D5BC((char*)a0,
                              *(Pair2*)((char*)&game_uso_D_807FF3D8 + 0xDE8));
         }
         inner = RA(a0)->curTrick;
@@ -7034,10 +7034,10 @@ void RiderAnim_stateHopRise(int *a0) {
         import_0010DB28(a0,
                          RA(a0)->animSet | RANIM_HOP,
                          2, 3, 1, 1);
-        RiderAnim_setState_0000D5F8((char*)a0,
+        RiderAnim_queueState_0000D5F8((char*)a0,
                          *(Pair2*)((char*)&game_uso_D_807FF3E0 + 0xDF0),
                          3);
-        RiderAnim_clearNextState_0000D5DC((char*)a0);
+        RiderAnim_clearState_0000D5DC((char*)a0);
     }
     RiderAnim_readTrickInput_0000E5C8((char*)a0, 0);
     if (RiderAnim_startQueuedTrick_0000E35C((char*)a0) == 0) {
@@ -7096,12 +7096,12 @@ void RiderAnim_stateHopAir(int *a0) {
   v0 = RA(s0)->rider;
   if ((v0->dnode.vel[1] < 0.0f) && (v0->groundDist < 1000.0f))
   {
-    RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
+    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D8)) + 0xDE8)));
     v0 = RA(s0)->rider;
   }
   if (((RiderInput *) (new_var = (int) v0->input))->pressed & 0x400)
   {
-    RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
+    RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3D0)) + 0xDE0)));
   }
   RiderAnim_readTrickInput_0000E5C8((char *)s0, 0);
   if (RiderAnim_startQueuedTrick_0000E35C((char *)s0) == 0)
@@ -7109,7 +7109,7 @@ void RiderAnim_stateHopAir(int *a0) {
     ;
     if (RA(s0)->rider->contactCount != 0)
     {
-      RiderAnim_setNextState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
+      RiderAnim_enterState_0000D5BC((char *)s0, *((Pair2 *) (((char *) (&game_uso_D_807FF3E8)) + 0xDF8)));
       RiderAnim_stateHopLand((char *)s0);
     }
     RiderAnim_checkBackwardSwitch_00011750((char *)s0);
@@ -7128,7 +7128,7 @@ void RiderAnim_stateHopDrop(int *arg0) {
     if (CALL(RiderAnim_startQueuedTrick_0000E35C)(arg0) == 0) {
         if (RA(arg0)->rider->contactCount != 0) {
 
-            CALL(RiderAnim_setNextState_0000D5BC)(arg0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
+            CALL(RiderAnim_enterState_0000D5BC)(arg0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
             CALL(RiderAnim_stateHopLand)(arg0);
         }
     }
@@ -7148,8 +7148,8 @@ void RiderAnim_stateHopLand(char *a0) {
             CALL(RiderAnim_endTrick_0000D63C)(a0, 1);
             CALL(RiderAnim_clearRiderEdge_00011868)(a0);
             CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_HOP, 5, 1, 1, 1);
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE10), 1);
-            CALL(RiderAnim_clearNextState_0000D5DC)(a0);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE10), 1);
+            CALL(RiderAnim_clearState_0000D5DC)(a0);
         }
     }
 }
@@ -7159,7 +7159,7 @@ void RiderAnim_stateHopLand(char *a0) {
  * copy tail. (The "precall-arg-spill family / INSN_PATCH ineligible" cap was wrong.) */
 void RiderAnim_stateCushionIn(char *a0) {
     CALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 0, ANIM_BLENDIN, 5);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE08), -1);
     RA(a0)->hitScale = RA(a0)->parms.lnc.value.f;
 }
 
@@ -7170,7 +7170,7 @@ void RiderAnim_stateCushionIn(char *a0) {
  * See docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateCushion(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_REGULAR | RANIM_KNEE_CUSHION), 0, 1, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE00), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE00), 1);
     GCALL(RiderAnim_clearRiderEdge_00011868)(a0);
 }
 
@@ -7184,14 +7184,14 @@ void RiderAnim_stateCushion(int *a0) {
  * base `&D+0xDF8` keeps the addiu split (lw 0(t6)/4(t6)). Byte-exact. */
 void RiderAnim_stateCushionEnd(void *a0) {
     RA(a0)->hitScale = 1.0f;
-    CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
+    CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xDF8));
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
 }
 
 /* RiderAnim_stateRide: 0x1AC (107 insns). State-machine entry handler,
  * sibling of 00010840. EXACT via REPLACE_FUNC_BODY donor splice: the real
  * body is the IDO 7.1 NCC (C++) donor src/game_uso/game_uso_ncc_10694.cpp
- * (107/107 words identical). Two RiderAnim_setNextState_0000D5BC(this, pm) calls pass
+ * (107/107 words identical). Two RiderAnim_enterState_0000D5BC(this, pm) calls pass
  * a pointer-to-member by value, the second guarded by the edg 2-word PMF
  * null compare (same block as D204). The old "mfc1-from-C cap" was a missing
  * float prototype for import_0010DB78. docs/MATCHING_WORKFLOW.md#game-uso-
@@ -7230,7 +7230,7 @@ void RiderAnim_stateRideDeep(int *a0) {
  *     created before the s0=a0 copy point and bases its lw on $a0 not $s0
  *     (the last 47/48 residual). Param used directly, no explicit s0 local. */
 extern int import_0010DB78();
-extern void RiderAnim_setNextState_0000D5BC(char *, Pair2);
+extern void RiderAnim_enterState_0000D5BC(char *, Pair2);
 extern void RiderAnim_checkGroundSpin_0000E91C(char *);
 extern void RiderAnim_checkJump_0000D8EC(int *);
 extern void RiderAnim_checkReverseBrake_0000D7F4(char *);
@@ -7241,11 +7241,11 @@ void RiderAnim_stateBrake(int *a0) {
     import_0010DB78(a0, RA(a0)->animSet | RANIM_BRAKE_B, RA(a0)->animSet | RANIM_BRAKE_F, *(int *)&RA(a0)->rider->edge, 0, 1);
     p = RA(a0)->rider;
     if (p->crouch == 0) {
-        RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
+        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF400 + 0xE10));
         p = RA(a0)->rider;
     }
     if (p->useDParms != 0) {
-        RiderAnim_setNextState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
+        RiderAnim_enterState_0000D5BC((char *)a0, *(Pair2 *)((char *)&game_uso_D_807FF460 + 0xE70));
     }
     RiderAnim_checkGroundSpin_0000E91C((char *)a0);
     RiderAnim_checkJump_0000D8EC(a0);
@@ -7274,7 +7274,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
     CALL(RiderAnim_checkJump_0000D8EC)(a0);
     v0 = RA(a0)->animSet;
     CALL(AnimPlayer_setBlend)(a0, v0 | 2, v0 | 3, *(int *)&RA(a0)->rider->edge, 0x100, 10);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), -1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E60/E64 pair). 29-insn init +
@@ -7285,7 +7285,7 @@ void RiderAnim_stateRideBlendIn(char *a0) {
 void RiderAnim_stateRideDeepBlendIn(int *a0) {
     CALL(RiderAnim_checkJump_0000D8EC)(a0);
     CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_TURN_B), (RANIM_GROUP_DEEP | RANIM_TURN_F), *(int *)&RA(a0)->rider->edge, ANIM_BLENDIN, 5);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE60), -1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE60), -1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value arg-pass for the E10/E14 and E48/E4C
@@ -7297,11 +7297,11 @@ void RiderAnim_blendWeight_00010BAC(char *a0) {
     CALL(AnimPlayer_setBlend)(a0, state | 7, state | 6, *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (RA(a0)->unkD8 == 0) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
     }
 
     if (RA(a0)->rider->useDParms != 0) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
     }
 }
 
@@ -7315,11 +7315,11 @@ void RiderAnim_blendWeightDeep_00010C4C(char *a0) {
                      *(int *)&RA(a0)->rider->localUp.x, 0, 1);
 
     if (RA(a0)->unkD8 == 0) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE48));
     }
 
     if (RA(a0)->rider->useDParms == 0) {
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10));
     }
 }
 
@@ -7329,13 +7329,13 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
     sub = RA(a0)->rider;
     if (sub->useDParms != 0) {
         CALL(AnimPlayer_setBlend)(a0, (RANIM_GROUP_DEEP | RANIM_BRAKE_B), (RANIM_GROUP_DEEP | RANIM_BRAKE_F), *(int *)&sub->edge, ANIM_BLENDIN, 10);
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE78), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE78), -1);
     } else {
         int state;
 
         state = RA(a0)->animSet;
         CALL(AnimPlayer_setBlend)(a0, state | 4, state | 5, *(int *)&sub->edge, 0x100, 10);
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE80), -1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE80), -1);
     }
     CALL(RiderAnim_checkGroundSpin_0000E91C)(a0);
 }
@@ -7345,7 +7345,7 @@ void RiderAnim_stateBrakeBlendIn(char *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_startLanding_00010DC8(int a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_LANDING, 0, 1, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE10), 1);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (E40/E44 pair). The prior "constant-
@@ -7354,7 +7354,7 @@ void RiderAnim_startLanding_00010DC8(int a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_restartRide_00010E2C(int a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, 0, 0, 1, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40), 1);
 }
 
 void RiderAnim_stateGoalNormal(int a0) {
@@ -7385,7 +7385,7 @@ void RiderAnim_stateStand(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, (RANIM_GROUP_EVENT | RANIM_STAND), 0, 1, 1, 1);
     RA(a0)->trickPhase = 0;
     RA(a0)->rider->slowdown = 100;
-    GCALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xF58));
+    GCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xF58));
 }
 
 /* 32-insn / 0x80 dual-call orchestrator on a0->B4-child:
@@ -7419,7 +7419,7 @@ void RiderAnim_startTimeout_00011024(int *a0) {
   p_B4 = (int *) &((SnowBoarder *) p_B4)->flags;
  goto dummy_label_965124; dummy_label_965124: ;
   *p_B4 = (*p_B4) & (~4);
-  CALL(RiderAnim_setNextState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
+  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
   RA(a0)->rider->slowdown = 0x64;
 }
@@ -7449,7 +7449,7 @@ void RiderAnim_startFinish_000110A4(int *a0) {
   ;
   new_var2 = (p_B4 = (int *) &((SnowBoarder *) p_B4)->flags);
   *p_B4 = (*new_var2) & (~4);
-  CALL(RiderAnim_setNextState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
+  CALL(RiderAnim_enterState_0000D5BC)(a0, *((Pair2 *) (((char *) (&D_00000000)) + 0xE10)));
   CALL(RiderAnim_clearRiderEdge_00011868)(a0);
   RA(new_var3)->rider->slowdown = 0x64;
 }
@@ -7465,7 +7465,7 @@ void RiderAnim_startFinish_000110A4(int *a0) {
  * identical to expected/.o; residual fuzzy<100 is the usual uso reloc-presence. */
 void RiderAnim_stateTimeUp(int *a0) {
     CALL(RiderAnim_stateStand)(a0);
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF50), 1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF50), 1);
 }
 
 /* BYTE-EXACT 2026-05-31 (stale-cap catch): the struct-by-value body below was
@@ -7507,31 +7507,31 @@ void RiderAnim_stateFinish(int *a0) {
             /* struct-by-value pass homes a1,a2 to sp+4/sp+8 (the target's
              * `sw a1,4(sp); sw a2,8(sp)`) — NOT reachable from two int args.
              * This solved the prior "precall-arg-spill cap" (was 61%, now 94%). */
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF28), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF28), 1);
             return;
         }
         if (*(int*)((char*)&D_00000000 + 0x64) < 2) {
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF30), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF30), 1);
         } else {
-            CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF38), 1);
+            CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF38), 1);
         }
         return;
     }
     /* flag != 1: default path. Placed last so IDO emits BNEL-skip-to-here
      * with delay-load (matching asm 0x11198 bnel t7,at,+0x26). */
-    CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF40), 1);
+    CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF40), 1);
 }
 
 /* RiderAnim_startEndingCpu_00011258: 34-insn (0x88) init+register-clear helper.
  * Structure:
  *   game_uso_func_077C44(a0, 0x70009, 0, 2, /stack: 1, 1/);     // call #1
- *   RiderAnim_setState_0000D5F8(a0, *(D+0xF18), *(D+0xF1C), 2);      // call #2 (varargs pair home)
- *   RiderAnim_clearNextState_0000D5DC(a0);                                 // call #3
+ *   RiderAnim_queueState_0000D5F8(a0, *(D+0xF18), *(D+0xF1C), 2);      // call #2 (varargs pair home)
+ *   RiderAnim_clearState_0000D5DC(a0);                                 // call #3
  *   p = a0->[0xB4]; p[0xA58] &= ~0x800;   // bit-clear (RSP/SP status mask)
  *
  * 2026-06-20: reconstructed with the REAL reloc callees (was placeholder
  * func_00000000/D_00000000, which score 100% under name-blind objdiff but are
- * NOT byte/episode-correct). RiderAnim_setState_0000D5F8 is varargs (homes the pair
+ * NOT byte/episode-correct). RiderAnim_queueState_0000D5F8 is varargs (homes the pair
  * to 4(sp)/8(sp)); passing the D-pair BY VALUE (`Pair2`) reproduces the
  * `addiu base,base,0xF18; lw 0/4(base)` + stack-home shape with a DIRECT jal
  * (a fn-ptr cast would emit lui/addiu/jalr). The tail bit-clear emits the
@@ -7558,8 +7558,8 @@ extern char game_uso_D_807FF508;
 void RiderAnim_startEndingCpu_00011258(int *a0) {
     int *p;
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_LOSE), 0, 2, 1, 1);
-    RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
-    RiderAnim_clearNextState_0000D5DC((char*)a0);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_clearState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
 }
@@ -7572,8 +7572,8 @@ extern char game_uso_D_807FF508;
 void RiderAnim_startEnding_000112E0(int *a0) {
     int *p;
     XCALL(game_uso_func_077C44, AnimPlayer_start)(a0, (RANIM_GROUP_EVENT | RANIM_ENDING_WIN), 0, 2, 1, 1);
-    RiderAnim_setState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
-    RiderAnim_clearNextState_0000D5DC((char*)a0);
+    RiderAnim_queueState_0000D5F8((char*)a0, *(Pair2*)((char*)&game_uso_D_807FF508 + 0xF18), 2);
+    RiderAnim_clearState_0000D5DC((char*)a0);
     p = (int *)&RA(a0)->rider->flags;
     *p = *p & ~0x800;
 }
@@ -7583,7 +7583,7 @@ void RiderAnim_startEnding_000112E0(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding1(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 2, 3, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF08), 3);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF08), 3);
 }
 
 /* MATCHED 2026-05-28: struct-by-value (F10/F14 pair). Family sibling #6 of
@@ -7591,7 +7591,7 @@ void RiderAnim_stateEnding1(int *a0) {
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateEnding2(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 3, 4, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF10), 4);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xF10), 4);
 }
 
 void RiderAnim_stateEnding3(int *a0) {
@@ -7604,15 +7604,15 @@ void RiderAnim_stateStartIntro(int *a0) {
     int v = (int)(RA(a0)->rider->character % 5U);
     int a1 = (v + RANIM_START_INTRO) | RANIM_GROUP_EVENT;
     FCALL(AnimPlayer_start)(a0, a1, 0, 2, 1, 1);
-    FCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xEF8), 2);
-    FCALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2 *)((char *)&D_00000000 + 0xF00));
+    FCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xEF8), 2);
+    FCALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2 *)((char *)&D_00000000 + 0xF00));
 }
 /* MATCHED 2026-05-28: struct-by-value (DB8/DBC pair). Family sibling of
  * RiderAnim_restartRide_00010E2C. See
  * docs/IDO_CODEGEN.md#feedback-ido-struct-by-value-homes-arg-pair. */
 void RiderAnim_stateStartIntroEnd(int *a0) {
     GCALL(AnimPlayer_startIfChanged)(a0, RA(a0)->player.anim, 2, 1, 1, 1);
-    GCALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDB8), 1);
+    GCALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2*)((char*)&D_00000000 + 0xDB8), 1);
 }
 
 /* RiderAnim_stateStartWait (0x80): orphan-prologue MERGE of the 0x8 stub at 0x1155C
@@ -7627,7 +7627,7 @@ void RiderAnim_stateStartWait(int *a0) {
     int val = 100;
     if (*(int*)((char*)&D_00000000 + 0x78) == 0) {
         RA(a0)->rider->slowdown = 0;
-        CALL(RiderAnim_setNextState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
+        CALL(RiderAnim_enterState_0000D5BC)(a0, *(Pair2*)((char*)&D_00000000 + 0xE40));
     } else {
         RA(a0)->rider->slowdown = val;
         CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->animSet | RANIM_UP_DOWN, 0, 1, 6, 1);
@@ -7643,7 +7643,7 @@ void RiderAnim_playHitAnim_000115EC(int *a0, int a1) {
     GCALL(RiderAnim_startHitAnim_00011624)(a0);
     GCALL(RiderAnim_clearRiderEdge_00011868)(a0);
     RA(a0)->trickPhase = 0;
-    GCALL(RiderAnim_clearNextState_0000D5DC)(a0);
+    GCALL(RiderAnim_clearState_0000D5DC)(a0);
 }
 
 /* RiderAnim_startHitAnim_00011624: 44-insn (EE84-family). MATCHED 2026-05-31
@@ -7658,9 +7658,9 @@ void RiderAnim_startHitAnim_00011624(int *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(a0);
     CALL(AnimPlayer_startIfChanged)(a0, RA(a0)->selectedAnim, 0, 1, 1, 1);
     if (RA(a0)->rider->health <= 0) {
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xDC8), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xDC8), 1);
     } else {
-        CALL(RiderAnim_setState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(a0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
     }
     RA(a0)->trickPhase = 0;
 }
@@ -7677,7 +7677,7 @@ void RiderAnim_crashRecover_000116D4(void *a0) {
     CALL(RiderAnim_clearRiderEdge_00011868)(s0);
     if (RA(s0)->slowCrash != 0) {
         CALL(AnimPlayer_startIfChanged)(s0, RA(s0)->selectedAnim, 2, 1, 1, 1);
-        CALL(RiderAnim_setState_0000D5F8)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
+        CALL(RiderAnim_queueState_0000D5F8)(s0, *(Pair2 *)((char *)&D_00000000 + 0xE40), 1);
     }
     RA(s0)->trickPhase = 0;
 }
@@ -7723,8 +7723,8 @@ void RiderAnim_crashRecover_000116D4(void *a0) {
  * just-in-time family typing). The prior NM body called placeholder
  * gl_func_00000000 + loaded &D_00000000; the resolved .s relocs name the real
  * callees game_uso_func_077C44 (event/sound dispatch, R_MIPS_26 to an undefined
- * import-class symbol), RiderAnim_setState_0000D5F8 (Pair2-by-value sink — homes
- * a1/a2 to sp+4/sp+8 via the prototype-flip lever), RiderAnim_clearNextState_0000D5DC
+ * import-class symbol), RiderAnim_queueState_0000D5F8 (Pair2-by-value sink — homes
+ * a1/a2 to sp+4/sp+8 via the prototype-flip lever), RiderAnim_clearState_0000D5DC
  * (pair-copy trailing call), and the real global game_uso_D_807FF490. Control
  * flow: the FP gate is the POSITIVE if (`if (s->0xA38 < -30.0f)` => the target
  * `c.lt.s; bc1fl` with the else-reset folded into the branch-likely delay slot);
@@ -7745,12 +7745,12 @@ void RiderAnim_checkBackwardSwitch_00011750(char *obj) {
         RA(obj)->backHits = 0;
         if (RA(obj)->rider->useDParms != 0) {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_DEEP_SWITCH, 0, 0, ANIM_BLENDIN, 5);
-            RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         } else {
             XCALL(game_uso_func_077C44, AnimPlayer_start)(obj, RA(obj)->animSet | RANIM_SWITCH_STANCE, 0, 0, ANIM_BLENDIN, 5);
-            RiderAnim_setState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
+            RiderAnim_queueState_0000D5F8(obj, *(Pair2 *)((char *)&game_uso_D_807FF490 + 0xEA0), -1);
         }
-        RiderAnim_clearNextState_0000D5DC(obj);
+        RiderAnim_clearState_0000D5DC(obj);
     } else {
         RA(obj)->backHits = 0;              /* not a hard hit: reset */
     }

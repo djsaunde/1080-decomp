@@ -59,7 +59,7 @@ glabel RiderAnim_stateRideDeep
     /* 01091C 0001091C 02002025 */  .word 0x02002025
     /* 010920 00010920 AFA50004 */  .word 0xAFA50004
     /* 010924 00010924 8D860004 */  .word 0x8D860004
-    jal RiderAnim_setNextState_0000D5BC   /* 010928 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 010928 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 01092C 0001092C AFA60008 */  .word 0xAFA60008
     jal RiderAnim_checkBackwardSwitch_00011750   /* 010930 0C000000 -> RiderAnim_checkBackwardSwitch_00011750 */
     /* 010934 00010934 02002025 */  .word 0x02002025

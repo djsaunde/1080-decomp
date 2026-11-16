@@ -1,6 +1,6 @@
-nonmatching RiderAnim_reset_0000D438, 0x20
+nonmatching RiderAnim_onKey_0000D438, 0x20
 
-glabel RiderAnim_reset_0000D438
+glabel RiderAnim_onKey_0000D438
     /* 00D438 0000D438 8C8F00C0 */  .word 0x8C8F00C0
     /* 00D43C 0000D43C 8C8E00C4 */  .word 0x8C8E00C4
     /* 00D440 0000D440 2402FC18 */  .word 0x2402FC18
@@ -9,4 +9,4 @@ glabel RiderAnim_reset_0000D438
     /* 00D44C 0000D44C AC8F00C8 */  .word 0xAC8F00C8
     /* 00D450 0000D450 03E00008 */  .word 0x03E00008
     /* 00D454 0000D454 AC8E00CC */  .word 0xAC8E00CC
-endlabel RiderAnim_reset_0000D438
+endlabel RiderAnim_onKey_0000D438

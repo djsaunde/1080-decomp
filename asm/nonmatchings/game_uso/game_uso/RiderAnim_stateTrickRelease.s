@@ -18,7 +18,7 @@ glabel RiderAnim_stateTrickRelease
     /* 00F5E0 0000F5E0 02002025 */  .word 0x02002025
     /* 00F5E4 0000F5E4 AFA50004 */  .word 0xAFA50004
     /* 00F5E8 0000F5E8 8DE60004 */  .word 0x8DE60004
-    jal RiderAnim_setNextState_0000D5BC   /* 00F5EC 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00F5EC 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00F5F0 0000F5F0 AFA60008 */  .word 0xAFA60008
     jal RiderAnim_stateTrickStart   /* 00F5F4 0C000000 -> RiderAnim_stateTrickStart */
     /* 00F5F8 0000F5F8 02002025 */  .word 0x02002025
@@ -39,9 +39,9 @@ glabel RiderAnim_stateTrickRelease
     /* 00F634 0000F634 24070001 */  .word 0x24070001
     /* 00F638 0000F638 AFA50004 */  .word 0xAFA50004
     /* 00F63C 0000F63C 8D660004 */  .word 0x8D660004
-    jal RiderAnim_setState_0000D5F8   /* 00F640 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00F640 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00F644 0000F644 AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearNextState_0000D5DC   /* 00F648 0C000000 -> RiderAnim_clearNextState_0000D5DC */
+    jal RiderAnim_clearState_0000D5DC   /* 00F648 0C000000 -> RiderAnim_clearState_0000D5DC */
     /* 00F64C 0000F64C 02002025 */  .word 0x02002025
     /* 00F650 0000F650 8FBF0024 */  .word 0x8FBF0024
     /* 00F654 0000F654 8FB00020 */  .word 0x8FB00020

@@ -19,7 +19,7 @@ glabel RiderAnim_stateEnding1
     /* 0113A4 000113A4 24070003 */  .word 0x24070003
     /* 0113A8 000113A8 AFA50004 */  .word 0xAFA50004
     /* 0113AC 000113AC 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setState_0000D5F8   /* 0113B0 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 0113B0 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 0113B4 000113B4 AFA60008 */  .word 0xAFA60008
     /* 0113B8 000113B8 8FBF001C */  .word 0x8FBF001C
     /* 0113BC 000113BC 27BD0020 */  .word 0x27BD0020

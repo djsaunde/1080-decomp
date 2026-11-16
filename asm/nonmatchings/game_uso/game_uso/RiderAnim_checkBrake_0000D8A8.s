@@ -12,7 +12,7 @@ glabel RiderAnim_checkBrake_0000D8A8
     /* 00D8C8 0000D8C8 8F050000 */  .word 0x8F050000
     /* 00D8CC 0000D8CC AFA50004 */  .word 0xAFA50004
     /* 00D8D0 0000D8D0 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setNextState_0000D5BC   /* 00D8D4 0C000000 -> RiderAnim_setNextState_0000D5BC */
+    jal RiderAnim_enterState_0000D5BC   /* 00D8D4 0C000000 -> RiderAnim_enterState_0000D5BC */
     /* 00D8D8 0000D8D8 AFA60008 */  .word 0xAFA60008
     /* 00D8DC 0000D8DC 8FBF0014 */  .word 0x8FBF0014
     /* 00D8E0 0000D8E0 27BD0018 */  .word 0x27BD0018

@@ -42,9 +42,9 @@ glabel RiderAnim_stateHopLand
     /* 01053C 0001053C 24070001 */  .word 0x24070001
     /* 010540 00010540 AFA50004 */  .word 0xAFA50004
     /* 010544 00010544 8D460004 */  .word 0x8D460004
-    jal RiderAnim_setState_0000D5F8   /* 010548 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 010548 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 01054C 0001054C AFA60008 */  .word 0xAFA60008
-    jal RiderAnim_clearNextState_0000D5DC   /* 010550 0C000000 -> RiderAnim_clearNextState_0000D5DC */
+    jal RiderAnim_clearState_0000D5DC   /* 010550 0C000000 -> RiderAnim_clearState_0000D5DC */
     /* 010554 00010554 02002025 */  .word 0x02002025
     /* 010558 00010558 8FBF0024 */  .word 0x8FBF0024
     /* 01055C 0001055C 8FB00020 */  .word 0x8FB00020

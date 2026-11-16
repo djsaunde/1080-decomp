@@ -21,7 +21,7 @@ glabel RiderAnim_stateRowOut
     /* 00FA98 0000FA98 24070001 */  .word 0x24070001
     /* 00FA9C 0000FA9C AFA50004 */  .word 0xAFA50004
     /* 00FAA0 0000FAA0 8F060004 */  .word 0x8F060004
-    jal RiderAnim_setState_0000D5F8   /* 00FAA4 0C000000 -> RiderAnim_setState_0000D5F8 */
+    jal RiderAnim_queueState_0000D5F8   /* 00FAA4 0C000000 -> RiderAnim_queueState_0000D5F8 */
     /* 00FAA8 0000FAA8 AFA60008 */  .word 0xAFA60008
     /* 00FAAC 0000FAAC 8FBF001C */  .word 0x8FBF001C
     /* 00FAB0 0000FAB0 27BD0020 */  .word 0x27BD0020
