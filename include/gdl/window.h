@@ -107,7 +107,8 @@ typedef struct ScreenWindow {
     /* 0x1AC */ s32 unk1AC;           /* -1 after allocBuffers */
     /* 0x1B0 */ s32 clearAlpha;       /* 1 after allocBuffers: the RGBA5551 alpha bit of the clear fill */
     /* 0x1B4 */ s32 unk1B4;           /* zeroed by ScreenWindow_display */
-    /* 0x1B8 */ s32 unk1B8;
+    /* 0x1B8 */ struct Window *unk1B8; /* 0 after allocBuffers; game_setupVs2P stores player 1's 3D
+                                       * window in player 2's (the other split-screen view) */
     /* 0x1BC */ s32 unk1BC;
     /* 0x1C0 */ struct DLContext *curBg; /* bgDL[fbIndex] for this frame */
     /* 0x1C4 */ s32 unk1C4[2];
