@@ -30,15 +30,16 @@
  *  - `v | 0x80000 | 0x2000 | 0x20000` stays unfolded (lui/or, ori, lui/or). */
 #include "common.h"
 #include "gdl/gl_data.h"
+#include "gdl/node.h"
+#include "game/course.h"
 #include "uso_call.h"
 
 extern int func_00000000();
 extern void func_00000000_2DA4_v();
 extern char sStr_ImgFileMgr_73EC, sStr_rom_tricks_bin_73F8, sStr_unknown_GAME_MODE_7408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
-extern char D_00000000, gPolyGeomMode_3EEC8_2DA4_cfg;
-
-#define FW(p, o) (*(int *)((char *)(p) + (o)))
+extern char D_00000000;
+extern int gPolyGeomMode_3EEC8_2DA4_cfg[]; /* gPolyGeomMode_3EEC8 read alias: mode words [0], [1] */
 
 void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
@@ -47,17 +48,17 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     XCALL(func_00000000_2DA4_v, memtrack_begin)(&sStr_ImgFileMgr_73EC, 0);
     XCALL(func_00000000_2DA4_v, memtrack_end)();
     D_2DA4_obj = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
-    v1 = (char *)FW(arg0, 0x84);
+    v1 = (char *)WORLDREG(arg0)->bgRoot;
     a1 = (char *)D_2DA4_obj_rd;
     XCALL(func_00000000_2DA4_v, list_append)(v1 + 0x10, a1);
-    if (FW(a1, 0x14) != 0) {
-        FW(a1, 0x4) = 1;
+    if (NODE(a1)->parent != 0) {
+        NODE(a1)->unk04 = 1;
     }
-    FW(a1, 0x14) = (int)v1;
+    NODE(a1)->parent = (Node *)v1;
     XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(D_2DA4_obj);
-    v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
+    v = gPolyGeomMode_3EEC8_2DA4_cfg[1]; /* [1]: the geometry mode word */
     v = v | 0x80000 | 0x2000 | 0x20000;
-    *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
+    ((int *)&gPolyGeomMode_3EEC8)[1] = v;
     switch (arg1) {
     case 2: XCALL(func_00000000_2DA4_v, game_setupSolo)(arg0, arg2); break;
     case 4: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;

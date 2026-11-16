@@ -1,5 +1,6 @@
 #include "common.h"
 #include "uso_call.h"
+#include "gdl/node.h"
 
 /* tim_main — -O0 donor (REPLACE_FUNC_BODY into
  * timproc_uso_b1.c.o). 14-case state-machine dispatcher on arg1; loop
@@ -111,11 +112,11 @@ void tim_main(int *arg0, int arg1) {
             base = (char *)&D_00000000;
             p2 = base + 0x10;
             CALL(list_append)(p2, s0v);
-            if (*(int *)((char *)s0v + 0x14) != 0) {
-                *(int *)((char *)s0v + 4) = 1;
+            if (NODE(s0v)->parent != 0) {
+                NODE(s0v)->unk04 = 1;
             }
             p2 = base;
-            *(int *)((char *)s0v + 0x14) = (int)p2;
+            NODE(s0v)->parent = (Node *)p2;
             CALL(app_launchNameEnt)(arg0, *arg0);
             done = 1;
             break;
@@ -129,11 +130,11 @@ void tim_main(int *arg0, int arg1) {
             base = (char *)&D_00000000;
             p2 = base + 0x10;
             CALL(list_append)(p2, s0v);
-            if (*(int *)((char *)s0v + 0x14) != 0) {
-                *(int *)((char *)s0v + 4) = 1;
+            if (NODE(s0v)->parent != 0) {
+                NODE(s0v)->unk04 = 1;
             }
             p3 = base;
-            *(int *)((char *)s0v + 0x14) = (int)p3;
+            NODE(s0v)->parent = (Node *)p3;
             done = 1;
             break;
         }

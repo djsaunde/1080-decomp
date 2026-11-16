@@ -1749,8 +1749,7 @@ void game_initDdm_00002C94(void *a0, void *a1) {
 extern void func_00000000_2DA4_v();
 extern char sStr_ImgFileMgr_73EC, sStr_rom_tricks_bin_73F8, sStr_unknown_GAME_MODE_7408;
 extern int D_2DA4_obj, D_2DA4_obj_rd;
-extern char gPolyGeomMode_3EEC8_2DA4_cfg;
-#define FW2DA4(p, o) (*(int *)((char *)(p) + (o)))
+extern int gPolyGeomMode_3EEC8_2DA4_cfg[]; /* gPolyGeomMode_3EEC8 read alias: mode words [0], [1] */
 void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     char *a1;
     char *v1;
@@ -1758,17 +1757,17 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
     XCALL(func_00000000_2DA4_v, memtrack_begin)(&sStr_ImgFileMgr_73EC, 0);
     XCALL(func_00000000_2DA4_v, memtrack_end)();
     D_2DA4_obj = FCALL(TrickTable_ctor_0000C2D4)(0, &sStr_rom_tricks_bin_73F8);
-    v1 = (char *)FW2DA4(arg0, 0x84);
+    v1 = (char *)WORLDREG(arg0)->bgRoot;
     a1 = (char *)D_2DA4_obj_rd;
     XCALL(func_00000000_2DA4_v, list_append)(v1 + 0x10, a1);
-    if (FW2DA4(a1, 0x14) != 0) {
-        FW2DA4(a1, 0x4) = 1;
+    if (NODE(a1)->parent != 0) {
+        NODE(a1)->unk04 = 1;
     }
-    FW2DA4(a1, 0x14) = (int)v1;
+    NODE(a1)->parent = (Node *)v1;
     XCALL(func_00000000_2DA4_v, AnimDataMgr_releaseFrames)(D_2DA4_obj);
-    v = *(int *)((char *)&gPolyGeomMode_3EEC8_2DA4_cfg + 4);
+    v = gPolyGeomMode_3EEC8_2DA4_cfg[1]; /* [1]: the geometry mode word */
     v = v | 0x80000 | 0x2000 | 0x20000;
-    *(int *)((char *)&gPolyGeomMode_3EEC8 + 4) = v;
+    ((int *)&gPolyGeomMode_3EEC8)[1] = v;
     switch (arg1) {
     case 2: XCALL(func_00000000_2DA4_v, game_setupSolo)(arg0, arg2); break;
     case 4: XCALL(func_00000000_2DA4_v, game_setupReplay)(arg0, arg2); break;
@@ -1788,7 +1787,6 @@ void game_setupMode(char *arg0, s32 arg1, s32 arg2) {
         break;
     }
 }
-#undef FW2DA4
 
 /* game_createLights - verified structural decode (0x228, 138 insns,
  * multi-widget builder + per-child init). Builder+register family
@@ -1857,20 +1855,20 @@ void game_createLights(char *s1) {
     {
         float k = kRo_game_createLights_524;
         WORLDREG(s1)->light0 = (s32)c;
-        *(float *)(c + 0x12C) = k;
-        *(float *)(c + 0x128) = k;
-        *(float *)(c + 0x124) = k;
-        *(float *)(c + 0x130) = 1.0f;
+        ((BaseLight *)c)->parms.col[2] = k;
+        ((BaseLight *)c)->parms.col[1] = k;
+        ((BaseLight *)c)->parms.col[0] = k;
+        ((BaseLight *)c)->parms.col[3] = 1.0f;
     }
     p90 = (char *)WORLDREG(s1)->light0; ((BaseLight *)p90)->mask = 1;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x40;
     p90 = (char *)WORLDREG(s1)->light0; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x80;
     c = (char *)FCALL(BaseLight_ctor)(0, &sStr_Infinite_Light_7434);
     WORLDREG(s1)->light1 = (s32)c;
-    *(float *)(c + 0x130) = 1.0f;
-    *(float *)(c + 0x12C) = 1.0f;
-    *(float *)(c + 0x128) = 1.0f;
-    *(float *)(c + 0x124) = 1.0f;
+    ((BaseLight *)c)->parms.col[3] = 1.0f;
+    ((BaseLight *)c)->parms.col[2] = 1.0f;
+    ((BaseLight *)c)->parms.col[1] = 1.0f;
+    ((BaseLight *)c)->parms.col[0] = 1.0f;
     p90 = (char *)WORLDREG(s1)->light1; ((BaseLight *)p90)->mask = 2;
     p90 = (char *)WORLDREG(s1)->light1; if (1) { p90 = (char *)&((BaseLight *)p90)->flags; } *(int *)p90 |= 0x40;
     o = (char *)FCALL(BaseLight_ctor)(0, &sStr_Shadow_Light_7444);
@@ -5273,7 +5271,6 @@ void SnowBoarder_createBoardShape_0000B49C(int idx, int j) {
  * 0x48 limit read inline at both uses; the call is (arg0 + 0x318, arg0). */
 extern f32 bu_b520_k48, bu_b520_k44;  /* rodata f32 (target FogTmpl_create + 0x48 / + 0x44) */
 extern f64 bu_b520_kc;               /* rodata f64 (target SndHandle_setScaleIdx15 + 0xC) */
-#define F520(p, o) (*(f32 *)((char *)(p) + (o)))
 void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     Vec3 v74;
     Vec3 vB;
@@ -5294,16 +5291,16 @@ void SnowBoarder_limitSpeed(SnowBoarder *sb) {
     t = 0.0f;
     if (sb->flags & SNOWB_FLAG_NUDGE) {
         p = (char *)sb->input;
-        if (FW(p, 0x10) & 4) {
+        if (((RiderInput *)p)->held & 4) {
             t += 10.0f;
         }
-        if (*(volatile int *)(p + 0x10) & 8) {
+        if (*(volatile int *)&((RiderInput *)p)->held & 8) {
             t -= 10.0f;
         }
     }
-    px = F520(q, 0) * t;
-    py = F520(q, 4) * t;
-    pz = F520(q, 8) * t;
+    px = ((f32 *)q)[0] * t;
+    py = ((f32 *)q)[1] * t;
+    pz = ((f32 *)q)[2] * t;
     if (1) {}
     v50.x = px; v50.y = py; v50.z = pz;
     v5C = v50;
