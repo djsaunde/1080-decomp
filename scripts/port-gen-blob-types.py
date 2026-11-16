@@ -72,7 +72,17 @@ KNOWN = [
     # osViModeTable (sym1947, gl_osViModeTable_44B78_modes): 42 OSViMode records of 0x50,
     # {u8 type + 3 pad, OSViCommonRegs 9 x u32, OSViFieldRegs 2 x 5 x u32}; types 0x00-0x29.
     ("bootup", "Data", 0x2D700, [(0, 4, "u8"), (4, 0x4C, "u32")], 42, 0x50, "known"),
+    # charsel: 6 blocks of 0x10220, each 8-bit texels (0x10010) and a TLUT (0x200), both bytes
+    # (Fast3D reads texels and TLUTs big-endian), then the record genproc loads:
+    # {0x110, 0x100, image ptr, TLUT ptr} (the pointers are DataReloc words, typed ptr already).
+    ("charsel", "Data", 0, [(0, 0x10210, "u8"), (0x10210, 8, "u32")], 6, 0x10220, "known"),
 ]
+# gamegfx (Data only, no relocs): five images, each an 8-byte header {0, 1} at an exported
+# symbol followed by texel bytes up to the next header.  The header reader is not located
+# (gamegfx is reached through its exports); {0, 1} is typed as two words.
+_GAMEGFX = [0x0, 0x848, 0x1C50, 0x33B8, 0x3E10, 0x4820]
+for _a, _b in zip(_GAMEGFX, _GAMEGFX[1:]):
+    KNOWN.append(("gamegfx", "Data", _a, [(0, 8, "u32"), (8, _b - _a - 8, "u8")], 1, _b - _a, "known"))
 
 # GBI1 (F3DEX) opcodes; address-taking ones: G_MTX 01, G_MOVEMEM 03, G_VTX 04, G_DL 06,
 # G_SETTIMG FD, G_SETZIMG FE, G_SETCIMG FF
@@ -318,6 +328,34 @@ def walk_assets(maps, ptrs, stats):
         if key in maps and count > 0:
             maps[key].put(o, typ, src, count)
 
+    def collgrid(gk, g):
+        """CollGrid (gdl/coll.h, BasePolyShape +0xA0, parse cmd 35): {s32 w, h, x0, z0; f32 cellW,
+        cellH; s16 *lists; s32 *cells}.  cells[z * w + x] indexes lists (-1 = empty); each list
+        is a -1-terminated run of s16 triangle indices."""
+        if gk not in maps or g + 0x20 > maps[gk].n:
+            return
+        gm = maps[gk]
+        gm.put(g, "u32", "collgrid", 4)
+        gm.put(g + 0x10, "f32", "collgrid", 2)
+        w, h = word(gm, g), word(gm, g + 4)
+        lt, ct = tgt(gk, g + 0x18), tgt(gk, g + 0x1C)
+        if not (0 < w <= 1024 and 0 < h <= 1024) or not lt or not ct or ct[0] not in maps:
+            return
+        cm, co = maps[ct[0]], ct[1]
+        if co + 4 * w * h > cm.n:
+            return
+        cm.put(co, "u32", "collgrid:cells", w * h)
+        top = max((word(cm, co + 4 * i) for i in range(w * h)
+                   if word(cm, co + 4 * i) != 0xFFFFFFFF), default=None)
+        if top is None or lt[0] not in maps:
+            return
+        lm, lo = maps[lt[0]], lt[1]
+        e = lo + 2 * top
+        while e + 2 <= lm.n and struct.unpack_from(">H", lm.data, e)[0] != 0xFFFF:
+            e += 2
+        lm.put(lo, "u16", "collgrid:lists", (e + 2 - lo) // 2)
+        stats["collision grids"] += 1
+
     for key, m in maps.items():
         for o in sorted(m.starts):
             if o % 4 or m.t[o] not in (None, "zero"):
@@ -361,6 +399,8 @@ def walk_assets(maps, ptrs, stats):
                     typed_run(*tgt(key, a[1]), "u16", 3 * nv, "shape:remap")
                 elif op == 29 and tgt(key, a[1]):
                     walk_mats(maps, ptrs, *tgt(key, a[1]), stats)
+                elif op == 35 and tgt(key, a[0]):
+                    collgrid(*tgt(key, a[0]))
 
 
 def walk_mats(maps, ptrs, key, o, stats):
