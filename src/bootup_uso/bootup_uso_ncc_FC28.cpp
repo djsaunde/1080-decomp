@@ -3,10 +3,24 @@
  * closing-brace branch the shipped code lacks; edg's -O0 ucode has none.
  * Spliced into bootup_uso_tail1_bot.c.o via REPLACE_FUNC_BODY.
  * agent-g run 543: the Node vptr / name stores spelled through include/gdl/node.h (NODE(p)->vptr / ->name; relative
- * include, its offset asserts are C-only). Same bytes. */
+ * include, its offset asserts are C-only). Same bytes.
+ * agent-g run 546: QuitProcess unk44 / menu (local view) and PauseMenu on game/guimenu.h GuiMenu (locked, the two
+ * row-colour quads in unk4C). Same bytes. */
 typedef unsigned char u8; typedef unsigned short u16; typedef unsigned int u32;
 typedef signed char s8; typedef signed short s16; typedef signed int s32; typedef float f32; typedef double f64;
 #include "../../include/gdl/node.h"
+#include "../../include/game/guimenu.h" /* PauseMenu = GuiMenu (0x304) */
+/* QuitProcess (0x50): the in-place Node (0x2C) -> Process (0x50) cascade, then QuitProcess_vtbl. No shared
+ * Process header yet; this view names the two slots QuitProcess_ctor clears. +0x48 is the Process child-menu
+ * slot (RaceProcess.menu, MenuProcess.menu: a GuiMenu); +0x44 is the word before it. */
+typedef struct QuitProcess {
+    Node node;                  /* 0x00 */
+    char unk2C[0x44 - 0x2C];
+    s32 unk44;                  /* 0x44: 0 (QuitProcess_ctor) */
+    struct GuiMenu *menu;       /* 0x48: the Process child menu; 0 (QuitProcess_ctor) */
+    s32 unk4C;
+} QuitProcess;
+typedef char QuitProcess_size_check[sizeof(QuitProcess) == 0x50 ? 1 : -1];
 extern "C" {
 /* bootup_uso 0xFC28..0x100F0 region, split off bootup_uso_tail1.c on
  * 2026-05-28 so that Process_setWindowFlag8_0000FBCC could move to a -O0 sub-file
@@ -128,8 +142,8 @@ void *QuitProcess_ctor(void *a0, int a1, int a2) {
         NODE(s0)->name = (int)s1;
         func_00000008.f2C = a1;
         func_00000008.f38 = a2;
-        *(int*)((char*)a0 + 0x44) = 0;
-        *(int*)((char*)a0 + 0x48) = 0;
+        ((QuitProcess *)a0)->unk44 = 0;
+        ((QuitProcess *)a0)->menu = 0;
         D_bootup_scratch0 = func_00000000(a0, 0);
         s0 = a0;
         func_00000000(D_bootup_scratch0, s0);
@@ -205,17 +219,17 @@ void *PauseMenu_create(char *a0) {
         s = a0;
         d = &sStr_PauseMenu_C5C4;
         NODE(s)->name = (int)d;
-        s = a0 + 0x4C;
+        s = GUIMENU(a0)->unk4C;               /* 0x4C: the cursor row's colour (PauseMenu_display's q4C) */
         *(float *)(s + 0) = (float)(0, 119) / 255.0f;
         *(float *)(s + 4) = (float)(0, 117) / 255.0f;
         *(float *)(s + 8) = (float)(0, 229) / 255.0f;
         *(float *)(s + 12) = (float)(0, 255) / 255.0f;
-        s = a0 + 0x5C;
+        s = GUIMENU(a0)->unk4C + 0x10;        /* 0x5C: the other rows' colour (PauseMenu_display's q5C) */
         *(float *)(s + 0) = (float)(0, 192) / 255.0f;
         *(float *)(s + 4) = (float)(0, 194) / 255.0f;
         *(float *)(s + 8) = (float)(0, 229) / 255.0f;
         *(float *)(s + 12) = (float)(0, 255) / 255.0f;
-        *(int *)(a0 + 0x80) = 0;
+        GUIMENU(a0)->locked = 0;
         func_00000000(a0);
     }
     return a0;

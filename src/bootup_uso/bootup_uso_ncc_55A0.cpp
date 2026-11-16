@@ -3,12 +3,17 @@
  * Reloc binding from the target relocations: every blank (reloc-free) lui/addiu pair references a 0-pinned
  * D_55A0_* name (gRoot -> D_55A0_root, the list table -> D_55A0_it0), the others are pinned to their target
  * addresses in undefined_syms_auto.txt.
- * agent-g run 543: the vptr stores spelled NODE(p)->vptr (include/gdl/node.h, relative include). Same bytes. */
+ * agent-g run 543: the vptr stores spelled NODE(p)->vptr (include/gdl/node.h, relative include). Same bytes.
+ * agent-g run 546: the tree types' fields on envobj.h TreeTmpl (colour, fog, unk38, shapeData) and the tv1 type's
+ * on Tv1Tmpl (scroll / state / timer / unk64 / displayCount). Same bytes. */
 typedef unsigned char u8;
 typedef signed short s16;
+typedef unsigned short u16;
 typedef signed int s32;
 typedef float f32;
 #include "../../include/gdl/node.h"
+#include "../../include/game/course.h"
+#include "../../include/game/envobj.h" /* TreeTmpl (the 0x74 "tr1".."tr3" types), Tv1Tmpl (the 0x6C "tv1" type) */
 typedef struct { int w; } SC4_;
 extern "C" {
 extern char D_00000000;
@@ -158,14 +163,14 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_0;
             }
             NODE(obj)->vptr = (int)&D_55A0_o28_0;
-            node = obj + 0x5C;
+            node = TREETMPL(obj)->fog;
             if (node != 0 || (node = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(node);
             }
-            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
+            TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f; if (1) {}
             vec0.w = 1.0f; vec0.x = kRo_item_registerTemplates_59C; vec0.y = kRo_item_registerTemplates_59C; vec0.z = kRo_item_registerTemplates_59C;
-            func_00000000(obj + 0x5C, &vec0, 993, 997);
-            OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_0;
+            func_00000000(TREETMPL(obj)->fog, &vec0, 993, 997);
+            TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = (int)&D_55A0_o48_0;
         }
         func_00000000(DROOT, obj, 4);
 
@@ -182,14 +187,14 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_1;
             }
             NODE(obj)->vptr = (int)&D_55A0_o28_1;
-            n2 = obj + 0x5C;
+            n2 = TREETMPL(obj)->fog;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
             }
-            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f; if (1) {}
+            TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f; if (1) {}
             vec1.w = 1.0f; vec1.x = kRo_item_registerTemplates_5A0; vec1.y = kRo_item_registerTemplates_5A0; vec1.z = kRo_item_registerTemplates_5A0;
-            func_00000000(obj + 0x5C, &vec1, 993, 997);
-            OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_1;
+            func_00000000(TREETMPL(obj)->fog, &vec1, 993, 997);
+            TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = (int)&D_55A0_o48_1;
         }
         func_00000000(DROOT, obj, 4);
 
@@ -209,14 +214,14 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 NODE(sub)->vptr = (int)&SNodeItemType_vtbl_55A0_s28_2;
             }
             NODE(obj)->vptr = (int)&D_55A0_o28_2;
-            n2 = obj + 0x5C;
+            n2 = TREETMPL(obj)->fog;
             if (n2 != 0 || (n2 = (char *)func_00000000(0x18)) != 0) {
                 func_00000000(n2);
             }
-            OF(obj, 0x4C) = (f32)0; OF(obj, 0x50) = (f32)0; OF(obj, 0x54) = (f32)0; OF(obj, 0x58) = 1.0f;
+            TREETMPL(obj)->colour[0] = (f32)0; TREETMPL(obj)->colour[1] = (f32)0; TREETMPL(obj)->colour[2] = (f32)0; TREETMPL(obj)->colour[3] = 1.0f;
             vec2.x = kRo_item_registerTemplates_5A4; vec2.y = kRo_item_registerTemplates_5A8; vec2.z = kRo_item_registerTemplates_5AC; vec2.w = 1.0f;
-            func_00000000(obj + 0x5C, &vec2, 993, 997);
-            OI(obj, 0x38) = 1; OI(obj, 0x48) = (int)&D_55A0_o48_2;
+            func_00000000(TREETMPL(obj)->fog, &vec2, 993, 997);
+            TREETMPL(obj)->unk38 = 1; TREETMPL(obj)->shapeData = (int)&D_55A0_o48_2;
         }
         func_00000000(DROOT, obj, 4);
 
@@ -248,11 +253,11 @@ extern "C" void item_registerTemplates(int arg0, int arg1, int arg2) {
                 OI(n2, 0) = (int)&D_55A0_n2;
             }
             DI(0) = 0;
-            OI(obj, 0x5C) = 2;
-            OI(obj, 0x64) = 0;
-            OI(obj, 0x60) = 0;
-            OI(obj, 0x58) = 0;
-            OI(obj, 0x68) = 0;
+            ((Tv1Tmpl *)obj)->state = 2;
+            ((Tv1Tmpl *)obj)->unk64 = 0;
+            ((Tv1Tmpl *)obj)->timer = 0;
+            ((Tv1Tmpl *)obj)->scroll = 0;
+            ((Tv1Tmpl *)obj)->displayCount = 0;
         }
         func_00000000(DROOT, obj, 0xFFFF);
     }

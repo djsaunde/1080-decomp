@@ -1,7 +1,11 @@
 #ifndef GAME_GUIMENU_H
 #define GAME_GUIMENU_H
 
+#ifndef __cplusplus
 #include "gdl/node.h"
+#else
+#include "../gdl/node.h" /* the edg (NCC) donors include this header by relative path, without -I include */
+#endif
 
 /* The bootup GUI menu (agent-h run 507): the pause menu PauseMenu_create builds (0x304,
  * Process base, PauseMenu_vtbl) and the other row menus that use the gui_* helpers
@@ -37,7 +41,9 @@ typedef struct GuiMenu {
 
 typedef char GuiRow_size_check[sizeof(GuiRow) == 0x28 ? 1 : -1];
 typedef char GuiMenu_size_check[sizeof(GuiMenu) == 0x304 ? 1 : -1];
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char GuiMenu_cursor_check[(int)&((GuiMenu *)0)->cursor == 0x7C ? 1 : -1];
+#endif
 
 /* Field access through an untyped `char *` / `int *` (the -O0 bodies keep them). */
 #define GUIMENU(p) ((GuiMenu *)(p))

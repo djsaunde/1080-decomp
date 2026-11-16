@@ -6,8 +6,14 @@
  * collider probes and the ShpNode. Only the fields the bootup bodies touch are named; offsets
  * come from the ctors' stores. Needs gdl/node.h and game/course.h first. */
 
+#ifndef __cplusplus
 #include "gdl/dnode.h"
 #include "gdl/coll.h"
+#else
+/* The edg (NCC) donors include this header by relative path, without -I include: they get Node only
+ * (include game/course.h first for FogItem / SnowItem); ShpNode / Tree and the asserts are C-only. */
+#include "../gdl/node.h"
+#endif
 
 /* ---- U64BGWall (0x4C, vtbl Data 0x6648; U64BGWall_ctor E68) ----
  * The tiled background-wall mesh. The ctor builds the quad grid into a scratch vertex buffer and
@@ -132,6 +138,7 @@ typedef struct SnowBCollider {
 
 #define SNOWBCOL(p) ((SnowBCollider *)(p))
 
+#ifndef __cplusplus /* DNode / SNode / CollCylinder (gdl/dnode.h, gdl/coll.h) */
 /* ---- ShpNode (0x3D8, `<QNode>` "shp", vtbl Data 0x81E0; ctor 8F18): a game_libs DNode ----
  * ShpNode_func_00008FA8 copies dnode.vqs (trans / scale / quat) into dnode.cvqs before the
  * base update, then counts `life` down. The ctor sets dnode.parms.rad to 50 (DNode default 150). */
@@ -153,6 +160,7 @@ typedef struct Tree {
 } Tree;                         /* 0xC8 */
 
 #define TREE(p) ((Tree *)(p))
+#endif /* __cplusplus */
 
 /* ---- TreeTmpl (0x74; the "tr1".. item types item_registerTemplates builds, bootup_uso_ncc_55A0.cpp) ----
  * An SNodeItemType (gdl/item.h ItemType head, 0x48) for trees (agent-h run 533). Its items are Trees chained
@@ -176,6 +184,7 @@ typedef struct TreeTmpl {
 
 #define TREETMPL(p) ((TreeTmpl *)(p))
 
+#ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 #define ENVOBJ_ASSERT(T, f, off) typedef char envobj_assert_##T##_##off[(int)&((T *)0)->f == (off) ? 1 : -1]
 ENVOBJ_ASSERT(U64BGWall, scale, 0x3C);
 ENVOBJ_ASSERT(EnvSettings, fallingSnow, 0x40);
@@ -197,5 +206,6 @@ typedef char envobj_size_SnowItem[sizeof(SnowItem) == 0x74 ? 1 : -1];
 typedef char envobj_size_SnowBCollider[sizeof(SnowBCollider) == 0x178 ? 1 : -1];
 typedef char envobj_size_ShpNode[sizeof(ShpNode) == 0x3D8 ? 1 : -1];
 typedef char envobj_size_Tree[sizeof(Tree) == 0xC8 ? 1 : -1];
+#endif /* __cplusplus */
 
 #endif
