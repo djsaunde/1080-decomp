@@ -44,12 +44,12 @@ int gl_osContInit(int a0, int a1, int a2) {
         CALL(gl_osRecvMesg)(q, &msg, 1);
     }
     D_00000000_b = 4;
-    CALL(__osPackReadData)(0);
+    CALL(gl___osPackRequestData_6BD14)(0);
     ret = CALL(gl___osSiRawStartDma)(1, &gl___osContPifRam);
     CALL(gl_osRecvMesg)(a0, &msg, 1);
     ret = CALL(gl___osSiRawStartDma)(0, &gl___osContPifRam);
     CALL(gl_osRecvMesg)(a0, &msg, 1);
-    CALL(osContGetReadData)(a1, a2);
+    CALL(gl___osContGetInitData_6BC44)(a1, a2);
     D_00000000_b = 0;
     CALL(gl___osSiCreateAccessQueue)();
     CALL(gl_osCreateMesgQueue)(&D_00000000_c, &D_00000000_d, 1);

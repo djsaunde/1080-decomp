@@ -1,5 +1,5 @@
-nonmatching gl___osContGetInitData, 0xA8
-glabel gl___osContGetInitData
+nonmatching gl_osContGetReadData, 0xA8
+glabel gl_osContGetReadData
 .word 0x3C0F0000
 .word 0x91EF0000
 .word 0x3C0E0000
@@ -42,4 +42,4 @@ glabel gl___osContGetInitData
 .word 0x24840006
 .word 0x03E00008
 .word 0x27BD0010
-endlabel gl___osContGetInitData
+endlabel gl_osContGetReadData

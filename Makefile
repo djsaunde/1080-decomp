@@ -2511,7 +2511,7 @@ build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_l
 # bootup.uso RoData +0x2200. Uses += (composes with the := line above).
 GAMELIBS_675A4_DONOR := build/src/game_libs/game_libs_o2_675A4.c.o
 build/src/game_libs/game_libs_post1b.c.o build/non_matching/src/game_libs/game_libs_post1b.c.o: private REPLACE_FUNC_BODY += pad_update=$(GAMELIBS_675A4_DONOR)
-build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl___osContGetInitData=$(GAMELIBS_6C11C_DONOR) gl_osCreateThread=$(GAMELIBS_6BF34_DONOR) gl___osPackRequestData=$(GAMELIBS_6C1B8_DONOR) gl_osDriveRomInit=$(GAMELIBS_6C2A4_DONOR)
+build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: REPLACE_FUNC_BODY := gl_osContGetReadData=$(GAMELIBS_6C11C_DONOR) gl_osCreateThread=$(GAMELIBS_6BF34_DONOR) gl___osPackReadData=$(GAMELIBS_6C1B8_DONOR) gl_osDriveRomInit=$(GAMELIBS_6C2A4_DONOR)
 build/src/game_libs/game_libs_post1b2.c.o build/non_matching/src/game_libs/game_libs_post1b2.c.o: private REPLACE_FUNC_BODY += osContStartReadData=$(GAMELIBS_6C084_DONOR)
 # 63964 = two-probe ground contact (C++: inline by-value Vec3 operators + by-value operator=; run 165).
 # EXACT in agent-c run 238 (dead nested pool-slot allocation before arm 1), spliced over the placeholder on both paths.

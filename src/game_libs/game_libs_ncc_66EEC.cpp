@@ -58,7 +58,7 @@ extern "C" void pad_threadLoop_00066EEC(char *arg0) {
         case 4:
             break;
         case 2:
-            FCALL(gl___osContGetInitData)(arg0 + 0x1200);
+            FCALL(gl_osContGetReadData)(arg0 + 0x1200);
             if (flag == 0) {
                 FCALL(pad_initMotors_00067264)(arg0);
             }

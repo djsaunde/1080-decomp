@@ -1,6 +1,6 @@
-nonmatching gl___osPackRequestData, 0xEC
+nonmatching gl___osPackReadData, 0xEC
 
-glabel gl___osPackRequestData
+glabel gl___osPackReadData
     /* E51290 0006C1B8 27BDFFF0 */  .word 0x27BDFFF0
     /* E51294 0006C1BC 3C0E0000 */  .word 0x3C0E0000
     /* E51298 0006C1C0 25CE0000 */  .word 0x25CE0000
@@ -60,4 +60,4 @@ glabel gl___osPackRequestData
     /* E51370 0006C298 27BD0010 */  .word 0x27BD0010
     /* E51374 0006C29C 03E00008 */  .word 0x03E00008
     /* E51378 0006C2A0 A1590000 */  .word 0xA1590000
-endlabel gl___osPackRequestData
+endlabel gl___osPackReadData

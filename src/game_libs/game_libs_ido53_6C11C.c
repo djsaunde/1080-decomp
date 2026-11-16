@@ -1,4 +1,4 @@
-/* IDO 5.3 -O1 donor for gl___osContGetInitData — 42-insn 8-byte-record decoder
+/* IDO 5.3 -O1 donor for gl_osContGetReadData — 42-insn 8-byte-record decoder
  * loop (frame 0x18, leaf). PROVEN EXACT 42/42 (2026-07-09 verify; 7.1 -O1
  * emits the same shape but colors the struct-copy scratch $t1/$t0 — only
  * 5.3 uses $at as the lwl/lwr block-copy scratch, the target's registers).
@@ -22,7 +22,7 @@ typedef union {
 } Rec;
 extern unsigned char D_00000000_a;
 extern RecBytes D_00000000_b[];
-void gl___osContGetInitData(unsigned char *out) {
+void gl_osContGetReadData(unsigned char *out) {
     RecBytes *cursor;
     Rec tmp;
     int i;

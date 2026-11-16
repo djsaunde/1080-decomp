@@ -1,4 +1,4 @@
-/* trailing alignment padding for __osPackReadData */
+/* trailing alignment padding for gl___osPackRequestData_6BD14 */
 glabel _pad_gl_func_0006BD14, local
 .word 0x00000000
 .word 0x00000000

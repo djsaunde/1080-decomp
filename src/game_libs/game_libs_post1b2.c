@@ -71,7 +71,7 @@ int osContStartReadData(void *mq) {
 }
 
 
-/* gl___osContGetInitData: 8-byte-record decoder loop (42 insns incl. the absorbed
+/* gl_osContGetReadData: 8-byte-record decoder loop (42 insns incl. the absorbed
  * 3-word orphan game_libs_func_0006C110 — its lui/lbu count-preload pair is
  * this function's stolen prologue, so the donor's true entry is 0x6C110 and
  * the spliced symbol covers 0x6C110..0x6C1B8; the orphan INCLUDE_ASM was
@@ -82,7 +82,7 @@ int osContStartReadData(void *mq) {
  * lwl/lwr struct-copy scratch $at; 7.1 uses $t1/$t0), spliced over this -O2
  * stand-in. Body below is a placeholder for the splice (its bytes are
  * replaced by the donor). */
-void gl___osContGetInitData(char *out, char *cursor, int count) {
+void gl_osContGetReadData(char *out, char *cursor, int count) {
     unsigned char rec[8];
     volatile int i;
     volatile char *cur = cursor;
@@ -104,9 +104,9 @@ void gl___osContGetInitData(char *out, char *cursor, int count) {
     }
 }
 
-/* gl___osPackRequestData: 59-insn table-reset + 8-byte record emitter,
- * reset-sibling of __osPackReadData (template {0xFF,1,4,1,0xFFFF,-1,-1},
- * type=4/subtype=1) and emitter-sibling of the landed gl___osContGetInitData
+/* gl___osPackReadData: 59-insn table-reset + 8-byte record emitter,
+ * reset-sibling of gl___osPackRequestData_6BD14 (template {0xFF,1,4,1,0xFFFF,-1,-1},
+ * type=4/subtype=1) and emitter-sibling of the landed gl_osContGetReadData
  * decoder. Zeroes D_c[0..14], sets D_c[15]=1, emits the template
  * D_a times via swl/swr struct copies, then a 0xFE terminator.
  * LANDED 2026-07-09 via REPLACE_FUNC_BODY donor splice: real C lives in
@@ -114,7 +114,7 @@ void gl___osContGetInitData(char *out, char *cursor, int count) {
  * the struct-copy scratch $at; FOR-loop shape sinks the cursor store into
  * the bne delay slot, see donor header). Body below is a placeholder for
  * the splice (its bytes are replaced by the donor). */
-void gl___osPackRequestData(void) {
+void gl___osPackReadData(void) {
     volatile int i;
     for (i = 0; i < 15; i++) {}
 }
