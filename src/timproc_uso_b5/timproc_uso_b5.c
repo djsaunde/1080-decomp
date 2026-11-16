@@ -3,6 +3,7 @@
 #include "gdl/node.h"
 #include "uso_call.h"
 #include "game/input.h"
+#include "game/course.h" /* WorldRegistry (GameFlow.game) */
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -795,19 +796,19 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
         if (self == 0) goto end;
     }
     gen_imp_Node_ctor(self, (char*)&timproc_uso_b5_D_807FE8F4 + 0x1084);
-    ((GenRoom *)self)->world = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x84));
-    ((GenRoom *)self)->unk30 = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x80));
-    ((GenRoom *)self)->unk34 = (char *)(*(int*)(*(volatile char **)&INPUT_MGR(import_80020098).game + 0x8C));
+    ((GenRoom *)self)->bg = (char *)WORLDREG(*(volatile char **)&INPUT_MGR(import_80020098).game)->bgRoot;
+    ((GenRoom *)self)->fg = (char *)WORLDREG(*(volatile char **)&INPUT_MGR(import_80020098).game)->fgRoot;
+    ((GenRoom *)self)->mainGame = (char *)WORLDREG(*(volatile char **)&INPUT_MGR(import_80020098).game)->mainGame;
     sub = (char*)RoomModifier_ctor(0);
-    entity = ((GenRoom *)self)->world;
+    entity = ((GenRoom *)self)->bg;
     ((GenRoom *)self)->modifier = sub;
-    gen_imp_list_append(entity + 0x10, sub);
-    if (*(int*)(sub + 0x14) != 0) *(int*)(sub + 0x4) = 1;
-    *(int*)(sub + 0x14) = (int)entity;
+    gen_imp_list_append(&NODE(entity)->children, sub);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)entity;
     entity = ((GenRoom *)self)->modifier;
-    gen_imp_list_append(entity + 0x10, self);
-    if (*(int*)(self + 0x14) != 0) *(int*)(self + 0x4) = 1;
-    *(int*)(self + 0x14) = (int)entity;
+    gen_imp_list_append(&NODE(entity)->children, self);
+    if (NODE(self)->parent != 0) NODE(self)->unk04 = 1;
+    NODE(self)->parent = (int)entity;
     gen_createLights_00001460(self);
     gen_createVRBox_00001658(self);
     {
@@ -816,9 +817,9 @@ void *gen_buildRoom_0000131C(char *self, int a1) {
     }
     sub = *(char**)&import_80020078;
     *(int*)&import_8001FFF0 = 0;
-    gen_imp_list_append(self + 0x10, sub);
-    if (*(int*)(sub + 0x14) != 0) *(int*)(sub + 0x4) = 1;
-    *(int*)(sub + 0x14) = (int)self;
+    gen_imp_list_append(&NODE(self)->children, sub);
+    if (NODE(sub)->parent != 0) NODE(sub)->unk04 = 1;
+    NODE(sub)->parent = (int)self;
     gen_imp_AnimDataMgr_releaseFrames(*(int*)&import_80020078);
     (void)a1;
 end:
@@ -891,10 +892,10 @@ void gen_createLights_00001460(char *arg0) {
     gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->ambient);
     o = ((GenRoom *)arg0)->ambient;
     gen_imp_list_append(reg, o);
-    if (*(int *)(o + 0x14) != 0) {
-        *(int *)(o + 0x4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
-    *(char **)(o + 0x14) = arg0;
+    NODE(o)->parent = (int)arg0;
 
     /* widget B (id 2) — white RGBA = 1.0f */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE90C + 0x109C);
@@ -908,10 +909,10 @@ void gen_createLights_00001460(char *arg0) {
     gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->local);
     o = ((GenRoom *)arg0)->local;
     gen_imp_list_append(reg, o);
-    if (*(int *)(o + 0x14) != 0) {
-        *(int *)(o + 0x4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
-    *(char **)(o + 0x14) = arg0;
+    NODE(o)->parent = (int)arg0;
 
     /* widget C (id 4) — RGBA = 174/255, 113/255, 61/255, retA */
     o = (char *)gen_imp_BaseLight_ctor(0, &timproc_uso_b5_D_807FE918 + 0x10A8);
@@ -931,10 +932,10 @@ void gen_createLights_00001460(char *arg0) {
     gen_imp_gfx_listAppend_0004E214(&gGfxLib_8005C108, ((GenRoom *)arg0)->ambient2);
     o = ((GenRoom *)arg0)->ambient2;
     gen_imp_list_append(reg, o);
-    if (*(int *)(o + 0x14) != 0) {
-        *(int *)(o + 0x4) = 1;
+    if (NODE(o)->parent != 0) {
+        NODE(o)->unk04 = 1;
     }
-    *(char **)(o + 0x14) = arg0;
+    NODE(o)->parent = (int)arg0;
     if (1) {} if (1) {} if (1) {} if (1) {}
 }
 #else
@@ -980,11 +981,11 @@ void gen_createVRBox_00001658(char *arg0) {
     gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE928 + 0x10B8, 0);
     gen_imp_memtrack_begin(&timproc_uso_b5_D_807FE930 + 0x10C0, 0);
     c = P = (char *)gen_imp_BGBox_ctor(0, &timproc_uso_b5_D_807FE938 + 0x10C8, 1, 0x100);
-    gen_imp_list_append(arg0 + 0x10, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    gen_imp_list_append(&NODE(arg0)->children, c);
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = arg0;
+    NODE(c)->parent = (int)arg0;
     ((GenRoom *)arg0)->walls[0] = (char *)gen_imp_U64BGWall_ctor(0, &import_807C3820, 0, 0, 0);
     ((GenRoom *)arg0)->walls[1] = (char *)gen_imp_U64BGWall_ctor(0, &import_807D3A40, 0, 0x5A, 0);
     ((GenRoom *)arg0)->walls[2] = (char *)gen_imp_U64BGWall_ctor(0, &import_807B3600, 0, 0xB4, 0);
@@ -993,40 +994,40 @@ void gen_createVRBox_00001658(char *arg0) {
     ((GenRoom *)arg0)->walls[5] = (char *)gen_imp_U64BGWall_ctor(0, &import_807931C0, -0x10E, 0, 0);
     c = ((GenRoom *)arg0)->walls[0];
     gen_imp_list_append(ap = P + 0x10, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     c = ((GenRoom *)arg0)->walls[1];
     gen_imp_list_append(ap, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     c = ((GenRoom *)arg0)->walls[2];
     gen_imp_list_append(ap, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     c = ((GenRoom *)arg0)->walls[3];
     gen_imp_list_append(ap, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     c = ((GenRoom *)arg0)->walls[4];
     gen_imp_list_append(ap, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     c = ((GenRoom *)arg0)->walls[5];
     gen_imp_list_append(ap, c);
-    if (*(int *)(c + 0x14) != 0) {
-        *(int *)(c + 0x4) = 1;
+    if (NODE(c)->parent != 0) {
+        NODE(c)->unk04 = 1;
     }
-    *(char **)(c + 0x14) = P;
+    NODE(c)->parent = (int)P;
     gen_imp_memtrack_end();
     gen_imp_memtrack_end();
 }
@@ -1101,11 +1102,11 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             ((SelectionMgr *)arg0)->wins[0] = (SelectWin *)w;
             SelectWin_init_00005BF0(w, &import_800200E8 + 0x68, &import_800200E8 + 0x4C, &import_800200E8 + 0x50, &gInputMgr_800200FC + 0x54, &gInputMgr_800200FC + 0x64);
             w = (char *)((SelectionMgr *)arg0)->wins[0];
-            gen_imp_list_append(arg0 + 0x10, w);
-            if (FW(w, 0x14) != 0) {
-                FW(w, 0x4) = 1;
+            gen_imp_list_append(&NODE(arg0)->children, w);
+            if (NODE(w)->parent != 0) {
+                NODE(w)->unk04 = 1;
             }
-            FW(w, 0x14) = arg0;
+            NODE(w)->parent = (int)arg0;
             FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
         } else {
             w = SelectWin_ctor(0, arg0, arg1, 2, 0, arg3, arg4, arg6, E, ((GenScene *)E)->cam, &timproc_uso_b5_D_807FE968 + 0x10F8, 0);
@@ -1114,20 +1115,20 @@ char *SelectionMgr_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char
             w = (char *)((SelectionMgr *)arg0)->wins[0];
             sp4C = arg0 + 0x10;
             gen_imp_list_append(sp4C, w);
-            if (FW(w, 0x14) != 0) {
-                FW(w, 0x4) = 1;
+            if (NODE(w)->parent != 0) {
+                NODE(w)->unk04 = 1;
             }
-            FW(w, 0x14) = arg0;
+            NODE(w)->parent = (int)arg0;
             FW(((GenScene *)E)->room->modifier, 0x38) = (int)((SelectionMgr *)arg0)->wins[0];
             w = SelectWin_ctor(0, arg0, arg1, 2, 1, arg3, arg4, arg7, E, ((GenScene *)E)->cam2, &timproc_uso_b5_D_807FE97C + 0x110C, 0x80);
             ((SelectionMgr *)arg0)->wins[1] = (SelectWin *)w;
             SelectWin_init_00005BF0(w, &import_800200F4 + 0x68, &import_800200F4 + 0x58, &import_800200F4 + 0x5C, &gInputMgr_800200FC + 0x60, &gInputMgr_800200FC + 0x64);
             w = (char *)((SelectionMgr *)arg0)->wins[1];
             gen_imp_list_append(sp4C, w);
-            if (FW(w, 0x14) != 0) {
-                FW(w, 0x4) = 1;
+            if (NODE(w)->parent != 0) {
+                NODE(w)->unk04 = 1;
             }
-            FW(w, 0x14) = arg0;
+            NODE(w)->parent = (int)arg0;
             FW(((GenScene *)E)->room->modifier, 0x3C) = (int)((SelectionMgr *)arg0)->wins[1];
             if (((SelectionMgr *)arg0)->wins[0]->stageBit != 4) {
                 ((SelectionMgr *)arg0)->waitMask = 0;
@@ -1558,9 +1559,9 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
 
     if ((arg0 != 0) || ((arg0 = (s32 *)gen_imp_mem_new(0x20)) != 0)) {
         g = &import_80020098;
-        GCAM->world = (char *)FW(FW(g, 0x134), 0x84);
-        GCAM->unk04 = (char *)FW(FW(g, 0x134), 0x80);
-        GCAM->unk08 = (char *)FW(FW(g, 0x134), 0x8C);
+        GCAM->bg = (char *)WORLDREG(((InputMgr *)g)->game)->bgRoot;
+        GCAM->fg = (char *)WORLDREG(((InputMgr *)g)->game)->fgRoot;
+        GCAM->mainGame = (char *)WORLDREG(((InputMgr *)g)->game)->mainGame;
         w = (s32 *)gen_imp_mem_new(0x80);
         if (w != 0) {
             gen_imp_pad_open(w, arg1);
@@ -1597,20 +1598,20 @@ s32 *gen_createCamera_0000283C(s32 *arg0, s32 *arg1, s32 arg2, s32 arg3) {
         }
         GCAM->target = (struct MNode *)w;
         w = gen_imp_MCamera_ctor(0, w, 0.0f, 0.0f, 0.0f);
-        v1t = (s32 *)GCAM->world;
+        v1t = (s32 *)GCAM->bg;
         GCAM->camera = (MCamera *)w;
-        gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
-        if (FW(w, 0x14) != 0) {
-            FW(w, 0x4) = 1;
+        gen_imp_list_append(&NODE(v1t)->children, w);
+        if (NODE(w)->parent != 0) {
+            NODE(w)->unk04 = 1;
         }
-        FW(w, 0x14) = (int)v1t;
-        v1t = (s32 *)GCAM->world;
+        NODE(w)->parent = (int)v1t;
+        v1t = (s32 *)GCAM->bg;
         w = (s32 *)GCAM->target;
-        gen_imp_list_append((s32 *)((char *)v1t + 0x10), w);
-        if (FW(w, 0x14) != 0) {
-            FW(w, 0x4) = 1;
+        gen_imp_list_append(&NODE(v1t)->children, w);
+        if (NODE(w)->parent != 0) {
+            NODE(w)->unk04 = 1;
         }
-        FW(w, 0x14) = (int)v1t;
+        NODE(w)->parent = (int)v1t;
         w = (s32 *)GCAM->target;
         zC[1] = 0.0f;
         zC[0] = 0.0f;
@@ -1979,6 +1980,8 @@ extern char timproc_uso_b5_D_807FF490;
 extern char timproc_uso_b5_D_807FF4A8;
 struct B5Tbl3A4C { int w[11]; };
 /* SelItem_drawStatBar_00003A4C: two-sprite HUD draw with table-indexed offsets.
+ * arg7 is the SelectWin (BoardItem_drawStats passes its window): the offsets are its
+ * Parms values cox / coy (0x338 / 0x350), clx / cly (0x308 / 0x320), cff / cdf (0x368 / 0x380).
  * Copies two 0x2C-byte tables from D_807FEA20/D_807FEA4C onto the stack
  * (sp84/sp58 — IDO unrolls each as a 3x12-byte loop + 2-word tail). If arg4!=0:
  * draw sprite obj &D_807FF490+0x10 twice at arg1+arg7->0x338 / +sp58[arg4],
@@ -2003,27 +2006,27 @@ void SelItem_drawStatBar_00003A4C(int arg0, int arg1, int arg2, int arg3, int ar
     int dw;
 
     if (arg4 != 0) {
-        import_0024E608(&import_8024CAF8, *(int *)(arg7 + 0x368), arg5);
+        import_0024E608(&import_8024CAF8, SELWIN(arg7)->parms.cff.value, arg5);
         import_0024F2C8(&timproc_uso_b5_D_807FF490 + 0x10);
         pA = &sp58.w[arg4];
-        import_0024F75C(&timproc_uso_b5_D_807FF490 + 0x10, *(int *)(arg7 + 0x338) + (int)(dp = (char *)arg1), *(int *)(arg7 + 0x350) + (dw = arg2), 0, *pA);
+        import_0024F75C(&timproc_uso_b5_D_807FF490 + 0x10, SELWIN(arg7)->parms.cox.value + (int)(dp = (char *)arg1), SELWIN(arg7)->parms.coy.value + (dw = arg2), 0, *pA);
         {
             char *objA = &timproc_uso_b5_D_807FF490;
             goto lA; lA: objA += 0x10;
             dp = *(char **)(objA + 0x10);
             dw = *(short *)(dp + 0x20);
-            import_0024F75C(objA, *pA + (*(int *)(arg7 + 0x338) + (sz = arg1)), *(int *)(arg7 + 0x350) + (int)(pB = (int *)arg2),
+            import_0024F75C(objA, *pA + (SELWIN(arg7)->parms.cox.value + (sz = arg1)), SELWIN(arg7)->parms.coy.value + (int)(pB = (int *)arg2),
                             dw - 0x20, 0x20);
         }
     }
     import_0024E608(&import_8024CAF8, 0xFF, arg6);
     import_0024F2C8(arg3);
-    import_0024F34C(arg3, arg1 - *(int *)(arg7 + 0x308), arg2 - *(int *)(arg7 + 0x320), 0);
+    import_0024F34C(arg3, arg1 - SELWIN(arg7)->parms.clx.value, arg2 - SELWIN(arg7)->parms.cly.value, 0);
     import_0024E608(&import_8024CAF8, 0xFF, arg5);
     import_0024F2C8(&timproc_uso_b5_D_807FF4A8 + 0x28);
     pB = &sp84.w[arg4];
     import_0024F75C(&timproc_uso_b5_D_807FF4A8 + 0x28, arg1, arg2, 0, *pB);
-    import_0024E608(&import_8024CAF8, *(int *)(arg7 + 0x380), arg5);
+    import_0024E608(&import_8024CAF8, SELWIN(arg7)->parms.cdf.value, arg5);
     {
         char *objB = &timproc_uso_b5_D_807FF4A8;
         goto lB; lB: objB += 0x28;
@@ -2095,16 +2098,16 @@ void SelItem_drawStatBarRight_00003C8C(int arg0, int arg1, int arg2, char *arg3,
     int dw;
 
     if (arg4 != 0) {
-        import_0024E608(&import_8024CAF8, *(int *)(arg7 + 0x368), arg5);
+        import_0024E608(&import_8024CAF8, SELWIN(arg7)->parms.cff.value, arg5);
         import_0024F2C8(&timproc_uso_b5_D_807FF490 + 0x10);
         pA = &sp58.w[arg4];
-        import_0024F75C(&timproc_uso_b5_D_807FF490 + 0x10, *(int *)(arg7 + 0x338) + (int)(dp = (char *)arg1), *(int *)(arg7 + 0x350) + (dw = arg2), 0, *pA);
+        import_0024F75C(&timproc_uso_b5_D_807FF490 + 0x10, SELWIN(arg7)->parms.cox.value + (int)(dp = (char *)arg1), SELWIN(arg7)->parms.coy.value + (dw = arg2), 0, *pA);
         {
             char *objA = &timproc_uso_b5_D_807FF490;
             goto lA; lA: objA += 0x10;
             dp = *(char **)(objA + 0x10);
             dw = *(short *)(dp + 0x20);
-            import_0024F75C(objA, *pA + (*(int *)(arg7 + 0x338) + (sz = arg1)), *(int *)(arg7 + 0x350) + (int)(pB = (int *)arg2),
+            import_0024F75C(objA, *pA + (SELWIN(arg7)->parms.cox.value + (sz = arg1)), SELWIN(arg7)->parms.coy.value + (int)(pB = (int *)arg2),
                             dw - 0x10, 0x10);
         }
     }
@@ -2112,13 +2115,13 @@ void SelItem_drawStatBarRight_00003C8C(int arg0, int arg1, int arg2, char *arg3,
     import_0024F2C8(arg3);
     dp = *(char **)(arg3 + 0x10);
     dw = *(short *)(dp + 0x20);
-    import_0024F34C(arg3, (arg1 - *(int *)(arg7 + 0x308)) - dw,
-                    arg2 - *(int *)(arg7 + 0x320), 0);
+    import_0024F34C(arg3, (arg1 - SELWIN(arg7)->parms.clx.value) - dw,
+                    arg2 - SELWIN(arg7)->parms.cly.value, 0);
     import_0024E608(&import_8024CAF8, 0xFF, arg5);
     import_0024F2C8(&timproc_uso_b5_D_807FF4A8 + 0x28);
     pB = &sp84.w[arg4];
     import_0024F75C(&timproc_uso_b5_D_807FF4A8 + 0x28, arg1, arg2, 0, *pB);
-    import_0024E608(&import_8024CAF8, *(int *)(arg7 + 0x380), arg5);
+    import_0024E608(&import_8024CAF8, SELWIN(arg7)->parms.cdf.value, arg5);
     {
         char *objB = &timproc_uso_b5_D_807FF4A8;
         goto lB; lB: objB += 0x28;
@@ -6042,10 +6045,10 @@ void *GenItemType_create_0000AB24(int *arg0) {
     head = (int*)p1[0x40 / 4];
     if ((int*)p1[0x40 / 4] != 0) {
         gen_imp_list_append((char*)p2 + 0x10, head);
-        if (*(int*)((char*)head + 0x14) != 0) {
-            *(int*)((char*)head + 0x4) = 1;
+        if (NODE(head)->parent != 0) {
+            NODE(head)->unk04 = 1;
         }
-        *(int*)((char*)head + 0x14) = (int)p2;
+        NODE(head)->parent = (int)p2;
     }
     return p2;
 }
@@ -7611,13 +7614,13 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
         SelItem_reset_00003890(child);
     }
     r = child;
-    gen_imp_list_append(a0 + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(a0)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
     {
         char *rr = r;
-        FW(child, 0x14) = (int)a0;
+        NODE(child)->parent = (int)a0;
         *(float *)(rr + 0x2A4) = (float)arg1;
         FW(rr, 0x2B0) = arg2 - 1;
     }
@@ -7709,11 +7712,11 @@ int CharacterList_createItem(char *a0, int arg1, int arg2, float arg3,
     }
 
     obj = (char *)FW(a0, 0x38);
-    gen_imp_list_append(obj + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(obj)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
-    FW(child, 0x14) = (int)obj;
+    NODE(child)->parent = (int)obj;
 
     child = (char *)FW(a0, 0x6C);
     FW(a0, 0x6C) = (int)child + 1;
@@ -7843,13 +7846,13 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
         SELITEM(child)->flags = 0;
     }
     r = child;
-    gen_imp_list_append(arg0 + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(arg0)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
     {
         char *rr = r;
-        FW(child, 0x14) = (s32) arg0;
+        NODE(child)->parent = (int)arg0;
         {
         s32 a2v = arg2;
         FW(rr, 0x2B0) = a2v;
@@ -7914,11 +7917,11 @@ char *BoardList_createItem(char *arg0, volatile s32 arg1, volatile s32 arg2, f32
     }
     p = (char *)FW(arg0, 0x38);
     obj = p;
-    gen_imp_list_append(p + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(p)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
-    FW(child, 0x14) = (s32) obj;
+    NODE(child)->parent = (int)obj;
     child = (char *)FW(arg0, 0x6C);
     FW(arg0, 0x6C) = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;

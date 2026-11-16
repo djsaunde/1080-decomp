@@ -35,6 +35,7 @@
  * piece shares its block with the following FP(self, 0x58) temp (v0) and lands in a2 like sites 1/2. */
 #include "common.h"
 #include "game/select.h"
+#include "gdl/node.h"
 #include "game/input.h"
 struct DBlk_8D38 { char _pad[0x154]; unsigned char *ptr; };
 extern char import_80020098; extern char import_800200CC;
@@ -168,9 +169,9 @@ extern char import_80020098_a, import_80020098_b, import_80020098_c, import_8002
 #define FP(p, o) (*(char **)((char *)(p) + (o)))
 #define ALLOC(n) ((char *)gen_imp_mem_new(n))
 /* inline B::add(B *n): list insert + parent link */
-#define ADDV(V, T, N) { V = (T); w = (char *)(N); gen_imp_list_append(V + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = V; }
-#define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(V + 0x10, W); if (1) {} if (FP(W, 0x14)) FW(W, 4) = 1; FP(W, 0x14) = V; }
-#define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(_at + 0x10, w); if (1) {} if (FP(w, 0x14)) FW(w, 4) = 1; FP(w, 0x14) = _at; }
+#define ADDV(V, T, N) { V = (T); w = (char *)(N); gen_imp_list_append(&NODE(V)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (int)V; }
+#define ADDW(V, W, T, N) { V = (T); W = (N); gen_imp_list_append(&NODE(V)->children, W); if (1) {} if (NODE(W)->parent) NODE(W)->unk04 = 1; NODE(W)->parent = (int)V; }
+#define ADD(T, N) { _at = (T); w = (char *)(N); gen_imp_list_append(&NODE(_at)->children, w); if (1) {} if (NODE(w)->parent) NODE(w)->unk04 = 1; NODE(w)->parent = (int)_at; }
 #define CFGS(S) FP(&S, 0x134)
 /* The four stage lists (Character / Board / Course / LevelList, 0x70 = SelItemList):
  * cfront ctor(this) with the nested base-ctor allocation check. VT is the SelItemList

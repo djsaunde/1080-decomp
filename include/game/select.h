@@ -325,13 +325,13 @@ struct MCamera;
 /* A select-screen camera rig (gen_createCamera_0000283C, alloc 0x20; GenScene.cam / cam2 =
  * SelectWin.scene). It builds two 0xB4 MNodes (Node_ctor + MNode_initMatrices, local
  * translation 0): the first goes to +0x14, the second to +0x10 and becomes the MCamera's
- * look-at target (MCamera_ctor(0, target, 0, 0, 0)); both are appended to world's +0x10 list,
+ * look-at target (MCamera_ctor(0, target, 0, 0, 0)); both are appended to bg's child list,
  * and target is moved to (0, 0, -400). The 3D Window renders camera (game_create3DWindow(...,
  * camera)); its fov (MCamera +0x14C) is the ctor's arg 3 (0x3C one player / 0x29 two). */
 typedef struct GenCamera {
-    char *world;            /* 0x00: (app +0x134) +0x84 (= GenRoom.world) */
-    char *unk04;            /* 0x04: (app +0x134) +0x80 */
-    char *unk08;            /* 0x08: (app +0x134) +0x8C */
+    char *bg;               /* 0x00: WorldRegistry.bgRoot (GameFlow.game, = GenRoom.bg) */
+    char *fg;               /* 0x04: WorldRegistry.fgRoot */
+    char *mainGame;         /* 0x08: WorldRegistry.mainGame */
     Window *view;           /* 0x0C: the screen Window (SelectionMgr_setSplit sizes it) */
     struct MNode *target;   /* 0x10: the look-at node; SelectWin.camPos copies its local
                              * translation (mtx[3], +0x60..0x68), lerpCamToItem moves it */
@@ -458,10 +458,10 @@ typedef struct SelectWin {
  * builds it). gen_createLights / gen_createVRBox fill the lights and the sky box. */
 typedef struct GenRoom {
     char node[0x2C];        /* 0x00: Node */
-    char *world;            /* 0x2C: (app +0x134) +0x84; the room is appended to modifier,
-                             * modifier to world */
-    char *unk30;            /* 0x30: (app +0x134) +0x80 */
-    char *unk34;            /* 0x34: (app +0x134) +0x8C */
+    char *bg;               /* 0x2C: the world's "bg" node (GameFlow.game = WorldRegistry,
+                             * bgRoot); the room is appended to modifier, modifier to bg */
+    char *fg;               /* 0x30: WorldRegistry.fgRoot ("fg") */
+    char *mainGame;         /* 0x34: WorldRegistry.mainGame ("MainGame") */
     char *ambient;          /* 0x38: BaseLight "Ambient Light", colour 1, flags |= 0xC0, mask 1 */
     char *local;            /* 0x3C: BaseLight "Local Light", colour 1, mask 2 */
     char *ambient2;         /* 0x40: BaseLight "Ambient Light", colour (174, 113, 61) / 255,

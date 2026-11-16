@@ -20,6 +20,7 @@
  * with matching types uopt forwards the stored value into the next load. */
 #include "common.h"
 #include "game/select.h"
+#include "gdl/node.h"
 #define LIST ((SelItemList *)arg0)
 #define ITEM(p) ((SelCourseItem *)(p))
 #define MODEL(p) ((SelCourseModel *)(p))
@@ -91,13 +92,13 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
         SelItem_reset_00003890(child);
     }
     r = child;
-    gen_imp_list_append(arg0 + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(arg0)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
     {
         char *rr = r;
-        FW(child, 0x14) = (s32) arg0;
+        NODE(child)->parent = (int)arg0;
         ITEM(rr)->base.enabled = (f32) arg1;
         ITEM(rr)->base.id = arg2;
     }
@@ -214,11 +215,11 @@ char *CourseList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, 
         ITEM(rr)->base.parms.cfv.value = -32.0f;
     }
     obj = LIST->dispItems;
-    gen_imp_list_append(obj + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(obj)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
-    FW(child, 0x14) = (s32) obj;
+    NODE(child)->parent = (int)obj;
     child = (char *)LIST->count;
     LIST->count = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;

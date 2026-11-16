@@ -18,6 +18,7 @@
  * rr: the r reload then colours v1 and FW(arg0, 0x38) v0, as the target. */
 #include "common.h"
 #include "game/select.h"
+#include "gdl/node.h"
 #include "game/input.h"
 #define LIST ((SelItemList *)arg0)
 #define ITEM(p) ((SelLevelItem *)(p))
@@ -94,14 +95,14 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
     }
     r = child;
     ITEM(child)->base.listIndex = LIST->count;
-    gen_imp_list_append(arg0 + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(arg0)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
     {
         char *rr = r;
         if (1) {} /* run 217: the r reload issues before the arg2 reload (target) */
-        FW(child, 0x14) = (s32) arg0;
+        NODE(child)->parent = (int)arg0;
         ITEM(rr)->base.enabled = (f32) arg1; /* run 216: cvt store before the id store */
         ITEM(rr)->base.id = arg2;
         sub = (char *)(arg2 + 10);
@@ -223,11 +224,11 @@ char *LevelList_createItem(char *arg0, s32 arg1, s32 arg2, f32 arg3, f32 arg4, f
         ITEM(gsub)->base.parms.cfv.value = -32.0f; if (1) {}
     }
     sub = LIST->dispItems;
-    gen_imp_list_append(sub + 0x10, child);
-    if (FW(child, 0x14) != 0) {
-        FW(child, 0x4) = 1;
+    gen_imp_list_append(&NODE(sub)->children, child);
+    if (NODE(child)->parent != 0) {
+        NODE(child)->unk04 = 1;
     }
-    FW(child, 0x14) = (s32) sub;
+    NODE(child)->parent = (int)sub;
     child = (char *)LIST->count;
     LIST->count = (s32) child + 1;
     FW(arg0 + (s32) child * 4, 0x3C) = (s32) r;
