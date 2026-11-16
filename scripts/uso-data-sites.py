@@ -1234,6 +1234,8 @@ def selftest_game(a):
     m = GSITE_RE.search('AT(PM, &game_uso_D_807FF4B0, 0xEC0)')
     assert m and m.group(1) == 'game_uso_D_807FF4B0' and m.group(3) == '0xEC0'
     assert [n for n, _, _ in game_spans('extern "C" int f(char *a) {\n    return 0;\n}\n')] == ['f']
+    m = GSITE_RE.search('*(float*)((char*)&D_44F4_iterA + 0xA0)')
+    assert m and m.group(1) == 'D_44F4_iterA' and m.group(3) == '0xA0'
     m = GSITE_RE.search('*(Pair2*)((char*)&D_00000000 + 0xE40)')
     assert m and m.group(1) == 'D_00000000' and m.group(3) == '0xE40'
     assert value_claim_error(g, 6, 0xD54, ': "Parms"') is None
@@ -1261,7 +1263,9 @@ GCONST_RE = re.compile(r'^\s*#\s*define\s+(k\w+)\s+(0x[0-9A-Fa-f]+)\s*/\*\s*(Dat
                        r'([^*]*(?:\*(?!/)[^*]*)*)\*/', re.M)
 GSECT = {'Data': 6, 'RoData': 7, 'Bss': 8}
 # a site literal K next to a zero placeholder: `&S + K`, `(char *)&S + K`, `(&S) + K`, `AT(T, &S, K)`
-GSITE_RE = re.compile(r'&\s*\(?\s*(game_uso_D_[0-9A-Fa-f]+|D_00000000)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
+# (agent-g run 551: also a per-site zero alias `D_<tag>_<name>` such as SnowAI_ctor's D_44F4_iterA; the
+# relocs still decide: a site counts only when the .o's placeholder for it IS that token and K matches)
+GSITE_RE = re.compile(r'&\s*\(?\s*(game_uso_D_[0-9A-Fa-f]+|D_00000000|D_[0-9A-Fa-f]+_\w+)\s*\)?\s*\)?\s*([+,])\s*(0x[0-9A-Fa-f]+|\d+)\b')
 
 
 def game_spans(src):
@@ -1470,6 +1474,7 @@ def const_name(c, sect, k, typ):
     v = scalar_at(c, sect, k, typ)
     vt = fmt_scalar(typ, v)
     vt = 'FLT_MAX' if typ == 'f32' and vt == '3.4028234663852886e+38' or vt == '3.4028235e+38' else vt
+    vt = 'mFLT_MAX' if typ == 'f32' and vt == '-3.4028235e+38' else vt
     vt = re.sub(r'\.0$', '', re.sub(r'\.0(?=e)', '', vt)).replace('-', 'm').replace('.', 'p').replace('+', '')
     vt = re.sub(r'[^A-Za-z0-9]', '_', vt)
     return f'k{"Ro" if sect == 7 else "Data"}{"F" if typ == "f32" else "D"}_{vt}_{k:X}'
@@ -1533,6 +1538,18 @@ def cmd_const_table(c, a):
             val = f'{typ} {fmt_scalar(typ, scalar_at(c, sect, k, typ))}'
             grp = 'num'
         groups[grp].append(f'#define {n} 0x{k:X} /* {SECT_NAME[sect]}+0x{k:X}: {val} */')
+    # keep the lines an earlier --write generated (their sites are spelled by name now, so the plan
+    # no longer sees them; agent-g run 551: a second --write used to drop them)
+    src0 = open(GAME_HDR).read()
+    i0, j0 = src0.find(CONST_BEGIN), src0.find(CONST_END)
+    if i0 >= 0 and j0 > i0:
+        for l in src0[i0 + len(CONST_BEGIN):j0].splitlines():
+            if not l.startswith('#define '):
+                continue
+            grp = 'tag' if l.split()[1].startswith('kTag_') else 'str' if l.split()[1].startswith('kStr_') else 'num'
+            groups[grp].append(l)
+    for g_ in groups.values():
+        g_.sort(key=lambda l: (l.split('/*')[1].split('+')[0], int(l.split()[2], 0)))
     names = [l.split()[1] for g_ in groups.values() for l in g_]
     dup = [n for n, cnt in collections.Counter(names).items() if cnt > 1]
     if dup:
