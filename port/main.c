@@ -1,5 +1,292 @@
-/* PC port entry point: stub so a link of libgame.a can be attempted (M1 prep).
- * M1 replaces it with the window / main loop / fixed-step scheduler (plan 9.6). */
-int main(void) {
+/* 1080 Snowboarding PC port: entry point and fixed-step scheduler
+ * (PC port plan 9.6).
+ *
+ * One host thread runs the simulation at a fixed 30 Hz step, decoupled from
+ * presentation:
+ *
+ *     acc += now - last;
+ *     while (acc >= STEP && steps < 4) {     catch-up cap
+ *         step();                            input_poll + app_runOneFrame + 2 VI retraces
+ *         acc -= STEP; steps++;
+ *     }
+ *     host_present();
+ *
+ * Every step runs Display and gfx_end, even when catching up (gfx_end runs
+ * MorphUpd / ADrawUpd, and display code grabs the thumbnail every 4th frame);
+ * only the host GPU submit of a skipped frame may be dropped (M2). In
+ * headless / trace mode the steps run back to back with no sleeping.
+ *
+ * Game entry points. These are the PORT restructure of app_run (plan 9.6.2),
+ * which is game-side work not linked yet; they are weak here, and main.c runs
+ * a stand-in frame while they are absent:
+ *   port_game_boot()    boot chain up to app_run: boot_main_00066850's
+ *                       manager setup + SnowBoard_ctor, then app_runInit()
+ *   app_runOneFrame()   one iteration of app_run's inner loop
+ *   port_game_frame_count()  SysLib.frameCount (trace key)
+ *
+ * Usage: 1080 [--rom baserom.z64] [--sram save.sram] [--frames N]
+ *             [--record in.log] [--replay in.log] [--trace state.log]
+ *             [--authentic] [--realtime]
+ */
+
+#include "port_libc.h"
+#include "host.h"
+#include "trace.h"
+#include "ultra/ultra.h"
+
+#define CATCH_UP_CAP 4
+
+extern void port_game_boot(void) __attribute__((weak));
+extern void app_runOneFrame(void) __attribute__((weak));
+extern u32 port_game_frame_count(void) __attribute__((weak));
+
+typedef struct Options {
+    const char *romPath;
+    const char *sramPath;
+    const char *recordPath;
+    const char *replayPath;
+    const char *statePath;
+    u32 frames;      /* 0 = run until quit (or the replay ends) */
+    int authentic;   /* 29.97 Hz step instead of 30 */
+    int realtime;    /* pace to the wall clock even when headless */
+} Options;
+
+static u32 sSteps; /* steps run so far */
+
+/* SSE scalar maths with flush-to-zero and denormals-are-zero, round to
+ * nearest: the VR4300's FCSR as osInitialize sets it (FS = 1, RM = 0; plan
+ * 9.5). The invalid-operation trap stays masked on the host. */
+static void fpu_setup(void) {
+#if defined(__i386__) || defined(__x86_64__)
+    unsigned int csr;
+    __asm__ volatile("stmxcsr %0" : "=m"(csr));
+    csr |= 0x8040u;   /* FTZ | DAZ */
+    csr &= ~0x6000u;  /* RC = round to nearest */
+    csr |= 0x1F80u;   /* all exceptions masked */
+    __asm__ volatile("ldmxcsr %0" : : "m"(csr));
+#endif
+}
+
+/* Poll the host pads into the SI (osContStartReadData snapshots them). */
+static void input_poll(void) {
+    HostPad hp[HOST_MAX_PADS];
+    OSContPad pads[MAXCONTROLLERS];
+    u8 connected[MAXCONTROLLERS];
+    u8 rumble[MAXCONTROLLERS];
+    int i;
+
+    memset(hp, 0, sizeof(hp));
+    host_read_pads(hp);
+    for (i = 0; i < MAXCONTROLLERS; i++) {
+        pads[i].button = hp[i].button;
+        pads[i].stick_x = hp[i].stick_x;
+        pads[i].stick_y = hp[i].stick_y;
+        pads[i].errno = 0;
+        connected[i] = hp[i].connected;
+        rumble[i] = hp[i].hasRumble;
+    }
+    port_si_set_pads(pads, connected, rumble);
+}
+
+/* Stand-in for app_runOneFrame while the game is not linked: exercises the
+ * shim's per-frame path (SI read through the event queue, the pad hook, a
+ * frame swap, a PI read) and the trace hooks, so record / replay / state
+ * traces can be tested end to end. */
+static OSMesgQueue sStubSiQueue;
+static OSMesg sStubSiMsg[1];
+static u8 sStubFb[2][16];
+
+static void stub_frame(void) {
+    static int init;
+    OSContPad pads[MAXCONTROLLERS];
+    OSMesg m;
+    u32 word;
+    int i;
+
+    if (!init) {
+        u8 bits;
+        OSContStatus st[MAXCONTROLLERS];
+        init = 1;
+        osCreateMesgQueue(&sStubSiQueue, sStubSiMsg, 1);
+        osSetEventMesg(OS_EVENT_SI, &sStubSiQueue, (OSMesg)0);
+        osContInit(&sStubSiQueue, &bits, st);
+        host_log("main: game not linked; running the stand-in frame (pads 0x%x)", bits);
+    }
+    osContStartReadData(&sStubSiQueue);
+    osRecvMesg(&sStubSiQueue, &m, OS_MESG_BLOCK);
+    osContGetReadData(pads);
+    for (i = 0; i < MAXCONTROLLERS; i++) {
+        u16 held = pads[i].button;
+        s8 rx = pads[i].stick_x;
+        s8 ry = pads[i].stick_y;
+        if (pads[i].errno != 0) {
+            continue;
+        }
+        port_trace_pad(i, sSteps, (s32)sSteps, &held, &rx, &ry);
+    }
+    osPiReadIo(0, &word); /* ROM header word 0 (0x80371240 for a .z64) */
+    osViSwapBuffer(sStubFb[sSteps & 1]);
+    port_trace_frame_end(sSteps);
+}
+
+static void step(void) {
+    input_poll();
+    if (app_runOneFrame != NULL) {
+        app_runOneFrame(); /* calls port_trace_pad / port_trace_frame_end itself */
+    } else {
+        stub_frame();
+    }
+    /* two virtual retraces per update (plan 9.1: 30 Hz = every other retrace) */
+    port_vi_retrace();
+    port_vi_retrace();
+    sSteps++;
+}
+
+static int done(const Options *o) {
+    if (o->frames != 0 && sSteps >= o->frames) {
+        return 1;
+    }
+    if (port_trace_replaying()) {
+        u32 frame = port_game_frame_count != NULL ? port_game_frame_count() : sSteps;
+        if (frame > port_trace_replay_last_frame()) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void run(const Options *o, int headless) {
+    const double stepSec = o->authentic ? 1001.0 / 30000.0 : 1.0 / 30.0;
+    double last = host_time_seconds();
+    double acc = 0.0;
+
+    while (!done(o)) {
+        if (!host_poll_events()) {
+            break;
+        }
+        if (headless && !o->realtime) {
+            step();
+            continue;
+        }
+        {
+            double now = host_time_seconds();
+            int steps = 0;
+            acc += now - last;
+            last = now;
+            while (acc >= stepSec && steps < CATCH_UP_CAP && !done(o)) {
+                step();
+                acc -= stepSec;
+                steps++;
+            }
+            if (acc >= stepSec) {
+                acc = 0.0; /* too far behind: drop the backlog (the game slows, as on hardware) */
+            }
+            host_present();
+            if (acc < stepSec) {
+                host_sleep_seconds(stepSec - acc);
+            }
+        }
+    }
+}
+
+static void usage(void) {
+    host_log("usage: 1080 [--rom PATH] [--sram PATH] [--frames N] [--record LOG] [--replay LOG]"
+             " [--trace LOG] [--authentic] [--realtime]");
+}
+
+static int parse(int argc, char **argv, Options *o) {
+    int i;
+
+    memset(o, 0, sizeof(*o));
+    o->romPath = "baserom.z64";
+    o->sramPath = "1080.sram";
+    for (i = 1; i < argc; i++) {
+        const char *a = argv[i];
+        const char *v = i + 1 < argc ? argv[i + 1] : NULL;
+        if (strcmp(a, "--authentic") == 0) {
+            o->authentic = 1;
+        } else if (strcmp(a, "--realtime") == 0) {
+            o->realtime = 1;
+        } else if (v == NULL) {
+            usage();
+            return -1;
+        } else if (strcmp(a, "--rom") == 0) {
+            o->romPath = v, i++;
+        } else if (strcmp(a, "--sram") == 0) {
+            o->sramPath = v, i++;
+        } else if (strcmp(a, "--frames") == 0) {
+            o->frames = (u32)strtoul(v, NULL, 10), i++;
+        } else if (strcmp(a, "--record") == 0) {
+            o->recordPath = v, i++;
+        } else if (strcmp(a, "--replay") == 0) {
+            o->replayPath = v, i++;
+        } else if (strcmp(a, "--trace") == 0) {
+            o->statePath = v, i++;
+        } else {
+            usage();
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    Options o;
+    HostConfig hc;
+    PortUltraConfig uc;
+    void *rom;
+    u32 romSize;
+    const PortUltraStats *st;
+    int headless = 1; /* only the headless host exists so far */
+
+    if (parse(argc, argv, &o) != 0) {
+        return 2;
+    }
+    fpu_setup();
+    memset(&hc, 0, sizeof(hc));
+    hc.title = "1080 Snowboarding";
+    hc.headless = headless;
+    if (host_init(&hc) != 0) {
+        host_fatal("main: host_init failed");
+    }
+    if (host_file_read_all(o.romPath, &rom, &romSize) != 0) {
+        host_fatal("main: cannot read the ROM %s", o.romPath);
+    }
+    if (romSize < 0x1000 || ((u8 *)rom)[0] != 0x80 || ((u8 *)rom)[1] != 0x37) {
+        host_fatal("main: %s is not a big-endian .z64 image", o.romPath);
+    }
+
+    memset(&uc, 0, sizeof(uc));
+    uc.rom = (const u8 *)rom;
+    uc.romSize = romSize;
+    uc.sramPath = o.sramPath;
+    uc.deadlockFatal = 1;
+    uc.maxIdleRetraces = 600;
+    uc.rcpTask = NULL; /* M2: Fast3D for M_GFXTASK; M4: CPU audio for M_AUDTASK */
+    port_ultra_init(&uc);
+    osInitialize();
+
+    if (port_trace_open(o.recordPath, o.replayPath, o.statePath) != 0) {
+        host_fatal("main: cannot open the trace files");
+    }
+    if (o.replayPath == NULL && o.frames == 0 && headless && app_runOneFrame == NULL) {
+        o.frames = 300; /* the stand-in frame would otherwise run forever */
+    }
+
+    if (port_game_boot != NULL) {
+        port_game_boot();
+    }
+    run(&o, headless);
+
+    st = port_ultra_stats();
+    host_log("main: %u steps, %u retraces (%u idle), %u pumps, %u deadlocks, %u parked threads, "
+             "%u PI bytes, %u SRAM writes, %u RCP tasks",
+             (unsigned)sSteps, (unsigned)st->retraces, (unsigned)st->idleRetraces,
+             (unsigned)st->pumps, (unsigned)st->deadlocks, (unsigned)st->parkedThreads,
+             (unsigned)st->piBytes, (unsigned)st->sramWrites, (unsigned)st->spTasks);
+    port_trace_close();
+    port_ultra_shutdown();
+    host_free(rom);
+    host_shutdown();
     return 0;
 }
