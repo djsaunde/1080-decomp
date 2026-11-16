@@ -23,7 +23,7 @@ struct W4 { M4 m; W4() {} };
 struct A { char p0[0x138]; M8 m138; M8 m140; char p148[0x18C - 0x148]; M4 m18C; char p190[0x1C4 - 0x190]; W4 w1C4; char p1C8[0x1E0 - 0x1C8]; A() {} };
 struct E { M8 m; int x; E() {} };
 /* GfxLib.fog (+0x294, FogParms, gfxlib.h): its ctor calls the out-of-line init */
-struct Fog { char p[0x18]; Fog() { gl_func_00000000(this); } };
+struct Fog { char p[0x18]; Fog() { CALL(FogParms_setDefault_00043EAC)(this); } };
 struct El { char p[0xC]; El(); };
 struct G { El e[50]; int n; G() {} };
 struct I : W4 { char p[0x18 - 4]; virtual void f(); I() {} };

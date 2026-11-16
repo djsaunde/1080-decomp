@@ -21,13 +21,13 @@ struct A40 {
     char pad[0x18];
     char *x18;
     char pad1C[0x28 - 0x1C];
-    A40() { x18 = (char *)gl_func_00000000(32); gl_func_00000000(this, x18, 8); }
+    A40() { x18 = (char *)CALL(mem_new)(32); CALL(gl_osCreateMesgQueue)(this, x18, 8); }
 };
 struct Holder { char pad[0x1C]; A40 *x1C; };
 extern "C" Holder gSysLib_445AC_b;
 struct L20 {
     int x0; int x4; int x8; int xC; int x10;
-    L20() { x8 = 10; xC = 0; x0 = gl_func_00000000(40); }
+    L20() { x8 = 10; xC = 0; x0 = CALL(mem_new)(40); }
 };
 struct L24 : L20 {
     char *x14;

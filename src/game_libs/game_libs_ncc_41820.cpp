@@ -42,7 +42,7 @@ struct Self : SB {
     int m2C;
     void init();
     void link(Rec *q) { if (0) { q = 0; } gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
-    void linkN(Rec *q) { gl_func_00000000(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
+    void linkN(Rec *q) { CALL(list_append)(&m10, q); if (q->f14) q->f4 = 1; q->f14 = this; }
 };
 inline void lnk(Rec *q, Self *s) { if (0) { q = 0; } CALL(list_append)(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} }
 inline void lnkB(Rec *q, Self *s) { if (0) { q = 0; } int r = CALL(list_append)(&s->m10, q); if (q->f14) q->f4 = 1; q->f14 = s; if (s) {} if (r) {} }

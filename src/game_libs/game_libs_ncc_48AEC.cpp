@@ -50,7 +50,7 @@ struct Ctx {
     Gfx *next() { int n = dl->count++; return &dl->buf[n]; } /* run 173: n-only post-increment (kit CXVII) */
     void load(Mtx *m) { Gfx *g = &dl->buf[dl->count++]; g->w0 = 0x01020040; g->w1 = (u32)func_00000000(m); }
     void prim(u32 hi, u32 lo) { Gfx *g = nextQ(); g->w0 = hi; g->w1 = lo; } /* agent-g run 245: w1 first (member permutation sweep, 97.235 -> 97.260); agent-g run 294: slot through next() */
-    void setup(Gfx *g, int z) { func_00000000(this, g, z); }
+    void setup(Gfx *g, int z) { FCALL(gfx_emitStateAndPrimColour_00042684)(this, g, z); }
     void push(void *src, Mtx *&c) { func_00000000(src, c = mtx()); load(c); } void push2(void *src, Mtx *c) { func_00000000(src, c); load(c); } void push5(void *src, Mtx *&c) { func_00000000(src, c); load(c); }
     Mtx *mtx() { return &mh->buf[mh->count++]; } /* agent-g run 424: plain (the run-407 code-free count test dropped) with the arm-1 receiver at depth 4 / else depth 3: arm-1 count on pool slot 5 (v0, with it.a) and mh on slot 6 (v1), B v1; 99.684 -> 99.713 */ /* agent-g run 266: named post-increment count (kit CXVII form): gctx a3 / mh v1 like the target in both arms, 97.29 -> 97.45 (frame 0x160 -> 0x168: n's edg home per expansion) */
     /* agent-g run 293: code-free dead loads of the head pointer first (kit CCCLXIII lever) in the push() matrix
@@ -94,7 +94,7 @@ struct Ctx {
      * behind three unused non-constant leading parameters (kit CDXC), so it lands on the else arm's c2 word: one
      * variable that the target keeps in s0 (mt / arm-1 count / else c2), with c spilled to its home like the target */
     Gfx *nq3(int z0, int z1, int z2, int n) { dl->count = n + 1; return &dl->buf[n]; }
-    void cS(void *src, Mtx *c) { func_00000000((char *)src, c); }
+    void cS(void *src, Mtx *c) { FCALL(guMtxF2L)((char *)src, c); }
     /* agent-g run 430: arm 1's slot as a single-return inline whose parameter is kept by a block-free `m = me(m);`
      * (an `if (0) { m = 0; }` keep adds a block to the D_00000000 base's LR and it loses s1): the return's first
      * holder is draw's named g, and the gctx home spill around cS() stays */

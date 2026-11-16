@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for QNode_ctor (0x234 / 141 words), EXACT (agent-c run 181; first draft agent-c run 157).
  * A C++ constructor Obj::Obj(void *a1, float x, float y, float z) : Base(a1): cfront `this == 0 -> new(0x108)`,
  * inline Base ctor (`new(0xB4)` fallback, external BB ctor -- BB itself declares a virtual, which is what puts
@@ -24,7 +25,7 @@ typedef int s32;
 extern "C" {
 void *gl_func_00000000(...);
 }
-inline void *operator new(unsigned n) { return gl_func_00000000(n); }
+inline void *operator new(unsigned n) { return CALL(mem_new)(n); }
 struct M4 { int a; M4() { a = 0; } };
 struct W4 { M4 m; W4() {} };
 struct M4f { int a; M4f() { a = 0; } };
@@ -36,10 +37,10 @@ struct Base : BB {
     W4 m2c;
     char m30[0xB4 - 0x30];
     Base(void *a1) : BB(a1) {
-        gl_func_00000000(this);
+        CALL(MNode_initMatrices)(this);
         zero(); { volatile int p1, p2, p3, p4; }
     }
-    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; gl_func_00000000(m30, z); }
+    void zero() { float z[3]; z[0] = 0.0f; z[1] = 0.0f; z[2] = 0.0f; CALL(math_mtxAddTranslation)(m30, z); }
     virtual void f();
 };
 struct Obj : Base {
@@ -66,5 +67,5 @@ Obj::Obj(void *a1, float x, float y, float zz) : Base(a1) {
     dc.set(b4);
     e8.set(c0);
     f4.set(rq);
-    gl_func_00000000(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
+    CALL(math_quatScaleToMtx4)(&dc, (char *)this + 0x70); { volatile int q1, q2, q3, q4; }
 }

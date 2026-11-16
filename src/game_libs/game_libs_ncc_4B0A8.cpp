@@ -18,12 +18,13 @@
  * initialised `{ int p1 = 0, p2 = 0; }` after the loop (frame 0xA8). Spliced over a placeholder in both build trees;
  * the blank jal / lui-addiu relocations go to the 0-pinned gl_4b0a8_c34458 / gl_4b0a8_base / Shadow_vtbl_4b0a8_vtbl (Makefile). */
 #include "../../include/gdl/gfxlib.h" /* GfxLib: unk140 (the Pair template), staticDL */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 void *gl_4b0a8_c34458(...);
 extern char D_00000000[];
 extern char gl_d_4b0a8_tbl, gGfxLib_4b0a8_vt, gGfxLib_4b0a8_w214;
 }
-inline void *operator new(unsigned n) { return gl_4b0a8_c34458(n); }
+inline void *operator new(unsigned n) { return XCALL(gl_4b0a8_c34458, mem_new)(n); }
 struct Pair { int a, b; };
 struct Gfx { unsigned w0, w1; };
 struct DLHead { Gfx *buf; int count; };
@@ -45,7 +46,7 @@ struct AIter : IBase {
     AIter *me() { return this; } /* agent-c run 238: zero-code pool hold for the loop increment (kit CCLIV) */
 };
 inline AIter iter(Arr *a) { return AIter(a); }
-inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return gl_4b0a8_c34458(*t->base + k * 8, t, k); }
+inline void *res(Elem *e1, Elem *e2) { Tex *t = e1->t; int k = e2->k; return XCALL(gl_4b0a8_c34458, gl_osVirtualToPhysical)(*t->base + k * 8, t, k); }
 struct Src { char pad[0x84]; Arr arr; };
 struct Base { int f0; char pad[0x24]; Base(char *name); virtual void f(); };
 struct Obj : Base {
@@ -57,11 +58,11 @@ struct Obj : Base {
 Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
     Pair p = *(Pair *)GFXLIB(&gGfxLib_4b0a8_vt)->unk140;
     f0 = 2;
-    f40 = (DL *)gl_4b0a8_c34458(0, D_00000000 + 0x200F4, (int)GFXLIB(&gGfxLib_4b0a8_w214)->staticDL); /* "MainStaticDL" */
-    gl_4b0a8_c34458(f40, &p);
-    gl_4b0a8_c34458(f40, &p);
-    gl_4b0a8_c34458(f40, &p);
-    gl_4b0a8_c34458(f40, &p);
+    f40 = (DL *)XCALL(gl_4b0a8_c34458, gfx_newDLChild_0005AB84)(0, D_00000000 + 0x200F4, (int)GFXLIB(&gGfxLib_4b0a8_w214)->staticDL); /* "MainStaticDL" */
+    XCALL(gl_4b0a8_c34458, gfx_emitCycleType)(f40, &p);
+    XCALL(gl_4b0a8_c34458, gfx_emitGeometryMode)(f40, &p);
+    XCALL(gl_4b0a8_c34458, gfx_emitCombineMode)(f40, &p);
+    XCALL(gl_4b0a8_c34458, gfx_emitRenderMode)(f40, &p);
     AIter it = iter(&s->arr);
     /* agent-c run 238: the increment holds three pool slots while edg emits the rotated bottom copy of
      * it.next(), so its result / pointer / ++idx temps take the target's a0 / v1 / v0 (99.56 -> 99.71); the
@@ -76,5 +77,5 @@ Obj::Obj(Src *s) : Base(D_00000000 + 0x200EC) {
         }
     }
     { int p1 = 0, p2 = 0; }
-    gl_4b0a8_c34458(f40);
+    XCALL(gl_4b0a8_c34458, gfx_endDL)(f40);
 }

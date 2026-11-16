@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for PolyShape_addFace_00048510 (0x210 / 132 words), agent-c run 160 (lift) / run 271 (exact),
  * REPLACE_FUNC_BODY-spliced over the placeholder in game_libs_post0b.c on both build paths.
  * Rewritten as real C++ (was the run-134 C lift under NCC, 91.11): `void Strip::add(Vtx *v, s16 *out, int *full,
@@ -44,11 +45,11 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
     int i;
     *full = 0;
     for (i = 0; i < n594; i++) {
-        idx[i] = gl_func_00048510_c34458(this, i == 0 || n594 == 2, &v[i]);
+        idx[i] = XCALL(gl_func_00048510_c34458, gfx_findVtx_00048720)(this, i == 0 || n594 == 2, &v[i]);
         if (idx[i] < 0) {
             if (max590 - 1 < nv + 1) { /* agent-g run 258: compare spelling (max590 loaded first like the target): 98.71 -> 98.73; agent-c run 271: `max590 - 1 < nv + 1` -> 99.05 */
                 flush();
-                gl_func_00048510_c34458(this);
+                XCALL(gl_func_00048510_c34458, gfx_vtxBatchBegin_000483A0)(this);
                 i = 0;
             }
             if (i == 0) {
@@ -65,6 +66,6 @@ void Strip::add(Vtx *v, s16 *out, int *full, u16 *id) {
         tris[nt].v[k] = idx[k];
     }
     nt = nt + 1; if (nt >= 200) {
-        gl_func_00048510_c34458(D_00000000 + 0x1FF44);
+        XCALL(gl_func_00048510_c34458, sys_fatal)(D_00000000 + 0x1FF44);
     }
 }

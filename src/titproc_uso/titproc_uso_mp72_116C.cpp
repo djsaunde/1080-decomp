@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* MIPSpro 7.2.1 C++ (o32 edgcpfe, EDG 2.29) EXACT donor for TitleDemoProcess_handleInput (290 words), built by
  * tools/ncc721.sh and spliced over a placeholder in both trees (agent-h runs 355 / 364). Its 4-label
  * `switch (s0->0x40)` is a native 4-entry table only under EDG 2.29 (the cfe body needs a phantom case 4).
@@ -86,18 +87,18 @@ void TitleDemoProcess_handleInput(char *s0) {
     case 0: {
         TITLEDEMO(s0)->timer = TITLEDEMO(s0)->timer - 1;
         if (TITLEDEMO(s0)->timer >= 0) {
-            if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
+            if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40300) == 0) {
                 return;
             }
         }
         vt = (char *)NODE(TITLEDEMO(s0)->mainLogo)->vptr;
         v1 = (char *)TITLEDEMO(s0)->mainLogo;
         ((void (*)(int))VT_SLOT(vt, 10).fn)((VT_SLOT(vt, 10).delta + (int)v1));
-        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+        XCALL(gl_func_00000000_116c_v, MainLogo_reset)(TITLEDEMO(s0)->mainLogo);
         TITLEDEMO(s0)->state = TITLEDEMO(s0)->state + 1;
         TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
         TITLEDEMO(s0)->keyDelay = 40;
-        gl_func_00000000_116c_v(13);
+        XCALL(gl_func_00000000_116c_v, snd_postEvent)(13);
         break;
     }
     case 1: {
@@ -116,44 +117,44 @@ void TitleDemoProcess_handleInput(char *s0) {
         if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
 fire:
             *(int *)((char *)&D_00000000 + 0x34) = 1;
-            v = gl_func_00000000();
-            gl_func_00000000_116c_v(s0, v, 0);
+            v = CALL(tit_nextDemo_000000C0)();
+            XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
             return;
         }
         if (TITLEDEMO(s0)->keyDelay != 0) {
             return;
         }
-        if (gl_func_00000000((char *)&D_00000000, 0x40300) == 0) {
+        if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40300) == 0) {
             return;
         }
-        gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
-        gl_func_00000000_116c_v(TITLEDEMO(s0)->keyMessage);
+        XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->mainLogo);
+        XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->keyMessage);
         if (*(unsigned short *)(*(char **)((char *)&D_00000000 + 0x154) + 4) & 8) {
             vt3 = (char *)NODE(TITLEDEMO(s0)->langMenu)->vptr;
             v1 = (char *)TITLEDEMO(s0)->langMenu;
             ((void (*)(int))VT_SLOT(vt3, 10).fn)((VT_SLOT(vt3, 10).delta + (int)v1));
             TITLEDEMO(s0)->state = 2;
-            gl_func_00000000_116c_v(144);
+            XCALL(gl_func_00000000_116c_v, snd_postEvent)(144);
         } else {
             vt4 = (char *)NODE(TITLEDEMO(s0)->menu)->vptr;
             v1 = (char *)TITLEDEMO(s0)->menu;
             ((void (*)(int))VT_SLOT(vt4, 10).fn)((VT_SLOT(vt4, 10).delta + (int)v1));
             TITLEDEMO(s0)->state = 3;
             TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk74 * 30;
-            gl_func_00000000_116c_v(144);
+            XCALL(gl_func_00000000_116c_v, snd_postEvent)(144);
         }
         break;
     }
     case 2: {
-        gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
-        if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-            gl_func_00000000_116c_v(5);
+        XCALL(gl_func_00000000_116c_v, tit_langMenuInput_00001BB8)(TITLEDEMO(s0)->langMenu);
+        if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40100) != 0) {
+            XCALL(gl_func_00000000_116c_v, snd_postEvent)(5);
             if (1) {
                 char *z = *(char **)((char *)&D_00000000 + 0x154) + 4;
                 *(short *)z = (short)(*(unsigned short *)z & 0xFFF7);
             }
-            gl_func_00000000_116c_v((char *)&D_00000000);
-            gl_func_00000000_116c_v(TITLEDEMO(s0)->langMenu);
+            XCALL(gl_func_00000000_116c_v, settings_save_00012150)((char *)&D_00000000);
+            XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->langMenu);
             vt5 = (char *)NODE(TITLEDEMO(s0)->menu)->vptr;
             v1 = (char *)TITLEDEMO(s0)->menu;
             ((void (*)(int))VT_SLOT(vt5, 10).fn)((VT_SLOT(vt5, 10).delta + (int)v1));
@@ -166,8 +167,8 @@ fire:
         int *c;
         if (TITLEDEMO(s0)->timer == 0) {
             *(int *)((char *)&D_00000000 + 0x34) = 1;
-            v = gl_func_00000000();
-            gl_func_00000000_116c_v(s0, v, 0);
+            v = CALL(tit_nextDemo_000000C0)();
+            XCALL(gl_func_00000000_116c_v, Process_fadeOut_0000F954)(s0, v, 0);
         }
         if (DATAMGR(TITLEDEMO(s0)->dataMgr)->entries->finished != 0) {
             v1 = (char *)TITLEDEMO(s0)->whiteFader;
@@ -209,23 +210,23 @@ fire:
                 }
             }
             if (av == 0) {
-                if (gl_func_00000000((char *)&D_00000000, 512) != 0) {
+                if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 512) != 0) {
                     vt7 = (char *)NODE(TITLEDEMO(s0)->mainLogo)->vptr;
                     v1 = (char *)TITLEDEMO(s0)->mainLogo;
                     ((void (*)(int))VT_SLOT(vt7, 10).fn)((VT_SLOT(vt7, 10).delta + (int)v1));
-                    gl_func_00000000_116c_v(TITLEDEMO(s0)->mainLogo);
+                    XCALL(gl_func_00000000_116c_v, MainLogo_reset)(TITLEDEMO(s0)->mainLogo);
                     vt8 = (char *)NODE(TITLEDEMO(s0)->keyMessage)->vptr;
                     v1 = (char *)TITLEDEMO(s0)->keyMessage;
                     ((void (*)(int))VT_SLOT(vt8, 10).fn)((VT_SLOT(vt8, 10).delta + (int)v1));
-                    gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
+                    XCALL(gl_func_00000000_116c_v, Process_stop)(TITLEDEMO(s0)->menu);
                     TITLEDEMO(s0)->state = 1;
                     TITLEDEMO(s0)->timer = TITLEDEMO(s0)->unk70 * 30;
-                    gl_func_00000000_116c_v(2050);
+                    XCALL(gl_func_00000000_116c_v, snd_postEvent)(2050);
                 }
             }
-            if (gl_func_00000000((char *)&D_00000000, 0x40100) != 0) {
-                gl_func_00000000_116c_v(TITLEDEMO(s0)->menu);
-                gl_func_00000000_116c_v(5);
+            if (CALL(input_checkPressed_00011E00)((char *)&D_00000000, 0x40100) != 0) {
+                XCALL(gl_func_00000000_116c_v, Node_clearFlag8_0000F564)(TITLEDEMO(s0)->menu);
+                XCALL(gl_func_00000000_116c_v, snd_postEvent)(5);
                 v1 = (char *)TITLEDEMO(s0)->menu;
                 if (1) {}
                 if (1) {}

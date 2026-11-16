@@ -29,6 +29,7 @@
  */
 typedef int s32; typedef unsigned int u32; typedef short s16; typedef unsigned short u16; typedef unsigned char u8; typedef float f32;
 #include "../../include/gdl/item.h" /* ItemMgr (arg0), ItemType (the type list) */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 int gl_3e5e0_c34458(...);
 extern char gHostio_e5e0a, D_00000000_e5e0c, gHostio_e5e0e, sStr_RemoveItems_1F318, D_00000000_e5e0h,
@@ -37,7 +38,7 @@ extern char gHostio_e5e0a, D_00000000_e5e0c, gHostio_e5e0e, sStr_RemoveItems_1F3
 }
 #define FW(p, o) (*(int *)((char *)(p) + (o)))
 struct PMF { s32 w0, w1; };
-inline void *operator new(unsigned n) { return (void *)gl_3e5e0_c34458(n); }
+inline void *operator new(unsigned n) { return (void *)XCALL(gl_3e5e0_c34458, mem_new)(n); }
 struct K { virtual void f(); };
 struct CB : K {
     void *obj;
@@ -46,25 +47,25 @@ struct CB : K {
 };
 struct CB1 : CB { CB1(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
 struct CB2 : CB { CB2(void *o, const PMF &p) : CB(o, p) {} virtual void f(); };
-inline void reg0(char *a) { gl_3e5e0_c34458(&gHostio_e5e0e, &sStr_RemoveItems_1F318 + 0x1F318, new CB1(a, *(PMF *)(&D_00000000_e5e0c + 0x1EEC0)), 0); }
-inline void reg1(char *a) { gl_3e5e0_c34458(&gHostio_e5e0j, &sStr_ChangeType_1F324 + 0x1F324, new CB1(a, *(PMF *)(&D_00000000_e5e0h + 0x1EEC8)), 1); }
+inline void reg0(char *a) { XCALL(gl_3e5e0_c34458, hostio_addButton)(&gHostio_e5e0e, &sStr_RemoveItems_1F318 + 0x1F318, new CB1(a, *(PMF *)(&D_00000000_e5e0c + 0x1EEC0)), 0); }
+inline void reg1(char *a) { XCALL(gl_3e5e0_c34458, hostio_addButton)(&gHostio_e5e0j, &sStr_ChangeType_1F324 + 0x1F324, new CB1(a, *(PMF *)(&D_00000000_e5e0h + 0x1EEC8)), 1); }
 inline void loop(char *it, int d0) {
     if (0) { it = 0; d0 = 0; } /* run 270: the dummy holds a pool entry during the body */
     if (it != 0) {
         do {
-            gl_3e5e0_c34458(&gHostio_e5e0q, it + 0x2C, new CB2(it, *(PMF *)(&D_00000000_e5e0o + 0x1EED0)));
+            XCALL(gl_3e5e0_c34458, hostio_addLink)(&gHostio_e5e0q, it + 0x2C, new CB2(it, *(PMF *)(&D_00000000_e5e0o + 0x1EED0)));
             it = (char *)ITEMTYPE(it)->next;
         } while (it != 0);
     }
 }
 extern "C" void ItemMgr_hostioParms(char *arg0) {
 
-    { int x = (int)ITEMMGR(arg0)->node.name; gl_3e5e0_c34458(&gHostio_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
+    { int x = (int)ITEMMGR(arg0)->node.name; XCALL(gl_3e5e0_c34458, hostio_beginGroup)(&gHostio_e5e0a, x, 0); } /* run 158: read before the call setup = the target's `lw a1,12(a0)` straight from a0 (no home reload); 91.78 -> 94.32, length 604 -> 600 (target 608: away, flagged) */
     reg0(arg0);
     reg1(arg0);
-    gl_3e5e0_c34458(&gHostio_e5e0l, &sStr_Items_1F330 + 0x1F330, 0);
+    XCALL(gl_3e5e0_c34458, hostio_beginGroup)(&gHostio_e5e0l, &sStr_Items_1F330 + 0x1F330, 0);
     loop((char *)ITEMMGR(arg0)->types, 1);
-    gl_3e5e0_c34458(&gHostio_e5e0r);
-    gl_3e5e0_c34458(&gHostio_e5e0s);
-    gl_3e5e0_c34458(arg0);
+    XCALL(gl_3e5e0_c34458, hostio_endGroup)(&gHostio_e5e0r);
+    XCALL(gl_3e5e0_c34458, hostio_endGroup)(&gHostio_e5e0s);
+    XCALL(gl_3e5e0_c34458, Node_hostioParms)(arg0);
 }

@@ -42,17 +42,17 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
     register int *mid;
     register int *child;
 
-    gl_func_00000000(&D_00000000, &sStr_rom_nameent_uso_D138);
-    gl_func_00000000(&D_00000000, *(int*)&gProcUsoPaths_8C3C_v0);
-    gl_func_00000000(&D_00000000, 7, 0, 0);
+    CALL(game_loadUso)(&D_00000000, &sStr_rom_nameent_uso_D138);
+    CALL(game_loadUso)(&D_00000000, *(int*)&gProcUsoPaths_8C3C_v0);
+    CALL(snd_playSeq_000120A8)(&D_00000000, 7, 0, 0);
 
     root = 0;
-    if (root != 0 || (root = (int*)gl_func_00000000(0xD4)) != 0) {
+    if (root != 0 || (root = (int*)CALL(mem_new)(0xD4)) != 0) {
         mid = root;
-        if (mid != 0 || (mid = (int*)gl_func_00000000(0x50)) != 0) {
+        if (mid != 0 || (mid = (int*)CALL(mem_new)(0x50)) != 0) {
             child = mid;
-            if (child != 0 || (child = (int*)gl_func_00000000(0x2C)) != 0) {
-                gl_func_00000000(child, &sStr_Node_D148);
+            if (child != 0 || (child = (int*)CALL(mem_new)(0x2C)) != 0) {
+                CALL(Node_ctor)(child, &sStr_Node_D148);
                 child[0x28 / 4] = (int)&Process_vtbl_8C3C_child_desc;
             }
             mid[0x28 / 4] = (int)&Process_vtbl_C3A0_8C3C_mid_desc;
@@ -63,7 +63,7 @@ app_launchNameEnt(a0, a1) int * a0; int a1; {
     gl_func_00000000(call_root, a0[0]);
     gl_func_00000000(call_root);
     root = call_root;
-    gl_func_00000000(a0, 0, root);
+    CALL(app_runProcess)(a0, 0, root);
 }
 
 /* app_launchViewRec: 39-insn 4-call init sequencer. -O0 island (file built

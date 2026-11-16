@@ -620,7 +620,7 @@ int *a0;
   int *tmp;
   if (a0 == 0)
   {
-    a0 = (int *) gl_func_00000000(60);
+    a0 = (int *) CALL(mem_new)(60);
     if (a0 == 0)
     {
       goto end;
@@ -629,12 +629,12 @@ int *a0;
   tmp = a0;
   if (tmp == 0)
   {
-    tmp = (int *) gl_func_00000000(44);
+    tmp = (int *) CALL(mem_new)(44);
     if (tmp == 0)
     {
       goto common;
     }
- } gl_func_00000000(tmp, ((char *) (&titproc_uso_D_00048C)) + 0x4C4); NODE(tmp)->vptr = (char *)&import_00073B18;
+ } CALL(Node_ctor)(tmp, ((char *) (&titproc_uso_D_00048C)) + 0x4C4); NODE(tmp)->vptr = (char *)&import_00073B18;
   common:
   NODE(a0)->vptr = (char *)&titproc_uso_D_000194;
 
@@ -643,7 +643,7 @@ int *a0;
   KEYMSG(a0)->fading = 0;
   KEYMSG(a0)->x = 160.0f;
   KEYMSG(a0)->y = 210.0f;
-  gl_func_00000000(a0);
+  CALL(Process_stop)(a0);
   end:
   return a0;
 

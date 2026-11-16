@@ -6914,10 +6914,10 @@ int *arg0; int arg1, arg2, arg3;
 #define pa3 (*(int **)&arg3)
     struct q3d { int a, b, c, d; };
     if (pa0 == 0) {
-        pa0 = (int *)gl_func_00000000(88);
+        pa0 = (int *)CALL(mem_new)(88);
         if (pa0 == 0) goto end;
     }
-    gl_func_00000000(pa0, *(struct { int x; } *)&arg1, ia2);
+    CALL(ItemType_ctor)(pa0, *(struct { int x; } *)&arg1, ia2);
     NODE(pa0)->vptr = (char *)&D_00000000;
     if (pa3 == 0) {
         COLOURITEMTYPE(pa0)->colour[1] = 0.0f;
@@ -16618,22 +16618,22 @@ int arg0, arg1, arg2, arg3, arg4, arg5;
     {
         int n = pa0[0x28 / 4];
         pa0[0x28 / 4] = n + 1;
-        gl_func_00000000(ia1, ia2, n);
+        CALL(RcpTask_init)(ia1, ia2, n);
     }
-    gl_func_00000000(ia1, ia3, ia4, pa0[0x2C / 4]);
+    CALL(RcpTask_setData)(ia1, ia3, ia4, pa0[0x2C / 4]);
     {
         int a = ia1;
         if (ia5 == 4) goto c4;
         if (ia5 != 3) goto dflt;
         goto c3;
 c4:
-        gl_func_00000000(a, *(int *)&D_4db50_a, *(int *)&D_4db50_b);
+        CALL(RcpTask_setUcodeF3DEX)(a, *(int *)&D_4db50_a, *(int *)&D_4db50_b);
         return;
 c3:
-        gl_func_00000000(a, *(int *)&D_4db50_c, *(int *)&D_4db50_d);
+        CALL(RcpTask_setUcodeF3DLP_Rej)(a, *(int *)&D_4db50_c, *(int *)&D_4db50_d);
         return;
 dflt:
-        gl_func_00000000((char *)&D_00000000 + 0x20314);
+        CALL(sys_fatal)((char *)&D_00000000 + 0x20314);
     }
 #undef pa0
 #undef ia1
@@ -20837,7 +20837,7 @@ NodeListState *a3;
     NodeListState s;
     int v0;
     /* Setup call: fmt/handle at D+0x211B8 */
-    gl_func_00000000((char*)&gl_data_00000000 + 0x211B8);
+    CALL(sys_imin)((char*)&gl_data_00000000 + 0x211B8);
     /* Clear 5 D-base globals (offsets 0/0/4/8/0xC) — the target uses a SEPARATE
      * `lui at; sw zero` per clear, so route each through a DISTINCT extern to
      * bust IDO's base CSE (else they all share one lui). */
@@ -20858,7 +20858,7 @@ NodeListState *a3;
         v0 = 1;
     }
     if (v0 != 0) {
-        gl_func_00000000((char*)&gl_data_00000000 + 0x211C8);
+        CALL(sys_fatal)((char*)&gl_data_00000000 + 0x211C8);
     }
     if (((NodeListState **)&a0)[3] != 0) s = *((NodeListState **)&a0)[3];
     s.cursor = (int **)&a0;
@@ -20870,8 +20870,8 @@ NodeListState *a3;
     s.node = (char *)a1;
     s.animMgr = (char *)a2;
     s.linkNodes = 1;
-    gl_func_00000000(s);
-    gl_func_00000000();
+    CALL(nodelist_dispatchList_000558A0)(s);
+    CALL(sys_imout)();
     return 1;
 }
 

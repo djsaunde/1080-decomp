@@ -37,6 +37,7 @@ int func_00000000(...);
 extern int D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 #include "../../include/game/input.h"  /* INPUT_MGR: gInputMgr / gInputMgr_76F0 are bootup Bss 0xF8 */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern char gInputMgr_76F0;
 
 typedef struct GlObj76F0VtEnt {
@@ -120,7 +121,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                     self->unk50C = 0;
                     switch (sp20) {
                     case 0:
-                        func_00000000(0x11);
+                        FCALL(snd_postEvent)(0x11);
                         self->unk534 = 1.0f;
                         self->unk538 = 1.0f;
                         self->unk550 = 0.0f;
@@ -134,34 +135,34 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                         self->unk540 = 0xFF;
                         self->unk534 = 1.0f;
                         self->unk538 = 1.0f;
-                        func_00000000(0x12);
-                        func_00000000(0x10);
+                        FCALL(snd_postEvent)(0x12);
+                        FCALL(snd_postEvent)(0x10);
                         break;
                     case 1:
                     case 2:
                         self->unk540 = 0xFF;
                         self->unk534 = 1.0f;
                         self->unk538 = 1.0f;
-                        func_00000000(0x12);
+                        FCALL(snd_postEvent)(0x12);
                         break;
                     }
                 }
                 if ((sp20 == 0) && (self->unk50C > 0)) {
-                    func_00000000((char *)self + 0x5A0);
-                    func_00000000((char *)self + 0x5B8);
-                    func_00000000((char *)self + 0x5D0);
-                    func_00000000((char *)self + 0x5E8);
+                    FCALL(gui_spriteRelease)((char *)self + 0x5A0);
+                    FCALL(gui_spriteRelease)((char *)self + 0x5B8);
+                    FCALL(gui_spriteRelease)((char *)self + 0x5D0);
+                    FCALL(gui_spriteRelease)((char *)self + 0x5E8);
                 }
                 self->unk50C = self->unk50C + 1;
             }
             if ((sp24 == 1) && (sp20 == 0)) {
-                func_00000000((char *)&gInputMgr, 1);
+                FCALL(input_setRacePadsActive)((char *)&gInputMgr, 1);
                 if ((s32)((u32)self->unk4F0 << 15) < 0) {
-                    func_00000000((char *)self + 0x588);
+                    FCALL(gui_spriteRelease)((char *)self + 0x588);
                 }
                 INPUT_MGR(gInputMgr).unk78 = 0;
                 self->unk4DC = 1;
-                func_00000000(INPUT_MGR(gInputMgr).dataMgr);
+                FCALL(Node_resumeUpdate_0000E450)(INPUT_MGR(gInputMgr).dataMgr);
             }
             if (self->unk4E4 < 1 - self->unk4E8) {
                 self->unk4E0 = 2;
@@ -180,7 +181,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x3D) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x3D) && (FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -200,7 +201,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 self->unk4E4 = self->unk4E4 - 1;
                 self->unk4EC = self->unk4EC + 1;
             }
-            if ((self->unk4EC >= 0x1F) && (func_00000000((char *)&gInputMgr, 0x40100) != 0)) {
+            if ((self->unk4EC >= 0x1F) && (FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x40100) != 0)) {
                 self->unk4E4 = 0;
             }
             if (self->unk4E4 < 0) {
@@ -214,7 +215,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
             if (1) {}
             temp = self->unk4F8;
             if ((temp == 0) || (temp == 5)) {
-                func_00000000(self);
+                FCALL(RaceProcess_leave)(self);
             }
         }
         if (self->unk4E0 == 7) {
@@ -244,7 +245,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
                 if (self->unk4F4 == 0) {
                     if ((s32)((u32)self->unk4F0 << 11) < 0) {
                         ((VO76 *)self)->m23();
-                        func_00000000(self, -1, 0);
+                        FCALL(Process_fadeOut_0000F954)(self, -1, 0);
                     } else {
                         ((VO76 *)self)->m24();
                     }
@@ -278,25 +279,25 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
     }
     if ((self->unk4DC != 2) && (self->unk4D8 == 0)) {
         if (self->unk30 == 0) {
-            if ((func_00000000(INPUT_MGR(gInputMgr).fader) != 0) && (self->unk48 != 0)) {
-                temp = func_00000000((char *)&gInputMgr, 0x40000);
+            if ((FCALL(Fader_isDone_00013980)(INPUT_MGR(gInputMgr).fader) != 0) && (self->unk48 != 0)) {
+                temp = FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x40000);
                 self->unk514 = temp;
                 if (temp != 0) {
                     ((VO76 *)self)->m17();
-                    func_00000000(self);
-                    func_00000000(INPUT_MGR(gInputMgr).dataMgr);
+                    FCALL(Process_pause_0000F9E8)(self);
+                    FCALL(Node_pauseUpdate_0000E464)(INPUT_MGR(gInputMgr).dataMgr);
                 }
             }
         } else {
             var_v0 = self->unk48->unk80;
             if (var_v0 == 0) {
-                if (func_00000000((char *)&gInputMgr, 0x100) != 0) {
+                if (FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x100) != 0) {
                     self->unk48->unk80 = 0x100;
                 }
-                if (func_00000000((char *)&gInputMgr, 0x40000) != 0) {
+                if (FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x40000) != 0) {
                     self->unk48->unk80 = 0x40000;
                 }
-            } else if (func_00000000((char *)&gInputMgr, var_v0 + 0 * var_v0) != 0) {
+            } else if (FCALL(input_checkReleased_00011FA8)((char *)&gInputMgr, var_v0 + 0 * var_v0) != 0) {
                 ((VO76 *)self)->m26();
                 self->unk48->unk80 = 0;
             }
@@ -317,7 +318,7 @@ void RaceProcess_handleInput(GlObj76F0 *self) {
         break;
     }
     if (((s32)((u32)self->unk4F0 << 12) < 0)
-        && ((func_00000000((char *)&gInputMgr, 0x300) != 0) || (func_00000000((char *)&gInputMgr, 0x40000) != 0))) {
+        && ((FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x300) != 0) || (FCALL(input_checkPressed_00011E00)((char *)&gInputMgr, 0x40000) != 0))) {
         ((VO76 *)self)->m27();
     }
 }

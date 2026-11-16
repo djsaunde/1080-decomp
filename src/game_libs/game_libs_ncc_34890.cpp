@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for hostio_sendNodeTree (0x150 / 84 words), agent-c run 164 lift, agent-g run 321 exact
  * (spliced over a placeholder on both build paths; the residual notes below are history).
  * `new X(o)` with inline cfront-protocol constructors: X : Mid : Base (Base = vptr only, 4 bytes; Mid stores the
@@ -11,7 +12,7 @@
  * colours (target a3 / v1, ours v1 / a0: zdbug:5 priorities Mid 2.0 > Base 1.5) and the next() result
  * (h's pooled slot is reused for it, so both are a1; target a2 then v1). */
 extern "C" void *gl_34890_c34458(...);
-inline void *operator new(unsigned n) { return gl_34890_c34458(n); }
+inline void *operator new(unsigned n) { return XCALL(gl_34890_c34458, mem_new)(n); }
 template <class T> inline T *me(T *p) { return p; } /* agent-c run 252: zero-code accessor (kit CCLXXXIV) */
 struct Pair { int a, b; };
 extern "C" Pair D_34890_tmpl;
@@ -38,7 +39,7 @@ struct X : Mid { X(O *oo) : Mid(oo) {} virtual void f(); };
  * loop test written out as next()'s ternary in the for condition (no inline call: no `this` temp in the loop, so h's
  * coloured M-12 variable is not reused by a next() result) and `me(&it)->cur` on the first store, `it(o->list)`
  * plain: 99.57 -> 99.64 standalone. LEFT: the two ternary result colours (target a2 / v1, ours v0 / a1). */
-inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); gl_34890_c34458(gHostio_34890_d, h, a, o->flags & 2); }
+inline void make(int h, O *o) { if (0) { h = 0; } X *a = new X(o); XCALL(gl_34890_c34458, hostio_beginTreeNode)(gHostio_34890_d, h, a, o->flags & 2); }
 extern "C" void hostio_sendNodeTree(O *o) {
     make(o->h, o);
     /* agent-g run 319 (kit CDXI): the loop as `if (top) do ... while (I3(it.nxi()))` with two `I2(0)` pool entries in
@@ -49,8 +50,8 @@ extern "C" void hostio_sendNodeTree(O *o) {
     LIter it(me(o)->list);
     if ((I2(0), I2(0), (me(&it)->cur = it.nxt) ? (it.nxt = it.nxt->next, it.cur->data) : 0)) {
         void *rv;
-        do { rv = gl_34890_c34458(it.cur->data); } while (I3(it.nxi()));
+        do { rv = XCALL(gl_34890_c34458, hostio_sendNodeTree)(it.cur->data); } while (I3(it.nxi()));
         if (rv) {}
     }
-    gl_34890_c34458(gHostio_34890_e);
+    XCALL(gl_34890_c34458, hostio_endTreeNode)(gHostio_34890_e);
 }

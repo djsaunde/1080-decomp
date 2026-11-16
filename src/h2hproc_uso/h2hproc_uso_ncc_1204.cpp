@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) donor for h2h_WinsDisplay_update_00001204 (0x15C / 87 words): fade a
  * 0..720 alpha up or down by 16, then run the registered state callback. Decode fix:
  * each clamp is NESTED inside its step (`if (a < 0xFF) { a += 16; if (a >= 0x100)
@@ -55,8 +56,8 @@ void h2h_WinsDisplay_update_00001204(char *a0) {
             }
         }
     }
-    if (gl_func_00000000(&D_00000000, 0x40100) != 0) {
-        if (gl_func_00000000(*(int*)(&D_00000000 + 0x190)) != 0) {
+    if (CALL(input_checkPressed_00011E00)(&D_00000000, 0x40100) != 0) {
+        if (CALL(Fader_isDone_00013980)(*(int*)(&D_00000000 + 0x190)) != 0) {
             p1 = (char *)H2HWINS(a0)->menu;
             if (GUIMENU(p1)->rows[GUIMENU(p1)->cursor].arg != 0) {
                 h2h_void_1204(5);

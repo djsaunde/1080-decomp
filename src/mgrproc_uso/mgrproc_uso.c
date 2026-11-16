@@ -1691,18 +1691,18 @@ void mgr_DataManager_init(self, a1, a2, a3, arg5)
     self->colour[3] = 0.0f / div255;     /* f10 = f10/f2 */
 
     if (((RaceProcess *)a1)->flags & RACEF_SPRITES) {
-        gl_func_00000000(self, 0xE8, 0x13, (char *)self->base.entries + 0x10);
-        gl_func_00000000(self, 0x123, 0xE1, 0xD);
-        gl_func_00000000(self, 0x47, 0x13, &self->base.elapsed);
-        gl_func_00000000(self, 0x44, 0x26, (char *)self->base.entries + 0x28);
-        v1 = (unsigned char *)gl_func_00000000(
+        CALL(hud_addSpeedGadget)(self, 0xE8, 0x13, (char *)self->base.entries + 0x10);
+        CALL(hud_addCourseGadget)(self, 0x123, 0xE1, 0xD);
+        CALL(hud_addTimeGadget)(self, 0x47, 0x13, &self->base.elapsed);
+        CALL(hud_addCoolGadget)(self, 0x44, 0x26, (char *)self->base.entries + 0x28);
+        v1 = (unsigned char *)CALL(Backup_courseRecordGetTime)(
                  MGR_D_64 * 48 + *(int*)self->base.session, 0);
-        obj = gl_func_00000000(0, self->base.sprites60);
+        obj = CALL(BestTimeGadget_ctor)(0, self->base.sprites60);
         self->rankLabel = obj;
-        gl_func_00000000(obj, v1[5], v1[6], v1[7]);
-        gl_func_00000000(self->rankLabel, 0x4B, 0xD6);
+        CALL(BestTimeGadget_setTime)(obj, v1[5], v1[6], v1[7]);
+        CALL(TimeGadgetParms_setPos_00013FE0)(self->rankLabel, 0x4B, 0xD6);
         node = (int *)self->rankLabel;
-        gl_func_00000000((int)self->base.children, (int)node);
+        CALL(list_append)((int)self->base.children, (int)node);
         if (NODE(node)->parent != 0) {
             NODE(node)->unk04 = 1;
         }

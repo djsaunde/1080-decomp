@@ -1,3 +1,4 @@
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 /* IDO 7.1 NCC (C++) EXACT donor for gfx_drawText (agent-c run 268; history: agent-c run 152 NM): the NM C body (EMIT path as the then-arm of `== 0`, call in the else arm) lifted under NCC; NCC colours the early _q/_n DL temps v0/a1 like the target where cfe gives a1/a2; the first character is read through a copy of the cursor (target `or v1,s3; lbu a1,0(v1)`), both the entry read and the loop-bottom read, 86.48 -> 86.91.
  * agent-c run 182: the character dispatch is a `switch (ch)` (edg compare chain `beq 10 / beq 9 / beql 0x30 / b default`
  * with the case bodies out of line, as the target) whose newline case jumps past the advance (`goto next`), and x is read
@@ -107,7 +108,7 @@ extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
         gW(CTX->next(), 0xFCFFFFFF, 0xFFFCF279);
         gW(CTX->next(), 0xBA000C02, 0 + (o->f4 & 0) + (o->f8 & 0) + (o->fC & 0));
         gW(CTX->next(), 0xBA001301, 0);
-        gW(CTX->next(), 0xFD900000, gl_func_00046050_c34458((void *)&D_00000000));
+        gW(CTX->next(), 0xFD900000, XCALL(gl_func_00046050_c34458, gl_osVirtualToPhysical)((void *)&D_00000000));
         gW(CTX->next(), 0xF5900000, 0x07000000);
         gW(CTX->next(), 0xE6000000, 0);
         gW(CTX->next(), 0xF3000000, 0x077FF100);
@@ -142,7 +143,7 @@ extern "C" s32 gfx_drawText(Font *o, u8 *arg1, s32 arg2) {
                     gSPTextureRectangle(CTX->nextr(), CTX->next0(), CTX->next(), o->x * 4, o->y * 4, (o->x + charw) * 4, (o->y + lineh) * 4, 0,
                         ((cc & 0xF) * 8) << 5, ((cc & 0xF0) >> 1) << 5, 0x2000 / charw, 0x2000 / lineh);
                 } else {
-                    gl_func_00046050_c34458(o, ch, o->x, o->y);
+                    XCALL(gl_func_00046050_c34458, gfx_drawFbChar_00046790)(o, ch, o->x, o->y);
                 }
             }
             o->x = o->x + charw;

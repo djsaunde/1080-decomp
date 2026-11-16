@@ -37,6 +37,7 @@ typedef int s32; typedef unsigned int u32; typedef float f32;
 #include "../../include/gdl/dlctx.h"     /* DLContext / DLBuf (NCC donors build without -I include) */
 #include "../../include/gdl/material.h"  /* BaseMat, MAT_FMT_* / MAT_TEX_* */
 #include "../../include/gdl/texload.h"   /* TexImage / TexCI / GfxWords */
+#include "../../include/uso_call.h"  /* NCC donors build without -I include */
 extern "C" {
 int gl_578b4_c34458(...);
 int game_libs_func_00062F08_578B4(...);
@@ -199,7 +200,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             n = DLBUF(g)->count;
             DLBUF(g)->count = n + 1;
             sp1C4 = (char *) (ctx->gfx.cur->base + (n * 8));
-            GFXW(sp1C4)->w0 = ((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD180000; GFXW(sp1C4)->w1 = gl_578b4_c34458(TEXIMG(sp1DC)->pixels, n, sp1DC, ctx);
+            GFXW(sp1C4)->w0 = ((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD180000; GFXW(sp1C4)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXIMG(sp1DC)->pixels, n, sp1DC, ctx);
             g = (s32)ctx->gfx.cur;
             n = DLBUF(g)->count;
             DLBUF(g)->count = n + 1;
@@ -247,7 +248,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
             sp1A8 = (char *)( ctx->gfx.cur->base + (temp_a1_9 * 8));
             GFXW(sp1A8)->w0 = (s32) (((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD100000);
-            GFXW(sp1A8)->w1 = gl_578b4_c34458(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
+            GFXW(sp1A8)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
@@ -295,7 +296,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
             sp18C = (char *)( ctx->gfx.cur->base + (temp_a1_9 * 8));
             GFXW(sp18C)->w0 = (s32) (((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD680000);
-            GFXW(sp18C)->w1 = gl_578b4_c34458(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
+            GFXW(sp18C)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
@@ -343,7 +344,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
             sp170 = (char *)( ctx->gfx.cur->base + (temp_a1_9 * 8));
             GFXW(sp170)->w0 = (s32) (((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD880000);
-            GFXW(sp170)->w1 = gl_578b4_c34458(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
+            GFXW(sp170)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
@@ -391,7 +392,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
             sp154 = (char *)( ctx->gfx.cur->base + (temp_a1_9 * 8));
             GFXW(sp154)->w0 = (s32) (((((s32) TEXIMG(sp1DC)->width >> 1) - 1) & 0xFFF) | 0xFD880000);
-            GFXW(sp154)->w1 = gl_578b4_c34458(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
+            GFXW(sp154)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXIMG(sp1DC)->pixels, temp_a1_9, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
@@ -475,7 +476,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
             sp118 = (char *)( ctx->gfx.cur->base + (temp_a1_9 * 8));
-            GFXW(sp118)->w0 = (s32) (((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD480000); GFXW(sp118)->w1 = gl_578b4_c34458(TEXCI(temp_t1_7)->texels, temp_a1_9, sp1DC, ctx);
+            GFXW(sp118)->w0 = (s32) (((TEXIMG(sp1DC)->width - 1) & 0xFFF) | 0xFD480000); GFXW(sp118)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXCI(temp_t1_7)->texels, temp_a1_9, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1_9 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1_9 + 1);
@@ -518,7 +519,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             GFXW(temp_t0_19)->w1 = (s32) (((((((TEXIMG(sp1DC)->s + mat->width) - TEXIMG(sp1DC)->s) - 1) << 2) & 0xFFF) << 0xC) | (((((temp_v0_6 + mat->height) - temp_v0_6) - 1) << 2) & 0xFFF));
             return;
         s1_def:                                    /* switch 1 */
-            gl_578b4_c34458((int *)(sStr_unkown_tile_219B8 + 0x219B8), temp_a1, sp1DC, ctx);
+            XCALL(gl_578b4_c34458, sys_fatal)((int *)(sStr_unkown_tile_219B8 + 0x219B8), temp_a1, sp1DC, ctx);
             return;
         }
     } else {
@@ -531,7 +532,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             spFC = (int *)( ctx->gfx.cur->base + (temp_a1 * 8));
-            GFXW(spFC)->w0 = 0xFD180000; GFXW(spFC)->w1 = gl_578b4_c34458((s32)mat->texels, temp_a1, spFC, ctx);
+            GFXW(spFC)->w0 = 0xFD180000; GFXW(spFC)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)((s32)mat->texels, temp_a1, spFC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -588,7 +589,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             spE0 = (int *)( ctx->gfx.cur->base + (temp_a1 * 8));
-            GFXW(spE0)->w0 = 0xFD100000; GFXW(spE0)->w1 = gl_578b4_c34458((s32)mat->texels, temp_a1, spE0, ctx);
+            GFXW(spE0)->w0 = 0xFD100000; GFXW(spE0)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)((s32)mat->texels, temp_a1, spE0, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -645,7 +646,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             spC4 = (int *)( ctx->gfx.cur->base + (temp_a1 * 8));
-            GFXW(spC4)->w0 = 0xFD700000; GFXW(spC4)->w1 = gl_578b4_c34458((s32)mat->texels, temp_a1, spC4, ctx);
+            GFXW(spC4)->w0 = 0xFD700000; GFXW(spC4)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)((s32)mat->texels, temp_a1, spC4, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -702,7 +703,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             spA8 = (int *)( ctx->gfx.cur->base + (temp_a1 * 8));
-            GFXW(spA8)->w0 = 0xFD900000; GFXW(spA8)->w1 = gl_578b4_c34458((s32)mat->texels, temp_a1, spA8, ctx);
+            GFXW(spA8)->w0 = 0xFD900000; GFXW(spA8)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)((s32)mat->texels, temp_a1, spA8, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -759,7 +760,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
             sp8C = (int *)( ctx->gfx.cur->base + (temp_a1 * 8));
-            GFXW(sp8C)->w0 = 0xFD900000; GFXW(sp8C)->w1 = gl_578b4_c34458((s32)mat->texels, temp_a1, sp8C, ctx);
+            GFXW(sp8C)->w0 = 0xFD900000; GFXW(sp8C)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)((s32)mat->texels, temp_a1, sp8C, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -855,7 +856,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             sp50 = (s32)( ctx->gfx.cur->base + (temp_a1 * 8));
             if (1) { GFXW(sp50)->w0 = 0xFD500000; }
             
-            GFXW(sp50)->w1 = gl_578b4_c34458(TEXCI(temp_t1_7)->texels, temp_a1, sp1DC, ctx);
+            GFXW(sp50)->w1 = XCALL(gl_578b4_c34458, gl_osVirtualToPhysical)(TEXCI(temp_t1_7)->texels, temp_a1, sp1DC, ctx);
             temp_v1 = (char *)( (s32)ctx->gfx.cur);
             temp_a1 = DLBUF(temp_v1)->count;
             DLBUF(temp_v1)->count = (s32) (temp_a1 + 1);
@@ -910,7 +911,7 @@ void gfx_loadTexture(DLContext *ctx, BaseMat *mat, s32 tmem) {
             if (0) { gl_578b4_c34458((s32 *)&sp34); }
             temp_a1 = sp34 = mat->format;
         s2_def:                                    /* switch 2 */
-            gl_578b4_c34458((int *)(sFmt_bad_texfmt_num_219C4 + 0x219C4), temp_a1);
+            XCALL(gl_578b4_c34458, sys_fatal)((int *)(sFmt_bad_texfmt_num_219C4 + 0x219C4), temp_a1);
             return;
         }
     }

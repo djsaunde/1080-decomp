@@ -35,8 +35,8 @@ typedef struct { float x, y, z; } Vec3;
 
 extern int gl_func_00000000();
 int AnimPlayer_update(a0) int a0; {
-    gl_func_00000000(a0);
-    return gl_func_00000000(a0);
+    CALL(AnimPlayer_advance)(a0);
+    return CALL(AnimPlayer_applyPose)(a0);
 }
 
 /* AnimPlayer_advance: 252-insn list-walk animation stepper — EXACT (2026-07-15 wave-3).

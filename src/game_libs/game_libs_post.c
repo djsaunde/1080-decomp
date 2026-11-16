@@ -3250,15 +3250,15 @@ int y;
     int j;
 
     if (x == 0 && y == 0) {
-        gl_func_00000000(d, 0);          /* AudioHeap_LoadLowPassFilter(d, 0) */
+        CALL(AudioHeap_LoadLowPassFilter)(d, 0);          /* AudioHeap_LoadLowPassFilter(d, 0) */
         return;
     }
     if (y == 0) {
-        gl_func_00000000(d);             /* AudioHeap_LoadLowPassFilter(d, x): $a1 = x untouched */
+        CALL(AudioHeap_LoadLowPassFilter)(d);             /* AudioHeap_LoadLowPassFilter(d, x): $a1 = x untouched */
         return;
     }
     if (x == 0) {
-        gl_func_00000000(d, y);          /* AudioHeap_LoadHighPassFilter(d, y) */
+        CALL(AudioHeap_LoadHighPassFilter)(d, y);          /* AudioHeap_LoadHighPassFilter(d, y) */
         return;
     }
     for (j = 0; j != 8; j++) {

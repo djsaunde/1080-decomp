@@ -29,7 +29,7 @@ extern int gBoardModelUsoPaths_b1b4_tblA[], gBoarderUsoPaths_b1b4_tblB[];
 }
 struct Bb4Pair { int a, b; Bb4Pair() { b = 0; a = 0; } };
 struct Bb4Word { int a; Bb4Word() { a = 0; } };
-struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; Bb4Base() { func_00000000(this); } virtual void v(); };
+struct Bb4Base { char p[0x34]; Bb4Pair m; char q[0x58 - 0x3C]; Bb4Word n; Bb4Base() { FCALL(BaseMat_init_000517E4)(this); } virtual void v(); };
 struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
 /* agent-g run 555: the real classes. Bb4Base = libgdl BaseMat (its out-of-line ctor is BaseMat_init_000517E4,
  * vtable BaseMat_vtbl Data+0x20640), Bb4Mid = Mat (0x90, Mat_vtbl Data+0x1FBEC), and Bb4Bank = a Mat subclass
@@ -40,10 +40,10 @@ struct Bb4Mid : Bb4Base { char x[0x30]; Bb4Mid() {} virtual void v(); };
  * with every 4th pixel of the main screen. The stores below are BaseMat fields (gdl/material.h). */
 #define BM ((BaseMat *)this)
 struct Bb4Bank : Bb4Mid {
-    Bb4Bank() { BM->format = MAT_FMT_RGBA16; BM->texels = (void *)func_00000000(0x1000); BM->width = 0x40; BM->height = 0x20; BM->texFlags = MAT_TEX_WRAP_S | MAT_TEX_WRAP_T; BM->geomFlags = 0x402C4B; BM->unk34 = 0; BM->id = 0; }
+    Bb4Bank() { BM->format = MAT_FMT_RGBA16; BM->texels = (void *)FCALL(mem_new)(0x1000); BM->width = 0x40; BM->height = 0x20; BM->texFlags = MAT_TEX_WRAP_S | MAT_TEX_WRAP_T; BM->geomFlags = 0x402C4B; BM->unk34 = 0; BM->id = 0; }
     virtual void v();
 };
-struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) func_00000000(); Bb4Base *o = b; tbl[n++] = o; } };
+struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) FCALL(sys_staticArrayOverflow)(); Bb4Base *o = b; tbl[n++] = o; } };
 extern "C" Bb4Reg snd_seqEventDbg_00000148;
 struct Bb4Req { int pad[3]; int a4a, a4b; int pad2[11]; int cat, idx, a2; };
 extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
