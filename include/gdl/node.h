@@ -13,12 +13,19 @@
  * +0x28 = vptr. Size 0x2C (alloc(0x2C) when this == 0). The HUD's child
  * list (include/gdl/hud.h, +0x10) and the gadget parent back-link (+0x14)
  * are the same two fields. */
+/* One record of a Node child list (list_append, game_libs post1b: {item, next}, 8 bytes, from
+ * list_allocNode). Node.children points at the first; the item is usually the child Node. */
+typedef struct NodeLink {
+    /* 0x0 */ void *item;
+    /* 0x4 */ struct NodeLink *next;
+} NodeLink;
+
 typedef struct Node {
     /* 0x00 */ s32 unk00;          /* -1 */
     /* 0x04 */ s32 unk04;          /* 0 */
     /* 0x08 */ s32 flags;          /* 0x8000 */
     /* 0x0C */ const char *name;   /* e.g. "App", "<Node>" */
-    /* 0x10 */ s32 children;       /* child list head */
+    /* 0x10 */ NodeLink *children; /* child list head (list_append) */
     /* 0x14 */ struct Node *parent; /* the node whose child list (+0x10) holds this one */
     /* 0x18 */ s32 doFlags;        /* flags sub-object (initialised by a call on its address):
                                     * 0x4 DoDisplay (Node_display), 0x8 DoUpdate (Node_update),
