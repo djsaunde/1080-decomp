@@ -477,16 +477,29 @@ typedef struct GenRoom {
  * MainGame)) and hangs MainGame under the app root. */
 typedef struct GenScene {
     GenRoom *room;          /* 0x0: gen_buildRoom(0, numPlayers) */
-    char *cam;              /* 0x4: player 0's camera: gen_createCamera(0, 1, 1, 0x3C) with 1 player,
+    GenCamera *cam;         /* 0x4: player 0's camera: gen_createCamera(0, 1, 1, 0x3C) with 1 player,
                              * (0, 1, 2, 0x29) with 2 (= SelectWin.scene of player 0) */
-    char *cam2;             /* 0x8: 2 players only: gen_createCamera(0, 2, 3, 0x29); its +0xC +0x1B8
-                             * gets cam's +0xC */
+    GenCamera *cam2;        /* 0x8: 2 players only: gen_createCamera(0, 2, 3, 0x29); its
+                             * view (a ScreenWindow) unk1B8 gets cam's view */
 } GenScene;                 /* 0xC */
+
+/* The character-select process (GenSelectChar_ctor, alloc 0x58): a 0x50 Process (itself a Node;
+ * the ctor's inlined base ctors allocate 0x50 / 0x2C) whose +0x10 child list gets the
+ * SelItemsMgr(s), the SelectionMgr and the Fader. */
+typedef struct GenSelectChar {
+    char process[0x50];     /* 0x00: Process (Node; +0x2C / +0x30 / +0x48 cleared by the ctor) */
+    s32 twoPlayer;          /* 0x50: 0 when the ctor's player count (arg 1, gen_createScene's a1) is 1,
+                             * else 1 (one SelItemsMgr vs two); GenSelectChar_initLabels derives
+                             * the label ids from it (n * 9, n * 2 + 0x10, ...) */
+    s32 unk54;              /* 0x54: 0 */
+} GenSelectChar;            /* 0x58 */
 
 #ifndef __cplusplus /* edg (the NCC donors ncc_1DB0 / ncc_1F14 include this header) rejects the
                      * &((T *)0)->f constant form; the C builds check the offsets */
 #define SELECT_ASSERT(name, cond) typedef char select_assert_##name[(cond) ? 1 : -1]
 SELECT_ASSERT(parmi_size, sizeof(SelParmI) == 0x18);
+SELECT_ASSERT(genselectchar_size, sizeof(GenSelectChar) == 0x58);
+SELECT_ASSERT(genselectchar_twoplayer, (int)&((GenSelectChar *)0)->twoPlayer == 0x50);
 SELECT_ASSERT(parmv3_size, sizeof(SelParmV3) == 0x20);
 SELECT_ASSERT(parmrgba_size, sizeof(SelParmRGBA) == 0x24);
 SELECT_ASSERT(itemparms_size, sizeof(SelItemParms) == 0x168);

@@ -277,7 +277,7 @@ extern char *gen_createScene_00008DB4(char *self, int a1);
 extern void **SelItemsMgr_ctor(void **arg0, int *arg1, int *arg2);
 extern int gen_imp_list_append();
 extern char *SelectionMgr_ctor(char *arg0, int arg1, int arg2, int arg3, int arg4, char *arg5, int arg6, int arg7);
-extern void GenSelectChar_initLabels_00000778(char *arg0);
+extern void GenSelectChar_initLabels_00000778(GenSelectChar *self);
 extern int gen_imp_Fader_start();
 extern int gen_imp_input_setRacePadsActive();
 extern int gen_imp_memtrack_end();
@@ -388,7 +388,7 @@ after_sub:
         *(float *)&import_80800228 = 374.0f;
     }
 
-    GenSelectChar_initLabels_00000778((char *)arg0);
+    GenSelectChar_initLabels_00000778((GenSelectChar *)arg0);
     node = (int *)*(int *)&INPUT_MGR(import_80020228).fader;
     gen_imp_list_append(slot, node);
     if (node[0x14 / 4] != 0) {
@@ -422,7 +422,11 @@ void GenSelectChar_update_00000770(int a0) { (void)a0; }
  * evaluates FIRST on the RIGHT (IDO emits the right subtree first); the
  * s1-resident 0x70000 (calls 2-4) is pinned as the or's rs with
  * `x | (k = 0x70000)` (docs/IDO_CODEGEN.md commutative-operand
- * assignment lever). */
+ * assignment lever).
+ * agent-c run 535: arg0 is the GenSelectChar (select.h) and n is self->twoPlayer. Byte lever:
+ * every n read is spelled `*(int *)&self->twoPlayer`; the plain member load (or a
+ * GenSelectChar-cast macro, or swapping the g + n * 2 operands) recolours the t-registers
+ * from the 0x14 / 0x18 group to the end, the address-deref form keeps the target's. */
 extern int import_0024F228();
 extern int import_0024F278();
 extern int import_8002022C;
@@ -502,26 +506,26 @@ extern char timproc_uso_b5_D_807FFB50;
 extern char timproc_uso_b5_D_807FFB68;
 extern char timproc_uso_b5_D_807FFB80;
 extern char timproc_uso_b5_D_807FFB98;
-void GenSelectChar_initLabels_00000778(char *arg0) {
+void GenSelectChar_initLabels_00000778(GenSelectChar *self) {
     int k;
-    import_0024F228((char *)&timproc_uso_b5_D_807FF490 + 0x10, ((*(int *)((char *)arg0 + 0x50))*9) | 0x70000);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF4A8 + 0x28, ((*(int *)((char *)arg0 + 0x50))*9 + 1) | (k = 0x70000));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF5B0 + 0x130, ((*(int *)((char *)arg0 + 0x50))*2 + 3) | (k = 0x70000));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF5C8 + 0x148, ((*(int *)((char *)arg0 + 0x50))*2 + 4) | (k = 0x70000));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF490 + 0x10, ((*(int *)&self->twoPlayer)*9) | 0x70000);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF4A8 + 0x28, ((*(int *)&self->twoPlayer)*9 + 1) | (k = 0x70000));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF5B0 + 0x130, ((*(int *)&self->twoPlayer)*2 + 3) | (k = 0x70000));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF5C8 + 0x148, ((*(int *)&self->twoPlayer)*2 + 4) | (k = 0x70000));
     import_0024F228((char *)&timproc_uso_b5_D_807FF5E0 + 0x160, (((*(int *)&import_8002022C) + 8) << 16) | 2);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF5F8 + 0x178, (((*(int *)((char *)arg0 + 0x50))*3) + 3) | (((*(int *)&import_8002022C) + 8) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF610 + 0x190, (((*(int *)((char *)arg0 + 0x50))*3) + 4) | (((*(int *)&import_8002022C) + 8) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF628 + 0x1a8, (((*(int *)((char *)arg0 + 0x50))*3) + 5) | (((*(int *)&import_8002022C) + 8) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF4C0 + 0x40, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x14) << 16) | 1);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF4D8 + 0x58, (((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x14) << 16);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF4F0 + 0x70, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x14) << 16) | 2);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF508 + 0x88, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x14) << 16) | 4);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF520 + 0xa0, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x14) << 16) | 3);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF538 + 0xb8, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x18) << 16) | 2);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF550 + 0xd0, (((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x18) << 16);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF568 + 0xe8, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x18) << 16) | 1);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF580 + 0x100, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x18) << 16) | 4);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF598 + 0x118, ((((*(int *)&import_8002022C) + (*(int *)((char *)arg0 + 0x50))*2) + 0x18) << 16) | 3);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF5F8 + 0x178, (((*(int *)&self->twoPlayer)*3) + 3) | (((*(int *)&import_8002022C) + 8) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF610 + 0x190, (((*(int *)&self->twoPlayer)*3) + 4) | (((*(int *)&import_8002022C) + 8) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF628 + 0x1a8, (((*(int *)&self->twoPlayer)*3) + 5) | (((*(int *)&import_8002022C) + 8) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF4C0 + 0x40, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x14) << 16) | 1);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF4D8 + 0x58, (((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x14) << 16);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF4F0 + 0x70, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x14) << 16) | 2);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF508 + 0x88, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x14) << 16) | 4);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF520 + 0xa0, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x14) << 16) | 3);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF538 + 0xb8, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x18) << 16) | 2);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF550 + 0xd0, (((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x18) << 16);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF568 + 0xe8, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x18) << 16) | 1);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF580 + 0x100, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x18) << 16) | 4);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF598 + 0x118, ((((*(int *)&import_8002022C) + (*(int *)&self->twoPlayer)*2) + 0x18) << 16) | 3);
     import_0024F278((char *)&timproc_uso_b5_D_807FF640 + 0x1c0, 0xA << 16);
     import_0024F278((char *)&timproc_uso_b5_D_807FF658 + 0x1d8, (0xA << 16) | 1);
     import_0024F228((char *)&timproc_uso_b5_D_807FF670 + 0x1f0, (0xA << 16) | 2);
@@ -540,37 +544,37 @@ void GenSelectChar_initLabels_00000778(char *arg0) {
         import_0024F278((char *)&timproc_uso_b5_D_807FF790 + 0x310, (0xB << 16) | 6);
         import_0024F278((char *)&timproc_uso_b5_D_807FF7A8 + 0x328, (0xB << 16) | 7);
     }
-    import_0024F228((char *)&timproc_uso_b5_D_807FF7C0 + 0x340, ((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF7D8 + 0x358, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 1);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF7F0 + 0x370, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 2);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF808 + 0x388, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 3);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF820 + 0x3a0, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 4);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF838 + 0x3b8, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 5);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF850 + 0x3d0, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 6);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF868 + 0x3e8, (((*(int *)((char *)arg0 + 0x50))*2 + 0x10) << 16) | 7);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF7C0 + 0x340, ((*(int *)&self->twoPlayer)*2 + 0x10) << 16);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF7D8 + 0x358, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 1);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF7F0 + 0x370, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 2);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF808 + 0x388, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 3);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF820 + 0x3a0, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 4);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF838 + 0x3b8, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 5);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF850 + 0x3d0, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 6);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF868 + 0x3e8, (((*(int *)&self->twoPlayer)*2 + 0x10) << 16) | 7);
     if ((*(int *)&import_8002022C) != 0) {
-        import_0024F228((char *)&timproc_uso_b5_D_807FF880 + 0x400, ((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF898 + 0x418, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 1);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF8B0 + 0x430, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 2);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF8C8 + 0x448, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 3);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF8E0 + 0x460, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 4);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF8F8 + 0x478, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 5);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF910 + 0x490, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 6);
-        import_0024F228((char *)&timproc_uso_b5_D_807FF928 + 0x4a8, (((*(int *)((char *)arg0 + 0x50))*2 + 0x11) << 16) | 7);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF880 + 0x400, ((*(int *)&self->twoPlayer)*2 + 0x11) << 16);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF898 + 0x418, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 1);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF8B0 + 0x430, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 2);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF8C8 + 0x448, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 3);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF8E0 + 0x460, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 4);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF8F8 + 0x478, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 5);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF910 + 0x490, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 6);
+        import_0024F228((char *)&timproc_uso_b5_D_807FF928 + 0x4a8, (((*(int *)&self->twoPlayer)*2 + 0x11) << 16) | 7);
     }
-    import_0024F228((char *)&timproc_uso_b5_D_807FF940 + 0x4c0, ((*(int *)&import_8002022C)*5) | (((*(int *)((char *)arg0 + 0x50))*2 + 0xC) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF958 + 0x4d8, ((*(int *)&import_8002022C)*5 + 1) | (((*(int *)((char *)arg0 + 0x50))*2 + 0xC) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF970 + 0x4f0, ((*(int *)&import_8002022C)*5 + 2) | (((*(int *)((char *)arg0 + 0x50))*2 + 0xC) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF988 + 0x508, ((*(int *)&import_8002022C)*5 + 3) | (((*(int *)((char *)arg0 + 0x50))*2 + 0xC) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF9A0 + 0x520, ((*(int *)&import_8002022C)*5 + 4) | (((*(int *)((char *)arg0 + 0x50))*2 + 0xC) << 16));
-    import_0024F228((char *)&timproc_uso_b5_D_807FF9B8 + 0x538, ((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF9D0 + 0x550, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 1);
-    import_0024F228((char *)&timproc_uso_b5_D_807FF9E8 + 0x568, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 2);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFA00 + 0x580, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 3);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFA18 + 0x598, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 4);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFA30 + 0x5b0, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 5);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFA48 + 0x5c8, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 6);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFA60 + 0x5e0, (((*(int *)((char *)arg0 + 0x50))*2 + 0xD) << 16) | 7);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF940 + 0x4c0, ((*(int *)&import_8002022C)*5) | (((*(int *)&self->twoPlayer)*2 + 0xC) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF958 + 0x4d8, ((*(int *)&import_8002022C)*5 + 1) | (((*(int *)&self->twoPlayer)*2 + 0xC) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF970 + 0x4f0, ((*(int *)&import_8002022C)*5 + 2) | (((*(int *)&self->twoPlayer)*2 + 0xC) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF988 + 0x508, ((*(int *)&import_8002022C)*5 + 3) | (((*(int *)&self->twoPlayer)*2 + 0xC) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF9A0 + 0x520, ((*(int *)&import_8002022C)*5 + 4) | (((*(int *)&self->twoPlayer)*2 + 0xC) << 16));
+    import_0024F228((char *)&timproc_uso_b5_D_807FF9B8 + 0x538, ((*(int *)&self->twoPlayer)*2 + 0xD) << 16);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF9D0 + 0x550, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 1);
+    import_0024F228((char *)&timproc_uso_b5_D_807FF9E8 + 0x568, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 2);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFA00 + 0x580, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 3);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFA18 + 0x598, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 4);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFA30 + 0x5b0, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 5);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFA48 + 0x5c8, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 6);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFA60 + 0x5e0, (((*(int *)&self->twoPlayer)*2 + 0xD) << 16) | 7);
     import_0024F278((char *)&timproc_uso_b5_D_807FFB08 + 0x688, ((*(int *)&import_8002022C) + 0x23) << 16);
     import_0024F278((char *)&timproc_uso_b5_D_807FFB20 + 0x6a0, (((*(int *)&import_8002022C) + 0x23) << 16) | 1);
     import_0024F278((char *)&timproc_uso_b5_D_807FFB38 + 0x6b8, (((*(int *)&import_8002022C) + 0x23) << 16) | 2);
@@ -578,8 +582,8 @@ void GenSelectChar_initLabels_00000778(char *arg0) {
     import_0024F228((char *)&timproc_uso_b5_D_807FFAA8 + 0x628, (0x7 << 16) | 7);
     import_0024F228((char *)&timproc_uso_b5_D_807FFA78 + 0x5f8, ((*(int *)&import_8002022C)*12) | 0x80000);
     import_0024F228((char *)&timproc_uso_b5_D_807FFA90 + 0x610, (((*(int *)&import_8002022C)*12) + 1) | 0x80000);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFAD8 + 0x658, ((*(int *)((char *)arg0 + 0x50))*2) | 0x1C0000);
-    import_0024F228((char *)&timproc_uso_b5_D_807FFAF0 + 0x670, ((*(int *)((char *)arg0 + 0x50))*2 + 1) | 0x1C0000);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFAD8 + 0x658, ((*(int *)&self->twoPlayer)*2) | 0x1C0000);
+    import_0024F228((char *)&timproc_uso_b5_D_807FFAF0 + 0x670, ((*(int *)&self->twoPlayer)*2 + 1) | 0x1C0000);
     import_0024F278((char *)&timproc_uso_b5_D_807FFB50 + 0x6d0, (0x2F << 16) | 0x10);
     import_0024F228((char *)&timproc_uso_b5_D_807FFB68 + 0x6e8, (((*(int *)&import_8002022C) + 8) << 16) | 9);
     import_0024F228((char *)&timproc_uso_b5_D_807FFB80 + 0x700, (((*(int *)&import_8002022C) + 8) << 16) | 0xA);
@@ -5613,13 +5617,13 @@ char *gen_createScene_00008DB4(char *self, int a1) {
     NODE(A)->parent = (int)&import_80020098;
     ((GenScene *)self)->room = gen_buildRoom_0000131C(0, a1);
     if (a1 == 1) {
-        ((GenScene *)self)->cam = (char *)gen_createCamera_0000283C(0, 1, 1, 0x3C);
+        ((GenScene *)self)->cam = (GenCamera *)gen_createCamera_0000283C(0, 1, 1, 0x3C);
         goto end;
     }
-    ((GenScene *)self)->cam = (char *)gen_createCamera_0000283C(0, 1, 2, 0x29);
+    ((GenScene *)self)->cam = (GenCamera *)gen_createCamera_0000283C(0, 1, 2, 0x29);
     p39c = (char *)gen_createCamera_0000283C(0, 2, 3, 0x29);
-    ((GenScene *)self)->cam2 = p39c;
-    *(int *)(*(char **)(p39c + 0x0C) + 0x1B8) = *(int *)(((GenScene *)self)->cam + 0x0C);
+    ((GenScene *)self)->cam2 = (GenCamera *)p39c;
+    ((ScreenWindow *)((GenCamera *)p39c)->view)->unk1B8 = (int)((GenScene *)self)->cam->view; /* +0x1B8 is past Window: a ScreenWindow */
 end:
     return self;
 }
