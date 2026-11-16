@@ -1,4 +1,5 @@
 #include "common.h"
+#include "libultra/rmon.h"
 
 extern s32 rmon_breakpoints;
 extern s32 rmon_altBreak_oldInstruction;
@@ -55,13 +56,14 @@ extern void func_800073F8(void *, s32, s32);
  * keyword pins arg0->s0 + the 3 table pointers->s1/s2/s3, and the reversed
  * loop-compare operand order (FW(s0,0x10) == *var_s2) fixes the commutative
  * load-order — both carried over from the 2026-06-23 rebuild. */
+#define REQ(p) ((KKSetBkptRequest *)(p))
 s32 __rmonSetBreak(void *arg0) {
     register void *s0 = arg0;
     register char *var_s1;
     register char *var_s2;
     register char *var_s3;
-    struct { s32 w0; u8 tag; u8 p5; s16 zero; s32 w8; s32 idC; s32 idx; s32 saved; } reply;
-    if (*(u8 *)((char *)arg0 + 9) == 1) {
+    KKBkptEvent reply;
+    if (REQ(arg0)->header.method == 1) {
         var_s1 = (char *) &rmon_RCPbreakpoints;
         var_s2 = (char *) &rmon_RCPbreakpoints + 8;
         var_s3 = (char *) &rmon_RCPbreakpoints + 0x80;
@@ -74,7 +76,7 @@ s32 __rmonSetBreak(void *arg0) {
         if (*(s32 *)var_s2 == 0) {
             break;
         }
-        if (FW(s0, 0x10) == *(s32 *)var_s2) {
+        if (REQ(s0)->addr == *(s32 *)var_s2) {
             break;
         }
         var_s2 += 8;
@@ -83,22 +85,22 @@ s32 __rmonSetBreak(void *arg0) {
         return -0xA;
     }
     if (*(s32 *)var_s2 == 0) {
-        if (*(u8 *)((char *)arg0 + 9) == 1) {
-            *(s32 *)(var_s2 + 4) = func_80006A98(FW(s0, 0x10));
-            func_80006A50(FW(s0, 0x10), ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD);
+        if (REQ(arg0)->header.method == 1) {
+            *(s32 *)(var_s2 + 4) = func_80006A98(REQ(s0)->addr);
+            func_80006A50(REQ(s0)->addr, ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD);
         } else {
-            *(s32 *)(var_s2 + 4) = *(s32 *)FW(s0, 0x10);
-            *(s32 *)FW(s0, 0x10) = ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD;
-            func_800031F0((void *) FW(s0, 0x10), 4);
-            func_80005350((void *) FW(s0, 0x10), 4);
+            *(s32 *)(var_s2 + 4) = *(s32 *)REQ(s0)->addr;
+            *(s32 *)REQ(s0)->addr = ((((var_s2 - var_s1) >> 3) + 0x10) & 0xFFFFF) << 6 | 0xD;
+            func_800031F0((void *) REQ(s0)->addr, 4);
+            func_80005350((void *) REQ(s0)->addr, 4);
         }
-        *(s32 *)var_s2 = FW(s0, 0x10);
+        *(s32 *)var_s2 = REQ(s0)->addr;
     }
-    reply.tag = *(u8 *)((char *)s0 + 4);
-    reply.zero = 0;
-    reply.idC = FW(s0, 0xC);
-    reply.idx = (var_s2 - var_s1) >> 3;
-    reply.saved = *(s32 *)(var_s2 + 4);
+    reply.header.code = REQ(s0)->header.code;
+    reply.header.error = 0;
+    reply.object = REQ(s0)->object;
+    reply.bp = (var_s2 - var_s1) >> 3;
+    reply.instruction = *(s32 *)(var_s2 + 4);
     func_800073F8(&reply, 0x18, 1);
     return 0;
 }

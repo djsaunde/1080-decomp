@@ -88,6 +88,20 @@ typedef struct KKReadRequest {
     /* 0x14 */ u32 nbytes;
 } KKReadRequest; /* size 0x18 */
 
+typedef struct KKSetBkptRequest {     /* ultralib rmon: set-breakpoint request */
+    /* 0x00 */ KKHeader header;
+    /* 0x0C */ TVid object;
+    /* 0x10 */ u32 addr;
+    /* 0x14 */ u32 nbytes;
+} KKSetBkptRequest; /* size 0x18 */
+
+typedef struct KKBkptEvent {          /* ultralib rmon: set-breakpoint reply */
+    /* 0x00 */ KKHeader header;
+    /* 0x0C */ TVid object;
+    /* 0x10 */ s32 bp;                 /* slot index in the breakpoint table */
+    /* 0x14 */ u32 instruction;        /* the word the BREAK replaced */
+} KKBkptEvent; /* size 0x18 */
+
 typedef struct KKWriteHeader {
     /* 0x00 */ KKHeader header;
     /* 0x0C */ TVid object;
