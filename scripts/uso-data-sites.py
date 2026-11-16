@@ -59,6 +59,12 @@ verifies the named game.uso section offsets in include/game/game_uso_data.h (che
 `--uso game check` runs only that. Two game.uso subcommands:
   pmf-table START END [--sect Data|RoData]
                      the #define lines naming a table of 8-byte PMF records by their target
+  const-table [--write]
+                     the #define lines naming the strings ("Parms" group names, class names, assert
+                     texts), 3-letter parm tags and float / double constants the game_uso sites reach
+                     by a literal K, each with a value claim (`"text"`, `f32 V`, `f64 V`) that `check`
+                     verifies against the section bytes; --write replaces the generated block of
+                     include/game/game_uso_data.h (agent-g run 543)
   spell FILE.. [-v] [--write]
                      respell the literal K of each game_uso site (`&game_uso_D_x + K`,
                      `AT(T, &game_uso_D_x, K)`, `&D_00000000 + K`) with the header constant
@@ -1230,6 +1236,12 @@ def selftest_game(a):
     assert [n for n, _, _ in game_spans('extern "C" int f(char *a) {\n    return 0;\n}\n')] == ['f']
     m = GSITE_RE.search('*(Pair2*)((char*)&D_00000000 + 0xE40)')
     assert m and m.group(1) == 'D_00000000' and m.group(3) == '0xE40'
+    assert value_claim_error(g, 6, 0xD54, ': "Parms"') is None
+    assert value_claim_error(g, 6, 0xD54, ': "Parm"') is not None
+    assert value_claim_error(g, 7, 0x158, ': f64 0.1') is None
+    assert value_claim_error(g, 7, 0x158, ': f64 0.2') is not None
+    assert const_name(g, 6, 0x320, 'str') == 'kTag_cof_320'
+    assert SITE_TYPE_RE.search('if (AT(double, ') and SITE_TYPE_RE.search('*(f64 *)((char *)')
     print('selftest game.uso OK')
 
 
@@ -1306,6 +1318,13 @@ def check_game(no_build=False, verbose=False):
             bad += 1
             print(f'MISMATCH {name} ({GAME_HDR}:{line}) = 0x{val:X} but its comment says +0x{coff:X}')
             continue
+        vbad = value_claim_error(g, sect, val, comment)
+        if vbad:
+            bad += 1
+            print(f'MISMATCH {name} ({GAME_HDR}:{line}): {vbad}')
+            continue
+        if VALUE_CLAIM_RE.search(comment):
+            tgt += 1
         pm = re.search(r'\b(PMF|ptr)\s*->\s*(\w+)', comment)
         if pm:
             got = game_ptr_target(g, sect, val + (4 if pm.group(1) == 'PMF' else 0))
@@ -1328,8 +1347,8 @@ def check_game(no_build=False, verbose=False):
                     continue
                 bad += 1
                 print(f'MISMATCH {name} in {f} ({p}): no {SECT_NAME[sect]}-base site with K=0x{val:X}')
-    print(f'check: game.uso: {len(consts)} named section offsets ({GAME_HDR}), {tgt} pointer targets '
-          f'verified, {ok} (constant, function) uses verified, {bad} mismatches')
+    print(f'check: game.uso: {len(consts)} named section offsets ({GAME_HDR}), {tgt} pointer targets / '
+          f'values verified, {ok} (constant, function) uses verified, {bad} mismatches')
     return bad
 
 
@@ -1390,6 +1409,160 @@ def cmd_game_spell(c, a):
     print(f'{total} sites' + ('' if a.write else ' (dry run; --write to apply)'))
 
 
+# value claims in a GAME_HDR comment (agent-g run 543), checked against the section bytes at K:
+#   "text"      the NUL-terminated string starting at K (rom_string)
+#   f32 V / f64 V   the big-endian float / double at K, printed with repr()
+VALUE_CLAIM_RE = re.compile(r':\s*("(?:[^"\\]|\\.)*"|f32 \S+|f64 \S+)')
+
+
+def scalar_at(c, sect, k, typ):
+    d = c.secs.get(SECT_NAME.get(sect), b'')
+    n = 4 if typ == 'f32' else 8
+    if k % n or k + n > len(d):
+        return None
+    return struct.unpack_from('>f' if typ == 'f32' else '>d', d, k)[0]
+
+
+def fmt_scalar(typ, v):
+    if typ == 'f32':
+        # shortest repr that rounds back to the same single
+        for p in range(1, 18):
+            t = '%.*g' % (p, v)
+            try:
+                if struct.pack('>f', float(t)) == struct.pack('>f', v):
+                    return repr(float(t))
+            except OverflowError:  # rounds past FLT_MAX
+                continue
+    return repr(v)
+
+
+def value_claim_error(c, sect, k, comment):
+    """None when the comment's value claim (if any) matches the section bytes at k, else why not."""
+    m = VALUE_CLAIM_RE.search(comment)
+    if not m:
+        return None
+    cl = m.group(1)
+    if cl.startswith('"'):
+        got = rom_string(c, sect, k)
+        want = c_unliteral(cl)
+        return None if got == want else f'claims {cl}, the ROM has {c_literal(got) if got else "no string"}'
+    typ, txt = cl.split(' ', 1)
+    v = scalar_at(c, sect, k, typ)
+    if v is None:
+        return f'claims {cl}, but +0x{k:X} is not an aligned {typ}'
+    want = struct.pack('>f' if typ == 'f32' else '>d', float(txt))
+    have = struct.pack('>f' if typ == 'f32' else '>d', v)
+    return None if want == have else f'claims {cl}, the ROM has {typ} {fmt_scalar(typ, v)}'
+
+
+TAG_RE = re.compile(r'[a-z][a-z0-9]{2}')
+# the C type a site reads its K as: a cast / AT() type within the 48 characters before the placeholder
+SITE_TYPE_RE = re.compile(r'(?:\(\s*(f64|double|f32|float)\s*\*\s*\)|\bAT\s*\(\s*(f64|double|f32|float)\s*,)[^;]{0,48}$')
+
+
+def const_name(c, sect, k, typ):
+    if typ == 'str':
+        t = rom_string(c, sect, k)
+        if TAG_RE.fullmatch(t):
+            return f'kTag_{t}_{k:X}'
+        ident = re.sub(r'_+', '_', re.sub(r'[^A-Za-z0-9]', '_', t)).strip('_')[:32].rstrip('_')
+        return f'kStr_{ident}_{k:X}'
+    v = scalar_at(c, sect, k, typ)
+    vt = fmt_scalar(typ, v)
+    vt = 'FLT_MAX' if typ == 'f32' and vt == '3.4028234663852886e+38' or vt == '3.4028235e+38' else vt
+    vt = re.sub(r'\.0$', '', re.sub(r'\.0(?=e)', '', vt)).replace('-', 'm').replace('.', 'p').replace('+', '')
+    vt = re.sub(r'[^A-Za-z0-9]', '_', vt)
+    return f'k{"Ro" if sect == 7 else "Data"}{"F" if typ == "f32" else "D"}_{vt}_{k:X}'
+
+
+def plan_const_table(c):
+    """{(sect, k): (typ, [func..])} for every literal game_uso site K that no GAME_HDR constant names
+    yet and whose relocs prove ONE section base: a string start (Data / RoData), or a scalar whose
+    site casts it as float / double (the cast within the statement just before the placeholder)."""
+    have = {(sect, val) for _, val, sect, *_ in game_consts()}
+    out = {}
+    srcs = [p for e in ('c', 'cpp') for p in sorted(glob.glob(f'{GAME_SRC}/*.{e}'))]
+    for path in srcs:
+        src = open(path, errors='replace').read()
+        for f, b0, b1 in game_spans(src):
+            ss = [x for x in c.by_func.get(f, []) if x.rtype == 2]
+            for mm in GSITE_RE.finditer(src, b0, b1):
+                k = int(mm.group(3), 0)
+                hit = [x for x in ss if x.placeholder == mm.group(1) and x.k == k]
+                secs_ = {x.sym.sect for x in hit if x.sym.is_base}
+                if not hit or len(secs_) != 1 or any(not x.sym.is_base for x in hit):
+                    continue
+                sect = secs_.pop()
+                if (sect, k) in have or sect not in (6, 7):
+                    continue
+                st = rom_string(c, sect, k)
+                if st is not None and '*/' not in st and (TAG_RE.fullmatch(st) or len(st) > 3):
+                    typ = 'str'
+                else:
+                    tm = SITE_TYPE_RE.search(src, max(b0, mm.start() - 64), mm.start())
+                    if not tm:
+                        continue
+                    typ = {'double': 'f64', 'float': 'f32'}.get(tm.group(1) or tm.group(2), tm.group(1) or tm.group(2))
+                    if scalar_at(c, sect, k, typ) is None:
+                        continue
+                e = out.setdefault((sect, k), (typ, []))
+                if e[0] != typ:
+                    out[(sect, k)] = ('conflict', e[1])
+                elif f not in e[1]:
+                    e[1].append(f)
+    return {key: v for key, v in out.items() if v[0] != 'conflict'}
+
+
+CONST_BEGIN = '/* const-table:begin (uso-data-sites.py --uso game const-table --write; do not edit by hand) */'
+CONST_END = '/* const-table:end */'
+
+
+def cmd_const_table(c, a):
+    """#define lines naming the game.uso strings, parm tags and float / double constants that the
+    game_uso sites reach by a literal K (`--uso game const-table [--write]`). Each line carries its
+    value claim ("text" / f32 V / f64 V), which `check` verifies against the ROM. --write replaces
+    the generated block of GAME_HDR."""
+    plan = plan_const_table(c)
+    groups = {'str': [], 'tag': [], 'num': []}
+    for (sect, k), (typ, fs) in sorted(plan.items()):
+        n = const_name(c, sect, k, typ)
+        if typ == 'str':
+            val = c_literal(rom_string(c, sect, k))
+            grp = 'tag' if n.startswith('kTag_') else 'str'
+        else:
+            val = f'{typ} {fmt_scalar(typ, scalar_at(c, sect, k, typ))}'
+            grp = 'num'
+        groups[grp].append(f'#define {n} 0x{k:X} /* {SECT_NAME[sect]}+0x{k:X}: {val} */')
+    names = [l.split()[1] for g_ in groups.values() for l in g_]
+    dup = [n for n, cnt in collections.Counter(names).items() if cnt > 1]
+    if dup:
+        print('duplicate names:', dup)
+        return 1
+    head = {'str': '/* strings (class names, "Parms" group names, assert texts, file names) */',
+            'tag': '/* 3-letter parm tags (Parms_addParm / the parms-file keys) */',
+            'num': '/* float / double constants (the type is the one the site reads) */'}
+    body = [CONST_BEGIN]
+    for gname in ('str', 'tag', 'num'):
+        if groups[gname]:
+            body += [head[gname]] + groups[gname]
+    body.append(CONST_END)
+    text = '\n'.join(body) + '\n'
+    if not a.write:
+        print(text, end='')
+        print(f'{len(names)} constants (dry run; --write to update {GAME_HDR})')
+        return 0
+    src = open(GAME_HDR).read()
+    i, j = src.find(CONST_BEGIN), src.find(CONST_END)
+    if i >= 0 and j > i:
+        src = src[:i] + text + src[j + len(CONST_END) + 1:]
+    else:
+        e = src.rfind('#endif')
+        src = src[:e] + text + '\n' + src[e:]
+    open(GAME_HDR, 'w').write(src)
+    print(f'{len(names)} constants written to {GAME_HDR}')
+    return 0
+
+
 def cmd_pmf_table(c, a):
     """#define lines naming a table of 8-byte PMF records {s16 delta, s16 index, fn} by the
     function each one points at (`--uso game pmf-table 0xDB0 0xF60`)."""
@@ -1436,6 +1609,7 @@ def main():
     sub.add_parser('selftest')
     p = sub.add_parser('pmf-table'); p.add_argument('start'); p.add_argument('end')
     p.add_argument('--sect', default='Data', choices=('Data', 'RoData'))
+    p = sub.add_parser('const-table'); p.add_argument('--write', action='store_true')
     p = sub.add_parser('spell'); p.add_argument('files', nargs='+')
     p.add_argument('-v', '--verbose', action='store_true')
     p.add_argument('--write', action='store_true')
@@ -1443,7 +1617,8 @@ def main():
     c = Census('.', a.no_build, a.uso)
     sys.exit({'sites': cmd_sites, 'calls': cmd_calls, 'census': cmd_census, 'object': cmd_object,
               'check': cmd_check, 'selftest': cmd_selftest, 'convert': cmd_convert,
-              'spell-base': cmd_spell_base, 'pmf-table': cmd_pmf_table, 'spell': cmd_game_spell}[a.cmd](c, a) or 0)
+              'spell-base': cmd_spell_base, 'pmf-table': cmd_pmf_table, 'spell': cmd_game_spell,
+              'const-table': cmd_const_table}[a.cmd](c, a) or 0)
 
 
 if __name__ == '__main__':
