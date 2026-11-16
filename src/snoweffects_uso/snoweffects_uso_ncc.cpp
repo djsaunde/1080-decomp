@@ -129,3 +129,99 @@ extern "C" void snoweffects_uso_func_000039C4(SnowFall *t) {
         }
     }
 }
+
+/* 0x4E5C: the emitter's end points from its basis angle. ang = acos(-(dir . v108)), mirrored when the
+ * camera's v318 . v3C8 is negative and again for camera flag 0x80; p = (-len cos, 0, -u40 u50 sin) and
+ * q = (len cos, 0, u40 u50 sin) through the world matrix (+0x30); each is probed with 0x52D4 (hit distance
+ * into d1 / d2, hit vector into a local) and, on a hit nearer than maxDist, pushed back along the hit
+ * vector (hits++); uD4 = uC4. Frame (216): the point transform declares its results z, y, x (the z temp
+ * the target spills sits right under the pool words), the push is a named local of its if-block with
+ * operator* as a member and += by const reference (agent-e's 0x8D70 shape), and one dead scratch block of
+ * four words after the first push fills the gap above the second probe's locals (agent-e run 659). */
+struct SnowBV3 {
+    float x, y, z;
+    SnowBV3() {}
+    void set(float a, float b, float c) { x = a; y = b; z = c; }
+    SnowBV3 &operator+=(const SnowBV3 &o) { x += o.x; y += o.y; z += o.z; return *this; }
+    SnowBV3 operator*(float s) const { SnowBV3 r; r.set(x * s, y * s, z * s); return r; }
+};
+inline float dot(const SnowBV3 &a, const SnowBV3 &b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+inline void xf(SnowBV3 *v, float (*m)[4]) {
+    float nz, ny, nx;
+    nx = m[0][0] * v->x + m[1][0] * v->y + m[2][0] * v->z + m[3][0];
+    ny = m[0][1] * v->x + m[1][1] * v->y + m[2][1] * v->z + m[3][1];
+    nz = m[0][2] * v->x + m[1][2] * v->y + m[2][2] * v->z + m[3][2];
+    v->x = nx; v->y = ny; v->z = nz;
+}
+struct SnowBCam {
+    char pad[0x318];
+    SnowBV3 v318;
+    char pad324[0x3C8 - 0x324];
+    SnowBV3 v3C8;
+    char pad3D4[0xA58 - 0x3D4];
+    int flags;       /* A58 */
+};
+struct SnowQuad { int a, b, c, d; };
+struct SnowBasis {
+    char pad00[0x2C];
+    SnowBCam *cam;   /* 2C */
+    float (*m)[4];   /* 30: world matrix */
+    char pad34[0x3C - 0x34];
+    float len;       /* 3C */
+    float u40;
+    char pad44[0x50 - 0x44];
+    float u50;
+    char pad54[0xB4 - 0x54];
+    SnowQuad uB4;    /* B4: 0x52D4 out-param of the p probe */
+    SnowQuad uC4;    /* C4: 0x52D4 out-param of the q probe */
+    SnowQuad uD4;    /* D4: copy of uC4 */
+    char padE4[0x108 - 0xE4];
+    SnowBV3 v108;    /* 108 */
+    SnowBV3 dir;     /* 114 */
+    SnowBV3 p;       /* 120 */
+    SnowBV3 q;       /* 12C */
+    char pad138[0x144 - 0x138];
+    int hits;        /* 144 */
+    float cosA;      /* 148 */
+    float d1;        /* 14C */
+    float d2;        /* 150 */
+    char pad154[0x15C - 0x154];
+    float maxDist;   /* 15C */
+};
+extern "C" float gl_func_00000000_snow_ff(float);  /* math_acosf / fcos / fsin: float(float) blank jal */
+extern "C" float gl_func_00000000_snow_hitf(SnowBasis *, SnowBV3 *, SnowBV3 *, SnowQuad *);  /* 0x52D4 */
+extern "C" void snoweffects_uso_func_00004E5C(SnowBasis *t) {
+    float ang;
+    SnowBV3 hit;
+    t->cosA = -(t->dir.x * t->v108.x + t->dir.y * t->v108.y + t->dir.z * t->v108.z);
+    ang = XCALL(gl_func_00000000_snow_ff, math_acosf)(t->cosA);
+    if (dot(t->cam->v318, t->cam->v3C8) < 0.0f) {
+        ang = -ang;
+    }
+    if (t->cam->flags & 0x80) {
+        ang = -ang;
+    }
+    t->hits = 0;
+    t->p.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * -t->len;
+    t->p.y = 0.0f;
+    t->p.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (-t->u40 * t->u50);
+    xf(&t->p, t->m);
+    t->q.x = XCALL(gl_func_00000000_snow_ff, fcos)(ang) * t->len;
+    t->q.y = 0.0f;
+    t->q.z = XCALL(gl_func_00000000_snow_ff, fsin)(ang) * (t->u40 * t->u50);
+    xf(&t->q, t->m);
+    t->d1 = XCALL(gl_func_00000000_snow_hitf, snoweffects_uso_func_000052D4)(t, &t->p, &hit, &t->uB4);
+    if (t->d1 != 0.0f && t->d1 < t->maxDist) {
+        SnowBV3 push = hit * -t->d1;
+        { int sc[4]; sc[0] = 0; }
+        t->p += push;
+        t->hits++;
+    }
+    t->d2 = XCALL(gl_func_00000000_snow_hitf, snoweffects_uso_func_000052D4)(t, &t->q, &hit, &t->uC4);
+    if (t->d2 != 0.0f && t->d2 < t->maxDist) {
+        SnowBV3 push = hit * -t->d2;
+        t->q += push;
+        t->hits++;
+    }
+    t->uD4 = t->uC4;
+}

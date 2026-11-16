@@ -715,15 +715,10 @@ void snoweffects_uso_func_00004E4C(char *a0) {
     *(float *)(a0 + 0x50) = 1.0f;
 }
 
-#ifdef NON_MATCHING
-/* basis end points + collision push-back: NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm.cpp
- * (agent-h run 656; all instructions match, frame layout 192 vs 216), REPLACE_FUNC_BODY-spliced over this
- * placeholder on the non_matching build. */
+/* basis end points + collision push-back: EXACT via the IDO 7.1 NCC donor
+ * src/snoweffects_uso/snoweffects_uso_ncc.cpp, REPLACE_FUNC_BODY-spliced over this placeholder. */
 void snoweffects_uso_func_00004E5C(void) {
 }
-#else
-INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00004E5C);
-#endif
 
 void snoweffects_uso_func_000052CC(int a0) {
     (void)&a0;
