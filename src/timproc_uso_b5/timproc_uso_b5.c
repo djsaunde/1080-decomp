@@ -4,6 +4,7 @@
 #include "uso_call.h"
 #include "game/input.h"
 #include "game/course.h" /* WorldRegistry (GameFlow.game) */
+#include "gdl/race.h" /* RaceSprite: the gui sprite slot (image at +0x10, its width at +0x20) */
 
 /* Vptr stores below spell bootup vtables as their import_<RAM addr> placeholders and name them in
  * a comment ("vptr: bootup X", the gl_data.h alias; Sym from this module's import table, agent-c run
@@ -2028,8 +2029,8 @@ void SelItem_drawStatBar_00003A4C(char *arg0, int arg1, int arg2, char *arg3, in
         {
             char *objA = &timproc_uso_b5_D_807FF490;
             goto lA; lA: objA += 0x10;
-            dp = *(char **)(objA + 0x10);
-            dw = *(short *)(dp + 0x20);
+            dp = (char *)((RaceSprite *)objA)->image;
+            dw = ((RaceSpriteImage *)dp)->width;
             import_0024F75C(objA, *pA + (SELWIN(arg7)->parms.cox.value + (sz = arg1)), SELWIN(arg7)->parms.coy.value + (int)(pB = (int *)arg2),
                             dw - 0x20, 0x20);
         }
@@ -2045,8 +2046,9 @@ void SelItem_drawStatBar_00003A4C(char *arg0, int arg1, int arg2, char *arg3, in
     {
         char *objB = &timproc_uso_b5_D_807FF4A8;
         goto lB; lB: objB += 0x28;
-        dw = (int) *(char **)(objB + 0x10);
-        dp = (char *) *(short *)((char *)dw + 0x20);
+        /* here dw holds the image and dp its width: swapping the two locals swaps v0 / v1 */
+        dw = *(int *)&((RaceSprite *)objB)->image;
+        dp = (char *)((RaceSpriteImage *)dw)->width;
         sz = *pB;
         import_0024F75C(objB, arg1 + sz, arg2, sz, dp - sz);
     }
@@ -2120,16 +2122,16 @@ void SelItem_drawStatBarRight_00003C8C(char *arg0, int arg1, int arg2, char *arg
         {
             char *objA = &timproc_uso_b5_D_807FF490;
             goto lA; lA: objA += 0x10;
-            dp = *(char **)(objA + 0x10);
-            dw = *(short *)(dp + 0x20);
+            dp = (char *)((RaceSprite *)objA)->image;
+            dw = ((RaceSpriteImage *)dp)->width;
             import_0024F75C(objA, *pA + (SELWIN(arg7)->parms.cox.value + (sz = arg1)), SELWIN(arg7)->parms.coy.value + (int)(pB = (int *)arg2),
                             dw - 0x10, 0x10);
         }
     }
     import_0024E608(&import_8024CAF8, 0xFF, arg6);
     import_0024F2C8(arg3);
-    dp = *(char **)(arg3 + 0x10);
-    dw = *(short *)(dp + 0x20);
+    dp = (char *)((RaceSprite *)arg3)->image;
+    dw = ((RaceSpriteImage *)dp)->width;
     import_0024F34C(arg3, (arg1 - SELWIN(arg7)->parms.clx.value) - dw,
                     arg2 - SELWIN(arg7)->parms.cly.value, 0);
     import_0024E608(&import_8024CAF8, 0xFF, arg5);
@@ -2140,8 +2142,9 @@ void SelItem_drawStatBarRight_00003C8C(char *arg0, int arg1, int arg2, char *arg
     {
         char *objB = &timproc_uso_b5_D_807FF4A8;
         goto lB; lB: objB += 0x28;
-        dw = (int) *(char **)(objB + 0x10);
-        dp = (char *) *(short *)((char *)dw + 0x20);
+        /* here dw holds the image and dp its width: swapping the two locals swaps v0 / v1 */
+        dw = *(int *)&((RaceSprite *)objB)->image;
+        dp = (char *)((RaceSpriteImage *)dw)->width;
         sz = *pB;
         import_0024F75C(objB, arg1 + sz, arg2, sz, dp - sz);
     }
@@ -3504,10 +3507,11 @@ int SelectWin_canScrollPrev_0000687C(int *a0) {
     if (idx < 0) goto ret0;
 
     byte_off = idx * 4;
-    cursor = (int*)((char*)*(int*)((char*)(int *)SELWIN(a0)->itemsMgr + group_off + 0x40) + byte_off);
+    /* cursor = the stage's item list shifted idx words: its items[0] is items[idx] */
+    cursor = (int*)((char*)SELWIN(a0)->itemsMgr->lists[group] + byte_off);
     do {
         byte_off -= 4;
-        if (*(float*)((char*)*(int*)((char*)cursor + 0x3C) + 0x2A4) != 0.0f) return 1;
+        if (((SelItemList *)cursor)->items[0]->enabled != 0.0f) return 1;
         cursor = (int*)((char*)cursor - 4);
     } while (byte_off >= 0);
 ret0:
@@ -3585,7 +3589,7 @@ int SelectWin_canScrollNext_00006900(char *s) {
     }
     i = ((int *)(s + 0x3D0))[SELWIN(s)->stage] + 1;
     for (; i < SelectWin_itemCount_00008C1C((int *)s); i++) {
-        if (*(float *)(*(int *)(*(int *)(SELWIN(s)->stage * 4 + *(int *)(s + 0x40C) + 0x40) + i * 4 + 0x3C) + 0x2A4) != 0.0f) {
+        if (SELWIN(s)->itemsMgr->lists[SELWIN(s)->stage]->items[i]->enabled != 0.0f) {
             return 1;
         }
     }
@@ -5663,9 +5667,9 @@ end:
  * p1 first (the natural order) gives the swap. Replaces prior INSN_PATCH
  * approach — no Makefile entry needed. */
 void CommonInfo_loadData_00008F98(char *a0) {
-    int *p2 = *(int**)((char*)*(int*)(a0 + 0x2C) + 0x28);
-    int p1 = *(int*)(a0 + 0x2C);
-    (*(int(**)())((char*)p2 + 0x5C))(*(short*)((char*)p2 + 0x58) + p1);
+    int *p2 = (int *)NODE(((SelCommonInfo *)a0)->mgr)->vptr;
+    SelItemsMgr *p1 = ((SelCommonInfo *)a0)->mgr;
+    VT_SLOT(p2, 10).fn(VT_SLOT(p2, 10).delta + (char *)p1); /* SelItemsMgr_loadInfo */
 }
 
 
@@ -5981,10 +5985,10 @@ void SelItemsMgr_loadData_0000A97C(char *a0) {
     i = 0;
     p = a0;
     do {
-        v1 = *(int**)(p + 0x40);
+        v1 = (int *)((SelItemsMgr *)p)->lists[0]; /* p is a0 shifted i words: lists[i] */
         if (1) {
-            v0 = *(int**)((char*)v1 + 0x28);
-            (*(int(**)())((char*)v0 + 0x4C))(*(short*)((char*)v0 + 0x48) + (int)v1);
+            v0 = (int *)NODE(v1)->vptr;
+            VT_SLOT(v0, 8).fn(VT_SLOT(v0, 8).delta + (int)v1); /* SelItemList_loadData */
             i++;
         }
         p += 4;
@@ -6005,10 +6009,10 @@ void SelItemsMgr_loadInfo_0000A9EC(char *a0) {
     i = 0;
     p = a0;
     do {
-        v1 = *(int**)(p + 0x40);
+        v1 = (int *)((SelItemsMgr *)p)->lists[0]; /* p is a0 shifted i words: lists[i] */
         if (1) {
-            v0 = *(int**)((char*)v1 + 0x28);
-            (*(int(**)())((char*)v0 + 0x64))(*(short*)((char*)v0 + 0x60) + (int)v1);
+            v0 = (int *)NODE(v1)->vptr;
+            VT_SLOT(v0, 11).fn(VT_SLOT(v0, 11).delta + (int)v1); /* SelItemList_loadInfo */
             i++;
         }
         p += 4;
@@ -7170,17 +7174,17 @@ void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, in
             SELITEM(arg0)->info.ixn.value * 24 + (int)(&timproc_uso_b5_D_807FF700 + 0x280), 0xFF);
     }
     sp30 = 0;
-    v0r = gen_imp_Backup_ghostGetMode(*(int *)(&import_80020098 + 0x148) + 4);
-    v1 = *(int *)(&import_80020098 + 0x34);
+    v0r = gen_imp_Backup_ghostGetMode((char *)INPUT_MGR(import_80020098).backup + 4);
+    v1 = INPUT_MGR(import_80020098).nextFlowMode;
     if (v1 == 6) {
         if (v0r == 2) {
-            if (gen_imp_Backup_ghostGetCourse(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
+            if (gen_imp_Backup_ghostGetCourse((char *)INPUT_MGR(import_80020098).backup + 4) == SELITEM(arg0)->id) {
                 sp30 = 1;
             }
         }
     } else if (v1 == 4) {
         if (v0r == 1) {
-            if (gen_imp_Backup_ghostGetCourse(*(int *)(&import_80020098 + 0x148) + 4) == SELITEM(arg0)->id) {
+            if (gen_imp_Backup_ghostGetCourse((char *)INPUT_MGR(import_80020098).backup + 4) == SELITEM(arg0)->id) {
                 sp30 = 1;
             }
         }
@@ -7516,10 +7520,10 @@ void SelItemList_loadData_0000D06C(char *a0) {
     i = 0;
     p = a0;
     do {
-        v1 = *(int**)(p + 0x3C);
+        v1 = (int *)((SelItemList *)p)->items[0]; /* p is a0 shifted i words: items[i] */
         if (1) {
-            v0 = *(int**)((char*)v1 + 0x28);
-            (*(int(**)())((char*)v0 + 0x4C))(*(short*)((char*)v0 + 0x48) + (int)v1);
+            v0 = (int *)NODE(v1)->vptr;
+            ((int (*)())SELVT(v0)->base[8].fn)(SELVT(v0)->base[8].delta + (int)v1); /* SelItem_loadData */
             i++;
         }
         p += 4;
@@ -7540,10 +7544,10 @@ void SelItemList_loadInfo_0000D0DC(char *a0) {
     i = 0;
     p = a0;
     do {
-        v1 = *(int**)(p + 0x3C);
+        v1 = (int *)((SelItemList *)p)->items[0]; /* p is a0 shifted i words: items[i] */
         if (1) {
-            v0 = *(int**)((char*)v1 + 0x28);
-            (*(int(**)())((char*)v0 + 0xE4))(*(short*)((char*)v0 + 0xE0) + (int)v1);
+            v0 = (int *)NODE(v1)->vptr;
+            ((int (*)())SELVT(v0)->loadInfo.fn)(SELVT(v0)->loadInfo.delta + (int)v1); /* SelItem_loadInfo */
             i++;
         }
         p += 4;

@@ -1256,27 +1256,13 @@ extern int gl_func_00000000();
 extern char D_00000000;
 void CourseItem_update_0000C8AC(int *a0);
 void CourseItem_setAlpha_0000C978(int *a0, float a1);
-typedef struct {
-    char pad_00[0xBC];
-    int field_BC;
-    char pad_C0[4];
-    int field_C4;
-} C98CDrawable;
-typedef struct {
-    char pad_00[0xC];
-    C98CDrawable *drawable;
-} C98CLink;
-typedef struct {
-    char pad_00[0x414];
-    C98CLink *link;
-} C98CContext;
 extern char timproc_uso_b5_D_807FF640;
 extern char timproc_uso_b5_D_807FF700;
 extern char timproc_uso_b5_D_807FFB50;
 extern int import_8002022C;
 extern int gen_imp_Backup_ghostGetMode(void *);
 extern int gen_imp_Backup_ghostGetCourse(void *);
-void CourseItem_drawLabel_0000C98C(C98CObject *arg0, C98CContext *arg1, volatile int arg2, int arg3);
+void CourseItem_drawLabel_0000C98C(char *arg0, char *arg1, volatile int arg2, int arg3);
 extern float D_CB40_up;
 extern float D_CB40_dn;
 void TesuriItem_updateHighlight_0000CB40(char *a0, float target);

@@ -506,6 +506,15 @@ typedef struct SequenceChannel {
     /* 0xE1 */ char unk_E1[3];
 } SequenceChannel; /* size = 0xE4 */
 
+/* 0xC (Audio_GetPortamentoFreqScale: mode u8, cur / speed u16, extent f32;
+ * Audio_NotePortamentoInit copies the layer's 12 bytes). SM64-era form. */
+typedef struct Portamento {
+    /* 0x0 */ u8 mode;
+    /* 0x2 */ u16 cur;
+    /* 0x4 */ u16 speed;
+    /* 0x8 */ f32 extent;
+} Portamento; /* size = 0xC */
+
 /* 0x80 (AudioSeq_InitLayerFreelist: 64 x 0x80 at gAudioCtx+0x3280, list item
  * at +0x70 registered on layerFreeList). Named: the flag word (the
  * game_libs_o2_2BB7C.c donor's enabled/finished bits), adsr 0x18 (copied from
@@ -522,14 +531,16 @@ typedef struct SequenceLayer {
     /* 0x00 */ u32 ignoreDrumPan : 1;
     /* 0x00 */ u32 bit1 : 1;
     /* 0x00 */ u32 notePropertiesNeedInit : 1; /* set by Audio_NoteInitForLayer */
-    /* 0x01 */ u32 rest : 24;                  /* byte 0x02 is OoT's u8 instOrWave (0xFF = take the
-                                                * channel's); Audio_NoteInitForLayer reads it as a byte */
+    /* 0x01 */ u8 unk_01;
+    /* 0x02 */ u8 instOrWave;                  /* OoT's (0xFF = take the channel's): Audio_InitSyntheticWave
+                                                * and Audio_NoteInitForLayer read it as a byte */
+    /* 0x03 */ u8 unk_03;
     /* 0x04 */ char unk_04;
     /* 0x05 */ u8 pan;                         /* Audio_SequenceChannelProcessSound: notePan = */
     /* 0x06 */ s8 notePan;                     /* (pan * (0x80 - ch->panChannelWeight) + ch->pan) >> 7 */
     /* 0x07 */ char unk_07[0x18 - 0x07];
     /* 0x18 */ AdsrSettings adsr;
-    /* 0x20 */ char unk_20[0x2C - 0x20];
+    /* 0x20 */ Portamento portamento;          /* Step1: mode 1 / 2 (high bit masked) -> 0 */
     /* 0x2C */ struct Note *note;              /* Audio_NoteInitForLayer */
     /* 0x30 */ f32 freqScale;                  /* ProcessSound: noteFreqScale = freqScale * channel freq */
     /* 0x34 */ char unk_34[0x38 - 0x34];
@@ -615,15 +626,6 @@ typedef struct AdsrState {
     /* 0x18 */ char unk_18[4];
     /* 0x1C */ AdsrEnvelope *envelope;
 } AdsrState; /* size = 0x20 */
-
-/* 0xC (Audio_GetPortamentoFreqScale: mode u8, cur / speed u16, extent f32;
- * Audio_NotePortamentoInit copies the layer's 12 bytes). SM64-era form. */
-typedef struct Portamento {
-    /* 0x0 */ u8 mode;
-    /* 0x2 */ u16 cur;
-    /* 0x4 */ u16 speed;
-    /* 0x8 */ f32 extent;
-} Portamento; /* size = 0xC */
 
 /* 0x1C, OoT's VibratoState (Audio_GetVibratoFreqScale donor gl_29978_*,
  * Audio_GetVibratoPitchChange time / curve / rate). */
@@ -925,7 +927,9 @@ AUDIO_ASSERT_MEMBER(SequenceChannel, notePool, 0x94);
 AUDIO_ASSERT_MEMBER(SequenceChannel, seqScriptIO, 0xD4);
 AUDIO_ASSERT_MEMBER(SequenceChannel, filter, 0xDC);
 AUDIO_ASSERT_MEMBER(SequenceChannel, stereo, 0xE0);
+AUDIO_ASSERT_MEMBER(SequenceLayer, instOrWave, 0x02);
 AUDIO_ASSERT_MEMBER(SequenceLayer, adsr, 0x18);
+AUDIO_ASSERT_MEMBER(SequenceLayer, portamento, 0x20);
 AUDIO_ASSERT_MEMBER(SequenceLayer, note, 0x2C);
 AUDIO_ASSERT_MEMBER(SequenceLayer, noteVelocity, 0x40);
 AUDIO_ASSERT_MEMBER(SequenceLayer, tunedSample, 0x4C);
@@ -983,6 +987,18 @@ typedef char audio_envelope_size_assert[sizeof(AdsrEnvelope) == 0x4 ? 1 : -1];
  */
 /* The voice-parameter block of a SoundObj (0x54..0x63): snd_SoundObjSetAngle takes its
  * address and updates it from the angle. */
+/* 0x14, game_libs Data sym1443 @0x1C0C0 (the only record of this type). snd_RampInit (target,
+ * count, frac = 0), snd_RampTick (8.8 step of current toward target while count != 0),
+ * snd_SetLevelRampTarget (mode 0 / 1 / 2 -> target 0 / 30 / 70 over 30 ticks),
+ * snd_SoundObjUpdateChannel (current is added to the channel level; mode picks the scale). */
+typedef struct SndLevelRamp {
+    /* 0x00 */ s32 target;
+    /* 0x04 */ s32 current;
+    /* 0x08 */ s32 count;
+    /* 0x0C */ s32 frac;
+    /* 0x10 */ s32 mode;
+} SndLevelRamp; /* size = 0x14 */
+
 typedef struct SoundVoice {
     f32 volScale;           /* 0x00 (SoundObj 0x54): Play multiplies the volume by it when flags1C bit0 */
     f32 turnAtten;          /* 0x04 (0x58): snd_SoundObjSetAngle: 1 - |angle step| / 16, clamped; Update multiplies the volume by it */

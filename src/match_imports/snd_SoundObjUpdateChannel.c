@@ -1,5 +1,17 @@
 /* Native original-compiler source port from src/game_libs/game_libs_post.c. Target bytes unchanged. */
 #include "context_game_libs_post.h"
+/* D_00000000 here is game_libs Data sym1443 @0x1C0C0 (TextReloc HI16 / LO16 at section 0x43918 /
+ * 0x4391C, addend 0): the level-ramp record snd_SetLevelRampTarget fills. snd_RampInit(rec, target,
+ * 30) sets target / count / frac, snd_RampTick steps current toward target, and SetLevelRampTarget
+ * keeps its 0 / 1 / 2 selector at +0x10. audio.h declares the same record for game_libs_post.c. */
+typedef struct SndLevelRamp {
+    /* 0x00 */ s32 target;
+    /* 0x04 */ s32 current;
+    /* 0x08 */ s32 count;
+    /* 0x0C */ s32 frac;
+    /* 0x10 */ s32 mode;
+} SndLevelRamp;
+#define gSndLevelRamp (*(SndLevelRamp *)&D_00000000)
 void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
     f32 value;
     f32 level;
@@ -16,10 +28,10 @@ void snd_SoundObjUpdateChannel(GlState2E0C4 *arg0) {
         mode = state == 0 ? 3 : 7;
         {
             s32 base;
-            base = *(s32 *)((char *)&D_00000000 + 4);
+            base = gSndLevelRamp.current;
             value = (f32)base * gl_2F288_pool1730.field_1730 + value;
             if ((kind == 0) && (arg0->field_38 >= 21)) {
-                switch (*(s32 *)((char *)&D_00000000 + 0x10)) {
+                switch (gSndLevelRamp.mode) {
                 default:
                 case 0:
                     amount = (u8)(s32)(value * 0.5f);

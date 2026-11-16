@@ -484,15 +484,15 @@ typedef struct { unsigned int w0, w1; } G1D200;
  * reads -- as member reads they re-rank the `|` operands and the bytes change. */
 #define REVERB_AT(rec) ((SynthesisReverb *)((char *)(rec) + 0x18))
 unsigned int *AudioSynth_LoadAuxBufferC(G1D200 *gfx, unsigned int a1, short a2, short a3) {
-    char *e; /* &reverb->items[reverb->curFrame][a3] */
+    ReverbRingBufferItem *e; /* &reverb->items[reverb->curFrame][a3] */
     short w2;
     short wr;
 #define rec ((char *)&gAudioContext + a2 * 0x158)
-    e = rec + REVERB_AT(rec)->curFrame * 100 + a3 * 0x14 + 0x50;
-    w2 = ((unsigned int)((ReverbRingBufferItem *)e)->startPos & 7) * 2;
-    wr = (w2 + ((ReverbRingBufferItem *)e)->lengthA + 0xF) & ~0xF;
-    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, ((unsigned int)((ReverbRingBufferItem *)e)->startPos - w2 / 2) & 0xFFFF, 0x1A0, a2);
-    if (((ReverbRingBufferItem *)e)->lengthB != 0) {
+    e = (ReverbRingBufferItem *)(rec + REVERB_AT(rec)->curFrame * 100 + a3 * 0x14 + 0x50);
+    w2 = ((unsigned int)e->startPos & 7) * 2;
+    wr = (w2 + e->lengthA + 0xF) & ~0xF;
+    gfx = (G1D200 *)gl_ref_00031FB0(gfx, 0x3E0, ((unsigned int)e->startPos - w2 / 2) & 0xFFFF, 0x1A0, a2);
+    if (e->lengthB != 0) {
         gfx = (G1D200 *)gl_ref_00031FB0(gfx, (wr + 0x3E0) & 0xFFFF, 0, 0x1A0 - wr, a2);
     }
     { G1D200 *_g = gfx++; _g->w0 = ((w2 + 0x3E0) & 0xFFFF) | 0x08000000; _g->w1 = ((a1 << 1) & 0xFFFF) | 0x0C800000; }
@@ -5584,7 +5584,7 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
     if ((soundListOffset != 0) && (numDrums != 0)) {
         fontData[0] = GL23BDC_RELOC(soundListOffset);
         for (i = 0; i < numDrums; i++) {
-            soundOffset = (u32)((Drum **)fontData[0])[i];
+            soundOffset = ((u32 *)fontData[0])[i]; /* the drum list holds font-relative offsets */
             if (soundOffset != 0) {
                 soundOffset = GL23BDC_RELOC(soundOffset);
                 ((Drum **)fontData[0])[i] = drum = (Drum *)soundOffset;
@@ -5602,7 +5602,7 @@ void AudioLoad_RelocateFont(s32 fontId, gl_23BDC_FontData *fontDataStartAddr, gl
     if ((fontData[1] != 0) && (numSfx != 0)) {
         fontData[1] = GL23BDC_RELOC(fontData[1]);
         for (i = 0; i < numSfx; i++) {
-            soundOffset = (u32)(((SoundEffect *)fontData[1]) + i);
+            soundOffset = (u32)(((SoundEffect *)fontData[1]) + i); /* OoT's spelling: the u32 copy is load-bearing */
             soundEffect = (SoundEffect *)soundOffset;
             if ((soundEffect == NULL) || ((u32)soundEffect->tunedSample.sample == 0)) {
                 continue;
@@ -8902,17 +8902,18 @@ extern int gl_func_0003CF18();
  * v1 = a0->u8[0x32]; rv = gl_func_0003CF18(a0,a1,sel);
  * if (rv != v1) a0->u8[0xB6] = (rv<<2)+v1. Byte-exact: declaring v1 FIRST
  * places its spill at sp+0x1C (first-declared = highest slot) to match. */
-void Audio_InitSyntheticWave(int a0, int a1) {
+/* OoT's body: v1 = harmonicIndex (sampleCountIndex), rv = Audio_BuildSyntheticWave's result. */
+void Audio_InitSyntheticWave(Note *note, SequenceLayer *layer) {
     int v1;
     int rv;
-    int sel = *(unsigned char*)(a1 + 2);
+    int sel = layer->instOrWave;
     if (sel == 255) {
-        sel = *(short*)((char*)*(int**)(a1 + 0x50) + 0x24);
+        sel = layer->channel->instOrWave;
     }
-    v1 = *(unsigned char*)(a0 + 0x32);
-    rv = gl_func_0003CF18(a0, a1, sel);
+    v1 = note->playbackState.harmonicIndex;
+    rv = gl_func_0003CF18(note, layer, sel);
     if (rv != v1) {
-        *(unsigned char*)(a0 + 0xB6) = (rv << 2) + v1;
+        note->sampleState.harmonicIndexCurAndPrev = (rv << 2) + v1;
     }
 }
 
@@ -10894,21 +10895,23 @@ typedef struct {
     unsigned int rest : 24;
 } ObjFlags2AB34;
 extern int gl_func_00000000();
+/* OoT's body (ObjFlags2AB34's b3 / b7 are SequenceLayer's continuousNotes /
+ * notePropertiesNeedInit: same u32 container, same bytes); the decay test is note->wantedParentLayer == layer. */
 void AudioSeq_SeqLayerProcessScriptStep1(char *o) {
     int st;
-    if (!((ObjFlags2AB34 *)o)->b3) {
+    if (!((SequenceLayer *)o)->continuousNotes) {
         CALL(Audio_SeqLayerNoteDecay)();
     } else {
-        char *p = (char *)*(int *)(o + 0x2C);
-        if ((p != 0) && ((char *)*(int *)(p + 0x48) == o)) {
+        Note *p = ((SequenceLayer *)o)->note;
+        if ((p != NULL) && (p->playbackState.wantedParentLayer == (SequenceLayer *)o)) {
             CALL(Audio_SeqLayerNoteDecay)();
         }
     }
-    st = *(unsigned char *)(o + 0x20) & ~0x80;
+    st = ((SequenceLayer *)o)->portamento.mode & ~0x80;
     if (st == 1 || st == 2) {
-        *(unsigned char *)(o + 0x20) = 0;
+        ((SequenceLayer *)o)->portamento.mode = 0;
     }
-    ((ObjFlags2AB34 *)o)->b7 = 1;
+    ((SequenceLayer *)o)->notePropertiesNeedInit = 1;
 }
 
 // AudioSeq_SeqLayerProcessScriptStep5 — STRUCTURAL PASS (0x15C / 87 words, no episode).
@@ -11520,30 +11523,32 @@ void AudioSeq_InitSequencePlayerChannels(int a0) {
     int *s3 = (int*)&((AudioContext *)base)->seqPlayers[a0];
     char *d5280 = (char *)&((AudioContext *)base)->sequenceChannelNone;
     int *s1;    /* walks seqPlayers[a0].channels[0..15] (+0x38) */
+#define CHANNEL_SLOT(cur) (((SequencePlayer *)(cur))->channels[0]) /* cur shifted j words: channels[j / 4] */
     int j;
     for (s1 = s3, j = 0; j < 64; j += 4) {
         int *retval = (int*)gl_alloc_2D130(&((AudioContext *)base)->miscPool, 228);
-        *(int**)((char*)s1 + 0x38) = retval;
+        CHANNEL_SLOT(s1) = (SequenceChannel *)retval;
         if (retval == 0) {
-            *(int*)((char*)s1 + 0x38) = (int)d5280;
+            CHANNEL_SLOT(s1) = (SequenceChannel *)d5280;
         } else {
             int *p;
             int i;
-            p = *(int**)((char*)s1 + 0x38);
-            *(int *)&((SequenceChannel *)p)->seqPlayer = (int)s3;
+            p = (int *)CHANNEL_SLOT(s1);
+            ((SequenceChannel *)p)->seqPlayer = (SequencePlayer *)s3;
             *(unsigned char*)p &= 0xFF7F; /* enabled = 0 */
             for (i = 0; i < 8; i += 4) { /* layers[0..7] = NULL, four per pass */
-                *(int *)&((SequenceChannel *)p)->layers[1] = 0;
-                *(int *)&((SequenceChannel *)p)->layers[2] = 0;
-                *(int *)&((SequenceChannel *)p)->layers[3] = 0;
+                ((SequenceChannel *)p)->layers[1] = NULL;
+                ((SequenceChannel *)p)->layers[2] = NULL;
+                ((SequenceChannel *)p)->layers[3] = NULL;
                 p = (int*)((char*)p + 16);
-                *(int*)((char*)p + 0x40) = 0; /* the previous p's layers[0] */
+                ((SequenceChannel *)((char *)p - 16))->layers[0] = NULL; /* the previous p's */
             }
         }
-        gl_ref_0003E8C4(*(int*)((char*)s1 + 0x38));
+        gl_ref_0003E8C4(CHANNEL_SLOT(s1));
         s1 = (int*)((char*)s1 + 4);
     }
 }
+#undef CHANNEL_SLOT
 
 #ifdef NON_MATCHING
 /* AudioSeq_InitSequencePlayer: 52-insn (0xD0) init with 2 loops + bit-clear chain.
@@ -13629,10 +13634,10 @@ void snd_SoundObjUpdateChannel(SoundObj *o) {
 
     if (mode != 2 && o->flags1C == 0) {
     if (mode == 0) t0 = 3; else t0 = 7;
-    t = D_2F288_g[1];
+    t = ((SndLevelRamp *)D_2F288_g)->current;
     f = *(float *)(D_2F288_a + 0x1730) * (float)t + f;
     if (k == 0 && o->unk38 >= 21) {
-        switch (D_2F288_g[4]) {
+        switch (((SndLevelRamp *)D_2F288_g)->mode) {
         case 0:
         default:
             v = (int)(f * 0.5f);
@@ -14293,7 +14298,7 @@ extern int D_309AC_a;
 extern int gl_ref_00046314();
 void snd_SetLevelRampTarget(int sel) {
     int p;
-    if (sel != *(int *)((char *)&D_309AC_a + 0x10)) {
+    if (sel != ((SndLevelRamp *)&D_309AC_a)->mode) {
         switch (sel) {
             case 2:  p = 70; break;
             case 1:  p = 30; break;
@@ -14301,7 +14306,7 @@ void snd_SetLevelRampTarget(int sel) {
             default: p = 0;  break;
         }
         gl_ref_00046314(&D_00000000_1c0c0, p, 30);
-        *(int *)((char *)&D_00000000_1c0c0 + 0x10) = sel;
+        ((SndLevelRamp *)&D_00000000_1c0c0)->mode = sel;
     }
 }
 
@@ -15402,7 +15407,7 @@ z31t:
     if (1) {} ACCS2_31A74 = r; goto c31t;
 }
 
-void snd_RampInit(int *a0, int a1, int a2) { *(int*)((char*)a0 + 0) = a1; *(int*)((char*)a0 + 8) = a2; *(int*)((char*)a0 + 0xC) = 0; }
+void snd_RampInit(SndLevelRamp *a0, int a1, int a2) { a0->target = a1; a0->count = a2; a0->frac = 0; }
 
 /* snd_RampTick: fixed-point value stepper (8.8): while count
  * (p[2]) is nonzero, accumulate |(target-current)<<8 / count| into the
