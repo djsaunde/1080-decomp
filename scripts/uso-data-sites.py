@@ -142,8 +142,24 @@ MODULES = {
 
 
 def mod_srcs(uso):
-    """The .c / .cpp sources of a MODULES entry, sorted."""
-    return [p for d in MODULES[uso][2] for e in ('c', 'cpp') for p in sorted(glob.glob(f'{d}/*.{e}'))]
+    """The .c / .cpp sources of a MODULES entry (bootup: src/game_libs + src/bootup_uso), sorted."""
+    dirs = ('src/game_libs', 'src/bootup_uso') if uso == 'bootup' else MODULES[uso][2]
+    return [p for d in dirs for e in ('c', 'cpp') for p in sorted(glob.glob(f'{d}/*.{e}'))]
+
+
+def import_srcs(uso):
+    """The src/match_imports ports of a module's functions (agent-g run 593): each port includes
+    `context_<src dir>[_part].h` and keeps the module function's name, so its sites are that
+    function's sites (by_func) and `check` verifies its constant / GL_* uses like the module's own
+    (bootup: context_bootup_uso* / context_game_libs*)."""
+    dirs = ('bootup_uso', 'game_libs') if uso == 'bootup' else \
+        tuple(os.path.basename(d) for d in MODULES[uso][2])
+    out = []
+    for p in sorted(glob.glob('src/match_imports/*.c')):
+        m = re.search(r'^#include "context_(\w+)\.h"', open(p, errors='replace').read(), re.M)
+        if m and any(m.group(1) == d or m.group(1).startswith(d + '_') for d in dirs):
+            out.append(p)
+    return out
 
 
 def mod_text_objs(uso, text_rom=None):
@@ -1072,12 +1088,12 @@ def check_direct(c, bodies, verbose=False):
 
 
 def cmd_check(c, a):
-    if c.uso == 'game':
-        return 1 if check_game(a.no_build, a.verbose, c.uso) else 0
+    if c.uso != 'bootup':   # game.uso or a mode USO: only its own header (run 593: a mode USO ran
+        return 1 if check_game(a.no_build, a.verbose, c.uso) else 0   # the bootup checks on its relocs)
     macros = scan_macros()
     claimed = [m for m in macros if m['claim']]
     srcs = [p for d in ('game_libs', 'bootup_uso') for e in ('c', 'cpp')
-            for p in sorted(glob.glob(f'src/{d}/*.{e}'))]
+            for p in sorted(glob.glob(f'src/{d}/*.{e}'))] + import_srcs('bootup')
     bodies = {p: func_bodies(p) for p in srcs}
     bad = ok = unused = 0
     for m in claimed:
@@ -1200,8 +1216,8 @@ def cmd_check(c, a):
     gb = 0
     if c.uso == 'bootup':
         # game.uso always; a mode USO once its constants header exists (agent-g run 589)
-        for m in MODULES:
-            if m == 'game' or os.path.exists(MODULES[m][3]):
+        for m in ['bootup'] + list(MODULES):
+            if m == 'game' or os.path.exists(mod_hdr(m)):
                 gb += check_game(a.no_build, a.verbose, m)
     return 1 if bad or ps_bad or d_bad or str_bad or rb or gb else 0
 
@@ -1377,9 +1393,13 @@ def game_bodies(path):
     return out
 
 
+BOOTUP_HDR = 'include/game/bootup_uso_data.h'
+
+
 def mod_hdr(uso):
-    """The section-offset constants header of a MODULES entry (game: GAME_HDR)."""
-    return MODULES[uso][3]
+    """The section-offset constants header of a MODULES entry (game: GAME_HDR; bootup: BOOTUP_HDR,
+    run 593: named offsets read through a local base pointer, where no GL_DATA spelling fits)."""
+    return BOOTUP_HDR if uso == 'bootup' else MODULES[uso][3]
 
 
 def game_consts(uso='game'):
@@ -1418,7 +1438,7 @@ def check_game(no_build=False, verbose=False, uso='game'):
         return 0
     g = Census('.', no_build, uso)
     bad = ok = tgt = 0
-    srcs = mod_srcs(uso)
+    srcs = mod_srcs(uso) + import_srcs(uso)
     bodies = {p: game_bodies(p) for p in srcs}
     for name, val, sect, coff, comment, line in consts:
         if val != coff:
@@ -1521,7 +1541,7 @@ def cmd_game_spell(c, a):
 # value claims in a GAME_HDR comment (agent-g run 543), checked against the section bytes at K:
 #   "text"      the NUL-terminated string starting at K (rom_string)
 #   f32 V / f64 V   the big-endian float / double at K, printed with repr()
-VALUE_CLAIM_RE = re.compile(r':\s*("(?:[^"\\]|\\.)*"|f32 \S+|f64 \S+)')
+VALUE_CLAIM_RE = re.compile(r':\s*("(?:[^"\\]|\\.)*"|f32 [^\s,;:]+|f64 [^\s,;:]+)')   # run 593: `f32 V, text`
 
 
 def scalar_at(c, sect, k, typ):
