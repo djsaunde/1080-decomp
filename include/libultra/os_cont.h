@@ -37,7 +37,21 @@ typedef struct {
     /* 0x65 */ u8 activebank;
 } OSPfs; /* size 0x68 */
 
+/* one controller's 8-byte read record in __osContPifRam (libultra controller.h, internal):
+ * osContStartReadData builds them, osContGetReadData parses them (agent-b run 591) */
+typedef struct {
+    /* 0x00 */ u8 dummy;
+    /* 0x01 */ u8 txsize;
+    /* 0x02 */ u8 rxsize;
+    /* 0x03 */ u8 cmd;
+    /* 0x04 */ u16 button;
+    /* 0x06 */ s8 stick_x;
+    /* 0x07 */ s8 stick_y;
+} __OSContReadFormat; /* size 0x8 */
+
 #define OS_CONT_ASSERT(name, cond) typedef char os_cont_assert_##name[(cond) ? 1 : -1]
+OS_CONT_ASSERT(readfmt_button, (int)&((__OSContReadFormat *)0)->button == 0x4);
+OS_CONT_ASSERT(readfmt_size, sizeof(__OSContReadFormat) == 0x8);
 OS_CONT_ASSERT(status_size, sizeof(OSContStatus) == 0x4);
 OS_CONT_ASSERT(pad_errno, (int)&((OSContPad *)0)->errno == 0x4);
 OS_CONT_ASSERT(pad_size, sizeof(OSContPad) == 0x6);

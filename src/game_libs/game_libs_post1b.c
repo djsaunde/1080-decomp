@@ -13,6 +13,7 @@
 #include "gdl/dma.h"
 #include "libultra/os_task.h"
 #include "libultra/os_message.h"
+#include "libultra/os_thread.h"
 #include "uso_call.h"
 extern int D_00000000;
 extern int gl_data_00000000;
@@ -1882,8 +1883,8 @@ void DNode_handleMsg(char *self, int *event) {
     (void)reserved_vec;
     tag = event[0];
     do {
-        if (tag == 6) {
-            *(Vec3 *)position = *(Vec3 *)((char *)event[1] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
+        if (tag == NODEMSG_ADD_TRANS) {
+            *(Vec3 *)position = *(Vec3 *)&((NodeMsgTransPayload *)event[1])->trans;
             args[0] = position[0]; args[1] = position[1]; args[2] = position[2];
             gl_add_position_65C54(self, args[0], args[1], args[2]);
             DNODE(self)->angVel[0] = 0.0f;
@@ -5626,7 +5627,7 @@ void gl_osDestroyThread(int *target) {
     if (target == 0) {
         target = *(int **)&gl___osRunningThread;
     } else {
-        if (*(unsigned short *)((char *)target + 0x10) != 1) { /* RAW: donor-mirror: -O2 stand-in; the real C is the -O1 donor game_libs_o1_6AF44.c (OSThread.state) */
+        if (((OSThread *)target)->state != OS_STATE_STOPPED) {
             gl_func_00000000(target[2], target);
         }
     }

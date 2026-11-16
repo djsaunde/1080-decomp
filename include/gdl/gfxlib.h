@@ -26,6 +26,24 @@ typedef struct GfxMorphList {
     /* 0x14 */ char *vptr;              /* slot 0 = the per-frame update (gfx_end) */
 } GfxMorphList;
 
+/* A DDM record (12 bytes; "DDM" = the per-frame render-state hooks, GfxLib.ddm[]). GfxLib holds a static
+ * pool of 50 (ddmPool, count nDdms): gfx_addDdm (0x44CE8) takes the next one (sys_staticArrayOverflow at
+ * 50), stores it in ddm[id], clears state.flags and calls gfx_initDdm, which records the static DL's Gfx
+ * count in dlIndex and builds the render state {0, flags} in place. Its Cfront element ctor is
+ * app_newListHead_000422AC (= El::El, passed to __vec_new(&ddmPool, 50, 12, ctor) by the static
+ * initializer app_staticInit_000412E8: bootup.uso TextReloc HI16 / LO16 at Text 0x55ABC / 0x55AC0 ->
+ * 0x422AC): it zeroes the state member, which has a ctor of its own (the `new(8)` fallback).
+ * agent-b run 591. */
+typedef struct GfxDdmState {         /* the GdlRenderState layout (dlctx.h); kept plain here for the NCC donors */
+    /* 0x0 */ int unk0;
+    /* 0x4 */ int flags;
+} GfxDdmState;
+
+typedef struct GfxDdm {
+    /* 0x0 */ int dlIndex;              /* gfx_initDdm: gGfx->staticDL's Gfx count where this state's commands start */
+    /* 0x4 */ GfxDdmState state;
+} GfxDdm;
+
 /* FogParms (0x18, parm group "FogParms"): FogParms_set / setDefault (white, 996..1000) / lerp /
  * emit (gfx_emitFog: G_SETFOGCOLOR + G_MW_FOG; the emit reads the low halves of min / max). */
 typedef struct FogParms {
@@ -103,8 +121,8 @@ typedef struct GfxLib {
     /* 0x294 */ FogParms fog;           /* the gGfxLib_*_src aliases; FogParms_emit / lerp, GfxLib_reset /
                                          * hostioParms pass its address */
     /* 0x2AC */ int ddm[51];            /* per-frame DDM render-state hooks (gfx_getDdm); zeroed by reset */
-    /* 0x378 */ int unk378[150];
-    /* 0x5D0 */ int unk5D0;             /* zeroed by GfxLib_reset */
+    /* 0x378 */ GfxDdm ddmPool[50];    /* the DDM records ddm[] points at (gfx_addDdm; GfxDdm above) */
+    /* 0x5D0 */ int nDdms;              /* ddmPool records in use; zeroed by GfxLib_reset */
     /* 0x5D4 */ int unk5D4;
 } GfxLib;
 
@@ -119,6 +137,7 @@ typedef struct GfxLib {
 #define gGfx GFXLIB(&gGfxLib)
 
 typedef char FogParms_size_check[sizeof(FogParms) == 0x18 ? 1 : -1];
+typedef char GfxDdm_size_check[sizeof(GfxDdm) == 0xC ? 1 : -1];
 typedef char GfxLib_size_check[sizeof(GfxLib) == 0x5D8 ? 1 : -1];
 #ifndef __cplusplus /* edg (NCC donors): &((T *)0)->f is not an integral constant expression */
 typedef char GfxLib_extraMtx_check[(int)&((GfxLib *)0)->extraMtx == 0xE4 ? 1 : -1];
@@ -137,7 +156,8 @@ typedef char GfxLib_morphs_check[(int)&((GfxLib *)0)->morphs == 0x22C ? 1 : -1];
 typedef char GfxLib_windows_check[(int)&((GfxLib *)0)->windows == 0x25C ? 1 : -1];
 typedef char GfxLib_oneFrameDL_check[(int)&((GfxLib *)0)->oneFrameDL == 0x280 ? 1 : -1];
 typedef char GfxLib_ddm_check[(int)&((GfxLib *)0)->ddm == 0x2AC ? 1 : -1];
-typedef char GfxLib_unk5D0_check[(int)&((GfxLib *)0)->unk5D0 == 0x5D0 ? 1 : -1];
+typedef char GfxLib_ddmPool_check[(int)&((GfxLib *)0)->ddmPool == 0x378 ? 1 : -1];
+typedef char GfxLib_nDdms_check[(int)&((GfxLib *)0)->nDdms == 0x5D0 ? 1 : -1];
 #endif
 
 #endif /* GDL_GFXLIB_H */

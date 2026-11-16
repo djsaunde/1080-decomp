@@ -83,22 +83,22 @@ int osContStartReadData(void *mq) {
  * $t1/$t0). The body below is a placeholder for the splice on both build paths (its bytes are
  * replaced by the donor). */
 void gl_osContGetReadData(OSContPad *data, char *cursor, int count) {
-    unsigned char rec[8];               /* __OSContReadFormat: dummy, txsize, rxsize, cmd, button, stick_x, stick_y */
+    __OSContReadFormat rec;             /* libultra/os_cont.h */
     volatile int i;
-    volatile char *cur = cursor;
+    volatile __OSContReadFormat *cur = (volatile __OSContReadFormat *)cursor;
     if (count > 0) {
         i = 0;
         do {
-            *(int *)rec = *(int *)cur;
-            *(int *)(rec + 4) = *(int *)(cur + 4); /* RAW: data-table: __OSContReadFormat raw bytes in a local buffer (libultra layout) */
-            data->errno = (rec[2] & 0xC0) >> 4;
+            *(int *)&rec.dummy = *(int *)&cur->dummy;   /* the record copied as two words */
+            *(int *)&rec.button = *(int *)&cur->button;
+            data->errno = (rec.rxsize & 0xC0) >> 4;
             if (data->errno == 0) {
-                data->button = *(unsigned short *)(rec + 4); /* RAW: data-table: __OSContReadFormat raw bytes in a local buffer (libultra layout) */
-                data->stick_x = rec[6];
-                data->stick_y = rec[7];
+                data->button = rec.button;
+                data->stick_x = rec.stick_x;
+                data->stick_y = rec.stick_y;
             }
             data++;
-            cur += 8;
+            cur++;
             i++;
         } while (i < 1);
     }

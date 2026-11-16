@@ -4169,7 +4169,7 @@ extern char sFmt_Global_out_of_range_1EC6C[], sFmt_Global_out_of_range_1EC84[], 
  * the donor-local jumptable reloc to Node_doCommand_rodata, pinned to the USO RoData at
  * +0x1A1C. Body below is a placeholder for the splice. */
 void Node_doCommand(char *o, char *c) {
-    *(volatile int *)(o + 4) = 7; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the -O2 donor unit */
+    *(volatile s32 *)&NODE(o)->unk04 = 7; /* placeholder body (spliced over) */
 }
 
 void Node_saveData(int a0) {}
@@ -4532,9 +4532,9 @@ void MNode_handleMsg(int *a0, int *a1) {
 
     cmd = a1[0];
     switch (cmd) {
-    case 6:
+    case NODEMSG_ADD_TRANS:
         if (a0[0x18/4] & 0x40) {
-            *(struct GL396V *) scratch = *(struct GL396V *) ((char *) a1[0x4/4] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
+            *(struct GL396V *) scratch = *(struct GL396V *) &((NodeMsgTransPayload *) a1[0x4/4])->trans;
             CALL(math_mtxAddTranslation)((char*)a0 + 0x30, scratch);
             CALL(math_mtxAddTranslation)((char*)a0 + 0x70, scratch);
         }
@@ -4823,7 +4823,7 @@ void SNode_hostioParms(int *a0) {
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED14, "RotY"), (char*)a0 + 0x78, -180.0f, 180.0f, 1);
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED1C, "RotZ"), (char*)a0 + 0x7C, -180.0f, 180.0f, 1);
     gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED24, "Height"), (char*)a0 + 0x6C, -500.0f, 500.0f, 1);
-    gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED2C, "Radius"), (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + 0x1A80), 1); /* RAW: data-table: rodata float read through the placeholder symbol + addend (USO reloc addend, not a field) */
+    gl_proto_39C8C(&gHostio, GL_DATA_STR(0x1ED2C, "Radius"), (char*)a0 + 0x80, 0.0f, *(float*)((char*)&D_39C8C_max + kRoF_SNode_radiusMax_1A80), 1);
     CALL(hostio_msg35_0003F244)(&gHostio, 0, 0);
     CALL(hostio_addMatrix)(&gHostio, GL_DATA_STR(0x1ED34, "Mtx"), (char*)a0 + 0x2C, 0);
     CALL(hostio_endGroup)(&gHostio);
@@ -5450,7 +5450,12 @@ float coll_return0f_0003B198(int a0, int a1) {
 typedef struct { f32 x, y, z; } V3_3B1A8;
 typedef struct { s32 pad0; V3_3B1A8 v; char pad10[0x18]; } E3B1A8;
 typedef struct { char pad[0x2C]; u32 n; E3B1A8 *buf; } L3B1A8;
-void coll_offsetPointsByMtx(char *a0, f32 *m) {
+/* a0's class is unknown (only its +0x8C point-list pointer is read): agent-b run 591 found no caller in
+ * any module (`uso-imports.py callers coll_offsetPointsByMtx`: no jal / HI16 / LO16 / data-word reloc
+ * names it, so no call and no vtable entry), and it is not CollObj (0x34 bytes); this view types the
+ * one field. */
+typedef struct { char pad[0x8C]; L3B1A8 *points; } PtsOwner_3B1A8;
+void coll_offsetPointsByMtx(PtsOwner_3B1A8 *a0, f32 *m) {
     s32 pad0;
     V3_3B1A8 p;
     V3_3B1A8 *q;
@@ -5458,8 +5463,8 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
     V3_3B1A8 t;
     f32 pad[3];
     f32 X, Y, Z;
-    for (i = 0; i < (*(L3B1A8 **)(a0 + 0x8C))->n; ) { /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
-        t = (*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
+    for (i = 0; i < a0->points->n; ) {
+        t = a0->points->buf[i].v;
         q = &p;
         q->x = t.x; q->y = t.y; q->z = t.z;
         X = m[12] + (m[8] * q->z + (m[4] * q->y + m[0] * q->x));
@@ -5469,7 +5474,7 @@ void coll_offsetPointsByMtx(char *a0, f32 *m) {
         q->x = X;
         q->z = Z;
         {
-            V3_3B1A8 *d = &(*(L3B1A8 **)(a0 + 0x8C))->buf[i].v; /* RAW: unknown-object: a0 +0x8C is a point list {+0x2C n, +0x30 buf of 0x28-byte records, Vec3 at +4}; checked: no TextReloc caller (uso-data-sites calls --to), no vtable entry or C/C++ caller; not CollObj (0x34), CollShape.unk8C unproven */
+            V3_3B1A8 *d = &a0->points->buf[i].v;
             i++;
             d->x = d->x + q->x;
             d->y = d->y + q->y;
@@ -9492,8 +9497,8 @@ void QNode_handleMsg(char *a0, int *a1) {
     V3_40CAC v;
 
     switch (*a1) {
-    case 6: {
-        d = *(V3_40CAC *)((char *)a1[1] + 0xEC); /* RAW: unknown-object: message 6 payload +0xEC Vec3 (a translation); checked: no NodeMsg with tag 6 is built in any C/C++ source and handleMsg is reached only through vtable slot 4, and +0xEC is not a Vec3 start in QNode / DNode (cvqs.scale[1]), so the payload class is unproven */
+    case NODEMSG_ADD_TRANS: {
+        d = *(V3_40CAC *)&((NodeMsgTransPayload *)a1[1])->trans;
         QNODE(a0)->cvqs.trans[0] = QNODE(a0)->cvqs.trans[0] + d.x;
         QNODE(a0)->cvqs.trans[1] = QNODE(a0)->cvqs.trans[1] + d.y;
         QNODE(a0)->cvqs.trans[2] = QNODE(a0)->cvqs.trans[2] + d.z;
@@ -9911,7 +9916,7 @@ void App_main(O415A4 *self) {
     WindowDefaults *t;
     float *v;
 
-    *(int *)((char *)&D_415A4_z + 0x3C160) = 0; /* RAW: data-table: Bss+0x3C160 (section-base site inside Sym 1761 at Bss+0x3C154, +0xC; object unnamed) through the distinct placeholder D_415A4_z + USO addend */
+    *(int *)((char *)&D_415A4_z + kBss_memTrace_3C160) = 0; /* the mem trace word, through its own placeholder */
     CALL(sys_getRegion_00034BDC)(gSysLib_415A4_s1, &a, &b);
     if (1) {}
     CALL(Mem_init)(gMainHeap_415A4_s2, a, a + b);
@@ -10381,19 +10386,21 @@ int memtrack_heapUsed() {
  * minimal -0x18 frame with the spill at 0x18 (a0's home). See
  * docs/IDO_CODEGEN.md#feedback-ido-reuse-param-as-object-caller-slot-spill. */
 extern int gl_func_00000000();
-void* app_newListHead_000422AC(void *a0) {
-    char *q;
+/* agent-b run 591: this is GfxDdm's element ctor (include/gdl/gfxlib.h): app_staticInit_000412E8 passes
+ * its address (TextReloc HI16 / LO16 at Text 0x55ABC / 0x55AC0) to __vec_new for GfxLib.ddmPool[50]. */
+GfxDdm *app_newListHead_000422AC(GfxDdm *a0) {
+    GfxDdmState *q;
     if (a0 == 0) {
-        a0 = (void*)gl_func_00000000(12);
+        a0 = (GfxDdm *)gl_func_00000000(12);
         if (a0 == 0) goto end;
     }
-    q = (char*)a0 + 4;
-    if (a0 == (void*)-4) {
-        q = (void*)gl_func_00000000(8);
+    q = &a0->state;
+    if (a0 == (GfxDdm *)-4) {      /* &a0->state == 0 */
+        q = (GfxDdmState *)gl_func_00000000(8);
         if (q == 0) goto end;
     }
-    *(int*)(q + 4) = 0; /* RAW: unknown-object: the 12-byte owner's inline 8-byte member at +4 (Cfront ctor zeroes both words, new(8) fallback); checked: no TextReloc / vtable / C caller, and it is not a GdlList (4 bytes), so neither class is proven */
-    *(int*)(q + 0) = 0; /* RAW: unknown-object: the 12-byte owner's inline 8-byte member at +4 (Cfront ctor zeroes both words, new(8) fallback); checked: no TextReloc / vtable / C caller, and it is not a GdlList (4 bytes), so neither class is proven */
+    q->flags = 0;
+    q->unk0 = 0;
 end:
     return a0;
 }
@@ -11832,7 +11839,7 @@ void GfxLib_reset(char *arg0) {
     int busy;
 
     p = ((GfxLib *)arg0)->ddm;
-    ((GfxLib *)arg0)->unk5D0 = 0;
+    ((GfxLib *)arg0)->nDdms = 0;
     for (i = 0; i < 50; i++) {
         p[i] = 0;
     }
@@ -20033,7 +20040,7 @@ s32 *BaseLight_ctor(char *self, int arg1) {
                 ((BaseLightParms *)v1)->name = &sStr_Parms_21084 + 0x21084;
                 ((BaseLightParms *)v1)->first = 0;
             }
-            u1.v = *(int *)(&sTag_col_2108C + 0x2108C); /* RAW: data-table: the "col" GdlParmTag word, Data+0x2108C read through its own placeholder + USO addend (the distinct symbol is the CSE lever) */
+            u1.v = *(int *)(&sTag_col_2108C + kTag_col_2108C); /* the "col" tag word, through its own placeholder (the CSE lever) */
             sp94.x = 0.0f;
             sp94.y = 0.0f;
             sp94.z = 0.0f;
@@ -20722,12 +20729,14 @@ NodeListState *a3;
      * `lui at; sw zero` per clear, so route each through a DISTINCT extern to
      * bust IDO's base CSE (else they all share one lui). */
     {
-        extern int D_5591C_z0a, gSkinMgrs_41700_5591C_z0b, gSkinMgrs_41700_5591C_z4, gSkinMgrs_41700_5591C_z8, gSkinMgrs_41700_5591C_zc;
+        /* gSkinMgrs (gl_data.h: SkinMgr *[4]) slots 1..3, each through its own placeholder */
+        extern int D_5591C_z0a, gSkinMgrs_41700_5591C_z0b;
+        extern int gSkinMgrs_41700_5591C_z4[4], gSkinMgrs_41700_5591C_z8[4], gSkinMgrs_41700_5591C_zc[4];
         D_5591C_z0a = 0;
         gSkinMgrs_41700_5591C_z0b = 0;
-        *(int*)((char*)&gSkinMgrs_41700_5591C_z4 + 0x4) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
-        *(int*)((char*)&gSkinMgrs_41700_5591C_z8 + 0x8) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
-        *(int*)((char*)&gSkinMgrs_41700_5591C_zc + 0xC) = 0; /* RAW: data-table: Bss placeholder symbol + addend (USO reloc addend), gSkinMgrs words 1..3 */
+        gSkinMgrs_41700_5591C_z4[1] = 0;
+        gSkinMgrs_41700_5591C_z8[2] = 0;
+        gSkinMgrs_41700_5591C_zc[3] = 0;
     }
     v0 = 0;
     if (a0 == 0) {
@@ -26375,7 +26384,7 @@ void AnimData_init(AnimData *a0, int a1) {
  * donor-local jumptable reloc to AnimData_load_rodata, pinned to the USO
  * RoData at +0x2080. Body below is a placeholder for the splice. */
 void AnimData_load(char *self) {
-    *(volatile int *)(self + 4) = 7; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the donor unit */
+    *(volatile s32 *)&((AnimData *)self)->state = 7; /* placeholder body (spliced over) */
 }
 
 /* AnimData_readFrames: 65-insn 64-bit-multiply-based scale + dispatch (0x104, frame 0x28).
@@ -26932,7 +26941,7 @@ void *Animator_ctor(char *self, int arg1, int arg2, int arg3, int arg4) {
  * spliced over this placeholder via REPLACE_FUNC_BODY. The old cfe NM wrap
  * (210 vs 209 words, FP colouring residual) is gone. */
 void anim_blendPose(char *o) {
-    *(volatile int *)(o + 0x50) = 22; /* RAW: donor-mirror: placeholder body; REPLACE_FUNC_BODY splices the real C from the donor unit */
+    *(volatile s32 *)&((Animator *)o)->unk50 = 22; /* placeholder body (spliced over) */
 }
 
 /* anim_unpackKey: unpack a packed s16 record into floats: q =

@@ -76,12 +76,26 @@ typedef struct NodeMsg {
 } NodeMsg;
 
 #define NODEMSG_SET_ACTIVE  0x2    /* arg != 0: set DoDisplay | DoUpdate, else clear both */
+#define NODEMSG_ADD_TRANS   0x6    /* add the payload's trans (NodeMsgTransPayload) to the node's translation */
 #define NODEMSG_SET_FLAG80  0xC
 #define NODEMSG_FIND_NAME   0xD
 #define NODEMSG_FIND_SERIAL 0xE
 
+/* The tag-6 (NODEMSG_ADD_TRANS) payload as its three handlers read it: MNode_handleMsg adds trans to both
+ * matrices' translation rows (when doFlags & 0x40), QNode_handleMsg to cvqs.trans and vqs.trans, and
+ * DNode_handleMsg moves the body by it and zeroes its velocities. Only that Vec3 at +0xEC is known: no code
+ * builds a tag-6 NodeMsg (agent-b run 591 scanned the asm of all 21 split segments and the raw Text of the
+ * unsplit trnproc / viewrec / nameent / balloon / heli / fire / checkpoint modules for a tag-6 store into a
+ * message passed by address; the same scan finds every tag 2 / 7 / 0xC / 0xD / 0xE / 0x10 / 0x14 sender),
+ * so the payload's class is unknown. */
+typedef struct NodeMsgTransPayload {
+    /* 0x00 */ char unk00[0xEC];
+    /* 0xEC */ f32 trans[3];
+} NodeMsgTransPayload;
+
 #ifndef __cplusplus
 typedef char NodeMsg_reply_check[(int)&((NodeMsg *)0)->reply == 0x8 ? 1 : -1];
+typedef char NodeMsgTransPayload_trans_check[(int)&((NodeMsgTransPayload *)0)->trans == 0xEC ? 1 : -1];
 #endif
 
 /* The libgdl application object (App_main, 0x415A4, sets its name to "App").

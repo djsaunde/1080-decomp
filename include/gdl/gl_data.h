@@ -319,4 +319,13 @@
 #define kRo_fcos                                   GL_RODATA(0x24E0) /* RoData+0x24E0..0x2520, 5 K: 24E0=table 2508=0.31831d 2510=3.14159d 2518=3.17865e-08d 2520=0f */
 #define kRo_gl_Ldtob                               GL_RODATA(0x2540) /* RoData+0x2540..0x2598, 3 K: 2540=table 2588=table 2598=1e+08d */
 
+/* ---- named per-site offsets (agent-b run 591) ----
+ * The K of a `(char *)&<per-site placeholder> + K` site whose placeholder is its own zero symbol
+ * (the distinct symbol is the matched CSE / reloc lever, so GL_DATA / GL_RODATA / GL_BSS cannot
+ * spell it). kRoF_ = a RoData float, kBss_ = a Bss word, kTag_ = a 4-byte parm tag string in Data.
+ * Offsets resolved by `uso-data-sites.py sites <Func>` (section base + K). */
+#define kRoF_SNode_radiusMax_1A80   0x1A80  /* RoData+0x1A80: f32 30000 (SNode_hostioParms: the "Radius" slider max; placeholder D_39C8C_max) */
+#define kBss_memTrace_3C160         0x3C160 /* Bss+0x3C160 (inside Sym 1761 at Bss+0x3C154, +0xC; the object is unnamed): a word; mem_delete and heap_new log while it is nonzero, app_setCurrentHeap stores it, App_main clears it (placeholder D_415A4_z) */
+#define kTag_col_2108C              0x2108C /* Data+0x2108C: "col" (BaseLight_ctor: the colour parm's GdlParmTag word; placeholder sTag_col_2108C) */
+
 #endif
