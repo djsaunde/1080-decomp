@@ -5,6 +5,8 @@
 #include "game/modemenu.h"
 #include "game/guimenu.h"
 #include "game/input.h"
+#include "game/modeproc.h"
+#include "game/snowboarder.h"
 #include "uso_call.h"
 
 /* P0 AUDIT WARNING 2026-06-10: the decompressed block3 build differs
@@ -1073,7 +1075,7 @@ void TrkDataManager_loadData(char *a0) {
         DATAMGR(a0)->score = 30000;
     }
     DATAMGR(a0)->shownScore = 0;
-    *(int*)(a0 + 0xD8) = 1;
+    TRKDATAMGR(a0)->ghostReplayMode = 1;
     CALL(RaceTracker_reset)();
 }
 
@@ -1125,29 +1127,29 @@ void TrkDataManager_update_00001C68(char *arg0) {
     int t1;
 
     CALL(RaceTracker_toggleGhost)();
-    if ((RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000) && (RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 1)) {
+    if ((RACEPROC(TRKDATAMGR(arg0)->race)->flags & 0x10000) && (RACEPROC(TRKDATAMGR(arg0)->race)->raceState == 1)) {
         DATAMGR(arg0)->elapsed = DATAMGR(arg0)->elapsed + 0x21;
         CALL(RaceTracker_passCheckpoints)(arg0);
         DATAMGR(arg0)->score = DATAMGR(arg0)->score - 0x21;
         if (DATAMGR(arg0)->score < 0) {
             DATAMGR(arg0)->score = 0;
             CALL(CountDownGadget_setTime)(DATAMGR(arg0)->countDown, 0, 0);
-            CALL(RaceProcess_timeUp)(*(char **)(arg0 + 0xB8));
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgFloor = 192.0f;
-            RACEPROC(*(char **)(arg0 + 0xB8))->msgAlpha = 0xFF;
+            CALL(RaceProcess_timeUp)(TRKDATAMGR(arg0)->race);
+            RACEPROC(TRKDATAMGR(arg0)->race)->msgFloor = 192.0f;
+            RACEPROC(TRKDATAMGR(arg0)->race)->msgAlpha = 0xFF;
             DATAMGR(arg0)->active = 0;
         }
     }
     CALL(RaceTracker_update)(arg0);
-    v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
-    if ((v0 != 0) && (RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 1)) {
+    v0 = RACEPROC(TRKDATAMGR(arg0)->race)->flags & 0x10000;
+    if ((v0 != 0) && (RACEPROC(TRKDATAMGR(arg0)->race)->raceState == 1)) {
         if (DATAMGR(arg0)->numEntries == 2) {
-            if ((*(int *)(arg0 + 0xD8) == 1) &&
-                (*(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C) == 0)) {
+            if ((TRKDATAMGR(arg0)->ghostReplayMode == 1) &&
+                (((PadCtl *)SNOWB(DATAMGR(arg0)->entries[1].rider)->input)->replayMode == 0)) {
                 CALL(RaceTracker_sendEntryLoseResult)(arg0, 1); if (arg0) {}
             }
-            *(int *)(arg0 + 0xD8) = *(int *)(*(char **)(*(char **)((char *)DATAMGR(arg0)->entries + 0x60) + 0x800) + 0x4C);
-            v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
+            TRKDATAMGR(arg0)->ghostReplayMode = ((PadCtl *)SNOWB(DATAMGR(arg0)->entries[1].rider)->input)->replayMode;
+            v0 = RACEPROC(TRKDATAMGR(arg0)->race)->flags & 0x10000;
         }
         if (DATAMGR(arg0)->entries->finished != 0) {
             if (v0 != 0) {
@@ -1155,27 +1157,29 @@ void TrkDataManager_update_00001C68(char *arg0) {
                 CALL(RaceTracker_popFinalScore)(arg0, DATAMGR(arg0)->score);
                 CALL(CountDownGadget_setTime)(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 0);
             }
-            CALL(RaceProcess_finishCourse)(*(char **)(arg0 + 0xB8));
-            v0 = RACEPROC(*(char **)(arg0 + 0xB8))->flags & 0x10000;
+            CALL(RaceProcess_finishCourse)(TRKDATAMGR(arg0)->race);
+            v0 = RACEPROC(TRKDATAMGR(arg0)->race)->flags & 0x10000;
         }
     }
     if (v0 != 0) {
+        /* the first three raceState reads load race as an int (`*(int *)&`): a lever, the original's mixed
+         * int / pointer loads keep IDO from merging the three shownScore arms (agent-h run 529) */
         t1 = DATAMGR(arg0)->shownScore;
         rem = DATAMGR(arg0)->entries->unk18 - t1;
         if (rem >= 0xFA) {
             DATAMGR(arg0)->shownScore = t1 + 0xFA;
-            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
+            v0b = RACEPROC(*(int *)&TRKDATAMGR(arg0)->race)->raceState;
         } else if (rem >= 0x32) {
             DATAMGR(arg0)->shownScore = t1 + 0x32;
-            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
+            v0b = RACEPROC(*(int *)&TRKDATAMGR(arg0)->race)->raceState;
         } else if (rem >= 0x19) {
             DATAMGR(arg0)->shownScore = t1 + 0x19;
-            v0b = RACEPROC(*(int *)(arg0 + 0xB8))->raceState;
+            v0b = RACEPROC(*(int *)&TRKDATAMGR(arg0)->race)->raceState;
         } else {
             if (rem > 0) {
                 DATAMGR(arg0)->shownScore = t1 + 1;
             }
-            v0b = RACEPROC(*(char **)(arg0 + 0xB8))->raceState;
+            v0b = RACEPROC(TRKDATAMGR(arg0)->race)->raceState;
         }
         if (v0b == 1) {
             CALL(CountDownGadget_setTime)(DATAMGR(arg0)->countDown, DATAMGR(arg0)->score, 1);
@@ -1210,7 +1214,7 @@ void TrkDataManager_update_00001C68(char *arg0) {
             fl = (int *)((char *)DATAMGR(arg0)->points94 + 0x18);
             *fl = *fl & ~4;
         }
-        if ((RACEPROC(*(char **)(arg0 + 0xB8))->raceState == 2) && (RACEPROC(*(char **)(arg0 + 0xB8))->result == 0)) {
+        if ((RACEPROC(TRKDATAMGR(arg0)->race)->raceState == 2) && (RACEPROC(TRKDATAMGR(arg0)->race)->result == 0)) {
             DATAMGR(arg0)->blinkTimer = DATAMGR(arg0)->blinkTimer + 1;
             if (DATAMGR(arg0)->blinkTimer & 8) {
                 fl = (int *)((char *)DATAMGR(arg0)->points + 0x18);

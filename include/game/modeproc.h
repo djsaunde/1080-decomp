@@ -144,6 +144,28 @@ typedef struct H2HDataManager {
 
 typedef char H2HDataManager_size_check[sizeof(H2HDataManager) == 0xF0 ? 1 : -1];
 
+/* ---- TrkDataManager (trkproc, timproc_uso_b3: TrkDataManager_init_000019CC / _loadData / _update_00001C68) ----
+ * Built by the trick-mode race process at RaceProcess + 0x6A8 (TimRace.dataManager). init writes the same
+ * 0xB8..0xD7 tail as TimDataManager (gdl/race.h); 0xD8 differs (agent-h run 529). */
+typedef struct TrkDataManager {
+    /* 0x00 */ DataManager base;
+    /* 0xB8 */ char *race;           /* the owning race process (init arg 1; also base.owner): update reads its
+                                      * RaceProcess flags / raceState / result and calls timeUp / finishCourse on it */
+    /* 0xBC */ s32 rankLabel;        /* BestScoreGadget with the course record score */
+    /* 0xC0 */ f32 colour[4];        /* 1, 1, 1, 1 */
+    /* 0xD0 */ s32 alpha;            /* 0xFF */
+    /* 0xD4 */ s32 unkD4;
+    /* 0xD8 */ s32 ghostReplayMode;  /* loadData: 1 (PAD_REPLAY_PLAY); with 2 entries update mirrors entries[1]'s pad
+                                      * replayMode into it and a 1 -> 0 edge (the ghost replay ran out) sends
+                                      * RaceTracker_sendEntryLoseResult(this, 1) */
+    /* 0xDC */ s32 unkDC;
+} TrkDataManager;
+
+typedef char TrkDataManager_size_check[sizeof(TrkDataManager) == 0xE0 ? 1 : -1];
+typedef char TrkDataManager_ghost_check[(int)&((TrkDataManager *)0)->ghostReplayMode == 0xD8 ? 1 : -1];
+
+#define TRKDATAMGR(p) ((TrkDataManager *)(p))
+
 /* ---- GameDemoProcess (titproc, alloc 0x6C8) ----
  * The attract-mode race: a RaceProcess with the title overlays on top. */
 typedef struct GameDemoProcess {
