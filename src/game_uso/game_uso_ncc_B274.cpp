@@ -50,7 +50,7 @@ extern "C" void Sun_display(Self *self) {
     float r;
     if (DBL(D_B274_t0, 0x120) < g->prog) return;
     v.x = self->pos.x; v.y = self->pos.y; v.z = self->pos.z;
-    if (game_uso_func_063734(g->handle, &v, 1, 0) == 0) return;
+    if (game_uso_func_063734(g->handle, &v, 1, 0) == 0) return; /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is Window_projectPoint (game TextReloc T+0xB2D0, uso-imports.py sites game) */
     self->ix = (int)v.x;
     self->iy = (int)v.y;
     import_000F8678(g, self->sub);
@@ -59,10 +59,10 @@ extern "C" void Sun_display(Self *self) {
     if (DBL(D_B274_t1, 0x128) < g->prog)
         self->r = self->r * (1.0 - (g->prog - DBL(D_B274_t1, 0x128)) / DBL(D_B274_t2, 0x130));
     if (!(DBL(D_B274_t3, 0x138) < self->r)) return;
-    game_uso_func_04D700(self);
+    game_uso_func_04D700(self); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is MNode_display (game TextReloc T+0xB390) */
     ((Dst *)di)->setPos(self->pos);
     r = self->k * self->r;
-    game_uso_func_05B750(g, self->sub2);
+    game_uso_func_05B750(g, self->sub2); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is gfx_setPrimColour (game TextReloc T+0xB3CC) */
     self->child->id = self->id;
     self->child->sx = r;
     self->child->sy = r;

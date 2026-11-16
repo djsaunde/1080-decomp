@@ -65,10 +65,10 @@ extern "C" void SnowChaseActorLook_update(Self *a0) {
         r = cam_toTargetLocal_000023D4(a0->cam);
         q += r;
         d = q - p;
-        len = game_uso_func_070238(d.x * d.x + d.y * d.y + d.z * d.z);
-        game_uso_func_071028(&d);
+        len = game_uso_func_070238(d.x * d.x + d.y * d.y + d.z * d.z); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_vec3Length_0005BBCC (game TextReloc T+0x2A14, uso-imports.py sites game) */
+        game_uso_func_071028(&d); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_vec3Normalize (game TextReloc T+0x2A20, uso-imports.py sites game) */
         float f = len * a0->ch0; d.x *= f; d.y *= f; d.z *= f;
-        game_uso_func_072EE8(c.getOut()->local, &d);
+        game_uso_func_072EE8(c.getOut()->local, &d); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_mtxAddTranslation (game TextReloc T+0x2A6C, uso-imports.py sites game) */
         c.out->world.m[3][0] = c.out->gx; c.out->world.m[3][1] = c.out->gy; c.out->world.m[3][2] = c.out->gz;
     } else {
         Node *o;
@@ -81,10 +81,10 @@ extern "C" void SnowChaseActorLook_update(Self *a0) {
         o = c.getTgt(); o->world.rotate(v);
         q += v;
         q -= p;
-        len = game_uso_func_070238(q.x * q.x + q.y * q.y + q.z * q.z);
-        game_uso_func_071028(&q);
+        len = game_uso_func_070238(q.x * q.x + q.y * q.y + q.z * q.z); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_vec3Length_0005BBCC (game TextReloc T+0x2C14, uso-imports.py sites game) */
+        game_uso_func_071028(&q); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_vec3Normalize (game TextReloc T+0x2C20, uso-imports.py sites game) */
         float f2 = len * a0->ch0; q.x *= f2; q.y *= f2; q.z *= f2;
-        game_uso_func_072EE8(c.getOut()->local, &q);
+        game_uso_func_072EE8(c.getOut()->local, &q); /* UNNAMED: no-reloc NM-only donor (spliced into the NON_MATCHING object only, its bytes are not the ROM), so this call has no ROM reloc; the ROM jal here is math_mtxAddTranslation (game TextReloc T+0x2C6C, uso-imports.py sites game) */
         c.out->world.m[3][0] = c.out->gx; c.out->world.m[3][1] = c.out->gy; c.out->world.m[3][2] = c.out->gz;
         }
     }

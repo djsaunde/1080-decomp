@@ -321,11 +321,11 @@ void camPath_read_00000724(char *a0) {
   {
     do
     {
-      int tmp = game_uso_func_055750(0x38);
+      int tmp = XCALL(game_uso_func_055750, mem_new)(0x38);
       if (1)
       {
         ((CamPath *) a0)->keys[i] = (CamKey *) tmp;
-        game_uso_func_000003F4(tmp);
+        XCALL(game_uso_func_000003F4, camKey_init_000003F8)(tmp);
       }
       camKey_read_000005B8(((CamPath *) a0)->keys[i]);
       if (!a0)
@@ -4554,7 +4554,7 @@ void LensFlare_readParms(char *a0) {
     char *base = a0;
     int i;
     char *p;
-    game_uso_func_04A2D8(&((LensFlare *)base)->parms);
+    XCALL(game_uso_func_04A2D8, Parms_load_00035C6C)(&((LensFlare *)base)->parms);
     stream_readS32_0000ADE0((int *)&((LensFlare *)base)->numElems);
     for (i = 0, p = (char *)((LensFlare *)base)->elems; i != sizeof(((LensFlare *)base)->elems); p += 0x24, i += 0x24) {
         LensFlareElem_read_0000B884(p);
@@ -4799,7 +4799,7 @@ void TrickTable_load_0000C3F8(int *a0) {
     int *p;
 
     TrickTable_readCount_0000C0F0(&game_uso_D_807FFBC4);
-    p = (int*)game_uso_func_055750(game_uso_D_807FFBC4 << 6);
+    p = (int*)XCALL(game_uso_func_055750, mem_new)(game_uso_D_807FFBC4 << 6);
     game_uso_D_807FFBC0 = p;
     i = 0;
     if (game_uso_D_807FFBC4 != 0) {
@@ -5313,7 +5313,7 @@ void RiderAnim_init_0000D458(s32 arg0) {
     s32 sp30[4];
     s32 var_v0;
 
-    game_uso_func_07F6C0((char *)arg0 + 0xBC, (char *)arg0 + 0x138 - ((char *)arg0 + 0xBC));
+    game_uso_func_07F6C0((char *)arg0 + 0xBC, (char *)arg0 + 0x138 - ((char *)arg0 + 0xBC)); /* UNNAMED: mid-entry jal gl_bzero+0xC (game TextReloc T+0xD470 -> bootup:gl_bzero+0xC, uso-imports.py sites game: bzero(ptr, len), entry 12 bytes into the build function, no symbol of its own) */
     RA(arg0)->trickPhase = 2;
     RA(arg0)->animSet = RANIM_GROUP_REGULAR;
     RA(arg0)->rideContacts = 1;
