@@ -26063,6 +26063,10 @@ void sys_hexDump(int a0, char *a1, unsigned int s4) {
     CALL(dbg_printf)(GL_DATA(0x21F30));
 }
 
+/* gSysLib's base-class virtuals (SysLibBase_vtbl, Data+0x21DA0): unimplemented
+ * defaults for the four slots the derived SysLib_vtbl_1E1B8 overrides with
+ * hostio_devWrite_00035990 / hostio_devRead_000359A4 / hostio_devSlot2_000359B8 /
+ * app_loadUso (same signatures). */
 int SysLibBase_devWrite_00061ADC(int a0, int a1, int a2) {
     return -1;
 }
@@ -26075,7 +26079,7 @@ int SysLibBase_devSlot2_00061B04(int a0) {
     return -1;
 }
 
-/* Empty 2-arg stub (sibling of matched SelItem_drawStats_0000AC04). */
+/* Empty 2-arg stub (base of app_loadUso). */
 void SysLibBase_loadUso_00061B10(int a0, int a1) {
 }
 
