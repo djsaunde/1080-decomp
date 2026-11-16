@@ -9909,7 +9909,7 @@ void App_main(O415A4 *self) {
     if (1) {}
     CALL(Mem_init)(gMainHeap_415A4_s2, a, a + b);
     CALL(app_setHeapMode)(0);
-    CALL(DynArr_init_000665A4)(D_415A4_s3, 50);
+    CALL(DynArrPool_init)(D_415A4_s3, 50);
     if (1) {}
     (D_415A4_g1 = self)->pC = GL_DATA_STR(0x1F5D0, "App");
     D_415A4_g2 = CALL(MemTrackerMgr_ctor)(0);

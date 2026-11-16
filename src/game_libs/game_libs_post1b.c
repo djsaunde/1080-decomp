@@ -2297,9 +2297,9 @@ int DynArr_push_0006656C(int *a0) {
     return (int)(DYNARR(a0)->items + idx * 8);
 }
 
-/* DynArr_init_000665A4: initialises a DynArrPool (include/gdl/mem.h; it is not a DynArr): chunkSize = a1,
+/* DynArrPool_init: initialises a DynArrPool (include/gdl/mem.h; it is not a DynArr): chunkSize = a1,
  * no chunks yet and no current DynArr, the state list_allocNode_000665B4 starts from. */
-void DynArr_init_000665A4(int *a0, int a1) { DYNARRPOOL(a0)->chunkSize = a1; DYNARRPOOL(a0)->nChunks = 0; DYNARRPOOL(a0)->cur = 0; }
+void DynArrPool_init(int *a0, int a1) { DYNARRPOOL(a0)->chunkSize = a1; DYNARRPOOL(a0)->nChunks = 0; DYNARRPOOL(a0)->cur = 0; }
 
 /* list_allocNode_000665B4: alloc-retry cache-lookup loop. MATCHED 2026-06-20 via
  * chained-assignment `v1 = *(p+4) = alloc(...)` forcing store-before-call-arg

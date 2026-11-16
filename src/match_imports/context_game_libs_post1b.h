@@ -561,7 +561,7 @@ void dlist_link_000664D4(int *a0, int *a1);
 void dlist_splice_000664F0(int *a0, int *a1);
 int DynArr_ctor_00066514(int a0, int a1);
 int DynArr_push_0006656C(int *a0);
-void DynArr_init_000665A4(int *a0, int a1);
+void DynArrPool_init(int *a0, int a1);
 extern int gl_func_00000000();
 int list_allocNode_000665B4(int a0);
 typedef struct Node66620 {

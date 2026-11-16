@@ -62,7 +62,7 @@ void Self::init() {
     CALL(gfx_waitRcpIdle)(gGfxLib_41820_c);
     CALL(app_freeAllOfType)(1);
     CALL(app_setHeapMode)(1);
-    CALL(DynArr_init_000665A4)(D_41820_d, 100);
+    CALL(DynArrPool_init)(D_41820_d, 100);
     D_41820_e = new Arr(10);
     CALL(app_setHeapMode)(1);
     CALL(MemTracker_walkAll)(D_41820_f, 1);
