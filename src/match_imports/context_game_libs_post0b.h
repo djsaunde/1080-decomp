@@ -946,7 +946,7 @@ typedef struct Record3C7A4{u32 unknown00;f32 value04;u32 unknown08;}Record3C7A4;
 typedef struct Parallel3C7A4{u32 unknown00;s16 value04;u8 unknown06[6];}Parallel3C7A4;
 typedef struct Descriptor3C7A4{u8 unknown00[0x44];u32 count44;u8 unknown48[12];Record3C7A4 *records54;}Descriptor3C7A4;
 typedef struct Owner3C7A4{u8 unknown00[0x2C];Parallel3C7A4 *parallel2C;u8 unknown30[0x54];Descriptor3C7A4 *descriptor84;}Owner3C7A4;
-void coll_markZeroWeight_0003C7A4(Owner3C7A4 *owner);
+void coll_disableVerticalTris(Owner3C7A4 *owner);
 int CollObjMgr_ctor(int *a0);
 typedef char *(*GP_0003C86C)();
 typedef struct {
@@ -2343,7 +2343,7 @@ int BasePolyShape_getVtxNorm(void *arg0, int arg1);
 void PolyShape_getNormal8(int *a0, int a1, unsigned char *a2);
 void _asmpp_func228(void);
 unsigned short PolyShape_getFaceVertex(Tbls_5330C *a0, int a1, int a2);
-s32 PolyShape_getFaceNormal(void *a0, int a1, int a2);
+s32 BasePolyShape_getCornerNormal(void *a0, int a1, int a2);
 void BasePolyShape_avgTriColour(void *arg0, int arg1, void *arg2);
 typedef char *(*GP_00053560)();
 void BasePolyShape_genNormals(char *arg0, s32 arg1, s32 arg2);

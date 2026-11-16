@@ -1,6 +1,6 @@
-nonmatching coll_markZeroWeight_0003C7A4, 0x70
+nonmatching coll_disableVerticalTris, 0x70
 
-glabel coll_markZeroWeight_0003C7A4
+glabel coll_disableVerticalTris
     /* E2187C 0003C7A4 8C820084 */  .word 0x8C820084
     /* E21880 0003C7A8 10400018 */  .word 0x10400018
     /* E21884 0003C7AC 00000000 */  .word 0x00000000
@@ -29,4 +29,4 @@ glabel coll_markZeroWeight_0003C7A4
     /* E218E0 0003C808 24E7000C */  .word 0x24E7000C
     /* E218E4 0003C80C 03E00008 */  .word 0x03E00008
     /* E218E8 0003C810 00000000 */  .word 0x00000000
-endlabel coll_markZeroWeight_0003C7A4
+endlabel coll_disableVerticalTris

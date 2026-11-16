@@ -5923,14 +5923,14 @@ int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
     return 0;
 }
 
-// coll_markZeroWeight_0003C7A4 — STRUCTURAL PASS (0x70 / 28 insns, no episode).
+// coll_disableVerticalTris — STRUCTURAL PASS (0x70 / 28 insns, no episode).
 //
 // Walks v0->items[] (each item = 0xC bytes wide) iterating up to n items,
 // checking items[i].field_04 (a float) for == 0.0f, and on equal stores
 // -1 (as short) at parallel-array (a0->[0x2C])[off+4].
 //
 // Pseudo-C (decoded 2026-05-27 PM):
-//   void coll_markZeroWeight_0003C7A4(int *a0) {
+//   void coll_disableVerticalTris(int *a0) {
 //       int *v0 = *(int**)((char*)a0 + 0x84);
 //       unsigned int i = 0;
 //       int n, off = 0;
@@ -5962,10 +5962,10 @@ int CollShape_nearestHit(char *o, int *r, float s, void *a3) {
 //
 // Body left INCLUDE_ASM; pseudo-C above is documentation only (below the
 // 80% NM-wrap-promote threshold per CLAUDE.md).
-/* coll_markZeroWeight_0003C7A4 (agent-b run 560: over gdl/coll.h CollShape / CollTri and
+/* coll_disableVerticalTris (agent-b run 560: over gdl/coll.h CollShape / CollTri and
  * polyshape.h BasePolyShape): every triangle whose face normal has y == 0 (a vertical face)
  * gets its CollTri tag set to -1, which the CollShape queries skip. */
-void coll_markZeroWeight_0003C7A4(CollShape *cs) {
+void coll_disableVerticalTris(CollShape *cs) {
     unsigned int i;
     f32 *n;
 
@@ -19387,7 +19387,7 @@ unsigned short PolyShape_getFaceVertex(Tbls_5330C *a0, int a1, int a2) {
  * (vtxNormals row of tris[tri].v[corner], through the optional 6-byte remap rows). Byte levers:
  * `*(PolyTri **)&shape->tris` and `*(char **)&shape->vtxNormals` (the member forms flip addu
  * operands); remap stays a byte pointer (`remap[v * 3]` moves the t-ring). */
-f32 *PolyShape_getFaceNormal(BasePolyShape *shape, int tri, int corner) {
+f32 *BasePolyShape_getCornerNormal(BasePolyShape *shape, int tri, int corner) {
     char *remap = (char *)shape->remap;
     if (remap != 0) {
         return (f32 *)(*(u16 *)(remap + (*(PolyTri **)&shape->tris)[tri].v[corner] * 6) * 12 +
