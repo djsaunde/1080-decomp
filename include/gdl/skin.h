@@ -25,7 +25,7 @@ typedef struct SkinWeight {
 typedef struct SkinBone {
     /* 0x0 */ s16 count;
     /* 0x2 */ s16 pad2;
-    /* 0x4 */ s32 weights;         /* SkinWeight *, 0 = bone not skinned */
+    /* 0x4 */ struct SkinWeight *weights; /* 0 = bone not skinned */
 } SkinBone;
 
 /* SkinMgr (0x98, "skinmgr", vtable Data 0x2C490; ctor 0x695F4). Up to 4 (MAX_SKIN_MGRS),
