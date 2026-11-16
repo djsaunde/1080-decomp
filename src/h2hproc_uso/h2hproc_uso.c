@@ -589,6 +589,10 @@ void H2HRaceProcess_onPause(H2HRace *a0) {
  *    uopt canonicalizes to the other operand slot regardless of textual
  *    order — removing the local (CSE keeps one load) makes both operands
  *    temps so textual order controls rs/rt.
+ *  - run 559: the row is `(GuiRow *)((char *)menu->rows + menu->cursor * k)`
+ *    (= menu->rows[menu->cursor], 0x84 + 0xC folds to the 0x90 slot); with
+ *    char * arithmetic the pointer must come first textually (the reverse
+ *    order swaps the addu operands).
  * NOTE: zero-target jals (gl_func_00000000 placeholders) — promotion to the
  * matching path still gated by USO reloc wiring; this is the NM-wrap body. */
 void H2HRaceProcess_onPauseSelect(int *a0) {
@@ -599,9 +603,9 @@ void H2HRaceProcess_onPauseSelect(int *a0) {
         CALL(snd_postEvent)(k);
         k = 0x28;
         if (k) {}
-        if (*(int*)((*(int**)((char*)a0 + 0x48))[0x7C/4] * k + (int)*(int**)((char*)a0 + 0x48) + 0x90) != 0) {
+        if (((GuiRow *)((char *)RACEPROC(a0)->menu->rows + RACEPROC(a0)->menu->cursor * k))->arg != 0) {
             *(int**)&D_00000000 = a0;
-            (*(void(**)())((*(int**)((char*)a0 + 0x48))[0x7C/4] * k + (int)*(int**)((char*)a0 + 0x48) + 0x90))();
+            ((void (*)())((GuiRow *)((char *)RACEPROC(a0)->menu->rows + RACEPROC(a0)->menu->cursor * k))->arg)();
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "common.h"
 #include "uso_call.h"
+#include "game/modeproc.h"
 
 /* Contiguous -O0 run [0x19C, 0xAE0) of the mgrproc_uso Yay0 block, carved into
  * a dedicated -O0 sub-unit (region 2) and concatenated with the -O2 objects
@@ -96,10 +97,10 @@ mgr_procMain(a0, a1) char * a0; int a1; {
             case 4:
                 mgrproc_uso_func_0118E4(import_80020098, import_80073CF0[1]);
                 gInputMgr_800200FC.v =
-                    (*(int**)(a0 + 8))[(*(int**)(a0 + 8))[1] + 3];
+                    FLOWPROC(a0)->courseList->courses[FLOWPROC(a0)->courseList->idx];
                 import_80020118.v = import_80020118.v ^ 1;
                 import_80020215.v =
-                    (*(int**)(a0 + 8))[(*(int**)(a0 + 8))[1] + 9];
+                    FLOWPROC(a0)->courseList->riders[FLOWPROC(a0)->courseList->idx];
                 import_80020217.v = import_80020128.arr[import_80020215.v];
                 mgrproc_uso_func_0120A8(import_80020098, 4,
                                         gInputMgr_800200FC.v, 0);
@@ -203,13 +204,13 @@ void mgr_pickRivals_000005D0(char *a0) {
             candidate = ((int)(XCALL(mgrproc_uso_func_075EE4, sys_randf)() * import_802600E4.v)
                          + import_800200E4.v + 1) % 5;
             for (idx = 0; idx < count; idx++) {
-                if (*(int*)((char*)*(int**)(a0 + 8) + idx * 4 + 0x24) == (0, candidate)) break;
+                if (FLOWPROC(a0)->courseList->riders[idx] == (0, candidate)) break;
             }
             if (idx == count) {
                 result = candidate;
             }
         }
-        *(int*)((char*)*(int**)(a0 + 8) + count * 4 + 0x24) = result;
+        FLOWPROC(a0)->courseList->riders[count] = result;
     } while (++count < 4);
 }
 
