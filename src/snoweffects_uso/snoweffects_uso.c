@@ -876,10 +876,16 @@ void snoweffects_uso_func_00006420(SnowEffect *this) {
 
 /* 0x64B8: spawn update of effect A (flag bit 0): burst / timer gating, a direction from the +0x30-matrix
  * point minus +0x138 (normalized, scaled, plus the camera +0x318 lean) and per-particle pool spawns.
- * NM draft (not spliced) in src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 664, 91.6 %,
- * 406 words vs 404: the lerped spawn point is reloaded where the target forwards it, and the edg Vec3
- * temporaries sit 4..24 bytes off the target's slots, frame 336 vs 344). */
+ * NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 668, 94.2 %, 404 words = target),
+ * spliced over this placeholder on the non_matching build. Left: the edg Vec3 temporaries sit 4..12 bytes
+ * off the target's slots (the second operator* result is above the first in the target), the target
+ * materialises &vFC for the scale, and the lerp loads are scheduled apart. */
+#ifdef NON_MATCHING
+void snoweffects_uso_func_000064B8(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_000064B8);
+#endif
 
 void snoweffects_uso_func_00006B08(char *a0) {
     *(int *)(a0 + 0x1C8) = 0;
@@ -888,7 +894,16 @@ void snoweffects_uso_func_00006B08(char *a0) {
     *(float *)(a0 + 0x1D8) = 0.0f;
 }
 
+/* 0x6B28: spawn update of effect B (flag bit 1): game-flag RoData defaults (+0x1B0..+0x1C4), course-state
+ * counters (+0x1C8 / +0x1CC / +0x1D8 from camera +0x9A0 / +0x9A2 / +0xA20), then a burst spawn along the
+ * camera +0x318 / +0x3B0 axes. NCC donor src/snoweffects_uso/snoweffects_uso_ncc_nm_e.cpp (agent-e run 668,
+ * 90.7 %), spliced over this placeholder on the non_matching build. */
+#ifdef NON_MATCHING
+void snoweffects_uso_func_00006B28(void) {
+}
+#else
 INCLUDE_ASM("asm/nonmatchings/snoweffects_uso/snoweffects_uso", snoweffects_uso_func_00006B28);
+#endif
 
 /* the RoData floats of the 0x70C0 defaults (each load takes its own lui: one pin per constant) */
 extern f32 snow_ro_80, snow_ro_84, snow_ro_88, snow_ro_8C, snow_ro_90, snow_ro_94;
