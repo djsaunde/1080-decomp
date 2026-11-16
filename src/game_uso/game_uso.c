@@ -460,7 +460,7 @@ void cam_pickResultView_00000940(char *arg0) {
         }
         break;
     case 1:                                         /* switch 1 */
-        if (INPUT_MGR(import_80020098).unk7C != 0) {
+        if (INPUT_MGR(import_80020098).winVariant != 0) {
             var_a1 = 0xB;
         } else {
             switch (INPUT_MGR(import_80020098).course) {                      /* switch 3 */

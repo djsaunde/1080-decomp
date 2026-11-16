@@ -3314,7 +3314,7 @@ void RaceProcess_leave(RaceProcess *a0) {
             CALL(RaceTracker_sendWinResult)(GAMEFLOW(G1)->dataMgr, 0);
             XCALL(gl_func_00000000_70fcv, func_00000188)(5, 0, 0);
             if (GAMEFLOW(G2)->nextFlowMode == 5 || GAMEFLOW(G2)->nextFlowMode == 4 || GAMEFLOW(G2)->nextFlowMode == 6) {
-                if (GAMEFLOW(G2)->unk7C == 1) {
+                if (GAMEFLOW(G2)->winVariant == 1) {
                     CALL(snd_playSeq_000120A8)(G2, 5, 2, 0);
                 } else {
                     CALL(snd_playSeq_000120A8)(G2, 5, 1, 0);

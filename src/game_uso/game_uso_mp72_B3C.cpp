@@ -74,7 +74,7 @@ void game_uso_func_00000940_lay(char *arg0) {
         }
         break;
     case 1:
-        if (*(int *)((char *)&import_80020098 + 0x7C) != 0) {
+        if (INPUT_MGR(import_80020098).winVariant != 0) {
             var_a1 = 0xB;
         } else {
             switch (INPUT_MGR(import_80020098).course) {

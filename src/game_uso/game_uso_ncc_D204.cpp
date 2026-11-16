@@ -21,6 +21,7 @@ extern "C" {
 typedef int s32; typedef unsigned short u16; typedef float f32; typedef double f64;
 typedef short s16; typedef unsigned char u8; typedef unsigned int u32;
 #include "../../include/game/rideranim.h"
+#include "../../include/game/input.h"
 extern char import_80020098;
 extern char game_uso_D_807FF68C;
 extern char game_uso_D_807FF3B8;
@@ -33,14 +34,14 @@ void game_uso_func_0775F8(void *);
 }
 struct A { char pad[40]; virtual void m(); };
 typedef void (A::*PM)();
-struct H : A { char pad2[200-44]; PM pm; };
-#define I(b,o) (*(int *)((char *)(b) + (o)))
+struct H : A {}; /* RiderAnim as the class its state PMFs bind to (vptr at +40) */
+#define PMF(pair) (*(PM *)&(pair)) /* a Pair2 field read as the PMF it holds */
 #define F(b,o) (*(float *)((char *)(b) + (o)))
 extern "C" void RiderAnim_update_0000D204(H *a0) {
     H *a3 = a0;
-    /* import_80020098 is GameFlow (include/game/input.h): +0x64 course, +0x138 dataMgr (RaceTracker),
-     * whose +0xB4 hudFlags get RTF_FLUSH | RTF_POINTS (3) while endTrickFlag (0x120) is set */
-    if (I(&import_80020098, 0x64) == 0) {
+    /* import_80020098 is GameFlow (include/game/input.h); on course 0 its dataMgr's hudFlags get
+     * RTF_FLUSH | RTF_POINTS while endTrickFlag is set and the rider is past the RoData z threshold */
+    if (INPUT_MGR(import_80020098).course == 0) {
         float th = F(&D_00000000, 0x1F4);
         if (RA(a0)->rider->dnode.vqs.trans[2] < th) {
             RA(a0)->endTrickFlag = 0;
@@ -48,10 +49,10 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
         if (RA(a0)->rider->dnode.vqs.trans[2] < th) goto clear_bits;
         if (RA(a3)->endTrickFlag == 0) goto set_bits;
     clear_bits:
-        { int *child = (int *)(I(&import_80020098, 0x138) + 0xB4); *child &= ~3; }
+        { s32 *flags = &INPUT_MGR(import_80020098).dataMgr->hudFlags; *flags &= ~(RTF_FLUSH | RTF_POINTS); }
         goto bits_done;
     set_bits:
-        { int *child = (int *)(I(&import_80020098, 0x138) + 0xB4); *child |= 3; }
+        { s32 *flags = &INPUT_MGR(import_80020098).dataMgr->hudFlags; *flags |= RTF_FLUSH | RTF_POINTS; }
     bits_done:;
     }
     {
@@ -61,7 +62,7 @@ extern "C" void RiderAnim_update_0000D204(H *a0) {
         }
     }
     if (RA(a3)->trickPhase != 0) RiderAnim_selectAnim_0000D9CC(a3);
-    if (a3->pm != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*(a3->pm))();
+    if (PMF(RA(a3)->state) != *(PM *)(&game_uso_D_807FF3B8 + 0xDC8)) (a3->*PMF(RA(a3)->state))(); /* run the state */
     XCALL(game_uso_func_0000ECE8, RiderAnim_updateSlowdown_0000ECEC)(a3);
     if (RA(a3)->player.anim != 0) {
         XCALL(game_uso_func_076E78, AnimDataMgr_lookup)(RA(a3)->player.mgr, RA(a3)->player.anim);

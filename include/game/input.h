@@ -68,8 +68,11 @@ typedef struct InputMgr {
     /* 0x70 */ s32 unk70;          /* GameFlow_create: 0 */
     /* 0x74 */ s32 unk74;          /* GameFlow_startMode clears 0x74 / 0x78 */
     /* 0x78 */ s32 unk78;
-    /* 0x7C */ s32 unk7C;          /* RaceProcess_leave (win path, flow modes 4..6): 1 -> victory
-                                    * seq variant 2, else variant 1 */
+    /* 0x7C */ s32 winVariant;     /* nonzero: the alternate win presentation. RaceProcess_leave (win
+                                    * path, flow modes 4..6): 1 -> victory seq variant 2, else 1;
+                                    * cam_pickResultView (game.uso): a win shows result view 11
+                                    * instead of the per-course one. RaceProcess_reset clears it; no
+                                    * other store found in any built object (run 532) */
     /* 0x80 */ s32 unk80;          /* input_initDefaults_00012188: 0 */
     /* 0x84 */ s32 unk84;          /* GameFlow_create: 0 */
     /* 0x88 */ s32 unk88;          /* GameFlow_create: 1 */
@@ -143,6 +146,24 @@ typedef struct InputMgr {
  * `char *` / `int *` parameter is a lever): same base + offset access as the raw form. */
 #define GAMEFLOW(p) ((InputMgr *)(p))
 
+#ifdef __cplusplus
+/* C++ (edg / NCC donor) mirror of what GameFlow.dataMgr points to. InputMgr itself compiles under
+ * edg as is (game_uso F6D4 / E35C / D204 / B3C use INPUT_MGR), but gdl/race.h is C-only (its
+ * &((T *)0)->f asserts), so a donor that reads through dataMgr gets the RaceTracker prefix here.
+ * Same layout as gdl/race.h's RaceTracker up to hudFlags; keep the two in step. */
+#ifndef RTF_FLUSH
+#define RTF_FLUSH      1
+#define RTF_POINTS     2
+#define RTF_BONUS      4
+#define RTF_SCORE      8
+#define RTF_LOOKUP     0x10
+#endif
+struct RaceTracker {
+    char pad00[0xB4];       /* 0x00: Node base, timers, entries, gadgets (gdl/race.h) */
+    s32 hudFlags;           /* 0xB4: RTF_* */
+};
+#endif
+
 #ifndef __cplusplus /* edg (NCC donors) rejects the &((T *)0)->f constant form */
 typedef char InputPad_held_check[(int)&((InputPad *)0)->held == 0x10 ? 1 : -1];
 typedef char InputPad_pressed_check[(int)&((InputPad *)0)->pressed == 0x18 ? 1 : -1];
@@ -179,6 +200,7 @@ typedef char InputMgr_app_check[(int)&((InputMgr *)0)->app == 0x12C ? 1 : -1];
 typedef char InputMgr_seqArg_check[(int)&((InputMgr *)0)->seqArg == 0x144 ? 1 : -1];
 typedef char InputMgr_flowImgs_check[(int)&((InputMgr *)0)->flowImgs == 0x150 ? 1 : -1];
 typedef char InputMgr_unk15C_check[(int)&((InputMgr *)0)->unk15C == 0x15C ? 1 : -1];
+typedef char InputMgr_winVariant_check[(int)&((InputMgr *)0)->winVariant == 0x7C ? 1 : -1];
 typedef char InputMgr_locked_check[(int)&((InputMgr *)0)->locked == 0x18C ? 1 : -1];
 #endif
 
