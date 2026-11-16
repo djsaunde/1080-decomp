@@ -5029,7 +5029,7 @@ void *SkinMgr_init(char *self, char *arg1, char *arg2) {
     ((SkinMgr *)self)->bone = (int)arg1;
     ((SkinMgr *)self)->bindVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
     ((SkinMgr *)self)->outVerts = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 6);
-    ((SkinMgr *)self)->weights = CALL(mem_new)(BASEPOLY(arg2)->nVerts * 2);
+    ((SkinMgr *)self)->weights = (s16 *)CALL(mem_new)(BASEPOLY(arg2)->nVerts * 2);
     ((SkinMgr *)self)->jitter = 0;
     i = 0;
     if (BASEPOLY(arg2)->nVerts != 0) {

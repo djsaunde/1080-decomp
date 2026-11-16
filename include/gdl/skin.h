@@ -33,7 +33,7 @@ typedef struct SkinBone {
 typedef struct SkinMgr {
     /* 0x00 */ Node node;
     /* 0x2C */ s32 unk2C;
-    /* 0x30 */ s32 weights;        /* s16 *: main-bone weight per vertex (percent) */
+    /* 0x30 */ s16 *weights;        /* main-bone weight per vertex (percent) */
     /* 0x34 */ s32 shape;          /* MorphPoly * (its +0x40 nVerts, +0x60 verts) */
     /* 0x38 */ s32 bone;           /* main bone MNode *; 0 = not initialised */
     /* 0x3C */ s32 bindVerts;      /* s16 (*)[3]: copy of the shape's verts at init */
