@@ -17,8 +17,7 @@ extern float D_00000030[4];    /* == func_00000008 + 0x28: Vec4f zeroed slot */
 extern char gSnowBoard_0000002C;        /* == func_00000008 + 0x24 */
 typedef struct {
     char pad44[0x44];
-    char *game;                 /* +0x44 = GameFlow.game (0xF0 + 0x44 = 0x134, reloc Bss 0xF8 sym272 +0x134):
-                                 * the game world object; the new process window goes to its +0x114 */
+    char *ptr44;                /* +0x44: object holder, result stored at +0x114 */
 } F0Struct;
 extern F0Struct func_000000F0; /* USO-base reloc */
 extern int func_00000188;      /* USO-base reloc */
@@ -59,7 +58,7 @@ void *game_createProcessWindow(int a0, int a1) {
     p = (float *)result;
     q = &gSnowBoard_0000002C;
     func_00000000(q, p);
-    *(int *)(func_000000F0.ptr44 + 0x114) = result; /* RAW: donor-mirror: NCC donor game-world +0x114 through a local mirror */
+    *(int *)(func_000000F0.ptr44 + 0x114) = result;
     return (void *)result;
 }
 

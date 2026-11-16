@@ -23,11 +23,6 @@ struct VO { char pad[0x28];
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
     virtual void f(); };
-/* The handler store is the app object's vptr: func_00000008 + 0x20 relocates against gSnowBoard (bootup
- * Bss 0x58, sym326, the same object as the D_00000000 root) at +0x28, the cfront vptr slot of a Node
- * subclass (uso-data-sites.py sites SnowBoard_ctor; agent-g run 580). */
-struct AppVptrE800 { char node[0x28]; void *vptr; };
-#define SNOWBOARD_E800 ((AppVptrE800 *)(func_00000008 - 8))
 extern "C" void SnowBoard_ctor(void) {
     VO *root;
     int z, x, y;
@@ -37,7 +32,7 @@ extern "C" void SnowBoard_ctor(void) {
     func_00000000(&gSysLib_e800_g2, &sStr_rom_audio_wave_uso_8D48, &y);
     func_00000000(&gSysLib_e800_g3, &sStr_rom_audio_bank_uso_8D5C, &z);
     func_00000000(x, z, y);
-    func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v; /* RAW: donor-mirror: NCC donor vptr store through a data alias (func_00000008 + 0x20) */
+    func_00000000(&gSnowBoard_e800_g4); *(void **)(func_00000008 + 0x20) = &SnowBoard_vtbl_e800_v;
     root = (VO *)&D_00000000;
     root->f();
 }
