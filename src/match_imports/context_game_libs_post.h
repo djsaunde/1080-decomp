@@ -632,7 +632,7 @@ extern int gl_func_00000000();
 extern int D_00000000;
 void AudioLoad_AsyncLoadFont(int idx, int a1, int a2, int a3);
 extern char gAudioContext_233A0[];
-int AudioLoad_GetFontsForSequence(int a0, int *a1);
+u8 *AudioLoad_GetFontsForSequence(int a0, int *a1);
 extern int gl_func_00000000();
 extern int D_00000000;
 void AudioLoad_DiscardSeqFonts(int idx);

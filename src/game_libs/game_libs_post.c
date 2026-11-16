@@ -3756,10 +3756,10 @@ extern void *gl_func_000365AC();
 void *aud_AllocSampleCacheTemporary(int a0, int a1, int a2, signed char a3) {
     char *v0 = (char *)gl_func_000365AC(a0);
     if (v0 == 0) goto end_zero;
-    v0[2] = (char)a1;
-    *(int*)(v0 + 0xC) = a2;
-    v0[1] = a3;
-    return *(void**)(v0 + 8);
+    ((SampleCacheEntry *)v0)->sampleBankId = a1;
+    ((SampleCacheEntry *)v0)->sampleAddr = (void *)a2;
+    ((SampleCacheEntry *)v0)->origMedium = a3;
+    return ((SampleCacheEntry *)v0)->allocatedAddr;
 end_zero:
     return 0;
 }
@@ -3770,10 +3770,10 @@ extern int gl_ref_00036A48();
 int *aud_AllocSampleCachePersistent(int a0, int a1, int a2, signed char a3) {
     int *v0 = (int*)gl_ref_00036A48(a0);
     if (v0 == 0) goto end_zero;
-    *(char*)((char*)v0 + 2) = (char)a1;
-    *(int*)((char*)v0 + 0xC) = a2;
-    *(signed char*)((char*)v0 + 1) = a3;
-    return *(int**)((char*)v0 + 0x8);
+    ((SampleCacheEntry *)v0)->sampleBankId = a1;
+    ((SampleCacheEntry *)v0)->sampleAddr = (void *)a2;
+    ((SampleCacheEntry *)v0)->origMedium = a3;
+    return (int *)((SampleCacheEntry *)v0)->allocatedAddr;
 end_zero:
     return 0;
 }
@@ -4979,15 +4979,17 @@ void AudioLoad_AsyncLoadFont(int idx, int a1, int a2, int a3) {
  *  - `off++ + (int)tbl` post-increment spelling gives the target's
  *    addu operand order (off first). */
 extern char gAudioContext_233A0[];
-int AudioLoad_GetFontsForSequence(int a0, int *a1) {
-    char *tbl = *(char **)(gAudioContext_233A0 + 0x2028);
+#define SEQ_FONT_TABLE ((AudioContext *)gAudioContext_233A0)->sequenceFontTable
+u8 *AudioLoad_GetFontsForSequence(int a0, int *a1) {
+    char *tbl = (char *)SEQ_FONT_TABLE;
     int off = ((unsigned short *)tbl)[a0];
     *a1 = *(unsigned char *)(off++ + (int)tbl);
     if (*a1 == 0) {
         return 0;
     }
-    return (int)(*(char **)(gAudioContext_233A0 + 0x2028) + off);
+    return SEQ_FONT_TABLE + off;
 }
+#undef SEQ_FONT_TABLE
 
 /* AudioLoad_DiscardSeqFonts (0xB0, 44 insns): run-list consumer over the halfword-indexed
  * byte stream at *(D+0x2028) (same buffer as AudioLoad_SyncLoadSeqFonts / AudioLoad_AsyncLoadFont).
@@ -9579,7 +9581,7 @@ void Audio_SequenceChannelProcessSound(char *arg0, s32 arg1, s32 arg2) {
         CH_CHANGES(arg0) = (CH_CHANGES(arg0) & 0xFF) | CH_CHANGE_FREQSCALE;
     }
     for (arg2 = 0; arg2 != 0x20; arg2 += 4) {
-        temp_v1 = *(char **)(arg0 + arg2 + 0x50);
+        temp_v1 = (char *)((SequenceChannel *)(arg0 + arg2))->layers[0]; /* layers[arg2 / 4] */
         if ((temp_v1 != 0) && LAYER->enabled && (LAYER->note != 0)) {
             b = *(u8*)temp_v1;
             if (b & 1) {
@@ -9683,7 +9685,7 @@ void Audio_SequencePlayerProcessSound(char *obj) {
         SP->appliedFadeVolume = SP->fadeVolume * SP->fadeVolumeScale;
     }
     for (s0 = 0, p = obj; s0 != 64; s0 += 4) {
-        char *e = *(char **)(p + 0x38);
+        char *e = (char *)((SequencePlayer *)p)->channels[0]; /* p is obj shifted s0 bytes: channels[s0 / 4] */
         if (((unsigned)*(int *)e >> 31) == 1) {
             gl_ref_0003DC30(e, ((Fl_2978C *)obj)->f4, ((Fl_2978C *)obj)->f1);
         }
@@ -15633,7 +15635,7 @@ char *MCamera_ctor(char *self, int arg1, float x, float y, float z) {
             if (q != 0 || (q = (int *)gl_func_0001CA10(4)) != 0) {
                 *q = 0;
             }
-            *(char **)(b + 0xC) = GL_DATA_STR(0x1E180, "<Unknown>");
+            NODE(b)->name = GL_DATA_STR(0x1E180, "<Unknown>");
             *(int *)(b + 0x14) = 0;
         }
         q = (int *)(o + 0x18);
@@ -15854,15 +15856,15 @@ void MCamera_doCommand(char *o, char *c) {
     int val;
     val = *(int *)c;
     if (val == 0x69) {
-        sp = *(int **)(c + 4);
-        *(int **)(c + 4) = sp + 1;
+        sp = (int *)((NodeMsg *)c)->arg.payload; /* the command stream cursor */
+        ((NodeMsg *)c)->arg.payload = (char *)(sp + 1);
         idx = *sp;
         if (c) { }
         if ((u32)idx >= 0x28) {
             CALL(sys_fatal)(GL_DATA_STR(0x1E194, "Global out of range %d"), idx);
         }
         val = *(int *)((char *)&gNodeGlobals + idx * 4);
-        *(int *)(o + 0xF4) = val;
+        *(int *)&((MCamera *)o)->target = val;
         return;
     }
     CALL(Node_doCommand)(o);
