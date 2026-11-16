@@ -6130,7 +6130,7 @@ int* coll_boxCtor_0003CAA0(int *a0) {
         a0 = (int*)CALL(mem_new)(0x34);
         if (a0 == 0) goto end;
     }
-    COLLOBJ(a0)->vptr = (int)&CollBox_vtbl;
+    COLLOBJ(a0)->vptr = (char *)&CollBox_vtbl;
     COLLOBJ(a0)->next = 0;
     COLLOBJ(a0)->owner = 0;
     COLLOBJ(a0)->pos[0] = 0.0f;
@@ -17636,7 +17636,7 @@ char *Mat_fromFrameBuffer_0004F85C(char *self, Window *spec) {
     if (self != 0 || (self = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
         if ((s = self) != 0 || (s = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x90)) != 0) {
             if ((s2 = s) != 0 || (s2 = (char *)XCALL(gl_func_00034458_4F85C, mem_new)(0x60)) != 0) {
-                ((BaseMat *)s2)->vptr = (s32)&BaseMat_vtbl_4F85C_a;
+                ((BaseMat *)s2)->vptr = (char *)&BaseMat_vtbl_4F85C_a;
                 if ((m = &((BaseMat *)s2)->unk34) != 0 || (m = (s32 *)XCALL(gl_func_00034458_4F85C, mem_new)(8)) != 0) {
                     m[1] = 0;
                     m[0] = 0;
@@ -17646,7 +17646,7 @@ char *Mat_fromFrameBuffer_0004F85C(char *self, Window *spec) {
                 }
                 XCALL(gl_func_00034458_4F85C, BaseMat_init_000517E4)(s2);
             }
-            ((BaseMat *)s)->vptr = (s32)&Mat_vtbl_4F85C_b;
+            ((BaseMat *)s)->vptr = (char *)&Mat_vtbl_4F85C_b;
         }
         ((BaseMat *)self)->format = MAT_FMT_RGBA16;
         ((BaseMat *)self)->texels = spec->colorBuf[0];

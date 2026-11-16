@@ -4812,7 +4812,7 @@ void *TreeTmpl_create(char *arg0) {
             }
         }
         func_00000000_087A4(s0);
-        COLLOBJ(s0)->vptr = (int)&D_87A4_vt;
+        COLLOBJ(s0)->vptr = (char *)&D_87A4_vt;
     }
 skip:
     TREE(s1)->snode.scale = 10.0f;

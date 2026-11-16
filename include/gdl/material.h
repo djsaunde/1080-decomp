@@ -41,7 +41,7 @@ typedef struct BaseMat {
     /* 0x50 */ s32 minCut;
     /* 0x54 */ s32 maxCut;
     /* 0x58 */ s32 unk58;
-    /* 0x5C */ s32 vptr;
+    /* 0x5C */ char *vptr;             /* Cfront vtable pointer */
 } BaseMat;
 
 /* format (+0x24): (component kind << 8) | bits per texel; decoded from

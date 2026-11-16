@@ -30,7 +30,7 @@ typedef struct BinFile {
     /* 0x0C */ struct BinFileMgr *mgr; /* owner (BinFileMgr_loadFile, BinFile_set) */
     /* 0x10 */ s32 size;            /* read by BinFile_load; 0 = "BinFile File empty" */
     /* 0x14 */ char unk14[0x1C - 0x14]; /* BinFile_init copies "<empty>" here (str_copyEnd) */
-    /* 0x1C */ s32 vptr;
+    /* 0x1C */ char *vptr;          /* Cfront vtable pointer */
 } BinFile;
 
 /* an image sub-file (0x30; ImageFileMgr_newFile_000688F8, vtable ImageFile_vtbl).

@@ -26,7 +26,7 @@ typedef struct CollObj {
     /* 0x16 */ s16 category;       /* 0xFFFF at init */
     /* 0x18 */ f32 pos[3];
     /* 0x24 */ f32 vel[3];         /* CollObj_sphereHitTest sweeps pos by the relative velocity */
-    /* 0x30 */ s32 vptr;
+    /* 0x30 */ char *vptr;         /* Cfront vtable pointer */
 } CollObj;
 
 /* the cylinder object of CollObj_initCylinder / CollObj_sphereHitTest (Y-up, XZ circle) */

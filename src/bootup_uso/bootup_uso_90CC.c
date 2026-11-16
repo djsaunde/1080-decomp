@@ -629,7 +629,7 @@ void *SnowBoarder_ctor(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 a
         var_s0 = temp_s1;
         if ((arg0 != (void *)-0x878) || (temp_v0_5 = FCALL(mem_new)(0x40), var_s0 = temp_v0_5, (temp_v0_5 != 0))) {
             FCALL(coll_boxCtor_0003CAA0)(var_s0);
-            COLLOBJ(var_s0)->vptr = (s32) &bu_90cc_imp30;
+            COLLOBJ(var_s0)->vptr = (char *)&bu_90cc_imp30;
         }
         SNOWB(arg0)->rival = 0;
         SNOWB(arg0)->controller = arg1;
