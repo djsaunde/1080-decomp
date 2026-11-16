@@ -687,9 +687,9 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
     int g7;
 
     if (1) { T4_18FC *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; }
-    if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xD0)) != 0) {
+    if (s0 != 0 || (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(0xD0)) != 0) {
         b = s0;
-        if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
+        if (b != 0 || (b = (char *)XCALL(game_uso_func_055750, mem_new)(8)) != 0) {
             ((SnowChaseActorCamParms *)b)->name = &game_uso_D_807FE908 + 0x318;
             ((SnowChaseActorCamParms *)b)->unk04 = 0;
         }
@@ -705,8 +705,8 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
         pc = big.v;
         prm.w = big.idx.w;
         o1 = s0 + 8;
-        if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
-            game_uso_func_04A188(o1, s0, prm, 1);
+        if (o1 != 0 || (o1 = (char *)XCALL(game_uso_func_055750, mem_new)(0x20)) != 0) {
+            XCALL(game_uso_func_04A188, Parms_addParm)(o1, s0, prm, 1);
             ((CamVec3Parm *)o1)->vptr = &game_uso_D_807FE620 + 48;
             ((CamVec3Parm *)o1)->unk1C = 0;
             tmp = pa;
@@ -726,13 +726,13 @@ void *SnowChaseActorCamParms_ctor(char *s0) {
             ((CamParm *)o)->unk14 = 0; \
             ((CamParm *)o)->value = 0.0f; \
         }
-        STAGE(40,  t2, game_uso_D_807FE914, 0x324, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(64,  t3, game_uso_D_807FE918, 0x328, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(88,  t4, game_uso_D_807FE91C, 0x32C, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(112, t5, game_uso_D_807FE920, 0x330, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(136, t6, game_uso_D_807FE924, 0x334, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(160, t7, game_uso_D_807FE928, 0x338, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(184, t8, game_uso_D_807FE92C, 0x33C, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(40,  t2, game_uso_D_807FE914, 0x324, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(64,  t3, game_uso_D_807FE918, 0x328, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(88,  t4, game_uso_D_807FE91C, 0x32C, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(112, t5, game_uso_D_807FE920, 0x330, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(136, t6, game_uso_D_807FE924, 0x334, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(160, t7, game_uso_D_807FE928, 0x338, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(184, t8, game_uso_D_807FE92C, 0x33C, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
 #undef STAGE
     }
     return s0;
@@ -1382,9 +1382,9 @@ void *SnowChaseActorParms_ctor(char *s0) {
     char *b;
 
     if (1) { T4_3018 *q = &t2; q = &t3; q = &t4; q = &t5; q = &t6; q = &t7; q = &t8; q = &t9; }
-    if (s0 != 0 || (s0 = (char *)game_uso_func_055750(0xE8)) != 0) {
+    if (s0 != 0 || (s0 = (char *)XCALL(game_uso_func_055750, mem_new)(0xE8)) != 0) {
         b = s0;
-        if (b != 0 || (b = (char *)game_uso_func_055750(8)) != 0) {
+        if (b != 0 || (b = (char *)XCALL(game_uso_func_055750, mem_new)(8)) != 0) {
             ((SnowChaseActorParms *)b)->name = &game_uso_D_807FE964 + 0x374;
             ((SnowChaseActorParms *)b)->unk04 = 0;
         }
@@ -1400,8 +1400,8 @@ void *SnowChaseActorParms_ctor(char *s0) {
         pc = big.v;
         prm.w = big.idx.w;
         o1 = s0 + 8;
-        if (o1 != 0 || (o1 = (char *)game_uso_func_055750(0x20)) != 0) {
-            game_uso_func_04A188(o1, s0, prm, 1);
+        if (o1 != 0 || (o1 = (char *)XCALL(game_uso_func_055750, mem_new)(0x20)) != 0) {
+            XCALL(game_uso_func_04A188, Parms_addParm)(o1, s0, prm, 1);
             ((CamVec3Parm *)o1)->vptr = &game_uso_D_807FE620 + 48;
             ((CamVec3Parm *)o1)->unk1C = 0;
             tmp = pa;
@@ -1418,14 +1418,14 @@ T.w = ((T4_3018 *)(&(SYM) + (TOFF)))->w; prm = T; o = s0 + (OFF); \
             ((CamParm *)o)->unk14 = 0; \
             ((CamParm *)o)->value = 0.0f; \
         }
-        STAGE(40,  t2, game_uso_D_807FE970, 0x380, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(64,  t3, game_uso_D_807FE974, 0x384, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(88,  t4, game_uso_D_807FE978, 0x388, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(112, t5, game_uso_D_807FE97C, 0x38C, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(136, t6, game_uso_D_807FE980, 0x390, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(160, t7, game_uso_D_807FE984, 0x394, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(184, t8, game_uso_D_807FE988, 0x398, game_uso_func_055750, game_uso_func_04A188)
-        STAGE(208, t9, game_uso_D_807FE98C, 0x39C, game_uso_func_055750, game_uso_func_04A188)
+        STAGE(40,  t2, game_uso_D_807FE970, 0x380, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(64,  t3, game_uso_D_807FE974, 0x384, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(88,  t4, game_uso_D_807FE978, 0x388, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(112, t5, game_uso_D_807FE97C, 0x38C, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(136, t6, game_uso_D_807FE980, 0x390, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(160, t7, game_uso_D_807FE984, 0x394, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(184, t8, game_uso_D_807FE988, 0x398, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
+        STAGE(208, t9, game_uso_D_807FE98C, 0x39C, XCALL(game_uso_func_055750, mem_new), XCALL(game_uso_func_04A188, Parms_addParm))
 #undef STAGE
     }
     return s0;
