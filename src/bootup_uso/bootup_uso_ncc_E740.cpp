@@ -17,7 +17,12 @@ extern char snd_setPlayer0VolumeLevel_0000023C[];
 }
 /* snd_setPlayer0VolumeLevel_0000023C + 4 is GfxLib +0x240 = mainWindow (uso-data-sites: Bss+0x3C168 sym154, K = 0x240; agent-g
  * run 580), so the root object is the main ScreenWindow and buf() its frame buffer. */
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: &gGfxLib */
+#include "port_game.h"
+#define GFX_E740 GFXLIB(PORT_GFXLIB)
+#else
 #define GFX_E740 GFXLIB(snd_setPlayer0VolumeLevel_0000023C - 0x23C)
+#endif
 #ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
 #include "port_cfront.h"
 struct VO { char pad[0x28];

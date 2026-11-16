@@ -11,6 +11,7 @@ s32 osTvType = OS_TV_NTSC; /* the analysed ROM is the NTSC release (plan 9.1) */
 s32 osRomType = 0;          /* cartridge */
 u32 osRomBase = 0xB0000000;
 s32 osResetType = 0;        /* cold reset */
+s32 osCicId = 0x17D7;       /* 6103: the cartridge's CIC (App_softReset / SelectWin_startGame check it) */
 u32 osMemSize = 0x400000;   /* no Expansion Pak */
 u8 osAppNMIBuffer[64];
 u64 osClockRate = 62500000;
@@ -20,6 +21,9 @@ s32 osViClock = PORT_VI_CLOCK_NTSC;
  * under these names in the matching build. */
 PORT_ALIAS(osTvType, gl_24378_osTvType);
 PORT_ALIAS(osTvType, D_00000000_tvtype);
+/* osCicId (0x80000310) and osResetType (0x8000030C, sys_getResetType) under their game tokens */
+PORT_ALIAS(osCicId, import_80000310);
+PORT_ALIAS(osResetType, D_35360_X);
 
 static u8 sInitialized;
 

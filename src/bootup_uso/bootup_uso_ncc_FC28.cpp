@@ -35,6 +35,11 @@ extern "C" {
 
 extern int func_00000000(...);
 extern struct { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; } stream_readS32_00000008; /* USO-base reloc; struct-typed for $at-fused member stores */
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: f2C / f38 are GameFlow + 0x34 / + 0x40 */
+#include "port_game.h"
+struct PortFC28Gf { char _p2C[0x2C]; int f2C; char _p38[0x8]; int f38; };
+#define stream_readS32_00000008 (*(PortFC28Gf *)(PORT_GAMEFLOW + 8))
+#endif
 extern char D_00000000;
 #include "../../include/gdl/gl_data.h"  /* object aliases (NCC donors build without -I include) */
 extern char sStr_Node_C58C;

@@ -52,7 +52,12 @@ extern char snd_setPlayer0VolumeLevel_0000023C[];
 }
 /* snd_setPlayer0VolumeLevel_0000023C + 0x18 is GfxLib +0x254 (uso-data-sites: the reloc names Bss+0x3C168 sym154, the GfxLib
  * global, K = 0x254), so snd_setPlayer0VolumeLevel_0000023C stands for &gGfxLib + 0x23C; the same reloc as the target. */
+#ifdef PORT /* &gGfxLib is bootup Bss 0x3C168; the code symbol is a function on the port (plan 17.8) */
+#include "port_game.h"
+#define GFX_1304C GFXLIB(PORT_GFXLIB)
+#else
 #define GFX_1304C GFXLIB(snd_setPlayer0VolumeLevel_0000023C - 0x23C)
+#endif
 extern "C" void Fader_display(Fire *f) {
     int x, y, i, j;
     float up, dn;

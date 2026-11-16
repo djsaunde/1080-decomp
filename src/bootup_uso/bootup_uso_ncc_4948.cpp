@@ -43,6 +43,10 @@ extern E8 bu_4948_t8[];
 extern float bu_4948_k0, bu_4948_k1, bu_4948_klo, bu_4948_khi;
 }
 #define F(p,o) (*(float *)((char *)(p) + (o)))
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: bootup RoData + 0x3F8 */
+extern "C" char port_bootup_rodata[];
+#define snd_calcEmitterDistPan_000003F8 (port_bootup_rodata + 0x3F8)
+#endif
 /* bootup RoData pool words reached off the snd_calcEmitterDistPan_000003F8 base (RoData-base + 0x3F8 + K, per the TextRelocs;
  * uso-data-sites.py sites): two separate f32 pi literals, the degree <-> radian factors */
 #define RO_PI_554 F(snd_calcEmitterDistPan_000003F8, 0x15C) /* RoData 0x554: f32 3.1415927 */

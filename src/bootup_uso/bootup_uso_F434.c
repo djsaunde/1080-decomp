@@ -12,6 +12,11 @@
 
 extern int func_00000000();
 extern struct { int a, b, c; } snd_seqEndDbg_00000188;
+#ifdef PORT /* the token is data: GameFlow (bootup Bss 0xF8) + 0x188 (uso-data-sites.py); a function on the port (plan 17.8) */
+#include "port_game.h"
+typedef struct { int a, b, c; } PortSeqEnd188;
+#define snd_seqEndDbg_00000188 (*(PortSeqEnd188 *)(PORT_GAMEFLOW + 0x188))
+#endif
 
 /* 42-insn -O0 method dispatcher: optionally invokes a pre-call hook
  * (vtable[0x6C] with arg = base + h_68) when state field 0x2C is zero,

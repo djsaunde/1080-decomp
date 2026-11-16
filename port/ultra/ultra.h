@@ -161,6 +161,7 @@ extern s32 osTvType;
 extern s32 osRomType;
 extern u32 osRomBase;
 extern s32 osResetType;
+extern s32 osCicId;
 extern u32 osMemSize;
 extern u8 osAppNMIBuffer[64];
 extern u64 osClockRate;

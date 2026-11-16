@@ -29,6 +29,10 @@ extern void *D_55A0_root; /* zero-page USO-GOT global (gRoot); reloaded per use 
 extern int sStr_light01_7E48, sTag_lig_7E54, sTag_gol_7E58, sTag_st0_7E5C, sTag_en1_7E60, sTag_en2_7E64, sTag_cam_7E68;
 extern char ColourItem_vtbl_75A0_type_7600;
 extern void Tv1Tmpl_update(int *a0);
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: the word read is bootup Data 0x7E50 */
+extern char port_bootup_data[];
+#define Tv1Tmpl_update (*(int *)(port_bootup_data + 0x7E50))
+#endif
 extern int sTag_pyr_7E20, D_55A0_it0; /* arg1==1 list-init globals (decode 2026-06-26; the list table is blank in the target) */
 extern char TreeTmpl_vtbl_7AB8; /* actor-0 obj+0x28 symbol store (decode 2026-06-26) */
 #define DROOT ((int *)D_55A0_root)

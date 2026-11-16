@@ -71,6 +71,11 @@ struct Bb4Bank : Bb4Mid {
 };
 struct Bb4Reg { Bb4Base *tbl[5]; int n; void add(Bb4Base *b) { if (n >= 5) FCALL(sys_staticArrayOverflow)(); Bb4Base *o = b; tbl[n++] = o; } };
 extern "C" Bb4Reg snd_seqEventDbg_00000148;
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: the registry is gGfxLib + 0x148 (frameStartCbs), the strings bootup Data 0x8A28 / 0x8A48 / 0x8A54 */
+#define snd_seqEventDbg_00000148 (*(Bb4Reg *)(PORT_GFXLIB + 0x148))
+#define stream_read16_000089FC (port_bootup_data + 0x89FC)
+#define stream_readF32_00008A40 (port_bootup_data + 0x8A40)
+#endif
 struct Bb4Req { int pad[3]; int a4a, a4b; int pad2[11]; int cat, idx, a2; };
 extern "C" void SnowBoarder_loadBoardModel_0000B1B4(unsigned int cat, unsigned int idx, int a2, int a3, int a4) {
     Bb4Req o;

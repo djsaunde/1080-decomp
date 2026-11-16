@@ -27,6 +27,16 @@ extern char *gui_getCurrentRow_00010324();
  * bootup_uso_o0_100F0.c). MATCHED 2026-07-10 (216/216). */
 extern int stream_readQuad_000000F0;
 extern struct { float f0, f1, f2, f3; } ColourItem_create_00000C10; /* FP literal pool */
+#ifdef PORT
+/* The two code-symbol tokens are data (uso-data-sites.py): stream_readQuad_000000F0 is the word at
+ * bootup Bss 0xF0 (GameFlow's TextWin), ColourItem_create_00000C10 the literal pool at bootup RoData
+ * 0xC10. On the port those names are functions in .text: spell the blob addresses (plan 17.8). */
+#include "port_game.h"
+extern char port_bootup_rodata[];
+typedef struct { float f0, f1, f2, f3; } PortLitPool10C8C;
+#define stream_readQuad_000000F0 (*(int *)(port_bootup_bss + 0xF0))
+#define ColourItem_create_00000C10 (*(PortLitPool10C8C *)(port_bootup_rodata + 0xC10))
+#endif
 extern char sStr_GameFlow_C5D0;
 extern char sStr_Flow_C5DC;
 extern char sStr_rom_gui_uso_C5E4;

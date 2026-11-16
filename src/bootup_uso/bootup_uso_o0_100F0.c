@@ -9,6 +9,11 @@ extern int func_00000000();
  * lwc1 %lo(ColourItem_create_00000C10+N)($at)` loads byte-for-byte (same reloc the ROM has),
  * the same way placeholder calls reference splat-assigned symbols. */
 extern struct { float f0, f1, f2; } ColourItem_create_00000C10;
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: the literal pool at bootup RoData 0xC10 */
+extern char port_bootup_rodata[];
+typedef struct { float f0, f1, f2; } PortLitPool100F0;
+#define ColourItem_create_00000C10 (*(PortLitPool100F0 *)(port_bootup_rodata + 0xC10))
+#endif
 
 /* -O0 sub-file split out of bootup_uso_tail1.c on 2026-05-14. Holds the
  * 0x100F0..0x1016B -O0 cluster: 100F0 (init+dispatch wrapper) + 1016C

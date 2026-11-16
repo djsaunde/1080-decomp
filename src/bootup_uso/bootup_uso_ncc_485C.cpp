@@ -30,7 +30,12 @@ extern char stream_readVec3_00000080[];
 extern char gGfxLib_485c_g[];          /* gGfxLib (blank per-site alias) */
 extern CamWindow *bu_485c_root;        /* bootup data sym161: the camera window (as 1A44's D_bu_205CC) */
 }
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: gGfxLib + 0xA0 */
+#include "port_game.h"
+#define STR (PORT_GFXLIB + 0xA0)
+#else
 #define STR (stream_readVec3_00000080 + 0x20)
+#endif
 /* gGfxLib.worldScale[i] (GfxLib 0x128, gfxlib.h assert) spelled base + offset: every member form
  * (.worldScale[i], *(float *)&->worldScale[i], a GfxLib * local, base + offsetof) folds the 0x128
  * into the lui / addiu pair or re-bases per load; the target keeps &gGfxLib in v1, 0x128.. in the lwc1s. */

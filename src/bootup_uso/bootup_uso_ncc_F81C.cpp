@@ -23,6 +23,10 @@ typedef struct {
     WorldRegistry *game;        /* +0x44: GameFlow.game (InputMgr +0x134), the game world */
 } F0Struct;
 extern F0Struct stream_readQuad_000000F0; /* USO-base reloc */
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: .game is GameFlow + 0x134 */
+#include "port_game.h"
+#define stream_readQuad_000000F0 (*(F0Struct *)(PORT_GAMEFLOW + 0x134 - 0x44))
+#endif
 extern int snd_seqEndDbg_00000188;      /* USO-base reloc */
 extern char sStr_ProcessWindow_C57C;
 extern char sStr_Node_C58C;

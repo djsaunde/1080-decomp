@@ -7,6 +7,12 @@
 extern int func_00000000();
 extern char D_00000000;
 extern struct { int a, b, c; } snd_seqEndDbg_00000188;
+#ifdef PORT /* the data use is GameFlow (bootup Bss 0xF8) + 0x190 (uso-data-sites.py): a function on the port (plan 17.8) */
+#include "port_game.h"
+#define SEQEND_190 (*(int *)(PORT_GAMEFLOW + 0x190))
+#else
+#define SEQEND_190 snd_seqEndDbg_00000188.c
+#endif
 
 /* -O0 cluster split from bootup_uso_tail1.c on 2026-06-23 (F954-F9E8 are -O0;
  * moved together so tail1 keeps only the -O2 game_createProcessWindow and the linker stays
@@ -21,7 +27,7 @@ void Process_fadeOut_0000F954(int *a0, int a1, int a2) {
         FCALL(Node_clearFlag4_0000F614)(*(int *)&PROCESS(a0)->pauseMenu);
     }
     FCALL(input_pauseRacePads)(&gInputMgr);
-    FCALL(Fader_start)(snd_seqEndDbg_00000188.c, 3, 0);
+    FCALL(Fader_start)(SEQEND_190, 3, 0);
     PROCESS(a0)->fadingOut = 1;
     FCALL(snd_seqEndDbg_00000188)(a1, a2, 0);
 }

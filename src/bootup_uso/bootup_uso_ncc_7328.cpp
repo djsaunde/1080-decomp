@@ -31,8 +31,15 @@ extern char snd_startPlayer2Seq_0000027C[], stream_readS32_00000008[], snd_muteA
 /* The relocs (uso-data-sites.py sites EnvSettings_load): stream_readS32_00000008 + 0x34 = GameFlow (bootup Bss
  * 0xF8, sym272) +0x3C, snd_muteAll_0000029C + 4 = GfxLib (sym154) +0x2A0 = fog.colour[3]; the symbols and
  * addends stay the target's (agent-g run 580). */
+#ifdef PORT /* plan 17.8: on the port the code-symbol token is a function in .text; uso-data-sites.py gives the data: GameFlow (Bss 0xF8), &gGfxLib, gGfxLib + 0x27C */
+#include "port_game.h"
+#define GAMEFLOW_7328 GAMEFLOW(PORT_GAMEFLOW)
+#define GFX_7328 GFXLIB(PORT_GFXLIB)
+#define snd_startPlayer2Seq_0000027C (PORT_GFXLIB + 0x27C)
+#else
 #define GAMEFLOW_7328 GAMEFLOW(stream_readS32_00000008 - 8)
 #define GFX_7328 GFXLIB(snd_muteAll_0000029C - 0x29C)
+#endif
 struct Msg73 { int id; };
 #ifdef PORT /* cfront layout: explicit vptr, virtuals as slot calls (port_cfront.h, plan 17.8) */
 #include "port_cfront.h"
